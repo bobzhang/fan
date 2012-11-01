@@ -52,11 +52,10 @@ module MakeDebugParser(Syntax:Sig.Camlp4Syntax) = struct
         ))
       ), call, ( Ast.ExId (_loc, ( Ast.IdUid (_loc, "()") )) ))
   let _=
-    let _ = (expr :'expr Gram.t  ) in
     let grammar_entry_create = Gram.mk in
-    let end_or_in = (grammar_entry_create "end_or_in" :'end_or_in Gram.t  )
-      and start_debug = (grammar_entry_create "start_debug"
-      :'start_debug Gram.t  ) in
+    let start_debug = (grammar_entry_create "start_debug"
+      :'start_debug Gram.t  ) and end_or_in =
+      (grammar_entry_create "end_or_in" :'end_or_in Gram.t  ) in
     Gram.extend (expr :'expr Gram.t  ) (
       (
         fun () -> (None, [(None, None,
@@ -129,30 +128,31 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
   include Syntax module Ast = Camlp4Ast open FanGrammar open FanGrammarTools
   let _= FanConfig.antiquotations := true
   let _=
-    let _ = (expr :'expr Gram.t  ) and _ = (level_list :'level_list Gram.t  )
-      and _ = (level :'level Gram.t  ) and _ = (psymbol :'psymbol Gram.t  )
-      and _ = (rule_list :'rule_list Gram.t  ) and _ = (rule :'rule Gram.t  )
-      and _ = (symbol :'symbol Gram.t  ) in
     let grammar_entry_create = Gram.mk in
-    let extend_header = (grammar_entry_create "extend_header"
-      :'extend_header Gram.t  ) and semi_sep =
-      (grammar_entry_create "semi_sep" :'semi_sep Gram.t  ) and string =
-      (grammar_entry_create "string" :'string Gram.t  ) and name =
-      (grammar_entry_create "name" :'name Gram.t  ) and comma_patt =
-      (grammar_entry_create "comma_patt" :'comma_patt Gram.t  ) and pattern =
-      (grammar_entry_create "pattern" :'pattern Gram.t  ) and assoc =
+    let delete_rule_body = (grammar_entry_create "delete_rule_body"
+      :'delete_rule_body Gram.t  ) and pattern =
+      (grammar_entry_create "pattern" :'pattern Gram.t  ) and comma_patt =
+      (grammar_entry_create "comma_patt" :'comma_patt Gram.t  ) and string =
+      (grammar_entry_create "string" :'string Gram.t  ) and semi_sep =
+      (grammar_entry_create "semi_sep" :'semi_sep Gram.t  ) and name =
+      (grammar_entry_create "name" :'name Gram.t  ) and psymbol =
+      (grammar_entry_create "psymbol" :'psymbol Gram.t  ) and rule =
+      (grammar_entry_create "rule" :'rule Gram.t  ) and rule_list =
+      (grammar_entry_create "rule_list" :'rule_list Gram.t  ) and level_list
+      = (grammar_entry_create "level_list" :'level_list Gram.t  ) and level =
+      (grammar_entry_create "level" :'level Gram.t  ) and assoc =
       (grammar_entry_create "assoc" :'assoc Gram.t  ) and position =
       (grammar_entry_create "position" :'position Gram.t  ) and entry =
       (grammar_entry_create "entry" :'entry Gram.t  ) and global =
       (grammar_entry_create "global" :'global Gram.t  ) and t_qualid =
       (grammar_entry_create "t_qualid" :'t_qualid Gram.t  ) and qualid =
       (grammar_entry_create "qualid" :'qualid Gram.t  ) and qualuid =
-      (grammar_entry_create "qualuid" :'qualuid Gram.t  ) and
-      delete_rule_header = (grammar_entry_create "delete_rule_header"
-      :'delete_rule_header Gram.t  ) and delete_rule_body =
-      (grammar_entry_create "delete_rule_body" :'delete_rule_body Gram.t  )
-      and extend_body = (grammar_entry_create "extend_body"
-      :'extend_body Gram.t  ) in
+      (grammar_entry_create "qualuid" :'qualuid Gram.t  ) and extend_body =
+      (grammar_entry_create "extend_body" :'extend_body Gram.t  ) and
+      extend_header = (grammar_entry_create "extend_header"
+      :'extend_header Gram.t  ) and delete_rule_header =
+      (grammar_entry_create "delete_rule_header" :'delete_rule_header Gram.t 
+      ) in
     Gram.extend (expr :'expr Gram.t  ) (
       (
         fun () -> (( Some ( `After "top" ) ), [(None, None,
@@ -337,8 +337,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
     Gram.extend (global :'global Gram.t  ) (
       (
         fun () -> (None, [(None, None,
-          [([`Stoken (( ( function | `UIDENT "GLOBAL" -> true | _ -> false )
-               ), (`Normal, "`UIDENT \"GLOBAL\"")); `Skeyword ":";
+          [([`Stoken (( ( function | `UIDENT "LOCAL" -> true | _ -> false )
+               ), (`Normal, "`UIDENT \"LOCAL\"")); `Skeyword ":";
           `Slist1 ( `Snterm ( Gram.obj (name :'name Gram.t  ) ) );
           `Snterm ( Gram.obj (semi_sep :'semi_sep Gram.t  ) )], (
           Gram.mk_action (
@@ -348,7 +348,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                   fun __camlp4_0 ->
                     fun (_loc : FanLoc.t ) ->
                       match __camlp4_0 with
-                      | `UIDENT "GLOBAL" -> (sl :'global )
+                      | `UIDENT "LOCAL" -> (sl :'global )
                       | _ -> assert false ) ))])]) ) () );
     Gram.extend (entry :'entry Gram.t  ) (
       (
@@ -768,7 +768,6 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
             fun _ -> fun (_loc : FanLoc.t ) -> (() :'semi_sep ) ) ))])]) ) ()
       )
   let _=
-    let _ = (symbol :'symbol Gram.t  ) in
     let grammar_entry_create = Gram.mk in
     let simple_expr = (grammar_entry_create "simple_expr"
       :'simple_expr Gram.t  ) in
@@ -879,9 +878,6 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
   let comprehension_or_sem_expr_for_list =
     Gram.mk "comprehension_or_sem_expr_for_list"
   let _=
-    let _ = (expr :'expr Gram.t  ) and _ =
-      (comprehension_or_sem_expr_for_list
-      :'comprehension_or_sem_expr_for_list Gram.t  ) in
     let grammar_entry_create = Gram.mk in
     let item = (grammar_entry_create "item" :'item Gram.t  ) in
     Gram.extend (expr :'expr Gram.t  ) (
@@ -970,9 +966,6 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
   let _=
     if is_revised ~expr ~sem_expr_for_list
     then
-      let _ = (expr :'expr Gram.t  ) and _ =
-        (comprehension_or_sem_expr_for_list
-        :'comprehension_or_sem_expr_for_list Gram.t  ) in
       Gram.extend (comprehension_or_sem_expr_for_list
         :'comprehension_or_sem_expr_for_list Gram.t  ) (
         (
@@ -1192,8 +1185,6 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
       else nil in
     SdStr item
   let _=
-    let _ = (expr :'expr Gram.t  ) and _ = (sig_item :'sig_item Gram.t  ) and
-      _ = (str_item :'str_item Gram.t  ) and _ = (patt :'patt Gram.t  ) in
     let grammar_entry_create = Gram.mk in
     let macro_def = (grammar_entry_create "macro_def" :'macro_def Gram.t  )
       and uident = (grammar_entry_create "uident" :'uident Gram.t  ) and
@@ -1906,147 +1897,27 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
         | _ -> al in
       fun (__strm : _ Stream.t ) -> let a = symb __strm in kont a __strm )
   let _=
-    let _ = (a_CHAR :'a_CHAR Gram.t  ) and _ = (override_flag_quot
-      :'override_flag_quot Gram.t  ) and _ = (row_var_flag_quot
-      :'row_var_flag_quot Gram.t  ) and _ = (virtual_flag_quot
-      :'virtual_flag_quot Gram.t  ) and _ = (private_flag_quot
-      :'private_flag_quot Gram.t  ) and _ = (mutable_flag_quot
-      :'mutable_flag_quot Gram.t  ) and _ = (direction_flag_quot
-      :'direction_flag_quot Gram.t  ) and _ = (rec_flag_quot
-      :'rec_flag_quot Gram.t  ) and _ = (package_type :'package_type Gram.t 
-      ) and _ = (do_sequence :'do_sequence Gram.t  ) and _ = (infixop4
-      :'infixop4 Gram.t  ) and _ = (infixop3 :'infixop3 Gram.t  ) and _ =
-      (infixop2 :'infixop2 Gram.t  ) and _ = (infixop1 :'infixop1 Gram.t  )
-      and _ = (infixop0 :'infixop0 Gram.t  ) and _ = (with_constr_quot
-      :'with_constr_quot Gram.t  ) and _ = (with_constr :'with_constr Gram.t 
-      ) and _ = (val_longident :'val_longident Gram.t  ) and _ = (use_file
-      :'use_file Gram.t  ) and _ = (typevars :'typevars Gram.t  ) and _ =
-      (type_parameters :'type_parameters Gram.t  ) and _ = (type_parameter
-      :'type_parameter Gram.t  ) and _ = (type_longident_and_parameters
-      :'type_longident_and_parameters Gram.t  ) and _ = (type_longident
-      :'type_longident Gram.t  ) and _ = (type_kind :'type_kind Gram.t  ) and
-      _ = (type_ident_and_parameters :'type_ident_and_parameters Gram.t  )
-      and _ = (type_declaration :'type_declaration Gram.t  ) and _ =
-      (type_constraint :'type_constraint Gram.t  ) and _ = (top_phrase
-      :'top_phrase Gram.t  ) and _ = (str_items :'str_items Gram.t  ) and _ =
-      (str_item_quot :'str_item_quot Gram.t  ) and _ = (str_item
-      :'str_item Gram.t  ) and _ = (star_ctyp :'star_ctyp Gram.t  ) and _ =
-      (sig_items :'sig_items Gram.t  ) and _ = (sig_item_quot
-      :'sig_item_quot Gram.t  ) and _ = (sig_item :'sig_item Gram.t  ) and _
-      = (sequence :'sequence Gram.t  ) and _ = (semi :'semi Gram.t  ) and _ =
-      (sem_patt_for_list :'sem_patt_for_list Gram.t  ) and _ = (sem_patt
-      :'sem_patt Gram.t  ) and _ = (sem_expr_for_list
-      :'sem_expr_for_list Gram.t  ) and _ = (sem_expr :'sem_expr Gram.t  )
-      and _ = (row_field :'row_field Gram.t  ) and _ = (poly_type
-      :'poly_type Gram.t  ) and _ = (phrase :'phrase Gram.t  ) and _ =
-      (patt_tcon :'patt_tcon Gram.t  ) and _ = (patt_quot :'patt_quot Gram.t 
-      ) and _ = (patt_eoi :'patt_eoi Gram.t  ) and _ = (patt_as_patt_opt
-      :'patt_as_patt_opt Gram.t  ) and _ = (patt :'patt Gram.t  ) and _ =
-      (opt_when_expr :'opt_when_expr Gram.t  ) and _ = (opt_virtual
-      :'opt_virtual Gram.t  ) and _ = (opt_rec :'opt_rec Gram.t  ) and _ =
-      (opt_private :'opt_private Gram.t  ) and _ = (opt_polyt
-      :'opt_polyt Gram.t  ) and _ = (opt_mutable :'opt_mutable Gram.t  ) and
-      _ = (opt_meth_list :'opt_meth_list Gram.t  ) and _ = (opt_expr
-      :'opt_expr Gram.t  ) and _ = (opt_eq_ctyp :'opt_eq_ctyp Gram.t  ) and _
-      = (opt_dot_dot :'opt_dot_dot Gram.t  ) and _ = (opt_comma_ctyp
-      :'opt_comma_ctyp Gram.t  ) and _ = (opt_class_self_type
-      :'opt_class_self_type Gram.t  ) and _ = (opt_class_self_patt
-      :'opt_class_self_patt Gram.t  ) and _ = (opt_as_lident
-      :'opt_as_lident Gram.t  ) and _ = (name_tags :'name_tags Gram.t  ) and
-      _ = (more_ctyp :'more_ctyp Gram.t  ) and _ = (module_type_quot
-      :'module_type_quot Gram.t  ) and _ = (module_type :'module_type Gram.t 
-      ) and _ = (module_rec_declaration :'module_rec_declaration Gram.t  )
-      and _ = (module_longident_with_app :'module_longident_with_app Gram.t 
-      ) and _ = (module_longident :'module_longident Gram.t  ) and _ =
-      (module_expr_quot :'module_expr_quot Gram.t  ) and _ = (module_expr
-      :'module_expr Gram.t  ) and _ = (module_declaration
-      :'module_declaration Gram.t  ) and _ = (module_binding_quot
-      :'module_binding_quot Gram.t  ) and _ = (module_binding0
-      :'module_binding0 Gram.t  ) and _ = (module_binding
-      :'module_binding Gram.t  ) and _ = (meth_decl :'meth_decl Gram.t  ) and
-      _ = (meth_list :'meth_list Gram.t  ) and _ = (let_binding
-      :'let_binding Gram.t  ) and _ = (labeled_ipatt :'labeled_ipatt Gram.t 
-      ) and _ = (label_patt_list :'label_patt_list Gram.t  ) and _ =
-      (label_patt :'label_patt Gram.t  ) and _ = (label_longident
-      :'label_longident Gram.t  ) and _ = (label_ipatt_list
-      :'label_ipatt_list Gram.t  ) and _ = (label_ipatt :'label_ipatt Gram.t 
-      ) and _ = (label_expr_list :'label_expr_list Gram.t  ) and _ =
-      (label_expr :'label_expr Gram.t  ) and _ = (label_declaration_list
-      :'label_declaration_list Gram.t  ) and _ = (label_declaration
-      :'label_declaration Gram.t  ) and _ = (label :'label Gram.t  ) and _ =
-      (ipatt_tcon :'ipatt_tcon Gram.t  ) and _ = (ipatt :'ipatt Gram.t  ) and
-      _ = (interf :'interf Gram.t  ) and _ = (implem :'implem Gram.t  ) and _
-      = (ident_quot :'ident_quot Gram.t  ) and _ = (ident :'ident Gram.t  )
-      and _ = (fun_def :'fun_def Gram.t  ) and _ = (fun_binding
-      :'fun_binding Gram.t  ) and _ = (field_expr_list
-      :'field_expr_list Gram.t  ) and _ = (field_expr :'field_expr Gram.t  )
-      and _ = (expr_quot :'expr_quot Gram.t  ) and _ = (expr_eoi
-      :'expr_eoi Gram.t  ) and _ = (expr :'expr Gram.t  ) and _ = (eq_expr
-      :'eq_expr Gram.t  ) and _ = (dummy :'dummy Gram.t  ) and _ =
-      (direction_flag :'direction_flag Gram.t  ) and _ = (cvalue_binding
-      :'cvalue_binding Gram.t  ) and _ = (ctyp_quot :'ctyp_quot Gram.t  ) and
-      _ = (ctyp :'ctyp Gram.t  ) and _ = (constructor_declarations
-      :'constructor_declarations Gram.t  ) and _ = (constructor_declaration
-      :'constructor_declaration Gram.t  ) and _ = (constructor_arg_list
-      :'constructor_arg_list Gram.t  ) and _ = (constrain :'constrain Gram.t 
-      ) and _ = (comma_type_parameter :'comma_type_parameter Gram.t  ) and _
-      = (comma_patt :'comma_patt Gram.t  ) and _ = (comma_ipatt
-      :'comma_ipatt Gram.t  ) and _ = (comma_expr :'comma_expr Gram.t  ) and
-      _ = (comma_ctyp :'comma_ctyp Gram.t  ) and _ = (class_type_quot
-      :'class_type_quot Gram.t  ) and _ = (class_type_plus
-      :'class_type_plus Gram.t  ) and _ = (class_type_longident_and_param
-      :'class_type_longident_and_param Gram.t  ) and _ =
-      (class_type_longident :'class_type_longident Gram.t  ) and _ =
-      (class_type_declaration :'class_type_declaration Gram.t  ) and _ =
-      (class_type :'class_type Gram.t  ) and _ = (class_structure
-      :'class_structure Gram.t  ) and _ = (class_str_item_quot
-      :'class_str_item_quot Gram.t  ) and _ = (class_str_item
-      :'class_str_item Gram.t  ) and _ = (class_signature
-      :'class_signature Gram.t  ) and _ = (class_sig_item_quot
-      :'class_sig_item_quot Gram.t  ) and _ = (class_sig_item
-      :'class_sig_item Gram.t  ) and _ = (class_name_and_param
-      :'class_name_and_param Gram.t  ) and _ = (class_longident_and_param
-      :'class_longident_and_param Gram.t  ) and _ = (class_longident
-      :'class_longident Gram.t  ) and _ = (class_info_for_class_type
-      :'class_info_for_class_type Gram.t  ) and _ =
-      (class_info_for_class_expr :'class_info_for_class_expr Gram.t  ) and _
-      = (class_fun_def :'class_fun_def Gram.t  ) and _ = (class_fun_binding
-      :'class_fun_binding Gram.t  ) and _ = (class_expr_quot
-      :'class_expr_quot Gram.t  ) and _ = (class_expr :'class_expr Gram.t  )
-      and _ = (class_description :'class_description Gram.t  ) and _ =
-      (class_declaration :'class_declaration Gram.t  ) and _ = (binding_quot
-      :'binding_quot Gram.t  ) and _ = (binding :'binding Gram.t  ) and _ =
-      (match_case_quot :'match_case_quot Gram.t  ) and _ = (match_case0
-      :'match_case0 Gram.t  ) and _ = (match_case :'match_case Gram.t  ) and
-      _ = (and_ctyp :'and_ctyp Gram.t  ) and _ = (amp_ctyp :'amp_ctyp Gram.t 
-      ) and _ = (a_ident :'a_ident Gram.t  ) and _ = (a_UIDENT
-      :'a_UIDENT Gram.t  ) and _ = (a_STRING :'a_STRING Gram.t  ) and _ =
-      (a_OPTLABEL :'a_OPTLABEL Gram.t  ) and _ = (a_NATIVEINT
-      :'a_NATIVEINT Gram.t  ) and _ = (rec_binding_quot
-      :'rec_binding_quot Gram.t  ) and _ = (a_LIDENT :'a_LIDENT Gram.t  ) and
-      _ = (a_LABEL :'a_LABEL Gram.t  ) and _ = (a_INT64 :'a_INT64 Gram.t  )
-      and _ = (a_INT32 :'a_INT32 Gram.t  ) and _ = (a_INT :'a_INT Gram.t  )
-      and _ = (a_FLOAT :'a_FLOAT Gram.t  ) in
     let grammar_entry_create = Gram.mk in
-    let infixop5 = (grammar_entry_create "infixop5" :'infixop5 Gram.t  ) and
-      string_list = (grammar_entry_create "string_list" :'string_list Gram.t 
-      ) and opt_override = (grammar_entry_create "opt_override"
-      :'opt_override Gram.t  ) and unquoted_typevars =
+    let string_list = (grammar_entry_create "string_list"
+      :'string_list Gram.t  ) and unquoted_typevars =
       (grammar_entry_create "unquoted_typevars" :'unquoted_typevars Gram.t  )
       and value_val_opt_override =
       (grammar_entry_create "value_val_opt_override"
       :'value_val_opt_override Gram.t  ) and method_opt_override =
       (grammar_entry_create "method_opt_override"
-      :'method_opt_override Gram.t  ) and module_longident_dot_lparen =
-      (grammar_entry_create "module_longident_dot_lparen"
-      :'module_longident_dot_lparen Gram.t  ) and optional_type_parameter =
+      :'method_opt_override Gram.t  ) and optional_type_parameter =
       (grammar_entry_create "optional_type_parameter"
       :'optional_type_parameter Gram.t  ) and fun_def_cont_no_when =
       (grammar_entry_create "fun_def_cont_no_when"
       :'fun_def_cont_no_when Gram.t  ) and fun_def_cont =
       (grammar_entry_create "fun_def_cont" :'fun_def_cont Gram.t  ) and
+      fun_def = (grammar_entry_create "fun_def" :'fun_def Gram.t  ) and
       sequence' = (grammar_entry_create "sequence'" :'sequence' Gram.t  ) and
-      infixop6 = (grammar_entry_create "infixop6" :'infixop6 Gram.t  ) in
+      module_longident_dot_lparen =
+      (grammar_entry_create "module_longident_dot_lparen"
+      :'module_longident_dot_lparen Gram.t  ) and infixop6 =
+      (grammar_entry_create "infixop6" :'infixop6 Gram.t  ) and infixop5 =
+      (grammar_entry_create "infixop5" :'infixop5 Gram.t  ) in
     Gram.extend (module_expr :'module_expr Gram.t  ) (
       (
         fun () -> (None, [(( Some "top" ), None, [([`Skeyword "struct";
@@ -8951,33 +8822,31 @@ module IdRevisedParserParser : Sig.Id =
   end 
 module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
   struct
-  include Syntax module Ast = Camlp4Ast
-  let stream_expr = Gram.mk "stream_expr"
-  let stream_begin = Gram.mk "stream_begin"
-  let stream_end = Gram.mk "stream_end"
-  let stream_quot = Gram.mk "stream_quot"
-  let parser_case = Gram.mk "parser_case"
-  let parser_case_list = Gram.mk "parser_case_list" open FanStreamTools
+  include Syntax module Ast = Camlp4Ast open FanStreamTools
   let _=
-    let _ = (expr :'expr Gram.t  ) and _ = (parser_case_list
-      :'parser_case_list Gram.t  ) and _ = (parser_case :'parser_case Gram.t 
-      ) and _ = (stream_quot :'stream_quot Gram.t  ) and _ = (stream_end
-      :'stream_end Gram.t  ) and _ = (stream_begin :'stream_begin Gram.t  )
-      and _ = (stream_expr :'stream_expr Gram.t  ) in
     let grammar_entry_create = Gram.mk in
     let parser_ipatt = (grammar_entry_create "parser_ipatt"
-      :'parser_ipatt Gram.t  ) and stream_expr_comp =
-      (grammar_entry_create "stream_expr_comp" :'stream_expr_comp Gram.t  )
-      and stream_expr_comp_list =
-      (grammar_entry_create "stream_expr_comp_list"
-      :'stream_expr_comp_list Gram.t  ) and stream_patt_comp_err_list =
+      :'parser_ipatt Gram.t  ) and stream_quot =
+      (grammar_entry_create "stream_quot" :'stream_quot Gram.t  ) and
+      stream_expr = (grammar_entry_create "stream_expr" :'stream_expr Gram.t 
+      ) and parser_case_list = (grammar_entry_create "parser_case_list"
+      :'parser_case_list Gram.t  ) and parser_case =
+      (grammar_entry_create "parser_case" :'parser_case Gram.t  ) and
+      stream_patt = (grammar_entry_create "stream_patt" :'stream_patt Gram.t 
+      ) and stream_end = (grammar_entry_create "stream_end"
+      :'stream_end Gram.t  ) and stream_begin =
+      (grammar_entry_create "stream_begin" :'stream_begin Gram.t  ) and
+      stream_patt_comp_err_list =
       (grammar_entry_create "stream_patt_comp_err_list"
       :'stream_patt_comp_err_list Gram.t  ) and stream_patt_comp_err =
       (grammar_entry_create "stream_patt_comp_err"
       :'stream_patt_comp_err Gram.t  ) and stream_patt_comp =
       (grammar_entry_create "stream_patt_comp" :'stream_patt_comp Gram.t  )
-      and stream_patt = (grammar_entry_create "stream_patt"
-      :'stream_patt Gram.t  ) in
+      and stream_expr_comp_list =
+      (grammar_entry_create "stream_expr_comp_list"
+      :'stream_expr_comp_list Gram.t  ) and stream_expr_comp =
+      (grammar_entry_create "stream_expr_comp" :'stream_expr_comp Gram.t 
+      ) in
     Gram.extend (expr :'expr Gram.t  ) (
       (
         fun () -> (( Some ( `Level "top" ) ), [(None, None,
@@ -9008,8 +8877,13 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                       fun (e : 'sequence) ->
                         fun _ ->
                           fun (_loc : FanLoc.t ) ->
-                            (cparser_match _loc e po pcl :'expr ) ) ));
-          ([`Skeyword "parser";
+                            (match name with
+                             | Some o ->
+                                 Ref.protect
+                                   FanStreamTools.grammar_module_name o (
+                                   fun _ -> cparser_match _loc e po pcl )
+                             | None  -> cparser_match _loc e po pcl :
+                            'expr ) ) )); ([`Skeyword "parser";
           `Sopt (
             Gram.srules expr
               [([`Stoken (( ( function | `UIDENT _ -> true | _ -> false ) ),
@@ -9030,8 +8904,42 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
               fun (po : 'parser_ipatt option ) ->
                 fun (name : 'e__26 option ) ->
                   fun _ ->
-                    fun (_loc : FanLoc.t ) -> (cparser _loc po pcl :'expr ) )
-          ))])]) ) () );
+                    fun (_loc : FanLoc.t ) ->
+                      (match name with
+                       | Some o ->
+                           Ref.protect FanStreamTools.grammar_module_name o (
+                             fun _ -> cparser _loc po pcl )
+                       | None  -> cparser _loc po pcl :'expr ) ) ))])]) ) ()
+      );
+    Gram.extend (expr :'expr Gram.t  ) (
+      (
+        fun () -> (( Some ( `Level "simple" ) ), [(None, None,
+          [([`Snterm ( Gram.obj (stream_begin :'stream_begin Gram.t  ) );
+          `Snterm (
+            Gram.obj (stream_expr_comp_list :'stream_expr_comp_list Gram.t  )
+            ); `Snterm ( Gram.obj (stream_end :'stream_end Gram.t  ) )], (
+          Gram.mk_action (
+            fun _ ->
+              fun (sel : 'stream_expr_comp_list) ->
+                fun (name : 'stream_begin) ->
+                  fun (_loc : FanLoc.t ) ->
+                    (match name with
+                     | Some o ->
+                         Ref.protect FanStreamTools.grammar_module_name o (
+                           fun _ -> cstream _loc sel )
+                     | None  -> cstream _loc sel :'expr ) ) ));
+          ([`Snterm ( Gram.obj (stream_begin :'stream_begin Gram.t  ) );
+          `Snterm ( Gram.obj (stream_end :'stream_end Gram.t  ) )], (
+          Gram.mk_action (
+            fun _ ->
+              fun (name : 'stream_begin) ->
+                fun (_loc : FanLoc.t ) ->
+                  (match name with
+                   | Some o ->
+                       Ref.protect FanStreamTools.grammar_module_name o (
+                         fun _ -> FanStreamTools.empty _loc )
+                   | None  -> FanStreamTools.empty _loc :'expr ) ) ))])]) )
+        () );
     Gram.extend (parser_ipatt :'parser_ipatt Gram.t  ) (
       (
         fun () -> (None, [(None, None, [([`Skeyword "_"], (
@@ -9062,8 +8970,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
             ) ))])]) ) () );
     Gram.extend (parser_case :'parser_case Gram.t  ) (
       (
-        fun () -> (None, [(None, None,
-          [([`Snterm ( Gram.obj (stream_begin :'stream_begin Gram.t  ) );
+        fun () -> (None, [(None, None, [([`Skeyword "[<";
           `Snterm ( Gram.obj (stream_patt :'stream_patt Gram.t  ) );
           `Snterm ( Gram.obj (stream_end :'stream_end Gram.t  ) );
           `Sopt ( `Snterm ( Gram.obj (parser_ipatt :'parser_ipatt Gram.t  ) )
@@ -9080,10 +8987,23 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                           ) ) ))])]) ) () );
     Gram.extend (stream_begin :'stream_begin Gram.t  ) (
       (
-        fun () -> (None, [(None, None, [([`Skeyword "[<"], (
+        fun () -> (None, [(None, None, [([`Skeyword "[<";
+          `Sopt (
+            Gram.srules stream_begin [([`Skeyword "!";
+              `Stoken (( ( function | `UIDENT _ -> true | _ -> false ) ),
+                (`Normal, "`UIDENT _"))], (
+              Gram.mk_action (
+                fun __camlp4_0 ->
+                  fun _ ->
+                    fun (_loc : FanLoc.t ) ->
+                      match __camlp4_0 with
+                      | `UIDENT n -> (n :'e__28 )
+                      | _ -> assert false ) ))]
+            )], (
           Gram.mk_action (
-            fun _ -> fun (_loc : FanLoc.t ) -> (() :'stream_begin ) ) ))])])
-        ) () );
+            fun (name : 'e__28 option ) ->
+              fun _ -> fun (_loc : FanLoc.t ) -> (name :'stream_begin ) )
+          ))])]) ) () );
     Gram.extend (stream_end :'stream_end Gram.t  ) (
       (
         fun () -> (None, [(None, None, [([`Skeyword ">]"], (
@@ -9150,10 +9070,10 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
               `Snterm ( Gram.obj (stream_expr :'stream_expr Gram.t  ) )], (
               Gram.mk_action (
                 fun (e : 'stream_expr) ->
-                  fun _ -> fun (_loc : FanLoc.t ) -> (e :'e__28 ) ) ))]
+                  fun _ -> fun (_loc : FanLoc.t ) -> (e :'e__29 ) ) ))]
             )], (
           Gram.mk_action (
-            fun (eo : 'e__28 option ) ->
+            fun (eo : 'e__29 option ) ->
               fun (p : 'patt) ->
                 fun (_loc : FanLoc.t ) -> (SpTrm (_loc, p, eo)
                   :'stream_patt_comp ) ) ))])]) ) () );
@@ -9167,10 +9087,10 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
               `Snterm ( Gram.obj (stream_expr :'stream_expr Gram.t  ) )], (
               Gram.mk_action (
                 fun (e : 'stream_expr) ->
-                  fun _ -> fun (_loc : FanLoc.t ) -> (e :'e__29 ) ) ))]
+                  fun _ -> fun (_loc : FanLoc.t ) -> (e :'e__30 ) ) ))]
             )], (
           Gram.mk_action (
-            fun (eo : 'e__29 option ) ->
+            fun (eo : 'e__30 option ) ->
               fun (spc : 'stream_patt_comp) ->
                 fun (_loc : FanLoc.t ) -> ((spc, eo) :'stream_patt_comp_err )
             ) ))])]) ) () );
@@ -9203,28 +9123,6 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
             fun (spc : 'stream_patt_comp_err) ->
               fun (_loc : FanLoc.t ) -> ([spc] :'stream_patt_comp_err_list )
             ) ))])]) ) () );
-    Gram.extend (expr :'expr Gram.t  ) (
-      (
-        fun () -> (( Some ( `Level "simple" ) ), [(None, None,
-          [([`Snterm ( Gram.obj (stream_begin :'stream_begin Gram.t  ) );
-          `Snterm (
-            Gram.obj (stream_expr_comp_list :'stream_expr_comp_list Gram.t  )
-            ); `Snterm ( Gram.obj (stream_end :'stream_end Gram.t  ) )], (
-          Gram.mk_action (
-            fun _ ->
-              fun (sel : 'stream_expr_comp_list) ->
-                fun _ -> fun (_loc : FanLoc.t ) -> (cstream _loc sel :'expr )
-            ) ));
-          ([`Snterm ( Gram.obj (stream_begin :'stream_begin Gram.t  ) );
-          `Snterm ( Gram.obj (stream_end :'stream_end Gram.t  ) )], (
-          Gram.mk_action (
-            fun _ ->
-              fun _ ->
-                fun (_loc : FanLoc.t ) ->
-                  (Ast.ExId (_loc, (
-                     Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                       Ast.IdLid (_loc, "sempty") ))
-                     )) :'expr ) ) ))])]) ) () );
     Gram.extend (stream_expr_comp_list :'stream_expr_comp_list Gram.t  ) (
       (
         fun () -> (None, [(None, None,

@@ -152,7 +152,7 @@ module Stream = struct
   let rev strm=
     let rec aux = parser
     [ [< x ; 'xs>] -> [< 'aux xs ; x >]
-    | [< >] -> [< >] ] in
+    | [< >] ->  [< >] ] in
     aux strm;
   let tail = parser
     [ [< _; 'xs >] -> [< 'xs >]

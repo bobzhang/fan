@@ -8,9 +8,8 @@ type spat_comp =
 type sexp_comp =
   [ SeTrm of FanLoc.t and Ast.expr | SeNtr of FanLoc.t and Ast.expr ];
 
-
+(* default module name ["Stream"] for compatibility *)
 let grammar_module_name = ref "Stream";
-(* let _loc = FanLoc.ghost in ref <:ident< Stream >>  *)
 let gm () = !grammar_module_name;  
 let strm_n = "__strm";
 
@@ -65,11 +64,9 @@ let rec subst v e =
   [ <:expr< $lid:x >> ->
       let x = if x = v then strm_n else x in
       <:expr< $lid:x >>
-  | <:expr< $uid:_ >> -> e
-  | <:expr< $int:_ >> -> e
-  | <:expr< $chr:_ >> -> e
-  | <:expr< $str:_ >> -> e
-  | <:expr< $_ . $_ >> -> e
+  | ( <:expr< $uid:_ >>  | <:expr< $int:_ >> 
+    | <:expr< $chr:_ >>  | <:expr< $str:_ >> 
+    | <:expr< $_ . $_ >> )-> e
   | <:expr< let $rec:rf $bi in $e >> ->
       <:expr< let $rec:rf $(subst_binding v bi) in $(subst v e) >>
   | <:expr< $e1 $e2 >> -> <:expr< $(subst v e1) $(subst v e2) >>

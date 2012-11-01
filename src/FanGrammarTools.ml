@@ -38,61 +38,7 @@ let check_not_tok s = (* ('a, 'b) symbol -> unit *)
           ("Deprecated syntax, use a sub rule. "^
            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
     | _ -> () ];
-
-(* internal *)      
-let mark_used modif tbl n = (* bool ref -> ('a, used ref * 'b) Hashtbl.t -> 'a -> unit*)
-  try let rll = Hashtbl.find_all tbl n in
-  List.iter (fun
-    [ (({contents=Unused} as r), _)   ->  begin
-      r := UsedNotScanned; modif := True;
-    end
-    |  _ -> () ]) rll
-  with
-    [ Not_found -> () ] ;
-    
-(* internal *)
-let  mark_symbol modif tbl symb =
-(* bool ref -> (string, used ref * 'a) Hashtbl.t -> ('b, 'c) symbol -> unit*)
-  List.iter (fun e -> mark_used modif tbl e) symb.used ;
-
-(* internal
-   mainly to report unused local entry. You need to
-   feed a name list and entry list to check
- *)  
-let check_use nl el = (* 'a name list -> (Ast.expr, 'b) entry list -> unit*)
-  let tbl = Hashtbl.create 301 in
-  let modif = ref False in
-  let ()=  List.iter (fun e
-    -> let u = match e.name.expr with
-    [ <:expr< $lid:_ >> -> Unused
-    | _ -> UsedNotScanned ] in Hashtbl.add tbl e.name.tvar (ref u, e))
-      el in 
-  let ()= List.iter (fun n
-    -> try let rll = Hashtbl.find_all tbl n.tvar in
-    List.iter (fun (r, _) -> r := UsedNotScanned) rll
-    with _ -> ())   nl in 
-  let () = modif := True in 
-  let () =
-    while !modif do 
-      modif := False;
-      Hashtbl.iter (fun _ (r, e) ->
-        if !r = UsedNotScanned then begin  
-          r := UsedScanned;
-          List.iter (fun level
-            -> let rules = level.rules in
-            List.iter(fun rule ->
-              List.iter (fun s -> mark_symbol modif tbl s)
-                rule.prod)
-              rules)
-            e.levels
-        end
-        else ())  tbl
-      done in
- Hashtbl.iter (fun s (r, e) ->
-   if !r = Unused then
-     print_warning e.name.loc ("Unused local entry \"" ^ s ^ "\"")
-   else ()) tbl;
-
+      
 let new_type_var = (* unit -> string *)
   let i = ref 0 in fun () -> begin  incr i; "e__" ^ string_of_int !i end ;
 
@@ -140,9 +86,7 @@ let  make_ctyp  styp tvar = (* styp -> string -> Ast.ctyp *)
     try Some (aux styp) with [NotneededTyping -> None ];
 
 (*
-  {[
-  styp generates type constraints which are used to constrain patt
-  ]}
+  {[ styp generates type constraints which are used to constrain patt ]}
 *)    
 let make_ctyp_patt styp tvar patt = (* styp -> string -> patt -> patt*)
   match make_ctyp styp tvar with
@@ -155,9 +99,7 @@ let make_ctyp_expr styp tvar expr = (* styp -> string -> expr -> expr*)
   | Some t -> let _loc = Camlp4Ast.loc_of_expr expr in <:expr< ($expr : $t) >> ];
       
 (*
-  {[
-  ('j, Ast.patt) symbol list
-  ]}
+  {[  ('j, Ast.patt) symbol list  ]}
  *)    
 let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string) =
   let locid = <:patt< $(lid: !FanLoc.name) >> in (* default is [_loc]*)
@@ -241,57 +183,33 @@ let rec make_expr entry tvar =  fun
   | TXlist _loc min t ts ->
       let txt = make_expr entry "" t.text in
       match (min, ts) with
-      [ (False, None) -> (* <:expr< $(id:gm()).Slist0 $txt >> *)
-        <:expr< `Slist0 $txt >> 
-      | (True, None) -> (* <:expr< $(id:gm()).Slist1 $txt >> *)
-          <:expr< `Slist1 $txt >> 
+      [ (False, None) -> <:expr< `Slist0 $txt >> 
+      | (True, None) ->  <:expr< `Slist1 $txt >> 
       | (False, Some s) ->
           let x = make_expr entry tvar s.text in
-          (* <:expr< $(id:gm()).Slist0sep $txt $x >> *)
           <:expr< `Slist0sep ($txt,$x) >>
       | (True, Some s) ->
             let x = make_expr entry tvar s.text in
-            (* <:expr< $(id:gm()).Slist1sep $txt $x >> ] *)
             <:expr< `Slist1sep ($txt,$x) >> ]
-  | TXnext _loc ->
-          (* <:expr< $(id:gm()).Snext >> *)
-          <:expr< `Snext >> 
+  | TXnext _loc ->  <:expr< `Snext >> 
   | TXnterm _loc n lev -> match lev with
         [ Some lab ->
-            (* <:expr< *)
-            (* $(id:gm()).Snterml *)
-            (*   ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))) *)
-            (*   $str:lab >> *)
           <:expr< `Snterml
             (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))), $str:lab) >> 
         | None ->
-            if n.tvar = tvar then
-              (* <:expr< $(id:gm()).Sself >> *)
-              <:expr< `Sself>>
+            if n.tvar = tvar then <:expr< `Sself>>
             else
-              (* <:expr< *)
-              (* $(id:gm()).Snterm *)
-              (*   ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))) >> *)
               <:expr<
               `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar)))
               >>   ]
-  | TXopt _loc t ->
-      (* <:expr< $(id:gm()).Sopt $(make_expr entry "" t) >> *)
-      <:expr< `Sopt $(make_expr entry "" t) >>
-  | TXtry _loc t ->
-      (* <:expr< $(id:gm()).Stry $(make_expr entry "" t) >> *)
-      <:expr< `Stry $(make_expr entry "" t) >>
+  | TXopt _loc t -> <:expr< `Sopt $(make_expr entry "" t) >>
+  | TXtry _loc t -> <:expr< `Stry $(make_expr entry "" t) >>
   | TXrules _loc rl ->
       <:expr< $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") >>
-  | TXself _loc ->
-      (* <:expr< $(id:gm()).Sself >> *)
-      <:expr< `Sself>>
-  | TXkwd _loc kwd -> (* <:expr< $(id:gm()).Skeyword $str:kwd >> *)
-      <:expr< `Skeyword $str:kwd >>
+  | TXself _loc ->  <:expr< `Sself>>
+  | TXkwd _loc kwd ->  <:expr< `Skeyword $str:kwd >>
   | TXtok _loc match_fun attr descr ->
-      (* <:expr< $(id:gm()).Stoken ($match_fun, $`str:descr) >> *)
-      <:expr< `Stoken ($match_fun, (`$uid:attr, $`str:descr)) >>
-  ]
+      <:expr< `Stoken ($match_fun, (`$uid:attr, $`str:descr)) >> ]
 and make_expr_rules _loc n rl tvar =
   (* loc ->expr name ->
      ((expr, 'a) text list * expr) list -> string -> expr*)
@@ -338,55 +256,42 @@ let text_of_entry  _loc e = (* loc -> (expr, patt) entry ->expr * expr * expr*)
       e.levels <:expr< [] >> in
   (ent, pos, txt) ;
   
+
 (* [gl] is the name  list option
 
    {[
    loc -> ident option ->expr name list option ->
    (expr, 'a) entry list -> expr -> expr
    ]}
+   
  *)   
-let let_in_of_extend _loc gram gl el default = match gl with
+let let_in_of_extend _loc gram gl  default =
+  let entry_mk =
+    match gram with
+    [ Some g -> <:expr< $(id:gm()).mk $id:g >>
+    | None   -> <:expr< $(id:gm()).mk >> ] in
+  let local_binding_of_name = fun
+    [ {expr = <:expr< $lid:i >> ; tvar = x; loc = _loc} ->
+      <:binding< $lid:i =  (grammar_entry_create $str:i : $(id:gm()).t '$x) >>
+    | _ -> failwith "internal error in the Grammar extension" ]  in
+  match gl with
   [ None -> default
-  | Some nl -> begin
-      check_use nl el; (* safety check *)
-      let ll =
-        let same_tvar e n = e.name.tvar = n.tvar in
-        List.fold_right (* actually a filter operation *)
-          (fun e ll -> match e.name.expr with
-          [ <:expr< $lid:_ >> ->
-              if List.exists (same_tvar e) nl then ll
-              else if List.exists (same_tvar e) ll then ll
-              else [e.name :: ll]
-          | _ -> ll ])  el [] in
-      let local_binding_of_name = fun
-        [ {expr = <:expr< $lid:i >> ; tvar = x; loc = _loc} ->
-          <:binding< $lid:i =  (grammar_entry_create $str:i : $(id:gm()).t '$x) >>
-        | _ -> failwith "internal error in the Grammar extension" ]  in
-      let expr_of_name {expr = e; tvar = x; loc = _loc} =
-        <:expr< ($e : $(id:gm()).t '$x) >> in
-      let e = match ll with
-      [ [] -> default
-      | [x::xs] -> let locals =
-          List.fold_right (fun name acc ->
-            <:binding< $acc and $(local_binding_of_name name) >>)
-            xs (local_binding_of_name x) in
-        let entry_mk =  match gram with
-        [ Some g -> <:expr< $(id:gm()).mk $id:g >>
-        | None   -> <:expr< $(id:gm()).mk >> ] in <:expr<
-        let grammar_entry_create = $entry_mk in
-        let $locals in $default >> ] in
-      match nl with
-      [ [] -> e
-      | [x::xs] ->
-          let globals = List.fold_right
-              (fun name acc ->
-                <:binding< $acc and _ = $(expr_of_name name) >>)
-              xs <:binding< _ = $(expr_of_name x) >>
-          in <:expr< let $globals in $e >> ]
+  | Some ll -> begin
+        match ll with
+        [ [] -> default
+        | [x::xs] ->
+            let locals =
+              List.fold_right (fun name acc -> <:binding< $acc and $(local_binding_of_name name) >>)
+                xs (local_binding_of_name x) in
+              <:expr<
+            let grammar_entry_create = $entry_mk in
+            let $locals in $default >> ] 
   end ]  ;
 
-(* the [gl] is global entry name list, [el] is entry list
-   [gram] is the grammar, [gmod] is the [Gram] module *)
+(* the [gl] is global entry name list,
+   [el] is entry list
+   [gram] is the grammar
+   [gmod] is the [Gram] module *)
 let text_of_functorial_extend _loc  gram gl el = (* FIXME remove gmod later*)
   let args =
     let el =
@@ -398,10 +303,9 @@ let text_of_functorial_extend _loc  gram gl el = (* FIXME remove gmod later*)
     | [e] -> e
     | [e::el] ->
         <:expr< do { $(List.fold_left (fun acc x -> <:expr< $acc; $x >>) e el) } >>  ]  in
-  let_in_of_extend _loc gram gl el args;
+  let_in_of_extend _loc gram gl  args;
 
 let mk_tok _loc ?restrict p t =
-
  match restrict with
     [ None ->
       let p' = Camlp4Ast.wildcarder#patt p in

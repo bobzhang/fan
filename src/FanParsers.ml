@@ -33,7 +33,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
     let call = Expr.apply <:expr< Debug.printf $str:section $str:fmt >> args in
       <:expr< if $(mk_debug_mode _loc m) $str:section then $call else () >>;
   EXTEND Gram
-    GLOBAL: expr;
+    LOCAL: start_debug end_or_in ;  
     expr:
     [ [ start_debug{m}; `LIDENT section; `STRING (_, fmt); (* FIXME move to `STRING(,_)*)
         LIST0 expr Level "."{args}; end_or_in{x} ->
@@ -64,7 +64,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   open FanGrammar;
   open FanGrammarTools;
   FanConfig.antiquotations := True;
-  EXTEND Gram GLOBAL: expr symbol rule rule_list psymbol level level_list;
+  EXTEND Gram
+      LOCAL:
+      delete_rule_body  delete_rule_header extend_header extend_body qualuid qualid t_qualid
+      global entry position assoc level level_list rule_list rule psymbol
+      name semi_sep string comma_patt pattern ;
     expr: After "top"
       [ [ "EXTEND"; extend_body{e}; "END" -> e
         | "DELETE_RULE"; delete_rule_body{e}; "END" -> e ] ] 
@@ -107,7 +111,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ `UIDENT x; ".";  SELF{xs} -> <:ident< $uid:x.$xs >>
         | `UIDENT x; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
     global:
-      [ [ `UIDENT "GLOBAL"; ":"; LIST1 name{sl}; semi_sep -> sl ] ]
+      [ [ `UIDENT "LOCAL"; ":"; LIST1 name{sl}; semi_sep -> sl ] ]
     entry:
       [ [ name{n}; ":";  OPT position{pos}; level_list{ll} ->
             mk_entry ~name:n ~pos ~levels:ll ] ]
@@ -201,7 +205,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ ";" -> () ] ]
   END;
   EXTEND Gram
-    GLOBAL: symbol;
+      LOCAL: simple_expr;
     symbol: Level "top"
       [ [`UIDENT "FOLD0"; simple_expr{f}; simple_expr{e}; SELF{s} ->
             sfold _loc "FOLD0" "sfold0" f e s
@@ -243,7 +247,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   let comprehension_or_sem_expr_for_list =
     Gram.mk "comprehension_or_sem_expr_for_list";
   EXTEND Gram
-    GLOBAL: expr comprehension_or_sem_expr_for_list;
+      LOCAL: item;
     expr: Level "simple"
       [ [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ] ]  
     comprehension_or_sem_expr_for_list:
@@ -260,7 +264,6 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   END;
   if is_revised ~expr ~sem_expr_for_list then
     EXTEND Gram
-      GLOBAL: expr comprehension_or_sem_expr_for_list;
       comprehension_or_sem_expr_for_list:
       [ [  expr Level "top"{e}; ";"; sem_expr_for_list{mk}; "::"; expr{last} ->
             <:expr< [ $e :: $(mk last) ] >>
@@ -485,7 +488,9 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
    ;
 
   EXTEND Gram
-    GLOBAL: expr patt str_item sig_item;
+     LOCAL: macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
+     else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
+     sglist_else endif opt_macro_value uident ;
     str_item: First
       [ [ macro_def{x} ->
             execute_macro <:str_item<>> (fun a b -> <:str_item< $a; $b >>) x ] ]
@@ -823,41 +828,10 @@ New syntax:\
   end;
 
   EXTEND Gram
-    GLOBAL:
-      a_CHAR a_FLOAT a_INT a_INT32 a_INT64 a_LABEL a_LIDENT rec_binding_quot
-      a_NATIVEINT a_OPTLABEL a_STRING a_UIDENT a_ident
-      amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot
-      class_declaration class_description class_expr class_expr_quot
-      class_fun_binding class_fun_def class_info_for_class_expr
-      class_info_for_class_type class_longident class_longident_and_param
-      class_name_and_param class_sig_item class_sig_item_quot class_signature
-      class_str_item class_str_item_quot class_structure class_type
-      class_type_declaration class_type_longident
-      class_type_longident_and_param class_type_plus class_type_quot
-      comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
-      constrain constructor_arg_list constructor_declaration
-      constructor_declarations ctyp ctyp_quot cvalue_binding direction_flag
-      dummy eq_expr expr expr_eoi expr_quot field_expr field_expr_list fun_binding
-      fun_def ident ident_quot implem interf ipatt ipatt_tcon label
-      label_declaration label_declaration_list label_expr label_expr_list
-      label_ipatt label_ipatt_list label_longident label_patt label_patt_list
-      labeled_ipatt let_binding meth_list meth_decl module_binding module_binding0
-      module_binding_quot module_declaration module_expr module_expr_quot
-      module_longident module_longident_with_app module_rec_declaration
-      module_type module_type_quot more_ctyp name_tags opt_as_lident
-      opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot opt_eq_ctyp opt_expr
-      opt_meth_list opt_mutable opt_polyt opt_private opt_rec
-      opt_virtual opt_when_expr patt patt_as_patt_opt patt_eoi
-      patt_quot patt_tcon phrase poly_type row_field
-      sem_expr sem_expr_for_list sem_patt sem_patt_for_list semi sequence
-      sig_item sig_item_quot sig_items star_ctyp str_item str_item_quot
-      str_items top_phrase type_constraint type_declaration
-      type_ident_and_parameters type_kind type_longident
-      type_longident_and_parameters type_parameter type_parameters typevars
-      use_file val_longident  with_constr with_constr_quot
-      infixop0 infixop1 infixop2 infixop3 infixop4 do_sequence package_type
-      rec_flag_quot direction_flag_quot mutable_flag_quot private_flag_quot
-      virtual_flag_quot row_var_flag_quot override_flag_quot;
+    LOCAL:
+    string_list  infixop5 infixop6
+    module_longident_dot_lparen sequence' fun_def fun_def_cont fun_def_cont_no_when
+    optional_type_parameter method_opt_override value_val_opt_override unquoted_typevars ;
     module_expr:
       [ "top"
         [ "functor"; "("; a_UIDENT{i}; ":"; module_type{t}; ")"; "->";
@@ -2171,16 +2145,12 @@ end;
 module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
-  let stream_expr = Gram.mk "stream_expr";
-  let stream_begin = Gram.mk "stream_begin";
-  let stream_end = Gram.mk "stream_end";
-  let stream_quot = Gram.mk "stream_quot";
-  let parser_case = Gram.mk "parser_case";
-  let parser_case_list = Gram.mk "parser_case_list";
   open FanStreamTools;
   EXTEND Gram
-    GLOBAL: expr stream_expr stream_begin stream_end stream_quot
-      parser_case parser_case_list;
+      LOCAL: parser_ipatt stream_expr_comp  stream_expr_comp_list
+      stream_patt_comp stream_patt_comp_err 
+      stream_patt_comp_err_list stream_begin stream_end stream_patt
+      parser_case parser_case_list stream_expr stream_quot; 
     expr: Level "top"
       [ [ "parser";  OPT [ `UIDENT(n) -> n]  {name}; OPT parser_ipatt{po}; parser_case_list{pcl}
           ->
@@ -2197,7 +2167,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
               Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cparser_match _loc e po pcl)
             | None -> cparser_match _loc e po pcl ] ] ]
     expr: Level "simple"
-      [ [ stream_begin{name}; (* OPT [`UIDENT(n)->n]{name}; *) stream_end
+      [ [ stream_begin{name};  stream_end
           ->
             match name with
             [ Some o ->
@@ -2210,18 +2180,15 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
             match name with
             [ Some o ->   
               Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cstream _loc sel)
-              (* cstream _loc sel *)
-            | None -> cstream _loc sel
-            ] ]]
+            | None -> cstream _loc sel ] ]]
     parser_ipatt:
       [ [ a_LIDENT{i} -> <:patt< $lid:i >>  | "_" -> <:patt< _ >>  ] ]        
     parser_case_list:
       [ [ "["; LIST0 parser_case SEP "|"{pcl}; "]" -> pcl
         | parser_case{pc} -> [pc] ] ]
     parser_case:
-      [ [ stream_begin; stream_patt{sp}; stream_end; OPT parser_ipatt{po}; "->"; expr{e}
+      [ [ "[<"; stream_patt{sp}; stream_end; OPT parser_ipatt{po}; "->"; expr{e}
           ->   (sp, po, e) ] ]
-    (* stream_begin: [ [ "[<" -> () ] ] *)
     stream_begin: [ [ "[<"; OPT [ "!"; `UIDENT(n)->n]{name} -> name  ] ]  
     stream_end: [ [ ">]" -> () ] ]
     stream_quot:  [ [ "'" -> () ] ]
@@ -2240,6 +2207,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ patt{p}; OPT [ "when"; stream_expr{e} -> e ]{eo}
           ->  SpTrm _loc p eo
         | patt{p}; "="; stream_expr{e} -> SpNtr _loc p e
+        (* | stream_expr{e}; "{"; patt{p}; "}"; -> SpNtr _loc p e *)
         | stream_quot; patt{p} -> SpStr _loc p ] ]
         
     stream_patt_comp_err:
