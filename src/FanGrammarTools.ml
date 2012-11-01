@@ -291,7 +291,7 @@ let let_in_of_extend _loc gram gl  default =
 (* the [gl] is global entry name list,
    [el] is entry list
    [gram] is the grammar
-   [gmod] is the [Gram] module *)
+   [gmod] is the [Gram] module true *)
 let text_of_functorial_extend _loc  gram gl el = (* FIXME remove gmod later*)
   let args =
     let el =

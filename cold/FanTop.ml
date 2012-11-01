@@ -70,7 +70,7 @@ let use_file token_stream =
       loop () in
   List.map Ast2pt.phrase ( pl0 @ pl )
 let revise_parser = wrap toplevel_phrase
-let _=
+let _ =
   Toploop.parse_toplevel_phrase := revise_parser;
   Toploop.parse_use_file := ( wrap use_file );
   Syntax.current_warning := (
@@ -80,7 +80,7 @@ let _=
           )
     );
   iter_and_take_callbacks ( fun (_,f) -> f () )
-let _=
+let _ =
   let open FanParsers in
     pa_r (module P);
     pa_rp (module P);

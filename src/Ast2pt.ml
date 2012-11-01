@@ -1,4 +1,3 @@
-(* open Format; *)
 open Parsetree;
 open Longident;
 open Asttypes;
@@ -31,11 +30,11 @@ let conv_con =
   end;
 
 (* *)
-let conv_lab = (* FIXME remove them later*)
-    let t = Hashtbl.create 73 in begin 
-      List.iter (fun (s, s') -> Hashtbl.add t s s') [("val", "contents")];
-      fun s -> try Hashtbl.find t s with [ Not_found -> s ]
-    end ;
+(* let conv_lab = (\* FIXME remove them later*\) *)
+(*     let t = Hashtbl.create 73 in begin *)
+(*       List.iter (fun (s, s') -> Hashtbl.add t s s') [(\* ("val", "contents") *\)]; *)
+(*       fun s -> try Hashtbl.find t s with [ Not_found -> s ] *)
+(*     end ; *)
 
 let mkrf = fun
     [ <:rec_flag< rec >> -> Recursive
@@ -67,7 +66,7 @@ let mkrf = fun
 
   If "", just remove it, this behavior should appear in other identifier as well FIXME
  *)
-let ident_tag ?(conv_lid = fun x -> x) i =
+let ident_tag (* ?(conv_lid = fun x -> x) *) i =
   let rec self i acc =  match i with
     [ <:ident< $(lid:"*predef*").$(lid:"option") >> ->
       (Some ((ldot (lident "*predef*") "option"), `lident))
@@ -86,17 +85,17 @@ let ident_tag ?(conv_lid = fun x -> x) i =
         | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier" ]
     | <:ident< $lid:s >> ->
           let x = match acc with
-            [ None -> lident (conv_lid s)
-            | Some (acc, `uident | `app) -> ldot acc (conv_lid s)
+            [ None -> lident s (* (conv_lid s) *)
+            | Some (acc, `uident | `app) -> ldot acc ((* conv_lid  *)s)
             | _ -> error (loc_of_ident i) "invalid long identifier" ]
           in Some (x, `lident)
     | _ -> error (loc_of_ident i) "invalid long identifier" ]
   in match self i None with [Some x -> x | None -> error (loc_of_ident i) "invalid long identifier "];
 
-let ident_noloc ?conv_lid i = fst (ident_tag ?conv_lid i);
+let ident_noloc (* ?conv_lid *) i = fst (ident_tag (* ?conv_lid *) i);
 
-let ident ?conv_lid  i =
-  with_loc (ident_noloc ?conv_lid i) (loc_of_ident i);
+let ident (* ?conv_lid *)  i =
+  with_loc (ident_noloc (* ?conv_lid *) i) (loc_of_ident i);
 
 let long_lident msg id =
     match ident_tag id with
@@ -461,7 +460,7 @@ let rec patt = fun
          | PaEq _ _ _ | PaSem _ _ _ | PaCom _ _ _ | PaNil _ as p ->
              error (loc_of_patt p) "invalid pattern" ]
 and mklabpat = fun (* patt -> Longident.t loc * pattern*)
-  [ <:patt< $i = $p >> -> (ident ~conv_lid:conv_lab i, patt p)
+  [ <:patt< $i = $p >> -> (ident (* ~conv_lid:conv_lab *) i, patt p)
   | p -> error (loc_of_patt p) "invalid pattern" ];
   
 
@@ -514,7 +513,7 @@ let rec expr = fun (* expr -> expression*)
           match e2 with
           [ <:expr@sloc< $lid:s >> ->
               let loc = FanLoc.merge loc_bp loc_ep
-              in  (loc, mkexp loc (Pexp_field e1 (mkli sloc (conv_lab s) ml)))
+              in  (loc, mkexp loc (Pexp_field e1 (mkli sloc ((* conv_lab *) s) ml)))
           | _ -> error (loc_of_expr e2) "lowercase identifier expected" ])
         (loc, e) l in
     e
@@ -665,7 +664,6 @@ let rec expr = fun (* expr -> expression*)
         | <:expr@loc< $lid:s >> ->
             mkexp loc (Pexp_ident (lident_with_loc s loc))
         | <:expr@loc< $uid:s >> ->
-            (* let ca = constructors_arity () in *)
             mkexp loc (Pexp_construct (lident_with_loc (conv_con s) loc) None True)
         | ExVrn loc s -> mkexp loc (Pexp_variant (conv_con s) None)
         | ExWhi loc e1 el ->
@@ -737,7 +735,7 @@ and when_expr e w = match w with (* expr -> expr -> expression*)
 and mklabexp x acc = match x with (* rec_binding ->  (Longident.t loc * expression) list -> (Longident.t loc * expression) list *)
   [ <:rec_binding< $x; $y >> ->
     mklabexp x (mklabexp y acc)
-  | <:rec_binding< $i = $e >> -> [(ident ~conv_lid:conv_lab i, expr e) :: acc]
+  | <:rec_binding< $i = $e >> -> [(ident (* ~conv_lid:conv_lab *) i, expr e) :: acc]
   | _ -> assert False ]
 and mkideexp x acc =match x with (* rec_binding -> (string loc * expression) list ->  (string loc * expression) list *)
   [ <:rec_binding<>> -> acc

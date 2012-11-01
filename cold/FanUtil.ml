@@ -18,7 +18,7 @@ let normal_handler =
   | Stream.Failure  -> Some ( sprintf "Parse failure" )
   | Stream.Error str -> Some ( sprintf "Parse error: %s" str )
   | _ -> None
-let _= Printexc.register_printer normal_handler
+let _ = Printexc.register_printer normal_handler
 let valid_float_lexeme s =
   let l = String.length s in
   let rec loop i =

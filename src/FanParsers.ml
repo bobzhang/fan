@@ -2,7 +2,7 @@ open LibUtil;
 open FanUtil;
 open Lib;
 open GramLib;
-(* module Gram = Grammar.Static; *)
+
 module IdDebugParser = struct
   let name = "Camlp4DebugParser";
   let version = Sys.ocaml_version;

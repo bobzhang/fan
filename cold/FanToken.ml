@@ -16,7 +16,7 @@ let print_basic_error ppf =
       fprintf ppf "Illegal token pattern: %s %S" p_con p_prm
   | Illegal_constructor con -> fprintf ppf "Illegal constructor %S" con
 let string_of_error_msg = to_string_of_printer print_basic_error
-let _=
+let _ =
   Printexc.register_printer (
     function | TokenError e -> Some ( string_of_error_msg e ) | _ -> None )
 let to_string =

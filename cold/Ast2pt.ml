@@ -20,18 +20,12 @@ let conv_con =
   (
   fun s -> try Hashtbl.find t s with | Not_found  -> s
   )
-let conv_lab =
-  let t = Hashtbl.create 73 in
-  List.iter ( fun (s,s') -> Hashtbl.add t s s' ) [("val", "contents")];
-  (
-  fun s -> try Hashtbl.find t s with | Not_found  -> s
-  )
 let mkrf =
   function
   | Ast.ReRecursive  -> Recursive
   | Ast.ReNil  -> Nonrecursive
   | _ -> assert false
-let ident_tag ?(conv_lid=fun x -> x)  i =
+let ident_tag i =
   let rec self i acc =
     match i with
     | Ast.IdAcc (_,Ast.IdLid (_,"*predef*"),Ast.IdLid (_,"option")) ->
@@ -51,17 +45,16 @@ let ident_tag ?(conv_lid=fun x -> x)  i =
     | Ast.IdLid (_,s) ->
         let x =
           match acc with
-          | None  -> lident ( conv_lid s )
-          | Some (acc,( `uident|`app )) -> ldot acc ( conv_lid s )
+          | None  -> lident s
+          | Some (acc,( `uident|`app )) -> ldot acc s
           | _ -> error ( loc_of_ident i ) "invalid long identifier" in
         Some (x, `lident)
     | _ -> error ( loc_of_ident i ) "invalid long identifier" in
   match self i None with
   | Some x -> x
   | None  -> error ( loc_of_ident i ) "invalid long identifier "
-let ident_noloc ?conv_lid  i = fst ( ident_tag ?conv_lid i )
-let ident ?conv_lid  i =
-  with_loc ( ident_noloc ?conv_lid i ) ( loc_of_ident i )
+let ident_noloc i = fst ( ident_tag i )
+let ident i = with_loc ( ident_noloc i ) ( loc_of_ident i )
 let long_lident msg id =
   match ident_tag id with
   | (i,`lident) -> with_loc i ( loc_of_ident id )
@@ -463,7 +456,7 @@ let rec patt =
   | PaEq (_,_,_)|PaSem (_,_,_)|PaCom (_,_,_)|PaNil _ as p ->
       error ( loc_of_patt p ) "invalid pattern" and mklabpat =
   function
-  | Ast.PaEq (_,i,p) -> (( ident ~conv_lid:conv_lab i ), ( patt p ))
+  | Ast.PaEq (_,i,p) -> (( ident i ), ( patt p ))
   | p -> error ( loc_of_patt p ) "invalid pattern"
 let override_flag loc =
   function
@@ -491,9 +484,7 @@ let rec expr =
               match e2 with
               | Ast.ExId (sloc,Ast.IdLid (_,s)) ->
                   let loc = FanLoc.merge loc_bp loc_ep in (loc, (
-                    mkexp loc (
-                      Pexp_field (e1, ( mkli sloc ( conv_lab s ) ml )) )
-                    ))
+                    mkexp loc ( Pexp_field (e1, ( mkli sloc s ml )) ) ))
               | _ -> error ( loc_of_expr e2 ) "lowercase identifier expected"
           ) (loc, e) l in
       e
@@ -751,7 +742,7 @@ let rec expr =
   mklabexp x acc =
   match x with
   | Ast.RbSem (_,x,y) -> mklabexp x ( mklabexp y acc )
-  | Ast.RbEq (_,i,e) -> (( ident ~conv_lid:conv_lab i ), ( expr e )) :: acc
+  | Ast.RbEq (_,i,e) -> (( ident i ), ( expr e )) :: acc
   | _ -> assert false and mkideexp x acc =
   match x with
   | Ast.RbNil _ -> acc

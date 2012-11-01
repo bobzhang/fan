@@ -86,8 +86,8 @@ module Make(U:sig  end) : Sig.PRECAST =
     module OCaml = PrinterOCaml.P module DumpOCamlAst = PrinterDumpOCamlAst.P
     module DumpCamlp4Ast = PrinterDumpCamlp4Ast.P
     module Null = PrinterNull.P
-    end let _= sig_item_parser := Syntax.parse_interf
-  let _= str_item_parser := Syntax.parse_implem
+    end let _ = sig_item_parser := Syntax.parse_interf
+  let _ = str_item_parser := Syntax.parse_implem
   module CurrentParser =
     struct
     let parse_interf ?directive_handler  loc strm =

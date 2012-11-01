@@ -147,7 +147,7 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let rule_list = Gram.mk "rule_list" let psymbol = Gram.mk "psymbol"
   let level = Gram.mk "level" let level_list = Gram.mk "level_list"
   let entry = Gram.mk "entry"
-  let _=
+  let _ =
     Gram.extend (top_phrase :'top_phrase Gram.t  ) (
       (
         fun () -> (None, [(None, None,

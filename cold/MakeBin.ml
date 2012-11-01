@@ -10,7 +10,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
   let loaded_modules = ref SSet.empty
   let add_to_loaded_modules name =
     loaded_modules := ( SSet.add name loaded_modules.contents )
-  let _=
+  let _ =
     Printexc.register_printer (
       function
       | FanLoc.Exc_located (loc,exn) ->
@@ -244,7 +244,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)"); ("-ignore", (
     Arg.String ignore ), "ignore the next argument"); ("--", (
     Arg.Unit ignore ), "Deprecated, does nothing")]
-  let _= FanUtil.Options.init initial_spec_list
+  let _ = FanUtil.Options.init initial_spec_list
   let anon_fun name =
     input_file (
       if Filename.check_suffix name ".mli"
@@ -293,5 +293,5 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
         exit 2 )
     | Arg.Help _ -> usage ()
     | exc -> ( eprintf "@[<v0>%s@]@." ( Printexc.to_string exc ); exit 2 )
-  let _= main Sys.argv
+  let _ = main Sys.argv
   end

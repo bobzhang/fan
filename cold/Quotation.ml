@@ -110,7 +110,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
           ) ) in
     let () = bprintf ppf "@\n%s@]@." ( Printexc.to_string exn ) in
     Buffer.contents ppf
-  let _=
+  let _ =
     Printexc.register_printer (
       function
       | Quotation x -> Some ( quotation_error_to_string x )

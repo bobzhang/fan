@@ -3,7 +3,7 @@ open Format
 open Grammar
 include Entry
 include Structure
-let _=
+let _ =
   let gkeywords = Hashtbl.create 301 in
   {
     gkeywords;

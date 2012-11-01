@@ -177,7 +177,7 @@ let check x msg =
     false )
   else true
 exception Exc_located of t *exn 
-let _=
+let _ =
   Printexc.register_printer (
     function
     | Exc_located (t,exn) ->
