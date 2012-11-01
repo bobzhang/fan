@@ -81,3 +81,6 @@ type 'a item_or_def =
   | SdUnd of string 
   | SdITE of bool *'a item_or_def  list *'a item_or_def  list 
   | SdLazy of 'a Lazy.t  
+
+
+type s = ?u:int -> int -> int 

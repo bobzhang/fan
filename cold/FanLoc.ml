@@ -182,3 +182,4 @@ let error_report (loc,s) =
   let err_location =
     String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
   prerr_endline (sprintf "err: ^%s^" err_location)
+let string_loc = mk "<string>"

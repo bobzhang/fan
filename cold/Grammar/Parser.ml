@@ -4,11 +4,11 @@ open FanUtil
 module Tools = Tools.Make(struct
   
   end)
-let loc_bp = Tools.get_cur_loc
-let loc_ep = Tools.get_prev_loc
+let get_cur_loc = Tools.get_cur_loc
+let get_prev_loc = Tools.get_prev_loc
 let add_loc bp parse_fun strm =
   let x = parse_fun strm in
-  let ep = loc_ep strm in
+  let ep = get_prev_loc strm in
   let loc =
     if (FanLoc.start_off bp) > (FanLoc.stop_off ep)
     then FanLoc.join bp
@@ -62,7 +62,7 @@ let continue entry loc a s son p1 (__strm : _ Stream.t ) =
         raise (Stream.Error (Failed.tree_failed entry a s son)) in
   Action.mk (fun _ -> Action.getf act a)
 let skip_if_empty bp strm =
-  if (loc_bp strm) = bp
+  if (get_cur_loc strm) = bp
   then Action.mk (fun _ -> raise Stream.Failure)
   else raise Stream.Failure
 let do_recover parser_of_tree entry nlevn alevn loc a s son
@@ -116,7 +116,7 @@ let rec parser_of_tree entry nlevn alevn =
            let p1 = parser_of_tree entry nlevn alevn son in
            let p1 = parser_cont p1 entry nlevn alevn s son in
            (fun strm ->
-              let bp = loc_bp strm in
+              let bp = get_cur_loc strm in
               let (__strm : _ Stream.t ) = strm in
               let a = ps __strm in
               let act =
@@ -139,7 +139,7 @@ let rec parser_of_tree entry nlevn alevn =
            let p1 = parser_cont p1 entry nlevn alevn s son in
            let p2 = parser_of_tree entry nlevn alevn bro in
            (fun strm ->
-              let bp = loc_bp strm in
+              let bp = get_cur_loc strm in
               let (__strm : _ Stream.t ) = strm in
               match try Some (ps __strm) with | Stream.Failure  -> None with
               | Some a ->
@@ -175,7 +175,7 @@ let rec parser_of_tree entry nlevn alevn =
                    (njunk n strm; Action.mk tok)
                | _ -> raise Stream.Failure in
              (fun strm ->
-                let bp = loc_bp strm in
+                let bp = get_cur_loc strm in
                 let (__strm : _ Stream.t ) = strm in
                 let a = ps __strm in
                 let act =
@@ -200,7 +200,7 @@ let rec parser_of_tree entry nlevn alevn =
                    (njunk n strm; Action.mk tok)
                | _ -> raise Stream.Failure in
              (fun strm ->
-                let bp = loc_bp strm in
+                let bp = get_cur_loc strm in
                 let (__strm : _ Stream.t ) = strm in
                 let a = ps __strm in
                 let act =
@@ -287,7 +287,7 @@ let rec parser_of_tree entry nlevn alevn =
   | `Stree t ->
       let pt = parser_of_tree entry 1 0 t in
       (fun strm ->
-         let bp = loc_bp strm in
+         let bp = get_cur_loc strm in
          let (__strm : _ Stream.t ) = strm in
          let (act,loc) = add_loc bp pt __strm in Action.getf act loc)
   | `Snterm e -> (fun (__strm : _ Stream.t ) -> e.estart 0 __strm)
@@ -322,7 +322,7 @@ let rec start_parser_of_levels entry clevn =
             | [] ->
                 (fun levn ->
                    fun strm ->
-                     let bp = loc_bp strm in
+                     let bp = get_cur_loc strm in
                      let (__strm : _ Stream.t ) = strm in
                      let (act,loc) = add_loc bp p2 __strm in
                      let strm = __strm in
@@ -334,7 +334,7 @@ let rec start_parser_of_levels entry clevn =
                      if levn > clevn
                      then p1 levn strm
                      else
-                       let bp = loc_bp strm in
+                       let bp = get_cur_loc strm in
                        let (__strm : _ Stream.t ) = strm in
                        (match try Some (add_loc bp p2 __strm)
                               with | Stream.Failure  -> None

@@ -142,7 +142,7 @@ class printer  ()= object(self:'self)
         | Some x -> pp f "%(%)%a%(%)" first fu x last
   method paren: 'a . bool -> (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a -> unit =
     fun b fu f x ->
-      if b then pp f "(%a)" fu  x
+      if b then pp f "(@;%a@;)" fu  x
       else fu f x
   method longident f = function
     | Lident s -> pp f "%s" s
@@ -150,7 +150,7 @@ class printer  ()= object(self:'self)
       | 'a'..'z' | 'A' .. 'Z' ->
           pp f "%a.%s" self#longident y s
       | _ ->
-          pp f "%a.(@ %s@ )@ " self#longident y s)
+          pp f "%a.(@;%s@;)@ " self#longident y s)
     | Lapply (y,s)->
         pp f "%a(%a)" self#longident y self#longident s
   method longident_loc f x = pp f "%a" self#longident x.txt

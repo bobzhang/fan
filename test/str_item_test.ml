@@ -216,15 +216,6 @@ let f = {
   }
 }    
     
-let test_labels = begin
-  List.find ~f:ff (+) g ;
-  List.find ~f (+) g;
-  List.find ~f (+) g;
-  f ?g:(Some 32)   3;
-  f ?g 3 ;
-  f ?g:g 3 ;
-end
-;;
 
 
 let f (x:int) (y:bool) = x+y
@@ -295,8 +286,22 @@ let h () =
 
 
 let a = 3 + (-1)
-
+let u = -1 + 3     
 let u a b = (or) a b   
 
 
 let f g h = ( * ) 3  4 1 2    
+let a = ( * )
+
+let u g {a  ;b ; _}=
+  {a;b}
+
+let test_labels = begin
+  List.find ~f:ff (+) g ;
+  List.find ~f (+) g;
+  List.find ~f (+) g;
+  f ?g:(Some 32)   3;
+  f ?g 3 ;
+  f ?g:g 3 ;
+end
+;;
