@@ -4,10 +4,12 @@ module type S =
     val register_sig_item_filter : Ast.sig_item  filter  -> unit 
     val register_str_item_filter : Ast.str_item  filter  -> unit 
     val register_topphrase_filter : Ast.str_item  filter  -> unit 
-    val fold_interf_filters : ('a -> Ast.sig_item  filter  -> 'a) -> 'a -> 'a
-    val fold_implem_filters : ('a -> Ast.str_item  filter  -> 'a) -> 'a -> 'a
+    val fold_interf_filters :
+      ( 'a -> Ast.sig_item  filter  -> 'a ) -> 'a -> 'a
+    val fold_implem_filters :
+      ( 'a -> Ast.str_item  filter  -> 'a ) -> 'a -> 'a
     val fold_topphrase_filters :
-      ('a -> Ast.str_item  filter  -> 'a) -> 'a -> 'a
+      ( 'a -> Ast.str_item  filter  -> 'a ) -> 'a -> 'a
   end
 module Make(U:sig  end) : S = struct
   type 'a filter = 'a -> 'a 

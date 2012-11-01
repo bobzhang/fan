@@ -21,12 +21,12 @@ type token_info =
   cur_loc: FanLoc.t ;
   prev_loc_only: bool } 
 let ghost_token_info =
-  {prev_loc = FanLoc.ghost; cur_loc = FanLoc.ghost; prev_loc_only = false }
+  { prev_loc = FanLoc.ghost; cur_loc = FanLoc.ghost; prev_loc_only = false }
 type token_stream = (token * token_info ) Stream.t  
 type efun = token_stream  -> Action.t  
 type description = [ `Normal | `Antiquot] 
 type descr = (description * string ) 
-type token_pattern = ((token  -> bool )* descr ) 
+type token_pattern = (( token  -> bool  )* descr ) 
 type internal_entry = 
   {
   egram: gram ;
@@ -36,7 +36,7 @@ type internal_entry =
   mutable edesc: desc } 
 and desc =  
   | Dlevels of level  list 
-  | Dparser of (token_stream  -> Action.t ) 
+  | Dparser of ( token_stream  -> Action.t  ) 
 and level = 
   {
   assoc: assoc ;
@@ -65,25 +65,27 @@ type extend_statment = (position  option * single_extend_statment  list )
 type delete_statment = symbol  list  
 type ('a,'b,'c) fold =
   internal_entry  ->
-    symbol  list  -> ('a Stream.t  -> 'b) -> 'a Stream.t  -> 'c
+    symbol  list  -> ( 'a Stream.t  -> 'b ) -> 'a Stream.t  -> 'c
   
 type ('a,'b,'c) foldsep =
   internal_entry  ->
     symbol  list  ->
-      ('a Stream.t  -> 'b) -> ('a Stream.t  -> unit ) -> 'a Stream.t  -> 'c
+      ( 'a Stream.t  -> 'b ) ->
+        ( 'a Stream.t  -> unit  ) -> 'a Stream.t  -> 'c
   
 let get_filter g = g.gfilter
 let token_location r = r.cur_loc
-let using {gkeywords = table;gfilter = filter;_} kwd =
+let using { gkeywords = table; gfilter = filter;_} kwd =
   let r =
     try Hashtbl.find table kwd
-    with | Not_found  -> let r = ref 0 in (Hashtbl.add table kwd r; r) in
-  FanToken.Filter.keyword_added filter kwd (r.contents = 0); incr r
+    with | Not_found  -> let r = ref 0 in ( Hashtbl.add table kwd r; r ) in
+  FanToken.Filter.keyword_added filter kwd ( r.contents = 0 ); incr r
 let mk_action = Action.mk
 let string_of_token = FanToken.extract_string
-let removing {gkeywords = table;gfilter = filter;_} kwd =
+let removing { gkeywords = table; gfilter = filter;_} kwd =
   let r = Hashtbl.find table kwd in
   let () = decr r in
   if r.contents = 0
-  then (FanToken.Filter.keyword_removed filter kwd; Hashtbl.remove table kwd)
+  then ( FanToken.Filter.keyword_removed filter kwd; Hashtbl.remove table kwd
+    )
   else ()
