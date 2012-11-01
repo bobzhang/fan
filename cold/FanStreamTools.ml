@@ -1,4 +1,5 @@
 module Ast = Camlp4Ast
+open Lib
 type spat_comp =  
   | SpTrm of FanLoc.t * Ast.patt * Ast.expr  option 
   | SpNtr of FanLoc.t * Ast.patt * Ast.expr 
@@ -16,32 +17,23 @@ let peek_fun _loc =
 let junk_fun _loc =
   Ast.ExId (_loc, ( Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "junk") ))
     ))
-let rec pattern_eq_expression p e =
-  match (p, e) with
-  | (Ast.PaId (_,Ast.IdLid (_,a)),Ast.ExId (_,Ast.IdLid (_,b))) -> a = b
-  | (Ast.PaId (_,Ast.IdUid (_,a)),Ast.ExId (_,Ast.IdUid (_,b))) -> a = b
-  | (Ast.PaApp (_,p1,p2),Ast.ExApp (_,e1,e2)) ->
-      ( pattern_eq_expression p1 e1 ) && ( pattern_eq_expression p2 e2 )
-  | _ -> false
-let is_raise e =
-  match e with
+let is_raise =
+  function
   | Ast.ExApp (_,Ast.ExId (_,Ast.IdLid (_,"raise")),_) -> true
   | _ -> false
-let is_raise_failure e =
-  match e with
+let is_raise_failure =
+  function
   | Ast.ExApp
       (_,Ast.ExId (_,Ast.IdLid (_,"raise")),Ast.ExId
-       (_,Ast.IdAcc (_,Ast.IdUid (_,"Stream"),Ast.IdUid (_,"Failure"))))
-      -> true
+       (_,Ast.IdAcc (_,m,Ast.IdUid (_,"Failure"))))
+      when m = ( gm () ) -> true
   | _ -> false
 let rec handle_failure e =
   match e with
   | Ast.ExTry
       (_,_,Ast.McArr
-       (_,Ast.PaId
-        (_,Ast.IdAcc (_,Ast.IdUid (_,"Stream"),Ast.IdUid (_,"Failure"))),Ast.ExNil
-        _,e))
-      -> handle_failure e
+       (_,Ast.PaId (_,Ast.IdAcc (_,m,Ast.IdUid (_,"Failure"))),Ast.ExNil _,e))
+      when m = ( gm () ) -> handle_failure e
   | Ast.ExMat (_,me,a) ->
       let rec match_case_handle_failure =
         function
@@ -63,9 +55,8 @@ let rec handle_failure e =
       (_,_)|Ast.ExFun (_,_)|Ast.ExId (_,Ast.IdUid (_,_)) -> true
   | Ast.ExApp (_,Ast.ExId (_,Ast.IdLid (_,"raise")),e) -> (
       match e with
-      | Ast.ExId
-          (_,Ast.IdAcc (_,Ast.IdUid (_,"Stream"),Ast.IdUid (_,"Failure"))) ->
-          false
+      | Ast.ExId (_,Ast.IdAcc (_,m,Ast.IdUid (_,"Failure"))) when
+          m = ( gm () ) -> false
       | _ -> true )
   | Ast.ExApp (_,f,x) ->
       ( is_constr_apply f ) && ( ( handle_failure f ) && ( handle_failure x )
@@ -149,15 +140,13 @@ let stream_pattern_component skont ckont =
             (_,Ast.McArr
              (_,Ast.PaTyc
               (_,Ast.PaId (_,Ast.IdLid (_,v)),Ast.TyApp
-               (_,Ast.TyId
-                (_,Ast.IdAcc (_,Ast.IdUid (_,"Stream"),Ast.IdLid (_,"t"))),Ast.TyAny
-                _)),Ast.ExNil
+               (_,Ast.TyId (_,Ast.IdAcc (_,m,Ast.IdLid (_,"t"))),Ast.TyAny _)),Ast.ExNil
               _,e))
-            when v = strm_n -> e
+            when ( v = strm_n ) && ( m = ( gm () ) ) -> e
         | _ ->
             Ast.ExApp (_loc, e, (
               Ast.ExId (_loc, ( Ast.IdLid (_loc, strm_n) )) )) in
-      if pattern_eq_expression p skont
+      if Expr.pattern_eq_expression p skont
       then
         if is_raise_failure ckont
         then e
@@ -168,8 +157,8 @@ let stream_pattern_component skont ckont =
             Ast.ExTry (_loc, e, (
               Ast.McArr (_loc, (
                 Ast.PaId (_loc, (
-                  Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                    Ast.IdUid (_loc, "Failure") ))
+                  Ast.IdAcc (_loc, ( gm () ), ( Ast.IdUid (_loc, "Failure")
+                    ))
                   ))
                 ), ( Ast.ExNil _loc ), ckont)
               ))
@@ -178,7 +167,7 @@ let stream_pattern_component skont ckont =
         then Ast.ExLet (_loc, Ast.ReNil, ( Ast.BiEq (_loc, p, e) ), skont)
         else
           if
-            pattern_eq_expression (
+            Expr.pattern_eq_expression (
               Ast.PaApp (_loc, (
                 Ast.PaId (_loc, ( Ast.IdUid (_loc, "Some") )) ), p) ) skont
           then
@@ -188,8 +177,8 @@ let stream_pattern_component skont ckont =
               ), (
               Ast.McArr (_loc, (
                 Ast.PaId (_loc, (
-                  Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                    Ast.IdUid (_loc, "Failure") ))
+                  Ast.IdAcc (_loc, ( gm () ), ( Ast.IdUid (_loc, "Failure")
+                    ))
                   ))
                 ), ( Ast.ExNil _loc ), ckont)
               ))
@@ -203,7 +192,7 @@ let stream_pattern_component skont ckont =
                   Ast.ExTry (_loc, e, (
                     Ast.McArr (_loc, (
                       Ast.PaId (_loc, (
-                        Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
+                        Ast.IdAcc (_loc, ( gm () ), (
                           Ast.IdUid (_loc, "Failure") ))
                         ))
                       ), ( Ast.ExNil _loc ), ckont)
@@ -217,7 +206,7 @@ let stream_pattern_component skont ckont =
                   ), (
                   Ast.McArr (_loc, (
                     Ast.PaId (_loc, (
-                      Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
+                      Ast.IdAcc (_loc, ( gm () ), (
                         Ast.IdUid (_loc, "Failure") ))
                       ))
                     ), ( Ast.ExNil _loc ), (
@@ -255,8 +244,7 @@ let rec stream_pattern _loc epo e ekont =
             Ast.BiEq (_loc, ep, (
               Ast.ExApp (_loc, (
                 Ast.ExId (_loc, (
-                  Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                    Ast.IdLid (_loc, "count") ))
+                  Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "count") ))
                   ))
                 ), ( Ast.ExId (_loc, ( Ast.IdLid (_loc, strm_n) )) ))
               ))
@@ -271,9 +259,7 @@ let rec stream_pattern _loc epo e ekont =
             ), (
             Ast.ExApp (_loc, (
               Ast.ExId (_loc, (
-                Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                  Ast.IdUid (_loc, "Error") ))
-                ))
+                Ast.IdAcc (_loc, ( gm () ), ( Ast.IdUid (_loc, "Error") )) ))
               ), str)
             )) in
         stream_pattern _loc epo e ekont spcl in
@@ -296,8 +282,8 @@ let stream_patterns_term _loc ekont tspel =
                 Ast.ExId (_loc, ( Ast.IdLid (_loc, "raise") )) ), (
                 Ast.ExApp (_loc, (
                   Ast.ExId (_loc, (
-                    Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                      Ast.IdUid (_loc, "Error") ))
+                    Ast.IdAcc (_loc, ( gm () ), ( Ast.IdUid (_loc, "Error")
+                      ))
                     ))
                   ), str)
                 )) in
@@ -332,9 +318,7 @@ let rec parser_cases _loc =
   | [] ->
       Ast.ExApp (_loc, ( Ast.ExId (_loc, ( Ast.IdLid (_loc, "raise") )) ), (
         Ast.ExId (_loc, (
-          Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-            Ast.IdUid (_loc, "Failure") ))
-          ))
+          Ast.IdAcc (_loc, ( gm () ), ( Ast.IdUid (_loc, "Failure") )) ))
         ))
   | spel -> (
       match group_terms spel with
@@ -352,9 +336,7 @@ let cparser _loc bpo pc =
           Ast.BiEq (_loc, bp, (
             Ast.ExApp (_loc, (
               Ast.ExId (_loc, (
-                Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                  Ast.IdLid (_loc, "count") ))
-                ))
+                Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "count") )) ))
               ), ( Ast.ExId (_loc, ( Ast.IdLid (_loc, strm_n) )) ))
             ))
           ), e)
@@ -363,9 +345,7 @@ let cparser _loc bpo pc =
     Ast.PaTyc (_loc, ( Ast.PaId (_loc, ( Ast.IdLid (_loc, strm_n) )) ), (
       Ast.TyApp (_loc, (
         Ast.TyId (_loc, (
-          Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-            Ast.IdLid (_loc, "t") ))
-          ))
+          Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "t") )) ))
         ), ( Ast.TyAny _loc ))
       )) in
   Ast.ExFun (_loc, ( Ast.McArr (_loc, p, ( Ast.ExNil _loc ), e) ))
@@ -378,9 +358,7 @@ let cparser_match _loc me bpo pc =
           Ast.BiEq (_loc, bp, (
             Ast.ExApp (_loc, (
               Ast.ExId (_loc, (
-                Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                  Ast.IdLid (_loc, "count") ))
-                ))
+                Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "count") )) ))
               ), ( Ast.ExId (_loc, ( Ast.IdLid (_loc, strm_n) )) ))
             ))
           ), pc)
@@ -396,9 +374,7 @@ let cparser_match _loc me bpo pc =
             (
             Ast.TyApp (_loc, (
               Ast.TyId (_loc, (
-                Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                  Ast.IdLid (_loc, "t") ))
-                ))
+                Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "t") )) ))
               ), ( Ast.TyAny _loc ))
             ))
           ), me)
@@ -441,16 +417,12 @@ let rec cstream gloc =
       then
         Ast.ExApp (_loc, (
           Ast.ExId (_loc, (
-            Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-              Ast.IdLid (_loc, "ising") ))
-            ))
+            Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "ising") )) ))
           ), e)
       else
         Ast.ExApp (_loc, (
           Ast.ExId (_loc, (
-            Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-              Ast.IdLid (_loc, "lsing") ))
-            ))
+            Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "lsing") )) ))
           ), ( slazy _loc e ))
   | SeTrm (_loc,e)::secl ->
       if not_computing e
@@ -458,18 +430,14 @@ let rec cstream gloc =
         Ast.ExApp (_loc, (
           Ast.ExApp (_loc, (
             Ast.ExId (_loc, (
-              Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                Ast.IdLid (_loc, "icons") ))
-              ))
+              Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "icons") )) ))
             ), e)
           ), ( cstream gloc secl ))
       else
         Ast.ExApp (_loc, (
           Ast.ExApp (_loc, (
             Ast.ExId (_loc, (
-              Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                Ast.IdLid (_loc, "lcons") ))
-              ))
+              Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "lcons") )) ))
             ), ( slazy _loc e ))
           ), ( cstream gloc secl ))
   | SeNtr (_loc,e)::[] ->
@@ -478,9 +446,7 @@ let rec cstream gloc =
       else
         Ast.ExApp (_loc, (
           Ast.ExId (_loc, (
-            Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-              Ast.IdLid (_loc, "slazy") ))
-            ))
+            Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "slazy") )) ))
           ), ( slazy _loc e ))
   | SeNtr (_loc,e)::secl ->
       if not_computing e
@@ -488,17 +454,13 @@ let rec cstream gloc =
         Ast.ExApp (_loc, (
           Ast.ExApp (_loc, (
             Ast.ExId (_loc, (
-              Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                Ast.IdLid (_loc, "iapp") ))
-              ))
+              Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "iapp") )) ))
             ), e)
           ), ( cstream gloc secl ))
       else
         Ast.ExApp (_loc, (
           Ast.ExApp (_loc, (
             Ast.ExId (_loc, (
-              Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Stream") ), (
-                Ast.IdLid (_loc, "lapp") ))
-              ))
+              Ast.IdAcc (_loc, ( gm () ), ( Ast.IdLid (_loc, "lapp") )) ))
             ), ( slazy _loc e ))
           ), ( cstream gloc secl ))

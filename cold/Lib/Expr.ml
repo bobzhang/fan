@@ -232,6 +232,13 @@ let bigarray_set _loc var newval =
           ), newval)
         )
   | _ -> None
+let rec pattern_eq_expression p e =
+  match (p, e) with
+  | (Ast.PaId (_,Ast.IdLid (_,a)),Ast.ExId (_,Ast.IdLid (_,b))) -> a = b
+  | (Ast.PaId (_,Ast.IdUid (_,a)),Ast.ExId (_,Ast.IdUid (_,b))) -> a = b
+  | (Ast.PaApp (_,p1,p2),Ast.ExApp (_,e1,e2)) ->
+      ( pattern_eq_expression p1 e1 ) && ( pattern_eq_expression p2 e2 )
+  | _ -> false
 let map _loc p e l =
   match (p, e) with
   | (Ast.PaId (_,Ast.IdLid (_,x)),Ast.ExId (_,Ast.IdLid (_,y))) when 

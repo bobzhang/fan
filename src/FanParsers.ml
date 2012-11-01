@@ -2182,11 +2182,37 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     GLOBAL: expr stream_expr stream_begin stream_end stream_quot
       parser_case parser_case_list;
     expr: Level "top"
-      [ [ "parser";  OPT parser_ipatt{po}; parser_case_list{pcl} ->
-            cparser _loc po pcl
-        | "match"; sequence{e}; "with"; "parser";  OPT parser_ipatt{po};
-          parser_case_list{pcl} ->
-            cparser_match _loc e po pcl ] ]
+      [ [ "parser";  OPT [ `UIDENT(n) -> n]  {name}; OPT parser_ipatt{po}; parser_case_list{pcl}
+          ->
+            match name with
+            [ Some o ->
+              Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cparser _loc po pcl)
+            | None -> cparser _loc po pcl]
+        | "match"; sequence{e}; "with"; "parser";
+           OPT [`UIDENT(n) -> n ] {name}; OPT parser_ipatt{po};
+          parser_case_list{pcl}
+          ->
+            match name with
+            [ Some o ->
+              Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cparser_match _loc e po pcl)
+            | None -> cparser_match _loc e po pcl ] ] ]
+    expr: Level "simple"
+      [ [ stream_begin{name}; (* OPT [`UIDENT(n)->n]{name}; *) stream_end
+          ->
+            match name with
+            [ Some o ->
+              Ref.protect FanStreamTools.grammar_module_name o (fun _ ->
+                FanStreamTools.empty _loc )
+            | None -> FanStreamTools.empty _loc 
+            ]
+      | stream_begin{name}; stream_expr_comp_list{sel}; stream_end
+          ->
+            match name with
+            [ Some o ->   
+              Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cstream _loc sel)
+              (* cstream _loc sel *)
+            | None -> cstream _loc sel
+            ] ]]
     parser_ipatt:
       [ [ a_LIDENT{i} -> <:patt< $lid:i >>  | "_" -> <:patt< _ >>  ] ]        
     parser_case_list:
@@ -2195,7 +2221,9 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     parser_case:
       [ [ stream_begin; stream_patt{sp}; stream_end; OPT parser_ipatt{po}; "->"; expr{e}
           ->   (sp, po, e) ] ]
-    stream_begin: [ [ "[<" -> () ] ] stream_end: [ [ ">]" -> () ] ]
+    (* stream_begin: [ [ "[<" -> () ] ] *)
+    stream_begin: [ [ "[<"; OPT [ "!"; `UIDENT(n)->n]{name} -> name  ] ]  
+    stream_end: [ [ ">]" -> () ] ]
     stream_quot:  [ [ "'" -> () ] ]
     stream_expr:  [ [ expr{e} -> e ] ]
     stream_patt:
@@ -2222,10 +2250,6 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
         | stream_patt_comp_err{spc}; ";" -> [spc]
         | stream_patt_comp_err{spc}; ";"; stream_patt_comp_err_list{sp} ->
             [spc :: sp] ] ]
-    expr: Level "simple"
-      [ [ stream_begin; stream_end -> <:expr< [< >] >>
-        | stream_begin; stream_expr_comp_list{sel}; stream_end
-          ->  cstream _loc sel] ]
     stream_expr_comp_list:
       [ [ stream_expr_comp{se}; ";"; stream_expr_comp_list{sel} -> [se :: sel]
         | stream_expr_comp{se}; ";" -> [se]

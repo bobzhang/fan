@@ -8984,6 +8984,17 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
           [([`Skeyword "match";
           `Snterm ( Gram.obj (sequence :'sequence Gram.t  ) );
           `Skeyword "with"; `Skeyword "parser";
+          `Sopt (
+            Gram.srules expr
+              [([`Stoken (( ( function | `UIDENT _ -> true | _ -> false ) ),
+                   (`Normal, "`UIDENT _"))], (
+              Gram.mk_action (
+                fun __camlp4_0 ->
+                  fun (_loc : FanLoc.t ) ->
+                    match __camlp4_0 with
+                    | `UIDENT n -> (n :'e__27 )
+                    | _ -> assert false ) ))]
+            );
           `Sopt ( `Snterm ( Gram.obj (parser_ipatt :'parser_ipatt Gram.t  ) )
             );
           `Snterm ( Gram.obj (parser_case_list :'parser_case_list Gram.t  ) )],
@@ -8991,13 +9002,25 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
           Gram.mk_action (
             fun (pcl : 'parser_case_list) ->
               fun (po : 'parser_ipatt option ) ->
-                fun _ ->
+                fun (name : 'e__27 option ) ->
                   fun _ ->
-                    fun (e : 'sequence) ->
-                      fun _ ->
-                        fun (_loc : FanLoc.t ) ->
-                          (cparser_match _loc e po pcl :'expr ) ) ));
+                    fun _ ->
+                      fun (e : 'sequence) ->
+                        fun _ ->
+                          fun (_loc : FanLoc.t ) ->
+                            (cparser_match _loc e po pcl :'expr ) ) ));
           ([`Skeyword "parser";
+          `Sopt (
+            Gram.srules expr
+              [([`Stoken (( ( function | `UIDENT _ -> true | _ -> false ) ),
+                   (`Normal, "`UIDENT _"))], (
+              Gram.mk_action (
+                fun __camlp4_0 ->
+                  fun (_loc : FanLoc.t ) ->
+                    match __camlp4_0 with
+                    | `UIDENT n -> (n :'e__26 )
+                    | _ -> assert false ) ))]
+            );
           `Sopt ( `Snterm ( Gram.obj (parser_ipatt :'parser_ipatt Gram.t  ) )
             );
           `Snterm ( Gram.obj (parser_case_list :'parser_case_list Gram.t  ) )],
@@ -9005,8 +9028,9 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
           Gram.mk_action (
             fun (pcl : 'parser_case_list) ->
               fun (po : 'parser_ipatt option ) ->
-                fun _ ->
-                  fun (_loc : FanLoc.t ) -> (cparser _loc po pcl :'expr ) )
+                fun (name : 'e__26 option ) ->
+                  fun _ ->
+                    fun (_loc : FanLoc.t ) -> (cparser _loc po pcl :'expr ) )
           ))])]) ) () );
     Gram.extend (parser_ipatt :'parser_ipatt Gram.t  ) (
       (
@@ -9126,10 +9150,10 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
               `Snterm ( Gram.obj (stream_expr :'stream_expr Gram.t  ) )], (
               Gram.mk_action (
                 fun (e : 'stream_expr) ->
-                  fun _ -> fun (_loc : FanLoc.t ) -> (e :'e__26 ) ) ))]
+                  fun _ -> fun (_loc : FanLoc.t ) -> (e :'e__28 ) ) ))]
             )], (
           Gram.mk_action (
-            fun (eo : 'e__26 option ) ->
+            fun (eo : 'e__28 option ) ->
               fun (p : 'patt) ->
                 fun (_loc : FanLoc.t ) -> (SpTrm (_loc, p, eo)
                   :'stream_patt_comp ) ) ))])]) ) () );
@@ -9143,10 +9167,10 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
               `Snterm ( Gram.obj (stream_expr :'stream_expr Gram.t  ) )], (
               Gram.mk_action (
                 fun (e : 'stream_expr) ->
-                  fun _ -> fun (_loc : FanLoc.t ) -> (e :'e__27 ) ) ))]
+                  fun _ -> fun (_loc : FanLoc.t ) -> (e :'e__29 ) ) ))]
             )], (
           Gram.mk_action (
-            fun (eo : 'e__27 option ) ->
+            fun (eo : 'e__29 option ) ->
               fun (spc : 'stream_patt_comp) ->
                 fun (_loc : FanLoc.t ) -> ((spc, eo) :'stream_patt_comp_err )
             ) ))])]) ) () );

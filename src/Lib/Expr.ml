@@ -122,6 +122,15 @@ let bigarray_set _loc var newval = match var with
     | _ -> None ];
   
 
+
+let rec pattern_eq_expression p e =  match (p, e) with
+  [ (<:patt< $lid:a >>, <:expr< $lid:b >>) -> a = b
+  | (<:patt< $uid:a >>, <:expr< $uid:b >>) -> a = b
+  | (<:patt< $p1 $p2 >>, <:expr< $e1 $e2 >>) ->
+      pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
+  | _ -> False ] ;
+
+  
 (*************************************************************************)
 (* List comprehension *)  
 let map _loc p e l =  match (p, e) with

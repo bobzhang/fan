@@ -12,7 +12,7 @@ module Make (U:sig end) = struct
     | Some (tok0,init_loc) ->
         let rec go prev_loc strm1 =
           if !get_prev_loc_only then
-            [< (tok0,{prev_loc;cur_loc=prev_loc;prev_loc_only=True});
+            [<  (tok0,{prev_loc;cur_loc=prev_loc;prev_loc_only=True});
                'go prev_loc strm1 >]
           else match strm1 with parser
             [ [< (tok,cur_loc); 'strm >] ->
@@ -20,7 +20,7 @@ module Make (U:sig end) = struct
                  'go cur_loc strm >]
             | [< >] -> [< >] ] in
         go init_loc strm ];
-  
+(* parser M [ [< 3 >] -> x ] *)
   let drop_prev_loc strm = Stream.map (fun (tok,r) -> (tok,r.cur_loc)) strm;
   
   let get_cur_loc strm =  match Stream.peek strm with
