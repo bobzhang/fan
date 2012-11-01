@@ -2166,6 +2166,8 @@ module IdRevisedParserParser : Sig.Id = struct
   let version = Sys.ocaml_version;
 end;
 
+
+(**************Stream Parser***********************)  
 module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;

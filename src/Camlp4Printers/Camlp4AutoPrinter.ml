@@ -19,6 +19,6 @@
 (* open Camlp4;
  * Register.enable_auto (fun () -> Unix.isatty Unix.stdout); *)
 
-open MakeCamlp4Bin;
+open MakeBin;
 
 Register.enable_auto (fun () -> Unix.isatty Unix.stdout);
