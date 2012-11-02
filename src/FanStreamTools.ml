@@ -19,11 +19,11 @@ let junk_fun _loc = <:expr< $(uid:gm()).junk >>;
 
 let empty _loc = <:expr< $(uid:gm()).sempty >> ;
 let is_raise  = fun 
-  [ <:expr< raise $_ >> -> True
-  | _ -> False ] ;
+  [ <:expr< raise $_ >> -> true
+  | _ -> false ] ;
 let is_raise_failure  = fun 
-  [ <:expr< raise $uid:m.Failure >> when m = gm() -> True
-  | _ -> False ] ;
+  [ <:expr< raise $uid:m.Failure >> when m = gm() -> true
+  | _ -> false ] ;
   
 let rec handle_failure e =  match e with
   [ <:expr< try $_ with [ $uid:m.Failure -> $e] >> when m = gm()
@@ -33,30 +33,30 @@ let rec handle_failure e =  match e with
         [ <:match_case< $a1 | $a2 >> ->
             match_case_handle_failure a1 && match_case_handle_failure a2
         | <:match_case< $pat:_ -> $e >> -> handle_failure e
-        | _ -> False ]
+        | _ -> false ]
       in handle_failure me && match_case_handle_failure a
   | <:expr< let $bi in $e >> ->
       let rec binding_handle_failure = fun
         [ <:binding< $b1 and $b2 >> ->
             binding_handle_failure b1 && binding_handle_failure b2
         | <:binding< $_ = $e >> -> handle_failure e
-        | _ -> False ] in
+        | _ -> false ] in
       binding_handle_failure bi && handle_failure e
   | <:expr< $lid:_ >> | <:expr< $int:_ >> | <:expr< $str:_ >> |
     <:expr< $chr:_ >> | <:expr< fun [ $_ ] >> | <:expr< $uid:_ >> ->
-      True
+      true
   | <:expr< raise $e >> ->
       match e with
-      [ <:expr< $uid:m.Failure >> when m = gm() -> False
-      | _ -> True ]
+      [ <:expr< $uid:m.Failure >> when m = gm() -> false
+      | _ -> true ]
   | <:expr< $f $x >> ->
       is_constr_apply f && handle_failure f && handle_failure x
-  | _ -> False ]
+  | _ -> false ]
 and is_constr_apply = fun
-  [ <:expr< $uid:_ >> -> True
-  | <:expr< $lid:_ >> -> False
+  [ <:expr< $uid:_ >> -> true
+  | <:expr< $lid:_ >> -> false
   | <:expr< $x $_ >> -> is_constr_apply x
-  | _ -> False ];
+  | _ -> false ];
 
 let rec subst v e =
   let _loc = Ast.loc_of_expr e in
@@ -197,14 +197,14 @@ let cparser_match _loc me bpo pc =
 
 let rec not_computing = fun
   [ <:expr< $lid:_ >> | <:expr< $uid:_ >> | <:expr< $int:_ >> |
-    <:expr< $flo:_ >> | <:expr< $chr:_ >> | <:expr< $str:_ >> -> True
+    <:expr< $flo:_ >> | <:expr< $chr:_ >> | <:expr< $str:_ >> -> true
   | <:expr< $x $y >> -> is_cons_apply_not_computing x && not_computing y
-  | _ -> False ]
+  | _ -> false ]
 and is_cons_apply_not_computing = fun
-  [ <:expr< $uid:_ >> -> True
-  | <:expr< $lid:_ >> -> False
+  [ <:expr< $uid:_ >> -> true
+  | <:expr< $lid:_ >> -> false
   | <:expr< $x $y >> -> is_cons_apply_not_computing x && not_computing y
-  | _ -> False ];
+  | _ -> false ];
 
 let slazy _loc e =
   match e with

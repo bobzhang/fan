@@ -171,7 +171,7 @@ let p_ctyp fmt e =
 
 (*   let parse_quot_string_with_filter entry f loc loc_name_opt s  = do{ *)
 (*     let q = Camlp4_config.antiquotations.val ; *)
-(*     Camlp4_config.antiquotations.val := True; *)
+(*     Camlp4_config.antiquotations.val := true; *)
 (*     let res = MGram.parse_string entry loc s ;   *)
 (*     Camlp4_config.antiquotations.val := q; *)
 (*     MetaLoc.loc_name.val := loc_name_opt ; *)

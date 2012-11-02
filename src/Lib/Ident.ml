@@ -18,7 +18,7 @@ let rec normalize_acc =fun
 let rec to_lid = fun
   [ <:ident< $_ . $i >> -> to_lid i
   | <:ident< $lid:lid >> -> lid
-  | _                     -> assert False ];
+  | _                     -> raise Not_found (* assert false *) ];
 
 
 (*

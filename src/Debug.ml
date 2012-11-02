@@ -19,7 +19,7 @@
 (* camlp4r *)
 open Format;
 open FanUtil;
-module Debug = struct let mode _ = False; end;
+module Debug = struct let mode _ = false; end;
 
 type section = string;
 
@@ -44,13 +44,13 @@ let mode =
       [ Not_found ->
           SSet.add (String.sub str i (String.length str - i)) acc ] in
     let sections = loop SSet.empty 0 in
-    if SSet.mem "*" sections then fun _ -> True
+    if SSet.mem "*" sections then fun _ -> true
     else fun x -> SSet.mem x sections
-  with [ Not_found -> fun _ -> False ];
+  with [ Not_found -> fun _ -> false ];
 
 let formatter =
   let header = "camlp4-debug: " in
-  let at_bol = ref True in
+  let at_bol = ref true in
   (make_formatter
     (fun buf pos len ->
        for i = pos to pos + len - 1 do

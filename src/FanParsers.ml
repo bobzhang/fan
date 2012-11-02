@@ -22,9 +22,9 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
         [ Not_found ->
             SSet.add (String.sub str i (String.length str - i)) acc ] in
       let sections = loop SSet.empty 0 in
-      if SSet.mem "*" sections then fun _ -> True
+      if SSet.mem "*" sections then fun _ -> true
       else fun x -> SSet.mem x sections
-    with [ Not_found -> fun _ -> False ];
+    with [ Not_found -> fun _ -> false ];
 
   let mk_debug_mode _loc = fun [ None -> <:expr< Debug.mode >>
     | Some m -> <:expr< $uid:m.Debug.mode >> ];
@@ -38,8 +38,8 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
     [ [ start_debug{m}; `LIDENT section; `STRING (_, fmt); (* FIXME move to `STRING(,_)*)
         LIST0 expr Level "."{args}; end_or_in{x} ->
       match (x, debug_mode section) with
-      [ (None,   False) -> <:expr< () >>
-      | (Some e, False) -> e
+      [ (None,   false) -> <:expr< () >>
+      | (Some e, false) -> e
       | (None, _) -> mk_debug _loc m fmt section args
       | (Some e, _) -> <:expr< let () = $(mk_debug _loc m fmt section args) in $e >> ]  ] ]
     end_or_in:
@@ -63,7 +63,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
   open FanGrammar;
   open FanGrammarTools;
-  FanConfig.antiquotations := True;
+  FanConfig.antiquotations := true;
   EXTEND Gram
       LOCAL:
       delete_rule_body  delete_rule_header extend_header extend_body qualuid qualid t_qualid
@@ -147,7 +147,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let styp = STapp _loc (STlid _loc "list") s.styp in
             let text = slist _loc
                 (match x with
-                ["LIST0" -> False | "LIST1" -> True
+                ["LIST0" -> false | "LIST1" -> true
                 | _ -> failwithf "only (LIST0|LIST1) allowed here"])  sep s in
             mk_symbol ~used ~text ~styp ~pattern:None
 
@@ -598,7 +598,7 @@ end;
 module MakeRevisedParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
-  FanConfig.constructors_arity := False;
+  FanConfig.constructors_arity := false;
 
   let help_sequences () =
     do {

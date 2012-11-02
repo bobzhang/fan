@@ -252,8 +252,8 @@ module Camlp4Bin
         | ModuleImpl of string
         | IncludeDir of string ];
       
-      let search_stdlib = ref True;
-      let print_loaded_modules = ref False;
+      let search_stdlib = ref true;
+      let print_loaded_modules = ref false;
       let (task, do_task) =
         let t = ref None in
         let task f x =

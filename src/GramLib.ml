@@ -35,8 +35,8 @@ let test_patt_lessminus =
 let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) =
   try begin
       DELETE_RULE Gram expr: "["; x; "::"; expr; "]" END;
-      True
-  end with [ Not_found -> False ];
+      true
+  end with [ Not_found -> false ];
     
 let setup_op_parser entry p =
   Gram.setup_parser entry

@@ -17,13 +17,13 @@ module MetaLoc : Ast.META_LOC= struct
     <:patt< FanLoc.of_tuple
       ($`str:a, $`int:b, $`int:c, $`int:d,
        $`int:e, $`int:f, $`int:g,
-       $(if h then <:patt< True >> else <:patt< False >> )) >>;
+       $(if h then <:patt< true >> else <:patt< false >> )) >>;
   let meta_loc_expr _loc location =
     let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
     <:expr< FanLoc.of_tuple
       ($`str:a, $`int:b, $`int:c, $`int:d,
        $`int:e, $`int:f, $`int:g,
-       $(if h then <:expr< True >> else <:expr< False >> )) >>;
+       $(if h then <:expr< true >> else <:expr< false >> )) >>;
 end;
   
 module MetaGhostLoc : Ast.META_LOC= struct (* MetaAction *)

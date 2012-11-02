@@ -13,7 +13,7 @@ let print ppf e = fprintf ppf "%a@\n" Print.text#entry e;
 let dump ppf e = fprintf ppf "%a@\n" Print.dump#entry e;
 
 
-let trace_parser = ref False;
+let trace_parser = ref false;
 let mk g n ={
   egram = g;
   ename = n;

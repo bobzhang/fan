@@ -66,16 +66,16 @@ let err error loc =
 let error_no_respect_rules p_con p_prm =
   raise (TokenError (Illegal_token_pattern p_con p_prm));
 
-let check_keyword _ = True;
+let check_keyword _ = true;
   (* FIXME let lb = Lexing.from_string s in
      let next () = token default_context lb in
      try
      match next () with
      [ SYMBOL _ | UIDENT _ | LIDENT _ -> (next () = EOI)
-     | _ -> False ]
-     with [ Stream.Error _ -> False ];                        *)
+     | _ -> false ]
+     with [ Stream.Error _ -> false ];                        *)
 
-let error_on_unknown_keywords = ref False;
+let error_on_unknown_keywords = ref false;
 
 let rec ignore_layout  = parser
   [ [< (`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _ , _); 's >] ->
@@ -87,8 +87,8 @@ let rec ignore_layout  = parser
 let print ppf x = pp_print_string ppf (token_to_string x);
     
 let match_keyword kwd =  fun
-  [ `KEYWORD kwd' when kwd = kwd' -> True
-  | _ -> False ];
+  [ `KEYWORD kwd' when kwd = kwd' -> true
+  | _ -> false ];
 
 (*
   {[

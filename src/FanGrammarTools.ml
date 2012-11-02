@@ -5,9 +5,9 @@ module Ast = Camlp4Ast;
 open FanGrammar;
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
-let split_ext = ref False;
+let split_ext = ref false;
 let prefix = "__camlp4_"  ;  
-let meta_action = ref False;
+let meta_action = ref false;
 let grammar_module_name = let _loc = FanLoc.ghost in ref <:ident< $(uid:"")>> ;
 let gm () = !grammar_module_name;
 
@@ -24,7 +24,7 @@ let string_of_patt patt =
     Format.bprintf buf "%a@?"
       (fun fmt p -> AstPrint.pattern fmt (Ast2pt.patt p)) patt in
   let str = Buffer.contents buf in
-  if str = "" then assert False else str;
+  if str = "" then raise Not_found (* assert false *) else str;
 
 (** FIXME why deprecate such syntax
     It makes
@@ -136,11 +136,11 @@ let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string
     | Some (<:expr< $t1, $t2 >>, <:patt< $p1, $p2 >>) ->
         <:expr< match ($t1, $t2) with
         [ ($p1, $p2) -> $e1
-        | _ -> assert False ] >>
+        | _ -> raise Not_found (* assert false *) ] >>
         | Some (tok, match_) ->
             <:expr< match $tok with
             [ $pat:match_ -> $e1
-            | _ -> assert False ] >> ] in
+            | _ -> raise Not_found (* assert false *) ] >> ] in
     <:expr< fun ($locid : FanLoc.t) -> $e2 >> in (*FIXME hard coded Loc*)
   let (txt, _) =
     List.fold_left
@@ -183,12 +183,12 @@ let rec make_expr entry tvar =  fun
   | TXlist _loc min t ts ->
       let txt = make_expr entry "" t.text in
       match (min, ts) with
-      [ (False, None) -> <:expr< `Slist0 $txt >> 
-      | (True, None) ->  <:expr< `Slist1 $txt >> 
-      | (False, Some s) ->
+      [ (false, None) -> <:expr< `Slist0 $txt >> 
+      | (true, None) ->  <:expr< `Slist1 $txt >> 
+      | (false, Some s) ->
           let x = make_expr entry tvar s.text in
           <:expr< `Slist0sep ($txt,$x) >>
-      | (True, Some s) ->
+      | (true, Some s) ->
             let x = make_expr entry tvar s.text in
             <:expr< `Slist1sep ($txt,$x) >> ]
   | TXnext _loc ->  <:expr< `Snext >> 
@@ -310,15 +310,15 @@ let mk_tok _loc ?restrict p t =
     [ None ->
       let p' = Camlp4Ast.wildcarder#patt p in
       let match_fun = if Camlp4Ast.is_irrefut_patt p' then 
-        <:expr< fun [ $pat:p' -> True ] >>
-      else <:expr< fun [$pat:p' -> True | _ -> False ] >> in 
+        <:expr< fun [ $pat:p' -> true ] >>
+      else <:expr< fun [$pat:p' -> true | _ -> false ] >> in 
       let descr = string_of_patt p' in
       let text = TXtok _loc match_fun "Normal" descr in
       {used = []; text = text; styp = t; pattern = Some p }
     | Some restrict ->
         let p'= Camlp4Ast.wildcarder#patt p in
         let match_fun = 
-          <:expr< fun [$pat:p when $restrict -> True | _ -> False ] >>  in
+          <:expr< fun [$pat:p when $restrict -> true | _ -> false ] >>  in
         let descr = string_of_patt p in
         let text = TXtok _loc match_fun "Antiquot" descr in
         {used=[]; text; styp=t; pattern = Some p'} ] ;

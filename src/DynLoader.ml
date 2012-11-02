@@ -3,7 +3,7 @@ module type S = sig
   exception Error of string and string;
   (** [mk ?ocaml_stdlib ?camlp4_stdlib]
       The stdlib flag is true by default.
-      To disable it use: [mk ~ocaml_stdlib:False] *)
+      To disable it use: [mk ~ocaml_stdlib:false] *)
   val mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t;
   (** Fold over the current load path list. *)
   val fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a;
@@ -16,7 +16,7 @@ module type S = sig
   (** [find_in_path f] Returns the full path of the file [f] if
      [f] is in the current load path, raises [Not_found] otherwise. *)
   val find_in_path : t -> string -> string;
-  (** [is_native] [True] if we are in native code, [False] for bytecode. *)
+  (** [is_native] [true] if we are in native code, [false] for bytecode. *)
   val is_native : bool;
   val instance: ref (unit -> t);  
 end;
@@ -31,7 +31,7 @@ module Make (U:sig end) : S= struct
 
   let fold_load_path x f acc = Queue.fold (fun x y -> f y x) acc x;
 
-  let mk ?(ocaml_stdlib = True) ?(camlp4_stdlib = True) () =
+  let mk ?(ocaml_stdlib = true) ?(camlp4_stdlib = true) () =
   let q = Queue.create () in do {
     if ocaml_stdlib then include_dir q FanConfig.ocaml_standard_library else ();
     if camlp4_stdlib then do {
@@ -58,14 +58,14 @@ let find_in_path x name =
     in match res with [ None -> raise Not_found | Some x -> x ];
 
 let load =
-  let _initialized = ref False in
+  let _initialized = ref false in
   fun _path file ->
     do {
       if not !_initialized then
         try do {
           Dynlink.init ();
-          Dynlink.allow_unsafe_modules True;
-         _initialized := True
+          Dynlink.allow_unsafe_modules true;
+         _initialized := true
         }
         with
         [ Dynlink.Error e ->

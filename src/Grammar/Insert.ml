@@ -5,25 +5,25 @@ open Structure;
 open Format;
 module Tools = Tools.Make(struct end);
 let is_before s1 s2 = match (s1, s2) with
-  [ (`Skeyword _ | `Stoken _, `Skeyword _ | `Stoken _) -> False
-  | (`Skeyword _ | `Stoken _, _) -> True
-  | _ -> False ];
+  [ (`Skeyword _ | `Stoken _, `Skeyword _ | `Stoken _) -> false
+  | (`Skeyword _ | `Stoken _, _) -> true
+  | _ -> false ];
 
 let rec derive_eps = fun
-  [ `Slist0 _ | `Slist0sep (_, _) | `Sopt _ -> True
+  [ `Slist0 _ | `Slist0sep (_, _) | `Sopt _ -> true
   | `Stry s -> derive_eps s
   | `Stree t -> tree_derive_eps t
   | `Slist1 _ | `Slist1sep (_, _) | `Stoken _ | `Skeyword _ ->
       (* For sure we cannot derive epsilon from these *)
-      False
+      false
   | `Smeta (_, _, _) | `Snterm _ | `Snterml (_, _) | `Snext | `Sself ->
         (* Approximation *)
-      False ]
+      false ]
 and tree_derive_eps = fun
-    [ LocAct _ _ -> True
+    [ LocAct _ _ -> true
     | Node {node = s; brother = bro; son = son} ->
         derive_eps s && tree_derive_eps son || tree_derive_eps bro
-    | DeadEnd -> False ];
+    | DeadEnd -> false ];
 
 let empty_lev lname assoc =
   let assoc = match assoc with
@@ -144,8 +144,8 @@ and tree_check_gram entry = fun
   | LocAct _ _ | DeadEnd -> () ];
 
 let get_initial = fun
-    [ [`Sself :: symbols] -> (True, symbols)
-    | symbols -> (False, symbols) ];
+    [ [`Sself :: symbols] -> (true, symbols)
+    | symbols -> (false, symbols) ];
 
 
 let insert_tokens gram symbols =
@@ -203,11 +203,11 @@ let insert_tree entry gsymbols action tree =
   insert gsymbols tree ;
   
 let insert_level entry e1 symbols action slev =  match e1 with
-  [ True ->
+  [ true ->
     {assoc = slev.assoc; lname = slev.lname;
      lsuffix = insert_tree entry symbols action slev.lsuffix;
      lprefix = slev.lprefix}
-  | False ->
+  | false ->
       {assoc = slev.assoc; lname = slev.lname; lsuffix = slev.lsuffix;
        lprefix = insert_tree entry symbols action slev.lprefix} ];
 

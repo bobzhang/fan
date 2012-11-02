@@ -73,7 +73,7 @@ let ghost =
   { 
     loc_start = start_pos ghost_name;
     loc_end   = start_pos ghost_name;
-    loc_ghost     = True     };
+    loc_ghost     = true     };
 
 (** Return a start location for the given file name.
     This location starts at the begining of the file. *)
@@ -82,7 +82,7 @@ let mk file_name =
   { 
     loc_start     = start_pos file_name;
     loc_end      = start_pos file_name;
-    loc_ghost     = False    };
+    loc_ghost     = false    };
 
 
 (** Return a location from [(file_name, start_line, start_bol, start_off,
@@ -153,7 +153,7 @@ let of_lexbuf lb =
   { (* file_name = better_file_name start.Lexing.pos_fname stop.Lexing.pos_fname; *)
     loc_start     = (* pos_of_lexing_position *) start;
     loc_end      = (* pos_of_lexing_position *) stop;
-    loc_ghost     = False } in
+    loc_ghost     = false } in
   debug loc "of_lexbuf: %a@\n" dump loc in
   loc;
 
@@ -163,7 +163,7 @@ let of_lexing_position pos =
   { (* file_name = pos.Lexing.pos_fname; *)
     loc_start     = (* pos_of_lexing_position *) pos;
     loc_end      = (* pos_of_lexing_position *) pos;
-    loc_ghost     = False } in
+    loc_ghost     = false } in
   debug loc "of_lexing_position: %a@\n" dump loc in
   loc;
 
@@ -183,16 +183,16 @@ let merge a b =
   else
     let r =
       match (a.loc_ghost, b.loc_ghost) with
-      [ (False, False) ->
+      [ (false, false) ->
         (* FIXME if a.file_name <> b.file_name then
           raise (Invalid_argument
             (sprintf "Loc.merge: Filenames must be equal: %s <> %s"
                     a.file_name b.file_name))                          *)
         (* else *)
           { (a) with loc_end = b.loc_end }
-      | (True, True) -> { (a) with loc_end = b.loc_end }
-      | (True, _) -> { (a) with loc_end = b.loc_end }
-      | (_, True) -> { (b) with loc_start = a.loc_start } ]
+      | (true, true) -> { (a) with loc_end = b.loc_end }
+      | (true, _) -> { (a) with loc_end = b.loc_end }
+      | (_, true) -> { (b) with loc_start = a.loc_start } ]
     in debug loc "@[<hov 6>merge %a@ %a@ %a@]@\n" dump a dump b dump r in r;
 
 (** The stop pos becomes equal to the start pos. *)
@@ -268,7 +268,7 @@ let set_file_name s x =
 (** Return the associated ghost location. *)
 let ghostify x =
   debug loc "ghostify: %a@\n" dump x in
-  { (x) with loc_ghost = True };
+  { (x) with loc_ghost = true };
 
 (** Return the location with an absolute file name. *)
 let make_absolute x =
@@ -283,7 +283,7 @@ let make_absolute x =
     }
   else x;
 
-(** [strictly_before loc1 loc2] True if the stop position of [loc1] is
+(** [strictly_before loc1 loc2] true if the stop position of [loc1] is
             strictly_before the start position of [loc2].
  *)
 let strictly_before x y =
@@ -321,9 +321,9 @@ let check x msg =
         have "correct" lets *)
   then do {
     eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
-    False
+    false
   }
-  else True;
+  else true;
 
   
 (** [Exc_located loc e] is an encapsulation of the exception [e] with

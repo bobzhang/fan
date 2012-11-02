@@ -113,9 +113,9 @@ let symbolchar =
     ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '='; '>'; '?';
        '@'; '^'; '|'; '~'; '\\'] in
   let rec loop s i =
-    if i == String.length s then True
+    if i == String.length s then true
     else if List.mem s.[i] list then loop s (i + 1)
-    else False
+    else false
   in loop ;
   
 let stopped_at _loc =
@@ -126,7 +126,7 @@ let stopped_at _loc =
 let with_open_out_file x f =
   match x with
   [ Some file -> let oc = open_out_bin file in begin f oc; flush oc; close_out oc end
-  | None -> (set_binary_mode_out stdout True; f stdout; flush stdout) ];
+  | None -> (set_binary_mode_out stdout true; f stdout; flush stdout) ];
         
 (* dump binary *)
 let dump_ast magic ast oc =
@@ -201,8 +201,8 @@ end= struct
           else
             (try (f (bool_of_string s); Some sl)
             with [ Invalid_argument "bool_of_string" -> None])
-      | Arg.Set r -> if s = "" then (r := True; Some sl) else None
-      | Arg.Clear r -> if s = "" then (r := False; Some sl) else None
+      | Arg.Set r -> if s = "" then (r := true; Some sl) else None
+      | Arg.Clear r -> if s = "" then (r := false; Some sl) else None
       | Arg.Rest f -> (List.iter f ([s :: sl]); Some [])
       | Arg.String f ->
           if s = ""

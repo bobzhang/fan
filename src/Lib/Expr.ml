@@ -59,7 +59,7 @@ let mklist _loc =
     | [e1 :: el] ->
         let _loc =
           if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc in
-        <:expr< [$e1 :: $(loop False el)] >> ] in loop True ;
+        <:expr< [$e1 :: $(loop false el)] >> ] in loop true ;
   
 let mkumin _loc f arg = match arg with
   [ <:expr< $int:n >> -> <:expr< $(int:neg_string n) >>
@@ -70,8 +70,9 @@ let mkumin _loc f arg = match arg with
   | _ -> <:expr< $(lid:"~" ^ f) $arg >> ];
   
 let mkassert _loc = fun
-  [ <:expr< False >> ->
-    <:expr< assert False >>
+  [ <:expr< false >> ->
+    ExAsf _loc 
+    (* <:expr< assert false >> *)
    (* this case takes care about
       the special assert false node *)
   | e -> <:expr< assert $e >> ] ;
@@ -85,8 +86,8 @@ let mklist_last ?last _loc  =
     | [e1 :: el] ->
         let _loc =
           if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc in
-        <:expr< [$e1 :: $(loop False el)] >> ] in
-  loop True ;
+        <:expr< [$e1 :: $(loop false el)] >> ] in
+  loop true ;
 
 let mksequence _loc = fun
   [ <:expr< $_; $_ >> | <:expr< $anti:_ >> as e -> <:expr< do { $e } >>
@@ -128,7 +129,7 @@ let rec pattern_eq_expression p e =  match (p, e) with
   | (<:patt< $uid:a >>, <:expr< $uid:b >>) -> a = b
   | (<:patt< $p1 $p2 >>, <:expr< $e1 $e2 >>) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
-  | _ -> False ] ;
+  | _ -> false ] ;
 
   
 (*************************************************************************)
@@ -141,7 +142,7 @@ let map _loc p e l =  match (p, e) with
       else
         <:expr< List.fold_right
           (fun
-            [ $pat:p when True -> (fun x xs -> [ x :: xs ]) $e
+            [ $pat:p when true -> (fun x xs -> [ x :: xs ]) $e
             | _ -> (fun l -> l) ])
           $l [] >> ];
 
@@ -150,7 +151,7 @@ let filter _loc p b l =
     if Ast.is_irrefut_patt p then
       <:expr< List.filter (fun $p -> $b) $l >>
     else
-      <:expr< List.filter (fun [ $p when True -> $b | _ -> False ]) $l >>;
+      <:expr< List.filter (fun [ $p when true -> $b | _ -> false ]) $l >>;
 let concat _loc l = <:expr< List.concat $l >>;
 (* only this function needs to be exposed *)
 let rec compr _loc e =  fun
@@ -205,7 +206,7 @@ let substp _loc env =
             <:expr< FanLoc.of_tuple
               ($`str:a, $`int:b, $`int:c, $`int:d,
                $`int:e, $`int:f, $`int:g,
-               $(if h then <:expr< True >> else <:expr< False >> )) >>
+               $(if h then <:expr< true >> else <:expr< false >> )) >>
           with [ Not_found -> super#expr e ]
       | e -> super#expr e ];
 
@@ -226,7 +227,7 @@ let substp _loc env =
      <:expr< FanLoc.of_tuple
        ($`str:a, $`int:b, $`int:c, $`int:d,
         $`int:e, $`int:f, $`int:g,
-        $(if h then <:expr< True >> else <:expr< False >> )) >>
+        $(if h then <:expr< true >> else <:expr< false >> )) >>
    | e -> e];
     
 
@@ -272,7 +273,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "`flo" -> <:expr< FanUtil.float_repres $e >>
             | "`str" -> <:expr< Ast.safe_string_escaped $e >>
             | "`chr" -> <:expr< Char.escaped $e >>
-            | "`bool" -> <:expr< Ast.IdUid $(mloc _loc) (if $e then "True" else "False") >>
+            | "`bool" -> <:expr< Ast.IdUid $(mloc _loc) (if $e then "true" else "false") >>
             | "liststr_item" -> <:expr< Ast.stSem_of_list $e >>
             | "listsig_item" -> <:expr< Ast.sgSem_of_list $e >>
             | "listclass_sig_item" -> <:expr< Ast.cgSem_of_list $e >>

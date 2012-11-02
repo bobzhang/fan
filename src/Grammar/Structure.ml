@@ -30,7 +30,7 @@ type token_info = {
 let ghost_token_info = {
   prev_loc=FanLoc.ghost;
   cur_loc = FanLoc.ghost;
-  prev_loc_only = False;};
+  prev_loc_only = false;};
   (* with neighbor token info stored*)  
 
 type token_stream = Stream.t (token * token_info);

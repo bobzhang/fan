@@ -64,7 +64,7 @@ let type_variance = function
   | (false,false) -> ""
   | (true,false) -> "+"
   | (false,true) -> "-"
-  | (_,_) -> assert false
+  | (_,_) -> raise Not_found (* assert false *)
 
 type construct = 
   [ `cons of expression list
@@ -128,7 +128,7 @@ class printer  ()= object(self:'self)
                 let rec loop  f = function
                   | [x] -> fu f x
                   | x::xs ->  pp f "%a%(%)%a" fu x sep loop xs 
-                  | _ -> assert false in begin
+                  | _ -> raise Not_found (* assert false *) in begin
                       pp f "%(%)%a%(%)" first loop xs last;
                   end in
           aux f xs
@@ -478,7 +478,7 @@ class printer  ()= object(self:'self)
         | `normal ->
             pp f "@[<2>%a@;%a@]" self#longident_loc li
               self#simple_expr  eo
-        | _ -> assert false)
+        | _ -> raise Not_found (* assert false *))
     | Pexp_setfield (e1, li, e2) ->
         pp f "@[<hov2>%a.%a@ <-@ %a@]" self#simple_expr  e1  self#longident_loc li self#expression e2;
     | Pexp_ifthenelse (e1, e2, eo) ->
@@ -495,7 +495,7 @@ class printer  ()= object(self:'self)
         let lst = sequence_helper [] x in
         pp f "@[<hv>%a@]"
           (self#list self#under_semi#expression ~sep:";@;") lst
-    | Pexp_when (_e1, _e2) ->  assert false (*FIXME handled already in pattern *)
+    | Pexp_when (_e1, _e2) ->  raise Not_found (* assert false *) (*FIXME handled already in pattern *)
     | Pexp_new (li) ->
         pp f "@[<hov2>new@ %a@]" self#longident_loc li;
     | Pexp_setinstvar (s, e) ->
@@ -515,7 +515,7 @@ class printer  ()= object(self:'self)
     | Pexp_lazy (e) ->
         pp f "@[<hov2>lazy@ %a@]" self#simple_expr e 
     | Pexp_poly _ -> 
-        assert false
+        raise Not_found (* assert false *)
     | Pexp_open (lid, e) ->
         pp f "@[<2>let open %a in@;%a@]" self#longident_loc lid
           self#expression  e
@@ -541,7 +541,7 @@ class printer  ()= object(self:'self)
         | `tuple -> pp f "()"
         | `list xs -> pp f "[%a]"  (self#list self#under_semi#expression ~sep:";@;") xs 
         | `simple x -> self#longident f x
-        | _ -> assert false)
+        | _ -> raise Not_found (* assert false *))
     | Pexp_ident li -> 
         let flag = is_infix (view_fixity_of_exp x) || (match li.txt with
         | Lident li -> List.mem li.[0] prefix_symbols
@@ -864,7 +864,7 @@ class printer  ()= object(self:'self)
     match x.pstr_desc with
     | Pstr_eval (e) ->
         pp f "@[<hov2>let@ _ =@ %a@]" self#expression e 
-    | Pstr_type [] -> assert false
+    | Pstr_type [] -> raise Not_found (* assert false *)
     | Pstr_type l  -> self#type_def_list f l 
     | Pstr_value (rf, l) -> pp f "@[<hov2>let %a%a@]"  self#rec_flag rf self#bindings l
     | Pstr_exception (s, ed) -> self#exception_declaration f (s.txt,ed)
@@ -951,7 +951,7 @@ class printer  ()= object(self:'self)
               self#module_type mt
               self#module_expr me 
               (fun f l2 -> List.iter (text_x_modtype_x_module f) l2) l2 
-        | _ -> assert false
+        | _ -> raise Not_found (* assert false *)
   end
   method type_param f  = function
     | (a,opt) -> pp f "%s%a" (type_variance a ) self#type_var_option opt 

@@ -41,8 +41,8 @@ let rec is_module_longident = fun
   [ <:ident< $_.$i >> -> is_module_longident i
   | <:ident< $i1 $i2 >> ->
       is_module_longident i1 && is_module_longident i2
-  | <:ident< $uid:_ >> -> True
-  | _ -> False ];
+  | <:ident< $uid:_ >> -> true
+  | _ -> false ];
 
 let ident_of_expr =
   let error () =
@@ -101,10 +101,10 @@ let ident_of_patt =
 
 let rec is_irrefut_patt =
     fun
-    [ <:patt< $lid:_ >> -> True
-    | <:patt< () >> -> True
-    | <:patt< _ >> -> True
-    | <:patt<>> -> True (* why not *)
+    [ <:patt< $lid:_ >> -> true
+    | <:patt< () >> -> true
+    | <:patt< _ >> -> true
+    | <:patt<>> -> true (* why not *)
     | <:patt< ($x as $y) >> -> is_irrefut_patt x && is_irrefut_patt y
     | <:patt< { $p } >> -> is_irrefut_patt p
     | <:patt< $_ = $p >> -> is_irrefut_patt p
@@ -114,36 +114,36 @@ let rec is_irrefut_patt =
     | <:patt< $p1 $p2 >> -> is_irrefut_patt p1 && is_irrefut_patt p2
     | <:patt< ($p : $_) >> -> is_irrefut_patt p
     | <:patt< ($tup:pl) >> -> is_irrefut_patt pl
-    | <:patt< ? $_ >> -> True
+    | <:patt< ? $_ >> -> true
     | <:patt< ? $_ : ($p) >> -> is_irrefut_patt p
     | <:patt< ? $_ : ($p = $_) >> -> is_irrefut_patt p
-    | <:patt< ~ $_ >> -> True
+    | <:patt< ~ $_ >> -> true
     | <:patt< ~ $_ : $p >> -> is_irrefut_patt p
     | <:patt< lazy $p >> -> is_irrefut_patt p
-    | <:patt< $id:_ >> -> False (* here one need to know the arity of constructors *)
-    | <:patt< (module $_) >> -> True
+    | <:patt< $id:_ >> -> false (* here one need to know the arity of constructors *)
+    | <:patt< (module $_) >> -> true
     | <:patt< `$_ >> | <:patt< $str:_ >> | <:patt< $_ .. $_ >> |
       <:patt< $flo:_ >> | <:patt< $nativeint:_ >> | <:patt< $int64:_ >> |
       <:patt< $int32:_ >> | <:patt< $int:_ >> | <:patt< $chr:_ >> |
-      <:patt< #$_ >> | <:patt< [| $_ |] >> | <:patt< $anti:_ >> -> False
+      <:patt< #$_ >> | <:patt< [| $_ |] >> | <:patt< $anti:_ >> -> false
     ];
 
 let rec is_constructor =  fun
     [ <:ident< $_.$i >> -> is_constructor i
-    | <:ident< $uid:_ >> -> True
-    | <:ident< $lid:_ >> | <:ident< $_ $_ >> -> False
-    | <:ident< $anti:_ >> -> assert False ];
+    | <:ident< $uid:_ >> -> true
+    | <:ident< $lid:_ >> | <:ident< $_ $_ >> -> false
+    | <:ident< $anti:_ >> -> raise Not_found (* assert false *) ];
 
 let is_patt_constructor = fun
     [ <:patt< $id:i >> -> is_constructor i
-    | <:patt< `$_ >> -> True
-    | _ -> False ];
+    | <:patt< `$_ >> -> true
+    | _ -> false ];
 
 let rec is_expr_constructor = fun
     [ <:expr< $id:i >> -> is_constructor i
     | <:expr< $e1.$e2 >> -> is_expr_constructor e1 && is_expr_constructor e2
-    | <:expr< `$_ >> -> True
-    | _ -> False ];
+    | <:expr< `$_ >> -> true
+    | _ -> false ];
 
 let rec tyOr_of_list = fun
     [ [] -> <:ctyp@ghost<>>
@@ -214,14 +214,14 @@ let rec wcAnd_of_list = fun
         <:with_constr< $w and $(wcAnd_of_list ws) >> ];
 
 let rec idAcc_of_list = fun
-    [ [] -> assert False
+    [ [] -> raise Not_found (* assert false *)
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of_ident i in
         <:ident< $i . $(idAcc_of_list is) >> ];
 
 let rec idApp_of_list =  fun
-    [ [] -> assert False
+    [ [] -> raise Not_found (* assert false *)
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of_ident i in
@@ -242,7 +242,7 @@ let rec mbAnd_of_list = fun
         <:module_binding< $x and $(mbAnd_of_list xs) >> ];
 
 let rec meApp_of_list = fun
-    [ [] -> assert False
+    [ [] -> raise Not_found (* assert false *)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_module_expr x in
@@ -309,8 +309,8 @@ let ty_of_stl = fun
     | (_loc, s, tl) -> <:ctyp< $uid:s of $(tyAnd_of_list tl) >> ];
 
 let ty_of_sbt = fun
-    [ (_loc, s, True, t) -> <:ctyp< $lid:s : mutable $t >>
-    | (_loc, s, False, t) -> <:ctyp< $lid:s : $t >> ];
+    [ (_loc, s, true, t) -> <:ctyp< $lid:s : mutable $t >>
+    | (_loc, s, false, t) -> <:ctyp< $lid:s : $t >> ];
 
 let bi_of_pe (p, e) = let _loc = loc_of_patt p in <:binding< $p = $e >>;
 let sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l);
@@ -320,7 +320,7 @@ let binding_of_pel l = biAnd_of_list (List.map bi_of_pe l);
 let rec pel_of_binding =  fun
     [ <:binding< $b1 and $b2 >> -> pel_of_binding b1 @ pel_of_binding b2
     | <:binding< $p = $e >> -> [(p, e)]
-    | _ -> assert False ];
+    | _ -> raise Not_found (* assert false *) ];
 
 let rec list_of_binding x acc =
     match x with

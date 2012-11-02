@@ -8,4 +8,4 @@ let mklist _loc =
     | [p1 :: pl] ->
         let _loc =
           if top then _loc else FanLoc.merge (loc_of_patt p1) _loc in
-        <:patt< [$p1 :: $(loop False pl)] >> ] in loop True ;
+        <:patt< [$p1 :: $(loop false pl)] >> ] in loop true ;

@@ -39,8 +39,8 @@ let level_number entry lab =
   [ Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found ] ;
     
-let strict_parsing = ref False;
-let strict_parsing_warning = ref False;
+let strict_parsing = ref false;
+let strict_parsing_warning = ref false;
 
 let rec top_symb entry =fun
   [ `Sself | `Snext -> `Snterm entry

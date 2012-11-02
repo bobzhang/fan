@@ -9,8 +9,8 @@
 (* type context =
 { loc        : FanLoc.t    ;
   in_comment : bool     ;
-   |+* FIXME When True, all lexers built by [Plexer.make ()] do not lex the
-       quotation syntax any more. Default is False (quotations are
+   |+* FIXME When true, all lexers built by [Plexer.make ()] do not lex the
+       quotation syntax any more. Default is false (quotations are
        lexed). +|
   quotations : bool     };
 

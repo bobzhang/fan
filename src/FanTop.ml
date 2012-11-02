@@ -60,8 +60,8 @@ let use_file token_stream =
             do { Topdirs.dir_load Format.std_formatter s; loop () }
         | [ <:str_item< #directory $str:s >> ] ->
             do { Topdirs.dir_directory s; loop () }
-        | _ -> (pl, False) ]
-      else (pl, True)
+        | _ -> (pl, false) ]
+      else (pl, true)
   in
   let pl =
     if eoi then []
