@@ -37,3 +37,9 @@
   [Exit] exception is a special exception
 
 * 0004 EOI
+* 0005 compiler warnings...
+
+  #+BEGIN_EXAMPLE
+  ocamlc -dparsetree true_false.ml -pp '../_build/boot/fan -parser rf -parser debug -printer p'
+  #+END_EXAMPLE
+  The compiler  ignores =-pp= option here, but it does not even give a warning

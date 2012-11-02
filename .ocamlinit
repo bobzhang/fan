@@ -8,38 +8,41 @@ open Format;;
 let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 #install_printer print_ocaml_loc;;
 #directory "_build";;
-#directory "_build/src";;
-let fmt = std_formatter
-let _ = Clflags.noprompt := true;;
+(* #directory "_build/src";; *)
+#directory "_build/cold" ;;
 #load_rec "FanLoc.cmo";;
-let _loc = FanLoc.ghost;;
-let _ = begin
-  Hashtbl.replace Toploop.directive_table "pwd"
-    (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())))
-end
+#load_rec "FanTop.cma";;
+(* let fmt = std_formatter *)
+(* let _ = Clflags.noprompt := true;; *)
 
-let _ = begin
+(* let _loc = FanLoc.ghost;; *)
+(* let _ = begin *)
+(*   Hashtbl.replace Toploop.directive_table "pwd" *)
+(*     (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ()))) *)
+(* end *)
 
-  Hashtbl.replace Toploop.directive_table "useo"
-    (Toploop.Directive_string (fun file ->
-      let old = !Toploop.parse_use_file in
-      let () = Toploop.parse_use_file:=Parse.use_file in
-      let () = try
-        ignore(Toploop.use_file Format.std_formatter file)
-      with
-        exn -> begin Toploop.parse_use_file := old; raise exn end in 
-      Toploop.parse_use_file := old))
-end
-let (|-) f g x = g (f x );;
+(* let _ = begin *)
+
+(*   Hashtbl.replace Toploop.directive_table "useo" *)
+(*     (Toploop.Directive_string (fun file -> *)
+(*       let old = !Toploop.parse_use_file in *)
+(*       let () = Toploop.parse_use_file:=Parse.use_file in *)
+(*       let () = try *)
+(*         ignore(Toploop.use_file Format.std_formatter file) *)
+(*       with *)
+(*         exn -> begin Toploop.parse_use_file := old; raise exn end in  *)
+(*       Toploop.parse_use_file := old)) *)
+(* end *)
+(* let (|-) f g x = g (f x );; *)
     
-let interface_of_string =
-  Lexing.from_string |- Parse.interface;;
-let implementation_of_string =
-  Lexing.from_string |- Parse.implementation;;
+(* let interface_of_string = *)
+(*   Lexing.from_string |- Parse.interface;; *)
+(* let implementation_of_string = *)
+(*   Lexing.from_string |- Parse.implementation;; *)
 
-let tg_dp () =
-  Clflags.dump_parsetree := not !Clflags.dump_parsetree ;;
-let pp =fprintf
-let f = std_formatter;;
+(* let tg_dp () = *)
+(*   Clflags.dump_parsetree := not !Clflags.dump_parsetree ;; *)
+(* let pp =fprintf *)
+(* let f = std_formatter;; *)
 (* consult Topdirs for more utlities *)
-#use "test/test_fan.ml";;
+(* #use "test/test_fan.ml";; *)

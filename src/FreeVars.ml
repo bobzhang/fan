@@ -16,7 +16,7 @@ let rec fold_binding_vars f bi acc = match bi with
     fold_binding_vars f bi1 (fold_binding_vars f bi2 acc)
   | <:binding< $p = $_ >> -> fold_pattern_vars f p acc
   | <:binding<>> -> acc
-  | <:binding< $anti:_ >> -> raise Not_found (* assert false *) ];
+  | <:binding< $anti:_ >> -> assert false ];
 
 class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.empty) free_init =  object (o)
   inherit Camlp4Ast.fold as super;

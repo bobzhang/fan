@@ -75,12 +75,12 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
   let xik i k =
     let i =
-      if i < 0 then raise Not_found (* assert false *)
+      if i < 0 then assert false
       else if i = 0 then ""
       else sf "_i%d" i
     in
     let k =
-      if k < 1 then raise Not_found (* assert false *)
+      if k < 1 then assert false
       else if k = 1 then ""
       else sf "_k%d" k
     in
@@ -127,7 +127,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     fun
     [ <:ident< $lid:s >> | <:ident< $uid:s >> -> s
     | <:ident< $i1.$i2 >> -> lid_of_ident sep i1 ^ sep ^ lid_of_ident sep i2
-    | _ -> raise Not_found (* assert false *) ];
+    | _ -> assert false ];
 
   type type_decl = (string * Ast.ident * list Ast.ctyp * Ast.ctyp * bool);
 
@@ -174,7 +174,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
       let mode = X.mode;
 
       let tuplify_expr f =
-        if size <= 0 then raise Not_found (* assert false *)
+        if size <= 0 then assert false
         else if size = 1 then f 1
         else
           let rec loop k =
@@ -183,7 +183,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
           in <:expr< ($(f 1), $(loop size)) >>;
 
       let tuplify_patt f =
-        if size <= 0 then raise Not_found (* assert false *)
+        if size <= 0 then assert false
         else if size = 1 then f 1
         else
           let rec loop k =
@@ -194,7 +194,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
       let xiks i = tuplify_expr (exik i);
 
       let tuplify_type typ =
-        if size <= 0 then raise Not_found (* assert false *)
+        if size <= 0 then assert false
         else if size = 1 then typ
         else
           let rec loop k =
@@ -210,7 +210,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         | <:expr< $id:i >> -> <:patt< $id:i >>
         | <:expr< $e1, $e2 >> -> <:patt< $(patt_of_expr e1), $(patt_of_expr e2) >>
         | <:expr< $tup:e >> -> <:patt< $(tup:patt_of_expr e) >>
-        | _ -> raise Not_found (* assert false *) ];
+        | _ -> assert false ];
 
       let bind p e1 e2 =
         match mode with
@@ -384,7 +384,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
              <:match_case< $(match_case_of_sum_type t1) | $(match_case_of_sum_type t2) >>
         | <:ctyp< $uid:s of $t >> -> match_case_of_constructor s t
         | <:ctyp< $uid:s >> -> match_case_of_constructor s <:ctyp<>>
-        | _ -> raise Not_found (* assert false *) ]
+        | _ -> assert false ]
 
       and match_case_of_poly_constructor s ts =
         chain_tuple
@@ -399,7 +399,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         | <:ctyp< `$i of ($tup:t) >> -> match_case_of_poly_constructor i (Ast.list_of_ctyp t [])
         | <:ctyp< `$i of $t >> -> match_case_of_poly_constructor i [t]
         | <:ctyp< `$i >> -> match_case_of_poly_constructor i []
-        | _ -> raise Not_found (* assert false *) ]
+        | _ -> assert false ]
 
       and record_patt_of_type k =
         fun
@@ -407,7 +407,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
             <:patt< $lid:s = $(lid:xsk s k) >>
         | <:ctyp< $t1 ; $t2 >> ->
             <:patt< $(record_patt_of_type k t1); $(record_patt_of_type k t2) >>
-        | _ -> raise Not_found (* assert false *) ]
+        | _ -> assert false ]
 
       and type_list_of_record_type t ((acc1, acc2) as acc) =
         match t with
@@ -416,7 +416,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
               ([s :: acc1], [t :: acc2])
         | <:ctyp< $t1 ; $t2 >> ->
              type_list_of_record_type t1 (type_list_of_record_type t2 acc)
-        | _ -> raise Not_found (* assert false *) ]
+        | _ -> assert false ]
 
       and expr_of_record_type t =
         let (ls, ts) = type_list_of_record_type t ([], []) in
@@ -453,12 +453,12 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
               <:expr< fun [ $(complete_match_case match_case_of_poly_sum_type t) ] >>
             else
               <:expr< fun [ $(match_case_of_poly_sum_type t) | $default_match_case ] >>
-        | _ -> raise Not_found (* assert false *) ]
+        | _ -> assert false ]
 
       and string_of_type_param t =
         match t with
         [ <:ctyp< '$s >> | <:ctyp< +'$s >> | <:ctyp< -'$s >> -> s
-        | _ -> raise Not_found (* assert false *) ]
+        | _ -> assert false ]
 
       and method_of_type_decl _ ((id1, _, params, ctyp, priv) as type_decl) acc =
         let rec lambda acc =
@@ -477,7 +477,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
       and method_type_of_type_decl (_, name, params, ctyp, _) =
         let t = ctyp_name_of_name_params name params in
         if mode = Map && not (contains_unknown ctyp) then
-          let out_params = List.map (fun [ <:ctyp< '$i >> -> <:ctyp< '$(i^"_out") >> | _ -> raise Not_found (* assert false *) ]) params in
+          let out_params = List.map (fun [ <:ctyp< '$i >> -> <:ctyp< '$(i^"_out") >> | _ -> assert false ]) params in
           let t_out = ctyp_name_of_name_params name out_params in
           method_type_of_type t t_out params out_params
         else
@@ -534,7 +534,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         tyMap_of_type_decls t1 (tyMap_of_type_decls t2 acc)
     | Ast.TyDcl _ name tl tk _ ->
         SMap.add name (name, <:ident< $lid:name >>, tl, tk, false) acc
-    | _ -> raise Not_found (* assert false *) ];
+    | _ -> assert false ];
 
   let generate_class_implem mode c tydcl n =
     let tyMap = tyMap_of_type_decls tydcl SMap.empty in
@@ -763,7 +763,7 @@ let rec string_of_ident =
   | <:ident< $uid:s >> -> s
   | <:ident< $i1.$i2 >> -> "acc_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
   | <:ident< $i1 $i2 >> -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
-  | <:ident< $anti:_ >> -> raise Not_found (* assert false *) ];
+  | <:ident< $anti:_ >> -> assert false ];
 
 let fold_args ty f init =
   let (_, res) =
@@ -779,7 +779,7 @@ let fold_data_ctors ty f init =
     | <:ctyp< $uid:cons >> -> f cons [] acc
     | <:ctyp< $t1 | $t2 >> -> loop (loop acc t1) t2
     | <:ctyp<>> -> acc
-    | _ -> raise Not_found (* assert false *) ] in
+    | _ -> assert false ] in
   loop init ty;
 
 let fold_type_decls m f init =
@@ -809,7 +809,7 @@ let rec meta_ident m =
 let m_app m x y = <:expr< $(m.app) _loc $x $y >>; (* take care $(m.app) is need*)
 let m_id m i = <:expr< $(m.id) _loc $i >>;
 let m_uid m s = m_id m (meta_ident m <:ident< $uid:s >>);
-
+let m_lid m s = m_id m (meta_ident m <:ident< $lid:s >>);
 let failure = <:expr< raise (Failure "MetaGenerator: cannot handle that kind of types") >>;
 
 let mk_meta m =
@@ -853,11 +853,11 @@ let mk_meta m =
             match tyvar with
             [ <:ctyp< +'$s >> | <:ctyp< -'$s >> | <:ctyp< '$s >> ->
                 <:expr< fun $(lid:mf_ s) -> $acc >>
-            | _ -> raise Not_found (* assert false *) ]
+            | _ -> assert false ]
           end tyvars <:expr< fun _loc -> fun [ $match_case ] >>
         in <:binding< $binding_acc and $(lid:"meta_"^tyname) = $funct >>
     | Ast.TyDcl _ _ _ _ _ -> binding_acc
-    | _ -> raise Not_found (* assert false *) ]
+    | _ -> assert false ]
   end <:binding<>>;
 
 let find_type_decls = object
@@ -885,8 +885,8 @@ let filter st =
           let meta_char _loc s = $(m.chr) _loc (String.escaped s);
           let meta_bool _loc =
             fun
-            [ False -> $(m_uid m "false") (* FIXME*)
-            | True  -> $(m_uid m "true") ]; (* FIXME*)
+            [ false -> $(m_lid m "false") (* FIXME*)
+            | true  -> $(m_lid m "true") ]; (* FIXME*)
           let rec meta_list mf_a _loc =
             fun
             [ [] -> $(m_uid m "[]")

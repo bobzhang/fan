@@ -48,7 +48,7 @@ and name_of_tree_failed entry =  fun
                match tok with
                [ `Stoken (_, descr) -> name_of_descr descr
                | `Skeyword kwd -> kwd
-               | _ -> raise Not_found (* assert false *) ])
+               | _ -> assert false ])
             "" tokl ]
   | DeadEnd | LocAct _ _ -> "???" ];
 

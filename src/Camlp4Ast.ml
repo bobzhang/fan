@@ -132,7 +132,7 @@ let rec is_constructor =  fun
     [ <:ident< $_.$i >> -> is_constructor i
     | <:ident< $uid:_ >> -> true
     | <:ident< $lid:_ >> | <:ident< $_ $_ >> -> false
-    | <:ident< $anti:_ >> -> raise Not_found (* assert false *) ];
+    | <:ident< $anti:_ >> -> assert false ];
 
 let is_patt_constructor = fun
     [ <:patt< $id:i >> -> is_constructor i
@@ -214,14 +214,14 @@ let rec wcAnd_of_list = fun
         <:with_constr< $w and $(wcAnd_of_list ws) >> ];
 
 let rec idAcc_of_list = fun
-    [ [] -> raise Not_found (* assert false *)
+    [ [] -> assert false
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of_ident i in
         <:ident< $i . $(idAcc_of_list is) >> ];
 
 let rec idApp_of_list =  fun
-    [ [] -> raise Not_found (* assert false *)
+    [ [] -> assert false
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of_ident i in
@@ -242,7 +242,7 @@ let rec mbAnd_of_list = fun
         <:module_binding< $x and $(mbAnd_of_list xs) >> ];
 
 let rec meApp_of_list = fun
-    [ [] -> raise Not_found (* assert false *)
+    [ [] -> assert false
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_module_expr x in
@@ -320,7 +320,7 @@ let binding_of_pel l = biAnd_of_list (List.map bi_of_pe l);
 let rec pel_of_binding =  fun
     [ <:binding< $b1 and $b2 >> -> pel_of_binding b1 @ pel_of_binding b2
     | <:binding< $p = $e >> -> [(p, e)]
-    | _ -> raise Not_found (* assert false *) ];
+    | _ -> assert false ];
 
 let rec list_of_binding x acc =
     match x with

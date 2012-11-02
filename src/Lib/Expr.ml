@@ -70,8 +70,8 @@ let mkumin _loc f arg = match arg with
   | _ -> <:expr< $(lid:"~" ^ f) $arg >> ];
   
 let mkassert _loc = fun
-  [ <:expr< false >> ->
-    ExAsf _loc 
+  [ <:expr< false >> -> <:expr< assert false >> 
+    (* Ast.ExAsf _loc  *)
     (* <:expr< assert false >> *)
    (* this case takes care about
       the special assert false node *)
@@ -273,7 +273,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "`flo" -> <:expr< FanUtil.float_repres $e >>
             | "`str" -> <:expr< Ast.safe_string_escaped $e >>
             | "`chr" -> <:expr< Char.escaped $e >>
-            | "`bool" -> <:expr< Ast.IdUid $(mloc _loc) (if $e then "true" else "false") >>
+            | "`bool" -> <:expr< Ast.IdLid $(mloc _loc) (if $e then "true" else "false") >>
             | "liststr_item" -> <:expr< Ast.stSem_of_list $e >>
             | "listsig_item" -> <:expr< Ast.sgSem_of_list $e >>
             | "listclass_sig_item" -> <:expr< Ast.cgSem_of_list $e >>

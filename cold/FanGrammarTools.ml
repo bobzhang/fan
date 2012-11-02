@@ -508,16 +508,16 @@ let mk_tok _loc ?restrict  p t =
         then
           Ast.ExFun (_loc, (
             Ast.McArr (_loc, p', ( Ast.ExNil _loc ), (
-              Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") )) ))
+              Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") )) ))
             ))
         else
           Ast.ExFun (_loc, (
             Ast.McOr (_loc, (
               Ast.McArr (_loc, p', ( Ast.ExNil _loc ), (
-                Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") )) ))
+                Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") )) ))
               ), (
               Ast.McArr (_loc, ( Ast.PaAny _loc ), ( Ast.ExNil _loc ), (
-                Ast.ExId (_loc, ( Ast.IdUid (_loc, "False") )) ))
+                Ast.ExId (_loc, ( Ast.IdLid (_loc, "false") )) ))
               ))
             )) in
       let descr = string_of_patt p' in
@@ -529,10 +529,10 @@ let mk_tok _loc ?restrict  p t =
         Ast.ExFun (_loc, (
           Ast.McOr (_loc, (
             Ast.McArr (_loc, p, restrict, (
-              Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") )) ))
+              Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") )) ))
             ), (
             Ast.McArr (_loc, ( Ast.PaAny _loc ), ( Ast.ExNil _loc ), (
-              Ast.ExId (_loc, ( Ast.IdUid (_loc, "False") )) ))
+              Ast.ExId (_loc, ( Ast.IdLid (_loc, "false") )) ))
             ))
           )) in
       let descr = string_of_patt p in

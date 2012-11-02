@@ -202,7 +202,7 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
       [ Some new_loc ->
         let pl =
           match List.rev pl with
-          [ [] -> raise Not_found (* assert false *)
+          [ [] -> assert false
           | [x :: xs] ->
               match directive_handler x with
               [ None -> xs

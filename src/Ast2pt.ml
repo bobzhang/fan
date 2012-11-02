@@ -13,12 +13,12 @@ let constructors_arity () =
 let mkvirtual = fun
   [ <:virtual_flag< virtual >> -> Virtual
   | <:virtual_flag<>> -> Concrete
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 
 let mkdirection = fun
   [ <:direction_flag< to >> -> Upto
   | <:direction_flag< downto >> -> Downto
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 
 
 (* let conv_con = *)
@@ -39,7 +39,7 @@ let mkdirection = fun
 let mkrf = fun
     [ <:rec_flag< rec >> -> Recursive
     | <:rec_flag<>> -> Nonrecursive
-    | _ -> raise Not_found (* assert false *) ];
+    | _ -> assert false ];
 
 
 (*
@@ -192,7 +192,7 @@ let rec ctyp = fun (* ctyp -> core_type *)
     TyCom _ _ _ |TyVrn _ _ |TyQuM _ _ |TyQuP _ _ |TyDcl _ _ _ _ _ |
     TyAnP _ | TyAnM _ | TyTypePol _ _ _ |
     TyObj _ _ (RvAnt _) | TyNil _ | TyTup _ _ ->
-      raise Not_found (* assert false *) ]
+      assert false ]
 and row_field = fun (* ctyp -> row_field list*)
   [ <:ctyp<>> -> []
   | <:ctyp< `$i >> -> [Rtag i true []]
@@ -205,7 +205,7 @@ and meth_list fl acc = match fl with (* ctyp -> core_field_type list -> core_fie
   | <:ctyp< $t1; $t2 >> -> meth_list t1 (meth_list t2 acc)
   | <:ctyp@loc< $lid:lab : $t >> ->
       [mkfield loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
-  | _ -> raise Not_found (* assert false *) ]
+  | _ -> assert false ]
 
 and package_type_constraints wc acc = match wc with
   [ <:with_constr<>> -> acc
@@ -230,13 +230,13 @@ let mkprivate' m = if m then Private else Public;
 let mkprivate = fun
   [ <:private_flag< private >> -> Private
   | <:private_flag<>> -> Public
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 let mktrecord = fun
   [ <:ctyp@loc< $(id:<:ident@sloc< $lid:s >>) : mutable $t >> ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  loc)
   | <:ctyp@loc< $(id:<:ident@sloc< $lid:s >>) : $t >> ->
       (with_loc s sloc, Immutable, mkpolytype (ctyp t),  loc)
-  | _ -> raise Not_found (* assert false *) (*FIXME*) ];
+  | _ -> assert false (*FIXME*) ];
   
 let mkvariant = fun
   [ <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) >> ->
@@ -248,7 +248,7 @@ let mkvariant = fun
   | <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) : $t >> ->
       (with_loc ((* conv_con *) s) sloc, [], Some (ctyp t),  loc)
 
-  | _ -> raise Not_found (* assert false *) (*FIXME*) ];
+  | _ -> assert false (*FIXME*) ];
   
 let rec type_decl tl cl loc m pflag = fun
   [ <:ctyp< $t1 == $t2 >> ->
@@ -276,12 +276,12 @@ let mkvalue_desc loc t p = {pval_type = ctyp t; pval_prim = p; pval_loc =  loc};
 let rec list_of_meta_list =fun
   [ Ast.LNil -> []
   | Ast.LCons x xs -> [x :: list_of_meta_list xs]
-  | Ast.LAnt _ -> raise Not_found (* assert false *) ];
+  | Ast.LAnt _ -> assert false ];
 
 let mkmutable = fun
   [ <:mutable_flag< mutable >> -> Mutable
   | <:mutable_flag<>> -> Immutable
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 
 let paolab lab p = match (lab, p) with
   [ ("", <:patt< $lid:i >> | <:patt< ($lid:i : $_) >>) -> i
@@ -297,7 +297,7 @@ let rec type_parameters t acc = match t with
   | <:ctyp< +'$s >> -> [(s, (true, false)) :: acc]
   | <:ctyp< -'$s >> -> [(s, (false, true)) :: acc]
   | <:ctyp< '$s >> -> [(s, (false, false)) :: acc]
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 
 let rec optional_type_parameters t acc =  match t with
   [ <:ctyp< $t1 $t2 >> -> optional_type_parameters t1 (optional_type_parameters t2 acc)
@@ -307,21 +307,21 @@ let rec optional_type_parameters t acc =  match t with
   | Ast.TyAnM _loc -> [(None, (false, true)) :: acc]
   | <:ctyp@loc< '$s >> -> [(Some (with_loc s loc), (false, false)) :: acc]
   | Ast.TyAny _loc -> [(None, (false, false)) :: acc]
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 
 let rec class_parameters t acc = match t with
   [ <:ctyp< $t1, $t2 >> -> class_parameters t1 (class_parameters t2 acc)
   | <:ctyp@loc< +'$s >> -> [(with_loc s loc, (true, false)) :: acc]
   | <:ctyp@loc< -'$s >> -> [(with_loc s loc, (false, true)) :: acc]
   | <:ctyp@loc< '$s >> -> [(with_loc s loc, (false, false)) :: acc]
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 
 let rec type_parameters_and_type_name t acc =  match t with
   [ <:ctyp< $t1 $t2 >> ->
     type_parameters_and_type_name t1
       (optional_type_parameters t2 acc)
   | <:ctyp< $id:i >> -> (ident i, acc)
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 
 let mkwithtyp pwith_type loc id_tpl ct =
   let (id, tpl) = type_parameters_and_type_name id_tpl [] in
@@ -707,7 +707,7 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
       let rec id_to_string x = match x with
       [ <:ctyp< $lid:x >> -> [x]
       | <:ctyp< $x $y >> -> (id_to_string x) @ (id_to_string y)
-      | _ -> raise Not_found (* assert false *)]   in
+      | _ -> assert false]   in
       let vars = id_to_string vs in
       let ampersand_vars = List.map (fun x -> "&" ^ x) vars in
       let ty' = varify_constructors vars (ctyp ty) in
@@ -719,7 +719,7 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
          [ [newtype :: []] -> mkexp (Pexp_newtype(newtype, e))
         | [newtype :: newtypes] ->
             mkexp(Pexp_newtype (newtype,mk_newtypes newtypes))
-        | [] -> raise Not_found (* assert false *)] in
+        | [] -> assert false] in
       let pat =
         mkpat (Ppat_constraint (mkpat (Ppat_var (with_loc bind_name sloc)),
                                 mktyp _loc (Ptyp_poly ampersand_vars ty'))) in
@@ -729,13 +729,13 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
       [(patt <:patt< ($p : ! $vs . $ty ) >>, expr e) :: acc]
   | <:binding< $p = $e >> -> [(patt p, expr e) :: acc]
   | <:binding<>> -> acc
-  | _ -> raise Not_found (* assert false *) ]
+  | _ -> assert false ]
 and match_case x acc =  match x with (* match_case -> (pattern * expression) list -> (pattern * expression) list*)
   [ <:match_case< $x | $y >> -> match_case x (match_case y acc)
   | <:match_case< $pat:p when $w -> $e >> ->
       [(patt p, when_expr e w) :: acc]
   | <:match_case<>> -> acc
-  | _ -> raise Not_found (* assert false *) ]
+  | _ -> assert false ]
 and when_expr e w = match w with (* expr -> expr -> expression*)
   [ <:expr<>> -> expr e
   | w -> mkexp (loc_of_expr w) (Pexp_when (expr w) (expr e)) ]
@@ -743,13 +743,13 @@ and mklabexp x acc = match x with (* rec_binding ->  (Longident.t loc * expressi
   [ <:rec_binding< $x; $y >> ->
     mklabexp x (mklabexp y acc)
   | <:rec_binding< $i = $e >> -> [(ident (* ~conv_lid:conv_lab *) i, expr e) :: acc]
-  | _ -> raise Not_found (* assert false *) ]
+  | _ -> assert false ]
 and mkideexp x acc =match x with (* rec_binding -> (string loc * expression) list ->  (string loc * expression) list *)
   [ <:rec_binding<>> -> acc
   | <:rec_binding< $x; $y >> ->
       mkideexp x (mkideexp y acc)
   | <:rec_binding< $(id: <:ident@sloc< $lid:s >>) = $e >> -> [(with_loc s sloc, expr e) :: acc]
-  | _ -> raise Not_found (* assert false *) ]
+  | _ -> assert false ]
 and mktype_decl x acc = match x with (* ctyp -> (string loc * type_declaration) list -> (string loc * type_declaration) list*)
   [ <:ctyp< $x and $y >> ->
     mktype_decl x (mktype_decl y acc)
@@ -762,7 +762,7 @@ and mktype_decl x acc = match x with (* ctyp -> (string loc * type_declaration) 
           cl  in
       [(with_loc c cloc,
         type_decl (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
-  | _ -> raise Not_found (* assert false *) ]
+  | _ -> assert false ]
 and module_type = fun (*module_type -> module_type*)
   [ <:module_type@loc<>> -> error loc "abstract/nil module type not allowed here"
   | <:module_type@loc< $id:i >> -> mkmty loc (Pmty_ident (long_uident i))
@@ -775,7 +775,7 @@ and module_type = fun (*module_type -> module_type*)
       mkmty loc (Pmty_with (module_type mt) (mkwithc wc []))
   | <:module_type@loc< module type of $me >> ->
       mkmty loc (Pmty_typeof (module_expr me))
-  | <:module_type< $anti:_ >> -> raise Not_found (* assert false *) ]
+  | <:module_type< $anti:_ >> -> assert false ]
 and sig_item s l = match s with (* sig_item -> signature -> signature*)
   [ <:sig_item<>> -> l
   | SgCls loc cd ->
@@ -791,7 +791,7 @@ and sig_item s l = match s with (* sig_item -> signature -> signature*)
   | <:sig_item@loc< exception $uid:s of $t >> ->
       [mksig loc (Psig_exception (with_loc ((* conv_con *) s) loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l]
-  | SgExc _ _ -> raise Not_found (* assert false *) (*FIXME*)
+  | SgExc _ _ -> assert false (*FIXME*)
   | SgExt loc n t sl -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | SgInc loc mt -> [mksig loc (Psig_include (module_type mt)) :: l]
   | SgMod loc n mt -> [mksig loc (Psig_module (with_loc n loc) (module_type mt)) :: l]
@@ -812,13 +812,13 @@ and module_sig_binding x acc = match x with (* module_binding -> (string loc * m
     module_sig_binding x (module_sig_binding y acc)
   | <:module_binding@loc< $s : $mt >> ->
       [(with_loc s loc, module_type mt) :: acc]
-  | _ -> raise Not_found (* assert false *) ]
+  | _ -> assert false ]
 and module_str_binding x acc =  match x with (* module_binding ->  (string loc * module_type * module_expr) list ->  (string loc * module_type * module_expr) list*)
   [ <:module_binding< $x and $y >> ->
       module_str_binding x (module_str_binding y acc)
   | <:module_binding@loc< $s : $mt = $me >> ->
       [(with_loc s loc, module_type mt, module_expr me) :: acc]
-  | _ -> raise Not_found (* assert false *) ]
+  | _ -> assert false ]
 and module_expr =   fun (* module_expr -> module_expr *)
   [ <:module_expr@loc< >> -> error loc "nil module expression"
   | <:module_expr@loc< $id:i >> -> mkmod loc (Pmod_ident (long_uident i))
@@ -857,7 +857,7 @@ and str_item s l = match s with (* str_item -> structure -> structure*)
       [mkstr loc (Pstr_exn_rebind (with_loc ((* conv_con *) s) loc) (ident i)) :: l ]
   | <:str_item@loc< exception $uid:_ of $_ = $_ >> ->
       error loc "type in exception alias"
-  | StExc _ _ _ -> raise Not_found (* assert false *) (*FIXME*)
+  | StExc _ _ _ -> assert false (*FIXME*)
   | StExp loc e -> [mkstr loc (Pstr_eval (expr e)) :: l]
   | StExt loc n t sl -> [mkstr loc (Pstr_primitive (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | StInc loc me -> [mkstr loc (Pstr_include (module_expr me)) :: l]
@@ -894,7 +894,7 @@ and class_type = fun (* class_type -> class_type *)
   | CtCon loc _ _ _ ->
         error loc "invalid virtual class inside a class type"
   | CtAnt _ _ | CtEq _ _ _ | CtCol _ _ _ | CtAnd _ _ _ | CtNil _ ->
-      raise Not_found (* assert false *) ]
+      assert false ]
     
 and class_info_class_expr ci = match ci with (* class_expr -> class_declaration*)
   [ CeEq _ (CeCon loc vir (IdLid nloc name) params) ce ->
@@ -935,7 +935,7 @@ and class_sig_item c l = match c with (* class_sig_item -> class_type_field list
       [mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l]
   | CgVir loc s b t ->
       [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
-  | CgAnt _ _ -> raise Not_found (* assert false *) ]
+  | CgAnt _ _ -> assert false ]
 and class_expr = fun (* class_expr -> class_expr *)
   [ CeApp loc _ _ as c ->
     let (ce, el) = ClassExpr.fa [] c in
@@ -970,7 +970,7 @@ and class_expr = fun (* class_expr -> class_expr *)
       mkcl loc (Pcl_constraint (class_expr ce) (class_type ct))
   | CeCon loc _ _ _ ->
       error loc "invalid virtual class inside a class expression"
-  | CeAnt _ _ | CeEq _ _ _ | CeAnd _ _ _ | CeNil _ -> raise Not_found (* assert false *) ]
+  | CeAnt _ _ | CeEq _ _ _ | CeAnd _ _ _ | CeNil _ -> assert false ]
 and class_str_item c l = match c with (*class_str_item -> class_field list -> class_field list*)
   [ CrNil _ -> l
   | CrCtr loc t1 t2 -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
@@ -992,7 +992,7 @@ and class_str_item c l = match c with (*class_str_item -> class_field list -> cl
       [mkcf loc (Pcf_virt (with_loc s loc, mkprivate pf, mkpolytype (ctyp t))) :: l]
   | CrVvr loc s mf t ->
       [mkcf loc (Pcf_valvirt (with_loc s loc, mkmutable mf, ctyp t)) :: l]
-  | CrAnt _ _ -> raise Not_found (* assert false *) ];
+  | CrAnt _ _ -> assert false ];
 (* sig_item -> signature *)  
 let sig_item ast = sig_item ast [];
 let str_item ast = str_item ast [];

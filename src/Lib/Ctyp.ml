@@ -12,7 +12,7 @@ let rec to_var_list =  fun
   [ <:ctyp< $t1 $t2 >> ->
     to_var_list t1 @ to_var_list t2
   | <:ctyp< '$s >> -> [s]
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
 
 let list_of_opt ot acc = match ot with
   [ <:ctyp<>> -> acc
@@ -22,7 +22,7 @@ let list_of_opt ot acc = match ot with
 let rec name_tags = fun
   [ <:ctyp< $t1 $t2 >> -> name_tags t1 @ name_tags t2
   | <:ctyp< `$s >> -> [s]
-  | _ -> raise Not_found (* assert false *) ];
+  | _ -> assert false ];
   
 let rec to_generalized = fun
     [ <:ctyp< $t1 -> $t2 >> ->

@@ -12,14 +12,10 @@ let mkvirtual =
   | Ast.ViNil  -> Concrete
   | _ -> assert false
 let mkdirection =
-  function | Ast.DiTo  -> Upto | Ast.DiDownto  -> Downto | _ -> assert false
-let conv_con =
-  let t = Hashtbl.create 73 in
-  List.iter ( fun (s,s') -> Hashtbl.add t s s' ) [("True", "true"); ("False",
-    "false"); (" True", "True"); (" False", "False")];
-  (
-  fun s -> try Hashtbl.find t s with | Not_found  -> s
-  )
+  function
+  | Ast.DiTo  -> Upto
+  | Ast.DiDownto  -> Downto
+  | _ -> assert false
 let mkrf =
   function
   | Ast.ReRecursive  -> Recursive
@@ -61,14 +57,13 @@ let long_lident msg id =
   | _ -> error ( loc_of_ident id ) msg
 let long_type_ident = long_lident "invalid long identifier type"
 let long_class_ident = long_lident "invalid class name"
-let long_uident_noloc ?(conv_con=fun x -> x)  i =
+let long_uident_noloc i =
   match ident_tag i with
-  | (Ldot (i,s),`uident) -> ldot i ( conv_con s )
-  | (Lident s,`uident) -> lident ( conv_con s )
+  | (Ldot (i,s),`uident) -> ldot i s
+  | (Lident s,`uident) -> lident s
   | (i,`app) -> i
   | _ -> error ( loc_of_ident i ) "uppercase identifier expected"
-let long_uident ?conv_con  i =
-  with_loc ( long_uident_noloc ?conv_con i ) ( loc_of_ident i )
+let long_uident i = with_loc ( long_uident_noloc i ) ( loc_of_ident i )
 let rec ctyp_long_id_prefix t =
   match t with
   | Ast.TyId (_,i) -> ident_noloc i
@@ -206,16 +201,14 @@ let mktrecord =
   | _ -> assert false
 let mkvariant =
   function
-  | Ast.TyId (loc,Ast.IdUid (sloc,s)) -> (( with_loc ( conv_con s ) sloc ),
-      [], None, loc)
-  | Ast.TyOf (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),t) -> ((
-      with_loc ( conv_con s ) sloc ), ( List.map ctyp ( list_of_ctyp t [] )
-      ), None, loc)
+  | Ast.TyId (loc,Ast.IdUid (sloc,s)) -> (( with_loc s sloc ), [], None, loc)
+  | Ast.TyOf (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),t) -> (( with_loc s sloc ),
+      ( List.map ctyp ( list_of_ctyp t [] ) ), None, loc)
   | Ast.TyCol (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),Ast.TyArr (_,t,u)) -> ((
-      with_loc ( conv_con s ) sloc ), ( List.map ctyp ( list_of_ctyp t [] )
-      ), ( Some ( ctyp u ) ), loc)
-  | Ast.TyCol (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),t) -> ((
-      with_loc ( conv_con s ) sloc ), [], ( Some ( ctyp t ) ), loc)
+      with_loc s sloc ), ( List.map ctyp ( list_of_ctyp t [] ) ), (
+      Some ( ctyp u ) ), loc)
+  | Ast.TyCol (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),t) -> (( with_loc s sloc
+      ), [], ( Some ( ctyp t ) ), loc)
   | _ -> assert false
 let rec type_decl tl cl loc m pflag =
   function
@@ -338,12 +331,16 @@ let rec mkrangepat loc c1 c2 =
           deep_mkrangepat loc ( Char.chr ( ( Char.code c1 ) + 1 ) ) c2 )) )
 let rec patt =
   function
+  | Ast.PaId (loc,Ast.IdLid (_,( "true"|"false" as txt ))) ->
+      let p =
+        Ppat_construct ({ txt = ( Lident txt ); loc }, None, (
+          constructors_arity () )) in
+      mkpat loc p
   | Ast.PaId (loc,Ast.IdLid (sloc,s)) ->
       mkpat loc ( Ppat_var ( with_loc s sloc ) )
   | Ast.PaId (loc,i) ->
       let p =
-        Ppat_construct (( long_uident ~conv_con i ), None, (
-          constructors_arity () )) in
+        Ppat_construct (( long_uident i ), None, ( constructors_arity () )) in
       mkpat loc p
   | PaAli (loc,p1,p2) ->
       let (p,i) =
@@ -358,7 +355,7 @@ let rec patt =
       (loc,Ast.PaId (_,Ast.IdUid (sloc,s)),Ast.PaTup (_,Ast.PaAny loc_any))
       ->
       mkpat loc (
-        Ppat_construct (( lident_with_loc ( conv_con s ) sloc ), (
+        Ppat_construct (( lident_with_loc s sloc ), (
           Some ( mkpat loc_any Ppat_any ) ), false) )
   | PaApp (loc,_,_) as f ->
       let (f,al) = patt_fa [] f in
@@ -450,7 +447,7 @@ let rec patt =
   | Ast.PaTup (loc,_) -> error loc "singleton tuple pattern"
   | PaTyc (loc,p,t) -> mkpat loc ( Ppat_constraint (( patt p ), ( ctyp t )) )
   | PaTyp (loc,i) -> mkpat loc ( Ppat_type ( long_type_ident i ) )
-  | PaVrn (loc,s) -> mkpat loc ( Ppat_variant (( conv_con s ), None) )
+  | PaVrn (loc,s) -> mkpat loc ( Ppat_variant (s, None) )
   | PaLaz (loc,p) -> mkpat loc ( Ppat_lazy ( patt p ) )
   | PaMod (loc,m) -> mkpat loc ( Ppat_unpack ( with_loc m loc ) )
   | PaEq (_,_,_)|PaSem (_,_,_)|PaCom (_,_,_)|PaNil _ as p ->
@@ -470,9 +467,8 @@ let rec expr =
         match Expr.sep_expr [] e with
         | (loc,ml,Ast.ExId (sloc,Ast.IdUid (_,s)))::l ->
             let ca = constructors_arity () in ((
-              mkexp loc (
-                Pexp_construct (( mkli sloc ( conv_con s ) ml ), None, ca) )
-              ), l)
+              mkexp loc ( Pexp_construct (( mkli sloc s ml ), None, ca) ) ),
+              l)
         | (loc,ml,Ast.ExId (sloc,Ast.IdLid (_,s)))::l -> ((
             mkexp loc ( Pexp_ident ( mkli sloc s ml ) ) ), l)
         | (_,[],e)::l -> (( expr e ), l)
@@ -663,12 +659,13 @@ let rec expr =
       mkexp loc ( Pexp_constraint (( expr e ), ( Some ( ctyp t ) ), None) )
   | Ast.ExId (loc,Ast.IdUid (_,"()")) ->
       mkexp loc ( Pexp_construct (( lident_with_loc "()" loc ), None, true) )
+  | Ast.ExId (loc,Ast.IdLid (_,( "true"|"false" as s ))) ->
+      mkexp loc ( Pexp_construct (( lident_with_loc s loc ), None, true) )
   | Ast.ExId (loc,Ast.IdLid (_,s)) ->
       mkexp loc ( Pexp_ident ( lident_with_loc s loc ) )
   | Ast.ExId (loc,Ast.IdUid (_,s)) ->
-      mkexp loc (
-        Pexp_construct (( lident_with_loc ( conv_con s ) loc ), None, true) )
-  | ExVrn (loc,s) -> mkexp loc ( Pexp_variant (( conv_con s ), None) )
+      mkexp loc ( Pexp_construct (( lident_with_loc s loc ), None, true) )
+  | ExVrn (loc,s) -> mkexp loc ( Pexp_variant (s, None) )
   | ExWhi (loc,e1,el) ->
       let e2 = ExSeq (loc, el) in
       mkexp loc ( Pexp_while (( expr e1 ), ( expr e2 )) )
@@ -791,11 +788,10 @@ let rec expr =
   | Ast.SgSem (_,sg1,sg2) -> sig_item sg1 ( sig_item sg2 l )
   | SgDir (_,_,_) -> l
   | Ast.SgExc (loc,Ast.TyId (_,Ast.IdUid (_,s))) -> (
-      mksig loc ( Psig_exception (( with_loc ( conv_con s ) loc ), []) ) ) ::
-      l
+      mksig loc ( Psig_exception (( with_loc s loc ), []) ) ) :: l
   | Ast.SgExc (loc,Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,s)),t)) -> (
       mksig loc (
-        Psig_exception (( with_loc ( conv_con s ) loc ), (
+        Psig_exception (( with_loc s loc ), (
           List.map ctyp ( list_of_ctyp t [] ) )) )
       ) :: l
   | SgExc (_,_) -> assert false
@@ -872,18 +868,15 @@ let rec expr =
   | Ast.StSem (_,st1,st2) -> str_item st1 ( str_item st2 l )
   | StDir (_,_,_) -> l
   | Ast.StExc (loc,Ast.TyId (_,Ast.IdUid (_,s)),Ast.ONone ) -> (
-      mkstr loc ( Pstr_exception (( with_loc ( conv_con s ) loc ), []) ) ) ::
-      l
+      mkstr loc ( Pstr_exception (( with_loc s loc ), []) ) ) :: l
   | Ast.StExc (loc,Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,s)),t),Ast.ONone ) ->
       (
       mkstr loc (
-        Pstr_exception (( with_loc ( conv_con s ) loc ), (
+        Pstr_exception (( with_loc s loc ), (
           List.map ctyp ( list_of_ctyp t [] ) )) )
       ) :: l
   | Ast.StExc (loc,Ast.TyId (_,Ast.IdUid (_,s)),Ast.OSome i) -> (
-      mkstr loc (
-        Pstr_exn_rebind (( with_loc ( conv_con s ) loc ), ( ident i )) )
-      ) :: l
+      mkstr loc ( Pstr_exn_rebind (( with_loc s loc ), ( ident i )) ) ) :: l
   | Ast.StExc (loc,Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,_)),_),Ast.OSome _)
       -> error loc "type in exception alias"
   | StExc (_,_,_) -> assert false
@@ -1065,8 +1058,8 @@ let directive =
   | Ast.ExNil _ -> Pdir_none
   | ExStr (_,s) -> Pdir_string s
   | ExInt (_,i) -> Pdir_int ( int_of_string i )
-  | Ast.ExId (_,Ast.IdUid (_,"True")) -> Pdir_bool true
-  | Ast.ExId (_,Ast.IdUid (_,"False")) -> Pdir_bool false
+  | Ast.ExId (_,Ast.IdLid (_,"true")) -> Pdir_bool true
+  | Ast.ExId (_,Ast.IdLid (_,"false")) -> Pdir_bool false
   | e -> Pdir_ident ( ident_noloc ( ident_of_expr e ) )
 let phrase =
   function

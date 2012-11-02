@@ -32,8 +32,8 @@ module MetaLoc : Ast.META_LOC =
               ), ( Ast.PaInt (_loc, ( string_of_int g )) ))
             ), (
             if h
-            then Ast.PaId (_loc, ( Ast.IdUid (_loc, "True") ))
-            else Ast.PaId (_loc, ( Ast.IdUid (_loc, "False") )) ))
+            then Ast.PaId (_loc, ( Ast.IdLid (_loc, "true") ))
+            else Ast.PaId (_loc, ( Ast.IdLid (_loc, "false") )) ))
           ))
         ))
       ))
@@ -61,8 +61,8 @@ module MetaLoc : Ast.META_LOC =
               ), ( Ast.ExInt (_loc, ( string_of_int g )) ))
             ), (
             if h
-            then Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") ))
-            else Ast.ExId (_loc, ( Ast.IdUid (_loc, "False") )) ))
+            then Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") ))
+            else Ast.ExId (_loc, ( Ast.IdLid (_loc, "false") )) ))
           ))
         ))
       ))

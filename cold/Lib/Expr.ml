@@ -41,7 +41,7 @@ let mkumin _loc f arg =
         ), arg)
 let mkassert _loc =
   function
-  | Ast.ExId (_,Ast.IdUid (_,"False")) -> Ast.ExAsf _loc
+  | Ast.ExId (_,Ast.IdLid (_,"false")) -> Ast.ExAsf _loc
   | e -> Ast.ExAsr (_loc, e)
 let mklist_last ?last  _loc =
   let rec loop top =
@@ -268,7 +268,7 @@ let map _loc p e l =
               Ast.ExFun (_loc, (
                 Ast.McOr (_loc, (
                   Ast.McArr (_loc, p, (
-                    Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") )) ), (
+                    Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") )) ), (
                     Ast.ExApp (_loc, (
                       Ast.ExFun (_loc, (
                         Ast.McArr (_loc, (
@@ -330,10 +330,10 @@ let filter _loc p b l =
         Ast.ExFun (_loc, (
           Ast.McOr (_loc, (
             Ast.McArr (_loc, p, (
-              Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") )) ), b)
+              Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") )) ), b)
             ), (
             Ast.McArr (_loc, ( Ast.PaAny _loc ), ( Ast.ExNil _loc ), (
-              Ast.ExId (_loc, ( Ast.IdUid (_loc, "False") )) ))
+              Ast.ExId (_loc, ( Ast.IdLid (_loc, "false") )) ))
             ))
           ))
         ))
@@ -420,8 +420,8 @@ class subst _loc env =
                       ), ( Ast.ExInt (_loc, ( string_of_int g )) ))
                     ), (
                     if h
-                    then Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") ))
-                    else Ast.ExId (_loc, ( Ast.IdUid (_loc, "False") )) ))
+                    then Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") ))
+                    else Ast.ExId (_loc, ( Ast.IdLid (_loc, "false") )) ))
                   ))
                 ))
               ))
@@ -466,8 +466,8 @@ let map_expr =
                 ), ( Ast.ExInt (_loc, ( string_of_int g )) ))
               ), (
               if h
-              then Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") ))
-              else Ast.ExId (_loc, ( Ast.IdUid (_loc, "False") )) ))
+              then Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") ))
+              else Ast.ExId (_loc, ( Ast.IdLid (_loc, "false") )) ))
             ))
           ))
         ))
@@ -699,12 +699,12 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                       Ast.ExApp (_loc, (
                         Ast.ExId (_loc, (
                           Ast.IdAcc (_loc, ( Ast.IdUid (_loc, "Ast") ), (
-                            Ast.IdUid (_loc, "IdUid") ))
+                            Ast.IdUid (_loc, "IdLid") ))
                           ))
                         ), ( mloc _loc ))
                       ), (
-                      Ast.ExIfe (_loc, e, ( Ast.ExStr (_loc, "True") ), (
-                        Ast.ExStr (_loc, "False") ))
+                      Ast.ExIfe (_loc, e, ( Ast.ExStr (_loc, "true") ), ( (*FIXME*)
+                        Ast.ExStr (_loc, "false") )) (* FIXME*)
                       ))
                 | "liststr_item" ->
                     Ast.ExApp (_loc, (

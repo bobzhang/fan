@@ -24,7 +24,7 @@ let string_of_patt patt =
     Format.bprintf buf "%a@?"
       (fun fmt p -> AstPrint.pattern fmt (Ast2pt.patt p)) patt in
   let str = Buffer.contents buf in
-  if str = "" then raise Not_found (* assert false *) else str;
+  if str = "" then assert false else str;
 
 (** FIXME why deprecate such syntax
     It makes
@@ -136,11 +136,11 @@ let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string
     | Some (<:expr< $t1, $t2 >>, <:patt< $p1, $p2 >>) ->
         <:expr< match ($t1, $t2) with
         [ ($p1, $p2) -> $e1
-        | _ -> raise Not_found (* assert false *) ] >>
+        | _ -> assert false ] >>
         | Some (tok, match_) ->
             <:expr< match $tok with
             [ $pat:match_ -> $e1
-            | _ -> raise Not_found (* assert false *) ] >> ] in
+            | _ -> assert false ] >> ] in
     <:expr< fun ($locid : FanLoc.t) -> $e2 >> in (*FIXME hard coded Loc*)
   let (txt, _) =
     List.fold_left

@@ -157,18 +157,18 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
     let tyMap = SMap.empty in
     let tyMap =
       let abstr = ["string"; "int"; "float"; "int32"; "int64"; "nativeint";
-        "char"] in
+        "char"; "bool"] in
       List.fold_right (
         fun name ->
           SMap.add name (name, ( Ast.IdLid (_loc, name) ), [], (
             Ast.TyNil _loc ), false) ) abstr tyMap in
     let tyMap =
-      let concr = [("bool", ( Ast.IdLid (_loc, "bool") ), [], (
-        Ast.TySum (_loc, (
-          Ast.TyOr (_loc, ( Ast.TyId (_loc, ( Ast.IdUid (_loc, "False") )) ),
-            ( Ast.TyId (_loc, ( Ast.IdUid (_loc, "True") )) ))
-          ))
-        ), false); ("list", ( Ast.IdLid (_loc, "list") ),
+      let concr = [(* ("bool", ( Ast.IdLid (_loc, "bool") ), [], ( *)
+        (* Ast.TySum (_loc, ( *)
+        (*   Ast.TyOr (_loc, ( Ast.TyId (_loc, ( Ast.IdLid (_loc, "false") )) ), *)
+        (*     ( Ast.TyId (_loc, ( Ast.IdUid (_loc, "True") )) )) *)
+        (*   )) *)
+        (* ), false) ;*) ("list", ( Ast.IdLid (_loc, "list") ),
         [Ast.TyQuo (_loc, "a")], (
         Ast.TySum (_loc, (
           Ast.TyOr (_loc, ( Ast.TyId (_loc, ( Ast.IdUid (_loc, "[]") )) ), (
@@ -993,7 +993,10 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
     Ast.ExApp (_loc, (
       Ast.ExApp (_loc, ( m.id ), (
         Ast.ExId (_loc, ( Ast.IdLid (_loc, "_loc") )) ))
-      ), i) let m_uid m s = m_id m ( meta_ident m ( Ast.IdUid (_loc, s) ) )
+      ), i)
+  let m_uid m s = m_id m ( meta_ident m ( Ast.IdUid (_loc, s) ) )
+  let m_lid m s = m_id m ( meta_ident m ( Ast.IdLid (_loc, s)))
+        
   let failure =
     Ast.ExApp (_loc, ( Ast.ExId (_loc, ( Ast.IdLid (_loc, "raise") )) ), (
       Ast.ExApp (_loc, ( Ast.ExId (_loc, ( Ast.IdUid (_loc, "Failure") )) ),
@@ -1343,14 +1346,14 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                   Ast.McOr (_loc, (
                                     Ast.McArr (_loc, (
                                       Ast.PaId (_loc, (
-                                        Ast.IdUid (_loc, "False") ))
+                                        Ast.IdLid (_loc, "false") ))
                                       ), ( Ast.ExNil _loc ), (
-                                      m_uid m "False" ))
+                                      m_lid m "false" )) (* FIXME*)
                                     ), (
                                     Ast.McArr (_loc, (
                                       Ast.PaId (_loc, (
-                                        Ast.IdUid (_loc, "True") ))
-                                      ), ( Ast.ExNil _loc ), ( m_uid m "True"
+                                        Ast.IdLid (_loc, "true") ))
+                                      ), ( Ast.ExNil _loc ), ( m_lid m "True" (*FIXME*)
                                       ))
                                     ))
                                   ))

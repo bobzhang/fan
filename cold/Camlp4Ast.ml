@@ -389,8 +389,8 @@ module Meta =
       let meta_char _loc s = Ast.ExChr (_loc, ( String.escaped s ))
       let meta_bool _loc =
         function
-        | false  -> Ast.ExId (_loc, ( Ast.IdUid (_loc, "False") ))
-        | true  -> Ast.ExId (_loc, ( Ast.IdUid (_loc, "True") ))
+        | false  -> Ast.ExId (_loc, ( Ast.IdLid (_loc, "false") ))
+        | true  -> Ast.ExId (_loc, ( Ast.IdLid (_loc, "true") ))
       let rec meta_list mf_a _loc =
         function
         | [] -> Ast.ExId (_loc, ( Ast.IdUid (_loc, "[]") ))
@@ -2697,8 +2697,8 @@ module Meta =
       let meta_char _loc s = Ast.PaChr (_loc, ( String.escaped s ))
       let meta_bool _loc =
         function
-        | false  -> Ast.PaId (_loc, ( Ast.IdUid (_loc, "False") ))
-        | true  -> Ast.PaId (_loc, ( Ast.IdUid (_loc, "True") ))
+        | false  -> Ast.PaId (_loc, ( Ast.IdLid (_loc, "false") ))
+        | true  -> Ast.PaId (_loc, ( Ast.IdLid (_loc, "true") ))
       let rec meta_list mf_a _loc =
         function
         | [] -> Ast.PaId (_loc, ( Ast.IdUid (_loc, "[]") ))
