@@ -12,10 +12,7 @@ let mkvirtual =
   | Ast.ViNil  -> Concrete
   | _ -> assert false
 let mkdirection =
-  function
-  | Ast.DiTo  -> Upto
-  | Ast.DiDownto  -> Downto
-  | _ -> assert false
+  function | Ast.DiTo  -> Upto | Ast.DiDownto  -> Downto | _ -> assert false
 let mkrf =
   function
   | Ast.ReRecursive  -> Recursive

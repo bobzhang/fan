@@ -703,8 +703,8 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                           ))
                         ), ( mloc _loc ))
                       ), (
-                      Ast.ExIfe (_loc, e, ( Ast.ExStr (_loc, "true") ), ( (*FIXME*)
-                        Ast.ExStr (_loc, "false") )) (* FIXME*)
+                      Ast.ExIfe (_loc, e, ( Ast.ExStr (_loc, "true") ), (
+                        Ast.ExStr (_loc, "false") ))
                       ))
                 | "liststr_item" ->
                     Ast.ExApp (_loc, (
