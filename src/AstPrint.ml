@@ -224,7 +224,7 @@ class printer  ()= object(self:'self)
               | [] -> ()
               | _ ->
                   pp f "%a@;.@;"
-                    (self#list self#tyvar ~sep:"@;")  l) (List.rev l)) sl  self#core_type ct
+                    (self#list self#tyvar ~sep:"@;")  l) l) sl  self#core_type ct
     | _ -> pp f "@[<2>%a@]" self#core_type1 x
   method core_type1 f x =
     match x.ptyp_desc with
@@ -246,14 +246,14 @@ class printer  ()= object(self:'self)
                 | _ -> pp f "@;of@;%a"
                       (self#list self#core_type ~sep:"&")  ctl) ctl
           | Rinherit ct -> self#core_type f ct in 
-        pp f "@[<hov2>[%a%a]@]"
+        pp f "@[<2>[%a%a]@]"
           (fun f l -> match l with
           | [] -> ()
           | _ ->
               pp f "%s@;%a"
                 (match (closed,low) with
                 | (true,None) -> ""
-                | (true,Some _) -> ""
+                | (true,Some _) -> "<" (* FIXME desugar the syntax sugar*)
                 | (false,_) -> ">") 
                 (self#list type_variant_helper ~sep:"@;<1 -2>| ") l) l 
           (fun f low -> match low with
@@ -435,10 +435,10 @@ class printer  ()= object(self:'self)
   method expression f x =
     match x.pexp_desc with
     | Pexp_function _ | Pexp_match _ | Pexp_try _ | Pexp_sequence _
-    | Pexp_let _
       when pipe || semi ->
         self#paren true self#reset#expression f x
-    
+    | Pexp_let _ | Pexp_letmodule _ when semi ->
+        self#paren true self#reset#expression f x
     | Pexp_function (p, eo, l) ->
         ( match l with
         | [(p',e')] ->
@@ -853,10 +853,12 @@ class printer  ()= object(self:'self)
       | Pexp_newtype (str,e) ->
           pp f "(type@ %s)@ %a" str pp_print_pexp_function e
       | _ -> pp f "=@;%a" self#expression x in 
-    match x.pexp_desc with
-    | Pexp_when (e1,e2) ->
+    match (x.pexp_desc,p.ppat_desc) with
+    | (Pexp_when (e1,e2),_) ->
         pp f "=@[<hov2>fun@ %a@ when@ %a@ ->@ %a@]"
-          self#simple_pattern p self#expression e1 self#expression e2 
+          self#simple_pattern p self#expression e1 self#expression e2
+    | (_, Ppat_constraint(p,ty)) -> (* special case for the first*)
+        pp f "%a@;:@;%a=@;%a" self#simple_pattern p  self#core_type ty self#expression x
     | _ -> pp f "%a@ %a" self#simple_pattern p pp_print_pexp_function x 
   method bindings f l =
     begin match l with
