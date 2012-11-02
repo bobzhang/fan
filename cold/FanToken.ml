@@ -60,8 +60,8 @@ let rec ignore_layout (__strm : _ Stream.t ) =
       (Stream.junk __strm; ignore_layout __strm)
   | Some x ->
       (Stream.junk __strm;
-       let s = __strm in
-       Stream.icons x (Stream.slazy (fun _ -> ignore_layout s)))
+       (let s = __strm in
+        Stream.icons x (Stream.slazy (fun _ -> ignore_layout s))))
   | _ -> Stream.sempty
 let print ppf x = pp_print_string ppf (token_to_string x)
 let match_keyword kwd =

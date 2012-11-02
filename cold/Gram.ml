@@ -52,8 +52,8 @@ let wrap_stream_parser p loc s =
 let parse_file_with ~rule  file =
   if Sys.file_exists file
   then
-    let ch = open_in file in
-    let st = Stream.of_channel ch in parse rule (FanLoc.mk file) st
+    (let ch = open_in file in
+     let st = Stream.of_channel ch in parse rule (FanLoc.mk file) st)
   else failwithf "@[file: %s not found@]@." file
 let delete_rule = Delete.delete_rule
 let srules e rl =

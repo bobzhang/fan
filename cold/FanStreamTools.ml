@@ -42,21 +42,21 @@ let rec handle_failure e =
         _,e))
       when m = (gm ()) -> handle_failure e
   | Ast.ExMat (_,me,a) ->
-      let rec match_case_handle_failure =
-        function
-        | Ast.McOr (_,a1,a2) ->
-            (match_case_handle_failure a1) && (match_case_handle_failure a2)
-        | Ast.McArr (_,_,Ast.ExNil _,e) -> handle_failure e
-        | _ -> false in
-      (handle_failure me) && (match_case_handle_failure a)
+      (let rec match_case_handle_failure =
+         function
+         | Ast.McOr (_,a1,a2) ->
+             (match_case_handle_failure a1) && (match_case_handle_failure a2)
+         | Ast.McArr (_,_,Ast.ExNil _,e) -> handle_failure e
+         | _ -> false in
+       (handle_failure me) && (match_case_handle_failure a))
   | Ast.ExLet (_,Ast.ReNil ,bi,e) ->
-      let rec binding_handle_failure =
-        function
-        | Ast.BiAnd (_,b1,b2) ->
-            (binding_handle_failure b1) && (binding_handle_failure b2)
-        | Ast.BiEq (_,_,e) -> handle_failure e
-        | _ -> false in
-      (binding_handle_failure bi) && (handle_failure e)
+      (let rec binding_handle_failure =
+         function
+         | Ast.BiAnd (_,b1,b2) ->
+             (binding_handle_failure b1) && (binding_handle_failure b2)
+         | Ast.BiEq (_,_,e) -> handle_failure e
+         | _ -> false in
+       (binding_handle_failure bi) && (handle_failure e))
   | Ast.ExId (_,Ast.IdLid (_,_))|Ast.ExInt (_,_)|Ast.ExStr (_,_)|Ast.ExChr
       (_,_)|Ast.ExFun (_,_)|Ast.ExId (_,Ast.IdUid (_,_)) -> true
   | Ast.ExApp (_,Ast.ExId (_,Ast.IdLid (_,"raise")),e) ->
@@ -76,8 +76,8 @@ let rec subst v e =
   let _loc = Ast.loc_of_expr e in
   match e with
   | Ast.ExId (_,Ast.IdLid (_,x)) ->
-      let x = if x = v then strm_n else x in
-      Ast.ExId (_loc, (Ast.IdLid (_loc, x)))
+      (let x = if x = v then strm_n else x in
+       Ast.ExId (_loc, (Ast.IdLid (_loc, x))))
   | Ast.ExId (_,Ast.IdUid (_,_))|Ast.ExInt (_,_)|Ast.ExChr (_,_)|Ast.ExStr
       (_,_)|Ast.ExAcc (_,_,_) -> e
   | Ast.ExLet (_,rf,bi,e) ->
@@ -126,83 +126,83 @@ let stream_pattern_component skont ckont =
                     skont)))))),
            (Ast.McArr (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc), ckont)))))
   | SpNtr (_loc,p,e) ->
-      let e =
-        match e with
-        | Ast.ExFun
-            (_,Ast.McArr
-             (_,Ast.PaTyc
-              (_,Ast.PaId (_,Ast.IdLid (_,v)),Ast.TyApp
-               (_,Ast.TyId
-                (_,Ast.IdAcc (_,Ast.IdUid (_,m),Ast.IdLid (_,"t"))),Ast.TyAny
-                _)),Ast.ExNil
-              _,e))
-            when (v = strm_n) && (m = (gm ())) -> e
-        | _ ->
-            Ast.ExApp (_loc, e,
-              (Ast.ExId (_loc, (Ast.IdLid (_loc, strm_n))))) in
-      if Expr.pattern_eq_expression p skont
-      then
-        if is_raise_failure ckont
-        then e
-        else
-          if handle_failure e
-          then e
-          else
-            Ast.ExTry (_loc, e,
-              (Ast.McArr (_loc,
-                 (Ast.PaId (_loc,
-                    (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
-                       (Ast.IdUid (_loc, "Failure")))))),
-                 (Ast.ExNil _loc), ckont)))
-      else
-        if is_raise_failure ckont
-        then Ast.ExLet (_loc, Ast.ReNil, (Ast.BiEq (_loc, p, e)), skont)
-        else
-          if
-            Expr.pattern_eq_expression
-              (Ast.PaApp (_loc,
-                 (Ast.PaId (_loc, (Ast.IdUid (_loc, "Some")))), p)) skont
-          then
-            Ast.ExTry (_loc,
-              (Ast.ExApp (_loc,
-                 (Ast.ExId (_loc, (Ast.IdUid (_loc, "Some")))), e)),
-              (Ast.McArr (_loc,
-                 (Ast.PaId (_loc,
-                    (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
-                       (Ast.IdUid (_loc, "Failure")))))),
-                 (Ast.ExNil _loc), ckont)))
-          else
-            if is_raise ckont
-            then
-              let tst =
-                if handle_failure e
-                then e
-                else
-                  Ast.ExTry (_loc, e,
+      (let e =
+         match e with
+         | Ast.ExFun
+             (_,Ast.McArr
+              (_,Ast.PaTyc
+               (_,Ast.PaId (_,Ast.IdLid (_,v)),Ast.TyApp
+                (_,Ast.TyId
+                 (_,Ast.IdAcc (_,Ast.IdUid (_,m),Ast.IdLid (_,"t"))),Ast.TyAny
+                 _)),Ast.ExNil
+               _,e))
+             when (v = strm_n) && (m = (gm ())) -> e
+         | _ ->
+             Ast.ExApp (_loc, e,
+               (Ast.ExId (_loc, (Ast.IdLid (_loc, strm_n))))) in
+       if Expr.pattern_eq_expression p skont
+       then
+         if is_raise_failure ckont
+         then e
+         else
+           if handle_failure e
+           then e
+           else
+             Ast.ExTry (_loc, e,
+               (Ast.McArr (_loc,
+                  (Ast.PaId (_loc,
+                     (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
+                        (Ast.IdUid (_loc, "Failure")))))),
+                  (Ast.ExNil _loc), ckont)))
+       else
+         if is_raise_failure ckont
+         then Ast.ExLet (_loc, Ast.ReNil, (Ast.BiEq (_loc, p, e)), skont)
+         else
+           if
+             Expr.pattern_eq_expression
+               (Ast.PaApp (_loc,
+                  (Ast.PaId (_loc, (Ast.IdUid (_loc, "Some")))), p)) skont
+           then
+             Ast.ExTry (_loc,
+               (Ast.ExApp (_loc,
+                  (Ast.ExId (_loc, (Ast.IdUid (_loc, "Some")))), e)),
+               (Ast.McArr (_loc,
+                  (Ast.PaId (_loc,
+                     (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
+                        (Ast.IdUid (_loc, "Failure")))))),
+                  (Ast.ExNil _loc), ckont)))
+           else
+             if is_raise ckont
+             then
+               (let tst =
+                  if handle_failure e
+                  then e
+                  else
+                    Ast.ExTry (_loc, e,
+                      (Ast.McArr (_loc,
+                         (Ast.PaId (_loc,
+                            (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
+                               (Ast.IdUid (_loc, "Failure")))))),
+                         (Ast.ExNil _loc), ckont))) in
+                Ast.ExLet (_loc, Ast.ReNil, (Ast.BiEq (_loc, p, tst)), skont))
+             else
+               Ast.ExMat (_loc,
+                 (Ast.ExTry (_loc,
+                    (Ast.ExApp (_loc,
+                       (Ast.ExId (_loc, (Ast.IdUid (_loc, "Some")))), e)),
                     (Ast.McArr (_loc,
                        (Ast.PaId (_loc,
                           (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
                              (Ast.IdUid (_loc, "Failure")))))),
-                       (Ast.ExNil _loc), ckont))) in
-              Ast.ExLet (_loc, Ast.ReNil, (Ast.BiEq (_loc, p, tst)), skont)
-            else
-              Ast.ExMat (_loc,
-                (Ast.ExTry (_loc,
-                   (Ast.ExApp (_loc,
-                      (Ast.ExId (_loc, (Ast.IdUid (_loc, "Some")))), e)),
-                   (Ast.McArr (_loc,
-                      (Ast.PaId (_loc,
-                         (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
-                            (Ast.IdUid (_loc, "Failure")))))),
-                      (Ast.ExNil _loc),
-                      (Ast.ExId (_loc, (Ast.IdUid (_loc, "None")))))))),
-                (Ast.McOr (_loc,
-                   (Ast.McArr (_loc,
-                      (Ast.PaApp (_loc,
-                         (Ast.PaId (_loc, (Ast.IdUid (_loc, "Some")))), p)),
-                      (Ast.ExNil _loc), skont)),
-                   (Ast.McArr (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
-                      ckont)))))
+                       (Ast.ExNil _loc),
+                       (Ast.ExId (_loc, (Ast.IdUid (_loc, "None")))))))),
+                 (Ast.McOr (_loc,
+                    (Ast.McArr (_loc,
+                       (Ast.PaApp (_loc,
+                          (Ast.PaId (_loc, (Ast.IdUid (_loc, "Some")))), p)),
+                       (Ast.ExNil _loc), skont)),
+                    (Ast.McArr (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
+                       ckont))))))
   | SpStr (_loc,p) ->
       (try
          match p with
@@ -229,18 +229,18 @@ let rec stream_pattern _loc epo e ekont =
              e)
        | _ -> e)
   | (spc,err)::spcl ->
-      let skont =
-        let ekont err =
-          let str =
-            match err with | Some estr -> estr | _ -> Ast.ExStr (_loc, "") in
-          Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "raise")))),
-            (Ast.ExApp (_loc,
-               (Ast.ExId (_loc,
-                  (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
-                     (Ast.IdUid (_loc, "Error")))))),
-               str))) in
-        stream_pattern _loc epo e ekont spcl in
-      let ckont = ekont err in stream_pattern_component skont ckont spc
+      (let skont =
+         let ekont err =
+           let str =
+             match err with | Some estr -> estr | _ -> Ast.ExStr (_loc, "") in
+           Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "raise")))),
+             (Ast.ExApp (_loc,
+                (Ast.ExId (_loc,
+                   (Ast.IdAcc (_loc, (Ast.IdUid (_loc, (gm ()))),
+                      (Ast.IdUid (_loc, "Error")))))),
+                str))) in
+         stream_pattern _loc epo e ekont spcl in
+       let ckont = ekont err in stream_pattern_component skont ckont spc)
 let stream_patterns_term _loc ekont tspel =
   let pel =
     List.fold_right
@@ -281,8 +281,8 @@ let stream_patterns_term _loc ekont tspel =
 let rec group_terms =
   function
   | ((SpTrm (_loc,p,w),None )::spcl,epo,e)::spel ->
-      let (tspel,spel) = group_terms spel in (((p, w, _loc, spcl, epo, e) ::
-        tspel), spel)
+      (let (tspel,spel) = group_terms spel in (((p, w, _loc, spcl, epo, e) ::
+         tspel), spel))
   | spel -> ([], spel)
 let rec parser_cases _loc =
   function
@@ -373,10 +373,10 @@ let slazy _loc e =
 let rec cstream gloc =
   function
   | [] ->
-      let _loc = gloc in
-      Ast.ExId (_loc,
-        (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Stream")),
-           (Ast.IdLid (_loc, "sempty")))))
+      (let _loc = gloc in
+       Ast.ExId (_loc,
+         (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Stream")),
+            (Ast.IdLid (_loc, "sempty"))))))
   | SeTrm (_loc,e)::[] ->
       if not_computing e
       then

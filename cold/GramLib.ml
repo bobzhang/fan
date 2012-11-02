@@ -38,16 +38,16 @@ let setup_op_parser entry p =
        match Stream.peek __strm with
        | Some ((`KEYWORD x|`SYMBOL x),ti) when p x ->
            (Stream.junk __strm;
-            let _loc = Gram.token_location ti in
-            Ast.ExId (_loc, (Ast.IdLid (_loc, x))))
+            (let _loc = Gram.token_location ti in
+             Ast.ExId (_loc, (Ast.IdLid (_loc, x)))))
        | _ -> raise Stream.Failure)
 let rec infix_kwds_filter (__strm : _ Stream.t ) =
   match Stream.peek __strm with
   | Some ((`KEYWORD "(",_) as tok) ->
       (Stream.junk __strm;
-       let xs = __strm in
-       let (__strm : _ Stream.t ) = xs in
-       (match Stream.peek __strm with
+       (let xs = __strm in
+        let (__strm : _ Stream.t ) = xs in
+        match Stream.peek __strm with
         | Some
             (`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i),_loc)
             ->
@@ -55,15 +55,15 @@ let rec infix_kwds_filter (__strm : _ Stream.t ) =
              (match Stream.peek __strm with
               | Some (`KEYWORD ")",_) ->
                   (Stream.junk __strm;
-                   let xs = __strm in
-                   Stream.lcons (fun _ -> ((`LIDENT i), _loc))
-                     (Stream.slazy (fun _ -> infix_kwds_filter xs)))
+                   (let xs = __strm in
+                    Stream.lcons (fun _ -> ((`LIDENT i), _loc))
+                      (Stream.slazy (fun _ -> infix_kwds_filter xs))))
               | _ -> raise (Stream.Error "")))
         | _ ->
-            let xs = __strm in
-            Stream.icons tok (Stream.slazy (fun _ -> infix_kwds_filter xs))))
+            (let xs = __strm in
+             Stream.icons tok (Stream.slazy (fun _ -> infix_kwds_filter xs)))))
   | Some x ->
       (Stream.junk __strm;
-       let xs = __strm in
-       Stream.icons x (Stream.slazy (fun _ -> infix_kwds_filter xs)))
+       (let xs = __strm in
+        Stream.icons x (Stream.slazy (fun _ -> infix_kwds_filter xs))))
   | _ -> Stream.sempty

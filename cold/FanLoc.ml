@@ -89,13 +89,13 @@ let merge a b =
   if a == b
   then a
   else
-    let r =
-      match ((a.loc_ghost), (b.loc_ghost)) with
-      | (false ,false ) -> { a with loc_end = (b.loc_end) }
-      | (true ,true ) -> { a with loc_end = (b.loc_end) }
-      | (true ,_) -> { a with loc_end = (b.loc_end) }
-      | (_,true ) -> { b with loc_start = (a.loc_start) } in
-    r
+    (let r =
+       match ((a.loc_ghost), (b.loc_ghost)) with
+       | (false ,false ) -> { a with loc_end = (b.loc_end) }
+       | (true ,true ) -> { a with loc_end = (b.loc_end) }
+       | (true ,_) -> { a with loc_end = (b.loc_end) }
+       | (_,true ) -> { b with loc_start = (a.loc_start) } in
+     r)
 let join x = { x with loc_end = (x.loc_start) }
 let map f start_stop_both x =
   match start_stop_both with
@@ -130,12 +130,12 @@ let make_absolute x =
   let old_name = (x.loc_start).pos_fname in
   if Filename.is_relative old_name
   then
-    let new_name = Filename.concat pwd old_name in
-    {
-      x with
-      loc_start = { (x.loc_start) with pos_fname = new_name };
-      loc_end = { (x.loc_end) with pos_fname = new_name }
-    }
+    (let new_name = Filename.concat pwd old_name in
+     {
+       x with
+       loc_start = { (x.loc_start) with pos_fname = new_name };
+       loc_end = { (x.loc_end) with pos_fname = new_name }
+     })
   else x
 let strictly_before x y =
   let b =
@@ -183,11 +183,11 @@ let raise loc exc =
   | _ -> raise (Exc_located (loc, exc))
 let error_report (loc,s) =
   prerr_endline (to_string loc);
-  let (start_bol,stop_bol,start_off,stop_off) = ((start_bol loc),
-    (stop_bol loc), (start_off loc), (stop_off loc)) in
-  let abs_start_off = start_bol + start_off in
-  let abs_stop_off = stop_bol + stop_off in
-  let err_location =
-    String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
-  prerr_endline (sprintf "err: ^%s^" err_location)
+  (let (start_bol,stop_bol,start_off,stop_off) = ((start_bol loc),
+     (stop_bol loc), (start_off loc), (stop_off loc)) in
+   let abs_start_off = start_bol + start_off in
+   let abs_stop_off = stop_bol + stop_off in
+   let err_location =
+     String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
+   prerr_endline (sprintf "err: ^%s^" err_location))
 let string_loc = mk "<string>"

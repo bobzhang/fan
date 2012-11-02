@@ -77,11 +77,11 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
          PreCast.enable_dump_camlp4_ast_printer ()
      | (("Printers"|""),("a"|"auto"|"camlp4autoprinter.cmo")) ->
          (load "Camlp4Autoprinter";
-          let (module P)  = Hashtbl.find printers "camlp4autoprinter" in
-          P.apply (module PreCast))
+          (let (module P)  = Hashtbl.find printers "camlp4autoprinter" in
+           P.apply (module PreCast)))
      | _ ->
-         let y = "Camlp4" ^ (n ^ ("/" ^ (x ^ objext))) in
-         real_load (try find_in_path y with | Not_found  -> x));
+         (let y = "Camlp4" ^ (n ^ ("/" ^ (x ^ objext))) in
+          real_load (try find_in_path y with | Not_found  -> x)));
     rcall_callback.contents ()
   let print_warning = eprintf "%a:\n%s@." FanLoc.print
   let rec parse_file dyn_loader name pa getdir =
@@ -103,12 +103,12 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
            | None  -> None) in
     let loc = FanLoc.mk name in
     PreCast.Syntax.current_warning := print_warning;
-    let ic = if name = "-" then stdin else open_in_bin name in
-    let cs = Stream.of_channel ic in
-    let clear () = if name = "-" then () else close_in ic in
-    let phr =
-      try pa ?directive_handler loc cs with | x -> (clear (); raise x) in
-    (clear (); phr) let output_file = ref None
+    (let ic = if name = "-" then stdin else open_in_bin name in
+     let cs = Stream.of_channel ic in
+     let clear () = if name = "-" then () else close_in ic in
+     let phr =
+       try pa ?directive_handler loc cs with | x -> (clear (); raise x) in
+     clear (); phr) let output_file = ref None
   let process dyn_loader name pa pr clean fold_filters getdir =
     (((parse_file dyn_loader name pa getdir) |>
         (fold_filters (fun t -> fun filter -> filter t)))
@@ -174,8 +174,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
      | Intf file_name -> task (process_intf dyn_loader) file_name
      | Impl file_name -> task (process_impl dyn_loader) file_name
      | Str s ->
-         let (f,o) = Filename.open_temp_file "from_string" ".ml" in
-         (output_string o s;
+         (let (f,o) = Filename.open_temp_file "from_string" ".ml" in
+          output_string o s;
           close_out o;
           task (process_impl dyn_loader) f;
           at_exit (fun () -> Sys.remove f))

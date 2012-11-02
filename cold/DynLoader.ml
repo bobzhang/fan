@@ -34,15 +34,15 @@ module Make(U:sig  end) : S = struct
     if not (Filename.is_implicit name)
     then if Sys.file_exists name then name else raise Not_found
     else
-      let res =
-        fold_load_path x
-          (fun dir ->
-             function
-             | None  ->
-                 let fullname = Filename.concat dir name in
-                 if Sys.file_exists fullname then Some fullname else None
-             | x -> x) None in
-      (match res with | None  -> raise Not_found | Some x -> x)
+      (let res =
+         fold_load_path x
+           (fun dir ->
+              function
+              | None  ->
+                  (let fullname = Filename.concat dir name in
+                   if Sys.file_exists fullname then Some fullname else None)
+              | x -> x) None in
+       match res with | None  -> raise Not_found | Some x -> x)
   let load =
     let _initialized = ref false in
     fun _path ->
@@ -59,10 +59,11 @@ module Make(U:sig  end) : S = struct
                  (Error ("Camlp4's dynamic loader initialization",
                     (Dynlink.error_message e))))
         else ();
-        let fname =
-          try find_in_path _path file
-          with | Not_found  -> raise (Error (file, "file not found in path")) in
-        (try Dynlink.loadfile fname
+        (let fname =
+           try find_in_path _path file
+           with
+           | Not_found  -> raise (Error (file, "file not found in path")) in
+         try Dynlink.loadfile fname
          with
          | Dynlink.Error e ->
              raise (Error (fname, (Dynlink.error_message e))))

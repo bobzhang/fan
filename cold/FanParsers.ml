@@ -480,9 +480,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                   fun (_loc : FanLoc.t ) ->
                     match __camlp4_0 with
                     | `UIDENT "TRY" ->
-                        (let text = TXtry (_loc, (s.text)) in
-                         mk_symbol ~used:(s.used) ~text ~styp:(s.styp)
-                           ~pattern:None
+                        ((let text = TXtry (_loc, (s.text)) in
+                          mk_symbol ~used:(s.used) ~text ~styp:(s.styp)
+                            ~pattern:None)
                         :'symbol )
                     | _ -> assert false)));
           ([`Stoken (((function | `UIDENT "OPT" -> true | _ -> false)),
@@ -493,11 +493,11 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                   fun (_loc : FanLoc.t ) ->
                     match __camlp4_0 with
                     | `UIDENT "OPT" ->
-                        (let () = check_not_tok s in
-                         let styp =
-                           STapp (_loc, (STlid (_loc, "option")), (s.styp)) in
-                         let text = TXopt (_loc, (s.text)) in
-                         mk_symbol ~used:(s.used) ~text ~styp ~pattern:None
+                        ((let () = check_not_tok s in
+                          let styp =
+                            STapp (_loc, (STlid (_loc, "option")), (s.styp)) in
+                          let text = TXopt (_loc, (s.text)) in
+                          mk_symbol ~used:(s.used) ~text ~styp ~pattern:None)
                         :'symbol )
                     | _ -> assert false)));
           ([`Stoken
@@ -522,23 +522,23 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                     fun (_loc : FanLoc.t ) ->
                       match __camlp4_0 with
                       | `UIDENT ("LIST0"|"LIST1" as x) ->
-                          (let () = check_not_tok s in
-                           let used =
-                             match sep with
-                             | Some symb -> symb.used @ s.used
-                             | None  -> s.used in
-                           let styp =
-                             STapp (_loc, (STlid (_loc, "list")), (s.styp)) in
-                           let text =
-                             slist _loc
-                               (match x with
-                                | "LIST0" -> false
-                                | "LIST1" -> true
-                                | _ ->
-                                    failwithf
-                                      "only (LIST0|LIST1) allowed here") sep
-                               s in
-                           mk_symbol ~used ~text ~styp ~pattern:None
+                          ((let () = check_not_tok s in
+                            let used =
+                              match sep with
+                              | Some symb -> symb.used @ s.used
+                              | None  -> s.used in
+                            let styp =
+                              STapp (_loc, (STlid (_loc, "list")), (s.styp)) in
+                            let text =
+                              slist _loc
+                                (match x with
+                                 | "LIST0" -> false
+                                 | "LIST1" -> true
+                                 | _ ->
+                                     failwithf
+                                       "only (LIST0|LIST1) allowed here") sep
+                                s in
+                            mk_symbol ~used ~text ~styp ~pattern:None)
                           :'symbol )
                       | _ -> assert false)))]); (None, None,
           [([`Skeyword "("; `Sself; `Skeyword ")"],
@@ -596,28 +596,28 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                        match ls with
                        | [] -> mk_tok _loc p (STtok _loc)
                        | (x,y)::ys ->
-                           let restrict =
-                             List.fold_left
-                               (fun acc ->
-                                  fun (x,y) ->
-                                    Ast.ExApp (_loc,
-                                      (Ast.ExApp (_loc,
-                                         (Ast.ExId (_loc,
-                                            (Ast.IdLid (_loc, "&&")))),
-                                         acc)),
-                                      (Ast.ExApp (_loc,
-                                         (Ast.ExApp (_loc,
-                                            (Ast.ExId (_loc,
-                                               (Ast.IdLid (_loc, "=")))),
-                                            x)),
-                                         y))))
-                               (Ast.ExApp (_loc,
-                                  (Ast.ExApp (_loc,
-                                     (Ast.ExId (_loc,
-                                        (Ast.IdLid (_loc, "=")))),
-                                     x)),
-                                  y)) ys in
-                           mk_tok _loc ~restrict p (STtok _loc) :'symbol ))));
+                           (let restrict =
+                              List.fold_left
+                                (fun acc ->
+                                   fun (x,y) ->
+                                     Ast.ExApp (_loc,
+                                       (Ast.ExApp (_loc,
+                                          (Ast.ExId (_loc,
+                                             (Ast.IdLid (_loc, "&&")))),
+                                          acc)),
+                                       (Ast.ExApp (_loc,
+                                          (Ast.ExApp (_loc,
+                                             (Ast.ExId (_loc,
+                                                (Ast.IdLid (_loc, "=")))),
+                                             x)),
+                                          y))))
+                                (Ast.ExApp (_loc,
+                                   (Ast.ExApp (_loc,
+                                      (Ast.ExId (_loc,
+                                         (Ast.IdLid (_loc, "=")))),
+                                      x)),
+                                   y)) ys in
+                            mk_tok _loc ~restrict p (STtok _loc)) :'symbol ))));
           ([`Skeyword "[";
           `Slist0sep ((`Snterm (Gram.obj (rule :'rule Gram.t  ))),
             (`Skeyword "|")); `Skeyword "]"],
@@ -993,8 +993,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                       fun (_loc : FanLoc.t ) ->
                         match __camlp4_0 with
                         | `UIDENT _ ->
-                            (let p = Expr.substp _loc [] e in
-                             ((new Ast.reloc) _loc)#patt p
+                            ((let p = Expr.substp _loc [] e in
+                              ((new Ast.reloc) _loc)#patt p)
                             :'patt )
                         | _ -> assert false)))])])) ()))
      | Some (sl,e) ->
@@ -1011,15 +1011,15 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                         fun (_loc : FanLoc.t ) ->
                           match __camlp4_0 with
                           | `UIDENT _ ->
-                              (let el =
-                                 match param with
-                                 | Ast.ExTup (_,e) -> Ast.list_of_expr e []
-                                 | e -> [e] in
-                               if (List.length el) = (List.length sl)
-                               then
-                                 let env = List.combine sl el in
-                                 ((new Expr.subst) _loc env)#expr e
-                               else incorrect_number _loc el sl
+                              ((let el =
+                                  match param with
+                                  | Ast.ExTup (_,e) -> Ast.list_of_expr e []
+                                  | e -> [e] in
+                                if (List.length el) = (List.length sl)
+                                then
+                                  (let env = List.combine sl el in
+                                   ((new Expr.subst) _loc env)#expr e)
+                                else incorrect_number _loc el sl)
                               :'expr )
                           | _ -> assert false)))])])) ());
           Gram.extend (patt :'patt Gram.t  )
@@ -1035,24 +1035,24 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                         fun (_loc : FanLoc.t ) ->
                           match __camlp4_0 with
                           | `UIDENT _ ->
-                              (let pl =
-                                 match param with
-                                 | Ast.PaTup (_,p) -> Ast.list_of_patt p []
-                                 | p -> [p] in
-                               if (List.length pl) = (List.length sl)
-                               then
-                                 let env = List.combine sl pl in
-                                 let p = Expr.substp _loc env e in
-                                 ((new Ast.reloc) _loc)#patt p
-                               else incorrect_number _loc pl sl
+                              ((let pl =
+                                  match param with
+                                  | Ast.PaTup (_,p) -> Ast.list_of_patt p []
+                                  | p -> [p] in
+                                if (List.length pl) = (List.length sl)
+                                then
+                                  (let env = List.combine sl pl in
+                                   let p = Expr.substp _loc env e in
+                                   ((new Ast.reloc) _loc)#patt p)
+                                else incorrect_number _loc pl sl)
                               :'patt )
                           | _ -> assert false)))])])) ()))
      | None  -> ());
     defined := ((x, eo) :: (defined.contents))
   let undef x =
     try
-      let eo = List.assoc x defined.contents in
-      (match eo with
+      (let eo = List.assoc x defined.contents in
+       match eo with
        | Some ([],_) ->
            (Gram.delete_rule expr
               [`Stoken
@@ -1085,9 +1085,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
   let add_include_dir str =
     if str <> ""
     then
-      let str =
-        if (str.[(String.length str) - 1]) = '/' then str else str ^ "/" in
-      include_dirs := (include_dirs.contents @ [str])
+      (let str =
+         if (str.[(String.length str) - 1]) = '/' then str else str ^ "/" in
+       include_dirs := (include_dirs.contents @ [str]))
     else ()
   let parse_include_file rule =
     let dir_ok file dir = Sys.file_exists (dir ^ file) in
@@ -1107,8 +1107,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
     function
     | [] -> nil
     | hd::tl ->
-        let il1 = execute_macro nil cons hd in
-        let il2 = execute_macro_list nil cons tl in cons il1 il2
+        (let il1 = execute_macro nil cons hd in
+         let il2 = execute_macro_list nil cons tl in cons il1 il2)
   let stack = Stack.create ()
   let make_SdITE_result st1 st2 =
     let test = Stack.pop stack in SdITE (test, st1, st2)
@@ -1776,20 +1776,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
          match Stream.peek __strm with
          | Some (`ANTIQUOT (("list" as n),s),ti) ->
              (Stream.junk __strm;
-              let _loc = Gram.token_location ti in
-              Ast.ExAnt (_loc, (mk_anti ~c:"expr;" n s)))
+              (let _loc = Gram.token_location ti in
+               Ast.ExAnt (_loc, (mk_anti ~c:"expr;" n s))))
          | _ -> symb1 __strm in
        let rec kont al (__strm : _ Stream.t ) =
          match Stream.peek __strm with
          | Some (`KEYWORD ";",_) ->
              (Stream.junk __strm;
-              let a =
-                try symb __strm
-                with | Stream.Failure  -> raise (Stream.Error "") in
-              let s = __strm in
-              let _loc =
-                FanLoc.merge (Ast.loc_of_expr al) (Ast.loc_of_expr a) in
-              kont (Ast.ExSem (_loc, al, a)) s)
+              (let a =
+                 try symb __strm
+                 with | Stream.Failure  -> raise (Stream.Error "") in
+               let s = __strm in
+               let _loc =
+                 FanLoc.merge (Ast.loc_of_expr al) (Ast.loc_of_expr a) in
+               kont (Ast.ExSem (_loc, al, a)) s))
          | _ -> al in
        fun (__strm : _ Stream.t ) -> let a = symb __strm in kont a __strm)
   let _ =
@@ -8215,9 +8215,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     fun (_loc : FanLoc.t ) ->
                       match __camlp4_0 with
                       | `ANTIQUOT (("virtual" as n),s) ->
-                          (let anti =
-                             Ast.ViAnt (mk_anti ~c:"class_expr" n s) in
-                           Ast.CeCon (_loc, anti, i, ot)
+                          ((let anti =
+                              Ast.ViAnt (mk_anti ~c:"class_expr" n s) in
+                            Ast.CeCon (_loc, anti, i, ot))
                           :'class_expr_quot )
                       | _ -> assert false))); ([`Skeyword "virtual";
           `Snterm
@@ -8262,9 +8262,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     fun (_loc : FanLoc.t ) ->
                       match __camlp4_0 with
                       | `ANTIQUOT (("virtual" as n),s) ->
-                          (let anti =
-                             Ast.ViAnt (mk_anti ~c:"class_type" n s) in
-                           Ast.CtCon (_loc, anti, i, ot)
+                          ((let anti =
+                              Ast.ViAnt (mk_anti ~c:"class_type" n s) in
+                            Ast.CtCon (_loc, anti, i, ot))
                           :'class_type_quot )
                       | _ -> assert false))); ([`Skeyword "virtual";
           `Snterm

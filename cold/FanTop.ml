@@ -24,10 +24,10 @@ let toplevel_phrase token_stream =
           :Ast.str_item  option  Gram.t  ) token_stream
   with
   | Some str_item ->
-      let str_item =
-        Syntax.AstFilters.fold_topphrase_filters
-          (fun t -> fun filter -> filter t) str_item in
-      Ast2pt.phrase str_item
+      (let str_item =
+         Syntax.AstFilters.fold_topphrase_filters
+           (fun t -> fun filter -> filter t) str_item in
+       Ast2pt.phrase str_item)
   | None  -> raise End_of_file
 let fake token_stream =
   (try
@@ -60,11 +60,11 @@ let use_file token_stream =
     if eoi
     then []
     else
-      let rec loop () =
-        let (pl,stopped_at_directive) =
-          Gram.parse_origin_tokens Syntax.use_file token_stream in
-        if stopped_at_directive <> None then pl @ (loop ()) else pl in
-      loop () in
+      (let rec loop () =
+         let (pl,stopped_at_directive) =
+           Gram.parse_origin_tokens Syntax.use_file token_stream in
+         if stopped_at_directive <> None then pl @ (loop ()) else pl in
+       loop ()) in
   List.map Ast2pt.phrase (pl0 @ pl)
 let revise_parser = wrap toplevel_phrase
 let _ =

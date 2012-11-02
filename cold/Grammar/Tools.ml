@@ -9,25 +9,25 @@ module Make(U:sig  end) =
     (match Stream.peek strm with
      | None  -> Stream.sempty
      | Some (tok0,init_loc) ->
-         let rec go prev_loc strm1 =
-           if get_prev_loc_only.contents
-           then
-             Stream.lcons
-               (fun _ -> (tok0,
-                  { prev_loc; cur_loc = prev_loc; prev_loc_only = true }))
-               (Stream.slazy (fun _ -> go prev_loc strm1))
-           else
-             let (__strm : _ Stream.t ) = strm1 in
-             (match Stream.peek __strm with
-              | Some (tok,cur_loc) ->
-                  (Stream.junk __strm;
-                   let strm = __strm in
-                   Stream.lcons
-                     (fun _ -> (tok,
-                        { prev_loc; cur_loc; prev_loc_only = false }))
-                     (Stream.slazy (fun _ -> go cur_loc strm)))
-              | _ -> Stream.sempty) in
-         go init_loc strm :('c* token_info ) Stream.t  )
+         (let rec go prev_loc strm1 =
+            if get_prev_loc_only.contents
+            then
+              Stream.lcons
+                (fun _ -> (tok0,
+                   { prev_loc; cur_loc = prev_loc; prev_loc_only = true }))
+                (Stream.slazy (fun _ -> go prev_loc strm1))
+            else
+              (let (__strm : _ Stream.t ) = strm1 in
+               match Stream.peek __strm with
+               | Some (tok,cur_loc) ->
+                   (Stream.junk __strm;
+                    (let strm = __strm in
+                     Stream.lcons
+                       (fun _ -> (tok,
+                          { prev_loc; cur_loc; prev_loc_only = false }))
+                       (Stream.slazy (fun _ -> go cur_loc strm))))
+               | _ -> Stream.sempty) in
+          go init_loc strm) :('c* token_info ) Stream.t  )
   let drop_prev_loc strm =
     Stream.map (fun (tok,r) -> (tok, (r.cur_loc))) strm
   let get_cur_loc strm =
@@ -36,13 +36,13 @@ module Make(U:sig  end) =
     | None  -> FanLoc.ghost
   let get_prev_loc strm =
     get_prev_loc_only := true;
-    let result =
-      match Stream.peek strm with
-      | Some (_,{ prev_loc; prev_loc_only = true ;_}) ->
-          (Stream.junk strm; prev_loc)
-      | Some (_,{ prev_loc; prev_loc_only = false ;_}) -> prev_loc
-      | None  -> FanLoc.ghost in
-    (get_prev_loc_only := false; result)
+    (let result =
+       match Stream.peek strm with
+       | Some (_,{ prev_loc; prev_loc_only = true ;_}) ->
+           (Stream.junk strm; prev_loc)
+       | Some (_,{ prev_loc; prev_loc_only = false ;_}) -> prev_loc
+       | None  -> FanLoc.ghost in
+     get_prev_loc_only := false; result)
   let is_level_labelled n =
     function | { lname = Some n1;_} -> n = n1 | _ -> false
   let warning_verbose = ref true

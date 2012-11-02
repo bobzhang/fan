@@ -77,7 +77,7 @@ let token_location r = r.cur_loc
 let using { gkeywords = table; gfilter = filter;_} kwd =
   let r =
     try Hashtbl.find table kwd
-    with | Not_found  -> let r = ref 0 in (Hashtbl.add table kwd r; r) in
+    with | Not_found  -> (let r = ref 0 in Hashtbl.add table kwd r; r) in
   FanToken.Filter.keyword_added filter kwd (r.contents = 0); incr r
 let mk_action = Action.mk
 let string_of_token = FanToken.extract_string

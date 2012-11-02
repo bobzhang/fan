@@ -434,8 +434,11 @@ class printer  ()= object(self:'self)
     | _ -> false
   method expression f x =
     match x.pexp_desc with
-    | Pexp_function _ | Pexp_match _ | Pexp_try _ | Pexp_sequence _  when pipe || semi ->
+    | Pexp_function _ | Pexp_match _ | Pexp_try _ | Pexp_sequence _
+    | Pexp_let _
+      when pipe || semi ->
         self#paren true self#reset#expression f x
+    
     | Pexp_function (p, eo, l) ->
         ( match l with
         | [(p',e')] ->
@@ -1084,6 +1087,11 @@ let string_of_expression x =
   let f = str_formatter in
   default#expression f x ;
   flush_str_formatter () ;;
+let string_of_structure x =
+  ignore (flush_str_formatter ());
+  let f = str_formatter in
+  default#structure f x;
+  flush_str_formatter ();;
 
 let top_phrase f x =
   pp_print_newline f () ;

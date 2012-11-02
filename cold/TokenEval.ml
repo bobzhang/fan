@@ -48,7 +48,7 @@ let backslash_in_string strict store (__strm : _ Stream.t ) =
   | Some '\n' -> (Stream.junk __strm; skip_indent __strm)
   | Some '\r' ->
       (Stream.junk __strm;
-       let s = __strm in (skip_opt_linefeed s; skip_indent s))
+       (let s = __strm in skip_opt_linefeed s; skip_indent s))
   | _ ->
       (match try Some (backslash __strm) with | Stream.Failure  -> None with
        | Some x -> store x
@@ -64,8 +64,8 @@ let char s =
     if (String.length s) = 0
     then failwith "invalid char token"
     else
-      let (__strm : _ Stream.t ) = Stream.of_string s in
-      (match Stream.peek __strm with
+      (let (__strm : _ Stream.t ) = Stream.of_string s in
+       match Stream.peek __strm with
        | Some '\\' ->
            (Stream.junk __strm;
             (try backslash __strm
@@ -78,10 +78,10 @@ let string ?strict  s =
     match Stream.peek __strm with
     | Some '\\' ->
         (Stream.junk __strm;
-         let _ =
-           try backslash_in_string (strict <> None) store __strm
-           with | Stream.Failure  -> raise (Stream.Error "") in
-         parse __strm)
-    | Some c -> (Stream.junk __strm; let s = __strm in (store c; parse s))
+         (let _ =
+            try backslash_in_string (strict <> None) store __strm
+            with | Stream.Failure  -> raise (Stream.Error "") in
+          parse __strm))
+    | Some c -> (Stream.junk __strm; (let s = __strm in store c; parse s))
     | _ -> Buffer.contents buf in
   parse (Stream.of_string s)

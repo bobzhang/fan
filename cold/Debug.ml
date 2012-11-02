@@ -33,8 +33,8 @@ let formatter =
          fun len ->
            for i = pos to  (pos + len) - 1 do
              if at_bol.contents then output_string out_channel header else ();
-             let ch = buf.[i] in
-             (output_char out_channel ch; at_bol.contents := (ch = '\n'))
+             (let ch = buf.[i] in
+              output_char out_channel ch; at_bol.contents := (ch = '\n'))
              
            done) (fun () -> flush out_channel)
 let printf section fmt = fprintf formatter ("%s: " ^^ fmt) section

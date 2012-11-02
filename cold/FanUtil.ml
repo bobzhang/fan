@@ -29,14 +29,14 @@ let float_repres f =
   | FP_nan  -> "nan"
   | FP_infinite  -> if f < 0.0 then "neg_infinity" else "infinity"
   | _ ->
-      let float_val =
-        let s1 = Printf.sprintf "%.12g" f in
-        if f = (float_of_string s1)
-        then s1
-        else
-          let s2 = Printf.sprintf "%.15g" f in
-          if f = (float_of_string s2) then s2 else Printf.sprintf "%.18g" f in
-      valid_float_lexeme float_val
+      (let float_val =
+         let s1 = Printf.sprintf "%.12g" f in
+         if f = (float_of_string s1)
+         then s1
+         else
+           (let s2 = Printf.sprintf "%.15g" f in
+            if f = (float_of_string s2) then s2 else Printf.sprintf "%.18g" f) in
+       valid_float_lexeme float_val)
 let cvt_int_literal s = ( ~- ) (int_of_string ("-" ^ s))
 let cvt_int32_literal s = Int32.neg (Int32.of_string ("-" ^ s))
 let cvt_int64_literal s = Int64.neg (Int64.of_string ("-" ^ s))
@@ -60,10 +60,10 @@ let view_antiquot s =
 let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
   if is_antiquot s
   then
-    let pos = String.index s ':' in
-    let name = String.sub s 2 (pos - 2) and code =
-      String.sub s (pos + 1) (((String.length s) - pos) - 1) in
-    decorate name (parse loc code)
+    (let pos = String.index s ':' in
+     let name = String.sub s 2 (pos - 2) and code =
+       String.sub s (pos + 1) (((String.length s) - pos) - 1) in
+     decorate name (parse loc code))
   else default
 let neg_string n =
   let len = String.length n in
@@ -91,7 +91,7 @@ let symbolchar =
 let stopped_at _loc = Some (FanLoc.move_line 1 _loc)
 let with_open_out_file x f =
   match x with
-  | Some file -> let oc = open_out_bin file in (f oc; flush oc; close_out oc)
+  | Some file -> (let oc = open_out_bin file in f oc; flush oc; close_out oc)
   | None  -> (set_binary_mode_out stdout true; f stdout; flush stdout)
 let dump_ast magic ast oc = output_string oc magic; output_value oc ast
 let dump_pt magic fname pt oc =
@@ -181,15 +181,15 @@ module Options :
            | [] -> None)
         else (r := (float_of_string s); Some sl)
     | Arg.Tuple specs ->
-        let rec action_args s sl =
-          function
-          | [] -> Some sl
-          | spec::spec_list ->
-              (match action_arg s sl spec with
-               | None  -> action_args "" [] spec_list
-               | Some (s::sl) -> action_args s sl spec_list
-               | Some sl -> action_args "" sl spec_list) in
-        action_args s sl specs
+        (let rec action_args s sl =
+           function
+           | [] -> Some sl
+           | spec::spec_list ->
+               (match action_arg s sl spec with
+                | None  -> action_args "" [] spec_list
+                | Some (s::sl) -> action_args s sl spec_list
+                | Some sl -> action_args "" sl spec_list) in
+         action_args s sl specs)
     | Arg.Symbol (syms,f) ->
         (match if s = "" then sl else s :: sl with
          | s::sl when List.mem s syms -> (f s; Some sl)
@@ -236,23 +236,23 @@ module Options :
       then
         if (s.[0]) = '<'
         then
-          let rec loop i =
-            if i = (String.length s)
-            then ("", s)
-            else
-              if (s.[i]) <> '>'
-              then loop (i + 1)
-              else
-                let p = String.sub s 0 (i + 1) in
-                let rec loop i =
-                  if i >= (String.length s)
-                  then (p, "")
-                  else
-                    if (s.[i]) = ' '
-                    then loop (i + 1)
-                    else (p, (String.sub s i ((String.length s) - i))) in
-                loop (i + 1) in
-          loop 0
+          (let rec loop i =
+             if i = (String.length s)
+             then ("", s)
+             else
+               if (s.[i]) <> '>'
+               then loop (i + 1)
+               else
+                 (let p = String.sub s 0 (i + 1) in
+                  let rec loop i =
+                    if i >= (String.length s)
+                    then (p, "")
+                    else
+                      if (s.[i]) = ' '
+                      then loop (i + 1)
+                      else (p, (String.sub s i ((String.length s) - i))) in
+                  loop (i + 1)) in
+           loop 0)
         else ("", s)
       else ("", "") in
     let tab =
@@ -269,9 +269,9 @@ module Options :
       (fun (key,spec,doc) ->
          match spec with
          | Arg.Symbol (symbs,_) ->
-             let s = make_symlist symbs in
-             let synt = key ^ (" " ^ s) in
-             eprintf "  %s %s\n" synt (align_doc synt doc)
+             (let s = make_symlist symbs in
+              let synt = key ^ (" " ^ s) in
+              eprintf "  %s %s\n" synt (align_doc synt doc))
          | _ -> eprintf "  %s %s\n" key (align_doc key doc)) l
   let remaining_args argv =
     let rec loop l i =

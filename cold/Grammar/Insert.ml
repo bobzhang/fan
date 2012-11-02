@@ -56,50 +56,50 @@ let get_level entry position levs =
   | Some `First -> ([], empty_lev, levs)
   | Some `Last -> (levs, empty_lev, [])
   | Some (`Level n) ->
-      let rec get =
-        function
-        | [] ->
-            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-               entry.ename;
-             flush Pervasives.stderr;
-             failwith "Grammar.extend")
-        | lev::levs ->
-            if Tools.is_level_labelled n lev
-            then ([], (change_lev entry lev n), levs)
-            else
-              let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                levs2) in
-      get levs
+      (let rec get =
+         function
+         | [] ->
+             (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
+                entry.ename;
+              flush Pervasives.stderr;
+              failwith "Grammar.extend")
+         | lev::levs ->
+             if Tools.is_level_labelled n lev
+             then ([], (change_lev entry lev n), levs)
+             else
+               (let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                  levs2)) in
+       get levs)
   | Some (`Before n) ->
-      let rec get =
-        function
-        | [] ->
-            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-               entry.ename;
-             flush Pervasives.stderr;
-             failwith "Grammar.extend")
-        | lev::levs ->
-            if Tools.is_level_labelled n lev
-            then ([], empty_lev, (lev :: levs))
-            else
-              let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                levs2) in
-      get levs
+      (let rec get =
+         function
+         | [] ->
+             (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
+                entry.ename;
+              flush Pervasives.stderr;
+              failwith "Grammar.extend")
+         | lev::levs ->
+             if Tools.is_level_labelled n lev
+             then ([], empty_lev, (lev :: levs))
+             else
+               (let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                  levs2)) in
+       get levs)
   | Some (`After n) ->
-      let rec get =
-        function
-        | [] ->
-            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-               entry.ename;
-             flush Pervasives.stderr;
-             failwith "Grammar.extend")
-        | lev::levs ->
-            if Tools.is_level_labelled n lev
-            then ([lev], empty_lev, levs)
-            else
-              let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                levs2) in
-      get levs
+      (let rec get =
+         function
+         | [] ->
+             (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
+                entry.ename;
+              flush Pervasives.stderr;
+              failwith "Grammar.extend")
+         | lev::levs ->
+             if Tools.is_level_labelled n lev
+             then ([lev], empty_lev, levs)
+             else
+               (let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                  levs2)) in
+       get levs)
   | None  ->
       (match levs with
        | lev::levs -> ([], (change_lev entry lev "<top>"), levs)
@@ -162,14 +162,14 @@ let insert_tree entry gsymbols action tree =
          | Node { node = s; son; brother = bro } ->
              Node { node = s; son; brother = (insert [] bro) }
          | LocAct (old_action,action_list) ->
-             let () =
-               if ((entry.egram).warning_verbose).contents
-               then
-                 eprintf
-                   "<W> Grammar extension: in [%s] some rule has been masked@."
-                   entry.ename
-               else () in
-             LocAct (action, (old_action :: action_list))
+             (let () =
+                if ((entry.egram).warning_verbose).contents
+                then
+                  eprintf
+                    "<W> Grammar extension: in [%s] some rule has been masked@."
+                    entry.ename
+                else () in
+              LocAct (action, (old_action :: action_list)))
          | DeadEnd  -> LocAct (action, []))
     and insert_in_tree s sl tree =
     match try_insert s sl tree with
@@ -180,21 +180,23 @@ let insert_tree entry gsymbols action tree =
     | Node { node = s1; son; brother = bro } ->
         if Tools.eq_symbol s s1
         then
-          let t = Node { node = s1; son = (insert sl son); brother = bro } in
-          Some t
+          (let t =
+             Node { node = s1; son = (insert sl son); brother = bro } in
+           Some t)
         else
           if (is_before s1 s) || ((derive_eps s) && (not (derive_eps s1)))
           then
-            let bro =
-              match try_insert s sl bro with
-              | Some bro -> bro
-              | None  ->
-                  Node { node = s; son = (insert sl DeadEnd); brother = bro } in
-            let t = Node { node = s1; son; brother = bro } in Some t
+            (let bro =
+               match try_insert s sl bro with
+               | Some bro -> bro
+               | None  ->
+                   Node
+                     { node = s; son = (insert sl DeadEnd); brother = bro } in
+             let t = Node { node = s1; son; brother = bro } in Some t)
           else
             (match try_insert s sl bro with
              | Some bro ->
-                 let t = Node { node = s1; son; brother = bro } in Some t
+                 (let t = Node { node = s1; son; brother = bro } in Some t)
              | None  -> None)
     | LocAct (_,_)|DeadEnd  -> None in
   insert gsymbols tree
@@ -225,24 +227,24 @@ let levels_of_rules entry position rules =
   if rules = []
   then elev
   else
-    let (levs1,make_lev,levs2) = get_level entry position elev in
-    let (levs,_) =
-      List.fold_left
-        (fun (levs,make_lev) ->
-           fun (lname,assoc,level) ->
-             let lev = make_lev lname assoc in
-             let lev =
-               List.fold_left
-                 (fun lev ->
-                    fun (symbols,action) ->
-                      let symbols =
-                        List.map (change_to_self entry) symbols in
-                      let () = List.iter (check_gram entry) symbols in
-                      let (e1,symbols) = get_initial symbols in
-                      let () = insert_tokens entry.egram symbols in
-                      insert_level entry e1 symbols action lev) lev level in
-             ((lev :: levs), empty_lev)) ([], make_lev) rules in
-    levs1 @ ((List.rev levs) @ levs2)
+    (let (levs1,make_lev,levs2) = get_level entry position elev in
+     let (levs,_) =
+       List.fold_left
+         (fun (levs,make_lev) ->
+            fun (lname,assoc,level) ->
+              let lev = make_lev lname assoc in
+              let lev =
+                List.fold_left
+                  (fun lev ->
+                     fun (symbols,action) ->
+                       let symbols =
+                         List.map (change_to_self entry) symbols in
+                       let () = List.iter (check_gram entry) symbols in
+                       let (e1,symbols) = get_initial symbols in
+                       let () = insert_tokens entry.egram symbols in
+                       insert_level entry e1 symbols action lev) lev level in
+              ((lev :: levs), empty_lev)) ([], make_lev) rules in
+     levs1 @ ((List.rev levs) @ levs2))
 let extend entry (position,rules) =
   let elev = levels_of_rules entry position rules in
   entry.edesc <- Dlevels elev;

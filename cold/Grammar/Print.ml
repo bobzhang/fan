@@ -44,10 +44,10 @@ class text_grammar =
         function
         | [] -> ()
         | s::sl ->
-            let j =
-              try String.index_from n i ' '
-              with | Not_found  -> String.length n in
-            (fprintf ppf "%s %a" (String.sub n i (j - i)) self#symbol1 s;
+            (let j =
+               try String.index_from n i ' '
+               with | Not_found  -> String.length n in
+             fprintf ppf "%s %a" (String.sub n i (j - i)) self#symbol1 s;
              if sl = []
              then ()
              else (fprintf ppf " "; loop (min (j + 1) (String.length n)) sl)) in
