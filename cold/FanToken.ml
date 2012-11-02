@@ -17,8 +17,8 @@ let print_basic_error ppf =
   | Illegal_constructor con -> fprintf ppf "Illegal constructor %S" con
 let string_of_error_msg = to_string_of_printer print_basic_error
 let _ =
-  Printexc.register_printer (
-    function | TokenError e -> Some ( string_of_error_msg e ) | _ -> None )
+  Printexc.register_printer
+    (function | TokenError e -> Some (string_of_error_msg e) | _ -> None)
 let to_string =
   function
   | `KEYWORD s -> sprintf "`KEYWORD %S" s
@@ -49,21 +49,21 @@ let token_to_string =
   function
   | #token as x -> to_string x
   | _ -> invalid_arg "token_to_string not implemented for this token"
-let err error loc = raise ( FanLoc.Exc_located (loc, ( TokenError error )) )
+let err error loc = raise (FanLoc.Exc_located (loc, (TokenError error)))
 let error_no_respect_rules p_con p_prm =
-  raise ( TokenError ( Illegal_token_pattern (p_con, p_prm) ) )
+  raise (TokenError (Illegal_token_pattern (p_con, p_prm)))
 let check_keyword _ = true
 let error_on_unknown_keywords = ref false
 let rec ignore_layout (__strm : _ Stream.t ) =
   match Stream.peek __strm with
-  | Some (( `COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _ ),_) -> (
-      Stream.junk __strm; ignore_layout __strm )
-  | Some x -> (
-      Stream.junk __strm;
-      let s = __strm in
-      Stream.icons x ( Stream.slazy ( fun _ -> ignore_layout s ) ) )
+  | Some ((`COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _),_) ->
+      (Stream.junk __strm; ignore_layout __strm)
+  | Some x ->
+      (Stream.junk __strm;
+       let s = __strm in
+       Stream.icons x (Stream.slazy (fun _ -> ignore_layout s)))
   | _ -> Stream.sempty
-let print ppf x = pp_print_string ppf ( token_to_string x )
+let print ppf x = pp_print_string ppf (token_to_string x)
 let match_keyword kwd =
   function | `KEYWORD kwd' when kwd = kwd' -> true | _ -> false
 let extract_string =
@@ -72,8 +72,8 @@ let extract_string =
       `INT64 (_,s)|`NATIVEINT (_,s)|`FLOAT (_,s)|`CHAR (_,s)|`STRING (_,s)|
       `LABEL s|`OPTLABEL s|`COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
   | tok ->
-      invalid_arg (
-        "Cannot extract a string from this token: " ^ ( to_string tok ) )
+      invalid_arg
+        ("Cannot extract a string from this token: " ^ (to_string tok))
 let keyword_conversion tok is_kwd =
   match tok with
   | `SYMBOL s|`LIDENT s|`UIDENT s when is_kwd s -> `KEYWORD s
@@ -81,15 +81,15 @@ let keyword_conversion tok is_kwd =
   | _ -> tok
 let check_keyword_as_label tok loc is_kwd =
   let s = match tok with | `LABEL s -> s | `OPTLABEL s -> s | _ -> "" in
-  if ( s <> "" ) && ( is_kwd s ) then err ( Keyword_as_label s ) loc else ()
+  if (s <> "") && (is_kwd s) then err (Keyword_as_label s) loc else ()
 let check_unknown_keywords tok loc =
-  match tok with | `SYMBOL s -> err ( Illegal_token s ) loc | _ -> ()
+  match tok with | `SYMBOL s -> err (Illegal_token s) loc | _ -> ()
 module Filter = struct
   let mk ~is_kwd  = { is_kwd; filter = ignore_layout }
   let filter x =
     let f (tok,loc) =
       let tok = keyword_conversion tok x.is_kwd in (tok, loc) in
-    fun strm -> x.filter ( Stream.map f strm )
+    fun strm -> x.filter (Stream.map f strm)
   let define_filter x f = x.filter <- f x.filter let keyword_added _ _ _ = ()
   let keyword_removed _ _ = ()
   end

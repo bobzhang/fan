@@ -64,18 +64,18 @@ type warning_type =
   | Abstract of string 
   | Qualified of string  
 let string_of_warning_type =
-  sprintf "Warning: %a\n" (
-    fun _ ->
-      function
-      | Abstract s -> "Abstract: " ^ s
-      | Qualified s -> "Qualified: " ^ s )
+  sprintf "Warning: %a\n"
+    (fun _ ->
+       function
+       | Abstract s -> "Abstract: " ^ s
+       | Qualified s -> "Qualified: " ^ s)
 module type Grammar =
   sig
     type 'a t  
     type loc  
     val eoi_entry : 'a t  -> 'a t 
     val parse_quot_string_with_filter :
-      'a t  -> ( 'a -> 'b ) -> loc  -> string  option  -> string  -> 'b
+      'a t  -> ('a -> 'b) -> loc  -> string  option  -> string  -> 'b
     val parse_quot_string : 'a t  -> loc  -> string  option  -> string  -> 'a
     val add_quotation :
       ?antiquot_expander:<
@@ -85,12 +85,12 @@ module type Grammar =
         ->
         string  ->
           entry:'a t  ->
-            mexpr:( FanLoc.t  -> 'a -> Ast.expr  ) ->
-              mpatt:( FanLoc.t  -> 'a -> Ast.patt  ) -> unit 
+            mexpr:(FanLoc.t  -> 'a -> Ast.expr ) ->
+              mpatt:(FanLoc.t  -> 'a -> Ast.patt ) -> unit 
     val add_quotation_of_str_item :
       name:string  -> entry:Ast.str_item  t  -> unit 
     val add_quotation_of_str_item_with_filter :
-      name:string  -> entry:'a t  -> filter:( 'a -> Ast.str_item  ) -> unit 
+      name:string  -> entry:'a t  -> filter:('a -> Ast.str_item ) -> unit 
     val add_quotation_of_expr : name:string  -> entry:Ast.expr  t  -> unit 
     val add_quotation_of_patt : name:string  -> entry:Ast.patt  t  -> unit 
     val add_quotation_of_class_str_item :

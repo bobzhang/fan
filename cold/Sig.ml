@@ -10,10 +10,10 @@ type ('a,'loc) stream_filter = ('a* 'loc) Stream.t  -> ('a* 'loc) Stream.t
 module type ParserImpl =
   sig
     val parse_implem :
-      ?directive_handler:( Ast.str_item  -> Ast.str_item  option  ) ->
+      ?directive_handler:(Ast.str_item  -> Ast.str_item  option ) ->
         FanLoc.t  -> char  Stream.t  -> Ast.str_item 
     val parse_interf :
-      ?directive_handler:( Ast.sig_item  -> Ast.sig_item  option  ) ->
+      ?directive_handler:(Ast.sig_item  -> Ast.sig_item  option ) ->
         FanLoc.t  -> char  Stream.t  -> Ast.sig_item 
   end
 module type PrinterImpl =
@@ -93,7 +93,7 @@ module type Camlp4Syntax =
     val direction_flag : Ast.direction_flag  Gram.t 
     val direction_flag_quot : Ast.direction_flag  Gram.t 
     val dummy : unit  Gram.t 
-    val eq_expr : ( string  -> Ast.patt  -> Ast.patt  ) Gram.t 
+    val eq_expr : (string  -> Ast.patt  -> Ast.patt ) Gram.t 
     val expr : Ast.expr  Gram.t 
     val expr_eoi : Ast.expr  Gram.t 
     val expr_quot : Ast.expr  Gram.t 
@@ -163,9 +163,9 @@ module type Camlp4Syntax =
     val poly_type : Ast.ctyp  Gram.t 
     val row_field : Ast.ctyp  Gram.t 
     val sem_expr : Ast.expr  Gram.t 
-    val sem_expr_for_list : ( Ast.expr  -> Ast.expr  ) Gram.t 
+    val sem_expr_for_list : (Ast.expr  -> Ast.expr ) Gram.t 
     val sem_patt : Ast.patt  Gram.t 
-    val sem_patt_for_list : ( Ast.patt  -> Ast.patt  ) Gram.t 
+    val sem_patt_for_list : (Ast.patt  -> Ast.patt ) Gram.t 
     val semi : unit  Gram.t 
     val sequence : Ast.expr  Gram.t 
     val do_sequence : Ast.expr  Gram.t 
@@ -183,7 +183,7 @@ module type Camlp4Syntax =
     val type_longident : Ast.ident  Gram.t 
     val type_longident_and_parameters : Ast.ctyp  Gram.t 
     val type_parameter : Ast.ctyp  Gram.t 
-    val type_parameters : ( Ast.ctyp  -> Ast.ctyp  ) Gram.t 
+    val type_parameters : (Ast.ctyp  -> Ast.ctyp ) Gram.t 
     val typevars : Ast.ctyp  Gram.t 
     val val_longident : Ast.ident  Gram.t 
     val with_constr : Ast.with_constr  Gram.t 
@@ -212,9 +212,7 @@ module type SyntaxPlugin = functor (Syn : Camlp4Syntax) -> sig  end
 module type PrinterPlugin = functor (Syn : Camlp4Syntax) -> PrinterImpl
 module type ParserPlugin = functor (Syn : Camlp4Syntax) -> ParserImpl
 type 'a parser_fun =
-  ?directive_handler:( 'a -> 'a option  ) ->
-    FanLoc.t  -> char  Stream.t  -> 'a
-  
+  ?directive_handler:('a -> 'a option ) -> FanLoc.t  -> char  Stream.t  -> 'a 
 type 'a printer_fun =
   ?input_file:string  -> ?output_file:string  -> 'a -> unit  
 module type PRECAST =
@@ -229,7 +227,7 @@ module type PRECAST =
     end
     val loaded_modules : string  list  ref 
     val iter_and_take_callbacks :
-      ( (string * ( unit  -> unit  )) -> unit  ) -> unit 
+      ((string * (unit  -> unit )) -> unit ) -> unit 
     val register_str_item_parser : Ast.str_item  parser_fun  -> unit 
     val register_sig_item_parser : Ast.sig_item  parser_fun  -> unit 
     val register_parser :
@@ -247,14 +245,14 @@ module type PRECAST =
     val enable_dump_ocaml_ast_printer : unit  -> unit 
     val enable_dump_camlp4_ast_printer : unit  -> unit 
     val enable_null_printer : unit  -> unit 
-    val enable_auto : ( unit  -> bool  ) -> unit 
+    val enable_auto : (unit  -> bool ) -> unit 
     val register_str_item_printer : Ast.str_item  printer_fun  -> unit 
     val register_sig_item_printer : Ast.sig_item  printer_fun  -> unit 
     val register_printer :
       Ast.str_item  printer_fun  -> Ast.sig_item  printer_fun  -> unit 
     val current_printer :
       unit  -> (Ast.str_item  printer_fun * Ast.sig_item  printer_fun )
-    val declare_dyn_module : string  -> ( unit  -> unit  ) -> unit 
+    val declare_dyn_module : string  -> (unit  -> unit ) -> unit 
     module CurrentParser : ParserImpl
     module CurrentPrinter : PrinterImpl
   end

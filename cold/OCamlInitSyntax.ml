@@ -148,17 +148,16 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let level = Gram.mk "level" let level_list = Gram.mk "level_list"
   let entry = Gram.mk "entry"
   let _ =
-    Gram.extend (top_phrase :'top_phrase Gram.t  ) (
-      (
-        fun () -> (None, [(None, None,
-          [([`Stoken (( ( function | `EOI -> true | _ -> false ) ), (`Normal,
-               "`EOI"))], (
-          Gram.mk_action (
-            fun __camlp4_0 ->
-              fun (_loc : FanLoc.t ) ->
-                match __camlp4_0 with
-                | `EOI -> (None :'top_phrase )
-                | _ -> assert false ) ))])]) ) () )
+    Gram.extend (top_phrase :'top_phrase Gram.t  )
+      ((fun () -> (None, [(None, None,
+          [([`Stoken (((function | `EOI -> true | _ -> false)), (`Normal,
+               "`EOI"))],
+          (Gram.mk_action
+             (fun __camlp4_0 ->
+                fun (_loc : FanLoc.t ) ->
+                  match __camlp4_0 with
+                  | `EOI -> (None :'top_phrase )
+                  | _ -> assert false)))])])) ())
   module AntiquotSyntax = struct
     module Ast = Ast module Gram = Gram
     let antiquot_expr = Gram.eoi_entry expr
@@ -174,18 +173,18 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
           let pl =
             match List.rev pl with
             | [] -> assert false
-            | x::xs -> (
-                match directive_handler x with
-                | None  -> xs
-                | Some x -> x :: xs ) in
-          ( List.rev pl ) @ ( loop new_loc )
+            | x::xs ->
+                (match directive_handler x with
+                 | None  -> xs
+                 | Some x -> x :: xs) in
+          (List.rev pl) @ (loop new_loc)
       | None  -> pl in
     loop init_loc
   let parse_implem ?(directive_handler=fun _ -> None)  _loc cs =
-    let l = wrap directive_handler ( Gram.parse implem ) _loc cs in
+    let l = wrap directive_handler (Gram.parse implem) _loc cs in
     Ast.stSem_of_list l
   let parse_interf ?(directive_handler=fun _ -> None)  _loc cs =
-    let l = wrap directive_handler ( Gram.parse interf ) _loc cs in
+    let l = wrap directive_handler (Gram.parse interf) _loc cs in
     Ast.sgSem_of_list l
   let print_interf ?input_file:_  ?output_file:_  _ =
     failwith "No interface printer"

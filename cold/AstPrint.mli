@@ -71,8 +71,8 @@ class printer :
       (Format.formatter -> 'a -> unit) ->
       Format.formatter -> 'a option -> unit
     method paren :
-      bool ->
-      (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a -> unit
+        ?first:space_formatter -> ?last:space_formatter -> bool ->
+          (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a -> unit
     method pattern : Format.formatter -> Parsetree.pattern -> unit
     method pattern1 : Format.formatter -> Parsetree.pattern -> unit
     method private_flag : Format.formatter -> Asttypes.private_flag -> unit

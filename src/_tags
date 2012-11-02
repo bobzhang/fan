@@ -1,5 +1,5 @@
 # -*- Mode:Shell-script -*-
 
 <**/*.{ml,mli,mlx}>: camlp4boot
-<{*_ppo,**/*_ppo,AstPrint,tmp*,FanLexer,FanConfig}.{ml,mli}> or <Gram.mli>: -camlp4boot
+<{*_ppo,**/*_ppo,AstPrint,AstEq,tmp*,FanLexer,FanConfig}.{ml,mli}> or <Gram.mli>: -camlp4boot
 <Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash

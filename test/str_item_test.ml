@@ -48,7 +48,7 @@ let ident_tag ?(conv_lid=(fun (x) -> x))  (i) =
     | _ -> (error ( (loc_of_ident i) ) "invalid long identifier") end in
   begin match (self i None ) with
   | Some(x) -> x
-  | None  -> (error ( (loc_of_ident i) ) "invalid long identifier ") end 
+  | None  -> (error ( (loc_of_ident i) ) "invalid long identifier ") end
   
 let mode = begin try
   let str = (Sys.getenv "CAMLP4_DEBUG") in
@@ -84,14 +84,14 @@ let formatter =
               (( at_bol.contents ) := ( (ch = '\n') ))
               end
             end done))) ) ( (fun (() ) -> (flush out_channel)) ))
-let simple_try =try List.find x lst with Not_found  -> 3 
+let simple_try =try List.find x lst with Not_found  -> 3
 
 let u = function
     (Ast.PaVrn(_,_) |Ast.PaStr(_,_) |Ast.PaRng(_,_,_)
      |Ast.PaFlo(_,_) |Ast.PaNativeInt(_,_) |Ast.PaInt64(_,_)
      |Ast.PaInt32(_,_) |Ast.PaInt(_,_) |Ast.PaChr(_,_)
      |Ast.PaTyp(_,_) |Ast.PaArr(_,_) |Ast.PaAnt(_,_)) -> 1
-  | 3 -> 2 
+  | 3 -> 2
 
 let v =
   (fun (ppf) ->
@@ -111,7 +111,7 @@ let v =
         | ((`Snterm _|`Snext|`Sself|(`Stree _)|(`Stoken _)|(`Skeyword _)) as s) ->
             (self#symbol1 ppf s)))
 
-let short_match x = match x with Some x-> x | Nnoe -> 0 | A -> 1 
+let short_match x = match x with Some x-> x | Nnoe -> 0 | A -> 1
 let short_match x = match x with Some x-> x | Nnoe -> 0 | A -> 1 | B -> 2 | C -> 3
 let short_match x = match x with Some x-> x | Nnoe -> 0 | A -> 1 | B -> 2 | C -> 3 | D -> 4 | E -> 5
 let f = function (Some x as y as z) -> z;;
@@ -189,6 +189,7 @@ let rec action_arg s sl = function
       else
         (try f (int_of_string s); Some sl
         with | Failure "int_of_string" -> None)
+          
 let u = {
   v =3;
   u = 32;
@@ -214,7 +215,7 @@ let f = {
   a=4;
   b=3;
   }
-}    
+}
     
 
 
@@ -264,33 +265,26 @@ let conv_con =
      (" False", "False")];
   (fun s -> try Hashtbl.find t s with | Not_found  -> s)
 
-let f =
-   List.iter (fun x -> x) [ ];
-  (fun s -> x)
-let t ()=
-  (let a = List.iter
-      (function Some x -> x | None -> y| A->3|B->4) 3  in
-  ()); 3
 
 let t ()= begin
   let a = List.iter (function Some x -> x | None -> y| A->3|B->4| C->5|D->6) 3  in  (); 3
 end
     
-let g () = begin 
+let g () = begin
   List.iter (function Some x -> x | None -> y) 3  ;
   3
 end
 let h () =
   match x with
-  |{x=y;_} as ( * )-> x 
+  |{x=y;_} as ( * )-> x
 
 
 let a = 3 + (-1)
-let u = -1 + 3     
-let u a b = (or) a b   
+let u = -1 + 3
+let u a b = (or) a b
 
 
-let f g h = ( * ) 3  4 1 2    
+let f g h = ( * ) 3  4 1 2
 let a = ( * )
 
 let u g {a  ;b ; _}=
@@ -305,3 +299,8 @@ let test_labels = begin
   f ?g:g 3 ;
 end
 ;;
+let u a = a -3 ;;
+let v = 32 + -3;;
+
+let f g = 32 + -3.0;;
+let f g = a -3.0;;
