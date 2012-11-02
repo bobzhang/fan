@@ -20,22 +20,6 @@ let mkdirection = fun
   | <:direction_flag< downto >> -> Downto
   | _ -> assert false ];
 
-
-(* let conv_con = *)
-(*   let t = Hashtbl.create 73 in begin *)
-(*     List.iter (fun (s, s') -> Hashtbl.add t s s') *)
-(*       [("True", "true"); ("false", "false"); (" True", "True"); *)
-(*        (" false", "false")]; *)
-(*     fun s -> try Hashtbl.find t s with [ Not_found -> s ] *)
-(*   end; *)
-
-(* *)
-(* let conv_lab = (\* FIXME remove them later*\) *)
-(*     let t = Hashtbl.create 73 in begin *)
-(*       List.iter (fun (s, s') -> Hashtbl.add t s s') [(\* ("val", "contents") *\)]; *)
-(*       fun s -> try Hashtbl.find t s with [ Not_found -> s ] *)
-(*     end ; *)
-
 let mkrf = fun
     [ <:rec_flag< rec >> -> Recursive
     | <:rec_flag<>> -> Nonrecursive
@@ -66,7 +50,7 @@ let mkrf = fun
 
   If "", just remove it, this behavior should appear in other identifier as well FIXME
  *)
-let ident_tag (* ?(conv_lid = fun x -> x) *) i =
+let ident_tag i =
   let rec self i acc =  match i with
     [ <:ident< $(lid:"*predef*").$(lid:"option") >> ->
       (Some ((ldot (lident "*predef*") "option"), `lident))
@@ -85,17 +69,17 @@ let ident_tag (* ?(conv_lid = fun x -> x) *) i =
         | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier" ]
     | <:ident< $lid:s >> ->
           let x = match acc with
-            [ None -> lident s (* (conv_lid s) *)
-            | Some (acc, `uident | `app) -> ldot acc ((* conv_lid  *)s)
+            [ None -> lident s 
+            | Some (acc, `uident | `app) -> ldot acc s
             | _ -> error (loc_of_ident i) "invalid long identifier" ]
           in Some (x, `lident)
     | _ -> error (loc_of_ident i) "invalid long identifier" ]
   in match self i None with [Some x -> x | None -> error (loc_of_ident i) "invalid long identifier "];
 
-let ident_noloc (* ?conv_lid *) i = fst (ident_tag (* ?conv_lid *) i);
+let ident_noloc i = fst (ident_tag  i);
 
-let ident (* ?conv_lid *)  i =
-  with_loc (ident_noloc (* ?conv_lid *) i) (loc_of_ident i);
+let ident i =
+  with_loc (ident_noloc  i) (loc_of_ident i);
 
 let long_lident msg id =
     match ident_tag id with
@@ -105,15 +89,15 @@ let long_lident msg id =
 let long_type_ident = long_lident "invalid long identifier type";
 let long_class_ident = long_lident "invalid class name";
 
-let long_uident_noloc (* ?(conv_con = fun x -> x) *) i =
+let long_uident_noloc  i =
     match ident_tag i with
-    [ (Ldot i s, `uident) -> ldot i ((* conv_con *) s)
-    | (Lident s, `uident) -> lident ((* conv_con *) s)
+    [ (Ldot i s, `uident) -> ldot i s
+    | (Lident s, `uident) -> lident s
     | (i, `app) -> i
     | _ -> error (loc_of_ident i) "uppercase identifier expected" ];
 
-let long_uident (* ?conv_con *) i =
-  with_loc (long_uident_noloc (* ?conv_con *) i) (loc_of_ident i);
+let long_uident  i =
+  with_loc (long_uident_noloc  i) (loc_of_ident i);
 
 let rec ctyp_long_id_prefix t = match t with
     [ <:ctyp< $id:i >> -> ident_noloc i
@@ -240,13 +224,13 @@ let mktrecord = fun
   
 let mkvariant = fun
   [ <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) >> ->
-    (with_loc ((* conv_con *) s) sloc, [], None,  loc)
+    (with_loc  s sloc, [], None,  loc)
   | <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) of $t >> ->
-      (with_loc ((* conv_con *) s) sloc, List.map ctyp (list_of_ctyp t []), None,  loc)
+      (with_loc  s sloc, List.map ctyp (list_of_ctyp t []), None,  loc)
   | <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) : ($t -> $u) >> ->
-      (with_loc ((* conv_con *) s) sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  loc)
+      (with_loc s sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  loc)
   | <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) : $t >> ->
-      (with_loc ((* conv_con *) s) sloc, [], Some (ctyp t),  loc)
+      (with_loc  s sloc, [], Some (ctyp t),  loc)
 
   | _ -> assert false (*FIXME*) ];
   
@@ -374,7 +358,7 @@ let rec patt = fun
   | <:patt@loc< $(id:<:ident@sloc< $lid:s >>) >> ->
     mkpat loc (Ppat_var (with_loc s sloc))
   | <:patt@loc< $id:i >> ->
-      let p = Ppat_construct (long_uident (* ~conv_con *) i)
+      let p = Ppat_construct (long_uident  i)
           None (constructors_arity ())
       in mkpat loc p
   | PaAli loc p1 p2 ->
@@ -387,7 +371,7 @@ let rec patt = fun
   | PaAnt loc _ -> error loc "antiquotation not allowed here"
   | PaAny loc -> mkpat loc Ppat_any
   | <:patt@loc< $(id:<:ident@sloc< $uid:s >>) $(tup:<:patt@loc_any< _ >>) >> ->
-      mkpat loc (Ppat_construct (lident_with_loc ((* conv_con *) s) sloc)
+      mkpat loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
   | PaApp loc _ _ as f ->
      let (f, al) = patt_fa [] f in
@@ -457,13 +441,13 @@ let rec patt = fun
          | <:patt@loc< ($tup:_) >> -> error loc "singleton tuple pattern"
          | PaTyc loc p t -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
          | PaTyp loc i -> mkpat loc (Ppat_type (long_type_ident i))
-         | PaVrn loc s -> mkpat loc (Ppat_variant ((* conv_con *) s) None)
+         | PaVrn loc s -> mkpat loc (Ppat_variant s None)
          | PaLaz loc p -> mkpat loc (Ppat_lazy (patt p))
          | PaMod loc m -> mkpat loc (Ppat_unpack (with_loc m loc))
          | PaEq _ _ _ | PaSem _ _ _ | PaCom _ _ _ | PaNil _ as p ->
              error (loc_of_patt p) "invalid pattern" ]
 and mklabpat = fun (* patt -> Longident.t loc * pattern*)
-  [ <:patt< $i = $p >> -> (ident (* ~conv_lid:conv_lab *) i, patt p)
+  [ <:patt< $i = $p >> -> (ident  i, patt p)
   | p -> error (loc_of_patt p) "invalid pattern" ];
   
 
@@ -505,7 +489,7 @@ let rec expr = fun (* expr -> expression*)
       match Expr.sep_expr [] e with
       [ [(loc, ml, <:expr@sloc< $uid:s >>) :: l] ->
         let ca = constructors_arity () in
-        (mkexp loc (Pexp_construct (mkli sloc ((* conv_con *) s) ml) None ca), l)
+        (mkexp loc (Pexp_construct (mkli sloc  s ml) None ca), l)
       | [(loc, ml, <:expr@sloc< $lid:s >>) :: l] ->
           (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
       | [(_, [], e) :: l] -> (expr e, l)
@@ -516,7 +500,7 @@ let rec expr = fun (* expr -> expression*)
           match e2 with
           [ <:expr@sloc< $lid:s >> ->
               let loc = FanLoc.merge loc_bp loc_ep
-              in  (loc, mkexp loc (Pexp_field e1 (mkli sloc ((* conv_lab *) s) ml)))
+              in  (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
           | _ -> error (loc_of_expr e2) "lowercase identifier expected" ])
         (loc, e) l in
     e
@@ -671,8 +655,8 @@ let rec expr = fun (* expr -> expression*)
         | <:expr@loc< $lid:s >> ->
             mkexp loc (Pexp_ident (lident_with_loc s loc))
         | <:expr@loc< $uid:s >> ->
-            mkexp loc (Pexp_construct (lident_with_loc ((* conv_con *) s) loc) None true)
-        | ExVrn loc s -> mkexp loc (Pexp_variant ((* conv_con *) s) None)
+            mkexp loc (Pexp_construct (lident_with_loc  s loc) None true)
+        | ExVrn loc s -> mkexp loc (Pexp_variant  s None)
         | ExWhi loc e1 el ->
             let e2 = ExSeq loc el in
             mkexp loc (Pexp_while (expr e1) (expr e2))
@@ -742,7 +726,7 @@ and when_expr e w = match w with (* expr -> expr -> expression*)
 and mklabexp x acc = match x with (* rec_binding ->  (Longident.t loc * expression) list -> (Longident.t loc * expression) list *)
   [ <:rec_binding< $x; $y >> ->
     mklabexp x (mklabexp y acc)
-  | <:rec_binding< $i = $e >> -> [(ident (* ~conv_lid:conv_lab *) i, expr e) :: acc]
+  | <:rec_binding< $i = $e >> -> [(ident  i, expr e) :: acc]
   | _ -> assert false ]
 and mkideexp x acc =match x with (* rec_binding -> (string loc * expression) list ->  (string loc * expression) list *)
   [ <:rec_binding<>> -> acc
@@ -787,9 +771,9 @@ and sig_item s l = match s with (* sig_item -> signature -> signature*)
   | <:sig_item< $sg1; $sg2 >> -> sig_item sg1 (sig_item sg2 l)
   | SgDir _ _ _ -> l
   | <:sig_item@loc< exception $uid:s >> ->
-      [mksig loc (Psig_exception (with_loc ((* conv_con *) s) loc) []) :: l]
+      [mksig loc (Psig_exception (with_loc s loc) []) :: l]
   | <:sig_item@loc< exception $uid:s of $t >> ->
-      [mksig loc (Psig_exception (with_loc ((* conv_con *) s) loc)
+      [mksig loc (Psig_exception (with_loc s loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l]
   | SgExc _ _ -> assert false (*FIXME*)
   | SgExt loc n t sl -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
@@ -849,12 +833,12 @@ and str_item s l = match s with (* str_item -> structure -> structure*)
   | <:str_item< $st1; $st2 >> -> str_item st1 (str_item st2 l)
   | StDir _ _ _ -> l
   | <:str_item@loc< exception $uid:s >> ->
-      [mkstr loc (Pstr_exception (with_loc ((* conv_con *) s) loc) []) :: l ]
+      [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
   | <:str_item@loc< exception $uid:s of $t >> ->
-      [mkstr loc (Pstr_exception (with_loc ((* conv_con *) s) loc)
+      [mkstr loc (Pstr_exception (with_loc s loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l ]
   | <:str_item@loc< exception $uid:s = $i >> ->
-      [mkstr loc (Pstr_exn_rebind (with_loc ((* conv_con *) s) loc) (ident i)) :: l ]
+      [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ]
   | <:str_item@loc< exception $uid:_ of $_ = $_ >> ->
       error loc "type in exception alias"
   | StExc _ _ _ -> assert false (*FIXME*)
