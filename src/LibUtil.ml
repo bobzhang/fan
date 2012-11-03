@@ -146,7 +146,65 @@ module Hashtbl = struct
   let values tbl = fold (fun _ v acc -> [v::acc] ) tbl [];
 end;
 
-module Stream = struct
+
+module type STREAM = sig
+  type  t 'a;
+  exception Failure;
+  exception Error of string;
+  val from : (int -> option 'a) -> t 'a;
+  val of_list : list 'a-> t 'a;
+  val of_string : string ->  t char;
+  val of_channel : in_channel -> t char;
+  val iter : ('a -> unit) -> t 'a -> unit;
+  val next : t 'a -> 'a;
+  val empty : t 'a -> unit;
+  val peek : t 'a -> option 'a;
+  val junk : t 'a -> unit;
+  val count : t 'a -> int;
+  val npeek : int -> t 'a ->  list 'a;
+  val iapp : t 'a -> t 'a -> t 'a;
+  val icons : 'a -> t 'a -> t 'a;
+  val ising : 'a -> t 'a;
+  val lapp : (unit -> t 'a) -> t 'a -> t 'a;
+  val lcons : (unit -> 'a) -> t 'a -> t 'a;
+  val lsing : (unit -> 'a) -> t 'a;
+  val sempty : t 'a;
+  val slazy : (unit -> t 'a) -> t 'a;
+  val dump : ('a -> unit) -> t 'a -> unit;
+    
+  val to_list : t 'a ->  list 'a;
+  val to_string : t char -> string;
+  val to_string_fmt :
+     format ('a -> string) unit string -> t 'a -> string;
+  val to_string_fun : ('a -> string) -> t 'a -> string;
+  val of_fun : (unit -> 'a) -> t 'a;
+  val foldl : ('a -> 'b -> ('a * option bool )) -> 'a -> t 'b -> 'a;
+  val foldr : ('a ->  lazy_t 'b -> 'b) -> 'b -> t 'a -> 'b;
+  val fold : ('a -> 'a -> ('a *  option bool)) -> t 'a -> 'a;
+  val filter : ('a -> bool) -> t 'a -> t 'a;
+  val map2 : ('a -> 'b -> 'c) -> t 'a -> t 'b -> t 'c;
+  val scanl : ('a -> 'b -> 'a) -> 'a -> t 'b -> t 'a;
+  val scan : ('a -> 'a -> 'a) -> t 'a -> t 'a;
+  val concat : t (t 'a)  -> t 'a;
+  val take : int -> t 'a -> t 'a;
+  val drop : int -> t 'a -> t 'a;
+  val take_while : ('a -> bool) -> t 'a -> t 'a;
+  val drop_while : ('a -> bool) -> t 'a -> t 'a;
+  val comb : (t 'a * t 'b) ->  t ('a * 'b);
+  val split :  t ('a * 'b) -> (t 'a * t 'b);
+  val merge :
+    (bool -> 'a -> bool) -> (t 'a * t 'a) -> t 'a;
+  val switch : ('a -> bool) -> t 'a -> (t 'a * t 'a);
+  val cons : 'a -> t 'a -> t 'a;
+  val apnd : t 'a -> t 'a -> t 'a;
+  val is_empty : t 'a -> bool;
+  val rev : t 'a -> t 'a;
+  val tail : t 'a -> t 'a;
+  val map : ('a -> 'b) -> t 'a -> t 'b;
+  val dup : t 'a -> t 'a;
+end;
+  
+module Stream : STREAM with type t 'a = Stream.t 'a = struct
   include BatStream;
   include Stream;
   let rev strm=

@@ -1,3 +1,4 @@
+open LibUtil;
 (** A type for stream filters. *)
 type  stream_filter 'a 'loc =
      Stream.t ('a *  'loc)-> Stream.t ('a*  'loc);

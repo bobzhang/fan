@@ -1,10 +1,10 @@
-
+open LibUtil;
 module P = MakePreCast.Make (struct end) ;
 open P;
 
 let wrap parse_fun lb =
   let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
-  let not_filtered_token_stream = FanLexer.from_lexbuf lb in
+  let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
   let token_stream = Gram.filter  not_filtered_token_stream in
   try  match token_stream with parser (* FIXME *)
   [ [< (`EOI, _) >] -> raise End_of_file

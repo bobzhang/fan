@@ -3,7 +3,7 @@
 (* <:fan< lang "ocaml"; keep on; show_code on; plugin_add "Print"; >> ; *)
 (* << type t = [A of int | B of bool ] ;  >> ; *)
 #load_rec "FanLexUtil.cmo";;
-#load "FanTop.cma";;
+#load_rec "FanTop.cma";;
 open FanTop;;
 open FanTop.P;;
 open FanSig;;

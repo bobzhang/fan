@@ -7,7 +7,7 @@ include Structure;
 let gkeywords = Hashtbl.create 301 in{
   gkeywords = gkeywords;
   gfilter = FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords);
-  glexer = FanLexer.mk ();
+  glexer = FanLexUtil.mk ();
   warning_verbose = ref true;
   error_verbose = FanConfig.verbose
 };
@@ -18,7 +18,7 @@ let gram =
   let gkeywords = Hashtbl.create 301 in{
   gkeywords = gkeywords;
   gfilter = FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords);
-  glexer = FanLexer.mk ();
+  glexer = FanLexUtil.mk ();
   warning_verbose = ref true;
   error_verbose = FanConfig.verbose };
 

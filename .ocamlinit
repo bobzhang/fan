@@ -1,5 +1,16 @@
 (* -*- Mode:caml; -*- *)
 
+let _ = begin
+  Hashtbl.replace Toploop.directive_table "useo"
+    (Toploop.Directive_string (fun file ->
+      let old = !Toploop.parse_use_file in
+      let () = Toploop.parse_use_file:=Parse.use_file in
+      let () = try
+        ignore(Toploop.use_file Format.std_formatter file)
+      with
+        exn -> begin Toploop.parse_use_file := old; raise exn end in
+      Toploop.parse_use_file := old))
+end
 #use "topfind";;
 #require "batteries";;
 (* open Batteries;; *)
@@ -8,8 +19,8 @@ open Format;;
 let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 #install_printer print_ocaml_loc;;
 #directory "_build";;
-(* #directory "_build/src";; *)
-#directory "_build/cold" ;;
+#directory "_build/src";;
+(* #directory "_build/cold" ;; *)
 #load_rec "FanLoc.cmo";;
 
 let fmt = std_formatter
@@ -21,18 +32,6 @@ let _ = begin
     (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())))
 end
 
-let _ = begin
-
-  Hashtbl.replace Toploop.directive_table "useo"
-    (Toploop.Directive_string (fun file ->
-      let old = !Toploop.parse_use_file in
-      let () = Toploop.parse_use_file:=Parse.use_file in
-      let () = try
-        ignore(Toploop.use_file Format.std_formatter file)
-      with
-        exn -> begin Toploop.parse_use_file := old; raise exn end in
-      Toploop.parse_use_file := old))
-end
 let (|-) f g x = g (f x );;
     
 let interface_of_string =
@@ -45,5 +44,5 @@ let tg_dp () =
 let pp =fprintf
 let f = std_formatter;;
 (* consult Topdirs for more utlities *)
-(* #use "test/test_fan.ml";; *)
+#useo "./test/test_fan.ml";;
 (* #load_rec "FanTop.cma";; *)
