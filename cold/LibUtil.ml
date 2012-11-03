@@ -52,9 +52,9 @@ let is_even x = (x mod 2) == 0
 let to_string_of_printer printer v =
   let buf = Buffer.create 30 in
   let () = Format.bprintf buf "@[%a@]" printer v in Buffer.contents buf
-let zfold_left ?(start=0)  ~until  ~acc  f =
+let zfold_left ?(start= 0)  ~until  ~acc  f =
   let v = ref acc in
-  for x = start to  until do v := (f v.contents x)  done; v.contents
+  for x = start to until do v := (f v.contents x) done; v.contents
 type 'a cont = 'a -> exn  
 let callcc (type u) (f : u  cont  -> u ) =
   let module M = struct
@@ -88,21 +88,22 @@ module Stream = struct
   include BatStream include Stream
   let rev strm =
     let rec aux (__strm : _ Stream.t ) =
-      match Stream.peek __strm with
+      match Stream.peek ( __strm ) with
       | Some x ->
-          (Stream.junk __strm;
-           (let xs = __strm in Stream.lapp (fun _ -> aux xs) (Stream.ising x)))
+          (Stream.junk ( __strm );
+           (let xs = ( __strm ) in
+            Stream.lapp (fun _ -> aux xs) (Stream.ising x)))
       | _ -> Stream.sempty in
     aux strm
   let tail (__strm : _ Stream.t ) =
-    match Stream.peek __strm with
-    | Some _ -> (Stream.junk __strm; __strm)
+    match Stream.peek ( __strm ) with
+    | Some _ -> (Stream.junk ( __strm ); ( __strm ))
     | _ -> Stream.sempty
   let rec map f (__strm : _ Stream.t ) =
-    match Stream.peek __strm with
+    match Stream.peek ( __strm ) with
     | Some x ->
-        (Stream.junk __strm;
-         (let xs = __strm in
+        (Stream.junk ( __strm );
+         (let xs = ( __strm ) in
           Stream.lcons (fun _ -> f x) (Stream.slazy (fun _ -> map f xs))))
     | _ -> Stream.sempty
   let dup strm =

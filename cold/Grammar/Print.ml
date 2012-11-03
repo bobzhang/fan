@@ -44,10 +44,10 @@ class text_grammar =
         function
         | [] -> ()
         | s::sl ->
-            (let j =
-               try String.index_from n i ' '
-               with | Not_found  -> String.length n in
-             fprintf ppf "%s %a" (String.sub n i (j - i)) self#symbol1 s;
+            let j =
+              try String.index_from n i ' '
+              with | Not_found  -> String.length n in
+            (fprintf ppf "%s %a" (String.sub n i (j - i)) self#symbol1 s;
              if sl = []
              then ()
              else (fprintf ppf " "; loop (min (j + 1) (String.length n)) sl)) in
@@ -126,7 +126,7 @@ class dump_grammar =
         and get_children acc =
         function
         | [] -> List.rev acc
-        | Bro (n,x)::[] -> get_children (n :: acc) x
+        | (Bro (n,x))::[] -> get_children (n :: acc) x
         | _ -> raise Exit in
       print_brothers ppf (get_brothers [] tree)
     method! levels ppf elev =

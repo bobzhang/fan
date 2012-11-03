@@ -19,8 +19,8 @@ let rec fold_binding_vars f bi acc =
   | Ast.BiEq (_,p,_) -> fold_pattern_vars f p acc
   | Ast.BiNil _ -> acc
   | Ast.BiAnt (_,_) -> assert false
-class ['accu] fold_free_vars (f : string  -> 'accu -> 'accu)
-  ?(env_init=SSet.empty) free_init =
+class ['accu] fold_free_vars (f : string  -> 'accu -> 'accu) ?(env_init=
+  SSet.empty) free_init =
   object (o)
     inherit  Camlp4Ast.fold as super
     val free = (free_init :'accu )

@@ -42,10 +42,9 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
     end) module Exp_fun = DynAst.Pack(struct
            type 'a t = 'a expand_fun  
            end)
-  let expanders_table = (ref []
-    :((string * Exp_key.pack )* Exp_fun.pack ) list  ref  )
-  let default = ref ""
-  let default_tbl = (Hashtbl.create 50 :(string ,string ) Hashtbl.t  )
+  let expanders_table:((string * Exp_key.pack )* Exp_fun.pack ) list  ref 
+    =ref [] let default = ref ""
+  let default_tbl:(string ,string ) Hashtbl.t  =Hashtbl.create 50
   let translate = ref (fun x -> x)
   let default_at_pos pos str = Hashtbl.replace default_tbl pos str
   let expander_name pos_tag name =
@@ -88,8 +87,8 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
           (pp "parsing result of quotation";
            (match dump_file.contents with
             | Some dump_file ->
-                (let () = bprintf ppf " dumping result...\n" in
-                 try
+                let () = bprintf ppf " dumping result...\n" in
+                (try
                    let oc = open_out_bin dump_file in
                    output_string oc str;
                    output_string oc "\n";
@@ -119,25 +118,25 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
       try expander loc loc_name_opt quot.q_contents
       with | FanLoc.Exc_located (_,Quotation _) as exc -> raise exc
       | FanLoc.Exc_located (iloc,exc) ->
-          (let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
-           raise (FanLoc.Exc_located (iloc, exc1)))
+          let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
+          raise (FanLoc.Exc_located (iloc, exc1))
       | exc ->
-          (let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
-           raise (FanLoc.Exc_located (loc, exc1)))
+          let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
+          raise (FanLoc.Exc_located (loc, exc1))
   let parse_quotation_result parse loc quot pos_tag str =
     let open FanSig in
       try parse loc str
       with
       | FanLoc.Exc_located (iloc,Quotation (n,pos_tag,Expanding ,exc)) ->
-          (let ctx = ParsingResult (iloc, (quot.q_contents)) in
-           let exc1 = Quotation (n, pos_tag, ctx, exc) in
-           raise (FanLoc.Exc_located (iloc, exc1)))
+          let ctx = ParsingResult (iloc, (quot.q_contents)) in
+          let exc1 = Quotation (n, pos_tag, ctx, exc) in
+          raise (FanLoc.Exc_located (iloc, exc1))
       | FanLoc.Exc_located (iloc,(Quotation _ as exc)) ->
           raise (FanLoc.Exc_located (iloc, exc))
       | FanLoc.Exc_located (iloc,exc) ->
-          (let ctx = ParsingResult (iloc, (quot.q_contents)) in
-           let exc1 = Quotation ((quot.q_name), pos_tag, ctx, exc) in
-           raise (FanLoc.Exc_located (iloc, exc1)))
+          let ctx = ParsingResult (iloc, (quot.q_contents)) in
+          let exc1 = Quotation ((quot.q_name), pos_tag, ctx, exc) in
+          raise (FanLoc.Exc_located (iloc, exc1))
   let expand loc quotation tag =
     let open FanSig in
       let pos_tag = DynAst.string_of_tag tag in
@@ -174,27 +173,28 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
     let expand_patt _loc loc_name_opt s =
       BatRef.protect FanConfig.antiquotations true
         (fun _ ->
-           let ast = Gram.parse_string entry_eoi _loc s in
-           let meta_ast = mpatt _loc ast in
+           let ast = Gram.parse_string entry_eoi ( _loc ) s in
+           let meta_ast = mpatt ( _loc ) ast in
            let exp_ast = anti_filter#patt meta_ast in
            match loc_name_opt with
            | None  -> exp_ast
            | Some name ->
-               (let rec subst_first_loc =
-                  function
-                  | Ast.PaApp
-                      (_loc,Ast.PaId
-                       (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
-                      ->
-                      Ast.PaApp (_loc,
-                        (Ast.PaId (_loc,
-                           (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Ast")),
-                              (Ast.IdUid (_loc, u)))))),
-                        (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
-                  | Ast.PaApp (_loc,a,b) ->
-                      Ast.PaApp (_loc, (subst_first_loc a), b)
-                  | p -> p in
-                subst_first_loc exp_ast)) in
+               let rec subst_first_loc =
+                 function
+                 | Ast.PaApp
+                     (_loc,Ast.PaId
+                      (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
+                     ->
+                     Ast.PaApp (( _loc ),
+                       (Ast.PaId (( _loc ),
+                          (Ast.IdAcc (( _loc ),
+                             (Ast.IdUid (( _loc ), "Ast")),
+                             (Ast.IdUid (( _loc ), u)))))),
+                       (Ast.PaId (( _loc ), (Ast.IdLid (( _loc ), name)))))
+                 | Ast.PaApp (_loc,a,b) ->
+                     Ast.PaApp (( _loc ), (subst_first_loc a), b)
+                 | p -> p in
+               subst_first_loc exp_ast) in
     add name DynAst.expr_tag expand_expr;
     add name DynAst.patt_tag expand_patt;
     add name DynAst.str_item_tag expand_str_item

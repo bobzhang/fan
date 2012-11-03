@@ -40,3 +40,4 @@ tmp*
 *.patch
 stats
 stat/
+log

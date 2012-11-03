@@ -2,12 +2,13 @@ open Format
 open FanLexer
 open LibUtil
 let rec clean (__strm : _ Stream.t ) =
-  match Stream.peek __strm with
+  match Stream.peek ( __strm ) with
   | Some (`EOI,loc) ->
-      (Stream.junk __strm; Stream.lsing (fun _ -> (`EOI, loc)))
+      (Stream.junk ( __strm ); Stream.lsing (fun _ -> (`EOI, loc)))
   | Some x ->
-      (Stream.junk __strm;
-       (let xs = __strm in Stream.icons x (Stream.slazy (fun _ -> clean xs))))
+      (Stream.junk ( __strm );
+       (let xs = ( __strm ) in
+        Stream.icons x (Stream.slazy (fun _ -> clean xs))))
   | _ -> Stream.sempty
 let debug_from_string str =
   let loc = FanLoc.string_loc in

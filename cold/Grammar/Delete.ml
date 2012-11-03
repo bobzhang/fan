@@ -29,11 +29,11 @@ let delete_rule_in_tree entry =
     | Some (Some dsl,DeadEnd ) ->
         Some ((Some ((n.node) :: dsl)), (n.brother))
     | Some (Some dsl,t) ->
-        (let t = Node { node = (n.node); son = t; brother = (n.brother) } in
-         Some ((Some ((n.node) :: dsl)), t))
+        let t = Node { node = (n.node); son = t; brother = (n.brother) } in
+        Some ((Some ((n.node) :: dsl)), t)
     | Some (None ,t) ->
-        (let t = Node { node = (n.node); son = t; brother = (n.brother) } in
-         Some (None, t))
+        let t = Node { node = (n.node); son = t; brother = (n.brother) } in
+        Some (None, t)
     | None  -> None in
   delete_in_tree
 let rec decr_keyw_use gram =
@@ -63,17 +63,16 @@ let rec delete_rule_in_suffix entry symbols =
             (match t with
              | DeadEnd  when lev.lprefix == DeadEnd -> levs
              | _ ->
-                 (let lev =
-                    {
-                      assoc = (lev.assoc);
-                      lname = (lev.lname);
-                      lsuffix = t;
-                      lprefix = (lev.lprefix)
-                    } in
-                  lev :: levs)))
+                 let lev =
+                   {
+                     assoc = (lev.assoc);
+                     lname = (lev.lname);
+                     lsuffix = t;
+                     lprefix = (lev.lprefix)
+                   } in
+                 lev :: levs))
        | None  ->
-           (let levs = delete_rule_in_suffix entry symbols levs in lev ::
-              levs))
+           let levs = delete_rule_in_suffix entry symbols levs in lev :: levs)
   | [] -> raise Not_found
 let rec delete_rule_in_prefix entry symbols =
   function
@@ -86,29 +85,28 @@ let rec delete_rule_in_prefix entry symbols =
             (match t with
              | DeadEnd  when lev.lsuffix == DeadEnd -> levs
              | _ ->
-                 (let lev =
-                    {
-                      assoc = (lev.assoc);
-                      lname = (lev.lname);
-                      lsuffix = (lev.lsuffix);
-                      lprefix = t
-                    } in
-                  lev :: levs)))
+                 let lev =
+                   {
+                     assoc = (lev.assoc);
+                     lname = (lev.lname);
+                     lsuffix = (lev.lsuffix);
+                     lprefix = t
+                   } in
+                 lev :: levs))
        | None  ->
-           (let levs = delete_rule_in_prefix entry symbols levs in lev ::
-              levs))
+           let levs = delete_rule_in_prefix entry symbols levs in lev :: levs)
   | [] -> raise Not_found
 let delete_rule_in_level_list entry symbols levs =
   match symbols with
   | `Sself::symbols -> delete_rule_in_suffix entry symbols levs
-  | `Snterm e::symbols when e == entry ->
+  | (`Snterm e)::symbols when e == entry ->
       delete_rule_in_suffix entry symbols levs
   | _ -> delete_rule_in_prefix entry symbols levs
 let delete_rule entry sl =
   match entry.edesc with
   | Dlevels levs ->
-      (let levs = delete_rule_in_level_list entry sl levs in
-       entry.edesc <- Dlevels levs;
+      let levs = delete_rule_in_level_list entry sl levs in
+      (entry.edesc <- Dlevels levs;
        entry.estart <-
          (fun lev ->
             fun strm ->

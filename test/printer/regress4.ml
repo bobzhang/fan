@@ -1,1 +1,1 @@
-let rec f : 'a 'b . 'a list = []
+let f : 'a 'b . 'a list = []

@@ -7,9 +7,9 @@ let wrap parse_fun lb =
   let not_filtered_token_stream = FanLexer.from_lexbuf lb in
   let token_stream = Gram.filter not_filtered_token_stream in
   try
-    let (__strm : _ Stream.t ) = token_stream in
-    match Stream.peek __strm with
-    | Some (`EOI,_) -> (Stream.junk __strm; raise End_of_file)
+    let (__strm :_ Stream.t )= token_stream in
+    match Stream.peek ( __strm ) with
+    | Some (`EOI,_) -> (Stream.junk ( __strm ); raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
@@ -24,10 +24,10 @@ let toplevel_phrase token_stream =
           :Ast.str_item  option  Gram.t  ) token_stream
   with
   | Some str_item ->
-      (let str_item =
-         Syntax.AstFilters.fold_topphrase_filters
-           (fun t -> fun filter -> filter t) str_item in
-       Ast2pt.phrase str_item)
+      let str_item =
+        Syntax.AstFilters.fold_topphrase_filters
+          (fun t -> fun filter -> filter t) str_item in
+      Ast2pt.phrase str_item
   | None  -> raise End_of_file
 let fake token_stream =
   (try
@@ -48,12 +48,12 @@ let use_file token_stream =
         Gram.parse_origin_tokens Syntax.use_file token_stream in
       if stopped_at_directive <> None
       then
-        (match pl with
-         | Ast.StDir (_,"load",Ast.ExStr (_,s))::[] ->
-             (Topdirs.dir_load Format.std_formatter s; loop ())
-         | Ast.StDir (_,"directory",Ast.ExStr (_,s))::[] ->
-             (Topdirs.dir_directory s; loop ())
-         | _ -> (pl, false))
+        match pl with
+        | (Ast.StDir (_,"load",Ast.ExStr (_,s)))::[] ->
+            (Topdirs.dir_load Format.std_formatter s; loop ())
+        | (Ast.StDir (_,"directory",Ast.ExStr (_,s)))::[] ->
+            (Topdirs.dir_directory s; loop ())
+        | _ -> (pl, false)
       else (pl, true) in
     loop () in
   let pl =

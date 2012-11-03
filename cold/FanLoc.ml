@@ -130,12 +130,12 @@ let make_absolute x =
   let old_name = (x.loc_start).pos_fname in
   if Filename.is_relative old_name
   then
-    (let new_name = Filename.concat pwd old_name in
-     {
-       x with
-       loc_start = { (x.loc_start) with pos_fname = new_name };
-       loc_end = { (x.loc_end) with pos_fname = new_name }
-     })
+    let new_name = Filename.concat pwd old_name in
+    {
+      x with
+      loc_start = { (x.loc_start) with pos_fname = new_name };
+      loc_end = { (x.loc_end) with pos_fname = new_name }
+    }
   else x
 let strictly_before x y =
   let b =

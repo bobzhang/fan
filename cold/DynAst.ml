@@ -35,35 +35,34 @@ let string_of_tag =
   | Tag_binding  -> "binding"
   | Tag_rec_binding  -> "rec_binding"
   | Tag_module_binding  -> "module_binding"
-let ctyp_tag = (Tag_ctyp :Ast.ctyp  tag  )
-let patt_tag = (Tag_patt :Ast.patt  tag  )
-let expr_tag = (Tag_expr :Ast.expr  tag  )
-let module_type_tag = (Tag_module_type :Ast.module_type  tag  )
-let sig_item_tag = (Tag_sig_item :Ast.sig_item  tag  )
-let with_constr_tag = (Tag_with_constr :Ast.with_constr  tag  )
-let module_expr_tag = (Tag_module_expr :Ast.module_expr  tag  )
-let str_item_tag = (Tag_str_item :Ast.str_item  tag  )
-let class_type_tag = (Tag_class_type :Ast.class_type  tag  )
-let class_sig_item_tag = (Tag_class_sig_item :Ast.class_sig_item  tag  )
-let class_expr_tag = (Tag_class_expr :Ast.class_expr  tag  )
-let class_str_item_tag = (Tag_class_str_item :Ast.class_str_item  tag  )
-let match_case_tag = (Tag_match_case :Ast.match_case  tag  )
-let ident_tag = (Tag_ident :Ast.ident  tag  )
-let binding_tag = (Tag_binding :Ast.binding  tag  )
-let rec_binding_tag = (Tag_rec_binding :Ast.rec_binding  tag  )
-let module_binding_tag = (Tag_module_binding :Ast.module_binding  tag  )
+let ctyp_tag:Ast.ctyp  tag  =Tag_ctyp
+let patt_tag:Ast.patt  tag  =Tag_patt
+let expr_tag:Ast.expr  tag  =Tag_expr
+let module_type_tag:Ast.module_type  tag  =Tag_module_type
+let sig_item_tag:Ast.sig_item  tag  =Tag_sig_item
+let with_constr_tag:Ast.with_constr  tag  =Tag_with_constr
+let module_expr_tag:Ast.module_expr  tag  =Tag_module_expr
+let str_item_tag:Ast.str_item  tag  =Tag_str_item
+let class_type_tag:Ast.class_type  tag  =Tag_class_type
+let class_sig_item_tag:Ast.class_sig_item  tag  =Tag_class_sig_item
+let class_expr_tag:Ast.class_expr  tag  =Tag_class_expr
+let class_str_item_tag:Ast.class_str_item  tag  =Tag_class_str_item
+let match_case_tag:Ast.match_case  tag  =Tag_match_case
+let ident_tag:Ast.ident  tag  =Tag_ident
+let binding_tag:Ast.binding  tag  =Tag_binding
+let rec_binding_tag:Ast.rec_binding  tag  =Tag_rec_binding
+let module_binding_tag:Ast.module_binding  tag  =Tag_module_binding
 type dyn  
 external dyn_tag : 'a tag  -> dyn  tag  = "%identity"
 module Pack(X:sig type 'a t   end) = struct
   type pack = (dyn  tag * Obj.t )  exception Pack_error
   let pack tag (v : 'a X.t ) = ((dyn_tag tag), (Obj.repr v))
-  let unpack =
-    (fun tag ->
+  let unpack:'a tag  -> pack  -> 'a X.t 
+    =fun tag ->
        fun (tag',obj) ->
          if (dyn_tag tag) = tag'
          then (Obj.obj obj :'a X.t  )
-         else raise Pack_error :'a tag  -> pack  -> 'a X.t  )
-  let print_tag =
-    (fun f -> fun (tag,_) -> Format.pp_print_string f (string_of_tag tag)
-    :Format.formatter  -> pack  -> unit  )
+         else raise Pack_error
+  let print_tag:Format.formatter  -> pack  -> unit 
+    =fun f -> fun (tag,_) -> Format.pp_print_string f (string_of_tag tag)
   end

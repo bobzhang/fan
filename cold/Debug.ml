@@ -21,7 +21,7 @@ let mode =
           SSet.add (String.sub str i ((String.length str) - i)) acc in
     let sections = loop SSet.empty 0 in
     if SSet.mem "*" sections
-    then (fun _ -> true)
+    then fun _ -> true
     else (fun x -> SSet.mem x sections)
   with | Not_found  -> (fun _ -> false)
 let formatter =
@@ -31,10 +31,9 @@ let formatter =
     (fun buf ->
        fun pos ->
          fun len ->
-           for i = pos to  (pos + len) - 1 do
+           for i = pos to (pos + len) - 1 do
              if at_bol.contents then output_string out_channel header else ();
              (let ch = buf.[i] in
               output_char out_channel ch; at_bol.contents := (ch = '\n'))
-             
            done) (fun () -> flush out_channel)
 let printf section fmt = fprintf formatter ("%s: " ^^ fmt) section

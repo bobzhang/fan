@@ -55,12 +55,12 @@ let error_no_respect_rules p_con p_prm =
 let check_keyword _ = true
 let error_on_unknown_keywords = ref false
 let rec ignore_layout (__strm : _ Stream.t ) =
-  match Stream.peek __strm with
+  match Stream.peek ( __strm ) with
   | Some ((`COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _),_) ->
-      (Stream.junk __strm; ignore_layout __strm)
+      (Stream.junk ( __strm ); ignore_layout ( __strm ))
   | Some x ->
-      (Stream.junk __strm;
-       (let s = __strm in
+      (Stream.junk ( __strm );
+       (let s = ( __strm ) in
         Stream.icons x (Stream.slazy (fun _ -> ignore_layout s))))
   | _ -> Stream.sempty
 let print ppf x = pp_print_string ppf (token_to_string x)

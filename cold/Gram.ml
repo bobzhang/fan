@@ -52,8 +52,8 @@ let wrap_stream_parser p loc s =
 let parse_file_with ~rule  file =
   if Sys.file_exists file
   then
-    (let ch = open_in file in
-     let st = Stream.of_channel ch in parse rule (FanLoc.mk file) st)
+    let ch = open_in file in
+    let st = Stream.of_channel ch in parse rule (FanLoc.mk file) st
   else failwithf "@[file: %s not found@]@." file
 let delete_rule = Delete.delete_rule
 let srules e rl =
@@ -66,14 +66,17 @@ let eoi_entry entry =
   let entry_eoi = mk ((name entry) ^ "_eoi") in
   let () =
     extend (entry_eoi :'entry_eoi t  )
-      ((fun () -> (None, [(None, None, [([`Snterm (obj (entry :'entry t  ));
-          `Stoken (((function | `EOI -> true | _ -> false)), (`Normal,
-            "`EOI"))],
+      ((fun () -> (None,
+          [(None,
+          None,
+          [([`Snterm (obj (entry :'entry t  ));
+            `Stoken (((function | `EOI -> true | _ -> false)), (`Normal,
+              "`EOI"))],
           (mk_action
              (fun __camlp4_0 ->
                 fun (x : 'entry) ->
                   fun (_loc : FanLoc.t ) ->
-                    match __camlp4_0 with
+                    match ( __camlp4_0 ) with
                     | `EOI -> (x :'entry_eoi )
                     | _ -> assert false)))])])) ()) in
   entry_eoi

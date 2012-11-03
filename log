@@ -1,0 +1,796 @@
+let f ~g  = g + x
+type u = v:(int  -> int ) -> int  
+type u = ?v:(int  -> int ) -> int  
+type u = ?v:int  option  list  -> int  
+type u = ?v:int  option  -> int  
+type u = (int  -> (int  -> int ) -> int ) -> int  -> int  -> int  
+type u = int  option  
+type u = (int ,bool ) option  list  
+type u = ?v:int  -> ?l:int  -> m:int  -> string  
+type u = (a * b ) -> ?v:int  -> ?l:int  -> m:int  -> string  
+type 'a u = [< `a | `b] as 'a 
+type 'a u = [< `a | `b> `a] as 'a 
+type u = [ `a | `b] 
+type 'a c = < draw :int  ;.. > as 'a 
+type 'a u = #a as 'a 
+type 'c u = ('a,'b)#a as 'c 
+let f ~v:v0  ~u  = u + v0
+let f ~v:(v0 : int )  y = v0 + y
+type ('a,'b,'c) u = ('a,'b)#f [> `c `a] as 'c 
+let sum (lst : _#iterator) = lst#fold (fun x -> fun y -> x + y) 0
+let f y ?(x= 3)  z = (x + y) + z
+let f ~y:y0  = 3
+let f ?x:x0  y = x + y0
+let f ?x:(Some x0)  y = x0 + y
+let f ?x  y = match x with | Some x -> x + y0
+let f ?x  y = match x with | Some x -> x + y | None  -> 0
+let f x = function | Some y -> 1 | None  -> 0
+let a f = f
+let f (Some x) = x
+let u = function | Some x when x > 0 -> x | None  -> 3
+let g () = let f = fun (Some x) when x > 0 -> x in f
+let _ = let f = fun (Some x) when x > 0 -> x in f
+let u = [1; 2; 3; 4; 4]
+let f x xs ys = (x + y) :: xs :: ys
+type u = [ `a of (int * bool ) | `b of bool ] 
+type u =  {
+  f: int ;
+  g: bool } 
+let fg { f;_} = f
+let f = function | x::xs -> x | [] -> 0
+let _ = ((!a), ((!a).b), (!(a.b)))
+external f : int  -> int  = "hah"
+type ('a,'b,'c) u = ('a,'b)#f as 'c 
+module type S = sig type u   end
+module X(U:S) = struct
+  
+  end
+module rec X:sig  end = struct
+  
+  end and Y:sig  end = struct
+        
+        end
+module type S = sig  module rec X: sig  end and Y: sig  end end
+include Ast
+external loc_of_ctyp : ctyp  -> FanLoc.t  = "%field0"
+external loc_of_patt : patt  -> FanLoc.t  = "%field0"
+external loc_of_expr : expr  -> FanLoc.t  = "%field0"
+external loc_of_module_type : module_type  -> FanLoc.t  = "%field0"
+external loc_of_module_expr : module_expr  -> FanLoc.t  = "%field0"
+let f = function | 'a'..'z' -> 1 | _ -> 2
+module type S =
+  sig
+    module U :
+    (S with type  u = x   and type ('a,'b) m = ('a,'b) x   and type 'c h =
+      M.h  )
+  end
+let _ = print_int 4; print_int 10
+let _ = (print_int 3; print_int 2) (print_int 3; print_int 2) and g f = g; g
+let f () = let g = a and g = 3 in g; g
+let _ = ignore ((a.[0]), (b.(1))); a.[0] <- 3; b.(1) <- 4
+let _ = object  method x : string  -> string = print_int 3 end
+let mk_set (type s) ~cmp  =
+  let module M = struct
+    type t = s   let compare = cmp
+    end in ((module Set.Make(M)) :(module Set.S with type elt = s ) )
+let mk_set (type s) ~cmp  =
+  let module M = struct
+    type t = s   let compare = cmp
+    end in ((module Set.Make(M)) :(module Set.S with type elt = s ) )
+let mk s (type s) (type u) = s
+let mk (type s) s (type u) = s
+let _ =
+  Gram.extend (start_debug :'start_debug Gram.t  )
+    ((fun () -> (None,
+        [(None,
+        None,
+        [([`Stoken
+             (((function | `LIDENT "camlp4_debug" -> true | _ -> false)),
+             (`Normal, "(`LIDENT \"camlp4_debug\")"))],
+        (Gram.mk_action
+           (fun __camlp4_0 ->
+              fun (_loc : FanLoc.t ) ->
+                match ( __camlp4_0 ) with
+                | `LIDENT "camlp4_debug" -> (Some "Camlp4" :'start_debug )
+                | _ -> assert false)));
+        ([`Stoken (((function | `LIDENT "debug" -> true | _ -> false)),
+            (`Normal, "(`LIDENT \"debug\")"))],
+        (Gram.mk_action
+           (fun __camlp4_0 ->
+              fun (_loc : FanLoc.t ) ->
+                match ( __camlp4_0 ) with
+                | `LIDENT "debug" -> (None :'start_debug )
+                | _ -> assert false)))])])) ())
+class a ?(f= 3) ~g:g0 = object   end
+class a : ?f:int  -> object  method x : int  end = fun ?(f= 3)  ->
+  object  method x = f end
+class a ?(f= 3) : object  method x : int  end = object  method x = f end
+class a f : object  method x : int  end = object  method p x = f x end
+class ['a] f = object   end
+class point = object (self : 'self)  end
+and a = object (self)  end
+class ['a] circle (c : 'a) =
+        object 
+          constraint 'a = #point
+          val mutable center = c
+          method center = center
+          method set_center c = center <- c
+          method move = center#move
+        end
+and circle (c : 'a) =
+    object 
+      constraint 'a = #point
+      val mutable center = c
+      method center = center
+      method set_center c = center <- c
+      method move = center#move
+    end
+let f x = object  method x = print_int x end
+class ['a,'b] f (v : 'a) (u : 'b) = object  method x = v method y = u end
+class ['a,'b] f ~v:(v : 'a) ~u = object  method x = v method y : 'b= u end
+class type a = object  method v : int  end
+class type b = object ('b) method new_x : int  -> 'b end
+module type S = sig  end
+module type S = sig  end
+module type S =
+  sig
+    val a : int 
+    val b : int 
+    val c : int 
+    val a : int 
+    val b : int 
+    val c : int 
+    module type U  =
+      sig
+        val a : int 
+        val b : int 
+        val c : int 
+        val b : int 
+        val c : int 
+        val c : int 
+        val b : int 
+        val c : int 
+        class ['a,'b] f :
+          f:'a -> ?g:'b -> object  method x : 'a method y : 'b end
+        class f : 'a -> 'b -> object  method x : 'a method y : 'b end
+        class a :
+          ?f:int  ->
+            g:'a ->
+              object 
+                method x : int 
+                method y : int  -> int 
+                method z : (int  -> int ) -> int 
+                method u : int  -> int  -> int 
+              end
+        class a : ?f:int  -> g:'a -> object   end
+        class a : ?f:int  -> g:'a -> object   end
+        and b : ?f:int  -> g:'a -> object   end
+      end
+    module type U  =
+      sig
+        val a : int 
+        val b : int 
+        val c : int 
+        val b : int 
+        val c : int 
+        val c : int 
+        val b : int 
+        val c : int 
+      end
+  end
+let compact_tables state_v =
+  for i = 0 to n - 1 do
+    (match state_v.(i) with
+     | Perform (n,c) ->
+         (base.(i) <- - (n + 1); base_code.(i) <- emit_tag_code c)
+     | Shift (trans,move) ->
+         ((match trans with
+           | No_remember  -> ()
+           | Remember (n,c) ->
+               (backtrk.(i) <- n; backtrk_code.(i) <- emit_tag_code c));
+          (let ((b_trans,d_trans),(b_moves,d_moves)) = pack_moves i move in
+           base.(i) <- b_trans;
+           default.(i) <- d_trans;
+           base_code.(i) <- b_moves;
+           default_code.(i) <- d_moves)))
+  done;
+  reset_compact trans;
+  reset_compact moves;
+  tables
+let check x msg =
+  if
+    ((start_bol x) < 0) ||
+      (((stop_bol x) < 0) || (((start_off x) < 0) || ((stop_off x) < 0)))
+  then
+    (eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
+     false)
+  else true
+open Lexing
+open Misc
+open Parser
+type error =  
+  | Illegal_character of char 
+  | Illegal_escape of string 
+  | Unterminated_comment of Location.t 
+  | Unterminated_string
+  | Unterminated_string_in_comment of Location.t 
+  | Keyword_as_label of string 
+  | Literal_overflow of string  
+exception Error of error *Location.t 
+let keyword_table =
+  create_hashtable 149
+    [("and",
+    AND);
+    ("as",
+    AS);
+    ("assert",
+    ASSERT);
+    ("begin",
+    BEGIN);
+    ("class",
+    CLASS);
+    ("constraint",
+    CONSTRAINT);
+    ("do",
+    DO);
+    ("done",
+    DONE);
+    ("downto",
+    DOWNTO);
+    ("else",
+    ELSE);
+    ("end",
+    END);
+    ("exception",
+    EXCEPTION);
+    ("external",
+    EXTERNAL);
+    ("false",
+    FALSE);
+    ("for",
+    FOR);
+    ("fun",
+    FUN);
+    ("function",
+    FUNCTION);
+    ("functor",
+    FUNCTOR);
+    ("if",
+    IF);
+    ("in",
+    IN);
+    ("include",
+    INCLUDE);
+    ("inherit",
+    INHERIT);
+    ("initializer",
+    INITIALIZER);
+    ("lazy",
+    LAZY);
+    ("let",
+    LET);
+    ("match",
+    MATCH);
+    ("method",
+    METHOD);
+    ("module",
+    MODULE);
+    ("mutable",
+    MUTABLE);
+    ("new",
+    NEW);
+    ("object",
+    OBJECT);
+    ("of",
+    OF);
+    ("open",
+    OPEN);
+    ("or",
+    OR);
+    ("private",
+    PRIVATE);
+    ("rec",
+    REC);
+    ("sig",
+    SIG);
+    ("struct",
+    STRUCT);
+    ("then",
+    THEN);
+    ("to",
+    TO);
+    ("true",
+    TRUE);
+    ("try",
+    TRY);
+    ("type",
+    TYPE);
+    ("val",
+    VAL);
+    ("virtual",
+    VIRTUAL);
+    ("when",
+    WHEN);
+    ("while",
+    WHILE);
+    ("with",
+    WITH);
+    ("mod",
+    (INFIXOP3 "mod"));
+    ("land",
+    (INFIXOP3 "land"));
+    ("lor",
+    (INFIXOP3 "lor"));
+    ("lxor",
+    (INFIXOP3 "lxor"));
+    ("lsl",
+    (INFIXOP4 "lsl"));
+    ("lsr",
+    (INFIXOP4 "lsr"));
+    ("asr",
+    (INFIXOP4 "asr"))]
+let initial_string_buffer = String.create 256
+let string_buff = ref initial_string_buffer
+let string_index = ref 0
+let reset_string_buffer () =
+  string_buff := initial_string_buffer; string_index := 0
+open Lexing
+let absname = ref false
+type t =  {
+  loc_start: position ;
+  loc_end: position ;
+  loc_ghost: bool } 
+let in_file name =
+  let loc =
+    { pos_fname = name; pos_lnum = 1; pos_bol = 0; pos_cnum = (-1) } in
+  { loc_start = loc; loc_end = loc; loc_ghost = true }
+let none = in_file "_none_"
+let curr lexbuf =
+  {
+    loc_start = (lexbuf.lex_start_p);
+    loc_end = (lexbuf.lex_curr_p);
+    loc_ghost = false
+  }
+let init lexbuf fname =
+  lexbuf.lex_curr_p <-
+    { pos_fname = fname; pos_lnum = 1; pos_bol = 0; pos_cnum = 0 }
+let symbol_rloc () =
+  {
+    loc_start = (Parsing.symbol_start_pos ());
+    loc_end = (Parsing.symbol_end_pos ());
+    loc_ghost = false
+  }
+let symbol_gloc () =
+  {
+    loc_start = (Parsing.symbol_start_pos ());
+    loc_end = (Parsing.symbol_end_pos ());
+    loc_ghost = true
+  }
+let rhs_loc n =
+  {
+    loc_start = (Parsing.rhs_start_pos n);
+    loc_end = (Parsing.rhs_end_pos n);
+    loc_ghost = false
+  }
+let input_name = ref "_none_"
+let input_lexbuf = ref (None :lexbuf  option  )
+let status = ref Terminfo.Uninitialised
+let num_loc_lines = ref 0
+let highlight_terminfo ppf num_lines lb loc1 loc2 =
+  Format.pp_print_flush ppf ();
+  (let pos0 = - lb.lex_abs_pos in
+   if pos0 < 0 then raise Exit;
+   (let lines = ref (!num_loc_lines) in
+    for i = pos0 to lb.lex_buffer_len - 1 do
+      if ((lb.lex_buffer).[i]) = '\n' then incr lines
+    done;
+    if (!lines) >= (num_lines - 2) then raise Exit;
+    flush stdout;
+    Terminfo.backup (!lines);
+    (let bol = ref false in
+     print_string "# ";
+     for pos = 0 to (lb.lex_buffer_len - pos0) - 1 do
+       (if !bol then (print_string "  "; bol := false);
+        if
+          (pos = (loc1.loc_start).pos_cnum) ||
+            (pos = (loc2.loc_start).pos_cnum)
+        then Terminfo.standout true;
+        if (pos = (loc1.loc_end).pos_cnum) || (pos = (loc2.loc_end).pos_cnum)
+        then Terminfo.standout false;
+        (let c = (lb.lex_buffer).[pos + pos0] in
+         print_char c; bol := (c = '\n')))
+     done;
+     Terminfo.standout false;
+     Terminfo.resume (!num_loc_lines);
+     flush stdout)))
+let highlight_dumb ppf lb loc =
+  let pos0 = - lb.lex_abs_pos in
+  if pos0 < 0 then raise Exit;
+  (let end_pos = (lb.lex_buffer_len - pos0) - 1 in
+   let line_start = ref 0 and line_end = ref 0 in
+   for pos = 0 to end_pos do
+     if ((lb.lex_buffer).[pos + pos0]) = '\n'
+     then
+       (if (loc.loc_start).pos_cnum > pos then incr line_start;
+        if (loc.loc_end).pos_cnum > pos then incr line_end)
+   done;
+   Format.fprintf ppf "Characters %i-%i:@." (loc.loc_start).pos_cnum
+     (loc.loc_end).pos_cnum;
+   Format.pp_print_string ppf "  ";
+   (let line = ref 0 in
+    let pos_at_bol = ref 0 in
+    for pos = 0 to end_pos do
+      let c = (lb.lex_buffer).[pos + pos0] in
+      if c <> '\n'
+      then
+        (if ((!line) = (!line_start)) && ((!line) = (!line_end))
+         then Format.pp_print_char ppf c
+         else
+           if (!line) = (!line_start)
+           then
+             (if pos < (loc.loc_start).pos_cnum
+              then Format.pp_print_char ppf '.'
+              else Format.pp_print_char ppf c)
+           else
+             if (!line) = (!line_end)
+             then
+               (if pos < (loc.loc_end).pos_cnum
+                then Format.pp_print_char ppf c
+                else Format.pp_print_char ppf '.')
+             else
+               if ((!line) > (!line_start)) && ((!line) < (!line_end))
+               then Format.pp_print_char ppf c)
+      else
+        (if ((!line) = (!line_start)) && ((!line) = (!line_end))
+         then
+           (Format.fprintf ppf "@.  ";
+            for _i = !pos_at_bol to (loc.loc_start).pos_cnum - 1 do
+              Format.pp_print_char ppf ' '
+            done;
+            for _i = (loc.loc_start).pos_cnum to (loc.loc_end).pos_cnum - 1
+              do
+              Format.pp_print_char ppf '^'
+            done);
+         if ((!line) >= (!line_start)) && ((!line) <= (!line_end))
+         then
+           (Format.fprintf ppf "@.";
+            if pos < (loc.loc_end).pos_cnum
+            then Format.pp_print_string ppf "  ");
+         incr line;
+         pos_at_bol := (pos + 1))
+    done))
+let ctx_matcher p =
+  let p = normalize_pat p in
+  match p.pat_desc with
+  | Tpat_construct (_,_,cstr,omegas,_) ->
+      (fun q ->
+         fun rem ->
+           match q.pat_desc with
+           | Tpat_construct (_,_,cstr',args,_) when
+               cstr.cstr_tag = cstr'.cstr_tag -> (p, (args @ rem))
+           | Tpat_any  -> (p, (omegas @ rem))
+           | _ -> raise NoMatch)
+  | Tpat_constant cst ->
+      (fun q ->
+         fun rem ->
+           match q.pat_desc with
+           | Tpat_constant cst' when (const_compare cst cst') = 0 -> (p, rem)
+           | Tpat_any  -> (p, rem)
+           | _ -> raise NoMatch)
+  | Tpat_variant (lab,Some omega,_) ->
+      (fun q ->
+         fun rem ->
+           match q.pat_desc with
+           | Tpat_variant (lab',Some arg,_) when lab = lab' -> (p, (arg ::
+               rem))
+           | Tpat_any  -> (p, (omega :: rem))
+           | _ -> raise NoMatch)
+  | Tpat_variant (lab,None ,_) ->
+      (fun q ->
+         fun rem ->
+           match q.pat_desc with
+           | Tpat_variant (lab',None ,_) when lab = lab' -> (p, rem)
+           | Tpat_any  -> (p, rem)
+           | _ -> raise NoMatch)
+  | Tpat_array omegas ->
+      let len = List.length omegas in
+      (fun q ->
+         fun rem ->
+           match q.pat_desc with
+           | Tpat_array args when (List.length args) = len -> (p,
+               (args @ rem))
+           | Tpat_any  -> (p, (omegas @ rem))
+           | _ -> raise NoMatch)
+  | Tpat_tuple omegas ->
+      (fun q ->
+         fun rem ->
+           match q.pat_desc with
+           | Tpat_tuple args -> (p, (args @ rem))
+           | _ -> (p, (omegas @ rem)))
+  | Tpat_record (l,_) ->
+      (fun q ->
+         fun rem ->
+           match q.pat_desc with
+           | Tpat_record (l',_) ->
+               let l' = all_record_args l' in (p,
+                 (List.fold_right (fun (_,_,_,p) -> fun r -> p :: r) l' rem))
+           | _ -> (p,
+               (List.fold_right (fun (_,_,_,p) -> fun r -> p :: r) l rem)))
+  | Tpat_lazy omega ->
+      (fun q ->
+         fun rem ->
+           match q.pat_desc with
+           | Tpat_lazy arg -> (p, (arg :: rem))
+           | _ -> (p, (omega :: rem)))
+  | _ -> fatal_error "Matching.ctx_matcher"
+module Ast = struct
+  include Ast
+  let safe_string_escaped s =
+    if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
+    then s
+    else String.escaped s
+  end
+module U = F.Make(S)
+let load_modules file =
+  try let (l :Odoc_module.t_module  list )= Odoc_types.open_dump dump in l
+  with | Sys_error s -> raise (Failure s)
+
+let _ =
+  rule "byte stdlib in mixed mode"
+    (fun env ->
+       fun build ->
+         let (_ :Command.t )= 3 in import_stdlib_contents build ["cmi"]; Nop)
+let u:int  =3
+let (u :int )= 3
+let open_temp_file ?(mode= [Open_text])  ?(temp_dir= !current_temp_dir_name) 
+  prefix suffix = ()
+open Complex
+let neg x = { re = (-. x.re); im = (+. x.im) }
+let neg2 x = { re = (-. x.re); im = (+. x.im) }
+class map =
+  object (o : 'self_type)
+    method string : string  -> string = o#unknown
+    method list :
+      'a_out 'a . ('self_type -> 'a -> 'a_out) -> 'a list  -> 'a_out list =
+      fun _f_a ->
+        function
+        | [] -> []
+        | _x::_x_i1 ->
+            let _x = ( _f_a ) o ( _x ) in
+            let _x_i1 = o#list ( _f_a ) ( _x_i1 ) in ( _x ) :: ( _x_i1 )
+  end
+type 'a u = [< `a | `b> `a `b] 
+type 'a u = [ 'a | 'b] 
+let f : 'a 'b . 'a list = []
+let store_string_char c =
+  if (!string_index) >= (String.length (!string_buff))
+  then
+    (let new_buff = String.create ((String.length (!string_buff)) * 2) in
+     String.blit (!string_buff) 0 new_buff 0 (String.length (!string_buff));
+     string_buff := new_buff);
+  String.unsafe_set (!string_buff) (!string_index) c;
+  incr string_index
+let pos0 = - lb.lex_abs_pos
+let highlight_dumb ppf lb loc =
+  for pos = 0 to end_pos do if c <> '\n' then (if a then b) else () done
+let a = [p1 :: ps; p2 :: ps]
+let f ((p::ps)::rem) = 3
+let u = F._a
+let u () = let base = "a" in base.[0] <- '3'
+let expand_quotation loc expander pos_tag quot =
+  let open FanSig in
+    let loc_name_opt = if quot.q_loc = "" then None else Some (quot.q_loc) in
+    try expander loc loc_name_opt quot.q_contents
+    with | FanLoc.Exc_located (_,Quotation _) as exc -> raise exc
+    | FanLoc.Exc_located (iloc,exc) ->
+        let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
+        raise (FanLoc.Exc_located (iloc, exc1))
+    | exc ->
+        let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
+        raise FanLoc.Exc_located (loc, exc1)
+let mkvirtual =
+  function
+  | Ast.ViVirtual  -> Virtual
+  | Ast.ViNil  -> Concrete
+  | _ -> assert false
+let ident_tag ?(conv_lid= fun x -> x)  i =
+  let rec self i acc =
+    match i with
+    | Ast.IdAcc (_,Ast.IdLid (_,"*predef*"),Ast.IdLid (_,"option")) ->
+        Some ((ldot (lident "*predef*") "option"), `lident)
+    | Ast.IdAcc (_,i1,i2) -> self i2 (self i1 acc)
+    | Ast.IdApp (_,i1,i2) ->
+        (match ((self i1 None), (self i2 None), acc) with
+         | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
+         | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifer")
+    | Ast.IdUid (_,s) ->
+        (match (acc, s) with
+         | (None ,"") -> None
+         | (None ,s) -> Some ((lident s), `uident)
+         | (Some (_,(`uident|`app)),"") -> acc
+         | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
+         | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier")
+    | Ast.IdLid (_,s) ->
+        let x =
+          match acc with
+          | None  -> lident (conv_lid s)
+          | Some (acc,(`uident|`app)) -> ldot acc (conv_lid s)
+          | _ -> error (loc_of_ident i) "invalid long identifier" in
+        Some (x, `lident)
+    | _ -> error (loc_of_ident i) "invalid long identifier" in
+  match self i None with
+  | Some x -> x
+  | None  -> error (loc_of_ident i) "invalid long identifier "
+let mode =
+  try
+    let str = Sys.getenv "CAMLP4_DEBUG" in
+    let rec loop acc i =
+      try
+        let pos = String.index_from str i ':' in
+        loop (SSet.add (String.sub str i (pos - i)) acc) (pos + 1)
+      with
+      | Not_found  ->
+          SSet.add (String.sub str i ((String.length str) - i)) acc in
+    let sections = loop SSet.empty 0 in
+    if SSet.mem "*" sections
+    then fun _ -> true
+    else (fun x -> SSet.mem x sections)
+  with | Not_found  -> (fun _ -> false)
+let formatter =
+  let header = "camlp4-debug: " in
+  let at_bol = ref true in
+  make_formatter
+    (fun buf ->
+       fun pos ->
+         fun len ->
+           for i = pos to (pos + len) - 1 do
+             if at_bol.contents then output_string out_channel header else ();
+             (let ch = buf.[i] in
+              output_char out_channel ch; at_bol.contents := (ch = '\n'))
+           done) (fun () -> flush out_channel)
+let simple_try = try List.find x lst with | Not_found  -> 3
+let u =
+  function
+  | Ast.PaVrn (_,_)|Ast.PaStr (_,_)|Ast.PaRng (_,_,_)|Ast.PaFlo
+      (_,_)|Ast.PaNativeInt (_,_)|Ast.PaInt64 (_,_)|Ast.PaInt32
+      (_,_)|Ast.PaInt (_,_)|Ast.PaChr (_,_)|Ast.PaTyp (_,_)|Ast.PaArr
+      (_,_)|Ast.PaAnt (_,_) -> 1
+  | 3 -> 2
+let v ppf =
+  function
+  | `Smeta (n,sl,_) -> self#meta ppf n sl
+  | `Slist0 s -> fprintf ppf "LIST0 %a" self#symbol1 s
+  | `Slist0sep (s,t) ->
+      fprintf ppf "LIST0 %a SEP %a" self#symbol1 s self#symbol1 t
+  | `Slist1 s -> fprintf ppf "LIST1 %a" self#symbol1 s
+  | `Slist1sep (s,t) ->
+      fprintf ppf "LIST1 %a SEP %a" self#symbol1 s self#symbol1 t
+  | `Sopt s -> fprintf ppf "OPT %a" self#symbol1 s
+  | `Stry s -> fprintf ppf "TRY %a" self#symbol1 s
+  | `Snterml (e,l) -> fprintf ppf "%s@ Level@ %S" e.ename l
+  | `Snterm _|`Snext|`Sself|`Stree _|`Stoken _|`Skeyword _ as s ->
+      self#symbol1 ppf s
+let short_match x = match x with | Some x -> x | Nnoe  -> 0 | A  -> 1
+let short_match x =
+  match x with | Some x -> x | Nnoe  -> 0 | A  -> 1 | B  -> 2 | C  -> 3
+let short_match x =
+  match x with
+  | Some x -> x
+  | Nnoe  -> 0
+  | A  -> 1
+  | B  -> 2
+  | C  -> 3
+  | D  -> 4
+  | E  -> 5
+let f (Some x as y as z) = z
+let f (`a (Some _|None )) = 3
+let f `a (Some _|None ) = 3
+let f (`a Some x|x) = 3
+let f (`a `b `c) = 3
+let u =
+  for i = 0 to 11 do print_int a long line; print_int i; print_string done
+let u = while true do this is; a test; ha statement done
+let g = f a g b b c d gh g g g g b
+let f () = if f a g then 3 else 4
+type simple =  
+  | A of int  
+type u =  
+  | A of int  
+and b =  
+  | B of bool  
+type loc = FanLoc.t  
+and meta_bool =  
+  | BTrue
+  | BFalse
+  | BAnt of string  
+and rec_flag =  
+  | ReRecursive
+  | ReNil
+  | ReAnt of string  
+and direction_flag =  
+  | DiTo
+  | DiDownto
+  | DiAnt of string  
+and mutable_flag =  
+  | MuMutable
+  | MuNil
+  | MuAnt of string  
+and private_flag =  
+  | PrPrivate
+  | PrNil
+  | PrAnt of string  
+and virtual_flag =  
+  | ViVirtual
+  | ViNil
+  | ViAnt of string  
+and override_flag =  
+  | OvOverride
+  | OvNil
+  | OvAnt of string  
+and row_var_flag =  
+  | RvRowVar
+  | RvNil
+  | RvAnt of string  
+and 'a meta_option =  
+  | ONone
+  | OSome of 'a
+  | OAnt of string  
+and 'a meta_list =  
+  | LNil
+  | LCons of 'a* 'a meta_list 
+  | LAnt of string  
+and ident =  
+  | IdAnt of loc * string  
+and ctyp =  
+  | TyDcl of loc * string * ctyp  list * ctyp * (ctyp * ctyp ) list 
+  | TyVrnInfSup of loc * ctyp * ctyp 
+  | TyAmp of loc * ctyp * ctyp  
+and patt =  
+  | ExFor of loc * string * expr * expr * direction_flag * expr  
+type u  
+type u = [ `a | `b] 
+type u = v  = 
+  | A of int  
+type u = v  = private 
+  | A of int  
+type 'a ab = [< `a | `b] as 'a 
+type 'a ac = 'a constraint 'a = [< `a | `c]
+type ('a,'b) m = [< `m of 'a ab &'a ac ] as 'b 
+type _ a =  
+  | A: int  -> int  a 
+  | B: float  -> float  a  
+type _ a =  
+  | A: int  -> int  a  
+type _ a =  
+  | A: int  -> int  a 
+  | B: int  -> float  a  
+type ('u,'v) a =  
+  | A of int  list * bool 
+  | B of bool  
+type gram = 
+  {
+  gfilter: filter ;
+  gkeywords: (string ,int  ref ) Hashtbl.t ;
+  glexer: FanLoc.t  -> char  Stream.t  -> (token * FanLoc.t ) Stream.t ;
+  warning_verbose: bool  ref ;
+  error_verbose: bool  ref } 
+and symbol =
+  [ `Smeta of (string * symbol  list * Action.t )
+  | `Snterm of internal_entry  | `Snterml of (internal_entry * string )
+  | `Slist0 of symbol  | `Slist0sep of (symbol * symbol )
+  | `Slist1 of symbol  | `Slist1sep of (symbol * symbol ) | `Sopt of symbol 
+  | `Stry of symbol  | `Sself | `Snext | `Stoken of token_pattern 
+  | `Skeyword of string  | `Stree of tree ] 
+type +'a my =  
+  | H of 'a
+  | D 
+type (+'a,-'b) u =  
+  | H of 'a
+  | D of ('b -> int ) 
+type 'a item_or_def =  
+  | SdStr of 'a
+  | SdDef of string * (string  list * Ast.expr ) option 
+  | SdUnd of string 
+  | SdITE of bool * 'a item_or_def  list * 'a item_or_def  list 
+  | SdLazy of 'a Lazy.t  
+type s = ?u:int  -> int  -> int  

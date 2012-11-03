@@ -15,5 +15,5 @@ let rec name_tags =
 let rec to_generalized =
   function
   | Ast.TyArr (_,t1,t2) ->
-      (let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt))
+      let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt)
   | t -> ([], t)
