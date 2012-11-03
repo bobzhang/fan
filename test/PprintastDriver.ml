@@ -6,7 +6,7 @@ let test_file file =
   let chin = open_in file in begin
     let ast = (Parse.implementation (Lexing.from_channel chin)) in
     let str = AstPrint.string_of_structure ast in
-    print_string str;
+    print_endline str;
     let new_ast = Parse.implementation (Lexing.from_string str) in
     (if AstEq.eq_structure (ast, new_ast) then
       prerr_endline "passed."

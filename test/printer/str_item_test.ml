@@ -142,165 +142,165 @@ let f () =
 
 
 
-let check x msg =
-  if ((start_line x) > (stop_line x) ||
-      (start_bol x) > (stop_bol x) ||
-      (start_off x) > (stop_off x) ||
-      (start_line x) < 0 || (stop_line x) < 0 ||
-      (start_bol x) < 0 || (stop_bol x) < 0 ||
-      (start_off x) < 0 ||  (stop_off x) < 0)
-      (* Here, we don't check
-        (start_off x) < (start_bol x) || (stop_off x) < (start_bol x)
-        since the lexer is called on antiquotations, with off=0, but line and bolpos
-        have "correct" lets *)
-  then begin
-    eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
-    false
-  end
-  else true
-let a = 3 + 4 -2
+(* let check x msg = *)
+(*   if ((start_line x) > (stop_line x) || *)
+(*       (start_bol x) > (stop_bol x) || *)
+(*       (start_off x) > (stop_off x) || *)
+(*       (start_line x) < 0 || (stop_line x) < 0 || *)
+(*       (start_bol x) < 0 || (stop_bol x) < 0 || *)
+(*       (start_off x) < 0 ||  (stop_off x) < 0) *)
+(*       (\* Here, we don't check *)
+(*         (start_off x) < (start_bol x) || (stop_off x) < (start_bol x) *)
+(*         since the lexer is called on antiquotations, with off=0, but line and bolpos *)
+(*         have "correct" lets *\) *)
+(*   then begin *)
+(*     eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x; *)
+(*     false *)
+(*   end *)
+(*   else true *)
+(* let a = 3 + 4 -2 *)
 
-let filter x =
-  let f (tok,loc) =
-    let tok = keyword_conversion tok (x.is_kwd) in (tok,loc) in
-  fun strm -> (x.filter) (Stream.map f strm)
+(* let filter x = *)
+(*   let f (tok,loc) = *)
+(*     let tok = keyword_conversion tok (x.is_kwd) in (tok,loc) in *)
+(*   fun strm -> (x.filter) (Stream.map f strm) *)
 
-let rec action_arg s sl = function
-  | Arg.Unit f -> if s = "" then (f (); Some sl) else None
-  | Arg.Bool f ->
-      if s = ""
-      then
-        (match sl with
-        | s::sl ->
-            (try f (bool_of_string s); Some sl
-            with | Invalid_argument "bool_of_string" -> None)
-        | [] -> None)
-        else
-          (try f (bool_of_string s); Some sl
-          with | Invalid_argument "bool_of_string" -> None)
-  | Arg.Int f ->
-      if s = ""
-      then
-        (match sl with
-          | s::sl ->
-              try f (int_of_string s); Some sl
-              with | Failure "int_of_string" -> None
-            | [] -> None)
-      else
-        (try f (int_of_string s); Some sl
-        with | Failure "int_of_string" -> None)
+(* let rec action_arg s sl = function *)
+(*   | Arg.Unit f -> if s = "" then (f (); Some sl) else None *)
+(*   | Arg.Bool f -> *)
+(*       if s = "" *)
+(*       then *)
+(*         (match sl with *)
+(*         | s::sl -> *)
+(*             (try f (bool_of_string s); Some sl *)
+(*             with | Invalid_argument "bool_of_string" -> None) *)
+(*         | [] -> None) *)
+(*         else *)
+(*           (try f (bool_of_string s); Some sl *)
+(*           with | Invalid_argument "bool_of_string" -> None) *)
+(*   | Arg.Int f -> *)
+(*       if s = "" *)
+(*       then *)
+(*         (match sl with *)
+(*           | s::sl -> *)
+(*               try f (int_of_string s); Some sl *)
+(*               with | Failure "int_of_string" -> None *)
+(*             | [] -> None) *)
+(*       else *)
+(*         (try f (int_of_string s); Some sl *)
+(*         with | Failure "int_of_string" -> None) *)
           
-let u = {
-  v =3;
-  u = 32;
-}
+(* let u = { *)
+(*   v =3; *)
+(*   u = 32; *)
+(* } *)
 
-let f = {
-  u={a=3;
-     v=b;
-   };
-  g={
-  a=4;
-  b=3;
-  };
-  g={
-  a=4;
-  b=3;
-  };
-  g={
-  a=4;
-  b=3;
-  };
-  g={
-  a=4;
-  b=3;
-  }
-}
+(* let f = { *)
+(*   u={a=3; *)
+(*      v=b; *)
+(*    }; *)
+(*   g={ *)
+(*   a=4; *)
+(*   b=3; *)
+(*   }; *)
+(*   g={ *)
+(*   a=4; *)
+(*   b=3; *)
+(*   }; *)
+(*   g={ *)
+(*   a=4; *)
+(*   b=3; *)
+(*   }; *)
+(*   g={ *)
+(*   a=4; *)
+(*   b=3; *)
+(*   } *)
+(* } *)
     
 
 
-let f (x:int) (y:bool) = x+y
-let () =
-  Gram.extend (position :'position Gram.t  )
-    ((fun () -> (None, [(None, None,
-        [([`Stoken
-             (((function
-                | `UIDENT ("Before"|"After"|"Level") -> true
-                | _ -> false)),
-             (`Normal, "`UIDENT (\"Before\"|\"After\"|\"Level\")"));
-        `Snterm (Gram.obj (string :'string Gram.t  ))],
-        (Gram.mk_action
-           ((fun (n : 'string) ->
-               fun __camlp4_0 ->
-                 fun (_loc : FanLoc.t ) ->
-                   match __camlp4_0 with
-                   | `UIDENT ("Before"|"After"|"Level" as x) ->
-                       (Ast.ExApp (_loc, (Ast.ExVrn (_loc, x)), n) :'position
-                       )
-                   | _ -> assert false))));
-        ([`Stoken
-            (((function
-               | `UIDENT ("First"|"Last") -> true
-               | _ -> false)),
-            (`Normal, "`UIDENT (\"First\"|\"Last\")"))],
-        (Gram.mk_action
-           ((fun __camlp4_0 ->
-               fun (_loc : FanLoc.t ) ->
-                 match __camlp4_0 with
-                 | `UIDENT ("First"|"Last" as x) -> (Ast.ExVrn (_loc, x)
-                     :'position )
-                 | _ -> assert false))))])])) ())
-let v = [1;2;3]
-let v = ()
-let z = []
-let x = x::ys
-let z =(x,ys)
+(* let f (x:int) (y:bool) = x+y *)
+(* let () = *)
+(*   Gram.extend (position :'position Gram.t  ) *)
+(*     ((fun () -> (None, [(None, None, *)
+(*         [([`Stoken *)
+(*              (((function *)
+(*                 | `UIDENT ("Before"|"After"|"Level") -> true *)
+(*                 | _ -> false)), *)
+(*              (`Normal, "`UIDENT (\"Before\"|\"After\"|\"Level\")")); *)
+(*         `Snterm (Gram.obj (string :'string Gram.t  ))], *)
+(*         (Gram.mk_action *)
+(*            ((fun (n : 'string) -> *)
+(*                fun __camlp4_0 -> *)
+(*                  fun (_loc : FanLoc.t ) -> *)
+(*                    match __camlp4_0 with *)
+(*                    | `UIDENT ("Before"|"After"|"Level" as x) -> *)
+(*                        (Ast.ExApp (_loc, (Ast.ExVrn (_loc, x)), n) :'position *)
+(*                        ) *)
+(*                    | _ -> assert false)))); *)
+(*         ([`Stoken *)
+(*             (((function *)
+(*                | `UIDENT ("First"|"Last") -> true *)
+(*                | _ -> false)), *)
+(*             (`Normal, "`UIDENT (\"First\"|\"Last\")"))], *)
+(*         (Gram.mk_action *)
+(*            ((fun __camlp4_0 -> *)
+(*                fun (_loc : FanLoc.t ) -> *)
+(*                  match __camlp4_0 with *)
+(*                  | `UIDENT ("First"|"Last" as x) -> (Ast.ExVrn (_loc, x) *)
+(*                      :'position ) *)
+(*                  | _ -> assert false))))])])) ()) *)
+(* let v = [1;2;3] *)
+(* let v = () *)
+(* let z = [] *)
+(* let x = x::ys *)
+(* let z =(x,ys) *)
                
-let conv_con =
-  let t = Hashtbl.create 73 in
-  List.iter (fun (s,s') -> Hashtbl.add t s s')
-    [("True", "true");
-     ("False", "false");
-     (" True", "True");
-     (" False", "False")];
-  (fun s -> try Hashtbl.find t s with | Not_found  -> s)
+(* let conv_con = *)
+(*   let t = Hashtbl.create 73 in *)
+(*   List.iter (fun (s,s') -> Hashtbl.add t s s') *)
+(*     [("True", "true"); *)
+(*      ("False", "false"); *)
+(*      (" True", "True"); *)
+(*      (" False", "False")]; *)
+(*   (fun s -> try Hashtbl.find t s with | Not_found  -> s) *)
 
 
-let t ()= begin
-  let a = List.iter (function Some x -> x | None -> y| A->3|B->4| C->5|D->6) 3  in  (); 3
-end
+(* let t ()= begin *)
+(*   let a = List.iter (function Some x -> x | None -> y| A->3|B->4| C->5|D->6) 3  in  (); 3 *)
+(* end *)
     
-let g () = begin
-  List.iter (function Some x -> x | None -> y) 3  ;
-  3
-end
-let h () =
-  match x with
-  |{x=y;_} as ( * )-> x
+(* let g () = begin *)
+(*   List.iter (function Some x -> x | None -> y) 3  ; *)
+(*   3 *)
+(* end *)
+(* let h () = *)
+(*   match x with *)
+(*   |{x=y;_} as ( * )-> x *)
 
 
-let a = 3 + (-1)
-let u = -1 + 3
-let u a b = (or) a b
+(* let a = 3 + (-1) *)
+(* let u = -1 + 3 *)
+(* let u a b = (or) a b *)
 
 
-let f g h = ( * ) 3  4 1 2
-let a = ( * )
+(* let f g h = ( * ) 3  4 1 2 *)
+(* let a = ( * ) *)
 
-let u g {a  ;b ; _}=
-  {a;b}
+(* let u g {a  ;b ; _}= *)
+(*   {a;b} *)
 
-let test_labels = begin
-  List.find ~f:ff (+) g ;
-  List.find ~f (+) g;
-  List.find ~f (+) g;
-  f ?g:(Some 32)   3;
-  f ?g 3 ;
-  f ?g:g 3 ;
-end
-;;
-let u a = a -3 ;;
-let v = 32 + -3;;
+(* let test_labels = begin *)
+(*   List.find ~f:ff (+) g ; *)
+(*   List.find ~f (+) g; *)
+(*   List.find ~f (+) g; *)
+(*   f ?g:(Some 32)   3; *)
+(*   f ?g 3 ; *)
+(*   f ?g:g 3 ; *)
+(* end *)
+(* ;; *)
+(* let u a = a -3 ;; *)
+(* let v = 32 + -3;; *)
 
-let f g = 32 + -3.0;;
-let f g = a -3.0;;
+(* let f g = 32 + -3.0;; *)
+(* let f g = a -3.0;; *)
