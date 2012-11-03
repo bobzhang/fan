@@ -1,3 +1,4 @@
+open LibUtil
 let sfold0 f e _entry _symbl psymb =
   let rec fold accu (__strm : _ Stream.t ) =
     match try Some (psymb ( __strm )) with | Stream.Failure  -> None with

@@ -1,9 +1,6 @@
 open Structure
 open LibUtil
 open FanUtil
-module Tools = Tools.Make(struct
-  
-  end)
 let get_cur_loc = Tools.get_cur_loc
 let get_prev_loc = Tools.get_prev_loc
 let add_loc bp parse_fun strm =

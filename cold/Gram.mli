@@ -1,3 +1,5 @@
+open LibUtil
+  
 type 'a t 
 
 type assoc = [ `LA | `NA | `RA ]

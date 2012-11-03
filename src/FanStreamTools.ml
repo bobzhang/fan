@@ -1,3 +1,10 @@
+(*
+  identifiers referenced:
+  {[
+   peek junk sempty Failure count Error  t ising lsing icons lcons slazy iapp lapp
+  ]}
+
+*)
 module Ast = Camlp4Ast;
 open Lib;
 type spat_comp =

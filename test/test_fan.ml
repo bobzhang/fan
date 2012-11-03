@@ -12,7 +12,7 @@ open FanUtil;;
 open Stream;;
 open Grammar;;
 
-module Tools = Tools.Make(struct end) ;;
+(* module Tools = Tools.Make(struct end) ;; *)
 (* let f = FanToken.Filter.filter Gram.gram.FanTop.Gram.gfilter;; *)
 (* let f = FanToken.Filter.filter Gram.gram.Gram.gfilter;; *)
 (* open Lib;; *)

@@ -1,5 +1,5 @@
 open Structure;
-module Tools = Tools.Make(struct end);
+(* module Tools = Tools.Make(struct end); *)
 (* Deleting a rule *)
 
 (* [delete_rule_in_tree] returns

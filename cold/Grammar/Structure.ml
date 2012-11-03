@@ -1,4 +1,5 @@
 open FanSig
+open LibUtil
 type assoc = [ `NA | `RA | `LA] 
 type position =
   [ `First | `Last | `Before of string  | `After of string 

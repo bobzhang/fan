@@ -2,7 +2,9 @@ open LibUtil;
 open Structure;
 
 let get_prev_loc_only = ref false;
-module Make (U:sig end) = struct
+
+
+(* module Make (U:sig end) = struct *)
   let empty_entry ename _ =
       raise (Stream.Error ("entry [" ^ ename ^ "] is empty"));
   
@@ -90,4 +92,4 @@ module Make (U:sig end) = struct
       | (`Stoken (_, s1), `Stoken (_, s2)) -> eq_Stoken_ids s1 s2
       | _ -> s1 = s2 ];
   
-  end;
+  (* end; *)

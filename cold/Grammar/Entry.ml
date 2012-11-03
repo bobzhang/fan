@@ -1,9 +1,7 @@
+open LibUtil
 open FanSig
 open Format
 open Structure
-module Tools = Tools.Make(struct
-  
-  end)
 open Tools
 type 'a t = internal_entry  
 let name e = e.ename

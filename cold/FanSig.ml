@@ -1,3 +1,4 @@
+open LibUtil
 type ('a,'loc) stream_filter = ('a* 'loc) Stream.t  -> ('a* 'loc) Stream.t  
 type quotation = 
   {

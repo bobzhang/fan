@@ -84,37 +84,93 @@ module Hashtbl = struct
   let keys tbl = fold (fun k -> fun _ -> fun acc -> k :: acc) tbl []
   let values tbl = fold (fun _ -> fun v -> fun acc -> v :: acc) tbl []
   end
-module Stream = struct
-  include BatStream include Stream
-  let rev strm =
-    let rec aux (__strm : _ Stream.t ) =
+module type STREAM =
+  sig
+    type 'a t  
+    exception Failure
+    exception Error of string 
+    val from : (int  -> 'a option ) -> 'a t 
+    val of_list : 'a list  -> 'a t 
+    val of_string : string  -> char  t 
+    val of_channel : in_channel  -> char  t 
+    val iter : ('a -> unit ) -> 'a t  -> unit 
+    val next : 'a t  -> 'a
+    val empty : 'a t  -> unit 
+    val peek : 'a t  -> 'a option 
+    val junk : 'a t  -> unit 
+    val count : 'a t  -> int 
+    val npeek : int  -> 'a t  -> 'a list 
+    val iapp : 'a t  -> 'a t  -> 'a t 
+    val icons : 'a -> 'a t  -> 'a t 
+    val ising : 'a -> 'a t 
+    val lapp : (unit  -> 'a t ) -> 'a t  -> 'a t 
+    val lcons : (unit  -> 'a) -> 'a t  -> 'a t 
+    val lsing : (unit  -> 'a) -> 'a t 
+    val sempty : 'a t 
+    val slazy : (unit  -> 'a t ) -> 'a t 
+    val dump : ('a -> unit ) -> 'a t  -> unit 
+    val to_list : 'a t  -> 'a list 
+    val to_string : char  t  -> string 
+    val to_string_fmt :
+      ('a -> string ,unit ,string ) format  -> 'a t  -> string 
+    val to_string_fun : ('a -> string ) -> 'a t  -> string 
+    val of_fun : (unit  -> 'a) -> 'a t 
+    val foldl : ('a -> 'b -> ('a* bool  option )) -> 'a -> 'b t  -> 'a
+    val foldr : ('a -> 'b lazy_t  -> 'b) -> 'b -> 'a t  -> 'b
+    val fold : ('a -> 'a -> ('a* bool  option )) -> 'a t  -> 'a
+    val filter : ('a -> bool ) -> 'a t  -> 'a t 
+    val map2 : ('a -> 'b -> 'c) -> 'a t  -> 'b t  -> 'c t 
+    val scanl : ('a -> 'b -> 'a) -> 'a -> 'b t  -> 'a t 
+    val scan : ('a -> 'a -> 'a) -> 'a t  -> 'a t 
+    val concat : 'a t  t  -> 'a t 
+    val take : int  -> 'a t  -> 'a t 
+    val drop : int  -> 'a t  -> 'a t 
+    val take_while : ('a -> bool ) -> 'a t  -> 'a t 
+    val drop_while : ('a -> bool ) -> 'a t  -> 'a t 
+    val comb : ('a t * 'b t ) -> ('a* 'b) t 
+    val split : ('a* 'b) t  -> ('a t * 'b t )
+    val merge : (bool  -> 'a -> bool ) -> ('a t * 'a t ) -> 'a t 
+    val switch : ('a -> bool ) -> 'a t  -> ('a t * 'a t )
+    val cons : 'a -> 'a t  -> 'a t 
+    val apnd : 'a t  -> 'a t  -> 'a t 
+    val is_empty : 'a t  -> bool 
+    val rev : 'a t  -> 'a t 
+    val tail : 'a t  -> 'a t 
+    val map : ('a -> 'b) -> 'a t  -> 'b t 
+    val dup : 'a t  -> 'a t 
+  end
+module Stream =
+  (struct
+    include BatStream include Stream
+    let rev strm =
+      let rec aux (__strm : _ Stream.t ) =
+        match Stream.peek ( __strm ) with
+        | Some x ->
+            (Stream.junk ( __strm );
+             (let xs = ( __strm ) in
+              Stream.lapp (fun _ -> aux xs) (Stream.ising x)))
+        | _ -> Stream.sempty in
+      aux strm
+    let tail (__strm : _ Stream.t ) =
+      match Stream.peek ( __strm ) with
+      | Some _ -> (Stream.junk ( __strm ); ( __strm ))
+      | _ -> Stream.sempty
+    let rec map f (__strm : _ Stream.t ) =
       match Stream.peek ( __strm ) with
       | Some x ->
           (Stream.junk ( __strm );
            (let xs = ( __strm ) in
-            Stream.lapp (fun _ -> aux xs) (Stream.ising x)))
-      | _ -> Stream.sempty in
-    aux strm
-  let tail (__strm : _ Stream.t ) =
-    match Stream.peek ( __strm ) with
-    | Some _ -> (Stream.junk ( __strm ); ( __strm ))
-    | _ -> Stream.sempty
-  let rec map f (__strm : _ Stream.t ) =
-    match Stream.peek ( __strm ) with
-    | Some x ->
-        (Stream.junk ( __strm );
-         (let xs = ( __strm ) in
-          Stream.lcons (fun _ -> f x) (Stream.slazy (fun _ -> map f xs))))
-    | _ -> Stream.sempty
-  let dup strm =
-    let rec loop n =
-      function
-      | [] -> None
-      | x::[] -> if n = 0 then Some x else None
-      | _::l -> loop (n - 1) l in
-    let peek_nth n = loop n (Stream.npeek (n + 1) strm) in
-    Stream.from peek_nth
-  end
+            Stream.lcons (fun _ -> f x) (Stream.slazy (fun _ -> map f xs))))
+      | _ -> Stream.sempty
+    let dup strm =
+      let rec loop n =
+        function
+        | [] -> None
+        | x::[] -> if n = 0 then Some x else None
+        | _::l -> loop (n - 1) l in
+      let peek_nth n = loop n (Stream.npeek (n + 1) strm) in
+      Stream.from peek_nth
+    end : (STREAM with type 'a t = 'a Stream.t  ))
 module ErrorMonad = struct
   type log = string   type 'a result =  
                         | Left of 'a

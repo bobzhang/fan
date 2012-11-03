@@ -2,7 +2,7 @@
 open Structure;
 open LibUtil;
 open FanUtil;
-module Tools=Tools.Make (struct end);
+(* module Tools=Tools.Make (struct end); *)
 let get_cur_loc = Tools.get_cur_loc;
 let get_prev_loc = Tools.get_prev_loc;
 (* let drop_prev_loc = Tools.drop_prev_loc; *) (* FIXME unused *)

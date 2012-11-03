@@ -1,3 +1,4 @@
+open LibUtil
 module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   module Ast = Camlp4Ast type warning = FanLoc.t  -> string  -> unit  
   let default_warning loc txt =

@@ -1,5 +1,8 @@
 (* -*- Mode:caml; -*- *)
 
+#use "topfind";;
+#require "batteries";;
+#directory "+compiler-libs";;
 let _ = begin
   Hashtbl.replace Toploop.directive_table "useo"
     (Toploop.Directive_string (fun file ->
@@ -11,11 +14,7 @@ let _ = begin
         exn -> begin Toploop.parse_use_file := old; raise exn end in
       Toploop.parse_use_file := old))
 end
-#use "topfind";;
-#require "batteries";;
-(* open Batteries;; *)
 open Format;;
-#directory "+compiler-libs";;
 let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 #install_printer print_ocaml_loc;;
 #directory "_build";;
