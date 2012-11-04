@@ -83,7 +83,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
        ("@[<v 0>@,----------------------------------@," ^^
           ("Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
              "----------------------------------@,@]@.")) entry.ename
-       (Print.text#level ~space:"@\n") (flatten_tree tree))
+       Print.text#rules (flatten_tree tree))
   else ();
   txt ^ (" (in [" ^ (entry.ename ^ "])"))
 let symb_failed entry prev_symb_result prev_symb symb =

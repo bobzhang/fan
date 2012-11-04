@@ -6,7 +6,7 @@ type brothers = [ Bro of symbol and list brothers ];
 type space_formatter =  format unit Format.formatter unit;
       
 class text_grammar= object(self:'self)
-  method tree f t = self#level f  (flatten_tree t);
+  method tree f t = self#rules f  (flatten_tree t);
   method list :  ! 'a .
       ?sep:space_formatter -> ?first:space_formatter ->
       ?last:space_formatter -> (Format.formatter -> 'a -> unit) ->
@@ -26,6 +26,14 @@ class text_grammar= object(self:'self)
                       pp f "%(%)%a%(%)" first loop xs last;
                   end ] in
           aux f xs;
+  method option : ! 'a . ?first:space_formatter -> ?last:space_formatter ->
+    (Format.formatter -> 'a -> unit) -> Format.formatter ->  option 'a -> unit =
+      fun  ?first  ?last fu f a ->
+        let first = match first with [Some x -> x | None -> ""]
+        and last = match last with [Some x -> x | None -> ""]  in
+        match a with
+        [ None -> ()
+        | Some x -> pp f "%(%)%a%(%)" first fu x last];
   method symbol f =  fun
     [ `Smeta n sl _ -> self#meta n f  sl
     | `Slist0 s -> pp f "LIST0 %a" self#symbol1 s
@@ -64,41 +72,29 @@ class text_grammar= object(self:'self)
             else do { pp f " "; loop (min (j + 1) (String.length n)) sl }
           end ] in
     loop 0 sl ;
-  method rule f symbols= begin
-    pp f "@[<0>%a@]"
-      (self#list self#symbol ~sep:";@ ") symbols
+  method rule f symbols= 
+    pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@ ") symbols;
+  method rules f  rules= begin
+    pp f "@[<hv0>[ %a]@]" (self#list self#rule ~sep:("@;| ")) rules
   end;
-  method level ?space:(space:option space_formatter) f  rules= begin
-    let space = match space with [None -> ("@ ":space_formatter) | Some x -> x] in 
-    pp f "@[<0>[@;%a@;]@]" (self#list self#rule ~sep:("|"^^space)) rules
-  end;
-    
+
+  method level f  = fun [ {assoc;lname;lsuffix;lprefix} ->
+    let rules = [ [`Sself::t] | t <- flatten_tree lsuffix] @ flatten_tree lprefix in 
+    pp f "%a %a@;%a" (self#option (fun f s -> pp f "%S" s)) lname self#assoc assoc self#rules rules ];
   method assoc f = fun
     [ `LA -> pp f "LA"
     | `RA -> pp f "RA"
     | `NA -> pp f "NA" ];
     
   method levels f elev:unit =
-    List.fold_left (fun sep lev ->
-      let rules =
-        [ [`Sself :: t] | t <- flatten_tree lev.lsuffix ] @
-        flatten_tree lev.lprefix    in begin 
-          pp f "%t@[<hov 2>" sep;
-          match lev.lname with
-          [ Some n -> pp f "%S@;<1 2>" n
-          | None -> () ];
-          self#assoc f  lev.assoc ;
-          pp f "@]@;<1 2>";
-          self#level ~space:"@\n" f  rules;
-          fun f -> pp f "@,| "
-          end)
-      (fun _ -> ()) elev f;
+    pp f "@[<hv0>  %a@]" (self#list self#level ~sep:"@;| ") elev;
   method entry f e :unit= begin
-    pp f "@[<v 0>%s: [ " e.ename;
-    match e.edesc with
-    [ Dlevels elev -> self#levels f elev
-    | Dparser _ -> pp f "<parser>" ];
-    pp f " ]@]"
+    pp f "@[<2>%s:@;[%a]@]" e.ename
+      (fun f e ->
+        match e.edesc with
+        [Dlevels elev -> self#levels f elev
+        |Dparser _ -> pp f "<parser>"]
+      ) e
   end;
 end;
 

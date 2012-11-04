@@ -176,8 +176,7 @@ let rec make_expr entry tvar =  fun
   [ TXmeta _loc n tl e t ->
     let el =
       List.fold_right
-        (fun t el -> <:expr< [$(make_expr entry "" t) :: $el] >>)
-        tl <:expr< [] >> in
+        (fun t el -> <:expr< [$(make_expr entry "" t) :: $el] >>) tl <:expr< [] >> in
     <:expr< `Smeta ($str:n, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) >>
   | TXlist _loc min t ts ->
       let txt = make_expr entry "" t.text in
@@ -321,13 +320,19 @@ let mk_tok _loc ?restrict p t =
         let descr = string_of_patt p in
         let text = TXtok _loc match_fun "Antiquot" descr in
         {used=[]; text; styp=t; pattern = Some p'} ] ;
-let sfold _loc  n foldfun f e s =
+let sfold _loc  n  f e s =
+  let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in 
+  let foldfun =
+    try List.assoc n fs with [Not_found -> invalid_arg "sfold"] in
   let styp = STquo _loc (new_type_var ()) in
   let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
   let t = STapp _loc (STapp _loc (STtyp <:ctyp< $(id:gm()).fold _ >>) s.styp) styp in
   {used = s.used; text = TXmeta _loc n [s.text] e t; styp = styp; pattern = None } ;
 
-let sfoldsep  _loc n foldfun f e s sep =
+let sfoldsep  _loc n (* foldfun*) f e s sep =
+  let fs = [("FOLD0","sfold0sep");("FOLD1","sfold1sep")] in
+  let foldfun =
+    try List.assoc n fs with [Not_found -> invalid_arg "sfoldsep" ]in 
   let styp = STquo _loc (new_type_var ()) in
   let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
   let t =

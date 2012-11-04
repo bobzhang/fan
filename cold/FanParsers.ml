@@ -797,8 +797,10 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
           ((Some (`Level "top")),
             [(None, None,
                [([`Stoken
-                    (((function | `UIDENT "FOLD1" -> true | _ -> false)),
-                      (`Normal, "`UIDENT \"FOLD1\""));
+                    (((function
+                       | `UIDENT ("FOLD0"|"FOLD1") -> true
+                       | _ -> false)),
+                      (`Normal, "`UIDENT (\"FOLD0\"|\"FOLD1\")"));
                  `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
                  `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
                  `Sself;
@@ -811,32 +813,17 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                         (e : 'simple_expr)  (f : 'simple_expr)  __camlp4_0 
                         (_loc : FanLoc.t)  ->
                         match (__camlp4_1, __camlp4_0) with
-                        | (`UIDENT "SEP",`UIDENT "FOLD1") ->
-                            (sfoldsep _loc "FOLD1 SEP" "sfold1sep" f e s sep : 
+                        | (`UIDENT ("SEP" as y),`UIDENT
+                                                  ("FOLD0"|"FOLD1" as x))
+                            ->
+                            (sfoldsep _loc (x ^ (" " ^ y)) f e s sep : 
                             'symbol )
                         | _ -> assert false)));
                ([`Stoken
-                   (((function | `UIDENT "FOLD0" -> true | _ -> false)),
-                     (`Normal, "`UIDENT \"FOLD0\""));
-                `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
-                `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
-                `Sself;
-                `Stoken
-                  (((function | `UIDENT "SEP" -> true | _ -> false)),
-                    (`Normal, "`UIDENT \"SEP\""));
-                `Sself],
-                 (Gram.mk_action
-                    (fun (sep : 'symbol)  __camlp4_1  (s : 'symbol) 
-                       (e : 'simple_expr)  (f : 'simple_expr)  __camlp4_0 
-                       (_loc : FanLoc.t)  ->
-                       match (__camlp4_1, __camlp4_0) with
-                       | (`UIDENT "SEP",`UIDENT "FOLD0") ->
-                           (sfoldsep _loc "FOLD0 SEP" "sfold0sep" f e s sep : 
-                           'symbol )
-                       | _ -> assert false)));
-               ([`Stoken
-                   (((function | `UIDENT "FOLD1" -> true | _ -> false)),
-                     (`Normal, "`UIDENT \"FOLD1\""));
+                   (((function
+                      | `UIDENT ("FOLD0"|"FOLD1") -> true
+                      | _ -> false)),
+                     (`Normal, "`UIDENT (\"FOLD0\"|\"FOLD1\")"));
                 `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
                 `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
                 `Sself],
@@ -844,21 +831,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (s : 'symbol)  (e : 'simple_expr) 
                        (f : 'simple_expr)  __camlp4_0  (_loc : FanLoc.t)  ->
                        match __camlp4_0 with
-                       | `UIDENT "FOLD1" ->
-                           (sfold _loc "FOLD1" "sfold1" f e s : 'symbol )
-                       | _ -> assert false)));
-               ([`Stoken
-                   (((function | `UIDENT "FOLD0" -> true | _ -> false)),
-                     (`Normal, "`UIDENT \"FOLD0\""));
-                `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
-                `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
-                `Sself],
-                 (Gram.mk_action
-                    (fun (s : 'symbol)  (e : 'simple_expr) 
-                       (f : 'simple_expr)  __camlp4_0  (_loc : FanLoc.t)  ->
-                       match __camlp4_0 with
-                       | `UIDENT "FOLD0" ->
-                           (sfold _loc "FOLD0" "sfold0" f e s : 'symbol )
+                       | `UIDENT ("FOLD0"|"FOLD1" as x) ->
+                           (sfold _loc x f e s : 'symbol )
                        | _ -> assert false)))])])) ());
     Gram.extend (simple_expr : 'simple_expr Gram.t )
       ((fun ()  ->

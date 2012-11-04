@@ -207,15 +207,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
       LOCAL: simple_expr;
     symbol: Level "top"
-      [ [`UIDENT "FOLD0"; simple_expr{f}; simple_expr{e}; SELF{s} ->
-            sfold _loc "FOLD0" "sfold0" f e s
-        |`UIDENT "FOLD1"; simple_expr{f}; simple_expr{e}; SELF{s} ->
-            sfold _loc "FOLD1" "sfold1" f e s
-        |`UIDENT "FOLD0"; simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT "SEP"; symbol{sep} ->
-            sfoldsep _loc "FOLD0 SEP" "sfold0sep" f e s sep
-        |`UIDENT "FOLD1"; simple_expr{f}; simple_expr{e}; SELF{s};
-`UIDENT "SEP"; symbol{sep} ->
-            sfoldsep _loc "FOLD1 SEP" "sfold1sep" f e s sep ] ]
+      [ [`UIDENT ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; SELF{s} ->
+            sfold _loc x f e s
+        |`UIDENT ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT ("SEP" as y); symbol{sep} ->
+            sfoldsep _loc (x^" " ^ y) f e s sep ]]
     simple_expr:
       [ [ a_LIDENT{i} -> <:expr< $lid:i >>
         | "("; expr{e}; ")" -> e ] ]

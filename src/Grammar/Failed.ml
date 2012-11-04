@@ -90,7 +90,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
                   "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
                   "----------------------------------@,@]@.")
               entry.ename
-              (Print.text#level ~space:"@\n"   (* Format.pp_force_newline *)) (flatten_tree tree);
+              (Print.text#rules (* ~space:"@\n" *)) (flatten_tree tree);
           end
         else ();
         txt ^ " (in [" ^ entry.ename ^ "])"

@@ -563,7 +563,9 @@ let mk_tok _loc ?restrict  p t =
       let descr = string_of_patt p in
       let text = TXtok (_loc, match_fun, "Antiquot", descr) in
       { used = []; text; styp = t; pattern = (Some p') }
-let sfold _loc n foldfun f e s =
+let sfold _loc n f e s =
+  let fs = [("FOLD0", "sfold0"); ("FOLD1", "sfold1")] in
+  let foldfun = try List.assoc n fs with | Not_found  -> invalid_arg "sfold" in
   let styp = STquo (_loc, (new_type_var ())) in
   let e =
     Ast.ExApp
@@ -593,7 +595,10 @@ let sfold _loc n foldfun f e s =
     styp;
     pattern = None
   }
-let sfoldsep _loc n foldfun f e s sep =
+let sfoldsep _loc n f e s sep =
+  let fs = [("FOLD0", "sfold0sep"); ("FOLD1", "sfold1sep")] in
+  let foldfun =
+    try List.assoc n fs with | Not_found  -> invalid_arg "sfoldsep" in
   let styp = STquo (_loc, (new_type_var ())) in
   let e =
     Ast.ExApp
