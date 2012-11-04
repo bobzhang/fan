@@ -143,12 +143,12 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
         with | FanLoc.Exc_located (_,Quotation _) as exc -> raise exc
         | FanLoc.Exc_located (qloc,exc) ->
             raise
-              (FanLoc.Exc_located (qloc,
-                 (Quotation (name, pos_tag, Finding, exc))))
+              (FanLoc.Exc_located
+                 (qloc, (Quotation (name, pos_tag, Finding, exc))))
         | exc ->
             raise
-              (FanLoc.Exc_located (loc,
-                 (Quotation (name, pos_tag, Finding, exc)))) in
+              (FanLoc.Exc_located
+                 (loc, (Quotation (name, pos_tag, Finding, exc)))) in
       let loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
       expand_quotation loc expander pos_tag quotation
   let parse_quot_string entry loc loc_name_opt s =
@@ -182,11 +182,14 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
                      (_loc,Ast.PaId
                       (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
                      ->
-                     Ast.PaApp (_loc,
-                       (Ast.PaId (_loc,
-                          (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Ast")),
-                             (Ast.IdUid (_loc, u)))))),
-                       (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
+                     Ast.PaApp
+                       (_loc,
+                         (Ast.PaId
+                            (_loc,
+                              (Ast.IdAcc
+                                 (_loc, (Ast.IdUid (_loc, "Ast")),
+                                   (Ast.IdUid (_loc, u)))))),
+                         (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
                  | Ast.PaApp (_loc,a,b) ->
                      Ast.PaApp (_loc, (subst_first_loc a), b)
                  | p -> p in

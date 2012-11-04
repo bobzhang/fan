@@ -8,16 +8,19 @@ let delete_rule_in_tree entry =
                 else
                   (match delete_in_tree symbols n.brother with
                    | Some (dsl,t) ->
-                       Some (dsl,
-                         (Node
-                            { node = (n.node); son = (n.son); brother = t }))
+                       Some
+                         (dsl,
+                           (Node
+                              { node = (n.node); son = (n.son); brother = t }))
                    | None  -> None)
             | (_::_,_) -> None
             | ([],Node n) ->
                 (match delete_in_tree [] n.brother with
                  | Some (dsl,t) ->
-                     Some (dsl,
-                       (Node { node = (n.node); son = (n.son); brother = t }))
+                     Some
+                       (dsl,
+                         (Node
+                            { node = (n.node); son = (n.son); brother = t }))
                  | None  -> None)
             | ([],DeadEnd ) -> None
             | ([],LocAct (_,[])) -> Some ((Some []), DeadEnd)

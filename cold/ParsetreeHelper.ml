@@ -57,13 +57,15 @@ let varify_constructors var_names =
               | Ptyp_alias (core_type,string) ->
                   Ptyp_alias ((loop core_type), string)
               | Ptyp_variant (row_field_list,flag,lbl_lst_option) ->
-                  Ptyp_variant ((List.map loop_row_field row_field_list),
-                    flag, lbl_lst_option)
+                  Ptyp_variant
+                    ((List.map loop_row_field row_field_list), flag,
+                      lbl_lst_option)
               | Ptyp_poly (string_lst,core_type) ->
                   Ptyp_poly (string_lst, (loop core_type))
               | Ptyp_package (longident,lst) ->
-                  Ptyp_package (longident,
-                    (List.map (fun (n,typ)  -> (n, (loop typ))) lst)) in
+                  Ptyp_package
+                    (longident,
+                      (List.map (fun (n,typ)  -> (n, (loop typ))) lst)) in
             { t with ptyp_desc = desc }
   and loop_core_field t =
         let desc =

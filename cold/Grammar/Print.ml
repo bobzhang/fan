@@ -90,15 +90,13 @@ class text_grammar =
             self#assoc f lev.assoc;
             pp f "@]@;<1 2>";
             self#level ~space:"@\n" f rules;
-            (fun f  -> pp f "@,| ")) (fun _  -> ()) elev f : unit
-      )
+            (fun f  -> pp f "@,| ")) (fun _  -> ()) elev f : unit )
     method entry f e =
       (pp f "@[<v 0>%s: [ " e.ename;
        (match e.edesc with
         | Dlevels elev -> self#levels f elev
         | Dparser _ -> pp f "<parser>");
-       pp f " ]@]" : unit
-      )
+       pp f " ]@]" : unit )
   end
 class dump_grammar =
   object (self : 'self)

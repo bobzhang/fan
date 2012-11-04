@@ -69,8 +69,9 @@ let to_tuple
     loc_end =
       { pos_lnum = stop_line; pos_bol = stop_bol; pos_cnum = stop_off;_};
     loc_ghost = ghost }
-  = (pos_fname, start_line, start_bol, start_off, stop_line, stop_bol,
-  stop_off, ghost)
+  =
+  (pos_fname, start_line, start_bol, start_off, stop_line, stop_bol,
+    stop_off, ghost)
 let better_file_name a b =
   match (a, b) with
   | ("","") -> a
@@ -184,8 +185,8 @@ let raise loc exc =
   | _ -> raise (Exc_located (loc, exc))
 let error_report (loc,s) =
   prerr_endline (to_string loc);
-  (let (start_bol,stop_bol,start_off,stop_off) = ((start_bol loc),
-     (stop_bol loc), (start_off loc), (stop_off loc)) in
+  (let (start_bol,stop_bol,start_off,stop_off) =
+     ((start_bol loc), (stop_bol loc), (start_off loc), (stop_off loc)) in
    let abs_start_off = start_bol + start_off in
    let abs_stop_off = stop_bol + stop_off in
    let err_location =

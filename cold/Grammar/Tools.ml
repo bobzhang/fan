@@ -11,8 +11,9 @@ let keep_prev_loc (strm : ('c* FanLoc.t) Stream.t) =
          if get_prev_loc_only.contents
          then
            Stream.lcons
-             (fun _  -> (tok0,
-                { prev_loc; cur_loc = prev_loc; prev_loc_only = true }))
+             (fun _  ->
+                (tok0,
+                  { prev_loc; cur_loc = prev_loc; prev_loc_only = true }))
              (Stream.slazy (fun _  -> go prev_loc strm1))
          else
            (let (__strm :_ Stream.t)= strm1 in
@@ -21,12 +22,11 @@ let keep_prev_loc (strm : ('c* FanLoc.t) Stream.t) =
                 (Stream.junk __strm;
                  (let strm = __strm in
                   Stream.lcons
-                    (fun _  -> (tok,
-                       { prev_loc; cur_loc; prev_loc_only = false }))
+                    (fun _  ->
+                       (tok, { prev_loc; cur_loc; prev_loc_only = false }))
                     (Stream.slazy (fun _  -> go cur_loc strm))))
             | _ -> Stream.sempty) in
-       go init_loc strm : ('c* token_info) Stream.t
-  )
+       go init_loc strm : ('c* token_info) Stream.t )
 let drop_prev_loc strm = Stream.map (fun (tok,r)  -> (tok, (r.cur_loc))) strm
 let get_cur_loc strm =
   match Stream.peek strm with

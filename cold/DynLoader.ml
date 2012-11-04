@@ -55,8 +55,9 @@ module Make(U:sig  end) : S = struct
          with
          | Dynlink.Error e ->
              raise
-               (Error ("Camlp4's dynamic loader initialization",
-                  (Dynlink.error_message e))))
+               (Error
+                  ("Camlp4's dynamic loader initialization",
+                    (Dynlink.error_message e))))
       else ();
       (let fname =
          try find_in_path _path file

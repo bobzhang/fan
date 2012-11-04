@@ -75,8 +75,8 @@ let ctyp_long_id t =
   | TyCls (_,i) -> (true, (ident i))
   | t -> error (loc_of_ctyp t) "invalid type"
 let predef_option loc =
-  TyId (loc,
-    (IdAcc (loc, (IdLid (loc, "*predef*")), (IdLid (loc, "option")))))
+  TyId
+    (loc, (IdAcc (loc, (IdLid (loc, "*predef*")), (IdLid (loc, "option")))))
 let rec ctyp =
           function
           | TyId (loc,i) ->
@@ -125,8 +125,8 @@ let rec ctyp =
               mktyp loc (Ptyp_variant ((row_field t), true, (Some [])))
           | Ast.TyVrnInfSup (loc,t,t') ->
               mktyp loc
-                (Ptyp_variant ((row_field t), true,
-                   (Some (Ctyp.name_tags t'))))
+                (Ptyp_variant
+                   ((row_field t), true, (Some (Ctyp.name_tags t'))))
           | TyLab (loc,_,_) -> error loc "labelled type not allowed here"
           | TyMan (loc,_,_) -> error loc "manifest type not allowed here"
           | TyOlb (loc,_,_) -> error loc "labelled type not allowed here"
@@ -172,8 +172,8 @@ and package_type_constraints wc acc =
             "unexpected `with constraint' for a package type"
 and package_type: module_type -> package_type =
       function
-      | Ast.MtWit (_,Ast.MtId (_,i),wc) -> ((long_uident i),
-          (package_type_constraints wc []))
+      | Ast.MtWit (_,Ast.MtId (_,i),wc) ->
+          ((long_uident i), (package_type_constraints wc []))
       | Ast.MtId (_,i) -> ((long_uident i), [])
       | mt -> error (loc_of_module_type mt) "unexpected package type"
 let mktype loc tl cl tk tp tm =
@@ -197,19 +197,19 @@ let mktrecord =
   function
   | Ast.TyCol (loc,Ast.TyId (_,Ast.IdLid (sloc,s)),Ast.TyMut (_,t)) ->
       ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), loc)
-  | Ast.TyCol (loc,Ast.TyId (_,Ast.IdLid (sloc,s)),t) -> ((with_loc s sloc),
-      Immutable, (mkpolytype (ctyp t)), loc)
+  | Ast.TyCol (loc,Ast.TyId (_,Ast.IdLid (sloc,s)),t) ->
+      ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), loc)
   | _ -> assert false
 let mkvariant =
   function
   | Ast.TyId (loc,Ast.IdUid (sloc,s)) -> ((with_loc s sloc), [], None, loc)
-  | Ast.TyOf (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),t) -> ((with_loc s sloc),
-      (List.map ctyp (list_of_ctyp t [])), None, loc)
+  | Ast.TyOf (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),t) ->
+      ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])), None, loc)
   | Ast.TyCol (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),Ast.TyArr (_,t,u)) ->
       ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])),
-      (Some (ctyp u)), loc)
-  | Ast.TyCol (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),t) -> ((with_loc s sloc),
-      [], (Some (ctyp t)), loc)
+        (Some (ctyp u)), loc)
+  | Ast.TyCol (loc,Ast.TyId (_,Ast.IdUid (sloc,s)),t) ->
+      ((with_loc s sloc), [], (Some (ctyp t)), loc)
   | _ -> assert false
 let rec type_decl tl cl loc m pflag =
   function
@@ -286,7 +286,8 @@ let rec type_parameters_and_type_name t acc =
 let mkwithtyp pwith_type loc id_tpl ct =
   let (id,tpl) = type_parameters_and_type_name id_tpl [] in
   let (params,variance) = List.split tpl in
-  let (kind,priv,ct) = opt_private_ctyp ct in (id,
+  let (kind,priv,ct) = opt_private_ctyp ct in
+  (id,
     (pwith_type
        {
          ptype_params = params;
@@ -302,12 +303,12 @@ let rec mkwithc wc acc =
   | Ast.WcNil _ -> acc
   | Ast.WcTyp (loc,id_tpl,ct) ->
       (mkwithtyp (fun x  -> Pwith_type x) loc id_tpl ct) :: acc
-  | Ast.WcMod (_,i1,i2) -> ((long_uident i1),
-      (Pwith_module (long_uident i2))) :: acc
+  | Ast.WcMod (_,i1,i2) ->
+      ((long_uident i1), (Pwith_module (long_uident i2))) :: acc
   | Ast.WcTyS (loc,id_tpl,ct) ->
       (mkwithtyp (fun x  -> Pwith_typesubst x) loc id_tpl ct) :: acc
-  | Ast.WcMoS (_,i1,i2) -> ((long_uident i1),
-      (Pwith_modsubst (long_uident i2))) :: acc
+  | Ast.WcMoS (_,i1,i2) ->
+      ((long_uident i1), (Pwith_modsubst (long_uident i2))) :: acc
   | Ast.WcAnd (_,wc1,wc2) -> mkwithc wc1 (mkwithc wc2 acc)
   | Ast.WcAnt (loc,_) -> error loc "bad with constraint (antiquotation)"
 let rec patt_fa al =
@@ -317,8 +318,9 @@ let rec deep_mkrangepat loc c1 c2 =
   then mkghpat loc (Ppat_constant (Const_char c1))
   else
     mkghpat loc
-      (Ppat_or ((mkghpat loc (Ppat_constant (Const_char c1))),
-         (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
+      (Ppat_or
+         ((mkghpat loc (Ppat_constant (Const_char c1))),
+           (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
 let rec mkrangepat loc c1 c2 =
   if c1 > c2
   then mkrangepat loc c2 c1
@@ -327,29 +329,31 @@ let rec mkrangepat loc c1 c2 =
     then mkpat loc (Ppat_constant (Const_char c1))
     else
       mkpat loc
-        (Ppat_or ((mkghpat loc (Ppat_constant (Const_char c1))),
-           (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
+        (Ppat_or
+           ((mkghpat loc (Ppat_constant (Const_char c1))),
+             (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
 let rec patt =
           function
           | Ast.PaId (loc,Ast.IdLid (_,("true"|"false" as txt))) ->
               let p =
-                Ppat_construct ({ txt = (Lident txt); loc }, None,
-                  (constructors_arity ())) in
+                Ppat_construct
+                  ({ txt = (Lident txt); loc }, None,
+                    (constructors_arity ())) in
               mkpat loc p
           | Ast.PaId (loc,Ast.IdLid (sloc,s)) ->
               mkpat loc (Ppat_var (with_loc s sloc))
           | Ast.PaId (loc,i) ->
               let p =
-                Ppat_construct ((long_uident i), None,
-                  (constructors_arity ())) in
+                Ppat_construct
+                  ((long_uident i), None, (constructors_arity ())) in
               mkpat loc p
           | PaAli (loc,p1,p2) ->
               let (p,i) =
                 match (p1, p2) with
-                | (p,Ast.PaId (_,Ast.IdLid (sloc,s))) -> (p,
-                    (with_loc s sloc))
-                | (Ast.PaId (_,Ast.IdLid (sloc,s)),p) -> (p,
-                    (with_loc s sloc))
+                | (p,Ast.PaId (_,Ast.IdLid (sloc,s))) ->
+                    (p, (with_loc s sloc))
+                | (Ast.PaId (_,Ast.IdLid (sloc,s)),p) ->
+                    (p, (with_loc s sloc))
                 | _ -> error loc "invalid alias pattern" in
               mkpat loc (Ppat_alias ((patt p), i))
           | PaAnt (loc,_) -> error loc "antiquotation not allowed here"
@@ -359,8 +363,9 @@ let rec patt =
                (_,Ast.PaAny loc_any))
               ->
               mkpat loc
-                (Ppat_construct ((lident_with_loc s sloc),
-                   (Some (mkpat loc_any Ppat_any)), false))
+                (Ppat_construct
+                   ((lident_with_loc s sloc),
+                     (Some (mkpat loc_any Ppat_any)), false))
           | PaApp (loc,_,_) as f ->
               let (f,al) = patt_fa [] f in
               let al = List.map patt al in
@@ -369,8 +374,8 @@ let rec patt =
                    if constructors_arity ()
                    then
                      mkpat loc
-                       (Ppat_construct (li,
-                          (Some (mkpat loc (Ppat_tuple al))), true))
+                       (Ppat_construct
+                          (li, (Some (mkpat loc (Ppat_tuple al))), true))
                    else
                      (let a =
                         match al with
@@ -488,7 +493,8 @@ let rec expr =
                   (fun (loc_bp,e1)  (loc_ep,ml,e2)  ->
                      match e2 with
                      | Ast.ExId (sloc,Ast.IdLid (_,s)) ->
-                         let loc = FanLoc.merge loc_bp loc_ep in (loc,
+                         let loc = FanLoc.merge loc_bp loc_ep in
+                         (loc,
                            (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
                      | _ ->
                          error (loc_of_expr e2)
@@ -504,8 +510,8 @@ let rec expr =
                    if constructors_arity ()
                    then
                      mkexp loc
-                       (Pexp_construct (li,
-                          (Some (mkexp loc (Pexp_tuple al))), true))
+                       (Pexp_construct
+                          (li, (Some (mkexp loc (Pexp_tuple al))), true))
                    else
                      (let a =
                         match al with
@@ -528,7 +534,7 @@ let rec expr =
                 (Pexp_apply
                    ((mkexp loc
                        (Pexp_ident (array_function loc "Array" "get"))),
-                   [("", (expr e1)); ("", (expr e2))]))
+                     [("", (expr e1)); ("", (expr e2))]))
           | ExArr (loc,e) ->
               mkexp loc (Pexp_array (List.map expr (list_of_expr e [])))
           | ExAsf loc -> mkexp loc Pexp_assertfalse
@@ -538,7 +544,7 @@ let rec expr =
                 | Ast.ExAcc (loc,x,Ast.ExId (_,Ast.IdLid (_,"contents"))) ->
                     Pexp_apply
                       ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
-                      [("", (expr x)); ("", (expr v))])
+                        [("", (expr x)); ("", (expr v))])
                 | ExAcc (loc,_,_) ->
                     (match (expr e).pexp_desc with
                      | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (expr v))
@@ -547,14 +553,14 @@ let rec expr =
                     Pexp_apply
                       ((mkexp loc
                           (Pexp_ident (array_function loc "Array" "set"))),
-                      [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
+                        [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
                 | Ast.ExId (lloc,Ast.IdLid (_,lab)) ->
                     Pexp_setinstvar ((with_loc lab lloc), (expr v))
                 | ExSte (loc,e1,e2) ->
                     Pexp_apply
                       ((mkexp loc
                           (Pexp_ident (array_function loc "String" "set"))),
-                      [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
+                        [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
                 | _ -> error loc "bad left part of assignment" in
               mkexp loc e
           | ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
@@ -570,22 +576,25 @@ let rec expr =
           | ExFor (loc,i,e1,e2,df,el) ->
               let e3 = ExSeq (loc, el) in
               mkexp loc
-                (Pexp_for ((with_loc i loc), (expr e1), (expr e2),
-                   (mkdirection df), (expr e3)))
+                (Pexp_for
+                   ((with_loc i loc), (expr e1), (expr e2), (mkdirection df),
+                     (expr e3)))
           | Ast.ExFun (loc,Ast.McArr (_,PaLab (_,lab,po),w,e)) ->
               mkexp loc
-                (Pexp_function (lab, None,
-                   [((patt_of_lab loc lab po), (when_expr e w))]))
+                (Pexp_function
+                   (lab, None, [((patt_of_lab loc lab po), (when_expr e w))]))
           | Ast.ExFun (loc,Ast.McArr (_,PaOlbi (_,lab,p,e1),w,e2)) ->
               let lab = paolab lab p in
               mkexp loc
-                (Pexp_function (("?" ^ lab), (Some (expr e1)),
-                   [((patt p), (when_expr e2 w))]))
+                (Pexp_function
+                   (("?" ^ lab), (Some (expr e1)),
+                     [((patt p), (when_expr e2 w))]))
           | Ast.ExFun (loc,Ast.McArr (_,PaOlb (_,lab,p),w,e)) ->
               let lab = paolab lab p in
               mkexp loc
-                (Pexp_function (("?" ^ lab), None,
-                   [((patt_of_lab loc lab p), (when_expr e w))]))
+                (Pexp_function
+                   (("?" ^ lab), None,
+                     [((patt_of_lab loc lab p), (when_expr e w))]))
           | ExFun (loc,a) ->
               mkexp loc (Pexp_function ("", None, (match_case a [])))
           | ExIfe (loc,e1,e2,e3) ->
@@ -630,8 +639,8 @@ let rec expr =
               mkexp loc (Pexp_let ((mkrf rf), (binding bi []), (expr e)))
           | ExLmd (loc,i,me,e) ->
               mkexp loc
-                (Pexp_letmodule ((with_loc i loc), (module_expr me),
-                   (expr e)))
+                (Pexp_letmodule
+                   ((with_loc i loc), (module_expr me), (expr e)))
           | ExMat (loc,e,a) ->
               mkexp loc (Pexp_match ((expr e), (match_case a [])))
           | ExNew (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
@@ -665,7 +674,7 @@ let rec expr =
                 (Pexp_apply
                    ((mkexp loc
                        (Pexp_ident (array_function loc "String" "get"))),
-                   [("", (expr e1)); ("", (expr e2))]))
+                     [("", (expr e1)); ("", (expr e2))]))
           | ExStr (loc,s) ->
               mkexp loc
                 (Pexp_constant (Const_string (string_of_string_token loc s)))
@@ -697,8 +706,10 @@ let rec expr =
               mkexp loc (Pexp_open ((long_uident i), (expr e)))
           | Ast.ExPkg (loc,Ast.MeTyc (_,me,pt)) ->
               mkexp loc
-                (Pexp_constraint ((mkexp loc (Pexp_pack (module_expr me))),
-                   (Some (mktyp loc (Ptyp_package (package_type pt)))), None))
+                (Pexp_constraint
+                   ((mkexp loc (Pexp_pack (module_expr me))),
+                     (Some (mktyp loc (Ptyp_package (package_type pt)))),
+                     None))
           | Ast.ExPkg (loc,me) -> mkexp loc (Pexp_pack (module_expr me))
           | ExFUN (loc,i,e) -> mkexp loc (Pexp_newtype (i, (expr e)))
           | Ast.ExCom (loc,_,_) -> error loc "expr, expr: not allowed here"
@@ -745,12 +756,14 @@ and binding x acc =
             | [] -> assert false in
           let pat =
             mkpat
-              (Ppat_constraint ((mkpat (Ppat_var (with_loc bind_name sloc))),
-                 (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
+              (Ppat_constraint
+                 ((mkpat (Ppat_var (with_loc bind_name sloc))),
+                   (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
           let e = mk_newtypes vars in (pat, e) :: acc
       | Ast.BiEq (_loc,p,Ast.ExTyc (_,e,Ast.TyPol (_,vs,ty))) ->
           ((patt (Ast.PaTyc (_loc, p, (Ast.TyPol (_loc, vs, ty))))),
-          (expr e)) :: acc
+            (expr e))
+          :: acc
       | Ast.BiEq (_,p,e) -> ((patt p), (expr e)) :: acc
       | Ast.BiNil _ -> acc
       | _ -> assert false
@@ -797,8 +810,8 @@ and module_type =
       | Ast.MtId (loc,i) -> mkmty loc (Pmty_ident (long_uident i))
       | Ast.MtFun (loc,n,nt,mt) ->
           mkmty loc
-            (Pmty_functor ((with_loc n loc), (module_type nt),
-               (module_type mt)))
+            (Pmty_functor
+               ((with_loc n loc), (module_type nt), (module_type mt)))
       | Ast.MtQuo (loc,_) ->
           error loc "module type variable not allowed here"
       | Ast.MtSig (loc,sl) -> mkmty loc (Pmty_signature (sig_item sl []))
@@ -825,14 +838,15 @@ and sig_item s l =
           (mksig loc (Psig_exception ((with_loc s loc), []))) :: l
       | Ast.SgExc (loc,Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,s)),t)) ->
           (mksig loc
-             (Psig_exception ((with_loc s loc),
-                (List.map ctyp (list_of_ctyp t [])))))
+             (Psig_exception
+                ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
           :: l
       | SgExc (_,_) -> assert false
       | SgExt (loc,n,t,sl) ->
           (mksig loc
-             (Psig_value ((with_loc n loc),
-                (mkvalue_desc loc t (list_of_meta_list sl)))))
+             (Psig_value
+                ((with_loc n loc),
+                  (mkvalue_desc loc t (list_of_meta_list sl)))))
           :: l
       | SgInc (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
       | SgMod (loc,n,mt) ->
@@ -859,8 +873,8 @@ and module_sig_binding x acc =
 and module_str_binding x acc =
       match x with
       | Ast.MbAnd (_,x,y) -> module_str_binding x (module_str_binding y acc)
-      | Ast.MbColEq (loc,s,mt,me) -> ((with_loc s loc), (module_type mt),
-          (module_expr me)) :: acc
+      | Ast.MbColEq (loc,s,mt,me) ->
+          ((with_loc s loc), (module_type mt), (module_expr me)) :: acc
       | _ -> assert false
 and module_expr =
       function
@@ -870,8 +884,8 @@ and module_expr =
           mkmod loc (Pmod_apply ((module_expr me1), (module_expr me2)))
       | Ast.MeFun (loc,n,mt,me) ->
           mkmod loc
-            (Pmod_functor ((with_loc n loc), (module_type mt),
-               (module_expr me)))
+            (Pmod_functor
+               ((with_loc n loc), (module_type mt), (module_expr me)))
       | Ast.MeStr (loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
       | Ast.MeTyc (loc,me,mt) ->
           mkmod loc (Pmod_constraint ((module_expr me), (module_type mt)))
@@ -879,9 +893,10 @@ and module_expr =
           mkmod loc
             (Pmod_unpack
                (mkexp loc
-                  (Pexp_constraint ((expr e),
-                     (Some (mktyp loc (Ptyp_package (package_type pt)))),
-                     None))))
+                  (Pexp_constraint
+                     ((expr e),
+                       (Some (mktyp loc (Ptyp_package (package_type pt)))),
+                       None))))
       | Ast.MePkg (loc,e) -> mkmod loc (Pmod_unpack (expr e))
       | Ast.MeAnt (loc,_) -> error loc "antiquotation in module_expr"
 and str_item s l =
@@ -904,8 +919,8 @@ and str_item s l =
       | Ast.StExc
           (loc,Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,s)),t),Ast.ONone ) ->
           (mkstr loc
-             (Pstr_exception ((with_loc s loc),
-                (List.map ctyp (list_of_ctyp t [])))))
+             (Pstr_exception
+                ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
           :: l
       | Ast.StExc (loc,Ast.TyId (_,Ast.IdUid (_,s)),Ast.OSome i) ->
           (mkstr loc (Pstr_exn_rebind ((with_loc s loc), (ident i)))) :: l
@@ -916,8 +931,9 @@ and str_item s l =
       | StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
       | StExt (loc,n,t,sl) ->
           (mkstr loc
-             (Pstr_primitive ((with_loc n loc),
-                (mkvalue_desc loc t (list_of_meta_list sl)))))
+             (Pstr_primitive
+                ((with_loc n loc),
+                  (mkvalue_desc loc t (list_of_meta_list sl)))))
           :: l
       | StInc (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
       | StMod (loc,n,me) ->
@@ -936,8 +952,9 @@ and class_type =
       function
       | CtCon (loc,ViNil ,id,tl) ->
           mkcty loc
-            (Pcty_constr ((long_class_ident id),
-               (List.map ctyp (Ctyp.list_of_opt tl []))))
+            (Pcty_constr
+               ((long_class_ident id),
+                 (List.map ctyp (Ctyp.list_of_opt tl []))))
       | CtFun (loc,TyLab (_,lab,t),ct) ->
           mkcty loc (Pcty_fun (lab, (ctyp t), (class_type ct)))
       | CtFun (loc,TyOlb (loc1,lab,t),ct) ->
@@ -1016,21 +1033,22 @@ and class_expr =
           mkcl loc (Pcl_apply ((class_expr ce), el))
       | CeCon (loc,ViNil ,id,tl) ->
           mkcl loc
-            (Pcl_constr ((long_class_ident id),
-               (List.map ctyp (Ctyp.list_of_opt tl []))))
+            (Pcl_constr
+               ((long_class_ident id),
+                 (List.map ctyp (Ctyp.list_of_opt tl []))))
       | CeFun (loc,PaLab (_,lab,po),ce) ->
           mkcl loc
             (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
       | CeFun (loc,PaOlbi (_,lab,p,e),ce) ->
           let lab = paolab lab p in
           mkcl loc
-            (Pcl_fun (("?" ^ lab), (Some (expr e)), (patt p),
-               (class_expr ce)))
+            (Pcl_fun
+               (("?" ^ lab), (Some (expr e)), (patt p), (class_expr ce)))
       | CeFun (loc,PaOlb (_,lab,p),ce) ->
           let lab = paolab lab p in
           mkcl loc
-            (Pcl_fun (("?" ^ lab), None, (patt_of_lab loc lab p),
-               (class_expr ce)))
+            (Pcl_fun
+               (("?" ^ lab), None, (patt_of_lab loc lab p), (class_expr ce)))
       | CeFun (loc,p,ce) ->
           mkcl loc (Pcl_fun ("", None, (patt p), (class_expr ce)))
       | CeLet (loc,rf,bi,ce) ->
@@ -1065,18 +1083,19 @@ and class_str_item c l =
             | t -> Some (mkpolytype (ctyp t)) in
           let e = mkexp loc (Pexp_poly ((expr e), t)) in
           (mkcf loc
-             (Pcf_meth ((with_loc s loc), (mkprivate pf),
-                (override_flag loc ov), e)))
+             (Pcf_meth
+                ((with_loc s loc), (mkprivate pf), (override_flag loc ov), e)))
             :: l
       | CrVal (loc,s,ov,mf,e) ->
           (mkcf loc
-             (Pcf_val ((with_loc s loc), (mkmutable mf),
-                (override_flag loc ov), (expr e))))
+             (Pcf_val
+                ((with_loc s loc), (mkmutable mf), (override_flag loc ov),
+                  (expr e))))
           :: l
       | CrVir (loc,s,pf,t) ->
           (mkcf loc
-             (Pcf_virt ((with_loc s loc), (mkprivate pf),
-                (mkpolytype (ctyp t)))))
+             (Pcf_virt
+                ((with_loc s loc), (mkprivate pf), (mkpolytype (ctyp t)))))
           :: l
       | CrVvr (loc,s,mf,t) ->
           (mkcf loc

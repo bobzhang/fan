@@ -9,15 +9,13 @@ let name_of_symbol entry =
    | `Sself|`Snext -> "[" ^ (entry.ename ^ "]")
    | `Stoken (_,descr) -> name_of_descr descr
    | `Skeyword kwd -> "\"" ^ (kwd ^ "\"")
-   | _ -> "???" : [> symbol] -> string
-  )
+   | _ -> "???" : [> symbol] -> string )
 let rec name_of_symbol_failed entry =
           (function
            | `Slist0 s|`Slist0sep (s,_)|`Slist1 s|`Slist1sep (s,_)|`Sopt s|
                `Stry s -> name_of_symbol_failed entry s
            | `Stree t -> name_of_tree_failed entry t
-           | s -> name_of_symbol entry s : [> symbol] -> string
-          )
+           | s -> name_of_symbol entry s : [> symbol] -> string )
 and name_of_tree_failed entry =
       (function
        | Node { node = s; brother = bro; son } ->
@@ -47,8 +45,7 @@ and name_of_tree_failed entry =
                         | `Stoken (_,descr) -> name_of_descr descr
                         | `Skeyword kwd -> kwd
                         | _ -> assert false)) "" tokl)
-       | DeadEnd |LocAct (_,_) -> "???" : tree -> string
-      )
+       | DeadEnd |LocAct (_,_) -> "???" : tree -> string )
 let magic _s x = Obj.magic x
 let tree_failed entry prev_symb_result prev_symb tree =
   let txt = name_of_tree_failed entry tree in

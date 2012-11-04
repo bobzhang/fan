@@ -24,13 +24,13 @@ module Make(U:sig  end) : Sig.PRECAST =
   let register_str_item_parser f = str_item_parser := f
   let register_sig_item_parser f = sig_item_parser := f
   let register_parser f g = str_item_parser := f; sig_item_parser := g
-  let current_parser () = ((str_item_parser.contents),
-    (sig_item_parser.contents))
+  let current_parser () =
+    ((str_item_parser.contents), (sig_item_parser.contents))
   let register_str_item_printer f = str_item_printer := f
   let register_sig_item_printer f = sig_item_printer := f
   let register_printer f g = str_item_printer := f; sig_item_printer := g
-  let current_printer () = ((str_item_printer.contents),
-    (sig_item_printer.contents))
+  let current_printer () =
+    ((str_item_printer.contents), (sig_item_printer.contents))
   let plugin ((module Id)  : (module Sig.Id))
     ((module Maker)  : (module Sig.PLUGIN)) =
     declare_dyn_module Id.name

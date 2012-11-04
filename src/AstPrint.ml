@@ -590,10 +590,10 @@ class printer  ()= object(self:'self)
     | Pexp_newtype (lid, e) ->
         pp f "fun@;(type@;%s)@;->@;%a"  lid  self#expression  e
     | Pexp_tuple l ->
-        pp f "(%a)"  (self#list self#simple_expr  ~sep:",@;")  l
+        pp f "@[<hov2>(%a)@]"  (self#list self#simple_expr  ~sep:",@;")  l
     | Pexp_constraint (e, cto1, cto2) ->
         pp f "(%a%a%a)" self#expression e
-          (self#option self#core_type ~first:" : " ~last:"@;") cto1 (* no sep hint*)
+          (self#option self#core_type ~first:" : " ~last:" ") cto1 (* no sep hint*)
           (self#option self#core_type ~first:" :>") cto2
     | Pexp_variant (l, None) -> pp f "`%s" l 
     | Pexp_record (l, eo) ->

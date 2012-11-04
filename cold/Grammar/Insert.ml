@@ -64,8 +64,8 @@ let get_level entry position levs =
             if Tools.is_level_labelled n lev
             then ([], (change_lev entry lev n), levs)
             else
-              (let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                 levs2)) in
+              (let (levs1,rlev,levs2) = get levs in
+               ((lev :: levs1), rlev, levs2)) in
       get levs
   | Some (`Before n) ->
       let rec get =
@@ -79,8 +79,8 @@ let get_level entry position levs =
             if Tools.is_level_labelled n lev
             then ([], empty_lev, (lev :: levs))
             else
-              (let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                 levs2)) in
+              (let (levs1,rlev,levs2) = get levs in
+               ((lev :: levs1), rlev, levs2)) in
       get levs
   | Some (`After n) ->
       let rec get =
@@ -94,8 +94,8 @@ let get_level entry position levs =
             if Tools.is_level_labelled n lev
             then ([lev], empty_lev, levs)
             else
-              (let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                 levs2)) in
+              (let (levs1,rlev,levs2) = get levs in
+               ((lev :: levs1), rlev, levs2)) in
       get levs
   | None  ->
       (match levs with
