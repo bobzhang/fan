@@ -199,108 +199,116 @@ let srules loc t rl tvar =
        let sl = List.map (fun s  -> s.text) r.prod in
        let ac = text_of_action loc r.prod t r.action tvar in (sl, ac)) rl
 let rec make_expr entry tvar =
-  function
-  | TXmeta (_loc,n,tl,e,t) ->
-      let el =
-        List.fold_right
-          (fun t  el  ->
-             Ast.ExApp (_loc,
-               (Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
-                  (make_expr entry "" t))),
-               el)) tl (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) in
-      Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Smeta")),
-        (Ast.ExTup (_loc,
-           (Ast.ExCom (_loc, (Ast.ExStr (_loc, n)),
-              (Ast.ExCom (_loc, el,
-                 (Ast.ExApp (_loc,
-                    (Ast.ExId (_loc,
-                       (Ast.IdAcc (_loc, (gm ()),
-                          (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Action")),
-                             (Ast.IdLid (_loc, "mk")))))))),
-                    (make_ctyp_expr t tvar e))))))))))
-  | TXlist (_loc,min,t,ts) ->
-      let txt = make_expr entry "" t.text in
-      (match (min, ts) with
-       | (false ,None ) ->
-           Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Slist0")), txt)
-       | (true ,None ) -> Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Slist1")), txt)
-       | (false ,Some s) ->
-           let x = make_expr entry tvar s.text in
-           Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Slist0sep")),
-             (Ast.ExTup (_loc, (Ast.ExCom (_loc, txt, x)))))
-       | (true ,Some s) ->
-           let x = make_expr entry tvar s.text in
-           Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Slist1sep")),
-             (Ast.ExTup (_loc, (Ast.ExCom (_loc, txt, x))))))
-  | TXnext _loc -> Ast.ExVrn (_loc, "Snext")
-  | TXnterm (_loc,n,lev) ->
-      (match lev with
-       | Some lab ->
-           Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Snterml")),
-             (Ast.ExTup (_loc,
-                (Ast.ExCom (_loc,
-                   (Ast.ExApp (_loc,
-                      (Ast.ExId (_loc,
-                         (Ast.IdAcc (_loc, (gm ()),
-                            (Ast.IdLid (_loc, "obj")))))),
-                      (Ast.ExTyc (_loc, (n.expr),
-                         (Ast.TyApp (_loc,
-                            (Ast.TyId (_loc,
+          function
+          | TXmeta (_loc,n,tl,e,t) ->
+              let el =
+                List.fold_right
+                  (fun t  el  ->
+                     Ast.ExApp (_loc,
+                       (Ast.ExApp (_loc,
+                          (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
+                          (make_expr entry "" t))),
+                       el)) tl (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) in
+              Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Smeta")),
+                (Ast.ExTup (_loc,
+                   (Ast.ExCom (_loc, (Ast.ExStr (_loc, n)),
+                      (Ast.ExCom (_loc, el,
+                         (Ast.ExApp (_loc,
+                            (Ast.ExId (_loc,
                                (Ast.IdAcc (_loc, (gm ()),
-                                  (Ast.IdLid (_loc, "t")))))),
-                            (Ast.TyQuo (_loc, (n.tvar))))))))),
-                   (Ast.ExStr (_loc, lab)))))))
-       | None  ->
-           if n.tvar = tvar
-           then Ast.ExVrn (_loc, "Sself")
-           else
-             Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Snterm")),
-               (Ast.ExApp (_loc,
-                  (Ast.ExId (_loc,
-                     (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "obj")))))),
-                  (Ast.ExTyc (_loc, (n.expr),
-                     (Ast.TyApp (_loc,
-                        (Ast.TyId (_loc,
-                           (Ast.IdAcc (_loc, (gm ()),
-                              (Ast.IdLid (_loc, "t")))))),
-                        (Ast.TyQuo (_loc, (n.tvar)))))))))))
-  | TXopt (_loc,t) ->
-      Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Sopt")), (make_expr entry "" t))
-  | TXtry (_loc,t) ->
-      Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Stry")), (make_expr entry "" t))
-  | TXrules (_loc,rl) ->
-      Ast.ExApp (_loc,
-        (Ast.ExApp (_loc,
-           (Ast.ExId (_loc,
-              (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "srules")))))),
-           (entry.expr))),
-        (make_expr_rules _loc entry rl ""))
-  | TXself _loc -> Ast.ExVrn (_loc, "Sself")
-  | TXkwd (_loc,kwd) ->
-      Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Skeyword")),
-        (Ast.ExStr (_loc, kwd)))
-  | TXtok (_loc,match_fun,attr,descr) ->
-      Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Stoken")),
-        (Ast.ExTup (_loc,
-           (Ast.ExCom (_loc, match_fun,
-              (Ast.ExTup (_loc,
-                 (Ast.ExCom (_loc, (Ast.ExVrn (_loc, attr)),
-                    (Ast.ExStr (_loc, (Ast.safe_string_escaped descr))))))))))))
-  and make_expr_rules _loc n rl tvar =
-  List.fold_left
-    (fun txt  (sl,ac)  ->
-       let sl =
-         List.fold_right
-           (fun t  txt  ->
-              let x = make_expr n tvar t in
+                                  (Ast.IdAcc (_loc,
+                                     (Ast.IdUid (_loc, "Action")),
+                                     (Ast.IdLid (_loc, "mk")))))))),
+                            (make_ctyp_expr t tvar e))))))))))
+          | TXlist (_loc,min,t,ts) ->
+              let txt = make_expr entry "" t.text in
+              (match (min, ts) with
+               | (false ,None ) ->
+                   Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Slist0")), txt)
+               | (true ,None ) ->
+                   Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Slist1")), txt)
+               | (false ,Some s) ->
+                   let x = make_expr entry tvar s.text in
+                   Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Slist0sep")),
+                     (Ast.ExTup (_loc, (Ast.ExCom (_loc, txt, x)))))
+               | (true ,Some s) ->
+                   let x = make_expr entry tvar s.text in
+                   Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Slist1sep")),
+                     (Ast.ExTup (_loc, (Ast.ExCom (_loc, txt, x))))))
+          | TXnext _loc -> Ast.ExVrn (_loc, "Snext")
+          | TXnterm (_loc,n,lev) ->
+              (match lev with
+               | Some lab ->
+                   Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Snterml")),
+                     (Ast.ExTup (_loc,
+                        (Ast.ExCom (_loc,
+                           (Ast.ExApp (_loc,
+                              (Ast.ExId (_loc,
+                                 (Ast.IdAcc (_loc, (gm ()),
+                                    (Ast.IdLid (_loc, "obj")))))),
+                              (Ast.ExTyc (_loc, (n.expr),
+                                 (Ast.TyApp (_loc,
+                                    (Ast.TyId (_loc,
+                                       (Ast.IdAcc (_loc, (gm ()),
+                                          (Ast.IdLid (_loc, "t")))))),
+                                    (Ast.TyQuo (_loc, (n.tvar))))))))),
+                           (Ast.ExStr (_loc, lab)))))))
+               | None  ->
+                   if n.tvar = tvar
+                   then Ast.ExVrn (_loc, "Sself")
+                   else
+                     Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Snterm")),
+                       (Ast.ExApp (_loc,
+                          (Ast.ExId (_loc,
+                             (Ast.IdAcc (_loc, (gm ()),
+                                (Ast.IdLid (_loc, "obj")))))),
+                          (Ast.ExTyc (_loc, (n.expr),
+                             (Ast.TyApp (_loc,
+                                (Ast.TyId (_loc,
+                                   (Ast.IdAcc (_loc, (gm ()),
+                                      (Ast.IdLid (_loc, "t")))))),
+                                (Ast.TyQuo (_loc, (n.tvar)))))))))))
+          | TXopt (_loc,t) ->
+              Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Sopt")),
+                (make_expr entry "" t))
+          | TXtry (_loc,t) ->
+              Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Stry")),
+                (make_expr entry "" t))
+          | TXrules (_loc,rl) ->
               Ast.ExApp (_loc,
                 (Ast.ExApp (_loc,
-                   (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), x)),
-                txt)) sl (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) in
-       Ast.ExApp (_loc,
-         (Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
-            (Ast.ExTup (_loc, (Ast.ExCom (_loc, sl, ac)))))),
-         txt)) (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) rl
+                   (Ast.ExId (_loc,
+                      (Ast.IdAcc (_loc, (gm ()),
+                         (Ast.IdLid (_loc, "srules")))))),
+                   (entry.expr))),
+                (make_expr_rules _loc entry rl ""))
+          | TXself _loc -> Ast.ExVrn (_loc, "Sself")
+          | TXkwd (_loc,kwd) ->
+              Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Skeyword")),
+                (Ast.ExStr (_loc, kwd)))
+          | TXtok (_loc,match_fun,attr,descr) ->
+              Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Stoken")),
+                (Ast.ExTup (_loc,
+                   (Ast.ExCom (_loc, match_fun,
+                      (Ast.ExTup (_loc,
+                         (Ast.ExCom (_loc, (Ast.ExVrn (_loc, attr)),
+                            (Ast.ExStr (_loc,
+                               (Ast.safe_string_escaped descr))))))))))))
+and make_expr_rules _loc n rl tvar =
+      List.fold_left
+        (fun txt  (sl,ac)  ->
+           let sl =
+             List.fold_right
+               (fun t  txt  ->
+                  let x = make_expr n tvar t in
+                  Ast.ExApp (_loc,
+                    (Ast.ExApp (_loc,
+                       (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), x)),
+                    txt)) sl (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) in
+           Ast.ExApp (_loc,
+             (Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
+                (Ast.ExTup (_loc, (Ast.ExCom (_loc, sl, ac)))))),
+             txt)) (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) rl
 let expr_of_delete_rule _loc n sl =
   let sl =
     List.fold_right

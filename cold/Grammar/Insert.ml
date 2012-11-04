@@ -6,18 +6,18 @@ let is_before s1 s2 =
   | ((`Skeyword _|`Stoken _),_) -> true
   | _ -> false
 let rec derive_eps =
-  function
-  | `Slist0 _|`Slist0sep (_,_)|`Sopt _ -> true
-  | `Stry s -> derive_eps s
-  | `Stree t -> tree_derive_eps t
-  | `Slist1 _|`Slist1sep (_,_)|`Stoken _|`Skeyword _ -> false
-  | `Smeta (_,_,_)|`Snterm _|`Snterml (_,_)|`Snext|`Sself -> false and
-  tree_derive_eps =
-  function
-  | LocAct (_,_) -> true
-  | Node { node = s; brother = bro; son } ->
-      ((derive_eps s) && (tree_derive_eps son)) || (tree_derive_eps bro)
-  | DeadEnd  -> false
+          function
+          | `Slist0 _|`Slist0sep (_,_)|`Sopt _ -> true
+          | `Stry s -> derive_eps s
+          | `Stree t -> tree_derive_eps t
+          | `Slist1 _|`Slist1sep (_,_)|`Stoken _|`Skeyword _ -> false
+          | `Smeta (_,_,_)|`Snterm _|`Snterml (_,_)|`Snext|`Sself -> false
+and tree_derive_eps =
+      function
+      | LocAct (_,_) -> true
+      | Node { node = s; brother = bro; son } ->
+          ((derive_eps s) && (tree_derive_eps son)) || (tree_derive_eps bro)
+      | DeadEnd  -> false
 let empty_lev lname assoc =
   let assoc = match assoc with | Some a -> a | None  -> `LA in
   { assoc; lname; lsuffix = DeadEnd; lprefix = DeadEnd }
@@ -102,99 +102,105 @@ let get_level entry position levs =
        | lev::levs -> ([], (change_lev entry lev "<top>"), levs)
        | [] -> ([], empty_lev, []))
 let rec check_gram entry =
-  function
-  | `Snterm e ->
-      if e.egram != entry.egram
-      then
-        (eprintf
-           "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
-           entry.ename e.ename;
-         flush Pervasives.stderr;
-         failwith "Grammar.extend error")
-      else ()
-  | `Snterml (e,_) ->
-      if e.egram != entry.egram
-      then
-        (eprintf
-           "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
-           entry.ename e.ename;
-         flush Pervasives.stderr;
-         failwith "Grammar.extend error")
-      else ()
-  | `Smeta (_,sl,_) -> List.iter (check_gram entry) sl
-  | `Slist0sep (s,t) -> (check_gram entry t; check_gram entry s)
-  | `Slist1sep (s,t) -> (check_gram entry t; check_gram entry s)
-  | `Slist0 s|`Slist1 s|`Sopt s|`Stry s -> check_gram entry s
-  | `Stree t -> tree_check_gram entry t
-  | `Snext|`Sself|`Stoken _|`Skeyword _ -> () and tree_check_gram entry =
-  function
-  | Node { node = n; brother = bro; son } ->
-      (check_gram entry n;
-       tree_check_gram entry bro;
-       tree_check_gram entry son)
-  | LocAct (_,_)|DeadEnd  -> ()
+          function
+          | `Snterm e ->
+              if e.egram != entry.egram
+              then
+                (eprintf
+                   "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
+                   entry.ename e.ename;
+                 flush Pervasives.stderr;
+                 failwith "Grammar.extend error")
+              else ()
+          | `Snterml (e,_) ->
+              if e.egram != entry.egram
+              then
+                (eprintf
+                   "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
+                   entry.ename e.ename;
+                 flush Pervasives.stderr;
+                 failwith "Grammar.extend error")
+              else ()
+          | `Smeta (_,sl,_) -> List.iter (check_gram entry) sl
+          | `Slist0sep (s,t) -> (check_gram entry t; check_gram entry s)
+          | `Slist1sep (s,t) -> (check_gram entry t; check_gram entry s)
+          | `Slist0 s|`Slist1 s|`Sopt s|`Stry s -> check_gram entry s
+          | `Stree t -> tree_check_gram entry t
+          | `Snext|`Sself|`Stoken _|`Skeyword _ -> ()
+and tree_check_gram entry =
+      function
+      | Node { node = n; brother = bro; son } ->
+          (check_gram entry n;
+           tree_check_gram entry bro;
+           tree_check_gram entry son)
+      | LocAct (_,_)|DeadEnd  -> ()
 let get_initial =
   function | `Sself::symbols -> (true, symbols) | symbols -> (false, symbols)
 let insert_tokens gram symbols =
   let rec insert =
-    function
-    | `Smeta (_,sl,_) -> List.iter insert sl
-    | `Slist0 s|`Slist1 s|`Sopt s|`Stry s -> insert s
-    | `Slist0sep (s,t) -> (insert s; insert t)
-    | `Slist1sep (s,t) -> (insert s; insert t)
-    | `Stree t -> tinsert t
-    | `Skeyword kwd -> using gram kwd
-    | `Snterm _|`Snterml (_,_)|`Snext|`Sself|`Stoken _ -> () and tinsert =
-    function
-    | Node { node = s; brother = bro; son } ->
-        (insert s; tinsert bro; tinsert son)
-    | LocAct (_,_)|DeadEnd  -> () in
+            function
+            | `Smeta (_,sl,_) -> List.iter insert sl
+            | `Slist0 s|`Slist1 s|`Sopt s|`Stry s -> insert s
+            | `Slist0sep (s,t) -> (insert s; insert t)
+            | `Slist1sep (s,t) -> (insert s; insert t)
+            | `Stree t -> tinsert t
+            | `Skeyword kwd -> using gram kwd
+            | `Snterm _|`Snterml (_,_)|`Snext|`Sself|`Stoken _ -> ()
+  and tinsert =
+        function
+        | Node { node = s; brother = bro; son } ->
+            (insert s; tinsert bro; tinsert son)
+        | LocAct (_,_)|DeadEnd  -> () in
   List.iter insert symbols
 let insert_tree entry gsymbols action tree =
   let rec insert symbols tree =
-    match symbols with
-    | s::sl -> insert_in_tree s sl tree
-    | [] ->
-        (match tree with
-         | Node { node = s; son; brother = bro } ->
-             Node { node = s; son; brother = (insert [] bro) }
-         | LocAct (old_action,action_list) ->
-             let () =
-               if ((entry.egram).warning_verbose).contents
-               then
-                 eprintf
-                   "<W> Grammar extension: in [%s] some rule has been masked@."
-                   entry.ename
-               else () in
-             LocAct (action, (old_action :: action_list))
-         | DeadEnd  -> LocAct (action, []))
-    and insert_in_tree s sl tree =
-    match try_insert s sl tree with
-    | Some t -> t
-    | None  -> Node { node = s; son = (insert sl DeadEnd); brother = tree }
-    and try_insert s sl tree =
-    match tree with
-    | Node { node = s1; son; brother = bro } ->
-        if Tools.eq_symbol s s1
-        then
-          let t = Node { node = s1; son = (insert sl son); brother = bro } in
-          Some t
-        else
-          if (is_before s1 s) || ((derive_eps s) && (not (derive_eps s1)))
-          then
-            (let bro =
-               match try_insert s sl bro with
-               | Some bro -> bro
-               | None  ->
-                   Node
-                     { node = s; son = (insert sl DeadEnd); brother = bro } in
-             let t = Node { node = s1; son; brother = bro } in Some t)
-          else
-            (match try_insert s sl bro with
-             | Some bro ->
-                 let t = Node { node = s1; son; brother = bro } in Some t
-             | None  -> None)
-    | LocAct (_,_)|DeadEnd  -> None in
+            match symbols with
+            | s::sl -> insert_in_tree s sl tree
+            | [] ->
+                (match tree with
+                 | Node { node = s; son; brother = bro } ->
+                     Node { node = s; son; brother = (insert [] bro) }
+                 | LocAct (old_action,action_list) ->
+                     let () =
+                       if ((entry.egram).warning_verbose).contents
+                       then
+                         eprintf
+                           "<W> Grammar extension: in [%s] some rule has been masked@."
+                           entry.ename
+                       else () in
+                     LocAct (action, (old_action :: action_list))
+                 | DeadEnd  -> LocAct (action, []))
+  and insert_in_tree s sl tree =
+        match try_insert s sl tree with
+        | Some t -> t
+        | None  ->
+            Node { node = s; son = (insert sl DeadEnd); brother = tree }
+  and try_insert s sl tree =
+        match tree with
+        | Node { node = s1; son; brother = bro } ->
+            if Tools.eq_symbol s s1
+            then
+              let t =
+                Node { node = s1; son = (insert sl son); brother = bro } in
+              Some t
+            else
+              if
+                (is_before s1 s) || ((derive_eps s) && (not (derive_eps s1)))
+              then
+                (let bro =
+                   match try_insert s sl bro with
+                   | Some bro -> bro
+                   | None  ->
+                       Node
+                         { node = s; son = (insert sl DeadEnd); brother = bro
+                         } in
+                 let t = Node { node = s1; son; brother = bro } in Some t)
+              else
+                (match try_insert s sl bro with
+                 | Some bro ->
+                     let t = Node { node = s1; son; brother = bro } in Some t
+                 | None  -> None)
+        | LocAct (_,_)|DeadEnd  -> None in
   insert gsymbols tree
 let insert_level entry e1 symbols action slev =
   match e1 with

@@ -21,8 +21,8 @@ let wrap parse_fun lb =
        raise Exit)
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
 let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens (Syntax.top_phrase :
-          Ast.str_item option Gram.t ) token_stream
+  match Gram.parse_origin_tokens
+          (Syntax.top_phrase : Ast.str_item option Gram.t ) token_stream
   with
   | Some str_item ->
       let str_item =

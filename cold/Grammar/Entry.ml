@@ -28,7 +28,8 @@ let action_parse entry ts =
        FanLoc.raise (get_prev_loc ts)
          (Stream.Error ("illegal begin of " ^ entry.ename))
    | FanLoc.Exc_located (_,_) as exc -> raise exc
-   | exc -> FanLoc.raise (get_prev_loc ts) exc : Action.t )
+   | exc -> FanLoc.raise (get_prev_loc ts) exc : Action.t
+  )
 let lex entry loc cs = (entry.egram).glexer loc cs
 let lex_string entry loc str = lex entry loc (Stream.of_string str)
 let filter entry ts =

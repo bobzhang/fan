@@ -111,8 +111,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
        | _ -> None)
   let expand_quotation loc expander pos_tag quot =
     let open FanSig in
-      let loc_name_opt =
-        if quot.q_loc = "" then None else Some (quot.q_loc) in
+      let loc_name_opt = if quot.q_loc = "" then None else Some (quot.q_loc) in
       try expander loc loc_name_opt quot.q_contents
       with | FanLoc.Exc_located (_,Quotation _) as exc -> raise exc
       | FanLoc.Exc_located (iloc,exc) ->

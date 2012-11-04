@@ -188,10 +188,11 @@ class printer  ()= object(self:'self)
   method virtual_flag f  = function
     | Concrete -> ()
     | Virtual -> pp f "virtual@;"
-          (* trailing space added *)        
+
+  (* trailing space added *)        
   method rec_flag f = function
     | Nonrecursive -> ()
-    | Recursive | Default -> pp f "rec@;"
+    | Recursive | Default -> pp f "rec "
   method direction_flag f = function
     | Upto -> pp f "to@ "
     | Downto -> pp f "downto@ "
@@ -592,8 +593,8 @@ class printer  ()= object(self:'self)
         pp f "(%a)"  (self#list self#simple_expr  ~sep:",@;")  l
     | Pexp_constraint (e, cto1, cto2) ->
         pp f "(%a%a%a)" self#expression e
-          (self#option self#core_type ~first:"@ :@ " ~last:"@;") cto1
-          (self#option self#core_type ~first:"@ :>") cto2
+          (self#option self#core_type ~first:" : " ~last:"@;") cto1 (* no sep hint*)
+          (self#option self#core_type ~first:" :>") cto2
     | Pexp_variant (l, None) -> pp f "`%s" l 
     | Pexp_record (l, eo) ->
         let longident_x_expression f ( li, e) =
@@ -907,8 +908,6 @@ class printer  ()= object(self:'self)
     | [] -> ()
     | [x] -> pp f "@[<2>let %a%a@]" self#rec_flag rf self#binding x 
     | x::xs ->
-        (* pp f "@[<hv>%a@]" *)
-        (*   (self#list self#binding ~sep) *) (* could use reset to improve the output further*)
         pp f "@[<hv0>let %a@[<2>%a%a@]"
           self#rec_flag rf  self#binding x
           (fun f l -> match l with

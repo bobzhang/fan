@@ -87,8 +87,7 @@ let check_unknown_keywords tok loc =
 module Filter = struct
   let mk ~is_kwd  = { is_kwd; filter = ignore_layout }
   let filter x =
-    let f (tok,loc) =
-      let tok = keyword_conversion tok x.is_kwd in (tok, loc) in
+    let f (tok,loc) = let tok = keyword_conversion tok x.is_kwd in (tok, loc) in
     fun strm  -> x.filter (Stream.map f strm)
   let define_filter x f = x.filter <- f x.filter let keyword_added _ _ _ = ()
   let keyword_removed _ _ = ()

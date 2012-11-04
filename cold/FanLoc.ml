@@ -68,8 +68,9 @@ let to_tuple
         pos_cnum = start_off };
     loc_end =
       { pos_lnum = stop_line; pos_bol = stop_bol; pos_cnum = stop_off;_};
-    loc_ghost = ghost } = (pos_fname, start_line, start_bol, start_off,
-  stop_line, stop_bol, stop_off, ghost)
+    loc_ghost = ghost }
+  = (pos_fname, start_line, start_bol, start_off, stop_line, stop_bol,
+  stop_off, ghost)
 let better_file_name a b =
   match (a, b) with
   | ("","") -> a

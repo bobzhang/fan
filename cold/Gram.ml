@@ -33,7 +33,8 @@ let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string loc str)
 let debug_origin_token_stream (entry : 'a t) tokens =
   (parse_origin_tokens entry
-     (Stream.map (fun t  -> (t, ghost_token_info)) tokens) : 'a )
+     (Stream.map (fun t  -> (t, ghost_token_info)) tokens) : 'a
+  )
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
     (Stream.map (fun t  -> (t, FanLoc.ghost)) tokens)

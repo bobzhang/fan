@@ -61,8 +61,8 @@ let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
   if is_antiquot s
   then
     let pos = String.index s ':' in
-    let name = String.sub s 2 (pos - 2) and code =
-      String.sub s (pos + 1) (((String.length s) - pos) - 1) in
+    let name = String.sub s 2 (pos - 2)
+    and code = String.sub s (pos + 1) (((String.length s) - pos) - 1) in
     decorate name (parse loc code)
   else default
 let neg_string n =

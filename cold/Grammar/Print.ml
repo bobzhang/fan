@@ -15,9 +15,9 @@ class text_grammar =
               (Format.formatter -> 'a -> unit) ->
                 Format.formatter -> 'a list -> unit=
       fun ?sep  ?first  ?last  fu  f  xs  ->
-        let first = match first with | Some x -> x | None  -> "" and last =
-          match last with | Some x -> x | None  -> "" and sep =
-          match sep with | Some x -> x | None  -> "@ " in
+        let first = match first with | Some x -> x | None  -> ""
+        and last = match last with | Some x -> x | None  -> ""
+        and sep = match sep with | Some x -> x | None  -> "@ " in
         let aux f =
           function
           | [] -> ()
@@ -90,46 +90,46 @@ class text_grammar =
             self#assoc f lev.assoc;
             pp f "@]@;<1 2>";
             self#level ~space:"@\n" f rules;
-            (fun f  -> pp f "@,| ")) (fun _  -> ()) elev f
-      : unit )
+            (fun f  -> pp f "@,| ")) (fun _  -> ()) elev f : unit
+      )
     method entry f e =
       (pp f "@[<v 0>%s: [ " e.ename;
        (match e.edesc with
         | Dlevels elev -> self#levels f elev
         | Dparser _ -> pp f "<parser>");
-       pp f " ]@]"
-      : unit )
+       pp f " ]@]" : unit
+      )
   end
 class dump_grammar =
   object (self : 'self)
     inherit  text_grammar
     method! tree f tree =
       let rec get_brothers acc =
-        function
-        | DeadEnd  -> List.rev acc
-        | LocAct (_,_) -> List.rev acc
-        | Node { node = n; brother = b; son = s } ->
-            get_brothers ((Bro (n, (get_brothers [] s))) :: acc) b
-        and print_brothers f brothers =
-        if brothers = []
-        then pp f "@ []"
-        else
-          List.iter
-            (fun (Bro (n,xs))  ->
-               pp f "@ @[<hv2>- %a" self#symbol n;
-               (match xs with
-                | [] -> ()
-                | _::[] ->
-                    (try print_children f (get_children [] xs)
-                     with | Exit  -> pp f ":%a" print_brothers xs)
-                | _ -> pp f ":%a" print_brothers xs);
-               pp f "@]") brothers
-        and print_children f = List.iter (pp f ";@ %a" self#symbol) and
-        get_children acc =
-        function
-        | [] -> List.rev acc
-        | (Bro (n,x))::[] -> get_children (n :: acc) x
-        | _ -> raise Exit in
+                function
+                | DeadEnd  -> List.rev acc
+                | LocAct (_,_) -> List.rev acc
+                | Node { node = n; brother = b; son = s } ->
+                    get_brothers ((Bro (n, (get_brothers [] s))) :: acc) b
+      and print_brothers f brothers =
+            if brothers = []
+            then pp f "@ []"
+            else
+              List.iter
+                (fun (Bro (n,xs))  ->
+                   pp f "@ @[<hv2>- %a" self#symbol n;
+                   (match xs with
+                    | [] -> ()
+                    | _::[] ->
+                        (try print_children f (get_children [] xs)
+                         with | Exit  -> pp f ":%a" print_brothers xs)
+                    | _ -> pp f ":%a" print_brothers xs);
+                   pp f "@]") brothers
+      and print_children f = List.iter (pp f ";@ %a" self#symbol)
+      and get_children acc =
+            function
+            | [] -> List.rev acc
+            | (Bro (n,x))::[] -> get_children (n :: acc) x
+            | _ -> raise Exit in
       print_brothers f (get_brothers [] tree)
     method! levels f elev =
       List.fold_left
