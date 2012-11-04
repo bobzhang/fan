@@ -120,3 +120,8 @@ let removing { gkeywords = table; gfilter = filter; _ } kwd =
     end else ();
 
 
+let rec flatten_tree = fun
+  [ DeadEnd -> []
+  | LocAct _ _ -> [[]]
+  | Node {node = n; brother = b; son = s} ->
+      [ [n :: l] | l <- flatten_tree s ] @ flatten_tree b ];

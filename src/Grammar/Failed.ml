@@ -1,13 +1,14 @@
 
-(* module Print  = Print.Make (struct end); (\* FIXME later*\) *)
+
 open Structure;
 open Format;
-(* module Tools=Tools.Make(struct end); *)
+let pp = fprintf ;
+
 let name_of_descr = fun
   [(`Antiquot,s) -> "$"^s
   |(_,s) -> s ];
   
-let  name_of_symbol entry =  fun
+let  name_of_symbol entry : [> symbol] -> string  =  fun
   [ `Snterm e -> "[" ^ e.ename ^ "]"
   | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
   | `Sself | `Snext -> "[" ^ entry.ename ^ "]"
@@ -15,25 +16,26 @@ let  name_of_symbol entry =  fun
   | `Skeyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" ];
 
-
-let rec name_of_symbol_failed entry = fun
+(* error message entrance *)
+let rec name_of_symbol_failed entry : [>symbol] -> string = fun
   [ `Slist0 s | `Slist0sep (s, _) |
     `Slist1 s | `Slist1sep (s, _) |
-    `Sopt s | `Stry s -> name_of_symbol_failed entry s
+    `Sopt s | `Stry s ->
+      name_of_symbol_failed entry s
   | `Stree t -> name_of_tree_failed entry t
   | s -> name_of_symbol entry s ]
-and name_of_tree_failed entry =  fun
+and name_of_tree_failed entry : tree -> string =  fun
   [ Node {node = s; brother = bro; son = son} ->
       let tokl =
         match s with
-        [ `Stoken _ | `Skeyword _ -> Tools.get_token_list entry [] s son
-        | _ -> None ]
-      in
+        [ `Stoken _ | `Skeyword _
+          ->  Tools.get_token_list s son
+        | _ -> None ]  in
       match tokl with
       [ None ->
           let txt = name_of_symbol_failed entry s in
           let txt =
-            match (s, son) with
+            match (s, son) with (* when the current node is Opt *)
             [ (`Sopt _, Node _) -> txt ^ " or " ^ name_of_tree_failed entry son
             | _ -> txt ]  in
           let txt =
@@ -44,15 +46,16 @@ and name_of_tree_failed entry =  fun
       | Some (tokl, _, _) ->
           List.fold_left
             (fun s tok ->
-               (if s = "" then "" else s ^ " then ") ^
-               match tok with
-               [ `Stoken (_, descr) -> name_of_descr descr
-               | `Skeyword kwd -> kwd
-               | _ -> assert false ])
-            "" tokl ]
+               ((if s = "" then "" else s ^ " then ") ^
+                match tok with
+                  [ `Stoken (_, descr) -> name_of_descr descr
+                  | `Skeyword kwd -> kwd
+                  | _ -> assert false ])) "" tokl ]
   | DeadEnd | LocAct _ _ -> "???" ];
 
 let magic _s x = debug magic "Obj.magic: %s@." _s in Obj.magic x;
+
+(* [prev_symb_result] is cast by [Obj.magic] *)
 let tree_failed entry prev_symb_result prev_symb tree =
   let txt = name_of_tree_failed entry tree in
   let txt = match prev_symb with
@@ -82,15 +85,12 @@ let tree_failed entry prev_symb_result prev_symb tree =
     | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb ] in begin
         if !(entry.egram.error_verbose) then 
           let tree = Search.tree_in_entry prev_symb tree entry.edesc in 
-          let ppf = err_formatter in begin
-            fprintf ppf "@[<v 0>@,";
-            fprintf ppf "----------------------------------@,";
-            fprintf ppf "Parse error in entry [%s], rule:@;<0 2>" entry.ename;
-            fprintf ppf "@[";
-            Print.text#level ppf pp_force_newline (Print.flatten_tree tree);
-            fprintf ppf "@]@,";
-            fprintf ppf "----------------------------------@,";
-            fprintf ppf "@]@."
+          let f = err_formatter in begin
+            pp f ("@[<v 0>@,----------------------------------@,"^^
+                  "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
+                  "----------------------------------@,@]@.")
+              entry.ename
+              (Print.text#level ~space:"@\n"   (* Format.pp_force_newline *)) (flatten_tree tree);
           end
         else ();
         txt ^ " (in [" ^ entry.ename ^ "])"

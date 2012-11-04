@@ -5,7 +5,7 @@ open FanUtil;
 (* module Tools=Tools.Make (struct end); *)
 let get_cur_loc = Tools.get_cur_loc;
 let get_prev_loc = Tools.get_prev_loc;
-(* let drop_prev_loc = Tools.drop_prev_loc; *) (* FIXME unused *)
+
 
 let add_loc bp parse_fun strm =
   let x = parse_fun strm in
@@ -103,7 +103,7 @@ let rec parser_of_tree entry nlevn alevn = fun
         | [< a = p2 >] -> a ]
   | Node {node = s; son = son; brother = DeadEnd} ->
       let tokl =  match s with
-      [ `Stoken _ | `Skeyword _ -> Tools.get_token_list entry [] s son
+      [ `Stoken _ | `Skeyword _ -> Tools.get_token_list (* entry *) (* [] *) s son
       | _ -> None ] in
       match tokl with
       [ None ->
@@ -120,7 +120,7 @@ let rec parser_of_tree entry nlevn alevn = fun
             parser_of_token_list p1 tokl ]
   | Node {node = s; son = son; brother = bro} ->
       let tokl =  match s with
-       [ `Stoken _ | `Skeyword _ -> Tools.get_token_list entry [] s son
+       [ `Stoken _ | `Skeyword _ -> Tools.get_token_list (* entry *) (* [] *) s son
        | _ -> None ] in
       match tokl with
       [ None ->

@@ -1,146 +1,152 @@
 open Structure;
 open Format;
+let pp = fprintf ;
+  
 type brothers = [ Bro of symbol and list brothers ];
-let rec flatten_tree = fun
-  [ DeadEnd -> []
-  | LocAct _ _ -> [[]]
-  | Node {node = n; brother = b; son = s} ->
-      [ [n :: l] | l <- flatten_tree s ] @ flatten_tree b ];
-
+type space_formatter =  format unit Format.formatter unit;
+      
 class text_grammar= object(self:'self)
-  method tree ppf t = self#level ppf Format.pp_print_space (flatten_tree t);
-  method symbol ppf =  fun
-    [ `Smeta n sl _ -> self#meta ppf n sl
-    | `Slist0 s -> fprintf ppf "LIST0 %a" self#symbol1 s
+  method tree f t = self#level f  (flatten_tree t);
+  method list :  ! 'a .
+      ?sep:space_formatter -> ?first:space_formatter ->
+      ?last:space_formatter -> (Format.formatter -> 'a -> unit) ->
+        Format.formatter ->  list 'a -> unit
+            = fun  ?sep ?first  ?last fu f xs -> 
+              let first = match first with [Some x -> x | None -> ""]
+              and last = match last with [Some x -> x | None -> ""]
+              and sep = match sep with [Some x -> x | None -> "@ "] in
+              let aux f = fun
+                [ [] -> ()
+                | [x] -> fu f x
+                | xs ->
+                let rec loop  f = fun
+                  [ [x] -> fu f x
+                  | [x::xs] ->  pp f "%a%(%)%a" fu x sep loop xs 
+                  | _ -> assert false ] in begin
+                      pp f "%(%)%a%(%)" first loop xs last;
+                  end ] in
+          aux f xs;
+  method symbol f =  fun
+    [ `Smeta n sl _ -> self#meta n f  sl
+    | `Slist0 s -> pp f "LIST0 %a" self#symbol1 s
     | `Slist0sep s t ->
-        fprintf ppf "LIST0 %a SEP %a" self#symbol1 s self#symbol1 t
-    | `Slist1 s -> fprintf ppf "LIST1 %a" self#symbol1 s
+        pp f "LIST0 %a SEP %a" self#symbol1 s self#symbol1 t
+    | `Slist1 s -> pp f "LIST1 %a" self#symbol1 s
     | `Slist1sep s t ->
-        fprintf ppf "LIST1 %a SEP %a" self#symbol1 s self#symbol1 t
-    | `Sopt s -> fprintf ppf "OPT %a" self#symbol1 s
-    | `Stry s -> fprintf ppf "TRY %a" self#symbol1 s
-    | `Snterml e l -> fprintf ppf "%s@ Level@ %S" e.ename l
+        pp f "LIST1 %a SEP %a" self#symbol1 s self#symbol1 t
+    | `Sopt s -> pp f "OPT %a" self#symbol1 s
+    | `Stry s -> pp f "TRY %a" self#symbol1 s
+    | `Snterml e l -> pp f "%s@ Level@ %S" e.ename l
     | `Snterm _ | `Snext | `Sself | `Stree _ | `Stoken _ | `Skeyword _ as s ->
-        self#symbol1 ppf s ];
-  method description ppf = fun
+        self#symbol1 f s ];
+  method description f = fun
     [ `Normal -> ()
-    | `Antiquot -> fprintf ppf "$"];
-  method symbol1 ppf = fun
-    [ `Snterm e -> pp_print_string ppf e.ename
-    | `Sself -> pp_print_string ppf "SELF"
-    | `Snext -> pp_print_string ppf "NEXT"
-    | `Stoken (_, (description,content)) -> begin 
-        self#description ppf description;
-        pp_print_string ppf content
-    end
-    | `Skeyword s -> fprintf ppf "%S" s
-    | `Stree t -> self#tree ppf t
+    | `Antiquot -> pp f "$"];
+  method symbol1 f = fun
+    [ `Snterm e -> pp f "%s" e.ename
+    | `Sself -> pp f "%s" "SELF"
+    | `Snext -> pp f "%s" "NEXT" 
+    | `Stoken (_, (description,content)) ->
+        pp f "%a%s" self#description description content
+    | `Skeyword s -> pp f "%S" s
+    | `Stree t -> self#tree f t
     | `Smeta _ _ _ | `Snterml _ _ | `Slist0 _ | `Slist0sep _ _ | `Slist1 _ |
-      `Slist1sep _ _ | `Sopt _ | `Stry _ as s -> fprintf ppf "(%a)" self#symbol s ];
-  method meta ppf n sl=
+      `Slist1sep _ _ | `Sopt _ | `Stry _ as s -> pp f "(%a)" self#symbol s ];
+  method meta n f  sl=
     let rec loop i =fun
     [ [] -> ()
     | [s :: sl] ->
-          let j = try String.index_from n i ' '
+        let j =
+          try String.index_from n i ' '
           with [ Not_found -> String.length n ] in begin 
-            fprintf ppf "%s %a" (String.sub n i (j - i)) self#symbol1 s;
+            pp f "%s %a" (String.sub n i (j - i)) self#symbol1 s;
             if sl = [] then ()
-            else do { fprintf ppf " "; loop (min (j + 1) (String.length n)) sl }
+            else do { pp f " "; loop (min (j + 1) (String.length n)) sl }
           end ] in
     loop 0 sl ;
-  method rule ppf symbols= begin
-    fprintf ppf "@[<hov 0>";
-    List.fold_left
-      (fun sep symbol ->begin
-        fprintf ppf "%t%a" sep self#symbol symbol;
-        fun ppf -> fprintf ppf ";@ "
-      end) (fun _ -> ()) symbols ppf;
-    fprintf ppf "@]"
+  method rule f symbols= begin
+    pp f "@[<0>%a@]"
+      (self#list self#symbol ~sep:";@ ") symbols
   end;
-  method level ppf space rules= begin
-    fprintf ppf "@[<hov 0>[ ";
-    List.fold_left
-          (fun sep rule -> begin
-              fprintf ppf "%t%a" sep self#rule rule;
-              fun ppf -> fprintf ppf "%a| " space ()
-            end)
-          (fun _ -> ()) rules ppf ; (* BUGFIX the original version misses [ppf]*)
-    fprintf ppf " ]@]"
+  method level ?space:(space:option space_formatter) f  rules= begin
+    let space = match space with [None -> ("@ ":space_formatter) | Some x -> x] in 
+    pp f "@[<0>[@;%a@;]@]" (self#list self#rule ~sep:("|"^^space)) rules
   end;
-  method assoc ppf = fun
-  [ `LA -> fprintf ppf "LA"
-  | `RA -> fprintf ppf "RA"
-  | `NA -> fprintf ppf "NA" ];
     
-  method levels ppf elev:unit =
+  method assoc f = fun
+    [ `LA -> pp f "LA"
+    | `RA -> pp f "RA"
+    | `NA -> pp f "NA" ];
+    
+  method levels f elev:unit =
     List.fold_left (fun sep lev ->
       let rules =
         [ [`Sself :: t] | t <- flatten_tree lev.lsuffix ] @
         flatten_tree lev.lprefix    in begin 
-          fprintf ppf "%t@[<hov 2>" sep;
+          pp f "%t@[<hov 2>" sep;
           match lev.lname with
-          [ Some n -> fprintf ppf "%S@;<1 2>" n
+          [ Some n -> pp f "%S@;<1 2>" n
           | None -> () ];
-          self#assoc ppf  lev.assoc ;
-          fprintf ppf "@]@;<1 2>";
-          self#level ppf Format.pp_force_newline rules;
-          fun ppf -> fprintf ppf "@,| "
+          self#assoc f  lev.assoc ;
+          pp f "@]@;<1 2>";
+          self#level ~space:"@\n" f  rules;
+          fun f -> pp f "@,| "
           end)
-      (fun _ -> ()) elev ppf;
-  method entry ppf e :unit= begin
-    fprintf ppf "@[<v 0>%s: [ " e.ename;
+      (fun _ -> ()) elev f;
+  method entry f e :unit= begin
+    pp f "@[<v 0>%s: [ " e.ename;
     match e.edesc with
-    [ Dlevels elev -> self#levels ppf elev
-    | Dparser _ -> fprintf ppf "<parser>" ];
-    fprintf ppf " ]@]"
+    [ Dlevels elev -> self#levels f elev
+    | Dparser _ -> pp f "<parser>" ];
+    pp f " ]@]"
   end;
 end;
 
 class dump_grammar = object(self:'self)
   inherit text_grammar ;
-  method! tree ppf tree =
+  method! tree f tree =
     let rec get_brothers acc =  fun
       [ DeadEnd -> List.rev acc
       | LocAct _ _ -> List.rev acc
       | Node {node = n; brother = b; son = s} ->
           get_brothers [Bro n (get_brothers [] s) :: acc] b ]
-    and print_brothers ppf brothers =
+    and print_brothers f brothers =
       if brothers = [] then
-        fprintf ppf "@ []"
+        pp f "@ []"
       else
         List.iter (fun [ Bro n xs -> begin
-          fprintf ppf "@ @[<hv2>- %a" self#symbol n;
+          pp f "@ @[<hv2>- %a" self#symbol n;
           match xs with
           [ [] -> ()
-          | [_] -> try print_children ppf (get_children [] xs)
-                   with [ Exit -> fprintf ppf ":%a" print_brothers xs ]
-          | _ -> fprintf ppf ":%a" print_brothers xs ];
-          fprintf ppf "@]";
+          | [_] -> try print_children f (get_children [] xs)
+                   with [ Exit -> pp f ":%a" print_brothers xs ]
+          | _ -> pp f ":%a" print_brothers xs ];
+          pp f "@]";
         end]) brothers
-    and print_children ppf = List.iter (fprintf ppf ";@ %a" self#symbol)
+    and print_children f = List.iter (pp f ";@ %a" self#symbol)
     and get_children acc =
       fun
       [ [] -> List.rev acc
       | [Bro n x] -> get_children [n::acc] x
       | _ -> raise Exit ]
-    in print_brothers ppf (get_brothers [] tree);
-  method! levels ppf elev =
+    in print_brothers f (get_brothers [] tree);
+  method! levels f elev =
     List.fold_left
       (fun sep lev -> begin
-        fprintf ppf "%t@[<v2>" sep;
+        pp f "%t@[<v2>" sep;
         match lev.lname with
-        [ Some n -> fprintf ppf "%S@;<1 2>" n
+        [ Some n -> pp f "%S@;<1 2>" n
         | None -> () ];
-        self#assoc ppf lev.assoc;
-        fprintf ppf "@]@;<1 2>";
-        fprintf ppf "@[<v2>suffix:@ ";
-        self#tree ppf lev.lsuffix;
-        fprintf ppf "@]@ @[<v2>prefix:@ ";
-        self#tree ppf lev.lprefix;
-        fprintf ppf "@]";
-        fun ppf -> fprintf ppf "@,| "
+        self#assoc f lev.assoc;
+        pp f "@]@;<1 2>";
+        pp f "@[<v2>suffix:@ ";
+        self#tree f lev.lsuffix;
+        pp f "@]@ @[<v2>prefix:@ ";
+        self#tree f lev.lprefix;
+        pp f "@]";
+        fun f -> pp f "@,| "
       end)
-      (fun _ -> ()) elev ppf;
+      (fun _ -> ()) elev f;
 end;
 let text = new text_grammar;
 let dump = new dump_grammar;
