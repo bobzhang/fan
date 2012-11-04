@@ -31,12 +31,12 @@ let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts)
 let parse entry loc cs = filter_and_parse_tokens entry (lex loc cs)
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string loc str)
-let debug_origin_token_stream (entry : 'a t ) tokens =
+let debug_origin_token_stream (entry : 'a t) tokens =
   (parse_origin_tokens entry
-     (Stream.map (fun t -> (t, ghost_token_info)) tokens) :'a )
+     (Stream.map (fun t  -> (t, ghost_token_info)) tokens) : 'a )
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
-    (Stream.map (fun t -> (t, FanLoc.ghost)) tokens)
+    (Stream.map (fun t  -> (t, FanLoc.ghost)) tokens)
 let parse_string_safe entry loc s =
   try parse_string entry loc s
   with
@@ -65,18 +65,16 @@ let extend = Insert.extend
 let eoi_entry entry =
   let entry_eoi = mk ((name entry) ^ "_eoi") in
   let () =
-    extend (entry_eoi :'entry_eoi t  )
-      ((fun () -> (None,
+    extend (entry_eoi : 'entry_eoi t )
+      ((fun ()  -> (None,
           [(None,
           None,
-          [([`Snterm (obj (entry :'entry t  ));
+          [([`Snterm (obj (entry : 'entry t ));
             `Stoken (((function | `EOI -> true | _ -> false)), (`Normal,
               "`EOI"))],
           (mk_action
-             (fun __camlp4_0 ->
-                fun (x : 'entry) ->
-                  fun (_loc : FanLoc.t ) ->
-                    match ( __camlp4_0 ) with
-                    | `EOI -> (x :'entry_eoi )
-                    | _ -> assert false)))])])) ()) in
+             (fun __camlp4_0  (x : 'entry)  (_loc : FanLoc.t)  ->
+                match __camlp4_0 with
+                | `EOI -> (x : 'entry_eoi )
+                | _ -> assert false)))])])) ()) in
   entry_eoi

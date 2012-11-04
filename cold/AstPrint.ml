@@ -161,7 +161,7 @@ class printer  ()= object(self:'self)
               pp f "%s" (String.sub s 1 (len-1))
             else
               pp f "%s" s 
-        | 'a' .. 'z' | 'A' .. 'Z' when not (is_infix (fixity_of_string s)) ->
+        | 'a' .. 'z' | 'A' .. 'Z' | '_' when not (is_infix (fixity_of_string s)) ->
             pp f "%s" s
         | _ -> pp f "(@;%s@;)" s )
     | Ldot(y,s) -> (match s.[0] with
@@ -249,7 +249,7 @@ class printer  ()= object(self:'self)
     | Ptyp_var s -> self#tyvar f  s; 
     | Ptyp_tuple l ->  pp f "(%a)" (self#list self#core_type1 ~sep:"*@;") l 
     | Ptyp_constr (li, l) ->
-        pp f "%a%a@;" 
+        pp f (* "%a%a@;" *) "%a%a"
           (fun f l -> match l with
           |[] -> ()
           |[x]-> pp f "%a@;" self#core_type1  x
@@ -257,7 +257,7 @@ class printer  ()= object(self:'self)
     | Ptyp_variant (l, closed, low) ->
         let type_variant_helper f x =
           match x with
-          | Rtag (l, _, ctl) -> pp f "@[<hov2>%a%a@]"  self#string_quot l
+          | Rtag (l, _, ctl) -> pp f "@[<2>%a%a@]"  self#string_quot l
                 (fun f l -> match l with
                 |[] -> ()
                 | _ -> pp f "@;of@;%a"
@@ -460,16 +460,26 @@ class printer  ()= object(self:'self)
         self#paren true self#reset#expression f x
     | Pexp_let _ | Pexp_letmodule _ when semi ->
         self#paren true self#reset#expression f x
-    | Pexp_function (p, eo, l) ->
-        ( match l with
-        | [(p',e')] ->
-            (match e'.pexp_desc with
-            | Pexp_when(e1,e2) ->
-                pp f "@[<hov2>fun@;%a@;when@;%a@;->@;%a@]"
-                  self#simple_pattern p' self#reset#expression e1 self#expression e2 
-            | _ ->  pp f "@[<hov2>fun@ %a->@ %a@]" (* FIXME IMPROVE later *)
-                  self#label_exp (p,eo,p') self#expression e')
-        | _ ->  pp f "@[<hv>function%a@]"  self#case_list  l )
+    | Pexp_function _(* (p, eo, l) *) ->
+        let rec aux acc = function
+          | {pexp_desc = Pexp_function (l,eo, [(p',e')]);_}
+              -> aux ((l,eo,p')::acc) e'
+          | x -> (List.rev acc,x)  in
+        begin match aux [] x with
+        | [], {pexp_desc=Pexp_function(_label,_eo,l);_} -> (* label should be "" *)
+            pp f "@[<hv>function%a@]" self#case_list l
+        | ls, {pexp_desc=Pexp_when(e1,e2);_}->
+            pp f "@[<2>fun@;%a@;when@;%a@;->@;%a@]"
+            (self#list
+               (fun f (l,eo,p) ->
+                 self#label_exp  f (l,eo,p) )) ls
+              self#reset#expression e1 self#expression e2
+        | ls, e ->
+            pp f "@[<2>fun@;%a@;->@;%a@]"
+              (self#list
+                 (fun f (l,eo,p) ->
+                   self#label_exp f (l,eo,p))) ls
+              self#expression e end
     | Pexp_match (e, l) ->
         pp f "@[<hv0>@[<hv0>@[<2>match %a@]@ with@]%a@]" self#reset#expression e self#case_list l 
 
@@ -581,7 +591,7 @@ class printer  ()= object(self:'self)
         pp f "(%a)"  (self#list self#simple_expr  ~sep:",@;")  l
     | Pexp_constraint (e, cto1, cto2) ->
         pp f "(%a%a%a)" self#expression e
-          (self#option self#core_type ~first:"@ :" ~last:"@;") cto1
+          (self#option self#core_type ~first:"@ :@ " ~last:"@;") cto1
           (self#option self#core_type ~first:"@ :>") cto2
     | Pexp_variant (l, None) -> pp f "`%s" l 
     | Pexp_record (l, eo) ->
@@ -884,8 +894,8 @@ class printer  ()= object(self:'self)
             pp f "%a@;:@;%a=@;%a" self#simple_pattern p  self#core_type ty self#expression x
         | _ ->
             pp f "(%a@;:%a)=@;%a" self#simple_pattern p  self#core_type ty self#expression x)
-    | (Pexp_constraint (e,Some t1,None),Ppat_var {txt;_}) ->
-        pp f "%s:%a@;=%a" txt self#core_type t1  self#expression e
+    | Pexp_constraint (e,Some t1,None),Ppat_var {txt;_} ->
+        pp f "%s:@ %a@;=@;%a" txt self#core_type t1  self#expression e
     | _ -> pp f "%a@ %a" self#simple_pattern p pp_print_pexp_function x
           
   method bindings f l =

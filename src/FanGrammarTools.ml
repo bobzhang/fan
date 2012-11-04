@@ -178,8 +178,7 @@ let rec make_expr entry tvar =  fun
       List.fold_right
         (fun t el -> <:expr< [$(make_expr entry "" t) :: $el] >>)
         tl <:expr< [] >> in
-    <:expr<
-    (* $(id:gm()). *)`Smeta ($str:n, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) >>
+    <:expr< `Smeta ($str:n, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) >>
   | TXlist _loc min t ts ->
       let txt = make_expr entry "" t.text in
       match (min, ts) with

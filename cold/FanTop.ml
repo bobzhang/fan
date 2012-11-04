@@ -4,13 +4,13 @@ module P = MakePreCast.Make(struct
   end)
 open P
 let wrap parse_fun lb =
-  let () = iter_and_take_callbacks (fun (_,f) -> f ()) in
+  let () = iter_and_take_callbacks (fun (_,f)  -> f ()) in
   let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
   let token_stream = Gram.filter not_filtered_token_stream in
   try
-    let (__strm :_ Stream.t )= token_stream in
-    match Stream.peek ( __strm ) with
-    | Some (`EOI,_) -> (Stream.junk ( __strm ); raise End_of_file)
+    let (__strm :_ Stream.t)= token_stream in
+    match Stream.peek __strm with
+    | Some (`EOI,_) -> (Stream.junk __strm; raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
@@ -21,19 +21,19 @@ let wrap parse_fun lb =
        raise Exit)
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
 let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens (Syntax.top_phrase
-          :Ast.str_item  option  Gram.t  ) token_stream
+  match Gram.parse_origin_tokens (Syntax.top_phrase :
+          Ast.str_item option Gram.t ) token_stream
   with
   | Some str_item ->
       let str_item =
-        Syntax.AstFilters.fold_topphrase_filters
-          (fun t -> fun filter -> filter t) str_item in
+        Syntax.AstFilters.fold_topphrase_filters (fun t  filter  -> filter t)
+          str_item in
       Ast2pt.phrase str_item
   | None  -> raise End_of_file
 let fake token_stream =
   (try
      Stream.iter
-       (fun (tok,_) ->
+       (fun (tok,_)  ->
           if tok = (`INT (3, "3"))
           then raise Not_found
           else
@@ -72,10 +72,9 @@ let _ =
   Toploop.parse_toplevel_phrase := revise_parser;
   Toploop.parse_use_file := (wrap use_file);
   Syntax.current_warning :=
-    (fun loc ->
-       fun txt ->
-         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt));
-  iter_and_take_callbacks (fun (_,f) -> f ())
+    (fun loc  txt  ->
+       Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt));
+  iter_and_take_callbacks (fun (_,f)  -> f ())
 let _ =
   let open FanParsers in
     pa_r (module P);

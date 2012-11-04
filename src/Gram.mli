@@ -135,12 +135,26 @@ val sfold0 :
 val sfold1 :
   ('a -> 'b -> 'b) ->
   'b -> 'c -> 'd -> ('e Stream.t -> 'a) -> 'e Stream.t -> 'b
+
+type ('a,'b,'c)fold  =
+    'b t->
+      symbol list->
+        ('a Stream.t  -> 'b) -> 'a Stream.t  -> 'c
+
+type ('a,'b,'c) foldsep  =
+   'b t ->
+     symbol list ->
+       ('a Stream.t -> 'b) ->
+         ('a Stream.t -> unit) ->
+           'a Stream.t -> 'c
+      
 val sfold0sep :
-  ('a -> 'b -> 'b) ->
-  'b ->
-  'a t ->
-  symbol list ->
-  ('c Stream.t -> 'a) -> ('c Stream.t -> unit) -> 'c Stream.t -> 'b
+    ('a -> 'b -> 'b) ->  'b ->
+    'a t ->
+    symbol list ->
+    ('c Stream.t -> 'a) ->
+      ('c Stream.t -> unit) ->
+        'c Stream.t -> 'b
 val extend :
   'a t ->
   [< `After of string | `Before of string | `First | `Last | `Level of string ]
@@ -149,3 +163,5 @@ val extend :
    (symbol list * Action.t) list)
   list -> unit
 val eoi_entry : 'a t -> 'a t
+
+    

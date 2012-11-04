@@ -162,13 +162,13 @@ let rec ctyp =
       package_type_constraints wc1 (package_type_constraints wc2 acc)
   | _ ->
       error (loc_of_with_constr wc)
-        "unexpected `with constraint' for a package type" and
-  package_type:module_type  -> package_type 
-  =function
-   | Ast.MtWit (_,Ast.MtId (_,i),wc) -> ((long_uident i),
-       (package_type_constraints wc []))
-   | Ast.MtId (_,i) -> ((long_uident i), [])
-   | mt -> error (loc_of_module_type mt) "unexpected package type"
+        "unexpected `with constraint' for a package type" and package_type:
+  module_type -> package_type =
+  function
+  | Ast.MtWit (_,Ast.MtId (_,i),wc) -> ((long_uident i),
+      (package_type_constraints wc []))
+  | Ast.MtId (_,i) -> ((long_uident i), [])
+  | mt -> error (loc_of_module_type mt) "unexpected package type"
 let mktype loc tl cl tk tp tm =
   let (params,variance) = List.split tl in
   {
@@ -294,11 +294,11 @@ let rec mkwithc wc acc =
   match wc with
   | Ast.WcNil _ -> acc
   | Ast.WcTyp (loc,id_tpl,ct) ->
-      (mkwithtyp (fun x -> Pwith_type x) loc id_tpl ct) :: acc
+      (mkwithtyp (fun x  -> Pwith_type x) loc id_tpl ct) :: acc
   | Ast.WcMod (_,i1,i2) -> ((long_uident i1),
       (Pwith_module (long_uident i2))) :: acc
   | Ast.WcTyS (loc,id_tpl,ct) ->
-      (mkwithtyp (fun x -> Pwith_typesubst x) loc id_tpl ct) :: acc
+      (mkwithtyp (fun x  -> Pwith_typesubst x) loc id_tpl ct) :: acc
   | Ast.WcMoS (_,i1,i2) -> ((long_uident i1),
       (Pwith_modsubst (long_uident i2))) :: acc
   | Ast.WcAnd (_,wc1,wc2) -> mkwithc wc1 (mkwithc wc2 acc)
@@ -462,13 +462,12 @@ let rec expr =
         | _ -> error loc "bad ast in expression" in
       let (_,e) =
         List.fold_left
-          (fun (loc_bp,e1) ->
-             fun (loc_ep,ml,e2) ->
-               match e2 with
-               | Ast.ExId (sloc,Ast.IdLid (_,s)) ->
-                   let loc = FanLoc.merge loc_bp loc_ep in (loc,
-                     (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
-               | _ -> error (loc_of_expr e2) "lowercase identifier expected")
+          (fun (loc_bp,e1)  (loc_ep,ml,e2)  ->
+             match e2 with
+             | Ast.ExId (sloc,Ast.IdLid (_,s)) ->
+                 let loc = FanLoc.merge loc_bp loc_ep in (loc,
+                   (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
+             | _ -> error (loc_of_expr e2) "lowercase identifier expected")
           (loc, e) l in
       e
   | ExAnt (loc,_) -> error loc "antiquotation not allowed here"
@@ -612,11 +611,11 @@ let rec expr =
   | ExSeq (_loc,e) ->
       let rec loop =
         function
-        | [] -> expr (Ast.ExId (( _loc ), (Ast.IdUid (( _loc ), "()"))))
+        | [] -> expr (Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))))
         | e::[] -> expr e
         | e::el ->
-            let _loc = FanLoc.merge (loc_of_expr e) ( _loc ) in
-            mkexp ( _loc ) (Pexp_sequence ((expr e), (loop el))) in
+            let _loc = FanLoc.merge (loc_of_expr e) _loc in
+            mkexp _loc (Pexp_sequence ((expr e), (loop el))) in
       loop (list_of_expr e [])
   | ExSnd (loc,e,s) -> mkexp loc (Pexp_send ((expr e), s))
   | ExSte (loc,e1,e2) ->
@@ -659,10 +658,10 @@ let rec expr =
   | ExId (_,_)|ExNil _ as e -> error (loc_of_expr e) "invalid expr" and
   patt_of_lab _loc lab =
   function
-  | Ast.PaNil _ -> patt (Ast.PaId (( _loc ), (Ast.IdLid (( _loc ), lab))))
+  | Ast.PaNil _ -> patt (Ast.PaId (_loc, (Ast.IdLid (_loc, lab))))
   | p -> patt p and expr_of_lab _loc lab =
   function
-  | Ast.ExNil _ -> expr (Ast.ExId (( _loc ), (Ast.IdLid (( _loc ), lab))))
+  | Ast.ExNil _ -> expr (Ast.ExId (_loc, (Ast.IdLid (_loc, lab))))
   | e -> expr e and label_expr =
   function
   | ExLab (loc,lab,eo) -> (lab, (expr_of_lab loc lab eo))
@@ -680,10 +679,10 @@ let rec expr =
         | Ast.TyApp (_,x,y) -> (id_to_string x) @ (id_to_string y)
         | _ -> assert false in
       let vars = id_to_string vs in
-      let ampersand_vars = List.map (fun x -> "&" ^ x) vars in
+      let ampersand_vars = List.map (fun x  -> "&" ^ x) vars in
       let ty' = varify_constructors vars (ctyp ty) in
-      let mkexp = mkexp ( _loc ) in
-      let mkpat = mkpat ( _loc ) in
+      let mkexp = mkexp _loc in
+      let mkpat = mkpat _loc in
       let e = mkexp (Pexp_constraint ((expr e), (Some (ctyp ty)), None)) in
       let rec mk_newtypes x =
         match x with
@@ -694,11 +693,11 @@ let rec expr =
       let pat =
         mkpat
           (Ppat_constraint ((mkpat (Ppat_var (with_loc bind_name sloc))),
-             (mktyp ( _loc ) (Ptyp_poly (ampersand_vars, ty'))))) in
+             (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
       let e = mk_newtypes vars in (pat, e) :: acc
   | Ast.BiEq (_loc,p,Ast.ExTyc (_,e,Ast.TyPol (_,vs,ty))) ->
-      ((patt (Ast.PaTyc (( _loc ), p, (Ast.TyPol (( _loc ), vs, ty))))),
-      (expr e)) :: acc
+      ((patt (Ast.PaTyc (_loc, p, (Ast.TyPol (_loc, vs, ty))))), (expr e)) ::
+      acc
   | Ast.BiEq (_,p,e) -> ((patt p), (expr e)) :: acc
   | Ast.BiNil _ -> acc
   | _ -> assert false and match_case x acc =
@@ -725,7 +724,7 @@ let rec expr =
   | Ast.TyDcl (cloc,c,tl,td,cl) ->
       let cl =
         List.map
-          (fun (t1,t2) ->
+          (fun (t1,t2)  ->
              let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
              ((ctyp t1), (ctyp t2), loc)) cl in
       ((with_loc c cloc),

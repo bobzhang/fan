@@ -2,50 +2,48 @@ open Lib
 open LibUtil
 module type AntiquotSyntax =
   sig
-    val parse_expr : FanLoc.t  -> string  -> Ast.expr 
-    val parse_patt : FanLoc.t  -> string  -> Ast.patt 
+    val parse_expr : FanLoc.t -> string -> Ast.expr
+    val parse_patt : FanLoc.t -> string -> Ast.patt
   end
 module type S =
   sig
-    type 'a expand_fun = FanLoc.t  -> string  option  -> string  -> 'a 
-    val add : string  -> 'a DynAst.tag  -> 'a expand_fun  -> unit 
-    val find : string  -> 'a DynAst.tag  -> 'a expand_fun 
-    val default : string  ref 
-    val default_tbl : (string ,string ) Hashtbl.t 
-    val default_at_pos : string  -> string  -> unit 
+    type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
+    val add : string -> 'a DynAst.tag -> 'a expand_fun -> unit
+    val find : string -> 'a DynAst.tag -> 'a expand_fun
+    val default : string ref
+    val default_tbl : (string,string) Hashtbl.t
+    val default_at_pos : string -> string -> unit
     val parse_quotation_result :
-      (FanLoc.t  -> string  -> 'a) ->
-        FanLoc.t  -> FanSig.quotation  -> string  -> string  -> 'a
-    val translate : (string  -> string ) ref 
-    val expand : FanLoc.t  -> FanSig.quotation  -> 'a DynAst.tag  -> 'a
-    val dump_file : string  option  ref 
+      (FanLoc.t -> string -> 'a) ->
+        FanLoc.t -> FanSig.quotation -> string -> string -> 'a
+    val translate : (string -> string) ref
+    val expand : FanLoc.t -> FanSig.quotation -> 'a DynAst.tag -> 'a
+    val dump_file : string option ref
     val add_quotation :
-      string  ->
-        'a Gram.t  ->
-          (FanLoc.t  -> 'a -> Lib.Expr.Ast.expr ) ->
-            (FanLoc.t  -> 'a -> Lib.Expr.Ast.patt ) -> unit 
-    val add_quotation_of_expr :
-      name:string  -> entry:Ast.expr  Gram.t  -> unit 
-    val add_quotation_of_patt :
-      name:string  -> entry:Ast.patt  Gram.t  -> unit 
+      string ->
+        'a Gram.t ->
+          (FanLoc.t -> 'a -> Lib.Expr.Ast.expr) ->
+            (FanLoc.t -> 'a -> Lib.Expr.Ast.patt) -> unit
+    val add_quotation_of_expr : name:string -> entry:Ast.expr Gram.t -> unit
+    val add_quotation_of_patt : name:string -> entry:Ast.patt Gram.t -> unit
     val add_quotation_of_class_str_item :
-      name:string  -> entry:Ast.class_str_item  Gram.t  -> unit 
+      name:string -> entry:Ast.class_str_item Gram.t -> unit
     val add_quotation_of_match_case :
-      name:string  -> entry:Ast.match_case  Gram.t  -> unit 
+      name:string -> entry:Ast.match_case Gram.t -> unit
   end
 open Format
 module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
   struct
-  type 'a expand_fun = FanLoc.t  -> string  option  -> string  -> 'a 
+  type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
   module Exp_key = DynAst.Pack(struct
-    type 'a t = unit  
+    type 'a t = unit 
     end) module Exp_fun = DynAst.Pack(struct
-           type 'a t = 'a expand_fun  
+           type 'a t = 'a expand_fun 
            end)
-  let expanders_table:((string * Exp_key.pack )* Exp_fun.pack ) list  ref 
-    =ref [] let default = ref ""
-  let default_tbl:(string ,string ) Hashtbl.t  =Hashtbl.create 50
-  let translate = ref (fun x -> x)
+  let expanders_table: ((string* Exp_key.pack)* Exp_fun.pack) list ref =
+    ref [] let default = ref ""
+  let default_tbl: (string,string) Hashtbl.t = Hashtbl.create 50
+  let translate = ref (fun x  -> x)
   let default_at_pos pos str = Hashtbl.replace default_tbl pos str
   let expander_name pos_tag name =
     let str = DynAst.string_of_tag pos_tag in
@@ -64,9 +62,9 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
   type quotation_error_message =  
     | Finding
     | Expanding
-    | ParsingResult of FanLoc.t * string  
-  type quotation_error = (string * string * quotation_error_message * exn ) 
-  exception Quotation of quotation_error 
+    | ParsingResult of FanLoc.t* string 
+  type quotation_error = (string* string* quotation_error_message* exn) 
+  exception Quotation of quotation_error
   let quotation_error_to_string (name,position,ctx,exn) =
     let ppf = Buffer.create 30 in
     let name = if name = "" then default.contents else name in
@@ -78,7 +76,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
           (pp "finding quotation";
            bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
            List.iter
-             (fun ((s,t),_) ->
+             (fun ((s,t),_)  ->
                 bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ " s
                   Exp_key.print_tag t) expanders_table.contents;
            bprintf ppf "@]")
@@ -156,7 +154,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
       expand_quotation loc expander pos_tag quotation
   let parse_quot_string entry loc loc_name_opt s =
     BatRef.protect FanConfig.antiquotations true
-      (fun _ ->
+      (fun _  ->
          let res = Gram.parse_string entry loc s in
          let () = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in res)
   let anti_filter =
@@ -172,9 +170,9 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
       Ast.StExp (loc, exp_ast) in
     let expand_patt _loc loc_name_opt s =
       BatRef.protect FanConfig.antiquotations true
-        (fun _ ->
-           let ast = Gram.parse_string entry_eoi ( _loc ) s in
-           let meta_ast = mpatt ( _loc ) ast in
+        (fun _  ->
+           let ast = Gram.parse_string entry_eoi _loc s in
+           let meta_ast = mpatt _loc ast in
            let exp_ast = anti_filter#patt meta_ast in
            match loc_name_opt with
            | None  -> exp_ast
@@ -185,14 +183,13 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
                      (_loc,Ast.PaId
                       (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
                      ->
-                     Ast.PaApp (( _loc ),
-                       (Ast.PaId (( _loc ),
-                          (Ast.IdAcc (( _loc ),
-                             (Ast.IdUid (( _loc ), "Ast")),
-                             (Ast.IdUid (( _loc ), u)))))),
-                       (Ast.PaId (( _loc ), (Ast.IdLid (( _loc ), name)))))
+                     Ast.PaApp (_loc,
+                       (Ast.PaId (_loc,
+                          (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Ast")),
+                             (Ast.IdUid (_loc, u)))))),
+                       (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
                  | Ast.PaApp (_loc,a,b) ->
-                     Ast.PaApp (( _loc ), (subst_first_loc a), b)
+                     Ast.PaApp (_loc, (subst_first_loc a), b)
                  | p -> p in
                subst_first_loc exp_ast) in
     add name DynAst.expr_tag expand_expr;

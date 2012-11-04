@@ -105,15 +105,11 @@ let delete_rule entry sl =
       let levs = delete_rule_in_level_list entry sl levs in
       (entry.edesc <- Dlevels levs;
        entry.estart <-
-         (fun lev ->
-            fun strm ->
-              let f = Parser.start_parser_of_entry entry in
-              entry.estart <- f; f lev strm);
+         (fun lev  strm  ->
+            let f = Parser.start_parser_of_entry entry in
+            entry.estart <- f; f lev strm);
        entry.econtinue <-
-         (fun lev ->
-            fun bp ->
-              fun a ->
-                fun strm ->
-                  let f = Parser.continue_parser_of_entry entry in
-                  entry.econtinue <- f; f lev bp a strm))
+         (fun lev  bp  a  strm  ->
+            let f = Parser.continue_parser_of_entry entry in
+            entry.econtinue <- f; f lev bp a strm))
   | Dparser _ -> ()

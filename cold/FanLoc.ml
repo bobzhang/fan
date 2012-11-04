@@ -1,7 +1,7 @@
 open Format
 open Location
 open Lexing
-type t = Location.t  
+type t = Location.t 
 let dump_sel f x =
   let s =
     match x with
@@ -25,7 +25,7 @@ let dump f x =
     (x.loc_start).pos_lnum ((x.loc_start).pos_cnum - (x.loc_start).pos_bol)
     ((x.loc_end).pos_cnum - (x.loc_start).pos_bol) (x.loc_end).pos_lnum
     ((x.loc_end).pos_cnum - (x.loc_end).pos_bol)
-    (fun o -> if x.loc_ghost then fprintf o " (ghost)" else ())
+    (fun o  -> if x.loc_ghost then fprintf o " (ghost)" else ())
 let start_pos name =
   { pos_fname = name; pos_lnum = 1; pos_bol = 0; pos_cnum = 0 }
 let ghost_name = "ghost-location"
@@ -167,7 +167,7 @@ let check x msg =
     (eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
      false)
   else true
-exception Exc_located of t *exn 
+exception Exc_located of t*exn
 let _ =
   Printexc.register_printer
     (function

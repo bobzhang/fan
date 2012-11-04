@@ -2,21 +2,18 @@ module Make(U:sig  end) : Sig.PRECAST =
   struct
   module Syntax = OCamlInitSyntax.Make(U)
   let sig_item_parser =
-    ref
-      (fun ?directive_handler:_ ->
-         fun _ -> fun _ -> failwith "No interface parser")
+    ref (fun ?directive_handler:_  _  _  -> failwith "No interface parser")
   let str_item_parser =
     ref
-      (fun ?directive_handler:_ ->
-         fun _ -> fun _ -> failwith "No implementation parser")
+      (fun ?directive_handler:_  _  _  -> failwith "No implementation parser")
   let sig_item_printer =
     ref
-      (fun ?input_file:_ ->
-         fun ?output_file:_ -> fun _ -> failwith "No interface printer")
+      (fun ?input_file:_  ?output_file:_  _  ->
+         failwith "No interface printer")
   let str_item_printer =
     ref
-      (fun ?input_file:_ ->
-         fun ?output_file:_ -> fun _ -> failwith "No implementation printer")
+      (fun ?input_file:_  ?output_file:_  _  ->
+         failwith "No implementation printer")
   let callbacks = Queue.create () let loaded_modules = ref []
   let iter_and_take_callbacks f =
     let rec loop () = loop (f (Queue.take callbacks)) in
@@ -37,33 +34,33 @@ module Make(U:sig  end) : Sig.PRECAST =
   let plugin ((module Id)  : (module Sig.Id))
     ((module Maker)  : (module Sig.PLUGIN)) =
     declare_dyn_module Id.name
-      (fun _ -> let module M = Maker(struct
-                  
-                  end) in ())
+      (fun _  -> let module M = Maker(struct
+                   
+                   end) in ())
   let syntax_plugin ((module Id)  : (module Sig.Id))
     ((module Maker)  : (module Sig.SyntaxPlugin)) =
-    declare_dyn_module Id.name (fun _ -> let module M = Maker(Syntax) in ())
+    declare_dyn_module Id.name (fun _  -> let module M = Maker(Syntax) in ())
   let syntax_extension ((module Id)  : (module Sig.Id))
     ((module Maker)  : (module Sig.SyntaxExtension)) =
-    declare_dyn_module Id.name (fun _ -> let module M = Maker(Syntax) in ())
+    declare_dyn_module Id.name (fun _  -> let module M = Maker(Syntax) in ())
   let printer_plugin ((module Id)  : (module Sig.Id))
     ((module Maker)  : (module Sig.PrinterPlugin)) =
     declare_dyn_module Id.name
-      (fun _ ->
+      (fun _  ->
          let module M = Maker(Syntax) in
            register_printer M.print_implem M.print_interf)
   let replace_printer ((module Id)  : (module Sig.Id))
     ((module P)  : (module Sig.PrinterImpl)) =
     declare_dyn_module Id.name
-      (fun _ -> register_printer P.print_implem P.print_interf)
+      (fun _  -> register_printer P.print_implem P.print_interf)
   let replace_parser ((module Id)  : (module Sig.Id))
     ((module Maker)  : (module Sig.ParserImpl)) =
     declare_dyn_module Id.name
-      (fun _ -> register_parser Maker.parse_implem Maker.parse_interf)
+      (fun _  -> register_parser Maker.parse_implem Maker.parse_interf)
   let parser_plugin ((module Id)  : (module Sig.Id))
     ((module Maker)  : (module Sig.ParserPlugin)) =
     declare_dyn_module Id.name
-      (fun _ ->
+      (fun _  ->
          let module M = Maker(Syntax) in
            register_parser M.parse_implem M.parse_interf)
   let enable_ocaml_printer () =

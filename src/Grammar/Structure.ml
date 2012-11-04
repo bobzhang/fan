@@ -125,3 +125,4 @@ let rec flatten_tree = fun
   | LocAct _ _ -> [[]]
   | Node {node = n; brother = b; son = s} ->
       [ [n :: l] | l <- flatten_tree s ] @ flatten_tree b ];
+

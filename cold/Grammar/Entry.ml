@@ -3,7 +3,7 @@ open FanSig
 open Format
 open Structure
 open Tools
-type 'a t = internal_entry  
+type 'a t = internal_entry 
 let name e = e.ename
 let print ppf e = fprintf ppf "%a@\n" Print.text#entry e
 let dump ppf e = fprintf ppf "%a@\n" Print.dump#entry e
@@ -13,9 +13,7 @@ let mk g n =
     egram = g;
     ename = n;
     estart = (empty_entry n);
-    econtinue =
-      (fun _ ->
-         fun _ -> fun _ -> fun (__strm : _ Stream.t ) -> raise Stream.Failure);
+    econtinue = (fun _  _  _  (__strm : _ Stream.t)  -> raise Stream.Failure);
     edesc = (Dlevels [])
   }
 let action_parse entry ts =
@@ -30,7 +28,7 @@ let action_parse entry ts =
        FanLoc.raise (get_prev_loc ts)
          (Stream.Error ("illegal begin of " ^ entry.ename))
    | FanLoc.Exc_located (_,_) as exc -> raise exc
-   | exc -> FanLoc.raise (get_prev_loc ts) exc :Action.t  )
+   | exc -> FanLoc.raise (get_prev_loc ts) exc : Action.t )
 let lex entry loc cs = (entry.egram).glexer loc cs
 let lex_string entry loc str = lex entry loc (Stream.of_string str)
 let filter entry ts =
@@ -41,28 +39,24 @@ let filter_and_parse_tokens entry ts =
 let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs)
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string entry loc str)
-let of_parser g n (p : (token * token_info ) Stream.t  -> 'a) =
+let of_parser g n (p : (token* token_info) Stream.t -> 'a) =
   let f ts = Action.mk (p ts) in
   {
     egram = g;
     ename = n;
-    estart = (fun _ -> f);
-    econtinue =
-      (fun _ ->
-         fun _ -> fun _ -> fun (__strm : _ Stream.t ) -> raise Stream.Failure);
+    estart = (fun _  -> f);
+    econtinue = (fun _  _  _  (__strm : _ Stream.t)  -> raise Stream.Failure);
     edesc = (Dparser f)
   }
-let setup_parser e (p : (token * token_info ) Stream.t  -> 'a) =
+let setup_parser e (p : (token* token_info) Stream.t -> 'a) =
   let f ts = Action.mk (p ts) in
-  e.estart <- (fun _ -> f);
+  e.estart <- (fun _  -> f);
   e.econtinue <-
-    (fun _ ->
-       fun _ -> fun _ -> fun (__strm : _ Stream.t ) -> raise Stream.Failure);
+    (fun _  _  _  (__strm : _ Stream.t)  -> raise Stream.Failure);
   e.edesc <- Dparser f
 let clear e =
-  e.estart <- (fun _ -> fun (__strm : _ Stream.t ) -> raise Stream.Failure);
+  e.estart <- (fun _  (__strm : _ Stream.t)  -> raise Stream.Failure);
   e.econtinue <-
-    (fun _ ->
-       fun _ -> fun _ -> fun (__strm : _ Stream.t ) -> raise Stream.Failure);
+    (fun _  _  _  (__strm : _ Stream.t)  -> raise Stream.Failure);
   e.edesc <- Dlevels []
 let obj x = x

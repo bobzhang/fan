@@ -226,33 +226,26 @@ let levels_of_rules entry position rules =
     (let (levs1,make_lev,levs2) = get_level entry position elev in
      let (levs,_) =
        List.fold_left
-         (fun (levs,make_lev) ->
-            fun (lname,assoc,level) ->
-              let lev = make_lev lname assoc in
-              let lev =
-                List.fold_left
-                  (fun lev ->
-                     fun (symbols,action) ->
-                       let symbols =
-                         List.map (change_to_self entry) symbols in
-                       let () = List.iter (check_gram entry) symbols in
-                       let (e1,symbols) = get_initial symbols in
-                       let () = insert_tokens entry.egram symbols in
-                       insert_level entry e1 symbols action lev) lev level in
-              ((lev :: levs), empty_lev)) ([], make_lev) rules in
+         (fun (levs,make_lev)  (lname,assoc,level)  ->
+            let lev = make_lev lname assoc in
+            let lev =
+              List.fold_left
+                (fun lev  (symbols,action)  ->
+                   let symbols = List.map (change_to_self entry) symbols in
+                   let () = List.iter (check_gram entry) symbols in
+                   let (e1,symbols) = get_initial symbols in
+                   let () = insert_tokens entry.egram symbols in
+                   insert_level entry e1 symbols action lev) lev level in
+            ((lev :: levs), empty_lev)) ([], make_lev) rules in
      levs1 @ ((List.rev levs) @ levs2))
 let extend entry (position,rules) =
   let elev = levels_of_rules entry position rules in
   entry.edesc <- Dlevels elev;
   entry.estart <-
-    (fun lev ->
-       fun strm ->
-         let f = Parser.start_parser_of_entry entry in
-         entry.estart <- f; f lev strm);
+    (fun lev  strm  ->
+       let f = Parser.start_parser_of_entry entry in
+       entry.estart <- f; f lev strm);
   entry.econtinue <-
-    (fun lev ->
-       fun bp ->
-         fun a ->
-           fun strm ->
-             let f = Parser.continue_parser_of_entry entry in
-             entry.econtinue <- f; f lev bp a strm)
+    (fun lev  bp  a  strm  ->
+       let f = Parser.continue_parser_of_entry entry in
+       entry.econtinue <- f; f lev bp a strm)

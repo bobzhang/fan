@@ -106,7 +106,7 @@ let symbolchar =
     then true
     else if List.mem (s.[i]) list then loop s (i + 1) else false in
   loop
-let stopped_at _loc = Some (FanLoc.move_line 1 ( _loc ))
+let stopped_at _loc = Some (FanLoc.move_line 1 _loc)
 let with_open_out_file x f =
   match x with
   | Some file -> let oc = open_out_bin file in (f oc; flush oc; close_out oc)
@@ -125,18 +125,19 @@ let remove_underscores s =
   let buf = Buffer.create l in
   let () =
     String.iter
-      (fun ch -> if ch <> '_' then ignore (Buffer.add_char buf ch) else ()) s in
+      (fun ch  -> if ch <> '_' then ignore (Buffer.add_char buf ch) else ())
+      s in
   Buffer.contents buf
 module Options :
   sig
-    type spec_list = (string * Arg.spec * string ) list  
-    val init : spec_list  -> unit 
-    val add : string  -> Arg.spec  -> string  -> unit 
-    val print_usage_list : spec_list  -> unit 
-    val ext_spec_list : unit  -> spec_list 
-    val parse : (string  -> unit ) -> string  array  -> string  list 
+    type spec_list = (string* Arg.spec* string) list 
+    val init : spec_list -> unit
+    val add : string -> Arg.spec -> string -> unit
+    val print_usage_list : spec_list -> unit
+    val ext_spec_list : unit -> spec_list
+    val parse : (string -> unit) -> string array -> string list
   end = struct
-  type spec_list = (string * Arg.spec * string ) list   open Format
+  type spec_list = (string* Arg.spec* string) list  open Format
   let rec action_arg s sl =
     function
     | Arg.Unit f -> if s = "" then (f (); Some sl) else None
@@ -220,15 +221,13 @@ module Options :
     loop 0
   let parse_arg fold s sl =
     fold
-      (fun (name,action,_) ->
-         fun acu ->
-           let i = common_start s name in
-           if i == (String.length name)
-           then
-             try
-               action_arg (String.sub s i ((String.length s) - i)) sl action
-             with | Arg.Bad _ -> acu
-           else acu) None
+      (fun (name,action,_)  acu  ->
+         let i = common_start s name in
+         if i == (String.length name)
+         then
+           try action_arg (String.sub s i ((String.length s) - i)) sl action
+           with | Arg.Bad _ -> acu
+         else acu) None
   let rec parse_aux fold anon_fun =
     function
     | [] -> []
@@ -238,7 +237,7 @@ module Options :
           (match parse_arg fold s sl with
            | Some sl -> parse_aux fold anon_fun sl
            | None  -> s :: (parse_aux fold anon_fun sl))
-        else ((anon_fun s :unit  ); parse_aux fold anon_fun sl)
+        else ((anon_fun s : unit ); parse_aux fold anon_fun sl)
   let align_doc key s =
     let s =
       let rec loop i =
@@ -280,11 +279,10 @@ module Options :
   let make_symlist l =
     match l with
     | [] -> "<none>"
-    | h::t ->
-        (List.fold_left (fun x -> fun y -> x ^ ("|" ^ y)) ("{" ^ h) t) ^ "}"
+    | h::t -> (List.fold_left (fun x  y  -> x ^ ("|" ^ y)) ("{" ^ h) t) ^ "}"
   let print_usage_list l =
     List.iter
-      (fun (key,spec,doc) ->
+      (fun (key,spec,doc)  ->
          match spec with
          | Arg.Symbol (symbs,_) ->
              let s = make_symlist symbs in
@@ -300,8 +298,7 @@ module Options :
     ext_spec_list := ((name, spec, descr) :: (ext_spec_list.contents))
   let fold f init =
     let spec_list = init_spec_list.contents @ ext_spec_list.contents in
-    let specs =
-      Sort.list (fun (k1,_,_) -> fun (k2,_,_) -> k1 >= k2) spec_list in
+    let specs = Sort.list (fun (k1,_,_)  (k2,_,_)  -> k1 >= k2) spec_list in
     List.fold_right f specs init
   let parse anon_fun argv =
     let remaining_args = remaining_args argv in
