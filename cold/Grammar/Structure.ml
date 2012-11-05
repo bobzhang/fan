@@ -42,9 +42,9 @@ and level =  {
   lsuffix: tree;
   lprefix: tree} 
 and symbol =
-  [ `Smeta of (string* symbol list* Action.t) | `Snterm of internal_entry
-  | `Snterml of (internal_entry* string) | `Slist0 of symbol
-  | `Slist0sep of (symbol* symbol) | `Slist1 of symbol
+  [ `Smeta of (string list* symbol list* Action.t)
+  | `Snterm of internal_entry | `Snterml of (internal_entry* string)
+  | `Slist0 of symbol | `Slist0sep of (symbol* symbol) | `Slist1 of symbol
   | `Slist1sep of (symbol* symbol) | `Sopt of symbol | `Stry of symbol
   | `Sself | `Snext | `Stoken of token_pattern | `Skeyword of string
   | `Stree of tree] 

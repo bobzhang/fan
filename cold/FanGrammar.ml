@@ -29,7 +29,7 @@ and symbol =
   styp: styp;
   pattern: Ast.patt option} 
 and text =  
-  | TXmeta of loc* string* text list* Ast.expr* styp
+  | TXmeta of loc* string list* text list* Ast.expr* styp
   | TXlist of loc* bool* symbol* symbol option
   | TXnext of loc
   | TXnterm of loc* name* string option

@@ -226,21 +226,16 @@ let rec make_expr entry tvar =
           function
           | TXmeta (_loc,n,tl,e,t) ->
               let el =
-                List.fold_right
-                  (fun t  el  ->
-                     Ast.ExApp
-                       (_loc,
-                         (Ast.ExApp
-                            (_loc,
-                              (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
-                              (make_expr entry "" t))), el)) tl
-                  (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) in
+                Expr.mklist _loc
+                  (List.map (fun t  -> make_expr entry "" t) tl) in
+              let ns =
+                Expr.mklist _loc (List.map (fun n  -> Ast.ExStr (_loc, n)) n) in
               Ast.ExApp
                 (_loc, (Ast.ExVrn (_loc, "Smeta")),
                   (Ast.ExTup
                      (_loc,
                        (Ast.ExCom
-                          (_loc, (Ast.ExStr (_loc, n)),
+                          (_loc, ns,
                             (Ast.ExCom
                                (_loc, el,
                                  (Ast.ExApp
@@ -563,42 +558,12 @@ let mk_tok _loc ?restrict  p t =
       let descr = string_of_patt p in
       let text = TXtok (_loc, match_fun, "Antiquot", descr) in
       { used = []; text; styp = t; pattern = (Some p') }
-let sfold _loc n f e s =
+let sfold ?sep  _loc (ns : string list) f e s =
   let fs = [("FOLD0", "sfold0"); ("FOLD1", "sfold1")] in
-  let foldfun = try List.assoc n fs with | Not_found  -> invalid_arg "sfold" in
-  let styp = STquo (_loc, (new_type_var ())) in
-  let e =
-    Ast.ExApp
-      (_loc,
-        (Ast.ExApp
-           (_loc,
-             (Ast.ExId
-                (_loc,
-                  (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, foldfun)))))),
-             f)), e) in
-  let t =
-    STapp
-      (_loc,
-        (STapp
-           (_loc,
-             (STtyp
-                (Ast.TyApp
-                   (_loc,
-                     (Ast.TyId
-                        (_loc,
-                          (Ast.IdAcc
-                             (_loc, (gm ()), (Ast.IdLid (_loc, "fold")))))),
-                     (Ast.TyAny _loc)))), (s.styp))), styp) in
-  {
-    used = (s.used);
-    text = (TXmeta (_loc, n, [s.text], e, t));
-    styp;
-    pattern = None
-  }
-let sfoldsep _loc n f e s sep =
-  let fs = [("FOLD0", "sfold0sep"); ("FOLD1", "sfold1sep")] in
+  let suffix = match sep with | None  -> "" | Some _ -> "sep" in
+  let n = List.hd ns in
   let foldfun =
-    try List.assoc n fs with | Not_found  -> invalid_arg "sfoldsep" in
+    try (List.assoc n fs) ^ suffix with | Not_found  -> invalid_arg "sfold" in
   let styp = STquo (_loc, (new_type_var ())) in
   let e =
     Ast.ExApp
@@ -620,11 +585,13 @@ let sfoldsep _loc n f e s sep =
                      (Ast.TyId
                         (_loc,
                           (Ast.IdAcc
-                             (_loc, (gm ()), (Ast.IdLid (_loc, "foldsep")))))),
+                             (_loc, (gm ()),
+                               (Ast.IdLid (_loc, ("fold" ^ suffix))))))),
                      (Ast.TyAny _loc)))), (s.styp))), styp) in
-  {
-    used = (s.used @ sep.used);
-    text = (TXmeta (_loc, n, [s.text; sep.text], e, t));
-    styp;
-    pattern = None
-  }
+  let used = match sep with | None  -> s.used | Some sep -> s.used @ sep.used in
+  let text =
+    TXmeta
+      (_loc, ns,
+        (match sep with | None  -> [s.text] | Some sep -> [s.text; sep.text]),
+        e, t) in
+  { used; text; styp; pattern = None }

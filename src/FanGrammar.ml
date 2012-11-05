@@ -2,6 +2,9 @@ type loc = FanLoc.t;
 
 (* every entry has a name *)  
 type name  = { expr : Ast.expr; tvar : string; loc : loc };
+
+(* we need to define a new ADT only because
+   we did not find a way to express STself and STtok yet  *)
 type styp =
  [ STlid of loc and string
  | STapp of loc and styp and styp
@@ -38,7 +41,7 @@ and symbol ={
   pattern : option Ast.patt
 }
 and text =
- [ TXmeta of loc and string and list text and Ast.expr and styp
+ [ TXmeta of loc and list string and list text and Ast.expr and styp
  | TXlist of loc and bool and symbol and option symbol
  | TXnext of loc
  | TXnterm of loc and name  and option string

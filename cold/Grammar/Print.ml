@@ -1,5 +1,6 @@
 open Structure
 open Format
+open LibUtil
 let pp = fprintf
 type brothers =  
   | Bro of symbol* brothers list 
@@ -56,6 +57,15 @@ class text_grammar =
       | `Snterml (e,l) -> pp f "%s@ Level@ %S" e.ename l
       | `Snterm _|`Snext|`Sself|`Stree _|`Stoken _|`Skeyword _ as s ->
           self#symbol1 f s
+    method meta ns f sl =
+      match ns with
+      | x::[] -> pp f "%s@;%a" x (self#list self#symbol) sl
+      | x::y::[] ->
+          let l = List.length sl in
+          let (a,b) = List.split_at (l - 1) sl in
+          pp f "%s@;%a@;%s@;%a" x (self#list self#symbol) a y
+            (self#list self#symbol) b
+      | _ -> invalid_arg "meta in print"
     method description f = function | `Normal -> () | `Antiquot -> pp f "$"
     method symbol1 f =
       function
@@ -68,19 +78,6 @@ class text_grammar =
       | `Stree t -> self#tree f t
       | `Smeta (_,_,_)|`Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _|
           `Slist1sep (_,_)|`Sopt _|`Stry _ as s -> pp f "(%a)" self#symbol s
-    method meta n f sl =
-      let rec loop i =
-        function
-        | [] -> ()
-        | s::sl ->
-            let j =
-              try String.index_from n i ' '
-              with | Not_found  -> String.length n in
-            (pp f "%s %a" (String.sub n i (j - i)) self#symbol1 s;
-             if sl = []
-             then ()
-             else (pp f " "; loop (min (j + 1) (String.length n)) sl)) in
-      loop 0 sl
     method rule f symbols =
       pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@ ") symbols
     method rules f rules =
@@ -134,19 +131,10 @@ class dump_grammar =
             | (Bro (n,x))::[] -> get_children (n :: acc) x
             | _ -> raise Exit in
       print_brothers f (get_brothers [] tree)
-    method! levels f elev =
-      List.fold_left
-        (fun sep  lev  ->
-           pp f "%t@[<v2>" sep;
-           (match lev.lname with | Some n -> pp f "%S@;<1 2>" n | None  -> ());
-           self#assoc f lev.assoc;
-           pp f "@]@;<1 2>";
-           pp f "@[<v2>suffix:@ ";
-           self#tree f lev.lsuffix;
-           pp f "@]@ @[<v2>prefix:@ ";
-           self#tree f lev.lprefix;
-           pp f "@]";
-           (fun f  -> pp f "@,| ")) (fun _  -> ()) elev f
+    method! level f { assoc; lname; lsuffix; lprefix } =
+      pp f "%a %a@;@[<hv2>suffix:@;%a@]@;@[<hv2>prefix:@;%a@]"
+        (self#option (fun f  s  -> pp f "%S" s)) lname self#assoc assoc
+        self#tree lsuffix self#tree lprefix
   end
 let text = new text_grammar
 let dump = new dump_grammar

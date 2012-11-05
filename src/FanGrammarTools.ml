@@ -174,10 +174,11 @@ let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string
 let rec make_expr entry tvar =  fun
   (* expr name -> string -> (expr, 'a) text -> expr*)
   [ TXmeta _loc n tl e t ->
-    let el =
-      List.fold_right
-        (fun t el -> <:expr< [$(make_expr entry "" t) :: $el] >>) tl <:expr< [] >> in
-    <:expr< `Smeta ($str:n, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) >>
+    let el = Expr.mklist _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
+      (* List.fold_right *)
+      (*   (fun t el -> <:expr< [$(make_expr entry "" t) :: $el] >>) tl <:expr< [] >> in *)
+    let ns = Expr.mklist _loc (List.map (fun n -> <:expr< $str:n >> ) n) in 
+    <:expr< `Smeta ($ns, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) >>
   | TXlist _loc min t ts ->
       let txt = make_expr entry "" t.text in
       match (min, ts) with
@@ -320,25 +321,19 @@ let mk_tok _loc ?restrict p t =
         let descr = string_of_patt p in
         let text = TXtok _loc match_fun "Antiquot" descr in
         {used=[]; text; styp=t; pattern = Some p'} ] ;
-let sfold _loc  n  f e s =
-  let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in 
+let sfold ?sep _loc  (ns:list string)  f e s =
+  let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in
+  let suffix = match sep with [None -> ""|Some  _ -> "sep"] in
+  let n = List.hd ns in 
   let foldfun =
-    try List.assoc n fs with [Not_found -> invalid_arg "sfold"] in
+    try List.assoc n fs ^ suffix  with [Not_found -> invalid_arg "sfold"] in
   let styp = STquo _loc (new_type_var ()) in
   let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
-  let t = STapp _loc (STapp _loc (STtyp <:ctyp< $(id:gm()).fold _ >>) s.styp) styp in
-  {used = s.used; text = TXmeta _loc n [s.text] e t; styp = styp; pattern = None } ;
+  let t = STapp _loc (STapp _loc (STtyp <:ctyp< $(id:gm()).$(lid:"fold"^suffix) _ >>) s.styp) styp in
+  let used = match sep with [None -> s.used|Some sep-> s.used @ sep.used] in
+  let text = TXmeta _loc ns (match sep with [None -> [s.text] | Some sep -> [s.text;sep.text] ])  e t   in 
+  {used ; text ; styp ; pattern = None } ;
 
-let sfoldsep  _loc n (* foldfun*) f e s sep =
-  let fs = [("FOLD0","sfold0sep");("FOLD1","sfold1sep")] in
-  let foldfun =
-    try List.assoc n fs with [Not_found -> invalid_arg "sfoldsep" ]in 
-  let styp = STquo _loc (new_type_var ()) in
-  let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
-  let t =
-    STapp _loc (STapp _loc (STtyp <:ctyp< $(id:gm()).foldsep _ >>) s.styp) styp in
-  {used = s.used @ sep.used; text = TXmeta _loc n [s.text; sep.text] e t;
-   styp = styp; pattern = None} ;
 
 
 

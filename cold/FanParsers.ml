@@ -815,9 +815,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                         match (__camlp4_1, __camlp4_0) with
                         | (`UIDENT ("SEP" as y),`UIDENT
                                                   ("FOLD0"|"FOLD1" as x))
-                            ->
-                            (sfoldsep _loc (x ^ (" " ^ y)) f e s sep : 
-                            'symbol )
+                            -> (sfold ~sep _loc [x; y] f e s : 'symbol )
                         | _ -> assert false)));
                ([`Stoken
                    (((function
@@ -832,7 +830,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                        (f : 'simple_expr)  __camlp4_0  (_loc : FanLoc.t)  ->
                        match __camlp4_0 with
                        | `UIDENT ("FOLD0"|"FOLD1" as x) ->
-                           (sfold _loc x f e s : 'symbol )
+                           (sfold _loc [x] f e s : 'symbol )
                        | _ -> assert false)))])])) ());
     Gram.extend (simple_expr : 'simple_expr Gram.t )
       ((fun ()  ->

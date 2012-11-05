@@ -890,7 +890,7 @@ class printer  ()= object(self:'self)
       | _ -> pp f "=@;%a" self#expression x in 
     match (x.pexp_desc,p.ppat_desc) with
     | (Pexp_when (e1,e2),_) ->
-        pp f "=@[<hov2>fun@ %a@ when@ %a@ ->@ %a@]"
+        pp f "=@[<2>fun@ %a@ when@ %a@ ->@ %a@]"
           self#simple_pattern p self#expression e1 self#expression e2
     | ( _ , Ppat_constraint( p ,ty)) -> (* special case for the first*)
         (match ty.ptyp_desc with
@@ -900,7 +900,11 @@ class printer  ()= object(self:'self)
             pp f "(%a@;:%a)=@;%a" self#simple_pattern p  self#core_type ty self#expression x)
     | Pexp_constraint (e,Some t1,None),Ppat_var {txt;_} ->
         pp f "%s:@ %a@;=@;%a" txt self#core_type t1  self#expression e
-    | _ -> pp f "%a@ %a" self#simple_pattern p pp_print_pexp_function x
+    | (_, Ppat_var _) ->
+        pp f "%a@ %a" self#simple_pattern p pp_print_pexp_function x
+    | _ ->
+        pp f "%a@;=@;%a" self#pattern p self#expression x 
+        (* pp f "%a@ %a" self#simple_pattern p pp_print_pexp_function x *)
 
   (* [in] is not printed *)        
   method bindings f (rf,l) =

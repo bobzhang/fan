@@ -208,9 +208,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       LOCAL: simple_expr;
     symbol: Level "top"
       [ [`UIDENT ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; SELF{s} ->
-            sfold _loc x f e s
+            sfold _loc [x] f e s
         |`UIDENT ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT ("SEP" as y); symbol{sep} ->
-            sfoldsep _loc (x^" " ^ y) f e s sep ]]
+            sfold ~sep _loc (* (x^" " ^ y) *) [x;y] f e s  ]]
     simple_expr:
       [ [ a_LIDENT{i} -> <:expr< $lid:i >>
         | "("; expr{e}; ")" -> e ] ]
@@ -1414,7 +1414,6 @@ New syntax:\
     ctyp:
       [ "==" LA
         [ SELF{t1}; "=="; SELF{t2} -> <:ctyp< $t1 == $t2 >> ]
-
       (* | "=" *)
       (*   [ SELF{t1}; "="; SELF{t2} -> Ast.TyMan _loc t1 t2] *)  
       | "private" NA
@@ -1423,20 +1422,14 @@ New syntax:\
         [ SELF{t1}; "as"; SELF{t2} ->
           <:ctyp< $t1 as $t2 >> ]
       | "forall" LA
-        [ "!"; typevars{t1}; "."; ctyp{t2} ->
-          <:ctyp< ! $t1 . $t2 >> ]
+        [ "!"; typevars{t1}; "."; ctyp{t2} -> <:ctyp< ! $t1 . $t2 >> ]
       | "arrow" RA
-        [ SELF{t1}; "->"; SELF{t2} ->
-          <:ctyp< $t1 -> $t2 >> ]
+        [ SELF{t1}; "->"; SELF{t2} ->  <:ctyp< $t1 -> $t2 >> ]
       | "label" NA
-        [ "~"; a_LIDENT{i}; ":"; SELF{t} ->
-          <:ctyp< ~ $i : $t >>
-        | a_LABEL{i}; SELF{t}  ->
-          <:ctyp< ~ $i : $t >>
-        | "?"; a_LIDENT{i}; ":"; SELF{t} ->
-            <:ctyp< ? $i : $t >>
-        | a_OPTLABEL{i}; SELF{t} ->
-            <:ctyp< ? $i : $t >> ]
+        [ "~"; a_LIDENT{i}; ":"; SELF{t} ->  <:ctyp< ~ $i : $t >>
+        | a_LABEL{i}; SELF{t}  ->  <:ctyp< ~ $i : $t >>
+        | "?"; a_LIDENT{i}; ":"; SELF{t} ->  <:ctyp< ? $i : $t >>
+        | a_OPTLABEL{i}; SELF{t} ->  <:ctyp< ? $i : $t >> ]
       | "apply" LA
         [ SELF{t1}; SELF{t2} ->
             let t = <:ctyp< $t1 $t2 >> in
