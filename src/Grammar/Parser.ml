@@ -2,11 +2,11 @@
 open Structure;
 open LibUtil;
 open FanUtil;
-(* module Tools=Tools.Make (struct end); *)
+
 let get_cur_loc = Tools.get_cur_loc;
 let get_prev_loc = Tools.get_prev_loc;
 
-
+(* [bp] *)
 let add_loc bp parse_fun strm =
   let x = parse_fun strm in
   let ep = get_prev_loc strm in
@@ -30,6 +30,7 @@ let try_parser ps strm =
         r;
     end;
 
+(* given a level string, return a number from 0 *)  
 let level_number entry lab =
   let rec lookup levn = fun
     [ [] -> failwith ("unknown level " ^ lab)
@@ -42,15 +43,18 @@ let level_number entry lab =
 let strict_parsing = ref false;
 let strict_parsing_warning = ref false;
 
+
+(* given an entry and a symbol return the top symbol *)
 let rec top_symb entry =fun
   [ `Sself | `Snext -> `Snterm entry
   | `Snterml (e, _) -> `Snterm e
   | `Slist1sep (s, sep) -> `Slist1sep ((top_symb entry s), sep)
   | _ -> raise Stream.Failure ];
 
+(* given an entry and a tree return the top tree *)  
 let top_tree entry = fun
-  [ Node {node = s; brother = bro; son = son} ->
-    Node {node = top_symb entry s; brother = bro; son = son}
+  [ Node ({node = s; _} as x) ->
+    Node ({(x) with node = top_symb entry s})
   | LocAct _ _ | DeadEnd -> raise Stream.Failure ];
 
 let entry_of_symb entry = fun
@@ -59,7 +63,7 @@ let entry_of_symb entry = fun
   | `Snterml (e, _) -> e
   | _ -> raise Stream.Failure ] ;
 
-let continue entry loc a s son p1 = parser
+let continue entry loc a s son (p1:efun) = parser
   [< a = (entry_of_symb entry s).econtinue 0 loc a;
      act = p1 ?? Failed.tree_failed entry a s son >] ->
   Action.mk (fun _ -> Action.getf act a);
@@ -249,16 +253,16 @@ and parser_of_symbol entry nlevn = fun
 and parse_top_symb entry symb strm =
   parser_of_symbol entry 0 (top_symb entry symb) strm;
 
-let rec start_parser_of_levels entry clevn = fun
-  [ [] -> fun _ -> parser []
-  | [lev :: levs] ->
-      let p1 = start_parser_of_levels entry (succ clevn) levs in
-      match lev.lprefix with
-      [ DeadEnd -> p1
-      | tree ->
+let start_parser_of_levels entry =
+  let rec aux clevn =  fun
+    [ [] -> fun _ -> parser []
+    | [lev :: levs] ->
+        let p1 = aux  (clevn+1) levs in
+        match lev.lprefix with
+        [ DeadEnd -> p1
+        | tree ->
           let alevn =  match lev.assoc with
-          [ `LA | `NA -> succ clevn
-          | `RA -> clevn ] in
+          [ `LA | `NA ->  clevn + 1 | `RA -> clevn ] in
           let p2 = parser_of_tree entry (succ clevn) alevn tree in
           match levs with
           [ [] ->
@@ -268,23 +272,24 @@ let rec start_parser_of_levels entry clevn = fun
               [< (act, loc) = add_loc bp p2; 'strm >] ->
                let a = Action.getf act loc in
                entry.econtinue levn loc a strm
-              | _ ->
-                  fun levn strm ->
-                    if levn > clevn then
-                      p1 levn strm
-                    else
-                      let bp = get_cur_loc strm in
-                      match strm with parser
-                      [ [< (act, loc) = add_loc bp p2 >] ->
-                        let a = Action.getf act loc in
-                        entry.econtinue levn loc a strm
-                      | [< act = p1 levn >] -> act ] ] ] ];
+         | _ ->
+             fun levn strm ->
+               if levn > clevn then
+                 p1 levn strm
+               else
+                 let bp = get_cur_loc strm in
+                 match strm with parser
+                 [ [< (act, loc) = add_loc bp p2 >] ->
+                     let a = Action.getf act loc in
+                     entry.econtinue levn loc a strm
+                 | [< act = p1 levn >] -> act ] ] ] ] in
+  aux 0;
   
 let start_parser_of_entry entry =
   debug gram "start_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in
   match entry.edesc with
   [ Dlevels [] -> Tools.empty_entry entry.ename
-  | Dlevels elev -> start_parser_of_levels entry 0 elev
+  | Dlevels elev -> start_parser_of_levels entry (* 0 *) elev
   | Dparser p -> fun _ -> p ] ;
     
 let rec continue_parser_of_levels entry clevn = fun

@@ -61,7 +61,7 @@ and level = {
 and symbol =
     [= `Smeta of (list string * list symbol * Action.t)
     | `Snterm of internal_entry
-    | `Snterml of (internal_entry * string)
+    | `Snterml of (internal_entry * string) (* the second argument is the level name *)
     | `Slist0 of symbol
     | `Slist0sep of (symbol * symbol)
     | `Slist1 of symbol

@@ -53,8 +53,7 @@ let rec apply accu = fun
       let _loc = Ast.loc_of_expr x
       in apply <:expr< $accu $x >> xs ];
 
-(* Ast.loc -> Ast.expr list -> Ast.expr
- *)  
+(* Ast.loc -> Ast.expr list -> Ast.expr *)  
 let mklist _loc =
   let rec loop top =  fun
     [ [] -> <:expr< [] >>

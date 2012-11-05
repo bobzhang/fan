@@ -5,7 +5,7 @@
 let arith: Gram.t int = Gram.mk "arith" ;
 let eoi_arith: Gram.t int = Gram.mk "eoi_arith";
   
-EXTEND Gram GLOBAL:arith eoi_arith;
+EXTEND Gram 
   arith:
   [ "plus"
   [ SELF{x}; "+"; SELF{y} -> x + y

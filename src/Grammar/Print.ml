@@ -96,16 +96,21 @@ class text_grammar= object(self:'self)
   end;
 end;
 
+
+let rec get_brothers acc =  fun
+  [ DeadEnd | LocAct _ -> List.rev acc
+  | Node {node = n; brother = b; son = s} ->
+          get_brothers [ Bro n (get_brothers [] s) :: acc] b ];
+
+let rec get_children acc =  fun
+  [ [] -> List.rev acc
+  | [Bro n x] -> get_children [n::acc] x
+  | _ -> raise Exit ] ;
+  
 class dump_grammar = object(self:'self)
   inherit text_grammar ;
-  
   method! tree f tree =
-    let rec get_brothers acc =  fun
-      [ DeadEnd -> List.rev acc
-      | LocAct _ _ -> List.rev acc
-      | Node {node = n; brother = b; son = s} ->
-          get_brothers [Bro n (get_brothers [] s) :: acc] b ]
-    and print_brothers f brothers =
+    let rec print_brothers f brothers =
       if brothers = [] then
         pp f "@ []"
       else
@@ -118,12 +123,7 @@ class dump_grammar = object(self:'self)
           | _ -> pp f ":%a" print_brothers xs ];
           pp f "@]";
         end]) brothers
-    and print_children f = List.iter (pp f ";@ %a" self#symbol)
-    and get_children acc =
-      fun
-      [ [] -> List.rev acc
-      | [Bro n x] -> get_children [n::acc] x
-      | _ -> raise Exit ] in
+    and print_children f = List.iter (pp f ";@ %a" self#symbol) in 
     print_brothers f (get_brothers [] tree);
   method! level f = fun [{assoc;lname;lsuffix;lprefix} ->
     pp f "%a %a@;@[<hv2>suffix:@;%a@]@;@[<hv2>prefix:@;%a@]"
