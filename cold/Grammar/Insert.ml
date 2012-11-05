@@ -27,25 +27,16 @@ let change_lev entry lev n lname assoc =
     | None  -> lev.assoc
     | Some a ->
         (if (a <> lev.assoc) && ((entry.egram).warning_verbose).contents
-         then
-           (eprintf "<W> Changing associativity of level \"%s\"\n" n;
-            flush Pervasives.stderr)
+         then eprintf "<W> Changing associativity of level %S @." n
          else ();
          a) in
   (match lname with
    | Some n ->
        if (lname <> lev.lname) && ((entry.egram).warning_verbose).contents
-       then
-         (eprintf "<W> Level label \"%s\" ignored\n" n;
-          flush Pervasives.stderr)
+       then eprintf "<W> Level label %S ignored@." n
        else ()
    | None  -> ());
-  {
-    assoc = a;
-    lname = (lev.lname);
-    lsuffix = (lev.lsuffix);
-    lprefix = (lev.lprefix)
-  }
+  { lev with assoc = a }
 let change_to_self entry =
   function | `Snterm e when e == entry -> `Sself | x -> x
 let get_level entry position levs =
@@ -56,9 +47,7 @@ let get_level entry position levs =
       let rec get =
         function
         | [] ->
-            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-               entry.ename;
-             flush Pervasives.stderr;
+            (eprintf "No level labelled %S in entry %S @." n entry.ename;
              failwith "Grammar.extend")
         | lev::levs ->
             if Tools.is_level_labelled n lev
@@ -71,9 +60,7 @@ let get_level entry position levs =
       let rec get =
         function
         | [] ->
-            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-               entry.ename;
-             flush Pervasives.stderr;
+            (eprintf "No level labelled %S in entry %S @." n entry.ename;
              failwith "Grammar.extend")
         | lev::levs ->
             if Tools.is_level_labelled n lev
@@ -86,9 +73,7 @@ let get_level entry position levs =
       let rec get =
         function
         | [] ->
-            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-               entry.ename;
-             flush Pervasives.stderr;
+            (eprintf "No level labelled %S in entry %S@." n entry.ename;
              failwith "Grammar.extend")
         | lev::levs ->
             if Tools.is_level_labelled n lev
@@ -107,18 +92,16 @@ let rec check_gram entry =
               if e.egram != entry.egram
               then
                 (eprintf
-                   "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
+                   "Error: entries %S and %S do not belong to the same grammar.@."
                    entry.ename e.ename;
-                 flush Pervasives.stderr;
                  failwith "Grammar.extend error")
               else ()
           | `Snterml (e,_) ->
               if e.egram != entry.egram
               then
                 (eprintf
-                   "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
+                   "Error: entries %S and %S do not belong to the same grammar.@."
                    entry.ename e.ename;
-                 flush Pervasives.stderr;
                  failwith "Grammar.extend error")
               else ()
           | `Smeta (_,sl,_) -> List.iter (check_gram entry) sl
@@ -129,11 +112,11 @@ let rec check_gram entry =
           | `Snext|`Sself|`Stoken _|`Skeyword _ -> ()
 and tree_check_gram entry =
       function
-      | Node { node = n; brother = bro; son } ->
-          (check_gram entry n;
-           tree_check_gram entry bro;
+      | Node { node; brother; son } ->
+          (check_gram entry node;
+           tree_check_gram entry brother;
            tree_check_gram entry son)
-      | LocAct (_,_)|DeadEnd  -> ()
+      | LocAct _|DeadEnd  -> ()
 let get_initial =
   function | `Sself::symbols -> (true, symbols) | symbols -> (false, symbols)
 let insert_tokens gram symbols =
@@ -158,8 +141,8 @@ let insert_tree entry gsymbols action tree =
             | s::sl -> insert_in_tree s sl tree
             | [] ->
                 (match tree with
-                 | Node { node = s; son; brother = bro } ->
-                     Node { node = s; son; brother = (insert [] bro) }
+                 | Node ({ brother;_} as x) ->
+                     Node { x with brother = (insert [] brother) }
                  | LocAct (old_action,action_list) ->
                      let () =
                        if ((entry.egram).warning_verbose).contents
@@ -177,54 +160,38 @@ let insert_tree entry gsymbols action tree =
             Node { node = s; son = (insert sl DeadEnd); brother = tree }
   and try_insert s sl tree =
         match tree with
-        | Node { node = s1; son; brother = bro } ->
-            if Tools.eq_symbol s s1
-            then
-              let t =
-                Node { node = s1; son = (insert sl son); brother = bro } in
-              Some t
+        | Node ({ node; son; brother } as x) ->
+            if Tools.eq_symbol s node
+            then Some (Node { x with son = (insert sl son) })
             else
               if
-                (is_before s1 s) || ((derive_eps s) && (not (derive_eps s1)))
+                (is_before node s) ||
+                  ((derive_eps s) && (not (derive_eps node)))
               then
                 (let bro =
-                   match try_insert s sl bro with
-                   | Some bro -> bro
+                   match try_insert s sl brother with
+                   | Some y -> y
                    | None  ->
-                       Node
-                         { node = s; son = (insert sl DeadEnd); brother = bro
-                         } in
-                 let t = Node { node = s1; son; brother = bro } in Some t)
+                       Node { x with node = s; son = (insert sl DeadEnd) } in
+                 Some (Node { x with brother = bro }))
               else
-                (match try_insert s sl bro with
-                 | Some bro ->
-                     let t = Node { node = s1; son; brother = bro } in Some t
+                (match try_insert s sl brother with
+                 | Some y -> Some (Node { x with brother = y })
                  | None  -> None)
         | LocAct (_,_)|DeadEnd  -> None in
   insert gsymbols tree
 let insert_level entry e1 symbols action slev =
-  match e1 with
-  | true  ->
-      {
-        assoc = (slev.assoc);
-        lname = (slev.lname);
-        lsuffix = (insert_tree entry symbols action slev.lsuffix);
-        lprefix = (slev.lprefix)
-      }
-  | false  ->
-      {
-        assoc = (slev.assoc);
-        lname = (slev.lname);
-        lsuffix = (slev.lsuffix);
-        lprefix = (insert_tree entry symbols action slev.lprefix)
-      }
+  if e1
+  then
+    { slev with lsuffix = (insert_tree entry symbols action slev.lsuffix) }
+  else
+    { slev with lprefix = (insert_tree entry symbols action slev.lprefix) }
 let levels_of_rules entry position rules =
   let elev =
     match entry.edesc with
     | Dlevels elev -> elev
     | Dparser _ ->
-        (eprintf "Error: entry not extensible: \"%s\"\n" entry.ename;
-         flush Pervasives.stderr;
+        (eprintf "Error: entry not extensible: %S@." entry.ename;
          failwith "Grammar.extend") in
   if rules = []
   then elev
@@ -232,7 +199,7 @@ let levels_of_rules entry position rules =
     (let (levs1,make_lev,levs2) = get_level entry position elev in
      let (levs,_) =
        List.fold_left
-         (fun (levs,make_lev)  (lname,assoc,level)  ->
+         (fun (levs,make_lev)  (lname,assoc,rules)  ->
             let lev = make_lev lname assoc in
             let lev =
               List.fold_left
@@ -241,7 +208,7 @@ let levels_of_rules entry position rules =
                    let () = List.iter (check_gram entry) symbols in
                    let (e1,symbols) = get_initial symbols in
                    let () = insert_tokens entry.egram symbols in
-                   insert_level entry e1 symbols action lev) lev level in
+                   insert_level entry e1 symbols action lev) lev rules in
             ((lev :: levs), empty_lev)) ([], make_lev) rules in
      levs1 @ ((List.rev levs) @ levs2))
 let extend entry (position,rules) =

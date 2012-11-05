@@ -41,8 +41,7 @@ let rec top_symb entry =
   | _ -> raise Stream.Failure
 let top_tree entry =
   function
-  | Node { node = s; brother = bro; son } ->
-      Node { node = (top_symb entry s); brother = bro; son }
+  | Node ({ node = s;_} as x) -> Node { x with node = (top_symb entry s) }
   | LocAct (_,_)|DeadEnd  -> raise Stream.Failure
 let entry_of_symb entry =
   function
@@ -50,7 +49,7 @@ let entry_of_symb entry =
   | `Snterm e -> e
   | `Snterml (e,_) -> e
   | _ -> raise Stream.Failure
-let continue entry loc a s son p1 (__strm : _ Stream.t) =
+let continue entry loc a s son (p1 : efun) (__strm : _ Stream.t) =
   let a = (entry_of_symb entry s).econtinue 0 loc a __strm in
   let act =
     try p1 __strm
@@ -311,44 +310,46 @@ and parser_of_symbol entry nlevn =
              | _ -> raise Stream.Failure)
 and parse_top_symb entry symb strm =
       parser_of_symbol entry 0 (top_symb entry symb) strm
-let rec start_parser_of_levels entry clevn =
-  function
-  | [] -> (fun _  (__strm : _ Stream.t)  -> raise Stream.Failure)
-  | lev::levs ->
-      let p1 = start_parser_of_levels entry (succ clevn) levs in
-      (match lev.lprefix with
-       | DeadEnd  -> p1
-       | tree ->
-           let alevn =
-             match lev.assoc with | `LA|`NA -> succ clevn | `RA -> clevn in
-           let p2 = parser_of_tree entry (succ clevn) alevn tree in
-           (match levs with
-            | [] ->
-                (fun levn  strm  ->
-                   let bp = get_cur_loc strm in
-                   let (__strm :_ Stream.t)= strm in
-                   let (act,loc) = add_loc bp p2 __strm in
-                   let strm = __strm in
-                   let a = Action.getf act loc in
-                   entry.econtinue levn loc a strm)
-            | _ ->
-                (fun levn  strm  ->
-                   if levn > clevn
-                   then p1 levn strm
-                   else
-                     (let bp = get_cur_loc strm in
-                      let (__strm :_ Stream.t)= strm in
-                      match try Some (add_loc bp p2 __strm)
-                            with | Stream.Failure  -> None
-                      with
-                      | Some (act,loc) ->
-                          let a = Action.getf act loc in
-                          entry.econtinue levn loc a strm
-                      | _ -> p1 levn __strm))))
+let start_parser_of_levels entry =
+  let rec aux clevn =
+    function
+    | [] -> (fun _  (__strm : _ Stream.t)  -> raise Stream.Failure)
+    | lev::levs ->
+        let p1 = aux (clevn + 1) levs in
+        (match lev.lprefix with
+         | DeadEnd  -> p1
+         | tree ->
+             let alevn =
+               match lev.assoc with | `LA|`NA -> clevn + 1 | `RA -> clevn in
+             let p2 = parser_of_tree entry (succ clevn) alevn tree in
+             (match levs with
+              | [] ->
+                  (fun levn  strm  ->
+                     let bp = get_cur_loc strm in
+                     let (__strm :_ Stream.t)= strm in
+                     let (act,loc) = add_loc bp p2 __strm in
+                     let strm = __strm in
+                     let a = Action.getf act loc in
+                     entry.econtinue levn loc a strm)
+              | _ ->
+                  (fun levn  strm  ->
+                     if levn > clevn
+                     then p1 levn strm
+                     else
+                       (let bp = get_cur_loc strm in
+                        let (__strm :_ Stream.t)= strm in
+                        match try Some (add_loc bp p2 __strm)
+                              with | Stream.Failure  -> None
+                        with
+                        | Some (act,loc) ->
+                            let a = Action.getf act loc in
+                            entry.econtinue levn loc a strm
+                        | _ -> p1 levn __strm)))) in
+  aux 0
 let start_parser_of_entry entry =
   match entry.edesc with
   | Dlevels [] -> Tools.empty_entry entry.ename
-  | Dlevels elev -> start_parser_of_levels entry 0 elev
+  | Dlevels elev -> start_parser_of_levels entry elev
   | Dparser p -> (fun _  -> p)
 let rec continue_parser_of_levels entry clevn =
   function

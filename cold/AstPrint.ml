@@ -904,8 +904,6 @@ class printer  ()= object(self:'self)
         pp f "%a@ %a" self#simple_pattern p pp_print_pexp_function x
     | _ ->
         pp f "%a@;=@;%a" self#pattern p self#expression x 
-        (* pp f "%a@ %a" self#simple_pattern p pp_print_pexp_function x *)
-
   (* [in] is not printed *)        
   method bindings f (rf,l) =
     begin match l with

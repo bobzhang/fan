@@ -100,36 +100,35 @@ class text_grammar =
             | Dlevels elev -> self#levels f elev
             | Dparser _ -> pp f "<parser>") e : unit )
   end
+let rec get_brothers acc =
+  function
+  | DeadEnd |LocAct _ -> List.rev acc
+  | Node { node = n; brother = b; son = s } ->
+      get_brothers ((Bro (n, (get_brothers [] s))) :: acc) b
+let rec get_children acc =
+  function
+  | [] -> List.rev acc
+  | (Bro (n,x))::[] -> get_children (n :: acc) x
+  | _ -> raise Exit
 class dump_grammar =
   object (self : 'self)
     inherit  text_grammar
     method! tree f tree =
-      let rec get_brothers acc =
-                function
-                | DeadEnd  -> List.rev acc
-                | LocAct (_,_) -> List.rev acc
-                | Node { node = n; brother = b; son = s } ->
-                    get_brothers ((Bro (n, (get_brothers [] s))) :: acc) b
-      and print_brothers f brothers =
-            if brothers = []
-            then pp f "@ []"
-            else
-              List.iter
-                (fun (Bro (n,xs))  ->
-                   pp f "@ @[<hv2>- %a" self#symbol n;
-                   (match xs with
-                    | [] -> ()
-                    | _::[] ->
-                        (try print_children f (get_children [] xs)
-                         with | Exit  -> pp f ":%a" print_brothers xs)
-                    | _ -> pp f ":%a" print_brothers xs);
-                   pp f "@]") brothers
-      and print_children f = List.iter (pp f ";@ %a" self#symbol)
-      and get_children acc =
-            function
-            | [] -> List.rev acc
-            | (Bro (n,x))::[] -> get_children (n :: acc) x
-            | _ -> raise Exit in
+      let rec print_brothers f brothers =
+                if brothers = []
+                then pp f "@ []"
+                else
+                  List.iter
+                    (fun (Bro (n,xs))  ->
+                       pp f "@ @[<hv2>- %a" self#symbol n;
+                       (match xs with
+                        | [] -> ()
+                        | _::[] ->
+                            (try print_children f (get_children [] xs)
+                             with | Exit  -> pp f ":%a" print_brothers xs)
+                        | _ -> pp f ":%a" print_brothers xs);
+                       pp f "@]") brothers
+      and print_children f = List.iter (pp f ";@ %a" self#symbol) in
       print_brothers f (get_brothers [] tree)
     method! level f { assoc; lname; lsuffix; lprefix } =
       pp f "%a %a@;@[<hv2>suffix:@;%a@]@;@[<hv2>prefix:@;%a@]"
