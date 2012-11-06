@@ -65,9 +65,9 @@ let entry_of_symb entry = fun
   | _ -> raise Stream.Failure ] ;
 
 let continue entry  s son (p1:parse Action.t) loc a = parser
-  [< a = (entry_of_symb entry s).econtinue 0 loc a;
+  [[< a = (entry_of_symb entry s).econtinue 0 loc a;
      act = p1 ?? Failed.tree_failed entry a s son >] ->
-  Action.mk (fun _ -> Action.getf act a);
+       Action.mk (fun _ -> Action.getf act a) ];
 
 (* PR#4603, PR#4330, PR#4551:
    Here get_cur_loc replaced get_prev_loc to fix all these bugs.
@@ -165,6 +165,7 @@ and parser_cont  entry nlevn alevn s son p1 loc a =  parser
   [ [< b = p1 >] -> b
   | [< b = recover parser_of_tree entry nlevn alevn  s son loc a >] -> b
   | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
+      
 and parser_of_symbols tokl p1 =
   let rec loop n =  fun
     [ [`Stoken (tematch, _) :: tokl] ->
@@ -173,7 +174,7 @@ and parser_of_symbols tokl p1 =
         let ps strm =
           match Stream.peek_nth n strm  with
           [ Some (tok, _) when tematch tok ->
-            (Stream.njunk n strm ; Action.mk tok)
+            (Stream.njunk n strm ; Action.mk tok) (*at the end*)
           | _ -> raise Stream.Failure ] in
         fun strm ->
           let bp = get_cur_loc strm in
