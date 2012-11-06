@@ -6,7 +6,7 @@ let test_patt_lessminus =
     Gram.of_parser "test_patt_lessminus"
       (fun strm ->
         let rec skip_patt n =
-          match stream_peek_nth n strm with
+          match Stream.peek_nth n strm with
           [ Some (`KEYWORD "<-",_) -> n
           | Some (`KEYWORD ("[" | "[<"),_) ->
               skip_patt (ignore_upto "]" (n + 1) + 1)
@@ -18,7 +18,7 @@ let test_patt_lessminus =
           | Some (`LIDENT _ | `UIDENT _, _) -> skip_patt (n + 1)
           | Some _ | None -> raise Stream.Failure ]
         and ignore_upto end_kwd n =
-          match stream_peek_nth n strm with
+          match Stream.peek_nth n strm with
           [ Some (`KEYWORD prm,_) when prm = end_kwd -> n
           | Some (`KEYWORD ("[" | "[<"),_) ->
               ignore_upto end_kwd (ignore_upto "]" (n + 1) + 1)

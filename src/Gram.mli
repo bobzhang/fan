@@ -36,7 +36,6 @@ module Action :
     val getf2 : t -> 'a -> 'b -> 'c
   end
 type token_stream = (FanSig.token * token_info) Stream.t
-type efun = token_stream -> Action.t
 type description = [ `Antiquot | `Normal ]
 type descr = description * string
 type token_pattern = (FanSig.token -> bool) * descr

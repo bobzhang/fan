@@ -94,14 +94,6 @@ let neg_string n =
     if len > 0 && n.[0] = '-' then String.sub n 1 (len - 1)
     else "-" ^ n ;
 
-let stream_peek_nth n strm  =
-  let rec loop i = fun
-    [ [x :: xs] -> if i = 1 then Some x else loop (i - 1) xs
-    | [] -> None ] in
-  loop n (Stream.npeek n strm);
-  
-let njunk  n strm  =
-  for _i = 1 to n do Stream.junk strm done; (* FIXME unsed  index i*)
 
 let rec list_remove x = fun
   [ [(y, _) :: l] when y = x -> l

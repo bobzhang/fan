@@ -35,9 +35,11 @@ let ghost_token_info = {
 
 type token_stream = Stream.t (token * token_info);
 
-type efun = token_stream -> Action.t;
+
+
 type parse 'a = token_stream -> 'a;
-  
+type cont_parse 'a = FanLoc.t -> Action.t -> parse 'a;
+    
 type description =
     [= `Normal
     | `Antiquot];
@@ -48,8 +50,8 @@ type token_pattern = ((token -> bool) * descr);
 type internal_entry =
     { egram     : gram;
       ename     : string;
-      estart    : mutable int -> efun;
-      econtinue : mutable int -> FanLoc.t -> Action.t -> efun;
+      estart    : mutable int -> parse Action.t;
+      econtinue : mutable int -> cont_parse Action.t;
       edesc     : mutable desc }
 and desc =
     [ Dlevels of list level

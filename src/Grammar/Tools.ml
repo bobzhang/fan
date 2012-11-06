@@ -45,7 +45,7 @@ let is_level_labelled n = fun [ {lname=Some n1; _  } ->  n = n1 | _ -> false ];
   
 let warning_verbose = ref true;
 
-let get_token_list last_tok node =
+let get_token_list (last_tok: symbol) node =
   let rec aux tokl last_tok  = fun 
     [ Node {node = (`Stoken _ | `Skeyword _ as tok); son; brother = DeadEnd}
       ->  aux [last_tok :: tokl] tok son

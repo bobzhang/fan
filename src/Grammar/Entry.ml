@@ -3,7 +3,6 @@ open LibUtil;
 open FanSig;
 open Format;
 open Structure;
-(* module Tools = Tools.Make (struct end); *)
 open Tools;
 
 type t 'a =internal_entry;
@@ -30,7 +29,7 @@ let action_parse entry ts : Action.t =
         Format.fprintf
       else Format.ifprintf in 
     let () = p Format.err_formatter "@[<4>%s@ " entry.ename in
-    let res = entry.estart 0 ts in
+    let res = entry.estart 0 ts in (* entry.estart 0 *)
     let () =  p Format.err_formatter "@]@." in 
     res 
   with

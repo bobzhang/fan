@@ -1,7 +1,7 @@
 
 open Structure;
 open LibUtil;
-open FanUtil;
+
 
 let get_cur_loc = Tools.get_cur_loc;
 let get_prev_loc = Tools.get_prev_loc;
@@ -30,7 +30,7 @@ let try_parser ps strm =
     [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
         raise Stream.Failure
     | exc -> raise exc ] in begin 
-        njunk (Stream.count strm') strm ;
+        Stream.njunk (Stream.count strm') strm ;
         r;
     end;
 
@@ -44,9 +44,6 @@ let level_number entry lab =
   [ Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found ] ;
     
-let strict_parsing = ref false;
-let strict_parsing_warning = ref false;
-
 
 (* given an entry and a symbol return the top symbol *)
 let rec top_symb entry =fun
@@ -67,7 +64,7 @@ let entry_of_symb entry = fun
   | `Snterml (e, _) -> e
   | _ -> raise Stream.Failure ] ;
 
-let continue entry loc a s son (p1:efun) = parser
+let continue entry  s son (p1:parse Action.t) loc a = parser
   [< a = (entry_of_symb entry s).econtinue 0 loc a;
      act = p1 ?? Failed.tree_failed entry a s son >] ->
   Action.mk (fun _ -> Action.getf act a);
@@ -81,118 +78,139 @@ let skip_if_empty bp strm =
   else
     raise Stream.Failure ;
 
-let do_recover parser_of_tree entry nlevn alevn loc a s son = parser
-  [ [< a = parser_of_tree entry nlevn alevn (top_tree entry son) >] -> a
-  | [< a = skip_if_empty loc >] -> a
-  | [< a = continue entry loc a s son (parser_of_tree entry nlevn alevn son) >] ->  a];
+let do_recover parser_of_tree entry nlevn alevn  s son loc a = parser
+  [ [< b = parser_of_tree entry nlevn alevn (top_tree entry son) >] -> b
+  | [< b = skip_if_empty loc >] -> b
+  | [< b = continue entry  s son (parser_of_tree entry nlevn alevn son) loc a >] ->  b];
 
 
-let recover parser_of_tree entry nlevn alevn loc a s son strm =
-  if !strict_parsing then
+let recover parser_of_tree entry nlevn alevn  s son loc a strm =
+  if !FanConfig.strict_parsing then
     raise (Stream.Error (Failed.tree_failed entry a s son))
   else
     let _ =
-      if !strict_parsing_warning then begin
+      if !FanConfig.strict_parsing_warning then begin
         let msg = Failed.tree_failed entry a s son;
           Format.eprintf "Warning: trying to recover from syntax error";
           if entry.ename <> "" then Format.eprintf " in [%s]" entry.ename else ();
           Format.eprintf "\n%s%a@." msg FanLoc.print loc;
       end else () in
-    do_recover parser_of_tree entry nlevn alevn loc a s son strm ;
+    do_recover parser_of_tree entry nlevn alevn  s son loc a strm ;
 
 let rec parser_of_tree entry nlevn alevn = fun
   [ DeadEnd -> parser []
+
   | LocAct act _ -> parser [< >] -> act
-  | Node {node = `Sself; son = LocAct act _; brother = DeadEnd} ->
-    parser [< a = entry.estart alevn >] -> Action.getf act a
-  | Node {node = `Sself; son = LocAct act _; brother = bro} ->
-      let p2 = parser_of_tree entry nlevn alevn bro in  parser
+        
+  | Node {node = `Sself; son = LocAct act _; brother = DeadEnd}
+    ->
+      parser
+      [ [< a = entry.estart alevn >] -> Action.getf act a] (* estart only use aleven *)
+          
+  | Node {node = `Sself; son = LocAct act _; brother = bro}
+    ->
+      let p2 = parser_of_tree entry nlevn alevn bro in
+      parser
         [ [< a = entry.estart alevn >] -> Action.getf act a
         | [< a = p2 >] -> a ]
+            
   | Node {node = s; son = son; brother = DeadEnd} ->
-      let tokl =  match s with
-      [ `Stoken _ | `Skeyword _ -> Tools.get_token_list (* entry *) (* [] *) s son
-      | _ -> None ] in
+      let tokl =
+        match s with
+        [ `Stoken _ | `Skeyword _ ->
+          Tools.get_token_list s son
+        | _ -> None ] in
       match tokl with
       [ None ->
-        let ps = parser_of_symbol entry nlevn s in
-        let p1 = parser_of_tree entry nlevn alevn son in
-        let p1 = parser_cont p1 entry nlevn alevn s son in
+        let ps = parser_of_symbol entry nlevn s in (*only use nleven*)
+        let p1 =
+          parser_of_tree entry nlevn alevn son
+          |> parser_cont  entry nlevn alevn s son in
         fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
-          [< a = ps; act = p1 bp a >] -> Action.getf act a
-          | Some (tokl, last_tok, son) ->
-            let p1 = parser_of_tree entry nlevn alevn son in
-            let p1 = parser_cont p1 entry nlevn alevn last_tok son in
-            parser_of_token_list p1 tokl ]
+          [[< a = ps; act = p1 bp a >] -> Action.getf act a]
+       | Some (tokl, last_tok, son) ->
+           parser_of_tree entry nlevn alevn son
+           |> parser_cont  entry nlevn alevn last_tok son
+           |> parser_of_symbols tokl ]
   | Node {node = s; son = son; brother = bro} ->
       let tokl =  match s with
-       [ `Stoken _ | `Skeyword _ -> Tools.get_token_list (* entry *) (* [] *) s son
+       [ `Stoken _ | `Skeyword _ ->
+         Tools.get_token_list s son
        | _ -> None ] in
       match tokl with
       [ None ->
         let ps = parser_of_symbol entry nlevn s in
-        let p1 = parser_of_tree entry nlevn alevn son in
-        let p1 = parser_cont p1 entry nlevn alevn s son in
+        let p1 =
+          parser_of_tree entry nlevn alevn son
+          |> parser_cont  entry nlevn alevn s son in
         let p2 = parser_of_tree entry nlevn alevn bro in
         fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
           [ [< a = ps; act = p1 bp a >] -> Action.getf act a
           | [< a = p2 >] -> a ]
-          | Some (tokl, last_tok, son) ->
-            let p1 = parser_of_tree entry nlevn alevn son in
-            let p1 = parser_cont p1 entry nlevn alevn last_tok son in
-            let p1 = parser_of_token_list p1 tokl in
-            let p2 = parser_of_tree entry nlevn alevn bro in
+      | Some (tokl, last_tok, son) ->
+          let p1 =
+            parser_of_tree entry nlevn alevn son
+            |> parser_cont  entry nlevn alevn last_tok son
+            |>  parser_of_symbols tokl in 
+          let p2 = parser_of_tree entry nlevn alevn bro in
             parser
             [ [< a = p1 >] -> a
             | [< a = p2 >] -> a ] ] ]
-and parser_cont p1 entry nlevn alevn s son loc a =  parser
-  [ [< a = p1 >] -> a
-  | [< a = recover parser_of_tree entry nlevn alevn loc a s son >] -> a
+
+and parser_cont  entry nlevn alevn s son p1 loc a =  parser
+  [ [< b = p1 >] -> b
+  | [< b = recover parser_of_tree entry nlevn alevn  s son loc a >] -> b
   | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
-and parser_of_token_list p1 tokl =
-  loop 1 tokl where rec loop n =  fun
-    [ [`Stoken (tematch, _) :: tokl] ->  match tokl with
+and parser_of_symbols tokl p1 =
+  let rec loop n =  fun
+    [ [`Stoken (tematch, _) :: tokl] ->
+      match tokl with
       [ [] ->
-        let ps strm = match stream_peek_nth n strm  with
-        [ Some (tok, _) when tematch tok -> (njunk n strm ; Action.mk tok)
-        | _ -> raise Stream.Failure ] in
+        let ps strm =
+          match Stream.peek_nth n strm  with
+          [ Some (tok, _) when tematch tok ->
+            (Stream.njunk n strm ; Action.mk tok)
+          | _ -> raise Stream.Failure ] in
         fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
-          [< a = ps; act = p1 bp a >] -> Action.getf act a
-          | _ ->
-              let ps strm =
-                match stream_peek_nth n strm with
-                [ Some (tok, _) when tematch tok -> tok
-                | _ -> raise Stream.Failure ] in
-            let p1 = loop (n + 1) tokl in
-            parser [< tok = ps; 's >] ->
-              let act = p1 s in Action.getf act tok ]
-      | [`Skeyword kwd :: tokl] ->
+          [[< a = ps; act = p1 bp a >] -> Action.getf act a]
+      | _ ->
+          let ps strm =
+            match Stream.peek_nth n strm with
+            [ Some (tok, _) when tematch tok -> tok
+            | _ -> raise Stream.Failure ] in
+          let p1 = loop (n + 1) tokl in
+          parser
+              [[< tok = ps; 's >] ->
+                let act = p1 s in Action.getf act tok ]]
+    | [`Skeyword kwd :: tokl] ->
           match tokl with
           [ [] ->
-              let ps strm =
-                match stream_peek_nth n strm with
-                [ Some (tok, _) when FanToken.match_keyword kwd tok ->
-                    (njunk n strm ; Action.mk tok)
-                | _ -> raise Stream.Failure ] in
-              fun strm ->
-                let bp = get_cur_loc strm in
-                match strm with parser
-               [< a = ps; act = p1 bp a >] -> Action.getf act a
+            let ps strm =
+              match Stream.peek_nth n strm with
+              [ Some (tok, _) when FanToken.match_keyword kwd tok ->
+                (Stream.njunk n strm ; Action.mk tok)
+              | _ -> raise Stream.Failure ] in
+            fun strm ->
+              let bp = get_cur_loc strm in
+              match strm with parser
+              [ [< a = ps; act = p1 bp a >] -> Action.getf act a]
           | _ ->
               let ps strm =
-                match stream_peek_nth n strm with
+                match Stream.peek_nth n strm with
                 [ Some (tok, _) when FanToken.match_keyword kwd tok -> tok
                 | _ -> raise Stream.Failure ] in
               let p1 = loop (n + 1) tokl in
-              parser [< tok = ps; 's >] ->
-                let act = p1 s in Action.getf act tok ]
-      | _ -> invalid_arg "parser_of_token_list" ]
+              parser
+                  [[< tok = ps; 's >] ->
+                    let act = p1 s in Action.getf act tok ]]
+      | _ -> invalid_arg "parser_of_symbols" ] in
+  loop 1 tokl 
 
 and parser_of_symbol entry nlevn = fun
   [ `Smeta _ symbl act ->
@@ -258,17 +276,17 @@ and parse_top_symb entry symb strm =
   parser_of_symbol entry 0 (top_symb entry symb) strm;
 
 let start_parser_of_levels entry =
-  let rec aux clevn =  fun
+  let rec aux clevn : list level -> int -> parse Action.t =  fun
     [ [] -> fun _ -> parser []
     | [lev :: levs] ->
         let p1 = aux  (clevn+1) levs in
         match lev.lprefix with
-        [ DeadEnd -> p1
+        [ DeadEnd -> p1 (* try the upper levels *)
         | tree ->
           let alevn =
             match lev.assoc with
             [ `LA | `NA ->  clevn + 1 | `RA -> clevn ] in
-          let p2 =
+          let p2 = (* *)
             parser_of_tree entry (1 + clevn) alevn tree in
           match levs with
           [ [] ->
