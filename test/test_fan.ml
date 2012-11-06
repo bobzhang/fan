@@ -31,3 +31,5 @@ open Grammar;;
 (* Tools.keep_prev_loc ((FanLexUtil.clean (FanLexer.from_string FanLoc.string_loc "let a = 3"))) *)
 (* |> Stream.iter (fun [ (t, {Structure.prev_loc=p;cur_loc=c;prev_loc_only=o}) -> *)
 (*     pp f "@[<v0>%a@;prev:%a@;cur:%a@;only:%b@;@]" FanToken.print t FanLoc.print p FanLoc.print c o]); *)
+let ls = let open Structure in (Obj.magic Syntax.label_ipatt_list:Structure.internal_entry).edesc |> fun [Dlevels ls -> ls];
+let a = List.hd ls;

@@ -1,0 +1,2 @@
+true:pkg_compiler-libs.common, pkg_batteries
+<**/*.{ml,mli,mlx}>: camlp4boot

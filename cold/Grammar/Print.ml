@@ -2,9 +2,6 @@ open Structure
 open Format
 open LibUtil
 let pp = fprintf
-type brothers =  
-  | Bro of symbol* brothers list 
-type space_formatter = (unit,Format.formatter,unit) format 
 class text_grammar =
   object (self : 'self)
     method tree f t = self#rules f (flatten_tree t)
@@ -54,7 +51,7 @@ class text_grammar =
           pp f "LIST1 %a SEP %a" self#symbol1 s self#symbol1 t
       | `Sopt s -> pp f "OPT %a" self#symbol1 s
       | `Stry s -> pp f "TRY %a" self#symbol1 s
-      | `Snterml (e,l) -> pp f "%s@ Level@ %S" e.ename l
+      | `Snterml (e,l) -> pp f "%s Level %S" e.ename l
       | `Snterm _|`Snext|`Sself|`Stree _|`Stoken _|`Skeyword _ as s ->
           self#symbol1 f s
     method meta ns f sl =
@@ -100,40 +97,25 @@ class text_grammar =
             | Dlevels elev -> self#levels f elev
             | Dparser _ -> pp f "<parser>") e : unit )
   end
-let rec get_brothers acc =
-  function
-  | DeadEnd |LocAct _ -> List.rev acc
-  | Node { node = n; brother = b; son = s } ->
-      get_brothers ((Bro (n, (get_brothers [] s))) :: acc) b
-let rec get_children acc =
-  function
-  | [] -> List.rev acc
-  | (Bro (n,x))::[] -> get_children (n :: acc) x
-  | _ -> raise Exit
 class dump_grammar =
   object (self : 'self)
     inherit  text_grammar
     method! tree f tree =
-      let rec print_brothers f brothers =
-                if brothers = []
-                then pp f "@ []"
-                else
-                  List.iter
-                    (fun (Bro (n,xs))  ->
-                       pp f "@ @[<hv2>- %a" self#symbol n;
-                       (match xs with
-                        | [] -> ()
-                        | _::[] ->
-                            (try print_children f (get_children [] xs)
-                             with | Exit  -> pp f ":%a" print_brothers xs)
-                        | _ -> pp f ":%a" print_brothers xs);
-                       pp f "@]") brothers
-      and print_children f = List.iter (pp f ";@ %a" self#symbol) in
-      print_brothers f (get_brothers [] tree)
+      let string_of_symbol s =
+        ignore (flush_str_formatter ());
+        self#symbol str_formatter s;
+        flush_str_formatter () in
+      TreePrint.print_sons "|-"
+        (fun (Bro (s,ls))  -> ((string_of_symbol s), ls)) "" f
+        (get_brothers tree)
     method! level f { assoc; lname; lsuffix; lprefix } =
-      pp f "%a %a@;@[<hv2>suffix:@;%a@]@;@[<hv2>prefix:@;%a@]"
+      pp f "%a %a@;@[<hv2>suffix:@\n%a@]@;@[<hv2>prefix:@\n%a@]"
         (self#option (fun f  s  -> pp f "%S" s)) lname self#assoc assoc
         self#tree lsuffix self#tree lprefix
   end
 let text = new text_grammar
 let dump = new dump_grammar
+let string_of_symbol s =
+  ignore (flush_str_formatter ());
+  text#symbol str_formatter s;
+  flush_str_formatter ()

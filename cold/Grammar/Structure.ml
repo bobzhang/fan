@@ -23,6 +23,7 @@ let ghost_token_info =
   { prev_loc = FanLoc.ghost; cur_loc = FanLoc.ghost; prev_loc_only = false }
 type token_stream = (token* token_info) Stream.t 
 type efun = token_stream -> Action.t 
+type 'a parse = token_stream -> 'a 
 type description = [ `Normal | `Antiquot] 
 type descr = (description* string) 
 type token_pattern = ((token -> bool)* descr) 
@@ -89,3 +90,20 @@ let rec flatten_tree =
   | LocAct (_,_) -> [[]]
   | Node { node = n; brother = b; son = s } ->
       (List.map (fun l  -> n :: l) (flatten_tree s)) @ (flatten_tree b)
+type brothers =  
+  | Bro of symbol* brothers list 
+type space_formatter = (unit,Format.formatter,unit) format 
+let get_brothers x =
+  let rec aux acc =
+    function
+    | DeadEnd |LocAct _ -> List.rev acc
+    | Node { node = n; brother = b; son = s } ->
+        aux ((Bro (n, (aux [] s))) :: acc) b in
+  aux [] x
+let get_children x =
+  let rec aux acc =
+    function
+    | [] -> List.rev acc
+    | (Bro (n,x))::[] -> aux (n :: acc) x
+    | _ -> raise Exit in
+  aux [] x

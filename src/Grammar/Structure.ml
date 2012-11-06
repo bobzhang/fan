@@ -36,6 +36,7 @@ let ghost_token_info = {
 type token_stream = Stream.t (token * token_info);
 
 type efun = token_stream -> Action.t;
+type parse 'a = token_stream -> 'a;
   
 type description =
     [= `Normal
@@ -120,9 +121,24 @@ let removing { gkeywords = table; gfilter = filter; _ } kwd =
     end else ();
 
 
+(* tree processing *)  
 let rec flatten_tree = fun
   [ DeadEnd -> []
   | LocAct _ _ -> [[]]
   | Node {node = n; brother = b; son = s} ->
       [ [n :: l] | l <- flatten_tree s ] @ flatten_tree b ];
 
+type brothers = [ Bro of symbol and list brothers ];
+
+type space_formatter =  format unit Format.formatter unit;
+
+let get_brothers x =
+  let rec aux acc =  fun
+  [ DeadEnd | LocAct _ -> List.rev acc
+  | Node {node = n; brother = b; son = s} ->
+          aux [ Bro n (aux [] s) :: acc] b ] in aux [] x ;
+let get_children x = 
+  let rec aux acc =  fun
+  [ [] -> List.rev acc
+  | [Bro n x] -> aux [n::acc] x
+  | _ -> raise Exit ] in aux [] x ;

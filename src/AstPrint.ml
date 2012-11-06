@@ -910,7 +910,7 @@ class printer  ()= object(self:'self)
     | [] -> ()
     | [x] -> pp f "@[<2>let %a%a@]" self#rec_flag rf self#binding x 
     | x::xs ->
-        pp f "@[<hv0>let %a@[<2>%a%a@]"
+        pp f "@[<hv0>let %a@[<2>%a%a@]" (* FIXME the indentation is not good see [Insert].ml*)
           self#rec_flag rf  self#binding x
           (fun f l -> match l with
           | [] -> assert false

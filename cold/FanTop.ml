@@ -1,5 +1,5 @@
 open LibUtil
-module P = MakePreCast.Make(struct
+module P = PreCast.Make(struct
   
   end)
 open P

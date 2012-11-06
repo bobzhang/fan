@@ -80,6 +80,7 @@ let sfold1 = Fold.sfold1;
 let sfold0sep = Fold.sfold0sep;
   (* let sfold1sep = Fold.sfold1sep; *)
 let extend = Insert.extend;
+let levels_of_entry = Insert.levels_of_entry;
   
 let eoi_entry entry =
   let entry_eoi = (mk (name entry ^ "_eoi")) in

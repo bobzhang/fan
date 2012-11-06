@@ -26,6 +26,7 @@ type token_info =
   prev_loc_only : bool;
 }
 
+
 module Action :
   sig
     type t = Grammar.Structure.Action.t
@@ -50,6 +51,19 @@ type production_rule = symbol list * Action.t
 type single_extend_statment = string option * assoc option * production_rule list
 type extend_statment = position option * single_extend_statment list
 type delete_statment = symbol list
+
+type ('a,'b,'c)fold  =
+    'b t->
+      symbol list->
+        ('a Stream.t  -> 'b) -> 'a Stream.t  -> 'c
+
+type ('a,'b,'c) foldsep  =
+   'b t ->
+     symbol list ->
+       ('a Stream.t -> 'b) ->
+         ('a Stream.t -> unit) ->
+           'a Stream.t -> 'c
+      
 
 
       
@@ -135,18 +149,6 @@ val sfold0 :
 val sfold1 :
   ('a -> 'b -> 'b) ->
   'b -> 'c -> 'd -> ('e Stream.t -> 'a) -> 'e Stream.t -> 'b
-
-type ('a,'b,'c)fold  =
-    'b t->
-      symbol list->
-        ('a Stream.t  -> 'b) -> 'a Stream.t  -> 'c
-
-type ('a,'b,'c) foldsep  =
-   'b t ->
-     symbol list ->
-       ('a Stream.t -> 'b) ->
-         ('a Stream.t -> unit) ->
-           'a Stream.t -> 'c
       
 val sfold0sep :
     ('a -> 'b -> 'b) ->  'b ->
@@ -159,9 +161,8 @@ val extend :
   'a t ->
   [< `After of string | `Before of string | `First | `Last | `Level of string ]
   option *
-  (string option * assoc option *
-   (symbol list * Action.t) list)
-  list -> unit
+  (string option * assoc option *  (symbol list * Action.t) list) list -> unit
 val eoi_entry : 'a t -> 'a t
 
     
+val levels_of_entry: 'a t -> level list option

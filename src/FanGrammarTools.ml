@@ -290,13 +290,15 @@ let let_in_of_extend _loc gram gl  default =
 (* the [gl] is global entry name list,
    [el] is entry list
    [gram] is the grammar
-   [gmod] is the [Gram] module true *)
+   [gmod] is the [Gram] module true
+   generate the extend, the main entrance
+ *)
 let text_of_functorial_extend _loc  gram gl el = (* FIXME remove gmod later*)
   let args =
     let el =
       List.map  (fun e ->
         let (ent, pos, txt) = text_of_entry e.name.loc e in
-        <:expr< $(id:gm()).extend $ent ((fun () -> ($pos, $txt)) ()) >> ) el  in
+        <:expr< $(id:gm()).extend $ent  ($pos, $txt) >> ) el  in
     match el with
     [ [] -> <:expr< () >>
     | [e] -> e

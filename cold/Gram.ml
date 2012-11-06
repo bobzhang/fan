@@ -62,20 +62,19 @@ let sfold0 = Fold.sfold0
 let sfold1 = Fold.sfold1
 let sfold0sep = Fold.sfold0sep
 let extend = Insert.extend
+let levels_of_entry = Insert.levels_of_entry
 let eoi_entry entry =
   let entry_eoi = mk ((name entry) ^ "_eoi") in
   let () =
     extend (entry_eoi : 'entry_eoi t )
-      ((fun ()  ->
-          (None,
-            [(None, None,
-               [([`Snterm (obj (entry : 'entry t ));
-                 `Stoken
-                   (((function | `EOI -> true | _ -> false)),
-                     (`Normal, "`EOI"))],
-                  (mk_action
-                     (fun __camlp4_0  (x : 'entry)  (_loc : FanLoc.t)  ->
-                        match __camlp4_0 with
-                        | `EOI -> (x : 'entry_eoi )
-                        | _ -> assert false)))])])) ()) in
+      (None,
+        [(None, None,
+           [([`Snterm (obj (entry : 'entry t ));
+             `Stoken
+               (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
+              (mk_action
+                 (fun __camlp4_0  (x : 'entry)  (_loc : FanLoc.t)  ->
+                    match __camlp4_0 with
+                    | `EOI -> (x : 'entry_eoi )
+                    | _ -> assert false)))])]) in
   entry_eoi

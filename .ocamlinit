@@ -48,6 +48,8 @@ let f = std_formatter;;
 (* consult Topdirs for more utlities *)
 #load_rec "FanLexUtil.cmo";;
 #load_rec "FanTop.cma";;
+#load_rec "OAstPrint.cmo";;
+
 open FanTop;;
 open FanTop.P;;
 open FanSig;;
@@ -55,6 +57,16 @@ open LibUtil;;
 open FanUtil;;
 open Stream;;
 open Grammar;;
- 
+open Structure;;
+open OAstPrint;;
+Toploop.print_out_value := loose#out_value;;
+Toploop.print_out_type := loose#out_type;;
+
+Toploop.print_out_class_type := loose#class_type;;
+Toploop.print_out_module_type := loose#module_type;;
+Toploop.print_out_sig_item := loose#sig_item;;
+Toploop.print_out_signature := loose#signature;;
+Toploop.print_out_phrase := loose#phrase;;
+
 (* #useo "./test/test_fan.ml";; *)
 (* #load_rec "FanTop.cma";; *)

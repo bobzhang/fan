@@ -497,17 +497,8 @@ let text_of_functorial_extend _loc gram gl el =
                        (_loc,
                          (Ast.IdAcc
                             (_loc, (gm ()), (Ast.IdLid (_loc, "extend")))))),
-                    ent)),
-               (Ast.ExApp
-                  (_loc,
-                    (Ast.ExFun
-                       (_loc,
-                         (Ast.McArr
-                            (_loc,
-                              (Ast.PaId (_loc, (Ast.IdUid (_loc, "()")))),
-                              (Ast.ExNil _loc),
-                              (Ast.ExTup (_loc, (Ast.ExCom (_loc, pos, txt)))))))),
-                    (Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))))))) el in
+                    ent)), (Ast.ExTup (_loc, (Ast.ExCom (_loc, pos, txt))))))
+        el in
     match el with
     | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))
     | e::[] -> e

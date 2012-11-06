@@ -321,7 +321,7 @@ let start_parser_of_levels entry =
          | tree ->
              let alevn =
                match lev.assoc with | `LA|`NA -> clevn + 1 | `RA -> clevn in
-             let p2 = parser_of_tree entry (succ clevn) alevn tree in
+             let p2 = parser_of_tree entry (1 + clevn) alevn tree in
              (match levs with
               | [] ->
                   (fun levn  strm  ->
@@ -355,13 +355,13 @@ let rec continue_parser_of_levels entry clevn =
   function
   | [] -> (fun _  _  _  (__strm : _ Stream.t)  -> raise Stream.Failure)
   | lev::levs ->
-      let p1 = continue_parser_of_levels entry (succ clevn) levs in
+      let p1 = continue_parser_of_levels entry (clevn + 1) levs in
       (match lev.lsuffix with
        | DeadEnd  -> p1
        | tree ->
            let alevn =
              match lev.assoc with | `LA|`NA -> succ clevn | `RA -> clevn in
-           let p2 = parser_of_tree entry (succ clevn) alevn tree in
+           let p2 = parser_of_tree entry (1 + clevn) alevn tree in
            (fun levn  bp  a  strm  ->
               if levn > clevn
               then p1 levn bp a strm

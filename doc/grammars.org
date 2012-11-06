@@ -895,3 +895,212 @@ Ptop_def
                 ))] ))) () ) ))
 
    #+END_SRC
+
+
+
+
+* Grammar Analysis
+
+  
+
+** top
+
+   #+BEGIN_EXAMPLE
+        suffix: 
+        prefix:
+
+          |-"IFDEF"---uident---"THEN"---SELF---else_expr
+
+          |-"IFNDEF"---uident---"THEN"---SELF---else_expr
+
+          |-"DEFINE"---`LIDENT _---"="---SELF---"IN"---SELF
+    # introduced by macro parser
+    #    expr: Level "top"
+    #   [ [ "IFDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
+    #    | "IFNDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
+    #    | "DEFINE"; `LIDENT i; "="; expr{def}; "IN"; expr{body} -> ]]
+
+
+   
+          |-"parser"---`UIDENT _---OPT parser_ipatt---parser_case_list
+
+          |-"match"---sequence---"with"-+-"parser"---`UIDENT _---OPT parser_ipatt---parser_case_list
+          |                             `-match_case
+    # expr: Level "top"
+    #   [ [ "parser";  OPT [ `UIDENT(n) -> n]  {name}; OPT parser_ipatt{po}; parser_case_list{pcl}
+    #     | "match"; sequence{e}; "with"; "parser";  OPT [`UIDENT(n) -> n ] {name}; OPT parser_ipatt{po};
+    #       parser_case_list{pcl}      -> ]]
+
+
+
+   
+          |-"let"-+-"module"---a_UIDENT---module_binding0---"in"---SELF
+          |       |-"open"---module_longident---"in"---SELF
+          |       `-opt_rec---binding---"in"---SELF
+
+          |-"fun"-+-"["---LIST0 match_case0 SEP "|"---"]"
+          |       `-fun_def
+          |-"try"---sequence---"with"---match_case
+
+          |-"if"---SELF---"then"---SELF---"else"---SELF
+
+          |-"do"---do_sequence
+
+          |-"for"---a_LIDENT---"="---sequence---direction_flag---sequence---"do"---do_sequence
+
+          |-"while"---sequence---"do"---do_sequence
+
+          `-"object"---opt_class_self_patt---class_structure---"end"
+   
+      #  expr: After "top"
+      # [ [ "EXTEND"; extend_body{e}; "END" -> e
+      #   | "DELETE_RULE"; delete_rule_body{e}; "END" -> e ] ] 
+
+      |  LA
+   suffix: 
+   prefix:
+     |-"EXTEND"---extend_body---"END"
+     `-"DELETE_RULE"---delete_rule_body---"END"
+   
+   | "where" LA
+   suffix: `-"where"---opt_rec---let_binding
+   prefix: 
+
+      | ":=" NA
+   suffix:
+     |-":="---SELF---dummy
+     `-"<-"---SELF---dummy
+   prefix: 
+
+      | "||" RA
+   suffix: `-infixop6---SELF
+   prefix: 
+   | "&&" RA
+   suffix: `-infixop5---SELF
+   prefix: 
+   | "<" LA
+   suffix:
+     `-infix operator (level 0) (comparison operators, and some others)---SELF
+   prefix: 
+   | "^" RA
+   suffix: `-infix operator (level 1) (start with '^', '@')---SELF
+   prefix: 
+   | "+" LA
+   suffix: `-infix operator (level 2) (start with '+', '-')---SELF
+   prefix: 
+   | "*" LA
+   suffix:
+     |-"land"---SELF
+     |-"lor"---SELF
+     |-"lxor"---SELF
+     |-"mod"---SELF
+     `-infix operator (level 3) (start with '*', '/', '%')---SELF
+   prefix: 
+   | "**" RA
+   suffix:
+     |-"asr"---SELF
+     |-"lsl"---SELF
+     |-"lsr"---SELF
+     `-infix operator (level 4) (start with "**") (right assoc)---SELF
+   prefix: 
+
+   | "unary minus" NA
+   suffix: 
+   prefix: |-"-"---SELF
+     `-"-."---SELF
+   | "apply" LA
+   suffix: `-SELF
+   prefix: |-"assert"---SELF
+     |-"new"---class_longident
+     `-"lazy"---SELF
+   | "label" NA
+   suffix: 
+   prefix:
+     |-"~"---a_LIDENT---":"---SELF
+     |-`LABEL _---SELF
+     |-`OPTLABEL _---SELF
+     `-"?"---a_LIDENT---":"---SELF
+   | "." LA
+   suffix:
+     |-"."-+-"("---SELF---")"
+     |     |-"["---SELF---"]"
+     |     |-"{"---comma_expr---"}"
+     |     `-SELF
+     `-"#"---label
+   prefix: 
+   | "~-" NA
+   suffix: 
+   prefix:
+     |-"!"---SELF
+     `-prefix operator (start with '!', '?', '~')---SELF
+
+
+   |  LA
+   suffix: 
+   prefix:
+   `-"`"-+-"IN"
+         `-a_ident
+
+   # introduced by macro parser
+   # expr: Before "simple"
+   #   [ [ "`";  [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"
+   #                  | "DEFINE" | "IN" ]{kwd} 
+   #     | "`"; a_ident{s} -> <:expr< ` $s >> ] ] 
+
+      | "simple" LA
+   suffix: 
+   prefix:
+
+     |-`QUOTATION _
+     |-`ANTIQUOT (("exp"|""|"anti"),_)
+     |-`ANTIQUOT ("`bool",_)
+     |-`ANTIQUOT ("tup",_)
+     |-`ANTIQUOT ("seq",_)
+
+     |-"`"---a_ident
+     |-"["-+-"]"
+     |     `-comprehension_or_sem_expr_for_list---"]"
+
+# introduced by List comprehension
+    #  EXTEND Gram
+    #   LOCAL: item;
+    # expr: Level "simple"
+    #   [ [ "["; comprehension_or_sem_expr_for_list{e}; "]"  ] ]  
+    # DELETE_RULE Gram expr: "["; x; "::"; expr; "]" END;
+   
+     |-"[|"-+-"|]"
+     |      `-sem_expr---"|]"
+
+     |-"{"-+-"("---SELF---")"---"with"---label_expr_list---"}"
+     |     `-label_expr_list---"}"
+     |-"{<"-+-">}"
+     |      `-field_expr_list---">}"
+     |-"begin"-+-"end"
+     |         `-sequence---"end"
+
+     |-"("-+-")"
+     |     |-"module"---module_expr-+-")"
+     |     |                        `-":"---package_type---")"
+     |     `-SELF-+-","---comma_expr---")"
+     |            |-";"-+-")"
+     |            |     `-sequence---")"
+     |            |-":"---ctyp-+-")"
+     |            |            `-":>"---ctyp---")"
+     |            |-":>"---ctyp---")"
+     |            `-")"
+
+     |-stream_begin-+-stream_end
+     |              `-stream_expr_comp_list---stream_end
+
+     |-a_INT
+     |-a_INT32
+     |-a_INT64
+     |-a_NATIVEINT
+     |-a_FLOAT
+     |-a_STRING
+     |-a_CHAR
+
+     |-TRY module_longident_dot_lparen---sequence---")"
+     `-TRY val_longident]
+
+   #+END_EXAMPLE

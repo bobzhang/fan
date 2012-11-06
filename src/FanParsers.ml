@@ -822,6 +822,7 @@ New syntax:\
     parser [< a = symb; 's >] -> kont a s
   end;
 
+  (* main grammar extension [Line 826 ~ Line 2123]*)
   EXTEND Gram
     LOCAL:
     string_list  infixop5 infixop6
@@ -1349,6 +1350,21 @@ New syntax:\
         | "("; SELF{p}; ","; comma_ipatt{pl}; ")" -> <:patt< ($p, $pl) >>
         | a_LIDENT{s} -> <:patt< $lid:s >>
         | "_" -> <:patt< _ >> ] ]
+    ipatt:
+      [ [ `LABEL i; SELF{p} -> <:patt< ~ $i : $p >>
+        | "~"; `ANTIQUOT ((""|"lid" as n),i); ":"; SELF{p} ->
+            <:patt< ~ $(mk_anti n i) : $p >>
+        | "~"; `ANTIQUOT ((""|"lid" as n),i) -> <:patt< ~ $(mk_anti n i) >>
+        | "~"; `LIDENT i -> <:patt< ~ $i >>
+        | `OPTLABEL i; "("; ipatt_tcon{p}; eq_expr{f}; ")" -> f i p
+        | "?"; `ANTIQUOT ((""|"lid" as n),i); ":"; "("; ipatt_tcon{p};
+          eq_expr{f}; ")" -> f (mk_anti n i) p
+        | "?"; `LIDENT i -> <:patt< ? $i >>
+        | "?"; `ANTIQUOT ((""|"lid" as n),i) -> <:patt< ? $(mk_anti n i) >>
+        | "?"; "("; ipatt_tcon{p}; ")" ->
+            <:patt< ? ($p) >>
+        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
+            <:patt< ? ($p = $e) >> ] ]        
     labeled_ipatt:
       [ [ ipatt{p} -> p ] ]
     comma_ipatt:
@@ -1841,21 +1857,7 @@ New syntax:\
     patt_tcon:
       [ [ patt{p}; ":"; ctyp{t} -> <:patt< ($p : $t) >>
         | patt{p} -> p ] ]
-    ipatt:
-      [ [ `LABEL i; SELF{p} -> <:patt< ~ $i : $p >>
-        | "~"; `ANTIQUOT ((""|"lid" as n),i); ":"; SELF{p} ->
-            <:patt< ~ $(mk_anti n i) : $p >>
-        | "~"; `ANTIQUOT ((""|"lid" as n),i) -> <:patt< ~ $(mk_anti n i) >>
-        | "~"; `LIDENT i -> <:patt< ~ $i >>
-        | `OPTLABEL i; "("; ipatt_tcon{p}; eq_expr{f}; ")" -> f i p
-        | "?"; `ANTIQUOT ((""|"lid" as n),i); ":"; "("; ipatt_tcon{p};
-          eq_expr{f}; ")" -> f (mk_anti n i) p
-        | "?"; `LIDENT i -> <:patt< ? $i >>
-        | "?"; `ANTIQUOT ((""|"lid" as n),i) -> <:patt< ? $(mk_anti n i) >>
-        | "?"; "("; ipatt_tcon{p}; ")" ->
-            <:patt< ? ($p) >>
-        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
-            <:patt< ? ($p = $e) >> ] ]
+    
     ipatt_tcon:
       [ [ ipatt{p}; ":"; ctyp{t} -> <:patt< ($p : $t) >>
         | ipatt{p} -> p ] ]

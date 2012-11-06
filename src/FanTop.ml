@@ -1,5 +1,5 @@
 open LibUtil;
-module P = MakePreCast.Make (struct end) ;
+module P = PreCast.Make (struct end) ;
 open P;
 
 let wrap parse_fun lb =

@@ -6,7 +6,11 @@ open FanUtil;
 let get_cur_loc = Tools.get_cur_loc;
 let get_prev_loc = Tools.get_prev_loc;
 
-(* [bp] *)
+(* [bp] means begining position, [ep] means ending position
+   apply the [parse_fun] and get the result and the location of
+   consumed areas
+ *)
+
 let add_loc bp parse_fun strm =
   let x = parse_fun strm in
   let ep = get_prev_loc strm in
@@ -189,6 +193,7 @@ and parser_of_token_list p1 tokl =
               parser [< tok = ps; 's >] ->
                 let act = p1 s in Action.getf act tok ]
       | _ -> invalid_arg "parser_of_token_list" ]
+
 and parser_of_symbol entry nlevn = fun
   [ `Smeta _ symbl act ->
     let act = Obj.magic act entry symbl in
@@ -239,17 +244,16 @@ and parser_of_symbol entry nlevn = fun
       let pt = parser_of_tree entry 1 0 t in fun strm ->
         let bp = get_cur_loc strm in
         match strm with parser
-        [< (act, loc) = add_loc bp pt >] ->
-            Action.getf act loc
-        | `Snterm e -> parser [< a = e.estart 0 >] -> a
-        | `Snterml (e, l) ->
-            parser [< a = e.estart (level_number e l) >] -> a
-        | `Sself -> parser [< a = entry.estart 0 >] -> a
-        | `Snext -> parser [< a = entry.estart nlevn >] -> a
-        | `Skeyword kwd -> parser
-              [< (tok, _) when FanToken.match_keyword kwd tok >] ->
-                Action.mk tok
-        | `Stoken (f, _) -> parser [< (tok,_) when f tok >] -> Action.mk tok ]
+        [ [< (act, loc) = add_loc bp pt >] ->  Action.getf act loc]
+  | `Snterm e -> parser [< a = e.estart 0 >] -> a
+  | `Snterml (e, l) -> parser [< a = e.estart (level_number e l) >] -> a
+  | `Sself -> parser [< a = entry.estart 0 >] -> a
+  | `Snext -> parser [< a = entry.estart nlevn >] -> a
+  | `Skeyword kwd -> parser
+        [ [< (tok, _) when FanToken.match_keyword kwd tok >] ->
+          Action.mk tok ]
+ | `Stoken (f, _) ->
+     parser [ [< (tok,_) when f tok >] -> Action.mk tok ]]
 and parse_top_symb entry symb strm =
   parser_of_symbol entry 0 (top_symb entry symb) strm;
 
@@ -261,21 +265,23 @@ let start_parser_of_levels entry =
         match lev.lprefix with
         [ DeadEnd -> p1
         | tree ->
-          let alevn =  match lev.assoc with
-          [ `LA | `NA ->  clevn + 1 | `RA -> clevn ] in
-          let p2 = parser_of_tree entry (succ clevn) alevn tree in
+          let alevn =
+            match lev.assoc with
+            [ `LA | `NA ->  clevn + 1 | `RA -> clevn ] in
+          let p2 =
+            parser_of_tree entry (1 + clevn) alevn tree in
           match levs with
           [ [] ->
             fun levn strm ->
               let bp = get_cur_loc strm in
               match strm with parser
-              [< (act, loc) = add_loc bp p2; 'strm >] ->
-               let a = Action.getf act loc in
-               entry.econtinue levn loc a strm
-         | _ ->
+              [ [< (act, loc) = add_loc bp p2; 'strm >] ->
+                let a = Action.getf act loc in
+                entry.econtinue levn loc a strm]
+          | _ ->
              fun levn strm ->
                if levn > clevn then
-                 p1 levn strm
+                 p1 levn strm (* only higher level allowed here *)
                else
                  let bp = get_cur_loc strm in
                  match strm with parser
@@ -289,20 +295,21 @@ let start_parser_of_entry entry =
   debug gram "start_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in
   match entry.edesc with
   [ Dlevels [] -> Tools.empty_entry entry.ename
-  | Dlevels elev -> start_parser_of_levels entry (* 0 *) elev
+  | Dlevels elev -> start_parser_of_levels entry  elev
   | Dparser p -> fun _ -> p ] ;
     
 let rec continue_parser_of_levels entry clevn = fun
   [ [] -> fun _ _ _ -> parser []
   | [lev :: levs] ->
-      let p1 = continue_parser_of_levels entry (succ clevn) levs in
+      let p1 = continue_parser_of_levels entry  (clevn+1) levs in
       match lev.lsuffix with
       [ DeadEnd -> p1
       | tree ->
-        let alevn = match lev.assoc with
-        [ `LA | `NA -> succ clevn
-        | `RA -> clevn ] in
-        let p2 = parser_of_tree entry (succ clevn) alevn tree in
+        let alevn =
+          match lev.assoc with
+          [ `LA | `NA -> succ clevn
+          | `RA -> clevn ] in
+        let p2 = parser_of_tree entry (1+ clevn) alevn tree in
         fun levn bp a strm ->
           if levn > clevn then
             p1 levn bp a strm
@@ -313,6 +320,11 @@ let rec continue_parser_of_levels entry clevn = fun
                 let a = Action.getf2 act a loc in
                 entry.econtinue levn loc a strm ] ] ];
 
+(*
+  {[Structure.internal_entry ->
+    int ->
+    FanLoc.t ->
+    Action.t -> efun ]}*)  
 let continue_parser_of_entry entry =
   debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in
   match entry.edesc with
@@ -321,6 +333,6 @@ let continue_parser_of_entry entry =
     fun levn bp a -> parser
     [ [< a = p levn bp a >] -> a
     | [< >] -> a ]
-    | Dparser _ -> fun _ _ _ -> parser [] ];
+  | Dparser _ -> fun _ _ _ -> parser [] ];
 
 

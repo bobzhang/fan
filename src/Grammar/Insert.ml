@@ -4,12 +4,17 @@
 open Structure;
 open Format;
 
-let is_before s1 s2 = match (s1, s2) with
+
+(* {[[> `Skeyword of 'a | `Stoken of 'b ] ->
+  [> `Skeyword of 'c | `Stoken of 'd ] -> bool ]}*)
+let is_before s1 s2 =
+  match (s1, s2) with
   [ (`Skeyword _ | `Stoken _, `Skeyword _ | `Stoken _) -> false
   | (`Skeyword _ | `Stoken _, _) -> true
   | _ -> false ];
 
-let rec derive_eps = fun
+(* {[ Structure.symbol -> bool ]}*)    
+let rec derive_eps : symbol -> bool = fun
   [ `Slist0 _ | `Slist0sep (_, _) | `Sopt _ -> true
   | `Stry s -> derive_eps s
   | `Stree t -> tree_derive_eps t
@@ -19,7 +24,7 @@ let rec derive_eps = fun
   | `Smeta (_, _, _) | `Snterm _ | `Snterml (_, _) | `Snext | `Sself ->
         (* Approximation *)
       false ]
-and tree_derive_eps = fun
+and tree_derive_eps : tree -> bool = fun
     [ LocAct _ _ -> true
     | Node {node = s; brother = bro; son = son} ->
         derive_eps s && tree_derive_eps son || tree_derive_eps bro
@@ -32,12 +37,13 @@ let empty_lev lname assoc =
     | None -> `LA ] in
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd};
 
-let change_lev entry lev n lname assoc =
+(* here [name] is only used to emit error message*)  
+let change_lev entry lev name lname assoc =
   let a = match assoc with
       [ None -> lev.assoc
       | Some a -> begin 
           if a <> lev.assoc && !(entry.egram.warning_verbose) then
-            eprintf "<W> Changing associativity of level %S @." n
+            eprintf "<W> Changing associativity of level %S @." name
           else ();
           a
       end ] in begin 
@@ -49,57 +55,48 @@ let change_lev entry lev n lname assoc =
       | None -> () ];
         { (lev) with assoc=a}
     end ;
-  
+
+(* *)  
 let change_to_self entry = fun
   [ `Snterm e when e == entry -> `Sself
   | x -> x ];
 
+
+let levels_of_entry  e =
+  match e.edesc with
+  [Dlevels ls -> Some ls
+  |_ -> None];
+    
 (* given [entry] [position] and [levs]  return [levs* (label name * assoc ) -> level  *levs]*)
-let get_level entry position levs =
+let find_level ?position entry  levs =
+  let find x n  ls = 
+    let rec get = fun
+      [ [] -> begin
+        eprintf "No level labelled %S in entry %S @." n entry.ename;
+        failwith "find_level"
+      end
+    | [lev::levs] ->
+      if Tools.is_level_labelled n lev then
+        match x with
+        [`Level _ ->
+            ([], change_lev entry lev n, levs)
+        |`Before _ ->
+            ([], empty_lev, [lev::levs])
+        |`After _ ->
+           ([lev], empty_lev, levs)]  
+      else
+        let (levs1,rlev,levs2) = get levs in
+        ([lev::levs1], rlev, levs2) ] in
+    get ls in 
   match position with
   [ Some `First -> ([], empty_lev, levs)
   | Some `Last -> (levs, empty_lev, [])
-  | Some (`Level n) ->
-      let rec get = fun
-        [ [] -> begin 
-          eprintf "No level labelled %S in entry %S @." n entry.ename;
-          failwith "Grammar.extend"
-        end
-        | [lev :: levs] ->
-            if Tools.is_level_labelled n lev then
-              ([], change_lev entry lev n, levs)
-            else
-              let (levs1, rlev, levs2) = get levs in
-              ([lev :: levs1], rlev, levs2) ] in
-      get levs
-    | Some (`Before n) ->
-        let rec get = fun
-          [ [] -> begin
-            eprintf "No level labelled %S in entry %S @." n entry.ename;
-            failwith "Grammar.extend"
-          end
-          | [lev :: levs] ->
-              if Tools.is_level_labelled n lev then ([], empty_lev, [lev :: levs])
-              else
-                let (levs1, rlev, levs2) = get levs in
-                ([lev :: levs1], rlev, levs2) ] in
-        get levs
-    | Some (`After n) ->
-        let rec get =  fun
-          [ [] -> begin 
-            eprintf "No level labelled %S in entry %S@." n entry.ename;
-            failwith "Grammar.extend"
-          end
-          | [lev :: levs] ->
-              if Tools.is_level_labelled n lev then
-                ([lev], empty_lev, levs)
-              else
-                let (levs1, rlev, levs2) = get levs in
-                ([lev :: levs1], rlev, levs2) ] in
-        get levs
-    | None ->  match levs with
-        [ [lev :: levs] -> ([], change_lev entry lev "<top>", levs)
-        | [] -> ([], empty_lev, []) ] ];
+  | Some ((`Level n | `Before n | `After n)  as x) ->
+      find x n levs 
+  | None ->
+      match levs with
+      [ [lev :: levs] -> ([], change_lev entry lev "<top>", levs)
+      | [] -> ([], empty_lev, []) ] ];
 
 let rec check_gram entry = fun
   [ `Snterm e ->
@@ -132,7 +129,8 @@ let get_initial = fun
     [ [`Sself :: symbols] -> (true, symbols)
     | symbols -> (false, symbols) ];
 
-(* insert the symbol list into the gram, it will create side effect which will
+(* Insert the symbol list into the gram,
+   it will create side effect which will
    update the keyword table in the gram
  *)
 let insert_tokens gram symbols =
@@ -152,7 +150,25 @@ let insert_tokens gram symbols =
 
 (* given an [entry] [symbols] and [action] a tree, return a new [tree]*)
 let insert_tree entry gsymbols action tree =
-  let rec insert symbols tree =
+  let rec try_insert s sl tree =
+    match tree with
+    [ Node ( {node ; son ; brother} as x) ->
+      if Tools.eq_symbol s node then
+        Some (Node { (x) with son = insert sl son})
+      else
+        match try_insert s sl brother with
+        [ Some y -> Some (Node {(x) with brother=y})
+        | None ->
+            if is_before node s || (derive_eps s && not (derive_eps node)) then
+              (* node has higher priority *)
+              Some (Node {(x) with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
+            else None ]
+    | LocAct _ _ | DeadEnd -> None ] 
+  and  insert_in_tree s sl tree =
+    match try_insert s sl tree with
+    [ Some t -> t
+    | None -> Node {node = s; son = insert sl DeadEnd; brother = tree} ] 
+  and  insert symbols tree =
     match symbols with
     [ [s :: sl] -> insert_in_tree s sl tree (* delegated to [insert_in_tree] *)
     | [] -> match tree with
@@ -163,27 +179,7 @@ let insert_tree entry gsymbols action tree =
                 eprintf "<W> Grammar extension: in [%s] some rule has been masked@." entry.ename
               else ()in
             LocAct action [old_action :: action_list]
-        | DeadEnd -> LocAct action [] ] ]
-  and insert_in_tree s sl tree =
-    match try_insert s sl tree with
-    [ Some t -> t
-    | None -> Node {node = s; son = insert sl DeadEnd; brother = tree} ]
-  and try_insert s sl tree =
-    match tree with
-    [ Node ( {node ; son ; brother} as x) ->
-      if Tools.eq_symbol s node then
-        Some (Node { (x) with son = insert sl son})
-      else if is_before node s || derive_eps s && not (derive_eps node) then
-        let bro =
-          match try_insert s sl brother with
-          [ Some y -> y
-          | None -> Node { (x) with node = s; son=insert sl DeadEnd } ] in
-        Some (Node {(x) with brother=bro})
-      else
-        match try_insert s sl brother with
-        [ Some y -> Some (Node {(x) with brother=y})
-        | None -> None ]
-    | LocAct _ _ | DeadEnd -> None ]  in
+        | DeadEnd -> LocAct action [] ] ] in 
   insert gsymbols tree ;
   
 let insert_level entry e1 symbols action slev =
@@ -203,7 +199,7 @@ let levels_of_rules entry position rules =
   if rules = [] then
     elev
   else
-    let (levs1, make_lev, levs2) = get_level entry position elev in
+    let (levs1, make_lev, levs2) = find_level ?position entry  elev in
     let (levs, _) =
       List.fold_left
         (fun (levs, make_lev) (lname, assoc, rules) ->
