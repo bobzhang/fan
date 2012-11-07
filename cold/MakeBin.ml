@@ -137,7 +137,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     printf "%s@." FanConfig.camlp4_standard_library; exit 0
   let usage ini_sl ext_sl =
     eprintf
-      "Usage: camlp4 [load-options] [--] [other-options]\nOptions:\n<file>.ml        Parse this implementation file\n<file>.mli       Parse this interface file\n<file>.%s Load this module inside the Camlp4 core@."
+      "Usage: Fan [load-options] [--] [other-options]\nOptions:\n<file>.ml        Parse this implementation file\n<file>.mli       Parse this interface file\n<file>.%s Load this module inside the Camlp4 core@."
       (if DynLoader.is_native then "cmxs     " else "(cmo|cma)");
     FanUtil.Options.print_usage_list ini_sl;
     if ext_sl <> []
@@ -217,6 +217,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       "Print Camlp4 version number and exit.");
     ("-no_quot", (Arg.Clear FanConfig.quotations),
       "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
+    ("-parsing-strict", (Arg.Set FanConfig.strict_parsing), "");
     ("-loaded-modules", (Arg.Set print_loaded_modules),
       "Print the list of loaded modules.");
     ("-parser", (Arg.String (rewrite_and_load "Parsers")),

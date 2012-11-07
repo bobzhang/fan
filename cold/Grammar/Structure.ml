@@ -22,17 +22,18 @@ type token_info =  {
 let ghost_token_info =
   { prev_loc = FanLoc.ghost; cur_loc = FanLoc.ghost; prev_loc_only = false }
 type token_stream = (token* token_info) Stream.t 
-type efun = token_stream -> Action.t 
 type 'a parse = token_stream -> 'a 
+type 'a cont_parse = FanLoc.t -> Action.t -> 'a parse 
 type description = [ `Normal | `Antiquot] 
 type descr = (description* string) 
 type token_pattern = ((token -> bool)* descr) 
+type terminal = [ `Skeyword of string | `Stoken of token_pattern] 
 type internal_entry = 
   {
   egram: gram;
   ename: string;
-  mutable estart: int -> efun;
-  mutable econtinue: int -> FanLoc.t -> Action.t -> efun;
+  mutable estart: int -> Action.t parse;
+  mutable econtinue: int -> Action.t cont_parse;
   mutable edesc: desc} 
 and desc =  
   | Dlevels of level list
@@ -47,8 +48,7 @@ and symbol =
   | `Snterm of internal_entry | `Snterml of (internal_entry* string)
   | `Slist0 of symbol | `Slist0sep of (symbol* symbol) | `Slist1 of symbol
   | `Slist1sep of (symbol* symbol) | `Sopt of symbol | `Stry of symbol
-  | `Sself | `Snext | `Stoken of token_pattern | `Skeyword of string
-  | `Stree of tree] 
+  | `Sself | `Snext | `Stree of tree | terminal] 
 and tree =  
   | Node of node
   | LocAct of Action.t* Action.t list

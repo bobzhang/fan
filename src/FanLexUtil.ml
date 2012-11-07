@@ -10,13 +10,6 @@ let lexing_store s buff max =
        match s with parser
        [ [< x >] -> begin buff.[n]<- x; succ n end
        | [< >] -> n ] in  
-       (* match Stream.peek s with *)
-       (* [ Some x -> begin  *)
-       (*     Stream.junk s; *)
-       (*     buff.[n] <- x; *)
-       (*     succ n *)
-       (* end *)
-       (* | _ -> n]  *)
    self 0 s;
 
 let from_context c =

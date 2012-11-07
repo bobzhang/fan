@@ -72,10 +72,6 @@ let mkumin _loc f arg = match arg with
   
 let mkassert _loc = fun
   [ <:expr< false >> -> <:expr< assert false >> 
-    (* Ast.ExAsf _loc  *)
-    (* <:expr< assert false >> *)
-   (* this case takes care about
-      the special assert false node *)
   | e -> <:expr< assert $e >> ] ;
 
 

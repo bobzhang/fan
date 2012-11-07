@@ -165,3 +165,9 @@ val eoi_entry : 'a t -> 'a t
 
     
 val levels_of_entry: 'a t -> level list option
+val find_level:
+    ?position:[< `After of string
+             | `Before of string
+             | `First
+             | `Last
+             | `Level of string ] ->  'a t -> level

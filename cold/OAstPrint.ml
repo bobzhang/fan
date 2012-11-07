@@ -465,13 +465,24 @@ end
 
 
 let strict = new printer ()
-
-let loose = object
-  inherit printer ()
-  method!  ident ppf =
-    function
-        Oide_ident s -> fprintf ppf "%s" s
-      | Oide_dot (_, s) -> fprintf ppf "%s" s
+let pp = fprintf 
+let loose = object(_self:'self)
+  val mutable under_type= false;  
+  inherit printer () as super
+  method!  ident f x =
+    if under_type then
+      super#ident f  x
+    else
+      match x with
+      | Oide_ident s ->  pp f "%s" s
+      | Oide_dot (_, s) ->  pp f "%s" s
       | Oide_apply _ -> ()
+  method! out_type f x = begin
+    (* ({<under_type=true>})#out_type  FIXME*)
+    under_type <- true;
+    super#out_type f x;
+    under_type <- false
+  end
+
 end
       

@@ -36,7 +36,6 @@ module Action :
     val getf2 : t -> 'a -> 'b -> 'c
   end
 type token_stream = (FanSig.token * token_info) Stream.t
-type efun = token_stream -> Action.t
 type description = [ `Antiquot | `Normal ]
 type descr = description * string
 type token_pattern = (FanSig.token -> bool) * descr
@@ -166,3 +165,9 @@ val eoi_entry : 'a t -> 'a t
 
     
 val levels_of_entry: 'a t -> level list option
+val find_level:
+    ?position:[< `After of string
+             | `Before of string
+             | `First
+             | `Last
+             | `Level of string ] ->  'a t -> level

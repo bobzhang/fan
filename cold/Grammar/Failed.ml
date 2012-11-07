@@ -16,36 +16,30 @@ let rec name_of_symbol_failed entry =
                `Stry s -> name_of_symbol_failed entry s
            | `Stree t -> name_of_tree_failed entry t
            | s -> name_of_symbol entry s : [> symbol] -> string )
-and name_of_tree_failed entry =
-      (function
-       | Node { node = s; brother = bro; son } ->
-           let tokl =
-             match s with
-             | `Stoken _|`Skeyword _ -> Tools.get_token_list s son
-             | _ -> None in
-           (match tokl with
-            | None  ->
-                let txt = name_of_symbol_failed entry s in
-                let txt =
-                  match (s, son) with
-                  | (`Sopt _,Node _) ->
-                      txt ^ (" or " ^ (name_of_tree_failed entry son))
-                  | _ -> txt in
-                let txt =
-                  match bro with
-                  | DeadEnd |LocAct (_,_) -> txt
-                  | Node _ ->
-                      txt ^ (" or " ^ (name_of_tree_failed entry bro)) in
-                txt
-            | Some (tokl,_,_) ->
-                List.fold_left
-                  (fun s  tok  ->
-                     (if s = "" then "" else s ^ " then ") ^
-                       (match tok with
-                        | `Stoken (_,descr) -> name_of_descr descr
-                        | `Skeyword kwd -> kwd
-                        | _ -> assert false)) "" tokl)
-       | DeadEnd |LocAct (_,_) -> "???" : tree -> string )
+and name_of_tree_failed entry x =
+      match x with
+      | Node ({ node = s; brother = bro; son } as y) ->
+          (match Tools.get_terminals y with
+           | None  ->
+               let txt = name_of_symbol_failed entry s in
+               let txt =
+                 match (s, son) with
+                 | (`Sopt _,Node _) ->
+                     txt ^ (" or " ^ (name_of_tree_failed entry son))
+                 | _ -> txt in
+               let txt =
+                 match bro with
+                 | DeadEnd |LocAct (_,_) -> txt
+                 | Node _ -> txt ^ (" or " ^ (name_of_tree_failed entry bro)) in
+               txt
+           | Some (tokl,_,_) ->
+               List.fold_left
+                 (fun s  tok  ->
+                    (if s = "" then "" else s ^ " then ") ^
+                      (match tok with
+                       | `Stoken (_,descr) -> name_of_descr descr
+                       | `Skeyword kwd -> kwd)) "" tokl)
+      | DeadEnd |LocAct (_,_) -> "???"
 let magic _s x = Obj.magic x
 let tree_failed entry prev_symb_result prev_symb tree =
   let txt = name_of_tree_failed entry tree in

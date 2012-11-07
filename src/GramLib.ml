@@ -1,5 +1,5 @@
 open LibUtil;
-open FanUtil;
+(* open FanUtil; *)
 module Ast = Camlp4Ast;
 (* test wheter revised or not hack*)  
 let test_patt_lessminus =
@@ -34,7 +34,7 @@ let test_patt_lessminus =
 (* very ad-hoc trick*)  
 let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) =
   try begin
-      DELETE_RULE Gram expr: "["; x; "::"; expr; "]" END;
+       {/ Gram expr: ["["; x; "::"; expr; "]"] /};
       true
   end with [ Not_found -> false ];
     

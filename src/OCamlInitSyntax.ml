@@ -180,10 +180,10 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   let level_list = Gram.mk "level_list";
   let entry = Gram.mk "entry";
     
-  EXTEND Gram
+  (* EXTEND *) {|Gram
     top_phrase:
-      [ [ `EOI -> None ] ]
-  END;
+      [ [ `EOI -> None ] ] |}; 
+  (* END; *)
 
   module AntiquotSyntax = struct
     module Ast  = Ast; 

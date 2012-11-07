@@ -44,17 +44,20 @@ end;
 let is_level_labelled n = fun [ {lname=Some n1; _  } ->  n = n1 | _ -> false ];
   
 let warning_verbose = ref true;
-
-let get_token_list (last_tok: symbol) node =
+  
+let get_terminals x =
   let rec aux tokl last_tok  = fun 
-    [ Node {node = (`Stoken _ | `Skeyword _ as tok); son; brother = DeadEnd}
+    [ Node {node = (#terminal as tok); son; brother = DeadEnd}
       ->  aux [last_tok :: tokl] tok son
     | tree ->
-        if tokl = [] then None
+        if tokl = [] then None (* FIXME?*)
         else Some (List.rev [last_tok :: tokl], last_tok, tree) ] in
-   aux [] last_tok node ;
-  
-  
+  match x with
+  [{node=(#terminal as x);son;_} ->
+    (* first case we don't require anything on [brother] *)
+     (aux [] x son)
+  | _ -> None ];
+    
 let eq_Stoken_ids s1 s2 = match (s1,s2) with
   [ ((`Antiquot,_),_) -> false
   | (_,(`Antiquot,_)) -> false
@@ -100,3 +103,7 @@ let rec eq_symbol s1 s2 =
   | _ -> s1 = s2 ];
     
 
+(* let rec get_first = fun *)
+(*   [ Node {node;brother} -> [node::get_first brother] *)
+(*   | _ -> [] ]; *)
+    

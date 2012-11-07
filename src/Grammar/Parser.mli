@@ -36,8 +36,8 @@ val parser_cont:
      internal_entry -> int ->  int -> symbol -> tree -> 
        Action.t parse -> Action.t cont_parse 
 
-val parser_of_symbols: symbol list -> Action.t cont_parse  -> Action.t parse
-val parser_of_symbol: internal_entry -> int -> symbol -> Action.t parse
+val parser_of_terminals: terminal list -> Action.t cont_parse  -> Action.t parse
+val parser_of_symbol: internal_entry ->  symbol -> int  -> Action.t parse
     
 val parse_top_symb: internal_entry -> symbol -> Action.t parse
 val start_parser_of_levels: internal_entry -> level list -> int -> Action.t parse 

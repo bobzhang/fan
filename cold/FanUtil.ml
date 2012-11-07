@@ -68,13 +68,6 @@ let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
 let neg_string n =
   let len = String.length n in
   if (len > 0) && ((n.[0]) = '-') then String.sub n 1 (len - 1) else "-" ^ n
-let stream_peek_nth n strm =
-  let rec loop i =
-    function
-    | x::xs -> if i = 1 then Some x else loop (i - 1) xs
-    | [] -> None in
-  loop n (Stream.npeek n strm)
-let njunk n strm = for _i = 1 to n do Stream.junk strm done
 let rec list_remove x =
   function
   | (y,_)::l when y = x -> l

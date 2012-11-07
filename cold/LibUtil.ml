@@ -134,6 +134,8 @@ module type STREAM =
     val tail : 'a t -> 'a t
     val map : ('a -> 'b) -> 'a t -> 'b t
     val dup : 'a t -> 'a t
+    val peek_nth : int -> 'a Stream.t -> 'a option
+    val njunk : int -> 'a Stream.t -> unit
   end
 module Stream =
   (struct
@@ -166,6 +168,13 @@ module Stream =
         | _::l -> loop (n - 1) l in
       let peek_nth n = loop n (Stream.npeek (n + 1) strm) in
       Stream.from peek_nth
+    let peek_nth n strm =
+      let rec loop i =
+        function
+        | x::xs -> if i = 1 then Some x else loop (i - 1) xs
+        | [] -> None in
+      loop n (Stream.npeek n strm)
+    let njunk n strm = for _i = 1 to n do Stream.junk strm done
     end : (STREAM with type 'a t = 'a Stream.t ))
 module ErrorMonad = struct
   type log = string  type 'a result =  

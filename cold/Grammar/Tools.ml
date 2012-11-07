@@ -44,16 +44,18 @@ let get_prev_loc strm =
 let is_level_labelled n =
   function | { lname = Some n1;_} -> n = n1 | _ -> false
 let warning_verbose = ref true
-let get_token_list last_tok node =
+let get_terminals x =
   let rec aux tokl last_tok =
     function
-    | Node { node = (`Stoken _|`Skeyword _ as tok); son; brother = DeadEnd  }
-        -> aux (last_tok :: tokl) tok son
+    | Node { node = (#terminal as tok); son; brother = DeadEnd  } ->
+        aux (last_tok :: tokl) tok son
     | tree ->
         if tokl = []
         then None
         else Some ((List.rev (last_tok :: tokl)), last_tok, tree) in
-  aux [] last_tok node
+  match x with
+  | { node = (#terminal as x); son;_} -> aux [] x son
+  | _ -> None
 let eq_Stoken_ids s1 s2 =
   match (s1, s2) with
   | ((`Antiquot,_),_) -> false

@@ -32,7 +32,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   let mk_debug _loc m fmt section args =
     let call = Expr.apply <:expr< Debug.printf $str:section $str:fmt >> args in
       <:expr< if $(mk_debug_mode _loc m) $str:section then $call else () >>;
-  EXTEND Gram
+  (* EXTEND *) {| Gram
     LOCAL: start_debug end_or_in ;  
     expr:
     [ [ start_debug{m}; `LIDENT section; `STRING (_, fmt); (* FIXME move to `STRING(,_)*)
@@ -47,8 +47,8 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
       | "in"; expr{e} -> Some e  ] ]
     start_debug:
     [ [ `LIDENT "debug" -> None
-      | `LIDENT "camlp4_debug" -> Some "Camlp4"  ] ]
-  END;
+      | `LIDENT "camlp4_debug" -> Some "Camlp4"  ] ] |}
+  (* END *);
 
 end;
 
@@ -64,14 +64,14 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   open FanGrammar;
   open FanGrammarTools;
   FanConfig.antiquotations := true;
-  EXTEND Gram
+  {|Gram
       LOCAL:
       delete_rule_body  delete_rule_header extend_header extend_body qualuid qualid t_qualid
       global entry position assoc level level_list rule_list rule psymbol
-      name semi_sep string comma_patt pattern ;
+      name semi_sep string comma_patt pattern simple_expr delete_rules;
     expr: After "top"
-      [ [ "EXTEND"; extend_body{e}; "END" -> e
-        | "DELETE_RULE"; delete_rule_body{e}; "END" -> e ] ] 
+      [ [ "{|"; extend_body{e}; "|}" -> e 
+        | "{/"; delete_rule_body{e} ; "/}" -> e ] ]
     extend_header:
       [ [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
         let old=gm() in 
@@ -90,11 +90,17 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let () = grammar_module_name := old in
             res      ] ] 
     delete_rule_body:
-      [ [ delete_rule_header{old}; name{n}; ":"; LIST0 symbol SEP semi_sep{sl} -> 
-        let (e, b) = expr_of_delete_rule _loc n sl in (*FIXME*)
-        let res =  <:expr< $(id:gm()).delete_rule $e $b >>  in
-        let () = grammar_module_name := old  in 
-        res   ] ]
+      [ [ delete_rule_header{old};  LIST0 delete_rules {es} ->
+            let () = grammar_module_name := old  in 
+            <:expr< begin $list:es end>>   ] ]
+     delete_rules:
+       [[ name{n} ;":"; "["; LIST1 [ LIST0 symbol SEP semi_sep{sl} -> sl  ] SEP "|" {sls}; "]"
+            ->
+              let rest = List.map (fun sl  ->
+                let (e,b) = expr_of_delete_rule _loc n sl in
+                <:expr< $(id:gm()).delete_rule $e $b >>) sls in
+              <:expr< begin $list:rest end >>   
+        ]]
      delete_rule_header: (*for side effets, parser action *)
         [[ qualuid{g} ->
           let old = gm () in
@@ -203,18 +209,14 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | `ANTIQUOT ("", s) -> AntiquotSyntax.parse_expr _loc s ] ]
     semi_sep:
       [ [ ";" -> () ] ]
-  END;
-  EXTEND Gram
-      LOCAL: simple_expr;
     symbol: Level "top"
       [ [`UIDENT ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; SELF{s} ->
             sfold _loc [x] f e s
         |`UIDENT ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT ("SEP" as y); symbol{sep} ->
-            sfold ~sep _loc (* (x^" " ^ y) *) [x;y] f e s  ]]
+            sfold ~sep _loc [x;y] f e s  ]]
     simple_expr:
       [ [ a_LIDENT{i} -> <:expr< $lid:i >>
-        | "("; expr{e}; ")" -> e ] ]
-  END;
+        | "("; expr{e}; ")" -> e ] ] |};
 
   Options.add "-split_ext" (Arg.Set split_ext)
     "Split EXTEND by functions to turn around a PowerPC problem.";
@@ -235,13 +237,13 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
 
-  DELETE_RULE Gram expr: "["; sem_expr_for_list; "]" END;
+   {/Gram expr: [ "["; sem_expr_for_list; "]"] /};
 
 
 
   let comprehension_or_sem_expr_for_list =
     Gram.mk "comprehension_or_sem_expr_for_list";
-  EXTEND Gram
+  (* EXTEND *) {| Gram
       LOCAL: item;
     expr: Level "simple"
       [ [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ] ]  
@@ -255,16 +257,16 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
       (* NP: These rules rely on being on this particular order. Which should
              be improved. *)
       [ [  TRY [ patt{p}; "<-" -> p]{p} ;  expr Level "top"{e} -> `gen (p, e)
-        | expr Level "top"{e} -> `cond e ] ] 
-  END;
+        | expr Level "top"{e} -> `cond e ] ] |};
+  (* END; *)
   if is_revised ~expr ~sem_expr_for_list then
-    EXTEND Gram
+    (* EXTEND *) {|Gram
       comprehension_or_sem_expr_for_list:
       [ [  expr Level "top"{e}; ";"; sem_expr_for_list{mk}; "::"; expr{last} ->
             <:expr< [ $e :: $(mk last) ] >>
         | expr Level "top"{e}; "::"; expr{last} ->
-            <:expr< [ $e :: $last ] >> ] ] 
-    END
+            <:expr< [ $e :: $last ] >> ] ] |}
+    (* END *)
   else ();
 
 end;
@@ -361,16 +363,16 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
   let define eo x = begin 
       match eo with
       [ Some ([], e) ->
-        EXTEND Gram
+        (* EXTEND *) {|Gram
         expr: Level "simple"
           [ [ `UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
         patt: Level "simple"
           [ [ `UIDENT $x ->
             let p = Expr.substp _loc [] e
-            in (new Ast.reloc _loc)#patt p ]]
-        END
+            in (new Ast.reloc _loc)#patt p ]] |}
+        (* END *)
       | Some (sl, e) ->
-          EXTEND Gram
+          (* EXTEND *) {| Gram
             expr: Level "apply"
             [ [ `UIDENT $x; SELF{param} ->
               let el =  match param with
@@ -392,7 +394,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
                 (new Ast.reloc _loc)#patt p
               else
                 incorrect_number _loc pl sl ] ]
-          END
+        |}
       | None -> () ];
       defined := [(x, eo) :: !defined]
     end;
@@ -402,16 +404,8 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       begin
         let eo = List.assoc x !defined in
         match eo with
-        [ Some ([], _) ->
-            begin
-              DELETE_RULE Gram expr: `UIDENT $x END;
-              DELETE_RULE Gram patt: `UIDENT $x END;
-            end
-        | Some (_, _) ->
-            begin
-              DELETE_RULE Gram expr: `UIDENT $x; SELF END;
-              DELETE_RULE Gram patt: `UIDENT $x; SELF END;
-            end
+        [ Some ([], _) -> {/ Gram expr: [`UIDENT $x ]  patt: [`UIDENT $x ] /}
+        | Some (_, _) ->  {/ Gram expr: [`UIDENT $x; SELF ] patt: [`UIDENT $x; SELF] /}
         | None -> () ];
         defined := list_remove x !defined;
       end
@@ -482,7 +476,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
    in SdStr(item)
    ;
 
-  EXTEND Gram
+  (* EXTEND *) {|Gram
      LOCAL: macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
      else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
      sglist_else endif opt_macro_value uident ;
@@ -569,8 +563,8 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
     patt: Before "simple"
       [ [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
             <:patt< `$uid:kwd >>
-        | "`"; a_ident{s} -> <:patt< ` $s >> ] ]
-  END;
+        | "`"; a_ident{s} -> <:patt< ` $s >> ] ] |};
+  (* END; *)
 
   Options.add "-D" (Arg.String parse_def)
     "<string> Define for IFDEF instruction.";
@@ -823,7 +817,7 @@ New syntax:\
   end;
 
   (* main grammar extension [Line 826 ~ Line 2123]*)
-  EXTEND Gram
+  (* EXTEND *) {|Gram
     LOCAL:
     string_list  infixop5 infixop6
     module_longident_dot_lparen sequence' fun_def fun_def_cont fun_def_cont_no_when
@@ -2120,8 +2114,8 @@ New syntax:\
     patt_eoi:
       [ [ patt{x}; `EOI -> x ] ]
     expr_eoi:
-      [ [ expr{x}; `EOI -> x ] ]
-  END;
+      [ [ expr{x}; `EOI -> x ] ] |};
+  (* END; *)
 
 end;
 
@@ -2136,7 +2130,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
   open FanStreamTools;
-  EXTEND Gram
+  (* EXTEND *) {|Gram
       LOCAL: parser_ipatt stream_expr_comp  stream_expr_comp_list
       stream_patt_comp stream_patt_comp_err 
       stream_patt_comp_err_list stream_begin stream_end stream_patt
@@ -2217,9 +2211,9 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     (*     | stream_expr{e} -> SeNtr _loc e ] ] *)
     stream_expr_comp: (* FIXME *)
       [ [  stream_expr{e} -> SeTrm _loc e
-        | stream_quot;stream_expr{e} -> SeNtr _loc e ] ]
+        | stream_quot;stream_expr{e} -> SeNtr _loc e ] ] |};
         
-  END;
+  (* END; *)
 
 end;
   

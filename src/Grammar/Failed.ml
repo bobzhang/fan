@@ -24,14 +24,15 @@ let rec name_of_symbol_failed entry : [>symbol] -> string = fun
       name_of_symbol_failed entry s
   | `Stree t -> name_of_tree_failed entry t
   | s -> name_of_symbol entry s ]
-and name_of_tree_failed entry : tree -> string =  fun
-  [ Node {node = s; brother = bro; son = son} ->
-      let tokl =
-        match s with
-        [ `Stoken _ | `Skeyword _
-          ->  Tools.get_token_list s son
-        | _ -> None ]  in
-      match tokl with
+and name_of_tree_failed entry x =
+  match x with 
+  [ Node ({node = s; brother = bro; son = son} as y)->
+      (* let tokl = *)
+      (*   match s with *)
+      (*   [ (`Stoken _ | `Skeyword _ as x) *)
+      (*     ->  Tools.get_token_list x son *)
+      (*   | _ -> None ]  in *)
+      match (* tokl *) Tools.get_terminals y  with
       [ None ->
           let txt = name_of_symbol_failed entry s in
           let txt =
@@ -50,7 +51,7 @@ and name_of_tree_failed entry : tree -> string =  fun
                 match tok with
                   [ `Stoken (_, descr) -> name_of_descr descr
                   | `Skeyword kwd -> kwd
-                  | _ -> assert false ])) "" tokl ]
+                  (* | _ -> assert false  *)])) "" tokl ]
   | DeadEnd | LocAct _ _ -> "???" ];
 
 let magic _s x = debug magic "Obj.magic: %s@." _s in Obj.magic x;

@@ -47,6 +47,10 @@ type description =
 type descr = (description * string) ;  
 type token_pattern = ((token -> bool) * descr);
 
+type terminal =
+    [= `Skeyword of string
+    | `Stoken of token_pattern ];
+
 type internal_entry =
     { egram     : gram;
       ename     : string;
@@ -73,9 +77,8 @@ and symbol =
     | `Stry of symbol
     | `Sself
     | `Snext
-    | `Stoken of token_pattern
-    | `Skeyword of string
-    | `Stree of tree ]
+    | `Stree of tree
+    | terminal ]
 and tree = (* internal struccture *)
     [ Node of node
     | LocAct of Action.t and list Action.t
