@@ -168,7 +168,7 @@ and parser_of_terminals tokl p1 =
                  let ps strm =
                    match Stream.peek_nth n strm with
                    | Some (tok,_) when tematch tok ->
-                       (Stream.njunk n strm; Action.mk tok)
+                       (Stream.njunk (n + 1) strm; Action.mk tok)
                    | _ -> raise Stream.Failure in
                  (fun strm  ->
                     let bp = get_cur_loc strm in
@@ -196,7 +196,7 @@ and parser_of_terminals tokl p1 =
                  let ps strm =
                    match Stream.peek_nth n strm with
                    | Some (tok,_) when FanToken.match_keyword kwd tok ->
-                       (Stream.njunk n strm; Action.mk tok)
+                       (Stream.njunk (n + 1) strm; Action.mk tok)
                    | _ -> raise Stream.Failure in
                  (fun strm  ->
                     let bp = get_cur_loc strm in
@@ -219,7 +219,7 @@ and parser_of_terminals tokl p1 =
                       with | Stream.Failure  -> raise (Stream.Error "") in
                     Action.getf act tok))
         | _ -> invalid_arg "parser_of_terminals" in
-      loop 1 tokl
+      loop 0 tokl
 and parser_of_symbol entry s nlevn =
       match s with
       | `Smeta (_,symbl,act) ->

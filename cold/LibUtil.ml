@@ -171,9 +171,11 @@ module Stream =
     let peek_nth n strm =
       let rec loop i =
         function
-        | x::xs -> if i = 1 then Some x else loop (i - 1) xs
+        | x::xs -> if i = 0 then Some x else loop (i - 1) xs
         | [] -> None in
-      loop n (Stream.npeek n strm)
+      if n < 0
+      then invalid_arg "Stream.peek_nth"
+      else loop n (Stream.npeek (n + 1) strm)
     let njunk n strm = for _i = 1 to n do Stream.junk strm done
     end : (STREAM with type 'a t = 'a Stream.t ))
 module ErrorMonad = struct

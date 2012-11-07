@@ -231,12 +231,14 @@ module Stream : STREAM with type t 'a = Stream.t 'a = struct
     let peek_nth n =
       loop n (Stream.npeek (n + 1) strm) in 
     Stream.from peek_nth;
-
+  (* the minimual [n] is 1 *)
   let peek_nth n strm  =
     let rec loop i = fun
-      [ [x :: xs] -> if i = 1 then Some x else loop (i - 1) xs
+      [ [x :: xs] -> if i = 0 then Some x else loop (i - 1) xs
       | [] -> None ] in
-    loop n (Stream.npeek n strm);
+    if n < 0 then
+      invalid_arg "Stream.peek_nth"
+    else loop n (Stream.npeek (n+1) strm);
   
   let njunk  n strm  =
     for _i = 1 to n do Stream.junk strm done; (* FIXME unsed  index i*)

@@ -170,6 +170,30 @@ and parser_cont  entry nlevn alevn s son p1 loc a =  parser
   [ [< b = p1 >] -> b
   | [< b = recover parser_of_tree entry nlevn alevn  s son loc a >] -> b
   | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
+
+(* and test terminals cont = *)
+(*   let rec loop n x = *)
+(*     match x with *)
+(*     [ [`Stoken(f ,_)::rest] -> *)
+(*       let ps strm = *)
+(*         match Stream.peek_nth n strm in *)
+(*         [ Some(tok,_) when f tok -> tok *)
+(*         | _ -> raise Stream.Failure ] in *)
+(*       let p1 = loop (n+1) rest in *)
+(*       parser [< tok = ps ; act = p1  > ] -> Action.getf act tok *)
+(*     | [`Skeyword kwd::rest] -> *)
+(*       let ps strm = *)
+(*         match Stream.peek_nth n strm in *)
+(*         [Some(tok,_) when FanToken.match_keyword kwd tok -> *)
+(*           tok *)
+(*         | _ -> raise Stream.Failure] in *)
+(*       let p1 = loop (n+1) tok in  *)
+(*       parser [< tok = ps; act=p1 >] -> Action.getf act tok *)
+(*      | [] -> *)
+(*          fun strm -> *)
+(*            let bp = get_cur_loc strm in *)
+(*            Stream.njunk n strm (\* ; cont bp  *\) *)
+(*     ] *)
       
 and parser_of_terminals tokl p1 =
   let rec loop n  =  fun
@@ -179,30 +203,28 @@ and parser_of_terminals tokl p1 =
         let ps strm =
           match Stream.peek_nth n strm  with
           [ Some (tok, _) when tematch tok ->
-            (Stream.njunk n strm ; Action.mk tok) (*at the end*)
+            (Stream.njunk (n+1) strm ; Action.mk tok) (*at the end*)
           | _ -> raise Stream.Failure ] in
         fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
           [[< a = ps; act = p1 bp a >] -> Action.getf act a]
+              (* continuation *)
       | _ ->
           let ps strm =
             match Stream.peek_nth n strm with
             [ Some (tok, _) when tematch tok -> tok
             | _ -> raise Stream.Failure ] in
           let p1 = loop (n + 1) tokl in
-          (* fun str -> *)
-          (*   match strm with parser *)
           parser
-              [[< tok = ps; act=p1 (* strm *) >] ->
-                (* let act = p1 s in *) Action.getf act tok ]]
+              [[< tok = ps; act=p1 >] -> Action.getf act tok ]]
     | [`Skeyword kwd :: tokl] ->
           match tokl with
           [ [] ->
             let ps strm =
               match Stream.peek_nth n strm with
               [ Some (tok, _) when FanToken.match_keyword kwd tok ->
-                (Stream.njunk n strm ; Action.mk tok)
+                (Stream.njunk (n+1) strm ; Action.mk tok)
               | _ -> raise Stream.Failure ] in
             fun strm ->
               let bp = get_cur_loc strm in
@@ -215,9 +237,9 @@ and parser_of_terminals tokl p1 =
                 | _ -> raise Stream.Failure ] in
               let p1 = loop (n + 1) tokl in
               parser
-                  [[< tok = ps; act=p1 (* s *) >] -> Action.getf act tok ]]
+                  [[< tok = ps; act=p1  >] -> Action.getf act tok ]]
       | _ -> invalid_arg "parser_of_terminals" ] in
-  loop 1 tokl 
+  loop 0 tokl 
 
 and parser_of_symbol entry s nlevn =
   match s with 
