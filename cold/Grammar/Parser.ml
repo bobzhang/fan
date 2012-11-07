@@ -166,7 +166,7 @@ and parser_of_terminals tokl p1 =
             (match tokl with
              | [] ->
                  let ps strm =
-                   match Stream.peek_nth n strm with
+                   match Stream.peek_nth strm n with
                    | Some (tok,_) when tematch tok ->
                        (Stream.njunk (n + 1) strm; Action.mk tok)
                    | _ -> raise Stream.Failure in
@@ -180,7 +180,7 @@ and parser_of_terminals tokl p1 =
                     Action.getf act a)
              | _ ->
                  let ps strm =
-                   match Stream.peek_nth n strm with
+                   match Stream.peek_nth strm n with
                    | Some (tok,_) when tematch tok -> tok
                    | _ -> raise Stream.Failure in
                  let p1 = loop (n + 1) tokl in
@@ -194,7 +194,7 @@ and parser_of_terminals tokl p1 =
             (match tokl with
              | [] ->
                  let ps strm =
-                   match Stream.peek_nth n strm with
+                   match Stream.peek_nth strm n with
                    | Some (tok,_) when FanToken.match_keyword kwd tok ->
                        (Stream.njunk (n + 1) strm; Action.mk tok)
                    | _ -> raise Stream.Failure in
@@ -208,7 +208,7 @@ and parser_of_terminals tokl p1 =
                     Action.getf act a)
              | _ ->
                  let ps strm =
-                   match Stream.peek_nth n strm with
+                   match Stream.peek_nth strm n with
                    | Some (tok,_) when FanToken.match_keyword kwd tok -> tok
                    | _ -> raise Stream.Failure in
                  let p1 = loop (n + 1) tokl in

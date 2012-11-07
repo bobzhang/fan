@@ -134,7 +134,7 @@ module type STREAM =
     val tail : 'a t -> 'a t
     val map : ('a -> 'b) -> 'a t -> 'b t
     val dup : 'a t -> 'a t
-    val peek_nth : int -> 'a Stream.t -> 'a option
+    val peek_nth : 'a Stream.t -> int -> 'a option
     val njunk : int -> 'a Stream.t -> unit
   end
 module Stream =
@@ -160,15 +160,7 @@ module Stream =
            (let xs = __strm in
             Stream.lcons (fun _  -> f x) (Stream.slazy (fun _  -> map f xs))))
       | _ -> Stream.sempty
-    let dup strm =
-      let rec loop n =
-        function
-        | [] -> None
-        | x::[] -> if n = 0 then Some x else None
-        | _::l -> loop (n - 1) l in
-      let peek_nth n = loop n (Stream.npeek (n + 1) strm) in
-      Stream.from peek_nth
-    let peek_nth n strm =
+    let peek_nth strm n =
       let rec loop i =
         function
         | x::xs -> if i = 0 then Some x else loop (i - 1) xs
@@ -176,6 +168,7 @@ module Stream =
       if n < 0
       then invalid_arg "Stream.peek_nth"
       else loop n (Stream.npeek (n + 1) strm)
+    let dup strm = Stream.from (peek_nth strm)
     let njunk n strm = for _i = 1 to n do Stream.junk strm done
     end : (STREAM with type 'a t = 'a Stream.t ))
 module ErrorMonad = struct

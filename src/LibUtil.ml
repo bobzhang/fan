@@ -202,7 +202,7 @@ module type STREAM = sig
   val tail: t 'a -> t 'a;
   val map: ('a -> 'b) -> t 'a -> t 'b;
   val dup: t 'a -> t 'a;
-  val peek_nth: int -> Stream.t 'a ->  option 'a;
+  val peek_nth: Stream.t 'a -> int ->   option 'a;
   val njunk: int -> Stream.t 'a -> unit;
 end;
   
@@ -221,24 +221,25 @@ module Stream : STREAM with type t 'a = Stream.t 'a = struct
     [ [< x; 'xs >] -> [< f x; 'map f xs >]
     | [< >] -> [< >] ];
 
-  (*  Used by [try_parser], very in-efficient 
-      This version of peek_nth is off-by-one from Stream.peek_nth *)      
-  let dup strm = 
-    let  rec loop n = fun
-      [ [] -> None
-      | [x] -> if n = 0 then Some x else None
-      | [_ :: l] -> loop (n - 1) l ] in
-    let peek_nth n =
-      loop n (Stream.npeek (n + 1) strm) in 
-    Stream.from peek_nth;
   (* the minimual [n] is 1 *)
-  let peek_nth n strm  =
+  let peek_nth strm n   =
     let rec loop i = fun
       [ [x :: xs] -> if i = 0 then Some x else loop (i - 1) xs
       | [] -> None ] in
     if n < 0 then
       invalid_arg "Stream.peek_nth"
     else loop n (Stream.npeek (n+1) strm);
+
+  (*  Used by [try_parser], very in-efficient 
+      This version of peek_nth is off-by-one from Stream.peek_nth *)      
+  let dup strm = 
+    (* let  rec loop n = fun *)
+    (*   [ [] -> None *)
+    (*   | [x] -> if n = 0 then Some x else None *)
+    (*   | [_ :: l] -> loop (n - 1) l ] in *)
+    (* let peek_nth n = *)
+    (*   loop n (Stream.npeek (n + 1) strm) in  *)
+    Stream.from (peek_nth strm);
   
   let njunk  n strm  =
     for _i = 1 to n do Stream.junk strm done; (* FIXME unsed  index i*)
