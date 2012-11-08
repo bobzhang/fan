@@ -53,6 +53,10 @@ let entry_of_symb entry = fun
   | `Snterml (e, _) -> e
   | _ -> raise Stream.Failure ] ;
 
+
+
+
+  
 let continue entry  s son (p1:parse Action.t) loc a = parser
   [[< a = (entry_of_symb entry s).econtinue 0 loc a;
      act = p1 ?? Failed.tree_failed entry a s son >] ->
@@ -72,13 +76,12 @@ let skip_if_empty bp strm =
    the [continue] function of the previous symbol(if the symbol is a call to an entry),
    so there's no behavior difference between [LA] and [NA]
  *)
-let do_recover parser_of_tree entry nlevn alevn  s son loc a = parser
-  [ [< b = parser_of_tree entry nlevn alevn (top_tree entry son) >] -> b
-  | [< b = skip_if_empty loc >] -> b
-  | [< b = continue entry  s son (parser_of_tree entry nlevn alevn son) loc a >] ->  b];
-
-
-let recover parser_of_tree entry nlevn alevn  s son loc a strm =
+let do_recover ~from_tree entry s son loc a = parser
+  [ [<b = from_tree (top_tree entry son) >] -> b
+  | [<b = skip_if_empty loc >] -> b
+  | [<b = continue entry s son (from_tree son) loc a >] -> b];
+    
+let recover  ~from_tree entry  s son loc a strm =
   if !FanConfig.strict_parsing then
     raise (Stream.Error (Failed.tree_failed entry a s son))
   else
@@ -89,20 +92,23 @@ let recover parser_of_tree entry nlevn alevn  s son loc a strm =
           if entry.ename <> "" then Format.eprintf " in [%s]" entry.ename else ();
           Format.eprintf "\n%s%a@." msg FanLoc.print loc;
       end else () in
-    do_recover parser_of_tree entry nlevn alevn  s son loc a strm ;
+    do_recover ~from_tree entry  s son loc a strm ;
 
+let rec parser_cont  ~from_tree entry s son p1 loc a =  parser
+  [ [< b = p1 >] -> b
+  | [< b = recover ~from_tree entry s son loc a >] -> b
+  | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
 
 (*
   [aleven] was used by [estart]
   [nlevn] was used by [parser_of_symbol]
+  It outputs a stateful parser, but it is functional itself
  *)    
-let rec parser_of_tree entry nlevn alevn x =
+and parser_of_tree entry nlevn alevn x =
   let rec aux  = fun 
-  (* match x with  *)
   [ DeadEnd -> parser []
 
   | LocAct act _ -> parser [< >] -> act
-
   (* rules ending with [SELF] or with the current entry name, for this last symbol
      there's a call to the [start] function: of the current level if the level is
      [`RA] or of the next level otherwise. (This can be verified by
@@ -121,23 +127,25 @@ let rec parser_of_tree entry nlevn alevn x =
         | [< a = p2 >] -> a ]
             
   | Node ({node ; son ; brother = DeadEnd} as y) ->
+
       match Tools.get_terminals y with
       [ None ->
+
         let ps = parser_of_symbol entry node nlevn in (*only use nleven*)
-        let p1 =  aux son |> parser_cont  entry nlevn alevn node son in
+        let p1 =  aux son |> parser_cont  ~from_tree:aux entry (* nlevn alevn *) node son in
         fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
           [[< a = ps; act = p1 bp a >] -> Action.getf act a]
        | Some (tokl, last_tok, son) ->
             aux son
-           |> parser_cont entry nlevn alevn (last_tok:>symbol) son
+           |> parser_cont ~from_tree:aux entry (* nlevn alevn *) (last_tok:>symbol) son
            |> parser_of_terminals (* LL.test *) tokl ]
   | Node ({node ; son; brother } as y) ->
       match Tools.get_terminals  y with
       [ None ->
         let ps = parser_of_symbol entry node  nlevn  in
-        let p1 = aux son |> parser_cont  entry nlevn alevn node son in
+        let p1 = aux son |> parser_cont  ~from_tree:aux entry (* nlevn alevn *) node son in
         let p2 = aux brother  in
         fun strm ->
           let bp = get_cur_loc strm in
@@ -147,18 +155,14 @@ let rec parser_of_tree entry nlevn alevn x =
       | Some (tokl, last_tok, son) ->
           let p1 =
             aux son
-            |> parser_cont  entry nlevn alevn (last_tok:>symbol) son
-            |>  parser_of_terminals (* LL.test *) tokl in 
+            |> parser_cont  ~from_tree:aux entry (* nlevn alevn *) (last_tok:>symbol) son
+            |>  parser_of_terminals  tokl in 
           let p2 =  aux brother in
             parser
             [ [< a = p1 >] -> a
             | [< a = p2 >] -> a ] ] ] in
   aux x 
 
-and parser_cont  entry nlevn alevn s son p1 loc a =  parser
-  [ [< b = p1 >] -> b
-  | [< b = recover parser_of_tree entry nlevn alevn  s son loc a >] -> b
-  | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
 
 and parser_of_terminals tokl p1 =
   let rec loop n  =  fun
@@ -206,42 +210,23 @@ and parser_of_terminals tokl p1 =
       | _ -> invalid_arg "parser_of_terminals" ] in
   loop 0 tokl 
 
+(* only for [Smeta] it might not be functional *)
 and parser_of_symbol entry s nlevn =
   let rec aux s = 
-  match s with 
-  [ `Smeta _ symbls act ->
-    let act = Obj.magic act entry symbls in
-    let pl = List.map aux symbls in
-    Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
-  | `Slist0 s ->
-    let ps = aux s in
-    (* let rec loop al = parser *)
-    (*   [ [< a = ps; 's >] -> loop [a :: al] s *)
-    (*   | [< >] -> al ] in *)
-    (* parser [< a = loop [] >] -> Action.mk (List.rev a) *)
-    Comb.slist0 ps ~f:(fun l -> Action.mk (List.rev l))
+    match s with 
+   [ `Smeta _ symbls act ->
+     let act = Obj.magic act entry symbls and pl = List.map aux symbls in
+     Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
+   | `Slist0 s ->
+     let ps = aux s in  Comb.slist0 ps ~f:(fun l -> Action.mk (List.rev l))
    | `Slist0sep (symb, sep) ->
-     let ps = aux symb  in
-     let pt =  aux sep  in
-     (* let rec kont al = parser *)
-     (*   [ [< v = pt; a = ps ?? Failed.symb_failed entry v sep symb; 's >] -> *)
-     (*     kont [a :: al] s *)
-     (*   | [< >] -> al ] in *)
-     (* parser *)
-     (*   [ [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s)) *)
-     (*   | [< >] -> Action.mk [] ] *)
+     let ps = aux symb and pt =  aux sep  in
      Comb.slist0sep ps pt ~err:(fun v -> Failed.symb_failed entry v sep symb)
        ~f:(fun l -> Action.mk (List.rev l))
-   | `Slist1 s ->
-     let ps =  aux s  in
+   | `Slist1 s -> let ps =  aux s  in
      Comb.slist1 ps ~f:(fun l -> Action.mk (List.rev l))
-     (* let rec loop al = parser *)
-     (*   [ [< a = ps; 's >] -> loop [a :: al] s *)
-     (*   | [< >] -> al ] in *)
-     (* parser [< a = ps; 's >] -> Action.mk (List.rev (loop [a] s)) *)
    | `Slist1sep (symb, sep) ->
-     let ps = aux symb  in
-     let pt = aux sep  in
+     let ps = aux symb and pt = aux sep  in
      let rec kont al = parser
        [ [< v = pt; a = parser
          [ [< a = ps >] -> a
@@ -254,11 +239,7 @@ and parser_of_symbol entry s nlevn =
   | `Sopt s ->
       let ps = aux s  in
       Comb.opt ps ~f:Action.mk
-      (* parser *)
-      (*   [ [< a = ps >] -> Action.mk (Some a) *)
-      (*   | [< >] -> Action.mk None ] *)
-  | `Stry s ->
-      let ps = aux s in Comb.tryp ps
+  | `Stry s -> let ps = aux s in Comb.tryp ps
   | `Stree t ->
       let pt = parser_of_tree entry 1 0 t in fun strm ->
         let bp = get_cur_loc strm in

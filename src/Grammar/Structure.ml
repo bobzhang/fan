@@ -66,7 +66,8 @@ and level = {
     lsuffix : tree          ;
     lprefix : tree          }
 and symbol =
-    [= `Smeta of (list string * list symbol * Action.t)
+    [=
+     `Smeta of (list string * list symbol * Action.t)
     | `Snterm of internal_entry
     | `Snterml of (internal_entry * string) (* the second argument is the level name *)
     | `Slist0 of symbol

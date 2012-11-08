@@ -40,3 +40,8 @@ let opt ps ~f = parser
         Stream.njunk (Stream.count strm') strm ;
         r;
     end;
+
+(* let (<|>) p1 p2 = parser *)
+(*   [ [< a = p1>] -> a *)
+(*   | [< a = p2> ] -> a *)
+(*   | [< >] -> ] *)
