@@ -1,3 +1,4 @@
+src/FanBasic.cmo
 src/OAstPrint.cmo
 src/FanLexUtil.cmo
 src/Fan.byte

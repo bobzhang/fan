@@ -105,7 +105,7 @@ let rec parser_cont  ~from_tree entry s son p1 loc a =  parser
   It outputs a stateful parser, but it is functional itself
  *)    
 and parser_of_tree entry nlevn alevn x =
-  let rec aux  = fun 
+  let rec from_tree  = fun 
   [ DeadEnd -> parser []
 
   | LocAct act _ -> parser [< >] -> act
@@ -121,7 +121,7 @@ and parser_of_tree entry nlevn alevn x =
           
   | Node {node = `Sself; son = LocAct act _; brother = bro}
     ->
-      let p2 = aux bro in
+      let p2 = from_tree bro in
       parser
         [ [< a = entry.estart alevn >] -> Action.getf act a
         | [< a = p2 >] -> a ]
@@ -130,23 +130,22 @@ and parser_of_tree entry nlevn alevn x =
 
       match Tools.get_terminals y with
       [ None ->
-
         let ps = parser_of_symbol entry node nlevn in (*only use nleven*)
-        let p1 =  aux son |> parser_cont  ~from_tree:aux entry (* nlevn alevn *) node son in
+        let p1 =  from_tree son |> parser_cont  ~from_tree entry node son in
         fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
           [[< a = ps; act = p1 bp a >] -> Action.getf act a]
        | Some (tokl, last_tok, son) ->
-            aux son
-           |> parser_cont ~from_tree:aux entry (* nlevn alevn *) (last_tok:>symbol) son
+            from_tree son
+           |> parser_cont ~from_tree entry  (last_tok:>symbol) son
            |> parser_of_terminals (* LL.test *) tokl ]
   | Node ({node ; son; brother } as y) ->
       match Tools.get_terminals  y with
       [ None ->
         let ps = parser_of_symbol entry node  nlevn  in
-        let p1 = aux son |> parser_cont  ~from_tree:aux entry (* nlevn alevn *) node son in
-        let p2 = aux brother  in
+        let p1 = from_tree son |> parser_cont  ~from_tree entry  node son in
+        let p2 = from_tree brother  in
         fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
@@ -154,14 +153,14 @@ and parser_of_tree entry nlevn alevn x =
           | [< a = p2 >] -> a ]
       | Some (tokl, last_tok, son) ->
           let p1 =
-            aux son
-            |> parser_cont  ~from_tree:aux entry (* nlevn alevn *) (last_tok:>symbol) son
+            from_tree son
+            |> parser_cont  ~from_tree entry  (last_tok:>symbol) son
             |>  parser_of_terminals  tokl in 
-          let p2 =  aux brother in
+          let p2 =  from_tree brother in
             parser
             [ [< a = p1 >] -> a
             | [< a = p2 >] -> a ] ] ] in
-  aux x 
+  from_tree x 
 
 
 and parser_of_terminals tokl p1 =
@@ -282,32 +281,23 @@ let start_parser_of_levels entry =
             （1 + clevn） was used by [parser_of_symbol]
              [alevn] was used by [entry.estart]
            *)
-          match levs with
-          [ [] ->
-            fun levn strm ->
+          (* the [start] function tires its associated tree. If it works
+             it calls the [continue] function of the same level, giving the
+             result of [start] as parameter.
+             If this continue fails, the parameter is simply returned.
+             If this [start] function fails, the start function of the
+             next level is tested, if there is no more levels, the parsing fails
+           *)    
+          fun levn strm ->
+            if levn > clevn && (not ([]=levs))then
+              hstart levn strm (* only higher level allowed here *)
+            else
               let bp = get_cur_loc strm in
               match strm with parser
-              [ [< (act, loc) = add_loc bp cstart; 'strm >] ->
+              [ [< (act, loc) = add_loc bp cstart >] ->
                 let a = Action.getf act loc in
-                entry.econtinue levn loc a strm]
-              (* the [start] function tires its associated tree. If it works
-                 it calls the [continue] function of the same level, giving the
-                 result of [start] as parameter.
-                 If this continue fails, the parameter is simply returned.
-                 If this [start] function fails, the start function of the
-                 next level is tested, if there is no more levels, the parsing fails
-               *)    
-          | _ ->
-             fun levn strm ->
-               if levn > clevn then
-                 hstart levn strm (* only higher level allowed here *)
-               else
-                 let bp = get_cur_loc strm in
-                 match strm with parser
-                 [ [< (act, loc) = add_loc bp cstart >] ->
-                     let a = Action.getf act loc in
-                     entry.econtinue levn loc a strm
-                 | [< act = hstart levn >] -> act ] ] ] ] in
+                entry.econtinue levn loc a strm
+              | [< act = hstart levn >] -> act ] ] ] in
   aux 0;
   
 let start_parser_of_entry entry =

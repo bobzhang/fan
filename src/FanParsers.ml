@@ -243,7 +243,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
 
   let comprehension_or_sem_expr_for_list =
     Gram.mk "comprehension_or_sem_expr_for_list";
-  (* EXTEND *) {| Gram
+   {| Gram
       LOCAL: item;
     expr: Level "simple"
       [ [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ] ]  
@@ -258,7 +258,6 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
              be improved. *)
       [ [  TRY [ patt{p}; "<-" -> p]{p} ;  expr Level "top"{e} -> `gen (p, e)
         | expr Level "top"{e} -> `cond e ] ] |};
-  (* END; *)
   if is_revised ~expr ~sem_expr_for_list then
     (* EXTEND *) {|Gram
       comprehension_or_sem_expr_for_list:
@@ -2274,7 +2273,7 @@ let pa_r  = "Camlp4OCamlRevisedParser";
 let pa_r (module P:Sig.PRECAST) =
   P.syntax_extension (module IdRevisedParser)  (module MakeRevisedParser);
 
-(* let pa_rp = "Camlp4OCamlRevisedParserParser"; *)
+(*  "Camlp4OCamlRevisedParserParser"; *)
 let pa_rp (module P:Sig.PRECAST) =
   P.syntax_extension (module IdRevisedParserParser)
     (module MakeRevisedParserParser);
@@ -2283,12 +2282,12 @@ let pa_rp (module P:Sig.PRECAST) =
 let pa_g (module P:Sig.PRECAST) =
   P.syntax_extension (module IdGrammarParser) (module MakeGrammarParser);
 
-(* let pa_m  = "Camlp4MacroParser"; *)
+(*  "Camlp4MacroParser"; *)
 let pa_m (module P:Sig.PRECAST) =
   let () = P.syntax_extension (module IdMacroParser) (module MakeMacroParser) in
   P.syntax_plugin (module IdMacroParser) (module MakeNothing);
 
-(* let pa_q  = "Camlp4QuotationExpander"; *)
+(*  "Camlp4QuotationExpander"; *)
 let pa_q (module P:Sig.PRECAST) =
   P.syntax_extension (module IdQuotationExpander) (module MakeQuotationExpander);
   

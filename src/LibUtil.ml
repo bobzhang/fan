@@ -81,6 +81,8 @@ let tap f x = begin f x; x end ;
 
 let is_even x = x mod 2 == 0;
 
+
+let pp = fprintf;  
 (*
   {[
   to_string_of_printer pp_print_int 32;
