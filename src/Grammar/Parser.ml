@@ -22,17 +22,6 @@ let add_loc bp parse_fun strm =
       FanLoc.merge bp ep in
   (x, loc);
 
-let try_parser ps strm =
-  let strm' = Stream.dup strm in
-  let r =
-    try ps strm'
-    with
-    [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
-        raise Stream.Failure
-    | exc -> raise exc ] in begin 
-        Stream.njunk (Stream.count strm') strm ;
-        r;
-    end;
 
 (* given a level string, return a number from 0 *)  
 let level_number entry lab =
@@ -218,36 +207,41 @@ and parser_of_terminals tokl p1 =
   loop 0 tokl 
 
 and parser_of_symbol entry s nlevn =
+  let rec aux s = 
   match s with 
-  [ `Smeta _ symbl act ->
-    let act = Obj.magic act entry symbl in
-    let pl = List.map (fun s -> parser_of_symbol entry s nlevn) symbl in
+  [ `Smeta _ symbls act ->
+    let act = Obj.magic act entry symbls in
+    let pl = List.map aux symbls in
     Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
   | `Slist0 s ->
-    let ps = parser_of_symbol entry s nlevn  in
-    let rec loop al = parser
-      [ [< a = ps; 's >] -> loop [a :: al] s
-      | [< >] -> al ] in
-    parser [< a = loop [] >] -> Action.mk (List.rev a)
+    let ps = aux s in
+    (* let rec loop al = parser *)
+    (*   [ [< a = ps; 's >] -> loop [a :: al] s *)
+    (*   | [< >] -> al ] in *)
+    (* parser [< a = loop [] >] -> Action.mk (List.rev a) *)
+    Comb.slist0 ps ~f:(fun l -> Action.mk (List.rev l))
    | `Slist0sep (symb, sep) ->
-     let ps = parser_of_symbol entry symb nlevn  in
-     let pt = parser_of_symbol entry sep nlevn  in
-     let rec kont al = parser
-       [ [< v = pt; a = ps ?? Failed.symb_failed entry v sep symb; 's >] ->
-         kont [a :: al] s
-       | [< >] -> al ] in
-     parser
-       [ [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
-       | [< >] -> Action.mk [] ]
+     let ps = aux symb  in
+     let pt =  aux sep  in
+     (* let rec kont al = parser *)
+     (*   [ [< v = pt; a = ps ?? Failed.symb_failed entry v sep symb; 's >] -> *)
+     (*     kont [a :: al] s *)
+     (*   | [< >] -> al ] in *)
+     (* parser *)
+     (*   [ [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s)) *)
+     (*   | [< >] -> Action.mk [] ] *)
+     Comb.slist0sep ps pt ~err:(fun v -> Failed.symb_failed entry v sep symb)
+       ~f:(fun l -> Action.mk (List.rev l))
    | `Slist1 s ->
-     let ps = parser_of_symbol entry s nlevn  in
-     let rec loop al = parser
-       [ [< a = ps; 's >] -> loop [a :: al] s
-       | [< >] -> al ] in
-     parser [< a = ps; 's >] -> Action.mk (List.rev (loop [a] s))
+     let ps =  aux s  in
+     Comb.slist1 ps ~f:(fun l -> Action.mk (List.rev l))
+     (* let rec loop al = parser *)
+     (*   [ [< a = ps; 's >] -> loop [a :: al] s *)
+     (*   | [< >] -> al ] in *)
+     (* parser [< a = ps; 's >] -> Action.mk (List.rev (loop [a] s)) *)
    | `Slist1sep (symb, sep) ->
-     let ps = parser_of_symbol entry symb nlevn  in
-     let pt = parser_of_symbol entry sep nlevn  in
+     let ps = aux symb  in
+     let pt = aux sep  in
      let rec kont al = parser
        [ [< v = pt; a = parser
          [ [< a = ps >] -> a
@@ -258,12 +252,13 @@ and parser_of_symbol entry s nlevn =
          | [< >] -> al ] in
      parser [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
   | `Sopt s ->
-      let ps = parser_of_symbol entry s nlevn  in parser
-        [ [< a = ps >] -> Action.mk (Some a)
-        | [< >] -> Action.mk None ]
+      let ps = aux s  in
+      Comb.opt ps ~f:Action.mk
+      (* parser *)
+      (*   [ [< a = ps >] -> Action.mk (Some a) *)
+      (*   | [< >] -> Action.mk None ] *)
   | `Stry s ->
-      let ps = parser_of_symbol entry s nlevn  in
-      try_parser ps
+      let ps = aux s in Comb.tryp ps
   | `Stree t ->
       let pt = parser_of_tree entry 1 0 t in fun strm ->
         let bp = get_cur_loc strm in
@@ -280,7 +275,8 @@ and parser_of_symbol entry s nlevn =
         [ [< (tok, _) when FanToken.match_keyword kwd tok >] ->
           Action.mk tok ]
  | `Stoken (f, _) ->
-     parser [ [< (tok,_) when f tok >] -> Action.mk tok ]]
+     parser [ [< (tok,_) when f tok >] -> Action.mk tok ]] in
+  aux s
 and parse_top_symb entry symb strm =
   parser_of_symbol entry (top_symb entry symb) 0  strm;
 

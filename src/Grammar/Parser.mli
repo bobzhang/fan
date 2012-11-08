@@ -6,7 +6,7 @@ val get_prev_loc: FanLoc.t parse
     
 val add_loc: FanLoc.t -> 'b parse -> ('b*FanLoc.t) parse
 
-val try_parser: 'b parse  -> 'b parse 
+
 val level_number: internal_entry -> string -> int
 
     
