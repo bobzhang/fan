@@ -171,3 +171,4 @@ val find_level:
              | `First
              | `Last
              | `Level of string ] ->  'a t -> level
+val token_stream_of_string: string -> (FanSig.token * Grammar.Structure.token_info) LibUtil.Stream.t

@@ -32,6 +32,9 @@ let lex loc cs = gram.glexer loc cs;
 let lex_string loc str = lex loc (Stream.of_string str);
   
 let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter gram.gfilter ts);
+
+let token_stream_of_string s =
+  s |> lex_string FanLoc.string_loc |> filter;
   
 let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts);
   

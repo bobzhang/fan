@@ -58,6 +58,11 @@ let rec clean  =  parser
   | [< x; 'xs>]  -> [< x ; 'clean xs >]
   | [< >] -> [< >] ] ;
 
+let rec strict_clean = parser
+  [ [< (`EOI,_) >] -> [<>]
+  | [< x; 'xs>]  -> [< x ; 'strict_clean xs >]
+  | [< >] -> [< >] ];
+    
 let debug_from_string str =
   let loc = FanLoc.string_loc  in
   let stream = from_string loc str  in

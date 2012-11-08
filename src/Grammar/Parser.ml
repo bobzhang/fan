@@ -143,7 +143,7 @@ let rec parser_of_tree entry nlevn alevn x =
        | Some (tokl, last_tok, son) ->
             aux son
            |> parser_cont entry nlevn alevn (last_tok:>symbol) son
-           |> parser_of_terminals tokl ]
+           |> parser_of_terminals (* LL.test *) tokl ]
   | Node ({node ; son; brother } as y) ->
       match Tools.get_terminals  y with
       [ None ->
@@ -159,7 +159,7 @@ let rec parser_of_tree entry nlevn alevn x =
           let p1 =
             aux son
             |> parser_cont  entry nlevn alevn (last_tok:>symbol) son
-            |>  parser_of_terminals tokl in 
+            |>  parser_of_terminals (* LL.test *) tokl in 
           let p2 =  aux brother in
             parser
             [ [< a = p1 >] -> a
@@ -171,30 +171,6 @@ and parser_cont  entry nlevn alevn s son p1 loc a =  parser
   | [< b = recover parser_of_tree entry nlevn alevn  s son loc a >] -> b
   | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
 
-(* and test terminals cont = *)
-(*   let rec loop n x = *)
-(*     match x with *)
-(*     [ [`Stoken(f ,_)::rest] -> *)
-(*       let ps strm = *)
-(*         match Stream.peek_nth n strm in *)
-(*         [ Some(tok,_) when f tok -> tok *)
-(*         | _ -> raise Stream.Failure ] in *)
-(*       let p1 = loop (n+1) rest in *)
-(*       parser [< tok = ps ; act = p1  > ] -> Action.getf act tok *)
-(*     | [`Skeyword kwd::rest] -> *)
-(*       let ps strm = *)
-(*         match Stream.peek_nth n strm in *)
-(*         [Some(tok,_) when FanToken.match_keyword kwd tok -> *)
-(*           tok *)
-(*         | _ -> raise Stream.Failure] in *)
-(*       let p1 = loop (n+1) tok in  *)
-(*       parser [< tok = ps; act=p1 >] -> Action.getf act tok *)
-(*      | [] -> *)
-(*          fun strm -> *)
-(*            let bp = get_cur_loc strm in *)
-(*            Stream.njunk n strm (\* ; cont bp  *\) *)
-(*     ] *)
-      
 and parser_of_terminals tokl p1 =
   let rec loop n  =  fun
     [ [`Stoken (tematch, _) :: tokl] ->
