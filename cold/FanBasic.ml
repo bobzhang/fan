@@ -1,4 +1,5 @@
 open LibUtil
+open Format
 exception Unhandled of Ast.ctyp
 exception Finished of Ast.expr
 let _loc = FanLoc.ghost
@@ -25,8 +26,7 @@ let check_valid str =
        "For valid name its length should be more than 1\ncan not be a-[digit], can not start with [all_]";
      exit 2)
   else ()
-let p_expr fmt e = eprintf "@[%a@]@." AstPrint.expression (Ast2pt.expr e)
-let p_patt fmt e = eprintf "@[%a@]@." AstPrint.pattern (Ast2pt.pattern e)
-let p_str_item fmt e =
-  eprintf "@[%a@]@." AstPrint.structure (Ast2pt.str_item e)
-let p_ctyp fmt e = eprintf "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e)
+let p_expr f e = pp f "@[%a@]@." AstPrint.expression (Ast2pt.expr e)
+let p_patt f e = pp f "@[%a@]@." AstPrint.pattern (Ast2pt.patt e)
+let p_str_item f e = pp f "@[%a@]@." AstPrint.structure (Ast2pt.str_item e)
+let p_ctyp f e = pp f "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e)

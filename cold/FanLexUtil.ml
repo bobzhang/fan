@@ -47,6 +47,14 @@ let rec clean (__strm : _ Stream.t) =
       (Stream.junk __strm;
        (let xs = __strm in Stream.icons x (Stream.slazy (fun _  -> clean xs))))
   | _ -> Stream.sempty
+let rec strict_clean (__strm : _ Stream.t) =
+  match Stream.peek __strm with
+  | Some (`EOI,_) -> (Stream.junk __strm; Stream.sempty)
+  | Some x ->
+      (Stream.junk __strm;
+       (let xs = __strm in
+        Stream.icons x (Stream.slazy (fun _  -> strict_clean xs))))
+  | _ -> Stream.sempty
 let debug_from_string str =
   let loc = FanLoc.string_loc in
   let stream = from_string loc str in

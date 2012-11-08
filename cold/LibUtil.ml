@@ -47,6 +47,7 @@ let uncurry f (x,y) = f x y
 let const x _ = x
 let tap f x = f x; x
 let is_even x = (x mod 2) == 0
+let pp = fprintf
 let to_string_of_printer printer v =
   let buf = Buffer.create 30 in
   let () = Format.bprintf buf "@[%a@]" printer v in Buffer.contents buf
