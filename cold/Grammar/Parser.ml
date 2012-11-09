@@ -83,44 +83,21 @@ and parser_of_tree entry (lev,assoc) x =
       let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
       let rec from_tree =
         function
-        | DeadEnd  -> (fun (__strm : _ Stream.t)  -> raise Stream.Failure)
+        | DeadEnd  -> raise Stream.Failure
         | LocAct (act,_) -> (fun (__strm : _ Stream.t)  -> act)
-        | Node { node = `Sself; son = LocAct (act,_); brother = DeadEnd  } ->
-            (fun (__strm : _ Stream.t)  ->
-               let a = entry.estart alevn __strm in Action.getf act a)
         | Node { node = `Sself; son = LocAct (act,_); brother = bro } ->
-            let p2 = from_tree bro in
             (fun (__strm : _ Stream.t)  ->
                match try Some (entry.estart alevn __strm)
                      with | Stream.Failure  -> None
                with
                | Some a -> Action.getf act a
-               | _ -> p2 __strm)
-        | Node ({ node; son; brother = DeadEnd  } as y) ->
-            (match Tools.get_terminals y with
-             | None  ->
-                 let ps = parser_of_symbol entry node lev in
-                 let p1 =
-                   (from_tree son) |> (parser_cont ~from_tree entry node son) in
-                 (fun strm  ->
-                    let bp = get_cur_loc strm in
-                    let (__strm :_ Stream.t)= strm in
-                    let a = ps __strm in
-                    let act =
-                      try p1 bp a __strm
-                      with | Stream.Failure  -> raise (Stream.Error "") in
-                    Action.getf act a)
-             | Some (tokl,last_tok,son) ->
-                 ((from_tree son) |>
-                    (parser_cont ~from_tree entry (last_tok :>symbol) son))
-                   |> (parser_of_terminals tokl))
+               | _ -> from_tree bro __strm)
         | Node ({ node; son; brother } as y) ->
             (match Tools.get_terminals y with
              | None  ->
                  let ps = parser_of_symbol entry node lev in
                  let p1 =
                    (from_tree son) |> (parser_cont ~from_tree entry node son) in
-                 let p2 = from_tree brother in
                  (fun strm  ->
                     let bp = get_cur_loc strm in
                     let (__strm :_ Stream.t)= strm in
@@ -131,77 +108,41 @@ and parser_of_tree entry (lev,assoc) x =
                           try p1 bp a __strm
                           with | Stream.Failure  -> raise (Stream.Error "") in
                         Action.getf act a
-                    | _ -> p2 __strm)
+                    | _ -> from_tree brother __strm)
              | Some (tokl,last_tok,son) ->
                  let p1 =
                    ((from_tree son) |>
                       (parser_cont ~from_tree entry (last_tok :>symbol) son))
-                     |> (parser_of_terminals tokl) in
-                 let p2 = from_tree brother in
+                     |> (LL.parser_of_terminals tokl) in
                  (fun (__strm : _ Stream.t)  ->
-                    try p1 __strm with | Stream.Failure  -> p2 __strm)) in
+                    try p1 __strm
+                    with | Stream.Failure  -> from_tree brother __strm)) in
       from_tree x
-and parser_of_terminals tokl p1 =
-      let rec loop n =
-        function
-        | (`Stoken (tematch,_))::tokl ->
-            (match tokl with
-             | [] ->
-                 let ps strm =
-                   match Stream.peek_nth strm n with
-                   | Some (tok,_) when tematch tok ->
-                       (Stream.njunk (n + 1) strm; Action.mk tok)
-                   | _ -> raise Stream.Failure in
-                 (fun strm  ->
-                    let bp = get_cur_loc strm in
-                    let (__strm :_ Stream.t)= strm in
-                    let a = ps __strm in
-                    let act =
-                      try p1 bp a __strm
-                      with | Stream.Failure  -> raise (Stream.Error "") in
-                    Action.getf act a)
+and parser_of_terminals (terminals : terminal list)
+      (cont : Action.t cont_parse) (strm : token_stream) =
+      let bp = Tools.get_cur_loc strm in
+      let rec p ?(first= true)  (acc : FanSig.token list)
+        (ts : terminal list) =
+        match ts with
+        | [] -> acc
+        | x::xs ->
+            let (__strm :_ Stream.t)= strm in
+            (match Stream.peek __strm with
+             | Some (t,_) when
+                 match x with
+                 | `Stoken (f,_) -> f t
+                 | `Skeyword kwd -> FanToken.match_keyword kwd t ->
+                 (Stream.junk __strm; p ~first:false (t :: acc) xs)
              | _ ->
-                 let ps strm =
-                   match Stream.peek_nth strm n with
-                   | Some (tok,_) when tematch tok -> tok
-                   | _ -> raise Stream.Failure in
-                 let p1 = loop (n + 1) tokl in
-                 (fun (__strm : _ Stream.t)  ->
-                    let tok = ps __strm in
-                    let act =
-                      try p1 __strm
-                      with | Stream.Failure  -> raise (Stream.Error "") in
-                    Action.getf act tok))
-        | (`Skeyword kwd)::tokl ->
-            (match tokl with
-             | [] ->
-                 let ps strm =
-                   match Stream.peek_nth strm n with
-                   | Some (tok,_) when FanToken.match_keyword kwd tok ->
-                       (Stream.njunk (n + 1) strm; Action.mk tok)
-                   | _ -> raise Stream.Failure in
-                 (fun strm  ->
-                    let bp = get_cur_loc strm in
-                    let (__strm :_ Stream.t)= strm in
-                    let a = ps __strm in
-                    let act =
-                      try p1 bp a __strm
-                      with | Stream.Failure  -> raise (Stream.Error "") in
-                    Action.getf act a)
-             | _ ->
-                 let ps strm =
-                   match Stream.peek_nth strm n with
-                   | Some (tok,_) when FanToken.match_keyword kwd tok -> tok
-                   | _ -> raise Stream.Failure in
-                 let p1 = loop (n + 1) tokl in
-                 (fun (__strm : _ Stream.t)  ->
-                    let tok = ps __strm in
-                    let act =
-                      try p1 __strm
-                      with | Stream.Failure  -> raise (Stream.Error "") in
-                    Action.getf act tok))
-        | _ -> invalid_arg "parser_of_terminals" in
-      loop 0 tokl
+                 if first
+                 then raise Stream.Failure
+                 else raise (Stream.Error "")) in
+      let (ts :FanSig.token list)= p [] terminals in
+      match ts with
+      | [] -> invalid_arg "parser_of_terminals"
+      | x::_ ->
+          let action = Obj.magic cont bp (Action.mk x) strm in
+          List.fold_left (fun a  arg  -> Action.getf a arg) action ts
 and parser_of_symbol entry s nlevn =
       let rec aux s =
         match s with
@@ -267,8 +208,8 @@ and parser_of_symbol entry s nlevn =
                    (Stream.junk __strm; Action.mk tok)
                | _ -> raise Stream.Failure) in
       aux s
-and parse_top_symb entry symb strm =
-      parser_of_symbol entry (top_symb entry symb) 0 strm
+and parse_top_symb entry symb =
+      parser_of_symbol entry (top_symb entry symb) 0
 let start_parser_of_levels entry =
   let rec aux clevn =
     (function

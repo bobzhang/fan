@@ -36,3 +36,8 @@ let tryp ps strm =
         raise Stream.Failure
     | exc -> raise exc in
   Stream.njunk (Stream.count strm') strm; r
+let orp ?(msg= "")  p1 p2 (__strm : _ Stream.t) =
+  try p1 __strm
+  with
+  | Stream.Failure  ->
+      (try p2 __strm with | Stream.Failure  -> raise (Stream.Error msg))

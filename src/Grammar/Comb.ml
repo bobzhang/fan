@@ -29,7 +29,7 @@ let opt ps ~f = parser
   [ [< a = ps >] -> f (Some a)
   | [< >] -> f None ];
 
- let tryp ps strm =
+let tryp ps strm =
   let strm' = Stream.dup strm in
   let r =
     try ps strm'
@@ -41,7 +41,8 @@ let opt ps ~f = parser
         r;
     end;
 
-(* let (<|>) p1 p2 = parser *)
-(*   [ [< a = p1>] -> a *)
-(*   | [< a = p2> ] -> a *)
-(*   | [< >] -> ] *)
+let orp ?(msg="") p1 p2 = parser
+  [ [< a = p1>] -> a
+  | [< a = p2 >] -> a
+  | [<>] -> raise (Stream.Error msg) ];
+

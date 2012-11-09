@@ -36,8 +36,14 @@ let action_parse entry ts : Action.t =
     [ Stream.Failure ->
         FanLoc.raise (get_prev_loc ts)
           (Stream.Error ("illegal begin of " ^ entry.ename))
-    | FanLoc.Exc_located _ _ as exc -> raise exc
-    | exc -> FanLoc.raise (get_prev_loc ts) exc ];
+    | FanLoc.Exc_located _ _ as exc -> begin
+        eprintf "%s@." (Printexc.to_string exc);
+        raise exc
+    end
+    | exc -> begin
+        eprintf "%s@." (Printexc.to_string exc);
+        FanLoc.raise (get_prev_loc ts) exc
+    end];
 
 let lex entry loc cs = entry.egram.glexer loc cs;
 

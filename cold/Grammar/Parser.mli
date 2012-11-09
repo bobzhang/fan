@@ -33,8 +33,10 @@ val recover:
   symbol ->
   tree -> Action.t cont_parse
 
-(* val parser_of_tree: internal_entry -> int -> int -> tree -> Action.t parse *)
 
+val parser_of_tree: internal_entry ->
+  int * assoc ->
+  tree -> Action.t parse
 val parser_cont:
   from_tree:(tree -> Action.t parse) ->
   internal_entry ->

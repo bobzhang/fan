@@ -10,4 +10,14 @@ let open FanParsers in  begin
    pa_m (module P);
 end;
 P.iter_and_take_callbacks (fun (_, f) -> f ()); 
-Gram.dump Format.std_formatter P.Syntax.ipatt;
+
+open P;
+
+Gram.dump Format.std_formatter Syntax.module_expr;
+
+
+Gram.parse_string Syntax.module_longident FanLoc.string_loc
+  "PreCast.Make";
+
+Gram.parse_string  Syntax.module_expr FanLoc.string_loc
+  "PreCast.Make (struct end)";

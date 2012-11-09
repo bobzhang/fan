@@ -15,7 +15,7 @@ let normal_handler = fun
   | Invalid_argument str -> Some (sprintf "Invalid argument: %S" str)
   | Sys_error str -> Some (sprintf "I/O error: %S" str)
   | Stream.Failure -> Some (sprintf "Parse failure")
-  | Stream.Error str -> Some (sprintf  "Parse error: %s" str)
+  | Stream.Error str -> Some (sprintf  "Stream.Error %S" str)
   | _ -> None];
     
 Printexc.register_printer normal_handler; 

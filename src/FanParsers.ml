@@ -47,8 +47,8 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
       | "in"; expr{e} -> Some e  ] ]
     start_debug:
     [ [ `LIDENT "debug" -> None
-      | `LIDENT "camlp4_debug" -> Some "Camlp4"  ] ] |}
-  (* END *);
+      | `LIDENT "camlp4_debug" -> Some "Camlp4"  ] ] |};
+
 
 end;
 

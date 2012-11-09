@@ -1,16 +1,11 @@
-
 open Structure;
 open LibUtil;
-
-
 let get_cur_loc = Tools.get_cur_loc;
 let get_prev_loc = Tools.get_prev_loc;
-
 (* [bp] means begining position, [ep] means ending position
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
-
 let add_loc bp parse_fun strm =
   let x = parse_fun strm in
   let ep = get_prev_loc strm in
@@ -34,7 +29,7 @@ let level_number entry lab =
   | Dparser _ -> raise Not_found ] ;
     
 
-(* given an entry and a symbol return the top symbol *)
+(* pomote the level to top *)
 let rec top_symb entry =fun
   [ `Sself | `Snext -> `Snterm entry
   | `Snterml (e, _) -> `Snterm e
@@ -106,108 +101,60 @@ and parser_of_tree entry (lev,assoc) x =
   let alevn = match assoc with
     [`LA|`NA -> lev + 1 | `RA -> lev ] in
   let rec from_tree  = fun 
-  [ DeadEnd -> parser []
-
+  [ DeadEnd -> raise Stream.Failure
   | LocAct act _ -> parser [< >] -> act
   (* rules ending with [SELF] or with the current entry name, for this last symbol
      there's a call to the [start] function: of the current level if the level is
      [`RA] or of the next level otherwise. (This can be verified by
-     [start_parser_of_levels])
-   *)      
-  | Node {node = `Sself; son = LocAct act _; brother = DeadEnd}
-    ->
-      parser
-      [ [< a = entry.estart alevn >] -> Action.getf act a] 
-          
+     [start_parser_of_levels]) *)      
   | Node {node = `Sself; son = LocAct act _; brother = bro}
-    ->
-      let p2 = from_tree bro in
-      parser
+    ->  parser
         [ [< a = entry.estart alevn >] -> Action.getf act a
-        | [< a = p2 >] -> a ]
-            
-  | Node ({node ; son ; brother = DeadEnd} as y) ->
-      match Tools.get_terminals y with
-      [ None ->
-        let ps = parser_of_symbol entry node lev in 
-        let p1 =  from_tree son |> parser_cont  ~from_tree entry node son in
-        fun strm ->
-          let bp = get_cur_loc strm in
-          match strm with parser
-          [[< a = ps; act = p1 bp a >] -> Action.getf act a]
-       | Some (tokl, last_tok, son) ->
-            from_tree son
-           |> parser_cont ~from_tree entry  (last_tok:>symbol) son
-           |> parser_of_terminals (* LL.test *) tokl ]
+        | [< a = from_tree bro >] -> a ]
+  (* [son] will never be [DeadEnd] *)        
   | Node ({node ; son; brother } as y) ->
       match Tools.get_terminals  y with
       [ None ->
         let ps = parser_of_symbol entry node  lev  in
         let p1 = from_tree son |> parser_cont  ~from_tree entry  node son in
-        let p2 = from_tree brother  in
         fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
           [ [< a = ps; act = p1 bp a >] -> Action.getf act a
-          | [< a = p2 >] -> a ]
+          | [< a = from_tree brother >] -> a ]
       | Some (tokl, last_tok, son) ->
           let p1 =
             from_tree son
             |> parser_cont  ~from_tree entry  (last_tok:>symbol) son
-            |>  parser_of_terminals  tokl in 
-          let p2 =  from_tree brother in
-            parser
+            |>  LL.parser_of_terminals  tokl in 
+          parser
             [ [< a = p1 >] -> a
-            | [< a = p2 >] -> a ] ] ] in
+            | [< a = from_tree brother >] -> a ] ] ] in
   from_tree x 
 
+and parser_of_terminals
+    (terminals:list terminal ) (cont:cont_parse Action.t) (strm:token_stream) =
+  let bp = Tools.get_cur_loc strm in (* FIXME more precise Location *)
+  let rec p ?(first=true) (acc:list FanSig.token) (ts:list terminal) =
+    match ts with
+    [ [] -> acc
+    | [x::xs] ->
+        match strm with parser
+        [[< (t,_) when
+          match x with [`Stoken(f,_) -> f t | `Skeyword kwd -> FanToken.match_keyword kwd t] >] ->   
+            p  ~first:false [t::acc] xs
+        |[<>] -> 
+           if first then raise Stream.Failure
+           else raise (Stream.Error "")]]in
 
-and parser_of_terminals tokl p1 =
-  let rec loop n  =  fun
-    [ [`Stoken (tematch, _) :: tokl] ->
-      match tokl with
-      [ [] ->
-        let ps strm =
-          match Stream.peek_nth strm n   with
-          [ Some (tok, _) when tematch tok ->
-            (Stream.njunk (n+1) strm ; Action.mk tok) (*at the end*)
-          | _ -> raise Stream.Failure ] in
-        fun strm ->
-          let bp = get_cur_loc strm in
-          match strm with parser
-          [[< a = ps; act = p1 bp a >] -> Action.getf act a]
-              (* continuation *)
-      | _ ->
-          let ps strm =
-            match Stream.peek_nth strm n  with
-            [ Some (tok, _) when tematch tok -> tok
-            | _ -> raise Stream.Failure ] in
-          let p1 = loop (n + 1) tokl in
-          parser
-              [[< tok = ps; act=p1 >] -> Action.getf act tok ]]
-    | [`Skeyword kwd :: tokl] ->
-          match tokl with
-          [ [] ->
-            let ps strm =
-              match Stream.peek_nth strm n  with
-              [ Some (tok, _) when FanToken.match_keyword kwd tok ->
-                (Stream.njunk (n+1) strm ; Action.mk tok)
-              | _ -> raise Stream.Failure ] in
-            fun strm ->
-              let bp = get_cur_loc strm in
-              match strm with parser
-              [ [< a = ps; act = p1 bp a >] -> Action.getf act a]
-          | _ ->
-              let ps strm =
-                match Stream.peek_nth strm n  with
-                [ Some (tok, _) when FanToken.match_keyword kwd tok -> tok
-                | _ -> raise Stream.Failure ] in
-              let p1 = loop (n + 1) tokl in
-              parser
-                  [[< tok = ps; act=p1  >] -> Action.getf act tok ]]
-      | _ -> invalid_arg "parser_of_terminals" ] in
-  loop 0 tokl 
-
+  let (ts:list FanSig.token) = p [] terminals in
+      match ts with
+      [ [] -> invalid_arg "parser_of_terminals"
+      | [x::_] ->
+          let action = Obj.magic cont bp (Action.mk x) strm in
+          List.fold_left
+            (fun a arg -> Action.getf a arg)
+            action ts ]  
 (* only for [Smeta] it might not be functional *)
 and parser_of_symbol entry s nlevn =
   let rec aux s = 
@@ -245,20 +192,17 @@ and parser_of_symbol entry s nlevn =
         match strm with parser
         [ [< (act, loc) = add_loc bp pt >] ->  Action.getf act loc]
   | `Snterm e -> parser [< a = e.estart 0 >] -> a
-        (* When a [SELF] or the current entry name is encountered in the middle of the rule(i.e, if it's not
-           the last symbol), there is a call to the [start] function of the first level of the current entry.
-         *)
   | `Snterml (e, l) -> parser [< a = e.estart (level_number e l) >] -> a
   | `Sself -> parser [< a = entry.estart 0 >] -> a
   | `Snext -> parser [< a = entry.estart (nlevn+1) >] -> a
   | `Skeyword kwd -> parser
         [ [< (tok, _) when FanToken.match_keyword kwd tok >] ->
           Action.mk tok ]
- | `Stoken (f, _) ->
+  | `Stoken (f, _) ->
      parser [ [< (tok,_) when f tok >] -> Action.mk tok ]] in
   aux s
-and parse_top_symb entry symb strm =
-  parser_of_symbol entry (top_symb entry symb) 0  strm;
+and parse_top_symb entry symb  =
+  parser_of_symbol entry (top_symb entry symb) 0 ;
 
 
 (* entrance for the start
@@ -274,10 +218,6 @@ let start_parser_of_levels entry =
         | tree ->
           let cstart = 
             parser_of_tree entry (clevn, lev.assoc) tree  in
-          (*
-            （1 + clevn） was used by [parser_of_symbol]
-             [alevn] was used by [entry.estart]
-           *)
           (* the [start] function tires its associated tree. If it works
              it calls the [continue] function of the same level, giving the
              result of [start] as parameter.
