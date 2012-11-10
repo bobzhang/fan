@@ -27,12 +27,7 @@ let rec name_of_symbol_failed entry : [>symbol] -> string = fun
 and name_of_tree_failed entry x =
   match x with 
   [ Node ({node = s; brother = bro; son = son} as y)->
-      (* let tokl = *)
-      (*   match s with *)
-      (*   [ (`Stoken _ | `Skeyword _ as x) *)
-      (*     ->  Tools.get_token_list x son *)
-      (*   | _ -> None ]  in *)
-      match (* tokl *) Tools.get_terminals y  with
+      match Tools.get_terminals y  with
       [ None ->
           let txt = name_of_symbol_failed entry s in
           let txt =
@@ -91,7 +86,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
                   "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
                   "----------------------------------@,@]@.")
               entry.ename
-              (Print.text#rules (* ~space:"@\n" *)) (flatten_tree tree);
+              (Print.text#rules ) (flatten_tree tree);
           end
         else ();
         txt ^ " (in [" ^ entry.ename ^ "])"

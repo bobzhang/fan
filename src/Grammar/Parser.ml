@@ -52,52 +52,18 @@ let entry_of_symb entry = fun
 
 
   
-let continue entry  s son (p1:parse Action.t) loc a = parser
-  [[< a = (entry_of_symb entry s).econtinue 0 loc a;
-     act = p1 ?? Failed.tree_failed entry a s son >] ->
-       Action.mk (fun _ -> Action.getf act a) ];
-
-(* PR#4603, PR#4330, PR#4551:
-   Here get_cur_loc replaced get_prev_loc to fix all these bugs.
-   If you do change it again look at these bugs. *)
-let skip_if_empty bp strm =
-  if get_cur_loc strm = bp then
-    Action.mk (fun _ -> raise Stream.Failure)
-  else
-    raise Stream.Failure ;
 
 
 (* in case of syntax error, the system attempts to recover the error by applying
    the [continue] function of the previous symbol(if the symbol is a call to an entry),
    so there's no behavior difference between [LA] and [NA]
  *)
-let do_recover ~from_tree entry s son loc a = parser
-  [ [<b = from_tree (top_tree entry son) >] -> b
-  | [<b = skip_if_empty loc >] -> b
-  | [<b = continue entry s son (from_tree son) loc a >] -> b];
     
-let recover  ~from_tree entry  s son loc a strm =
-  if !FanConfig.strict_parsing then
-    raise (Stream.Error (Failed.tree_failed entry a s son))
-  else
-    let _ =
-      if !FanConfig.strict_parsing_warning then begin
-        let msg = Failed.tree_failed entry a s son;
-          Format.eprintf "Warning: trying to recover from syntax error";
-          if entry.ename <> "" then Format.eprintf " in [%s]" entry.ename else ();
-          Format.eprintf "\n%s%a@." msg FanLoc.print loc;
-      end else () in
-    do_recover ~from_tree entry  s son loc a strm ;
-
-let rec parser_cont  ~from_tree entry s son p1 loc a =  parser
-  [ [< b = p1 >] -> b
-  | [< b = recover ~from_tree entry s son loc a >] -> b
-  | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
 
 (*
   It outputs a stateful parser, but it is functional itself
  *)    
-and parser_of_tree entry (lev,assoc) x =
+let rec parser_of_tree entry (lev,assoc) x =
   let alevn = match assoc with
     [`LA|`NA -> lev + 1 | `RA -> lev ] in
   let rec from_tree  = fun 
@@ -113,20 +79,48 @@ and parser_of_tree entry (lev,assoc) x =
         | [< a = from_tree bro >] -> a ]
   (* [son] will never be [DeadEnd] *)        
   | Node ({node ; son; brother } as y) ->
+      let  parser_cont  (node,son) loc a =
+        let pson = from_tree son in 
+        let recover loc a strm =
+          if !FanConfig.strict_parsing then
+            raise (Stream.Error (Failed.tree_failed entry a node son))
+          else
+            let _ =
+              if !FanConfig.strict_parsing_warning then begin
+                let msg = Failed.tree_failed entry a node son;
+                  Format.eprintf "Warning: trying to recover from syntax error";
+                  if entry.ename <> "" then Format.eprintf " in [%s]" entry.ename else ();
+                  Format.eprintf "\n%s%a@." msg FanLoc.print loc;
+              end else () in
+            let continue loc a = parser
+                [[< a = (entry_of_symb entry node).econtinue 0 loc a;
+                    act = pson ?? Failed.tree_failed entry a node son >] ->
+                      Action.mk (fun _ -> Action.getf act a) ] in
+            let skip_if_empty bp strm =
+              if get_cur_loc strm = bp then
+                Action.mk (fun _ -> raise Stream.Failure)
+              else
+                raise Stream.Failure  in
+            let do_recover loc a =
+              parser
+                [ [<b = from_tree (top_tree entry son) >] -> b
+                | [<b = skip_if_empty loc >] -> b
+                | [<b = continue loc a >] -> b] in
+            do_recover loc a strm in
+        parser
+          [ [< b = pson >] -> b
+          | [< b = recover  loc a >] -> b
+          | [< >] -> raise (Stream.Error (Failed.tree_failed entry a node son)) ] in
       match Tools.get_terminals  y with
       [ None ->
-        let ps = parser_of_symbol entry node  lev  in
-        let p1 = from_tree son |> parser_cont  ~from_tree entry  node son in
-        fun strm ->
+        let ps = parser_of_symbol entry node  lev  in fun strm ->
           let bp = get_cur_loc strm in
           match strm with parser
-          [ [< a = ps; act = p1 bp a >] -> Action.getf act a
+          [ [< a = ps; act = parser_cont (node,son) bp a >] -> Action.getf act a
           | [< a = from_tree brother >] -> a ]
-      | Some (tokl, last_tok, son) ->
+      | Some (tokl, node, son) ->
           let p1 =
-            from_tree son
-            |> parser_cont  ~from_tree entry  (last_tok:>symbol) son
-            |>  LL.parser_of_terminals  tokl in 
+            parser_of_terminals  tokl (parser_cont (node,son)) in 
           parser
             [ [< a = p1 >] -> a
             | [< a = from_tree brother >] -> a ] ] ] in
@@ -152,9 +146,7 @@ and parser_of_terminals
       [ [] -> invalid_arg "parser_of_terminals"
       | [x::_] ->
           let action = Obj.magic cont bp (Action.mk x) strm in
-          List.fold_left
-            (fun a arg -> Action.getf a arg)
-            action ts ]  
+          List.fold_left  (fun a arg -> Action.getf a arg)  action ts ]  
 (* only for [Smeta] it might not be functional *)
 and parser_of_symbol entry s nlevn =
   let rec aux s = 

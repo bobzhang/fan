@@ -37,87 +37,95 @@ let entry_of_symb entry =
   | `Snterm e -> e
   | `Snterml (e,_) -> e
   | _ -> raise Stream.Failure
-let continue entry s son (p1 : Action.t parse) loc a (__strm : _ Stream.t) =
-  let a = (entry_of_symb entry s).econtinue 0 loc a __strm in
-  let act =
-    try p1 __strm
-    with
-    | Stream.Failure  ->
-        raise (Stream.Error (Failed.tree_failed entry a s son)) in
-  Action.mk (fun _  -> Action.getf act a)
-let skip_if_empty bp strm =
-  if (get_cur_loc strm) = bp
-  then Action.mk (fun _  -> raise Stream.Failure)
-  else raise Stream.Failure
-let do_recover ~from_tree  entry s son loc a (__strm : _ Stream.t) =
-  try from_tree (top_tree entry son) __strm
-  with
-  | Stream.Failure  ->
-      (try skip_if_empty loc __strm
-       with
-       | Stream.Failure  -> continue entry s son (from_tree son) loc a __strm)
-let recover ~from_tree  entry s son loc a strm =
-  if FanConfig.strict_parsing.contents
-  then raise (Stream.Error (Failed.tree_failed entry a s son))
-  else
-    (let _ =
-       if FanConfig.strict_parsing_warning.contents
-       then
-         let msg = Failed.tree_failed entry a s son in
-         (Format.eprintf "Warning: trying to recover from syntax error";
-          if entry.ename <> ""
-          then Format.eprintf " in [%s]" entry.ename
-          else ();
-          Format.eprintf "\n%s%a@." msg FanLoc.print loc)
-       else () in
-     do_recover ~from_tree entry s son loc a strm)
-let rec parser_cont ~from_tree  entry s son p1 loc a (__strm : _ Stream.t) =
-          try p1 __strm
-          with
-          | Stream.Failure  ->
-              (try recover ~from_tree entry s son loc a __strm
-               with
-               | Stream.Failure  ->
-                   raise (Stream.Error (Failed.tree_failed entry a s son)))
-and parser_of_tree entry (lev,assoc) x =
-      let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
-      let rec from_tree =
-        function
-        | DeadEnd  -> raise Stream.Failure
-        | LocAct (act,_) -> (fun (__strm : _ Stream.t)  -> act)
-        | Node { node = `Sself; son = LocAct (act,_); brother = bro } ->
-            (fun (__strm : _ Stream.t)  ->
-               match try Some (entry.estart alevn __strm)
-                     with | Stream.Failure  -> None
-               with
-               | Some a -> Action.getf act a
-               | _ -> from_tree bro __strm)
-        | Node ({ node; son; brother } as y) ->
-            (match Tools.get_terminals y with
-             | None  ->
-                 let ps = parser_of_symbol entry node lev in
-                 let p1 =
-                   (from_tree son) |> (parser_cont ~from_tree entry node son) in
-                 (fun strm  ->
-                    let bp = get_cur_loc strm in
-                    let (__strm :_ Stream.t)= strm in
-                    match try Some (ps __strm) with | Stream.Failure  -> None
+let rec parser_of_tree entry (lev,assoc) x =
+          let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
+          let rec from_tree =
+            function
+            | DeadEnd  -> raise Stream.Failure
+            | LocAct (act,_) -> (fun (__strm : _ Stream.t)  -> act)
+            | Node { node = `Sself; son = LocAct (act,_); brother = bro } ->
+                (fun (__strm : _ Stream.t)  ->
+                   match try Some (entry.estart alevn __strm)
+                         with | Stream.Failure  -> None
+                   with
+                   | Some a -> Action.getf act a
+                   | _ -> from_tree bro __strm)
+            | Node ({ node; son; brother } as y) ->
+                let parser_cont (node,son) loc a =
+                  let pson = from_tree son in
+                  let recover loc a strm =
+                    if FanConfig.strict_parsing.contents
+                    then
+                      raise
+                        (Stream.Error (Failed.tree_failed entry a node son))
+                    else
+                      (let _ =
+                         if FanConfig.strict_parsing_warning.contents
+                         then
+                           let msg = Failed.tree_failed entry a node son in
+                           (Format.eprintf
+                              "Warning: trying to recover from syntax error";
+                            if entry.ename <> ""
+                            then Format.eprintf " in [%s]" entry.ename
+                            else ();
+                            Format.eprintf "\n%s%a@." msg FanLoc.print loc)
+                         else () in
+                       let continue loc a (__strm : _ Stream.t) =
+                         let a =
+                           (entry_of_symb entry node).econtinue 0 loc a
+                             __strm in
+                         let act =
+                           try pson __strm
+                           with
+                           | Stream.Failure  ->
+                               raise
+                                 (Stream.Error
+                                    (Failed.tree_failed entry a node son)) in
+                         Action.mk (fun _  -> Action.getf act a) in
+                       let skip_if_empty bp strm =
+                         if (get_cur_loc strm) = bp
+                         then Action.mk (fun _  -> raise Stream.Failure)
+                         else raise Stream.Failure in
+                       let do_recover loc a (__strm : _ Stream.t) =
+                         try from_tree (top_tree entry son) __strm
+                         with
+                         | Stream.Failure  ->
+                             (try skip_if_empty loc __strm
+                              with | Stream.Failure  -> continue loc a __strm) in
+                       do_recover loc a strm) in
+                  fun (__strm : _ Stream.t)  ->
+                    try pson __strm
                     with
-                    | Some a ->
-                        let act =
-                          try p1 bp a __strm
-                          with | Stream.Failure  -> raise (Stream.Error "") in
-                        Action.getf act a
-                    | _ -> from_tree brother __strm)
-             | Some (tokl,last_tok,son) ->
-                 let p1 =
-                   ((from_tree son) |>
-                      (parser_cont ~from_tree entry (last_tok :>symbol) son))
-                     |> (LL.parser_of_terminals tokl) in
-                 (fun (__strm : _ Stream.t)  ->
-                    try p1 __strm
-                    with | Stream.Failure  -> from_tree brother __strm)) in
-      from_tree x
+                    | Stream.Failure  ->
+                        (try recover loc a __strm
+                         with
+                         | Stream.Failure  ->
+                             raise
+                               (Stream.Error
+                                  (Failed.tree_failed entry a node son))) in
+                (match Tools.get_terminals y with
+                 | None  ->
+                     let ps = parser_of_symbol entry node lev in
+                     (fun strm  ->
+                        let bp = get_cur_loc strm in
+                        let (__strm :_ Stream.t)= strm in
+                        match try Some (ps __strm)
+                              with | Stream.Failure  -> None
+                        with
+                        | Some a ->
+                            let act =
+                              try parser_cont (node, son) bp a __strm
+                              with
+                              | Stream.Failure  -> raise (Stream.Error "") in
+                            Action.getf act a
+                        | _ -> from_tree brother __strm)
+                 | Some (tokl,node,son) ->
+                     let p1 =
+                       parser_of_terminals tokl (parser_cont (node, son)) in
+                     (fun (__strm : _ Stream.t)  ->
+                        try p1 __strm
+                        with | Stream.Failure  -> from_tree brother __strm)) in
+          from_tree x
 and parser_of_terminals (terminals : terminal list)
       (cont : Action.t cont_parse) (strm : token_stream) =
       let bp = Tools.get_cur_loc strm in

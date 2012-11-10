@@ -1,48 +1,38 @@
 open Structure;
-(* module Tools = Tools.Make(struct end); *)
+
 (* Deleting a rule *)
 
 (* [delete_rule_in_tree] returns
      [Some (dsl, t)] if success
         [dsl] =
-           Some (list of deleted nodes) if branch deleted
-           None if action replaced by previous version of action
+           Some (symbols) if branch deleted
+           None if [action] replaced by previous version of action
         [t] = remaining tree
      [None] if failure *)
 
 let delete_rule_in_tree entry =
-(* internal_entry -> symbol list ->  tree ->
-   (symbol list option * tree) option *)
   let rec delete_in_tree symbols tree =
     match (symbols, tree) with
-    [ ([s :: sl], Node n) ->
-        if Tools.logically_eq_symbols entry s n.node then
-          delete_son sl n
+    [ ([s :: sl], Node ({node;brother;son} as n)) ->
+        if Tools.logically_eq_symbols entry s node then
+            match delete_in_tree sl son with
+            [Some (Some dsl,DeadEnd) -> Some (Some [node::dsl],brother)
+            |Some (Some dsl, t) -> Some (Some [node::dsl],Node {(n) with son=t})
+            |Some (None,t) -> Some (None,Node {(n) with son=t})
+            |None -> None]
         else
-          match delete_in_tree symbols n.brother with
+          match delete_in_tree symbols brother with
           [ Some (dsl, t) ->
-              Some (dsl, Node {node = n.node; son = n.son; brother = t})
+              Some (dsl, Node {(n) with brother=t} )
           | None -> None ]
     | ([_ :: _], _) -> None
     | ([], Node n) ->
         match delete_in_tree [] n.brother with
-        [ Some (dsl, t) ->
-            Some (dsl, Node {node = n.node; son = n.son; brother = t})
+        [ Some (dsl, t) -> Some (dsl, Node {(n) with brother =t  })
         | None -> None ]
     | ([], DeadEnd) -> None
     | ([], LocAct _ []) -> Some (Some [], DeadEnd)
-    | ([], LocAct _ [action :: list]) -> Some (None, LocAct action list) ]
-  and delete_son sl n =
-    match delete_in_tree sl n.son with
-    [ Some (Some dsl, DeadEnd) -> Some (Some [n.node :: dsl], n.brother)
-    | Some (Some dsl, t) ->
-        let t = Node {node = n.node; son = t; brother = n.brother} in
-        Some (Some [n.node :: dsl], t)
-    | Some (None, t) ->
-        let t = Node {node = n.node; son = t; brother = n.brother} in
-        Some (None, t)
-    | None -> None ] in
-  delete_in_tree;
+    | ([], LocAct _ [action :: list]) -> Some (None, LocAct action list) ] in delete_in_tree;
 
 (* FIXME
    there's a bug
@@ -66,7 +56,6 @@ and decr_keyw_use_in_tree gram =  fun
   end ];
 
 let rec delete_rule_in_suffix entry symbols = fun
-  (* internal_entry ->symbol list ->level list ->level list*)
   [ [lev :: levs] ->
       match delete_rule_in_tree entry symbols lev.lsuffix with
       [ Some (dsl, t) ->begin 
@@ -76,10 +65,7 @@ let rec delete_rule_in_suffix entry symbols = fun
         match t with
         [ DeadEnd when lev.lprefix == DeadEnd -> levs
         | _ ->
-            let lev =
-              {assoc = lev.assoc; lname = lev.lname; lsuffix = t;
-               lprefix = lev.lprefix} in
-            [lev :: levs] ]
+            [ {(lev) with lsuffix=t} :: levs]]
       end
       | None ->
           let levs = delete_rule_in_suffix entry symbols levs in
@@ -88,7 +74,6 @@ let rec delete_rule_in_suffix entry symbols = fun
 
 
 let rec delete_rule_in_prefix entry symbols = fun
-  (* internal_entry -> symbol list -> level list -> level list*)
   [ [lev :: levs] ->
       match delete_rule_in_tree entry symbols lev.lprefix with
       [ Some (dsl, t) -> begin 
@@ -97,36 +82,31 @@ let rec delete_rule_in_prefix entry symbols = fun
         | None -> () ];
         match t with
         [ DeadEnd when lev.lsuffix == DeadEnd -> levs
-        | _ ->
-            let lev =
-              {assoc = lev.assoc; lname = lev.lname;
-               lsuffix = lev.lsuffix; lprefix = t} in
-            [lev :: levs] ]
+        | _ -> [ {(lev) with lprefix=t}::levs]]
       end
       | None -> let levs = delete_rule_in_prefix entry symbols levs in
           [lev :: levs] ]
   | [] -> raise Not_found ];
   
-(*internal_entry -> symbol list -> level list -> level list*)
-let  delete_rule_in_level_list entry symbols levs = match symbols with
+
+let  delete_rule_in_level_list entry symbols levs =
+  match symbols with
   [ [`Sself :: symbols] -> delete_rule_in_suffix entry symbols levs
   | [`Snterm e :: symbols] when e == entry ->
       delete_rule_in_suffix entry symbols levs
   | _ -> delete_rule_in_prefix entry symbols levs ];
 
 
-(* internal_entry -> symbol list -> unit*)
+
 let delete_rule entry sl = match entry.edesc with
   [ Dlevels levs ->
-      let levs = delete_rule_in_level_list entry sl levs in begin 
+      let levs = delete_rule_in_level_list entry sl levs in begin
         entry.edesc <- Dlevels levs;
-        entry.estart <-  fun lev strm ->
-          let f = Parser.start_parser_of_entry entry in begin 
-            entry.estart <- f; f lev strm end;
-        entry.econtinue <-
-          fun lev bp a strm ->
-            let f = Parser.continue_parser_of_entry entry in
-            begin entry.econtinue <- f; f lev bp a strm end
+        let start = Parser.start_parser_of_entry entry in
+        let continue = Parser.continue_parser_of_entry entry in begin 
+          entry.estart <- start;
+          entry.econtinue <- continue
+        end
       end
   | Dparser _ -> () ];
 

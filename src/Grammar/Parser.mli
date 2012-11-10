@@ -15,32 +15,9 @@ val top_tree: internal_entry -> tree -> tree
     
 val entry_of_symb: internal_entry -> symbol -> internal_entry
 
-val continue:
-    internal_entry  ->
-      symbol ->
-        tree ->
-          Action.t parse -> Action.t cont_parse 
-val skip_if_empty: FanLoc.t -> Action.t parse
-val do_recover:
-  from_tree:(tree -> Action.t parse) ->
-  internal_entry ->
-  symbol ->
-  tree -> Action.t cont_parse
-  
-val recover:
-  from_tree:(tree -> Action.t parse) ->
-  internal_entry ->
-  symbol ->
-  tree -> Action.t cont_parse
-
-
 val parser_of_tree: internal_entry ->
   int * assoc ->
   tree -> Action.t parse
-val parser_cont:
-  from_tree:(tree -> Action.t parse) ->
-  internal_entry ->
-  symbol ->  tree ->  Action.t parse ->  Action.t cont_parse
 
 val parser_of_terminals: terminal list -> Action.t cont_parse  -> Action.t parse
 val parser_of_symbol: internal_entry ->  symbol -> int  -> Action.t parse
