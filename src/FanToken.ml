@@ -29,7 +29,7 @@ Printexc.register_printer (fun
   [TokenError e -> Some (string_of_error_msg e)
   | _ -> None]);
   
-let to_string  =fun
+let to_string  : [>FanSig.token] -> string =fun
   [ `KEYWORD s    -> sprintf "`KEYWORD %S" s
   | `SYMBOL s     -> sprintf "`SYMBOL %S" s
   | `LIDENT s     -> sprintf "`LIDENT %S" s
@@ -53,7 +53,8 @@ let to_string  =fun
   | `EOI          -> sprintf "`EOI"
   | `ESCAPED_IDENT s -> sprintf "`ESCAPED_IDENT %S" s
   | `LINE_DIRECTIVE (i, None) -> sprintf "`LINE_DIRECTIVE %d" i
-  | `LINE_DIRECTIVE (i, (Some s)) -> sprintf "`LINE_DIRECTIVE %d %S" i s ];
+  | `LINE_DIRECTIVE (i, (Some s)) -> sprintf "`LINE_DIRECTIVE %d %S" i s
+  (* | _ -> "unknown token" *)];
 
 let token_to_string = fun
   [ #token as x -> to_string x
@@ -95,14 +96,16 @@ let match_keyword kwd =  fun
   x=STRING -> extract_string x
   ]}
  *)  
-let extract_string = fun
+let extract_string : [> FanSig.token] -> string = fun
   [ `KEYWORD s | `SYMBOL s | `LIDENT s | `UIDENT s | `INT (_, s) | `INT32 (_, s) |
   `INT64 (_, s) | `NATIVEINT (_ ,s) | `FLOAT (_, s) | `CHAR (_, s) | `STRING (_, s) |
-  `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s -> s
+  `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->
       invalid_arg ("Cannot extract a string from this token: "^
-                   to_string tok) ];
+                   token_to_string tok) ];
 
+
+(* [SYMBOL] should all be filtered into keywords *)  
 let keyword_conversion tok is_kwd = match tok with
   [ `SYMBOL s | `LIDENT s | `UIDENT s when is_kwd s -> `KEYWORD s
   | `ESCAPED_IDENT s -> `LIDENT s (* ESCAPED_IDENT *)
@@ -115,7 +118,8 @@ let check_keyword_as_label tok loc is_kwd =
   | _               -> "" ] in
   if s <> "" && is_kwd s then err (Keyword_as_label s) loc else ();
     
-let check_unknown_keywords tok loc = match tok with
+let check_unknown_keywords tok loc =
+  match tok with
   [ `SYMBOL s -> err (Illegal_token s) loc
   | _        -> () ];
   
@@ -129,7 +133,7 @@ module Filter = struct
   let filter x =
     let f (tok, loc) = 
       let tok = keyword_conversion tok x.is_kwd in begin 
-        (* check_keyword_as_label tok loc x.is_kwd ; *)
+        check_keyword_as_label tok loc x.is_kwd ;
         (* if !error_on_unknown_keywords  then *)
         (*   check_unknown_keywords tok loc *)
         (* else (); *)
@@ -150,7 +154,8 @@ module Filter = struct
     fun strm -> x.filter (Stream.map f strm);
 
   let define_filter x f = x.filter <- f x.filter;
-    
+
+  (* keyword added hook FIXME gives an warning later*)  
   let keyword_added _ _ _ = ();
   let keyword_removed _ _ = ();
 end;

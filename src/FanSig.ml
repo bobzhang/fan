@@ -48,7 +48,7 @@ type token =
   | `SYMBOL of string
   | `LIDENT of string
   | `UIDENT of string
-  | `ESCAPED_IDENT of string
+  | `ESCAPED_IDENT of string (* (+)*)
   | `INT of (int * string )
   | `INT32 of (int32 * string )
   | `INT64 of (int64 * string )

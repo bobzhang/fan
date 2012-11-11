@@ -97,7 +97,8 @@ module Stack=struct
     pop stk
   end 
 end
-    (* the trailing char after "<<" *)    
+
+(* the trailing char after "<<" *)    
 let opt_char : char option Stack.t = Stack.create ()
 let turn_on_quotation_debug () = debug:=true
 let turn_off_quotation_debug () = debug:=false
