@@ -17,7 +17,7 @@ let sfold0sep f e entry symbl psymb psep =
   let failed =
     function
     | symb::sep::[] -> Failed.symb_failed_txt entry sep symb
-    | _ -> "failed" in
+    | _ -> assert false in
   let rec kont accu (__strm : _ Stream.t) =
     match try Some (psep __strm) with | Stream.Failure  -> None with
     | Some () ->

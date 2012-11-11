@@ -13,10 +13,11 @@ let sfold1 f e _entry _symbl psymb =
 let sfold0sep f e entry symbl psymb psep =
   let failed = fun
     [ [symb; sep] -> Failed.symb_failed_txt entry sep symb
-      | _ -> "failed" ] in
+      | _ -> assert false ] in
   let rec kont accu = parser
     [ [< () = psep; a = psymb ?? failed symbl; 's >] -> kont (f a accu) s
-    | [< >] -> accu ] in parser
+    | [< >] -> accu ] in
+  parser
     [ [< a = psymb; 's >] -> kont (f a e) s
     | [< >] -> e ] ;
 

@@ -152,7 +152,8 @@ and parser_of_symbol entry s nlevn =
   let rec aux s = 
     match s with 
    [ `Smeta _ symbls act ->
-     let act = Obj.magic act entry symbls and pl = List.map aux symbls in
+     let act = Obj.magic act entry symbls
+     and pl = List.map aux symbls in
      Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
    | `Slist0 s ->
      let ps = aux s in  Comb.slist0 ps ~f:(fun l -> Action.mk (List.rev l))

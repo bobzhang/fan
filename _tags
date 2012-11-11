@@ -4,9 +4,9 @@ true:pkg_batteries
 <{cold,src}/Camlp4Printers/**.ml>: use_unix
 
 
-<{cold,src}/Grammar/{Comb,LL,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Search,Static,Structure,Tools}.cmx>:for-pack(Grammar)
+<{cold,src}/Grammar/{Comb,LL,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.cmx>:for-pack(Grammar)
 
-<{cold,src}/Grammar/{Comb,LL,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Search,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
+<{cold,src}/Grammar/{Comb,LL,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
 
 <{cold,src}/Lib/{Meta,Expr,Patt,Ident,ModuleType,Ctyp,ClassExpr}.cmx>:for-pack(Lib)
 <{cold,src}/Lib/{Meta,Expr,Patt,Ident,ModuleType,Ctyp,ClassExpr}.p.cmx>:for-pack(Lib)

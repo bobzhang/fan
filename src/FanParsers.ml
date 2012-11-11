@@ -187,7 +187,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             | [(x,y)::ys] ->
                 let restrict =
                   List.fold_left (fun acc (x,y) -> <:expr< $acc && ( $x = $y ) >> )
-                    <:expr< $x = $y >> ys  in 
+                    <:expr< $x = $y >> ys
+                in 
                 mk_tok _loc ~restrict p (STtok _loc) ]                
         | `STRING (_, s) ->
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
@@ -212,7 +213,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     symbol: Level "top"
       [ [`UIDENT ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; SELF{s} ->
             sfold _loc [x] f e s
-        |`UIDENT ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT ("SEP" as y); symbol{sep} ->
+        |`UIDENT ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT ("SEP" as y); symbol{sep}
+          ->
             sfold ~sep _loc [x;y] f e s  ]]
     simple_expr:
       [ [ a_LIDENT{i} -> <:expr< $lid:i >>
