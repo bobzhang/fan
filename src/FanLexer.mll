@@ -231,7 +231,7 @@ let symbolchar = '*' | not_star_symbolchar
 let quotchar =
   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
 let extra_quot =
-  ['!' '%' '&' '+' '-' '.' '/' ':'  '='  '?' '@' '^' '|' '~' '\\']
+  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\']
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
 let decimal_literal =
   ['0'-'9'] ['0'-'9' '_']*
@@ -324,28 +324,47 @@ rule token c = parse
        | "*)"
            { warn Comment_not_end (FanLoc.of_lexbuf lexbuf)                           ;
              move_start_p (-1) c; `SYMBOL "*"                                       }
-       | "<<" (extra_quot as p)? (quotchar* as beginning)
+       (* | "<<" (extra_quot as p)? (quotchar* as beginning) *)
+       | "{|" (extra_quot as p)? (quotchar* as beginning)
            { if quotations c  then
-             (move_start_p (-String.length beginning) c; (* FIX partial application*)
+             (
+              (* prerr_endline beginning; *)
+              Format.eprintf "%s :%d@." beginning (-String.length beginning);
+              move_start_p (-String.length beginning) c; (* FIX partial application*)
               Stack.push p opt_char;
               let len = 2 + opt_char_len p in 
               mk_quotation quotation c ~name:"" ~loc:"" ~shift:len ~retract:len)
            else parse
                (symbolchar_star
-                  ("<<" ^
+                  ((* "<<" ^ *)
+                   "{|" ^
                    (match p with Some x -> String.make 1 x | None -> "")
                    ^ beginning))
                c                       }
-       | "<<>>"
+       (* | "<<>>" *)
+       | "{||}"
            { if quotations c
            then `QUOTATION { FanSig.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
-           else parse (symbolchar_star "<<>>") c                                   }
-       | "<@"
+           else parse
+               (symbolchar_star
+                  (* "<<>>" *)
+                  "{||}"
+               ) c                                   }
+       (* | "<@" *)
+       | "{@"
            { if quotations c then with_curr_loc maybe_quotation_at c
-           else parse (symbolchar_star "<@") c                                     }
-       | "<:"
+           else parse
+               (symbolchar_star
+                  "{@"
+                         (* "<@" *)) c                                     }
+       (* | "<:" *)
+       | "{:"
            { if quotations c then with_curr_loc maybe_quotation_colon c
-           else parse (symbolchar_star "<:") c                                     }
+           else parse
+               (symbolchar_star
+                  (* "<:" *)
+                  "{:"
+               ) c                                     }
        | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
            ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
            [^ '\010' '\013'] * newline
@@ -442,18 +461,19 @@ and symbolchar_star beginning c = parse
 
 (* <@loc< *)        
 and maybe_quotation_at c = parse
-    | (ident as loc) '<' (extra_quot as p)?     {
+    | (ident as loc) (* '<' *) '|' (extra_quot as p)?     {
          Stack.push p opt_char;
          mk_quotation quotation c ~name:"" ~loc
            ~shift:(2 + 1 + String.length loc + (opt_char_len p))
            ~retract:(2 + opt_char_len p)
        }
         (* { mk_quotation quotation c "" loc (1 + String.length loc)                 } *)
-    | symbolchar* as tok                                   { `SYMBOL("<@" ^ tok) }
+    | symbolchar* as tok
+        { `SYMBOL((* "<@" *)"{@" ^ tok) }
 
 (* <:name< *)        
 and maybe_quotation_colon c = parse
-    | (ident as name) '<' (extra_quot as p)?  { begin 
+    | (ident as name) (* '<' *) '|' (extra_quot as p)?  { begin 
         Stack.push p opt_char;
         mk_quotation quotation c
           ~name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
@@ -461,7 +481,7 @@ and maybe_quotation_colon c = parse
     end
     }
         (* { mk_quotation quotation c name "" (1 + String.length name)               } *)
-    | (ident as name) '@' (locname as loc) '<' (extra_quot as p)? { begin 
+    | (ident as name) '@' (locname as loc) (* '<' *) '|' (extra_quot as p)? { begin 
         Stack.push p opt_char;
         mk_quotation quotation c ~name ~loc
           ~shift:(2 + 2 + String.length loc + String.length name + opt_char_len p)
@@ -473,13 +493,16 @@ and maybe_quotation_colon c = parse
     | symbolchar* as tok                                   { `SYMBOL("<:" ^ tok) }
 
 and quotation c = parse
-    | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? {begin
+    (* | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? *)
+    | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
+        {
+         begin
         store c ;
         Stack.push p opt_char; (* take care the order matters*)
         with_curr_loc quotation c ;
         parse quotation c
-    end}
-    | (extra_quot as p)? ">>"  {
+         end}
+    | (extra_quot as p)? "|}"  {
       if not (Stack.is_empty opt_char) then
         let top = Stack.top opt_char in
         if p <> top then
@@ -504,8 +527,10 @@ and quotation c = parse
     | newline                                     {
       update_loc c ;
       store_parse quotation c }
-    | _                                               {
-      store_parse quotation c }
+    | _
+        {
+         Format.eprintf "char in quotations %c@." (Lexing.lexeme_char  lexbuf 0);
+         store_parse quotation c }
 (*
   $lid:ident
   $ident
@@ -550,7 +575,9 @@ and antiquot name depth c  = parse
     | eof                                   { err Unterminated_antiquot (loc c) }
     | newline
         { update_loc c ; store_parse (antiquot name depth) c              }
-    | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? {
+    (* | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? *)
+    | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
+        {
       let () = Stack.push p opt_char in
       let () = store c in
       let () = with_curr_loc quotation c in
