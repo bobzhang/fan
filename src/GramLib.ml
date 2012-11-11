@@ -34,7 +34,7 @@ module Ast = Camlp4Ast;
 (* very ad-hoc trick*)  
 let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) =
   try begin
-       {/ Gram expr: ["["; x; "::"; expr; "]"] /};
+       {:delete| Gram expr: ["["; x; "::"; expr; "]"] |};
       true
   end with [ Not_found -> false ];
     

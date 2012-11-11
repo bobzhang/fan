@@ -48,8 +48,8 @@ let ident_of_expr =
   let error () =
     invalid_arg "ident_of_expr: this expression is not an identifier" in
   let rec self =  fun
-    [ <:expr@_loc< $e1 $e2 >> -> {:ident| $(self e1) $(self e2) |}
-    | <:expr@_loc< $e1.$e2 >> -> {:ident| $(self e1).$(self e2) |}
+    [ {:expr@_loc| $e1 $e2 |} -> {:ident| $(self e1) $(self e2) |}
+    | {:expr@_loc| $e1.$e2 |} -> {:ident| $(self e1).$(self e2) |}
     | {:expr| $lid:_ |} -> error ()
     | {:expr| $id:i |} -> if is_module_longident i then i else error ()
     | _ -> error () ] in
@@ -79,7 +79,7 @@ let ident_of_ctyp =
   let error () =
     invalid_arg "ident_of_ctyp: this type is not an identifier" in
   let rec self =   fun
-    [ <:ctyp@_loc< $t1 $t2 >> -> {:ident| $(self t1) $(self t2) |}
+    [ {:ctyp@_loc| $t1 $t2 |} -> {:ident| $(self t1) $(self t2) |}
     | {:ctyp| $lid:_ |} -> error ()
     | {:ctyp| $id:i |} -> if is_module_longident i then i else error ()
     | _ -> error () ] in
@@ -91,7 +91,7 @@ let ident_of_patt =
   let error () =
     invalid_arg "ident_of_patt: this pattern is not an identifier" in
   let rec self = fun
-    [ <:patt@_loc< $p1 $p2 >> -> {:ident| $(self p1) $(self p2) |}
+    [ {:patt@_loc| $p1 $p2 |} -> {:ident| $(self p1) $(self p2) |}
     | {:patt| $lid:_ |} -> error ()
     | {:patt| $id:i |} -> if is_module_longident i then i else error ()
     | _ -> error () ] in
@@ -182,13 +182,13 @@ let rec tySta_of_list =  fun
         let _loc = loc_of_ctyp t in {:ctyp| $t * $(tySta_of_list ts) |} ];
 
 let rec stSem_of_list = fun
-    [ [] -> <:str_item@ghost<>>
+    [ [] -> {:str_item@ghost||}
     | [t] -> t
     | [t::ts] ->
         let _loc = loc_of_str_item t in {:str_item| $t ; $(stSem_of_list ts) |} ];
   (* FIXME introduces Nil here *)    
 let rec sgSem_of_list = fun
-    [ [] -> <:sig_item@ghost<>>
+    [ [] -> {:sig_item@ghost||}
     | [t] -> t
     | [t::ts] ->
         let _loc = loc_of_sig_item t in {:sig_item| $t ; $(sgSem_of_list ts) |} ];
@@ -200,14 +200,14 @@ let rec biAnd_of_list =  fun
         let _loc = loc_of_binding b in {:binding| $b and $(biAnd_of_list bs) |} ];
 
 let rec rbSem_of_list =  fun
-    [ [] -> <:rec_binding@ghost<>>
+    [ [] -> {:rec_binding@ghost||}
     | [b] -> b
     | [b::bs] ->
         let _loc = loc_of_rec_binding b in
         {:rec_binding| $b; $(rbSem_of_list bs) |} ];
 
 let rec wcAnd_of_list = fun
-    [ [] -> <:with_constr@ghost<>>
+    [ [] -> {:with_constr@ghost||}
     | [w] -> w
     | [w::ws] ->
         let _loc = loc_of_with_constr w in
@@ -228,14 +228,14 @@ let rec idApp_of_list =  fun
         {:ident| $i $(idApp_of_list is) |} ];
 
 let rec mcOr_of_list = fun
-    [ [] -> <:match_case@ghost<>>
+    [ [] -> {:match_case@ghost||}
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_match_case x in
         {:match_case| $x | $(mcOr_of_list xs) |} ];
 
 let rec mbAnd_of_list = fun
-    [ [] -> <:module_binding@ghost<>>
+    [ [] -> {:module_binding@ghost||}
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_module_binding x in
@@ -249,28 +249,28 @@ let rec meApp_of_list = fun
         {:module_expr| $x $(meApp_of_list xs) |} ];
 
 let rec ceAnd_of_list =  fun
-    [ [] -> <:class_expr@ghost<>>
+    [ [] -> {:class_expr@ghost||}
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_class_expr x in
         {:class_expr| $x and $(ceAnd_of_list xs) |} ];
 
 let rec ctAnd_of_list = fun
-    [ [] -> <:class_type@ghost<>>
+    [ [] -> {:class_type@ghost||}
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_class_type x in
         {:class_type| $x and $(ctAnd_of_list xs) |} ];
 
 let rec cgSem_of_list = fun
-    [ [] -> <:class_sig_item@ghost<>>
+    [ [] -> {:class_sig_item@ghost||}
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_class_sig_item x in
         {:class_sig_item| $x; $(cgSem_of_list xs) |} ];
 
 let rec crSem_of_list = fun
-    [ [] -> <:class_str_item@ghost<>>
+    [ [] -> {:class_str_item@ghost||}
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_class_str_item x in
@@ -534,14 +534,14 @@ module Meta = struct
     method! sig_item sg = match super#sig_item sg with
       [ {:sig_item| $({:sig_item||}); $sg |} |
         {:sig_item| $sg; $({:sig_item||} ) |} -> sg
-      | <:sig_item@loc< type $({:ctyp||} ) >> -> <:sig_item@loc<>>
+      | {:sig_item@loc| type $({:ctyp||} ) |} -> {:sig_item@loc||}
       | sg -> sg ];
 
     method! str_item st = match super#str_item st with
       [ {:str_item| $({:str_item||} ); $st |} |
         {:str_item| $st; $({:str_item||} ) |} -> st
-      | <:str_item@loc< type $({:ctyp||} ) >> -> <:str_item@loc<>>
-      | <:str_item@loc< let $rec:_ $({:binding||} ) >> -> <:str_item@loc<>>
+      | {:str_item@loc| type $({:ctyp||} ) |} -> {:str_item@loc||}
+      | {:str_item@loc| let $rec:_ $({:binding||} ) |} -> {:str_item@loc||}
       | st -> st ];
 
     method! module_type mt =  match super#module_type mt with
@@ -579,7 +579,7 @@ end;
 let wildcarder = object (self)
   inherit map as super;
   method! patt = fun
-  [ <:patt@_loc< $lid:_ >> -> {:patt| _ |}
+  [ {:patt@_loc| $lid:_ |} -> {:patt| _ |}
   | {:patt| ($p as $_) |} -> self#patt p
   | p -> super#patt p ];
 end;

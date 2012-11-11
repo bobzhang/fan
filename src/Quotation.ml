@@ -226,7 +226,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
       parse_quot_string entry_eoi loc loc_name_opt s |> mexpr loc |> anti_filter#expr  in
     let expand_str_item loc loc_name_opt s =
       let exp_ast = expand_expr loc loc_name_opt s in
-      <:str_item@loc< $(exp:exp_ast) >> in
+      {:str_item@loc| $(exp:exp_ast) |} in
     let expand_patt _loc loc_name_opt s =
       BatRef.protect FanConfig.antiquotations true begin fun _ ->
         let ast = Gram.parse_string entry_eoi _loc s in
@@ -236,8 +236,8 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
         [ None -> exp_ast
         | Some name ->
         let rec subst_first_loc =  fun
-          [ <:patt@_loc< Ast.$uid:u $_ >> -> {:patt| Ast.$uid:u $lid:name |}
-          | <:patt@_loc< $a $b >> -> {:patt| $(subst_first_loc a) $b |}
+          [ {:patt@_loc| Ast.$uid:u $_ |} -> {:patt| Ast.$uid:u $lid:name |}
+          | {:patt@_loc| $a $b |} -> {:patt| $(subst_first_loc a) $b |}
           | p -> p ] in
         subst_first_loc exp_ast ]
       end in begin
@@ -257,7 +257,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
     let add_quotation_of_expr ~name ~entry = 
       let expand_fun = parse_quot_string (Gram.eoi_entry entry) in
       let mk_fun loc loc_name_opt s =
-        <:str_item@loc< $(exp:expand_fun loc loc_name_opt s) >> in begin 
+        {:str_item@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin 
           add name DynAst.expr_tag expand_fun ;
           add name DynAst.str_item_tag mk_fun ;
         end ;

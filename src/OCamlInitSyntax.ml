@@ -179,11 +179,12 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   let level = Gram.mk "level"  ;
   let level_list = Gram.mk "level_list";
   let entry = Gram.mk "entry";
-    
-  (* EXTEND *) {|Gram
+  let extend_body = Gram.mk "extend_body" ;
+  let delete_rule_body = Gram.mk "delete_rule_body";
+  {:extend|Gram
     top_phrase:
-      [ [ `EOI -> None ] ] |}; 
-  (* END; *)
+    [ [ `EOI -> None ] ] |}; 
+
 
   module AntiquotSyntax = struct
     module Ast  = Ast; 
@@ -193,8 +194,10 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
     let parse_expr loc str = Gram.parse_string antiquot_expr loc str;
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str;
   end;
-
   module Quotation = Quotation.Make(AntiquotSyntax);
+
+  Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (* built in extend support *)
+  Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (* built in delete support *)  
   let wrap directive_handler pa init_loc cs =
     let rec loop loc =
       let (pl, stopped_at_directive) = pa loc cs in
@@ -212,10 +215,10 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
     in loop init_loc;
   let parse_implem ?(directive_handler = fun _ -> None) _loc cs =
     let l = wrap directive_handler (Gram.parse implem) _loc cs in
-    <:str_item< $list:l >>;
+    {:str_item| $list:l |};
   let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
     let l = wrap directive_handler (Gram.parse interf) _loc cs in
-    <:sig_item< $list:l >>;
+    {:sig_item| $list:l |};
   let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";
   let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";
   module AstFilters = AstFilters.Make (struct end);

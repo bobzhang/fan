@@ -33,27 +33,27 @@ module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
   let add_debug_expr e =
     let _loc = Ast.loc_of_expr e in
     let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
-    <:expr<
+    {:expr|
         try $e  with
         [ Stream.Failure | Exit as exc -> raise exc
-        | exc -> do {
+        | exc -> begin
             if Debug.mode "exc" then
               Format.eprintf $`str:msg (Printexc.to_string exc) else ();
             raise exc
-          } ] >>;
+          end ] |};
 
   let rec map_match_case =
     fun
-    [ <:match_case@_loc< $m1 | $m2 >> ->
+    [ {:match_case@_loc| $m1 | $m2 |} ->
         {:match_case| $(map_match_case m1) | $(map_match_case m2) |}
-    | <:match_case@_loc< $p when $w -> $e >> ->
-        <:match_case@_loc< $p when $w -> $(add_debug_expr e) >>
+    | {:match_case@_loc| $p when $w -> $e |} ->
+        {:match_case@_loc| $p when $w -> $(add_debug_expr e) |}
     | m -> m ];
 
   let filter = object
     inherit Ast.map as super;
     method! expr = fun
-    [ <:expr@_loc< fun [ $m ] >>  -> {:expr| fun [ $(map_match_case m) ] |}
+    [ {:expr@_loc| fun [ $m ] |}  -> {:expr| fun [ $(map_match_case m) ] |}
     | x -> super#expr x ];
     method! str_item = fun
     [ {:str_item| module Debug = $_ |} as st -> st
@@ -337,7 +337,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
           | {:ctyp| $lid:id |} ->
               let () = store_if_builtin_type id in
               opt_bind' ox {:expr|o|} (fun e1 -> {:expr| $e1#$id |})
-          | <:ctyp@_loc< $t1 $t2 >> ->
+          | {:ctyp@_loc| $t1 $t2 |} ->
               let e = opt_bind None
                                (self ~arity:(arity+1) None t1)
                                (fun e1 -> {:expr| $e1 $(mkfuno (self None t2)) |}) in
@@ -425,8 +425,8 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         chain_tuple mkp mke expr_of_ty ts
 
       and failure_match_case =
-        <:match_case< $(tuplify_patt (pxik 0)) ->
-                        o#$(lid:sf "%s%d_failure" (string_of_mode mode) size) $(tuplify_expr (exik 0)) >>
+        {:match_case| $(tuplify_patt (pxik 0)) ->
+                        o#$(lid:sf "%s%d_failure" (string_of_mode mode) size) $(tuplify_expr (exik 0)) |}
 
       and complete_match_case mk t =
         match t with
@@ -513,9 +513,9 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
               [ {:ctyp| $lid:id |} -> let () = store_if_builtin_type id in self
               | t -> super#ctyp t ];
           end#ctyp t in
-        <:class_sig_item<
+        {:class_sig_item|
            method $lid:name : $(method_type_of_type_decl type_decl);
-           $acc >>
+           $acc |}
 
       and generate_structure tyMap =
         SMap.fold method_of_type_decl !used_builtins
@@ -546,9 +546,9 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     let failure =
       if n > 1 then
         let name = string_of_mode mode in
-        <:class_str_item< method $(lid:sf "%s%d_failure" name n) : $gen_type =
+        {:class_str_item| method $(lid:sf "%s%d_failure" name n) : $gen_type =
                             fun $(M.tuplify_patt (pxik 0)) ->
-                              failwith $(`str:sf "%s%d_failure: default implementation" name n) >>
+                              failwith $(`str:sf "%s%d_failure: default implementation" name n) |}
       else {:class_str_item||}
     in
     let gen_type =
@@ -603,13 +603,13 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         [ {:str_item| type $t |} -> (last := t; st)
 
         (* backward compatibility *)
-        | <:str_item@_loc< class $lid:c = Camlp4Filters.GenerateFold.generated >> ->
+        | {:str_item@_loc| class $lid:c = Camlp4Filters.GenerateFold.generated |} ->
               generate_class_implem Fold c !last 1
-        | <:str_item@_loc< class $lid:c = Camlp4Filters.GenerateMap.generated >> ->
+        | {:str_item@_loc| class $lid:c = Camlp4Filters.GenerateMap.generated |} ->
               generate_class_implem Map c !last 1
 
         (* Handle Camlp4(Fold|Map|FoldMap)\d*Generator *)
-        | <:str_item@_loc< class $lid:c = $uid:m.generated >> ->
+        | {:str_item@_loc| class $lid:c = $uid:m.generated |} ->
               generate_class_from_module_name generate_class_implem c st m
 
         (* It's a hack to force to recurse on the left to right order *)
@@ -624,13 +624,13 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         [ {:sig_item| type $t |} -> (last := t; sg)
 
         (* backward compatibility *)
-        | <:sig_item@_loc< class $lid:c : Camlp4Filters.GenerateFold.generated >> ->
+        | {:sig_item@_loc| class $lid:c : Camlp4Filters.GenerateFold.generated |} ->
              generate_class_interf Fold c !last 1
-        | <:sig_item@_loc< class $lid:c : Camlp4Filters.GenerateMap.generated >> ->
+        | {:sig_item@_loc| class $lid:c : Camlp4Filters.GenerateMap.generated |} ->
              generate_class_interf Map c !last 1
 
         (* Handle Camlp4(Fold|Map|FoldMap)\d*Generator *)
-        | <:sig_item@_loc< class $lid:c : $uid:m.generated >> ->
+        | {:sig_item@_loc| class $lid:c : $uid:m.generated |} ->
             generate_class_from_module_name generate_class_interf c sg m
 
         (* It's a hack to force to recurse on the left to right order *)
@@ -668,7 +668,7 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
     inherit Ast.map as super;
     method! binding =
       fun
-      [ <:binding@_loc< $lid:id = $( ({:expr| fun [ $_ ] |} as e)) >> ->
+      [ {:binding@_loc| $lid:id = $( ({:expr| fun [ $_ ] |} as e)) |} ->
           {:binding| $lid:id = $(decorate_fun id e) |}
       | b -> super#binding b ];
   end#binding;
@@ -677,14 +677,14 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
     inherit Ast.map as super;
     method! str_item =
       fun
-      [ <:str_item@_loc< let $rec:r $b >> ->
+      [ {:str_item@_loc| let $rec:r $b |} ->
           {:str_item| let $rec:r $(decorate_binding decorate_fun b) |}
       | st -> super#str_item st ];
     method! expr =
       fun
-      [ <:expr@_loc< let $rec:r $b in $e >> ->
+      [ {:expr@_loc| let $rec:r $b in $e |} ->
           {:expr| let $rec:r $(decorate_binding decorate_fun b) in $(o#expr e) |}
-      | <:expr@_loc< fun [ $_ ] >> as e -> decorate_fun "<fun>" e
+      | {:expr@_loc| fun [ $_ ] |} as e -> decorate_fun "<fun>" e
       | e -> super#expr e ];
   end;
 
@@ -700,9 +700,9 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
     let decorate_expr = decorate#expr in
     let decorate_match_case = decorate#match_case in
     fun
-    [ <:expr@_loc< fun $p -> $e >> ->
+    [ {:expr@_loc| fun $p -> $e |} ->
         {:expr| fun $p -> $(decorate_fun id e) |}
-    | <:expr@_loc< fun [ $m ] >> ->
+    | {:expr@_loc| fun [ $m ] |} ->
         decorate_this_expr {:expr| fun [ $(decorate_match_case m) ] |} id
     | e -> decorate_this_expr (decorate_expr e) id ];
 
@@ -720,7 +720,7 @@ module MakeTrashRemover (Syn : Sig.Camlp4Syntax) = struct
   Syn.AstFilters.register_str_item_filter
     (Ast.map_str_item
       (fun
-       [ <:str_item@_loc< module Camlp4Trash = $_ >> ->
+       [ {:str_item@_loc| module Camlp4Trash = $_ |} ->
             {:str_item||}
        | st -> st ]))#str_item;
 end;
@@ -835,11 +835,11 @@ let mk_meta m =
                   [ {:ctyp| $id:id |} ->
                       {:expr| $(id:meta_ (string_of_ident id)) |}
                   | {:ctyp| ($t1 * $t2) |} ->
-                      <:expr< fun _loc (x1, x2) ->
+                      {:expr| fun _loc (x1, x2) ->
                                 $(m.tup) _loc
                                   ($(m.com) _loc
                                     ($(fcall_of_ctyp t1) _loc x1)
-                                    ($(fcall_of_ctyp t2) _loc x2)) >>
+                                    ($(fcall_of_ctyp t2) _loc x2)) |}
                   | {:ctyp| $t1 $t2 |} ->
                       {:expr| $(fcall_of_ctyp t1) $(fcall_of_ctyp t2) |}
                   | {:ctyp| '$s |} -> {:expr| $(lid:mf_ s) |}
@@ -877,7 +877,7 @@ let filter st =
    method! module_expr me =
      let mk_meta_module m =
        let bi = mk_meta m in
-       <:module_expr<
+       {:module_expr|
         struct
           let meta_string _loc s = $(m.str) _loc (safe_string_escaped s);
           let meta_int _loc s = $(m.int) _loc s;
@@ -892,7 +892,7 @@ let filter st =
             [ [] -> $(m_uid m "[]")
             | [x :: xs] -> $(m_app m (m_app m (m_uid m "::") {:expr| mf_a _loc x |}) {:expr| meta_list mf_a _loc xs |}) ];
           let rec $bi;
-        end >> in
+        end |} in
      match super#module_expr me with
      [ {:module_expr| Camlp4Filters.MetaGeneratorExpr $id:i |} ->
          mk_meta_module

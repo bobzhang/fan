@@ -81,23 +81,23 @@ let rec subst v e =
   | {:expr| $e1, $e2 |} -> {:expr| $(subst v e1), $(subst v e2) |}
   | _ -> raise Not_found ]
 and subst_binding v =  fun
-  [ <:binding@_loc< $b1 and $b2 >> ->
+  [ {:binding@_loc| $b1 and $b2 |} ->
       {:binding| $(subst_binding v b1) and $(subst_binding v b2) |}
-  | <:binding@_loc< $lid:v' = $e >> ->
+  | {:binding@_loc| $lid:v' = $e |} ->
       {:binding| $lid:v' = $(if v = v' then e else subst v e) |}
   | _ -> raise Not_found ];
 
 let stream_pattern_component skont ckont =  fun
   [ SpTrm _loc p None ->
-      <:expr< match $(peek_fun _loc) $lid:strm_n with
+      {:expr| match $(peek_fun _loc) $lid:strm_n with
               [ Some $p ->
                   do { $(junk_fun _loc) $lid:strm_n; $skont }
-              | _ -> $ckont ] >>
+              | _ -> $ckont ] |}
   | SpTrm _loc p (Some w) ->
-      <:expr< match $(peek_fun _loc) $lid:strm_n with
+      {:expr| match $(peek_fun _loc) $lid:strm_n with
               [ Some $p when $w ->
                   do { $(junk_fun _loc) $lid:strm_n; $skont }
-              | _ -> $ckont ] >>
+              | _ -> $ckont ] |}
   | SpNtr _loc p e ->
       let e =
         match e with
@@ -117,9 +117,9 @@ let stream_pattern_component skont ckont =  fun
           else {:expr| try $e with [ $(uid:gm()).Failure -> $ckont ] |}  in
         {:expr| let $p = $tst in $skont |}
       else
-        <:expr< match try Some $e with [ $(uid:gm()).Failure -> None ] with
+        {:expr| match try Some $e with [ $(uid:gm()).Failure -> None ] with
                 [ Some $p -> $skont
-                | _ -> $ckont ] >>
+                | _ -> $ckont ] |}
   | SpStr _loc p ->
       try
         match p with
@@ -194,7 +194,7 @@ let cparser_match _loc me bpo pc =
     [ Some bp -> {:expr| let $bp = $(uid:gm()).count $lid:strm_n in $pc |}
     | None -> pc ]  in
   let me = match me with
-    [ <:expr@_loc< $_; $_ >> as e -> {:expr| do { $e } |}
+    [ {:expr@_loc| $_; $_ |} as e -> {:expr| do { $e } |}
     | e -> e ] in
   match me with
   [ {:expr| $lid:x |} when x = strm_n -> e

@@ -211,6 +211,8 @@ module type Camlp4Syntax = sig
   val level:  Gram.t FanGrammar.level;
   val level_list: Gram.t (list FanGrammar.level);
   val entry: Gram.t FanGrammar.entry;
+  val extend_body: Gram.t Ast.expr;
+  val delete_rule_body: Gram.t Ast.expr;
 end;
 
 

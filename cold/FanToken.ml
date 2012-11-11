@@ -19,7 +19,7 @@ let string_of_error_msg = to_string_of_printer print_basic_error
 let _ =
   Printexc.register_printer
     (function | TokenError e -> Some (string_of_error_msg e) | _ -> None)
-let to_string =
+let to_string: [> FanSig.token] -> string =
   function
   | `KEYWORD s -> sprintf "`KEYWORD %S" s
   | `SYMBOL s -> sprintf "`SYMBOL %S" s
@@ -66,14 +66,14 @@ let rec ignore_layout (__strm : _ Stream.t) =
 let print ppf x = pp_print_string ppf (token_to_string x)
 let match_keyword kwd =
   function | `KEYWORD kwd' when kwd = kwd' -> true | _ -> false
-let extract_string =
+let extract_string: [> FanSig.token] -> string =
   function
   | `KEYWORD s|`SYMBOL s|`LIDENT s|`UIDENT s|`INT (_,s)|`INT32 (_,s)|
       `INT64 (_,s)|`NATIVEINT (_,s)|`FLOAT (_,s)|`CHAR (_,s)|`STRING (_,s)|
       `LABEL s|`OPTLABEL s|`COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
   | tok ->
       invalid_arg
-        ("Cannot extract a string from this token: " ^ (to_string tok))
+        ("Cannot extract a string from this token: " ^ (token_to_string tok))
 let keyword_conversion tok is_kwd =
   match tok with
   | `SYMBOL s|`LIDENT s|`UIDENT s when is_kwd s -> `KEYWORD s
@@ -87,7 +87,9 @@ let check_unknown_keywords tok loc =
 module Filter = struct
   let mk ~is_kwd  = { is_kwd; filter = ignore_layout }
   let filter x =
-    let f (tok,loc) = let tok = keyword_conversion tok x.is_kwd in (tok, loc) in
+    let f (tok,loc) =
+      let tok = keyword_conversion tok x.is_kwd in
+      check_keyword_as_label tok loc x.is_kwd; (tok, loc) in
     fun strm  -> x.filter (Stream.map f strm)
   let define_filter x f = x.filter <- f x.filter let keyword_added _ _ _ = ()
   let keyword_removed _ _ = ()

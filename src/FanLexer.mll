@@ -330,7 +330,7 @@ rule token c = parse
            { if quotations c  then
              (
               (* prerr_endline beginning; *)
-              Format.eprintf "%s :%d@." beginning (-String.length beginning);
+              (* Format.eprintf "%s :%d@." beginning (-String.length beginning); *)
               move_start_p (-String.length beginning) c; (* FIX partial application*)
               Stack.push p opt_char;
               let len = 2 + opt_char_len p in 
@@ -405,7 +405,8 @@ and comment c = parse
             parse comment c
           }
      | "*)"   { store c }
-     | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)?
+     (* | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? *)
+     | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
          { store c;
            if quotations c then begin
              Stack.push p opt_char;
@@ -457,8 +458,9 @@ and string c = parse
     | _                                                  { store_parse string c }
 
 and symbolchar_star beginning c = parse
-    | symbolchar* as tok            { move_start_p (-String.length beginning) c ;
-                                  `SYMBOL(beginning ^ tok) }
+    | symbolchar* as tok            {
+      (* move_start_p (-String.length beginning) c ; *)
+      `SYMBOL(beginning ^ tok) }
 
 (* <@loc< *)        
 and maybe_quotation_at c = parse
@@ -530,7 +532,7 @@ and quotation c = parse
       store_parse quotation c }
     | _
         {
-         Format.eprintf "char in quotations %c@." (Lexing.lexeme_char  lexbuf 0);
+         (* Format.eprintf "char in quotations %c@." (Lexing.lexeme_char  lexbuf 0); *)
          store_parse quotation c }
 (*
   $lid:ident

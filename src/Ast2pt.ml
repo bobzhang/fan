@@ -216,20 +216,20 @@ let mkprivate = fun
   | {:private_flag||} -> Public
   | _ -> assert false ];
 let mktrecord = fun
-  [ {:ctyp@loc| $(id:<:ident@sloc< $lid:s |}) : mutable $t >> ->
+  [ {:ctyp@loc| $(id:{:ident@sloc| $lid:s |}) : mutable $t |} ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  loc)
-  | {:ctyp@loc| $(id:<:ident@sloc< $lid:s |}) : $t >> ->
+  | {:ctyp@loc| $(id:{:ident@sloc| $lid:s |}) : $t |} ->
       (with_loc s sloc, Immutable, mkpolytype (ctyp t),  loc)
   | _ -> assert false (*FIXME*) ];
   
 let mkvariant = fun
-  [ {:ctyp@loc| $(id:<:ident@sloc< $uid:s |}) >> ->
+  [ {:ctyp@loc| $(id:{:ident@sloc| $uid:s |}) |} ->
     (with_loc  s sloc, [], None,  loc)
-  | {:ctyp@loc| $(id:<:ident@sloc< $uid:s |}) of $t >> ->
+  | {:ctyp@loc| $(id:{:ident@sloc| $uid:s |}) of $t |} ->
       (with_loc  s sloc, List.map ctyp (list_of_ctyp t []), None,  loc)
-  | {:ctyp@loc| $(id:<:ident@sloc< $uid:s |}) : ($t -> $u) >> ->
+  | {:ctyp@loc| $(id:{:ident@sloc| $uid:s |}) : ($t -> $u) |} ->
       (with_loc s sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  loc)
-  | {:ctyp@loc| $(id:<:ident@sloc< $uid:s |}) : $t >> ->
+  | {:ctyp@loc| $(id:{:ident@sloc| $uid:s |}) : $t |} ->
       (with_loc  s sloc, [], Some (ctyp t),  loc)
 
   | _ -> assert false (*FIXME*) ];
@@ -320,16 +320,16 @@ let mkwithtyp pwith_type loc id_tpl ct =
   
 let rec mkwithc wc acc = match wc with
   [ {:with_constr||} -> acc
-  | <:with_constr@loc< type $id_tpl = $ct >> ->
+  | {:with_constr@loc| type $id_tpl = $ct |} ->
      [mkwithtyp (fun x -> Pwith_type x) loc id_tpl ct :: acc]
   | {:with_constr| module $i1 = $i2 |} ->
       [(long_uident i1, Pwith_module (long_uident i2)) :: acc]
-  | <:with_constr@loc< type $id_tpl := $ct >> ->
+  | {:with_constr@loc| type $id_tpl := $ct |} ->
       [mkwithtyp (fun x -> Pwith_typesubst x) loc id_tpl ct :: acc]
   | {:with_constr| module $i1 := $i2 |} (*WcMoS _ i1 i2*) ->
       [(long_uident i1, Pwith_modsubst (long_uident i2)) :: acc]
   | {:with_constr| $wc1 and $wc2 |} -> mkwithc wc1 (mkwithc wc2 acc)
-  | <:with_constr@loc< $anti:_ >> ->
+  | {:with_constr@loc| $anti:_ |} ->
       error loc "bad with constraint (antiquotation)" ];
 
 let rec patt_fa al = fun
@@ -355,7 +355,7 @@ let rec patt = fun
   [ {:patt@loc| $(lid:("true"|"false" as txt)) |}  ->
     let p = Ppat_construct ({txt=Lident txt;loc}) None (constructors_arity ()) in
     mkpat loc p 
-  | {:patt@loc| $(id:<:ident@sloc< $lid:s |}) >> ->
+  | {:patt@loc| $(id:{:ident@sloc| $lid:s |}) |} ->
     mkpat loc (Ppat_var (with_loc s sloc))
   | {:patt@loc| $id:i |} ->
       let p = Ppat_construct (long_uident  i)
@@ -370,7 +370,7 @@ let rec patt = fun
        mkpat loc (Ppat_alias (patt p) i)
   | PaAnt loc _ -> error loc "antiquotation not allowed here"
   | PaAny loc -> mkpat loc Ppat_any
-  | {:patt@loc| $(id:<:ident@sloc< $uid:s |}) $(tup:<:patt@loc_any< _ >>) >> ->
+  | {:patt@loc| $(id:{:ident@sloc| $uid:s |}) $(tup:{:patt@loc_any| _ |}) |} ->
       mkpat loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
   | PaApp loc _ _ as f ->
@@ -686,7 +686,7 @@ and label_expr = fun (* expr -> label * expression *)
 and binding x acc =  match x with (* binding -> (pattern * expression) list ->  (pattern * expression) list *)
   [ {:binding| $x and $y |} ->
     binding x (binding y acc)
-  | <:binding@_loc< $(pat: {:patt@sloc| $lid:bind_name |} ) = ($e : $(TyTypePol _ vs ty)) >> ->
+  | {:binding@_loc| $(pat: {:patt@sloc| $lid:bind_name |} ) = ($e : $(TyTypePol _ vs ty)) |} ->
       (* this code is not pretty because it is temporary *)
       let rec id_to_string x = match x with
       [ {:ctyp| $lid:x |} -> [x]
@@ -709,7 +709,7 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
                                 mktyp _loc (Ptyp_poly ampersand_vars ty'))) in
       let e = mk_newtypes vars in
       [( pat, e) :: acc]
-  | <:binding@_loc< $p = ($e : ! $vs . $ty) >> ->
+  | {:binding@_loc| $p = ($e : ! $vs . $ty) |} ->
       [(patt {:patt| ($p : ! $vs . $ty ) |}, expr e) :: acc]
   | {:binding| $p = $e |} -> [(patt p, expr e) :: acc]
   | {:binding||} -> acc
@@ -748,16 +748,16 @@ and mktype_decl x acc = match x with (* ctyp -> (string loc * type_declaration) 
         type_decl (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
   | _ -> assert false ]
 and module_type = fun (*module_type -> module_type*)
-  [ <:module_type@loc<>> -> error loc "abstract/nil module type not allowed here"
-  | <:module_type@loc< $id:i >> -> mkmty loc (Pmty_ident (long_uident i))
-  | <:module_type@loc< functor ($n : $nt) -> $mt >> ->
+  [ {:module_type@loc||} -> error loc "abstract/nil module type not allowed here"
+  | {:module_type@loc| $id:i |} -> mkmty loc (Pmty_ident (long_uident i))
+  | {:module_type@loc| functor ($n : $nt) -> $mt |} ->
       mkmty loc (Pmty_functor (with_loc n loc) (module_type nt) (module_type mt))
-  | <:module_type@loc< '$_ >> -> error loc "module type variable not allowed here"
-  | <:module_type@loc< sig $sl end >> ->
+  | {:module_type@loc| '$_ |} -> error loc "module type variable not allowed here"
+  | {:module_type@loc| sig $sl end |} ->
       mkmty loc (Pmty_signature (sig_item sl []))
-  | <:module_type@loc< $mt with $wc >> ->
+  | {:module_type@loc| $mt with $wc |} ->
       mkmty loc (Pmty_with (module_type mt) (mkwithc wc []))
-  | <:module_type@loc< module type of $me >> ->
+  | {:module_type@loc| module type of $me |} ->
       mkmty loc (Pmty_typeof (module_expr me))
   | {:module_type| $anti:_ |} -> assert false ]
 and sig_item s l = match s with (* sig_item -> signature -> signature*)
@@ -770,9 +770,9 @@ and sig_item s l = match s with (* sig_item -> signature -> signature*)
                     (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
   | {:sig_item| $sg1; $sg2 |} -> sig_item sg1 (sig_item sg2 l)
   | SgDir _ _ _ -> l
-  | <:sig_item@loc< exception $uid:s >> ->
+  | {:sig_item@loc| exception $uid:s |} ->
       [mksig loc (Psig_exception (with_loc s loc) []) :: l]
-  | <:sig_item@loc< exception $uid:s of $t >> ->
+  | {:sig_item@loc| exception $uid:s of $t |} ->
       [mksig loc (Psig_exception (with_loc s loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l]
   | SgExc _ _ -> assert false (*FIXME*)
@@ -790,38 +790,38 @@ and sig_item s l = match s with (* sig_item -> signature -> signature*)
       [mksig loc (Psig_open (long_uident id)) :: l]
   | SgTyp loc tdl -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
   | SgVal loc n t -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l]
-  | <:sig_item@loc< $anti:_ >> -> error loc "antiquotation in sig_item" ]
+  | {:sig_item@loc| $anti:_ |} -> error loc "antiquotation in sig_item" ]
 and module_sig_binding x acc = match x with (* module_binding -> (string loc * module_type) list -> (string loc * module_type) list*)
   [ {:module_binding| $x and $y |} ->
     module_sig_binding x (module_sig_binding y acc)
-  | <:module_binding@loc< $s : $mt >> ->
+  | {:module_binding@loc| $s : $mt |} ->
       [(with_loc s loc, module_type mt) :: acc]
   | _ -> assert false ]
 and module_str_binding x acc =  match x with (* module_binding ->  (string loc * module_type * module_expr) list ->  (string loc * module_type * module_expr) list*)
   [ {:module_binding| $x and $y |} ->
       module_str_binding x (module_str_binding y acc)
-  | <:module_binding@loc< $s : $mt = $me >> ->
+  | {:module_binding@loc| $s : $mt = $me |} ->
       [(with_loc s loc, module_type mt, module_expr me) :: acc]
   | _ -> assert false ]
 and module_expr =   fun (* module_expr -> module_expr *)
-  [ <:module_expr@loc< >> -> error loc "nil module expression"
-  | <:module_expr@loc< $id:i >> -> mkmod loc (Pmod_ident (long_uident i))
-  | <:module_expr@loc< $me1 $me2 >> ->
+  [ {:module_expr@loc| |} -> error loc "nil module expression"
+  | {:module_expr@loc| $id:i |} -> mkmod loc (Pmod_ident (long_uident i))
+  | {:module_expr@loc| $me1 $me2 |} ->
       mkmod loc (Pmod_apply (module_expr me1) (module_expr me2))
-  | <:module_expr@loc< functor ($n : $mt) -> $me >> ->
+  | {:module_expr@loc| functor ($n : $mt) -> $me |} ->
       mkmod loc (Pmod_functor (with_loc n loc) (module_type mt) (module_expr me))
-  | <:module_expr@loc< struct $sl end >> ->
+  | {:module_expr@loc| struct $sl end |} ->
       mkmod loc (Pmod_structure (str_item sl []))
-  | <:module_expr@loc< ($me : $mt) >> ->
+  | {:module_expr@loc| ($me : $mt) |} ->
         mkmod loc (Pmod_constraint (module_expr me) (module_type mt))
-  | <:module_expr@loc< (val $e : $pt) >> ->
+  | {:module_expr@loc| (val $e : $pt) |} ->
       mkmod loc (Pmod_unpack (
                  mkexp loc (Pexp_constraint (expr e,
                                              Some (mktyp loc (Ptyp_package (package_type pt))),
                                              None))))
-  | <:module_expr@loc< (val $e) >> ->
+  | {:module_expr@loc| (val $e) |} ->
       mkmod loc (Pmod_unpack (expr e))
-  | <:module_expr@loc< $anti:_ >> -> error loc "antiquotation in module_expr" ]
+  | {:module_expr@loc| $anti:_ |} -> error loc "antiquotation in module_expr" ]
 and str_item s l = match s with (* str_item -> structure -> structure*)
   [ {:str_item||} -> l
   | StCls loc cd ->
@@ -832,14 +832,14 @@ and str_item s l = match s with (* str_item -> structure -> structure*)
                     (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
   | {:str_item| $st1; $st2 |} -> str_item st1 (str_item st2 l)
   | StDir _ _ _ -> l
-  | <:str_item@loc< exception $uid:s >> ->
+  | {:str_item@loc| exception $uid:s |} ->
       [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
-  | <:str_item@loc< exception $uid:s of $t >> ->
+  | {:str_item@loc| exception $uid:s of $t |} ->
       [mkstr loc (Pstr_exception (with_loc s loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l ]
-  | <:str_item@loc< exception $uid:s = $i >> ->
+  | {:str_item@loc| exception $uid:s = $i |} ->
       [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ]
-  | <:str_item@loc< exception $uid:_ of $_ = $_ >> ->
+  | {:str_item@loc| exception $uid:_ of $_ = $_ |} ->
       error loc "type in exception alias"
   | StExc _ _ _ -> assert false (*FIXME*)
   | StExp loc e -> [mkstr loc (Pstr_eval (expr e)) :: l]
@@ -854,7 +854,7 @@ and str_item s l = match s with (* str_item -> structure -> structure*)
   | StTyp loc tdl -> [mkstr loc (Pstr_type (mktype_decl tdl [])) :: l]
   | StVal loc rf bi ->
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
-  | <:str_item@loc< $anti:_ >> -> error loc "antiquotation in str_item" ]
+  | {:str_item@loc| $anti:_ |} -> error loc "antiquotation in str_item" ]
 and class_type = fun (* class_type -> class_type *)
   [ CtCon loc ViNil id tl ->
     mkcty loc

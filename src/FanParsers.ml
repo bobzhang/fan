@@ -32,7 +32,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   let mk_debug _loc m fmt section args =
     let call = Expr.apply {:expr| Debug.printf $str:section $str:fmt |} args in
       {:expr| if $(mk_debug_mode _loc m) $str:section then $call else () |};
-  (* EXTEND *) {| Gram
+  {:extend| Gram
     LOCAL: start_debug end_or_in ;  
     expr:
     [ [ start_debug{m}; `LIDENT section; `STRING (_, fmt); (* FIXME move to `STRING(,_)*)
@@ -64,9 +64,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   open FanGrammar;
   open FanGrammarTools;
   FanConfig.antiquotations := true;
-  {|Gram
+  {:extend|Gram
       LOCAL:
-      delete_rule_body  delete_rule_header extend_header extend_body qualuid qualid t_qualid
+      (* delete_rule_body *)
+      (* extend_body *)
+      delete_rule_header extend_header  qualuid qualid t_qualid
       global entry position assoc level level_list rule_list rule psymbol
       name semi_sep string comma_patt pattern simple_expr delete_rules;
     expr: After "top"
@@ -239,13 +241,13 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
 
-   {/Gram expr: [ "["; sem_expr_for_list; "]"] /};
+   {:delete|Gram expr: [ "["; sem_expr_for_list; "]"] |};
 
 
 
   let comprehension_or_sem_expr_for_list =
     Gram.mk "comprehension_or_sem_expr_for_list";
-   {| Gram
+   {:extend| Gram
       LOCAL: item;
     expr: Level "simple"
       [ [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ] ]  
@@ -261,7 +263,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
       [ [  TRY [ patt{p}; "<-" -> p]{p} ;  expr Level "top"{e} -> `gen (p, e)
         | expr Level "top"{e} -> `cond e ] ] |};
   if is_revised ~expr ~sem_expr_for_list then
-    (* EXTEND *) {|Gram
+    (* EXTEND *) {:extend|Gram
       comprehension_or_sem_expr_for_list:
       [ [  expr Level "top"{e}; ";"; sem_expr_for_list{mk}; "::"; expr{last} ->
             {:expr| [ $e :: $(mk last) ] |}
@@ -364,7 +366,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
   let define eo x = begin 
       match eo with
       [ Some ([], e) ->
-        (* EXTEND *) {|Gram
+        (* EXTEND *) {:extend|Gram
         expr: Level "simple"
           [ [ `UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
         patt: Level "simple"
@@ -373,7 +375,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
             in (new Ast.reloc _loc)#patt p ]] |}
         (* END *)
       | Some (sl, e) ->
-          (* EXTEND *) {| Gram
+          (* EXTEND *) {:extend| Gram
             expr: Level "apply"
             [ [ `UIDENT $x; SELF{param} ->
               let el =  match param with
@@ -405,8 +407,8 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       begin
         let eo = List.assoc x !defined in
         match eo with
-        [ Some ([], _) -> {/ Gram expr: [`UIDENT $x ]  patt: [`UIDENT $x ] /}
-        | Some (_, _) ->  {/ Gram expr: [`UIDENT $x; SELF ] patt: [`UIDENT $x; SELF] /}
+        [ Some ([], _) -> {:delete| Gram expr: [`UIDENT $x ]  patt: [`UIDENT $x ] |}
+        | Some (_, _) ->  {:delete| Gram expr: [`UIDENT $x; SELF ] patt: [`UIDENT $x; SELF] |}
         | None -> () ];
         defined := list_remove x !defined;
       end
@@ -477,7 +479,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
    in SdStr(item)
    ;
 
-  (* EXTEND *) {|Gram
+  (* EXTEND *) {:extend|Gram
      LOCAL: macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
      else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
      sglist_else endif opt_macro_value uident ;
@@ -818,7 +820,7 @@ New syntax:\
   end;
 
   (* main grammar extension [Line 826 ~ Line 2123]*)
-  (* EXTEND *) {|Gram
+  (* EXTEND *) {:extend|Gram
     LOCAL:
     string_list  infixop5 infixop6
     module_longident_dot_lparen sequence' fun_def fun_def_cont fun_def_cont_no_when
@@ -1009,8 +1011,8 @@ New syntax:\
         | "do"; do_sequence{seq} -> Expr.mksequence _loc seq
         | "for"; a_LIDENT{i}; "="; sequence{e1}; direction_flag{df};
           sequence{e2}; "do"; do_sequence{seq} ->
-            <:expr< for $i = $(Expr.mksequence' _loc e1) $to:df $(Expr.mksequence' _loc e2) do
-              { $seq } >>
+            {:expr| for $i = $(Expr.mksequence' _loc e1) $to:df $(Expr.mksequence' _loc e2) do
+              { $seq } |}
         | "while"; sequence{e}; "do"; do_sequence{seq} ->
             {:expr| while $(Expr.mksequence' _loc e) do { $seq } |}
         | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
@@ -2131,7 +2133,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
   open FanStreamTools;
-  (* EXTEND *) {|Gram
+  {:extend|Gram
       LOCAL: parser_ipatt stream_expr_comp  stream_expr_comp_list
       stream_patt_comp stream_patt_comp_err 
       stream_patt_comp_err_list stream_begin stream_end stream_patt

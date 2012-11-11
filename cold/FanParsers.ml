@@ -132,8 +132,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
   let _ = FanConfig.antiquotations := true
   let _ =
     let grammar_entry_create = Gram.mk in
-    let delete_rule_body: 'delete_rule_body Gram.t =
-          grammar_entry_create "delete_rule_body"
+    let delete_rule_header: 'delete_rule_header Gram.t =
+          grammar_entry_create "delete_rule_header"
     and delete_rules: 'delete_rules Gram.t =
           grammar_entry_create "delete_rules"
     and simple_expr: 'simple_expr Gram.t = grammar_entry_create "simple_expr"
@@ -154,11 +154,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
     and t_qualid: 't_qualid Gram.t = grammar_entry_create "t_qualid"
     and qualid: 'qualid Gram.t = grammar_entry_create "qualid"
     and qualuid: 'qualuid Gram.t = grammar_entry_create "qualuid"
-    and extend_body: 'extend_body Gram.t = grammar_entry_create "extend_body"
     and extend_header: 'extend_header Gram.t =
-          grammar_entry_create "extend_header"
-    and delete_rule_header: 'delete_rule_header Gram.t =
-          grammar_entry_create "delete_rule_header" in
+          grammar_entry_create "extend_header" in
     Gram.extend (expr : 'expr Gram.t )
       ((Some (`After "top")),
         [(None, None,

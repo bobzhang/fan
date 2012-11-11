@@ -137,11 +137,11 @@ let map _loc p e l =  match (p, e) with
       if Ast.is_irrefut_patt p then
         {:expr| List.map (fun $p -> $e) $l |}
       else
-        <:expr< List.fold_right
+        {:expr| List.fold_right
           (fun
             [ $pat:p when true -> (fun x xs -> [ x :: xs ]) $e
             | _ -> (fun l -> l) ])
-          $l [] >> ];
+          $l [] |} ];
 
 
 let filter _loc p b l =
@@ -196,14 +196,14 @@ let substp _loc env =
       [ {:expr| $lid:x |} | {:expr| $uid:x |} as e ->
           try List.assoc x env with
           [ Not_found -> super#expr e ]
-      | <:expr@_loc< LOCATION_OF $lid:x >> | <:expr@_loc< LOCATION_OF $uid:x >> as e ->
+      | {:expr@_loc| LOCATION_OF $lid:x |} | {:expr@_loc| LOCATION_OF $uid:x |} as e ->
           try
             let loc = Ast.loc_of_expr (List.assoc x env) in
             let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
-            <:expr< FanLoc.of_tuple
+            {:expr| FanLoc.of_tuple
               ($`str:a, $`int:b, $`int:c, $`int:d,
                $`int:e, $`int:f, $`int:g,
-               $(if h then {:expr| true |} else {:expr| false |} )) >>
+               $(if h then {:expr| true |} else {:expr| false |} )) |}
           with [ Not_found -> super#expr e ]
       | e -> super#expr e ];
 
@@ -218,13 +218,13 @@ let substp _loc env =
 (* utilit for MakeNothing *)
  let map_expr = fun
    [ {:expr| $e NOTHING |} | {:expr| fun $({:patt| NOTHING |} ) -> $e |} -> e
-   | <:expr@_loc< $(lid:"__FILE__") >> -> {:expr| $(`str:FanLoc.file_name _loc) |}
-   | <:expr@_loc< $(lid:"__LOCATION__") >> ->
+   | {:expr@_loc| $(lid:"__FILE__") |} -> {:expr| $(`str:FanLoc.file_name _loc) |}
+   | {:expr@_loc| $(lid:"__LOCATION__") |} ->
      let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple _loc in
-     <:expr< FanLoc.of_tuple
+     {:expr| FanLoc.of_tuple
        ($`str:a, $`int:b, $`int:c, $`int:d,
         $`int:e, $`int:f, $`int:g,
-        $(if h then {:expr| true |} else {:expr| false |} )) >>
+        $(if h then {:expr| true |} else {:expr| false |} )) |}
    | e -> e];
     
 
@@ -233,7 +233,7 @@ let substp _loc env =
 let antiquot_expander ~parse_patt ~parse_expr = object
   inherit Ast.map as super;
   method! patt = fun
-    [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p ->
+    [ {:patt@_loc| $anti:s |} | {:patt@_loc| $str:s |} as p ->
       let mloc _loc = Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
       handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
         ~decorate:(fun n p ->
@@ -258,7 +258,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | _ -> p ])
       | p -> super#patt p ];
     method! expr = fun
-      [ <:expr@_loc< $anti:s >> | <:expr@_loc< $str:s >> as e ->
+      [ {:expr@_loc| $anti:s |} | {:expr@_loc| $str:s |} as e ->
           let mloc _loc = Meta.MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n e -> (* e is the parsed Ast node already *)
@@ -323,7 +323,7 @@ let capture_antiquot = object
   inherit Camlp4Ast.map as super;
   val mutable constraints =[];
   method! patt = fun
-  [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p when is_antiquot s -> begin
+  [ {:patt@_loc| $anti:s |} | {:patt@_loc| $str:s |} as p when is_antiquot s -> begin
     match view_antiquot s with
     [Some(_name,code) -> begin 
       (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)

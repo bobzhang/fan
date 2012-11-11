@@ -4,7 +4,7 @@ type  stream_filter 'a 'loc =
      Stream.t ('a *  'loc)-> Stream.t ('a*  'loc);
 (** The generic quotation type.
     To see how fields are used here is an example:
-    <:q_name@q_loc<q_contents>>
+    {:q_name@q_loc|q_contents|}
     The last one, q_shift is equal to the length of "<:q_name@q_loc<". *)
 type quotation ={
     q_name : string;

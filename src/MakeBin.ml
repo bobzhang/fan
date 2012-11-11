@@ -179,11 +179,11 @@ module Camlp4Bin
           |> clean
           |> pr ?input_file:(Some name) ?output_file:!output_file ;
       let gind = fun
-        [ <:sig_item@loc< # $n $str:s >> -> Some (loc, n, s)
+        [ {:sig_item@loc| # $n $str:s |} -> Some (loc, n, s)
         | _ -> None ];
       
       let gimd = fun
-        [ <:str_item@loc< # $n $str:s >> -> Some (loc, n, s)
+        [ {:str_item@loc| # $n $str:s |} -> Some (loc, n, s)
         | _ -> None ];
 
       (* [entrance] *)  

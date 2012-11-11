@@ -202,6 +202,8 @@ module type Camlp4Syntax =
     val level : FanGrammar.level Gram.t
     val level_list : FanGrammar.level list Gram.t
     val entry : FanGrammar.entry Gram.t
+    val extend_body : Ast.expr Gram.t
+    val delete_rule_body : Ast.expr Gram.t
   end
 module type SyntaxExtension =
   functor (Syn : Camlp4Syntax) ->

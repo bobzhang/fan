@@ -147,7 +147,8 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let symbol = Gram.mk "symbol" let rule = Gram.mk "rule"
   let rule_list = Gram.mk "rule_list" let psymbol = Gram.mk "psymbol"
   let level = Gram.mk "level" let level_list = Gram.mk "level_list"
-  let entry = Gram.mk "entry"
+  let entry = Gram.mk "entry" let extend_body = Gram.mk "extend_body"
+  let delete_rule_body = Gram.mk "delete_rule_body"
   let _ =
     Gram.extend (top_phrase : 'top_phrase Gram.t )
       (None,
@@ -166,6 +167,9 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
     let parse_expr loc str = Gram.parse_string antiquot_expr loc str
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str
     end module Quotation = Quotation.Make(AntiquotSyntax)
+  let _ = Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body
+  let _ =
+    Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body
   let wrap directive_handler pa init_loc cs =
     let rec loop loc =
       let (pl,stopped_at_directive) = pa loc cs in

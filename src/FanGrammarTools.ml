@@ -118,8 +118,8 @@ let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string
                  *)
       | { pattern = Some {:patt| ($_ $(tup:{:patt| _ |}) as $lid:s) |} ; _} ->
           (tok_match_pl,
-           <:expr< let $lid:s = $(id:gm()).string_of_token $lid:s
-           in $act >>, i) (* FIXME should be removed later *)
+           {:expr| let $lid:s = $(id:gm()).string_of_token $lid:s
+           in $act |}, i) (* FIXME should be removed later *)
       | { pattern = Some p; text=TXtok _ _  _ _ ; _ } ->
           let id = prefix ^ string_of_int i in
           (Some (match (tok_match_pl) with
@@ -134,13 +134,13 @@ let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string
     let e2 = match (tok_match_pl) with
     [ None -> e1
     | Some ({:expr| $t1, $t2 |}, {:patt| $p1, $p2 |}) ->
-        <:expr< match ($t1, $t2) with
+        {:expr| match ($t1, $t2) with
         [ ($p1, $p2) -> $e1
-        | _ -> assert false ] >>
+        | _ -> assert false ] |}
         | Some (tok, match_) ->
-            <:expr< match $tok with
+            {:expr| match $tok with
             [ $pat:match_ -> $e1
-            | _ -> assert false ] >> ] in
+            | _ -> assert false ] |} ] in
     {:expr| fun ($locid : FanLoc.t) -> $e2 |} in (*FIXME hard coded Loc*)
   let (txt, _) =
     List.fold_left
@@ -193,14 +193,14 @@ let rec make_expr entry tvar =  fun
   | TXnext _loc ->  {:expr| `Snext |} 
   | TXnterm _loc n lev -> match lev with
         [ Some lab ->
-          <:expr< `Snterml
-            (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))), $str:lab) >> 
+          {:expr| `Snterml
+            (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))), $str:lab) |} 
         | None ->
             if n.tvar = tvar then {:expr| `Sself|}
             else
-              <:expr<
+              {:expr|
               `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar)))
-              >>   ]
+              |}   ]
   | TXopt _loc t -> {:expr| `Sopt $(make_expr entry "" t) |}
   | TXtry _loc t -> {:expr| `Stry $(make_expr entry "" t) |}
   | TXrules _loc rl ->
@@ -282,9 +282,9 @@ let let_in_of_extend _loc gram gl  default =
             let locals =
               List.fold_right (fun name acc -> {:binding| $acc and $(local_binding_of_name name) |})
                 xs (local_binding_of_name x) in
-              <:expr<
+              {:expr|
             let grammar_entry_create = $entry_mk in
-            let $locals in $default >> ] 
+            let $locals in $default |} ] 
   end ]  ;
 
 (* the [gl] is global entry name list,
