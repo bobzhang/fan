@@ -236,8 +236,8 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
         [ None -> exp_ast
         | Some name ->
         let rec subst_first_loc =  fun
-          [ <:patt@_loc< Ast.$uid:u $_ >> -> <:patt< Ast.$uid:u $lid:name >>
-          | <:patt@_loc< $a $b >> -> <:patt< $(subst_first_loc a) $b >>
+          [ <:patt@_loc< Ast.$uid:u $_ >> -> {:patt| Ast.$uid:u $lid:name |}
+          | <:patt@_loc< $a $b >> -> {:patt| $(subst_first_loc a) $b |}
           | p -> p ] in
         subst_first_loc exp_ast ]
       end in begin

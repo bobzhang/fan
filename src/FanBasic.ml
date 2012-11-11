@@ -9,7 +9,7 @@ open Format;
 exception Unhandled of Ast.ctyp ;
 exception Finished of Ast.expr;
 let _loc = FanLoc.ghost;
-let unit_literal = <:expr< () >> ;
+let unit_literal = {:expr| () |} ;
 
 (* generate name *)  
 let x ?(off=0) (i:int)    =
@@ -19,11 +19,11 @@ let x ?(off=0) (i:int)    =
     String.of_char base ^ string_of_int i;
     
 let xid ?(off=0) (i:int) : Ast.ident  =
-  <:ident< $(lid:x ~off i) >> ;
+  {:ident| $(lid:x ~off i) |} ;
   
 let allx ?(off=0) i =  "all_" ^x ~off i ;
   
-let allxid ?(off=0) i = <:ident< $(lid:allx ~off i) >>;
+let allxid ?(off=0) i = {:ident| $(lid:allx ~off i) |};
 
 (* check whether the introduced name is valid or not *)  
 let check_valid str =
@@ -113,7 +113,7 @@ let p_ctyp f e =
 (* let parse_module_type str = *)
 (*   try *)
 (*      match  Gram.parse_string Syntax.module_type _loc str with *)
-(*      [ <:module_type< .$id:i$. >>  -> i *)
+(*      [ {:module_type| .$id:i$. |}  -> i *)
 (*      | _ -> begin *)
 (*          eprintf "the module type %s is not a simple module type" str; *)
 (*          exit 2; *)
@@ -145,10 +145,10 @@ let p_ctyp f e =
 (*   let loc_name = ref None; *)
 (*   let meta_loc_expr _loc loc = *)
 (*     match loc_name.val with *)
-(*     [ None -> <:expr< .$lid:Loc.name.val$. >> *)
+(*     [ None -> {:expr| .$lid:Loc.name.val$. |} *)
 (*     | Some "here" -> MetaLocHere.meta_loc_expr _loc loc *)
-(*     | Some x -> <:expr< .$lid:x$. >> ]; *)
-(*   let meta_loc_patt _loc _ = <:patt< _ >>; *)
+(*     | Some x -> {:expr| .$lid:x$. |} ]; *)
+(*   let meta_loc_patt _loc _ = {:patt| _ |}; *)
 (* end; *)
 (* module MetaAst = Ast.Meta.Make MetaLoc; *)
 
@@ -214,9 +214,9 @@ let p_ctyp f e =
 (*           let rec subst_first_loc = *)
 (*           fun *)
 (*           [ <:patt@_loc< Ast. .$uid:u$. .$_$. >> *)
-(*             -> <:patt< Ast. .$uid:u$. .$lid:name$. >> *)
+(*             -> {:patt| Ast. .$uid:u$. .$lid:name$. |} *)
 (*           | <:patt@_loc< .$a$. .$b$. >> *)
-(*             -> <:patt< .$subst_first_loc a$. .$b$. >> *)
+(*             -> {:patt| .$subst_first_loc a$. .$b$. |} *)
 (*           | p -> p ] in *)
 (*         subst_first_loc exp_ast ] in *)
 (*     let open Quotation in  *)
@@ -238,7 +238,7 @@ let p_ctyp f e =
 (*     let add_quotation_of_expr ~name ~entry = begin *)
 (*       let expand_fun = parse_quot_string & eoi_entry entry in  *)
 (*       let mk_fun loc loc_name_opt s = *)
-(*         <:str_item< .$exp:expand_fun loc loc_name_opt s$. >> in  *)
+(*         {:str_item| .$exp:expand_fun loc loc_name_opt s$. |} in  *)
 (*       let () = add name Quotation.DynAst.expr_tag expand_fun in  *)
 (*       let () = add name Quotation.DynAst.str_item_tag mk_fun in *)
 (*       () *)

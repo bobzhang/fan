@@ -63,17 +63,17 @@ let rec strict_clean = parser
   | [< x; 'xs>]  -> [< x ; 'strict_clean xs >]
   | [< >] -> [< >] ];
     
-let debug_from_string str =
+let debug_from_string ?quotations str =
   let loc = FanLoc.string_loc  in
-  let stream = from_string loc str  in
+  let stream = from_string ?quotations loc str  in
   stream |> clean |> Stream.iter
     (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc);
 
-let debug_from_file file =
+let debug_from_file ?quotations file =
   let loc = FanLoc.mk file in
   let chan = open_in file in
   let stream = Stream.of_channel  chan in
-  from_stream loc stream |> clean |> Stream.iter (
+  from_stream ?quotations loc stream |> clean |> Stream.iter (
   fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc
  );
 

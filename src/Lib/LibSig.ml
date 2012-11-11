@@ -57,7 +57,7 @@ type full_id_transform =
     | `Ident of Ast.ident -> Ast.ident
     (* just pass the ident to user do ident transform *)
     | `Last of string -> Ast.ident
-    (* pass the string, and << .$old$. .$return$. >>  *)      
+    (* pass the string, and {| .$old$. .$return$. |}  *)      
     | `Obj of string -> string ];
 
 type named_type = (string*Ast.ctyp)

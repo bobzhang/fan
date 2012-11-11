@@ -153,10 +153,11 @@ let in_comment c = { (c) with in_comment = true }
 (* update the lexing position to the loc *)    
 let set_start_p c = c.lexbuf.lex_start_p <- FanLoc.start_pos c.loc
 
-(* shift the lexing buffer, usually shift back *)    
+(* [unsafe] shift the lexing buffer, usually shift back *)    
 let move_start_p shift c =
-  let p = c.lexbuf.lex_start_p in
-  c.lexbuf.lex_start_p <- { (p) with pos_cnum = p.pos_cnum + shift }
+  c.lexbuf.lex_curr_pos <- c.lexbuf.lex_curr_pos + shift
+  (* let p = c.lexbuf.lex_start_p in *)
+  (* c.lexbuf.lex_start_p <- { (p) with pos_cnum = p.pos_cnum + shift } *)
       
 (* create a new context with  the location of the context for the lexer
    the old context was kept *)      
@@ -231,7 +232,7 @@ let symbolchar = '*' | not_star_symbolchar
 let quotchar =
   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
 let extra_quot =
-  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\']
+  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\'] (* FIX remove the '\' as extra quot*)
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
 let decimal_literal =
   ['0'-'9'] ['0'-'9' '_']*
@@ -341,13 +342,13 @@ rule token c = parse
                    (match p with Some x -> String.make 1 x | None -> "")
                    ^ beginning))
                c                       }
-       (* | "<<>>" *)
+       (* | "{||}" *)
        | "{||}"
            { if quotations c
            then `QUOTATION { FanSig.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
            else parse
                (symbolchar_star
-                  (* "<<>>" *)
+                  (* "{||}" *)
                   "{||}"
                ) c                                   }
        (* | "<@" *)

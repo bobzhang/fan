@@ -43,7 +43,7 @@ let setup_op_parser entry p =
     (parser
         [< (`KEYWORD x | `SYMBOL x, ti) when p x >] ->
           let _loc = Gram.token_location ti in
-          <:expr< $lid:x >>);
+          {:expr| $lid:x |});
 
 let rec infix_kwds_filter = parser
   [ [< ((`KEYWORD "(", _) as tok); 'xs >] ->
@@ -61,7 +61,7 @@ let rec infix_kwds_filter = parser
 (*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_str_item fan_expr  fan_class_str_item fan_ctyp  ; *)
 (*   fan_quots: *)
 (*     ["top" *)
-(*        [  LIST0 [ fan_quot{x}; ";" -> x ]{strs} -> <:expr< begin $list:strs end >> ] ] *)
+(*        [  LIST0 [ fan_quot{x}; ";" -> x ]{strs} -> {:expr| begin $list:strs end |} ] ] *)
 (*   fan_quot: *)
 (*     ["top" *)
 (*        [ "lang"; STRING{quot}-> begin      Quotation.default:= quot;  unit_literal _loc end  *)
