@@ -25,23 +25,21 @@ let delete_rule_in_tree entry =
     | ([],LocAct (_,action::list)) -> Some (None, (LocAct (action, list))) in
   delete_in_tree
 let rec decr_keyw_use gram =
-          function
-          | `Skeyword kwd -> removing gram kwd
-          | `Smeta (_,sl,_) -> List.iter (decr_keyw_use gram) sl
-          | `Slist0 s|`Slist1 s|`Sopt s|`Stry s -> decr_keyw_use gram s
-          | `Slist0sep (s1,s2) ->
-              (decr_keyw_use gram s1; decr_keyw_use gram s2)
-          | `Slist1sep (s1,s2) ->
-              (decr_keyw_use gram s1; decr_keyw_use gram s2)
-          | `Stree t -> decr_keyw_use_in_tree gram t
-          | `Sself|`Snext|`Snterm _|`Snterml (_,_)|`Stoken _ -> ()
+  function
+  | `Skeyword kwd -> removing gram kwd
+  | `Smeta (_,sl,_) -> List.iter (decr_keyw_use gram) sl
+  | `Slist0 s|`Slist1 s|`Sopt s|`Stry s -> decr_keyw_use gram s
+  | `Slist0sep (s1,s2) -> (decr_keyw_use gram s1; decr_keyw_use gram s2)
+  | `Slist1sep (s1,s2) -> (decr_keyw_use gram s1; decr_keyw_use gram s2)
+  | `Stree t -> decr_keyw_use_in_tree gram t
+  | `Sself|`Snext|`Snterm _|`Snterml (_,_)|`Stoken _ -> ()
 and decr_keyw_use_in_tree gram =
-      function
-      | DeadEnd |LocAct (_,_) -> ()
-      | Node n ->
-          (decr_keyw_use gram n.node;
-           decr_keyw_use_in_tree gram n.son;
-           decr_keyw_use_in_tree gram n.brother)
+  function
+  | DeadEnd |LocAct (_,_) -> ()
+  | Node n ->
+      (decr_keyw_use gram n.node;
+       decr_keyw_use_in_tree gram n.son;
+       decr_keyw_use_in_tree gram n.brother)
 let rec delete_rule_in_suffix entry symbols =
   function
   | lev::levs ->

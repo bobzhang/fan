@@ -133,9 +133,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
   let _ =
     let grammar_entry_create = Gram.mk in
     let delete_rule_header: 'delete_rule_header Gram.t =
-          grammar_entry_create "delete_rule_header"
+      grammar_entry_create "delete_rule_header"
     and delete_rules: 'delete_rules Gram.t =
-          grammar_entry_create "delete_rules"
+      grammar_entry_create "delete_rules"
     and simple_expr: 'simple_expr Gram.t = grammar_entry_create "simple_expr"
     and pattern: 'pattern Gram.t = grammar_entry_create "pattern"
     and comma_patt: 'comma_patt Gram.t = grammar_entry_create "comma_patt"
@@ -155,23 +155,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
     and qualid: 'qualid Gram.t = grammar_entry_create "qualid"
     and qualuid: 'qualuid Gram.t = grammar_entry_create "qualuid"
     and extend_header: 'extend_header Gram.t =
-          grammar_entry_create "extend_header" in
-    Gram.extend (expr : 'expr Gram.t )
-      ((Some (`After "top")),
-        [(None, None,
-           [([`Skeyword "{/";
-             `Snterm
-               (Gram.obj (delete_rule_body : 'delete_rule_body Gram.t ));
-             `Skeyword "/}"],
-              (Gram.mk_action
-                 (fun _  (e : 'delete_rule_body)  _  (_loc : FanLoc.t)  ->
-                    (e : 'expr ))));
-           ([`Skeyword "{|";
-            `Snterm (Gram.obj (extend_body : 'extend_body Gram.t ));
-            `Skeyword "|}"],
-             (Gram.mk_action
-                (fun _  (e : 'extend_body)  _  (_loc : FanLoc.t)  ->
-                   (e : 'expr ))))])]);
+      grammar_entry_create "extend_header" in
     Gram.extend (extend_header : 'extend_header Gram.t )
       (None,
         [(None, None,
@@ -1073,19 +1057,18 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
       let ch = open_in file in
       let st = Stream.of_channel ch in Gram.parse rule (FanLoc.mk file) st
   let rec execute_macro nil cons =
-            function
-            | SdStr i -> i
-            | SdDef (x,eo) -> (define eo x; nil)
-            | SdUnd x -> (undef x; nil)
-            | SdITE (b,l1,l2) ->
-                execute_macro_list nil cons (if b then l1 else l2)
-            | SdLazy l -> Lazy.force l
+    function
+    | SdStr i -> i
+    | SdDef (x,eo) -> (define eo x; nil)
+    | SdUnd x -> (undef x; nil)
+    | SdITE (b,l1,l2) -> execute_macro_list nil cons (if b then l1 else l2)
+    | SdLazy l -> Lazy.force l
   and execute_macro_list nil cons =
-        function
-        | [] -> nil
-        | hd::tl ->
-            let il1 = execute_macro nil cons hd in
-            let il2 = execute_macro_list nil cons tl in cons il1 il2
+    function
+    | [] -> nil
+    | hd::tl ->
+        let il1 = execute_macro nil cons hd in
+        let il2 = execute_macro_list nil cons tl in cons il1 il2
   let stack = Stack.create ()
   let make_SdITE_result st1 st2 =
     let test = Stack.pop stack in SdITE (test, st1, st2)
@@ -1104,7 +1087,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
     let macro_def: 'macro_def Gram.t = grammar_entry_create "macro_def"
     and uident: 'uident Gram.t = grammar_entry_create "uident"
     and opt_macro_value: 'opt_macro_value Gram.t =
-          grammar_entry_create "opt_macro_value"
+      grammar_entry_create "opt_macro_value"
     and endif: 'endif Gram.t = grammar_entry_create "endif"
     and sglist_else: 'sglist_else Gram.t = grammar_entry_create "sglist_else"
     and sglist_then: 'sglist_then Gram.t = grammar_entry_create "sglist_then"
@@ -1112,15 +1095,15 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
     and smlist_then: 'smlist_then Gram.t = grammar_entry_create "smlist_then"
     and else_expr: 'else_expr Gram.t = grammar_entry_create "else_expr"
     and else_macro_def_sig: 'else_macro_def_sig Gram.t =
-          grammar_entry_create "else_macro_def_sig"
+      grammar_entry_create "else_macro_def_sig"
     and else_macro_def: 'else_macro_def Gram.t =
-          grammar_entry_create "else_macro_def"
+      grammar_entry_create "else_macro_def"
     and uident_eval_ifndef: 'uident_eval_ifndef Gram.t =
-          grammar_entry_create "uident_eval_ifndef"
+      grammar_entry_create "uident_eval_ifndef"
     and uident_eval_ifdef: 'uident_eval_ifdef Gram.t =
-          grammar_entry_create "uident_eval_ifdef"
+      grammar_entry_create "uident_eval_ifdef"
     and macro_def_sig: 'macro_def_sig Gram.t =
-          grammar_entry_create "macro_def_sig" in
+      grammar_entry_create "macro_def_sig" in
     Gram.extend (str_item : 'str_item Gram.t )
       ((Some `First),
         [(None, None,
@@ -1738,21 +1721,21 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
     let grammar_entry_create = Gram.mk in
     let string_list: 'string_list Gram.t = grammar_entry_create "string_list"
     and unquoted_typevars: 'unquoted_typevars Gram.t =
-          grammar_entry_create "unquoted_typevars"
+      grammar_entry_create "unquoted_typevars"
     and value_val_opt_override: 'value_val_opt_override Gram.t =
-          grammar_entry_create "value_val_opt_override"
+      grammar_entry_create "value_val_opt_override"
     and method_opt_override: 'method_opt_override Gram.t =
-          grammar_entry_create "method_opt_override"
+      grammar_entry_create "method_opt_override"
     and optional_type_parameter: 'optional_type_parameter Gram.t =
-          grammar_entry_create "optional_type_parameter"
+      grammar_entry_create "optional_type_parameter"
     and fun_def_cont_no_when: 'fun_def_cont_no_when Gram.t =
-          grammar_entry_create "fun_def_cont_no_when"
+      grammar_entry_create "fun_def_cont_no_when"
     and fun_def_cont: 'fun_def_cont Gram.t =
-          grammar_entry_create "fun_def_cont"
+      grammar_entry_create "fun_def_cont"
     and fun_def: 'fun_def Gram.t = grammar_entry_create "fun_def"
     and sequence': 'sequence' Gram.t = grammar_entry_create "sequence'"
     and module_longident_dot_lparen: 'module_longident_dot_lparen Gram.t =
-          grammar_entry_create "module_longident_dot_lparen"
+      grammar_entry_create "module_longident_dot_lparen"
     and infixop6: 'infixop6 Gram.t = grammar_entry_create "infixop6"
     and infixop5: 'infixop5 Gram.t = grammar_entry_create "infixop5" in
     Gram.extend (module_expr : 'module_expr Gram.t )
@@ -7767,26 +7750,26 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
   let _ =
     let grammar_entry_create = Gram.mk in
     let parser_ipatt: 'parser_ipatt Gram.t =
-          grammar_entry_create "parser_ipatt"
+      grammar_entry_create "parser_ipatt"
     and stream_quot: 'stream_quot Gram.t = grammar_entry_create "stream_quot"
     and stream_expr: 'stream_expr Gram.t = grammar_entry_create "stream_expr"
     and parser_case_list: 'parser_case_list Gram.t =
-          grammar_entry_create "parser_case_list"
+      grammar_entry_create "parser_case_list"
     and parser_case: 'parser_case Gram.t = grammar_entry_create "parser_case"
     and stream_patt: 'stream_patt Gram.t = grammar_entry_create "stream_patt"
     and stream_end: 'stream_end Gram.t = grammar_entry_create "stream_end"
     and stream_begin: 'stream_begin Gram.t =
-          grammar_entry_create "stream_begin"
+      grammar_entry_create "stream_begin"
     and stream_patt_comp_err_list: 'stream_patt_comp_err_list Gram.t =
-          grammar_entry_create "stream_patt_comp_err_list"
+      grammar_entry_create "stream_patt_comp_err_list"
     and stream_patt_comp_err: 'stream_patt_comp_err Gram.t =
-          grammar_entry_create "stream_patt_comp_err"
+      grammar_entry_create "stream_patt_comp_err"
     and stream_patt_comp: 'stream_patt_comp Gram.t =
-          grammar_entry_create "stream_patt_comp"
+      grammar_entry_create "stream_patt_comp"
     and stream_expr_comp_list: 'stream_expr_comp_list Gram.t =
-          grammar_entry_create "stream_expr_comp_list"
+      grammar_entry_create "stream_expr_comp_list"
     and stream_expr_comp: 'stream_expr_comp Gram.t =
-          grammar_entry_create "stream_expr_comp" in
+      grammar_entry_create "stream_expr_comp" in
     Gram.extend (expr : 'expr Gram.t )
       ((Some (`Level "top")),
         [(None, None,

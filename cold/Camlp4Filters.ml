@@ -400,252 +400,240 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
     let opt_app e ox =
       match ox with | Some x -> Ast.ExApp (_loc, e, x) | _ -> e
     let rec expr_of_ty x ty =
-              let rec self ?(arity= 0)  ox =
-                function
-                | t when is_unknown t ->
-                    self ox (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown"))))
-                | Ast.TyId (_,Ast.IdLid (_,id)) ->
-                    let () = store_if_builtin_type id in
-                    opt_bind' ox (Ast.ExId (_loc, (Ast.IdLid (_loc, "o"))))
-                      (fun e1  -> Ast.ExSnd (_loc, e1, id))
-                | Ast.TyApp (_loc,t1,t2) ->
-                    let e =
-                      opt_bind None (self ~arity:(arity + 1) None t1)
-                        (fun e1  ->
-                           Ast.ExApp (_loc, e1, (mkfuno (self None t2)))) in
-                    opt_app e ox
-                | Ast.TyTup (_,t) -> opt_app (mk_tuple (self ~arity:0) t) ox
-                | Ast.TyQuo (_,s) ->
-                    opt_app
-                      (Ast.ExApp
-                         (_loc,
-                           (Ast.ExId (_loc, (Ast.IdLid (_loc, ("_f_" ^ s))))),
-                           (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))))) ox
-                | _ ->
-                    self ox (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown")))) in
-              self x ty
+      let rec self ?(arity= 0)  ox =
+        function
+        | t when is_unknown t ->
+            self ox (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown"))))
+        | Ast.TyId (_,Ast.IdLid (_,id)) ->
+            let () = store_if_builtin_type id in
+            opt_bind' ox (Ast.ExId (_loc, (Ast.IdLid (_loc, "o"))))
+              (fun e1  -> Ast.ExSnd (_loc, e1, id))
+        | Ast.TyApp (_loc,t1,t2) ->
+            let e =
+              opt_bind None (self ~arity:(arity + 1) None t1)
+                (fun e1  -> Ast.ExApp (_loc, e1, (mkfuno (self None t2)))) in
+            opt_app e ox
+        | Ast.TyTup (_,t) -> opt_app (mk_tuple (self ~arity:0) t) ox
+        | Ast.TyQuo (_,s) ->
+            opt_app
+              (Ast.ExApp
+                 (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, ("_f_" ^ s))))),
+                   (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))))) ox
+        | _ -> self ox (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown")))) in
+      self x ty
     and expr_of_ty' e t = expr_of_ty (Some e) t
     and out_constr_patt s = Ast.PaId (_loc, (Ast.IdUid (_loc, s)))
     and out_constr_expr s = Ast.ExId (_loc, (Ast.IdUid (_loc, s)))
     and match_case_of_constructor s t =
-          chain_tuple (apply_patt (out_constr_patt s))
-            (apply_expr (out_constr_expr s)) expr_of_ty
-            (Ast.list_of_ctyp t [])
+      chain_tuple (apply_patt (out_constr_patt s))
+        (apply_expr (out_constr_expr s)) expr_of_ty (Ast.list_of_ctyp t [])
     and match_case_of_sum_type =
-          function
-          | Ast.TyOr (_,t1,t2) ->
-              Ast.McOr
-                (_loc, (match_case_of_sum_type t1),
-                  (match_case_of_sum_type t2))
-          | Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,s)),t) ->
-              match_case_of_constructor s t
-          | Ast.TyId (_,Ast.IdUid (_,s)) ->
-              match_case_of_constructor s (Ast.TyNil _loc)
-          | _ -> assert false
+      function
+      | Ast.TyOr (_,t1,t2) ->
+          Ast.McOr
+            (_loc, (match_case_of_sum_type t1), (match_case_of_sum_type t2))
+      | Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,s)),t) ->
+          match_case_of_constructor s t
+      | Ast.TyId (_,Ast.IdUid (_,s)) ->
+          match_case_of_constructor s (Ast.TyNil _loc)
+      | _ -> assert false
     and match_case_of_poly_constructor s ts =
-          chain_tuple
-            (function
-             | [] -> Ast.PaVrn (_loc, s)
-             | p::[] -> Ast.PaApp (_loc, (Ast.PaVrn (_loc, s)), p)
-             | ps ->
-                 Ast.PaApp
-                   (_loc, (Ast.PaVrn (_loc, s)),
-                     (Ast.PaTup (_loc, (Ast.paCom_of_list ps)))))
-            (function
-             | [] -> Ast.ExVrn (_loc, s)
-             | e::[] -> Ast.ExApp (_loc, (Ast.ExVrn (_loc, s)), e)
-             | es ->
-                 Ast.ExApp
-                   (_loc, (Ast.ExVrn (_loc, s)),
-                     (Ast.ExTup (_loc, (Ast.exCom_of_list es))))) expr_of_ty
-            ts
+      chain_tuple
+        (function
+         | [] -> Ast.PaVrn (_loc, s)
+         | p::[] -> Ast.PaApp (_loc, (Ast.PaVrn (_loc, s)), p)
+         | ps ->
+             Ast.PaApp
+               (_loc, (Ast.PaVrn (_loc, s)),
+                 (Ast.PaTup (_loc, (Ast.paCom_of_list ps)))))
+        (function
+         | [] -> Ast.ExVrn (_loc, s)
+         | e::[] -> Ast.ExApp (_loc, (Ast.ExVrn (_loc, s)), e)
+         | es ->
+             Ast.ExApp
+               (_loc, (Ast.ExVrn (_loc, s)),
+                 (Ast.ExTup (_loc, (Ast.exCom_of_list es))))) expr_of_ty ts
     and match_case_of_poly_sum_type =
-          function
-          | Ast.TyOr (_,t1,t2) ->
-              Ast.McOr
-                (_loc, (match_case_of_poly_sum_type t1),
-                  (match_case_of_poly_sum_type t2))
-          | Ast.TyOf (_,Ast.TyVrn (_,i),Ast.TyTup (_,t)) ->
-              match_case_of_poly_constructor i (Ast.list_of_ctyp t [])
-          | Ast.TyOf (_,Ast.TyVrn (_,i),t) ->
-              match_case_of_poly_constructor i [t]
-          | Ast.TyVrn (_,i) -> match_case_of_poly_constructor i []
-          | _ -> assert false
+      function
+      | Ast.TyOr (_,t1,t2) ->
+          Ast.McOr
+            (_loc, (match_case_of_poly_sum_type t1),
+              (match_case_of_poly_sum_type t2))
+      | Ast.TyOf (_,Ast.TyVrn (_,i),Ast.TyTup (_,t)) ->
+          match_case_of_poly_constructor i (Ast.list_of_ctyp t [])
+      | Ast.TyOf (_,Ast.TyVrn (_,i),t) ->
+          match_case_of_poly_constructor i [t]
+      | Ast.TyVrn (_,i) -> match_case_of_poly_constructor i []
+      | _ -> assert false
     and record_patt_of_type k =
-          function
-          | Ast.TyCol (_,Ast.TyId (_,Ast.IdLid (_,s)),_) ->
-              Ast.PaEq
-                (_loc, (Ast.IdLid (_loc, s)),
-                  (Ast.PaId (_loc, (Ast.IdLid (_loc, (xsk s k))))))
-          | Ast.TySem (_,t1,t2) ->
-              Ast.PaSem
-                (_loc, (record_patt_of_type k t1),
-                  (record_patt_of_type k t2))
-          | _ -> assert false
+      function
+      | Ast.TyCol (_,Ast.TyId (_,Ast.IdLid (_,s)),_) ->
+          Ast.PaEq
+            (_loc, (Ast.IdLid (_loc, s)),
+              (Ast.PaId (_loc, (Ast.IdLid (_loc, (xsk s k))))))
+      | Ast.TySem (_,t1,t2) ->
+          Ast.PaSem
+            (_loc, (record_patt_of_type k t1), (record_patt_of_type k t2))
+      | _ -> assert false
     and type_list_of_record_type t ((acc1,acc2) as acc) =
-          match t with
-          | Ast.TyNil _ -> acc
-          | Ast.TyCol
-              (_,Ast.TyId (_,Ast.IdLid (_,s)),Ast.TyMut (_,t))|Ast.TyCol
-              (_,Ast.TyId (_,Ast.IdLid (_,s)),t) ->
-              ((s :: acc1), (t :: acc2))
-          | Ast.TySem (_,t1,t2) ->
-              type_list_of_record_type t1 (type_list_of_record_type t2 acc)
-          | _ -> assert false
+      match t with
+      | Ast.TyNil _ -> acc
+      | Ast.TyCol (_,Ast.TyId (_,Ast.IdLid (_,s)),Ast.TyMut (_,t))|Ast.TyCol
+          (_,Ast.TyId (_,Ast.IdLid (_,s)),t) -> ((s :: acc1), (t :: acc2))
+      | Ast.TySem (_,t1,t2) ->
+          type_list_of_record_type t1 (type_list_of_record_type t2 acc)
+      | _ -> assert false
     and expr_of_record_type t =
-          let (ls,ts) = type_list_of_record_type t ([], []) in
-          let mkp ps =
-            Ast.PaRec
-              (_loc,
-                (Ast.paSem_of_list
-                   (List.map2
-                      (fun l  p  -> Ast.PaEq (_loc, (Ast.IdLid (_loc, l)), p))
-                      ls ps))) in
-          let mke es =
-            Ast.ExRec
-              (_loc,
-                (Ast.rbSem_of_list
-                   (List.map2
-                      (fun l  e  -> Ast.RbEq (_loc, (Ast.IdLid (_loc, l)), e))
-                      ls es)), (Ast.ExNil _loc)) in
-          chain_tuple mkp mke expr_of_ty ts
+      let (ls,ts) = type_list_of_record_type t ([], []) in
+      let mkp ps =
+        Ast.PaRec
+          (_loc,
+            (Ast.paSem_of_list
+               (List.map2
+                  (fun l  p  -> Ast.PaEq (_loc, (Ast.IdLid (_loc, l)), p)) ls
+                  ps))) in
+      let mke es =
+        Ast.ExRec
+          (_loc,
+            (Ast.rbSem_of_list
+               (List.map2
+                  (fun l  e  -> Ast.RbEq (_loc, (Ast.IdLid (_loc, l)), e)) ls
+                  es)), (Ast.ExNil _loc)) in
+      chain_tuple mkp mke expr_of_ty ts
     and failure_match_case =
-          Ast.McArr
-            (_loc, (tuplify_patt (pxik 0)), (Ast.ExNil _loc),
-              (Ast.ExApp
-                 (_loc,
-                   (Ast.ExSnd
-                      (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))),
-                        (sf "%s%d_failure" (string_of_mode mode) size))),
-                   (tuplify_expr (exik 0)))))
+      Ast.McArr
+        (_loc, (tuplify_patt (pxik 0)), (Ast.ExNil _loc),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExSnd
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))),
+                    (sf "%s%d_failure" (string_of_mode mode) size))),
+               (tuplify_expr (exik 0)))))
     and complete_match_case mk t =
-          match t with
-          | Ast.TyOr (_,_,_) when size > 1 ->
-              Ast.McOr (_loc, (mk t), failure_match_case)
-          | _ -> mk t
+      match t with
+      | Ast.TyOr (_,_,_) when size > 1 ->
+          Ast.McOr (_loc, (mk t), failure_match_case)
+      | _ -> mk t
     and fun_of_ctyp tyid =
-          function
-          | Ast.TySum (_,t) ->
-              Ast.ExFun
-                (_loc, (complete_match_case match_case_of_sum_type t))
-          | Ast.TyRec (_,t) -> Ast.ExFun (_loc, (expr_of_record_type t))
-          | Ast.TyTup (_,t) -> mk_tuple expr_of_ty t
-          | Ast.TyId (_,Ast.IdLid (_,i)) when i = tyid -> default_expr
-          | Ast.TyApp (_,_,_)|Ast.TyArr (_,_,_)|Ast.TyQuo (_,_)|Ast.TyId
-              (_,_) as t -> expr_of_ty None t
-          | Ast.TyNil _ ->
-              expr_of_ty None
-                (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown"))))
-          | Ast.TyVrnEq (_,t)|Ast.TyVrnInf (_,t)|Ast.TyPrv
-              (_,Ast.TyVrnInf (_,t)) ->
-              Ast.ExFun
-                (_loc, (complete_match_case match_case_of_poly_sum_type t))
-          | Ast.TyVrnSup (_,t)|Ast.TyPrv (_,Ast.TyVrnSup (_,t)) ->
-              if size > 1
-              then
-                Ast.ExFun
-                  (_loc, (complete_match_case match_case_of_poly_sum_type t))
-              else
-                Ast.ExFun
-                  (_loc,
-                    (Ast.McOr
-                       (_loc, (match_case_of_poly_sum_type t),
-                         default_match_case)))
-          | _ -> assert false
-    and string_of_type_param t =
-          match t with
-          | Ast.TyQuo (_,s)|Ast.TyQuP (_,s)|Ast.TyQuM (_,s) -> s
-          | _ -> assert false
-    and method_of_type_decl _ ((id1,_,params,ctyp,priv) as type_decl) acc =
-          let rec lambda acc =
-            function
-            | [] -> acc
-            | x::xs ->
-                lambda
-                  (Ast.ExFun
-                     (_loc,
-                       (Ast.McArr
-                          (_loc,
-                            (Ast.PaId (_loc, (Ast.IdLid (_loc, ("_f_" ^ x))))),
-                            (Ast.ExNil _loc), acc)))) xs in
-          let params' = List.map string_of_type_param params in
-          let funs = lambda (fun_of_ctyp id1 ctyp) params' in
-          let ty = method_type_of_type_decl type_decl in
-          let priv = if priv then Ast.PrPrivate else Ast.PrNil in
-          Ast.CrSem
-            (_loc, (Ast.CrMth (_loc, id1, Ast.OvNil, priv, funs, ty)), acc)
-    and ctyp_name_of_name_params name params =
-          apply_ctyp (Ast.TyId (_loc, name)) params
-    and method_type_of_type_decl (_,name,params,ctyp,_) =
-          let t = ctyp_name_of_name_params name params in
-          if (mode = Map) && (not (contains_unknown ctyp))
+      function
+      | Ast.TySum (_,t) ->
+          Ast.ExFun (_loc, (complete_match_case match_case_of_sum_type t))
+      | Ast.TyRec (_,t) -> Ast.ExFun (_loc, (expr_of_record_type t))
+      | Ast.TyTup (_,t) -> mk_tuple expr_of_ty t
+      | Ast.TyId (_,Ast.IdLid (_,i)) when i = tyid -> default_expr
+      | Ast.TyApp (_,_,_)|Ast.TyArr (_,_,_)|Ast.TyQuo (_,_)|Ast.TyId 
+          (_,_) as t -> expr_of_ty None t
+      | Ast.TyNil _ ->
+          expr_of_ty None (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown"))))
+      | Ast.TyVrnEq (_,t)|Ast.TyVrnInf (_,t)|Ast.TyPrv (_,Ast.TyVrnInf (_,t))
+          ->
+          Ast.ExFun
+            (_loc, (complete_match_case match_case_of_poly_sum_type t))
+      | Ast.TyVrnSup (_,t)|Ast.TyPrv (_,Ast.TyVrnSup (_,t)) ->
+          if size > 1
           then
-            let out_params =
-              List.map
-                (function
-                 | Ast.TyQuo (_,i) -> Ast.TyQuo (_loc, (i ^ "_out"))
-                 | _ -> assert false) params in
-            let t_out = ctyp_name_of_name_params name out_params in
-            method_type_of_type t t_out params out_params
-          else method_type_of_type t t params []
+            Ast.ExFun
+              (_loc, (complete_match_case match_case_of_poly_sum_type t))
+          else
+            Ast.ExFun
+              (_loc,
+                (Ast.McOr
+                   (_loc, (match_case_of_poly_sum_type t),
+                     default_match_case)))
+      | _ -> assert false
+    and string_of_type_param t =
+      match t with
+      | Ast.TyQuo (_,s)|Ast.TyQuP (_,s)|Ast.TyQuM (_,s) -> s
+      | _ -> assert false
+    and method_of_type_decl _ ((id1,_,params,ctyp,priv) as type_decl) acc =
+      let rec lambda acc =
+        function
+        | [] -> acc
+        | x::xs ->
+            lambda
+              (Ast.ExFun
+                 (_loc,
+                   (Ast.McArr
+                      (_loc,
+                        (Ast.PaId (_loc, (Ast.IdLid (_loc, ("_f_" ^ x))))),
+                        (Ast.ExNil _loc), acc)))) xs in
+      let params' = List.map string_of_type_param params in
+      let funs = lambda (fun_of_ctyp id1 ctyp) params' in
+      let ty = method_type_of_type_decl type_decl in
+      let priv = if priv then Ast.PrPrivate else Ast.PrNil in
+      Ast.CrSem
+        (_loc, (Ast.CrMth (_loc, id1, Ast.OvNil, priv, funs, ty)), acc)
+    and ctyp_name_of_name_params name params =
+      apply_ctyp (Ast.TyId (_loc, name)) params
+    and method_type_of_type_decl (_,name,params,ctyp,_) =
+      let t = ctyp_name_of_name_params name params in
+      if (mode = Map) && (not (contains_unknown ctyp))
+      then
+        let out_params =
+          List.map
+            (function
+             | Ast.TyQuo (_,i) -> Ast.TyQuo (_loc, (i ^ "_out"))
+             | _ -> assert false) params in
+        let t_out = ctyp_name_of_name_params name out_params in
+        method_type_of_type t t_out params out_params
+      else method_type_of_type t t params []
     and method_type_of_type t_in t_out params_in params_out =
-          let rt t =
-            match mode with
-            | Fold_map  ->
-                Ast.TyTup
-                  (_loc,
-                    (Ast.TySta (_loc, (Ast.TyQuo (_loc, "self_type")), t)))
-            | Fold  -> Ast.TyQuo (_loc, "self_type")
-            | Map  -> t in
-          match (params_in, params_out) with
-          | (param_in::[],param_out::[]) ->
-              let alphas = tuplify_type param_in in
-              Ast.TyPol
-                (_loc, (Ast.TyApp (_loc, param_in, param_out)),
-                  (Ast.TyArr
-                     (_loc,
-                       (Ast.TyArr
-                          (_loc, (Ast.TyQuo (_loc, "self_type")),
-                            (Ast.TyArr (_loc, alphas, (rt param_out))))),
-                       (Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))))))
-          | (param::[],[]) ->
-              let alphas = tuplify_type param in
-              Ast.TyPol
-                (_loc, param,
-                  (Ast.TyArr
-                     (_loc,
-                       (Ast.TyArr
-                          (_loc, (Ast.TyQuo (_loc, "self_type")),
-                            (Ast.TyArr (_loc, alphas, (rt param))))),
-                       (Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))))))
-          | ([],[]) -> Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))
-          | _ ->
-              let i = List.length params_in in
-              failwith
-                (Printf.sprintf
-                   "Camlp4FoldGenerator: FIXME not implemented for types with %d parameters"
-                   i)
+      let rt t =
+        match mode with
+        | Fold_map  ->
+            Ast.TyTup
+              (_loc, (Ast.TySta (_loc, (Ast.TyQuo (_loc, "self_type")), t)))
+        | Fold  -> Ast.TyQuo (_loc, "self_type")
+        | Map  -> t in
+      match (params_in, params_out) with
+      | (param_in::[],param_out::[]) ->
+          let alphas = tuplify_type param_in in
+          Ast.TyPol
+            (_loc, (Ast.TyApp (_loc, param_in, param_out)),
+              (Ast.TyArr
+                 (_loc,
+                   (Ast.TyArr
+                      (_loc, (Ast.TyQuo (_loc, "self_type")),
+                        (Ast.TyArr (_loc, alphas, (rt param_out))))),
+                   (Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))))))
+      | (param::[],[]) ->
+          let alphas = tuplify_type param in
+          Ast.TyPol
+            (_loc, param,
+              (Ast.TyArr
+                 (_loc,
+                   (Ast.TyArr
+                      (_loc, (Ast.TyQuo (_loc, "self_type")),
+                        (Ast.TyArr (_loc, alphas, (rt param))))),
+                   (Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))))))
+      | ([],[]) -> Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))
+      | _ ->
+          let i = List.length params_in in
+          failwith
+            (Printf.sprintf
+               "Camlp4FoldGenerator: FIXME not implemented for types with %d parameters"
+               i)
     and class_sig_item_of_type_decl _ ((name,_,_,t,_) as type_decl) acc =
-          let (_ :< .. >)=
-            (object (self)
-               inherit  Ast.fold as super
-               method! ctyp =
-                 function
-                 | Ast.TyId (_,Ast.IdLid (_,id)) ->
-                     let () = store_if_builtin_type id in self
-                 | t -> super#ctyp t
-             end)#ctyp t in
-          Ast.CgSem
-            (_loc,
-              (Ast.CgMth
-                 (_loc, name, Ast.PrNil,
-                   (method_type_of_type_decl type_decl))), acc)
+      let (_ :< .. >)=
+        (object (self)
+           inherit  Ast.fold as super
+           method! ctyp =
+             function
+             | Ast.TyId (_,Ast.IdLid (_,id)) ->
+                 let () = store_if_builtin_type id in self
+             | t -> super#ctyp t
+         end)#ctyp t in
+      Ast.CgSem
+        (_loc,
+          (Ast.CgMth
+             (_loc, name, Ast.PrNil, (method_type_of_type_decl type_decl))),
+          acc)
     and generate_structure tyMap =
-          SMap.fold method_of_type_decl used_builtins.contents
-            (SMap.fold method_of_type_decl tyMap (Ast.CrNil _loc))
+      SMap.fold method_of_type_decl used_builtins.contents
+        (SMap.fold method_of_type_decl tyMap (Ast.CrNil _loc))
     and generate_signature tyMap =
-          SMap.fold class_sig_item_of_type_decl used_builtins.contents
-            (SMap.fold class_sig_item_of_type_decl tyMap (Ast.CgNil _loc))
+      SMap.fold class_sig_item_of_type_decl used_builtins.contents
+        (SMap.fold class_sig_item_of_type_decl tyMap (Ast.CgNil _loc))
     end
   let rec tyMap_of_type_decls t acc =
     match t with

@@ -66,14 +66,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   FanConfig.antiquotations := true;
   {:extend|Gram
       LOCAL:
-      (* delete_rule_body *)
-      (* extend_body *)
       delete_rule_header extend_header  qualuid qualid t_qualid
       global entry position assoc level level_list rule_list rule psymbol
       name semi_sep string comma_patt pattern simple_expr delete_rules;
-    expr: After "top"
-      [ [ "{|"; extend_body{e}; "|}" -> e 
-        | "{/"; delete_rule_body{e} ; "/}" -> e ] ]
     extend_header:
       [ [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
         let old=gm() in 
@@ -1540,7 +1535,8 @@ New syntax:\
       [ [ a_LIDENT{i} -> i
         | a_UIDENT{i} -> i ] ]
     ident:
-      [ [ `ANTIQUOT ((""|"id"|"anti"|"list" as n),s) -> (* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*)
+      [ [ `ANTIQUOT ((""|"id"|"anti"|"list" as n),s) ->
+           (* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*)
             {:ident| $(anti:mk_anti ~c:"ident" n s) |}
         | a_UIDENT{i} -> {:ident| $uid:i |}
         | a_LIDENT{i} -> {:ident| $lid:i |}

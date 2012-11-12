@@ -194,6 +194,6 @@ module ErrorMonad = struct
       | [] -> return []
       | x::xs ->
           (f x acc) >>=
-            (fun x  -> (aux (acc + 1) xs) >>= (fun xs  -> return (x :: xs))) in
+            ((fun x  -> (aux (acc + 1) xs) >>= (fun xs  -> return (x :: xs)))) in
     aux 0 xs
   end
