@@ -71,14 +71,18 @@ let eoi_entry entry =
     extend (entry_eoi : 'entry_eoi t )
       (None,
         [(None, None,
-           [([`Snterm (obj (entry : 'entry t ));
-             `Stoken
-               (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
+           [([srules entry_eoi
+                [([`Snterm (obj (entry : 'entry t ));
+                  `Stoken
+                    (((function | `EOI -> true | _ -> false)),
+                      (`Normal, "`EOI"))],
+                   (mk_action
+                      (fun __camlp4_0  (x : 'entry)  (_loc : FanLoc.t)  ->
+                         match __camlp4_0 with
+                         | `EOI -> (x : 'e__1 )
+                         | _ -> assert false)))]],
               (mk_action
-                 (fun __camlp4_0  (x : 'entry)  (_loc : FanLoc.t)  ->
-                    match __camlp4_0 with
-                    | `EOI -> (x : 'entry_eoi )
-                    | _ -> assert false)))])]) in
+                 (fun (x : 'e__1)  (_loc : FanLoc.t)  -> (x : 'entry_eoi ))))])]) in
   entry_eoi
 let find_level ?position  entry =
   match entry.edesc with

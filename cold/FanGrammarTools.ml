@@ -13,7 +13,8 @@ let gm () = grammar_module_name.contents
 let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
 let mk_rule ~prod  ~action  = { prod; action }
-let mk_symbol ~used  ~text  ~styp  ~pattern  = { used; text; styp; pattern }
+let mk_symbol ?(pattern= None)  ~used  ~text  ~styp  =
+  { used; text; styp; pattern }
 let string_of_patt patt =
   let buf = Buffer.create 42 in
   let () =
@@ -495,10 +496,10 @@ let text_of_functorial_extend _loc gram gl el =
           (_loc,
             (List.fold_left (fun acc  x  -> Ast.ExSem (_loc, acc, x)) e el)) in
   let_in_of_extend _loc gram gl args
-let mk_tok _loc ?restrict  p t =
+let mk_tok _loc ?restrict  ~pattern  t =
   match restrict with
   | None  ->
-      let p' = Camlp4Ast.wildcarder#patt p in
+      let p' = Camlp4Ast.wildcarder#patt pattern in
       let match_fun =
         if Camlp4Ast.is_irrefut_patt p'
         then
@@ -520,21 +521,21 @@ let mk_tok _loc ?restrict  p t =
                         (Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))))))) in
       let descr = string_of_patt p' in
       let text = TXtok (_loc, match_fun, "Normal", descr) in
-      { used = []; text; styp = t; pattern = (Some p) }
+      { used = []; text; styp = t; pattern = (Some pattern) }
   | Some restrict ->
-      let p' = Camlp4Ast.wildcarder#patt p in
+      let p' = Camlp4Ast.wildcarder#patt pattern in
       let match_fun =
         Ast.ExFun
           (_loc,
             (Ast.McOr
                (_loc,
                  (Ast.McArr
-                    (_loc, p, restrict,
+                    (_loc, pattern, restrict,
                       (Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))))),
                  (Ast.McArr
                     (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
                       (Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))))))) in
-      let descr = string_of_patt p in
+      let descr = string_of_patt pattern in
       let text = TXtok (_loc, match_fun, "Antiquot", descr) in
       { used = []; text; styp = t; pattern = (Some p') }
 let sfold ?sep  _loc (ns : string list) f e s =

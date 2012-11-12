@@ -153,13 +153,17 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
     Gram.extend (top_phrase : 'top_phrase Gram.t )
       (None,
         [(None, None,
-           [([`Stoken
-                (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
+           [([Gram.srules top_phrase
+                [([`Stoken
+                     (((function | `EOI -> true | _ -> false)),
+                       (`Normal, "`EOI"))],
+                   (Gram.mk_action
+                      (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                         match __camlp4_0 with
+                         | `EOI -> (None : 'e__1 )
+                         | _ -> assert false)))]],
               (Gram.mk_action
-                 (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                    match __camlp4_0 with
-                    | `EOI -> (None : 'top_phrase )
-                    | _ -> assert false)))])])
+                 (fun (x : 'e__1)  (_loc : FanLoc.t)  -> (x : 'top_phrase ))))])])
   module AntiquotSyntax = struct
     module Ast = Ast module Gram = Gram
     let antiquot_expr = Gram.eoi_entry expr

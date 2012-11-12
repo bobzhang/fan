@@ -14,7 +14,7 @@ let gm () = !grammar_module_name;
 let mk_entry ~name ~pos ~levels = {name;pos;levels};
 let mk_level ~label ~assoc ~rules ={label; assoc;rules};
 let mk_rule ~prod ~action = {prod;action};
-let mk_symbol ~used ~text ~styp ~pattern = {
+let mk_symbol  ?(pattern=None) ~used ~text ~styp = {
   used;text;styp;pattern
 };
 
@@ -306,21 +306,21 @@ let text_of_functorial_extend _loc  gram gl el = (* FIXME remove gmod later*)
         {:expr| do { $(List.fold_left (fun acc x -> {:expr| $acc; $x |}) e el) } |}  ]  in
   let_in_of_extend _loc gram gl  args;
 
-let mk_tok _loc ?restrict p t =
+let mk_tok _loc ?restrict ~pattern t =
  match restrict with
     [ None ->
-      let p' = Camlp4Ast.wildcarder#patt p in
+      let p' = Camlp4Ast.wildcarder#patt pattern in
       let match_fun = if Camlp4Ast.is_irrefut_patt p' then 
         {:expr| fun [ $pat:p' -> true ] |}
       else {:expr| fun [$pat:p' -> true | _ -> false ] |} in 
       let descr = string_of_patt p' in
       let text = TXtok _loc match_fun "Normal" descr in
-      {used = []; text = text; styp = t; pattern = Some p }
+      {used = []; text = text; styp = t; pattern = Some pattern }
     | Some restrict ->
-        let p'= Camlp4Ast.wildcarder#patt p in
+        let p'= Camlp4Ast.wildcarder#patt pattern in
         let match_fun = 
-          {:expr| fun [$pat:p when $restrict -> true | _ -> false ] |}  in
-        let descr = string_of_patt p in
+          {:expr| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
+        let descr = string_of_patt pattern in
         let text = TXtok _loc match_fun "Antiquot" descr in
         {used=[]; text; styp=t; pattern = Some p'} ] ;
 let sfold ?sep _loc  (ns:list string)  f e s =
