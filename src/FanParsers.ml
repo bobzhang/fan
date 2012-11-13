@@ -955,14 +955,12 @@ New syntax:\
         | "("; a_UIDENT{i}; ":"; module_type{t}; ")"; SELF{mt} ->
             {:module_type| functor ( $i : $t ) -> $mt |} ] }
     module_rec_declaration:
-      (* [ LA *)
         [ SELF{m1}; "and"; SELF{m2} -> {:module_binding| $m1 and $m2 |}
         | `ANTIQUOT ((""|"module_binding"|"anti"|"list" as n),s) ->
             {:module_binding| $(anti:mk_anti ~c:"module_binding" n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
-        | a_UIDENT{m}; ":"; module_type{mt} -> {:module_binding| $m : $mt |} ] (* ] *)
+        | a_UIDENT{m}; ":"; module_type{mt} -> {:module_binding| $m : $mt |} ]
     with_constr:
-      (* [ LA *)
         [ SELF{wc1}; "and"; SELF{wc2} -> {:with_constr| $wc1 and $wc2 |}
         | `ANTIQUOT ((""|"with_constr"|"anti"|"list" as n),s) ->
             {:with_constr| $(anti:mk_anti ~c:"with_constr" n s) |}
@@ -978,7 +976,7 @@ New syntax:\
         | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->
             {:with_constr| type $t1 := $t2 |}
         | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} ->
-            {:with_constr| module $i1 := $i2 |} ] (* ] *)
+            {:with_constr| module $i1 := $i2 |} ]
     expr:
       { "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; SELF{x} ->

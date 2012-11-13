@@ -119,10 +119,10 @@ let rec parser_of_tree entry (lev,assoc) x =
           [ [< a = ps; act = parser_cont (node,son) bp a >] -> Action.getf act a
           | [< a = from_tree brother >] -> a ]
       | Some (tokl, node, son) ->
-          let p1 =
-            parser_of_terminals  tokl (parser_cont (node,son)) in 
+          (* let p1 = *)
+          (*   parser_of_terminals  tokl (parser_cont (node,son)) in  *)
           parser
-            [ [< a = p1 >] -> a
+            [ [< a = parser_of_terminals tokl (parser_cont (node,son)) >] -> a
             | [< a = from_tree brother >] -> a ] ] ] in
   from_tree x 
 
