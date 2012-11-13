@@ -112,9 +112,10 @@ let rec parser_of_tree entry (lev,assoc) x =
                     Action.getf act a
                 | _ -> from_tree brother __strm)
          | Some (tokl,node,son) ->
-             let p1 = parser_of_terminals tokl (parser_cont (node, son)) in
              (fun (__strm : _ Stream.t)  ->
-                try p1 __strm
+                try
+                  LL.parser_of_terminals tokl (parser_cont (node, son))
+                    __strm
                 with | Stream.Failure  -> from_tree brother __strm)) in
   from_tree x
 and parser_of_terminals (terminals : terminal list)

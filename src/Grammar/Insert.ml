@@ -218,8 +218,8 @@ let insert_olevels_in_levels entry position rules =
 (* mutate the [estart] and [econtinue]
    The previous version is lazy. We should find a way to exploit both in the future
  *)    
-let extend entry (position, rules) =
-  let elev = insert_olevels_in_levels entry position rules in begin 
+let extend entry (position, levels) =
+  let elev = insert_olevels_in_levels entry position levels in begin 
     entry.edesc <- Dlevels elev;
     entry.estart <-Parser.start_parser_of_entry entry;
     entry.econtinue <- Parser.continue_parser_of_entry entry;
