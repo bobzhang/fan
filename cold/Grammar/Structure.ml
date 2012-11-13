@@ -57,10 +57,9 @@ and node =  {
   node: symbol;
   son: tree;
   brother: tree} 
-type production_rule = (symbol list* Action.t) 
-type single_extend_statment =
-  (string option* assoc option* production_rule list) 
-type extend_statment = (position option* single_extend_statment list) 
+type production = (symbol list* Action.t) 
+type olevel = (string option* assoc option* production list) 
+type extend_statment = (position option* olevel list) 
 type delete_statment = symbol list 
 type ('a,'b,'c) fold =
   internal_entry -> symbol list -> ('a Stream.t -> 'b) -> 'a Stream.t -> 'c 

@@ -89,11 +89,12 @@ and node = {
     son     : tree   ;
     brother : tree   };
 
-type production_rule = (list symbol * Action.t);
-type single_extend_statment =
-  (option string * option assoc * list production_rule);
-type extend_statment =
-  (option position * list single_extend_statment);
+type production= (list symbol * Action.t);
+
+type olevel = (option string * option assoc * list production);
+  
+type extend_statment = (option position * list olevel);
+  
 type delete_statment = list symbol;
 
 type fold 'a 'b 'c =

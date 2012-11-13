@@ -1,7 +1,7 @@
 
 let expr_eoi = Gram.mk "expr";
 
-{|Gram LOCAL:expr;
+{:extend|Gram LOCAL:expr;
   expr:
   {"minus" LA
     [SELF{x};"-";SELF{y} -> x -. y

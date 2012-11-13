@@ -2,8 +2,8 @@ open Structure
 open Format
 let is_before s1 s2 =
   match (s1, s2) with
-  | ((`Skeyword _|`Stoken _),(`Skeyword _|`Stoken _)) -> false
-  | ((`Skeyword _|`Stoken _),_) -> true
+  | (#terminal,#terminal) -> false
+  | (#terminal,_) -> true
   | _ -> false
 let rec derive_eps: symbol -> bool =
   function
@@ -162,24 +162,24 @@ let insert_tree entry gsymbols action tree =
              LocAct (action, (old_action :: action_list))
          | DeadEnd  -> LocAct (action, [])) in
   insert gsymbols tree
-let insert_level entry e1 symbols action slev =
+let insert_production entry e1 (symbols,action) slev =
   if e1
   then
     { slev with lsuffix = (insert_tree entry symbols action slev.lsuffix) }
   else
     { slev with lprefix = (insert_tree entry symbols action slev.lprefix) }
-let levels_of_rules entry position rules =
+let insert_olevels entry position levels =
   let elev =
     match entry.edesc with
     | Dlevels elev -> elev
     | Dparser _ ->
         (eprintf "Error: entry not extensible: %S@." entry.ename;
          failwith "Grammar.extend") in
-  if rules = []
+  if levels = []
   then elev
   else
     (let (levs1,make_lev,levs2) = find_level ?position entry elev in
-     let (levs,_) =
+     let (result,_) =
        List.fold_left
          (fun (levs,make_lev)  (lname,assoc,rules)  ->
             let lev = make_lev lname assoc in
@@ -190,11 +190,12 @@ let levels_of_rules entry position rules =
                    let () = List.iter (check_gram entry) symbols in
                    let (e1,symbols) = get_initial symbols in
                    let () = insert_tokens entry.egram symbols in
-                   insert_level entry e1 symbols action lev) lev rules in
-            ((lev :: levs), empty_lev)) ([], make_lev) rules in
-     levs1 @ ((List.rev levs) @ levs2))
+                   insert_production entry e1 (symbols, action) lev) lev
+                rules in
+            ((lev :: levs), empty_lev)) ([], make_lev) levels in
+     levs1 @ ((List.rev result) @ levs2))
 let extend entry (position,rules) =
-  let elev = levels_of_rules entry position rules in
+  let elev = insert_olevels entry position rules in
   entry.edesc <- Dlevels elev;
   entry.estart <-
     (fun lev  strm  ->

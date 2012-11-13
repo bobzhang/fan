@@ -46,9 +46,9 @@ and symbol = Grammar.Structure.symbol
 and tree = Grammar.Structure.tree 
 and node =  Grammar.Structure.node 
 
-type production_rule = symbol list * Action.t
-type single_extend_statment = string option * assoc option * production_rule list
-type extend_statment = position option * single_extend_statment list
+type production = symbol list * Action.t
+type olevel = string option * assoc option * production list
+type extend_statment = position option * olevel list
 type delete_statment = symbol list
 
 type ('a,'b,'c)fold  =
@@ -82,31 +82,6 @@ val ghost_token_info : token_info
 val token_location : token_info -> FanLoc.t
 val using : gram -> string -> unit
 val mk_action : 'a -> Action.t
-(* val string_of_token : *)
-(*   [< `ANTIQUOT of string * string *)
-(*    | `BLANKS of string *)
-(*    | `CHAR of 'a * string *)
-(*    | `COMMENT of string *)
-(*    | `EOI *)
-(*    (\* | `ESCAPED_IDENT of string *\) *)
-(*    | `FLOAT of 'b * string *)
-(*    | `INT of 'c * string *)
-(*    | `INT32 of 'd * string *)
-(*    | `INT64 of 'e * string *)
-(*    | `KEYWORD of string *)
-(*    | `LABEL of string *)
-(*    | `LIDENT of string *)
-(*    | `LINE_DIRECTIVE of int * string option *)
-(*    | `NATIVEINT of 'f * string *)
-(*    | `NEWLINE *)
-(*    | `OPTLABEL of string *)
-(*    | `QUOTATION of FanSig.quotation *)
-(*    | `STRING of 'g * string *)
-(*    | `SYMBOL of string *)
-(*    | `UIDENT of string *)
-(*    > `BLANKS `CHAR `COMMENT (\* `ESCAPED_IDENT *\) `FLOAT `INT `INT32 `INT64 `KEYWORD *)
-(*      `LABEL `LIDENT `NATIVEINT `OPTLABEL `STRING `SYMBOL `UIDENT ] -> *)
-(*   string *)
 val string_of_token:[>FanSig.token] -> string
 
 val obj : 'a t -> internal_entry         
@@ -159,17 +134,12 @@ val sfold0sep :
         'c Stream.t -> 'b
 val extend :
   'a t ->
-  [< `After of string | `Before of string | `First | `Last | `Level of string ]
-  option *
+  position  option *
   (string option * assoc option *  (symbol list * Action.t) list) list -> unit
 val eoi_entry : 'a t -> 'a t
 
     
 val levels_of_entry: 'a t -> level list option
 val find_level:
-    ?position:[< `After of string
-             | `Before of string
-             | `First
-             | `Last
-             | `Level of string ] ->  'a t -> level
+    ?position:position ->  'a t -> level
 val token_stream_of_string: string -> (FanSig.token * Grammar.Structure.token_info) LibUtil.Stream.t
