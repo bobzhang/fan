@@ -66,45 +66,46 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   {:extend|Gram
       LOCAL:
       delete_rule_header extend_header  qualuid qualid t_qualid
-      global entry position assoc (* level level_list rule_list rule  psymbol *)
-      name semi_sep string comma_patt pattern simple_expr delete_rules;
+      locals entry position assoc name (* semi_sep *) string (* comma_patt *)
+      pattern simple_expr delete_rules;
     extend_header:
-       [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
-        let old=gm() in 
-        let () = grammar_module_name := t in
-        (Some i,old)
-        | qualuid{t} -> 
-            let old = gm() in
-            let () = grammar_module_name := t in 
-            (None,old)
-        | -> (None,gm())    ] 
+       [ "("; qualid{i}; ":"; t_qualid{t}; ")"
+         -> 
+           let old=gm() in 
+           let () = grammar_module_name := t in
+           (Some i,old)
+       | qualuid{t}
+         -> 
+           let old = gm() in
+           let () = grammar_module_name := t in 
+           (None,old)
+       | -> (None,gm())] 
     extend_body:
-      [ extend_header{(gram,old)};  OPT global{global_list };
-          (LIST1 [ entry{e}  -> e ] ){el} -> 
-            let res = text_of_functorial_extend _loc  gram global_list el in 
-            let () = grammar_module_name := old in
-            res      ]  
-    delete_rule_body:
-      [ delete_rule_header{old};  (LIST0 delete_rules) {es} ->
-            let () = grammar_module_name := old  in 
-            {:expr| begin $list:es end|}   ] 
-    delete_rules:
-       [ name{n} ;":"; "[";
-          LIST1 [ LIST0 symbol SEP semi_sep{sl} -> sl  ] SEP "|" {sls}; "]"
-            ->
-              let rest = List.map (fun sl  ->
-                let (e,b) = expr_of_delete_rule _loc n sl in
-                {:expr| $(id:gm()).delete_rule $e $b |}) sls in
-              {:expr| begin $list:rest end |}   
-        ]
+      [ extend_header{(gram,old)};  OPT locals{locals}; LIST1 entry {el} -> 
+        let res = text_of_functorial_extend _loc  gram locals el in 
+        let () = grammar_module_name := old in
+        res      ]
      delete_rule_header: (*for side effets, parser action *)
-        [ qualuid{g} ->
-          let old = gm () in
-          let () = grammar_module_name := g in
-          old  ]
+     [ qualuid{g} ->
+       let old = gm () in
+       let () = grammar_module_name := g in
+       old  ]
+    delete_rule_body:
+     [ delete_rule_header{old};  LIST0 delete_rules {es}
+       ->
+         let () = grammar_module_name := old  in 
+         {:expr| begin $list:es end|}   ] 
+    delete_rules:
+     [ name{n} ;":"; "["; LIST1 [ LIST0 symbol SEP (* semi_sep *)";"{sl} -> sl  ] SEP "|" {sls}; "]"
+       ->
+         let rest = List.map (fun sl  ->
+           let (e,b) = expr_of_delete_rule _loc n sl in
+           {:expr| $(id:gm()).delete_rule $e $b |}) sls in
+         {:expr| begin $list:rest end |}   
+        ]
     qualuid:
       [ `UIDENT x; ".";  SELF{xs} -> {:ident| $uid:x.$xs |}
-        | `UIDENT x -> {:ident| $uid:x |} ] 
+      | `UIDENT x -> {:ident| $uid:x |} ] 
     qualid:
       [ `UIDENT x; ".";  SELF{xs} -> {:ident| $uid:x.$xs |}
       | `UIDENT i -> {:ident| $uid:i |}
@@ -112,8 +113,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     t_qualid:
       [ `UIDENT x; ".";  SELF{xs} -> {:ident| $uid:x.$xs |}
       | `UIDENT x; "."; `LIDENT "t" -> {:ident| $uid:x |} ] 
-    global:
-      [ `UIDENT "LOCAL"; ":"; LIST1 name{sl}; semi_sep -> sl ]
+    locals:
+      [ `UIDENT "LOCAL"; ":"; LIST1 name{sl}; (* semi_sep *)";" -> sl ]
     entry:
       [ name{n}; ":";  OPT position{pos}; level_list{levels} ->
             mk_entry ~name:n ~pos ~levels ]
@@ -135,43 +136,47 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ "["; "]" -> []
       | "["; LIST1 rule SEP "|"{rules}; "]" ->  retype_rule_list_without_patterns _loc rules ]
     rule:
-      [ LIST0 psymbol SEP semi_sep{psl};
-        OPT ["->"; expr{act}-> act]{action} -> mk_rule ~prod:psl ~action ]
+      [ LIST0 psymbol SEP ";"{psl}; OPT ["->"; expr{act}-> act]{action}
+        ->
+          mk_rule ~prod:psl ~action ]
     psymbol:
-      [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
-        match p with [Some _ -> {(s) with pattern = p } | None -> s]  ] 
+      [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p}
+        ->
+          match p with [Some _ -> {(s) with pattern = p } | None -> s]  ] 
     symbol:
-     [ `UIDENT ("LIST0"| "LIST1" as x); SELF{s};  OPT [`UIDENT "SEP"; symbol{t} -> t ]{sep } ->
-       let () = check_not_tok s in
-       let used =
-         match sep with
-         [ Some symb -> symb.used @ s.used
-         | None -> s.used ]   in
-       let styp = STapp _loc (STlid _loc "list") s.styp in
-       let text = slist _loc
-           (match x with
+     [ `UIDENT ("LIST0"| "LIST1" as x); SELF{s}; OPT [`UIDENT "SEP"; symbol{t} -> t ]{sep }
+       ->
+         let () = check_not_tok s in
+         let used =
+           match sep with
+           [ Some symb -> symb.used @ s.used
+           | None -> s.used ]   in
+         let styp = STapp _loc (STlid _loc "list") s.styp in
+         let text = slist _loc
+             (match x with
              ["LIST0" -> false | "LIST1" -> true
-           | _ -> failwithf "only (LIST0|LIST1) allowed here"])  sep s in
-       mk_symbol ~used ~text ~styp ~pattern:None
-    |`UIDENT "OPT"; SELF{s} ->
-        let () = check_not_tok s in
-        let styp = STapp _loc (STlid _loc "option") s.styp in
-        let text = TXopt _loc s.text in
-        mk_symbol ~used:s.used ~text ~styp ~pattern:None
-    |`UIDENT "TRY"; SELF{s} ->
+             | _ -> failwithf "only (LIST0|LIST1) allowed here"]) sep s in
+         mk_symbol ~used ~text ~styp ~pattern:None
+     |`UIDENT "OPT"; SELF{s}
+       ->
+         let () = check_not_tok s in
+         let styp = STapp _loc (STlid _loc "option") s.styp in
+         let text = TXopt _loc s.text in
+         mk_symbol ~used:s.used ~text ~styp ~pattern:None
+     |`UIDENT "TRY"; SELF{s} ->
         let text = TXtry _loc s.text in
         mk_symbol ~used:s.used ~text ~styp:(s.styp) ~pattern:None
-    | `UIDENT "SELF" ->
+     | `UIDENT "SELF" ->
         mk_symbol ~used:[] ~text:(TXself _loc)  ~styp:(STself _loc "SELF") ~pattern:None
-    |`UIDENT "NEXT" ->
+     |`UIDENT "NEXT" ->
         mk_symbol ~used:[] ~text:(TXnext _loc)   ~styp:(STself _loc "NEXT") ~pattern:None
-    | "["; LIST0 rule SEP "|"{rl}; "]" ->
+     | "["; LIST0 rule SEP "|"{rl}; "]" ->
         let rl = retype_rule_list_without_patterns _loc rl in
         let t = new_type_var () in
         let used = used_of_rule_list rl in
         mk_symbol ~used ~text:(TXrules _loc (srules _loc t rl ""))
           ~styp:(STquo _loc t) ~pattern:None
-    | "`"; a_ident{i}; OPT patt{p} ->
+     | "`"; a_ident{i}; OPT patt{p} ->
         let p = match p with
           [None -> {:patt| `$i |}
           |Some p -> {:patt| `$i $p |} ] in 
@@ -183,32 +188,29 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
               List.fold_left (fun acc (x,y) -> {:expr| $acc && ( $x = $y ) |} )
                 {:expr| $x = $y |} ys  in 
             mk_tok _loc ~restrict ~pattern:p (STtok _loc) ]                
-        | `STRING (_, s) ->
+     | `STRING (_, s) ->
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
-        | name{n};  OPT [`UIDENT "Level"; `STRING (_, s) -> s ]{lev} ->
+     | name{n};  OPT [`UIDENT "Level"; `STRING (_, s) -> s ]{lev} ->
             mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
-        | "("; SELF{s_t}; ")" -> s_t ]
+     | "("; SELF{s_t}; ")" -> s_t ]
    pattern:
      [ `LIDENT i -> {:patt| $lid:i |}
      | "_" -> {:patt| _ |}
      | "("; pattern{p}; ")" -> {:patt| $p |}
-     | "("; pattern{p1}; ",";  comma_patt{p2}; ")" -> {:patt| ( $p1, $p2 ) |}  ]
-    comma_patt:
-     [ SELF{p1}; ",";  SELF{p2} -> {:patt| $p1, $p2 |}
-        | pattern{p} -> p ]
-    name:
-     [ qualid{il} -> mk_name _loc il ]
-    string:
+     | "("; pattern{p1}; ","; LIST1 SELF SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
+   name:
+    [ qualid{il} -> mk_name _loc il ]
+   string:
     [ `STRING (_, s) -> {:expr| $str:s |}
-    | `ANTIQUOT ("", s) -> AntiquotSyntax.parse_expr _loc s ] 
-    semi_sep: [ ";" -> () ]
-    symbol: 
+    | `ANTIQUOT ("", s) -> AntiquotSyntax.parse_expr _loc s ] (*suport antiquot for string*)
+
+   symbol: 
      [`UIDENT ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; SELF{s} ->
             sfold _loc [x] f e s
      |`UIDENT ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT ("SEP" as y); symbol{sep}
        ->
          sfold ~sep _loc [x;y] f e s  ]
-    simple_expr:
+   simple_expr:
      [ a_LIDENT{i} -> {:expr| $lid:i |}
      | "("; expr{e}; ")" -> e ]  |};
 
@@ -478,21 +480,22 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
             execute_macro {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ]
     macro_def:
       [ "DEFINE"; uident{i}; opt_macro_value{def} -> SdDef i def
-        | "UNDEF";  uident{i} -> SdUnd i
-        | "IFDEF";  uident_eval_ifdef;  "THEN"; smlist_then{st1}; else_macro_def{st2} ->
-            make_SdITE_result st1 st2
-        | "IFNDEF"; uident_eval_ifndef; "THEN"; smlist_then{st1}; else_macro_def{st2} ->
-            make_SdITE_result st1 st2
-        | "INCLUDE"; `STRING (_, fname) ->
+      | "UNDEF";  uident{i} -> SdUnd i
+      | "IFDEF";  uident_eval_ifdef;  "THEN"; smlist_then{st1}; else_macro_def{st2} ->
+          make_SdITE_result st1 st2
+      | "IFNDEF"; uident_eval_ifndef; "THEN"; smlist_then{st1}; else_macro_def{st2} ->
+          make_SdITE_result st1 st2
+      | "INCLUDE"; `STRING (_, fname) ->
             SdLazy (lazy (parse_include_file str_items fname)) ]
     macro_def_sig:
       [ "DEFINE"; uident{i} -> SdDef i None
-        | "UNDEF";  uident{i} -> SdUnd i
-        | "IFDEF";  uident_eval_ifdef;  "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
+      | "UNDEF";  uident{i} -> SdUnd i
+      | "IFDEF";  uident_eval_ifdef;  "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2}
+        ->
+          make_SdITE_result sg1 sg2
+      | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
             make_SdITE_result sg1 sg2
-        | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
-            make_SdITE_result sg1 sg2
-        | "INCLUDE"; `STRING (_, fname) ->
+      | "INCLUDE"; `STRING (_, fname) ->
             SdLazy (lazy (parse_include_file sig_items fname)) ]
     uident_eval_ifdef:
       [ uident{i} -> Stack.push (is_defined i) stack ]
@@ -538,7 +541,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       | "DEFINE"; `LIDENT i; "="; expr{def}; "IN"; expr{body} ->
           (new Expr.subst _loc [(i, def)])#expr body ] 
     patt:
-      [ "IFDEF"; uident{i}; "THEN"; patt{p1}; "ELSE"; patt{p2}; endif ->
+      [ "IFDEF"; uident{i}; "THEN"; patt{p1};  "ELSE"; patt{p2}; endif ->
         if is_defined i then p1 else p2
       | "IFNDEF"; uident{i}; "THEN"; patt{p1}; "ELSE"; patt{p2}; endif ->
           if is_defined i then p2 else p1 ]

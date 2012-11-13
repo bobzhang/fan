@@ -56,7 +56,9 @@ let cvt_int64_literal s =
 let cvt_nativeint_literal s =
   Nativeint.neg (Nativeint.of_string ("-" ^ s));
 
-(* c gives a finer control *)
+(* c gives a finer control
+   FIXME uses a structure data
+ *)
 let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s;
 
 let append_eLem el e = el @ [e];
@@ -81,7 +83,10 @@ let view_antiquot s =
     with [Not_found  -> None]
   else None;
 
-let handle_antiquot_in_string ~s ~default ~parse ~loc ~decorate = (* provide syntax extension for string matching *)
+
+  
+let handle_antiquot_in_string ~s ~default ~parse ~loc ~decorate =
+  (* provide syntax extension for string matching *)
   if is_antiquot s then
     let pos = String.index s ':' in
     let name = String.sub s 2 (pos - 2)

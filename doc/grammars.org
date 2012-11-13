@@ -1104,3 +1104,46 @@ Ptop_def
      `-TRY val_longident]
 
    #+END_EXAMPLE
+
+
+* improvements
+
+  - detect follow conflicts
+    dangling if then else detection(at least gives a warning)
+
+  - add actions to each non-terminal
+    like [extend-header]
+
+  - verbatim copy
+
+    now we want to write
+    #+BEGIN_SRC ocaml
+      qualuid:
+        [ `UIDENT x; ".";  SELF{xs} -> {:ident| $uid:x.$xs |}
+        | `UIDENT x -> {:ident| $uid:x |} ]
+      quallid:
+        [ qualuid!
+        | `LIDENT x -> {:ident| $lid:x |}]
+    #+END_SRC
+
+    instead of 
+    #+BEGIN_SRC ocaml
+          qualuid:
+            [ `UIDENT x; ".";  SELF{xs} -> {:ident| $uid:x.$xs |}
+            | `UIDENT x -> {:ident| $uid:x |} ] 
+          qualid:
+            [ `UIDENT x; ".";  SELF{xs} -> {:ident| $uid:x.$xs |}
+            | `UIDENT i -> {:ident| $uid:i |}
+            | `LIDENT i -> {:ident| $lid:i |} ]    
+    #+END_SRC
+    
+    
+  - semantics copy
+  - automatic build patterns?
+    cause some problems variable capture?
+    and shadowing if you have two non-terminals used in the same rule
+  - left refactoring
+    LIST1 and itself
+
+  - antiquot
+    

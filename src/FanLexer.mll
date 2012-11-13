@@ -232,7 +232,8 @@ let symbolchar = '*' | not_star_symbolchar
 let quotchar =
   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
 let extra_quot =
-  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\'] (* FIX remove the '\' as extra quot*)
+  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\']
+    (* FIX remove the '\' as extra quot*)
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
 let decimal_literal =
   ['0'-'9'] ['0'-'9' '_']*

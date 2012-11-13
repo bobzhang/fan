@@ -293,7 +293,7 @@ let let_in_of_extend _loc gram gl  default =
    [gmod] is the [Gram] module true
    generate the extend, the main entrance
  *)
-let text_of_functorial_extend _loc  gram gl el = (* FIXME remove gmod later*)
+let text_of_functorial_extend _loc  gram gl el = 
   let args =
     let el =
       List.map  (fun e ->

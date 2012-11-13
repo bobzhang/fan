@@ -25,8 +25,9 @@ let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 (* #directory "_build/cold" ;; *)
 #load_rec "FanLoc.cmo";;
 #load_rec "FanBasic.cmo";;
+#load_rec "Query.cmo";;
 let fmt = std_formatter
-let _ = Clflags.noprompt := true;;
+(* let _ = Clflags.noprompt := true;; *)
 
 let _loc = FanLoc.ghost;;
 let _ = begin
