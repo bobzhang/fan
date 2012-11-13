@@ -149,7 +149,7 @@ let insert_tokens gram symbols =
   List.iter insert symbols ;
 
 (* given an [entry] [symbols] and [action] a tree, return a new [tree]*)
-let insert_tree entry gsymbols action tree =
+let insert_production_in_tree entry (gsymbols, action) tree =
   let rec try_insert s sl tree =
     match tree with
     [ Node ( {node ; son ; brother} as x) ->
@@ -182,14 +182,14 @@ let insert_tree entry gsymbols action tree =
         | DeadEnd -> LocAct action [] ] ] in 
   insert gsymbols tree ;
   
-let insert_level entry e1 symbols action slev =
+let insert_production_in_level entry e1 (symbols, action) slev =
   if e1 then
-    {(slev) with lsuffix = insert_tree entry symbols action slev.lsuffix}
+    {(slev) with lsuffix = insert_production_in_tree entry (symbols, action) slev.lsuffix}
   else
-    {(slev) with lprefix = insert_tree entry symbols action slev.lprefix};
+    {(slev) with lprefix = insert_production_in_tree entry (symbols ,action) slev.lprefix};
 
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
-let levels_of_rules entry position rules =
+let insert_olevels_in_levels entry position rules =
   let elev = match entry.edesc with
     [ Dlevels elev -> elev
     | Dparser _ -> begin
@@ -211,13 +211,13 @@ let levels_of_rules entry position rules =
                   let () = List.iter (check_gram entry) symbols in 
                   let (e1, symbols) = get_initial symbols in 
                   let () =   insert_tokens entry.egram symbols in 
-                  insert_level entry e1 symbols action lev) lev rules in
+                  insert_production_in_level entry e1 (symbols, action) lev) lev rules in
           ([lev :: levs], empty_lev)) ([], make_lev) rules in
       levs1 @ List.rev levs @ levs2 ;
 
 (* mutate the [estart] and [econtinue] *)    
 let extend entry (position, rules) =
-  let elev = levels_of_rules entry position rules in begin 
+  let elev = insert_olevels_in_levels entry position rules in begin 
     entry.edesc <- Dlevels elev;
     entry.estart <-
     fun lev strm ->

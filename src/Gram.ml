@@ -77,7 +77,7 @@ let parse_file_with ~rule file  =
 let delete_rule = Delete.delete_rule;
 
 let srules e rl =
-    `Stree (List.fold_left (flip (uncurry (Insert.insert_tree e))) DeadEnd rl);
+    `Stree (List.fold_left (flip (Insert.insert_production_in_tree e)(* (uncurry (Insert.insert_tree e)) *)) DeadEnd rl);
     
 let sfold0 = Fold.sfold0;
 let sfold1 = Fold.sfold1;

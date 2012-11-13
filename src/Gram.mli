@@ -46,9 +46,9 @@ and symbol = Grammar.Structure.symbol
 and tree = Grammar.Structure.tree 
 and node =  Grammar.Structure.node 
 
-type production_rule = symbol list * Action.t
-type single_extend_statment = string option * assoc option * production_rule list
-type extend_statment = position option * single_extend_statment list
+type production = symbol list * Action.t
+type olevel = string option * assoc option * production list
+type extend_statment = position option * olevel list
 type delete_statment = symbol list
 
 type ('a,'b,'c)fold  =
@@ -158,18 +158,11 @@ val sfold0sep :
       ('c Stream.t -> unit) ->
         'c Stream.t -> 'b
 val extend :
-  'a t ->
-  [< `After of string | `Before of string | `First | `Last | `Level of string ]
-  option *
-  (string option * assoc option *  (symbol list * Action.t) list) list -> unit
+  'a t -> extend_statment -> unit
 val eoi_entry : 'a t -> 'a t
 
     
 val levels_of_entry: 'a t -> level list option
 val find_level:
-    ?position:[< `After of string
-             | `Before of string
-             | `First
-             | `Last
-             | `Level of string ] ->  'a t -> level
+    ?position:position ->  'a t -> level
 val token_stream_of_string: string -> (FanSig.token * Grammar.Structure.token_info) LibUtil.Stream.t
