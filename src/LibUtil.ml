@@ -223,7 +223,7 @@ module Stream : STREAM with type t 'a = Stream.t 'a = struct
     [ [< x; 'xs >] -> [< f x; 'map f xs >]
     | [< >] -> [< >] ];
 
-  (* the minimual [n] is 1 *)
+  (* the minimual [n] is 0 *)
   let peek_nth strm n   =
     let rec loop i = fun
       [ [x :: xs] -> if i = 0 then Some x else loop (i - 1) xs

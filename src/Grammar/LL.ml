@@ -8,19 +8,23 @@ let parser_of_terminals
     (terminals:list terminal ) (cont:cont_parse Action.t) (strm:token_stream) =
   let bp = Tools.get_cur_loc strm in (* FIXME more precise Location *)
   let n = List.length terminals in
-  let acc = ref [] in
-  let tokens = Stream.npeek n strm in begin 
+  let acc = ref [] in begin
+  (* let tokens = Stream.npeek n strm in begin  *)
     try
-      List.iter2
-          (fun terminal (t,_) -> begin
-            acc:= [t::!acc];
-            if not (match terminal with
-              [`Stoken(f,_) -> f t
-              |`Skeyword kwd -> FanToken.match_keyword kwd t])
-            then
-              invalid_arg "parser_of_terminals"
-            else ()
-          end) terminals tokens
+      List.iteri
+          (fun i terminal  -> 
+            let t =
+              match Stream.peek_nth strm i with
+              [Some (tok,_) -> tok
+              |None -> invalid_arg "parser_of_terminals"] in begin
+                  acc:= [t::!acc];
+                  if not (match terminal with
+                    [`Stoken(f,_) -> f t
+                    |`Skeyword kwd -> FanToken.match_keyword kwd t])
+                  then
+                    invalid_arg "parser_of_terminals"
+                  else ()
+              end) terminals (* tokens *)
     with [Invalid_argument _ -> raise Stream.Failure];
 
     Stream.njunk n strm;
