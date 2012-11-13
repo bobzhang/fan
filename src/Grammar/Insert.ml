@@ -215,18 +215,14 @@ let insert_olevels_in_levels entry position rules =
           ([lev :: levs], empty_lev)) ([], make_lev) rules in
       levs1 @ List.rev levs @ levs2 ;
 
-(* mutate the [estart] and [econtinue] *)    
+(* mutate the [estart] and [econtinue]
+   The previous version is lazy. We should find a way to exploit both in the future
+ *)    
 let extend entry (position, rules) =
   let elev = insert_olevels_in_levels entry position rules in begin 
     entry.edesc <- Dlevels elev;
-    entry.estart <-
-    fun lev strm ->
-      let f = Parser.start_parser_of_entry entry in
-      begin entry.estart <- f; f lev strm end;
-    entry.econtinue <-
-      fun lev bp a strm ->
-        let f = Parser.continue_parser_of_entry entry in
-        begin entry.econtinue <- f; f lev bp a strm end
+    entry.estart <-Parser.start_parser_of_entry entry;
+    entry.econtinue <- Parser.continue_parser_of_entry entry;
   end;
 
 

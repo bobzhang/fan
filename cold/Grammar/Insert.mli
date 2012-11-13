@@ -22,14 +22,14 @@ val get_initial : ([> `Sself ] as 'a) list -> bool * 'a list
 
 val insert_tokens : gram -> symbol list -> unit
 
-val insert_tree :
-    internal_entry -> symbol list -> Action.t -> tree -> tree
+val insert_production_in_tree:
+    internal_entry -> production -> tree -> tree
 
-val insert_production :
+val insert_production_in_level:
     internal_entry -> bool ->
       production -> level -> level
           
-val insert_olevels :
+val insert_olevels_in_levels :
     internal_entry ->
       position option ->
         olevel list
