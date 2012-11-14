@@ -67,8 +67,8 @@ class text_grammar =
     method symbol1 f =
       function
       | `Snterm e -> pp f "%s" e.ename
-      | `Sself -> pp f "%s" "SELF"
-      | `Snext -> pp f "%s" "NEXT"
+      | `Sself -> pp f "%s" "S"
+      | `Snext -> pp f "%s" "N"
       | `Stoken (_,(description,content)) ->
           pp f "%a%s" self#description description content
       | `Skeyword s -> pp f "%S" s

@@ -29,12 +29,12 @@ and symbol =  {
 and text =  
   | TXmeta of loc* string list* text list* Ast.expr* styp
   | TXlist of loc* bool* symbol* symbol option
-  | TXnext of loc
   | TXnterm of loc* name* string option
   | TXopt of loc* text
   | TXtry of loc* text
   | TXrules of loc* (text list* Ast.expr) list
   | TXself of loc
+  | TXnext of loc
   | TXkwd of loc* string
   | TXtok of loc* Ast.expr* attr* string 
 type used =  
