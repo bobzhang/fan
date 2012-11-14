@@ -499,7 +499,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                           | _ -> assert false)))])],
              (Gram.mk_action
                 (fun (lev : 'e__6 option)  (n : 'name)  (_loc : FanLoc.t)  ->
-                   (mk_symbol ~used:[n.tvar] ~text:(TXnterm (_loc, n, lev))
+                   (mk_symbol ~text:(TXnterm (_loc, n, lev))
                       ~styp:(STquo (_loc, (n.tvar))) ~pattern:None : 
                    'symbol ))));
            ([`Stoken
@@ -509,8 +509,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun __camlp4_0  (_loc : FanLoc.t)  ->
                    match __camlp4_0 with
                    | `STRING (_,s) ->
-                       (mk_symbol ~used:[] ~text:(TXkwd (_loc, s))
-                          ~styp:(STtok _loc) ~pattern:None : 'symbol )
+                       (mk_symbol ~text:(TXkwd (_loc, s)) ~styp:(STtok _loc)
+                          ~pattern:None : 'symbol )
                    | _ -> assert false)));
            ([`Skeyword "`";
             `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
@@ -561,9 +561,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun _  (rl : 'rule list)  _  (_loc : FanLoc.t)  ->
                    (let rl = retype_rule_list_without_patterns _loc rl in
                     let t = new_type_var () in
-                    let used = used_of_rule_list rl in
-                    mk_symbol ~used
-                      ~text:(TXrules (_loc, (srules _loc t rl "")))
+                    mk_symbol ~text:(TXrules (_loc, (srules _loc t rl "")))
                       ~styp:(STquo (_loc, t)) ~pattern:None : 'symbol ))));
            ([`Stoken
                (((function | `UIDENT "NEXT" -> true | _ -> false)),
@@ -572,7 +570,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun __camlp4_0  (_loc : FanLoc.t)  ->
                    match __camlp4_0 with
                    | `UIDENT "NEXT" ->
-                       (mk_symbol ~used:[] ~text:(TXnext _loc)
+                       (mk_symbol ~text:(TXnext _loc)
                           ~styp:(STself (_loc, "NEXT")) ~pattern:None : 
                        'symbol )
                    | _ -> assert false)));
@@ -583,7 +581,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun __camlp4_0  (_loc : FanLoc.t)  ->
                    match __camlp4_0 with
                    | `UIDENT "SELF" ->
-                       (mk_symbol ~used:[] ~text:(TXself _loc)
+                       (mk_symbol ~text:(TXself _loc)
                           ~styp:(STself (_loc, "SELF")) ~pattern:None : 
                        'symbol )
                    | _ -> assert false)));
@@ -596,8 +594,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    match __camlp4_0 with
                    | `UIDENT "TRY" ->
                        (let text = TXtry (_loc, (s.text)) in
-                        mk_symbol ~used:(s.used) ~text ~styp:(s.styp)
-                          ~pattern:None : 'symbol )
+                        mk_symbol ~text ~styp:(s.styp) ~pattern:None : 
+                       'symbol )
                    | _ -> assert false)));
            ([`Stoken
                (((function | `UIDENT "OPT" -> true | _ -> false)),
@@ -611,8 +609,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                         let styp =
                           STapp (_loc, (STlid (_loc, "option")), (s.styp)) in
                         let text = TXopt (_loc, (s.text)) in
-                        mk_symbol ~used:(s.used) ~text ~styp ~pattern:None : 
-                       'symbol )
+                        mk_symbol ~text ~styp ~pattern:None : 'symbol )
                    | _ -> assert false)));
            ([`Stoken
                (((function | `UIDENT ("LIST0"|"LIST1") -> true | _ -> false)),
@@ -635,10 +632,6 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    match __camlp4_0 with
                    | `UIDENT ("LIST0"|"LIST1" as x) ->
                        (let () = check_not_tok s in
-                        let used =
-                          match sep with
-                          | Some symb -> symb.used @ s.used
-                          | None  -> s.used in
                         let styp =
                           STapp (_loc, (STlid (_loc, "list")), (s.styp)) in
                         let text =
@@ -649,7 +642,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                              | _ ->
                                  failwithf "only (LIST0|LIST1) allowed here")
                             sep s in
-                        mk_symbol ~used ~text ~styp ~pattern:None : 'symbol )
+                        mk_symbol ~text ~styp ~pattern:None : 'symbol )
                    | _ -> assert false)))])]);
     Gram.extend (pattern : 'pattern Gram.t )
       (None,

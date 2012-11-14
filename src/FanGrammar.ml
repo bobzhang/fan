@@ -35,7 +35,7 @@ and rule ={
   action : option Ast.expr
 }
 and symbol ={
-  used : list string;
+  (* used : list string; *)
   text : text;
   styp : styp;
   pattern : option Ast.patt

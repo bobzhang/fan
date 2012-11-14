@@ -14,8 +14,8 @@ let gm () = !grammar_module_name;
 let mk_entry ~name ~pos ~levels = {name;pos;levels};
 let mk_level ~label ~assoc ~rules ={label; assoc;rules};
 let mk_rule ~prod ~action = {prod;action};
-let mk_symbol  ?(pattern=None) ~used ~text ~styp = {
-  used;text;styp;pattern
+let mk_symbol  ?(pattern=None) (* ~used *) ~text ~styp = {
+  (* used; *)text;styp;pattern
 };
 
 let string_of_patt patt = 
@@ -42,8 +42,8 @@ let check_not_tok s = (* ('a, 'b) symbol -> unit *)
 let new_type_var = (* unit -> string *)
   let i = ref 0 in fun () -> begin  incr i; "e__" ^ string_of_int !i end ;
 
-let used_of_rule_list rl = (*('h, 'i) rule list -> string list *)
-  List.fold_left (fun nl r -> List.fold_left (fun nl s -> s.used @ nl) nl r.prod) [] rl ;
+(* let used_of_rule_list rl = (\*('h, 'i) rule list -> string list *\) *)
+(*   List.fold_left (fun nl r -> List.fold_left (fun nl s -> s.used @ nl) nl r.prod) [] rl ; *)
 
 (* transform rule list *)  
 let retype_rule_list_without_patterns _loc rl =
@@ -312,14 +312,14 @@ let mk_tok _loc ?restrict ~pattern t =
       else {:expr| fun [$pat:p' -> true | _ -> false ] |} in 
       let descr = string_of_patt p' in
       let text = TXtok _loc match_fun "Normal" descr in
-      {used = []; text = text; styp = t; pattern = Some pattern }
+      {(* used = []; *) text = text; styp = t; pattern = Some pattern }
     | Some restrict ->
         let p'= Camlp4Ast.wildcarder#patt pattern in
         let match_fun = 
           {:expr| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
         let descr = string_of_patt pattern in
         let text = TXtok _loc match_fun "Antiquot" descr in
-        {used=[]; text; styp=t; pattern = Some p'} ] ;
+        {(* used=[]; *) text; styp=t; pattern = Some p'} ] ;
 let sfold ?sep _loc  (ns:list string)  f e s =
   let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in
   let suffix = match sep with [None -> ""|Some  _ -> "sep"] in
@@ -329,9 +329,9 @@ let sfold ?sep _loc  (ns:list string)  f e s =
   let styp = STquo _loc (new_type_var ()) in
   let e = {:expr| $(id:gm()).$lid:foldfun $f $e |} in
   let t = STapp _loc (STapp _loc (STtyp {:ctyp| $(id:gm()).$(lid:"fold"^suffix) _ |}) s.styp) styp in
-  let used = match sep with [None -> s.used|Some sep-> s.used @ sep.used] in
+  (* let used = match sep with [None -> s.used|Some sep-> s.used @ sep.used] in *)
   let text = TXmeta _loc ns (match sep with [None -> [s.text] | Some sep -> [s.text;sep.text] ])  e t   in 
-  {used ; text ; styp ; pattern = None } ;
+  {(* used ; *) text ; styp ; pattern = None } ;
 
 
 

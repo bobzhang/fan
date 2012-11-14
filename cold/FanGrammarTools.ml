@@ -13,8 +13,7 @@ let gm () = grammar_module_name.contents
 let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
 let mk_rule ~prod  ~action  = { prod; action }
-let mk_symbol ?(pattern= None)  ~used  ~text  ~styp  =
-  { used; text; styp; pattern }
+let mk_symbol ?(pattern= None)  ~text  ~styp  = { text; styp; pattern }
 let string_of_patt patt =
   let buf = Buffer.create 42 in
   let () =
@@ -31,10 +30,6 @@ let check_not_tok s =
   | _ -> ()
 let new_type_var =
   let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
-let used_of_rule_list rl =
-  List.fold_left
-    (fun nl  r  -> List.fold_left (fun nl  s  -> s.used @ nl) nl r.prod) []
-    rl
 let retype_rule_list_without_patterns _loc rl =
   try
     List.map
@@ -521,7 +516,7 @@ let mk_tok _loc ?restrict  ~pattern  t =
                         (Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))))))) in
       let descr = string_of_patt p' in
       let text = TXtok (_loc, match_fun, "Normal", descr) in
-      { used = []; text; styp = t; pattern = (Some pattern) }
+      { text; styp = t; pattern = (Some pattern) }
   | Some restrict ->
       let p' = Camlp4Ast.wildcarder#patt pattern in
       let match_fun =
@@ -537,7 +532,7 @@ let mk_tok _loc ?restrict  ~pattern  t =
                       (Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))))))) in
       let descr = string_of_patt pattern in
       let text = TXtok (_loc, match_fun, "Antiquot", descr) in
-      { used = []; text; styp = t; pattern = (Some p') }
+      { text; styp = t; pattern = (Some p') }
 let sfold ?sep  _loc (ns : string list) f e s =
   let fs = [("FOLD0", "sfold0"); ("FOLD1", "sfold1")] in
   let suffix = match sep with | None  -> "" | Some _ -> "sep" in
@@ -568,10 +563,9 @@ let sfold ?sep  _loc (ns : string list) f e s =
                              (_loc, (gm ()),
                                (Ast.IdLid (_loc, ("fold" ^ suffix))))))),
                      (Ast.TyAny _loc)))), (s.styp))), styp) in
-  let used = match sep with | None  -> s.used | Some sep -> s.used @ sep.used in
   let text =
     TXmeta
       (_loc, ns,
         (match sep with | None  -> [s.text] | Some sep -> [s.text; sep.text]),
         e, t) in
-  { used; text; styp; pattern = None }
+  { text; styp; pattern = None }

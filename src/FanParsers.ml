@@ -147,35 +147,35 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      [ `UIDENT ("LIST0"| "LIST1" as x); SELF{s}; OPT [`UIDENT "SEP"; symbol{t} -> t ]{sep }
        ->
          let () = check_not_tok s in
-         let used =
-           match sep with
-           [ Some symb -> symb.used @ s.used
-           | None -> s.used ]   in
+         (* let used = *)
+         (*   match sep with *)
+         (*   [ Some symb -> symb.used @ s.used *)
+         (*   | None -> s.used ]   in *)
          let styp = STapp _loc (STlid _loc "list") s.styp in
          let text = slist _loc
              (match x with
              ["LIST0" -> false | "LIST1" -> true
              | _ -> failwithf "only (LIST0|LIST1) allowed here"]) sep s in
-         mk_symbol ~used ~text ~styp ~pattern:None
+         mk_symbol (* ~used *) ~text ~styp ~pattern:None
      |`UIDENT "OPT"; SELF{s}
        ->
          let () = check_not_tok s in
          let styp = STapp _loc (STlid _loc "option") s.styp in
          let text = TXopt _loc s.text in
-         mk_symbol ~used:s.used ~text ~styp ~pattern:None
+         mk_symbol (* ~used:s.used *) ~text ~styp ~pattern:None
      |`UIDENT "TRY"; SELF{s} ->
         let text = TXtry _loc s.text in
-        mk_symbol ~used:s.used ~text ~styp:(s.styp) ~pattern:None
+        mk_symbol (* ~used:s.used *) ~text ~styp:(s.styp) ~pattern:None
      | `UIDENT "SELF"
        ->
-        mk_symbol ~used:[] ~text:(TXself _loc)  ~styp:(STself _loc "SELF") ~pattern:None
+        mk_symbol (* ~used:[] *) ~text:(TXself _loc)  ~styp:(STself _loc "SELF") ~pattern:None
      |`UIDENT "NEXT" ->
-        mk_symbol ~used:[] ~text:(TXnext _loc)   ~styp:(STself _loc "NEXT") ~pattern:None
+        mk_symbol (* ~used:[] *) ~text:(TXnext _loc)   ~styp:(STself _loc "NEXT") ~pattern:None
      | "["; LIST0 rule SEP "|"{rl}; "]" ->
         let rl = retype_rule_list_without_patterns _loc rl in
         let t = new_type_var () in
-        let used = used_of_rule_list rl in
-        mk_symbol ~used ~text:(TXrules _loc (srules _loc t rl ""))
+        (* let used = used_of_rule_list rl in *)
+        mk_symbol (* ~used *) ~text:(TXrules _loc (srules _loc t rl ""))
           ~styp:(STquo _loc t) ~pattern:None
      | "`"; a_ident{i}; OPT patt{p} ->
         let p = match p with
@@ -190,9 +190,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 {:expr| $x = $y |} ys  in 
             mk_tok _loc ~restrict ~pattern:p (STtok _loc) ]                
      | `STRING (_, s) ->
-            mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
+            mk_symbol (* ~used:[] *) ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
      | name{n};  OPT [`UIDENT "Level"; `STRING (_, s) -> s ]{lev} ->
-            mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
+            mk_symbol (* ~used:[n.tvar] *) ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
      | "("; SELF{s_t}; ")" -> s_t ]
    pattern:
      [ `LIDENT i -> {:patt| $lid:i |}

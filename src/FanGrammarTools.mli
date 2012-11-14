@@ -15,14 +15,13 @@ val mk_rule :
   prod:symbol list -> action:Ast.expr option -> rule
 val mk_symbol :
   ?pattern:Ast.patt option ->
-  used:string list ->
   text:text -> styp:styp -> symbol
 val string_of_patt : Camlp4Ast.Ast.patt -> string
 
 val check_not_tok : symbol -> unit
     
 val new_type_var : unit -> string
-val used_of_rule_list : rule list -> string list
+
 val retype_rule_list_without_patterns :
   Ast.loc -> rule list -> rule list
 exception NotneededTyping

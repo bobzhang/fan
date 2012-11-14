@@ -22,9 +22,7 @@ and level =  {
 and rule =  {
   prod: symbol list;
   action: Ast.expr option} 
-and symbol = 
-  {
-  used: string list;
+and symbol =  {
   text: text;
   styp: styp;
   pattern: Ast.patt option} 
