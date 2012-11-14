@@ -166,7 +166,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      |`UIDENT "TRY"; SELF{s} ->
         let text = TXtry _loc s.text in
         mk_symbol ~used:s.used ~text ~styp:(s.styp) ~pattern:None
-     | `UIDENT "SELF" ->
+     | `UIDENT "SELF"
+       ->
         mk_symbol ~used:[] ~text:(TXself _loc)  ~styp:(STself _loc "SELF") ~pattern:None
      |`UIDENT "NEXT" ->
         mk_symbol ~used:[] ~text:(TXnext _loc)   ~styp:(STself _loc "NEXT") ~pattern:None

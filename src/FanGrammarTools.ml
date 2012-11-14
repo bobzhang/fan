@@ -172,11 +172,8 @@ let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string
       rl ;
     
 let rec make_expr entry tvar =  fun
-  (* expr name -> string -> (expr, 'a) text -> expr*)
   [ TXmeta _loc n tl e t ->
     let el = Expr.mklist _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
-      (* List.fold_right *)
-      (*   (fun t el -> {:expr| [$(make_expr entry "" t) :: $el] |}) tl {:expr| [] |} in *)
     let ns = Expr.mklist _loc (List.map (fun n -> {:expr| $str:n |} ) n) in 
     {:expr| `Smeta ($ns, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) |}
   | TXlist _loc min t ts ->

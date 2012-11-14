@@ -38,8 +38,7 @@ val srules :
   Ast.loc ->
   string ->
   rule list -> string -> (text list * Ast.expr) list
-val make_expr :
-  name -> string -> text -> Ast.expr
+val make_expr : name -> string -> text -> Ast.expr
 val make_expr_rules :
   loc ->
   name ->

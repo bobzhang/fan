@@ -9,7 +9,6 @@ let parser_of_terminals
   let bp = Tools.get_cur_loc strm in (* FIXME more precise Location *)
   let n = List.length terminals in
   let acc = ref [] in begin
-  (* let tokens = Stream.npeek n strm in begin  *)
     try
       List.iteri
           (fun i terminal  -> 
