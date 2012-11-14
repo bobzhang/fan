@@ -169,18 +169,18 @@ let remove_underscores s =
 
 
 (********************************************************************************)
-module Options :sig
-  type spec_list = list (string * Arg.spec *  string);
+module Options (* :sig *)
+(*   type spec_list = list (string * Arg.spec *  string); *)
         
-  val init : spec_list -> unit;
+(*   val init : spec_list -> unit; *)
       
-  val add : string -> Arg.spec -> string -> unit;
+(*   val add : string -> Arg.spec -> string -> unit; *)
       
-(** Add an option to the command line options. *)
-  val print_usage_list : spec_list -> unit;
-  val ext_spec_list : unit -> spec_list;
-  val parse : (string -> unit) -> array string  -> list string ;
-end= struct
+(* (\** Add an option to the command line options. *\) *)
+(*   val print_usage_list : spec_list -> unit; *)
+(*   val ext_spec_list : unit -> spec_list; *)
+(*   val parse : (string -> unit) -> array string  -> list string ; *)
+(* end*)=  struct
   type spec_list = list (string  * Arg.spec * string);
 
   open Format;
@@ -355,7 +355,7 @@ end= struct
       
   let init spec_list = init_spec_list := spec_list;
       
-  let add name spec descr =
+  let add (name, spec, descr) =
     ext_spec_list := [(name, spec, descr) :: !ext_spec_list];
                                              
   let fold f init =

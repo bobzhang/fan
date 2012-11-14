@@ -1,4 +1,4 @@
-
+(* A file demonstrate how meta works*)
 
 let u = Ast.ExInt _loc "\\$int:\"32\""; (* came from $(int:"32") *)
 

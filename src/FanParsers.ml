@@ -219,14 +219,12 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      [ a_LIDENT{i} -> {:expr| $lid:i |}
      | "("; expr{e}; ")" -> e ]  |};
 
-  Options.add "-split_ext" (Arg.Set split_ext)
-    "Split EXTEND by functions to turn around a PowerPC problem.";
+  Options.add ("-split_ext", (Arg.Set split_ext),
+               "Split EXTEND by functions to turn around a PowerPC problem.");
 
-  Options.add "-split_gext" (Arg.Set split_ext)
-    "Old name for the option -split_ext.";
+  Options.add ("-split_gext", (Arg.Set split_ext),"Old name for the option -split_ext.");
 
-  Options.add "-meta_action" (Arg.Set meta_action)
-    "Undocumented"; (* FIXME *)
+  Options.add ("-meta_action", (Arg.Set meta_action), "Undocumented"); (* FIXME *)
 end;
 
 module IdListComprehension = struct
@@ -563,12 +561,9 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       | "`"; a_ident{s} -> {:patt| ` $s |} ] |};
 
 
-  Options.add "-D" (Arg.String parse_def)
-    "<string> Define for IFDEF instruction.";
-  Options.add "-U" (Arg.String undef)
-    "<string> Undefine for IFDEF instruction.";
-  Options.add "-I" (Arg.String add_include_dir)
-    "<string> Add a directory to INCLUDE search path.";
+  Options.add ("-D", (Arg.String parse_def),"<string> Define for IFDEF instruction.");
+  Options.add ("-U", (Arg.String undef), "<string> Undefine for IFDEF instruction.");
+  Options.add ("-I", (Arg.String add_include_dir), "<string> Add a directory to INCLUDE search path.");
 end;
 module MakeNothing (Syn : Sig.Camlp4Syntax) = struct
  module Ast = Camlp4Ast ;
@@ -606,8 +601,7 @@ New syntax:\
       exit 1
     }
   ;
-  Options.add "-help_seq" (Arg.Unit help_sequences)
-    "Print explanations about new sequences and exit.";
+  Options.add ("-help_seq", (Arg.Unit help_sequences), "Print explanations about new sequences and exit.");
   Gram.clear a_CHAR;
   Gram.clear a_FLOAT;
   Gram.clear a_INT;

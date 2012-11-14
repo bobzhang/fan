@@ -339,7 +339,10 @@ module Camlp4Bin
           else raise (Arg.Bad ("don't know what to do with " ^ name)));
       
       let main argv =
-        let usage () = do { usage initial_spec_list (FanUtil.Options.ext_spec_list ()); exit 0 } in
+        let usage () = begin
+          usage initial_spec_list (FanUtil.Options.ext_spec_list ());
+          exit 0
+        end in
         try begin
           let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib
                                        ~camlp4_stdlib:!search_stdlib () in 
@@ -357,7 +360,8 @@ module Camlp4Bin
           | [s :: _] ->
               do { eprintf "%s: unknown or misused option\n" s;
                   eprintf "Use option -help for usage@.";
-                  exit 2 } ] in 
+                  exit 2 } ] in
+          (* let () = Arg.parse_argv argv anon_fun "" in *)
           let ()  = do_task usage in 
           let () =call_callback () in 
           if !print_loaded_modules then do {
