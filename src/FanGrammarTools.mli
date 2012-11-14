@@ -39,9 +39,7 @@ val srules :
   rule list -> string -> (text list * Ast.expr) list
 val make_expr : name -> string -> text -> Ast.expr
 val make_expr_rules :
-  loc ->
-  name ->
-  (text list * Ast.expr) list -> string -> Ast.expr
+    loc -> name -> (text list * Ast.expr) list -> string -> Ast.expr
 val expr_of_delete_rule :
   Ast.loc -> name -> symbol list -> Ast.expr * Ast.expr
 val mk_name : Ast.loc -> Ast.ident -> name

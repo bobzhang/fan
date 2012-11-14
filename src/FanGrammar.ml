@@ -35,7 +35,6 @@ and rule ={
   action : option Ast.expr
 }
 and symbol ={
-  (* used : list string; *)
   text : text;
   styp : styp;
   pattern : option Ast.patt
@@ -43,12 +42,12 @@ and symbol ={
 and text =
  [ TXmeta of loc and list string and list text and Ast.expr and styp
  | TXlist of loc and bool and symbol and option symbol
- | TXnext of loc
  | TXnterm of loc and name  and option string
  | TXopt of loc and text 
  | TXtry of loc and text 
  | TXrules of loc and list (list text * Ast.expr)
  | TXself of loc
+ | TXnext of loc       
  | TXkwd of loc and string
  | TXtok of loc and Ast.expr and attr and string];
 (** The first is the match function expr,
