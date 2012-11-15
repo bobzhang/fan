@@ -112,7 +112,7 @@ let token_location r = r.cur_loc;
 let using { gkeywords = table; gfilter = filter; _ } kwd =
   let r = try Hashtbl.find table kwd with
     [ Not_found ->
-      let r = ref 0 in do { Hashtbl.add table kwd r; r } ]
+      let r = ref 0 in begin Hashtbl.add table kwd r; r end ]
   in begin
     FanToken.Filter.keyword_added filter kwd (r.contents = 0);
     incr r

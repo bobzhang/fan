@@ -298,7 +298,7 @@ let text_of_functorial_extend _loc  gram gl el =
     [ [] -> {:expr| () |}
     | [e] -> e
     | [e::el] ->
-        {:expr| do { $(List.fold_left (fun acc x -> {:expr| $acc; $x |}) e el) } |}  ]  in
+        {:expr| begin  $(List.fold_left (fun acc x -> {:expr| $acc; $x |}) e el) end |}  ]  in
   let_in_of_extend _loc gram gl  args;
 
 let mk_tok _loc ?restrict ~pattern t =

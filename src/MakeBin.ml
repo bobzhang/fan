@@ -27,10 +27,10 @@ module Camlp4Bin
       let rewrite_and_load n x =
         let dyn_loader = !DynLoader.instance () in 
         let find_in_path = DynLoader.find_in_path dyn_loader in
-        let real_load name = do {
+        let real_load name = do 
           add_to_loaded_modules name;
           DynLoader.load dyn_loader name
-        } in
+        done in
         let load =  begin fun n ->
           if SSet.mem n !loaded_modules
           || List.mem n !PreCast.loaded_modules then ()
@@ -152,24 +152,24 @@ module Camlp4Bin
           match getdir ast with
           [ Some x ->
               match x with
-              [ (_, "load", s) -> do { rewrite_and_load "" s; None }
-              | (_, "directory", s) -> do { DynLoader.include_dir dyn_loader s; None }
+              [ (_, "load", s) -> begin  rewrite_and_load "" s; None end
+              | (_, "directory", s) -> begin  DynLoader.include_dir dyn_loader s; None end
               | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir)
-              | (_, "default_quotation", s) -> do { PreCast.Syntax.Quotation.default := s; None }
+              | (_, "default_quotation", s) -> begin PreCast.Syntax.Quotation.default := s; None end
               | (loc, _, _) -> FanLoc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ]
           | None -> None ]) in
         let loc = FanLoc.mk name
-        in do {
+        in do 
           PreCast.Syntax.current_warning := print_warning;
           let ic = if name = "-" then stdin else open_in_bin name;
           let cs = Stream.of_channel ic;
           let clear () = if name = "-" then () else close_in ic;
           let phr =
             try pa ?directive_handler loc cs
-            with x -> do { clear (); raise x };
+            with x -> begin  clear (); raise x end ;
           clear ();
           phr
-        };
+        done ;
       
       let output_file = ref None;
       
@@ -207,16 +207,16 @@ module Camlp4Bin
        *)  
         
       let just_print_the_version () =
-        do { printf "%s@." FanConfig.version; exit 0 };
+        begin  printf "%s@." FanConfig.version; exit 0 end ;
       
       let print_version () =
-        do { eprintf "Camlp4 version %s@." FanConfig.version; exit 0 };
+        begin eprintf "Camlp4 version %s@." FanConfig.version; exit 0 end;
       
       let print_stdlib () =
-        do { printf "%s@." FanConfig.camlp4_standard_library; exit 0 };
+        begin  printf "%s@." FanConfig.camlp4_standard_library; exit 0 end;
       
       let usage ini_sl ext_sl =
-        do {
+        begin
           eprintf "\
       Usage: Fan [load-options] [--] [other-options]\n\
       Options:\n\
@@ -231,19 +231,19 @@ module Camlp4Bin
             [ [(y, _, _) :: _] when y = "-help" -> ()
             | [_ :: sl] -> loop sl
             | [] -> eprintf "  -help         Display this list of options.@." ];    *)
-          if ext_sl <> [] then do {
+          if ext_sl <> [] then begin
             eprintf "Options added by loaded object files:@.";
             FanUtil.Options.print_usage_list ext_sl;
-          }
+          end
           else ();
-        };
+        end;
       
       let warn_noassert () =
-        do {
+        begin
           eprintf "\
       camlp4 warning: option -noassert is obsolete\n\
       You should give the -noassert option to the ocaml compiler instead.@.";
-        };
+        end;
       
       type file_kind =
         [ Intf of string
@@ -264,7 +264,7 @@ module Camlp4Bin
         (task, do_task);
       let input_file x =
         let dyn_loader = !DynLoader.instance () in 
-        do {
+        begin
           !rcall_callback ();
           match x with
           [ Intf file_name -> task (process_intf dyn_loader) file_name
@@ -280,7 +280,7 @@ module Camlp4Bin
           | ModuleImpl file_name -> rewrite_and_load "" file_name
           | IncludeDir dir -> DynLoader.include_dir dyn_loader dir ];
           !rcall_callback ();
-        };
+        end;
       
       let initial_spec_list =
         [("-I", Arg.String (fun x -> input_file (IncludeDir x)),
@@ -357,23 +357,26 @@ module Camlp4Bin
           let () = match FanUtil.Options.parse anon_fun argv with
           [ [] -> ()
           | ["-help"|"--help"|"-h"|"-?" :: _] -> usage ()
-          | [s :: _] ->
-              do { eprintf "%s: unknown or misused option\n" s;
-                  eprintf "Use option -help for usage@.";
-                  exit 2 } ] in
+          | [s :: _] -> begin
+              eprintf "%s: unknown or misused option\n" s;
+              eprintf "Use option -help for usage@.";
+              exit 2
+          end ] in
           (* let () = Arg.parse_argv argv anon_fun "" in *)
           let ()  = do_task usage in 
           let () =call_callback () in 
-          if !print_loaded_modules then do {
+          if !print_loaded_modules then begin
             SSet.iter (eprintf "%s@.") !loaded_modules;
-          } else ()
+          end else ()
         end
         with
-        [ Arg.Bad s -> do { eprintf "Error: %s\n" s;
-                            eprintf "Use option -help for usage@.";
-                            exit 2 }
+        [ Arg.Bad s -> begin
+          eprintf "Error: %s\n" s;
+          eprintf "Use option -help for usage@.";
+          exit 2
+        end
         | Arg.Help _ -> usage ()
-        | exc -> do { eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 } ];
+        | exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end ];
       
       main Sys.argv;
             

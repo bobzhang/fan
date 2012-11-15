@@ -91,12 +91,12 @@ let stream_pattern_component skont ckont =  fun
   [ SpTrm _loc p None ->
       {:expr| match $(peek_fun _loc) $lid:strm_n with
               [ Some $p ->
-                  do { $(junk_fun _loc) $lid:strm_n; $skont }
+                  begin  $(junk_fun _loc) $lid:strm_n; $skont  end
               | _ -> $ckont ] |}
   | SpTrm _loc p (Some w) ->
       {:expr| match $(peek_fun _loc) $lid:strm_n with
               [ Some $p when $w ->
-                  do { $(junk_fun _loc) $lid:strm_n; $skont }
+                  begin  $(junk_fun _loc) $lid:strm_n; $skont  end
               | _ -> $ckont ] |}
   | SpNtr _loc p e ->
       let e =
@@ -156,7 +156,7 @@ let stream_patterns_term _loc ekont tspel =
               | _ -> {:expr| "" |} ] in
             {:expr| raise ($(uid:gm()).Error $str) |} in
           let skont = stream_pattern _loc epo e ekont spcl in
-          {:expr| do { $(junk_fun _loc) $lid:strm_n; $skont } |} in
+          {:expr| begin  $(junk_fun _loc) $lid:strm_n; $skont  end |} in
         match w with
         [ Some w -> {:match_case| $pat:p when $w -> $e | $acc |}
         | None -> {:match_case| $pat:p -> $e | $acc |} ])
@@ -194,7 +194,7 @@ let cparser_match _loc me bpo pc =
     [ Some bp -> {:expr| let $bp = $(uid:gm()).count $lid:strm_n in $pc |}
     | None -> pc ]  in
   let me = match me with
-    [ {:expr@_loc| $_; $_ |} as e -> {:expr| do { $e } |}
+    [ {:expr@_loc| $_; $_ |} as e -> {:expr| begin  $e  end |}
     | e -> e ] in
   match me with
   [ {:expr| $lid:x |} when x = strm_n -> e

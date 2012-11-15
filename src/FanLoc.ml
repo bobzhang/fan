@@ -292,7 +292,7 @@ let strictly_before x y =
   b;
 
 (** Same as {!print} but return a string instead of printting it. *)
-let to_string x = do {
+let to_string x = begin
   let (a, b) = (x.loc_start, x.loc_end) in
   let res = sprintf "File \"%s\", line %d, characters %d-%d"
       a.pos_fname a.pos_lnum
@@ -302,7 +302,7 @@ let to_string x = do {
     sprintf "%s (end at line %d, character %d)"
             res x.loc_end.pos_lnum (b.pos_cnum - b.pos_bol)
   else res
-};
+end;
 
 (** Print the location into the formatter in a format suitable for error
     reporting. *)
@@ -319,10 +319,10 @@ let check x msg =
         (start_off x) < (start_bol x) || (stop_off x) < (start_bol x)
         since the lexer is called on antiquotations, with off=0, but line and bolpos
         have "correct" lets *)
-  then do {
+  then begin
     eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
     false
-  }
+  end
   else true;
 
   

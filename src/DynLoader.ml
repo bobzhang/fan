@@ -32,16 +32,16 @@ module Make (U:sig end) : S= struct
   let fold_load_path x f acc = Queue.fold (fun x y -> f y x) acc x;
 
   let mk ?(ocaml_stdlib = true) ?(camlp4_stdlib = true) () =
-  let q = Queue.create () in do {
+  let q = Queue.create () in begin
     if ocaml_stdlib then include_dir q FanConfig.ocaml_standard_library else ();
-    if camlp4_stdlib then do {
+    if camlp4_stdlib then begin
       include_dir q FanConfig.camlp4_standard_library;
       include_dir q (Filename.concat FanConfig.camlp4_standard_library "Camlp4Printers");
       include_dir q (Filename.concat FanConfig.camlp4_standard_library "Camlp4Filters");
-    } else ();
+    end else ();
     include_dir q ".";
   q
-};
+end;
 (* Load files in core *)
 let find_in_path x name =
   if not (Filename.is_implicit name) then
@@ -60,13 +60,13 @@ let find_in_path x name =
 let load =
   let _initialized = ref false in
   fun _path file ->
-    do {
+    begin
       if not !_initialized then
-        try do {
+        try begin
           Dynlink.init ();
           Dynlink.allow_unsafe_modules true;
          _initialized := true
-        }
+        end
         with
         [ Dynlink.Error e ->
            raise (Error "Camlp4's dynamic loader initialization" (Dynlink.error_message e)) ]
@@ -77,7 +77,7 @@ let load =
       in
       try Dynlink.loadfile fname with
       [ Dynlink.Error e -> raise (Error fname (Dynlink.error_message e)) ]
-    };
+    end;
 
 
 let is_native = Dynlink.is_native;

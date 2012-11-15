@@ -57,9 +57,9 @@ let use_file token_stream =
       if stopped_at_directive <> None then
         match pl with
         [ [ {:str_item| #load $str:s |} ] ->
-            do { Topdirs.dir_load Format.std_formatter s; loop () }
+            begin  Topdirs.dir_load Format.std_formatter s; loop ()  end
         | [ {:str_item| #directory $str:s |} ] ->
-            do { Topdirs.dir_directory s; loop () }
+            begin  Topdirs.dir_directory s; loop ()  end
         | _ -> (pl, false) ]
       else (pl, true)
   in

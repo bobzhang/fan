@@ -24,13 +24,13 @@ module Make   (U: sig end) : Sig.PRECAST  = struct
   let register_str_item_parser f = str_item_parser := f;
   let register_sig_item_parser f = sig_item_parser := f;
   let register_parser f g =
-    do { str_item_parser := f; sig_item_parser := g };
+    begin  str_item_parser := f; sig_item_parser := g  end;
   let current_parser () = (!str_item_parser, !sig_item_parser);
 
   let register_str_item_printer f = str_item_printer := f;
   let register_sig_item_printer f = sig_item_printer := f;
   let register_printer f g =
-    do { str_item_printer := f; sig_item_printer := g };
+    begin  str_item_printer := f; sig_item_printer := g  end;
   let current_printer () = (!str_item_printer, !sig_item_printer);
 
 
@@ -109,4 +109,5 @@ module Make   (U: sig end) : Sig.PRECAST  = struct
     let print_implem ?input_file ?output_file ast =
       !str_item_printer ?input_file ?output_file ast;
   end;
+
 end; 

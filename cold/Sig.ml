@@ -169,7 +169,6 @@ module type Camlp4Syntax =
     val sem_patt_for_list : (Ast.patt -> Ast.patt) Gram.t
     val semi : unit Gram.t
     val sequence : Ast.expr Gram.t
-    val do_sequence : Ast.expr Gram.t
     val sig_item : Ast.sig_item Gram.t
     val sig_item_quot : Ast.sig_item Gram.t
     val sig_items : Ast.sig_item Gram.t

@@ -87,11 +87,11 @@ let mklist_last ?last _loc  =
   loop true ;
 
 let mksequence _loc = fun
-  [ {:expr| $_; $_ |} | {:expr| $anti:_ |} as e -> {:expr| do { $e } |}
+  [ {:expr| $_; $_ |} | {:expr| $anti:_ |} as e -> {:expr| begin  $e end |}
   | e -> e ];
 
 let mksequence' _loc = fun
-  [ {:expr| $_; $_ |} as e -> {:expr| do { $e } |}
+  [ {:expr| $_; $_ |} as e -> {:expr| begin  $e  end |}
   | e -> e ];
 
 

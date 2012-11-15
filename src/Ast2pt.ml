@@ -671,7 +671,7 @@ let rec expr = fun (* expr -> expression*)
             mkexp loc (Pexp_newtype i (expr e))
         | {:expr@loc| $_,$_ |} -> error loc "expr, expr: not allowed here"
         | {:expr@loc| $_;$_ |} ->
-            error loc "expr; expr: not allowed here, use do {...} or [|...|] to surround them"
+            error loc "expr; expr: not allowed here, use begin ... end or [|...|] to surround them"
         | ExId _ _ | ExNil _ as e -> error (loc_of_expr e) "invalid expr" ]
 and patt_of_lab _loc lab =  fun (* loc -> string -> patt -> pattern *)
   [ {:patt||} -> patt {:patt| $lid:lab |}

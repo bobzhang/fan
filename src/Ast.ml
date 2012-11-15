@@ -169,7 +169,7 @@
     | ExChr of loc and string (* 'c' *)
     | ExCoe of loc and expr and ctyp and ctyp (* (e : t) or (e : t :> t) *)
     | ExFlo of loc and string (* 3.14 *)
-      (* for s = e to/downto e do { e } *)
+      (* for s = e to/downto e begin  e  end *)
     | ExFor of loc and string and expr and expr and direction_flag and expr
     | ExFun of loc and match_case (* fun [ mc ] *)
     | ExIfe of loc and expr and expr and expr (* if e then e else e *)
@@ -195,7 +195,7 @@
     | ExOvr of loc and rec_binding
       (* { rb } or { (e) with rb } *)
     | ExRec of loc and rec_binding and expr
-      (* do { e } *)
+      (* begin  e  end *)
     | ExSeq of loc and expr
       (* e#s *)
     | ExSnd of loc and expr and string
@@ -213,7 +213,7 @@
     | ExTyc of loc and expr and ctyp
       (* `s *)
     | ExVrn of loc and string
-      (* while e do { e } *)
+      (* while e begin  e  end *)
     | ExWhi of loc and expr and expr
       (* let open i in e *)
     | ExOpI of loc and ident and expr

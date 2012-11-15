@@ -121,15 +121,7 @@ let remove_underscores s =
       (fun ch  -> if ch <> '_' then ignore (Buffer.add_char buf ch) else ())
       s in
   Buffer.contents buf
-module Options :
-  sig
-    type spec_list = (string* Arg.spec* string) list 
-    val init : spec_list -> unit
-    val add : string -> Arg.spec -> string -> unit
-    val print_usage_list : spec_list -> unit
-    val ext_spec_list : unit -> spec_list
-    val parse : (string -> unit) -> string array -> string list
-  end = struct
+module Options = struct
   type spec_list = (string* Arg.spec* string) list  open Format
   let rec action_arg s sl =
     function
@@ -287,7 +279,7 @@ module Options :
       if i == (Array.length argv) then l else loop ((argv.(i)) :: l) (i + 1) in
     List.rev (loop [] (Arg.current.contents + 1)) let init_spec_list = ref []
   let ext_spec_list = ref [] let init spec_list = init_spec_list := spec_list
-  let add name spec descr =
+  let add (name,spec,descr) =
     ext_spec_list := ((name, spec, descr) :: (ext_spec_list.contents))
   let fold f init =
     let spec_list = init_spec_list.contents @ ext_spec_list.contents in
@@ -297,4 +289,4 @@ module Options :
     let remaining_args = remaining_args argv in
     parse_aux fold anon_fun remaining_args
   let ext_spec_list () = ext_spec_list.contents
-  end 
+  end

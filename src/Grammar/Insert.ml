@@ -137,8 +137,8 @@ let insert_tokens gram symbols =
   let rec insert = fun
     [ `Smeta _ sl _ -> List.iter insert sl
     | `Slist0 s | `Slist1 s | `Sopt s | `Stry s -> insert s
-    | `Slist0sep (s, t) -> do { insert s; insert t }
-    | `Slist1sep (s, t) -> do { insert s; insert t }
+    | `Slist0sep (s, t) -> begin  insert s; insert t  end
+    | `Slist1sep (s, t) -> begin  insert s; insert t  end
     | `Stree t -> tinsert t
     | `Skeyword kwd -> using gram kwd (* main meat *)
     | `Snterm _ | `Snterml (_, _) | `Snext | `Sself | `Stoken _ -> () ]

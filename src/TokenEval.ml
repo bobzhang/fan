@@ -63,9 +63,9 @@ let  backslash = parser
  *)    
 let  backslash_in_string strict store = parser
   [ [< '\010'; 's >] -> skip_indent s
-  | [< '\013'; 's >] -> do { skip_opt_linefeed s; skip_indent s }
+  | [< '\013'; 's >] -> begin  skip_opt_linefeed s; skip_indent s  end
   | [< x = backslash >] -> store x
-  | [< c when not strict >] -> do { store '\\'; store c }
+  | [< c when not strict >] -> begin  store '\\'; store c  end
   | [< >] -> failwith "invalid string token" ];
 
 (*

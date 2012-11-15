@@ -662,7 +662,7 @@ let rec expr =
   | Ast.ExCom (loc,_,_) -> error loc "expr, expr: not allowed here"
   | Ast.ExSem (loc,_,_) ->
       error loc
-        "expr; expr: not allowed here, use do {...} or [|...|] to surround them"
+        "expr; expr: not allowed here, use begin ... end or [|...|] to surround them"
   | ExId (_,_)|ExNil _ as e -> error (loc_of_expr e) "invalid expr"
 and patt_of_lab _loc lab =
   function
