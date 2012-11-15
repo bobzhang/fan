@@ -1146,4 +1146,7 @@ Ptop_def
     LIST1 and itself
 
   - antiquot
-    
+
+  - our backtracking algorithm 
+    WILL  devastate the error message
+    The deepest ... to do 

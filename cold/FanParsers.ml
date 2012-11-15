@@ -3283,8 +3283,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
               (Gram.mk_action
                  (fun (bi : 'cvalue_binding)  (_loc : FanLoc.t)  ->
                     (bi : 'fun_binding ))));
-           ([`Stry
-               (`Snterm (Gram.obj (labeled_ipatt : 'labeled_ipatt Gram.t )));
+           ([`Snterm (Gram.obj (labeled_ipatt : 'labeled_ipatt Gram.t ));
             `Sself],
              (Gram.mk_action
                 (fun (e : 'fun_binding)  (p : 'labeled_ipatt) 
@@ -3292,16 +3291,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (Ast.ExFun
                       (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), e))) : 
                    'fun_binding ))));
-           ([`Stry
-               (Gram.srules fun_binding
-                  [([`Skeyword "("; `Skeyword "type"],
-                     (Gram.mk_action
-                        (fun _  _  (_loc : FanLoc.t)  -> (() : 'e__18 ))))]);
+           ([`Skeyword "(";
+            `Skeyword "type";
             `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
             `Skeyword ")";
             `Sself],
              (Gram.mk_action
-                (fun (e : 'fun_binding)  _  (i : 'a_LIDENT)  _ 
+                (fun (e : 'fun_binding)  _  (i : 'a_LIDENT)  _  _ 
                    (_loc : FanLoc.t)  ->
                    (Ast.ExFUN (_loc, i, e) : 'fun_binding ))))])]);
     Gram.extend (match_case : 'match_case Gram.t )
@@ -3491,26 +3487,22 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
     Gram.extend (fun_def : 'fun_def Gram.t )
       (None,
         [(None, None,
-           [([`Stry
-                (`Snterm (Gram.obj (labeled_ipatt : 'labeled_ipatt Gram.t )));
+           [([`Snterm (Gram.obj (labeled_ipatt : 'labeled_ipatt Gram.t ));
              `Snterm (Gram.obj (fun_def_cont : 'fun_def_cont Gram.t ))],
               (Gram.mk_action
                  (fun ((w,e) : 'fun_def_cont)  (p : 'labeled_ipatt) 
                     (_loc : FanLoc.t)  ->
                     (Ast.ExFun (_loc, (Ast.McArr (_loc, p, w, e))) : 
                     'fun_def ))));
-           ([`Stry
-               (Gram.srules fun_def
-                  [([`Skeyword "("; `Skeyword "type"],
-                     (Gram.mk_action
-                        (fun _  _  (_loc : FanLoc.t)  -> (() : 'e__19 ))))]);
+           ([`Skeyword "(";
+            `Skeyword "type";
             `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
             `Skeyword ")";
             `Snterm
               (Gram.obj
                  (fun_def_cont_no_when : 'fun_def_cont_no_when Gram.t ))],
              (Gram.mk_action
-                (fun (e : 'fun_def_cont_no_when)  _  (i : 'a_LIDENT)  _ 
+                (fun (e : 'fun_def_cont_no_when)  _  (i : 'a_LIDENT)  _  _ 
                    (_loc : FanLoc.t)  -> (Ast.ExFUN (_loc, i, e) : 'fun_def ))))])]);
     Gram.extend (fun_def_cont : 'fun_def_cont Gram.t )
       (None,
@@ -3526,8 +3518,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (e : 'expr)  _  (w : 'expr)  _  (_loc : FanLoc.t)  ->
                    ((w, e) : 'fun_def_cont ))));
-           ([`Stry
-               (`Snterm (Gram.obj (labeled_ipatt : 'labeled_ipatt Gram.t )));
+           ([`Snterm (Gram.obj (labeled_ipatt : 'labeled_ipatt Gram.t ));
             `Sself],
              (Gram.mk_action
                 (fun ((w,e) : 'fun_def_cont)  (p : 'labeled_ipatt) 
@@ -3535,18 +3526,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (((Ast.ExNil _loc),
                       (Ast.ExFun (_loc, (Ast.McArr (_loc, p, w, e))))) : 
                    'fun_def_cont ))));
-           ([`Stry
-               (Gram.srules fun_def_cont
-                  [([`Skeyword "("; `Skeyword "type"],
-                     (Gram.mk_action
-                        (fun _  _  (_loc : FanLoc.t)  -> (() : 'e__20 ))))]);
+           ([`Skeyword "(";
+            `Skeyword "type";
             `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
             `Skeyword ")";
             `Snterm
               (Gram.obj
                  (fun_def_cont_no_when : 'fun_def_cont_no_when Gram.t ))],
              (Gram.mk_action
-                (fun (e : 'fun_def_cont_no_when)  _  (i : 'a_LIDENT)  _ 
+                (fun (e : 'fun_def_cont_no_when)  _  (i : 'a_LIDENT)  _  _ 
                    (_loc : FanLoc.t)  ->
                    (((Ast.ExNil _loc), (Ast.ExFUN (_loc, i, e))) : 'fun_def_cont ))))])]);
     Gram.extend (fun_def_cont_no_when : 'fun_def_cont_no_when Gram.t )
@@ -3556,23 +3544,19 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
               (Gram.mk_action
                  (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->
                     (e : 'fun_def_cont_no_when ))));
-           ([`Stry
-               (`Snterm (Gram.obj (labeled_ipatt : 'labeled_ipatt Gram.t )));
+           ([`Snterm (Gram.obj (labeled_ipatt : 'labeled_ipatt Gram.t ));
             `Snterm (Gram.obj (fun_def_cont : 'fun_def_cont Gram.t ))],
              (Gram.mk_action
                 (fun ((w,e) : 'fun_def_cont)  (p : 'labeled_ipatt) 
                    (_loc : FanLoc.t)  ->
                    (Ast.ExFun (_loc, (Ast.McArr (_loc, p, w, e))) : 'fun_def_cont_no_when ))));
-           ([`Stry
-               (Gram.srules fun_def_cont_no_when
-                  [([`Skeyword "("; `Skeyword "type"],
-                     (Gram.mk_action
-                        (fun _  _  (_loc : FanLoc.t)  -> (() : 'e__21 ))))]);
+           ([`Skeyword "(";
+            `Skeyword "type";
             `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
             `Skeyword ")";
             `Sself],
              (Gram.mk_action
-                (fun (e : 'fun_def_cont_no_when)  _  (i : 'a_LIDENT)  _ 
+                (fun (e : 'fun_def_cont_no_when)  _  (i : 'a_LIDENT)  _  _ 
                    (_loc : FanLoc.t)  ->
                    (Ast.ExFUN (_loc, i, e) : 'fun_def_cont_no_when ))))])]);
     Gram.extend (patt : 'patt Gram.t )
@@ -5075,6 +5059,37 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
                        'ident )
                    | _ -> assert false)))])]);
+    Gram.extend
+      (module_longident_dot_lparen : 'module_longident_dot_lparen Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+             `Skeyword ".";
+             `Skeyword "("],
+              (Gram.mk_action
+                 (fun _  _  (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
+                    (Ast.IdUid (_loc, i) : 'module_longident_dot_lparen ))));
+           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+            `Skeyword ".";
+            `Sself],
+             (Gram.mk_action
+                (fun (l : 'module_longident_dot_lparen)  _  (m : 'a_UIDENT) 
+                   (_loc : FanLoc.t)  ->
+                   (Ast.IdAcc (_loc, (Ast.IdUid (_loc, m)), l) : 'module_longident_dot_lparen ))));
+           ([`Stoken
+               (((function
+                  | `ANTIQUOT ((""|"id"|"anti"|"list"),_) -> true
+                  | _ -> false)),
+                 (`Normal, "`ANTIQUOT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"));
+            `Skeyword ".";
+            `Skeyword "("],
+             (Gram.mk_action
+                (fun _  _  __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANTIQUOT ((""|"id"|"anti"|"list" as n),s) ->
+                       (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
+                       'module_longident_dot_lparen )
+                   | _ -> assert false)))])]);
     Gram.extend (module_longident : 'module_longident Gram.t )
       (None,
         [(None, None,
@@ -5136,37 +5151,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   | `ANTIQUOT ((""|"id"|"anti"|"list" as n),s) ->
                       (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 'module_longident_with_app )
                   | _ -> assert false)))])]);
-    Gram.extend
-      (module_longident_dot_lparen : 'module_longident_dot_lparen Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
-             `Skeyword ".";
-             `Skeyword "("],
-              (Gram.mk_action
-                 (fun _  _  (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                    (Ast.IdUid (_loc, i) : 'module_longident_dot_lparen ))));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
-            `Skeyword ".";
-            `Sself],
-             (Gram.mk_action
-                (fun (l : 'module_longident_dot_lparen)  _  (m : 'a_UIDENT) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.IdAcc (_loc, (Ast.IdUid (_loc, m)), l) : 'module_longident_dot_lparen ))));
-           ([`Stoken
-               (((function
-                  | `ANTIQUOT ((""|"id"|"anti"|"list"),_) -> true
-                  | _ -> false)),
-                 (`Normal, "`ANTIQUOT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"));
-            `Skeyword ".";
-            `Skeyword "("],
-             (Gram.mk_action
-                (fun _  _  __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANTIQUOT ((""|"id"|"anti"|"list" as n),s) ->
-                       (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
-                       'module_longident_dot_lparen )
-                   | _ -> assert false)))])]);
     Gram.extend (type_longident : 'type_longident Gram.t )
       (None,
         [((Some "apply"), None,
@@ -5529,9 +5513,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (cst : 'class_str_item)  (_loc : FanLoc.t) 
-                            -> (cst : 'e__22 ))))])],
+                            -> (cst : 'e__18 ))))])],
               (Gram.mk_action
-                 (fun (l : 'e__22 list)  (_loc : FanLoc.t)  ->
+                 (fun (l : 'e__18 list)  (_loc : FanLoc.t)  ->
                     (Ast.crSem_of_list l : 'class_structure ))));
            ([`Stoken
                (((function
@@ -5942,9 +5926,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (csg : 'class_sig_item)  (_loc : FanLoc.t) 
-                            -> (csg : 'e__23 ))))])],
+                            -> (csg : 'e__19 ))))])],
               (Gram.mk_action
-                 (fun (l : 'e__23 list)  (_loc : FanLoc.t)  ->
+                 (fun (l : 'e__19 list)  (_loc : FanLoc.t)  ->
                     (Ast.cgSem_of_list l : 'class_signature ))));
            ([`Stoken
                (((function
@@ -6644,9 +6628,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (sg : 'sig_item)  (_loc : FanLoc.t)  ->
-                            (sg : 'e__24 ))))])],
+                            (sg : 'e__20 ))))])],
               (Gram.mk_action
-                 (fun (l : 'e__24 list)  (_loc : FanLoc.t)  ->
+                 (fun (l : 'e__20 list)  (_loc : FanLoc.t)  ->
                     (Ast.sgSem_of_list l : 'sig_items ))));
            ([`Stoken
                (((function
@@ -6710,9 +6694,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (st : 'str_item)  (_loc : FanLoc.t)  ->
-                            (st : 'e__25 ))))])],
+                            (st : 'e__21 ))))])],
               (Gram.mk_action
-                 (fun (l : 'e__25 list)  (_loc : FanLoc.t)  ->
+                 (fun (l : 'e__21 list)  (_loc : FanLoc.t)  ->
                     (Ast.stSem_of_list l : 'str_items ))));
            ([`Stoken
                (((function
@@ -7754,7 +7738,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                      (Gram.mk_action
                         (fun __camlp4_0  (_loc : FanLoc.t)  ->
                            match __camlp4_0 with
-                           | `UIDENT n -> (n : 'e__27 )
+                           | `UIDENT n -> (n : 'e__23 )
                            | _ -> assert false)))]);
              `Sopt
                (`Snterm (Gram.obj (parser_ipatt : 'parser_ipatt Gram.t )));
@@ -7762,7 +7746,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                (Gram.obj (parser_case_list : 'parser_case_list Gram.t ))],
               (Gram.mk_action
                  (fun (pcl : 'parser_case_list)  (po : 'parser_ipatt option) 
-                    (name : 'e__27 option)  _  _  (e : 'sequence)  _ 
+                    (name : 'e__23 option)  _  _  (e : 'sequence)  _ 
                     (_loc : FanLoc.t)  ->
                     (match name with
                      | Some o ->
@@ -7778,13 +7762,13 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                     (Gram.mk_action
                        (fun __camlp4_0  (_loc : FanLoc.t)  ->
                           match __camlp4_0 with
-                          | `UIDENT n -> (n : 'e__26 )
+                          | `UIDENT n -> (n : 'e__22 )
                           | _ -> assert false)))]);
             `Sopt (`Snterm (Gram.obj (parser_ipatt : 'parser_ipatt Gram.t )));
             `Snterm (Gram.obj (parser_case_list : 'parser_case_list Gram.t ))],
              (Gram.mk_action
                 (fun (pcl : 'parser_case_list)  (po : 'parser_ipatt option) 
-                   (name : 'e__26 option)  _  (_loc : FanLoc.t)  ->
+                   (name : 'e__22 option)  _  (_loc : FanLoc.t)  ->
                    (match name with
                     | Some o ->
                         Ref.protect FanStreamTools.grammar_module_name o
@@ -7868,10 +7852,10 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                      (Gram.mk_action
                         (fun __camlp4_0  _  (_loc : FanLoc.t)  ->
                            match __camlp4_0 with
-                           | `UIDENT n -> (n : 'e__28 )
+                           | `UIDENT n -> (n : 'e__24 )
                            | _ -> assert false)))])],
               (Gram.mk_action
-                 (fun (name : 'e__28 option)  _  (_loc : FanLoc.t)  ->
+                 (fun (name : 'e__24 option)  _  (_loc : FanLoc.t)  ->
                     (name : 'stream_begin ))))])]);
     Gram.extend (stream_end : 'stream_end Gram.t )
       (None,
@@ -7934,9 +7918,9 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                    `Snterm (Gram.obj (stream_expr : 'stream_expr Gram.t ))],
                     (Gram.mk_action
                        (fun (e : 'stream_expr)  _  (_loc : FanLoc.t)  ->
-                          (e : 'e__29 ))))])],
+                          (e : 'e__25 ))))])],
              (Gram.mk_action
-                (fun (eo : 'e__29 option)  (p : 'patt)  (_loc : FanLoc.t)  ->
+                (fun (eo : 'e__25 option)  (p : 'patt)  (_loc : FanLoc.t)  ->
                    (SpTrm (_loc, p, eo) : 'stream_patt_comp ))))])]);
     Gram.extend (stream_patt_comp_err : 'stream_patt_comp_err Gram.t )
       (None,
@@ -7949,9 +7933,9 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                     `Snterm (Gram.obj (stream_expr : 'stream_expr Gram.t ))],
                      (Gram.mk_action
                         (fun (e : 'stream_expr)  _  (_loc : FanLoc.t)  ->
-                           (e : 'e__30 ))))])],
+                           (e : 'e__26 ))))])],
               (Gram.mk_action
-                 (fun (eo : 'e__30 option)  (spc : 'stream_patt_comp) 
+                 (fun (eo : 'e__26 option)  (spc : 'stream_patt_comp) 
                     (_loc : FanLoc.t)  ->
                     ((spc, eo) : 'stream_patt_comp_err ))))])]);
     Gram.extend
