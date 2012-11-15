@@ -213,6 +213,14 @@ module type Camlp4Syntax = sig
   val entry: Gram.t FanGrammar.entry;
   val extend_body: Gram.t Ast.expr;
   val delete_rule_body: Gram.t Ast.expr;
+
+  module Options:sig
+    type spec_list = list (string * FanArg.spec * string);
+    val init : spec_list -> unit;
+    val add : (string * FanArg.spec * string) -> unit;
+    val adds : list (string * FanArg.spec * string) -> unit;
+    val init_spec_list: ref spec_list;
+  end;
 end;
 
 

@@ -776,13 +776,14 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    (Ast.ExId (_loc, (Ast.IdLid (_loc, i))) : 'simple_expr ))))])])
   let _ =
     Options.add
-      ("-split_ext", (Arg.Set split_ext),
+      ("-split_ext", (FanArg.Set split_ext),
         "Split EXTEND by functions to turn around a PowerPC problem.")
   let _ =
     Options.add
-      ("-split_gext", (Arg.Set split_ext),
+      ("-split_gext", (FanArg.Set split_ext),
         "Old name for the option -split_ext.")
-  let _ = Options.add ("-meta_action", (Arg.Set meta_action), "Undocumented")
+  let _ =
+    Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented")
   end
 module IdListComprehension = struct
   let name = "Camlp4ListComprehension" let version = Sys.ocaml_version
@@ -1539,14 +1540,15 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                    (Ast.PaVrn (_loc, kwd) : 'patt ))))])])
   let _ =
     Options.add
-      ("-D", (Arg.String parse_def),
+      ("-D", (FanArg.String parse_def),
         "<string> Define for IFDEF instruction.")
   let _ =
     Options.add
-      ("-U", (Arg.String undef), "<string> Undefine for IFDEF instruction.")
+      ("-U", (FanArg.String undef),
+        "<string> Undefine for IFDEF instruction.")
   let _ =
     Options.add
-      ("-I", (Arg.String add_include_dir),
+      ("-I", (FanArg.String add_include_dir),
         "<string> Add a directory to INCLUDE search path.")
   end
 module MakeNothing(Syn:Sig.Camlp4Syntax) = struct
@@ -1568,7 +1570,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
     exit 1
   let _ =
     Options.add
-      ("-help_seq", (Arg.Unit help_sequences),
+      ("-help_seq", (FanArg.Unit help_sequences),
         "Print explanations about new sequences and exit.")
   let _ = Gram.clear a_CHAR let _ = Gram.clear a_FLOAT
   let _ = Gram.clear a_INT let _ = Gram.clear a_INT32

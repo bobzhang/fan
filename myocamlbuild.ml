@@ -314,7 +314,7 @@ module Driver = struct
         Cmd (S[A"cat"; P ml; Sh ">"; Px pp_ml])
     end
     | _ ->
-        Cmd (S[pp; P ml; A "-printer"; printer; A "-o"; Px pp_ml])
+        Cmd (S[pp;  A "-printer"; printer; A "-o"; Px pp_ml; P ml])
     (* let pp = match pp with | N -> default | _ -> pp in *)
     (* Cmd (S [ pp; P ml; A "-printer";printer; A "-o"; Px pp_ml ]) *)
    )

@@ -201,4 +201,12 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   module AstFilters = AstFilters.Make(struct
     
     end)
+  module Options = struct
+    type spec_list = (string* FanArg.spec* string) list 
+    let init_spec_list = ref []
+    let init spec_list = init_spec_list := spec_list
+    let add (name,spec,descr) =
+      init_spec_list := (init_spec_list.contents @ [(name, spec, descr)])
+    let adds ls = init_spec_list := (init_spec_list.contents @ ls)
+    end
   end 

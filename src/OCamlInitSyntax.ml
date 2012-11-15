@@ -222,4 +222,14 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";
   let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";
   module AstFilters = AstFilters.Make (struct end);
+  module Options = struct
+    type spec_list = list (string * FanArg.spec * string);
+    let init_spec_list = ref [];
+    let init spec_list = init_spec_list := spec_list;
+    let add (name, spec, descr) =
+     init_spec_list := !init_spec_list @ [(name, spec, descr)];
+    let adds ls =
+      init_spec_list := !init_spec_list @ ls ;
+  end;
+
 end;

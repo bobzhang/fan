@@ -203,6 +203,14 @@ module type Camlp4Syntax =
     val entry : FanGrammar.entry Gram.t
     val extend_body : Ast.expr Gram.t
     val delete_rule_body : Ast.expr Gram.t
+    module Options :
+    sig
+      type spec_list = (string* FanArg.spec* string) list 
+      val init : spec_list -> unit
+      val add : (string* FanArg.spec* string) -> unit
+      val adds : (string* FanArg.spec* string) list -> unit
+      val init_spec_list : spec_list ref
+    end
   end
 module type SyntaxExtension =
   functor (Syn : Camlp4Syntax) ->

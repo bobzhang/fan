@@ -135,16 +135,6 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     eprintf "Camlp4 version %s@." FanConfig.version; exit 0
   let print_stdlib () =
     printf "%s@." FanConfig.camlp4_standard_library; exit 0
-  let usage ini_sl ext_sl =
-    eprintf
-      "Usage: Fan [load-options] [--] [other-options]\nOptions:\n<file>.ml        Parse this implementation file\n<file>.mli       Parse this interface file\n<file>.%s Load this module inside the Camlp4 core@."
-      (if DynLoader.is_native then "cmxs     " else "(cmo|cma)");
-    FanUtil.Options.print_usage_list ini_sl;
-    if ext_sl <> []
-    then
-      (eprintf "Options added by loaded object files:@.";
-       FanUtil.Options.print_usage_list ext_sl)
-    else ()
   let warn_noassert () =
     eprintf
       "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
@@ -155,18 +145,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     | ModuleImpl of string
     | IncludeDir of string  let search_stdlib = ref true
   let print_loaded_modules = ref false
-  let (task,do_task) =
-    let t = ref None in
-    let task f x =
-      let () = FanConfig.current_input_file := x in
-      t :=
-        (Some
-           (if t.contents = None
-            then fun _  -> f x
-            else (fun usage  -> usage ()))) in
-    let do_task usage =
-      match t.contents with | Some f -> f usage | None  -> () in
-    (task, do_task)
+  let task f x = let () = FanConfig.current_input_file := x in f x
   let input_file x =
     let dyn_loader = DynLoader.instance.contents () in
     rcall_callback.contents ();
@@ -183,52 +162,52 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
      | IncludeDir dir -> DynLoader.include_dir dyn_loader dir);
     rcall_callback.contents ()
   let initial_spec_list =
-    [("-I", (Arg.String ((fun x  -> input_file (IncludeDir x)))),
+    [("-I", (FanArg.String ((fun x  -> input_file (IncludeDir x)))),
        "<directory>  Add directory in search patch for object files.");
-    ("-where", (Arg.Unit print_stdlib),
+    ("-where", (FanArg.Unit print_stdlib),
       "Print camlp4 library directory and exit.");
-    ("-nolib", (Arg.Clear search_stdlib),
+    ("-nolib", (FanArg.Clear search_stdlib),
       "No automatic search for object files in library directory.");
-    ("-intf", (Arg.String ((fun x  -> input_file (Intf x)))),
+    ("-intf", (FanArg.String ((fun x  -> input_file (Intf x)))),
       "<file>  Parse <file> as an interface, whatever its extension.");
-    ("-impl", (Arg.String ((fun x  -> input_file (Impl x)))),
+    ("-impl", (FanArg.String ((fun x  -> input_file (Impl x)))),
       "<file>  Parse <file> as an implementation, whatever its extension.");
-    ("-str", (Arg.String ((fun x  -> input_file (Str x)))),
+    ("-str", (FanArg.String ((fun x  -> input_file (Str x)))),
       "<string>  Parse <string> as an implementation.");
-    ("-unsafe", (Arg.Set FanConfig.unsafe),
+    ("-unsafe", (FanArg.Set FanConfig.unsafe),
       "Generate unsafe accesses to array and strings.");
-    ("-noassert", (Arg.Unit warn_noassert),
+    ("-noassert", (FanArg.Unit warn_noassert),
       "Obsolete, do not use this option.");
-    ("-verbose", (Arg.Set FanConfig.verbose),
+    ("-verbose", (FanArg.Set FanConfig.verbose),
       "More verbose in parsing errors.");
-    ("-loc", (Arg.Set_string FanLoc.name),
+    ("-loc", (FanArg.Set_string FanLoc.name),
       ("<name>   Name of the location variable (default: " ^
          (FanLoc.name.contents ^ ").")));
     ("-QD",
-      (Arg.String
+      (FanArg.String
          ((fun x  -> PreCast.Syntax.Quotation.dump_file := (Some x)))),
       "<file> Dump quotation expander result in case of syntax error.");
-    ("-o", (Arg.String ((fun x  -> output_file := (Some x)))),
+    ("-o", (FanArg.String ((fun x  -> output_file := (Some x)))),
       "<file> Output on <file> instead of standard output.");
-    ("-v", (Arg.Unit print_version), "Print Camlp4 version and exit.");
-    ("-version", (Arg.Unit just_print_the_version),
+    ("-v", (FanArg.Unit print_version), "Print Camlp4 version and exit.");
+    ("-version", (FanArg.Unit just_print_the_version),
       "Print Camlp4 version number and exit.");
-    ("-vnum", (Arg.Unit just_print_the_version),
+    ("-vnum", (FanArg.Unit just_print_the_version),
       "Print Camlp4 version number and exit.");
-    ("-no_quot", (Arg.Clear FanConfig.quotations),
+    ("-no_quot", (FanArg.Clear FanConfig.quotations),
       "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
-    ("-parsing-strict", (Arg.Set FanConfig.strict_parsing), "");
-    ("-loaded-modules", (Arg.Set print_loaded_modules),
+    ("-parsing-strict", (FanArg.Set FanConfig.strict_parsing), "");
+    ("-loaded-modules", (FanArg.Set print_loaded_modules),
       "Print the list of loaded modules.");
-    ("-parser", (Arg.String (rewrite_and_load "Parsers")),
+    ("-parser", (FanArg.String (rewrite_and_load "Parsers")),
       "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
-    ("-printer", (Arg.String (rewrite_and_load "Printers")),
+    ("-printer", (FanArg.String (rewrite_and_load "Printers")),
       "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)");
-    ("-filter", (Arg.String (rewrite_and_load "Filters")),
+    ("-filter", (FanArg.String (rewrite_and_load "Filters")),
       "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)");
-    ("-ignore", (Arg.String ignore), "ignore the next argument");
-    ("--", (Arg.Unit ignore), "Deprecated, does nothing")]
-  let _ = FanUtil.Options.init initial_spec_list
+    ("-ignore", (FanArg.String ignore), "ignore the next argument");
+    ("--", (FanArg.Unit ignore), "Deprecated, does nothing")]
+  let _ = PreCast.Syntax.Options.init initial_spec_list
   let anon_fun name =
     input_file
       (if Filename.check_suffix name ".mli"
@@ -242,40 +221,25 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
            else
              if Filename.check_suffix name libext
              then ModuleImpl name
-             else raise (Arg.Bad ("don't know what to do with " ^ name)))
-  let main argv =
-    let usage () =
-      usage initial_spec_list (FanUtil.Options.ext_spec_list ()); exit 0 in
+             else raise (FanArg.Bad ("don't know what to do with " ^ name)))
+  let main () =
     try
       let dynloader =
         DynLoader.mk ~ocaml_stdlib:(search_stdlib.contents)
           ~camlp4_stdlib:(search_stdlib.contents) () in
-      let () = DynLoader.instance := (fun ()  -> dynloader) in
-      let call_callback () =
-        PreCast.iter_and_take_callbacks
-          (fun (name,module_callback)  ->
-             let () = add_to_loaded_modules name in module_callback ()) in
-      let () = call_callback () in
-      let () = rcall_callback := call_callback in
-      let () =
-        match FanUtil.Options.parse anon_fun argv with
-        | [] -> ()
-        | ("-help"|"--help"|"-h"|"-?")::_ -> usage ()
-        | s::_ ->
-            (eprintf "%s: unknown or misused option\n" s;
-             eprintf "Use option -help for usage@.";
-             exit 2) in
-      let () = do_task usage in
-      let () = call_callback () in
-      if print_loaded_modules.contents
-      then SSet.iter (eprintf "%s@.") loaded_modules.contents
-      else ()
-    with
-    | Arg.Bad s ->
-        (eprintf "Error: %s\n" s;
-         eprintf "Use option -help for usage@.";
-         exit 2)
-    | Arg.Help _ -> usage ()
-    | exc -> (eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2)
-  let _ = main Sys.argv
+      DynLoader.instance := ((fun ()  -> dynloader));
+      (let call_callback () =
+         PreCast.iter_and_take_callbacks
+           (fun (name,module_callback)  ->
+              let () = add_to_loaded_modules name in module_callback ()) in
+       call_callback ();
+       rcall_callback := call_callback;
+       FanArg.parse PreCast.Syntax.Options.init_spec_list anon_fun
+         "fan <options> <file>\nOptions are:\n";
+       call_callback ();
+       if print_loaded_modules.contents
+       then SSet.iter (eprintf "%s@.") loaded_modules.contents
+       else ())
+    with | exc -> (eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2)
+  let _ = main ()
   end
