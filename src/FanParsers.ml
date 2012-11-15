@@ -1410,9 +1410,11 @@ New syntax:\
         | a_OPTLABEL{i}; S{t} ->  {| ? $i : $t |} ]
       | "apply" LA
         [ S{t1}; S{t2} ->
-            let t = {| $t1 $t2 |} in
+          let t = Ast.TyApp (_loc, t2, t1) in
+            (* let t = {| $t1 $t2 |} in *)
             try {| $(id:Ast.ident_of_ctyp t) |}
-            with [ Invalid_argument _ -> t ] ]
+            with [ Invalid_argument _ -> t ]
+        | TRY ]
       | "." LA
         [ S{t1}; "."; S{t2} ->
             try {| $(id:Ast.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) |}
@@ -2180,7 +2182,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
   add_quotation "virtual_flag" virtual_flag_quot ME.meta_virtual_flag MP.meta_virtual_flag;
   add_quotation "override_flag" override_flag_quot ME.meta_override_flag MP.meta_override_flag;
   add_quotation "direction_flag" direction_flag_quot ME.meta_direction_flag MP.meta_direction_flag;
-
+  Options.add ("-dlang", FanArg.Set_string Quotation.default," Set the default language");
 end;
 
 
