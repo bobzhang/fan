@@ -532,7 +532,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     [ {:ctyp||} -> acc
     | {:ctyp| $t1 and $t2 |} ->
         tyMap_of_type_decls t1 (tyMap_of_type_decls t2 acc)
-    | Ast.TyDcl _ name tl tk _ ->
+    | Ast.TyDcl (_, name, tl, tk, _) ->
         SMap.add name (name, {:ident| $lid:name |}, tl, tk, false) acc
     | _ -> assert false ];
 
@@ -816,7 +816,7 @@ let mk_meta m =
   let m_name_uid x = {:ident| $(m.name).$uid:x |} in
   fold_type_decls m begin fun tyname tydcl binding_acc ->
     match tydcl with
-    [ Ast.TyDcl _ _ tyvars {:ctyp| [ $ty] |} _ ->
+    [ Ast.TyDcl (_, _, tyvars, {:ctyp| [ $ty] |}, _) ->
       let match_case =
         fold_data_ctors ty begin fun cons tyargs acc ->
           let m_name_cons = m_name_uid cons in
@@ -856,7 +856,7 @@ let mk_meta m =
             | _ -> assert false ]
           end tyvars {:expr| fun _loc -> fun [ $match_case ] |}
         in {:binding| $binding_acc and $(lid:"meta_"^tyname) = $funct |}
-    | Ast.TyDcl _ _ _ _ _ -> binding_acc
+    | Ast.TyDcl (_, _, _, _, _) -> binding_acc
     | _ -> assert false ]
   end {:binding||};
 
@@ -866,7 +866,7 @@ let find_type_decls = object
   method get = accu;
   method! ctyp =
     fun
-    [ Ast.TyDcl _ name _ _ _ as t -> {< accu = SMap.add name t accu >}
+    [ Ast.TyDcl (_, name, _, _, _) as t -> {< accu = SMap.add name t accu >}
     | t -> super#ctyp t ];
 end;
 

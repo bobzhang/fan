@@ -443,9 +443,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
          | [] -> Ast.PaVrn (_loc, s)
          | p::[] -> Ast.PaApp (_loc, (Ast.PaVrn (_loc, s)), p)
          | ps ->
-             Ast.PaApp
-               (_loc, (Ast.PaVrn (_loc, s)),
-                 (Ast.PaTup (_loc, (Ast.paCom_of_list ps)))))
+             Ast.PaApp (_loc, (Ast.PaVrn (_loc, s)), (Ast.paCom_of_list ps)))
         (function
          | [] -> Ast.ExVrn (_loc, s)
          | e::[] -> Ast.ExApp (_loc, (Ast.ExVrn (_loc, s)), e)

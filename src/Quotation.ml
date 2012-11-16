@@ -136,7 +136,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
           bprintf ppf "@]";
           end
         | Expanding ->  pp "expanding quotation"
-        | ParsingResult loc str -> begin
+        | ParsingResult (loc, str) -> begin
             pp "parsing result of quotation" ;
             match !dump_file with
             [ Some dump_file ->
@@ -171,9 +171,9 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
     let open FanSig in
     let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
     try expander loc loc_name_opt quot.q_contents with
-    [ FanLoc.Exc_located _ (Quotation _) as exc ->
+    [ FanLoc.Exc_located (_, (Quotation _)) as exc ->
         raise exc
-    | FanLoc.Exc_located iloc exc ->
+    | FanLoc.Exc_located (iloc, exc) ->
         let exc1 = Quotation (quot.q_name, pos_tag, Expanding, exc) in
         raise (FanLoc.Exc_located iloc exc1)
     | exc ->
@@ -183,13 +183,13 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
   let parse_quotation_result parse loc quot pos_tag str =
     let open FanSig in 
     try parse loc str with
-    [ FanLoc.Exc_located iloc (Quotation (n, pos_tag, Expanding, exc)) ->
+    [ FanLoc.Exc_located (iloc, (Quotation (n, pos_tag, Expanding, exc))) ->
         let ctx = ParsingResult iloc quot.q_contents in
         let exc1 = Quotation (n, pos_tag, ctx, exc) in
         raise (FanLoc.Exc_located iloc exc1)
-    | FanLoc.Exc_located iloc (Quotation _ as exc) ->
+    | FanLoc.Exc_located (iloc, (Quotation _ as exc)) ->
         raise (FanLoc.Exc_located iloc exc)
-    | FanLoc.Exc_located iloc exc ->
+    | FanLoc.Exc_located (iloc, exc) ->
         let ctx = ParsingResult iloc quot.q_contents in
         let exc1 = Quotation (quot.q_name, pos_tag, ctx, exc) in
         raise (FanLoc.Exc_located iloc exc1) ];
@@ -202,8 +202,8 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
     let expander =
       try find name tag
       with
-      [ FanLoc.Exc_located _ (Quotation _) as exc -> raise exc
-      | FanLoc.Exc_located qloc exc ->
+      [ FanLoc.Exc_located (_, (Quotation _)) as exc -> raise exc
+      | FanLoc.Exc_located (qloc, exc) ->
           raise (FanLoc.Exc_located qloc (Quotation (name, pos_tag, Finding, exc)))
       | exc ->
           raise (FanLoc.Exc_located loc (Quotation (name, pos_tag, Finding, exc))) ] in

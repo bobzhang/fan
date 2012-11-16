@@ -187,10 +187,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         mk_symbol  ~text:(`TXrules _loc (srules _loc t rl ""))
           ~styp:(`STquo _loc t) ~pattern:None
           
-     | "`"; a_ident{i}; OPT patt{p} ->
-        let p = match p with
-          [None -> {:patt| `$i |}
-          |Some p -> {:patt| `$i $p |} ] in 
+     (* | "`"; a_ident{i}; OPT patt{p} -> *)
+     (*    let p = match p with *)
+     (*      [None -> {:patt| `$i |} *)
+     (*      |Some p -> {:patt| `$i $p |} ] in  *)
+     | patt{p} -> 
         let (p,ls) = Expr.filter_patt_with_captured_variables p in
         match ls with
         [ [] -> mk_tok _loc ~pattern:p (`STtok _loc)
@@ -456,9 +457,9 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
 
   let rec execute_macro nil cons = fun
     [ SdStr i -> i
-    | SdDef x eo -> begin  define eo x; nil  end
+    | SdDef (x, eo) -> begin  define eo x; nil  end
     | SdUnd x -> begin  undef x; nil  end
-    | SdITE b l1 l2 -> execute_macro_list nil cons (if b then l1 else l2)
+    | SdITE (b, l1, l2) -> execute_macro_list nil cons (if b then l1 else l2)
     | SdLazy l -> Lazy.force l ]
 
   and execute_macro_list nil cons = fun
@@ -1266,14 +1267,22 @@ New syntax:\
         [ S{p1}; ".."; S{p2} -> {| $p1 .. $p2 |} ]
        "apply" LA
         [
-         S{p1}; S{p2} -> {| $p1 $p2 |}
-          (* patt_constr{p1}; S{p2} -> *)
-          (*   match p2 with *)
-          (*   [ {| ($tup:p) |} -> *)
-          (*     List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1 *)
-          (*       (Ast.list_of_patt p []) *)
-          (*   | _ -> {|$p1 $p2 |} ] *)
-        (* | patt_constr{p1} -> p1 *)
+         (* S{p1}; S{p2} -> {| $p1 $p2 |} *)
+          patt_constr{p1}; S{p2} ->
+            match p2 with
+            [ {| ($tup:p) |} ->
+              List.fold_left (fun p1 p2 -> (* {| $p1 $p2 |} *) Ast.PaApp (_loc,p1,p2)) p1
+                (Ast.list_of_patt p [])
+            | _ -> (* {|$p1 $p2 |} *) Ast.PaApp(_loc,p1,p2) ]
+        | patt_constr{p1} -> p1
+        | `ANTIQUOT ((""|"pat"|"anti" as n), s) 
+          ->
+            {|$(anti:mk_anti ~c:"patt" n s)|} 
+        | `ANTIQUOT ((""|"pat"|"anti" as n1), s1); S{p}
+              ->
+                let p0 = {|$(anti:mk_anti ~c:"patt" n1 s1)|} in
+                {| $p0 $p|}
+
         | "lazy"; S{p} -> {| lazy $p |}  ]
        "simple"
         [ `ANTIQUOT ((""|"pat"|"anti" as n),s) ->

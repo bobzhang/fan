@@ -10,9 +10,9 @@ let wrap parse_fun lb =
   [ [< (`EOI, _) >] -> raise End_of_file
   | [< >] -> parse_fun token_stream ]
   with
-  [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break)) as x ->
+  [ End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
     raise x
-  | (FanLoc.Exc_located loc y ) -> begin
+  | (FanLoc.Exc_located (loc, y) ) -> begin
       Format.eprintf "@[<0>%a%s@]@."
         Toploop.print_location loc (Printexc.to_string y);
       raise Exit; (* commuiniation with toplevel special case here*)

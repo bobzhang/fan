@@ -38,11 +38,11 @@ let tree_in_entry prev_symb tree = fun
                   [ Some t ->
                       Some (Node {node = n.node; son = t; brother = DeadEnd})
                   | None -> search_tree n.brother ] ]
-          | LocAct _ _ | DeadEnd -> None ]
+          | LocAct (_, _) | DeadEnd -> None ]
       and search_symbol symb =
         match symb with
-        [ `Snterm _ | `Snterml _ _ | `Slist0 _ | `Slist0sep _ _ | `Slist1 _ |
-          `Slist1sep _ _ | `Sopt _ | `Stry _ | `Stoken _ | `Stree _ | `Skeyword _
+        [ `Snterm _ | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
+          `Slist1sep (_, _) | `Sopt _ | `Stry _ | `Stoken _ | `Stree _ | `Skeyword _
           | `Speek _
           when symb == prev_symb ->
             Some symb
@@ -50,18 +50,18 @@ let tree_in_entry prev_symb tree = fun
             match search_symbol symb with
             [ Some symb -> Some (`Slist0 symb)
             | None -> None ]
-        | `Slist0sep symb sep ->
+        | `Slist0sep (symb, sep) ->
             match search_symbol symb with
-            [ Some symb -> Some (`Slist0sep symb sep)
+            [ Some symb -> Some (`Slist0sep (symb, sep))
             | None ->
                 match search_symbol sep with
-                [ Some sep -> Some (`Slist0sep symb sep)
+                [ Some sep -> Some (`Slist0sep (symb, sep))
                 | None -> None ] ]
         | `Slist1 symb ->
             match search_symbol symb with
             [ Some symb -> Some (`Slist1 symb)
             | None -> None ]
-        | `Slist1sep symb sep ->
+        | `Slist1sep (symb, sep) ->
             match search_symbol symb with
             [ Some symb -> Some (`Slist1sep symb sep)
             | None ->
@@ -109,7 +109,7 @@ and name_of_tree_failed entry x =
             | _ -> txt ]  in
           let txt =
             match brother with
-            [ DeadEnd | LocAct _ _ -> txt
+            [ DeadEnd | LocAct (_, _) -> txt
             | Node _ -> txt ^ " or " ^ name_of_tree_failed entry brother ] in
           txt
       | Some (tokl, _, _) ->
@@ -119,7 +119,7 @@ and name_of_tree_failed entry x =
                 match tok with
                   [ `Stoken (_, descr) -> name_of_descr descr
                   | `Skeyword kwd -> kwd])) "" tokl ]
-  | DeadEnd | LocAct _ _ -> "???" ];
+  | DeadEnd | LocAct (_, _) -> "???" ];
 
 let magic _s x = debug magic "Obj.magic: %s@." _s in Obj.magic x;
 

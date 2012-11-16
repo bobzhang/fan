@@ -40,7 +40,7 @@ let rec top_symb entry =fun
 let top_tree entry = fun
   [ Node ({node = s; _} as x) ->
     Node ({(x) with node = top_symb entry s})
-  | LocAct _ _ | DeadEnd -> raise Stream.Failure ];
+  | LocAct(_, _) | DeadEnd -> raise Stream.Failure ];
 
 let entry_of_symb entry = fun
   [ `Sself | `Snext -> entry
@@ -62,12 +62,12 @@ let rec parser_of_tree entry (lev,assoc) x =
     [`LA|`NA -> lev + 1 | `RA -> lev ] in
   let rec from_tree  = fun 
   [ DeadEnd -> raise Stream.Failure
-  | LocAct act _ -> parser [< >] -> act
+  | LocAct (act, _) -> parser [< >] -> act
   (* rules ending with [SELF] or with the current entry name, for this last symbol
      there's a call to the [start] function: of the current level if the level is
      [`RA] or of the next level otherwise. (This can be verified by
      [start_parser_of_levels]) *)      
-  | Node {node = `Sself; son = LocAct act _; brother = bro}
+  | Node {node = `Sself; son = LocAct (act, _); brother = bro}
     ->  parser
         [ [< a = entry.estart alevn >] -> Action.getf act a
         | [< a = from_tree bro >] -> a ]
@@ -153,7 +153,7 @@ and parser_of_terminals
 and parser_of_symbol entry s nlevn =
   let rec aux s = 
     match s with 
-   [ `Smeta _ symbls act ->
+   [ `Smeta (_, symbls, act) ->
      let act = Obj.magic act entry symbls
      and pl = List.map aux symbls in
      Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)

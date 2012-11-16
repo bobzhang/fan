@@ -120,8 +120,9 @@ let bigarray_set _loc var newval = match var with
     | _ -> None ];
   
 
-
-let rec pattern_eq_expression p e =  match (p, e) with
+(* FIXME later *)
+let rec pattern_eq_expression p e =
+  match (p, e) with
   [ ({:patt| $lid:a |}, {:expr| $lid:b |}) -> a = b
   | ({:patt| $uid:a |}, {:expr| $uid:b |}) -> a = b
   | ({:patt| $p1 $p2 |}, {:expr| $e1 $e2 |}) ->
@@ -169,7 +170,7 @@ let bad_patt _loc =
        "this macro cannot be used in a pattern (see its definition)");
 let substp _loc env =
   let rec loop = fun
-      [ {:expr| $e1 $e2 |} -> {:patt| $(loop e1) $(loop e2) |}
+      [ {:expr| $e1 $e2 |} -> {:patt| $(loop e1) $(loop e2) |} 
       | {:expr| |} -> {:patt| |}
       | {:expr| $lid:x |} ->
           try List.assoc x env with
@@ -238,23 +239,23 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
         ~decorate:(fun n p ->
             match n with
-            [ "antisig_item" -> {:patt| Ast.SgAnt $(mloc _loc) $p |}
-            | "antistr_item" -> {:patt| Ast.StAnt $(mloc _loc) $p |}
-            | "antictyp" -> {:patt| Ast.TyAnt $(mloc _loc) $p |}
-            | "antipatt" -> {:patt| Ast.PaAnt $(mloc _loc) $p |}
-            | "antiexpr" -> {:patt| Ast.ExAnt $(mloc _loc) $p |}
-            | "antimodule_type" -> {:patt| Ast.MtAnt $(mloc _loc) $p |}
-            | "antimodule_expr" -> {:patt| Ast.MeAnt $(mloc _loc) $p |}
-            | "anticlass_type" -> {:patt| Ast.CtAnt $(mloc _loc) $p |}
-            | "anticlass_expr" -> {:patt| Ast.CeAnt $(mloc _loc) $p |}
-            | "anticlass_sig_item" -> {:patt| Ast.CgAnt $(mloc _loc) $p |}
-            | "anticlass_str_item" -> {:patt| Ast.CrAnt $(mloc _loc) $p |}
-            | "antiwith_constr" -> {:patt| Ast.WcAnt $(mloc _loc) $p |}
-            | "antibinding" -> {:patt| Ast.BiAnt $(mloc _loc) $p |}
-            | "antirec_binding" -> {:patt| Ast.RbAnt $(mloc _loc) $p |}
-            | "antimatch_case" -> {:patt| Ast.McAnt $(mloc _loc) $p |}
-            | "antimodule_binding" -> {:patt| Ast.MbAnt $(mloc _loc) $p |}
-            | "antiident" -> {:patt| Ast.IdAnt $(mloc _loc) $p |}
+            [ "antisig_item" -> {:patt| Ast.SgAnt ($(mloc _loc), $p) |}
+            | "antistr_item" -> {:patt| Ast.StAnt ($(mloc _loc), $p) |}
+            | "antictyp" -> {:patt| Ast.TyAnt ($(mloc _loc), $p) |}
+            | "antipatt" -> {:patt| Ast.PaAnt ($(mloc _loc), $p) |}
+            | "antiexpr" -> {:patt| Ast.ExAnt ($(mloc _loc), $p) |}
+            | "antimodule_type" -> {:patt| Ast.MtAnt($(mloc _loc), $p) |}
+            | "antimodule_expr" -> {:patt| Ast.MeAnt ($(mloc _loc), $p) |}
+            | "anticlass_type" -> {:patt| Ast.CtAnt ($(mloc _loc), $p) |}
+            | "anticlass_expr" -> {:patt| Ast.CeAnt ($(mloc _loc), $p) |}
+            | "anticlass_sig_item" -> {:patt| Ast.CgAnt ($(mloc _loc), $p) |}
+            | "anticlass_str_item" -> {:patt| Ast.CrAnt ($(mloc _loc), $p) |}
+            | "antiwith_constr" -> {:patt| Ast.WcAnt ($(mloc _loc), $p) |}
+            | "antibinding" -> {:patt| Ast.BiAnt ($(mloc _loc), $p) |}
+            | "antirec_binding" -> {:patt| Ast.RbAnt ($(mloc _loc), $p) |}
+            | "antimatch_case" -> {:patt| Ast.McAnt ($(mloc _loc), $p) |}
+            | "antimodule_binding" -> {:patt| Ast.MbAnt ($(mloc _loc), $p) |}
+            | "antiident" -> {:patt| Ast.IdAnt ($(mloc _loc), $p) |}
             | _ -> p ])
       | p -> super#patt p ];
     method! expr = fun

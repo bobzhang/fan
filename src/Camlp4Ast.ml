@@ -90,14 +90,16 @@ let ident_of_ctyp =
 let ident_of_patt =
   let error () =
     invalid_arg "ident_of_patt: this pattern is not an identifier" in
-  let rec self = fun
-    [ {:patt@_loc| $p1 $p2 |} -> {:ident| $(self p1) $(self p2) |}
+  let rec self = fun 
+    [ {:patt@_loc| $p1 $p2 |}
+      -> {:ident| $(self p1) $(self p2) |}
     | {:patt| $lid:_ |} -> error ()
     | {:patt| $id:i |} -> if is_module_longident i then i else error ()
     | _ -> error () ] in
     fun
     [ {:patt| $id:i |} -> i
     | p -> self p ];
+
 
 let rec is_irrefut_patt =
     fun
@@ -126,7 +128,8 @@ let rec is_irrefut_patt =
       {:patt| $flo:_ |} | {:patt| $nativeint:_ |} | {:patt| $int64:_ |} |
       {:patt| $int32:_ |} | {:patt| $int:_ |} | {:patt| $chr:_ |} |
       {:patt| #$_ |} | {:patt| [| $_ |] |} | {:patt| $anti:_ |} -> false
-    ];
+    ];      
+      
 
 let rec is_constructor =  fun
     [ {:ident| $_.$i |} -> is_constructor i

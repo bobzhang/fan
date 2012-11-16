@@ -75,10 +75,10 @@ exception NotneededTyping ;
  *)
 let  make_ctyp  styp tvar = 
   let rec aux  = fun  
-    [ `STlid _loc s -> {:ctyp| $lid:s |}
-    | `STapp _loc t1 t2 -> {:ctyp| $(aux t1) $(aux t2 ) |}
-    | `STquo _loc s -> {:ctyp| '$s |}
-    | `STself _loc x ->
+    [ `STlid (_loc, s) -> {:ctyp| $lid:s |}
+    | `STapp (_loc, t1, t2) -> {:ctyp| $(aux t1) $(aux t2 ) |}
+    | `STquo (_loc, s) -> {:ctyp| '$s |}
+    | `STself (_loc, x) ->
         if tvar = "" then
           FanLoc.raise _loc
             (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
@@ -102,11 +102,11 @@ let make_ctyp_expr styp tvar expr =
 
 (* transform text to [expr] *)    
 let rec make_expr entry tvar =  fun
-  [ `TXmeta _loc n tl e t ->
+  [ `TXmeta (_loc, n, tl, e, t) ->
     let el = Expr.mklist _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
     let ns = Expr.mklist _loc (List.map (fun n -> {:expr| $str:n |} ) n) in 
     {:expr| `Smeta ($ns, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) |}
-  | `TXlist _loc min t ts ->
+  | `TXlist (_loc, min, t, ts) ->
       let txt = make_expr entry "" t.text in
       match (min, ts) with
       [ (false, None) -> {:expr| `Slist0 $txt |} 
@@ -119,24 +119,25 @@ let rec make_expr entry tvar =  fun
             {:expr| `Slist1sep ($txt,$x) |} ]
   | `TXnext _loc ->  {:expr| `Snext |}
   | `TXself _loc ->  {:expr| `Sself|}
-  | `TXkwd _loc kwd ->  {:expr| `Skeyword $str:kwd |}
+  | `TXkwd (_loc, kwd) ->  {:expr| `Skeyword $str:kwd |}
 
-  | `TXnterm _loc n lev -> match lev with
-        [ Some lab ->
-          {:expr| `Snterml
-            (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))), $str:lab) |} 
-        | None ->
-            if n.tvar = tvar then {:expr| `Sself|}
-            else
-              {:expr|
-              `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar)))
-              |}   ]
-  | `TXopt _loc t -> {:expr| `Sopt $(make_expr entry "" t) |}
-  | `TXtry _loc t -> {:expr| `Stry $(make_expr entry "" t) |}
-  | `TXpeek _loc t -> {:expr| `Speek $(make_expr entry "" t) |}
-  | `TXrules _loc rl ->
+  | `TXnterm (_loc, n, lev) ->
+      match lev with
+      [ Some lab ->
+        {:expr| `Snterml
+          (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))), $str:lab) |} 
+      | None ->
+          if n.tvar = tvar then {:expr| `Sself|}
+          else
+            {:expr|
+            `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar)))
+          |}   ]
+  | `TXopt (_loc, t) -> {:expr| `Sopt $(make_expr entry "" t) |}
+  | `TXtry (_loc, t) -> {:expr| `Stry $(make_expr entry "" t) |}
+  | `TXpeek (_loc, t) -> {:expr| `Speek $(make_expr entry "" t) |}
+  | `TXrules (_loc, rl) ->
       {:expr| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
-  | `TXtok _loc match_fun attr descr ->
+  | `TXtok (_loc, match_fun, attr, descr) ->
       {:expr| `Stoken ($match_fun, (`$uid:attr, $`str:descr)) |} ]
     
 and make_expr_rules _loc n rl tvar =
@@ -168,7 +169,7 @@ let text_of_action _loc  psl
         -> fun
           [ { pattern = None; _ } -> accu
           | { pattern = Some p ; _} when Camlp4Ast.is_irrefut_patt p -> accu
-          | { pattern = Some p; text=`TXtok _ _  _ _ ; _ } ->
+          | { pattern = Some p; text=`TXtok (_, _,  _, _) ; _ } ->
               let id = prefix ^ string_of_int i in
               (Some
                  (match tok_match_pl with

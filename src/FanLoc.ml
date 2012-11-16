@@ -335,7 +335,7 @@ exception Exc_located of t and exn;
 
 let _ = begin
   Printexc.register_printer (fun
-  [Exc_located t exn ->
+  [Exc_located (t, exn) ->
     Some (sprintf "Exc_located(%s,%s)" (to_string t ) (Printexc.to_string exn))
   |_ -> None ])
   end;
@@ -347,7 +347,7 @@ let name = ref "_loc";
             re-raise it, else raise the exception [Exc_located loc e]. *)
 let raise loc exc =
   match exc with
-  [ Exc_located _ _ -> raise exc
+  [ Exc_located (_, _) -> raise exc
   | _ -> raise (Exc_located loc exc) ];
 
 

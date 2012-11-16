@@ -88,17 +88,17 @@ and subst_binding v =  fun
   | _ -> raise Not_found ];
 
 let stream_pattern_component skont ckont =  fun
-  [ SpTrm _loc p None ->
+  [ SpTrm (_loc, p, None) ->
       {:expr| match $(peek_fun _loc) $lid:strm_n with
               [ Some $p ->
                   begin  $(junk_fun _loc) $lid:strm_n; $skont  end
               | _ -> $ckont ] |}
-  | SpTrm _loc p (Some w) ->
+  | SpTrm (_loc, p, (Some w)) ->
       {:expr| match $(peek_fun _loc) $lid:strm_n with
               [ Some $p when $w ->
                   begin  $(junk_fun _loc) $lid:strm_n; $skont  end
               | _ -> $ckont ] |}
-  | SpNtr _loc p e ->
+  | SpNtr (_loc, p, e) ->
       let e =
         match e with
         [ {:expr| fun [ ($lid:v : $uid:m.t _) -> $e ] |} when v = strm_n && m = gm() -> e
@@ -120,7 +120,7 @@ let stream_pattern_component skont ckont =  fun
         {:expr| match try Some $e with [ $(uid:gm()).Failure -> None ] with
                 [ Some $p -> $skont
                 | _ -> $ckont ] |}
-  | SpStr _loc p ->
+  | SpStr (_loc, p) ->
       try
         match p with
         [ {:patt| $lid:v |} -> subst v skont
@@ -164,7 +164,7 @@ let stream_patterns_term _loc ekont tspel =
   {:expr| match $(peek_fun _loc) $lid:strm_n with [ $pel | _ -> $(ekont ()) ] |} ;
 
 let rec group_terms = fun
-  [ [([(SpTrm _loc p w, None) :: spcl], epo, e) :: spel] ->
+  [ [([(SpTrm (_loc, p, w), None) :: spcl], epo, e) :: spel] ->
     let (tspel, spel) = group_terms spel in
     ([(p, w, _loc, spcl, epo, e) :: tspel], spel)
   | spel -> ([], spel) ];
@@ -223,16 +223,16 @@ let slazy _loc e =
 
 let rec cstream gloc = fun
   [ [] -> let _loc = gloc in {:expr| [< >] |}
-  | [SeTrm _loc e] ->
+  | [SeTrm (_loc, e)] ->
       if not_computing e then {:expr| $(uid:gm()).ising $e |}
       else {:expr| $(uid:gm()).lsing $(slazy _loc e) |}
-  | [SeTrm _loc e :: secl] ->
+  | [SeTrm (_loc, e) :: secl] ->
       if not_computing e then {:expr| $(uid:gm()).icons $e $(cstream gloc secl) |}
       else {:expr| $(uid:gm()).lcons $(slazy _loc e) $(cstream gloc secl) |}
-  | [SeNtr _loc e] ->
+  | [SeNtr (_loc, e)] ->
       if not_computing e then e
       else {:expr| $(uid:gm()).slazy $(slazy _loc e) |}
-  | [SeNtr _loc e :: secl] ->
+  | [SeNtr (_loc, e) :: secl] ->
       if not_computing e then {:expr| $(uid:gm()).iapp $e $(cstream gloc secl) |}
       else {:expr| $(uid:gm()).lapp $(slazy _loc e) $(cstream gloc secl) |} ] ;
     

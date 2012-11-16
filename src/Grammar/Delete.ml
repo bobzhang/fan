@@ -31,8 +31,8 @@ let delete_rule_in_tree entry =
         [ Some (dsl, t) -> Some (dsl, Node {(n) with brother =t  })
         | None -> None ]
     | ([], DeadEnd) -> None
-    | ([], LocAct _ []) -> Some (Some [], DeadEnd)
-    | ([], LocAct _ [action :: list]) -> Some (None, LocAct action list) ] in delete_in_tree;
+    | ([], LocAct (_, [])) -> Some (Some [], DeadEnd)
+    | ([], LocAct (_, [action :: list])) -> Some (None, LocAct action list) ] in delete_in_tree;
 
 (* FIXME
    there's a bug
@@ -41,14 +41,14 @@ let delete_rule_in_tree entry =
  *)
 let rec decr_keyw_use gram = fun (* gram ->symbol -> unit*)
   [ `Skeyword kwd -> removing gram kwd
-  | `Smeta _ sl _ -> List.iter (decr_keyw_use gram) sl
+  | `Smeta (_, sl, _) -> List.iter (decr_keyw_use gram) sl
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> decr_keyw_use gram s
   | `Slist0sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
   | `Slist1sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
   | `Stree t -> decr_keyw_use_in_tree gram t
   | `Sself | `Snext | `Snterm _ | `Snterml (_, _) | `Stoken _ -> () ]
 and decr_keyw_use_in_tree gram =  fun
-  [ DeadEnd | LocAct _ _ -> ()
+  [ DeadEnd | LocAct (_, _) -> ()
   | Node n -> begin
         decr_keyw_use gram n.node;
         decr_keyw_use_in_tree gram n.son;

@@ -36,7 +36,7 @@ let action_parse entry ts : Action.t =
     [ Stream.Failure ->
         FanLoc.raise (get_prev_loc ts)
           (Stream.Error ("illegal begin of " ^ entry.ename))
-    | FanLoc.Exc_located _ _ as exc -> begin
+    | FanLoc.Exc_located (_, _) as exc -> begin
         eprintf "%s@." (Printexc.to_string exc);
         raise exc
     end

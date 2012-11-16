@@ -132,7 +132,7 @@ let removing { gkeywords = table; gfilter = filter; _ } kwd =
 (* tree processing *)  
 let rec flatten_tree = fun
   [ DeadEnd -> []
-  | LocAct _ _ -> [[]]
+  | LocAct (_, _) -> [[]]
   | Node {node = n; brother = b; son = s} ->
       [ [n :: l] | l <- flatten_tree s ] @ flatten_tree b ];
 
@@ -148,5 +148,5 @@ let get_brothers x =
 let get_children x = 
   let rec aux acc =  fun
   [ [] -> List.rev acc
-  | [Bro n x] -> aux [n::acc] x
+  | [Bro (n, x)] -> aux [n::acc] x
   | _ -> raise Exit ] in aux [] x ;

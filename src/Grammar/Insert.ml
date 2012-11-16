@@ -25,7 +25,7 @@ let rec derive_eps : symbol -> bool = fun
         (* Approximation *)
       false ]
 and tree_derive_eps : tree -> bool = fun
-    [ LocAct _ _ -> true
+    [ LocAct (_, _) -> true
     | Node {node = s; brother = bro; son = son} ->
         derive_eps s && tree_derive_eps son || tree_derive_eps bro
     | DeadEnd -> false ];
@@ -105,7 +105,7 @@ let rec check_gram entry = fun
       failwith "Grammar.extend error"
     end
     else ()
-  | `Snterml e _ ->
+  | `Snterml (e, _) ->
       if e.egram != entry.egram then begin
         eprintf "Error: entries %S and %S do not belong to the same grammar.@." entry.ename e.ename;
         failwith "Grammar.extend error"
@@ -135,7 +135,7 @@ let get_initial = fun
  *)
 let insert_tokens gram symbols =
   let rec insert = fun
-    [ `Smeta _ sl _ -> List.iter insert sl
+    [ `Smeta (_, sl, _) -> List.iter insert sl
     | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> insert s
     | `Slist0sep (s, t) -> begin  insert s; insert t  end
     | `Slist1sep (s, t) -> begin  insert s; insert t  end
@@ -145,7 +145,7 @@ let insert_tokens gram symbols =
   and tinsert = fun
     [ Node {node = s; brother = bro; son = son} ->
       begin insert s; tinsert bro; tinsert son end
-    | LocAct _ _ | DeadEnd -> () ] in
+    | LocAct (_, _) | DeadEnd -> () ] in
   List.iter insert symbols ;
 
 (* given an [entry] [symbols] and [action] a tree, return a new [tree]*)
@@ -163,7 +163,7 @@ let insert_production_in_tree entry (gsymbols, action) tree =
               (* node has higher priority *)
               Some (Node {(x) with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
             else None ]
-    | LocAct _ _ | DeadEnd -> None ] 
+    | LocAct (_, _) | DeadEnd -> None ] 
   and  insert_in_tree s sl tree =
     match try_insert s sl tree with
     [ Some t -> t
@@ -173,7 +173,7 @@ let insert_production_in_tree entry (gsymbols, action) tree =
     [ [s :: sl] -> insert_in_tree s sl tree (* delegated to [insert_in_tree] *)
     | [] -> match tree with
         [ Node ({ brother;_} as x) ->  Node {(x) with brother = insert [] brother }
-        | LocAct old_action action_list ->
+        | LocAct (old_action, action_list) ->
             let () =
               if !(entry.egram.warning_verbose) then
                 eprintf "<W> Grammar extension: in [%s] some rule has been masked@." entry.ename

@@ -85,7 +85,7 @@ let logically_eq_symbols entry =
   and eq_tree t1 t2 = match (t1, t2) with
     [ (Node n1, Node n2) ->
       eq_symbol n1.node n2.node && eq_tree n1.son n2.son &&  eq_tree n1.brother n2.brother
-    | (LocAct _ _ | DeadEnd, LocAct _ _ | DeadEnd) -> true
+    | (LocAct (_, _) | DeadEnd, LocAct (_, _) | DeadEnd) -> true
     | _ -> false ] in eq_symbol;
 
 let rec eq_symbol s1 s2 =

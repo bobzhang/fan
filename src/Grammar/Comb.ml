@@ -34,7 +34,7 @@ let tryp ps strm =
   let r =
     try ps strm'
     with
-    [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
+    [ Stream.Error _ | FanLoc.Exc_located (_, (Stream.Error _)) ->
         raise Stream.Failure
     | exc -> raise exc ] in begin 
         Stream.njunk (Stream.count strm') strm ;
@@ -46,7 +46,7 @@ let peek ps strm =
   let r =
     try ps strm'
     with
-    [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
+    [ Stream.Error _ | FanLoc.Exc_located (_, (Stream.Error _)) ->
         raise Stream.Failure
     | exc -> raise exc ] in begin 
         (* Stream.njunk (Stream.count strm') strm ; *)

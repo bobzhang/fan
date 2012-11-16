@@ -3632,10 +3632,44 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (p : 'patt)  _  (_loc : FanLoc.t)  ->
                    (Ast.PaLaz (_loc, p) : 'patt ))));
-          ([`Sself; `Sself],
+          ([`Stoken
+              (((function
+                 | `ANTIQUOT ((""|"pat"|"anti"),_) -> true
+                 | _ -> false)),
+                (`Normal, "`ANTIQUOT ((\"\"|\"pat\"|\"anti\"),_)"));
+           `Sself],
             (Gram.mk_action
-               (fun (p2 : 'patt)  (p1 : 'patt)  (_loc : FanLoc.t)  ->
-                  (Ast.PaApp (_loc, p1, p2) : 'patt ))))]);
+               (fun (p : 'patt)  __camlp4_0  (_loc : FanLoc.t)  ->
+                  match __camlp4_0 with
+                  | `ANTIQUOT ((""|"pat"|"anti" as n1),s1) ->
+                      (Ast.PaApp
+                         (_loc,
+                           (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n1 s1))), p) : 
+                      'patt )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function
+                 | `ANTIQUOT ((""|"pat"|"anti"),_) -> true
+                 | _ -> false)),
+                (`Normal, "`ANTIQUOT ((\"\"|\"pat\"|\"anti\"),_)"))],
+            (Gram.mk_action
+               (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                  match __camlp4_0 with
+                  | `ANTIQUOT ((""|"pat"|"anti" as n),s) ->
+                      (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'patt )
+                  | _ -> assert false)));
+          ([`Snterm (Gram.obj (patt_constr : 'patt_constr Gram.t ))],
+            (Gram.mk_action
+               (fun (p1 : 'patt_constr)  (_loc : FanLoc.t)  -> (p1 : 'patt ))));
+          ([`Snterm (Gram.obj (patt_constr : 'patt_constr Gram.t )); `Sself],
+            (Gram.mk_action
+               (fun (p2 : 'patt)  (p1 : 'patt_constr)  (_loc : FanLoc.t)  ->
+                  (match p2 with
+                   | Ast.PaTup (_,p) ->
+                       List.fold_left
+                         (fun p1  p2  -> Ast.PaApp (_loc, p1, p2)) p1
+                         (Ast.list_of_patt p [])
+                   | _ -> Ast.PaApp (_loc, p1, p2) : 'patt ))))]);
         ((Some "simple"), None,
           [([`Skeyword "?";
             `Skeyword "(";

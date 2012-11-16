@@ -15,7 +15,7 @@ module Camlp4Bin
 
      Printexc.register_printer
             (
-              fun [ FanLoc.Exc_located loc exn ->
+              fun [ FanLoc.Exc_located (loc, exn) ->
                     Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
                   | _ -> None ]);
       module DynLoader = DynLoader.Make (struct end);

@@ -69,7 +69,7 @@ let print_spec buf (key, spec, doc) =
   if (String.length doc) > 0
   then
     match spec with
-    [ Symbol l _ ->
+    [ Symbol (l, _) ->
         bprintf buf "  %s %s%s\n" key (make_symlist "{" "|" "}" l) doc
     | _ -> bprintf buf "  %s %s\n" key doc ]
   else ();
@@ -107,7 +107,7 @@ let parse_argv ?(current = current) argv speclist anonfun errmsg =
        | Unknown s -> bprintf b "%s: unknown option `%s'.\n" progname s
        | Missing s ->
            bprintf b "%s: option `%s' needs an argument.\n" progname s
-       | Wrong opt arg expected ->
+       | Wrong (opt, arg, expected) ->
            bprintf b "%s: wrong argument `%s'; option `%s' expects %s.\n"
              progname arg opt expected
        | Message s -> bprintf b "%s: %s.\n" progname s ];
@@ -139,7 +139,7 @@ let parse_argv ?(current = current) argv speclist anonfun errmsg =
                 | Clear r -> r := false
                 | String f when (!current + 1) < l ->
                     (f argv.(!current + 1); incr current)
-                | Symbol symb f when (!current + 1) < l ->
+                | Symbol (symb, f) when (!current + 1) < l ->
                     let arg = argv.(!current + 1)
                     in
                       if List.mem arg symb
@@ -216,7 +216,7 @@ let max_arg_len cur (kwd, spec, doc) =
       (* Do not pad undocumented options, so that they still don't show up when
        * run through [usage] or [parse]. *)
       ksd
-  | (kwd, ((Symbol _ _ as spec)), msg) ->
+  | (kwd, ((Symbol (_, _) as spec)), msg) ->
       let cutcol = second_word msg in
       let spaces = String.make ((len - cutcol) + 3) ' '
       in (kwd, spec, ("\n" ^ (spaces ^ msg)))
