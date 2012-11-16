@@ -7,7 +7,7 @@ let is_before s1 s2 =
   | _ -> false
 let rec derive_eps: symbol -> bool =
   function
-  | `Slist0 _|`Slist0sep (_,_)|`Sopt _ -> true
+  | `Slist0 _|`Slist0sep (_,_)|`Sopt _|`Speek _ -> true
   | `Stry s -> derive_eps s
   | `Stree t -> tree_derive_eps t
   | `Slist1 _|`Slist1sep (_,_)|`Stoken _|`Skeyword _ -> false
@@ -88,7 +88,7 @@ let rec check_gram entry =
   | `Smeta (_,sl,_) -> List.iter (check_gram entry) sl
   | `Slist0sep (s,t) -> (check_gram entry t; check_gram entry s)
   | `Slist1sep (s,t) -> (check_gram entry t; check_gram entry s)
-  | `Slist0 s|`Slist1 s|`Sopt s|`Stry s -> check_gram entry s
+  | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> check_gram entry s
   | `Stree t -> tree_check_gram entry t
   | `Snext|`Sself|`Stoken _|`Skeyword _ -> ()
 and tree_check_gram entry =
@@ -104,7 +104,7 @@ let insert_tokens gram symbols =
   let rec insert =
     function
     | `Smeta (_,sl,_) -> List.iter insert sl
-    | `Slist0 s|`Slist1 s|`Sopt s|`Stry s -> insert s
+    | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> insert s
     | `Slist0sep (s,t) -> (insert s; insert t)
     | `Slist1sep (s,t) -> (insert s; insert t)
     | `Stree t -> tinsert t

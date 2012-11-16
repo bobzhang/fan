@@ -48,7 +48,7 @@ and symbol =
   | `Snterm of internal_entry | `Snterml of (internal_entry* string)
   | `Slist0 of symbol | `Slist0sep of (symbol* symbol) | `Slist1 of symbol
   | `Slist1sep of (symbol* symbol) | `Sopt of symbol | `Stry of symbol
-  | `Sself | `Snext | `Stree of tree | terminal] 
+  | `Speek of symbol | `Sself | `Snext | `Stree of tree | terminal] 
 and tree =  
   | Node of node
   | LocAct of Action.t* Action.t list

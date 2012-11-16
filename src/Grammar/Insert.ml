@@ -15,7 +15,7 @@ let is_before s1 s2 =
 
 (* {[ Structure.symbol -> bool ]}*)    
 let rec derive_eps : symbol -> bool = fun
-  [ `Slist0 _ | `Slist0sep (_, _) | `Sopt _ -> true
+  [ `Slist0 _ | `Slist0sep (_, _) | `Sopt _ | `Speek _ -> true
   | `Stry s -> derive_eps s
   | `Stree t -> tree_derive_eps t
   | `Slist1 _ | `Slist1sep (_, _) | `Stoken _ | `Skeyword _ ->
@@ -114,7 +114,7 @@ let rec check_gram entry = fun
   | `Smeta (_, sl, _) -> List.iter (check_gram entry) sl
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s -> check_gram entry s
+  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> check_gram entry s
   | `Stree t -> tree_check_gram entry t
   | `Snext | `Sself | `Stoken _ | `Skeyword _ -> () ]
 and tree_check_gram entry = fun
@@ -136,7 +136,7 @@ let get_initial = fun
 let insert_tokens gram symbols =
   let rec insert = fun
     [ `Smeta _ sl _ -> List.iter insert sl
-    | `Slist0 s | `Slist1 s | `Sopt s | `Stry s -> insert s
+    | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> insert s
     | `Slist0sep (s, t) -> begin  insert s; insert t  end
     | `Slist1sep (s, t) -> begin  insert s; insert t  end
     | `Stree t -> tinsert t

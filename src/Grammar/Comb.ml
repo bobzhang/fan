@@ -40,7 +40,18 @@ let tryp ps strm =
         Stream.njunk (Stream.count strm') strm ;
         r;
     end;
-
+  
+let peek ps strm =
+  let strm' = Stream.dup strm in
+  let r =
+    try ps strm'
+    with
+    [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
+        raise Stream.Failure
+    | exc -> raise exc ] in begin 
+        (* Stream.njunk (Stream.count strm') strm ; *)
+        r;
+    end;
 let orp ?(msg="") p1 p2 = parser
   [ [< a = p1>] -> a
   | [< a = p2 >] -> a

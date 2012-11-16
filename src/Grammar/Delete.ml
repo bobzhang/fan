@@ -42,7 +42,7 @@ let delete_rule_in_tree entry =
 let rec decr_keyw_use gram = fun (* gram ->symbol -> unit*)
   [ `Skeyword kwd -> removing gram kwd
   | `Smeta _ sl _ -> List.iter (decr_keyw_use gram) sl
-  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s -> decr_keyw_use gram s
+  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> decr_keyw_use gram s
   | `Slist0sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
   | `Slist1sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
   | `Stree t -> decr_keyw_use_in_tree gram t

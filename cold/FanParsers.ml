@@ -641,6 +641,18 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                        'symbol )
                    | _ -> assert false)));
            ([`Stoken
+               (((function | `UID "PEEK" -> true | _ -> false)),
+                 (`Normal, "`UID \"PEEK\""));
+            `Sself],
+             (Gram.mk_action
+                (fun (s : 'symbol)  __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `UID "PEEK" ->
+                       (let text = `TXpeek (_loc, (s.text)) in
+                        mk_symbol ~text ~styp:(s.styp) ~pattern:None : 
+                       'symbol )
+                   | _ -> assert false)));
+           ([`Stoken
                (((function | `UID "TRY" -> true | _ -> false)),
                  (`Normal, "`UID \"TRY\""));
             `Sself],

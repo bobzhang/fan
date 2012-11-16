@@ -192,6 +192,8 @@ let rec make_expr entry tvar =
       Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Sopt")), (make_expr entry "" t))
   | `TXtry (_loc,t) ->
       Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Stry")), (make_expr entry "" t))
+  | `TXpeek (_loc,t) ->
+      Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Speek")), (make_expr entry "" t))
   | `TXrules (_loc,rl) ->
       Ast.ExApp
         (_loc,

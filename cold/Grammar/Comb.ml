@@ -36,6 +36,15 @@ let tryp ps strm =
         raise Stream.Failure
     | exc -> raise exc in
   Stream.njunk (Stream.count strm') strm; r
+let peek ps strm =
+  let strm' = Stream.dup strm in
+  let r =
+    try ps strm'
+    with
+    | Stream.Error _|FanLoc.Exc_located (_,Stream.Error _) ->
+        raise Stream.Failure
+    | exc -> raise exc in
+  r
 let orp ?(msg= "")  p1 p2 (__strm : _ Stream.t) =
   try p1 __strm
   with

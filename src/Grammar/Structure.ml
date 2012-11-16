@@ -76,6 +76,7 @@ and symbol =
     | `Slist1sep of (symbol * symbol)
     | `Sopt of symbol
     | `Stry of symbol
+    | `Speek of symbol
     | `Sself
     | `Snext
     | `Stree of tree

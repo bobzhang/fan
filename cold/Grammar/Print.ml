@@ -51,6 +51,7 @@ class text_grammar =
           pp f "LIST1 %a SEP %a" self#symbol1 s self#symbol1 t
       | `Sopt s -> pp f "OPT %a" self#symbol1 s
       | `Stry s -> pp f "TRY %a" self#symbol1 s
+      | `Speek s -> pp f "PEEK %a" self#symbol1 s
       | `Snterml (e,l) -> pp f "%s Level %S" e.ename l
       | `Snterm _|`Snext|`Sself|`Stree _|`Stoken _|`Skeyword _ as s ->
           self#symbol1 f s
@@ -74,7 +75,8 @@ class text_grammar =
       | `Skeyword s -> pp f "%S" s
       | `Stree t -> self#tree f t
       | `Smeta (_,_,_)|`Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _|
-          `Slist1sep (_,_)|`Sopt _|`Stry _ as s -> pp f "(%a)" self#symbol s
+          `Slist1sep (_,_)|`Sopt _|`Stry _|`Speek _ as s ->
+          pp f "(%a)" self#symbol s
     method rule f symbols =
       pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@ ") symbols
     method rules f rules =

@@ -182,6 +182,7 @@ and parser_of_symbol entry s nlevn =
            let s = __strm in Action.mk (List.rev (kont [a] s)))
     | `Sopt s -> let ps = aux s in Comb.opt ps ~f:Action.mk
     | `Stry s -> let ps = aux s in Comb.tryp ps
+    | `Speek s -> let ps = aux s in Comb.peek ps
     | `Stree t ->
         let pt = parser_of_tree entry (0, `RA) t in
         (fun strm  ->

@@ -133,6 +133,7 @@ let rec make_expr entry tvar =  fun
               |}   ]
   | `TXopt _loc t -> {:expr| `Sopt $(make_expr entry "" t) |}
   | `TXtry _loc t -> {:expr| `Stry $(make_expr entry "" t) |}
+  | `TXpeek _loc t -> {:expr| `Speek $(make_expr entry "" t) |}
   | `TXrules _loc rl ->
       {:expr| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
   | `TXtok _loc match_fun attr descr ->

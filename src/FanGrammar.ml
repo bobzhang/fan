@@ -45,6 +45,7 @@ and text =
  | `TXnterm of (loc * name  * option string)
  | `TXopt of (loc * text )
  | `TXtry of (loc * text )
+ | `TXpeek of (loc * text)
  | `TXrules of (loc * list (list text * Ast.expr))
  | `TXself of loc
  | `TXnext of loc       

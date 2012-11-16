@@ -48,12 +48,6 @@ let entry_of_symb entry = fun
   | `Snterml (e, _) -> e
   | _ -> raise Stream.Failure ] ;
 
-
-
-
-  
-
-
 (* in case of syntax error, the system attempts to recover the error by applying
    the [continue] function of the previous symbol(if the symbol is a call to an entry),
    so there's no behavior difference between [LA] and [NA]
@@ -186,6 +180,7 @@ and parser_of_symbol entry s nlevn =
       let ps = aux s  in
       Comb.opt ps ~f:Action.mk
   | `Stry s -> let ps = aux s in Comb.tryp ps
+  | `Speek s -> let ps = aux s in Comb.peek ps
   | `Stree t ->
       let pt = parser_of_tree entry (0, `RA)  t (* FIXME*) in
       fun strm ->
