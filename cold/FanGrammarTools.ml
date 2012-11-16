@@ -22,7 +22,7 @@ let string_of_patt patt =
   let str = Buffer.contents buf in if str = "" then assert false else str
 let check_not_tok s =
   match s with
-  | { text = TXtok (_loc,_,_,_);_} ->
+  | { text = `TXtok (_loc,_,_,_);_} ->
       FanLoc.raise _loc
         (Stream.Error
            ("Deprecated syntax, use a sub rule. " ^
@@ -30,11 +30,13 @@ let check_not_tok s =
   | _ -> ()
 let new_type_var =
   let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
+let gensym = let i = ref 0 in fun ()  -> incr i; i
+let gen_lid () = prefix ^ (string_of_int (gensym ()).contents)
 let retype_rule_list_without_patterns _loc rl =
   try
     List.map
       (function
-       | { prod = ({ pattern = None ; styp = STtok _;_} as s)::[];
+       | { prod = ({ pattern = None ; styp = `STtok _;_} as s)::[];
            action = None  } ->
            {
              prod =
@@ -69,17 +71,17 @@ exception NotneededTyping
 let make_ctyp styp tvar =
   let rec aux =
     function
-    | STlid (_loc,s) -> Ast.TyId (_loc, (Ast.IdLid (_loc, s)))
-    | STapp (_loc,t1,t2) -> Ast.TyApp (_loc, (aux t1), (aux t2))
-    | STquo (_loc,s) -> Ast.TyQuo (_loc, s)
-    | STself (_loc,x) ->
+    | `STlid (_loc,s) -> Ast.TyId (_loc, (Ast.IdLid (_loc, s)))
+    | `STapp (_loc,t1,t2) -> Ast.TyApp (_loc, (aux t1), (aux t2))
+    | `STquo (_loc,s) -> Ast.TyQuo (_loc, s)
+    | `STself (_loc,x) ->
         if tvar = ""
         then
           FanLoc.raise _loc
             (Stream.Error ("'" ^ (x ^ "' illegal in anonymous entry level")))
         else Ast.TyQuo (_loc, tvar)
-    | STtok _loc -> raise NotneededTyping
-    | STtyp t -> t in
+    | `STtok _loc -> raise NotneededTyping
+    | `STtyp t -> t in
   try Some (aux styp) with | NotneededTyping  -> None
 let make_ctyp_patt styp tvar patt =
   match make_ctyp styp tvar with
@@ -93,7 +95,7 @@ let make_ctyp_expr styp tvar expr =
       let _loc = Camlp4Ast.loc_of_expr expr in Ast.ExTyc (_loc, expr, t)
 let rec make_expr entry tvar =
   function
-  | TXmeta (_loc,n,tl,e,t) ->
+  | `TXmeta (_loc,n,tl,e,t) ->
       let el =
         Expr.mklist _loc (List.map (fun t  -> make_expr entry "" t) tl) in
       let ns = Expr.mklist _loc (List.map (fun n  -> Ast.ExStr (_loc, n)) n) in
@@ -116,7 +118,7 @@ let rec make_expr entry tvar =
                                              (Ast.IdUid (_loc, "Action")),
                                              (Ast.IdLid (_loc, "mk")))))))),
                               (make_ctyp_expr t tvar e))))))))))
-  | TXlist (_loc,min,t,ts) ->
+  | `TXlist (_loc,min,t,ts) ->
       let txt = make_expr entry "" t.text in
       (match (min, ts) with
        | (false ,None ) ->
@@ -132,12 +134,12 @@ let rec make_expr entry tvar =
            Ast.ExApp
              (_loc, (Ast.ExVrn (_loc, "Slist1sep")),
                (Ast.ExTup (_loc, (Ast.ExCom (_loc, txt, x))))))
-  | TXnext _loc -> Ast.ExVrn (_loc, "Snext")
-  | TXself _loc -> Ast.ExVrn (_loc, "Sself")
-  | TXkwd (_loc,kwd) ->
+  | `TXnext _loc -> Ast.ExVrn (_loc, "Snext")
+  | `TXself _loc -> Ast.ExVrn (_loc, "Sself")
+  | `TXkwd (_loc,kwd) ->
       Ast.ExApp
         (_loc, (Ast.ExVrn (_loc, "Skeyword")), (Ast.ExStr (_loc, kwd)))
-  | TXnterm (_loc,n,lev) ->
+  | `TXnterm (_loc,n,lev) ->
       (match lev with
        | Some lab ->
            Ast.ExApp
@@ -186,11 +188,11 @@ let rec make_expr entry tvar =
                                         (_loc, (gm ()),
                                           (Ast.IdLid (_loc, "t")))))),
                                 (Ast.TyQuo (_loc, (n.tvar)))))))))))
-  | TXopt (_loc,t) ->
+  | `TXopt (_loc,t) ->
       Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Sopt")), (make_expr entry "" t))
-  | TXtry (_loc,t) ->
+  | `TXtry (_loc,t) ->
       Ast.ExApp (_loc, (Ast.ExVrn (_loc, "Stry")), (make_expr entry "" t))
-  | TXrules (_loc,rl) ->
+  | `TXrules (_loc,rl) ->
       Ast.ExApp
         (_loc,
           (Ast.ExApp
@@ -199,7 +201,7 @@ let rec make_expr entry tvar =
                   (_loc,
                     (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "srules")))))),
                (entry.expr))), (make_expr_rules _loc entry rl ""))
-  | TXtok (_loc,match_fun,attr,descr) ->
+  | `TXtok (_loc,match_fun,attr,descr) ->
       Ast.ExApp
         (_loc, (Ast.ExVrn (_loc, "Stoken")),
           (Ast.ExTup
@@ -262,7 +264,7 @@ let text_of_action _loc psl (rtvar : string) (act : Ast.expr option)
                                         (Ast.IdLid (_loc, "string_of_token")))))),
                               (Ast.ExId (_loc, (Ast.IdLid (_loc, s)))))))),
                     act)), i)
-         | { pattern = Some p; text = TXtok (_,_,_,_);_} ->
+         | { pattern = Some p; text = `TXtok (_,_,_,_);_} ->
              let id = prefix ^ (string_of_int i) in
              ((Some
                  ((match tok_match_pl with
@@ -331,8 +333,7 @@ let text_of_action _loc psl (rtvar : string) (act : Ast.expr option)
              let p =
                make_ctyp_patt s.styp tvar
                  (Ast.PaId
-                    (_loc,
-                      (Ast.IdLid (_loc, ("__camlp4_" ^ (string_of_int i)))))) in
+                    (_loc, (Ast.IdLid (_loc, (prefix ^ (string_of_int i)))))) in
              ((Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), txt)))),
                (succ i))) (e, 0) psl in
   let txt =
@@ -370,7 +371,7 @@ let expr_of_delete_rule _loc n sl =
   ((n.expr), sl)
 let mk_name _loc i =
   { expr = (Ast.ExId (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
-let slist loc min sep symb = TXlist (loc, min, symb, sep)
+let slist loc min sep symb = `TXlist (loc, min, symb, sep)
 let text_of_entry _loc e =
   let ent =
     let x = e.name in
@@ -491,7 +492,7 @@ let text_of_functorial_extend _loc gram gl el =
           (_loc,
             (List.fold_left (fun acc  x  -> Ast.ExSem (_loc, acc, x)) e el)) in
   let_in_of_extend _loc gram gl args
-let mk_tok _loc ?restrict  ~pattern  t =
+let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
   | None  ->
       let p' = Camlp4Ast.wildcarder#patt pattern in
@@ -515,8 +516,8 @@ let mk_tok _loc ?restrict  ~pattern  t =
                       (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
                         (Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))))))) in
       let descr = string_of_patt p' in
-      let text = TXtok (_loc, match_fun, "Normal", descr) in
-      { text; styp = t; pattern = (Some pattern) }
+      let text = `TXtok (_loc, match_fun, "Normal", descr) in
+      { text; styp; pattern = (Some pattern) }
   | Some restrict ->
       let p' = Camlp4Ast.wildcarder#patt pattern in
       let match_fun =
@@ -531,15 +532,15 @@ let mk_tok _loc ?restrict  ~pattern  t =
                     (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
                       (Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))))))) in
       let descr = string_of_patt pattern in
-      let text = TXtok (_loc, match_fun, "Antiquot", descr) in
-      { text; styp = t; pattern = (Some p') }
+      let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
+      { text; styp; pattern = (Some p') }
 let sfold ?sep  _loc (ns : string list) f e s =
   let fs = [("FOLD0", "sfold0"); ("FOLD1", "sfold1")] in
   let suffix = match sep with | None  -> "" | Some _ -> "sep" in
   let n = List.hd ns in
   let foldfun =
     try (List.assoc n fs) ^ suffix with | Not_found  -> invalid_arg "sfold" in
-  let styp = STquo (_loc, (new_type_var ())) in
+  let styp = `STquo (_loc, (new_type_var ())) in
   let e =
     Ast.ExApp
       (_loc,
@@ -550,11 +551,11 @@ let sfold ?sep  _loc (ns : string list) f e s =
                   (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, foldfun)))))),
              f)), e) in
   let t =
-    STapp
+    `STapp
       (_loc,
-        (STapp
+        (`STapp
            (_loc,
-             (STtyp
+             (`STtyp
                 (Ast.TyApp
                    (_loc,
                      (Ast.TyId
@@ -564,7 +565,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
                                (Ast.IdLid (_loc, ("fold" ^ suffix))))))),
                      (Ast.TyAny _loc)))), (s.styp))), styp) in
   let text =
-    TXmeta
+    `TXmeta
       (_loc, ns,
         (match sep with | None  -> [s.text] | Some sep -> [s.text; sep.text]),
         e, t) in

@@ -23,15 +23,15 @@ let to_string: [> FanSig.token] -> string =
   function
   | `KEYWORD s -> sprintf "`KEYWORD %S" s
   | `SYMBOL s -> sprintf "`SYMBOL %S" s
-  | `LIDENT s -> sprintf "`LIDENT %S" s
-  | `UIDENT s -> sprintf "`UIDENT %S" s
+  | `LID s -> sprintf "`LID %S" s
+  | `UID s -> sprintf "`UID %S" s
   | `INT (_,s) -> sprintf "`INT %s" s
   | `INT32 (_,s) -> sprintf "`INT32 %sd" s
   | `INT64 (_,s) -> sprintf "`INT64 %sd" s
   | `NATIVEINT (_,s) -> sprintf "`NATIVEINT %sd" s
   | `FLOAT (_,s) -> sprintf "`FLOAT %s" s
   | `CHAR (_,s) -> sprintf "`CHAR '%s'" s
-  | `STRING (_,s) -> sprintf "`STRING \"%s\"" s
+  | `STR (_,s) -> sprintf "`STR \"%s\"" s
   | `LABEL s -> sprintf "`LABEL %S" s
   | `OPTLABEL s -> sprintf "`OPTLABEL %S" s
   | `ANTIQUOT (n,s) -> sprintf "`ANTIQUOT %S: %S" n s
@@ -68,16 +68,17 @@ let match_keyword kwd =
   function | `KEYWORD kwd' when kwd = kwd' -> true | _ -> false
 let extract_string: [> FanSig.token] -> string =
   function
-  | `KEYWORD s|`SYMBOL s|`LIDENT s|`UIDENT s|`INT (_,s)|`INT32 (_,s)|
-      `INT64 (_,s)|`NATIVEINT (_,s)|`FLOAT (_,s)|`CHAR (_,s)|`STRING (_,s)|
-      `LABEL s|`OPTLABEL s|`COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
+  | `KEYWORD s|`SYMBOL s|`LID s|`UID s|`INT (_,s)|`INT32 (_,s)|`INT64 (_,s)|
+      `NATIVEINT (_,s)|`FLOAT (_,s)|`CHAR (_,s)|`STR (_,s)|`LABEL s|`OPTLABEL
+                                                                    s|
+      `COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
   | tok ->
       invalid_arg
         ("Cannot extract a string from this token: " ^ (token_to_string tok))
 let keyword_conversion tok is_kwd =
   match tok with
-  | `SYMBOL s|`LIDENT s|`UIDENT s when is_kwd s -> `KEYWORD s
-  | `ESCAPED_IDENT s -> `LIDENT s
+  | `SYMBOL s|`LID s|`UID s when is_kwd s -> `KEYWORD s
+  | `ESCAPED_IDENT s -> `LID s
   | _ -> tok
 let check_keyword_as_label tok loc is_kwd =
   let s = match tok with | `LABEL s -> s | `OPTLABEL s -> s | _ -> "" in

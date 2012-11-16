@@ -15,7 +15,7 @@ module Ast = Camlp4Ast;
 (*           | Some (`KEYWORD "{",_) -> *)
 (*               skip_patt (ignore_upto "}" (n + 1) + 1) *)
 (*           | Some (`KEYWORD ("as" | "::" | "," | "_"),_) *)
-(*           | Some (`LIDENT _ | `UIDENT _, _) -> skip_patt (n + 1) *)
+(*           | Some (`LID _ | `UID _, _) -> skip_patt (n + 1) *)
 (*           | Some _ | None -> raise Stream.Failure ] *)
 (*         and ignore_upto end_kwd n = *)
 (*           match Stream.peek_nth n strm with *)
@@ -50,7 +50,7 @@ let rec infix_kwds_filter = parser
     match xs with parser
       [ [< (`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
              (`KEYWORD ")", _); 'xs >] ->
-                [< (`LIDENT i, _loc); '(infix_kwds_filter xs) >]
+                [< (`LID i, _loc); '(infix_kwds_filter xs) >]
         | [< 'xs >] ->
                 [< tok; '(infix_kwds_filter xs) >] ]
   | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >]

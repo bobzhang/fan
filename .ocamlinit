@@ -20,6 +20,7 @@ end
 open Format;;
 let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 #install_printer print_ocaml_loc;;
+
 #directory "_build";;
 #directory "_build/src";;
 (* #directory "_build/cold" ;; *)
@@ -36,7 +37,7 @@ let _ = begin
 end
 
 let (|-) f g x = g (f x );;
-    
+
 let interface_of_string =
   Lexing.from_string |- Parse.interface;;
 let implementation_of_string =
@@ -68,6 +69,6 @@ Toploop.print_out_module_type := loose#module_type;;
 Toploop.print_out_sig_item := loose#sig_item;;
 Toploop.print_out_signature := loose#signature;;
 Toploop.print_out_phrase := loose#phrase;;
-
+#install_printer Gram.dump;;
 (* #useo "./test/test_fan.ml";; *)
 (* #load_rec "FanTop.cma";; *)

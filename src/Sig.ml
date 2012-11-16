@@ -204,6 +204,19 @@ module type Camlp4Syntax = sig
   val infixop3 : Gram.t Ast.expr;
   val infixop4 : Gram.t Ast.expr;
 
+  val string_list: Gram.t (Ast.meta_list string);
+  val infixop5: Gram.t Ast.expr;
+  val infixop6: Gram.t Ast.expr;
+  val module_longident_dot_lparen: Gram.t Ast.ident;
+  val sequence':Gram.t (Ast.expr -> Lib.Expr.Ast.expr); 
+  val fun_def: Gram.t Ast.expr;
+  val fun_def_cont: Gram.t (Ast.expr * Ast.expr);
+  val fun_def_cont_no_when: Gram.t Ast.expr;
+  val optional_type_parameter:  Gram.t Ast.ctyp;
+  val method_opt_override: Gram.t Ast.override_flag;
+  val value_val_opt_override: Gram.t Ast.override_flag;
+  val unquoted_typevars:Gram.t Ast.ctyp;
+  val lang: Gram.t string;
   val symbol:  Gram.t FanGrammar.symbol ;
   val rule:  Gram.t FanGrammar.rule;
   val rule_list: Gram.t (list FanGrammar.rule);
@@ -213,6 +226,7 @@ module type Camlp4Syntax = sig
   val entry: Gram.t FanGrammar.entry;
   val extend_body: Gram.t Ast.expr;
   val delete_rule_body: Gram.t Ast.expr;
+
 
   module Options:sig
     type spec_list = list (string * FanArg.spec * string);

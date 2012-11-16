@@ -291,8 +291,8 @@ rule token c = parse
        | blank + as x                                                   { `BLANKS x }
        | "~" (lowercase identchar * as x) ':'                            { `LABEL x }
        | "?" (lowercase identchar * as x) ':'                         { `OPTLABEL x }
-       | lowercase identchar * as x                                     { `LIDENT x }
-       | uppercase identchar * as x                                     { `UIDENT x }
+       | lowercase identchar * as x                                     { `LID x }
+       | uppercase identchar * as x                                     { `UID x }
        | int_literal as i
            { try  `INT(cvt_int_literal i, i)
            with Failure _ -> err (Literal_overflow "int") (FanLoc.of_lexbuf lexbuf) }
@@ -310,7 +310,7 @@ rule token c = parse
            with Failure _ -> err (Literal_overflow "nativeint") (FanLoc.of_lexbuf lexbuf) }
        | '"'
            { with_curr_loc string c;
-             let s = buff_contents c in `STRING (TokenEval.string s, s)             }
+             let s = buff_contents c in `STR (TokenEval.string s, s)             }
        | "'" (newline as x) "'"
            { update_loc c  ~retract:1; `CHAR (TokenEval.char x, x)               }
        | "'" ( [^ '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']

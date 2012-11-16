@@ -46,8 +46,8 @@ type quotation ={
 type token =
   [=  `KEYWORD of string
   | `SYMBOL of string
-  | `LIDENT of string
-  | `UIDENT of string
+  | `LID of string
+  | `UID of string
   | `ESCAPED_IDENT of string (* (+)*)
   | `INT of (int * string )
   | `INT32 of (int32 * string )
@@ -55,7 +55,7 @@ type token =
   | `NATIVEINT of (nativeint * string )
   | `FLOAT of (float * string )
   | `CHAR of (char * string )
-  | `STRING of (string * string )
+  | `STR of (string * string )
   | `LABEL of string
   | `OPTLABEL of string
   | `QUOTATION of quotation

@@ -20,8 +20,11 @@ val string_of_patt : Camlp4Ast.Ast.patt -> string
 
 val check_not_tok : symbol -> unit
     
-val new_type_var : unit -> string
+val new_type_var: unit -> string
 
+val gensym: unit -> int ref
+val gen_lid: unit -> string
+    
 val retype_rule_list_without_patterns :
   Ast.loc -> rule list -> rule list
 exception NotneededTyping

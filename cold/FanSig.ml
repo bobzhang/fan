@@ -7,11 +7,11 @@ type quotation =
   q_shift: int;
   q_contents: string} 
 type token =
-  [ `KEYWORD of string | `SYMBOL of string | `LIDENT of string
-  | `UIDENT of string | `ESCAPED_IDENT of string | `INT of (int* string)
+  [ `KEYWORD of string | `SYMBOL of string | `LID of string | `UID of string
+  | `ESCAPED_IDENT of string | `INT of (int* string)
   | `INT32 of (int32* string) | `INT64 of (int64* string)
   | `NATIVEINT of (nativeint* string) | `FLOAT of (float* string)
-  | `CHAR of (char* string) | `STRING of (string* string) | `LABEL of string
+  | `CHAR of (char* string) | `STR of (string* string) | `LABEL of string
   | `OPTLABEL of string | `QUOTATION of quotation
   | `ANTIQUOT of (string* string) | `COMMENT of string | `BLANKS of string
   | `NEWLINE | `LINE_DIRECTIVE of (int* string option) | `EOI] 

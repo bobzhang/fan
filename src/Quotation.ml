@@ -2,9 +2,11 @@ open Lib;
 open LibUtil;
 module type AntiquotSyntax = sig
     (**generally "expr; EOI". *)
-  val parse_expr : FanLoc.t -> string -> Ast.expr;
+  val parse_expr: FanLoc.t -> string -> Ast.expr;
     (**  generally "patt; EOI". *)
-  val parse_patt : FanLoc.t -> string -> Ast.patt;
+  val parse_patt: FanLoc.t -> string -> Ast.patt;
+
+  val parse_ident: FanLoc.t -> string -> Ast.ident;  
 end;
 
 module type S = sig

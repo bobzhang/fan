@@ -143,10 +143,21 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
     Gram.mk "infix operator (level 3) (start with '*', '/', '%')"
   let infixop4 =
     Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)"
-  let symbol = Gram.mk "symbol" let rule = Gram.mk "rule"
-  let rule_list = Gram.mk "rule_list" let psymbol = Gram.mk "psymbol"
-  let level = Gram.mk "level" let level_list = Gram.mk "level_list"
-  let entry = Gram.mk "entry" let extend_body = Gram.mk "extend_body"
+  let string_list = Gram.mk "string_list" let infixop5 = Gram.mk "infixop5"
+  let infixop6 = Gram.mk "infixop6"
+  let module_longident_dot_lparen = Gram.mk "module_longident_dot_lparen"
+  let sequence' = Gram.mk "sequence'" let fun_def = Gram.mk "fun_def"
+  let fun_def_cont = Gram.mk "def_cont"
+  let fun_def_cont_no_when = Gram.mk "fun_def_cont_no_when"
+  let optional_type_parameter = Gram.mk "optional_type_parameter"
+  let method_opt_override = Gram.mk "method_opt_override"
+  let value_val_opt_override = Gram.mk "value_val_opt_override"
+  let unquoted_typevars = Gram.mk "unquoted_typevars"
+  let lang = Gram.mk "lang" let symbol = Gram.mk "symbol"
+  let rule = Gram.mk "rule" let rule_list = Gram.mk "rule_list"
+  let psymbol = Gram.mk "psymbol" let level = Gram.mk "level"
+  let level_list = Gram.mk "level_list" let entry = Gram.mk "entry"
+  let extend_body = Gram.mk "extend_body"
   let delete_rule_body = Gram.mk "delete_rule_body"
   let _ =
     Gram.extend (top_phrase : 'top_phrase Gram.t )
@@ -167,8 +178,10 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
     module Ast = Ast module Gram = Gram
     let antiquot_expr = Gram.eoi_entry expr
     let antiquot_patt = Gram.eoi_entry patt
+    let antiquot_ident = Gram.eoi_entry ident
     let parse_expr loc str = Gram.parse_string antiquot_expr loc str
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str
+    let parse_ident loc str = Gram.parse_string antiquot_ident loc str
     end module Quotation = Quotation.Make(AntiquotSyntax)
   let _ = Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body
   let _ =

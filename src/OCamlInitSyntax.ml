@@ -171,6 +171,20 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   let infixop3 = Gram.mk "infix operator (level 3) (start with '*', '/', '%')";
   let infixop4 = Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)";
 
+
+  let string_list = Gram.mk "string_list";  
+  let infixop5 = Gram.mk "infixop5";
+  let infixop6 = Gram.mk "infixop6";
+  let module_longident_dot_lparen = Gram.mk "module_longident_dot_lparen";
+  let sequence' = Gram.mk "sequence'";
+  let fun_def = Gram.mk "fun_def";
+  let fun_def_cont = Gram.mk "def_cont";
+  let fun_def_cont_no_when = Gram.mk "fun_def_cont_no_when";   
+  let optional_type_parameter = Gram.mk "optional_type_parameter";
+  let method_opt_override = Gram.mk "method_opt_override";
+  let value_val_opt_override = Gram.mk "value_val_opt_override";
+  let unquoted_typevars = Gram.mk "unquoted_typevars";
+  let lang =Gram.mk "lang"  ;
   (* for the grammar module *)  
   let symbol= Gram.mk "symbol" ;
   let rule = Gram.mk "rule"  ;
@@ -191,8 +205,10 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
     module Gram = Gram;
     let antiquot_expr = Gram.eoi_entry expr ; 
     let antiquot_patt = Gram.eoi_entry patt;
+    let antiquot_ident = Gram.eoi_entry ident; 
     let parse_expr loc str = Gram.parse_string antiquot_expr loc str;
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str;
+    let parse_ident loc str = Gram.parse_string antiquot_ident loc str;      
   end;
   module Quotation = Quotation.Make(AntiquotSyntax);
 
