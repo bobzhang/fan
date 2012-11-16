@@ -34,7 +34,7 @@ let to_string: [> FanSig.token] -> string =
   | `STR (_,s) -> sprintf "`STR \"%s\"" s
   | `LABEL s -> sprintf "`LABEL %S" s
   | `OPTLABEL s -> sprintf "`OPTLABEL %S" s
-  | `ANTIQUOT (n,s) -> sprintf "`ANTIQUOT %S: %S" n s
+  | `ANT (n,s) -> sprintf "`ANT %S: %S" n s
   | `QUOTATION x ->
       sprintf "`QUOTATION { q_name=%S; q_loc=%S; q_shift=%d; q_contents=%S }"
         x.q_name x.q_loc x.q_shift x.q_contents

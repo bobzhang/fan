@@ -44,7 +44,7 @@ let to_string  : [>FanSig.token] -> string =fun
         (* here it's not %S since the string is already escaped *)
   | `LABEL s      -> sprintf "`LABEL %S" s
   | `OPTLABEL s   -> sprintf "`OPTLABEL %S" s
-  | `ANTIQUOT (n, s) -> sprintf "`ANTIQUOT %S: %S" n s (* use S for n FIX*)
+  | `ANT (n, s) -> sprintf "`ANT %S: %S" n s (* use S for n FIX*)
   | `QUOTATION x  -> sprintf "`QUOTATION { q_name=%S; q_loc=%S; q_shift=%d; q_contents=%S }"
         x.q_name x.q_loc x.q_shift x.q_contents
   | `COMMENT s    -> sprintf "`COMMENT %S" s

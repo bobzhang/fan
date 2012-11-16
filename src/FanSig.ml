@@ -59,7 +59,7 @@ type token =
   | `LABEL of string
   | `OPTLABEL of string
   | `QUOTATION of quotation
-  | `ANTIQUOT of (string * string )
+  | `ANT of (string * string )
   | `COMMENT of string
   | `BLANKS of string
   | `NEWLINE

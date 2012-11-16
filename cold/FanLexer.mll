@@ -544,10 +544,10 @@ and quotation c = parse
  *)
 and dollar c = parse
     | ('`'? (identchar*|['.' '!']+) as name) ':' (lident as x)
-        {set_start_p c; `ANTIQUOT(name,x)}
+        {set_start_p c; `ANT(name,x)}
         (* { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
     | lident as x 
-        {set_start_p c; `ANTIQUOT("",x)}
+        {set_start_p c; `ANT("",x)}
     (* | '$' {store_parse (antiquot "") c} *)
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {
       with_curr_loc (antiquot name 0) (shift (2 + String.length name) c)
@@ -556,7 +556,7 @@ and dollar c = parse
     | '(' {
       with_curr_loc (antiquot "" 0) (shift 1 c)
      }
-    (* | '$'                                     { set_start_p c; `ANTIQUOT("", "") } *)
+    (* | '$'                                     { set_start_p c; `ANT("", "") } *)
     (* | ('`'? (identchar*|['.' '!']+) as name) ':' *)
     (*     { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
     | _ as c {
@@ -570,7 +570,7 @@ and antiquot name depth c  = parse
     | ')'                      {
       if depth = 0 then
         let () = set_start_p c in
-        `ANTIQUOT(name, buff_contents c)
+        `ANT(name, buff_contents c)
       else store_parse (antiquot name (depth-1)) c }
     | '(' {
       store_parse (antiquot name (depth+1)) c
