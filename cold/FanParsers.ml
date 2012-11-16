@@ -3589,6 +3589,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        'label_expr )
                    | _ -> assert false)))])])
   let _ =
+    let grammar_entry_create = Gram.mk in
+    let patt_constr: 'patt_constr Gram.t = grammar_entry_create "patt_constr" in
+    Gram.extend (patt_constr : 'patt_constr Gram.t )
+      (None,
+        [(None, None,
+           [([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+              (Gram.mk_action
+                 (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
+                    (Ast.PaVrn (_loc, s) : 'patt_constr ))));
+           ([`Snterm
+               (Gram.obj (module_longident : 'module_longident Gram.t ))],
+             (Gram.mk_action
+                (fun (i : 'module_longident)  (_loc : FanLoc.t)  ->
+                   (Ast.PaId (_loc, i) : 'patt_constr ))))])]);
     Gram.extend (patt : 'patt Gram.t )
       (None,
         [((Some "|"), (Some `LA),

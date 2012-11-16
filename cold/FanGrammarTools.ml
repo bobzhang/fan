@@ -245,25 +245,6 @@ let text_of_action _loc psl (rtvar : string) (act : Ast.expr option)
          function
          | { pattern = None ;_} -> accu
          | { pattern = Some p;_} when Camlp4Ast.is_irrefut_patt p -> accu
-         | {
-             pattern = Some (Ast.PaAli
-               (_,Ast.PaApp (_,_,Ast.PaTup (_,Ast.PaAny _)),Ast.PaId
-                (_,Ast.IdLid (_,s))));_}
-             ->
-             (tok_match_pl,
-               (Ast.ExLet
-                  (_loc, Ast.ReNil,
-                    (Ast.BiEq
-                       (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, s)))),
-                         (Ast.ExApp
-                            (_loc,
-                              (Ast.ExId
-                                 (_loc,
-                                   (Ast.IdAcc
-                                      (_loc, (gm ()),
-                                        (Ast.IdLid (_loc, "string_of_token")))))),
-                              (Ast.ExId (_loc, (Ast.IdLid (_loc, s)))))))),
-                    act)), i)
          | { pattern = Some p; text = `TXtok (_,_,_,_);_} ->
              let id = prefix ^ (string_of_int i) in
              ((Some
@@ -273,7 +254,7 @@ let text_of_action _loc psl (rtvar : string) (act : Ast.expr option)
                        ((Ast.ExCom
                            (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, id)))),
                              tok_pl)), (Ast.PaCom (_loc, p, match_pl)))))),
-               act, (succ i))
+               act, (i + 1))
          | _ -> accu) (None, act, 0) psl in
   let e =
     let e1 = Ast.ExTyc (_loc, act, (Ast.TyQuo (_loc, rtvar))) in
