@@ -61,7 +61,7 @@ let rec infix_kwds_filter = parser
 (*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_str_item fan_expr  fan_class_str_item fan_ctyp  ; *)
 (*   fan_quots: *)
 (*     ["top" *)
-(*        [  LIST0 [ fan_quot{x}; ";" -> x ]{strs} -> {:expr| begin $list:strs end |} ] ] *)
+(*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> {:expr| begin $list:strs end |} ] ] *)
 (*   fan_quot: *)
 (*     ["top" *)
 (*        [ "lang"; STRING{quot}-> begin      Quotation.default:= quot;  unit_literal _loc end  *)

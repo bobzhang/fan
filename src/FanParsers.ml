@@ -34,8 +34,8 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
       {:expr| if $(mk_debug_mode _loc m) $str:section then $call else () |};
   {:extend| Gram local: start_debug end_or_in ;  
     expr "expr":
-     [ start_debug{m}; `LID section; `STR (_, fmt); (* FIXME move to `STR(,_)*)
-        (LIST0 expr Level "."){args}; end_or_in{x} ->
+     [ start_debug{m}; `LID section; `STR (_, fmt);
+       L0 expr Level "."{args}; end_or_in{x} ->
       match (x, debug_mode section) with
       [ (None,   false) -> {| () |}
       | (Some e, false) -> e
@@ -80,7 +80,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            (None,old)
        | -> (None,gm())] 
     extend_body:
-      [ extend_header{(gram,old)};  OPT locals{locals}; LIST1 entry {el} -> 
+      [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
         let res = text_of_functorial_extend _loc  gram locals el in 
         let () = grammar_module_name := old in
         res      ]
@@ -90,12 +90,12 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
        let () = grammar_module_name := g in
        old  ]
     delete_rule_body:
-     [ delete_rule_header{old};  LIST0 delete_rules {es}
+     [ delete_rule_header{old};  L0 delete_rules {es}
        ->
          let () = grammar_module_name := old  in 
          {:expr| begin $list:es end|}   ] 
     delete_rules:
-     [ name{n} ;":"; "["; LIST1 [ LIST0 symbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]"
+     [ name{n} ;":"; "["; L1 [ L0 symbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]"
        ->
          let rest = List.map (fun sl  ->
            let (e,b) = expr_of_delete_rule _loc n sl in
@@ -113,7 +113,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ `UID x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
       | `UID x; "."; `LID "t" -> {:ident| $uid:x |} ] 
     locals:
-      [ `LID "local"; ":"; LIST1 name{sl}; ";" -> sl ]
+      [ `LID "local"; ":"; L1 name{sl}; ";" -> sl ]
     name:[ qualid{il} -> mk_name _loc il ] 
     entry_name:
      [ qualid{il}; OPT[`STR(_,x)->x]{name} -> begin
@@ -135,7 +135,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       | `UID ("Before" | "After" | "Level" as x) ; string{n} ->
             {:expr| `$uid:x  $n |}     ]
     level_list:
-      [ "{"; LIST0 level (* SEP "|" *) {ll}; "}" -> ll
+      [ "{"; L0 level (* SEP "|" *) {ll}; "}" -> ll
       | level {l} -> [l]]
     level:
       [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->
@@ -146,9 +146,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
        | `UID x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
     rule_list:
       [ "["; "]" -> []
-      | "["; LIST1 rule SEP "|"{rules}; "]" ->  retype_rule_list_without_patterns _loc rules ]
+      | "["; L1 rule SEP "|"{rules}; "]" ->  retype_rule_list_without_patterns _loc rules ]
     rule:
-      [ LIST0 psymbol SEP ";"{psl}; OPT ["->"; expr{act}-> act]{action}
+      [ L0 psymbol SEP ";"{psl}; OPT ["->"; expr{act}-> act]{action}
         ->
           mk_rule ~prod:psl ~action ]
     psymbol:
@@ -156,14 +156,14 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         ->
           match p with [Some _ -> {(s) with pattern = p } | None -> s]  ] 
     symbol:
-     [ `UID ("LIST0"| "LIST1" as x); S{s}; OPT [`UID "SEP"; symbol{t} -> t ]{sep }
+     [ `UID ("L0"| "L1" as x); S{s}; OPT [`UID "SEP"; symbol{t} -> t ]{sep }
        ->
          let () = check_not_tok s in
          let styp = `STapp _loc (`STlid _loc "list") s.styp in
          let text = slist _loc
              (match x with
-             ["LIST0" -> false | "LIST1" -> true
-             | _ -> failwithf "only (LIST0|LIST1) allowed here"]) sep s in
+             ["L0" -> false | "L1" -> true
+             | _ -> failwithf "only (L0|L1) allowed here"]) sep s in
          mk_symbol ~text ~styp ~pattern:None
      |`UID "OPT"; S{s}
        ->
@@ -181,7 +181,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         mk_symbol  ~text:(`TXself _loc)  ~styp:(`STself _loc "S") ~pattern:None
      |`UID "N" ->
         mk_symbol  ~text:(`TXnext _loc)   ~styp:(`STself _loc "N") ~pattern:None
-     | "["; LIST0 rule SEP "|"{rl}; "]" ->
+     | "["; L0 rule SEP "|"{rl}; "]" ->
         let rl = retype_rule_list_without_patterns _loc rl in
         let t = new_type_var () in
         mk_symbol  ~text:(`TXrules _loc (srules _loc t rl ""))
@@ -223,7 +223,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      [ `LID i -> {:patt| $lid:i |}
      | "_" -> {:patt| _ |}
      | "("; pattern{p}; ")" -> {:patt| $p |}
-     | "("; pattern{p1}; ","; LIST1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
+     | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
    string:
     [ `STR (_, s) -> {:expr| $str:s |}
     | `ANT ("", s) -> AntiquotSyntax.parse_expr _loc s ] (*suport antiquot for string*)
@@ -269,7 +269,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
      [  expr Level "top"{e}; ";"; sem_expr_for_list{mk} ->
        {:expr| [ $e :: $(mk {:expr| [] |}) ] |}
      | expr Level "top"{e}; ";" -> {:expr| [$e] |}
-     | expr Level "top"{e}; "|"; LIST1 item SEP ";"{l} -> Expr.compr _loc e l
+     | expr Level "top"{e}; "|"; L1 item SEP ";"{l} -> Expr.compr _loc e l
      | expr Level "top"{e} -> {:expr| [$e] |} ]   
     item:
       (* NP: These rules rely on being on this particular order. Which should
@@ -533,26 +533,26 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       [ "ELSE"; expr{e}; endif -> e
       | endif -> {:expr| () |} ]
     smlist_then:
-      [ LIST1 [ macro_def{d}; semi ->
+      [ L1 [ macro_def{d}; semi ->
         execute_macro_if_active_branch _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Then d
       | str_item{si}; semi -> SdStr si ]{sml} -> sml ]
     smlist_else:
-      [ LIST1 [ macro_def{d}; semi ->
+      [ L1 [ macro_def{d}; semi ->
         execute_macro_if_active_branch _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Else d
       | str_item{si}; semi -> SdStr si ]{sml} -> sml ]
     sglist_then:
-      [ LIST1 [ macro_def_sig{d}; semi ->
+      [ L1 [ macro_def_sig{d}; semi ->
         execute_macro_if_active_branch _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Then d
       | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ]   
     sglist_else:
-      [ LIST1 [ macro_def_sig{d}; semi ->
+      [ L1 [ macro_def_sig{d}; semi ->
         execute_macro_if_active_branch _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Else d
       | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ]  
     endif:
       [ "END" -> ()
       | "ENDIF" -> () ]
     opt_macro_value:
-      [ "("; LIST1 [ `LID x -> x ] SEP ","{pl}; ")"; "="; expr{e} -> Some (pl, e)
+      [ "("; L1 [ `LID x -> x ] SEP ","{pl}; ")"; "="; expr{e} -> Some (pl, e)
       | "="; expr{e} -> Some ([], e)
       | -> None ]
     expr: Level "top"
@@ -1012,7 +1012,7 @@ New syntax:\
             {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
             {| let open $id:i in $e |}
-        | "fun"; "[";  LIST0 match_case0 SEP "|"{a}; "]" ->
+        | "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" ->
             {| fun [ $list:a ] |}
         | "fun"; fun_def{e} -> e
         | "match"; S{e}; "with"; match_case{a} ->
@@ -1219,7 +1219,7 @@ New syntax:\
     with "match_case"
     {:extend|Gram
      match_case:
-     [ "["; LIST0 match_case0 SEP "|"{l}; "]" -> Ast.mcOr_of_list l
+     [ "["; L0 match_case0 SEP "|"{l}; "]" -> Ast.mcOr_of_list l
      | ipatt{p}; "->"; expr{e} -> {| $p -> $e |} ]
     match_case0:
      [ `ANT (("match_case"|"list" as n),s) ->
@@ -1428,14 +1428,14 @@ New syntax:\
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
         | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
         |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk};
-          LIST0 constrain{cl} -> Ast.TyDcl _loc n tpl tk cl ]
+          L0 constrain{cl} -> Ast.TyDcl _loc n tpl tk cl ]
     constrain:
         [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
     opt_eq_ctyp:
         [ "="; type_kind{tk} -> tk | -> {||} ] 
     type_kind: [ ctyp{t} -> t ] 
     type_ident_and_parameters:
-        [ a_LIDENT{i}; LIST0 optional_type_parameter{tpl} -> (i, tpl) ]
+        [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl) ]
     type_longident_and_parameters:
         [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |} ] 
     type_parameters:
@@ -1697,7 +1697,7 @@ New syntax:\
             {:class_str_item| $(anti:mk_anti ~c:"class_str_item" n s) |}
         | `ANT ((""|"cst"|"anti"|"list" as n),s); semi; S{cst} ->
             {:class_str_item| $(anti:mk_anti ~c:"class_str_item" n s); $cst |}
-        | LIST0 [ class_str_item{cst}; semi -> cst ]{l} -> Ast.crSem_of_list l  ]
+        | L0 [ class_str_item{cst}; semi -> cst ]{l} -> Ast.crSem_of_list l  ]
     opt_class_self_patt:
         [ "("; patt{p}; ")" -> p
         | "("; patt{p}; ":"; ctyp{t}; ")" -> {:patt| ($p : $t) |}
@@ -1786,7 +1786,7 @@ New syntax:\
             {:class_sig_item| $(anti:mk_anti ~c:"class_sig_item" n s) |}
         | `ANT ((""|"csg"|"anti"|"list" as n),s); semi; S{csg} ->
             {:class_sig_item| $(anti:mk_anti ~c:"class_sig_item" n s); $csg |}
-        | LIST0 [ class_sig_item{csg}; semi -> csg ]{l} ->
+        | L0 [ class_sig_item{csg}; semi -> csg ]{l} ->
             Ast.cgSem_of_list l  ]
     class_sig_item "class_sig_item":
         [ `ANT ((""|"csg"|"anti"|"list" as n),s) ->
@@ -1934,7 +1934,7 @@ New syntax:\
             {:sig_item| $(anti:mk_anti n ~c:"sig_item" s) |}
         | `ANT ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->
             {:sig_item| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
-        | LIST0 [ sig_item{sg}; semi -> sg ]{l} -> Ast.sgSem_of_list l  ]
+        | L0 [ sig_item{sg}; semi -> sg ]{l} -> Ast.sgSem_of_list l  ]
     (* ml entrance *)    
     implem:
         [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
@@ -1946,7 +1946,7 @@ New syntax:\
             {:str_item| $(anti:mk_anti n ~c:"str_item" s) |}
         | `ANT ((""|"stri"|"anti"|"list" as n),s); semi; S{st} ->
             {:str_item| $(anti:mk_anti n ~c:"str_item" s); $st |}
-        | LIST0 [ str_item{st}; semi -> st ]{l} -> Ast.stSem_of_list l  ]
+        | L0 [ str_item{st}; semi -> st ]{l} -> Ast.stSem_of_list l  ]
     phrase:
         [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> (* directive to be the same as normal syntax*)
             {:str_item| # $n $dp |}
@@ -2038,7 +2038,7 @@ New syntax:\
         [ module_expr{x} -> x
         | -> {:module_expr||} ] 
     match_case_quot:
-        [ LIST0 match_case0 SEP "|"{x} -> {:match_case| $list:x |}
+        [ L0 match_case0 SEP "|"{x} -> {:match_case| $list:x |}
         | -> {:match_case||} ]
     binding_quot:
         [ binding{x} -> x | -> {:binding||} ] 
@@ -2167,7 +2167,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     parser_ipatt:
       [ a_LIDENT{i} -> {:patt| $lid:i |}  | "_" -> {:patt| _ |}  ]         
     parser_case_list:
-      [ "["; LIST0 parser_case SEP "|"{pcl}; "]" -> pcl
+      [ "["; L0 parser_case SEP "|"{pcl}; "]" -> pcl
       | parser_case{pc} -> [pc] ] 
     parser_case:
       [ "[<"; stream_patt{sp}; stream_end; OPT parser_ipatt{po}; "->"; expr{e}

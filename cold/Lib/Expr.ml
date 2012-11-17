@@ -1295,7 +1295,7 @@ let capture_antiquot =
           (match view_antiquot s with
            | Some (_name,code) ->
                let cons = Ast.ExId (_loc, (Ast.IdLid (_loc, code))) in
-               let code' = "__" ^ code in
+               let code' = "__fan__" ^ code in
                let cons' = Ast.ExId (_loc, (Ast.IdLid (_loc, code'))) in
                let () = constraints <- (cons, cons') :: constraints in
                Ast.PaId (_loc, (Ast.IdLid (_loc, code')))
@@ -1309,3 +1309,176 @@ let filter_patt_with_captured_variables patt =
   (let patt = capture_antiquot#patt patt in
    let constraints = capture_antiquot#get_captured_variables in
    (patt, constraints))
+let rec string_of_ident =
+  function
+  | Ast.IdLid (_,s) -> s
+  | Ast.IdUid (_,s) -> s
+  | Ast.IdAcc (_,i1,i2) ->
+      "acc_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
+  | Ast.IdApp (_,i1,i2) ->
+      "app_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
+  | Ast.IdAnt (_,_) -> assert false
+let rec normalize =
+  let _loc = FanLoc.ghost in
+  function
+  | Ast.PaAny _ -> Ast.ExStr (_loc, "_")
+  | Ast.PaId (_,_) -> Ast.ExStr (_loc, "_")
+  | Ast.PaAli (_,p,_) -> normalize p
+  | Ast.PaApp (_,p1,p2) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (normalize p1))), (normalize p2))
+  | Ast.PaArr (_,p) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, "[|")))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (normalize p))), (Ast.ExStr (_loc, "|]")))))
+  | Ast.PaSem (_,p1,p2) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (normalize p1))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (Ast.ExStr (_loc, ";")))), (normalize p2))))
+  | Ast.PaCom (_,p1,p2) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (normalize p1))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (Ast.ExStr (_loc, ",")))), (normalize p2))))
+  | Ast.PaChr (_,x) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, "'")))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (Ast.ExApp
+                       (_loc,
+                         (Ast.ExApp
+                            (_loc,
+                              (Ast.ExId
+                                 (_loc,
+                                   (Ast.IdAcc
+                                      (_loc, (Ast.IdUid (_loc, "String")),
+                                        (Ast.IdLid (_loc, "make")))))),
+                              (Ast.ExInt (_loc, "1")))),
+                         (Ast.ExChr (_loc, x)))))), (Ast.ExStr (_loc, "'")))))
+  | Ast.PaInt (_,x) -> Ast.ExStr (_loc, x)
+  | Ast.PaInt32 (_,x) -> Ast.ExStr (_loc, x)
+  | Ast.PaInt64 (_,x) -> Ast.ExStr (_loc, x)
+  | Ast.PaNativeInt (_,x) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, "\\\"")))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (Ast.ExStr (_loc, x)))), (Ast.ExStr (_loc, "\\\"")))))
+  | Ast.PaStr (_,s) -> Ast.ExStr (_loc, s)
+  | Ast.PaLaz (_,p) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, "lazy")))), (normalize p))
+  | Ast.PaMod (_,s) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, "(module")))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (Ast.ExStr (_loc, s)))), (Ast.ExStr (_loc, ")")))))
+  | Ast.PaFlo (_,x) -> Ast.ExStr (_loc, x)
+  | Ast.PaOrp (_,p1,p2) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (normalize p1))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (Ast.ExStr (_loc, "|")))), (normalize p2))))
+  | Ast.PaRng (_,p1,p2) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (normalize p1))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (Ast.ExStr (_loc, "..")))), (normalize p2))))
+  | Ast.PaRec (_,p) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, "{")))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (normalize p))), (Ast.ExStr (_loc, "}")))))
+  | Ast.PaEq (_,i,p) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, (string_of_ident i))))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (Ast.ExStr (_loc, "=")))), (normalize p))))
+  | Ast.PaTup (_,pl) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, "(")))),
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExApp
+                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+                    (normalize pl))), (Ast.ExStr (_loc, ")")))))
+  | Ast.PaTyc (_,p,_) -> normalize p
+  | Ast.PaVrn (_,s) ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "^")))),
+               (Ast.ExStr (_loc, "`")))), (Ast.ExStr (_loc, s)))
+  | Ast.PaAnt (_,_)|Ast.PaNil _|Ast.PaOlb (_,_,Ast.PaNil _)|Ast.PaOlb
+      (_,_,_)|Ast.PaOlbi (_,_,_,_)|Ast.PaLab (_,_,Ast.PaNil _)|Ast.PaLab
+      (_,_,_)|Ast.PaTyp (_,_) -> assert false

@@ -673,8 +673,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                         mk_symbol ~text ~styp ~pattern:None : 'symbol )
                    | _ -> assert false)));
            ([`Stoken
-               (((function | `UID ("LIST0"|"LIST1") -> true | _ -> false)),
-                 (`Normal, "`UID (\"LIST0\"|\"LIST1\")"));
+               (((function | `UID ("L0"|"L1") -> true | _ -> false)),
+                 (`Normal, "`UID (\"L0\"|\"L1\")"));
             `Sself;
             `Sopt
               (Gram.srules symbol
@@ -691,17 +691,16 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (sep : 'e__6 option)  (s : 'symbol)  __camlp4_0 
                    (_loc : FanLoc.t)  ->
                    match __camlp4_0 with
-                   | `UID ("LIST0"|"LIST1" as x) ->
+                   | `UID ("L0"|"L1" as x) ->
                        (let () = check_not_tok s in
                         let styp =
                           `STapp (_loc, (`STlid (_loc, "list")), (s.styp)) in
                         let text =
                           slist _loc
                             (match x with
-                             | "LIST0" -> false
-                             | "LIST1" -> true
-                             | _ ->
-                                 failwithf "only (LIST0|LIST1) allowed here")
+                             | "L0" -> false
+                             | "L1" -> true
+                             | _ -> failwithf "only (L0|L1) allowed here")
                             sep s in
                         mk_symbol ~text ~styp ~pattern:None : 'symbol )
                    | _ -> assert false)))])]);
@@ -965,8 +964,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
               [(None, None,
                  [([`Stoken
                       (((function
-                         | `UID __x when x = __x -> true
-                         | _ -> false)), (`Antiquot, "`UID __x"))],
+                         | `UID __fan__x when x = __fan__x -> true
+                         | _ -> false)), (`Antiquot, "`UID __fan__x"))],
                     (Gram.mk_action
                        (fun __camlp4_0  (_loc : FanLoc.t)  ->
                           match __camlp4_0 with
@@ -978,8 +977,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
               [(None, None,
                  [([`Stoken
                       (((function
-                         | `UID __x when x = __x -> true
-                         | _ -> false)), (`Antiquot, "`UID __x"))],
+                         | `UID __fan__x when x = __fan__x -> true
+                         | _ -> false)), (`Antiquot, "`UID __fan__x"))],
                     (Gram.mk_action
                        (fun __camlp4_0  (_loc : FanLoc.t)  ->
                           match __camlp4_0 with
@@ -993,8 +992,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
               [(None, None,
                  [([`Stoken
                       (((function
-                         | `UID __x when x = __x -> true
-                         | _ -> false)), (`Antiquot, "`UID __x"));
+                         | `UID __fan__x when x = __fan__x -> true
+                         | _ -> false)), (`Antiquot, "`UID __fan__x"));
                    `Sself],
                     (Gram.mk_action
                        (fun (param : 'expr)  __camlp4_0  (_loc : FanLoc.t) 
@@ -1016,8 +1015,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
               [(None, None,
                  [([`Stoken
                       (((function
-                         | `UID __x when x = __x -> true
-                         | _ -> false)), (`Antiquot, "`UID __x"));
+                         | `UID __fan__x when x = __fan__x -> true
+                         | _ -> false)), (`Antiquot, "`UID __fan__x"));
                    `Sself],
                     (Gram.mk_action
                        (fun (param : 'patt)  __camlp4_0  (_loc : FanLoc.t) 
@@ -1044,22 +1043,26 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
        | Some ([],_) ->
            (Gram.delete_rule expr
               [`Stoken
-                 (((function | `UID __x when x = __x -> true | _ -> false)),
-                   (`Antiquot, "`UID __x"))];
+                 (((function
+                    | `UID __fan__x when x = __fan__x -> true
+                    | _ -> false)), (`Antiquot, "`UID __fan__x"))];
             Gram.delete_rule patt
               [`Stoken
-                 (((function | `UID __x when x = __x -> true | _ -> false)),
-                   (`Antiquot, "`UID __x"))])
+                 (((function
+                    | `UID __fan__x when x = __fan__x -> true
+                    | _ -> false)), (`Antiquot, "`UID __fan__x"))])
        | Some (_,_) ->
            (Gram.delete_rule expr
               [`Stoken
-                 (((function | `UID __x when x = __x -> true | _ -> false)),
-                   (`Antiquot, "`UID __x"));
+                 (((function
+                    | `UID __fan__x when x = __fan__x -> true
+                    | _ -> false)), (`Antiquot, "`UID __fan__x"));
               `Sself];
             Gram.delete_rule patt
               [`Stoken
-                 (((function | `UID __x when x = __x -> true | _ -> false)),
-                   (`Antiquot, "`UID __x"));
+                 (((function
+                    | `UID __fan__x when x = __fan__x -> true
+                    | _ -> false)), (`Antiquot, "`UID __fan__x"));
               `Sself])
        | None  -> ());
       defined := (list_remove x defined.contents)

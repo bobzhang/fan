@@ -20,7 +20,9 @@ module Hashset = struct
   let mem = Hashtbl.mem let iter f = Hashtbl.iter (fun v  ()  -> f v)
   let fold f = Hashtbl.fold (fun v  ()  st  -> f v st)
   let elements = Hashtbl.length let clear = Hashtbl.clear
-  let of_list size vs = let set = create size in List.iter (add set) vs; set
+  let of_list ?(size= 100)  vs =
+    let set = create size in List.iter (add set) vs; set
+  let add_list set vs = List.iter (add set) vs
   let to_list set = fold (fun x  y  -> x :: y) set []
   end
 let mk_set (type s) ~cmp  =

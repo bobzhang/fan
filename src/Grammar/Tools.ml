@@ -57,7 +57,7 @@ let get_terminals x =
     (* first case we don't require anything on [brother] *)
      (aux [] x son)
   | _ -> None ];
-    
+
 let eq_Stoken_ids s1 s2 =
   match (s1,s2) with
   [ ((`Antiquot,_),_) -> false

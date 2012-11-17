@@ -1,5 +1,5 @@
 {:extend|Gram
-  a:[ `LID x   {(a,b)}; `UID y{b}; `LID z{c}  ]
+  a:[ `STR _ ; `STR _ ; `STR  -> "ha"]
 |} ;
 
 (* {:extend|Gram *)

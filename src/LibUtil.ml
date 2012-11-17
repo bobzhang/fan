@@ -35,11 +35,13 @@ module Hashset = struct
   let fold f = Hashtbl.fold (fun v () st -> f v st);
   let elements = Hashtbl.length;
   let clear = Hashtbl.clear;
-  let of_list size vs = 
+  let of_list ?(size=100) vs = 
     let set = create size in begin
       List.iter (add set) vs;
       set
     end;
+  let add_list set vs =
+    List.iter (add set) vs;
   let to_list set = fold (fun x y -> [x::y]) set [];
 end ;
 

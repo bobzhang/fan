@@ -70,5 +70,8 @@ Toploop.print_out_sig_item := loose#sig_item;;
 Toploop.print_out_signature := loose#signature;;
 Toploop.print_out_phrase := loose#phrase;;
 #install_printer Gram.dump;;
+
+let print_tree = Grammar.Print.dump#tree;; 
+#install_printer print_tree;;
 (* #useo "./test/test_fan.ml";; *)
 (* #load_rec "FanTop.cma";; *)

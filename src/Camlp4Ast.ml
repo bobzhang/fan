@@ -101,33 +101,33 @@ let ident_of_patt =
     | p -> self p ];
 
 
-let rec is_irrefut_patt =
+let rec is_irrefut_patt = with "patt"
     fun
-    [ {:patt| $lid:_ |} -> true
-    | {:patt| () |} -> true
-    | {:patt| _ |} -> true
-    | {:patt||} -> true (* why not *)
-    | {:patt| ($x as $y) |} -> is_irrefut_patt x && is_irrefut_patt y
-    | {:patt| { $p } |} -> is_irrefut_patt p
-    | {:patt| $_ = $p |} -> is_irrefut_patt p
-    | {:patt| $p1; $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {:patt| $p1, $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {:patt| $p1 | $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
-    | {:patt| $p1 $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {:patt| ($p : $_) |} -> is_irrefut_patt p
-    | {:patt| ($tup:pl) |} -> is_irrefut_patt pl
-    | {:patt| ? $_ |} -> true
-    | {:patt| ? $_ : ($p) |} -> is_irrefut_patt p
-    | {:patt| ? $_ : ($p = $_) |} -> is_irrefut_patt p
-    | {:patt| ~ $_ |} -> true
-    | {:patt| ~ $_ : $p |} -> is_irrefut_patt p
-    | {:patt| lazy $p |} -> is_irrefut_patt p
-    | {:patt| $id:_ |} -> false (* here one need to know the arity of constructors *)
-    | {:patt| (module $_) |} -> true
-    | {:patt| `$_ |} | {:patt| $str:_ |} | {:patt| $_ .. $_ |} |
-      {:patt| $flo:_ |} | {:patt| $nativeint:_ |} | {:patt| $int64:_ |} |
-      {:patt| $int32:_ |} | {:patt| $int:_ |} | {:patt| $chr:_ |} |
-      {:patt| #$_ |} | {:patt| [| $_ |] |} | {:patt| $anti:_ |} -> false
+    [ {| $lid:_ |} -> true
+    | {| () |} -> true
+    | {| _ |} -> true
+    | {||} -> true (* why not *)
+    | {| ($x as $y) |} -> is_irrefut_patt x && is_irrefut_patt y
+    | {| { $p } |} -> is_irrefut_patt p
+    | {| $_ = $p |} -> is_irrefut_patt p
+    | {| $p1; $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | {| $p1, $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | {| $p1 | $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
+    | {| $p1 $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | {| ($p : $_) |} -> is_irrefut_patt p
+    | {| ($tup:pl) |} -> is_irrefut_patt pl
+    | {| ? $_ |} -> true
+    | {| ? $_ : ($p) |} -> is_irrefut_patt p
+    | {| ? $_ : ($p = $_) |} -> is_irrefut_patt p
+    | {| ~ $_ |} -> true
+    | {| ~ $_ : $p |} -> is_irrefut_patt p
+    | {| lazy $p |} -> is_irrefut_patt p
+    | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
+    | {| (module $_) |} -> true
+    | {| `$_ |} | {| $str:_ |} | {| $_ .. $_ |} |
+      {| $flo:_ |} | {| $nativeint:_ |} | {| $int64:_ |} |
+      {| $int32:_ |} | {| $int:_ |} | {| $chr:_ |} |
+      {| #$_ |} | {| [| $_ |] |} | {| $anti:_ |} -> false
     ];      
       
 
@@ -587,3 +587,6 @@ let wildcarder = object (self)
   | p -> super#patt p ];
 end;
 
+(* let normalize = object (self) *)
+(*   inherit fold as super; *)
+(* end; *)

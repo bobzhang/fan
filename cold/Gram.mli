@@ -70,7 +70,7 @@ val name : 'a t -> string
 val print : Format.formatter -> 'a t -> unit
 val dump : Format.formatter -> 'a t -> unit
 val trace_parser : bool ref
-val action_parse :
+val action_parse:
   'a t ->  token_stream -> Action.t
 val parse_origin_tokens :
   'a t -> token_stream -> 'a

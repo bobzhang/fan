@@ -329,7 +329,7 @@ let capture_antiquot = object
     [Some(_name,code) -> begin 
       (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)
       let cons = {:expr| $lid:code |} in
-      let code' = "__"^code in  (* prefix "camlp4__" FIXME *)
+      let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
       let cons' = {:expr| $lid:code' |} in 
       let () = constraints <- [(cons,cons')::constraints]in 
       {:patt| $lid:code' |} (* only allows lidentifiers here *)
@@ -349,3 +349,59 @@ let filter_patt_with_captured_variables patt= begin
   let constraints = capture_antiquot#get_captured_variables in
   (patt,constraints)
 end;
+
+(* let normalize = object *)
+(*   val expr:Ast.expr; *)
+(*   inherit Camlp4Ast.fold as super; *)
+(*   method! patt = with "patt" fun *)
+(*     [ {| $_ |} -> {:expr| "_" |} *)
+(*     | {| $lid:_ |} -> {:expr| "_" |} *)
+(*     | {| $p as $_ |} -> self#patt p  *)
+(*     ] *)
+(* end; *)
+
+
+let rec string_of_ident = (* duplicated with Camlp4Filters remove soon*)
+  fun
+  [ {:ident| $lid:s |} -> s
+  | {:ident| $uid:s |} -> s
+  | {:ident| $i1.$i2 |} -> "acc_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
+  | {:ident| $i1 $i2 |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
+  | {:ident| $anti:_ |} -> assert false ];
+
+    
+let rec normalize = let _loc = FanLoc.ghost in with "patt" fun
+  [ {| _ |} -> {:expr|"_"|}
+  | {| $id:_|} -> {:expr| "_"|}
+  | {| ($p as $_) |} -> normalize p
+  | {| $p1 $p2 |} -> {:expr| $(normalize p1) ^ $(normalize p2) |}
+  | {| [| $p |]|} -> {:expr| "[|"^ $(normalize p) ^ "|]"|} (* FIXME ^$ does not work *)
+  | {| $p1;$p2 |} -> {:expr| $(normalize p1) ^ ";" ^  $(normalize p2) |}
+  | {| $p1,$p2|} ->  {:expr| $(normalize p1) ^ "," ^ $(normalize p2) |}
+  | {| $chr:x |} -> {:expr| "'" ^ String.make 1 $chr:x ^ "'" |}
+  | {| $int:x |} -> {:expr| $str:x |}
+  | {| $int32:x |} -> {:expr| $str:x |}
+  | {| $int64:x |} -> {:expr| $str:x |}
+  | {| $nativeint:x |} -> {:expr| "\"" ^ $str:x ^ "\""|} 
+  | {| $str:s |} -> {:expr| $str:s |}
+  | {| lazy $p |} -> {:expr| "lazy" ^ $(normalize p)|}
+  | {| (module $s) |}  -> {:expr| "(module" ^ $str:s ^")"|}
+  | {| $flo:x |} -> {:expr| $str:x|}
+
+  | {| $p1 | $p2 |} -> {:expr| $(normalize p1)  ^ "|" ^ $(normalize p2)  |}
+        
+  | {| $p1 .. $p2 |} -> {:expr| $(normalize p1) ^ ".." ^ $(normalize p2) |}
+        
+  | {| {$p} |} -> {:expr| "{" ^ $(normalize p)^ "}"|}
+  | {| $i = $p |} ->
+      {:expr| $(str:string_of_ident i) ^"=" ^ $(normalize p) |}
+
+  | {| ($tup:pl) |} -> {:expr| "("^ $(normalize pl) ^")"|}
+  | {| ($p:$_)|} -> normalize p (* type was ignored *)
+  | {| `$s |} -> {:expr| "`" ^ $str:s |}
+  | {|$anti:_|} | {||}
+    | {| ? $_ |} | (* FIXME ?$ not supported *)
+      {| ? $_ : ($_) |} | {| ? $_ : ($_ = $_ )|} |
+      {| ~ $_ |} | {| ~ $_ : $_ |} | {| #$_ |}
+      -> assert false
+  ];

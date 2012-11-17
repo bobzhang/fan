@@ -26,7 +26,7 @@ let check_not_tok s =
       FanLoc.raise _loc
         (Stream.Error
            ("Deprecated syntax, use a sub rule. " ^
-              "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
+              "L0 STRING becomes L0 [ x = STRING -> x ]"))
   | _ -> ()
 let new_type_var =
   let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
@@ -478,14 +478,14 @@ let text_of_functorial_extend _loc gram gl el =
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
   | None  ->
-      let p' = Camlp4Ast.wildcarder#patt pattern in
+      let no_variable = Camlp4Ast.wildcarder#patt pattern in
       let match_fun =
-        if Camlp4Ast.is_irrefut_patt p'
+        if Camlp4Ast.is_irrefut_patt no_variable
         then
           Ast.ExFun
             (_loc,
               (Ast.McArr
-                 (_loc, p', (Ast.ExNil _loc),
+                 (_loc, no_variable, (Ast.ExNil _loc),
                    (Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))))))
         else
           Ast.ExFun
@@ -493,12 +493,12 @@ let mk_tok _loc ?restrict  ~pattern  styp =
               (Ast.McOr
                  (_loc,
                    (Ast.McArr
-                      (_loc, p', (Ast.ExNil _loc),
+                      (_loc, no_variable, (Ast.ExNil _loc),
                         (Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))))),
                    (Ast.McArr
                       (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
                         (Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))))))) in
-      let descr = string_of_patt p' in
+      let descr = string_of_patt no_variable in
       let text = `TXtok (_loc, match_fun, "Normal", descr) in
       { text; styp; pattern = (Some pattern) }
   | Some restrict ->

@@ -106,3 +106,13 @@ let get_children x =
     | (Bro (n,x))::[] -> aux (n :: acc) x
     | _ -> raise Exit in
   aux [] x
+let get_first =
+  let rec aux acc =
+    function
+    | Node { node; brother;_} -> aux (node :: acc) brother
+    | LocAct (_,_)|DeadEnd  -> acc in
+  aux []
+let get_first_from levels set =
+  List.iter
+    (fun level  -> (level.lprefix |> get_first) |> (Hashset.add_list set))
+    levels

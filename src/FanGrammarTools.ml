@@ -5,18 +5,29 @@ module Ast = Camlp4Ast;
 open FanGrammar;
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
+
 let split_ext = ref false;
-let prefix = "__camlp4_"  ;  
+  
+let prefix = "__camlp4_"  ;
+  
 let meta_action = ref false;
-let grammar_module_name = let _loc = FanLoc.ghost in ref {:ident| $(uid:"")|} ;
+  
+let grammar_module_name =
+  let _loc = FanLoc.ghost in ref {:ident| $(uid:"")|} ;
+  
 let gm () = !grammar_module_name;
 
-let mk_entry ~name ~pos ~levels = {name;pos;levels};
-let mk_level ~label ~assoc ~rules ={label; assoc;rules};
-let mk_rule ~prod ~action = {prod;action};
-let mk_symbol  ?(pattern=None)  ~text ~styp = {
-  text;styp;pattern
-};
+let mk_entry ~name ~pos ~levels =
+  {name;pos;levels};
+  
+let mk_level ~label ~assoc ~rules =
+  {label; assoc;rules};
+  
+let mk_rule ~prod ~action =
+  {prod;action};
+  
+let mk_symbol  ?(pattern=None)  ~text ~styp =
+  { text;styp;pattern};
 
 let string_of_patt patt = 
   let buf = Buffer.create 42 in
@@ -36,11 +47,14 @@ let check_not_tok s = (* ('a, 'b) symbol -> unit *)
     [ {text = `TXtok (_loc, _, _, _) ;_} ->
         FanLoc.raise _loc (Stream.Error
           ("Deprecated syntax, use a sub rule. "^
-           "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
+           "L0 STRING becomes L0 [ x = STRING -> x ]"))
     | _ -> () ];
       
 let new_type_var = 
-  let i = ref 0 in fun () -> begin  incr i; "e__" ^ string_of_int !i end ;
+  let i = ref 0 in fun () -> begin
+    incr i; "e__" ^ string_of_int !i
+  end ;
+    
 let gensym  =
   let i = ref 0 in fun () -> begin
     incr i;
@@ -69,6 +83,7 @@ let retype_rule_list_without_patterns _loc rl =
     [ Exit -> rl ];
 
 exception NotneededTyping ;
+
 (*
   translate [styp] into [Ast.ctyp],
   given the assumption that the entry output [tvar] type
@@ -101,51 +116,51 @@ let make_ctyp_expr styp tvar expr =
   | Some t -> let _loc = Camlp4Ast.loc_of_expr expr in {:expr| ($expr : $t) |} ];
 
 (* transform text to [expr] *)    
-let rec make_expr entry tvar =  fun
+let rec make_expr entry tvar = with "expr"
+  fun
   [ `TXmeta (_loc, n, tl, e, t) ->
     let el = Expr.mklist _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
-    let ns = Expr.mklist _loc (List.map (fun n -> {:expr| $str:n |} ) n) in 
-    {:expr| `Smeta ($ns, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) |}
+    let ns = Expr.mklist _loc (List.map (fun n -> {| $str:n |} ) n) in 
+    {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) |}
   | `TXlist (_loc, min, t, ts) ->
       let txt = make_expr entry "" t.text in
       match (min, ts) with
-      [ (false, None) -> {:expr| `Slist0 $txt |} 
-      | (true, None) ->  {:expr| `Slist1 $txt |} 
+      [ (false, None) -> {| `Slist0 $txt |} 
+      | (true, None) ->  {| `Slist1 $txt |} 
       | (false, Some s) ->
           let x = make_expr entry tvar s.text in
-          {:expr| `Slist0sep ($txt,$x) |}
+          {| `Slist0sep ($txt,$x) |}
       | (true, Some s) ->
             let x = make_expr entry tvar s.text in
-            {:expr| `Slist1sep ($txt,$x) |} ]
-  | `TXnext _loc ->  {:expr| `Snext |}
-  | `TXself _loc ->  {:expr| `Sself|}
-  | `TXkwd (_loc, kwd) ->  {:expr| `Skeyword $str:kwd |}
+            {| `Slist1sep ($txt,$x) |} ]
+  | `TXnext _loc ->  {| `Snext |}
+  | `TXself _loc ->  {| `Sself|}
+  | `TXkwd (_loc, kwd) ->  {| `Skeyword $str:kwd |}
 
   | `TXnterm (_loc, n, lev) ->
       match lev with
       [ Some lab ->
-        {:expr| `Snterml
+        {| `Snterml
           (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))), $str:lab) |} 
       | None ->
-          if n.tvar = tvar then {:expr| `Sself|}
+          if n.tvar = tvar then {| `Sself|}
           else
-            {:expr|
+            {|
             `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar)))
           |}   ]
-  | `TXopt (_loc, t) -> {:expr| `Sopt $(make_expr entry "" t) |}
-  | `TXtry (_loc, t) -> {:expr| `Stry $(make_expr entry "" t) |}
-  | `TXpeek (_loc, t) -> {:expr| `Speek $(make_expr entry "" t) |}
+  | `TXopt (_loc, t) -> {| `Sopt $(make_expr entry "" t) |}
+  | `TXtry (_loc, t) -> {| `Stry $(make_expr entry "" t) |}
+  | `TXpeek (_loc, t) -> {| `Speek $(make_expr entry "" t) |}
   | `TXrules (_loc, rl) ->
-      {:expr| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
+      {| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
   | `TXtok (_loc, match_fun, attr, descr) ->
-      {:expr| `Stoken ($match_fun, (`$uid:attr, $`str:descr)) |} ]
+      {| `Stoken ($match_fun, (`$uid:attr, $`str:descr)) |} ]
     
 and make_expr_rules _loc n rl tvar =
   List.fold_left
     (fun txt (sl, ac)
       ->
         let sl =
-          
           List.fold_right
             (fun t txt ->
               let x = make_expr n tvar t in
@@ -185,7 +200,7 @@ let text_of_action _loc  psl
       [ None -> e1
       | Some ({:expr| $t1, $t2 |}, {:patt| $p1, $p2 |}) ->
           {:expr|
-            match ($t1, $t2) with
+            match ($t1, $t2) with (* two and more patterns here *)
             [ ($p1, $p2) -> $e1
             | _ -> assert false ] |}
       | Some (tok, match_) ->
@@ -216,13 +231,15 @@ let text_of_action _loc  psl
       {:expr| Obj.magic $(MetaAst.Expr.meta_expr _loc txt) |}
     else txt  in
   {:expr| $(id:gm()).mk_action $txt |}  ;
-  let srules loc t rl tvar =
-    List.map
-      (fun r ->
+
+
+let srules loc t rl tvar =
+  List.map
+    (fun r
+      ->
         let sl = [ s.text | s <- r.prod ] in
         let ac = text_of_action loc r.prod t r.action tvar in
-        (sl, ac))
-      rl ;
+        (sl, ac)) rl ;
     
 
 let expr_of_delete_rule _loc n sl =
@@ -313,25 +330,27 @@ let text_of_functorial_extend _loc  gram gl el =
         {:expr| begin  $(List.fold_left (fun acc x -> {:expr| $acc; $x |}) e el) end |}  ]  in
   let_in_of_extend _loc gram gl  args;
 
-let mk_tok _loc ?restrict ~pattern styp =
+
+(* generate TXtok *)  
+let mk_tok _loc ?restrict ~pattern styp = with "expr"
  match restrict with
-    [ None ->
-      let p' = Camlp4Ast.wildcarder#patt pattern in
-      let match_fun =
-        if Camlp4Ast.is_irrefut_patt p'
-        then 
-          {:expr| fun [ $pat:p' -> true ] |}
-        else {:expr| fun [$pat:p' -> true | _ -> false ] |} in 
-      let descr = string_of_patt p' in
-      let text = `TXtok _loc match_fun "Normal" descr in
-      {text; styp; pattern = Some pattern }
-    | Some restrict ->
-        let p'= Camlp4Ast.wildcarder#patt pattern in
-        let match_fun = 
-          {:expr| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
-        let descr = string_of_patt pattern in
-        let text = `TXtok _loc match_fun "Antiquot" descr in
-        {text; styp; pattern = Some p'} ] ;
+ [ None ->
+   let no_variable = Camlp4Ast.wildcarder#patt pattern in
+   let match_fun =
+     if Camlp4Ast.is_irrefut_patt no_variable
+     then 
+       {| fun [ $no_variable -> true ] |}
+     else {| fun [$no_variable -> true | _ -> false ] |} in 
+   let descr = string_of_patt no_variable in
+   let text = `TXtok (_loc, match_fun, "Normal", descr) in
+   {text; styp; pattern = Some pattern }
+ | Some restrict ->
+     let p'= Camlp4Ast.wildcarder#patt pattern in
+     let match_fun = 
+       {| fun [$pattern when $restrict -> true | _ -> false ] |}  in
+     let descr = string_of_patt pattern in
+     let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
+     {text; styp; pattern = Some p'} ] ;
    
 let sfold ?sep _loc  (ns:list string)  f e s =
   let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in
