@@ -5,15 +5,15 @@ let expr = Gram.mk "expr";
 {:extend|Gram 
   expr:
   {"minus" LA
-    [SELF{x};"-";SELF{y} -> x -. y
-    |SELF{x};"+";SELF{y} -> x +. y]
-  |"times" LA
-    [SELF{x};"*";SELF{y} -> x *. y
-    |SELF{x};"/";SELF{y} -> x /. y]  
-  | "power" RA
-    [SELF{x};"**";SELF{y} -> x ** y]
-  | "simple"
-    ["("; SELF{x}; ")" -> x
+    [S{x};"-";S{y} -> x -. y
+    |S{x};"+";S{y} -> x +. y]
+  "times" LA
+    [S{x};"*";S{y} -> x *. y
+    |S{x};"/";S{y} -> x /. y]  
+   "power" RA
+    [S{x};"**";S{y} -> x ** y]
+   "simple"
+    ["("; S{x}; ")" -> x
     | `INT(x,_) -> float_of_int x ] }
   expr_eoi:  [expr{x};`EOI -> x ]  
 |};

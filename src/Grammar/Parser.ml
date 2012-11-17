@@ -116,7 +116,7 @@ let rec parser_of_tree entry (lev,assoc) x =
           (* let p1 = *)
           (*   parser_of_terminals  tokl (parser_cont (node,son)) in  *)
           parser
-            [ [< a = parser_of_terminals tokl (parser_cont (node,son)) >] -> a
+            [ [< a = parser_of_terminals tokl (parser_cont ((node:>symbol),son)) >] -> a
             | [< a = from_tree brother >] -> a ] ] ] in
   from_tree x 
 
