@@ -54,10 +54,10 @@ let use_file token_stream =
         Gram.parse_origin_tokens Syntax.use_file token_stream
       in
       if stopped_at_directive <> None then
-        match pl with
-        [ [ {:str_item| #load $str:s |} ] ->
+        with "str_item" match pl with
+        [ [ {| #load $str:s |} ] ->
             begin  Topdirs.dir_load Format.std_formatter s; loop ()  end
-        | [ {:str_item| #directory $str:s |} ] ->
+        | [ {| #directory $str:s |} ] ->
             begin  Topdirs.dir_directory s; loop ()  end
         | _ -> (pl, false) ]
       else (pl, true) in

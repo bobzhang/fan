@@ -399,10 +399,10 @@ let rec normalize = let _loc = FanLoc.ghost in with "patt" fun
   | {| ($tup:pl) |} -> {:expr| "("^ $(normalize pl) ^")"|}
   | {| ($p:$_)|} -> normalize p (* type was ignored *)
   | {| `$s |} -> {:expr| "`" ^ $str:s |}
-  | {| $anti:x |} -> Syntax.parse_expr
+  (* | {| $anti:x |} -> Syntax.parse_expr *)
   | {|$anti:_|} | {||}
     | {| ? $_ |} | (* FIXME ?$ not supported *)
       {| ? $_ : ($_) |} | {| ? $_ : ($_ = $_ )|} |
-      {| ~ $_ |} | {| ~ $_ : $_ |} | {| #$_ |}
+      {| ~ $_ |} | {| ~ $_ : $_ |} | {| #$_ |} 
       -> assert false
   ];

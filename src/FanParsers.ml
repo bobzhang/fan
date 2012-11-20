@@ -1924,7 +1924,7 @@ New syntax:\
 
     (* mli entrance *)    
     interf:
-        [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
+        [ "#"; a_LIDENT{n}; opt_expr{dp}; (* semi  *) ";;" ->
             ([ {:sig_item| # $n $dp |} ], stopped_at _loc)
           (* Ast.SgDir(_loc,n,dp), stopped is of type FanLoc.t option *)
         | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
@@ -1937,7 +1937,7 @@ New syntax:\
         | L0 [ sig_item{sg}; semi -> sg ]{l} -> Ast.sgSem_of_list l  ]
     (* ml entrance *)    
     implem:
-        [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
+        [ "#"; a_LIDENT{n}; opt_expr{dp}; (* semi *)";;" ->
             ([ {:str_item| # $n $dp |} ], stopped_at _loc)
         | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
         | `EOI -> ([], None) ]
