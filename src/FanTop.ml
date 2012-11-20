@@ -49,8 +49,7 @@ end;
 
   
 let use_file token_stream =
-  let (pl0, eoi) =
-    loop () where rec loop () =
+  let rec loop () =
       let (pl, stopped_at_directive) =
         Gram.parse_origin_tokens Syntax.use_file token_stream
       in
@@ -61,7 +60,9 @@ let use_file token_stream =
         | [ {:str_item| #directory $str:s |} ] ->
             begin  Topdirs.dir_directory s; loop ()  end
         | _ -> (pl, false) ]
-      else (pl, true)
+      else (pl, true) in
+  let (pl0, eoi) =
+    loop () 
   in
   let pl =
     if eoi then []
