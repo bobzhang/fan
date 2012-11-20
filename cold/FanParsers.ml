@@ -6786,7 +6786,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
            ([`Skeyword "#";
             `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
             `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ));
-            `Snterm (Gram.obj (semi : 'semi Gram.t ))],
+            `Skeyword ";;"],
              (Gram.mk_action
                 (fun _  (dp : 'opt_expr)  (n : 'a_LIDENT)  _ 
                    (_loc : FanLoc.t)  ->
@@ -6852,7 +6852,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
            ([`Skeyword "#";
             `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
             `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ));
-            `Snterm (Gram.obj (semi : 'semi Gram.t ))],
+            `Skeyword ";;"],
              (Gram.mk_action
                 (fun _  (dp : 'opt_expr)  (n : 'a_LIDENT)  _ 
                    (_loc : FanLoc.t)  ->
