@@ -200,10 +200,6 @@ let cparser_match _loc me bpo pc =
     match bpo with
     [ Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $pc |}
     | None -> pc ]  in
-  let me =
-    match me with
-    [ {@_loc| $_; $_ |} as e -> {| begin  $e  end |}
-    | e -> e ]  in
   match me with
   [ {| $lid:x |} when x = strm_n -> e
   | _ -> {| let ($lid:strm_n : $(uid:gm()).t _) = $me in $e |} ] ;

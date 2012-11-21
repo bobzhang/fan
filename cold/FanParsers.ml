@@ -1935,6 +1935,19 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (i : 'module_longident)  _  (_loc : FanLoc.t)  ->
                    (Ast.StOpn (_loc, i) : 'str_item ))));
+           ([`Skeyword "open";
+            `Stoken
+              (((function | `LID "lang" -> true | _ -> false)),
+                (`Normal, "`LID \"lang\""));
+            `Stoken
+              (((function | `STR (_,_) -> true | _ -> false)),
+                (`Normal, "`STR (_,_)"))],
+             (Gram.mk_action
+                (fun __camlp4_1  __camlp4_0  _  (_loc : FanLoc.t)  ->
+                   match (__camlp4_1, __camlp4_0) with
+                   | (`STR (_,s),`LID "lang") ->
+                       ((Quotation.default := s; Ast.StNil _loc) : 'str_item )
+                   | _ -> assert false)));
            ([`Skeyword "module";
             `Skeyword "type";
             `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));

@@ -10,7 +10,6 @@ module type S =
   sig
     type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
     val add : string -> 'a DynAst.tag -> 'a expand_fun -> unit
-    val find : string -> 'a DynAst.tag -> 'a expand_fun
     val default : string ref
     val default_tbl : (string,string) Hashtbl.t
     val default_at_pos : string -> string -> unit
@@ -53,9 +52,6 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
         (try Hashtbl.find default_tbl str
          with | Not_found  -> default.contents)
     | name -> name
-  let find name tag =
-    let key = ((expander_name tag name), (Exp_key.pack tag ())) in
-    Exp_fun.unpack tag (List.assoc key expanders_table.contents)
   let add name tag f =
     let elt = ((name, (Exp_key.pack tag ())), (Exp_fun.pack tag f)) in
     expanders_table := (elt :: (expanders_table.contents))
@@ -63,9 +59,10 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
   type quotation_error_message =  
     | Finding
     | Expanding
-    | ParsingResult of FanLoc.t* string 
+    | ParsingResult of FanLoc.t* string
+    | NoName 
   type quotation_error = (string* string* quotation_error_message* exn) 
-  exception Quotation of quotation_error
+  exception QuotationError of quotation_error
   let quotation_error_to_string (name,position,ctx,exn) =
     let ppf = Buffer.create 30 in
     let name = if name = "" then default.contents else name in
@@ -102,54 +99,71 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
                        dump_file)
             | None  ->
                 bprintf ppf
-                  "\n(consider setting variable Quotation.dump_file, or using the -QD option)")) in
+                  "\n(consider setting variable Quotation.dump_file, or using the -QD option)"))
+      | NoName  -> pp "No default quotation name" in
     let () = bprintf ppf "@\n%s@]@." (Printexc.to_string exn) in
     Buffer.contents ppf
   let _ =
     Printexc.register_printer
       (function
-       | Quotation x -> Some (quotation_error_to_string x)
+       | QuotationError x -> Some (quotation_error_to_string x)
        | _ -> None)
   let expand_quotation loc expander pos_tag quot =
     let open FanSig in
       let loc_name_opt = if quot.q_loc = "" then None else Some (quot.q_loc) in
       try expander loc loc_name_opt quot.q_contents
-      with | FanLoc.Exc_located (_,Quotation _) as exc -> raise exc
+      with | FanLoc.Exc_located (_,QuotationError _) as exc -> raise exc
       | FanLoc.Exc_located (iloc,exc) ->
-          let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
+          let exc1 = QuotationError ((quot.q_name), pos_tag, Expanding, exc) in
           raise (FanLoc.Exc_located (iloc, exc1))
       | exc ->
-          let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
+          let exc1 = QuotationError ((quot.q_name), pos_tag, Expanding, exc) in
           raise (FanLoc.Exc_located (loc, exc1))
   let parse_quotation_result parse loc quot pos_tag str =
     let open FanSig in
       try parse loc str
       with
-      | FanLoc.Exc_located (iloc,Quotation (n,pos_tag,Expanding ,exc)) ->
+      | FanLoc.Exc_located (iloc,QuotationError (n,pos_tag,Expanding ,exc))
+          ->
           let ctx = ParsingResult (iloc, (quot.q_contents)) in
-          let exc1 = Quotation (n, pos_tag, ctx, exc) in
+          let exc1 = QuotationError (n, pos_tag, ctx, exc) in
           raise (FanLoc.Exc_located (iloc, exc1))
-      | FanLoc.Exc_located (iloc,(Quotation _ as exc)) ->
+      | FanLoc.Exc_located (iloc,(QuotationError _ as exc)) ->
           raise (FanLoc.Exc_located (iloc, exc))
       | FanLoc.Exc_located (iloc,exc) ->
           let ctx = ParsingResult (iloc, (quot.q_contents)) in
-          let exc1 = Quotation ((quot.q_name), pos_tag, ctx, exc) in
+          let exc1 = QuotationError ((quot.q_name), pos_tag, ctx, exc) in
           raise (FanLoc.Exc_located (iloc, exc1))
   let expand loc quotation tag =
     let open FanSig in
       let pos_tag = DynAst.string_of_tag tag in
       let name = quotation.q_name in
+      let find name tag =
+        let key = ((expander_name tag name), (Exp_key.pack tag ())) in
+        let pack =
+          try List.assoc key expanders_table.contents
+          with
+          | Not_found  ->
+              if name = ""
+              then
+                raise
+                  (FanLoc.Exc_located
+                     (loc,
+                       (QuotationError (name, pos_tag, NoName, Not_found))))
+              else raise Not_found
+          | e -> raise e in
+        Exp_fun.unpack tag pack in
       let expander =
         try find name tag
-        with | FanLoc.Exc_located (_,Quotation _) as exc -> raise exc
+        with | FanLoc.Exc_located (_,QuotationError _) as exc -> raise exc
         | FanLoc.Exc_located (qloc,exc) ->
             raise
               (FanLoc.Exc_located
-                 (qloc, (Quotation (name, pos_tag, Finding, exc))))
+                 (qloc, (QuotationError (name, pos_tag, Finding, exc))))
         | exc ->
             raise
               (FanLoc.Exc_located
-                 (loc, (Quotation (name, pos_tag, Finding, exc)))) in
+                 (loc, (QuotationError (name, pos_tag, Finding, exc)))) in
       let loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
       expand_quotation loc expander pos_tag quotation
   let parse_quot_string entry loc loc_name_opt s =
