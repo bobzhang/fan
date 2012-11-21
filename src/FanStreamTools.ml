@@ -1,7 +1,7 @@
 (*
   identifiers referenced:
   {[
-   peek junk sempty Failure count Error  t ising lsing icons lcons slazy iapp lapp
+   peek junk sempty Failure count Error  t ising lsing icons lcons iapp lapp slazy sempty
   ]}
 
 *)
@@ -176,6 +176,8 @@ let rec group_terms = fun
     ([(p, w, _loc, spcl, epo, e) :: tspel], spel)
   | spel -> ([], spel) ];
 
+
+  
 let rec parser_cases _loc = fun
   [ [] -> {| raise $(uid:gm()).Failure |}
   | spel ->
@@ -185,6 +187,7 @@ let rec parser_cases _loc = fun
       | (tspel, spel) ->
           stream_patterns_term _loc (fun _ -> parser_cases _loc spel) tspel ] ];
 
+(* it call [parser_cases] *)  
 let cparser _loc bpo pc =
   let e = parser_cases _loc pc in
   let e =

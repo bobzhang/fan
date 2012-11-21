@@ -1,5 +1,5 @@
 # -*- Mode:Shell-script -*-
 
 <**/*.{ml,mlx}>: camlp4boot
-<{*_ppo,**/*_ppo,AstPrint,OAstPrint,AstEq,tmp*,FanLexer,FanConfig,XStream,CharStream,OStream,Stream8}.{ml}>  : -camlp4boot
+<{*_ppo,**/*_ppo,AstPrint,OAstPrint,AstEq,tmp*,FanLexer,FanConfig,XStream,CharStream,OStream,Stream8,GStream}.{ml}>  : -camlp4boot
 <Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash

@@ -1156,3 +1156,15 @@ Ptop_def
 
 * Ast definition
   PaApp is im-precise
+
+
+* Syntax partial-ordering
+
+* Syntax management
+  self-describing syntax
+  #+BEGIN_SRC ocaml
+    {:file|
+     syntax:"blabla";
+              
+     |}
+  #+END_SRC

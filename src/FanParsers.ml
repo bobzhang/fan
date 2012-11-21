@@ -697,8 +697,8 @@ New syntax:\
   Gram.clear label_declaration_list;
   Gram.clear label_expr_list;
   Gram.clear label_expr;
-  Gram.clear label_ipatt;
-  Gram.clear label_ipatt_list;
+  (* Gram.clear label_ipatt; *)
+  (* Gram.clear label_ipatt_list; *)
   Gram.clear label_longident;
   Gram.clear label_patt;
   Gram.clear label_patt_list;
@@ -1373,8 +1373,23 @@ New syntax:\
             {| $(anti:mk_anti ~c:"patt;" n s) |}
         | label_longident{i}; "="; patt{p} -> {| $i = $p |}
         | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ]
+    (* label_ipatt: *)
+    (*     [ `ANT ((""|"pat"|"anti" as n),s) -> *)
+    (*         {| $(anti:mk_anti ~c:"patt" n s) |} *)
+    (*     | `ANT (("list" as n),s) -> *)
+    (*         {| $(anti:mk_anti ~c:"patt;" n s) |} *)
+    (*     | `QUOTATION x -> *)
+    (*         Quotation.expand _loc x DynAst.patt_tag *)
+    (*     | label_longident{i}; "="; ipatt{p} -> {| $i = $p |}   ]        *)
+    (* label_ipatt_list: *)
+    (*    [ label_ipatt{p1}; ";"; S{p2} -> {| $p1 ; $p2 |} *)
+    (*    | label_ipatt{p1}; ";"; "_"       -> {| $p1 ; _ |} *)
+    (*    | label_ipatt{p1}; ";"; "_"; ";"  -> {| $p1 ; _ |} *)
+    (*    | label_ipatt{p1}; ";"            -> p1 *)
+    (*    | label_ipatt{p1}                 -> p1   ] *)
+
     ipatt:
-        [ "{"; label_ipatt_list{pl}; "}" -> {| { $pl } |}
+        [ "{"; (* label_ipatt_list{pl} *) label_patt_list{pl}; "}" -> {| { $pl } |}
         | `ANT ((""|"pat"|"anti" as n),s) ->
             {| $(anti:mk_anti ~c:"patt" n s) |}
         | `ANT (("tup" as n),s) ->
@@ -1410,20 +1425,8 @@ New syntax:\
         [ S{p1}; ","; S{p2} -> {| $p1, $p2 |}
         | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt," n s) |}
         | ipatt{p} -> p ]
-    label_ipatt_list:
-        [ label_ipatt{p1}; ";"; S{p2} -> {| $p1 ; $p2 |}
-        | label_ipatt{p1}; ";"; "_"       -> {| $p1 ; _ |}
-        | label_ipatt{p1}; ";"; "_"; ";"  -> {| $p1 ; _ |}
-        | label_ipatt{p1}; ";"            -> p1
-        | label_ipatt{p1}                 -> p1   ]
-    label_ipatt:
-        [ `ANT ((""|"pat"|"anti" as n),s) ->
-            {| $(anti:mk_anti ~c:"patt" n s) |}
-        | `ANT (("list" as n),s) ->
-            {| $(anti:mk_anti ~c:"patt;" n s) |}
-        | `QUOTATION x ->
-            Quotation.expand _loc x DynAst.patt_tag
-        | label_longident{i}; "="; ipatt{p} -> {| $i = $p |}   ] |};
+
+ |};
     with "ctyp"
     {:extend|Gram
     type_declaration:
