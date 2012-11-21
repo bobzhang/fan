@@ -1,4 +1,6 @@
 src/Query.cmo
+src/XStream.cmo
+src/CharStream.cmo
 src/FanBasic.cmo
 src/OAstPrint.cmo
 src/FanLexUtil.cmo

@@ -852,7 +852,8 @@ New syntax:\
             {| (val $e : $p) |} ] } |};
 
 
-    {:extend|Gram str_item "str_item":
+    with "str_item"
+    {:extend|Gram str_item:
       { "top"
         [ "exception"; constructor_declaration{t} ->
             {| exception $t |}
@@ -867,6 +868,11 @@ New syntax:\
             {| module rec $mb |}
         | "module"; "type"; a_ident{i}; "="; module_type{mt} ->
             {| module type $i = $mt |}
+        | "open"; `LID "lang"; `STR(_,s) -> (* FIXME put in the directive table*)
+            begin
+              Quotation.default:=s;
+              {||}
+            end
         | "open"; module_longident{i} -> {| open $i |}
         | "type"; type_declaration{td} ->
             {| type $td |}
