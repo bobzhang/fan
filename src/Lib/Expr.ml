@@ -297,6 +297,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "listpatt;" -> {:expr| Ast.paSem_of_list $e |}
             | "listexpr," -> {:expr| Ast.exCom_of_list $e |}
             | "listexpr;" -> {:expr| Ast.exSem_of_list $e |}
+            | "listforall" -> {:expr| Ast.tyVarApp_of_list $e |}
             | "antisig_item" -> {:expr| Ast.SgAnt $(mloc _loc) $e |}
             | "antistr_item" -> {:expr| Ast.StAnt $(mloc _loc) $e |}
             | "antictyp" -> {:expr| Ast.TyAnt $(mloc _loc) $e |}

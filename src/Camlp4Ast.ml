@@ -183,7 +183,22 @@ let rec tySta_of_list =  fun
     | [t] -> t
     | [t::ts] ->
         let _loc = loc_of_ctyp t in {:ctyp| $t * $(tySta_of_list ts) |} ];
+  
+let rec tyApp_of_list = fun
+    [ [] -> {:ctyp@ghost||}
+    | [t] -> t
+    | [t::ts] ->
+        let _loc = loc_of_ctyp t in {:ctyp| $t  $(tyApp_of_list ts) |} ];
 
+let tyVarApp_of_list (_loc,ls)=
+  let rec aux = fun 
+    [ [] -> {:ctyp@ghost||}
+    | [t] -> {:ctyp| '$t |}
+    | [t::ts] ->
+        {:ctyp| '$t  $(aux ts) |} ] in
+  aux ls;
+  
+  
 let rec stSem_of_list = fun
     [ [] -> {:str_item@ghost||}
     | [t] -> t

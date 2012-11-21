@@ -697,8 +697,6 @@ New syntax:\
   Gram.clear label_declaration_list;
   Gram.clear label_expr_list;
   Gram.clear label_expr;
-  (* Gram.clear label_ipatt; *)
-  (* Gram.clear label_ipatt_list; *)
   Gram.clear label_longident;
   Gram.clear label_patt;
   Gram.clear label_patt_list;
@@ -1467,6 +1465,14 @@ New syntax:\
         | "+"; "_" -> Ast.TyAnP _loc  
         | "-"; "_" -> Ast.TyAnM _loc  
         | "_" -> {| _ |}  ]
+   typevars:
+        [ S{t1}; S{t2} -> {| $t1 $t2 |}
+        | `ANT ((""|"typ" as n),s) ->
+            {| $(anti:mk_anti ~c:"ctyp" n s) |}
+        | `ANT(("list" as n),s) ->
+            {| $(anti:mk_anti ~c:"forall" n s)|}
+        | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+        | "'"; a_ident{i} -> {| '$lid:i |} ]
     ctyp :
       { "==" LA
         [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ]
@@ -1860,12 +1866,7 @@ New syntax:\
         [ ctyp{t} -> t ]
     package_type:
         [ module_type{p} -> p ] 
-    typevars:
-        [ S{t1}; S{t2} -> {:ctyp| $t1 $t2 |}
-        | `ANT ((""|"typ" as n),s) ->
-            {:ctyp| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | "'"; a_ident{i} -> {:ctyp| '$lid:i |} ]
+    
     unquoted_typevars:
         [ S{t1}; S{t2} -> {:ctyp| $t1 $t2 |}
         | `ANT ((""|"typ" as n),s) ->
