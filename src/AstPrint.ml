@@ -281,8 +281,8 @@ class printer  ()= object(self:'self)
               match low with
               |Some [] |None -> ()  
               |Some xs ->
-                  pp f ">@ %a"
-                    (self#list self#string_quot) xs) low
+              pp f ">@ %a"
+                (self#list self#string_quot) xs) low
     | Ptyp_object l ->
         let  core_field_type f {pfield_desc;_} =
           match pfield_desc with

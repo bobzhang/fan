@@ -333,12 +333,37 @@ class printer = object(self:'self)
        | Pmod_unpack e ->
            {| (val $(self#expr e)) |}
        ];
+     method lhs_type_declaration (params,variance,({loc;_} as lid_loc)) =
+       with "ctyp"
+       let u = List.map2
+         (fun p v ->
+           match (p,v) with
+           [((false,false),Some {txt;loc=_loc}) ->
+             {| '$txt |}
+           | ((false,false),None) ->
+               let _loc = FanLoc.ghost in {| _ |}
+           | ((true,false),Some{txt;loc=_loc}) ->
+               {| +' $txt|}
+           | ((true,false),None) ->
+               let _loc = FanLoc.ghost in Ast.TyAnP _loc 
+           | ((false,true),Some {txt;loc=_loc} ) ->
+               {| - ' $txt |}
+           | ((false,true),None) ->
+               let _loc = FanLoc.ghost in Ast.TyAnM _loc
+           | _ -> assert false ]) variance params  in
+       Camlp4Ast.tyApp_of_list
+         [
+          {@loc| $(id:self#longident_loc lid_loc) |}::
+          u] ;
      method with_constraint  (({loc=_loc;_} as lid1),w)  =
        with "with_constr" match w with
-       [ Pwith_type td -> assert false
-
-       | Pwith_typesubst td -> assert false
-
+       [ Pwith_type ({ptype_params=ls;ptype_manifest=Some ty;ptype_variance;_} ) -> 
+           {| type $(self#lhs_type_declaration (ls, ptype_variance,lid1))
+                 = $(self#core_type ty)|}
+       | Pwith_typesubst ({ptype_params=ls;ptype_manifest=Some ty;ptype_variance;_} ) -> 
+           {| type $(self#lhs_type_declaration (ls, ptype_variance,lid1))
+                 := $(self#core_type ty)|}
+       | Pwith_type _ | Pwith_typesubst _ -> assert false 
        | Pwith_module lid2 ->
            {| module $(id:self#longident_loc lid1) = $(id:self#longident_loc lid2) |}
        | Pwith_modsubst lid2 ->
@@ -355,10 +380,35 @@ class printer = object(self:'self)
        | Pmty_with (mt1,lst) ->
            let lst = List.map self#with_constraint lst in
            {| $(self#module_type mt1) with $list:lst |}
+       | Pmty_typeof me ->
+           {| module type of $(self#module_expr me) |}
        ];  
 
      method structure_item {pstr_desc=x;pstr_loc=_loc} : Ast.str_item =
-       assert false;
+       with "str_item" match x with
+       [Pstr_eval e -> {| $(exp:self#expr e) |}
+       |Pstr_value (rf,lst) ->
+           let bindings =
+             List.map (fun (p,e) -> {:binding| $(self#pattern p) = $(self#expr e) |}) lst in 
+           {|let $(rec:self#rec_flag rf) $list:bindings |}
+       | Pstr_module ({txt;_},me) ->
+           {| module $txt = $(self#module_expr me) |}
+       | Pstr_modtype ({txt;_},mty) ->
+           {| module type $txt = $(self#module_type mty) |}
+       | Pstr_open lid ->
+           {| open $(id:self#longident_loc lid) |}
+       | Pstr_include me ->
+           {| include $(self#module_expr me) |}
+       | Pstr_class_type _ 
+       | Pstr_class _
+       | Pstr_recmodule _
+       | Pstr_exn_rebind _
+       | Pstr_exception _
+       | Pstr_primitive _
+       | Pstr_type _ ->  assert false
+
+       ];  
+
      method structure (ls:structure) : Ast.str_item =
        assert false; 
      method signature (ls:signature)  : Ast.sig_item =
@@ -370,6 +420,7 @@ class printer = object(self:'self)
      method class_field {pcf_desc=x;pcf_loc = _loc} : Ast.class_str_item =
        assert false;
      method class_expr {pcl_desc=x;pcl_loc=_loc} : Ast.class_expr = assert false;
+     method class_type {pci_expr;_} : Ast.class_type = assert false;
 end;
 
 

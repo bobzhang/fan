@@ -1456,13 +1456,13 @@ New syntax:\
         | "'"; a_ident{i} -> {| '$lid:i |}
         | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
         | "-"; "'"; a_ident{i} -> {| -'$lid:i |} ]
-    optional_type_parameter:
+    optional_type_parameter: (* overlapps with type_parameter *)
         [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
         | "'"; a_ident{i} -> {| '$lid:i |}
         | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
         | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
-        | "+"; "_" -> Ast.TyAnP _loc  
+        | "+"; "_" -> Ast.TyAnP _loc   (* FIXME *)
         | "-"; "_" -> Ast.TyAnM _loc  
         | "_" -> {| _ |}  ]
    typevars:
