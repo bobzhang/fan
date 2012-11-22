@@ -1078,6 +1078,16 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (Ast.IdUid (_loc, "Ast")),
                                            (Ast.IdLid (_loc, "exSem_of_list")))))),
                                  e)
+                         | "listforall" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdLid
+                                              (_loc, "tyVarApp_of_list")))))),
+                                 e)
                          | "antisig_item" ->
                              Ast.ExApp
                                (_loc,

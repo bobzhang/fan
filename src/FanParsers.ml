@@ -1473,7 +1473,7 @@ New syntax:\
             {| $(anti:mk_anti ~c:"forall" n s)|}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
         | "'"; a_ident{i} -> {| '$lid:i |} ]
-    ctyp :
+    ctyp:
       { "==" LA
         [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ]
        "private" NA

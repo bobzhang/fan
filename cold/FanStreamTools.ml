@@ -404,8 +404,6 @@ let cparser_match _loc me bpo pc =
                                 (Ast.IdLid (_loc, "count")))))),
                       (Ast.ExId (_loc, (Ast.IdLid (_loc, strm_n)))))))), pc)
     | None  -> pc in
-  let me =
-    match me with | Ast.ExSem (_loc,_,_) as e -> Ast.ExSeq (_loc, e) | e -> e in
   match me with
   | Ast.ExId (_,Ast.IdLid (_,x)) when x = strm_n -> e
   | _ ->

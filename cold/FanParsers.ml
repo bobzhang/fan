@@ -1646,7 +1646,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
   let _ = Gram.clear label let _ = Gram.clear label_declaration
   let _ = Gram.clear label_declaration_list
   let _ = Gram.clear label_expr_list let _ = Gram.clear label_expr
-  let _ = Gram.clear label_ipatt let _ = Gram.clear label_ipatt_list
   let _ = Gram.clear label_longident let _ = Gram.clear label_patt
   let _ = Gram.clear label_patt_list let _ = Gram.clear labeled_ipatt
   let _ = Gram.clear let_binding let _ = Gram.clear meth_list
@@ -4318,10 +4317,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'ipatt )
                    | _ -> assert false)));
            ([`Skeyword "{";
-            `Snterm (Gram.obj (label_ipatt_list : 'label_ipatt_list Gram.t ));
+            `Snterm (Gram.obj (label_patt_list : 'label_patt_list Gram.t ));
             `Skeyword "}"],
              (Gram.mk_action
-                (fun _  (pl : 'label_ipatt_list)  _  (_loc : FanLoc.t)  ->
+                (fun _  (pl : 'label_patt_list)  _  (_loc : FanLoc.t)  ->
                    (Ast.PaRec (_loc, pl) : 'ipatt ))))])]);
     Gram.extend (labeled_ipatt : 'labeled_ipatt Gram.t )
       (None,
@@ -4350,77 +4349,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (p2 : 'comma_ipatt)  _  (p1 : 'comma_ipatt) 
                    (_loc : FanLoc.t)  ->
-                   (Ast.PaCom (_loc, p1, p2) : 'comma_ipatt ))))])]);
-    Gram.extend (label_ipatt_list : 'label_ipatt_list Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (label_ipatt : 'label_ipatt Gram.t ))],
-              (Gram.mk_action
-                 (fun (p1 : 'label_ipatt)  (_loc : FanLoc.t)  ->
-                    (p1 : 'label_ipatt_list ))));
-           ([`Snterm (Gram.obj (label_ipatt : 'label_ipatt Gram.t ));
-            `Skeyword ";"],
-             (Gram.mk_action
-                (fun _  (p1 : 'label_ipatt)  (_loc : FanLoc.t)  ->
-                   (p1 : 'label_ipatt_list ))));
-           ([`Snterm (Gram.obj (label_ipatt : 'label_ipatt Gram.t ));
-            `Skeyword ";";
-            `Skeyword "_";
-            `Skeyword ";"],
-             (Gram.mk_action
-                (fun _  _  _  (p1 : 'label_ipatt)  (_loc : FanLoc.t)  ->
-                   (Ast.PaSem (_loc, p1, (Ast.PaAny _loc)) : 'label_ipatt_list ))));
-           ([`Snterm (Gram.obj (label_ipatt : 'label_ipatt Gram.t ));
-            `Skeyword ";";
-            `Skeyword "_"],
-             (Gram.mk_action
-                (fun _  _  (p1 : 'label_ipatt)  (_loc : FanLoc.t)  ->
-                   (Ast.PaSem (_loc, p1, (Ast.PaAny _loc)) : 'label_ipatt_list ))));
-           ([`Snterm (Gram.obj (label_ipatt : 'label_ipatt Gram.t ));
-            `Skeyword ";";
-            `Sself],
-             (Gram.mk_action
-                (fun (p2 : 'label_ipatt_list)  _  (p1 : 'label_ipatt) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.PaSem (_loc, p1, p2) : 'label_ipatt_list ))))])]);
-    Gram.extend (label_ipatt : 'label_ipatt Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (label_longident : 'label_longident Gram.t ));
-             `Skeyword "=";
-             `Snterm (Gram.obj (ipatt : 'ipatt Gram.t ))],
-              (Gram.mk_action
-                 (fun (p : 'ipatt)  _  (i : 'label_longident) 
-                    (_loc : FanLoc.t)  ->
-                    (Ast.PaEq (_loc, i, p) : 'label_ipatt ))));
-           ([`Stoken
-               (((function | `QUOTATION _ -> true | _ -> false)),
-                 (`Normal, "`QUOTATION _"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `QUOTATION x ->
-                       (Quotation.expand _loc x DynAst.patt_tag : 'label_ipatt )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ("list",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"list\",_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT (("list" as n),s) ->
-                       (Ast.PaAnt (_loc, (mk_anti ~c:"patt;" n s)) : 
-                       'label_ipatt )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"pat"|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"),_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"pat"|"anti" as n),s) ->
-                       (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'label_ipatt )
-                   | _ -> assert false)))])])
+                   (Ast.PaCom (_loc, p1, p2) : 'comma_ipatt ))))])])
   let _ =
     Gram.extend (type_declaration : 'type_declaration Gram.t )
       (None,
@@ -4622,6 +4551,45 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    | `ANT ((""|"typ"|"anti" as n),s) ->
                        (Ast.TyAnt (_loc, (mk_anti n s)) : 'optional_type_parameter )
                    | _ -> assert false)))])]);
+    Gram.extend (typevars : 'typevars Gram.t )
+      (None,
+        [(None, None,
+           [([`Skeyword "'"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+              (Gram.mk_action
+                 (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
+                    (Ast.TyQuo (_loc, i) : 'typevars ))));
+           ([`Stoken
+               (((function | `QUOTATION _ -> true | _ -> false)),
+                 (`Normal, "`QUOTATION _"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `QUOTATION x ->
+                       (Quotation.expand _loc x DynAst.ctyp_tag : 'typevars )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ("list",_) -> true | _ -> false)),
+                 (`Normal, "`ANT (\"list\",_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT (("list" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"forall" n s)) : 
+                       'typevars )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"typ" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'typevars )
+                   | _ -> assert false)));
+           ([`Sself; `Sself],
+             (Gram.mk_action
+                (fun (t2 : 'typevars)  (t1 : 'typevars)  (_loc : FanLoc.t) 
+                   -> (Ast.TyApp (_loc, t1, t2) : 'typevars ))))])]);
     Gram.extend (ctyp : 'ctyp Gram.t )
       (None,
         [((Some "=="), (Some `LA),
@@ -6456,35 +6424,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
               (Gram.mk_action
                  (fun (p : 'module_type)  (_loc : FanLoc.t)  ->
                     (p : 'package_type ))))])]);
-    Gram.extend (typevars : 'typevars Gram.t )
-      (None,
-        [(None, None,
-           [([`Skeyword "'"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
-              (Gram.mk_action
-                 (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
-                    (Ast.TyQuo (_loc, i) : 'typevars ))));
-           ([`Stoken
-               (((function | `QUOTATION _ -> true | _ -> false)),
-                 (`Normal, "`QUOTATION _"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `QUOTATION x ->
-                       (Quotation.expand _loc x DynAst.ctyp_tag : 'typevars )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"typ" as n),s) ->
-                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'typevars )
-                   | _ -> assert false)));
-           ([`Sself; `Sself],
-             (Gram.mk_action
-                (fun (t2 : 'typevars)  (t1 : 'typevars)  (_loc : FanLoc.t) 
-                   -> (Ast.TyApp (_loc, t1, t2) : 'typevars ))))])]);
     Gram.extend (unquoted_typevars : 'unquoted_typevars Gram.t )
       (None,
         [(None, None,

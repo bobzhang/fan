@@ -265,20 +265,24 @@ class printer  ()= object(self:'self)
                       (self#list self#core_type ~sep:"&")  ctl) ctl
           | Rinherit ct -> self#core_type f ct in 
         pp f "@[<2>[%a%a]@]"
-          (fun f l -> match l with
-          | [] -> ()
-          | _ ->
+          (fun f l
+            ->
+              match l with
+              | [] -> ()
+              | _ ->
               pp f "%s@;%a"
                 (match (closed,low) with
                 | (true,None) -> ""
                 | (true,Some _) -> "<" (* FIXME desugar the syntax sugar*)
                 | (false,_) -> ">") 
                 (self#list type_variant_helper ~sep:"@;<1 -2>| ") l) l 
-          (fun f low -> match low with
-          |Some [] |None -> ()  
-          |Some xs ->
-              pp f ">@ %a"
-                (self#list self#string_quot) xs) low
+          (fun f low
+            ->
+              match low with
+              |Some [] |None -> ()  
+              |Some xs ->
+                  pp f ">@ %a"
+                    (self#list self#string_quot) xs) low
     | Ptyp_object l ->
         let  core_field_type f {pfield_desc;_} =
           match pfield_desc with

@@ -111,8 +111,6 @@ module type Camlp4Syntax =
     val label_declaration_list : Ast.ctyp Gram.t
     val label_expr : Ast.rec_binding Gram.t
     val label_expr_list : Ast.rec_binding Gram.t
-    val label_ipatt : Ast.patt Gram.t
-    val label_ipatt_list : Ast.patt Gram.t
     val label_longident : Ast.ident Gram.t
     val label_patt : Ast.patt Gram.t
     val label_patt_list : Ast.patt Gram.t

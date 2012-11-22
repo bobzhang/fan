@@ -183,19 +183,24 @@ let rec tySta_of_list =  fun
     | [t] -> t
     | [t::ts] ->
         let _loc = loc_of_ctyp t in {:ctyp| $t * $(tySta_of_list ts) |} ];
-  
-let rec tyApp_of_list = fun
+
+(* LA *)  
+let  tyApp_of_list = fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in {:ctyp| $t  $(tyApp_of_list ts) |} ];
 
+        List.fold_left
+          (fun x y -> let _loc = loc_of_ctyp  x in {:ctyp| $x $y |}) t ts];
+
+        (* let _loc = loc_of_ctyp t in {:ctyp| $t  $(tyApp_of_list ts) |} ]; *)
+(* LA *)
 let tyVarApp_of_list (_loc,ls)=
-  let rec aux = fun 
+  let  aux = fun 
     [ [] -> {:ctyp@ghost||}
     | [t] -> {:ctyp| '$t |}
     | [t::ts] ->
-        {:ctyp| '$t  $(aux ts) |} ] in
+        List.fold_left (fun x y -> {:ctyp| $x '$y |}) {:ctyp| '$t |} ts ] in
   aux ls;
   
   
@@ -321,6 +326,13 @@ let rec exCom_of_list =  fun
     | [x::xs] ->
         let _loc = loc_of_expr x in
         {:expr| $x, $(exCom_of_list xs) |} ];
+(* LA *)  
+let  exApp_of_list = fun
+    [ [] -> {:expr@ghost||}
+    | [t] -> t
+    | [t::ts] ->
+        List.fold_left
+          (fun x y -> let _loc = loc_of_expr  x in {:expr| $x $y |}) t ts];
 
 let ty_of_stl = fun
     [ (_loc, s, []) -> {:ctyp| $uid:s |}

@@ -145,6 +145,24 @@ let rec tySta_of_list =
   | t::[] -> t
   | t::ts ->
       let _loc = loc_of_ctyp t in Ast.TySta (_loc, t, (tySta_of_list ts))
+let tyApp_of_list =
+  function
+  | [] -> Ast.TyNil ghost
+  | t::[] -> t
+  | t::ts ->
+      List.fold_left
+        (fun x  y  -> let _loc = loc_of_ctyp x in Ast.TyApp (_loc, x, y)) t
+        ts
+let tyVarApp_of_list (_loc,ls) =
+  let aux =
+    function
+    | [] -> Ast.TyNil ghost
+    | t::[] -> Ast.TyQuo (_loc, t)
+    | t::ts ->
+        List.fold_left
+          (fun x  y  -> Ast.TyApp (_loc, x, (Ast.TyQuo (_loc, y))))
+          (Ast.TyQuo (_loc, t)) ts in
+  aux ls
 let rec stSem_of_list =
   function
   | [] -> Ast.StNil ghost
@@ -261,6 +279,14 @@ let rec exCom_of_list =
   | x::[] -> x
   | x::xs ->
       let _loc = loc_of_expr x in Ast.ExCom (_loc, x, (exCom_of_list xs))
+let exApp_of_list =
+  function
+  | [] -> Ast.ExNil ghost
+  | t::[] -> t
+  | t::ts ->
+      List.fold_left
+        (fun x  y  -> let _loc = loc_of_expr x in Ast.ExApp (_loc, x, y)) t
+        ts
 let ty_of_stl =
   function
   | (_loc,s,[]) -> Ast.TyId (_loc, (Ast.IdUid (_loc, s)))
