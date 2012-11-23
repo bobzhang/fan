@@ -88,10 +88,10 @@ let levels_of_entry = Insert.levels_of_entry;
   
 let eoi_entry entry =
   let entry_eoi = (mk (name entry ^ "_eoi")) in
-  let () = 
-    {:extend| entry_eoi:
-      [[  entry{x}; `EOI -> x ]] |} in
-  entry_eoi;
+  begin
+    {:extend| entry_eoi: [  entry{x}; `EOI -> x ] |} ;
+    entry_eoi
+  end;
 
 let find_level ?position entry =
   match entry.edesc with

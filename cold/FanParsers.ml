@@ -348,10 +348,10 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
              `Slist1sep
                ((Gram.srules delete_rules
                    [([`Slist0sep
-                        ((`Snterm (Gram.obj (symbol : 'symbol Gram.t ))),
+                        ((`Snterm (Gram.obj (psymbol : 'psymbol Gram.t ))),
                           (`Skeyword ";"))],
                       (Gram.mk_action
-                         (fun (sl : 'symbol list)  (_loc : FanLoc.t)  ->
+                         (fun (sl : 'psymbol list)  (_loc : FanLoc.t)  ->
                             (sl : 'e__2 ))))]), (`Skeyword "|"));
              `Skeyword "]"],
               (Gram.mk_action
@@ -516,18 +516,29 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
       (None,
         [(None, None,
            [([`Stoken
-                (((function
-                   | `UID ("Before"|"After"|"Level") -> true
-                   | _ -> false)),
-                  (`Normal, "`UID (\"Before\"|\"After\"|\"Level\")"));
-             `Snterm (Gram.obj (string : 'string Gram.t ))],
+                (((function | `UID _ -> true | _ -> false)),
+                  (`Normal, "`UID _"))],
               (Gram.mk_action
-                 (fun (n : 'string)  __camlp4_0  (_loc : FanLoc.t)  ->
+                 (fun __camlp4_0  (_loc : FanLoc.t)  ->
                     match __camlp4_0 with
-                    | `UID ("Before"|"After"|"Level" as x) ->
-                        (Ast.ExApp (_loc, (Ast.ExVrn (_loc, x)), n) : 
-                        'position )
+                    | `UID x ->
+                        (failwithf
+                           "%x is not the right position:(First|Last) or (Before|After|Level)"
+                           x : 'position )
                     | _ -> assert false)));
+           ([`Stoken
+               (((function
+                  | `UID ("Before"|"After"|"Level") -> true
+                  | _ -> false)),
+                 (`Normal, "`UID (\"Before\"|\"After\"|\"Level\")"));
+            `Snterm (Gram.obj (string : 'string Gram.t ))],
+             (Gram.mk_action
+                (fun (n : 'string)  __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `UID ("Before"|"After"|"Level" as x) ->
+                       (Ast.ExApp (_loc, (Ast.ExVrn (_loc, x)), n) : 
+                       'position )
+                   | _ -> assert false)));
            ([`Stoken
                (((function | `UID ("First"|"Last") -> true | _ -> false)),
                  (`Normal, "`UID (\"First\"|\"Last\")"))],
@@ -1747,85 +1758,150 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
     Options.add
       ("-help_seq", (FanArg.Unit help_sequences),
         "Print explanations about new sequences and exit.")
-  let _ = Gram.clear a_CHAR let _ = Gram.clear a_FLOAT
-  let _ = Gram.clear a_INT let _ = Gram.clear a_INT32
-  let _ = Gram.clear a_INT64 let _ = Gram.clear a_LABEL
-  let _ = Gram.clear a_LIDENT let _ = Gram.clear a_NATIVEINT
-  let _ = Gram.clear a_OPTLABEL let _ = Gram.clear a_STRING
-  let _ = Gram.clear a_UIDENT let _ = Gram.clear a_ident
-  let _ = Gram.clear amp_ctyp let _ = Gram.clear and_ctyp
-  let _ = Gram.clear match_case let _ = Gram.clear match_case0
-  let _ = Gram.clear match_case_quot let _ = Gram.clear binding
-  let _ = Gram.clear binding_quot let _ = Gram.clear rec_binding_quot
-  let _ = Gram.clear class_declaration let _ = Gram.clear class_description
-  let _ = Gram.clear class_expr let _ = Gram.clear class_expr_quot
-  let _ = Gram.clear class_fun_binding let _ = Gram.clear class_fun_def
-  let _ = Gram.clear class_info_for_class_expr
-  let _ = Gram.clear class_info_for_class_type
-  let _ = Gram.clear class_longident
-  let _ = Gram.clear class_longident_and_param
-  let _ = Gram.clear class_name_and_param let _ = Gram.clear class_sig_item
-  let _ = Gram.clear class_sig_item_quot let _ = Gram.clear class_signature
-  let _ = Gram.clear class_str_item let _ = Gram.clear class_str_item_quot
-  let _ = Gram.clear class_structure let _ = Gram.clear class_type
-  let _ = Gram.clear class_type_declaration
-  let _ = Gram.clear class_type_longident
-  let _ = Gram.clear class_type_longident_and_param
-  let _ = Gram.clear class_type_plus let _ = Gram.clear class_type_quot
-  let _ = Gram.clear comma_ctyp let _ = Gram.clear comma_expr
-  let _ = Gram.clear comma_ipatt let _ = Gram.clear comma_patt
-  let _ = Gram.clear comma_type_parameter let _ = Gram.clear constrain
-  let _ = Gram.clear constructor_arg_list
-  let _ = Gram.clear constructor_declaration
-  let _ = Gram.clear constructor_declarations let _ = Gram.clear ctyp
-  let _ = Gram.clear ctyp_quot let _ = Gram.clear cvalue_binding
-  let _ = Gram.clear direction_flag let _ = Gram.clear dummy
-  let _ = Gram.clear eq_expr let _ = Gram.clear expr
-  let _ = Gram.clear expr_eoi let _ = Gram.clear expr_quot
-  let _ = Gram.clear field_expr let _ = Gram.clear field_expr_list
-  let _ = Gram.clear fun_binding let _ = Gram.clear fun_def
-  let _ = Gram.clear ident let _ = Gram.clear ident_quot
-  let _ = Gram.clear implem let _ = Gram.clear interf
-  let _ = Gram.clear ipatt let _ = Gram.clear ipatt_tcon
-  let _ = Gram.clear label let _ = Gram.clear label_declaration
-  let _ = Gram.clear label_declaration_list
-  let _ = Gram.clear label_expr_list let _ = Gram.clear label_expr
-  let _ = Gram.clear label_longident let _ = Gram.clear label_patt
-  let _ = Gram.clear label_patt_list let _ = Gram.clear labeled_ipatt
-  let _ = Gram.clear let_binding let _ = Gram.clear meth_list
-  let _ = Gram.clear meth_decl let _ = Gram.clear module_binding
-  let _ = Gram.clear module_binding0 let _ = Gram.clear module_binding_quot
-  let _ = Gram.clear module_declaration let _ = Gram.clear module_expr
-  let _ = Gram.clear module_expr_quot let _ = Gram.clear module_longident
-  let _ = Gram.clear module_longident_with_app
-  let _ = Gram.clear module_rec_declaration let _ = Gram.clear module_type
-  let _ = Gram.clear module_type_quot let _ = Gram.clear more_ctyp
-  let _ = Gram.clear name_tags let _ = Gram.clear opt_as_lident
-  let _ = Gram.clear opt_class_self_patt
-  let _ = Gram.clear opt_class_self_type let _ = Gram.clear opt_comma_ctyp
-  let _ = Gram.clear opt_dot_dot let _ = Gram.clear opt_eq_ctyp
-  let _ = Gram.clear opt_expr let _ = Gram.clear opt_meth_list
-  let _ = Gram.clear opt_mutable let _ = Gram.clear opt_polyt
-  let _ = Gram.clear opt_private let _ = Gram.clear opt_rec
-  let _ = Gram.clear opt_virtual let _ = Gram.clear opt_when_expr
-  let _ = Gram.clear patt let _ = Gram.clear patt_as_patt_opt
-  let _ = Gram.clear patt_eoi let _ = Gram.clear patt_quot
-  let _ = Gram.clear patt_tcon let _ = Gram.clear poly_type
-  let _ = Gram.clear row_field let _ = Gram.clear sem_expr
-  let _ = Gram.clear sem_expr_for_list let _ = Gram.clear sem_patt
-  let _ = Gram.clear sem_patt_for_list let _ = Gram.clear semi
-  let _ = Gram.clear sequence let _ = Gram.clear sig_item
-  let _ = Gram.clear sig_item_quot let _ = Gram.clear sig_items
-  let _ = Gram.clear star_ctyp let _ = Gram.clear str_item
-  let _ = Gram.clear str_item_quot let _ = Gram.clear str_items
-  let _ = Gram.clear top_phrase let _ = Gram.clear type_constraint
-  let _ = Gram.clear type_declaration
-  let _ = Gram.clear type_ident_and_parameters let _ = Gram.clear type_kind
-  let _ = Gram.clear type_longident
-  let _ = Gram.clear type_longident_and_parameters
-  let _ = Gram.clear type_parameter let _ = Gram.clear type_parameters
-  let _ = Gram.clear typevars let _ = Gram.clear val_longident
-  let _ = Gram.clear with_constr let _ = Gram.clear with_constr_quot
+  let _ =
+    Gram.clear a_CHAR;
+    Gram.clear a_FLOAT;
+    Gram.clear a_INT;
+    Gram.clear a_INT32;
+    Gram.clear a_INT64;
+    Gram.clear a_LABEL;
+    Gram.clear a_LIDENT;
+    Gram.clear a_NATIVEINT;
+    Gram.clear a_OPTLABEL;
+    Gram.clear a_STRING;
+    Gram.clear a_UIDENT;
+    Gram.clear a_ident;
+    Gram.clear amp_ctyp;
+    Gram.clear and_ctyp;
+    Gram.clear match_case;
+    Gram.clear match_case0;
+    Gram.clear match_case_quot;
+    Gram.clear binding;
+    Gram.clear binding_quot;
+    Gram.clear rec_binding_quot;
+    Gram.clear class_declaration;
+    Gram.clear class_description;
+    Gram.clear class_expr;
+    Gram.clear class_expr_quot;
+    Gram.clear class_fun_binding;
+    Gram.clear class_fun_def;
+    Gram.clear class_info_for_class_expr;
+    Gram.clear class_info_for_class_type;
+    Gram.clear class_longident;
+    Gram.clear class_longident_and_param;
+    Gram.clear class_name_and_param;
+    Gram.clear class_sig_item;
+    Gram.clear class_sig_item_quot;
+    Gram.clear class_signature;
+    Gram.clear class_str_item;
+    Gram.clear class_str_item_quot;
+    Gram.clear class_structure;
+    Gram.clear class_type;
+    Gram.clear class_type_declaration;
+    Gram.clear class_type_longident;
+    Gram.clear class_type_longident_and_param;
+    Gram.clear class_type_plus;
+    Gram.clear class_type_quot;
+    Gram.clear comma_ctyp;
+    Gram.clear comma_expr;
+    Gram.clear comma_ipatt;
+    Gram.clear comma_patt;
+    Gram.clear comma_type_parameter;
+    Gram.clear constrain;
+    Gram.clear constructor_arg_list;
+    Gram.clear constructor_declaration;
+    Gram.clear constructor_declarations;
+    Gram.clear ctyp;
+    Gram.clear ctyp_quot;
+    Gram.clear cvalue_binding;
+    Gram.clear direction_flag;
+    Gram.clear dummy;
+    Gram.clear eq_expr;
+    Gram.clear expr;
+    Gram.clear expr_eoi;
+    Gram.clear expr_quot;
+    Gram.clear field_expr;
+    Gram.clear field_expr_list;
+    Gram.clear fun_binding;
+    Gram.clear fun_def;
+    Gram.clear ident;
+    Gram.clear ident_quot;
+    Gram.clear implem;
+    Gram.clear interf;
+    Gram.clear ipatt;
+    Gram.clear ipatt_tcon;
+    Gram.clear label;
+    Gram.clear label_declaration;
+    Gram.clear label_declaration_list;
+    Gram.clear label_expr_list;
+    Gram.clear label_expr;
+    Gram.clear label_longident;
+    Gram.clear label_patt;
+    Gram.clear label_patt_list;
+    Gram.clear labeled_ipatt;
+    Gram.clear let_binding;
+    Gram.clear meth_list;
+    Gram.clear meth_decl;
+    Gram.clear module_binding;
+    Gram.clear module_binding0;
+    Gram.clear module_binding_quot;
+    Gram.clear module_declaration;
+    Gram.clear module_expr;
+    Gram.clear module_expr_quot;
+    Gram.clear module_longident;
+    Gram.clear module_longident_with_app;
+    Gram.clear module_rec_declaration;
+    Gram.clear module_type;
+    Gram.clear module_type_quot;
+    Gram.clear more_ctyp;
+    Gram.clear name_tags;
+    Gram.clear opt_as_lident;
+    Gram.clear opt_class_self_patt;
+    Gram.clear opt_class_self_type;
+    Gram.clear opt_comma_ctyp;
+    Gram.clear opt_dot_dot;
+    Gram.clear opt_eq_ctyp;
+    Gram.clear opt_expr;
+    Gram.clear opt_meth_list;
+    Gram.clear opt_mutable;
+    Gram.clear opt_polyt;
+    Gram.clear opt_private;
+    Gram.clear opt_rec;
+    Gram.clear opt_virtual;
+    Gram.clear opt_when_expr;
+    Gram.clear patt;
+    Gram.clear patt_as_patt_opt;
+    Gram.clear patt_eoi;
+    Gram.clear patt_quot;
+    Gram.clear patt_tcon;
+    Gram.clear poly_type;
+    Gram.clear row_field;
+    Gram.clear sem_expr;
+    Gram.clear sem_expr_for_list;
+    Gram.clear sem_patt;
+    Gram.clear sem_patt_for_list;
+    Gram.clear semi;
+    Gram.clear sequence;
+    Gram.clear sig_item;
+    Gram.clear sig_item_quot;
+    Gram.clear sig_items;
+    Gram.clear star_ctyp;
+    Gram.clear str_item;
+    Gram.clear str_item_quot;
+    Gram.clear str_items;
+    Gram.clear top_phrase;
+    Gram.clear type_constraint;
+    Gram.clear type_declaration;
+    Gram.clear type_ident_and_parameters;
+    Gram.clear type_kind;
+    Gram.clear type_longident;
+    Gram.clear type_longident_and_parameters;
+    Gram.clear type_parameter;
+    Gram.clear type_parameters;
+    Gram.clear typevars;
+    Gram.clear val_longident;
+    Gram.clear with_constr;
+    Gram.clear with_constr_quot
   let _ =
     let list = ['!'; '?'; '~'] in
     let excl = ["!="; "??"] in
@@ -1898,6 +1974,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
          | _ -> al in
        fun (__strm : _ Stream.t)  -> let a = symb __strm in kont a __strm)
   let _ =
+    Gram.extend (module_expr_quot : 'module_expr_quot Gram.t )
+      (None,
+        [(None, None,
+           [([],
+              (Gram.mk_action
+                 (fun (_loc : FanLoc.t)  ->
+                    (Ast.MeNil _loc : 'module_expr_quot ))));
+           ([`Snterm (Gram.obj (module_expr : 'module_expr Gram.t ))],
+             (Gram.mk_action
+                (fun (x : 'module_expr)  (_loc : FanLoc.t)  ->
+                   (x : 'module_expr_quot ))))])]);
     Gram.extend (module_binding0 : 'module_binding0 Gram.t )
       (None,
         [(None, (Some `RA),
@@ -1924,17 +2011,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (mb : 'module_binding0)  _  (mt : 'module_type)  _ 
                    (m : 'a_UIDENT)  _  (_loc : FanLoc.t)  ->
                    (Ast.MeFun (_loc, m, mt, mb) : 'module_binding0 ))))])]);
-    Gram.extend (module_expr_quot : 'module_expr_quot Gram.t )
-      (None,
-        [(None, None,
-           [([],
-              (Gram.mk_action
-                 (fun (_loc : FanLoc.t)  ->
-                    (Ast.MeNil _loc : 'module_expr_quot ))));
-           ([`Snterm (Gram.obj (module_expr : 'module_expr Gram.t ))],
-             (Gram.mk_action
-                (fun (x : 'module_expr)  (_loc : FanLoc.t)  ->
-                   (x : 'module_expr_quot ))))])]);
     Gram.extend (module_expr : 'module_expr Gram.t )
       (None,
         [((Some "top"), None,
@@ -2038,13 +2114,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (me : 'module_expr)  _  (mt : 'module_type)  _ 
                    (m : 'a_UIDENT)  (_loc : FanLoc.t)  ->
                    (Ast.MbColEq (_loc, m, mt, me) : 'module_binding_quot ))));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
-            `Skeyword ":";
-            `Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
-             (Gram.mk_action
-                (fun (mt : 'module_type)  _  (m : 'a_UIDENT) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.MbCol (_loc, m, mt) : 'module_binding_quot ))));
            ([`Stoken
                (((function | `ANT ("",_) -> true | _ -> false)),
                  (`Normal, "`ANT (\"\",_)"));
@@ -2071,6 +2140,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    | `ANT (("" as n),m) ->
                        (Ast.MbCol (_loc, (mk_anti n m), mt) : 'module_binding_quot )
                    | _ -> assert false)));
+           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+            `Skeyword ":";
+            `Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
+             (Gram.mk_action
+                (fun (mt : 'module_type)  _  (m : 'a_UIDENT) 
+                   (_loc : FanLoc.t)  ->
+                   (Ast.MbCol (_loc, m, mt) : 'module_binding_quot ))));
            ([`Stoken
                (((function | `ANT ("",_) -> true | _ -> false)),
                  (`Normal, "`ANT (\"\",_)"))],
@@ -2226,31 +2302,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (fun (i2 : 'module_longident_with_app)  _ 
                     (i1 : 'module_longident)  _  (_loc : FanLoc.t)  ->
                     (Ast.WcMoS (_loc, i1, i2) : 'with_constr ))));
-           ([`Skeyword "type";
-            `Snterm
-              (Gram.obj
-                 (type_longident_and_parameters : 'type_longident_and_parameters
-                                                    Gram.t ));
-            `Skeyword ":=";
-            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-             (Gram.mk_action
-                (fun (t2 : 'ctyp)  _  (t1 : 'type_longident_and_parameters) 
-                   _  (_loc : FanLoc.t)  ->
-                   (Ast.WcTyS (_loc, t1, t2) : 'with_constr ))));
-           ([`Skeyword "type";
-            `Stoken
-              (((function | `ANT ((""|"typ"|"anti"),_) -> true | _ -> false)),
-                (`Normal, "`ANT ((\"\"|\"typ\"|\"anti\"),_)"));
-            `Skeyword ":=";
-            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'ctyp)  _  __camlp4_0  _  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"typ"|"anti" as n),s) ->
-                       (Ast.WcTyS
-                          (_loc, (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s))),
-                            t) : 'with_constr )
-                   | _ -> assert false)));
            ([`Skeyword "module";
             `Snterm (Gram.obj (module_longident : 'module_longident Gram.t ));
             `Skeyword "=";
@@ -2267,12 +2318,37 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
               (Gram.obj
                  (type_longident_and_parameters : 'type_longident_and_parameters
                                                     Gram.t ));
+            `Skeyword ":=";
+            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+             (Gram.mk_action
+                (fun (t2 : 'ctyp)  _  (t1 : 'type_longident_and_parameters) 
+                   _  (_loc : FanLoc.t)  ->
+                   (Ast.WcTyS (_loc, t1, t2) : 'with_constr ))));
+           ([`Skeyword "type";
+            `Snterm
+              (Gram.obj
+                 (type_longident_and_parameters : 'type_longident_and_parameters
+                                                    Gram.t ));
             `Skeyword "=";
             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
              (Gram.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'type_longident_and_parameters) 
                    _  (_loc : FanLoc.t)  ->
                    (Ast.WcTyp (_loc, t1, t2) : 'with_constr ))));
+           ([`Skeyword "type";
+            `Stoken
+              (((function | `ANT ((""|"typ"|"anti"),_) -> true | _ -> false)),
+                (`Normal, "`ANT ((\"\"|\"typ\"|\"anti\"),_)"));
+            `Skeyword ":=";
+            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'ctyp)  _  __camlp4_0  _  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"typ"|"anti" as n),s) ->
+                       (Ast.WcTyS
+                          (_loc, (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s))),
+                            t) : 'with_constr )
+                   | _ -> assert false)));
            ([`Skeyword "type";
             `Stoken
               (((function | `ANT ((""|"typ"|"anti"),_) -> true | _ -> false)),
@@ -2340,9 +2416,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (_loc : FanLoc.t)  ->
                    (Ast.MtWit (_loc, mt, wc) : 'module_type ))))]);
         ((Some "apply"), None,
-          [([`Sself; `Sself; `Snterm (Gram.obj (dummy : 'dummy Gram.t ))],
+          [([`Sself; `Sself],
              (Gram.mk_action
-                (fun _  (mt2 : 'module_type)  (mt1 : 'module_type) 
+                (fun (mt2 : 'module_type)  (mt1 : 'module_type) 
                    (_loc : FanLoc.t)  ->
                    (ModuleType.app mt1 mt2 : 'module_type ))))]);
         ((Some "."), None,
@@ -2636,6 +2712,53 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        'sig_item )
                    | _ -> assert false)))])])
   let _ =
+    Gram.extend (cvalue_binding : 'cvalue_binding Gram.t )
+      (None,
+        [(None, None,
+           [([`Skeyword ":>";
+             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+             `Skeyword "=";
+             `Snterm (Gram.obj (expr : 'expr Gram.t ))],
+              (Gram.mk_action
+                 (fun (e : 'expr)  _  (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
+                    (Ast.ExCoe (_loc, e, (Ast.TyNil _loc), t) : 'cvalue_binding ))));
+           ([`Skeyword ":";
+            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ));
+            `Skeyword ":>";
+            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+            `Skeyword "=";
+            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
+             (Gram.mk_action
+                (fun (e : 'expr)  _  (t2 : 'ctyp)  _  (t : 'poly_type)  _ 
+                   (_loc : FanLoc.t)  ->
+                   (match t with
+                    | Ast.TyPol (_,_,_) ->
+                        raise (Stream.Error "unexpected polytype here")
+                    | _ -> Ast.ExCoe (_loc, e, t, t2) : 'cvalue_binding ))));
+           ([`Skeyword ":";
+            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ));
+            `Skeyword "=";
+            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
+             (Gram.mk_action
+                (fun (e : 'expr)  _  (t : 'poly_type)  _  (_loc : FanLoc.t) 
+                   -> (Ast.ExTyc (_loc, e, t) : 'cvalue_binding ))));
+           ([`Skeyword ":";
+            `Skeyword "type";
+            `Snterm
+              (Gram.obj (unquoted_typevars : 'unquoted_typevars Gram.t ));
+            `Skeyword ".";
+            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+            `Skeyword "=";
+            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
+             (Gram.mk_action
+                (fun (e : 'expr)  _  (t2 : 'ctyp)  _ 
+                   (t1 : 'unquoted_typevars)  _  _  (_loc : FanLoc.t)  ->
+                   (let u = Ast.TyPol (_loc, t1, t2) in
+                    Ast.ExTyc (_loc, e, u) : 'cvalue_binding ))));
+           ([`Skeyword "="; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
+             (Gram.mk_action
+                (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->
+                   (e : 'cvalue_binding ))))])]);
     Gram.extend (lang : 'lang Gram.t )
       (None,
         [(None, None,
@@ -4734,6 +4857,245 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (_loc : FanLoc.t)  ->
                    (Ast.PaCom (_loc, p1, p2) : 'comma_ipatt ))))])])
   let _ =
+    Gram.extend (opt_class_self_type : 'opt_class_self_type Gram.t )
+      (None,
+        [(None, None,
+           [([],
+              (Gram.mk_action
+                 (fun (_loc : FanLoc.t)  ->
+                    (Ast.TyNil _loc : 'opt_class_self_type ))));
+           ([`Skeyword "(";
+            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+            `Skeyword ")"],
+             (Gram.mk_action
+                (fun _  (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
+                   (t : 'opt_class_self_type ))))])]);
+    Gram.extend (type_constraint : 'type_constraint Gram.t )
+      (None,
+        [(None, None,
+           [([`Skeyword "constraint"],
+              (Gram.mk_action
+                 (fun _  (_loc : FanLoc.t)  -> (() : 'type_constraint ))));
+           ([`Skeyword "type"],
+             (Gram.mk_action
+                (fun _  (_loc : FanLoc.t)  -> (() : 'type_constraint ))))])]);
+    Gram.extend (meth_list : 'meth_list Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (meth_decl : 'meth_decl Gram.t ));
+             `Snterm (Gram.obj (opt_dot_dot : 'opt_dot_dot Gram.t ))],
+              (Gram.mk_action
+                 (fun (v : 'opt_dot_dot)  (m : 'meth_decl)  (_loc : FanLoc.t)
+                     -> ((m, v) : 'meth_list ))));
+           ([`Snterm (Gram.obj (meth_decl : 'meth_decl Gram.t ));
+            `Skeyword ";";
+            `Snterm (Gram.obj (opt_dot_dot : 'opt_dot_dot Gram.t ))],
+             (Gram.mk_action
+                (fun (v : 'opt_dot_dot)  _  (m : 'meth_decl) 
+                   (_loc : FanLoc.t)  -> ((m, v) : 'meth_list ))));
+           ([`Snterm (Gram.obj (meth_decl : 'meth_decl Gram.t ));
+            `Skeyword ";";
+            `Sself],
+             (Gram.mk_action
+                (fun ((ml,v) : 'meth_list)  _  (m : 'meth_decl) 
+                   (_loc : FanLoc.t)  ->
+                   (((Ast.TySem (_loc, m, ml)), v) : 'meth_list ))))])]);
+    Gram.extend (meth_decl : 'meth_decl Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+             `Skeyword ":";
+             `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
+              (Gram.mk_action
+                 (fun (t : 'poly_type)  _  (lab : 'a_LIDENT) 
+                    (_loc : FanLoc.t)  ->
+                    (Ast.TyCol
+                       (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, lab)))), t) : 
+                    'meth_decl ))));
+           ([`Stoken
+               (((function | `QUOTATION _ -> true | _ -> false)),
+                 (`Normal, "`QUOTATION _"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `QUOTATION x ->
+                       (Quotation.expand _loc x DynAst.ctyp_tag : 'meth_decl )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ("list",_) -> true | _ -> false)),
+                 (`Normal, "`ANT (\"list\",_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT (("list" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp;" n s)) : 
+                       'meth_decl )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"typ" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'meth_decl )
+                   | _ -> assert false)))])]);
+    Gram.extend (opt_meth_list : 'opt_meth_list Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (opt_dot_dot : 'opt_dot_dot Gram.t ))],
+              (Gram.mk_action
+                 (fun (v : 'opt_dot_dot)  (_loc : FanLoc.t)  ->
+                    (Ast.TyObj (_loc, (Ast.TyNil _loc), v) : 'opt_meth_list ))));
+           ([`Snterm (Gram.obj (meth_list : 'meth_list Gram.t ))],
+             (Gram.mk_action
+                (fun ((ml,v) : 'meth_list)  (_loc : FanLoc.t)  ->
+                   (Ast.TyObj (_loc, ml, v) : 'opt_meth_list ))))])]);
+    Gram.extend (poly_type : 'poly_type Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+              (Gram.mk_action
+                 (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'poly_type ))))])]);
+    Gram.extend (package_type : 'package_type Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
+              (Gram.mk_action
+                 (fun (p : 'module_type)  (_loc : FanLoc.t)  ->
+                    (p : 'package_type ))))])]);
+    Gram.extend (unquoted_typevars : 'unquoted_typevars Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+              (Gram.mk_action
+                 (fun (i : 'a_ident)  (_loc : FanLoc.t)  ->
+                    (Ast.TyId (_loc, (Ast.IdLid (_loc, i))) : 'unquoted_typevars ))));
+           ([`Stoken
+               (((function | `QUOTATION _ -> true | _ -> false)),
+                 (`Normal, "`QUOTATION _"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `QUOTATION x ->
+                       (Quotation.expand _loc x DynAst.ctyp_tag : 'unquoted_typevars )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"typ" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'unquoted_typevars )
+                   | _ -> assert false)));
+           ([`Sself; `Sself],
+             (Gram.mk_action
+                (fun (t2 : 'unquoted_typevars)  (t1 : 'unquoted_typevars) 
+                   (_loc : FanLoc.t)  ->
+                   (Ast.TyApp (_loc, t1, t2) : 'unquoted_typevars ))))])]);
+    Gram.extend (row_field : 'row_field Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+              (Gram.mk_action
+                 (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'row_field ))));
+           ([`Skeyword "`";
+            `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+            `Skeyword "of";
+            `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'amp_ctyp)  _  (i : 'a_ident)  _  (_loc : FanLoc.t)
+                    ->
+                   (Ast.TyOf (_loc, (Ast.TyVrn (_loc, i)), t) : 'row_field ))));
+           ([`Skeyword "`";
+            `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+            `Skeyword "of";
+            `Skeyword "&";
+            `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'amp_ctyp)  _  _  (i : 'a_ident)  _ 
+                   (_loc : FanLoc.t)  ->
+                   (Ast.TyOfAmp (_loc, (Ast.TyVrn (_loc, i)), t) : 'row_field ))));
+           ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+             (Gram.mk_action
+                (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
+                   (Ast.TyVrn (_loc, i) : 'row_field ))));
+           ([`Sself; `Skeyword "|"; `Sself],
+             (Gram.mk_action
+                (fun (t2 : 'row_field)  _  (t1 : 'row_field) 
+                   (_loc : FanLoc.t)  ->
+                   (Ast.TyOr (_loc, t1, t2) : 'row_field ))));
+           ([`Stoken
+               (((function | `ANT ("list",_) -> true | _ -> false)),
+                 (`Normal, "`ANT (\"list\",_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT (("list" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp|" n s)) : 
+                       'row_field )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"typ" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'row_field )
+                   | _ -> assert false)))])]);
+    Gram.extend (amp_ctyp : 'amp_ctyp Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+              (Gram.mk_action
+                 (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'amp_ctyp ))));
+           ([`Stoken
+               (((function | `ANT ("list",_) -> true | _ -> false)),
+                 (`Normal, "`ANT (\"list\",_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT (("list" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp&" n s)) : 
+                       'amp_ctyp )
+                   | _ -> assert false)));
+           ([`Sself; `Skeyword "&"; `Sself],
+             (Gram.mk_action
+                (fun (t2 : 'amp_ctyp)  _  (t1 : 'amp_ctyp)  (_loc : FanLoc.t)
+                    -> (Ast.TyAmp (_loc, t1, t2) : 'amp_ctyp ))))])]);
+    Gram.extend (name_tags : 'name_tags Gram.t )
+      (None,
+        [(None, None,
+           [([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+              (Gram.mk_action
+                 (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
+                    (Ast.TyVrn (_loc, i) : 'name_tags ))));
+           ([`Sself; `Sself],
+             (Gram.mk_action
+                (fun (t2 : 'name_tags)  (t1 : 'name_tags)  (_loc : FanLoc.t) 
+                   -> (Ast.TyApp (_loc, t1, t2) : 'name_tags ))));
+           ([`Stoken
+               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"typ" as n),s) ->
+                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'name_tags )
+                   | _ -> assert false)))])]);
+    Gram.extend (opt_polyt : 'opt_polyt Gram.t )
+      (None,
+        [(None, None,
+           [([],
+              (Gram.mk_action
+                 (fun (_loc : FanLoc.t)  -> (Ast.TyNil _loc : 'opt_polyt ))));
+           ([`Skeyword ":";
+            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'poly_type)  _  (_loc : FanLoc.t)  ->
+                   (t : 'opt_polyt ))))])]);
     Gram.extend (type_declaration : 'type_declaration Gram.t )
       (None,
         [(None, None,
@@ -5918,418 +6280,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (i : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
                    (i : 'opt_as_lident ))))])]);
-    Gram.extend (opt_polyt : 'opt_polyt Gram.t )
-      (None,
-        [(None, None,
-           [([],
-              (Gram.mk_action
-                 (fun (_loc : FanLoc.t)  -> (Ast.TyNil _loc : 'opt_polyt ))));
-           ([`Skeyword ":";
-            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'poly_type)  _  (_loc : FanLoc.t)  ->
-                   (t : 'opt_polyt ))))])]);
-    Gram.extend (cvalue_binding : 'cvalue_binding Gram.t )
-      (None,
-        [(None, None,
-           [([`Skeyword ":>";
-             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-             `Skeyword "=";
-             `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-              (Gram.mk_action
-                 (fun (e : 'expr)  _  (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                    (Ast.ExCoe (_loc, e, (Ast.TyNil _loc), t) : 'cvalue_binding ))));
-           ([`Skeyword ":";
-            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ));
-            `Skeyword ":>";
-            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-            `Skeyword "=";
-            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  _  (t2 : 'ctyp)  _  (t : 'poly_type)  _ 
-                   (_loc : FanLoc.t)  ->
-                   (match t with
-                    | Ast.TyPol (_,_,_) ->
-                        raise (Stream.Error "unexpected polytype here")
-                    | _ -> Ast.ExCoe (_loc, e, t, t2) : 'cvalue_binding ))));
-           ([`Skeyword ":";
-            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ));
-            `Skeyword "=";
-            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  _  (t : 'poly_type)  _  (_loc : FanLoc.t) 
-                   -> (Ast.ExTyc (_loc, e, t) : 'cvalue_binding ))));
-           ([`Skeyword ":";
-            `Skeyword "type";
-            `Snterm
-              (Gram.obj (unquoted_typevars : 'unquoted_typevars Gram.t ));
-            `Skeyword ".";
-            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-            `Skeyword "=";
-            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  _  (t2 : 'ctyp)  _ 
-                   (t1 : 'unquoted_typevars)  _  _  (_loc : FanLoc.t)  ->
-                   (let u = Ast.TyPol (_loc, t1, t2) in
-                    Ast.ExTyc (_loc, e, u) : 'cvalue_binding ))));
-           ([`Skeyword "="; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->
-                   (e : 'cvalue_binding ))))])]);
     Gram.extend (label : 'label Gram.t )
       (None,
         [(None, None,
            [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
               (Gram.mk_action
                  (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  -> (i : 'label ))))])]);
-    Gram.extend (opt_class_self_type : 'opt_class_self_type Gram.t )
-      (None,
-        [(None, None,
-           [([],
-              (Gram.mk_action
-                 (fun (_loc : FanLoc.t)  ->
-                    (Ast.TyNil _loc : 'opt_class_self_type ))));
-           ([`Skeyword "(";
-            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-            `Skeyword ")"],
-             (Gram.mk_action
-                (fun _  (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                   (t : 'opt_class_self_type ))))])]);
-    Gram.extend (class_signature : 'class_signature Gram.t )
-      (None,
-        [(None, None,
-           [([`Slist0
-                (Gram.srules class_signature
-                   [([`Snterm
-                        (Gram.obj (class_sig_item : 'class_sig_item Gram.t ));
-                     `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                      (Gram.mk_action
-                         (fun _  (csg : 'class_sig_item)  (_loc : FanLoc.t) 
-                            -> (csg : 'e__21 ))))])],
-              (Gram.mk_action
-                 (fun (l : 'e__21 list)  (_loc : FanLoc.t)  ->
-                    (Ast.cgSem_of_list l : 'class_signature ))));
-           ([`Stoken
-               (((function
-                  | `ANT ((""|"csg"|"anti"|"list"),_) -> true
-                  | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"csg\"|\"anti\"|\"list\"),_)"));
-            `Snterm (Gram.obj (semi : 'semi Gram.t ));
-            `Sself],
-             (Gram.mk_action
-                (fun (csg : 'class_signature)  _  __camlp4_0 
-                   (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"csg"|"anti"|"list" as n),s) ->
-                       (Ast.CgSem
-                          (_loc,
-                            (Ast.CgAnt
-                               (_loc, (mk_anti ~c:"class_sig_item" n s))),
-                            csg) : 'class_signature )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function
-                  | `ANT ((""|"csg"|"anti"|"list"),_) -> true
-                  | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"csg\"|\"anti\"|\"list\"),_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"csg"|"anti"|"list" as n),s) ->
-                       (Ast.CgAnt (_loc, (mk_anti ~c:"class_sig_item" n s)) : 
-                       'class_signature )
-                   | _ -> assert false)))])]);
-    Gram.extend (class_sig_item : 'class_sig_item Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (type_constraint : 'type_constraint Gram.t ));
-             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-             `Skeyword "=";
-             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-              (Gram.mk_action
-                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                    (Ast.CgCtr (_loc, t1, t2) : 'class_sig_item ))));
-           ([`Skeyword "method";
-            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
-            `Skeyword "virtual";
-            `Snterm (Gram.obj (label : 'label Gram.t ));
-            `Skeyword ":";
-            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'poly_type)  _  (l : 'label)  _ 
-                   (pf : 'opt_private)  _  (_loc : FanLoc.t)  ->
-                   (Ast.CgVir (_loc, l, pf, t) : 'class_sig_item ))));
-           ([`Skeyword "method";
-            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
-            `Snterm (Gram.obj (label : 'label Gram.t ));
-            `Skeyword ":";
-            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'poly_type)  _  (l : 'label)  (pf : 'opt_private) 
-                   _  (_loc : FanLoc.t)  ->
-                   (Ast.CgMth (_loc, l, pf, t) : 'class_sig_item ))));
-           ([`Skeyword "method";
-            `Skeyword "virtual";
-            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
-            `Snterm (Gram.obj (label : 'label Gram.t ));
-            `Skeyword ":";
-            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'poly_type)  _  (l : 'label)  (pf : 'opt_private) 
-                   _  _  (_loc : FanLoc.t)  ->
-                   (Ast.CgVir (_loc, l, pf, t) : 'class_sig_item ))));
-           ([`Skeyword "val";
-            `Snterm (Gram.obj (opt_mutable : 'opt_mutable Gram.t ));
-            `Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
-            `Snterm (Gram.obj (label : 'label Gram.t ));
-            `Skeyword ":";
-            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'ctyp)  _  (l : 'label)  (mv : 'opt_virtual) 
-                   (mf : 'opt_mutable)  _  (_loc : FanLoc.t)  ->
-                   (Ast.CgVal (_loc, l, mf, mv, t) : 'class_sig_item ))));
-           ([`Skeyword "inherit";
-            `Snterm (Gram.obj (class_type : 'class_type Gram.t ))],
-             (Gram.mk_action
-                (fun (cs : 'class_type)  _  (_loc : FanLoc.t)  ->
-                   (Ast.CgInh (_loc, cs) : 'class_sig_item ))));
-           ([`Stoken
-               (((function | `QUOTATION _ -> true | _ -> false)),
-                 (`Normal, "`QUOTATION _"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `QUOTATION x ->
-                       (Quotation.expand _loc x DynAst.class_sig_item_tag : 
-                       'class_sig_item )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function
-                  | `ANT ((""|"csg"|"anti"|"list"),_) -> true
-                  | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"csg\"|\"anti\"|\"list\"),_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"csg"|"anti"|"list" as n),s) ->
-                       (Ast.CgAnt (_loc, (mk_anti ~c:"class_sig_item" n s)) : 
-                       'class_sig_item )
-                   | _ -> assert false)))])]);
-    Gram.extend (type_constraint : 'type_constraint Gram.t )
-      (None,
-        [(None, None,
-           [([`Skeyword "constraint"],
-              (Gram.mk_action
-                 (fun _  (_loc : FanLoc.t)  -> (() : 'type_constraint ))));
-           ([`Skeyword "type"],
-             (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (() : 'type_constraint ))))])]);
-    Gram.extend (meth_list : 'meth_list Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (meth_decl : 'meth_decl Gram.t ));
-             `Snterm (Gram.obj (opt_dot_dot : 'opt_dot_dot Gram.t ))],
-              (Gram.mk_action
-                 (fun (v : 'opt_dot_dot)  (m : 'meth_decl)  (_loc : FanLoc.t)
-                     -> ((m, v) : 'meth_list ))));
-           ([`Snterm (Gram.obj (meth_decl : 'meth_decl Gram.t ));
-            `Skeyword ";";
-            `Snterm (Gram.obj (opt_dot_dot : 'opt_dot_dot Gram.t ))],
-             (Gram.mk_action
-                (fun (v : 'opt_dot_dot)  _  (m : 'meth_decl) 
-                   (_loc : FanLoc.t)  -> ((m, v) : 'meth_list ))));
-           ([`Snterm (Gram.obj (meth_decl : 'meth_decl Gram.t ));
-            `Skeyword ";";
-            `Sself],
-             (Gram.mk_action
-                (fun ((ml,v) : 'meth_list)  _  (m : 'meth_decl) 
-                   (_loc : FanLoc.t)  ->
-                   (((Ast.TySem (_loc, m, ml)), v) : 'meth_list ))))])]);
-    Gram.extend (meth_decl : 'meth_decl Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
-             `Skeyword ":";
-             `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
-              (Gram.mk_action
-                 (fun (t : 'poly_type)  _  (lab : 'a_LIDENT) 
-                    (_loc : FanLoc.t)  ->
-                    (Ast.TyCol
-                       (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, lab)))), t) : 
-                    'meth_decl ))));
-           ([`Stoken
-               (((function | `QUOTATION _ -> true | _ -> false)),
-                 (`Normal, "`QUOTATION _"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `QUOTATION x ->
-                       (Quotation.expand _loc x DynAst.ctyp_tag : 'meth_decl )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ("list",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"list\",_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT (("list" as n),s) ->
-                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp;" n s)) : 
-                       'meth_decl )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"typ" as n),s) ->
-                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'meth_decl )
-                   | _ -> assert false)))])]);
-    Gram.extend (opt_meth_list : 'opt_meth_list Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (opt_dot_dot : 'opt_dot_dot Gram.t ))],
-              (Gram.mk_action
-                 (fun (v : 'opt_dot_dot)  (_loc : FanLoc.t)  ->
-                    (Ast.TyObj (_loc, (Ast.TyNil _loc), v) : 'opt_meth_list ))));
-           ([`Snterm (Gram.obj (meth_list : 'meth_list Gram.t ))],
-             (Gram.mk_action
-                (fun ((ml,v) : 'meth_list)  (_loc : FanLoc.t)  ->
-                   (Ast.TyObj (_loc, ml, v) : 'opt_meth_list ))))])]);
-    Gram.extend (poly_type : 'poly_type Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-              (Gram.mk_action
-                 (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'poly_type ))))])]);
-    Gram.extend (package_type : 'package_type Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
-              (Gram.mk_action
-                 (fun (p : 'module_type)  (_loc : FanLoc.t)  ->
-                    (p : 'package_type ))))])]);
-    Gram.extend (unquoted_typevars : 'unquoted_typevars Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
-              (Gram.mk_action
-                 (fun (i : 'a_ident)  (_loc : FanLoc.t)  ->
-                    (Ast.TyId (_loc, (Ast.IdLid (_loc, i))) : 'unquoted_typevars ))));
-           ([`Stoken
-               (((function | `QUOTATION _ -> true | _ -> false)),
-                 (`Normal, "`QUOTATION _"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `QUOTATION x ->
-                       (Quotation.expand _loc x DynAst.ctyp_tag : 'unquoted_typevars )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"typ" as n),s) ->
-                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'unquoted_typevars )
-                   | _ -> assert false)));
-           ([`Sself; `Sself],
-             (Gram.mk_action
-                (fun (t2 : 'unquoted_typevars)  (t1 : 'unquoted_typevars) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.TyApp (_loc, t1, t2) : 'unquoted_typevars ))))])]);
-    Gram.extend (row_field : 'row_field Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-              (Gram.mk_action
-                 (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'row_field ))));
-           ([`Skeyword "`";
-            `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
-            `Skeyword "of";
-            `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'amp_ctyp)  _  (i : 'a_ident)  _  (_loc : FanLoc.t)
-                    ->
-                   (Ast.TyOf (_loc, (Ast.TyVrn (_loc, i)), t) : 'row_field ))));
-           ([`Skeyword "`";
-            `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
-            `Skeyword "of";
-            `Skeyword "&";
-            `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'amp_ctyp)  _  _  (i : 'a_ident)  _ 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.TyOfAmp (_loc, (Ast.TyVrn (_loc, i)), t) : 'row_field ))));
-           ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
-             (Gram.mk_action
-                (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
-                   (Ast.TyVrn (_loc, i) : 'row_field ))));
-           ([`Sself; `Skeyword "|"; `Sself],
-             (Gram.mk_action
-                (fun (t2 : 'row_field)  _  (t1 : 'row_field) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.TyOr (_loc, t1, t2) : 'row_field ))));
-           ([`Stoken
-               (((function | `ANT ("list",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"list\",_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT (("list" as n),s) ->
-                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp|" n s)) : 
-                       'row_field )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"typ" as n),s) ->
-                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'row_field )
-                   | _ -> assert false)))])]);
-    Gram.extend (amp_ctyp : 'amp_ctyp Gram.t )
-      (None,
-        [(None, None,
-           [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-              (Gram.mk_action
-                 (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'amp_ctyp ))));
-           ([`Stoken
-               (((function | `ANT ("list",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"list\",_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT (("list" as n),s) ->
-                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp&" n s)) : 
-                       'amp_ctyp )
-                   | _ -> assert false)));
-           ([`Sself; `Skeyword "&"; `Sself],
-             (Gram.mk_action
-                (fun (t2 : 'amp_ctyp)  _  (t1 : 'amp_ctyp)  (_loc : FanLoc.t)
-                    -> (Ast.TyAmp (_loc, t1, t2) : 'amp_ctyp ))))])]);
-    Gram.extend (name_tags : 'name_tags Gram.t )
-      (None,
-        [(None, None,
-           [([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
-              (Gram.mk_action
-                 (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
-                    (Ast.TyVrn (_loc, i) : 'name_tags ))));
-           ([`Sself; `Sself],
-             (Gram.mk_action
-                (fun (t2 : 'name_tags)  (t1 : 'name_tags)  (_loc : FanLoc.t) 
-                   -> (Ast.TyApp (_loc, t1, t2) : 'name_tags ))));
-           ([`Stoken
-               (((function | `ANT ((""|"typ"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"typ\"),_)"))],
-             (Gram.mk_action
-                (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                   match __camlp4_0 with
-                   | `ANT ((""|"typ" as n),s) ->
-                       (Ast.TyAnt (_loc, (mk_anti ~c:"ctyp" n s)) : 'name_tags )
-                   | _ -> assert false)))])]);
     Gram.extend (direction_flag : 'direction_flag Gram.t )
       (None,
         [(None, None,
@@ -6772,26 +6728,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   | `ANT ((""|"id"|"anti"|"list" as n),s) ->
                       (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 'ident_quot )
                   | _ -> assert false)))])]);
-    Gram.extend (class_sig_item_quot : 'class_sig_item_quot Gram.t )
-      (None,
-        [(None, None,
-           [([],
-              (Gram.mk_action
-                 (fun (_loc : FanLoc.t)  ->
-                    (Ast.CgNil _loc : 'class_sig_item_quot ))));
-           ([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ))],
-             (Gram.mk_action
-                (fun (x : 'class_sig_item)  (_loc : FanLoc.t)  ->
-                   (x : 'class_sig_item_quot ))));
-           ([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ));
-            `Snterm (Gram.obj (semi : 'semi Gram.t ));
-            `Sself],
-             (Gram.mk_action
-                (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) 
-                   (_loc : FanLoc.t)  ->
-                   (match x2 with
-                    | Ast.CgNil _ -> x1
-                    | _ -> Ast.CgSem (_loc, x1, x2) : 'class_sig_item_quot ))))])]);
     Gram.extend (rec_flag_quot : 'rec_flag_quot Gram.t )
       (None,
         [(None, None,
@@ -6898,9 +6834,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (st : 'str_item)  (_loc : FanLoc.t)  ->
-                            (st : 'e__22 ))))])],
+                            (st : 'e__21 ))))])],
               (Gram.mk_action
-                 (fun (l : 'e__22 list)  (_loc : FanLoc.t)  ->
+                 (fun (l : 'e__21 list)  (_loc : FanLoc.t)  ->
                     (Ast.stSem_of_list l : 'str_items ))));
            ([`Stoken
                (((function
@@ -7138,6 +7074,147 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (t : 'constructor_declaration)  _  (_loc : FanLoc.t)  ->
                    (Ast.StExc (_loc, t, Ast.ONone) : 'str_item ))))])])
+  let _ =
+    Gram.extend (class_sig_item_quot : 'class_sig_item_quot Gram.t )
+      (None,
+        [(None, None,
+           [([],
+              (Gram.mk_action
+                 (fun (_loc : FanLoc.t)  ->
+                    (Ast.CgNil _loc : 'class_sig_item_quot ))));
+           ([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ))],
+             (Gram.mk_action
+                (fun (x : 'class_sig_item)  (_loc : FanLoc.t)  ->
+                   (x : 'class_sig_item_quot ))));
+           ([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ));
+            `Snterm (Gram.obj (semi : 'semi Gram.t ));
+            `Sself],
+             (Gram.mk_action
+                (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) 
+                   (_loc : FanLoc.t)  ->
+                   (match x2 with
+                    | Ast.CgNil _ -> x1
+                    | _ -> Ast.CgSem (_loc, x1, x2) : 'class_sig_item_quot ))))])]);
+    Gram.extend (class_signature : 'class_signature Gram.t )
+      (None,
+        [(None, None,
+           [([`Slist0
+                (Gram.srules class_signature
+                   [([`Snterm
+                        (Gram.obj (class_sig_item : 'class_sig_item Gram.t ));
+                     `Snterm (Gram.obj (semi : 'semi Gram.t ))],
+                      (Gram.mk_action
+                         (fun _  (csg : 'class_sig_item)  (_loc : FanLoc.t) 
+                            -> (csg : 'e__22 ))))])],
+              (Gram.mk_action
+                 (fun (l : 'e__22 list)  (_loc : FanLoc.t)  ->
+                    (Ast.cgSem_of_list l : 'class_signature ))));
+           ([`Stoken
+               (((function
+                  | `ANT ((""|"csg"|"anti"|"list"),_) -> true
+                  | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"csg\"|\"anti\"|\"list\"),_)"));
+            `Snterm (Gram.obj (semi : 'semi Gram.t ));
+            `Sself],
+             (Gram.mk_action
+                (fun (csg : 'class_signature)  _  __camlp4_0 
+                   (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"csg"|"anti"|"list" as n),s) ->
+                       (Ast.CgSem
+                          (_loc,
+                            (Ast.CgAnt
+                               (_loc, (mk_anti ~c:"class_sig_item" n s))),
+                            csg) : 'class_signature )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function
+                  | `ANT ((""|"csg"|"anti"|"list"),_) -> true
+                  | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"csg\"|\"anti\"|\"list\"),_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"csg"|"anti"|"list" as n),s) ->
+                       (Ast.CgAnt (_loc, (mk_anti ~c:"class_sig_item" n s)) : 
+                       'class_signature )
+                   | _ -> assert false)))])]);
+    Gram.extend (class_sig_item : 'class_sig_item Gram.t )
+      (None,
+        [(None, None,
+           [([`Snterm (Gram.obj (type_constraint : 'type_constraint Gram.t ));
+             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+             `Skeyword "=";
+             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+              (Gram.mk_action
+                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
+                    (Ast.CgCtr (_loc, t1, t2) : 'class_sig_item ))));
+           ([`Skeyword "method";
+            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
+            `Skeyword "virtual";
+            `Snterm (Gram.obj (label : 'label Gram.t ));
+            `Skeyword ":";
+            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'poly_type)  _  (l : 'label)  _ 
+                   (pf : 'opt_private)  _  (_loc : FanLoc.t)  ->
+                   (Ast.CgVir (_loc, l, pf, t) : 'class_sig_item ))));
+           ([`Skeyword "method";
+            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
+            `Snterm (Gram.obj (label : 'label Gram.t ));
+            `Skeyword ":";
+            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'poly_type)  _  (l : 'label)  (pf : 'opt_private) 
+                   _  (_loc : FanLoc.t)  ->
+                   (Ast.CgMth (_loc, l, pf, t) : 'class_sig_item ))));
+           ([`Skeyword "method";
+            `Skeyword "virtual";
+            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
+            `Snterm (Gram.obj (label : 'label Gram.t ));
+            `Skeyword ":";
+            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'poly_type)  _  (l : 'label)  (pf : 'opt_private) 
+                   _  _  (_loc : FanLoc.t)  ->
+                   (Ast.CgVir (_loc, l, pf, t) : 'class_sig_item ))));
+           ([`Skeyword "val";
+            `Snterm (Gram.obj (opt_mutable : 'opt_mutable Gram.t ));
+            `Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
+            `Snterm (Gram.obj (label : 'label Gram.t ));
+            `Skeyword ":";
+            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'ctyp)  _  (l : 'label)  (mv : 'opt_virtual) 
+                   (mf : 'opt_mutable)  _  (_loc : FanLoc.t)  ->
+                   (Ast.CgVal (_loc, l, mf, mv, t) : 'class_sig_item ))));
+           ([`Skeyword "inherit";
+            `Snterm (Gram.obj (class_type : 'class_type Gram.t ))],
+             (Gram.mk_action
+                (fun (cs : 'class_type)  _  (_loc : FanLoc.t)  ->
+                   (Ast.CgInh (_loc, cs) : 'class_sig_item ))));
+           ([`Stoken
+               (((function | `QUOTATION _ -> true | _ -> false)),
+                 (`Normal, "`QUOTATION _"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `QUOTATION x ->
+                       (Quotation.expand _loc x DynAst.class_sig_item_tag : 
+                       'class_sig_item )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function
+                  | `ANT ((""|"csg"|"anti"|"list"),_) -> true
+                  | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"csg\"|\"anti\"|\"list\"),_)"))],
+             (Gram.mk_action
+                (fun __camlp4_0  (_loc : FanLoc.t)  ->
+                   match __camlp4_0 with
+                   | `ANT ((""|"csg"|"anti"|"list" as n),s) ->
+                       (Ast.CgAnt (_loc, (mk_anti ~c:"class_sig_item" n s)) : 
+                       'class_sig_item )
+                   | _ -> assert false)))])])
   let _ =
     Gram.extend (class_structure : 'class_structure Gram.t )
       (None,

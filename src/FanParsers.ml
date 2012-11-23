@@ -160,9 +160,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     position:
       [ `UID ("First"|"Last" as x ) ->   {:expr| `$uid:x |}
       | `UID ("Before" | "After" | "Level" as x) ; string{n} ->
-            {:expr| `$uid:x  $n |}     ]
+            {:expr| `$uid:x  $n |}
+      | `UID x -> failwithf "%x is not the right position:(First|Last) or (Before|After|Level)" x]
     level_list:
-      [ "{"; L0 level (* SEP "|" *) {ll}; "}" -> ll
+      [ "{"; L0 level {ll}; "}" -> ll
       | level {l} -> [l]]
     level:
       [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->
@@ -170,7 +171,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     assoc:
       [ `UID ("LA"|"RA"|"NA" as x) ->
          {:expr| `$uid:x |} 
-       | `UID x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
+      | `UID x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
     rule_list:
       [ "["; "]" -> []
       | "["; L1 rule SEP "|"{rules}; "]" ->  retype_rule_list_without_patterns _loc rules ]
@@ -801,25 +802,21 @@ New syntax:\
   with "with_constr"
       {:extend|Gram
         with_constr_quot:
-        [ with_constr{x} -> x
-        | -> {||} ]
+        [ with_constr{x} -> x  | -> {||} ]
         with_constr: 
         [ S{wc1}; "and"; S{wc2} -> {| $wc1 and $wc2 |}
-        | `ANT ((""|"with_constr"|"anti"|"list" as n),s) ->
-         {| $(anti:mk_anti ~c:"with_constr" n s) |}
+        | `ANT ((""|"with_constr"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"with_constr" n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.with_constr_tag
         | "type"; `ANT ((""|"typ"|"anti" as n),s); "="; ctyp{t} ->
             {| type $(anti:mk_anti ~c:"ctyp" n s) = $t |}
-        | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->
-            {| type $t1 = $t2 |}
-        | "module"; module_longident{i1}; "="; module_longident_with_app{i2} ->
-            {| module $i1 = $i2 |}
         | "type"; `ANT ((""|"typ"|"anti" as n),s); ":="; ctyp{t} ->
             {| type $(anti:mk_anti ~c:"ctyp" n s) := $t |}
-        | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->
-            {| type $t1 := $t2 |}
-        | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} ->
-            {| module $i1 := $i2 |} ] |};
+        | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->
+            (* we hope to know the initial token, so we can override some behavior by sub-non-terminals *)
+            {| type $t1 = $t2 |}
+        | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->         {| type $t1 := $t2 |}
+        | "module"; module_longident{i1}; "="; module_longident_with_app{i2} -> {| module $i1 = $i2 |}
+        | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} -> {| module $i1 := $i2 |} ] |};
   with "module_type"
     {:extend|Gram
       module_type:
@@ -827,10 +824,9 @@ New syntax:\
         [ "functor"; "("; a_UIDENT{i}; ":"; S{t}; ")"; "->"; S{mt} ->
             {| functor ( $i : $t ) -> $mt |} ]
         "with"
-        [ S{mt}; "with"; with_constr{wc} ->
-            {| $mt with $wc |} ]
+        [ S{mt}; "with"; with_constr{wc} ->  {| $mt with $wc |} ]
         "apply"
-        [ S{mt1}; S{mt2}; dummy -> ModuleType.app mt1 mt2 ]
+        [ S{mt1}; S{mt2}(* ; dummy *) ->  ModuleType.app mt1 mt2 ]
         "."
         [ S{mt1}; "."; S{mt2} -> ModuleType.acc mt1 mt2 ]
         "sig"
@@ -843,8 +839,7 @@ New syntax:\
         | module_longident_with_app{i} -> {| $id:i |}
         | "'"; a_ident{i} -> {| ' $i |}
         | "("; S{mt}; ")" -> {| $mt |}
-        | "module"; "type"; "of"; module_expr{me} ->
-            {| module type of $me |} ] }
+        | "module"; "type"; "of"; module_expr{me} -> {| module type of $me |} ] }
       module_declaration:
       { RA
         [ ":"; module_type{mt} -> {| $mt |}

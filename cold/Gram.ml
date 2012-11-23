@@ -68,22 +68,17 @@ let extend = Insert.extend
 let levels_of_entry = Insert.levels_of_entry
 let eoi_entry entry =
   let entry_eoi = mk ((name entry) ^ "_eoi") in
-  let () =
-    extend (entry_eoi : 'entry_eoi t )
-      (None,
-        [(None, None,
-           [([srules entry_eoi
-                [([`Snterm (obj (entry : 'entry t ));
-                  `Stoken
-                    (((function | `EOI -> true | _ -> false)),
-                      (`Normal, "`EOI"))],
-                   (mk_action
-                      (fun __camlp4_0  (x : 'entry)  (_loc : FanLoc.t)  ->
-                         match __camlp4_0 with
-                         | `EOI -> (x : 'e__1 )
-                         | _ -> assert false)))]],
-              (mk_action
-                 (fun (x : 'e__1)  (_loc : FanLoc.t)  -> (x : 'entry_eoi ))))])]) in
+  extend (entry_eoi : 'entry_eoi t )
+    (None,
+      [(None, None,
+         [([`Snterm (obj (entry : 'entry t ));
+           `Stoken
+             (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
+            (mk_action
+               (fun __camlp4_0  (x : 'entry)  (_loc : FanLoc.t)  ->
+                  match __camlp4_0 with
+                  | `EOI -> (x : 'entry_eoi )
+                  | _ -> assert false)))])]);
   entry_eoi
 let find_level ?position  entry =
   match entry.edesc with
