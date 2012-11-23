@@ -1163,7 +1163,10 @@ Ptop_def
      b.
 
      solution:
-     copy the existing grammars only, and associate diffferent actions?
+     copy the existing grammars only, and associate diffferent
+     actions?
+
+  local nonterminals can be optimized aggressively   
 * Ast definition
   PaApp is im-precise
 

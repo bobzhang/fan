@@ -122,7 +122,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
          let () = grammar_module_name := old  in 
          {:expr| begin $list:es end|}   ] 
     delete_rules:
-     [ name{n} ;":"; "["; L1 [ L0 symbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]"
+     [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]"
        ->
          let rest = List.map (fun sl  ->
            let (e,b) = expr_of_delete_rule _loc n sl in
@@ -286,14 +286,12 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
 
-   {:delete|Gram expr: [ "["; sem_expr_for_list; "]"] |};
-
-
+  {:delete|Gram expr: [ "["; sem_expr_for_list; "]"] |};
 
   {:extend.create|Gram comprehension_or_sem_expr_for_list |}  ;
 
-    {:extend| Gram
-      local: item;
+  {:extend| Gram
+    local: item;
     expr: Level "simple"
      [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ]
     comprehension_or_sem_expr_for_list:
@@ -735,6 +733,9 @@ New syntax:\
 
   with "module_expr"
   {:extend|Gram
+      module_expr_quot:
+      [ module_expr{x} -> x
+      | -> {||} ]
       module_binding0:
       { RA
         [ "("; a_UIDENT{m}; ":"; module_type{mt}; ")"; S{mb} ->
@@ -742,9 +743,6 @@ New syntax:\
         | ":"; module_type{mt}; "="; module_expr{me} ->
             {| ( $me : $mt ) |}
         | "="; module_expr{me} -> {| $me |} ] }
-      module_expr_quot:
-      [ module_expr{x} -> x
-      | -> {||} ]
       module_expr:
       { "top"
         [ "functor"; "("; a_UIDENT{i}; ":"; module_type{t}; ")"; "->"; S{me} ->
@@ -765,27 +763,26 @@ New syntax:\
         | "("; "val"; expr{e}; ")" -> (* val *)
             {| (val $e) |}  (* first class modules *)
         | "("; "val"; expr{e}; ":"; package_type{p}; ")" ->
-            {| (val $e : $p) |} ] }
-    |};
+            {| (val $e : $p) |} ] } |};
 
   with "module_binding"
       {:extend|Gram
         module_binding_quot:
         [ S{b1}; "and"; S{b2} ->  {| $b1 and $b2 |}
-        | `ANT (("module_binding"|"anti" as n),s) ->
-            {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | `ANT (("" as n),s) ->
-            {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | `ANT (("" as n),m); ":"; module_type{mt} ->
-            {| $(mk_anti n m) : $mt |}
-        | `ANT (("" as n),m); ":"; module_type{mt}; "="; module_expr{me} ->
-            {| $(mk_anti n m) : $mt = $me |}
+        | `ANT (("module_binding"|"anti" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
+        | `ANT (("" as n),s) ->   {| $(anti:mk_anti ~c:"module_binding" n s) |}
+
         | a_UIDENT{m}; ":"; module_type{mt} ->  {| $m : $mt |}
+
+        | `ANT (("" as n),m); ":"; module_type{mt} -> {| $(mk_anti n m) : $mt |}              
+        | `ANT (("" as n),m); ":"; module_type{mt}; "="; module_expr{me} -> {| $(mk_anti n m) : $mt = $me |}
+              
         | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} ->  {| $m : $mt = $me |}
         | -> {||} ]
+
+        (* {:module_binding| $lid:m : $m1 = $m2 |} *)
         module_binding:
-        [ S{b1}; "and"; S{b2} ->
-            {| $b1 and $b2 |}
+        [ S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
         | `ANT (("module_binding"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"module_binding" n s) |}
         | `ANT (("" as n),s) ->
@@ -793,15 +790,13 @@ New syntax:\
         | `ANT (("" as n),m); ":"; module_type{mt}; "="; module_expr{me} ->
             {| $(mk_anti n m) : $mt = $me |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
-        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} ->
-            {| $m : $mt = $me |} ]
-    module_rec_declaration:
-      [ S{m1}; "and"; S{m2} -> {| $m1 and $m2 |}
-      | `ANT ((""|"module_binding"|"anti"|"list" as n),s) ->
-          {| $(anti:mk_anti ~c:"module_binding" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
-      | a_UIDENT{m}; ":"; module_type{mt} -> {| $m : $mt |} ]
-     |};
+        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} -> {| $m : $mt = $me |} ]
+        module_rec_declaration:
+        [ S{m1}; "and"; S{m2} -> {| $m1 and $m2 |}
+        | `ANT ((""|"module_binding"|"anti"|"list" as n),s) ->
+            {| $(anti:mk_anti ~c:"module_binding" n s) |}
+        | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
+        | a_UIDENT{m}; ":"; module_type{mt} -> {| $m : $mt |} ] |};
 
   with "with_constr"
       {:extend|Gram
@@ -861,56 +856,51 @@ New syntax:\
   {:extend|Gram
         (* mli entrance *)    
     interf:
-        [ "#"; a_LIDENT{n}; opt_expr{dp}; (* semi  *) ";;" ->
-            ([ {| # $n $dp |} ], stopped_at _loc)
-          (* Ast.SgDir(_loc,n,dp), stopped is of type FanLoc.t option *)
-        | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
-        | `EOI -> ([], None) ]
+    [ "#"; a_LIDENT{n}; opt_expr{dp}; (* semi  *) ";;" -> ([ {| # $n $dp |} ], stopped_at _loc)
+        (* Ast.SgDir(_loc,n,dp), stopped is of type FanLoc.t option *)
+    | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
+    | `EOI -> ([], None) ]
     sig_items:
-        [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti n ~c:"sig_item" s) |}
-        | `ANT ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->
-            {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
-        | L0 [ sig_item{sg}; semi -> sg ]{l} -> Ast.sgSem_of_list l  ]
-        sig_item_quot:
-        [ "#"; a_LIDENT{n}; opt_expr{dp} -> {| # $n $dp |}
-        | sig_item{sg1}; semi; S{sg2} ->
-            match sg2 with
-            [ {||} -> sg1
-            | _ -> {| $sg1; $sg2 |} ]
-        | sig_item{sg} -> sg
-        | -> {||} ]
+    [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti n ~c:"sig_item" s) |}
+    | `ANT ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->
+        {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
+    | L0 [ sig_item{sg}; semi -> sg ]{l} -> Ast.sgSem_of_list l  ]
+    sig_item_quot:
+    [ "#"; a_LIDENT{n}; opt_expr{dp} -> {| # $n $dp |}
+    | sig_item{sg1}; semi; S{sg2} ->
+        match sg2 with
+        [ {||} -> sg1
+        | _ -> {| $sg1; $sg2 |} ]
+    | sig_item{sg} -> sg
+    | -> {||} ]
     sig_item:
-      [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"sig_item" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.sig_item_tag
-      | "exception"; constructor_declaration{t} ->
-          {| exception $t |}
-      | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} ->
-          {| external $i : $t = $sl |}
-      | "include"; module_type{mt} -> {| include $mt |}
-      | "module"; a_UIDENT{i}; module_declaration{mt} ->
-          {| module $i : $mt |}
-      | "module"; "rec"; module_rec_declaration{mb} ->
-          {| module rec $mb |}
-      | "module"; "type"; a_ident{i}; "="; module_type{mt} ->
-          {| module type $i = $mt |}
-      | "module"; "type"; a_ident{i} ->
-          {| module type $i |}
-      | "open"; module_longident{i} -> {| open $i |}
-      | "type"; type_declaration{t} ->
-          {| type $t |}
-      | "val"; a_LIDENT{i}; ":"; ctyp{t} ->
-          {| val $i : $t |}
-      | "class"; class_description{cd} ->
-          {| class $cd |}
-      | "class"; "type"; class_type_declaration{ctd} ->
-          {| class type $ctd |} ] |};
+    [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
+    | `QUOTATION x -> Quotation.expand _loc x DynAst.sig_item_tag
+    | "exception"; constructor_declaration{t} ->  {| exception $t |}
+    | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} -> {| external $i : $t = $sl |}
+    | "include"; module_type{mt} -> {| include $mt |}
+    | "module"; a_UIDENT{i}; module_declaration{mt} ->  {| module $i : $mt |}
+    | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
+    | "module"; "type"; a_ident{i}; "="; module_type{mt} ->  {| module type $i = $mt |}
+    | "module"; "type"; a_ident{i} ->  {| module type $i |}
+    | "open"; module_longident{i} -> {| open $i |}
+    | "type"; type_declaration{t} -> {| type $t |}
+    | "val"; a_LIDENT{i}; ":"; ctyp{t} ->  {| val $i : $t |}
+    | "class"; class_description{cd} ->    {| class $cd |}
+    | "class"; "type"; class_type_declaration{ctd} ->  {| class type $ctd |} ] |};
 
-
-    
     with "expr"
     {:extend|Gram
+      cvalue_binding:
+      [ "="; expr{e} -> e
+      | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; expr{e} -> 
+          let u = {:ctyp| ! $t1 . $t2 |} in  {| ($e : $u) |}
+      | ":"; poly_type{t}; "="; expr{e} -> {| ($e : $t) |}
+      | ":"; poly_type{t}; ":>"; ctyp{t2}; "="; expr{e} ->
+          match t with
+          [ {:ctyp| ! $_ . $_ |} -> raise (Stream.Error "unexpected polytype here")
+          | _ -> {| ($e : $t :> $t2) |} ]
+      | ":>"; ctyp{t}; "="; expr{e} -> {| ($e :> $t) |} ]
       lang:
       [ `STR(_,s) ->
         (let old = !Quotation.default in
@@ -930,19 +920,15 @@ New syntax:\
           | labeled_ipatt{p}; S{e} ->
               {| fun $p -> $e |}
           | cvalue_binding{bi} -> bi  ] }
-      
       opt_when_expr:
       [ "when"; expr{w} -> w  | -> {||}   ]
-      
       opt_expr:
       [ expr{e} -> e | -> {||} ]
-      
       expr_quot:
       [ expr{e1}; ","; comma_expr{e2} -> {| $e1, $e2 |}
       | expr{e1}; ";"; sem_expr{e2} -> {| $e1; $e2 |}
       | expr{e} -> e
       | -> {||} ]
-
       expr:
       { "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
@@ -964,14 +950,9 @@ New syntax:\
         | "with"; lang{old}; S{x} -> begin  Quotation.default := old; x  end
 
         | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do"; sequence{seq}; "done"
-          ->
-            {| for $i = $e1 $to:df $e2 do $seq done |}
-            (* {| for $i = $(Expr.mksequence' _loc e1) $to:df $(Expr.mksequence' _loc e2) do *)
-            (*    $seq *)
-            (* done |} *)
+          -> {| for $i = $e1 $to:df $e2 do $seq done |}
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
             {|while $e do $seq done |}
-            (* {| while $(Expr.mksequence' _loc e) do  $seq done |} *)
         | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
             {| object ($csp) $cst end |} ]
         "where"
@@ -983,8 +964,7 @@ New syntax:\
         | S{e1}; "<-"; S{e2}; dummy -> (* FIXME should be deleted in original syntax later? *)
             match Expr.bigarray_set _loc e1 e2 with
             [ Some e -> e
-            | None -> {| $e1 <- $e2 |} ]  
-        ]
+            | None -> {| $e1 <- $e2 |} ] ]
        "||" RA
         [ S{e1}; infixop6{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "&&" RA
@@ -1017,13 +997,10 @@ New syntax:\
        "label" NA
         [ "~"; a_LIDENT{i}; ":"; S{e} -> {| ~ $i : $e |}
         | "~"; a_LIDENT{i} -> {| ~ $i |}
-
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
         | `LABEL i; S{e} -> {| ~ $i : $e |}
-
         (* Same remark for ?a:b *)
         | `OPTLABEL i; S{e} -> {| ? $i : $e |}
-
         | "?"; a_LIDENT{i}; ":"; S{e} -> {| ? $i : $e |}
         | "?"; a_LIDENT{i} -> {| ? $i |} ]
        "." LA
@@ -1126,7 +1103,6 @@ New syntax:\
         |  labeled_ipatt{ p}; fun_def_cont{(w,e)} ->
             {| fun [ $p when $w -> $e ] |}
         | "->"; expr{e} -> e ] }  |};
-
   with "binding"
       {:extend|Gram
         binding_quot:
@@ -1140,8 +1116,7 @@ New syntax:\
         | S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
         | let_binding{b} -> b ] 
         let_binding:
-        [ ipatt{p}; fun_binding{e} -> {| $p = $e |} ]
-    |};
+        [ ipatt{p}; fun_binding{e} -> {| $p = $e |} ] |};
 
   with "match_case"
     {:extend|Gram
@@ -1162,6 +1137,7 @@ New syntax:\
       match_case_quot:
       [ L0 match_case0 SEP "|"{x} -> {| $list:x |}
       | -> {||} ]  |};
+    
   with "rec_binding"
       {:extend|Gram
         rec_binding_quot:
@@ -1194,6 +1170,7 @@ New syntax:\
         | label{l}; "=";  expr Level "top"{e} ->
             {| $lid:l = $e |} ]
     |};
+    
   with "patt"
     {:extend|Gram local: patt_constr;
        patt_as_patt_opt:
@@ -1223,9 +1200,10 @@ New syntax:\
            {| $i = $y |}
        | patt{x} -> x
        | -> {||} ]
-     patt_constr:
-      [module_longident{i} -> {| $id:i |}
-      |"`"; a_ident{s}  -> {| `$s|} ]
+
+       patt_constr:
+       [module_longident{i} -> {| $id:i |}
+       |"`"; a_ident{s}  -> {| `$s|} ]
        patt:
        { "|" LA
         [ S{p1}; "|"; S{p2} -> {| $p1 | $p2 |} ]
@@ -1363,57 +1341,91 @@ New syntax:\
     comma_ipatt:
         [ S{p1}; ","; S{p2} -> {| $p1, $p2 |}
         | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt," n s) |}
-        | ipatt{p} -> p ]
-
- |};
+        | ipatt{p} -> p ] |};
+    
     with "ctyp"
     {:extend|Gram
-    type_declaration:
-        [ `ANT ((""|"typ"|"anti" as n),s) ->
-            {| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | `ANT (("list" as n),s) ->
-            {| $(anti:mk_anti ~c:"ctypand" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
-        |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk};
-          L0 constrain{cl} -> Ast.TyDcl _loc n tpl tk cl ]
-    constrain:
-        [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
-    opt_eq_ctyp:
-        [ "="; type_kind{tk} -> tk | -> {||} ] 
-    type_kind: [ ctyp{t} -> t ] 
-    type_ident_and_parameters:
-        [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl) ]
-    type_longident_and_parameters:
-        [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |} ] 
-    type_parameters:
-        [ type_parameter{t1}; S{t2} ->
-            fun acc -> t2 {| $acc $t1 |}
-        | type_parameter{t} -> fun acc -> {| $acc $t |}
-        | -> fun t -> t  ]
-    type_parameter:
-        [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | "'"; a_ident{i} -> {| '$lid:i |}
-        | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
-        | "-"; "'"; a_ident{i} -> {| -'$lid:i |} ]
-    optional_type_parameter: (* overlapps with type_parameter *)
-        [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | "'"; a_ident{i} -> {| '$lid:i |}
-        | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
-        | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
-        | "+"; "_" -> Ast.TyAnP _loc   (* FIXME *)
-        | "-"; "_" -> Ast.TyAnM _loc  
-        | "_" -> {| _ |}  ]
-   typevars:
-        [ S{t1}; S{t2} -> {| $t1 $t2 |}
-        | `ANT ((""|"typ" as n),s) ->
-            {| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | `ANT(("list" as n),s) ->
-            {| $(anti:mk_anti ~c:"forall" n s)|}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | "'"; a_ident{i} -> {| '$lid:i |} ]
+      opt_class_self_type:
+      [ "("; ctyp{t}; ")" -> t
+      | -> {||} ]
+      type_constraint:
+      [ "type" | "constraint" -> () ] 
+      meth_list:
+      [ meth_decl{m}; ";"; S{(ml, v) }  -> ({| $m; $ml |}, v)
+      | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
+      | meth_decl{m}; opt_dot_dot{v}      -> (m, v)  ]
+      meth_decl:
+      [ `ANT ((""|"typ" as n),s)        -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `ANT (("list" as n),s)          -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
+      | `QUOTATION x                       -> Quotation.expand _loc x DynAst.ctyp_tag
+      | a_LIDENT{lab}; ":"; poly_type{t} -> {| $lid:lab : $t |} ]
+      opt_meth_list:
+      [ meth_list{(ml, v) } -> {| < $ml $(..:v) > |}
+      | opt_dot_dot{v}     -> {| < $(..:v) > |}  ]
+      poly_type: [ ctyp{t} -> t ]
+      package_type: [ module_type{p} -> p ] 
+      unquoted_typevars:
+      [ S{t1}; S{t2} -> {| $t1 $t2 |}
+      | `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | a_ident{i} -> {| $lid:i |}   ] 
+      row_field:
+      [ `ANT ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `ANT (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
+      | S{t1}; "|"; S{t2} -> {| $t1 | $t2 |}
+      | "`"; a_ident{i} -> {| `$i |}
+      | "`"; a_ident{i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
+      | "`"; a_ident{i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
+      | ctyp{t} -> t ] 
+      amp_ctyp:
+      [ S{t1}; "&"; S{t2} -> {| $t1 & $t2 |}
+      | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp&" n s) |}
+      | ctyp{t} -> t ]
+      name_tags:
+      [ `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | S{t1}; S{t2} -> {| $t1 $t2 |}
+      | "`"; a_ident{i} -> {| `$i |}  ]
+      opt_polyt:
+      [ ":"; poly_type{t} -> t  | -> {||} ]
+      type_declaration:
+      [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `ANT (("list" as n),s) ->          {| $(anti:mk_anti ~c:"ctypand" n s) |}
+      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
+      |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
+        -> Ast.TyDcl _loc n tpl tk cl ]
+      constrain:
+      [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
+      opt_eq_ctyp:
+      [ "="; type_kind{tk} -> tk | -> {||} ] 
+      type_kind: [ ctyp{t} -> t ] 
+      type_ident_and_parameters: [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl) ]
+      type_longident_and_parameters:[ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |} ] 
+      type_parameters:
+      [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
+      | type_parameter{t} -> fun acc -> {| $acc $t |}
+      | -> fun t -> t  ]
+      type_parameter:
+      [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
+      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | "'"; a_ident{i} -> {| '$lid:i |}
+      | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
+      | "-"; "'"; a_ident{i} -> {| -'$lid:i |} ]
+      optional_type_parameter: (* overlapps with type_parameter *)
+      [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
+      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | "'"; a_ident{i} -> {| '$lid:i |}
+      | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
+      | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
+      | "+"; "_" -> Ast.TyAnP _loc   (* FIXME *)
+      | "-"; "_" -> Ast.TyAnM _loc  
+      | "_" -> {| _ |}  ]
+      typevars:
+      [ S{t1}; S{t2} -> {| $t1 $t2 |}
+      | `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `ANT(("list" as n),s) ->     {| $(anti:mk_anti ~c:"forall" n s)|}
+      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | "'"; a_ident{i} -> {| '$lid:i |} ]
     ctyp:
       { "==" LA
         [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ]
@@ -1432,10 +1444,9 @@ New syntax:\
         | a_OPTLABEL{i}; S{t} ->  {| ? $i : $t |} ]
        "apply" LA
         [ S{t1}; S{t2} ->
-          (* let t = Ast.TyApp (_loc, t2, t1) in *)
-            let t = {| $t1 $t2 |} in
-            try {| $(id:Ast.ident_of_ctyp t) |}
-            with [ Invalid_argument _ -> t ]]
+          let t = {| $t1 $t2 |} in
+          try {| $(id:Ast.ident_of_ctyp t) |}
+          with [ Invalid_argument _ -> t ]]
        "." LA
         [ S{t1}; "."; S{t2} ->
             try {| $(id:Ast.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) |}
@@ -1547,27 +1558,23 @@ New syntax:\
     
     with "ident"
     {:extend|Gram
-    a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
-    ident:
-        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->
-           (* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*)
-            {| $(anti:mk_anti ~c:"ident" n s) |}
-        | a_UIDENT{i} -> {| $uid:i |}
-        | a_LIDENT{i} -> {| $lid:i |}
-        | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->
-            {| $(anti:mk_anti ~c:"ident" n s).$i |}
-        | a_UIDENT{i}; "."; S{j} -> {| $uid:i.$j |} ]
+      a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
+      ident:
+      [ `ANT ((""|"id"|"anti"|"list" as n),s) ->
+        (* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*)
+        {| $(anti:mk_anti ~c:"ident" n s) |}
+      | a_UIDENT{i} -> {| $uid:i |}
+      | a_LIDENT{i} -> {| $lid:i |}
+      | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
+      | a_UIDENT{i}; "."; S{j} -> {| $uid:i.$j |} ]
     module_longident_dot_lparen:
-        [ `ANT ((""|"id"|"anti"|"list" as n),s); "."; "(" ->
-            {| $(anti:mk_anti ~c:"ident" n s) |}
-        | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
-        | a_UIDENT{i}; "."; "(" -> {| $uid:i |} ]        
-        
+      [ `ANT ((""|"id"|"anti"|"list" as n),s); "."; "(" ->   {| $(anti:mk_anti ~c:"ident" n s) |}
+      | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
+      | a_UIDENT{i}; "."; "(" -> {| $uid:i |} ]        
     module_longident:
-        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"ident" n s) |}
-        | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
-        | a_UIDENT{i} -> {| $uid:i |} ]
+      [ `ANT ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
+      | a_UIDENT{i} -> {| $uid:i |} ]
     module_longident_with_app:
       { "apply"
         [ S{i}; S{j} -> {| $i $j |} ]
@@ -1578,7 +1585,6 @@ New syntax:\
             {| $(anti:mk_anti ~c:"ident" n s) |}
         | a_UIDENT{i} -> {| $uid:i |}
         | "("; S{i}; ")" -> i ] }
- 
     type_longident:
       { "apply"
         [ S{i}; S{j} -> {| $i $j |} ]
@@ -1599,211 +1605,105 @@ New syntax:\
       [ type_longident{x} -> x ]
     val_longident:
       [ ident{x} -> x ]
-    class_longident:
+      class_longident:
       [ label_longident{x} -> x ]
-
-
-    method_opt_override:
-        [ "method"; "!" -> {:override_flag| ! |}
-        | "method"; `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
-        | "method" -> {:override_flag||}  ] 
-    value_val_opt_override:
-        [ "val"; "!" -> {:override_flag| ! |}
-        | "val"; `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
-        | "val" -> {:override_flag||}   ] 
-    opt_as_lident:
-        [ "as"; a_LIDENT{i} -> i  | -> ""  ] 
-    opt_polyt:
-        [ ":"; poly_type{t} -> t  | -> {:ctyp||} ]
-    cvalue_binding "expr":
-        [ "="; expr{e} -> e
-        | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; expr{e} -> 
-         let u = {:ctyp| ! $t1 . $t2 |} in  {| ($e : $u) |}
-        | ":"; poly_type{t}; "="; expr{e} -> {| ($e : $t) |}
-        | ":"; poly_type{t}; ":>"; ctyp{t2}; "="; expr{e} ->
-            match t with
-            [ {:ctyp| ! $_ . $_ |} -> raise (Stream.Error "unexpected polytype here")
-            | _ -> {| ($e : $t :> $t2) |} ]
-        | ":>"; ctyp{t}; "="; expr{e} -> {| ($e :> $t) |} ] 
-    label:  [ a_LIDENT{i} -> i ]
-    
-    opt_class_self_type:
-        [ "("; ctyp{t}; ")" -> t
-        | -> {:ctyp||} ]
-    class_signature:
-        [ `ANT ((""|"csg"|"anti"|"list" as n),s) ->
-            {:class_sig_item| $(anti:mk_anti ~c:"class_sig_item" n s) |}
-        | `ANT ((""|"csg"|"anti"|"list" as n),s); semi; S{csg} ->
-            {:class_sig_item| $(anti:mk_anti ~c:"class_sig_item" n s); $csg |}
-        | L0 [ class_sig_item{csg}; semi -> csg ]{l} ->
-            Ast.cgSem_of_list l  ]
-    class_sig_item "class_sig_item":
-        [ `ANT ((""|"csg"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.class_sig_item_tag
-        | "inherit"; class_type{cs} ->
-            {| inherit $cs |}
-        | "val"; opt_mutable{mf}; opt_virtual{mv};
-          label{l}; ":"; ctyp{t} ->
-            {| val $mutable:mf $virtual:mv $l : $t |}
-        | "method"; "virtual"; opt_private{pf}; label{l}; ":"; poly_type{t} ->
-            {| method virtual $private:pf $l : $t |}
-        | "method"; opt_private{pf}; label{l}; ":"; poly_type{t} ->
-            {| method $private:pf $l : $t |}
-        | "method"; opt_private{pf}; "virtual"; label{l}; ":"; poly_type{t} ->
-            {| method virtual $private:pf $l : $t |}
-        | type_constraint; ctyp{t1}; "="; ctyp{t2} ->
-            {| type $t1 = $t2 |} ]
-    type_constraint:
-        [ "type" | "constraint" -> () ] 
-    meth_list:
-        [ meth_decl{m}; ";"; S{(ml, v) }  -> ({:ctyp| $m; $ml |}, v)
-        | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
-        | meth_decl{m}; opt_dot_dot{v}      -> (m, v)  ]
-    meth_decl:
-        [ `ANT ((""|"typ" as n),s)        -> {:ctyp| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | `ANT (("list" as n),s)          -> {:ctyp| $(anti:mk_anti ~c:"ctyp;" n s) |}
-        | `QUOTATION x                       -> Quotation.expand _loc x DynAst.ctyp_tag
-        | a_LIDENT{lab}; ":"; poly_type{t} -> {:ctyp| $lid:lab : $t |} ]
-    opt_meth_list:
-        [ meth_list{(ml, v) } -> {:ctyp| < $ml $(..:v) > |}
-        | opt_dot_dot{v}     -> {:ctyp| < $(..:v) > |}  ]
-    poly_type:
-        [ ctyp{t} -> t ]
-    package_type:
-        [ module_type{p} -> p ] 
-    
-    unquoted_typevars:
-        [ S{t1}; S{t2} -> {:ctyp| $t1 $t2 |}
-        | `ANT ((""|"typ" as n),s) ->
-            {:ctyp| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | a_ident{i} -> {:ctyp| $lid:i |}   ] 
-    row_field:
-        [ `ANT ((""|"typ" as n),s) ->
-            {:ctyp| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | `ANT (("list" as n),s) ->
-            {:ctyp| $(anti:mk_anti ~c:"ctyp|" n s) |}
-        | S{t1}; "|"; S{t2} -> {:ctyp| $t1 | $t2 |}
-        | "`"; a_ident{i} -> {:ctyp| `$i |}
-        | "`"; a_ident{i}; "of"; "&"; amp_ctyp{t} -> {:ctyp| `$i of & $t |}
-        | "`"; a_ident{i}; "of"; amp_ctyp{t} -> {:ctyp| `$i of $t |}
-        | ctyp{t} -> t ] 
-    amp_ctyp:
-        [ S{t1}; "&"; S{t2} -> {:ctyp| $t1 & $t2 |}
-        | `ANT (("list" as n),s) -> {:ctyp| $(anti:mk_anti ~c:"ctyp&" n s) |}
-        | ctyp{t} -> t ]
-    name_tags:
-        [ `ANT ((""|"typ" as n),s) ->
-            {:ctyp| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | S{t1}; S{t2} -> {:ctyp| $t1 $t2 |}
-        | "`"; a_ident{i} -> {:ctyp| `$i |}  ]
-
-    direction_flag:
-        [ "to" -> {:direction_flag| to |}
-        | "downto" -> {:direction_flag| downto |}
-        | `ANT (("to"|"anti" as n),s) -> Ast.DiAnt (mk_anti n s) ]
-    opt_private:
-        [ "private" -> {:private_flag| private |}
-        | `ANT (("private"|"anti" as n),s) -> Ast.PrAnt (mk_anti n s)
-        | -> {:private_flag||}  ] 
-    opt_mutable:
-        [ "mutable" -> {:mutable_flag| mutable |}
-        | `ANT (("mutable"|"anti" as n),s) -> Ast.MuAnt (mk_anti n s)
-        | -> {:mutable_flag||}  ] 
-    opt_virtual:
-        [ "virtual" -> {:virtual_flag| virtual |}
-        | `ANT (("virtual"|"anti" as n),s) -> Ast.ViAnt (mk_anti n s)
-        | -> {:virtual_flag||}  ] 
-    opt_dot_dot:
-        [ ".." -> {:row_var_flag| .. |}
-        | `ANT ((".."|"anti" as n),s) -> Ast.RvAnt (mk_anti n s)
-        | -> {:row_var_flag||}  ]
-    opt_rec:
-        [ "rec" -> {:rec_flag| rec |}
-        | `ANT (("rec"|"anti" as n),s) -> Ast.ReAnt (mk_anti n s)
-        | -> {:rec_flag||} ] 
-    opt_override:
-        [ "!" -> {:override_flag| ! |}
-        | `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
-        | -> {:override_flag||} ] 
-
-
-
-
-    
-    a_INT:
-        [ `ANT ((""|"int"|"`int" as n),s) -> mk_anti n s
-        | `INT (_, s) -> s ] 
-    a_INT32:
-        [ `ANT ((""|"int32"|"`int32" as n),s) -> mk_anti n s
-        | `INT32 (_, s) -> s ] 
-    a_INT64:
-        [ `ANT ((""|"int64"|"`int64" as n),s) -> mk_anti n s
-        | `INT64 (_, s) -> s ]
-    a_NATIVEINT:
-        [ `ANT ((""|"nativeint"|"`nativeint" as n),s) -> mk_anti n s
-        | `NATIVEINT (_, s) -> s ]
-    a_FLOAT:
-        [ `ANT ((""|"flo"|"`flo" as n),s) -> mk_anti n s
-        | `FLOAT (_, s) -> s ]
-    a_CHAR:
-        [ `ANT ((""|"chr"|"`chr" as n),s) -> mk_anti n s
-        | `CHAR (_, s) -> s ] 
-    a_UIDENT:
-        [ `ANT ((""|"uid" as n),s) -> mk_anti n s
-        | `UID s -> s ]
-    a_LIDENT:
-        [ `ANT ((""|"lid" as n),s) -> mk_anti n s
-        | `LID s -> s ] 
-    a_LABEL:
-        [ "~"; `ANT (("" as n),s); ":" -> mk_anti n s
-        | `LABEL s -> s ] 
-    a_OPTLABEL:
-        [ "?"; `ANT (("" as n),s); ":" -> mk_anti n s
-        | `OPTLABEL s -> s ] 
-    a_STRING:
-        [ `ANT ((""|"str"|"`str" as n),s) -> mk_anti n s
-        | `STR (_, s) -> s ] 
-    string_list:
-        [ `ANT ((""|"str_list"),s) -> Ast.LAnt (mk_anti "str_list" s)
-        | `STR (_, x); string_list{xs} -> Ast.LCons x xs
-        | `STR (_, x) -> Ast.LCons x Ast.LNil ] 
-    semi:
-        [ ";" -> () ]  
- 
- 
-    ident_quot "ident":
+      method_opt_override:
+      [ "method"; "!" -> {:override_flag| ! |}
+      | "method"; `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
+      | "method" -> {:override_flag||}  ] 
+      value_val_opt_override:
+      [ "val"; "!" -> {:override_flag| ! |}
+      | "val"; `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
+      | "val" -> {:override_flag||}   ] 
+      opt_as_lident:  [ "as"; a_LIDENT{i} -> i  | -> ""  ] 
+      label:[ a_LIDENT{i} -> i ]
+      direction_flag:
+      [ "to" -> {:direction_flag| to |}
+      | "downto" -> {:direction_flag| downto |}
+      | `ANT (("to"|"anti" as n),s) -> Ast.DiAnt (mk_anti n s) ]
+      opt_private:
+      [ "private" -> {:private_flag| private |}
+      | `ANT (("private"|"anti" as n),s) -> Ast.PrAnt (mk_anti n s)
+      | -> {:private_flag||}  ] 
+      opt_mutable:
+      [ "mutable" -> {:mutable_flag| mutable |}
+      | `ANT (("mutable"|"anti" as n),s) -> Ast.MuAnt (mk_anti n s)
+      | -> {:mutable_flag||}  ] 
+      opt_virtual:
+      [ "virtual" -> {:virtual_flag| virtual |}
+      | `ANT (("virtual"|"anti" as n),s) -> Ast.ViAnt (mk_anti n s)
+      | -> {:virtual_flag||}  ] 
+      opt_dot_dot:
+      [ ".." -> {:row_var_flag| .. |}
+      | `ANT ((".."|"anti" as n),s) -> Ast.RvAnt (mk_anti n s)
+      | -> {:row_var_flag||}  ]
+      opt_rec:
+      [ "rec" -> {:rec_flag| rec |}
+      | `ANT (("rec"|"anti" as n),s) -> Ast.ReAnt (mk_anti n s)
+      | -> {:rec_flag||} ] 
+      opt_override:
+      [ "!" -> {:override_flag| ! |}
+      | `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
+      | -> {:override_flag||} ] 
+      a_INT:
+      [ `ANT ((""|"int"|"`int" as n),s) -> mk_anti n s
+      | `INT (_, s) -> s ] 
+      a_INT32:
+      [ `ANT ((""|"int32"|"`int32" as n),s) -> mk_anti n s
+      | `INT32 (_, s) -> s ] 
+      a_INT64:
+      [ `ANT ((""|"int64"|"`int64" as n),s) -> mk_anti n s
+      | `INT64 (_, s) -> s ]
+      a_NATIVEINT:
+      [ `ANT ((""|"nativeint"|"`nativeint" as n),s) -> mk_anti n s
+      | `NATIVEINT (_, s) -> s ]
+      a_FLOAT:
+      [ `ANT ((""|"flo"|"`flo" as n),s) -> mk_anti n s
+      | `FLOAT (_, s) -> s ]
+      a_CHAR:
+      [ `ANT ((""|"chr"|"`chr" as n),s) -> mk_anti n s
+      | `CHAR (_, s) -> s ] 
+      a_UIDENT:
+      [ `ANT ((""|"uid" as n),s) -> mk_anti n s
+      | `UID s -> s ]
+      a_LIDENT:
+      [ `ANT ((""|"lid" as n),s) -> mk_anti n s
+      | `LID s -> s ] 
+      a_LABEL:
+      [ "~"; `ANT (("" as n),s); ":" -> mk_anti n s
+      | `LABEL s -> s ] 
+      a_OPTLABEL:
+      [ "?"; `ANT (("" as n),s); ":" -> mk_anti n s
+      | `OPTLABEL s -> s ] 
+      a_STRING:
+      [ `ANT ((""|"str"|"`str" as n),s) -> mk_anti n s
+      | `STR (_, s) -> s ] 
+      string_list:
+      [ `ANT ((""|"str_list"),s) -> Ast.LAnt (mk_anti "str_list" s)
+      | `STR (_, x); string_list{xs} -> Ast.LCons x xs
+      | `STR (_, x) -> Ast.LCons x Ast.LNil ] 
+      semi:
+      [ ";" -> () ]  
+      ident_quot:
       { "apply"
         [ S{i}; S{j} -> {| $i $j |} ]
         "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
         "simple"
-        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"ident" n s) |}
+        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
         | a_UIDENT{i} -> {| $uid:i |}
         | a_LIDENT{i} -> {| $lid:i |}
         | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
         | "("; S{i}; ")" -> i  ] }
- 
-    class_sig_item_quot "class_sig_item":
-        [ class_sig_item{x1}; semi; S{x2} ->
-          match x2 with
-          [ {||} -> x1
-          | _ -> {| $x1; $x2 |} ]
-        | class_sig_item{x} -> x
-        | -> {||} ] 
- 
-    rec_flag_quot:  [ opt_rec{x} -> x ]
-    direction_flag_quot:  [ direction_flag{x} -> x ] 
-    mutable_flag_quot: [  opt_mutable{x} -> x ] 
-    private_flag_quot: [  opt_private{x} -> x ]
-    virtual_flag_quot: [  opt_virtual{x} -> x ] 
-    row_var_flag_quot: [  opt_dot_dot{x} -> x ] 
-    override_flag_quot:[  opt_override{x} -> x ] 
-    patt_eoi:  [ patt{x}; `EOI -> x ] 
-    expr_eoi:  [ expr{x}; `EOI -> x ]  |};
-
+      rec_flag_quot:  [ opt_rec{x} -> x ]
+      direction_flag_quot:  [ direction_flag{x} -> x ] 
+      mutable_flag_quot: [  opt_mutable{x} -> x ] 
+      private_flag_quot: [  opt_private{x} -> x ]
+      virtual_flag_quot: [  opt_virtual{x} -> x ] 
+      row_var_flag_quot: [  opt_dot_dot{x} -> x ] 
+      override_flag_quot:[  opt_override{x} -> x ] 
+      patt_eoi:  [ patt{x}; `EOI -> x ] 
+      expr_eoi:  [ expr{x}; `EOI -> x ]  |};
   with "str_item"
     {:extend|Gram
     (* ml entrance *)    
@@ -1878,7 +1778,36 @@ New syntax:\
         (* this entry makes {| let $rec:r $bi in $x |} parsable *)
         ] }
     |};
-    
+
+  with "class_sig_item"
+    {:extend|Gram
+      class_sig_item_quot:
+      [ class_sig_item{x1}; semi; S{x2} ->
+        match x2 with
+        [ {||} -> x1
+        | _ -> {| $x1; $x2 |} ]
+      | class_sig_item{x} -> x
+      | -> {||} ]
+      class_signature:
+      [ `ANT ((""|"csg"|"anti"|"list" as n),s) ->
+        {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
+      | `ANT ((""|"csg"|"anti"|"list" as n),s); semi; S{csg} ->
+        {| $(anti:mk_anti ~c:"class_sig_item" n s); $csg |}
+      | L0 [ class_sig_item{csg}; semi -> csg ]{l} -> Ast.cgSem_of_list l  ]
+      class_sig_item:
+      [ `ANT ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
+      | `QUOTATION x -> Quotation.expand _loc x DynAst.class_sig_item_tag
+      | "inherit"; class_type{cs} ->   {| inherit $cs |}
+      | "val"; opt_mutable{mf}; opt_virtual{mv}; label{l}; ":"; ctyp{t} ->
+          {| val $mutable:mf $virtual:mv $l : $t |}
+      | "method"; "virtual"; opt_private{pf}; label{l}; ":"; poly_type{t} ->
+          {| method virtual $private:pf $l : $t |}
+      | "method"; opt_private{pf}; label{l}; ":"; poly_type{t} ->
+          {| method $private:pf $l : $t |}
+      | "method"; opt_private{pf}; "virtual"; label{l}; ":"; poly_type{t} ->
+          {| method virtual $private:pf $l : $t |}
+      | type_constraint; ctyp{t1}; "="; ctyp{t2} -> {| type $t1 = $t2 |} ]
+    |};  
   with "class_str_item"
     {:extend|Gram
       class_structure:

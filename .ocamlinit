@@ -75,3 +75,4 @@ let print_tree = Grammar.Print.dump#tree;;
 #install_printer print_tree;;
 (* #useo "./test/test_fan.ml";; *)
 (* #load_rec "FanTop.cma";; *)
+open Syntax;;
