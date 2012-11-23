@@ -342,17 +342,102 @@ class printer =
       | Pexp_assertfalse  -> Ast.ExAsf _loc
       | Pexp_lazy e -> Ast.ExLaz (_loc, (self#expr e))
       | Pexp_poly _ -> assert false
-      | Pexp_object e -> assert false
-      | Pexp_newtype _ -> assert false
-      | Pexp_pack me -> assert false
+      | Pexp_object { pcstr_pat = pat; pcstr_fields = fs } ->
+          Ast.ExObj (_loc, (self#pattern pat), (self#class_fields fs))
+      | Pexp_newtype (str,e) -> Ast.ExFUN (_loc, str, (self#expr e))
+      | Pexp_pack me -> Ast.ExPkg (_loc, (self#module_expr me))
       | Pexp_open (lid_loc,e) ->
           Ast.ExOpI (_loc, (self#longident_loc lid_loc), (self#expr e))
     method module_expr { pmod_desc = x; pmod_loc = _loc } =
-      (assert false : Ast.module_expr )
+      (match x with
+       | Pmod_ident lid_loc -> Ast.MeId (_loc, (self#longident_loc lid_loc))
+       | Pmod_structure s -> Ast.MeStr (_loc, (self#structure s))
+       | Pmod_functor ({ txt;_},mty,me) ->
+           Ast.MeFun
+             (_loc, txt, (self#module_type mty), (self#module_expr me))
+       | Pmod_apply (me1,me2) ->
+           Ast.MeApp (_loc, (self#module_expr me1), (self#module_expr me2))
+       | Pmod_constraint (me,mty) ->
+           Ast.MeTyc (_loc, (self#module_expr me), (self#module_type mty))
+       | Pmod_unpack e -> Ast.MePkg (_loc, (self#expr e)) : Ast.module_expr )
+    method lhs_type_declaration (params,variance,({ loc;_} as lid_loc)) =
+      let u =
+        List.map2
+          (fun p  v  ->
+             match (p, v) with
+             | ((false ,false ),Some { txt; loc = _loc }) ->
+                 Ast.TyQuo (_loc, txt)
+             | ((false ,false ),None ) ->
+                 let _loc = FanLoc.ghost in Ast.TyAny _loc
+             | ((true ,false ),Some { txt; loc = _loc }) ->
+                 Ast.TyQuP (_loc, txt)
+             | ((true ,false ),None ) ->
+                 let _loc = FanLoc.ghost in Ast.TyAnP _loc
+             | ((false ,true ),Some { txt; loc = _loc }) ->
+                 Ast.TyQuM (_loc, txt)
+             | ((false ,true ),None ) ->
+                 let _loc = FanLoc.ghost in Ast.TyAnM _loc
+             | _ -> assert false) variance params in
+      Camlp4Ast.tyApp_of_list ((Ast.TyId (loc, (self#longident_loc lid_loc)))
+        :: u)
+    method with_constraint (({ loc = _loc;_} as lid1),w) =
+      match w with
+      | Pwith_type
+          { ptype_params = ls; ptype_manifest = Some ty; ptype_variance;_} ->
+          Ast.WcTyp
+            (_loc, (self#lhs_type_declaration (ls, ptype_variance, lid1)),
+              (self#core_type ty))
+      | Pwith_typesubst
+          { ptype_params = ls; ptype_manifest = Some ty; ptype_variance;_} ->
+          Ast.WcTyS
+            (_loc, (self#lhs_type_declaration (ls, ptype_variance, lid1)),
+              (self#core_type ty))
+      | Pwith_type _|Pwith_typesubst _ -> assert false
+      | Pwith_module lid2 ->
+          Ast.WcMod
+            (_loc, (self#longident_loc lid1), (self#longident_loc lid2))
+      | Pwith_modsubst lid2 ->
+          Ast.WcMoS
+            (_loc, (self#longident_loc lid1), (self#longident_loc lid2))
+    method module_type { pmty_desc = x; pmty_loc = _loc } =
+      (match x with
+       | Pmty_ident lid_loc -> Ast.MtId (_loc, (self#longident_loc lid_loc))
+       | Pmty_signature s -> Ast.MtSig (_loc, (self#signature s))
+       | Pmty_functor ({ txt;_},mty1,mty2) ->
+           Ast.MtFun
+             (_loc, txt, (self#module_type mty1), (self#module_type mty2))
+       | Pmty_with (mt1,lst) ->
+           let lst = List.map self#with_constraint lst in
+           Ast.MtWit (_loc, (self#module_type mt1), (Ast.wcAnd_of_list lst))
+       | Pmty_typeof me -> Ast.MtOf (_loc, (self#module_expr me)) : Ast.module_type )
     method structure_item { pstr_desc = x; pstr_loc = _loc } =
-      (assert false : Ast.str_item )
+      (match x with
+       | Pstr_eval e -> Ast.StExp (_loc, (self#expr e))
+       | Pstr_value (rf,lst) ->
+           let bindings =
+             List.map
+               (fun (p,e)  ->
+                  Ast.BiEq (_loc, (self#pattern p), (self#expr e))) lst in
+           Ast.StVal (_loc, (self#rec_flag rf), (Ast.biAnd_of_list bindings))
+       | Pstr_module ({ txt;_},me) ->
+           Ast.StMod (_loc, txt, (self#module_expr me))
+       | Pstr_modtype ({ txt;_},mty) ->
+           Ast.StMty (_loc, txt, (self#module_type mty))
+       | Pstr_open lid -> Ast.StOpn (_loc, (self#longident_loc lid))
+       | Pstr_include me -> Ast.StInc (_loc, (self#module_expr me))
+       | Pstr_class_type _|Pstr_class _|Pstr_recmodule _|Pstr_exn_rebind
+           _|Pstr_exception _|Pstr_primitive _|Pstr_type _ -> assert false : 
+      Ast.str_item )
     method structure (ls : structure) = (assert false : Ast.str_item )
     method signature (ls : signature) = (assert false : Ast.sig_item )
     method signature_item { psig_desc = x; psig_loc = _loc } =
       (raise Not_found : Ast.sig_item )
+    method class_fields (ls : class_field list) =
+      (assert false : Ast.class_str_item )
+    method class_field { pcf_desc = x; pcf_loc = _loc } =
+      (assert false : Ast.class_str_item )
+    method class_expr { pcl_desc = x; pcl_loc = _loc } =
+      (assert false : Ast.class_expr )
+    method class_type ({ pci_expr;_} : class_type class_infos) =
+      (assert false : Ast.class_type )
   end

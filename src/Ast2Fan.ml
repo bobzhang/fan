@@ -420,7 +420,13 @@ class printer = object(self:'self)
      method class_field {pcf_desc=x;pcf_loc = _loc} : Ast.class_str_item =
        assert false;
      method class_expr {pcl_desc=x;pcl_loc=_loc} : Ast.class_expr = assert false;
-     method class_type {pci_expr;_} : Ast.class_type = assert false;
+     method class_type ({pci_expr;_}: class_infos class_type)  : Ast.class_type = assert false;
+  (*    method class_types ls = *)
+  (*      with "class_type_declaration" *)
+  (*      {| $(list:List.map self#class_type ls ) |} ; *)
+  (* {:class_type| object end |} *)
+  (*   {:class_type| $a and $b |} *)
+       (* {:str_item| class type a = object end and b = object end|} *)
 end;
 
 
