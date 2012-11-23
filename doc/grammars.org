@@ -1116,6 +1116,8 @@ Ptop_def
   - add actions to each non-terminal
     like [extend-header]
 
+  - overlapping rules error report
+    
   - verbatim copy
 
     now we want to write
@@ -1154,6 +1156,14 @@ Ptop_def
     The deepest ... to do 
 
 
+  we did have the need to reuse existing grammars for diffferent
+  actions(for example: nonterminals, top_phrase, implem)
+  -- two challenges here
+     a. typing
+     b.
+
+     solution:
+     copy the existing grammars only, and associate diffferent actions?
 * Ast definition
   PaApp is im-precise
 

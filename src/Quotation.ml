@@ -60,6 +60,7 @@ module type S = sig
   val add_quotation_of_patt: ~name:string -> ~entry: Gram.t Ast.patt -> unit;
   val add_quotation_of_class_str_item: ~name:string -> ~entry: Gram.t Ast.class_str_item -> unit;
   val add_quotation_of_match_case: ~name:string -> ~entry: Gram.t Ast.match_case -> unit;
+  val add_quotation_of_str_item: ~name:string -> ~entry: Gram.t Ast.str_item -> unit;
 end;
 
 

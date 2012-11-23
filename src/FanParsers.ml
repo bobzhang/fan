@@ -63,6 +63,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   open FanGrammar;
   open FanGrammarTools;
   FanConfig.antiquotations := true;
+  {:extend.create|Gram nonterminals nonterminalsclear |}  ;
+    
   {:extend|Gram
       local:
       delete_rule_header extend_header  qualuid qualid t_qualid entry_name
@@ -78,7 +80,32 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            let old = gm() in
            let () = grammar_module_name := t in 
            (None,old)
-       | -> (None,gm())] 
+       | -> (None,gm())]
+    nonterminals:
+     [ qualuid{t};
+       L0
+         [ a_LIDENT{x} -> (x,None,None)
+         | "(";a_LIDENT{x};`STR(_,y); ")" ->(x,Some y,None)
+         | "(";a_LIDENT{x};`STR(_,y);ctyp{t};  ")" -> (x,Some y,Some t) ] {ls} ->
+       let rest =
+         List.map
+           (fun
+             (x,descr,ty) ->
+               match (descr,ty) with
+               [(Some d,None) ->
+                 {:str_item| let $lid:x = $id:t.mk $str:d |}
+               | (Some d,Some typ) ->
+                  {:str_item| let $lid:x : $typ = $id:t.mk $str:d |}
+               |(None,None) ->
+                 {:str_item| let $lid:x = $id:t.mk $str:x  |}
+               | (None,Some typ) ->
+                 {:str_item| let $lid:x : $typ = $id:t.mk $str:x  |} ] ) ls in
+      {:str_item| $list:rest |}
+     ]
+    nonterminalsclear:
+     [ qualuid{t}; L0 a_LIDENT {ls} ->
+       let rest = List.map (fun x -> {:expr| $id:t.clear $lid:x |}) ls in
+       {:expr| begin $list:rest end |} ]
     extend_body:
       [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
         let res = text_of_functorial_extend _loc  gram locals el in 
@@ -238,6 +265,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      [ a_LIDENT{i} -> {:expr| $lid:i |}
      | "("; expr{e}; ")" -> e ]  |};
 
+  Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (* built in extend support *)
+  Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (* built in delete support *)
+  Quotation.add_quotation_of_expr ~name:"extend.clear" ~entry:nonterminalsclear; 
+  Quotation.add_quotation_of_str_item ~name:"extend.create" ~entry:nonterminals;
   Options.add ("-split_ext", (FanArg.Set split_ext),
                "Split EXTEND by functions to turn around a PowerPC problem.");
 
@@ -259,9 +290,9 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
 
 
 
-  let comprehension_or_sem_expr_for_list =
-    Gram.mk "comprehension_or_sem_expr_for_list";
-   {:extend| Gram
+  {:extend.create|Gram comprehension_or_sem_expr_for_list |}  ;
+
+    {:extend| Gram
       local: item;
     expr: Level "simple"
      [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ]
@@ -276,6 +307,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
              be improved. *)(* FIXME LL *)
       [  TRY [ patt{p}; "<-" -> p]{p} ;  expr Level "top"{e} -> `gen (p, e)
       | expr Level "top"{e} -> `cond e ] |};
+    
   if is_revised ~expr ~sem_expr_for_list then
      {:extend|Gram
        comprehension_or_sem_expr_for_list:
@@ -621,152 +653,27 @@ New syntax:\
     end
   ;
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
-  Gram.clear a_CHAR;
-  Gram.clear a_FLOAT;
-  Gram.clear a_INT;
-  Gram.clear a_INT32;
-  Gram.clear a_INT64;
-  Gram.clear a_LABEL;
-  Gram.clear a_LIDENT;
-  Gram.clear a_NATIVEINT;
-  Gram.clear a_OPTLABEL;
-  Gram.clear a_STRING;
-  Gram.clear a_UIDENT;
-  Gram.clear a_ident;
-  Gram.clear amp_ctyp;
-  Gram.clear and_ctyp;
-  Gram.clear match_case;
-  Gram.clear match_case0;
-  Gram.clear match_case_quot;
-  Gram.clear binding;
-  Gram.clear binding_quot;
-  Gram.clear rec_binding_quot;
-  Gram.clear class_declaration;
-  Gram.clear class_description;
-  Gram.clear class_expr;
-  Gram.clear class_expr_quot;
-  Gram.clear class_fun_binding;
-  Gram.clear class_fun_def;
-  Gram.clear class_info_for_class_expr;
-  Gram.clear class_info_for_class_type;
-  Gram.clear class_longident;
-  Gram.clear class_longident_and_param;
-  Gram.clear class_name_and_param;
-  Gram.clear class_sig_item;
-  Gram.clear class_sig_item_quot;
-  Gram.clear class_signature;
-  Gram.clear class_str_item;
-  Gram.clear class_str_item_quot;
-  Gram.clear class_structure;
-  Gram.clear class_type;
-  Gram.clear class_type_declaration;
-  Gram.clear class_type_longident;
-  Gram.clear class_type_longident_and_param;
-  Gram.clear class_type_plus;
-  Gram.clear class_type_quot;
-  Gram.clear comma_ctyp;
-  Gram.clear comma_expr;
-  Gram.clear comma_ipatt;
-  Gram.clear comma_patt;
-  Gram.clear comma_type_parameter;
-  Gram.clear constrain;
-  Gram.clear constructor_arg_list;
-  Gram.clear constructor_declaration;
-  Gram.clear constructor_declarations;
-  Gram.clear ctyp;
-  Gram.clear ctyp_quot;
-  Gram.clear cvalue_binding;
-  Gram.clear direction_flag;
-  Gram.clear dummy;
-  Gram.clear eq_expr;
-  Gram.clear expr;
-  Gram.clear expr_eoi;
-  Gram.clear expr_quot;
-  Gram.clear field_expr;
-  Gram.clear field_expr_list;
-  Gram.clear fun_binding;
-  Gram.clear fun_def;
-  Gram.clear ident;
-  Gram.clear ident_quot;
-  Gram.clear implem;
-  Gram.clear interf;
-  Gram.clear ipatt;
-  Gram.clear ipatt_tcon;
-  Gram.clear label;
-  Gram.clear label_declaration;
-  Gram.clear label_declaration_list;
-  Gram.clear label_expr_list;
-  Gram.clear label_expr;
-  Gram.clear label_longident;
-  Gram.clear label_patt;
-  Gram.clear label_patt_list;
-  Gram.clear labeled_ipatt;
-  Gram.clear let_binding;
-  Gram.clear meth_list;
-  Gram.clear meth_decl;
-  Gram.clear module_binding;
-  Gram.clear module_binding0;
-  Gram.clear module_binding_quot;
-  Gram.clear module_declaration;
-  Gram.clear module_expr;
-  Gram.clear module_expr_quot;
-  Gram.clear module_longident;
-  Gram.clear module_longident_with_app;
-  Gram.clear module_rec_declaration;
-  Gram.clear module_type;
-  Gram.clear module_type_quot;
-  Gram.clear more_ctyp;
-  Gram.clear name_tags;
-  Gram.clear opt_as_lident;
-  Gram.clear opt_class_self_patt;
-  Gram.clear opt_class_self_type;
-  Gram.clear opt_comma_ctyp;
-  Gram.clear opt_dot_dot;
-  Gram.clear opt_eq_ctyp;
-  Gram.clear opt_expr;
-  Gram.clear opt_meth_list;
-  Gram.clear opt_mutable;
-  Gram.clear opt_polyt;
-  Gram.clear opt_private;
-  Gram.clear opt_rec;
-  Gram.clear opt_virtual;
-  Gram.clear opt_when_expr;
-  Gram.clear patt;
-  Gram.clear patt_as_patt_opt;
-  Gram.clear patt_eoi;
-  Gram.clear patt_quot;
-  Gram.clear patt_tcon;
-  Gram.clear phrase;
-  Gram.clear poly_type;
-  Gram.clear row_field;
-  Gram.clear sem_expr;
-  Gram.clear sem_expr_for_list;
-  Gram.clear sem_patt;
-  Gram.clear sem_patt_for_list;
-  Gram.clear semi;
-  Gram.clear sequence;
-  Gram.clear sig_item;
-  Gram.clear sig_item_quot;
-  Gram.clear sig_items;
-  Gram.clear star_ctyp;
-  Gram.clear str_item;
-  Gram.clear str_item_quot;
-  Gram.clear str_items;
-  Gram.clear top_phrase;
-  Gram.clear type_constraint;
-  Gram.clear type_declaration;
-  Gram.clear type_ident_and_parameters;
-  Gram.clear type_kind;
-  Gram.clear type_longident;
-  Gram.clear type_longident_and_parameters;
-  Gram.clear type_parameter;
-  Gram.clear type_parameters;
-  Gram.clear typevars;
-  Gram.clear use_file;
-  Gram.clear val_longident;
-  Gram.clear with_constr;
-  Gram.clear with_constr_quot;
-
+  {:extend.clear|Gram
+    a_CHAR a_FLOAT a_INT a_INT32 a_INT64 a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING a_UIDENT a_ident
+    amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
+    class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
+    class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
+    class_name_and_param class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
+    class_structure class_type class_type_declaration class_type_longident class_type_longident_and_param
+    class_type_plus class_type_quot comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
+    constrain constructor_arg_list constructor_declaration constructor_declarations ctyp ctyp_quot
+    cvalue_binding direction_flag dummy eq_expr expr expr_eoi expr_quot field_expr field_expr_list fun_binding
+    fun_def ident ident_quot implem interf ipatt ipatt_tcon label label_declaration label_declaration_list
+    label_expr_list label_expr label_longident label_patt label_patt_list labeled_ipatt let_binding meth_list
+    meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
+    module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
+    more_ctyp name_tags opt_as_lident opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot
+    opt_eq_ctyp opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual opt_when_expr
+    patt patt_as_patt_opt patt_eoi patt_quot patt_tcon (* phrase *) poly_type row_field sem_expr
+    sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
+    str_item str_item_quot str_items top_phrase type_constraint type_declaration type_ident_and_parameters
+    type_kind type_longident type_longident_and_parameters type_parameter type_parameters typevars 
+    val_longident with_constr with_constr_quot |};  
 
   let list = ['!'; '?'; '~'] in
   let excl = ["!="; "??"] in
@@ -1420,21 +1327,6 @@ New syntax:\
             {| $(anti:mk_anti ~c:"patt;" n s) |}
         | label_longident{i}; "="; patt{p} -> {| $i = $p |}
         | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ]
-    (* label_ipatt: *)
-    (*     [ `ANT ((""|"pat"|"anti" as n),s) -> *)
-    (*         {| $(anti:mk_anti ~c:"patt" n s) |} *)
-    (*     | `ANT (("list" as n),s) -> *)
-    (*         {| $(anti:mk_anti ~c:"patt;" n s) |} *)
-    (*     | `QUOTATION x -> *)
-    (*         Quotation.expand _loc x DynAst.patt_tag *)
-    (*     | label_longident{i}; "="; ipatt{p} -> {| $i = $p |}   ]        *)
-    (* label_ipatt_list: *)
-    (*    [ label_ipatt{p1}; ";"; S{p2} -> {| $p1 ; $p2 |} *)
-    (*    | label_ipatt{p1}; ";"; "_"       -> {| $p1 ; _ |} *)
-    (*    | label_ipatt{p1}; ";"; "_"; ";"  -> {| $p1 ; _ |} *)
-    (*    | label_ipatt{p1}; ";"            -> p1 *)
-    (*    | label_ipatt{p1}                 -> p1   ] *)
-
     ipatt:
         [ "{"; (* label_ipatt_list{pl} *) label_patt_list{pl}; "}" -> {| { $pl } |}
         | `ANT ((""|"pat"|"anti" as n),s) ->
@@ -1914,37 +1806,29 @@ New syntax:\
 
   with "str_item"
     {:extend|Gram
-          (* ml entrance *)    
-    implem:
-        [ "#"; a_LIDENT{n}; opt_expr{dp}; (* semi *)";;" ->
-            ([ {| # $n $dp |} ], stopped_at _loc)
-        | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
-        | `EOI -> ([], None) ]
-          str_items:
-        [ `ANT ((""|"stri"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti n ~c:"str_item" s) |}
-        | `ANT ((""|"stri"|"anti"|"list" as n),s); semi; S{st} ->
-            {| $(anti:mk_anti n ~c:"str_item" s); $st |}
-        | L0 [ str_item{st}; semi -> st ]{l} -> Ast.stSem_of_list l  ]
-    phrase:
-        [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> (* directive to be the same as normal syntax*)
-            {| # $n $dp |}
-        | str_item{st}; semi -> st  ]         
-    top_phrase:
-        [ phrase{ph} -> Some ph | `EOI -> None ] 
-    use_file:
-        [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
-            ([ {| # $n $dp |} ], stopped_at _loc)
-        | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
-        | `EOI -> ([], None) ]
-          str_item_quot:
-        [ "#"; a_LIDENT{n}; opt_expr{dp} -> {| # $n $dp |}
-        | str_item{st1}; semi; S{st2} ->
-            match st2 with
-            [ {||} -> st1
-            | _ -> {| $st1; $st2 |} ]
-        | str_item{st} -> st
-        | -> {||} ]
+    (* ml entrance *)    
+      implem:
+      [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ], stopped_at _loc)
+      | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
+      | `EOI -> ([], None) ]
+      str_items:
+      [ `ANT ((""|"stri"|"anti"|"list" as n),s) ->
+        {| $(anti:mk_anti n ~c:"str_item" s) |}
+      | `ANT ((""|"stri"|"anti"|"list" as n),s); semi; S{st} ->
+        {| $(anti:mk_anti n ~c:"str_item" s); $st |}
+      | L0 [ str_item{st}; semi -> st ]{l} -> {| $list:l |}  ]
+      top_phrase:
+      [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> Some {| # $n $dp |}
+      | str_item{st}; semi -> Some st
+      | `EOI -> None ]
+      str_item_quot:
+      [ "#"; a_LIDENT{n}; opt_expr{dp} -> {| # $n $dp |}
+      | str_item{st1}; semi; S{st2} ->
+          match st2 with
+          [ {||} -> st1
+          | _ -> {| $st1; $st2 |} ]
+      | str_item{st} -> st
+      | -> {||} ]
       str_item:
       { "top"
         [ "exception"; constructor_declaration{t} ->
@@ -1994,6 +1878,7 @@ New syntax:\
         (* this entry makes {| let $rec:r $bi in $x |} parsable *)
         ] }
     |};
+    
   with "class_str_item"
     {:extend|Gram
       class_structure:
@@ -2049,6 +1934,7 @@ New syntax:\
         | class_str_item{x} -> x
         | -> {||} ]
     |};
+    
   with "class_expr"
     {:extend|Gram
       class_declaration:
@@ -2103,7 +1989,8 @@ New syntax:\
             let anti = Ast.ViAnt (mk_anti ~c:"class_expr" n s) in
             {| $virtual:anti $id:i [ $ot ] |}
         | class_expr{x} -> x
-        | -> {||} ]  |};  
+        | -> {||} ]  |};
+    
   with "class_type"
     {:extend|Gram
       class_description:

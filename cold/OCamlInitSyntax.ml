@@ -57,15 +57,15 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let label_declaration_list = Gram.mk "label_declaration_list"
   let label_expr = Gram.mk "label_expr"
   let label_expr_list = Gram.mk "label_expr_list"
-  let label_longident = Gram.mk "label_longident"
-  let label_patt = Gram.mk "label_patt"
-  let label_patt_list = Gram.mk "label_patt_list"
   let labeled_ipatt = Gram.mk "labeled_ipatt"
+  let label_patt_list = Gram.mk "label_patt_list"
+  let label_patt = Gram.mk "label_patt"
+  let label_longident = Gram.mk "label_longident"
   let let_binding = Gram.mk "let_binding" let meth_list = Gram.mk "meth_list"
   let meth_decl = Gram.mk "meth_decl"
   let module_binding = Gram.mk "module_binding"
+  let module_binding = Gram.mk "module_binding"
   let module_binding0 = Gram.mk "module_binding0"
-  let module_declaration = Gram.mk "module_declaration"
   let module_expr = Gram.mk "module_expr"
   let module_longident = Gram.mk "module_longident"
   let module_longident_with_app = Gram.mk "module_longident_with_app"
@@ -93,8 +93,8 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let opt_when_expr = Gram.mk "opt_when_expr" let patt = Gram.mk "patt"
   let patt_as_patt_opt = Gram.mk "patt_as_patt_opt"
   let patt_eoi = Gram.mk "patt_eoi" let patt_tcon = Gram.mk "patt_tcon"
-  let phrase = Gram.mk "phrase" let poly_type = Gram.mk "poly_type"
-  let row_field = Gram.mk "row_field" let sem_expr = Gram.mk "sem_expr"
+  let poly_type = Gram.mk "poly_type" let row_field = Gram.mk "row_field"
+  let sem_expr = Gram.mk "sem_expr"
   let sem_expr_for_list = Gram.mk "sem_expr_for_list"
   let sem_patt = Gram.mk "sem_patt"
   let sem_patt_for_list = Gram.mk "sem_patt_for_list"
@@ -110,28 +110,22 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let type_longident_and_parameters = Gram.mk "type_longident_and_parameters"
   let type_parameter = Gram.mk "type_parameter"
   let type_parameters = Gram.mk "type_parameters"
-  let typevars = Gram.mk "typevars" let use_file = Gram.mk "use_file"
+  let typevars = Gram.mk "typevars"
   let val_longident = Gram.mk "val_longident"
-  let with_constr = Gram.mk "with_constr"
-  let expr_quot = Gram.mk "quotation of expression"
-  let patt_quot = Gram.mk "quotation of pattern"
-  let ctyp_quot = Gram.mk "quotation of type"
-  let str_item_quot = Gram.mk "quotation of structure item"
-  let sig_item_quot = Gram.mk "quotation of signature item"
-  let class_str_item_quot = Gram.mk "quotation of class structure item"
-  let class_sig_item_quot = Gram.mk "quotation of class signature item"
-  let module_expr_quot = Gram.mk "quotation of module expression"
-  let module_type_quot = Gram.mk "quotation of module type"
-  let class_type_quot = Gram.mk "quotation of class type"
-  let class_expr_quot = Gram.mk "quotation of class expression"
-  let with_constr_quot = Gram.mk "quotation of with constraint"
-  let binding_quot = Gram.mk "quotation of binding"
-  let rec_binding_quot = Gram.mk "quotation of record binding"
-  let match_case_quot =
-    Gram.mk "quotation of match_case (try/match/function case)"
-  let module_binding_quot = Gram.mk "quotation of module rec binding"
-  let ident_quot = Gram.mk "quotation of identifier"
-  let prefixop = Gram.mk "prefix operator (start with '!', '?', '~')"
+  let with_constr = Gram.mk "with_constr" let expr_quot = Gram.mk "expr_quot"
+  let patt_quot = Gram.mk "patt_quot" let ctyp_quot = Gram.mk "ctyp_quot"
+  let str_item_quot = Gram.mk "str_item_quot"
+  let sig_item_quot = Gram.mk "sig_item_quot"
+  let class_str_item_quot = Gram.mk "class_str_item_quot"
+  let class_sig_item_quot = Gram.mk "class_sig_item_quot"
+  let module_expr_quot = Gram.mk "module_expr_quot"
+  let module_type_quot = Gram.mk "module_type_quot"
+  let class_type_quot = Gram.mk "class_type_quot"
+  let class_expr_quot = Gram.mk "class_expr_quot"
+  let with_constr_quot = Gram.mk "with_constr_quot"
+  let binding_quot = Gram.mk "binding_quot"
+  let rec_binding_quot = Gram.mk "rec_binding_quot"
+  let module_declaration = Gram.mk "module_declaration"
   let infixop0 =
     Gram.mk
       "infix operator (level 0) (comparison operators, and some others)"
@@ -141,12 +135,17 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
     Gram.mk "infix operator (level 3) (start with '*', '/', '%')"
   let infixop4 =
     Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)"
-  let string_list = Gram.mk "string_list" let infixop5 = Gram.mk "infixop5"
-  let infixop6 = Gram.mk "infixop6"
+  let prefixop = Gram.mk "prefix operator (start with '!', '?', '~')"
+  let match_case_quot =
+    Gram.mk "quotation of match_case (try/match/function case)"
+  let infixop5 = Gram.mk "infixop5" let infixop6 = Gram.mk "infixop6"
   let module_longident_dot_lparen = Gram.mk "module_longident_dot_lparen"
   let sequence' = Gram.mk "sequence'" let fun_def = Gram.mk "fun_def"
-  let fun_def_cont = Gram.mk "def_cont"
+  let fun_def_cont = Gram.mk "fun_def_cont"
   let fun_def_cont_no_when = Gram.mk "fun_def_cont_no_when"
+  let module_binding_quot = Gram.mk "module_binding_quot"
+  let ident_quot = Gram.mk "ident_quot"
+  let string_list = Gram.mk "string_list"
   let optional_type_parameter = Gram.mk "optional_type_parameter"
   let method_opt_override = Gram.mk "method_opt_override"
   let value_val_opt_override = Gram.mk "value_val_opt_override"
@@ -157,21 +156,6 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let level_list = Gram.mk "level_list" let entry = Gram.mk "entry"
   let extend_body = Gram.mk "extend_body"
   let delete_rule_body = Gram.mk "delete_rule_body"
-  let _ =
-    Gram.extend (top_phrase : 'top_phrase Gram.t )
-      (None,
-        [(None, None,
-           [([Gram.srules top_phrase
-                [([`Stoken
-                     (((function | `EOI -> true | _ -> false)),
-                       (`Normal, "`EOI"))],
-                   (Gram.mk_action
-                      (fun __camlp4_0  (_loc : FanLoc.t)  ->
-                         match __camlp4_0 with
-                         | `EOI -> (None : 'e__1 )
-                         | _ -> assert false)))]],
-              (Gram.mk_action
-                 (fun (x : 'e__1)  (_loc : FanLoc.t)  -> (x : 'top_phrase ))))])])
   module AntiquotSyntax = struct
     module Ast = Ast module Gram = Gram
     let antiquot_expr = Gram.eoi_entry expr
@@ -181,9 +165,6 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str
     let parse_ident loc str = Gram.parse_string antiquot_ident loc str
     end module Quotation = Quotation.Make(AntiquotSyntax)
-  let _ = Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body
-  let _ =
-    Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body
   let wrap directive_handler pa init_loc cs =
     let rec loop loc =
       let (pl,stopped_at_directive) = pa loc cs in

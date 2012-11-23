@@ -7,199 +7,52 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   let current_warning = ref default_warning;
   let print_warning loc txt = !current_warning loc txt;
 
-  let a_CHAR = Gram.mk "a_CHAR";
-  let a_FLOAT = Gram.mk "a_FLOAT";
-  let a_INT = Gram.mk "a_INT";
-  let a_INT32 = Gram.mk "a_INT32";
-  let a_INT64 = Gram.mk "a_INT64";
-  let a_LABEL = Gram.mk "a_LABEL";
-  let a_LIDENT = Gram.mk "a_LIDENT";
-  let a_NATIVEINT = Gram.mk "a_NATIVEINT";
-  let a_OPTLABEL = Gram.mk "a_OPTLABEL";
-  let a_STRING = Gram.mk "a_STRING";
-  let a_UIDENT = Gram.mk "a_UIDENT";
-  let a_ident = Gram.mk "a_ident";
-  let amp_ctyp = Gram.mk "amp_ctyp";
-  let and_ctyp = Gram.mk "and_ctyp";
-  let match_case = Gram.mk "match_case";
-  let match_case0 = Gram.mk "match_case0";
-  let binding = Gram.mk "binding";
-  let class_declaration = Gram.mk "class_declaration";
-  let class_description = Gram.mk "class_description";
-  let class_expr = Gram.mk "class_expr";
-  let class_fun_binding = Gram.mk "class_fun_binding";
-  let class_fun_def = Gram.mk "class_fun_def";
-  let class_info_for_class_expr = Gram.mk "class_info_for_class_expr";
-  let class_info_for_class_type = Gram.mk "class_info_for_class_type";
-  let class_longident = Gram.mk "class_longident";
-  let class_longident_and_param = Gram.mk "class_longident_and_param";
-  let class_name_and_param = Gram.mk "class_name_and_param";
-  let class_sig_item = Gram.mk "class_sig_item";
-  let class_signature = Gram.mk "class_signature";
-  let class_str_item = Gram.mk "class_str_item";
-  let class_structure = Gram.mk "class_structure";
-  let class_type = Gram.mk "class_type";
-  let class_type_declaration = Gram.mk "class_type_declaration";
-  let class_type_longident = Gram.mk "class_type_longident";
-  let class_type_longident_and_param = Gram.mk "class_type_longident_and_param";
-  let class_type_plus = Gram.mk "class_type_plus";
-  let comma_ctyp = Gram.mk "comma_ctyp";
-  let comma_expr = Gram.mk "comma_expr";
-  let comma_ipatt = Gram.mk "comma_ipatt";
-  let comma_patt = Gram.mk "comma_patt";
-  let comma_type_parameter = Gram.mk "comma_type_parameter";
-  let constrain = Gram.mk "constrain";
-  let constructor_arg_list = Gram.mk "constructor_arg_list";
-  let constructor_declaration = Gram.mk "constructor_declaration";
-  let constructor_declarations = Gram.mk "constructor_declarations";
-  let ctyp = Gram.mk "ctyp";
-  let cvalue_binding = Gram.mk "cvalue_binding";
-  let direction_flag = Gram.mk "direction_flag";
-  let direction_flag_quot = Gram.mk "direction_flag_quot";
-  let dummy = Gram.mk "dummy";
-  let eq_expr = Gram.mk "eq_expr";
-  let expr = Gram.mk "expr";
-  let expr_eoi = Gram.mk "expr_eoi";
-  let field_expr = Gram.mk "field_expr";
-  let field_expr_list = Gram.mk "field_expr_list";
-  let fun_binding = Gram.mk "fun_binding";
-  let fun_def = Gram.mk "fun_def";
-  let ident = Gram.mk "ident";
-  let implem = Gram.mk "implem";
-  let interf = Gram.mk "interf";
-  let ipatt = Gram.mk "ipatt";
-  let ipatt_tcon = Gram.mk "ipatt_tcon";
-  let label = Gram.mk "label";
-  let label_declaration = Gram.mk "label_declaration";
-  let label_declaration_list = Gram.mk "label_declaration_list";
-  let label_expr = Gram.mk "label_expr";
-  let label_expr_list = Gram.mk "label_expr_list";
-  (* let label_ipatt = Gram.mk "label_ipatt"; *)
-  (* let label_ipatt_list = Gram.mk "label_ipatt_list"; *)
-  let label_longident = Gram.mk "label_longident";
-  let label_patt = Gram.mk "label_patt";
-  let label_patt_list = Gram.mk "label_patt_list";
-  let labeled_ipatt = Gram.mk "labeled_ipatt";
-  let let_binding = Gram.mk "let_binding";
-  let meth_list = Gram.mk "meth_list";
-  let meth_decl = Gram.mk "meth_decl";
-  let module_binding = Gram.mk "module_binding";
-  let module_binding0 = Gram.mk "module_binding0";
-  let module_declaration = Gram.mk "module_declaration";
-  let module_expr = Gram.mk "module_expr";
-  let module_longident = Gram.mk "module_longident";
-  let module_longident_with_app = Gram.mk "module_longident_with_app";
-  let module_rec_declaration = Gram.mk "module_rec_declaration";
-  let module_type = Gram.mk "module_type";
-  let package_type = Gram.mk "package_type";
-  let more_ctyp = Gram.mk "more_ctyp";
-  let name_tags = Gram.mk "name_tags";
-  let opt_as_lident = Gram.mk "opt_as_lident";
-  let opt_class_self_patt = Gram.mk "opt_class_self_patt";
-  let opt_class_self_type = Gram.mk "opt_class_self_type";
-  let opt_comma_ctyp = Gram.mk "opt_comma_ctyp";
-  let opt_dot_dot = Gram.mk "opt_dot_dot";
-  let row_var_flag_quot = Gram.mk "row_var_flag_quot";
-  let opt_eq_ctyp = Gram.mk "opt_eq_ctyp";
-  let opt_expr = Gram.mk "opt_expr";
-  let opt_meth_list = Gram.mk "opt_meth_list";
-  let opt_mutable = Gram.mk "opt_mutable";
-  let mutable_flag_quot = Gram.mk "mutable_flag_quot";
-  let opt_polyt = Gram.mk "opt_polyt";
-  let opt_private = Gram.mk "opt_private";
-  let private_flag_quot = Gram.mk "private_flag_quot";
-  let opt_rec = Gram.mk "opt_rec";
-  let rec_flag_quot = Gram.mk "rec_flag_quot";
-  let opt_virtual = Gram.mk "opt_virtual";
-  let virtual_flag_quot = Gram.mk "virtual_flag_quot";
-  let opt_override = Gram.mk "opt_override";
-  let override_flag_quot = Gram.mk "override_flag_quot";
-  let opt_when_expr = Gram.mk "opt_when_expr";
-  let patt = Gram.mk "patt";
-  let patt_as_patt_opt = Gram.mk "patt_as_patt_opt";
-  let patt_eoi = Gram.mk "patt_eoi";
-  let patt_tcon = Gram.mk "patt_tcon";
-  let phrase = Gram.mk "phrase";
-  let poly_type = Gram.mk "poly_type";
-  let row_field = Gram.mk "row_field";
-  let sem_expr = Gram.mk "sem_expr";
-  let sem_expr_for_list = Gram.mk "sem_expr_for_list";
-  let sem_patt = Gram.mk "sem_patt";
-  let sem_patt_for_list = Gram.mk "sem_patt_for_list";
-  let semi = Gram.mk "semi";
-  let sequence = Gram.mk "sequence";
-  (* let do_sequence = Gram.mk "do_sequence"; *)
-  let sig_item = Gram.mk "sig_item";
-  let sig_items = Gram.mk "sig_items";
-  let star_ctyp = Gram.mk "star_ctyp";
-  let str_item = Gram.mk "str_item";
-  let str_items = Gram.mk "str_items";
-  let top_phrase = Gram.mk "top_phrase";
-  let type_constraint = Gram.mk "type_constraint";
-  let type_declaration = Gram.mk "type_declaration";
-  let type_ident_and_parameters = Gram.mk "type_ident_and_parameters";
-  let type_kind = Gram.mk "type_kind";
-  let type_longident = Gram.mk "type_longident";
-  let type_longident_and_parameters = Gram.mk "type_longident_and_parameters";
-  let type_parameter = Gram.mk "type_parameter";
-  let type_parameters = Gram.mk "type_parameters";
-  let typevars = Gram.mk "typevars";
-  let use_file = Gram.mk "use_file";
-  let val_longident = Gram.mk "val_longident";
-  let with_constr = Gram.mk "with_constr";
-  let expr_quot = Gram.mk "quotation of expression";
-  let patt_quot = Gram.mk "quotation of pattern";
-  let ctyp_quot = Gram.mk "quotation of type";
-  let str_item_quot = Gram.mk "quotation of structure item";
-  let sig_item_quot = Gram.mk "quotation of signature item";
-  let class_str_item_quot = Gram.mk "quotation of class structure item";
-  let class_sig_item_quot = Gram.mk "quotation of class signature item";
-  let module_expr_quot = Gram.mk "quotation of module expression";
-  let module_type_quot = Gram.mk "quotation of module type";
-  let class_type_quot = Gram.mk "quotation of class type";
-  let class_expr_quot = Gram.mk "quotation of class expression";
-  let with_constr_quot = Gram.mk "quotation of with constraint";
-  let binding_quot = Gram.mk "quotation of binding";
-  let rec_binding_quot = Gram.mk "quotation of record binding";
-  let match_case_quot = Gram.mk "quotation of match_case (try/match/function case)";
-  let module_binding_quot = Gram.mk "quotation of module rec binding";
-  let ident_quot = Gram.mk "quotation of identifier";
-  let prefixop = Gram.mk "prefix operator (start with '!', '?', '~')";
-  let infixop0 = Gram.mk "infix operator (level 0) (comparison operators, and some others)";
-  let infixop1 = Gram.mk "infix operator (level 1) (start with '^', '@')";
-  let infixop2 = Gram.mk "infix operator (level 2) (start with '+', '-')";
-  let infixop3 = Gram.mk "infix operator (level 3) (start with '*', '/', '%')";
-  let infixop4 = Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)";
 
-
-  let string_list = Gram.mk "string_list";  
-  let infixop5 = Gram.mk "infixop5";
-  let infixop6 = Gram.mk "infixop6";
-  let module_longident_dot_lparen = Gram.mk "module_longident_dot_lparen";
-  let sequence' = Gram.mk "sequence'";
-  let fun_def = Gram.mk "fun_def";
-  let fun_def_cont = Gram.mk "def_cont";
-  let fun_def_cont_no_when = Gram.mk "fun_def_cont_no_when";   
-  let optional_type_parameter = Gram.mk "optional_type_parameter";
-  let method_opt_override = Gram.mk "method_opt_override";
-  let value_val_opt_override = Gram.mk "value_val_opt_override";
-  let unquoted_typevars = Gram.mk "unquoted_typevars";
-  let lang =Gram.mk "lang"  ;
-  (* for the grammar module *)  
-  let symbol= Gram.mk "symbol" ;
-  let rule = Gram.mk "rule"  ;
-  let rule_list = Gram.mk "rule_list";
-  let psymbol = Gram.mk "psymbol"  ;
-  let level = Gram.mk "level"  ;
-  let level_list = Gram.mk "level_list";
-  let entry = Gram.mk "entry";
-  let extend_body = Gram.mk "extend_body" ;
-  let delete_rule_body = Gram.mk "delete_rule_body";
-  {:extend|Gram
-    top_phrase:
-    [ [ `EOI -> None ] ] |}; 
-
-
+  {:extend.create|Gram
+    a_CHAR a_FLOAT a_INT a_INT32 a_INT64 a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING a_UIDENT
+    a_ident amp_ctyp and_ctyp match_case match_case0 binding class_declaration class_description
+    class_expr class_fun_binding class_fun_def class_info_for_class_expr class_info_for_class_type
+    class_longident class_longident_and_param class_name_and_param class_sig_item class_signature
+    class_str_item class_structure class_type class_type_declaration
+    class_type_longident class_type_longident_and_param
+    class_type_plus comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
+    constrain constructor_arg_list constructor_declaration constructor_declarations
+    ctyp cvalue_binding direction_flag direction_flag_quot
+    dummy eq_expr expr expr_eoi field_expr field_expr_list fun_binding
+    fun_def ident implem interf ipatt ipatt_tcon label
+    label_declaration  label_declaration_list label_expr label_expr_list labeled_ipatt
+    label_patt_list label_patt label_longident
+    let_binding meth_list meth_decl module_binding
+    module_binding
+    module_binding0
+    module_expr  module_longident  module_longident_with_app  module_rec_declaration
+    module_type  package_type more_ctyp  name_tags opt_as_lident opt_class_self_patt
+    opt_class_self_type  opt_comma_ctyp  opt_dot_dot  row_var_flag_quot  opt_eq_ctyp
+    opt_expr  opt_meth_list  opt_mutable  mutable_flag_quot  opt_polyt  opt_private
+    private_flag_quot  opt_rec  rec_flag_quot  opt_virtual  virtual_flag_quot  opt_override
+    override_flag_quot  opt_when_expr  patt  patt_as_patt_opt  patt_eoi  patt_tcon  poly_type
+    row_field  sem_expr  sem_expr_for_list  sem_patt  sem_patt_for_list  semi  sequence
+    sig_item  sig_items  star_ctyp  str_item  str_items  top_phrase  type_constraint
+    type_declaration  type_ident_and_parameters  type_kind  type_longident  type_longident_and_parameters
+    type_parameter  type_parameters  typevars  val_longident  with_constr  expr_quot  patt_quot
+    ctyp_quot  str_item_quot  sig_item_quot  class_str_item_quot  class_sig_item_quot  module_expr_quot
+    module_type_quot  class_type_quot  class_expr_quot  with_constr_quot  binding_quot  rec_binding_quot
+    module_declaration
+    (infixop0 "infix operator (level 0) (comparison operators, and some others)")
+    (infixop1 "infix operator (level 1) (start with '^', '@')")
+    (infixop2 "infix operator (level 2) (start with '+', '-')")
+    (infixop3 "infix operator (level 3) (start with '*', '/', '%')")
+    (infixop4 "infix operator (level 4) (start with \"**\") (right assoc)")
+    (prefixop "prefix operator (start with '!', '?', '~')")
+    (match_case_quot "quotation of match_case (try/match/function case)")
+    infixop5  infixop6
+    module_longident_dot_lparen  sequence'  fun_def  fun_def_cont  fun_def_cont_no_when
+    module_binding_quot ident_quot string_list     
+    optional_type_parameter  method_opt_override  value_val_opt_override  unquoted_typevars  lang
+    (* for the grammar module *)  
+    symbol  rule  rule_list  psymbol  level  level_list  entry  extend_body  delete_rule_body
+  |};
+    
   module AntiquotSyntax = struct
     module Ast  = Ast; 
     module Gram = Gram;
@@ -212,8 +65,9 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   end;
   module Quotation = Quotation.Make(AntiquotSyntax);
 
-  Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (* built in extend support *)
-  Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (* built in delete support *)  
+  (* Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (\* built in extend support *\) *)
+  (* Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (\* built in delete support *\) *)
+    
   let wrap directive_handler pa init_loc cs =
     let rec loop loc =
       let (pl, stopped_at_directive) = pa loc cs in

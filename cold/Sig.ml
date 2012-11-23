@@ -35,7 +35,6 @@ module type Camlp4Syntax =
     val interf : (Ast.sig_item list* FanLoc.t option) Gram.t
     val implem : (Ast.str_item list* FanLoc.t option) Gram.t
     val top_phrase : Ast.str_item option Gram.t
-    val use_file : (Ast.str_item list* FanLoc.t option) Gram.t
     val a_CHAR : string Gram.t
     val a_FLOAT : string Gram.t
     val a_INT : string Gram.t
@@ -158,7 +157,6 @@ module type Camlp4Syntax =
     val patt_eoi : Ast.patt Gram.t
     val patt_quot : Ast.patt Gram.t
     val patt_tcon : Ast.patt Gram.t
-    val phrase : Ast.str_item Gram.t
     val poly_type : Ast.ctyp Gram.t
     val row_field : Ast.ctyp Gram.t
     val sem_expr : Ast.expr Gram.t

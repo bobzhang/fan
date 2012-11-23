@@ -222,6 +222,8 @@ let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
 let identchar =
   ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
 let ident = (lowercase|uppercase) identchar*
+
+let quotation_name= ident ('.'ident)*
 let locname = ident
 let lident = lowercase identchar *
 let uident = uppercase identchar *
@@ -471,30 +473,27 @@ and maybe_quotation_at c = parse
            ~shift:(2 + 1 + String.length loc + (opt_char_len p))
            ~retract:(2 + opt_char_len p)
        }
-        (* { mk_quotation quotation c "" loc (1 + String.length loc)                 } *)
     | symbolchar* as tok
         { `SYMBOL((* "<@" *)"{@" ^ tok) }
 
 (* <:name< *)        
 and maybe_quotation_colon c = parse
-    | (ident as name) (* '<' *) '|' (extra_quot as p)?  { begin 
+    | ((* ident *)quotation_name as name) (* '<' *) '|' (extra_quot as p)?  { begin 
         Stack.push p opt_char;
         mk_quotation quotation c
           ~name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
     end
     }
-        (* { mk_quotation quotation c name "" (1 + String.length name)               } *)
-    | (ident as name) '@' (locname as loc) (* '<' *) '|' (extra_quot as p)? { begin 
+
+    | ((* ident *)quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)? { begin 
         Stack.push p opt_char;
         mk_quotation quotation c ~name ~loc
           ~shift:(2 + 2 + String.length loc + String.length name + opt_char_len p)
           ~retract:(2 + opt_char_len p)
       end}
    
-        (* { mk_quotation quotation c name loc *)
-        (* (2 + String.length loc + String.length name)               } *)
-    | symbolchar* as tok                                   { `SYMBOL("<:" ^ tok) }
+    | symbolchar* as tok                                   { `SYMBOL("{:" ^ tok) }
 
 and quotation c = parse
     (* | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? *)

@@ -51,7 +51,7 @@ end;
 let use_file token_stream =
   let rec loop () =
       let (pl, stopped_at_directive) =
-        Gram.parse_origin_tokens Syntax.use_file token_stream
+        Gram.parse_origin_tokens Syntax.implem(*use_file*) token_stream
       in
       if stopped_at_directive <> None then
         with "str_item" match pl with
@@ -69,7 +69,7 @@ let use_file token_stream =
     else
       loop () where rec loop () =
         let (pl, stopped_at_directive) =
-          Gram.parse_origin_tokens Syntax.use_file token_stream
+          Gram.parse_origin_tokens Syntax.implem (* use_file*) token_stream
         in
         if stopped_at_directive <> None then pl @ loop () else pl
   in List.map Ast2pt.phrase (pl0 @ pl);

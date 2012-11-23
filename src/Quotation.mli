@@ -28,5 +28,6 @@ module type S =
       name:string -> entry:Ast.class_str_item Gram.t -> unit
     val add_quotation_of_match_case :
       name:string -> entry:Ast.match_case Gram.t -> unit
+    val add_quotation_of_str_item: name:string -> entry:Ast.str_item Gram.t -> unit
   end
 module Make : functor (TheAntiquotSyntax : AntiquotSyntax) -> S
