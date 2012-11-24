@@ -668,11 +668,12 @@ New syntax:\
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
     more_ctyp name_tags opt_as_lident opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot
     opt_eq_ctyp opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual opt_when_expr
-    patt patt_as_patt_opt patt_eoi patt_quot patt_tcon (* phrase *) poly_type row_field sem_expr
+    patt patt_as_patt_opt patt_eoi patt_quot patt_tcon  poly_type row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
     str_item str_item_quot str_items top_phrase type_constraint type_declaration type_ident_and_parameters
     type_kind type_longident type_longident_and_parameters type_parameter type_parameters typevars 
     val_longident with_constr with_constr_quot |};  
+
 
   let list = ['!'; '?'; '~'] in
   let excl = ["!="; "??"] in
@@ -683,28 +684,28 @@ New syntax:\
   let list_ok = ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] in
   let list_first_char_ok = ['='; '<'; '>'; '|'; '&'; '$'; '!'] in
   let excl = ["<-"; "||"; "&&"] in
-  setup_op_parser infixop0
+  setup_op_parser infixop2
     (fun x -> (List.mem x list_ok) ||
               (not (List.mem x excl) && String.length x >= 2 &&
               List.mem x.[0] list_first_char_ok && symbolchar x 1));
 
   let list = ['@'; '^'] in
-  setup_op_parser infixop1
+  setup_op_parser infixop3
     (fun x -> String.length x >= 1 && List.mem x.[0] list &&
               symbolchar x 1);
 
   let list = ['+'; '-'] in
-  setup_op_parser infixop2
+  setup_op_parser infixop4
     (fun x -> x <> "->" && String.length x >= 1 && List.mem x.[0] list &&
               symbolchar x 1);
 
   let list = ['*'; '/'; '%'; '\\'] in
-  setup_op_parser infixop3
+  setup_op_parser infixop5
     (fun x -> String.length x >= 1 && List.mem x.[0] list &&
               (x.[0] <> '*' || String.length x < 2 || x.[1] <> '*') &&
               symbolchar x 1);
 
-  setup_op_parser infixop4
+  setup_op_parser infixop6
     (fun x -> String.length x >= 2 && x.[0] == '*' && x.[1] == '*' &&
               symbolchar x 2);
 
@@ -886,6 +887,11 @@ New syntax:\
 
     with "expr"
     {:extend|Gram
+      expr_quot:
+      [ expr{e1}; ","; comma_expr{e2} -> {| $e1, $e2 |}
+      | expr{e1}; ";"; sem_expr{e2} -> {| $e1; $e2 |}
+      | expr{e} -> e
+      | -> {||} ]
       cvalue_binding:
       [ "="; expr{e} -> e
       | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; expr{e} -> 
@@ -896,34 +902,34 @@ New syntax:\
           [ {:ctyp| ! $_ . $_ |} -> raise (Stream.Error "unexpected polytype here")
           | _ -> {| ($e : $t :> $t2) |} ]
       | ":>"; ctyp{t}; "="; expr{e} -> {| ($e :> $t) |} ]
-      lang:
-      [ `STR(_,s) ->
-        (let old = !Quotation.default in
-        begin Quotation.default := s; old end) ]
-      fun_def_cont:
-      { RA
-        [ "("; "type"; a_LIDENT{i}; ")"; fun_def_cont_no_when{e} ->
-          ({||}, {| fun (type $i) -> $e |})
-        |  labeled_ipatt{p };  S{(w,e)} ->
-            ({||}, {| fun [ $p when $w -> $e ] |})
-        | "when"; expr{w}; "->"; expr{e} -> (w, e)
-        | "->"; expr{e} -> ({||}, e) ] }
       fun_binding:
       { RA
-          [ "("; "type"; a_LIDENT{i}; ")"; S{e} ->
-            {| fun (type $i) -> $e |}
-          | labeled_ipatt{p}; S{e} ->
-              {| fun $p -> $e |}
+          [ "("; "type"; a_LIDENT{i}; ")"; S{e} -> {| fun (type $i) -> $e |}
+          | labeled_ipatt{p}; S{e} -> {| fun $p -> $e |}
           | cvalue_binding{bi} -> bi  ] }
-      opt_when_expr:
-      [ "when"; expr{w} -> w  | -> {||}   ]
+      lang:
+      [ `STR(_,s) -> begin let old = !Quotation.default;  Quotation.default := s; old end ]
+
+      fun_def_cont_no_when:
+      { RA
+        [ "("; "type"; a_LIDENT{i}; ")"; S{e} -> {| fun (type $i) -> $e |}
+        |  labeled_ipatt{ p}; fun_def_cont{(w,e)} -> {| fun [ $p when $w -> $e ] |}
+        | "->"; expr{e} -> e ] }
+      fun_def_cont:
+      { RA
+        [ "("; "type"; a_LIDENT{i}; ")"; fun_def_cont_no_when{e} -> ({||}, {| fun (type $i) -> $e |})
+        |  labeled_ipatt{p };  S{(w,e)} ->  ({||}, {| fun [ $p when $w -> $e ] |})
+        | "when"; expr{w}; "->"; expr{e} -> (w, e)
+        | "->"; expr{e} -> ({||}, e) ] }
+      fun_def:
+      [ "("; "type"; a_LIDENT{i}; ")"; fun_def_cont_no_when{e} -> {| fun (type $i) -> $e |}
+      |  labeled_ipatt{p };  fun_def_cont{(w, e)} ->   {| fun [ $p when $w -> $e ] |} ]
+      
+      (* opt_when_expr: *)
+      (* [ "when"; expr{w} -> w  | -> {||}   ] *)
       opt_expr:
       [ expr{e} -> e | -> {||} ]
-      expr_quot:
-      [ expr{e1}; ","; comma_expr{e2} -> {| $e1, $e2 |}
-      | expr{e1}; ";"; sem_expr{e2} -> {| $e1; $e2 |}
-      | expr{e} -> e
-      | -> {||} ]
+      
       expr:
       { "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
@@ -954,33 +960,32 @@ New syntax:\
         [ S{e}; "where"; opt_rec{rf}; let_binding{lb} ->
             {| let $rec:rf $lb in $e |} ]
        ":=" NA
-        [ S{e1}; ":="; S{e2}; dummy ->
-              {| $e1 := $e2 |} 
-        | S{e1}; "<-"; S{e2}; dummy -> (* FIXME should be deleted in original syntax later? *)
+        [ S{e1}; ":="; S{e2} -> {| $e1 := $e2 |} 
+        | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
             match Expr.bigarray_set _loc e1 e2 with
             [ Some e -> e
             | None -> {| $e1 <- $e2 |} ] ]
        "||" RA
-        [ S{e1}; infixop6{op}; S{e2} -> {| $op $e1 $e2 |} ]
-       "&&" RA
-        [ S{e1}; infixop5{op}; S{e2} -> {| $op $e1 $e2 |} ]
-       "<" LA
         [ S{e1}; infixop0{op}; S{e2} -> {| $op $e1 $e2 |} ]
-       "^" RA
+       "&&" RA
         [ S{e1}; infixop1{op}; S{e2} -> {| $op $e1 $e2 |} ]
-       "+" LA
+       "<" LA
         [ S{e1}; infixop2{op}; S{e2} -> {| $op $e1 $e2 |} ]
+       "^" RA
+        [ S{e1}; infixop3{op}; S{e2} -> {| $op $e1 $e2 |} ]
+       "+" LA
+        [ S{e1}; infixop4{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "*" LA
         [ S{e1}; "land"; S{e2} -> {| $e1 land $e2 |}
         | S{e1}; "lor"; S{e2} -> {| $e1 lor $e2 |}
         | S{e1}; "lxor"; S{e2} -> {| $e1 lxor $e2 |}
         | S{e1}; "mod"; S{e2} -> {| $e1 mod $e2 |}
-        | S{e1}; infixop3{op}; S{e2} -> {| $op $e1 $e2 |} ]
+        | S{e1}; infixop5{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "**" RA
         [ S{e1}; "asr"; S{e2} -> {| $e1 asr $e2 |}
         | S{e1}; "lsl"; S{e2} -> {| $e1 lsl $e2 |}
         | S{e1}; "lsr"; S{e2} -> {| $e1 lsr $e2 |}
-        | S{e1}; infixop4{op}; S{e2} -> {| $op $e1 $e2 |} ]
+        | S{e1}; infixop6{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "unary minus" NA
         [ "-"; S{e} -> Expr.mkumin _loc "-" e
         | "-."; S{e} -> Expr.mkumin _loc "-." e ]
@@ -1068,9 +1073,9 @@ New syntax:\
           {| let open $id:i in $e |}
       | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"expr;" n s) |}
       | expr{e}; sequence'{k} -> k e ]
-    infixop5:
+    infixop1:
       [  [ "&" | "&&" ]{x} -> {| $lid:x |} ]
-    infixop6:
+    infixop0:
       [  [ "or" | "||" ]{x} -> {| $lid:x |} ]
     sem_expr_for_list:
       [ expr{e}; ";"; S{el} -> fun acc -> {| [ $e :: $(el acc) ] |}
@@ -1086,18 +1091,7 @@ New syntax:\
       [ -> fun e -> e
       | ";" -> fun e -> e
       | ";"; sequence{el} -> fun e -> {| $e; $el |} ]
-    fun_def:
-      [ "("; "type"; a_LIDENT{i}; ")"; fun_def_cont_no_when{e} ->
-        {| fun (type $i) -> $e |}
-      |  labeled_ipatt{p };  fun_def_cont{(w, e)} ->
-            {| fun [ $p when $w -> $e ] |} ] 
-    fun_def_cont_no_when:
-      { RA
-        [ "("; "type"; a_LIDENT{i}; ")";
-          fun_def_cont_no_when{e} -> {| fun (type $i) -> $e |}
-        |  labeled_ipatt{ p}; fun_def_cont{(w,e)} ->
-            {| fun [ $p when $w -> $e ] |}
-        | "->"; expr{e} -> e ] }  |};
+      |};
   with "binding"
       {:extend|Gram
         binding_quot:
@@ -1127,8 +1121,9 @@ New syntax:\
          {| $(anti:mk_anti ~c:"patt" n s) -> $e |}
      | `ANT ((""|"anti" as n),s); "when"; expr{w}; "->"; expr{e} ->
          {| $(anti:mk_anti ~c:"patt" n s) when $w -> $e |}
-     | patt_as_patt_opt{p}; opt_when_expr{w}; "->"; expr{e} ->
-         {| $p when $w -> $e |}  ]
+     | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->
+         {| $p when $w -> $e |}
+     | patt_as_patt_opt{p}; "->"; expr{e} -> {| $p -> $e |} ]
       match_case_quot:
       [ L0 match_case0 SEP "|"{x} -> {| $list:x |}
       | -> {||} ]  |};

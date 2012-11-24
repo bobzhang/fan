@@ -38,14 +38,17 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
     ctyp_quot  str_item_quot  sig_item_quot  class_str_item_quot  class_sig_item_quot  module_expr_quot
     module_type_quot  class_type_quot  class_expr_quot  with_constr_quot  binding_quot  rec_binding_quot
     module_declaration
-    (infixop0 "infix operator (level 0) (comparison operators, and some others)")
-    (infixop1 "infix operator (level 1) (start with '^', '@')")
-    (infixop2 "infix operator (level 2) (start with '+', '-')")
-    (infixop3 "infix operator (level 3) (start with '*', '/', '%')")
-    (infixop4 "infix operator (level 4) (start with \"**\") (right assoc)")
+    (infixop0 "or ||")
+    (infixop1  "& &&")
+    (infixop2 "infix operator (level 2) (comparison operators, and some others)")
+    (infixop3 "infix operator (level 3) (start with '^', '@')")
+    (infixop4 "infix operator (level 4) (start with '+', '-')")
+    (infixop5 "infix operator (level 5) (start with '*', '/', '%')")
+    (infixop6 "infix operator (level 6) (start with \"**\") (right assoc)")
+
     (prefixop "prefix operator (start with '!', '?', '~')")
     (match_case_quot "quotation of match_case (try/match/function case)")
-    infixop5  infixop6
+
     module_longident_dot_lparen  sequence'  fun_def  fun_def_cont  fun_def_cont_no_when
     module_binding_quot ident_quot string_list     
     optional_type_parameter  method_opt_override  value_val_opt_override  unquoted_typevars  lang

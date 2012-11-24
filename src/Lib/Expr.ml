@@ -95,6 +95,8 @@ let mksequence' _loc = fun
   | e -> e ];
 
 
+
+  
 let bigarray_get _loc arr arg =
   let coords =  match arg with
   [ {:expr| ($e1, $e2) |} | {:expr| $e1, $e2 |} ->
@@ -106,7 +108,8 @@ let bigarray_get _loc arr arg =
   | [c1; c2] -> {:expr| $arr.{$c1,$c2} |}  
   | [c1; c2; c3] -> {:expr| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {:expr| $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } |} ]; (* FIXME 1.ExArr, 2. can we just write $list:coords? *)
+      {:expr| $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } |} ];
+(* FIXME 1.ExArr, 2. can we just write $list:coords? *)
 
 let bigarray_set _loc var newval = match var with
     [ {:expr|  $arr.{$c1} |} ->

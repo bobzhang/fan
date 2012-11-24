@@ -2712,6 +2712,27 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        'sig_item )
                    | _ -> assert false)))])])
   let _ =
+    Gram.extend (expr_quot : 'expr_quot Gram.t )
+      (None,
+        [(None, None,
+           [([],
+              (Gram.mk_action
+                 (fun (_loc : FanLoc.t)  -> (Ast.ExNil _loc : 'expr_quot ))));
+           ([`Snterm (Gram.obj (expr : 'expr Gram.t ))],
+             (Gram.mk_action
+                (fun (e : 'expr)  (_loc : FanLoc.t)  -> (e : 'expr_quot ))));
+           ([`Snterm (Gram.obj (expr : 'expr Gram.t ));
+            `Skeyword ";";
+            `Snterm (Gram.obj (sem_expr : 'sem_expr Gram.t ))],
+             (Gram.mk_action
+                (fun (e2 : 'sem_expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
+                   (Ast.ExSem (_loc, e1, e2) : 'expr_quot ))));
+           ([`Snterm (Gram.obj (expr : 'expr Gram.t ));
+            `Skeyword ",";
+            `Snterm (Gram.obj (comma_expr : 'comma_expr Gram.t ))],
+             (Gram.mk_action
+                (fun (e2 : 'comma_expr)  _  (e1 : 'expr)  (_loc : FanLoc.t) 
+                   -> (Ast.ExCom (_loc, e1, e2) : 'expr_quot ))))])]);
     Gram.extend (cvalue_binding : 'cvalue_binding Gram.t )
       (None,
         [(None, None,
@@ -2849,27 +2870,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
            ([`Snterm (Gram.obj (expr : 'expr Gram.t ))],
              (Gram.mk_action
                 (fun (e : 'expr)  (_loc : FanLoc.t)  -> (e : 'opt_expr ))))])]);
-    Gram.extend (expr_quot : 'expr_quot Gram.t )
-      (None,
-        [(None, None,
-           [([],
-              (Gram.mk_action
-                 (fun (_loc : FanLoc.t)  -> (Ast.ExNil _loc : 'expr_quot ))));
-           ([`Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  (_loc : FanLoc.t)  -> (e : 'expr_quot ))));
-           ([`Snterm (Gram.obj (expr : 'expr Gram.t ));
-            `Skeyword ";";
-            `Snterm (Gram.obj (sem_expr : 'sem_expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e2 : 'sem_expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
-                   (Ast.ExSem (_loc, e1, e2) : 'expr_quot ))));
-           ([`Snterm (Gram.obj (expr : 'expr Gram.t ));
-            `Skeyword ",";
-            `Snterm (Gram.obj (comma_expr : 'comma_expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e2 : 'comma_expr)  _  (e1 : 'expr)  (_loc : FanLoc.t) 
-                   -> (Ast.ExCom (_loc, e1, e2) : 'expr_quot ))))])]);
     Gram.extend (expr : 'expr Gram.t )
       (None,
         [((Some "top"), (Some `RA),
@@ -2995,21 +2995,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (_loc : FanLoc.t)  ->
                    (Ast.ExLet (_loc, rf, lb, e) : 'expr ))))]);
         ((Some ":="), (Some `NA),
-          [([`Sself;
-            `Skeyword "<-";
-            `Sself;
-            `Snterm (Gram.obj (dummy : 'dummy Gram.t ))],
+          [([`Sself; `Skeyword "<-"; `Sself],
              (Gram.mk_action
-                (fun _  (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
+                (fun (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
                    (match Expr.bigarray_set _loc e1 e2 with
                     | Some e -> e
                     | None  -> Ast.ExAss (_loc, e1, e2) : 'expr ))));
-          ([`Sself;
-           `Skeyword ":=";
-           `Sself;
-           `Snterm (Gram.obj (dummy : 'dummy Gram.t ))],
+          ([`Sself; `Skeyword ":="; `Sself],
             (Gram.mk_action
-               (fun _  (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
+               (fun (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
                   (Ast.ExAss
                      (_loc,
                        (Ast.ExAcc
