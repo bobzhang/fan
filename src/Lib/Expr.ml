@@ -262,63 +262,70 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "antiident" -> {:patt| Ast.IdAnt ($(mloc _loc), $p) |}
             | _ -> p ])
       | p -> super#patt p ];
-    method! expr = fun
-      [ {:expr@_loc| $anti:s |} | {:expr@_loc| $str:s |} as e ->
+    method! expr = with "expr" fun
+      [ {@_loc| $anti:s |} | {@_loc| $str:s |} as e ->
           let mloc _loc = Meta.MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n e -> (* e is the parsed Ast node already *)
             match n with
-            [ "`int" -> {:expr| string_of_int $e |}
-            | "`int32" -> {:expr| Int32.to_string $e |}
-            | "`int64" -> {:expr| Int64.to_string $e |}
-            | "`nativeint" -> {:expr| Nativeint.to_string $e |}
-            | "`flo" -> {:expr| FanUtil.float_repres $e |}
-            | "`str" -> {:expr| Ast.safe_string_escaped $e |}
-            | "`chr" -> {:expr| Char.escaped $e |}
-            | "`bool" -> {:expr| Ast.IdLid $(mloc _loc) (if $e then "true" else "false") |}
-            | "liststr_item" -> {:expr| Ast.stSem_of_list $e |}
-            | "listsig_item" -> {:expr| Ast.sgSem_of_list $e |}
-            | "listclass_sig_item" -> {:expr| Ast.cgSem_of_list $e |}
-            | "listclass_str_item" -> {:expr| Ast.crSem_of_list $e |}
-            | "listmodule_expr" -> {:expr| Ast.meApp_of_list $e |}
-            | "listmodule_type" -> {:expr| Ast.mtApp_of_list $e |}
-            | "listmodule_binding" -> {:expr| Ast.mbAnd_of_list $e |}
-            | "listbinding" -> {:expr| Ast.biAnd_of_list $e |}
-            | "listbinding;" -> {:expr| Ast.biSem_of_list $e |}
-            | "listrec_binding" -> {:expr| Ast.rbSem_of_list $e |}
-            | "listclass_type" -> {:expr| Ast.ctAnd_of_list $e |}
-            | "listclass_expr" -> {:expr| Ast.ceAnd_of_list $e |}
-            | "listident" -> {:expr| Ast.idAcc_of_list $e |}
-            | "listctypand" -> {:expr| Ast.tyAnd_of_list $e |}
-            | "listctyp;" -> {:expr| Ast.tySem_of_list $e |}
-            | "listctyp*" -> {:expr| Ast.tySta_of_list $e |}
-            | "listctyp|" -> {:expr| Ast.tyOr_of_list $e |}
-            | "listctyp," -> {:expr| Ast.tyCom_of_list $e |}
-            | "listctyp&" -> {:expr| Ast.tyAmp_of_list $e |}
-            | "listwith_constr" -> {:expr| Ast.wcAnd_of_list $e |}
-            | "listmatch_case" -> {:expr| Ast.mcOr_of_list $e |}
-            | "listpatt," -> {:expr| Ast.paCom_of_list $e |}
-            | "listpatt;" -> {:expr| Ast.paSem_of_list $e |}
-            | "listexpr," -> {:expr| Ast.exCom_of_list $e |}
-            | "listexpr;" -> {:expr| Ast.exSem_of_list $e |}
-            | "listforall" -> {:expr| Ast.tyVarApp_of_list $e |}
-            | "antisig_item" -> {:expr| Ast.SgAnt $(mloc _loc) $e |}
-            | "antistr_item" -> {:expr| Ast.StAnt $(mloc _loc) $e |}
-            | "antictyp" -> {:expr| Ast.TyAnt $(mloc _loc) $e |}
-            | "antipatt" -> {:expr| Ast.PaAnt $(mloc _loc) $e |}
-            | "antiexpr" -> {:expr| Ast.ExAnt $(mloc _loc) $e |}
-            | "antimodule_type" -> {:expr| Ast.MtAnt $(mloc _loc) $e |}
-            | "antimodule_expr" -> {:expr| Ast.MeAnt $(mloc _loc) $e |}
-            | "anticlass_type" -> {:expr| Ast.CtAnt $(mloc _loc) $e |}
-            | "anticlass_expr" -> {:expr| Ast.CeAnt $(mloc _loc) $e |}
-            | "anticlass_sig_item" -> {:expr| Ast.CgAnt $(mloc _loc) $e |}
-            | "anticlass_str_item" -> {:expr| Ast.CrAnt $(mloc _loc) $e |}
-            | "antiwith_constr" -> {:expr| Ast.WcAnt $(mloc _loc) $e |}
-            | "antibinding" -> {:expr| Ast.BiAnt $(mloc _loc) $e |}
-            | "antirec_binding" -> {:expr| Ast.RbAnt $(mloc _loc) $e |}
-            | "antimatch_case" -> {:expr| Ast.McAnt $(mloc _loc) $e |}
-            | "antimodule_binding" -> {:expr| Ast.MbAnt $(mloc _loc) $e |}
-            | "antiident" -> {:expr| Ast.IdAnt $(mloc _loc) $e |}
+            [ "`int" -> {| string_of_int $e |}
+            | "`int32" -> {| Int32.to_string $e |}
+            | "`int64" -> {| Int64.to_string $e |}
+            | "`nativeint" -> {| Nativeint.to_string $e |}
+            | "`flo" -> {| FanUtil.float_repres $e |}
+            | "`str" -> {| Ast.safe_string_escaped $e |}
+            | "`chr" -> {| Char.escaped $e |}
+            | "`bool" -> {| Ast.IdLid $(mloc _loc) (if $e then "true" else "false") |}
+            | "liststr_item" -> {| Ast.stSem_of_list $e |}
+            | "listsig_item" -> {| Ast.sgSem_of_list $e |}
+            | "listclass_sig_item" -> {| Ast.cgSem_of_list $e |}
+            | "listclass_str_item" -> {| Ast.crSem_of_list $e |}
+            | "listmodule_expr" -> {| Ast.meApp_of_list $e |}
+            | "listmodule_type" -> {| Ast.mtApp_of_list $e |}
+            | "listmodule_binding" -> {| Ast.mbAnd_of_list $e |}
+            | "listbinding" -> {| Ast.biAnd_of_list $e |}
+            | "listbinding;" -> {| Ast.biSem_of_list $e |}
+            | "listrec_binding" -> {| Ast.rbSem_of_list $e |}
+            | "listclass_type" -> {| Ast.ctAnd_of_list $e |}
+            | "listclass_expr" -> {| Ast.ceAnd_of_list $e |}
+            | "listident" -> {| Ast.idAcc_of_list $e |}
+            | "listctypand" -> {| Ast.tyAnd_of_list $e |}
+            | "listctyp;" -> {| Ast.tySem_of_list $e |}
+            | "listctyp*" -> {| Ast.tySta_of_list $e |}
+            | "listctyp|" -> {| Ast.tyOr_of_list $e |}
+            | "listctyp," -> {| Ast.tyCom_of_list $e |}
+            | "listctyp&" -> {| Ast.tyAmp_of_list $e |}
+            | "listwith_constr" -> {| Ast.wcAnd_of_list $e |}
+            | "listmatch_case" -> {| Ast.mcOr_of_list $e |}
+            | "listpatt," -> {| Ast.paCom_of_list $e |}
+            | "listpatt;" -> {| Ast.paSem_of_list $e |}
+            | "listexpr," -> {| Ast.exCom_of_list $e |}
+            | "listexpr;" -> {| Ast.exSem_of_list $e |}
+            | "listforall" -> {| Ast.tyVarApp_of_list $e |}
+            | "antisig_item" -> {| Ast.SgAnt $(mloc _loc) $e |}
+            | "antistr_item" -> {| Ast.StAnt $(mloc _loc) $e |}
+            | "antictyp" -> {| Ast.TyAnt $(mloc _loc) $e |}
+            | "antipatt" -> {| Ast.PaAnt $(mloc _loc) $e |}
+            | "antiexpr" -> {| Ast.ExAnt $(mloc _loc) $e |}
+            | "antimodule_type" -> {| Ast.MtAnt $(mloc _loc) $e |}
+            | "antimodule_expr" -> {| Ast.MeAnt $(mloc _loc) $e |}
+            | "anticlass_type" -> {| Ast.CtAnt $(mloc _loc) $e |}
+            | "anticlass_expr" -> {| Ast.CeAnt $(mloc _loc) $e |}
+            | "anticlass_sig_item" -> {| Ast.CgAnt $(mloc _loc) $e |}
+            | "anticlass_str_item" -> {| Ast.CrAnt $(mloc _loc) $e |}
+            | "antiwith_constr" -> {| Ast.WcAnt $(mloc _loc) $e |}
+            | "antibinding" -> {| Ast.BiAnt $(mloc _loc) $e |}
+            | "antirec_binding" -> {| Ast.RbAnt $(mloc _loc) $e |}
+            | "antimatch_case" -> {| Ast.McAnt $(mloc _loc) $e |}
+            | "antimodule_binding" -> {| Ast.MbAnt $(mloc _loc) $e |}
+            | "antiident" -> {| Ast.IdAnt $(mloc _loc) $e |}
+            | "antidirection_flag" -> {| Ast.DiAnt  $e |}
+            | "antioverride_flag" -> {| Ast.OvAnt $e |}
+            | "antiprivate_flag" -> {|Ast.PrAnt $e |}
+            | "antimutable_flag" -> {|Ast.MuAnt $e|}
+            | "antivirtual_flag" -> {|Ast.ViAnt $e|}
+            | "antirow_var_flag" -> {|Ast.RvAnt $e|}
+            | "antirec_flag" -> {|Ast.ReAnt $e|}
             | _ -> e ])
       | e -> super#expr e ];
   end;

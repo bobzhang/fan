@@ -1292,6 +1292,69 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "IdAnt")))))),
                                       (mloc _loc))), e)
+                         | "antidirection_flag" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "DiAnt")))))),
+                                 e)
+                         | "antioverride_flag" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "OvAnt")))))),
+                                 e)
+                         | "antiprivate_flag" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "PrAnt")))))),
+                                 e)
+                         | "antimutable_flag" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "MuAnt")))))),
+                                 e)
+                         | "antivirtual_flag" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "ViAnt")))))),
+                                 e)
+                         | "antirow_var_flag" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "RvAnt")))))),
+                                 e)
+                         | "antirec_flag" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "ReAnt")))))),
+                                 e)
                          | _ -> e)
       | e -> super#expr e
   end

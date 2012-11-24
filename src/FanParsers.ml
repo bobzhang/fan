@@ -852,8 +852,7 @@ New syntax:\
   {:extend|Gram
         (* mli entrance *)    
     interf:
-    [ "#"; a_LIDENT{n}; opt_expr{dp}; (* semi  *) ";;" -> ([ {| # $n $dp |} ], stopped_at _loc)
-        (* Ast.SgDir(_loc,n,dp), stopped is of type FanLoc.t option *)
+    [ "#"; a_LIDENT{n}; opt_expr{dp};  ";;" -> ([ {| # $n $dp |} ], stopped_at _loc)
     | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
     | `EOI -> ([], None) ]
     sig_items:
@@ -887,7 +886,7 @@ New syntax:\
 
     with "expr"
     {:extend|Gram
-      local: (* fun_def_k *) fun_def_patt;
+      local:  fun_def_patt;
       expr_quot:
       [ expr{e1}; ","; comma_expr{e2} -> {| $e1, $e2 |}
       | expr{e1}; ";"; sem_expr{e2} -> {| $e1; $e2 |}
@@ -1150,8 +1149,7 @@ New syntax:\
         field_expr_list:
         [ field_expr{b1}; ";"; S{b2} -> {| $b1 ; $b2 |}
         | field_expr{b1}; ";"            -> b1
-        | field_expr{b1}                 -> b1  ] 
-    |};
+        | field_expr{b1}                 -> b1  ] |};
     
   with "patt"
     {:extend|Gram local: patt_constr;
@@ -1350,6 +1348,22 @@ New syntax:\
       | "'"; a_ident{i} -> {| '$lid:i |}
       | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
       | "-"; "'"; a_ident{i} -> {| -'$lid:i |} ]
+      type_ident_and_parameters: [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl) ]
+      optional_type_parameter: (* overlapps with type_parameter *)
+      [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
+      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | "'"; a_ident{i} -> {| '$lid:i |}
+      | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
+      | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
+      | "+"; "_" -> Ast.TyAnP _loc   (* FIXME *)
+      | "-"; "_" -> Ast.TyAnM _loc  
+      | "_" -> {| _ |}  ]
+      type_longident_and_parameters:[ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |} ] 
+      type_parameters:
+      [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
+      | type_parameter{t} -> fun acc -> {| $acc $t |}
+      | -> fun t -> t  ]
+
       opt_class_self_type:
       [ "("; ctyp{t}; ")" -> t
       | -> {||} ]
@@ -1404,22 +1418,8 @@ New syntax:\
       opt_eq_ctyp:
       [ "="; type_kind{tk} -> tk | -> {||} ] 
       type_kind: [ ctyp{t} -> t ] 
-      type_ident_and_parameters: [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl) ]
-      type_longident_and_parameters:[ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |} ] 
-      type_parameters:
-      [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
-      | type_parameter{t} -> fun acc -> {| $acc $t |}
-      | -> fun t -> t  ]
       
-      optional_type_parameter: (* overlapps with type_parameter *)
-      [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_ident{i} -> {| '$lid:i |}
-      | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
-      | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
-      | "+"; "_" -> Ast.TyAnP _loc   (* FIXME *)
-      | "-"; "_" -> Ast.TyAnM _loc  
-      | "_" -> {| _ |}  ]
+      
       typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1528,9 +1528,7 @@ New syntax:\
       comma_ctyp:
       [ S{t1}; ","; S{t2} -> {| $t1, $t2 |}
       | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp," n s) |}
-      | ctyp{t} -> t  ]
- 
-      |};
+      | ctyp{t} -> t  ]  |};
     
     with "ident"
     {:extend|Gram
@@ -1543,15 +1541,15 @@ New syntax:\
       | a_LIDENT{i} -> {| $lid:i |}
       | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
       | a_UIDENT{i}; "."; S{j} -> {| $uid:i.$j |} ]
-    module_longident_dot_lparen:
+      module_longident_dot_lparen:
       [ `ANT ((""|"id"|"anti"|"list" as n),s); "."; "(" ->   {| $(anti:mk_anti ~c:"ident" n s) |}
       | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
       | a_UIDENT{i}; "."; "(" -> {| $uid:i |} ]        
-    module_longident:
+      module_longident:
       [ `ANT ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
       | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
       | a_UIDENT{i} -> {| $uid:i |} ]
-    module_longident_with_app:
+      module_longident_with_app:
       { "apply"
         [ S{i}; S{j} -> {| $i $j |} ]
        "."
@@ -1561,7 +1559,7 @@ New syntax:\
             {| $(anti:mk_anti ~c:"ident" n s) |}
         | a_UIDENT{i} -> {| $uid:i |}
         | "("; S{i}; ")" -> i ] }
-    type_longident:
+      type_longident:
       { "apply"
         [ S{i}; S{j} -> {| $i $j |} ]
         "."
@@ -1572,55 +1570,57 @@ New syntax:\
         | a_LIDENT{i} -> {| $lid:i |}
         | a_UIDENT{i} -> {| $uid:i |}
         | "("; S{i}; ")" -> i ] }
-    label_longident:
-        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"ident" n s) |}
-        | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
-        | a_LIDENT{i} -> {| $lid:i |} ]
-    class_type_longident:
-      [ type_longident{x} -> x ]
-    val_longident:
-      [ ident{x} -> x ]
+      label_longident:
+      [ `ANT ((""|"id"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
+      | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
+      | a_LIDENT{i} -> {| $lid:i |} ]
+      class_type_longident: [ type_longident{x} -> x ]
+      val_longident:[ ident{x} -> x ]
       class_longident:
       [ label_longident{x} -> x ]
       method_opt_override:
       [ "method"; "!" -> {:override_flag| ! |}
-      | "method"; `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
+      | "method"; `ANT (((""|"override"|"anti") as n),s) ->
+          Ast.OvAnt (mk_anti ~c:"override_flag" n s)
+            (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s)|} *)
       | "method" -> {:override_flag||}  ] 
+      opt_override:
+      [ "!" -> {:override_flag| ! |}
+      | `ANT ((("!"|"override"|"anti") as n),s) ->
+          {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |}
+      | -> {:override_flag||} ]
+      
       value_val_opt_override:
       [ "val"; "!" -> {:override_flag| ! |}
-      | "val"; `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
+      | "val"; `ANT (((""|"override"|"anti") as n),s) -> {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |}
       | "val" -> {:override_flag||}   ] 
       opt_as_lident:  [ "as"; a_LIDENT{i} -> i  | -> ""  ] 
       label:[ a_LIDENT{i} -> i ]
       direction_flag:
       [ "to" -> {:direction_flag| to |}
       | "downto" -> {:direction_flag| downto |}
-      | `ANT (("to"|"anti" as n),s) -> Ast.DiAnt (mk_anti n s) ]
+      | `ANT (("to"|"anti"|"" as n),s) -> {:direction_flag|$(anti:mk_anti ~c:"direction_flag" n s)|} ]
+
       opt_private:
       [ "private" -> {:private_flag| private |}
-      | `ANT (("private"|"anti" as n),s) -> Ast.PrAnt (mk_anti n s)
+      | `ANT (("private"|"anti" as n),s) -> {:private_flag| $(anti:mk_anti ~c:"private_flag" n s)|}
       | -> {:private_flag||}  ] 
       opt_mutable:
       [ "mutable" -> {:mutable_flag| mutable |}
-      | `ANT (("mutable"|"anti" as n),s) -> Ast.MuAnt (mk_anti n s)
+      | `ANT (("mutable"|"anti" as n),s) -> {:mutable_flag| $(anti:mk_anti ~c:"mutable_flag" n s) |}
       | -> {:mutable_flag||}  ] 
       opt_virtual:
       [ "virtual" -> {:virtual_flag| virtual |}
-      | `ANT (("virtual"|"anti" as n),s) -> Ast.ViAnt (mk_anti n s)
+      | `ANT (("virtual"|"anti" as n),s) -> {:virtual_flag|$(anti:(mk_anti ~c:"virtual_flag" n s))|}
       | -> {:virtual_flag||}  ] 
       opt_dot_dot:
       [ ".." -> {:row_var_flag| .. |}
-      | `ANT ((".."|"anti" as n),s) -> Ast.RvAnt (mk_anti n s)
+      | `ANT ((".."|"anti" as n),s) -> {:row_var_flag|$(anti:mk_anti ~c:"row_var_flag" n s) |}
       | -> {:row_var_flag||}  ]
       opt_rec:
       [ "rec" -> {:rec_flag| rec |}
-      | `ANT (("rec"|"anti" as n),s) -> Ast.ReAnt (mk_anti n s)
+      | `ANT (("rec"|"anti" as n),s) -> {:rec_flag|$(anti:mk_anti ~c:"rec_flag" n s) |}
       | -> {:rec_flag||} ] 
-      opt_override:
-      [ "!" -> {:override_flag| ! |}
-      | `ANT ((("!"|"override"|"anti") as n),s) -> Ast.OvAnt (mk_anti n s)
-      | -> {:override_flag||} ] 
       a_INT:
       [ `ANT ((""|"int"|"`int" as n),s) -> mk_anti n s
       | `INT (_, s) -> s ] 
@@ -1656,7 +1656,7 @@ New syntax:\
       | `STR (_, s) -> s ] 
       string_list:
       [ `ANT ((""|"str_list"),s) -> Ast.LAnt (mk_anti "str_list" s)
-      | `STR (_, x); string_list{xs} -> Ast.LCons x xs
+      | `STR (_, x); S{xs} -> Ast.LCons x xs
       | `STR (_, x) -> Ast.LCons x Ast.LNil ] 
       semi:
       [ ";" -> () ]  
