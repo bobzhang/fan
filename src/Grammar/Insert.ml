@@ -39,21 +39,22 @@ let empty_lev lname assoc =
 
 (* here [name] is only used to emit error message*)  
 let change_lev entry lev name lname assoc =
-  let a = match assoc with
-      [ None -> lev.assoc
-      | Some a -> begin 
-          if a <> lev.assoc && !(entry.egram.warning_verbose) then
-            eprintf "<W> Changing associativity of level %S @." name
-          else ();
-          a
-      end ] in begin 
-      match lname with
-      [ Some n ->
-          if lname <> lev.lname && !(entry.egram.warning_verbose) then 
-            eprintf "<W> Level label %S ignored@." n
-          else ()
-      | None -> () ];
-        { (lev) with assoc=a}
+  let a =
+    match assoc with
+    [ None -> lev.assoc
+    | Some a -> begin 
+        if a <> lev.assoc && !(entry.egram.warning_verbose) then
+          eprintf "<W> Changing associativity of level %S @." name
+        else ();
+        a
+    end ] in begin 
+    match lname with
+    [ Some n ->
+      if lname <> lev.lname && !(entry.egram.warning_verbose) then 
+        eprintf "<W> Level label %S ignored@." n
+      else ()
+    | None -> () ];
+    { (lev) with assoc=a}
     end ;
 
 (* *)  
