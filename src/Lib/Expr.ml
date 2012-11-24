@@ -237,29 +237,31 @@ let substp _loc env =
 
 let antiquot_expander ~parse_patt ~parse_expr = object
   inherit Ast.map as super;
-  method! patt = fun
-    [ {:patt@_loc| $anti:s |} | {:patt@_loc| $str:s |} as p ->
+  method! patt =
+    with "patt"
+    fun
+    [ {@_loc| $anti:s |} | {@_loc| $str:s |} as p ->
       let mloc _loc = Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
       handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
         ~decorate:(fun n p ->
             match n with
-            [ "antisig_item" -> {:patt| Ast.SgAnt ($(mloc _loc), $p) |}
-            | "antistr_item" -> {:patt| Ast.StAnt ($(mloc _loc), $p) |}
-            | "antictyp" -> {:patt| Ast.TyAnt ($(mloc _loc), $p) |}
-            | "antipatt" -> {:patt| Ast.PaAnt ($(mloc _loc), $p) |}
-            | "antiexpr" -> {:patt| Ast.ExAnt ($(mloc _loc), $p) |}
-            | "antimodule_type" -> {:patt| Ast.MtAnt($(mloc _loc), $p) |}
-            | "antimodule_expr" -> {:patt| Ast.MeAnt ($(mloc _loc), $p) |}
-            | "anticlass_type" -> {:patt| Ast.CtAnt ($(mloc _loc), $p) |}
-            | "anticlass_expr" -> {:patt| Ast.CeAnt ($(mloc _loc), $p) |}
-            | "anticlass_sig_item" -> {:patt| Ast.CgAnt ($(mloc _loc), $p) |}
-            | "anticlass_str_item" -> {:patt| Ast.CrAnt ($(mloc _loc), $p) |}
-            | "antiwith_constr" -> {:patt| Ast.WcAnt ($(mloc _loc), $p) |}
-            | "antibinding" -> {:patt| Ast.BiAnt ($(mloc _loc), $p) |}
-            | "antirec_binding" -> {:patt| Ast.RbAnt ($(mloc _loc), $p) |}
-            | "antimatch_case" -> {:patt| Ast.McAnt ($(mloc _loc), $p) |}
-            | "antimodule_binding" -> {:patt| Ast.MbAnt ($(mloc _loc), $p) |}
-            | "antiident" -> {:patt| Ast.IdAnt ($(mloc _loc), $p) |}
+            [ "antisig_item" -> {| Ast.SgAnt ($(mloc _loc), $p) |}
+            | "antistr_item" -> {| Ast.StAnt ($(mloc _loc), $p) |}
+            | "antictyp" -> {| Ast.TyAnt ($(mloc _loc), $p) |}
+            | "antipatt" -> {| Ast.PaAnt ($(mloc _loc), $p) |}
+            | "antiexpr" -> {| Ast.ExAnt ($(mloc _loc), $p) |}
+            | "antimodule_type" -> {| Ast.MtAnt($(mloc _loc), $p) |}
+            | "antimodule_expr" -> {| Ast.MeAnt ($(mloc _loc), $p) |}
+            | "anticlass_type" -> {| Ast.CtAnt ($(mloc _loc), $p) |}
+            | "anticlass_expr" -> {| Ast.CeAnt ($(mloc _loc), $p) |}
+            | "anticlass_sig_item" -> {| Ast.CgAnt ($(mloc _loc), $p) |}
+            | "anticlass_str_item" -> {| Ast.CrAnt ($(mloc _loc), $p) |}
+            | "antiwith_constr" -> {| Ast.WcAnt ($(mloc _loc), $p) |}
+            | "antibinding" -> {| Ast.BiAnt ($(mloc _loc), $p) |}
+            | "antirec_binding" -> {| Ast.RbAnt ($(mloc _loc), $p) |}
+            | "antimatch_case" -> {| Ast.McAnt ($(mloc _loc), $p) |}
+            | "antimodule_binding" -> {| Ast.MbAnt ($(mloc _loc), $p) |}
+            | "antiident" -> {| Ast.IdAnt ($(mloc _loc), $p) |}
             | _ -> p ])
       | p -> super#patt p ];
     method! expr = with "expr" fun
