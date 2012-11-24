@@ -80,8 +80,8 @@ let rec is_irrefut_patt =
   | Ast.PaTyc (_,p,_) -> is_irrefut_patt p
   | Ast.PaTup (_,pl) -> is_irrefut_patt pl
   | Ast.PaOlb (_,_,Ast.PaNil _) -> true
-  | Ast.PaOlb (_,_,p) -> is_irrefut_patt p
-  | Ast.PaOlbi (_,_,p,_) -> is_irrefut_patt p
+  | Ast.PaOlb (_,_,_) -> true
+  | Ast.PaOlbi (_,_,_,_) -> true
   | Ast.PaLab (_,_,Ast.PaNil _) -> true
   | Ast.PaLab (_,_,p) -> is_irrefut_patt p
   | Ast.PaLaz (_,p) -> is_irrefut_patt p

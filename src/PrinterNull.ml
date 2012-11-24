@@ -4,6 +4,6 @@ module Id = struct
 end;
 
 module P = struct
-  let print_interf ?input_file:(_) ?output_file:(_) _ = ();
-  let print_implem ?input_file:(_) ?output_file:(_) _ = ();
+  let print_interf ?input_file(* :(_) *) ?output_file(* :(_) *) _ = ();
+  let print_implem ?input_file(* :(_) *) ?output_file(* :(_) *) _ = ();
 end;

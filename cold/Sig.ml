@@ -105,6 +105,7 @@ module type Camlp4Syntax =
     val ident_quot : Ast.ident Gram.t
     val ipatt : Ast.patt Gram.t
     val ipatt_tcon : Ast.patt Gram.t
+    val patt_tcon : Ast.patt Gram.t
     val label : string Gram.t
     val label_declaration : Ast.ctyp Gram.t
     val label_declaration_list : Ast.ctyp Gram.t
@@ -113,7 +114,6 @@ module type Camlp4Syntax =
     val label_longident : Ast.ident Gram.t
     val label_patt : Ast.patt Gram.t
     val label_patt_list : Ast.patt Gram.t
-    val labeled_ipatt : Ast.patt Gram.t
     val let_binding : Ast.binding Gram.t
     val meth_list : (Ast.ctyp* Ast.row_var_flag) Gram.t
     val meth_decl : Ast.ctyp Gram.t
@@ -151,12 +151,10 @@ module type Camlp4Syntax =
     val rec_flag_quot : Ast.rec_flag Gram.t
     val opt_virtual : Ast.virtual_flag Gram.t
     val virtual_flag_quot : Ast.virtual_flag Gram.t
-    val opt_when_expr : Ast.expr Gram.t
     val patt : Ast.patt Gram.t
     val patt_as_patt_opt : Ast.patt Gram.t
     val patt_eoi : Ast.patt Gram.t
     val patt_quot : Ast.patt Gram.t
-    val patt_tcon : Ast.patt Gram.t
     val poly_type : Ast.ctyp Gram.t
     val row_field : Ast.ctyp Gram.t
     val sem_expr : Ast.expr Gram.t
@@ -196,8 +194,6 @@ module type Camlp4Syntax =
     val module_longident_dot_lparen : Ast.ident Gram.t
     val sequence' : (Ast.expr -> Lib.Expr.Ast.expr) Gram.t
     val fun_def : Ast.expr Gram.t
-    val fun_def_cont : (Ast.expr* Ast.expr) Gram.t
-    val fun_def_cont_no_when : Ast.expr Gram.t
     val optional_type_parameter : Ast.ctyp Gram.t
     val method_opt_override : Ast.override_flag Gram.t
     val value_val_opt_override : Ast.override_flag Gram.t

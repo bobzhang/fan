@@ -67,12 +67,11 @@ let use_file token_stream =
   let pl =
     if eoi then []
     else
-      loop () where rec loop () =
+      let rec loop () =
         let (pl, stopped_at_directive) =
-          Gram.parse_origin_tokens Syntax.implem (* use_file*) token_stream
-        in
-        if stopped_at_directive <> None then pl @ loop () else pl
-  in List.map Ast2pt.phrase (pl0 @ pl);
+          Gram.parse_origin_tokens Syntax.implem  token_stream in  
+        if stopped_at_directive <> None then pl @ loop () else pl in loop () in
+  List.map Ast2pt.phrase (pl0 @ pl);
 
 
 let revise_parser =  wrap toplevel_phrase; 

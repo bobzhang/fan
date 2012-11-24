@@ -114,6 +114,7 @@ module type Camlp4Syntax = sig
   val ident_quot : Gram.t Ast.ident;
   val ipatt : Gram.t Ast.patt;
   val ipatt_tcon : Gram.t Ast.patt;
+  val patt_tcon : Gram.t Ast.patt;    
   val label : Gram.t string;
   val label_declaration : Gram.t Ast.ctyp;
   val label_declaration_list : Gram.t Ast.ctyp;
@@ -124,7 +125,7 @@ module type Camlp4Syntax = sig
   val label_longident : Gram.t Ast.ident;
   val label_patt : Gram.t Ast.patt;
   val label_patt_list : Gram.t Ast.patt;
-  val labeled_ipatt : Gram.t Ast.patt;
+  (* val labeled_ipatt : Gram.t Ast.patt; *)
   val let_binding : Gram.t Ast.binding;
   val meth_list : Gram.t (Ast.ctyp * Ast.row_var_flag);
   val meth_decl : Gram.t Ast.ctyp;
@@ -162,13 +163,10 @@ module type Camlp4Syntax = sig
   val rec_flag_quot : Gram.t Ast.rec_flag;
   val opt_virtual : Gram.t Ast.virtual_flag;
   val virtual_flag_quot : Gram.t Ast.virtual_flag;
-  val opt_when_expr : Gram.t Ast.expr;
   val patt : Gram.t Ast.patt;
   val patt_as_patt_opt : Gram.t Ast.patt;
   val patt_eoi : Gram.t Ast.patt;
   val patt_quot : Gram.t Ast.patt;
-  val patt_tcon : Gram.t Ast.patt;
-  (* val phrase : Gram.t Ast.str_item; *)
   val poly_type : Gram.t Ast.ctyp;
   val row_field : Gram.t Ast.ctyp;
   val sem_expr : Gram.t Ast.expr;
@@ -177,7 +175,6 @@ module type Camlp4Syntax = sig
   val sem_patt_for_list : Gram.t (Ast.patt -> Ast.patt);
   val semi : Gram.t unit;
   val sequence : Gram.t Ast.expr;
-  (* val do_sequence : Gram.t Ast.expr; *)
   val sig_item : Gram.t Ast.sig_item;
   val sig_item_quot : Gram.t Ast.sig_item;
   val sig_items : Gram.t Ast.sig_item;
@@ -210,8 +207,6 @@ module type Camlp4Syntax = sig
   val module_longident_dot_lparen: Gram.t Ast.ident;
   val sequence':Gram.t (Ast.expr -> Lib.Expr.Ast.expr); 
   val fun_def: Gram.t Ast.expr;
-  val fun_def_cont: Gram.t (Ast.expr * Ast.expr);
-  val fun_def_cont_no_when: Gram.t Ast.expr;
   val optional_type_parameter:  Gram.t Ast.ctyp;
   val method_opt_override: Gram.t Ast.override_flag;
   val value_val_opt_override: Gram.t Ast.override_flag;

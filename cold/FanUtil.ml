@@ -73,32 +73,34 @@ let rec list_remove x =
   | (y,_)::l when y = x -> l
   | d::l -> d :: (list_remove x l)
   | [] -> []
-let symbolchar =
-  let list =
-    ['$';
-    '!';
-    '%';
-    '&';
-    '*';
-    '+';
-    '-';
-    '.';
-    '/';
-    ':';
-    '<';
-    '=';
-    '>';
-    '?';
-    '@';
-    '^';
-    '|';
-    '~';
-    '\\'] in
-  let rec loop s i =
-    if i == (String.length s)
-    then true
-    else if List.mem (s.[i]) list then loop s (i + 1) else false in
-  loop
+let symbolchars =
+  ['$';
+  '!';
+  '%';
+  '&';
+  '*';
+  '+';
+  '-';
+  '.';
+  '/';
+  ':';
+  '<';
+  '=';
+  '>';
+  '?';
+  '@';
+  '^';
+  '|';
+  '~';
+  '\\']
+let symbolchar s i =
+  let len = String.length s in
+  try
+    for j = i to len - 1 do
+      if not (List.mem (s.[j]) symbolchars) then raise Not_found else ()
+    done;
+    true
+  with | Not_found  -> false
 let stopped_at _loc = Some (FanLoc.move_line 1 _loc)
 let with_open_out_file x f =
   match x with

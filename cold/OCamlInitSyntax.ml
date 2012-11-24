@@ -52,12 +52,12 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let fun_binding = Gram.mk "fun_binding" let fun_def = Gram.mk "fun_def"
   let ident = Gram.mk "ident" let implem = Gram.mk "implem"
   let interf = Gram.mk "interf" let ipatt = Gram.mk "ipatt"
-  let ipatt_tcon = Gram.mk "ipatt_tcon" let label = Gram.mk "label"
+  let ipatt_tcon = Gram.mk "ipatt_tcon" let patt_tcon = Gram.mk "patt_tcon"
+  let label = Gram.mk "label"
   let label_declaration = Gram.mk "label_declaration"
   let label_declaration_list = Gram.mk "label_declaration_list"
   let label_expr = Gram.mk "label_expr"
   let label_expr_list = Gram.mk "label_expr_list"
-  let labeled_ipatt = Gram.mk "labeled_ipatt"
   let label_patt_list = Gram.mk "label_patt_list"
   let label_patt = Gram.mk "label_patt"
   let label_longident = Gram.mk "label_longident"
@@ -90,11 +90,9 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let virtual_flag_quot = Gram.mk "virtual_flag_quot"
   let opt_override = Gram.mk "opt_override"
   let override_flag_quot = Gram.mk "override_flag_quot"
-  let opt_when_expr = Gram.mk "opt_when_expr" let patt = Gram.mk "patt"
-  let patt_as_patt_opt = Gram.mk "patt_as_patt_opt"
-  let patt_eoi = Gram.mk "patt_eoi" let patt_tcon = Gram.mk "patt_tcon"
-  let poly_type = Gram.mk "poly_type" let row_field = Gram.mk "row_field"
-  let sem_expr = Gram.mk "sem_expr"
+  let patt = Gram.mk "patt" let patt_as_patt_opt = Gram.mk "patt_as_patt_opt"
+  let patt_eoi = Gram.mk "patt_eoi" let poly_type = Gram.mk "poly_type"
+  let row_field = Gram.mk "row_field" let sem_expr = Gram.mk "sem_expr"
   let sem_expr_for_list = Gram.mk "sem_expr_for_list"
   let sem_patt = Gram.mk "sem_patt"
   let sem_patt_for_list = Gram.mk "sem_patt_for_list"
@@ -126,23 +124,21 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let binding_quot = Gram.mk "binding_quot"
   let rec_binding_quot = Gram.mk "rec_binding_quot"
   let module_declaration = Gram.mk "module_declaration"
-  let infixop0 =
+  let infixop0 = Gram.mk "or ||" let infixop1 = Gram.mk "& &&"
+  let infixop2 =
     Gram.mk
-      "infix operator (level 0) (comparison operators, and some others)"
-  let infixop1 = Gram.mk "infix operator (level 1) (start with '^', '@')"
-  let infixop2 = Gram.mk "infix operator (level 2) (start with '+', '-')"
-  let infixop3 =
-    Gram.mk "infix operator (level 3) (start with '*', '/', '%')"
-  let infixop4 =
-    Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)"
+      "infix operator (level 2) (comparison operators, and some others)"
+  let infixop3 = Gram.mk "infix operator (level 3) (start with '^', '@')"
+  let infixop4 = Gram.mk "infix operator (level 4) (start with '+', '-')"
+  let infixop5 =
+    Gram.mk "infix operator (level 5) (start with '*', '/', '%')"
+  let infixop6 =
+    Gram.mk "infix operator (level 6) (start with \"**\") (right assoc)"
   let prefixop = Gram.mk "prefix operator (start with '!', '?', '~')"
   let match_case_quot =
     Gram.mk "quotation of match_case (try/match/function case)"
-  let infixop5 = Gram.mk "infixop5" let infixop6 = Gram.mk "infixop6"
   let module_longident_dot_lparen = Gram.mk "module_longident_dot_lparen"
   let sequence' = Gram.mk "sequence'" let fun_def = Gram.mk "fun_def"
-  let fun_def_cont = Gram.mk "fun_def_cont"
-  let fun_def_cont_no_when = Gram.mk "fun_def_cont_no_when"
   let module_binding_quot = Gram.mk "module_binding_quot"
   let ident_quot = Gram.mk "ident_quot"
   let string_list = Gram.mk "string_list"
@@ -186,9 +182,9 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let parse_interf ?(directive_handler= fun _  -> None)  _loc cs =
     let l = wrap directive_handler (Gram.parse interf) _loc cs in
     Ast.sgSem_of_list l
-  let print_interf ?input_file:_  ?output_file:_  _ =
+  let print_interf ?input_file  ?output_file  _ =
     failwith "No interface printer"
-  let print_implem ?input_file:_  ?output_file:_  _ =
+  let print_implem ?input_file  ?output_file  _ =
     failwith "No implementation printer"
   module AstFilters = AstFilters.Make(struct
     

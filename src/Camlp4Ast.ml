@@ -117,8 +117,8 @@ let rec is_irrefut_patt = with "patt"
     | {| ($p : $_) |} -> is_irrefut_patt p
     | {| ($tup:pl) |} -> is_irrefut_patt pl
     | {| ? $_ |} -> true
-    | {| ? $_ : ($p) |} -> is_irrefut_patt p
-    | {| ? $_ : ($p = $_) |} -> is_irrefut_patt p
+    | {| ? $_ : ($_ ) |} -> (* is_irrefut_patt p *) true
+    | {| ? $_ : ($_ = $_) |} -> (* is_irrefut_patt p *) true
     | {| ~ $_ |} -> true
     | {| ~ $_ : $p |} -> is_irrefut_patt p
     | {| lazy $p |} -> is_irrefut_patt p

@@ -102,7 +102,7 @@
     | TyAnM of loc (* -_ *)
     | TyVrn of loc and string (* `s *)
     | TyRec of loc and ctyp (* { t } *) (* { foo : int ; bar : mutable string } *)
-    | TyCol of loc and ctyp and ctyp (* t : t *)
+    | TyCol of loc and ctyp and ctyp (* t : t *) (* FIXME be more precise *)
     | TySem of loc and ctyp and ctyp (* t; t *)
     | TyCom of loc and ctyp and ctyp (* t, t *)
     | TySum of loc and ctyp (* [ t ] *) (* [ A of int and string | B ] *)

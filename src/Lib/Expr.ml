@@ -69,7 +69,8 @@ let mkumin _loc f arg = match arg with
   | {:expr| $nativeint:n |} -> {:expr| $(nativeint:neg_string n) |}
   | {:expr| $flo:n |} -> {:expr| $(flo:neg_string n) |}
   | _ -> {:expr| $(lid:"~" ^ f) $arg |} ];
-  
+
+(* FIXME refer to mkuplus *)  
 let mkassert _loc = fun
   [ {:expr| false |} -> {:expr| assert false |} 
   | e -> {:expr| assert $e |} ] ;

@@ -19,8 +19,8 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
     constrain constructor_arg_list constructor_declaration constructor_declarations
     ctyp cvalue_binding direction_flag direction_flag_quot
     dummy eq_expr expr expr_eoi field_expr field_expr_list fun_binding
-    fun_def ident implem interf ipatt ipatt_tcon label
-    label_declaration  label_declaration_list label_expr label_expr_list labeled_ipatt
+    fun_def ident implem interf ipatt ipatt_tcon patt_tcon label
+    label_declaration  label_declaration_list label_expr label_expr_list (* labeled_ipatt *)
     label_patt_list label_patt label_longident
     let_binding meth_list meth_decl module_binding
     module_binding
@@ -30,7 +30,7 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
     opt_class_self_type  opt_comma_ctyp  opt_dot_dot  row_var_flag_quot  opt_eq_ctyp
     opt_expr  opt_meth_list  opt_mutable  mutable_flag_quot  opt_polyt  opt_private
     private_flag_quot  opt_rec  rec_flag_quot  opt_virtual  virtual_flag_quot  opt_override
-    override_flag_quot  opt_when_expr  patt  patt_as_patt_opt  patt_eoi  patt_tcon  poly_type
+    override_flag_quot  patt  patt_as_patt_opt  patt_eoi    poly_type
     row_field  sem_expr  sem_expr_for_list  sem_patt  sem_patt_for_list  semi  sequence
     sig_item  sig_items  star_ctyp  str_item  str_items  top_phrase  type_constraint
     type_declaration  type_ident_and_parameters  type_kind  type_longident  type_longident_and_parameters
@@ -49,7 +49,7 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
     (prefixop "prefix operator (start with '!', '?', '~')")
     (match_case_quot "quotation of match_case (try/match/function case)")
 
-    module_longident_dot_lparen  sequence'  fun_def  fun_def_cont  fun_def_cont_no_when
+    module_longident_dot_lparen  sequence'  fun_def  
     module_binding_quot ident_quot string_list     
     optional_type_parameter  method_opt_override  value_val_opt_override  unquoted_typevars  lang
     (* for the grammar module *)  
@@ -92,8 +92,8 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
     let l = wrap directive_handler (Gram.parse interf) _loc cs in
     {:sig_item| $list:l |};
-  let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";
-  let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";
+  let print_interf ?input_file(* :(_) *) ?output_file(* :(_) *) _ = failwith "No interface printer";
+  let print_implem ?input_file(* :(_) *) ?output_file(* :(_) *) _ = failwith "No implementation printer";
   module AstFilters = AstFilters.Make (struct end);
   module Options = struct
     type spec_list = list (string * FanArg.spec * string);

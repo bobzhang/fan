@@ -3,11 +3,11 @@ module Make   (U: sig end) : Sig.PRECAST  = struct
   let sig_item_parser =
     ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
   let str_item_parser =
-    ref (fun ?directive_handler:(_) _ _ -> failwith "No implementation parser");
+    ref (fun ?directive_handler(* :(_) *) _ _ -> failwith "No implementation parser");
   let sig_item_printer =
-    ref (fun ?input_file:(_) ?output_file:(_) _ -> failwith "No interface printer");
+    ref (fun ?input_file(* :(_) *) ?output_file(* :(_) *) _ -> failwith "No interface printer");
   let str_item_printer =
-    ref (fun ?input_file:(_) ?output_file:(_) _ -> failwith "No implementation printer");
+    ref (fun ?input_file(* :(_) *) ?output_file(* :(_) *) _ -> failwith "No implementation printer");
   let callbacks = Queue.create ();
   let loaded_modules = ref [];
 

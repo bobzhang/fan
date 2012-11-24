@@ -1119,7 +1119,7 @@ Ptop_def
   - overlapping rules error report
     
   - verbatim copy
-
+    
     now we want to write
     #+BEGIN_SRC ocaml
       qualuid:
@@ -1153,7 +1153,9 @@ Ptop_def
 
   - our backtracking algorithm 
     WILL  devastate the error message
-    The deepest ... to do 
+    The deepest ... to do
+
+  - support peek-k natively
 
 
   we did have the need to reuse existing grammars for diffferent
