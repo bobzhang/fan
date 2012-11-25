@@ -192,14 +192,14 @@ let insert_olevels_in_levels entry position rules =
          (fun (levs,make_lev)  (lname,assoc,rules)  ->
             let lev = make_lev lname assoc in
             let lev =
-              List.fold_left
-                (fun lev  (symbols,action)  ->
+              List.fold_right
+                (fun (symbols,action)  lev  ->
                    let symbols = List.map (change_to_self entry) symbols in
                    let () = List.iter (check_gram entry) symbols in
                    let (e1,symbols) = get_initial symbols in
                    let () = insert_tokens entry.egram symbols in
                    insert_production_in_level entry e1 (symbols, action) lev)
-                lev rules in
+                rules lev in
             ((lev :: levs), empty_lev)) ([], make_lev) rules in
      levs1 @ ((List.rev levs) @ levs2))
 let extend entry (position,levels) =

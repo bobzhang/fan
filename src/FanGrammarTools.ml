@@ -181,17 +181,10 @@ let rec make_expr entry tvar = with "expr"
       {| `Stoken ($match_fun, (`$uid:attr, $`str:descr)) |} ]
     
 and make_expr_rules _loc n rl tvar = with "expr"
-  List.fold_left
-    (fun txt (sl, ac)
-      ->
-        let sl =
-          List.fold_right
-            (fun t txt ->
-              let x = make_expr n tvar t in
-              {| [$x :: $txt] |})  sl {| [] |} in
-        {| [($sl, $ac) :: $txt ] |})  {| [] |} rl  ;
-
-
+  Expr.mklist _loc
+    (List.map (fun (sl,action) ->
+      let sl = Expr.mklist _loc (List.map (fun t -> make_expr n tvar t) sl) in
+      {| ($sl,$action) |} ) rl);
   
 (* generate action, collecting patterns into action  *)
 let text_of_action _loc  psl

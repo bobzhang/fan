@@ -224,23 +224,12 @@ let rec make_expr entry tvar =
                               (Ast.ExStr
                                  (_loc, (Ast.safe_string_escaped descr))))))))))))
 and make_expr_rules _loc n rl tvar =
-  List.fold_left
-    (fun txt  (sl,ac)  ->
-       let sl =
-         List.fold_right
-           (fun t  txt  ->
-              let x = make_expr n tvar t in
-              Ast.ExApp
-                (_loc,
-                  (Ast.ExApp
-                     (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), x)),
-                  txt)) sl (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) in
-       Ast.ExApp
-         (_loc,
-           (Ast.ExApp
-              (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
-                (Ast.ExTup (_loc, (Ast.ExCom (_loc, sl, ac)))))), txt))
-    (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) rl
+  Expr.mklist _loc
+    (List.map
+       (fun (sl,action)  ->
+          let sl =
+            Expr.mklist _loc (List.map (fun t  -> make_expr n tvar t) sl) in
+          Ast.ExTup (_loc, (Ast.ExCom (_loc, sl, action)))) rl)
 let text_of_action _loc psl (rtvar : string) (act : Ast.expr option)
   (tvar : string) =
   let locid = Ast.PaId (_loc, (Ast.IdLid (_loc, (FanLoc.name.contents)))) in

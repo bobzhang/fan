@@ -564,21 +564,23 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       [ "ELSE"; expr{e}; endif -> e
       | endif -> {:expr| () |} ]
     smlist_then:
-      [ L1 [ macro_def{d}; semi ->
-        execute_macro_if_active_branch _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Then d
-      | str_item{si}; semi -> SdStr si ]{sml} -> sml ]
+      [ L1
+          [ macro_def{d}; semi ->
+            execute_macro_if_active_branch _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Then d
+          | str_item{si}; semi -> SdStr si ]{sml} ->
+          sml ]
     smlist_else:
       [ L1 [ macro_def{d}; semi ->
-        execute_macro_if_active_branch _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Else d
-      | str_item{si}; semi -> SdStr si ]{sml} -> sml ]
+           execute_macro_if_active_branch _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Else d
+           | str_item{si}; semi -> SdStr si ]{sml} -> sml ]
     sglist_then:
       [ L1 [ macro_def_sig{d}; semi ->
-        execute_macro_if_active_branch _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Then d
-      | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ]   
+             execute_macro_if_active_branch _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Then d
+           | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ]   
     sglist_else:
       [ L1 [ macro_def_sig{d}; semi ->
-        execute_macro_if_active_branch _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Else d
-      | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ]  
+             execute_macro_if_active_branch _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Else d
+           | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ]  
     endif:
       [ "END" -> ()
       | "ENDIF" -> () ]
@@ -1467,12 +1469,9 @@ New syntax:\
         | "["; "="; row_field{rfl}; "]" ->   {| [ = $rfl ] |}
         | "["; ">"; "]" -> {| [ > $({||}) ] |}
         | "["; ">"; row_field{rfl}; "]" ->    {| [ > $rfl ] |}
-        | "["; "<"; row_field{rfl}; "]" ->
-            {| [ < $rfl ] |}
-        | "["; "<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->
-            {| [ < $rfl > $ntl ] |}
-        | "[<"; row_field{rfl}; "]" ->
-            {| [ < $rfl ] |}
+        | "["; "<"; row_field{rfl}; "]" ->     {| [ < $rfl ] |}
+        | "["; "<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->   {| [ < $rfl > $ntl ] |}
+        | "[<"; row_field{rfl}; "]" ->    {| [ < $rfl ] |}
         | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->
             {| [ < $rfl > $ntl ] |}
         | "{"; label_declaration_list{t}; "}" -> {| { $t } |}
