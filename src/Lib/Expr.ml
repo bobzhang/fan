@@ -1,15 +1,16 @@
 (* open Format; *)
+open lang "expr";
 open FanUtil;
 module Ast= Camlp4Ast; (* it contains a module named Meta *)
 (*
   {[
   
-  sep_expr [] {:expr| A.B.g.h|}; ;
+  sep_expr [] {| A.B.g.h|}; ;
   [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "h")))]
 
   The first two dots are IdAcc, the last dot is ExAcc
 
-  sep_expr [] {:expr| A.B.g.h + 3 |}
+  sep_expr [] {| A.B.g.h + 3 |}
   [(, [],
   ExApp (,
    ExApp (, ExId (, IdLid (, "+")),
@@ -19,11 +20,11 @@ module Ast= Camlp4Ast; (* it contains a module named Meta *)
    ExInt (, "3")))]
 
 
-  sep_expr [] {:expr| A.B.g.h.i|}; ;
+  sep_expr [] {| A.B.g.h.i|}; ;
   [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "h")));
   (, [], ExId (, IdLid (, "i")))]
 
-  sep_expr [] {:expr| $(uid:"").t |} ; ;
+  sep_expr [] {| $(uid:"").t |} ; ;
   - : (Camlp4Ast.Ast.loc * string list * Camlp4Ast.Ast.expr) list =
   [(, [""], Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "t")))]
 
@@ -31,19 +32,19 @@ module Ast= Camlp4Ast; (* it contains a module named Meta *)
  *)
 
 let rec sep_expr acc = fun
-  [ {:expr| $e1.$e2|} ->
+  [ {| $e1.$e2|} ->
     sep_expr (sep_expr acc e2) e1
-  | {:expr@loc| $uid:s |} as e ->
+  | {@loc| $uid:s |} as e ->
       match acc with
       [ [] -> [(loc, [], e)]
       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
-  | {:expr| $(id:({:ident| $_.$_ |} as i)) |} ->
+  | {| $(id:({:ident| $_.$_ |} as i)) |} ->
       sep_expr acc (Ident.normalize_acc i)
   | e -> [(Ast.loc_of_expr e, [], e) :: acc] ];
 
 
 let rec fa al = fun
-  [ {:expr| $f $a |} ->fa [a :: al] f
+  [ {| $f $a |} ->fa [a :: al] f
   | f -> (f, al) ];
 
 
@@ -51,48 +52,48 @@ let rec apply accu = fun
   [ [] -> accu
   | [x :: xs] ->
       let _loc = Ast.loc_of_expr x
-      in apply {:expr| $accu $x |} xs ];
+      in apply {| $accu $x |} xs ];
 
 (* Ast.loc -> Ast.expr list -> Ast.expr *)  
 let mklist _loc =
   let rec loop top =  fun
-    [ [] -> {:expr| [] |}
+    [ [] -> {| [] |}
     | [e1 :: el] ->
         let _loc =
           if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc in
-        {:expr| [$e1 :: $(loop false el)] |} ] in loop true ;
+        {| [$e1 :: $(loop false el)] |} ] in loop true ;
   
 let mkumin _loc f arg = match arg with
-  [ {:expr| $int:n |} -> {:expr| $(int:neg_string n) |}
-  | {:expr| $int32:n |} -> {:expr| $(int32:neg_string n) |}
-  | {:expr| $(int64:n) |} -> {:expr| $(int64:neg_string n) |}
-  | {:expr| $nativeint:n |} -> {:expr| $(nativeint:neg_string n) |}
-  | {:expr| $flo:n |} -> {:expr| $(flo:neg_string n) |}
-  | _ -> {:expr| $(lid:"~" ^ f) $arg |} ];
+  [ {| $int:n |} -> {| $(int:neg_string n) |}
+  | {| $int32:n |} -> {| $(int32:neg_string n) |}
+  | {| $(int64:n) |} -> {| $(int64:neg_string n) |}
+  | {| $nativeint:n |} -> {| $(nativeint:neg_string n) |}
+  | {| $flo:n |} -> {| $(flo:neg_string n) |}
+  | _ -> {| $(lid:"~" ^ f) $arg |} ];
 
 (* FIXME refer to mkuplus *)  
 let mkassert _loc = fun
-  [ {:expr| false |} -> {:expr| assert false |} 
-  | e -> {:expr| assert $e |} ] ;
+  [ {| false |} -> {| assert false |} 
+  | e -> {| assert $e |} ] ;
 
 
 let mklist_last ?last _loc  =
   let rec loop top = fun
     [ [] -> match last with
       [ Some e -> e
-      | None -> {:expr| [] |} ]
+      | None -> {| [] |} ]
     | [e1 :: el] ->
         let _loc =
           if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc in
-        {:expr| [$e1 :: $(loop false el)] |} ] in
+        {| [$e1 :: $(loop false el)] |} ] in
   loop true ;
 
 let mksequence _loc = fun
-  [ {:expr| $_; $_ |} | {:expr| $anti:_ |} as e -> {:expr| begin  $e end |}
+  [ {| $_; $_ |} | {| $anti:_ |} as e -> {| begin  $e end |}
   | e -> e ];
 
 let mksequence' _loc = fun
-  [ {:expr| $_; $_ |} as e -> {:expr| begin  $e  end |}
+  [ {| $_; $_ |} as e -> {| begin  $e  end |}
   | e -> e ];
 
 
@@ -100,36 +101,36 @@ let mksequence' _loc = fun
   
 let bigarray_get _loc arr arg =
   let coords =  match arg with
-  [ {:expr| ($e1, $e2) |} | {:expr| $e1, $e2 |} ->
+  [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
       Ast.list_of_expr e1 (Ast.list_of_expr e2 [])
   | _ -> [arg] ] in
   match coords with
   [ [] -> failwith "bigarray_get null list"
-  | [c1] -> {:expr| $arr.{$c1} |}  
-  | [c1; c2] -> {:expr| $arr.{$c1,$c2} |}  
-  | [c1; c2; c3] -> {:expr| $arr.{$c1,$c2,$c3} |} 
+  | [c1] -> {| $arr.{$c1} |}  
+  | [c1; c2] -> {| $arr.{$c1,$c2} |}  
+  | [c1; c2; c3] -> {| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {:expr| $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } |} ];
+      {| $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } |} ];
 (* FIXME 1.ExArr, 2. can we just write $list:coords? *)
 
 let bigarray_set _loc var newval = match var with
-    [ {:expr|  $arr.{$c1} |} ->
-        Some {:expr| $arr.{$c1} := $newval |} 
-    | {:expr|  $arr.{$c1, $c2} |} ->
-        Some {:expr|  $arr.{$c1, $c2} :=  $newval |}
-    | {:expr|  $arr.{$c1, $c2, $c3} |} ->
-        Some {:expr| $arr.{$c1,$c2,$c3} := $newval |} 
-    |  {:expr| Bigarray.Genarray.get $arr [| $coords |] |} -> (* FIXME how to remove Bigarray here?*)
-        Some {:expr| Bigarray.Genarray.set $arr [| $coords |] $newval |}
+    [ {|  $arr.{$c1} |} ->
+        Some {| $arr.{$c1} := $newval |} 
+    | {|  $arr.{$c1, $c2} |} ->
+        Some {|  $arr.{$c1, $c2} :=  $newval |}
+    | {|  $arr.{$c1, $c2, $c3} |} ->
+        Some {| $arr.{$c1,$c2,$c3} := $newval |} 
+    |  {| Bigarray.Genarray.get $arr [| $coords |] |} -> (* FIXME how to remove Bigarray here?*)
+        Some {| Bigarray.Genarray.set $arr [| $coords |] $newval |}
     | _ -> None ];
   
 
 (* FIXME later *)
 let rec pattern_eq_expression p e =
   match (p, e) with
-  [ ({:patt| $lid:a |}, {:expr| $lid:b |}) -> a = b
-  | ({:patt| $uid:a |}, {:expr| $uid:b |}) -> a = b
-  | ({:patt| $p1 $p2 |}, {:expr| $e1 $e2 |}) ->
+  [ ({:patt| $lid:a |}, {| $lid:b |}) -> a = b
+  | ({:patt| $uid:a |}, {| $uid:b |}) -> a = b
+  | ({:patt| $p1 $p2 |}, {| $e1 $e2 |}) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
   | _ -> false ] ;
 
@@ -137,12 +138,12 @@ let rec pattern_eq_expression p e =
 (*************************************************************************)
 (* List comprehension *)  
 let map _loc p e l =  match (p, e) with
-  [ ({:patt| $lid:x |}, {:expr| $lid:y |}) when x = y -> l
+  [ ({:patt| $lid:x |}, {| $lid:y |}) when x = y -> l
   | _ ->
       if Ast.is_irrefut_patt p then
-        {:expr| List.map (fun $p -> $e) $l |}
+        {| List.map (fun $p -> $e) $l |}
       else
-        {:expr| List.fold_right
+        {| List.fold_right
           (fun
             [ $pat:p when true -> (fun x xs -> [ x :: xs ]) $e
             | _ -> (fun l -> l) ])
@@ -151,10 +152,10 @@ let map _loc p e l =  match (p, e) with
 
 let filter _loc p b l =
     if Ast.is_irrefut_patt p then
-      {:expr| List.filter (fun $p -> $b) $l |}
+      {| List.filter (fun $p -> $b) $l |}
     else
-      {:expr| List.filter (fun [ $p when true -> $b | _ -> false ]) $l |};
-let concat _loc l = {:expr| List.concat $l |};
+      {| List.filter (fun [ $p when true -> $b | _ -> false ]) $l |};
+let concat _loc l = {| List.concat $l |};
 (* only this function needs to be exposed *)
 let rec compr _loc e =  fun
     [ [`gen (p, l)] -> map _loc p e l
@@ -174,19 +175,19 @@ let bad_patt _loc =
        "this macro cannot be used in a pattern (see its definition)");
 let substp _loc env =
   let rec loop = fun
-      [ {:expr| $e1 $e2 |} -> {:patt| $(loop e1) $(loop e2) |} 
-      | {:expr| |} -> {:patt| |}
-      | {:expr| $lid:x |} ->
+      [ {| $e1 $e2 |} -> {:patt| $(loop e1) $(loop e2) |} 
+      | {| |} -> {:patt| |}
+      | {| $lid:x |} ->
           try List.assoc x env with
           [ Not_found -> {:patt| $lid:x |} ]
-      | {:expr| $uid:x |} ->
+      | {| $uid:x |} ->
           try List.assoc x env with
           [ Not_found -> {:patt| $uid:x |} ]
-      | {:expr| $int:x |} -> {:patt| $int:x |}
-      | {:expr| $str:s |} -> {:patt| $str:s |}
-      | {:expr| ($tup:x) |} -> {:patt| $(tup:loop x) |}
-      | {:expr| $x1, $x2 |} -> {:patt| $(loop x1), $(loop x2) |}
-      | {:expr| { $bi } |} ->
+      | {| $int:x |} -> {:patt| $int:x |}
+      | {| $str:s |} -> {:patt| $str:s |}
+      | {| ($tup:x) |} -> {:patt| $(tup:loop x) |}
+      | {| $x1, $x2 |} -> {:patt| $(loop x1), $(loop x2) |}
+      | {| { $bi } |} ->
           let rec substbi = fun
             [ {:rec_binding| $b1; $b2 |} -> {:patt| $(substbi b1); $(substbi b2) |}
             | {:rec_binding| $i = $e |} -> {:patt| $i = $(loop e) |}
@@ -198,17 +199,17 @@ let substp _loc env =
     inherit Ast.reloc _loc as super;
     method! expr =
       fun
-      [ {:expr| $lid:x |} | {:expr| $uid:x |} as e ->
+      [ {| $lid:x |} | {| $uid:x |} as e ->
           try List.assoc x env with
           [ Not_found -> super#expr e ]
-      | {:expr@_loc| LOCATION_OF $lid:x |} | {:expr@_loc| LOCATION_OF $uid:x |} as e ->
+      | {@_loc| LOCATION_OF $lid:x |} | {@_loc| LOCATION_OF $uid:x |} as e ->
           try
             let loc = Ast.loc_of_expr (List.assoc x env) in
             let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
-            {:expr| FanLoc.of_tuple
+            {| FanLoc.of_tuple
               ($`str:a, $`int:b, $`int:c, $`int:d,
                $`int:e, $`int:f, $`int:g,
-               $(if h then {:expr| true |} else {:expr| false |} )) |}
+               $(if h then {| true |} else {| false |} )) |}
           with [ Not_found -> super#expr e ]
       | e -> super#expr e ];
 
@@ -222,14 +223,14 @@ let substp _loc env =
 (*************************************************************************)
 (* utilit for MakeNothing *)
  let map_expr = fun
-   [ {:expr| $e NOTHING |} | {:expr| fun $({:patt| NOTHING |} ) -> $e |} -> e
-   | {:expr@_loc| $(lid:"__FILE__") |} -> {:expr| $(`str:FanLoc.file_name _loc) |}
-   | {:expr@_loc| $(lid:"__LOCATION__") |} ->
+   [ {| $e NOTHING |} | {| fun $({:patt| NOTHING |} ) -> $e |} -> e
+   | {@_loc| $(lid:"__FILE__") |} -> {| $(`str:FanLoc.file_name _loc) |}
+   | {@_loc| $(lid:"__LOCATION__") |} ->
      let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple _loc in
-     {:expr| FanLoc.of_tuple
+     {| FanLoc.of_tuple
        ($`str:a, $`int:b, $`int:c, $`int:d,
         $`int:e, $`int:f, $`int:g,
-        $(if h then {:expr| true |} else {:expr| false |} )) |}
+        $(if h then {| true |} else {| false |} )) |}
    | e -> e];
     
 
@@ -342,9 +343,9 @@ let capture_antiquot = object
     match view_antiquot s with
     [Some(_name,code) -> begin 
       (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)
-      let cons = {:expr| $lid:code |} in
+      let cons = {| $lid:code |} in
       let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
-      let cons' = {:expr| $lid:code' |} in 
+      let cons' = {| $lid:code' |} in 
       let () = constraints <- [(cons,cons')::constraints]in 
       {:patt| $lid:code' |} (* only allows lidentifiers here *)
     end
@@ -368,8 +369,8 @@ end;
 (*   val expr:Ast.expr; *)
 (*   inherit Camlp4Ast.fold as super; *)
 (*   method! patt = with "patt" fun *)
-(*     [ {| $_ |} -> {:expr| "_" |} *)
-(*     | {| $lid:_ |} -> {:expr| "_" |} *)
+(*     [ {| $_ |} -> {| "_" |} *)
+(*     | {| $lid:_ |} -> {| "_" |} *)
 (*     | {| $p as $_ |} -> self#patt p  *)
 (*     ] *)
 (* end; *)
@@ -384,39 +385,60 @@ let rec string_of_ident = (* duplicated with Camlp4Filters remove soon*)
   | {:ident| $anti:_ |} -> assert false ];
 
     
-let rec normalize = let _loc = FanLoc.ghost in with "patt" fun
-  [ {| _ |} -> {:expr|"_"|}
-  | {| $id:_|} -> {:expr| "_"|}
-  | {| ($p as $_) |} -> normalize p
-  | {| $p1 $p2 |} -> {:expr| $(normalize p1) ^ $(normalize p2) |}
-  | {| [| $p |]|} -> {:expr| "[|"^ $(normalize p) ^ "|]"|} (* FIXME ^$ does not work *)
-  | {| $p1;$p2 |} -> {:expr| $(normalize p1) ^ ";" ^  $(normalize p2) |}
-  | {| $p1,$p2|} ->  {:expr| $(normalize p1) ^ "," ^ $(normalize p2) |}
-  | {| $chr:x |} -> {:expr| "'" ^ String.make 1 $chr:x ^ "'" |}
-  | {| $int:x |} -> {:expr| $str:x |}
-  | {| $int32:x |} -> {:expr| $str:x |}
-  | {| $int64:x |} -> {:expr| $str:x |}
-  | {| $nativeint:x |} -> {:expr| "\"" ^ $str:x ^ "\""|} 
-  | {| $str:s |} -> {:expr| $str:s |}
-  | {| lazy $p |} -> {:expr| "lazy" ^ $(normalize p)|}
-  | {| (module $s) |}  -> {:expr| "(module" ^ $str:s ^")"|}
-  | {| $flo:x |} -> {:expr| $str:x|}
+(* let rec normalize = let _loc = FanLoc.ghost in with "patt" fun *)
+(*   [ {| _ |} -> {|"_"|} *)
+(*   | {| $id:_|} -> {:expr| "_"|} *)
+(*   | {| ($p as $_) |} -> normalize p *)
+(*   | {| $p1 $p2 |} -> {:expr| $(normalize p1) ^ $(normalize p2) |} *)
+(*   | {| [| $p |]|} -> {:expr| "[|"^ $(normalize p) ^ "|]"|} (\* FIXME ^$ does not work *\) *)
+(*   | {| $p1;$p2 |} -> {:expr| $(normalize p1) ^ ";" ^  $(normalize p2) |} *)
+(*   | {| $p1,$p2|} ->  {:expr| $(normalize p1) ^ "," ^ $(normalize p2) |} *)
+(*   | {| $chr:x |} -> {:expr| "'" ^ String.make 1 $chr:x ^ "'" |} *)
+(*   | {| $int:x |} -> {:expr| $str:x |} *)
+(*   | {| $int32:x |} -> {:expr| $str:x |} *)
+(*   | {| $int64:x |} -> {:expr| $str:x |} *)
+(*   | {| $nativeint:x |} -> {:expr| "\"" ^ $str:x ^ "\""|}  *)
+(*   | {| $str:s |} -> {:expr| $str:s |} *)
+(*   | {| lazy $p |} -> {:expr| "lazy" ^ $(normalize p)|} *)
+(*   | {| (module $s) |}  -> {:expr| "(module" ^ $str:s ^")"|} *)
+(*   | {| $flo:x |} -> {:expr| $str:x|} *)
 
-  | {| $p1 | $p2 |} -> {:expr| $(normalize p1)  ^ "|" ^ $(normalize p2)  |}
+(*   | {| $p1 | $p2 |} -> {:expr| $(normalize p1)  ^ "|" ^ $(normalize p2)  |} *)
         
-  | {| $p1 .. $p2 |} -> {:expr| $(normalize p1) ^ ".." ^ $(normalize p2) |}
+(*   | {| $p1 .. $p2 |} -> {:expr| $(normalize p1) ^ ".." ^ $(normalize p2) |} *)
         
-  | {| {$p} |} -> {:expr| "{" ^ $(normalize p)^ "}"|}
-  | {| $i = $p |} ->
-      {:expr| $(str:string_of_ident i) ^"=" ^ $(normalize p) |}
+(*   | {| {$p} |} -> {:expr| "{" ^ $(normalize p)^ "}"|} *)
+(*   | {| $i = $p |} -> *)
+(*       {:expr| $(str:string_of_ident i) ^"=" ^ $(normalize p) |} *)
 
-  | {| ($tup:pl) |} -> {:expr| "("^ $(normalize pl) ^")"|}
-  | {| ($p:$_)|} -> normalize p (* type was ignored *)
-  | {| `$s |} -> {:expr| "`" ^ $str:s |}
-  (* | {| $anti:x |} -> Syntax.parse_expr *)
-  | {|$anti:_|} | {||}
-    | {| ? $_ |} | (* FIXME ?$ not supported *)
-      {| ? $_ : ($_) |} | {| ? $_ : ($_ = $_ )|} |
-      {| ~ $_ |} | {| ~ $_ : $_ |} | {| #$_ |} 
-      -> assert false
-  ];
+(*   | {| ($tup:pl) |} -> {:expr| "("^ $(normalize pl) ^")"|} *)
+(*   | {| ($p:$_)|} -> normalize p (\* type was ignored *\) *)
+(*   | {| `$s |} -> {:expr| "`" ^ $str:s |} *)
+(*   (\* | {| $anti:x |} -> Syntax.parse_expr *\) *)
+(*   | {|$anti:_|} | {||} *)
+(*     | {| ? $_ |} | (\* FIXME ?$ not supported *\) *)
+(*       {| ? $_ : ($_) |} | {| ? $_ : ($_ = $_ )|} | *)
+(*       {| ~ $_ |} | {| ~ $_ : $_ |} | {| #$_ |}  *)
+(*       -> assert false *)
+(*   ]; *)
+
+
+  
+let tuple _loc  =   fun
+  [[] -> {|()|}
+  |[p] -> p
+  | [e::es] -> {| ($e, $list:es) |} ];
+  
+let fun_args _loc args body =
+  if args = [] then {| fun () -> $body |}
+  else
+    List.fold_right
+      (fun arg body ->
+	{| fun $arg -> $body |}) args body;
+  
+let fun_apply _loc e args =
+  if args = [] then {| $e () |}
+  else
+    List.fold_left
+      (fun e arg ->
+        {| $e $arg |}) e args;
