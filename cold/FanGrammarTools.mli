@@ -25,8 +25,7 @@ val new_type_var: unit -> string
 val gensym: unit -> int ref
 val gen_lid: unit -> string
     
-val retype_rule_list_without_patterns :
-  Ast.loc -> rule list -> rule list
+val retype_rule_list_without_patterns:  Ast.loc -> rule list -> rule list
 exception NotneededTyping
 val make_ctyp : styp -> string -> Ast.ctyp option
 val make_ctyp_patt :

@@ -80,7 +80,14 @@ let make_ctyp styp tvar =
           FanLoc.raise _loc
             (Stream.Error ("'" ^ (x ^ "' illegal in anonymous entry level")))
         else Ast.TyQuo (_loc, tvar)
-    | `STtok _loc -> raise NotneededTyping
+    | `STtok _loc ->
+        Ast.TyVrnSup
+          (_loc,
+            (Ast.TyId
+               (_loc,
+                 (Ast.IdAcc
+                    (_loc, (Ast.IdUid (_loc, "FanSig")),
+                      (Ast.IdLid (_loc, "token")))))))
     | `STtyp t -> t in
   try Some (aux styp) with | NotneededTyping  -> None
 let make_ctyp_patt styp tvar patt =

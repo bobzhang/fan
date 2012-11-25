@@ -161,7 +161,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ `UID ("First"|"Last" as x ) ->   {:expr| `$uid:x |}
       | `UID ("Before" | "After" | "Level" as x) ; string{n} ->
             {:expr| `$uid:x  $n |}
-      | `UID x -> failwithf "%x is not the right position:(First|Last) or (Before|After|Level)" x]
+      | `UID x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
     level_list:
       [ "{"; L0 level {ll}; "}" -> ll
       | level {l} -> [l]]

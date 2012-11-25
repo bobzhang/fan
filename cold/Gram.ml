@@ -75,7 +75,8 @@ let eoi_entry entry =
            `Stoken
              (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
             (mk_action
-               (fun __camlp4_0  (x : 'entry)  (_loc : FanLoc.t)  ->
+               (fun (__camlp4_0 : [> FanSig.token])  (x : 'entry) 
+                  (_loc : FanLoc.t)  ->
                   match __camlp4_0 with
                   | `EOI -> (x : 'entry_eoi )
                   | _ -> assert false)))])]);

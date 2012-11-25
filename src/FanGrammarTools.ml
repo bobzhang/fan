@@ -1,3 +1,4 @@
+
 open Format;
 open Lib;
 module MetaAst = Camlp4Ast.Meta.Make Lib.Meta.MetaGhostLoc ;
@@ -81,7 +82,33 @@ let retype_rule_list_without_patterns _loc rl =
     | _ -> raise Exit ]) rl
   with
     [ Exit -> rl ];
+(*
+  {:extend|Gram
+  a:[ L0 ["match"]{ls} -> ls ]   |}
+  Gram.extend (a : 'a Gram.t )
+    (None,
+      [(None, None,
+         [([`Slist0
+              (Gram.srules a
+                 [([`Skeyword "match"],
+                    (Gram.mk_action
+                       (fun x  (_loc : FanLoc.t)  ->
+                          (Gram.string_of_token x : 'e__1 ))))])],
+            (Gram.mk_action
+               (fun (ls : 'e__1 list)  (_loc : FanLoc.t)  -> (ls : 'a ))))])])
 
+  
+  {:extend|Gram
+  a:[ L0 "match"{ls} -> ls ]
+  |}
+    Gram.extend (a : 'a Gram.t )
+    (None,
+      [(None, None,
+         [([`Slist0 (`Skeyword "match")],
+            (Gram.mk_action (fun ls  (_loc : FanLoc.t)  -> (ls : 'a ))))])])
+
+   {:extend|Gram b:[L0 c {ls} -> ls] c:[`INT (x,y) ->x ] |} 
+ *)
 exception NotneededTyping ;
 
 (*
@@ -89,16 +116,16 @@ exception NotneededTyping ;
   given the assumption that the entry output [tvar] type
  *)
 let  make_ctyp  styp tvar = 
-  let rec aux  = fun  
-    [ `STlid (_loc, s) -> {:ctyp| $lid:s |}
-    | `STapp (_loc, t1, t2) -> {:ctyp| $(aux t1) $(aux t2 ) |}
-    | `STquo (_loc, s) -> {:ctyp| '$s |}
+  let rec aux  = with "ctyp" fun  
+    [ `STlid (_loc, s) -> {| $lid:s |}
+    | `STapp (_loc, t1, t2) -> {| $(aux t1) $(aux t2 ) |}
+    | `STquo (_loc, s) -> {| '$s |}
     | `STself (_loc, x) ->
         if tvar = "" then
           FanLoc.raise _loc
             (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
-        else {:ctyp| '$tvar |}
-    | `STtok _loc -> raise NotneededTyping
+        else {| '$tvar |}
+    | `STtok _loc -> (* raise NotneededTyping *) {| [> FanSig.token ] |} (* FIXME *)
     | `STtyp t -> t ] in
     try Some (aux styp) with [NotneededTyping -> None ];
 
