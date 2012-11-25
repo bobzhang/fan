@@ -43,7 +43,7 @@ let string_of_patt patt =
     [OPT STRING] invalid
     You shoud write [OPT [x=STRING -> x] ]
  *)  
-let check_not_tok s = (* ('a, 'b) symbol -> unit *)
+let check_not_tok s = 
     match s with
     [ {text = `TXtok (_loc, _, _, _) ;_} ->
         FanLoc.raise _loc (Stream.Error
@@ -71,10 +71,12 @@ let retype_rule_list_without_patterns _loc rl =
     List.map(fun
       (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
     [ {prod = [({pattern = None; styp = `STtok _ ;_} as s)]; action = None} ->
-        {prod = [{ (s) with pattern = Some {:patt| x |} }];
-         action = Some {:expr| $(id:gm()).string_of_token x |}}
+      {prod =
+       [{ (s) with pattern = Some {:patt| x |} }];
+       action = Some {:expr| $(id:gm()).string_of_token x |}}
     (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
     | {prod = [({pattern = None; _ } as s)]; action = None} ->
+
         {prod = [{ (s) with pattern = Some {:patt| x |} }];
          action = Some {:expr| x |}}
     (* ...; ([] -> a); ... *)
@@ -83,8 +85,8 @@ let retype_rule_list_without_patterns _loc rl =
   with
     [ Exit -> rl ];
 (*
-  {:extend|Gram
-  a:[ L0 ["match"]{ls} -> ls ]   |}
+  {:extend|Gram a:[ L0 ["match"]{ls} -> ls ] |}
+  
   Gram.extend (a : 'a Gram.t )
     (None,
       [(None, None,
@@ -97,15 +99,10 @@ let retype_rule_list_without_patterns _loc rl =
             (Gram.mk_action
                (fun (ls : 'e__1 list)  (_loc : FanLoc.t)  -> (ls : 'a ))))])])
 
-  
-  {:extend|Gram
-  a:[ L0 "match"{ls} -> ls ]
+  {:extend|Gram a:[b|c | "match"]|}
+  {:extend|Gram  a:[ L0 "match"{ls} -> ls ]
   |}
-    Gram.extend (a : 'a Gram.t )
-    (None,
-      [(None, None,
-         [([`Slist0 (`Skeyword "match")],
-            (Gram.mk_action (fun ls  (_loc : FanLoc.t)  -> (ls : 'a ))))])])
+    
 
    {:extend|Gram b:[L0 c {ls} -> ls] c:[`INT (x,y) ->x ] |} 
  *)
@@ -125,12 +122,12 @@ let  make_ctyp  styp tvar =
           FanLoc.raise _loc
             (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else {| '$tvar |}
-    | `STtok _loc -> (* raise NotneededTyping *) {| [> FanSig.token ] |} (* FIXME *)
+    | `STtok _loc ->  {| [> FanSig.token ] |} 
     | `STtyp t -> t ] in
     try Some (aux styp) with [NotneededTyping -> None ];
 
 (*
-  {[ styp generates type constraints which are used to constrain patt ]}
+  {[ [styp] generates type constraints which are used to constrain patt ]}
 *)    
 let make_ctyp_patt styp tvar patt = 
   match make_ctyp styp tvar with
@@ -183,7 +180,7 @@ let rec make_expr entry tvar = with "expr"
   | `TXtok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, (`$uid:attr, $`str:descr)) |} ]
     
-and make_expr_rules _loc n rl tvar =
+and make_expr_rules _loc n rl tvar = with "expr"
   List.fold_left
     (fun txt (sl, ac)
       ->
@@ -191,8 +188,8 @@ and make_expr_rules _loc n rl tvar =
           List.fold_right
             (fun t txt ->
               let x = make_expr n tvar t in
-              {:expr| [$x :: $txt] |})  sl {:expr| [] |} in   {:expr| [($sl, $ac) :: $txt ] |})
-    {:expr| [] |} rl  ;
+              {| [$x :: $txt] |})  sl {| [] |} in
+        {| [($sl, $ac) :: $txt ] |})  {| [] |} rl  ;
 
 
   
@@ -200,7 +197,7 @@ and make_expr_rules _loc n rl tvar =
 let text_of_action _loc  psl
     (rtvar:string)
     (act:option Ast.expr) (tvar:string) =
-  let locid = {:patt| $(lid:!FanLoc.name) |} in (* default is [_loc]*)
+  let locid = {:patt| $(lid:!FanLoc.name) |} in 
   let act = match act with
   [ Some act -> act (* get the action *)
   | None -> {:expr| () |} ] in
@@ -262,17 +259,16 @@ let text_of_action _loc  psl
 
 let srules loc t rl tvar =
   List.map
-    (fun r
-      ->
-        let sl = [ s.text | s <- r.prod ] in
-        let ac = text_of_action loc r.prod t r.action tvar in
-        (sl, ac)) rl ;
+    (fun r ->
+      let sl = [ s.text | s <- r.prod ] in
+      let ac = text_of_action loc r.prod t r.action tvar in
+      (sl, ac)) rl ;
     
 
-let expr_of_delete_rule _loc n sl =
+let expr_of_delete_rule _loc n sl = with "expr"
   let sl =
     List.fold_right
-      (fun s e -> {:expr| [$(make_expr n "" s.text) :: $e ] |}) sl {:expr| [] |}  in
+      (fun s e -> {| [$(make_expr n "" s.text) :: $e ] |}) sl {| [] |}  in
   ({:expr| $(n.expr) |}, sl)  ;
 
 (* given the entry of the name, make a name *)
