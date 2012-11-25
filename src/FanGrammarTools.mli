@@ -35,7 +35,7 @@ val make_ctyp_expr :
 val text_of_action :
   Ast.loc ->
   symbol list -> string -> Ast.expr option -> string -> Ast.expr
-val srules :
+val mk_srules :
   Ast.loc ->
   string ->
   rule list -> string -> (text list * Ast.expr) list
@@ -45,7 +45,7 @@ val make_expr_rules :
 val expr_of_delete_rule :
   Ast.loc -> name -> symbol list -> Ast.expr * Ast.expr
 val mk_name : Ast.loc -> Ast.ident -> name
-val slist :
+val mk_slist :
   loc ->
   bool -> symbol option -> symbol -> text
 val text_of_entry :

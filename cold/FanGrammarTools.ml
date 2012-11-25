@@ -1,11 +1,12 @@
 open Format
 open Lib
+open LibUtil
 module MetaAst = Camlp4Ast.Meta.Make(Lib.Meta.MetaGhostLoc)
 module Ast = Camlp4Ast
 open FanGrammar
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 let split_ext = ref false
-let prefix = "__camlp4_"
+let prefix = "__fan_"
 let meta_action = ref false
 let grammar_module_name =
   let _loc = FanLoc.ghost in ref (Ast.IdUid (_loc, ""))
@@ -230,30 +231,26 @@ and make_expr_rules _loc n rl tvar =
           let sl =
             Expr.mklist _loc (List.map (fun t  -> make_expr n tvar t) sl) in
           Ast.ExTup (_loc, (Ast.ExCom (_loc, sl, action)))) rl)
-let text_of_action _loc psl (rtvar : string) (act : Ast.expr option)
-  (tvar : string) =
+let text_of_action _loc psl rtvar act tvar =
   let locid = Ast.PaId (_loc, (Ast.IdLid (_loc, (FanLoc.name.contents)))) in
   let act =
     match act with
     | Some act -> act
     | None  -> Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))) in
-  let (tok_match_pl,act,_) =
-    List.fold_left
-      (fun ((tok_match_pl,act,i) as accu)  ->
-         function
-         | { pattern = None ;_} -> accu
-         | { pattern = Some p;_} when Camlp4Ast.is_irrefut_patt p -> accu
-         | { pattern = Some p; text = `TXtok (_,_,_,_);_} ->
+  let (_,tok_match_pl) =
+    List.fold_lefti
+      (fun i  tok_match_pl  x  ->
+         match x with
+         | { pattern = Some p; text = `TXtok _;_} ->
              let id = prefix ^ (string_of_int i) in
-             ((Some
-                 ((match tok_match_pl with
-                   | None  -> ((Ast.ExId (_loc, (Ast.IdLid (_loc, id)))), p)
-                   | Some (tok_pl,match_pl) ->
-                       ((Ast.ExCom
-                           (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, id)))),
-                             tok_pl)), (Ast.PaCom (_loc, p, match_pl)))))),
-               act, (i + 1))
-         | _ -> accu) (None, act, 0) psl in
+             Some
+               ((match tok_match_pl with
+                 | None  -> ((Ast.ExId (_loc, (Ast.IdLid (_loc, id)))), p)
+                 | Some (oe,op) ->
+                     ((Ast.ExCom
+                         (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, id)))),
+                           oe)), (Ast.PaCom (_loc, p, op)))))
+         | _ -> tok_match_pl) None psl in
   let e =
     let e1 = Ast.ExTyc (_loc, act, (Ast.TyQuo (_loc, rtvar))) in
     let e2 =
@@ -290,31 +287,28 @@ let text_of_action _loc psl (rtvar : string) (act : Ast.expr option)
                           (_loc, (Ast.IdUid (_loc, "FanLoc")),
                             (Ast.IdLid (_loc, "t")))))))), (Ast.ExNil _loc),
              e2))) in
-  let (txt,_) =
-    List.fold_left
-      (fun (txt,i)  s  ->
+  let (_,txt) =
+    List.fold_lefti
+      (fun i  txt  s  ->
          match s.pattern with
          | None |Some (Ast.PaAny _) ->
-             ((Ast.ExFun
-                 (_loc,
-                   (Ast.McArr (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc), txt)))),
-               i)
+             Ast.ExFun
+               (_loc,
+                 (Ast.McArr (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc), txt)))
          | Some (Ast.PaAli (_,Ast.PaApp (_,_,Ast.PaTup (_,Ast.PaAny _)),p))
              ->
              let p = make_ctyp_patt s.styp tvar p in
-             ((Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), txt)))),
-               i)
+             Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), txt)))
          | Some p when Camlp4Ast.is_irrefut_patt p ->
              let p = make_ctyp_patt s.styp tvar p in
-             ((Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), txt)))),
-               i)
+             Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), txt)))
          | Some _ ->
              let p =
                make_ctyp_patt s.styp tvar
                  (Ast.PaId
                     (_loc, (Ast.IdLid (_loc, (prefix ^ (string_of_int i)))))) in
-             ((Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), txt)))),
-               (succ i))) (e, 0) psl in
+             Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), txt))))
+      e psl in
   let txt =
     if meta_action.contents
     then
@@ -332,7 +326,7 @@ let text_of_action _loc psl (rtvar : string) (act : Ast.expr option)
       (Ast.ExId
          (_loc, (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "mk_action")))))),
       txt)
-let srules loc t rl tvar =
+let mk_srules loc t rl tvar =
   List.map
     (fun r  ->
        let sl = List.map (fun s  -> s.text) r.prod in
@@ -350,7 +344,7 @@ let expr_of_delete_rule _loc n sl =
   ((n.expr), sl)
 let mk_name _loc i =
   { expr = (Ast.ExId (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
-let slist loc min sep symb = `TXlist (loc, min, symb, sep)
+let mk_slist loc min sep symb = `TXlist (loc, min, symb, sep)
 let text_of_entry _loc e =
   let ent =
     let x = e.name in
@@ -384,7 +378,7 @@ let text_of_entry _loc e =
                  (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "Some")))), ass)
            | None  -> Ast.ExId (_loc, (Ast.IdUid (_loc, "None"))) in
          let txt =
-           let rl = srules _loc (e.name).tvar level.rules (e.name).tvar in
+           let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
            let e = make_expr_rules _loc e.name rl (e.name).tvar in
            Ast.ExApp
              (_loc,
@@ -447,7 +441,7 @@ let let_in_of_extend _loc gram gl default =
                        (_loc, (Ast.IdLid (_loc, "grammar_entry_create")))),
                     entry_mk)),
                (Ast.ExLet (_loc, Ast.ReNil, locals, default))))
-let text_of_functorial_extend _loc gram gl el =
+let text_of_functorial_extend _loc gram locals el =
   let args =
     let el =
       List.map
@@ -470,7 +464,7 @@ let text_of_functorial_extend _loc gram gl el =
         Ast.ExSeq
           (_loc,
             (List.fold_left (fun acc  x  -> Ast.ExSem (_loc, acc, x)) e el)) in
-  let_in_of_extend _loc gram gl args
+  let_in_of_extend _loc gram locals args
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
   | None  ->

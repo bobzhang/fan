@@ -188,7 +188,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
        ->
          let () = check_not_tok s in
          let styp = `STapp _loc (`STlid _loc "list") s.styp in
-         let text = slist _loc
+         let text = mk_slist _loc
              (match x with
              ["L0" -> false | "L1" -> true
              | _ -> failwithf "only (L0|L1) allowed here"]) sep s in
@@ -212,7 +212,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      | "["; L0 rule SEP "|"{rl}; "]" ->
         let rl = retype_rule_list_without_patterns _loc rl in
         let t = new_type_var () in
-        mk_symbol  ~text:(`TXrules _loc (srules _loc t rl ""))
+        mk_symbol  ~text:(`TXrules _loc (mk_srules _loc t rl ""))
           ~styp:(`STquo _loc t) ~pattern:None
           
      (* | "`"; a_ident{i}; OPT patt{p} -> *)

@@ -1,6 +1,7 @@
 
 open Format;
 open Lib;
+open LibUtil;
 module MetaAst = Camlp4Ast.Meta.Make Lib.Meta.MetaGhostLoc ;
 module Ast = Camlp4Ast;
 open FanGrammar;
@@ -9,7 +10,7 @@ let print_warning = eprintf "%a:\n%s@." FanLoc.print;
 
 let split_ext = ref false;
   
-let prefix = "__camlp4_"  ;
+let prefix = "__fan_"  ;
   
 let meta_action = ref false;
   
@@ -84,28 +85,7 @@ let retype_rule_list_without_patterns _loc rl =
     | _ -> raise Exit ]) rl
   with
     [ Exit -> rl ];
-(*
-  {:extend|Gram a:[ L0 ["match"]{ls} -> ls ] |}
-  
-  Gram.extend (a : 'a Gram.t )
-    (None,
-      [(None, None,
-         [([`Slist0
-              (Gram.srules a
-                 [([`Skeyword "match"],
-                    (Gram.mk_action
-                       (fun x  (_loc : FanLoc.t)  ->
-                          (Gram.string_of_token x : 'e__1 ))))])],
-            (Gram.mk_action
-               (fun (ls : 'e__1 list)  (_loc : FanLoc.t)  -> (ls : 'a ))))])])
 
-  {:extend|Gram a:[b|c | "match"]|}
-  {:extend|Gram  a:[ L0 "match"{ls} -> ls ]
-  |}
-    
-
-   {:extend|Gram b:[L0 c {ls} -> ls] c:[`INT (x,y) ->x ] |} 
- *)
 exception NotneededTyping ;
 
 (*
@@ -139,7 +119,9 @@ let make_ctyp_expr styp tvar expr =
   [ None -> expr
   | Some t -> let _loc = Camlp4Ast.loc_of_expr expr in {:expr| ($expr : $t) |} ];
 
-(* transform text to [expr] *)    
+(* transform [text] to [expr] which represents [symbol]
+   compute the [lhs]
+ *)    
 let rec make_expr entry tvar = with "expr"
   fun
   [ `TXmeta (_loc, n, tl, e, t) ->
@@ -179,78 +161,72 @@ let rec make_expr entry tvar = with "expr"
       {| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
   | `TXtok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, (`$uid:attr, $`str:descr)) |} ]
-    
+(* the [rhs] was computed, compute the [lhs] *)    
 and make_expr_rules _loc n rl tvar = with "expr"
   Expr.mklist _loc
     (List.map (fun (sl,action) ->
       let sl = Expr.mklist _loc (List.map (fun t -> make_expr n tvar t) sl) in
       {| ($sl,$action) |} ) rl);
   
-(* generate action, collecting patterns into action  *)
-let text_of_action _loc  psl
-    (rtvar:string)
-    (act:option Ast.expr) (tvar:string) =
+(* generate action, collecting patterns into action
+   [rtvar] stands for the type of the return value
+   [tvar] refers to the current entry's type
+ *)
+let text_of_action _loc  psl  rtvar act tvar = with "expr"
   let locid = {:patt| $(lid:!FanLoc.name) |} in 
-  let act = match act with
-  [ Some act -> act (* get the action *)
-  | None -> {:expr| () |} ] in
-  let (tok_match_pl, act, _) =
-    List.fold_left
-      (fun
-        ((tok_match_pl, act, i) as accu)
-        -> fun
-          [ { pattern = None; _ } -> accu
-          | { pattern = Some p ; _} when Camlp4Ast.is_irrefut_patt p -> accu
-          | { pattern = Some p; text=`TXtok (_, _,  _, _) ; _ } ->
-              let id = prefix ^ string_of_int i in
-              (Some
-                 (match tok_match_pl with
-                 [ None -> ({:expr| $lid:id |}, p)
-                 | Some (tok_pl, match_pl) ->
-                     ({:expr| $lid:id, $tok_pl |}, {:patt| $p, $match_pl |})]),act,  i+1)
-          | _ -> accu ])
-      (None, act, 0) psl  in
+  let act =
+    match act with
+    [ Some act -> act (* get the action *)
+    | None -> {| () |} ] in
+  let (_,tok_match_pl) = List.fold_lefti
+    (fun i tok_match_pl x ->
+      match x with
+      [ {pattern=Some p ; text=`TXtok _;_ } ->
+          let id = prefix ^ string_of_int i in
+          (Some
+             (match tok_match_pl with
+             [None -> ( {|$lid:id|}, p)
+             |Some (oe,op) ->
+                 ({| $lid:id, $oe |}, {:patt|$p,$op |}) ]))
+      | _ -> tok_match_pl]  ) None psl in
   let e =
-    let e1 = {:expr| ($act : '$rtvar) |} in
+    let e1 = {| ($act : '$rtvar) |} in
     let e2 =
       match tok_match_pl with
       [ None -> e1
-      | Some ({:expr| $t1, $t2 |}, {:patt| $p1, $p2 |}) ->
-          {:expr|
+      | Some ({| $t1, $t2 |}, {:patt| $p1, $p2 |}) ->
+          {|
             match ($t1, $t2) with (* two and more patterns here *)
             [ ($p1, $p2) -> $e1
             | _ -> assert false ] |}
       | Some (tok, match_) ->
-            {:expr|
+            {|
             match $tok with
             [ $pat:match_ -> $e1
             | _ -> assert false ] |} ] in
-    {:expr| fun ($locid : FanLoc.t) -> $e2 |} in (*FIXME hard coded Loc*)
+    {| fun ($locid : FanLoc.t) -> $e2 |} in (*FIXME hard coded Loc*)
   (* add prefix now *)
-  let (txt, _) =
-    List.fold_left
-      (fun (txt, i) s ->
+  let (_,txt) =
+    List.fold_lefti
+      (fun i txt s ->
         match s.pattern with
-        [ None | Some {:patt| _ |} -> ({:expr| fun _ -> $txt |}, i)
+        [ None | Some {:patt| _ |} -> {| fun _ -> $txt |}
         | Some {:patt| ($_ $(tup:{:patt| _ |}) as $p) |} ->
-            let p = make_ctyp_patt s.styp tvar p in
-            ({:expr| fun $p -> $txt |}, i)
+            let p = make_ctyp_patt s.styp tvar p in  {| fun $p -> $txt |}
         | Some p when Camlp4Ast.is_irrefut_patt p ->
             let p = make_ctyp_patt s.styp tvar p in
-            ({:expr| fun $p -> $txt |}, i)
+            {| fun $p -> $txt |}
         | Some _ ->
-            let p = make_ctyp_patt s.styp tvar
-                {:patt| $(lid:prefix^string_of_int i) |} in
-            ({:expr| fun $p -> $txt |}, succ i) ])
-      (e, 0) psl in
+            let p = make_ctyp_patt s.styp tvar {:patt| $(lid:prefix^string_of_int i) |} in
+            {| fun $p -> $txt |} ])  e psl in
   let txt =
     if !meta_action then
-      {:expr| Obj.magic $(MetaAst.Expr.meta_expr _loc txt) |}
+      {| Obj.magic $(MetaAst.Expr.meta_expr _loc txt) |}
     else txt  in
-  {:expr| $(id:gm()).mk_action $txt |}  ;
+  {| $(id:gm()).mk_action $txt |}  ;
 
-
-let srules loc t rl tvar =
+(* the [rhs] was already computed, the [lhs] was left *)
+let mk_srules loc t rl tvar =
   List.map
     (fun r ->
       let sl = [ s.text | s <- r.prod ] in
@@ -258,8 +234,8 @@ let srules loc t rl tvar =
       (sl, ac)) rl ;
     
 
-let expr_of_delete_rule _loc n sl = with "expr"
-  let sl =
+let expr_of_delete_rule _loc n sl =  with "expr"
+   let sl =
     List.fold_right
       (fun s e -> {| [$(make_expr n "" s.text) :: $e ] |}) sl {| [] |}  in
   ({:expr| $(n.expr) |}, sl)  ;
@@ -267,32 +243,32 @@ let expr_of_delete_rule _loc n sl = with "expr"
 (* given the entry of the name, make a name *)
 let mk_name _loc i = {expr = {:expr| $id:i |}; tvar = Ident.tvar_of_ident i; loc = _loc};
   
-let slist loc min sep symb = `TXlist loc min symb sep ;
+let mk_slist loc min sep symb = `TXlist loc min symb sep ;
   
-let text_of_entry  _loc e = 
+let text_of_entry  _loc e =  with "expr"
   let ent =
     let x = e.name in
     let _loc = e.name.loc in
-    {:expr| ($(x.expr) : $(id:gm()).t '$(x.tvar)) |}   in
+    {| ($(x.expr) : $(id:gm()).t '$(x.tvar)) |}   in
   let pos =
     match e.pos with
-    [ Some pos -> {:expr| Some $pos |}
-    | None -> {:expr| None |} ] in
+    [ Some pos -> {| Some $pos |}
+    | None -> {| None |} ] in
   let txt =
     List.fold_right
       (fun level txt ->
         let lab =
           match level.label with
-          [ Some lab -> {:expr| Some $str:lab |}
-          | None -> {:expr| None |} ]  in
+          [ Some lab -> {| Some $str:lab |}
+          | None -> {| None |} ]  in
         let ass =
           match level.assoc with
-          [ Some ass -> {:expr| Some $ass |}
-          | None -> {:expr| None |} ]  in
+          [ Some ass -> {| Some $ass |}
+          | None -> {| None |} ]  in
         let txt =
-          let rl = srules _loc e.name.tvar level.rules e.name.tvar in
+          let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
           let e = make_expr_rules _loc e.name rl e.name.tvar in
-          {:expr| [($lab, $ass, $e) :: $txt] |} in txt) e.levels {:expr| [] |} in
+          {| [($lab, $ass, $e) :: $txt] |} in txt) e.levels {| [] |} in
   (ent, pos, txt) ;
   
 
@@ -315,25 +291,25 @@ let let_in_of_extend _loc gram gl  default =
     | _ -> failwith "internal error in the Grammar extension" ]  in
   match gl with
   [ None -> default
-  | Some ll -> begin
+  | Some ll ->
         match ll with
         [ [] -> default
         | [x::xs] ->
             let locals =
-              List.fold_right (fun name acc -> {:binding| $acc and $(local_binding_of_name name) |})
+              List.fold_right
+                (fun name acc -> {:binding| $acc and $(local_binding_of_name name) |})
                 xs (local_binding_of_name x) in
               {:expr|
-            let grammar_entry_create = $entry_mk in
-            let $locals in $default |} ] 
-  end ]  ;
+              let grammar_entry_create = $entry_mk in
+              let $locals in $default |} ] ]  ;
 
-(* the [gl] is global entry name list,
+(* the [locals] is local entry name list,
    [el] is entry list
    [gram] is the grammar
    [gmod] is the [Gram] module true
    generate the extend, the main entrance
  *)
-let text_of_functorial_extend _loc  gram gl el = 
+let text_of_functorial_extend _loc  gram locals el = 
   let args =
     let el =
       List.map  (fun e ->
@@ -344,7 +320,7 @@ let text_of_functorial_extend _loc  gram gl el =
     | [e] -> e
     | [e::el] ->
         {:expr| begin  $(List.fold_left (fun acc x -> {:expr| $acc; $x |}) e el) end |}  ]  in
-  let_in_of_extend _loc gram gl  args;
+  let_in_of_extend _loc gram locals  args;
 
 
 (* generate TXtok *)  
@@ -398,3 +374,20 @@ let sfold ?sep _loc  (ns:list string)  f e s =
 
 
 
+        
+  (* (\*                 ) *\) *)
+  (* let (tok_match_pl(\* , act *\), _) = *)
+  (*   List.fold_left *)
+  (*     (fun *)
+  (*       ((tok_match_pl, i) as accu) *)
+  (*       -> fun *)
+  (*         [ { pattern = None; _ } -> accu *)
+  (*         | { pattern = Some p ; _} when Camlp4Ast.is_irrefut_patt p -> accu *)
+  (*         | { pattern = Some p; text=`TXtok (_, _,  _, _) ; _ } -> *)
+  (*             let id = prefix ^ string_of_int i in *)
+  (*             (Some *)
+  (*                (match tok_match_pl with *)
+  (*                [ None -> ({| $lid:id |}, p) *)
+  (*                | Some (tok_pl, match_pl) -> *)
+  (*                    ({| $lid:id, $tok_pl |}, {:patt| $p, $match_pl |})]),  i+1) *)
+  (*         | _ -> accu ])  (None, 0) psl  in *)

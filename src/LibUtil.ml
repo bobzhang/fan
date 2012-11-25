@@ -120,6 +120,8 @@ let callcc  (type u) (f: cont u-> u)  =
 module List = struct
   include List;
   include BatList;
+  let fold_lefti f acc ls =
+    fold_left (fun (i,acc) x -> (i+1,f i acc x) ) (0,acc) ls;
 end;
 
 module Char = struct

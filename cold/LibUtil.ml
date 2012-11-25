@@ -63,6 +63,8 @@ let callcc (type u) (f : u cont -> u) =
     end in try f (fun x  -> raise (M.Return x)) with | M.Return u -> u
 module List = struct
   include List include BatList
+  let fold_lefti f acc ls =
+    fold_left (fun (i,acc)  x  -> ((i + 1), (f i acc x))) (0, acc) ls
   end
 module Char = struct
   include BatChar
