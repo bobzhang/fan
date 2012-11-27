@@ -12,8 +12,9 @@ module Ast = Camlp4Ast;
 	 with Not_found -> []
        in PredMap.add p [(ts,goals,_loc)::l] m
      ) PredMap.empty r in
-    let prog = (List.concat [PlTranslate.prog_atoms _loc res; PlTranslate.prog_rules _loc res]) in
-    {:str_item| $list:prog |}
+    (* let prog = (List.concat [PlTranslate.prog_atoms _loc res; PlTranslate.prog_rules _loc res]) in *)
+    (* {:str_item| $list:prog |} *)
+    {:str_item| $(list:PlTranslate.prog_atoms _loc res); $(list:PlTranslate.prog_rules _loc res) |}
   ]
   rule:
   [goal{g}; OPT clauses{c};"." ->
@@ -37,5 +38,5 @@ module Ast = Camlp4Ast;
   | `UID x -> Var(x,_loc) ]
 |};
 
-(* Quotation.add_quotation_of_str_item ~name:"plc" ~entry:prog; *)
+Fan.P.Syntax.Quotation.add_quotation_of_str_item ~name:"plc" ~entry:prog; 
 

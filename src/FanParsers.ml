@@ -1658,7 +1658,7 @@ New syntax:\
       | `STR (_, x); S{xs} -> Ast.LCons x xs
       | `STR (_, x) -> Ast.LCons x Ast.LNil ] 
       semi:
-      [ ";" -> () ]  
+      [ ";" -> () ] (* -> ()]  (* FIXME *) *)
       ident_quot:
       { "apply"
         [ S{i}; S{j} -> {| $i $j |} ]
@@ -1686,7 +1686,7 @@ New syntax:\
       [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ], stopped_at _loc)
       | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
       | `EOI -> ([], None) ]
-      str_items:
+      str_items: (* FIXME dump seems to be incorrect *)
       [ `ANT ((""|"stri"|"anti"|"list" as n),s) ->
         {| $(anti:mk_anti n ~c:"str_item" s) |}
       | `ANT ((""|"stri"|"anti"|"list" as n),s); semi; S{st} ->

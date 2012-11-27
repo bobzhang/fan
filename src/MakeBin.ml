@@ -148,7 +148,9 @@ module Camlp4Bin
           match getdir ast with
           [ Some x ->
               match x with
-              [ (_, "load", s) -> begin  rewrite_and_load "" s; None end
+              [ (_, "load", s) -> begin
+                rewrite_and_load "" s;
+                None end
               | (_, "directory", s) -> begin  DynLoader.include_dir dyn_loader s; None end
               | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir)
               | (_, "default_quotation", s) -> begin PreCast.Syntax.Quotation.default := s; None end
@@ -329,3 +331,4 @@ module Camlp4Bin
       main ();
     end ;
     
+

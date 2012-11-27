@@ -4,5 +4,5 @@ src/CharStream.cmo
 src/FanBasic.cmo
 src/OAstPrint.cmo
 src/FanLexUtil.cmo
-src/Fan.byte
+src/FanDriver.byte
 src/FanTop.cma

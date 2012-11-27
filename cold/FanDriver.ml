@@ -1,0 +1,1 @@
+module M = MakeBin.Camlp4Bin(Fan.P)

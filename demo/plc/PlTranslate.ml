@@ -25,7 +25,7 @@ let version_opened (i,_k) j =
 let version_reconstruct bs =
   List.fold_left
     (fun (o,k) b ->
-      ((let o = o lsl 1 in if b then o + 1 else o), k+1)) (0,0) bs;
+      (((* let o = o lsl 1 in *) if b then 2 * o + 1 else 2 * o), k+1)) (0,0) bs;
 
 let version_fold f acc (i,k) =
   let rec aux acc j =
@@ -39,10 +39,11 @@ let version_neg (i,k) =
   ((1 lsl k) - 1 - i, k) ;
 
 (** Name functions **)
-
+let pred_name n v = n ^ "_" ^ (version_string v) ;
+  
 let atom_name n = String.capitalize n ;
 
-let pred_name n v = n ^ "_" ^ (version_string v) ;
+
 
 let pred_var_name n = "_arg" ^ (string_of_int n) ;
 
@@ -52,33 +53,33 @@ let f_name = "_f" ;
 
 let atoms_type _loc atoms =
   let wrap =
-    StringSet.fold
+    SSet.fold
       (fun atom l ->
         [ {:ctyp| $(uid:atom_name atom) |}::l]) atoms [] in
   {:str_item| type atom = [ $list:wrap ] |};
 
 let atoms_repr _loc atoms =
-  let cases = StringSet.fold
+  let cases = SSet.fold
       (fun atom l ->
 	[{:match_case| $(uid:atom_name atom) -> $str:atom |} ::l] ) atoms [] in
   {:str_item| let string_of_atom = fun [ $list:cases ] |};
 
 (** Env management **)
 
-let empty = StringMap.empty ;
+let empty = SMap.empty ;
 
 let bound map = fun
-  [ Var (v,_) -> StringMap.mem v map
+  [ Var (v,_) -> SMap.mem v map
   | Atom (_,_) -> true
   | Anon _ -> false];
 
-let lookup map v = StringMap.find v map;
+let lookup map v = SMap.find v map;
 
 let bind map v id =
   try
     let id' = lookup map v in
     (map, Some id')
-  with Not_found -> (StringMap.add v id map, None);
+  with Not_found -> (SMap.add v id map, None);
 
 (**
 	Rules translation:
@@ -233,7 +234,7 @@ let prog_atoms _loc prog =
   let atoms = atoms prog in
   [atoms_type _loc atoms; atoms_repr _loc atoms];
 
-let prog_rules _loc prog =
+let prog_rules _loc (prog:PlAst.prog 'a) =
   let defs = PredMap.fold
       (fun p rs acc ->
 	List.append (pred _loc p (List.rev rs)) acc) prog [] in

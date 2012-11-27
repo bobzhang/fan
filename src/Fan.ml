@@ -2,10 +2,11 @@
 
 
 
-let module P =
-  PreCast.Make (struct end) in 
-let module M =MakeBin.Camlp4Bin  P in
-();
+(* module P = *)
+include PreCast.Make (struct end);
+
+
+
 
 
 

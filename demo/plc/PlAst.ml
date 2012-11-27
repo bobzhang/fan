@@ -1,7 +1,6 @@
 
-module StringSet = Set.Make String;
+open LibUtil;
 
-module StringMap = Map.Make(String);
 
 (* atoms and integers are constants *)
 type term 'loc =
@@ -28,11 +27,11 @@ type rule 'loc = (list (term 'loc)   * list (goal 'loc)   * 'loc);
 (* Complete program: map from pred to rule list *)
 type prog 'loc = PredMap.t  (list (rule 'loc))   ;
 
-let atoms_of_terms acc terms =
+let (* atoms_of_terms *) (+>) acc terms =
   List.fold_left
     (fun acc term ->
       match term with
-      [ Atom (a,_) -> StringSet.add a acc
+      [ Atom (a,_) -> SSet.add a acc
       | _ -> acc]) acc terms ;
 
 let atoms (prog : prog 'a) =
@@ -40,7 +39,7 @@ let atoms (prog : prog 'a) =
     (fun _pred rules acc ->
       List.fold_left
         (fun acc (terms,goals,_) ->
-	  let acc = atoms_of_terms acc terms in
+	  let acc = (* atoms_of_terms *) acc +> terms in
 	  List.fold_left
             (fun acc (_,terms,_) ->
-	      atoms_of_terms acc terms) acc goals) acc rules) prog StringSet.empty ;
+	      (* atoms_of_terms *) acc +> terms) acc goals) acc rules) prog SSet.empty ;
