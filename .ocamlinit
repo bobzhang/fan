@@ -51,9 +51,9 @@ let f = std_formatter;;
 #load_rec "FanLexUtil.cmo";;
 #load_rec "FanTop.cma";;
 #load_rec "OAstPrint.cmo";;
-
+open Fan;;
 open FanTop;;
-open FanTop.P;;
+(* open FanTop.P;; *)
 open FanSig;;
 open LibUtil;;
 open FanUtil;;

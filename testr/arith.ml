@@ -1,7 +1,9 @@
 
-let expr_eoi = Gram.mk "expr_eoi";
-let expr = Gram.mk "expr";
+(* let expr_eoi = Gram.mk "expr_eoi"; *)
+(* let expr = Gram.mk "expr"; *)
 
+
+{:extend.create|Gram expr_eoi expr|};
 {:extend|Gram 
   expr:
   {"minus" LA
@@ -15,10 +17,9 @@ let expr = Gram.mk "expr";
    "simple"
     ["("; S{x}; ")" -> x
     | `INT(x,_) -> float_of_int x ] }
-  expr_eoi:  [expr{x};`EOI -> x ]  
-|};
+  expr_eoi:  [expr{x};`EOI -> x ]  |};
 
-print_float (Gram.parse_string expr_eoi FanLoc.string_loc  "3+3*2/1**3" ) ;
+(* print_float (Gram.parse_string expr_eoi FanLoc.string_loc  "3+3*2/1**3" ) ; *)
 
 (* the left [SELF] of the two [minus] and [power] correspond to
    a call to the next level.

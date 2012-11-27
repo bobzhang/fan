@@ -1,3 +1,6 @@
 PlAst
 PlTranslate
 PlParser
+PlEnv
+PlNames
+PlVersion

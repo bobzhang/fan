@@ -1,1 +1,2 @@
 <**/*.{ml,mlx}>: camlp4boot
+<*_ppo.ml>: -camlp4boot
