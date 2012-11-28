@@ -854,7 +854,7 @@ New syntax:\
   {:extend|Gram
         (* mli entrance *)    
     interf:
-    [ "#"; a_LIDENT{n}; opt_expr{dp};  ";;" -> ([ {| # $n $dp |} ], stopped_at _loc)
+    [ "#"; a_LIDENT{n}; opt_expr{dp};  ";;" -> ([ {| # $n $dp |} ], (* stopped_at *) Some _loc)
     | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
     | `EOI -> ([], None) ]
     sig_items:
@@ -1683,7 +1683,7 @@ New syntax:\
     {:extend|Gram
     (* ml entrance *)    
       implem:
-      [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ], stopped_at _loc)
+      [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ], (* stopped_at *) Some _loc)
       | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
       | `EOI -> ([], None) ]
       str_items: (* FIXME dump seems to be incorrect *)

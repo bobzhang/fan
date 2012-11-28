@@ -45,3 +45,9 @@ let rec infix_kwds_filter (__strm : _ Stream.t) =
        (let xs = __strm in
         Stream.icons x (Stream.slazy (fun _  -> infix_kwds_filter xs))))
   | _ -> Stream.sempty
+let parse_include_file rule file =
+  if Sys.file_exists file
+  then
+    let ch = open_in file in
+    let st = Stream.of_channel ch in Gram.parse rule (FanLoc.mk file) st
+  else failwithf "@[file: %s not found@]@." file

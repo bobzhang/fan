@@ -1,4 +1,5 @@
 open LibUtil
+open Format
 module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   module Ast = Camlp4Ast type warning = FanLoc.t -> string -> unit 
   let default_warning loc txt =
@@ -182,10 +183,28 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let parse_interf ?(directive_handler= fun _  -> None)  _loc cs =
     let l = wrap directive_handler (Gram.parse interf) _loc cs in
     Ast.sgSem_of_list l
-  let print_interf ?input_file  ?output_file  _ =
+  let print_interf ?input_file:_  ?output_file:_  _ =
     failwith "No interface printer"
-  let print_implem ?input_file  ?output_file  _ =
+  let print_implem ?input_file:_  ?output_file:_  _ =
     failwith "No implementation printer"
+  let parse_include_file_smart file =
+    let open Filename in
+      if check_suffix file ".ml"
+      then `Str (GramLib.parse_include_file str_items file)
+      else
+        if check_suffix file ".mli"
+        then `Sig (GramLib.parse_include_file sig_items file)
+        else
+          (eprintf "file input should ends with either .ml or .mli";
+           invalid_arg ("parse_include_file_smart: " ^ file))
+  let parse_module_type str =
+    try
+      match Gram.parse_string module_type FanLoc.string_loc str with
+      | Ast.MtId (_,i) -> i
+      | _ ->
+          (eprintf "the module type %s is not a simple module type" str;
+           exit 2)
+    with | _ -> (eprintf "%s is not a valid module_type" str; exit 2)
   module AstFilters = AstFilters.Make(struct
     
     end)

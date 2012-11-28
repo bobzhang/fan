@@ -52,9 +52,9 @@ end;
 let use_file token_stream =
   let rec loop () =
       let (pl, stopped_at_directive) =
-        Gram.parse_origin_tokens Syntax.implem(*use_file*) token_stream
+        Gram.parse_origin_tokens Syntax.implem token_stream
       in
-      if stopped_at_directive <> None then
+      if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with "str_item" match pl with
         [ [ {| #load $str:s |} ] ->
             begin  Topdirs.dir_load Format.std_formatter s; loop ()  end
@@ -62,9 +62,7 @@ let use_file token_stream =
             begin  Topdirs.dir_directory s; loop ()  end
         | _ -> (pl, false) ]
       else (pl, true) in
-  let (pl0, eoi) =
-    loop () 
-  in
+  let (pl0, eoi) = loop () in
   let pl =
     if eoi then []
     else

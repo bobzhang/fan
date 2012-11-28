@@ -318,26 +318,26 @@ module Driver = struct
     (* let pp = match pp with | N -> default | _ -> pp in *)
     (* Cmd (S [ pp; P ml; A "-printer";printer; A "-o"; Px pp_ml ]) *)
    )
-  let infer_with_error_channel ?(ocamlc=Options.ocamlc) flag tag =
+  let infer_with_error_channel ?(ocamlc=Options.ocamlc) flags tag =
     let infer ml dlambda env build = let open Ocaml_utils in
     let ml = env ml and dlambda = env dlambda in
     let tags = tags_of_pathname ml ++ "ocaml" in
     Ocaml_compiler.prepare_compile build ml ;
-    Cmd(S[!ocamlc; ocaml_ppflags tags; ocaml_include_flags ml;
-          A flag;
-          (if Tags.mem "thread" tags then A"-thread" else N);
-          T(tags++tag); P ml; Sh"2>"; Px dlambda]) in
+    Cmd(S( [!ocamlc; ocaml_ppflags tags; ocaml_include_flags ml] @
+          List.map (fun f -> A f) flags @
+          [(if Tags.mem "thread" tags then A"-thread" else N);
+          T(tags++tag); P ml; Sh"2>"; Px dlambda]) ) in
     infer 
-  let infer_dlambda =  infer_with_error_channel "-dlambda" "infer_dlambda"
-  let infer_drawlambda = infer_with_error_channel "-drawlambda" "infer_drawlambda"
-  let infer_dparsetree = infer_with_error_channel "-dparsetree" "infer_dparsetree"
-  let infer_instr =  infer_with_error_channel "-dinstr" "infer_instr"
+  let infer_dlambda =  infer_with_error_channel ["-dlambda"] "infer_dlambda"
+  let infer_drawlambda = infer_with_error_channel ["-drawlambda"] "infer_drawlambda"
+  let infer_dparsetree = infer_with_error_channel ["-c";"-dparsetree"] "infer_dparsetree"
+  let infer_instr =  infer_with_error_channel ["-dinstr"] "infer_instr"
   let infer_dclambda =  infer_with_error_channel
-      ~ocamlc:Options.ocamlopt "-dclambda" "infer_dclambda"
+      ~ocamlc:Options.ocamlopt ["-dclambda"] "infer_dclambda"
   let infer_dcmm = infer_with_error_channel
-      ~ocamlc:Options.ocamlopt "-dcmm" "infer_dcmm" 
+      ~ocamlc:Options.ocamlopt ["-dcmm"] "infer_dcmm" 
   let infer_dlinear = infer_with_error_channel
-      ~ocamlc:Options.ocamlopt "-dlinear" "infer_dlinear";;
+      ~ocamlc:Options.ocamlopt ["-dlinear"] "infer_dlinear";;
   let mk_odocl _ _ =
     let modules = String.concat "\n" (StringSet.elements !Options.doc_modules) in
     Cmd (S[A"echo"; Quote(Sh modules); Sh">"; P ("foo" /*> Odocl)])

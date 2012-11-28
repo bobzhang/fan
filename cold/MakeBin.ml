@@ -84,6 +84,14 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
          real_load (try find_in_path y with | Not_found  -> x));
     rcall_callback.contents ()
   let print_warning = eprintf "%a:\n%s@." FanLoc.print
+  let gind =
+    function
+    | Ast.SgDir (loc,n,Ast.ExStr (_,s)) -> Some (loc, n, s)
+    | _ -> None
+  let gimd =
+    function
+    | Ast.StDir (loc,n,Ast.ExStr (_,s)) -> Some (loc, n, s)
+    | _ -> None
   let rec parse_file dyn_loader name pa getdir =
     let directive_handler =
       Some
@@ -114,14 +122,6 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
         (fold_filters (fun t  filter  -> filter t)))
        |> clean)
       |> (pr ?input_file:(Some name) ?output_file:(output_file.contents))
-  let gind =
-    function
-    | Ast.SgDir (loc,n,Ast.ExStr (_,s)) -> Some (loc, n, s)
-    | _ -> None
-  let gimd =
-    function
-    | Ast.StDir (loc,n,Ast.ExStr (_,s)) -> Some (loc, n, s)
-    | _ -> None
   let process_intf dyn_loader name =
     process dyn_loader name PreCast.CurrentParser.parse_interf
       PreCast.CurrentPrinter.print_interf (new Camlp4Ast.clean_ast)#sig_item

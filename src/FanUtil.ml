@@ -61,7 +61,7 @@ let cvt_nativeint_literal s =
  *)
 let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s;
 
-let append_eLem el e = el @ [e];
+(* let append_eLem el e = el @ [e]; *)
 
 (*
   {[
@@ -120,8 +120,9 @@ let symbolchar s i =
   with [Not_found -> false];
 
   
-let stopped_at _loc =
-  Some (FanLoc.move_line 1 _loc) (* FIXME be more precise *);
+(* let stopped_at _loc = *)
+(*   (\* Some (FanLoc.move_line 1 _loc) (\\* FIXME be more precise *\\); *\) *)
+(*   Some _loc; *)
 
 
 (* either dump to a file or stdout *)    

@@ -8,7 +8,7 @@ val cvt_nativeint_literal : string -> nativeint
 
 val mk_anti : ?c:string -> string -> string -> string
     
-val append_eLem : 'a list -> 'a -> 'a list
+(* val append_eLem : 'a list -> 'a -> 'a list *)
 val is_antiquot : string -> bool
 val view_antiquot : string -> (string * string) option
 val handle_antiquot_in_string :
@@ -18,7 +18,7 @@ val handle_antiquot_in_string :
 val neg_string : string -> string
 val list_remove : 'a -> ('a * 'b) list -> ('a * 'b) list
 val symbolchar : string -> int -> bool
-val stopped_at : FanLoc.t -> FanLoc.t option
+(* val stopped_at : FanLoc.t -> FanLoc.t option *)
 val with_open_out_file : string option -> (out_channel -> 'a) -> unit
 val dump_ast : string -> 'a -> out_channel -> unit
 val dump_pt : string -> string -> 'a -> out_channel -> unit

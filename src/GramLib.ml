@@ -56,7 +56,14 @@ let rec infix_kwds_filter = parser
   | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >]
   | [< >] -> [< >] ];
   
+let parse_include_file rule file  =
+  if Sys.file_exists file then
+    let ch = open_in file in
+    let st = Stream.of_channel ch in 
+    Gram.parse rule (FanLoc.mk file) st
+  else  failwithf "@[file: %s not found@]@." file;
 
+  
 (* let mk_lang_meta fan_quots fan_quot fan_str_item fan_expr fan_class_str_item fan_ctyp =  *)
 (*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_str_item fan_expr  fan_class_str_item fan_ctyp  ; *)
 (*   fan_quots: *)

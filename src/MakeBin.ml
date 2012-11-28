@@ -142,22 +142,28 @@ module Camlp4Bin
       
       
      let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
-      (* camlp4 directive handler *)  
-      let rec parse_file dyn_loader name pa getdir =
-        let directive_handler = Some (fun ast ->
-          match getdir ast with
-          [ Some x ->
-              match x with
-              [ (_, "load", s) -> begin
-                rewrite_and_load "" s;
-                None end
-              | (_, "directory", s) -> begin  DynLoader.include_dir dyn_loader s; None end
-              | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir)
-              | (_, "default_quotation", s) -> begin PreCast.Syntax.Quotation.default := s; None end
-              | (loc, _, _) -> FanLoc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ]
+      (* camlp4 directive handler *)
+       let gind = fun
+         [ {:sig_item@loc| # $n $str:s |} -> Some (loc, n, s)
+         | _ -> None ];
+       let gimd = fun
+         [ {:str_item@loc| # $n $str:s |} -> Some (loc, n, s)
+         | _ -> None ];
+
+       let rec parse_file dyn_loader name pa getdir =
+         let directive_handler = Some (fun ast ->
+           match getdir ast with
+           [ Some x ->
+             match x with
+             [ (_, "load", s) -> begin
+               rewrite_and_load "" s;
+               None end
+             | (_, "directory", s) -> begin  DynLoader.include_dir dyn_loader s; None end
+             | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir)
+             | (_, "default_quotation", s) -> begin PreCast.Syntax.Quotation.default := s; None end
+             | (loc, _, _) -> FanLoc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ]
           | None -> None ]) in
-        let loc = FanLoc.mk name
-        in do 
+        let loc = FanLoc.mk name in begin
           PreCast.Syntax.current_warning := print_warning;
           let ic = if name = "-" then stdin else open_in_bin name;
           let cs = Stream.of_channel ic;
@@ -167,22 +173,13 @@ module Camlp4Bin
             with x -> begin  clear (); raise x end ;
           clear ();
           phr
-        done ;
-      
+        end;
       let output_file = ref None;
-      
       let process dyn_loader name pa pr clean fold_filters getdir =
           parse_file dyn_loader name pa getdir
           |> fold_filters (fun t filter -> filter t )
           |> clean
           |> pr ?input_file:(Some name) ?output_file:!output_file ;
-      let gind = fun
-        [ {:sig_item@loc| # $n $str:s |} -> Some (loc, n, s)
-        | _ -> None ];
-      
-      let gimd = fun
-        [ {:str_item@loc| # $n $str:s |} -> Some (loc, n, s)
-        | _ -> None ];
 
       (* [entrance] *)  
       let process_intf dyn_loader name =

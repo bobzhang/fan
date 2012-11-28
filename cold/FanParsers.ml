@@ -2537,8 +2537,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
               (Gram.mk_action
                  (fun _  (dp : 'opt_expr)  (n : 'a_LIDENT)  _ 
                     (_loc : FanLoc.t)  ->
-                    (([Ast.SgDir (_loc, n, dp)], (stopped_at _loc)) : 
-                    'interf ))));
+                    (([Ast.SgDir (_loc, n, dp)], (Some _loc)) : 'interf ))));
            ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
             `Snterm (Gram.obj (semi : 'semi Gram.t ));
             `Sself],
@@ -6831,8 +6830,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
               (Gram.mk_action
                  (fun _  (dp : 'opt_expr)  (n : 'a_LIDENT)  _ 
                     (_loc : FanLoc.t)  ->
-                    (([Ast.StDir (_loc, n, dp)], (stopped_at _loc)) : 
-                    'implem ))));
+                    (([Ast.StDir (_loc, n, dp)], (Some _loc)) : 'implem ))));
            ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
             `Snterm (Gram.obj (semi : 'semi Gram.t ));
             `Sself],

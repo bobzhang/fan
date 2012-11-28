@@ -42,7 +42,6 @@ let cvt_int32_literal s = Int32.neg (Int32.of_string ("-" ^ s))
 let cvt_int64_literal s = Int64.neg (Int64.of_string ("-" ^ s))
 let cvt_nativeint_literal s = Nativeint.neg (Nativeint.of_string ("-" ^ s))
 let mk_anti ?(c= "")  n s = "\\$" ^ (n ^ (c ^ (":" ^ s)))
-let append_eLem el e = el @ [e]
 let is_antiquot s =
   let len = String.length s in
   (len > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
@@ -101,7 +100,6 @@ let symbolchar s i =
     done;
     true
   with | Not_found  -> false
-let stopped_at _loc = Some (FanLoc.move_line 1 _loc)
 let with_open_out_file x f =
   match x with
   | Some file -> let oc = open_out_bin file in (f oc; flush oc; close_out oc)

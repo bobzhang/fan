@@ -1,5 +1,5 @@
 open LibUtil;
-
+open Format;
 module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   module Ast     = Camlp4Ast;
   type warning = FanLoc.t -> string -> unit;
@@ -92,8 +92,36 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
     let l = wrap directive_handler (Gram.parse interf) _loc cs in
     {:sig_item| $list:l |};
-  let print_interf ?input_file(* :(_) *) ?output_file(* :(_) *) _ = failwith "No interface printer";
-  let print_implem ?input_file(* :(_) *) ?output_file(* :(_) *) _ = failwith "No implementation printer";
+  let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";
+  let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";
+
+
+  (* to be exported *)  
+  let parse_include_file_smart file = let open Filename in 
+    if check_suffix file ".ml" then 
+      `Str (GramLib.parse_include_file str_items file)
+    else if check_suffix file ".mli" then
+      `Sig (GramLib.parse_include_file sig_items file)
+    else begin 
+    eprintf "file input should ends with either .ml or .mli";
+    invalid_arg ("parse_include_file_smart: " ^ file )
+  end;
+
+  let parse_module_type str =
+    try
+      match  Gram.parse_string module_type FanLoc.string_loc str with
+      [ {:module_type| $id:i |}  -> i
+      | _ -> begin
+          eprintf "the module type %s is not a simple module type" str;
+          exit 2;
+      end ]
+    with
+      [ _ -> begin
+        eprintf "%s is not a valid module_type" str;
+        exit 2;
+      end];
+
+    
   module AstFilters = AstFilters.Make (struct end);
   module Options = struct
     type spec_list = list (string * FanArg.spec * string);

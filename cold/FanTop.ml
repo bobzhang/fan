@@ -1,8 +1,5 @@
 open LibUtil
-module P = PreCast.Make(struct
-  
-  end)
-open P
+open Fan
 let wrap parse_fun lb =
   let () = iter_and_take_callbacks (fun (_,f)  -> f ()) in
   let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
@@ -76,12 +73,12 @@ let _ =
   iter_and_take_callbacks (fun (_,f)  -> f ())
 let _ =
   let open FanParsers in
-    pa_r (module P);
-    pa_rp (module P);
-    pa_q (module P);
-    pa_g (module P);
-    pa_l (module P);
-    pa_m (module P)
+    pa_r (module Fan);
+    pa_rp (module Fan);
+    pa_q (module Fan);
+    pa_g (module Fan);
+    pa_l (module Fan);
+    pa_m (module Fan)
 let normal () = Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 let revise () = Toploop.parse_toplevel_phrase := revise_parser
 let token () = Toploop.parse_toplevel_phrase := (wrap fake)

@@ -40,7 +40,7 @@ noattack(Q1,Q2,D) :-
   Q1-Q2 =\= D.
 
 |};
-
+let a =3  ;
 nqueens_co (fun b -> print_endline (string_of_plval b)) (Int 10);
 (*
 

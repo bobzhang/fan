@@ -1,3 +1,3 @@
-module P = PreCast.Make(struct
+include PreCast.Make(struct
   
   end)

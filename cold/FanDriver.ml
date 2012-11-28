@@ -1,1 +1,1 @@
-module M = MakeBin.Camlp4Bin(Fan.P)
+include MakeBin.Camlp4Bin(Fan)
