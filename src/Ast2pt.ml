@@ -795,13 +795,13 @@ and sig_item s l = match s with (* sig_item -> signature -> signature*)
 and module_sig_binding x acc = match x with (* module_binding -> (string loc * module_type) list -> (string loc * module_type) list*)
   [ {:module_binding| $x and $y |} ->
     module_sig_binding x (module_sig_binding y acc)
-  | {:module_binding@loc| $s : $mt |} ->
+  | {:module_binding@loc| $uid:s : $mt |} ->
       [(with_loc s loc, module_type mt) :: acc]
   | _ -> assert false ]
 and module_str_binding x acc =  match x with (* module_binding ->  (string loc * module_type * module_expr) list ->  (string loc * module_type * module_expr) list*)
   [ {:module_binding| $x and $y |} ->
       module_str_binding x (module_str_binding y acc)
-  | {:module_binding@loc| $s : $mt = $me |} ->
+  | {:module_binding@loc| $uid:s : $mt = $me |} ->
       [(with_loc s loc, module_type mt, module_expr me) :: acc]
   | _ -> assert false ]
 and module_expr =   fun (* module_expr -> module_expr *)

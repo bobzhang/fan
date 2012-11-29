@@ -99,14 +99,15 @@ class text_grammar =
             | Dlevels elev -> self#levels f elev
             | Dparser _ -> pp f "<parser>") e : unit )
   end
+let text = new text_grammar
+let string_of_symbol s =
+  ignore (flush_str_formatter ());
+  text#symbol str_formatter s;
+  flush_str_formatter ()
 class dump_grammar =
   object (self : 'self)
     inherit  text_grammar
     method! tree f tree =
-      let string_of_symbol s =
-        ignore (flush_str_formatter ());
-        self#symbol str_formatter s;
-        flush_str_formatter () in
       TreePrint.print_sons "|-"
         (fun (Bro (s,ls))  -> ((string_of_symbol s), ls)) "" f
         (get_brothers tree)
@@ -115,9 +116,4 @@ class dump_grammar =
         (self#option (fun f  s  -> pp f "%S" s)) lname self#assoc assoc
         self#tree lsuffix self#tree lprefix
   end
-let text = new text_grammar
 let dump = new dump_grammar
-let string_of_symbol s =
-  ignore (flush_str_formatter ());
-  text#symbol str_formatter s;
-  flush_str_formatter ()

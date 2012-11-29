@@ -780,34 +780,20 @@ New syntax:\
       {:extend|Gram
         module_binding_quot:
         [ S{b1}; "and"; S{b2} ->  {| $b1 and $b2 |}
-        | `ANT (("module_binding"|"anti" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | `ANT (("" as n),s) ->   {| $(anti:mk_anti ~c:"module_binding" n s) |}
-
-        | a_UIDENT{m}; ":"; module_type{mt} ->  {| $m : $mt |}
-
-        | `ANT (("" as n),m); ":"; module_type{mt} -> {| $(mk_anti n m) : $mt |}              
-        | `ANT (("" as n),m); ":"; module_type{mt}; "="; module_expr{me} -> {| $(mk_anti n m) : $mt = $me |}
-              
-        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} ->  {| $m : $mt = $me |}
+        | `ANT (("module_binding"|"anti"|"" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
+        | a_UIDENT{m}; ":"; module_type{mt} ->  {| $uid:m : $mt |}
+        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} ->  {| $uid:m : $mt = $me |}
         | -> {||} ]
-
-        (* {:module_binding| $lid:m : $m1 = $m2 |} *)
         module_binding:
         [ S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
-        | `ANT (("module_binding"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | `ANT (("" as n),s) ->
-            {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | `ANT (("" as n),m); ":"; module_type{mt}; "="; module_expr{me} ->
-            {| $(mk_anti n m) : $mt = $me |}
+        | `ANT (("module_binding"|"anti"|"list" |"" as n),s) -> {| $(anti:mk_anti ~c:"module_binding" n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
-        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} -> {| $m : $mt = $me |} ]
+        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} -> {| $uid:m : $mt = $me |} ]
         module_rec_declaration:
         [ S{m1}; "and"; S{m2} -> {| $m1 and $m2 |}
-        | `ANT ((""|"module_binding"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"module_binding" n s) |}
+        | `ANT ((""|"module_binding"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
-        | a_UIDENT{m}; ":"; module_type{mt} -> {| $m : $mt |} ] |};
+        | a_UIDENT{m}; ":"; module_type{mt} -> {| $uid:m : $mt |} ] |};
 
   with "with_constr"
       {:extend|Gram
@@ -817,13 +803,7 @@ New syntax:\
         [ S{wc1}; "and"; S{wc2} -> {| $wc1 and $wc2 |}
         | `ANT ((""|"with_constr"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"with_constr" n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.with_constr_tag
-        | "type"; `ANT ((""|"typ"|"anti" as n),s); "="; ctyp{t} ->
-            {| type $(anti:mk_anti ~c:"ctyp" n s) = $t |}
-        | "type"; `ANT ((""|"typ"|"anti" as n),s); ":="; ctyp{t} ->
-            {| type $(anti:mk_anti ~c:"ctyp" n s) := $t |}
-        | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->
-            (* we hope to know the initial token, so we can override some behavior by sub-non-terminals *)
-            {| type $t1 = $t2 |}
+        | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->           {| type $t1 = $t2 |}
         | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->         {| type $t1 := $t2 |}
         | "module"; module_longident{i1}; "="; module_longident_with_app{i2} -> {| module $i1 = $i2 |}
         | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} -> {| module $i1 := $i2 |} ] |};
@@ -843,8 +823,7 @@ New syntax:\
         [ "sig"; sig_items{sg}; "end" ->
             {| sig $sg end |} ]
        "simple"
-        [ `ANT ((""|"mtyp"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"module_type" n s) |}
+        [ `ANT ((""|"mtyp"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_type" n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_type_tag
         | module_longident_with_app{i} -> {| $id:i |}
         | "'"; a_ident{i} -> {| ' $i |}
@@ -866,9 +845,9 @@ New syntax:\
     | `EOI -> ([], None) ]
     sig_items:
     [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti n ~c:"sig_item" s) |}
-    | `ANT ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->
-        {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
-    | L0 [ sig_item{sg}; semi -> sg ]{l} -> Ast.sgSem_of_list l  ]
+    | `ANT ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->  {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
+    | L0 [ sig_item{sg}; semi -> sg ]{l} -> {|$list:l|}
+    ]
     sig_item_quot:
     [ "#"; a_LIDENT{n}; opt_expr{dp} -> {| # $n $dp |}
     | sig_item{sg1}; semi; S{sg2} ->
@@ -1367,7 +1346,9 @@ New syntax:\
       | "+"; "_" -> Ast.TyAnP _loc   (* FIXME *)
       | "-"; "_" -> Ast.TyAnM _loc  
       | "_" -> {| _ |}  ]
-      type_longident_and_parameters:[ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |} ] 
+      type_longident_and_parameters:
+      [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
+      | `ANT ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] 
       type_parameters:
       [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
       | type_parameter{t} -> fun acc -> {| $acc $t |}
@@ -1698,7 +1679,8 @@ New syntax:\
         {| $(anti:mk_anti n ~c:"str_item" s) |}
       | `ANT ((""|"stri"|"anti"|"list" as n),s); semi; S{st} ->
         {| $(anti:mk_anti n ~c:"str_item" s); $st |}
-      | L0 [ str_item{st}; semi -> st ]{l} -> {| $list:l |}  ]
+      | L0 [ str_item{st}; semi -> st ]{l} -> {| $list:l |}
+      ]
       top_phrase:
       [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> Some {| # $n $dp |}
       | str_item{st}; semi -> Some st

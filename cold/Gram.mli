@@ -87,8 +87,10 @@ val string_of_token:[>FanSig.token] -> string
 
 val obj : 'a t -> internal_entry         
 val removing : gram -> string -> unit
-val gram : gram
-val mk : string -> 'a t
+val gram: gram
+val create_gram: unit -> gram
+val mk_dynamic: gram -> string -> 'a t
+val mk: string -> 'a t
 val of_parser :
   string ->
   ((FanSig.token * token_info) Stream.t -> 'a) ->
@@ -99,9 +101,9 @@ val lex_string : FanLoc.t -> string -> (FanSig.token * FanLoc.t) Stream.t
 val filter :
   (FanSig.token * FanLoc.t) Stream.t ->
   (FanSig.token * token_info) LibUtil.Stream.t
-val filter_and_parse_tokens :
-  'a t ->
-  (FanSig.token * FanLoc.t) Stream.t -> 'a
+(* val filter_and_parse_tokens : *)
+(*   'a t -> *)
+(*   (FanSig.token * FanLoc.t) Stream.t -> 'a *)
 val parse :
   'a t -> FanLoc.t -> char Stream.t -> 'a
 val parse_string :

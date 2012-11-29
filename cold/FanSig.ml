@@ -10,7 +10,7 @@ type token =
   [ `KEYWORD of string | `SYMBOL of string | `LID of string | `UID of string
   | `ESCAPED_IDENT of string | `INT of (int* string)
   | `INT32 of (int32* string) | `INT64 of (int64* string)
-  | `NATIVEINT of (nativeint* string) | `FLOAT of (float* string)
+  | `NATIVEINT of (nativeint* string) | `FLO of (float* string)
   | `CHAR of (char* string) | `STR of (string* string) | `LABEL of string
   | `OPTLABEL of string | `QUOTATION of quotation | `ANT of (string* string)
   | `COMMENT of string | `BLANKS of string | `NEWLINE

@@ -299,7 +299,7 @@ rule token c = parse
            { try  `INT(cvt_int_literal i, i)
            with Failure _ -> err (Literal_overflow "int") (FanLoc.of_lexbuf lexbuf) }
        | float_literal as f
-           { try  `FLOAT(float_of_string f, f)
+           { try  `FLO(float_of_string f, f)
            with Failure _ -> err (Literal_overflow "float") (FanLoc.of_lexbuf lexbuf) }
        | (int_literal as i) "l"
            { try `INT32(cvt_int32_literal i, i)
