@@ -1,2 +1,2 @@
-<**/*.{ml,mlx}>: camlp4boot
-<*_ppo.ml>: -camlp4boot
+<**/*.{ml,mlx}>: use_fan
+<*_ppo.ml>: -use_fan

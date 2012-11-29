@@ -18,4 +18,5 @@ true:pkg_batteries
 
 <{cold,src}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 
-<{*_ppo,**/*_ppo,**/**/*_ppo}.ml>: -camlp4boot
+# <{*_ppo,**/*_ppo,*/*/*_ppo}.ml>: -camlp4boot
+# <{**/*_ppo,llvm/a_ppo}.ml>: -camlp4boot

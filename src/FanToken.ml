@@ -38,7 +38,7 @@ let to_string  : [>FanSig.token] -> string =fun
   | `INT32 (_, s)    -> sprintf "`INT32 %sd" s
   | `INT64 (_, s)    -> sprintf "`INT64 %sd" s
   | `NATIVEINT (_, s)-> sprintf "`NATIVEINT %sd" s
-  | `FLOAT (_, s)    -> sprintf "`FLOAT %s" s
+  | `FLO (_, s)    -> sprintf "`FLO %s" s
   | `CHAR (_,s)     -> sprintf "`CHAR '%s'" s
   | `STR (_, s)   -> sprintf "`STR \"%s\"" s
         (* here it's not %S since the string is already escaped *)
@@ -98,7 +98,7 @@ let match_keyword kwd =  fun
  *)  
 let extract_string : [> FanSig.token] -> string = fun
   [ `KEYWORD s | `SYMBOL s | `LID s | `UID s | `INT (_, s) | `INT32 (_, s) |
-  `INT64 (_, s) | `NATIVEINT (_ ,s) | `FLOAT (_, s) | `CHAR (_, s) | `STR (_, s) |
+  `INT64 (_, s) | `NATIVEINT (_ ,s) | `FLO (_, s) | `CHAR (_, s) | `STR (_, s) |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->
       invalid_arg ("Cannot extract a string from this token: "^

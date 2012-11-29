@@ -82,26 +82,33 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            (None,old)
        | -> (None,gm())]
     nonterminals:
-     [ qualuid{t};
+     [ [ "(";(* `LID x *) qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
+       |  qualuid{t} -> `static(t)]{t};
        L0
          [ a_LIDENT{x} -> (x,None,None)
          | "(";a_LIDENT{x};`STR(_,y); ")" ->(x,Some y,None)
-         | "(";a_LIDENT{x};`STR(_,y);ctyp{t};  ")" -> (x,Some y,Some t) ] {ls} ->
+         | "(";a_LIDENT{x};`STR(_,y);ctyp{t};  ")" -> (x,Some y,Some t)
+         | "(";a_LIDENT{x}; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (x,y,Some t) ] {ls}
+       ->
+       with "str_item"
+       let mk =
+         match t with
+         [`static t -> {:expr| $id:t.mk |}
+         |`dynamic(x,t) -> {:expr| $id:t.mk_dynamic $id:x |}] in   
        let rest =
          List.map
            (fun
              (x,descr,ty) ->
                match (descr,ty) with
                [(Some d,None) ->
-                 {:str_item| let $lid:x = $id:t.mk $str:d |}
+                   {| let $lid:x = $mk $str:d |}
                | (Some d,Some typ) ->
-                  {:str_item| let $lid:x : $typ = $id:t.mk $str:d |}
+                   {| let $lid:x : $typ = $mk $str:d |}
                |(None,None) ->
-                 {:str_item| let $lid:x = $id:t.mk $str:x  |}
+                   {| let $lid:x = $mk $str:x  |}
                | (None,Some typ) ->
-                 {:str_item| let $lid:x : $typ = $id:t.mk $str:x  |} ] ) ls in
-      {:str_item| $list:rest |}
-     ]
+                   {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
+                   {| $list:rest |} ]
     nonterminalsclear:
      [ qualuid{t}; L0 a_LIDENT {ls} ->
        let rest = List.map (fun x -> {:expr| $id:t.clear $lid:x |}) ls in
@@ -1634,7 +1641,7 @@ New syntax:\
       | `NATIVEINT (_, s) -> s ]
       a_FLOAT:
       [ `ANT ((""|"flo"|"`flo" as n),s) -> mk_anti n s
-      | `FLOAT (_, s) -> s ]
+      | `FLO (_, s) -> s ]
       a_CHAR:
       [ `ANT ((""|"chr"|"`chr" as n),s) -> mk_anti n s
       | `CHAR (_, s) -> s ] 
@@ -1683,7 +1690,7 @@ New syntax:\
     {:extend|Gram
     (* ml entrance *)    
       implem:
-      [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ], (* stopped_at *) Some _loc)
+      [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ],  Some _loc)
       | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
       | `EOI -> ([], None) ]
       str_items: (* FIXME dump seems to be incorrect *)

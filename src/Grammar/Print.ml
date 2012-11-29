@@ -95,16 +95,23 @@ class text_grammar= object(self:'self)
   end;
 end;
 
+let text = new text_grammar;
 
+(* FIXME if I move this into the object, the output is different*)  
+let string_of_symbol s = begin
+  ignore (flush_str_formatter ());
+  text#symbol str_formatter s;
+  flush_str_formatter ()
+end;
   
 class dump_grammar = object(self:'self)
   inherit text_grammar ;
   method! tree f tree =
-    let string_of_symbol s = begin
-      ignore (flush_str_formatter ());
-      self#symbol str_formatter s;
-      flush_str_formatter ()
-    end in
+    (* let string_of_symbol s = begin *)
+    (*   ignore (flush_str_formatter ()); *)
+    (*   self#symbol str_formatter s; *)
+    (*   flush_str_formatter () *)
+    (* end in *)
     TreePrint.print_sons "|-" (fun [Bro (s, ls) -> (string_of_symbol s, ls)]) "" f
       (get_brothers tree);
   method! level f = fun [{assoc;lname;lsuffix;lprefix} ->
@@ -114,11 +121,6 @@ class dump_grammar = object(self:'self)
       self#tree lsuffix
       self#tree lprefix ];
 end;
-let text = new text_grammar;
+
 let dump = new dump_grammar;
     
-let string_of_symbol s = begin
-  ignore (flush_str_formatter ());
-  text#symbol str_formatter s;
-  flush_str_formatter ()
-end;

@@ -14,7 +14,7 @@ let dump ppf e = fprintf ppf "%a@\n" Print.dump#entry e;
 
 
 let trace_parser = ref false;
-let mk g n ={
+let mk_dynamic g n ={
   egram = g;
   ename = n;
   estart = empty_entry n;

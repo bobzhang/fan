@@ -21,8 +21,15 @@ let gram =
   glexer = FanLexUtil.mk ();
   warning_verbose = ref true;
   error_verbose = FanConfig.verbose };
-
-let mk = mk gram;
+let create_gram () =
+  let gkeywords = Hashtbl.create 301 in{
+  gkeywords = gkeywords;
+  gfilter = FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords);
+  glexer = FanLexUtil.mk ();
+  warning_verbose = ref true;
+  error_verbose = FanConfig.verbose } ;
+  
+let mk = mk_dynamic gram;
 let of_parser name strm = of_parser gram name strm;
 
 let get_filter () = gram.gfilter;
@@ -33,14 +40,26 @@ let lex_string loc str = lex loc (Stream.of_string str);
   
 let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter gram.gfilter ts);
 
-let token_stream_of_string s =
-  s |> lex_string FanLoc.string_loc |> filter;
+let token_stream_of_string s =  s |> lex_string FanLoc.string_loc |> filter;
   
-let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts);
+(* let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts); *)
   
-let parse entry loc cs = filter_and_parse_tokens entry (lex loc cs);
+
+let parse entry loc cs =
+  let lexer = entry.egram.glexer in
+  let filter = entry.egram.gfilter in
+  let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter filter ts) in
+  parse_origin_tokens entry (filter (lexer loc cs))
+  (* filter_and_parse_tokens entry (lex loc cs) *);
   
-let parse_string entry loc str = filter_and_parse_tokens entry (lex_string loc str);
+let parse_string entry loc str =
+  let lexer = entry.egram.glexer in
+  let filter = entry.egram.gfilter in
+  let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter filter ts) in
+  parse_origin_tokens entry (filter (lexer loc (Stream.of_string str)))
+  (* filter_and_parse_tokens entry *)
+  (*   (entry.egram.glexer loc cs) *)
+(* (lex_string loc str) *);
   
 let debug_origin_token_stream (entry:t 'a) tokens : 'a =
   parse_origin_tokens entry (Stream.map (fun t -> (t,ghost_token_info)) tokens);

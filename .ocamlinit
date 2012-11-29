@@ -53,7 +53,6 @@ let f = std_formatter;;
 #load_rec "OAstPrint.cmo";;
 open Fan;;
 open FanTop;;
-(* open FanTop.P;; *)
 open FanSig;;
 open LibUtil;;
 open FanUtil;;

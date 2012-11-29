@@ -1,1 +1,7 @@
+
+
+true:pkg_compiler-libs.toplevel, pkg_batteries
 true: pkg_llvm.bitwriter
+
+<*.ml>: use_fan
+<*_ppo.ml>: -use_fan

@@ -53,7 +53,7 @@ type token =
   | `INT32 of (int32 * string )
   | `INT64 of (int64 * string )
   | `NATIVEINT of (nativeint * string )
-  | `FLOAT of (float * string )
+  | `FLO of (float * string )
   | `CHAR of (char * string )
   | `STR of (string * string )
   | `LABEL of string

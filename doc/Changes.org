@@ -292,8 +292,8 @@ two printers
   
 
 ** File [[file:camlp4-build.log][Camlp4-build-log]]
-   for the initial version, it's linked into camlp4boot.byte,
    camlp4lib.cma, camlp4fulllib.cma, camlp4_import.cmi is also installed
+   for the initial version, it's linked into camlp4boot.byte,
 
 ** myocamlbuild
    has a rule 'camlp4/camlp4_import.ml' to build camlp4_import, using

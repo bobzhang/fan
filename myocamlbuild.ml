@@ -771,6 +771,7 @@ let define_context_for_root r =
     def (r // "Lib") [r];
     def ("test") ["src"];
     def "testr" ["src"];
+    def "llvm" ["src"];
     def ("demo"//"plc") ["src"]
     (* the toplevel directory can see src, this is only for debugging convenience, you should never put any
        library code in toplevel, only test files
@@ -778,21 +779,12 @@ let define_context_for_root r =
   end ;;
 define_context_for_root root1;;
 define_context_for_root root2;;
-(* let boot1 = "camlp4boot.native";; *)
-(* let hot_camlp4boot = "boot"// boot1;; *)
-(* let boot_flags = S[P hot_camlp4boot];; *)
 
-(* let boot2 = "fanboot.byte";; *)
-(* let hot_camlp4boot = boot2;; *)
 let boot_flags =
   S[P ("boot"//"fan"); (* symlink fan to either fan.byte or fan.native *)
     A "-parser"; A"rf";
     A "-parser"; A"debug";
     A"-printer"; A"p"];;
-
-let cold_camlp4o = "" (* to be added *);;
-let cold_camlp4boot = "" (* to be added *);;
-
 
 rule "code_boot: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
     (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
@@ -807,106 +799,19 @@ rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
 
 let () =
   after_rules_dispatch := fun () -> begin
-    flag ["ocaml"; "pp"; "camlp4boot"] boot_flags;
-    flag ["ocaml"; "pp"; "camlp4boot"; "native"] (S[A"-D"; A"OPT"]);
-    flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);
-    flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);
-    "src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Ast.ml"];
+    flag ["ocaml"; "pp"; "use_fan"] boot_flags;
+    flag ["ocaml"; "pp"; "use_fan"; "native"] (S[A"-D"; A"OPT"]);
+    flag ["ocaml"; "pp"; "use_fan"; "pp:dep"] (S[A"-D"; A"OPT"]);
+    flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
     "src/Camlp4Ast.ml" |-? ["src/Ast.ml"];
-    (* dep ["ocaml"; "file:Camlp4/Struct/Camlp4Ast.ml"] ["Camlp4/Camlp4Ast.partial.ml"]; *)
-    dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Ast.ml"];
-    dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]  ["src/Camlp4/Ast.ml"];
-
   end;;
 
-(* copy_rule "camlp4: boot/Camlp4Ast.ml -> src/Camlp4/Struct/Camlp4Ast.ml" *)
-(*   ~insert:`top "boot/Camlp4Ast.ml" "src/Camlp4/Struct/Camlp4Ast.ml";; *)
 
 copy_rule "camlp4: src/fan.byte -> boot/fan.byte"
-  ~insert:`top "src/fan.byte" "boot/fan.byte";;
+  ~insert:`top "src/FanDriver.byte" "boot/FanDriver.byte";;
 copy_rule "camlp4: src/fan.native -> boot/fan.native"
-  ~insert:`top "src/fan.native" "boot/fan.native";;
+  ~insert:`top "src/FanDriver.native" "boot/FanDriver.native";;
 
-(* let spec_list = *)
-(*   ["-ppcommand", Arg.String (fun x -> prerr_endline x ), "set the pp driver"] ;; *)
-
-(* Arg.parse spec_list (fun _ -> ()) "";; *)
-
-(* (\* seems  non-necessary should be fixed later *\)
- * rule "camlp4: Camlp4/Struct/Lexer.ml -> boot/Lexer.ml"
- *   ~prod:"camlp4/boot/Lexer.ml"
- *   ~dep:"camlp4/Camlp4/Struct/Lexer.ml"
- *   begin fun _ _ ->
- *     Cmd(S[P cold_camlp4o; P"camlp4/Camlp4/Struct/Lexer.ml";
- *           A"-printer"; A"r"; A"-o"; Px"camlp4/boot/Lexer.ml"])
- *   end;; *)
-
-(* module Camlp4deps = struct *)
-(*   let lexer = Genlex.make_lexer ["INCLUDE"; ";"; "="; ":"] *)
-(*   let rec parse strm = *)
-(*     match Stream.peek strm with *)
-(*     | None -> [] *)
-(*     | Some(Genlex.Kwd "INCLUDE") -> *)
-(*         Stream.junk strm; *)
-(*         begin match Stream.peek strm with *)
-(*         | Some(Genlex.String s) -> *)
-(*             Stream.junk strm; *)
-(*             s :: parse strm *)
-(*         | _ -> invalid_arg "Camlp4deps parse failure" *)
-(*         end *)
-(*     | Some _ -> *)
-(*         Stream.junk strm; *)
-(*         parse strm *)
-
-(*   let parse_file file = *)
-(*     with_input_file file begin fun ic -> *)
-(*       let strm = Stream.of_channel ic in *)
-(*       parse (lexer strm) *)
-(*     end *)
-
-(*   let build_deps build file = *)
-(*     let includes = parse_file file in *)
-(*     List.iter Outcome.ignore_good (build (List.map (fun i -> [i]) includes)); *)
-(* end;; *)
-
-
-
-(* rule "camlp4: ml4 -> ml" *)
-(*   ~prod:"%.ml" *)
-(*   ~dep:"%.ml4" *)
-(*   begin fun env build -> *)
-(*     let ml4 = env "%.ml4" and ml = env "%.ml" in *)
-(*     Camlp4deps.build_deps build ml4; *)
-(*     Cmd(S[P hot_camlp4boot; A"-impl"; P ml4; A"-printer"; A"o"; *)
-(*           A"-D"; A"OPT"; A"-o"; Px ml]) *)
-(*   end;; *)
-
-(* bootstraping *)
-(* rule "camlp4: ml4 -> ml"
- *   ~prod:"%.ml"
- *   ~dep:"%.ml4"
- *   begin fun env build ->
- *     let ml4 = env "%.ml4" and ml = env "%.ml" in
- *     Camlp4deps.build_deps build ml4;
- *     Cmd(S[P cold_camlp4boot; A"-impl"; P ml4; A"-printer"; A"o";
- *           A"-D"; A"OPT"; A"-o"; Px ml])
- *   end;; *)
-
-(* rule "camlp4: mlast -> ml"
- *   ~prod:"%.ml"
- *   ~deps:["%.mlast"; "camlp4/Camlp4/Camlp4Ast.partial.ml"]
- *   begin fun env _ ->
- *     let mlast = env "%.mlast" and ml = env "%.ml" in
- *     (\* Camlp4deps.build_deps build mlast; too hard to lex *\)
- *     Cmd(S[P cold_camlp4boot;
- *           A"-printer"; A"r";
- *           A"-filter"; A"map";
- *           A"-filter"; A"fold";
- *           A"-filter"; A"meta";
- *           A"-filter"; A"trash";
- *           A"-impl"; P mlast;
- *           A"-o"; Px ml])
- *   end;; *)
 
 
 let _ = begin 
