@@ -987,12 +987,7 @@ New syntax:\
         | prefixop{f}; S{e} -> {| $f $e |} ]
        "simple"
         [ `QUOTATION x -> Quotation.expand _loc x DynAst.expr_tag
-        | `ANT (("exp"|""|"anti"|"`bool" as n),s) ->
-            {| $(anti:mk_anti ~c:"expr" n s) |} 
-        | `ANT (("tup" as n),s) ->
-            {| $(tup: {| $(anti:mk_anti ~c:"expr" n s) |}) |}
-(* Ast.ExTup (_loc, (Ast.ExAnt (_loc, (mk_anti ~c:"expr" n s)))) *)
-        | `ANT (("seq" as n),s) -> {| begin $(anti:mk_anti ~c:"expr" n s) end |}
+        | `ANT (("exp"|""|"anti"|"`bool" |"tup"|"seq" as n),s) -> {| $(anti:mk_anti ~c:"expr" n s) |} 
         | a_INT{s} -> {| $int:s |}
         | a_INT32{s} -> {| $int32:s |}
         | a_INT64{s} -> {| $int64:s |}
@@ -1085,8 +1080,7 @@ New syntax:\
      match_case0:
      [ `ANT (("match_case"|"list" as n),s) ->
          {| $(anti:mk_anti ~c:"match_case" n s) |}
-     | `ANT ((""|"anti" as n),s) ->
-         {| $(anti:mk_anti ~c:"match_case" n s) |}
+     | `ANT ((""|"anti" as n),s) ->         {| $(anti:mk_anti ~c:"match_case" n s) |}
      | `ANT ((""|"anti" as n),s); "->"; expr{e} ->
          {| $(anti:mk_anti ~c:"patt" n s) -> $e |}
      | `ANT ((""|"anti" as n),s); "when"; expr{w}; "->"; expr{e} ->
