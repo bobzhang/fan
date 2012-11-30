@@ -72,6 +72,7 @@ let print_lex_error ppf =  function
 
             
 let lex_error_to_string = to_string_of_printer print_lex_error
+
 let _ =
   Printexc.register_printer (function
     | Lexing_error e -> Some (lex_error_to_string e)
@@ -172,7 +173,6 @@ let parse_nested ~lexer c = begin
   buff_contents c
 end
 
-let shift n c = { (c) with loc = FanLoc.move `both n c.loc }
 
 let store_parse f c =  begin
   store c ; f c c.lexbuf

@@ -82,7 +82,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            (None,old)
        | -> (None,gm())]
     nonterminals:
-     [ [ "(";(* `LID x *) qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
+     [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
        |  qualuid{t} -> `static(t)]{t};
        L0
          [ a_LIDENT{x} -> (x,None,None)

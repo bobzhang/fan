@@ -111,13 +111,13 @@ let match_expr _loc es cases nbody =
 	[ None ->
 	  if List.for_all is_always_patt ps
 	  then {:expr| let $(tuple_patt _loc ps) = $(tuple_expr _loc es) in $body |}	
-	  else {:expr| match $(tuple_expr _loc es) with [ $(tuple_patt _loc ps) -> $body | _ -> $nbody ] |}
-	| Some t -> {:expr| match $(tuple_expr _loc es) with [ $(tuple_patt _loc ps) when $t -> $body | _ -> $nbody ] |} ]) ])
+	  else {:expr| match $(tuple_expr _loc es) with [ $(pat:tuple_patt _loc ps) -> $body | _ -> $nbody ] |}
+	| Some t -> {:expr| match $(tuple_expr _loc es) with [ $(pat:tuple_patt _loc ps) when $t -> $body | _ -> $nbody ] |} ]) ])
   | _ ->
       let cases = List.map (fun (ps,t,body) -> match t with
-	[ None -> {:match_case| $(tuple_patt _loc ps) -> $body |}
+	[ None -> {:match_case| $(pat:tuple_patt _loc ps) -> $body |}
         | Some t ->
-            {:match_case| $(tuple_patt _loc ps) when $t -> $body |}]) cases in
+            {:match_case| $(pat:tuple_patt _loc ps) when $t -> $body |}]) cases in
       {:expr| match $(tuple_expr _loc es) with [ $list:cases | _ -> $nbody ] |}] ;
 
 let single_match_expr _loc es ps t body nbody =
@@ -237,7 +237,7 @@ let value_repr _loc comps =
 			   {:expr| $(lid:PlNames.string_of) $lid:a |}) args) with
 		  [ None -> {:expr| $str:comp |}
 		  | Some e -> {:expr| $(str:comp ^ "(") ^ $e ^ ")" |}] in
-		[{:match_case| $patt -> $expr |} ::l])
+		[{:match_case| $pat:patt -> $expr |} ::l])
             comps [ {:match_case| $(uid:PlNames.int_cons) i -> string_of_int i |} ] in
 	{:str_item| let rec $(lid:PlNames.string_of) v =
 	  try

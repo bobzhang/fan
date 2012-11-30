@@ -11,22 +11,20 @@ open Format;
     to use character numbers with the source file if the sources
     contain line number directives. *)
 
-(* type pos = { *)
-(*     line : int; *)
-(*     bol  : int; *)
-(*     off  : int *)
-(*   }; *)
 
 
-(* type t = { *)
-(*   file_name : string; *)
-(*   start     : pos; *)
-(*   stop      : pos; *)
-(*   ghost     : bool *)
-(* }; *)
-open Location;
-open Lexing;
-type t = Location.t;
+type position = Lexing.position == {
+  pos_fname : string;
+  pos_lnum : int;
+  pos_bol : int;
+  pos_cnum : int;
+};
+
+type t = Location.t == {
+  loc_start: position;
+  loc_end: position;
+  loc_ghost: bool;
+};
 
 (* Debug section *)
 let dump_sel f x =
@@ -35,8 +33,7 @@ let dump_sel f x =
     [ `start -> "`start"
     | `stop  -> "`stop"
     | `both  -> "`both"
-    | _      -> "<not-printable>" ]
-  in pp_print_string f s;
+    | _      -> "<not-printable>" ] in pp_print_string f s;
   
 let dump_pos f x =
   fprintf f "@[<hov 2>{ line = %d ;@ bol = %d ;@ off = %d } : pos@]"
@@ -89,7 +86,7 @@ let mk file_name =
             stop_line,  stop_bol,  stop_off, ghost)]. *)
 let of_tuple (file_name, start_line, start_bol, start_off,
                           stop_line,  stop_bol,  stop_off, ghost) =
-  { (* file_name = file_name; *)
+  {
     loc_start     = {
       pos_fname=file_name;
       pos_lnum = start_line ;
@@ -106,35 +103,20 @@ let of_tuple (file_name, start_line, start_bol, start_off,
 (** Return [(file_name, start_line, start_bol, start_off,
             stop_line,  stop_bol,  stop_off, ghost)]. *)
 let to_tuple = 
-  fun [
-    { (* file_name = file_name; *)
-    loc_start     = { pos_fname;
-                  pos_lnum = start_line ;
-                  pos_bol = start_bol ;
-                  pos_cnum  = start_off };
-    loc_end      = { pos_lnum = stop_line  ;
-                  pos_bol = stop_bol  ;
-                  pos_cnum = stop_off ; _
-                };
-    loc_ghost     = ghost } -> 
-  (pos_fname, start_line, start_bol, start_off,
-              stop_line,  stop_bol,  stop_off, ghost) ];
+  fun [{loc_start=
+        { pos_fname;
+          pos_lnum = start_line ;
+          pos_bol = start_bol ;
+          pos_cnum  = start_off };
+        loc_end=
+        { pos_lnum = stop_line  ;
+          pos_bol = stop_bol  ;
+          pos_cnum = stop_off ;
+          _};
+        loc_ghost     = ghost } -> 
+          (pos_fname, start_line, start_bol, start_off,
+           stop_line,  stop_bol,  stop_off, ghost) ];
 
-(* let pos_of_lexing_position p = *)
-(*   let pos = *)
-(*   { line = p.Lexing.pos_lnum ; *)
-(*     bol  = p.Lexing.pos_bol  ; *)
-(*     off  = p.Lexing.pos_cnum } in *)
-(*   debug loc "pos_of_lexing_position: %a@\n" dump_pos pos in *)
-(*   pos; *)
-
-(* let pos_to_lexing_position p file_name = *)
-(*   (\* debug loc "pos_to_lexing_position: %a@\n" dump_pos p in *\) *)
-(*   { Lexing. *)
-(*     pos_fname = file_name; *)
-(*     pos_lnum  = p.line   ; *)
-(*     pos_bol   = p.bol    ; *)
-(*     pos_cnum  = p.off    }; *)
 
 let better_file_name a b =
   match (a, b) with
@@ -147,23 +129,25 @@ let better_file_name a b =
     
 (** Return a location from ocamllex buffer. *)
 let of_lexbuf lb =
-  let start = Lexing.lexeme_start_p lb
-  and stop  = Lexing.lexeme_end_p lb in
+  let loc_start = Lexing.lexeme_start_p lb
+  and loc_end  = Lexing.lexeme_end_p lb in
   let loc =
-  { loc_start  =  start;
-    loc_end    =  stop;
+  { loc_start  ;
+    loc_end   ;
     loc_ghost  = false } in
   debug loc "of_lexbuf: %a@\n" dump loc in
   loc;
 
+let of_positions s e = {loc_start = s; loc_end = e ; loc_ghost = false};
+  
 (** Return a location where both positions are set the given position. *)
-let of_lexing_position pos =
-  let loc =
-  { loc_start =  pos;
-    loc_end =  pos;
-    loc_ghost     = false } in
-  debug loc "of_lexing_position: %a@\n" dump loc in
-  loc;
+(* let of_lexing_position pos = *)
+(*   let loc = *)
+(*   { loc_start =  pos; *)
+(*     loc_end =  pos; *)
+(*     loc_ghost     = false } in *)
+(*   debug loc "of_lexing_position: %a@\n" dump loc in *)
+(*   loc; *)
 
 
 (** Return the start position as a Lexing.position. *)
@@ -196,7 +180,8 @@ let merge a b =
 (** The stop pos becomes equal to the start pos. *)
 let join x = { (x) with loc_end = x.loc_start };
 
-let map f start_stop_both x = match start_stop_both with
+let map f start_stop_both x =
+  match start_stop_both with
   [ `start -> { (x) with loc_start = f x.loc_start }
   | `stop  -> { (x) with loc_end  = f x.loc_end }
   | `both  -> { (x) with loc_start = f x.loc_start; loc_end  = f x.loc_end } ];
