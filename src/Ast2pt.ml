@@ -726,7 +726,7 @@ and when_expr e w = match w with (* expr -> expr -> expression*)
 and mklabexp x acc = match x with (* rec_binding ->  (Longident.t loc * expression) list -> (Longident.t loc * expression) list *)
   [ {:rec_binding| $x; $y |} ->
     mklabexp x (mklabexp y acc)
-  | {:rec_binding| $i = $e |} -> [(ident  i, expr e) :: acc]
+  | {:rec_binding| $id:i = $e |} -> [(ident  i, expr e) :: acc]
   | _ -> assert false ]
 and mkideexp x acc =match x with (* rec_binding -> (string loc * expression) list ->  (string loc * expression) list *)
   [ {:rec_binding||} -> acc

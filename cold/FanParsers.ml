@@ -3726,50 +3726,18 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
       (None,
         [(None, None,
            [([`Stoken
-                (((function | `ANT ("rec_binding",_) -> true | _ -> false)),
-                  (`Normal, "`ANT (\"rec_binding\",_)"))],
+                (((function
+                   | `ANT (("rec_binding"|""|"anti"|"list"),_) -> true
+                   | _ -> false)),
+                  (`Normal,
+                    "`ANT ((\"rec_binding\"|\"\"|\"anti\"|\"list\"),_)"))],
               (Gram.mk_action
                  (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
-                    | `ANT (("rec_binding" as n),s) ->
+                    | `ANT (("rec_binding"|""|"anti"|"list" as n),s) ->
                         (Ast.RbAnt (_loc, (mk_anti ~c:"rec_binding" n s)) : 
                         'label_expr )
                     | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"anti\"),_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT ((""|"anti" as n),s) ->
-                       (Ast.RbAnt (_loc, (mk_anti ~c:"rec_binding" n s)) : 
-                       'label_expr )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"anti\"),_)"));
-            `Skeyword "=";
-            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  _  (__fan_0 : [> FanSig.token]) 
-                   (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT ((""|"anti" as n),s) ->
-                       (Ast.RbEq
-                          (_loc,
-                            (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s))), e) : 
-                       'label_expr )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ("list",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"list\",_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT (("list" as n),s) ->
-                       (Ast.RbAnt (_loc, (mk_anti ~c:"rec_binding" n s)) : 
-                       'label_expr )
-                   | _ -> assert false)));
            ([`Snterm (Gram.obj (label_longident : 'label_longident Gram.t ));
             `Snterm (Gram.obj (fun_binding : 'fun_binding Gram.t ))],
              (Gram.mk_action
@@ -3788,25 +3756,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
       (None,
         [(None, None,
            [([`Stoken
-                (((function | `ANT ((""|"bi"|"anti"),_) -> true | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"bi\"|\"anti\"),_)"))],
+                (((function
+                   | `ANT ((""|"bi"|"anti"|"list"),_) -> true
+                   | _ -> false)),
+                  (`Normal, "`ANT ((\"\"|\"bi\"|\"anti\"|\"list\"),_)"))],
               (Gram.mk_action
                  (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
-                    | `ANT ((""|"bi"|"anti" as n),s) ->
+                    | `ANT ((""|"bi"|"anti"|"list" as n),s) ->
                         (Ast.RbAnt (_loc, (mk_anti ~c:"rec_binding" n s)) : 
                         'field_expr )
                     | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ("list",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"list\",_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT (("list" as n),s) ->
-                       (Ast.RbAnt (_loc, (mk_anti ~c:"rec_binding" n s)) : 
-                       'field_expr )
-                   | _ -> assert false)));
            ([`Snterm (Gram.obj (label : 'label Gram.t ));
             `Skeyword "=";
             `Snterml ((Gram.obj (expr : 'expr Gram.t )), "top")],

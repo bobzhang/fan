@@ -190,7 +190,7 @@ let substp _loc env =
       | {| { $bi } |} ->
           let rec substbi = fun
             [ {:rec_binding| $b1; $b2 |} -> {:patt| $(substbi b1); $(substbi b2) |}
-            | {:rec_binding| $i = $e |} -> {:patt| $i = $(loop e) |}
+            | {:rec_binding| $id:i = $e |} -> {:patt| $i = $(loop e) |}
             | _ -> bad_patt _loc ]
           in {:patt| { $(substbi bi) } |}
       | _ -> bad_patt _loc ] in loop;

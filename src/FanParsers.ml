@@ -1079,11 +1079,6 @@ New syntax:\
      | patt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
      match_case0:
      [ `ANT (("match_case"|"list"| "anti"|"" as n),s) -> {| $(anti:mk_anti ~c:"match_case" n s) |}
-     (* | `ANT ((""|"anti" as n),s) ->  {| $(anti:mk_anti ~c:"match_case" n s) |} *)
-     (* | `ANT ((""|"anti" as n),s); "->"; expr{e} -> {| $(anti:mk_anti ~c:"patt" n s) -> $e |} *)
-
-     (* | `ANT ((""|"anti" as n),s); "when"; expr{w}; "->"; expr{e} -> *)
-     (*     {| $(anti:mk_anti ~c:"patt" n s) when $w -> $e |} *)
      | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->  {| $pat:p when $w -> $e |}
      | patt_as_patt_opt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
       match_case_quot:
@@ -1100,23 +1095,13 @@ New syntax:\
       {:extend|Gram
         rec_binding_quot:
         [ label_expr_list{x} -> x | -> {||} ]
-
         label_expr:
-        [ `ANT (("rec_binding" as n),s) ->
-          {| $(anti:mk_anti ~c:"rec_binding" n s) |}
-        | `ANT ((""|"anti" as n),s) ->
-          {| $(anti:mk_anti ~c:"rec_binding" n s) |}
-        | `ANT ((""|"anti" as n),s); "="; expr{e} ->
-          {| $(anti:mk_anti ~c:"ident" n s) = $e |}
-        | `ANT (("list" as n),s) ->
-          {| $(anti:mk_anti ~c:"rec_binding" n s) |}
-        | label_longident{i}; fun_binding{e} -> {| $i = $e |}
-        | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ]
+        [ `ANT (("rec_binding" |""|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |}
+        | label_longident{i}; fun_binding{e} -> {| $id:i = $e |}
+        | label_longident{i} -> {| $id:i = $(lid:Ident.to_lid i) |} ]
         field_expr:
-        [ `ANT ((""|"bi"|"anti" as n),s) ->
-            {| $(anti:mk_anti ~c:"rec_binding" n s) |}
-        | `ANT (("list" as n),s) ->
-            {| $(anti:mk_anti ~c:"rec_binding" n s) |}
+        [ `ANT ((""|"bi"|"anti" |"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |}
+        (* | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |} *)
         | label{l}; "=";  expr Level "top"{e} -> {| $lid:l = $e |} ]
         label_expr_list:
         [ label_expr{b1}; ";"; S{b2} -> {| $b1 ; $b2 |}
@@ -1126,7 +1111,6 @@ New syntax:\
         [ field_expr{b1}; ";"; S{b2} -> {| $b1 ; $b2 |}
         | field_expr{b1}; ";"            -> b1
         | field_expr{b1}                 -> b1  ] |};
-    
   with "patt"
     {:extend|Gram local: patt_constr;
 
@@ -1160,22 +1144,18 @@ New syntax:\
         [ patt_constr{p1}; S{p2} ->
           match p2 with
             [ {| ($tup:p) |} ->
-              List.fold_left (fun p1 p2 -> (* {| $p1 $p2 |} *) Ast.PaApp (_loc,p1,p2)) p1
+              List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
                 (Ast.list_of_patt p [])
-            | _ -> (* {|$p1 $p2 |} *) Ast.PaApp(_loc,p1,p2) ]
+            | _ -> {|$p1 $p2 |}  ]
         | patt_constr{p1} -> p1
         | `ANT ((""|"pat"|"anti" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|} 
         | `ANT ((""|"pat"|"anti" as n1), s1); S{p} ->
-            let p0 = {|$(anti:mk_anti ~c:"patt" n1 s1)|} in
-            {| $p0 $p|}
+            let p0 = {|$(anti:mk_anti ~c:"patt" n1 s1)|} in  {| $p0 $p|}
         | "lazy"; S{p} -> {| lazy $p |}  ]
        "simple"
-        [ `ANT ((""|"pat"|"anti" as n),s) ->
-            {| $(anti:mk_anti ~c:"patt" n s) |}
-        | `ANT (("tup" as n),s) ->
-            {| ($(tup:{| $(anti:mk_anti ~c:"patt" n s) |} )) |}
-        | `ANT (("`bool" as n),s) ->
-            {| $(id:{:ident| $(anti:mk_anti n s) |}) |}
+        [ `ANT ((""|"pat"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
+        | `ANT (("tup" as n),s) -> {| ($(tup:{| $(anti:mk_anti ~c:"patt" n s) |} )) |}
+        | `ANT (("`bool" as n),s) -> {| $(id:{:ident| $(anti:mk_anti n s) |}) |}
         | ident{i} -> {| $id:i |}
         | a_INT{s} -> {| $int:s |}
         | a_INT32{s} -> {| $int32:s |}
