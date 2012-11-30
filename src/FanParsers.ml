@@ -771,8 +771,7 @@ New syntax:\
         | "("; S{me}; ":"; module_type{mt}; ")" ->
             {| ( $me : $mt ) |}
         | "("; S{me}; ")" -> {| $me |}
-        | "("; "val"; expr{e}; ")" -> (* val *)
-            {| (val $e) |}  (* first class modules *)
+        | "("; "val"; expr{e}; ")" -> {| (val $e) |}  (* first class modules *)
         | "("; "val"; expr{e}; ":"; package_type{p}; ")" ->
             {| (val $e : $p) |} ] } |};
 
@@ -1148,9 +1147,12 @@ New syntax:\
                 (Ast.list_of_patt p [])
             | _ -> {|$p1 $p2 |}  ]
         | patt_constr{p1} -> p1
-        | `ANT ((""|"pat"|"anti" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|} 
+        | `ANT ((""|"pat"|"anti" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|}
         | `ANT ((""|"pat"|"anti" as n1), s1); S{p} ->
             let p0 = {|$(anti:mk_anti ~c:"patt" n1 s1)|} in  {| $p0 $p|}
+              (*This fix should be related to PaApp ident and blabla
+                wait until merge previous work
+               *)
         | "lazy"; S{p} -> {| lazy $p |}  ]
        "simple"
         [ `ANT ((""|"pat"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}

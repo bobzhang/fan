@@ -539,13 +539,10 @@ and antiquot name depth c  = parse
         let () = set_start_p c in (* only cares about FanLoc.start_pos *)
         `ANT(name, buff_contents c)
       else store_parse (antiquot name (depth-1)) c }
-    | '(' {
-      store_parse (antiquot name (depth+1)) c
-      }
+    | '(' {    store_parse (antiquot name (depth+1)) c }
         
-    | eof                                   { err Unterminated_antiquot (loc_merge c) }
-    | newline
-        { update_loc c ; store_parse (antiquot name depth) c              }
+    | eof  { err Unterminated_antiquot (loc_merge c) }
+    | newline   { update_loc c ; store_parse (antiquot name depth) c  }
     | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
         {
       let () = Stack.push p opt_char in
