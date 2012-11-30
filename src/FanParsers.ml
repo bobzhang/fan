@@ -820,8 +820,7 @@ New syntax:\
         "."
         [ S{mt1}; "."; S{mt2} -> ModuleType.acc mt1 mt2 ]
         "sig"
-        [ "sig"; sig_items{sg}; "end" ->
-            {| sig $sg end |} ]
+        [ "sig"; sig_items{sg}; "end" -> {| sig $sg end |} ]
        "simple"
         [ `ANT ((""|"mtyp"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_type" n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_type_tag
@@ -838,16 +837,6 @@ New syntax:\
 
   with "sig_item"
   {:extend|Gram
-        (* mli entrance *)    
-    interf:
-    [ "#"; a_LIDENT{n}; opt_expr{dp};  ";;" -> ([ {| # $n $dp |} ], (* stopped_at *) Some _loc)
-    | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
-    | `EOI -> ([], None) ]
-    sig_items:
-    [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti n ~c:"sig_item" s) |}
-    | `ANT ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->  {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
-    | L0 [ sig_item{sg}; semi -> sg ]{l} -> {|$list:l|}
-    ]
     sig_item_quot:
     [ "#"; a_LIDENT{n}; opt_expr{dp} -> {| # $n $dp |}
     | sig_item{sg1}; semi; S{sg2} ->
@@ -870,7 +859,17 @@ New syntax:\
     | "type"; type_declaration{t} -> {| type $t |}
     | "val"; a_LIDENT{i}; ":"; ctyp{t} ->  {| val $i : $t |}
     | "class"; class_description{cd} ->    {| class $cd |}
-    | "class"; "type"; class_type_declaration{ctd} ->  {| class type $ctd |} ] |};
+    | "class"; "type"; class_type_declaration{ctd} ->  {| class type $ctd |} ]
+    (* mli entrance *)    
+    interf:
+    [ "#"; a_LIDENT{n}; opt_expr{dp};  ";;" -> ([ {| # $n $dp |} ],  Some _loc)
+    | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
+    | `EOI -> ([], None) ]
+    sig_items:
+    [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti n ~c:"sig_item" s) |}
+    | `ANT ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->  {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
+    | L0 [ sig_item{sg}; semi -> sg ]{l} -> {|$list:l|} ]
+ |};
 
     with "expr"
     {:extend|Gram
@@ -992,10 +991,11 @@ New syntax:\
             {| $(anti:mk_anti ~c:"expr" n s) |}
         | `ANT (("`bool" as n),s) ->
             {| $(id:{:ident| $(anti:mk_anti n s) |}) |}
+              (* {:expr| $(anti:mk_anti ~c:"expr" n s)|} *)
+              (* {:expr|$`bool:x|} {:expr| true |} *)
         | `ANT (("tup" as n),s) ->
             {| $(tup: {| $(anti:mk_anti ~c:"expr" n s) |}) |}
-        | `ANT (("seq" as n),s) ->
-            {| do $(anti:mk_anti ~c:"expr" n s) done |}
+        | `ANT (("seq" as n),s) -> {| begin $(anti:mk_anti ~c:"expr" n s) end |}
         | a_INT{s} -> {| $int:s |}
         | a_INT32{s} -> {| $int32:s |}
         | a_INT64{s} -> {| $int64:s |}
@@ -1005,13 +1005,12 @@ New syntax:\
         | a_CHAR{s} -> {| $chr:s |}
         | TRY module_longident_dot_lparen{i};S{e}; ")" ->
             {| let open $i in $e |}
-        | TRY val_longident{i} -> {| $id:i |}
+        (* | TRY val_longident{i} -> {| $id:i |} *)
+        | ident{i} -> {|$id:i|}
         | "`"; a_ident{s} -> {| ` $s |}
         | "["; "]" -> {| [] |}
-        | "[";sem_expr_for_list{mk_list}; "::"; expr{last}; "]" ->
-            mk_list last
-        | "["; sem_expr_for_list{mk_list}; "]" ->
-            mk_list {| [] |}
+        | "[";sem_expr_for_list{mk_list}; "::"; expr{last}; "]" -> mk_list last
+        | "["; sem_expr_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> {| [| $({||}) |] |}
         | "[|"; sem_expr{el}; "|]" -> {| [| $el |] |}
         | "{"; label_expr_list{el}; "}" -> {| { $el } |}

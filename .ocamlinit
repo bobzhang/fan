@@ -78,3 +78,8 @@ open Syntax;;
 
 let t e s = Gram.parse_string e FanLoc.string_loc s;;
 open Lib;;
+open Meta;;
+
+let anti_filter = Expr.antiquot_expander
+    ~parse_patt:AntiquotSyntax.parse_patt
+    ~parse_expr:AntiquotSyntax.parse_expr;;
