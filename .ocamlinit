@@ -83,3 +83,5 @@ open Meta;;
 let anti_filter = Expr.antiquot_expander
     ~parse_patt:AntiquotSyntax.parse_patt
     ~parse_expr:AntiquotSyntax.parse_expr;;
+
+Quotation.default:="expr";;

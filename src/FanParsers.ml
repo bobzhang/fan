@@ -987,14 +987,11 @@ New syntax:\
         | prefixop{f}; S{e} -> {| $f $e |} ]
        "simple"
         [ `QUOTATION x -> Quotation.expand _loc x DynAst.expr_tag
-        | `ANT (("exp"|""|"anti" as n),s) ->
-            {| $(anti:mk_anti ~c:"expr" n s) |}
-        | `ANT (("`bool" as n),s) ->
-            {| $(id:{:ident| $(anti:mk_anti n s) |}) |}
-              (* {:expr| $(anti:mk_anti ~c:"expr" n s)|} *)
-              (* {:expr|$`bool:x|} {:expr| true |} *)
+        | `ANT (("exp"|""|"anti"|"`bool" as n),s) ->
+            {| $(anti:mk_anti ~c:"expr" n s) |} 
         | `ANT (("tup" as n),s) ->
             {| $(tup: {| $(anti:mk_anti ~c:"expr" n s) |}) |}
+(* Ast.ExTup (_loc, (Ast.ExAnt (_loc, (mk_anti ~c:"expr" n s)))) *)
         | `ANT (("seq" as n),s) -> {| begin $(anti:mk_anti ~c:"expr" n s) end |}
         | a_INT{s} -> {| $int:s |}
         | a_INT32{s} -> {| $int32:s |}

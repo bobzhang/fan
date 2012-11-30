@@ -838,7 +838,22 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (Ast.IdUid (_loc, "Char")),
                                            (Ast.IdLid (_loc, "escaped")))))),
                                  e)
-                         | "`bool" ->
+                         | "`boolexpr" ->
+                             let x =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExApp
+                                      (_loc,
+                                        (Ast.ExId
+                                           (_loc,
+                                             (Ast.IdAcc
+                                                (_loc,
+                                                  (Ast.IdUid (_loc, "Ast")),
+                                                  (Ast.IdUid (_loc, "IdLid")))))),
+                                        (mloc _loc))),
+                                   (Ast.ExIfe
+                                      (_loc, e, (Ast.ExStr (_loc, "true")),
+                                        (Ast.ExStr (_loc, "false"))))) in
                              Ast.ExApp
                                (_loc,
                                  (Ast.ExApp
@@ -848,11 +863,10 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (Ast.IdAcc
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
-                                                (Ast.IdUid (_loc, "IdLid")))))),
-                                      (mloc _loc))),
-                                 (Ast.ExIfe
-                                    (_loc, e, (Ast.ExStr (_loc, "true")),
-                                      (Ast.ExStr (_loc, "false")))))
+                                                (Ast.IdUid (_loc, "ExId")))))),
+                                      (Ast.ExId
+                                         (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                                 x)
                          | "liststr_item" ->
                              Ast.ExApp
                                (_loc,

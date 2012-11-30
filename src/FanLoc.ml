@@ -150,19 +150,17 @@ let of_lexbuf lb =
   let start = Lexing.lexeme_start_p lb
   and stop  = Lexing.lexeme_end_p lb in
   let loc =
-  { (* file_name = better_file_name start.Lexing.pos_fname stop.Lexing.pos_fname; *)
-    loc_start     = (* pos_of_lexing_position *) start;
-    loc_end      = (* pos_of_lexing_position *) stop;
-    loc_ghost     = false } in
+  { loc_start  =  start;
+    loc_end    =  stop;
+    loc_ghost  = false } in
   debug loc "of_lexbuf: %a@\n" dump loc in
   loc;
 
 (** Return a location where both positions are set the given position. *)
 let of_lexing_position pos =
   let loc =
-  { (* file_name = pos.Lexing.pos_fname; *)
-    loc_start     = (* pos_of_lexing_position *) pos;
-    loc_end      = (* pos_of_lexing_position *) pos;
+  { loc_start =  pos;
+    loc_end =  pos;
     loc_ghost     = false } in
   debug loc "of_lexing_position: %a@\n" dump loc in
   loc;

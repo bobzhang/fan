@@ -278,13 +278,12 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "`flo" -> {| FanUtil.float_repres $e |}
             | "`str" -> {| Ast.safe_string_escaped $e |}
             | "`chr" -> {| Char.escaped $e |}
-            | "`bool" -> {| Ast.IdLid $(mloc _loc) (if $e then "true" else "false") |}
-            | "`boolexpr" -> (* {| {| if $($e) then "true" else "false" |} |} *)
-                (* {|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |} *)
-                (* {:expr| Ast.ExId _loc $({|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |}) |} *)
-                  let x = {|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in 
-                  {:expr| {:expr| $(id:$x)  |} |}
-                  
+            (* | "`bool" -> {| Ast.IdLid $(mloc _loc) (if $e then "true" else "false") |} *)
+            | "`boolexpr" ->
+                let x = {|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in
+                {| {| $(id:$x)  |} |}
+            (* | "tupexpr" -> *)
+                
             | "liststr_item" -> {| Ast.stSem_of_list $e |}
             | "listsig_item" -> {| Ast.sgSem_of_list $e |}
             | "listclass_sig_item" -> {| Ast.cgSem_of_list $e |}

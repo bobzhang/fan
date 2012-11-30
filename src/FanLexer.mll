@@ -120,7 +120,8 @@ end
  *)
 
 type context =
-    { loc        : FanLoc.t    ;
+    { loc        : FanLoc.t  ;
+     (* only record the start position when enter into a quotation or antiquotation*)
       in_comment : bool     ;
       quotations : bool     ;
       antiquots  : bool     ;
@@ -144,13 +145,14 @@ let buff_contents c =
   let contents = Buffer.contents c.buffer in
   Buffer.reset c.buffer; contents
     
-let loc c = FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf)
+let loc_merge c = FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf)
 let quotations c = c.quotations
 let antiquots c = c.antiquots
 let is_in_comment c = c.in_comment
 let in_comment c = { (c) with in_comment = true }
 
-(* update the lexing position to the loc *)    
+(* update the lexing position to the loc
+  combined with [with_curr_loc]  *)    
 let set_start_p c = c.lexbuf.lex_start_p <- FanLoc.start_pos c.loc
 
 (* [unsafe] shift the lexing buffer, usually shift back *)    
@@ -390,7 +392,8 @@ rule token c = parse
        | '$'
            {
             if antiquots c
-            then with_curr_loc dollar (shift 1 c)
+            then (* with_curr_loc dollar (shift 1 c) *)
+              with_curr_loc dollar c 
             else parse (symbolchar_star "$") c }
        | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar *
            as x { `SYMBOL x }
@@ -408,7 +411,6 @@ and comment c = parse
             parse comment c
           }
      | "*)"   { store c }
-     (* | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? *)
      | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
          { store c;
            if quotations c then begin
@@ -421,7 +423,7 @@ and comment c = parse
            begin
              try with_curr_loc string c
              with FanLoc.Exc_located(_, Lexing_error Unterminated_string) ->
-               err Unterminated_string_in_comment (loc c)
+               err Unterminated_string_in_comment (loc_merge c)
            end;
       Buffer.add_char c.buffer '"';
       parse comment c }
@@ -434,7 +436,7 @@ and comment c = parse
      | "'\\" ['0'-'9'] ['0'-'9'] ['0'-'9'] "'"           { store_parse comment c }
      | "'\\" 'x' hexa_char hexa_char "'"                 { store_parse comment c }
      | eof
-         { err Unterminated_comment (loc c)                                        }
+         { err Unterminated_comment (loc_merge c)                                }
      | newline
          { update_loc c ; store_parse comment c                      }
      | _                                                 { store_parse comment c }
@@ -457,7 +459,7 @@ and string c = parse
          end }
     | newline
         { update_loc c ; store_parse string c                       }
-    | eof                                     { err Unterminated_string (loc c) }
+    | eof                                     { err Unterminated_string (loc_merge c) }
     | _                                                  { store_parse string c }
 
 and symbolchar_star beginning c = parse
@@ -474,11 +476,11 @@ and maybe_quotation_at c = parse
            ~retract:(2 + opt_char_len p)
        }
     | symbolchar* as tok
-        { `SYMBOL((* "<@" *)"{@" ^ tok) }
+        { `SYMBOL("{@" ^ tok) }
 
 (* <:name< *)        
 and maybe_quotation_colon c = parse
-    | ((* ident *)quotation_name as name) (* '<' *) '|' (extra_quot as p)?  { begin 
+    | (quotation_name as name)  '|' (extra_quot as p)?  { begin 
         Stack.push p opt_char;
         mk_quotation quotation c
           ~name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
@@ -496,7 +498,6 @@ and maybe_quotation_colon c = parse
     | symbolchar* as tok                                   { `SYMBOL("{:" ^ tok) }
 
 and quotation c = parse
-    (* | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? *)
     | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
         {
          begin
@@ -521,12 +522,12 @@ and quotation c = parse
             begin
               try with_curr_loc string c
               with FanLoc.Exc_located(_,Lexing_error Unterminated_string) ->
-                err Unterminated_string_in_quotation (loc c)
+                err Unterminated_string_in_quotation (loc_merge c)
             end;
             Buffer.add_char c.buffer '"';
             parse quotation c
           }
-    | eof {show_stack (); err Unterminated_quotation (loc c)}
+    | eof {show_stack (); err Unterminated_quotation (loc_merge c)}
     | newline                                     {
       update_loc c ;
       store_parse quotation c }
@@ -543,42 +544,44 @@ and quotation c = parse
  *)
 and dollar c = parse
     | ('`'? (identchar*|['.' '!']+) as name) ':' (lident as x)
-        {set_start_p c; `ANT(name,x)}
-        (* { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
+        {c.lexbuf.lex_start_p <-FanLoc.move_pos (String.length name + 1) c.lexbuf.lex_start_p;
+         (* set_start_p c; *)
+         `ANT(name,x)}
     | lident as x 
-        {set_start_p c; `ANT("",x)}
-    (* | '$' {store_parse (antiquot "") c} *)
+        {
+         (* set_start_p c; *)
+         (* c.lexbuf.lex_start_p <- FanLoc.move_pos 1 c.lexbuf.lex_start_p ; *)
+         `ANT("",x)}
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {
-      with_curr_loc (antiquot name 0) (shift (2 + String.length name) c)
+      (* with_curr_loc (antiquot name 0) (shift (2 + String.length name) c) *)
+      (* with_curr_loc (antiquot name 0) c  *)
+      antiquot name 0 {(c) with loc = FanLoc.move `start (3+String.length name) c.loc} c.lexbuf
       }
-        
     | '(' {
-      with_curr_loc (antiquot "" 0) (shift 1 c)
+      (* with_curr_loc (antiquot "" 0) (shift 1 c) *)
+      (* with_curr_loc (antiquot "" 0) c  *)
+      antiquot "" 0 {(c) with loc = FanLoc.move `start 2 c.loc} c.lexbuf
      }
-    (* | '$'                                     { set_start_p c; `ANT("", "") } *)
-    (* | ('`'? (identchar*|['.' '!']+) as name) ':' *)
-    (*     { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
     | _ as c {
       err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) (*unexpected char in antiquot*)
      }
         
-      (* { store_parse (antiquot "") c } *)
+
 
 (* depth makes sure the parentheses are balanced *)
 and antiquot name depth c  = parse
     | ')'                      {
       if depth = 0 then
-        let () = set_start_p c in
+        let () = set_start_p c in (* only cares about FanLoc.start_pos *)
         `ANT(name, buff_contents c)
       else store_parse (antiquot name (depth-1)) c }
     | '(' {
       store_parse (antiquot name (depth+1)) c
       }
         
-    | eof                                   { err Unterminated_antiquot (loc c) }
+    | eof                                   { err Unterminated_antiquot (loc_merge c) }
     | newline
         { update_loc c ; store_parse (antiquot name depth) c              }
-    (* | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? *)
     | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
         {
       let () = Stack.push p opt_char in
@@ -590,15 +593,12 @@ and antiquot name depth c  = parse
              begin
                try with_curr_loc string c
                with FanLoc.Exc_located (_,Lexing_error Unterminated_string) ->
-                 err Unterminated_string_in_antiquot (loc c)
+                 err Unterminated_string_in_antiquot (loc_merge c)
              end;
              Buffer.add_char c.buffer '"';
              parse (antiquot name depth) c 
       }
-        
-        (* { store c; with_curr_loc quotation c; *)
-        (*   parse (antiquot name) c             } *)
-    | _                                         { store_parse (antiquot name depth) c }
+    | _  { store_parse (antiquot name depth) c }
 
 
 

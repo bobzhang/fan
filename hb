@@ -39,3 +39,4 @@ fi
 
 mv _build/boot/$target _build/boot/$target.old #store as old 
 mv _build/src/$target _build/boot/$target
+ocamlbuild foo.otarget

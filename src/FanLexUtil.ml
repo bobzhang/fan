@@ -14,7 +14,7 @@ let lexing_store s buff max =
 
 let from_context c =
   let next _ =
-    let tok = with_curr_loc token c in
+    let tok = with_curr_loc token c in (* entry *)
     let loc = FanLoc.of_lexbuf c.lexbuf in
     Some ((tok, loc))
   in Stream.from next;
