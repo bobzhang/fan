@@ -527,19 +527,11 @@ and dollar c = parse
         {move_start_p (String.length name + 1) c;  `ANT(name,x)}
     | lident as x    { `ANT("",x) }
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {
-      antiquot name 0
-        {(c) with loc = FanLoc.move_pos (3+String.length name) c.loc} c.lexbuf
+      antiquot name 0 {(c) with loc = FanLoc.move_pos (3+String.length name) c.loc} c.lexbuf
       }
-    | '(' {
-
-      antiquot "" 0 {(c) with loc = FanLoc.move_pos  2 c.loc} c.lexbuf
-     }
-    | _ as c {
-      err (Illegal_character c) (FanLoc.of_lexbuf lexbuf)
-     }
+    | '(' { antiquot "" 0 {(c) with loc = FanLoc.move_pos  2 c.loc} c.lexbuf }
+    | _ as c { err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) }
         
-
-
 (* depth makes sure the parentheses are balanced *)
 and antiquot name depth c  = parse
     | ')'                      {

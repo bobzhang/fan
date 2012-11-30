@@ -21,7 +21,7 @@ let from_lexbuf ?(quotations= true)  lb =
   let c =
     {
       (default_context lb) with
-      loc = (FanLoc.of_lexbuf lb);
+      loc = (Lexing.lexeme_start_p lb);
       antiquots = (FanConfig.antiquotations.contents);
       quotations
     } in

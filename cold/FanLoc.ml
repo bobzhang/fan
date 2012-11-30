@@ -1,7 +1,14 @@
 open Format
-open Location
-open Lexing
-type t = Location.t 
+type position = Lexing.position =
+  {
+  pos_fname: string;
+  pos_lnum: int;
+  pos_bol: int;
+  pos_cnum: int} 
+type t = Location.t = {
+  loc_start: position;
+  loc_end: position;
+  loc_ghost: bool} 
 let dump_sel f x =
   let s =
     match x with
@@ -81,10 +88,11 @@ let better_file_name a b =
   | (x,"-") -> x
   | (x,_) -> x
 let of_lexbuf lb =
-  let start = Lexing.lexeme_start_p lb and stop = Lexing.lexeme_end_p lb in
-  let loc = { loc_start = start; loc_end = stop; loc_ghost = false } in loc
-let of_lexing_position pos =
-  let loc = { loc_start = pos; loc_end = pos; loc_ghost = false } in loc
+  let loc_start = Lexing.lexeme_start_p lb
+  and loc_end = Lexing.lexeme_end_p lb in
+  let loc = { loc_start; loc_end; loc_ghost = false } in loc
+let of_positions s e = { loc_start = s; loc_end = e; loc_ghost = false }
+let dummy_pos = Lexing.dummy_pos
 let start_pos x = x.loc_start
 let stop_pos x = x.loc_end
 let merge a b =

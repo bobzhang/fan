@@ -72,6 +72,7 @@ let print_lex_error ppf =  function
 
             
 let lex_error_to_string = to_string_of_printer print_lex_error
+
 let _ =
   Printexc.register_printer (function
     | Lexing_error e -> Some (lex_error_to_string e)
@@ -120,7 +121,7 @@ end
  *)
 
 type context =
-    { loc        : FanLoc.t  ;
+    { loc        :  FanLoc.position ; (* FanLoc.t  ; *)
      (* only record the start position when enter into a quotation or antiquotation*)
       in_comment : bool     ;
       quotations : bool     ;
@@ -129,7 +130,7 @@ type context =
       buffer     : Buffer.t }
       
 let default_context lb =
-  { loc        = FanLoc.ghost ;
+  { loc        = FanLoc.dummy_pos ;
     in_comment = false     ;
     quotations = true      ;
     antiquots  = false     ;
@@ -145,7 +146,9 @@ let buff_contents c =
   let contents = Buffer.contents c.buffer in
   Buffer.reset c.buffer; contents
     
-let loc_merge c = FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf)
+let loc_merge c =
+  FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
+  (* FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf) *)
 let quotations c = c.quotations
 let antiquots c = c.antiquots
 let is_in_comment c = c.in_comment
@@ -153,18 +156,18 @@ let in_comment c = { (c) with in_comment = true }
 
 (* update the lexing position to the loc
   combined with [with_curr_loc]  *)    
-let set_start_p c = c.lexbuf.lex_start_p <- FanLoc.start_pos c.loc
+let set_start_p c = c.lexbuf.lex_start_p <- (* FanLoc.start_pos *) c.loc
 
 (* [unsafe] shift the lexing buffer, usually shift back *)    
-let move_start_p shift c =
+let move_curr_p shift c =
   c.lexbuf.lex_curr_pos <- c.lexbuf.lex_curr_pos + shift
-  (* let p = c.lexbuf.lex_start_p in *)
-  (* c.lexbuf.lex_start_p <- { (p) with pos_cnum = p.pos_cnum + shift } *)
+let move_start_p shift c =
+  c.lexbuf.lex_start_p <- FanLoc.move_pos shift c.lexbuf.lex_start_p
       
 (* create a new context with  the location of the context for the lexer
    the old context was kept *)      
 let with_curr_loc lexer c =
-  lexer ({c with loc = FanLoc.of_lexbuf c.lexbuf}) c.lexbuf
+  lexer ({c with loc = Lexing.lexeme_start_p c.lexbuf }) c.lexbuf
     
 let parse_nested ~lexer c = begin 
   with_curr_loc lexer c;
@@ -172,7 +175,6 @@ let parse_nested ~lexer c = begin
   buff_contents c
 end
 
-let shift n c = { (c) with loc = FanLoc.move `both n c.loc }
 
 let store_parse f c =  begin
   store c ; f c c.lexbuf
@@ -181,13 +183,12 @@ end
 let parse f c =
   f c c.lexbuf
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
-  let s = parse_nested ~lexer:quotation ({c with loc = FanLoc.of_lexbuf c.lexbuf}) in
+  let s = parse_nested ~lexer:quotation ({c with loc = Lexing.lexeme_start_p  c.lexbuf}) in
   let contents = String.sub s 0 (String.length s - retract) in
-  `QUOTATION {
-  FanSig.q_name     = name     ;
-  q_loc      = loc      ;
-  q_shift    = shift    ;
-  q_contents = contents }
+  `QUOTATION {FanSig.q_name     = name     ;
+              q_loc      = loc      ;
+              q_shift    = shift    ;
+              q_contents = contents }
     
 
 
@@ -199,19 +200,14 @@ let update_loc   ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
   let new_file = match file with
   | None -> pos.pos_fname
   | Some s -> s in
-  lexbuf.lex_curr_p <- { pos with
-                         pos_fname = new_file;
-                         pos_lnum = if absolute then line else pos.pos_lnum + line;
-                         pos_bol = pos.pos_cnum - retract;
-                       }
+  lexbuf.lex_curr_p <-
+    { pos with
+      pos_fname = new_file;
+      pos_lnum = if absolute then line else pos.pos_lnum + line;
+      pos_bol = pos.pos_cnum - retract;}
 	
-
-	
-
-
 let err (error:lex_error) (loc:FanLoc.t) =
   raise(FanLoc.Exc_located(loc, Lexing_error error))
-    
 let warn error loc =
   Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error
 
@@ -329,14 +325,12 @@ rule token c = parse
              parse comment (in_comment c); `COMMENT (buff_contents c)               }
        | "*)"
            { warn Comment_not_end (FanLoc.of_lexbuf lexbuf)                           ;
-             move_start_p (-1) c; `SYMBOL "*"                                       }
+             move_curr_p (-1) c; `SYMBOL "*"                                       }
 
        | "{|" (extra_quot as p)? (quotchar* as beginning)
            { if quotations c  then
              (
-              (* prerr_endline beginning; *)
-              (* Format.eprintf "%s :%d@." beginning (-String.length beginning); *)
-              move_start_p (-String.length beginning) c; (* FIX partial application*)
+              move_curr_p (-String.length beginning) c; (* FIX partial application*)
               Stack.push p opt_char;
               let len = 2 + opt_char_len p in 
               mk_quotation quotation c ~name:"" ~loc:"" ~shift:len ~retract:len)
@@ -376,7 +370,7 @@ rule token c = parse
        | '$'
            {
             if antiquots c
-            then (* with_curr_loc dollar (shift 1 c) *)
+            then 
               with_curr_loc dollar c 
             else parse (symbolchar_star "$") c }
        | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar *
@@ -447,14 +441,12 @@ and string c = parse
     | _                                                  { store_parse string c }
 
 and symbolchar_star beginning c = parse
-    | symbolchar* as tok            {
-      (* move_start_p (-String.length beginning) c ; *)
-      `SYMBOL(beginning ^ tok) }
+    | symbolchar* as tok            { `SYMBOL(beginning ^ tok) }
 
 (* <@loc< *)        
 and maybe_quotation_at c = parse
     | (ident as loc)  '|' (extra_quot as p)?     {
-      c.lexbuf.lex_start_p <- FanLoc.move_pos (-2) c.lexbuf.lex_start_p;
+      move_start_p (-2) c;
       Stack.push p opt_char;
       mk_quotation quotation c ~name:"" ~loc
            ~shift:(2 + 1 + String.length loc + (opt_char_len p))
@@ -467,7 +459,7 @@ and maybe_quotation_at c = parse
 and maybe_quotation_colon c = parse
     | (quotation_name as name)  '|' (extra_quot as p)?  {
       begin
-        c.lexbuf.lex_start_p <- FanLoc.move_pos (-2) c.lexbuf.lex_start_p;
+        move_start_p (-2) c;
         Stack.push p opt_char;
         mk_quotation quotation c
           ~name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
@@ -476,7 +468,7 @@ and maybe_quotation_colon c = parse
     }
 
     | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)? { begin
-        c.lexbuf.lex_start_p <- FanLoc.move_pos (-2) c.lexbuf.lex_start_p;
+        move_start_p (-2) c ;
         Stack.push p opt_char;
         mk_quotation quotation c ~name ~loc
           ~shift:(2 + 2 + String.length loc + String.length name + opt_char_len p)
@@ -532,26 +524,18 @@ and quotation c = parse
  *)
 and dollar c = parse
     | ('`'? (identchar*|['.' '!']+) as name) ':' (lident as x)
-        {c.lexbuf.lex_start_p <-FanLoc.move_pos (String.length name + 1) c.lexbuf.lex_start_p;
-         (* set_start_p c; *)
-         `ANT(name,x)}
-    | lident as x 
-        {
-         (* set_start_p c; *)
-         (* c.lexbuf.lex_start_p <- FanLoc.move_pos 1 c.lexbuf.lex_start_p ; *)
-         `ANT("",x)}
+        {move_start_p (String.length name + 1) c;  `ANT(name,x)}
+    | lident as x    { `ANT("",x) }
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {
-      (* with_curr_loc (antiquot name 0) (shift (2 + String.length name) c) *)
-      (* with_curr_loc (antiquot name 0) c  *)
-      antiquot name 0 {(c) with loc = FanLoc.move `start (3+String.length name) c.loc} c.lexbuf
+      antiquot name 0
+        {(c) with loc = FanLoc.move_pos (3+String.length name) c.loc} c.lexbuf
       }
     | '(' {
-      (* with_curr_loc (antiquot "" 0) (shift 1 c) *)
-      (* with_curr_loc (antiquot "" 0) c  *)
-      antiquot "" 0 {(c) with loc = FanLoc.move `start 2 c.loc} c.lexbuf
+
+      antiquot "" 0 {(c) with loc = FanLoc.move_pos  2 c.loc} c.lexbuf
      }
     | _ as c {
-      err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) (*unexpected char in antiquot*)
+      err (Illegal_character c) (FanLoc.of_lexbuf lexbuf)
      }
         
 
