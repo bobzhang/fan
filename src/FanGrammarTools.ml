@@ -331,15 +331,15 @@ let mk_tok _loc ?restrict ~pattern styp = with "expr"
    let match_fun =
      if Camlp4Ast.is_irrefut_patt no_variable
      then 
-       {| fun [ $no_variable -> true ] |}
-     else {| fun [$no_variable -> true | _ -> false ] |} in 
+       {| fun [ $pat:no_variable -> true ] |}
+     else {| fun [$pat:no_variable -> true | _ -> false ] |} in 
    let descr = string_of_patt no_variable in
    let text = `TXtok (_loc, match_fun, "Normal", descr) in
    {text; styp; pattern = Some pattern }
  | Some restrict ->
      let p'= Camlp4Ast.wildcarder#patt pattern in
      let match_fun = 
-       {| fun [$pattern when $restrict -> true | _ -> false ] |}  in
+       {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
      let descr = string_of_patt pattern in
      let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} ] ;

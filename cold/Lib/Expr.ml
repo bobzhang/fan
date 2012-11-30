@@ -765,6 +765,30 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "IdAnt")))))),
                                       (mloc _loc))), p)
+                         | "tupexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExTup")))))),
+                                      (mloc _loc))), p)
+                         | "seqexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExSeq")))))),
+                                      (mloc _loc))), p)
                          | _ -> p)
       | p -> super#patt p
     method! expr =
@@ -867,6 +891,30 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (Ast.ExId
                                          (_loc, (Ast.IdLid (_loc, "_loc")))))),
                                  x)
+                         | "tupexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExTup")))))),
+                                      (mloc _loc))), e)
+                         | "seqexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExSeq")))))),
+                                      (mloc _loc))), e)
                          | "liststr_item" ->
                              Ast.ExApp
                                (_loc,

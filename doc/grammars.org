@@ -1186,3 +1186,10 @@ Ptop_def
 
 * location
   http://caml.inria.fr/mantis/view.php?id=5127
+
+  - abstract over location {:$loc| a b |}
+  - visualize grammar overshadowing
+    patt_as_patt_opt: [   LA suffix:
+                            prefix:
+                              `-patt---"as"---patt]
+    patt is shadowed here

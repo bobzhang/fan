@@ -51,7 +51,7 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   | e -> super#expr e ];
 
   method! match_case = fun
-  [ {:match_case| $p when $e1 -> $e2 |} ->
+  [ {:match_case| $pat:p when $e1 -> $e2 |} ->
     (((o#add_patt p)#expr e1)#expr e2)#set_env env
   | m -> super#match_case m ];
 

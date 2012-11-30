@@ -3192,36 +3192,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    | _ -> assert false)));
           ([`Stoken
               (((function
-                 | `ANT (("exp"|""|"anti"|"`bool"),_) -> true
+                 | `ANT (("exp"|""|"anti"|"`bool"|"tup"|"seq"),_) -> true
                  | _ -> false)),
-                (`Normal, "`ANT ((\"exp\"|\"\"|\"anti\"|\"`bool\"),_)"))],
+                (`Normal,
+                  "`ANT ((\"exp\"|\"\"|\"anti\"|\"`bool\"|\"tup\"|\"seq\"),_)"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `ANT (("exp"|""|"anti"|"`bool" as n),s) ->
+                  | `ANT (("exp"|""|"anti"|"`bool"|"tup"|"seq" as n),s) ->
                       (Ast.ExAnt (_loc, (mk_anti ~c:"expr" n s)) : 'expr )
-                  | _ -> assert false)));
-          ([`Stoken
-              (((function | `ANT ("tup",_) -> true | _ -> false)),
-                (`Normal, "`ANT (\"tup\",_)"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `ANT (("tup" as n),s) ->
-                      (Ast.ExTup
-                         (_loc, (Ast.ExAnt (_loc, (mk_anti ~c:"expr" n s)))) : 
-                      'expr )
-                  | _ -> assert false)));
-          ([`Stoken
-              (((function | `ANT ("seq",_) -> true | _ -> false)),
-                (`Normal, "`ANT (\"seq\",_)"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `ANT (("seq" as n),s) ->
-                      (Ast.ExSeq
-                         (_loc, (Ast.ExAnt (_loc, (mk_anti ~c:"expr" n s)))) : 
-                      'expr )
                   | _ -> assert false)));
           ([`Snterm (Gram.obj (a_INT : 'a_INT Gram.t ))],
             (Gram.mk_action
@@ -3675,56 +3654,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
         [(None, None,
            [([`Stoken
                 (((function
-                   | `ANT (("match_case"|"list"),_) -> true
+                   | `ANT (("match_case"|"list"|"anti"|""),_) -> true
                    | _ -> false)),
-                  (`Normal, "`ANT ((\"match_case\"|\"list\"),_)"))],
+                  (`Normal,
+                    "`ANT ((\"match_case\"|\"list\"|\"anti\"|\"\"),_)"))],
               (Gram.mk_action
                  (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
-                    | `ANT (("match_case"|"list" as n),s) ->
+                    | `ANT (("match_case"|"list"|"anti"|"" as n),s) ->
                         (Ast.McAnt (_loc, (mk_anti ~c:"match_case" n s)) : 
                         'match_case0 )
                     | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"anti\"),_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT ((""|"anti" as n),s) ->
-                       (Ast.McAnt (_loc, (mk_anti ~c:"match_case" n s)) : 
-                       'match_case0 )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"anti\"),_)"));
-            `Skeyword "->";
-            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  _  (__fan_0 : [> FanSig.token]) 
-                   (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT ((""|"anti" as n),s) ->
-                       (Ast.McArr
-                          (_loc, (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s))),
-                            (Ast.ExNil _loc), e) : 'match_case0 )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ((""|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"anti\"),_)"));
-            `Skeyword "when";
-            `Snterm (Gram.obj (expr : 'expr Gram.t ));
-            `Skeyword "->";
-            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  _  (w : 'expr)  _ 
-                   (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT ((""|"anti" as n),s) ->
-                       (Ast.McArr
-                          (_loc, (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s))),
-                            w, e) : 'match_case0 )
-                   | _ -> assert false)));
            ([`Snterm
                (Gram.obj (patt_as_patt_opt : 'patt_as_patt_opt Gram.t ));
             `Skeyword "when";

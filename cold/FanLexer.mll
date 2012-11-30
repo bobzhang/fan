@@ -330,7 +330,7 @@ rule token c = parse
        | "*)"
            { warn Comment_not_end (FanLoc.of_lexbuf lexbuf)                           ;
              move_start_p (-1) c; `SYMBOL "*"                                       }
-       (* | "<<" (extra_quot as p)? (quotchar* as beginning) *)
+
        | "{|" (extra_quot as p)? (quotchar* as beginning)
            { if quotations c  then
              (
@@ -340,37 +340,21 @@ rule token c = parse
               Stack.push p opt_char;
               let len = 2 + opt_char_len p in 
               mk_quotation quotation c ~name:"" ~loc:"" ~shift:len ~retract:len)
-           else parse
-               (symbolchar_star
-                  ((* "<<" ^ *)
-                   "{|" ^
-                   (match p with Some x -> String.make 1 x | None -> "")
-                   ^ beginning))
+           else
+             parse
+               (symbolchar_star ("{|" ^(match p with Some x -> String.make 1 x | None -> "") ^ beginning))
                c                       }
-       (* | "{||}" *)
        | "{||}"
            { if quotations c
            then `QUOTATION { FanSig.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
            else parse
-               (symbolchar_star
-                  (* "{||}" *)
-                  "{||}"
-               ) c                                   }
-       (* | "<@" *)
+               (symbolchar_star "{||}") c}
        | "{@"
            { if quotations c then with_curr_loc maybe_quotation_at c
-           else parse
-               (symbolchar_star
-                  "{@"
-                         (* "<@" *)) c                                     }
-       (* | "<:" *)
+           else parse  (symbolchar_star "{@") c}
        | "{:"
            { if quotations c then with_curr_loc maybe_quotation_colon c
-           else parse
-               (symbolchar_star
-                  (* "<:" *)
-                  "{:"
-               ) c                                     }
+           else parse (symbolchar_star "{:")  c}
        | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
            ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
            [^ '\010' '\013'] * newline
@@ -469,9 +453,10 @@ and symbolchar_star beginning c = parse
 
 (* <@loc< *)        
 and maybe_quotation_at c = parse
-    | (ident as loc) (* '<' *) '|' (extra_quot as p)?     {
-         Stack.push p opt_char;
-         mk_quotation quotation c ~name:"" ~loc
+    | (ident as loc)  '|' (extra_quot as p)?     {
+      c.lexbuf.lex_start_p <- FanLoc.move_pos (-2) c.lexbuf.lex_start_p;
+      Stack.push p opt_char;
+      mk_quotation quotation c ~name:"" ~loc
            ~shift:(2 + 1 + String.length loc + (opt_char_len p))
            ~retract:(2 + opt_char_len p)
        }
@@ -480,15 +465,18 @@ and maybe_quotation_at c = parse
 
 (* <:name< *)        
 and maybe_quotation_colon c = parse
-    | (quotation_name as name)  '|' (extra_quot as p)?  { begin 
+    | (quotation_name as name)  '|' (extra_quot as p)?  {
+      begin
+        c.lexbuf.lex_start_p <- FanLoc.move_pos (-2) c.lexbuf.lex_start_p;
         Stack.push p opt_char;
         mk_quotation quotation c
           ~name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
-    end
+      end
     }
 
-    | ((* ident *)quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)? { begin 
+    | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)? { begin
+        c.lexbuf.lex_start_p <- FanLoc.move_pos (-2) c.lexbuf.lex_start_p;
         Stack.push p opt_char;
         mk_quotation quotation c ~name ~loc
           ~shift:(2 + 2 + String.length loc + String.length name + opt_char_len p)

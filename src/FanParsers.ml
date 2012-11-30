@@ -1076,18 +1076,16 @@ New syntax:\
     {:extend|Gram
      match_case:
      [ "["; L0 match_case0 SEP "|"{l}; "]" -> {|  $list:l  |} (* FIXME *)
-     | patt{p}; "->"; expr{e} -> {| $p -> $e |} ]
+     | patt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
      match_case0:
-     [ `ANT (("match_case"|"list" as n),s) ->
-         {| $(anti:mk_anti ~c:"match_case" n s) |}
-     | `ANT ((""|"anti" as n),s) ->         {| $(anti:mk_anti ~c:"match_case" n s) |}
-     | `ANT ((""|"anti" as n),s); "->"; expr{e} ->
-         {| $(anti:mk_anti ~c:"patt" n s) -> $e |}
-     | `ANT ((""|"anti" as n),s); "when"; expr{w}; "->"; expr{e} ->
-         {| $(anti:mk_anti ~c:"patt" n s) when $w -> $e |}
-     | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->
-         {| $p when $w -> $e |}
-     | patt_as_patt_opt{p}; "->"; expr{e} -> {| $p -> $e |} ]
+     [ `ANT (("match_case"|"list"| "anti"|"" as n),s) -> {| $(anti:mk_anti ~c:"match_case" n s) |}
+     (* | `ANT ((""|"anti" as n),s) ->  {| $(anti:mk_anti ~c:"match_case" n s) |} *)
+     (* | `ANT ((""|"anti" as n),s); "->"; expr{e} -> {| $(anti:mk_anti ~c:"patt" n s) -> $e |} *)
+
+     (* | `ANT ((""|"anti" as n),s); "when"; expr{w}; "->"; expr{e} -> *)
+     (*     {| $(anti:mk_anti ~c:"patt" n s) when $w -> $e |} *)
+     | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->  {| $pat:p when $w -> $e |}
+     | patt_as_patt_opt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
       match_case_quot:
       [ L0 match_case0 SEP "|"{x} -> {| $list:x |}
       | -> {||} ]  |};

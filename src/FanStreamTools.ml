@@ -44,7 +44,7 @@ let rec handle_failure e =
         fun
         [ {:match_case| $a1 | $a2 |} ->
             match_case_handle_failure a1 && match_case_handle_failure a2
-        | {:match_case| $_ -> $e |} -> handle_failure e
+        | {:match_case| $pat:_ -> $e |} -> handle_failure e
         | _ -> false ]
       in handle_failure me && match_case_handle_failure a
   | {| let $bi in $e |} ->

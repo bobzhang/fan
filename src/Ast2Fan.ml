@@ -20,9 +20,9 @@ class printer = object(self:'self)
      (fun (p,e) ->
        match e.pexp_desc with
        [Pexp_when (e1,e2) ->
-           {| $(self#pattern p) when $(self#expr e1) -> $(self#expr e2) |}
+           {| $(pat:self#pattern p) when $(self#expr e1) -> $(self#expr e2) |}
        | _ ->
-          {|$(self#pattern p) -> $(self#expr (e:expression)) |} ]) lst ;
+          {|$(pat:self#pattern p) -> $(self#expr (e:expression)) |} ]) lst ;
 
     method constant_expr _loc i=
       with "expr" match i with 

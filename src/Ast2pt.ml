@@ -570,15 +570,15 @@ let rec expr = fun (* expr -> expression*)
       | ExFor (loc, i, e1, e2, df, el) ->
           let e3 = ExSeq loc el in
           mkexp loc (Pexp_for (with_loc i loc) (expr e1) (expr e2) (mkdirection df) (expr e3))
-      | {:expr@loc| fun [ $(PaLab (_, lab, po)) when $w -> $e ] |} ->
+      | {:expr@loc| fun [ $(pat:PaLab (_, lab, po)) when $w -> $e ] |} ->
           mkexp loc
             (Pexp_function lab None
                [(patt_of_lab loc lab po, when_expr e w)])
-      | {:expr@loc| fun [ $(PaOlbi (_, lab, p, e1)) when $w -> $e2 ] |} ->
+      | {:expr@loc| fun [ $(pat:PaOlbi (_, lab, p, e1)) when $w -> $e2 ] |} ->
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) (Some (expr e1)) [(patt p, when_expr e2 w)])
-      | {:expr@loc| fun [ $(PaOlb (_, lab, p)) when $w -> $e ] |} ->
+      | {:expr@loc|fun [ $(pat:PaOlb (_, lab, p)) when $w -> $e ] |} ->
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e w)])

@@ -154,7 +154,7 @@ let filter _loc p b l =
     if Ast.is_irrefut_patt p then
       {| List.filter (fun $p -> $b) $l |}
     else
-      {| List.filter (fun [ $p when true -> $b | _ -> false ]) $l |};
+      {| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
 let concat _loc l = {| List.concat $l |};
 (* only this function needs to be exposed *)
 let rec compr _loc e =  fun

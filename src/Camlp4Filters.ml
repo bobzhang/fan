@@ -46,8 +46,8 @@ module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
     fun
     [ {:match_case@_loc| $m1 | $m2 |} ->
         {:match_case| $(map_match_case m1) | $(map_match_case m2) |}
-    | {:match_case@_loc| $p when $w -> $e |} ->
-        {:match_case@_loc| $p when $w -> $(add_debug_expr e) |}
+    | {:match_case@_loc| $pat:p when $w -> $e |} ->
+        {:match_case@_loc| $pat:p when $w -> $(add_debug_expr e) |}
     | m -> m ];
 
   let filter = object
@@ -251,7 +251,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
             bind pxi1 e acc
           end pxi1s es (return e1)
         in
-        {:match_case| $p -> $e |};
+        {:match_case| $pat:p -> $e |};
 
       let mk_tuple expr_of_ty t =
         let mc =
@@ -264,9 +264,9 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
       let default_match_case =
         let mk k = if k = 1 then {:patt| x |} else {:patt| _ |} in
         match mode with
-        [ Fold_map -> {:match_case| $(tuplify_patt mk) -> (o, x) |}
+        [ Fold_map -> {:match_case| $(pat:tuplify_patt mk) -> (o, x) |}
         | Fold     -> {:match_case| _ -> o |}
-        | Map      -> {:match_case| $(tuplify_patt mk) -> x |} ];
+        | Map      -> {:match_case| $(pat:tuplify_patt mk) -> x |} ];
 
       let default_expr = {:expr| fun [ $default_match_case ] |};
 
@@ -425,7 +425,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         chain_tuple mkp mke expr_of_ty ts
 
       and failure_match_case =
-        {:match_case| $(tuplify_patt (pxik 0)) ->
+        {:match_case| $(pat:tuplify_patt (pxik 0)) ->
                         o#$(lid:sf "%s%d_failure" (string_of_mode mode) size) $(tuplify_expr (exik 0)) |}
 
       and complete_match_case mk t =
@@ -846,7 +846,7 @@ let mk_meta m =
                   | _ -> failure ]
                 in m_app m acc {:expr| $(fcall_of_ctyp ty) _loc $(id:x i) |}
               end init
-          in {:match_case| $p -> $e | $acc |}
+          in {:match_case| $pat:p -> $e | $acc |}
         end {:match_case||} in
         let funct =
           List.fold_right begin fun tyvar acc ->
