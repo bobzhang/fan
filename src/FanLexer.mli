@@ -14,7 +14,7 @@ type lex_error =
   | Literal_overflow of string
         
 type context =
-    { loc        : FanLoc.t    ;
+    { loc        : FanLoc.position    ;
       in_comment : bool     ;
       quotations : bool     ;
       antiquots  : bool     ;

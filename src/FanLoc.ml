@@ -139,7 +139,7 @@ let of_lexbuf lb =
   loc;
 
 let of_positions s e = {loc_start = s; loc_end = e ; loc_ghost = false};
-  
+let dummy_pos = Lexing.dummy_pos;  
 (** Return a location where both positions are set the given position. *)
 (* let of_lexing_position pos = *)
 (*   let loc = *)
