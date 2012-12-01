@@ -1273,10 +1273,7 @@ New syntax:\
        | `QUOTATION x -> Quotation.expand _loc x DynAst.patt_tag
        | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
        | label_longident{i}; "="; patt{p} -> {| $i = $p |}
-       | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ]
-
-  |};
-    
+       | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ] |};
     with "ctyp"
     {:extend|Gram
       ctyp_quot:
@@ -1323,10 +1320,8 @@ New syntax:\
       [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
       | type_parameter{t} -> fun acc -> {| $acc $t |}
       | -> fun t -> t  ]
-
       opt_class_self_type:
-      [ "("; ctyp{t}; ")" -> t
-      | -> {||} ]
+      [ "("; ctyp{t}; ")" -> t | -> {||} ]
       type_constraint:
       [ "type" | "constraint" -> () ] 
       meth_list:
@@ -1378,8 +1373,6 @@ New syntax:\
       opt_eq_ctyp:
       [ "="; type_kind{tk} -> tk | -> {||} ] 
       type_kind: [ ctyp{t} -> t ] 
-      
-      
       typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1615,8 +1608,7 @@ New syntax:\
       [ `ANT ((""|"str_list"),s) -> Ast.LAnt (mk_anti "str_list" s)
       | `STR (_, x); S{xs} -> Ast.LCons x xs
       | `STR (_, x) -> Ast.LCons x Ast.LNil ] 
-      semi:
-      [ ";" -> () ] (* -> ()]  (* FIXME *) *)
+      semi: [ ";" -> () ]
       ident_quot:
       { "apply"
         [ S{i}; S{j} -> {| $i $j |} ]
@@ -1693,23 +1685,13 @@ New syntax:\
             | _ -> {| let $rec:r $bi |} ]
         | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; expr{e} ->
               {| let module $m = $mb in $e |}
-        | "let"; "open"; module_longident{i}; "in"; expr{e} ->
-              {| let open $id:i in $e |}
-
-        | "class"; class_declaration{cd} ->
-            {| class $cd |}
-        | "class"; "type"; class_type_declaration{ctd} ->
-            {| class type $ctd |}
-        | `ANT ((""|"stri"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"str_item" n s) |}
-            (*
-              first, it gives "mk_anti ~c:"str_item" n s" , and then through
-              the meta operation, it gets
-              (Ast.StAnt (_loc, ( (mk_anti ~c:"str_item" n s) )))
-             *)
+        | "let"; "open"; module_longident{i}; "in"; expr{e} -> {| let open $id:i in $e |}
+        | "class"; class_declaration{cd} ->  {| class $cd |}
+        | "class"; "type"; class_type_declaration{ctd} -> {| class type $ctd |}
+        | `ANT ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"str_item" n s) |}
         | `QUOTATION x -> Quotation.expand _loc x DynAst.str_item_tag
         | expr{e} -> {| $exp:e |}
-        (* this entry makes {| let $rec:r $bi in $x |} parsable *)
+              (* this entry makes {| let $rec:r $bi in $x |} parsable *)
         ] }
     |};
 
