@@ -527,19 +527,11 @@ and dollar c = parse
         {move_start_p (String.length name + 1) c;  `ANT(name,x)}
     | lident as x    { `ANT("",x) }
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {
-      antiquot name 0
-        {(c) with loc = FanLoc.move_pos (3+String.length name) c.loc} c.lexbuf
+      antiquot name 0 {(c) with loc = FanLoc.move_pos (3+String.length name) c.loc} c.lexbuf
       }
-    | '(' {
-
-      antiquot "" 0 {(c) with loc = FanLoc.move_pos  2 c.loc} c.lexbuf
-     }
-    | _ as c {
-      err (Illegal_character c) (FanLoc.of_lexbuf lexbuf)
-     }
+    | '(' { antiquot "" 0 {(c) with loc = FanLoc.move_pos  2 c.loc} c.lexbuf }
+    | _ as c { err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) }
         
-
-
 (* depth makes sure the parentheses are balanced *)
 and antiquot name depth c  = parse
     | ')'                      {
@@ -547,13 +539,10 @@ and antiquot name depth c  = parse
         let () = set_start_p c in (* only cares about FanLoc.start_pos *)
         `ANT(name, buff_contents c)
       else store_parse (antiquot name (depth-1)) c }
-    | '(' {
-      store_parse (antiquot name (depth+1)) c
-      }
+    | '(' {    store_parse (antiquot name (depth+1)) c }
         
-    | eof                                   { err Unterminated_antiquot (loc_merge c) }
-    | newline
-        { update_loc c ; store_parse (antiquot name depth) c              }
+    | eof  { err Unterminated_antiquot (loc_merge c) }
+    | newline   { update_loc c ; store_parse (antiquot name depth) c  }
     | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
         {
       let () = Stack.push p opt_char in

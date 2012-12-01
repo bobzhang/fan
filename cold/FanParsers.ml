@@ -3890,7 +3890,16 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
            ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
              (Gram.mk_action
                 (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
-                   (Ast.PaVrn (_loc, s) : 'patt_constr ))))])]);
+                   (Ast.PaVrn (_loc, s) : 'patt_constr ))));
+           ([`Stoken
+               (((function | `ANT ((""|"pat"|"anti"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"),_)"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT ((""|"pat"|"anti" as n),s) ->
+                       (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'patt_constr )
+                   | _ -> assert false)))])]);
     Gram.extend (patt : 'patt Gram.t )
       (None,
         [((Some "|"), (Some `LA),
@@ -3916,62 +3925,22 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
           ([`Snterm (Gram.obj (patt_constr : 'patt_constr Gram.t ))],
             (Gram.mk_action
                (fun (p1 : 'patt_constr)  (_loc : FanLoc.t)  -> (p1 : 'patt ))));
-          ([`Stoken
-              (((function | `ANT ((""|"pat"|"anti"),_) -> true | _ -> false)),
-                (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"),_)"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `ANT ((""|"pat"|"anti" as n),s) ->
-                      (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'patt )
-                  | _ -> assert false)));
-          ([`Stoken
-              (((function | `ANT ((""|"pat"|"anti"),_) -> true | _ -> false)),
-                (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"),_)"));
-           `Sself],
-            (Gram.mk_action
-               (fun (p : 'patt)  (__fan_0 : [> FanSig.token]) 
-                  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `ANT ((""|"pat"|"anti" as n1),s1) ->
-                      (let p0 = Ast.PaAnt (_loc, (mk_anti ~c:"patt" n1 s1)) in
-                       Ast.PaApp (_loc, p0, p) : 'patt )
-                  | _ -> assert false)));
           ([`Skeyword "lazy"; `Sself],
             (Gram.mk_action
                (fun (p : 'patt)  _  (_loc : FanLoc.t)  ->
                   (Ast.PaLaz (_loc, p) : 'patt ))))]);
         ((Some "simple"), None,
           [([`Stoken
-               (((function | `ANT ((""|"pat"|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"),_)"))],
+               (((function
+                  | `ANT ((""|"pat"|"anti"|"tup"),_) -> true
+                  | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"|\"tup\"),_)"))],
              (Gram.mk_action
                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `ANT ((""|"pat"|"anti" as n),s) ->
+                   | `ANT ((""|"pat"|"anti"|"tup" as n),s) ->
                        (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'patt )
                    | _ -> assert false)));
-          ([`Stoken
-              (((function | `ANT ("tup",_) -> true | _ -> false)),
-                (`Normal, "`ANT (\"tup\",_)"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `ANT (("tup" as n),s) ->
-                      (Ast.PaTup
-                         (_loc, (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)))) : 
-                      'patt )
-                  | _ -> assert false)));
-          ([`Stoken
-              (((function | `ANT ("`bool",_) -> true | _ -> false)),
-                (`Normal, "`ANT (\"`bool\",_)"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `ANT (("`bool" as n),s) ->
-                      (Ast.PaId (_loc, (Ast.IdAnt (_loc, (mk_anti n s)))) : 
-                      'patt )
-                  | _ -> assert false)));
           ([`Snterm (Gram.obj (ident : 'ident Gram.t ))],
             (Gram.mk_action
                (fun (i : 'ident)  (_loc : FanLoc.t)  ->

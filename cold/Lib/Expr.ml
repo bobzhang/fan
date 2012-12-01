@@ -777,6 +777,18 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "ExTup")))))),
                                       (mloc _loc))), p)
+                         | "tuppatt" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaTup")))))),
+                                      (mloc _loc))), p)
                          | "seqexpr" ->
                              Ast.PaApp
                                (_loc,
@@ -902,6 +914,18 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "ExTup")))))),
+                                      (mloc _loc))), e)
+                         | "tuppatt" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaTup")))))),
                                       (mloc _loc))), e)
                          | "seqexpr" ->
                              Ast.ExApp

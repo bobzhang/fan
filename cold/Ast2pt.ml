@@ -349,7 +349,9 @@ let rec patt =
       mkpat loc (Ppat_alias ((patt p), i))
   | PaAnt (loc,_) -> error loc "antiquotation not allowed here"
   | PaAny loc -> mkpat loc Ppat_any
-  | Ast.PaApp (loc,Ast.PaId (_,Ast.IdUid (sloc,s)),Ast.PaAny loc_any) ->
+  | Ast.PaApp
+      (loc,Ast.PaId (_,Ast.IdUid (sloc,s)),Ast.PaTup (_,Ast.PaAny loc_any))
+      ->
       mkpat loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))

@@ -1133,7 +1133,8 @@ New syntax:\
        | -> {||} ]
        patt_constr:
        [module_longident{i} -> {| $id:i |}
-       |"`"; a_ident{s}  -> {| `$s|} ]
+       |"`"; a_ident{s}  -> {| `$s|}
+       |`ANT ((""|"pat"|"anti" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|} ]
        patt:
        { "|" LA
         [ S{p1}; "|"; S{p2} -> {| $p1 | $p2 |} ]
@@ -1147,17 +1148,9 @@ New syntax:\
                 (Ast.list_of_patt p [])
             | _ -> {|$p1 $p2 |}  ]
         | patt_constr{p1} -> p1
-        | `ANT ((""|"pat"|"anti" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|}
-        | `ANT ((""|"pat"|"anti" as n1), s1); S{p} ->
-            let p0 = {|$(anti:mk_anti ~c:"patt" n1 s1)|} in  {| $p0 $p|}
-              (*This fix should be related to PaApp ident and blabla
-                wait until merge previous work
-               *)
         | "lazy"; S{p} -> {| lazy $p |}  ]
        "simple"
-        [ `ANT ((""|"pat"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
-        | `ANT (("tup" as n),s) -> {| ($(tup:{| $(anti:mk_anti ~c:"patt" n s) |} )) |}
-        | `ANT (("`bool" as n),s) -> {| $(id:{:ident| $(anti:mk_anti n s) |}) |}
+        [ `ANT ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
         | ident{i} -> {| $id:i |}
         | a_INT{s} -> {| $int:s |}
         | a_INT32{s} -> {| $int32:s |}
@@ -1181,16 +1174,13 @@ New syntax:\
         | "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
         | "("; ")" -> {| () |}
         | "("; "module"; a_UIDENT{m}; ")" -> {| (module $m) |}
-        | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" ->
-            {| ((module $m) : (module $pt)) |}
+        | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" -> {| ((module $m) : (module $pt)) |}
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as"; S{p2}; ")" -> {| ($p as $p2) |}
         | "("; S{p}; ","; comma_patt{pl}; ")" -> {| ($p, $pl) |}
-
         | "`"; a_ident{s} -> {| ` $s |}
         | "#"; type_longident{i} -> {| # $i |}
-
         | `QUOTATION x -> Quotation.expand _loc x DynAst.patt_tag
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $i : $p |}

@@ -263,7 +263,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "antimatch_case" -> {| Ast.McAnt ($(mloc _loc), $p) |}
             | "antimodule_binding" -> {| Ast.MbAnt ($(mloc _loc), $p) |}
             | "antiident" -> {| Ast.IdAnt ($(mloc _loc), $p) |}
-            | "tupexpr" -> {|Ast.ExTup ($(mloc _loc), $p) |}
+            | "tupexpr" -> {|Ast.ExTup ($(mloc _loc), $p)|}
+            | "tuppatt" -> {|Ast.PaTup ($(mloc _loc), $p)|}
             | "seqexpr" -> {|Ast.ExSeq ($(mloc _loc), $p) |}
             | _ -> p ])
       | p -> super#patt p ];
@@ -280,11 +281,11 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "`flo" -> {| FanUtil.float_repres $e |}
             | "`str" -> {| Ast.safe_string_escaped $e |}
             | "`chr" -> {| Char.escaped $e |}
-            (* | "`bool" -> {| Ast.IdLid $(mloc _loc) (if $e then "true" else "false") |} *)
             | "`boolexpr" ->
                 let x = {|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in
                 {| {| $(id:$x)  |} |}
             | "tupexpr" ->   {| Ast.ExTup $(mloc _loc) $e |}
+            | "tuppatt" ->  {|Ast.PaTup $(mloc _loc) $e |}
             | "seqexpr" -> {| Ast.ExSeq $(mloc _loc) $e |}
                   
             | "liststr_item" -> {| Ast.stSem_of_list $e |}
