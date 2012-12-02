@@ -56,6 +56,10 @@ let view_antiquot s =
       Some (name, code)
     with | Not_found  -> None
   else None
+let add_context s c =
+  match view_antiquot s with
+  | Some (c1,n) -> "\\$" ^ (c1 ^ (c ^ (":" ^ n)))
+  | None  -> (prerr_endline s; assert false)
 let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
   if is_antiquot s
   then

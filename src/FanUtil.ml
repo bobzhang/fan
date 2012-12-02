@@ -83,6 +83,10 @@ let view_antiquot s =
     with [Not_found  -> None]
   else None;
 
+let add_context s c=
+  match view_antiquot s with
+  [Some(c1,n) -> "\\$" ^ c1 ^ c ^":" ^ n  
+  |None -> begin prerr_endline s ; assert false end ];  
 
   
 let handle_antiquot_in_string ~s ~default ~parse ~loc ~decorate =

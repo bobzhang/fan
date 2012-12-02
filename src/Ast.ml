@@ -246,7 +246,7 @@
       (* sg ; sg *)
     | SgSem of loc and sig_item and sig_item
       (* # s or # s e *)
-    | SgDir of loc and string and expr
+    | SgDir of loc and string and expr (* the first field does not have location :-( *)
       (* exception t *)
     | SgExc of loc and ctyp
       (* external s : t = s ... s *)

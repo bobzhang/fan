@@ -11,6 +11,7 @@ val mk_anti : ?c:string -> string -> string -> string
 (* val append_eLem : 'a list -> 'a -> 'a list *)
 val is_antiquot : string -> bool
 val view_antiquot : string -> (string * string) option
+val add_context: string -> string -> string    
 val handle_antiquot_in_string :
   s:string ->
   default:'a ->

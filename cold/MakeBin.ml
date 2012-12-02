@@ -2,6 +2,22 @@ open FanParsers
 open Camlp4Filters
 open Format
 open LibUtil
+let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
+let print_version () =
+  eprintf "Camlp4 version %s@." FanConfig.version; exit 0
+let print_stdlib () = printf "%s@." FanConfig.camlp4_standard_library; exit 0
+let warn_noassert () =
+  eprintf
+    "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
+type file_kind =  
+  | Intf of string
+  | Impl of string
+  | Str of string
+  | ModuleImpl of string
+  | IncludeDir of string 
+let search_stdlib = ref true
+let print_loaded_modules = ref false
+let task f x = let () = FanConfig.current_input_file := x in f x
 module Camlp4Bin(PreCast:Sig.PRECAST) =
   struct
   let printers: (string,(module Sig.PRECAST_PLUGIN)) Hashtbl.t =
@@ -91,24 +107,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
   let gimd =
     function
     | Ast.StDir (loc,n,Ast.ExStr (_,s)) -> Some (loc, n, s)
-    | _ -> None
-  let rec parse_file dyn_loader name pa getdir =
-    let directive_handler =
-      Some
-        (fun ast  ->
-           match getdir ast with
-           | Some x ->
-               (match x with
-                | (_,"load",s) -> (rewrite_and_load "" s; None)
-                | (_,"directory",s) ->
-                    (DynLoader.include_dir dyn_loader s; None)
-                | (_,"use",s) -> Some (parse_file dyn_loader s pa getdir)
-                | (_,"default_quotation",s) ->
-                    (PreCast.Syntax.Quotation.default := s; None)
-                | (loc,_,_) ->
-                    FanLoc.raise loc
-                      (Stream.Error "bad directive camlp4 can not handled "))
-           | None  -> None) in
+    | _ -> None let output_file = ref None let directive_handler = None
+  let parse_file ?directive_handler  name pa =
     let loc = FanLoc.mk name in
     PreCast.Syntax.current_warning := print_warning;
     (let ic = if name = "-" then stdin else open_in_bin name in
@@ -116,47 +116,63 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
      let clear () = if name = "-" then () else close_in ic in
      let phr =
        try pa ?directive_handler loc cs with | x -> (clear (); raise x) in
-     clear (); phr) let output_file = ref None
-  let process dyn_loader name pa pr clean fold_filters getdir =
-    (((parse_file dyn_loader name pa getdir) |>
+     clear (); phr)
+  let rec sig_handler =
+    function
+    | Ast.SgDir (_,"load",Ast.ExStr (_,s)) -> (rewrite_and_load "" s; None)
+    | Ast.SgDir (_,"directory",Ast.ExStr (_,s)) ->
+        (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
+    | Ast.SgDir (_,"use",Ast.ExStr (_,s)) ->
+        Some
+          (parse_file ~directive_handler:sig_handler s
+             PreCast.CurrentParser.parse_interf)
+    | Ast.SgDir (_,"default_quotation",Ast.ExStr (_,s)) ->
+        (PreCast.Syntax.Quotation.default := s; None)
+    | Ast.SgDir (loc,x,_) ->
+        FanLoc.raise loc
+          (Stream.Error (x ^ " is abad directive camlp4 can not handled "))
+    | _ -> assert false
+  let rec str_handler =
+    function
+    | Ast.StDir (_,"load",Ast.ExStr (_,s)) -> (rewrite_and_load "" s; None)
+    | Ast.StDir (_,"directory",Ast.ExStr (_,s)) ->
+        (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
+    | Ast.StDir (_,"use",Ast.ExStr (_,s)) ->
+        Some
+          (parse_file ~directive_handler:str_handler s
+             PreCast.CurrentParser.parse_implem)
+    | Ast.StDir (_,"default_quotation",Ast.ExStr (_,s)) ->
+        (PreCast.Syntax.Quotation.default := s; None)
+    | Ast.StDir (loc,x,_) ->
+        FanLoc.raise loc
+          (Stream.Error (x ^ "bad directive camlp4 can not handled "))
+    | _ -> assert false
+  let process ?directive_handler  name pa pr clean fold_filters =
+    (((parse_file ?directive_handler name pa) |>
         (fold_filters (fun t  filter  -> filter t)))
        |> clean)
       |> (pr ?input_file:(Some name) ?output_file:(output_file.contents))
-  let process_intf dyn_loader name =
-    process dyn_loader name PreCast.CurrentParser.parse_interf
-      PreCast.CurrentPrinter.print_interf (new Camlp4Ast.clean_ast)#sig_item
-      PreCast.Syntax.AstFilters.fold_interf_filters gind
-  let process_impl dyn_loader name =
-    process dyn_loader name PreCast.CurrentParser.parse_implem
-      PreCast.CurrentPrinter.print_implem (new Camlp4Ast.clean_ast)#str_item
-      PreCast.Syntax.AstFilters.fold_implem_filters gimd
-  let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
-  let print_version () =
-    eprintf "Camlp4 version %s@." FanConfig.version; exit 0
-  let print_stdlib () =
-    printf "%s@." FanConfig.camlp4_standard_library; exit 0
-  let warn_noassert () =
-    eprintf
-      "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
-  type file_kind =  
-    | Intf of string
-    | Impl of string
-    | Str of string
-    | ModuleImpl of string
-    | IncludeDir of string  let search_stdlib = ref true
-  let print_loaded_modules = ref false
-  let task f x = let () = FanConfig.current_input_file := x in f x
+  let process_intf name =
+    process ~directive_handler:sig_handler name
+      PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
+      (new Camlp4Ast.clean_ast)#sig_item
+      PreCast.Syntax.AstFilters.fold_interf_filters
+  let process_impl name =
+    process ~directive_handler:str_handler name
+      PreCast.CurrentParser.parse_implem PreCast.CurrentPrinter.print_implem
+      (new Camlp4Ast.clean_ast)#str_item
+      PreCast.Syntax.AstFilters.fold_implem_filters
   let input_file x =
     let dyn_loader = DynLoader.instance.contents () in
     rcall_callback.contents ();
     (match x with
-     | Intf file_name -> task (process_intf dyn_loader) file_name
-     | Impl file_name -> task (process_impl dyn_loader) file_name
+     | Intf file_name -> task process_intf file_name
+     | Impl file_name -> task process_impl file_name
      | Str s ->
          let (f,o) = Filename.open_temp_file "from_string" ".ml" in
          (output_string o s;
           close_out o;
-          task (process_impl dyn_loader) f;
+          task process_impl f;
           at_exit (fun ()  -> Sys.remove f))
      | ModuleImpl file_name -> rewrite_and_load "" file_name
      | IncludeDir dir -> DynLoader.include_dir dyn_loader dir);

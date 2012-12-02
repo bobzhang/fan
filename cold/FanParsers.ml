@@ -3192,44 +3192,77 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    | _ -> assert false)));
           ([`Stoken
               (((function
-                 | `ANT (("exp"|""|"anti"|"`bool"|"tup"|"seq"),_) -> true
+                 | `ANT
+                     (("exp"|""|"anti"|"`bool"|"tup"|"seq"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"),_)
+                     -> true
                  | _ -> false)),
                 (`Normal,
-                  "`ANT ((\"exp\"|\"\"|\"anti\"|\"`bool\"|\"tup\"|\"seq\"),_)"))],
+                  "`ANT\n  ((\"exp\"|\"\"|\"anti\"|\"`bool\"|\"tup\"|\"seq\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"|\"`int64\"|\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `ANT (("exp"|""|"anti"|"`bool"|"tup"|"seq" as n),s) ->
-                      (Ast.ExAnt (_loc, (mk_anti ~c:"expr" n s)) : 'expr )
+                  | `ANT
+                      (("exp"|""|"anti"|"`bool"|"tup"|"seq"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"
+                          as n),s)
+                      -> (Ast.ExAnt (_loc, (mk_anti ~c:"expr" n s)) : 
+                      'expr )
                   | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_INT : 'a_INT Gram.t ))],
+          ([`Stoken
+              (((function | `INT (_,_) -> true | _ -> false)),
+                (`Normal, "`INT (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_INT)  (_loc : FanLoc.t)  ->
-                  (Ast.ExInt (_loc, s) : 'expr ))));
-          ([`Snterm (Gram.obj (a_INT32 : 'a_INT32 Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `INT (_,s) -> (Ast.ExInt (_loc, s) : 'expr )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `INT32 (_,_) -> true | _ -> false)),
+                (`Normal, "`INT32 (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_INT32)  (_loc : FanLoc.t)  ->
-                  (Ast.ExInt32 (_loc, s) : 'expr ))));
-          ([`Snterm (Gram.obj (a_INT64 : 'a_INT64 Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `INT32 (_,s) -> (Ast.ExInt32 (_loc, s) : 'expr )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `INT64 (_,_) -> true | _ -> false)),
+                (`Normal, "`INT64 (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_INT64)  (_loc : FanLoc.t)  ->
-                  (Ast.ExInt64 (_loc, s) : 'expr ))));
-          ([`Snterm (Gram.obj (a_NATIVEINT : 'a_NATIVEINT Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `INT64 (_,s) -> (Ast.ExInt64 (_loc, s) : 'expr )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `FLO (_,_) -> true | _ -> false)),
+                (`Normal, "`FLO (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_NATIVEINT)  (_loc : FanLoc.t)  ->
-                  (Ast.ExNativeInt (_loc, s) : 'expr ))));
-          ([`Snterm (Gram.obj (a_FLOAT : 'a_FLOAT Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `FLO (_,s) -> (Ast.ExFlo (_loc, s) : 'expr )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `CHAR (_,_) -> true | _ -> false)),
+                (`Normal, "`CHAR (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_FLOAT)  (_loc : FanLoc.t)  ->
-                  (Ast.ExFlo (_loc, s) : 'expr ))));
-          ([`Snterm (Gram.obj (a_STRING : 'a_STRING Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `CHAR (_,s) -> (Ast.ExChr (_loc, s) : 'expr )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `STR (_,_) -> true | _ -> false)),
+                (`Normal, "`STR (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_STRING)  (_loc : FanLoc.t)  ->
-                  (Ast.ExStr (_loc, s) : 'expr ))));
-          ([`Snterm (Gram.obj (a_CHAR : 'a_CHAR Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `STR (_,s) -> (Ast.ExStr (_loc, s) : 'expr )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `NATIVEINT (_,_) -> true | _ -> false)),
+                (`Normal, "`NATIVEINT (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_CHAR)  (_loc : FanLoc.t)  ->
-                  (Ast.ExChr (_loc, s) : 'expr ))));
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `NATIVEINT (_,s) -> (Ast.ExNativeInt (_loc, s) : 'expr )
+                  | _ -> assert false)));
           ([`Stry
               (`Snterm
                  (Gram.obj
@@ -3932,68 +3965,121 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
         ((Some "simple"), None,
           [([`Stoken
                (((function
-                  | `ANT ((""|"pat"|"anti"|"tup"),_) -> true
+                  | `ANT
+                      ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"),_)
+                      -> true
                   | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"|\"tup\"),_)"))],
+                 (`Normal,
+                   "`ANT\n  ((\"\"|\"pat\"|\"anti\"|\"tup\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"|\"`int64\"|\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
              (Gram.mk_action
                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `ANT ((""|"pat"|"anti"|"tup" as n),s) ->
+                   | `ANT
+                       ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"
+                           as n),s)
+                       ->
                        (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'patt )
                    | _ -> assert false)));
           ([`Snterm (Gram.obj (ident : 'ident Gram.t ))],
             (Gram.mk_action
                (fun (i : 'ident)  (_loc : FanLoc.t)  ->
                   (Ast.PaId (_loc, i) : 'patt ))));
-          ([`Snterm (Gram.obj (a_INT : 'a_INT Gram.t ))],
+          ([`Stoken
+              (((function | `INT (_,_) -> true | _ -> false)),
+                (`Normal, "`INT (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_INT)  (_loc : FanLoc.t)  ->
-                  (Ast.PaInt (_loc, s) : 'patt ))));
-          ([`Snterm (Gram.obj (a_INT32 : 'a_INT32 Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `INT (_,s) -> (Ast.PaInt (_loc, s) : 'patt )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `INT32 (_,_) -> true | _ -> false)),
+                (`Normal, "`INT32 (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_INT32)  (_loc : FanLoc.t)  ->
-                  (Ast.PaInt32 (_loc, s) : 'patt ))));
-          ([`Snterm (Gram.obj (a_INT64 : 'a_INT64 Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `INT32 (_,s) -> (Ast.PaInt32 (_loc, s) : 'patt )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `INT64 (_,_) -> true | _ -> false)),
+                (`Normal, "`INT64 (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_INT64)  (_loc : FanLoc.t)  ->
-                  (Ast.PaInt64 (_loc, s) : 'patt ))));
-          ([`Snterm (Gram.obj (a_NATIVEINT : 'a_NATIVEINT Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `INT64 (_,s) -> (Ast.PaInt64 (_loc, s) : 'patt )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `FLO (_,_) -> true | _ -> false)),
+                (`Normal, "`FLO (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_NATIVEINT)  (_loc : FanLoc.t)  ->
-                  (Ast.PaNativeInt (_loc, s) : 'patt ))));
-          ([`Snterm (Gram.obj (a_FLOAT : 'a_FLOAT Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `FLO (_,s) -> (Ast.PaFlo (_loc, s) : 'patt )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `CHAR (_,_) -> true | _ -> false)),
+                (`Normal, "`CHAR (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_FLOAT)  (_loc : FanLoc.t)  ->
-                  (Ast.PaFlo (_loc, s) : 'patt ))));
-          ([`Snterm (Gram.obj (a_STRING : 'a_STRING Gram.t ))],
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `CHAR (_,s) -> (Ast.PaChr (_loc, s) : 'patt )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `STR (_,_) -> true | _ -> false)),
+                (`Normal, "`STR (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_STRING)  (_loc : FanLoc.t)  ->
-                  (Ast.PaStr (_loc, s) : 'patt ))));
-          ([`Snterm (Gram.obj (a_CHAR : 'a_CHAR Gram.t ))],
-            (Gram.mk_action
-               (fun (s : 'a_CHAR)  (_loc : FanLoc.t)  ->
-                  (Ast.PaChr (_loc, s) : 'patt ))));
-          ([`Skeyword "-"; `Snterm (Gram.obj (a_INT : 'a_INT Gram.t ))],
-            (Gram.mk_action
-               (fun (s : 'a_INT)  _  (_loc : FanLoc.t)  ->
-                  (Ast.PaInt (_loc, (neg_string s)) : 'patt ))));
-          ([`Skeyword "-"; `Snterm (Gram.obj (a_INT32 : 'a_INT32 Gram.t ))],
-            (Gram.mk_action
-               (fun (s : 'a_INT32)  _  (_loc : FanLoc.t)  ->
-                  (Ast.PaInt32 (_loc, (neg_string s)) : 'patt ))));
-          ([`Skeyword "-"; `Snterm (Gram.obj (a_INT64 : 'a_INT64 Gram.t ))],
-            (Gram.mk_action
-               (fun (s : 'a_INT64)  _  (_loc : FanLoc.t)  ->
-                  (Ast.PaInt64 (_loc, (neg_string s)) : 'patt ))));
+               (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `STR (_,s) -> (Ast.PaStr (_loc, s) : 'patt )
+                  | _ -> assert false)));
           ([`Skeyword "-";
-           `Snterm (Gram.obj (a_NATIVEINT : 'a_NATIVEINT Gram.t ))],
+           `Stoken
+             (((function | `INT (_,_) -> true | _ -> false)),
+               (`Normal, "`INT (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_NATIVEINT)  _  (_loc : FanLoc.t)  ->
-                  (Ast.PaNativeInt (_loc, (neg_string s)) : 'patt ))));
-          ([`Skeyword "-"; `Snterm (Gram.obj (a_FLOAT : 'a_FLOAT Gram.t ))],
+               (fun (__fan_1 : [> FanSig.token])  _  (_loc : FanLoc.t)  ->
+                  match __fan_1 with
+                  | `INT (_,s) -> (Ast.PaInt (_loc, (neg_string s)) : 'patt )
+                  | _ -> assert false)));
+          ([`Skeyword "-";
+           `Stoken
+             (((function | `INT32 (_,_) -> true | _ -> false)),
+               (`Normal, "`INT32 (_,_)"))],
             (Gram.mk_action
-               (fun (s : 'a_FLOAT)  _  (_loc : FanLoc.t)  ->
-                  (Ast.PaFlo (_loc, (neg_string s)) : 'patt ))));
+               (fun (__fan_1 : [> FanSig.token])  _  (_loc : FanLoc.t)  ->
+                  match __fan_1 with
+                  | `INT32 (_,s) ->
+                      (Ast.PaInt32 (_loc, (neg_string s)) : 'patt )
+                  | _ -> assert false)));
+          ([`Skeyword "-";
+           `Stoken
+             (((function | `INT64 (_,_) -> true | _ -> false)),
+               (`Normal, "`INT64 (_,_)"))],
+            (Gram.mk_action
+               (fun (__fan_1 : [> FanSig.token])  _  (_loc : FanLoc.t)  ->
+                  match __fan_1 with
+                  | `INT64 (_,s) ->
+                      (Ast.PaInt64 (_loc, (neg_string s)) : 'patt )
+                  | _ -> assert false)));
+          ([`Skeyword "-";
+           `Stoken
+             (((function | `NATIVEINT (_,_) -> true | _ -> false)),
+               (`Normal, "`NATIVEINT (_,_)"))],
+            (Gram.mk_action
+               (fun (__fan_1 : [> FanSig.token])  _  (_loc : FanLoc.t)  ->
+                  match __fan_1 with
+                  | `NATIVEINT (_,s) ->
+                      (Ast.PaInt64 (_loc, (neg_string s)) : 'patt )
+                  | _ -> assert false)));
+          ([`Skeyword "-";
+           `Stoken
+             (((function | `FLO (_,_) -> true | _ -> false)),
+               (`Normal, "`FLO (_,_)"))],
+            (Gram.mk_action
+               (fun (__fan_1 : [> FanSig.token])  _  (_loc : FanLoc.t)  ->
+                  match __fan_1 with
+                  | `FLO (_,s) -> (Ast.PaFlo (_loc, (neg_string s)) : 'patt )
+                  | _ -> assert false)));
           ([`Skeyword "["; `Skeyword "]"],
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
@@ -4220,24 +4306,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (fun _  (pl : 'label_patt_list)  _  (_loc : FanLoc.t)  ->
                     (Ast.PaRec (_loc, pl) : 'ipatt ))));
            ([`Stoken
-               (((function | `ANT ((""|"pat"|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"),_)"))],
+               (((function
+                  | `ANT ((""|"pat"|"anti"|"tup"),_) -> true
+                  | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"pat\"|\"anti\"|\"tup\"),_)"))],
              (Gram.mk_action
                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `ANT ((""|"pat"|"anti" as n),s) ->
+                   | `ANT ((""|"pat"|"anti"|"tup" as n),s) ->
                        (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'ipatt )
-                   | _ -> assert false)));
-           ([`Stoken
-               (((function | `ANT ("tup",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"tup\",_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT (("tup" as n),s) ->
-                       (Ast.PaTup
-                          (_loc, (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)))) : 
-                       'ipatt )
                    | _ -> assert false)));
            ([`Skeyword "("; `Skeyword ")"],
              (Gram.mk_action
@@ -4416,22 +4493,22 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
     Gram.extend (sem_patt : 'sem_patt Gram.t )
       (None,
         [(None, None,
-           [([`Snterm (Gram.obj (patt : 'patt Gram.t ));
-             `Skeyword ";";
-             `Sself],
+           [([`Stoken
+                (((function | `ANT ("list",_) -> true | _ -> false)),
+                  (`Normal, "`ANT (\"list\",_)"))],
               (Gram.mk_action
-                 (fun (p2 : 'sem_patt)  _  (p1 : 'patt)  (_loc : FanLoc.t) 
-                    -> (Ast.PaSem (_loc, p1, p2) : 'sem_patt ))));
-           ([`Stoken
-               (((function | `ANT ("list",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"list\",_)"))],
+                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                    match __fan_0 with
+                    | `ANT (("list" as n),s) ->
+                        (Ast.PaAnt (_loc, (mk_anti ~c:"patt;" n s)) : 
+                        'sem_patt )
+                    | _ -> assert false)));
+           ([`Snterm (Gram.obj (patt : 'patt Gram.t ));
+            `Skeyword ";";
+            `Sself],
              (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT (("list" as n),s) ->
-                       (Ast.PaAnt (_loc, (mk_anti ~c:"patt;" n s)) : 
-                       'sem_patt )
-                   | _ -> assert false)));
+                (fun (p2 : 'sem_patt)  _  (p1 : 'patt)  (_loc : FanLoc.t)  ->
+                   (Ast.PaSem (_loc, p1, p2) : 'sem_patt ))));
            ([`Snterm (Gram.obj (patt : 'patt Gram.t )); `Skeyword ";"],
              (Gram.mk_action
                 (fun _  (p : 'patt)  (_loc : FanLoc.t)  -> (p : 'sem_patt ))));
@@ -4489,19 +4566,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
     Gram.extend (ipatt_tcon : 'ipatt_tcon Gram.t )
       (None,
         [(None, None,
-           [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+           [([`Stoken
+                (((function | `ANT ((""|"anti"),_) -> true | _ -> false)),
+                  (`Normal, "`ANT ((\"\"|\"anti\"),_)"))],
               (Gram.mk_action
-                 (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                    (Ast.PaId (_loc, (Ast.IdLid (_loc, i))) : 'ipatt_tcon ))));
-           ([`Stoken
-               (((function | `ANT ((""|"anti"),_) -> true | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"anti\"),_)"))],
+                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                    match __fan_0 with
+                    | `ANT ((""|"anti" as n),s) ->
+                        (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 
+                        'ipatt_tcon )
+                    | _ -> assert false)));
+           ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
              (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT ((""|"anti" as n),s) ->
-                       (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)) : 'ipatt_tcon )
-                   | _ -> assert false)));
+                (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
+                   (Ast.PaId (_loc, (Ast.IdLid (_loc, i))) : 'ipatt_tcon ))));
            ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
             `Skeyword ":";
             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
@@ -6230,132 +6308,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
            ([],
              (Gram.mk_action
                 (fun (_loc : FanLoc.t)  -> (Ast.ReNil : 'opt_rec ))))])]);
-    Gram.extend (a_INT : 'a_INT Gram.t )
-      (None,
-        [(None, None,
-           [([`Stoken
-                (((function | `ANT ((""|"int"|"`int"),_) -> true | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"int\"|\"`int\"),_)"))],
-              (Gram.mk_action
-                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                    match __fan_0 with
-                    | `ANT ((""|"int"|"`int" as n),s) ->
-                        (mk_anti n s : 'a_INT )
-                    | _ -> assert false)));
-           ([`Stoken
-               (((function | `INT (_,_) -> true | _ -> false)),
-                 (`Normal, "`INT (_,_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `INT (_,s) -> (s : 'a_INT )
-                   | _ -> assert false)))])]);
-    Gram.extend (a_INT32 : 'a_INT32 Gram.t )
-      (None,
-        [(None, None,
-           [([`Stoken
-                (((function
-                   | `ANT ((""|"int32"|"`int32"),_) -> true
-                   | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"int32\"|\"`int32\"),_)"))],
-              (Gram.mk_action
-                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                    match __fan_0 with
-                    | `ANT ((""|"int32"|"`int32" as n),s) ->
-                        (mk_anti n s : 'a_INT32 )
-                    | _ -> assert false)));
-           ([`Stoken
-               (((function | `INT32 (_,_) -> true | _ -> false)),
-                 (`Normal, "`INT32 (_,_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `INT32 (_,s) -> (s : 'a_INT32 )
-                   | _ -> assert false)))])]);
-    Gram.extend (a_INT64 : 'a_INT64 Gram.t )
-      (None,
-        [(None, None,
-           [([`Stoken
-                (((function
-                   | `ANT ((""|"int64"|"`int64"),_) -> true
-                   | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"int64\"|\"`int64\"),_)"))],
-              (Gram.mk_action
-                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                    match __fan_0 with
-                    | `ANT ((""|"int64"|"`int64" as n),s) ->
-                        (mk_anti n s : 'a_INT64 )
-                    | _ -> assert false)));
-           ([`Stoken
-               (((function | `INT64 (_,_) -> true | _ -> false)),
-                 (`Normal, "`INT64 (_,_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `INT64 (_,s) -> (s : 'a_INT64 )
-                   | _ -> assert false)))])]);
-    Gram.extend (a_NATIVEINT : 'a_NATIVEINT Gram.t )
-      (None,
-        [(None, None,
-           [([`Stoken
-                (((function
-                   | `ANT ((""|"nativeint"|"`nativeint"),_) -> true
-                   | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"nativeint\"|\"`nativeint\"),_)"))],
-              (Gram.mk_action
-                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                    match __fan_0 with
-                    | `ANT ((""|"nativeint"|"`nativeint" as n),s) ->
-                        (mk_anti n s : 'a_NATIVEINT )
-                    | _ -> assert false)));
-           ([`Stoken
-               (((function | `NATIVEINT (_,_) -> true | _ -> false)),
-                 (`Normal, "`NATIVEINT (_,_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `NATIVEINT (_,s) -> (s : 'a_NATIVEINT )
-                   | _ -> assert false)))])]);
-    Gram.extend (a_FLOAT : 'a_FLOAT Gram.t )
-      (None,
-        [(None, None,
-           [([`Stoken
-                (((function | `ANT ((""|"flo"|"`flo"),_) -> true | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"flo\"|\"`flo\"),_)"))],
-              (Gram.mk_action
-                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                    match __fan_0 with
-                    | `ANT ((""|"flo"|"`flo" as n),s) ->
-                        (mk_anti n s : 'a_FLOAT )
-                    | _ -> assert false)));
-           ([`Stoken
-               (((function | `FLO (_,_) -> true | _ -> false)),
-                 (`Normal, "`FLO (_,_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `FLO (_,s) -> (s : 'a_FLOAT )
-                   | _ -> assert false)))])]);
-    Gram.extend (a_CHAR : 'a_CHAR Gram.t )
-      (None,
-        [(None, None,
-           [([`Stoken
-                (((function | `ANT ((""|"chr"|"`chr"),_) -> true | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"chr\"|\"`chr\"),_)"))],
-              (Gram.mk_action
-                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                    match __fan_0 with
-                    | `ANT ((""|"chr"|"`chr" as n),s) ->
-                        (mk_anti n s : 'a_CHAR )
-                    | _ -> assert false)));
-           ([`Stoken
-               (((function | `CHAR (_,_) -> true | _ -> false)),
-                 (`Normal, "`CHAR (_,_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `CHAR (_,s) -> (s : 'a_CHAR )
-                   | _ -> assert false)))])]);
     Gram.extend (a_UIDENT : 'a_UIDENT Gram.t )
       (None,
         [(None, None,
@@ -6437,26 +6389,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `OPTLABEL s -> (s : 'a_OPTLABEL )
-                   | _ -> assert false)))])]);
-    Gram.extend (a_STRING : 'a_STRING Gram.t )
-      (None,
-        [(None, None,
-           [([`Stoken
-                (((function | `ANT ((""|"str"|"`str"),_) -> true | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"str\"|\"`str\"),_)"))],
-              (Gram.mk_action
-                 (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                    match __fan_0 with
-                    | `ANT ((""|"str"|"`str" as n),s) ->
-                        (mk_anti n s : 'a_STRING )
-                    | _ -> assert false)));
-           ([`Stoken
-               (((function | `STR (_,_) -> true | _ -> false)),
-                 (`Normal, "`STR (_,_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `STR (_,s) -> (s : 'a_STRING )
                    | _ -> assert false)))])]);
     Gram.extend (string_list : 'string_list Gram.t )
       (None,
@@ -7237,6 +7169,50 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (_loc : FanLoc.t)  ->
                    (Ast.CrNil _loc : 'class_str_item_quot ))))])])
   let _ =
+    Gram.extend (class_expr_quot : 'class_expr_quot Gram.t )
+      (None,
+        [(None, None,
+           [([`Sself; `Skeyword "and"; `Sself],
+              (Gram.mk_action
+                 (fun (ce2 : 'class_expr_quot)  _  (ce1 : 'class_expr_quot) 
+                    (_loc : FanLoc.t)  ->
+                    (Ast.CeAnd (_loc, ce1, ce2) : 'class_expr_quot ))));
+           ([`Sself; `Skeyword "="; `Sself],
+             (Gram.mk_action
+                (fun (ce2 : 'class_expr_quot)  _  (ce1 : 'class_expr_quot) 
+                   (_loc : FanLoc.t)  ->
+                   (Ast.CeEq (_loc, ce1, ce2) : 'class_expr_quot ))));
+           ([`Skeyword "virtual";
+            `Snterm
+              (Gram.obj
+                 (class_name_and_param : 'class_name_and_param Gram.t ))],
+             (Gram.mk_action
+                (fun ((i,ot) : 'class_name_and_param)  _  (_loc : FanLoc.t) 
+                   ->
+                   (Ast.CeCon
+                      (_loc, Ast.ViVirtual, (Ast.IdLid (_loc, i)), ot) : 
+                   'class_expr_quot ))));
+           ([`Stoken
+               (((function | `ANT ("virtual",_) -> true | _ -> false)),
+                 (`Normal, "`ANT (\"virtual\",_)"));
+            `Snterm (Gram.obj (ident : 'ident Gram.t ));
+            `Snterm (Gram.obj (opt_comma_ctyp : 'opt_comma_ctyp Gram.t ))],
+             (Gram.mk_action
+                (fun (ot : 'opt_comma_ctyp)  (i : 'ident) 
+                   (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT (("virtual" as n),s) ->
+                       (let anti = Ast.ViAnt (mk_anti ~c:"class_expr" n s) in
+                        Ast.CeCon (_loc, anti, i, ot) : 'class_expr_quot )
+                   | _ -> assert false)));
+           ([`Snterm (Gram.obj (class_expr : 'class_expr Gram.t ))],
+             (Gram.mk_action
+                (fun (x : 'class_expr)  (_loc : FanLoc.t)  ->
+                   (x : 'class_expr_quot ))));
+           ([],
+             (Gram.mk_action
+                (fun (_loc : FanLoc.t)  ->
+                   (Ast.CeNil _loc : 'class_expr_quot ))))])]);
     Gram.extend (class_declaration : 'class_declaration Gram.t )
       (None,
         [(None, None,
@@ -7413,51 +7389,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (ci : 'class_longident)  (_loc : FanLoc.t)  ->
                    (Ast.CeCon (_loc, Ast.ViNil, ci, (Ast.TyNil _loc)) : 
-                   'class_longident_and_param ))))])]);
-    Gram.extend (class_expr_quot : 'class_expr_quot Gram.t )
-      (None,
-        [(None, None,
-           [([`Sself; `Skeyword "and"; `Sself],
-              (Gram.mk_action
-                 (fun (ce2 : 'class_expr_quot)  _  (ce1 : 'class_expr_quot) 
-                    (_loc : FanLoc.t)  ->
-                    (Ast.CeAnd (_loc, ce1, ce2) : 'class_expr_quot ))));
-           ([`Sself; `Skeyword "="; `Sself],
-             (Gram.mk_action
-                (fun (ce2 : 'class_expr_quot)  _  (ce1 : 'class_expr_quot) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.CeEq (_loc, ce1, ce2) : 'class_expr_quot ))));
-           ([`Skeyword "virtual";
-            `Snterm
-              (Gram.obj
-                 (class_name_and_param : 'class_name_and_param Gram.t ))],
-             (Gram.mk_action
-                (fun ((i,ot) : 'class_name_and_param)  _  (_loc : FanLoc.t) 
-                   ->
-                   (Ast.CeCon
-                      (_loc, Ast.ViVirtual, (Ast.IdLid (_loc, i)), ot) : 
-                   'class_expr_quot ))));
-           ([`Stoken
-               (((function | `ANT ("virtual",_) -> true | _ -> false)),
-                 (`Normal, "`ANT (\"virtual\",_)"));
-            `Snterm (Gram.obj (ident : 'ident Gram.t ));
-            `Snterm (Gram.obj (opt_comma_ctyp : 'opt_comma_ctyp Gram.t ))],
-             (Gram.mk_action
-                (fun (ot : 'opt_comma_ctyp)  (i : 'ident) 
-                   (__fan_0 : [> FanSig.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT (("virtual" as n),s) ->
-                       (let anti = Ast.ViAnt (mk_anti ~c:"class_expr" n s) in
-                        Ast.CeCon (_loc, anti, i, ot) : 'class_expr_quot )
-                   | _ -> assert false)));
-           ([`Snterm (Gram.obj (class_expr : 'class_expr Gram.t ))],
-             (Gram.mk_action
-                (fun (x : 'class_expr)  (_loc : FanLoc.t)  ->
-                   (x : 'class_expr_quot ))));
-           ([],
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  ->
-                   (Ast.CeNil _loc : 'class_expr_quot ))))])])
+                   'class_longident_and_param ))))])])
   let _ =
     Gram.extend (class_description : 'class_description Gram.t )
       (None,

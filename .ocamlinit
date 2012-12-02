@@ -18,8 +18,6 @@ let _ = begin
       (* (\* Toploop.parse_use_file := old) *\)) *)
 end
 open Format;;
-let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
-#install_printer print_ocaml_loc;;
 
 #directory "_build";;
 #directory "_build/src";;
@@ -68,10 +66,11 @@ Toploop.print_out_module_type := loose#module_type;;
 Toploop.print_out_sig_item := loose#sig_item;;
 Toploop.print_out_signature := loose#signature;;
 Toploop.print_out_phrase := loose#phrase;;
-#install_printer Gram.dump;;
+let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
+
 
 let print_tree = Grammar.Print.dump#tree;; 
-#install_printer print_tree;;
+
 (* #useo "./test/test_fan.ml";; *)
 (* #load_rec "FanTop.cma";; *)
 open Syntax;;
@@ -85,3 +84,6 @@ let anti_filter = Expr.antiquot_expander
     ~parse_expr:AntiquotSyntax.parse_expr;;
 
 Quotation.default:="expr";;
+#install_printer print_tree;;
+#install_printer Gram.dump;;
+#install_printer print_ocaml_loc;;

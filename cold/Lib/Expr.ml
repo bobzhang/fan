@@ -559,7 +559,8 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
       | Ast.PaAnt (_loc,s)|Ast.PaStr (_loc,s) as p ->
           let mloc _loc = Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
           handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
-            ~decorate:(fun n  p  ->
+            ~decorate:(fun n  e  ->
+                         let len = String.length n in
                          match n with
                          | "antisig_item" ->
                              Ast.PaApp
@@ -572,7 +573,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "SgAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antistr_item" ->
                              Ast.PaApp
                                (_loc,
@@ -584,7 +585,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "StAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antictyp" ->
                              Ast.PaApp
                                (_loc,
@@ -596,7 +597,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "TyAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antipatt" ->
                              Ast.PaApp
                                (_loc,
@@ -608,7 +609,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "PaAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antiexpr" ->
                              Ast.PaApp
                                (_loc,
@@ -620,7 +621,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "ExAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antimodule_type" ->
                              Ast.PaApp
                                (_loc,
@@ -632,7 +633,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "MtAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antimodule_expr" ->
                              Ast.PaApp
                                (_loc,
@@ -644,7 +645,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "MeAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "anticlass_type" ->
                              Ast.PaApp
                                (_loc,
@@ -656,7 +657,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "CtAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "anticlass_expr" ->
                              Ast.PaApp
                                (_loc,
@@ -668,7 +669,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "CeAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "anticlass_sig_item" ->
                              Ast.PaApp
                                (_loc,
@@ -680,7 +681,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "CgAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "anticlass_str_item" ->
                              Ast.PaApp
                                (_loc,
@@ -692,7 +693,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "CrAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antiwith_constr" ->
                              Ast.PaApp
                                (_loc,
@@ -704,7 +705,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "WcAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antibinding" ->
                              Ast.PaApp
                                (_loc,
@@ -716,7 +717,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "BiAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antirec_binding" ->
                              Ast.PaApp
                                (_loc,
@@ -728,7 +729,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "RbAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antimatch_case" ->
                              Ast.PaApp
                                (_loc,
@@ -740,7 +741,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "McAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antimodule_binding" ->
                              Ast.PaApp
                                (_loc,
@@ -752,7 +753,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "MbAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "antiident" ->
                              Ast.PaApp
                                (_loc,
@@ -764,7 +765,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "IdAnt")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "tupexpr" ->
                              Ast.PaApp
                                (_loc,
@@ -776,7 +777,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "ExTup")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "tuppatt" ->
                              Ast.PaApp
                                (_loc,
@@ -788,7 +789,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "PaTup")))))),
-                                      (mloc _loc))), p)
+                                      (mloc _loc))), e)
                          | "seqexpr" ->
                              Ast.PaApp
                                (_loc,
@@ -800,8 +801,204 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "ExSeq")))))),
-                                      (mloc _loc))), p)
-                         | _ -> p)
+                                      (mloc _loc))), e)
+                         | "uidexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "IdUid")))))),
+                                      (mloc _loc))), e)
+                         | "lidexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "IdLid")))))),
+                                      (mloc _loc))), e)
+                         | "flopatt" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaFlo")))))),
+                                      (mloc _loc))), e)
+                         | "intpatt" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaInt")))))),
+                                      (mloc _loc))), e)
+                         | "int32patt" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaInt32")))))),
+                                      (mloc _loc))), e)
+                         | "int64patt" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaInt64")))))),
+                                      (mloc _loc))), e)
+                         | "nativeintpatt" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid
+                                                   (_loc, "PaNativeInt")))))),
+                                      (mloc _loc))), e)
+                         | "chrpatt" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaChr")))))),
+                                      (mloc _loc))), e)
+                         | "strpatt" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaStr")))))),
+                                      (mloc _loc))), e)
+                         | "strexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExStr")))))),
+                                      (mloc _loc))), e)
+                         | "chrexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExChr")))))),
+                                      (mloc _loc))), e)
+                         | "intexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt")))))),
+                                      (mloc _loc))), e)
+                         | "int32expr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt32")))))),
+                                      (mloc _loc))), e)
+                         | "int64expr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt64")))))),
+                                      (mloc _loc))), e)
+                         | "floexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExFlo")))))),
+                                      (mloc _loc))), e)
+                         | "nativeintexpr" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid
+                                                   (_loc, "ExNativeInt")))))),
+                                      (mloc _loc))), e)
+                         | x when (len > 0) && ((x.[0]) = '`') ->
+                             failwith (x ^ "is not allowed in pattern")
+                         | _ -> e)
       | p -> super#patt p
     method! expr =
       function
@@ -810,70 +1007,303 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n  e  ->
                          match n with
-                         | "`int" ->
+                         | "tupexpr" ->
                              Ast.ExApp
                                (_loc,
-                                 (Ast.ExId
+                                 (Ast.ExApp
                                     (_loc,
-                                      (Ast.IdLid (_loc, "string_of_int")))),
-                                 e)
-                         | "`int32" ->
-                             Ast.ExApp
-                               (_loc,
-                                 (Ast.ExId
-                                    (_loc,
-                                      (Ast.IdAcc
-                                         (_loc, (Ast.IdUid (_loc, "Int32")),
-                                           (Ast.IdLid (_loc, "to_string")))))),
-                                 e)
-                         | "`int64" ->
-                             Ast.ExApp
-                               (_loc,
-                                 (Ast.ExId
-                                    (_loc,
-                                      (Ast.IdAcc
-                                         (_loc, (Ast.IdUid (_loc, "Int64")),
-                                           (Ast.IdLid (_loc, "to_string")))))),
-                                 e)
-                         | "`nativeint" ->
-                             Ast.ExApp
-                               (_loc,
-                                 (Ast.ExId
-                                    (_loc,
-                                      (Ast.IdAcc
+                                      (Ast.ExId
                                          (_loc,
-                                           (Ast.IdUid (_loc, "Nativeint")),
-                                           (Ast.IdLid (_loc, "to_string")))))),
-                                 e)
-                         | "`flo" ->
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExTup")))))),
+                                      (mloc _loc))), e)
+                         | "tuppatt" ->
                              Ast.ExApp
                                (_loc,
-                                 (Ast.ExId
+                                 (Ast.ExApp
                                     (_loc,
-                                      (Ast.IdAcc
+                                      (Ast.ExId
                                          (_loc,
-                                           (Ast.IdUid (_loc, "FanUtil")),
-                                           (Ast.IdLid (_loc, "float_repres")))))),
-                                 e)
-                         | "`str" ->
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaTup")))))),
+                                      (mloc _loc))), e)
+                         | "seqexpr" ->
                              Ast.ExApp
                                (_loc,
-                                 (Ast.ExId
+                                 (Ast.ExApp
                                     (_loc,
-                                      (Ast.IdAcc
-                                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                                           (Ast.IdLid
-                                              (_loc, "safe_string_escaped")))))),
-                                 e)
-                         | "`chr" ->
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExSeq")))))),
+                                      (mloc _loc))), e)
+                         | "uidexpr" ->
                              Ast.ExApp
                                (_loc,
-                                 (Ast.ExId
+                                 (Ast.ExApp
                                     (_loc,
-                                      (Ast.IdAcc
-                                         (_loc, (Ast.IdUid (_loc, "Char")),
-                                           (Ast.IdLid (_loc, "escaped")))))),
-                                 e)
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "IdUid")))))),
+                                      (mloc _loc))), e)
+                         | "lidexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "IdLid")))))),
+                                      (mloc _loc))), e)
+                         | "strexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExStr")))))),
+                                      (mloc _loc))), e)
+                         | "chrexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExChr")))))),
+                                      (mloc _loc))), e)
+                         | "intexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt")))))),
+                                      (mloc _loc))), e)
+                         | "int32expr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt32")))))),
+                                      (mloc _loc))), e)
+                         | "int64expr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt64")))))),
+                                      (mloc _loc))), e)
+                         | "floexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExFlo")))))),
+                                      (mloc _loc))), e)
+                         | "nativeintexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid
+                                                   (_loc, "ExNativeInt")))))),
+                                      (mloc _loc))), e)
+                         | "`nativeintexpr" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc,
+                                             (Ast.IdUid (_loc, "Nativeint")),
+                                             (Ast.IdLid (_loc, "to_string")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid
+                                                   (_loc, "ExNativeInt")))))),
+                                      (mloc _loc))), e)
+                         | "`intexpr" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdLid (_loc, "string_of_int")))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt")))))),
+                                      (mloc _loc))), e)
+                         | "`int32expr" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc,
+                                             (Ast.IdUid (_loc, "Int32")),
+                                             (Ast.IdLid (_loc, "to_string")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt32")))))),
+                                      (mloc _loc))), e)
+                         | "`int64expr" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc,
+                                             (Ast.IdUid (_loc, "Int64")),
+                                             (Ast.IdLid (_loc, "to_string")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExInt64")))))),
+                                      (mloc _loc))), e)
+                         | "`chrexpr" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc, (Ast.IdUid (_loc, "Char")),
+                                             (Ast.IdLid (_loc, "escaped")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExChr")))))),
+                                      (mloc _loc))), e)
+                         | "`strexpr" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc, (Ast.IdUid (_loc, "Ast")),
+                                             (Ast.IdLid
+                                                (_loc, "safe_string_escaped")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExStr")))))),
+                                      (mloc _loc))), e)
+                         | "`floexpr" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc,
+                                             (Ast.IdUid (_loc, "FanUtil")),
+                                             (Ast.IdLid
+                                                (_loc, "float_repres")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "ExFlo")))))),
+                                      (mloc _loc))), e)
                          | "`boolexpr" ->
                              let x =
                                Ast.ExApp
@@ -903,7 +1333,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (Ast.ExId
                                          (_loc, (Ast.IdLid (_loc, "_loc")))))),
                                  x)
-                         | "tupexpr" ->
+                         | "flopatt" ->
                              Ast.ExApp
                                (_loc,
                                  (Ast.ExApp
@@ -913,9 +1343,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (Ast.IdAcc
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
-                                                (Ast.IdUid (_loc, "ExTup")))))),
+                                                (Ast.IdUid (_loc, "PaFlo")))))),
                                       (mloc _loc))), e)
-                         | "tuppatt" ->
+                         | "intpatt" ->
                              Ast.ExApp
                                (_loc,
                                  (Ast.ExApp
@@ -925,9 +1355,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (Ast.IdAcc
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
-                                                (Ast.IdUid (_loc, "PaTup")))))),
+                                                (Ast.IdUid (_loc, "PaInt")))))),
                                       (mloc _loc))), e)
-                         | "seqexpr" ->
+                         | "int32patt" ->
                              Ast.ExApp
                                (_loc,
                                  (Ast.ExApp
@@ -937,7 +1367,206 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (Ast.IdAcc
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
-                                                (Ast.IdUid (_loc, "ExSeq")))))),
+                                                (Ast.IdUid (_loc, "PaInt32")))))),
+                                      (mloc _loc))), e)
+                         | "int64patt" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaInt64")))))),
+                                      (mloc _loc))), e)
+                         | "nativeintpatt" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid
+                                                   (_loc, "PaNativeInt")))))),
+                                      (mloc _loc))), e)
+                         | "chrpatt" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "PaChr")))))),
+                                 (Ast.ExTup
+                                    (_loc,
+                                      (Ast.ExCom (_loc, (mloc _loc), e)))))
+                         | "strpatt" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "PaStr")))))),
+                                 (Ast.ExTup
+                                    (_loc,
+                                      (Ast.ExCom (_loc, (mloc _loc), e)))))
+                         | "`nativeintpatt" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc,
+                                             (Ast.IdUid (_loc, "Nativeint")),
+                                             (Ast.IdLid (_loc, "to_string")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid
+                                                   (_loc, "PaNativeInt")))))),
+                                      (mloc _loc))), e)
+                         | "`intpatt" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdLid (_loc, "string_of_int")))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaInt")))))),
+                                      (mloc _loc))), e)
+                         | "`int32patt" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc,
+                                             (Ast.IdUid (_loc, "Int32")),
+                                             (Ast.IdLid (_loc, "to_string")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaInt32")))))),
+                                      (mloc _loc))), e)
+                         | "`int64patt" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc,
+                                             (Ast.IdUid (_loc, "Int64")),
+                                             (Ast.IdLid (_loc, "to_string")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaInt64")))))),
+                                      (mloc _loc))), e)
+                         | "`chrpatt" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc, (Ast.IdUid (_loc, "Char")),
+                                             (Ast.IdLid (_loc, "escaped")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaChr")))))),
+                                      (mloc _loc))), e)
+                         | "`strpatt" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc, (Ast.IdUid (_loc, "Ast")),
+                                             (Ast.IdLid
+                                                (_loc, "safe_string_escaped")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaStr")))))),
+                                      (mloc _loc))), e)
+                         | "`flopatt" ->
+                             let e =
+                               Ast.ExApp
+                                 (_loc,
+                                   (Ast.ExId
+                                      (_loc,
+                                        (Ast.IdAcc
+                                           (_loc,
+                                             (Ast.IdUid (_loc, "FanUtil")),
+                                             (Ast.IdLid
+                                                (_loc, "float_repres")))))),
+                                   e) in
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "PaFlo")))))),
                                       (mloc _loc))), e)
                          | "liststr_item" ->
                              Ast.ExApp
