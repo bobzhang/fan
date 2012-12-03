@@ -273,7 +273,9 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "uidexpr" -> {| Ast.IdUid ($(mloc _loc), $e) |} (* use Ant instead *)
           | "lidexpr" -> {| Ast.IdLid ($(mloc _loc), $e) |}
                 
-
+          | "uidident" -> {| Ast.IdUid ($(mloc _loc), $e)|}
+          | "lidident" -> {| Ast.IdLid ($(mloc _loc), $e)|}
+                
           | "flopatt" -> {| Ast.PaFlo ($(mloc _loc), $e) |}
           | "intpatt" -> {| Ast.PaInt ($(mloc _loc), $e) |}
           | "int32patt" -> {| Ast.PaInt32 ($(mloc _loc), $e)|}
@@ -302,8 +304,12 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             ["tupexpr" ->   {| Ast.ExTup $(mloc _loc) $e |}
             | "tuppatt" ->  {|Ast.PaTup $(mloc _loc) $e |}
             | "seqexpr" -> {| Ast.ExSeq $(mloc _loc) $e |}
+
             | "uidexpr" -> {| Ast.IdUid $(mloc _loc) $e |} (* use Ant instead *)
             | "lidexpr" -> {| Ast.IdLid $(mloc _loc) $e |}
+
+            | "uidident"->  {| Ast.IdUid $(mloc _loc) $e |}
+            | "lidident" -> {| Ast.IdLid $(mloc _loc) $e |}
             | "strexpr" -> {| Ast.ExStr $(mloc _loc) $e |}
             | "chrexpr" -> {| Ast.ExChr $(mloc _loc) $e |}
             | "intexpr" -> {| Ast.ExInt $(mloc _loc) $e |}

@@ -72,7 +72,7 @@ let rec parser_of_tree entry (lev,assoc) x =
         [ [< a = entry.estart alevn >] -> Action.getf act a
         | [< a = from_tree bro >] -> a ]
   (* [son] will never be [DeadEnd] *)        
-  | Node ({node ; son; brother } as y) ->
+  | Node ({ node ; son; brother } as y) ->
       let  parser_cont  (node,son) loc a =
         let pson = from_tree son in 
         let recover loc a strm =
