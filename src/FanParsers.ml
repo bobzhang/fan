@@ -68,7 +68,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   {:extend|Gram
       local:
       delete_rule_header extend_header  qualuid qualid t_qualid entry_name
-      locals entry position assoc name string pattern simple_expr delete_rules simple_patt;
+      locals entry position assoc name string pattern simple_expr delete_rules
+      simple_patt internal_patt;
     extend_header:
        [ "("; qualid{i}; ":"; t_qualid{t}; ")"
          -> 
@@ -136,6 +137,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            {:expr| $(id:gm()).delete_rule $e $b |}) sls in
          {:expr| begin $list:rest end |}   
         ]
+     (* t patt "`A ((\"x\"|\"y\" as n),s)"; *)
+     (* t patt "`A $x"; *)
      (* {:delete|Gram expr:[a|b|c]|} *)
      (* {:delete|Gram expr:[`INT32(_,s) | `INT64(_,s)]|}; *)
    (* let _ = *)
@@ -245,7 +248,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      (*    let p = match p with *)
      (*      [None -> {:patt| `$i |} *)
      (*      |Some p -> {:patt| `$i $p |} ] in  *)
-     | PEEK "`"; patt{p} ->  (*otherwise conflict with name *)
+     (* | PEEK "`"; patt{p} ->  (\*otherwise conflict with name *\) *)
+     | simple_patt{p} -> 
         let (p,ls) = Expr.filter_patt_with_captured_variables p in
         match ls with
         [ [] -> mk_tok _loc ~pattern:p (`STtok _loc)
@@ -273,6 +277,24 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
          let n = mk_name _loc i in
          mk_symbol ~text:(`TXnterm _loc n lev) ~styp:(`STquo _loc n.tvar) ~pattern:None
      | "("; S{s}; ")" -> s ]
+     simple_patt "patt":
+     ["`"; a_ident{s}  -> {| `$s |}
+     |"`"; a_ident{v}; `ANT (("" | "anti" as n) ,s)
+       -> {| `$v $(anti:mk_anti ~c:"patt" n s)|}
+     |"`"; a_ident{s}; `STR(_,v) -> {| `$s $str:v |}
+     |"`"; a_ident{s}; `LID x  ->  {| `$s $lid:x |}
+     |"`"; a_ident{s}; "_" ->  {| `$s _ |}           
+     |"`"; a_ident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
+         match v with
+           [ [x] -> {| `$s $x |}
+         | [x::xs] -> {| `$s ($x,$list:xs) |}
+         | _ -> assert false ]  ]
+     internal_patt "patt":
+     [ `STR(_,s) -> {| $str:s|}
+     | "_" -> {| _ |}
+     | `LID x   -> (* {| $(id:{:ident|$lid:x|}) |} *)  {| $lid:x|} 
+     | S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |}
+     | "("; S{p1} ; "as"; S{p2} ; ")" -> {| ($p1 as $p2) |} ]
    (* simple_patt "patt": *)
    (*   {"|" *)
    (*    [S{p1} ; "|"; S{p2} -> {| $p1 | $p2 |}] *)
@@ -312,8 +334,15 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (* built in extend support *)
   Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (* built in delete support *)
-  Quotation.add_quotation_of_expr ~name:"extend.clear" ~entry:nonterminalsclear; 
+  Quotation.add_quotation_of_expr ~name:"extend.clear" ~entry:nonterminalsclear;
+    
   Quotation.add_quotation_of_str_item ~name:"extend.create" ~entry:nonterminals;
+
+  (* to be tuned *)  
+  Quotation.add "str" DynAst.expr_tag (fun _loc _loc_option s -> {:expr|$str:s|});
+  Quotation.add "str" DynAst.str_item_tag
+      (fun _loc _loc_option s -> {:str_item| $(exp:{:expr|$str:s|}) |});
+    
   Options.add ("-split_ext", (FanArg.Set split_ext),
                "Split EXTEND by functions to turn around a PowerPC problem.");
 
