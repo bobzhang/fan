@@ -135,28 +135,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
          let rest = List.map (fun sl  ->
            let (e,b) = expr_of_delete_rule _loc n sl in
            {:expr| $(id:gm()).delete_rule $e $b |}) sls in
-         {:expr| begin $list:rest end |}   
-        ]
-     (* t patt "`A ((\"x\"|\"y\" as n),s)"; *)
-     (* t patt "`A $x"; *)
-     (* {:delete|Gram expr:[a|b|c]|} *)
-     (* {:delete|Gram expr:[`INT32(_,s) | `INT64(_,s)]|}; *)
-   (* let _ = *)
-   (*   Gram.delete_rule expr *)
-   (*  [`Stoken *)
-   (*     (((function | `INT32 (_,_)|`INT64 (_,_) -> true | _ -> false)), *)
-   (*       (`Normal, "`INT32 (_,_)|`INT64 (_,_)"))] *)
-   (* {:delete|Gram expr:[`INT32(_,s) (\* | `INT64(_,s) *\)]|} *)
-     (*   Gram.delete_rule expr *)
-    (* [`Stoken *)
-    (*    (((function | `INT32 (_,_) -> true | _ -> false)), *)
-    (*      (`Normal, "`INT32 (_,_)"))] *)
-     (* let _ = *)
-     (* Gram.delete_rule expr [`Snterm (Gram.obj (a : 'a Gram.t ))]; *)
-     (* Gram.delete_rule expr [`Snterm (Gram.obj (b : 'b Gram.t ))]; *)
-     (* Gram.delete_rule expr [`Snterm (Gram.obj (c : 'c Gram.t ))] *)
-     (* {:delete|Gram expr:[a]|} *)
-     (* let _ = Gram.delete_rule expr [`Snterm (Gram.obj (a : 'a Gram.t ))] *)
+         {:expr| begin $list:rest end |}   ]
     qualuid:
       [ `UID x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
       | `UID x -> {:ident| $uid:x |} ] 
@@ -238,17 +217,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         mk_symbol  ~text:(`TXself _loc)  ~styp:(`STself _loc "S") ~pattern:None
      |`UID "N" ->
         mk_symbol  ~text:(`TXnext _loc)   ~styp:(`STself _loc "N") ~pattern:None
-     | "["; L0 rule SEP "|"{rl}; "]" ->
+     | "["; L1 rule SEP "|"{rl}; "]" ->
         let rl = retype_rule_list_without_patterns _loc rl in
         let t = new_type_var () in
         mk_symbol  ~text:(`TXrules _loc (mk_srules _loc t rl ""))
           ~styp:(`STquo _loc t) ~pattern:None
-          
-     (* | "`"; a_ident{i}; OPT patt{p} -> *)
-     (*    let p = match p with *)
-     (*      [None -> {:patt| `$i |} *)
-     (*      |Some p -> {:patt| `$i $p |} ] in  *)
-     (* | PEEK "`"; patt{p} ->  (\*otherwise conflict with name *\) *)
      | simple_patt{p} -> 
         let (p,ls) = Expr.filter_patt_with_captured_variables p in
         match ls with
@@ -290,29 +263,16 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
          | [x::xs] -> {| `$s ($x,$list:xs) |}
          | _ -> assert false ]  ]
      internal_patt "patt":
-     [ `STR(_,s) -> {| $str:s|}
-     | "_" -> {| _ |}
-     | `LID x   -> (* {| $(id:{:ident|$lid:x|}) |} *)  {| $lid:x|} 
-     | S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |}
-     | "("; S{p1} ; "as"; S{p2} ; ")" -> {| ($p1 as $p2) |} ]
-   (* simple_patt "patt": *)
-   (*   {"|" *)
-   (*    [S{p1} ; "|"; S{p2} -> {| $p1 | $p2 |}] *)
-   (*    "apply" *)
-   (*    [ patt_constr{p1}; or_patt{p2} -> *)
-   (*        match p2 with *)
-   (*          [ {| ($tup:p) |} -> *)
-   (*            List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1 *)
-   (*              (Ast.list_of_patt p []) *)
-   (*          | _ -> {|$p1 $p2 |}  ] *)
-   (*      | patt_constr{p1} -> p1 *)
-   (*      | "lazy"; S{p} -> {| lazy $p |}  ] *)
-   (*    "simple" *)
-   (*    [ "`"; a_ident{s} -> {|` $s |} *)
-   (*    | "`"; a_ident{s}; patt Level "simple" *)
-   (*    | "("; S{p}; "as"; S{p2}; ")" -> {| ($p as $p2) |} ]} *)
-   (* using patt will make the analysis hard, you also need to support antiquotation,
-      otherwise it will fail to bootstrapping *)  
+     {
+        "as"
+        [ S{p1} ; "as"; S{p2} -> {| ($p1 as $p2) |}]  
+        "|"
+        [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
+        "simple"
+        [ `STR(_,s) -> {| $str:s|}
+        | "_" -> {| _ |}
+        | `LID x   -> (* {| $(id:{:ident|$lid:x|}) |} *)  {| $lid:x|}
+        | "("; S{p}; ")" -> p ] }
    pattern:
      [ `LID i -> {:patt| $lid:i |}
      | "_" -> {:patt| _ |}
@@ -548,7 +508,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       in include_dirs := !include_dirs @ [str]
     else ();
 
-  let parse_include_file rule =
+  let parse_include_file entry =
     let dir_ok file dir = Sys.file_exists (dir ^ file) in
     fun file ->
       let file =
@@ -557,7 +517,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       in
       let ch = open_in file in
       let st = Stream.of_channel ch in
-        Gram.parse rule (FanLoc.mk file) st;
+        Gram.parse entry (FanLoc.mk file) st;
 
   let rec execute_macro nil cons = fun
     [ SdStr i -> i
