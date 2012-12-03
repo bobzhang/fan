@@ -826,6 +826,30 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "IdLid")))))),
                                       (mloc _loc))), e)
+                         | "uidident" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "IdUid")))))),
+                                      (mloc _loc))), e)
+                         | "lidident" ->
+                             Ast.PaApp
+                               (_loc,
+                                 (Ast.PaApp
+                                    (_loc,
+                                      (Ast.PaId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "IdLid")))))),
+                                      (mloc _loc))), e)
                          | "flopatt" ->
                              Ast.PaApp
                                (_loc,
@@ -1056,6 +1080,30 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (Ast.IdUid (_loc, "IdUid")))))),
                                       (mloc _loc))), e)
                          | "lidexpr" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "IdLid")))))),
+                                      (mloc _loc))), e)
+                         | "uidident" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "IdUid")))))),
+                                      (mloc _loc))), e)
+                         | "lidident" ->
                              Ast.ExApp
                                (_loc,
                                  (Ast.ExApp
