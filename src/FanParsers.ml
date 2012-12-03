@@ -68,7 +68,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   {:extend|Gram
       local:
       delete_rule_header extend_header  qualuid qualid t_qualid entry_name
-      locals entry position assoc name string pattern simple_expr delete_rules;
+      locals entry position assoc name string pattern simple_expr delete_rules simple_patt;
     extend_header:
        [ "("; qualid{i}; ":"; t_qualid{t}; ")"
          -> 
@@ -136,6 +136,24 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            {:expr| $(id:gm()).delete_rule $e $b |}) sls in
          {:expr| begin $list:rest end |}   
         ]
+     (* {:delete|Gram expr:[a|b|c]|} *)
+     (* {:delete|Gram expr:[`INT32(_,s) | `INT64(_,s)]|}; *)
+   (* let _ = *)
+   (*   Gram.delete_rule expr *)
+   (*  [`Stoken *)
+   (*     (((function | `INT32 (_,_)|`INT64 (_,_) -> true | _ -> false)), *)
+   (*       (`Normal, "`INT32 (_,_)|`INT64 (_,_)"))] *)
+   (* {:delete|Gram expr:[`INT32(_,s) (\* | `INT64(_,s) *\)]|} *)
+     (*   Gram.delete_rule expr *)
+    (* [`Stoken *)
+    (*    (((function | `INT32 (_,_) -> true | _ -> false)), *)
+    (*      (`Normal, "`INT32 (_,_)"))] *)
+     (* let _ = *)
+     (* Gram.delete_rule expr [`Snterm (Gram.obj (a : 'a Gram.t ))]; *)
+     (* Gram.delete_rule expr [`Snterm (Gram.obj (b : 'b Gram.t ))]; *)
+     (* Gram.delete_rule expr [`Snterm (Gram.obj (c : 'c Gram.t ))] *)
+     (* {:delete|Gram expr:[a]|} *)
+     (* let _ = Gram.delete_rule expr [`Snterm (Gram.obj (a : 'a Gram.t ))] *)
     qualuid:
       [ `UID x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
       | `UID x -> {:ident| $uid:x |} ] 
@@ -255,6 +273,24 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
          let n = mk_name _loc i in
          mk_symbol ~text:(`TXnterm _loc n lev) ~styp:(`STquo _loc n.tvar) ~pattern:None
      | "("; S{s}; ")" -> s ]
+   (* simple_patt "patt": *)
+   (*   {"|" *)
+   (*    [S{p1} ; "|"; S{p2} -> {| $p1 | $p2 |}] *)
+   (*    "apply" *)
+   (*    [ patt_constr{p1}; or_patt{p2} -> *)
+   (*        match p2 with *)
+   (*          [ {| ($tup:p) |} -> *)
+   (*            List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1 *)
+   (*              (Ast.list_of_patt p []) *)
+   (*          | _ -> {|$p1 $p2 |}  ] *)
+   (*      | patt_constr{p1} -> p1 *)
+   (*      | "lazy"; S{p} -> {| lazy $p |}  ] *)
+   (*    "simple" *)
+   (*    [ "`"; a_ident{s} -> {|` $s |} *)
+   (*    | "`"; a_ident{s}; patt Level "simple" *)
+   (*    | "("; S{p}; "as"; S{p2}; ")" -> {| ($p as $p2) |} ]} *)
+   (* using patt will make the analysis hard, you also need to support antiquotation,
+      otherwise it will fail to bootstrapping *)  
    pattern:
      [ `LID i -> {:patt| $lid:i |}
      | "_" -> {:patt| _ |}
