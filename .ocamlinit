@@ -29,10 +29,6 @@ let fmt = std_formatter
 (* let _ = Clflags.noprompt := true;; *)
 
 let _loc = FanLoc.ghost;;
-let _ = begin
-  Hashtbl.replace Toploop.directive_table "pwd"
-    (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())))
-end
 
 let (|-) f g x = g (f x );;
 
@@ -83,7 +79,19 @@ let anti_filter = Expr.antiquot_expander
     ~parse_patt:AntiquotSyntax.parse_patt
     ~parse_expr:AntiquotSyntax.parse_expr;;
 
+let normal () = begin
+  Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
+end;;
+
+let _ = begin
+  Hashtbl.replace Toploop.directive_table "pwd"
+    (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())));
+  Hashtbl.replace Toploop.directive_table "normal"
+    (Toploop.Directive_none (fun () -> normal ()))
+end
+;;
 Quotation.default:="expr";;
 #install_printer print_tree;;
 #install_printer Gram.dump;;
 #install_printer print_ocaml_loc;;
+

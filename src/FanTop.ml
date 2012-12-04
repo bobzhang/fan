@@ -109,6 +109,10 @@ let token() = begin
 end;
 
 
+Hashtbl.replace Toploop.directive_table "revise"
+    (Toploop.Directive_none (fun () -> revise ()));
+
+
 
 
 

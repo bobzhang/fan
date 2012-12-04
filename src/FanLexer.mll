@@ -523,7 +523,7 @@ and quotation c = parse
   $(....)
  *)
 and dollar c = parse
-    | ('`'? (identchar*|['.' '!']+) as name) ':' (lident as x)
+    | ('`'? (identchar*|['.' '!']+) as name) ':' (lident as x) (* FIXME allow uident here *)
         {move_start_p (String.length name + 1) c;  `ANT(name,x)}
     | lident as x    { `ANT("",x) }
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {

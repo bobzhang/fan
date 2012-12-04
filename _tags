@@ -11,7 +11,7 @@ true:pkg_batteries
 <{cold,src}/Lib/{Meta,Expr,Patt,Ident,ModuleType,Ctyp,ClassExpr}.cmx>:for-pack(Lib)
 <{cold,src}/Lib/{Meta,Expr,Patt,Ident,ModuleType,Ctyp,ClassExpr}.p.cmx>:for-pack(Lib)
 
-<{cold,src}/FanDriver.{p.native,byte,native,d.byte}>: pkg_dynlink, pkg_compiler-libs.common
+<{cold,src}/*.{p.native,byte,native,d.byte}>: pkg_dynlink, pkg_compiler-libs.common
 <{cold,src}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,Sig,ParsetreeHelper,Ast2Fan}.{ml,mli}> : pkg_compiler-libs.common
 <{cold,src}/FanTop.{ml,mli}>:pkg_compiler-libs.toplevel
 # <{cold,src}/Lib/{Plongident,Ploc,Ptype,Ptyp,Pexp,Ppat,Pmty,Psig,Pmod,Pstr,Pfield,Pcty,Pcl,Pcf,Pctf}.ml>:pkg_compiler-libs.common
