@@ -295,7 +295,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (* built in extend support *)
   Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (* built in delete support *)
   Quotation.add_quotation_of_expr ~name:"extend.clear" ~entry:nonterminalsclear;
-    
   Quotation.add_quotation_of_str_item ~name:"extend.create" ~entry:nonterminals;
 
   (* to be tuned *)  
@@ -1487,13 +1486,34 @@ New syntax:\
       | ctyp{t} -> t  ]  |};
     with "ident"
     {:extend|Gram
+      ident_quot:
+      { "apply"
+        [ S{i}; S{j} -> {| $i $j |} ]
+        "."
+        [ S{i}; "."; S{j} -> {| $i.$j |} ]
+        "simple"
+        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
+        | `ANT (("uid"|"lid" as n), s) -> {|$(anti:mk_anti ~c:"ident" n s)|}
+        | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
+        | `LID i -> {| $lid:i |}
+        | `UID i -> {| $uid:i |}
+        | "("; S{i}; ")" -> i  ] }
       a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
+      
       ident:   (* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*)
-      [ `ANT ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-      | a_UIDENT{i} -> {| $uid:i |}
-      | a_LIDENT{i} -> {| $lid:i |}
-      | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
-      | a_UIDENT{i}; "."; S{j} -> {| $uid:i.$j |} ]
+      [ `ANT ((""|"id"|"anti"|"list" |"uid"|"lid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      (* | `ANT (("uid"|"lid" as n), s) -> {|$(anti:mk_anti ~c:"ident" n s)|} *)
+      | `ANT ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
+      | `LID i -> {| $lid:i |}
+      | `UID i -> {| $uid:i |}
+      | `UID s ; "." ; S{j} -> {|$uid:s.$j|}  ]
+
+      a_UIDENT:
+      [ `ANT ((""|"uid" as n),s) -> mk_anti n s
+      | `UID s -> s ]
+      a_LIDENT:
+      [ `ANT ((""|"lid" as n),s) -> mk_anti n s
+      | `LID s -> s ] 
       module_longident_dot_lparen:
       [ `ANT ((""|"id"|"anti"|"list" as n),s); "."; "(" ->   {| $(anti:mk_anti ~c:"ident" n s) |}
       | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
@@ -1574,12 +1594,6 @@ New syntax:\
       [ "rec" -> {:rec_flag| rec |}
       | `ANT (("rec"|"anti" as n),s) -> {:rec_flag|$(anti:mk_anti ~c:"rec_flag" n s) |}
       | -> {:rec_flag||} ] 
-      a_UIDENT:
-      [ `ANT ((""|"uid" as n),s) -> mk_anti n s
-      | `UID s -> s ]
-      a_LIDENT:
-      [ `ANT ((""|"lid" as n),s) -> mk_anti n s
-      | `LID s -> s ] 
       a_LABEL:
       [ "~"; `ANT (("" as n),s); ":" -> mk_anti n s
       | `LABEL s -> s ] 
@@ -1591,17 +1605,7 @@ New syntax:\
       | `STR (_, x); S{xs} -> Ast.LCons x xs
       | `STR (_, x) -> Ast.LCons x Ast.LNil ] 
       semi: [ ";" -> () ]
-      ident_quot:
-      { "apply"
-        [ S{i}; S{j} -> {| $i $j |} ]
-        "."
-        [ S{i}; "."; S{j} -> {| $i.$j |} ]
-        "simple"
-        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
-        | a_UIDENT{i} -> {| $uid:i |}
-        | a_LIDENT{i} -> {| $lid:i |}
-        | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
-        | "("; S{i}; ")" -> i  ] }
+      
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ direction_flag{x} -> x ] 
       mutable_flag_quot: [  opt_mutable{x} -> x ] 
