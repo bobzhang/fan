@@ -50,7 +50,7 @@ let lex entry loc cs = entry.egram.glexer loc cs;
 let lex_string entry loc str = lex entry loc (Stream.of_string str);
 
 let filter entry ts =
-  keep_prev_loc (FanToken.Filter.filter (get_filter entry.egram) ts);
+  keep_prev_loc (FanTokenFilter.filter (get_filter entry.egram) ts);
 
 let parse_origin_tokens entry ts = Action.get (action_parse entry ts);
 
