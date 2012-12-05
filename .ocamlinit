@@ -72,10 +72,11 @@ let print_tree = Grammar.Print.dump#tree;;
 open Syntax;;
 
 let t e s = Gram.parse_string e FanLoc.string_loc s;;
-open Lib;;
-open Meta;;
+(* open Lib;; *)
+module L = Lib;;
+open L.Meta;;
 
-let anti_filter = Expr.antiquot_expander
+let anti_filter = L.Expr.antiquot_expander
     ~parse_patt:AntiquotSyntax.parse_patt
     ~parse_expr:AntiquotSyntax.parse_expr;;
 
@@ -91,6 +92,7 @@ let _ = begin
 end
 ;;
 Quotation.default:="expr";;
+let env = !Toploop.toplevel_env;;
 #install_printer print_tree;;
 #install_printer Gram.dump;;
 #install_printer print_ocaml_loc;;
