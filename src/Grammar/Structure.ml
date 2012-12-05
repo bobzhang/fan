@@ -1,4 +1,4 @@
-open FanSig;
+(* open FanSig; *)
 open LibUtil;
 type assoc =
     [= `NA|`RA|`LA];
@@ -16,9 +16,9 @@ end;
 
 
 type gram = {
-    gfilter         : filter;
+    gfilter         : FanTokenFilter.filter;
     gkeywords       : Hashtbl.t string (ref int);
-    glexer          : FanLoc.t -> Stream.t char -> Stream.t (token * FanLoc.t);
+    glexer          : FanLoc.t -> Stream.t char -> Stream.t (FanToken.token * FanLoc.t);
     warning_verbose : ref bool;
     error_verbose   : ref bool };
 
@@ -33,9 +33,17 @@ let ghost_token_info = {
   prev_loc_only = false;};
   (* with neighbor token info stored*)  
 
-type token_stream = Stream.t (token * token_info);
+type token_stream = Stream.t (FanToken.token * token_info);
 
-
+open Format;
+let pp = fprintf;
+  
+let pp_token_info f {prev_loc;cur_loc;prev_loc_only} =
+  pp f
+    "{prev_loc=@;%a;cur_loc=@;%a;prev_loc_only=%b}"
+    FanLoc.print prev_loc
+    FanLoc.print cur_loc
+    prev_loc_only ;
 
 type parse 'a = token_stream -> 'a;
 type cont_parse 'a = FanLoc.t -> Action.t -> parse 'a;
@@ -45,7 +53,7 @@ type description =
     | `Antiquot];
 
 type descr = (description * string) ;  
-type token_pattern = ((token -> bool) * descr);
+type token_pattern = ((FanToken.token -> bool) * descr);
 
 type terminal =
     [= `Skeyword of string
@@ -115,7 +123,7 @@ let using { gkeywords = table; gfilter = filter; _ } kwd =
     [ Not_found ->
       let r = ref 0 in begin Hashtbl.add table kwd r; r end ]
   in begin
-    FanToken.Filter.keyword_added filter kwd (r.contents = 0);
+    FanTokenFilter.keyword_added filter kwd (r.contents = 0);
     incr r
   end;
 let mk_action=Action.mk;
@@ -124,7 +132,7 @@ let removing { gkeywords = table; gfilter = filter; _ } kwd =
   let r = Hashtbl.find table kwd in
   let () = decr r in
     if !r = 0 then begin
-      FanToken.Filter.keyword_removed filter kwd;
+      FanTokenFilter.keyword_removed filter kwd;
       Hashtbl.remove table kwd
     end else ();
 

@@ -13,9 +13,9 @@ module type S =
     val default_at_pos : string -> string -> unit
     val parse_quotation_result :
       (FanLoc.t -> string -> 'a) ->
-      FanLoc.t -> FanSig.quotation -> string -> string -> 'a
+      FanLoc.t -> FanToken.quotation -> string -> string -> 'a
     val translate : (string -> string) ref
-    val expand : FanLoc.t -> FanSig.quotation -> 'a DynAst.tag -> 'a
+    val expand : FanLoc.t -> FanToken.quotation -> 'a DynAst.tag -> 'a
     val dump_file : string option ref
     val add_quotation :
       string ->

@@ -40,6 +40,33 @@ let t e s = Gram.parse_string e FanLoc.string_loc s;
 (* Comparing two ant *)
 (* *\) *)
 (* Gram.dump Format.std_formatter expr; *)
-{:delete|Gram ident:[`UID i]|};
-  (* {:delete|Gram expr:[TRY module_longident_dot_lparen; S; ")"]|}; *)
-t expr "A.B.C.D.c";
+(* {:delete|Gram ident:[`UID i]|}; *)
+(*   (\* {:delete|Gram expr:[TRY module_longident_dot_lparen; S; ")"]|}; *\) *)
+(* t expr "A.B.C.D.c"; *)
+
+{:extend.create|Gram a b a_eoi |}  ;
+  
+{:extend|Gram 
+  a:
+  [ TRY module_longident_dot_lparen{s} -> s
+  | b{s} -> s ]
+  b "ident":
+  [ 
+   (* a_UIDENT{i} -> {| $uid:i |} *)
+  (* | *) a_LIDENT{i} -> {| $lid:i |}
+  | `UID i -> {|$uid:i|}
+  | `UID i; "."; S{j} -> {| $uid:i.$j |} 
+  (* | a_UIDENT{i}; "."; S{j} -> {| $uid:i.$j |}  *)]
+  (* [ `LID i  -> {| $lid:i|} *)
+  (* | `UID s ; "." ; S{j} -> {|$uid:s.$j|}  ] *)
+  a_eoi: [a{i} ; `EOI -> i]
+|};
+
+(* {:extend.create|Gram c|}  ; *)
+
+(*   with "ident"{:extend|Gram local:d; *)
+(*  c:[  d {x}; "(" -> {| $uid:x |}   ] *)
+(*                  d:[`UID x -> x ] *)
+(* |};   *)
+
+t a_eoi "A.C.U.b"  ;

@@ -169,7 +169,7 @@ let parse f c =
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
   let s = parse_nested ~lexer:quotation ({c with loc = Lexing.lexeme_start_p  c.lexbuf}) in
   let contents = String.sub s 0 (String.length s - retract) in
-  `QUOTATION {FanSig.q_name     = name     ;
+  `QUOTATION {FanToken.q_name     = name     ;
               q_loc      = loc      ;
               q_shift    = shift    ;
               q_contents = contents }
@@ -325,7 +325,7 @@ rule token c = parse
                c                       }
        | "{||}"
            { if quotations c
-           then `QUOTATION { FanSig.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
+           then `QUOTATION { FanToken.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
            else parse
                (symbolchar_star "{||}") c}
        | "{@"

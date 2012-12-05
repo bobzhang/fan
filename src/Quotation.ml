@@ -37,12 +37,12 @@ module type S = sig
       It's a parser wrapper, this function handles the error reporting for you. *)
     
   val parse_quotation_result :
-    (FanLoc.t -> string -> 'a) -> FanLoc.t -> FanSig.quotation -> string -> string -> 'a;
+    (FanLoc.t -> string -> 'a) -> FanLoc.t -> FanToken.quotation -> string -> string -> 'a;
 
   (** function translating quotation names; default = identity *)
   val translate : ref (string -> string);
 
-  val expand : FanLoc.t -> FanSig.quotation -> DynAst.tag 'a -> 'a;
+  val expand : FanLoc.t -> FanToken.quotation -> DynAst.tag 'a -> 'a;
 
   (** [dump_file] optionally tells Camlp4 to dump the
       result of an expander if this result is syntactically incorrect.
@@ -50,7 +50,7 @@ module type S = sig
       result is dumped in the file [fname]. *)
   val dump_file : ref (option string);
 
-  (* module Error : FanSig.Error; *)
+
   val add_quotation: string -> Gram.t 'a ->
     (FanLoc.t -> 'a -> Lib.Expr.Ast.expr) ->
       (FanLoc.t -> 'a -> Lib.Expr.Ast.patt) -> unit;
@@ -167,7 +167,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
 
   let expand_quotation loc expander pos_tag quot =
     debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
-    let open FanSig in
+    let open FanToken in
     let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
     try expander loc loc_name_opt quot.q_contents with
     [ FanLoc.Exc_located (_, (QuotationError _)) as exc ->
@@ -180,7 +180,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
         raise (FanLoc.Exc_located loc exc1) ];
 
   let parse_quotation_result parse loc quot pos_tag str =
-    let open FanSig in 
+    let open FanToken in 
     try parse loc str with
     [ FanLoc.Exc_located (iloc, (QuotationError (n, pos_tag, Expanding, exc))) ->
         let ctx = ParsingResult iloc quot.q_contents in
@@ -195,7 +195,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
 
       
   let expand loc quotation tag =
-    let open FanSig in 
+    let open FanToken in 
     let pos_tag = DynAst.string_of_tag tag in
     let name = quotation.q_name in
     debug quot "handle_quotation: name: %s, str: %S@." name quotation.q_contents in

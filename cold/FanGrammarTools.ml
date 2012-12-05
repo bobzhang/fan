@@ -87,7 +87,7 @@ let make_ctyp styp tvar =
             (Ast.TyId
                (_loc,
                  (Ast.IdAcc
-                    (_loc, (Ast.IdUid (_loc, "FanSig")),
+                    (_loc, (Ast.IdUid (_loc, "FanToken")),
                       (Ast.IdLid (_loc, "token")))))))
     | `STtyp t -> t in
   try Some (aux styp) with | NotneededTyping  -> None

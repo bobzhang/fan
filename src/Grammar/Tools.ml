@@ -24,8 +24,10 @@ let keep_prev_loc (strm: Stream.t ('c * FanLoc.t) ) :  Stream.t ('c * token_info
 
 (* not used *)    
 let drop_prev_loc strm = Stream.map (fun (tok,r) -> (tok,r.cur_loc)) strm;
-  
-let get_cur_loc strm =  match Stream.peek strm with
+
+(* get_cur_loc *must* be used first *)  
+let get_cur_loc strm =
+  match Stream.peek strm with
   [ Some (_,r) -> r.cur_loc
   | None -> FanLoc.ghost ];
 

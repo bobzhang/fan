@@ -1,7 +1,7 @@
 
 open Format;
 let failwithf fmt = ksprintf failwith fmt  ;
-
+let prerr_endlinef fmt = ksprintf prerr_endline fmt  ;
 module MapMake(S:Map.OrderedType) = struct
   include Map.Make S;
   let of_list lst =
@@ -212,7 +212,7 @@ module type STREAM = sig
   val njunk: int -> Stream.t 'a -> unit;
 end;
   
-module Stream : STREAM with type t 'a = Stream.t 'a = struct
+module Stream (* : STREAM with type t 'a = Stream.t 'a *) = struct
   include BatStream;
   include Stream;
   let rev strm=
@@ -243,7 +243,9 @@ module Stream : STREAM with type t 'a = Stream.t 'a = struct
   
   let njunk  n strm  =
     for _i = 1 to n do Stream.junk strm done; (* FIXME unsed  index i*)
-    
+  let rec filter f = parser
+    [ [< x; 'xs >] -> if f x then [< x ; 'filter f xs >] else [< 'filter f xs >]
+    | [< >] -> [<>] ]; 
    (* let rec filter f = parser *)
    (*  [ [< x; 'xs>] -> [<>]]    *)
   (* value rec map f = parser *)

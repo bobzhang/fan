@@ -1,6 +1,6 @@
 
 open LibUtil;
-open FanSig;
+(* open FanSig; *)
 open Format;
 open Structure;
 open Tools;
@@ -54,14 +54,15 @@ let filter entry ts =
 
 let parse_origin_tokens entry ts = Action.get (action_parse entry ts);
 
-let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter entry ts);
+let filter_and_parse_tokens entry ts =
+  parse_origin_tokens entry (filter entry ts);
 
 let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs);
 
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string entry loc str);
 
-let of_parser g n (p : Stream.t (token * token_info) -> 'a)   =
+let of_parser g n (p : Stream.t (FanToken.token * token_info) -> 'a)   =
   let f ts = Action.mk (p ts) in {
   egram = g;
   ename = n;
@@ -69,7 +70,7 @@ let of_parser g n (p : Stream.t (token * token_info) -> 'a)   =
   econtinue _ _ _ = parser [];
   edesc = Dparser f };
 
-let setup_parser e (p : Stream.t (token * token_info) -> 'a) =
+let setup_parser e (p : Stream.t (FanToken.token * token_info) -> 'a) =
   let f ts = Action.mk (p ts) in begin
     e.estart <- fun _ -> f;
     e.econtinue <- fun _ _ _ -> parser [];

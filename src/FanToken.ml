@@ -1,6 +1,70 @@
 open Format;
-open LibUtil;
-open FanSig;
+(* open LibUtil; *)
+(* open FanSig; *)
+(** The generic quotation type.
+    To see how fields are used here is an example:
+    {:q_name@q_loc|q_contents|}
+    The last one, q_shift is equal to the length of "<:q_name@q_loc<". *)
+type quotation ={
+    q_name : string;
+    q_loc : string;
+    q_shift : int;
+    q_contents : string
+  };
+
+
+      
+(* (\** This signature describes tokens for the OCaml and the Revised *)
+(*     syntax lexing rules. For some tokens the data constructor holds two *)
+(*     representations with the evaluated one and the source one. For example *)
+(*     the INT data constructor holds an integer and a string, this string can *)
+(*     contains more information that's needed for a good pretty-printing *)
+(*     ("42", "4_2", "0000042", "0b0101010"...). *)
+
+(*     The meaning of the tokens are: *)
+(*     -      [KEYWORD s] is the keyword [s]. *)
+(*     -      [LIDENT s] is the ident [s] starting with a lowercase letter. *)
+(*     -      [UIDENT s] is the ident [s] starting with an uppercase letter. *)
+(*     -      [INT i s] (resp. [INT32 i s], [INT64 i s] and [NATIVEINT i s]) *)
+(*     the integer constant [i] whose string source is [s]. *)
+(*     -      [FLOAT f s] is the float constant [f] whose string source is [s]. *)
+(*     -      [STRING s s'] is the string constant [s] whose string source is [s']. *)
+(*     -      [CHAR c s] is the character constant [c] whose string source is [s]. *)
+(*     -      [QUOTATION q] is a quotation [q], see {!Quotation.t} for more information. *)
+(*     -      [ANTIQUOT n s] is an antiquotation [n] holding the string [s]. *)
+(*     -      [EOI] is the end of input. *)
+
+(*     Warning: the second string associated with the constructor [STRING] is *)
+(*     the string found in the source without any interpretation. In particular, *)
+(*     the backslashes are not interpreted. For example, if the input is ["\n"] *)
+(*     the string is *not* a string with one element containing the character *)
+(*     "return", but a string of two elements: the backslash and the character *)
+(*     ["n"]. To interpret a string use the first string of the [STRING] *)
+(*     constructor (or if you need to compute it use the module *)
+(*     {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *\) *)
+type token =
+  [=  `KEYWORD of string
+  | `SYMBOL of string
+  | `LID of string
+  | `UID of string
+  | `ESCAPED_IDENT of string (* (+)*)
+  | `INT of (int * string )
+  | `INT32 of (int32 * string )
+  | `INT64 of (int64 * string )
+  | `NATIVEINT of (nativeint * string )
+  | `FLO of (float * string )
+  | `CHAR of (char * string )
+  | `STR of (string * string )
+  | `LABEL of string
+  | `OPTLABEL of string
+  | `QUOTATION of quotation
+  | `ANT of (string * string )
+  | `COMMENT of string
+  | `BLANKS of string
+  | `NEWLINE
+  | `LINE_DIRECTIVE of (int * option string )
+  | `EOI];
+
 
 
 type error = 
@@ -23,13 +87,18 @@ let print_basic_error ppf = fun
         fprintf ppf "Illegal constructor %S" con
     ];
 
+(* FIXME duplicate copy of LibUtil *)  
+let to_string_of_printer printer v =
+  let buf = Buffer.create 30 in
+  let () = Format.bprintf buf "@[%a@]" printer v in Buffer.contents buf;
+
 let string_of_error_msg = to_string_of_printer print_basic_error;
 
 Printexc.register_printer (fun
   [TokenError e -> Some (string_of_error_msg e)
   | _ -> None]);
   
-let to_string  : [>FanSig.token] -> string =fun
+let to_string  : [>(* FanSig. *)token] -> string =fun
   [ `KEYWORD s    -> sprintf "`KEYWORD %S" s
   | `SYMBOL s     -> sprintf "`SYMBOL %S" s
   | `LID s     -> sprintf "`LID %S" s
@@ -96,7 +165,7 @@ let match_keyword kwd =  fun
   x=STRING -> extract_string x
   ]}
  *)  
-let extract_string : [> FanSig.token] -> string = fun
+let extract_string : [> (* FanSig. *)token] -> string = fun
   [ `KEYWORD s | `SYMBOL s | `LID s | `UID s | `INT (_, s) | `INT32 (_, s) |
   `INT64 (_, s) | `NATIVEINT (_ ,s) | `FLO (_, s) | `CHAR (_, s) | `STR (_, s) |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
@@ -124,41 +193,6 @@ let check_unknown_keywords tok loc =
   | _        -> () ];
   
   
-
-module Filter = struct
-  let mk ~is_kwd ={
-    is_kwd ;
-    filter = ignore_layout };
-    
-  let filter x =
-    let f (tok, loc) = 
-      let tok = keyword_conversion tok x.is_kwd in begin 
-        check_keyword_as_label tok loc x.is_kwd ;
-        (* if !error_on_unknown_keywords  then *)
-        (*   check_unknown_keywords tok loc *)
-        (* else (); *)
-        (* debug token "@[<hov 2>Lexer before filter:@ %a@ at@ %a@]@." *)
-        (*   print tok FanLoc.dump loc in *)
-        (tok, loc)
-      end in
-      (* let rec filter = parser *)
-      (*   [ [< (tok, loc); 's >] -> [< f tok loc; '(filter s) >] *)
-      (*   | [< >] -> [< >] ] in *)
-      (* let rec tracer = (\* FIXME add a debug block construct *\) parser *)
-      (*   [ [< ((_tok, _loc) as x); 'xs >] -> *)
-      (*       debug token "@[<hov 2>Lexer after filter:@ %a@ at@ %a@]@." *)
-      (*                   print _tok FanLoc.dump _loc in *)
-      (*       [< x; 'tracer xs >] *)
-      (*   | [< >] -> [< >] ] *)
-  (* in fun strm -> tracer (x.filter (filter strm)); *)
-    fun strm -> x.filter (Stream.map f strm);
-
-  let define_filter x f = x.filter <- f x.filter;
-
-  (* keyword added hook FIXME gives an warning later*)  
-  let keyword_added _ _ _ = ();
-  let keyword_removed _ _ = ();
-end;
 
 
 

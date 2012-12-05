@@ -30,7 +30,7 @@ let take_stream = fst;
   
 let define token_fiter comments_strm =
   debug comments "Define a comment filter@\n" in
-   FanToken.Filter.define_filter token_fiter
+   FanTokenFilter.define_filter token_fiter
   (fun previous strm -> previous (filter comments_strm strm));
 
 

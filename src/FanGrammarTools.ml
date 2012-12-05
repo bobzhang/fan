@@ -102,7 +102,7 @@ let  make_ctyp  styp tvar =
           FanLoc.raise _loc
             (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else {| '$tvar |}
-    | `STtok _loc ->  {| [> FanSig.token ] |} 
+    | `STtok _loc ->  {| [> FanToken.token ] |}  (* BOOTSTRAPPING*)
     | `STtyp t -> t ] in
     try Some (aux styp) with [NotneededTyping -> None ];
 
