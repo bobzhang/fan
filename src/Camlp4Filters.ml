@@ -16,9 +16,9 @@ module MakeAstLifter (Syn : Sig.Camlp4Syntax) = struct
   end;
   module MetaAst = Ast.Meta.Make MetaLoc;
 
-  Syn.AstFilters.register_str_item_filter (fun ast ->
+  Syn.AstFilters.register_str_item_filter ("lift",(fun ast ->
     let _loc = Ast.loc_of_str_item ast in
-    {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |}); (* FIXME Loc => FanLoc*)
+    {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |})); (* FIXME Loc => FanLoc*)
 
 end;
 
@@ -59,7 +59,7 @@ module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
     [ {:str_item| module Debug = $_ |} as st -> st
     | st -> super#str_item st ];
   end;
-  Syn.AstFilters.register_str_item_filter filter#str_item;
+  Syn.AstFilters.register_str_item_filter ("exception",filter#str_item);
 end;
 
 
@@ -641,8 +641,8 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         | sg -> super#sig_item sg ];
     end;
 
-  Syn.AstFilters.register_str_item_filter processor#str_item;
-  Syn.AstFilters.register_sig_item_filter processor#sig_item;
+  Syn.AstFilters.register_str_item_filter("fold",processor#str_item);
+  Syn.AstFilters.register_sig_item_filter ("fold",processor#sig_item);
 
 end;
   
@@ -653,7 +653,7 @@ end;
 
 module MakeLocationStripper (Syn : Sig.Camlp4Syntax) = struct
   module Ast=Camlp4Ast;
-  Syn.AstFilters.register_str_item_filter (Ast.map_loc (fun _ -> FanLoc.ghost))#str_item;
+  Syn.AstFilters.register_str_item_filter ("strip",(Ast.map_loc (fun _ -> FanLoc.ghost))#str_item);
 end;
 
 
@@ -706,7 +706,7 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
         decorate_this_expr {:expr| fun [ $(decorate_match_case m) ] |} id
     | e -> decorate_this_expr (decorate_expr e) id ];
 
-  Syn.AstFilters.register_str_item_filter (decorate decorate_fun)#str_item;
+  Syn.AstFilters.register_str_item_filter("profile", (decorate decorate_fun)#str_item);
 
 end;
   
@@ -718,11 +718,11 @@ end;
 module MakeTrashRemover (Syn : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
   Syn.AstFilters.register_str_item_filter
-    (Ast.map_str_item
+    ("trash",(Ast.map_str_item
       (fun
        [ {:str_item@_loc| module Camlp4Trash = $_ |} ->
             {:str_item||}
-       | st -> st ]))#str_item;
+       | st -> st ]))#str_item);
 end;
 
 
@@ -927,7 +927,7 @@ let filter st =
      | me -> me ];
   end#str_item st;
 
-  Syn.AstFilters.register_str_item_filter filter;
+  Syn.AstFilters.register_str_item_filter ("meta",filter);
 end;
   
 let f_lift (module P:Sig.PRECAST) =

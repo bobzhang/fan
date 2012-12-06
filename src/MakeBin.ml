@@ -38,22 +38,22 @@ open LibUtil;
 module Camlp4Bin
      (PreCast:Sig.PRECAST)
     =struct
-      let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) =
-        Hashtbl.create 30;
+    let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) = Hashtbl.create 30;
       (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
-      let rcall_callback = ref (fun () -> ());
-      let loaded_modules = ref SSet.empty;
-      let add_to_loaded_modules name =
-        loaded_modules := SSet.add name !loaded_modules;
-
-     Printexc.register_printer
+    let rcall_callback = ref (fun () -> ());
+    let loaded_modules = ref SSet.empty;
+    let add_to_loaded_modules name =
+      loaded_modules := SSet.add name !loaded_modules;
+        
+    Printexc.register_printer
             (
               fun [ FanLoc.Exc_located (loc, exn) ->
                     Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
                   | _ -> None ]);
-      module DynLoader = DynLoader.Make (struct end);
+     module DynLoader = DynLoader.Make (struct end);
       (* let plugins = Hashtbl.create 50;      *)
-      let (objext,libext) =
+     module Quotation = PreCast.Syntax.Quotation;  
+     let (objext,libext) =
         if DynLoader.is_native then (".cmxs",".cmxs")
         else (".cmo",".cma");
       
@@ -172,33 +172,9 @@ module Camlp4Bin
           ];
           !rcall_callback ();
         end;
-      
-      
      let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
-      (* camlp4 directive handler *)
-       let gind = fun
-         [ {:sig_item@loc| # $n $str:s |} -> Some (loc, n, s)
-         | _ -> None ];
-       let gimd = fun
-         [ {:str_item@loc| # $n $str:s |} -> Some (loc, n, s)
-         | _ -> None ];
-
-       let output_file = ref None;                
-         let directive_handler = (* Some (fun ast -> *)
-          (*  match getdir ast with *)
-          (*  [ Some x -> *)
-          (*    match x with *)
-          (*    [ (_, "load", s) -> begin *)
-          (*      rewrite_and_load "" s; *)
-          (*      None end *)
-          (*    | (_, "directory", s) -> begin  DynLoader.include_dir dyn_loader s; None end *)
-          (*    | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir) *)
-          (*    | (_, "default_quotation", s) -> begin PreCast.Syntax.Quotation.default := s; None end *)
-          (*    | (loc, _, _) -> FanLoc.raise loc (XStream.Error "bad directive camlp4 can not handled ") ] *)
-          (* | None -> None ]) *) None ;
-
-         
-      let parse_file  ?directive_handler name pa =
+     let output_file = ref None;                
+     let parse_file  ?directive_handler name pa =
         let loc = FanLoc.mk name in begin
           PreCast.Syntax.current_warning := print_warning;
           let ic = if name = "-" then stdin else open_in_bin name;
@@ -212,39 +188,42 @@ module Camlp4Bin
         end;
        let  rec sig_handler  = with "sig_item"
           (fun
-            [ {| # $(lid:"load") $str:s |} ->
+            [ {| #load $str:s |} ->
               begin rewrite_and_load "" s; None end
-            | {| # $(lid:"directory") $str:s |} ->
+            | {| #directory $str:s |} ->
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
-            | {| # $(lid:"use") $str:s |} ->
+            | {| #use $str:s |} ->
                 Some (parse_file  ~directive_handler:sig_handler s PreCast.CurrentParser.parse_interf )
             | {| # $(lid:"default_quotation") $str:s |} ->
-                begin PreCast.Syntax.Quotation.default := s; None end
-                  
+                begin Quotation.default := s; None end
             | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
                 FanLoc.raise loc (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
             | _ -> assert false
             ] );
-        
-      (* let sig_handler = failwith "Not implemented" ; *)
       let rec str_handler = with "str_item"
           (fun
-            [ {| # $(lid:"load") $str:s |} ->
+            [ {| #load $str:s |} ->
               begin rewrite_and_load "" s; None end
-            | {| # $(lid:"directory") $str:s |} ->
+            | {| #directory $str:s |} ->
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
-            | {| # $(lid:"use") $str:s |} ->
+            | {| #use $str:s |} ->
                 Some (parse_file  ~directive_handler:str_handler s PreCast.CurrentParser.parse_implem )
-            | {| # $(lid:"default_quotation") $str:s |} ->
-                begin PreCast.Syntax.Quotation.default := s; None end
-                  
+            | {| #default_quotation $str:s |} ->
+                begin Quotation.default := s; None end
+            | {| #lang_at $str:tag $str:quot |} ->
+                begin Quotation.default_at_pos tag quot; None end
+            | {| #lang_clear |} -> begin 
+                Quotation.default:="";
+                Hashtbl.clear Quotation.default_tbl;
+                None
+            end
             | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
                 FanLoc.raise loc (XStream.Error (x ^ "bad directive camlp4 can not handled "))
             | _ -> assert false
             ] );
       let process  ?directive_handler name pa pr clean fold_filters =
           parse_file  ?directive_handler name pa 
-          |> fold_filters (fun t filter -> filter t )
+          |> fold_filters 
           |> clean
           |> pr ?input_file:(Some name) ?output_file:!output_file ;
 
@@ -253,14 +232,14 @@ module Camlp4Bin
         process ~directive_handler:sig_handler
           name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
                 (new Camlp4Ast.clean_ast)#sig_item
-                PreCast.Syntax.AstFilters.fold_interf_filters;
+                PreCast.Syntax.AstFilters.apply_interf_filters;
       let process_impl  name =
         process ~directive_handler:str_handler
           name
           PreCast.CurrentParser.parse_implem
           PreCast.CurrentPrinter.print_implem
           (new Camlp4Ast.clean_ast)#str_item
-          PreCast.Syntax.AstFilters.fold_implem_filters
+          PreCast.Syntax.AstFilters.apply_implem_filters
           (* gimd *);
 
       
@@ -305,7 +284,7 @@ module Camlp4Bin
           "More verbose in parsing errors.");
          ("-loc", FanArg.Set_string FanLoc.name,
           "<name>   Name of the location variable (default: " ^ !FanLoc.name ^ ").");
-         ("-QD", FanArg.String (fun x -> PreCast.Syntax.Quotation.dump_file := Some x),
+         ("-QD", FanArg.String (fun x -> Quotation.dump_file := Some x),
           "<file> Dump quotation expander result in case of syntax error.");
          ("-o", FanArg.String (fun x -> output_file := Some x),
           "<file> Output on <file> instead of standard output.");
