@@ -14,10 +14,8 @@ let setup_op_parser entry p =
   Gram.setup_parser entry
     (fun (__strm : _ XStream.t)  ->
        match XStream.peek __strm with
-       | Some ((`KEYWORD x|`SYMBOL x),ti) when p x ->
-           (XStream.junk __strm;
-            (let _loc = Gram.token_location ti in
-             Ast.ExId (_loc, (Ast.IdLid (_loc, x)))))
+       | Some ((`KEYWORD x|`SYMBOL x),_loc) when p x ->
+           (XStream.junk __strm; Ast.ExId (_loc, (Ast.IdLid (_loc, x))))
        | _ -> raise XStream.Failure)
 let rec infix_kwds_filter (__strm : _ XStream.t) =
   match XStream.peek __strm with

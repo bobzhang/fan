@@ -14,18 +14,7 @@ type gram =
   glexer: FanLoc.t -> char XStream.t -> (FanToken.token* FanLoc.t) XStream.t;
   warning_verbose: bool ref;
   error_verbose: bool ref} 
-type token_info =  {
-  prev_loc: FanLoc.t;
-  cur_loc: FanLoc.t;
-  prev_loc_only: bool} 
-let ghost_token_info =
-  { prev_loc = FanLoc.ghost; cur_loc = FanLoc.ghost; prev_loc_only = false }
-type token_stream = (FanToken.token* token_info) XStream.t 
-open Format
-let pp = fprintf
-let pp_token_info f { prev_loc; cur_loc; prev_loc_only } =
-  pp f "{prev_loc=@;%a;cur_loc=@;%a;prev_loc_only=%b}" FanLoc.print prev_loc
-    FanLoc.print cur_loc prev_loc_only
+type token_stream = (FanToken.token* FanLoc.t) XStream.t 
 type 'a parse = token_stream -> 'a 
 type 'a cont_parse = FanLoc.t -> Action.t -> 'a parse 
 type description = [ `Normal | `Antiquot] 
@@ -73,7 +62,6 @@ type ('a,'b,'c) foldsep =
       ('a XStream.t -> 'b) -> ('a XStream.t -> unit) -> 'a XStream.t -> 'c
   
 let get_filter g = g.gfilter
-let token_location r = r.cur_loc
 let using { gkeywords = table; gfilter = filter;_} kwd =
   let r =
     try Hashtbl.find table kwd

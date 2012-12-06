@@ -19,13 +19,6 @@ type gram =
   warning_verbose : bool ref;
   error_verbose : bool ref;
 }
-type token_info =
-  Grammar.Structure.token_info = {
-  prev_loc : FanLoc.t;
-  cur_loc : FanLoc.t;
-  prev_loc_only : bool;
-}
-
 
 module Action :
   sig
@@ -35,7 +28,7 @@ module Action :
     val getf : t -> 'a -> 'b
     val getf2 : t -> 'a -> 'b -> 'c
   end
-type token_stream = (FanToken.token * token_info) XStream.t
+type token_stream = (FanToken.token * FanLoc.t) XStream.t
 type description = [ `Antiquot | `Normal ]
 type descr = description * string
 type token_pattern = (FanToken.token -> bool) * descr
@@ -76,12 +69,11 @@ val parse_origin_tokens :
   'a t -> token_stream -> 'a
 val setup_parser :
   'a t ->
-  ((FanToken.token * token_info) XStream.t -> 'a) -> unit
+  (token_stream -> 'a) -> unit
 val clear : 'a t -> unit
-val ghost_token_info : token_info
-val token_location : token_info -> FanLoc.t
-val using : gram -> string -> unit
-val mk_action : 'a -> Action.t
+
+val using: gram -> string -> unit
+val mk_action: 'a -> Action.t
 
 val string_of_token:[>FanToken.token] -> string
 
@@ -91,26 +83,21 @@ val gram: gram
 val create_gram: unit -> gram
 val mk_dynamic: gram -> string -> 'a t
 val mk: string -> 'a t
-val of_parser :
+val of_parser:
   string ->
-  ((FanToken.token * token_info) XStream.t -> 'a) ->
-  'a t
-val get_filter : unit -> FanTokenFilter.filter
-val lex : FanLoc.t -> char XStream.t -> (FanToken.token * FanLoc.t) XStream.t
-val lex_string : FanLoc.t -> string -> (FanToken.token * FanLoc.t) XStream.t
-val filter :
-  (FanToken.token * FanLoc.t) XStream.t ->
-  (FanToken.token * token_info) LibUtil.XStream.t
-(* val filter_and_parse_tokens : *)
-(*   'a t -> *)
-(*   (FanToken.token * FanLoc.t) XStream.t -> 'a *)
-val parse :
-  'a t -> FanLoc.t -> char XStream.t -> 'a
-val parse_string :
+  (token_stream -> 'a) ->  'a t
+val get_filter: unit -> FanTokenFilter.filter
+val lex: FanLoc.t -> char XStream.t -> (FanToken.token * FanLoc.t) XStream.t
+val lex_string: FanLoc.t -> string -> (FanToken.token * FanLoc.t) XStream.t
+val filter:  token_stream -> token_stream
+
+val parse:  'a t -> FanLoc.t -> char XStream.t -> 'a
+
+val parse_string:
   'a t -> FanLoc.t -> string -> 'a
-val debug_origin_token_stream : 'a t -> FanToken.token XStream.t -> 'a
-val debug_filtered_token_stream :
-  'a t -> FanToken.token XStream.t -> 'a
+      
+val debug_origin_token_stream: 'a t -> FanToken.token XStream.t -> 'a
+val debug_filtered_token_stream: 'a t -> FanToken.token XStream.t -> 'a
 val parse_string_safe :
   'a t -> FanLoc.t -> string -> 'a
 val wrap_stream_parser : ('a -> 'b -> 'c) -> 'a -> 'b -> 'c
@@ -143,4 +130,4 @@ val eoi_entry : 'a t -> 'a t
 val levels_of_entry: 'a t -> level list option
 val find_level:
     ?position:position ->  'a t -> level
-val token_stream_of_string: string -> (FanToken.token * Grammar.Structure.token_info) LibUtil.XStream.t
+val token_stream_of_string: string -> token_stream

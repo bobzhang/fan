@@ -35,22 +35,22 @@ let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter
 let lex loc cs = gram.glexer loc cs
 let lex_string loc str = lex loc (XStream.of_string str)
-let filter ts = Tools.keep_prev_loc (FanTokenFilter.filter gram.gfilter ts)
+let filter ts = FanTokenFilter.filter gram.gfilter ts
 let token_stream_of_string s =
   (s |> (lex_string FanLoc.string_loc)) |> filter
 let parse entry loc cs =
   let lexer = (entry.egram).glexer in
   let filter = (entry.egram).gfilter in
-  let filter ts = Tools.keep_prev_loc (FanTokenFilter.filter filter ts) in
+  let filter ts = FanTokenFilter.filter filter ts in
   parse_origin_tokens entry (filter (lexer loc cs))
 let parse_string entry loc str =
   let lexer = (entry.egram).glexer in
   let filter = (entry.egram).gfilter in
-  let filter ts = Tools.keep_prev_loc (FanTokenFilter.filter filter ts) in
+  let filter ts = FanTokenFilter.filter filter ts in
   parse_origin_tokens entry (filter (lexer loc (XStream.of_string str)))
 let debug_origin_token_stream (entry : 'a t) tokens =
   (parse_origin_tokens entry
-     (XStream.map (fun t  -> (t, ghost_token_info)) tokens) : 'a )
+     (XStream.map (fun t  -> (t, FanLoc.ghost)) tokens) : 'a )
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
     (XStream.map (fun t  -> (t, FanLoc.ghost)) tokens)

@@ -1,42 +1,11 @@
 open LibUtil
 open Structure
-let get_prev_loc_only = ref false
 let empty_entry ename _ =
   raise (XStream.Error ("entry [" ^ (ename ^ "] is empty")))
-let keep_prev_loc (strm : ('c* FanLoc.t) XStream.t) =
-  (match XStream.peek strm with
-   | None  -> XStream.sempty
-   | Some (tok0,init_loc) ->
-       let rec go prev_loc strm1 =
-         if get_prev_loc_only.contents
-         then
-           XStream.lcons
-             (fun _  ->
-                (tok0,
-                  { prev_loc; cur_loc = prev_loc; prev_loc_only = true }))
-             (XStream.slazy (fun _  -> go prev_loc strm1))
-         else
-           (let (__strm :_ XStream.t)= strm1 in
-            match XStream.peek __strm with
-            | Some (tok,cur_loc) ->
-                (XStream.junk __strm;
-                 (let strm = __strm in
-                  XStream.lcons
-                    (fun _  ->
-                       (tok, { prev_loc; cur_loc; prev_loc_only = false }))
-                    (XStream.slazy (fun _  -> go cur_loc strm))))
-            | _ -> XStream.sempty) in
-       go init_loc strm : ('c* token_info) XStream.t )
-let drop_prev_loc strm =
-  XStream.map (fun (tok,r)  -> (tok, (r.cur_loc))) strm
 let get_cur_loc strm =
-  match XStream.peek strm with
-  | Some (_,r) -> r.cur_loc
-  | None  -> FanLoc.ghost
+  match XStream.peek strm with | Some (_,r) -> r | None  -> FanLoc.ghost
 let get_prev_loc strm =
-  match XStream.get_last strm with
-  | Some (_,{ cur_loc = l;_}) -> l
-  | None  -> FanLoc.ghost
+  match XStream.get_last strm with | Some (_,l) -> l | None  -> FanLoc.ghost
 let is_level_labelled n =
   function | { lname = Some n1;_} -> n = n1 | _ -> false
 let warning_verbose = ref true

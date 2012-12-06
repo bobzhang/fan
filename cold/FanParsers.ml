@@ -2119,10 +2119,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
       (let symb1 = Gram.parse_origin_tokens expr in
        let symb (__strm : _ XStream.t) =
          match XStream.peek __strm with
-         | Some (`ANT (("list" as n),s),ti) ->
-             (XStream.junk __strm;
-              (let _loc = Gram.token_location ti in
-               Ast.ExAnt (_loc, (mk_anti ~c:"expr;" n s))))
+         | Some (`ANT (("list" as n),s),_loc) ->
+             (XStream.junk __strm; Ast.ExAnt (_loc, (mk_anti ~c:"expr;" n s)))
          | _ -> symb1 __strm in
        let rec kont al (__strm : _ XStream.t) =
          match XStream.peek __strm with
