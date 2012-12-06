@@ -1487,19 +1487,23 @@ New syntax:\
     with "ident"
     {:extend|Gram
       a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
-      ident:   (* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*)
-      [ `ANT ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-      | a_UIDENT{i} -> {| $uid:i |}
-      | a_LIDENT{i} -> {| $lid:i |}
-      | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
-      | a_UIDENT{i}; "."; S{j} -> {| $uid:i.$j |} ]
-      (* ident: *)
-      (* [ `ANT ((""|"id"|"anti"|"list" |"uid"|"lid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |} *)
-      (* (\* | `ANT (("uid"|"lid" as n), s) -> {|$(anti:mk_anti ~c:"ident" n s)|} *\) *)
-      (* | `ANT ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |} *)
-      (* | `LID i -> {| $lid:i |} *)
-      (* | `UID i -> {| $uid:i |} *)
-      (* | `UID s ; "." ; S{j} -> {|$uid:s.$j|}  ] *)
+      (* ident:   (\* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*\) *)
+      (* [ `ANT ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |} *)
+      (* | a_UIDENT{i} -> {| $uid:i |} *)
+      (* | a_LIDENT{i} -> {| $lid:i |} *)
+      (* | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |} *)
+      (* | a_UIDENT{i}; "."; S{j} -> {| $uid:i.$j |} ] *)
+      ident:
+      [ `ANT ((""|"id"|"anti"|"list" |"uid"|"lid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      (* | `ANT (("uid"|"lid" as n), s) -> {|$(anti:mk_anti ~c:"ident" n s)|} *)
+      | `ANT ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s); "."; S{i} ->
+          if n = "lid" then
+            failwithf "antiquot lid is not supported here"
+          else
+            {| $(anti:mk_anti ~c:"ident" n s).$i |}
+      | `LID i -> {| $lid:i |}
+      | `UID i -> {| $uid:i |}
+      | `UID s ; "." ; S{j} -> {|$uid:s.$j|}  ]
       module_longident_dot_lparen:
       [ `ANT ((""|"id"|"anti"|"list" as n),s); "."; "(" ->   {| $(anti:mk_anti ~c:"ident" n s) |}
       | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
