@@ -30,30 +30,30 @@ let opt ps ~f = parser
   | [< >] -> f None ];
 
 let tryp ps strm =
-  let strm' = Stream.dup strm in
+  let strm' = XStream.dup strm in
   let r =
     try ps strm'
     with
-    [ Stream.Error _ | FanLoc.Exc_located (_, (Stream.Error _)) ->
-        raise Stream.Failure
+    [ XStream.Error _ | FanLoc.Exc_located (_, (XStream.Error _)) ->
+        raise XStream.Failure
     | exc -> raise exc ] in begin 
-        Stream.njunk (Stream.count strm') strm ;
+        XStream.njunk (XStream.count strm') strm ;
         r;
     end;
   
 let peek ps strm =
-  let strm' = Stream.dup strm in
+  let strm' = XStream.dup strm in
   let r =
     try ps strm'
     with
-    [ Stream.Error _ | FanLoc.Exc_located (_, (Stream.Error _)) ->
-        raise Stream.Failure
+    [ XStream.Error _ | FanLoc.Exc_located (_, (XStream.Error _)) ->
+        raise XStream.Failure
     | exc -> raise exc ] in begin 
-        (* Stream.njunk (Stream.count strm') strm ; *)
+        (* XStream.njunk (XStream.count strm') strm ; *)
         r;
     end;
 let orp ?(msg="") p1 p2 = parser
   [ [< a = p1>] -> a
   | [< a = p2 >] -> a
-  | [<>] -> raise (Stream.Error msg) ];
+  | [<>] -> raise (XStream.Error msg) ];
 

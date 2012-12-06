@@ -1,6 +1,19 @@
 open Format
-open LibUtil
-open FanSig
+type quotation = 
+  {
+  q_name: string;
+  q_loc: string;
+  q_shift: int;
+  q_contents: string} 
+type token =
+  [ `KEYWORD of string | `SYMBOL of string | `LID of string | `UID of string
+  | `ESCAPED_IDENT of string | `INT of (int* string)
+  | `INT32 of (int32* string) | `INT64 of (int64* string)
+  | `NATIVEINT of (nativeint* string) | `FLO of (float* string)
+  | `CHAR of (char* string) | `STR of (string* string) | `LABEL of string
+  | `OPTLABEL of string | `QUOTATION of quotation | `ANT of (string* string)
+  | `COMMENT of string | `BLANKS of string | `NEWLINE
+  | `LINE_DIRECTIVE of (int* string option) | `EOI] 
 type error =  
   | Illegal_token of string
   | Keyword_as_label of string
@@ -15,11 +28,14 @@ let print_basic_error ppf =
   | Illegal_token_pattern (p_con,p_prm) ->
       fprintf ppf "Illegal token pattern: %s %S" p_con p_prm
   | Illegal_constructor con -> fprintf ppf "Illegal constructor %S" con
+let to_string_of_printer printer v =
+  let buf = Buffer.create 30 in
+  let () = Format.bprintf buf "@[%a@]" printer v in Buffer.contents buf
 let string_of_error_msg = to_string_of_printer print_basic_error
 let _ =
   Printexc.register_printer
     (function | TokenError e -> Some (string_of_error_msg e) | _ -> None)
-let to_string: [> FanSig.token] -> string =
+let to_string: [> token] -> string =
   function
   | `KEYWORD s -> sprintf "`KEYWORD %S" s
   | `SYMBOL s -> sprintf "`SYMBOL %S" s
@@ -54,19 +70,19 @@ let error_no_respect_rules p_con p_prm =
   raise (TokenError (Illegal_token_pattern (p_con, p_prm)))
 let check_keyword _ = true
 let error_on_unknown_keywords = ref false
-let rec ignore_layout (__strm : _ Stream.t) =
-  match Stream.peek __strm with
+let rec ignore_layout (__strm : _ XStream.t) =
+  match XStream.peek __strm with
   | Some ((`COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _),_) ->
-      (Stream.junk __strm; ignore_layout __strm)
+      (XStream.junk __strm; ignore_layout __strm)
   | Some x ->
-      (Stream.junk __strm;
+      (XStream.junk __strm;
        (let s = __strm in
-        Stream.icons x (Stream.slazy (fun _  -> ignore_layout s))))
-  | _ -> Stream.sempty
+        XStream.icons x (XStream.slazy (fun _  -> ignore_layout s))))
+  | _ -> XStream.sempty
 let print ppf x = pp_print_string ppf (token_to_string x)
 let match_keyword kwd =
   function | `KEYWORD kwd' when kwd = kwd' -> true | _ -> false
-let extract_string: [> FanSig.token] -> string =
+let extract_string: [> token] -> string =
   function
   | `KEYWORD s|`SYMBOL s|`LID s|`UID s|`INT (_,s)|`INT32 (_,s)|`INT64 (_,s)|
       `NATIVEINT (_,s)|`FLO (_,s)|`CHAR (_,s)|`STR (_,s)|`LABEL s|`OPTLABEL s|
@@ -84,13 +100,3 @@ let check_keyword_as_label tok loc is_kwd =
   if (s <> "") && (is_kwd s) then err (Keyword_as_label s) loc else ()
 let check_unknown_keywords tok loc =
   match tok with | `SYMBOL s -> err (Illegal_token s) loc | _ -> ()
-module Filter = struct
-  let mk ~is_kwd  = { is_kwd; filter = ignore_layout }
-  let filter x =
-    let f (tok,loc) =
-      let tok = keyword_conversion tok x.is_kwd in
-      check_keyword_as_label tok loc x.is_kwd; (tok, loc) in
-    fun strm  -> x.filter (Stream.map f strm)
-  let define_filter x f = x.filter <- f x.filter let keyword_added _ _ _ = ()
-  let keyword_removed _ _ = ()
-  end

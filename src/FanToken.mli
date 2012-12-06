@@ -53,7 +53,7 @@ val check_keyword : 'a -> bool
 val error_on_unknown_keywords : bool ref
 
 val ignore_layout :
-  (([>  (* FanSig. *)token ] as 'a) * 'e) Stream.t -> ('a * 'e) Stream.t
+  (([>  (* FanSig. *)token ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t
 
 val print : Format.formatter -> [> (* FanSig. *)token ] -> unit
 
@@ -76,8 +76,8 @@ val check_unknown_keywords : [> `SYMBOL of string ] -> FanLoc.t -> unit
 (*     val mk : is_kwd:(string -> bool) -> FanSig.filter *)
 (*     val filter : *)
 (*       FanSig.filter -> *)
-(*       (FanSig.token * FanLoc.t) Stream.t -> *)
-(*       (FanSig.token * FanLoc.t) Stream.t *)
+(*       (FanSig.token * FanLoc.t) XStream.t -> *)
+(*       (FanSig.token * FanLoc.t) XStream.t *)
 (*     val define_filter : *)
 (*       FanSig.filter -> (FanSig.token_filter -> FanSig.token_filter) -> unit *)
 (*     val keyword_added : 'a -> 'b -> 'c -> unit *)

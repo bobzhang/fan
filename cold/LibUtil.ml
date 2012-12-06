@@ -1,5 +1,6 @@
 open Format
 let failwithf fmt = ksprintf failwith fmt
+let prerr_endlinef fmt = ksprintf prerr_endline fmt
 module MapMake(S:Map.OrderedType) = struct
   include Map.Make(S)
   let of_list lst = List.fold_left (fun acc  (k,v)  -> add k v acc) empty lst
@@ -139,43 +140,51 @@ module type STREAM =
     val tail : 'a t -> 'a t
     val map : ('a -> 'b) -> 'a t -> 'b t
     val dup : 'a t -> 'a t
-    val peek_nth : 'a Stream.t -> int -> 'a option
-    val njunk : int -> 'a Stream.t -> unit
+    val peek_nth : 'a t -> int -> 'a option
+    val njunk : int -> 'a t -> unit
   end
-module Stream =
-  (struct
-    include BatStream include Stream
-    let rev strm =
-      let rec aux (__strm : _ Stream.t) =
-        match Stream.peek __strm with
-        | Some x ->
-            (Stream.junk __strm;
-             (let xs = __strm in
-              Stream.lapp (fun _  -> aux xs) (Stream.ising x)))
-        | _ -> Stream.sempty in
-      aux strm
-    let tail (__strm : _ Stream.t) =
-      match Stream.peek __strm with
-      | Some _ -> (Stream.junk __strm; __strm)
-      | _ -> Stream.sempty
-    let rec map f (__strm : _ Stream.t) =
-      match Stream.peek __strm with
+module XStream = struct
+  include XStream
+  let rev strm =
+    let rec aux (__strm : _ XStream.t) =
+      match XStream.peek __strm with
       | Some x ->
-          (Stream.junk __strm;
+          (XStream.junk __strm;
            (let xs = __strm in
-            Stream.lcons (fun _  -> f x) (Stream.slazy (fun _  -> map f xs))))
-      | _ -> Stream.sempty
-    let peek_nth strm n =
-      let rec loop i =
-        function
-        | x::xs -> if i = 0 then Some x else loop (i - 1) xs
-        | [] -> None in
-      if n < 0
-      then invalid_arg "Stream.peek_nth"
-      else loop n (Stream.npeek (n + 1) strm)
-    let dup strm = Stream.from (peek_nth strm)
-    let njunk n strm = for _i = 1 to n do Stream.junk strm done
-    end : (STREAM with type 'a t = 'a Stream.t ))
+            XStream.lapp (fun _  -> aux xs) (XStream.ising x)))
+      | _ -> XStream.sempty in
+    aux strm
+  let tail (__strm : _ XStream.t) =
+    match XStream.peek __strm with
+    | Some _ -> (XStream.junk __strm; __strm)
+    | _ -> XStream.sempty
+  let rec map f (__strm : _ XStream.t) =
+    match XStream.peek __strm with
+    | Some x ->
+        (XStream.junk __strm;
+         (let xs = __strm in
+          XStream.lcons (fun _  -> f x) (XStream.slazy (fun _  -> map f xs))))
+    | _ -> XStream.sempty
+  let peek_nth strm n =
+    let rec loop i =
+      function
+      | x::xs -> if i = 0 then Some x else loop (i - 1) xs
+      | [] -> None in
+    if n < 0
+    then invalid_arg "XStream.peek_nth"
+    else loop n (XStream.npeek (n + 1) strm)
+  let dup strm = XStream.from (peek_nth strm)
+  let njunk n strm = for _i = 1 to n do XStream.junk strm done
+  let rec filter f (__strm : _ XStream.t) =
+    match XStream.peek __strm with
+    | Some x ->
+        (XStream.junk __strm;
+         (let xs = __strm in
+          if f x
+          then XStream.icons x (XStream.slazy (fun _  -> filter f xs))
+          else XStream.slazy (fun _  -> filter f xs)))
+    | _ -> XStream.sempty
+  end
 module ErrorMonad = struct
   type log = string  type 'a result =  
                        | Left of 'a

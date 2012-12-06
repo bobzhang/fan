@@ -18,7 +18,7 @@ end;
 type gram = {
     gfilter         : FanTokenFilter.filter;
     gkeywords       : Hashtbl.t string (ref int);
-    glexer          : FanLoc.t -> Stream.t char -> Stream.t (FanToken.token * FanLoc.t);
+    glexer          : FanLoc.t -> XStream.t char -> XStream.t (FanToken.token * FanLoc.t);
     warning_verbose : ref bool;
     error_verbose   : ref bool };
 
@@ -33,7 +33,7 @@ let ghost_token_info = {
   prev_loc_only = false;};
   (* with neighbor token info stored*)  
 
-type token_stream = Stream.t (FanToken.token * token_info);
+type token_stream = XStream.t (FanToken.token * token_info);
 
 open Format;
 let pp = fprintf;
@@ -108,11 +108,11 @@ type delete_statment = list symbol;
 
 type fold 'a 'b 'c =
     internal_entry -> list symbol ->
-      (Stream.t 'a -> 'b) -> Stream.t 'a -> 'c;
+      (XStream.t 'a -> 'b) -> XStream.t 'a -> 'c;
 
 type foldsep 'a 'b 'c =
     internal_entry -> list symbol ->
-      (Stream.t 'a -> 'b) -> (Stream.t 'a -> unit) -> Stream.t 'a -> 'c;
+      (XStream.t 'a -> 'b) -> (XStream.t 'a -> unit) -> XStream.t 'a -> 'c;
 
 let get_filter g = g.gfilter;
 let token_location r = r.cur_loc;

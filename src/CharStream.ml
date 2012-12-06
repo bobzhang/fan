@@ -251,5 +251,5 @@ and dump_data f =
 (* (\* new stream ~data:(iapp s1#data s2#data) *\) *)
 (*   (\* method icons v s = new stream (icons v s#data) *\) *)
 (*   (\* method lapp f s = new stream (lapp f s#data) *\) *)
-(*   (\* method from = Stream.from *\) *)
+(*   (\* method from = XStream.from *\) *)
 (* end;; *)

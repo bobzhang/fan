@@ -1,13 +1,13 @@
 
 
 
-type t = (Stream.t (string * FanLoc.t) * Queue.t (string * FanLoc.t));
+type t = (XStream.t (string * FanLoc.t) * Queue.t (string * FanLoc.t));
 let mk () =
   let q = Queue.create () in
   let f _ =
     debug comments "take...@\n" in
   try Some (Queue.take q) with [ Queue.Empty -> None ]
-  in (Stream.from f, q);
+  in (XStream.from f, q);
 
 let filter (_, q) =
   let rec self = parser

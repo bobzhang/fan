@@ -15,9 +15,9 @@ module type S =
     val default_at_pos : string -> string -> unit
     val parse_quotation_result :
       (FanLoc.t -> string -> 'a) ->
-        FanLoc.t -> FanSig.quotation -> string -> string -> 'a
+        FanLoc.t -> FanToken.quotation -> string -> string -> 'a
     val translate : (string -> string) ref
-    val expand : FanLoc.t -> FanSig.quotation -> 'a DynAst.tag -> 'a
+    val expand : FanLoc.t -> FanToken.quotation -> 'a DynAst.tag -> 'a
     val dump_file : string option ref
     val add_quotation :
       string ->
@@ -111,7 +111,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
        | QuotationError x -> Some (quotation_error_to_string x)
        | _ -> None)
   let expand_quotation loc expander pos_tag quot =
-    let open FanSig in
+    let open FanToken in
       let loc_name_opt = if quot.q_loc = "" then None else Some (quot.q_loc) in
       try expander loc loc_name_opt quot.q_contents
       with | FanLoc.Exc_located (_,QuotationError _) as exc -> raise exc
@@ -122,7 +122,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
           let exc1 = QuotationError ((quot.q_name), pos_tag, Expanding, exc) in
           raise (FanLoc.Exc_located (loc, exc1))
   let parse_quotation_result parse loc quot pos_tag str =
-    let open FanSig in
+    let open FanToken in
       try parse loc str
       with
       | FanLoc.Exc_located (iloc,QuotationError (n,pos_tag,Expanding ,exc))
@@ -137,7 +137,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
           let exc1 = QuotationError ((quot.q_name), pos_tag, ctx, exc) in
           raise (FanLoc.Exc_located (iloc, exc1))
   let expand loc quotation tag =
-    let open FanSig in
+    let open FanToken in
       let pos_tag = DynAst.string_of_tag tag in
       let name = quotation.q_name in
       let find name tag =

@@ -251,16 +251,16 @@ let rev strm=
       [ [x :: xs] -> if i = 0 then Some x else loop (i - 1) xs
       | [] -> None ] in
     if n < 0 then
-      invalid_arg "Stream.peek_nth"
-    else loop n (Stream.npeek (n+1) strm);
+      invalid_arg "XStream.peek_nth"
+    else loop n (XStream.npeek (n+1) strm);
 
   (*  Used by [try_parser], very in-efficient 
-      This version of peek_nth is off-by-one from Stream.peek_nth *)      
+      This version of peek_nth is off-by-one from XStream.peek_nth *)      
   let dup strm = 
-    Stream.from (peek_nth strm);
+    XStream.from (peek_nth strm);
   
   let njunk  n strm  =
-    for _i = 1 to n do Stream.junk strm done; (* FIXME unsed  index i*)
+    for _i = 1 to n do XStream.junk strm done; (* FIXME unsed  index i*)
     
    (* let rec filter f = parser *)
    (*  [ [< x; 'xs>] -> [<>]]    *)

@@ -47,7 +47,7 @@ let string_of_patt patt =
 let check_not_tok s = 
     match s with
     [ {text = `TXtok (_loc, _, _, _) ;_} ->
-        FanLoc.raise _loc (Stream.Error
+        FanLoc.raise _loc (XStream.Error
           ("Deprecated syntax, use a sub rule. "^
            "L0 STRING becomes L0 [ x = STRING -> x ]"))
     | _ -> () ];
@@ -100,7 +100,7 @@ let  make_ctyp  styp tvar =
     | `STself (_loc, x) ->
         if tvar = "" then
           FanLoc.raise _loc
-            (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
+            (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else {| '$tvar |}
     | `STtok _loc ->  {| [> FanToken.token ] |}  (* BOOTSTRAPPING*)
     | `STtyp t -> t ] in

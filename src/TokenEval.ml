@@ -35,11 +35,11 @@ let chr c =
 
 (*
   {[
-  backslash (Stream.of_string "321");;
+  backslash (XStream.of_string "321");;
   Exception: Failure "invalid char token".
-  backslash (Stream.of_string "255");;
+  backslash (XStream.of_string "255");;
   - : char = '\255'
-  backslash (Stream.of_string "xff");;
+  backslash (XStream.of_string "xff");;
   - : char = '\255'
   '\255';;
   - : char = '\255'
@@ -82,7 +82,7 @@ let  backslash_in_string strict store = parser
 let char s =
   if String.length s = 1 then s.[0] (* normal *)
   else if String.length s = 0 then failwith "invalid char token"
-  else match Stream.of_string s with parser
+  else match XStream.of_string s with parser
     [ [< '\\'; x = backslash >] -> x
     | [< >] -> failwith "invalid char token" ];
 
@@ -102,7 +102,7 @@ let string ?strict s =
     [ [< '\\'; _ = backslash_in_string (strict <> None) store; 's >] -> parse s
     | [< c; 's >] ->  begin store c; parse s end
     | [< >] -> Buffer.contents buf ]
-  in parse (Stream.of_string s);
+  in parse (XStream.of_string s);
         
 
 

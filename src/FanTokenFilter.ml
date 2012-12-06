@@ -33,7 +33,7 @@ open LibUtil;
       (*       [< x; 'tracer xs >] *)
       (*   | [< >] -> [< >] ] *)
   (* in fun strm -> tracer (x.filter (filter strm)); *)
-    fun strm -> x.filter (Stream.map f strm);
+    fun strm -> x.filter (XStream.map f strm);
 
   let define_filter x f = x.filter <- f x.filter;
 

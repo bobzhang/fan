@@ -112,7 +112,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     let loc = FanLoc.mk name in
     PreCast.Syntax.current_warning := print_warning;
     (let ic = if name = "-" then stdin else open_in_bin name in
-     let cs = Stream.of_channel ic in
+     let cs = XStream.of_channel ic in
      let clear () = if name = "-" then () else close_in ic in
      let phr =
        try pa ?directive_handler loc cs with | x -> (clear (); raise x) in
@@ -130,7 +130,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
         (PreCast.Syntax.Quotation.default := s; None)
     | Ast.SgDir (loc,x,_) ->
         FanLoc.raise loc
-          (Stream.Error (x ^ " is abad directive camlp4 can not handled "))
+          (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
     | _ -> assert false
   let rec str_handler =
     function
@@ -145,7 +145,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
         (PreCast.Syntax.Quotation.default := s; None)
     | Ast.StDir (loc,x,_) ->
         FanLoc.raise loc
-          (Stream.Error (x ^ "bad directive camlp4 can not handled "))
+          (XStream.Error (x ^ "bad directive camlp4 can not handled "))
     | _ -> assert false
   let process ?directive_handler  name pa pr clean fold_filters =
     (((parse_file ?directive_handler name pa) |>

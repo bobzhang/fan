@@ -25,7 +25,7 @@ let check_not_tok s =
   match s with
   | { text = `TXtok (_loc,_,_,_);_} ->
       FanLoc.raise _loc
-        (Stream.Error
+        (XStream.Error
            ("Deprecated syntax, use a sub rule. " ^
               "L0 STRING becomes L0 [ x = STRING -> x ]"))
   | _ -> ()
@@ -79,7 +79,7 @@ let make_ctyp styp tvar =
         if tvar = ""
         then
           FanLoc.raise _loc
-            (Stream.Error ("'" ^ (x ^ "' illegal in anonymous entry level")))
+            (XStream.Error ("'" ^ (x ^ "' illegal in anonymous entry level")))
         else Ast.TyQuo (_loc, tvar)
     | `STtok _loc ->
         Ast.TyVrnSup

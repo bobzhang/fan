@@ -13,8 +13,8 @@ let normal_handler =
   | Failure str -> Some (sprintf "Failure: %S" str)
   | Invalid_argument str -> Some (sprintf "Invalid argument: %S" str)
   | Sys_error str -> Some (sprintf "I/O error: %S" str)
-  | Stream.Failure  -> Some (sprintf "Parse failure")
-  | Stream.Error str -> Some (sprintf "Stream.Error %s" str)
+  | XStream.Failure  -> Some (sprintf "Parse failure")
+  | XStream.Error str -> Some (sprintf "XStream.Error %s" str)
   | _ -> None
 let _ = Printexc.register_printer normal_handler
 let valid_float_lexeme s =

@@ -35,7 +35,7 @@ module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
     let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
     {:expr|
         try $e  with
-        [ Stream.Failure | Exit as exc -> raise exc
+        [ XStream.Failure | Exit as exc -> raise exc
         | exc -> begin
             if Debug.mode "exc" then
               Format.eprintf $`str:msg (Printexc.to_string exc) else ();

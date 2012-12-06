@@ -143,7 +143,7 @@ let check_keyword _ = true;
      match next () with
      [ SYMBOL _ | UIDENT _ | LIDENT _ -> (next () = EOI)
      | _ -> false ]
-     with [ Stream.Error _ -> false ];                        *)
+     with [ XStream.Error _ -> false ];                        *)
 
 let error_on_unknown_keywords = ref false;
 

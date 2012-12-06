@@ -516,7 +516,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
         with [ Not_found -> file ]
       in
       let ch = open_in file in
-      let st = Stream.of_channel ch in
+      let st = XStream.of_channel ch in
         Gram.parse entry (FanLoc.mk file) st;
 
   let rec execute_macro nil cons = fun
@@ -911,7 +911,7 @@ New syntax:\
       | ":"; poly_type{t}; "="; expr{e} -> {| ($e : $t) |}
       | ":"; poly_type{t}; ":>"; ctyp{t2}; "="; expr{e} ->
           match t with
-          [ {:ctyp| ! $_ . $_ |} -> raise (Stream.Error "unexpected polytype here")
+          [ {:ctyp| ! $_ . $_ |} -> raise (XStream.Error "unexpected polytype here")
           | _ -> {| ($e : $t :> $t2) |} ]
       | ":>"; ctyp{t}; "="; expr{e} -> {| ($e :> $t) |} ]
       fun_binding:
@@ -1411,7 +1411,7 @@ New syntax:\
        "." LA
         [ S{t1}; "."; S{t2} ->
             try {| $(id:Ast.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) |}
-            with [ Invalid_argument s -> raise (Stream.Error s) ] ]
+            with [ Invalid_argument s -> raise (XStream.Error s) ] ]
        "simple"
         [ "'"; a_ident{i} -> {| '$i |}
         | "_" -> {| _ |}
@@ -1726,19 +1726,19 @@ New syntax:\
         | value_val_opt_override{o}; opt_mutable{mf}; "virtual"; label{l}; ":";
               poly_type{t} ->
             if o <> {:override_flag||} then
-              raise (Stream.Error "override (!) is incompatible with virtual")
+              raise (XStream.Error "override (!) is incompatible with virtual")
             else
               {| val virtual $mutable:mf $l : $t |}
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; label{l}; ":";
                 poly_type{t} ->
             if o <> {:override_flag||} then
-              raise (Stream.Error "override (!) is incompatible with virtual")
+              raise (XStream.Error "override (!) is incompatible with virtual")
             else
               {| val virtual $mutable:mf $l : $t |}
         | method_opt_override{o}; "virtual"; opt_private{pf}; label{l}; ":";
                 poly_type{t} ->
             if o <> {:override_flag||} then
-              raise (Stream.Error "override (!) is incompatible with virtual")
+              raise (XStream.Error "override (!) is incompatible with virtual")
             else
               {| method virtual $private:pf $l : $t |}
         | method_opt_override{o}; opt_private{pf}; label{l}; opt_polyt{topt};
@@ -1747,7 +1747,7 @@ New syntax:\
         | method_opt_override{o}; opt_private{pf}; "virtual"; label{l}; ":";
              poly_type{t} ->
             if o <> {:override_flag||} then
-              raise (Stream.Error "override (!) is incompatible with virtual")
+              raise (XStream.Error "override (!) is incompatible with virtual")
             else
               {| method virtual $private:pf $l : $t |}
         | type_constraint; ctyp{t1}; "="; ctyp{t2} ->  {| type $t1 = $t2 |}

@@ -5,9 +5,9 @@ let wrap parse_fun lb =
   let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
   let token_stream = Gram.filter not_filtered_token_stream in
   try
-    let (__strm :_ Stream.t)= token_stream in
-    match Stream.peek __strm with
-    | Some (`EOI,_) -> (Stream.junk __strm; raise End_of_file)
+    let (__strm :_ XStream.t)= token_stream in
+    match XStream.peek __strm with
+    | Some (`EOI,_) -> (XStream.junk __strm; raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
@@ -29,7 +29,7 @@ let toplevel_phrase token_stream =
   | None  -> raise End_of_file
 let fake token_stream =
   (try
-     Stream.iter
+     XStream.iter
        (fun (tok,_)  ->
           if tok = (`INT (3, "3"))
           then raise Not_found
@@ -82,3 +82,6 @@ let _ =
 let normal () = Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 let revise () = Toploop.parse_toplevel_phrase := revise_parser
 let token () = Toploop.parse_toplevel_phrase := (wrap fake)
+let _ =
+  Hashtbl.replace Toploop.directive_table "revise"
+    (Toploop.Directive_none (fun ()  -> revise ()))

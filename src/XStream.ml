@@ -15,7 +15,7 @@
    the empty stream. This is type safe because the empty stream is never
    patched. *)
 
-type 'a t = { count : int; data : 'a data }
+type 'a t = { count : int; data : 'a data; (* mutable *) last: 'a option }
 and 'a data =
     Sempty
   | Scons of 'a * 'a data
@@ -32,6 +32,8 @@ exception Error of string;;
 
 external count : 'a t -> int = "%field0";;
 external set_count : 'a t -> int -> unit = "%setfield0";;
+let set_last (s: 'a t) (v:'a option) =
+  Obj.set_field (Obj.repr s) 2 (Obj.repr v);;
 let set_data (s : 'a t) (d : 'a data) =
   Obj.set_field (Obj.repr s) 1 (Obj.repr d)
 ;;
@@ -110,23 +112,46 @@ let rec peek s =
      else Some (Obj.magic (String.unsafe_get b.buff b.ind))
 ;;
 
-let rec junk  s =
+let rec junk s =
   match s.data with
-    Scons (_, d) -> set_count s (succ s.count); set_data s d
-  | Sgen ({curr = Some _;_} as g) -> set_count s (succ s.count); g.curr <- None
-  | Sbuffio b -> set_count s (succ s.count); b.ind <- succ b.ind
+    Scons (a, d) -> set_count s (succ s.count); set_data s d; set_last s (Some a) ;
+  | Sgen ({curr = Some a; _ } as g) ->
+      set_count s (succ s.count); g.curr <- None; set_last s a;
+  | Sbuffio b ->
+      set_count s (succ s.count);
+      set_last s (Some (Obj.magic b.buff.[s.count - 1]));
+      b.ind <- succ b.ind;
+
   | _ ->
       match peek s with
         None -> ()
       | Some _ -> junk s
 ;;
 
+(* don't set last field *)
+let rec fake_junk s =
+  match s.data with
+    Scons (_a, d) -> set_count s (succ s.count); set_data s d; (* set_last s (Some a) ; *)
+  | Sgen ({curr = Some _a; _ } as g) ->
+      set_count s (succ s.count); g.curr <- None; (* set_last s a; *)
+  | Sbuffio b ->
+      set_count s (succ s.count);
+      (* set_last s (Some (Obj.magic b.buff.[s.count - 1])); *)
+      b.ind <- succ b.ind;
+
+  | _ ->
+      match peek s with
+        None -> ()
+      | Some _ -> fake_junk s
+;;
+
+(* Used only in npeek, and call [fake_junk] *)
 let rec nget n s =
   if n <= 0 then [], s.data, 0
   else
     match peek s with
       Some a ->
-        junk s;
+        fake_junk s;
         let (al, d, k) = nget (pred n) s in a :: al, Scons (a, d), succ k
     | None -> [], s.data, 0
 ;;
@@ -158,10 +183,10 @@ let iter f strm =
 
 (* Stream building functions *)
 
-let from f = {count = 0; data = Sgen {curr = None; func = f}};;
+let from f = {count = 0; data = Sgen {curr = None; func = f}; last = None};;
 
 let of_list l =
-  {count = 0; data = List.fold_right (fun x l -> Scons (x, l)) l Sempty}
+  {count = 0; data = List.fold_right (fun x l -> Scons (x, l)) l Sempty; last = None}
 ;;
 
 let of_string s =
@@ -170,7 +195,9 @@ let of_string s =
 
 let of_channel ic =
   {count = 0;
-   data = Sbuffio {ic = ic; buff = String.create 4096; len = 0; ind = 0}}
+   data = Sbuffio {ic = ic; buff = String.create 4096; len = 0; ind = 0};
+   last = None
+ }
 ;;
 
 (* Stream expressions builders *)
@@ -180,16 +207,16 @@ let of_channel ic =
    when the parameter stream is forced (see update code in [get_data]
    and [peek]). *)
 
-let ising i = {count = 0; data = Scons (i, Sempty)};;
-let icons i s = {count = s.count - 1; data = Scons (i, s.data)};;
-let iapp i s = {count = i.count; data = Sapp (i.data, s)};;
+let ising i = {count = 0; data = Scons (i, Sempty); last = None};;
+let icons i s = {count = s.count - 1; data = Scons (i, s.data); last = None};;
+let iapp i s = {count = i.count; data = Sapp (i.data, s); last = None};;
 
-let sempty = {count = 0; data = Sempty};;
-let slazy f = {count = 0; data = Slazy (lazy (f()))};;
+let sempty = {count = 0; data = Sempty; last = None};;
+let slazy f = {count = 0; data = Slazy (lazy (f())); last = None};;
 
-let lsing f = {count = 0; data = Slazy (lazy (ising (f())))};;
-let lcons f s = {count = 0; data = Slazy (lazy (icons (f()) s))};;
-let lapp f s = {count = 0; data = Slazy (lazy(iapp (f()) s))};;
+let lsing f = {count = 0; data = Slazy (lazy (ising (f()))); last = None};;
+let lcons f s = {count = 0; data = Slazy (lazy (icons (f()) s)); last = None};;
+let lapp f s = {count = 0; data = Slazy (lazy(iapp (f()) s)); last = None};;
 
 (* For debugging use *)
 
@@ -220,26 +247,4 @@ and dump_data f =
   | Sbuffio _b -> print_string "Sbuffio"
 ;;
 
-
-(* class ['a] stream ~data:(data:'a t) = object *)
-(*   val mutable data = data  *)
-(*   method iter (f:'a ->unit) =  iter f data *)
-(*   method next = next data *)
-(*   method empty = empty data *)
-(*   method peek = peek data *)
-(*   method junk = junk data *)
-(*   method count = count data *)
-(*   method npeek i = npeek i data *)
-(*   method data = data *)
-(*   method iapp (s2: 'a stream) = *)
-(*     data <- iapp data s2#data *)
-(*   method icons v = *)
-(*     data <- icons v data *)
-(*   method ising v = *)
-(*     data <- ising v *)
-(*   (\* method lapp  *\) *)
-(* (\* new stream ~data:(iapp s1#data s2#data) *\) *)
-(*   (\* method icons v s = new stream (icons v s#data) *\) *)
-(*   (\* method lapp f s = new stream (lapp f s#data) *\) *)
-(*   (\* method from = Stream.from *\) *)
-(* end;; *)
+let get_last v = v.last;;

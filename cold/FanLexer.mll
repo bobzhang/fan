@@ -3,22 +3,6 @@
 
 {
 
-(** A lexical analyzer. *)
-
-
-(* type context =
-{ loc        : FanLoc.t    ;
-  in_comment : bool     ;
-   |+* FIXME When true, all lexers built by [Plexer.make ()] do not lex the
-       quotation syntax any more. Default is false (quotations are
-       lexed). +|
-  quotations : bool     };
-
-let default_context : context;
-
-let mk : FanLoc.t -> Stream.t char -> Stream.t (Token.t * FanLoc.t);
-
-let mk' : context -> Stream.t char -> Stream.t (Token.t * FanLoc.t);              *)
 (* FIXME Beware the context argument must be given like that:
  * mk' { (default_context) with ... = ... } strm
  *)
@@ -185,7 +169,7 @@ let parse f c =
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
   let s = parse_nested ~lexer:quotation ({c with loc = Lexing.lexeme_start_p  c.lexbuf}) in
   let contents = String.sub s 0 (String.length s - retract) in
-  `QUOTATION {FanSig.q_name     = name     ;
+  `QUOTATION {FanToken.q_name     = name     ;
               q_loc      = loc      ;
               q_shift    = shift    ;
               q_contents = contents }
@@ -224,6 +208,7 @@ let ident = (lowercase|uppercase) identchar*
 let quotation_name= ident ('.'ident)*
 let locname = ident
 let lident = lowercase identchar *
+let antifollowident =   identchar +   
 let uident = uppercase identchar *
     
 let not_star_symbolchar =
@@ -340,7 +325,7 @@ rule token c = parse
                c                       }
        | "{||}"
            { if quotations c
-           then `QUOTATION { FanSig.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
+           then `QUOTATION { FanToken.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
            else parse
                (symbolchar_star "{||}") c}
        | "{@"
@@ -354,15 +339,9 @@ rule token c = parse
            [^ '\010' '\013'] * newline
            { let inum = int_of_string num in
            update_loc c ?file:name ~line:inum ~absolute:true ; `LINE_DIRECTIVE(inum, name)            }
-       | '(' (not_star_symbolchar as op) ')'
-           { `ESCAPED_IDENT (String.make 1 op) }
-       | '(' (not_star_symbolchar symbolchar* not_star_symbolchar as op) ')'
+       | '(' (not_star_symbolchar symbolchar* as op) blank* ')'
            { `ESCAPED_IDENT op }
-       | '(' (not_star_symbolchar symbolchar* as op) blank+ ')'
-           { `ESCAPED_IDENT op }
-       | '(' blank+ (symbolchar* not_star_symbolchar as op) ')'
-           { `ESCAPED_IDENT op }
-       | '(' blank+ (symbolchar+ as op) blank+ ')'
+       | '(' blank+ (symbolchar+ as op) blank* ')'
            { `ESCAPED_IDENT op }
        | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
            | ":=" | ":>" | ";"  | ";;" | "_"
@@ -380,7 +359,7 @@ rule token c = parse
             let pos = lexbuf.lex_curr_p in
             lexbuf.lex_curr_p <- { pos with pos_bol  = pos.pos_bol  + 1 ;
                                    pos_cnum = pos.pos_cnum + 1 };
-            `EOI (* raise Stream.Failure*)      }
+            `EOI (* raise XStream.Failure*)      }
        | _ as c                 { err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) }
 
 and comment c = parse
@@ -522,8 +501,9 @@ and quotation c = parse
   $(....)
   $(....)
  *)
+(* FIXME should support more flexible syntax ${:str|x hgoshgo|} $"Aghioho" *)
 and dollar c = parse
-    | ('`'? (identchar*|['.' '!']+) as name) ':' (lident as x)
+    | ('`'? (identchar*|['.' '!']+) as name) ':' (antifollowident as x)
         {move_start_p (String.length name + 1) c;  `ANT(name,x)}
     | lident as x    { `ANT("",x) }
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {

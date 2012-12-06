@@ -11,17 +11,17 @@ module type Warning = sig
 end;
 
 (** A type for stream filters. *)
-type stream_filter 'a 'loc = Stream.t ('a * 'loc) -> Stream.t ('a * 'loc);
+type stream_filter 'a 'loc = XStream.t ('a * 'loc) -> XStream.t ('a * 'loc);
 
 module type ParserImpl = sig
   (** When  the parser encounter a directive it stops (since the directive may change  the
       syntax), the given [directive_handler] function  evaluates  it  and
       the parsing starts again. *)
   val parse_implem : ?directive_handler:(Ast.str_item -> option Ast.str_item) ->
-    FanLoc.t -> Stream.t char -> Ast.str_item;
+    FanLoc.t -> XStream.t char -> Ast.str_item;
 
   val parse_interf : ?directive_handler:(Ast.sig_item -> option Ast.sig_item) ->
-        FanLoc.t -> Stream.t char -> Ast.sig_item;
+        FanLoc.t -> XStream.t char -> Ast.sig_item;
 end;
 
 module type PrinterImpl = sig
@@ -251,7 +251,7 @@ module type ParserPlugin = functor (Syn:Camlp4Syntax) -> ParserImpl;
 
 
 type parser_fun 'a =
-    ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
+    ?directive_handler:('a -> option 'a) -> FanLoc.t -> XStream.t char -> 'a;
 type printer_fun 'a =
       ?input_file:string -> ?output_file:string -> 'a -> unit;
 module type PRECAST = sig

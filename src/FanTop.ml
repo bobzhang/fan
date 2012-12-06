@@ -37,7 +37,7 @@ let toplevel_phrase token_stream =
     
 let fake token_stream = begin 
   try
-    Stream.iter (fun (tok,_) ->
+    XStream.iter (fun (tok,_) ->
       if tok= `INT (3,"3") then raise Not_found
       else
         Format.fprintf Format.std_formatter

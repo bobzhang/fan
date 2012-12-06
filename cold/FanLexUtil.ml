@@ -7,16 +7,16 @@ let lexing_store s buff max =
     if n >= max
     then n
     else
-      (let (__strm :_ Stream.t)= s in
-       match Stream.peek __strm with
-       | Some x -> (Stream.junk __strm; buff.[n] <- x; succ n)
+      (let (__strm :_ XStream.t)= s in
+       match XStream.peek __strm with
+       | Some x -> (XStream.junk __strm; buff.[n] <- x; succ n)
        | _ -> n) in
   self 0 s
 let from_context c =
   let next _ =
     let tok = with_curr_loc token c in
     let loc = FanLoc.of_lexbuf c.lexbuf in Some (tok, loc) in
-  Stream.from next
+  XStream.from next
 let from_lexbuf ?(quotations= true)  lb =
   let c =
     {
@@ -39,34 +39,35 @@ let from_stream ?quotations  loc strm =
   setup_loc lb loc; from_lexbuf ?quotations lb
 let mk () loc strm =
   from_stream ~quotations:(FanConfig.quotations.contents) loc strm
-let rec clean (__strm : _ Stream.t) =
-  match Stream.peek __strm with
+let rec clean (__strm : _ XStream.t) =
+  match XStream.peek __strm with
   | Some (`EOI,loc) ->
-      (Stream.junk __strm; Stream.lsing (fun _  -> (`EOI, loc)))
+      (XStream.junk __strm; XStream.lsing (fun _  -> (`EOI, loc)))
   | Some x ->
-      (Stream.junk __strm;
-       (let xs = __strm in Stream.icons x (Stream.slazy (fun _  -> clean xs))))
-  | _ -> Stream.sempty
-let rec strict_clean (__strm : _ Stream.t) =
-  match Stream.peek __strm with
-  | Some (`EOI,_) -> (Stream.junk __strm; Stream.sempty)
-  | Some x ->
-      (Stream.junk __strm;
+      (XStream.junk __strm;
        (let xs = __strm in
-        Stream.icons x (Stream.slazy (fun _  -> strict_clean xs))))
-  | _ -> Stream.sempty
+        XStream.icons x (XStream.slazy (fun _  -> clean xs))))
+  | _ -> XStream.sempty
+let rec strict_clean (__strm : _ XStream.t) =
+  match XStream.peek __strm with
+  | Some (`EOI,_) -> (XStream.junk __strm; XStream.sempty)
+  | Some x ->
+      (XStream.junk __strm;
+       (let xs = __strm in
+        XStream.icons x (XStream.slazy (fun _  -> strict_clean xs))))
+  | _ -> XStream.sempty
 let debug_from_string ?quotations  str =
   let loc = FanLoc.string_loc in
   let stream = from_string ?quotations loc str in
   (stream |> clean) |>
-    (Stream.iter
+    (XStream.iter
        (fun (t,loc)  ->
           fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc))
 let debug_from_file ?quotations  file =
   let loc = FanLoc.mk file in
   let chan = open_in file in
-  let stream = Stream.of_channel chan in
+  let stream = XStream.of_channel chan in
   ((from_stream ?quotations loc stream) |> clean) |>
-    (Stream.iter
+    (XStream.iter
        (fun (t,loc)  ->
           fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc))

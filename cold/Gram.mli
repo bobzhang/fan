@@ -13,9 +13,9 @@ type position =
 
 type gram =
   Grammar.Structure.gram = {
-  gfilter : FanSig.filter;
+  gfilter : FanTokenFilter.filter;
   gkeywords : (string, int ref) Hashtbl.t;
-  glexer : FanLoc.t -> char Stream.t -> (FanSig.token * FanLoc.t) Stream.t;
+  glexer : FanLoc.t -> char XStream.t -> (FanToken.token * FanLoc.t) XStream.t;
   warning_verbose : bool ref;
   error_verbose : bool ref;
 }
@@ -35,10 +35,10 @@ module Action :
     val getf : t -> 'a -> 'b
     val getf2 : t -> 'a -> 'b -> 'c
   end
-type token_stream = (FanSig.token * token_info) Stream.t
+type token_stream = (FanToken.token * token_info) XStream.t
 type description = [ `Antiquot | `Normal ]
 type descr = description * string
-type token_pattern = (FanSig.token -> bool) * descr
+type token_pattern = (FanToken.token -> bool) * descr
 type internal_entry = Grammar.Structure.internal_entry 
 and desc = Grammar.Structure.desc
 and level = Grammar.Structure.level 
@@ -54,14 +54,14 @@ type delete_statment = symbol list
 type ('a,'b,'c)fold  =
     'b t->
       symbol list->
-        ('a Stream.t  -> 'b) -> 'a Stream.t  -> 'c
+        ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c
 
 type ('a,'b,'c) foldsep  =
    'b t ->
      symbol list ->
-       ('a Stream.t -> 'b) ->
-         ('a Stream.t -> unit) ->
-           'a Stream.t -> 'c
+       ('a XStream.t -> 'b) ->
+         ('a XStream.t -> unit) ->
+           'a XStream.t -> 'c
       
 
 
@@ -76,14 +76,14 @@ val parse_origin_tokens :
   'a t -> token_stream -> 'a
 val setup_parser :
   'a t ->
-  ((FanSig.token * token_info) Stream.t -> 'a) -> unit
+  ((FanToken.token * token_info) XStream.t -> 'a) -> unit
 val clear : 'a t -> unit
 val ghost_token_info : token_info
 val token_location : token_info -> FanLoc.t
 val using : gram -> string -> unit
 val mk_action : 'a -> Action.t
 
-val string_of_token:[>FanSig.token] -> string
+val string_of_token:[>FanToken.token] -> string
 
 val obj : 'a t -> internal_entry         
 val removing : gram -> string -> unit
@@ -93,24 +93,24 @@ val mk_dynamic: gram -> string -> 'a t
 val mk: string -> 'a t
 val of_parser :
   string ->
-  ((FanSig.token * token_info) Stream.t -> 'a) ->
+  ((FanToken.token * token_info) XStream.t -> 'a) ->
   'a t
-val get_filter : unit -> FanSig.filter
-val lex : FanLoc.t -> char Stream.t -> (FanSig.token * FanLoc.t) Stream.t
-val lex_string : FanLoc.t -> string -> (FanSig.token * FanLoc.t) Stream.t
+val get_filter : unit -> FanTokenFilter.filter
+val lex : FanLoc.t -> char XStream.t -> (FanToken.token * FanLoc.t) XStream.t
+val lex_string : FanLoc.t -> string -> (FanToken.token * FanLoc.t) XStream.t
 val filter :
-  (FanSig.token * FanLoc.t) Stream.t ->
-  (FanSig.token * token_info) LibUtil.Stream.t
+  (FanToken.token * FanLoc.t) XStream.t ->
+  (FanToken.token * token_info) LibUtil.XStream.t
 (* val filter_and_parse_tokens : *)
 (*   'a t -> *)
-(*   (FanSig.token * FanLoc.t) Stream.t -> 'a *)
+(*   (FanToken.token * FanLoc.t) XStream.t -> 'a *)
 val parse :
-  'a t -> FanLoc.t -> char Stream.t -> 'a
+  'a t -> FanLoc.t -> char XStream.t -> 'a
 val parse_string :
   'a t -> FanLoc.t -> string -> 'a
-val debug_origin_token_stream : 'a t -> FanSig.token Stream.t -> 'a
+val debug_origin_token_stream : 'a t -> FanToken.token XStream.t -> 'a
 val debug_filtered_token_stream :
-  'a t -> FanSig.token Stream.t -> 'a
+  'a t -> FanToken.token XStream.t -> 'a
 val parse_string_safe :
   'a t -> FanLoc.t -> string -> 'a
 val wrap_stream_parser : ('a -> 'b -> 'c) -> 'a -> 'b -> 'c
@@ -123,18 +123,18 @@ val srules :
   [> `Stree of tree ]
 val sfold0 :
   ('a -> 'b -> 'b) ->
-  'b -> 'c -> 'd -> ('e Stream.t -> 'a) -> 'e Stream.t -> 'b
+  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
 val sfold1 :
   ('a -> 'b -> 'b) ->
-  'b -> 'c -> 'd -> ('e Stream.t -> 'a) -> 'e Stream.t -> 'b
+  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
       
 val sfold0sep :
     ('a -> 'b -> 'b) ->  'b ->
     'a t ->
     symbol list ->
-    ('c Stream.t -> 'a) ->
-      ('c Stream.t -> unit) ->
-        'c Stream.t -> 'b
+    ('c XStream.t -> 'a) ->
+      ('c XStream.t -> unit) ->
+        'c XStream.t -> 'b
 val extend :
   'a t -> extend_statment -> unit
 val eoi_entry : 'a t -> 'a t
@@ -143,4 +143,4 @@ val eoi_entry : 'a t -> 'a t
 val levels_of_entry: 'a t -> level list option
 val find_level:
     ?position:position ->  'a t -> level
-val token_stream_of_string: string -> (FanSig.token * Grammar.Structure.token_info) LibUtil.Stream.t
+val token_stream_of_string: string -> (FanToken.token * Grammar.Structure.token_info) LibUtil.XStream.t

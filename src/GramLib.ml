@@ -6,7 +6,7 @@ module Ast = Camlp4Ast;
 (*     Gram.of_parser "test_patt_lessminus" *)
 (*       (fun strm -> *)
 (*         let rec skip_patt n = *)
-(*           match Stream.peek_nth n strm with *)
+(*           match XStream.peek_nth n strm with *)
 (*           [ Some (`KEYWORD "<-",_) -> n *)
 (*           | Some (`KEYWORD ("[" | "[<"),_) -> *)
 (*               skip_patt (ignore_upto "]" (n + 1) + 1) *)
@@ -16,9 +16,9 @@ module Ast = Camlp4Ast;
 (*               skip_patt (ignore_upto "}" (n + 1) + 1) *)
 (*           | Some (`KEYWORD ("as" | "::" | "," | "_"),_) *)
 (*           | Some (`LID _ | `UID _, _) -> skip_patt (n + 1) *)
-(*           | Some _ | None -> raise Stream.Failure ] *)
+(*           | Some _ | None -> raise XStream.Failure ] *)
 (*         and ignore_upto end_kwd n = *)
-(*           match Stream.peek_nth n strm with *)
+(*           match XStream.peek_nth n strm with *)
 (*           [ Some (`KEYWORD prm,_) when prm = end_kwd -> n *)
 (*           | Some (`KEYWORD ("[" | "[<"),_) -> *)
 (*               ignore_upto end_kwd (ignore_upto "]" (n + 1) + 1) *)
@@ -27,7 +27,7 @@ module Ast = Camlp4Ast;
 (*           | Some (`KEYWORD "{",_) -> *)
 (*               ignore_upto end_kwd (ignore_upto "}" (n + 1) + 1) *)
 (*           | Some _ -> ignore_upto end_kwd (n + 1) *)
-(*           | None -> raise Stream.Failure ] *)
+(*           | None -> raise XStream.Failure ] *)
 (*         in *)
 (*         skip_patt 1); *)
 
@@ -59,7 +59,7 @@ let rec infix_kwds_filter = parser
 let parse_include_file rule file  =
   if Sys.file_exists file then
     let ch = open_in file in
-    let st = Stream.of_channel ch in 
+    let st = XStream.of_channel ch in 
     Gram.parse rule (FanLoc.mk file) st
   else  failwithf "@[file: %s not found@]@." file;
 

@@ -13,7 +13,7 @@ let parser_of_terminals
       List.iteri
           (fun i terminal  -> 
             let t =
-              match Stream.peek_nth strm i with
+              match XStream.peek_nth strm i with
               [Some (tok,_) -> tok
               |None -> invalid_arg "parser_of_terminals"] in begin
                   acc:= [t::!acc];
@@ -24,9 +24,9 @@ let parser_of_terminals
                     invalid_arg "parser_of_terminals"
                   else ()
               end) terminals (* tokens *)
-    with [Invalid_argument _ -> raise Stream.Failure];
+    with [Invalid_argument _ -> raise XStream.Failure];
 
-    Stream.njunk n strm;
+    XStream.njunk n strm;
     match !acc with
     [[] -> invalid_arg "parser_of_terminals"
     |[x::_] ->
@@ -43,8 +43,8 @@ let parser_of_terminals
   (*         match x with [`Stoken(f,_) -> f t | `Skeyword kwd -> FanToken.match_keyword kwd t] >] ->    *)
   (*           p  ~first:false [t::acc] xs *)
   (*       |[<>] ->  *)
-  (*          if first then raise Stream.Failure *)
-  (*          else raise (Stream.Error "")]]in *)
+  (*          if first then raise XStream.Failure *)
+  (*          else raise (XStream.Error "")]]in *)
 
   (* let (ts:list FanSig.token) = p [] terminals in *)
   (*     match ts with *)

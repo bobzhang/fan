@@ -1,4 +1,3 @@
-open FanSig
 open LibUtil
 type assoc = [ `NA | `RA | `LA] 
 type position =
@@ -10,9 +9,9 @@ module Action = struct
   end
 type gram = 
   {
-  gfilter: filter;
+  gfilter: FanTokenFilter.filter;
   gkeywords: (string,int ref) Hashtbl.t;
-  glexer: FanLoc.t -> char Stream.t -> (token* FanLoc.t) Stream.t;
+  glexer: FanLoc.t -> char XStream.t -> (FanToken.token* FanLoc.t) XStream.t;
   warning_verbose: bool ref;
   error_verbose: bool ref} 
 type token_info =  {
@@ -21,12 +20,17 @@ type token_info =  {
   prev_loc_only: bool} 
 let ghost_token_info =
   { prev_loc = FanLoc.ghost; cur_loc = FanLoc.ghost; prev_loc_only = false }
-type token_stream = (token* token_info) Stream.t 
+type token_stream = (FanToken.token* token_info) XStream.t 
+open Format
+let pp = fprintf
+let pp_token_info f { prev_loc; cur_loc; prev_loc_only } =
+  pp f "{prev_loc=@;%a;cur_loc=@;%a;prev_loc_only=%b}" FanLoc.print prev_loc
+    FanLoc.print cur_loc prev_loc_only
 type 'a parse = token_stream -> 'a 
 type 'a cont_parse = FanLoc.t -> Action.t -> 'a parse 
 type description = [ `Normal | `Antiquot] 
 type descr = (description* string) 
-type token_pattern = ((token -> bool)* descr) 
+type token_pattern = ((FanToken.token -> bool)* descr) 
 type terminal = [ `Skeyword of string | `Stoken of token_pattern] 
 type internal_entry = 
   {
@@ -62,11 +66,11 @@ type olevel = (string option* assoc option* production list)
 type extend_statment = (position option* olevel list) 
 type delete_statment = symbol list 
 type ('a,'b,'c) fold =
-  internal_entry -> symbol list -> ('a Stream.t -> 'b) -> 'a Stream.t -> 'c 
+  internal_entry -> symbol list -> ('a XStream.t -> 'b) -> 'a XStream.t -> 'c 
 type ('a,'b,'c) foldsep =
   internal_entry ->
     symbol list ->
-      ('a Stream.t -> 'b) -> ('a Stream.t -> unit) -> 'a Stream.t -> 'c
+      ('a XStream.t -> 'b) -> ('a XStream.t -> unit) -> 'a XStream.t -> 'c
   
 let get_filter g = g.gfilter
 let token_location r = r.cur_loc
@@ -74,14 +78,14 @@ let using { gkeywords = table; gfilter = filter;_} kwd =
   let r =
     try Hashtbl.find table kwd
     with | Not_found  -> let r = ref 0 in (Hashtbl.add table kwd r; r) in
-  FanToken.Filter.keyword_added filter kwd (r.contents = 0); incr r
+  FanTokenFilter.keyword_added filter kwd (r.contents = 0); incr r
 let mk_action = Action.mk
 let string_of_token = FanToken.extract_string
 let removing { gkeywords = table; gfilter = filter;_} kwd =
   let r = Hashtbl.find table kwd in
   let () = decr r in
   if r.contents = 0
-  then (FanToken.Filter.keyword_removed filter kwd; Hashtbl.remove table kwd)
+  then (FanTokenFilter.keyword_removed filter kwd; Hashtbl.remove table kwd)
   else ()
 let rec flatten_tree =
   function

@@ -7,7 +7,7 @@ type spat_comp =
 type sexp_comp =  
   | SeTrm of FanLoc.t* Ast.expr
   | SeNtr of FanLoc.t* Ast.expr 
-let grammar_module_name = ref "Stream"
+let grammar_module_name = ref "XStream"
 let gm () = grammar_module_name.contents
 let strm_n = "__strm"
 let peek_fun _loc =
@@ -452,7 +452,7 @@ let rec cstream gloc =
       Ast.ExId
         (_loc,
           (Ast.IdAcc
-             (_loc, (Ast.IdUid (_loc, "Stream")),
+             (_loc, (Ast.IdUid (_loc, "XStream")),
                (Ast.IdLid (_loc, "sempty")))))
   | (SeTrm (_loc,e))::[] ->
       if not_computing e

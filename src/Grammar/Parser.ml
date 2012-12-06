@@ -34,19 +34,19 @@ let rec top_symb entry =fun
   [ `Sself | `Snext -> `Snterm entry
   | `Snterml (e, _) -> `Snterm e
   | `Slist1sep (s, sep) -> `Slist1sep ((top_symb entry s), sep)
-  | _ -> raise Stream.Failure ];
+  | _ -> raise XStream.Failure ];
 
 (* given an entry and a tree return the top tree *)  
 let top_tree entry = fun
   [ Node ({node = s; _} as x) ->
     Node ({(x) with node = top_symb entry s})
-  | LocAct(_, _) | DeadEnd -> raise Stream.Failure ];
+  | LocAct(_, _) | DeadEnd -> raise XStream.Failure ];
 
 let entry_of_symb entry = fun
   [ `Sself | `Snext -> entry
   | `Snterm e -> e
   | `Snterml (e, _) -> e
-  | _ -> raise Stream.Failure ] ;
+  | _ -> raise XStream.Failure ] ;
 
 (* in case of syntax error, the system attempts to recover the error by applying
    the [continue] function of the previous symbol(if the symbol is a call to an entry),
@@ -61,7 +61,7 @@ let rec parser_of_tree entry (lev,assoc) x =
   let alevn = match assoc with
     [`LA|`NA -> lev + 1 | `RA -> lev ] in
   let rec from_tree  = fun 
-  [ DeadEnd -> raise Stream.Failure
+  [ DeadEnd -> raise XStream.Failure
   | LocAct (act, _) -> parser [< >] -> act
   (* rules ending with [SELF] or with the current entry name, for this last symbol
      there's a call to the [start] function: of the current level if the level is
@@ -77,7 +77,7 @@ let rec parser_of_tree entry (lev,assoc) x =
         let pson = from_tree son in 
         let recover loc a strm =
           if !FanConfig.strict_parsing then
-            raise (Stream.Error (Failed.tree_failed entry a node son))
+            raise (XStream.Error (Failed.tree_failed entry a node son))
           else
             let _ =
               if !FanConfig.strict_parsing_warning then begin
@@ -92,9 +92,9 @@ let rec parser_of_tree entry (lev,assoc) x =
                       Action.mk (fun _ -> Action.getf act a) ] in
             let skip_if_empty bp strm =
               if get_cur_loc strm = bp then
-                Action.mk (fun _ -> raise Stream.Failure)
+                Action.mk (fun _ -> raise XStream.Failure)
               else
-                raise Stream.Failure  in
+                raise XStream.Failure  in
             let do_recover loc a =
               parser
                 [ [<b = from_tree (top_tree entry son) >] -> b
@@ -104,7 +104,7 @@ let rec parser_of_tree entry (lev,assoc) x =
         parser
           [ [< b = pson >] -> b
           | [< b = recover  loc a >] -> b
-          | [< >] -> raise (Stream.Error (Failed.tree_failed entry a node son)) ] in
+          | [< >] -> raise (XStream.Error (Failed.tree_failed entry a node son)) ] in
       match Tools.get_terminals  y with
       [ None ->
         let ps = parser_of_symbol entry node  lev  in fun strm ->
@@ -129,7 +129,7 @@ and parser_of_terminals
       List.iteri
           (fun i terminal  -> 
             let t =
-              match Stream.peek_nth strm i with
+              match XStream.peek_nth strm i with
               [Some (tok,_) -> tok
               |None -> invalid_arg "parser_of_terminals"] in begin
                   acc:= [t::!acc];
@@ -140,9 +140,9 @@ and parser_of_terminals
                     invalid_arg "parser_of_terminals"
                   else ()
               end) terminals (* tokens *)
-    with [Invalid_argument _ -> raise Stream.Failure];
+    with [Invalid_argument _ -> raise XStream.Failure];
 
-    Stream.njunk n strm;
+    XStream.njunk n strm;
     match !acc with
     [[] -> invalid_arg "parser_of_terminals"
     |[x::_] ->
@@ -172,7 +172,7 @@ and parser_of_symbol entry s nlevn =
          [ [< a = ps >] -> a
          | [< a = parse_top_symb entry symb >] -> a
          | [< >] ->
-             raise (Stream.Error (Failed.symb_failed entry v sep symb)) ];
+             raise (XStream.Error (Failed.symb_failed entry v sep symb)) ];
            's >] ->kont [a :: al] s
          | [< >] -> al ] in
      parser [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))

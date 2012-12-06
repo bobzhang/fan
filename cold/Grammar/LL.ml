@@ -10,7 +10,7 @@ let parser_of_terminals (terminals : terminal list)
      List.iteri
        (fun i  terminal  ->
           let t =
-            match Stream.peek_nth strm i with
+            match XStream.peek_nth strm i with
             | Some (tok,_) -> tok
             | None  -> invalid_arg "parser_of_terminals" in
           acc := (t :: (acc.contents));
@@ -21,8 +21,8 @@ let parser_of_terminals (terminals : terminal list)
                | `Skeyword kwd -> FanToken.match_keyword kwd t)
           then invalid_arg "parser_of_terminals"
           else ()) terminals
-   with | Invalid_argument _ -> raise Stream.Failure);
-  Stream.njunk n strm;
+   with | Invalid_argument _ -> raise XStream.Failure);
+  XStream.njunk n strm;
   (match acc.contents with
    | [] -> invalid_arg "parser_of_terminals"
    | x::_ ->

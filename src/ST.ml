@@ -15,7 +15,7 @@ let p =  (fun (t,i) ->
          Format.eprintf "(%a:@\n%a)@." FanToken.print t  Grammar.Structure.pp_token_info i);
 
 let f = Grammar.Comb.tryp (Gram.parse_origin_tokens c );  
-(* Stream.iter (fun (t,_) -> print_string (FanToken.to_string t)) (Stream.take 2  u); *)
+(* XStream.iter (fun (t,_) -> print_string (FanToken.to_string t)) (XStream.take 2  u); *)
 (* peek_nth  u 10; *)
 (* f u; *)
 (* dump p u; *)

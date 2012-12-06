@@ -12,23 +12,8 @@
 (***********************************************************************)
 
 (** Streams and parsers. *)
-type 'a t = { count : int; data : 'a data; }
-and 'a data =
-    Sempty
-  | Scons of 'a * 'a data
-  | Sapp of 'a data * 'a t
-  | Slazy of 'a t Lazy.t
-  | Sgen of 'a gen
-  | Sbuffio of buffio
-and 'a gen = { mutable curr : 'a option option; func : int -> 'a option; }
-and buffio = {
-  ic : in_channel;
-  buff : string;
-  mutable len : int;
-  mutable ind : int;
-}
 
-(* type 'a t *)
+type 'a t
 (** The type of streams holding values of type ['a]. *)
 
 exception Failure
@@ -43,7 +28,7 @@ exception Error of string
 (** {6 Stream builders} *)
 
 val from : (int -> 'a option) -> 'a t
-(** [Stream.from f] returns a stream built from the function [f].
+(** [XStream.from f] returns a stream built from the function [f].
    To create a new stream element, the function [f] is called with
    the current stream count. The user function [f] must return either
    [Some <value>] for a value or [None] to specify the end of the
@@ -63,7 +48,7 @@ val of_channel : in_channel -> char t
 (** {6 Stream iterator} *)
 
 val iter : ('a -> unit) -> 'a t -> unit
-(** [Stream.iter f s] scans the whole stream s, applying function [f]
+(** [XStream.iter f s] scans the whole stream s, applying function [f]
    in turn to each stream element encountered. *)
 
 
@@ -71,10 +56,10 @@ val iter : ('a -> unit) -> 'a t -> unit
 
 val next : 'a t -> 'a
 (** Return the first element of the stream and remove it from the
-   stream. Raise Stream.Failure if the stream is empty. *)
+   stream. Raise XStream.Failure if the stream is empty. *)
 
 val empty : 'a t -> unit
-(** Return [()] if the stream is empty, else raise [Stream.Failure]. *)
+(** Return [()] if the stream is empty, else raise [XStream.Failure]. *)
 
 
 (** {6 Useful functions} *)
@@ -112,3 +97,5 @@ val sempty : 'a t
 val slazy : (unit -> 'a t) -> 'a t
 
 val dump : ('a -> unit) -> 'a t -> unit
+val get_last: 'a t -> 'a option
+val fake_junk: 'a t -> unit

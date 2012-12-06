@@ -18,7 +18,7 @@ type sexp_comp =
   [ SeTrm of FanLoc.t and Ast.expr | SeNtr of FanLoc.t and Ast.expr ];
 
 (* default module name ["Stream"] for compatibility *)
-let grammar_module_name = ref "Stream";
+let grammar_module_name = ref "XStream"; (* BOOTSTRAPPING *)
 let gm () = !grammar_module_name;  
 let strm_n = "__strm";
 

@@ -194,7 +194,7 @@ module Camlp4Bin
           (*    | (_, "directory", s) -> begin  DynLoader.include_dir dyn_loader s; None end *)
           (*    | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir) *)
           (*    | (_, "default_quotation", s) -> begin PreCast.Syntax.Quotation.default := s; None end *)
-          (*    | (loc, _, _) -> FanLoc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ] *)
+          (*    | (loc, _, _) -> FanLoc.raise loc (XStream.Error "bad directive camlp4 can not handled ") ] *)
           (* | None -> None ]) *) None ;
 
          
@@ -202,7 +202,7 @@ module Camlp4Bin
         let loc = FanLoc.mk name in begin
           PreCast.Syntax.current_warning := print_warning;
           let ic = if name = "-" then stdin else open_in_bin name;
-          let cs = Stream.of_channel ic;
+          let cs = XStream.of_channel ic;
           let clear () = if name = "-" then () else close_in ic;
           let phr =
             try pa ?directive_handler loc cs
@@ -222,7 +222,7 @@ module Camlp4Bin
                 begin PreCast.Syntax.Quotation.default := s; None end
                   
             | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
-                FanLoc.raise loc (Stream.Error (x ^ " is abad directive camlp4 can not handled "))
+                FanLoc.raise loc (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
             | _ -> assert false
             ] );
         
@@ -239,7 +239,7 @@ module Camlp4Bin
                 begin PreCast.Syntax.Quotation.default := s; None end
                   
             | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
-                FanLoc.raise loc (Stream.Error (x ^ "bad directive camlp4 can not handled "))
+                FanLoc.raise loc (XStream.Error (x ^ "bad directive camlp4 can not handled "))
             | _ -> assert false
             ] );
       let process (* dyn_loader *) ?directive_handler name pa pr clean fold_filters (* getdir *) =

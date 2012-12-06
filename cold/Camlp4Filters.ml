@@ -48,7 +48,7 @@ module MakeExceptionTracer(Syn:Sig.Camlp4Syntax) =
                             (Ast.PaId
                                (_loc,
                                  (Ast.IdAcc
-                                    (_loc, (Ast.IdUid (_loc, "Stream")),
+                                    (_loc, (Ast.IdUid (_loc, "XStream")),
                                       (Ast.IdUid (_loc, "Failure")))))),
                             (Ast.PaId (_loc, (Ast.IdUid (_loc, "Exit")))))),
                        (Ast.PaId (_loc, (Ast.IdLid (_loc, "exc")))))),

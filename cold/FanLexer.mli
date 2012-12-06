@@ -32,31 +32,31 @@ val mk_quotation:
   context ->
   name:string ->
   loc:string ->
-  shift:int -> retract:int -> [> `QUOTATION of FanSig.quotation ]
+  shift:int -> retract:int -> [> `QUOTATION of FanToken.quotation ]
 val update_loc:
   ?file:string ->
   ?absolute:bool -> ?retract:int -> ?line:int -> context -> unit
 val err: lex_error -> FanLoc.t -> 'a
 val warn: lex_error -> FanLoc.t -> unit
 
-val token: context ->  Lexing.lexbuf ->  [> FanSig.token ]
+val token: context ->  Lexing.lexbuf ->  [> FanToken.token ]
 
 val comment: context -> Lexing.lexbuf -> unit
 
 val string: context -> Lexing.lexbuf -> unit
 
-val symbolchar_star:  string ->  context -> Lexing.lexbuf ->  [> FanSig.token ]
+val symbolchar_star:  string ->  context -> Lexing.lexbuf ->  [> FanToken.token ]
 val default_context: Lexing.lexbuf -> context   
 val with_curr_loc: (context -> Lexing.lexbuf -> 'a) -> context -> 'a
 
-(* val from_context :  context ->  ([> FanSig.token] * FanLoc.t)Stream.t *)
+(* val from_context :  context ->  ([> FanSig.token] * FanLoc.t)XStream.t *)
 (* val from_lexbuf :  ?quotations:bool ->  Lexing.lexbuf -> *)
-(*   ([> FanSig.token ] * FanLoc.t) Stream.t *)
+(*   ([> FanSig.token ] * FanLoc.t) XStream.t *)
 (* val setup_loc : Lexing.lexbuf -> FanLoc.t -> unit *)
 (* val from_string : *)
-(*   ?quotations:bool -> FanLoc.t ->  string ->  ([> FanSig.token] * FanLoc.t) Stream.t *)
+(*   ?quotations:bool -> FanLoc.t ->  string ->  ([> FanSig.token] * FanLoc.t) XStream.t *)
 (* val from_stream : *)
-(*     ?quotations:bool -> FanLoc.t -> char Stream.t -> ([> FanSig.token ] * FanLoc.t) Stream.t *)
+(*     ?quotations:bool -> FanLoc.t -> char XStream.t -> ([> FanSig.token ] * FanLoc.t) XStream.t *)
 (* val mk : *)
-(*   unit -> FanLoc.t ->  char Stream.t -> ([> FanSig.token ] * FanLoc.t) Stream.t *)
+(*   unit -> FanLoc.t ->  char XStream.t -> ([> FanSig.token ] * FanLoc.t) XStream.t *)
       

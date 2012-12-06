@@ -208,13 +208,13 @@ module type STREAM = sig
   val tail: t 'a -> t 'a;
   val map: ('a -> 'b) -> t 'a -> t 'b;
   val dup: t 'a -> t 'a;
-  val peek_nth: Stream.t 'a -> int ->   option 'a;
-  val njunk: int -> Stream.t 'a -> unit;
+  val peek_nth: t 'a -> int ->   option 'a;
+  val njunk: int -> t 'a -> unit;
 end;
   
-module Stream (* : STREAM with type t 'a = Stream.t 'a *) = struct
-  include BatStream;
-  include Stream;
+module XStream (* : STREAM with type t 'a = XStream.t 'a *) = struct
+  (* include BatStream; *)
+  include XStream;
   let rev strm=
     let rec aux = parser
     [ [< x ; 'xs>] -> [< 'aux xs ; x >]
@@ -223,7 +223,7 @@ module Stream (* : STREAM with type t 'a = Stream.t 'a *) = struct
   let tail = parser
     [ [< _; 'xs >] -> [< 'xs >]
     | [< >] -> [<>]];
-  let rec map f = parser
+  let rec map f  = parser
     [ [< x; 'xs >] -> [< f x; 'map f xs >]
     | [< >] -> [< >] ];
 
@@ -233,16 +233,16 @@ module Stream (* : STREAM with type t 'a = Stream.t 'a *) = struct
       [ [x :: xs] -> if i = 0 then Some x else loop (i - 1) xs
       | [] -> None ] in
     if n < 0 then
-      invalid_arg "Stream.peek_nth"
-    else loop n (Stream.npeek (n+1) strm);
+      invalid_arg "XStream.peek_nth"
+    else loop n (XStream.npeek (n+1) strm);
 
   (*  Used by [try_parser], very in-efficient 
-      This version of peek_nth is off-by-one from Stream.peek_nth *)      
+      This version of peek_nth is off-by-one from XStream.peek_nth *)      
   let dup strm = 
-    Stream.from (peek_nth strm);
+    XStream.from (peek_nth strm);
   
   let njunk  n strm  =
-    for _i = 1 to n do Stream.junk strm done; (* FIXME unsed  index i*)
+    for _i = 1 to n do XStream.junk strm done; (* FIXME unsed  index i*)
   let rec filter f = parser
     [ [< x; 'xs >] -> if f x then [< x ; 'filter f xs >] else [< 'filter f xs >]
     | [< >] -> [<>] ]; 

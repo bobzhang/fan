@@ -17,7 +17,7 @@ let from_context c =
     let tok = with_curr_loc token c in (* entry *)
     let loc = FanLoc.of_lexbuf c.lexbuf in
     Some ((tok, loc))
-  in Stream.from next;
+  in XStream.from next;
 
 let from_lexbuf ?(quotations = true) lb =
   let c = { (default_context lb) with
@@ -66,14 +66,14 @@ let rec strict_clean = parser
 let debug_from_string ?quotations str =
   let loc = FanLoc.string_loc  in
   let stream = from_string ?quotations loc str  in
-  stream |> clean |> Stream.iter
+  stream |> clean |> XStream.iter
     (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc);
 
 let debug_from_file ?quotations file =
   let loc = FanLoc.mk file in
   let chan = open_in file in
-  let stream = Stream.of_channel  chan in
-  from_stream ?quotations loc stream |> clean |> Stream.iter (
+  let stream = XStream.of_channel  chan in
+  from_stream ?quotations loc stream |> clean |> XStream.iter (
   fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc
  );
 

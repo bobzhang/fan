@@ -7,7 +7,7 @@ let _ =
   let gkeywords = Hashtbl.create 301 in
   {
     gkeywords;
-    gfilter = (FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords));
+    gfilter = (FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords));
     glexer = (FanLexUtil.mk ());
     warning_verbose = (ref true);
     error_verbose = FanConfig.verbose
@@ -16,7 +16,7 @@ let gram =
   let gkeywords = Hashtbl.create 301 in
   {
     gkeywords;
-    gfilter = (FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords));
+    gfilter = (FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords));
     glexer = (FanLexUtil.mk ());
     warning_verbose = (ref true);
     error_verbose = FanConfig.verbose
@@ -25,7 +25,7 @@ let create_gram () =
   let gkeywords = Hashtbl.create 301 in
   {
     gkeywords;
-    gfilter = (FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords));
+    gfilter = (FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords));
     glexer = (FanLexUtil.mk ());
     warning_verbose = (ref true);
     error_verbose = FanConfig.verbose
@@ -34,26 +34,26 @@ let mk = mk_dynamic gram
 let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter
 let lex loc cs = gram.glexer loc cs
-let lex_string loc str = lex loc (Stream.of_string str)
-let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter gram.gfilter ts)
+let lex_string loc str = lex loc (XStream.of_string str)
+let filter ts = Tools.keep_prev_loc (FanTokenFilter.filter gram.gfilter ts)
 let token_stream_of_string s =
   (s |> (lex_string FanLoc.string_loc)) |> filter
 let parse entry loc cs =
   let lexer = (entry.egram).glexer in
   let filter = (entry.egram).gfilter in
-  let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter filter ts) in
+  let filter ts = Tools.keep_prev_loc (FanTokenFilter.filter filter ts) in
   parse_origin_tokens entry (filter (lexer loc cs))
 let parse_string entry loc str =
   let lexer = (entry.egram).glexer in
   let filter = (entry.egram).gfilter in
-  let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter filter ts) in
-  parse_origin_tokens entry (filter (lexer loc (Stream.of_string str)))
+  let filter ts = Tools.keep_prev_loc (FanTokenFilter.filter filter ts) in
+  parse_origin_tokens entry (filter (lexer loc (XStream.of_string str)))
 let debug_origin_token_stream (entry : 'a t) tokens =
   (parse_origin_tokens entry
-     (Stream.map (fun t  -> (t, ghost_token_info)) tokens) : 'a )
+     (XStream.map (fun t  -> (t, ghost_token_info)) tokens) : 'a )
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
-    (Stream.map (fun t  -> (t, FanLoc.ghost)) tokens)
+    (XStream.map (fun t  -> (t, FanLoc.ghost)) tokens)
 let parse_string_safe entry loc s =
   try parse_string entry loc s
   with
@@ -70,7 +70,7 @@ let parse_file_with ~rule  file =
   if Sys.file_exists file
   then
     let ch = open_in file in
-    let st = Stream.of_channel ch in parse rule (FanLoc.mk file) st
+    let st = XStream.of_channel ch in parse rule (FanLoc.mk file) st
   else failwithf "@[file: %s not found@]@." file
 let delete_rule = Delete.delete_rule
 let srules e rl =
@@ -90,7 +90,7 @@ let eoi_entry entry =
            `Stoken
              (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
             (mk_action
-               (fun (__fan_1 : [> FanSig.token])  (x : 'entry) 
+               (fun (__fan_1 : [> FanToken.token])  (x : 'entry) 
                   (_loc : FanLoc.t)  ->
                   match __fan_1 with
                   | `EOI -> (x : 'entry_eoi )

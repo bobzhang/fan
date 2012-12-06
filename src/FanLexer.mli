@@ -49,14 +49,14 @@ val symbolchar_star:  string ->  context -> Lexing.lexbuf ->  [> FanToken.token 
 val default_context: Lexing.lexbuf -> context   
 val with_curr_loc: (context -> Lexing.lexbuf -> 'a) -> context -> 'a
 
-(* val from_context :  context ->  ([> FanSig.token] * FanLoc.t)Stream.t *)
+(* val from_context :  context ->  ([> FanSig.token] * FanLoc.t)XStream.t *)
 (* val from_lexbuf :  ?quotations:bool ->  Lexing.lexbuf -> *)
-(*   ([> FanSig.token ] * FanLoc.t) Stream.t *)
+(*   ([> FanSig.token ] * FanLoc.t) XStream.t *)
 (* val setup_loc : Lexing.lexbuf -> FanLoc.t -> unit *)
 (* val from_string : *)
-(*   ?quotations:bool -> FanLoc.t ->  string ->  ([> FanSig.token] * FanLoc.t) Stream.t *)
+(*   ?quotations:bool -> FanLoc.t ->  string ->  ([> FanSig.token] * FanLoc.t) XStream.t *)
 (* val from_stream : *)
-(*     ?quotations:bool -> FanLoc.t -> char Stream.t -> ([> FanSig.token ] * FanLoc.t) Stream.t *)
+(*     ?quotations:bool -> FanLoc.t -> char XStream.t -> ([> FanSig.token ] * FanLoc.t) XStream.t *)
 (* val mk : *)
-(*   unit -> FanLoc.t ->  char Stream.t -> ([> FanSig.token ] * FanLoc.t) Stream.t *)
+(*   unit -> FanLoc.t ->  char XStream.t -> ([> FanSig.token ] * FanLoc.t) XStream.t *)
       

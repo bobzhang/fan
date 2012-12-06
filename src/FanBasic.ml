@@ -104,7 +104,7 @@ let p_ctyp f e =
 (* let parse_include_file rule file  = *)
 (*   if Sys.file_exists file then *)
 (*     let ch = open_in file in *)
-(*     let st = Stream.of_channel ch in  *)
+(*     let st = XStream.of_channel ch in  *)
 (*     Gram.parse rule (Loc.mk file) st *)
 (*   else  failwithf "@[file: %s not found@]@." file; *)
 
@@ -290,16 +290,16 @@ let p_ctyp f e =
 
 (* let token_of_string str = *)
 (*   let lex = Lexer.mk () (Loc.mk "<string>") in *)
-(*   lex (Stream.of_string str); *)
+(*   lex (XStream.of_string str); *)
 
 (* (\* debugging purpose *)
 (*  *\) *)
 (* let tokens_of_string str = begin  *)
 (*   let stream = token_of_string str in *)
-(*   let tok = ref (fst (Stream.next stream)) in  *)
+(*   let tok = ref (fst (XStream.next stream)) in  *)
 (*   while tok.val <> EOI do *)
 (*     fprintf err_formatter "%a\n" Token.print  tok.val; *)
-(*     tok.val := fst (Stream.next stream); *)
+(*     tok.val := fst (XStream.next stream); *)
 (*   done ; *)
 (*   fprintf err_formatter "@."; *)
 (* end ; *)
