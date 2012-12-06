@@ -11,7 +11,7 @@ class printer = object(self:'self)
       with "ident" match i with
       [ Lident s -> {|$lid:s|}
       | Ldot(y,s) -> {| $(id:self#longident _loc y).$lid:s|}
-      | Lapply(a,b) -> {| $(id:self#longident _loc a) $(id:self#longident _loc b) |}]  ;
+      | Lapply(a,b) -> {| ($(id:self#longident _loc a) $(id:self#longident _loc b)) |}]  ;
     method longident_loc i =
       self#longident i.loc i.txt;
     method gen_cases  _loc (lst: list (pattern*expression)) =

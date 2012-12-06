@@ -6006,84 +6006,219 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
            ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
              (Gram.mk_action
                 (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  -> (i : 'a_ident ))))])]);
+    Gram.extend (ident_quot : 'ident_quot Gram.t )
+      (None,
+        [((Some "."), None,
+           [([`Sself; `Skeyword "."; `Sself],
+              (Gram.mk_action
+                 (fun (j : 'ident_quot)  _  (i : 'ident_quot) 
+                    (_loc : FanLoc.t)  ->
+                    (Ast.IdAcc (_loc, i, j) : 'ident_quot ))))]);
+        ((Some "simple"), None,
+          [([`Stoken
+               (((function
+                  | `ANT ((""|"id"|"anti"|"list"|"uid"),_) -> true
+                  | _ -> false)),
+                 (`Normal,
+                   "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"),_)"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s) ->
+                       (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
+                       'ident_quot )
+                   | _ -> assert false)));
+          ([`Stoken
+              (((function | `ANT ("lid",_) -> true | _ -> false)),
+                (`Normal, "`ANT (\"lid\",_)"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `ANT (("lid" as n),s) ->
+                      (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 'ident_quot )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function
+                 | `ANT ((""|"id"|"anti"|"list"|"uid"),_) -> true
+                 | _ -> false)),
+                (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"),_)"));
+           `Skeyword ".";
+           `Sself],
+            (Gram.mk_action
+               (fun (i : 'ident_quot)  _  (__fan_0 : [> FanToken.token]) 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s) ->
+                      (Ast.IdAcc
+                         (_loc, (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s))),
+                           i) : 'ident_quot )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `LID _ -> true | _ -> false)),
+                (`Normal, "`LID _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `LID i -> (Ast.IdLid (_loc, i) : 'ident_quot )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `UID _ -> true | _ -> false)),
+                (`Normal, "`UID _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `UID i -> (Ast.IdUid (_loc, i) : 'ident_quot )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `UID _ -> true | _ -> false)),
+                (`Normal, "`UID _"));
+           `Skeyword ".";
+           `Sself],
+            (Gram.mk_action
+               (fun (j : 'ident_quot)  _  (__fan_0 : [> FanToken.token]) 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `UID s ->
+                      (Ast.IdAcc (_loc, (Ast.IdUid (_loc, s)), j) : 'ident_quot )
+                  | _ -> assert false)));
+          ([`Skeyword "("; `Sself; `Sself; `Skeyword ")"],
+            (Gram.mk_action
+               (fun _  (j : 'ident_quot)  (i : 'ident_quot)  _ 
+                  (_loc : FanLoc.t)  ->
+                  (Ast.IdApp (_loc, i, j) : 'ident_quot ))))])]);
     Gram.extend (ident : 'ident Gram.t )
       (None,
         [(None, None,
            [([`Stoken
                 (((function
-                   | `ANT ((""|"id"|"anti"|"list"),_) -> true
+                   | `ANT ((""|"id"|"anti"|"list"|"uid"),_) -> true
                    | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"))],
+                  (`Normal,
+                    "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"),_)"))],
               (Gram.mk_action
                  (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
-                    | `ANT ((""|"id"|"anti"|"list" as n),s) ->
+                    | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s) ->
                         (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
                         'ident )
                     | _ -> assert false)));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
+           ([`Stoken
+               (((function | `ANT ("lid",_) -> true | _ -> false)),
+                 (`Normal, "`ANT (\"lid\",_)"))],
              (Gram.mk_action
-                (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                   (Ast.IdUid (_loc, i) : 'ident ))));
-           ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
-             (Gram.mk_action
-                (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                   (Ast.IdLid (_loc, i) : 'ident ))));
+                (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT (("lid" as n),s) ->
+                       (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
+                       'ident )
+                   | _ -> assert false)));
            ([`Stoken
                (((function
-                  | `ANT ((""|"id"|"anti"|"list"),_) -> true
+                  | `ANT ((""|"id"|"anti"|"list"|"uid"),_) -> true
                   | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"));
+                 (`Normal,
+                   "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"),_)"));
             `Skeyword ".";
             `Sself],
              (Gram.mk_action
                 (fun (i : 'ident)  _  (__fan_0 : [> FanToken.token]) 
                    (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `ANT ((""|"id"|"anti"|"list" as n),s) ->
+                   | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s) ->
                        (Ast.IdAcc
                           (_loc,
                             (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s))), i) : 
                        'ident )
                    | _ -> assert false)));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           ([`Stoken
+               (((function | `LID _ -> true | _ -> false)),
+                 (`Normal, "`LID _"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `LID i -> (Ast.IdLid (_loc, i) : 'ident )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `UID _ -> true | _ -> false)),
+                 (`Normal, "`UID _"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `UID i -> (Ast.IdUid (_loc, i) : 'ident )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `UID _ -> true | _ -> false)),
+                 (`Normal, "`UID _"));
             `Skeyword ".";
             `Sself],
              (Gram.mk_action
-                (fun (j : 'ident)  _  (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                   (Ast.IdAcc (_loc, (Ast.IdUid (_loc, i)), j) : 'ident ))))])]);
+                (fun (j : 'ident)  _  (__fan_0 : [> FanToken.token]) 
+                   (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `UID s ->
+                       (Ast.IdAcc (_loc, (Ast.IdUid (_loc, s)), j) : 
+                       'ident )
+                   | _ -> assert false)))])]);
     Gram.extend
       (module_longident_dot_lparen : 'module_longident_dot_lparen Gram.t )
       (None,
         [(None, None,
            [([`Stoken
                 (((function
-                   | `ANT ((""|"id"|"anti"|"list"),_) -> true
+                   | `ANT ((""|"id"|"anti"|"list"|"uid"),_) -> true
                    | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"));
+                  (`Normal,
+                    "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"),_)"));
              `Skeyword ".";
              `Skeyword "("],
               (Gram.mk_action
                  (fun _  _  (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)
                      ->
                     match __fan_0 with
-                    | `ANT ((""|"id"|"anti"|"list" as n),s) ->
+                    | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s) ->
                         (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
                         'module_longident_dot_lparen )
                     | _ -> assert false)));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           ([`Stoken
+               (((function | `UID _ -> true | _ -> false)),
+                 (`Normal, "`UID _"));
             `Skeyword ".";
             `Sself],
              (Gram.mk_action
-                (fun (l : 'module_longident_dot_lparen)  _  (m : 'a_UIDENT) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.IdAcc (_loc, (Ast.IdUid (_loc, m)), l) : 'module_longident_dot_lparen ))));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+                (fun (l : 'module_longident_dot_lparen)  _ 
+                   (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `UID i ->
+                       (Ast.IdAcc (_loc, (Ast.IdUid (_loc, i)), l) : 
+                       'module_longident_dot_lparen )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `UID _ -> true | _ -> false)),
+                 (`Normal, "`UID _"));
             `Skeyword ".";
             `Skeyword "("],
              (Gram.mk_action
-                (fun _  _  (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                   (Ast.IdUid (_loc, i) : 'module_longident_dot_lparen ))))])]);
+                (fun _  _  (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t) 
+                   ->
+                   match __fan_0 with
+                   | `UID i ->
+                       (Ast.IdUid (_loc, i) : 'module_longident_dot_lparen )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT (("uid"|""),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"uid\"|\"\"),_)"));
+            `Skeyword ".";
+            `Sself],
+             (Gram.mk_action
+                (fun (l : 'module_longident_dot_lparen)  _ 
+                   (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT (("uid"|"" as n),s) ->
+                       (Ast.IdAcc
+                          (_loc,
+                            (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s))), l) : 
+                       'module_longident_dot_lparen )
+                   | _ -> assert false)))])]);
     Gram.extend (module_longident : 'module_longident Gram.t )
       (None,
         [(None, None,
@@ -6099,17 +6234,52 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
                         'module_longident )
                     | _ -> assert false)));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           ([`Stoken
+               (((function | `UID _ -> true | _ -> false)),
+                 (`Normal, "`UID _"));
             `Skeyword ".";
             `Sself],
              (Gram.mk_action
-                (fun (l : 'module_longident)  _  (m : 'a_UIDENT) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.IdAcc (_loc, (Ast.IdUid (_loc, m)), l) : 'module_longident ))));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
+                (fun (l : 'module_longident)  _ 
+                   (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `UID i ->
+                       (Ast.IdAcc (_loc, (Ast.IdUid (_loc, i)), l) : 
+                       'module_longident )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `UID _ -> true | _ -> false)),
+                 (`Normal, "`UID _"))],
              (Gram.mk_action
-                (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                   (Ast.IdUid (_loc, i) : 'module_longident ))))])]);
+                (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `UID i -> (Ast.IdUid (_loc, i) : 'module_longident )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ((""|"uid"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"uid\"),_)"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT ((""|"uid" as n),s) ->
+                       (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
+                       'module_longident )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ((""|"uid"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"uid\"),_)"));
+            `Skeyword ".";
+            `Sself],
+             (Gram.mk_action
+                (fun (l : 'module_longident)  _ 
+                   (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT ((""|"uid" as n),s) ->
+                       (Ast.IdAcc
+                          (_loc,
+                            (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s))), l) : 
+                       'module_longident )
+                   | _ -> assert false)))])]);
     Gram.extend
       (module_longident_with_app : 'module_longident_with_app Gram.t )
       (None,
@@ -6128,20 +6298,26 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
         ((Some "simple"), None,
           [([`Stoken
                (((function
-                  | `ANT ((""|"id"|"anti"|"list"),_) -> true
+                  | `ANT ((""|"id"|"anti"|"list"|"uid"),_) -> true
                   | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"))],
+                 (`Normal,
+                   "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"),_)"))],
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `ANT ((""|"id"|"anti"|"list" as n),s) ->
+                   | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s) ->
                        (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
                        'module_longident_with_app )
                    | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
+          ([`Stoken
+              (((function | `UID _ -> true | _ -> false)),
+                (`Normal, "`UID _"))],
             (Gram.mk_action
-               (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                  (Ast.IdUid (_loc, i) : 'module_longident_with_app ))));
+               (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `UID i ->
+                      (Ast.IdUid (_loc, i) : 'module_longident_with_app )
+                  | _ -> assert false)));
           ([`Skeyword "("; `Sself; `Skeyword ")"],
             (Gram.mk_action
                (fun _  (i : 'module_longident_with_app)  _  (_loc : FanLoc.t)
@@ -6163,24 +6339,33 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
         ((Some "simple"), None,
           [([`Stoken
                (((function
-                  | `ANT ((""|"id"|"anti"|"list"),_) -> true
+                  | `ANT ((""|"id"|"anti"|"list"|"uid"|"lid"),_) -> true
                   | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"))],
+                 (`Normal,
+                   "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"|\"lid\"),_)"))],
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `ANT ((""|"id"|"anti"|"list" as n),s) ->
+                   | `ANT ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s) ->
                        (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
                        'type_longident )
                    | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+          ([`Stoken
+              (((function | `LID _ -> true | _ -> false)),
+                (`Normal, "`LID _"))],
             (Gram.mk_action
-               (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (Ast.IdLid (_loc, i) : 'type_longident ))));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
+               (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `LID i -> (Ast.IdLid (_loc, i) : 'type_longident )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `UID _ -> true | _ -> false)),
+                (`Normal, "`UID _"))],
             (Gram.mk_action
-               (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                  (Ast.IdUid (_loc, i) : 'type_longident ))));
+               (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `UID i -> (Ast.IdUid (_loc, i) : 'type_longident )
+                  | _ -> assert false)));
           ([`Skeyword "("; `Sself; `Skeyword ")"],
             (Gram.mk_action
                (fun _  (i : 'type_longident)  _  (_loc : FanLoc.t)  ->
@@ -6190,27 +6375,53 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
         [(None, None,
            [([`Stoken
                 (((function
-                   | `ANT ((""|"id"|"anti"|"list"),_) -> true
+                   | `ANT ((""|"id"|"anti"|"list"|"lid"),_) -> true
                    | _ -> false)),
-                  (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"))],
+                  (`Normal,
+                    "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"|\"lid\"),_)"))],
               (Gram.mk_action
                  (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
-                    | `ANT ((""|"id"|"anti"|"list" as n),s) ->
+                    | `ANT ((""|"id"|"anti"|"list"|"lid" as n),s) ->
                         (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
                         'label_longident )
                     | _ -> assert false)));
-           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           ([`Stoken
+               (((function | `LID _ -> true | _ -> false)),
+                 (`Normal, "`LID _"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `LID i -> (Ast.IdLid (_loc, i) : 'label_longident )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `UID _ -> true | _ -> false)),
+                 (`Normal, "`UID _"));
             `Skeyword ".";
             `Sself],
              (Gram.mk_action
-                (fun (l : 'label_longident)  _  (m : 'a_UIDENT) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.IdAcc (_loc, (Ast.IdUid (_loc, m)), l) : 'label_longident ))));
-           ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+                (fun (l : 'label_longident)  _ 
+                   (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `UID i ->
+                       (Ast.IdAcc (_loc, (Ast.IdUid (_loc, i)), l) : 
+                       'label_longident )
+                   | _ -> assert false)));
+           ([`Stoken
+               (((function | `ANT ((""|"uid"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"uid\"),_)"));
+            `Skeyword ".";
+            `Sself],
              (Gram.mk_action
-                (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                   (Ast.IdLid (_loc, i) : 'label_longident ))))])]);
+                (fun (l : 'label_longident)  _ 
+                   (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT ((""|"uid" as n),s) ->
+                       (Ast.IdAcc
+                          (_loc,
+                            (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s))), l) : 
+                       'label_longident )
+                   | _ -> assert false)))])]);
     Gram.extend (class_type_longident : 'class_type_longident Gram.t )
       (None,
         [(None, None,
@@ -6549,60 +6760,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
         [(None, None,
            [([`Skeyword ";"],
               (Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (() : 'semi ))))])]);
-    Gram.extend (ident_quot : 'ident_quot Gram.t )
-      (None,
-        [((Some "apply"), None,
-           [([`Sself; `Sself],
-              (Gram.mk_action
-                 (fun (j : 'ident_quot)  (i : 'ident_quot)  (_loc : FanLoc.t)
-                     -> (Ast.IdApp (_loc, i, j) : 'ident_quot ))))]);
-        ((Some "."), None,
-          [([`Sself; `Skeyword "."; `Sself],
-             (Gram.mk_action
-                (fun (j : 'ident_quot)  _  (i : 'ident_quot) 
-                   (_loc : FanLoc.t)  ->
-                   (Ast.IdAcc (_loc, i, j) : 'ident_quot ))))]);
-        ((Some "simple"), None,
-          [([`Stoken
-               (((function
-                  | `ANT ((""|"id"|"anti"|"list"),_) -> true
-                  | _ -> false)),
-                 (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `ANT ((""|"id"|"anti"|"list" as n),s) ->
-                       (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s)) : 
-                       'ident_quot )
-                   | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
-            (Gram.mk_action
-               (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                  (Ast.IdUid (_loc, i) : 'ident_quot ))));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
-            (Gram.mk_action
-               (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (Ast.IdLid (_loc, i) : 'ident_quot ))));
-          ([`Stoken
-              (((function
-                 | `ANT ((""|"id"|"anti"|"list"),_) -> true
-                 | _ -> false)),
-                (`Normal, "`ANT ((\"\"|\"id\"|\"anti\"|\"list\"),_)"));
-           `Skeyword ".";
-           `Sself],
-            (Gram.mk_action
-               (fun (i : 'ident_quot)  _  (__fan_0 : [> FanToken.token]) 
-                  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `ANT ((""|"id"|"anti"|"list" as n),s) ->
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdAnt (_loc, (mk_anti ~c:"ident" n s))),
-                           i) : 'ident_quot )
-                  | _ -> assert false)));
-          ([`Skeyword "("; `Sself; `Skeyword ")"],
-            (Gram.mk_action
-               (fun _  (i : 'ident_quot)  _  (_loc : FanLoc.t)  ->
-                  (i : 'ident_quot ))))])]);
     Gram.extend (rec_flag_quot : 'rec_flag_quot Gram.t )
       (None,
         [(None, None,

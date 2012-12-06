@@ -1487,56 +1487,71 @@ New syntax:\
     with "ident"
     {:extend|Gram
       a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
-      (* ident:   (\* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*\) *)
-      (* [ `ANT ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |} *)
-      (* | a_UIDENT{i} -> {| $uid:i |} *)
-      (* | a_LIDENT{i} -> {| $lid:i |} *)
-      (* | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |} *)
-      (* | a_UIDENT{i}; "."; S{j} -> {| $uid:i.$j |} ] *)
+      ident_quot:
+      { "."
+        [ S{i}; "."; S{j} -> {| $i.$j  |} ]
+        "simple"
+        [ `ANT ((""|"id"|"anti"|"list" |"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+        | `ANT (("lid" as n), s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+        | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} -> {| $(anti:mk_anti ~c:"ident" n s).$i |}
+        | `LID i -> {| $lid:i |}
+        | `UID i -> {| $uid:i |}
+        | `UID s ; "." ; S{j} -> {|$uid:s.$j|}
+        | "("; S{i};S{j}; ")" -> Ast.IdApp _loc i j  ] }
       ident:
-      [ `ANT ((""|"id"|"anti"|"list" |"uid"|"lid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-      (* | `ANT (("uid"|"lid" as n), s) -> {|$(anti:mk_anti ~c:"ident" n s)|} *)
-      | `ANT ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s); "."; S{i} ->
-          if n = "lid" then
-            failwithf "antiquot lid is not supported here"
-          else
-            {| $(anti:mk_anti ~c:"ident" n s).$i |}
+      [ `ANT ((""|"id"|"anti"|"list" |"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      | `ANT (("lid" as n), s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} -> {| $(anti:mk_anti ~c:"ident" n s).$i |}
       | `LID i -> {| $lid:i |}
       | `UID i -> {| $uid:i |}
       | `UID s ; "." ; S{j} -> {|$uid:s.$j|}  ]
+      
       module_longident_dot_lparen:
-      [ `ANT ((""|"id"|"anti"|"list" as n),s); "."; "(" ->   {| $(anti:mk_anti ~c:"ident" n s) |}
-      | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
-      | a_UIDENT{i}; "."; "(" -> {| $uid:i |} ]        
+      [ `ANT ((""|"id"|"anti"|"list"|"uid" as n),s); "."; "(" ->   {| $(anti:mk_anti ~c:"ident" n s) |}
+
+      | `UID i; "."; S{l} -> {|$uid:i.$l|}
+      | `UID i; "."; "(" -> {|$uid:i|}
+      | `ANT (("uid"|"" as n),s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l|}      
+      (* | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |} *)
+      (* | a_UIDENT{i}; "."; "(" -> {| $uid:i |} *) ]        
       module_longident:
       [ `ANT ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-      | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
-      | a_UIDENT{i} -> {| $uid:i |} ]
+      | `UID i; "."; S{l} -> {| $uid:i.$l|}
+      | `UID i -> {|$uid:i|}
+      | `ANT ((""|"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      | `ANT((""|"uid" as n), s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l |}
+      (* | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |} *)
+      (* | a_UIDENT{i} -> {| $uid:i |} *) ]
       module_longident_with_app:
       { "apply"
-        [ S{i}; S{j} -> {| $i $j |} ]
+        [ S{i}; S{j} -> {| ($i $j) |} ]
        "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
        "simple"
-        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"ident" n s) |}
-        | a_UIDENT{i} -> {| $uid:i |}
+        [ `ANT ((""|"id"|"anti"|"list"|"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+        | `UID i -> {|$uid:i|}
+        (* | a_UIDENT{i} -> {| $uid:i |} *)
         | "("; S{i}; ")" -> i ] }
-      type_longident:
-      { "apply"
-        [ S{i}; S{j} -> {| $i $j |} ]
+      type_longident: (* FIXME *)
+      { "apply" (* No parens *)
+        [ S{i}; S{j} -> {| ($i $j) |} ]
         "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
         "simple"
-        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"ident" n s) |}
-        | a_LIDENT{i} -> {| $lid:i |}
-        | a_UIDENT{i} -> {| $uid:i |}
+        [ `ANT ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+        | `LID i -> {|$lid:i|}
+        | `UID i -> {|$uid:i|}
+
+        (* | a_LIDENT{i} -> {| $lid:i |} *)
+        (* | a_UIDENT{i} -> {| $uid:i |} *)
         | "("; S{i}; ")" -> i ] }
       label_longident:
-      [ `ANT ((""|"id"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
-      | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |}
-      | a_LIDENT{i} -> {| $lid:i |} ]
+      [ `ANT ((""|"id"|"anti"|"list"|"lid" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
+      | `LID i -> {|$lid:i|}
+      | `UID i; "."; S{l} -> {|$uid:i.$l|}
+      | `ANT((""|"uid" as n),s); "."; S{l} -> {|$(anti:mk_anti ~c:"ident" n s).$l|}
+      (* | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |} *)
+      (* | a_LIDENT{i} -> {| $lid:i |} *) ]
       class_type_longident: [ type_longident{x} -> x ]
       val_longident:[ ident{x} -> x ]
       class_longident:
@@ -1601,17 +1616,6 @@ New syntax:\
       | `STR (_, x); S{xs} -> Ast.LCons x xs
       | `STR (_, x) -> Ast.LCons x Ast.LNil ] 
       semi: [ ";" -> () ]
-      ident_quot:
-      { "apply"
-        [ S{i}; S{j} -> {| $i $j |} ]
-        "."
-        [ S{i}; "."; S{j} -> {| $i.$j |} ]
-        "simple"
-        [ `ANT ((""|"id"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
-        | a_UIDENT{i} -> {| $uid:i |}
-        | a_LIDENT{i} -> {| $lid:i |}
-        | `ANT ((""|"id"|"anti"|"list" as n),s); "."; S{i} ->  {| $(anti:mk_anti ~c:"ident" n s).$i |}
-        | "("; S{i}; ")" -> i  ] }
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ direction_flag{x} -> x ] 
       mutable_flag_quot: [  opt_mutable{x} -> x ] 

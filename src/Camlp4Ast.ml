@@ -39,7 +39,7 @@ let ghost = FanLoc.ghost;
  *)
 let rec is_module_longident = fun
   [ {:ident| $_.$i |} -> is_module_longident i
-  | {:ident| $i1 $i2 |} ->
+  | {:ident| ($i1 $i2) |} ->
       is_module_longident i1 && is_module_longident i2
   | {:ident| $uid:_ |} -> true
   | _ -> false ];
@@ -48,7 +48,7 @@ let ident_of_expr =
   let error () =
     invalid_arg "ident_of_expr: this expression is not an identifier" in
   let rec self =  fun
-    [ {:expr@_loc| $e1 $e2 |} -> {:ident| $(self e1) $(self e2) |}
+    [ {:expr@_loc| $e1 $e2 |} -> {:ident| ( $(self e1) $(self e2)) |}
     | {:expr@_loc| $e1.$e2 |} -> {:ident| $(self e1).$(self e2) |}
     | {:expr| $lid:_ |} -> error ()
     | {:expr| $id:i |} -> if is_module_longident i then i else error ()
@@ -79,7 +79,7 @@ let ident_of_ctyp =
   let error () =
     invalid_arg "ident_of_ctyp: this type is not an identifier" in
   let rec self =   fun
-    [ {:ctyp@_loc| $t1 $t2 |} -> {:ident| $(self t1) $(self t2) |}
+    [ {:ctyp@_loc| $t1 $t2 |} -> {:ident| ( $(self t1) $(self t2) ) |}
     | {:ctyp| $lid:_ |} -> error ()
     | {:ctyp| $id:i |} -> if is_module_longident i then i else error ()
     | _ -> error () ] in
@@ -92,7 +92,7 @@ let ident_of_patt =
     invalid_arg "ident_of_patt: this pattern is not an identifier" in
   let rec self = fun 
     [ {:patt@_loc| $p1 $p2 |}
-      -> {:ident| $(self p1) $(self p2) |}
+      -> {:ident| ( $(self p1) $(self p2) ) |}
     | {:patt| $lid:_ |} -> error ()
     | {:patt| $id:i |} -> if is_module_longident i then i else error ()
     | _ -> error () ] in
@@ -134,7 +134,7 @@ let rec is_irrefut_patt = with "patt"
 let rec is_constructor =  fun
     [ {:ident| $_.$i |} -> is_constructor i
     | {:ident| $uid:_ |} -> true
-    | {:ident| $lid:_ |} | {:ident| $_ $_ |} -> false
+    | {:ident| $lid:_ |} | {:ident| ($_ $_) |} -> false
     | {:ident| $anti:_ |} -> assert false ];
 
 let is_patt_constructor = fun
@@ -248,7 +248,7 @@ let rec idApp_of_list =  fun
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of_ident i in
-        {:ident| $i $(idApp_of_list is) |} ];
+        {:ident| ($i $(idApp_of_list is)) |} ];
 
 let rec mcOr_of_list = fun
     [ [] -> {:match_case@ghost||}
@@ -434,7 +434,7 @@ let rec list_of_match_case x acc =  match x with
   | x -> [x :: acc] ];
 
 let rec list_of_ident x acc = match x with
-    [ {:ident| $x . $y |} | {:ident| $x $y |} ->
+    [ {:ident| $x . $y |} | {:ident| ($x $y) |} ->
       list_of_ident x (list_of_ident y acc)
     | x -> [x :: acc] ];
 

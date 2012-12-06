@@ -36,7 +36,7 @@ let is_raise_failure  = fun
   
 let rec handle_failure e =
   match e with
-  [ {| try $_ with [ $uid:m.Failure -> $e] |}
+  [ {| try $_ with [ $(uid:m).Failure -> $e] |}  (* {:match_case|$(uid:m).Failure -> $e|} *)
     when m = gm()
     ->  handle_failure e
   | {| match $me with [ $a ] |} ->

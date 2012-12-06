@@ -477,7 +477,7 @@ let rec string_of_ident = (* duplicated with Camlp4Filters remove soon*)
   [ {:ident| $lid:s |} -> s
   | {:ident| $uid:s |} -> s
   | {:ident| $i1.$i2 |} -> "acc_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
-  | {:ident| $i1 $i2 |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
+  | {:ident| ($i1 $i2) |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
   | {:ident| $anti:_ |} -> assert false ];
 
     

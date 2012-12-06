@@ -198,7 +198,7 @@ module Camlp4Bin
           (* | None -> None ]) *) None ;
 
          
-      let (* rec *) (* and *)  parse_file (* dyn_loader *) ?directive_handler name pa (* getdir *) =
+      let parse_file  ?directive_handler name pa =
         let loc = FanLoc.mk name in begin
           PreCast.Syntax.current_warning := print_warning;
           let ic = if name = "-" then stdin else open_in_bin name;
@@ -242,21 +242,20 @@ module Camlp4Bin
                 FanLoc.raise loc (XStream.Error (x ^ "bad directive camlp4 can not handled "))
             | _ -> assert false
             ] );
-      let process (* dyn_loader *) ?directive_handler name pa pr clean fold_filters (* getdir *) =
-          parse_file (* dyn_loader *) ?directive_handler name pa (* getdir *)
+      let process  ?directive_handler name pa pr clean fold_filters =
+          parse_file  ?directive_handler name pa 
           |> fold_filters (fun t filter -> filter t )
           |> clean
           |> pr ?input_file:(Some name) ?output_file:!output_file ;
 
       (* [entrance] *)  
-      let process_intf (* dyn_loader *) name =
+      let process_intf  name =
         process ~directive_handler:sig_handler
           name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
                 (new Camlp4Ast.clean_ast)#sig_item
-                PreCast.Syntax.AstFilters.fold_interf_filters (* gind *);
-      let process_impl (* dyn_loader *) name =
+                PreCast.Syntax.AstFilters.fold_interf_filters;
+      let process_impl  name =
         process ~directive_handler:str_handler
-          (* dyn_loader *)
           name
           PreCast.CurrentParser.parse_implem
           PreCast.CurrentPrinter.print_implem

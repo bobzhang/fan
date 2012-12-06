@@ -56,7 +56,7 @@ let ident_tag i =
       (Some ((ldot (lident "*predef*") "option"), `lident))
     | {:ident| $i1.$i2 |} ->
         self i2 (self i1 acc) (* take care of the order *)
-    | {:ident| $i1 $i2 |} -> match ((self i1 None), (self i2 None),acc) with
+    | {:ident| ($i1 $i2) |} -> match ((self i1 None), (self i2 None),acc) with
         (* FIXME uid required here, more precise *)
         [ (Some (l,_),Some (r,_),None) ->
           Some(Lapply l r,`app)

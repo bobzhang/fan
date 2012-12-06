@@ -762,7 +762,7 @@ let rec string_of_ident =
   [ {:ident| $lid:s |} -> s
   | {:ident| $uid:s |} -> s
   | {:ident| $i1.$i2 |} -> "acc_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
-  | {:ident| $i1 $i2 |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
+  | {:ident| ($i1 $i2) |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
   | {:ident| $anti:_ |} -> assert false ];
 
 let fold_args ty f init =
@@ -802,7 +802,7 @@ let is_antiquot_data_ctor s =
 let rec meta_ident m =
   fun
   [ {:ident| $i1.$i2 |} -> {:expr| Ast.IdAcc _loc $(meta_ident m i1) $(meta_ident m i2) |}
-  | {:ident| $i1 $i2 |} -> {:expr| Ast.IdApp _loc $(meta_ident m i1) $(meta_ident m i2) |}
+  | {:ident| ($i1 $i2) |} -> {:expr| Ast.IdApp _loc $(meta_ident m i1) $(meta_ident m i2) |}
   | {:ident| $anti:s |}  -> {:expr| $anti:s |}
   | {:ident| $lid:s |}   -> {:expr| Ast.IdLid _loc $str:s |}
   | {:ident| $uid:s |}   -> {:expr| Ast.IdUid _loc $str:s |} ];
