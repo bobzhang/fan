@@ -1,14 +1,9 @@
 
 open Structure
   
-val get_prev_loc_only: bool ref
+
 
 val empty_entry: string -> 'a -> 'b
-
-val keep_prev_loc:
-    (FanToken.token * FanLoc.t) XStream.t -> token_stream
-
-val drop_prev_loc: token_stream -> (FanToken.token * FanLoc.t) XStream.t
 
 val get_cur_loc:  token_stream -> FanLoc.t
        

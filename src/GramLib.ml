@@ -41,8 +41,8 @@ let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) =
 let setup_op_parser entry p =
   Gram.setup_parser entry
     (parser
-        [< (`KEYWORD x | `SYMBOL x, ti) when p x >] ->
-          let _loc = Gram.token_location ti in
+        [< (`KEYWORD x | `SYMBOL x,_loc) when p x >] ->
+          (* let _loc = Gram.token_location ti in *)
           {:expr| $lid:x |});
 
 let rec infix_kwds_filter = parser

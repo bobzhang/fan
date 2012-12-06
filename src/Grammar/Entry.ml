@@ -1,6 +1,5 @@
 
 open LibUtil;
-(* open FanSig; *)
 open Format;
 open Structure;
 open Tools;
@@ -29,7 +28,7 @@ let action_parse entry ts : Action.t =
         Format.fprintf
       else Format.ifprintf in 
     let () = p Format.err_formatter "@[<4>%s@ " entry.ename in
-    let res = entry.estart 0 ts in (* entry.estart 0 *)
+    let res = entry.estart 0 ts in
     let () =  p Format.err_formatter "@]@." in 
     res 
   with
@@ -50,7 +49,7 @@ let lex entry loc cs = entry.egram.glexer loc cs;
 let lex_string entry loc str = lex entry loc (XStream.of_string str);
 
 let filter entry ts =
-  keep_prev_loc (FanTokenFilter.filter (get_filter entry.egram) ts);
+  (FanTokenFilter.filter (get_filter entry.egram) ts);
 
 let parse_origin_tokens entry ts = Action.get (action_parse entry ts);
 
@@ -62,7 +61,7 @@ let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs);
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string entry loc str);
 
-let of_parser g n (p : XStream.t (FanToken.token * token_info) -> 'a)   =
+let of_parser g n (p : token_stream -> 'a)   =
   let f ts = Action.mk (p ts) in {
   egram = g;
   ename = n;
@@ -70,7 +69,7 @@ let of_parser g n (p : XStream.t (FanToken.token * token_info) -> 'a)   =
   econtinue _ _ _ = parser [];
   edesc = Dparser f };
 
-let setup_parser e (p : XStream.t (FanToken.token * token_info) -> 'a) =
+let setup_parser e (p : token_stream -> 'a) =
   let f ts = Action.mk (p ts) in begin
     e.estart <- fun _ -> f;
     e.econtinue <- fun _ _ _ -> parser [];

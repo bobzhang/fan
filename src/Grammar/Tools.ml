@@ -1,50 +1,22 @@
 open LibUtil;
 open Structure;
 
-let get_prev_loc_only = ref false;
 
 let empty_entry ename _ =
   raise (XStream.Error ("entry [" ^ ename ^ "] is empty"));
 
-(* Make sure [get_prev_loc] will not peek *)  
-let keep_prev_loc (strm: XStream.t ('c * FanLoc.t) ) :  XStream.t ('c * token_info) =
-  match XStream.peek strm with
-  [ None -> [< >]
-  | Some (tok0,init_loc) ->
-      let rec go prev_loc strm1 =
-        if !get_prev_loc_only then
-          [<  (tok0,{prev_loc;cur_loc=prev_loc;prev_loc_only=true});
-              'go prev_loc strm1 >]
-        else match strm1 with parser
-        [ [< (tok,cur_loc); 'strm >] ->
-            [< (tok, {prev_loc; cur_loc; prev_loc_only = false});
-               'go cur_loc strm >]
-        | [< >] -> [< >] ] in
-        go init_loc strm ];
 
-(* not used *)    
-let drop_prev_loc strm = XStream.map (fun (tok,r) -> (tok,r.cur_loc)) strm;
 
 (* get_cur_loc *must* be used first *)  
 let get_cur_loc strm =
   match XStream.peek strm with
-  [ Some (_,r) -> r.cur_loc
+  [ Some (_,r) -> r
   | None -> FanLoc.ghost ];
 
-(* (\* Make sure [get_prev_loc] will not peek *\)     *)
-(* let get_prev_loc strm = begin *)
-(*   get_prev_loc_only:=true; *)
-(*   let result = *)
-(*     match XStream.peek strm with *)
-(*     [ Some (_, {prev_loc; prev_loc_only = true; _}) -> *)
-(*       begin XStream.junk strm; prev_loc end *)
-(*     | Some (_, {prev_loc; prev_loc_only = false;_}) -> prev_loc *)
-(*     | None -> FanLoc.ghost ] in *)
-(*   (get_prev_loc_only:=false; result) *)
-(* end; *)
+
 let get_prev_loc strm =
   match XStream.get_last strm with
-  [Some (_,{cur_loc=l;_}) -> l
+  [Some (_,l) -> l
   |None -> begin
       FanLoc.ghost end];
       

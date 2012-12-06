@@ -751,8 +751,7 @@ New syntax:\
   Gram.setup_parser sem_expr begin
     let symb1 = Gram.parse_origin_tokens expr in
     let symb = parser
-      [ [< (`ANT (("list" as n), s), ti) >] ->
-        let _loc = Gram.token_location ti in
+      [ [< (`ANT (("list" as n), s), _loc) >] ->
         {:expr| $(anti:mk_anti ~c:"expr;" n s) |}
       | [< a = symb1 >] -> a ] in
     let rec kont al =

@@ -22,28 +22,7 @@ type gram = {
     warning_verbose : ref bool;
     error_verbose   : ref bool };
 
-type token_info = {
-    prev_loc : FanLoc.t;
-    cur_loc : FanLoc.t ;
-    prev_loc_only : bool };
-  
-let ghost_token_info = {
-  prev_loc=FanLoc.ghost;
-  cur_loc = FanLoc.ghost;
-  prev_loc_only = false;};
-  (* with neighbor token info stored*)  
-
-type token_stream = XStream.t (FanToken.token * token_info);
-
-open Format;
-let pp = fprintf;
-  
-let pp_token_info f {prev_loc;cur_loc;prev_loc_only} =
-  pp f
-    "{prev_loc=@;%a;cur_loc=@;%a;prev_loc_only=%b}"
-    FanLoc.print prev_loc
-    FanLoc.print cur_loc
-    prev_loc_only ;
+type token_stream = XStream.t (FanToken.token * FanLoc.t);
 
 type parse 'a = token_stream -> 'a;
 type cont_parse 'a = FanLoc.t -> Action.t -> parse 'a;
@@ -115,7 +94,7 @@ type foldsep 'a 'b 'c =
       (XStream.t 'a -> 'b) -> (XStream.t 'a -> unit) -> XStream.t 'a -> 'c;
 
 let get_filter g = g.gfilter;
-let token_location r = r.cur_loc;
+
 
   
 let using { gkeywords = table; gfilter = filter; _ } kwd =
