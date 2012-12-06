@@ -31,6 +31,7 @@ val start_pos: t -> position
 val stop_pos: t -> position
 val merge: t -> t -> t
 val join: t -> t
+val join_end: t -> t    
 val map:
   (position -> position) ->
   [< `both | `start | `stop ] -> t -> t

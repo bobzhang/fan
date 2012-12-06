@@ -76,6 +76,7 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
       let (pl, stopped_at_directive) = pa loc cs in
       match stopped_at_directive with
       [ Some new_loc ->
+        (* let _ = Format.eprintf "Stopped at %a for directive processing@." FanLoc.print new_loc in *)
         let pl =
           match List.rev pl with
           [ [] -> assert false
@@ -83,7 +84,7 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
               match directive_handler x with
               [ None -> xs
               | Some x -> [x :: xs] ] ]
-        in (List.rev pl) @ (loop new_loc)
+        in (List.rev pl) @ (loop (FanLoc.join_end new_loc))
       | None -> pl ]
     in loop init_loc;
   let parse_implem ?(directive_handler = fun _ -> None) _loc cs =

@@ -174,7 +174,7 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
                 (match directive_handler x with
                  | None  -> xs
                  | Some x -> x :: xs) in
-          (List.rev pl) @ (loop new_loc)
+          (List.rev pl) @ (loop (FanLoc.join_end new_loc))
       | None  -> pl in
     loop init_loc
   let parse_implem ?(directive_handler= fun _  -> None)  _loc cs =

@@ -107,6 +107,7 @@ let merge a b =
        | (_,true ) -> { b with loc_start = (a.loc_start) } in
      r)
 let join x = { x with loc_end = (x.loc_start) }
+let join_end x = { x with loc_start = (x.loc_end) }
 let map f start_stop_both x =
   match start_stop_both with
   | `start -> { x with loc_start = (f x.loc_start) }
