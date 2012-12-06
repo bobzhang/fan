@@ -140,10 +140,14 @@ let rec fake_junk s =
   | Sgen ({curr = Some _a; _ } as g) ->
       set_count s (succ s.count); g.curr <- None; (* set_last s a; *)
   | Sbuffio b ->
-      set_count s (succ s.count);
-      (* set_last s (Some (Obj.magic b.buff.[s.count - 1])); *)
-      b.ind <- succ b.ind;
-
+      if b.ind >= b.len then fill_buff b;
+      if b.len == 0 then
+        ()
+      else begin 
+        set_count s (succ s.count);
+        (* set_last s (Some (Obj.magic b.buff.[s.count - 1])); *)
+        b.ind <- succ b.ind;
+      end
   | _ ->
       match peek s with
         None -> ()
