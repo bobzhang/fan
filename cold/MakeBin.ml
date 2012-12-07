@@ -9,6 +9,12 @@ let print_stdlib () = printf "%s@." FanConfig.camlp4_standard_library; exit 0
 let warn_noassert () =
   eprintf
     "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
+let just_print_filters () =
+  let pp = eprintf in
+  let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
+  pp "@[for interface:@[<hv2>%a@]@]@." p_tbl AstFilters.interf_filters;
+  pp "@[for phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.implem_filters;
+  pp "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.topphrase_filters
 type file_kind =  
   | Intf of string
   | Impl of string
@@ -18,11 +24,8 @@ type file_kind =
 let search_stdlib = ref true
 let print_loaded_modules = ref false
 let task f x = let () = FanConfig.current_input_file := x in f x
-module Camlp4Bin(PreCast:Sig.PRECAST) = struct
-  let _ = f_lift (module PreCast) let _ = f_exn (module PreCast)
-  let _ = f_prof (module PreCast) let _ = f_fold (module PreCast)
-  let _ = f_striploc (module PreCast) let _ = f_trash (module PreCast)
-  let _ = f_meta (module PreCast)
+module Camlp4Bin(PreCast:Sig.PRECAST) =
+  struct
   let printers: (string,(module Sig.PRECAST_PLUGIN)) Hashtbl.t =
     Hashtbl.create 30 let rcall_callback = ref (fun ()  -> ())
   let loaded_modules = ref SSet.empty
@@ -72,22 +75,6 @@ module Camlp4Bin(PreCast:Sig.PRECAST) = struct
      | (("Parsers"|""),"debug") -> pa_debug (module PreCast)
      | (("Parsers"|""),("comp"|"camlp4listcomprehension.cmo")) ->
          pa_l (module PreCast)
-     | (("Filters"|""),("lift"|"camlp4astlifter.cmo")) ->
-         f_lift (module PreCast)
-     | (("Filters"|""),("exn"|"camlp4exceptiontracer.cmo")) ->
-         f_exn (module PreCast)
-     | (("Filters"|""),("prof"|"camlp4profiler.cmo")) ->
-         f_prof (module PreCast)
-     | (("Filters"|""),("map"|"camlp4mapgenerator.cmo")) ->
-         f_fold (module PreCast)
-     | (("Filters"|""),("fold"|"camlp4foldgenerator.cmo")) ->
-         f_fold (module PreCast)
-     | (("Filters"|""),("meta"|"camlp4metagenerator.cmo")) ->
-         f_meta (module PreCast)
-     | (("Filters"|""),("trash"|"camlp4trashremover.cmo")) ->
-         f_trash (module PreCast)
-     | (("Filters"|""),("striploc"|"camlp4locationstripper.cmo")) ->
-         f_striploc (module PreCast)
      | (("Printers"|""),("pr_o.cmo"|"o"|"ocaml"|"camlp4ocamlprinter.cmo")) ->
          PreCast.enable_ocaml_printer ()
      | (("Printers"|""),("pr_dump.cmo"|"p"|"dumpocaml"|"camlp4ocamlastdumper.cmo"))
@@ -214,6 +201,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) = struct
     ("-parsing-strict", (FanArg.Set FanConfig.strict_parsing), "");
     ("-loaded-modules", (FanArg.Set print_loaded_modules),
       "Print the list of loaded modules.");
+    ("-loaded-filters", (FanArg.Unit just_print_filters),
+      "Print the registered filters.");
     ("-parser", (FanArg.String (rewrite_and_load "Parsers")),
       "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
     ("-printer", (FanArg.String (rewrite_and_load "Printers")),

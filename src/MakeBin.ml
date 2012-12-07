@@ -2,49 +2,50 @@ open FanParsers;
 open Camlp4Filters;
 open Format;
 open LibUtil;
-      (*be careful, since you can register your own [str_item_parser],
-        if you do it in-consistently, this may result in an
-        in-consistent behavior
-       *)  
-        
-      let just_print_the_version () =
-        begin  printf "%s@." FanConfig.version; exit 0 end ;
+
+
+(*be careful, since you can register your own [str_item_parser],
+  if you do it in-consistently, this may result in an
+  in-consistent behavior *)  
+let just_print_the_version () =
+  begin  printf "%s@." FanConfig.version; exit 0 end ;
       
-      let print_version () =
-        begin eprintf "Camlp4 version %s@." FanConfig.version; exit 0 end;
+let print_version () =
+  begin eprintf "Camlp4 version %s@." FanConfig.version; exit 0 end;
       
-      let print_stdlib () =
-        begin  printf "%s@." FanConfig.camlp4_standard_library; exit 0 end;
+let print_stdlib () =
+  begin  printf "%s@." FanConfig.camlp4_standard_library; exit 0 end;
       
-      let warn_noassert () =
-        begin
-          eprintf "\
+let warn_noassert () =
+  begin
+    eprintf "\
       camlp4 warning: option -noassert is obsolete\n\
       You should give the -noassert option to the ocaml compiler instead.@.";
         end;
-      type file_kind =
-        [ Intf of string
-        | Impl of string
-        | Str of string
-        | ModuleImpl of string
-        | IncludeDir of string ];
-      
-      let search_stdlib = ref true;
-      let print_loaded_modules = ref false;
-      let task f x =
-          let () = FanConfig.current_input_file := x in
-          f x ;
+let just_print_filters () =
+  let pp = eprintf (* and f = Format.std_formatter *) in 
+  let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in
+  begin
+    pp  "@[for interface:@[<hv2>%a@]@]@." p_tbl AstFilters.interf_filters ;
+    pp  "@[for phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.implem_filters ;
+    pp  "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.topphrase_filters 
+  end;
+type file_kind =
+  [ Intf of string
+  | Impl of string
+  | Str of string
+  | ModuleImpl of string
+  | IncludeDir of string ];
+  
+let search_stdlib = ref true;
+let print_loaded_modules = ref false;
+let task f x =
+  let () = FanConfig.current_input_file := x in
+  f x ;
 
 module Camlp4Bin
      (PreCast:Sig.PRECAST)
     =struct
-    f_lift (module PreCast);
-    f_exn (module PreCast);
-    f_prof (module PreCast);
-    f_fold (module PreCast);
-    f_striploc (module PreCast);
-    f_trash (module PreCast);
-    f_meta (module PreCast);  
     let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) = Hashtbl.create 30;
       (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
     let rcall_callback = ref (fun () -> ());
@@ -276,6 +277,7 @@ module Camlp4Bin
          ("-parsing-strict",FanArg.Set FanConfig.strict_parsing, "");
          (* FIXME the command line parsing sucks, it can not handle prefix problem*)
          ("-loaded-modules", FanArg.Set print_loaded_modules, "Print the list of loaded modules.");
+         ("-loaded-filters", FanArg.Unit just_print_filters, "Print the registered filters.");
          ("-parser", FanArg.String (rewrite_and_load "Parsers"),
           "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
          ("-printer", FanArg.String (rewrite_and_load "Printers"),

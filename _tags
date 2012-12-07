@@ -1,5 +1,7 @@
 # -*- Mode:Shell-script -*-
 true:pkg_batteries
+# true:-traverse
+# <cold> and <src>:traverse
 # <{cold,src}/Pprintast.ml>: warn_a
 <{cold,src}/Camlp4Printers/**.ml>: use_unix
 

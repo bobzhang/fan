@@ -615,7 +615,7 @@ module Default = struct
                                       ];
     Options.ocamldep   := ocamlfind & A"ocamldep";
     Options.ocamldoc   := ocamlfind & A"ocamldoc";
-    Options.make_links := false;
+    (* Options.make_links := false; *)
     (* Options.ocamldoc := S [A "ocamldoc"]; *)
     (** ocamlfind does not accept -search
         ocamldoc.opt does not work on mac
@@ -798,12 +798,16 @@ rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
     (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
 let () =
+  Options.ocaml_lflags :=  [ "-linkall"] ;
   after_rules_dispatch := fun () -> begin
     flag ["ocaml"; "pp"; "use_fan"] boot_flags;
     flag ["ocaml"; "pp"; "use_fan"; "native"] (S[A"-D"; A"OPT"]);
     flag ["ocaml"; "pp"; "use_fan"; "pp:dep"] (S[A"-D"; A"OPT"]);
     flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
+    (* dep ["ocaml"; "link"; "native"] ["src/Camlp4Filters.cmx"]; *)
+    (* dep ["ocaml"; "link"; "byte"] ["src/Camlp4Filters.cmo"]; *)
     "src/Camlp4Ast.ml" |-? ["src/Ast.ml"];
+
   end;;
 
 
