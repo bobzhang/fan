@@ -30,7 +30,7 @@ let toplevel_phrase token_stream =
     [ Some str_item ->
         let str_item =
           (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) str_item in *)
-          Syntax.AstFilters.apply_topphrase_filters str_item in
+          AstFilters.apply_topphrase_filters str_item in
         Ast2pt.phrase str_item
     | None -> raise End_of_file ];
 

@@ -1,4 +1,8 @@
 (* Enrich with some utility functions in Ast *)
+
+#filter "fold";;
+#filter "meta";;
+#filter "trash";;
 module Ast = struct
   include Ast;
   let safe_string_escaped s =

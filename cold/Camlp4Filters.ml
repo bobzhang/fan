@@ -10,21 +10,22 @@ module MakeAstLifter(Syn:Sig.Camlp4Syntax) = struct
     let meta_loc_expr _loc _ = Ast.ExId (_loc, (Ast.IdLid (_loc, "loc")))
     end module MetaAst = Ast.Meta.Make(MetaLoc)
   let _ =
-    Syn.AstFilters.register_str_item_filter
-      (fun ast  ->
-         let _loc = Ast.loc_of_str_item ast in
-         Ast.StExp
-           (_loc,
-             (Ast.ExLet
-                (_loc, Ast.ReNil,
-                  (Ast.BiEq
-                     (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "loc")))),
-                       (Ast.ExId
-                          (_loc,
-                            (Ast.IdAcc
-                               (_loc, (Ast.IdUid (_loc, "FanLoc")),
-                                 (Ast.IdLid (_loc, "ghost")))))))),
-                  (MetaAst.Expr.meta_str_item _loc ast)))))
+    AstFilters.register_str_item_filter
+      ("lift",
+        (fun ast  ->
+           let _loc = Ast.loc_of_str_item ast in
+           Ast.StExp
+             (_loc,
+               (Ast.ExLet
+                  (_loc, Ast.ReNil,
+                    (Ast.BiEq
+                       (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "loc")))),
+                         (Ast.ExId
+                            (_loc,
+                              (Ast.IdAcc
+                                 (_loc, (Ast.IdUid (_loc, "FanLoc")),
+                                   (Ast.IdLid (_loc, "ghost")))))))),
+                    (MetaAst.Expr.meta_str_item _loc ast))))))
   end
 module IdExceptionTracer = struct
   let name = "Camlp4ExceptionTracer" let version = Sys.ocaml_version
@@ -125,7 +126,9 @@ module MakeExceptionTracer(Syn:Sig.Camlp4Syntax) =
         function
         | Ast.StMod (_,"Debug",_) as st -> st
         | st -> super#str_item st
-    end let _ = Syn.AstFilters.register_str_item_filter filter#str_item
+    end
+  let _ =
+    AstFilters.register_str_item_filter ("exception", (filter#str_item))
   end
 module IdFoldGenerator = struct
   let name = "Camlp4FoldGenerator" let version = Sys.ocaml_version
@@ -822,8 +825,9 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
             let sg1 = self#sig_item sg1 in
             Ast.SgSem (_loc, sg1, (self#sig_item sg2))
         | sg -> super#sig_item sg
-    end let _ = Syn.AstFilters.register_str_item_filter processor#str_item
-  let _ = Syn.AstFilters.register_sig_item_filter processor#sig_item
+    end
+  let _ = AstFilters.register_str_item_filter ("fold", (processor#str_item))
+  let _ = AstFilters.register_sig_item_filter ("fold", (processor#sig_item))
   end
 module IdLocationStripper = struct
   let name = "Camlp4LocationStripper" let version = Sys.ocaml_version
@@ -832,8 +836,8 @@ module MakeLocationStripper(Syn:Sig.Camlp4Syntax) =
   struct
   module Ast = Camlp4Ast
   let _ =
-    Syn.AstFilters.register_str_item_filter
-      (Ast.map_loc (fun _  -> FanLoc.ghost))#str_item
+    AstFilters.register_str_item_filter
+      ("strip", ((Ast.map_loc (fun _  -> FanLoc.ghost))#str_item))
   end
 module IdProfiler = struct
   let name = "Camlp4Profiler" let version = Sys.ocaml_version
@@ -898,7 +902,8 @@ module MakeProfiler(Syn:Sig.Camlp4Syntax) = struct
         decorate_this_expr (Ast.ExFun (_loc, (decorate_match_case m))) id
     | e -> decorate_this_expr (decorate_expr e) id
   let _ =
-    Syn.AstFilters.register_str_item_filter (decorate decorate_fun)#str_item
+    AstFilters.register_str_item_filter
+      ("profile", ((decorate decorate_fun)#str_item))
   end
 module IdTrashRemover = struct
   let name = "Camlp4TrashRemover" let version = Sys.ocaml_version
@@ -906,11 +911,12 @@ module IdTrashRemover = struct
 module MakeTrashRemover(Syn:Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast
   let _ =
-    Syn.AstFilters.register_str_item_filter
-      (Ast.map_str_item
-         (function
-          | Ast.StMod (_loc,"Camlp4Trash",_) -> Ast.StNil _loc
-          | st -> st))#str_item
+    AstFilters.register_str_item_filter
+      ("trash",
+        ((Ast.map_str_item
+            (function
+             | Ast.StMod (_loc,"Camlp4Trash",_) -> Ast.StNil _loc
+             | st -> st))#str_item))
   end
 module IdMetaGenerator = struct
   let name = "Camlp4MetaGenerator" let version = Sys.ocaml_version
@@ -1732,7 +1738,7 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                }
          | me -> me
      end)#str_item st
-  let _ = Syn.AstFilters.register_str_item_filter filter
+  let _ = AstFilters.register_str_item_filter ("meta", filter)
   end
 let f_lift ((module P)  : (module Sig.PRECAST)) =
   P.syntax_plugin (module IdAstLifter) (module MakeAstLifter)

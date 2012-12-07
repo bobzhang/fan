@@ -28,7 +28,6 @@ module type Camlp4Syntax =
   sig
     module AntiquotSyntax : Quotation.AntiquotSyntax
     module Quotation : Quotation.S
-    module AstFilters : AstFilters.S
     include Warning
     include ParserImpl
     include PrinterImpl
@@ -220,8 +219,7 @@ module type Camlp4Syntax =
 module type SyntaxExtension =
   functor (Syn : Camlp4Syntax) ->
     (Camlp4Syntax with module AntiquotSyntax = Syn.AntiquotSyntax and
-      module Quotation = Syn.Quotation and module AstFilters =
-      Syn.AstFilters)
+      module Quotation = Syn.Quotation)
 module type PLUGIN = functor (Unit : sig  end) -> sig  end
 module type SyntaxPlugin = functor (Syn : Camlp4Syntax) -> sig  end
 module type PrinterPlugin = functor (Syn : Camlp4Syntax) -> PrinterImpl

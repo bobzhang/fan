@@ -123,7 +123,7 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
       end];
 
     
-  module AstFilters = AstFilters.Make (struct end);
+  (* module AstFilters = AstFilters.Make (struct end); *)
   module Options = struct
     type spec_list = list (string * FanArg.spec * string);
     let init_spec_list = ref [];

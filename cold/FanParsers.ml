@@ -1906,8 +1906,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
 module MakeNothing(Syn:Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast
   let _ =
-    Syn.AstFilters.register_str_item_filter
-      (Ast.map_expr Expr.map_expr)#str_item
+    AstFilters.register_str_item_filter
+      ("trash_nothing", ((Ast.map_expr Expr.map_expr)#str_item))
   end
 module IdRevisedParser = struct
   let name = "Camlp4OCamlRevisedParser" let version = Sys.ocaml_version

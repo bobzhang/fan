@@ -2,4 +2,4 @@
 
 <**/*.{ml,mlx}>: use_fan
 <{**/*_ppo,AstPrint,OAstPrint,AstEq,tmp*,FanLexer,FanConfig,XStream,CharStream,OStream,Stream8,GStream,Stream}.{ml}>  : -use_fan
-<Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash
+

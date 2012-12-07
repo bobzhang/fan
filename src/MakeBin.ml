@@ -38,6 +38,13 @@ open LibUtil;
 module Camlp4Bin
      (PreCast:Sig.PRECAST)
     =struct
+    f_lift (module PreCast);
+    f_exn (module PreCast);
+    f_prof (module PreCast);
+    f_fold (module PreCast);
+    f_striploc (module PreCast);
+    f_trash (module PreCast);
+    f_meta (module PreCast);  
     let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) = Hashtbl.create 30;
       (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
     let rcall_callback = ref (fun () -> ());
@@ -112,40 +119,6 @@ module Camlp4Bin
                begin
                  pa_l (module PreCast);
                end 
-          | ("Filters"|"",
-             "lift" | "camlp4astlifter.cmo") -> begin
-               f_lift (module PreCast);
-             end
-
-          | ("Filters"|"",
-             "exn" | "camlp4exceptiontracer.cmo") -> begin
-               f_exn (module PreCast);
-             end 
-          | ("Filters"|"",
-             "prof" | "camlp4profiler.cmo") -> begin 
-               f_prof (module PreCast);
-             end 
-          (* map is now an alias of fold since fold handles map too *)
-          | ("Filters"|"",
-             "map" | "camlp4mapgenerator.cmo") -> begin
-               f_fold (module PreCast);
-             end 
-          | ("Filters"|"", 
-             "fold" | "camlp4foldgenerator.cmo") -> begin
-               f_fold (module PreCast);
-             end 
-          | ("Filters"|"",
-             "meta" | "camlp4metagenerator.cmo") -> begin
-               f_meta (module PreCast);
-             end 
-          | ("Filters"|"",
-             "trash" | "camlp4trashremover.cmo") -> begin
-               f_trash (module PreCast);
-             end 
-          | ("Filters"|"",
-             "striploc" | "camlp4locationstripper.cmo") -> begin
-               f_striploc (module PreCast);
-             end
           | ("Printers"|"",
              "pr_o.cmo" | "o" | "ocaml" | "camlp4ocamlprinter.cmo") -> begin
                PreCast.enable_ocaml_printer ();
@@ -194,8 +167,10 @@ module Camlp4Bin
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
             | {| #use $str:s |} ->
                 Some (parse_file  ~directive_handler:sig_handler s PreCast.CurrentParser.parse_interf )
-            | {| # $(lid:"default_quotation") $str:s |} ->
+            | {| #default_quotation $str:s |} ->
                 begin Quotation.default := s; None end
+            | {| #filter $str:s |} ->
+                begin AstFilters.use_interf_filter s; None ; end 
             | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
                 FanLoc.raise loc (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
             | _ -> assert false
@@ -217,6 +192,8 @@ module Camlp4Bin
                 Hashtbl.clear Quotation.default_tbl;
                 None
             end
+            | {| #filter $str:s |} ->
+                begin AstFilters.use_implem_filter s; None ; end 
             | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
                 FanLoc.raise loc (XStream.Error (x ^ "bad directive camlp4 can not handled "))
             | _ -> assert false
@@ -232,14 +209,14 @@ module Camlp4Bin
         process ~directive_handler:sig_handler
           name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
                 (new Camlp4Ast.clean_ast)#sig_item
-                PreCast.Syntax.AstFilters.apply_interf_filters;
+                AstFilters.apply_interf_filters;
       let process_impl  name =
         process ~directive_handler:str_handler
           name
           PreCast.CurrentParser.parse_implem
           PreCast.CurrentPrinter.print_implem
           (new Camlp4Ast.clean_ast)#str_item
-          PreCast.Syntax.AstFilters.apply_implem_filters
+          AstFilters.apply_implem_filters
           (* gimd *);
 
       

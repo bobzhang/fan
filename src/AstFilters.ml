@@ -1,22 +1,22 @@
 
 open LibUtil;
-module type S = sig
-  type filter 'a = 'a -> 'a;
-  type key = string;
+(* module type S = sig *)
+  (* type filter 'a = 'a -> 'a; *)
+  (* type key = string; *)
 
-  val apply_interf_filters : Ast.sig_item -> Ast.sig_item;
-  val apply_implem_filters : Ast.str_item -> Ast.str_item;
-  val apply_topphrase_filters : Ast.str_item -> Ast.str_item;
+  (* val apply_interf_filters : Ast.sig_item -> Ast.sig_item; *)
+  (* val apply_implem_filters : Ast.str_item -> Ast.str_item; *)
+  (* val apply_topphrase_filters : Ast.str_item -> Ast.str_item; *)
       
-  val use_interf_filter : key -> unit;
-  val use_implem_filter : key -> unit;
-  val use_topphrase_filter : key -> unit;
-  val register_sig_item_filter : (key *  filter Ast.sig_item) -> unit;
-  val register_str_item_filter : (key * filter Ast.str_item ) -> unit;
-  val register_topphrase_filter : (key * filter Ast.str_item ) -> unit;
-end;
+  (* val use_interf_filter : key -> unit; *)
+  (* val use_implem_filter : key -> unit; *)
+  (* val use_topphrase_filter : key -> unit; *)
+  (* val register_sig_item_filter : (key *  filter Ast.sig_item) -> unit; *)
+  (* val register_str_item_filter : (key * filter Ast.str_item ) -> unit; *)
+  (* val register_topphrase_filter : (key * filter Ast.str_item ) -> unit; *)
+(* end; *)
     
-module Make (U:sig end) : S = struct
+(* module Make (U:sig end) : S = struct *)
   type filter 'a = 'a -> 'a;
   type key = string;
 
@@ -56,4 +56,4 @@ module Make (U:sig end) : S = struct
   let register_topphrase_filter (k,f) =
     Hashtbl.replace topphrase_filters k f;
     
-end;
+(* end; *)

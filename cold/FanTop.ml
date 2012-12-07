@@ -22,9 +22,7 @@ let toplevel_phrase token_stream =
           (Syntax.top_phrase : Ast.str_item option Gram.t ) token_stream
   with
   | Some str_item ->
-      let str_item =
-        Syntax.AstFilters.fold_topphrase_filters (fun t  filter  -> filter t)
-          str_item in
+      let str_item = AstFilters.apply_topphrase_filters str_item in
       Ast2pt.phrase str_item
   | None  -> raise End_of_file
 let fake token_stream =
