@@ -594,7 +594,7 @@ module Default = struct
     Options.ocamlc     := ocamlfind & S[A"ocamlc";
                                         A"-annot";
                                         A "-w";
-                                        A "+a-4-32";
+                                        A "+a-4-32-30";
                                         (* A "-4"; (\* otherwise, a lot of fragile pattern will be detected*\)  *)
                                         (* A "-bin-annot"; *)
                                         (* A"-warn-error"; *)
@@ -604,8 +604,8 @@ module Default = struct
     Options.ocamlopt   := ocamlfind & S[A"ocamlopt";
                                         A"-annot";
                                         A"-w";
-                                        A"+a-4-32";
-                                        A"-unsafe";
+                                        A"+a-4-32-30";
+                                        (* A"-unsafe"; *)
                                         A"-inline";
                                         A"100";
                                         (* A"-4"; *)

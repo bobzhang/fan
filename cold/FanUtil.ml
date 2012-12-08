@@ -71,11 +71,6 @@ let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
 let neg_string n =
   let len = String.length n in
   if (len > 0) && ((n.[0]) = '-') then String.sub n 1 (len - 1) else "-" ^ n
-let rec list_remove x =
-  function
-  | (y,_)::l when y = x -> l
-  | d::l -> d :: (list_remove x l)
-  | [] -> []
 let symbolchars =
   ['$';
   '!';

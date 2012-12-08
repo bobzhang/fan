@@ -1,5 +1,5 @@
 open FanParsers
-open Camlp4Filters
+open Filters
 open Format
 open LibUtil
 let just_print_the_version () = printf "%s@." FanConfig.version; exit 0

@@ -104,10 +104,6 @@ let neg_string n =
     else "-" ^ n ;
 
 
-let rec list_remove x = fun
-  [ [(y, _) :: l] when y = x -> l
-  | [d :: l] -> [d :: list_remove x l]
-  | [] -> [] ];
 
 
 let symbolchars =

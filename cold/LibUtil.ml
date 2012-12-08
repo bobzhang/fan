@@ -63,64 +63,92 @@ let callcc (type u) (f : u cont -> u) =
     exception Return of u
     end in try f (fun x  -> raise (M.Return x)) with | M.Return u -> u
 module List = struct
-  include List (* include BatList *)
-
-  (* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
-  let  split_at n xs =
-    let rec aux  n acc xs = 
-      match xs with 
+  include List
+  let split_at n xs =
+    let rec aux n acc xs =
+      match xs with
       | [] ->
-          if n = 0 then acc,[]
-          else invalid_arg "Index past end of list"
-      | (h::t as l) ->
-        if n = 0 then acc, l
-        else aux (n-1) (h::acc ) t in
-    if n < 0 then invalid_arg "split_at n< 0"
-    else
-      let (a,b) =  aux n [] xs  in
-      (List.rev a ,b)
-  let rec find_map f = function
+          if n = 0 then (acc, []) else invalid_arg "Index past end of list"
+      | h::t as l -> if n = 0 then (acc, l) else aux (n - 1) (h :: acc) t in
+    if n < 0
+    then invalid_arg "split_at n< 0"
+    else (let (a,b) = aux n [] xs in ((List.rev a), b))
+  let rec find_map f =
+    function
     | [] -> raise Not_found
-    | x :: xs ->
-        match f x with
-        | Some y -> y
-        | None -> find_map f xs
-
+    | x::xs -> (match f x with | Some y -> y | None  -> find_map f xs)
   let fold_lefti f acc ls =
     fold_left (fun (i,acc)  x  -> ((i + 1), (f i acc x))) (0, acc) ls
-end
+  let rec remove x =
+    function
+    | (y,_)::l when y = x -> l
+    | d::l -> d :: (remove x l)
+    | [] -> []
+  end
 module Char = struct
-  (* include BatChar *) include Char
+  include Char
+  let is_whitespace =
+    function | ' '|'\n'|'\r'|'\t'|'\026'|'\012' -> true | _ -> false
+  let is_newline = function | '\n'|'\r' -> true | _ -> false
+  let is_digit = function | '0'..'9' -> true | _ -> false
+  end
+module Return = struct
+  type 'a t = 'a -> exn  let return label v = raise (label v)
+  let label (type u) (f : u t -> u) =
+    (let module M = struct
+       exception Return of u
+       end in try f (fun x  -> M.Return x) with | M.Return u -> u : u )
+  let with_label = label
   end
 module String = struct
-  include String (* include BatString *)
+  include String
+  let init len f =
+    let s = create len in
+    for i = 0 to len - 1 do unsafe_set s i (f i) done; s
+  let starts_with str p =
+    let len = length p in
+    if (length str) < len
+    then false
+    else
+      Return.label
+        (fun label  ->
+           for i = 0 to len - 1 do
+             if (unsafe_get str i) <> (unsafe_get p i)
+             then Return.return label false
+             else ()
+           done;
+           true)
+  let ends_with str p =
+    let el = length p and sl = length str in
+    let diff = sl - el in
+    if diff < 0
+    then false
+    else
+      Return.label
+        (fun label  ->
+           for i = 0 to el - 1 do
+             if (get str (diff + i)) <> (get p i)
+             then Return.return label false
+             else ()
+           done;
+           true) let of_char = make 1
   end
-module Ref = struct
-  (* include BatRef *)
+module Ref =
+  struct
   let protect r v body =
-  let old = !r in
-  try
-    r := v;
-    let res = body() in
-    r := old;
-    res
-  with x ->
-    r := old;
-    raise x
-
+    let old = r.contents in
+    try r := v; (let res = body () in r := old; res)
+    with | x -> (r := old; raise x)
   end
 module Option = struct
-  (* include BatOption *)
+  
   end
 module Buffer = struct
-  include Buffer
-  (* include BatBuffer *) let (+>) buf chr = Buffer.add_char buf chr; buf
+  include Buffer let (+>) buf chr = Buffer.add_char buf chr; buf
   let (+>>) buf str = Buffer.add_string buf str; buf
   end
 module Hashtbl = struct
-  (* include BatHashtbl *)
-  include Hashtbl
-  let keys tbl = fold (fun k  _  acc  -> k :: acc) tbl []
+  include Hashtbl let keys tbl = fold (fun k  _  acc  -> k :: acc) tbl []
   let values tbl = fold (fun _  v  acc  -> v :: acc) tbl []
   end
 module type STREAM =

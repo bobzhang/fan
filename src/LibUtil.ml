@@ -145,6 +145,12 @@ module List = struct
   (* include BatList; *)
   let fold_lefti f acc ls =
     fold_left (fun (i,acc) x -> (i+1,f i acc x) ) (0,acc) ls;
+
+  let rec remove x = fun
+    [ [(y, _) :: l] when y = x -> l
+    | [d :: l] -> [d :: remove x l]
+    | [] -> [] ];
+
 end;
 
 module Char = struct
@@ -238,6 +244,8 @@ module String = struct
           end);
     
   let of_char = make 1;
+
+    
 end;
   
 module Ref = struct

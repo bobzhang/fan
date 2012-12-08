@@ -1261,181 +1261,7 @@ module IdMacroParser = struct
   let name = "Camlp4MacroParser" let version = Sys.ocaml_version
   end
 module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
-  include Syntax module Ast = Camlp4Ast
-  type 'a item_or_def =  
-    | SdStr of 'a
-    | SdDef of string* (string list* Ast.expr) option
-    | SdUnd of string
-    | SdITE of bool* 'a item_or_def list* 'a item_or_def list
-    | SdLazy of 'a Lazy.t  let defined = ref []
-  let is_defined i = List.mem_assoc i defined.contents
-  let incorrect_number loc l1 l2 =
-    FanLoc.raise loc
-      (Failure
-         (Printf.sprintf "expected %d parameters; found %d" (List.length l2)
-            (List.length l1)))
-  let define eo x =
-    (match eo with
-     | Some ([],e) ->
-         (Gram.extend (expr : 'expr Gram.t )
-            ((Some (`Level "simple")),
-              [(None, None,
-                 [([`Stoken
-                      (((function
-                         | `UID __fan__x when x = __fan__x -> true
-                         | _ -> false)), (`Antiquot, "`UID __fan__x"))],
-                    (Gram.mk_action
-                       (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)
-                           ->
-                          match __fan_0 with
-                          | `UID _ ->
-                              (((new Ast.reloc) _loc)#expr e : 'expr )
-                          | _ -> assert false)))])]);
-          Gram.extend (patt : 'patt Gram.t )
-            ((Some (`Level "simple")),
-              [(None, None,
-                 [([`Stoken
-                      (((function
-                         | `UID __fan__x when x = __fan__x -> true
-                         | _ -> false)), (`Antiquot, "`UID __fan__x"))],
-                    (Gram.mk_action
-                       (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t)
-                           ->
-                          match __fan_0 with
-                          | `UID _ ->
-                              (let p = Expr.substp _loc [] e in
-                               ((new Ast.reloc) _loc)#patt p : 'patt )
-                          | _ -> assert false)))])]))
-     | Some (sl,e) ->
-         (Gram.extend (expr : 'expr Gram.t )
-            ((Some (`Level "apply")),
-              [(None, None,
-                 [([`Stoken
-                      (((function
-                         | `UID __fan__x when x = __fan__x -> true
-                         | _ -> false)), (`Antiquot, "`UID __fan__x"));
-                   `Sself],
-                    (Gram.mk_action
-                       (fun (param : 'expr)  (__fan_0 : [> FanToken.token]) 
-                          (_loc : FanLoc.t)  ->
-                          match __fan_0 with
-                          | `UID _ ->
-                              (let el =
-                                 match param with
-                                 | Ast.ExTup (_,e) -> Ast.list_of_expr e []
-                                 | e -> [e] in
-                               if (List.length el) = (List.length sl)
-                               then
-                                 let env = List.combine sl el in
-                                 ((new Expr.subst) _loc env)#expr e
-                               else incorrect_number _loc el sl : 'expr )
-                          | _ -> assert false)))])]);
-          Gram.extend (patt : 'patt Gram.t )
-            ((Some (`Level "simple")),
-              [(None, None,
-                 [([`Stoken
-                      (((function
-                         | `UID __fan__x when x = __fan__x -> true
-                         | _ -> false)), (`Antiquot, "`UID __fan__x"));
-                   `Sself],
-                    (Gram.mk_action
-                       (fun (param : 'patt)  (__fan_0 : [> FanToken.token]) 
-                          (_loc : FanLoc.t)  ->
-                          match __fan_0 with
-                          | `UID _ ->
-                              (let pl =
-                                 match param with
-                                 | Ast.PaTup (_,p) -> Ast.list_of_patt p []
-                                 | p -> [p] in
-                               if (List.length pl) = (List.length sl)
-                               then
-                                 let env = List.combine sl pl in
-                                 let p = Expr.substp _loc env e in
-                                 ((new Ast.reloc) _loc)#patt p
-                               else incorrect_number _loc pl sl : 'patt )
-                          | _ -> assert false)))])]))
-     | None  -> ());
-    defined := ((x, eo) :: (defined.contents))
-  let undef x =
-    try
-      (let eo = List.assoc x defined.contents in
-       match eo with
-       | Some ([],_) ->
-           (Gram.delete_rule expr
-              [`Stoken
-                 (((function
-                    | `UID __fan__x when x = __fan__x -> true
-                    | _ -> false)), (`Antiquot, "`UID __fan__x"))];
-            Gram.delete_rule patt
-              [`Stoken
-                 (((function
-                    | `UID __fan__x when x = __fan__x -> true
-                    | _ -> false)), (`Antiquot, "`UID __fan__x"))])
-       | Some (_,_) ->
-           (Gram.delete_rule expr
-              [`Stoken
-                 (((function
-                    | `UID __fan__x when x = __fan__x -> true
-                    | _ -> false)), (`Antiquot, "`UID __fan__x"));
-              `Sself];
-            Gram.delete_rule patt
-              [`Stoken
-                 (((function
-                    | `UID __fan__x when x = __fan__x -> true
-                    | _ -> false)), (`Antiquot, "`UID __fan__x"));
-              `Sself])
-       | None  -> ());
-      defined := (list_remove x defined.contents)
-    with | Not_found  -> ()
-  let parse_def s =
-    match Gram.parse_string expr (FanLoc.mk "<command line>") s with
-    | Ast.ExId (_,Ast.IdUid (_,n)) -> define None n
-    | Ast.ExApp
-        (_,Ast.ExApp
-         (_,Ast.ExId (_,Ast.IdLid (_,"=")),Ast.ExId (_,Ast.IdUid (_,n))),e)
-        -> define (Some ([], e)) n
-    | _ -> invalid_arg s let include_dirs = ref []
-  let add_include_dir str =
-    if str <> ""
-    then
-      let str =
-        if (str.[(String.length str) - 1]) = '/' then str else str ^ "/" in
-      include_dirs := (include_dirs.contents @ [str])
-    else ()
-  let parse_include_file entry =
-    let dir_ok file dir = Sys.file_exists (dir ^ file) in
-    fun file  ->
-      let file =
-        try (List.find (dir_ok file) (include_dirs.contents @ ["./"])) ^ file
-        with | Not_found  -> file in
-      let ch = open_in file in
-      let st = XStream.of_channel ch in Gram.parse entry (FanLoc.mk file) st
-  let rec execute_macro nil cons =
-    function
-    | SdStr i -> i
-    | SdDef (x,eo) -> (define eo x; nil)
-    | SdUnd x -> (undef x; nil)
-    | SdITE (b,l1,l2) -> execute_macro_list nil cons (if b then l1 else l2)
-    | SdLazy l -> Lazy.force l
-  and execute_macro_list nil cons =
-    function
-    | [] -> nil
-    | hd::tl ->
-        let il1 = execute_macro nil cons hd in
-        let il2 = execute_macro_list nil cons tl in cons il1 il2
-  let stack = Stack.create ()
-  let make_SdITE_result st1 st2 =
-    let test = Stack.pop stack in SdITE (test, st1, st2)
-  type branch =  
-    | Then
-    | Else 
-  let execute_macro_if_active_branch _loc nil cons branch macro_def =
-    let test = Stack.top stack in
-    let item =
-      if (test && (branch = Then)) || ((not test) && (branch = Else))
-      then execute_macro nil cons macro_def
-      else nil in
-    SdStr item
+  open FanMacroTools include Syntax
   let _ =
     let grammar_entry_create = Gram.mk in
     let macro_def: 'macro_def Gram.t = grammar_entry_create "macro_def"
@@ -1464,7 +1290,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
            [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ))],
               (Gram.mk_action
                  (fun (x : 'macro_def)  (_loc : FanLoc.t)  ->
-                    (execute_macro (Ast.StNil _loc)
+                    (execute_macro ~expr ~patt (Ast.StNil _loc)
                        (fun a  b  -> Ast.StSem (_loc, a, b)) x : 'str_item ))))])]);
     Gram.extend (sig_item : 'sig_item Gram.t )
       ((Some `First),
@@ -1472,7 +1298,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
            [([`Snterm (Gram.obj (macro_def_sig : 'macro_def_sig Gram.t ))],
               (Gram.mk_action
                  (fun (x : 'macro_def_sig)  (_loc : FanLoc.t)  ->
-                    (execute_macro (Ast.SgNil _loc)
+                    (execute_macro ~expr ~patt (Ast.SgNil _loc)
                        (fun a  b  -> Ast.SgSem (_loc, a, b)) x : 'sig_item ))))])]);
     Gram.extend (macro_def : 'macro_def Gram.t )
       (None,
@@ -1625,7 +1451,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
-                            (execute_macro_if_active_branch _loc
+                            (execute_macro_if_active_branch ~expr ~patt _loc
                                (Ast.StNil _loc)
                                (fun a  b  -> Ast.StSem (_loc, a, b)) Then d : 
                             'e__13 ))));
@@ -1646,7 +1472,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
-                            (execute_macro_if_active_branch _loc
+                            (execute_macro_if_active_branch ~expr ~patt _loc
                                (Ast.StNil _loc)
                                (fun a  b  -> Ast.StSem (_loc, a, b)) Else d : 
                             'e__14 ))));
@@ -1668,7 +1494,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (d : 'macro_def_sig)  (_loc : FanLoc.t)  ->
-                            (execute_macro_if_active_branch _loc
+                            (execute_macro_if_active_branch ~expr ~patt _loc
                                (Ast.SgNil _loc)
                                (fun a  b  -> Ast.SgSem (_loc, a, b)) Then d : 
                             'e__15 ))));
@@ -1690,7 +1516,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                      `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                       (Gram.mk_action
                          (fun _  (d : 'macro_def_sig)  (_loc : FanLoc.t)  ->
-                            (execute_macro_if_active_branch _loc
+                            (execute_macro_if_active_branch ~expr ~patt _loc
                                (Ast.SgNil _loc)
                                (fun a  b  -> Ast.SgSem (_loc, a, b)) Else d : 
                             'e__16 ))));
@@ -1892,11 +1718,11 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                    (Ast.PaVrn (_loc, s) : 'patt ))))])])
   let _ =
     Options.add
-      ("-D", (FanArg.String parse_def),
+      ("-D", (FanArg.String (parse_def ~expr ~patt)),
         "<string> Define for IFDEF instruction.")
   let _ =
     Options.add
-      ("-U", (FanArg.String undef),
+      ("-U", (FanArg.String (undef ~expr ~patt)),
         "<string> Undefine for IFDEF instruction.")
   let _ =
     Options.add

@@ -17,7 +17,7 @@ val handle_antiquot_in_string :
   default:'a ->
   parse:('b -> string -> 'c) -> loc:'b -> decorate:(string -> 'c -> 'a) -> 'a
 val neg_string : string -> string
-val list_remove : 'a -> ('a * 'b) list -> ('a * 'b) list
+(* val list_remove : 'a -> ('a * 'b) list -> ('a * 'b) list *)
 val symbolchar : string -> int -> bool
 (* val stopped_at : FanLoc.t -> FanLoc.t option *)
 val with_open_out_file : string option -> (out_channel -> 'a) -> unit
