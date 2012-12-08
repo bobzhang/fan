@@ -60,11 +60,10 @@ it's 100% compatible with ocaml.
 
    - [[http://caml.inria.fr/ocaml/release.en.html][ocaml 4.00 or later]]
    - [[http://projects.camlcity.org/projects/findlib.html][ocamlfind or later]] 
-   - [[https://github.com/ocaml-batteries-team/batteries-included][batteries dev]]
 
-   Currently we depend on =batteries= and =ocamlfind=, but the
-   dependency is quite loose, we will remove the dependency on them
-   when polished
+
+   Currently we depend on =ocamlfind=, but the dependency is quite
+   loose, we will remove the dependency on them when polished
    
 ** Initial Install
 
