@@ -739,7 +739,7 @@ let processor =
           (_loc,Ast.CeEq
            (_,Ast.CeCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
             (_,Ast.ViNil ,Ast.IdAcc
-             (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdAcc
+             (_,Ast.IdUid (_,"Filters"),Ast.IdAcc
               (_,Ast.IdUid (_,"GenerateFold"),Ast.IdLid (_,"generated"))),Ast.TyNil
              _)))
           -> generate_class_implem Fold c last.contents 1
@@ -747,7 +747,7 @@ let processor =
           (_loc,Ast.CeEq
            (_,Ast.CeCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
             (_,Ast.ViNil ,Ast.IdAcc
-             (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdAcc
+             (_,Ast.IdUid (_,"Filters"),Ast.IdAcc
               (_,Ast.IdUid (_,"GenerateMap"),Ast.IdLid (_,"generated"))),Ast.TyNil
              _)))
           -> generate_class_implem Map c last.contents 1
@@ -769,7 +769,7 @@ let processor =
            (_,Ast.CtCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
             (_,Ast.ViNil ,Ast.IdAcc
              (_,Ast.IdAcc
-              (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdUid (_,"GenerateFold")),Ast.IdLid
+              (_,Ast.IdUid (_,"Filters"),Ast.IdUid (_,"GenerateFold")),Ast.IdLid
               (_,"generated")),Ast.TyNil
              _)))
           -> generate_class_interf Fold c last.contents 1
@@ -778,7 +778,7 @@ let processor =
            (_,Ast.CtCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
             (_,Ast.ViNil ,Ast.IdAcc
              (_,Ast.IdAcc
-              (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdUid (_,"GenerateMap")),Ast.IdLid
+              (_,Ast.IdUid (_,"Filters"),Ast.IdUid (_,"GenerateMap")),Ast.IdLid
               (_,"generated")),Ast.TyNil
              _)))
           -> generate_class_interf Map c last.contents 1
@@ -1546,7 +1546,7 @@ let filter st =
        | Ast.MeApp
            (_,Ast.MeId
             (_,Ast.IdAcc
-             (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdUid
+             (_,Ast.IdUid (_,"Filters"),Ast.IdUid
               (_,"MetaGeneratorExpr"))),Ast.MeId
             (_,i))
            ->
@@ -1616,7 +1616,7 @@ let filter st =
        | Ast.MeApp
            (_,Ast.MeId
             (_,Ast.IdAcc
-             (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdUid
+             (_,Ast.IdUid (_,"Filters"),Ast.IdUid
               (_,"MetaGeneratorPatt"))),Ast.MeId
             (_,i))
            ->

@@ -1,5 +1,5 @@
 open FanParsers
-open Camlp4Filters
+open Filters
 open Format
 open LibUtil
 let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
@@ -207,8 +207,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
     ("-printer", (FanArg.String (rewrite_and_load "Printers")),
       "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)");
-    ("-filter", (FanArg.String (rewrite_and_load "Filters")),
-      "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)");
+    (* ("-filter", (FanArg.String (rewrite_and_load "Filters")), *)
+    (*   "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)"); *)
     ("-ignore", (FanArg.String ignore), "ignore the next argument");
     ("--", (FanArg.Unit ignore), "Deprecated, does nothing")]
   let _ = PreCast.Syntax.Options.init initial_spec_list

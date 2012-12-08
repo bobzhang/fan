@@ -37,7 +37,7 @@ module Make (U:sig end) : S= struct
     if camlp4_stdlib then begin
       include_dir q FanConfig.camlp4_standard_library;
       include_dir q (Filename.concat FanConfig.camlp4_standard_library "Camlp4Printers");
-      include_dir q (Filename.concat FanConfig.camlp4_standard_library "Camlp4Filters");
+      (* include_dir q (Filename.concat FanConfig.camlp4_standard_library "Filters"); *)
     end else ();
     include_dir q ".";
   q
