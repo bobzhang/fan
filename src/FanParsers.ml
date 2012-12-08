@@ -246,7 +246,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      | name{n};  OPT [`UID "Level"; `STR (_, s) -> s ]{lev} ->
             mk_symbol  ~text:(`TXnterm _loc n lev) ~styp:(`STquo _loc n.tvar) ~pattern:None
      | `ANT(("nt"|""),s); OPT [`UID "Level"; `STR (_, s) -> s ]{lev} ->
-         let i = AntiquotSyntax.parse_ident _loc s in
+         let i = (* AntiquotSyntax. *)parse_ident _loc s in
          let n = mk_name _loc i in
          mk_symbol ~text:(`TXnterm _loc n lev) ~styp:(`STquo _loc n.tvar) ~pattern:None
      | "("; S{s}; ")" -> s ]
@@ -280,7 +280,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
    string:
     [ `STR (_, s) -> {:expr| $str:s |}
-    | `ANT ("", s) -> AntiquotSyntax.parse_expr _loc s ] (*suport antiquot for string*)
+    | `ANT ("", s) -> (* AntiquotSyntax. *)parse_expr _loc s ] (*suport antiquot for string*)
 
    symbol: 
      [`UID ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; S{s} ->
@@ -432,91 +432,110 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
      local: macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
      else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
      sglist_else endif opt_macro_value uident ;
-    str_item: First
-      [ macro_def{x} ->
-            execute_macro ~expr ~patt {:str_item||} (fun a b -> {:str_item| $a; $b |}) x ]
-    sig_item: First
-      [ macro_def_sig{x} ->
-            execute_macro ~expr ~patt {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ]
-    macro_def:
-      [ "DEFINE"; uident{i}; opt_macro_value{def} -> SdDef i def
-      | "UNDEF";  uident{i} -> SdUnd i
+
+      str_item: First
+      [ macro_def{x} -> execute_macro ~expr ~patt {:str_item||} (fun a b -> {:str_item| $a; $b |}) x ]
+      sig_item: First
+      [ macro_def_sig{x} -> execute_macro ~expr ~patt {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ]
+
+      macro_def:
+      [ "DEFINE"; uident{i}; opt_macro_value{def} -> Def i def
+      | "UNDEF";  uident{i} -> Und i
       | "IFDEF";  uident_eval_ifdef;  "THEN"; smlist_then{st1}; else_macro_def{st2} ->
-          make_SdITE_result st1 st2
+          let _ = Format.eprintf "WHAT@." in
+          make_ITE_result st1 st2
       | "IFNDEF"; uident_eval_ifndef; "THEN"; smlist_then{st1}; else_macro_def{st2} ->
-          make_SdITE_result st1 st2
-      | "INCLUDE"; `STR (_, fname) ->
-            SdLazy (lazy (parse_include_file str_items fname)) ]
-    macro_def_sig:
-      [ "DEFINE"; uident{i} -> SdDef i None
-      | "UNDEF";  uident{i} -> SdUnd i
+          make_ITE_result st1 st2
+      | "INCLUDE"; `STR (_, fname) -> Lazy (lazy (parse_include_file str_items fname)) ]
+      
+      macro_def_sig:
+      [ "DEFINE"; uident{i} -> Def i None
+      | "UNDEF";  uident{i} -> Und i
       | "IFDEF";  uident_eval_ifdef;  "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2}
         ->
-          make_SdITE_result sg1 sg2
+          make_ITE_result sg1 sg2
       | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
-            make_SdITE_result sg1 sg2
+            make_ITE_result sg1 sg2
       | "INCLUDE"; `STR (_, fname) ->
-            SdLazy (lazy (parse_include_file sig_items fname)) ]
-    uident_eval_ifdef:
+            Lazy (lazy (parse_include_file sig_items fname)) ]
+
+      uident_eval_ifdef:
       [ uident{i} -> Stack.push (is_defined i) stack ]
-    uident_eval_ifndef:
+
+      uident_eval_ifndef:
       [ uident{i} -> Stack.push (not (is_defined i)) stack ]
-    else_macro_def:
-      [ "ELSE"; smlist_else{st}; endif -> st
-      | endif -> [] ]
-    else_macro_def_sig:
-      [ "ELSE"; sglist_else{st}; endif -> st
-      | endif -> [] ]
-    else_expr:
-      [ "ELSE"; expr{e}; endif -> e
-      | endif -> {:expr| () |} ]
-    smlist_then:
+
+      else_macro_def:
+      [ "ELSE"; smlist_else{st}; endif -> st | endif -> [] ]
+
+      else_macro_def_sig:
+      [ "ELSE"; sglist_else{st}; endif -> st | endif -> [] ]
+
+      else_expr:
+      [ "ELSE"; expr{e}; endif -> e | endif -> {:expr| () |} ]
+
+      smlist_then:
       [ L1
           [ macro_def{d}; semi ->
-            execute_macro_if_active_branch ~expr ~patt _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Then d
-          | str_item{si}; semi -> SdStr si ]{sml} ->
-          sml ]
-    smlist_else:
+            let _ = Format.eprintf "WHTF@" in
+            execute_macro_if_active_branch ~expr ~patt _loc
+              {:str_item||} (fun a b -> {:str_item| $a; $b |}) Then d
+          | str_item{si}; semi -> Str si ]{sml} ->
+              let _ = Format.eprintf "smlist_then" in 
+              sml ]
+
+      smlist_else:
       [ L1 [ macro_def{d}; semi ->
-           execute_macro_if_active_branch ~expr ~patt  _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Else d
-           | str_item{si}; semi -> SdStr si ]{sml} -> sml ]
-    sglist_then:
+        let _ = Format.eprintf "WHTF Elsee@" in
+           execute_macro_if_active_branch ~expr ~patt  _loc
+          {:str_item||} (fun a b -> {:str_item| $a; $b |}) Else d
+           | str_item{si}; semi -> Str si ]{sml} ->
+               let _ = Format.eprintf "smlist_else" in
+               sml ]
+      
+      sglist_then:
       [ L1 [ macro_def_sig{d}; semi ->
            execute_macro_if_active_branch ~expr ~patt
           _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Then d
-           | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ]   
-    sglist_else:
+           | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]   
+
+      sglist_else:
       [ L1 [ macro_def_sig{d}; semi ->
              execute_macro_if_active_branch ~expr ~patt
                _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Else d
-           | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ]  
-    endif:
-      [ "END" -> ()
-      | "ENDIF" -> () ]
-    opt_macro_value:
+           | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]  
+
+      endif: [ "END" -> () | "ENDIF" -> () ]
+
+      opt_macro_value:
       [ "("; L1 [ `LID x -> x ] SEP ","{pl}; ")"; "="; expr{e} -> Some (pl, e)
       | "="; expr{e} -> Some ([], e)
       | -> None ]
-    expr: Level "top"
+
+      expr: Level "top"
       [ "IFDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
         if is_defined i then e1 else e2
       | "IFNDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
           if is_defined i then e2 else e1
       | "DEFINE"; `LID i; "="; expr{def}; "IN"; expr{body} ->
           (new Expr.subst _loc [(i, def)])#expr body ] 
-    patt:
+
+      patt:
       [ "IFDEF"; uident{i}; "THEN"; patt{p1};  "ELSE"; patt{p2}; endif ->
         if is_defined i then p1 else p2
       | "IFNDEF"; uident{i}; "THEN"; patt{p1}; "ELSE"; patt{p2}; endif ->
           if is_defined i then p2 else p1 ]
-    uident:
+
+      uident:
       [ `UID i -> i ]
-    (* dirty hack to allow polymorphic variants using the introduced keywords.FIXME *)
-    expr: Before "simple"
+      (* dirty hack to allow polymorphic variants using the introduced keywords.FIXME *)
+
+      expr: Before "simple"
       [ "`";  [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"
                 | "DEFINE" | "IN" ]{kwd} -> {:expr| `$uid:kwd |}
       | "`"; a_ident{s} -> {:expr| ` $s |} ]
-    patt: Before "simple"
+
+      patt: Before "simple"
       [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
             {:patt| `$uid:kwd |}
       | "`"; a_ident{s} -> {:patt| ` $s |} ] |};
@@ -526,11 +545,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
   Options.add ("-U", (FanArg.String (undef ~expr ~patt)), "<string> Undefine for IFDEF instruction.");
   Options.add ("-I", (FanArg.String add_include_dir), "<string> Add a directory to INCLUDE search path.");
 end;
-module MakeNothing (Syn : Sig.Camlp4Syntax) = struct
- module Ast = Camlp4Ast ;
- (* Remove NOTHING and expanse __FILE__ and __LOCATION__ *)
- AstFilters.register_str_item_filter ("trash_nothing",(Ast.map_expr Expr.map_expr)#str_item);
-end;
+  
 
 module IdRevisedParser = struct
   let name = "Camlp4OCamlRevisedParser";
@@ -1811,33 +1826,33 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
   include Syntax; 
   open Quotation;
   open Meta;
-  add_quotation "sig_item" sig_item_quot ME.meta_sig_item MP.meta_sig_item;
-  add_quotation "str_item" str_item_quot ME.meta_str_item MP.meta_str_item;
-  add_quotation "ctyp" ctyp_quot ME.meta_ctyp MP.meta_ctyp;
-  add_quotation "patt" patt_quot ME.meta_patt MP.meta_patt;
-  add_quotation "expr" expr_quot ME.meta_expr MP.meta_expr;
-  add_quotation "module_type" module_type_quot ME.meta_module_type MP.meta_module_type;
-  add_quotation "module_expr" module_expr_quot ME.meta_module_expr MP.meta_module_expr;
-  add_quotation "class_type" class_type_quot ME.meta_class_type MP.meta_class_type;
-  add_quotation "class_expr" class_expr_quot ME.meta_class_expr MP.meta_class_expr;
+  add_quotation "sig_item" sig_item_quot ~mexpr:ME.meta_sig_item ~mpatt:MP.meta_sig_item ~expr_filter ~patt_filter ;
+  add_quotation "str_item" str_item_quot ~mexpr:ME.meta_str_item ~mpatt:MP.meta_str_item ~expr_filter ~patt_filter ;
+  add_quotation "ctyp" ctyp_quot ~mexpr:ME.meta_ctyp ~mpatt:MP.meta_ctyp ~expr_filter ~patt_filter ;
+  add_quotation "patt" patt_quot ~mexpr:ME.meta_patt ~mpatt:MP.meta_patt ~expr_filter ~patt_filter ;
+  add_quotation "expr" expr_quot ~mexpr:ME.meta_expr ~mpatt:MP.meta_expr ~expr_filter ~patt_filter ;
+  add_quotation "module_type" module_type_quot ~mexpr:ME.meta_module_type ~mpatt:MP.meta_module_type ~expr_filter ~patt_filter ;
+  add_quotation "module_expr" module_expr_quot ~mexpr:ME.meta_module_expr ~mpatt:MP.meta_module_expr ~expr_filter ~patt_filter ;
+  add_quotation "class_type" class_type_quot ~mexpr:ME.meta_class_type ~mpatt:MP.meta_class_type ~expr_filter ~patt_filter ;
+  add_quotation "class_expr" class_expr_quot ~mexpr:ME.meta_class_expr ~mpatt:MP.meta_class_expr ~expr_filter ~patt_filter ;
   add_quotation "class_sig_item"
-                class_sig_item_quot ME.meta_class_sig_item MP.meta_class_sig_item;
+                class_sig_item_quot ~mexpr:ME.meta_class_sig_item ~mpatt:MP.meta_class_sig_item ~expr_filter ~patt_filter ;
   add_quotation "class_str_item"
-                class_str_item_quot ME.meta_class_str_item MP.meta_class_str_item;
-  add_quotation "with_constr" with_constr_quot ME.meta_with_constr MP.meta_with_constr;
-  add_quotation "binding" binding_quot ME.meta_binding MP.meta_binding;
-  add_quotation "rec_binding" rec_binding_quot ME.meta_rec_binding MP.meta_rec_binding;
-  add_quotation "match_case" match_case_quot ME.meta_match_case MP.meta_match_case;
+                class_str_item_quot ~mexpr:ME.meta_class_str_item ~mpatt:MP.meta_class_str_item ~expr_filter ~patt_filter ;
+  add_quotation "with_constr" with_constr_quot ~mexpr:ME.meta_with_constr ~mpatt:MP.meta_with_constr ~expr_filter ~patt_filter ;
+  add_quotation "binding" binding_quot ~mexpr:ME.meta_binding ~mpatt:MP.meta_binding ~expr_filter ~patt_filter ;
+  add_quotation "rec_binding" rec_binding_quot ~mexpr:ME.meta_rec_binding ~mpatt:MP.meta_rec_binding ~expr_filter ~patt_filter ;
+  add_quotation "match_case" match_case_quot ~mexpr:ME.meta_match_case ~mpatt:MP.meta_match_case ~expr_filter ~patt_filter ;
   add_quotation "module_binding"
-                module_binding_quot ME.meta_module_binding MP.meta_module_binding;
-  add_quotation "ident" ident_quot ME.meta_ident MP.meta_ident;
-  add_quotation "rec_flag" rec_flag_quot ME.meta_rec_flag MP.meta_rec_flag;
-  add_quotation "private_flag" private_flag_quot ME.meta_private_flag MP.meta_private_flag;
-  add_quotation "row_var_flag" row_var_flag_quot ME.meta_row_var_flag MP.meta_row_var_flag;
-  add_quotation "mutable_flag" mutable_flag_quot ME.meta_mutable_flag MP.meta_mutable_flag;
-  add_quotation "virtual_flag" virtual_flag_quot ME.meta_virtual_flag MP.meta_virtual_flag;
-  add_quotation "override_flag" override_flag_quot ME.meta_override_flag MP.meta_override_flag;
-  add_quotation "direction_flag" direction_flag_quot ME.meta_direction_flag MP.meta_direction_flag;
+                module_binding_quot ~mexpr:ME.meta_module_binding ~mpatt:MP.meta_module_binding ~expr_filter ~patt_filter ;
+  add_quotation "ident" ident_quot ~mexpr:ME.meta_ident ~mpatt:MP.meta_ident ~expr_filter ~patt_filter ;
+  add_quotation "rec_flag" rec_flag_quot ~mexpr:ME.meta_rec_flag ~mpatt:MP.meta_rec_flag ~expr_filter ~patt_filter ;
+  add_quotation "private_flag" private_flag_quot ~mexpr:ME.meta_private_flag ~mpatt:MP.meta_private_flag ~expr_filter ~patt_filter ;
+  add_quotation "row_var_flag" row_var_flag_quot ~mexpr:ME.meta_row_var_flag ~mpatt:MP.meta_row_var_flag ~expr_filter ~patt_filter ;
+  add_quotation "mutable_flag" mutable_flag_quot ~mexpr:ME.meta_mutable_flag ~mpatt:MP.meta_mutable_flag ~expr_filter ~patt_filter ;
+  add_quotation "virtual_flag" virtual_flag_quot ~mexpr:ME.meta_virtual_flag ~mpatt:MP.meta_virtual_flag ~expr_filter ~patt_filter ;
+  add_quotation "override_flag" override_flag_quot ~mexpr:ME.meta_override_flag ~mpatt:MP.meta_override_flag ~expr_filter ~patt_filter ;
+  add_quotation "direction_flag" direction_flag_quot ~mexpr:ME.meta_direction_flag ~mpatt:MP.meta_direction_flag ~expr_filter ~patt_filter ;
   Options.add ("-dlang", FanArg.Set_string Quotation.default," Set the default language");
 end;
 
@@ -1850,7 +1865,7 @@ end;
 
 module MakeQuotationExpander (Syntax : Sig.Camlp4Syntax)
 = struct
-  module M = MakeQuotationCommon Syntax (* Syntax.AntiquotSyntax *);
+  module M = MakeQuotationCommon Syntax;
   include M;
 end;
 let pa_r  = "Camlp4OCamlRevisedParser";    
@@ -1864,8 +1879,8 @@ let pa_g (module P:Sig.PRECAST) =
   P.syntax_extension (module IdGrammarParser) (module MakeGrammarParser);
 (*  "Camlp4MacroParser"; *)
 let pa_m (module P:Sig.PRECAST) =
-  let () = P.syntax_extension (module IdMacroParser) (module MakeMacroParser) in
-  P.syntax_plugin (module IdMacroParser) (module MakeNothing);
+   P.syntax_extension (module IdMacroParser) (module MakeMacroParser) ;
+
 (*  "Camlp4QuotationExpander"; *)
 let pa_q (module P:Sig.PRECAST) =
   P.syntax_extension (module IdQuotationExpander) (module MakeQuotationExpander);

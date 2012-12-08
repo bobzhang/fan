@@ -1,11 +1,11 @@
-module type AntiquotSyntax =
-  sig
-    val parse_expr : FanLoc.t -> string -> Ast.expr
-    val parse_patt : FanLoc.t -> string -> Ast.patt
-    val parse_ident : FanLoc.t -> string -> Ast.ident
-  end
-module type S =
-  sig
+(* module type AntiquotSyntax = *)
+(*   sig *)
+(*     val parse_expr : FanLoc.t -> string -> Ast.expr *)
+(*     val parse_patt : FanLoc.t -> string -> Ast.patt *)
+(*     val parse_ident : FanLoc.t -> string -> Ast.ident *)
+(*   end *)
+(* module type S = *)
+(*   sig *)
     type 'a expand_fun = FanLoc.t -> string option -> string -> 'a
     val add : string -> 'a DynAst.tag -> 'a expand_fun -> unit
     val default : string ref
@@ -17,11 +17,18 @@ module type S =
     val translate : (string -> string) ref
     val expand : FanLoc.t -> FanToken.quotation -> 'a DynAst.tag -> 'a
     val dump_file : string option ref
-    val add_quotation :
-      string ->
-      'a Gram.t ->
-      (FanLoc.t -> 'a -> Lib.Expr.Ast.expr) ->
-      (FanLoc.t -> 'a -> Lib.Expr.Ast.patt) -> unit
+    (* val add_quotation : *)
+    (*   string -> *)
+    (*   'a Gram.t -> *)
+    (*   (FanLoc.t -> 'a -> Lib.Expr.Ast.expr) -> *)
+    (*   (FanLoc.t -> 'a -> Lib.Expr.Ast.patt) -> unit *)
+   val add_quotation:
+       expr_filter:('a -> Ast.expr) ->
+         patt_filter:('b -> Ast.patt) ->
+           mexpr:(FanLoc.t -> 'c -> 'a) ->
+             mpatt:(FanLoc.t -> 'c -> 'b) -> 
+               string ->
+                 'c Gram.t  ->  unit
     val add_quotation_of_expr : name:string -> entry:Ast.expr Gram.t -> unit
     val add_quotation_of_patt : name:string -> entry:Ast.patt Gram.t -> unit
     val add_quotation_of_class_str_item :
@@ -29,5 +36,5 @@ module type S =
     val add_quotation_of_match_case :
       name:string -> entry:Ast.match_case Gram.t -> unit
     val add_quotation_of_str_item: name:string -> entry:Ast.str_item Gram.t -> unit
-  end
-module Make : functor (TheAntiquotSyntax : AntiquotSyntax) -> S
+  (* end *)
+(* module Make : functor (TheAntiquotSyntax : AntiquotSyntax) -> S *)

@@ -56,17 +56,20 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
     symbol  rule  rule_list  psymbol  level  level_list  entry  extend_body  delete_rule_body
   |};
     
-  module AntiquotSyntax = struct
-    module Ast  = Ast; 
-    module Gram = Gram;
+  (* module AntiquotSyntax = struct *)
+  (*   module Ast  = Ast;  *)
+  (*   module Gram = Gram; *)
     let antiquot_expr = Gram.eoi_entry expr ; 
     let antiquot_patt = Gram.eoi_entry patt;
     let antiquot_ident = Gram.eoi_entry ident; 
     let parse_expr loc str = Gram.parse_string antiquot_expr loc str;
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str;
-    let parse_ident loc str = Gram.parse_string antiquot_ident loc str;      
-  end;
-  module Quotation = Quotation.Make(AntiquotSyntax);
+    let parse_ident loc str = Gram.parse_string antiquot_ident loc str;
+  let anti_filter = Lib.Expr.antiquot_expander  ~parse_expr  ~parse_patt;
+  let expr_filter = anti_filter#expr;
+  let patt_filter = anti_filter#patt;  
+  (* end; *)
+  (* module Quotation = Quotation.Make(AntiquotSyntax); *)
 
   (* Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (\* built in extend support *\) *)
   (* Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (\* built in delete support *\) *)

@@ -620,7 +620,7 @@ let processor =
 
 AstFilters.register_str_item_filter("fold",processor#str_item);
 AstFilters.register_sig_item_filter ("fold",processor#sig_item);
-AstFilters.register_str_item_filter ("strip",(Ast.map_loc (fun _ -> FanLoc.ghost))#str_item);
+AstFilters.register_str_item_filter ("strip",(new Ast.reloc  FanLoc.ghost)#str_item);
 
 let decorate_binding decorate_fun = object
   inherit Ast.map as super;
@@ -862,8 +862,20 @@ let filter st =
   end#str_item st;
 
 AstFilters.register_str_item_filter ("meta",filter);
+
+
+let map_expr = with "expr" fun
+  [ {| $e NOTHING |} | {| fun $({:patt| NOTHING |} ) -> $e |} -> e
+  | {@_loc| __FILE__ |} -> {| $(`str:FanLoc.file_name _loc) |}
+  | {@_loc| __LOCATION__ |} ->
+      let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple _loc in
+      {| FanLoc.of_tuple
+        ($`str:a, $`int:b, $`int:c, $`int:d,
+         $`int:e, $`int:f, $`int:g,
+         $(if h then {| true |} else {| false |} )) |}
+  | e -> e];
+
+AstFilters.register_str_item_filter ("trash_nothing",(Ast.map_expr map_expr)#str_item);
   
 
-  
 
-  (* print_endline "I am in"; (\* this will screw everything up*\) *)

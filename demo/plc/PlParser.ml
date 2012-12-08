@@ -87,5 +87,5 @@ arg_mask:
    | "?";  OPT var -> ArgAny _loc ] |};
 
 
-Fan.Syntax.Quotation.add_quotation_of_str_item ~name:"plc" ~entry:prog;
+Quotation.add_quotation_of_str_item ~name:"plc" ~entry:prog;
 

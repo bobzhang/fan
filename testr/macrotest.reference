@@ -1,0 +1,12 @@
+let a_should_be_present = 51 + 2
+let _ = print_int (a_should_be_present + 1)
+let _ = print_int (a_should_be_present + 2)
+let _ = print_int (a_should_be_present + 3)
+let _ = print_int (a_should_be_present + 4)
+let _ = print_int ((42 * a_should_be_present) + 5)
+let _ = print_int ((42 * a_should_be_present) + 6)
+let _ = print_int ((42 * a_should_be_present) + 7)
+let e = print_int ((42 * a_should_be_present) + 8)
+let f _ = print_int ((42 * a_should_be_present) + 9)
+let _ = "ko"
+let _ = "ok2"

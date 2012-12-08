@@ -34,8 +34,8 @@ end;
 
   
 module type Camlp4Syntax = sig
-  module AntiquotSyntax : Quotation.AntiquotSyntax;
-  module Quotation : Quotation.S;
+  (* module AntiquotSyntax : Quotation.AntiquotSyntax; *)
+  (* module Quotation : Quotation.S; *)
   (* module AstFilters: AstFilters.S; *)
   include Warning;
   include ParserImpl;
@@ -222,7 +222,14 @@ module type Camlp4Syntax = sig
   val extend_body: Gram.t Ast.expr;
   val delete_rule_body: Gram.t Ast.expr;
 
+  val parse_expr: FanLoc.t -> string -> Ast.expr;
+    (**  generally "patt; EOI". *)
+  val parse_patt: FanLoc.t -> string -> Ast.patt;
 
+  val parse_ident: FanLoc.t -> string -> Ast.ident;
+
+  val expr_filter: Ast.expr -> Ast.expr;
+  val patt_filter: Ast.patt -> Ast.patt;
   module Options:sig
     type spec_list = list (string * FanArg.spec * string);
     val init : spec_list -> unit;
@@ -234,9 +241,9 @@ end;
 
 
 module type SyntaxExtension = functor (Syn : Camlp4Syntax)
-  -> (Camlp4Syntax with
-      module AntiquotSyntax = Syn.AntiquotSyntax and
-      module Quotation = Syn.Quotation (* and *)
+  -> (Camlp4Syntax (* with *)
+      (* module AntiquotSyntax = Syn.AntiquotSyntax and *)
+      (* module Quotation = Syn.Quotation (\* and *\) *)
       (* module AstFilters = Syn.AstFilters *) );
 
 module type PLUGIN = functor (Unit:sig end) -> sig end;

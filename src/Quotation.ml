@@ -1,4 +1,4 @@
-open Lib;
+(* open Lib; *)
 open LibUtil;
 module type AntiquotSyntax = sig
     (**generally "expr; EOI". *)
@@ -66,7 +66,7 @@ end;
 
 
 open Format;
-module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct   
+(* module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct    *)
 
   type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
   module Exp_key = DynAst.Pack(struct
@@ -227,14 +227,14 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
       res
     end;
 
-  let anti_filter = Expr.antiquot_expander
-      ~parse_expr:TheAntiquotSyntax.parse_expr
-      ~parse_patt:TheAntiquotSyntax.parse_patt;
+  (* let anti_filter = Expr.antiquot_expander *)
+  (*     ~parse_expr:TheAntiquotSyntax.parse_expr *)
+  (*     ~parse_patt:TheAntiquotSyntax.parse_patt; *)
 
-  let add_quotation name entry mexpr mpatt =
+  let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
     let entry_eoi = Gram.eoi_entry entry in 
     let expand_expr loc loc_name_opt s =
-      parse_quot_string entry_eoi loc loc_name_opt s |> mexpr loc |> anti_filter#expr  in
+      parse_quot_string entry_eoi loc loc_name_opt s |> mexpr loc |> expr_filter (* anti_filter#expr *)  in
     let expand_str_item loc loc_name_opt s =
       let exp_ast = expand_expr loc loc_name_opt s in
       {:str_item@loc| $(exp:exp_ast) |} in
@@ -242,7 +242,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
       Ref.protect FanConfig.antiquotations true begin fun _ ->
         let ast = Gram.parse_string entry_eoi _loc s in
         let meta_ast = mpatt _loc ast in
-        let exp_ast = anti_filter#patt meta_ast in
+        let exp_ast = (* anti_filter#patt *)patt_filter  meta_ast in
         match loc_name_opt with
         [ None -> exp_ast
         | Some name ->
@@ -283,4 +283,4 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
         (parse_quot_string (Gram.eoi_entry entry));
     
   
-end;
+(* end; *)

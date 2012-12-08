@@ -60,7 +60,7 @@ module Camlp4Bin
                   | _ -> None ]);
      module DynLoader = DynLoader.Make (struct end);
       (* let plugins = Hashtbl.create 50;      *)
-     module Quotation = PreCast.Syntax.Quotation;  
+     (* module Quotation = PreCast.Syntax.Quotation;   *)
      let (objext,libext) =
         if DynLoader.is_native then (".cmxs",".cmxs")
         else (".cmo",".cma");

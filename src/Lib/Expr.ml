@@ -197,45 +197,35 @@ let substp _loc env =
           in {:patt| { $(substbi bi) } |}
       | _ -> bad_patt _loc ] in loop;
   
-  class subst _loc env = object
-    inherit Ast.reloc _loc as super;
-    method! expr =
-      fun
-      [ {| $lid:x |} | {| $uid:x |} as e ->
-          try List.assoc x env with
-          [ Not_found -> super#expr e ]
-      | {@_loc| LOCATION_OF $lid:x |} | {@_loc| LOCATION_OF $uid:x |} as e ->
-          try
-            let loc = Ast.loc_of_expr (List.assoc x env) in
-            let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
-            {| FanLoc.of_tuple
-              ($`str:a, $`int:b, $`int:c, $`int:d,
-               $`int:e, $`int:f, $`int:g,
-               $(if h then {| true |} else {| false |} )) |}
-          with [ Not_found -> super#expr e ]
-      | e -> super#expr e ];
+class subst _loc env = object
+  inherit Ast.reloc _loc as super;
+  method! expr =
+    fun
+    [ {| $lid:x |} | {| $uid:x |} as e ->
+        try List.assoc x env with
+        [ Not_found -> super#expr e ]
+    | {@_loc| LOCATION_OF $lid:x |} | {@_loc| LOCATION_OF $uid:x |} as e ->
+        try
+          let loc = Ast.loc_of_expr (List.assoc x env) in
+          let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
+          {| FanLoc.of_tuple
+            ($`str:a, $`int:b, $`int:c, $`int:d,
+             $`int:e, $`int:f, $`int:g,
+             $(if h then {| true |} else {| false |} )) |}
+        with [ Not_found -> super#expr e ]
+    | e -> super#expr e ];
 
-    method! patt =  fun
-      [ {:patt| $lid:x |} | {:patt| $uid:x |} as p ->
-         try substp _loc [] (List.assoc x env) with
-         [ Not_found -> super#patt p ]
-      | p -> super#patt p ];
-  end;
+  method! patt =  fun
+    [ {:patt| $lid:x |} | {:patt| $uid:x |} as p ->
+       try substp _loc [] (List.assoc x env) with
+       [ Not_found -> super#patt p ]
+    | p -> super#patt p ];
+end;
 
 (*************************************************************************)
 (* utilit for MakeNothing *)
- let map_expr = fun
-   [ {| $e NOTHING |} | {| fun $({:patt| NOTHING |} ) -> $e |} -> e
-   | {@_loc| $(lid:"__FILE__") |} -> {| $(`str:FanLoc.file_name _loc) |}
-   | {@_loc| $(lid:"__LOCATION__") |} ->
-     let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple _loc in
-     {| FanLoc.of_tuple
-       ($`str:a, $`int:b, $`int:c, $`int:d,
-        $`int:e, $`int:f, $`int:g,
-        $(if h then {| true |} else {| false |} )) |}
-   | e -> e];
-    
-
+    (* {:expr| __FILE__ |} *)
+    (*  {:expr| $(lid:"__FILE__")|} *)
 
 
 let antiquot_expander ~parse_patt ~parse_expr = object
