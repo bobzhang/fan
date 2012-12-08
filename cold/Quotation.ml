@@ -169,7 +169,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
       let loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
       expand_quotation loc expander pos_tag quotation
   let parse_quot_string entry loc loc_name_opt s =
-    BatRef.protect FanConfig.antiquotations true
+    Ref.protect FanConfig.antiquotations true
       (fun _  ->
          let res = Gram.parse_string entry loc s in
          let () = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in res)
@@ -185,7 +185,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
       let exp_ast = expand_expr loc loc_name_opt s in
       Ast.StExp (loc, exp_ast) in
     let expand_patt _loc loc_name_opt s =
-      BatRef.protect FanConfig.antiquotations true
+      Ref.protect FanConfig.antiquotations true
         (fun _  ->
            let ast = Gram.parse_string entry_eoi _loc s in
            let meta_ast = mpatt _loc ast in

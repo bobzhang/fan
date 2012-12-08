@@ -1,5 +1,5 @@
 open FanParsers;
-open Camlp4Filters;
+open Filters;
 open Format;
 open LibUtil;
 

@@ -119,35 +119,155 @@ let callcc  (type u) (f: cont u-> u)  =
 
 module List = struct
   include List;
-  include BatList;
+
+  (* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
+  let  split_at n xs =
+    let rec aux  n acc xs = 
+      match xs with 
+      [ [] ->
+          if n = 0 then (acc,[])
+          else invalid_arg "Index past end of list"
+      | ([h::t ] as l) ->
+        if n = 0 then (acc, l)
+        else aux (n-1) [h::acc] t ]in
+    if n < 0 then invalid_arg "split_at n< 0"
+    else
+      let (a,b) =  aux n [] xs  in
+      (List.rev a ,b);
+      
+  let rec find_map f = fun
+    [ [] -> raise Not_found
+    | [x :: xs] ->
+        match f x with
+        [ Some y -> y
+        | None -> find_map f xs] ];
+
+  (* include BatList; *)
   let fold_lefti f acc ls =
     fold_left (fun (i,acc) x -> (i+1,f i acc x) ) (0,acc) ls;
 end;
 
 module Char = struct
-  include BatChar;
+  (* include BatChar; *) include Char;
+  let is_whitespace = fun
+    [ ' ' | '\010' | '\013' | '\009' | '\026' | '\012' -> true
+    | _ -> false];
+
+  let is_newline = fun
+    [ '\010' | '\013' -> true
+    | _               -> false];
+  
+  let is_digit = fun
+    [ '0'..'9' -> true
+    | _ -> false];
+
+
 end;
 
+module Return = struct
+  type t 'a = 'a -> exn;
+
+  let return label v =
+    raise (label v);
+
+  let label (type u) (f : t u-> u) : u =
+      let module M = struct exception Return of u; end in
+      try f (fun x -> M.Return x)
+      with M.Return u -> u;
+  let with_label = label;
+
+end;
 module String = struct
   include String;
-  include BatString;
+  (* include BatString; *)
+  let init len f = begin 
+    let s = create len ;
+    for i = 0 to len - 1 do
+      unsafe_set s i (f i)
+    done;
+    s
+  end;
+
+    (*$T starts_with
+  starts_with "foobarbaz" "foob"
+  starts_with "foobarbaz" ""
+  starts_with "" ""
+  not (starts_with "bar" "foobar")
+  not (starts_with "" "foo")
+  starts_with "Jon \"Maddog\" Orwant" "Jon"
+  not (starts_with "Jon \"Maddog\" Orwant" "Jon \"Maddog\" Orwants")
+  not (starts_with "Jon \"Maddog\" Orwant" "Orwants")
+    *) 
+  let starts_with str p =
+    let len = length p in
+    if length str < len then false
+    else
+    Return.label
+        (fun label -> begin 
+          for i = 0 to len - 1 do
+            if unsafe_get str i <> unsafe_get p i then
+              Return.return label false
+            else ()
+          done;
+          true end);
+
+    (*$T ends_with
+      ends_with "foobarbaz" "rbaz"
+      ends_with "foobarbaz" ""
+      ends_with "" ""
+      not (ends_with "foo" "foobar")
+      not (ends_with "" "foo")
+      ends_with "Jon \"Maddog\" Orwant" "want"
+      not (ends_with "Jon \"Maddog\" Orwant" "I'm Jon \"Maddog\" Orwant")
+      not (ends_with "Jon \"Maddog\" Orwant" "Jon")
+     *)
+    let ends_with str p =
+      let el = length p
+      and sl = length str in
+      let diff = sl - el in
+      if diff < 0 then false (*string is too short*)
+      else
+        Return.label
+          (fun label -> begin 
+            for i = 0 to el - 1 do
+              if get str (diff + i) <> get p i then
+                Return.return label false
+              else ()
+            done;
+            true
+          end);
+    
+  let of_char = make 1;
 end;
   
 module Ref = struct
-  include BatRef;
+  (* include BatRef; *)
+  let protect r v body =
+    let old = !r in
+    try begin 
+      r := v;
+      let res = body();
+      r := old;
+      res
+    end
+  with x -> begin 
+    r := old;
+    raise x
+  end;
 end;
 module Option = struct
-  include BatOption;
+  (* include BatOption; *)
 end;
 
 module Buffer = struct
-  include BatBuffer ;
+  (* include BatBuffer ; *)
+  include Buffer;
   let (+>) buf chr = begin Buffer.add_char buf chr; buf end;
   let (+>>) buf str = begin Buffer.add_string buf str; buf end;  
 end;
 
 module Hashtbl = struct
-  include BatHashtbl;
+  include Hashtbl;
   let keys tbl = fold (fun k _ acc -> [k::acc]) tbl [];
   let values tbl = fold (fun _ v acc -> [v::acc] ) tbl [];
 end;

@@ -220,7 +220,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
     expand_quotation loc expander pos_tag quotation;
 
   let parse_quot_string entry loc loc_name_opt s  =
-    BatRef.protect FanConfig.antiquotations true begin fun _ ->
+    Ref.protect FanConfig.antiquotations true begin fun _ ->
       let res = Gram.parse_string entry loc s in 
       let ()  = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in
       (* It's fine, since every quotation will always have a name *)
@@ -239,7 +239,7 @@ module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct
       let exp_ast = expand_expr loc loc_name_opt s in
       {:str_item@loc| $(exp:exp_ast) |} in
     let expand_patt _loc loc_name_opt s =
-      BatRef.protect FanConfig.antiquotations true begin fun _ ->
+      Ref.protect FanConfig.antiquotations true begin fun _ ->
         let ast = Gram.parse_string entry_eoi _loc s in
         let meta_ast = mpatt _loc ast in
         let exp_ast = anti_filter#patt meta_ast in

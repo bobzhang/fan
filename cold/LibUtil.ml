@@ -63,28 +63,64 @@ let callcc (type u) (f : u cont -> u) =
     exception Return of u
     end in try f (fun x  -> raise (M.Return x)) with | M.Return u -> u
 module List = struct
-  include List include BatList
+  include List (* include BatList *)
+
+  (* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
+  let  split_at n xs =
+    let rec aux  n acc xs = 
+      match xs with 
+      | [] ->
+          if n = 0 then acc,[]
+          else invalid_arg "Index past end of list"
+      | (h::t as l) ->
+        if n = 0 then acc, l
+        else aux (n-1) (h::acc ) t in
+    if n < 0 then invalid_arg "split_at n< 0"
+    else
+      let (a,b) =  aux n [] xs  in
+      (List.rev a ,b)
+  let rec find_map f = function
+    | [] -> raise Not_found
+    | x :: xs ->
+        match f x with
+        | Some y -> y
+        | None -> find_map f xs
+
   let fold_lefti f acc ls =
     fold_left (fun (i,acc)  x  -> ((i + 1), (f i acc x))) (0, acc) ls
-  end
+end
 module Char = struct
-  include BatChar
+  (* include BatChar *) include Char
   end
 module String = struct
-  include String include BatString
+  include String (* include BatString *)
   end
 module Ref = struct
-  include BatRef
+  (* include BatRef *)
+  let protect r v body =
+  let old = !r in
+  try
+    r := v;
+    let res = body() in
+    r := old;
+    res
+  with x ->
+    r := old;
+    raise x
+
   end
 module Option = struct
-  include BatOption
+  (* include BatOption *)
   end
 module Buffer = struct
-  include BatBuffer let (+>) buf chr = Buffer.add_char buf chr; buf
+  include Buffer
+  (* include BatBuffer *) let (+>) buf chr = Buffer.add_char buf chr; buf
   let (+>>) buf str = Buffer.add_string buf str; buf
   end
 module Hashtbl = struct
-  include BatHashtbl let keys tbl = fold (fun k  _  acc  -> k :: acc) tbl []
+  (* include BatHashtbl *)
+  include Hashtbl
+  let keys tbl = fold (fun k  _  acc  -> k :: acc) tbl []
   let values tbl = fold (fun _  v  acc  -> v :: acc) tbl []
   end
 module type STREAM =
