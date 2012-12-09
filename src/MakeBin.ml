@@ -276,8 +276,6 @@ module Camlp4Bin
           "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
          ("-printer", FanArg.String (rewrite_and_load "Printers"),
           "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)");
-         ("-filter", FanArg.String (rewrite_and_load "Filters"),
-          "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)");
          ("-ignore", FanArg.String ignore, "ignore the next argument");
          ("--", FanArg.Unit ignore, "Deprecated, does nothing")];
       

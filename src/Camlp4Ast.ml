@@ -466,9 +466,9 @@ end;
 module Meta = struct
     module Make (MetaLoc : META_LOC) = struct
       let meta_loc = MetaLoc.meta_loc_expr;
-      module Expr = Camlp4Filters.MetaGeneratorExpr Ast;
+      module Expr = Filters.MetaGeneratorExpr Ast;
       let meta_loc = MetaLoc.meta_loc_patt;
-      module Patt = Camlp4Filters.MetaGeneratorPatt Ast;
+      module Patt = Filters.MetaGeneratorPatt Ast;
     end;
 
   end;

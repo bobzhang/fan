@@ -1202,13 +1202,16 @@ Ptop_def
 * self-describing syntax
 
   - built-in knowledge
-     {|
-     syntax: [name1;name2]
-     filter: [filter1;filter2]
-     |}
-     #syntax: [name1;name2]
 
-     #open syntax [name1;name2] (you have to stop here), it will
+     # {|
+     # syntax: [name1;name2]
+     # filter: [filter1;filter2]
+     # |}
+     # #syntax: [name1;name2]
+
+
+
+    #open syntax [name1;name2] (you have to stop here), it will
     change the parser behavior later
 
      let open syntax [name1] in {
@@ -1220,6 +1223,7 @@ Ptop_def
 
      #ppx_filter: [filter1;filter2];
      #fan_filter: [filter1;filter2];
+     
      filter is always global, no scope semantics
      
      {:transform.str_item|

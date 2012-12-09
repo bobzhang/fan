@@ -580,9 +580,9 @@ let processor =
       [ {:str_item| type $t |} -> (last := t; st)
 
       (* backward compatibility *)
-      | {:str_item@_loc| class $lid:c = Camlp4Filters.GenerateFold.generated |} ->
+      | {:str_item@_loc| class $lid:c = Filters.GenerateFold.generated |} ->
             generate_class_implem Fold c !last 1
-      | {:str_item@_loc| class $lid:c = Camlp4Filters.GenerateMap.generated |} ->
+      | {:str_item@_loc| class $lid:c = Filters.GenerateMap.generated |} ->
             generate_class_implem Map c !last 1
 
       (* Handle Camlp4(Fold|Map|FoldMap)\d*Generator *)
@@ -601,9 +601,9 @@ let processor =
       [ {:sig_item| type $t |} -> (last := t; sg)
 
       (* backward compatibility *)
-      | {:sig_item@_loc| class $lid:c : Camlp4Filters.GenerateFold.generated |} ->
+      | {:sig_item@_loc| class $lid:c : Filters.GenerateFold.generated |} ->
            generate_class_interf Fold c !last 1
-      | {:sig_item@_loc| class $lid:c : Camlp4Filters.GenerateMap.generated |} ->
+      | {:sig_item@_loc| class $lid:c : Filters.GenerateMap.generated |} ->
            generate_class_interf Map c !last 1
 
       (* Handle Camlp4(Fold|Map|FoldMap)\d*Generator *)
@@ -828,7 +828,7 @@ let filter st =
           let rec $bi;
         end |} in
      match super#module_expr me with
-     [ {:module_expr| Camlp4Filters.MetaGeneratorExpr $id:i |} ->
+     [ {:module_expr| Filters.MetaGeneratorExpr $id:i |} ->
          mk_meta_module
            { name = i;
              type_decls = Lazy.force type_decls;
@@ -843,7 +843,7 @@ let filter st =
              chr = {:expr| Ast.ExChr |};
              ant = {:ident| Ast.ExAnt |}
            }
-     | {:module_expr| Camlp4Filters.MetaGeneratorPatt $id:i |} ->
+     | {:module_expr| Filters.MetaGeneratorPatt $id:i |} ->
          mk_meta_module
            { name = i;
              type_decls = Lazy.force type_decls;
