@@ -7,20 +7,20 @@ val derive_eps : symbol -> bool
 val tree_derive_eps : tree -> bool
 val empty_lev : string option -> assoc option -> level
 
-val change_lev : internal_entry -> level ->  string
+val change_lev:  level ->  string
   -> string option -> assoc option -> level
-val change_to_self : 'a -> ([> `Snterm of 'a | `Sself ] as 'b) -> 'b
-val levels_of_entry : internal_entry -> level list option
-val find_level :
+val change_to_self: 'a -> ([> `Snterm of 'a | `Sself ] as 'b) -> 'b
+val levels_of_entry: internal_entry -> level list option
+val find_level:
     ?position:position -> internal_entry -> level list
       -> level list * (string option -> assoc option -> level) * level list
-val check_gram : internal_entry -> symbol -> unit
+val check_gram: internal_entry -> symbol -> unit
 
-val tree_check_gram : internal_entry -> tree -> unit
+val tree_check_gram: internal_entry -> tree -> unit
 
-val get_initial : ([> `Sself ] as 'a) list -> bool * 'a list
+val get_initial: ([> `Sself ] as 'a) list -> bool * 'a list
 
-val insert_tokens : gram -> symbol list -> unit
+val insert_tokens: gram -> symbol list -> unit
 
 val insert_production_in_tree:
     internal_entry -> production -> tree -> tree

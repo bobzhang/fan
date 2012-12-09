@@ -87,5 +87,5 @@ arg_mask:
    | "?";  OPT var -> ArgAny _loc ] |};
 
 
-Quotation.add_quotation_of_str_item ~name:"plc" ~entry:prog;
+AstQuotation.add_quotation_of_str_item ~name:"plc" ~entry:prog;
 

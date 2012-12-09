@@ -1,4 +1,5 @@
 open LibUtil
+open FanToken
 type assoc = [ `NA | `RA | `LA] 
 type position =
   [ `First | `Last | `Before of string | `After of string | `Level of string] 
@@ -9,17 +10,13 @@ module Action = struct
   end
 type gram = 
   {
-  gfilter: FanTokenFilter.filter;
+  gfilter: FanTokenFilter.t;
   gkeywords: (string,int ref) Hashtbl.t;
-  glexer: FanLoc.t -> char XStream.t -> (FanToken.token* FanLoc.t) XStream.t;
-  warning_verbose: bool ref;
-  error_verbose: bool ref} 
-type token_stream = (FanToken.token* FanLoc.t) XStream.t 
-type 'a parse = token_stream -> 'a 
+  glexer: FanLoc.t -> char XStream.t -> stream} 
 type 'a cont_parse = FanLoc.t -> Action.t -> 'a parse 
 type description = [ `Normal | `Antiquot] 
 type descr = (description* string) 
-type token_pattern = ((FanToken.token -> bool)* descr) 
+type token_pattern = ((FanToken.t -> bool)* descr) 
 type terminal = [ `Skeyword of string | `Stoken of token_pattern] 
 type internal_entry = 
   {
@@ -30,7 +27,7 @@ type internal_entry =
   mutable edesc: desc} 
 and desc =  
   | Dlevels of level list
-  | Dparser of (token_stream -> Action.t) 
+  | Dparser of (stream -> Action.t) 
 and level =  {
   assoc: assoc;
   lname: string option;

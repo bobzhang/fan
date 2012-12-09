@@ -2,11 +2,11 @@ module Ast = Camlp4Ast
 open Lib
 open LibUtil
 type 'a item_or_def =  
-  | SdStr of 'a
-  | SdDef of string* (string list* Ast.expr) option
-  | SdUnd of string
-  | SdITE of bool* 'a item_or_def list* 'a item_or_def list
-  | SdLazy of 'a Lazy.t 
+  | Str of 'a
+  | Def of string* (string list* Ast.expr) option
+  | Und of string
+  | ITE of bool* 'a item_or_def list* 'a item_or_def list
+  | Lazy of 'a Lazy.t 
 let defined = ref []
 let is_defined i = List.mem_assoc i defined.contents
 let incorrect_number loc l1 l2 =
@@ -25,8 +25,7 @@ let define ~expr  ~patt  eo x =
                        | `UID __fan__x when x = __fan__x -> true
                        | _ -> false)), (`Antiquot, "`UID __fan__x"))],
                   (Gram.mk_action
-                     (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t) 
-                        ->
+                     (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match __fan_0 with
                         | `UID _ -> (((new Ast.reloc) _loc)#expr e : 'expr )
                         | _ -> assert false)))])]);
@@ -38,8 +37,7 @@ let define ~expr  ~patt  eo x =
                        | `UID __fan__x when x = __fan__x -> true
                        | _ -> false)), (`Antiquot, "`UID __fan__x"))],
                   (Gram.mk_action
-                     (fun (__fan_0 : [> FanToken.token])  (_loc : FanLoc.t) 
-                        ->
+                     (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match __fan_0 with
                         | `UID _ ->
                             (let p = Expr.substp _loc [] e in
@@ -55,7 +53,7 @@ let define ~expr  ~patt  eo x =
                        | _ -> false)), (`Antiquot, "`UID __fan__x"));
                  `Sself],
                   (Gram.mk_action
-                     (fun (param : 'expr)  (__fan_0 : [> FanToken.token]) 
+                     (fun (param : 'expr)  (__fan_0 : [> FanToken.t]) 
                         (_loc : FanLoc.t)  ->
                         match __fan_0 with
                         | `UID _ ->
@@ -78,7 +76,7 @@ let define ~expr  ~patt  eo x =
                        | _ -> false)), (`Antiquot, "`UID __fan__x"));
                  `Sself],
                   (Gram.mk_action
-                     (fun (param : 'patt)  (__fan_0 : [> FanToken.token]) 
+                     (fun (param : 'patt)  (__fan_0 : [> FanToken.t]) 
                         (_loc : FanLoc.t)  ->
                         match __fan_0 with
                         | `UID _ ->
@@ -152,12 +150,12 @@ let parse_include_file entry =
     let st = XStream.of_channel ch in Gram.parse entry (FanLoc.mk file) st
 let rec execute_macro ~expr  ~patt  nil cons =
   function
-  | SdStr i -> i
-  | SdDef (x,eo) -> (define ~expr ~patt eo x; nil)
-  | SdUnd x -> (undef ~expr ~patt x; nil)
-  | SdITE (b,l1,l2) ->
+  | Str i -> i
+  | Def (x,eo) -> (define ~expr ~patt eo x; nil)
+  | Und x -> (undef ~expr ~patt x; nil)
+  | ITE (b,l1,l2) ->
       execute_macro_list ~expr ~patt nil cons (if b then l1 else l2)
-  | SdLazy l -> Lazy.force l
+  | Lazy l -> Lazy.force l
 and execute_macro_list ~expr  ~patt  nil cons =
   function
   | [] -> nil
@@ -165,16 +163,21 @@ and execute_macro_list ~expr  ~patt  nil cons =
       let il1 = execute_macro ~expr ~patt nil cons hd in
       let il2 = execute_macro_list ~expr ~patt nil cons tl in cons il1 il2
 let stack = Stack.create ()
-let make_SdITE_result st1 st2 =
-  let test = Stack.pop stack in SdITE (test, st1, st2)
+let make_ITE_result st1 st2 =
+  let test = Stack.pop stack in ITE (test, st1, st2)
 type branch =  
   | Then
   | Else 
 let execute_macro_if_active_branch ~expr  ~patt  _loc nil cons branch
   macro_def =
+  let _ = Format.eprintf "execute_macro_if_active_branch@." in
   let test = Stack.top stack in
   let item =
     if (test && (branch = Then)) || ((not test) && (branch = Else))
-    then execute_macro ~expr ~patt nil cons macro_def
+    then
+      let res = execute_macro ~expr ~patt nil cons macro_def in
+      (Format.eprintf "executing branch %s@."
+         (if branch = Then then "Then" else "Else");
+       res)
     else nil in
-  SdStr item
+  Str item

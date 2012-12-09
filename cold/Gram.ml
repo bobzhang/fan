@@ -3,32 +3,19 @@ open Format
 open Grammar
 include Entry
 include Structure
-let _ =
-  let gkeywords = Hashtbl.create 301 in
-  {
-    gkeywords;
-    gfilter = (FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords));
-    glexer = (FanLexUtil.mk ());
-    warning_verbose = (ref true);
-    error_verbose = FanConfig.verbose
-  }
 let gram =
   let gkeywords = Hashtbl.create 301 in
   {
     gkeywords;
     gfilter = (FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords));
-    glexer = (FanLexUtil.mk ());
-    warning_verbose = (ref true);
-    error_verbose = FanConfig.verbose
+    glexer = (FanLexUtil.mk ())
   }
 let create_gram () =
   let gkeywords = Hashtbl.create 301 in
   {
     gkeywords;
     gfilter = (FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords));
-    glexer = (FanLexUtil.mk ());
-    warning_verbose = (ref true);
-    error_verbose = FanConfig.verbose
+    glexer = (FanLexUtil.mk ())
   }
 let mk = mk_dynamic gram
 let of_parser name strm = of_parser gram name strm
@@ -90,7 +77,7 @@ let eoi_entry entry =
            `Stoken
              (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
             (mk_action
-               (fun (__fan_1 : [> FanToken.token])  (x : 'entry) 
+               (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
                   (_loc : FanLoc.t)  ->
                   match __fan_1 with
                   | `EOI -> (x : 'entry_eoi )

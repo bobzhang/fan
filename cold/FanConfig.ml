@@ -49,3 +49,5 @@ let strict_parsing = ref false;;
 let strict_parsing_warning = ref false;;
 
 
+let gram_warning_verbose = ref true;
+(* let gram_error_verbose =   *)

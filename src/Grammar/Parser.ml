@@ -1,5 +1,7 @@
 open Structure;
 open LibUtil;
+open FanToken;
+
 let get_cur_loc = Tools.get_cur_loc;
 let get_prev_loc = Tools.get_prev_loc;
 (* [bp] means begining position, [ep] means ending position
@@ -121,7 +123,7 @@ let rec parser_of_tree entry (lev,assoc) x =
   from_tree x 
 
 and parser_of_terminals
-    (terminals:list terminal ) (cont:cont_parse Action.t) (strm:token_stream) =
+    (terminals:list terminal ) (cont:cont_parse Action.t) strm =
   let bp = Tools.get_cur_loc strm in (* FIXME more precise Location *)
   let n = List.length terminals in
   let acc = ref [] in begin
@@ -187,7 +189,7 @@ and parser_of_symbol entry s nlevn =
         let bp = get_cur_loc strm in
         match strm with parser
         [ [< (act, loc) = add_loc bp pt >] ->  Action.getf act loc]
-  | `Snterm e -> parser [< a = e.estart 0 >] -> a
+  | `Snterm e -> parser [< a = e.estart 0 >] -> a (* No filter any more *)
   | `Snterml (e, l) -> parser [< a = e.estart (level_number e l) >] -> a
   | `Sself -> parser [< a = entry.estart 0 >] -> a
   | `Snext -> parser [< a = entry.estart (nlevn+1) >] -> a

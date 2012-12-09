@@ -152,7 +152,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     entry_name:
      [ qualid{il}; OPT[`STR(_,x)->x]{name} -> begin
        (match name with
-         [ Some x -> (let old = !Quotation.default in (Quotation.default:=x;`name old))
+         [ Some x -> (let old = !AstQuotation.default in (AstQuotation.default:=x;`name old))
          | None -> `non], mk_name _loc il)
        (* (mk_name _loc il,`name) *)
      end]
@@ -160,7 +160,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
        -> begin 
          match n with
-         [`name old -> Quotation.default := old
+         [`name old -> AstQuotation.default := old
          | _ -> ()];  
            mk_entry ~name:p ~pos ~levels
        end]
@@ -292,16 +292,13 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      [ a_LIDENT{i} -> {:expr| $lid:i |}
      | "("; expr{e}; ")" -> e ]  |};
 
-  Quotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (* built in extend support *)
-  Quotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (* built in delete support *)
-  Quotation.add_quotation_of_expr ~name:"extend.clear" ~entry:nonterminalsclear;
+  AstQuotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (* built in extend support *)
+  AstQuotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (* built in delete support *)
+  AstQuotation.add_quotation_of_expr ~name:"extend.clear" ~entry:nonterminalsclear;
     
-  Quotation.add_quotation_of_str_item ~name:"extend.create" ~entry:nonterminals;
+  AstQuotation.add_quotation_of_str_item ~name:"extend.create" ~entry:nonterminals;
 
   (* to be tuned *)  
-  Quotation.add "str" DynAst.expr_tag (fun _loc _loc_option s -> {:expr|$str:s|});
-  Quotation.add "str" DynAst.str_item_tag
-      (fun _loc _loc_option s -> {:str_item| $(exp:{:expr|$str:s|}) |});
     
   Options.add ("-split_ext", (FanArg.Set split_ext),
                "Split EXTEND by functions to turn around a PowerPC problem.");
@@ -682,7 +679,7 @@ New syntax:\
         [ `ANT ((""|"mexp"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"module_expr" n s) |}
         | `QUOTATION x ->
-            Quotation.expand _loc x DynAst.module_expr_tag
+            AstQuotation.expand _loc x DynAst.module_expr_tag
         | module_longident{i} -> {| $id:i |}
         | "("; S{me}; ":"; module_type{mt}; ")" ->
             {| ( $me : $mt ) |}
@@ -702,12 +699,12 @@ New syntax:\
         module_binding:
         [ S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
         | `ANT (("module_binding"|"anti"|"list" |"" as n),s) -> {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_binding_tag
         | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} -> {| $uid:m : $mt = $me |} ]
         module_rec_declaration:
         [ S{m1}; "and"; S{m2} -> {| $m1 and $m2 |}
         | `ANT ((""|"module_binding"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_binding_tag
         | a_UIDENT{m}; ":"; module_type{mt} -> {| $uid:m : $mt |} ] |};
 
   with "with_constr"
@@ -717,7 +714,7 @@ New syntax:\
         with_constr: 
         [ S{wc1}; "and"; S{wc2} -> {| $wc1 and $wc2 |}
         | `ANT ((""|"with_constr"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"with_constr" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.with_constr_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.with_constr_tag
         | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->           {| type $t1 = $t2 |}
         | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->         {| type $t1 := $t2 |}
         | "module"; module_longident{i1}; "="; module_longident_with_app{i2} -> {| module $i1 = $i2 |}
@@ -738,7 +735,7 @@ New syntax:\
         [ "sig"; sig_items{sg}; "end" -> {| sig $sg end |} ]
        "simple"
         [ `ANT ((""|"mtyp"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_type" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.module_type_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_type_tag
         | module_longident_with_app{i} -> {| $id:i |}
         | "'"; a_ident{i} -> {| ' $i |}
         | "("; S{mt}; ")" -> {| $mt |}
@@ -762,7 +759,7 @@ New syntax:\
     | -> {||} ]
     sig_item:
     [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
-    | `QUOTATION x -> Quotation.expand _loc x DynAst.sig_item_tag
+    | `QUOTATION x -> AstQuotation.expand _loc x DynAst.sig_item_tag
     | "exception"; constructor_declaration{t} ->  {| exception $t |}
     | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} -> {| external $i : $t = $sl |}
     | "include"; module_type{mt} -> {| include $mt |}
@@ -810,7 +807,7 @@ New syntax:\
           | ipatt{p}; S{e} -> {| fun $p -> $e |}
           | cvalue_binding{bi} -> bi  ] }
       lang:
-      [ `STR(_,s) -> begin let old = !Quotation.default;  Quotation.default := s; old end ]
+      [ `STR(_,s) -> begin let old = !AstQuotation.default;  AstQuotation.default := s; old end ]
       fun_def_patt:
           ["(";"type";a_LIDENT{i};")" -> fun e -> {|fun (type $i) -> $e |}
           | ipatt{p} -> fun e -> {| fun $p -> $e |}
@@ -840,7 +837,7 @@ New syntax:\
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} ->
             {| if $e1 then $e2 else $e3 |}
         | "do"; sequence{seq}; "done" -> Expr.mksequence _loc seq
-        | "with"; lang{old}; S{x} -> begin  Quotation.default := old; x  end
+        | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do"; sequence{seq}; "done"
           -> {| for $i = $e1 $to:df $e2 do $seq done |}
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
@@ -901,7 +898,7 @@ New syntax:\
         [ "!"; S{e} ->  {| ! $e|}
         | prefixop{f}; S{e} -> {| $f $e |} ]
        "simple"
-        [ `QUOTATION x -> Quotation.expand _loc x DynAst.expr_tag
+        [ `QUOTATION x -> AstQuotation.expand _loc x DynAst.expr_tag
         | `ANT (("exp"|""|"anti"|"`bool" |"tup"|"seq"|"int"|"`int"
                 |"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
                 |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s) -> {| $(anti:mk_anti ~c:"expr" n s) |}
@@ -1098,7 +1095,7 @@ New syntax:\
         | "("; S{p}; ","; comma_patt{pl}; ")" -> {| ($p, $pl) |}
         | "`"; a_ident{s} -> {| ` $s |}
         | "#"; type_longident{i} -> {| # $i |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.patt_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $i : $p |}
         | "~"; `ANT ((""|"lid" as n),i); ":"; S{p} -> {| ~ $(mk_anti n i) : $p |}
@@ -1121,7 +1118,7 @@ New syntax:\
         | "("; S{p}; "as"; S{p2}; ")" -> {| ($p as $p2) |}
         | "("; S{p}; ","; comma_ipatt{pl}; ")" -> {| ($p, $pl) |}
         | a_LIDENT{s} -> {| $lid:s |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.patt_tag                            
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag                            
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $i : $p |}
         | "~"; `ANT ((""|"lid" as n),i); ":"; S{p} -> {| ~ $(mk_anti n i) : $p |}
@@ -1169,7 +1166,7 @@ New syntax:\
        | label_patt{p1}                 -> p1   ] 
        label_patt:
        [ `ANT ((""|"pat"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
-       | `QUOTATION x -> Quotation.expand _loc x DynAst.patt_tag
+       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
        | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
        | label_longident{i}; "="; patt{p} -> {| $i = $p |}
        | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ] |};
@@ -1197,14 +1194,14 @@ New syntax:\
       | type_parameter{x} -> x   ]
       type_parameter:
       [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | "'"; a_ident{i} -> {| '$lid:i |}
       | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
       | "-"; "'"; a_ident{i} -> {| -'$lid:i |} ]
       type_ident_and_parameters: [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl) ]
       optional_type_parameter: (* overlapps with type_parameter *)
       [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | "'"; a_ident{i} -> {| '$lid:i |}
       | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
       | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
@@ -1229,7 +1226,7 @@ New syntax:\
       meth_decl:
       [ `ANT ((""|"typ" as n),s)        -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `ANT (("list" as n),s)          -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
-      | `QUOTATION x                       -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x                       -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | a_LIDENT{lab}; ":"; poly_type{t} -> {| $lid:lab : $t |} ]
       opt_meth_list:
       [ meth_list{(ml, v) } -> {| < $ml $(..:v) > |}
@@ -1239,7 +1236,7 @@ New syntax:\
       unquoted_typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | a_ident{i} -> {| $lid:i |}   ] 
       row_field:
       [ `ANT ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1262,7 +1259,7 @@ New syntax:\
       type_declaration:
       [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `ANT (("list" as n),s) ->          {| $(anti:mk_anti ~c:"ctypand" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
       |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
         -> Ast.TyDcl _loc n tpl tk cl ]
@@ -1275,7 +1272,7 @@ New syntax:\
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `ANT(("list" as n),s) ->     {| $(anti:mk_anti ~c:"forall" n s)|}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | "'"; a_ident{i} -> {| '$lid:i |} ]
       ctyp:
       { "==" LA
@@ -1308,7 +1305,7 @@ New syntax:\
         | `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
         | `ANT (("tup" as n),s) ->  {| ($(tup:{| $(anti:mk_anti ~c:"ctyp" n s) |})) |}
         | `ANT (("id" as n),s) ->   {| $(id:{:ident| $(anti:mk_anti ~c:"ident" n s) |}) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
         | a_LIDENT{i} -> {| $lid:i |}
         | a_UIDENT{i} -> {| $uid:i |}
         | "("; S{t}; "*"; star_ctyp{tl}; ")" ->  {| ( $t * $tl ) |}
@@ -1335,7 +1332,7 @@ New syntax:\
       constructor_declarations:
       [ `ANT ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `ANT (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | S{t1}; "|"; S{t2} ->        {| $t1 | $t2 |}
       | a_UIDENT{s}; "of"; constructor_arg_list{t} ->  {| $uid:s of $t |}
       | a_UIDENT{s}; ":"; ctyp{t} ->
@@ -1344,7 +1341,7 @@ New syntax:\
       | a_UIDENT{s} ->  {| $uid:s |}  ]
       constructor_declaration:
       [ `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | a_UIDENT{s}; "of"; constructor_arg_list{t} ->   {| $uid:s of $t |}
       | a_UIDENT{s} ->    {| $uid:s |}  ]
       constructor_arg_list:
@@ -1358,7 +1355,7 @@ New syntax:\
       label_declaration:
       [ `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | a_LIDENT{s}; ":"; poly_type{t} ->      {| $lid:s : $t |}
       | a_LIDENT{s}; ":"; "mutable"; poly_type{t} ->  {| $lid:s : mutable $t |}  ]
       class_name_and_param:
@@ -1556,7 +1553,7 @@ New syntax:\
             {| module type $i = $mt |}
         | "open"; `LID "lang"; `STR(_,s) -> (* FIXME put in the directive table*)
             begin
-              Quotation.default:=s;
+              AstQuotation.default:=s;
               {||}
             end
         | "open"; module_longident{i} -> {| open $i |}
@@ -1573,7 +1570,7 @@ New syntax:\
         | "class"; class_declaration{cd} ->  {| class $cd |}
         | "class"; "type"; class_type_declaration{ctd} -> {| class type $ctd |}
         | `ANT ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"str_item" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.str_item_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.str_item_tag
         | expr{e} -> {| $exp:e |}
               (* this entry makes {| let $rec:r $bi in $x |} parsable *)
         ] }   |};
@@ -1594,7 +1591,7 @@ New syntax:\
       | L0 [ class_sig_item{csg}; semi -> csg ]{l} -> {| $list:l |}]
       class_sig_item:
       [ `ANT ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.class_sig_item_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_sig_item_tag
       | "inherit"; class_type{cs} ->   {| inherit $cs |}
       | "val"; opt_mutable{mf}; opt_virtual{mv}; label{l}; ":"; ctyp{t} ->
           {| val $mutable:mf $virtual:mv $l : $t |}
@@ -1615,7 +1612,7 @@ New syntax:\
       class_str_item:
         [ `ANT ((""|"cst"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"class_str_item" n s) |}
-        | `QUOTATION x -> Quotation.expand _loc x DynAst.class_str_item_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_str_item_tag
         | "inherit"; opt_override{o}; class_expr{ce}; opt_as_lident{pb} ->
             {| inherit $override:o $ce as $pb |}
         | value_val_opt_override{o}; opt_mutable{mf}; label{lab}; cvalue_binding{e}
@@ -1673,7 +1670,7 @@ New syntax:\
       class_declaration:
       [ S{c1}; "and"; S{c2} -> {| $c1 and $c2 |}
       | `ANT ((""|"cdcl"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_expr" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.class_expr_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_expr_tag
       | class_info_for_class_expr{ci}; class_fun_binding{ce} -> {| $ci = $ce |} ]
       class_fun_binding:
       [ "="; class_expr{ce} -> ce
@@ -1692,7 +1689,7 @@ New syntax:\
           [ S{ce}; expr Level "label"{e} -> {| $ce $e |} ]
         "simple"
           [ `ANT ((""|"cexp"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"class_expr" n s) |}
-          | `QUOTATION x -> Quotation.expand _loc x DynAst.class_expr_tag
+          | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_expr_tag
           | class_longident_and_param{ce} -> ce
           | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" -> {| object ($csp) $cst end |}
           | "("; S{ce}; ":"; class_type{ct}; ")" -> {| ($ce : $ct) |}
@@ -1706,12 +1703,12 @@ New syntax:\
       [ S{cd1}; "and"; S{cd2} -> {| $cd1 and $cd2 |}
       | `ANT ((""|"typ"|"anti"|"list" as n),s) ->
           {| $(anti:mk_anti ~c:"class_type" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.class_type_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
       | class_info_for_class_type{ci}; ":"; class_type_plus{ct} -> {| $ci : $ct |}  ]
       class_type_declaration:
       [ S{cd1}; "and"; S{cd2} -> {| $cd1 and $cd2 |}
       | `ANT ((""|"typ"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_type" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.class_type_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
       | class_info_for_class_type{ci}; "="; class_type{ct} -> {| $ci = $ct |} ]
       class_info_for_class_type:
       [ opt_virtual{mv};  class_name_and_param{(i, ot)} -> {| $virtual:mv $lid:i [ $ot ] |} ]
@@ -1730,7 +1727,7 @@ New syntax:\
       | class_type{ct} -> ct ]
       class_type:
       [ `ANT ((""|"ctyp"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"class_type" n s) |}
-      | `QUOTATION x -> Quotation.expand _loc x DynAst.class_type_tag
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
       | class_type_longident_and_param{ct} -> ct
       | "object"; opt_class_self_type{cst}; class_signature{csg}; "end" ->
           {| object ($cst) $csg end |} ]
@@ -1815,77 +1812,27 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
      [  stream_expr{e} -> SeTrm _loc e
      | stream_quot;stream_expr{e} -> SeNtr _loc e ]  |};
 end;
+
+let pa_r  = "Camlp4OCamlRevisedParser";
   
-module IdQuotationCommon = struct (* FIXME unused here *)
-  let name = "Camlp4QuotationCommon";
-  let version = Sys.ocaml_version;
-end;
-
-module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
-= struct
-  include Syntax; 
-  open Quotation;
-  open Meta;
-  add_quotation "sig_item" sig_item_quot ~mexpr:ME.meta_sig_item ~mpatt:MP.meta_sig_item ~expr_filter ~patt_filter ;
-  add_quotation "str_item" str_item_quot ~mexpr:ME.meta_str_item ~mpatt:MP.meta_str_item ~expr_filter ~patt_filter ;
-  add_quotation "ctyp" ctyp_quot ~mexpr:ME.meta_ctyp ~mpatt:MP.meta_ctyp ~expr_filter ~patt_filter ;
-  add_quotation "patt" patt_quot ~mexpr:ME.meta_patt ~mpatt:MP.meta_patt ~expr_filter ~patt_filter ;
-  add_quotation "expr" expr_quot ~mexpr:ME.meta_expr ~mpatt:MP.meta_expr ~expr_filter ~patt_filter ;
-  add_quotation "module_type" module_type_quot ~mexpr:ME.meta_module_type ~mpatt:MP.meta_module_type ~expr_filter ~patt_filter ;
-  add_quotation "module_expr" module_expr_quot ~mexpr:ME.meta_module_expr ~mpatt:MP.meta_module_expr ~expr_filter ~patt_filter ;
-  add_quotation "class_type" class_type_quot ~mexpr:ME.meta_class_type ~mpatt:MP.meta_class_type ~expr_filter ~patt_filter ;
-  add_quotation "class_expr" class_expr_quot ~mexpr:ME.meta_class_expr ~mpatt:MP.meta_class_expr ~expr_filter ~patt_filter ;
-  add_quotation "class_sig_item"
-                class_sig_item_quot ~mexpr:ME.meta_class_sig_item ~mpatt:MP.meta_class_sig_item ~expr_filter ~patt_filter ;
-  add_quotation "class_str_item"
-                class_str_item_quot ~mexpr:ME.meta_class_str_item ~mpatt:MP.meta_class_str_item ~expr_filter ~patt_filter ;
-  add_quotation "with_constr" with_constr_quot ~mexpr:ME.meta_with_constr ~mpatt:MP.meta_with_constr ~expr_filter ~patt_filter ;
-  add_quotation "binding" binding_quot ~mexpr:ME.meta_binding ~mpatt:MP.meta_binding ~expr_filter ~patt_filter ;
-  add_quotation "rec_binding" rec_binding_quot ~mexpr:ME.meta_rec_binding ~mpatt:MP.meta_rec_binding ~expr_filter ~patt_filter ;
-  add_quotation "match_case" match_case_quot ~mexpr:ME.meta_match_case ~mpatt:MP.meta_match_case ~expr_filter ~patt_filter ;
-  add_quotation "module_binding"
-                module_binding_quot ~mexpr:ME.meta_module_binding ~mpatt:MP.meta_module_binding ~expr_filter ~patt_filter ;
-  add_quotation "ident" ident_quot ~mexpr:ME.meta_ident ~mpatt:MP.meta_ident ~expr_filter ~patt_filter ;
-  add_quotation "rec_flag" rec_flag_quot ~mexpr:ME.meta_rec_flag ~mpatt:MP.meta_rec_flag ~expr_filter ~patt_filter ;
-  add_quotation "private_flag" private_flag_quot ~mexpr:ME.meta_private_flag ~mpatt:MP.meta_private_flag ~expr_filter ~patt_filter ;
-  add_quotation "row_var_flag" row_var_flag_quot ~mexpr:ME.meta_row_var_flag ~mpatt:MP.meta_row_var_flag ~expr_filter ~patt_filter ;
-  add_quotation "mutable_flag" mutable_flag_quot ~mexpr:ME.meta_mutable_flag ~mpatt:MP.meta_mutable_flag ~expr_filter ~patt_filter ;
-  add_quotation "virtual_flag" virtual_flag_quot ~mexpr:ME.meta_virtual_flag ~mpatt:MP.meta_virtual_flag ~expr_filter ~patt_filter ;
-  add_quotation "override_flag" override_flag_quot ~mexpr:ME.meta_override_flag ~mpatt:MP.meta_override_flag ~expr_filter ~patt_filter ;
-  add_quotation "direction_flag" direction_flag_quot ~mexpr:ME.meta_direction_flag ~mpatt:MP.meta_direction_flag ~expr_filter ~patt_filter ;
-  Options.add ("-dlang", FanArg.Set_string Quotation.default," Set the default language");
-end;
-
-
-
-module IdQuotationExpander = struct
-  let name = "Camlp4QuotationExpander";
-  let version = Sys.ocaml_version;
-end;
-
-module MakeQuotationExpander (Syntax : Sig.Camlp4Syntax)
-= struct
-  module M = MakeQuotationCommon Syntax;
-  include M;
-end;
-let pa_r  = "Camlp4OCamlRevisedParser";    
 let pa_r (module P:Sig.PRECAST) =
   P.syntax_extension (module IdRevisedParser)  (module MakeRevisedParser);
+  
 (*  "Camlp4OCamlRevisedParserParser"; *)
 let pa_rp (module P:Sig.PRECAST) =
   P.syntax_extension (module IdRevisedParserParser)
     (module MakeRevisedParserParser);
+  
 let pa_g (module P:Sig.PRECAST) =
   P.syntax_extension (module IdGrammarParser) (module MakeGrammarParser);
+
 (*  "Camlp4MacroParser"; *)
 let pa_m (module P:Sig.PRECAST) =
    P.syntax_extension (module IdMacroParser) (module MakeMacroParser) ;
 
-(*  "Camlp4QuotationExpander"; *)
-let pa_q (module P:Sig.PRECAST) =
-  P.syntax_extension (module IdQuotationExpander) (module MakeQuotationExpander);
 let pa_l  (module P: Sig.PRECAST) =
   P.syntax_extension (module IdListComprehension) (module MakeListComprehension);
+  
 (* load debug parser for bootstrapping *)
 let pa_debug (module P: Sig.PRECAST) =
   P.syntax_extension (module IdDebugParser) (module MakeDebugParser);

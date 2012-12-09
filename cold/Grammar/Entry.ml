@@ -2,6 +2,7 @@ open LibUtil
 open Format
 open Structure
 open Tools
+open FanToken
 type 'a t = internal_entry 
 let name e = e.ename
 let print ppf e = fprintf ppf "%a@\n" Print.text#entry e
@@ -16,7 +17,7 @@ let mk_dynamic g n =
       (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
     edesc = (Dlevels [])
   }
-let action_parse entry ts =
+let action_parse entry (ts : stream) =
   (try
      let p =
        if trace_parser.contents then Format.fprintf else Format.ifprintf in
@@ -34,14 +35,14 @@ let action_parse entry ts =
         FanLoc.raise (get_prev_loc ts) exc) : Action.t )
 let lex entry loc cs = (entry.egram).glexer loc cs
 let lex_string entry loc str = lex entry loc (XStream.of_string str)
-let filter entry ts = FanTokenFilter.filter (get_filter entry.egram) ts
 let parse_origin_tokens entry ts = Action.get (action_parse entry ts)
+let filter entry ts = FanTokenFilter.filter (get_filter entry.egram) ts
 let filter_and_parse_tokens entry ts =
   parse_origin_tokens entry (filter entry ts)
 let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs)
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string entry loc str)
-let of_parser g n (p : token_stream -> 'a) =
+let of_parser g n (p : stream -> 'a) =
   let f ts = Action.mk (p ts) in
   {
     egram = g;
@@ -51,7 +52,7 @@ let of_parser g n (p : token_stream -> 'a) =
       (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
     edesc = (Dparser f)
   }
-let setup_parser e (p : token_stream -> 'a) =
+let setup_parser e (p : stream -> 'a) =
   let f ts = Action.mk (p ts) in
   e.estart <- (fun _  -> f);
   e.econtinue <-

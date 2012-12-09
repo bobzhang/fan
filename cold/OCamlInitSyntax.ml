@@ -153,15 +153,14 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let level_list = Gram.mk "level_list" let entry = Gram.mk "entry"
   let extend_body = Gram.mk "extend_body"
   let delete_rule_body = Gram.mk "delete_rule_body"
-  module AntiquotSyntax = struct
-    module Ast = Ast module Gram = Gram
-    let antiquot_expr = Gram.eoi_entry expr
-    let antiquot_patt = Gram.eoi_entry patt
-    let antiquot_ident = Gram.eoi_entry ident
-    let parse_expr loc str = Gram.parse_string antiquot_expr loc str
-    let parse_patt loc str = Gram.parse_string antiquot_patt loc str
-    let parse_ident loc str = Gram.parse_string antiquot_ident loc str
-    end module Quotation = Quotation.Make(AntiquotSyntax)
+  let antiquot_expr = Gram.eoi_entry expr
+  let antiquot_patt = Gram.eoi_entry patt
+  let antiquot_ident = Gram.eoi_entry ident
+  let parse_expr loc str = Gram.parse_string antiquot_expr loc str
+  let parse_patt loc str = Gram.parse_string antiquot_patt loc str
+  let parse_ident loc str = Gram.parse_string antiquot_ident loc str
+  let anti_filter = Lib.Expr.antiquot_expander ~parse_expr ~parse_patt
+  let expr_filter = anti_filter#expr let patt_filter = anti_filter#patt
   let wrap directive_handler pa init_loc cs =
     let rec loop loc =
       let (pl,stopped_at_directive) = pa loc cs in

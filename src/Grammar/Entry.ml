@@ -3,6 +3,7 @@ open LibUtil;
 open Format;
 open Structure;
 open Tools;
+open FanToken;
 
 type t 'a =internal_entry;
 
@@ -21,7 +22,7 @@ let mk_dynamic g n ={
   edesc = Dlevels [] };
 
 (* [estart] *)  
-let action_parse entry ts : Action.t =
+let action_parse entry (ts: stream) : Action.t =
   try 
     let p =
       if !trace_parser then
@@ -44,15 +45,21 @@ let action_parse entry ts : Action.t =
         FanLoc.raise (get_prev_loc ts) exc
     end];
 
+(* UNfiltered token stream *)
 let lex entry loc cs = entry.egram.glexer loc cs;
 
+(* Unfiltered *)
 let lex_string entry loc str = lex entry loc (XStream.of_string str);
 
+(* unfilter *)
+let parse_origin_tokens entry ts = Action.get (action_parse entry ts);
+
+
+(* filter *)  
 let filter entry ts =
   (FanTokenFilter.filter (get_filter entry.egram) ts);
 
-let parse_origin_tokens entry ts = Action.get (action_parse entry ts);
-
+(* filtering using the [entrance entry]'s filter '*)  
 let filter_and_parse_tokens entry ts =
   parse_origin_tokens entry (filter entry ts);
 
@@ -61,15 +68,16 @@ let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs);
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string entry loc str);
 
-let of_parser g n (p : token_stream -> 'a)   =
+let of_parser g n (p : stream -> 'a)   =
   let f ts = Action.mk (p ts) in {
   egram = g;
   ename = n;
   estart _ = f;
   econtinue _ _ _ = parser [];
-  edesc = Dparser f };
+  edesc = Dparser f
+};
 
-let setup_parser e (p : token_stream -> 'a) =
+let setup_parser e (p : stream -> 'a) =
   let f ts = Action.mk (p ts) in begin
     e.estart <- fun _ -> f;
     e.econtinue <- fun _ _ _ -> parser [];
@@ -77,12 +85,9 @@ let setup_parser e (p : token_stream -> 'a) =
   end;
 
 let clear e = begin 
-
-      e.estart <- fun _ -> parser [];
-      e.econtinue <- fun _ _ _ -> parser [];
-      e.edesc <- Dlevels []
+  e.estart <- fun _ -> parser [];
+  e.econtinue <- fun _ _ _ -> parser [];
+  e.edesc <- Dlevels []
 end;
 
 let obj x = x;
-
-

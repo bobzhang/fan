@@ -4,34 +4,26 @@ open Grammar;
 include Entry;
 include Structure;
 
-let gkeywords = Hashtbl.create 301 in{
+let gram =
+  let gkeywords = Hashtbl.create 301 in {
   gkeywords = gkeywords;
   gfilter = FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords);
   glexer = FanLexUtil.mk ();
-  warning_verbose = ref true;
-  error_verbose = FanConfig.verbose
+};
+  
+let create_gram () =
+  let gkeywords = Hashtbl.create 301 in {
+  gkeywords = gkeywords;
+  gfilter = FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords);
+  glexer = FanLexUtil.mk ();
 };
 
-
-  
-let gram =
-  let gkeywords = Hashtbl.create 301 in{
-  gkeywords = gkeywords;
-  gfilter = FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords);
-  glexer = FanLexUtil.mk ();
-  warning_verbose = ref true;
-  error_verbose = FanConfig.verbose };
-let create_gram () =
-  let gkeywords = Hashtbl.create 301 in{
-  gkeywords = gkeywords;
-  gfilter = FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords);
-  glexer = FanLexUtil.mk ();
-  warning_verbose = ref true;
-  error_verbose = FanConfig.verbose } ;
+(* let copy {egram:}   *)
 
 (* FIXME duplicate some code from Entry *)
   
 let mk = mk_dynamic gram;
+
 let of_parser name strm = of_parser gram name strm;
 
 let get_filter () = gram.gfilter;

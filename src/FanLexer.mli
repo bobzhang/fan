@@ -39,13 +39,13 @@ val update_loc:
 val err: lex_error -> FanLoc.t -> 'a
 val warn: lex_error -> FanLoc.t -> unit
 
-val token: context ->  Lexing.lexbuf ->  [> FanToken.token ]
+val token: context ->  Lexing.lexbuf ->  [> FanToken.t ]
 
 val comment: context -> Lexing.lexbuf -> unit
 
 val string: context -> Lexing.lexbuf -> unit
 
-val symbolchar_star:  string ->  context -> Lexing.lexbuf ->  [> FanToken.token ]
+val symbolchar_star:  string ->  context -> Lexing.lexbuf ->  [> FanToken.t ]
 val default_context: Lexing.lexbuf -> context   
 val with_curr_loc: (context -> Lexing.lexbuf -> 'a) -> context -> 'a
 

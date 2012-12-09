@@ -1,6 +1,6 @@
 open Structure
 
-
+open FanToken
 val get_cur_loc: FanLoc.t parse
 val get_prev_loc: FanLoc.t parse 
     

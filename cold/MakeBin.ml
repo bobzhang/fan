@@ -40,7 +40,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
                 (Printexc.to_string exn))
        | _ -> None) module DynLoader = DynLoader.Make(struct
                       
-                      end) module Quotation = PreCast.Syntax.Quotation
+                      end)
   let (objext,libext) =
     if DynLoader.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
   let rewrite_and_load n x =
@@ -63,12 +63,9 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
          -> pa_g (module PreCast)
      | (("Parsers"|""),("pa_macro.cmo"|"m"|"macro"|"camlp4macroparser.cmo"))
          -> pa_m (module PreCast)
-     | (("Parsers"|""),("q"|"camlp4quotationexpander.cmo")) ->
-         pa_q (module PreCast)
      | (("Parsers"|""),"rf") ->
          (pa_r (module PreCast);
           pa_rp (module PreCast);
-          pa_q (module PreCast);
           pa_g (module PreCast);
           pa_l (module PreCast);
           pa_m (module PreCast))
@@ -110,7 +107,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
           (parse_file ~directive_handler:sig_handler s
              PreCast.CurrentParser.parse_interf)
     | Ast.SgDir (_,"default_quotation",Ast.ExStr (_,s)) ->
-        (Quotation.default := s; None)
+        (AstQuotation.default := s; None)
     | Ast.SgDir (_,"filter",Ast.ExStr (_,s)) ->
         (AstFilters.use_interf_filter s; None)
     | Ast.SgDir (loc,x,_) ->
@@ -127,12 +124,14 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
           (parse_file ~directive_handler:str_handler s
              PreCast.CurrentParser.parse_implem)
     | Ast.StDir (_,"default_quotation",Ast.ExStr (_,s)) ->
-        (Quotation.default := s; None)
+        (AstQuotation.default := s; None)
     | Ast.StDir
         (_,"lang_at",Ast.ExApp (_,Ast.ExStr (_,tag),Ast.ExStr (_,quot))) ->
-        (Quotation.default_at_pos tag quot; None)
+        (AstQuotation.default_at_pos tag quot; None)
     | Ast.StDir (_,"lang_clear",Ast.ExNil _) ->
-        (Quotation.default := ""; Hashtbl.clear Quotation.default_tbl; None)
+        (AstQuotation.default := "";
+         Hashtbl.clear AstQuotation.default_tbl;
+         None)
     | Ast.StDir (_,"filter",Ast.ExStr (_,s)) ->
         (AstFilters.use_implem_filter s; None)
     | Ast.StDir (loc,x,_) ->
@@ -187,7 +186,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     ("-loc", (FanArg.Set_string FanLoc.name),
       ("<name>   Name of the location variable (default: " ^
          (FanLoc.name.contents ^ ").")));
-    ("-QD", (FanArg.String ((fun x  -> Quotation.dump_file := (Some x)))),
+    ("-QD", (FanArg.String ((fun x  -> AstQuotation.dump_file := (Some x)))),
       "<file> Dump quotation expander result in case of syntax error.");
     ("-o", (FanArg.String ((fun x  -> output_file := (Some x)))),
       "<file> Output on <file> instead of standard output.");

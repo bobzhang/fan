@@ -8,7 +8,6 @@ let get_prev_loc strm =
   match XStream.get_last strm with | Some (_,l) -> l | None  -> FanLoc.ghost
 let is_level_labelled n =
   function | { lname = Some n1;_} -> n = n1 | _ -> false
-let warning_verbose = ref true
 let get_terminals x =
   let rec aux tokl last_tok =
     function

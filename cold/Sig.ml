@@ -26,8 +26,6 @@ module type PrinterImpl =
   end
 module type Camlp4Syntax =
   sig
-    module AntiquotSyntax : Quotation.AntiquotSyntax
-    module Quotation : Quotation.S
     include Warning
     include ParserImpl
     include PrinterImpl
@@ -207,6 +205,11 @@ module type Camlp4Syntax =
     val entry : FanGrammar.entry Gram.t
     val extend_body : Ast.expr Gram.t
     val delete_rule_body : Ast.expr Gram.t
+    val parse_expr : FanLoc.t -> string -> Ast.expr
+    val parse_patt : FanLoc.t -> string -> Ast.patt
+    val parse_ident : FanLoc.t -> string -> Ast.ident
+    val expr_filter : Ast.expr -> Ast.expr
+    val patt_filter : Ast.patt -> Ast.patt
     module Options :
     sig
       type spec_list = (string* FanArg.spec* string) list 
@@ -216,10 +219,7 @@ module type Camlp4Syntax =
       val init_spec_list : spec_list ref
     end
   end
-module type SyntaxExtension =
-  functor (Syn : Camlp4Syntax) ->
-    (Camlp4Syntax with module AntiquotSyntax = Syn.AntiquotSyntax and
-      module Quotation = Syn.Quotation)
+module type SyntaxExtension = functor (Syn : Camlp4Syntax) -> Camlp4Syntax
 module type PLUGIN = functor (Unit : sig  end) -> sig  end
 module type SyntaxPlugin = functor (Syn : Camlp4Syntax) -> sig  end
 module type PrinterPlugin = functor (Syn : Camlp4Syntax) -> PrinterImpl

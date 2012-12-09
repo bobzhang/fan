@@ -1,5 +1,6 @@
 open Structure
 open LibUtil
+open FanToken
 let get_cur_loc = Tools.get_cur_loc
 let get_prev_loc = Tools.get_prev_loc
 let add_loc bp parse_fun strm =
@@ -119,7 +120,7 @@ let rec parser_of_tree entry (lev,assoc) x =
                 with | XStream.Failure  -> from_tree brother __strm)) in
   from_tree x
 and parser_of_terminals (terminals : terminal list)
-  (cont : Action.t cont_parse) (strm : token_stream) =
+  (cont : Action.t cont_parse) strm =
   let bp = Tools.get_cur_loc strm in
   let n = List.length terminals in
   let acc = ref [] in

@@ -1,6 +1,6 @@
 open Format;
-(* open LibUtil; *)
-(* open FanSig; *)
+
+
 (** The generic quotation type.
     To see how fields are used here is an example:
     {:q_name@q_loc|q_contents|}
@@ -30,7 +30,7 @@ type quotation ={
 (*     -      [FLOAT f s] is the float constant [f] whose string source is [s]. *)
 (*     -      [STRING s s'] is the string constant [s] whose string source is [s']. *)
 (*     -      [CHAR c s] is the character constant [c] whose string source is [s]. *)
-(*     -      [QUOTATION q] is a quotation [q], see {!Quotation.t} for more information. *)
+(*     -      [QUOTATION q] is a quotation [q], see {!AstQuotation.t} for more information. *)
 (*     -      [ANTIQUOT n s] is an antiquotation [n] holding the string [s]. *)
 (*     -      [EOI] is the end of input. *)
 
@@ -42,7 +42,7 @@ type quotation ={
 (*     ["n"]. To interpret a string use the first string of the [STRING] *)
 (*     constructor (or if you need to compute it use the module *)
 (*     {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *\) *)
-type token =
+type t =
   [=  `KEYWORD of string
   | `SYMBOL of string
   | `LID of string
@@ -65,7 +65,7 @@ type token =
   | `LINE_DIRECTIVE of (int * option string )
   | `EOI];
 
-
+type token 'a = [> t] as 'a;
 
 type error = 
     [ Illegal_token of string
@@ -73,7 +73,15 @@ type error =
     | Illegal_token_pattern of (string * string)
     | Illegal_constructor of string];
 
+type stream = XStream.t (t * FanLoc.t);
 
+type estream 'a = XStream.t (token 'a * FanLoc.t);
+
+type parse 'a = stream -> 'a;
+
+type filter = stream -> stream;
+
+  
 exception TokenError of  error;
 
 let print_basic_error ppf = fun
@@ -98,7 +106,7 @@ Printexc.register_printer (fun
   [TokenError e -> Some (string_of_error_msg e)
   | _ -> None]);
   
-let to_string  : [>(* FanSig. *)token] -> string =fun
+let token_to_string  : t -> string =fun
   [ `KEYWORD s    -> sprintf "`KEYWORD %S" s
   | `SYMBOL s     -> sprintf "`SYMBOL %S" s
   | `LID s     -> sprintf "`LID %S" s
@@ -122,11 +130,10 @@ let to_string  : [>(* FanSig. *)token] -> string =fun
   | `EOI          -> sprintf "`EOI"
   | `ESCAPED_IDENT s -> sprintf "`ESCAPED_IDENT %S" s
   | `LINE_DIRECTIVE (i, None) -> sprintf "`LINE_DIRECTIVE %d" i
-  | `LINE_DIRECTIVE (i, (Some s)) -> sprintf "`LINE_DIRECTIVE %d %S" i s
-  (* | _ -> "unknown token" *)];
+  | `LINE_DIRECTIVE (i, (Some s)) -> sprintf "`LINE_DIRECTIVE %d %S" i s];
 
-let token_to_string = fun
-  [ #token as x -> to_string x
+let to_string = fun
+  [ #t as x -> token_to_string x
   | _ -> invalid_arg "token_to_string not implemented for this token"]; (* FIXME*)
   
 let err error loc =
@@ -154,7 +161,7 @@ let rec ignore_layout  = parser
   | [< >] -> [< >] ];
 
   
-let print ppf x = pp_print_string ppf (token_to_string x);
+let print ppf x = pp_print_string ppf (to_string x);
     
 let match_keyword kwd =  fun
   [ `KEYWORD kwd' when kwd = kwd' -> true
@@ -165,13 +172,12 @@ let match_keyword kwd =  fun
   x=STRING -> extract_string x
   ]}
  *)  
-let extract_string : [> (* FanSig. *)token] -> string = fun
+let extract_string : [> t] -> string = fun
   [ `KEYWORD s | `SYMBOL s | `LID s | `UID s | `INT (_, s) | `INT32 (_, s) |
   `INT64 (_, s) | `NATIVEINT (_ ,s) | `FLO (_, s) | `CHAR (_, s) | `STR (_, s) |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->
-      invalid_arg ("Cannot extract a string from this token: "^
-                   token_to_string tok) ];
+      invalid_arg ("Cannot extract a string from this token: "^ to_string tok) ];
 
 
 (* [SYMBOL] should all be filtered into keywords *)  
@@ -196,3 +202,5 @@ let check_unknown_keywords tok loc =
 
 
 
+
+  

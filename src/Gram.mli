@@ -1,4 +1,5 @@
 open LibUtil
+open FanToken
   
 type 'a t 
 
@@ -10,14 +11,14 @@ type position =
     | `First
     | `Last
     | `Level of string ]
-
+      
+(* type token_stream = (FanToken.token * FanLoc.t) XStream.t *)
+      
 type gram =
   Grammar.Structure.gram = {
-  gfilter : FanTokenFilter.filter;
+  gfilter : FanTokenFilter.t;
   gkeywords : (string, int ref) Hashtbl.t;
-  glexer : FanLoc.t -> char XStream.t -> (FanToken.token * FanLoc.t) XStream.t;
-  warning_verbose : bool ref;
-  error_verbose : bool ref;
+  glexer : FanLoc.t -> char XStream.t -> FanToken.stream ;
 }
 
 module Action :
@@ -28,10 +29,15 @@ module Action :
     val getf : t -> 'a -> 'b
     val getf2 : t -> 'a -> 'b -> 'c
   end
-type token_stream = (FanToken.token * FanLoc.t) XStream.t
+
+
+
 type description = [ `Antiquot | `Normal ]
+
 type descr = description * string
-type token_pattern = (FanToken.token -> bool) * descr
+
+type token_pattern = (FanToken.t -> bool) * descr
+
 type internal_entry = Grammar.Structure.internal_entry 
 and desc = Grammar.Structure.desc
 and level = Grammar.Structure.level 
@@ -56,78 +62,85 @@ type ('a,'b,'c) foldsep  =
          ('a XStream.t -> unit) ->
            'a XStream.t -> 'c
       
+val name: 'a t -> string
 
+val print: Format.formatter -> 'a t -> unit
+    
+val dump: Format.formatter -> 'a t -> unit
 
+val trace_parser: bool ref
+
+val action_parse:  'a t ->  stream -> Action.t
+
+val parse_origin_tokens:  'a t -> stream -> 'a
       
-val name : 'a t -> string
-val print : Format.formatter -> 'a t -> unit
-val dump : Format.formatter -> 'a t -> unit
-val trace_parser : bool ref
-val action_parse:
-  'a t ->  token_stream -> Action.t
-val parse_origin_tokens :
-  'a t -> token_stream -> 'a
-val setup_parser :
-  'a t ->
-  (token_stream -> 'a) -> unit
-val clear : 'a t -> unit
+val setup_parser:  'a t ->  (stream -> 'a) -> unit
+    
+val clear: 'a t -> unit
 
 val using: gram -> string -> unit
+
 val mk_action: 'a -> Action.t
 
-val string_of_token:[>FanToken.token] -> string
+val string_of_token:[> FanToken.t ] -> string
 
-val obj : 'a t -> internal_entry         
-val removing : gram -> string -> unit
+val obj: 'a t -> internal_entry         
+
+val removing: gram -> string -> unit
+
 val gram: gram
+
 val create_gram: unit -> gram
+
 val mk_dynamic: gram -> string -> 'a t
+
 val mk: string -> 'a t
-val of_parser:
-  string ->
-  (token_stream -> 'a) ->  'a t
-val get_filter: unit -> FanTokenFilter.filter
-val lex: FanLoc.t -> char XStream.t -> (FanToken.token * FanLoc.t) XStream.t
-val lex_string: FanLoc.t -> string -> (FanToken.token * FanLoc.t) XStream.t
-val filter:  token_stream -> token_stream
+
+val of_parser:  string ->  (stream -> 'a) ->  'a t
+
+val get_filter: unit -> FanTokenFilter.t
+
+val lex: FanLoc.t -> char XStream.t -> (FanToken.t * FanLoc.t) XStream.t
+
+val lex_string: FanLoc.t -> string -> (FanToken.t * FanLoc.t) XStream.t
+
+val filter:  stream -> stream
 
 val parse:  'a t -> FanLoc.t -> char XStream.t -> 'a
 
-val parse_string:
-  'a t -> FanLoc.t -> string -> 'a
+val parse_string:  'a t -> FanLoc.t -> string -> 'a
       
-val debug_origin_token_stream: 'a t -> FanToken.token XStream.t -> 'a
-val debug_filtered_token_stream: 'a t -> FanToken.token XStream.t -> 'a
-val parse_string_safe :
-  'a t -> FanLoc.t -> string -> 'a
-val wrap_stream_parser : ('a -> 'b -> 'c) -> 'a -> 'b -> 'c
-val parse_file_with : rule:'a t -> string -> 'a
-val delete_rule :
-  'a t -> symbol list -> unit
-val srules :
-  'a t ->
-  (symbol list * Action.t) list ->
-  [> `Stree of tree ]
-val sfold0 :
-  ('a -> 'b -> 'b) ->
-  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
-val sfold1 :
-  ('a -> 'b -> 'b) ->
-  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
+val debug_origin_token_stream: 'a t -> FanToken.t XStream.t -> 'a
+
+val debug_filtered_token_stream: 'a t -> FanToken.t XStream.t -> 'a
+
+val parse_string_safe:  'a t -> FanLoc.t -> string -> 'a
+
+val wrap_stream_parser: ('a -> 'b -> 'c) -> 'a -> 'b -> 'c
+
+val parse_file_with: rule:'a t -> string -> 'a
+
+val delete_rule:  'a t -> symbol list -> unit
+
+val srules:  'a t -> (symbol list * Action.t) list ->  [> `Stree of tree ]
+
+val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
+
+
+val sfold1:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
       
-val sfold0sep :
-    ('a -> 'b -> 'b) ->  'b ->
-    'a t ->
-    symbol list ->
-    ('c XStream.t -> 'a) ->
+val sfold0sep:
+    ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> ('c XStream.t -> 'a) ->
       ('c XStream.t -> unit) ->
         'c XStream.t -> 'b
-val extend :
-  'a t -> extend_statment -> unit
-val eoi_entry : 'a t -> 'a t
+
+val extend:  'a t -> extend_statment -> unit
+
+val eoi_entry: 'a t -> 'a t
 
     
 val levels_of_entry: 'a t -> level list option
-val find_level:
-    ?position:position ->  'a t -> level
-val token_stream_of_string: string -> token_stream
+
+val find_level: ?position:position ->  'a t -> level
+    
+val token_stream_of_string: string -> stream

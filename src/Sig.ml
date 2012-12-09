@@ -34,9 +34,6 @@ end;
 
   
 module type Camlp4Syntax = sig
-  (* module AntiquotSyntax : Quotation.AntiquotSyntax; *)
-  (* module Quotation : Quotation.S; *)
-  (* module AstFilters: AstFilters.S; *)
   include Warning;
   include ParserImpl;
   include PrinterImpl;
@@ -120,12 +117,9 @@ module type Camlp4Syntax = sig
   val label_declaration_list : Gram.t Ast.ctyp;
   val label_expr : Gram.t Ast.rec_binding;
   val label_expr_list : Gram.t Ast.rec_binding;
-  (* val label_ipatt : Gram.t Ast.patt; *)
-  (* val label_ipatt_list : Gram.t Ast.patt; *)
   val label_longident : Gram.t Ast.ident;
   val label_patt : Gram.t Ast.patt;
   val label_patt_list : Gram.t Ast.patt;
-  (* val labeled_ipatt : Gram.t Ast.patt; *)
   val let_binding : Gram.t Ast.binding;
   val meth_list : Gram.t (Ast.ctyp * Ast.row_var_flag);
   val meth_decl : Gram.t Ast.ctyp;
@@ -230,6 +224,7 @@ module type Camlp4Syntax = sig
 
   val expr_filter: Ast.expr -> Ast.expr;
   val patt_filter: Ast.patt -> Ast.patt;
+  (* val anti_filter: Ast.map ;   *)
   module Options:sig
     type spec_list = list (string * FanArg.spec * string);
     val init : spec_list -> unit;
@@ -241,10 +236,7 @@ end;
 
 
 module type SyntaxExtension = functor (Syn : Camlp4Syntax)
-  -> (Camlp4Syntax (* with *)
-      (* module AntiquotSyntax = Syn.AntiquotSyntax and *)
-      (* module Quotation = Syn.Quotation (\* and *\) *)
-      (* module AstFilters = Syn.AstFilters *) );
+  -> Camlp4Syntax;
 
 module type PLUGIN = functor (Unit:sig end) -> sig end;
 module type SyntaxPlugin = functor (Syn:Camlp4Syntax) -> sig end ;
@@ -286,8 +278,8 @@ module type PRECAST = sig
   val replace_printer: (module Id) -> (module PrinterImpl) -> unit;
   val replace_parser: (module Id) -> (module ParserImpl) -> unit;
   val parser_plugin: (module Id) -> (module ParserPlugin) -> unit;
-  val enable_ocaml_printer : unit -> unit;
-  val enable_dump_ocaml_ast_printer : unit -> unit;
+  val enable_ocaml_printer: unit -> unit;
+  val enable_dump_ocaml_ast_printer: unit -> unit;
   val enable_dump_camlp4_ast_printer: unit -> unit;
   val enable_null_printer: unit -> unit;
   val enable_auto: (unit->bool) -> unit;
@@ -311,3 +303,5 @@ end ;
 module type PRECAST_PLUGIN = sig
   val apply : (module PRECAST) -> unit;
 end;
+
+

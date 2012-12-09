@@ -38,19 +38,19 @@ let empty_lev lname assoc =
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd};
 
 (* here [name] is only used to emit error message*)  
-let change_lev entry lev name lname assoc =
+let change_lev (* entry *) lev name lname assoc =
   let a =
     match assoc with
     [ None -> lev.assoc
     | Some a -> begin 
-        if a <> lev.assoc && !(entry.egram.warning_verbose) then
+        if a <> lev.assoc && !(FanConfig.gram_warning_verbose) then
           eprintf "<W> Changing associativity of level %S @." name
         else ();
         a
     end ] in begin 
     match lname with
     [ Some n ->
-      if lname <> lev.lname && !(entry.egram.warning_verbose) then 
+      if lname <> lev.lname && !(FanConfig.gram_warning_verbose) then 
         eprintf "<W> Level label %S ignored@." n
       else ()
     | None -> () ];
@@ -80,7 +80,7 @@ let find_level ?position entry  levs =
       if Tools.is_level_labelled n lev then
         match x with
         [`Level _ ->
-            ([], change_lev entry lev n, levs)
+            ([], change_lev (* entry *) lev n, levs)
         |`Before _ ->
             ([], empty_lev, [lev::levs])
         |`After _ ->
@@ -96,7 +96,7 @@ let find_level ?position entry  levs =
       find x n levs 
   | None ->
       match levs with
-      [ [lev :: levs] -> ([], change_lev entry lev "<top>", levs)
+      [ [lev :: levs] -> ([], change_lev (* entry *) lev "<top>", levs)
       | [] -> ([], empty_lev, []) ] ];
 
 let rec check_gram entry = fun
@@ -176,7 +176,7 @@ let insert_production_in_tree entry (gsymbols, action) tree =
         [ Node ({ brother;_} as x) ->  Node {(x) with brother = insert [] brother }
         | LocAct (old_action, action_list) ->
             let () =
-              if !(entry.egram.warning_verbose) then
+              if !(FanConfig.gram_warning_verbose) then
                 eprintf "<W> Grammar extension: in [%s] some rule has been masked@." entry.ename
               else ()in
             LocAct action [old_action :: action_list]
@@ -209,13 +209,12 @@ let insert_olevels_in_levels entry position rules =
             List.fold_right
               (fun  (symbols, action) lev ->
                 let symbols = List.map (change_to_self entry) symbols in 
-                  let () = List.iter (check_gram entry) symbols in 
-                  let (e1, symbols) = get_initial symbols in 
-                  let () =   insert_tokens entry.egram symbols in 
-                  insert_production_in_level entry e1 (symbols, action) lev)  rules lev
-          in
-          
-          ([lev :: levs], empty_lev)) ([], make_lev) rules in
+                let () = List.iter (check_gram entry) symbols in 
+                let (e1, symbols) = get_initial symbols in 
+                let () =   insert_tokens entry.egram symbols in 
+                insert_production_in_level entry e1 (symbols, action) lev)
+              rules lev in ([lev :: levs], empty_lev))
+        ([], make_lev) rules in
       levs1 @ List.rev levs @ levs2 ;
 
 (* mutate the [estart] and [econtinue]

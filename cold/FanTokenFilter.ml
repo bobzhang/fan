@@ -1,9 +1,7 @@
 open FanToken
-open FanSig
-type token_filter = (token,FanLoc.t) stream_filter 
-type filter =  {
+type t =  {
   is_kwd: string -> bool;
-  mutable filter: token_filter} 
+  mutable filter: filter} 
 open LibUtil
 let mk ~is_kwd  = { is_kwd; filter = ignore_layout }
 let filter x =

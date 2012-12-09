@@ -21,18 +21,18 @@ and tree_derive_eps: tree -> bool =
 let empty_lev lname assoc =
   let assoc = match assoc with | Some a -> a | None  -> `LA in
   { assoc; lname; lsuffix = DeadEnd; lprefix = DeadEnd }
-let change_lev entry lev name lname assoc =
+let change_lev lev name lname assoc =
   let a =
     match assoc with
     | None  -> lev.assoc
     | Some a ->
-        (if (a <> lev.assoc) && ((entry.egram).warning_verbose).contents
+        (if (a <> lev.assoc) && FanConfig.gram_warning_verbose.contents
          then eprintf "<W> Changing associativity of level %S @." name
          else ();
          a) in
   (match lname with
    | Some n ->
-       if (lname <> lev.lname) && ((entry.egram).warning_verbose).contents
+       if (lname <> lev.lname) && FanConfig.gram_warning_verbose.contents
        then eprintf "<W> Level label %S ignored@." n
        else ()
    | None  -> ());
@@ -52,7 +52,7 @@ let find_level ?position  entry levs =
           if Tools.is_level_labelled n lev
           then
             (match x with
-             | `Level _ -> ([], (change_lev entry lev n), levs)
+             | `Level _ -> ([], (change_lev lev n), levs)
              | `Before _ -> ([], empty_lev, (lev :: levs))
              | `After _ -> ([lev], empty_lev, levs))
           else
@@ -65,7 +65,7 @@ let find_level ?position  entry levs =
   | Some (`Level n|`Before n|`After n as x) -> find x n levs
   | None  ->
       (match levs with
-       | lev::levs -> ([], (change_lev entry lev "<top>"), levs)
+       | lev::levs -> ([], (change_lev lev "<top>"), levs)
        | [] -> ([], empty_lev, []))
 let rec check_gram entry =
   function
@@ -153,7 +153,7 @@ let insert_production_in_tree entry (gsymbols,action) tree =
              Node { x with brother = (insert [] brother) }
          | LocAct (old_action,action_list) ->
              let () =
-               if ((entry.egram).warning_verbose).contents
+               if FanConfig.gram_warning_verbose.contents
                then
                  eprintf
                    "<W> Grammar extension: in [%s] some rule has been masked@."

@@ -91,7 +91,7 @@ let _  =   begin
 let open FanParsers in  begin
    pa_r (module Fan);
    pa_rp (module Fan);
-   pa_q (module Fan);
+   (* pa_q (module Fan); *)
    pa_g (module Fan);
    pa_l (module Fan);
    pa_m (module Fan);
@@ -117,7 +117,7 @@ Hashtbl.replace Toploop.directive_table "revise"
 
 
 
-(* parser [ [<x;'z;'y>] -> z ] *)
+
 
 
 

@@ -73,7 +73,6 @@ let _ =
   let open FanParsers in
     pa_r (module Fan);
     pa_rp (module Fan);
-    pa_q (module Fan);
     pa_g (module Fan);
     pa_l (module Fan);
     pa_m (module Fan)

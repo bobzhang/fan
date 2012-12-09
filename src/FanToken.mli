@@ -5,7 +5,7 @@ type quotation ={
     q_shift : int;
     q_contents : string
   }
-type token =
+type t =
   [  `KEYWORD of string
   | `SYMBOL of string
   | `LID of string
@@ -36,13 +36,24 @@ type error =
 
 exception TokenError of error
 
-val print_basic_error : Format.formatter -> error -> unit
 
-val string_of_error_msg : error -> string
+type stream = (t * FanLoc.t) XStream.t 
 
-val to_string : (* FanSig. *)token  -> string
+type 'a token  = [> t] as 'a
+      
+type 'a estream  = ('a token * FanLoc.t) XStream.t
+      
+type 'a parse = stream -> 'a
 
-val token_to_string : [> (* FanSig. *)token ] -> string
+type filter = stream -> stream
+
+val print_basic_error: Format.formatter -> error -> unit
+
+val string_of_error_msg: error -> string
+
+val token_to_string: t  -> string
+
+val to_string: [> t]  -> string
 
 val err : error -> FanLoc.t -> 'a
 
@@ -52,34 +63,20 @@ val check_keyword : 'a -> bool
 
 val error_on_unknown_keywords : bool ref
 
-val ignore_layout :
-  (([>  (* FanSig. *)token ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t
+val ignore_layout:  (([>  t ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t
 
-val print : Format.formatter -> [> (* FanSig. *)token ] -> unit
+val print: Format.formatter -> [> t ] -> unit
 
-val match_keyword : 'a -> [> `KEYWORD of 'a ] -> bool
+val match_keyword: 'a -> [> `KEYWORD of 'a ] -> bool
 
-val extract_string : [> (* FanSig. *)token ] -> string
+val extract_string: [> t ] -> string
 
-val keyword_conversion :
-  ([>(* FanSig. *)token] as 'a) ->
-  (string -> bool) -> 'a
+val keyword_conversion:  ([> t ] as 'a) ->  (string -> bool) -> 'a
 
-val check_keyword_as_label :
+val check_keyword_as_label:
   [> `LABEL of string | `OPTLABEL of string ] ->
   FanLoc.t -> (string -> bool) -> unit
 
-val check_unknown_keywords : [> `SYMBOL of string ] -> FanLoc.t -> unit
+val check_unknown_keywords: [> `SYMBOL of string ] -> FanLoc.t -> unit
 
-(* module Filter : *)
-(*   sig *)
-(*     val mk : is_kwd:(string -> bool) -> FanSig.filter *)
-(*     val filter : *)
-(*       FanSig.filter -> *)
-(*       (FanSig.token * FanLoc.t) XStream.t -> *)
-(*       (FanSig.token * FanLoc.t) XStream.t *)
-(*     val define_filter : *)
-(*       FanSig.filter -> (FanSig.token_filter -> FanSig.token_filter) -> unit *)
-(*     val keyword_added : 'a -> 'b -> 'c -> unit *)
-(*     val keyword_removed : 'a -> 'b -> unit *)
-(*   end *)
+

@@ -76,9 +76,9 @@ let t e s = Gram.parse_string e FanLoc.string_loc s;;
 module L = Lib;;
 open L.Meta;;
 
-let anti_filter = L.Expr.antiquot_expander
-    ~parse_patt:AntiquotSyntax.parse_patt
-    ~parse_expr:AntiquotSyntax.parse_expr;;
+(* let anti_filter = L.Expr.antiquot_expander *)
+(*     ~parse_patt:AntiquotSyntax.parse_patt *)
+(*     ~parse_expr:AntiquotSyntax.parse_expr;; *)
 
 let normal () = begin
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
@@ -91,7 +91,7 @@ let _ = begin
     (Toploop.Directive_none (fun () -> normal ()))
 end
 ;;
-Quotation.default:="expr";;
+AstQuotation.default:="expr";;
 let env = !Toploop.toplevel_env;;
 #install_printer print_tree;;
 #install_printer Gram.dump;;

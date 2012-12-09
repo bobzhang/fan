@@ -5,7 +5,7 @@ type quotation =
   q_loc: string;
   q_shift: int;
   q_contents: string} 
-type token =
+type t =
   [ `KEYWORD of string | `SYMBOL of string | `LID of string | `UID of string
   | `ESCAPED_IDENT of string | `INT of (int* string)
   | `INT32 of (int32* string) | `INT64 of (int64* string)
@@ -14,11 +14,16 @@ type token =
   | `OPTLABEL of string | `QUOTATION of quotation | `ANT of (string* string)
   | `COMMENT of string | `BLANKS of string | `NEWLINE
   | `LINE_DIRECTIVE of (int* string option) | `EOI] 
+type 'a token = [> t] as 'a 
 type error =  
   | Illegal_token of string
   | Keyword_as_label of string
   | Illegal_token_pattern of (string* string)
   | Illegal_constructor of string 
+type stream = (t* FanLoc.t) XStream.t 
+type 'a estream = ('a token* FanLoc.t) XStream.t 
+type 'a parse = stream -> 'a 
+type filter = stream -> stream 
 exception TokenError of error
 let print_basic_error ppf =
   function
@@ -35,7 +40,7 @@ let string_of_error_msg = to_string_of_printer print_basic_error
 let _ =
   Printexc.register_printer
     (function | TokenError e -> Some (string_of_error_msg e) | _ -> None)
-let to_string: [> token] -> string =
+let token_to_string: t -> string =
   function
   | `KEYWORD s -> sprintf "`KEYWORD %S" s
   | `SYMBOL s -> sprintf "`SYMBOL %S" s
@@ -61,9 +66,9 @@ let to_string: [> token] -> string =
   | `ESCAPED_IDENT s -> sprintf "`ESCAPED_IDENT %S" s
   | `LINE_DIRECTIVE (i,None ) -> sprintf "`LINE_DIRECTIVE %d" i
   | `LINE_DIRECTIVE (i,Some s) -> sprintf "`LINE_DIRECTIVE %d %S" i s
-let token_to_string =
+let to_string =
   function
-  | #token as x -> to_string x
+  | #t as x -> token_to_string x
   | _ -> invalid_arg "token_to_string not implemented for this token"
 let err error loc = raise (FanLoc.Exc_located (loc, (TokenError error)))
 let error_no_respect_rules p_con p_prm =
@@ -79,17 +84,17 @@ let rec ignore_layout (__strm : _ XStream.t) =
        (let s = __strm in
         XStream.icons x (XStream.slazy (fun _  -> ignore_layout s))))
   | _ -> XStream.sempty
-let print ppf x = pp_print_string ppf (token_to_string x)
+let print ppf x = pp_print_string ppf (to_string x)
 let match_keyword kwd =
   function | `KEYWORD kwd' when kwd = kwd' -> true | _ -> false
-let extract_string: [> token] -> string =
+let extract_string: [> t] -> string =
   function
   | `KEYWORD s|`SYMBOL s|`LID s|`UID s|`INT (_,s)|`INT32 (_,s)|`INT64 (_,s)|
       `NATIVEINT (_,s)|`FLO (_,s)|`CHAR (_,s)|`STR (_,s)|`LABEL s|`OPTLABEL s|
       `COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
   | tok ->
       invalid_arg
-        ("Cannot extract a string from this token: " ^ (token_to_string tok))
+        ("Cannot extract a string from this token: " ^ (to_string tok))
 let keyword_conversion tok is_kwd =
   match tok with
   | `SYMBOL s|`LID s|`UID s when is_kwd s -> `KEYWORD s

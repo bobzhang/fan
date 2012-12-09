@@ -797,7 +797,7 @@ let _ = AstFilters.register_str_item_filter ("fold", (processor#str_item))
 let _ = AstFilters.register_sig_item_filter ("fold", (processor#sig_item))
 let _ =
   AstFilters.register_str_item_filter
-    ("strip", ((Ast.map_loc (fun _  -> FanLoc.ghost))#str_item))
+    ("strip", (((new Ast.reloc) FanLoc.ghost)#str_item))
 let decorate_binding decorate_fun =
   (object 
      inherit  Ast.map as super
@@ -1686,3 +1686,53 @@ let filter st =
        | me -> me
    end)#str_item st
 let _ = AstFilters.register_str_item_filter ("meta", filter)
+let map_expr =
+  function
+  | Ast.ExApp (_,e,Ast.ExId (_,Ast.IdUid (_,"NOTHING")))|Ast.ExFun
+      (_,Ast.McArr (_,Ast.PaId (_,Ast.IdUid (_,"NOTHING")),Ast.ExNil _,e)) ->
+      e
+  | Ast.ExId (_loc,Ast.IdLid (_,"__FILE__")) ->
+      Ast.ExStr (_loc, (Ast.safe_string_escaped (FanLoc.file_name _loc)))
+  | Ast.ExId (_loc,Ast.IdLid (_,"__LOCATION__")) ->
+      let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
+      Ast.ExApp
+        (_loc,
+          (Ast.ExId
+             (_loc,
+               (Ast.IdAcc
+                  (_loc, (Ast.IdUid (_loc, "FanLoc")),
+                    (Ast.IdLid (_loc, "of_tuple")))))),
+          (Ast.ExTup
+             (_loc,
+               (Ast.ExCom
+                  (_loc, (Ast.ExStr (_loc, (Ast.safe_string_escaped a))),
+                    (Ast.ExCom
+                       (_loc,
+                         (Ast.ExCom
+                            (_loc,
+                              (Ast.ExCom
+                                 (_loc,
+                                   (Ast.ExCom
+                                      (_loc,
+                                        (Ast.ExCom
+                                           (_loc,
+                                             (Ast.ExCom
+                                                (_loc,
+                                                  (Ast.ExInt
+                                                     (_loc,
+                                                       (string_of_int b))),
+                                                  (Ast.ExInt
+                                                     (_loc,
+                                                       (string_of_int c))))),
+                                             (Ast.ExInt
+                                                (_loc, (string_of_int d))))),
+                                        (Ast.ExInt (_loc, (string_of_int e))))),
+                                   (Ast.ExInt (_loc, (string_of_int f))))),
+                              (Ast.ExInt (_loc, (string_of_int g))))),
+                         (if h
+                          then Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))
+                          else Ast.ExId (_loc, (Ast.IdLid (_loc, "false")))))))))))
+  | e -> e
+let _ =
+  AstFilters.register_str_item_filter
+    ("trash_nothing", ((Ast.map_expr map_expr)#str_item))

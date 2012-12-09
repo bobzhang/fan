@@ -1,6 +1,6 @@
 open LibUtil
-type 'a filter = 'a -> 'a 
 type key = string 
+type 'a filter = 'a -> 'a 
 let interf_filters: (key,Ast.sig_item filter) Hashtbl.t = Hashtbl.create 40
 let implem_filters: (key,Ast.str_item filter) Hashtbl.t = Hashtbl.create 40
 let topphrase_filters: (key,Ast.str_item filter) Hashtbl.t =

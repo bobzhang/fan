@@ -504,53 +504,6 @@ class subst _loc env =
            with | Not_found  -> super#patt p)
       | p -> super#patt p
   end
-let map_expr =
-  function
-  | Ast.ExApp (_,e,Ast.ExId (_,Ast.IdUid (_,"NOTHING")))|Ast.ExFun
-      (_,Ast.McArr (_,Ast.PaId (_,Ast.IdUid (_,"NOTHING")),Ast.ExNil _,e)) ->
-      e
-  | Ast.ExId (_loc,Ast.IdLid (_,"__FILE__")) ->
-      Ast.ExStr (_loc, (Ast.safe_string_escaped (FanLoc.file_name _loc)))
-  | Ast.ExId (_loc,Ast.IdLid (_,"__LOCATION__")) ->
-      let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
-      Ast.ExApp
-        (_loc,
-          (Ast.ExId
-             (_loc,
-               (Ast.IdAcc
-                  (_loc, (Ast.IdUid (_loc, "FanLoc")),
-                    (Ast.IdLid (_loc, "of_tuple")))))),
-          (Ast.ExTup
-             (_loc,
-               (Ast.ExCom
-                  (_loc, (Ast.ExStr (_loc, (Ast.safe_string_escaped a))),
-                    (Ast.ExCom
-                       (_loc,
-                         (Ast.ExCom
-                            (_loc,
-                              (Ast.ExCom
-                                 (_loc,
-                                   (Ast.ExCom
-                                      (_loc,
-                                        (Ast.ExCom
-                                           (_loc,
-                                             (Ast.ExCom
-                                                (_loc,
-                                                  (Ast.ExInt
-                                                     (_loc,
-                                                       (string_of_int b))),
-                                                  (Ast.ExInt
-                                                     (_loc,
-                                                       (string_of_int c))))),
-                                             (Ast.ExInt
-                                                (_loc, (string_of_int d))))),
-                                        (Ast.ExInt (_loc, (string_of_int e))))),
-                                   (Ast.ExInt (_loc, (string_of_int f))))),
-                              (Ast.ExInt (_loc, (string_of_int g))))),
-                         (if h
-                          then Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))
-                          else Ast.ExId (_loc, (Ast.IdLid (_loc, "false")))))))))))
-  | e -> e
 let antiquot_expander ~parse_patt  ~parse_expr  =
   object 
     inherit  Ast.map as super

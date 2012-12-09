@@ -60,12 +60,10 @@ module Camlp4Bin
                   | _ -> None ]);
      module DynLoader = DynLoader.Make (struct end);
       (* let plugins = Hashtbl.create 50;      *)
-     (* module Quotation = PreCast.Syntax.Quotation;   *)
      let (objext,libext) =
         if DynLoader.is_native then (".cmxs",".cmxs")
         else (".cmo",".cma");
-      
-      let rewrite_and_load n x =
+     let rewrite_and_load n x =
         let dyn_loader = !DynLoader.instance () in 
         let find_in_path = DynLoader.find_in_path dyn_loader in
         let real_load name = do 
@@ -101,13 +99,9 @@ module Camlp4Bin
              "pa_macro.cmo"  | "m"  | "macro" | "camlp4macroparser.cmo") -> begin
                pa_m (module PreCast);
              end 
-          | ("Parsers"|"", "q" | "camlp4quotationexpander.cmo") -> begin
-              pa_q (module PreCast); (* no pa_qb any more*)
-          end
           | ("Parsers"|"", "rf") -> begin
               pa_r (module PreCast);
               pa_rp (module PreCast);
-              pa_q (module PreCast);
               pa_g (module PreCast);
               pa_l (module PreCast);
               pa_m (module PreCast);
@@ -169,7 +163,7 @@ module Camlp4Bin
             | {| #use $str:s |} ->
                 Some (parse_file  ~directive_handler:sig_handler s PreCast.CurrentParser.parse_interf )
             | {| #default_quotation $str:s |} ->
-                begin Quotation.default := s; None end
+                begin AstQuotation.default := s; None end
             | {| #filter $str:s |} ->
                 begin AstFilters.use_interf_filter s; None ; end 
             | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
@@ -185,12 +179,12 @@ module Camlp4Bin
             | {| #use $str:s |} ->
                 Some (parse_file  ~directive_handler:str_handler s PreCast.CurrentParser.parse_implem )
             | {| #default_quotation $str:s |} ->
-                begin Quotation.default := s; None end
+                begin AstQuotation.default := s; None end
             | {| #lang_at $str:tag $str:quot |} ->
-                begin Quotation.default_at_pos tag quot; None end
+                begin AstQuotation.default_at_pos tag quot; None end
             | {| #lang_clear |} -> begin 
-                Quotation.default:="";
-                Hashtbl.clear Quotation.default_tbl;
+                AstQuotation.default:="";
+                Hashtbl.clear AstQuotation.default_tbl;
                 None
             end
             | {| #filter $str:s |} ->
@@ -262,7 +256,7 @@ module Camlp4Bin
           "More verbose in parsing errors.");
          ("-loc", FanArg.Set_string FanLoc.name,
           "<name>   Name of the location variable (default: " ^ !FanLoc.name ^ ").");
-         ("-QD", FanArg.String (fun x -> Quotation.dump_file := Some x),
+         ("-QD", FanArg.String (fun x -> AstQuotation.dump_file := Some x),
           "<file> Dump quotation expander result in case of syntax error.");
          ("-o", FanArg.String (fun x -> output_file := Some x),
           "<file> Output on <file> instead of standard output.");
