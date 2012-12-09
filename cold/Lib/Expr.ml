@@ -1758,6 +1758,79 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (Ast.IdUid (_loc, "Ast")),
                                            (Ast.IdLid (_loc, "mcOr_of_list")))))),
                                  e)
+                         | "antimatch_case" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdUid (_loc, "McAnt")))))),
+                                      (mloc _loc))), e)
+                         | "listmatch_caselettry" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExSnd
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdLid
+                                                   (_loc, "match_pre")))))),
+                                      "match_case")),
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdLid
+                                                   (_loc, "mcOr_of_list")))))),
+                                      e)))
+                         | "antimatch_caselettry" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExSnd
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdLid
+                                                   (_loc, "match_pre")))))),
+                                      "match_case")),
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExApp
+                                         (_loc,
+                                           (Ast.ExId
+                                              (_loc,
+                                                (Ast.IdAcc
+                                                   (_loc,
+                                                     (Ast.IdUid (_loc, "Ast")),
+                                                     (Ast.IdUid
+                                                        (_loc, "McAnt")))))),
+                                           (mloc _loc))), e)))
+                         | "match_caselettry" ->
+                             Ast.ExApp
+                               (_loc,
+                                 (Ast.ExSnd
+                                    (_loc,
+                                      (Ast.ExId
+                                         (_loc,
+                                           (Ast.IdAcc
+                                              (_loc,
+                                                (Ast.IdUid (_loc, "Ast")),
+                                                (Ast.IdLid
+                                                   (_loc, "match_pre")))))),
+                                      "match_case")), e)
                          | "listpatt," ->
                              Ast.ExApp
                                (_loc,
@@ -1971,18 +2044,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc,
                                                 (Ast.IdUid (_loc, "Ast")),
                                                 (Ast.IdUid (_loc, "RbAnt")))))),
-                                      (mloc _loc))), e)
-                         | "antimatch_case" ->
-                             Ast.ExApp
-                               (_loc,
-                                 (Ast.ExApp
-                                    (_loc,
-                                      (Ast.ExId
-                                         (_loc,
-                                           (Ast.IdAcc
-                                              (_loc,
-                                                (Ast.IdUid (_loc, "Ast")),
-                                                (Ast.IdUid (_loc, "McAnt")))))),
                                       (mloc _loc))), e)
                          | "antimodule_binding" ->
                              Ast.ExApp

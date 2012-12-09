@@ -3,6 +3,8 @@
 #filter "fold";;
 #filter "meta";;
 #filter "trash";;
+open FanUtil;
+open LibUtil;
 module Ast = struct
   include Ast;
   let safe_string_escaped s =
@@ -260,6 +262,7 @@ let rec mcOr_of_list = fun
     | [x::xs] ->
         let _loc = loc_of_match_case x in
         {:match_case| $x | $(mcOr_of_list xs) |} ];
+  
 
 let rec mbAnd_of_list = fun
     [ [] -> {:module_binding@ghost||}
@@ -623,3 +626,13 @@ end;
 (* let normalize = object (self) *)
 (*   inherit fold as super; *)
 (* end; *)
+
+let match_pre = object (self)
+  inherit map; (* as super; *)
+  method! match_case = with "match_case" fun
+   [ {@_loc| $pat:p -> $e |} -> {| $pat:p -> fun () -> $e |}
+   | {@_loc| $pat:p when $e -> $e1 |} -> {| $pat:p when $e -> fun () -> $e1 |}
+   | {@_loc| $a1 | $a2 |} -> {| $(self#match_case a1) | $(self#match_case a2) |}
+   | {@_loc| |} -> {| |}
+   | {@_loc| $anti:x |} -> {| $(anti: add_context x "lettry" ) |} ];
+end;

@@ -279,7 +279,7 @@ module Camlp4Bin
          ("-ignore", FanArg.String ignore, "ignore the next argument");
          ("--", FanArg.Unit ignore, "Deprecated, does nothing")];
       
-      PreCast.Syntax.Options.init initial_spec_list;
+      PreCast.Syntax.Options.adds initial_spec_list;
 
       (* handle the file name *)  
       let anon_fun name =

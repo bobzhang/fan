@@ -385,7 +385,17 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "listctyp," -> {| Ast.tyCom_of_list $e |}
             | "listctyp&" -> {| Ast.tyAmp_of_list $e |}
             | "listwith_constr" -> {| Ast.wcAnd_of_list $e |}
+
+            (* staging problems here *)      
             | "listmatch_case" -> {| Ast.mcOr_of_list $e |}
+            | "antimatch_case" -> {| Ast.McAnt $(mloc _loc) $e |}
+            | "listmatch_caselettry" ->
+                {| ((Ast.match_pre)#match_case (Ast.mcOr_of_list $e)) |}
+            | "antimatch_caselettry" ->
+                {| Ast.match_pre#match_case (Ast.McAnt $(mloc _loc) $e) |}
+            | "match_caselettry" ->
+                {| Ast.match_pre#match_case $e |}
+                  
             | "listpatt," -> {| Ast.paCom_of_list $e |}
             | "listpatt;" -> {| Ast.paSem_of_list $e |}
             | "listexpr," -> {| Ast.exCom_of_list $e |}
@@ -405,7 +415,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "antiwith_constr" -> {| Ast.WcAnt $(mloc _loc) $e |}
             | "antibinding" -> {| Ast.BiAnt $(mloc _loc) $e |}
             | "antirec_binding" -> {| Ast.RbAnt $(mloc _loc) $e |}
-            | "antimatch_case" -> {| Ast.McAnt $(mloc _loc) $e |}
+
             | "antimodule_binding" -> {| Ast.MbAnt $(mloc _loc) $e |}
             | "antiident" -> {| Ast.IdAnt $(mloc _loc) $e |}
             | "antidirection_flag" -> {| Ast.DiAnt  $e |}

@@ -1,3 +1,5 @@
+open FanUtil
+open LibUtil
 module Ast = struct
   include Ast
   let safe_string_escaped s =
@@ -7799,4 +7801,30 @@ let wildcarder =
       | Ast.PaId (_loc,Ast.IdLid (_,_)) -> Ast.PaAny _loc
       | Ast.PaAli (_,p,_) -> self#patt p
       | p -> super#patt p
+  end
+let match_pre =
+  object (self)
+    inherit  map
+    method! match_case =
+      function
+      | Ast.McArr (_loc,p,Ast.ExNil _,e) ->
+          Ast.McArr
+            (_loc, p, (Ast.ExNil _loc),
+              (Ast.ExFun
+                 (_loc,
+                   (Ast.McArr
+                      (_loc, (Ast.PaId (_loc, (Ast.IdUid (_loc, "()")))),
+                        (Ast.ExNil _loc), e)))))
+      | Ast.McArr (_loc,p,e,e1) ->
+          Ast.McArr
+            (_loc, p, e,
+              (Ast.ExFun
+                 (_loc,
+                   (Ast.McArr
+                      (_loc, (Ast.PaId (_loc, (Ast.IdUid (_loc, "()")))),
+                        (Ast.ExNil _loc), e1)))))
+      | Ast.McOr (_loc,a1,a2) ->
+          Ast.McOr (_loc, (self#match_case a1), (self#match_case a2))
+      | Ast.McNil _loc -> Ast.McNil _loc
+      | Ast.McAnt (_loc,x) -> Ast.McAnt (_loc, (add_context x "lettry"))
   end

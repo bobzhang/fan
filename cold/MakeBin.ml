@@ -208,7 +208,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)");
     ("-ignore", (FanArg.String ignore), "ignore the next argument");
     ("--", (FanArg.Unit ignore), "Deprecated, does nothing")]
-  let _ = PreCast.Syntax.Options.init initial_spec_list
+  let _ = PreCast.Syntax.Options.adds initial_spec_list
   let anon_fun name =
     input_file
       (if Filename.check_suffix name ".mli"

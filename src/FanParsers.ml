@@ -825,8 +825,15 @@ New syntax:\
             {| let $rec:r $bi in $x |}
         | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; S{e} ->
             {| let module $m = $mb in $e |}
-        | "let"; "open"; module_longident{i}; "in"; S{e} ->
-            {| let open $id:i in $e |}
+        | "let"; "open"; module_longident{i}; "in"; S{e} -> {| let open $id:i in $e |}
+        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a} ->
+            {| let try $rec:r $bi in $x with [ $a ] |}
+            (* {| *)
+            (* (try let $rec:r $bi in fun () -> $x *)
+            (* with *)
+            (*   [ $(Ast.match_pre#match_case a)]) () |} *)
+              
+              (*  *)
         | "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" ->
             {| fun [ $list:a ] |}
         | "fun"; fun_def{e} -> e
@@ -1567,6 +1574,9 @@ New syntax:\
         | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; expr{e} ->
               {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; expr{e} -> {| let open $id:i in $e |}
+              
+        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; expr{x}; "with"; match_case{a} ->
+             {| let try $rec:r $bi in $x with [ $a ]|} 
         | "class"; class_declaration{cd} ->  {| class $cd |}
         | "class"; "type"; class_type_declaration{ctd} -> {| class type $ctd |}
         | `ANT ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"str_item" n s) |}

@@ -2781,6 +2781,34 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (e : 'expr)  _  (i : 'module_longident)  _  _ 
                    (_loc : FanLoc.t)  -> (Ast.ExOpI (_loc, i, e) : 'expr ))));
+           ([`Skeyword "let";
+            `Skeyword "try";
+            `Snterm (Gram.obj (opt_rec : 'opt_rec Gram.t ));
+            `Snterm (Gram.obj (binding : 'binding Gram.t ));
+            `Skeyword "in";
+            `Sself;
+            `Skeyword "with";
+            `Snterm (Gram.obj (match_case : 'match_case Gram.t ))],
+             (Gram.mk_action
+                (fun (a : 'match_case)  _  (x : 'expr)  _  (bi : 'binding) 
+                   (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->
+                   (Ast.ExApp
+                      (_loc,
+                        (Ast.ExTry
+                           (_loc,
+                             (Ast.ExLet
+                                (_loc, r, bi,
+                                  (Ast.ExFun
+                                     (_loc,
+                                       (Ast.McArr
+                                          (_loc,
+                                            (Ast.PaId
+                                               (_loc,
+                                                 (Ast.IdUid (_loc, "()")))),
+                                            (Ast.ExNil _loc), x)))))),
+                             (Ast.match_pre#match_case a))),
+                        (Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))))) : 
+                   'expr ))));
            ([`Skeyword "fun";
             `Skeyword "[";
             `Slist0sep
@@ -6891,6 +6919,36 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (e : 'expr)  _  (i : 'module_longident)  _  _ 
                    (_loc : FanLoc.t)  ->
                    (Ast.StExp (_loc, (Ast.ExOpI (_loc, i, e))) : 'str_item ))));
+           ([`Skeyword "let";
+            `Skeyword "try";
+            `Snterm (Gram.obj (opt_rec : 'opt_rec Gram.t ));
+            `Snterm (Gram.obj (binding : 'binding Gram.t ));
+            `Skeyword "in";
+            `Snterm (Gram.obj (expr : 'expr Gram.t ));
+            `Skeyword "with";
+            `Snterm (Gram.obj (match_case : 'match_case Gram.t ))],
+             (Gram.mk_action
+                (fun (a : 'match_case)  _  (x : 'expr)  _  (bi : 'binding) 
+                   (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->
+                   (Ast.StExp
+                      (_loc,
+                        (Ast.ExApp
+                           (_loc,
+                             (Ast.ExTry
+                                (_loc,
+                                  (Ast.ExLet
+                                     (_loc, r, bi,
+                                       (Ast.ExFun
+                                          (_loc,
+                                            (Ast.McArr
+                                               (_loc,
+                                                 (Ast.PaId
+                                                    (_loc,
+                                                      (Ast.IdUid (_loc, "()")))),
+                                                 (Ast.ExNil _loc), x)))))),
+                                  (Ast.match_pre#match_case a))),
+                             (Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))))))) : 
+                   'str_item ))));
            ([`Skeyword "class";
             `Snterm
               (Gram.obj (class_declaration : 'class_declaration Gram.t ))],
