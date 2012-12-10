@@ -263,8 +263,32 @@ module Ref = struct
   with x ->   begin 
     r := old;
     raise x;
-  end
-  ;
+  end;
+  let protect2 (r1,v1) (r2,v2) body =
+    let o1 = !r1 and o2 = !r2 in
+    try begin
+      r1:= v1; r2:=v2;
+      let res = body ();
+      r1:=o1; r2:=o2;
+      res
+    end
+    with  e -> begin
+      r1:=o1; r2:=o2;
+      raise e
+    end;
+      
+  let protects refs vs body =
+    let olds = List.map (fun x-> !x ) refs in 
+    try begin
+      List.iter2 (fun ref v -> ref:=v) refs vs;
+      let res = body ();
+      List.iter2 (fun ref v -> ref:=v) refs olds;
+      res   
+    end
+      with e -> begin
+        List.iter2 (fun ref v -> ref:=v) refs olds;
+        raise e;
+      end;
 end;
 module Option = struct
   (* include BatOption; *)

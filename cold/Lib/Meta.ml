@@ -58,15 +58,3 @@ module MetaGhostLoc : Ast.META_LOC =
         (Ast.IdAcc
            (_loc, (Ast.IdUid (_loc, "FanLoc")), (Ast.IdLid (_loc, "ghost")))))
   end 
-module MetaLocQuotation = struct
-  let loc_name = ref None
-  let meta_loc_expr _loc loc =
-    match loc_name.contents with
-    | None  -> Ast.ExId (_loc, (Ast.IdLid (_loc, (FanLoc.name.contents))))
-    | Some "here" -> MetaLoc.meta_loc_expr _loc loc
-    | Some x -> Ast.ExId (_loc, (Ast.IdLid (_loc, x)))
-  let meta_loc_patt _loc _ = Ast.PaAny _loc
-  end
-module MetaQAst = Ast.Meta.Make(MetaLocQuotation)
-module ME = MetaQAst.Expr
-module MP = MetaQAst.Patt

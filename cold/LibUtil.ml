@@ -139,6 +139,17 @@ module Ref =
     let old = r.contents in
     try r := v; (let res = body () in r := old; res)
     with | x -> (r := old; raise x)
+  let protect2 (r1,v1) (r2,v2) body =
+    let o1 = r1.contents and o2 = r2.contents in
+    try r1 := v1; r2 := v2; (let res = body () in r1 := o1; r2 := o2; res)
+    with | e -> (r1 := o1; r2 := o2; raise e)
+  let protects refs vs body =
+    let olds = List.map (fun x  -> x.contents) refs in
+    try
+      List.iter2 (fun ref  v  -> ref := v) refs vs;
+      (let res = body () in
+       List.iter2 (fun ref  v  -> ref := v) refs olds; res)
+    with | e -> (List.iter2 (fun ref  v  -> ref := v) refs olds; raise e)
   end
 module Option = struct
   

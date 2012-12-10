@@ -159,7 +159,7 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let parse_expr loc str = Gram.parse_string antiquot_expr loc str
   let parse_patt loc str = Gram.parse_string antiquot_patt loc str
   let parse_ident loc str = Gram.parse_string antiquot_ident loc str
-  let anti_filter = Lib.Expr.antiquot_expander ~parse_expr ~parse_patt
+  let anti_filter = AstQuotation.antiquot_expander ~parse_expr ~parse_patt
   let expr_filter = anti_filter#expr let patt_filter = anti_filter#patt
   let wrap directive_handler pa init_loc cs =
     let rec loop loc =
