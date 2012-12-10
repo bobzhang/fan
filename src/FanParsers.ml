@@ -828,12 +828,6 @@ New syntax:\
         | "let"; "open"; module_longident{i}; "in"; S{e} -> {| let open $id:i in $e |}
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a} ->
             {| let try $rec:r $bi in $x with [ $a ] |}
-            (* {| *)
-            (* (try let $rec:r $bi in fun () -> $x *)
-            (* with *)
-            (*   [ $(Ast.match_pre#match_case a)]) () |} *)
-              
-              (*  *)
         | "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" ->
             {| fun [ $list:a ] |}
         | "fun"; fun_def{e} -> e
@@ -995,13 +989,13 @@ New syntax:\
 
   with "match_case"
     {:extend|Gram
-     match_case:
-     [ "["; L0 match_case0 SEP "|"{l}; "]" -> {|  $list:l  |} (* FIXME *)
-     | patt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
-     match_case0:
-     [ `ANT (("match_case"|"list"| "anti"|"" as n),s) -> {| $(anti:mk_anti ~c:"match_case" n s) |}
-     | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->  {| $pat:p when $w -> $e |}
-     | patt_as_patt_opt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
+      match_case:
+      [ "["; L0 match_case0 SEP "|"{l}; "]" -> {|  $list:l  |} (* FIXME *)
+      | patt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
+      match_case0:
+      [ `ANT (("match_case"|"list"| "anti"|"" as n),s) -> {| $(anti:mk_anti ~c:"match_case" n s) |}
+      | patt_as_patt_opt{p}; "when"; expr{w};  "->"; sequence{e} ->  {| $pat:p when $w -> $e |}
+      | patt_as_patt_opt{p}; "->";expr{e} -> {| $pat:p -> $e |} ]
       match_case_quot:
       [ L0 match_case0 SEP "|"{x} -> {| $list:x |}
       | -> {||} ]  |};

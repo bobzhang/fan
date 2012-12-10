@@ -182,7 +182,7 @@ module Return = struct
   let label (type u) (f : t u-> u) : u =
       let module M = struct exception Return of u; end in
       try f (fun x -> M.Return x)
-      with M.Return u -> u;
+      with [M.Return u -> u];
   let with_label = label;
 
 end;
@@ -252,7 +252,6 @@ module String = struct
 end;
   
 module Ref = struct
-  (* include BatRef; *)
   let protect r v body =
     let old = !r in
     try begin 
@@ -261,10 +260,11 @@ module Ref = struct
       r := old;
       res
     end
-  with x -> begin 
+  with x ->   begin 
     r := old;
-    raise x
-  end;
+    raise x;
+  end
+  ;
 end;
 module Option = struct
   (* include BatOption; *)

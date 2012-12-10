@@ -150,7 +150,7 @@ module Camlp4Bin
           let clear () = if name = "-" then () else close_in ic;
           let phr =
             try pa ?directive_handler loc cs
-            with x -> begin  clear (); raise x end ;
+            with [x -> begin  clear (); raise x end ];
           clear ();
           phr
         end;
@@ -309,7 +309,7 @@ module Camlp4Bin
             SSet.iter (eprintf "%s@.") !loaded_modules;
           end else ()
         end
-      with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;
+      with [exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end];
       main ();
     end ;
     
