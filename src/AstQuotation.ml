@@ -225,21 +225,6 @@ let expand loc quotation tag =
 
 
   let current_loc_name = ref None  ;
-    
-  (* let parse_quot_string entry loc loc_name_opt s  = *)
-  (*   Ref.protect FanConfig.antiquotations true begin fun _ -> *)
-  (*     Ref.protect current_loc_name loc_name_opt (fun _ -> *)
-  (*       Gram.parse_string entry loc s) *)
-  (*     (\* let res = Gram.parse_string entry loc s in *\) *)
-  (*     (\* let () = current_loc_name := loc_name_opt in  *\) *)
-  (*     (\* (\\* let ()  = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in *\\) *\) *)
-  (*     (\* (\\* It's fine, since every quotation will always have a name *\\) *\) *)
-  (*     (\* res *\) *)
-  (*   end; *)
-
-  (* let anti_filter = Expr.antiquot_expander *)
-  (*     ~parse_expr:TheAntiquotSyntax.parse_expr *)
-  (*     ~parse_patt:TheAntiquotSyntax.parse_patt; *)
 
   let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
     let entry_eoi = Gram.eoi_entry entry in 
@@ -247,7 +232,6 @@ let expand loc quotation tag =
       Ref.protect2 (FanConfig.antiquotations,true) (current_loc_name, loc_name_opt)
         (fun _ ->
           Gram.parse_string entry_eoi loc s |> mexpr loc |> expr_filter) in
-      (* parse_quot_string entry_eoi loc loc_name_opt s |> mexpr loc |> expr_filter in *)
     let expand_str_item loc loc_name_opt s =
       let exp_ast = expand_expr loc loc_name_opt s in
       {:str_item@loc| $(exp:exp_ast) |} in
@@ -281,9 +265,8 @@ let expand loc quotation tag =
       add name DynAst.str_item_tag (make_parser entry);
 
     let add_quotation_of_str_item_with_filter ~name ~entry ~filter =
-      add name DynAst.str_item_tag
-        (filter (make_parser entry));
-        (* (filter (parse_quot_string (Gram.eoi_entry entry) )); *)
+      add name DynAst.str_item_tag (filter (make_parser entry));
+
 
     (* both [expr] and [str_item] positions are registered *)  
     let add_quotation_of_expr ~name ~entry = 
@@ -304,7 +287,7 @@ let expand loc quotation tag =
     
   
 module MetaLocQuotation = struct
-  (* let loc_name = ref None; (\* set by [AstQuotation] [parse_quot_string] *\) *)
+
   let meta_loc_expr _loc loc =
     match !current_loc_name with
     [ None -> {:expr| $(lid:!FanLoc.name) |}
