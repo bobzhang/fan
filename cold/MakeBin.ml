@@ -99,16 +99,17 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
      clear (); phr)
   let rec sig_handler =
     function
-    | Ast.SgDir (_,"load",Ast.ExStr (_,s)) -> (rewrite_and_load "" s; None)
-    | Ast.SgDir (_,"directory",Ast.ExStr (_,s)) ->
+    | Ast.SgDir (_loc,"load",Ast.ExStr (_,s)) ->
+        (rewrite_and_load "" s; None)
+    | Ast.SgDir (_loc,"directory",Ast.ExStr (_,s)) ->
         (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-    | Ast.SgDir (_,"use",Ast.ExStr (_,s)) ->
+    | Ast.SgDir (_loc,"use",Ast.ExStr (_,s)) ->
         Some
           (parse_file ~directive_handler:sig_handler s
              PreCast.CurrentParser.parse_interf)
-    | Ast.SgDir (_,"default_quotation",Ast.ExStr (_,s)) ->
+    | Ast.SgDir (_loc,"default_quotation",Ast.ExStr (_,s)) ->
         (AstQuotation.default := s; None)
-    | Ast.SgDir (_,"filter",Ast.ExStr (_,s)) ->
+    | Ast.SgDir (_loc,"filter",Ast.ExStr (_,s)) ->
         (AstFilters.use_interf_filter s; None)
     | Ast.SgDir (loc,x,_) ->
         FanLoc.raise loc
@@ -116,23 +117,24 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     | _ -> assert false
   let rec str_handler =
     function
-    | Ast.StDir (_,"load",Ast.ExStr (_,s)) -> (rewrite_and_load "" s; None)
-    | Ast.StDir (_,"directory",Ast.ExStr (_,s)) ->
+    | Ast.StDir (_loc,"load",Ast.ExStr (_,s)) ->
+        (rewrite_and_load "" s; None)
+    | Ast.StDir (_loc,"directory",Ast.ExStr (_,s)) ->
         (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-    | Ast.StDir (_,"use",Ast.ExStr (_,s)) ->
+    | Ast.StDir (_loc,"use",Ast.ExStr (_,s)) ->
         Some
           (parse_file ~directive_handler:str_handler s
              PreCast.CurrentParser.parse_implem)
-    | Ast.StDir (_,"default_quotation",Ast.ExStr (_,s)) ->
+    | Ast.StDir (_loc,"default_quotation",Ast.ExStr (_,s)) ->
         (AstQuotation.default := s; None)
     | Ast.StDir
-        (_,"lang_at",Ast.ExApp (_,Ast.ExStr (_,tag),Ast.ExStr (_,quot))) ->
-        (AstQuotation.default_at_pos tag quot; None)
-    | Ast.StDir (_,"lang_clear",Ast.ExNil _) ->
+        (_loc,"lang_at",Ast.ExApp (_,Ast.ExStr (_,tag),Ast.ExStr (_,quot)))
+        -> (AstQuotation.default_at_pos tag quot; None)
+    | Ast.StDir (_loc,"lang_clear",Ast.ExNil _) ->
         (AstQuotation.default := "";
          Hashtbl.clear AstQuotation.default_tbl;
          None)
-    | Ast.StDir (_,"filter",Ast.ExStr (_,s)) ->
+    | Ast.StDir (_loc,"filter",Ast.ExStr (_,s)) ->
         (AstFilters.use_implem_filter s; None)
     | Ast.StDir (loc,x,_) ->
         FanLoc.raise loc

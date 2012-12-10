@@ -114,7 +114,7 @@ let _ =
             | x -> super#expr x
           method! str_item =
             function
-            | Ast.StMod (_,"Debug",_) as st -> st
+            | Ast.StMod (_loc,"Debug",_) as st -> st
             | st -> super#str_item st
         end)#str_item))
 let _loc = FanLoc.ghost
@@ -153,8 +153,8 @@ let list_init f n =
   let rec self m = if m = n then [] else (f m) :: (self (succ m)) in self 0
 let rec lid_of_ident sep =
   function
-  | Ast.IdLid (_,s)|Ast.IdUid (_,s) -> s
-  | Ast.IdAcc (_,i1,i2) ->
+  | Ast.IdLid (_loc,s)|Ast.IdUid (_loc,s) -> s
+  | Ast.IdAcc (_loc,i1,i2) ->
       (lid_of_ident sep i1) ^ (sep ^ (lid_of_ident sep i2))
   | _ -> assert false
 type type_decl = (string* Ast.ident* Ast.ctyp list* Ast.ctyp* bool) 
@@ -259,11 +259,11 @@ module Gen(X:sig val size : int val mode : mode end) =
     tuplify_type (Ast.TyId (_loc, (Ast.IdLid (_loc, tycon))))
   let rec patt_of_expr =
     function
-    | Ast.ExNil _ -> Ast.PaNil _loc
-    | Ast.ExId (_,i) -> Ast.PaId (_loc, i)
-    | Ast.ExCom (_,e1,e2) ->
+    | Ast.ExNil _loc -> Ast.PaNil _loc
+    | Ast.ExId (_loc,i) -> Ast.PaId (_loc, i)
+    | Ast.ExCom (_loc,e1,e2) ->
         Ast.PaCom (_loc, (patt_of_expr e1), (patt_of_expr e2))
-    | Ast.ExTup (_,e) -> Ast.PaTup (_loc, (patt_of_expr e))
+    | Ast.ExTup (_loc,e) -> Ast.PaTup (_loc, (patt_of_expr e))
     | _ -> assert false
   let bind p e1 e2 =
     match mode with
@@ -293,8 +293,9 @@ module Gen(X:sig val size : int val mode : mode end) =
     | Fold  -> Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))
   let rec opt_bind opt_patt e1 mk_e2 =
     match e1 with
-    | Ast.ExId (_,_)|Ast.ExSnd (_,Ast.ExId (_,Ast.IdLid (_,_)),_) -> mk_e2 e1
-    | Ast.ExLet (_,Ast.ReNil ,Ast.BiEq (_,p1,e1),e2) ->
+    | Ast.ExId (_loc,_)|Ast.ExSnd (_loc,Ast.ExId (_,Ast.IdLid (_,_)),_) ->
+        mk_e2 e1
+    | Ast.ExLet (_loc,Ast.ReNil ,Ast.BiEq (_,p1,e1),e2) ->
         Ast.ExLet
           (_loc, Ast.ReNil, (Ast.BiEq (_loc, p1, e1)),
             (opt_bind None e2 mk_e2))
@@ -353,7 +354,7 @@ module Gen(X:sig val size : int val mode : mode end) =
   let default_expr = Ast.ExFun (_loc, default_match_case)
   let mkfuno e =
     match e with
-    | Ast.ExApp (_,e,Ast.ExId (_,Ast.IdLid (_,"o"))) -> e
+    | Ast.ExApp (_loc,e,Ast.ExId (_,Ast.IdLid (_,"o"))) -> e
     | _ ->
         Ast.ExFun
           (_loc,
@@ -363,11 +364,11 @@ module Gen(X:sig val size : int val mode : mode end) =
   let is_unknown t =
     let rec loop t =
       match t with
-      | Ast.TyId (_,Ast.IdLid (_,_)) -> false
-      | Ast.TyId (_,_) -> true
-      | Ast.TyApp (_,t,_) -> loop t
+      | Ast.TyId (_loc,Ast.IdLid (_,_)) -> false
+      | Ast.TyId (_loc,_) -> true
+      | Ast.TyApp (_loc,t,_) -> loop t
       | _ -> false in
-    match t with | Ast.TyId (_,Ast.IdUid (_,_)) -> false | t -> loop t
+    match t with | Ast.TyId (_loc,Ast.IdUid (_,_)) -> false | t -> loop t
   let contains_unknown t =
     try
       let (_ :< .. >)=
@@ -390,7 +391,7 @@ module Gen(X:sig val size : int val mode : mode end) =
       function
       | t when is_unknown t ->
           self ox (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown"))))
-      | Ast.TyId (_,Ast.IdLid (_,id)) ->
+      | Ast.TyId (_loc,Ast.IdLid (_,id)) ->
           let () = store_if_builtin_type id in
           opt_bind' ox (Ast.ExId (_loc, (Ast.IdLid (_loc, "o"))))
             (fun e1  -> Ast.ExSnd (_loc, e1, id))
@@ -399,8 +400,8 @@ module Gen(X:sig val size : int val mode : mode end) =
             opt_bind None (self ~arity:(arity + 1) None t1)
               (fun e1  -> Ast.ExApp (_loc, e1, (mkfuno (self None t2)))) in
           opt_app e ox
-      | Ast.TyTup (_,t) -> opt_app (mk_tuple (self ~arity:0) t) ox
-      | Ast.TyQuo (_,s) ->
+      | Ast.TyTup (_loc,t) -> opt_app (mk_tuple (self ~arity:0) t) ox
+      | Ast.TyQuo (_loc,s) ->
           opt_app
             (Ast.ExApp
                (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, ("_f_" ^ s))))),
@@ -415,12 +416,12 @@ module Gen(X:sig val size : int val mode : mode end) =
       (apply_expr (out_constr_expr s)) expr_of_ty (Ast.list_of_ctyp t [])
   and match_case_of_sum_type =
     function
-    | Ast.TyOr (_,t1,t2) ->
+    | Ast.TyOr (_loc,t1,t2) ->
         Ast.McOr
           (_loc, (match_case_of_sum_type t1), (match_case_of_sum_type t2))
-    | Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,s)),t) ->
+    | Ast.TyOf (_loc,Ast.TyId (_,Ast.IdUid (_,s)),t) ->
         match_case_of_constructor s t
-    | Ast.TyId (_,Ast.IdUid (_,s)) ->
+    | Ast.TyId (_loc,Ast.IdUid (_,s)) ->
         match_case_of_constructor s (Ast.TyNil _loc)
     | _ -> assert false
   and match_case_of_poly_constructor s ts =
@@ -441,31 +442,32 @@ module Gen(X:sig val size : int val mode : mode end) =
                (Ast.ExTup (_loc, (Ast.exCom_of_list es))))) expr_of_ty ts
   and match_case_of_poly_sum_type =
     function
-    | Ast.TyOr (_,t1,t2) ->
+    | Ast.TyOr (_loc,t1,t2) ->
         Ast.McOr
           (_loc, (match_case_of_poly_sum_type t1),
             (match_case_of_poly_sum_type t2))
-    | Ast.TyOf (_,Ast.TyVrn (_,i),Ast.TyTup (_,t)) ->
+    | Ast.TyOf (_loc,Ast.TyVrn (_,i),Ast.TyTup (_,t)) ->
         match_case_of_poly_constructor i (Ast.list_of_ctyp t [])
-    | Ast.TyOf (_,Ast.TyVrn (_,i),t) -> match_case_of_poly_constructor i [t]
-    | Ast.TyVrn (_,i) -> match_case_of_poly_constructor i []
+    | Ast.TyOf (_loc,Ast.TyVrn (_,i),t) ->
+        match_case_of_poly_constructor i [t]
+    | Ast.TyVrn (_loc,i) -> match_case_of_poly_constructor i []
     | _ -> assert false
   and record_patt_of_type k =
     function
-    | Ast.TyCol (_,Ast.TyId (_,Ast.IdLid (_,s)),_) ->
+    | Ast.TyCol (_loc,Ast.TyId (_,Ast.IdLid (_,s)),_) ->
         Ast.PaEq
           (_loc, (Ast.IdLid (_loc, s)),
             (Ast.PaId (_loc, (Ast.IdLid (_loc, (xsk s k))))))
-    | Ast.TySem (_,t1,t2) ->
+    | Ast.TySem (_loc,t1,t2) ->
         Ast.PaSem
           (_loc, (record_patt_of_type k t1), (record_patt_of_type k t2))
     | _ -> assert false
   and type_list_of_record_type t ((acc1,acc2) as acc) =
     match t with
-    | Ast.TyNil _ -> acc
-    | Ast.TyCol (_,Ast.TyId (_,Ast.IdLid (_,s)),Ast.TyMut (_,t))|Ast.TyCol
-        (_,Ast.TyId (_,Ast.IdLid (_,s)),t) -> ((s :: acc1), (t :: acc2))
-    | Ast.TySem (_,t1,t2) ->
+    | Ast.TyNil _loc -> acc
+    | Ast.TyCol (_loc,Ast.TyId (_,Ast.IdLid (_,s)),Ast.TyMut (_,t))|Ast.TyCol
+        (_loc,Ast.TyId (_,Ast.IdLid (_,s)),t) -> ((s :: acc1), (t :: acc2))
+    | Ast.TySem (_loc,t1,t2) ->
         type_list_of_record_type t1 (type_list_of_record_type t2 acc)
     | _ -> assert false
   and expr_of_record_type t =
@@ -496,24 +498,24 @@ module Gen(X:sig val size : int val mode : mode end) =
              (tuplify_expr (exik 0)))))
   and complete_match_case mk t =
     match t with
-    | Ast.TyOr (_,_,_) when size > 1 ->
+    | Ast.TyOr (_loc,_,_) when size > 1 ->
         Ast.McOr (_loc, (mk t), failure_match_case)
     | _ -> mk t
   and fun_of_ctyp tyid =
     function
-    | Ast.TySum (_,t) ->
+    | Ast.TySum (_loc,t) ->
         Ast.ExFun (_loc, (complete_match_case match_case_of_sum_type t))
-    | Ast.TyRec (_,t) -> Ast.ExFun (_loc, (expr_of_record_type t))
-    | Ast.TyTup (_,t) -> mk_tuple expr_of_ty t
-    | Ast.TyId (_,Ast.IdLid (_,i)) when i = tyid -> default_expr
-    | Ast.TyApp (_,_,_)|Ast.TyArr (_,_,_)|Ast.TyQuo (_,_)|Ast.TyId (_,_) as t
-        -> expr_of_ty None t
-    | Ast.TyNil _ ->
+    | Ast.TyRec (_loc,t) -> Ast.ExFun (_loc, (expr_of_record_type t))
+    | Ast.TyTup (_loc,t) -> mk_tuple expr_of_ty t
+    | Ast.TyId (_loc,Ast.IdLid (_,i)) when i = tyid -> default_expr
+    | Ast.TyApp (_loc,_,_)|Ast.TyArr (_loc,_,_)|Ast.TyQuo (_loc,_)|Ast.TyId
+        (_loc,_) as t -> expr_of_ty None t
+    | Ast.TyNil _loc ->
         expr_of_ty None (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown"))))
-    | Ast.TyVrnEq (_,t)|Ast.TyVrnInf (_,t)|Ast.TyPrv (_,Ast.TyVrnInf (_,t))
-        ->
+    | Ast.TyVrnEq (_loc,t)|Ast.TyVrnInf (_loc,t)|Ast.TyPrv
+        (_loc,Ast.TyVrnInf (_,t)) ->
         Ast.ExFun (_loc, (complete_match_case match_case_of_poly_sum_type t))
-    | Ast.TyVrnSup (_,t)|Ast.TyPrv (_,Ast.TyVrnSup (_,t)) ->
+    | Ast.TyVrnSup (_loc,t)|Ast.TyPrv (_loc,Ast.TyVrnSup (_,t)) ->
         if size > 1
         then
           Ast.ExFun
@@ -526,7 +528,7 @@ module Gen(X:sig val size : int val mode : mode end) =
     | _ -> assert false
   and string_of_type_param t =
     match t with
-    | Ast.TyQuo (_,s)|Ast.TyQuP (_,s)|Ast.TyQuM (_,s) -> s
+    | Ast.TyQuo (_loc,s)|Ast.TyQuP (_loc,s)|Ast.TyQuM (_loc,s) -> s
     | _ -> assert false
   and method_of_type_decl _ ((id1,_,params,ctyp,priv) as type_decl) acc =
     let rec lambda acc =
@@ -554,7 +556,7 @@ module Gen(X:sig val size : int val mode : mode end) =
       let out_params =
         List.map
           (function
-           | Ast.TyQuo (_,i) -> Ast.TyQuo (_loc, (i ^ "_out"))
+           | Ast.TyQuo (_loc,i) -> Ast.TyQuo (_loc, (i ^ "_out"))
            | _ -> assert false) params in
       let t_out = ctyp_name_of_name_params name out_params in
       method_type_of_type t t_out params out_params
@@ -601,7 +603,7 @@ module Gen(X:sig val size : int val mode : mode end) =
          inherit  Ast.fold as super
          method! ctyp =
            function
-           | Ast.TyId (_,Ast.IdLid (_,id)) ->
+           | Ast.TyId (_loc,Ast.IdLid (_,id)) ->
                let () = store_if_builtin_type id in self
            | t -> super#ctyp t
        end)#ctyp t in
@@ -619,8 +621,8 @@ module Gen(X:sig val size : int val mode : mode end) =
   end
 let rec tyMap_of_type_decls t acc =
   match t with
-  | Ast.TyNil _ -> acc
-  | Ast.TyAnd (_,t1,t2) ->
+  | Ast.TyNil _loc -> acc
+  | Ast.TyAnd (_loc,t1,t2) ->
       tyMap_of_type_decls t1 (tyMap_of_type_decls t2 acc)
   | Ast.TyDcl (_,name,tl,tk,_) ->
       SMap.add name (name, (Ast.IdLid (_loc, name)), tl, tk, false) acc
@@ -734,7 +736,7 @@ let processor =
     inherit  Ast.map as super
     method! str_item st =
       match st with
-      | Ast.StTyp (_,t) -> (last := t; st)
+      | Ast.StTyp (_loc,t) -> (last := t; st)
       | Ast.StCls
           (_loc,Ast.CeEq
            (_,Ast.CeCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
@@ -757,13 +759,13 @@ let processor =
             (_,Ast.ViNil ,Ast.IdAcc
              (_,Ast.IdUid (_,m),Ast.IdLid (_,"generated")),Ast.TyNil _)))
           -> generate_class_from_module_name generate_class_implem c st m
-      | Ast.StSem (_,st1,st2) ->
+      | Ast.StSem (_loc,st1,st2) ->
           let st1 = self#str_item st1 in
           Ast.StSem (_loc, st1, (self#str_item st2))
       | st -> super#str_item st
     method! sig_item sg =
       match sg with
-      | Ast.SgTyp (_,t) -> (last := t; sg)
+      | Ast.SgTyp (_loc,t) -> (last := t; sg)
       | Ast.SgCls
           (_loc,Ast.CtCol
            (_,Ast.CtCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
@@ -788,7 +790,7 @@ let processor =
             (_,Ast.ViNil ,Ast.IdAcc
              (_,Ast.IdUid (_,m),Ast.IdLid (_,"generated")),Ast.TyNil _)))
           -> generate_class_from_module_name generate_class_interf c sg m
-      | Ast.SgSem (_,sg1,sg2) ->
+      | Ast.SgSem (_loc,sg1,sg2) ->
           let sg1 = self#sig_item sg1 in
           Ast.SgSem (_loc, sg1, (self#sig_item sg2))
       | sg -> super#sig_item sg
@@ -883,13 +885,13 @@ let meta_ s = Ast.IdLid (_loc, ("meta_" ^ s))
 let mf_ s = "mf_" ^ s
 let rec string_of_ident =
   function
-  | Ast.IdLid (_,s) -> s
-  | Ast.IdUid (_,s) -> s
-  | Ast.IdAcc (_,i1,i2) ->
+  | Ast.IdLid (_loc,s) -> s
+  | Ast.IdUid (_loc,s) -> s
+  | Ast.IdAcc (_loc,i1,i2) ->
       "acc_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
-  | Ast.IdApp (_,i1,i2) ->
+  | Ast.IdApp (_loc,i1,i2) ->
       "app_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
-  | Ast.IdAnt (_,_) -> assert false
+  | Ast.IdAnt (_loc,_) -> assert false
 let fold_args ty f init =
   let (_,res) =
     List.fold_left (fun (i,acc)  ty  -> ((succ i), (f ty i acc))) (0, init)
@@ -898,11 +900,11 @@ let fold_args ty f init =
 let fold_data_ctors ty f init =
   let rec loop acc t =
     match t with
-    | Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,cons)),ty) ->
+    | Ast.TyOf (_loc,Ast.TyId (_,Ast.IdUid (_,cons)),ty) ->
         f cons (Ast.list_of_ctyp ty []) acc
-    | Ast.TyId (_,Ast.IdUid (_,cons)) -> f cons [] acc
-    | Ast.TyOr (_,t1,t2) -> loop (loop acc t1) t2
-    | Ast.TyNil _ -> acc
+    | Ast.TyId (_loc,Ast.IdUid (_,cons)) -> f cons [] acc
+    | Ast.TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
+    | Ast.TyNil _loc -> acc
     | _ -> assert false in
   loop init ty
 let fold_type_decls m f init = SMap.fold f m.type_decls init
@@ -918,7 +920,7 @@ let is_antiquot_data_ctor s =
   let ls = String.length s in (ls > 3) && ((String.sub s (ls - 3) 3) = "Ant")
 let rec meta_ident m =
   function
-  | Ast.IdAcc (_,i1,i2) ->
+  | Ast.IdAcc (_loc,i1,i2) ->
       Ast.ExApp
         (_loc,
           (Ast.ExApp
@@ -932,7 +934,7 @@ let rec meta_ident m =
                               (Ast.IdUid (_loc, "IdAcc")))))),
                     (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
                (meta_ident m i1))), (meta_ident m i2))
-  | Ast.IdApp (_,i1,i2) ->
+  | Ast.IdApp (_loc,i1,i2) ->
       Ast.ExApp
         (_loc,
           (Ast.ExApp
@@ -946,8 +948,8 @@ let rec meta_ident m =
                               (Ast.IdUid (_loc, "IdApp")))))),
                     (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
                (meta_ident m i1))), (meta_ident m i2))
-  | Ast.IdAnt (_,s) -> Ast.ExAnt (_loc, s)
-  | Ast.IdLid (_,s) ->
+  | Ast.IdAnt (_loc,s) -> Ast.ExAnt (_loc, s)
+  | Ast.IdLid (_loc,s) ->
       Ast.ExApp
         (_loc,
           (Ast.ExApp
@@ -959,7 +961,7 @@ let rec meta_ident m =
                          (Ast.IdUid (_loc, "IdLid")))))),
                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
           (Ast.ExStr (_loc, s)))
-  | Ast.IdUid (_,s) ->
+  | Ast.IdUid (_loc,s) ->
       Ast.ExApp
         (_loc,
           (Ast.ExApp
@@ -998,7 +1000,7 @@ let mk_meta m =
   fold_type_decls m
     (fun tyname  tydcl  binding_acc  ->
        match tydcl with
-       | Ast.TyDcl (_,_,tyvars,Ast.TySum (_,ty),_) ->
+       | Ast.TyDcl (_,_,tyvars,Ast.TySum (_loc,ty),_) ->
            let match_case =
              fold_data_ctors ty
                (fun cons  tyargs  acc  ->
@@ -1033,10 +1035,10 @@ let mk_meta m =
                           (fun ty  i  acc  ->
                              let rec fcall_of_ctyp ty =
                                match ty with
-                               | Ast.TyId (_,id) ->
+                               | Ast.TyId (_loc,id) ->
                                    Ast.ExId
                                      (_loc, (meta_ (string_of_ident id)))
-                               | Ast.TyTup (_,Ast.TySta (_,t1,t2)) ->
+                               | Ast.TyTup (_loc,Ast.TySta (_,t1,t2)) ->
                                    Ast.ExFun
                                      (_loc,
                                        (Ast.McArr
@@ -1118,11 +1120,11 @@ let mk_meta m =
                                                                     (Ast.IdLid
                                                                     (_loc,
                                                                     "x2")))))))))))))))))
-                               | Ast.TyApp (_,t1,t2) ->
+                               | Ast.TyApp (_loc,t1,t2) ->
                                    Ast.ExApp
                                      (_loc, (fcall_of_ctyp t1),
                                        (fcall_of_ctyp t2))
-                               | Ast.TyQuo (_,s) ->
+                               | Ast.TyQuo (_loc,s) ->
                                    Ast.ExId
                                      (_loc, (Ast.IdLid (_loc, (mf_ s))))
                                | _ -> failure in
@@ -1142,7 +1144,8 @@ let mk_meta m =
              List.fold_right
                (fun tyvar  acc  ->
                   match tyvar with
-                  | Ast.TyQuP (_,s)|Ast.TyQuM (_,s)|Ast.TyQuo (_,s) ->
+                  | Ast.TyQuP (_loc,s)|Ast.TyQuM (_loc,s)|Ast.TyQuo (_loc,s)
+                      ->
                       Ast.ExFun
                         (_loc,
                           (Ast.McArr
@@ -1544,7 +1547,7 @@ let filter st =
                                               (_loc, Ast.ReRecursive, bi))))))))))))))) in
        match super#module_expr me with
        | Ast.MeApp
-           (_,Ast.MeId
+           (_loc,Ast.MeId
             (_,Ast.IdAcc
              (_,Ast.IdUid (_,"Filters"),Ast.IdUid (_,"MetaGeneratorExpr"))),Ast.MeId
             (_,i))
@@ -1613,7 +1616,7 @@ let filter st =
                       (Ast.IdUid (_loc, "ExAnt"))))
              }
        | Ast.MeApp
-           (_,Ast.MeId
+           (_loc,Ast.MeId
             (_,Ast.IdAcc
              (_,Ast.IdUid (_,"Filters"),Ast.IdUid (_,"MetaGeneratorPatt"))),Ast.MeId
             (_,i))
@@ -1686,9 +1689,9 @@ let filter st =
 let _ = AstFilters.register_str_item_filter ("meta", filter)
 let map_expr =
   function
-  | Ast.ExApp (_,e,Ast.ExId (_,Ast.IdUid (_,"NOTHING")))|Ast.ExFun
-      (_,Ast.McArr (_,Ast.PaId (_,Ast.IdUid (_,"NOTHING")),Ast.ExNil _,e)) ->
-      e
+  | Ast.ExApp (_loc,e,Ast.ExId (_,Ast.IdUid (_,"NOTHING")))|Ast.ExFun
+      (_loc,Ast.McArr (_,Ast.PaId (_,Ast.IdUid (_,"NOTHING")),Ast.ExNil _,e))
+      -> e
   | Ast.ExId (_loc,Ast.IdLid (_,"__FILE__")) ->
       Ast.ExStr (_loc, (Ast.safe_string_escaped (FanLoc.file_name _loc)))
   | Ast.ExId (_loc,Ast.IdLid (_,"__LOCATION__")) ->

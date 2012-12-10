@@ -9,11 +9,11 @@ let rec normalize_acc =
       Ast.ExId (_loc, i)
 let rec to_lid =
   function
-  | Ast.IdAcc (_,_,i) -> to_lid i
-  | Ast.IdLid (_,lid) -> lid
+  | Ast.IdAcc (_loc,_,i) -> to_lid i
+  | Ast.IdLid (_loc,lid) -> lid
   | _ -> assert false
 let rec tvar_of_ident =
   function
-  | Ast.IdLid (_,x)|Ast.IdUid (_,x) -> x
-  | Ast.IdAcc (_,Ast.IdUid (_,x),xs) -> x ^ ("__" ^ (tvar_of_ident xs))
+  | Ast.IdLid (_loc,x)|Ast.IdUid (_loc,x) -> x
+  | Ast.IdAcc (_loc,Ast.IdUid (_,x),xs) -> x ^ ("__" ^ (tvar_of_ident xs))
   | _ -> failwith "internal error in the Grammar extension"

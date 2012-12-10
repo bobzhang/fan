@@ -484,7 +484,8 @@ let override_flag loc = fun
   ]}
  *)
 let rec expr = fun (* expr -> expression*)
-  [ ExAcc (loc, _, _) | {:expr@loc| $(id:{:ident| $_ . $_ |}) |} as e ->
+  [ (* ExAcc (loc, _, _)   *){:expr| $_ . $_ |}|
+   {:expr| $(id:{:ident@_| $_ . $_ |}) |} as e ->
     let (e, l) =
       match Expr.sep_expr [] e with
       [ [(loc, ml, {:expr@sloc| $uid:s |}) :: l] ->
@@ -493,7 +494,7 @@ let rec expr = fun (* expr -> expression*)
       | [(loc, ml, {:expr@sloc| $lid:s |}) :: l] ->
           (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
       | [(_, [], e) :: l] -> (expr e, l)
-      | _ -> error loc "bad ast in expression" ] in
+      | _ -> error _loc "bad ast in expression" ] in
     let (_, e) =
       List.fold_left
         (fun (loc_bp, e1) (loc_ep, ml, e2) ->
@@ -502,7 +503,7 @@ let rec expr = fun (* expr -> expression*)
               let loc = FanLoc.merge loc_bp loc_ep
               in  (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
           | _ -> error (loc_of_expr e2) "lowercase identifier expected" ])
-        (loc, e) l in
+        (_loc, e) l in
     e
   | ExAnt (loc,_) -> error loc "antiquotation not allowed here"
   | ExApp (loc, _, _) as f ->

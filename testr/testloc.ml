@@ -55,3 +55,8 @@ let u x y = {:expr| $lid:x $y |};
       [ macro_def{d}; semi ->
         execute_macro_if_active_branch ~expr ~patt _loc {:str_item||} (fun a b -> {:str_item| $a; $b |}) Then d
   | str_item{si}; semi -> Str si ]{sml} -> sml ] |};
+
+
+(* ghost location :-( *)  
+with "ctyp"
+  fun [ {| $t -> $(@_loc{||} ) |}  -> t];

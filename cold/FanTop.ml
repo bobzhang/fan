@@ -44,9 +44,9 @@ let use_file token_stream =
     if stopped_at_directive <> None
     then
       match pl with
-      | (Ast.StDir (_,"load",Ast.ExStr (_,s)))::[] ->
+      | (Ast.StDir (_loc,"load",Ast.ExStr (_,s)))::[] ->
           (Topdirs.dir_load Format.std_formatter s; loop ())
-      | (Ast.StDir (_,"directory",Ast.ExStr (_,s)))::[] ->
+      | (Ast.StDir (_loc,"directory",Ast.ExStr (_,s)))::[] ->
           (Topdirs.dir_directory s; loop ())
       | _ -> (pl, false)
     else (pl, true) in

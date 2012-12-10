@@ -73,7 +73,7 @@ end;
 
 
 module MetaLocQuotation = struct
-  let loc_name = ref None;
+  let loc_name = ref None; (* set by [AstQuotation] [parse_quot_string] *)
   let meta_loc_expr _loc loc =
     match !loc_name with
     [ None -> {:expr| $(lid:!FanLoc.name) |}
@@ -82,7 +82,11 @@ module MetaLocQuotation = struct
    (* FIXME track the location of the quotation
       read the list for the detailed usage
     *)   
-  let meta_loc_patt _loc _ = {:patt| _ |};
+  let meta_loc_patt _loc _ =
+    {:patt| _ |};
+    (* match !loc_name with *)
+    (* [None  -> {:patt| $(lid:!FanLoc.name) |} *)
+    (* |Some x -> {:patt|$lid:x|}]; *)
 end;
 
 module MetaQAst = Ast.Meta.Make MetaLocQuotation;

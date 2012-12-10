@@ -199,7 +199,7 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let parse_module_type str =
     try
       match Gram.parse_string module_type FanLoc.string_loc str with
-      | Ast.MtId (_,i) -> i
+      | Ast.MtId (_loc,i) -> i
       | _ ->
           (eprintf "the module type %s is not a simple module type" str;
            exit 2)

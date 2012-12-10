@@ -2,15 +2,16 @@ open FanUtil
 module Ast = Camlp4Ast
 let rec sep_expr acc =
   function
-  | Ast.ExAcc (_,e1,e2) -> sep_expr (sep_expr acc e2) e1
+  | Ast.ExAcc (_loc,e1,e2) -> sep_expr (sep_expr acc e2) e1
   | Ast.ExId (loc,Ast.IdUid (_,s)) as e ->
       (match acc with
        | [] -> [(loc, [], e)]
        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
-  | Ast.ExId (_,(Ast.IdAcc (_,_,_) as i)) ->
+  | Ast.ExId (_loc,(Ast.IdAcc (_l,_,_) as i)) ->
       sep_expr acc (Ident.normalize_acc i)
   | e -> ((Ast.loc_of_expr e), [], e) :: acc
-let rec fa al = function | Ast.ExApp (_,f,a) -> fa (a :: al) f | f -> (f, al)
+let rec fa al =
+  function | Ast.ExApp (_loc,f,a) -> fa (a :: al) f | f -> (f, al)
 let rec apply accu =
   function
   | [] -> accu
@@ -31,16 +32,16 @@ let mklist _loc =
   loop true
 let mkumin _loc f arg =
   match arg with
-  | Ast.ExInt (_,n) -> Ast.ExInt (_loc, (neg_string n))
-  | Ast.ExInt32 (_,n) -> Ast.ExInt32 (_loc, (neg_string n))
-  | Ast.ExInt64 (_,n) -> Ast.ExInt64 (_loc, (neg_string n))
-  | Ast.ExNativeInt (_,n) -> Ast.ExNativeInt (_loc, (neg_string n))
-  | Ast.ExFlo (_,n) -> Ast.ExFlo (_loc, (neg_string n))
+  | Ast.ExInt (_loc,n) -> Ast.ExInt (_loc, (neg_string n))
+  | Ast.ExInt32 (_loc,n) -> Ast.ExInt32 (_loc, (neg_string n))
+  | Ast.ExInt64 (_loc,n) -> Ast.ExInt64 (_loc, (neg_string n))
+  | Ast.ExNativeInt (_loc,n) -> Ast.ExNativeInt (_loc, (neg_string n))
+  | Ast.ExFlo (_loc,n) -> Ast.ExFlo (_loc, (neg_string n))
   | _ ->
       Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, ("~" ^ f))))), arg)
 let mkassert _loc =
   function
-  | Ast.ExId (_,Ast.IdLid (_,"false")) -> Ast.ExAsf _loc
+  | Ast.ExId (_loc,Ast.IdLid (_,"false")) -> Ast.ExAsf _loc
   | e -> Ast.ExAsr (_loc, e)
 let mklist_last ?last  _loc =
   let rec loop top =
@@ -60,14 +61,14 @@ let mklist_last ?last  _loc =
   loop true
 let mksequence _loc =
   function
-  | Ast.ExSem (_,_,_)|Ast.ExAnt (_,_) as e -> Ast.ExSeq (_loc, e)
+  | Ast.ExSem (_loc,_,_)|Ast.ExAnt (_loc,_) as e -> Ast.ExSeq (_loc, e)
   | e -> e
 let mksequence' _loc =
-  function | Ast.ExSem (_,_,_) as e -> Ast.ExSeq (_loc, e) | e -> e
+  function | Ast.ExSem (_loc,_,_) as e -> Ast.ExSeq (_loc, e) | e -> e
 let bigarray_get _loc arr arg =
   let coords =
     match arg with
-    | Ast.ExTup (_,Ast.ExCom (_,e1,e2))|Ast.ExCom (_,e1,e2) ->
+    | Ast.ExTup (_loc,Ast.ExCom (_,e1,e2))|Ast.ExCom (_loc,e1,e2) ->
         Ast.list_of_expr e1 (Ast.list_of_expr e2 [])
     | _ -> [arg] in
   match coords with
@@ -138,7 +139,7 @@ let bigarray_get _loc arr arg =
 let bigarray_set _loc var newval =
   match var with
   | Ast.ExApp
-      (_,Ast.ExApp
+      (_loc,Ast.ExApp
        (_,Ast.ExId
         (_,Ast.IdAcc
          (_,Ast.IdUid (_,"Bigarray"),Ast.IdAcc
@@ -164,7 +165,7 @@ let bigarray_set _loc var newval =
                   (Ast.ExId (_loc, (Ast.IdLid (_loc, "contents")))))),
              newval))
   | Ast.ExApp
-      (_,Ast.ExApp
+      (_loc,Ast.ExApp
        (_,Ast.ExApp
         (_,Ast.ExId
          (_,Ast.IdAcc
@@ -195,7 +196,7 @@ let bigarray_set _loc var newval =
                   (Ast.ExId (_loc, (Ast.IdLid (_loc, "contents")))))),
              newval))
   | Ast.ExApp
-      (_,Ast.ExApp
+      (_loc,Ast.ExApp
        (_,Ast.ExApp
         (_,Ast.ExApp
          (_,Ast.ExId
@@ -230,7 +231,7 @@ let bigarray_set _loc var newval =
                   (Ast.ExId (_loc, (Ast.IdLid (_loc, "contents")))))),
              newval))
   | Ast.ExApp
-      (_,Ast.ExApp
+      (_loc,Ast.ExApp
        (_,Ast.ExId
         (_,Ast.IdAcc
          (_,Ast.IdUid (_,"Bigarray"),Ast.IdAcc
@@ -255,14 +256,14 @@ let bigarray_set _loc var newval =
   | _ -> None
 let rec pattern_eq_expression p e =
   match (p, e) with
-  | (Ast.PaId (_,Ast.IdLid (_,a)),Ast.ExId (_,Ast.IdLid (_,b))) -> a = b
-  | (Ast.PaId (_,Ast.IdUid (_,a)),Ast.ExId (_,Ast.IdUid (_,b))) -> a = b
-  | (Ast.PaApp (_,p1,p2),Ast.ExApp (_,e1,e2)) ->
+  | (Ast.PaId (_loc,Ast.IdLid (_,a)),Ast.ExId (_l,Ast.IdLid (_,b))) -> a = b
+  | (Ast.PaId (_loc,Ast.IdUid (_,a)),Ast.ExId (_l,Ast.IdUid (_,b))) -> a = b
+  | (Ast.PaApp (_loc,p1,p2),Ast.ExApp (_l,e1,e2)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
   | _ -> false
 let map _loc p e l =
   match (p, e) with
-  | (Ast.PaId (_,Ast.IdLid (_,x)),Ast.ExId (_,Ast.IdLid (_,y))) when 
+  | (Ast.PaId (_loc,Ast.IdLid (_,x)),Ast.ExId (_l,Ast.IdLid (_,y))) when
       x = y -> l
   | _ ->
       if Ast.is_irrefut_patt p
@@ -410,24 +411,24 @@ let bad_patt _loc =
 let substp _loc env =
   let rec loop =
     function
-    | Ast.ExApp (_,e1,e2) -> Ast.PaApp (_loc, (loop e1), (loop e2))
-    | Ast.ExNil _ -> Ast.PaNil _loc
-    | Ast.ExId (_,Ast.IdLid (_,x)) ->
+    | Ast.ExApp (_loc,e1,e2) -> Ast.PaApp (_loc, (loop e1), (loop e2))
+    | Ast.ExNil _loc -> Ast.PaNil _loc
+    | Ast.ExId (_loc,Ast.IdLid (_,x)) ->
         (try List.assoc x env
          with | Not_found  -> Ast.PaId (_loc, (Ast.IdLid (_loc, x))))
-    | Ast.ExId (_,Ast.IdUid (_,x)) ->
+    | Ast.ExId (_loc,Ast.IdUid (_,x)) ->
         (try List.assoc x env
          with | Not_found  -> Ast.PaId (_loc, (Ast.IdUid (_loc, x))))
-    | Ast.ExInt (_,x) -> Ast.PaInt (_loc, x)
-    | Ast.ExStr (_,s) -> Ast.PaStr (_loc, s)
-    | Ast.ExTup (_,x) -> Ast.PaTup (_loc, (loop x))
-    | Ast.ExCom (_,x1,x2) -> Ast.PaCom (_loc, (loop x1), (loop x2))
-    | Ast.ExRec (_,bi,Ast.ExNil _) ->
+    | Ast.ExInt (_loc,x) -> Ast.PaInt (_loc, x)
+    | Ast.ExStr (_loc,s) -> Ast.PaStr (_loc, s)
+    | Ast.ExTup (_loc,x) -> Ast.PaTup (_loc, (loop x))
+    | Ast.ExCom (_loc,x1,x2) -> Ast.PaCom (_loc, (loop x1), (loop x2))
+    | Ast.ExRec (_loc,bi,Ast.ExNil _) ->
         let rec substbi =
           function
-          | Ast.RbSem (_,b1,b2) ->
+          | Ast.RbSem (_loc,b1,b2) ->
               Ast.PaSem (_loc, (substbi b1), (substbi b2))
-          | Ast.RbEq (_,i,e) -> Ast.PaEq (_loc, i, (loop e))
+          | Ast.RbEq (_loc,i,e) -> Ast.PaEq (_loc, i, (loop e))
           | _ -> bad_patt _loc in
         Ast.PaRec (_loc, (substbi bi))
     | _ -> bad_patt _loc in
@@ -437,8 +438,8 @@ class subst _loc env =
     inherit  (Ast.reloc _loc) as super
     method! expr =
       function
-      | Ast.ExId (_,Ast.IdLid (_,x))|Ast.ExId (_,Ast.IdUid (_,x)) as e ->
-          (try List.assoc x env with | Not_found  -> super#expr e)
+      | Ast.ExId (_loc,Ast.IdLid (_,x))|Ast.ExId (_loc,Ast.IdUid (_,x)) as e
+          -> (try List.assoc x env with | Not_found  -> super#expr e)
       | Ast.ExApp
           (_loc,Ast.ExId (_,Ast.IdUid (_,"LOCATION_OF")),Ast.ExId
            (_,Ast.IdLid (_,x)))|Ast.ExApp
@@ -499,7 +500,8 @@ class subst _loc env =
       | e -> super#expr e
     method! patt =
       function
-      | Ast.PaId (_,Ast.IdLid (_,x))|Ast.PaId (_,Ast.IdUid (_,x)) as p ->
+      | Ast.PaId (_loc,Ast.IdLid (_,x))|Ast.PaId (_loc,Ast.IdUid (_,x)) as p
+          ->
           (try substp _loc [] (List.assoc x env)
            with | Not_found  -> super#patt p)
       | p -> super#patt p
@@ -2161,13 +2163,13 @@ let filter_patt_with_captured_variables patt =
    (patt, constraints))
 let rec string_of_ident =
   function
-  | Ast.IdLid (_,s) -> s
-  | Ast.IdUid (_,s) -> s
-  | Ast.IdAcc (_,i1,i2) ->
+  | Ast.IdLid (_loc,s) -> s
+  | Ast.IdUid (_loc,s) -> s
+  | Ast.IdAcc (_loc,i1,i2) ->
       "acc_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
-  | Ast.IdApp (_,i1,i2) ->
+  | Ast.IdApp (_loc,i1,i2) ->
       "app_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
-  | Ast.IdAnt (_,_) -> assert false
+  | Ast.IdAnt (_loc,_) -> assert false
 let tuple _loc =
   function
   | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))

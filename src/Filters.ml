@@ -625,7 +625,7 @@ AstFilters.register_str_item_filter ("strip",(new Ast.reloc  FanLoc.ghost)#str_i
 let decorate_binding decorate_fun = object
   inherit Ast.map as super;
   method! binding = fun
-    [ {:binding@_loc| $lid:id = $( ({:expr| fun [ $_ ] |} as e)) |} ->
+    [ {:binding| $lid:id = $( ({:expr@_| fun [ $_ ] |} as e)) |} ->
       {:binding| $lid:id = $(decorate_fun id e) |}
     | b -> super#binding b ];
   end#binding;
@@ -863,11 +863,10 @@ let filter st =
 
 AstFilters.register_str_item_filter ("meta",filter);
 
-
 let map_expr = with "expr" fun
-  [ {| $e NOTHING |} | {| fun $({:patt| NOTHING |} ) -> $e |} -> e
-  | {@_loc| __FILE__ |} -> {| $(`str:FanLoc.file_name _loc) |}
-  | {@_loc| __LOCATION__ |} ->
+  [ {| $e NOTHING |} | {| fun [NOTHING  -> $e] |} -> e
+  | {| __FILE__ |} -> {| $(`str:FanLoc.file_name _loc) |}
+  | {| __LOCATION__ |} ->
       let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple _loc in
       {| FanLoc.of_tuple
         ($`str:a, $`int:b, $`int:c, $`int:d,

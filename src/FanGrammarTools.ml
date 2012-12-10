@@ -194,7 +194,7 @@ let text_of_action _loc  psl  rtvar act tvar = with "expr"
     let e2 =
       match tok_match_pl with
       [ None -> e1
-      | Some ({| $t1, $t2 |}, {:patt| $p1, $p2 |}) ->
+      | Some ({| $t1, $t2 |}, {:patt@_| $p1, $p2 |}) ->
           {|
             match ($t1, $t2) with (* two and more patterns here *)
             [ ($p1, $p2) -> $e1
@@ -210,8 +210,8 @@ let text_of_action _loc  psl  rtvar act tvar = with "expr"
     List.fold_lefti
       (fun i txt s ->
         match s.pattern with
-        [ None | Some {:patt| _ |} -> {| fun _ -> $txt |}
-        | Some {:patt| ($_ $(tup:{:patt| _ |}) as $p) |} ->
+        [ None | Some {:patt@_| _ |} -> {| fun _ -> $txt |}
+        | Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
             let p = make_ctyp_patt s.styp tvar p in  {| fun $p -> $txt |}
         | Some p when Camlp4Ast.is_irrefut_patt p ->
             let p = make_ctyp_patt s.styp tvar p in
@@ -286,7 +286,7 @@ let let_in_of_extend _loc gram gl  default =
     [ Some g -> {:expr| $(id:gm()).mk $id:g |}
     | None   -> {:expr| $(id:gm()).mk |} ] in
   let local_binding_of_name = fun
-    [ {expr = {:expr| $lid:i |} ; tvar = x; loc = _loc} ->
+    [ {expr = {:expr@_| $lid:i |} ; tvar = x; loc = _loc} ->
       {:binding| $lid:i =  (grammar_entry_create $str:i : $(id:gm()).t '$x) |}
     | _ -> failwith "internal error in the Grammar extension" ]  in
   match gl with

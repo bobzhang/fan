@@ -2413,7 +2413,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (sg2 : 'sig_item_quot)  _  (sg1 : 'sig_item) 
                    (_loc : FanLoc.t)  ->
                    (match sg2 with
-                    | Ast.SgNil _ -> sg1
+                    | Ast.SgNil _loc -> sg1
                     | _ -> Ast.SgSem (_loc, sg1, sg2) : 'sig_item_quot ))));
            ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ))],
              (Gram.mk_action
@@ -2659,7 +2659,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (e : 'expr)  _  (t2 : 'ctyp)  _  (t : 'poly_type)  _ 
                    (_loc : FanLoc.t)  ->
                    (match t with
-                    | Ast.TyPol (_,_,_) ->
+                    | Ast.TyPol (_loc,_,_) ->
                         raise (XStream.Error "unexpected polytype here")
                     | _ -> Ast.ExCoe (_loc, e, t, t2) : 'cvalue_binding ))));
            ([`Skeyword ":>";
@@ -3917,7 +3917,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              (Gram.mk_action
                 (fun (p2 : 'patt)  (p1 : 'patt_constr)  (_loc : FanLoc.t)  ->
                    (match p2 with
-                    | Ast.PaTup (_,p) ->
+                    | Ast.PaTup (_loc,p) ->
                         List.fold_left
                           (fun p1  p2  -> Ast.PaApp (_loc, p1, p2)) p1
                           (Ast.list_of_patt p [])
@@ -6789,7 +6789,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (st2 : 'str_item_quot)  _  (st1 : 'str_item) 
                    (_loc : FanLoc.t)  ->
                    (match st2 with
-                    | Ast.StNil _ -> st1
+                    | Ast.StNil _loc -> st1
                     | _ -> Ast.StSem (_loc, st1, st2) : 'str_item_quot ))));
            ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ))],
              (Gram.mk_action
@@ -6897,7 +6897,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (fun (bi : 'binding)  (r : 'opt_rec)  _  (_loc : FanLoc.t) 
                    ->
                    (match bi with
-                    | Ast.BiEq (_,Ast.PaAny _,e) -> Ast.StExp (_loc, e)
+                    | Ast.BiEq (_loc,Ast.PaAny _,e) -> Ast.StExp (_loc, e)
                     | _ -> Ast.StVal (_loc, r, bi) : 'str_item ))));
            ([`Skeyword "let";
             `Skeyword "module";
@@ -7000,7 +7000,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) 
                     (_loc : FanLoc.t)  ->
                     (match x2 with
-                     | Ast.CgNil _ -> x1
+                     | Ast.CgNil _loc -> x1
                      | _ -> Ast.CgSem (_loc, x1, x2) : 'class_sig_item_quot ))));
            ([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ))],
              (Gram.mk_action
@@ -7320,7 +7320,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (fun (x2 : 'class_str_item_quot)  _  (x1 : 'class_str_item) 
                     (_loc : FanLoc.t)  ->
                     (match x2 with
-                     | Ast.CrNil _ -> x1
+                     | Ast.CrNil _loc -> x1
                      | _ -> Ast.CrSem (_loc, x1, x2) : 'class_str_item_quot ))));
            ([`Snterm (Gram.obj (class_str_item : 'class_str_item Gram.t ))],
              (Gram.mk_action

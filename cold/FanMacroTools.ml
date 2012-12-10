@@ -59,7 +59,7 @@ let define ~expr  ~patt  eo x =
                         | `UID _ ->
                             (let el =
                                match param with
-                               | Ast.ExTup (_,e) -> Ast.list_of_expr e []
+                               | Ast.ExTup (_loc,e) -> Ast.list_of_expr e []
                                | e -> [e] in
                              if (List.length el) = (List.length sl)
                              then
@@ -82,7 +82,7 @@ let define ~expr  ~patt  eo x =
                         | `UID _ ->
                             (let pl =
                                match param with
-                               | Ast.PaTup (_,p) -> Ast.list_of_patt p []
+                               | Ast.PaTup (_loc,p) -> Ast.list_of_patt p []
                                | p -> [p] in
                              if (List.length pl) = (List.length sl)
                              then
@@ -126,9 +126,9 @@ let undef ~expr  ~patt  x =
   with | Not_found  -> ()
 let parse_def ~expr  ~patt  s =
   match Gram.parse_string expr (FanLoc.mk "<command line>") s with
-  | Ast.ExId (_,Ast.IdUid (_,n)) -> define ~expr ~patt None n
+  | Ast.ExId (_loc,Ast.IdUid (_,n)) -> define ~expr ~patt None n
   | Ast.ExApp
-      (_,Ast.ExApp
+      (_loc,Ast.ExApp
        (_,Ast.ExId (_,Ast.IdLid (_,"=")),Ast.ExId (_,Ast.IdUid (_,n))),e)
       -> define ~expr ~patt (Some ([], e)) n
   | _ -> invalid_arg s

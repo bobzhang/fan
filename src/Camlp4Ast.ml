@@ -508,101 +508,123 @@ module Meta = struct
   class clean_ast = object
       
     inherit map as super;
-    method! with_constr wc =  match super#with_constr wc with
-      [ {:with_constr| $({:with_constr||})  and $wc |} |
-        {:with_constr| $wc and $({:with_constr||} ) |} -> wc
+    method! with_constr wc =
+      with "with_constr"
+      match super#with_constr wc with
+      [ {| $({@_l||})  and $wc |} |
+        {| $wc and $({@_l||} ) |} -> wc
       | wc -> wc ];
-    method! expr e =  match super#expr e with
-      [ {:expr| let $rec:_ $({:binding||}) in $e |} |
-        {:expr| { ($e) with $({:rec_binding||})  } |} |
-        {:expr| $({:expr||} ), $e |} |
-        {:expr| $e, $({:expr||} ) |} |
-        {:expr| $({:expr||}); $e |} |
-        {:expr| $e; $({:expr||} ) |} -> e
+    method! expr e =
+      with "expr"
+      match super#expr e with
+      [ {| let $rec:_ $({:binding@_l||}) in $e |} |
+        {| { ($e) with $({:rec_binding@_l||})  } |} |
+        {| $({@_l||} ), $e |} |
+        {| $e, $({@_l||} ) |} |
+        {| $({@_l||}); $e |} |
+        {| $e; $({@_l||} ) |} -> e
       | e -> e ];
-    method! patt p = match super#patt p with
-      [ {:patt| ( $p as $({:patt||} ) ) |} |
-        {:patt| $({:patt||}) | $p |} |
-        {:patt| $p | $({:patt||} ) |} |
-        {:patt| $({:patt||} ), $p |} |
-        {:patt| $p, $({:patt||} ) |} |
-        {:patt| $({:patt||} ); $p |} |
-        {:patt| $p; $({:patt||} ) |} -> p
+    method! patt p =
+      with "patt"
+      match super#patt p with
+      [ {| ( $p as $({@_l||} ) ) |} |
+        {| $({@_l||}) | $p |} |
+        {| $p | $({@_l||} ) |} |
+        {| $({@_l||} ), $p |} |
+        {| $p, $({@_l||} ) |} |
+        {| $({@_l||} ); $p |} |
+        {| $p; $({@_l||} ) |} -> p
       | p -> p ];
-    method! match_case mc = match super#match_case mc with
-      [ {:match_case| $({:match_case||} ) | $mc |} |
-        {:match_case| $mc | $({:match_case||} ) |} -> mc
+    method! match_case mc =
+      with "match_case"
+      match super#match_case mc with
+      [ {| $({@_l||} ) | $mc |} |
+        {| $mc | $({@_l||} ) |} -> mc
       | mc -> mc ];
-    method! binding bi =  match super#binding bi with
-      [ {:binding| $({:binding||} ) and $bi |} |
-        {:binding| $bi and $({:binding||} ) |} -> bi
+    method! binding bi =
+      with "binding"
+      match super#binding bi with
+      [ {| $({@_l||} ) and $bi |} |
+        {| $bi and $({@_l||} ) |} -> bi
       | bi -> bi ];
-    method! rec_binding rb =  match super#rec_binding rb with
-      [ {:rec_binding| $({:rec_binding||} ) ; $bi |} |
-        {:rec_binding| $bi ; $({:rec_binding||} ) |} -> bi
+    method! rec_binding rb =
+      with "rec_binding"
+      match super#rec_binding rb with
+      [ {| $({@_l||} ) ; $bi |} | {| $bi ; $({@_l||} ) |} -> bi
       | bi -> bi ];
 
-    method! module_binding mb =  match super#module_binding mb with
-      [ {:module_binding| $({:module_binding||} ) and $mb |} |
-        {:module_binding| $mb and $({:module_binding||} ) |} -> mb
+    method! module_binding mb =
+      with "module_binding"
+      match super#module_binding mb with
+      [ {| $({@_l||} ) and $mb |} |
+        {| $mb and $({@_l||} ) |} -> mb
       | mb -> mb ];
 
-    method! ctyp t = match super#ctyp t with
-      [ {:ctyp| ! $({:ctyp||} ) . $t |} |
-        {:ctyp| $({:ctyp||} ) as $t |} |
-        {:ctyp| $t as $({:ctyp||} ) |} |
-        {:ctyp| $t -> $({:ctyp||} ) |} |
-        {:ctyp| $({:ctyp||} ) -> $t |} |
-        {:ctyp| $({:ctyp||} ) | $t |} |
-        {:ctyp| $t | $({:ctyp||} ) |} |
-        {:ctyp| $t of $({:ctyp||} ) |} |
-        {:ctyp| $({:ctyp||} ) and $t |} |
-        {:ctyp| $t and $({:ctyp||} ) |} |
-        {:ctyp| $t; $({:ctyp||} ) |} |
-        {:ctyp| $({:ctyp||} ); $t |} |
-        {:ctyp| $({:ctyp||}), $t |} |
-        {:ctyp| $t, $({:ctyp||} ) |} |
-        {:ctyp| $t & $({:ctyp||} ) |} |
-        {:ctyp| $({:ctyp||} ) & $t |} |
-        {:ctyp| $({:ctyp||} ) * $t |} |
-        {:ctyp| $t * $({:ctyp||} ) |} -> t
+    method! ctyp t =
+      with "ctyp"
+      match super#ctyp t with
+      [ {| ! $({@_l||} ) . $t |} |
+        {| $({@_l||} ) as $t |} |
+        {| $t as $({@_l||} ) |} |
+        {| $t -> $({@_l||} ) |} |
+        {| $({@_l||} ) -> $t |} |
+        {| $({@_l||} ) | $t |} |
+        {| $t | $({@_l||} ) |} |
+        {| $t of $({@_l||} ) |} |
+        {| $({@_l||} ) and $t |} |
+        {| $t and $({@_l||} ) |} |
+        {| $t; $({@_l||} ) |} |
+        {| $({@_l||} ); $t |} |
+        {| $({@_l||}), $t |} |
+        {| $t, $({@_l||} ) |} |
+        {| $t & $({@_l||} ) |} |
+        {| $({@_l||} ) & $t |} |
+        {| $({@_l||} ) * $t |} |
+        {| $t * $({@_l||} ) |} -> t
       | t -> t ];
 
-    method! sig_item sg = match super#sig_item sg with
-      [ {:sig_item| $({:sig_item||}); $sg |} |
-        {:sig_item| $sg; $({:sig_item||} ) |} -> sg
-      | {:sig_item@loc| type $({:ctyp||} ) |} -> {:sig_item@loc||}
+    method! sig_item sg =
+      with "sig_item"
+      match super#sig_item sg with
+      [ {| $({@_l||}); $sg |} | {| $sg; $({@_l||} ) |} -> sg
+      | {| type $({:ctyp@_l||} ) |} -> {||}
       | sg -> sg ];
 
-    method! str_item st = match super#str_item st with
-      [ {:str_item| $({:str_item||} ); $st |} |
-        {:str_item| $st; $({:str_item||} ) |} -> st
-      | {:str_item@loc| type $({:ctyp||} ) |} -> {:str_item@loc||}
-      | {:str_item@loc| let $rec:_ $({:binding||} ) |} -> {:str_item@loc||}
+    method! str_item st =
+      with "str_item"
+      match super#str_item st with
+      [ {| $({@_l||} ); $st |} | {| $st; $({@_l||} ) |} -> st
+      | {| type $({:ctyp@_l||} ) |} -> {||}
+      | {| let $rec:_ $({:binding@_l||} ) |} -> {||}
       | st -> st ];
 
-    method! module_type mt =  match super#module_type mt with
-      [ {:module_type| $mt with $({:with_constr||} ) |} -> mt
+    method! module_type mt =
+      match super#module_type mt with
+      [ {:module_type| $mt with $({:with_constr@_l||} ) |} -> mt
       | mt -> mt ];
 
-    method! class_expr ce = match super#class_expr ce with
-      [ {:class_expr| $({:class_expr||} ) and $ce |} |
-        {:class_expr| $ce and $({:class_expr||} ) |} -> ce
+    method! class_expr ce =
+      with "class_expr"
+      match super#class_expr ce with
+      [ {| $({@_l||} ) and $ce |} | {| $ce and $({@_l||} ) |} -> ce
       | ce -> ce ];
 
-    method! class_type ct =  match super#class_type ct with
-      [ {:class_type| $({:class_type||} ) and $ct |} |
-        {:class_type| $ct and $({:class_type||} ) |} -> ct
+    method! class_type ct =
+      with "class_type"
+      match super#class_type ct with
+      [ {| $({@_l||} ) and $ct |} | {| $ct and $({@_l||} ) |} -> ct
       | ct -> ct ];
 
-    method! class_sig_item csg =  match super#class_sig_item csg with
-      [ {:class_sig_item| $({:class_sig_item||} ); $csg |} |
-        {:class_sig_item| $csg; $({:class_sig_item||} ) |} -> csg
+    method! class_sig_item csg =
+      with "class_sig_item"
+      match super#class_sig_item csg with
+      [ {| $({@_l||} ); $csg |} | {| $csg; $({@_l||} ) |} -> csg
       | csg -> csg ];
 
-    method! class_str_item cst = match super#class_str_item cst with
-      [ {:class_str_item| $({:class_str_item||} ); $cst |} |
-        {:class_str_item| $cst; $({:class_str_item||} ) |} -> cst
+    method! class_str_item cst =
+      with "class_str_item"
+      match super#class_str_item cst with
+      [ {| $({@_l||} ); $cst |} | {| $cst; $({@_l||} ) |} -> cst
       | cst -> cst ];
   end;
 

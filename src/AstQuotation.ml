@@ -234,7 +234,7 @@ open Format;
   let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
     let entry_eoi = Gram.eoi_entry entry in 
     let expand_expr loc loc_name_opt s =
-      parse_quot_string entry_eoi loc loc_name_opt s |> mexpr loc |> expr_filter (* anti_filter#expr *)  in
+      parse_quot_string entry_eoi loc loc_name_opt s |> mexpr loc |> expr_filter in
     let expand_str_item loc loc_name_opt s =
       let exp_ast = expand_expr loc loc_name_opt s in
       {:str_item@loc| $(exp:exp_ast) |} in
@@ -242,15 +242,15 @@ open Format;
       Ref.protect FanConfig.antiquotations true begin fun _ ->
         let ast = Gram.parse_string entry_eoi _loc s in
         let meta_ast = mpatt _loc ast in
-        let exp_ast = (* anti_filter#patt *)patt_filter  meta_ast in
+        let exp_ast = patt_filter meta_ast in
+        let rec subst_first_loc name =  with "patt" fun
+          [ {@_loc| Ast.$uid:u $_ |} -> {| Ast.$uid:u $lid:name |}
+          | {@_loc| $a $b |} -> {| $(subst_first_loc name a) $b |}
+          | p -> p ] in 
         match loc_name_opt with
-        [ None -> exp_ast
-        | Some name ->
-        let rec subst_first_loc =  fun
-          [ {:patt@_loc| Ast.$uid:u $_ |} -> {:patt| Ast.$uid:u $lid:name |}
-          | {:patt@_loc| $a $b |} -> {:patt| $(subst_first_loc a) $b |}
-          | p -> p ] in
-        subst_first_loc exp_ast ]
+        [ None -> subst_first_loc (!FanLoc.name) exp_ast
+        | Some "_" -> exp_ast
+        | Some name -> subst_first_loc name exp_ast ]
       end in begin
           add name DynAst.expr_tag expand_expr;
           add name DynAst.patt_tag expand_patt;

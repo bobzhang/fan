@@ -256,7 +256,7 @@ let text_of_action _loc psl rtvar act tvar =
     let e2 =
       match tok_match_pl with
       | None  -> e1
-      | Some (Ast.ExCom (_,t1,t2),Ast.PaCom (_,p1,p2)) ->
+      | Some (Ast.ExCom (_loc,t1,t2),Ast.PaCom (_,p1,p2)) ->
           Ast.ExMat
             (_loc, (Ast.ExTup (_loc, (Ast.ExCom (_loc, t1, t2)))),
               (Ast.McOr
@@ -295,8 +295,8 @@ let text_of_action _loc psl rtvar act tvar =
              Ast.ExFun
                (_loc,
                  (Ast.McArr (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc), txt)))
-         | Some (Ast.PaAli (_,Ast.PaApp (_,_,Ast.PaTup (_,Ast.PaAny _)),p))
-             ->
+         | Some (Ast.PaAli
+             (_loc,Ast.PaApp (_,_,Ast.PaTup (_,Ast.PaAny _)),p)) ->
              let p = make_ctyp_patt s.styp tvar p in
              Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), txt)))
          | Some p when Camlp4Ast.is_irrefut_patt p ->

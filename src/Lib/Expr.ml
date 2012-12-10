@@ -40,7 +40,7 @@ let rec sep_expr acc = fun
       match acc with
       [ [] -> [(loc, [], e)]
       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
-  | {| $(id:({:ident| $_.$_ |} as i)) |} ->
+  | {| $(id:({:ident@_l| $_.$_ |} as i)) |} ->
       sep_expr acc (Ident.normalize_acc i)
   | e -> [(Ast.loc_of_expr e, [], e) :: acc] ];
 
@@ -130,9 +130,9 @@ let bigarray_set _loc var newval = match var with
 (* FIXME later *)
 let rec pattern_eq_expression p e =
   match (p, e) with
-  [ ({:patt| $lid:a |}, {| $lid:b |}) -> a = b
-  | ({:patt| $uid:a |}, {| $uid:b |}) -> a = b
-  | ({:patt| $p1 $p2 |}, {| $e1 $e2 |}) ->
+  [ ({:patt| $lid:a |}, {@_l| $lid:b |}) -> a = b
+  | ({:patt| $uid:a |}, {@_l| $uid:b |}) -> a = b
+  | ({:patt| $p1 $p2 |}, {@_l| $e1 $e2 |}) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
   | _ -> false ] ;
 
@@ -140,7 +140,7 @@ let rec pattern_eq_expression p e =
 (*************************************************************************)
 (* List comprehension *)  
 let map _loc p e l =  match (p, e) with
-  [ ({:patt| $lid:x |}, {| $lid:y |}) when x = y -> l
+  [ ({:patt| $lid:x |}, {@_l| $lid:y |}) when x = y -> l
   | _ ->
       if Ast.is_irrefut_patt p then
         {| List.map (fun $p -> $e) $l |}

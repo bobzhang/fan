@@ -181,27 +181,27 @@ let add_quotation ~expr_filter  ~patt_filter  ~mexpr  ~mpatt  name entry =
          let ast = Gram.parse_string entry_eoi _loc s in
          let meta_ast = mpatt _loc ast in
          let exp_ast = patt_filter meta_ast in
+         let rec subst_first_loc name =
+           function
+           | Ast.PaApp
+               (_loc,Ast.PaId
+                (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
+               ->
+               Ast.PaApp
+                 (_loc,
+                   (Ast.PaId
+                      (_loc,
+                        (Ast.IdAcc
+                           (_loc, (Ast.IdUid (_loc, "Ast")),
+                             (Ast.IdUid (_loc, u)))))),
+                   (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
+           | Ast.PaApp (_loc,a,b) ->
+               Ast.PaApp (_loc, (subst_first_loc name a), b)
+           | p -> p in
          match loc_name_opt with
-         | None  -> exp_ast
-         | Some name ->
-             let rec subst_first_loc =
-               function
-               | Ast.PaApp
-                   (_loc,Ast.PaId
-                    (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
-                   ->
-                   Ast.PaApp
-                     (_loc,
-                       (Ast.PaId
-                          (_loc,
-                            (Ast.IdAcc
-                               (_loc, (Ast.IdUid (_loc, "Ast")),
-                                 (Ast.IdUid (_loc, u)))))),
-                       (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
-               | Ast.PaApp (_loc,a,b) ->
-                   Ast.PaApp (_loc, (subst_first_loc a), b)
-               | p -> p in
-             subst_first_loc exp_ast) in
+         | None  -> subst_first_loc FanLoc.name.contents exp_ast
+         | Some "_" -> exp_ast
+         | Some name -> subst_first_loc name exp_ast) in
   add name DynAst.expr_tag expand_expr;
   add name DynAst.patt_tag expand_patt;
   add name DynAst.str_item_tag expand_str_item
