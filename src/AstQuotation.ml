@@ -106,6 +106,12 @@ let expander_name pos_tag name =
   | name -> name ];
 
 
+let current_loc_name = ref None  ;
+let stack = Stack.create ();
+let current_quot () =
+  try Stack.pop stack
+  with [Stack.Empty -> failwith "it's not in a quotation context"];
+    
 let add name tag f =
   let elt = ((name, Exp_key.pack tag ()), Exp_fun.pack tag f) in
   expanders_table := [elt :: !expanders_table];
@@ -169,20 +175,6 @@ Printexc.register_printer (fun
   [ QuotationError x -> Some (quotation_error_to_string x )
   | _ -> None]);
 
-let expand_quotation loc expander pos_tag quot =
-  debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
-  let open FanToken in
-  let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
-  try expander loc loc_name_opt quot.q_contents with
-  [ FanLoc.Exc_located (_, (QuotationError _)) as exc ->
-      raise exc
-  | FanLoc.Exc_located (iloc, exc) ->
-      let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
-      raise (FanLoc.Exc_located iloc exc1)
-  | exc ->
-      let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
-      raise (FanLoc.Exc_located loc exc1) ];
-
 let parse_quotation_result parse loc quot pos_tag str =
   let open FanToken in 
   try parse loc str with
@@ -197,6 +189,20 @@ let parse_quotation_result parse loc quot pos_tag str =
       let exc1 = QuotationError (quot.q_name, pos_tag, ctx, exc) in
       raise (FanLoc.Exc_located iloc exc1) ];
 
+(* called by [expand] *)    
+let expand_quotation loc expander pos_tag quot =
+  debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
+  let open FanToken in
+  let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
+  try expander loc loc_name_opt quot.q_contents with
+  [ FanLoc.Exc_located (_, (QuotationError _)) as exc ->
+      raise exc
+  | FanLoc.Exc_located (iloc, exc) ->
+      let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
+      raise (FanLoc.Exc_located iloc exc1)
+  | exc ->
+      let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
+      raise (FanLoc.Exc_located loc exc1) ];
     
 let expand loc quotation tag =
   let open FanToken in 
@@ -214,8 +220,16 @@ let expand loc quotation tag =
         else raise Not_found
      | e -> raise e ] in 
   let try expander = find name tag
-  and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc)  in
-  expand_quotation loc expander pos_tag quotation
+  and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc)  in begin
+    Stack.push  quotation.q_name stack;
+    try  begin 
+      let res = expand_quotation loc expander pos_tag quotation;
+      ignore(Stack.pop stack);
+      res 
+    end
+    with
+      e -> begin ignore (Stack.pop stack) ; raise e end
+  end
   with
     [ FanLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
     | FanLoc.Exc_located (qloc, exc) ->
@@ -224,78 +238,72 @@ let expand loc quotation tag =
         raise (FanLoc.Exc_located loc (QuotationError (name, pos_tag, Finding, exc))) ];
 
 
-  let current_loc_name = ref None  ;
+let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
+  let entry_eoi = Gram.eoi_entry entry in 
+  let expand_expr loc loc_name_opt s =
+    Ref.protect2 (FanConfig.antiquotations,true) (current_loc_name, loc_name_opt)
+      (fun _ ->
+        Gram.parse_string entry_eoi loc s |> mexpr loc |> expr_filter) in
+  let expand_str_item loc loc_name_opt s =
+    let exp_ast = expand_expr loc loc_name_opt s in
+    {:str_item@loc| $(exp:exp_ast) |} in
+  let expand_patt _loc loc_name_opt s =
+    Ref.protect FanConfig.antiquotations true begin fun _ ->
+      let ast = Gram.parse_string entry_eoi _loc s in
+      let meta_ast = mpatt _loc ast in
+      let exp_ast = patt_filter meta_ast in
+      let rec subst_first_loc name =  with "patt" fun
+        [ {@_loc| Ast.$uid:u $_ |} -> {| Ast.$uid:u $lid:name |}
+        | {@_loc| $a $b |} -> {| $(subst_first_loc name a) $b |}
+        | p -> p ] in 
+      match loc_name_opt with
+      [ None -> subst_first_loc (!FanLoc.name) exp_ast
+      | Some "_" -> exp_ast
+      | Some name -> subst_first_loc name exp_ast ]
+    end in begin
+        add name DynAst.expr_tag expand_expr;
+        add name DynAst.patt_tag expand_patt;
+        add name DynAst.str_item_tag expand_str_item;
+    end;
 
-  let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
-    let entry_eoi = Gram.eoi_entry entry in 
-    let expand_expr loc loc_name_opt s =
-      Ref.protect2 (FanConfig.antiquotations,true) (current_loc_name, loc_name_opt)
-        (fun _ ->
-          Gram.parse_string entry_eoi loc s |> mexpr loc |> expr_filter) in
-    let expand_str_item loc loc_name_opt s =
-      let exp_ast = expand_expr loc loc_name_opt s in
-      {:str_item@loc| $(exp:exp_ast) |} in
-    let expand_patt _loc loc_name_opt s =
-      Ref.protect FanConfig.antiquotations true begin fun _ ->
-        let ast = Gram.parse_string entry_eoi _loc s in
-        let meta_ast = mpatt _loc ast in
-        let exp_ast = patt_filter meta_ast in
-        let rec subst_first_loc name =  with "patt" fun
-          [ {@_loc| Ast.$uid:u $_ |} -> {| Ast.$uid:u $lid:name |}
-          | {@_loc| $a $b |} -> {| $(subst_first_loc name a) $b |}
-          | p -> p ] in 
-        match loc_name_opt with
-        [ None -> subst_first_loc (!FanLoc.name) exp_ast
-        | Some "_" -> exp_ast
-        | Some name -> subst_first_loc name exp_ast ]
-      end in begin
-          add name DynAst.expr_tag expand_expr;
-          add name DynAst.patt_tag expand_patt;
-          add name DynAst.str_item_tag expand_str_item;
-      end;
-
-    let make_parser entry =
-      fun loc loc_name_opt s  -> 
-        Ref.protect2
-          (FanConfig.antiquotations, true)
-          (current_loc_name,loc_name_opt)
-          (fun _ -> Gram.parse_string (Gram.eoi_entry entry) loc  s);
+let make_parser entry =
+  fun loc loc_name_opt s  -> 
+    Ref.protect2
+      (FanConfig.antiquotations, true)
+      (current_loc_name,loc_name_opt)
+      (fun _ -> Gram.parse_string (Gram.eoi_entry entry) loc  s);
         
-    let add_quotation_of_str_item ~name ~entry =
-      add name DynAst.str_item_tag (make_parser entry);
+let add_quotation_of_str_item ~name ~entry =
+  add name DynAst.str_item_tag (make_parser entry);
 
-    let add_quotation_of_str_item_with_filter ~name ~entry ~filter =
-      add name DynAst.str_item_tag (filter (make_parser entry));
+let add_quotation_of_str_item_with_filter ~name ~entry ~filter =
+  add name DynAst.str_item_tag (filter (make_parser entry));
 
 
-    (* both [expr] and [str_item] positions are registered *)  
-    let add_quotation_of_expr ~name ~entry = 
-      let expand_fun =  make_parser entry in
-      let mk_fun loc loc_name_opt s =
-        {:str_item@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin 
-          add name DynAst.expr_tag expand_fun ;
-          add name DynAst.str_item_tag mk_fun ;
-        end ;
-    let add_quotation_of_patt ~name ~entry =
-      add name DynAst.patt_tag (make_parser entry);
-      
-    let add_quotation_of_class_str_item ~name ~entry =
-      add name DynAst.class_str_item_tag (make_parser entry);
-      
-    let add_quotation_of_match_case ~name ~entry =
-      add name DynAst.match_case_tag (make_parser  entry);
+(* both [expr] and [str_item] positions are registered *)  
+let add_quotation_of_expr ~name ~entry = 
+  let expand_fun =  make_parser entry in
+  let mk_fun loc loc_name_opt s =
+    {:str_item@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin 
+      add name DynAst.expr_tag expand_fun ;
+      add name DynAst.str_item_tag mk_fun ;
+    end ;
+let add_quotation_of_patt ~name ~entry =
+  add name DynAst.patt_tag (make_parser entry);
+  
+let add_quotation_of_class_str_item ~name ~entry =
+  add name DynAst.class_str_item_tag (make_parser entry);
+  
+let add_quotation_of_match_case ~name ~entry =
+  add name DynAst.match_case_tag (make_parser  entry);
     
   
 module MetaLocQuotation = struct
-
   let meta_loc_expr _loc loc =
     match !current_loc_name with
     [ None -> {:expr| $(lid:!FanLoc.name) |}
     | Some "here" -> MetaLoc.meta_loc_expr _loc loc
     | Some x -> {:expr| $lid:x |} ];
-   (* FIXME track the location of the quotation
-      read the list for the detailed usage
-    *)   
   let meta_loc_patt _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
 end;
 
@@ -503,4 +511,76 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       | e -> super#expr e ];
   end;
 
+
   
+let anti ~parse_patt ~parse_expr = object
+  inherit Ast.map as super;
+  method! patt =
+    with "patt"
+    fun
+    [ {| $anti:s |} | {| $str:s |} as p ->
+      let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
+      handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
+        ~decorate:(fun n e ->
+          let len = String.length n in 
+          match n with
+          [ "tupexpr" -> {|Ast.ExTup ($(mloc _loc), $e)|}
+          | "seqexpr" -> {|Ast.ExSeq ($(mloc _loc), $e) |}
+          | "uidexpr" -> {| Ast.IdUid ($(mloc _loc), $e) |} (* use Ant instead *)
+          | "lidexpr" -> {| Ast.IdLid ($(mloc _loc), $e) |}
+          | "strexpr" -> {| Ast.ExStr ($(mloc _loc), $e) |}
+          | "chrexpr" -> {| Ast.ExChr ($(mloc _loc), $e) |}
+          | "intexpr" -> {| Ast.ExInt ($(mloc _loc), $e) |}
+          | "int32expr" -> {| Ast.ExInt32 ($(mloc _loc), $e) |}
+          | "int64expr" -> {|Ast.ExInt64 ($(mloc _loc), $e)|}
+          | "floexpr" -> {| Ast.ExFlo ($(mloc _loc), $e) |}
+          | "nativeintexpr" -> {|Ast.ExNativeInt ($(mloc _loc), $e) |}
+          | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern")
+          | _ -> e ])
+      | p -> super#patt p ];
+    method! expr = with "expr" fun (* ExAnt keeps the right location, ExStr does not *)
+      [ {| $anti:s |} | {| $str:s |} as e ->
+          let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
+          handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
+            ~decorate:(fun n e -> (* e is the parsed Ast node already *)
+            match n with
+            ["tupexpr" ->   {| Ast.ExTup $(mloc _loc) $e |}
+            | "seqexpr" -> {| Ast.ExSeq $(mloc _loc) $e |}
+            | "uidexpr" -> {| Ast.IdUid $(mloc _loc) $e |} (* use Ant instead *)
+            | "lidexpr" -> {| Ast.IdLid $(mloc _loc) $e |}
+            | "strexpr" -> {| Ast.ExStr $(mloc _loc) $e |}
+            | "chrexpr" -> {| Ast.ExChr $(mloc _loc) $e |}
+            | "intexpr" -> {| Ast.ExInt $(mloc _loc) $e |}
+            | "int32expr" -> {| Ast.ExInt32 $(mloc _loc) $e |}
+            | "int64expr" -> {|Ast.ExInt64 $(mloc _loc) $e|}
+            | "floexpr" -> {| Ast.ExFlo $(mloc _loc) $e |}
+            | "nativeintexpr" -> {|Ast.ExNativeInt $(mloc _loc) $e |}
+            | "`nativeintexpr" ->
+                let e = {| Nativeint.to_string $e |} in
+                {|Ast.ExNativeInt $(mloc _loc) $e |}
+            | "`intexpr" ->
+                let e = {|string_of_int $e |} in
+                {|Ast.ExInt $(mloc _loc) $e |}
+            | "`int32expr" ->
+                let e = {|Int32.to_string $e |} in
+                {|Ast.ExInt32 $(mloc _loc) $e |}
+            | "`int64expr" ->
+                let e = {|Int64.to_string $e |} in
+                {|Ast.ExInt64 $(mloc _loc) $e |}
+            | "`chrexpr" ->
+                let e = {|Char.escaped $e|} in
+                {|Ast.ExChr $(mloc _loc) $e |}
+            | "`strexpr" ->
+                let e = {|Ast.safe_string_escaped $e |} in
+                {|Ast.ExStr $(mloc _loc) $e |}
+            | "`floexpr" ->
+                let e = {| FanUtil.float_repres $e |} in 
+                {|Ast.ExFlo $(mloc _loc) $e |}
+            | "`boolexpr" ->
+                let x = {|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in
+                {| {| $(id:$x)  |} |}
+            | "antiexpr" -> {| Ast.ExAnt $(mloc _loc) $e |}
+            | _ -> e ])
+      | e -> super#expr e ];
+  end;
+

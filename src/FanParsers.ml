@@ -280,7 +280,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
    string:
     [ `STR (_, s) -> {:expr| $str:s |}
-    | `ANT ("", s) -> (* AntiquotSyntax. *)parse_expr _loc s ] (*suport antiquot for string*)
+    | `ANT ("", s) -> parse_expr _loc s ] (*suport antiquot for string*)
 
    symbol: 
      [`UID ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; S{s} ->
