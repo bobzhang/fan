@@ -413,7 +413,40 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "`boolexpr" ->
                 let x = {|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in
                 {| {| $(id:$x)  |} |}
+
+                (* {| {| $(id: $({|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |}))  |} |} *)
                   
+
+                  {| $(lid:if e then "true" else "false") |}
+                  (* {| {| $(lid:if $e then "true" else "false") |} |} *)
+
+                  (* {:expr@here|$`bool:x|} *)
+                  (*
+                    let _ =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExId
+              (_loc,
+                (Ast.IdAcc
+                   (_loc, (Ast.IdUid (_loc, "Ast")),
+                     (Ast.IdUid (_loc, "ExId")))))),
+           (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "IdLid")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+           (Ast.ExIfe
+              (_loc, e, (Ast.ExStr (_loc, "true")),
+                (Ast.ExStr (_loc, "false")))))))
+                   *)
             | "flopatt" -> {| Ast.PaFlo $(mloc _loc) $e |}
             | "intpatt" -> {| Ast.PaInt $(mloc _loc) $e |}
             | "int32patt" -> {| Ast.PaInt32 $(mloc _loc) $e|}
