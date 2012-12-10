@@ -994,7 +994,7 @@ New syntax:\
       | patt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
       match_case0:
       [ `ANT (("match_case"|"list"| "anti"|"" as n),s) -> {| $(anti:mk_anti ~c:"match_case" n s) |}
-      | patt_as_patt_opt{p}; "when"; expr{w};  "->"; sequence{e} ->  {| $pat:p when $w -> $e |}
+      | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->  {| $pat:p when $w -> $e |}
       | patt_as_patt_opt{p}; "->";expr{e} -> {| $pat:p -> $e |} ]
       match_case_quot:
       [ L0 match_case0 SEP "|"{x} -> {| $list:x |}
