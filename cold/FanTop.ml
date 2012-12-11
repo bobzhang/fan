@@ -69,13 +69,15 @@ let _ =
     ((fun loc  txt  ->
         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt)));
   iter_and_take_callbacks (fun (_,f)  -> f ())
+open ParserListComprehension
+open ParserRevise
+open ParserMacro
+open ParserGrammar
+open ParserDebug
+open ParserStream
 let _ =
-  let open FanParsers in
-    pa_r (module Fan);
-    pa_rp (module Fan);
-    pa_g (module Fan);
-    pa_l (module Fan);
-    pa_m (module Fan)
+  AstParsers.use_parsers
+    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"]
 let normal () = Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 let revise () = Toploop.parse_toplevel_phrase := revise_parser
 let token () = Toploop.parse_toplevel_phrase := (wrap fake)

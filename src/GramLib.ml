@@ -87,4 +87,11 @@ let parse_include_file rule file  =
   (* fan_class_str_item: [[ STRING{file}; STRING{c}->  class_str_item_of_file (file,c) ]] *)
   (* fan_ctyp: [[STRING{file};STRING{c} ->  ctyp_of_file (file,c) ]] *)
 
+
+  (* let mk_semi_list nt nts = *)
+  (*   with "rec_binding" *)
+  (*   {:extend|Gram *)
+  (*     nts:[ nt{b1};";";S{b2} -> {|$b1;$b2|} | nt{b1};";" -> b1 | nt{b1} -> b1 ] *)
+  (*   |}; *)
     
+  

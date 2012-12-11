@@ -88,14 +88,14 @@ let _  =   begin
       iter_and_take_callbacks (fun (_, f) -> f ());
   end;
 
-let open FanParsers in  begin
-   pa_r (module Fan);
-   pa_rp (module Fan);
-   (* pa_q (module Fan); *)
-   pa_g (module Fan);
-   pa_l (module Fan);
-   pa_m (module Fan);
-end;
+open ParserListComprehension;
+open ParserRevise;
+open ParserMacro;
+open ParserGrammar;
+open ParserDebug;
+open ParserStream;
+AstParsers.use_parsers ["revise";"stream";"debug";"macro";"ListComprehension"];
+  
 
 let normal () = begin
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase;

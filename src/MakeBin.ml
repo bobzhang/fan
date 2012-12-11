@@ -1,4 +1,3 @@
-open FanParsers;
 open Filters;
 open Format;
 open LibUtil;
@@ -30,6 +29,25 @@ let just_print_filters () =
     pp  "@[for phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.implem_filters ;
     pp  "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.topphrase_filters 
   end;
+let just_print_parsers () =
+  let pp = eprintf in
+  let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in begin
+    pp "@[Loaded Parsers:@;@[<hv2>%a@]@]@." p_tbl AstParsers.registered_parsers
+  end;
+  
+let just_print_applied_parsers () =
+  let pp = eprintf in
+  pp "@[Applied Parsers:@;@[<hv2>%a@]@]@."
+    (fun f q -> Queue.iter (fun (k,_) -> fprintf f "%s@;" k) q  ) AstParsers.applied_parsers;
+
+open ParserListComprehension;
+open ParserRevise;
+open ParserMacro;
+open ParserGrammar;
+open ParserDebug;
+open ParserStream;
+AstParsers.use_parsers ["revise";"stream";"debug";"macro";"ListComprehension"];
+  
 type file_kind =
   [ Intf of string
   | Impl of string
@@ -44,11 +62,11 @@ let task f x =
   f x ;
 
 module Camlp4Bin
-     (PreCast:Sig.PRECAST)
-    =struct
-    let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) = Hashtbl.create 30;
-      (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
-    let rcall_callback = ref (fun () -> ());
+     (PreCast:Sig.PRECAST) = struct
+
+   let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) = Hashtbl.create 30;
+     (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
+  let rcall_callback = ref (fun () -> ());
     let loaded_modules = ref SSet.empty;
     let add_to_loaded_modules name =
       loaded_modules := SSet.add name !loaded_modules;
@@ -79,49 +97,12 @@ module Camlp4Bin
           end
         end in begin 
           match (n, String.lowercase x) with
-          [ ("Parsers"|"",
-             "pa_r.cmo" | "r"|"ocamlr"|"ocamlrevised" | "camlp4ocamlrevisedparser.cmo")
-            -> begin
-              pa_r (module PreCast) ;
-            end
-          | ("Parsers"|"",
-             "pa_rp.cmo" | "rp" | "rparser" | "camlp4ocamlrevisedparserparser.cmo")
-            -> begin
-              pa_r (module PreCast);
-              pa_rp (module PreCast);
-            end 
-          | ("Parsers"|"",
-             "pa_extend.cmo" | "pa_extend_m.cmo" | "g" | "grammar" | "camlp4grammarparser.cmo")
-            -> begin
-              pa_g (module PreCast);
-            end 
-          | ("Parsers"|"",
-             "pa_macro.cmo"  | "m"  | "macro" | "camlp4macroparser.cmo") -> begin
-               pa_m (module PreCast);
-             end 
-          | ("Parsers"|"", "rf") -> begin
-              pa_r (module PreCast);
-              pa_rp (module PreCast);
-              pa_g (module PreCast);
-              pa_l (module PreCast);
-              pa_m (module PreCast);
-          end
-          | ("Parsers"|"","debug") -> begin
-              pa_debug (module PreCast);
-          end
-          | ("Parsers"|"",
-             "comp" | "camlp4listcomprehension.cmo") ->
-               begin
-                 pa_l (module PreCast);
-               end 
+          [("Printers"|"",
+            "pr_o.cmo" | "o" | "ocaml" | "camlp4ocamlprinter.cmo") -> 
+              PreCast.enable_ocaml_printer ()
           | ("Printers"|"",
-             "pr_o.cmo" | "o" | "ocaml" | "camlp4ocamlprinter.cmo") -> begin
-               PreCast.enable_ocaml_printer ();
-             end 
-          | ("Printers"|"",
-             "pr_dump.cmo" | "p" | "dumpocaml" | "camlp4ocamlastdumper.cmo") -> begin 
+             "pr_dump.cmo" | "p" | "dumpocaml" | "camlp4ocamlastdumper.cmo") -> 
               PreCast.enable_dump_ocaml_ast_printer ()
-             end
           | ("Printers"|"",
              "d" | "dumpcamlp4" | "camlp4astdumper.cmo") ->
               PreCast.enable_dump_camlp4_ast_printer ()
@@ -136,8 +117,7 @@ module Camlp4Bin
                end
           | _ ->
             let y = "Camlp4"^n^"/"^x^objext in
-            real_load (try find_in_path y with [ Not_found -> x ])
-          ];
+            real_load (try find_in_path y with [ Not_found -> x ]) ];
           !rcall_callback ();
         end;
      let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
@@ -272,6 +252,8 @@ module Camlp4Bin
          (* FIXME the command line parsing sucks, it can not handle prefix problem*)
          ("-loaded-modules", FanArg.Set print_loaded_modules, "Print the list of loaded modules.");
          ("-loaded-filters", FanArg.Unit just_print_filters, "Print the registered filters.");
+         ("-loaded-parsers", FanArg.Unit just_print_parsers, "Print the loaded parsers.");
+         ("-used-parsers", FanArg.Unit just_print_applied_parsers, "Print the applied parsers.");
          ("-parser", FanArg.String (rewrite_and_load "Parsers"),
           "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
          ("-printer", FanArg.String (rewrite_and_load "Printers"),

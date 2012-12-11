@@ -1,4 +1,3 @@
-open FanParsers
 open Filters
 open Format
 open LibUtil
@@ -15,6 +14,24 @@ let just_print_filters () =
   pp "@[for interface:@[<hv2>%a@]@]@." p_tbl AstFilters.interf_filters;
   pp "@[for phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.implem_filters;
   pp "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.topphrase_filters
+let just_print_parsers () =
+  let pp = eprintf in
+  let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
+  pp "@[Loaded Parsers:@;@[<hv2>%a@]@]@." p_tbl AstParsers.registered_parsers
+let just_print_applied_parsers () =
+  let pp = eprintf in
+  pp "@[Applied Parsers:@;@[<hv2>%a@]@]@."
+    (fun f  q  -> Queue.iter (fun (k,_)  -> fprintf f "%s@;" k) q)
+    AstParsers.applied_parsers
+open ParserListComprehension
+open ParserRevise
+open ParserMacro
+open ParserGrammar
+open ParserDebug
+open ParserStream
+let _ =
+  AstParsers.use_parsers
+    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"]
 type file_kind =  
   | Intf of string
   | Impl of string
@@ -55,23 +72,6 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       then ()
       else (add_to_loaded_modules n; DynLoader.load dyn_loader (n ^ objext)) in
     (match (n, (String.lowercase x)) with
-     | (("Parsers"|""),("pa_r.cmo"|"r"|"ocamlr"|"ocamlrevised"|"camlp4ocamlrevisedparser.cmo"))
-         -> pa_r (module PreCast)
-     | (("Parsers"|""),("pa_rp.cmo"|"rp"|"rparser"|"camlp4ocamlrevisedparserparser.cmo"))
-         -> (pa_r (module PreCast); pa_rp (module PreCast))
-     | (("Parsers"|""),("pa_extend.cmo"|"pa_extend_m.cmo"|"g"|"grammar"|"camlp4grammarparser.cmo"))
-         -> pa_g (module PreCast)
-     | (("Parsers"|""),("pa_macro.cmo"|"m"|"macro"|"camlp4macroparser.cmo"))
-         -> pa_m (module PreCast)
-     | (("Parsers"|""),"rf") ->
-         (pa_r (module PreCast);
-          pa_rp (module PreCast);
-          pa_g (module PreCast);
-          pa_l (module PreCast);
-          pa_m (module PreCast))
-     | (("Parsers"|""),"debug") -> pa_debug (module PreCast)
-     | (("Parsers"|""),("comp"|"camlp4listcomprehension.cmo")) ->
-         pa_l (module PreCast)
      | (("Printers"|""),("pr_o.cmo"|"o"|"ocaml"|"camlp4ocamlprinter.cmo")) ->
          PreCast.enable_ocaml_printer ()
      | (("Printers"|""),("pr_dump.cmo"|"p"|"dumpocaml"|"camlp4ocamlastdumper.cmo"))
@@ -204,6 +204,10 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       "Print the list of loaded modules.");
     ("-loaded-filters", (FanArg.Unit just_print_filters),
       "Print the registered filters.");
+    ("-loaded-parsers", (FanArg.Unit just_print_parsers),
+      "Print the loaded parsers.");
+    ("-used-parsers", (FanArg.Unit just_print_applied_parsers),
+      "Print the applied parsers.");
     ("-parser", (FanArg.String (rewrite_and_load "Parsers")),
       "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
     ("-printer", (FanArg.String (rewrite_and_load "Printers")),

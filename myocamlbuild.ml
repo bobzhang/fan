@@ -782,8 +782,8 @@ define_context_for_root root2;;
 
 let boot_flags =
   S[P ("boot"//"fan"); (* symlink fan to either fan.byte or fan.native *)
-    A "-parser"; A"rf";
-    A "-parser"; A"debug";
+    (* A "-parser"; A"rf"; *)
+    (* A "-parser"; A"debug"; *)
     A"-printer"; A"p"];;
 
 rule "code_boot: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
