@@ -417,7 +417,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 (* {| {| $(id: $({|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |}))  |} |} *)
                   
 
-                  {| $(lid:if e then "true" else "false") |}
+                  (* {| $(lid:if e then "true" else "false") |} *)
                   (* {| {| $(lid:if $e then "true" else "false") |} |} *)
 
                   (* {:expr@here|$`bool:x|} *)
