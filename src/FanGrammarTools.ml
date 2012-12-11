@@ -8,7 +8,6 @@ open FanGrammar;
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
 
-let split_ext = ref false;
   
 let prefix = "__fan_"  ;
   

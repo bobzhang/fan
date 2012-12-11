@@ -1,6 +1,6 @@
 open FanGrammar
 val print_warning : FanLoc.t -> string -> unit
-val split_ext : bool ref
+
 val prefix : string
 val meta_action : bool ref
 val grammar_module_name : Ast.ident ref

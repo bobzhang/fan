@@ -86,10 +86,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
      [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
        |  qualuid{t} -> `static(t)]{t};
        L0
-         [ a_LIDENT{x} -> (x,None,None)
-         | "(";a_LIDENT{x};`STR(_,y); ")" ->(x,Some y,None)
-         | "(";a_LIDENT{x};`STR(_,y);ctyp{t};  ")" -> (x,Some y,Some t)
-         | "(";a_LIDENT{x}; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (x,y,Some t) ] {ls}
+         [ a_LIDENT{x} -> (_loc,x,None,None)
+         | "(";a_LIDENT{x};`STR(_,y); ")" ->(_loc,x,Some y,None)
+         | "(";a_LIDENT{x};`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
+         | "(";a_LIDENT{x}; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")"
+           -> (_loc,x,y,Some t) ] {ls}
        ->
        with "str_item"
        let mk =
@@ -99,7 +100,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
        let rest =
          List.map
            (fun
-             (x,descr,ty) ->
+             (_loc,x,descr,ty) ->
                match (descr,ty) with
                [(Some d,None) ->
                    {| let $lid:x = $mk $str:d |}
@@ -300,11 +301,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   (* to be tuned *)  
     
-  Options.add ("-split_ext", (FanArg.Set split_ext),
-               "Split EXTEND by functions to turn around a PowerPC problem.");
-
-  Options.add ("-split_gext", (FanArg.Set split_ext),"Old name for the option -split_ext.");
-
+  
   Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented"); (* FIXME *)
 end;
 

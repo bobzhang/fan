@@ -11,7 +11,8 @@ FanConfig.antiquotations := true;
 
 
 {:extend.create|Gram nonterminals nonterminalsclear
-  delete_rule_header extend_header  qualuid qualid t_qualid entry_name
+  delete_rule_header extend_header  qualuid qualid t_qualid
+  (entry_name : Gram.t ([=`name of string | `non] * FanGrammar.name))
   locals entry position assoc name string pattern simple_expr delete_rules
   simple_patt internal_patt|}  ;
 
@@ -240,18 +241,18 @@ FanConfig.antiquotations := true;
    [ a_LIDENT{i} -> {:expr| $lid:i |}
    | "("; expr{e}; ")" -> e ]  |};
 
-AstQuotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body; (* built in extend support *)
-AstQuotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body; (* built in delete support *)
-AstQuotation.add_quotation_of_expr ~name:"extend.clear" ~entry:nonterminalsclear;
+AstQuotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body;
+  (* built in extend support *)
+AstQuotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body;
+  (* built in delete support *)
+AstQuotation.add_quotation_of_expr ~name:"extend.clear"
+    ~entry:nonterminalsclear;
 
-AstQuotation.add_quotation_of_str_item ~name:"extend.create" ~entry:nonterminals;
+AstQuotation.add_quotation_of_str_item ~name:"extend.create"
+    ~entry:nonterminals;
 
 (* to be tuned *)  
 
-Options.add ("-split_ext", (FanArg.Set split_ext),
-             "Split EXTEND by functions to turn around a PowerPC problem.");
-
-Options.add ("-split_gext", (FanArg.Set split_ext),"Old name for the option -split_ext.");
 
 Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented"); (* FIXME *)
 
