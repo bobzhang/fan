@@ -5,7 +5,6 @@ module MetaAst = Camlp4Ast.Meta.Make(Lib.Meta.MetaGhostLoc)
 module Ast = Camlp4Ast
 open FanGrammar
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
-let split_ext = ref false
 let prefix = "__fan_"
 let meta_action = ref false
 let grammar_module_name =

@@ -200,7 +200,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                   [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
                      (Gram.mk_action
                         (fun (x : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                           ((x, None, None) : 'e__3 ))));
+                           ((_loc, x, None, None) : 'e__3 ))));
                   ([`Skeyword "(";
                    `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
                    `Stoken
@@ -211,7 +211,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                        (fun _  (__fan_2 : [> FanToken.t])  (x : 'a_LIDENT)  _
                            (_loc : FanLoc.t)  ->
                           match __fan_2 with
-                          | `STR (_,y) -> ((x, (Some y), None) : 'e__3 )
+                          | `STR (_,y) ->
+                              ((_loc, x, (Some y), None) : 'e__3 )
                           | _ -> assert false)));
                   ([`Skeyword "(";
                    `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
@@ -224,7 +225,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                        (fun _  (t : 'ctyp)  (__fan_2 : [> FanToken.t]) 
                           (x : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
                           match __fan_2 with
-                          | `STR (_,y) -> ((x, (Some y), (Some t)) : 'e__3 )
+                          | `STR (_,y) ->
+                              ((_loc, x, (Some y), (Some t)) : 'e__3 )
                           | _ -> assert false)));
                   ([`Skeyword "(";
                    `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
@@ -245,7 +247,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                     (Gram.mk_action
                        (fun _  (y : 'e__2 option)  (t : 'ctyp)  _ 
                           (x : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
-                          ((x, y, (Some t)) : 'e__3 ))))])],
+                          ((_loc, x, y, (Some t)) : 'e__3 ))))])],
               (Gram.mk_action
                  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->
                     (let mk =
@@ -265,7 +267,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                (Ast.ExId (_loc, x))) in
                      let rest =
                        List.map
-                         (fun (x,descr,ty)  ->
+                         (fun (_loc,x,descr,ty)  ->
                             match (descr, ty) with
                             | (Some d,None ) ->
                                 Ast.StVal
@@ -1111,14 +1113,6 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
     AstQuotation.add_quotation_of_str_item ~name:"extend.create"
       ~entry:nonterminals
   let _ =
-    Options.add
-      ("-split_ext", (FanArg.Set split_ext),
-        "Split EXTEND by functions to turn around a PowerPC problem.")
-  let _ =
-    Options.add
-      ("-split_gext", (FanArg.Set split_ext),
-        "Old name for the option -split_ext.")
-  let _ =
     Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented")
   end
 module IdListComprehension = struct
@@ -1728,7 +1722,6 @@ module IdRevisedParser = struct
   end
 module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
   include Syntax module Ast = Camlp4Ast
-  let _ = FanConfig.constructors_arity := false
   let help_sequences () =
     Printf.eprintf
       "New syntax:\n    (e1; e2; ... ; en) OR begin e1; e2; ... ; en end\n    while e do e1; e2; ... ; en done\n    for v = v1 to/downto v2 do e1; e2; ... ; en done\nOld syntax (still supported):\n    begin e1; e2; ... ; en end\n    while e begin e1; e2; ... ; en end\n    for v = v1 to/downto v2 do {e1; e2; ... ; en}\nVery old (no more supported) syntax:\n    do e1; e2; ... ; en-1; return en\n    while e do e1; e2; ... ; en; done\n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\n";

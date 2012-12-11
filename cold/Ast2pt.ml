@@ -5,7 +5,6 @@ open Lib
 open FanUtil
 open Camlp4Ast
 open ParsetreeHelper
-let constructors_arity () = FanConfig.constructors_arity.contents
 let mkvirtual =
   function
   | Ast.ViVirtual  -> Virtual
@@ -331,15 +330,12 @@ let rec mkrangepat loc c1 c2 =
 let rec patt =
   function
   | Ast.PaId (loc,Ast.IdLid (_,("true"|"false" as txt))) ->
-      let p =
-        Ppat_construct
-          ({ txt = (Lident txt); loc }, None, (constructors_arity ())) in
+      let p = Ppat_construct ({ txt = (Lident txt); loc }, None, false) in
       mkpat loc p
   | Ast.PaId (loc,Ast.IdLid (sloc,s)) ->
       mkpat loc (Ppat_var (with_loc s sloc))
   | Ast.PaId (loc,i) ->
-      let p = Ppat_construct ((long_uident i), None, (constructors_arity ())) in
-      mkpat loc p
+      let p = Ppat_construct ((long_uident i), None, false) in mkpat loc p
   | PaAli (loc,p1,p2) ->
       let (p,i) =
         match (p1, p2) with
@@ -360,20 +356,12 @@ let rec patt =
       let al = List.map patt al in
       (match (patt f).ppat_desc with
        | Ppat_construct (li,None ,_) ->
-           if constructors_arity ()
-           then
-             mkpat loc
-               (Ppat_construct (li, (Some (mkpat loc (Ppat_tuple al))), true))
-           else
-             (let a =
-                match al with | a::[] -> a | _ -> mkpat loc (Ppat_tuple al) in
-              mkpat loc (Ppat_construct (li, (Some a), false)))
+           let a =
+             match al with | a::[] -> a | _ -> mkpat loc (Ppat_tuple al) in
+           mkpat loc (Ppat_construct (li, (Some a), false))
        | Ppat_variant (s,None ) ->
            let a =
-             if constructors_arity ()
-             then mkpat loc (Ppat_tuple al)
-             else
-               (match al with | a::[] -> a | _ -> mkpat loc (Ppat_tuple al)) in
+             match al with | a::[] -> a | _ -> mkpat loc (Ppat_tuple al) in
            mkpat loc (Ppat_variant (s, (Some a)))
        | _ ->
            error (loc_of_patt f)
@@ -460,8 +448,7 @@ let rec expr =
       let (e,l) =
         match Expr.sep_expr [] e with
         | (loc,ml,Ast.ExId (sloc,Ast.IdUid (_,s)))::l ->
-            let ca = constructors_arity () in
-            ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, ca))), l)
+            ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)
         | (loc,ml,Ast.ExId (sloc,Ast.IdLid (_,s)))::l ->
             ((mkexp loc (Pexp_ident (mkli sloc s ml))), l)
         | (_,[],e)::l -> ((expr e), l)
@@ -483,21 +470,13 @@ let rec expr =
       (match (expr f).pexp_desc with
        | Pexp_construct (li,None ,_) ->
            let al = List.map snd al in
-           if constructors_arity ()
-           then
-             mkexp loc
-               (Pexp_construct (li, (Some (mkexp loc (Pexp_tuple al))), true))
-           else
-             (let a =
-                match al with | a::[] -> a | _ -> mkexp loc (Pexp_tuple al) in
-              mkexp loc (Pexp_construct (li, (Some a), false)))
+           let a =
+             match al with | a::[] -> a | _ -> mkexp loc (Pexp_tuple al) in
+           mkexp loc (Pexp_construct (li, (Some a), false))
        | Pexp_variant (s,None ) ->
            let al = List.map snd al in
            let a =
-             if constructors_arity ()
-             then mkexp loc (Pexp_tuple al)
-             else
-               (match al with | a::[] -> a | _ -> mkexp loc (Pexp_tuple al)) in
+             match al with | a::[] -> a | _ -> mkexp loc (Pexp_tuple al) in
            mkexp loc (Pexp_variant (s, (Some a)))
        | _ -> mkexp loc (Pexp_apply ((expr f), al)))
   | ExAre (loc,e1,e2) ->

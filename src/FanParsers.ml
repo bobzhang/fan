@@ -549,8 +549,7 @@ end;
 module MakeRevisedParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
-  FanConfig.constructors_arity := false;
-
+  
   let help_sequences () =
     begin
       Printf.eprintf "\

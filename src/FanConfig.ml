@@ -26,7 +26,6 @@ let camlp4_standard_library =
 
 let version = Sys.ocaml_version;;
 let program_name = ref "camlp4";;
-let constructors_arity = ref true;;
 let unsafe             = ref false;;
 let verbose            = ref false;;
 let antiquotations     = ref false;;
