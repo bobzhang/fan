@@ -782,8 +782,6 @@ define_context_for_root root2;;
 
 let boot_flags =
   S[P ("boot"//"fan"); (* symlink fan to either fan.byte or fan.native *)
-    (* A "-parser"; A"rf"; *)
-    (* A "-parser"; A"debug"; *)
     A"-printer"; A"p"];;
 
 rule "code_boot: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
@@ -801,8 +799,6 @@ let () =
   Options.ocaml_lflags :=  [ "-linkall"] ;
   after_rules_dispatch := fun () -> begin
     flag ["ocaml"; "pp"; "use_fan"] boot_flags;
-    flag ["ocaml"; "pp"; "use_fan"; "native"] (S[A"-D"; A"OPT"]);
-    flag ["ocaml"; "pp"; "use_fan"; "pp:dep"] (S[A"-D"; A"OPT"]);
     flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
     (* dep ["ocaml"; "link"; "native"] ["src/Camlp4Filters.cmx"]; *)
     (* dep ["ocaml"; "link"; "byte"] ["src/Camlp4Filters.cmo"]; *)
@@ -811,9 +807,9 @@ let () =
   end;;
 
 
-copy_rule "camlp4: src/fan.byte -> boot/fan.byte"
+copy_rule "src/FanDriver.byte -> boot/FanDriver.byte"
   ~insert:`top "src/FanDriver.byte" "boot/FanDriver.byte";;
-copy_rule "camlp4: src/fan.native -> boot/fan.native"
+copy_rule "src/FanDriver.native -> boot/FanDriver.native"
   ~insert:`top "src/FanDriver.native" "boot/FanDriver.native";;
 
 

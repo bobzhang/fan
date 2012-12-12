@@ -1,29 +1,22 @@
 open Fan.Syntax
 open FanMacroTools
 open Lib
+let macro_def = Gram.mk "macro_def"
+let macro_def_sig = Gram.mk "macro_def_sig"
+let uident_eval_ifdef = Gram.mk "uident_eval_ifdef"
+let uident_eval_ifndef = Gram.mk "uident_eval_ifndef"
+let else_macro_def = Gram.mk "else_macro_def"
+let else_macro_def_sig = Gram.mk "else_macro_def_sig"
+let else_expr = Gram.mk "else_expr"
+let smlist_then = Gram.mk "smlist_then"
+let smlist_else = Gram.mk "smlist_else"
+let sglist_then = Gram.mk "sglist_then"
+let sglist_else = Gram.mk "sglist_else"
+let endif = Gram.mk "endif"
+let opt_macro_value = Gram.mk "opt_macro_value"
+let uident = Gram.mk "uident"
 let apply () =
-  (let grammar_entry_create = Gram.mk in
-   let macro_def: 'macro_def Gram.t = grammar_entry_create "macro_def"
-   and uident: 'uident Gram.t = grammar_entry_create "uident"
-   and opt_macro_value: 'opt_macro_value Gram.t =
-     grammar_entry_create "opt_macro_value"
-   and endif: 'endif Gram.t = grammar_entry_create "endif"
-   and sglist_else: 'sglist_else Gram.t = grammar_entry_create "sglist_else"
-   and sglist_then: 'sglist_then Gram.t = grammar_entry_create "sglist_then"
-   and smlist_else: 'smlist_else Gram.t = grammar_entry_create "smlist_else"
-   and smlist_then: 'smlist_then Gram.t = grammar_entry_create "smlist_then"
-   and else_expr: 'else_expr Gram.t = grammar_entry_create "else_expr"
-   and else_macro_def_sig: 'else_macro_def_sig Gram.t =
-     grammar_entry_create "else_macro_def_sig"
-   and else_macro_def: 'else_macro_def Gram.t =
-     grammar_entry_create "else_macro_def"
-   and uident_eval_ifndef: 'uident_eval_ifndef Gram.t =
-     grammar_entry_create "uident_eval_ifndef"
-   and uident_eval_ifdef: 'uident_eval_ifdef Gram.t =
-     grammar_entry_create "uident_eval_ifdef"
-   and macro_def_sig: 'macro_def_sig Gram.t =
-     grammar_entry_create "macro_def_sig" in
-   Gram.extend (str_item : 'str_item Gram.t )
+  (Gram.extend (str_item : 'str_item Gram.t )
      ((Some `First),
        [(None, None,
           [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ))],
@@ -61,8 +54,7 @@ let apply () =
             (Gram.mk_action
                (fun (st2 : 'else_macro_def)  (st1 : 'smlist_then)  _  _  _ 
                   (_loc : FanLoc.t)  ->
-                  (let _ = Format.eprintf "WHAT@." in make_ITE_result st1 st2 : 
-                  'macro_def ))));
+                  (make_ITE_result st1 st2 : 'macro_def ))));
           ([`Skeyword "IFNDEF";
            `Snterm
              (Gram.obj (uident_eval_ifndef : 'uident_eval_ifndef Gram.t ));
@@ -189,8 +181,7 @@ let apply () =
                     `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                      (Gram.mk_action
                         (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
-                           (let _ = Format.eprintf "WHTF@" in
-                            execute_macro_if_active_branch ~expr ~patt _loc
+                           (execute_macro_if_active_branch ~expr ~patt _loc
                               (Ast.StNil _loc)
                               (fun a  b  -> Ast.StSem (_loc, a, b)) Then d : 
                            'e__1 ))));
@@ -211,8 +202,7 @@ let apply () =
                     `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                      (Gram.mk_action
                         (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
-                           (let _ = Format.eprintf "WHTF Elsee@" in
-                            execute_macro_if_active_branch ~expr ~patt _loc
+                           (execute_macro_if_active_branch ~expr ~patt _loc
                               (Ast.StNil _loc)
                               (fun a  b  -> Ast.StSem (_loc, a, b)) Else d : 
                            'e__2 ))));

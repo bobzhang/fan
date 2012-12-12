@@ -2,12 +2,14 @@ open Fan.Syntax;
 open FanMacroTools;
 open Lib;
 
+{:extend.create|Gram
+  macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
+  else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
+  sglist_else endif opt_macro_value uident 
+|};
+
 let apply () = begin 
   {:extend|Gram
-     local: macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
-     else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
-     sglist_else endif opt_macro_value uident ;
-
       str_item: First
       [ macro_def{x} -> execute_macro ~expr ~patt {:str_item||} (fun a b -> {:str_item| $a; $b |}) x ]
       sig_item: First
@@ -17,7 +19,7 @@ let apply () = begin
       [ "DEFINE"; uident{i}; opt_macro_value{def} -> Def i def
       | "UNDEF";  uident{i} -> Und i
       | "IFDEF";  uident_eval_ifdef;  "THEN"; smlist_then{st1}; else_macro_def{st2} ->
-          let _ = Format.eprintf "WHAT@." in
+          (* let _ = Format.eprintf "WHAT@." in *)
           make_ITE_result st1 st2
       | "IFNDEF"; uident_eval_ifndef; "THEN"; smlist_then{st1}; else_macro_def{st2} ->
           make_ITE_result st1 st2
@@ -52,7 +54,7 @@ let apply () = begin
       smlist_then:
       [ L1
           [ macro_def{d}; semi ->
-            let _ = Format.eprintf "WHTF@" in
+            (* let _ = Format.eprintf "WHTF@." in *)
             execute_macro_if_active_branch ~expr ~patt _loc
               {:str_item||} (fun a b -> {:str_item| $a; $b |}) Then d
           | str_item{si}; semi -> Str si ]{sml} ->
@@ -61,7 +63,7 @@ let apply () = begin
 
       smlist_else:
       [ L1 [ macro_def{d}; semi ->
-        let _ = Format.eprintf "WHTF Elsee@" in
+        (* let _ = Format.eprintf "WHTF Elsee@" in *)
            execute_macro_if_active_branch ~expr ~patt  _loc
           {:str_item||} (fun a b -> {:str_item| $a; $b |}) Else d
            | str_item{si}; semi -> Str si ]{sml} ->
@@ -114,9 +116,18 @@ let apply () = begin
       [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
             {:patt| `$uid:kwd |}
       | "`"; a_ident{s} -> {:patt| ` $s |} ] |};
-  Options.add ("-D", (FanArg.String (parse_def ~expr ~patt)  ),"<string> Define for IFDEF instruction.");
-  Options.add ("-U", (FanArg.String (undef ~expr ~patt)), "<string> Undefine for IFDEF instruction.");
-  Options.add ("-I", (FanArg.String add_include_dir), "<string> Add a directory to INCLUDE search path.");
+  Options.add
+    ("-D",
+     (FanArg.String (parse_def ~expr ~patt)  ),
+     "<string> Define for IFDEF instruction.");
+  Options.add
+    ("-U",
+     (FanArg.String (undef ~expr ~patt)),
+     "<string> Undefine for IFDEF instruction.");
+  Options.add
+    ("-I",
+     (FanArg.String add_include_dir),
+     "<string> Add a directory to INCLUDE search path.");
 end;
     
 
