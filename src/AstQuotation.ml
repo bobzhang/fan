@@ -348,7 +348,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 
           | "uidident" -> {| Ast.IdUid ($(mloc _loc), $e)|}
           | "lidident" -> {| Ast.IdLid ($(mloc _loc), $e)|}
-                
+
           | "flopatt" -> {| Ast.PaFlo ($(mloc _loc), $e) |}
           | "intpatt" -> {| Ast.PaInt ($(mloc _loc), $e) |}
           | "int32patt" -> {| Ast.PaInt32 ($(mloc _loc), $e)|}

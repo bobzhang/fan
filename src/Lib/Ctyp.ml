@@ -25,7 +25,7 @@ let rec name_tags = fun
   [ {| $t1 $t2 |} -> name_tags t1 @ name_tags t2
   | {| `$s |} -> [s]
   | _ -> assert false ];
-  
+
 (* here -> can not be used as a delimiter, if we remove quotations.*)  
 let rec to_generalized = fun
     [ {| $t1 -> $t2 |} ->
