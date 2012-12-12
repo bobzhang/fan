@@ -1271,3 +1271,11 @@ http://caml.inria.fr/pub/ml-archives/caml-list/2004/12/b5b79fcd4ea695b8e1e0aff74
   But there are some other ways by copy?
 
   The benefit is obvious: You don't have to write the signatures everywhere
+
+
+TODO
+  1. add conflict detection
+
+  2. clean type specification 
+     
+  3. merge ...   

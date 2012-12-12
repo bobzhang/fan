@@ -1,0 +1,6 @@
+cold/Query.cmo
+cold/FanBasic.cmo
+cold/OAstPrint.cmo
+cold/FanLexUtil.cmo
+cold/FanDriver.byte
+cold/FanTop.cma
