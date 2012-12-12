@@ -192,7 +192,7 @@ let apply () =
                           (Str si : 'e__1 ))))])],
              (Gram.mk_action
                 (fun (sml : 'e__1 list)  (_loc : FanLoc.t)  ->
-                   (let _ = Format.eprintf "smlist_then" in sml : 'smlist_then ))))])]);
+                   (sml : 'smlist_then ))))])]);
    Gram.extend (smlist_else : 'smlist_else Gram.t )
      (None,
        [(None, None,
@@ -213,7 +213,7 @@ let apply () =
                           (Str si : 'e__2 ))))])],
              (Gram.mk_action
                 (fun (sml : 'e__2 list)  (_loc : FanLoc.t)  ->
-                   (let _ = Format.eprintf "smlist_else" in sml : 'smlist_else ))))])]);
+                   (sml : 'smlist_else ))))])]);
    Gram.extend (sglist_then : 'sglist_then Gram.t )
      (None,
        [(None, None,

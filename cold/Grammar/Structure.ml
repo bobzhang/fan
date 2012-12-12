@@ -8,16 +8,16 @@ module Action = struct
   let getf: t -> 'a -> 'b = Obj.obj
   let getf2: t -> 'a -> 'b -> 'c = Obj.obj
   end
-type gram = 
-  {
-  gfilter: FanTokenFilter.t;
-  gkeywords: (string,int ref) Hashtbl.t;
-  glexer: FanLoc.t -> char XStream.t -> stream} 
 type 'a cont_parse = FanLoc.t -> Action.t -> 'a parse 
 type description = [ `Normal | `Antiquot] 
 type descr = (description* string) 
 type token_pattern = ((FanToken.t -> bool)* descr) 
 type terminal = [ `Skeyword of string | `Stoken of token_pattern] 
+type gram = 
+  {
+  gfilter: FanTokenFilter.t;
+  gkeywords: (string,int ref) Hashtbl.t;
+  glexer: FanLoc.t -> char XStream.t -> stream} 
 type internal_entry = 
   {
   egram: gram;

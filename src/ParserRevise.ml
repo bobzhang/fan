@@ -366,7 +366,7 @@ New syntax:\
         | TRY module_longident_dot_lparen{i};S{e}; ")" ->
             {| let open $i in $e |}
         (* | TRY val_longident{i} -> {| $id:i |} *)
-        | ident{i} -> {|$id:i|}
+        | ident{i} -> {|$id:i|} (* FIXME logic was splitted here *)
         | "`"; a_ident{s} -> {| ` $s |}
         | "["; "]" -> {| [] |}
         | "[";sem_expr_for_list{mk_list}; "::"; expr{last}; "]" -> mk_list last

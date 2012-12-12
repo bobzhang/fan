@@ -39,6 +39,7 @@ let mk_hashtbl (type s) ~eq  ~hash  =
     type t = s  let equal = eq let hash = hash
     end in ((module Hashtbl.Make(M)) : (module Hashtbl.S with type key = s) )
 let (|>) x f = f x
+let (&) f x = f x
 let (<|) f x = f x
 let (|-) f g x = g (f x)
 let (-|) f g x = f (g x)
@@ -84,6 +85,29 @@ module List = struct
     | (y,_)::l when y = x -> l
     | d::l -> d :: (remove x l)
     | [] -> []
+  let iteri f lst =
+    let i = ref 0 in
+    List.iter (fun x  -> let () = f i.contents x in incr i) lst
+  type dir = [ `Left | `Right] 
+  let reduce_left f lst =
+    match lst with
+    | [] -> invalid_arg "reduce_left length zero"
+    | x::xs ->
+        let rec loop x xs =
+          match xs with | [] -> x | y::ys -> loop (f x y) ys in
+        loop x xs
+  let reduce_right_with ~compose  ~f  lst =
+    match lst with
+    | [] -> invalid_arg "reduce_right length zero"
+    | xs ->
+        let rec loop xs =
+          match xs with
+          | [] -> assert false
+          | y::[] -> f y
+          | y::ys -> compose (f y) (loop ys) in
+        loop xs
+  let reduce_right compose = reduce_right_with ~compose ~f:(fun x  -> x)
+  let init n f = let open Array in to_list & (init n f)
   end
 module Char = struct
   include Char
