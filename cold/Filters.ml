@@ -1737,3 +1737,22 @@ let map_expr =
 let _ =
   AstFilters.register_str_item_filter
     ("trash_nothing", ((Ast.map_expr map_expr)#str_item))
+let macro_expander =
+  object (self)
+    inherit  Camlp4Ast.map as super
+    method! expr =
+      function
+      | Ast.ExApp (_loc,Ast.ExId (_,Ast.IdUid (_,a)),y) ->
+          ((try
+              let f = Hashtbl.find AstMacros.macro_expanders a in
+              fun ()  -> self#expr (f y)
+            with
+            | Not_found  ->
+                (fun ()  ->
+                   Ast.ExApp
+                     (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, a)))),
+                       (self#expr y))))) ()
+      | e -> super#expr e
+  end
+let _ =
+  AstFilters.register_str_item_filter ("macro", (macro_expander#str_item))

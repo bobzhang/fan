@@ -71,7 +71,7 @@ let _ =
                 [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
                    (Gram.mk_action
                       (fun (x : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                         ((x, None, None) : 'e__3 ))));
+                         ((_loc, x, None, None) : 'e__3 ))));
                 ([`Skeyword "(";
                  `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
                  `Stoken
@@ -82,7 +82,7 @@ let _ =
                      (fun _  (__fan_2 : [> FanToken.t])  (x : 'a_LIDENT)  _ 
                         (_loc : FanLoc.t)  ->
                         match __fan_2 with
-                        | `STR (_,y) -> ((x, (Some y), None) : 'e__3 )
+                        | `STR (_,y) -> ((_loc, x, (Some y), None) : 'e__3 )
                         | _ -> assert false)));
                 ([`Skeyword "(";
                  `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
@@ -95,7 +95,8 @@ let _ =
                      (fun _  (t : 'ctyp)  (__fan_2 : [> FanToken.t]) 
                         (x : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
                         match __fan_2 with
-                        | `STR (_,y) -> ((x, (Some y), (Some t)) : 'e__3 )
+                        | `STR (_,y) ->
+                            ((_loc, x, (Some y), (Some t)) : 'e__3 )
                         | _ -> assert false)));
                 ([`Skeyword "(";
                  `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
@@ -116,7 +117,7 @@ let _ =
                   (Gram.mk_action
                      (fun _  (y : 'e__2 option)  (t : 'ctyp)  _ 
                         (x : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
-                        ((x, y, (Some t)) : 'e__3 ))))])],
+                        ((_loc, x, y, (Some t)) : 'e__3 ))))])],
             (Gram.mk_action
                (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->
                   (let mk =
@@ -136,7 +137,7 @@ let _ =
                              (Ast.ExId (_loc, x))) in
                    let rest =
                      List.map
-                       (fun (x,descr,ty)  ->
+                       (fun (_loc,x,descr,ty)  ->
                           match (descr, ty) with
                           | (Some d,None ) ->
                               Ast.StVal
