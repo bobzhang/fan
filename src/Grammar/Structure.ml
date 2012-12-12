@@ -18,11 +18,6 @@ module Action  = struct
 end;
 
 
-type gram = {
-    gfilter         : FanTokenFilter.t;
-    gkeywords       : Hashtbl.t string (ref int);
-    glexer          : FanLoc.t -> XStream.t char -> stream;
-};
 
 type cont_parse 'a = FanLoc.t -> Action.t -> parse 'a;
     
@@ -36,6 +31,12 @@ type token_pattern = ((FanToken.t -> bool) * descr);
 type terminal =
     [= `Skeyword of string
     | `Stoken of token_pattern ];
+  
+type gram = {
+    gfilter         : FanTokenFilter.t;
+    gkeywords       : Hashtbl.t string (ref int);
+    glexer          : FanLoc.t -> XStream.t char -> stream;
+};
 
 type internal_entry =
     { egram     : gram;

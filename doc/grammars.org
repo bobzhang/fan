@@ -1237,3 +1237,37 @@ Ptop_def
   - first step get filter work
 
 http://caml.inria.fr/pub/ml-archives/caml-list/2004/12/b5b79fcd4ea695b8e1e0aff740b07cf3.en.html
+
+
+* lens
+  http://stackoverflow.com/questions/9379626/statically-extend-a-record-ish-data-type-without-indirection-hassle
+
+  http://bugsquash.blogspot.com/2011/11/lenses-in-f.html
+
+  http://twanvl.nl/blog/haskell/overloading-functional-references
+  
+  Lenses are closed under composition. That is, the sequential
+  composition of any two lenses is a lens.
+
+
+  For each module, it should provide both =apply= and =retract=?
+
+
+* syntax extension
+  recording created non-terminals, keywords,
+  and modified existing non-terminals
+
+  keywords count by reference:
+
+  {:syntax-extension|
+  
+  |};
+
+
+
+  Without functorizing, we loose the ability to create 2 stand-alone
+  suit of parsers?
+
+  But there are some other ways by copy?
+
+  The benefit is obvious: You don't have to write the signatures everywhere

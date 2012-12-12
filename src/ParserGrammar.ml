@@ -30,28 +30,34 @@ FanConfig.antiquotations := true;
   | -> (None,gm())]
 
   nonterminals:
-  [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t) |  qualuid{t} -> `static(t)]{t};
-    L0
-      [ a_LIDENT{x} -> (x,None,None)
-      | "(";a_LIDENT{x};`STR(_,y); ")" ->(x,Some y,None)
-      | "(";a_LIDENT{x};`STR(_,y);ctyp{t};  ")" -> (x,Some y,Some t)
-      | "(";a_LIDENT{x}; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (x,y,Some t) ] {ls}
-    ->
-     with "str_item"
-      let mk =
-        match t with
-        [`static t -> {:expr| $id:t.mk |}
-        |`dynamic(x,t) -> {:expr| $id:t.mk_dynamic $id:x |}] in   
-      let rest =
-        List.map
-          (fun
-            (x,descr,ty) ->
-              match (descr,ty) with
-              [(Some d,None) -> {| let $lid:x = $mk $str:d |}
-              | (Some d,Some typ) -> {| let $lid:x : $typ = $mk $str:d |}
-              |(None,None) -> {| let $lid:x = $mk $str:x  |}
-              | (None,Some typ) -> {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
-                {| $list:rest |} ]
+  [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
+       |  qualuid{t} -> `static(t)]{t};
+       L0
+         [ a_LIDENT{x} -> (_loc,x,None,None)
+         | "(";a_LIDENT{x};`STR(_,y); ")" ->(_loc,x,Some y,None)
+         | "(";a_LIDENT{x};`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
+         | "(";a_LIDENT{x}; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")"
+           -> (_loc,x,y,Some t) ] {ls}
+       ->
+       with "str_item"
+       let mk =
+         match t with
+         [`static t -> {:expr| $id:t.mk |}
+         |`dynamic(x,t) -> {:expr| $id:t.mk_dynamic $id:x |}] in   
+       let rest =
+         List.map
+           (fun
+             (_loc,x,descr,ty) ->
+               match (descr,ty) with
+               [(Some d,None) ->
+                   {| let $lid:x = $mk $str:d |}
+               | (Some d,Some typ) ->
+                   {| let $lid:x : $typ = $mk $str:d |}
+               |(None,None) ->
+                   {| let $lid:x = $mk $str:x  |}
+               | (None,Some typ) ->
+                   {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
+                   {| $list:rest |} ]
   nonterminalsclear:
   [ qualuid{t}; L0 a_LIDENT {ls} ->
     let rest = List.map (fun x -> {:expr| $id:t.clear $lid:x |}) ls in

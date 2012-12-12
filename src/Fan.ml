@@ -1,7 +1,7 @@
 
 
 
-include PreCast.Make (struct end);
+include PreCast;
 
 open AstQuotation;
 open Lib.Meta;
