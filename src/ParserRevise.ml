@@ -106,8 +106,6 @@ New syntax:\
     parser [< a = symb; 's >] -> kont a s
   end;
 
-  (* main grammar extension [Line 826 ~ Line 2123]*)
-
   with "module_expr"
   {:extend|Gram
       module_expr_quot:
@@ -1187,14 +1185,6 @@ New syntax:\
 end;
 
 AstParsers.register_parser ("revise",apply);
-
-
-
-
-
-
-
-
 
 
 

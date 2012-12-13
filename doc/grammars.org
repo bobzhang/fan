@@ -1279,3 +1279,11 @@ TODO
   2. clean type specification 
      
   3. merge ...   
+
+
+http://stackoverflow.com/questions/7072980/how-do-you-compile-macros-in-a-lisp-compiler
+
+
+正常的load code 不应该影响编译器的行为的.
+
+http://docs.racket-lang.org/guide/stx-phases.html
