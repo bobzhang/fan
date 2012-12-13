@@ -10,8 +10,8 @@
 
 <{cold,src}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
 
-<{cold,src}/Lib/{Meta,Expr,Patt,Ident,ModuleType,Ctyp,ClassExpr}.cmx>:for-pack(Lib)
-<{cold,src}/Lib/{Meta,Expr,Patt,Ident,ModuleType,Ctyp,ClassExpr}.p.cmx>:for-pack(Lib)
+<{cold,src}/Lib/{Asthook,Basic,ClassExpr,Ctyp,Easy,Expr,FSig,Frame,Ident,Meta,ModuleType,Patt,Transform}.cmx>:for-pack(Lib)
+<{cold,src}/Lib/{Asthook,Basic,ClassExpr,Ctyp,Easy,Expr,FSig,Frame,Ident,Meta,ModuleType,Patt,Transform}.p.cmx>:for-pack(Lib)
 
 <{cold,src}/*.{p.native,byte,native,d.byte}>: pkg_dynlink, pkg_compiler-libs.common
 <{cold,src}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,Sig,ParsetreeHelper,Ast2Fan}.{ml,mli}> : pkg_compiler-libs.common

@@ -65,6 +65,11 @@ let callcc (type u) (f : u cont -> u) =
     end in try f (fun x  -> raise (M.Return x)) with | M.Return u -> u
 module List = struct
   include List
+  let rec drop n = function | _::l when n > 0 -> drop (n - 1) l | l -> l
+  let lastbut1 ls =
+    match ls with
+    | [] -> failwith "lastbut1 empty"
+    | _ -> let l = List.rev ls in ((List.tl l), (List.hd l))
   let split_at n xs =
     let rec aux n acc xs =
       match xs with
@@ -73,7 +78,7 @@ module List = struct
       | h::t as l -> if n = 0 then (acc, l) else aux (n - 1) (h :: acc) t in
     if n < 0
     then invalid_arg "split_at n< 0"
-    else (let (a,b) = aux n [] xs in ((List.rev a), b))
+    else (let (a,b) = aux n [] xs in ((rev a), b))
   let rec find_map f =
     function
     | [] -> raise Not_found
@@ -115,6 +120,8 @@ module Char = struct
     function | ' '|'\n'|'\r'|'\t'|'\026'|'\012' -> true | _ -> false
   let is_newline = function | '\n'|'\r' -> true | _ -> false
   let is_digit = function | '0'..'9' -> true | _ -> false
+  let is_uppercase c = ('A' <= c) && (c <= 'Z')
+  let is_lowercase c = ('a' <= c) && (c <= 'z')
   end
 module Return = struct
   type 'a t = 'a -> exn  let return label v = raise (label v)
@@ -156,6 +163,18 @@ module String = struct
              else ()
            done;
            true) let of_char = make 1
+  let drop_while f s =
+    let len = length s in
+    let found = ref false in
+    let i = ref 0 in
+    while (i.contents < len) && (not found.contents) do
+      if not (f (s.[i.contents])) then found := true else incr i done;
+    String.sub s i.contents (len - i.contents)
+  let neg n =
+    let len = String.length n in
+    if (len > 0) && ((n.[0]) = '-')
+    then String.sub n 1 (len - 1)
+    else "-" ^ n
   end
 module Ref =
   struct

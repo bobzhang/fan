@@ -987,7 +987,8 @@ let phrase = fun
   [ StDir (_,d,dp) -> Ptop_dir d (directive dp)
   | si -> Ptop_def (str_item si) ];
 
-
+open Format;
+let pp = fprintf;  
 
 let print_expr f  e =
   pp f "@[%a@]@." AstPrint.expression (expr e);

@@ -1,3 +1,5 @@
+open LibUtil
+open Basic
 open FanUtil
 module Ast = Camlp4Ast
 let rec sep_expr acc =
@@ -561,3 +563,425 @@ let fun_apply _loc e args =
   if args = []
   then Ast.ExApp (_loc, e, (Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))))
   else List.fold_left (fun e  arg  -> Ast.ExApp (_loc, e, arg)) e args
+let _loc = FanLoc.ghost
+let app a b = Ast.ExApp (_loc, a, b)
+let comma a b = Ast.ExCom (_loc, a, b)
+let (<$) = app
+let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
+let sem a b = Ast.ExSem (_loc, a, b)
+let list_of_app ty =
+  let rec loop t acc =
+    match t with
+    | Ast.ExApp (_loc,t1,t2) -> loop t1 (t2 :: acc)
+    | Ast.ExNil _loc -> acc
+    | i -> i :: acc in
+  loop ty []
+let list_of_com ty =
+  let rec loop t acc =
+    match t with
+    | Ast.ExCom (_loc,t1,t2) -> t1 :: (loop t2 acc)
+    | Ast.ExNil _loc -> acc
+    | i -> i :: acc in
+  loop ty []
+let list_of_sem ty =
+  let rec loop t acc =
+    match t with
+    | Ast.ExSem (_loc,t1,t2) -> t1 :: (loop t2 acc)
+    | Ast.ExNil _loc -> acc
+    | i -> i :: acc in
+  loop ty []
+let app_of_list =
+  function | [] -> Ast.ExNil _loc | l -> List.reduce_left app l
+let com_of_list =
+  function | [] -> Ast.ExNil _loc | l -> List.reduce_right comma l
+let sem_of_list =
+  function | [] -> Ast.ExNil _loc | l -> List.reduce_right sem l
+let tuple_of_list =
+  function
+  | [] -> invalid_arg "tuple_of_list while list is empty"
+  | x::[] -> x
+  | xs -> Ast.ExTup (_loc, (com_of_list xs))
+let mk_list lst =
+  let rec loop =
+    function
+    | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))
+    | x::xs ->
+        Ast.ExApp
+          (_loc,
+            (Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), x)),
+            (loop xs)) in
+  loop lst
+let mk_array arr =
+  let items = (arr |> Array.to_list) |> sem_of_list in
+  Ast.ExArr (_loc, items)
+let of_str s =
+  let len = String.length s in
+  if len = 0
+  then invalid_arg "[expr|patt]_of_str len=0"
+  else
+    (match s.[0] with
+     | '`' -> Ast.ExVrn (_loc, (String.sub s 1 (len - 1)))
+     | x when Char.is_uppercase x -> Ast.ExId (_loc, (Ast.IdUid (_loc, s)))
+     | _ -> Ast.ExId (_loc, (Ast.IdLid (_loc, s))))
+let of_ident_number cons n =
+  apply (Ast.ExId (_loc, cons))
+    (List.init n (fun i  -> Ast.ExId (_loc, (xid i))))
+let (+>) f names =
+  apply f
+    (List.map (fun lid  -> Ast.ExId (_loc, (Ast.IdLid (_loc, lid)))) names)
+let gen_tuple_first ~number  ~off  =
+  match number with
+  | 1 -> Ast.ExId (_loc, (xid ~off 0))
+  | n when n > 1 ->
+      let lst =
+        zfold_left ~start:1 ~until:(number - 1)
+          ~acc:(Ast.ExId (_loc, (xid ~off 0)))
+          (fun acc  i  -> comma acc (Ast.ExId (_loc, (xid ~off i)))) in
+      Ast.ExTup (_loc, lst)
+  | _ -> invalid_arg "n < 1 in gen_tuple_first"
+let gen_tuple_second ~number  ~off  =
+  match number with
+  | 1 -> Ast.ExId (_loc, (xid ~off:0 off))
+  | n when n > 1 ->
+      let lst =
+        zfold_left ~start:1 ~until:(number - 1)
+          ~acc:(Ast.ExId (_loc, (xid ~off:0 off)))
+          (fun acc  i  -> comma acc (Ast.ExId (_loc, (xid ~off:i off)))) in
+      Ast.ExTup (_loc, lst)
+  | _ -> invalid_arg "n < 1 in gen_tuple_first "
+let tuple_of_number ast n =
+  let res =
+    zfold_left ~start:1 ~until:(n - 1) ~acc:ast
+      (fun acc  _  -> comma acc ast) in
+  if n > 1 then Ast.ExTup (_loc, res) else res
+let tuple_of_list lst =
+  let len = List.length lst in
+  match len with
+  | 1 -> List.hd lst
+  | n when n > 1 -> Ast.ExTup (_loc, (List.reduce_left comma lst))
+  | _ -> invalid_arg "tuple_of_list n < 1"
+let gen_tuple_n ~arity  cons n =
+  let args =
+    List.init arity
+      (fun i  -> List.init n (fun j  -> Ast.ExId (_loc, (xid ~off:i j)))) in
+  let pat = of_str cons in
+  (List.map (fun lst  -> apply pat lst) args) |> tuple_of_list
+let mk_unary_min f arg =
+  match arg with
+  | Ast.ExInt (_loc,n) -> Ast.ExInt (_loc, (String.neg n))
+  | Ast.ExInt32 (_loc,n) -> Ast.ExInt32 (_loc, (String.neg n))
+  | Ast.ExInt64 (_loc,n) -> Ast.ExInt64 (_loc, (String.neg n))
+  | Ast.ExNativeInt (_loc,n) -> Ast.ExNativeInt (_loc, (String.neg n))
+  | Ast.ExFlo (_loc,n) -> Ast.ExFlo (_loc, (String.neg n))
+  | _ ->
+      Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, ("~" ^ f))))), arg)
+let mk_assert =
+  function
+  | Ast.ExId (_loc,Ast.IdLid (_,"false")) -> Ast.ExAsf _loc
+  | e -> Ast.ExAsr (_loc, e)
+let mk_record label_exprs =
+  let rec_bindings =
+    List.map
+      (fun (label,expr)  -> Ast.RbEq (_loc, (Ast.IdLid (_loc, label)), expr))
+      label_exprs in
+  Ast.ExRec (_loc, (Ast.rbSem_of_list rec_bindings), (Ast.ExNil _loc))
+let failure =
+  Ast.ExApp
+    (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "raise")))),
+      (Ast.ExApp
+         (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "Failure")))),
+           (Ast.ExStr (_loc, "metafilter: Cannot handle that kind of types ")))))
+let (<+) names acc =
+  List.fold_right
+    (fun name  acc  ->
+       Ast.ExFun
+         (_loc,
+           (Ast.McArr
+              (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))),
+                (Ast.ExNil _loc), acc)))) names acc
+let (<+<) patts acc =
+  List.fold_right
+    (fun p  acc  ->
+       Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), acc)))) patts
+    acc
+let mk_seq es =
+  let _loc = FanLoc.ghost in Ast.ExSeq (_loc, (Ast.exSem_of_list es))
+let mep_comma x y =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "PaCom")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
+let mep_app x y =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "PaApp")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
+let mk_tuple_ep =
+  function
+  | [] -> assert false
+  | x::[] -> x
+  | xs ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExId
+                  (_loc,
+                    (Ast.IdAcc
+                       (_loc, (Ast.IdUid (_loc, "Ast")),
+                         (Ast.IdUid (_loc, "PaTup")))))),
+               (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+          (List.reduce_right mep_comma xs))
+let mep_of_str s =
+  let u =
+    Ast.ExApp
+      (_loc,
+        (Ast.ExApp
+           (_loc,
+             (Ast.ExId
+                (_loc,
+                  (Ast.IdAcc
+                     (_loc, (Ast.IdUid (_loc, "Ast")),
+                       (Ast.IdUid (_loc, "IdUid")))))),
+             (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+        (Ast.ExStr (_loc, s))) in
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExId
+              (_loc,
+                (Ast.IdAcc
+                   (_loc, (Ast.IdUid (_loc, "Ast")),
+                     (Ast.IdUid (_loc, "PaId")))))),
+           (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), u)
+let mee_of_str s =
+  let u =
+    Ast.ExApp
+      (_loc,
+        (Ast.ExApp
+           (_loc,
+             (Ast.ExId
+                (_loc,
+                  (Ast.IdAcc
+                     (_loc, (Ast.IdUid (_loc, "Ast")),
+                       (Ast.IdUid (_loc, "IdUid")))))),
+             (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+        (Ast.ExStr (_loc, s))) in
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExId
+              (_loc,
+                (Ast.IdAcc
+                   (_loc, (Ast.IdUid (_loc, "Ast")),
+                     (Ast.IdUid (_loc, "ExId")))))),
+           (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), u)
+let mee_record_left str =
+  let u =
+    Ast.ExApp
+      (_loc,
+        (Ast.ExApp
+           (_loc,
+             (Ast.ExId
+                (_loc,
+                  (Ast.IdAcc
+                     (_loc, (Ast.IdUid (_loc, "Ast")),
+                       (Ast.IdUid (_loc, "IdLid")))))),
+             (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+        (Ast.ExStr (_loc, str))) in
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExId
+              (_loc,
+                (Ast.IdAcc
+                   (_loc, (Ast.IdUid (_loc, "Ast")),
+                     (Ast.IdUid (_loc, "RbEq")))))),
+           (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), u)
+let mep_record_left str =
+  let u =
+    Ast.ExApp
+      (_loc,
+        (Ast.ExApp
+           (_loc,
+             (Ast.ExId
+                (_loc,
+                  (Ast.IdAcc
+                     (_loc, (Ast.IdUid (_loc, "Ast")),
+                       (Ast.IdUid (_loc, "IdLid")))))),
+             (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+        (Ast.ExStr (_loc, str))) in
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExId
+              (_loc,
+                (Ast.IdAcc
+                   (_loc, (Ast.IdUid (_loc, "Ast")),
+                     (Ast.IdUid (_loc, "PaEq")))))),
+           (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), u)
+let mee_comma x y =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "ExCom")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
+let mee_app x y =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "ExApp")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
+let mk_tuple_ee =
+  function
+  | [] -> invalid_arg "mktupee arity is zero "
+  | x::[] -> x
+  | xs ->
+      Ast.ExApp
+        (_loc,
+          (Ast.ExApp
+             (_loc,
+               (Ast.ExId
+                  (_loc,
+                    (Ast.IdAcc
+                       (_loc, (Ast.IdUid (_loc, "Ast")),
+                         (Ast.IdUid (_loc, "ExTup")))))),
+               (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+          (List.reduce_right mee_comma xs))
+let mee_record_col label expr =
+  Ast.ExApp (_loc, (mee_record_left label), expr)
+let mep_record_col label expr =
+  Ast.ExApp (_loc, (mep_record_left label), expr)
+let mee_record_semi a b =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "RbSem")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), a)), b)
+let mep_record_semi a b =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "PaSem")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), a)), b)
+let mk_record_ee label_exprs =
+  let open List in
+    (label_exprs |> (map (fun (label,expr)  -> mee_record_col label expr)))
+      |>
+      (fun es  ->
+         Ast.ExApp
+           (_loc,
+             (Ast.ExApp
+                (_loc,
+                  (Ast.ExApp
+                     (_loc,
+                       (Ast.ExId
+                          (_loc,
+                            (Ast.IdAcc
+                               (_loc, (Ast.IdUid (_loc, "Ast")),
+                                 (Ast.IdUid (_loc, "ExRec")))))),
+                       (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                  (List.reduce_right mee_record_semi es))),
+             (Ast.ExApp
+                (_loc,
+                  (Ast.ExId
+                     (_loc,
+                       (Ast.IdAcc
+                          (_loc, (Ast.IdUid (_loc, "Ast")),
+                            (Ast.IdUid (_loc, "ExNil")))))),
+                  (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc"))))))))
+let mk_record_ep label_exprs =
+  let open List in
+    (label_exprs |> (map (fun (label,expr)  -> mep_record_col label expr)))
+      |>
+      (fun es  ->
+         Ast.ExApp
+           (_loc,
+             (Ast.ExApp
+                (_loc,
+                  (Ast.ExId
+                     (_loc,
+                       (Ast.IdAcc
+                          (_loc, (Ast.IdUid (_loc, "Ast")),
+                            (Ast.IdUid (_loc, "PaRec")))))),
+                  (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+             (List.reduce_right mep_record_semi es)))
+let eta_expand expr number =
+  let names = List.init number (fun i  -> x ~off:0 i) in
+  names <+ (expr +> names)
+let gen_curry_n acc ~arity  cons n =
+  let args =
+    List.init arity
+      (fun i  -> List.init n (fun j  -> Ast.PaId (_loc, (xid ~off:i j)))) in
+  let pat = Patt.of_str cons in
+  List.fold_right
+    (fun p  acc  ->
+       Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), acc))))
+    (List.map (fun lst  -> Patt.apply pat lst) args) acc
+let currying match_cases ~arity  =
+  if arity >= 2
+  then
+    let names = List.init arity (fun i  -> x ~off:i 0) in
+    let exprs =
+      List.map (fun s  -> Ast.ExId (_loc, (Ast.IdLid (_loc, s)))) names in
+    names <+
+      (Ast.ExMat
+         (_loc, (tuple_of_list exprs), (Ast.mcOr_of_list match_cases)))
+  else Ast.ExFun (_loc, (Ast.mcOr_of_list match_cases))
+let unknown len =
+  if len = 0
+  then
+    Ast.ExSnd
+      (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "self")))), "unknown")
+  else
+    Ast.ExApp
+      (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "failwith")))),
+        (Ast.ExStr (_loc, "not implemented!")))

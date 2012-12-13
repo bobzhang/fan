@@ -1017,3 +1017,9 @@ let phrase =
   function
   | StDir (_,d,dp) -> Ptop_dir (d, (directive dp))
   | si -> Ptop_def (str_item si)
+open Format
+let pp = fprintf
+let print_expr f e = pp f "@[%a@]@." AstPrint.expression (expr e)
+let print_patt f e = pp f "@[%a@]@." AstPrint.pattern (patt e)
+let print_str_item f e = pp f "@[%a@]@." AstPrint.structure (str_item e)
+let print_ctyp f e = pp f "@[%a@]@." AstPrint.core_type (ctyp e)

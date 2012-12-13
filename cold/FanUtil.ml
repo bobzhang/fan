@@ -120,3 +120,8 @@ let remove_underscores s =
       (fun ch  -> if ch <> '_' then ignore (Buffer.add_char buf ch) else ())
       s in
   Buffer.contents buf
+let destruct_poly s =
+  let n = String.length s in
+  if n = 0
+  then invalid_arg "destruct_poly length=0"
+  else if (s.[0]) = '`' then Some (String.sub s 1 (n - 1)) else None

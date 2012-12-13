@@ -85,7 +85,7 @@ module Make(S:FSig.Config) = struct
         else right_trans {:ident| $lid:id |} 
       | {| $id:id |} ->   right_trans id
         (* recursive call here *)
-      | {| ($tup:t) |} as ty ->
+      | {| $tup:_t |} as ty ->
           tuple_expr_of_ctyp  (normal_simple_expr_of_ctyp cxt) ty 
       | {| $t1 $t2 |} ->  {:expr| $(aux t1) $(aux t2) |} 
       | {|  ' $s |} ->   tyvar s
@@ -135,7 +135,7 @@ module Make(S:FSig.Config) = struct
     try return & aux ty with
       [Unhandled t0 -> fail &
         sprintf "obj_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
-          (Ctyp.to_string t0) (Ctyp.to_string ty) ] );
+          (!Ctyp.to_string t0) (!Ctyp.to_string ty) ] );
         
   (*
     call [reduce_data_ctors]  for variant types
@@ -150,7 +150,7 @@ module Make(S:FSig.Config) = struct
             Patt.gen_tuple_n ~arity:S.arity  cons args_length in
             (* Fan_expr.gen_curry_n acc ~arity:S.arity cons args_length in  *)
           let mk (cons,tyargs) =
-            let exprs = mapi (mapi_expr simple_expr_of_ctyp) tyargs in
+            let exprs = List.mapi (mapi_expr simple_expr_of_ctyp) tyargs in
             S.mk_variant cons exprs in
         let e = mk (cons,tyargs) in
         [ {:match_case| $pat:p -> $e |} :: acc ] in 
@@ -162,7 +162,7 @@ module Make(S:FSig.Config) = struct
       | {| [> $t ] |} -> (TyVrnSup,List.length (Ast.list_of_ctyp t []))
       | {| [< $t ] |} -> (TyVrnInf,List.length (Ast.list_of_ctyp t []))
       | _ ->  invalid_arg  (sprintf "expr_of_ctyp {|%s|} "
-                              & Ctyp.to_string ty) ] in 
+                              & !Ctyp.to_string ty) ] in 
     Ctyp.reduce_data_ctors ty  [] f >>= (fun res ->
       let res = let t =
         (* only under this case we need trailing  *)
@@ -180,7 +180,7 @@ module Make(S:FSig.Config) = struct
     [ {| +' $s |} | {| -' $s |}
     | {| ' $s |} ->
         {| fun $(lid: varf s) -> $acc |}
-    | _ -> begin  Ctyp.eprint var ;
+    | _ -> begin  !Ctyp.eprint var ;
      invalid_arg "mk_prefix";end ] in
     List.fold_right f vars ( S.names <+ acc);
 
@@ -189,7 +189,7 @@ module Make(S:FSig.Config) = struct
     Ast node represent the function
     (combine both expr_of_ctyp and simple_expr_of_ctyp) *)  
   let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp  = let open ErrorMonad in fun
-    [ Ast.TyDcl (_, _, tyvars, ctyp, constraints) ->
+    [ Ast.TyDcl (_, _, tyvars, ctyp, _constraints) ->
         let ctyp =  match ctyp with
         [
          ( {| $_ == $ctyp |} (* the latter reifys the structure *)
@@ -200,7 +200,7 @@ module Make(S:FSig.Config) = struct
           let cols =  Ctyp.list_of_record t  in
           let patt = Patt.mk_record ~arity:S.arity  cols in
           let info =
-            mapi (fun i x ->  match x with
+            List.mapi (fun i x ->  match x with
                 [ {col_label;col_mutable;col_ctyp} ->
                        {record_info = (mapi_expr
                            (unwrap simple_expr_of_ctyp)) (* unwrap here *)
@@ -232,6 +232,112 @@ module Make(S:FSig.Config) = struct
     | tydcl -> 
         invalid_arg ( sprintf "fun_of_tydcl <<%s>>\n"
                         (!Ctyp.to_string tydcl)) ];
+
+  let binding_of_tydcl simple_expr_of_ctyp _name tydcl =
+    let open ErrorMonad in
+    let open Transform in 
+    let tctor_var = basic_transform S.left_type_id in
+    let (name,len) = Ctyp.name_length_of_tydcl tydcl in 
+    let ty = Ctyp.mk_method_type_of_name
+        ~number:S.arity ~prefix:S.names (name,len) Str_item in
+    if not & Ctyp.is_abstract tydcl then 
+      let fun_expr = fun_of_tydcl simple_expr_of_ctyp
+          (expr_of_ctyp (unwrap simple_expr_of_ctyp)) tydcl  in
+      {:binding| $(lid:tctor_var name) : $ty = $fun_expr |}
+    else begin
+      eprintf "Warning: %s as a abstract type no structure generated\n"
+        (!Ctyp.to_string tydcl);
+      {:binding| $(lid:tctor_var  name) =
+      failwithf $(str:"Abstract data type not implemented") |};
+    end ;
+
+  let str_item_of_module_types ?module_name
+      simple_expr_of_ctyp_with_cxt
+      (lst:module_types)  =
+    let cxt  = Hashset.create 50 in 
+    let mk_binding =
+      binding_of_tydcl (simple_expr_of_ctyp_with_cxt cxt) in
+    (* return new types as generated  new context *)
+    let fs (ty:types) = match ty with
+      [ Mutual named_types ->
+        let binding = match named_types with
+          [ [] -> {:binding| |}
+          | xs -> begin 
+              List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
+              List.reduce_right_with
+                ~compose:(fun x y -> {:binding| $x and $y |} )
+                ~f:(fun (name,ty) ->begin
+                  mk_binding name ty;
+                end ) xs
+          end ] in 
+        {:str_item| let rec $binding |} 
+      | Single (name,tydcl) -> begin 
+          Hashset.add cxt name;
+          let rec_flag =
+            if Ctyp.is_recursive tydcl then Ast.ReRecursive
+            else Ast.ReNil 
+          and binding = mk_binding name tydcl in 
+          {:str_item| let $rec:rec_flag  $binding |}
+      end ] in
+    let item =  {:str_item| $(list:List.map fs lst) |}  in
+    match module_name with
+    [ None -> item
+    | Some m -> {:str_item| module $uid:m = struct $item end |} ];
+
+
+   (*
+     Generate warnings for abstract data type
+     and qualified data type.
+     all the types in one module will derive a class 
+    *)
+  let obj_of_module_types ?module_name base class_name  simple_expr_of_ctyp
+      (k:FSig.k) (lst:module_types) =
+    let open ErrorMonad in 
+    let tbl = Hashtbl.create 50 in 
+      let f  = fun_of_tydcl simple_expr_of_ctyp
+          (expr_of_ctyp (unwrap simple_expr_of_ctyp)) in
+      let mk_type (_name,tydcl) =
+          let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+          Ctyp.mk_method_type ~number:S.arity ~prefix:S.names
+            ({:ident| $lid:name |} ,len ) (Obj k) in 
+      let mk_class_str_item (name,tydcl) = 
+        let ty = mk_type (name,tydcl) in
+        {:class_str_item| method $lid:name : $ty = $(f tydcl) |}  in 
+      let fs (ty:types) = match ty with
+        [ Mutual named_types ->
+          {:class_str_item| $(list: List.map mk_class_str_item named_types ) |}
+       | Single ((name,tydcl) as  named_type) ->
+           match Ctyp.abstract_list tydcl with
+           [ Some n  -> begin
+             let ty_str =  (!Ctyp.to_string tydcl) in
+             let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
+             let ty = mk_type (name,tydcl) in
+             {:class_str_item| method $lid:name : $ty= $(unknown n) |}
+           end
+           | None ->  mk_class_str_item named_type ]] in 
+        (* Loc.t will be translated to loc_t
+         we need to process extra to generate method loc_t
+       *)
+      let (extras,lst) = Ctyp.transform_module_types lst in 
+      let body = List.fold_left 
+          (fun acc types -> {:class_str_item| $acc; $(fs types) |} )
+          ({:class_str_item| |}) lst in
+      let body =
+        let items = List.map (fun (dest,src,len) ->
+          let ty = Ctyp.mk_method_type ~number:S.arity
+              ~prefix:S.names (src,len) (Obj k) in
+          let () = Hashtbl.add tbl dest (Qualified dest) in 
+          {:class_str_item| method
+              $lid:dest : $ty = $(unknown len) |} ) extras in
+        {:class_str_item| $body ; $list:items |} in  begin 
+        let v = Ctyp.mk_obj class_name  base body;
+        Hashtbl.iter (fun _ v -> eprintf "%s" (string_of_warning_type v))
+        tbl;
+        match module_name with
+        [None -> v
+        |Some u -> {:str_item| module $uid:u = struct $v  end  |} ]  
+        end ;
+    
 end;
 
 

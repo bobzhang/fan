@@ -289,6 +289,7 @@ New syntax:\
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} ->
             {| if $e1 then $e2 else $e3 |}
         | "do"; sequence{seq}; "done" -> Expr.mksequence _loc seq
+        | "do"; "{"; sequence{seq};"}" -> Expr.mksequence _loc seq
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do"; sequence{seq}; "done"
           -> {| for $i = $e1 $to:df $e2 do $seq done |}

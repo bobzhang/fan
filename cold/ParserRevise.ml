@@ -568,13 +568,13 @@ let apply () =
             (Gram.mk_action
                (fun (mt2 : 'module_type)  (mt1 : 'module_type) 
                   (_loc : FanLoc.t)  ->
-                  (ModuleType.app mt1 mt2 : 'module_type ))))]);
+                  (ModuleType.app0 mt1 mt2 : 'module_type ))))]);
        ((Some "."), None,
          [([`Sself; `Skeyword "."; `Sself],
             (Gram.mk_action
                (fun (mt2 : 'module_type)  _  (mt1 : 'module_type) 
                   (_loc : FanLoc.t)  ->
-                  (ModuleType.acc mt1 mt2 : 'module_type ))))]);
+                  (ModuleType.acc0 mt1 mt2 : 'module_type ))))]);
        ((Some "sig"), None,
          [([`Skeyword "sig";
            `Snterm (Gram.obj (sig_items : 'sig_items Gram.t ));
@@ -1110,6 +1110,13 @@ let apply () =
            `Skeyword "done"],
             (Gram.mk_action
                (fun _  (seq : 'sequence)  _  (_loc : FanLoc.t)  ->
+                  (Expr.mksequence _loc seq : 'expr ))));
+          ([`Skeyword "do";
+           `Skeyword "{";
+           `Snterm (Gram.obj (sequence : 'sequence Gram.t ));
+           `Skeyword "}"],
+            (Gram.mk_action
+               (fun _  (seq : 'sequence)  _  _  (_loc : FanLoc.t)  ->
                   (Expr.mksequence _loc seq : 'expr ))));
           ([`Skeyword "with";
            `Snterm (Gram.obj (lang : 'lang Gram.t ));

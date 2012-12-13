@@ -1,5 +1,0 @@
-
-
-make camlp4t
-
-ocamlbuild fan.cma
