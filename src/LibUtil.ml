@@ -315,6 +315,15 @@ module String = struct
       done ;
       String.sub s !i (len - !i)
     end;      
+
+(**
+   [neg_string "ab" ] = ["-ab"]
+   [neg_string ""] = ["-"]
+ *)
+  let neg n =
+    let len = String.length n in
+    if len > 0 && n.[0] = '-' then String.sub n 1 (len - 1)
+    else "-" ^ n;
     
 end;
   

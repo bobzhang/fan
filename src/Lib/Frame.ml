@@ -10,7 +10,9 @@
 #lang_at "patt" "ctyp";;
 open Format;
 open LibUtil;
+open Basic;
 module Ast = Camlp4Ast;
+open FSig;  
 (* <:include_ml< "open_template.ml"; >> ; *)
 
 
@@ -18,7 +20,7 @@ module Ast = Camlp4Ast;
 
 
 
-module Make(S:FSig) = struct   
+module Make(S:FSig.Config) = struct   
   open Expr;
   open Ident;
   (* we preserve some keywords to avoid variable capture *)
@@ -37,9 +39,9 @@ module Make(S:FSig) = struct
     let base = ty_name_expr  +> S.names in
     (** FIXME as a tuple it is useful when arity> 1??? *)
     let ty_id_exprs =
-      (init S.arity (fun index  -> {| $(id:xid ~off:index i) |} ))
+      (List.init S.arity (fun index  -> {| $(id:xid ~off:index i) |} ))
     and ty_id_patts =
-      (init S.arity (fun index  -> <:patt< $(id:xid ~off:index i) >>))in
+      (List.init S.arity (fun index  -> {:patt| $(id:xid ~off:index i) |}))in
     let ty_id_expr = Expr.tuple_of_list  ty_id_exprs  in
     let ty_id_patt = Patt.tuple_of_list ty_id_patts in 
     let ty_expr = apply base ty_id_exprs  in
@@ -49,14 +51,13 @@ module Make(S:FSig) = struct
   let tuple_expr_of_ctyp simple_expr_of_ctyp ty = ErrorMonad.(
     let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in 
     match ty with
-    [ {|  (.$tup:t$.) |}  -> 
+    [ {|  ($tup:t) |}  -> 
       let ls = Ast.list_of_ctyp t [] in
       let len = List.length ls in
       let patt = Patt.mk_tuple ~arity:S.arity ~number:len in
-      let tys = mapi (mapi_expr  simple_expr_of_ctyp) ls in
+      let tys = List.mapi (mapi_expr  simple_expr_of_ctyp) ls in
       S.names <+ (currying
-                    [ <:match_case< .$patt$. ->
-                      .$S.mk_tuple tys $. >> ] ~arity:S.arity)
+                    [ {:match_case| $pat:patt -> $(S.mk_tuple tys ) |} ] ~arity:S.arity)
     | _  -> invalid_arg &
         sprintf  "tuple_expr_of_ctyp {|%s|}\n" (!Ctyp.to_string  ty)]);
 
@@ -79,23 +80,22 @@ module Make(S:FSig) = struct
     let left_trans = basic_transform S.left_type_id in 
     let tyvar = right_transform S.right_type_variable  in 
     let rec aux = fun 
-      [ {| .$lid:id$. |} -> 
-        if Hashset.mem cxt id then {| .$lid:left_trans id$. |}
-        else right_trans <:ident< .$lid:id$. >> 
-      | {| .$id:id$. |} ->   right_trans id
+      [ {| $lid:id |} -> 
+        if Hashset.mem cxt id then {| $(lid:left_trans id) |}
+        else right_trans {:ident| $lid:id |} 
+      | {| $id:id |} ->   right_trans id
         (* recursive call here *)
-      | {| (.$tup:t$.) |} as ty ->
+      | {| ($tup:t) |} as ty ->
           tuple_expr_of_ctyp  (normal_simple_expr_of_ctyp cxt) ty 
-      | {| .$t1$. .$t2$. |} ->  <:expr< .$aux t1$. .$aux t2$. >> 
-      | {|  '.$s$. |} ->   tyvar s
-      | {| .$t1$. -> .$t2$. |} -> 
-          aux <:ctyp< .$lid:"arrow"$. .$t1$. .$t2$. >> 
+      | {| $t1 $t2 |} ->  {:expr| $(aux t1) $(aux t2) |} 
+      | {|  ' $s |} ->   tyvar s
+      | {|$t1 -> $t2 |} -> 
+          aux {:ctyp| $(lid:"arrow") $t1 $t2 |} 
       | ty ->  raise (Unhandled  ty ) ] in
     try return & aux ty with
       [Unhandled t ->
         fail & sprintf "normal_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
-          (!Ctyp.to_string t) (!Ctyp.to_string ty) ])
-  ;
+          (!Ctyp.to_string t) (!Ctyp.to_string ty) ]) ;
 
 
   (*
@@ -119,17 +119,17 @@ module Make(S:FSig) = struct
     let var = basic_transform S.left_type_variable in
     let tyvar = right_transform S.right_type_variable  in 
     let rec aux = fun
-      [ {| .$id:id$. |} -> trans id
-      | {|  '.$s$. |} ->   tyvar s
-      | {| .$_$. .$_$. |} as ty -> match  Ctyp.list_of_app ty  with
-          [ [ {| .$id:tctor$. |} :: ls ] ->
-            ls |> List.map (fun [ {|  '.$s$. |} -> <:expr< .$lid:var s$. >> 
-                                | t ->   <:expr< fun self -> .$aux t$. >> ])
+      [ {| $id:id |} -> trans id
+      | {|  '$s |} ->   tyvar s
+      | {:ctyp| $_  $_ |} as ty -> match  Ctyp.list_of_app ty  with
+          [ [ {| $id:tctor |} :: ls ] ->
+            ls |> List.map (fun [ {|  '$s |} -> {:expr| $(lid:var s) |} 
+                                | t ->   {:expr| fun self -> $(aux t) |} ])
                |> apply (trans tctor)
           | _  -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp"]
-      | {| .$t1$. -> .$t2$. |} -> 
-          aux <:ctyp< .$lid:"arrow"$. .$t1$. .$t2$. >> 
-      | {|  .$tup:_$.  |} as ty ->
+      | {|$t1 -> $t2 |} -> 
+          aux {:ctyp| $(lid:"arrow") $t1 $t2 |} 
+      | {|  $tup:_  |} as ty ->
           tuple_expr_of_ctyp  (obj_simple_expr_of_ctyp ) ty 
       | ty -> raise (Unhandled ty) ] in
     try return & aux ty with
@@ -153,14 +153,14 @@ module Make(S:FSig) = struct
             let exprs = mapi (mapi_expr simple_expr_of_ctyp) tyargs in
             S.mk_variant cons exprs in
         let e = mk (cons,tyargs) in
-        [ <:match_case< .$p$. -> .$e$. >> :: acc ] in 
-        (* <:match_case< $acc$ | $p$ -> $e$  >> in *)
+        [ {:match_case| $pat:p -> $e |} :: acc ] in 
+        (* {:match_case| $acc$ | $p$ -> $e$  |} in *)
     let info = match ty with
       (* FIXME TyVrnInfSup to be added *)
-      [ {|  [.$t$.]  |}  -> (TyVrn, List.length (Ast.list_of_ctyp t []))
-      | {| [= .$t$. ] |} -> (TyVrnEq, List.length (Ast.list_of_ctyp t []))
-      | {| [> .$t$. ] |} -> (TyVrnSup,List.length (Ast.list_of_ctyp t []))
-      | {| [< .$t$. ] |} -> (TyVrnInf,List.length (Ast.list_of_ctyp t []))
+      [ {|  [ $t]  |}  -> (TyVrn, List.length (Ast.list_of_ctyp t []))
+      | {| [= $t ] |} -> (TyVrnEq, List.length (Ast.list_of_ctyp t []))
+      | {| [> $t ] |} -> (TyVrnSup,List.length (Ast.list_of_ctyp t []))
+      | {| [< $t ] |} -> (TyVrnInf,List.length (Ast.list_of_ctyp t []))
       | _ ->  invalid_arg  (sprintf "expr_of_ctyp {|%s|} "
                               & Ctyp.to_string ty) ] in 
     Ctyp.reduce_data_ctors ty  [] f >>= (fun res ->
@@ -177,26 +177,26 @@ module Make(S:FSig) = struct
     let open Transform in 
     let varf = basic_transform S.left_type_variable in
     let  f var acc = match var with
-    [ <@_loc< +'.$s$. >> | <@_loc< -'.$s$. >>
-    | <@_loc<  '.$s$. >> ->
-        {| fun .$lid: varf s $. -> .$acc$. |}
-    | _ -> do { Ctyp.eprint var ;
-     invalid_arg "mk_prefix";} ] in
-    List.fold_right f vars ( S.names <+ acc)
-  ;
+    [ {| +' $s |} | {| -' $s |}
+    | {| ' $s |} ->
+        {| fun $(lid: varf s) -> $acc |}
+    | _ -> begin  Ctyp.eprint var ;
+     invalid_arg "mk_prefix";end ] in
+    List.fold_right f vars ( S.names <+ acc);
 
   (*
     Given type declarations, generate corresponding
     Ast node represent the function
     (combine both expr_of_ctyp and simple_expr_of_ctyp) *)  
   let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp  = let open ErrorMonad in fun
-    [ Ast.TyDcl _ _ tyvars ctyp constraints ->
+    [ Ast.TyDcl (_, _, tyvars, ctyp, constraints) ->
         let ctyp =  match ctyp with
         [
-         ( {| .$_$. == .$ctyp$. |} (* the latter reifys the structure *)
-        | {| private .$ctyp$. |} ) -> ctyp | _ -> ctyp ] in
+         ( {| $_ == $ctyp |} (* the latter reifys the structure *)
+        | {| private $ctyp |} ) -> ctyp | _ -> ctyp ] in
         match ctyp with
-        [ {|  {.$t$.}  |} -> 
+        [ {|  { $t}  |} ->
+          (* FIXME the error message is wrong when using lang_at *)
           let cols =  Ctyp.list_of_record t  in
           let patt = Patt.mk_record ~arity:S.arity  cols in
           let info =
@@ -213,7 +213,7 @@ module Make(S:FSig) = struct
              *)
           mk_prefix tyvars
             (currying ~arity:S.arity
-               [ <:match_case< .$patt$. -> .$S.mk_record info$.  >> ])
+               [ {:match_case| $pat:patt -> $(S.mk_record info)  |} ])
         | _ ->
             let process =
               (fun ctyp ->
@@ -227,13 +227,11 @@ module Make(S:FSig) = struct
                [ Left result  ->  result
                | Right str ->
                    invalid_arg (sprintf "fun_of_tydcl{|%s|}\n%s"
-                               (Ctyp.mk_obj class_name  base body;
-        Hashtbl.iter (fun _ v -> eprintf "%s" (string_of_warning_type v))
-        tbl;
-        match module_name with
-        [None -> v
-        |Some u -> <:str_item< module .$uid:u$. = struct .$ v $. end  >> ]  
-         } ;
+                                  (!Ctyp.to_string ctyp) str)]
+            in  mk_prefix tyvars funct ]
+    | tydcl -> 
+        invalid_arg ( sprintf "fun_of_tydcl <<%s>>\n"
+                        (!Ctyp.to_string tydcl)) ];
 end;
 
 
