@@ -195,7 +195,26 @@ module Ref =
     with | e -> (List.iter2 (fun ref  v  -> ref := v) refs olds; raise e)
   end
 module Option = struct
-  
+  let may f = function | None  -> () | Some v -> f v
+  let map f = function | None  -> None | Some v -> Some (f v)
+  let bind f = function | None  -> None | Some v -> f v
+  let apply = function | None  -> (fun x  -> x) | Some f -> f
+  let filter f = function | Some x when f x -> Some x | _ -> None
+  let default v = function | None  -> v | Some v -> v
+  let is_some = function | None  -> false | _ -> true
+  let is_none = function | None  -> true | _ -> false
+  let get_exn s e = match s with | None  -> raise e | Some v -> v
+  let get s = get_exn s (Invalid_argument "Option.get")
+  let map_default f v = function | None  -> v | Some v2 -> f v2
+  let compare ?(cmp= Pervasives.compare)  a b =
+    match a with
+    | None  -> (match b with | None  -> 0 | Some _ -> (-1))
+    | Some x -> (match b with | None  -> 1 | Some y -> cmp x y)
+  let eq ?(eq= ( = ))  x y =
+    match (x, y) with
+    | (None ,None ) -> true
+    | (Some a,Some b) -> eq a b
+    | _ -> false
   end
 module Buffer = struct
   include Buffer let (+>) buf chr = Buffer.add_char buf chr; buf

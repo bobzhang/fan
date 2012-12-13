@@ -2,72 +2,54 @@ open LibUtil
 open Basic
 open FanUtil
 module Ast = Camlp4Ast
-let rec sep_expr acc =
+let rec sep_dot_expr acc =
   function
-  | Ast.ExAcc (_loc,e1,e2) -> sep_expr (sep_expr acc e2) e1
+  | Ast.ExAcc (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1
   | Ast.ExId (loc,Ast.IdUid (_,s)) as e ->
       (match acc with
        | [] -> [(loc, [], e)]
        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
   | Ast.ExId (_loc,(Ast.IdAcc (_l,_,_) as i)) ->
-      sep_expr acc (Ident.normalize_acc i)
+      sep_dot_expr acc (Ident.normalize_acc i)
   | e -> ((Ast.loc_of_expr e), [], e) :: acc
-let rec fa al =
-  function | Ast.ExApp (_loc,f,a) -> fa (a :: al) f | f -> (f, al)
 let rec apply accu =
   function
   | [] -> accu
   | x::xs ->
       let _loc = Ast.loc_of_expr x in apply (Ast.ExApp (_loc, accu, x)) xs
-let mklist _loc =
+let mklist loc =
   let rec loop top =
     function
     | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))
     | e1::el ->
-        let _loc =
-          if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc in
+        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_expr e1) loc in
         Ast.ExApp
           (_loc,
             (Ast.ExApp
                (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), e1)),
             (loop false el)) in
   loop true
-let mkumin _loc f arg =
-  match arg with
-  | Ast.ExInt (_loc,n) -> Ast.ExInt (_loc, (neg_string n))
-  | Ast.ExInt32 (_loc,n) -> Ast.ExInt32 (_loc, (neg_string n))
-  | Ast.ExInt64 (_loc,n) -> Ast.ExInt64 (_loc, (neg_string n))
-  | Ast.ExNativeInt (_loc,n) -> Ast.ExNativeInt (_loc, (neg_string n))
-  | Ast.ExFlo (_loc,n) -> Ast.ExFlo (_loc, (neg_string n))
-  | _ ->
-      Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, ("~" ^ f))))), arg)
-let mkassert _loc =
+let mksequence loc =
   function
-  | Ast.ExId (_loc,Ast.IdLid (_,"false")) -> Ast.ExAsf _loc
-  | e -> Ast.ExAsr (_loc, e)
-let mklist_last ?last  _loc =
-  let rec loop top =
-    function
-    | [] ->
-        (match last with
-         | Some e -> e
-         | None  -> Ast.ExId (_loc, (Ast.IdUid (_loc, "[]"))))
-    | e1::el ->
-        let _loc =
-          if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc in
-        Ast.ExApp
-          (_loc,
-            (Ast.ExApp
-               (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), e1)),
-            (loop false el)) in
-  loop true
-let mksequence _loc =
-  function
-  | Ast.ExSem (_loc,_,_)|Ast.ExAnt (_loc,_) as e -> Ast.ExSeq (_loc, e)
+  | Ast.ExSem (_loc,_,_)|Ast.ExAnt (_loc,_) as e -> Ast.ExSeq (loc, e)
   | e -> e
-let mksequence' _loc =
-  function | Ast.ExSem (_loc,_,_) as e -> Ast.ExSeq (_loc, e) | e -> e
-let bigarray_get _loc arr arg =
+let mksequence' loc =
+  function | Ast.ExSem (_loc,_,_) as e -> Ast.ExSeq (loc, e) | e -> e
+let mkumin loc prefix arg =
+  match arg with
+  | Ast.ExInt (_loc,n) -> Ast.ExInt (loc, (neg_string n))
+  | Ast.ExInt32 (_loc,n) -> Ast.ExInt32 (loc, (neg_string n))
+  | Ast.ExInt64 (_loc,n) -> Ast.ExInt64 (loc, (neg_string n))
+  | Ast.ExNativeInt (_loc,n) -> Ast.ExNativeInt (loc, (neg_string n))
+  | Ast.ExFlo (_loc,n) -> Ast.ExFlo (loc, (neg_string n))
+  | _ ->
+      Ast.ExApp
+        (loc, (Ast.ExId (loc, (Ast.IdLid (loc, ("~" ^ prefix))))), arg)
+let mkassert loc =
+  function
+  | Ast.ExId (_loc,Ast.IdLid (_,"false")) -> Ast.ExAsf loc
+  | e -> Ast.ExAsr (loc, e)
+let bigarray_get loc arr arg =
   let coords =
     match arg with
     | Ast.ExTup (_loc,Ast.ExCom (_,e1,e2))|Ast.ExCom (_loc,e1,e2) ->
@@ -77,68 +59,68 @@ let bigarray_get _loc arr arg =
   | [] -> failwith "bigarray_get null list"
   | c1::[] ->
       Ast.ExApp
-        (_loc,
+        (loc,
           (Ast.ExApp
-             (_loc,
+             (loc,
                (Ast.ExId
-                  (_loc,
+                  (loc,
                     (Ast.IdAcc
-                       (_loc, (Ast.IdUid (_loc, "Bigarray")),
+                       (loc, (Ast.IdUid (loc, "Bigarray")),
                          (Ast.IdAcc
-                            (_loc, (Ast.IdUid (_loc, "Array1")),
-                              (Ast.IdLid (_loc, "get")))))))), arr)), c1)
+                            (loc, (Ast.IdUid (loc, "Array1")),
+                              (Ast.IdLid (loc, "get")))))))), arr)), c1)
   | c1::c2::[] ->
       Ast.ExApp
-        (_loc,
+        (loc,
           (Ast.ExApp
-             (_loc,
+             (loc,
                (Ast.ExApp
-                  (_loc,
+                  (loc,
                     (Ast.ExId
-                       (_loc,
+                       (loc,
                          (Ast.IdAcc
-                            (_loc, (Ast.IdUid (_loc, "Bigarray")),
+                            (loc, (Ast.IdUid (loc, "Bigarray")),
                               (Ast.IdAcc
-                                 (_loc, (Ast.IdUid (_loc, "Array2")),
-                                   (Ast.IdLid (_loc, "get")))))))), arr)),
-               c1)), c2)
+                                 (loc, (Ast.IdUid (loc, "Array2")),
+                                   (Ast.IdLid (loc, "get")))))))), arr)), c1)),
+          c2)
   | c1::c2::c3::[] ->
       Ast.ExApp
-        (_loc,
+        (loc,
           (Ast.ExApp
-             (_loc,
+             (loc,
                (Ast.ExApp
-                  (_loc,
+                  (loc,
                     (Ast.ExApp
-                       (_loc,
+                       (loc,
                          (Ast.ExId
-                            (_loc,
+                            (loc,
                               (Ast.IdAcc
-                                 (_loc, (Ast.IdUid (_loc, "Bigarray")),
+                                 (loc, (Ast.IdUid (loc, "Bigarray")),
                                    (Ast.IdAcc
-                                      (_loc, (Ast.IdUid (_loc, "Array3")),
-                                        (Ast.IdLid (_loc, "get")))))))), arr)),
+                                      (loc, (Ast.IdUid (loc, "Array3")),
+                                        (Ast.IdLid (loc, "get")))))))), arr)),
                     c1)), c2)), c3)
   | c1::c2::c3::coords ->
       Ast.ExApp
-        (_loc,
+        (loc,
           (Ast.ExApp
-             (_loc,
+             (loc,
                (Ast.ExId
-                  (_loc,
+                  (loc,
                     (Ast.IdAcc
-                       (_loc, (Ast.IdUid (_loc, "Bigarray")),
+                       (loc, (Ast.IdUid (loc, "Bigarray")),
                          (Ast.IdAcc
-                            (_loc, (Ast.IdUid (_loc, "Genarray")),
-                              (Ast.IdLid (_loc, "get")))))))), arr)),
+                            (loc, (Ast.IdUid (loc, "Genarray")),
+                              (Ast.IdLid (loc, "get")))))))), arr)),
           (Ast.ExArr
-             (_loc,
+             (loc,
                (Ast.ExSem
-                  (_loc, c1,
+                  (loc, c1,
                     (Ast.ExSem
-                       (_loc, c2,
-                         (Ast.ExSem (_loc, c3, (Ast.exSem_of_list coords))))))))))
-let bigarray_set _loc var newval =
+                       (loc, c2,
+                         (Ast.ExSem (loc, c3, (Ast.exSem_of_list coords))))))))))
+let bigarray_set loc var newval =
   match var with
   | Ast.ExApp
       (_loc,Ast.ExApp
@@ -149,23 +131,22 @@ let bigarray_set _loc var newval =
       ->
       Some
         (Ast.ExAss
-           (_loc,
+           (loc,
              (Ast.ExAcc
-                (_loc,
+                (loc,
                   (Ast.ExApp
-                     (_loc,
+                     (loc,
                        (Ast.ExApp
-                          (_loc,
+                          (loc,
                             (Ast.ExId
-                               (_loc,
+                               (loc,
                                  (Ast.IdAcc
-                                    (_loc, (Ast.IdUid (_loc, "Bigarray")),
+                                    (loc, (Ast.IdUid (loc, "Bigarray")),
                                       (Ast.IdAcc
-                                         (_loc, (Ast.IdUid (_loc, "Array1")),
-                                           (Ast.IdLid (_loc, "get")))))))),
+                                         (loc, (Ast.IdUid (loc, "Array1")),
+                                           (Ast.IdLid (loc, "get")))))))),
                             arr)), c1)),
-                  (Ast.ExId (_loc, (Ast.IdLid (_loc, "contents")))))),
-             newval))
+                  (Ast.ExId (loc, (Ast.IdLid (loc, "contents")))))), newval))
   | Ast.ExApp
       (_loc,Ast.ExApp
        (_,Ast.ExApp
@@ -176,27 +157,25 @@ let bigarray_set _loc var newval =
       ->
       Some
         (Ast.ExAss
-           (_loc,
+           (loc,
              (Ast.ExAcc
-                (_loc,
+                (loc,
                   (Ast.ExApp
-                     (_loc,
+                     (loc,
                        (Ast.ExApp
-                          (_loc,
+                          (loc,
                             (Ast.ExApp
-                               (_loc,
+                               (loc,
                                  (Ast.ExId
-                                    (_loc,
+                                    (loc,
                                       (Ast.IdAcc
-                                         (_loc,
-                                           (Ast.IdUid (_loc, "Bigarray")),
+                                         (loc, (Ast.IdUid (loc, "Bigarray")),
                                            (Ast.IdAcc
-                                              (_loc,
-                                                (Ast.IdUid (_loc, "Array2")),
-                                                (Ast.IdLid (_loc, "get")))))))),
+                                              (loc,
+                                                (Ast.IdUid (loc, "Array2")),
+                                                (Ast.IdLid (loc, "get")))))))),
                                  arr)), c1)), c2)),
-                  (Ast.ExId (_loc, (Ast.IdLid (_loc, "contents")))))),
-             newval))
+                  (Ast.ExId (loc, (Ast.IdLid (loc, "contents")))))), newval))
   | Ast.ExApp
       (_loc,Ast.ExApp
        (_,Ast.ExApp
@@ -208,30 +187,29 @@ let bigarray_set _loc var newval =
       ->
       Some
         (Ast.ExAss
-           (_loc,
+           (loc,
              (Ast.ExAcc
-                (_loc,
+                (loc,
                   (Ast.ExApp
-                     (_loc,
+                     (loc,
                        (Ast.ExApp
-                          (_loc,
+                          (loc,
                             (Ast.ExApp
-                               (_loc,
+                               (loc,
                                  (Ast.ExApp
-                                    (_loc,
+                                    (loc,
                                       (Ast.ExId
-                                         (_loc,
+                                         (loc,
                                            (Ast.IdAcc
-                                              (_loc,
-                                                (Ast.IdUid (_loc, "Bigarray")),
+                                              (loc,
+                                                (Ast.IdUid (loc, "Bigarray")),
                                                 (Ast.IdAcc
-                                                   (_loc,
+                                                   (loc,
                                                      (Ast.IdUid
-                                                        (_loc, "Array3")),
-                                                     (Ast.IdLid (_loc, "get")))))))),
+                                                        (loc, "Array3")),
+                                                     (Ast.IdLid (loc, "get")))))))),
                                       arr)), c1)), c2)), c3)),
-                  (Ast.ExId (_loc, (Ast.IdLid (_loc, "contents")))))),
-             newval))
+                  (Ast.ExId (loc, (Ast.IdLid (loc, "contents")))))), newval))
   | Ast.ExApp
       (_loc,Ast.ExApp
        (_,Ast.ExId
@@ -242,154 +220,158 @@ let bigarray_set _loc var newval =
       ->
       Some
         (Ast.ExApp
-           (_loc,
+           (loc,
              (Ast.ExApp
-                (_loc,
+                (loc,
                   (Ast.ExApp
-                     (_loc,
+                     (loc,
                        (Ast.ExId
-                          (_loc,
+                          (loc,
                             (Ast.IdAcc
-                               (_loc, (Ast.IdUid (_loc, "Bigarray")),
+                               (loc, (Ast.IdUid (loc, "Bigarray")),
                                  (Ast.IdAcc
-                                    (_loc, (Ast.IdUid (_loc, "Genarray")),
-                                      (Ast.IdLid (_loc, "set")))))))), arr)),
-                  (Ast.ExArr (_loc, coords)))), newval))
+                                    (loc, (Ast.IdUid (loc, "Genarray")),
+                                      (Ast.IdLid (loc, "set")))))))), arr)),
+                  (Ast.ExArr (loc, coords)))), newval))
   | _ -> None
 let rec pattern_eq_expression p e =
   match (p, e) with
-  | (Ast.PaId (_loc,Ast.IdLid (_,a)),Ast.ExId (_l,Ast.IdLid (_,b))) -> a = b
-  | (Ast.PaId (_loc,Ast.IdUid (_,a)),Ast.ExId (_l,Ast.IdUid (_,b))) -> a = b
-  | (Ast.PaApp (_loc,p1,p2),Ast.ExApp (_l,e1,e2)) ->
+  | (Ast.PaId (_loc,Ast.IdLid (_,a)),Ast.ExId (_,Ast.IdLid (_,b)))|(Ast.PaId
+                                                                    (_loc,Ast.IdUid
+                                                                    (_,a)),Ast.ExId
+                                                                    (_,Ast.IdUid
+                                                                    (_,b)))
+      -> a = b
+  | (Ast.PaApp (_loc,p1,p2),Ast.ExApp (_,e1,e2)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
   | _ -> false
-let map _loc p e l =
+let map loc p e l =
   match (p, e) with
-  | (Ast.PaId (_loc,Ast.IdLid (_,x)),Ast.ExId (_l,Ast.IdLid (_,y))) when
+  | (Ast.PaId (_loc,Ast.IdLid (_,x)),Ast.ExId (_,Ast.IdLid (_,y))) when 
       x = y -> l
   | _ ->
       if Ast.is_irrefut_patt p
       then
         Ast.ExApp
-          (_loc,
+          (loc,
             (Ast.ExApp
-               (_loc,
+               (loc,
                  (Ast.ExId
-                    (_loc,
+                    (loc,
                       (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "List")),
-                           (Ast.IdLid (_loc, "map")))))),
-                 (Ast.ExFun
-                    (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), e)))))), l)
+                         (loc, (Ast.IdUid (loc, "List")),
+                           (Ast.IdLid (loc, "map")))))),
+                 (Ast.ExFun (loc, (Ast.McArr (loc, p, (Ast.ExNil loc), e)))))),
+            l)
       else
         Ast.ExApp
-          (_loc,
+          (loc,
             (Ast.ExApp
-               (_loc,
+               (loc,
                  (Ast.ExApp
-                    (_loc,
+                    (loc,
                       (Ast.ExId
-                         (_loc,
+                         (loc,
                            (Ast.IdAcc
-                              (_loc, (Ast.IdUid (_loc, "List")),
-                                (Ast.IdLid (_loc, "fold_right")))))),
+                              (loc, (Ast.IdUid (loc, "List")),
+                                (Ast.IdLid (loc, "fold_right")))))),
                       (Ast.ExFun
-                         (_loc,
+                         (loc,
                            (Ast.McOr
-                              (_loc,
+                              (loc,
                                 (Ast.McArr
-                                   (_loc, p,
+                                   (loc, p,
                                      (Ast.ExId
-                                        (_loc, (Ast.IdLid (_loc, "true")))),
+                                        (loc, (Ast.IdLid (loc, "true")))),
                                      (Ast.ExApp
-                                        (_loc,
+                                        (loc,
                                           (Ast.ExFun
-                                             (_loc,
+                                             (loc,
                                                (Ast.McArr
-                                                  (_loc,
+                                                  (loc,
                                                     (Ast.PaId
-                                                       (_loc,
+                                                       (loc,
                                                          (Ast.IdLid
-                                                            (_loc, "x")))),
-                                                    (Ast.ExNil _loc),
+                                                            (loc, "x")))),
+                                                    (Ast.ExNil loc),
                                                     (Ast.ExFun
-                                                       (_loc,
+                                                       (loc,
                                                          (Ast.McArr
-                                                            (_loc,
+                                                            (loc,
                                                               (Ast.PaId
-                                                                 (_loc,
+                                                                 (loc,
                                                                    (Ast.IdLid
-                                                                    (_loc,
+                                                                    (loc,
                                                                     "xs")))),
-                                                              (Ast.ExNil _loc),
+                                                              (Ast.ExNil loc),
                                                               (Ast.ExApp
-                                                                 (_loc,
+                                                                 (loc,
                                                                    (Ast.ExApp
-                                                                    (_loc,
+                                                                    (loc,
                                                                     (Ast.ExId
-                                                                    (_loc,
+                                                                    (loc,
                                                                     (Ast.IdUid
-                                                                    (_loc,
+                                                                    (loc,
                                                                     "::")))),
                                                                     (Ast.ExId
-                                                                    (_loc,
+                                                                    (loc,
                                                                     (Ast.IdLid
-                                                                    (_loc,
+                                                                    (loc,
                                                                     "x")))))),
                                                                    (Ast.ExId
-                                                                    (_loc,
+                                                                    (loc,
                                                                     (Ast.IdLid
-                                                                    (_loc,
+                                                                    (loc,
                                                                     "xs")))))))))))))),
                                           e)))),
                                 (Ast.McArr
-                                   (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
+                                   (loc, (Ast.PaAny loc), (Ast.ExNil loc),
                                      (Ast.ExFun
-                                        (_loc,
+                                        (loc,
                                           (Ast.McArr
-                                             (_loc,
+                                             (loc,
                                                (Ast.PaId
-                                                  (_loc,
-                                                    (Ast.IdLid (_loc, "l")))),
-                                               (Ast.ExNil _loc),
+                                                  (loc,
+                                                    (Ast.IdLid (loc, "l")))),
+                                               (Ast.ExNil loc),
                                                (Ast.ExId
-                                                  (_loc,
-                                                    (Ast.IdLid (_loc, "l")))))))))))))))),
-                 l)), (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))))
-let filter _loc p b l =
+                                                  (loc,
+                                                    (Ast.IdLid (loc, "l")))))))))))))))),
+                 l)), (Ast.ExId (loc, (Ast.IdUid (loc, "[]")))))
+let filter loc p b l =
   if Ast.is_irrefut_patt p
   then
     Ast.ExApp
-      (_loc,
+      (loc,
         (Ast.ExApp
-           (_loc,
+           (loc,
              (Ast.ExId
-                (_loc,
+                (loc,
                   (Ast.IdAcc
-                     (_loc, (Ast.IdUid (_loc, "List")),
-                       (Ast.IdLid (_loc, "filter")))))),
-             (Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), b)))))),
+                     (loc, (Ast.IdUid (loc, "List")),
+                       (Ast.IdLid (loc, "filter")))))),
+             (Ast.ExFun (loc, (Ast.McArr (loc, p, (Ast.ExNil loc), b)))))),
         l)
   else
     Ast.ExApp
-      (_loc,
+      (loc,
         (Ast.ExApp
-           (_loc,
+           (loc,
              (Ast.ExId
-                (_loc,
+                (loc,
                   (Ast.IdAcc
-                     (_loc, (Ast.IdUid (_loc, "List")),
-                       (Ast.IdLid (_loc, "filter")))))),
+                     (loc, (Ast.IdUid (loc, "List")),
+                       (Ast.IdLid (loc, "filter")))))),
              (Ast.ExFun
-                (_loc,
+                (loc,
                   (Ast.McOr
-                     (_loc,
+                     (loc,
                        (Ast.McArr
-                          (_loc, p,
-                            (Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))), b)),
+                          (loc, p,
+                            (Ast.ExId (loc, (Ast.IdLid (loc, "true")))), b)),
                        (Ast.McArr
-                          (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
-                            (Ast.ExId (_loc, (Ast.IdLid (_loc, "false")))))))))))),
+                          (loc, (Ast.PaAny loc), (Ast.ExNil loc),
+                            (Ast.ExId (loc, (Ast.IdLid (loc, "false")))))))))))),
         l)
 let concat _loc l =
   Ast.ExApp
@@ -410,34 +392,34 @@ let rec compr _loc e =
 let bad_patt _loc =
   FanLoc.raise _loc
     (Failure "this macro cannot be used in a pattern (see its definition)")
-let substp _loc env =
+let substp loc env =
   let rec loop =
     function
-    | Ast.ExApp (_loc,e1,e2) -> Ast.PaApp (_loc, (loop e1), (loop e2))
-    | Ast.ExNil _loc -> Ast.PaNil _loc
+    | Ast.ExApp (_loc,e1,e2) -> Ast.PaApp (loc, (loop e1), (loop e2))
+    | Ast.ExNil _loc -> Ast.PaNil loc
     | Ast.ExId (_loc,Ast.IdLid (_,x)) ->
         (try List.assoc x env
-         with | Not_found  -> Ast.PaId (_loc, (Ast.IdLid (_loc, x))))
+         with | Not_found  -> Ast.PaId (loc, (Ast.IdLid (loc, x))))
     | Ast.ExId (_loc,Ast.IdUid (_,x)) ->
         (try List.assoc x env
-         with | Not_found  -> Ast.PaId (_loc, (Ast.IdUid (_loc, x))))
-    | Ast.ExInt (_loc,x) -> Ast.PaInt (_loc, x)
-    | Ast.ExStr (_loc,s) -> Ast.PaStr (_loc, s)
-    | Ast.ExTup (_loc,x) -> Ast.PaTup (_loc, (loop x))
-    | Ast.ExCom (_loc,x1,x2) -> Ast.PaCom (_loc, (loop x1), (loop x2))
+         with | Not_found  -> Ast.PaId (loc, (Ast.IdUid (loc, x))))
+    | Ast.ExInt (_loc,x) -> Ast.PaInt (loc, x)
+    | Ast.ExStr (_loc,s) -> Ast.PaStr (loc, s)
+    | Ast.ExTup (_loc,x) -> Ast.PaTup (loc, (loop x))
+    | Ast.ExCom (_loc,x1,x2) -> Ast.PaCom (loc, (loop x1), (loop x2))
     | Ast.ExRec (_loc,bi,Ast.ExNil _) ->
         let rec substbi =
           function
           | Ast.RbSem (_loc,b1,b2) ->
-              Ast.PaSem (_loc, (substbi b1), (substbi b2))
-          | Ast.RbEq (_loc,i,e) -> Ast.PaEq (_loc, i, (loop e))
+              Ast.PaSem (loc, (substbi b1), (substbi b2))
+          | Ast.RbEq (_loc,i,e) -> Ast.PaEq (loc, i, (loop e))
           | _ -> bad_patt _loc in
-        Ast.PaRec (_loc, (substbi bi))
-    | _ -> bad_patt _loc in
+        Ast.PaRec (loc, (substbi bi))
+    | _ -> bad_patt loc in
   loop
-class subst _loc env =
+class subst loc env =
   object 
-    inherit  (Ast.reloc _loc) as super
+    inherit  (Ast.reloc loc) as super
     method! expr =
       function
       | Ast.ExId (_loc,Ast.IdLid (_,x))|Ast.ExId (_loc,Ast.IdUid (_,x)) as e
@@ -504,7 +486,7 @@ class subst _loc env =
       function
       | Ast.PaId (_loc,Ast.IdLid (_,x))|Ast.PaId (_loc,Ast.IdUid (_,x)) as p
           ->
-          (try substp _loc [] (List.assoc x env)
+          (try substp loc [] (List.assoc x env)
            with | Not_found  -> super#patt p)
       | p -> super#patt p
   end
@@ -532,15 +514,6 @@ let filter_patt_with_captured_variables patt =
   (let patt = capture_antiquot#patt patt in
    let constraints = capture_antiquot#get_captured_variables in
    (patt, constraints))
-let rec string_of_ident =
-  function
-  | Ast.IdLid (_loc,s) -> s
-  | Ast.IdUid (_loc,s) -> s
-  | Ast.IdAcc (_loc,i1,i2) ->
-      "acc_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
-  | Ast.IdApp (_loc,i1,i2) ->
-      "app_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
-  | Ast.IdAnt (_loc,_) -> assert false
 let tuple _loc =
   function
   | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))
@@ -590,6 +563,8 @@ let list_of_sem ty =
     | Ast.ExNil _loc -> acc
     | i -> i :: acc in
   loop ty []
+let rec view_app acc =
+  function | Ast.ExApp (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let app_of_list =
   function | [] -> Ast.ExNil _loc | l -> List.reduce_left app l
 let com_of_list =

@@ -1076,7 +1076,20 @@ let apply () =
             (Gram.mk_action
                (fun _  (a : 'match_case0 list)  _  _  (_loc : FanLoc.t)  ->
                   (Ast.ExFun (_loc, (Ast.mcOr_of_list a)) : 'expr ))));
+          ([`Skeyword "function";
+           `Skeyword "[";
+           `Slist0sep
+             ((`Snterm (Gram.obj (match_case0 : 'match_case0 Gram.t ))),
+               (`Skeyword "|"));
+           `Skeyword "]"],
+            (Gram.mk_action
+               (fun _  (a : 'match_case0 list)  _  _  (_loc : FanLoc.t)  ->
+                  (Ast.ExFun (_loc, (Ast.mcOr_of_list a)) : 'expr ))));
           ([`Skeyword "fun"; `Snterm (Gram.obj (fun_def : 'fun_def Gram.t ))],
+            (Gram.mk_action
+               (fun (e : 'fun_def)  _  (_loc : FanLoc.t)  -> (e : 'expr ))));
+          ([`Skeyword "function";
+           `Snterm (Gram.obj (fun_def : 'fun_def Gram.t ))],
             (Gram.mk_action
                (fun (e : 'fun_def)  _  (_loc : FanLoc.t)  -> (e : 'expr ))));
           ([`Skeyword "match";
@@ -1085,16 +1098,14 @@ let apply () =
            `Snterm (Gram.obj (match_case : 'match_case Gram.t ))],
             (Gram.mk_action
                (fun (a : 'match_case)  _  (e : 'expr)  _  (_loc : FanLoc.t) 
-                  ->
-                  (Ast.ExMat (_loc, (Expr.mksequence' _loc e), a) : 'expr ))));
+                  -> (Ast.ExMat (_loc, e, a) : 'expr ))));
           ([`Skeyword "try";
            `Sself;
            `Skeyword "with";
            `Snterm (Gram.obj (match_case : 'match_case Gram.t ))],
             (Gram.mk_action
                (fun (a : 'match_case)  _  (e : 'expr)  _  (_loc : FanLoc.t) 
-                  ->
-                  (Ast.ExTry (_loc, (Expr.mksequence' _loc e), a) : 'expr ))));
+                  -> (Ast.ExTry (_loc, e, a) : 'expr ))));
           ([`Skeyword "if";
            `Sself;
            `Skeyword "then";
@@ -1110,13 +1121,6 @@ let apply () =
            `Skeyword "done"],
             (Gram.mk_action
                (fun _  (seq : 'sequence)  _  (_loc : FanLoc.t)  ->
-                  (Expr.mksequence _loc seq : 'expr ))));
-          ([`Skeyword "do";
-           `Skeyword "{";
-           `Snterm (Gram.obj (sequence : 'sequence Gram.t ));
-           `Skeyword "}"],
-            (Gram.mk_action
-               (fun _  (seq : 'sequence)  _  _  (_loc : FanLoc.t)  ->
                   (Expr.mksequence _loc seq : 'expr ))));
           ([`Skeyword "with";
            `Snterm (Gram.obj (lang : 'lang Gram.t ));
@@ -5600,6 +5604,12 @@ let apply () =
                 (fun (ce : 'class_fun_def)  (p : 'ipatt)  _ 
                    (_loc : FanLoc.t)  ->
                    (Ast.CeFun (_loc, p, ce) : 'class_expr ))));
+          ([`Skeyword "function";
+           `Snterm (Gram.obj (ipatt : 'ipatt Gram.t ));
+           `Snterm (Gram.obj (class_fun_def : 'class_fun_def Gram.t ))],
+            (Gram.mk_action
+               (fun (ce : 'class_fun_def)  (p : 'ipatt)  _  (_loc : FanLoc.t)
+                   -> (Ast.CeFun (_loc, p, ce) : 'class_expr ))));
           ([`Skeyword "let";
            `Snterm (Gram.obj (opt_rec : 'opt_rec Gram.t ));
            `Snterm (Gram.obj (binding : 'binding Gram.t ));

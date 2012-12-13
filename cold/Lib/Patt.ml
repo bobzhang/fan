@@ -47,6 +47,8 @@ let list_of_sem ty =
     | Ast.PaNil _loc -> acc
     | i -> i :: acc in
   loop ty []
+let rec view_app acc =
+  function | Ast.PaApp (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let app_of_list =
   function | [] -> Ast.PaNil _loc | l -> List.reduce_left app l
 let com_of_list =

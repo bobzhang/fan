@@ -3,8 +3,6 @@ open LibUtil
 open Format
 open Basic
 open FSig
-let rec fa al =
-  function | Ast.TyApp (_loc,f,a) -> fa (a :: al) f | f -> (f, al)
 let rec to_var_list =
   function
   | Ast.TyApp (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
@@ -56,6 +54,8 @@ let list_of_sem ty =
     | Ast.TyNil _loc -> acc
     | i -> i :: acc in
   loop ty []
+let rec view_app acc =
+  function | Ast.TyApp (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let app_of_list =
   function | [] -> Ast.TyNil _loc | l -> List.reduce_left app l
 let com_of_list =
