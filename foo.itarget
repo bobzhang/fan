@@ -5,5 +5,5 @@ src/FanBasic.cmo
 src/OAstPrint.cmo
 src/FanLexUtil.cmo
 src/FanDriver.byte
-demo/plc/plc.cma
+# demo/plc/plc.cma
 src/FanTop.cma

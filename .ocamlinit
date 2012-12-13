@@ -97,4 +97,4 @@ let env = !Toploop.toplevel_env;;
 #install_printer Gram.dump;;
 #install_printer print_ocaml_loc;;
 
-#install_printer FanBasic.p_expr;;
+(* #install_printer FanBasic.p_expr;; *)

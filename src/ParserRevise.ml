@@ -279,17 +279,22 @@ New syntax:\
         | "let"; "open"; module_longident{i}; "in"; S{e} -> {| let open $id:i in $e |}
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a} ->
             {| let try $rec:r $bi in $x with [ $a ] |}
-        | "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" ->
-            {| fun [ $list:a ] |}
+        (* FIXME fun and function duplicated *)      
+        | "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| fun [ $list:a ] |}
+        | "function"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| fun [ $list:a ] |}
         | "fun"; fun_def{e} -> e
+        | "function"; fun_def{e} -> e
+              
         | "match"; S{e}; "with"; match_case{a} ->
-            {| match $(Expr.mksequence' _loc e) with [ $a ] |}
+            (* {| match $(Expr.mksequence' _loc e) with [ $a ] |} *)
+            {|match $e with [$a]|}
         | "try"; S{e}; "with"; match_case{a} ->
-            {| try $(Expr.mksequence' _loc e) with [ $a ] |}
+            (* {| try $(Expr.mksequence' _loc e) with [ $a ] |} *)
+            {|try $e with [$a]|}
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} ->
             {| if $e1 then $e2 else $e3 |}
         | "do"; sequence{seq}; "done" -> Expr.mksequence _loc seq
-        | "do"; "{"; sequence{seq};"}" -> Expr.mksequence _loc seq
+        (* | "do"; "{"; sequence{seq};"}" -> Expr.mksequence _loc seq *)
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do"; sequence{seq}; "done"
           -> {| for $i = $e1 $to:df $e2 do $seq done |}
@@ -1132,6 +1137,7 @@ New syntax:\
       class_expr:
       { "top"
           [ "fun"; ipatt{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
+          | "function"; ipatt{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
           | "let"; opt_rec{rf}; binding{bi}; "in"; S{ce} ->
               {| let $rec:rf $bi in $ce |} ]
         "apply" NA

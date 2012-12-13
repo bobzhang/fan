@@ -7,9 +7,9 @@ open Basic;
 open FSig;
 
 (*  *)
-let rec fa al =fun
-  [ {| $f $a |}  -> fa [a :: al] f
-  | f -> (f, al) ];
+(* let rec fa al =fun *)
+(*   [ {| $f $a |}  -> fa [a :: al] f *)
+(*   | f -> (f, al) ]; *)
 
 let rec to_var_list =  fun
   [ {| $t1 $t2 |} ->

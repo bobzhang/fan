@@ -1,165 +1,200 @@
 (* open Format; *)
 (* open lang "expr"; *)
 #default_quotation     "expr";;
-(* open lang "expr"; *)
+
+
+(* +-----------------------------------------------------------------+
+   | the modules documented with [open Lib.Expr]                     |
+   +-----------------------------------------------------------------+ *)
+
+
+
+
 open LibUtil;
 open Basic;
 open FanUtil;
 module Ast= Camlp4Ast; (* it contains a module named Meta *)
+
+
 (*
+  The input is either {|$_.$_|} or {|$(id:{:ident| $_.$_|})|}
+  the type of return value and [acc] is
+  [(loc* string list * expr) list]
+
+  The [string list] is generally a module path, the [expr] is the last field
+
+  Examples:
+
   {[
-  
-  sep_expr [] {| A.B.g.h|}; ;
-  [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "h")))]
+  sep_dot_expr [] {|A.B.g.U.E.h.i|};
+  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
+  [(, ["A"; "B"], ExId (, IdLid (, "g")));
+  (, ["U"; "E"], ExId (, IdLid (, "h"))); (, [], ExId (, IdLid (, "i")))]
 
-  The first two dots are IdAcc, the last dot is ExAcc
+  sep_dot_expr [] {|A.B.g.i|};
+  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
+  [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "i")))]
 
-  sep_expr [] {| A.B.g.h + 3 |}
-  [(, [],
-  ExApp (,
-   ExApp (, ExId (, IdLid (, "+")),
-    ExAcc (,
-     ExId (, IdAcc (, IdUid (, "A"), IdAcc (, IdUid (, "B"), IdLid (, "g")))),
-     ExId (, IdLid (, "h")))),
-   ExInt (, "3")))]
-
-
-  sep_expr [] {| A.B.g.h.i|}; ;
-  [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "h")));
-  (, [], ExId (, IdLid (, "i")))]
-
-  sep_expr [] {| $(uid:"").t |} ; ;
-  - : (Camlp4Ast.Ast.loc * string list * Camlp4Ast.Ast.expr) list =
-  [(, [""], Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "t")))]
+  sep_dot_expr [] {|$(uid:"").i|};
+  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
+  [(, [""], ExId (, IdLid (, "i")))]
 
   ]}
  *)
 
-let rec sep_expr acc = fun
+let rec sep_dot_expr acc = fun
   [ {| $e1.$e2|} ->
-    sep_expr (sep_expr acc e2) e1
+    sep_dot_expr (sep_dot_expr acc e2) e1
   | {@loc| $uid:s |} as e ->
       match acc with
       [ [] -> [(loc, [], e)]
       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
   | {| $(id:({:ident@_l| $_.$_ |} as i)) |} ->
-      sep_expr acc (Ident.normalize_acc i)
+      sep_dot_expr acc (Ident.normalize_acc i)
   | e -> [(Ast.loc_of_expr e, [], e) :: acc] ];
 
 
-let rec fa al = fun
-  [ {| $f $a |} ->fa [a :: al] f
-  | f -> (f, al) ];
-
-
+(* It is the inverse operation by [view_app]
+   Example:
+   {[
+   apply {|a|} [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+   a b c d
+   ]}
+ *)
 let rec apply accu = fun
   [ [] -> accu
   | [x :: xs] ->
       let _loc = Ast.loc_of_expr x
       in apply {| $accu $x |} xs ];
 
-(* Ast.loc -> Ast.expr list -> Ast.expr *)  
-let mklist _loc =
+(*
+  Given an location, and a list of expression node,
+  return an expression node which represents the list
+  of the expresson nodes
+
+  Example:
+  {[
+  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+  [b; c; d]
+  ]}
+ *)
+let mklist loc =
   let rec loop top =  fun
     [ [] -> {| [] |}
     | [e1 :: el] ->
         let _loc =
-          if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc in
+          if top then loc else FanLoc.merge (Ast.loc_of_expr e1) loc in
         {| [$e1 :: $(loop false el)] |} ] in loop true ;
-  
-let mkumin _loc f arg = match arg with
-  [ {| $int:n |} -> {| $(int:neg_string n) |}
-  | {| $int32:n |} -> {| $(int32:neg_string n) |}
-  | {| $(int64:n) |} -> {| $(int64:neg_string n) |}
-  | {| $nativeint:n |} -> {| $(nativeint:neg_string n) |}
-  | {| $flo:n |} -> {| $(flo:neg_string n) |}
-  | _ -> {| $(lid:"~" ^ f) $arg |} ];
 
-(* FIXME refer to mkuplus *)  
-let mkassert _loc = fun
-  [ {| false |} -> {| assert false |} 
-  | e -> {| assert $e |} ] ;
-
-
-let mklist_last ?last _loc  =
-  let rec loop top = fun
-    [ [] -> match last with
-      [ Some e -> e
-      | None -> {| [] |} ]
-    | [e1 :: el] ->
-        let _loc =
-          if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc in
-        {| [$e1 :: $(loop false el)] |} ] in
-  loop true ;
-
-let mksequence _loc = fun
-  [ {| $_; $_ |} | {| $anti:_ |} as e -> {| begin  $e end |}
+(* Add a sequence delimiter to the semi delimiter
+   antiquot is also decorated
+ *)  
+let mksequence loc = fun
+  [ {| $_; $_ |}
+  | {| $anti:_ |} as e -> {@loc| begin  $e end |}
   | e -> e ];
 
-let mksequence' _loc = fun
-  [ {| $_; $_ |} as e -> {| begin  $e  end |}
+(* see [mksequence], antiquot is not decoreated *)  
+let mksequence' loc = fun
+  [ {| $_; $_ |} as e -> {@loc| begin  $e  end |}
   | e -> e ];
 
-
-
   
-let bigarray_get _loc arr arg =
-  let coords =  match arg with
-  [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
+
+(* Given a [location] and [prefix](generally "-" or "-.")
+   The location provided is more precise
+ *)  
+let mkumin loc prefix arg =
+  match arg with
+  [ {| $int:n |} -> {@loc| $(int:neg_string n) |}
+  | {| $int32:n |} -> {@loc| $(int32:neg_string n) |}
+  | {| $int64:n |} -> {@loc| $(int64:neg_string n) |}
+  | {| $nativeint:n |} -> {@loc| $(nativeint:neg_string n) |}
+  | {| $flo:n |} -> {@loc| $(flo:neg_string n) |}
+  | _ -> {@loc| $(lid:"~" ^ prefix) $arg |} ];
+
+
+let mkassert loc = fun
+  [ {| false |} -> {@loc| assert false |} 
+  | e -> {@loc| assert $e |} ] ;
+
+(*
+  Examples:
+  {[
+  bigarray_get _loc {|a|} {|(b,c,d)|} |> FanBasic.p_expr f;
+  ]}
+ *)  
+let bigarray_get loc arr arg =
+  let coords =
+    match arg with
+    [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
       Ast.list_of_expr e1 (Ast.list_of_expr e2 [])
-  | _ -> [arg] ] in
+    | _ -> [arg] ] in
   match coords with
   [ [] -> failwith "bigarray_get null list"
-  | [c1] -> {| $arr.{$c1} |}  
-  | [c1; c2] -> {| $arr.{$c1,$c2} |}  
-  | [c1; c2; c3] -> {| $arr.{$c1,$c2,$c3} |} 
+  | [c1] -> {@loc| $arr.{$c1} |}  
+  | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
+  | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {| $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } |} ];
-(* FIXME 1.ExArr, 2. can we just write $list:coords? *)
+      {@loc| $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } |} ];
 
-let bigarray_set _loc var newval = match var with
-    [ {|  $arr.{$c1} |} ->
-        Some {| $arr.{$c1} := $newval |} 
-    | {|  $arr.{$c1, $c2} |} ->
-        Some {|  $arr.{$c1, $c2} :=  $newval |}
-    | {|  $arr.{$c1, $c2, $c3} |} ->
-        Some {| $arr.{$c1,$c2,$c3} := $newval |} 
-    |  {| Bigarray.Genarray.get $arr [| $coords |] |} -> (* FIXME how to remove Bigarray here?*)
-        Some {| Bigarray.Genarray.set $arr [| $coords |] $newval |}
-    | _ -> None ];
+
+(*
+  Example:
+  {[
+  bigarray_set _loc {|a.{b,c,d}|} {|3+2|} |> Option.get |> FanBasic.p_expr f;
+  (Bigarray.Array3.get a b c d) := (3 + 2)
+  ]}
+  FIXME
+    1.ExArr, 2. can we just write $list:coords?
+    2. The output seems to be wrong
+       it should be Bigarray.Array3.set a b c d (3+2) instead
+ *)
+let bigarray_set loc var newval =
+  match var with
+  [ {|  $arr.{$c1} |} -> Some {@loc| $arr.{$c1} := $newval |} 
+  | {|  $arr.{$c1, $c2} |} -> Some {@loc|  $arr.{$c1, $c2} :=  $newval |}
+  | {|  $arr.{$c1, $c2, $c3} |} -> Some {@loc| $arr.{$c1,$c2,$c3} := $newval |} 
+  |  {| Bigarray.Genarray.get $arr [| $coords |] |} -> (* FIXME how to remove Bigarray here?*)
+      Some {@loc| Bigarray.Genarray.set $arr [| $coords |] $newval |}
+  | _ -> None ];
   
 
-(* FIXME later *)
+(* Utilities for [Stream] optimizations  *)
 let rec pattern_eq_expression p e =
   match (p, e) with
-  [ ({:patt| $lid:a |}, {@_l| $lid:b |}) -> a = b
-  | ({:patt| $uid:a |}, {@_l| $uid:b |}) -> a = b
-  | ({:patt| $p1 $p2 |}, {@_l| $e1 $e2 |}) ->
+  [ ({:patt| $lid:a |}, {@_| $lid:b |}) 
+  | ({:patt| $uid:a |}, {@_| $uid:b |}) -> a = b
+  | ({:patt| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
   | _ -> false ] ;
 
   
-(*************************************************************************)
-(* List comprehension *)  
-let map _loc p e l =  match (p, e) with
-  [ ({:patt| $lid:x |}, {@_l| $lid:y |}) when x = y -> l
+(* +-----------------------------------------------------------------+
+   | utilities for list comprehension                                |
+   +-----------------------------------------------------------------+ *)
+    
+let map loc p e l =
+  match (p, e) with
+  [ ({:patt| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
       if Ast.is_irrefut_patt p then
-        {| List.map (fun $p -> $e) $l |}
+        {@loc| List.map (fun $p -> $e) $l |}
       else
-        {| List.fold_right
+        {@loc| List.fold_right
           (fun
             [ $pat:p when true -> (fun x xs -> [ x :: xs ]) $e
-            | _ -> (fun l -> l) ])
-          $l [] |} ];
+            | _ -> (fun l -> l) ]) $l [] |} ];
 
 
-let filter _loc p b l =
+let filter loc p b l =
     if Ast.is_irrefut_patt p then
-      {| List.filter (fun $p -> $b) $l |}
+      {@loc| List.filter (fun $p -> $b) $l |}
     else
-      {| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
+      {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
+  
 let concat _loc l = {| List.concat $l |};
+
 (* only this function needs to be exposed *)
 let rec compr _loc e =  fun
     [ [`gen (p, l)] -> map _loc p e l
@@ -169,44 +204,61 @@ let rec compr _loc e =  fun
         concat _loc (map _loc p (compr _loc e is) l)
     | _ -> raise Stream.Failure ];
 
-(*************************************************************************)    
 
-(*************************************************************************)
-(* Utility for macro *)
+(* +-----------------------------------------------------------------+
+   | Utiliies for macro expansion                                    |
+   +-----------------------------------------------------------------+ *)
+  
 let bad_patt _loc =
   FanLoc.raise _loc
     (Failure
        "this macro cannot be used in a pattern (see its definition)");
-let substp _loc env =
+
+(* Environment is a [string*patt] pair,
+
+   Try to convert the 
+   [expr] node into [patt] node.
+   when do the conversion, if the expr node has an identifier which
+   has a special meaning, then that replacment will be used
+ *)  
+let substp loc env =
   let rec loop = fun
-      [ {| $e1 $e2 |} -> {:patt| $(loop e1) $(loop e2) |} 
-      | {| |} -> {:patt| |}
-      | {| $lid:x |} ->
-          try List.assoc x env with
-          [ Not_found -> {:patt| $lid:x |} ]
-      | {| $uid:x |} ->
-          try List.assoc x env with
-          [ Not_found -> {:patt| $uid:x |} ]
-      | {| $int:x |} -> {:patt| $int:x |}
-      | {| $str:s |} -> {:patt| $str:s |}
-      | {| ($tup:x) |} -> {:patt| $(tup:loop x) |}
-      | {| $x1, $x2 |} -> {:patt| $(loop x1), $(loop x2) |}
-      | {| { $bi } |} ->
-          let rec substbi = fun
-            [ {:rec_binding| $b1; $b2 |} -> {:patt| $(substbi b1); $(substbi b2) |}
-            | {:rec_binding| $id:i = $e |} -> {:patt| $i = $(loop e) |}
-            | _ -> bad_patt _loc ]
-          in {:patt| { $(substbi bi) } |}
-      | _ -> bad_patt _loc ] in loop;
-  
-class subst _loc env = object
-  inherit Ast.reloc _loc as super;
+    [ {| $e1 $e2 |} -> {:patt@loc| $(loop e1) $(loop e2) |} 
+    | {| |} -> {:patt@loc| |}
+    | {| $lid:x |} ->
+        try List.assoc x env with
+          [ Not_found -> {:patt@loc| $lid:x |} ]
+    | {| $uid:x |} ->
+        try List.assoc x env with
+          [ Not_found -> {:patt@loc| $uid:x |} ]
+    | {| $int:x |} -> {:patt@loc| $int:x |}
+    | {| $str:s |} -> {:patt@loc| $str:s |}
+    | {| $tup:x |} -> {:patt@loc| $(tup:loop x) |}
+    | {| $x1, $x2 |} -> {:patt@loc| $(loop x1), $(loop x2) |}
+    | {| { $bi } |} ->
+        let rec substbi = fun
+          [ {:rec_binding| $b1; $b2 |} -> {:patt@loc| $(substbi b1); $(substbi b2) |}
+          | {:rec_binding| $id:i = $e |} -> {:patt@loc| $i = $(loop e) |}
+          | _ -> bad_patt _loc ] in
+        {:patt@loc| { $(substbi bi) } |}
+    | _ -> bad_patt loc ] in loop;
+
+(*
+  [env] is a list of [string*expr],
+
+  traverse the [expr] node
+  when the identifier in pos expr in the expr has a speical meaning, using that instead
+  when the identifier in pos patt in the expr has a special meaning,
+  try to convert the expr meaning into patt and use that instead
+ *)  
+class subst loc env = object
+  inherit Ast.reloc loc as super;
   method! expr =
     fun
     [ {| $lid:x |} | {| $uid:x |} as e ->
         try List.assoc x env with
         [ Not_found -> super#expr e ]
-    | {@_loc| LOCATION_OF $lid:x |} | {@_loc| LOCATION_OF $uid:x |} as e ->
+    | {| LOCATION_OF $lid:x |} | {| LOCATION_OF $uid:x |} as e ->
         try
           let loc = Ast.loc_of_expr (List.assoc x env) in
           let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
@@ -216,18 +268,13 @@ class subst _loc env = object
              $(if h then {| true |} else {| false |} )) |}
         with [ Not_found -> super#expr e ]
     | e -> super#expr e ];
-
   method! patt =  fun
     [ {:patt| $lid:x |} | {:patt| $uid:x |} as p ->
-       try substp _loc [] (List.assoc x env) with
+      (* convert expression into pattern only *)
+       try substp loc [] (List.assoc x env) with 
        [ Not_found -> super#patt p ]
     | p -> super#patt p ];
 end;
-
-(*************************************************************************)
-(* utilit for MakeNothing *)
-    (* {:expr| __FILE__ |} *)
-    (*  {:expr| $(lid:"__FILE__")|} *)
 
 
   
@@ -273,13 +320,13 @@ end;
 (* end; *)
 
 
-let rec string_of_ident = (* duplicated with Camlp4Filters remove soon*)
-  fun
-  [ {:ident| $lid:s |} -> s
-  | {:ident| $uid:s |} -> s
-  | {:ident| $i1.$i2 |} -> "acc_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
-  | {:ident| ($i1 $i2) |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
-  | {:ident| $anti:_ |} -> assert false ];
+(* let rec string_of_ident = (\* duplicated with Camlp4Filters remove soon*\) *)
+(*   fun *)
+(*   [ {:ident| $lid:s |} -> s *)
+(*   | {:ident| $uid:s |} -> s *)
+(*   | {:ident| $i1.$i2 |} -> "acc_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2) *)
+(*   | {:ident| ($i1 $i2) |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2) *)
+(*   | {:ident| $anti:_ |} -> assert false ]; *)
 
     
 (* let rec normalize = let _loc = FanLoc.ghost in with "patt" fun *)

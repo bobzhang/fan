@@ -129,7 +129,7 @@ let rec ctyp = fun (* ctyp -> core_type *)
       mktyp loc (Ptyp_alias (ctyp t) i)
   | TyAny loc -> mktyp loc Ptyp_any
   | TyApp (loc, _, _) as f ->
-      let (f, al) = Ctyp.fa [] f in
+      let (f, al) = Ctyp.view_app [] f in
       let (is_cls, li) = ctyp_long_id f in
       if is_cls then mktyp loc (Ptyp_class li (List.map ctyp al) [])
       else mktyp loc (Ptyp_constr li (List.map ctyp al))
@@ -478,7 +478,7 @@ let rec expr = fun (* expr -> expression*)
   [ (* ExAcc (loc, _, _)   *){:expr| $_ . $_ |}|
    {:expr| $(id:{:ident@_| $_ . $_ |}) |} as e ->
     let (e, l) =
-      match Expr.sep_expr [] e with
+      match Expr.sep_dot_expr [] e with
       [ [(loc, ml, {:expr@sloc| $uid:s |}) :: l] ->
         (mkexp loc (Pexp_construct (mkli sloc  s ml) None false(* ca *)), l)
       | [(loc, ml, {:expr@sloc| $lid:s |}) :: l] ->
@@ -497,7 +497,7 @@ let rec expr = fun (* expr -> expression*)
     e
   | ExAnt (loc,_) -> error loc "antiquotation not allowed here"
   | ExApp (loc, _, _) as f ->
-      let (f, al) = Expr.fa [] f in
+      let (f, al) = Expr.view_app [] f in
       let al = List.map label_expr al in
       match (expr f).pexp_desc with
       [ Pexp_construct (li, None, _) ->
@@ -914,7 +914,7 @@ and class_sig_item c l = match c with (* class_sig_item -> class_type_field list
   | CgAnt (_,_) -> assert false ]
 and class_expr = fun (* class_expr -> class_expr *)
   [ CeApp (loc, _, _) as c ->
-    let (ce, el) = ClassExpr.fa [] c in
+    let (ce, el) = ClassExpr.view_app [] c in
     let el = List.map label_expr el in
     mkcl loc (Pcl_apply (class_expr ce) el)
   | CeCon (loc, ViNil, id,tl) ->

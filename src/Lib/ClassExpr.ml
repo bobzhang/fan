@@ -1,7 +1,8 @@
 open Camlp4Ast;
+#default_quotation "class_expr";;
+(* INCLUDE "src/Lib/CommonStructure.ml"; *)
 
-let rec fa al =  fun
-  [ {:class_expr| $ce $a |}
-    ->fa [a :: al] ce
+let rec view_app al =  fun
+  [ {| $ce $a |} ->view_app [a :: al] ce
   | ce -> (ce, al) ];
 
