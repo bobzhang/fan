@@ -989,3 +989,17 @@ let phrase = fun
 
 
 
+let print_expr f  e =
+  pp f "@[%a@]@." AstPrint.expression (expr e);
+(* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
+let print_patt f e =
+  pp f "@[%a@]@." AstPrint.pattern (patt e);
+  
+let print_str_item f e =
+  pp f "@[%a@]@." AstPrint.structure (str_item e);
+
+(* FIXME allow more interfaces later *)  
+(* let p_ident f e = *)
+(*   eprintf "@[%a@]@." Pprintast.fmt_longident (ident e) ;     *)
+let print_ctyp f e =
+  pp f "@[%a@]@." AstPrint.core_type (ctyp e) ;

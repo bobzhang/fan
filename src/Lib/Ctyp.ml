@@ -1,11 +1,12 @@
 
-open Camlp4Ast;
+#default_quotation "ctyp";;  
+module Ast = Camlp4Ast;
 open LibUtil;
 open Format;
-#default_quotation "ctyp";;
-(*
-  
-  *)
+open Basic;
+open FSig;
+
+(*  *)
 let rec fa al =fun
   [ {| $f $a |}  -> fa [a :: al] f
   | f -> (f, al) ];
@@ -18,7 +19,7 @@ let rec to_var_list =  fun
 
 let list_of_opt ot acc = match ot with
   [ {||} -> acc
-  | t -> list_of_ctyp t acc ];
+  | t -> Ast.list_of_ctyp t acc ];
 
 
 let rec name_tags = fun
@@ -56,7 +57,11 @@ let eprint : ref (Ast.ctyp -> unit) =
 (*   "fan_structure.ml"; *)
 (* >> ; *)
 
-let _loc = FanLoc.ghost ; (* FIXME *)   
+
+  
+let _loc = FanLoc.ghost ; (* FIXME *)
+
+INCLUDE "src/Lib/CommonStructure.ml";  
 (*
    compose type abstractions
  *)
@@ -94,7 +99,7 @@ let name_length_of_tydcl = fun
         sprintf "name_length_of_tydcl {|%s|}\n" & !to_string tydcl)];      
 
 
-(*
+
 (*
    generate universal quantifiers for object's type signatures
    {[
@@ -116,7 +121,7 @@ let gen_quantifiers ~arity n  =
   ]}
  *)  
 let of_id_len ~off (id,len) =
-  apply {|$id:id |} (init len (fun i -> {|  '$(lid:allx ~off i) |} ));
+  apply {|$id:id |} (List.init len (fun i -> {|  '$(lid:allx ~off i) |} ));
   
 (*
    {[
@@ -169,8 +174,8 @@ let gen_ty_of_tydcl ~off tydcl =
 
    {[
    list_of_record <:ctyp< u:int; m:mutable int >>;
-   [{Sig.label="u"; Sig.is_mutable=False; Sig.ctyp=TyId  (IdLid  "int")};
-    {Sig.label="m"; Sig.is_mutable=True; Sig.ctyp=TyId  (IdLid  "int")}]
+   [{Sig.label="u"; Sig.is_mutable=false; Sig.ctyp=TyId  (IdLid  "int")};
+    {Sig.label="m"; Sig.is_mutable=true; Sig.ctyp=TyId  (IdLid  "int")}]
    ]}
    
  *)
@@ -179,15 +184,15 @@ let list_of_record ty =
     ty |> list_of_sem |> List.map (
        fun
          [ {| $lid:col_label : mutable $col_ctyp  |} ->
-           {col_label; col_ctyp; col_mutable=True}
+           {col_label; col_ctyp; col_mutable=true}
          | {| $lid:col_label :  $col_ctyp  |} ->
-           {col_label; col_ctyp; col_mutable=False}
+           {col_label; col_ctyp; col_mutable=false}
          | t0 -> raise & Unhandled t0 ])
   with
     [Unhandled t0 ->
       invalid_arg &
       (sprintf "list_of_record inner: {|%s|} outer: {|%s|}"
-                     (!to_string t0) (to_string ty)) ];
+                     (!to_string t0) (!to_string ty)) ];
 
   
 (*
@@ -199,7 +204,7 @@ let list_of_record ty =
    int
    ]}
  *)
-let gen_tuple_n ty n = init n (fun _ -> ty) |> tuple_sta_of_list;
+let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta_of_list;
 
 (*
   {[
@@ -208,7 +213,7 @@ let gen_tuple_n ty n = init n (fun _ -> ty) |> tuple_sta_of_list;
   ]}
   *)
 let repeat_arrow_n ty n =
-  init n (fun _ -> ty) |>  arrow_of_list;
+  List.init n (fun _ -> ty) |>  arrow_of_list;
   
 (*
   [result] is a keyword
@@ -253,16 +258,16 @@ let mk_method_type ~number ~prefix (id,len) (k:obj_dest)  =
   let prefix = List.map
       (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
-    app_arrow (init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
+    app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
   let result_type = {| 'result |} and self_type = {| 'self_type |} in 
   let (quant,dst) = match k with
     [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)
     |Str_item -> (1,result_type)] in 
-  let params = init len (fun i
+  let params = List.init len (fun i
     -> let app_src = app_arrow
-        (init number (fun _ -> {|  '$(lid:allx ~off:0 i)  |} )) in
+        (List.init number (fun _ -> {|  '$(lid:allx ~off:0 i)  |} )) in
       match k with
         [Obj u  ->
           let dst = match  u with
@@ -291,11 +296,11 @@ let mk_obj class_name  base body =
 let is_recursive ty_dcl = match ty_dcl with
   [ Ast.TyDcl (_, name, _, ctyp, _)  ->
     let obj = object(self:'self_type)
-      inherit Ast.fold as super;
-      val mutable is_recursive = False;
+      inherit Camlp4Ast.fold as super;
+      val mutable is_recursive = false;
       method! ctyp = fun
         [ {| $lid:i |} when i = name -> begin 
-          is_recursive := True;
+          is_recursive <- true;
           self;
         end 
         | x ->  if is_recursive then  self
@@ -303,7 +308,7 @@ let is_recursive ty_dcl = match ty_dcl with
       method is_recursive = is_recursive;
     end in
     (obj#ctyp ctyp)#is_recursive
-  | {| $_ and $_ |} -> True
+  | {| $_ and $_ |} -> true
   | _ -> invalid_arg ("is_recursive not type declartion" ^ !to_string ty_dcl)];
 
 
@@ -330,19 +335,19 @@ let qualified_app_list = fun
   | _ -> None ];
 
 let is_abstract = fun 
-  [ Ast.TyDcl (_, _, _, {| |}, _) -> True | _ -> False];
+  [ Ast.TyDcl (_, _, _, {| |}, _) -> true | _ -> false];
 
 let abstract_list = fun
   [ Ast.TyDcl (_, _, lst, {| |}, _) -> Some (List.length lst) | _ -> None];
 let eq t1 t2 =
-  let strip_locs t = (Ast.map_loc (fun _ -> Ast.Loc.ghost))#ctyp t in
+  let strip_locs t = (Camlp4Ast.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
   strip_locs t1 = strip_locs t2;
   
 let eq_list t1 t2 =
   let rec loop = fun
-    [ ([],[]) -> True
+    [ ([],[]) -> true
     | ([x::xs],[y::ys]) -> eq x y && loop (xs,ys)
-    | (_,_) -> False] in loop (t1,t2);
+    | (_,_) -> false] in loop (t1,t2);
   
 (*
 
@@ -381,10 +386,10 @@ let eq_list t1 t2 =
  *)
 let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50;
-  inherit Ast.map as super;
+  inherit Camlp4Ast.map as super;
   method! str_item = fun
     [ 
-     {:str_item| type $(Ast.TyDcl (_, name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
+     {:str_item| type $(Ast.TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
        match qualified_app_list ctyp with
        [ Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
          if  not (eq_list vars lst) then 
@@ -395,7 +400,7 @@ let mk_transform_type_eq () = object(self:'self_type)
              [type u int = Loc.t int]
              This case can not happen [type u Ast.int = Loc.t Ast.int ]
            *)
-           let src = i and dest = Fan_ident.map_to_string i in begin
+           let src = i and dest = Ident.map_to_string i in begin
              Hashtbl.replace transformers dest (src,List.length lst);
              {:str_item| |} 
            end 
@@ -404,7 +409,7 @@ let mk_transform_type_eq () = object(self:'self_type)
   method! ctyp x =   match qualified_app_list x with
     [ Some (i, lst) ->
       let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
-      let src = i and dest = Fan_ident.map_to_string i in begin
+      let src = i and dest = Ident.map_to_string i in begin
         Hashtbl.replace transformers dest (src,List.length lst);
         app_of_list [ {| $lid:dest |} :: lst ]
       end 
@@ -495,4 +500,4 @@ let reduce_data_ctors (ty:Ast.ctyp)  (init:'a) (f:  string -> list Ast.ctyp -> '
               (!to_string t0 )
               (!to_string ty)) ]);
   
-*)
+

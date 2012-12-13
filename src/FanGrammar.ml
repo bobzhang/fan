@@ -11,7 +11,11 @@ type styp =
  | `STquo of (loc * string)
  | `STself of (loc * string)
  | `STtok of loc
- | `STtyp of Ast.ctyp ] ;
+ | `STtyp of Ast.ctyp ]
+(* and patt = *) (* FIXME subtyping soon*)
+(*  [= `PaApp of (loc * patt) *)
+(*  | `PaVrn of (loc * string) *)
+(*  | ] *);   
 
 
 

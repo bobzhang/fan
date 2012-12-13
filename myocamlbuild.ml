@@ -804,7 +804,7 @@ let () =
     (* dep ["ocaml"; "link"; "native"] ["src/Camlp4Filters.cmx"]; *)
     (* dep ["ocaml"; "link"; "byte"] ["src/Camlp4Filters.cmo"]; *)
     "src/Camlp4Ast.ml" |-? ["src/Ast.ml"];
-
+    "src/Lib/Ctyp.ml" |-? ["src/Lib/CommonStructure.ml"];
   end;;
 
 

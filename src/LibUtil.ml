@@ -123,6 +123,30 @@ let callcc  (type u) (f: cont u-> u)  =
 module List = struct
   include List;
 
+  (*
+    {[
+    drop 3 [1;2;3;4];
+
+    list int = [4]
+    ]}
+   *)
+  let rec drop n = fun
+    [ [_ :: l] when n > 0 -> drop (n-1) l
+    | l -> l];
+
+  (*
+    {[
+    [1;2;3;4;5]
+    ([4;3;2;1], 5 )
+    ]}
+   *)  
+  let lastbut1 ls =
+    match ls with
+    [ [ ] -> failwith "lastbut1 empty"
+    |  _ -> let l = List.rev ls in
+     (List.tl l, List.hd l ) ];
+    
+
   (* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
   let  split_at n xs =
     let rec aux  n acc xs = 
@@ -136,7 +160,7 @@ module List = struct
     if n < 0 then invalid_arg "split_at n< 0"
     else
       let (a,b) =  aux n [] xs  in
-      (List.rev a ,b);
+      (rev a ,b);
       
   let rec find_map f = fun
     [ [] -> raise Not_found
@@ -277,6 +301,17 @@ module String = struct
     
   let of_char = make 1;
 
+  let drop_while f s =
+    let len = length s in
+    let found = ref false in
+    let i = ref 0 in begin 
+      while !i < len && not !found do
+        if not (f s.[!i]) then 
+          found:=true
+        else incr i
+      done ;
+      String.sub s !i (len - !i)
+    end;      
     
 end;
   

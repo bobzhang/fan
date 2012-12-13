@@ -39,21 +39,7 @@ let check_valid str =
            exit 2;
          end 
   else ();    
-
-let p_expr f  e =
-  pp f "@[%a@]@." AstPrint.expression (Ast2pt.expr e);
-(* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
-let p_patt f e =
-  pp f "@[%a@]@." AstPrint.pattern (Ast2pt.patt e);
-  
-let p_str_item f e =
-  pp f "@[%a@]@." AstPrint.structure (Ast2pt.str_item e);
-
-(* FIXME allow more interfaces later *)  
-(* let p_ident f e = *)
-(*   eprintf "@[%a@]@." Pprintast.fmt_longident (Ast2pt.ident e) ;     *)
-let p_ctyp f e =
-  pp f "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e) ;
+(* let print_expr = fun _ -> failwithf "Basic.print_expr not implemented yet" *)
 
   
 let error_report (loc,s) = begin
