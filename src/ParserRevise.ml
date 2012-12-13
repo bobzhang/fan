@@ -179,9 +179,9 @@ New syntax:\
         "with"
         [ S{mt}; "with"; with_constr{wc} ->  {| $mt with $wc |} ]
         "apply"
-        [ S{mt1}; S{mt2} ->  ModuleType.app mt1 mt2 ]
+        [ S{mt1}; S{mt2} ->  ModuleType.app0 mt1 mt2 ] (* FIXME *)
         "."
-        [ S{mt1}; "."; S{mt2} -> ModuleType.acc mt1 mt2 ]
+        [ S{mt1}; "."; S{mt2} -> ModuleType.acc0 mt1 mt2 ] (*FIXME*)
         "sig"
         [ "sig"; sig_items{sg}; "end" -> {| sig $sg end |} ]
        "simple"

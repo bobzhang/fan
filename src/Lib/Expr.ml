@@ -1,7 +1,9 @@
 (* open Format; *)
 (* open lang "expr"; *)
-(* #default_quotation     "expr";; *)
-open lang "expr";
+#default_quotation     "expr";;
+(* open lang "expr"; *)
+open LibUtil;
+open Basic;
 open FanUtil;
 module Ast= Camlp4Ast; (* it contains a module named Meta *)
 (*
@@ -337,3 +339,8 @@ let fun_apply _loc e args =
     List.fold_left
       (fun e arg ->
         {| $e $arg |}) e args;
+
+
+let _loc = FanLoc.ghost ;  
+INCLUDE "src/Lib/CommonStructure.ml";
+INCLUDE "src/Lib/ExprPatt.ml";

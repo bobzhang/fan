@@ -81,3 +81,4 @@ let wrap_stream_parser ?(_loc=FanLoc.mk "<stream>") p s =
 
 let is_antiquot_data_ctor s = String.ends_with s "Ant";
     
+let conversion_table : Hashtbl.t string string = Hashtbl.create 50;

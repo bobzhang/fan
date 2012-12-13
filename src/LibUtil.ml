@@ -210,7 +210,7 @@ module List = struct
 end;
 
 module Char = struct
-  (* include BatChar; *) include Char;
+  include Char;
   let is_whitespace = fun
     [ ' ' | '\010' | '\013' | '\009' | '\026' | '\012' -> true
     | _ -> false];
@@ -223,7 +223,10 @@ module Char = struct
     [ '0'..'9' -> true
     | _ -> false];
 
+  let is_uppercase c = 'A' <= c && c <= 'Z';
+  let is_lowercase c = 'a' <= c && c <= 'z';
 
+  
 end;
 
 module Return = struct
