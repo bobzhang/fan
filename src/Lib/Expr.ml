@@ -389,6 +389,11 @@ let (<+<) patts acc =
 
 
 
+(* +-----------------------------------------------------------------+
+   | Multiple staging code generation.                               |
+   +-----------------------------------------------------------------+ *)
+  
+
 
 
 (*
@@ -400,56 +405,71 @@ let (<+<) patts acc =
    ]}
  *)
   
-let mep_comma x y =  {| Ast.PaCom _loc $x $y |};
-let mep_app x y =  {| Ast.PaApp _loc $x $y |};       
-let mee_comma x y = {| Ast.ExCom _loc $x $y |};
-let mee_app x y =   {| Ast.ExApp _loc $x $y |};
+let mep_comma x y =  {| {:patt| $($x), $($y) |} |};
+  (* {| Ast.PaCom _loc $x $y |}; *)
+let mep_app x y = {| {:patt| $($x) $($y) |}|};
+  (* {| Ast.PaApp _loc $x $y |};        *)
+let mee_comma x y = {| {| $($x), $($y) |} |};
+  (* {| Ast.ExCom _loc $x $y |}; *)
+let mee_app x y = {| {| $($x) $($y) |}|};
+  (* {| Ast.ExApp _loc $x $y |}; *)
 
   
+
 (*
-  
+  We want to generate code 
+   {[
+   {:expr| {:patt| (A,B,C) |} |}
+   ]}
+  But [A],[B],[C] should be parameterized here 
+  Example:
+  {[
+  mk_tuple_ep [{|a|}; {|b|} ] = {| {:patt| ($($(lid:"a")),$($(lid:"b"))) |} |};
+  - : bool = true
+  ]}
  *)
 let mk_tuple_ep = fun 
    [ [] -> assert false
    | [x] -> x
-   | xs  -> {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |}];
+   | xs  -> (* {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |} *)
+         {| {:patt|$(tup: $(List.reduce_right mep_comma xs))|} |} ];
   
 (*
-
-   We want to generate code 
-   {[
-   {:expr| {:patt| (A,B,C) |} |}
-   ]}
-
-   {[
-   mk_tuple_ep   [ {:patt| f |} ;   {:patt| a |} ;   {:patt| b|} ]
    
-   Ast.PaTup _loc (Ast.PaCom _loc f (Ast.PaCom _loc a b))
-   ]}
- *)
-
-
-(*
-   {[
-   meta_of_str "A" = <:expr< <:patt< A >> >> ;
-   True 
-   ]}
+  Example:
+  {[
+  mep_of_str "B" = {|{:patt| B |}|};
+  - : bool = true
+  ]}
  *)  
 
 let mep_of_str  s =
-  let u = {| Ast.IdUid _loc $str:s |} in
-  {| Ast.PaId _loc $u |}
-;
+   let u = {| {:ident| $(uid:$str:s) |} |} in 
+   {| {:patt| $(id:$u) |} |};
+    (* let u = {| Ast.IdUid _loc $str:s |} in *)
+  (* {| Ast.PaId _loc $u |}; *)
 
-let mee_of_str s =
-  let u = {| Ast.IdUid _loc $str:s |} in 
-  {| Ast.ExId _loc $u |};
 (*
-   {[
-    meta_of_str "A" = {| << A |} >> ;
-    True
-    ]}
+  Here [s] should be a capital alphabet
+  {[
+  mee_of_str "A" = {| {| A |}|};
+  - : bool = true
+  ]}
+ *)   
+let mee_of_str s =
+  let u = {| {:ident| $(uid:$str:s) |} |} in
+  {| {| $(id:$u) |} |};
+
+(*
+  Examples:
+  {[
+  meee_of_str "A" = {| {| {| A |}|}|};
+  ]}
  *)
+let meee_of_str s =
+  let u = {| {| {:ident| $(uid:$(str:$(str:s))) |} |} |} in 
+  {| {| {| $(id:$($u))|}|}|};
+
 
 (*
    @raise Invalid_argument
@@ -457,72 +477,27 @@ let mee_of_str s =
    There are 2 stages here 
    We want to generate code  like this
    {[
-   <<
-       {| ($meta_int _loc x0$, $meta_int _loc x1$ ) |}
-   >>
+
+    {|  {| ( $(meta_int _loc x0), $(meta_int _loc x1) ) |}  |}
    ]}
 
-   {[
-   ( <:expr< <:expr< (A,B,C) >> >>   |> eprint );
+  Normal practice:
+  First print the result, then find a mechanical way to   construct
 
-   Ast.ExTup _loc
-   (Ast.ExCom _loc (Ast.ExId _loc (Ast.IdUid _loc "A"))
-   (Ast.ExCom _loc (Ast.ExId _loc (Ast.IdUid _loc "B"))
-        (Ast.ExId _loc (Ast.IdUid _loc "C"))))
+  Here we should avoid singleton tuple error
+  {| $tup:a |} when a is  single, it will cause error FIXME
 
-   ]}
-   
-   Normal practice:
-     first print the result, then find a mechanical way to
-     construct
-   Here we should avoid singleton tuple error
-   {| .$tup:a$. |} when a is a single, will cause error
-
-   when dumped
-   {[
-
-   mk_tuple_ee
-   [ <:expr< f >> ; <:expr< a >> ; <:expr< b>> ] |> eprint;
-
-   Ast.ExTup _loc (Ast.ExCom _loc f (Ast.ExCom _loc a b))
-
-   ]}
  *)      
 
-(*
-let mee_semi_col x y =
-  {| Ast.RbSem _loc $x$ $y$ |} ;
-  
-(* let meta_semi_col x y = {| Ast.RbEq   |}*)
-let mk_record_ee label_exprs =
-  let rec_bindings = List.map
-      (fun (label,expr) ->
-        <:rec_binding< $lid:label$ = $expr$ >> ) label_exprs in
-  {| Ast.ExRec _loc .$ reduce ~dir:`Right mee_semi_col rec_bindings$. |}
-;  
-*)
-
   
 (*
+  Here we want to generate something like
+  
   {[
-  ({| << { u = .$meta $. } |} >> );
-  ExApp 
-  (ExApp 
-   (ExApp  (ExId  (IdAcc  (IdUid  "Ast") (IdUid  "ExRec")))
-     (ExId  (IdLid  "_loc")))
-   (ExApp 
-     (ExApp 
-       (ExApp  (ExId  (IdAcc  (IdUid  "Ast") (IdUid  "RbEq")))
-         (ExId  (IdLid  "_loc")))
-       (ExApp 
-         (ExApp  (ExId  (IdAcc  (IdUid  "Ast") (IdUid  "IdLid")))
-           (ExId  (IdLid  "_loc")))
-         (ExStr  "u")))
-     (ExId  (IdLid  "meta"))))
-  (ExApp  (ExId  (IdAcc  (IdUid  "Ast") (IdUid  "ExNil")))
-  (ExId  (IdLid  "_loc")))
-
+  ({| {| { u = $meta } |} |} );
   ]}
+  [meta] could be parameterized
+  
   First we need to construct this part
   {[
   (ExApp 
