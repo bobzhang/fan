@@ -1,19 +1,41 @@
+
+(* +-----------------------------------------------------------------+
+   | it is a code template, it needs macro =GETLOC= and              |
+   | [default_quotation] to compile                                  |
+   +-----------------------------------------------------------------+ *)
+
 (*
-   Given a list expr, translate it into a expr.
-   Here [Loc.merge (Ast.loc_of_expr e1) _loc ] will
-   give more precise location
+  Given an location, and a list of expression node,
+  return an expression node which represents the list
+  of the expresson nodes
+
+  Example:
+  {[
+  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+  [b; c; d]
+  ]}
+ *)
+let mklist loc =
+  let rec loop top =  fun
+    [ [] -> {| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge ((* Ast.loc_of_expr  *) GETLOC(e1)) loc in
+        {| [$e1 :: $(loop false el)] |} ] in loop true ;
+
+(* It is the inverse operation by [view_app]
+   Example:
    {[
-   mk_list None [ {|3|}; {|4|} ] |> opr#expr fmt;
-   
-   [ 3; 4 ]
+   apply {|a|} [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+   a b c d
    ]}
  *)
-let mk_list lst =
-  let rec loop  = fun
-    [ [] -> {| [] |}
-    | [x::xs] -> {| [ $x :: $(loop xs) ] |} ] in
-  loop lst ;
-
+let rec apply accu = fun
+  [ [] -> accu
+  | [x :: xs] ->
+      let _loc = GETLOC x in
+      apply {| $accu $x |} xs ];
+  
 (*
   mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
   True
@@ -167,3 +189,10 @@ let gen_tuple_n ~arity cons n =
     
 
   
+(*
+  This is used for Prolog, deprecated soon
+ *)  
+let tuple _loc  =   fun
+  [[] -> {|()|}
+  |[p] -> p
+  | [e::es] -> {| ($e, $list:es) |} ];

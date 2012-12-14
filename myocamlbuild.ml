@@ -806,6 +806,7 @@ let () =
     "src/Camlp4Ast.ml" |-? ["src/Ast.ml"];
     "src/Lib/Ctyp.ml" |-? ["src/Lib/CommonStructure.ml" ];
     "src/Lib/Expr.ml" |-? ["src/Lib/CommonStructure.ml"; "src/Lib/ExprPatt.ml" ];
+    "src/Lib/Patt.ml" |-? ["src/Lib/CommonStructure.ml"; "src/Lib/ExprPatt.ml" ];
   end;;
 
 

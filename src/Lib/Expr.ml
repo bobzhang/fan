@@ -54,37 +54,7 @@ let rec sep_dot_expr acc = fun
   | e -> [(Ast.loc_of_expr e, [], e) :: acc] ];
 
 
-(* It is the inverse operation by [view_app]
-   Example:
-   {[
-   apply {|a|} [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
-   a b c d
-   ]}
- *)
-let rec apply accu = fun
-  [ [] -> accu
-  | [x :: xs] ->
-      let _loc = Ast.loc_of_expr x
-      in apply {| $accu $x |} xs ];
 
-(*
-  Given an location, and a list of expression node,
-  return an expression node which represents the list
-  of the expresson nodes
-
-  Example:
-  {[
-  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
-  [b; c; d]
-  ]}
- *)
-let mklist loc =
-  let rec loop top =  fun
-    [ [] -> {| [] |}
-    | [e1 :: el] ->
-        let _loc =
-          if top then loc else FanLoc.merge (Ast.loc_of_expr e1) loc in
-        {| [$e1 :: $(loop false el)] |} ] in loop true ;
 
 (* Add a sequence delimiter to the semi delimiter
    antiquot is also decorated
@@ -162,7 +132,6 @@ let bigarray_set loc var newval =
       (* Some {@loc|Bigarray.Array3.set $arr $c1 $c2 $c3 $newval |} *)
       Some {@loc| $arr.{$c1,$c2,$c3} := $newval |}
         (* $arr.{$c1,$c2,$c3,$c4,$list:y}*)
-
   |  {| Bigarray.Genarray.get $arr [| $coords |] |} -> (* FIXME how to remove Bigarray here?*)
       Some {@loc| Bigarray.Genarray.set $arr [| $coords |] $newval |}
   | _ -> None ];
@@ -318,14 +287,18 @@ let filter_patt_with_captured_variables patt= begin
 end;
 
 
+
+
 (*
-  
- *)  
-let tuple _loc  =   fun
-  [[] -> {|()|}
-  |[p] -> p
-  | [e::es] -> {| ($e, $list:es) |} ];
-  
+  Given [args] and [body], generate an expression
+  when [args] is nil, adding a [unit]
+
+  Examples:
+  {[
+  fun_args _loc [{:patt|a|};{:patt|c|};{:patt|b|}] {|c|} |> FanBasic.p_expr f;
+  fun a  c  b  -> c
+  ]}
+ *)
 let fun_args _loc args body =
   if args = [] then {| fun () -> $body |}
   else
@@ -333,15 +306,10 @@ let fun_args _loc args body =
       (fun arg body ->
 	{| fun $arg -> $body |}) args body;
   
-let fun_apply _loc e args =
-  if args = [] then {| $e () |}
-  else
-    List.fold_left
-      (fun e arg ->
-        {| $e $arg |}) e args;
 
 
-let _loc = FanLoc.ghost ;  
+let _loc = FanLoc.ghost ;
+DEFINE GETLOC(expr)= Ast.loc_of_expr expr;  
 INCLUDE "src/Lib/CommonStructure.ml";
 INCLUDE "src/Lib/ExprPatt.ml";
 
@@ -370,143 +338,91 @@ let mk_unary_min f arg =
 
     
 
-let mk_assert  =
-  fun
+let mk_assert  =  fun
   [ {| false |} ->    {| assert false |} 
   | e -> {| assert $e |} ];
+
+
+
 (*
-   Camlp4 treats [assert false] as a special construct [ExAsf]
+   FIXME: label is lid
+ *)
+  
+(*
+  Example:
+  {[
+  mk_record [("a",{|3|});("b",{|4|})] ;
+  - : L.Expr.Ast.expr = { a = 3; b = 4 }
 
-   {[
-   <:expr< assert false>>;
-
-   Camlp4.PreCast.Ast.expr = ExAsf 
-
-   <:expr< assert .$ <:expr< false >> $. >>;
-   
-   Camlp4.PreCast.Ast.expr = ExAsr  (ExId  (IdUid  "false"))
-
-   e2s {|assert false|};
-   [
-   {Camlp4_import.Parsetree.pstr_desc=
-   Camlp4_import.Parsetree.Pstr_eval
-   {Camlp4_import.Parsetree.pexp_desc=
-   Camlp4_import.Parsetree.Pexp_assertfalse;
-   Camlp4_import.Parsetree.pexp_loc=};
-   Camlp4_import.Parsetree.pstr_loc=}]
-
-   e2s    <:expr< assert .$ <:expr< false >> $. >>;
-
-   {Camlp4_import.Parsetree.pstr_desc=
-   Camlp4_import.Parsetree.Pstr_eval
-    {Camlp4_import.Parsetree.pexp_desc=
-      Camlp4_import.Parsetree.Pexp_assert
-       {Camlp4_import.Parsetree.pexp_desc=
-         Camlp4_import.Parsetree.Pexp_construct
-          (Camlp4_import.Longident.Lident "false") None True;
-        Camlp4_import.Parsetree.pexp_loc=};
-     Camlp4_import.Parsetree.pexp_loc=};
-  Camlp4_import.Parsetree.pstr_loc=}
-   ]}
- *)      
-
-
+  ]}
+ *)
 let mk_record label_exprs =
   let rec_bindings = List.map (fun (label, expr) ->
     {:rec_binding| $lid:label = $expr |} ) label_exprs in
   {| { $list:rec_bindings } |};
-(*
-   FIXME: label is lid
- *)
 
 
-
+(* TBD *)
 let failure =
-  {| raise (Failure "metafilter: Cannot handle that kind of types ") |}
-;       
+  {| raise (Failure "metafilter: Cannot handle that kind of types ") |};       
 
 
-
-let (<+) names acc  =
-  List.fold_right (fun name acc ->  {| fun [ $lid:name -> $acc ]|})
-    names acc ;
-  
-let (<+<) patts acc =
-  List.fold_right (fun p acc -> {| fun [ $pat:p -> $acc] |} ) patts acc;
 (*
+  Example:
   {[
-   gen_app_first 3 2  |> eprint;
-   c0 c1 c2
-   Warning: strange pattern application of a non constructor
+  ["a";"b"] <+ {|3|};
+  - : L.Expr.Ast.expr = fun a  b  -> 3
   ]}
  *)
-(* let gen_app_first ~number ~off =
- *   List.init number (fun i -> {| .$id:xid ~off i$. |}) |> app_of_list
- * ; *)
-    
+let (<+) names acc  =
+  List.fold_right (fun name acc ->  {| fun [ $lid:name -> $acc ]|}) names acc ;
+
 (*
-   Add Prefixes to expression
-   {[
-
-    ["x0";"x1";"x2"] <+ {| blabla|} |> eprint;
-    fun x0 x1 x2 -> blabla
-
-   ]}
+  Example:
+  {[
+  [{:patt|a|}; {:patt|b|} ] <+< {|3|};
+  - : L.Expr.Ast.expr = fun a  b  -> 3
+  ]}
  *)  
+let (<+<) patts acc =
+  List.fold_right (fun p acc -> {| fun [ $pat:p -> $acc] |} ) patts acc;
 
-  
-let mk_seq es =
-  let _loc = FanLoc.ghost in 
-  {| $(seq:Ast.exSem_of_list es) |};
+
+
+
+
 (*
-   {[
-   mkseq [ <:expr<f >> ;
-           <:expr< a >> ; <:expr< b >>
-        ] |> eprint
-   ;
-
-   (f; a; b)
+  {[
+  mep_app {| a |} {|g |};
+  - : L.Expr.Ast.expr = Ast.PaApp (_loc, a, g)
+  mee_app {:expr|f a |} {:expr|g |};
+  - : L.Expr.Ast.expr = Ast.ExApp (_loc, (f a), g)
    ]}
  *)
-
-
-let mep_comma x y =
-  {| Ast.PaCom _loc $x $y |};
-(*
-   Notice for meta, we should annote quotation expander
-   expr explicitly
- *)    
-
   
+let mep_comma x y =  {| Ast.PaCom _loc $x $y |};
 let mep_app x y =  {| Ast.PaApp _loc $x $y |};       
-(*
-   {[
-   mep_app <:patt< a >> <:patt<g >> |> eprint 
-   Ast.PaApp _loc a g
-   ]}
- *)
+let mee_comma x y = {| Ast.ExCom _loc $x $y |};
+let mee_app x y =   {| Ast.ExApp _loc $x $y |};
 
   
-
+(*
+  
+ *)
 let mk_tuple_ep = fun 
    [ [] -> assert false
    | [x] -> x
-   | xs  ->
-       {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |}
-   ]
-;
+   | xs  -> {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |}];
+  
 (*
 
    We want to generate code 
    {[
-   <:expr< <:patt< (A,B,C) >> >>
+   {:expr| {:patt| (A,B,C) |} |}
    ]}
 
    {[
-   mk_tuple_ep
-   [ <:patt< f >> ;
-   <:patt< a >> ;
-   <:patt< b>> ] |> eprint ;
+   mk_tuple_ep   [ {:patt| f |} ;   {:patt| a |} ;   {:patt| b|} ]
    
    Ast.PaTup _loc (Ast.PaCom _loc f (Ast.PaCom _loc a b))
    ]}
@@ -640,16 +556,6 @@ let mep_record_left str =
 ;
   
   
-let mee_comma x y = {| Ast.ExCom _loc $x $y |};
-
-  
-let mee_app x y =   {| Ast.ExApp _loc $x $y |};
-(*
-   {[
-    mee_app <:expr<f a >> <:expr<g >> |> eprint 
-    Ast.ExApp _loc (f a) g
-    ]}
-*)
   
 let mk_tuple_ee = fun 
   [ [] -> invalid_arg "mktupee arity is zero "
@@ -824,3 +730,13 @@ let unknown len =
 (*       -> assert false *)
 (*   ]; *)
 
+
+(* depcrated use apply instead *)  
+(*  
+let fun_apply _loc e args =
+  if args = [] then {| $e () |}
+  else
+    List.fold_left
+      (fun e arg ->
+        {| $e $arg |}) e args;
+*)
