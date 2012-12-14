@@ -130,9 +130,32 @@ let bigarray_set loc var newval =
           (_,Ast.IdUid (_,"Array1"),Ast.IdLid (_,"get")))),arr),c1)
       ->
       Some
-        (Ast.ExAss
+        (Ast.ExApp
            (loc,
-             (Ast.ExAcc
+             (Ast.ExApp
+                (loc,
+                  (Ast.ExApp
+                     (loc,
+                       (Ast.ExId
+                          (loc,
+                            (Ast.IdAcc
+                               (loc, (Ast.IdUid (loc, "Bigarray")),
+                                 (Ast.IdAcc
+                                    (loc, (Ast.IdUid (loc, "Array1")),
+                                      (Ast.IdLid (loc, "set")))))))), arr)),
+                  c1)), newval))
+  | Ast.ExApp
+      (_loc,Ast.ExApp
+       (_,Ast.ExApp
+        (_,Ast.ExId
+         (_,Ast.IdAcc
+          (_,Ast.IdUid (_,"Bigarray"),Ast.IdAcc
+           (_,Ast.IdUid (_,"Array2"),Ast.IdLid (_,"get")))),arr),c1),c2)
+      ->
+      Some
+        (Ast.ExApp
+           (loc,
+             (Ast.ExApp
                 (loc,
                   (Ast.ExApp
                      (loc,
@@ -143,39 +166,9 @@ let bigarray_set loc var newval =
                                  (Ast.IdAcc
                                     (loc, (Ast.IdUid (loc, "Bigarray")),
                                       (Ast.IdAcc
-                                         (loc, (Ast.IdUid (loc, "Array1")),
-                                           (Ast.IdLid (loc, "get")))))))),
-                            arr)), c1)),
-                  (Ast.ExId (loc, (Ast.IdLid (loc, "contents")))))), newval))
-  | Ast.ExApp
-      (_loc,Ast.ExApp
-       (_,Ast.ExApp
-        (_,Ast.ExId
-         (_,Ast.IdAcc
-          (_,Ast.IdUid (_,"Bigarray"),Ast.IdAcc
-           (_,Ast.IdUid (_,"Array2"),Ast.IdLid (_,"get")))),arr),c1),c2)
-      ->
-      Some
-        (Ast.ExAss
-           (loc,
-             (Ast.ExAcc
-                (loc,
-                  (Ast.ExApp
-                     (loc,
-                       (Ast.ExApp
-                          (loc,
-                            (Ast.ExApp
-                               (loc,
-                                 (Ast.ExId
-                                    (loc,
-                                      (Ast.IdAcc
-                                         (loc, (Ast.IdUid (loc, "Bigarray")),
-                                           (Ast.IdAcc
-                                              (loc,
-                                                (Ast.IdUid (loc, "Array2")),
-                                                (Ast.IdLid (loc, "get")))))))),
-                                 arr)), c1)), c2)),
-                  (Ast.ExId (loc, (Ast.IdLid (loc, "contents")))))), newval))
+                                         (loc, (Ast.IdUid (loc, "Array2")),
+                                           (Ast.IdLid (loc, "set")))))))),
+                            arr)), c1)), c2)), newval))
   | Ast.ExApp
       (_loc,Ast.ExApp
        (_,Ast.ExApp

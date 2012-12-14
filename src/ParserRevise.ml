@@ -281,7 +281,7 @@ New syntax:\
             {| let try $rec:r $bi in $x with [ $a ] |}
         (* FIXME fun and function duplicated *)      
         | "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| fun [ $list:a ] |}
-        | "function"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| fun [ $list:a ] |}
+        | "function"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| function [ $list:a ] |}
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
               

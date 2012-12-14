@@ -143,18 +143,26 @@ let bigarray_get loc arr arg =
   Example:
   {[
   bigarray_set _loc {|a.{b,c,d}|} {|3+2|} |> Option.get |> FanBasic.p_expr f;
-  (Bigarray.Array3.get a b c d) := (3 + 2)
+  a.{b,c,d} <- (3 + 2)
   ]}
   FIXME
     1.ExArr, 2. can we just write $list:coords?
-    2. The output seems to be wrong
-       it should be Bigarray.Array3.set a b c d (3+2) instead
+    Technically, we cannot, it uses [Pexp_array], pattern match doesnot work here
+     {:expr|a.{1,2,3,4,$rest:x}|}
  *)
 let bigarray_set loc var newval =
   match var with
-  [ {|  $arr.{$c1} |} -> Some {@loc| $arr.{$c1} := $newval |} 
-  | {|  $arr.{$c1, $c2} |} -> Some {@loc|  $arr.{$c1, $c2} :=  $newval |}
-  | {|  $arr.{$c1, $c2, $c3} |} -> Some {@loc| $arr.{$c1,$c2,$c3} := $newval |} 
+  [ {|  $arr.{$c1} |} ->
+    (* Some {@loc|Bigarray.Array1.set $arr $c1 $newval |} *)
+      Some {@loc| $arr.{$c1} <- $newval |}
+  | {|  $arr.{$c1, $c2} |} ->
+      (* Some {@loc|Bigarray.Array2.set $arr $c1 $c2 $newval|} *)
+      Some {@loc|  $arr.{$c1, $c2} <-  $newval |}
+  | {|  $arr.{$c1, $c2, $c3} |} ->
+      (* Some {@loc|Bigarray.Array3.set $arr $c1 $c2 $c3 $newval |} *)
+      Some {@loc| $arr.{$c1,$c2,$c3} := $newval |}
+        (* $arr.{$c1,$c2,$c3,$c4,$list:y}*)
+
   |  {| Bigarray.Genarray.get $arr [| $coords |] |} -> (* FIXME how to remove Bigarray here?*)
       Some {@loc| Bigarray.Genarray.set $arr [| $coords |] $newval |}
   | _ -> None ];
@@ -309,65 +317,10 @@ let filter_patt_with_captured_variables patt= begin
   (patt,constraints)
 end;
 
-(* let normalize = object *)
-(*   val expr:Ast.expr; *)
-(*   inherit Camlp4Ast.fold as super; *)
-(*   method! patt = with "patt" fun *)
-(*     [ {| $_ |} -> {| "_" |} *)
-(*     | {| $lid:_ |} -> {| "_" |} *)
-(*     | {| $p as $_ |} -> self#patt p  *)
-(*     ] *)
-(* end; *)
 
-
-(* let rec string_of_ident = (\* duplicated with Camlp4Filters remove soon*\) *)
-(*   fun *)
-(*   [ {:ident| $lid:s |} -> s *)
-(*   | {:ident| $uid:s |} -> s *)
-(*   | {:ident| $i1.$i2 |} -> "acc_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2) *)
-(*   | {:ident| ($i1 $i2) |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2) *)
-(*   | {:ident| $anti:_ |} -> assert false ]; *)
-
-    
-(* let rec normalize = let _loc = FanLoc.ghost in with "patt" fun *)
-(*   [ {| _ |} -> {|"_"|} *)
-(*   | {| $id:_|} -> {:expr| "_"|} *)
-(*   | {| ($p as $_) |} -> normalize p *)
-(*   | {| $p1 $p2 |} -> {:expr| $(normalize p1) ^ $(normalize p2) |} *)
-(*   | {| [| $p |]|} -> {:expr| "[|"^ $(normalize p) ^ "|]"|} (\* FIXME ^$ does not work *\) *)
-(*   | {| $p1;$p2 |} -> {:expr| $(normalize p1) ^ ";" ^  $(normalize p2) |} *)
-(*   | {| $p1,$p2|} ->  {:expr| $(normalize p1) ^ "," ^ $(normalize p2) |} *)
-(*   | {| $chr:x |} -> {:expr| "'" ^ String.make 1 $chr:x ^ "'" |} *)
-(*   | {| $int:x |} -> {:expr| $str:x |} *)
-(*   | {| $int32:x |} -> {:expr| $str:x |} *)
-(*   | {| $int64:x |} -> {:expr| $str:x |} *)
-(*   | {| $nativeint:x |} -> {:expr| "\"" ^ $str:x ^ "\""|}  *)
-(*   | {| $str:s |} -> {:expr| $str:s |} *)
-(*   | {| lazy $p |} -> {:expr| "lazy" ^ $(normalize p)|} *)
-(*   | {| (module $s) |}  -> {:expr| "(module" ^ $str:s ^")"|} *)
-(*   | {| $flo:x |} -> {:expr| $str:x|} *)
-
-(*   | {| $p1 | $p2 |} -> {:expr| $(normalize p1)  ^ "|" ^ $(normalize p2)  |} *)
-        
-(*   | {| $p1 .. $p2 |} -> {:expr| $(normalize p1) ^ ".." ^ $(normalize p2) |} *)
-        
-(*   | {| {$p} |} -> {:expr| "{" ^ $(normalize p)^ "}"|} *)
-(*   | {| $i = $p |} -> *)
-(*       {:expr| $(str:string_of_ident i) ^"=" ^ $(normalize p) |} *)
-
-(*   | {| ($tup:pl) |} -> {:expr| "("^ $(normalize pl) ^")"|} *)
-(*   | {| ($p:$_)|} -> normalize p (\* type was ignored *\) *)
-(*   | {| `$s |} -> {:expr| "`" ^ $str:s |} *)
-(*   (\* | {| $anti:x |} -> Syntax.parse_expr *\) *)
-(*   | {|$anti:_|} | {||} *)
-(*     | {| ? $_ |} | (\* FIXME ?$ not supported *\) *)
-(*       {| ? $_ : ($_) |} | {| ? $_ : ($_ = $_ )|} | *)
-(*       {| ~ $_ |} | {| ~ $_ : $_ |} | {| #$_ |}  *)
-(*       -> assert false *)
-(*   ]; *)
-
-
+(*
   
+ *)  
 let tuple _loc  =   fun
   [[] -> {|()|}
   |[p] -> p
@@ -814,3 +767,60 @@ let unknown len =
   else {| failwith $(str:"not implemented!") |};
 
   
+(* let normalize = object *)
+(*   val expr:Ast.expr; *)
+(*   inherit Camlp4Ast.fold as super; *)
+(*   method! patt = with "patt" fun *)
+(*     [ {| $_ |} -> {| "_" |} *)
+(*     | {| $lid:_ |} -> {| "_" |} *)
+(*     | {| $p as $_ |} -> self#patt p  *)
+(*     ] *)
+(* end; *)
+
+
+(* let rec string_of_ident = (\* duplicated with Camlp4Filters remove soon*\) *)
+(*   fun *)
+(*   [ {:ident| $lid:s |} -> s *)
+(*   | {:ident| $uid:s |} -> s *)
+(*   | {:ident| $i1.$i2 |} -> "acc_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2) *)
+(*   | {:ident| ($i1 $i2) |} -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2) *)
+(*   | {:ident| $anti:_ |} -> assert false ]; *)
+
+    
+(* let rec normalize = let _loc = FanLoc.ghost in with "patt" fun *)
+(*   [ {| _ |} -> {|"_"|} *)
+(*   | {| $id:_|} -> {:expr| "_"|} *)
+(*   | {| ($p as $_) |} -> normalize p *)
+(*   | {| $p1 $p2 |} -> {:expr| $(normalize p1) ^ $(normalize p2) |} *)
+(*   | {| [| $p |]|} -> {:expr| "[|"^ $(normalize p) ^ "|]"|} (\* FIXME ^$ does not work *\) *)
+(*   | {| $p1;$p2 |} -> {:expr| $(normalize p1) ^ ";" ^  $(normalize p2) |} *)
+(*   | {| $p1,$p2|} ->  {:expr| $(normalize p1) ^ "," ^ $(normalize p2) |} *)
+(*   | {| $chr:x |} -> {:expr| "'" ^ String.make 1 $chr:x ^ "'" |} *)
+(*   | {| $int:x |} -> {:expr| $str:x |} *)
+(*   | {| $int32:x |} -> {:expr| $str:x |} *)
+(*   | {| $int64:x |} -> {:expr| $str:x |} *)
+(*   | {| $nativeint:x |} -> {:expr| "\"" ^ $str:x ^ "\""|}  *)
+(*   | {| $str:s |} -> {:expr| $str:s |} *)
+(*   | {| lazy $p |} -> {:expr| "lazy" ^ $(normalize p)|} *)
+(*   | {| (module $s) |}  -> {:expr| "(module" ^ $str:s ^")"|} *)
+(*   | {| $flo:x |} -> {:expr| $str:x|} *)
+
+(*   | {| $p1 | $p2 |} -> {:expr| $(normalize p1)  ^ "|" ^ $(normalize p2)  |} *)
+        
+(*   | {| $p1 .. $p2 |} -> {:expr| $(normalize p1) ^ ".." ^ $(normalize p2) |} *)
+        
+(*   | {| {$p} |} -> {:expr| "{" ^ $(normalize p)^ "}"|} *)
+(*   | {| $i = $p |} -> *)
+(*       {:expr| $(str:string_of_ident i) ^"=" ^ $(normalize p) |} *)
+
+(*   | {| ($tup:pl) |} -> {:expr| "("^ $(normalize pl) ^")"|} *)
+(*   | {| ($p:$_)|} -> normalize p (\* type was ignored *\) *)
+(*   | {| `$s |} -> {:expr| "`" ^ $str:s |} *)
+(*   (\* | {| $anti:x |} -> Syntax.parse_expr *\) *)
+(*   | {|$anti:_|} | {||} *)
+(*     | {| ? $_ |} | (\* FIXME ?$ not supported *\) *)
+(*       {| ? $_ : ($_) |} | {| ? $_ : ($_ = $_ )|} | *)
+(*       {| ~ $_ |} | {| ~ $_ : $_ |} | {| #$_ |}  *)
+(*       -> assert false *)
+(*   ]; *)
+
