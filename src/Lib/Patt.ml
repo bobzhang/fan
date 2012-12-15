@@ -17,15 +17,11 @@ INCLUDE "src/Lib/CommonStructure.ml"  ;
 INCLUDE "src/Lib/ExprPatt.ml"  ;
 
 (*
+  Example:
    {[
-
-   (Fan_ctyp.list_of_record <:ctyp< u:int;v:mutable float >> )
-   |> mk_record ~arity:3 |> Fan_patt.eprint;
-   ({ u = a0; v = a1 }, { u = b0; v = b1 }, { u = c0; v = c1 })
-   
-   (Fan_ctyp.list_of_record <:ctyp< u:int;v:mutable float >> )
-     |> mk_record ~arity:1 |> Fan_patt.eprint;
-   { u = a0; v = a1 }
+  mk_record ~arity:3 (Lib.Ctyp.list_of_record {:ctyp| u:int; v:mutable float |} )
+  |> FanBasic.p_patt f;
+  ({ u = a0; v = a1 },{ u = b0; v = b1 },{ u = c0; v = c1 })
 
    ]}
  *)
@@ -39,6 +35,7 @@ let mk_record ?(arity=1) cols =
   if arity > 1 then
     {| $tup:res |}
   else res ;    
+
 
 (*
    @raise Invalid_argument 
@@ -57,8 +54,7 @@ let mk_tuple ~arity ~number =
   | n when n > 1 -> 
       let e = zfold_left
         ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
-        (fun acc i ->
-        comma acc (gen_tuple_first ~number ~off:i)) in
+        (fun acc i -> comma acc (gen_tuple_first ~number ~off:i)) in
       {| $tup:e |}
   | _ -> invalid_arg "mk_tuple arity < 1 " ];        
 

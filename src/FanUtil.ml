@@ -98,10 +98,6 @@ let handle_antiquot_in_string ~s ~default ~parse ~loc ~decorate =
     decorate name (parse loc code)
   else default;
   
-let neg_string n =
-    let len = String.length n in
-    if len > 0 && n.[0] = '-' then String.sub n 1 (len - 1)
-    else "-" ^ n ;
 
 
 
@@ -120,9 +116,6 @@ let symbolchar s i =
   with [Not_found -> false];
 
   
-(* let stopped_at _loc = *)
-(*   (\* Some (FanLoc.move_line 1 _loc) (\\* FIXME be more precise *\\); *\) *)
-(*   Some _loc; *)
 
 
 (* either dump to a file or stdout *)    

@@ -526,11 +526,11 @@ New syntax:\
         | `FLO(_,s) -> {|$flo:s|}
         | `CHAR(_,s) -> {|$chr:s|}
         | `STR(_,s) -> {|$str:s|}
-        | "-"; `INT(_,s) -> {|$(int:neg_string s)|}
-        | "-"; `INT32(_,s) -> {|$(int32:neg_string s)|}
-        | "-"; `INT64(_,s) -> {|$(int64:neg_string s)|}
-        | "-"; `NATIVEINT(_,s) -> {|$(int64:neg_string s)|}
-        | "-"; `FLO(_,s) -> {|$(flo:neg_string s)|}
+        | "-"; `INT(_,s) -> {|$(int:String.neg s)|}
+        | "-"; `INT32(_,s) -> {|$(int32:String.neg s)|}
+        | "-"; `INT64(_,s) -> {|$(int64:String.neg s)|}
+        | "-"; `NATIVEINT(_,s) -> {|$(int64:String.neg s)|}
+        | "-"; `FLO(_,s) -> {|$(flo:String.neg s)|}
         | "["; "]" -> {| [] |}
         | "["; sem_patt_for_list{mk_list}; "::"; patt{last}; "]" -> mk_list last
         | "["; sem_patt_for_list{mk_list}; "]" -> mk_list {| [] |}

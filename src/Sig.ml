@@ -200,7 +200,7 @@ module type Camlp4Syntax = sig
   val infixop5: Gram.t Ast.expr;
   val infixop6: Gram.t Ast.expr;
   val module_longident_dot_lparen: Gram.t Ast.ident;
-  val sequence':Gram.t (Ast.expr -> Lib.Expr.Ast.expr); 
+  val sequence':Gram.t (Ast.expr -> Ast.expr); 
   val fun_def: Gram.t Ast.expr;
   val optional_type_parameter:  Gram.t Ast.ctyp;
   val method_opt_override: Gram.t Ast.override_flag;
@@ -305,4 +305,5 @@ module type PRECAST_PLUGIN = sig
   val apply : (module PRECAST) -> unit;
 end;
 
+(* open Ast;   *)
 

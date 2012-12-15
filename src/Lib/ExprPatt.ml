@@ -20,7 +20,7 @@ let mklist loc =
     [ [] -> {| [] |}
     | [e1 :: el] ->
         let _loc =
-          if top then loc else FanLoc.merge ((* Ast.loc_of_expr  *) GETLOC(e1)) loc in
+          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
         {| [$e1 :: $(loop false el)] |} ] in loop true ;
 
 (* It is the inverse operation by [view_app]
@@ -32,9 +32,7 @@ let mklist loc =
  *)
 let rec apply accu = fun
   [ [] -> accu
-  | [x :: xs] ->
-      let _loc = GETLOC x in
-      apply {| $accu $x |} xs ];
+  | [x :: xs] -> let _loc = GETLOC x in apply {| $accu $x |} xs ];
   
 (*
   mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
@@ -43,6 +41,8 @@ let rec apply accu = fun
 let mk_array arr =
   let items = arr |> Array.to_list |> sem_of_list in 
   {| [| $items |] |};  
+
+
 (*
    A very naive lifting. It does not do any parsing at all
    It is applied to both expr and patt

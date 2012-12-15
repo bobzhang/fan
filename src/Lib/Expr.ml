@@ -71,18 +71,6 @@ let mksequence' loc = fun
 
   
 
-(* Given a [location] and [prefix](generally "-" or "-.")
-   The location provided is more precise
- *)  
-let mkumin loc prefix arg =
-  match arg with
-  [ {| $int:n |} -> {@loc| $(int:neg_string n) |}
-  | {| $int32:n |} -> {@loc| $(int32:neg_string n) |}
-  | {| $int64:n |} -> {@loc| $(int64:neg_string n) |}
-  | {| $nativeint:n |} -> {@loc| $(nativeint:neg_string n) |}
-  | {| $flo:n |} -> {@loc| $(flo:neg_string n) |}
-  | _ -> {@loc| $(lid:"~" ^ prefix) $arg |} ];
-
 
 let mkassert loc = fun
   [ {| false |} -> {@loc| assert false |} 
@@ -254,9 +242,14 @@ class subst loc env = object
 end;
 
 
+class type antiquot_filter =object
+  inherit Camlp4Ast.map;
+  method get_captured_variables: list (Ast.expr * Ast.expr);
+  method clear_captured_variables: unit;
+end;
   
 (* We don't do any parsing for antiquots here, so it's parser-independent *)  
-let capture_antiquot = object
+let capture_antiquot : antiquot_filter = object
   inherit Camlp4Ast.map as super;
   val mutable constraints =[];
   method! patt = fun
@@ -313,28 +306,26 @@ DEFINE GETLOC(expr)= Ast.loc_of_expr expr;
 INCLUDE "src/Lib/CommonStructure.ml";
 INCLUDE "src/Lib/ExprPatt.ml";
 
-let mk_unary_min f arg =
-  match arg with
-  [ {| $int:n |} -> {| $(int:String.neg n) |} 
-  | {| $int32:n |} -> {| $(int32:String.neg n) |}
-  | {| $int64:n |} -> {| $(int64:String.neg n) |}
-  | {| $nativeint:n |} -> {| $(nativeint:String.neg n) |}
-  | {| $flo:n |} -> {| $(flo:String.neg n) |}
-  | _ -> {| $(lid:"~" ^ f) $arg |} ];
-(*
+(* Given a [location] and [prefix](generally "-" or "-.")
+   The location provided is more precise.
    since ocaml respect [(~-)] as a prefix [(-)]
    and [(~-.)] as a prefix [(-.)]
-   Example:
    {[
-   mk_unary_min "-." <:expr< 3 >>;
-    Camlp4.PreCast.Ast.expr = ExInt  "-3"
-
-   mk_unary_min "-." <:expr< a >>;
-    Camlp4.PreCast.Ast.expr =
-   ExApp  (ExId  (IdLid  "~-.")) (ExId  (IdLid  "a"))
-
+   mkumin _loc "-." {| 3 |};
+   - : L.Expr.Ast.expr = ExInt (, "-3")
+   mkumin _loc "-." {| a |};
+   - : L.Expr.Ast.expr =
+   ExApp (, ExId (, IdLid (, "~-.")), ExId (, IdLid (, "a")))
    ]}
  *)  
+let mkumin loc prefix arg =
+  match arg with
+  [ {| $int:n |} -> {@loc| $(int:String.neg n) |}
+  | {| $int32:n |} -> {@loc| $(int32:String.neg n) |}
+  | {| $int64:n |} -> {@loc| $(int64:String.neg n) |}
+  | {| $nativeint:n |} -> {@loc| $(nativeint:String.neg n) |}
+  | {| $flo:n |} -> {@loc| $(flo:String.neg n) |}
+  | _ -> {@loc| $(lid:"~" ^ prefix) $arg |} ];
 
     
 
@@ -343,11 +334,6 @@ let mk_assert  =  fun
   | e -> {| assert $e |} ];
 
 
-
-(*
-   FIXME: label is lid
- *)
-  
 (*
   Example:
   {[
@@ -355,6 +341,9 @@ let mk_assert  =  fun
   - : L.Expr.Ast.expr = { a = 3; b = 4 }
 
   ]}
+  FIXME: label is lid, it can be more precise
+  [mk_record] becomes a bit complex when you have to consider
+  the arity
  *)
 let mk_record label_exprs =
   let rec_bindings = List.map (fun (label, expr) ->
@@ -515,20 +504,15 @@ let meee_of_str s =
   ]}
   given string input "u" and [ {| meta_u |} ]
  *)
-let mee_record_left str =
-  let u = {| Ast.IdLid _loc $str:str |} in 
-  {| Ast.RbEq _loc $u |} 
-;
 
-(*
-   {[
-   {| <:patt< { u = $meta_u$ ; v = $meta_v$ } |} >> ;
-   ]}
- *)  
-let mep_record_left str =
-  let u = {| Ast.IdLid _loc $str:str |} in
-  {| Ast.PaEq _loc $u |}
-;
+(* (\* *)
+(*    {[ *)
+(*    {| <:patt< { u = $meta_u$ ; v = $meta_v$ } |} >> ; *)
+(*    ]} *)
+(*  *\)   *)
+(* let mep_record_left str = *)
+(*   let u = {| Ast.IdLid _loc $str:str |} in *)
+(*   {| Ast.PaEq _loc $u |}; *)
   
   
   
@@ -538,57 +522,63 @@ let mk_tuple_ee = fun
   | xs  ->
       {| Ast.ExTup _loc $(List.reduce_right mee_comma xs) |}];
 
+  
+(*
+  Example:
+  {[
+  mee_record_col "a" {|3|} = {| {:rec_binding| a = $($({|3|})) |}|};
+  ]}
+ *)
 let mee_record_col label expr =
-  {| $(mee_record_left label) $expr |};
-  
+  {| {:rec_binding| $(lid:($str:label)) = $($expr) |}|};
+
+(*
+  Example:
+  {[
+  mep_record_col "a" {|3|} = {| {:patt| a = $($({|3|}))|}|};
+  ]}
+  *)  
 let mep_record_col label expr =
-  {| $(mep_record_left label) $expr |};
-  
+  {| {:patt| $(lid:$(str:label)) = $($expr) |} |};
+
 let mee_record_semi a b =
-  {| Ast.RbSem _loc $a $b |};
+  {| {:rec_binding| $($a);$($b) |} |};
+
 
 let mep_record_semi a b =
-  {| Ast.PaSem _loc $a $b |};  
+  {| {:patt| $($a); $($b) |}|};
+
 
 (*
-   {[
-   ( {| << {u = $meta_u$ ; v = $meta_v$ } |} >>
-     |> e2s ) =
-   (({| << {u = $meta_u$ ; v = $meta_v$ } |} >> |> e2s));
-
-   True
-   ]}
-   They are syntaxlly different, the first has a trailing Nil.
- *)  
-let mk_record_ee label_exprs = let open List in 
-  label_exprs
-  |> map (fun (label,expr) -> mee_record_col label expr)
-  |> (fun es ->
-      {|  Ast.ExRec _loc
-         $(List.reduce_right mee_record_semi es) {| |} |} );
-
-(*
-  Syntactially not equivalent, but dumped result should be the same 
+  Example:
   {[
-  (e2s {| <:patt< { u = $meta_u$ ; v = $meta_v$ } |} >>
-  = 
-  e2s (mk_record_ep [ ("u", {| meta_u|} ) ; ("v", {|meta_v|})]))
-  ;
+  mk_record_ee [("a",{|3|})] = {| {| { a = $($({|3|})) }|}|};
+  ]}
+ *)  
+let mk_record_ee label_exprs = 
+  label_exprs
+  |> List.map (fun (label,expr) -> mee_record_col label expr)
+  |> (fun es -> {| {| { $($(List.reduce_right mee_record_semi es)) } |}|} );
+
+    
+
+(*
+  Example:
+  {[
+  mk_record_ep [("u",  {|3 |})] = {| {:patt| { u = $($({|3|}))} |} |};
   ]}
  *)    
 let mk_record_ep label_exprs = let open List in
   label_exprs
   |> map (fun (label,expr) -> mep_record_col label expr)
-  |> (fun es ->
-     {| Ast.PaRec _loc
-        $(List.reduce_right mep_record_semi es) |} );
+  |> (fun es -> {| {:patt| { $($(List.reduce_right mep_record_semi es)) } |} |});
 
 
 
-(* overcome the monomophism restriction
+(* Mainly used to overcome the value restriction
    {[
-   eta_expand {| f|} 3 |> eprint;
-    fun a0 a1 a2 -> f a0 a1 a2
+    eta_expand {|f |} 3 |> FanBasic.p_expr f;
+    fun a0  a1  a2  -> f a0 a1 a2
    ]}
  *)
 let eta_expand expr number =
@@ -597,10 +587,15 @@ let eta_expand expr number =
 
 
 (*
+  Example:
   {[
-  gen_curry_n {|3|} ~arity:2 "`X" 2 |> eprint;
-  fun [ `X a0 a1 -> fun [ `X b0 b1 -> 3 ] ]
+  gen_curry_n {|3|} ~arity:2 "`X" 2 ;
+  fun [ `X (a0, a1) -> fun [ `X (b0, b1) -> 3 ] ]
+
+  gen_curry_n {|3|} ~arity:2 "X" 2 ;
+  fun (X (a0,a1))  (X (b0,b1))  -> 3
   ]}
+  
  *)
 let gen_curry_n acc ~arity cons n =
   let args = List.init arity
@@ -611,21 +606,21 @@ let gen_curry_n acc ~arity cons n =
     (List.map (fun lst -> Patt.apply pat lst) args) acc;
 
 (*
-  
+  Example:
   {[
-  currying
-  <:match_case<
-  (A0 a0 a1,A0 b0 b1) -> 1
-  | (A1 a0 a1, A1 b0 b1) -> 2
-  | (A2 a0 a1, A2 b0 b1) -> 3
-  >> ~arity:2 |> eprint ;
-  fun a0 b0 ->
+   let u  =  Ast.list_of_match_case {:match_case|
+  (A0 (a0, a1),A0 (b0, b1)) -> 1
+  |   (A1 (a0, a1), A1 (b0, b1)) -> 2
+  |   (A2 (a0, a1), A2 (b0, b1)) -> 3 |} [] in currying ~arity:2 u ;
+
+  fun a0  b0  ->
   match (a0, b0) with
-  [ (A0 a0 a1, A0 b0 b1) -> 1
-  | (A1 a0 a1, A1 b0 b1) -> 2
-  | (A2 a0 a1, A2 b0 b1) -> 3 ]
+  | (A0 (a0,a1),A0 (b0,b1)) -> 1
+  | (A1 (a0,a1),A1 (b0,b1)) -> 2
+  | (A2 (a0,a1),A2 (b0,b1)) -> 3
   ]}
-  make sure the names generated are shadowed by
+
+  Make Sure the names generated are shadowed by
   gen_tuple_n
  *)  
 let currying match_cases ~arity =
@@ -636,12 +631,7 @@ let currying match_cases ~arity =
     names <+ {| match $(tuple_of_list exprs) with [ $list:match_cases ] |}
   else {| fun [ $list:match_cases ] |};
 
-(*
-  {[
-  unknown 3 |> eprint;
-  fun _ _ _ -> self#unknown
-  ]}
-    *)
+
 let unknown len =
   if len = 0 then
     {| self#unknown|}

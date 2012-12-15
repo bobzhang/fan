@@ -56,8 +56,8 @@ module type S = sig
 
 
   val add_quotation: string -> Gram.t 'a ->
-    (FanLoc.t -> 'a -> Lib.Expr.Ast.expr) ->
-      (FanLoc.t -> 'a -> Lib.Expr.Ast.patt) -> unit;
+    (FanLoc.t -> 'a -> Ast.expr) ->
+      (FanLoc.t -> 'a -> Ast.patt) -> unit;
 
   (* BUG, revised parser can not parse name:string -> unit*)      
   val add_quotation_of_expr: ~name:string -> ~entry: Gram.t Ast.expr -> unit;
