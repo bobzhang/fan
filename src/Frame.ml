@@ -87,7 +87,8 @@ module Make(S:FSig.Config) = struct
     try return & aux ty with
       [Unhandled t ->
         fail & sprintf "normal_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
-          (!Ctyp.to_string t) (!Ctyp.to_string ty) ]) ;
+          "" ""
+          (* (!Ctyp.to_string t) (!Ctyp.to_string ty) *) ]) ;
 
 
   (*

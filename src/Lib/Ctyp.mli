@@ -1,15 +1,27 @@
 open Ast 
+
 val to_var_list : ctyp -> string list
+
 val list_of_opt : ctyp -> ctyp list -> ctyp list
+
 val name_tags : ctyp -> string list
+
 val to_generalized : ctyp -> ctyp list * ctyp
+
 val to_string : (ctyp -> string) ref
+
 val eprint : (ctyp -> unit) ref
-val _loc : FanLoc.t
+
+(* val _loc : FanLoc.t *)
+
 val app : ctyp -> ctyp -> ctyp
+
 val comma : ctyp -> ctyp -> ctyp
+
 val ( <$ ) : ctyp -> ctyp -> ctyp
+
 val apply : ctyp -> ctyp list -> ctyp
+
 val sem : ctyp -> ctyp -> ctyp
 val list_of_app : ctyp -> ctyp list
 val list_of_com : ctyp -> ctyp list
@@ -59,3 +71,6 @@ val transform_module_types : FSig.module_types ->
 val reduce_data_ctors :
   ctyp ->
     'a -> (string -> ctyp list -> 'a -> 'a) -> 'a LibUtil.ErrorMonad.result
+
+(* @raise Invalid_argument *)        
+val of_str_item: str_item -> ctyp 

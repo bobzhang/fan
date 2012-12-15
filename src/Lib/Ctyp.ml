@@ -495,3 +495,5 @@ let reduce_data_ctors (ty:Ast.ctyp)  (init:'a) (f:  string -> list Ast.ctyp -> '
               (!to_string ty)) ]);
   
 
+let of_str_item = fun
+  [ {:str_item|type $x|} -> x | _ -> invalid_arg "Ctyp.of_str_item" ];
