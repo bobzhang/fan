@@ -245,7 +245,7 @@ module Make(S:FSig.Config) = struct
     let mk_binding = binding_of_tydcl (simple_expr_of_ctyp_with_cxt cxt) in
     let fs (ty : types) =
       match ty with
-      | Mutual named_types ->
+      | `Mutual named_types ->
           let binding =
             match named_types with
             | [] -> Ast.BiNil _loc
@@ -255,7 +255,7 @@ module Make(S:FSig.Config) = struct
                    ~compose:(fun x  y  -> Ast.BiAnd (_loc, x, y))
                    ~f:(fun (name,ty)  -> mk_binding name ty) xs) in
           Ast.StVal (_loc, Ast.ReRecursive, binding)
-      | Single (name,tydcl) ->
+      | `Single (name,tydcl) ->
           (Hashset.add cxt name;
            (let rec_flag =
               if Ctyp.is_recursive tydcl then Ast.ReRecursive else Ast.ReNil
@@ -281,9 +281,9 @@ module Make(S:FSig.Config) = struct
         Ast.CrMth (_loc, name, Ast.OvNil, Ast.PrNil, (f tydcl), ty) in
       let fs (ty : types) =
         match ty with
-        | Mutual named_types ->
+        | `Mutual named_types ->
             Ast.crSem_of_list (List.map mk_class_str_item named_types)
-        | Single ((name,tydcl) as named_type) ->
+        | `Single ((name,tydcl) as named_type) ->
             (match Ctyp.abstract_list tydcl with
              | Some n ->
                  let ty_str = Ctyp.to_string.contents tydcl in

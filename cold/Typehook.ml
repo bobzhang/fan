@@ -21,15 +21,23 @@ let show_modules () =
   Hashtbl.iter (fun key  _  -> Format.printf "%s@ " key) filters;
   print_newline ()
 let plugin_add plugin =
-  try let v = Hashtbl.find filters plugin in v.plugin_activate <- true
-  with
-  | Not_found  -> (show_modules (); failwithf "plugins %s not found " plugin)
+  (try
+     let v = Hashtbl.find filters plugin in
+     fun ()  -> v.plugin_activate <- true
+   with
+   | Not_found  ->
+       (fun ()  -> show_modules (); failwithf "plugins %s not found " plugin))
+    ()
 let plugin_remove plugin =
-  try let v = Hashtbl.find filters plugin in v.plugin_activate <- false
-  with
-  | Not_found  ->
-      (show_modules ();
-       eprintf "plugin %s not found, removing operation ignored" plugin)
+  (try
+     let v = Hashtbl.find filters plugin in
+     fun ()  -> v.plugin_activate <- false
+   with
+   | Not_found  ->
+       (fun ()  ->
+          show_modules ();
+          eprintf "plugin %s not found, removing operation ignored" plugin))
+    ()
 let filter_type_defs ?qualified  () =
   object 
     inherit  Ast.map as super
@@ -70,64 +78,75 @@ let filter_type_defs ?qualified  () =
       | ty -> super#ctyp ty
     method get_type_defs = type_defs
   end
-let traversal () =
-  object (self : 'self_type)
-    inherit  Ast.map as super
-    val module_types_stack = (Stack.create () : module_types Stack.t )
-    method get_cur_module_types : module_types= Stack.top module_types_stack
-    method update_cur_module_types f =
-      let open Stack in push (f (pop module_types_stack)) module_types_stack
-    method in_module = Stack.push [] module_types_stack
-    method out_module = (Stack.pop module_types_stack) |> ignore
-    val mutable cur_and_types = ([] : and_types )
-    val mutable and_group = false
-    method in_and_types = and_group <- true; cur_and_types <- []
-    method out_and_types = and_group <- false; cur_and_types <- []
-    method is_in_and_types = and_group
-    method get_cur_and_types = cur_and_types
-    method update_cur_and_types f = cur_and_types <- f cur_and_types
-    method! module_expr =
-      function
-      | Ast.MeStr (_loc,u) ->
-          let () = self#in_module in
-          let res = self#str_item u in
-          let module_types = List.rev self#get_cur_module_types in
-          let result =
-            Hashtbl.fold
-              (fun _  v  acc  ->
-                 if v.plugin_activate
-                 then
-                   Ast.StSem (_loc, acc, (v.plugin_transform module_types))
-                 else acc) filters
-              (if keep.contents then res else Ast.StNil _loc) in
-          let () = self#out_module in Ast.MeStr (_loc, result)
-      | x -> super#module_expr x
-    method! str_item =
-      function
-      | Ast.StTyp (_loc,Ast.TyAnd (_,_,_)) as x ->
-          (self#in_and_types;
-           (let _ = super#str_item x in
-            self#update_cur_module_types
-              (fun lst  -> (Mutual (List.rev self#get_cur_and_types)) :: lst);
-            self#out_and_types;
-            if keep.contents then x else Ast.StNil _loc))
-      | Ast.StTyp (_loc,(Ast.TyDcl (_,name,_,_,_) as t)) as x ->
-          (self#update_cur_module_types
-             (fun lst  -> (Single (name, t)) :: lst);
-           x)
-      | Ast.StVal (_loc,Ast.ReNil ,_)|Ast.StMty (_loc,_,_)|Ast.StInc
-          (_loc,_)|Ast.StExt (_loc,_,_,_)|Ast.StExp (_loc,_)|Ast.StExc
-          (_loc,_,Ast.ONone )|Ast.StDir (_loc,_,_) as x -> x
-      | x -> super#str_item x
-    method! ctyp =
-      function
-      | Ast.TyDcl (_,name,_,_,_) as t ->
-          (if self#is_in_and_types
-           then self#update_cur_and_types (fun lst  -> (name, t) :: lst)
-           else ();
-           t)
-      | t -> super#ctyp t
+class type traversal
+  =
+  object 
+    inherit Ast.map
+    method get_cur_module_types : FSig.module_types
+    method get_cur_and_types : FSig.and_types
+    method update_cur_and_types : (FSig.and_types -> FSig.and_types) -> unit
+    method update_cur_module_types :
+      (FSig.module_types -> FSig.module_types) -> unit
   end
+let traversal () =
+  (object (self : 'self_type)
+     inherit  Ast.map as super
+     val module_types_stack = (Stack.create () : module_types Stack.t )
+     val mutable cur_and_types = ([] : and_types )
+     val mutable and_group = false
+     method get_cur_module_types : module_types= Stack.top module_types_stack
+     method update_cur_module_types f =
+       let open Stack in push (f (pop module_types_stack)) module_types_stack
+     method private in_module = Stack.push [] module_types_stack
+     method private out_module = (Stack.pop module_types_stack) |> ignore
+     method private in_and_types = and_group <- true; cur_and_types <- []
+     method private out_and_types = and_group <- false; cur_and_types <- []
+     method private is_in_and_types = and_group
+     method get_cur_and_types = cur_and_types
+     method update_cur_and_types f = cur_and_types <- f cur_and_types
+     method! module_expr =
+       function
+       | Ast.MeStr (_loc,u) ->
+           let () = self#in_module in
+           let res = self#str_item u in
+           let module_types = List.rev self#get_cur_module_types in
+           let result =
+             Hashtbl.fold
+               (fun _  v  acc  ->
+                  if v.plugin_activate
+                  then
+                    Ast.StSem (_loc, acc, (v.plugin_transform module_types))
+                  else acc) filters
+               (if keep.contents then res else Ast.StNil _loc) in
+           let () = self#out_module in Ast.MeStr (_loc, result)
+       | x -> super#module_expr x
+     method! str_item =
+       function
+       | Ast.StTyp (_loc,Ast.TyAnd (_,_,_)) as x ->
+           (self#in_and_types;
+            (let _ = super#str_item x in
+             self#update_cur_module_types
+               (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
+                  lst);
+             self#out_and_types;
+             if keep.contents then x else Ast.StNil _loc))
+       | Ast.StTyp (_loc,(Ast.TyDcl (_,name,_,_,_) as t)) as x ->
+           (self#update_cur_module_types
+              (fun lst  -> (`Single (name, t)) :: lst);
+            x)
+       | Ast.StVal (_loc,Ast.ReNil ,_)|Ast.StMty (_loc,_,_)|Ast.StInc
+           (_loc,_)|Ast.StExt (_loc,_,_,_)|Ast.StExp (_loc,_)|Ast.StExc
+           (_loc,_,Ast.ONone )|Ast.StDir (_loc,_,_) as x -> x
+       | x -> super#str_item x
+     method! ctyp =
+       function
+       | Ast.TyDcl (_,name,_,_,_) as t ->
+           (if self#is_in_and_types
+            then self#update_cur_and_types (fun lst  -> (name, t) :: lst)
+            else ();
+            t)
+       | t -> super#ctyp t
+   end : traversal )
 let g = Gram.create_gram ()
 let fan_quot = Gram.mk_dynamic g "fan_quot"
 let fan_quots = Gram.mk_dynamic g "fan_quots"

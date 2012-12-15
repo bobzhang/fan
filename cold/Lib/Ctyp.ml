@@ -270,9 +270,9 @@ let transform_module_types lst =
   let item1 =
     List.map
       (function
-       | Mutual ls ->
-           Mutual (List.map (fun (s,ty)  -> (s, (obj#ctyp ty))) ls)
-       | Single (s,ty) -> Single (s, (obj#ctyp ty))) lst in
+       | `Mutual ls ->
+           `Mutual (List.map (fun (s,ty)  -> (s, (obj#ctyp ty))) ls)
+       | `Single (s,ty) -> `Single (s, (obj#ctyp ty))) lst in
   let new_types = obj#type_transformers in (new_types, item1)
 let reduce_data_ctors (ty : Ast.ctyp) (init : 'a)
   (f : string -> Ast.ctyp list -> 'e) =
