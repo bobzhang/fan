@@ -11,9 +11,13 @@ type plugin = {
     plugin_transform:(module_types -> Ast.str_item);
     plugin_activate: mutable bool;
   };
+  
 type plugin_name = string ;
+  
 let filters : Hashtbl.t plugin_name plugin = Hashtbl.create 30;
+  
 let show_code =  ref false;
+  
 let register  (name,filter) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
@@ -37,19 +41,16 @@ let show_modules () =
 
 
 let plugin_add plugin =
-  try
-    let v = Hashtbl.find filters plugin in begin 
-    v.plugin_activate <- true
-  end 
+  let try v = Hashtbl.find filters plugin in
+  v.plugin_activate <- true
   with
-    [Not_found -> begin
-      show_modules ();
-      failwithf "plugins %s not found " plugin ;
-    end];
+  [Not_found -> begin
+    show_modules ();
+    failwithf "plugins %s not found " plugin ;
+  end];
 let plugin_remove plugin =
-  try
-    let v = Hashtbl.find filters plugin in
-    v.plugin_activate <- false
+  let try v = Hashtbl.find filters plugin in
+  v.plugin_activate <- false
   with
     [Not_found -> begin 
       show_modules ();
@@ -104,27 +105,38 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
   method get_type_defs = type_defs;
 end;
 
+class type traversal = object
+  inherit Ast.map;
+  method get_cur_module_types: FSig.module_types;
+  method get_cur_and_types: FSig.and_types;
+  (* method in_and_types: *)
+  method update_cur_and_types:
+      (FSig.and_types -> FSig.and_types) -> unit;
+  method update_cur_module_types:
+      (FSig.module_types -> FSig.module_types) -> unit;
 
+end;
 
 (*
   Entrance is  [module_expr]
   Choose [module_expr] as an entrace point to make the traversal
   more modular
  *)  
-let traversal ()  = object (self:'self_type)
+let traversal () : traversal  = object (self:'self_type)
   inherit Ast.map as super;
   val module_types_stack : Stack.t module_types = Stack.create ();
+  val mutable cur_and_types : and_types= [];
+  val mutable and_group = false;
   method get_cur_module_types : module_types =
     Stack.top module_types_stack;
   method update_cur_module_types f =
     Stack.(push (f (pop module_types_stack)) module_types_stack);
-  method in_module =  Stack.push [] module_types_stack ;
-  method out_module = Stack.pop module_types_stack |> ignore;
-  val mutable cur_and_types : and_types= [];
-  val mutable and_group = false;
-  method in_and_types = begin and_group <- true; cur_and_types <- [] end;
-  method out_and_types = begin and_group <- false; cur_and_types <- [] end;
-  method is_in_and_types = and_group;
+  method private in_module =  Stack.push [] module_types_stack ;
+  method private out_module = Stack.pop module_types_stack |> ignore;
+    
+  method private in_and_types = begin and_group <- true; cur_and_types <- [] end;
+  method private out_and_types = begin and_group <- false; cur_and_types <- [] end;
+  method private is_in_and_types = and_group;
   method get_cur_and_types = cur_and_types;
   method update_cur_and_types f = 
     cur_and_types <-  f cur_and_types;
