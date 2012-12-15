@@ -94,6 +94,8 @@ val create_gram: unit -> gram
 
 val mk_dynamic: gram -> string -> 'a t
 
+val gram_of_entry: 'a t -> gram
+    
 val mk: string -> 'a t
 
 val of_parser:  string ->  (stream -> 'a) ->  'a t

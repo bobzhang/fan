@@ -1,4 +1,0 @@
-#! /bin/sh 
-# -*- Mode:Shell-script -*-
-set -e
-_build/src/FanDriver.byte -parser rf -printer o -str "$1"

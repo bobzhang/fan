@@ -23,8 +23,8 @@ module type S =
     val add_quotation :
       string ->
         'a Gram.t ->
-          (FanLoc.t -> 'a -> Lib.Expr.Ast.expr) ->
-            (FanLoc.t -> 'a -> Lib.Expr.Ast.patt) -> unit
+          (FanLoc.t -> 'a -> Ast.expr) ->
+            (FanLoc.t -> 'a -> Ast.patt) -> unit
     val add_quotation_of_expr : name:string -> entry:Ast.expr Gram.t -> unit
     val add_quotation_of_patt : name:string -> entry:Ast.patt Gram.t -> unit
     val add_quotation_of_class_str_item :
@@ -227,7 +227,9 @@ let make_parser entry loc loc_name_opt s =
 let add_quotation_of_str_item ~name  ~entry  =
   add name DynAst.str_item_tag (make_parser entry)
 let add_quotation_of_str_item_with_filter ~name  ~entry  ~filter  =
-  add name DynAst.str_item_tag (filter (make_parser entry))
+  add name DynAst.str_item_tag
+    (fun loc  loc_name_opt  s  ->
+       filter (make_parser entry loc loc_name_opt s))
 let add_quotation_of_expr ~name  ~entry  =
   let expand_fun = make_parser entry in
   let mk_fun loc loc_name_opt s =

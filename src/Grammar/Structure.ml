@@ -95,7 +95,7 @@ type foldsep 'a 'b 'c =
 
 let get_filter g = g.gfilter;
 
-
+let gram_of_entry {egram;_} = egram;
   
 let using { gkeywords = table; gfilter = filter; _ } kwd =
   let r = try Hashtbl.find table kwd with

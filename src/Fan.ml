@@ -6,6 +6,36 @@ include PreCast;
 open AstQuotation;
 open Lib.Meta;
 open Syntax;
+open LibUtil;
+open Lib;
+add_quotation_of_str_item_with_filter ~name:"ocaml" ~entry:str_items
+  ~filter:(fun s ->
+    let _loc = Ast.loc_of_str_item s in 
+    let v =  {:module_expr| struct $s end |} in
+    let module_expr =
+      (Asthook.traversal ())#module_expr v in
+    let code = match module_expr with
+    [ {:module_expr| struct $item end |}  -> item
+    | _ -> failwith "can not find items back " ]  in
+    begin
+      if !Asthook.show_code then
+        try
+          FanBasic.p_str_item Format.std_formatter code
+        with
+          [_ -> begin
+            prerr_endline &
+            "There is a printer bug\
+             Our code generator may still work when \
+             Printer is broken\
+             Plz send bug report to " ^ FanConfig.bug_main_address;
+          end]
+      else ();
+      code
+    end);
+
+(* {:ocaml| type u = int; |}; *)
+(* {:fan_quot| show_code on |}; *)
+add_quotation_of_expr ~name:"fans" ~entry:Asthook.fan_quots ;
 
 add_quotation "sig_item" sig_item_quot ~mexpr:ME.meta_sig_item ~mpatt:MP.meta_sig_item ~expr_filter ~patt_filter ;
 add_quotation "str_item" str_item_quot ~mexpr:ME.meta_str_item ~mpatt:MP.meta_str_item ~expr_filter ~patt_filter ;

@@ -129,3 +129,93 @@ let traversal () =
            t)
       | t -> super#ctyp t
   end
+let g = Gram.create_gram ()
+let fan_quot = Gram.mk_dynamic g "fan_quot"
+let fan_quots = Gram.mk_dynamic g "fan_quots"
+let _ =
+  Gram.extend (fan_quot : 'fan_quot Gram.t )
+    (None,
+      [(None, None,
+         [([`Skeyword "plugin_add";
+           `Stoken
+             (((function | `STR (_,_) -> true | _ -> false)),
+               (`Normal, "`STR (_,_)"))],
+            (Gram.mk_action
+               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
+                  match __fan_1 with
+                  | `STR (_,plugin) ->
+                      ((plugin_add plugin; Ast.ExNil _loc) : 'fan_quot )
+                  | _ -> assert false)));
+         ([`Skeyword "plugins_add";
+          `Slist1sep
+            ((Gram.srules fan_quot
+                [([`Stoken
+                     (((function | `STR (_,_) -> true | _ -> false)),
+                       (`Normal, "`STR (_,_)"))],
+                   (Gram.mk_action
+                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                         match __fan_0 with
+                         | `STR (_,x) -> (x : 'e__1 )
+                         | _ -> assert false)))]), (`Skeyword ","))],
+           (Gram.mk_action
+              (fun (plugins : 'e__1 list)  _  (_loc : FanLoc.t)  ->
+                 (List.iter plugin_add plugins; Ast.ExNil _loc : 'fan_quot ))));
+         ([`Skeyword "plugins_clear"],
+           (Gram.mk_action
+              (fun _  (_loc : FanLoc.t)  ->
+                 (Hashtbl.iter (fun _  v  -> v.plugin_activate <- false)
+                    filters;
+                  Ast.ExNil _loc : 'fan_quot ))));
+         ([`Skeyword "plugin_remove";
+          `Stoken
+            (((function | `STR (_,_) -> true | _ -> false)),
+              (`Normal, "`STR (_,_)"))],
+           (Gram.mk_action
+              (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
+                 match __fan_1 with
+                 | `STR (_,plugin) ->
+                     ((plugin_remove plugin; Ast.ExNil _loc) : 'fan_quot )
+                 | _ -> assert false)));
+         ([`Skeyword "plugins_remove";
+          `Slist1sep
+            ((Gram.srules fan_quot
+                [([`Stoken
+                     (((function | `STR (_,_) -> true | _ -> false)),
+                       (`Normal, "`STR (_,_)"))],
+                   (Gram.mk_action
+                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                         match __fan_0 with
+                         | `STR (_,x) -> (x : 'e__2 )
+                         | _ -> assert false)))]), (`Skeyword ","))],
+           (Gram.mk_action
+              (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->
+                 (List.iter plugin_remove plugins; Ast.ExNil _loc : 'fan_quot ))));
+         ([`Skeyword "keep"; `Skeyword "on"],
+           (Gram.mk_action
+              (fun _  _  (_loc : FanLoc.t)  ->
+                 (keep := true; Ast.ExNil _loc : 'fan_quot ))));
+         ([`Skeyword "keep"; `Skeyword "off"],
+           (Gram.mk_action
+              (fun _  _  (_loc : FanLoc.t)  ->
+                 (keep := false; Ast.ExNil _loc : 'fan_quot ))));
+         ([`Skeyword "show_code"; `Skeyword "on"],
+           (Gram.mk_action
+              (fun _  _  (_loc : FanLoc.t)  ->
+                 (show_code := true; Ast.ExNil _loc : 'fan_quot ))));
+         ([`Skeyword "show_code"; `Skeyword "off"],
+           (Gram.mk_action
+              (fun _  _  (_loc : FanLoc.t)  ->
+                 (show_code := false; Ast.ExNil _loc : 'fan_quot ))))])]);
+  Gram.extend (fan_quots : 'fan_quots Gram.t )
+    (None,
+      [(None, None,
+         [([`Slist0
+              (Gram.srules fan_quots
+                 [([`Snterm (Gram.obj (fan_quot : 'fan_quot Gram.t ));
+                   `Skeyword ";"],
+                    (Gram.mk_action
+                       (fun _  (x : 'fan_quot)  (_loc : FanLoc.t)  ->
+                          (x : 'e__3 ))))])],
+            (Gram.mk_action
+               (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
+                  (Ast.ExSeq (_loc, (Ast.exSem_of_list xs)) : 'fan_quots ))))])])

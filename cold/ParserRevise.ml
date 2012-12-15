@@ -2230,7 +2230,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
-                 | `INT (_,s) -> (Ast.PaInt (_loc, (neg_string s)) : 'patt )
+                 | `INT (_,s) -> (Ast.PaInt (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -2240,7 +2240,7 @@ let apply () =
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
                  | `INT32 (_,s) ->
-                     (Ast.PaInt32 (_loc, (neg_string s)) : 'patt )
+                     (Ast.PaInt32 (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -2250,7 +2250,7 @@ let apply () =
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
                  | `INT64 (_,s) ->
-                     (Ast.PaInt64 (_loc, (neg_string s)) : 'patt )
+                     (Ast.PaInt64 (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -2260,7 +2260,7 @@ let apply () =
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
                  | `NATIVEINT (_,s) ->
-                     (Ast.PaInt64 (_loc, (neg_string s)) : 'patt )
+                     (Ast.PaInt64 (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -2269,7 +2269,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
-                 | `FLO (_,s) -> (Ast.PaFlo (_loc, (neg_string s)) : 'patt )
+                 | `FLO (_,s) -> (Ast.PaFlo (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "["; `Skeyword "]"],
            (Gram.mk_action

@@ -1,5 +1,3 @@
-(* <:fan< include_ml "open_template.ml" ; >> ; *)
-(* <:include_ml< "open_template.ml"; >> ; *)
 open LibUtil;
 open Basic;
 open FSig;
@@ -58,7 +56,7 @@ let plugin_remove plugin =
       eprintf "plugin %s not found, removing operation ignored" plugin;
       end ];
   
-(* <:fan< lang "sig_item"; >> ; *)
+
 
 
 (* Filter type definitions from mli file
@@ -107,8 +105,6 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
 end;
 
 
-(* {:fan| lang "str_item"; |} ; *)
-#default_quotation "str_item";;
 
 (*
   Entrance is  [module_expr]
@@ -133,7 +129,7 @@ let traversal ()  = object (self:'self_type)
   method update_cur_and_types f = 
     cur_and_types <-  f cur_and_types;
   (* entrance *)  
-  method! module_expr = fun
+  method! module_expr = with "str_item" fun
     [ {:module_expr| struct $u end |}  -> 
       let () = self#in_module in 
       let res = self#str_item u in 
@@ -153,7 +149,7 @@ let traversal ()  = object (self:'self_type)
 
     | x -> super#module_expr x ];
 
-  method! str_item  = fun
+  method! str_item  = with "str_item" fun
     [ {| type $_ and $_ |} as x -> begin
       self#in_and_types;
       let _ = super#str_item x ;
@@ -182,49 +178,38 @@ let traversal ()  = object (self:'self_type)
 end;
 
 
-(* <:fan< *)
-(* lang "expr"; *)
-(* lang_at "patt" "module_expr"; *)
-(* >>; *)
 
 #default_quotation "expr"  ;;
 #lang_at "patt" "module_expr";;
 
-(* let open Fan_lang_meta in    *)
-(* EXTEND MGram fan_quot: LEVEL "top"  *)
-(*   [ [  "plugin_add" ; plugin = STRING -> begin *)
-(*          plugin_add plugin; {| |}  *)
-(*      end  *)
-(*      | "plugins_add"; plugins = LIST1 [x = STRING -> x] SEP "," -> begin *)
-(*          List.iter plugin_add plugins; {| |} *)
-(*      end  *)
-(*      | "plugins_clear" -> begin  *)
-(*          Hashtbl.iter (fun _  v -> v.plugin_activate := false) filters; *)
-(*          {| |}    *)
-(*      end  *)
-(*      | "plugin_remove"; plugin = STRING -> begin  *)
-(*          plugin_remove plugin; *)
-(*          {| |} *)
-(*      end  *)
-(*      | "plugins_remove"; plugins =LIST1 [x=STRING -> x] SEP "," -> begin *)
-(*          List.iter plugin_remove plugins ; {| |}  *)
-(*      end  *)
+let g = Gram.create_gram ();
 
-(*      | "keep" ; "on" -> begin *)
-(*          keep.val := true; {| |}  *)
-(*      end *)
-(*      | "keep" ; "off" -> begin *)
-(*          keep.val := false; {| |} *)
-(*      end *)
-(*      | "show_code"; "on" -> begin *)
-(*          show_code.val := true; {| |}  *)
-(*      end *)
-(*      | "show_code"; "off" -> begin *)
-(*          show_code.val := false; {| |}  *)
-(*      end  *)
-(*     ] ]; *)
-(* END; *)
+{:extend.create|(g:Gram.t)
+  fan_quot fan_quots
+|};
 
+with "expr"
+    {:extend|Gram
+      fan_quot:
+      [ "plugin_add" ; `STR(_,plugin) -> begin plugin_add plugin; {| |} end
+      | "plugins_add"; L1 [`STR(_,x) -> x] SEP ","{plugins} ->
+          begin List.iter plugin_add plugins; {| |}  end
+      | "plugins_clear" -> begin Hashtbl.iter (fun _  v -> v.plugin_activate <- false) filters; {| |} end
+      | "plugin_remove"; `STR(_,plugin) -> begin  plugin_remove plugin;{| |} end
+      | "plugins_remove"; L1 [`STR(_,x) -> x] SEP ","{plugins} -> begin
+          List.iter plugin_remove plugins ; {| |}
+      end
+      | "keep" ; "on" -> begin keep := true; {| |} end
+      | "keep" ; "off" -> begin keep := false; {| |} end
+      | "show_code"; "on" -> begin
+          show_code := true; {| |}
+      end
+      | "show_code"; "off" -> begin
+          show_code := false; {| |}
+      end]
+      fan_quots:
+      [L0[fan_quot{x};";" -> x]{xs} -> {| begin $list:xs end|}]
+|};  
 (* let open Fan_lang_include in EXTEND MGram fan_include_ml: LEVEL "top" *)
 (*   [ [ "mli"; file=STRING; *)
 (*           include_mod = OPT [ x= STRING -> x ] ->  *)
@@ -243,11 +228,11 @@ end;
 (* (\* AstFilters.register_str_item_filter  filter ; *\) *)
 (* Fan_camlp4syntax.add_quotation_of_str_item_with_filter *)
 (*   ~name:"ocaml" ~entry:Syntax.str_items ~filter:(fun s -> *)
-(*     let v =  {:module_expr| struct .$s$. end |} in  *)
-(*     let module_expr =  *)
+(*     let v =  {:module_expr| struct .$s$. end |} in *)
+(*     let module_expr = *)
 (*       (traversal ())#module_expr v in *)
 (*     let code = match module_expr with *)
-(*     [ {:module_expr| struct .$item$. end |}  -> item  *)
+(*     [ {:module_expr| struct .$item$. end |}  -> item *)
 (*     | _ -> failwith "can not find items back " ]  in *)
 (*     begin *)
 (*       if show_code.val then *)
@@ -256,13 +241,13 @@ end;
 (*         with *)
 (*           [e -> begin *)
 (*             prerr_endline & *)
-(*             "There is a printer bug\ *)
-(*              Our code generator may still work when \ *)
-(*              Printer is broken\ *)
-(*              Plz send bug report to " ^ bug_main_address; *)
+(*             "There is a printer bug\ *\) *)
+(* (\*              Our code generator may still work when \ *\) *)
+(* (\*              Printer is broken\ *\) *)
+(* (\*              Plz send bug report to " ^ bug_main_address; *)
 (*           end] *)
 (*       else (); *)
-(*       code  *)
+(*       code *)
 (*     end); *)
 
 (* begin *)

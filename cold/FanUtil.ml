@@ -68,9 +68,6 @@ let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
     and code = String.sub s (pos + 1) (((String.length s) - pos) - 1) in
     decorate name (parse loc code)
   else default
-let neg_string n =
-  let len = String.length n in
-  if (len > 0) && ((n.[0]) = '-') then String.sub n 1 (len - 1) else "-" ^ n
 let symbolchars =
   ['$';
   '!';

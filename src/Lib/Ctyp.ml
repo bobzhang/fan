@@ -49,18 +49,12 @@ let eprint : ref (Ast.ctyp -> unit) =
   ref (fun _ -> failwith "Ctyp.eprint foward declaration, not implemented yet");
          (* eprintf "@[%a@]@." !FanBasic.p_ctyp v ; *)
 
-(* <:fan< *)
-(* lang "ctyp"; *)
-(* >>; *)
-  
-(* <:include_ml< *)
-(*   "fan_structure.ml"; *)
-(* >> ; *)
 
 
   
 let _loc = FanLoc.ghost ; (* FIXME *)
 
+DEFINE GETLOC(expr)= Ast.loc_of_ctyp expr;  
 INCLUDE "src/Lib/CommonStructure.ml";  
 (*
    compose type abstractions

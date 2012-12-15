@@ -2,6 +2,29 @@ include PreCast
 open AstQuotation
 open Lib.Meta
 open Syntax
+open LibUtil
+open Lib
+let _ =
+  add_quotation_of_str_item_with_filter ~name:"ocaml" ~entry:str_items
+    ~filter:(fun s  ->
+               let _loc = Ast.loc_of_str_item s in
+               let v = Ast.MeStr (_loc, s) in
+               let module_expr = (Asthook.traversal ())#module_expr v in
+               let code =
+                 match module_expr with
+                 | Ast.MeStr (_loc,item) -> item
+                 | _ -> failwith "can not find items back " in
+               if Asthook.show_code.contents
+               then
+                 (try FanBasic.p_str_item Format.std_formatter code
+                  with
+                  | _ ->
+                      prerr_endline &
+                        ("There is a printer bugOur code generator may still work when Printer is brokenPlz send bug report to "
+                           ^ FanConfig.bug_main_address))
+               else ();
+               code)
+let _ = add_quotation_of_expr ~name:"fans" ~entry:Asthook.fan_quots
 let _ =
   add_quotation "sig_item" sig_item_quot ~mexpr:ME.meta_sig_item
     ~mpatt:MP.meta_sig_item ~expr_filter ~patt_filter

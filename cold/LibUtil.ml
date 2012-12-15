@@ -101,6 +101,13 @@ module List = struct
         let rec loop x xs =
           match xs with | [] -> x | y::ys -> loop (f x y) ys in
         loop x xs
+  let reduce_left_with ~compose  ~f  lst =
+    match lst with
+    | [] -> invalid_arg "reduce_left length zero"
+    | x::xs ->
+        let rec loop x xs =
+          match xs with | [] -> x | y::ys -> loop (compose x (f y)) ys in
+        loop (f x) xs
   let reduce_right_with ~compose  ~f  lst =
     match lst with
     | [] -> invalid_arg "reduce_right length zero"

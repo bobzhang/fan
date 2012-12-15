@@ -189,7 +189,7 @@ module type Camlp4Syntax =
     val infixop5 : Ast.expr Gram.t
     val infixop6 : Ast.expr Gram.t
     val module_longident_dot_lparen : Ast.ident Gram.t
-    val sequence' : (Ast.expr -> Lib.Expr.Ast.expr) Gram.t
+    val sequence' : (Ast.expr -> Ast.expr) Gram.t
     val fun_def : Ast.expr Gram.t
     val optional_type_parameter : Ast.ctyp Gram.t
     val method_opt_override : Ast.override_flag Gram.t

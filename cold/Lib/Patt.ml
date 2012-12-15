@@ -1,31 +1,15 @@
-open Camlp4Ast
 open LibUtil
 open Basic
 open FSig
 module Ast = Camlp4Ast
-let mklist _loc =
-  let rec loop top =
-    function
-    | [] -> Ast.PaId (_loc, (Ast.IdUid (_loc, "[]")))
-    | p1::pl ->
-        let _loc = if top then _loc else FanLoc.merge (loc_of_patt p1) _loc in
-        Ast.PaApp
-          (_loc,
-            (Ast.PaApp
-               (_loc, (Ast.PaId (_loc, (Ast.IdUid (_loc, "::")))), p1)),
-            (loop false pl)) in
-  loop true
-let tuple _loc =
-  function
-  | [] -> Ast.PaId (_loc, (Ast.IdUid (_loc, "()")))
-  | p::[] -> p
-  | e::es -> Ast.PaTup (_loc, (Ast.PaCom (_loc, e, (Ast.paCom_of_list es))))
 let _loc = FanLoc.ghost
 let app a b = Ast.PaApp (_loc, a, b)
 let comma a b = Ast.PaCom (_loc, a, b)
 let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
-let sem a b = Ast.PaSem (_loc, a, b)
+let sem a b =
+  let _loc = FanLoc.merge (Ast.loc_of_patt a) (Ast.loc_of_patt b) in
+  Ast.PaSem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
     match t with
@@ -60,16 +44,23 @@ let tuple_of_list =
   | [] -> invalid_arg "tuple_of_list while list is empty"
   | x::[] -> x
   | xs -> Ast.PaTup (_loc, (com_of_list xs))
-let mk_list lst =
-  let rec loop =
+let mklist loc =
+  let rec loop top =
     function
     | [] -> Ast.PaId (_loc, (Ast.IdUid (_loc, "[]")))
-    | x::xs ->
+    | e1::el ->
+        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_patt e1) loc in
         Ast.PaApp
           (_loc,
-            (Ast.PaApp (_loc, (Ast.PaId (_loc, (Ast.IdUid (_loc, "::")))), x)),
-            (loop xs)) in
-  loop lst
+            (Ast.PaApp
+               (_loc, (Ast.PaId (_loc, (Ast.IdUid (_loc, "::")))), e1)),
+            (loop false el)) in
+  loop true
+let rec apply accu =
+  function
+  | [] -> accu
+  | x::xs ->
+      let _loc = Ast.loc_of_patt x in apply (Ast.PaApp (_loc, accu, x)) xs
 let mk_array arr =
   let items = (arr |> Array.to_list) |> sem_of_list in
   Ast.PaArr (_loc, items)
@@ -125,6 +116,11 @@ let gen_tuple_n ~arity  cons n =
       (fun i  -> List.init n (fun j  -> Ast.PaId (_loc, (xid ~off:i j)))) in
   let pat = of_str cons in
   (List.map (fun lst  -> apply pat lst) args) |> tuple_of_list
+let tuple _loc =
+  function
+  | [] -> Ast.PaId (_loc, (Ast.IdUid (_loc, "()")))
+  | p::[] -> p
+  | e::es -> Ast.PaTup (_loc, (Ast.PaCom (_loc, e, (Ast.paCom_of_list es))))
 let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi

@@ -277,7 +277,8 @@ let add_quotation_of_str_item ~name ~entry =
   add name DynAst.str_item_tag (make_parser entry);
 
 let add_quotation_of_str_item_with_filter ~name ~entry ~filter =
-  add name DynAst.str_item_tag (filter (make_parser entry));
+  add name DynAst.str_item_tag
+    (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
 
 
 (* both [expr] and [str_item] positions are registered *)  

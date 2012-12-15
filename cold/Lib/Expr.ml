@@ -12,39 +12,12 @@ let rec sep_dot_expr acc =
   | Ast.ExId (_loc,(Ast.IdAcc (_l,_,_) as i)) ->
       sep_dot_expr acc (Ident.normalize_acc i)
   | e -> ((Ast.loc_of_expr e), [], e) :: acc
-let rec apply accu =
-  function
-  | [] -> accu
-  | x::xs ->
-      let _loc = Ast.loc_of_expr x in apply (Ast.ExApp (_loc, accu, x)) xs
-let mklist loc =
-  let rec loop top =
-    function
-    | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))
-    | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_expr e1) loc in
-        Ast.ExApp
-          (_loc,
-            (Ast.ExApp
-               (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), e1)),
-            (loop false el)) in
-  loop true
 let mksequence loc =
   function
   | Ast.ExSem (_loc,_,_)|Ast.ExAnt (_loc,_) as e -> Ast.ExSeq (loc, e)
   | e -> e
 let mksequence' loc =
   function | Ast.ExSem (_loc,_,_) as e -> Ast.ExSeq (loc, e) | e -> e
-let mkumin loc prefix arg =
-  match arg with
-  | Ast.ExInt (_loc,n) -> Ast.ExInt (loc, (neg_string n))
-  | Ast.ExInt32 (_loc,n) -> Ast.ExInt32 (loc, (neg_string n))
-  | Ast.ExInt64 (_loc,n) -> Ast.ExInt64 (loc, (neg_string n))
-  | Ast.ExNativeInt (_loc,n) -> Ast.ExNativeInt (loc, (neg_string n))
-  | Ast.ExFlo (_loc,n) -> Ast.ExFlo (loc, (neg_string n))
-  | _ ->
-      Ast.ExApp
-        (loc, (Ast.ExId (loc, (Ast.IdLid (loc, ("~" ^ prefix))))), arg)
 let mkassert loc =
   function
   | Ast.ExId (_loc,Ast.IdLid (_,"false")) -> Ast.ExAsf loc
@@ -483,7 +456,14 @@ class subst loc env =
            with | Not_found  -> super#patt p)
       | p -> super#patt p
   end
-let capture_antiquot =
+class type antiquot_filter
+  =
+  object 
+    inherit Camlp4Ast.map
+    method get_captured_variables : (Ast.expr* Ast.expr) list
+    method clear_captured_variables : unit
+  end
+let capture_antiquot: antiquot_filter =
   object 
     inherit  Camlp4Ast.map as super
     val mutable constraints = []
@@ -507,11 +487,6 @@ let filter_patt_with_captured_variables patt =
   (let patt = capture_antiquot#patt patt in
    let constraints = capture_antiquot#get_captured_variables in
    (patt, constraints))
-let tuple _loc =
-  function
-  | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))
-  | p::[] -> p
-  | e::es -> Ast.ExTup (_loc, (Ast.ExCom (_loc, e, (Ast.exCom_of_list es))))
 let fun_args _loc args body =
   if args = []
   then
@@ -525,16 +500,14 @@ let fun_args _loc args body =
       (fun arg  body  ->
          Ast.ExFun (_loc, (Ast.McArr (_loc, arg, (Ast.ExNil _loc), body))))
       args body
-let fun_apply _loc e args =
-  if args = []
-  then Ast.ExApp (_loc, e, (Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))))
-  else List.fold_left (fun e  arg  -> Ast.ExApp (_loc, e, arg)) e args
 let _loc = FanLoc.ghost
 let app a b = Ast.ExApp (_loc, a, b)
 let comma a b = Ast.ExCom (_loc, a, b)
 let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
-let sem a b = Ast.ExSem (_loc, a, b)
+let sem a b =
+  let _loc = FanLoc.merge (Ast.loc_of_expr a) (Ast.loc_of_expr b) in
+  Ast.ExSem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
     match t with
@@ -569,16 +542,23 @@ let tuple_of_list =
   | [] -> invalid_arg "tuple_of_list while list is empty"
   | x::[] -> x
   | xs -> Ast.ExTup (_loc, (com_of_list xs))
-let mk_list lst =
-  let rec loop =
+let mklist loc =
+  let rec loop top =
     function
     | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))
-    | x::xs ->
+    | e1::el ->
+        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_expr e1) loc in
         Ast.ExApp
           (_loc,
-            (Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), x)),
-            (loop xs)) in
-  loop lst
+            (Ast.ExApp
+               (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), e1)),
+            (loop false el)) in
+  loop true
+let rec apply accu =
+  function
+  | [] -> accu
+  | x::xs ->
+      let _loc = Ast.loc_of_expr x in apply (Ast.ExApp (_loc, accu, x)) xs
 let mk_array arr =
   let items = (arr |> Array.to_list) |> sem_of_list in
   Ast.ExArr (_loc, items)
@@ -634,15 +614,21 @@ let gen_tuple_n ~arity  cons n =
       (fun i  -> List.init n (fun j  -> Ast.ExId (_loc, (xid ~off:i j)))) in
   let pat = of_str cons in
   (List.map (fun lst  -> apply pat lst) args) |> tuple_of_list
-let mk_unary_min f arg =
+let tuple _loc =
+  function
+  | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))
+  | p::[] -> p
+  | e::es -> Ast.ExTup (_loc, (Ast.ExCom (_loc, e, (Ast.exCom_of_list es))))
+let mkumin loc prefix arg =
   match arg with
-  | Ast.ExInt (_loc,n) -> Ast.ExInt (_loc, (String.neg n))
-  | Ast.ExInt32 (_loc,n) -> Ast.ExInt32 (_loc, (String.neg n))
-  | Ast.ExInt64 (_loc,n) -> Ast.ExInt64 (_loc, (String.neg n))
-  | Ast.ExNativeInt (_loc,n) -> Ast.ExNativeInt (_loc, (String.neg n))
-  | Ast.ExFlo (_loc,n) -> Ast.ExFlo (_loc, (String.neg n))
+  | Ast.ExInt (_loc,n) -> Ast.ExInt (loc, (String.neg n))
+  | Ast.ExInt32 (_loc,n) -> Ast.ExInt32 (loc, (String.neg n))
+  | Ast.ExInt64 (_loc,n) -> Ast.ExInt64 (loc, (String.neg n))
+  | Ast.ExNativeInt (_loc,n) -> Ast.ExNativeInt (loc, (String.neg n))
+  | Ast.ExFlo (_loc,n) -> Ast.ExFlo (loc, (String.neg n))
   | _ ->
-      Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, ("~" ^ f))))), arg)
+      Ast.ExApp
+        (loc, (Ast.ExId (loc, (Ast.IdLid (loc, ("~" ^ prefix))))), arg)
 let mk_assert =
   function
   | Ast.ExId (_loc,Ast.IdLid (_,"false")) -> Ast.ExAsf _loc
@@ -672,8 +658,6 @@ let (<+<) patts acc =
     (fun p  acc  ->
        Ast.ExFun (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), acc)))) patts
     acc
-let mk_seq es =
-  let _loc = FanLoc.ghost in Ast.ExSeq (_loc, (Ast.exSem_of_list es))
 let mep_comma x y =
   Ast.ExApp
     (_loc,
@@ -699,6 +683,32 @@ let mep_app x y =
                      (Ast.IdAcc
                         (_loc, (Ast.IdUid (_loc, "Ast")),
                           (Ast.IdUid (_loc, "PaApp")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
+let mee_comma x y =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "ExCom")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
+let mee_app x y =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "ExApp")))))),
                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
 let mk_tuple_ep =
   function
@@ -762,66 +772,122 @@ let mee_of_str s =
                    (_loc, (Ast.IdUid (_loc, "Ast")),
                      (Ast.IdUid (_loc, "ExId")))))),
            (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), u)
-let mee_record_left str =
+let meee_of_str s =
   let u =
     Ast.ExApp
       (_loc,
         (Ast.ExApp
            (_loc,
-             (Ast.ExId
+             (Ast.ExApp
                 (_loc,
-                  (Ast.IdAcc
-                     (_loc, (Ast.IdUid (_loc, "Ast")),
-                       (Ast.IdUid (_loc, "IdLid")))))),
-             (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-        (Ast.ExStr (_loc, str))) in
-  Ast.ExApp
-    (_loc,
-      (Ast.ExApp
-         (_loc,
-           (Ast.ExId
-              (_loc,
-                (Ast.IdAcc
-                   (_loc, (Ast.IdUid (_loc, "Ast")),
-                     (Ast.IdUid (_loc, "RbEq")))))),
-           (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), u)
-let mep_record_left str =
-  let u =
-    Ast.ExApp
-      (_loc,
+                  (Ast.ExId
+                     (_loc,
+                       (Ast.IdAcc
+                          (_loc, (Ast.IdUid (_loc, "Ast")),
+                            (Ast.IdUid (_loc, "ExApp")))))),
+                  (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+             (Ast.ExApp
+                (_loc,
+                  (Ast.ExApp
+                     (_loc,
+                       (Ast.ExApp
+                          (_loc,
+                            (Ast.ExId
+                               (_loc,
+                                 (Ast.IdAcc
+                                    (_loc, (Ast.IdUid (_loc, "Ast")),
+                                      (Ast.IdUid (_loc, "ExApp")))))),
+                            (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                       (Ast.ExApp
+                          (_loc,
+                            (Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "ExId")))))),
+                                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                            (Ast.ExApp
+                               (_loc,
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExApp
+                                         (_loc,
+                                           (Ast.ExId
+                                              (_loc,
+                                                (Ast.IdAcc
+                                                   (_loc,
+                                                     (Ast.IdUid (_loc, "Ast")),
+                                                     (Ast.IdUid
+                                                        (_loc, "IdAcc")))))),
+                                           (Ast.ExId
+                                              (_loc,
+                                                (Ast.IdLid (_loc, "_loc")))))),
+                                      (Ast.ExApp
+                                         (_loc,
+                                           (Ast.ExApp
+                                              (_loc,
+                                                (Ast.ExId
+                                                   (_loc,
+                                                     (Ast.IdAcc
+                                                        (_loc,
+                                                          (Ast.IdUid
+                                                             (_loc, "Ast")),
+                                                          (Ast.IdUid
+                                                             (_loc, "IdUid")))))),
+                                                (Ast.ExId
+                                                   (_loc,
+                                                     (Ast.IdLid
+                                                        (_loc, "_loc")))))),
+                                           (Ast.ExStr (_loc, "Ast")))))),
+                                 (Ast.ExApp
+                                    (_loc,
+                                      (Ast.ExApp
+                                         (_loc,
+                                           (Ast.ExId
+                                              (_loc,
+                                                (Ast.IdAcc
+                                                   (_loc,
+                                                     (Ast.IdUid (_loc, "Ast")),
+                                                     (Ast.IdUid
+                                                        (_loc, "IdUid")))))),
+                                           (Ast.ExId
+                                              (_loc,
+                                                (Ast.IdLid (_loc, "_loc")))))),
+                                      (Ast.ExStr (_loc, "IdUid")))))))))),
+                  (Ast.ExApp
+                     (_loc,
+                       (Ast.ExApp
+                          (_loc,
+                            (Ast.ExId
+                               (_loc,
+                                 (Ast.IdAcc
+                                    (_loc, (Ast.IdUid (_loc, "Ast")),
+                                      (Ast.IdUid (_loc, "ExId")))))),
+                            (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                       (Ast.ExApp
+                          (_loc,
+                            (Ast.ExApp
+                               (_loc,
+                                 (Ast.ExId
+                                    (_loc,
+                                      (Ast.IdAcc
+                                         (_loc, (Ast.IdUid (_loc, "Ast")),
+                                           (Ast.IdUid (_loc, "IdLid")))))),
+                                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                            (Ast.ExStr (_loc, "_loc")))))))))),
         (Ast.ExApp
            (_loc,
-             (Ast.ExId
+             (Ast.ExApp
                 (_loc,
-                  (Ast.IdAcc
-                     (_loc, (Ast.IdUid (_loc, "Ast")),
-                       (Ast.IdUid (_loc, "IdLid")))))),
-             (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-        (Ast.ExStr (_loc, str))) in
-  Ast.ExApp
-    (_loc,
-      (Ast.ExApp
-         (_loc,
-           (Ast.ExId
-              (_loc,
-                (Ast.IdAcc
-                   (_loc, (Ast.IdUid (_loc, "Ast")),
-                     (Ast.IdUid (_loc, "PaEq")))))),
-           (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), u)
-let mee_comma x y =
-  Ast.ExApp
-    (_loc,
-      (Ast.ExApp
-         (_loc,
-           (Ast.ExApp
-              (_loc,
-                (Ast.ExId
-                   (_loc,
-                     (Ast.IdAcc
-                        (_loc, (Ast.IdUid (_loc, "Ast")),
-                          (Ast.IdUid (_loc, "ExCom")))))),
-                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
-let mee_app x y =
+                  (Ast.ExId
+                     (_loc,
+                       (Ast.IdAcc
+                          (_loc, (Ast.IdUid (_loc, "Ast")),
+                            (Ast.IdUid (_loc, "ExStr")))))),
+                  (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+             (Ast.ExStr (_loc, s))))) in
   Ast.ExApp
     (_loc,
       (Ast.ExApp
@@ -833,7 +899,95 @@ let mee_app x y =
                      (Ast.IdAcc
                         (_loc, (Ast.IdUid (_loc, "Ast")),
                           (Ast.IdUid (_loc, "ExApp")))))),
-                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExApp
+                   (_loc,
+                     (Ast.ExApp
+                        (_loc,
+                          (Ast.ExId
+                             (_loc,
+                               (Ast.IdAcc
+                                  (_loc, (Ast.IdUid (_loc, "Ast")),
+                                    (Ast.IdUid (_loc, "ExApp")))))),
+                          (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                     (Ast.ExApp
+                        (_loc,
+                          (Ast.ExApp
+                             (_loc,
+                               (Ast.ExId
+                                  (_loc,
+                                    (Ast.IdAcc
+                                       (_loc, (Ast.IdUid (_loc, "Ast")),
+                                         (Ast.IdUid (_loc, "ExId")))))),
+                               (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                          (Ast.ExApp
+                             (_loc,
+                               (Ast.ExApp
+                                  (_loc,
+                                    (Ast.ExApp
+                                       (_loc,
+                                         (Ast.ExId
+                                            (_loc,
+                                              (Ast.IdAcc
+                                                 (_loc,
+                                                   (Ast.IdUid (_loc, "Ast")),
+                                                   (Ast.IdUid (_loc, "IdAcc")))))),
+                                         (Ast.ExId
+                                            (_loc,
+                                              (Ast.IdLid (_loc, "_loc")))))),
+                                    (Ast.ExApp
+                                       (_loc,
+                                         (Ast.ExApp
+                                            (_loc,
+                                              (Ast.ExId
+                                                 (_loc,
+                                                   (Ast.IdAcc
+                                                      (_loc,
+                                                        (Ast.IdUid
+                                                           (_loc, "Ast")),
+                                                        (Ast.IdUid
+                                                           (_loc, "IdUid")))))),
+                                              (Ast.ExId
+                                                 (_loc,
+                                                   (Ast.IdLid (_loc, "_loc")))))),
+                                         (Ast.ExStr (_loc, "Ast")))))),
+                               (Ast.ExApp
+                                  (_loc,
+                                    (Ast.ExApp
+                                       (_loc,
+                                         (Ast.ExId
+                                            (_loc,
+                                              (Ast.IdAcc
+                                                 (_loc,
+                                                   (Ast.IdUid (_loc, "Ast")),
+                                                   (Ast.IdUid (_loc, "IdUid")))))),
+                                         (Ast.ExId
+                                            (_loc,
+                                              (Ast.IdLid (_loc, "_loc")))))),
+                                    (Ast.ExStr (_loc, "ExId")))))))))),
+                (Ast.ExApp
+                   (_loc,
+                     (Ast.ExApp
+                        (_loc,
+                          (Ast.ExId
+                             (_loc,
+                               (Ast.IdAcc
+                                  (_loc, (Ast.IdUid (_loc, "Ast")),
+                                    (Ast.IdUid (_loc, "ExId")))))),
+                          (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                     (Ast.ExApp
+                        (_loc,
+                          (Ast.ExApp
+                             (_loc,
+                               (Ast.ExId
+                                  (_loc,
+                                    (Ast.IdAcc
+                                       (_loc, (Ast.IdUid (_loc, "Ast")),
+                                         (Ast.IdUid (_loc, "IdLid")))))),
+                               (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                          (Ast.ExStr (_loc, "_loc")))))))))), u)
 let mk_tuple_ee =
   function
   | [] -> invalid_arg "mktupee arity is zero "
@@ -851,9 +1005,53 @@ let mk_tuple_ee =
                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
           (List.reduce_right mee_comma xs))
 let mee_record_col label expr =
-  Ast.ExApp (_loc, (mee_record_left label), expr)
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "RbEq")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExApp
+                   (_loc,
+                     (Ast.ExId
+                        (_loc,
+                          (Ast.IdAcc
+                             (_loc, (Ast.IdUid (_loc, "Ast")),
+                               (Ast.IdUid (_loc, "IdLid")))))),
+                     (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                (Ast.ExStr (_loc, label)))))), expr)
 let mep_record_col label expr =
-  Ast.ExApp (_loc, (mep_record_left label), expr)
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "PaEq")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExApp
+                   (_loc,
+                     (Ast.ExId
+                        (_loc,
+                          (Ast.IdAcc
+                             (_loc, (Ast.IdUid (_loc, "Ast")),
+                               (Ast.IdUid (_loc, "IdLid")))))),
+                     (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                (Ast.ExStr (_loc, label)))))), expr)
 let mee_record_semi a b =
   Ast.ExApp
     (_loc,
@@ -881,31 +1079,30 @@ let mep_record_semi a b =
                           (Ast.IdUid (_loc, "PaSem")))))),
                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), a)), b)
 let mk_record_ee label_exprs =
-  let open List in
-    (label_exprs |> (map (fun (label,expr)  -> mee_record_col label expr)))
-      |>
-      (fun es  ->
-         Ast.ExApp
-           (_loc,
-             (Ast.ExApp
-                (_loc,
-                  (Ast.ExApp
-                     (_loc,
-                       (Ast.ExId
-                          (_loc,
-                            (Ast.IdAcc
-                               (_loc, (Ast.IdUid (_loc, "Ast")),
-                                 (Ast.IdUid (_loc, "ExRec")))))),
-                       (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-                  (List.reduce_right mee_record_semi es))),
-             (Ast.ExApp
-                (_loc,
-                  (Ast.ExId
-                     (_loc,
-                       (Ast.IdAcc
-                          (_loc, (Ast.IdUid (_loc, "Ast")),
-                            (Ast.IdUid (_loc, "ExNil")))))),
-                  (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc"))))))))
+  (label_exprs |> (List.map (fun (label,expr)  -> mee_record_col label expr)))
+    |>
+    (fun es  ->
+       Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExApp
+                   (_loc,
+                     (Ast.ExId
+                        (_loc,
+                          (Ast.IdAcc
+                             (_loc, (Ast.IdUid (_loc, "Ast")),
+                               (Ast.IdUid (_loc, "ExRec")))))),
+                     (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                (List.reduce_right mee_record_semi es))),
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "ExNil")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc"))))))))
 let mk_record_ep label_exprs =
   let open List in
     (label_exprs |> (map (fun (label,expr)  -> mep_record_col label expr)))

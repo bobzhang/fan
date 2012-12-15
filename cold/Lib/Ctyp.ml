@@ -32,7 +32,9 @@ let app a b = Ast.TyApp (_loc, a, b)
 let comma a b = Ast.TyCom (_loc, a, b)
 let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
-let sem a b = Ast.TySem (_loc, a, b)
+let sem a b =
+  let _loc = FanLoc.merge (Ast.loc_of_ctyp a) (Ast.loc_of_ctyp b) in
+  Ast.TySem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
     match t with

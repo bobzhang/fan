@@ -68,7 +68,8 @@ let sfold0sep = Fold.sfold0sep
 let extend = Insert.extend
 let levels_of_entry = Insert.levels_of_entry
 let eoi_entry entry =
-  let entry_eoi = mk ((name entry) ^ "_eoi") in
+  let g = gram_of_entry entry in
+  let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
   extend (entry_eoi : 'entry_eoi t )
     (None,
       [(None, None,
