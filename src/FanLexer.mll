@@ -359,7 +359,7 @@ rule token c = parse
             let pos = lexbuf.lex_curr_p in
             lexbuf.lex_curr_p <- { pos with pos_bol  = pos.pos_bol  + 1 ;
                                    pos_cnum = pos.pos_cnum + 1 };
-            `EOI (* raise XStream.Failure*)      }
+            `EOI}
        | _ as c                 { err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) }
 
 and comment c = parse
@@ -368,30 +368,30 @@ and comment c = parse
             parse comment c
           }
      | "*)"   { store c }
-     | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
-         { store c;
-           if quotations c then begin
-             Stack.push p opt_char;
-             with_curr_loc quotation c;
-             parse comment c ;
-           end}
-     | ident                                             { store_parse comment c }
-     | "\"" { store c;
-           begin
-             try with_curr_loc string c
-             with FanLoc.Exc_located(_, Lexing_error Unterminated_string) ->
-               err Unterminated_string_in_comment (loc_merge c)
-           end;
-      Buffer.add_char c.buffer '"';
-      parse comment c }
-     | "''"                                              { store_parse comment c }
-     | "'''"                                             { store_parse comment c }
-     | "'" newline "'"
-         { update_loc c ~retract:1; store_parse comment c                      }
-     | "'" [^ '\\' '\'' '\010' '\013' ] "'"              { store_parse comment c }
-     | "'\\" ['\\' '"' '\'' 'n' 't' 'b' 'r' ' '] "'"     { store_parse comment c }
-     | "'\\" ['0'-'9'] ['0'-'9'] ['0'-'9'] "'"           { store_parse comment c }
-     | "'\\" 'x' hexa_char hexa_char "'"                 { store_parse comment c }
+     (* | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)? *)
+     (*     { store c; *)
+     (*       if quotations c then begin *)
+     (*         Stack.push p opt_char; *)
+     (*         with_curr_loc quotation c; *)
+     (*         parse comment c ; *)
+     (*       end} *)
+     (* | ident                                             { store_parse comment c } *)
+     (* | "\"" { store c; *)
+     (*       begin *)
+     (*         try with_curr_loc string c *)
+     (*         with FanLoc.Exc_located(_, Lexing_error Unterminated_string) -> *)
+     (*           err Unterminated_string_in_comment (loc_merge c) *)
+     (*       end; *)
+     (*  Buffer.add_char c.buffer '"'; *)
+     (*  parse comment c } *)
+     (* | "''"                                              { store_parse comment c } *)
+     (* | "'''"                                             { store_parse comment c } *)
+     (* | "'" newline "'" *)
+     (*     { update_loc c ~retract:1; store_parse comment c                      } *)
+     (* | "'" [^ '\\' '\'' '\010' '\013' ] "'"              { store_parse comment c } *)
+     (* | "'\\" ['\\' '"' '\'' 'n' 't' 'b' 'r' ' '] "'"     { store_parse comment c } *)
+     (* | "'\\" ['0'-'9'] ['0'-'9'] ['0'-'9'] "'"           { store_parse comment c } *)
+     (* | "'\\" 'x' hexa_char hexa_char "'"                 { store_parse comment c } *)
      | eof
          { err Unterminated_comment (loc_merge c)                                }
      | newline
