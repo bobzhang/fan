@@ -1,24 +1,16 @@
 
 (* This module builds a generic framework *)
 
-(* <:fan< *)
-(* lang "expr"; *)
-(* lang_at "patt" "ctyp"; *)
-(* >>; *)
-
 #default_quotation "expr";;
+
 #lang_at "patt" "ctyp";;
+
 open Format;
 open LibUtil;
-open Basic;
+open Lib;
+open Lib.Basic;
 module Ast = Camlp4Ast;
 open FSig;  
-(* <:include_ml< "open_template.ml"; >> ; *)
-
-
-
-
-
 
 module Make(S:FSig.Config) = struct   
   open Expr;

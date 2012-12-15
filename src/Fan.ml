@@ -7,18 +7,27 @@ open AstQuotation;
 open Lib.Meta;
 open Syntax;
 open LibUtil;
-open Lib;
-add_quotation_of_str_item_with_filter ~name:"ocaml" ~entry:str_items
+module MetaQAst = Camlp4Ast.Meta.Make MetaLocQuotation;
+module ME = MetaQAst.Expr;
+module MP = MetaQAst.Patt;
+
+
+
+
+
+
+
+of_str_item_with_filter ~name:"ocaml" ~entry:str_items
   ~filter:(fun s ->
     let _loc = Ast.loc_of_str_item s in 
     let v =  {:module_expr| struct $s end |} in
     let module_expr =
-      (Asthook.traversal ())#module_expr v in
+      (Typehook.traversal ())#module_expr v in
     let code = match module_expr with
     [ {:module_expr| struct $item end |}  -> item
     | _ -> failwith "can not find items back " ]  in
     begin
-      if !Asthook.show_code then
+      if !Typehook.show_code then
         try
           FanBasic.p_str_item Format.std_formatter code
         with
@@ -35,7 +44,8 @@ add_quotation_of_str_item_with_filter ~name:"ocaml" ~entry:str_items
 
 (* {:ocaml| type u = int; |}; *)
 (* {:fan_quot| show_code on |}; *)
-add_quotation_of_expr ~name:"fans" ~entry:Asthook.fan_quots ;
+
+of_expr ~name:"fans" ~entry:Typehook.fan_quots ;
 
 add_quotation "sig_item" sig_item_quot ~mexpr:ME.meta_sig_item ~mpatt:MP.meta_sig_item ~expr_filter ~patt_filter ;
 add_quotation "str_item" str_item_quot ~mexpr:ME.meta_str_item ~mpatt:MP.meta_str_item ~expr_filter ~patt_filter ;
@@ -72,9 +82,3 @@ add "str" DynAst.str_item_tag
   (fun _loc _loc_option s -> {:str_item| $(exp:{:expr|$str:s|}) |});
   
 Options.add ("-dlang", FanArg.Set_string AstQuotation.default," Set the default language");
-
-
-
-
-
-

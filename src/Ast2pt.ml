@@ -1004,3 +1004,5 @@ let print_str_item f e =
 (*   eprintf "@[%a@]@." Pprintast.fmt_longident (ident e) ;     *)
 let print_ctyp f e =
   pp f "@[%a@]@." AstPrint.core_type (ctyp e) ;
+
+Ctyp.to_string := LibUtil.to_string_of_printer print_ctyp;  

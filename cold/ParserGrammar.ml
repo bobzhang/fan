@@ -953,14 +953,9 @@ let _ =
            (Gram.mk_action
               (fun _  (e : 'expr)  _  (_loc : FanLoc.t)  ->
                  (e : 'simple_expr ))))])])
-let _ = AstQuotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body
-let _ =
-  AstQuotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body
-let _ =
-  AstQuotation.add_quotation_of_expr ~name:"extend.clear"
-    ~entry:nonterminalsclear
-let _ =
-  AstQuotation.add_quotation_of_str_item ~name:"extend.create"
-    ~entry:nonterminals
+let _ = AstQuotation.of_expr ~name:"extend" ~entry:extend_body
+let _ = AstQuotation.of_expr ~name:"delete" ~entry:delete_rule_body
+let _ = AstQuotation.of_expr ~name:"extend.clear" ~entry:nonterminalsclear
+let _ = AstQuotation.of_str_item ~name:"extend.create" ~entry:nonterminals
 let _ =
   Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented")

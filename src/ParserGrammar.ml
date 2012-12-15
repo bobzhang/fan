@@ -247,14 +247,14 @@ FanConfig.antiquotations := true;
    [ a_LIDENT{i} -> {:expr| $lid:i |}
    | "("; expr{e}; ")" -> e ]  |};
 
-AstQuotation.add_quotation_of_expr ~name:"extend" ~entry:extend_body;
+AstQuotation.of_expr ~name:"extend" ~entry:extend_body;
   (* built in extend support *)
-AstQuotation.add_quotation_of_expr ~name:"delete" ~entry:delete_rule_body;
+AstQuotation.of_expr ~name:"delete" ~entry:delete_rule_body;
   (* built in delete support *)
-AstQuotation.add_quotation_of_expr ~name:"extend.clear"
+AstQuotation.of_expr ~name:"extend.clear"
     ~entry:nonterminalsclear;
 
-AstQuotation.add_quotation_of_str_item ~name:"extend.create"
+AstQuotation.of_str_item ~name:"extend.create"
     ~entry:nonterminals;
 
 Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented"); (* FIXME *)

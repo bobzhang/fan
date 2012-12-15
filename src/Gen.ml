@@ -1,10 +1,13 @@
-(* open Format; *)
+
 open LibUtil;
 open Easy;
-open Expr;
+
 open FSig;
-open Basic;
+open Lib.Expr;
+open Lib.Basic;
+
 let _loc = FanLoc.ghost;
+  
 let mk_variant_eq _cons : list FSig.ty_info  -> Ast.expr  = with "expr" fun 
   [ [] -> {|true|}
   | ls -> List.reduce_left_with
@@ -21,7 +24,7 @@ let gen_eq = with "expr"
     ~arity:2   ~mk_tuple:mk_tuple_eq ~mk_record:mk_record_eq mk_variant_eq
     ~trail: {|false|} ;
   
-[ ("Eq",gen_eq) ; ] |> List.iter Asthook.register;
+[ ("Eq",gen_eq) ; ] |> List.iter Typehook.register;
 
 
 
@@ -45,7 +48,7 @@ let (gen_fold,gen_fold2) = with "expr"
      ~arity:2 ~trail: {|invalid_arg "fold2 failure" |} ) ;
 begin  
    [("Fold",gen_fold);
-    ("Fold2",gen_fold2);] |> List.iter Asthook.register;
+    ("Fold2",gen_fold2);] |> List.iter Typehook.register;
 end;
 
 
@@ -67,7 +70,7 @@ let (gen_map,gen_map2) = with "expr"
 begin
   [("Map",gen_map);
    ("Map2",gen_map2);]
-  |> List.iter Asthook.register;
+  |> List.iter Typehook.register;
 end;
 
 let mk_variant_meta_expr cons params = with "expr"
@@ -125,7 +128,7 @@ let gen_meta_patt =
 
 begin  [
    ("MetaExpr",gen_meta_expr) ;
-   ("MetaPatt",gen_meta_patt) ;] |> List.iter Asthook.register;
+   ("MetaPatt",gen_meta_patt) ;] |> List.iter Typehook.register;
 end ;
   
 
@@ -168,7 +171,7 @@ let gen_print_obj =
     ~names:["fmt"]  ~mk_record:mk_record_print mk_variant_print;
 
 [("Print",gen_print);
- ("OPrint",gen_print_obj)] |> List.iter Asthook.register;
+ ("OPrint",gen_print_obj)] |> List.iter Typehook.register;
 
 
 

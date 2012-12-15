@@ -1,8 +1,8 @@
 open LibUtil;
-open Basic;
+
 open FSig;
 open Format;
-
+open Lib;
 module Ast = Camlp4Ast;
   
 (** A Hook To Ast Filters *)
@@ -18,7 +18,7 @@ let register  (name,filter) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
   else begin
-   eprintf "%s filter registered@." name ;
+   (* eprintf "%s filter registered@." name ; *)
    Hashtbl.add filters name {plugin_transform=filter; plugin_activate=false} ;
   end;
 
@@ -66,7 +66,7 @@ let plugin_remove plugin =
  *)  
 let filter_type_defs ?qualified () = object (* (self:'self_type) *)
   inherit Ast.map as super;
-  val mutable type_defs = {:str_item||} ;
+  val mutable type_defs = let _loc = FanLoc.ghost in {:str_item||} ;
   method! sig_item = with "sig_item" fun
     [
      ( {| val $_ : $_ |} | {| include $_ |} | {| external $_ : $_ = $_ |}
@@ -191,96 +191,20 @@ let g = Gram.create_gram ();
 with "expr"
     {:extend|Gram
       fan_quot:
-      [ "plugin_add" ; `STR(_,plugin) -> begin plugin_add plugin; {| |} end
-      | "plugins_add"; L1 [`STR(_,x) -> x] SEP ","{plugins} ->
+      [ "<+" ; `STR(_,plugin) -> begin plugin_add plugin; {| |} end
+      | "<++"; L1 [`STR(_,x) -> x] SEP ","{plugins} ->
           begin List.iter plugin_add plugins; {| |}  end
-      | "plugins_clear" -> begin Hashtbl.iter (fun _  v -> v.plugin_activate <- false) filters; {| |} end
-      | "plugin_remove"; `STR(_,plugin) -> begin  plugin_remove plugin;{| |} end
-      | "plugins_remove"; L1 [`STR(_,x) -> x] SEP ","{plugins} -> begin
-          List.iter plugin_remove plugins ; {| |}
-      end
+      | "clear" -> begin Hashtbl.iter (fun _  v -> v.plugin_activate <- false) filters; {| |} end
+      | "<--"; L1 [`STR(_,x) -> x] SEP ","{plugins} -> begin List.iter plugin_remove plugins ; {| |} end
       | "keep" ; "on" -> begin keep := true; {| |} end
       | "keep" ; "off" -> begin keep := false; {| |} end
-      | "show_code"; "on" -> begin
-          show_code := true; {| |}
-      end
-      | "show_code"; "off" -> begin
-          show_code := false; {| |}
-      end]
+      | "show_code"; "on" -> begin show_code := true; {| |} end
+      | "show_code"; "off" -> begin show_code := false; {| |} end]
       fan_quots:
       [L0[fan_quot{x};";" -> x]{xs} -> {| begin $list:xs end|}]
 |};  
-(* let open Fan_lang_include in EXTEND MGram fan_include_ml: LEVEL "top" *)
-(*   [ [ "mli"; file=STRING; *)
-(*           include_mod = OPT [ x= STRING -> x ] ->  *)
-(*           let sig_item = (parse_include_file Syntax.sig_items file) in *)
-(*           let qualified = match include_mod with *)
-(*             [Some v -> Some (parse_module_type v) *)
-(*             |None -> None] in  *)
-(*           let obj = (filter_type_defs ?qualified ()) in  *)
-(*           let _ = obj#sig_item sig_item in *)
-(*           obj#get_type_defs *)
-            
-(*     ] ]; *)
-(* END; *)
 
-
-(* (\* AstFilters.register_str_item_filter  filter ; *\) *)
-(* Fan_camlp4syntax.add_quotation_of_str_item_with_filter *)
-(*   ~name:"ocaml" ~entry:Syntax.str_items ~filter:(fun s -> *)
-(*     let v =  {:module_expr| struct .$s$. end |} in *)
-(*     let module_expr = *)
-(*       (traversal ())#module_expr v in *)
-(*     let code = match module_expr with *)
-(*     [ {:module_expr| struct .$item$. end |}  -> item *)
-(*     | _ -> failwith "can not find items back " ]  in *)
-(*     begin *)
-(*       if show_code.val then *)
-(*         try *)
-(*           p_str_item code; *)
-(*         with *)
-(*           [e -> begin *)
-(*             prerr_endline & *)
-(*             "There is a printer bug\ *\) *)
-(* (\*              Our code generator may still work when \ *\) *)
-(* (\*              Printer is broken\ *\) *)
-(* (\*              Plz send bug report to " ^ bug_main_address; *)
-(*           end] *)
-(*       else (); *)
-(*       code *)
-(*     end); *)
-
-(* begin *)
-(*   prerr_endline "fan_asthook linking!"; (\* it should appear only once *\) *)
-(* end ; *)
-
-(* Fan_camlp4syntax.add_quotation_of_match_case *)
-(*       ~name:"pattern" ~entry:Syntax.match_case; *)
-(*    
-begin
-  (* Camlp4.Options.add "-trash" (Arg.Set_string trash)
-   *   "Trash  for your defined type and will be removed default: Camlp4Types"; *)
-  (* Fan.Syntax.Options.add ("-debug", (FanArg.Set debug),"Turn on debug option"); *)
-  Fan.Syntax.Options.add ("-keep", (FanArg.Set keep), "Keep the included type definitions") ;
-  Fan.Syntax.Options.add ("-loaded-plugins",(FanArg.Unit show_modules), "Show plugins");
+begin 
+  PreCast.Syntax.Options.add ("-keep", (FanArg.Set keep), "Keep the included type definitions") ;
+  PreCast.Syntax.Options.add ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins");
 end;
-*)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

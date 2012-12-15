@@ -1,8 +1,8 @@
 open LibUtil
 open Easy
-open Expr
 open FSig
-open Basic
+open Lib.Expr
+open Lib.Basic
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
   (function
@@ -27,7 +27,7 @@ let gen_eq =
   gen_str_item ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
     ~mk_record:mk_record_eq mk_variant_eq
     ~trail:(Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))
-let _ = [("Eq", gen_eq)] |> (List.iter Asthook.register)
+let _ = [("Eq", gen_eq)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |>
@@ -53,7 +53,7 @@ let (gen_fold,gen_fold2) =
                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "invalid_arg")))),
                    (Ast.ExStr (_loc, "fold2 failure"))))))
 let _ =
-  [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Asthook.register)
+  [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |>
@@ -74,7 +74,7 @@ let (gen_map,gen_map2) =
                  (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "invalid_arg")))),
                    (Ast.ExStr (_loc, "map2 failure"))))))
 let _ =
-  [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Asthook.register)
+  [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
 let mk_variant_meta_expr cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
@@ -153,7 +153,7 @@ let gen_meta_patt =
     mk_variant_meta_patt ~module_name:"MetaPatt"
 let _ =
   [("MetaExpr", gen_meta_expr); ("MetaPatt", gen_meta_patt)] |>
-    (List.iter Asthook.register)
+    (List.iter Typehook.register)
 let extract info =
   (info |>
      (List.map
@@ -199,4 +199,4 @@ let gen_print_obj =
     mk_variant_print
 let _ =
   [("Print", gen_print); ("OPrint", gen_print_obj)] |>
-    (List.iter Asthook.register)
+    (List.iter Typehook.register)

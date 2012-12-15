@@ -1,39 +1,6 @@
 open LibUtil
 open FanUtil
 open Lib.Meta
-module type AntiquotSyntax =
-  sig
-    val parse_expr : FanLoc.t -> string -> Ast.expr
-    val parse_patt : FanLoc.t -> string -> Ast.patt
-    val parse_ident : FanLoc.t -> string -> Ast.ident
-  end
-module type S =
-  sig
-    type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
-    val add : string -> 'a DynAst.tag -> 'a expand_fun -> unit
-    val default : string ref
-    val default_tbl : (string,string) Hashtbl.t
-    val default_at_pos : string -> string -> unit
-    val parse_quotation_result :
-      (FanLoc.t -> string -> 'a) ->
-        FanLoc.t -> FanToken.quotation -> string -> string -> 'a
-    val translate : (string -> string) ref
-    val expand : FanLoc.t -> FanToken.quotation -> 'a DynAst.tag -> 'a
-    val dump_file : string option ref
-    val add_quotation :
-      string ->
-        'a Gram.t ->
-          (FanLoc.t -> 'a -> Ast.expr) ->
-            (FanLoc.t -> 'a -> Ast.patt) -> unit
-    val add_quotation_of_expr : name:string -> entry:Ast.expr Gram.t -> unit
-    val add_quotation_of_patt : name:string -> entry:Ast.patt Gram.t -> unit
-    val add_quotation_of_class_str_item :
-      name:string -> entry:Ast.class_str_item Gram.t -> unit
-    val add_quotation_of_match_case :
-      name:string -> entry:Ast.match_case Gram.t -> unit
-    val add_quotation_of_str_item :
-      name:string -> entry:Ast.str_item Gram.t -> unit
-  end
 open Format
 type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
 module Exp_key = DynAst.Pack(struct
@@ -224,22 +191,21 @@ let make_parser entry loc loc_name_opt s =
   Ref.protect2 (FanConfig.antiquotations, true)
     (current_loc_name, loc_name_opt)
     (fun _  -> Gram.parse_string (Gram.eoi_entry entry) loc s)
-let add_quotation_of_str_item ~name  ~entry  =
+let of_str_item ~name  ~entry  =
   add name DynAst.str_item_tag (make_parser entry)
-let add_quotation_of_str_item_with_filter ~name  ~entry  ~filter  =
+let of_str_item_with_filter ~name  ~entry  ~filter  =
   add name DynAst.str_item_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
-let add_quotation_of_expr ~name  ~entry  =
+let of_expr ~name  ~entry  =
   let expand_fun = make_parser entry in
   let mk_fun loc loc_name_opt s =
     Ast.StExp (loc, (expand_fun loc loc_name_opt s)) in
   add name DynAst.expr_tag expand_fun; add name DynAst.str_item_tag mk_fun
-let add_quotation_of_patt ~name  ~entry  =
-  add name DynAst.patt_tag (make_parser entry)
-let add_quotation_of_class_str_item ~name  ~entry  =
+let of_patt ~name  ~entry  = add name DynAst.patt_tag (make_parser entry)
+let of_class_str_item ~name  ~entry  =
   add name DynAst.class_str_item_tag (make_parser entry)
-let add_quotation_of_match_case ~name  ~entry  =
+let of_match_case ~name  ~entry  =
   add name DynAst.match_case_tag (make_parser entry)
 module MetaLocQuotation =
   struct
@@ -250,9 +216,6 @@ module MetaLocQuotation =
     | Some x -> Ast.ExId (_loc, (Ast.IdLid (_loc, x)))
   let meta_loc_patt _loc _ = Ast.PaAny _loc
   end
-module MetaQAst = Camlp4Ast.Meta.Make(MetaLocQuotation)
-module ME = MetaQAst.Expr
-module MP = MetaQAst.Patt
 let antiquot_expander ~parse_patt  ~parse_expr  =
   object 
     inherit  Ast.map as super

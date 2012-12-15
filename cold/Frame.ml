@@ -1,6 +1,7 @@
 open Format
 open LibUtil
-open Basic
+open Lib
+open Lib.Basic
 module Ast = Camlp4Ast
 open FSig
 module Make(S:FSig.Config) = struct

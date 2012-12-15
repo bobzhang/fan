@@ -1,3 +1,5 @@
+(* {:fans|<+ "Print"; |}; *)
+(* {:ocaml| *)(* |}; *)
 type tag 'a =
  [ Tag_ctyp
  | Tag_patt

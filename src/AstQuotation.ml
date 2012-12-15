@@ -2,83 +2,13 @@
 open LibUtil;
 open FanUtil;
 open Lib.Meta;
-
-
-module type AntiquotSyntax = sig
-    (**generally "expr; EOI". *)
-  val parse_expr: FanLoc.t -> string -> Ast.expr;
-    (**  generally "patt; EOI". *)
-  val parse_patt: FanLoc.t -> string -> Ast.patt;
-
-  val parse_ident: FanLoc.t -> string -> Ast.ident;  
-end;
-
-module type S = sig
-
-  (** The [loc] is the initial location. The option string is the optional name
-      for the location variable. The string is the quotation contents. *)
-  type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
-
-  (** [add name exp] adds the quotation [name] associated with the
-      expander [exp]. *)
-  val add : string -> DynAst.tag 'a -> expand_fun 'a -> unit;
-
-  (* (\** [find name] returns the expander of the given quotation name. *\) *)
-  (* val find : string -> DynAst.tag 'a -> expand_fun 'a; *)
-
-  (** [default] holds the default quotation name. *)
-  val default : ref string;
-
-  (** [default_tbl] mapping position to the default quotation name
-      it has higher precedence over default
-   *)
-  val default_tbl : Hashtbl.t string string ;
-
-  (** [default_at_pos] set the default quotation name for specific pos*)
-  val default_at_pos: string -> string -> unit;
-      
-  (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
-      It's a parser wrapper, this function handles the error reporting for you. *)
-    
-  val parse_quotation_result :
-    (FanLoc.t -> string -> 'a) -> FanLoc.t -> FanToken.quotation -> string -> string -> 'a;
-
-  (** function translating quotation names; default = identity *)
-  val translate : ref (string -> string);
-
-  val expand : FanLoc.t -> FanToken.quotation -> DynAst.tag 'a -> 'a;
-
-  (** [dump_file] optionally tells Camlp4 to dump the
-      result of an expander if this result is syntactically incorrect.
-      If [None] (default), this result is not dumped. If [Some fname], the
-      result is dumped in the file [fname]. *)
-  val dump_file : ref (option string);
-
-
-  val add_quotation: string -> Gram.t 'a ->
-    (FanLoc.t -> 'a -> Ast.expr) ->
-      (FanLoc.t -> 'a -> Ast.patt) -> unit;
-
-  (* BUG, revised parser can not parse name:string -> unit*)      
-  val add_quotation_of_expr: ~name:string -> ~entry: Gram.t Ast.expr -> unit;
-  val add_quotation_of_patt: ~name:string -> ~entry: Gram.t Ast.patt -> unit;
-  val add_quotation_of_class_str_item: ~name:string -> ~entry: Gram.t Ast.class_str_item -> unit;
-  val add_quotation_of_match_case: ~name:string -> ~entry: Gram.t Ast.match_case -> unit;
-  val add_quotation_of_str_item: ~name:string -> ~entry: Gram.t Ast.str_item -> unit;
-end;
-
-
-
 open Format;
 
 type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
-module Exp_key = DynAst.Pack(struct
-  type t 'a = unit;
-end);
+  
+module Exp_key = DynAst.Pack(struct  type t 'a = unit; end);
 
-module Exp_fun = DynAst.Pack(struct
-  type t 'a = expand_fun 'a;
-end);
+module Exp_fun = DynAst.Pack(struct  type t 'a = expand_fun 'a; end);
   
 let expanders_table =
   (ref [] : ref (list ((string * Exp_key.pack) * Exp_fun.pack)));
@@ -273,29 +203,30 @@ let make_parser entry =
       (current_loc_name,loc_name_opt)
       (fun _ -> Gram.parse_string (Gram.eoi_entry entry) loc  s);
         
-let add_quotation_of_str_item ~name ~entry =
+let of_str_item ~name ~entry =
   add name DynAst.str_item_tag (make_parser entry);
 
-let add_quotation_of_str_item_with_filter ~name ~entry ~filter =
+let of_str_item_with_filter ~name ~entry ~filter =
   add name DynAst.str_item_tag
     (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
 
 
 (* both [expr] and [str_item] positions are registered *)  
-let add_quotation_of_expr ~name ~entry = 
+let of_expr ~name ~entry = 
   let expand_fun =  make_parser entry in
   let mk_fun loc loc_name_opt s =
     {:str_item@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin 
       add name DynAst.expr_tag expand_fun ;
       add name DynAst.str_item_tag mk_fun ;
     end ;
-let add_quotation_of_patt ~name ~entry =
+  
+let of_patt ~name ~entry =
   add name DynAst.patt_tag (make_parser entry);
   
-let add_quotation_of_class_str_item ~name ~entry =
+let of_class_str_item ~name ~entry =
   add name DynAst.class_str_item_tag (make_parser entry);
   
-let add_quotation_of_match_case ~name ~entry =
+let of_match_case ~name ~entry =
   add name DynAst.match_case_tag (make_parser  entry);
     
   
@@ -308,16 +239,13 @@ module MetaLocQuotation = struct
   let meta_loc_patt _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
 end;
 
-module MetaQAst = Camlp4Ast.Meta.Make MetaLocQuotation;
-module ME = MetaQAst.Expr;
-module MP = MetaQAst.Patt;
 
 let antiquot_expander ~parse_patt ~parse_expr = object
   inherit Ast.map as super;
   method! patt =
     with "patt"
     fun
-    [ {@_loc| $anti:s |} | {@_loc| $str:s |} as p ->
+    [ {| $anti:s |} | {| $str:s |} as p ->
       let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
       handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
         ~decorate:(fun n e ->

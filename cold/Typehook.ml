@@ -1,7 +1,7 @@
 open LibUtil
-open Basic
 open FSig
 open Format
+open Lib
 module Ast = Camlp4Ast
 let keep = ref false
 type plugin = 
@@ -15,9 +15,8 @@ let register (name,filter) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
   else
-    (eprintf "%s filter registered@." name;
-     Hashtbl.add filters name
-       { plugin_transform = filter; plugin_activate = false })
+    Hashtbl.add filters name
+      { plugin_transform = filter; plugin_activate = false }
 let show_modules () =
   Hashtbl.iter (fun key  _  -> Format.printf "%s@ " key) filters;
   print_newline ()
@@ -34,7 +33,7 @@ let plugin_remove plugin =
 let filter_type_defs ?qualified  () =
   object 
     inherit  Ast.map as super
-    val mutable type_defs = Ast.StNil _loc
+    val mutable type_defs = let _loc = FanLoc.ghost in Ast.StNil _loc
     method! sig_item =
       function
       | Ast.SgVal (_loc,_,_)|Ast.SgInc (_loc,_)|Ast.SgExt
@@ -136,7 +135,7 @@ let _ =
   Gram.extend (fan_quot : 'fan_quot Gram.t )
     (None,
       [(None, None,
-         [([`Skeyword "plugin_add";
+         [([`Skeyword "<+";
            `Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"))],
@@ -146,7 +145,7 @@ let _ =
                   | `STR (_,plugin) ->
                       ((plugin_add plugin; Ast.ExNil _loc) : 'fan_quot )
                   | _ -> assert false)));
-         ([`Skeyword "plugins_add";
+         ([`Skeyword "<++";
           `Slist1sep
             ((Gram.srules fan_quot
                 [([`Stoken
@@ -160,23 +159,13 @@ let _ =
            (Gram.mk_action
               (fun (plugins : 'e__1 list)  _  (_loc : FanLoc.t)  ->
                  (List.iter plugin_add plugins; Ast.ExNil _loc : 'fan_quot ))));
-         ([`Skeyword "plugins_clear"],
+         ([`Skeyword "clear"],
            (Gram.mk_action
               (fun _  (_loc : FanLoc.t)  ->
                  (Hashtbl.iter (fun _  v  -> v.plugin_activate <- false)
                     filters;
                   Ast.ExNil _loc : 'fan_quot ))));
-         ([`Skeyword "plugin_remove";
-          `Stoken
-            (((function | `STR (_,_) -> true | _ -> false)),
-              (`Normal, "`STR (_,_)"))],
-           (Gram.mk_action
-              (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                 match __fan_1 with
-                 | `STR (_,plugin) ->
-                     ((plugin_remove plugin; Ast.ExNil _loc) : 'fan_quot )
-                 | _ -> assert false)));
-         ([`Skeyword "plugins_remove";
+         ([`Skeyword "<--";
           `Slist1sep
             ((Gram.srules fan_quot
                 [([`Stoken
@@ -219,3 +208,8 @@ let _ =
             (Gram.mk_action
                (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
                   (Ast.ExSeq (_loc, (Ast.exSem_of_list xs)) : 'fan_quots ))))])])
+let _ =
+  PreCast.Syntax.Options.add
+    ("-keep", (FanArg.Set keep), "Keep the included type definitions");
+  PreCast.Syntax.Options.add
+    ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins")
