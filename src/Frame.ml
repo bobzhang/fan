@@ -251,7 +251,7 @@ module Make(S:FSig.Config) = struct
       binding_of_tydcl (simple_expr_of_ctyp_with_cxt cxt) in
     (* return new types as generated  new context *)
     let fs (ty:types) = match ty with
-      [ Mutual named_types ->
+      [ `Mutual named_types ->
         let binding = match named_types with
           [ [] -> {:binding| |}
           | xs -> begin 
@@ -263,7 +263,7 @@ module Make(S:FSig.Config) = struct
                 end ) xs
           end ] in 
         {:str_item| let rec $binding |} 
-      | Single (name,tydcl) -> begin 
+      | `Single (name,tydcl) -> begin 
           Hashset.add cxt name;
           let rec_flag =
             if Ctyp.is_recursive tydcl then Ast.ReRecursive
@@ -295,10 +295,11 @@ module Make(S:FSig.Config) = struct
       let mk_class_str_item (name,tydcl) = 
         let ty = mk_type (name,tydcl) in
         {:class_str_item| method $lid:name : $ty = $(f tydcl) |}  in 
-      let fs (ty:types) = match ty with
-        [ Mutual named_types ->
+      let fs (ty:types) =
+        match ty with
+        [ `Mutual named_types ->
           {:class_str_item| $(list: List.map mk_class_str_item named_types ) |}
-       | Single ((name,tydcl) as  named_type) ->
+        | `Single ((name,tydcl) as  named_type) ->
            match Ctyp.abstract_list tydcl with
            [ Some n  -> begin
              let ty_str =  (!Ctyp.to_string tydcl) in

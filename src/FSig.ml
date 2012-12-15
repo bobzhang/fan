@@ -1,6 +1,6 @@
 (** Main signatures for Fan *)
 open Format;
-
+open Ast;
 type vrn =
     [TyVrn
     | TyVrnEq
@@ -13,21 +13,21 @@ type trail_info = (vrn*int);
 type col = {
     col_label:string;
     col_mutable:bool;
-    col_ctyp:Ast.ctyp
+    col_ctyp:ctyp
   };
 
 type ty_info = {
-    ty_name_expr: Ast.expr;
+    ty_name_expr: expr;
     (* int -> meta_int *)
-    ty_expr: Ast.expr;
+    ty_expr: expr;
     (* int -> meta_int fmt x0 *)
-    ty_id_expr: Ast.expr ;
+    ty_id_expr: expr ;
     (* (ai,bi) *)
-    ty_id_patt: Ast.patt;
+    ty_id_patt: patt;
     (* (ai,bi) *)
-    ty_id_exprs: list Ast.expr;
+    ty_id_exprs: list expr;
     (* [ai;bi;ci] *)
-    ty_id_patts: list Ast.patt;
+    ty_id_patts: list patt;
     (* [ai;bi;ci]*)
   }
 ;
@@ -41,7 +41,7 @@ type record_col = {
 type record_info = list record_col ;
 
 (* types below are used to tell fan how to produce
-   function of type [Ast.ident -> Ast.ident]
+   function of type [ident -> ident]
  *)
 type basic_id_transform =
     [ = `Pre of string
@@ -50,23 +50,25 @@ type basic_id_transform =
 
 type rhs_basic_id_transform =
     [ = basic_id_transform
-    | `Exp of string -> Ast.expr ];
+    | `Exp of string -> expr ];
 
 type full_id_transform =
     [ =  basic_id_transform
-    | `Idents of list Ast.ident  -> Ast.ident
+    | `Idents of list ident  -> ident
     (* decompose to a list of ident and compose as an ident *)          
-    | `Ident of Ast.ident -> Ast.ident
+    | `Ident of ident -> ident
     (* just pass the ident to user do ident transform *)
-    | `Last of string -> Ast.ident
+    | `Last of string -> ident
     (* pass the string, and << .$old$. .$return$. >>  *)      
     | `Obj of string -> string ];
 
-type named_type = (string*Ast.ctyp)
-and and_types = list named_type
+type named_type =
+    (string*ctyp)
+and and_types =
+    list named_type
 and types =
-    [ Mutual of and_types
-    | Single of named_type ]
+    [= `Mutual of and_types
+    | `Single of named_type ]
 and module_types = list types;
 
 type obj_dest =
@@ -81,9 +83,9 @@ and k =
 let preserve =
   ["self"; "self_type"; "unit"; "result"];
 module type Config = sig
-  val mk_variant:(string -> list ty_info  -> Ast.expr);
-  val mk_tuple: (list ty_info -> Ast.expr );    
-  val mk_record: (record_info -> Ast.expr);
+  val mk_variant:(string -> list ty_info  -> expr);
+  val mk_tuple: (list ty_info -> expr );    
+  val mk_record: (record_info -> expr);
   val arity: int;
 
   val left_type_variable: basic_id_transform;
@@ -105,7 +107,7 @@ module type Config = sig
      [t -> t]
    *)
 
-  val trail: trail_info -> Ast.match_case;
+  val trail: trail_info -> match_case;
   val names: list string;
 end; 
 
@@ -122,34 +124,3 @@ let string_of_warning_type =
                           );
   
 
-module type Grammar = sig
-  type t 'a;
-  type loc ;
-  val eoi_entry : t 'a -> t 'a;
-  val parse_quot_string_with_filter :
-      t 'a ->
-        ('a -> 'b) -> loc -> option string -> string -> 'b;
-  val parse_quot_string :
-     t 'a -> loc -> option string -> string -> 'a;
-  val add_quotation :
-      ?antiquot_expander:
-      < expr : Ast.expr -> Ast.expr; patt : Ast.patt -> Ast.patt; .. > ->
-        string -> 
-        ~entry: (t 'a) ->
-        ~mexpr: (FanLoc.t -> 'a -> Ast.expr) ->
-        ~mpatt: (FanLoc.t -> 'a -> Ast.patt) ->
-        unit ;
-  val add_quotation_of_str_item :
-      ~name: string -> ~entry: (t Ast.str_item) -> unit;
-  val add_quotation_of_str_item_with_filter :
-     ~name: string ->
-     ~entry: (t 'a) -> ~filter: ('a -> Ast.str_item) -> unit;
-  val add_quotation_of_expr :
-    ~name: string -> ~entry: t Ast.expr -> unit;
-  val add_quotation_of_patt :
-    ~name: string -> ~entry: t Ast.patt -> unit;
-  val add_quotation_of_class_str_item :
-    ~name: string -> ~entry: t Ast.class_str_item -> unit;
-  val add_quotation_of_match_case :
-    ~name: string -> ~entry: t Ast.match_case -> unit;
-end;

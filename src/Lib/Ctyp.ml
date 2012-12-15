@@ -432,12 +432,12 @@ let transform_module_types  lst =
   let obj = mk_transform_type_eq () in 
   let item1 =
     List.map (fun
-           [Mutual ls ->
-             Mutual (List.map
+           [`Mutual ls ->
+             `Mutual (List.map
                       (fun (s,ty) ->
                         (s, obj#ctyp ty)) ls)
-           |Single (s,ty) ->
-               Single (s, obj#ctyp ty)]) lst in
+           |`Single (s,ty) ->
+               `Single (s, obj#ctyp ty)]) lst in
   let new_types = obj#type_transformers in
   (new_types,item1);
       

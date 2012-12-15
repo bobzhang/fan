@@ -166,12 +166,12 @@ let traversal () : traversal  = object (self:'self_type)
       self#in_and_types;
       let _ = super#str_item x ;
       self#update_cur_module_types (
-        fun lst -> [Mutual (List.rev self#get_cur_and_types) :: lst] );
+        fun lst -> [`Mutual (List.rev self#get_cur_and_types) :: lst] );
       self#out_and_types;
       (if !keep then x else {| |} )
     end
     | {| type $((Ast.TyDcl (_, name, _, _, _) as t)) |} as x -> begin
-        self#update_cur_module_types (fun lst -> [Single (name,t) :: lst]);
+        self#update_cur_module_types (fun lst -> [`Single (name,t) :: lst]);
        (* if keep.val then x else {| |} *)
        x (* always keep *)
     end

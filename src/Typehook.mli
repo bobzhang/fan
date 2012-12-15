@@ -26,6 +26,11 @@ class type traversal = object
 
 end
 val traversal: unit -> traversal    
-(* val g : Gram.gram *)
+
+(* val g : Gram.gram
+   grammar used by two entries [fan_quot] and [fan_quots]
+   they should not be mixed with other entries which has
+   diffierent gram
+ *)
 val fan_quot : expr Gram.t
 val fan_quots : expr Gram.t

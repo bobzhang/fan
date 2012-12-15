@@ -4,6 +4,7 @@ open Transform;
 open FSig;
 open Lib;
 let _loc = FanLoc.ghost ;
+
 (**
    For var, in most cases we just add a prefix
    mf_, so we just fix it here
