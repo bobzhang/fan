@@ -30,8 +30,10 @@
     class_expr         :: The type of class expressions
     class_str_item     :: The type of class structure items
  *)
+{:fans|keep on; (* <+ "Print"; *) |};
 
-  type loc = FanLoc.t
+{:ocaml|
+type loc = FanLoc.t
    and meta_bool =
     [ BTrue
     | BFalse
@@ -427,3 +429,4 @@
       (* value virtual (mutable)? s : t *)
     | CrVvr of loc and string and mutable_flag and ctyp
     | CrAnt of loc and string (* $s$ *) ];
+  |};

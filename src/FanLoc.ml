@@ -290,7 +290,7 @@ end;
 (** Print the location into the formatter in a format suitable for error
     reporting. *)
 let print out x = pp_print_string out (to_string x);
-
+let pp_print_t = print;
 let check x msg =
   if ((start_line x) > (stop_line x) ||
       (start_bol x) > (stop_bol x) ||

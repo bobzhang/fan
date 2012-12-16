@@ -4,25 +4,48 @@ open FanUtil;
 open Lib.Meta;
 open Format;
 
+type quotation_error_message =
+    [ Finding
+    | Expanding
+    | ParsingResult of FanLoc.t and string
+    | NoName];
+
+type quotation_error = (string * string * quotation_error_message * exn);
+
+exception QuotationError of quotation_error;
+
 type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
   
-module Exp_key = DynAst.Pack(struct  type t 'a = unit; end);
+module ExpKey = DynAst.Pack(struct  type t 'a = unit; end);
 
-module Exp_fun = DynAst.Pack(struct  type t 'a = expand_fun 'a; end);
-  
-let expanders_table =
-  (ref [] : ref (list ((string * Exp_key.pack) * Exp_fun.pack)));
+module ExpFun = DynAst.Pack(struct  type t 'a = expand_fun 'a; end);
 
 let default = ref "";
-  (* create a table mapping from
-     (string_of_tag tag) to default quotation expander *)  
-let default_tbl : Hashtbl.t string string = Hashtbl.create 50;
-let translate = ref (fun x -> x);
-(* intentionaly make its value a string to be more flexibile to
-   incorporating more tags in the future
+let current_loc_name = ref None  ;
+let stack = Stack.create ();
+let current_quot () =
+  try Stack.pop stack
+  with [Stack.Empty -> failwith "it's not in a quotation context"];
+    
+let dump_file = ref None;
+
+
+(* create a table mapping from  (string_of_tag tag) to default
+   quotation expander intentionaly make its value a string to
+   be more flexibile to incorporating more tags in the future
  *)  
+let default_tbl : Hashtbl.t string string = Hashtbl.create 50;
+
+let translate = ref (fun x -> x);
+
 let default_at_pos pos str =
   Hashtbl.replace default_tbl pos str;
+
+
+  
+let expanders_table =
+  (ref [] : ref (list ((string * ExpKey.pack) * ExpFun.pack)));
+
 
 (* First according the [position] to find the default language,
    if not found, then dispatched to default 
@@ -35,29 +58,62 @@ let expander_name pos_tag name =
     with [Not_found -> !default]
   | name -> name ];
 
-
-let current_loc_name = ref None  ;
-let stack = Stack.create ();
-let current_quot () =
-  try Stack.pop stack
-  with [Stack.Empty -> failwith "it's not in a quotation context"];
-    
 let add name tag f =
-  let elt = ((name, Exp_key.pack tag ()), Exp_fun.pack tag f) in
+  let elt = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   expanders_table := [elt :: !expanders_table];
 
-let dump_file = ref None;
+(* called by [expand] *)    
+let expand_quotation loc expander pos_tag quot =
+  debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
+  let open FanToken in
+  let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
+  try expander loc loc_name_opt quot.q_contents with
+  [ FanLoc.Exc_located (_, (QuotationError _)) as exc ->
+      raise exc
+  | FanLoc.Exc_located (iloc, exc) ->
+      let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
+      raise (FanLoc.Exc_located iloc exc1)
+  | exc ->
+      let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
+      raise (FanLoc.Exc_located loc exc1) ];
+  
+let expand loc quotation tag =
+  let open FanToken in 
+  let pos_tag = DynAst.string_of_tag tag in
+  let name = quotation.q_name in
+  debug quot "handle_quotation: name: %s, str: %S@." name quotation.q_contents in
+  let find name tag =
+    let key = (expander_name tag name, ExpKey.pack tag ()) in
+    let try pack = List.assoc key !expanders_table in
+    ExpFun.unpack tag pack
+    with
+      [Not_found ->
+        if name="" then raise
+            (FanLoc.Exc_located loc (QuotationError (name,pos_tag,NoName,Not_found)))
+        else raise Not_found
+     | e -> raise e ] in 
+  let try expander = find name tag
+  and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc)  in begin
+    Stack.push  quotation.q_name stack;
+    try  begin 
+      let res = expand_quotation loc expander pos_tag quotation;
+      ignore(Stack.pop stack);
+      res 
+    end
+    with
+      e -> begin ignore (Stack.pop stack) ; raise e end
+  end
+  with
+    [ FanLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
+    | FanLoc.Exc_located (qloc, exc) ->
+        raise (FanLoc.Exc_located qloc (QuotationError (name, pos_tag, Finding, exc)))
+    | exc ->
+        raise (FanLoc.Exc_located loc (QuotationError (name, pos_tag, Finding, exc))) ];
+
+  
 
 
-type quotation_error_message =
-    [ Finding
-    | Expanding
-    | ParsingResult of FanLoc.t and string
-    | NoName];
 
-type quotation_error = (string * string * quotation_error_message * exn);
-
-exception QuotationError of quotation_error;
 
 let quotation_error_to_string (name, position, ctx, exn) =
   let ppf = Buffer.create 30 in
@@ -70,7 +126,7 @@ let quotation_error_to_string (name, position, ctx, exn) =
         bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
         List.iter begin fun ((s,t),_) ->
           bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
-            s Exp_key.print_tag t
+            s ExpKey.print_tag t
         end !expanders_table;
         bprintf ppf "@]";
         end
@@ -119,54 +175,7 @@ let parse_quotation_result parse loc quot pos_tag str =
       let exc1 = QuotationError (quot.q_name, pos_tag, ctx, exc) in
       raise (FanLoc.Exc_located iloc exc1) ];
 
-(* called by [expand] *)    
-let expand_quotation loc expander pos_tag quot =
-  debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
-  let open FanToken in
-  let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
-  try expander loc loc_name_opt quot.q_contents with
-  [ FanLoc.Exc_located (_, (QuotationError _)) as exc ->
-      raise exc
-  | FanLoc.Exc_located (iloc, exc) ->
-      let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
-      raise (FanLoc.Exc_located iloc exc1)
-  | exc ->
-      let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
-      raise (FanLoc.Exc_located loc exc1) ];
     
-let expand loc quotation tag =
-  let open FanToken in 
-  let pos_tag = DynAst.string_of_tag tag in
-  let name = quotation.q_name in
-  debug quot "handle_quotation: name: %s, str: %S@." name quotation.q_contents in
-  let find name tag =
-    let key = (expander_name tag name, Exp_key.pack tag ()) in
-    let try pack = List.assoc key !expanders_table in
-    Exp_fun.unpack tag pack
-    with
-      [Not_found ->
-        if name="" then raise
-            (FanLoc.Exc_located loc (QuotationError (name,pos_tag,NoName,Not_found)))
-        else raise Not_found
-     | e -> raise e ] in 
-  let try expander = find name tag
-  and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc)  in begin
-    Stack.push  quotation.q_name stack;
-    try  begin 
-      let res = expand_quotation loc expander pos_tag quotation;
-      ignore(Stack.pop stack);
-      res 
-    end
-    with
-      e -> begin ignore (Stack.pop stack) ; raise e end
-  end
-  with
-    [ FanLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
-    | FanLoc.Exc_located (qloc, exc) ->
-        raise (FanLoc.Exc_located qloc (QuotationError (name, pos_tag, Finding, exc)))
-    | exc ->
-        raise (FanLoc.Exc_located loc (QuotationError (name, pos_tag, Finding, exc))) ];
-
 
 let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
   let entry_eoi = Gram.eoi_entry entry in 

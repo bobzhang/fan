@@ -1,5 +1,6 @@
-{:fans|keep on ;|};
-{:ocaml|
+(* {:fans|keep on ; <+ "Print"; |}; *)
+
+(* {:ocaml| *)
 type tag 'a =
  [ Ctyp
  | Patt
@@ -18,7 +19,7 @@ type tag 'a =
  | Binding
  | Rec_binding
  | Module_binding ];
-|};
+(* |}; *)
 let string_of_tag = fun
  [ Ctyp -> "ctyp"
  | Patt -> "patt"
@@ -57,10 +58,10 @@ let rec_binding_tag : tag Ast.rec_binding  = Rec_binding;
 let module_binding_tag : tag Ast.module_binding = Module_binding;
 
 type dyn;
+  
 external dyn_tag : tag 'a -> tag dyn = "%identity";
 
 module Pack(X : sig type t 'a; end) = struct
- (* These Obj.* hacks should be avoided with GADTs *)
   type pack = (tag dyn * Obj.t);
   exception Pack_error;
   let pack tag (v:X.t 'a) = (dyn_tag tag, Obj.repr v);

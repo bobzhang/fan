@@ -63,9 +63,10 @@ val of_str_item: name:string -> entry: str_item Gram.t  -> unit
 
 val make_parser: 'a Gram.t -> FanLoc.t -> string option -> string -> 'a
 
-val of_str_item: name:string -> entry:'a Gram.t -> unit
+val of_str_item: name:string -> entry:str_item Gram.t -> unit
 
-val of_str_item_with_filter: name:string -> entry:'a Gram.t -> filter:('a -> 'b) -> unit
+val of_str_item_with_filter: name:string ->
+  entry:str_item Gram.t -> filter:(str_item -> str_item) -> unit
 
 
 module MetaLocQuotation :
