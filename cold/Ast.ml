@@ -1,3 +1,4 @@
+let _ = ()
 type loc = FanLoc.t 
 and meta_bool =  
   | BTrue

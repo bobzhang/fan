@@ -878,14 +878,3 @@ AstFilters.register_str_item_filter ("trash_nothing",(Ast.map_expr map_expr)#str
   
 
 
-let macro_expander = object(self)
-  inherit Camlp4Ast.map as super;
-  method! expr = with "expr" fun
-  [{| $uid:a $y |} ->
-    let try f = Hashtbl.find AstMacros.macro_expanders a in
-    self#expr (f y)
-    with Not_found -> {| $uid:a $(self#expr y)|}
-  | e -> super#expr e ];
-end;
-
-AstFilters.register_str_item_filter ("macro", macro_expander#str_item);  

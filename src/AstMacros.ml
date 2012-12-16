@@ -24,6 +24,21 @@
 
   -- macro.str_item
      StExp ..  
+
+  1. the position where macro quotation appears
+     - class_str_item
+       combine with translate, this should be inferred automatically
+
+
+  2. the position where macro expander appears?
+     currently only expr
+
+  3. the type macro expander
+     - macro.class_str_item should generate class_str_item 
+
+  4. register
+
+  5. dependency 
  *)
 type key = string;
 
@@ -100,3 +115,14 @@ GFIB 10;
 
 
 
+let macro_expander = object(self)
+  inherit Camlp4Ast.map as super;
+  method! expr = with "expr" fun
+  [{| $uid:a $y |} ->
+    let try f = Hashtbl.find macro_expanders a in
+    self#expr (f y)
+    with Not_found -> {| $uid:a $(self#expr y)|}
+  | e -> super#expr e ];
+end;
+
+(* AstFilters.register_str_item_filter ("macro", macro_expander#str_item);   *)

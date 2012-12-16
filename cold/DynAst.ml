@@ -1,4 +1,3 @@
-let _ = ()
 type 'a tag =  
   | Ctyp
   | Patt

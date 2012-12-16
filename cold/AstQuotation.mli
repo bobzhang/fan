@@ -46,7 +46,6 @@ val add_quotation:
       patt_filter:('b -> Lib.Meta.Ast.patt) ->
         mexpr:(FanLoc.t -> 'c -> 'a) ->
           mpatt:(FanLoc.t -> 'c -> 'b) -> string -> 'c Gram.t -> unit
-(* val add_quotation: string ->  'a Gram.t ->  (FanLoc.t -> 'a -> Ast.expr) -> (FanLoc.t -> 'a -> Ast.patt) -> unit *)
 
 
 
@@ -63,11 +62,23 @@ val of_str_item: name:string -> entry: str_item Gram.t  -> unit
 
 val make_parser: 'a Gram.t -> FanLoc.t -> string option -> string -> 'a
 
-val of_str_item: name:string -> entry:'a Gram.t -> unit
+val of_str_item: name:string -> entry:str_item Gram.t -> unit
 
-val of_str_item_with_filter: name:string -> entry:'a Gram.t -> filter:('a -> 'b) -> unit
+val of_str_item_with_filter: name:string ->
+  entry:str_item Gram.t -> filter:(str_item -> str_item) -> unit
 
+val of_patt_with_filter :
+  name:string -> entry:patt Gram.t -> filter:(patt -> patt) -> unit
 
+val of_class_str_item_with_filter :
+  name:string -> entry:class_str_item Gram.t -> filter:(class_str_item -> class_str_item) -> unit
+
+val of_match_case_with_filter :
+  name:string -> entry:match_case Gram.t -> filter:(match_case -> match_case) -> unit
+
+val of_expr_with_filter :
+    name:string -> entry:expr Gram.t -> filter:(expr -> expr) -> unit
+        
 module MetaLocQuotation :
   sig
     val meta_loc_expr : loc -> loc -> expr

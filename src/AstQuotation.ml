@@ -211,14 +211,21 @@ let make_parser entry =
       (FanConfig.antiquotations, true)
       (current_loc_name,loc_name_opt)
       (fun _ -> Gram.parse_string (Gram.eoi_entry entry) loc  s);
-        
-let of_str_item ~name ~entry =
-  add name DynAst.str_item_tag (make_parser entry);
 
-let of_str_item_with_filter ~name ~entry ~filter =
+DEFINE REGISTER(tag) = fun  ~name ~entry -> add name tag (make_parser entry);
+DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter -> 
   add name DynAst.str_item_tag
     (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
-
+  
+let of_str_item = REGISTER(DynAst.str_item_tag);
+let of_str_item_with_filter = REGISTER_FILTER(DynAst.str_item_tag);  
+let of_patt  = REGISTER(DynAst.patt_tag);
+let of_patt_with_filter  = REGISTER_FILTER(DynAst.patt_tag);  
+let of_class_str_item  = REGISTER(DynAst.class_str_item_tag);
+let of_class_str_item_with_filter  = REGISTER_FILTER(DynAst.patt_tag);  
+let of_match_case = REGISTER(DynAst.match_case_tag);
+let of_match_case_with_filter = REGISTER_FILTER(DynAst.match_case_tag);  
+  
 
 (* both [expr] and [str_item] positions are registered *)  
 let of_expr ~name ~entry = 
@@ -229,15 +236,14 @@ let of_expr ~name ~entry =
       add name DynAst.str_item_tag mk_fun ;
     end ;
   
-let of_patt ~name ~entry =
-  add name DynAst.patt_tag (make_parser entry);
-  
-let of_class_str_item ~name ~entry =
-  add name DynAst.class_str_item_tag (make_parser entry);
-  
-let of_match_case ~name ~entry =
-  add name DynAst.match_case_tag (make_parser  entry);
-    
+let of_expr_with_filter ~name ~entry ~filter =     
+  let expand_fun =
+    fun loc loc_name_opt s -> filter ( make_parser entry loc loc_name_opt s) in
+  let mk_fun loc loc_name_opt s =
+    {:str_item@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin 
+      add name DynAst.expr_tag expand_fun ;
+      add name DynAst.str_item_tag mk_fun ;
+    end ;
   
 module MetaLocQuotation = struct
   let meta_loc_expr _loc loc =

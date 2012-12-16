@@ -52,7 +52,10 @@ val ghostify: t -> t
 val make_absolute: t -> t
 val strictly_before: t -> t -> bool
 val to_string: t -> string
+
 val print: Format.formatter -> t -> unit
+val pp_print_t: Format.formatter -> t -> unit
+    
 val check: t -> string -> bool
 exception Exc_located of t * exn
 val name: string ref

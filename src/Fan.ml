@@ -46,7 +46,9 @@ of_str_item_with_filter ~name:"ocaml" ~entry:str_items
 (* {:fan_quot| show_code on |}; *)
 
 of_expr ~name:"fans" ~entry:Typehook.fan_quots ;
-
+(* of_expr ~name:"macro.expr" ~entry: *)
+of_expr_with_filter ~name:"macro.expr" ~entry:expr ~filter:(AstMacros.macro_expander#expr);
+  
 add_quotation "sig_item" sig_item_quot ~mexpr:ME.meta_sig_item ~mpatt:MP.meta_sig_item ~expr_filter ~patt_filter ;
 add_quotation "str_item" str_item_quot ~mexpr:ME.meta_str_item ~mpatt:MP.meta_str_item ~expr_filter ~patt_filter ;
 add_quotation "ctyp" ctyp_quot ~mexpr:ME.meta_ctyp ~mpatt:MP.meta_ctyp ~expr_filter ~patt_filter ;

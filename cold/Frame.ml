@@ -76,8 +76,8 @@ module Make(S:FSig.Config) = struct
         | Unhandled t ->
             fail &
               (sprintf
-                 "normal_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
-                 (Ctyp.to_string.contents t) (Ctyp.to_string.contents ty))
+                 "normal_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n" ""
+                 "")
   let rec obj_simple_expr_of_ctyp ty =
     let open Transform in
       let open ErrorMonad in

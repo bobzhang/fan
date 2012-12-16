@@ -296,3 +296,5 @@ let reduce_data_ctors (ty : Ast.ctyp) (init : 'a)
         fail
           (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}"
              (to_string.contents t0) (to_string.contents ty))
+let of_str_item =
+  function | Ast.StTyp (_loc,x) -> x | _ -> invalid_arg "Ctyp.of_str_item"

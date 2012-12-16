@@ -28,6 +28,9 @@ let _ =
                code)
 let _ = of_expr ~name:"fans" ~entry:Typehook.fan_quots
 let _ =
+  of_expr_with_filter ~name:"macro.expr" ~entry:expr
+    ~filter:(AstMacros.macro_expander#expr)
+let _ =
   add_quotation "sig_item" sig_item_quot ~mexpr:ME.meta_sig_item
     ~mpatt:MP.meta_sig_item ~expr_filter ~patt_filter
 let _ =

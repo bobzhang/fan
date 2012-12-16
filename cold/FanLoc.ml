@@ -164,6 +164,7 @@ let to_string x =
       (b.pos_cnum - b.pos_bol)
   else res
 let print out x = pp_print_string out (to_string x)
+let pp_print_t = print
 let check x msg =
   if
     ((start_line x) > (stop_line x)) ||
