@@ -38,7 +38,11 @@
 
   4. register
 
-  5. dependency 
+  5. dependency
+
+  Guarantee:
+    macro.expr should return expr
+    macro.str_item should return str_item 
  *)
 type key = string;
 
