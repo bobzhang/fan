@@ -10,6 +10,9 @@
 
 <{cold,src}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
 
+# <{cold,src}/Lex/{cset,ulex,ulexing,utf16,utf8,LexGen}.cmx>:for-pack(Lex)
+# <{cold,src}/Lex/{cset,ulex,ulexing,utf16,utf8,LexGen}.p.cmx>:for-pack(Lex)
+
 <{cold,src}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt}.cmx>:for-pack(Lib)
 <{cold,src}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt}.p.cmx>:for-pack(Lib)
 

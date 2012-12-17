@@ -40,17 +40,17 @@ let token_stream_of_string s =  s |> lex_string FanLoc.string_loc |> filter;
   
 
 let parse entry loc cs =
-  let lexer = entry.egram.glexer in
+  let l = entry.egram.glexer in
   let filter = entry.egram.gfilter in
   let filter ts =  FanTokenFilter.filter filter ts in
-  parse_origin_tokens entry (filter (lexer loc cs))
+  parse_origin_tokens entry (filter (l loc cs))
   (* filter_and_parse_tokens entry (lex loc cs) *);
   
 let parse_string entry loc str =
-  let lexer = entry.egram.glexer in
+  let l = entry.egram.glexer in
   let filter = entry.egram.gfilter in
   let filter ts = FanTokenFilter.filter filter ts in
-  parse_origin_tokens entry (filter (lexer loc (XStream.of_string str)))
+  parse_origin_tokens entry (filter (l loc (XStream.of_string str)))
   (* filter_and_parse_tokens entry *)
   (*   (entry.egram.glexer loc cs) *)
 (* (lex_string loc str) *);

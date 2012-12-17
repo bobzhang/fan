@@ -14,7 +14,10 @@ let use_parsers ls =
     with Not_found -> failwithf "parser %s is not registered" s) ls;
     
 let register_parser (k,f) =
-  Hashtbl.replace registered_parsers k f;
+  if Hashtbl.mem registered_parsers k then
+    Format.eprintf "%s is already a registered parser" k
+  else 
+    Hashtbl.replace registered_parsers k f;
 (*   let u  *)
     
 

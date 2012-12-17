@@ -47,7 +47,8 @@ open ParserMacro;
 open ParserGrammar;
 open ParserDebug;
 open ParserStream;
-AstParsers.use_parsers ["revise";"stream";"debug";"macro";"ListComprehension"];
+open ParserLex;  
+AstParsers.use_parsers ["revise";"stream";"debug";"macro";"ListComprehension";"lexer"];
   
 type file_kind =
   [ Intf of string
