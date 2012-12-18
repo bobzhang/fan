@@ -41,10 +41,7 @@ module Make(S:FSig.Config) = struct
             (currying
                [Ast.McArr (_loc, patt, (Ast.ExNil _loc), (S.mk_tuple tys))]
                ~arity:S.arity)
-      | _ ->
-          invalid_arg &
-            (sprintf "tuple_expr_of_ctyp {|%s|}\n"
-               (Ctyp.to_string.contents ty))
+      | _ -> invalid_arg & (sprintf "tuple_expr_of_ctyp {|%s|}\n" "")
   let rec normal_simple_expr_of_ctyp cxt ty =
     let open Transform in
       let open ErrorMonad in
@@ -119,10 +116,10 @@ module Make(S:FSig.Config) = struct
           | ty -> raise (Unhandled ty) in
         try return & (aux ty)
         with
-        | Unhandled t0 ->
+        | Unhandled _t0 ->
             fail &
               (sprintf "obj_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
-                 (Ctyp.to_string.contents t0) (Ctyp.to_string.contents ty))
+                 "" "")
   let expr_of_ctyp simple_expr_of_ctyp (ty : Ast.ctyp) =
     let open ErrorMonad in
       let f cons tyargs acc =
@@ -143,10 +140,7 @@ module Make(S:FSig.Config) = struct
             (TyVrnSup, (List.length (Ast.list_of_ctyp t [])))
         | Ast.TyVrnInf (_loc,t) ->
             (TyVrnInf, (List.length (Ast.list_of_ctyp t [])))
-        | _ ->
-            invalid_arg
-              ((sprintf "expr_of_ctyp {|%s|} ") &
-                 (Ctyp.to_string.contents ty)) in
+        | _ -> invalid_arg (sprintf "expr_of_ctyp {|%s|} " "") in
       (Ctyp.reduce_data_ctors ty [] f) >>=
         (fun res  ->
            let res =
@@ -208,13 +202,9 @@ module Make(S:FSig.Config) = struct
                  match process ctyp with
                  | Left result -> result
                  | Right str ->
-                     invalid_arg
-                       (sprintf "fun_of_tydcl{|%s|}\n%s"
-                          (Ctyp.to_string.contents ctyp) str) in
+                     invalid_arg (sprintf "fun_of_tydcl{|%s|}\n%s" "" str) in
                mk_prefix tyvars funct)
-      | tydcl ->
-          invalid_arg
-            (sprintf "fun_of_tydcl <<%s>>\n" (Ctyp.to_string.contents tydcl))
+      | _tydcl -> invalid_arg (sprintf "fun_of_tydcl <<%s>>\n" "")
   let binding_of_tydcl simple_expr_of_ctyp _name tydcl =
     let open ErrorMonad in
       let open Transform in
@@ -233,7 +223,7 @@ module Make(S:FSig.Config) = struct
               (Ast.ExTyc (_loc, fun_expr, ty)))
         else
           (eprintf "Warning: %s as a abstract type no structure generated\n"
-             (Ctyp.to_string.contents tydcl);
+             "";
            Ast.BiEq
              (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, (tctor_var name))))),
                (Ast.ExApp
@@ -286,7 +276,7 @@ module Make(S:FSig.Config) = struct
         | `Single ((name,tydcl) as named_type) ->
             (match Ctyp.abstract_list tydcl with
              | Some n ->
-                 let ty_str = Ctyp.to_string.contents tydcl in
+                 let ty_str = "" in
                  let () = Hashtbl.add tbl ty_str (Abstract ty_str) in
                  let ty = mk_type (name, tydcl) in
                  Ast.CrMth

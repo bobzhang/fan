@@ -30,8 +30,8 @@
     class_expr         :: The type of class expressions
     class_str_item     :: The type of class structure items
  *)
-{:fans|keep on; (* <+ "Print"; *) |};
-
+{:fans|keep on; <++ "Print", "OPrint";|};
+open StdLib;
 {:ocaml|
 type loc = FanLoc.t
    and meta_bool =

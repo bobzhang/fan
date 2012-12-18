@@ -51,7 +51,8 @@ module Make(S:FSig.Config) = struct
       S.names <+ (currying
                     [ {:match_case| $pat:patt -> $(S.mk_tuple tys ) |} ] ~arity:S.arity)
     | _  -> invalid_arg &
-        sprintf  "tuple_expr_of_ctyp {|%s|}\n" (!Ctyp.to_string  ty)]);
+        sprintf  "tuple_expr_of_ctyp {|%s|}\n" "" (*FIXME*)
+          (* (!Ctyp.to_string  ty) *)]);
 
 
   (*
@@ -126,9 +127,11 @@ module Make(S:FSig.Config) = struct
           tuple_expr_of_ctyp  (obj_simple_expr_of_ctyp ) ty 
       | ty -> raise (Unhandled ty) ] in
     try return & aux ty with
-      [Unhandled t0 -> fail &
-        sprintf "obj_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
-          (!Ctyp.to_string t0) (!Ctyp.to_string ty) ] );
+      [Unhandled _t0 -> fail &
+        sprintf
+          "obj_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
+          "" "" (* FIXME *)
+          (* (!Ctyp.to_string t0) (!Ctyp.to_string ty) *) ] );
         
   (*
     call [reduce_data_ctors]  for variant types
@@ -154,8 +157,10 @@ module Make(S:FSig.Config) = struct
       | {| [= $t ] |} -> (TyVrnEq, List.length (Ast.list_of_ctyp t []))
       | {| [> $t ] |} -> (TyVrnSup,List.length (Ast.list_of_ctyp t []))
       | {| [< $t ] |} -> (TyVrnInf,List.length (Ast.list_of_ctyp t []))
-      | _ ->  invalid_arg  (sprintf "expr_of_ctyp {|%s|} "
-                              & !Ctyp.to_string ty) ] in 
+      | _ ->
+          invalid_arg
+            (sprintf "expr_of_ctyp {|%s|} " "" (*FIXME*)
+               (* & !Ctyp.to_string ty *)) ] in 
     Ctyp.reduce_data_ctors ty  [] f >>= (fun res ->
       let res = let t =
         (* only under this case we need trailing  *)
@@ -219,12 +224,16 @@ module Make(S:FSig.Config) = struct
             let funct =  match process ctyp  with
                [ Left result  ->  result
                | Right str ->
-                   invalid_arg (sprintf "fun_of_tydcl{|%s|}\n%s"
-                                  (!Ctyp.to_string ctyp) str)]
+                   invalid_arg
+                     (sprintf "fun_of_tydcl{|%s|}\n%s" "" (*FIXME*)
+                                  (* (!Ctyp.to_string ctyp) *) str)]
             in  mk_prefix tyvars funct ]
-    | tydcl -> 
-        invalid_arg ( sprintf "fun_of_tydcl <<%s>>\n"
-                        (!Ctyp.to_string tydcl)) ];
+    | _tydcl -> 
+        invalid_arg
+          ( sprintf "fun_of_tydcl <<%s>>\n"
+              ""
+              (*FIXME*)
+              (* (!Ctyp.to_string tydcl) *)) ];
 
   let binding_of_tydcl simple_expr_of_ctyp _name tydcl =
     let open ErrorMonad in
@@ -238,8 +247,8 @@ module Make(S:FSig.Config) = struct
           (expr_of_ctyp (unwrap simple_expr_of_ctyp)) tydcl  in
       {:binding| $(lid:tctor_var name) : $ty = $fun_expr |}
     else begin
-      eprintf "Warning: %s as a abstract type no structure generated\n"
-        (!Ctyp.to_string tydcl);
+      eprintf "Warning: %s as a abstract type no structure generated\n" "" (*FIXME*)
+        (* (!Ctyp.to_string tydcl) *);
       {:binding| $(lid:tctor_var  name) =
       failwithf $(str:"Abstract data type not implemented") |};
     end ;
@@ -303,7 +312,7 @@ module Make(S:FSig.Config) = struct
         | `Single ((name,tydcl) as  named_type) ->
            match Ctyp.abstract_list tydcl with
            [ Some n  -> begin
-             let ty_str =  (!Ctyp.to_string tydcl) in
+             let ty_str =  (* (!Ctyp.to_string tydcl) FIXME *) "" in
              let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
              let ty = mk_type (name,tydcl) in
              {:class_str_item| method $lid:name : $ty= $(unknown n) |}
