@@ -82,7 +82,7 @@ let base1_types =
                                           (Ast.ExNil _loc),
                                           (Ast.ExId
                                              (_loc,
-                                               (Ast.IdUid (_loc, "True")))))))))))),
+                                               (Ast.IdLid (_loc, "true")))))))))))),
                       (Ast.TyArr
                          (_loc,
                            (Ast.TyId (_loc, (Ast.IdLid (_loc, "unit")))),
@@ -282,3 +282,17 @@ let eq_base1 =
                               (Ast.ExId (_loc, (Ast.IdLid (_loc, "=")))), ty)))))
             | `Custom s -> s)) in
   Ast.stSem_of_list items
+let _ =
+  let open AstInjection in
+    register_inject_class_str_item
+      ("map_class_str_item_base_1", map_class_str_item_base_1);
+    register_inject_class_str_item
+      ("map_class_str_item_base_2", map_class_str_item_base_2);
+    register_inject_class_str_item
+      ("fold_class_str_item_base_1", fold_class_str_item_base_1);
+    register_inject_class_str_item
+      ("fold_class_str_item_base_2", fold_class_str_item_base_2);
+    register_inject_class_str_item
+      ("print_class_str_item_base", print_class_str_item_base);
+    register_inject_str_item ("eq_base1", eq_base1);
+    register_inject_str_item ("print_base1", print_base1)

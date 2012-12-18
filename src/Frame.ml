@@ -85,7 +85,7 @@ module Make(S:FSig.Config) = struct
           aux {:ctyp| $(lid:"arrow") $t1 $t2 |} 
       | ty ->  raise (Unhandled  ty ) ] in
     try return & aux ty with
-      [Unhandled t ->
+      [Unhandled _t ->
         fail & sprintf "normal_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
           "" ""
           (* (!Ctyp.to_string t) (!Ctyp.to_string ty) *) ]) ;

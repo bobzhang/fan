@@ -23,7 +23,7 @@ let base1_types = with "str_item"
     ("unit", `Custom (
      {| let pp_print_unit : Format.formatter -> unit -> unit = fun fmt _ ->
           Format.fprintf fmt "()" |} ),
-     `Custom ( {|  let eq_unit : unit -> unit -> bool = fun _ _ -> True |}  ))];
+     `Custom ( {|  let eq_unit : unit -> unit -> bool = fun _ _ -> true |}  ))];
 
 let ty_metas =
   base1_types |> List.map (fun
@@ -76,8 +76,21 @@ let eq_base1 = with "str_item"
     |`Custom s -> s ]]) in 
     {| $list:items |} ;
 
-
-
+let open AstInjection in begin 
+  register_inject_class_str_item
+    ("map_class_str_item_base_1",map_class_str_item_base_1);
+  register_inject_class_str_item
+    ("map_class_str_item_base_2",map_class_str_item_base_2);
+  register_inject_class_str_item
+    ("fold_class_str_item_base_1",fold_class_str_item_base_1);
+  register_inject_class_str_item
+    ("fold_class_str_item_base_2",fold_class_str_item_base_2);
+  (* val print_class_str_item_base : class_str_item *)
+  register_inject_class_str_item
+    ("print_class_str_item_base",print_class_str_item_base);
+  register_inject_str_item ("eq_base1",eq_base1);
+  register_inject_str_item ("print_base1",print_base1);
+end;
 
 
 

@@ -73,7 +73,7 @@ module Make(S:FSig.Config) = struct
           | ty -> raise (Unhandled ty) in
         try return & (aux ty)
         with
-        | Unhandled t ->
+        | Unhandled _t ->
             fail &
               (sprintf
                  "normal_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n" ""

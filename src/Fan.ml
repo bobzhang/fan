@@ -199,7 +199,8 @@ add "str" DynAst.str_item_tag
   
 Options.add ("-dlang", FanArg.Set_string AstQuotation.default," Set the default language");
 
-  
+
+(* Try to force linking for convenience *)  
 open ParserListComprehension;
 open ParserRevise;
 open ParserMacro;
@@ -208,3 +209,5 @@ open ParserDebug;
 open ParserStream;
 open ParserLex;  
 open AstInjection;
+open FanGen;
+open CodeTemplate;

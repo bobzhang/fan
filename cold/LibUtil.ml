@@ -231,6 +231,20 @@ module Hashtbl = struct
   include Hashtbl let keys tbl = fold (fun k  _  acc  -> k :: acc) tbl []
   let values tbl = fold (fun _  v  acc  -> v :: acc) tbl []
   end
+module Array = struct
+  include Array
+  let fold_left2 f acc a1 a2 =
+    let l1 = Array.length a1 and l2 = Array.length a2 in
+    if l1 <> l2
+    then invalid_arg "Array.fold_left2 length is not equal"
+    else
+      (let acc = ref acc in
+       let rec loop i =
+         if i < l1
+         then (acc := (f acc.contents (a1.(i)) (a2.(i))); loop (i + 1))
+         else acc.contents in
+       loop 0)
+  end
 module type STREAM =
   sig
     type 'a t  

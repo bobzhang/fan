@@ -69,13 +69,6 @@ let _ =
     ((fun loc  txt  ->
         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt)));
   iter_and_take_callbacks (fun (_,f)  -> f ())
-open ParserListComprehension
-open ParserRevise
-open ParserMacro
-open ParserGrammar
-open ParserDebug
-open ParserStream
-open ParserLex
 let _ =
   AstParsers.use_parsers
     ["revise"; "stream"; "debug"; "macro"; "ListComprehension"; "lexer"]

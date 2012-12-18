@@ -10,10 +10,11 @@ val base1_types :
    [> `Custom of str_item | `Def ])
   list
 val ty_metas : ty_meta list
-val print_base1 : str_item
+
 val map_class_str_item_base_1 : class_str_item
 val map_class_str_item_base_2 : class_str_item
 val fold_class_str_item_base_1 : class_str_item
 val fold_class_str_item_base_2 : class_str_item
 val print_class_str_item_base : class_str_item
 val eq_base1 : str_item
+val print_base1 : str_item

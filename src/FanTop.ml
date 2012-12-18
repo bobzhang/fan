@@ -85,13 +85,6 @@ let _  =   begin
       iter_and_take_callbacks (fun (_, f) -> f ());
   end;
 
-open ParserListComprehension;
-open ParserRevise;
-open ParserMacro;
-open ParserGrammar;
-open ParserDebug;
-open ParserStream;
-open ParserLex;  
 AstParsers.use_parsers ["revise";"stream";"debug";"macro";"ListComprehension";"lexer"];
   
 
