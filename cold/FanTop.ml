@@ -75,9 +75,10 @@ open ParserMacro
 open ParserGrammar
 open ParserDebug
 open ParserStream
+open ParserLex
 let _ =
   AstParsers.use_parsers
-    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"]
+    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"; "lexer"]
 let normal () = Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 let revise () = Toploop.parse_toplevel_phrase := revise_parser
 let token () = Toploop.parse_toplevel_phrase := (wrap fake)

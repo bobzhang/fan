@@ -198,3 +198,13 @@ add "str" DynAst.str_item_tag
   (fun _loc _loc_option s -> {:str_item| $(exp:{:expr|$str:s|}) |});
   
 Options.add ("-dlang", FanArg.Set_string AstQuotation.default," Set the default language");
+
+  
+open ParserListComprehension;
+open ParserRevise;
+open ParserMacro;
+open ParserGrammar;
+open ParserDebug;
+open ParserStream;
+open ParserLex;  
+open AstInjection;

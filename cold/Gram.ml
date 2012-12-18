@@ -26,15 +26,15 @@ let filter ts = FanTokenFilter.filter gram.gfilter ts
 let token_stream_of_string s =
   (s |> (lex_string FanLoc.string_loc)) |> filter
 let parse entry loc cs =
-  let lexer = (entry.egram).glexer in
+  let l = (entry.egram).glexer in
   let filter = (entry.egram).gfilter in
   let filter ts = FanTokenFilter.filter filter ts in
-  parse_origin_tokens entry (filter (lexer loc cs))
+  parse_origin_tokens entry (filter (l loc cs))
 let parse_string entry loc str =
-  let lexer = (entry.egram).glexer in
+  let l = (entry.egram).glexer in
   let filter = (entry.egram).gfilter in
   let filter ts = FanTokenFilter.filter filter ts in
-  parse_origin_tokens entry (filter (lexer loc (XStream.of_string str)))
+  parse_origin_tokens entry (filter (l loc (XStream.of_string str)))
 let debug_origin_token_stream (entry : 'a t) tokens =
   (parse_origin_tokens entry
      (XStream.map (fun t  -> (t, FanLoc.ghost)) tokens) : 'a )

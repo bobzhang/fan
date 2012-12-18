@@ -22,6 +22,6 @@
 # <{cold,src}/Lib/{Plongident,Ploc,Ptype,Ptyp,Pexp,Ppat,Pmty,Psig,Pmod,Pstr,Pfield,Pcty,Pcl,Pcf,Pctf}.ml>:pkg_compiler-libs.common
 
 <{cold,src}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
-<{cold,src}/MakeBin.ml>: warn(-33)
+<{cold,src}/Fan.ml>: warn(-33)
 # <{*_ppo,**/*_ppo,*/*/*_ppo}.ml>: -camlp4boot
 # <{**/*_ppo,llvm/a_ppo}.ml>: -camlp4boot

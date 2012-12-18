@@ -1,6 +1,6 @@
 open FanGrammar;
 open FanGrammarTools;
-open Fan.Syntax;
+open PreCast.Syntax;
 open LibUtil;
 open Lib;
 open FanUtil;

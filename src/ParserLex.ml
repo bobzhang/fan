@@ -1,6 +1,6 @@
 
 module Ast = Camlp4Ast;
-open Fan.Syntax; (* FIXME contains a lot of modules, like Gen*)
+open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 
 {:extend.create|Gram regexp chr ch_class|};
 

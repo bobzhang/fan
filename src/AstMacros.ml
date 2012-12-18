@@ -89,6 +89,7 @@ let generate_fibs = with "expr" fun
   | e -> e ];
 
 register_macro ("GFIB", generate_fibs);    
+
 (*
 #filter "macro";;
 GFIB 10;
@@ -103,21 +104,6 @@ GFIB 10;
 
 *)
     
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 let macro_expander = object(self)
   inherit Camlp4Ast.map as super;

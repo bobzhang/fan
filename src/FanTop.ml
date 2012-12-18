@@ -1,7 +1,4 @@
 open LibUtil;
-(* module P = PreCast.Make (struct end) ; *)
-(* module P = Fan.P; *)
-(* open Fan.P; *)
 open Fan;
 let wrap parse_fun lb =
   let () = iter_and_take_callbacks (fun (_, f) -> f ()) in

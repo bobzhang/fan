@@ -1,5 +1,5 @@
 module Ast = Camlp4Ast;
-open Fan.Syntax;
+open PreCast.Syntax;
 open Lib;
 open GramLib;  
 {:extend.create|Gram comprehension_or_sem_expr_for_list |}  ;

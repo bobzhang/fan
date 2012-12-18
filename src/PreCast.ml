@@ -1,4 +1,4 @@
-(* module Make   (U: sig end) : Sig.PRECAST  = struct *)
+
 module Syntax = OCamlInitSyntax;
 let sig_item_parser =
   ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
@@ -110,4 +110,4 @@ module CurrentPrinter = struct
     !str_item_printer ?input_file ?output_file ast;
 end;
 
-(* end;  *)
+

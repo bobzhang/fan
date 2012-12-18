@@ -31,6 +31,12 @@ let _ =
   of_expr_with_filter ~name:"macro.expr" ~entry:expr
     ~filter:(AstMacros.macro_expander#expr)
 let _ =
+  of_class_str_item_with_filter ~name:"macro.class_str_item"
+    ~entry:class_str_item ~filter:(AstMacros.macro_expander#class_str_item)
+let _ =
+  of_str_item_with_filter ~name:"macro.str_item" ~entry:str_item
+    ~filter:(AstMacros.macro_expander#str_item)
+let _ =
   add_quotation "sig_item" sig_item_quot ~mexpr:ME.meta_sig_item
     ~mpatt:MP.meta_sig_item ~expr_filter ~patt_filter
 let _ =
@@ -117,3 +123,11 @@ let _ =
   Options.add
     ("-dlang", (FanArg.Set_string AstQuotation.default),
       " Set the default language")
+open ParserListComprehension
+open ParserRevise
+open ParserMacro
+open ParserGrammar
+open ParserDebug
+open ParserStream
+open ParserLex
+open AstInjection

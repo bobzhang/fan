@@ -1,5 +1,5 @@
 
-open Fan.Syntax;
+open PreCast.Syntax;
 open Lib;
 open LibUtil;
 

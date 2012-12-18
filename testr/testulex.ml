@@ -23,20 +23,20 @@ and comment = lexer
    ];
 
 
-let () =
-  let enc = ref Ulexing.Ascii in
-  let lexbuf = Ulexing.from_var_enc_string enc
-      "<utf8>中华人民共和国"
-      (* "abc<latin1>é<utf8>Ã©(abc)(def)ghi" *) in
-  try
-    while true do
-      let r = token enc lexbuf in
-      Printf.printf "%s\n" r
-    done
-  with
-    [ Ulexing.Error ->
-	Printf.eprintf
-	"Lexing error at offset %i\n" (Ulexing.lexeme_end lexbuf)
-    | Ulexing.InvalidCodepoint i ->
-	Printf.eprintf
-	"Invalid code point %i at offset %i\n" i (Ulexing.lexeme_end lexbuf)];
+(* let () = *)
+(*   let enc = ref Ulexing.Ascii in *)
+(*   let lexbuf = Ulexing.from_var_enc_string enc *)
+(*       "<utf8>中华人民共和国" *)
+(*       (\* "abc<latin1>é<utf8>Ã©(abc)(def)ghi" *\) in *)
+(*   try *)
+(*     while true do *)
+(*       let r = token enc lexbuf in *)
+(*       Printf.printf "%s\n" r *)
+(*     done *)
+(*   with *)
+(*     [ Ulexing.Error -> *)
+(* 	Printf.eprintf *)
+(* 	"Lexing error at offset %i\n" (Ulexing.lexeme_end lexbuf) *)
+(*     | Ulexing.InvalidCodepoint i -> *)
+(* 	Printf.eprintf *)
+(* 	"Invalid code point %i at offset %i\n" i (Ulexing.lexeme_end lexbuf)]; *)
