@@ -115,10 +115,12 @@ module Make(S:FSig.Config) = struct
     let rec aux = fun
       [ {| $id:id |} -> trans id
       | {|  '$s |} ->   tyvar s
-      | {:ctyp| $_  $_ |} as ty -> match  Ctyp.list_of_app ty  with
+      | {:ctyp| $_  $_ |} as ty ->
+          match  Ctyp.list_of_app ty  with
           [ [ {| $id:tctor |} :: ls ] ->
-            ls |> List.map (fun [ {|  '$s |} -> {:expr| $(lid:var s) |} 
-                                | t ->   {:expr| fun self -> $(aux t) |} ])
+            ls |> List.map
+              (fun [ {|  '$s |} -> {:expr| $(lid:var s) |} 
+                   | t ->   {:expr| fun self -> $(aux t) |} ])
                |> apply (trans tctor)
           | _  -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp"]
       | {|$t1 -> $t2 |} -> 

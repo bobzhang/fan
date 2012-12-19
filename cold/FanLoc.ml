@@ -180,6 +180,10 @@ let check x msg =
      false)
   else true
 exception Exc_located of t*exn
+let raise loc exc =
+  match exc with
+  | Exc_located (_,_) -> raise exc
+  | _ -> raise (Exc_located (loc, exc))
 let _ =
   Printexc.register_printer
     (function
@@ -189,10 +193,6 @@ let _ =
               (Printexc.to_string exn))
      | _ -> None)
 let name = ref "_loc"
-let raise loc exc =
-  match exc with
-  | Exc_located (_,_) -> raise exc
-  | _ -> raise (Exc_located (loc, exc))
 let error_report (loc,s) =
   prerr_endline (to_string loc);
   (let (start_bol,stop_bol,start_off,stop_off) =

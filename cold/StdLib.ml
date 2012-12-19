@@ -34,6 +34,11 @@ let pp_print_option mf_a fmt v =
   | None  -> fprintf fmt "None"
   | Some v -> fprintf fmt "Some @[%a@]" mf_a v
 let pp_print_ref mf_a fmt v = fprintf fmt "@[{contents=%a}@]" mf_a v.contents
+let pp_print_list mf_a fmt lst =
+  let open List in
+    fprintf fmt "@[<1>[%a]@]"
+      (fun fmt  -> iter (fun x  -> fprintf fmt "%a@ " mf_a x)) lst
+let pp_print_exn fmt (e : exn) = fprintf fmt "%s" (Printexc.to_string e)
 let eq_list mf_a xs ys =
   let rec loop =
     function
@@ -41,10 +46,6 @@ let eq_list mf_a xs ys =
     | (x::xs,y::ys) -> (mf_a x y) && (loop (xs, ys))
     | (_,_) -> false in
   loop (xs, ys)
-let pp_print_list mf_a fmt lst =
-  let open List in
-    fprintf fmt "@[<1>[%a]@]"
-      (fun fmt  -> iter (fun x  -> fprintf fmt "%a@ " mf_a x)) lst
 let eq_array mf_a xs ys =
   let lx = Array.length xs and ly = Array.length ys in
   if lx <> ly

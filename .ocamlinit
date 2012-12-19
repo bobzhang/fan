@@ -1,13 +1,32 @@
 (* -*- Mode:caml; -*- *)
 
-#use "topfind";;
-#require "batteries";;
+(* #use "topfind";; *)
+
+(* #require "batteries";; *)
+open Format;;
 #directory "+compiler-libs";;
+#directory "_build";;
+#directory "_build/src";;
+(* #directory "_build/cold" ;; *)
+#load_rec "FanLoc.cmo";;
+#load_rec "FanBasic.cmo";;
+#load_rec "Query.cmo";;
+(* consult Topdirs for more utlities *)
+#load_rec "FanLexUtil.cmo";;
+#load_rec "FanTop.cma";;
+#load_rec "OAstPrint.cmo";;
+
+let fmt = std_formatter
+(* let _ = Clflags.noprompt := true;; *)
+
+let _loc = FanLoc.ghost;;
+
+let (|-) f g x = g (f x );;
 
 let _ = begin
   Hashtbl.replace Toploop.directive_table "useo"
     (Toploop.Directive_string (fun file ->
-      BatRef.protect Toploop.parse_use_file Parse.use_file
+      LibUtil.Ref.protect Toploop.parse_use_file Parse.use_file
         (fun _ -> ignore(Toploop.use_file Format.std_formatter file))))
       (* let old = !Toploop.parse_use_file in *)
       (* let () = Toploop.parse_use_file:=Parse.use_file in *)
@@ -17,20 +36,8 @@ let _ = begin
       (*   exn -> begin Toploop.parse_use_file := old; raise exn end in *)
       (* (\* Toploop.parse_use_file := old) *\)) *)
 end
-open Format;;
 
-#directory "_build";;
-#directory "_build/src";;
-(* #directory "_build/cold" ;; *)
-#load_rec "FanLoc.cmo";;
-#load_rec "FanBasic.cmo";;
-#load_rec "Query.cmo";;
-let fmt = std_formatter
-(* let _ = Clflags.noprompt := true;; *)
 
-let _loc = FanLoc.ghost;;
-
-let (|-) f g x = g (f x );;
 
 let interface_of_string =
   Lexing.from_string |- Parse.interface;;
@@ -41,10 +48,6 @@ let tg_dp () =
   Clflags.dump_parsetree := not !Clflags.dump_parsetree ;;
 let pp =fprintf
 let f = std_formatter;;
-(* consult Topdirs for more utlities *)
-#load_rec "FanLexUtil.cmo";;
-#load_rec "FanTop.cma";;
-#load_rec "OAstPrint.cmo";;
 open Fan;;
 open FanTop;;
 (* open FanSig;; *)
@@ -98,4 +101,4 @@ let env = !Toploop.toplevel_env;;
 #install_printer print_ocaml_loc;;
 
 (* #install_printer FanBasic.p_expr;; *)
-#load_rec "Gen.cmo";;
+(* #load_rec "Gen.cmo";; *)

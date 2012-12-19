@@ -125,9 +125,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
         (_loc,"lang_at",Ast.ExApp (_,Ast.ExStr (_,tag),Ast.ExStr (_,quot)))
         -> (AstQuotation.default_at_pos tag quot; None)
     | Ast.StDir (_loc,"lang_clear",Ast.ExNil _) ->
-        (AstQuotation.default := "";
-         Hashtbl.clear AstQuotation.default_tbl;
-         None)
+        (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
     | Ast.StDir (_loc,"filter",Ast.ExStr (_,s)) ->
         (AstFilters.use_implem_filter s; None)
     | Ast.StDir (loc,x,_) ->

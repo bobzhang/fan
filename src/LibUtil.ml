@@ -5,6 +5,19 @@ open Format;
   
 let failwithf fmt = ksprintf failwith fmt  ;
 let prerr_endlinef fmt = ksprintf prerr_endline fmt  ;
+
+let finally action f x  =
+  try begin 
+    let res = f x;
+    action ();
+    res 
+  end
+  with
+    [e -> begin action (); raise e end];
+    
+let with_dispose ~dispose f x =
+  finally (fun () -> dispose x) f x;
+    
 module MapMake(S:Map.OrderedType) = struct
   include Map.Make S;
   let of_list lst =
@@ -13,6 +26,8 @@ module MapMake(S:Map.OrderedType) = struct
     Hashtbl.fold (fun k v acc -> add k v acc) tbl empty;
   let elements map =
     fold (fun k v acc ->  [ (k,v) :: acc] ) map [] ;
+  let find_default ~default k m =
+    try find k m with Not_found -> default;
 end ;
 
 module SSet = Set.Make String;
@@ -507,6 +522,8 @@ module Hashtbl = struct
   include Hashtbl;
   let keys tbl = fold (fun k _ acc -> [k::acc]) tbl [];
   let values tbl = fold (fun _ v acc -> [v::acc] ) tbl [];
+  let find_default ~default tbl k =
+    try find tbl k with Not_found -> default ;
 end;
 
 module Array = struct

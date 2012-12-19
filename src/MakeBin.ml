@@ -159,8 +159,10 @@ module Camlp4Bin
             | {| #lang_at $str:tag $str:quot |} ->
                 begin AstQuotation.default_at_pos tag quot; None end
             | {| #lang_clear |} -> begin 
-                AstQuotation.default:="";
-                Hashtbl.clear AstQuotation.default_tbl;
+                (* AstQuotation.default:=""; *)
+                (* Hashtbl.clear AstQuotation.default_tbl; *)
+                AstQuotation.clear_map ();
+                AstQuotation.clear_default ();
                 None
             end
             | {| #filter $str:s |} ->

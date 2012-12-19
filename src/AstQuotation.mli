@@ -14,16 +14,17 @@ val add : string -> 'a DynAst.tag  -> 'a expand_fun  -> unit
 
     
 (** [default] holds the default quotation name. *)
-val default : string ref 
+val default: string ref     
+(* val default : string option ref  *)
 
 (** [default_tbl] mapping position to the default quotation name
     it has higher precedence over default  *)
-val default_tbl : (string, string)Hashtbl.t  
-
+(* val default_tbl : (string, string)Hashtbl.t   *)
+val map: string LibUtil.SMap.t ref
 (** [default_at_pos] set the default quotation name for specific pos*)
 val default_at_pos: string -> string -> unit
-    
-
+val clear_map: unit -> unit     
+val clear_default: unit -> unit 
 (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
   It's a parser wrapper, this function handles the error reporting for you. *)
 val parse_quotation_result:
@@ -34,6 +35,10 @@ val translate : (string -> string) ref
 
 val expand : FanLoc.t -> FanToken.quotation -> 'a DynAst.tag  -> 'a
 
+val expand_quotation :
+    FanLoc.t ->
+      expander:(FanLoc.t -> string option -> string -> 'a) ->
+        string -> FanToken.quotation -> 'a
 
 (** [dump_file] optionally tells Camlp4 to dump the
     result of an expander if this result is syntactically incorrect.

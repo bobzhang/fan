@@ -310,11 +310,17 @@ let check x msg =
 
   
 (** [Exc_located loc e] is an encapsulation of the exception [e] with
-            the input location [loc]. To be used in quotation expanders
-            and in grammars to specify some input location for an error.
-            Do not raise this exception directly: rather use the following
-            function [Loc.raise]. *)
+    the input location [loc]. To be used in quotation expanders
+    and in grammars to specify some input location for an error.
+    Do not raise this exception directly: rather use the following
+    function [FanLoc.raise]. *)
 exception Exc_located of t and exn;
+(** [raise loc e], if [e] is already an [Exc_located] exception,
+    re-raise it, else raise the exception [Exc_located loc e]. *)
+let raise loc exc =
+  match exc with
+  [ Exc_located (_, _) -> raise exc
+  | _ -> raise (Exc_located loc exc) ];
 
 let _ = begin
   Printexc.register_printer (fun
@@ -326,12 +332,6 @@ let _ = begin
     the predefined quotations for OCaml syntax trees. Default: [_loc]. *)
 let name = ref "_loc";
 
-(** [raise loc e], if [e] is already an [Exc_located] exception,
-            re-raise it, else raise the exception [Exc_located loc e]. *)
-let raise loc exc =
-  match exc with
-  [ Exc_located (_, _) -> raise exc
-  | _ -> raise (Exc_located loc exc) ];
 
 
 let error_report (loc,s) = begin
