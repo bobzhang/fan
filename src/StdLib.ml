@@ -39,8 +39,9 @@ let eq_array mf_a  xs ys =
   if lx <> ly then false
   else
     let rec loop = fun
-      [ i -> if i >= lx then true
-       else if mf_a xs.(i) ys.(i) then loop (i+1) else false ] in
+      [ i ->
+        if i >= lx then true
+        else if mf_a xs.(i) ys.(i) then loop (i+1) else false ] in
     loop 0 ;
     
 let pp_print_array mf_a  fmt  lst = let open Array in 

@@ -277,7 +277,8 @@ let apply () = begin
        opt_expr:
        [ expr{e} -> e | -> {||} ]
        expr:
-       { "top" RA
+       {
+        "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
             {| let $rec:r $bi in $x |}
         | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; S{e} ->
@@ -285,12 +286,6 @@ let apply () = begin
         | "let"; "open"; module_longident{i}; "in"; S{e} -> {| let open $id:i in $e |}
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a} ->
             {| let try $rec:r $bi in $x with [ $a ] |}
-        (* FIXME fun and function duplicated *)      
-        | "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| fun [ $list:a ] |}
-        | "function"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| function [ $list:a ] |}
-        | "fun"; fun_def{e} -> e
-        | "function"; fun_def{e} -> e
-              
         | "match"; S{e}; "with"; match_case{a} -> {|match $e with [$a]|}
         | "try"; S{e}; "with"; match_case{a} -> {|try $e with [$a]|}
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} -> {| if $e1 then $e2 else $e3 |}
@@ -300,9 +295,7 @@ let apply () = begin
         | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
             sequence{seq}; "done" -> {| for $i = $e1 $to:df $e2 do $seq done |}
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
-            {|while $e do $seq done |}
-        | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
-            {| object ($csp) $cst end |} ]
+            {|while $e do $seq done |}   ]  
        ":=" NA
         [ S{e1}; ":="; S{e2} -> {| $e1 := $e2 |} 
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
@@ -330,6 +323,15 @@ let apply () = begin
         | S{e1}; "lsl"; S{e2} -> {| $e1 lsl $e2 |}
         | S{e1}; "lsr"; S{e2} -> {| $e1 lsr $e2 |}
         | S{e1}; infixop6{op}; S{e2} -> {| $op $e1 $e2 |} ]
+       "obj" RA
+        [
+        (* FIXME fun and function duplicated *)      
+         "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| fun [ $list:a ] |}
+        | "function"; "[";  L0 match_case0 SEP "|"{a}; "]" -> {| function [ $list:a ] |}
+        | "fun"; fun_def{e} -> e
+        | "function"; fun_def{e} -> e
+        | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
+            {| object ($csp) $cst end |} ]
        "unary minus" NA
         [ "-"; S{e} -> Expr.mkumin _loc "-" e
         | "-."; S{e} -> Expr.mkumin _loc "-." e ]
