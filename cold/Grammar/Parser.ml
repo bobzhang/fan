@@ -52,48 +52,17 @@ let rec parser_of_tree entry (lev,assoc) x =
            | Some a -> Action.getf act a
            | _ -> from_tree bro __strm)
     | Node ({ node; son; brother } as y) ->
+        let skip_if_empty bp strm =
+          if (get_cur_loc strm) = bp
+          then Action.mk (fun _  -> raise XStream.Failure)
+          else raise XStream.Failure in
         let parser_cont (node,son) loc a =
           let pson = from_tree son in
-          let recover loc a strm =
-            if FanConfig.strict_parsing.contents
-            then raise (XStream.Error (Failed.tree_failed entry a node son))
-            else
-              (let _ =
-                 if FanConfig.strict_parsing_warning.contents
-                 then
-                   let msg = Failed.tree_failed entry a node son in
-                   (Format.eprintf
-                      "Warning: trying to recover from syntax error";
-                    if entry.ename <> ""
-                    then Format.eprintf " in [%s]" entry.ename
-                    else ();
-                    Format.eprintf "\n%s%a@." msg FanLoc.print loc)
-                 else () in
-               let continue loc a (__strm : _ XStream.t) =
-                 let a = (entry_of_symb entry node).econtinue 0 loc a __strm in
-                 let act =
-                   try pson __strm
-                   with
-                   | XStream.Failure  ->
-                       raise
-                         (XStream.Error (Failed.tree_failed entry a node son)) in
-                 Action.mk (fun _  -> Action.getf act a) in
-               let skip_if_empty bp strm =
-                 if (get_cur_loc strm) = bp
-                 then Action.mk (fun _  -> raise XStream.Failure)
-                 else raise XStream.Failure in
-               let do_recover loc a (__strm : _ XStream.t) =
-                 try from_tree (top_tree entry son) __strm
-                 with
-                 | XStream.Failure  ->
-                     (try skip_if_empty loc __strm
-                      with | XStream.Failure  -> continue loc a __strm) in
-               do_recover loc a strm) in
           fun (__strm : _ XStream.t)  ->
             try pson __strm
             with
             | XStream.Failure  ->
-                (try recover loc a __strm
+                (try skip_if_empty loc __strm
                  with
                  | XStream.Failure  ->
                      raise

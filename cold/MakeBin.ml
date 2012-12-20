@@ -191,7 +191,6 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       "Print Camlp4 version number and exit.");
     ("-no_quot", (FanArg.Clear FanConfig.quotations),
       "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
-    ("-parsing-strict", (FanArg.Set FanConfig.strict_parsing), "");
     ("-loaded-modules", (FanArg.Set print_loaded_modules),
       "Print the list of loaded modules.");
     ("-loaded-filters", (FanArg.Unit just_print_filters),

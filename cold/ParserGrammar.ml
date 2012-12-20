@@ -450,7 +450,7 @@ let _ =
     (None,
       [(None, None,
          [([`Skeyword "{";
-           `Slist0 (`Snterm (Gram.obj (level : 'level Gram.t )));
+           `Slist1 (`Snterm (Gram.obj (level : 'level Gram.t )));
            `Skeyword "}"],
             (Gram.mk_action
                (fun _  (ll : 'level list)  _  (_loc : FanLoc.t)  ->
