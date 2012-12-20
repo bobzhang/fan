@@ -78,9 +78,9 @@ let _  =   begin
     Toploop.parse_use_file := wrap use_file;
 
     Syntax.current_warning :=
-    fun loc txt ->
+    (fun loc txt ->
       Toploop.print_warning  loc Format.err_formatter
-        (Warnings.Camlp4 txt);
+        (Warnings.Camlp4 txt));
       
       iter_and_take_callbacks (fun (_, f) -> f ());
   end;

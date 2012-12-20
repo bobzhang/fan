@@ -115,10 +115,10 @@ and name_of_tree_failed entry x =
       | Some (tokl, _, _) ->
           List.fold_left
             (fun s tok ->
-               ((if s = "" then "" else s ^ " then ") ^
-                match tok with
-                  [ `Stoken (_, descr) -> name_of_descr descr
-                  | `Skeyword kwd -> kwd])) "" tokl ]
+              ((if s = "" then "" else s ^ " then ") ^
+               (match tok with
+                [ `Stoken (_, descr) -> name_of_descr descr
+                | `Skeyword kwd -> kwd]))) "" tokl ]
   | DeadEnd | LocAct (_, _) -> "???" ];
 
 let magic _s x = debug magic "Obj.magic: %s@." _s in Obj.magic x;

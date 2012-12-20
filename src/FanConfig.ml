@@ -45,6 +45,8 @@ let fan_debug = ref false;;
 let conversion_table : (string, string) Hashtbl.t = Hashtbl.create 50
 
 let strict_parsing = ref false;;
+(* let strict_parsing = ref true;; *)
+      
 let strict_parsing_warning = ref false;;
 
 

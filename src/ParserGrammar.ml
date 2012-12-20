@@ -122,7 +122,7 @@ FanConfig.antiquotations := true;
     {:expr| `$uid:x  $n |}
   | `UID x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
   level_list:
-  [ "{"; L0 level {ll}; "}" -> ll  | level {l} -> [l]]
+  [ "{"; L1 level {ll}; "}" -> ll  | level {l} -> [l]] (* FIXME L1 does not work here *)
 
   level:
   [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->
@@ -224,8 +224,8 @@ FanConfig.antiquotations := true;
      "simple"
      [ `STR(_,s) -> {| $str:s|}
      | "_" -> {| _ |}
-     | `LID x   -> (* {| $(id:{:ident|$lid:x|}) |} *)  {| $lid:x|}
-     | "("; S{p}; ")" -> p ] }
+     | `LID x   ->  {| $lid:x|}
+     | "("; S{p}; ")" -> p] }
 
   pattern:
   [ `LID i -> {:patt| $lid:i |}

@@ -3,7 +3,6 @@
     #load "ocamlbuildlib.cma";;
     for interactive debugging
  *)
-
 open Ocamlbuild_plugin
 open Ocamlbuild_pack  
 open Command
@@ -291,9 +290,9 @@ module Driver = struct
      stolen from ocamlbuild source p4_flags can not be applied twice.
      it's already applied in [ocaml_specific.ml]
    *)    
-  let p4_flags  = List.iter (fun p4 -> flag ["ocaml"; "pp"; p4] (A p4))
+  (* let p4_flags  = List.iter (fun p4 -> flag ["ocaml"; "pp"; p4] (A p4)) *)
 
-  let p4_flags' = List.iter (fun (p4, flags) -> flag ["ocaml"; "pp"; p4] flags)
+  (* let p4_flags' = List.iter (fun (p4, flags) -> flag ["ocaml"; "pp"; p4] flags) *)
 
   let fan  ?(printer=A "o")
       tag i o env build = (
@@ -371,10 +370,10 @@ end;;
 open Driver;;
 (** My rules *)
  begin (
-   let open List in
-   p4_flags & concat &
-     map (fun s -> map (fun (pre,post) -> pre ^ s ^post )
-         !Options.p4s )!Options.p4_suffix;
+   (* let open List in *)
+   (* p4_flags & concat & *)
+   (*   map (fun s -> map (fun (pre,post) -> pre ^ s ^post ) *)
+   (*       !Options.p4s )!Options.p4_suffix; *)
    rule "ocaml: ml & ml.depends  -> .dlambda" ~prod:"%.dlambda" ~deps:["%.ml";"%.ml.depends"]
      (infer_dlambda "%.ml" "%.dlambda");
    rule "ocaml: ml & ml.depends  -> .drawlambda"

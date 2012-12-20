@@ -79,14 +79,14 @@ let of_parser g n (p : stream -> 'a)   =
 
 let setup_parser e (p : stream -> 'a) =
   let f ts = Action.mk (p ts) in begin
-    e.estart <- fun _ -> f;
-    e.econtinue <- fun _ _ _ -> parser [];
+    e.estart <- (fun _ -> f);
+    e.econtinue <- (fun _ _ _ -> parser []);
     e.edesc <- Dparser f
   end;
 
 let clear e = begin 
-  e.estart <- fun _ -> parser [];
-  e.econtinue <- fun _ _ _ -> parser [];
+  e.estart <- (fun _ -> parser []);
+  e.econtinue <- (fun _ _ _ -> parser []);
   e.edesc <- Dlevels []
 end;
 

@@ -274,7 +274,7 @@ module Camlp4Bin
         begin 
           let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib
                                        ~camlp4_stdlib:!search_stdlib () ;
-          DynLoader.instance := fun () -> dynloader ;
+          DynLoader.instance := (fun () -> dynloader );
           let call_callback () =
             PreCast.iter_and_take_callbacks
               (fun (name, module_callback) ->
