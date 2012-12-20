@@ -121,10 +121,10 @@ let gen_definition _loc l =
 
 (* Lexer specification parser *)
 
-let char_int s =
-  let i = int_of_string s in
-  if (i >=0) && (i <= Cset.max_code) then i
-  else failwith ("Invalid Unicode code point: " ^ s);
+(* let char_int s = *)
+(*   let i = int_of_string s in *)
+(*   if (i >=0) && (i <= Cset.max_code) then i *)
+(*   else failwith ("Invalid Unicode code point: " ^ s); *)
 
 let regexp_for_string s =
   let rec aux n =

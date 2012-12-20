@@ -67,12 +67,10 @@ let clear_default () =
   default:="";
 let default_at_pos pos str =
   update (pos,str); 
-(* let default_at_pos pos str = *)
-(*   Hashtbl.replace default_tbl pos str; *)
-(* let default_tbl : Hashtbl.t string string = Hashtbl.create 50; *)  
 let expanders_table =
   (ref [] : ref (list ((string * ExpKey.pack) * ExpFun.pack)));
-
+let set_default s =
+  default := s;
 
 (* If the quotation has a name, it has a higher precedence,
    otherwise the [position table] has a precedence, otherwise

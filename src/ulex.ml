@@ -1,5 +1,5 @@
 (* NFA *)
-
+open LibUtil
 type node = { 
   id : int; 
   mutable eps : node list; 
@@ -27,6 +27,7 @@ let rep r succ =
   n.eps <- [r n; succ];
   n
 
+(* return [nr] instead *)
 let plus r succ =
   let n = new_node () in
   let nr = r n in
@@ -56,31 +57,15 @@ and add_nodes state nodes =
 
 let transition state =
   (* Merge transition with the same target *)
-  let rec norm = function
-    | (c1,n1)::((c2,n2)::q as l) ->
-	if n1 == n2 then norm ((Cset.union c1 c2,n1)::q)
-	else (c1,n1)::(norm l)
-    | l -> l in
-  let t = List.concat (List.map (fun n -> n.trans) state) in
-  let t = norm (List.sort (fun (_c1,n1) (_c2,n2) -> n1.id - n2.id) t) in
-
-  (* Split char sets so as to make them disjoint *)
-  let  split (all,t) ((c0 : Cset.t),n0) = 
-    let t = 
-      [(Cset.difference c0 all, [n0])] @
-      List.map (fun (c,ns) -> (Cset.intersection c c0, n0::ns)) t @
-      List.map (fun (c,ns) -> (Cset.difference c c0, ns)) t in
-    (Cset.union all c0,
-    List.filter (fun (c,_ns) -> not (Cset.is_empty c)) t) in
-
-  let (_,t) = List.fold_left split (Cset.empty,[]) t in
-
+  let t =
+    List.(sort (fun (_,n1) (_,n2) -> n1.id - n2.id)
+            (concat_map (fun n -> n.trans) state)) |> Cset.norm in
+  let (_,t) = List.fold_left Cset.split (Cset.empty,[]) t in
   (* Epsilon closure of targets *)
   let t = List.map (fun (c,ns) -> (c,add_nodes [] ns)) t in
-
   (* Canonical ordering *)
   let t = Array.of_list t in
-  Array.sort (fun (c1,_ns1) (c2,_ns2) -> compare c1 c2) t;
+  Array.sort (fun (c1,_) (c2,_) -> compare c1 c2) t;
   Array.map fst t, Array.map snd t
 
 let find_alloc tbl counter x =
@@ -93,6 +78,7 @@ let find_alloc tbl counter x =
  
 let part_tbl = Hashtbl.create 31
 let part_id = ref 0
+    
 let get_part (t : Cset.t array) = find_alloc part_tbl part_id t
 
 

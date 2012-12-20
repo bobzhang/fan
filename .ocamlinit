@@ -102,3 +102,9 @@ let env = !Toploop.toplevel_env;;
 
 (* #install_printer FanBasic.p_expr;; *)
 (* #load_rec "Gen.cmo";; *)
+
+(* #default_quotation "str";;
+   FIXME nto supported 
+*)
+open ParserLex;;
+AstQuotation.set_default "str";;

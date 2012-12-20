@@ -17,5 +17,5 @@ val gen_state :
   loc -> int -> int * int array * bool array -> binding
 val gen_definition :
   loc -> (Ulex.regexp * expr) list -> expr
-val char_int : string -> int
+(* val char_int : string -> int *)
 val regexp_for_string : string -> Ulex.regexp 

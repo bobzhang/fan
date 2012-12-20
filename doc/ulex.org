@@ -1,0 +1,136 @@
+#+OPTIONS: ^:{}
+
+
+
+* syntax category
+
+**  ch_class
+   #+BEGIN_SRC ocaml
+     t ch_class {:str|'a'-'c'|};
+     - : Cset.t = [(97, 99)]
+     t ch_class {:str|'a'|};
+     - : Cset.t = [(97, 97)]
+     t ch_class {:str|'a' 'b'|};
+     - : Cset.t = [(97, 98)]
+     t ch_class {:str|"abc"|};
+     - : Cset.t = [(97, 99)]
+     t ch_class {:str|"abcghog"|};
+     - : Cset.t = [(97, 99); (103, 104); (111, 111)]               
+   #+END_SRC
+** chr
+   
+  #+BEGIN_SRC 
+
+  #+END_SRC
+
+** regexp
+
+   #+BEGIN_SRC ocaml
+     t regexp {| 'a' |};
+     - : Ulex.regexp = <fun>
+     # t regexp {| 'a' | 'b' |};
+     - : Ulex.regexp = <fun>
+     # t regexp {| 'a' | 'b' |};
+     - : Ulex.regexp = <fun>
+     # t regexp {| 'a'  'b' |};
+     - : Ulex.regexp = <fun>
+     # t regexp {| 'a'  *  |};
+     - : Ulex.regexp = <fun>
+     # t regexp {| 'a'  +  |};
+     - : Ulex.regexp = <fun>   
+   #+END_SRC
+   
+* Run time
+  
+
+** Cset
+
+   #+BEGIN_SRC ocaml
+   type t = (int * int) list
+   #+END_SRC
+
+*** union
+    
+** Ulex
+
+   #+BEGIN_SRC ocaml
+     type node = { 
+       id : int; 
+       mutable eps : node list; 
+       mutable trans : (Cset.t * node) list;
+     }
+     
+     (* Compilation regexp -> NFA *)
+     
+     type regexp = node -> node
+   #+END_SRC
+
+
+   #+BEGIN_SRC ocaml
+     let new_node () =
+       incr cur_id;
+       { id = !cur_id; eps = []; trans = [] }
+   #+END_SRC
+
+*** seq
+
+    #+BEGIN_SRC ocaml
+    let seq r1 r2 succ = r1 (r2 succ)
+    #+END_SRC
+    
+*** alt
+    #+BEGIN_SRC ocaml
+      let alt r1 r2 succ =
+        let n = new_node () in
+        n.eps <- [r1 succ; r2 succ];
+        n
+    #+END_SRC
+
+
+*** rep
+    #+BEGIN_SRC ocaml
+      let rep r succ =
+        let n = new_node () in
+        n.eps <- [r n; succ];
+        n
+    #+END_SRC
+
+*** plus
+    #+BEGIN_SRC ocaml
+      (* return [nr] instead *)
+      let plus r succ =
+        let n = new_node () in
+        let nr = r n in
+        n.eps <- [nr; succ];
+        nr
+    #+END_SRC
+
+    
+
+*** eps 
+    #+BEGIN_SRC ocaml
+    let eps succ = succ
+    #+END_SRC
+
+*** chars
+
+    #+BEGIN_SRC ocaml
+      let chars c succ =
+        let n = new_node () in
+        n.trans <- [c,succ];
+        n
+    #+END_SRC
+
+*** compile_re
+    #+BEGIN_SRC ocaml
+      let compile_re re =
+        let final = new_node () in
+        (re final, final)
+    #+END_SRC
+
+
+
+*** state
+    #+BEGIN_SRC ocaml
+    type state = node list
+    #+END_SRC

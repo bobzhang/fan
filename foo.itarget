@@ -1,9 +1,9 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
-src/Query.cmo
+# src/Query.cmo
 # src/XStream.cmo
 # src/CharStream.cmo
-src/FanBasic.cmo
+# src/FanBasic.cmo
 src/OAstPrint.cmo
 src/FanLexUtil.cmo
 src/FanDriver.byte

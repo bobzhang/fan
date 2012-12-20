@@ -1,23 +1,53 @@
-type t = (int * int) list
+type t = (* private *) (int * int) list
 val max_code : int
 val min_code : int
-val empty : 'a list
-val singleton : 'a -> ('a * 'a) list
-val is_empty : 'a list -> bool
-val interval : 'a -> 'a -> ('a * 'a) list
-val eof : (int * int) list
-val any : (int * int) list
-val print : Format.formatter -> (int * int) list -> unit
-val dump : (int * int) list -> unit
-val union : (int * int) list -> (int * int) list -> (int * int) list
-val complement : (int * int) list -> (int * int) list
-val intersection : (int * int) list -> (int * int) list -> (int * int) list
-val difference : (int * int) list -> (int * int) list -> (int * int) list
-val base_char : (int * int) list
-val ideographic : (int * int) list
-val combining_char : (int * int) list
-val digit : (int * int) list
-val extender : (int * int) list
-val blank : (int * int) list
-val letter : (int * int) list
-val tr8876_ident_char : (int * int) list
+val empty : t
+val singleton : int -> t
+val is_empty : t -> bool
+val interval : int -> int -> t
+
+(* {[ (-1,-1) ]}*)
+val eof : t
+(* {[ (0,max_code) ]}*)    
+val any : t 
+val print : Format.formatter -> t -> unit
+
+val dump : t -> unit
+
+val union : t -> t -> t
+
+(* {[
+   Cset.complement [(1,3);(30,40)];
+   - : (int * int) list = [ -1-0 4-29 41-1114111 ]
+   ]}
+ *)
+val complement : t -> t
+
+(*
+  {[
+  Cset.intersection [(2,4);(40,50)] [(3,49)];
+  - : (int * int) list = [ 3-4 40-49 ]
+  ]}
+ *)    
+val intersection : t -> t -> t
+
+(*
+  {[
+  Cset.difference [(2,4);(40,50)] [(3,49)];
+  - : (int * int) list = [ 2-2 50-50 ]
+  ]}
+ *)    
+
+val difference :  t -> t -> t 
+
+val norm: (t * 'a) list -> (t * 'a) list
+
+val split: t * (t * 'a list) list ->  t * 'a ->  t * (t * 'a list) list    
+val base_char : t 
+val ideographic : t 
+val combining_char : t 
+val digit : t
+val extender : t 
+val blank : t 
+val letter : t 
+val tr8876_ident_char : t 

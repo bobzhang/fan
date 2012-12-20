@@ -20,9 +20,9 @@ val partitions: unit -> (int * (int * int * int) list) list
 
 val new_node : unit -> node
 val compile_re : (node -> 'a) -> 'a * node
-val add_node : node list -> node -> node list
-val add_nodes : node list -> node list -> node list
-val transition : node list -> (int * int) list array * node list array
+val add_node: state -> node -> state
+val add_nodes: state -> node list -> state
+val transition: state -> (int * int) list array * state array
 val find_alloc : ('a, int) Hashtbl.t -> int ref -> 'a -> int
 val get_part : Cset.t array -> int
 

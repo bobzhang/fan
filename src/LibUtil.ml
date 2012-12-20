@@ -17,66 +17,7 @@ let finally action f x  =
     
 let with_dispose ~dispose f x =
   finally (fun () -> dispose x) f x;
-    
-module MapMake(S:Map.OrderedType) = struct
-  include Map.Make S;
-  let of_list lst =
-    List.fold_left (fun acc (k,v)  -> add k v acc) empty lst;
-  let add_list lst base =
-    List.fold_left (fun acc (k,v) -> add k v acc) base lst;
-  let of_hashtbl tbl =
-    Hashtbl.fold (fun k v acc -> add k v acc) tbl empty;
-  let elements map =
-    fold (fun k v acc ->  [ (k,v) :: acc] ) map [] ;
-  let find_default ~default k m =
-    try find k m with Not_found -> default;
-end ;
 
-module SSet = Set.Make String;
-module SMap = MapMake String;
-module IMap = Set.Make (struct
-  type t = int;
-  let compare = Pervasives.compare ; 
-end);
-
-module ISet = Set.Make(struct
- type t = int;
- let compare = Pervasives.compare;
-end);
-
-
-module Hashset = struct
-  type t 'a =  Hashtbl.t 'a unit;
-  let create = Hashtbl.create;
-  let add set x = Hashtbl.replace set x ();
-  let remove = Hashtbl.remove;
-  let mem = Hashtbl.mem;
-  let iter f = Hashtbl.iter (fun v () -> f v);
-  let fold f = Hashtbl.fold (fun v () st -> f v st);
-  let elements = Hashtbl.length;
-  let clear = Hashtbl.clear;
-  let of_list ?(size=100) vs = 
-    let set = create size in begin
-      List.iter (add set) vs;
-      set
-    end;
-  let add_list set vs =
-    List.iter (add set) vs;
-  let to_list set = fold (fun x y -> [x::y]) set [];
-end ;
-
-let mk_set (type s) ~cmp =
-  let module M = struct type t = s; let compare = cmp; end in
-  (module Set.Make M :Set.S with type elt = s);
-
-let mk_map (type s) ~cmp=
-  let module M = struct type t = s; let compare = cmp; end in
-  (module Map.Make M : Map.S with type key = s);
-  
-let mk_hashtbl (type s) ~eq ~hash =
-  let module M=struct type t = s; let equal = eq; let hash = hash; end
-  in  (module Hashtbl.Make M  :Hashtbl.S with type key = s);
-  
 (** {6 Operators}*)
 let ( |> ) x f = f x;
 let (&) f x = f x;
@@ -136,6 +77,8 @@ let callcc  (type u) (f: cont u-> u)  =
   try f (fun x -> raise (M.Return x))
   with [M.Return u -> u];
   
+
+
 
 module List = struct
   include List;
@@ -231,9 +174,73 @@ module List = struct
   let reduce_right compose = reduce_right_with ~compose ~f:(fun x -> x);
     
   let init n f =
-    Array.(to_list & (init n f ));
-end;
+    Array.(to_list ( (init n f )));
 
+  let concat_map f lst =
+    fold_right (fun x acc -> f x @ acc) lst [];
+
+end;
+  
+module MapMake(S:Map.OrderedType) = struct
+  include Map.Make S;
+  let of_list lst =
+    List.fold_left (fun acc (k,v)  -> add k v acc) empty lst;
+  let add_list lst base =
+    List.fold_left (fun acc (k,v) -> add k v acc) base lst;
+  let of_hashtbl tbl =
+    Hashtbl.fold (fun k v acc -> add k v acc) tbl empty;
+  let elements map =
+    fold (fun k v acc ->  [ (k,v) :: acc] ) map [] ;
+  let find_default ~default k m =
+    try find k m with Not_found -> default;
+end ;
+
+
+module SSet = Set.Make String;
+module SMap = MapMake String;
+module IMap = Set.Make (struct
+  type t = int;
+  let compare = Pervasives.compare ; 
+end);
+
+module ISet = Set.Make(struct
+ type t = int;
+ let compare = Pervasives.compare;
+end);
+
+
+module Hashset = struct
+  type t 'a =  Hashtbl.t 'a unit;
+  let create = Hashtbl.create;
+  let add set x = Hashtbl.replace set x ();
+  let remove = Hashtbl.remove;
+  let mem = Hashtbl.mem;
+  let iter f = Hashtbl.iter (fun v () -> f v);
+  let fold f = Hashtbl.fold (fun v () st -> f v st);
+  let elements = Hashtbl.length;
+  let clear = Hashtbl.clear;
+  let of_list ?(size=100) vs = 
+    let set = create size in begin
+      List.iter (add set) vs;
+      set
+    end;
+  let add_list set vs =
+    List.iter (add set) vs;
+  let to_list set = fold (fun x y -> [x::y]) set [];
+end ;
+
+let mk_set (type s) ~cmp =
+  let module M = struct type t = s; let compare = cmp; end in
+  (module Set.Make M :Set.S with type elt = s);
+
+let mk_map (type s) ~cmp=
+  let module M = struct type t = s; let compare = cmp; end in
+  (module Map.Make M : Map.S with type key = s);
+  
+let mk_hashtbl (type s) ~eq ~hash =
+  let module M=struct type t = s; let equal = eq; let hash = hash; end
+  in  (module Hashtbl.Make M  :Hashtbl.S with type key = s);
+  
 module Char = struct
   include Char;
   let is_whitespace = fun

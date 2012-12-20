@@ -1,5 +1,6 @@
 
 module Ast = Camlp4Ast;
+open LibUtil;  
 open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 
 {:extend.create|Gram regexp chr ch_class|};
@@ -34,13 +35,14 @@ let apply () =
    |`LID x ->
        try  Hashtbl.find Ulex.named_regexps x
        with Not_found ->
-         failwith 
-           ("pa_ulex (error): reference to unbound regexp name `"^x^"'")
-  ]}
+         failwithf "referenced to unbound named  regexp  `%s'" x  ]}
 
   chr: 
   [ `CHAR (c,_) -> Char.code c
-  |  `INT(_,i) -> LexGen.char_int i ]
+  |  `INT(i,s) ->
+      if i >= 0 && i <= Cset.max_code then i
+      else failwithf "Invalid Unicode code point:%s" s]
+
   ch_class: 
    [ chr{c1}; "-"; chr{c2} -> Cset.interval c1 c2
    | chr{c} -> Cset.singleton c
