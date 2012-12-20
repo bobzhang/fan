@@ -461,7 +461,8 @@ let syntax_lib_file
       ;"mikmatch_pcre", [`D "pa_mikmatch_pcre.cma"]
       ;"meta_filter",    [`D "meta_filter.cma"]
       ;"text", [`D "text.cma"; `D "text-pcre-syntax.cma"]
-      ;"type_conv", [`D "pa_type_conv.cma"]   
+      ;"type_conv", [`D "pa_type_conv.cma"]
+      ;"js_of_ocaml", [`D "pa_js.cmo"]   
       ]
 let syntax_lib_file_cache
     = ".syntax_lib_file_cache"
@@ -526,8 +527,7 @@ let syntax_path syntax_lib_file = (
         flag a b 
       with
         Not_found ->
-          Log.dprintf 2 "syntax package %s not setup" x
-              ) syntax_lib_file;
+          Log.dprintf 2 "syntax package %s not setup" x ) syntax_lib_file;
     close_in chin ;
   end 
   else begin
@@ -799,8 +799,6 @@ let () =
   after_rules_dispatch := fun () -> begin
     flag ["ocaml"; "pp"; "use_fan"] boot_flags;
     flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
-    (* dep ["ocaml"; "link"; "native"] ["src/Camlp4Filters.cmx"]; *)
-    (* dep ["ocaml"; "link"; "byte"] ["src/Camlp4Filters.cmo"]; *)
     "src/Camlp4Ast.ml" |-? ["src/Ast.ml"];
     "src/Lib/Ctyp.ml" |-? ["src/Lib/CommonStructure.ml" ];
     "src/Lib/Expr.ml" |-? ["src/Lib/CommonStructure.ml"; "src/Lib/ExprPatt.ml" ];

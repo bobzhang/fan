@@ -1,0 +1,3 @@
+true: use_menhir, pkg_oUnit
+
+<JsClient.ml>:camlp4o, use_js_of_ocaml, pkg_js_of_ocaml
