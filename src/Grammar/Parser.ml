@@ -75,6 +75,11 @@ let rec parser_of_tree entry (lev,assoc) x =
         | [< a = from_tree bro >] -> a ]
   (* [son] will never be [DeadEnd] *)        
   | Node ({ node ; son; brother } as y) ->
+      let skip_if_empty bp strm =
+        if get_cur_loc strm = bp then
+          Action.mk (fun _ -> raise XStream.Failure)
+        else
+          raise XStream.Failure  in
       let  parser_cont  (node,son) loc a =
         let pson = from_tree son in 
         let recover loc a strm =
@@ -92,20 +97,16 @@ let rec parser_of_tree entry (lev,assoc) x =
                 [[< a = (entry_of_symb entry node).econtinue 0 loc a;
                     act = pson ?? Failed.tree_failed entry a node son >] ->
                       Action.mk (fun _ -> Action.getf act a) ] in
-            let skip_if_empty bp strm =
-              if get_cur_loc strm = bp then
-                Action.mk (fun _ -> raise XStream.Failure)
-              else
-                raise XStream.Failure  in
             let do_recover loc a =
               parser
-                [ [<b = from_tree (top_tree entry son) >] -> b
-                | [<b = skip_if_empty loc >] -> b
-                | [<b = continue loc a >] -> b] in
+                [(*  [<b = from_tree (top_tree entry son) >] -> b *)
+                (* | *) [<b = skip_if_empty loc >] -> b
+                (* | [<b = continue loc a  >] -> b *)] in
             do_recover loc a strm in
         parser
           [ [< b = pson >] -> b
-          | [< b = recover  loc a >] -> b
+          (* | [< b = recover  loc a >] -> b *)
+          | [< b = skip_if_empty loc >] -> b 
           | [< >] -> raise (XStream.Error (Failed.tree_failed entry a node son)) ] in
       match Tools.get_terminals  y with
       [ None ->
