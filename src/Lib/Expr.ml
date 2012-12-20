@@ -187,25 +187,25 @@ let bad_patt _loc =
    has a special meaning, then that replacment will be used
  *)  
 let substp loc env =
-  let rec loop = fun
-    [ {| $e1 $e2 |} -> {:patt@loc| $(loop e1) $(loop e2) |} 
-    | {| |} -> {:patt@loc| |}
+  let rec loop = with {"patt":"expr";"expr":"patt"} fun
+    [ {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
+    | {| |} -> {@loc| |}
     | {| $lid:x |} ->
         try List.assoc x env with
-          [ Not_found -> {:patt@loc| $lid:x |} ]
+          [ Not_found -> {@loc| $lid:x |} ]
     | {| $uid:x |} ->
         try List.assoc x env with
-          [ Not_found -> {:patt@loc| $uid:x |} ]
-    | {| $int:x |} -> {:patt@loc| $int:x |}
-    | {| $str:s |} -> {:patt@loc| $str:s |}
-    | {| $tup:x |} -> {:patt@loc| $(tup:loop x) |}
-    | {| $x1, $x2 |} -> {:patt@loc| $(loop x1), $(loop x2) |}
+          [ Not_found -> {@loc| $uid:x |} ]
+    | {| $int:x |} -> {@loc| $int:x |}
+    | {| $str:s |} -> {@loc| $str:s |}
+    | {| $tup:x |} -> {@loc| $(tup:loop x) |}
+    | {| $x1, $x2 |} -> {@loc| $(loop x1), $(loop x2) |}
     | {| { $bi } |} ->
-        let rec substbi = fun
-          [ {:rec_binding| $b1; $b2 |} -> {:patt@loc| $(substbi b1); $(substbi b2) |}
-          | {:rec_binding| $id:i = $e |} -> {:patt@loc| $i = $(loop e) |}
+        let rec substbi = with {"patt":"rec_binding";"expr":"patt"} fun
+          [ {| $b1; $b2 |} -> {@loc| $(substbi b1); $(substbi b2) |}
+          | {| $id:i = $e |} -> {@loc| $i = $(loop e) |}
           | _ -> bad_patt _loc ] in
-        {:patt@loc| { $(substbi bi) } |}
+        {@loc| { $(substbi bi) } |}
     | _ -> bad_patt loc ] in loop;
 
 (*

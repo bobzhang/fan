@@ -1,6 +1,6 @@
 (* -*- Mode:caml; -*- *)
 
-(* #use "topfind";; *)
+#use "topfind";;
 
 (* #require "batteries";; *)
 open Format;;

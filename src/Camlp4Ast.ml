@@ -641,7 +641,7 @@ end;
 let wildcarder = object (self)
   inherit map as super;
   method! patt = fun
-  [ {:patt@_loc| $lid:_ |} -> {:patt| _ |}
+  [ {:patt| $lid:_ |} -> {:patt| _ |}
   | {:patt| ($p as $_) |} -> self#patt p
   | p -> super#patt p ];
 end;
@@ -653,9 +653,9 @@ end;
 let match_pre = object (self)
   inherit map; (* as super; *)
   method! match_case = with "match_case" fun
-   [ {@_loc| $pat:p -> $e |} -> {| $pat:p -> fun () -> $e |}
-   | {@_loc| $pat:p when $e -> $e1 |} -> {| $pat:p when $e -> fun () -> $e1 |}
-   | {@_loc| $a1 | $a2 |} -> {| $(self#match_case a1) | $(self#match_case a2) |}
-   | {@_loc| |} -> {| |}
-   | {@_loc| $anti:x |} -> {| $(anti: add_context x "lettry" ) |} ];
+   [ {| $pat:p -> $e |} -> {| $pat:p -> fun () -> $e |}
+   | {| $pat:p when $e -> $e1 |} -> {| $pat:p when $e -> fun () -> $e1 |}
+   | {| $a1 | $a2 |} -> {| $(self#match_case a1) | $(self#match_case a2) |}
+   | {| |} -> {| |}
+   | {| $anti:x |} -> {| $(anti: add_context x "lettry" ) |} ];
 end;

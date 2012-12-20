@@ -20,7 +20,7 @@ let print_warning loc txt = !current_warning loc txt;
   ctyp cvalue_binding direction_flag direction_flag_quot
   dummy eq_expr expr expr_eoi field_expr field_expr_list fun_binding
   fun_def ident implem interf ipatt ipatt_tcon patt_tcon label
-  label_declaration  label_declaration_list label_expr label_expr_list (* labeled_ipatt *)
+  label_declaration  label_declaration_list label_expr label_expr_list 
   label_patt_list label_patt label_longident
   let_binding meth_list meth_decl module_binding
   module_binding

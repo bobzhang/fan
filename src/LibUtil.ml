@@ -22,6 +22,8 @@ module MapMake(S:Map.OrderedType) = struct
   include Map.Make S;
   let of_list lst =
     List.fold_left (fun acc (k,v)  -> add k v acc) empty lst;
+  let add_list lst base =
+    List.fold_left (fun acc (k,v) -> add k v acc) base lst;
   let of_hashtbl tbl =
     Hashtbl.fold (fun k v acc -> add k v acc) tbl empty;
   let elements map =

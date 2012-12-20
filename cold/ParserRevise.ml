@@ -3,12 +3,13 @@ open Lib
 open LibUtil
 open FanUtil
 open GramLib
+let help_sequences () =
+  Printf.eprintf
+    "New syntax:\n    (e1; e2; ... ; en) OR begin e1; e2; ... ; en end\n    while e do e1; e2; ... ; en done\n    for v = v1 to/downto v2 do e1; e2; ... ; en done\nOld syntax (still supported):\n    begin e1; e2; ... ; en end\n    while e begin e1; e2; ... ; en end\n    for v = v1 to/downto v2 do {e1; e2; ... ; en}\nVery old (no more supported) syntax:\n    do e1; e2; ... ; en-1; return en\n    while e do e1; e2; ... ; en; done\n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\n";
+  flush stderr;
+  exit 1
+let pos_exprs = Gram.mk "pos_exprs"
 let apply () =
-  let help_sequences () =
-    Printf.eprintf
-      "New syntax:\n    (e1; e2; ... ; en) OR begin e1; e2; ... ; en end\n    while e do e1; e2; ... ; en done\n    for v = v1 to/downto v2 do e1; e2; ... ; en done\nOld syntax (still supported):\n    begin e1; e2; ... ; en end\n    while e begin e1; e2; ... ; en end\n    for v = v1 to/downto v2 do {e1; e2; ... ; en}\nVery old (no more supported) syntax:\n    do e1; e2; ... ; en-1; return en\n    while e do e1; e2; ... ; en; done\n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\n";
-    flush stderr;
-    exit 1 in
   Options.add
     ("-help_seq", (FanArg.Unit help_sequences),
       "Print explanations about new sequences and exit.");
@@ -152,7 +153,8 @@ let apply () =
    Gram.clear typevars;
    Gram.clear val_longident;
    Gram.clear with_constr;
-   Gram.clear with_constr_quot);
+   Gram.clear with_constr_quot;
+   Gram.clear lang);
   (let list = ['!'; '?'; '~'] in
    let excl = ["!="; "??"] in
    setup_op_parser prefixop
@@ -962,6 +964,29 @@ let apply () =
                        (let old = AstQuotation.default.contents in
                         (AstQuotation.default := s; old) : 'lang )
                    | _ -> assert false)))])]);
+   Gram.extend (pos_exprs : 'pos_exprs Gram.t )
+     (None,
+       [(None, None,
+          [([`Slist1sep
+               ((Gram.srules pos_exprs
+                   [([`Stoken
+                        (((function | `STR (_,_) -> true | _ -> false)),
+                          (`Normal, "`STR (_,_)"));
+                     `Skeyword ":";
+                     `Stoken
+                       (((function | `STR (_,_) -> true | _ -> false)),
+                         (`Normal, "`STR (_,_)"))],
+                      (Gram.mk_action
+                         (fun (__fan_2 : [> FanToken.t])  _ 
+                            (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                            match (__fan_2, __fan_0) with
+                            | (`STR (_,y),`STR (_,x)) -> ((x, y) : 'e__2 )
+                            | _ -> assert false)))]), (`Skeyword ";"))],
+             (Gram.mk_action
+                (fun (xys : 'e__2 list)  (_loc : FanLoc.t)  ->
+                   (let old = AstQuotation.map.contents in
+                    AstQuotation.map := (SMap.add_list xys old); old : 
+                   'pos_exprs ))))])]);
    Gram.extend (fun_def_patt : 'fun_def_patt Gram.t )
      (None,
        [(None, None,
@@ -1128,6 +1153,15 @@ let apply () =
             (Gram.mk_action
                (fun (x : 'expr)  (old : 'lang)  _  (_loc : FanLoc.t)  ->
                   (AstQuotation.default := old; x : 'expr ))));
+          ([`Skeyword "with";
+           `Skeyword "{";
+           `Snterm (Gram.obj (pos_exprs : 'pos_exprs Gram.t ));
+           `Skeyword "}";
+           `Sself],
+            (Gram.mk_action
+               (fun (x : 'expr)  _  (old : 'pos_exprs)  _  _ 
+                  (_loc : FanLoc.t)  -> (AstQuotation.map := old; x : 
+                  'expr ))));
           ([`Skeyword "for";
            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
            `Skeyword "=";
@@ -1730,13 +1764,13 @@ let apply () =
                [([`Skeyword "&"],
                   (Gram.mk_action
                      (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                        (Gram.string_of_token x : 'e__2 ))));
+                        (Gram.string_of_token x : 'e__3 ))));
                ([`Skeyword "&&"],
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__2 ))))]],
+                       (Gram.string_of_token x : 'e__3 ))))]],
              (Gram.mk_action
-                (fun (x : 'e__2)  (_loc : FanLoc.t)  ->
+                (fun (x : 'e__3)  (_loc : FanLoc.t)  ->
                    (Ast.ExId (_loc, (Ast.IdLid (_loc, x))) : 'infixop1 ))))])]);
    Gram.extend (infixop0 : 'infixop0 Gram.t )
      (None,
@@ -1745,13 +1779,13 @@ let apply () =
                [([`Skeyword "or"],
                   (Gram.mk_action
                      (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                        (Gram.string_of_token x : 'e__3 ))));
+                        (Gram.string_of_token x : 'e__4 ))));
                ([`Skeyword "||"],
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__3 ))))]],
+                       (Gram.string_of_token x : 'e__4 ))))]],
              (Gram.mk_action
-                (fun (x : 'e__3)  (_loc : FanLoc.t)  ->
+                (fun (x : 'e__4)  (_loc : FanLoc.t)  ->
                    (Ast.ExId (_loc, (Ast.IdLid (_loc, x))) : 'infixop0 ))))])]);
    Gram.extend (sem_expr_for_list : 'sem_expr_for_list Gram.t )
      (None,
@@ -4889,9 +4923,9 @@ let apply () =
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
                        (fun _  (st : 'str_item)  (_loc : FanLoc.t)  ->
-                          (st : 'e__4 ))))])],
+                          (st : 'e__5 ))))])],
             (Gram.mk_action
-               (fun (l : 'e__4 list)  (_loc : FanLoc.t)  ->
+               (fun (l : 'e__5 list)  (_loc : FanLoc.t)  ->
                   (Ast.stSem_of_list l : 'str_items ))))])]);
    Gram.extend (top_phrase : 'top_phrase Gram.t )
      (None,
@@ -5189,9 +5223,9 @@ let apply () =
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
                        (fun _  (csg : 'class_sig_item)  (_loc : FanLoc.t)  ->
-                          (csg : 'e__5 ))))])],
+                          (csg : 'e__6 ))))])],
             (Gram.mk_action
-               (fun (l : 'e__5 list)  (_loc : FanLoc.t)  ->
+               (fun (l : 'e__6 list)  (_loc : FanLoc.t)  ->
                   (Ast.cgSem_of_list l : 'class_signature ))))])]);
    Gram.extend (class_sig_item : 'class_sig_item Gram.t )
      (None,
@@ -5309,9 +5343,9 @@ let apply () =
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
                        (fun _  (cst : 'class_str_item)  (_loc : FanLoc.t)  ->
-                          (cst : 'e__6 ))))])],
+                          (cst : 'e__7 ))))])],
             (Gram.mk_action
-               (fun (l : 'e__6 list)  (_loc : FanLoc.t)  ->
+               (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->
                   (Ast.crSem_of_list l : 'class_structure ))))])]);
    Gram.extend (class_str_item : 'class_str_item Gram.t )
      (None,

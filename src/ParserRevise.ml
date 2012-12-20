@@ -3,11 +3,8 @@ open Lib;
 open LibUtil;
 open FanUtil;
 open GramLib;
-
-let apply () = begin 
-  let help_sequences () =
-    begin
-      Printf.eprintf "\
+let help_sequences () = begin
+  Printf.eprintf "\
 New syntax:\
 \n    (e1; e2; ... ; en) OR begin e1; e2; ... ; en end\
 \n    while e do e1; e2; ... ; en done\
@@ -20,11 +17,10 @@ New syntax:\
 \n    do e1; e2; ... ; en-1; return en\
 \n    while e do e1; e2; ... ; en; done\
 \n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\
-\n";
-      flush stderr;
-      exit 1
-    end
-  ;
+\n"; flush stderr; exit 1  end;
+
+{:extend.create|Gram pos_exprs|};
+let apply () = begin 
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
 
@@ -39,16 +35,18 @@ New syntax:\
     constrain constructor_arg_list constructor_declaration constructor_declarations ctyp ctyp_quot
     cvalue_binding direction_flag dummy eq_expr expr expr_eoi expr_quot field_expr field_expr_list fun_binding
     fun_def ident ident_quot implem interf ipatt ipatt_tcon patt_tcon label label_declaration label_declaration_list
-    label_expr_list label_expr label_longident label_patt label_patt_list (* labeled_ipatt *) let_binding meth_list
+    label_expr_list label_expr label_longident label_patt label_patt_list  let_binding meth_list
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
     more_ctyp name_tags opt_as_lident opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot
-    opt_eq_ctyp opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual (* opt_when_expr *)
+    opt_eq_ctyp opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot   poly_type row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
     str_item str_item_quot str_items top_phrase type_constraint type_declaration type_ident_and_parameters
     type_kind type_longident type_longident_and_parameters type_parameter type_parameters typevars 
-    val_longident with_constr with_constr_quot |};  
+    val_longident with_constr with_constr_quot
+      lang
+  |};  
 
 
   let list = ['!'; '?'; '~'] in
@@ -257,21 +255,29 @@ New syntax:\
           [ "("; "type"; a_LIDENT{i}; ")"; S{e} -> {| fun (type $i) -> $e |}
           | ipatt{p}; S{e} -> {| fun $p -> $e |}
           | cvalue_binding{bi} -> bi  ] }
-      lang:
-      [ `STR(_,s) -> begin let old = !AstQuotation.default;  AstQuotation.default := s; old end ]
-      fun_def_patt:
-          ["(";"type";a_LIDENT{i};")" -> fun e -> {|fun (type $i) -> $e |}
-          | ipatt{p} -> fun e -> {| fun $p -> $e |}
-          | ipatt{p}; "when"; expr{w} -> fun e -> {|fun $p when $w -> $e |} ]
-      fun_def:
-      {RA
-         [ fun_def_patt{f}; "->"; expr{e} ->  f e
-         | fun_def_patt{f}; S{e} -> f e]
-       }    
-      opt_expr:
-      [ expr{e} -> e | -> {||} ]
-      expr:
-      { "top" RA
+       lang:
+       [ `STR(_,s) ->
+        begin let old = !AstQuotation.default;  AstQuotation.default := s; old end ]
+       pos_exprs:
+       [ L1 [ `STR(_,x); ":";`STR(_,y) -> (x,y) ] SEP ";"{xys}  ->
+         begin
+           let old = !AstQuotation.map;
+           AstQuotation.map := SMap.add_list xys old;
+           old
+         end
+       ]
+       fun_def_patt:
+       ["(";"type";a_LIDENT{i};")" -> fun e -> {|fun (type $i) -> $e |}
+       | ipatt{p} -> fun e -> {| fun $p -> $e |}
+       | ipatt{p}; "when"; expr{w} -> fun e -> {|fun $p when $w -> $e |} ]
+       fun_def:
+       {RA
+          [ fun_def_patt{f}; "->"; expr{e} ->  f e
+          | fun_def_patt{f}; S{e} -> f e] }    
+       opt_expr:
+       [ expr{e} -> e | -> {||} ]
+       expr:
+       { "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
             {| let $rec:r $bi in $x |}
         | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; S{e} ->
@@ -285,19 +291,14 @@ New syntax:\
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
               
-        | "match"; S{e}; "with"; match_case{a} ->
-            (* {| match $(Expr.mksequence' _loc e) with [ $a ] |} *)
-            {|match $e with [$a]|}
-        | "try"; S{e}; "with"; match_case{a} ->
-            (* {| try $(Expr.mksequence' _loc e) with [ $a ] |} *)
-            {|try $e with [$a]|}
-        | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} ->
-            {| if $e1 then $e2 else $e3 |}
+        | "match"; S{e}; "with"; match_case{a} -> {|match $e with [$a]|}
+        | "try"; S{e}; "with"; match_case{a} -> {|try $e with [$a]|}
+        | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} -> {| if $e1 then $e2 else $e3 |}
         | "do"; sequence{seq}; "done" -> Expr.mksequence _loc seq
-        (* | "do"; "{"; sequence{seq};"}" -> Expr.mksequence _loc seq *)
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
-        | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do"; sequence{seq}; "done"
-          -> {| for $i = $e1 $to:df $e2 do $seq done |}
+        | "with";"{"; pos_exprs{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
+        | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
+            sequence{seq}; "done" -> {| for $i = $e1 $to:df $e2 do $seq done |}
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
             {|while $e do $seq done |}
         | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
