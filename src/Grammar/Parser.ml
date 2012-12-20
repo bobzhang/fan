@@ -82,30 +82,8 @@ let rec parser_of_tree entry (lev,assoc) x =
           raise XStream.Failure  in
       let  parser_cont  (node,son) loc a =
         let pson = from_tree son in 
-        let recover loc a strm =
-          if !FanConfig.strict_parsing then
-            raise (XStream.Error (Failed.tree_failed entry a node son))
-          else
-            let _ =
-              if !FanConfig.strict_parsing_warning then begin
-                let msg = Failed.tree_failed entry a node son;
-                  Format.eprintf "Warning: trying to recover from syntax error";
-                  if entry.ename <> "" then Format.eprintf " in [%s]" entry.ename else ();
-                  Format.eprintf "\n%s%a@." msg FanLoc.print loc;
-              end else () in
-            let continue loc a = parser
-                [[< a = (entry_of_symb entry node).econtinue 0 loc a;
-                    act = pson ?? Failed.tree_failed entry a node son >] ->
-                      Action.mk (fun _ -> Action.getf act a) ] in
-            let do_recover loc a =
-              parser
-                [(*  [<b = from_tree (top_tree entry son) >] -> b *)
-                (* | *) [<b = skip_if_empty loc >] -> b
-                (* | [<b = continue loc a  >] -> b *)] in
-            do_recover loc a strm in
         parser
           [ [< b = pson >] -> b
-          (* | [< b = recover  loc a >] -> b *)
           | [< b = skip_if_empty loc >] -> b 
           | [< >] -> raise (XStream.Error (Failed.tree_failed entry a node son)) ] in
       match Tools.get_terminals  y with
@@ -116,8 +94,6 @@ let rec parser_of_tree entry (lev,assoc) x =
           [ [< a = ps; act = parser_cont (node,son) bp a >] -> Action.getf act a
           | [< a = from_tree brother >] -> a ]
       | Some (tokl, node, son) ->
-          (* let p1 = *)
-          (*   parser_of_terminals  tokl (parser_cont (node,son)) in  *)
           parser
             [ [< a = parser_of_terminals tokl (parser_cont ((node:>symbol),son)) >] -> a
             | [< a = from_tree brother >] -> a ] ] ] in
