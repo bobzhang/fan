@@ -1,4 +1,6 @@
 
+(* A pure and re-entrant module *)
+open LibUtil;
 (*
   the generated code depends on [next] [backtrack] [start] [Error]
   *)
@@ -6,29 +8,27 @@ module Ast = Camlp4Ast;
 let _loc = FanLoc.ghost;
 open Ulex;
   
-let tables = Hashtbl.create 31;
-let tables_counter = ref 0;
-let get_tables () = begin 
+
+let get_tables ~tables () = begin 
   let t = Hashtbl.fold (fun key x accu -> [(x,key)::accu]) tables [] ;
   Hashtbl.clear tables;
   t
 end;
   
-let table_name t =
+let table_name ~tables ~counter t =
   try Hashtbl.find tables t
   with Not_found -> begin 
-    incr tables_counter;
-    let n = Printf.sprintf "__ulex_table_%i" !tables_counter ;
+    incr counter;
+    let n = Printf.sprintf "__ulex_table_%i" !counter ;
     Hashtbl.add tables t n;
     n
   end;
 
-let output_byte buf b = begin 
-  Buffer.add_char buf '\\';
-  Buffer.add_char buf (Char.chr(48 + b / 100));
-  Buffer.add_char buf (Char.chr(48 + (b / 10) mod 10));
-  Buffer.add_char buf (Char.chr(48 + b mod 10))
-end;
+let output_byte buf b =
+  let open Buffer in begin
+    ignore( buf +> '\\' +>  Char.chr (48 + b/100)  +>
+            Char.chr (48 + (b/10) mod 10) +> Char.chr (48 + b mod 10))
+  end;
   
 let output_byte_array v =  begin 
   let b = Buffer.create (Array.length v * 5) ;
@@ -44,7 +44,7 @@ let table (n,t) = {:str_item| let $lid:n = $(output_byte_array t) |};
 
 let partition_name i = Printf.sprintf "__ulex_partition_%i" i;
 
-let partition (i,p) =
+let partition ~counter ~tables (i,p) =
   let rec gen_tree = function 
     [ Lte (i,yes,no) ->
 	{:expr| if (c <= $`int:i) 
@@ -54,8 +54,8 @@ let partition (i,p) =
     | Table (offset, t) ->
 	let c = if offset = 0 then {:expr| c |} 
 	else {:expr| (c - $`int:offset) |} in
-	{:expr| Char.code ($(lid: table_name t).[$c]) - 1|} ] in
-  let body = gen_tree (simplify (-1) (Cset.max_code) (decision_table p)) in
+	{:expr| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
+  let body = gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = partition_name i in
   {:str_item| let $lid:f = fun c -> $body |};
 
@@ -69,24 +69,24 @@ let best_final final =
   !fin
   end;
 
-let call_state auto state =
-  match auto.(state) with (_,trans,final) ->
-    if Array.length trans = 0 
-    then match best_final final with
-      [ Some i -> {:expr| $`int:i |}
+
+let gen_definition _loc l =
+  let call_state auto state = with "expr"
+    let (_,trans,final) = auto.(state) in
+    if Array.length trans = 0 then
+      match best_final final with
+      [ Some i -> {| $`int:i |}
       | None -> assert false]
     else
       let f = Printf.sprintf "__ulex_state_%i" state in
-      {:expr| $lid:f lexbuf |};
-	
-
-let gen_state auto _loc i (part,trans,final) = 
-  let f = Printf.sprintf "__ulex_state_%i" i in
-  let p = partition_name part in
-  let cases =
-    Array.mapi 
-      (fun i j -> {:match_case| $`int:i -> $(call_state auto j) |}) 
-      trans in
+      {| $lid:f lexbuf |} in
+  let gen_state auto _loc i (part,trans,final) = 
+    let f = Printf.sprintf "__ulex_state_%i" i in
+    let p = partition_name part in
+    let cases =
+      Array.mapi 
+        (fun i j -> {:match_case| $`int:i -> $(call_state auto j) |})
+        trans in
   let cases = Array.to_list cases in
   let body = 
     {:expr|
@@ -100,14 +100,12 @@ let gen_state auto _loc i (part,trans,final) =
     | Some i -> 
 	if Array.length trans = 0 then {:binding||} else
 	ret
-	  {:expr| begin  Ulexing.mark lexbuf $`int:i;  $body end |} ];
+	  {:expr| begin  Ulexing.mark lexbuf $`int:i;  $body end |} ] in
 
 
-let gen_definition _loc l =
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
   let auto = Ulex.compile rs in
-
   let cases = Array.mapi (fun i (_,e) -> {:match_case| $`int:i -> $e |}) brs in
   let states = Array.mapi (gen_state auto _loc) auto in
   {:expr| fun lexbuf ->
@@ -121,17 +119,6 @@ let gen_definition _loc l =
 
 (* Lexer specification parser *)
 
-(* let char_int s = *)
-(*   let i = int_of_string s in *)
-(*   if (i >=0) && (i <= Cset.max_code) then i *)
-(*   else failwith ("Invalid Unicode code point: " ^ s); *)
-
-let regexp_for_string s =
-  let rec aux n =
-    if n = String.length s then Ulex.eps
-    else 
-      Ulex.seq (Ulex.chars (Cset.singleton (Char.code s.[n]))) (aux (succ n))
-  in aux 0;
 
 
 

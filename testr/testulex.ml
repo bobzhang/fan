@@ -18,7 +18,7 @@ let rec token enc = lexer
 and comment = lexer
   [ "*)" -> ()
   | eof -> failwith "comment"
-  | _ -> let lexeme = Ulexing.lexeme lexbuf in
+  | _ -> let _lexeme = Ulexing.lexeme lexbuf in
     print_string  "comment"
    ];
 

@@ -1,6 +1,6 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
-# src/Query.cmo
+src/Query.cmo
 # src/XStream.cmo
 # src/CharStream.cmo
 # src/FanBasic.cmo

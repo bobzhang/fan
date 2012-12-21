@@ -1,6 +1,10 @@
+
+
 (* Character sets are represented as lists of intervals.
    The intervals must be non-overlapping and not collapsable, 
-   and the list must be ordered in increasing order. *)
+   and the list must be ordered in increasing order.
+   It's a pure and re-entrant module '
+ *)
 
 type t = (int * int) list
 
@@ -25,7 +29,7 @@ let dump l =
 (*
   Example:
   {[
-  Cset.union [(1,3);(5,7);(9,11)] [(2,4);(6,8);(10,12)];
+  LexSet.union [(1,3);(5,7);(9,11)] [(2,4);(6,8);(10,12)];
   - : (int * int) list = [(1, 12)]
   ]}
  *)    

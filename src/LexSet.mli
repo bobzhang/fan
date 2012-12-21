@@ -17,7 +17,7 @@ val dump : t -> unit
 val union : t -> t -> t
 
 (* {[
-   Cset.complement [(1,3);(30,40)];
+   LexSet.complement [(1,3);(30,40)];
    - : (int * int) list = [ -1-0 4-29 41-1114111 ]
    ]}
  *)
@@ -25,7 +25,7 @@ val complement : t -> t
 
 (*
   {[
-  Cset.intersection [(2,4);(40,50)] [(3,49)];
+  LexSet.intersection [(2,4);(40,50)] [(3,49)];
   - : (int * int) list = [ 3-4 40-49 ]
   ]}
  *)    
@@ -33,7 +33,7 @@ val intersection : t -> t -> t
 
 (*
   {[
-  Cset.difference [(2,4);(40,50)] [(3,49)];
+  LexSet.difference [(2,4);(40,50)] [(3,49)];
   - : (int * int) list = [ 2-2 50-50 ]
   ]}
  *)    
