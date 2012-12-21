@@ -8,7 +8,7 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 (* let apply () = *)
   {:extend|Gram
     lex:
-    ["[";L0[regexp{r};"->";expr{a} -> (r,a)] SEP "|"{l}; "]" ->
+    [(* "["; *)L0[regexp{r};"->";expr{a} -> (r,a)] SEP "|"{l}(* ; "]" *) ->
       FanLexTools.gen_definition _loc l  ]
     declare_regexp:
     [ L1 [`LID x ;":"; regexp{r} -> (x,r)] SEP ";" {xrs} -> begin
