@@ -41,7 +41,7 @@ let output_byte_array v =  begin
 end;
 
 let table (n,t) = {:str_item| let $lid:n = $(output_byte_array t) |};
-
+let binding_table (n,t) = {:binding|  $lid:n = $(output_byte_array t) |};
 let partition_name i = Printf.sprintf "__ulex_partition_%i" i;
 
 let partition ~counter ~tables (i,p) =
@@ -59,6 +59,20 @@ let partition ~counter ~tables (i,p) =
   let f = partition_name i in
   {:str_item| let $lid:f = fun c -> $body |};
 
+let binding_partition ~counter ~tables (i,p) = (* with "binding" *)
+  let rec gen_tree = function 
+    [ Lte (i,yes,no) ->
+	{:expr| if (c <= $`int:i) 
+	then $(gen_tree yes) else $(gen_tree no) |}
+    | Return i ->
+	{:expr| $`int:i |}
+    | Table (offset, t) ->
+	let c = if offset = 0 then {:expr| c |} 
+	else {:expr| (c - $`int:offset) |} in
+	{:expr| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
+  let body = gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
+  let f = partition_name i in
+  {:binding|  $lid:f = fun c -> $body |};
 
 (* Code generation for the automata *)
 
@@ -101,20 +115,29 @@ let gen_definition _loc l =
 	if Array.length trans = 0 then {:binding||} else
 	ret
 	  {:expr| begin  Ulexing.mark lexbuf $`int:i;  $body end |} ] in
-
-
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
   let auto = Ulex.compile rs in
   let cases = Array.mapi (fun i (_,e) -> {:match_case| $`int:i -> $e |}) brs in
   let states = Array.mapi (gen_state auto _loc) auto in
-  {:expr| fun lexbuf ->
+
+  let table_counter = ref 0 in 
+  let tables = Hashtbl.create 31 in
+
+  let parts = List.map ((* LexGen. *)binding_partition ~counter:table_counter ~tables) (Ulex.partitions ()) in
+  let tables = List.map (* LexGen. *)binding_table ((* LexGen. *)get_tables ~tables ()) in
+
+  {:expr|
+  fun lexbuf ->
+    let $list:tables in
+    let $list:parts in 
     let rec $(list:Array.to_list states) in
     begin
       Ulexing.start lexbuf;
       match __ulex_state_0 lexbuf with
         [ $(list:Array.to_list cases) | _ -> raise Ulexing.Error ]
-    end |};
+    end
+  |};
 
 
 (* Lexer specification parser *)

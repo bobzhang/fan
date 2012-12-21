@@ -67,7 +67,7 @@ let change_ids suffix = object
     [ {|$lid:s|}  when String.length s > 6 && String.sub s 0 6 = "__ulex" -> {|$(lid:s^suffix)|}
     | i -> i];
 end;
-
+(*
 let () =
   let first = ref true in
   let _loc = FanLoc.ghost in 
@@ -82,7 +82,7 @@ let () =
       (change_ids suffix) # str_item {:str_item| $list:tables; $list:parts; $s |}
     end
     ));
-
+*)
 
 
 
