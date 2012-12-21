@@ -15,8 +15,12 @@ val rep: regexp -> regexp
 val plus: regexp -> regexp
 val eps: regexp
 
-val compile: regexp array -> (int * int array * bool array) array
-val partitions: unit -> (int * (int * int * int) list) list
+val compile:
+    part_tbl:(LexSet.t array, int) Hashtbl.t ->
+      regexp array -> (int * int array * bool array) array
+val partitions:
+    part_tbl:(LexSet.t array, int) Hashtbl.t -> 
+      unit -> (int * (int * int * int) list) list
 
 val new_node : unit -> node
 val compile_re : (node -> 'a) -> 'a * node
@@ -24,7 +28,8 @@ val add_node: state -> node -> state
 val add_nodes: state -> node list -> state
 val transition: state -> (int * int) list array * state array
 val find_alloc: ('a, int) Hashtbl.t -> int ref -> 'a -> int
-val get_part: LexSet.t array -> int
+(* val get_part: LexSet.t array -> int *)
+val get_part: part_tbl:(LexSet.t array, int)Hashtbl.t -> LexSet.t array -> int    
 val of_string:string -> regexp
     
 

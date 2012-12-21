@@ -75,6 +75,7 @@ let transition state =
   Array.sort (fun (c1,_) (c2,_) -> compare c1 c2) t;
   Array.map fst t, Array.map snd t
 
+(* It will change the counter *)    
 let find_alloc tbl counter x =
   try Hashtbl.find tbl x
   with Not_found ->
@@ -83,10 +84,10 @@ let find_alloc tbl counter x =
     Hashtbl.add tbl x i;
     i
  
-let part_tbl = Hashtbl.create 31
+(* let part_tbl = Hashtbl.create 31 *)
 let part_id = ref 0
     
-let get_part (t : LexSet.t array) = find_alloc part_tbl part_id t
+let get_part ~part_tbl (t : LexSet.t array) = find_alloc part_tbl part_id t
 
 (*
   {[
@@ -101,7 +102,7 @@ let get_part (t : LexSet.t array) = find_alloc part_tbl part_id t
 
   ]}
  *)
-let compile (rs:regexp array) =
+let compile ~part_tbl (rs:regexp array) =
   let rs = Array.map compile_re rs in
   let counter = ref 0 in
   let states = Hashtbl.create 31 in
@@ -113,7 +114,7 @@ let compile (rs:regexp array) =
       incr counter;
       Hashtbl.add states state i;
       let (part,targets) = transition state in
-      let part = get_part part in
+      let part = get_part ~part_tbl part in
       let targets = Array.map aux targets in
       let finals = Array.map (fun (_,f) -> List.mem f state) rs in
       states_def := (i, (part,targets,finals)) :: !states_def;
@@ -124,7 +125,7 @@ let compile (rs:regexp array) =
   Array.init !counter (fun id -> List.assoc id !states_def)
 
 (* fetch the data from [part_tbl] *)    
-let partitions () =
+let partitions ~part_tbl () =
   let aux part =
     let seg = ref [] in
     Array.iteri

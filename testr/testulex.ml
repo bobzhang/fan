@@ -21,9 +21,7 @@ and comment = lexer
   [ "*)" -> ()
   | eof -> failwith "comment"
   | _ -> let _lexeme = Ulexing.lexeme lexbuf in
-    (* print_string  "comment" *)
-    comment lexbuf
-   ];
+    comment lexbuf];
 
 
 let () =
