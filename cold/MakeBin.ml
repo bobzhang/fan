@@ -25,7 +25,7 @@ let just_print_applied_parsers () =
     AstParsers.applied_parsers
 let _ =
   AstParsers.use_parsers
-    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"; "lexer"]
+    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"]
 type file_kind =  
   | Intf of string
   | Impl of string

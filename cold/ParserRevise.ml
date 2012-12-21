@@ -1092,31 +1092,6 @@ let apply () =
                             (Ast.match_pre#match_case a))),
                        (Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))))) : 
                   'expr ))));
-          ([`Skeyword "fun";
-           `Skeyword "[";
-           `Slist0sep
-             ((`Snterm (Gram.obj (match_case0 : 'match_case0 Gram.t ))),
-               (`Skeyword "|"));
-           `Skeyword "]"],
-            (Gram.mk_action
-               (fun _  (a : 'match_case0 list)  _  _  (_loc : FanLoc.t)  ->
-                  (Ast.ExFun (_loc, (Ast.mcOr_of_list a)) : 'expr ))));
-          ([`Skeyword "function";
-           `Skeyword "[";
-           `Slist0sep
-             ((`Snterm (Gram.obj (match_case0 : 'match_case0 Gram.t ))),
-               (`Skeyword "|"));
-           `Skeyword "]"],
-            (Gram.mk_action
-               (fun _  (a : 'match_case0 list)  _  _  (_loc : FanLoc.t)  ->
-                  (Ast.ExFun (_loc, (Ast.mcOr_of_list a)) : 'expr ))));
-          ([`Skeyword "fun"; `Snterm (Gram.obj (fun_def : 'fun_def Gram.t ))],
-            (Gram.mk_action
-               (fun (e : 'fun_def)  _  (_loc : FanLoc.t)  -> (e : 'expr ))));
-          ([`Skeyword "function";
-           `Snterm (Gram.obj (fun_def : 'fun_def Gram.t ))],
-            (Gram.mk_action
-               (fun (e : 'fun_def)  _  (_loc : FanLoc.t)  -> (e : 'expr ))));
           ([`Skeyword "match";
            `Sself;
            `Skeyword "with";
@@ -1183,16 +1158,7 @@ let apply () =
            `Skeyword "done"],
             (Gram.mk_action
                (fun _  (seq : 'sequence)  _  (e : 'expr)  _ 
-                  (_loc : FanLoc.t)  -> (Ast.ExWhi (_loc, e, seq) : 'expr ))));
-          ([`Skeyword "object";
-           `Snterm
-             (Gram.obj (opt_class_self_patt : 'opt_class_self_patt Gram.t ));
-           `Snterm (Gram.obj (class_structure : 'class_structure Gram.t ));
-           `Skeyword "end"],
-            (Gram.mk_action
-               (fun _  (cst : 'class_structure)  (csp : 'opt_class_self_patt)
-                   _  (_loc : FanLoc.t)  ->
-                  (Ast.ExObj (_loc, csp, cst) : 'expr ))))]);
+                  (_loc : FanLoc.t)  -> (Ast.ExWhi (_loc, e, seq) : 'expr ))))]);
        ((Some ":="), (Some `NA),
          [([`Sself; `Skeyword ":="; `Sself],
             (Gram.mk_action
@@ -1327,6 +1293,41 @@ let apply () =
                  (_loc : FanLoc.t)  ->
                  (Ast.ExApp (_loc, (Ast.ExApp (_loc, op, e1)), e2) : 
                  'expr ))))]);
+       ((Some "obj"), (Some `RA),
+         [([`Skeyword "fun";
+           `Skeyword "[";
+           `Slist0sep
+             ((`Snterm (Gram.obj (match_case0 : 'match_case0 Gram.t ))),
+               (`Skeyword "|"));
+           `Skeyword "]"],
+            (Gram.mk_action
+               (fun _  (a : 'match_case0 list)  _  _  (_loc : FanLoc.t)  ->
+                  (Ast.ExFun (_loc, (Ast.mcOr_of_list a)) : 'expr ))));
+         ([`Skeyword "function";
+          `Skeyword "[";
+          `Slist0sep
+            ((`Snterm (Gram.obj (match_case0 : 'match_case0 Gram.t ))),
+              (`Skeyword "|"));
+          `Skeyword "]"],
+           (Gram.mk_action
+              (fun _  (a : 'match_case0 list)  _  _  (_loc : FanLoc.t)  ->
+                 (Ast.ExFun (_loc, (Ast.mcOr_of_list a)) : 'expr ))));
+         ([`Skeyword "fun"; `Snterm (Gram.obj (fun_def : 'fun_def Gram.t ))],
+           (Gram.mk_action
+              (fun (e : 'fun_def)  _  (_loc : FanLoc.t)  -> (e : 'expr ))));
+         ([`Skeyword "function";
+          `Snterm (Gram.obj (fun_def : 'fun_def Gram.t ))],
+           (Gram.mk_action
+              (fun (e : 'fun_def)  _  (_loc : FanLoc.t)  -> (e : 'expr ))));
+         ([`Skeyword "object";
+          `Snterm
+            (Gram.obj (opt_class_self_patt : 'opt_class_self_patt Gram.t ));
+          `Snterm (Gram.obj (class_structure : 'class_structure Gram.t ));
+          `Skeyword "end"],
+           (Gram.mk_action
+              (fun _  (cst : 'class_structure)  (csp : 'opt_class_self_patt) 
+                 _  (_loc : FanLoc.t)  ->
+                 (Ast.ExObj (_loc, csp, cst) : 'expr ))))]);
        ((Some "unary minus"), (Some `NA),
          [([`Skeyword "-"; `Sself],
             (Gram.mk_action

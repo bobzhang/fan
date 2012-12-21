@@ -87,7 +87,7 @@ let _  =   begin
       iter_and_take_callbacks (fun (_, f) -> f ());
   end;
 
-AstParsers.use_parsers ["revise";"stream";"debug";"macro";"ListComprehension";"lexer"];
+AstParsers.use_parsers ["revise";"stream";"debug";"macro";"ListComprehension"(*; "lexer" *)];
   
 
 let normal () = begin

@@ -1,8 +1,8 @@
 (* #filter "ulex";; *)
-let regexp number = [ '0'-'9' ]+;
-
+(* let regexp number = [ '0'-'9' ]+; *)
+{:lex.regexp| number:[ '0'-'9' ]+ |};
   
-let rec token enc = lexer
+let rec token enc = with "lex" {|
   [ "<utf8>" -> begin enc := Ulexing.Utf8; token enc lexbuf end
   | "<latin1>" -> begin enc := Ulexing.Latin1; token enc lexbuf end
   | xml_letter+ -> Printf.sprintf "word(%s)" (Ulexing.utf8_lexeme lexbuf)
@@ -11,17 +11,17 @@ let rec token enc = lexer
   | [1234-1246] -> "bla"
   | "(" ->  begin
       Ulexing.rollback lexbuf; (* Puts the lexeme back into the buffer *)
-      ( lexer ["(" [^ '(']* ")" -> Ulexing.utf8_lexeme lexbuf]) lexbuf
+      {| ["(" [^ '(']* ")" -> Ulexing.utf8_lexeme lexbuf] |} lexbuf
       (* Note the use of an inline lexer *)
   end
   | "(*" -> begin comment lexbuf; "comment" end
   | ' ' -> "whitespace"
-  | _ -> "???"]
-and comment = lexer
+  | _ -> "???"] |}
+and comment = {:lex|
   [ "*)" -> ()
   | eof -> failwith "comment"
   | _ -> let _lexeme = Ulexing.lexeme lexbuf in
-    comment lexbuf];
+    comment lexbuf] |};
 
 
 let () =

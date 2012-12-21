@@ -1,12 +1,14 @@
 
 (* A pure and re-entrant module *)
 open LibUtil;
-(*
-  the generated code depends on [next] [backtrack] [start] [Error]
-  *)
+
+open Ulex;
+
+(*  the generated code depends on [next] [backtrack] [start] [Error] *)
+
 module Ast = Camlp4Ast;
 let _loc = FanLoc.ghost;
-open Ulex;
+
   
 
 let get_tables ~tables () = begin 
@@ -141,7 +143,7 @@ let gen_definition _loc l =
   let partitions =
     List.sort
       (fun (i0,_) (i1,_) -> compare i0 i1)
-      (Ulex.partitions ~part_tbl ()) in 
+      (partitions ~part_tbl ()) in 
   let parts = 
     List.map
       (binding_partition ~counter:table_counter ~tables) partitions in

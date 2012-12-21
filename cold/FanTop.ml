@@ -48,6 +48,8 @@ let use_file token_stream =
           (Topdirs.dir_load Format.std_formatter s; loop ())
       | (Ast.StDir (_loc,"directory",Ast.ExStr (_,s)))::[] ->
           (Topdirs.dir_directory s; loop ())
+      | (Ast.StDir (_loc,"default_quotation",Ast.ExStr (_,s)))::[] ->
+          (AstQuotation.set_default s; loop ())
       | _ -> (pl, false)
     else (pl, true) in
   let (pl0,eoi) = loop () in
@@ -71,7 +73,7 @@ let _ =
   iter_and_take_callbacks (fun (_,f)  -> f ())
 let _ =
   AstParsers.use_parsers
-    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"; "lexer"]
+    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"]
 let normal () = Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 let revise () = Toploop.parse_toplevel_phrase := revise_parser
 let token () = Toploop.parse_toplevel_phrase := (wrap fake)
