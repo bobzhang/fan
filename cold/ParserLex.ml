@@ -11,18 +11,16 @@ let _ =
   Gram.extend (lex : 'lex Gram.t )
     (None,
       [(None, None,
-         [([`Skeyword "[";
-           `Slist0sep
-             ((Gram.srules lex
-                 [([`Snterm (Gram.obj (regexp : 'regexp Gram.t ));
-                   `Skeyword "->";
-                   `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-                    (Gram.mk_action
-                       (fun (a : 'expr)  _  (r : 'regexp)  (_loc : FanLoc.t) 
-                          -> ((r, a) : 'e__1 ))))]), (`Skeyword "|"));
-           `Skeyword "]"],
+         [([`Slist0sep
+              ((Gram.srules lex
+                  [([`Snterm (Gram.obj (regexp : 'regexp Gram.t ));
+                    `Skeyword "->";
+                    `Snterm (Gram.obj (expr : 'expr Gram.t ))],
+                     (Gram.mk_action
+                        (fun (a : 'expr)  _  (r : 'regexp)  (_loc : FanLoc.t)
+                            -> ((r, a) : 'e__1 ))))]), (`Skeyword "|"))],
             (Gram.mk_action
-               (fun _  (l : 'e__1 list)  _  (_loc : FanLoc.t)  ->
+               (fun (l : 'e__1 list)  (_loc : FanLoc.t)  ->
                   (FanLexTools.gen_definition _loc l : 'lex ))))])]);
   Gram.extend (declare_regexp : 'declare_regexp Gram.t )
     (None,
