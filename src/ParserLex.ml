@@ -8,18 +8,28 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 (* let apply () = *)
   {:extend|Gram
     lex:
-    [(* "["; *)L0[regexp{r};"->";expr{a} -> (r,a)] SEP "|"{l}(* ; "]" *) ->
+    [ "|"; L0[regexp{r};"->"; sequence{a} -> (r,a)] SEP "|"{l} ->
       FanLexTools.gen_definition _loc l  ]
+
+    (* declare_regexp: *)
+    (* [ L1 [`LID x ;":"; regexp{r} -> (x,r)] SEP ";" {xrs} -> begin *)
+    (*   List.iter (fun (x,r) -> begin  *)
+    (*     if Hashtbl.mem FanLexTools.named_regexps x then *)
+    (*       Printf.eprintf  *)
+    (*         "pa_ulex (warning): multiple definition of named regexp '%s'\n" x *)
+    (*     else (); *)
+    (*     Hashtbl.add FanLexTools.named_regexps x r ; *)
+    (*   end) xrs ; {:str_item||} *)
+    (* end] *)
     declare_regexp:
-    [ L1 [`LID x ;":"; regexp{r} -> (x,r)] SEP ";" {xrs} -> begin
-      List.iter (fun (x,r) -> begin 
+    [ FOLD1 (fun (x,r) () -> begin 
         if Hashtbl.mem FanLexTools.named_regexps x then
           Printf.eprintf 
             "pa_ulex (warning): multiple definition of named regexp '%s'\n" x
         else ();
-        Hashtbl.add FanLexTools.named_regexps x r ;
-      end) xrs ; {:str_item||}
-    end]
+        Hashtbl.add FanLexTools.named_regexps x r
+    end) (())
+        [`LID x ; ":"; regexp{r} -> (x,r)]  SEP ";" -> {:str_item| |}]
     regexps:
     ["{" ; L1 regexp SEP ";"{xs};"}"  -> Array.of_list xs ]  
     regexp:

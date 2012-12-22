@@ -201,3 +201,9 @@ val backtrack: lexbuf -> int
 (** [Ulexing.backtrack lexbuf] returns the value stored in the
   internal slot of the buffer, and performs backtracking
   (the current position is set to the value of the backtrack position). *)
+
+val with_latin1_file: string -> (lexbuf -> 'a) -> 'a    
+
+val new_line: lexbuf -> unit
+
+val line_info: lexbuf -> int * int * int    

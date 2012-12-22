@@ -1,4 +1,7 @@
+open LibUtil
+
 exception Error
+
 exception InvalidCodepoint of int
 
 let eof = -1
@@ -12,12 +15,14 @@ type lexbuf = {
   mutable len: int;    (* Number of meaningful char in buffer *)
   mutable offset: apos; (* Position of the first char in buffer
 			    in the input stream *)
-  mutable pos : int;
+  mutable pos : int;   (* current pointer*)
   mutable start : int; (* First char we need to keep visible *)
 
+  mutable lnum : int;
+  mutable bol : int;  
   mutable marked_pos : int;
   mutable marked_val : int;
-
+    
   mutable finished: bool;
 }
 
@@ -37,6 +42,9 @@ let empty_lexbuf = {
   marked_pos = 0;
   marked_val = 0;
   finished = false;
+  
+  lnum = 1; (*compatible with emacs editor*)
+  bol = 0;
 }
 
 let create f = {
@@ -200,3 +208,20 @@ let utf8_lexeme lexbuf =
   utf8_sub_lexeme lexbuf 0 (lexbuf.pos - lexbuf.start)
 
 
+let with_latin1_file file  f =
+  if Sys.file_exists file then 
+    let chan = open_in file in
+    let lexbuf = from_latin1_channel chan in
+    finally (fun _ -> close_in chan) f lexbuf
+  else failwithf "%s does not exists" file
+
+(* the [\n] should be the last char *)      
+let new_line lexbuf = begin 
+  lexbuf.lnum <- lexbuf.lnum + 1 ;
+  lexbuf.bol <- lexbuf.pos + lexbuf.offset;
+end
+
+let line_info lexbuf =
+  (lexbuf.lnum,
+   lexbuf.start + lexbuf.offset - lexbuf.bol,
+   lexbuf.pos + lexbuf.offset -  lexbuf.bol)

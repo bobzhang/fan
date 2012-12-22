@@ -175,6 +175,8 @@ let () =
 let table_prefix = "__table_"  ;
 let state_prefix = "__state_";
 let partition_prefix = "__partition_";
+
+(* FIXME ghost location introduced *)
 let lexer_module_name =
   let _loc = FanLoc.ghost in ref {:ident|$(uid:"Ulexing")|};
   
@@ -322,8 +324,13 @@ let best_final final =
   end;
 
 
-  
+(* FIXME,
+   1. it seems some *states* are missing __state_1, __state_2
+   will be skimmed, 2. how to remove [rec] warning,
+   3. provide a `rec antiquot 
+ *)  
 let gen_definition _loc l =
+
   let call_state auto state = with "expr"
     let (_,trans,final) = auto.(state) in
     if Array.length trans = 0 then
@@ -333,6 +340,8 @@ let gen_definition _loc l =
     else
       let f = mk_state_name state in
       {| $lid:f lexbuf |} in
+
+  (* generate states transition *)
   let gen_state auto _loc i (part,trans,final) =
     let f = mk_state_name i in 
     let p = mk_partition_name part in
@@ -341,11 +350,10 @@ let gen_definition _loc l =
         (fun i j -> {:match_case| $`int:i -> $(call_state auto j) |})
         trans in
     let cases = Array.to_list cases in
-    let body = 
-      {:expr|
+    let body = {:expr|
       match ($lid:p ($(id:gm()).next lexbuf)) with
-      [ $list:cases
-      | _ -> $(id:gm()).backtrack lexbuf ] |} in
+      [ $list:cases | _ -> $(id:gm()).backtrack lexbuf ]
+      |} in
     let ret body =
       {:binding| $lid:f = fun lexbuf -> $body |} in
     match best_final final with
@@ -376,11 +384,18 @@ let gen_definition _loc l =
       (fun (i,arr) ->
         binding_table (mk_table_name i,arr))
       (List.sort (fun (i0,_) (i1,_) -> compare i0 i1) (get_tables ~tables ())) in
+  let b =
+    let len = Array.length states in
+    if  len > 1 then begin 
+      (* prerr_endlinef "length %d" len; *) (* FIXME *)
+      Ast.ReRecursive
+    end else
+    Ast.ReNil  in (* FIXME *)
   {:expr|
   fun lexbuf ->
     let $list:tables in
     let $list:parts in 
-    let rec $(list:Array.to_list states) in
+    let $rec:b $(list:Array.to_list states) in
     begin
       $(id:gm()).start lexbuf;
       match $(lid:mk_state_name 0) lexbuf with

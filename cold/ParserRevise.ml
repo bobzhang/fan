@@ -1570,6 +1570,21 @@ let apply () =
               (fun _  (el : 'sem_expr)  _  (_loc : FanLoc.t)  ->
                  (Ast.ExArr (_loc, el) : 'expr ))));
          ([`Skeyword "{";
+          `Stoken
+            (((function | `LID _ -> true | _ -> false)), (`Normal, "`LID _"));
+          `Skeyword "with";
+          `Snterm (Gram.obj (label_expr_list : 'label_expr_list Gram.t ));
+          `Skeyword "}"],
+           (Gram.mk_action
+              (fun _  (el : 'label_expr_list)  _  (__fan_1 : [> FanToken.t]) 
+                 _  (_loc : FanLoc.t)  ->
+                 match __fan_1 with
+                 | `LID x ->
+                     (Ast.ExRec
+                        (_loc, el, (Ast.ExId (_loc, (Ast.IdLid (_loc, x))))) : 
+                     'expr )
+                 | _ -> assert false)));
+         ([`Skeyword "{";
           `Snterm (Gram.obj (label_expr_list : 'label_expr_list Gram.t ));
           `Skeyword "}"],
            (Gram.mk_action

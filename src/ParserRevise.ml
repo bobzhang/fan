@@ -23,7 +23,6 @@ New syntax:\
 let apply () = begin 
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
-
     {:extend.clear|Gram
     a_CHAR a_FLOAT a_INT a_INT32 a_INT64 a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING a_UIDENT a_ident
     amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
@@ -168,6 +167,7 @@ let apply () = begin
         | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->         {| type $t1 := $t2 |}
         | "module"; module_longident{i1}; "="; module_longident_with_app{i2} -> {| module $i1 = $i2 |}
         | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} -> {| module $i1 := $i2 |} ] |};
+
   with "module_type"
     {:extend|Gram
       module_type:
@@ -380,6 +380,9 @@ let apply () = begin
         | "["; sem_expr_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> {| [| $({||}) |] |}
         | "[|"; sem_expr{el}; "|]" -> {| [| $el |] |}
+
+        | "{"; `LID x ; "with"; label_expr_list{el}; "}" ->
+            {| { ($lid:x) with $el }|} (* FIXME add antiquot support *)
         | "{"; label_expr_list{el}; "}" -> {| { $el } |}
         | "{"; "("; S{e}; ")"; "with"; label_expr_list{el}; "}" ->
             {| { ($e) with $el } |}

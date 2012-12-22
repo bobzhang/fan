@@ -11,45 +11,51 @@ let _ =
   Gram.extend (lex : 'lex Gram.t )
     (None,
       [(None, None,
-         [([`Slist0sep
-              ((Gram.srules lex
-                  [([`Snterm (Gram.obj (regexp : 'regexp Gram.t ));
-                    `Skeyword "->";
-                    `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-                     (Gram.mk_action
-                        (fun (a : 'expr)  _  (r : 'regexp)  (_loc : FanLoc.t)
-                            -> ((r, a) : 'e__1 ))))]), (`Skeyword "|"))],
+         [([`Skeyword "|";
+           `Slist0sep
+             ((Gram.srules lex
+                 [([`Snterm (Gram.obj (regexp : 'regexp Gram.t ));
+                   `Skeyword "->";
+                   `Snterm (Gram.obj (sequence : 'sequence Gram.t ))],
+                    (Gram.mk_action
+                       (fun (a : 'sequence)  _  (r : 'regexp) 
+                          (_loc : FanLoc.t)  -> ((r, a) : 'e__1 ))))]),
+               (`Skeyword "|"))],
             (Gram.mk_action
-               (fun (l : 'e__1 list)  (_loc : FanLoc.t)  ->
+               (fun (l : 'e__1 list)  _  (_loc : FanLoc.t)  ->
                   (FanLexTools.gen_definition _loc l : 'lex ))))])]);
   Gram.extend (declare_regexp : 'declare_regexp Gram.t )
     (None,
       [(None, None,
-         [([`Slist1sep
-              ((Gram.srules declare_regexp
-                  [([`Stoken
-                       (((function | `LID _ -> true | _ -> false)),
-                         (`Normal, "`LID _"));
-                    `Skeyword ":";
-                    `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
-                     (Gram.mk_action
-                        (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t]) 
-                           (_loc : FanLoc.t)  ->
-                           match __fan_0 with
-                           | `LID x -> ((x, r) : 'e__2 )
-                           | _ -> assert false)))]), (`Skeyword ";"))],
+         [([`Smeta
+              (["FOLD1"; "SEP"],
+                [Gram.srules declare_regexp
+                   [([`Stoken
+                        (((function | `LID _ -> true | _ -> false)),
+                          (`Normal, "`LID _"));
+                     `Skeyword ":";
+                     `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
+                      (Gram.mk_action
+                         (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t]) 
+                            (_loc : FanLoc.t)  ->
+                            match __fan_0 with
+                            | `LID x -> ((x, r) : 'e__2 )
+                            | _ -> assert false)))];
+                `Skeyword ";"],
+                (Gram.Action.mk
+                   (Gram.sfold1sep
+                      (fun (x,r)  ()  ->
+                         if Hashtbl.mem FanLexTools.named_regexps x
+                         then
+                           Printf.eprintf
+                             "pa_ulex (warning): multiple definition of named regexp '%s'\n"
+                             x
+                         else ();
+                         Hashtbl.add FanLexTools.named_regexps x r) () : 
+                   (_,'e__2,'e__3) Gram.foldsep )))],
             (Gram.mk_action
-               (fun (xrs : 'e__2 list)  (_loc : FanLoc.t)  ->
-                  (List.iter
-                     (fun (x,r)  ->
-                        if Hashtbl.mem FanLexTools.named_regexps x
-                        then
-                          Printf.eprintf
-                            "pa_ulex (warning): multiple definition of named regexp '%s'\n"
-                            x
-                        else ();
-                        Hashtbl.add FanLexTools.named_regexps x r) xrs;
-                   Ast.StNil _loc : 'declare_regexp ))))])]);
+               (fun _  (_loc : FanLoc.t)  ->
+                  (Ast.StNil _loc : 'declare_regexp ))))])]);
   Gram.extend (regexps : 'regexps Gram.t )
     (None,
       [(None, None,

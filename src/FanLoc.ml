@@ -75,7 +75,7 @@ let ghost =
 (** Return a start location for the given file name.
     This location starts at the begining of the file. *)
 let mk file_name =
-  debug loc "mk %s@\n" file_name in
+  (* debug loc "mk %s@\n" file_name in *)
   { 
     loc_start     = start_pos file_name;
     loc_end      = start_pos file_name;
@@ -135,7 +135,7 @@ let of_lexbuf lb =
   { loc_start  ;
     loc_end   ;
     loc_ghost  = false } in
-  debug loc "of_lexbuf: %a@\n" dump loc in
+  (* debug loc "of_lexbuf: %a@\n" dump loc in *)
   loc;
 
 let of_positions s e = {loc_start = s; loc_end = e ; loc_ghost = false};
@@ -160,7 +160,7 @@ let stop_pos x =  x.loc_end;
             [loc2]. *)  
 let merge a b =
   if a == b then
-    debug loc "trivial merge@\n" in
+    (* debug loc "trivial merge@\n" in *)
     a
   else
     let r =
@@ -175,7 +175,9 @@ let merge a b =
       | (true, true) -> { (a) with loc_end = b.loc_end }
       | (true, _) -> { (a) with loc_end = b.loc_end }
       | (_, true) -> { (b) with loc_start = a.loc_start } ]
-    in debug loc "@[<hov 6>merge %a@ %a@ %a@]@\n" dump a dump b dump r in r;
+    in
+    (* debug loc "@[<hov 6>merge %a@ %a@ %a@]@\n" dump a dump b dump r in *)
+    r;
 
 (** The stop pos becomes equal to the start pos. *)
 let join x = { (x) with loc_end = x.loc_start };
@@ -193,13 +195,13 @@ let move_pos chars x = { (x) with pos_cnum = x.pos_cnum + chars };
     Affected positions are chosen with [selector].
     Returned positions have their character offset plus [n]. *)
 let move s chars x =
-  debug loc "move %a %d %a@\n" dump_sel s chars dump x in
+  (* debug loc "move %a %d %a@\n" dump_sel s chars dump x in *)
   map (move_pos chars) s x;
 
 (** [move_line n loc] Return the location with the old line count plus [n].
             The "begin of line" of both positions become the current offset. *)
 let move_line lines x =
-  debug loc "move_line %d %a@\n" lines dump x in
+  (* debug loc "move_line %d %a@\n" lines dump x in *)
   let move_line_pos x =
     { (x) with pos_lnum = x.pos_lnum + lines ; pos_bol = x.pos_cnum }
   in map move_line_pos `both x;
@@ -242,7 +244,7 @@ let is_ghost   x = x.loc_ghost;
 
 (** Return the location with the give file name *)
 let set_file_name s x =
-  debug loc "set_file_name: %a@\n" dump x in
+  (* debug loc "set_file_name: %a@\n" dump x in *)
   { (x) with
     loc_start = {(x.loc_start) with pos_fname = s };
     loc_end = {(x.loc_end) with pos_fname = s }
@@ -250,12 +252,12 @@ let set_file_name s x =
 
 (** Return the associated ghost location. *)
 let ghostify x =
-  debug loc "ghostify: %a@\n" dump x in
+  (* debug loc "ghostify: %a@\n" dump x in *)
   { (x) with loc_ghost = true };
 
 (** Return the location with an absolute file name. *)
 let make_absolute x =
-  debug loc "make_absolute: %a@\n" dump x in
+  (* debug loc "make_absolute: %a@\n" dump x in *)
   let pwd = Sys.getcwd () in
   let old_name = x.loc_start.pos_fname in 
   if Filename.is_relative old_name then
@@ -271,7 +273,7 @@ let make_absolute x =
  *)
 let strictly_before x y =
   let b = x.loc_end.pos_cnum < y.loc_start.pos_cnum && x.loc_end.pos_fname = y.loc_start.pos_fname in
-  debug loc "%a [strictly_before] %a => %b@\n" dump x dump y b in
+  (* debug loc "%a [strictly_before] %a => %b@\n" dump x dump y b in *)
   b;
 
 (** Same as {!print} but return a string instead of printting it. *)

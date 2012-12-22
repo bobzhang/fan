@@ -1694,6 +1694,10 @@ let map_expr =
       -> e
   | Ast.ExId (_loc,Ast.IdLid (_,"__FILE__")) ->
       Ast.ExStr (_loc, (Ast.safe_string_escaped (FanLoc.file_name _loc)))
+  | Ast.ExId (_loc,Ast.IdLid (_,"__PWD__")) ->
+      Ast.ExStr
+        (_loc,
+          (Ast.safe_string_escaped (Filename.dirname (FanLoc.file_name _loc))))
   | Ast.ExId (_loc,Ast.IdLid (_,"__LOCATION__")) ->
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
       Ast.ExApp

@@ -136,6 +136,11 @@ val sfold0sep:
       ('c XStream.t -> unit) ->
         'c XStream.t -> 'b
 
+val sfold1sep:
+    ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> (stream -> 'a) ->
+      (stream -> unit) ->
+        stream -> 'b
+            
 val extend:  'a t -> extend_statment -> unit
 
 val eoi_entry: 'a t -> 'a t

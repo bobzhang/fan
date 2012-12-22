@@ -95,7 +95,7 @@ let srules e rl =
 let sfold0 = Fold.sfold0;
 let sfold1 = Fold.sfold1;
 let sfold0sep = Fold.sfold0sep;
-  (* let sfold1sep = Fold.sfold1sep; *)
+let sfold1sep = Fold.sfold1sep;
 let extend = Insert.extend;
 let levels_of_entry = Insert.levels_of_entry;
   

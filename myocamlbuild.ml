@@ -770,6 +770,7 @@ let define_context_for_root r =
     def "testr" ["src"];
     def "llvm" ["src"];
     def ("testr"//"loc") ["src"];
+    def ("testr"//"lex") ["src"];    
     def ("demo"//"plc") ["src"]
     (* the toplevel directory can see src, this is only for debugging convenience, you should never put any
        library code in toplevel, only test files

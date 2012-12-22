@@ -396,6 +396,9 @@ let gen_definition _loc l =
     List.map (fun (i,arr)  -> binding_table ((mk_table_name i), arr))
       (List.sort (fun (i0,_)  (i1,_)  -> compare i0 i1)
          (get_tables ~tables ())) in
+  let b =
+    let len = Array.length states in
+    if len > 1 then Ast.ReRecursive else Ast.ReNil in
   Ast.ExFun
     (_loc,
       (Ast.McArr
@@ -406,8 +409,7 @@ let gen_definition _loc l =
                 (Ast.ExLet
                    (_loc, Ast.ReNil, (Ast.biAnd_of_list parts),
                      (Ast.ExLet
-                        (_loc, Ast.ReRecursive,
-                          (Ast.biAnd_of_list (Array.to_list states)),
+                        (_loc, b, (Ast.biAnd_of_list (Array.to_list states)),
                           (Ast.ExSeq
                              (_loc,
                                (Ast.ExSem

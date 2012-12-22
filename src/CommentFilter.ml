@@ -5,7 +5,7 @@ type t = (XStream.t (string * FanLoc.t) * Queue.t (string * FanLoc.t));
 let mk () =
   let q = Queue.create () in
   let f _ =
-    debug comments "take...@\n" in
+    (* debug comments "take...@\n" in *)
   try Some (Queue.take q) with [ Queue.Empty -> None ]
   in (XStream.from f, q);
 
@@ -13,7 +13,7 @@ let filter (_, q) =
   let rec self = parser
     [ [< (`COMMENT x, loc); 'xs >] -> begin
       Queue.add (x, loc) q;
-      debug comments "add: %S at %a@\n" x FanLoc.dump loc in
+      (* debug comments "add: %S at %a@\n" x FanLoc.dump loc in *)
       self xs
     end
     | [< x; 'xs >] ->
@@ -29,7 +29,7 @@ let take_list (_, q) =
 let take_stream = fst;
   
 let define token_fiter comments_strm =
-  debug comments "Define a comment filter@\n" in
+  (* debug comments "Define a comment filter@\n" in *)
    FanTokenFilter.define_filter token_fiter
   (fun previous strm -> previous (filter comments_strm strm));
 

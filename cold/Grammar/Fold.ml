@@ -31,3 +31,29 @@ let sfold0sep f e entry symbl psymb psep =
     match try Some (psymb __strm) with | XStream.Failure  -> None with
     | Some a -> kont (f a e) __strm
     | _ -> e
+let sfold1sep f e entry symbl psymb psep =
+  let failed =
+    function
+    | symb::sep::[] -> Failed.symb_failed_txt entry sep symb
+    | _ -> assert false in
+  let parse_top =
+    function
+    | symb::_::[] -> Parser.parse_top_symb entry symb
+    | _ -> raise XStream.Failure in
+  let rec kont accu (__strm : _ XStream.t) =
+    match try Some (psep __strm) with | XStream.Failure  -> None with
+    | Some () ->
+        let a =
+          try
+            try psymb __strm
+            with
+            | XStream.Failure  ->
+                let a =
+                  try parse_top symbl __strm
+                  with
+                  | XStream.Failure  -> raise (XStream.Error (failed symbl)) in
+                Obj.magic a
+          with | XStream.Failure  -> raise (XStream.Error "") in
+        kont (f a accu) __strm
+    | _ -> accu in
+  fun (__strm : _ XStream.t)  -> let a = psymb __strm in kont (f a e) __strm

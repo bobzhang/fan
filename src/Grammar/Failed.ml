@@ -121,7 +121,7 @@ and name_of_tree_failed entry x =
                 | `Skeyword kwd -> kwd]))) "" tokl ]
   | DeadEnd | LocAct (_, _) -> "???" ];
 
-let magic _s x = debug magic "Obj.magic: %s@." _s in Obj.magic x;
+let magic _s x = (* debug magic "Obj.magic: %s@." _s in *) Obj.magic x;
 
 (* [prev_symb_result] is cast by [Obj.magic] *)
 let tree_failed entry prev_symb_result prev_symb tree =
