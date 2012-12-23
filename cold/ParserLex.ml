@@ -1,4 +1,5 @@
 module Ast = Camlp4Ast
+open Lib
 open LibUtil
 open PreCast.Syntax
 let regexp = Gram.mk "regexp"
@@ -19,7 +20,8 @@ let _ =
                    `Snterm (Gram.obj (sequence : 'sequence Gram.t ))],
                     (Gram.mk_action
                        (fun (a : 'sequence)  _  (r : 'regexp) 
-                          (_loc : FanLoc.t)  -> ((r, a) : 'e__1 ))))]),
+                          (_loc : FanLoc.t)  ->
+                          ((r, (Expr.mksequence a)) : 'e__1 ))))]),
                (`Skeyword "|"))],
             (Gram.mk_action
                (fun (l : 'e__1 list)  _  (_loc : FanLoc.t)  ->

@@ -1121,7 +1121,7 @@ let apply () =
            `Skeyword "done"],
             (Gram.mk_action
                (fun _  (seq : 'sequence)  _  (_loc : FanLoc.t)  ->
-                  (Expr.mksequence _loc seq : 'expr ))));
+                  (Expr.mksequence ~loc:_loc seq : 'expr ))));
           ([`Skeyword "with";
            `Snterm (Gram.obj (lang : 'lang Gram.t ));
            `Sself],
@@ -1639,11 +1639,12 @@ let apply () =
            (Gram.mk_action
               (fun _  (seq : 'sequence)  _  (e : 'expr)  _  (_loc : FanLoc.t)
                   ->
-                 (Expr.mksequence _loc (Ast.ExSem (_loc, e, seq)) : 'expr ))));
+                 (Expr.mksequence ~loc:_loc (Ast.ExSem (_loc, e, seq)) : 
+                 'expr ))));
          ([`Skeyword "("; `Sself; `Skeyword ";"; `Skeyword ")"],
            (Gram.mk_action
               (fun _  _  (e : 'expr)  _  (_loc : FanLoc.t)  ->
-                 (Expr.mksequence _loc e : 'expr ))));
+                 (Expr.mksequence ~loc:_loc e : 'expr ))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ":";
@@ -1671,7 +1672,7 @@ let apply () =
           `Skeyword "end"],
            (Gram.mk_action
               (fun _  (seq : 'sequence)  _  (_loc : FanLoc.t)  ->
-                 (Expr.mksequence _loc seq : 'expr ))));
+                 (Expr.mksequence ~loc:_loc seq : 'expr ))));
          ([`Skeyword "begin"; `Skeyword "end"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
@@ -1714,7 +1715,7 @@ let apply () =
             (Gram.mk_action
                (fun (el : 'sequence)  _  (bi : 'binding)  (rf : 'opt_rec)  _ 
                   (_loc : FanLoc.t)  ->
-                  (Ast.ExLet (_loc, rf, bi, (Expr.mksequence _loc el)) : 
+                  (Ast.ExLet (_loc, rf, bi, (Expr.mksequence ~loc:_loc el)) : 
                   'sequence ))));
           ([`Skeyword "let";
            `Skeyword "module";
@@ -1736,7 +1737,7 @@ let apply () =
             (Gram.mk_action
                (fun (el : 'sequence)  _  (mb : 'module_binding0) 
                   (m : 'a_UIDENT)  _  _  (_loc : FanLoc.t)  ->
-                  (Ast.ExLmd (_loc, m, mb, (Expr.mksequence _loc el)) : 
+                  (Ast.ExLmd (_loc, m, mb, (Expr.mksequence ~loc:_loc el)) : 
                   'sequence ))));
           ([`Skeyword "let";
            `Skeyword "open";

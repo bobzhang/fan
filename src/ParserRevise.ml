@@ -289,7 +289,7 @@ let apply () = begin
         | "match"; S{e}; "with"; match_case{a} -> {|match $e with [$a]|}
         | "try"; S{e}; "with"; match_case{a} -> {|try $e with [$a]|}
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} -> {| if $e1 then $e2 else $e3 |}
-        | "do"; sequence{seq}; "done" -> Expr.mksequence _loc seq
+        | "do"; sequence{seq}; "done" -> Expr.mksequence ~loc:_loc seq
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "with";"{"; pos_exprs{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
         | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
@@ -391,13 +391,13 @@ let apply () = begin
         | "("; ")" -> {| () |}
         | "("; S{e}; ":"; ctyp{t}; ")" -> {| ($e : $t) |}
         | "("; S{e}; ","; comma_expr{el}; ")" -> {| ( $e, $el ) |}
-        | "("; S{e}; ";"; sequence{seq}; ")" -> Expr.mksequence _loc {| $e; $seq |}
-        | "("; S{e}; ";"; ")" -> Expr.mksequence _loc e
+        | "("; S{e}; ";"; sequence{seq}; ")" -> Expr.mksequence ~loc:_loc {| $e; $seq |}
+        | "("; S{e}; ";"; ")" -> Expr.mksequence ~loc:_loc e
         | "("; S{e}; ":"; ctyp{t}; ":>"; ctyp{t2}; ")" ->
             {| ($e : $t :> $t2 ) |}
         | "("; S{e}; ":>"; ctyp{t}; ")" -> {| ($e :> $t) |}
         | "("; S{e}; ")" -> e
-        | "begin"; sequence{seq}; "end" -> Expr.mksequence _loc seq
+        | "begin"; sequence{seq}; "end" -> Expr.mksequence ~loc:_loc seq
         | "begin"; "end" -> {| () |}
         | "("; "module"; module_expr{me}; ")" ->
             {| (module $me) |}
@@ -407,11 +407,11 @@ let apply () = begin
        [ "let"; opt_rec{rf}; binding{bi}; "in"; expr{e}; sequence'{k} ->
          k {| let $rec:rf $bi in $e |}
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
-           {| let $rec:rf $bi in $(Expr.mksequence _loc el) |}
+           {| let $rec:rf $bi in $(Expr.mksequence ~loc:_loc el) |}
        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; expr{e}; sequence'{k} ->
            k {| let module $m = $mb in $e |}
        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; ";"; S{el} ->
-           {| let module $m = $mb in $(Expr.mksequence _loc el) |}
+           {| let module $m = $mb in $(Expr.mksequence ~loc:_loc el) |}
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
            {| let open $id:i in $e |}
        | `ANT (("list" as n),s) -> {| $(anti:mk_anti ~c:"expr;" n s) |}

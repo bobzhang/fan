@@ -88,9 +88,6 @@ let show_stack () = begin
   eprintf "stack expand to check the error message@.";
   Stack.iter (Format.eprintf "%a@." print_opt_char ) opt_char 
 end;
-    
-    
-
 
 (* To store some context information:
  *   loc       : position of the beginning of a string, quotation and comment
@@ -279,11 +276,28 @@ right_delimitor:
    | '>' delimchars* [']' '}']
     (* Old brace and new ones *)
    | (delimchars* ['|' ':'])? '}'
-
 |};
 
+#default_quotation "lex";;
 
-
+(* let rec token c = {| *)
+(*  |newline -> update_loc c ; `NEWLINE *)
+(*  |blank+ -> *)
+(*      let x = Ulexing.latin1_lexeme lexbuf in *)
+(*      `BLANKS x *)
+(*  |("~"|"?") (lowercase identchar *\)  ':' -> *)
+(*      let x = Ulexing.latin1_lexeme lexbuf in *)
+(*      if x.[0] = '~' then `LABEL x *)
+(*      else `OPTLABEL x *)
+(*  |(lowercase|uppercase) identchar* -> *)
+(*      let x = Ulexing.latin1_lexeme lexbuf in *)
+(*      if Char.is_uppercase x.[0] then `UID x *)
+(*      else `LID x *)
+(*  | int_literal ('l'|'L'|'n')? -> *)
+(*      let x = Ulexing.latin1_lexeme lexbuf in *)
+(*      try `INT(cvt_int_literal x,x) *)
+(*      with  [Failure _ -> err (Literal_overflow "int") (FanLoc.of_lexbuf lexbuf)] *)
+(* |}; *)
 
 
 
