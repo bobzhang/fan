@@ -1254,6 +1254,7 @@ http://caml.inria.fr/pub/ml-archives/caml-list/2004/12/b5b79fcd4ea695b8e1e0aff74
 
 
 * syntax extension
+
   recording created non-terminals, keywords,
   and modified existing non-terminals
 
@@ -1262,7 +1263,7 @@ http://caml.inria.fr/pub/ml-archives/caml-list/2004/12/b5b79fcd4ea695b8e1e0aff74
   {:syntax-extension|
   
   |};
-
+  
 
 
   Without functorizing, we loose the ability to create 2 stand-alone
@@ -1278,7 +1279,11 @@ TODO
 
   2. clean type specification 
      
-  3. merge ...   
+  3. merge ...   done
+     
+     {| let u = 3 |}
+     {:expr@loc| let u = 3 |}
+     {|$x + $y|} -> {|$x+$y|}
 
 
 http://stackoverflow.com/questions/7072980/how-do-you-compile-macros-in-a-lisp-compiler
@@ -1287,3 +1292,77 @@ http://stackoverflow.com/questions/7072980/how-do-you-compile-macros-in-a-lisp-c
 正常的load code 不应该影响编译器的行为的.
 
 http://docs.racket-lang.org/guide/stx-phases.html
+
+
+* orakuda
+https://bitbucket.org/camlspotter/orakuda/src/68da1890e85c?at=default
+
+** fmt
+
+   #+BEGIN_SRC ocaml
+     let _ = 
+       assert (Cformat.sprintf $%"hello%dworld" 2 = "hello2world");
+     
+       let x = 1 and y = 2 in 
+       assert (Cformat.sprintf $%"%d %${x}d %d %${y}d %d" 3 4 5 = "3 1 4 2 5");
+     
+       assert (Cformat.sprintf $%"%1.F" 123.456 = "123.");
+     ;;
+     
+     (* people who cannot use the p4 patch *)
+     let _ = 
+       assert (Cformat.sprintf <:fmt<hello%dworld>> 2 = "hello2world");
+     
+       let x = 1 and y = 2 in 
+       assert (Cformat.sprintf <:fmt<%d %${x}d %d %${y}d %d>> 3 4 5 = "3 1 4 2 5")
+     ;;
+   #+END_SRC
+
+   #+BEGIN_SRC ocaml
+   `{/ let u = 3 in 3 /}
+   #+END_SRC
+   ` gives an default quotaion name more convenient
+
+   
+
+** cmd
+   #+BEGIN_SRC ocaml
+     let _ =
+       <:qx<ls .>> & function
+         | (`Out, `Read s) -> prerr_string ("OUT: " ^ s)
+         | (`Err, `Read s) -> prerr_string ("ERR: " ^ s)
+         | (`Out, `EOF) -> prerr_endline "OUT: EOF"
+         | (`Err, `EOF) -> prerr_endline "ERR: EOF"
+     ;;
+        
+   #+END_SRC
+
+** regexp
+   #+BEGIN_SRC ocaml
+     
+     (* str_item *)
+     $/([0-9]+)(?P<x>[a-z]+)|([A-Z]+)/;;
+     
+     (* CR jfuruse: CamlP4 problem: the following is not parsable. *) 
+     (* $/([0-9]+)(?P<x>[a-z]+)|([A-Z]+)/, 1;; *)
+     ($/([0-9]+)(?P<x>[a-z]+)|([A-Z]+)/, 1);;
+     
+     let rex = $/([0-9]+)(?P<x>[a-z]+)|([A-Z]+)/;;
+     
+     let res =
+       match Regexp.exec rex "abc123def456" with
+       | None -> assert false
+       | Some res ->
+           assert (res#_0 = "123def");
+           assert (res#_1 = "123");
+           assert (res#_2 = "def");
+           assert (res#_2 = res#x);
+           assert (res#_left = "abc");
+           assert (res#_right = "456");
+           assert (res#_3 = "");
+           assert (res#_last = "def");
+           res
+     ;;
+     
+     let rex = <:m<([0-9]+)(?P<x>[a-z]+)|([A-Z]+)>>;;
+   #+END_SRC

@@ -289,6 +289,9 @@ let apply () = begin
         | "match"; S{e}; "with"; match_case{a} -> {|match $e with [$a]|}
         | "try"; S{e}; "with"; match_case{a} -> {|try $e with [$a]|}
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} -> {| if $e1 then $e2 else $e3 |}
+        | "if"; S{e1}; "then"; S{e2} ->
+            {| if $e1 then $e2 |}
+             (*FIXME add {|if then|} as a quote *)
         | "do"; sequence{seq}; "done" -> Expr.mksequence _loc seq
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "with";"{"; pos_exprs{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end

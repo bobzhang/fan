@@ -189,9 +189,9 @@ let delete_rule_body = Gram.mk "delete_rule_body"
 let antiquot_expr = Gram.eoi_entry expr
 let antiquot_patt = Gram.eoi_entry patt
 let antiquot_ident = Gram.eoi_entry ident
-let parse_expr loc str = Gram.parse_string antiquot_expr loc str
-let parse_patt loc str = Gram.parse_string antiquot_patt loc str
-let parse_ident loc str = Gram.parse_string antiquot_ident loc str
+let parse_expr loc str = Gram.parse_string antiquot_expr ~loc str
+let parse_patt loc str = Gram.parse_string antiquot_patt ~loc str
+let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str
 let anti_filter = AstQuotation.antiquot_expander ~parse_expr ~parse_patt
 let expr_filter = anti_filter#expr
 let patt_filter = anti_filter#patt
@@ -232,7 +232,7 @@ let parse_include_file_smart file =
          invalid_arg ("parse_include_file_smart: " ^ file))
 let parse_module_type str =
   try
-    match Gram.parse_string module_type FanLoc.string_loc str with
+    match Gram.parse_string module_type str with
     | Ast.MtId (_loc,i) -> i
     | _ ->
         (eprintf "the module type %s is not a simple module type" str; exit 2)

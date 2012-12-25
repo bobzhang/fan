@@ -330,6 +330,7 @@ module Driver = struct
   let infer_dlambda =  infer_with_error_channel ["-dlambda"] "infer_dlambda"
   let infer_drawlambda = infer_with_error_channel ["-drawlambda"] "infer_drawlambda"
   let infer_dparsetree = infer_with_error_channel ["-c";"-dparsetree"] "infer_dparsetree"
+  let infer_dtypedtree = infer_with_error_channel ["-c"; "-dtypedtree"] "infer_dtypedtree"
   let infer_instr =  infer_with_error_channel ["-dinstr"] "infer_instr"
   let infer_dclambda =  infer_with_error_channel
       ~ocamlc:Options.ocamlopt ["-dclambda"] "infer_dclambda"
@@ -382,6 +383,9 @@ open Driver;;
    rule "ocaml: ml  -> .dparsetree"
      ~prod:"%.dparsetree" ~deps:["%.ml"]
      (infer_dparsetree "%.ml" "%.dparsetree");
+   rule "ocaml: ml -> .dtypedtree"
+     ~prod:"%.dtypedtree" ~deps:["%.ml"]
+     (infer_dtypedtree "%.ml" "%.dtypedtree");
    rule "ocaml: ml & ml.depends  -> .dinstr"
      ~prod:"%.dinstr" ~deps:["%.ml";"%.ml.depends"]
      (infer_instr "%.ml" "%.dinstr");
@@ -770,7 +774,8 @@ let define_context_for_root r =
     def "testr" ["src"];
     def "llvm" ["src"];
     def ("testr"//"loc") ["src"];
-    def ("demo"//"plc") ["src"]
+    def ("demo"//"plc") ["src"];
+    def ("demo"//"graph") ["src"];
     (* the toplevel directory can see src, this is only for debugging convenience, you should never put any
        library code in toplevel, only test files
      *)

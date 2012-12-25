@@ -60,9 +60,9 @@ let error_report (loc,s) = begin
 end ;
 
 
-let parse_string_of_entry ?(_loc=FanLoc.mk "<string>") entry  s =
+let parse_string_of_entry ?(loc=FanLoc.mk "<string>") entry  s =
   try
-    Gram.parse_string entry  _loc s
+    Gram.parse_string entry  ~loc s
   with
     [FanLoc.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);
@@ -70,8 +70,8 @@ let parse_string_of_entry ?(_loc=FanLoc.mk "<string>") entry  s =
       FanLoc.raise loc e ;
     end ];
 
-let wrap_stream_parser ?(_loc=FanLoc.mk "<stream>") p s =
-  try p _loc s
+let wrap_stream_parser ?(loc=FanLoc.mk "<stream>") p s =
+  try p ~loc s
   with
     [FanLoc.Exc_located(loc,e) -> begin
       eprintf "error: %s" (FanLoc.to_string loc) ;

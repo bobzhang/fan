@@ -175,13 +175,13 @@ let add_quotation ~expr_filter  ~patt_filter  ~mexpr  ~mpatt  name entry =
     Ref.protect2 (FanConfig.antiquotations, true)
       (current_loc_name, loc_name_opt)
       (fun _  ->
-         ((Gram.parse_string entry_eoi loc s) |> (mexpr loc)) |> expr_filter) in
+         ((Gram.parse_string entry_eoi ~loc s) |> (mexpr loc)) |> expr_filter) in
   let expand_str_item loc loc_name_opt s =
     let exp_ast = expand_expr loc loc_name_opt s in Ast.StExp (loc, exp_ast) in
   let expand_patt _loc loc_name_opt s =
     Ref.protect FanConfig.antiquotations true
       (fun _  ->
-         let ast = Gram.parse_string entry_eoi _loc s in
+         let ast = Gram.parse_string entry_eoi ~loc:_loc s in
          let meta_ast = mpatt _loc ast in
          let exp_ast = patt_filter meta_ast in
          let rec subst_first_loc name =
@@ -211,7 +211,7 @@ let add_quotation ~expr_filter  ~patt_filter  ~mexpr  ~mpatt  name entry =
 let make_parser entry loc loc_name_opt s =
   Ref.protect2 (FanConfig.antiquotations, true)
     (current_loc_name, loc_name_opt)
-    (fun _  -> Gram.parse_string (Gram.eoi_entry entry) loc s)
+    (fun _  -> Gram.parse_string (Gram.eoi_entry entry) ~loc s)
 let of_str_item ~name  ~entry  =
   add name DynAst.str_item_tag (make_parser entry)
 let of_str_item_with_filter ~name  ~entry  ~filter  =

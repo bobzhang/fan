@@ -89,7 +89,7 @@ val obj: 'a t -> internal_entry
 val removing: gram -> string -> unit
 
 val gram: gram
-
+(* create a standalone gram *)
 val create_gram: unit -> gram
 
 val mk_dynamic: gram -> string -> 'a t
@@ -110,13 +110,13 @@ val filter:  stream -> stream
 
 val parse:  'a t -> FanLoc.t -> char XStream.t -> 'a
 
-val parse_string:  'a t -> FanLoc.t -> string -> 'a
+val parse_string:  ?loc:FanLoc.t -> 'a t  -> string -> 'a
       
 val debug_origin_token_stream: 'a t -> FanToken.t XStream.t -> 'a
 
 val debug_filtered_token_stream: 'a t -> FanToken.t XStream.t -> 'a
 
-val parse_string_safe:  'a t -> FanLoc.t -> string -> 'a
+val parse_string_safe:  ?loc:FanLoc.t -> 'a t ->  string -> 'a
 
 val wrap_stream_parser: ('a -> 'b -> 'c) -> 'a -> 'b -> 'c
 
