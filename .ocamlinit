@@ -108,3 +108,5 @@ let env = !Toploop.toplevel_env;;
 *)
 open ParserLex;;
 AstQuotation.set_default "str";;
+module Obj= O;;
+#require "unix";;

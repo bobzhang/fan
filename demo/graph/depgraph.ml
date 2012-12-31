@@ -59,7 +59,7 @@ let _ =
       List.iter (fun dep ->
         if (SSet.mem (String.lowercase name) filter)
           && (SSet.mem (String.lowercase dep) filter)
-        then add_edge g (name^"_") (String.lowercase dep ^ "_")) deps 
+        then add_edge g  (String.lowercase dep ^ "_") (name^"_")) deps 
     done
   with End_of_file -> begin
     prerr_endline "writing to dump.dot"; 
