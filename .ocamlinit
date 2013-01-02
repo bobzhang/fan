@@ -1,7 +1,7 @@
 (* -*- Mode:caml; -*- *)
 
 #use "topfind";;
-
+#require "unix";;
 (* #require "batteries";; *)
 open Format;;
 #directory "+compiler-libs";;
@@ -74,7 +74,7 @@ let print_tree = Grammar.Print.dump#tree;;
 (* #load_rec "FanTop.cma";; *)
 open Syntax;;
 
-let t e s = Gram.parse_string e FanLoc.string_loc s;;
+let t e s = Gram.parse_string e  s;;
 (* open Lib;; *)
 module L = Lib;;
 open L.Meta;;
@@ -108,5 +108,5 @@ let env = !Toploop.toplevel_env;;
 *)
 open ParserLex;;
 AstQuotation.set_default "str";;
-module Obj= O;;
-#require "unix";;
+module O = Obj;;
+

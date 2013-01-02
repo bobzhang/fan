@@ -241,6 +241,7 @@ DEFINE REGISTER(tag) = fun  ~name ~entry -> add name tag (make_parser entry);
 DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter -> 
   add name DynAst.str_item_tag
     (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
+
   
 let of_str_item = REGISTER(DynAst.str_item_tag);
 let of_str_item_with_filter = REGISTER_FILTER(DynAst.str_item_tag);  

@@ -46,6 +46,7 @@ of_str_item_with_filter ~name:"ocaml" ~entry:str_items
 (* {:fan_quot| show_code on |}; *)
 
 of_expr ~name:"fans" ~entry:Typehook.fan_quots ;
+
 (* of_expr ~name:"macro.expr" ~entry: *)
 of_expr_with_filter ~
     name:"macro.expr" ~entry:expr ~filter:(AstMacros.macro_expander#expr);
@@ -55,7 +56,8 @@ of_class_str_item_with_filter ~name:"macro.class_str_item" ~entry:class_str_item
 
 of_str_item_with_filter ~name:"macro.str_item" ~entry:str_item
     ~filter:(AstMacros.macro_expander#str_item);
-  
+
+
 add_quotation "sig_item" sig_item_quot
     ~mexpr:ME.meta_sig_item
     ~mpatt:MP.meta_sig_item
@@ -211,3 +213,4 @@ open ParserLex;
 open AstInjection;
 open FanGen;
 open CodeTemplate;
+(* open FanEval; *)

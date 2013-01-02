@@ -99,6 +99,7 @@ let callcc  (type u) (f: cont u-> u)  =
 module List = struct
   include List;
 
+  let null xs = xs = [];
   (*
     {[
     drop 3 [1;2;3;4];
