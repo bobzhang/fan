@@ -8,4 +8,7 @@ src/OAstPrint.cmo
 src/FanLexUtil.cmo
 src/FanDriver.byte
 # demo/plc/plc.cma
+src/Ulexing.cma
+# src/Utf8.cmo
+# src/Utf16.cmo
 src/FanTop.cma

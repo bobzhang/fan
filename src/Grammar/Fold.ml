@@ -21,29 +21,23 @@ let sfold0sep f e entry symbl psymb psep =
     [ [< a = psymb; 's >] -> kont (f a e) s
     | [< >] -> e ] ;
 
-  (* let sfold1sep f e entry symbl psymb psep =  (\* FIXME this function was never used*\) *)
-  (*   let failed = *)
-  (*     fun *)
-  (*     [ [symb; sep] -> Fail.symb_failed_txt entry sep symb *)
-  (*     | _ -> "failed" ] *)
-  (*   in *)
-  (*   let parse_top = *)
-  (*     fun *)
-  (*     [ [symb; _] -> Parse.parse_top_symb entry symb (\* FIXME context *\) *)
-  (*     | _ -> raise XStream.Failure ] *)
-  (*   in *)
-  (*   let rec kont accu = *)
-  (*     parser *)
-  (*     [ [< () = psep; *)
-  (*         a = *)
-  (*           parser *)
-  (*           [ [< a = psymb >] -> a *)
-  (*           | [< a = parse_top symbl >] -> Obj.magic a *)
-  (*           | [< >] -> raise (XStream.Error (failed symbl)) ]; *)
-  (*         s >] -> *)
-  (*           kont (f a accu) s *)
-  (*     | [< >] -> accu ] *)
-  (*   in *)
-  (*   parser [< a = psymb; 's >] -> kont (f a e) 's *)
-  (* ; *)
-(* end; *)
+let sfold1sep f e entry symbl psymb psep =  (* FIXME this function was never used*)
+  let failed = fun
+    [ [symb; sep] -> Failed.symb_failed_txt entry sep symb
+    | _ -> assert false ] in
+  let parse_top =  fun
+    [ [symb; _] -> Parser.parse_top_symb entry symb (* FIXME context *)
+    | _ -> raise XStream.Failure ] in
+  let rec kont accu =
+    parser
+    [ [< () = psep;
+        a =
+          parser
+          [ [< a = psymb >] -> a
+          | [< a = parse_top symbl >] -> Obj.magic a
+          | [< >] -> raise (XStream.Error (failed symbl)) ];
+        's >] ->
+          kont (f a accu) s
+    | [< >] -> accu ] in
+  parser [ [< a = psymb; 's >] -> kont (f a e) s];
+

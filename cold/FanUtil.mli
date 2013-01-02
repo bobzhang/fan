@@ -1,10 +1,9 @@
 val normal_handler : exn -> string option
 val valid_float_lexeme : string -> string
 val float_repres : float -> string
-val cvt_int_literal : string -> int
-val cvt_int32_literal : string -> int32
-val cvt_int64_literal : string -> int64
-val cvt_nativeint_literal : string -> nativeint
+
+val cvt_int_literal: string ->
+  [> `INT of (int*string) | `INT32 of (int32*string) | `INT64 of (int64*string) | `NATIVEINT of (nativeint*string) ]
 
 val mk_anti : ?c:string -> string -> string -> string
     

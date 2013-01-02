@@ -1,9 +1,9 @@
 (* NFA *)
-
+open LibUtil
 type node = { 
   id : int; 
   mutable eps : node list; 
-  mutable trans : (Cset.t * node) list;
+  mutable trans : (LexSet.t * node) list;
 }
 
 (* Compilation regexp -> NFA *)
@@ -27,6 +27,7 @@ let rep r succ =
   n.eps <- [r n; succ];
   n
 
+(* return [nr] instead *)
 let plus r succ =
   let n = new_node () in
   let nr = r n in
@@ -44,6 +45,13 @@ let compile_re re =
   let final = new_node () in
   (re final, final)
 
+let of_string s =
+  let rec aux n =
+    if n = String.length s then eps
+    else 
+      seq (chars (LexSet.singleton (Char.code s.[n]))) (aux (succ n))
+  in aux 0;
+    
 (* Determinization *)
 
 type state = node list
@@ -56,33 +64,18 @@ and add_nodes state nodes =
 
 let transition state =
   (* Merge transition with the same target *)
-  let rec norm = function
-    | (c1,n1)::((c2,n2)::q as l) ->
-	if n1 == n2 then norm ((Cset.union c1 c2,n1)::q)
-	else (c1,n1)::(norm l)
-    | l -> l in
-  let t = List.concat (List.map (fun n -> n.trans) state) in
-  let t = norm (List.sort (fun (_c1,n1) (_c2,n2) -> n1.id - n2.id) t) in
-
-  (* Split char sets so as to make them disjoint *)
-  let  split (all,t) ((c0 : Cset.t),n0) = 
-    let t = 
-      [(Cset.difference c0 all, [n0])] @
-      List.map (fun (c,ns) -> (Cset.intersection c c0, n0::ns)) t @
-      List.map (fun (c,ns) -> (Cset.difference c c0, ns)) t in
-    (Cset.union all c0,
-    List.filter (fun (c,_ns) -> not (Cset.is_empty c)) t) in
-
-  let (_,t) = List.fold_left split (Cset.empty,[]) t in
-
+  let t =
+    List.(sort (fun (_,n1) (_,n2) -> n1.id - n2.id)
+            (concat_map (fun n -> n.trans) state)) |> LexSet.norm in
+  let (_,t) = List.fold_left LexSet.split (LexSet.empty,[]) t in
   (* Epsilon closure of targets *)
   let t = List.map (fun (c,ns) -> (c,add_nodes [] ns)) t in
-
   (* Canonical ordering *)
   let t = Array.of_list t in
-  Array.sort (fun (c1,_ns1) (c2,_ns2) -> compare c1 c2) t;
+  Array.sort (fun (c1,_) (c2,_) -> compare c1 c2) t;
   Array.map fst t, Array.map snd t
 
+(* It will change the counter *)    
 let find_alloc tbl counter x =
   try Hashtbl.find tbl x
   with Not_found ->
@@ -91,12 +84,25 @@ let find_alloc tbl counter x =
     Hashtbl.add tbl x i;
     i
  
-let part_tbl = Hashtbl.create 31
+(* let part_tbl = Hashtbl.create 31 *)
 let part_id = ref 0
-let get_part (t : Cset.t array) = find_alloc part_tbl part_id t
+    
+let get_part ~part_tbl (t : LexSet.t array) = find_alloc part_tbl part_id t
 
+(*
+  {[
+  Ulex.compile & t regexps {| {'a' | 'b' }|};
+  - : (int * int array * bool array) array =
+  [|(0, [|1|], [|false|]); (1, [||], [|true|])|]
 
-let compile rs =
+  Ulex.compile & t regexps {| {'a' | 'b' ; "ab"}|};
+  - : (int * int array * bool array) array =
+  [|(2, [|1; 3|], [|false; false|]); (3, [|2|], [|true; false|]);
+    (1, [||], [|false; true|]); (1, [||], [|true; false|])|]
+
+  ]}
+ *)
+let compile ~part_tbl (rs:regexp array) =
   let rs = Array.map compile_re rs in
   let counter = ref 0 in
   let states = Hashtbl.create 31 in
@@ -108,18 +114,18 @@ let compile rs =
       incr counter;
       Hashtbl.add states state i;
       let (part,targets) = transition state in
-      let part = get_part part in
+      let part = get_part ~part_tbl part in
       let targets = Array.map aux targets in
       let finals = Array.map (fun (_,f) -> List.mem f state) rs in
       states_def := (i, (part,targets,finals)) :: !states_def;
-      i
-  in
+      i  in
   let init = ref [] in
   Array.iter (fun (i,_) -> init := add_node !init i) rs;
   ignore (aux !init);
   Array.init !counter (fun id -> List.assoc id !states_def)
-  
-let partitions () =
+
+(* fetch the data from [part_tbl] *)    
+let partitions ~part_tbl () =
   let aux part =
     let seg = ref [] in
     Array.iteri
@@ -142,16 +148,16 @@ let named_regexps =
 let () =
   List.iter (fun (n,c) -> Hashtbl.add named_regexps n (chars c))
     [
-      "eof", Cset.eof;
-      "xml_letter", Cset.letter;
-      "xml_digit", Cset.digit;
-      "xml_extender", Cset.extender;
-      "xml_base_char", Cset.base_char;
-      "xml_ideographic", Cset.ideographic;
-      "xml_combining_char", Cset.combining_char;
-      "xml_blank", Cset.blank;
+      "eof", LexSet.eof;
+      "xml_letter", LexSet.letter;
+      "xml_digit", LexSet.digit;
+      "xml_extender", LexSet.extender;
+      "xml_base_char", LexSet.base_char;
+      "xml_ideographic", LexSet.ideographic;
+      "xml_combining_char", LexSet.combining_char;
+      "xml_blank", LexSet.blank;
 
-      "tr8876_ident_char", Cset.tr8876_ident_char;
+      "tr8876_ident_char", LexSet.tr8876_ident_char;
     ] 
 
 (* Decision tree for partitions *)
@@ -184,19 +190,23 @@ let decision_table l =
   let rec aux m accu = function
     | ((a,b,i) as x)::rem when (b < limit && i < 255)-> 
 	aux (min a m) (x::accu) rem
-    | rem -> m,accu,rem in
-  match (aux max_int [] l : int * 'a list * 'b list) with
-    | _,[], _ -> decision l
-    | min,((_,max,_)::_ as l1), l2 ->
-	let arr = Array.create (max-min+1) 0 in
-	List.iter (fun (a,b,i) -> for j = a to b do arr.(j-min) <- i + 1 done) l1;
-	Lte (min-1, Return (-1), Lte (max, Table (min,arr), decision l2))
+    | rem -> (m,accu,rem) in
+  match aux max_int [] l  with
+  | _,[], _ -> decision l
+  | min,((_,max,_)::_ as l1), l2 ->
+      let arr = Array.create (max-min+1) 0 in
+      List.iter (fun (a,b,i) -> for j = a to b do arr.(j-min) <- i + 1 done) l1;
+      Lte (min-1, Return (-1), Lte (max, Table (min,arr), decision l2))
 
 let rec simplify min max = function
   | Lte (i,yes,no) ->
-      if i >= max then simplify min max yes 
-      else if i < min then simplify min max no
-      else Lte (i, simplify min i yes, simplify (i+1) max no)
+      if i >= max then
+        simplify min max yes 
+      else
+        if i < min then
+          simplify min max no
+        else
+          Lte (i, simplify min i yes, simplify (i+1) max no)
   | x -> x
 		   
     

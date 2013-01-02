@@ -24,8 +24,7 @@ let just_print_applied_parsers () =
     (fun f  q  -> Queue.iter (fun (k,_)  -> fprintf f "%s@;" k) q)
     AstParsers.applied_parsers
 let _ =
-  AstParsers.use_parsers
-    ["revise"; "stream"; "debug"; "macro"; "ListComprehension"; "lexer"]
+  AstParsers.use_parsers ["revise"; "stream"; "macro"; "ListComprehension"]
 type file_kind =  
   | Intf of string
   | Impl of string

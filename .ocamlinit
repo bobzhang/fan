@@ -108,3 +108,7 @@ let env = !Toploop.toplevel_env;;
 *)
 open ParserLex;;
 AstQuotation.set_default "str";;
+
+(* #load "Utf8.cmo";; *)
+(* #load "Utf16.cmo";; *)
+#load_rec "Ulexing.cma";;

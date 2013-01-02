@@ -90,7 +90,7 @@ let add name tag f =
 
 (* called by [expand] *)    
 let expand_quotation loc ~expander pos_tag quot =
-  debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
+  (* debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in *)
   let open FanToken in
   let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
   try expander loc loc_name_opt quot.q_contents with
@@ -109,7 +109,7 @@ let expand loc (quotation:FanToken.quotation) tag =
   let open FanToken in
   let pos_tag = DynAst.string_of_tag tag in
   let name = quotation.q_name in
-  debug quot "handle_quotation: name: %s, str: %S@." name quotation.q_contents in
+  (* debug quot "handle_quotation: name: %s, str: %S@." name quotation.q_contents in *)
   let find name tag =
     let key = (expander_name ~pos:(DynAst.string_of_tag tag) name, ExpKey.pack tag ()) in
     let try pack = List.assoc key !expanders_table in

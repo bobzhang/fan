@@ -59,14 +59,20 @@ let rec sep_dot_expr acc = fun
 (* Add a sequence delimiter to the semi delimiter
    antiquot is also decorated
  *)  
-let mksequence loc = fun
+let mksequence ?loc = fun
   [ {| $_; $_ |}
-  | {| $anti:_ |} as e -> {@loc| begin  $e end |}
+  | {| $anti:_ |} as e ->
+      let _loc =
+        match loc with [Some x -> x | None -> _loc] in
+      {| begin  $e end |}
   | e -> e ];
 
 (* see [mksequence], antiquot is not decoreated *)  
-let mksequence' loc = fun
-  [ {| $_; $_ |} as e -> {@loc| begin  $e  end |}
+let mksequence' ?loc = fun
+  [ {| $_; $_ |} as e ->
+    let _loc = match loc with
+      [Some x -> x | None -> _loc] in
+    {| begin  $e  end |}
   | e -> e ];
 
   

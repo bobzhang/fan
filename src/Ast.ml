@@ -91,6 +91,7 @@ type loc = FanLoc.t
     | TyId  of loc and ident (* i *) (* Lazy.t *)
     | TyMan of loc and ctyp and ctyp (* t == t *) (* type t = [ A | B ] == Foo.t *)
       (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
+      (* first is the name, second is type parameters and third is the core, forth is constraints *)
     | TyDcl of loc and string and list ctyp and ctyp and list (ctyp * ctyp)
       (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
     | TyObj of loc and ctyp and row_var_flag

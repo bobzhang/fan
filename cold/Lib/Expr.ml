@@ -12,12 +12,18 @@ let rec sep_dot_expr acc =
   | Ast.ExId (_loc,(Ast.IdAcc (_l,_,_) as i)) ->
       sep_dot_expr acc (Ident.normalize_acc i)
   | e -> ((Ast.loc_of_expr e), [], e) :: acc
-let mksequence loc =
+let mksequence ?loc  =
   function
-  | Ast.ExSem (_loc,_,_)|Ast.ExAnt (_loc,_) as e -> Ast.ExSeq (loc, e)
+  | Ast.ExSem (_loc,_,_)|Ast.ExAnt (_loc,_) as e ->
+      let _loc = match loc with | Some x -> x | None  -> _loc in
+      Ast.ExSeq (_loc, e)
   | e -> e
-let mksequence' loc =
-  function | Ast.ExSem (_loc,_,_) as e -> Ast.ExSeq (loc, e) | e -> e
+let mksequence' ?loc  =
+  function
+  | Ast.ExSem (_loc,_,_) as e ->
+      let _loc = match loc with | Some x -> x | None  -> _loc in
+      Ast.ExSeq (_loc, e)
+  | e -> e
 let mkassert loc =
   function
   | Ast.ExId (_loc,Ast.IdLid (_,"false")) -> Ast.ExAsf loc

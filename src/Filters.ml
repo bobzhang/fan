@@ -866,6 +866,8 @@ AstFilters.register_str_item_filter ("meta",filter);
 let map_expr = with "expr" fun
   [ {| $e NOTHING |} | {| fun [NOTHING  -> $e] |} -> e
   | {| __FILE__ |} -> {| $(`str:FanLoc.file_name _loc) |}
+  | {| __PWD__ |} ->
+      {|$(`str:Filename.dirname (FanLoc.file_name _loc) ) |}
   | {| __LOCATION__ |} ->
       let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple _loc in
       {| FanLoc.of_tuple

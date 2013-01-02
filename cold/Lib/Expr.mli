@@ -3,8 +3,11 @@ open Ast
 val sep_dot_expr :
   (loc * string list * expr) list ->
   expr -> (loc * string list * expr) list
-val mksequence : loc -> expr -> expr
-val mksequence' : loc -> expr -> expr
+
+val mksequence : ?loc:loc -> expr -> expr
+
+val mksequence' : ?loc:loc -> expr -> expr
+
 val mkassert : loc -> expr -> expr
 
 val bigarray_get : loc -> expr -> expr -> expr

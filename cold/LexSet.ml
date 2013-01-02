@@ -1,6 +1,10 @@
+
+
 (* Character sets are represented as lists of intervals.
    The intervals must be non-overlapping and not collapsable, 
-   and the list must be ordered in increasing order. *)
+   and the list must be ordered in increasing order.
+   It's a pure and re-entrant module '
+ *)
 
 type t = (int * int) list
 
@@ -22,16 +26,23 @@ let print ppf l =
 let dump l =
   print Format.std_formatter l
 
+(*
+  Example:
+  {[
+  LexSet.union [(1,3);(5,7);(9,11)] [(2,4);(6,8);(10,12)];
+  - : (int * int) list = [(1, 12)]
+  ]}
+ *)    
 let rec union c1 c2 =
   match c1,c2 with
-    | [], _ -> c2
-    | _, [] -> c1
-    | ((i1,j1) as s1)::r1, (i2,j2)::r2 ->
-	if (i1 <= i2) then
-	  if j1 + 1 < i2 then s1::(union r1 c2)
-	  else if (j1 < j2) then union r1 ((i1,j2)::r2)
-	  else union c1 r2
-	else union c2 c1
+  | [], _ -> c2
+  | _, [] -> c1
+  | ((i1,j1) as s1)::r1, (i2,j2)::r2 ->
+      if (i1 <= i2) then
+	if j1 + 1 < i2 then s1::(union r1 c2)
+	else if (j1 < j2) then union r1 ((i1,j2)::r2)
+	else union c1 r2
+      else union c2 c1
 
 let complement c =
   let rec aux start = function
@@ -47,9 +58,25 @@ let intersection c1 c2 =
 
 let difference c1 c2 =
   complement (union (complement c1) c2)
-  
 
 
+(* phisical comparity, merge concsequent segments *)    
+let rec norm = function
+  | (c1,n1)::((c2,n2)::q as l) ->
+      if n1 == n2 then norm ((union c1 c2,n1)::q)
+      else (c1,n1)::(norm l)
+  | l -> l 
+
+(* Split char sets so as to make them disjoint *)        
+let  split (all,t) (c0 ,n0) = 
+  let t = 
+    [(difference c0 all, [n0])] @
+    List.map (fun (c,ns) -> (intersection c c0, n0::ns)) t @
+    List.map (fun (c,ns) -> (difference c c0, ns)) t in
+  (union all c0,
+   List.filter (fun (c,_ns) -> not (is_empty c)) t) ;;
+
+(* let f t  = List.fold_left split (empty,[]) t ;; *)
 (* Unicode classes from XML *)
 
 let base_char =

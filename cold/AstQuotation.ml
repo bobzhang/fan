@@ -48,6 +48,7 @@ let clear_map () = map := SMap.empty
 let clear_default () = default := ""
 let default_at_pos pos str = update (pos, str)
 let expanders_table: ((string* ExpKey.pack)* ExpFun.pack) list ref = ref []
+let set_default s = default := s
 let expander_name ~pos:(pos : string)  (name : string) =
   let u = translate.contents name in
   if u = ""

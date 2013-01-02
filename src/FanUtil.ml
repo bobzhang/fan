@@ -48,13 +48,19 @@ let float_repres f =
       in valid_float_lexeme float_val];
 
 let cvt_int_literal s =
-  - int_of_string ("-" ^ s);
-let cvt_int32_literal s =
-  Int32.neg (Int32.of_string ("-" ^ s));
-let cvt_int64_literal s =
-  Int64.neg (Int64.of_string ("-" ^ s));
-let cvt_nativeint_literal s =
-  Nativeint.neg (Nativeint.of_string ("-" ^ s));
+  let n = String.length s in
+  match s.[n-1] with
+  ['l' -> `INT32 (Int32.(neg (of_string ("-" ^ s))),s)
+  |'L' -> `INT64 (Int64.(neg (of_string ("-" ^ s))),s)
+  |'n' -> `NATIVEINT (Nativeint.(neg (of_string ("-" ^ s))),s)
+  | _  -> `INT (- int_of_string ("-" ^ s),s) ];  
+  (* - int_of_string ("-" ^ s); *)
+(* let cvt_int32_literal s = *)
+(*   Int32.neg (Int32.of_string ("-" ^ s)); *)
+(* let cvt_int64_literal s = *)
+(*   Int64.neg (Int64.of_string ("-" ^ s)); *)
+(* let cvt_nativeint_literal s = *)
+(*   Nativeint.neg (Nativeint.of_string ("-" ^ s)); *)
 
 (* c gives a finer control
    FIXME uses a structure data

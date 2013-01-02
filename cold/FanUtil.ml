@@ -37,10 +37,13 @@ let float_repres f =
           (let s2 = Printf.sprintf "%.15g" f in
            if f = (float_of_string s2) then s2 else Printf.sprintf "%.18g" f) in
       valid_float_lexeme float_val
-let cvt_int_literal s = - (int_of_string ("-" ^ s))
-let cvt_int32_literal s = Int32.neg (Int32.of_string ("-" ^ s))
-let cvt_int64_literal s = Int64.neg (Int64.of_string ("-" ^ s))
-let cvt_nativeint_literal s = Nativeint.neg (Nativeint.of_string ("-" ^ s))
+let cvt_int_literal s =
+  let n = String.length s in
+  match s.[n - 1] with
+  | 'l' -> `INT32 ((let open Int32 in neg (of_string ("-" ^ s))), s)
+  | 'L' -> `INT64 ((let open Int64 in neg (of_string ("-" ^ s))), s)
+  | 'n' -> `NATIVEINT ((let open Nativeint in neg (of_string ("-" ^ s))), s)
+  | _ -> `INT ((- (int_of_string ("-" ^ s))), s)
 let mk_anti ?(c= "")  n s = "\\$" ^ (n ^ (c ^ (":" ^ s)))
 let is_antiquot s =
   let len = String.length s in

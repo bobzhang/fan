@@ -213,7 +213,7 @@ let start_parser_of_levels entry =
   aux 0;
   
 let start_parser_of_entry entry =
-  debug gram "start_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in
+  (* debug gram "start_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in *)
   match entry.edesc with
   [ Dlevels [] -> Tools.empty_entry entry.ename
   | Dlevels elev -> start_parser_of_levels entry  elev
@@ -246,7 +246,7 @@ let rec continue_parser_of_levels entry clevn = fun
 
   
 let continue_parser_of_entry entry =
-  debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in
+  (* debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in *)
   match entry.edesc with
   [ Dlevels elev ->
     let p = continue_parser_of_levels entry 0 elev in

@@ -278,21 +278,10 @@ rule token c = parse
        | "?" (lowercase identchar * as x) ':'                         { `OPTLABEL x }
        | lowercase identchar * as x                                     { `LID x }
        | uppercase identchar * as x                                     { `UID x }
-       | int_literal as i
-           { try  `INT(cvt_int_literal i, i)
-           with Failure _ -> err (Literal_overflow "int") (FanLoc.of_lexbuf lexbuf) }
+       | int_literal  ('l'|'L'|'n')? as x
+           {try cvt_int_literal x with Failure _ -> err (Literal_overflow x) (FanLoc.of_lexbuf lexbuf)}
        | float_literal as f
-           { try  `FLO(float_of_string f, f)
-           with Failure _ -> err (Literal_overflow "float") (FanLoc.of_lexbuf lexbuf) }
-       | (int_literal as i) "l"
-           { try `INT32(cvt_int32_literal i, i)
-           with Failure _ -> err (Literal_overflow "int32") (FanLoc.of_lexbuf lexbuf) }
-       | (int_literal as i) "L"
-           { try  `INT64(cvt_int64_literal i, i)
-           with Failure _ -> err (Literal_overflow "int64") (FanLoc.of_lexbuf lexbuf) }
-       | (int_literal as i) "n"
-           { try `NATIVEINT(cvt_nativeint_literal i, i)
-           with Failure _ -> err (Literal_overflow "nativeint") (FanLoc.of_lexbuf lexbuf) }
+           { try  `FLO(float_of_string f, f) with Failure _ -> err (Literal_overflow f) (FanLoc.of_lexbuf lexbuf) }
        | '"'
            { with_curr_loc string c;
              let s = buff_contents c in `STR (TokenEval.string s, s)             }

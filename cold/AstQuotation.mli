@@ -15,7 +15,7 @@ val add : string -> 'a DynAst.tag  -> 'a expand_fun  -> unit
     
 (** [default] holds the default quotation name. *)
 val default: string ref     
-(* val default : string option ref  *)
+val set_default: string -> unit 
 
 (** [default_tbl] mapping position to the default quotation name
     it has higher precedence over default  *)
