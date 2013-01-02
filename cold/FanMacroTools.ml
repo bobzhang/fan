@@ -125,7 +125,7 @@ let undef ~expr  ~patt  x =
     defined := (List.remove x defined.contents)
   with | Not_found  -> ()
 let parse_def ~expr  ~patt  s =
-  match Gram.parse_string expr (FanLoc.mk "<command line>") s with
+  match Gram.parse_string expr ~loc:(FanLoc.mk "<command line>") s with
   | Ast.ExId (_loc,Ast.IdUid (_,n)) -> define ~expr ~patt None n
   | Ast.ExApp
       (_loc,Ast.ExApp

@@ -37,7 +37,8 @@ val from : (int -> 'a option) -> 'a t
 val of_list : 'a list -> 'a t
 (** Return the stream holding the elements of the list in the same
    order. *)
-
+val of_array : 'a array -> 'a t
+    
 val of_string : string -> char t
 (** Return the stream of the characters of the string parameter. *)
 

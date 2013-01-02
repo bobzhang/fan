@@ -207,13 +207,13 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
   let expand_expr loc loc_name_opt s =
     Ref.protect2 (FanConfig.antiquotations,true) (current_loc_name, loc_name_opt)
       (fun _ ->
-        Gram.parse_string entry_eoi loc s |> mexpr loc |> expr_filter) in
+        Gram.parse_string entry_eoi ~loc s |> mexpr loc |> expr_filter) in
   let expand_str_item loc loc_name_opt s =
     let exp_ast = expand_expr loc loc_name_opt s in
     {:str_item@loc| $(exp:exp_ast) |} in
   let expand_patt _loc loc_name_opt s =
     Ref.protect FanConfig.antiquotations true begin fun _ ->
-      let ast = Gram.parse_string entry_eoi _loc s in
+      let ast = Gram.parse_string entry_eoi ~loc:_loc s in
       let meta_ast = mpatt _loc ast in
       let exp_ast = patt_filter meta_ast in
       let rec subst_first_loc name =  with "patt" fun
@@ -235,12 +235,13 @@ let make_parser entry =
     Ref.protect2
       (FanConfig.antiquotations, true)
       (current_loc_name,loc_name_opt)
-      (fun _ -> Gram.parse_string (Gram.eoi_entry entry) loc  s);
+      (fun _ -> Gram.parse_string (Gram.eoi_entry entry) ~loc  s);
 
 DEFINE REGISTER(tag) = fun  ~name ~entry -> add name tag (make_parser entry);
 DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter -> 
   add name DynAst.str_item_tag
     (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
+
   
 let of_str_item = REGISTER(DynAst.str_item_tag);
 let of_str_item_with_filter = REGISTER_FILTER(DynAst.str_item_tag);  

@@ -46,14 +46,11 @@ let parse entry loc cs =
   parse_origin_tokens entry (filter (l loc cs))
   (* filter_and_parse_tokens entry (lex loc cs) *);
   
-let parse_string entry loc str =
+let parse_string ?(loc=FanLoc.string_loc) entry  str =
   let l = entry.egram.glexer in
   let filter = entry.egram.gfilter in
   let filter ts = FanTokenFilter.filter filter ts in
-  parse_origin_tokens entry (filter (l loc (XStream.of_string str)))
-  (* filter_and_parse_tokens entry *)
-  (*   (entry.egram.glexer loc cs) *)
-(* (lex_string loc str) *);
+  parse_origin_tokens entry (filter (l loc (XStream.of_string str)));
   
 let debug_origin_token_stream (entry:t 'a) tokens : 'a =
   parse_origin_tokens entry (XStream.map (fun t -> (t,FanLoc.ghost)) tokens);
@@ -62,9 +59,9 @@ let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry (XStream.map (fun t -> (t,FanLoc.ghost)) tokens);
 
 (* with a special exception handler *)  
-let parse_string_safe entry loc s =
+let parse_string_safe ?(loc=FanLoc.string_loc) entry  s =
   try
-    parse_string entry loc s
+    parse_string entry ~loc s
   with
     [FanLoc.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);

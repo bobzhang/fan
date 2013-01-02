@@ -70,7 +70,7 @@ let undef ~expr ~patt x =
     [ Not_found -> () ];
 
 let parse_def ~expr ~patt s =
-  match Gram.parse_string expr (FanLoc.mk "<command line>") s with
+  match Gram.parse_string expr ~loc:(FanLoc.mk "<command line>") s with
   [ {:expr| $uid:n |} -> define ~expr ~patt None n
   | {:expr| $uid:n = $e |} -> define ~expr ~patt (Some ([],e)) n
   | _ -> invalid_arg s ];

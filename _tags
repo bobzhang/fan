@@ -1,5 +1,5 @@
 # -*- Mode:Shell-script -*-
-# true:pkg_batteries
+true:use_unix
 # true:-traverse
 # <cold> and <src>:traverse
 # <{cold,src}/Pprintast.ml>: warn_a
@@ -10,18 +10,16 @@
 
 <{cold,src}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
 
-# <{cold,src}/Lex/{cset,ulex,ulexing,utf16,utf8,LexGen}.cmx>:for-pack(Lex)
-# <{cold,src}/Lex/{cset,ulex,ulexing,utf16,utf8,LexGen}.p.cmx>:for-pack(Lex)
 
 <{cold,src}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt}.cmx>:for-pack(Lib)
 <{cold,src}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt}.p.cmx>:for-pack(Lib)
 
-<{cold,src}/*.{p.native,byte,native,d.byte}>: pkg_dynlink, pkg_compiler-libs.common
+<{cold,src}/*.{p.native,native}>: pkg_dynlink, pkg_compiler-libs.common
+
+<{cold,src}/*.{byte,d.byte}>: pkg_dynlink, pkg_compiler-libs.toplevel
 <{cold,src}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,Sig,ParsetreeHelper,Ast2Fan}.{ml,mli}> : pkg_compiler-libs.common
-<{cold,src}/FanTop.{ml,mli}>:pkg_compiler-libs.toplevel
-# <{cold,src}/Lib/{Plongident,Ploc,Ptype,Ptyp,Pexp,Ppat,Pmty,Psig,Pmod,Pstr,Pfield,Pcty,Pcl,Pcf,Pctf}.ml>:pkg_compiler-libs.common
+
+<{cold,src}/{FanTop,FanEval}.{ml,mli}>:pkg_compiler-libs.toplevel
 
 <{cold,src}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 <{cold,src}/Fan.ml>: warn(-33)
-# <{*_ppo,**/*_ppo,*/*/*_ppo}.ml>: -camlp4boot
-# <{**/*_ppo,llvm/a_ppo}.ml>: -camlp4boot

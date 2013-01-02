@@ -1,11 +1,22 @@
 open Format
 let failwithf fmt = ksprintf failwith fmt
 let prerr_endlinef fmt = ksprintf prerr_endline fmt
+let invalid_argf fmt = kprintf invalid_arg fmt
+let memoize f =
+  let cache = Hashtbl.create 101 in
+  fun v  ->
+    try Hashtbl.find cache v
+    with | Not_found  -> let r = f v in (Hashtbl.replace cache v r; r)
 let finally action f x =
   try let res = f x in action (); res with | e -> (action (); raise e)
 let with_dispose ~dispose  f x = finally (fun ()  -> dispose x) f x
-let (|>) x f = f x
-let (&) f x = f x
+external ( |> ) : 'a -> ('a -> 'b) -> 'b = "%revapply"
+external ( & ) : ('a -> 'b) -> 'a -> 'b = "%apply"
+external id : 'a -> 'a = "%identity"
+external ( !& ) : _ -> unit = "%ignore"
+let time f v =
+  let start = Unix.gettimeofday () in
+  let res = f v in let end_ = Unix.gettimeofday () in (res, (end_ -. start))
 let (<|) f x = f x
 let (|-) f g x = g (f x)
 let (-|) f g x = f (g x)
@@ -97,12 +108,18 @@ module MapMake(S:Map.OrderedType) = struct
   let elements map = fold (fun k  v  acc  -> (k, v) :: acc) map []
   let find_default ~default  k m = try find k m with | Not_found  -> default
   end
-module SSet = Set.Make(String)
+module SetMake(S:Set.OrderedType) = struct
+  include Set.Make(S) let of_list = List.fold_left (flip add) empty
+  let add_list c = List.fold_left (flip add) c
+  let of_array = Array.fold_left (flip add) empty
+  let add_array c = Array.fold_left (flip add) c
+  end
+module SSet = SetMake(String)
 module SMap = MapMake(String)
-module IMap = Set.Make(struct
+module IMap = MapMake(struct
   type t = int  let compare = Pervasives.compare
   end)
-module ISet = Set.Make(struct
+module ISet = SetMake(struct
   type t = int  let compare = Pervasives.compare
   end)
 module Hashset = struct
@@ -189,6 +206,14 @@ module String = struct
     if (len > 0) && ((n.[0]) = '-')
     then String.sub n 1 (len - 1)
     else "-" ^ n
+  let map f s =
+    let l = length s in
+    if l = 0
+    then s
+    else
+      (let r = create l in
+       for i = 0 to l - 1 do unsafe_set r i (f (unsafe_get s i)) done; r)
+  let lowercase s = map Char.lowercase s
   end
 module Ref =
   struct
@@ -252,7 +277,30 @@ module Array = struct
          if i < l1
          then (acc := (f acc.contents (a1.(i)) (a2.(i))); loop (i + 1))
          else acc.contents in
-       loop 0)
+       loop 0) let stream a = XStream.of_array a
+  let filter_opt t =
+    let n = length t in
+    let res_size = ref 0 in
+    let first_some = ref None in
+    for i = 0 to n - 1 do
+      (match t.(i) with
+       | None  -> ()
+       | Some _ as s ->
+           (if res_size.contents = 0 then first_some := s else ();
+            incr res_size))
+    done;
+    (match first_some.contents with
+     | None  -> [||]
+     | Some el ->
+         let result = create res_size.contents el in
+         let pos = ref 0 in
+         let _ =
+           for i = 0 to n - 1 do
+             match t.(i) with
+             | None  -> ()
+             | Some x -> (result.(pos.contents) <- x; incr pos)
+           done in
+         result) let filter_map f a = filter_opt (map f a)
   end
 module type STREAM =
   sig
@@ -376,4 +424,47 @@ module ErrorMonad = struct
           (f x acc) >>=
             ((fun x  -> (aux (acc + 1) xs) >>= (fun xs  -> return (x :: xs)))) in
     aux 0 xs
+  end
+module Unix = struct
+  include Unix
+  let folddir ~f  ~init  path =
+    let dh = opendir path in
+    finally (fun _  -> closedir dh)
+      (fun ()  ->
+         let rec loop st =
+           (try let st' = f st (readdir dh) in fun ()  -> loop st'
+            with | End_of_file  -> (fun ()  -> st)) () in
+         loop init) ()
+  let try_set_close_on_exec fd =
+    try set_close_on_exec fd; true with | Invalid_argument _ -> false
+  let gen_open_proc_full cmdargs input output error toclose =
+    let cmd =
+      match cmdargs with
+      | x::_ -> x
+      | _ -> invalid_arg "Unix.gen_open_proc_full" in
+    let cmdargs = Array.of_list cmdargs in
+    let cloexec = List.for_all try_set_close_on_exec toclose in
+    match fork () with
+    | 0 ->
+        (dup2 input stdin;
+         close input;
+         dup2 output stdout;
+         close output;
+         dup2 error stderr;
+         close error;
+         if not cloexec then List.iter close toclose else ();
+         (try execvp cmd cmdargs with | _ -> exit 127))
+    | id -> id
+  let open_process_full cmdargs =
+    let (in_read,in_write) = pipe () in
+    let (out_read,out_write) = pipe () in
+    let (err_read,err_write) = pipe () in
+    let pid =
+      gen_open_proc_full cmdargs out_read in_write err_write
+        [in_read; out_write; err_read] in
+    close out_read;
+    close in_write;
+    close err_write;
+    (pid, (in_read, out_write, err_read))
+  let open_shell_process_full cmd = open_process_full ["/bin/sh"; "-c"; cmd]
   end

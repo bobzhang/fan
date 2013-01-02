@@ -36,15 +36,15 @@ let error_report (loc,s) =
    let err_location =
      String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
    prerr_endline (sprintf "err: ^%s^" err_location))
-let parse_string_of_entry ?(_loc= FanLoc.mk "<string>")  entry s =
-  try Gram.parse_string entry _loc s
+let parse_string_of_entry ?(loc= FanLoc.mk "<string>")  entry s =
+  try Gram.parse_string entry ~loc s
   with
   | FanLoc.Exc_located (loc,e) ->
       (eprintf "%s" (Printexc.to_string e);
        error_report (loc, s);
        FanLoc.raise loc e)
-let wrap_stream_parser ?(_loc= FanLoc.mk "<stream>")  p s =
-  try p _loc s
+let wrap_stream_parser ?(loc= FanLoc.mk "<stream>")  p s =
+  try p ~loc s
   with
   | FanLoc.Exc_located (loc,e) ->
       (eprintf "error: %s" (FanLoc.to_string loc); FanLoc.raise loc e)

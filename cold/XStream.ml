@@ -197,6 +197,9 @@ let from f = {count = 0; data = Sgen {curr = None; func = f}; last = None};;
 let of_list l =
   {count = 0; data = List.fold_right (fun x l -> Scons (x, l)) l Sempty; last = None}
 ;;
+(* add a generator for array *)
+let of_array l =
+  {count = 0; data = Array.fold_right (fun x l -> Scons (x, l)) l Sempty; last = None};;
 
 let of_string s =
   from (fun c -> if c < String.length s then Some s.[c] else None)

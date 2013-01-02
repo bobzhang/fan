@@ -5,7 +5,14 @@ open Format;
   
 let failwithf fmt = ksprintf failwith fmt  ;
 let prerr_endlinef fmt = ksprintf prerr_endline fmt  ;
-
+let invalid_argf fmt = kprintf invalid_arg fmt;
+let memoize f =
+  let cache = Hashtbl.create 101 in
+  fun v -> try Hashtbl.find cache v with Not_found -> begin 
+    let r = f v ;
+    Hashtbl.replace cache v r;
+    r end;
+  
 let finally action f x  =
   try begin 
     let res = f x;
@@ -19,9 +26,18 @@ let with_dispose ~dispose f x =
   finally (fun () -> dispose x) f x;
 
 (** {6 Operators}*)
-let ( |> ) x f = f x;
-let ( ||> ) (x,y) f = f x y ;
-let (&) f x = f x;
+external (|>) : 'a -> ('a -> 'b) -> 'b =  "%revapply"  ;
+external (&) : ('a -> 'b) -> 'a -> 'b = "%apply";
+external id : 'a -> 'a = "%identity";
+external (!&) : _ -> unit = "%ignore";
+
+let time f v =
+  let start = Unix.gettimeofday () in
+  let res = f v in
+  let end_ = Unix.gettimeofday () in
+  (res, end_ -. start);
+    
+
 let ( <| ) f x = f x;
 
 let ( |- ) f g x = g (f x);
@@ -84,6 +100,7 @@ let callcc  (type u) (f: cont u-> u)  =
 module List = struct
   include List;
 
+  let null xs = xs = [];
   (*
     {[
     drop 3 [1;2;3;4];
@@ -196,15 +213,23 @@ module MapMake(S:Map.OrderedType) = struct
     try find k m with Not_found -> default;
 end ;
 
-
-module SSet = Set.Make String;
+module SetMake(S:Set.OrderedType) = struct
+  include Set.Make S;
+  let of_list = List.fold_left (flip add) empty;
+  let add_list c = List.fold_left (flip add) c;
+  let of_array = Array.fold_left (flip add) empty;
+  let add_array c = Array.fold_left (flip add) c;
+end;
+(* module SSet = Set.Make String; *)
+module SSet =SetMake String; 
 module SMap = MapMake String;
-module IMap = Set.Make (struct
+
+module IMap = MapMake (struct
   type t = int;
   let compare = Pervasives.compare ; 
 end);
 
-module ISet = Set.Make(struct
+module ISet = SetMake(struct
  type t = int;
  let compare = Pervasives.compare;
 end);
@@ -357,7 +382,18 @@ module String = struct
     let len = String.length n in
     if len > 0 && n.[0] = '-' then String.sub n 1 (len - 1)
     else "-" ^ n;
-    
+
+  let map f s =
+    let l = length s in
+    if l = 0 then s else begin
+      let r = create l ;
+      for i = 0 to l - 1 do unsafe_set r i (f(unsafe_get s i)) done;
+      r
+    end;
+  let lowercase s = map Char.lowercase s;
+
+  (* let filter_map f a = *)
+  (*   let u = Array.filter *)
 end;
   
 module Ref = struct
@@ -552,6 +588,39 @@ module Array = struct
         else
           !acc in
       loop 0 ;
+   (* let of_stream s = *)
+     
+   let stream a =
+     XStream.of_array a;
+   (* let filter_map f arr = *)
+  let filter_opt t = begin 
+    let n = length t ;
+    let res_size = ref 0 ;
+    let first_some = ref None ;
+    for i = 0 to n - 1 do
+     match t.(i) with
+     [ None -> ()
+     | Some _ as s -> begin 
+         if !res_size = 0 then first_some := s else () ;
+         incr res_size
+     end]
+    done;
+    match !first_some with
+    [ None -> [||]
+    | Some el ->
+        let result = create (!res_size) el in
+        let pos = ref 0 in
+        let _ = for i = 0 to n - 1 do
+           match t.(i) with
+           [ None -> ()
+           | Some x -> begin 
+               result.(!pos) <- x;
+               incr pos
+           end]
+        done in 
+        result]
+  end;
+  let filter_map f a = filter_opt  (map f a);
 end;
 
 
@@ -701,3 +770,146 @@ module ErrorMonad = struct
     in aux 0 xs;
 end;
   
+
+module Unix = struct
+  include Unix;
+  let folddir ~f ~init path =
+    let dh = opendir path in
+    finally (fun _ -> closedir dh)
+    (fun () ->
+    let rec loop st =
+        let try st' = f st (readdir dh) in
+        loop st'
+        with End_of_file -> st    in
+    loop init) ();
+    
+  let try_set_close_on_exec fd =
+    try begin set_close_on_exec fd; true end  with Invalid_argument _ -> false;
+      
+  let gen_open_proc_full cmdargs input output error toclose =
+    let cmd =
+      match cmdargs with
+      [[x :: _] -> x
+      | _ -> invalid_arg "Unix.gen_open_proc_full"]  in
+    let cmdargs = Array.of_list cmdargs in
+    let cloexec = List.for_all try_set_close_on_exec toclose in
+    match fork() with
+    [  0 -> begin 
+      dup2 input stdin; close input;
+      dup2 output stdout; close output;
+      dup2 error stderr; close error;
+      if not cloexec then List.iter close toclose else ();
+      try execvp cmd cmdargs with _ -> exit 127
+    end (* never return *)
+   | id -> id];
+  let open_process_full cmdargs =
+    let (in_read, in_write) = pipe() in
+    let (out_read, out_write) = pipe() in
+    let (err_read, err_write) = pipe() in
+    let pid = gen_open_proc_full cmdargs
+        out_read in_write err_write [in_read; out_write; err_read]  in begin 
+          close out_read;
+          close in_write;
+          close err_write;
+          (pid, (in_read, out_write, err_read))
+        end;
+  let open_shell_process_full cmd =
+    open_process_full [ "/bin/sh"; "-c"; cmd ];
+
+(*   let command_aux readers = *)
+(*     let read_buflen = 4096 in *)
+(*     let read_buf = String.create read_buflen in *)
+(*     let try_read_lines fd buf = *)
+(*     let read_bytes =  *)
+(*       try Some (read fd read_buf 0 read_buflen) with *)
+(*       [ Unix_error ((EAGAIN | EWOULDBLOCK), _, _) -> None] in *)
+(*       match read_bytes with *)
+(*       [ None -> [], false *)
+(*       | Some 0 -> (\* eof *\) *)
+(*           let s = Buffer.contents buf in *)
+(*           (if s = "" then [] else [s]), true *)
+(*       | Some len -> *)
+(*         let buffer_old_len = Buffer.length buf in *)
+(*         Buffer.add_substring buf read_buf 0 len; *)
+
+(*         let pos_in_buffer pos = buffer_old_len + pos in *)
+        
+(*         let rec get_lines st from_in_buffer pos =   *)
+(*           match *)
+(*             if pos >= len then None *)
+(*             else Xstring.index_from_to read_buf pos (len-1) '\n' *)
+(*           with *)
+(*           | None -> *)
+(*               let rem = *)
+(*                 Buffer.sub buf *)
+(*                   from_in_buffer *)
+(*                   (Buffer.length buf - from_in_buffer) *)
+(*               in *)
+(*               Buffer.clear buf; *)
+(*               if String.length rem > buf_flush_limit then rem :: st *)
+(*               else begin *)
+(*                 Buffer.add_string buf rem; st *)
+(*               end *)
+(*           | Some pos -> *)
+(*               let next_from_in_buffer = pos_in_buffer pos + 1 in *)
+(*               let line = *)
+(*                 Buffer.sub buf *)
+(*                   from_in_buffer *)
+(*                   (next_from_in_buffer - from_in_buffer) *)
+(*               in *)
+(*               get_lines (line :: st) next_from_in_buffer (pos + 1) *)
+(*         in *)
+(*         (List.rev (get_lines [] 0 0), false  in *)
+
+(*   let rec loop readers = *)
+(*     if readers = [] then () (\* no more reader and no need to loop *\) *)
+(*     else begin *)
+(*       let fds = List.map (fun (fd, _, _) -> fd) readers in  *)
+(*       let readables, _, _ = select fds [] [](\*?*\) (-1.0)(\*?*\) in *)
+(*       let readers' =  *)
+(*         List.fold_right (fun (fd, buf, fs as reader) st -> *)
+(*           if not (List.mem fd readables) then *)
+(*             reader :: st *)
+(*           else begin *)
+(*             let rec loop () = *)
+(*               let lines, is_eof = try_read_lines fd buf in *)
+(*               if lines <> [] then begin *)
+(*                 List.iter (fun line -> *)
+(*                   List.iter (fun f -> f (`Read line)) fs) lines; *)
+(*                 if not is_eof then loop () else is_eof *)
+(*               end else is_eof  *)
+(*             in *)
+(*             if loop () then begin *)
+(* 	      (\* reached eof. remove the reader *\) *)
+(* 	      List.iter (fun f -> f `EOF) fs; *)
+(*               close fd;  *)
+(* 	      st *)
+(*             end else reader :: st *)
+(*           end) readers [] *)
+
+(*       in *)
+(*       loop readers' *)
+(*     end *)
+(*   in *)
+(*   loop readers *)
+(* ;     *)
+ (*  let command_wrapper (pid, (out, in_, err)) f = *)
+(*     try begin  *)
+(*       close in_; *)
+(*       set_nonblock out; *)
+(*       set_nonblock err; *)
+(*       let buf_out = Buffer.create buf_flush_limit in *)
+(*       let buf_err = Buffer.create buf_flush_limit in *)
+
+(*     command_aux *)
+(*       [out, buf_out, [fun s -> f (`Out, s)]; *)
+(*        err, buf_err, [fun s -> f (`Err, s)]]; *)
+(*     snd (waitpid_non_intr pid) *)
+(*   with *)
+(*   | e -> *)
+(*       (\* kill really ? *\) *)
+(*       kill pid 9; *)
+(*       ignore (waitpid_non_intr pid); *)
+(*       raise e *)
+(* ; *)    
+end;

@@ -1116,6 +1116,13 @@ let apply () =
                (fun (e3 : 'expr)  _  (e2 : 'expr)  _  (e1 : 'expr)  _ 
                   (_loc : FanLoc.t)  ->
                   (Ast.ExIfe (_loc, e1, e2, e3) : 'expr ))));
+          ([`Skeyword "if"; `Sself; `Skeyword "then"; `Sself],
+            (Gram.mk_action
+               (fun (e2 : 'expr)  _  (e1 : 'expr)  _  (_loc : FanLoc.t)  ->
+                  (Ast.ExIfe
+                     (_loc, e1, e2,
+                       (Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))))) : 
+                  'expr ))));
           ([`Skeyword "do";
            `Snterm (Gram.obj (sequence : 'sequence Gram.t ));
            `Skeyword "done"],
