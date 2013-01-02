@@ -235,7 +235,10 @@ let rec type_decl tl cl loc m pflag = fun
   [ {:ctyp| $t1 == $t2 |} ->
     type_decl tl cl loc (Some (ctyp t1)) pflag t2
   | {:ctyp| private $t |} ->
-      type_decl tl cl loc m true t
+      if pflag then
+        error _loc "multiple private keyword used, use only one instead"
+      else
+        type_decl tl cl loc m true t
   | {:ctyp| { $t } |} ->
       mktype loc tl cl
         (Ptype_record (List.map mktrecord (list_of_ctyp t []))) (mkprivate' pflag) m
@@ -719,7 +722,19 @@ and mkideexp x acc =match x with (* rec_binding -> (string loc * expression) lis
       mkideexp x (mkideexp y acc)
   | {:rec_binding| $(id: {:ident@sloc| $lid:s |}) = $e |} -> [(with_loc s sloc, expr e) :: acc]
   | _ -> assert false ]
-and mktype_decl x acc = match x with (* ctyp -> (string loc * type_declaration) list -> (string loc * type_declaration) list*)
+
+(* Example:
+   {[
+   (Lib.Ctyp.of_str_item {:str_item|type u = int and v  = [A of u and b ] |},[])
+     ||> mktype_decl |> AstPrint.default#type_def_list f;
+   type u = int 
+   and v =  
+   | A of u* b
+   ]}
+   
+ *)    
+and mktype_decl x acc =
+  match x with (* ctyp -> (string loc * type_declaration) list -> (string loc * type_declaration) list*)
   [ {:ctyp| $x and $y |} ->
     mktype_decl x (mktype_decl y acc)
   | Ast.TyDcl (cloc, c, tl, td, cl) ->

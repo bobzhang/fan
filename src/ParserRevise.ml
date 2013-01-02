@@ -732,7 +732,7 @@ let apply () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | "'"; a_ident{i} -> {| '$lid:i |} ]
       ctyp:
-      { "==" LA
+      { "==" NA (* FIXME should be more restrict *)
         [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ]
        "private" NA
         [ "private"; ctyp Level "alias"{t} -> {| private $t |} ]

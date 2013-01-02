@@ -20,6 +20,7 @@ let with_dispose ~dispose f x =
 
 (** {6 Operators}*)
 let ( |> ) x f = f x;
+let ( ||> ) (x,y) f = f x y ;
 let (&) f x = f x;
 let ( <| ) f x = f x;
 
