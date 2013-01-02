@@ -1741,3 +1741,9 @@ let map_expr =
 let _ =
   AstFilters.register_str_item_filter
     ("trash_nothing", ((Ast.map_expr map_expr)#str_item))
+let make_filter (s,code) =
+  let f =
+    function
+    | Ast.StExp (_loc,Ast.ExId (_,Ast.IdLid (_,s'))) when s = s' -> code
+    | e -> e in
+  (("filter_" ^ s), ((Ast.map_str_item f)#str_item))

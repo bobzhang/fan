@@ -565,9 +565,14 @@ let rec apply accu =
   | [] -> accu
   | x::xs ->
       let _loc = Ast.loc_of_expr x in apply (Ast.ExApp (_loc, accu, x)) xs
-let mk_array arr =
-  let items = (arr |> Array.to_list) |> sem_of_list in
-  Ast.ExArr (_loc, items)
+let mkarray loc arr =
+  let rec loop top =
+    function
+    | [] -> Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))
+    | e1::el ->
+        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_expr e1) loc in
+        Ast.ExArr (_loc, (Ast.ExSem (_loc, e1, (loop false el)))) in
+  let items = arr |> Array.to_list in loop true items
 let of_str s =
   let len = String.length s in
   if len = 0
@@ -677,19 +682,6 @@ let mep_comma x y =
                         (_loc, (Ast.IdUid (_loc, "Ast")),
                           (Ast.IdUid (_loc, "PaCom")))))),
                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
-let mep_app x y =
-  Ast.ExApp
-    (_loc,
-      (Ast.ExApp
-         (_loc,
-           (Ast.ExApp
-              (_loc,
-                (Ast.ExId
-                   (_loc,
-                     (Ast.IdAcc
-                        (_loc, (Ast.IdUid (_loc, "Ast")),
-                          (Ast.IdUid (_loc, "PaApp")))))),
-                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
 let mee_comma x y =
   Ast.ExApp
     (_loc,
@@ -715,6 +707,19 @@ let mee_app x y =
                      (Ast.IdAcc
                         (_loc, (Ast.IdUid (_loc, "Ast")),
                           (Ast.IdUid (_loc, "ExApp")))))),
+                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
+let mep_app x y =
+  Ast.ExApp
+    (_loc,
+      (Ast.ExApp
+         (_loc,
+           (Ast.ExApp
+              (_loc,
+                (Ast.ExId
+                   (_loc,
+                     (Ast.IdAcc
+                        (_loc, (Ast.IdUid (_loc, "Ast")),
+                          (Ast.IdUid (_loc, "PaApp")))))),
                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), x)), y)
 let mk_tuple_ep =
   function

@@ -3,4 +3,4 @@
 <**/*.{ml,mlx}>: use_fan
 <{**/*_ppo,AstPrint,OAstPrint,AstEq,tmp*,FanLexer,FanConfig,XStream,CharStream,OStream,Stream8,GStream,Stream}.{ml}>  : -use_fan
 
-<{Utf8,Utf16,Ulexing,LexSet}.ml>: -use_fan
+<{Utf8,Utf16,Ulexing,LexSet,MetaTemplate}.ml>: -use_fan

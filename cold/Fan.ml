@@ -131,5 +131,5 @@ open ParserDebug
 open ParserStream
 open ParserLex
 open AstInjection
-open FanGen
+open AstTypeGen
 open CodeTemplate

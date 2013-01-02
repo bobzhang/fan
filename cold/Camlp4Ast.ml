@@ -1,3 +1,8 @@
+module type META_LOC =
+  sig
+    val meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt
+    val meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr
+  end
 open FanUtil
 open LibUtil
 module Ast = struct
@@ -394,11 +399,6 @@ let rec list_of_module_binding x acc =
   | Ast.MbAnd (_loc,x,y) ->
       list_of_module_binding x (list_of_module_binding y acc)
   | x -> x :: acc
-module type META_LOC =
-  sig
-    val meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt
-    val meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr
-  end
 module Meta =
   struct
   module Make(MetaLoc:META_LOC) = struct

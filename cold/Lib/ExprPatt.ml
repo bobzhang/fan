@@ -37,10 +37,20 @@ let rec apply accu = fun
 (*
   mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
   True
- *)  
-let mk_array arr =
-  let items = arr |> Array.to_list |> sem_of_list in 
-  {| [| $items |] |};  
+ *)
+let mkarray loc arr =
+  let rec loop top =  fun
+    [ [] -> {| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
+        {| [| $e1 ; $(loop false el) |] |} ] in
+  let items = arr |> Array.to_list in 
+  loop true items;
+  
+(* let mk_array arr = *)
+(*   let items = arr |> Array.to_list |> sem_of_list in  *)
+(*   {| [| $items |] |};   *)
 
 
 (*

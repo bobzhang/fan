@@ -112,7 +112,7 @@ let mk_tuple_meta_expr params =
 let gen_meta_expr =
   gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_expr ~mk_record:mk_record_meta_expr
-    mk_variant_meta_expr ~module_name:"MetaExpr"
+    mk_variant_meta_expr
 let mk_variant_meta_patt cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
@@ -150,10 +150,13 @@ let mk_tuple_meta_patt params =
 let gen_meta_patt =
   gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_patt ~mk_record:mk_record_meta_patt
-    mk_variant_meta_patt ~module_name:"MetaPatt"
+    mk_variant_meta_patt
 let _ =
-  [("MetaExpr", gen_meta_expr); ("MetaPatt", gen_meta_patt)] |>
-    (List.iter Typehook.register)
+  Typehook.register ~position:"__MetaExpr__" ~filter:(fun s  -> s <> "loc")
+    ("MetaExpr", gen_meta_expr)
+let _ =
+  Typehook.register ~position:"__MetaPatt__" ~filter:(fun s  -> s <> "loc")
+    ("MetaPatt", gen_meta_patt)
 let extract info =
   (info |>
      (List.map

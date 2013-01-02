@@ -73,6 +73,10 @@ begin
   |> List.iter Typehook.register;
 end;
 
+(* +-----------------------------------------------------------------+
+   | Meta generator                                                  |
+   +-----------------------------------------------------------------+ *)
+  
 let mk_variant_meta_expr cons params = with "expr"
     let len = List.length params in 
     if String.ends_with cons "Ant" then
@@ -86,8 +90,7 @@ let mk_variant_meta_expr cons params = with "expr"
       |> List.fold_left mee_app (mee_of_str cons)  ;
         
 let mk_record_meta_expr cols = cols |> List.map
-      (fun [ {record_label; record_info={ty_expr;_};_} -> (record_label, ty_expr)])
-      |> mk_record_ee ;
+  (fun [ {record_label; record_info={ty_expr;_};_} -> (record_label, ty_expr)]) |> mk_record_ee ;
 
 let mk_tuple_meta_expr params =
     params |> List.map (fun [{ty_expr;_} -> ty_expr]) |> mk_tuple_ee ;
@@ -95,8 +98,8 @@ let mk_tuple_meta_expr params =
 let gen_meta_expr = 
   gen_str_item  ~id:(`Pre "meta_")  ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_expr
-    ~mk_record:mk_record_meta_expr mk_variant_meta_expr
-    ~module_name:"MetaExpr";    
+    ~mk_record:mk_record_meta_expr mk_variant_meta_expr;
+    (* ~module_name:"MetaExpr";     *)
 
 let mk_variant_meta_patt cons params = with "expr"
     let len = List.length params in 
@@ -122,16 +125,30 @@ let gen_meta_patt =
   gen_str_item  ~id:(`Pre "meta_")
     ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_patt
-    ~mk_record:mk_record_meta_patt mk_variant_meta_patt
-    ~module_name:"MetaPatt"
+    ~mk_record:mk_record_meta_patt
+    mk_variant_meta_patt
+    (* ~module_name:"MetaPatt" *)
 ;
 
-begin  [
-   ("MetaExpr",gen_meta_expr) ;
-   ("MetaPatt",gen_meta_patt) ;] |> List.iter Typehook.register;
-end ;
+(* add hock FIXME*)  
+Typehook.register
+    ~position:"__MetaExpr__"
+    ~filter:(fun s -> s<>"loc")
+    ("MetaExpr",gen_meta_expr);
+Typehook.register
+    ~position:"__MetaPatt__"
+    ~filter:(fun s -> s<> "loc")
+    ("MetaPatt",gen_meta_patt);
+(* begin  [ *)
+(*    ("MetaExpr",gen_meta_expr) ; *)
+(*    ("MetaPatt",gen_meta_patt) ;] |> List.iter Typehook.register; *)
+(* end ; *)
   
 
+(* +-----------------------------------------------------------------+
+   | Format generator                                                |
+   +-----------------------------------------------------------------+ *)
+  
 let extract info = info
     |> List.map (fun [{ty_name_expr;ty_id_expr;_} -> [ty_name_expr;ty_id_expr] ])
     |> List.concat ;

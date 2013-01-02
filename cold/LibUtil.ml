@@ -41,7 +41,7 @@ let callcc (type u) (f : u cont -> u) =
     exception Return of u
     end in try f (fun x  -> raise (M.Return x)) with | M.Return u -> u
 module List = struct
-  include List
+  include List let null xs = xs = []
   let rec drop n = function | _::l when n > 0 -> drop (n - 1) l | l -> l
   let lastbut1 ls =
     match ls with
@@ -98,6 +98,13 @@ module List = struct
   let reduce_right compose = reduce_right_with ~compose ~f:(fun x  -> x)
   let init n f = let open Array in to_list (init n f)
   let concat_map f lst = fold_right (fun x  acc  -> (f x) @ acc) lst []
+  let rec filter_map f ls =
+    match ls with
+    | [] -> []
+    | x::xs ->
+        (match f x with
+         | Some y -> y :: (filter_map f xs)
+         | None  -> filter_map f xs)
   end
 module MapMake(S:Map.OrderedType) = struct
   include Map.Make(S)

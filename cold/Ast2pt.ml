@@ -209,7 +209,10 @@ let mkvariant =
 let rec type_decl tl cl loc m pflag =
   function
   | Ast.TyMan (_loc,t1,t2) -> type_decl tl cl loc (Some (ctyp t1)) pflag t2
-  | Ast.TyPrv (_loc,t) -> type_decl tl cl loc m true t
+  | Ast.TyPrv (_loc,t) ->
+      if pflag
+      then error _loc "multiple private keyword used, use only one instead"
+      else type_decl tl cl loc m true t
   | Ast.TyRec (_loc,t) ->
       mktype loc tl cl
         (Ptype_record (List.map mktrecord (list_of_ctyp t [])))

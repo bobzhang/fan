@@ -59,9 +59,12 @@ val view_app : expr list -> expr -> expr * expr list
 val app_of_list : expr list -> expr
 val com_of_list : expr list -> expr
 val sem_of_list : expr list -> expr
-val mklist : FanLoc.t -> expr list -> expr
+
+val mklist : loc -> expr list -> expr
+val mkarray : loc -> expr array -> expr
+    
 val apply : expr -> expr list -> expr
-val mk_array : expr array -> expr
+
 val of_str : string -> expr
 val of_ident_number : ident -> int -> expr
 val ( +> ) : expr -> string list -> expr

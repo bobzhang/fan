@@ -3,6 +3,17 @@
 #filter "fold";;
 #filter "meta";;
 #filter "trash";;
+module type META_LOC = sig
+      (** The first location is where to put the returned pattern.
+          Generally it's _loc to match with {:patt| ... |} quotations.
+          The second location is the one to treat. *)
+    val meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt;
+      (** The first location is where to put the returned expression.
+          Generally it's _loc to match with {:expr| ... |} quotations.
+          The second location is the one to treat. *)
+    val meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr;
+end;
+
 open FanUtil;
 open LibUtil;
 module Ast = struct
@@ -455,16 +466,6 @@ module Camlp4Trash = struct
     INCLUDE "src/Ast.ml";
 end;
 
-module type META_LOC = sig
-      (** The first location is where to put the returned pattern.
-          Generally it's _loc to match with {:patt| ... |} quotations.
-          The second location is the one to treat. *)
-    val meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt;
-      (** The first location is where to put the returned expression.
-          Generally it's _loc to match with {:expr| ... |} quotations.
-          The second location is the one to treat. *)
-    val meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr;
-end;
 
   
 module Meta = struct

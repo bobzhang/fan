@@ -8,9 +8,25 @@ module Ast = Camlp4Ast;
 (** A Hook To Ast Filters *)
 let keep = ref false;
 type plugin = {
-    plugin_transform:(module_types -> Ast.str_item);
-    plugin_activate: mutable bool;
+    transform:(module_types -> Ast.str_item);
+    activate: mutable bool;
+    position: option string;
+    filter: option (string->bool);
   };
+
+let apply_filter f (m:module_types) : module_types = begin 
+  (* eprintf "applying filter@."; *)
+  let f  = (fun
+    [ (`Single (s,_) as x) ->
+      if f s then Some  x else None
+    | `Mutual ls ->
+       let x = List.filter_map (fun ((s,_) as x) -> if f s then Some x  else None) ls in
+       match x with
+       [ [] -> None
+       | [x] -> Some (`Single  x)
+       |  y -> Some (`Mutual y)]]) in
+  List.filter_map  f m ;
+end;
   
 type plugin_name = string ;
   
@@ -18,12 +34,12 @@ let filters : Hashtbl.t plugin_name plugin = Hashtbl.create 30;
   
 let show_code =  ref false;
   
-let register  (name,filter) =
+let register  ?filter ?position (name,f) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
   else begin
    (* eprintf "%s filter registered@." name ; *)
-   Hashtbl.add filters name {plugin_transform=filter; plugin_activate=false} ;
+   Hashtbl.add filters name {transform=f; activate=false;position;filter} ;
   end;
 
 let show_modules () =
@@ -42,7 +58,7 @@ let show_modules () =
 
 let plugin_add plugin =
   let try v = Hashtbl.find filters plugin in
-  v.plugin_activate <- true
+  v.activate <- true
   with
   [Not_found -> begin
     show_modules ();
@@ -50,7 +66,7 @@ let plugin_add plugin =
   end];
 let plugin_remove plugin =
   let try v = Hashtbl.find filters plugin in
-  v.plugin_activate <- false
+  v.activate <- false
   with
     [Not_found -> begin 
       show_modules ();
@@ -148,9 +164,23 @@ let traversal () : traversal  = object (self:'self_type)
       let module_types = List.rev (self#get_cur_module_types) in
       let result =
         Hashtbl.fold
-          (fun _ v acc
-            -> if v.plugin_activate then
-              {|$acc; $(v.plugin_transform module_types) |}
+          (fun _ {activate;position;transform;filter} acc
+            ->
+              let module_types =
+                match filter with
+                [Some x -> apply_filter x module_types
+                |None -> module_types] in   
+              if activate then
+                let code = transform module_types in 
+                match position with
+                [Some x ->
+                  let (name,f) = Filters.make_filter (x,code) in begin 
+                    AstFilters.register_str_item_filter (name,f);
+                    AstFilters.use_implem_filter name ;
+                    acc
+                  end
+                |None -> 
+                  {| $acc; $code |} ]
             else  acc) filters
           (if !keep then res else {| |} ) in 
       (* let items = <<
@@ -206,7 +236,7 @@ with "expr"
       [ "<+" ; `STR(_,plugin) -> begin plugin_add plugin; {| |} end
       | "<++"; L1 [`STR(_,x) -> x] SEP ","{plugins} ->
           begin List.iter plugin_add plugins; {| |}  end
-      | "clear" -> begin Hashtbl.iter (fun _  v -> v.plugin_activate <- false) filters; {| |} end
+      | "clear" -> begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end
       | "<--"; L1 [`STR(_,x) -> x] SEP ","{plugins} -> begin List.iter plugin_remove plugins ; {| |} end
       | "keep" ; "on" -> begin keep := true; {| |} end
       | "keep" ; "off" -> begin keep := false; {| |} end

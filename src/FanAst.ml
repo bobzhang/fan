@@ -1,5 +1,16 @@
 (* Note: when you modify these types you must increment
    ast magic numbers defined in FanConfig.ml. *)
+module type META_LOC = sig
+      (** The first location is where to put the returned pattern.
+          Generally it's _loc to match with {:patt| ... |} quotations.
+          The second location is the one to treat. *)
+    val meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt;
+      (** The first location is where to put the returned expression.
+          Generally it's _loc to match with {:expr| ... |} quotations.
+          The second location is the one to treat. *)
+    val meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr;
+end;
+
 (** Signature for OCaml syntax trees. *) (*
     This signature is an extension of {!Ast}
     It provides:
@@ -30,10 +41,13 @@
     class_expr         :: The type of class expressions
     class_str_item     :: The type of class structure items
  *)
-{:fans|keep on; <++ "Print", "OPrint"(* , "MetaExpr", "MetaPatt" *);|};
-open StdLib;
+{:fans|keep off; <++ "MetaExpr", "MetaPatt";|};
+open Ast;
+
+
+  
 {:ocaml|
-type loc = FanLoc.t
+   type loc = FanLoc.t
    and meta_bool =
     [ BTrue
     | BFalse
@@ -431,3 +445,20 @@ type loc = FanLoc.t
     | CrVvr of loc and string and mutable_flag and ctyp
     | CrAnt of loc and string (* $s$ *) ];
   |};
+
+module Make(MetaLoc:META_LOC) = struct
+
+
+  module MetaExpr = struct
+    open StdMeta.Expr;
+    let meta_loc = MetaLoc.meta_loc_expr;
+    __MetaExpr__;
+  end;
+    
+  module MetaPatt =struct
+    open StdMeta.Patt;
+    let meta_loc = MetaLoc.meta_loc_patt;
+    __MetaPatt__;
+  end;
+  (* module Expr = struct __MetaExpr__; end; *)
+end;

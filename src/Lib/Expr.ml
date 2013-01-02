@@ -402,12 +402,14 @@ let (<+<) patts acc =
   
 let mep_comma x y =  {| {:patt| $($x), $($y) |} |};
   (* {| Ast.PaCom _loc $x $y |}; *)
-let mep_app x y = {| {:patt| $($x) $($y) |}|};
-  (* {| Ast.PaApp _loc $x $y |};        *)
 let mee_comma x y = {| {| $($x), $($y) |} |};
   (* {| Ast.ExCom _loc $x $y |}; *)
+
+
 let mee_app x y = {| {| $($x) $($y) |}|};
   (* {| Ast.ExApp _loc $x $y |}; *)
+let mep_app x y = {| {:patt| $($x) $($y) |}|};
+  (* {| Ast.PaApp _loc $x $y |};        *)
 
   
 

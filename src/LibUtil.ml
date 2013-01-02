@@ -197,6 +197,14 @@ module List = struct
   let concat_map f lst =
     fold_right (fun x acc -> f x @ acc) lst [];
 
+  let rec filter_map f ls =
+    match ls with
+    [ [] -> []
+    |[x::xs] ->
+        match f x with
+        [Some y -> [y:: filter_map  f xs]
+        |None -> filter_map f xs]
+    ];  
 end;
   
 module MapMake(S:Map.OrderedType) = struct

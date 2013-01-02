@@ -61,9 +61,14 @@ let rec apply accu =
   | [] -> accu
   | x::xs ->
       let _loc = Ast.loc_of_patt x in apply (Ast.PaApp (_loc, accu, x)) xs
-let mk_array arr =
-  let items = (arr |> Array.to_list) |> sem_of_list in
-  Ast.PaArr (_loc, items)
+let mkarray loc arr =
+  let rec loop top =
+    function
+    | [] -> Ast.PaId (_loc, (Ast.IdUid (_loc, "[]")))
+    | e1::el ->
+        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_patt e1) loc in
+        Ast.PaArr (_loc, (Ast.PaSem (_loc, e1, (loop false el)))) in
+  let items = arr |> Array.to_list in loop true items
 let of_str s =
   let len = String.length s in
   if len = 0

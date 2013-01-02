@@ -2,13 +2,17 @@ open Ast
   
 val keep : bool ref
 type plugin = {
-  plugin_transform : FSig.module_types -> str_item;
-  mutable plugin_activate : bool;
+  transform : FSig.module_types -> str_item;
+  mutable activate : bool;
+  position: string option;
+  filter: (string -> bool) option;
 }
 type plugin_name = string
 val filters : (plugin_name, plugin) LibUtil.Hashtbl.t
 val show_code : bool ref
-val register : plugin_name * (FSig.module_types -> str_item) -> unit
+val register :
+    ?filter:(string->bool) -> ?position:string ->
+      plugin_name * (FSig.module_types -> str_item) -> unit
 val show_modules : unit -> unit
 val plugin_add : plugin_name -> unit
 val plugin_remove : plugin_name -> unit

@@ -3564,7 +3564,7 @@ let apply () =
                   (Ast.TyQuo (_loc, i) : 'typevars ))))])]);
    Gram.extend (ctyp : 'ctyp Gram.t )
      (None,
-       [((Some "=="), (Some `LA),
+       [((Some "=="), (Some `NA),
           [([`Sself; `Skeyword "=="; `Sself],
              (Gram.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
