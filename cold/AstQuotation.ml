@@ -3,7 +3,6 @@ open LibUtil
 open FanUtil
 open Lib.Meta
 open Format
-open StdLib
 let _ = ()
 type quotation_error_message =  
   | Finding

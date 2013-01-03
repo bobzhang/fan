@@ -1597,7 +1597,7 @@ module Make(MetaLoc:META_LOC) =
                              (_loc, (ExId (_loc, (IdUid (_loc, "CrVvr")))),
                                (meta_loc _loc a0))), (meta_string _loc a1))),
                      (meta_mutable_flag _loc a2))), (meta_ctyp _loc a3))
-        | CrAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | CrAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_class_expr: 'loc -> class_expr -> 'result =
       fun _loc  ->
         function
@@ -1682,7 +1682,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "CeEq")))),
                           (meta_loc _loc a0))), (meta_class_expr _loc a1))),
                 (meta_class_expr _loc a2))
-        | CeAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | CeAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
       fun _loc  ->
         function
@@ -1753,7 +1753,7 @@ module Make(MetaLoc:META_LOC) =
                              (_loc, (ExId (_loc, (IdUid (_loc, "CgVir")))),
                                (meta_loc _loc a0))), (meta_string _loc a1))),
                      (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
-        | CgAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | CgAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_class_type: 'loc -> class_type -> 'result =
       fun _loc  ->
         function
@@ -1818,7 +1818,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "CtEq")))),
                           (meta_loc _loc a0))), (meta_class_type _loc a1))),
                 (meta_class_type _loc a2))
-        | CtAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | CtAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_str_item: 'loc -> str_item -> 'result =
       fun _loc  ->
         function
@@ -1934,7 +1934,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "StVal")))),
                           (meta_loc _loc a0))), (meta_rec_flag _loc a1))),
                 (meta_binding _loc a2))
-        | StAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | StAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_module_expr: 'loc -> module_expr -> 'result =
       fun _loc  ->
         function
@@ -1990,7 +1990,7 @@ module Make(MetaLoc:META_LOC) =
                 (ExApp
                    (_loc, (ExId (_loc, (IdUid (_loc, "MePkg")))),
                      (meta_loc _loc a0))), (meta_expr _loc a1))
-        | MeAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | MeAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_match_case: 'loc -> match_case -> 'result =
       fun _loc  ->
         function
@@ -2018,7 +2018,7 @@ module Make(MetaLoc:META_LOC) =
                              (_loc, (ExId (_loc, (IdUid (_loc, "McArr")))),
                                (meta_loc _loc a0))), (meta_patt _loc a1))),
                      (meta_expr _loc a2))), (meta_expr _loc a3))
-        | McAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | McAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_module_binding: 'loc -> module_binding -> 'result =
       fun _loc  ->
         function
@@ -2057,7 +2057,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "MbCol")))),
                           (meta_loc _loc a0))), (meta_string _loc a1))),
                 (meta_module_type _loc a2))
-        | MbAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | MbAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_rec_binding: 'loc -> rec_binding -> 'result =
       fun _loc  ->
         function
@@ -2083,7 +2083,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "RbEq")))),
                           (meta_loc _loc a0))), (meta_ident _loc a1))),
                 (meta_expr _loc a2))
-        | RbAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | RbAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_binding: 'loc -> binding -> 'result =
       fun _loc  ->
         function
@@ -2109,7 +2109,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "BiEq")))),
                           (meta_loc _loc a0))), (meta_patt _loc a1))),
                 (meta_expr _loc a2))
-        | BiAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | BiAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_with_constr: 'loc -> with_constr -> 'result =
       fun _loc  ->
         function
@@ -2162,7 +2162,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "WcAnd")))),
                           (meta_loc _loc a0))), (meta_with_constr _loc a1))),
                 (meta_with_constr _loc a2))
-        | WcAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | WcAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_sig_item: 'loc -> sig_item -> 'result =
       fun _loc  ->
         function
@@ -2269,7 +2269,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "SgVal")))),
                           (meta_loc _loc a0))), (meta_string _loc a1))),
                 (meta_ctyp _loc a2))
-        | SgAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | SgAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_module_type: 'loc -> module_type -> 'result =
       fun _loc  ->
         function
@@ -2322,7 +2322,7 @@ module Make(MetaLoc:META_LOC) =
                 (ExApp
                    (_loc, (ExId (_loc, (IdUid (_loc, "MtOf")))),
                      (meta_loc _loc a0))), (meta_module_expr _loc a1))
-        | MtAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | MtAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_expr: 'loc -> expr -> 'result =
       fun _loc  ->
         function
@@ -2345,7 +2345,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "ExAcc")))),
                           (meta_loc _loc a0))), (meta_expr _loc a1))),
                 (meta_expr _loc a2))
-        | ExAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | ExAnt (a0,a1) -> ExAnt (a0, a1)
         | ExApp (a0,a1,a2) ->
             ExApp
               (_loc,
@@ -2690,7 +2690,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (ExId (_loc, (IdUid (_loc, "PaAli")))),
                           (meta_loc _loc a0))), (meta_patt _loc a1))),
                 (meta_patt _loc a2))
-        | PaAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | PaAnt (a0,a1) -> ExAnt (a0, a1)
         | PaAny a0 ->
             ExApp
               (_loc, (ExId (_loc, (IdUid (_loc, "PaAny")))),
@@ -3174,7 +3174,7 @@ module Make(MetaLoc:META_LOC) =
                 (ExApp
                    (_loc, (ExId (_loc, (IdUid (_loc, "TyPkg")))),
                      (meta_loc _loc a0))), (meta_module_type _loc a1))
-        | TyAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | TyAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_ident: 'loc -> ident -> 'result =
       fun _loc  ->
         function
@@ -3208,7 +3208,7 @@ module Make(MetaLoc:META_LOC) =
                 (ExApp
                    (_loc, (ExId (_loc, (IdUid (_loc, "IdUid")))),
                      (meta_loc _loc a0))), (meta_string _loc a1))
-        | IdAnt (a0,a1) -> Ast.ExAnt (a0, a1)
+        | IdAnt (a0,a1) -> ExAnt (a0, a1)
     and meta_meta_list :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
@@ -3221,7 +3221,7 @@ module Make(MetaLoc:META_LOC) =
                 (ExApp
                    (_loc, (ExId (_loc, (IdUid (_loc, "LCons")))),
                      (mf_a _loc a0))), (meta_meta_list mf_a _loc a1))
-        | LAnt a0 -> Ast.ExAnt (_loc, a0)
+        | LAnt a0 -> ExAnt (_loc, a0)
     and meta_meta_option :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) ->
@@ -3232,55 +3232,55 @@ module Make(MetaLoc:META_LOC) =
         | OSome a0 ->
             ExApp
               (_loc, (ExId (_loc, (IdUid (_loc, "OSome")))), (mf_a _loc a0))
-        | OAnt a0 -> Ast.ExAnt (_loc, a0)
+        | OAnt a0 -> ExAnt (_loc, a0)
     and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
       fun _loc  ->
         function
         | RvRowVar  -> ExId (_loc, (IdUid (_loc, "RvRowVar")))
         | RvNil  -> ExId (_loc, (IdUid (_loc, "RvNil")))
-        | RvAnt a0 -> Ast.ExAnt (_loc, a0)
+        | RvAnt a0 -> ExAnt (_loc, a0)
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
         | OvOverride  -> ExId (_loc, (IdUid (_loc, "OvOverride")))
         | OvNil  -> ExId (_loc, (IdUid (_loc, "OvNil")))
-        | OvAnt a0 -> Ast.ExAnt (_loc, a0)
+        | OvAnt a0 -> ExAnt (_loc, a0)
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
         function
         | ViVirtual  -> ExId (_loc, (IdUid (_loc, "ViVirtual")))
         | ViNil  -> ExId (_loc, (IdUid (_loc, "ViNil")))
-        | ViAnt a0 -> Ast.ExAnt (_loc, a0)
+        | ViAnt a0 -> ExAnt (_loc, a0)
     and meta_private_flag: 'loc -> private_flag -> 'result =
       fun _loc  ->
         function
         | PrPrivate  -> ExId (_loc, (IdUid (_loc, "PrPrivate")))
         | PrNil  -> ExId (_loc, (IdUid (_loc, "PrNil")))
-        | PrAnt a0 -> Ast.ExAnt (_loc, a0)
+        | PrAnt a0 -> ExAnt (_loc, a0)
     and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
       fun _loc  ->
         function
         | MuMutable  -> ExId (_loc, (IdUid (_loc, "MuMutable")))
         | MuNil  -> ExId (_loc, (IdUid (_loc, "MuNil")))
-        | MuAnt a0 -> Ast.ExAnt (_loc, a0)
+        | MuAnt a0 -> ExAnt (_loc, a0)
     and meta_direction_flag: 'loc -> direction_flag -> 'result =
       fun _loc  ->
         function
         | DiTo  -> ExId (_loc, (IdUid (_loc, "DiTo")))
         | DiDownto  -> ExId (_loc, (IdUid (_loc, "DiDownto")))
-        | DiAnt a0 -> Ast.ExAnt (_loc, a0)
+        | DiAnt a0 -> ExAnt (_loc, a0)
     and meta_rec_flag: 'loc -> rec_flag -> 'result =
       fun _loc  ->
         function
         | ReRecursive  -> ExId (_loc, (IdUid (_loc, "ReRecursive")))
         | ReNil  -> ExId (_loc, (IdUid (_loc, "ReNil")))
-        | ReAnt a0 -> Ast.ExAnt (_loc, a0)
+        | ReAnt a0 -> ExAnt (_loc, a0)
     and meta_meta_bool: 'loc -> meta_bool -> 'result =
       fun _loc  ->
         function
         | BTrue  -> ExId (_loc, (IdUid (_loc, "BTrue")))
         | BFalse  -> ExId (_loc, (IdUid (_loc, "BFalse")))
-        | BAnt a0 -> Ast.ExAnt (_loc, a0)
+        | BAnt a0 -> ExAnt (_loc, a0)
     end
   module Patt = struct
     open StdMeta.Patt let meta_loc = MetaLoc.meta_loc_patt
@@ -3386,7 +3386,7 @@ module Make(MetaLoc:META_LOC) =
                              (_loc, (PaId (_loc, (IdUid (_loc, "CrVvr")))),
                                (meta_loc _loc a0))), (meta_string _loc a1))),
                      (meta_mutable_flag _loc a2))), (meta_ctyp _loc a3))
-        | CrAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | CrAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_class_expr: 'loc -> class_expr -> 'result =
       fun _loc  ->
         function
@@ -3471,7 +3471,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "CeEq")))),
                           (meta_loc _loc a0))), (meta_class_expr _loc a1))),
                 (meta_class_expr _loc a2))
-        | CeAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | CeAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
       fun _loc  ->
         function
@@ -3542,7 +3542,7 @@ module Make(MetaLoc:META_LOC) =
                              (_loc, (PaId (_loc, (IdUid (_loc, "CgVir")))),
                                (meta_loc _loc a0))), (meta_string _loc a1))),
                      (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
-        | CgAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | CgAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_class_type: 'loc -> class_type -> 'result =
       fun _loc  ->
         function
@@ -3607,7 +3607,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "CtEq")))),
                           (meta_loc _loc a0))), (meta_class_type _loc a1))),
                 (meta_class_type _loc a2))
-        | CtAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | CtAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_str_item: 'loc -> str_item -> 'result =
       fun _loc  ->
         function
@@ -3723,7 +3723,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "StVal")))),
                           (meta_loc _loc a0))), (meta_rec_flag _loc a1))),
                 (meta_binding _loc a2))
-        | StAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | StAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_module_expr: 'loc -> module_expr -> 'result =
       fun _loc  ->
         function
@@ -3779,7 +3779,7 @@ module Make(MetaLoc:META_LOC) =
                 (PaApp
                    (_loc, (PaId (_loc, (IdUid (_loc, "MePkg")))),
                      (meta_loc _loc a0))), (meta_expr _loc a1))
-        | MeAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | MeAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_match_case: 'loc -> match_case -> 'result =
       fun _loc  ->
         function
@@ -3807,7 +3807,7 @@ module Make(MetaLoc:META_LOC) =
                              (_loc, (PaId (_loc, (IdUid (_loc, "McArr")))),
                                (meta_loc _loc a0))), (meta_patt _loc a1))),
                      (meta_expr _loc a2))), (meta_expr _loc a3))
-        | McAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | McAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_module_binding: 'loc -> module_binding -> 'result =
       fun _loc  ->
         function
@@ -3846,7 +3846,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "MbCol")))),
                           (meta_loc _loc a0))), (meta_string _loc a1))),
                 (meta_module_type _loc a2))
-        | MbAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | MbAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_rec_binding: 'loc -> rec_binding -> 'result =
       fun _loc  ->
         function
@@ -3872,7 +3872,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "RbEq")))),
                           (meta_loc _loc a0))), (meta_ident _loc a1))),
                 (meta_expr _loc a2))
-        | RbAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | RbAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_binding: 'loc -> binding -> 'result =
       fun _loc  ->
         function
@@ -3898,7 +3898,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "BiEq")))),
                           (meta_loc _loc a0))), (meta_patt _loc a1))),
                 (meta_expr _loc a2))
-        | BiAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | BiAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_with_constr: 'loc -> with_constr -> 'result =
       fun _loc  ->
         function
@@ -3951,7 +3951,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "WcAnd")))),
                           (meta_loc _loc a0))), (meta_with_constr _loc a1))),
                 (meta_with_constr _loc a2))
-        | WcAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | WcAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_sig_item: 'loc -> sig_item -> 'result =
       fun _loc  ->
         function
@@ -4058,7 +4058,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "SgVal")))),
                           (meta_loc _loc a0))), (meta_string _loc a1))),
                 (meta_ctyp _loc a2))
-        | SgAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | SgAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_module_type: 'loc -> module_type -> 'result =
       fun _loc  ->
         function
@@ -4111,7 +4111,7 @@ module Make(MetaLoc:META_LOC) =
                 (PaApp
                    (_loc, (PaId (_loc, (IdUid (_loc, "MtOf")))),
                      (meta_loc _loc a0))), (meta_module_expr _loc a1))
-        | MtAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | MtAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_expr: 'loc -> expr -> 'result =
       fun _loc  ->
         function
@@ -4134,7 +4134,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "ExAcc")))),
                           (meta_loc _loc a0))), (meta_expr _loc a1))),
                 (meta_expr _loc a2))
-        | ExAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | ExAnt (a0,a1) -> PaAnt (a0, a1)
         | ExApp (a0,a1,a2) ->
             PaApp
               (_loc,
@@ -4479,7 +4479,7 @@ module Make(MetaLoc:META_LOC) =
                         (_loc, (PaId (_loc, (IdUid (_loc, "PaAli")))),
                           (meta_loc _loc a0))), (meta_patt _loc a1))),
                 (meta_patt _loc a2))
-        | PaAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | PaAnt (a0,a1) -> PaAnt (a0, a1)
         | PaAny a0 ->
             PaApp
               (_loc, (PaId (_loc, (IdUid (_loc, "PaAny")))),
@@ -4963,7 +4963,7 @@ module Make(MetaLoc:META_LOC) =
                 (PaApp
                    (_loc, (PaId (_loc, (IdUid (_loc, "TyPkg")))),
                      (meta_loc _loc a0))), (meta_module_type _loc a1))
-        | TyAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | TyAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_ident: 'loc -> ident -> 'result =
       fun _loc  ->
         function
@@ -4997,7 +4997,7 @@ module Make(MetaLoc:META_LOC) =
                 (PaApp
                    (_loc, (PaId (_loc, (IdUid (_loc, "IdUid")))),
                      (meta_loc _loc a0))), (meta_string _loc a1))
-        | IdAnt (a0,a1) -> Ast.PaAnt (a0, a1)
+        | IdAnt (a0,a1) -> PaAnt (a0, a1)
     and meta_meta_list :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
@@ -5010,7 +5010,7 @@ module Make(MetaLoc:META_LOC) =
                 (PaApp
                    (_loc, (PaId (_loc, (IdUid (_loc, "LCons")))),
                      (mf_a _loc a0))), (meta_meta_list mf_a _loc a1))
-        | LAnt a0 -> Ast.PaAnt (_loc, a0)
+        | LAnt a0 -> PaAnt (_loc, a0)
     and meta_meta_option :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) ->
@@ -5021,54 +5021,54 @@ module Make(MetaLoc:META_LOC) =
         | OSome a0 ->
             PaApp
               (_loc, (PaId (_loc, (IdUid (_loc, "OSome")))), (mf_a _loc a0))
-        | OAnt a0 -> Ast.PaAnt (_loc, a0)
+        | OAnt a0 -> PaAnt (_loc, a0)
     and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
       fun _loc  ->
         function
         | RvRowVar  -> PaId (_loc, (IdUid (_loc, "RvRowVar")))
         | RvNil  -> PaId (_loc, (IdUid (_loc, "RvNil")))
-        | RvAnt a0 -> Ast.PaAnt (_loc, a0)
+        | RvAnt a0 -> PaAnt (_loc, a0)
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
         | OvOverride  -> PaId (_loc, (IdUid (_loc, "OvOverride")))
         | OvNil  -> PaId (_loc, (IdUid (_loc, "OvNil")))
-        | OvAnt a0 -> Ast.PaAnt (_loc, a0)
+        | OvAnt a0 -> PaAnt (_loc, a0)
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
         function
         | ViVirtual  -> PaId (_loc, (IdUid (_loc, "ViVirtual")))
         | ViNil  -> PaId (_loc, (IdUid (_loc, "ViNil")))
-        | ViAnt a0 -> Ast.PaAnt (_loc, a0)
+        | ViAnt a0 -> PaAnt (_loc, a0)
     and meta_private_flag: 'loc -> private_flag -> 'result =
       fun _loc  ->
         function
         | PrPrivate  -> PaId (_loc, (IdUid (_loc, "PrPrivate")))
         | PrNil  -> PaId (_loc, (IdUid (_loc, "PrNil")))
-        | PrAnt a0 -> Ast.PaAnt (_loc, a0)
+        | PrAnt a0 -> PaAnt (_loc, a0)
     and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
       fun _loc  ->
         function
         | MuMutable  -> PaId (_loc, (IdUid (_loc, "MuMutable")))
         | MuNil  -> PaId (_loc, (IdUid (_loc, "MuNil")))
-        | MuAnt a0 -> Ast.PaAnt (_loc, a0)
+        | MuAnt a0 -> PaAnt (_loc, a0)
     and meta_direction_flag: 'loc -> direction_flag -> 'result =
       fun _loc  ->
         function
         | DiTo  -> PaId (_loc, (IdUid (_loc, "DiTo")))
         | DiDownto  -> PaId (_loc, (IdUid (_loc, "DiDownto")))
-        | DiAnt a0 -> Ast.PaAnt (_loc, a0)
+        | DiAnt a0 -> PaAnt (_loc, a0)
     and meta_rec_flag: 'loc -> rec_flag -> 'result =
       fun _loc  ->
         function
         | ReRecursive  -> PaId (_loc, (IdUid (_loc, "ReRecursive")))
         | ReNil  -> PaId (_loc, (IdUid (_loc, "ReNil")))
-        | ReAnt a0 -> Ast.PaAnt (_loc, a0)
+        | ReAnt a0 -> PaAnt (_loc, a0)
     and meta_meta_bool: 'loc -> meta_bool -> 'result =
       fun _loc  ->
         function
         | BTrue  -> PaId (_loc, (IdUid (_loc, "BTrue")))
         | BFalse  -> PaId (_loc, (IdUid (_loc, "BFalse")))
-        | BAnt a0 -> Ast.PaAnt (_loc, a0)
+        | BAnt a0 -> PaAnt (_loc, a0)
     end
   end

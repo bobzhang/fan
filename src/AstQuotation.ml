@@ -4,7 +4,7 @@ open FanUtil;
 open Lib.Meta;
 
 open Format;
-open StdLib;
+(* open StdLib; *)
 
 (* FIXME order is in-correct  *)
 {:fans|keep on; (* <++ "Print"; *) |};

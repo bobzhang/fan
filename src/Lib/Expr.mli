@@ -80,17 +80,27 @@ val mk_record : (string * expr) list -> expr
 val failure : expr
 val ( <+ ) : string list -> expr -> expr
 val ( <+< ) : patt list -> expr -> expr
+
 val mep_comma : expr -> expr -> expr
+
 val mep_app : expr -> expr -> expr
 val mee_comma : expr -> expr -> expr
+
 val mee_app : expr -> expr -> expr
+
+val vee_app : expr -> expr -> expr
+val vep_app : expr -> expr -> expr
+val vee_of_str : string -> expr    
 val mk_tuple_ep : expr list -> expr
 val mep_of_str : string -> expr
+
 val mee_of_str : string -> expr
+
 val meee_of_str : string -> expr
-(* val mee_record_left : string -> expr *)
-(* val mep_record_left : string -> expr *)
+
 val mk_tuple_ee : expr list -> expr
+val mk_tuple_vee: expr list -> expr
+    
 val mee_record_col : string -> expr -> expr
 val mep_record_col : string -> expr -> expr
 val mee_record_semi : expr -> expr -> expr
@@ -102,3 +112,6 @@ val gen_curry_n : expr -> arity:int -> string -> int -> expr
 val currying : match_case list -> arity:int -> expr
 val unknown : int -> expr
     
+val of_vstr_number : string -> int  -> expr
+
+

@@ -404,13 +404,15 @@ let mep_comma x y =  {| {:patt| $($x), $($y) |} |};
   (* {| Ast.PaCom _loc $x $y |}; *)
 let mee_comma x y = {| {| $($x), $($y) |} |};
   (* {| Ast.ExCom _loc $x $y |}; *)
-
+let mvee_comma x y = {| `ExCom (_loc,$x,$y) |};
 
 let mee_app x y = {| {| $($x) $($y) |}|};
   (* {| Ast.ExApp _loc $x $y |}; *)
+let vee_app x y = {| `ExApp (_loc,$x,$y) |};
+  
 let mep_app x y = {| {:patt| $($x) $($y) |}|};
   (* {| Ast.PaApp _loc $x $y |};        *)
-
+let vep_app x y = {| `PaApp (_loc,$x,$y)|};
   
 
 (*
@@ -457,6 +459,19 @@ let mee_of_str s =
   let u = {| {:ident| $(uid:$str:s) |} |} in
   {| {| $(id:$u) |} |};
 
+(*
+  {[
+  vee_of_str "A" = {| {|`A|} |};
+  true
+  ]}
+  BOOTSTRAPPING
+  *)
+(* let vee_of_str s = *)
+(*   {| ExVrn _loc $str:s|}; *)
+
+let vee_of_str s =
+  {| `ExVrn (_loc,$str:s) |};
+  
 (*
   Examples:
   {[
@@ -528,8 +543,15 @@ let mk_tuple_ee = fun
   [ [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
-      {| Ast.ExTup _loc $(List.reduce_right mee_comma xs) |}];
+      {| ExTup _loc $(List.reduce_right mee_comma xs) |}];
 
+let mk_tuple_vee = fun 
+  [ [] -> invalid_arg "mktupee arity is zero "
+  | [x] -> x
+  | xs  ->
+      {| `ExTup (_loc, $(List.reduce_right mvee_comma xs)) |}];
+
+  
   
 (*
   Example:

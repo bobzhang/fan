@@ -178,6 +178,10 @@ let tuple_of_list lst =
   | _ -> invalid_arg "tuple_of_list n < 1"] ;
 
 
+let of_vstr_number name i =
+  let item = List.init i (fun i -> {|$(id:xid i) |} ) |> tuple_of_list in 
+   {| `$name $item |};
+    
 (*
   {[
     gen_tuple_n "X" 4 ~arity:2 |> opr#patt std_formatter ;

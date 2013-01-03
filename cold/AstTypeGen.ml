@@ -17,9 +17,9 @@ let mk_variant_eq _cons =
                             (_loc, (ExId (_loc, (IdLid (_loc, "&&")))), x)),
                          y)) ~f:(fun { ty_expr;_}  -> ty_expr) ls : FSig.ty_info
                                                                     list ->
-                                                                    Ast.expr )
+                                                                    expr )
 let mk_tuple_eq exprs = mk_variant_eq "" exprs
-let mk_record_eq: FSig.record_col list -> Ast.expr =
+let mk_record_eq: FSig.record_col list -> expr =
   fun cols  ->
     (cols |> (List.map (fun { record_info;_}  -> record_info))) |>
       (mk_variant_eq "")
@@ -79,19 +79,12 @@ let mk_variant_meta_expr cons params =
   if String.ends_with cons "Ant"
   then
     match len with
-    | n when n > 1 ->
-        of_ident_number
-          (IdAcc (_loc, (IdUid (_loc, "Ast")), (IdUid (_loc, "ExAnt")))) len
+    | n when n > 1 -> of_ident_number (IdUid (_loc, "ExAnt")) len
     | 1 ->
         ExApp
           (_loc,
             (ExApp
-               (_loc,
-                 (ExId
-                    (_loc,
-                      (IdAcc
-                         (_loc, (IdUid (_loc, "Ast")),
-                           (IdUid (_loc, "ExAnt")))))),
+               (_loc, (ExId (_loc, (IdUid (_loc, "ExAnt")))),
                  (ExId (_loc, (IdLid (_loc, "_loc")))))),
             (ExId (_loc, (xid 0))))
     | _ -> failwithf "%s can not be handled" cons
@@ -115,19 +108,12 @@ let mk_variant_meta_patt cons params =
   if String.ends_with cons "Ant"
   then
     match len with
-    | n when n > 1 ->
-        of_ident_number
-          (IdAcc (_loc, (IdUid (_loc, "Ast")), (IdUid (_loc, "PaAnt")))) len
+    | n when n > 1 -> of_ident_number (IdUid (_loc, "PaAnt")) len
     | 1 ->
         ExApp
           (_loc,
             (ExApp
-               (_loc,
-                 (ExId
-                    (_loc,
-                      (IdAcc
-                         (_loc, (IdUid (_loc, "Ast")),
-                           (IdUid (_loc, "PaAnt")))))),
+               (_loc, (ExId (_loc, (IdUid (_loc, "PaAnt")))),
                  (ExId (_loc, (IdLid (_loc, "_loc")))))),
             (ExId (_loc, (xid 0))))
     | _ -> failwithf "%s can not be handled" cons
@@ -152,6 +138,70 @@ let _ =
 let _ =
   Typehook.register ~position:"__MetaPatt__" ~filter:(fun s  -> s <> "loc")
     ("MetaPatt", gen_meta_patt)
+let mk_variant_meta_expr cons params =
+  let len = List.length params in
+  if String.ends_with cons "Ant"
+  then
+    match len with
+    | n when n > 1 -> of_ident_number (IdUid (_loc, "ExAnt")) len
+    | 1 ->
+        ExApp
+          (_loc,
+            (ExApp
+               (_loc, (ExId (_loc, (IdUid (_loc, "ExAnt")))),
+                 (ExId (_loc, (IdLid (_loc, "_loc")))))),
+            (ExId (_loc, (xid 0))))
+    | _ -> failwithf "%s can not be handled" cons
+  else
+    (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |>
+      (List.fold_left mee_app (mee_of_str cons))
+let mk_record_meta_expr cols =
+  (cols |>
+     (List.map
+        (fun { record_label; record_info = { ty_expr;_};_}  ->
+           (record_label, ty_expr))))
+    |> mk_record_ee
+let mk_tuple_meta_expr params =
+  (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |> mk_tuple_ee
+let gen_meta_expr =
+  gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
+    ~mk_tuple:mk_tuple_meta_expr ~mk_record:mk_record_meta_expr
+    mk_variant_meta_expr
+let mk_variant_meta_patt cons params =
+  let len = List.length params in
+  if String.ends_with cons "Ant"
+  then
+    match len with
+    | n when n > 1 -> of_ident_number (IdUid (_loc, "PaAnt")) len
+    | 1 ->
+        ExApp
+          (_loc,
+            (ExApp
+               (_loc, (ExId (_loc, (IdUid (_loc, "PaAnt")))),
+                 (ExId (_loc, (IdLid (_loc, "_loc")))))),
+            (ExId (_loc, (xid 0))))
+    | _ -> failwithf "%s can not be handled" cons
+  else
+    (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |>
+      (List.fold_left mep_app (mep_of_str cons))
+let mk_record_meta_patt cols =
+  (cols |>
+     (List.map
+        (fun { record_label; record_info = { ty_expr;_};_}  ->
+           (record_label, ty_expr))))
+    |> mk_record_ep
+let mk_tuple_meta_patt params =
+  (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |> mk_tuple_ep
+let gen_meta_patt =
+  gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
+    ~mk_tuple:mk_tuple_meta_patt ~mk_record:mk_record_meta_patt
+    mk_variant_meta_patt
+let _ =
+  Typehook.register ~position:"__MetaExpr__" ~filter:(fun s  -> s <> "loc")
+    ("MetaExpr2", gen_meta_expr)
+let _ =
+  Typehook.register ~position:"__MetaPatt__" ~filter:(fun s  -> s <> "loc")
+    ("MetaPatt2", gen_meta_patt)
 let extract info =
   (info |>
      (List.map

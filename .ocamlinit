@@ -115,3 +115,4 @@ open ParserLex;;
 #load_rec "Ulexing.cma";;
 module O = Obj;;
 open Ast;;
+open L.Expr;;
