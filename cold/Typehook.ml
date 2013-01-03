@@ -27,6 +27,7 @@ let apply_filter f (m : module_types) =
 type plugin_name = string 
 let filters: (plugin_name,plugin) Hashtbl.t = Hashtbl.create 30
 let show_code = ref false
+let print_collect_module_types = ref false
 let register ?filter  ?position  (name,f) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
@@ -114,29 +115,32 @@ let traversal () =
      method! module_expr =
        function
        | MeStr (_loc,u) ->
-           let () = self#in_module in
-           let res = self#str_item u in
-           let module_types = List.rev self#get_cur_module_types in
-           let result =
-             Hashtbl.fold
-               (fun _  { activate; position; transform; filter }  acc  ->
-                  let module_types =
-                    match filter with
-                    | Some x -> apply_filter x module_types
-                    | None  -> module_types in
-                  if activate
-                  then
-                    let code = transform module_types in
-                    match position with
-                    | Some x ->
-                        let (name,f) = Filters.make_filter (x, code) in
-                        (AstFilters.register_str_item_filter (name, f);
-                         AstFilters.use_implem_filter name;
-                         acc)
-                    | None  -> StSem (_loc, acc, code)
-                  else acc) filters
-               (if keep.contents then res else StNil _loc) in
-           let () = self#out_module in MeStr (_loc, result)
+           (self#in_module;
+            (let res = self#str_item u in
+             let module_types = List.rev self#get_cur_module_types in
+             if print_collect_module_types.contents
+             then eprintf "@[%a@]@." FSig.pp_print_module_types module_types
+             else ();
+             (let result =
+                Hashtbl.fold
+                  (fun _  { activate; position; transform; filter }  acc  ->
+                     let module_types =
+                       match filter with
+                       | Some x -> apply_filter x module_types
+                       | None  -> module_types in
+                     if activate
+                     then
+                       let code = transform module_types in
+                       match position with
+                       | Some x ->
+                           let (name,f) = Filters.make_filter (x, code) in
+                           (AstFilters.register_str_item_filter (name, f);
+                            AstFilters.use_implem_filter name;
+                            acc)
+                       | None  -> StSem (_loc, acc, code)
+                     else acc) filters
+                  (if keep.contents then res else StNil _loc) in
+              self#out_module; MeStr (_loc, result))))
        | x -> super#module_expr x
      method! str_item =
        function
@@ -149,8 +153,9 @@ let traversal () =
              self#out_and_types;
              if keep.contents then x else StNil _loc))
        | StTyp (_loc,(Ast.TyDcl (_,name,_,_,_) as t)) as x ->
-           (self#update_cur_module_types
-              (fun lst  -> (`Single (name, t)) :: lst);
+           let item = `Single (name, t) in
+           (eprintf "Came across @[%a@]@." FSig.pp_print_types item;
+            self#update_cur_module_types (fun lst  -> item :: lst);
             x)
        | StVal (_loc,ReNil ,_)|StMty (_loc,_,_)|StInc (_loc,_)|StExt
            (_loc,_,_,_)|StExp (_loc,_)|StExc (_loc,_,ONone )|StDir (_loc,_,_)

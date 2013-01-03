@@ -8,7 +8,12 @@ open Lib.Expr;
 open Lib.Basic;
 
 let _loc = FanLoc.ghost;
-  
+
+
+(* +-----------------------------------------------------------------+
+   | Eq generator                                                    |
+   +-----------------------------------------------------------------+ *)
+
 let mk_variant_eq _cons : list FSig.ty_info  -> Ast.expr  = with "expr" fun 
   [ [] -> {|true|}
   | ls -> List.reduce_left_with
@@ -219,5 +224,6 @@ let gen_print_obj =
 
 
 
-
+(* (with "expr" {| {|`a (3,4)|} |}, *)
+(* with "expr" {| {| A(3,4)|} |}) *)
 
