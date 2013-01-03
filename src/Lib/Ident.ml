@@ -1,4 +1,4 @@
-(* open Camlp4Ast; *)
+open Ast;
 #default_quotation "ident";;
 module Ast = Camlp4Ast;
 open LibUtil;

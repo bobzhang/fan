@@ -1,4 +1,4 @@
-
+open Ast;
 (* This module builds a generic framework *)
 
 #default_quotation "expr";;

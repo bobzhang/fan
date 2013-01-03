@@ -1,3 +1,4 @@
+open Ast
 open LibUtil
 open Easy
 open FSig
@@ -6,15 +7,14 @@ open Lib.Basic
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
   (function
-   | [] -> Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))
+   | [] -> ExId (_loc, (IdLid (_loc, "true")))
    | ls ->
        List.reduce_left_with
          ~compose:(fun x  y  ->
-                     Ast.ExApp
+                     ExApp
                        (_loc,
-                         (Ast.ExApp
-                            (_loc,
-                              (Ast.ExId (_loc, (Ast.IdLid (_loc, "&&")))), x)),
+                         (ExApp
+                            (_loc, (ExId (_loc, (IdLid (_loc, "&&")))), x)),
                          y)) ~f:(fun { ty_expr;_}  -> ty_expr) ls : FSig.ty_info
                                                                     list ->
                                                                     Ast.expr )
@@ -26,21 +26,20 @@ let mk_record_eq: FSig.record_col list -> Ast.expr =
 let gen_eq =
   gen_str_item ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
     ~mk_record:mk_record_eq mk_variant_eq
-    ~trail:(Ast.ExId (_loc, (Ast.IdLid (_loc, "false"))))
+    ~trail:(ExId (_loc, (IdLid (_loc, "false"))))
 let _ = [("Eq", gen_eq)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |>
       (function
-       | [] -> Ast.ExId (_loc, (Ast.IdLid (_loc, "self")))
+       | [] -> ExId (_loc, (IdLid (_loc, "self")))
        | ls ->
            List.reduce_right
              (fun v  acc  ->
-                Ast.ExLet
-                  (_loc, Ast.ReNil,
-                    (Ast.BiEq
-                       (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "self")))),
-                         v)), acc)) ls) in
+                ExLet
+                  (_loc, ReNil,
+                    (BiEq (_loc, (PaId (_loc, (IdLid (_loc, "self")))), v)),
+                    acc)) ls) in
   let mk_tuple = mk_variant "" in
   let mk_record cols =
     (cols |> (List.map (fun { record_info;_}  -> record_info))) |>
@@ -49,9 +48,9 @@ let (gen_fold,gen_fold2) =
       ~class_name:"fold" mk_variant ~names:[]),
     (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
        ~class_name:"fold2" mk_variant ~names:[] ~arity:2
-       ~trail:(Ast.ExApp
-                 (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "invalid_arg")))),
-                   (Ast.ExStr (_loc, "fold2 failure"))))))
+       ~trail:(ExApp
+                 (_loc, (ExId (_loc, (IdLid (_loc, "invalid_arg")))),
+                   (ExStr (_loc, "fold2 failure"))))))
 let _ =
   [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
 let (gen_map,gen_map2) =
@@ -70,9 +69,9 @@ let (gen_map,gen_map2) =
       ~class_name:"map" mk_variant ~names:[]),
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
        ~class_name:"map2" mk_variant ~names:[] ~arity:2
-       ~trail:(Ast.ExApp
-                 (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "invalid_arg")))),
-                   (Ast.ExStr (_loc, "map2 failure"))))))
+       ~trail:(ExApp
+                 (_loc, (ExId (_loc, (IdLid (_loc, "invalid_arg")))),
+                   (ExStr (_loc, "map2 failure"))))))
 let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
 let mk_variant_meta_expr cons params =
@@ -82,21 +81,19 @@ let mk_variant_meta_expr cons params =
     match len with
     | n when n > 1 ->
         of_ident_number
-          (Ast.IdAcc
-             (_loc, (Ast.IdUid (_loc, "Ast")), (Ast.IdUid (_loc, "ExAnt"))))
-          len
+          (IdAcc (_loc, (IdUid (_loc, "Ast")), (IdUid (_loc, "ExAnt")))) len
     | 1 ->
-        Ast.ExApp
+        ExApp
           (_loc,
-            (Ast.ExApp
+            (ExApp
                (_loc,
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExAnt")))))),
-                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-            (Ast.ExId (_loc, (xid 0))))
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExAnt")))))),
+                 (ExId (_loc, (IdLid (_loc, "_loc")))))),
+            (ExId (_loc, (xid 0))))
     | _ -> failwithf "%s can not be handled" cons
   else
     (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |>
@@ -120,21 +117,19 @@ let mk_variant_meta_patt cons params =
     match len with
     | n when n > 1 ->
         of_ident_number
-          (Ast.IdAcc
-             (_loc, (Ast.IdUid (_loc, "Ast")), (Ast.IdUid (_loc, "PaAnt"))))
-          len
+          (IdAcc (_loc, (IdUid (_loc, "Ast")), (IdUid (_loc, "PaAnt")))) len
     | 1 ->
-        Ast.ExApp
+        ExApp
           (_loc,
-            (Ast.ExApp
+            (ExApp
                (_loc,
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaAnt")))))),
-                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-            (Ast.ExId (_loc, (xid 0))))
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaAnt")))))),
+                 (ExId (_loc, (IdLid (_loc, "_loc")))))),
+            (ExId (_loc, (xid 0))))
     | _ -> failwithf "%s can not be handled" cons
   else
     (params |> (List.map (fun { ty_expr;_}  -> ty_expr))) |>
@@ -163,17 +158,17 @@ let extract info =
         (fun { ty_name_expr; ty_id_expr;_}  -> [ty_name_expr; ty_id_expr])))
     |> List.concat
 let mkfmt pre sep post fields =
-  Ast.ExApp
+  ExApp
     (_loc,
-      (Ast.ExApp
+      (ExApp
          (_loc,
-           (Ast.ExId
+           (ExId
               (_loc,
-                (Ast.IdAcc
-                   (_loc, (Ast.IdUid (_loc, "Format")),
-                     (Ast.IdLid (_loc, "fprintf")))))),
-           (Ast.ExId (_loc, (Ast.IdLid (_loc, "fmt")))))),
-      (Ast.ExStr (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
+                (IdAcc
+                   (_loc, (IdUid (_loc, "Format")),
+                     (IdLid (_loc, "fprintf")))))),
+           (ExId (_loc, (IdLid (_loc, "fmt")))))),
+      (ExStr (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
 let mk_variant_print cons params =
   let len = List.length params in
   let pre =

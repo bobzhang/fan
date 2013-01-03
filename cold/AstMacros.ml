@@ -1,3 +1,4 @@
+open Ast
 type key = string 
 type expander = Ast.expr -> Ast.expr 
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40
@@ -9,29 +10,27 @@ let rec fib =
   | _ -> invalid_arg "fib"
 let fibm y =
   match y with
-  | Ast.ExInt (_loc,x) ->
-      Ast.ExInt (_loc, (string_of_int (fib (int_of_string x))))
+  | ExInt (_loc,x) -> ExInt (_loc, (string_of_int (fib (int_of_string x))))
   | x ->
       let _loc = Camlp4Ast.loc_of_expr x in
-      Ast.ExApp (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "fib")))), x)
+      ExApp (_loc, (ExId (_loc, (IdLid (_loc, "fib")))), x)
 let _ = register_macro ("FIB", fibm)
 open LibUtil
 let generate_fibs =
   function
-  | Ast.ExInt (_loc,x) ->
+  | ExInt (_loc,x) ->
       let j = int_of_string x in
       let res =
-        zfold_left ~until:j ~acc:(Ast.ExNil _loc)
+        zfold_left ~until:j ~acc:(ExNil _loc)
           (fun acc  i  ->
-             Ast.ExSem
+             ExSem
                (_loc, acc,
-                 (Ast.ExApp
-                    (_loc,
-                      (Ast.ExId (_loc, (Ast.IdLid (_loc, "print_int")))),
-                      (Ast.ExApp
-                         (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "FIB")))),
-                           (Ast.ExInt (_loc, (string_of_int i))))))))) in
-      Ast.ExSeq (_loc, res)
+                 (ExApp
+                    (_loc, (ExId (_loc, (IdLid (_loc, "print_int")))),
+                      (ExApp
+                         (_loc, (ExId (_loc, (IdUid (_loc, "FIB")))),
+                           (ExInt (_loc, (string_of_int i))))))))) in
+      ExSeq (_loc, res)
   | e -> e
 let _ = register_macro ("GFIB", generate_fibs)
 let macro_expander =
@@ -39,15 +38,15 @@ let macro_expander =
     inherit  Camlp4Ast.map as super
     method! expr =
       function
-      | Ast.ExApp (_loc,Ast.ExId (_,Ast.IdUid (_,a)),y) ->
+      | ExApp (_loc,ExId (_,IdUid (_,a)),y) ->
           ((try
               let f = Hashtbl.find macro_expanders a in
               fun ()  -> self#expr (f y)
             with
             | Not_found  ->
                 (fun ()  ->
-                   Ast.ExApp
-                     (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, a)))),
-                       (self#expr y))))) ()
+                   ExApp
+                     (_loc, (ExId (_loc, (IdUid (_loc, a)))), (self#expr y)))))
+            ()
       | e -> super#expr e
   end

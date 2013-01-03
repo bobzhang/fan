@@ -9,7 +9,7 @@
 
 
 
-
+open Ast;
 open LibUtil;
 open Basic;
 open FanUtil;

@@ -1,3 +1,4 @@
+open Ast;
 open LibUtil;
 open Fan;
 let wrap parse_fun lb =

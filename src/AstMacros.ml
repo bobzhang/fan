@@ -1,4 +1,4 @@
-(* open Format; *)
+open Ast;
 
 (*
   {:macro|M a b c|}

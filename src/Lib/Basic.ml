@@ -1,6 +1,6 @@
 open Format;
 open LibUtil;
-
+open Ast;  
 
 (*
    Basic module contains utility functions to manipulate Camlp4Ast
@@ -11,7 +11,7 @@ exception Unhandled of Ast.ctyp ;
 exception Finished of Ast.expr;
 
 let _loc =FanLoc.ghost ;
-  
+
 let unit_literal = {:expr| () |} ;
   
 let x ?(off=0) (i:int)    =

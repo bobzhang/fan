@@ -1,5 +1,6 @@
 
 open LibUtil;
+open Ast;
 module Ast = Camlp4Ast;
 module MetaLoc = struct
    (* this makes sense here, because, for list operation
@@ -8,8 +9,8 @@ module MetaLoc = struct
   let meta_loc_patt _loc _ = {:patt| loc |};
   let meta_loc_expr _loc _ = {:expr| loc |};
 end;
-module MetaAst = Ast.Meta.Make MetaLoc;
-
+(* module MetaAst = Ast.Meta.Make MetaLoc; *)
+module MetaAst = FanAst.Make MetaLoc;
 AstFilters.register_str_item_filter ("lift",(fun ast ->
   let _loc = Ast.loc_of_str_item ast in
   {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |})); (* FIXME Loc => FanLoc*)

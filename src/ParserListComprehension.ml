@@ -1,3 +1,4 @@
+open Ast;
 module Ast = Camlp4Ast;
 open PreCast.Syntax;
 open Lib;

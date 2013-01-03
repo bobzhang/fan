@@ -449,13 +449,13 @@ open Ast;
 module Make(MetaLoc:META_LOC) = struct
 
 
-  module MetaExpr = struct
+  module Expr = struct
     open StdMeta.Expr;
     let meta_loc = MetaLoc.meta_loc_expr;
     __MetaExpr__;
   end;
     
-  module MetaPatt =struct
+  module Patt =struct
     open StdMeta.Patt;
     let meta_loc = MetaLoc.meta_loc_patt;
     __MetaPatt__;

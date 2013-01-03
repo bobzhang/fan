@@ -3,7 +3,7 @@
    This module is mainly provided to generate code. For simplicity,
    we don't take care of Location.(Should be FIXED later)
  *)
-
+open Ast;
 open LibUtil;
 open Format;
 exception Unhandled of Ast.ctyp ;

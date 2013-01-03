@@ -1,4 +1,4 @@
-
+open Ast;
 module Ast = Camlp4Ast; (* FIXME: rename it into Camlp4Ast later *)
 
 (* never used before *)    

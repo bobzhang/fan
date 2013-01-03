@@ -1,5 +1,5 @@
 open LibUtil;
-(* open FanUtil; *)
+open Ast;
 module Ast = Camlp4Ast;
 (* test wheter revised or not hack*)  
 (* let test_patt_lessminus = *)

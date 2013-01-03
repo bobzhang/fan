@@ -1,107 +1,99 @@
 open LibUtil
+open Ast
 module Ast = Camlp4Ast
 module MetaLoc =
   struct
-  let meta_loc_patt _loc _ = Ast.PaId (_loc, (Ast.IdLid (_loc, "loc")))
-  let meta_loc_expr _loc _ = Ast.ExId (_loc, (Ast.IdLid (_loc, "loc")))
+  let meta_loc_patt _loc _ = PaId (_loc, (IdLid (_loc, "loc")))
+  let meta_loc_expr _loc _ = ExId (_loc, (IdLid (_loc, "loc")))
   end
-module MetaAst = Ast.Meta.Make(MetaLoc)
+module MetaAst = FanAst.Make(MetaLoc)
 let _ =
   AstFilters.register_str_item_filter
     ("lift",
       (fun ast  ->
          let _loc = Ast.loc_of_str_item ast in
-         Ast.StExp
+         StExp
            (_loc,
-             (Ast.ExLet
-                (_loc, Ast.ReNil,
-                  (Ast.BiEq
-                     (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "loc")))),
-                       (Ast.ExId
+             (ExLet
+                (_loc, ReNil,
+                  (BiEq
+                     (_loc, (PaId (_loc, (IdLid (_loc, "loc")))),
+                       (ExId
                           (_loc,
-                            (Ast.IdAcc
-                               (_loc, (Ast.IdUid (_loc, "FanLoc")),
-                                 (Ast.IdLid (_loc, "ghost")))))))),
+                            (IdAcc
+                               (_loc, (IdUid (_loc, "FanLoc")),
+                                 (IdLid (_loc, "ghost")))))))),
                   (MetaAst.Expr.meta_str_item _loc ast))))))
 let add_debug_expr e =
   let _loc = Ast.loc_of_expr e in
   let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
-  Ast.ExTry
+  ExTry
     (_loc, e,
-      (Ast.McOr
+      (McOr
          (_loc,
-           (Ast.McArr
+           (McArr
               (_loc,
-                (Ast.PaAli
+                (PaAli
                    (_loc,
-                     (Ast.PaOrp
+                     (PaOrp
                         (_loc,
-                          (Ast.PaId
+                          (PaId
                              (_loc,
-                               (Ast.IdAcc
-                                  (_loc, (Ast.IdUid (_loc, "XStream")),
-                                    (Ast.IdUid (_loc, "Failure")))))),
-                          (Ast.PaId (_loc, (Ast.IdUid (_loc, "Exit")))))),
-                     (Ast.PaId (_loc, (Ast.IdLid (_loc, "exc")))))),
-                (Ast.ExNil _loc),
-                (Ast.ExApp
-                   (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "raise")))),
-                     (Ast.ExId (_loc, (Ast.IdLid (_loc, "exc")))))))),
-           (Ast.McArr
-              (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "exc")))),
-                (Ast.ExNil _loc),
-                (Ast.ExSeq
+                               (IdAcc
+                                  (_loc, (IdUid (_loc, "XStream")),
+                                    (IdUid (_loc, "Failure")))))),
+                          (PaId (_loc, (IdUid (_loc, "Exit")))))),
+                     (PaId (_loc, (IdLid (_loc, "exc")))))), (ExNil _loc),
+                (ExApp
+                   (_loc, (ExId (_loc, (IdLid (_loc, "raise")))),
+                     (ExId (_loc, (IdLid (_loc, "exc")))))))),
+           (McArr
+              (_loc, (PaId (_loc, (IdLid (_loc, "exc")))), (ExNil _loc),
+                (ExSeq
                    (_loc,
-                     (Ast.ExSem
+                     (ExSem
                         (_loc,
-                          (Ast.ExIfe
+                          (ExIfe
                              (_loc,
-                               (Ast.ExApp
+                               (ExApp
                                   (_loc,
-                                    (Ast.ExId
+                                    (ExId
                                        (_loc,
-                                         (Ast.IdAcc
-                                            (_loc,
-                                              (Ast.IdUid (_loc, "Debug")),
-                                              (Ast.IdLid (_loc, "mode")))))),
-                                    (Ast.ExStr (_loc, "exc")))),
-                               (Ast.ExApp
+                                         (IdAcc
+                                            (_loc, (IdUid (_loc, "Debug")),
+                                              (IdLid (_loc, "mode")))))),
+                                    (ExStr (_loc, "exc")))),
+                               (ExApp
                                   (_loc,
-                                    (Ast.ExApp
+                                    (ExApp
                                        (_loc,
-                                         (Ast.ExId
+                                         (ExId
                                             (_loc,
-                                              (Ast.IdAcc
+                                              (IdAcc
                                                  (_loc,
-                                                   (Ast.IdUid
-                                                      (_loc, "Format")),
-                                                   (Ast.IdLid
-                                                      (_loc, "eprintf")))))),
-                                         (Ast.ExStr
+                                                   (IdUid (_loc, "Format")),
+                                                   (IdLid (_loc, "eprintf")))))),
+                                         (ExStr
                                             (_loc,
                                               (Ast.safe_string_escaped msg))))),
-                                    (Ast.ExApp
+                                    (ExApp
                                        (_loc,
-                                         (Ast.ExId
+                                         (ExId
                                             (_loc,
-                                              (Ast.IdAcc
+                                              (IdAcc
                                                  (_loc,
-                                                   (Ast.IdUid
-                                                      (_loc, "Printexc")),
-                                                   (Ast.IdLid
-                                                      (_loc, "to_string")))))),
-                                         (Ast.ExId
-                                            (_loc, (Ast.IdLid (_loc, "exc")))))))),
-                               (Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))))),
-                          (Ast.ExApp
-                             (_loc,
-                               (Ast.ExId (_loc, (Ast.IdLid (_loc, "raise")))),
-                               (Ast.ExId (_loc, (Ast.IdLid (_loc, "exc")))))))))))))))
+                                                   (IdUid (_loc, "Printexc")),
+                                                   (IdLid (_loc, "to_string")))))),
+                                         (ExId (_loc, (IdLid (_loc, "exc")))))))),
+                               (ExId (_loc, (IdUid (_loc, "()")))))),
+                          (ExApp
+                             (_loc, (ExId (_loc, (IdLid (_loc, "raise")))),
+                               (ExId (_loc, (IdLid (_loc, "exc")))))))))))))))
 let rec map_match_case =
   function
-  | Ast.McOr (_loc,m1,m2) ->
-      Ast.McOr (_loc, (map_match_case m1), (map_match_case m2))
-  | Ast.McArr (_loc,p,w,e) -> Ast.McArr (_loc, p, w, (add_debug_expr e))
+  | McOr (_loc,m1,m2) ->
+      McOr (_loc, (map_match_case m1), (map_match_case m2))
+  | McArr (_loc,p,w,e) -> McArr (_loc, p, w, (add_debug_expr e))
   | m -> m
 let _ =
   AstFilters.register_str_item_filter
@@ -110,11 +102,11 @@ let _ =
           inherit  Ast.map as super
           method! expr =
             function
-            | Ast.ExFun (_loc,m) -> Ast.ExFun (_loc, (map_match_case m))
+            | ExFun (_loc,m) -> ExFun (_loc, (map_match_case m))
             | x -> super#expr x
           method! str_item =
             function
-            | Ast.StMod (_loc,"Debug",_) as st -> st
+            | StMod (_loc,"Debug",_) as st -> st
             | st -> super#str_item st
         end)#str_item))
 let _loc = FanLoc.ghost
@@ -123,38 +115,35 @@ let xik i k =
   let i = if i < 0 then assert false else if i = 0 then "" else sf "_i%d" i in
   let k = if k < 1 then assert false else if k = 1 then "" else sf "_k%d" k in
   sf "_x%s%s" i k
-let exik i k = Ast.ExId (_loc, (Ast.IdLid (_loc, (xik i k))))
-let pxik i k = Ast.PaId (_loc, (Ast.IdLid (_loc, (xik i k))))
-let elidk y k = Ast.ExId (_loc, (Ast.IdLid (_loc, (sf "%s_%d" y k))))
-let plidk y k = Ast.PaId (_loc, (Ast.IdLid (_loc, (sf "%s_%d" y k))))
+let exik i k = ExId (_loc, (IdLid (_loc, (xik i k))))
+let pxik i k = PaId (_loc, (IdLid (_loc, (xik i k))))
+let elidk y k = ExId (_loc, (IdLid (_loc, (sf "%s_%d" y k))))
+let plidk y k = PaId (_loc, (IdLid (_loc, (sf "%s_%d" y k))))
 let xs s = "_x_" ^ s
 let xsk = sf "_x_%s_%d"
-let exsk s k = Ast.ExId (_loc, (Ast.IdLid (_loc, (xsk s k))))
+let exsk s k = ExId (_loc, (IdLid (_loc, (xsk s k))))
 let rec apply_expr accu =
   function
   | [] -> accu
   | x::xs ->
-      let _loc = Ast.loc_of_expr x in
-      apply_expr (Ast.ExApp (_loc, accu, x)) xs
+      let _loc = Ast.loc_of_expr x in apply_expr (ExApp (_loc, accu, x)) xs
 let rec apply_patt accu =
   function
   | [] -> accu
   | x::xs ->
-      let _loc = Ast.loc_of_patt x in
-      apply_patt (Ast.PaApp (_loc, accu, x)) xs
+      let _loc = Ast.loc_of_patt x in apply_patt (PaApp (_loc, accu, x)) xs
 let rec apply_ctyp accu =
   function
   | [] -> accu
   | x::xs ->
-      let _loc = Ast.loc_of_ctyp x in
-      apply_ctyp (Ast.TyApp (_loc, accu, x)) xs
+      let _loc = Ast.loc_of_ctyp x in apply_ctyp (TyApp (_loc, accu, x)) xs
 let opt_map f = function | Some x -> Some (f x) | None  -> None
 let list_init f n =
   let rec self m = if m = n then [] else (f m) :: (self (succ m)) in self 0
 let rec lid_of_ident sep =
   function
-  | Ast.IdLid (_loc,s)|Ast.IdUid (_loc,s) -> s
-  | Ast.IdAcc (_loc,i1,i2) ->
+  | IdLid (_loc,s)|IdUid (_loc,s) -> s
+  | IdAcc (_loc,i1,i2) ->
       (lid_of_ident sep i1) ^ (sep ^ (lid_of_ident sep i2))
   | _ -> assert false
 type type_decl = (string* Ast.ident* Ast.ctyp list* Ast.ctyp* bool) 
@@ -172,39 +161,36 @@ let builtin_types =
       "bool"] in
     List.fold_right
       (fun name  ->
-         SMap.add name
-           (name, (Ast.IdLid (_loc, name)), [], (Ast.TyNil _loc), false))
+         SMap.add name (name, (IdLid (_loc, name)), [], (TyNil _loc), false))
       abstr tyMap in
   let tyMap =
     let concr =
-      [("list", (Ast.IdLid (_loc, "list")), [Ast.TyQuo (_loc, "a")],
-         (Ast.TySum
+      [("list", (IdLid (_loc, "list")), [TyQuo (_loc, "a")],
+         (TySum
             (_loc,
-              (Ast.TyOr
-                 (_loc, (Ast.TyId (_loc, (Ast.IdUid (_loc, "[]")))),
-                   (Ast.TyOf
-                      (_loc, (Ast.TyId (_loc, (Ast.IdUid (_loc, "::")))),
-                        (Ast.TyAnd
-                           (_loc, (Ast.TyQuo (_loc, "a")),
-                             (Ast.TyApp
-                                (_loc,
-                                  (Ast.TyId
-                                     (_loc, (Ast.IdLid (_loc, "list")))),
-                                  (Ast.TyQuo (_loc, "a")))))))))))), false);
-      ("option", (Ast.IdLid (_loc, "option")), [Ast.TyQuo (_loc, "a")],
-        (Ast.TySum
+              (TyOr
+                 (_loc, (TyId (_loc, (IdUid (_loc, "[]")))),
+                   (TyOf
+                      (_loc, (TyId (_loc, (IdUid (_loc, "::")))),
+                        (TyAnd
+                           (_loc, (TyQuo (_loc, "a")),
+                             (TyApp
+                                (_loc, (TyId (_loc, (IdLid (_loc, "list")))),
+                                  (TyQuo (_loc, "a")))))))))))), false);
+      ("option", (IdLid (_loc, "option")), [TyQuo (_loc, "a")],
+        (TySum
            (_loc,
-             (Ast.TyOr
-                (_loc, (Ast.TyId (_loc, (Ast.IdUid (_loc, "None")))),
-                  (Ast.TyOf
-                     (_loc, (Ast.TyId (_loc, (Ast.IdUid (_loc, "Some")))),
-                       (Ast.TyQuo (_loc, "a")))))))), false);
-      ("ref", (Ast.IdLid (_loc, "ref")), [Ast.TyQuo (_loc, "a")],
-        (Ast.TyRec
+             (TyOr
+                (_loc, (TyId (_loc, (IdUid (_loc, "None")))),
+                  (TyOf
+                     (_loc, (TyId (_loc, (IdUid (_loc, "Some")))),
+                       (TyQuo (_loc, "a")))))))), false);
+      ("ref", (IdLid (_loc, "ref")), [TyQuo (_loc, "a")],
+        (TyRec
            (_loc,
-             (Ast.TyCol
-                (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, "contents")))),
-                  (Ast.TyQuo (_loc, "a")))))), false)] in
+             (TyCol
+                (_loc, (TyId (_loc, (IdLid (_loc, "contents")))),
+                  (TyQuo (_loc, "a")))))), false)] in
     List.fold_right (fun ((name,_,_,_,_) as decl)  -> SMap.add name decl)
       concr tyMap in
   tyMap
@@ -232,8 +218,8 @@ module Gen(X:sig val size : int val mode : mode end) =
       then f 1
       else
         (let rec loop k =
-           if k = 2 then f 2 else Ast.ExCom (_loc, (loop (k - 1)), (f k)) in
-         Ast.ExTup (_loc, (Ast.ExCom (_loc, (f 1), (loop size)))))
+           if k = 2 then f 2 else ExCom (_loc, (loop (k - 1)), (f k)) in
+         ExTup (_loc, (ExCom (_loc, (f 1), (loop size)))))
   let tuplify_patt f =
     if size <= 0
     then assert false
@@ -242,8 +228,8 @@ module Gen(X:sig val size : int val mode : mode end) =
       then f 1
       else
         (let rec loop k =
-           if k = 2 then f 2 else Ast.PaCom (_loc, (loop (k - 1)), (f k)) in
-         Ast.PaTup (_loc, (Ast.PaCom (_loc, (f 1), (loop size)))))
+           if k = 2 then f 2 else PaCom (_loc, (loop (k - 1)), (f k)) in
+         PaTup (_loc, (PaCom (_loc, (f 1), (loop size)))))
   let xiks i = tuplify_expr (exik i)
   let tuplify_type typ =
     if size <= 0
@@ -253,64 +239,56 @@ module Gen(X:sig val size : int val mode : mode end) =
       then typ
       else
         (let rec loop k =
-           if k = 2 then typ else Ast.TySta (_loc, (loop (k - 1)), typ) in
-         Ast.TyTup (_loc, (Ast.TySta (_loc, typ, (loop size)))))
-  let tuplify_tycon tycon =
-    tuplify_type (Ast.TyId (_loc, (Ast.IdLid (_loc, tycon))))
+           if k = 2 then typ else TySta (_loc, (loop (k - 1)), typ) in
+         TyTup (_loc, (TySta (_loc, typ, (loop size)))))
+  let tuplify_tycon tycon = tuplify_type (TyId (_loc, (IdLid (_loc, tycon))))
   let rec patt_of_expr =
     function
-    | Ast.ExNil _loc -> Ast.PaNil _loc
-    | Ast.ExId (_loc,i) -> Ast.PaId (_loc, i)
-    | Ast.ExCom (_loc,e1,e2) ->
-        Ast.PaCom (_loc, (patt_of_expr e1), (patt_of_expr e2))
-    | Ast.ExTup (_loc,e) -> Ast.PaTup (_loc, (patt_of_expr e))
+    | ExNil _loc -> PaNil _loc
+    | ExId (_loc,i) -> PaId (_loc, i)
+    | ExCom (_loc,e1,e2) ->
+        PaCom (_loc, (patt_of_expr e1), (patt_of_expr e2))
+    | ExTup (_loc,e) -> PaTup (_loc, (patt_of_expr e))
     | _ -> assert false
   let bind p e1 e2 =
     match mode with
     | Fold_map  ->
-        Ast.ExLet
-          (_loc, Ast.ReNil,
-            (Ast.BiEq
+        ExLet
+          (_loc, ReNil,
+            (BiEq
                (_loc,
-                 (Ast.PaTup
+                 (PaTup
                     (_loc,
-                      (Ast.PaCom
-                         (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "o")))),
-                           p)))), e1)), e2)
-    | Map  -> Ast.ExLet (_loc, Ast.ReNil, (Ast.BiEq (_loc, p, e1)), e2)
+                      (PaCom (_loc, (PaId (_loc, (IdLid (_loc, "o")))), p)))),
+                 e1)), e2)
+    | Map  -> ExLet (_loc, ReNil, (BiEq (_loc, p, e1)), e2)
     | Fold  ->
-        Ast.ExLet
-          (_loc, Ast.ReNil,
-            (Ast.BiEq (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "o")))), e1)),
-            e2)
+        ExLet
+          (_loc, ReNil,
+            (BiEq (_loc, (PaId (_loc, (IdLid (_loc, "o")))), e1)), e2)
   let return e =
     match mode with
     | Fold_map  ->
-        Ast.ExTup
-          (_loc,
-            (Ast.ExCom (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))), e)))
+        ExTup (_loc, (ExCom (_loc, (ExId (_loc, (IdLid (_loc, "o")))), e)))
     | Map  -> e
-    | Fold  -> Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))
+    | Fold  -> ExId (_loc, (IdLid (_loc, "o")))
   let rec opt_bind opt_patt e1 mk_e2 =
     match e1 with
-    | Ast.ExId (_loc,_)|Ast.ExSnd (_loc,Ast.ExId (_,Ast.IdLid (_,_)),_) ->
-        mk_e2 e1
-    | Ast.ExLet (_loc,Ast.ReNil ,Ast.BiEq (_,p1,e1),e2) ->
-        Ast.ExLet
-          (_loc, Ast.ReNil, (Ast.BiEq (_loc, p1, e1)),
-            (opt_bind None e2 mk_e2))
+    | ExId (_loc,_)|ExSnd (_loc,ExId (_,IdLid (_,_)),_) -> mk_e2 e1
+    | ExLet (_loc,ReNil ,BiEq (_,p1,e1),e2) ->
+        ExLet (_loc, ReNil, (BiEq (_loc, p1, e1)), (opt_bind None e2 mk_e2))
     | _ ->
-        let e2 = mk_e2 (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))) in
+        let e2 = mk_e2 (ExId (_loc, (IdLid (_loc, "o")))) in
         (match opt_patt with
          | Some patt -> bind patt e1 e2
          | None  ->
-             Ast.ExApp
+             ExApp
                (_loc,
-                 (Ast.ExFun
+                 (ExFun
                     (_loc,
-                      (Ast.McArr
-                         (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "o")))),
-                           (Ast.ExNil _loc), e1)))), e2))
+                      (McArr
+                         (_loc, (PaId (_loc, (IdLid (_loc, "o")))),
+                           (ExNil _loc), e1)))), e2))
   let chain_tuple mkp mke expr_of_ty ts =
     let exiks = list_init (fun i  -> tuplify_expr (exik i)) (List.length ts) in
     let exi1s = list_init (fun i  -> exik i 1) (List.length ts) in
@@ -322,53 +300,49 @@ module Gen(X:sig val size : int val mode : mode end) =
     let e =
       List.fold_right2 (fun pxi1  e  acc  -> bind pxi1 e acc) pxi1s es
         (return e1) in
-    Ast.McArr (_loc, p, (Ast.ExNil _loc), e)
+    McArr (_loc, p, (ExNil _loc), e)
   let mk_tuple expr_of_ty t =
     let mc =
-      chain_tuple (fun ps  -> Ast.PaTup (_loc, (Ast.paCom_of_list ps)))
-        (fun es  -> Ast.ExTup (_loc, (Ast.exCom_of_list es))) expr_of_ty
+      chain_tuple (fun ps  -> PaTup (_loc, (Ast.paCom_of_list ps)))
+        (fun es  -> ExTup (_loc, (Ast.exCom_of_list es))) expr_of_ty
         (Ast.list_of_ctyp t []) in
-    Ast.ExFun (_loc, mc)
+    ExFun (_loc, mc)
   let default_match_case =
-    let mk k =
-      if k = 1
-      then Ast.PaId (_loc, (Ast.IdLid (_loc, "x")))
-      else Ast.PaAny _loc in
+    let mk k = if k = 1 then PaId (_loc, (IdLid (_loc, "x"))) else PaAny _loc in
     match mode with
     | Fold_map  ->
-        Ast.McArr
-          (_loc, (tuplify_patt mk), (Ast.ExNil _loc),
-            (Ast.ExTup
+        McArr
+          (_loc, (tuplify_patt mk), (ExNil _loc),
+            (ExTup
                (_loc,
-                 (Ast.ExCom
-                    (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))),
-                      (Ast.ExId (_loc, (Ast.IdLid (_loc, "x")))))))))
+                 (ExCom
+                    (_loc, (ExId (_loc, (IdLid (_loc, "o")))),
+                      (ExId (_loc, (IdLid (_loc, "x")))))))))
     | Fold  ->
-        Ast.McArr
-          (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
-            (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))))
+        McArr
+          (_loc, (PaAny _loc), (ExNil _loc),
+            (ExId (_loc, (IdLid (_loc, "o")))))
     | Map  ->
-        Ast.McArr
-          (_loc, (tuplify_patt mk), (Ast.ExNil _loc),
-            (Ast.ExId (_loc, (Ast.IdLid (_loc, "x")))))
-  let default_expr = Ast.ExFun (_loc, default_match_case)
+        McArr
+          (_loc, (tuplify_patt mk), (ExNil _loc),
+            (ExId (_loc, (IdLid (_loc, "x")))))
+  let default_expr = ExFun (_loc, default_match_case)
   let mkfuno e =
     match e with
-    | Ast.ExApp (_loc,e,Ast.ExId (_,Ast.IdLid (_,"o"))) -> e
+    | ExApp (_loc,e,ExId (_,IdLid (_,"o"))) -> e
     | _ ->
-        Ast.ExFun
+        ExFun
           (_loc,
-            (Ast.McArr
-               (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "o")))),
-                 (Ast.ExNil _loc), e)))
+            (McArr
+               (_loc, (PaId (_loc, (IdLid (_loc, "o")))), (ExNil _loc), e)))
   let is_unknown t =
     let rec loop t =
       match t with
-      | Ast.TyId (_loc,Ast.IdLid (_,_)) -> false
-      | Ast.TyId (_loc,_) -> true
-      | Ast.TyApp (_loc,t,_) -> loop t
+      | TyId (_loc,IdLid (_,_)) -> false
+      | TyId (_loc,_) -> true
+      | TyApp (_loc,t,_) -> loop t
       | _ -> false in
-    match t with | Ast.TyId (_loc,Ast.IdUid (_,_)) -> false | t -> loop t
+    match t with | TyId (_loc,IdUid (_,_)) -> false | t -> loop t
   let contains_unknown t =
     try
       let (_ :< .. >)=
@@ -381,154 +355,142 @@ module Gen(X:sig val size : int val mode : mode end) =
   let opt_bind' ox e1 mk_e2 =
     let mk_e2 =
       match ox with
-      | Some x -> (fun e1  -> Ast.ExApp (_loc, (mk_e2 e1), x))
+      | Some x -> (fun e1  -> ExApp (_loc, (mk_e2 e1), x))
       | _ -> mk_e2 in
     opt_bind (opt_map patt_of_expr ox) e1 mk_e2
-  let opt_app e ox =
-    match ox with | Some x -> Ast.ExApp (_loc, e, x) | _ -> e
+  let opt_app e ox = match ox with | Some x -> ExApp (_loc, e, x) | _ -> e
   let rec expr_of_ty x ty =
     let rec self ?(arity= 0)  ox =
       function
       | t when is_unknown t ->
-          self ox (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown"))))
-      | Ast.TyId (_loc,Ast.IdLid (_,id)) ->
+          self ox (TyId (_loc, (IdLid (_loc, "unknown"))))
+      | TyId (_loc,IdLid (_,id)) ->
           let () = store_if_builtin_type id in
-          opt_bind' ox (Ast.ExId (_loc, (Ast.IdLid (_loc, "o"))))
-            (fun e1  -> Ast.ExSnd (_loc, e1, id))
-      | Ast.TyApp (_loc,t1,t2) ->
+          opt_bind' ox (ExId (_loc, (IdLid (_loc, "o"))))
+            (fun e1  -> ExSnd (_loc, e1, id))
+      | TyApp (_loc,t1,t2) ->
           let e =
             opt_bind None (self ~arity:(arity + 1) None t1)
-              (fun e1  -> Ast.ExApp (_loc, e1, (mkfuno (self None t2)))) in
+              (fun e1  -> ExApp (_loc, e1, (mkfuno (self None t2)))) in
           opt_app e ox
-      | Ast.TyTup (_loc,t) -> opt_app (mk_tuple (self ~arity:0) t) ox
-      | Ast.TyQuo (_loc,s) ->
+      | TyTup (_loc,t) -> opt_app (mk_tuple (self ~arity:0) t) ox
+      | TyQuo (_loc,s) ->
           opt_app
-            (Ast.ExApp
-               (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, ("_f_" ^ s))))),
-                 (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))))) ox
-      | _ -> self ox (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown")))) in
+            (ExApp
+               (_loc, (ExId (_loc, (IdLid (_loc, ("_f_" ^ s))))),
+                 (ExId (_loc, (IdLid (_loc, "o")))))) ox
+      | _ -> self ox (TyId (_loc, (IdLid (_loc, "unknown")))) in
     self x ty
   and expr_of_ty' e t = expr_of_ty (Some e) t
-  and out_constr_patt s = Ast.PaId (_loc, (Ast.IdUid (_loc, s)))
-  and out_constr_expr s = Ast.ExId (_loc, (Ast.IdUid (_loc, s)))
+  and out_constr_patt s = PaId (_loc, (IdUid (_loc, s)))
+  and out_constr_expr s = ExId (_loc, (IdUid (_loc, s)))
   and match_case_of_constructor s t =
     chain_tuple (apply_patt (out_constr_patt s))
       (apply_expr (out_constr_expr s)) expr_of_ty (Ast.list_of_ctyp t [])
   and match_case_of_sum_type =
     function
-    | Ast.TyOr (_loc,t1,t2) ->
-        Ast.McOr
-          (_loc, (match_case_of_sum_type t1), (match_case_of_sum_type t2))
-    | Ast.TyOf (_loc,Ast.TyId (_,Ast.IdUid (_,s)),t) ->
-        match_case_of_constructor s t
-    | Ast.TyId (_loc,Ast.IdUid (_,s)) ->
-        match_case_of_constructor s (Ast.TyNil _loc)
+    | TyOr (_loc,t1,t2) ->
+        McOr (_loc, (match_case_of_sum_type t1), (match_case_of_sum_type t2))
+    | TyOf (_loc,TyId (_,IdUid (_,s)),t) -> match_case_of_constructor s t
+    | TyId (_loc,IdUid (_,s)) -> match_case_of_constructor s (TyNil _loc)
     | _ -> assert false
   and match_case_of_poly_constructor s ts =
     chain_tuple
       (function
-       | [] -> Ast.PaVrn (_loc, s)
-       | p::[] -> Ast.PaApp (_loc, (Ast.PaVrn (_loc, s)), p)
+       | [] -> PaVrn (_loc, s)
+       | p::[] -> PaApp (_loc, (PaVrn (_loc, s)), p)
        | ps ->
-           Ast.PaApp
-             (_loc, (Ast.PaVrn (_loc, s)),
-               (Ast.PaTup (_loc, (Ast.paCom_of_list ps)))))
+           PaApp
+             (_loc, (PaVrn (_loc, s)),
+               (PaTup (_loc, (Ast.paCom_of_list ps)))))
       (function
-       | [] -> Ast.ExVrn (_loc, s)
-       | e::[] -> Ast.ExApp (_loc, (Ast.ExVrn (_loc, s)), e)
+       | [] -> ExVrn (_loc, s)
+       | e::[] -> ExApp (_loc, (ExVrn (_loc, s)), e)
        | es ->
-           Ast.ExApp
-             (_loc, (Ast.ExVrn (_loc, s)),
-               (Ast.ExTup (_loc, (Ast.exCom_of_list es))))) expr_of_ty ts
+           ExApp
+             (_loc, (ExVrn (_loc, s)),
+               (ExTup (_loc, (Ast.exCom_of_list es))))) expr_of_ty ts
   and match_case_of_poly_sum_type =
     function
-    | Ast.TyOr (_loc,t1,t2) ->
-        Ast.McOr
+    | TyOr (_loc,t1,t2) ->
+        McOr
           (_loc, (match_case_of_poly_sum_type t1),
             (match_case_of_poly_sum_type t2))
-    | Ast.TyOf (_loc,Ast.TyVrn (_,i),Ast.TyTup (_,t)) ->
+    | TyOf (_loc,TyVrn (_,i),TyTup (_,t)) ->
         match_case_of_poly_constructor i (Ast.list_of_ctyp t [])
-    | Ast.TyOf (_loc,Ast.TyVrn (_,i),t) ->
-        match_case_of_poly_constructor i [t]
-    | Ast.TyVrn (_loc,i) -> match_case_of_poly_constructor i []
+    | TyOf (_loc,TyVrn (_,i),t) -> match_case_of_poly_constructor i [t]
+    | TyVrn (_loc,i) -> match_case_of_poly_constructor i []
     | _ -> assert false
   and record_patt_of_type k =
     function
-    | Ast.TyCol (_loc,Ast.TyId (_,Ast.IdLid (_,s)),_) ->
-        Ast.PaEq
-          (_loc, (Ast.IdLid (_loc, s)),
-            (Ast.PaId (_loc, (Ast.IdLid (_loc, (xsk s k))))))
-    | Ast.TySem (_loc,t1,t2) ->
-        Ast.PaSem
-          (_loc, (record_patt_of_type k t1), (record_patt_of_type k t2))
+    | TyCol (_loc,TyId (_,IdLid (_,s)),_) ->
+        PaEq
+          (_loc, (IdLid (_loc, s)), (PaId (_loc, (IdLid (_loc, (xsk s k))))))
+    | TySem (_loc,t1,t2) ->
+        PaSem (_loc, (record_patt_of_type k t1), (record_patt_of_type k t2))
     | _ -> assert false
   and type_list_of_record_type t ((acc1,acc2) as acc) =
     match t with
-    | Ast.TyNil _loc -> acc
-    | Ast.TyCol (_loc,Ast.TyId (_,Ast.IdLid (_,s)),Ast.TyMut (_,t))|Ast.TyCol
-        (_loc,Ast.TyId (_,Ast.IdLid (_,s)),t) -> ((s :: acc1), (t :: acc2))
-    | Ast.TySem (_loc,t1,t2) ->
+    | TyNil _loc -> acc
+    | TyCol (_loc,TyId (_,IdLid (_,s)),TyMut (_,t))|TyCol
+        (_loc,TyId (_,IdLid (_,s)),t) -> ((s :: acc1), (t :: acc2))
+    | TySem (_loc,t1,t2) ->
         type_list_of_record_type t1 (type_list_of_record_type t2 acc)
     | _ -> assert false
   and expr_of_record_type t =
     let (ls,ts) = type_list_of_record_type t ([], []) in
     let mkp ps =
-      Ast.PaRec
+      PaRec
         (_loc,
           (Ast.paSem_of_list
-             (List.map2
-                (fun l  p  -> Ast.PaEq (_loc, (Ast.IdLid (_loc, l)), p)) ls
+             (List.map2 (fun l  p  -> PaEq (_loc, (IdLid (_loc, l)), p)) ls
                 ps))) in
     let mke es =
-      Ast.ExRec
+      ExRec
         (_loc,
           (Ast.rbSem_of_list
-             (List.map2
-                (fun l  e  -> Ast.RbEq (_loc, (Ast.IdLid (_loc, l)), e)) ls
-                es)), (Ast.ExNil _loc)) in
+             (List.map2 (fun l  e  -> RbEq (_loc, (IdLid (_loc, l)), e)) ls
+                es)), (ExNil _loc)) in
     chain_tuple mkp mke expr_of_ty ts
   and failure_match_case =
-    Ast.McArr
-      (_loc, (tuplify_patt (pxik 0)), (Ast.ExNil _loc),
-        (Ast.ExApp
+    McArr
+      (_loc, (tuplify_patt (pxik 0)), (ExNil _loc),
+        (ExApp
            (_loc,
-             (Ast.ExSnd
-                (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "o")))),
+             (ExSnd
+                (_loc, (ExId (_loc, (IdLid (_loc, "o")))),
                   (sf "%s%d_failure" (string_of_mode mode) size))),
              (tuplify_expr (exik 0)))))
   and complete_match_case mk t =
     match t with
-    | Ast.TyOr (_loc,_,_) when size > 1 ->
-        Ast.McOr (_loc, (mk t), failure_match_case)
+    | TyOr (_loc,_,_) when size > 1 ->
+        McOr (_loc, (mk t), failure_match_case)
     | _ -> mk t
   and fun_of_ctyp tyid =
     function
-    | Ast.TySum (_loc,t) ->
-        Ast.ExFun (_loc, (complete_match_case match_case_of_sum_type t))
-    | Ast.TyRec (_loc,t) -> Ast.ExFun (_loc, (expr_of_record_type t))
-    | Ast.TyTup (_loc,t) -> mk_tuple expr_of_ty t
-    | Ast.TyId (_loc,Ast.IdLid (_,i)) when i = tyid -> default_expr
-    | Ast.TyApp (_loc,_,_)|Ast.TyArr (_loc,_,_)|Ast.TyQuo (_loc,_)|Ast.TyId
-        (_loc,_) as t -> expr_of_ty None t
-    | Ast.TyNil _loc ->
-        expr_of_ty None (Ast.TyId (_loc, (Ast.IdLid (_loc, "unknown"))))
-    | Ast.TyVrnEq (_loc,t)|Ast.TyVrnInf (_loc,t)|Ast.TyPrv
-        (_loc,Ast.TyVrnInf (_,t)) ->
-        Ast.ExFun (_loc, (complete_match_case match_case_of_poly_sum_type t))
-    | Ast.TyVrnSup (_loc,t)|Ast.TyPrv (_loc,Ast.TyVrnSup (_,t)) ->
+    | TySum (_loc,t) ->
+        ExFun (_loc, (complete_match_case match_case_of_sum_type t))
+    | TyRec (_loc,t) -> ExFun (_loc, (expr_of_record_type t))
+    | TyTup (_loc,t) -> mk_tuple expr_of_ty t
+    | TyId (_loc,IdLid (_,i)) when i = tyid -> default_expr
+    | TyApp (_loc,_,_)|TyArr (_loc,_,_)|TyQuo (_loc,_)|TyId (_loc,_) as t ->
+        expr_of_ty None t
+    | TyNil _loc -> expr_of_ty None (TyId (_loc, (IdLid (_loc, "unknown"))))
+    | TyVrnEq (_loc,t)|TyVrnInf (_loc,t)|TyPrv (_loc,TyVrnInf (_,t)) ->
+        ExFun (_loc, (complete_match_case match_case_of_poly_sum_type t))
+    | TyVrnSup (_loc,t)|TyPrv (_loc,TyVrnSup (_,t)) ->
         if size > 1
         then
-          Ast.ExFun
-            (_loc, (complete_match_case match_case_of_poly_sum_type t))
+          ExFun (_loc, (complete_match_case match_case_of_poly_sum_type t))
         else
-          Ast.ExFun
+          ExFun
             (_loc,
-              (Ast.McOr
+              (McOr
                  (_loc, (match_case_of_poly_sum_type t), default_match_case)))
     | _ -> assert false
   and string_of_type_param t =
     match t with
-    | Ast.TyQuo (_loc,s)|Ast.TyQuP (_loc,s)|Ast.TyQuM (_loc,s) -> s
+    | TyQuo (_loc,s)|TyQuP (_loc,s)|TyQuM (_loc,s) -> s
     | _ -> assert false
   and method_of_type_decl _ ((id1,_,params,ctyp,priv) as type_decl) acc =
     let rec lambda acc =
@@ -536,19 +498,18 @@ module Gen(X:sig val size : int val mode : mode end) =
       | [] -> acc
       | x::xs ->
           lambda
-            (Ast.ExFun
+            (ExFun
                (_loc,
-                 (Ast.McArr
-                    (_loc,
-                      (Ast.PaId (_loc, (Ast.IdLid (_loc, ("_f_" ^ x))))),
-                      (Ast.ExNil _loc), acc)))) xs in
+                 (McArr
+                    (_loc, (PaId (_loc, (IdLid (_loc, ("_f_" ^ x))))),
+                      (ExNil _loc), acc)))) xs in
     let params' = List.map string_of_type_param params in
     let funs = lambda (fun_of_ctyp id1 ctyp) params' in
     let ty = method_type_of_type_decl type_decl in
-    let priv = if priv then Ast.PrPrivate else Ast.PrNil in
-    Ast.CrSem (_loc, (Ast.CrMth (_loc, id1, Ast.OvNil, priv, funs, ty)), acc)
+    let priv = if priv then PrPrivate else PrNil in
+    CrSem (_loc, (CrMth (_loc, id1, OvNil, priv, funs, ty)), acc)
   and ctyp_name_of_name_params name params =
-    apply_ctyp (Ast.TyId (_loc, name)) params
+    apply_ctyp (TyId (_loc, name)) params
   and method_type_of_type_decl (_,name,params,ctyp,_) =
     let t = ctyp_name_of_name_params name params in
     if (mode = Map) && (not (contains_unknown ctyp))
@@ -556,7 +517,7 @@ module Gen(X:sig val size : int val mode : mode end) =
       let out_params =
         List.map
           (function
-           | Ast.TyQuo (_loc,i) -> Ast.TyQuo (_loc, (i ^ "_out"))
+           | TyQuo (_loc,i) -> TyQuo (_loc, (i ^ "_out"))
            | _ -> assert false) params in
       let t_out = ctyp_name_of_name_params name out_params in
       method_type_of_type t t_out params out_params
@@ -565,32 +526,31 @@ module Gen(X:sig val size : int val mode : mode end) =
     let rt t =
       match mode with
       | Fold_map  ->
-          Ast.TyTup
-            (_loc, (Ast.TySta (_loc, (Ast.TyQuo (_loc, "self_type")), t)))
-      | Fold  -> Ast.TyQuo (_loc, "self_type")
+          TyTup (_loc, (TySta (_loc, (TyQuo (_loc, "self_type")), t)))
+      | Fold  -> TyQuo (_loc, "self_type")
       | Map  -> t in
     match (params_in, params_out) with
     | (param_in::[],param_out::[]) ->
         let alphas = tuplify_type param_in in
-        Ast.TyPol
-          (_loc, (Ast.TyApp (_loc, param_in, param_out)),
-            (Ast.TyArr
+        TyPol
+          (_loc, (TyApp (_loc, param_in, param_out)),
+            (TyArr
                (_loc,
-                 (Ast.TyArr
-                    (_loc, (Ast.TyQuo (_loc, "self_type")),
-                      (Ast.TyArr (_loc, alphas, (rt param_out))))),
-                 (Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))))))
+                 (TyArr
+                    (_loc, (TyQuo (_loc, "self_type")),
+                      (TyArr (_loc, alphas, (rt param_out))))),
+                 (TyArr (_loc, (tuplify_type t_in), (rt t_out))))))
     | (param::[],[]) ->
         let alphas = tuplify_type param in
-        Ast.TyPol
+        TyPol
           (_loc, param,
-            (Ast.TyArr
+            (TyArr
                (_loc,
-                 (Ast.TyArr
-                    (_loc, (Ast.TyQuo (_loc, "self_type")),
-                      (Ast.TyArr (_loc, alphas, (rt param))))),
-                 (Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))))))
-    | ([],[]) -> Ast.TyArr (_loc, (tuplify_type t_in), (rt t_out))
+                 (TyArr
+                    (_loc, (TyQuo (_loc, "self_type")),
+                      (TyArr (_loc, alphas, (rt param))))),
+                 (TyArr (_loc, (tuplify_type t_in), (rt t_out))))))
+    | ([],[]) -> TyArr (_loc, (tuplify_type t_in), (rt t_out))
     | _ ->
         let i = List.length params_in in
         failwith
@@ -603,29 +563,27 @@ module Gen(X:sig val size : int val mode : mode end) =
          inherit  Ast.fold as super
          method! ctyp =
            function
-           | Ast.TyId (_loc,Ast.IdLid (_,id)) ->
+           | TyId (_loc,IdLid (_,id)) ->
                let () = store_if_builtin_type id in self
            | t -> super#ctyp t
        end)#ctyp t in
-    Ast.CgSem
+    CgSem
       (_loc,
-        (Ast.CgMth
-           (_loc, name, Ast.PrNil, (method_type_of_type_decl type_decl))),
+        (CgMth (_loc, name, PrNil, (method_type_of_type_decl type_decl))),
         acc)
   and generate_structure tyMap =
     SMap.fold method_of_type_decl used_builtins.contents
-      (SMap.fold method_of_type_decl tyMap (Ast.CrNil _loc))
+      (SMap.fold method_of_type_decl tyMap (CrNil _loc))
   and generate_signature tyMap =
     SMap.fold class_sig_item_of_type_decl used_builtins.contents
-      (SMap.fold class_sig_item_of_type_decl tyMap (Ast.CgNil _loc))
+      (SMap.fold class_sig_item_of_type_decl tyMap (CgNil _loc))
   end
 let rec tyMap_of_type_decls t acc =
   match t with
-  | Ast.TyNil _loc -> acc
-  | Ast.TyAnd (_loc,t1,t2) ->
-      tyMap_of_type_decls t1 (tyMap_of_type_decls t2 acc)
+  | TyNil _loc -> acc
+  | TyAnd (_loc,t1,t2) -> tyMap_of_type_decls t1 (tyMap_of_type_decls t2 acc)
   | Ast.TyDcl (_,name,tl,tk,_) ->
-      SMap.add name (name, (Ast.IdLid (_loc, name)), tl, tk, false) acc
+      SMap.add name (name, (IdLid (_loc, name)), tl, tk, false) acc
   | _ -> assert false
 let generate_class_implem mode c tydcl n =
   let tyMap = tyMap_of_type_decls tydcl SMap.empty in
@@ -634,51 +592,45 @@ let generate_class_implem mode c tydcl n =
     end) in
     let generated = M.generate_structure tyMap in
     let gen_type =
-      Ast.TyPol
-        (_loc,
-          (Ast.TyApp (_loc, (Ast.TyQuo (_loc, "a")), (Ast.TyQuo (_loc, "b")))),
-          (M.method_type_of_type (Ast.TyQuo (_loc, "a"))
-             (Ast.TyQuo (_loc, "b")) [] [])) in
+      TyPol
+        (_loc, (TyApp (_loc, (TyQuo (_loc, "a")), (TyQuo (_loc, "b")))),
+          (M.method_type_of_type (TyQuo (_loc, "a")) (TyQuo (_loc, "b")) []
+             [])) in
     let failure =
       if n > 1
       then
         let name = string_of_mode mode in
-        Ast.CrMth
-          (_loc, (sf "%s%d_failure" name n), Ast.OvNil, Ast.PrNil,
-            (Ast.ExFun
+        CrMth
+          (_loc, (sf "%s%d_failure" name n), OvNil, PrNil,
+            (ExFun
                (_loc,
-                 (Ast.McArr
-                    (_loc, (M.tuplify_patt (pxik 0)), (Ast.ExNil _loc),
-                      (Ast.ExApp
-                         (_loc,
-                           (Ast.ExId (_loc, (Ast.IdLid (_loc, "failwith")))),
-                           (Ast.ExStr
+                 (McArr
+                    (_loc, (M.tuplify_patt (pxik 0)), (ExNil _loc),
+                      (ExApp
+                         (_loc, (ExId (_loc, (IdLid (_loc, "failwith")))),
+                           (ExStr
                               (_loc,
                                 (Ast.safe_string_escaped
                                    (sf "%s%d_failure: default implementation"
                                       name n)))))))))), gen_type)
-      else Ast.CrNil _loc in
+      else CrNil _loc in
     let gen_type =
-      Ast.TyPol
-        (_loc, (Ast.TyQuo (_loc, "a")),
-          (M.method_type_of_type (Ast.TyQuo (_loc, "a"))
-             (Ast.TyQuo (_loc, "a")) [] [])) in
+      TyPol
+        (_loc, (TyQuo (_loc, "a")),
+          (M.method_type_of_type (TyQuo (_loc, "a")) (TyQuo (_loc, "a")) []
+             [])) in
     let unknown =
-      Ast.CrMth
-        (_loc, "unknown", Ast.OvNil, Ast.PrNil, M.default_expr, gen_type) in
-    Ast.StCls
+      CrMth (_loc, "unknown", OvNil, PrNil, M.default_expr, gen_type) in
+    StCls
       (_loc,
-        (Ast.CeEq
-           (_loc,
-             (Ast.CeCon
-                (_loc, Ast.ViNil, (Ast.IdLid (_loc, c)), (Ast.TyNil _loc))),
-             (Ast.CeStr
+        (CeEq
+           (_loc, (CeCon (_loc, ViNil, (IdLid (_loc, c)), (TyNil _loc))),
+             (CeStr
                 (_loc,
-                  (Ast.PaTyc
-                     (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "o")))),
-                       (Ast.TyQuo (_loc, "self_type")))),
-                  (Ast.CrSem
-                     (_loc, generated, (Ast.CrSem (_loc, failure, unknown)))))))))
+                  (PaTyc
+                     (_loc, (PaId (_loc, (IdLid (_loc, "o")))),
+                       (TyQuo (_loc, "self_type")))),
+                  (CrSem (_loc, generated, (CrSem (_loc, failure, unknown)))))))))
 let generate_class_interf mode c tydcl n =
   let tyMap = tyMap_of_type_decls tydcl SMap.empty in
   let module M = Gen(struct
@@ -686,35 +638,31 @@ let generate_class_interf mode c tydcl n =
     end) in
     let generated = M.generate_signature tyMap in
     let gen_type =
-      Ast.TyPol
-        (_loc,
-          (Ast.TyApp (_loc, (Ast.TyQuo (_loc, "a")), (Ast.TyQuo (_loc, "b")))),
-          (M.method_type_of_type (Ast.TyQuo (_loc, "a"))
-             (Ast.TyQuo (_loc, "b")) [] [])) in
+      TyPol
+        (_loc, (TyApp (_loc, (TyQuo (_loc, "a")), (TyQuo (_loc, "b")))),
+          (M.method_type_of_type (TyQuo (_loc, "a")) (TyQuo (_loc, "b")) []
+             [])) in
     let failure =
       if n > 1
       then
         let name = string_of_mode mode in
-        Ast.CgMth (_loc, (sf "%s%d_failure" name n), Ast.PrNil, gen_type)
-      else Ast.CgNil _loc in
+        CgMth (_loc, (sf "%s%d_failure" name n), PrNil, gen_type)
+      else CgNil _loc in
     let gen_type =
-      Ast.TyPol
-        (_loc, (Ast.TyQuo (_loc, "a")),
-          (M.method_type_of_type (Ast.TyQuo (_loc, "a"))
-             (Ast.TyQuo (_loc, "a")) [] [])) in
-    let unknown = Ast.CgMth (_loc, "unknown", Ast.PrNil, gen_type) in
-    Ast.SgCls
+      TyPol
+        (_loc, (TyQuo (_loc, "a")),
+          (M.method_type_of_type (TyQuo (_loc, "a")) (TyQuo (_loc, "a")) []
+             [])) in
+    let unknown = CgMth (_loc, "unknown", PrNil, gen_type) in
+    SgCls
       (_loc,
-        (Ast.CtCol
-           (_loc,
-             (Ast.CtCon
-                (_loc, Ast.ViNil, (Ast.IdLid (_loc, c)), (Ast.TyNil _loc))),
-             (Ast.CtSig
-                (_loc, (Ast.TyQuo (_loc, "self_type")),
-                  (Ast.CgSem
-                     (_loc, generated, (Ast.CgSem (_loc, failure, unknown)))))))))
+        (CtCol
+           (_loc, (CtCon (_loc, ViNil, (IdLid (_loc, c)), (TyNil _loc))),
+             (CtSig
+                (_loc, (TyQuo (_loc, "self_type")),
+                  (CgSem (_loc, generated, (CgSem (_loc, failure, unknown)))))))))
 let processor =
-  let last = ref (Ast.TyNil _loc) in
+  let last = ref (TyNil _loc) in
   let generate_class' generator default c s n =
     match s with
     | "Fold" -> generator Fold c last.contents n
@@ -736,63 +684,59 @@ let processor =
     inherit  Ast.map as super
     method! str_item st =
       match st with
-      | Ast.StTyp (_loc,t) -> (last := t; st)
-      | Ast.StCls
-          (_loc,Ast.CeEq
-           (_,Ast.CeCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
-            (_,Ast.ViNil ,Ast.IdAcc
-             (_,Ast.IdUid (_,"Filters"),Ast.IdAcc
-              (_,Ast.IdUid (_,"GenerateFold"),Ast.IdLid (_,"generated"))),Ast.TyNil
+      | StTyp (_loc,t) -> (last := t; st)
+      | StCls
+          (_loc,CeEq
+           (_,CeCon (_,ViNil ,IdLid (_,c),TyNil _),CeCon
+            (_,ViNil ,IdAcc
+             (_,IdUid (_,"Filters"),IdAcc
+              (_,IdUid (_,"GenerateFold"),IdLid (_,"generated"))),TyNil
              _)))
           -> generate_class_implem Fold c last.contents 1
-      | Ast.StCls
-          (_loc,Ast.CeEq
-           (_,Ast.CeCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
-            (_,Ast.ViNil ,Ast.IdAcc
-             (_,Ast.IdUid (_,"Filters"),Ast.IdAcc
-              (_,Ast.IdUid (_,"GenerateMap"),Ast.IdLid (_,"generated"))),Ast.TyNil
+      | StCls
+          (_loc,CeEq
+           (_,CeCon (_,ViNil ,IdLid (_,c),TyNil _),CeCon
+            (_,ViNil ,IdAcc
+             (_,IdUid (_,"Filters"),IdAcc
+              (_,IdUid (_,"GenerateMap"),IdLid (_,"generated"))),TyNil
              _)))
           -> generate_class_implem Map c last.contents 1
-      | Ast.StCls
-          (_loc,Ast.CeEq
-           (_,Ast.CeCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
-            (_,Ast.ViNil ,Ast.IdAcc
-             (_,Ast.IdUid (_,m),Ast.IdLid (_,"generated")),Ast.TyNil _)))
+      | StCls
+          (_loc,CeEq
+           (_,CeCon (_,ViNil ,IdLid (_,c),TyNil _),CeCon
+            (_,ViNil ,IdAcc (_,IdUid (_,m),IdLid (_,"generated")),TyNil _)))
           -> generate_class_from_module_name generate_class_implem c st m
-      | Ast.StSem (_loc,st1,st2) ->
+      | StSem (_loc,st1,st2) ->
           let st1 = self#str_item st1 in
-          Ast.StSem (_loc, st1, (self#str_item st2))
+          StSem (_loc, st1, (self#str_item st2))
       | st -> super#str_item st
     method! sig_item sg =
       match sg with
-      | Ast.SgTyp (_loc,t) -> (last := t; sg)
-      | Ast.SgCls
-          (_loc,Ast.CtCol
-           (_,Ast.CtCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
-            (_,Ast.ViNil ,Ast.IdAcc
-             (_,Ast.IdAcc
-              (_,Ast.IdUid (_,"Filters"),Ast.IdUid (_,"GenerateFold")),Ast.IdLid
-              (_,"generated")),Ast.TyNil
+      | SgTyp (_loc,t) -> (last := t; sg)
+      | SgCls
+          (_loc,CtCol
+           (_,CtCon (_,ViNil ,IdLid (_,c),TyNil _),CtCon
+            (_,ViNil ,IdAcc
+             (_,IdAcc (_,IdUid (_,"Filters"),IdUid (_,"GenerateFold")),IdLid
+              (_,"generated")),TyNil
              _)))
           -> generate_class_interf Fold c last.contents 1
-      | Ast.SgCls
-          (_loc,Ast.CtCol
-           (_,Ast.CtCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
-            (_,Ast.ViNil ,Ast.IdAcc
-             (_,Ast.IdAcc
-              (_,Ast.IdUid (_,"Filters"),Ast.IdUid (_,"GenerateMap")),Ast.IdLid
-              (_,"generated")),Ast.TyNil
+      | SgCls
+          (_loc,CtCol
+           (_,CtCon (_,ViNil ,IdLid (_,c),TyNil _),CtCon
+            (_,ViNil ,IdAcc
+             (_,IdAcc (_,IdUid (_,"Filters"),IdUid (_,"GenerateMap")),IdLid
+              (_,"generated")),TyNil
              _)))
           -> generate_class_interf Map c last.contents 1
-      | Ast.SgCls
-          (_loc,Ast.CtCol
-           (_,Ast.CtCon (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
-            (_,Ast.ViNil ,Ast.IdAcc
-             (_,Ast.IdUid (_,m),Ast.IdLid (_,"generated")),Ast.TyNil _)))
+      | SgCls
+          (_loc,CtCol
+           (_,CtCon (_,ViNil ,IdLid (_,c),TyNil _),CtCon
+            (_,ViNil ,IdAcc (_,IdUid (_,m),IdLid (_,"generated")),TyNil _)))
           -> generate_class_from_module_name generate_class_interf c sg m
-      | Ast.SgSem (_loc,sg1,sg2) ->
+      | SgSem (_loc,sg1,sg2) ->
           let sg1 = self#sig_item sg1 in
-          Ast.SgSem (_loc, sg1, (self#sig_item sg2))
+          SgSem (_loc, sg1, (self#sig_item sg2))
       | sg -> super#sig_item sg
   end
 let _ = AstFilters.register_str_item_filter ("fold", (processor#str_item))
@@ -805,11 +749,9 @@ let decorate_binding decorate_fun =
      inherit  Ast.map as super
      method! binding =
        function
-       | Ast.BiEq (_loc,Ast.PaId (_,Ast.IdLid (_,id)),(Ast.ExFun (_,_) as e))
-           ->
-           Ast.BiEq
-             (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, id)))),
-               (decorate_fun id e))
+       | BiEq (_loc,PaId (_,IdLid (_,id)),(ExFun (_,_) as e)) ->
+           BiEq
+             (_loc, (PaId (_loc, (IdLid (_loc, id)))), (decorate_fun id e))
        | b -> super#binding b
    end)#binding
 let decorate decorate_fun =
@@ -817,14 +759,14 @@ let decorate decorate_fun =
     inherit  Ast.map as super
     method! str_item =
       function
-      | Ast.StVal (_loc,r,b) ->
-          Ast.StVal (_loc, r, (decorate_binding decorate_fun b))
+      | StVal (_loc,r,b) ->
+          StVal (_loc, r, (decorate_binding decorate_fun b))
       | st -> super#str_item st
     method! expr =
       function
-      | Ast.ExLet (_loc,r,b,e) ->
-          Ast.ExLet (_loc, r, (decorate_binding decorate_fun b), (o#expr e))
-      | Ast.ExFun (_loc,_) as e -> decorate_fun "<fun>" e
+      | ExLet (_loc,r,b,e) ->
+          ExLet (_loc, r, (decorate_binding decorate_fun b), (o#expr e))
+      | ExFun (_loc,_) as e -> decorate_fun "<fun>" e
       | e -> super#expr e
   end
 let decorate_this_expr e id =
@@ -832,28 +774,27 @@ let decorate_this_expr e id =
   let _loc = Ast.loc_of_expr e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
-  Ast.ExLet
-    (_loc, Ast.ReNil,
-      (Ast.BiEq
-         (_loc, (Ast.PaId (_loc, (Ast.IdUid (_loc, "()")))),
-           (Ast.ExApp
+  ExLet
+    (_loc, ReNil,
+      (BiEq
+         (_loc, (PaId (_loc, (IdUid (_loc, "()")))),
+           (ExApp
               (_loc,
-                (Ast.ExId
+                (ExId
                    (_loc,
-                     (Ast.IdAcc
-                        (_loc, (Ast.IdUid (_loc, "Camlp4prof")),
-                          (Ast.IdLid (_loc, "count")))))),
-                (Ast.ExStr (_loc, (Ast.safe_string_escaped s))))))), e)
+                     (IdAcc
+                        (_loc, (IdUid (_loc, "Camlp4prof")),
+                          (IdLid (_loc, "count")))))),
+                (ExStr (_loc, (Ast.safe_string_escaped s))))))), e)
 let rec decorate_fun id =
   let decorate = decorate decorate_fun in
   let decorate_expr = decorate#expr in
   let decorate_match_case = decorate#match_case in
   function
-  | Ast.ExFun (_loc,Ast.McArr (_,p,Ast.ExNil _,e)) ->
-      Ast.ExFun
-        (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), (decorate_fun id e))))
-  | Ast.ExFun (_loc,m) ->
-      decorate_this_expr (Ast.ExFun (_loc, (decorate_match_case m))) id
+  | ExFun (_loc,McArr (_,p,ExNil _,e)) ->
+      ExFun (_loc, (McArr (_loc, p, (ExNil _loc), (decorate_fun id e))))
+  | ExFun (_loc,m) ->
+      decorate_this_expr (ExFun (_loc, (decorate_match_case m))) id
   | e -> decorate_this_expr (decorate_expr e) id
 let _ =
   AstFilters.register_str_item_filter
@@ -862,9 +803,7 @@ let _ =
   AstFilters.register_str_item_filter
     ("trash",
       ((Ast.map_str_item
-          (function
-           | Ast.StMod (_loc,"Camlp4Trash",_) -> Ast.StNil _loc
-           | st -> st))#str_item))
+          (function | StMod (_loc,"Camlp4Trash",_) -> StNil _loc | st -> st))#str_item))
 type t = 
   {
   name: Ast.ident;
@@ -880,18 +819,18 @@ type t =
   chr: Ast.expr;
   ant: Ast.ident} 
 let _loc = FanLoc.ghost
-let x i = Ast.IdLid (_loc, ("x" ^ (string_of_int i)))
-let meta_ s = Ast.IdLid (_loc, ("meta_" ^ s))
+let x i = IdLid (_loc, ("x" ^ (string_of_int i)))
+let meta_ s = IdLid (_loc, ("meta_" ^ s))
 let mf_ s = "mf_" ^ s
 let rec string_of_ident =
   function
-  | Ast.IdLid (_loc,s) -> s
-  | Ast.IdUid (_loc,s) -> s
-  | Ast.IdAcc (_loc,i1,i2) ->
+  | IdLid (_loc,s) -> s
+  | IdUid (_loc,s) -> s
+  | IdAcc (_loc,i1,i2) ->
       "acc_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
-  | Ast.IdApp (_loc,i1,i2) ->
+  | IdApp (_loc,i1,i2) ->
       "app_" ^ ((string_of_ident i1) ^ ("_" ^ (string_of_ident i2)))
-  | Ast.IdAnt (_loc,_) -> assert false
+  | IdAnt (_loc,_) -> assert false
 let fold_args ty f init =
   let (_,res) =
     List.fold_left (fun (i,acc)  ty  -> ((succ i), (f ty i acc))) (0, init)
@@ -900,107 +839,99 @@ let fold_args ty f init =
 let fold_data_ctors ty f init =
   let rec loop acc t =
     match t with
-    | Ast.TyOf (_loc,Ast.TyId (_,Ast.IdUid (_,cons)),ty) ->
+    | TyOf (_loc,TyId (_,IdUid (_,cons)),ty) ->
         f cons (Ast.list_of_ctyp ty []) acc
-    | Ast.TyId (_loc,Ast.IdUid (_,cons)) -> f cons [] acc
-    | Ast.TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
-    | Ast.TyNil _loc -> acc
+    | TyId (_loc,IdUid (_,cons)) -> f cons [] acc
+    | TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
+    | TyNil _loc -> acc
     | _ -> assert false in
   loop init ty
 let fold_type_decls m f init = SMap.fold f m.type_decls init
 let patt_of_data_ctor_decl cons tyargs =
   fold_args tyargs
-    (fun _  i  acc  -> Ast.PaApp (_loc, acc, (Ast.PaId (_loc, (x i)))))
-    (Ast.PaId (_loc, cons))
+    (fun _  i  acc  -> PaApp (_loc, acc, (PaId (_loc, (x i)))))
+    (PaId (_loc, cons))
 let expr_of_data_ctor_decl cons tyargs =
   fold_args tyargs
-    (fun _  i  acc  -> Ast.ExApp (_loc, acc, (Ast.ExId (_loc, (x i)))))
-    (Ast.ExId (_loc, cons))
+    (fun _  i  acc  -> ExApp (_loc, acc, (ExId (_loc, (x i)))))
+    (ExId (_loc, cons))
 let is_antiquot_data_ctor s =
   let ls = String.length s in (ls > 3) && ((String.sub s (ls - 3) 3) = "Ant")
 let rec meta_ident m =
   function
-  | Ast.IdAcc (_loc,i1,i2) ->
-      Ast.ExApp
+  | IdAcc (_loc,i1,i2) ->
+      ExApp
         (_loc,
-          (Ast.ExApp
+          (ExApp
              (_loc,
-               (Ast.ExApp
+               (ExApp
                   (_loc,
-                    (Ast.ExId
+                    (ExId
                        (_loc,
-                         (Ast.IdAcc
-                            (_loc, (Ast.IdUid (_loc, "Ast")),
-                              (Ast.IdUid (_loc, "IdAcc")))))),
-                    (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                         (IdAcc
+                            (_loc, (IdUid (_loc, "Ast")),
+                              (IdUid (_loc, "IdAcc")))))),
+                    (ExId (_loc, (IdLid (_loc, "_loc")))))),
                (meta_ident m i1))), (meta_ident m i2))
-  | Ast.IdApp (_loc,i1,i2) ->
-      Ast.ExApp
+  | IdApp (_loc,i1,i2) ->
+      ExApp
         (_loc,
-          (Ast.ExApp
+          (ExApp
              (_loc,
-               (Ast.ExApp
+               (ExApp
                   (_loc,
-                    (Ast.ExId
+                    (ExId
                        (_loc,
-                         (Ast.IdAcc
-                            (_loc, (Ast.IdUid (_loc, "Ast")),
-                              (Ast.IdUid (_loc, "IdApp")))))),
-                    (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
+                         (IdAcc
+                            (_loc, (IdUid (_loc, "Ast")),
+                              (IdUid (_loc, "IdApp")))))),
+                    (ExId (_loc, (IdLid (_loc, "_loc")))))),
                (meta_ident m i1))), (meta_ident m i2))
-  | Ast.IdAnt (_loc,s) -> Ast.ExAnt (_loc, s)
-  | Ast.IdLid (_loc,s) ->
-      Ast.ExApp
+  | IdAnt (_loc,s) -> ExAnt (_loc, s)
+  | IdLid (_loc,s) ->
+      ExApp
         (_loc,
-          (Ast.ExApp
+          (ExApp
              (_loc,
-               (Ast.ExId
+               (ExId
                   (_loc,
-                    (Ast.IdAcc
-                       (_loc, (Ast.IdUid (_loc, "Ast")),
-                         (Ast.IdUid (_loc, "IdLid")))))),
-               (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-          (Ast.ExStr (_loc, s)))
-  | Ast.IdUid (_loc,s) ->
-      Ast.ExApp
+                    (IdAcc
+                       (_loc, (IdUid (_loc, "Ast")), (IdUid (_loc, "IdLid")))))),
+               (ExId (_loc, (IdLid (_loc, "_loc")))))), (ExStr (_loc, s)))
+  | IdUid (_loc,s) ->
+      ExApp
         (_loc,
-          (Ast.ExApp
+          (ExApp
              (_loc,
-               (Ast.ExId
+               (ExId
                   (_loc,
-                    (Ast.IdAcc
-                       (_loc, (Ast.IdUid (_loc, "Ast")),
-                         (Ast.IdUid (_loc, "IdUid")))))),
-               (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-          (Ast.ExStr (_loc, s)))
+                    (IdAcc
+                       (_loc, (IdUid (_loc, "Ast")), (IdUid (_loc, "IdUid")))))),
+               (ExId (_loc, (IdLid (_loc, "_loc")))))), (ExStr (_loc, s)))
 let m_app m x y =
-  Ast.ExApp
+  ExApp
     (_loc,
-      (Ast.ExApp
+      (ExApp
          (_loc,
-           (Ast.ExApp
-              (_loc, (m.app), (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-           x)), y)
+           (ExApp (_loc, (m.app), (ExId (_loc, (IdLid (_loc, "_loc")))))), x)),
+      y)
 let m_id m i =
-  Ast.ExApp
-    (_loc,
-      (Ast.ExApp
-         (_loc, (m.id), (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))), i)
-let m_uid m s = m_id m (meta_ident m (Ast.IdUid (_loc, s)))
-let m_lid m s = m_id m (meta_ident m (Ast.IdLid (_loc, s)))
+  ExApp
+    (_loc, (ExApp (_loc, (m.id), (ExId (_loc, (IdLid (_loc, "_loc")))))), i)
+let m_uid m s = m_id m (meta_ident m (IdUid (_loc, s)))
+let m_lid m s = m_id m (meta_ident m (IdLid (_loc, s)))
 let failure =
-  Ast.ExApp
-    (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, "raise")))),
-      (Ast.ExApp
-         (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "Failure")))),
-           (Ast.ExStr
-              (_loc, "MetaGenerator: cannot handle that kind of types")))))
+  ExApp
+    (_loc, (ExId (_loc, (IdLid (_loc, "raise")))),
+      (ExApp
+         (_loc, (ExId (_loc, (IdUid (_loc, "Failure")))),
+           (ExStr (_loc, "MetaGenerator: cannot handle that kind of types")))))
 let mk_meta m =
-  let m_name_uid x = Ast.IdAcc (_loc, (m.name), (Ast.IdUid (_loc, x))) in
+  let m_name_uid x = IdAcc (_loc, (m.name), (IdUid (_loc, x))) in
   fold_type_decls m
     (fun tyname  tydcl  binding_acc  ->
        match tydcl with
-       | Ast.TyDcl (_,_,tyvars,Ast.TySum (_loc,ty),_) ->
+       | Ast.TyDcl (_,_,tyvars,TySum (_loc,ty),_) ->
            let match_case =
              fold_data_ctors ty
                (fun cons  tyargs  acc  ->
@@ -1021,12 +952,12 @@ let mk_meta m =
                         "OvAnt";
                         "RvAnt"]
                     then
-                      Ast.ExApp
+                      ExApp
                         (_loc,
-                          (Ast.ExApp
-                             (_loc, (Ast.ExId (_loc, (m.ant))),
-                               (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-                          (Ast.ExId (_loc, (Ast.IdLid (_loc, "x0")))))
+                          (ExApp
+                             (_loc, (ExId (_loc, (m.ant))),
+                               (ExId (_loc, (IdLid (_loc, "_loc")))))),
+                          (ExId (_loc, (IdLid (_loc, "x0")))))
                     else
                       if is_antiquot_data_ctor cons
                       then expr_of_data_ctor_decl m.ant tyargs
@@ -1035,137 +966,128 @@ let mk_meta m =
                           (fun ty  i  acc  ->
                              let rec fcall_of_ctyp ty =
                                match ty with
-                               | Ast.TyId (_loc,id) ->
-                                   Ast.ExId
-                                     (_loc, (meta_ (string_of_ident id)))
-                               | Ast.TyTup (_loc,Ast.TySta (_,t1,t2)) ->
-                                   Ast.ExFun
+                               | TyId (_loc,id) ->
+                                   ExId (_loc, (meta_ (string_of_ident id)))
+                               | TyTup (_loc,TySta (_,t1,t2)) ->
+                                   ExFun
                                      (_loc,
-                                       (Ast.McArr
+                                       (McArr
                                           (_loc,
-                                            (Ast.PaId
+                                            (PaId
+                                               (_loc, (IdLid (_loc, "_loc")))),
+                                            (ExNil _loc),
+                                            (ExFun
                                                (_loc,
-                                                 (Ast.IdLid (_loc, "_loc")))),
-                                            (Ast.ExNil _loc),
-                                            (Ast.ExFun
-                                               (_loc,
-                                                 (Ast.McArr
+                                                 (McArr
                                                     (_loc,
-                                                      (Ast.PaTup
+                                                      (PaTup
                                                          (_loc,
-                                                           (Ast.PaCom
+                                                           (PaCom
                                                               (_loc,
-                                                                (Ast.PaId
+                                                                (PaId
                                                                    (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "x1")))),
-                                                                (Ast.PaId
+                                                                (PaId
                                                                    (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "x2")))))))),
-                                                      (Ast.ExNil _loc),
-                                                      (Ast.ExApp
+                                                      (ExNil _loc),
+                                                      (ExApp
                                                          (_loc,
-                                                           (Ast.ExApp
+                                                           (ExApp
                                                               (_loc, (
                                                                 m.tup),
-                                                                (Ast.ExId
+                                                                (ExId
                                                                    (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
-                                                           (Ast.ExApp
+                                                           (ExApp
                                                               (_loc,
-                                                                (Ast.ExApp
+                                                                (ExApp
                                                                    (_loc,
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
                                                                     (m.com),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
                                                                     (fcall_of_ctyp
                                                                     t1),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "x1")))))))),
-                                                                (Ast.ExApp
+                                                                (ExApp
                                                                    (_loc,
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
                                                                     (fcall_of_ctyp
                                                                     t2),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "x2")))))))))))))))))
-                               | Ast.TyApp (_loc,t1,t2) ->
-                                   Ast.ExApp
+                               | TyApp (_loc,t1,t2) ->
+                                   ExApp
                                      (_loc, (fcall_of_ctyp t1),
                                        (fcall_of_ctyp t2))
-                               | Ast.TyQuo (_loc,s) ->
-                                   Ast.ExId
-                                     (_loc, (Ast.IdLid (_loc, (mf_ s))))
+                               | TyQuo (_loc,s) ->
+                                   ExId (_loc, (IdLid (_loc, (mf_ s))))
                                | _ -> failure in
                              m_app m acc
-                               (Ast.ExApp
+                               (ExApp
                                   (_loc,
-                                    (Ast.ExApp
+                                    (ExApp
                                        (_loc, (fcall_of_ctyp ty),
-                                         (Ast.ExId
-                                            (_loc,
-                                              (Ast.IdLid (_loc, "_loc")))))),
-                                    (Ast.ExId (_loc, (x i)))))) init in
-                  Ast.McOr
-                    (_loc, (Ast.McArr (_loc, p, (Ast.ExNil _loc), e)), acc))
-               (Ast.McNil _loc) in
+                                         (ExId (_loc, (IdLid (_loc, "_loc")))))),
+                                    (ExId (_loc, (x i)))))) init in
+                  McOr (_loc, (McArr (_loc, p, (ExNil _loc), e)), acc))
+               (McNil _loc) in
            let funct =
              List.fold_right
                (fun tyvar  acc  ->
                   match tyvar with
-                  | Ast.TyQuP (_loc,s)|Ast.TyQuM (_loc,s)|Ast.TyQuo (_loc,s)
-                      ->
-                      Ast.ExFun
+                  | TyQuP (_loc,s)|TyQuM (_loc,s)|TyQuo (_loc,s) ->
+                      ExFun
                         (_loc,
-                          (Ast.McArr
-                             (_loc,
-                               (Ast.PaId (_loc, (Ast.IdLid (_loc, (mf_ s))))),
-                               (Ast.ExNil _loc), acc)))
+                          (McArr
+                             (_loc, (PaId (_loc, (IdLid (_loc, (mf_ s))))),
+                               (ExNil _loc), acc)))
                   | _ -> assert false) tyvars
-               (Ast.ExFun
+               (ExFun
                   (_loc,
-                    (Ast.McArr
-                       (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "_loc")))),
-                         (Ast.ExNil _loc), (Ast.ExFun (_loc, match_case)))))) in
-           Ast.BiAnd
+                    (McArr
+                       (_loc, (PaId (_loc, (IdLid (_loc, "_loc")))),
+                         (ExNil _loc), (ExFun (_loc, match_case)))))) in
+           BiAnd
              (_loc, binding_acc,
-               (Ast.BiEq
-                  (_loc,
-                    (Ast.PaId (_loc, (Ast.IdLid (_loc, ("meta_" ^ tyname))))),
+               (BiEq
+                  (_loc, (PaId (_loc, (IdLid (_loc, ("meta_" ^ tyname))))),
                     funct)))
        | Ast.TyDcl (_,_,_,_,_) -> binding_acc
-       | _ -> assert false) (Ast.BiNil _loc)
+       | _ -> assert false) (BiNil _loc)
 let find_type_decls =
   object 
     inherit  Ast.fold as super
@@ -1183,373 +1105,361 @@ let filter st =
      method! module_expr me =
        let mk_meta_module m =
          let bi = mk_meta m in
-         Ast.MeStr
+         MeStr
            (_loc,
-             (Ast.StSem
+             (StSem
                 (_loc,
-                  (Ast.StVal
-                     (_loc, Ast.ReNil,
-                       (Ast.BiEq
+                  (StVal
+                     (_loc, ReNil,
+                       (BiEq
                           (_loc,
-                            (Ast.PaId
-                               (_loc, (Ast.IdLid (_loc, "meta_string")))),
-                            (Ast.ExFun
+                            (PaId (_loc, (IdLid (_loc, "meta_string")))),
+                            (ExFun
                                (_loc,
-                                 (Ast.McArr
+                                 (McArr
                                     (_loc,
-                                      (Ast.PaId
-                                         (_loc, (Ast.IdLid (_loc, "_loc")))),
-                                      (Ast.ExNil _loc),
-                                      (Ast.ExFun
+                                      (PaId (_loc, (IdLid (_loc, "_loc")))),
+                                      (ExNil _loc),
+                                      (ExFun
                                          (_loc,
-                                           (Ast.McArr
+                                           (McArr
                                               (_loc,
-                                                (Ast.PaId
+                                                (PaId
                                                    (_loc,
-                                                     (Ast.IdLid (_loc, "s")))),
-                                                (Ast.ExNil _loc),
-                                                (Ast.ExApp
+                                                     (IdLid (_loc, "s")))),
+                                                (ExNil _loc),
+                                                (ExApp
                                                    (_loc,
-                                                     (Ast.ExApp
+                                                     (ExApp
                                                         (_loc, (m.str),
-                                                          (Ast.ExId
+                                                          (ExId
                                                              (_loc,
-                                                               (Ast.IdLid
+                                                               (IdLid
                                                                   (_loc,
                                                                     "_loc")))))),
-                                                     (Ast.ExApp
+                                                     (ExApp
                                                         (_loc,
-                                                          (Ast.ExId
+                                                          (ExId
                                                              (_loc,
-                                                               (Ast.IdLid
+                                                               (IdLid
                                                                   (_loc,
                                                                     "safe_string_escaped")))),
-                                                          (Ast.ExId
+                                                          (ExId
                                                              (_loc,
-                                                               (Ast.IdLid
+                                                               (IdLid
                                                                   (_loc, "s")))))))))))))))))))),
-                  (Ast.StSem
+                  (StSem
                      (_loc,
-                       (Ast.StVal
-                          (_loc, Ast.ReNil,
-                            (Ast.BiEq
+                       (StVal
+                          (_loc, ReNil,
+                            (BiEq
                                (_loc,
-                                 (Ast.PaId
-                                    (_loc, (Ast.IdLid (_loc, "meta_int")))),
-                                 (Ast.ExFun
+                                 (PaId (_loc, (IdLid (_loc, "meta_int")))),
+                                 (ExFun
                                     (_loc,
-                                      (Ast.McArr
+                                      (McArr
                                          (_loc,
-                                           (Ast.PaId
+                                           (PaId
+                                              (_loc, (IdLid (_loc, "_loc")))),
+                                           (ExNil _loc),
+                                           (ExFun
                                               (_loc,
-                                                (Ast.IdLid (_loc, "_loc")))),
-                                           (Ast.ExNil _loc),
-                                           (Ast.ExFun
-                                              (_loc,
-                                                (Ast.McArr
+                                                (McArr
                                                    (_loc,
-                                                     (Ast.PaId
+                                                     (PaId
                                                         (_loc,
-                                                          (Ast.IdLid
-                                                             (_loc, "s")))),
-                                                     (Ast.ExNil _loc),
-                                                     (Ast.ExApp
+                                                          (IdLid (_loc, "s")))),
+                                                     (ExNil _loc),
+                                                     (ExApp
                                                         (_loc,
-                                                          (Ast.ExApp
+                                                          (ExApp
                                                              (_loc, (
                                                                m.int),
-                                                               (Ast.ExId
+                                                               (ExId
                                                                   (_loc,
                                                                     (
-                                                                    Ast.IdLid
+                                                                    IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
-                                                          (Ast.ExId
+                                                          (ExId
                                                              (_loc,
-                                                               (Ast.IdLid
+                                                               (IdLid
                                                                   (_loc, "s")))))))))))))))))),
-                       (Ast.StSem
+                       (StSem
                           (_loc,
-                            (Ast.StVal
-                               (_loc, Ast.ReNil,
-                                 (Ast.BiEq
+                            (StVal
+                               (_loc, ReNil,
+                                 (BiEq
                                     (_loc,
-                                      (Ast.PaId
+                                      (PaId
+                                         (_loc, (IdLid (_loc, "meta_float")))),
+                                      (ExFun
                                          (_loc,
-                                           (Ast.IdLid (_loc, "meta_float")))),
-                                      (Ast.ExFun
-                                         (_loc,
-                                           (Ast.McArr
+                                           (McArr
                                               (_loc,
-                                                (Ast.PaId
+                                                (PaId
                                                    (_loc,
-                                                     (Ast.IdLid
-                                                        (_loc, "_loc")))),
-                                                (Ast.ExNil _loc),
-                                                (Ast.ExFun
+                                                     (IdLid (_loc, "_loc")))),
+                                                (ExNil _loc),
+                                                (ExFun
                                                    (_loc,
-                                                     (Ast.McArr
+                                                     (McArr
                                                         (_loc,
-                                                          (Ast.PaId
+                                                          (PaId
                                                              (_loc,
-                                                               (Ast.IdLid
+                                                               (IdLid
                                                                   (_loc, "s")))),
-                                                          (Ast.ExNil _loc),
-                                                          (Ast.ExApp
+                                                          (ExNil _loc),
+                                                          (ExApp
                                                              (_loc,
-                                                               (Ast.ExApp
+                                                               (ExApp
                                                                   (_loc,
                                                                     (
                                                                     m.flo),
                                                                     (
-                                                                    Ast.ExId
+                                                                    ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
-                                                               (Ast.ExId
+                                                               (ExId
                                                                   (_loc,
                                                                     (
-                                                                    Ast.IdLid
+                                                                    IdLid
                                                                     (_loc,
                                                                     "s")))))))))))))))))),
-                            (Ast.StSem
+                            (StSem
                                (_loc,
-                                 (Ast.StVal
-                                    (_loc, Ast.ReNil,
-                                      (Ast.BiEq
+                                 (StVal
+                                    (_loc, ReNil,
+                                      (BiEq
                                          (_loc,
-                                           (Ast.PaId
+                                           (PaId
                                               (_loc,
-                                                (Ast.IdLid
-                                                   (_loc, "meta_char")))),
-                                           (Ast.ExFun
+                                                (IdLid (_loc, "meta_char")))),
+                                           (ExFun
                                               (_loc,
-                                                (Ast.McArr
+                                                (McArr
                                                    (_loc,
-                                                     (Ast.PaId
+                                                     (PaId
                                                         (_loc,
-                                                          (Ast.IdLid
+                                                          (IdLid
                                                              (_loc, "_loc")))),
-                                                     (Ast.ExNil _loc),
-                                                     (Ast.ExFun
+                                                     (ExNil _loc),
+                                                     (ExFun
                                                         (_loc,
-                                                          (Ast.McArr
+                                                          (McArr
                                                              (_loc,
-                                                               (Ast.PaId
+                                                               (PaId
                                                                   (_loc,
                                                                     (
-                                                                    Ast.IdLid
+                                                                    IdLid
                                                                     (_loc,
                                                                     "s")))),
-                                                               (Ast.ExNil
-                                                                  _loc),
-                                                               (Ast.ExApp
+                                                               (ExNil _loc),
+                                                               (ExApp
                                                                   (_loc,
                                                                     (
-                                                                    Ast.ExApp
+                                                                    ExApp
                                                                     (_loc,
                                                                     (m.chr),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
                                                                     (
-                                                                    Ast.ExApp
+                                                                    ExApp
                                                                     (_loc,
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdAcc
+                                                                    (IdAcc
                                                                     (_loc,
-                                                                    (Ast.IdUid
+                                                                    (IdUid
                                                                     (_loc,
                                                                     "String")),
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "escaped")))))),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "s")))))))))))))))))))),
-                                 (Ast.StSem
+                                 (StSem
                                     (_loc,
-                                      (Ast.StVal
-                                         (_loc, Ast.ReNil,
-                                           (Ast.BiEq
+                                      (StVal
+                                         (_loc, ReNil,
+                                           (BiEq
                                               (_loc,
-                                                (Ast.PaId
+                                                (PaId
                                                    (_loc,
-                                                     (Ast.IdLid
+                                                     (IdLid
                                                         (_loc, "meta_bool")))),
-                                                (Ast.ExFun
+                                                (ExFun
                                                    (_loc,
-                                                     (Ast.McArr
+                                                     (McArr
                                                         (_loc,
-                                                          (Ast.PaId
+                                                          (PaId
                                                              (_loc,
-                                                               (Ast.IdLid
+                                                               (IdLid
                                                                   (_loc,
                                                                     "_loc")))),
-                                                          (Ast.ExNil _loc),
-                                                          (Ast.ExFun
+                                                          (ExNil _loc),
+                                                          (ExFun
                                                              (_loc,
-                                                               (Ast.McOr
+                                                               (McOr
                                                                   (_loc,
                                                                     (
-                                                                    Ast.McArr
+                                                                    McArr
                                                                     (_loc,
-                                                                    (Ast.PaId
+                                                                    (PaId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "false")))),
-                                                                    (Ast.ExNil
+                                                                    (ExNil
                                                                     _loc),
                                                                     (m_lid m
                                                                     "false"))),
                                                                     (
-                                                                    Ast.McArr
+                                                                    McArr
                                                                     (_loc,
-                                                                    (Ast.PaId
+                                                                    (PaId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "true")))),
-                                                                    (Ast.ExNil
+                                                                    (ExNil
                                                                     _loc),
                                                                     (m_lid m
                                                                     "true"))))))))))))))),
-                                      (Ast.StSem
+                                      (StSem
                                          (_loc,
-                                           (Ast.StVal
-                                              (_loc, Ast.ReRecursive,
-                                                (Ast.BiEq
+                                           (StVal
+                                              (_loc, ReRecursive,
+                                                (BiEq
                                                    (_loc,
-                                                     (Ast.PaId
+                                                     (PaId
                                                         (_loc,
-                                                          (Ast.IdLid
+                                                          (IdLid
                                                              (_loc,
                                                                "meta_list")))),
-                                                     (Ast.ExFun
+                                                     (ExFun
                                                         (_loc,
-                                                          (Ast.McArr
+                                                          (McArr
                                                              (_loc,
-                                                               (Ast.PaId
+                                                               (PaId
                                                                   (_loc,
                                                                     (
-                                                                    Ast.IdLid
+                                                                    IdLid
                                                                     (_loc,
                                                                     "mf_a")))),
-                                                               (Ast.ExNil
-                                                                  _loc),
-                                                               (Ast.ExFun
+                                                               (ExNil _loc),
+                                                               (ExFun
                                                                   (_loc,
                                                                     (
-                                                                    Ast.McArr
+                                                                    McArr
                                                                     (_loc,
-                                                                    (Ast.PaId
+                                                                    (PaId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))),
-                                                                    (Ast.ExNil
+                                                                    (ExNil
                                                                     _loc),
-                                                                    (Ast.ExFun
+                                                                    (ExFun
                                                                     (_loc,
-                                                                    (Ast.McOr
+                                                                    (McOr
                                                                     (_loc,
-                                                                    (Ast.McArr
+                                                                    (McArr
                                                                     (_loc,
-                                                                    (Ast.PaId
+                                                                    (PaId
                                                                     (_loc,
-                                                                    (Ast.IdUid
+                                                                    (IdUid
                                                                     (_loc,
                                                                     "[]")))),
-                                                                    (Ast.ExNil
+                                                                    (ExNil
                                                                     _loc),
                                                                     (m_uid m
                                                                     "[]"))),
-                                                                    (Ast.McArr
+                                                                    (McArr
                                                                     (_loc,
-                                                                    (Ast.PaApp
+                                                                    (PaApp
                                                                     (_loc,
-                                                                    (Ast.PaApp
+                                                                    (PaApp
                                                                     (_loc,
-                                                                    (Ast.PaId
+                                                                    (PaId
                                                                     (_loc,
-                                                                    (Ast.IdUid
+                                                                    (IdUid
                                                                     (_loc,
                                                                     "::")))),
-                                                                    (Ast.PaId
+                                                                    (PaId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "x")))))),
-                                                                    (Ast.PaId
+                                                                    (PaId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "xs")))))),
-                                                                    (Ast.ExNil
+                                                                    (ExNil
                                                                     _loc),
                                                                     (m_app m
                                                                     (m_app m
                                                                     (m_uid m
                                                                     "::")
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "mf_a")))),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "x")))))))
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
-                                                                    (Ast.ExApp
+                                                                    (ExApp
                                                                     (_loc,
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "meta_list")))),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "mf_a")))))),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "_loc")))))),
-                                                                    (Ast.ExId
+                                                                    (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "xs"))))))))))))))))))))))))),
-                                           (Ast.StVal
-                                              (_loc, Ast.ReRecursive, bi))))))))))))))) in
+                                           (StVal (_loc, ReRecursive, bi))))))))))))))) in
        match super#module_expr me with
-       | Ast.MeApp
-           (_loc,Ast.MeId
-            (_,Ast.IdAcc
-             (_,Ast.IdUid (_,"Filters"),Ast.IdUid (_,"MetaGeneratorExpr"))),Ast.MeId
+       | MeApp
+           (_loc,MeId
+            (_,IdAcc (_,IdUid (_,"Filters"),IdUid (_,"MetaGeneratorExpr"))),MeId
             (_,i))
            ->
            mk_meta_module
@@ -1557,68 +1467,66 @@ let filter st =
                name = i;
                type_decls = (Lazy.force type_decls);
                app =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExApp"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExApp"))))));
                acc =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExAcc"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExAcc"))))));
                id =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExId"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExId"))))));
                tup =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExTup"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExTup"))))));
                com =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExCom"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExCom"))))));
                str =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExStr"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExStr"))))));
                int =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExInt"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExInt"))))));
                flo =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExFlo"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExFlo"))))));
                chr =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "ExChr"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "ExChr"))))));
                ant =
-                 (Ast.IdAcc
-                    (_loc, (Ast.IdUid (_loc, "Ast")),
-                      (Ast.IdUid (_loc, "ExAnt"))))
+                 (IdAcc
+                    (_loc, (IdUid (_loc, "Ast")), (IdUid (_loc, "ExAnt"))))
              }
-       | Ast.MeApp
-           (_loc,Ast.MeId
-            (_,Ast.IdAcc
-             (_,Ast.IdUid (_,"Filters"),Ast.IdUid (_,"MetaGeneratorPatt"))),Ast.MeId
+       | MeApp
+           (_loc,MeId
+            (_,IdAcc (_,IdUid (_,"Filters"),IdUid (_,"MetaGeneratorPatt"))),MeId
             (_,i))
            ->
            mk_meta_module
@@ -1626,117 +1534,114 @@ let filter st =
                name = i;
                type_decls = (Lazy.force type_decls);
                app =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaApp"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaApp"))))));
                acc =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaAcc"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaAcc"))))));
                id =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaId"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaId"))))));
                tup =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaTup"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaTup"))))));
                com =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaCom"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaCom"))))));
                str =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaStr"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaStr"))))));
                int =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaInt"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaInt"))))));
                flo =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaFlo"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaFlo"))))));
                chr =
-                 (Ast.ExId
+                 (ExId
                     (_loc,
-                      (Ast.IdAcc
-                         (_loc, (Ast.IdUid (_loc, "Ast")),
-                           (Ast.IdUid (_loc, "PaChr"))))));
+                      (IdAcc
+                         (_loc, (IdUid (_loc, "Ast")),
+                           (IdUid (_loc, "PaChr"))))));
                ant =
-                 (Ast.IdAcc
-                    (_loc, (Ast.IdUid (_loc, "Ast")),
-                      (Ast.IdUid (_loc, "PaAnt"))))
+                 (IdAcc
+                    (_loc, (IdUid (_loc, "Ast")), (IdUid (_loc, "PaAnt"))))
              }
        | me -> me
    end)#str_item st
 let _ = AstFilters.register_str_item_filter ("meta", filter)
 let map_expr =
   function
-  | Ast.ExApp (_loc,e,Ast.ExId (_,Ast.IdUid (_,"NOTHING")))|Ast.ExFun
-      (_loc,Ast.McArr (_,Ast.PaId (_,Ast.IdUid (_,"NOTHING")),Ast.ExNil _,e))
-      -> e
-  | Ast.ExId (_loc,Ast.IdLid (_,"__FILE__")) ->
-      Ast.ExStr (_loc, (Ast.safe_string_escaped (FanLoc.file_name _loc)))
-  | Ast.ExId (_loc,Ast.IdLid (_,"__PWD__")) ->
-      Ast.ExStr
+  | ExApp (_loc,e,ExId (_,IdUid (_,"NOTHING")))|ExFun
+      (_loc,McArr (_,PaId (_,IdUid (_,"NOTHING")),ExNil _,e)) -> e
+  | ExId (_loc,IdLid (_,"__FILE__")) ->
+      ExStr (_loc, (Ast.safe_string_escaped (FanLoc.file_name _loc)))
+  | ExId (_loc,IdLid (_,"__PWD__")) ->
+      ExStr
         (_loc,
           (Ast.safe_string_escaped (Filename.dirname (FanLoc.file_name _loc))))
-  | Ast.ExId (_loc,Ast.IdLid (_,"__LOCATION__")) ->
+  | ExId (_loc,IdLid (_,"__LOCATION__")) ->
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
-      Ast.ExApp
+      ExApp
         (_loc,
-          (Ast.ExId
+          (ExId
              (_loc,
-               (Ast.IdAcc
-                  (_loc, (Ast.IdUid (_loc, "FanLoc")),
-                    (Ast.IdLid (_loc, "of_tuple")))))),
-          (Ast.ExTup
+               (IdAcc
+                  (_loc, (IdUid (_loc, "FanLoc")),
+                    (IdLid (_loc, "of_tuple")))))),
+          (ExTup
              (_loc,
-               (Ast.ExCom
-                  (_loc, (Ast.ExStr (_loc, (Ast.safe_string_escaped a))),
-                    (Ast.ExCom
+               (ExCom
+                  (_loc, (ExStr (_loc, (Ast.safe_string_escaped a))),
+                    (ExCom
                        (_loc,
-                         (Ast.ExCom
+                         (ExCom
                             (_loc,
-                              (Ast.ExCom
+                              (ExCom
                                  (_loc,
-                                   (Ast.ExCom
+                                   (ExCom
                                       (_loc,
-                                        (Ast.ExCom
+                                        (ExCom
                                            (_loc,
-                                             (Ast.ExCom
+                                             (ExCom
                                                 (_loc,
-                                                  (Ast.ExInt
+                                                  (ExInt
                                                      (_loc,
                                                        (string_of_int b))),
-                                                  (Ast.ExInt
+                                                  (ExInt
                                                      (_loc,
                                                        (string_of_int c))))),
-                                             (Ast.ExInt
-                                                (_loc, (string_of_int d))))),
-                                        (Ast.ExInt (_loc, (string_of_int e))))),
-                                   (Ast.ExInt (_loc, (string_of_int f))))),
-                              (Ast.ExInt (_loc, (string_of_int g))))),
+                                             (ExInt (_loc, (string_of_int d))))),
+                                        (ExInt (_loc, (string_of_int e))))),
+                                   (ExInt (_loc, (string_of_int f))))),
+                              (ExInt (_loc, (string_of_int g))))),
                          (if h
-                          then Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))
-                          else Ast.ExId (_loc, (Ast.IdLid (_loc, "false")))))))))))
+                          then ExId (_loc, (IdLid (_loc, "true")))
+                          else ExId (_loc, (IdLid (_loc, "false")))))))))))
   | e -> e
 let _ =
   AstFilters.register_str_item_filter
@@ -1744,6 +1649,6 @@ let _ =
 let make_filter (s,code) =
   let f =
     function
-    | Ast.StExp (_loc,Ast.ExId (_,Ast.IdLid (_,s'))) when s = s' -> code
+    | StExp (_loc,ExId (_,IdLid (_,s'))) when s = s' -> code
     | e -> e in
   (("filter_" ^ s), ((Ast.map_str_item f)#str_item))

@@ -1,4 +1,5 @@
 open LibUtil
+open Ast
 open FSig
 open Format
 open Lib
@@ -52,41 +53,36 @@ let plugin_remove plugin =
 let filter_type_defs ?qualified  () =
   object 
     inherit  Ast.map as super
-    val mutable type_defs = let _loc = FanLoc.ghost in Ast.StNil _loc
+    val mutable type_defs = let _loc = FanLoc.ghost in StNil _loc
     method! sig_item =
       function
-      | Ast.SgVal (_loc,_,_)|Ast.SgInc (_loc,_)|Ast.SgExt
-          (_loc,_,_,_)|Ast.SgExc (_loc,_)|Ast.SgCls (_loc,_)|Ast.SgClt
-          (_loc,_)|Ast.SgDir (_loc,_,Ast.ExNil _)|Ast.SgMod
-          (_loc,_,_)|Ast.SgMty (_loc,_,_)|Ast.SgRecMod (_loc,_)|Ast.SgOpn
-          (_loc,_) -> Ast.SgNil _loc
-      | Ast.SgTyp (_,(Ast.TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
+      | SgVal (_loc,_,_)|SgInc (_loc,_)|SgExt (_loc,_,_,_)|SgExc
+          (_loc,_)|SgCls (_loc,_)|SgClt (_loc,_)|SgDir (_loc,_,ExNil _)|SgMod
+          (_loc,_,_)|SgMty (_loc,_,_)|SgRecMod (_loc,_)|SgOpn (_loc,_) ->
+          SgNil _loc
+      | SgTyp (_,(Ast.TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
           let x =
             match ((Ctyp.qualified_app_list ctyp), qualified) with
-            | (Some (Ast.IdAcc (_loc,i,_),ls),Some q) when
+            | (Some (IdAcc (_loc,i,_),ls),Some q) when
                 (Ident.eq i q) && (Ctyp.eq_list ls vars) ->
-                Ast.TyDcl (_loc, name, vars, (Ast.TyNil _loc), constraints)
+                Ast.TyDcl (_loc, name, vars, (TyNil _loc), constraints)
             | (_,_) -> super#ctyp x in
-          let y = Ast.StTyp (_loc, x) in
-          let () = type_defs <- Ast.StSem (_loc, type_defs, y) in
-          Ast.SgTyp (_loc, x)
-      | Ast.SgTyp (_loc,ty) ->
+          let y = StTyp (_loc, x) in
+          let () = type_defs <- StSem (_loc, type_defs, y) in SgTyp (_loc, x)
+      | SgTyp (_loc,ty) ->
           let x = super#ctyp ty in
-          let () =
-            type_defs <- Ast.StSem (_loc, type_defs, (Ast.StTyp (_loc, x))) in
-          Ast.SgTyp (_loc, x)
+          let () = type_defs <- StSem (_loc, type_defs, (StTyp (_loc, x))) in
+          SgTyp (_loc, x)
       | x -> super#sig_item x
     method! ident =
       function
-      | Ast.IdAcc (_loc,x,y) as i ->
+      | IdAcc (_loc,x,y) as i ->
           (match qualified with
            | Some q when Ident.eq q x -> super#ident y
            | _ -> super#ident i)
       | i -> super#ident i
     method! ctyp =
-      function
-      | Ast.TyMan (_loc,_,ctyp) -> super#ctyp ctyp
-      | ty -> super#ctyp ty
+      function | TyMan (_loc,_,ctyp) -> super#ctyp ctyp | ty -> super#ctyp ty
     method get_type_defs = type_defs
   end
 class type traversal
@@ -117,7 +113,7 @@ let traversal () =
      method update_cur_and_types f = cur_and_types <- f cur_and_types
      method! module_expr =
        function
-       | Ast.MeStr (_loc,u) ->
+       | MeStr (_loc,u) ->
            let () = self#in_module in
            let res = self#str_item u in
            let module_types = List.rev self#get_cur_module_types in
@@ -137,28 +133,28 @@ let traversal () =
                         (AstFilters.register_str_item_filter (name, f);
                          AstFilters.use_implem_filter name;
                          acc)
-                    | None  -> Ast.StSem (_loc, acc, code)
+                    | None  -> StSem (_loc, acc, code)
                   else acc) filters
-               (if keep.contents then res else Ast.StNil _loc) in
-           let () = self#out_module in Ast.MeStr (_loc, result)
+               (if keep.contents then res else StNil _loc) in
+           let () = self#out_module in MeStr (_loc, result)
        | x -> super#module_expr x
      method! str_item =
        function
-       | Ast.StTyp (_loc,Ast.TyAnd (_,_,_)) as x ->
+       | StTyp (_loc,TyAnd (_,_,_)) as x ->
            (self#in_and_types;
             (let _ = super#str_item x in
              self#update_cur_module_types
                (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                   lst);
              self#out_and_types;
-             if keep.contents then x else Ast.StNil _loc))
-       | Ast.StTyp (_loc,(Ast.TyDcl (_,name,_,_,_) as t)) as x ->
+             if keep.contents then x else StNil _loc))
+       | StTyp (_loc,(Ast.TyDcl (_,name,_,_,_) as t)) as x ->
            (self#update_cur_module_types
               (fun lst  -> (`Single (name, t)) :: lst);
             x)
-       | Ast.StVal (_loc,Ast.ReNil ,_)|Ast.StMty (_loc,_,_)|Ast.StInc
-           (_loc,_)|Ast.StExt (_loc,_,_,_)|Ast.StExp (_loc,_)|Ast.StExc
-           (_loc,_,Ast.ONone )|Ast.StDir (_loc,_,_) as x -> x
+       | StVal (_loc,ReNil ,_)|StMty (_loc,_,_)|StInc (_loc,_)|StExt
+           (_loc,_,_,_)|StExp (_loc,_)|StExc (_loc,_,ONone )|StDir (_loc,_,_)
+           as x -> x
        | x -> super#str_item x
      method! ctyp =
        function
@@ -184,7 +180,7 @@ let _ =
                (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                   match __fan_1 with
                   | `STR (_,plugin) ->
-                      ((plugin_add plugin; Ast.ExNil _loc) : 'fan_quot )
+                      ((plugin_add plugin; ExNil _loc) : 'fan_quot )
                   | _ -> assert false)));
          ([`Skeyword "<++";
           `Slist1sep
@@ -199,12 +195,12 @@ let _ =
                          | _ -> assert false)))]), (`Skeyword ","))],
            (Gram.mk_action
               (fun (plugins : 'e__1 list)  _  (_loc : FanLoc.t)  ->
-                 (List.iter plugin_add plugins; Ast.ExNil _loc : 'fan_quot ))));
+                 (List.iter plugin_add plugins; ExNil _loc : 'fan_quot ))));
          ([`Skeyword "clear"],
            (Gram.mk_action
               (fun _  (_loc : FanLoc.t)  ->
                  (Hashtbl.iter (fun _  v  -> v.activate <- false) filters;
-                  Ast.ExNil _loc : 'fan_quot ))));
+                  ExNil _loc : 'fan_quot ))));
          ([`Skeyword "<--";
           `Slist1sep
             ((Gram.srules fan_quot
@@ -218,23 +214,23 @@ let _ =
                          | _ -> assert false)))]), (`Skeyword ","))],
            (Gram.mk_action
               (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->
-                 (List.iter plugin_remove plugins; Ast.ExNil _loc : 'fan_quot ))));
+                 (List.iter plugin_remove plugins; ExNil _loc : 'fan_quot ))));
          ([`Skeyword "keep"; `Skeyword "on"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
-                 (keep := true; Ast.ExNil _loc : 'fan_quot ))));
+                 (keep := true; ExNil _loc : 'fan_quot ))));
          ([`Skeyword "keep"; `Skeyword "off"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
-                 (keep := false; Ast.ExNil _loc : 'fan_quot ))));
+                 (keep := false; ExNil _loc : 'fan_quot ))));
          ([`Skeyword "show_code"; `Skeyword "on"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
-                 (show_code := true; Ast.ExNil _loc : 'fan_quot ))));
+                 (show_code := true; ExNil _loc : 'fan_quot ))));
          ([`Skeyword "show_code"; `Skeyword "off"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
-                 (show_code := false; Ast.ExNil _loc : 'fan_quot ))))])]);
+                 (show_code := false; ExNil _loc : 'fan_quot ))))])]);
   Gram.extend (fan_quots : 'fan_quots Gram.t )
     (None,
       [(None, None,
@@ -247,7 +243,7 @@ let _ =
                           (x : 'e__3 ))))])],
             (Gram.mk_action
                (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
-                  (Ast.ExSeq (_loc, (Ast.exSem_of_list xs)) : 'fan_quots ))))])])
+                  (ExSeq (_loc, (Ast.exSem_of_list xs)) : 'fan_quots ))))])])
 let _ =
   PreCast.Syntax.Options.add
     ("-keep", (FanArg.Set keep), "Keep the included type definitions");

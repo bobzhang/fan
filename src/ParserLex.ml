@@ -1,4 +1,4 @@
-
+open Ast;
 module Ast = Camlp4Ast;
 open Lib;
 open LibUtil;  

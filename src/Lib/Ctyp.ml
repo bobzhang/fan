@@ -1,5 +1,6 @@
 
-#default_quotation "ctyp";;  
+#default_quotation "ctyp";;
+open Ast;
 module Ast = Camlp4Ast;
 open LibUtil;
 open Format;

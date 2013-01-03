@@ -1,8 +1,9 @@
-
+open Ast;
 open Format;
 open Lib;
 open LibUtil;
-module MetaAst = Camlp4Ast.Meta.Make Lib.Meta.MetaGhostLoc ;
+(* module MetaAst = Camlp4Ast.Meta.Make Lib.Meta.MetaGhostLoc ; *)
+module MetaAst = FanAst.Make Lib.Meta.MetaGhostLoc;  
 module Ast = Camlp4Ast;
 open FanGrammar;
 

@@ -1,3 +1,4 @@
+open Ast
 open LibUtil
 open Fan
 let wrap parse_fun lb =
@@ -44,11 +45,11 @@ let use_file token_stream =
     if stopped_at_directive <> None
     then
       match pl with
-      | (Ast.StDir (_loc,"load",Ast.ExStr (_,s)))::[] ->
+      | (StDir (_loc,"load",ExStr (_,s)))::[] ->
           (Topdirs.dir_load Format.std_formatter s; loop ())
-      | (Ast.StDir (_loc,"directory",Ast.ExStr (_,s)))::[] ->
+      | (StDir (_loc,"directory",ExStr (_,s)))::[] ->
           (Topdirs.dir_directory s; loop ())
-      | (Ast.StDir (_loc,"default_quotation",Ast.ExStr (_,s)))::[] ->
+      | (StDir (_loc,"default_quotation",ExStr (_,s)))::[] ->
           (AstQuotation.set_default s; loop ())
       | _ -> (pl, false)
     else (pl, true) in

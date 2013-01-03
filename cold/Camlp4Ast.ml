@@ -33,370 +33,337 @@ external loc_of_ident : ident -> FanLoc.t = "%field0"
 let ghost = FanLoc.ghost
 let rec is_module_longident =
   function
-  | Ast.IdAcc (_loc,_,i) -> is_module_longident i
-  | Ast.IdApp (_loc,i1,i2) ->
+  | IdAcc (_loc,_,i) -> is_module_longident i
+  | IdApp (_loc,i1,i2) ->
       (is_module_longident i1) && (is_module_longident i2)
-  | Ast.IdUid (_loc,_) -> true
+  | IdUid (_loc,_) -> true
   | _ -> false
 let ident_of_expr =
   let error () =
     invalid_arg "ident_of_expr: this expression is not an identifier" in
   let rec self =
     function
-    | Ast.ExApp (_loc,e1,e2) -> Ast.IdApp (_loc, (self e1), (self e2))
-    | Ast.ExAcc (_loc,e1,e2) -> Ast.IdAcc (_loc, (self e1), (self e2))
-    | Ast.ExId (_loc,Ast.IdLid (_,_)) -> error ()
-    | Ast.ExId (_loc,i) -> if is_module_longident i then i else error ()
+    | ExApp (_loc,e1,e2) -> IdApp (_loc, (self e1), (self e2))
+    | ExAcc (_loc,e1,e2) -> IdAcc (_loc, (self e1), (self e2))
+    | ExId (_loc,IdLid (_,_)) -> error ()
+    | ExId (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
-  function
-  | Ast.ExId (_loc,i) -> i
-  | Ast.ExApp (_loc,_,_) -> error ()
-  | t -> self t
+  function | ExId (_loc,i) -> i | ExApp (_loc,_,_) -> error () | t -> self t
 let ident_of_ctyp =
   let error () = invalid_arg "ident_of_ctyp: this type is not an identifier" in
   let rec self =
     function
-    | Ast.TyApp (_loc,t1,t2) -> Ast.IdApp (_loc, (self t1), (self t2))
-    | Ast.TyId (_loc,Ast.IdLid (_,_)) -> error ()
-    | Ast.TyId (_loc,i) -> if is_module_longident i then i else error ()
+    | TyApp (_loc,t1,t2) -> IdApp (_loc, (self t1), (self t2))
+    | TyId (_loc,IdLid (_,_)) -> error ()
+    | TyId (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
-  function | Ast.TyId (_loc,i) -> i | t -> self t
+  function | TyId (_loc,i) -> i | t -> self t
 let ident_of_patt =
   let error () =
     invalid_arg "ident_of_patt: this pattern is not an identifier" in
   let rec self =
     function
-    | Ast.PaApp (_loc,p1,p2) -> Ast.IdApp (_loc, (self p1), (self p2))
-    | Ast.PaId (_loc,Ast.IdLid (_,_)) -> error ()
-    | Ast.PaId (_loc,i) -> if is_module_longident i then i else error ()
+    | PaApp (_loc,p1,p2) -> IdApp (_loc, (self p1), (self p2))
+    | PaId (_loc,IdLid (_,_)) -> error ()
+    | PaId (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
-  function | Ast.PaId (_loc,i) -> i | p -> self p
+  function | PaId (_loc,i) -> i | p -> self p
 let rec is_irrefut_patt =
   function
-  | Ast.PaId (_loc,Ast.IdLid (_,_)) -> true
-  | Ast.PaId (_loc,Ast.IdUid (_,"()")) -> true
-  | Ast.PaAny _loc -> true
-  | Ast.PaNil _loc -> true
-  | Ast.PaAli (_loc,x,y) -> (is_irrefut_patt x) && (is_irrefut_patt y)
-  | Ast.PaRec (_loc,p) -> is_irrefut_patt p
-  | Ast.PaEq (_loc,_,p) -> is_irrefut_patt p
-  | Ast.PaSem (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | Ast.PaCom (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | Ast.PaOrp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | Ast.PaApp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | Ast.PaTyc (_loc,p,_) -> is_irrefut_patt p
-  | Ast.PaTup (_loc,pl) -> is_irrefut_patt pl
-  | Ast.PaOlb (_loc,_,Ast.PaNil _) -> true
-  | Ast.PaOlb (_loc,_,_) -> true
-  | Ast.PaOlbi (_loc,_,_,_) -> true
-  | Ast.PaLab (_loc,_,Ast.PaNil _) -> true
-  | Ast.PaLab (_loc,_,p) -> is_irrefut_patt p
-  | Ast.PaLaz (_loc,p) -> is_irrefut_patt p
-  | Ast.PaId (_loc,_) -> false
-  | Ast.PaMod (_loc,_) -> true
-  | Ast.PaVrn (_loc,_)|Ast.PaStr (_loc,_)|Ast.PaRng (_loc,_,_)|Ast.PaFlo
-      (_loc,_)|Ast.PaNativeInt (_loc,_)|Ast.PaInt64 (_loc,_)|Ast.PaInt32
-      (_loc,_)|Ast.PaInt (_loc,_)|Ast.PaChr (_loc,_)|Ast.PaTyp
-      (_loc,_)|Ast.PaArr (_loc,_)|Ast.PaAnt (_loc,_) -> false
+  | PaId (_loc,IdLid (_,_)) -> true
+  | PaId (_loc,IdUid (_,"()")) -> true
+  | PaAny _loc -> true
+  | PaNil _loc -> true
+  | PaAli (_loc,x,y) -> (is_irrefut_patt x) && (is_irrefut_patt y)
+  | PaRec (_loc,p) -> is_irrefut_patt p
+  | PaEq (_loc,_,p) -> is_irrefut_patt p
+  | PaSem (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | PaCom (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | PaOrp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | PaApp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | PaTyc (_loc,p,_) -> is_irrefut_patt p
+  | PaTup (_loc,pl) -> is_irrefut_patt pl
+  | PaOlb (_loc,_,PaNil _) -> true
+  | PaOlb (_loc,_,_) -> true
+  | PaOlbi (_loc,_,_,_) -> true
+  | PaLab (_loc,_,PaNil _) -> true
+  | PaLab (_loc,_,p) -> is_irrefut_patt p
+  | PaLaz (_loc,p) -> is_irrefut_patt p
+  | PaId (_loc,_) -> false
+  | PaMod (_loc,_) -> true
+  | PaVrn (_loc,_)|PaStr (_loc,_)|PaRng (_loc,_,_)|PaFlo (_loc,_)|PaNativeInt
+      (_loc,_)|PaInt64 (_loc,_)|PaInt32 (_loc,_)|PaInt (_loc,_)|PaChr
+      (_loc,_)|PaTyp (_loc,_)|PaArr (_loc,_)|PaAnt (_loc,_) -> false
 let rec is_constructor =
   function
-  | Ast.IdAcc (_loc,_,i) -> is_constructor i
-  | Ast.IdUid (_loc,_) -> true
-  | Ast.IdLid (_loc,_)|Ast.IdApp (_loc,_,_) -> false
-  | Ast.IdAnt (_loc,_) -> assert false
+  | IdAcc (_loc,_,i) -> is_constructor i
+  | IdUid (_loc,_) -> true
+  | IdLid (_loc,_)|IdApp (_loc,_,_) -> false
+  | IdAnt (_loc,_) -> assert false
 let is_patt_constructor =
   function
-  | Ast.PaId (_loc,i) -> is_constructor i
-  | Ast.PaVrn (_loc,_) -> true
+  | PaId (_loc,i) -> is_constructor i
+  | PaVrn (_loc,_) -> true
   | _ -> false
 let rec is_expr_constructor =
   function
-  | Ast.ExId (_loc,i) -> is_constructor i
-  | Ast.ExAcc (_loc,e1,e2) ->
+  | ExId (_loc,i) -> is_constructor i
+  | ExAcc (_loc,e1,e2) ->
       (is_expr_constructor e1) && (is_expr_constructor e2)
-  | Ast.ExVrn (_loc,_) -> true
+  | ExVrn (_loc,_) -> true
   | _ -> false
 let rec tyOr_of_list =
   function
-  | [] -> Ast.TyNil ghost
+  | [] -> TyNil ghost
   | t::[] -> t
-  | t::ts ->
-      let _loc = loc_of_ctyp t in Ast.TyOr (_loc, t, (tyOr_of_list ts))
+  | t::ts -> let _loc = loc_of_ctyp t in TyOr (_loc, t, (tyOr_of_list ts))
 let rec tyAnd_of_list =
   function
-  | [] -> Ast.TyNil ghost
+  | [] -> TyNil ghost
   | t::[] -> t
-  | t::ts ->
-      let _loc = loc_of_ctyp t in Ast.TyAnd (_loc, t, (tyAnd_of_list ts))
+  | t::ts -> let _loc = loc_of_ctyp t in TyAnd (_loc, t, (tyAnd_of_list ts))
 let rec tySem_of_list =
   function
-  | [] -> Ast.TyNil ghost
+  | [] -> TyNil ghost
   | t::[] -> t
-  | t::ts ->
-      let _loc = loc_of_ctyp t in Ast.TySem (_loc, t, (tySem_of_list ts))
+  | t::ts -> let _loc = loc_of_ctyp t in TySem (_loc, t, (tySem_of_list ts))
 let rec tyCom_of_list =
   function
-  | [] -> Ast.TyNil ghost
+  | [] -> TyNil ghost
   | t::[] -> t
-  | t::ts ->
-      let _loc = loc_of_ctyp t in Ast.TyCom (_loc, t, (tyCom_of_list ts))
+  | t::ts -> let _loc = loc_of_ctyp t in TyCom (_loc, t, (tyCom_of_list ts))
 let rec tyAmp_of_list =
   function
-  | [] -> Ast.TyNil ghost
+  | [] -> TyNil ghost
   | t::[] -> t
-  | t::ts ->
-      let _loc = loc_of_ctyp t in Ast.TyAmp (_loc, t, (tyAmp_of_list ts))
+  | t::ts -> let _loc = loc_of_ctyp t in TyAmp (_loc, t, (tyAmp_of_list ts))
 let rec tySta_of_list =
   function
-  | [] -> Ast.TyNil ghost
+  | [] -> TyNil ghost
   | t::[] -> t
-  | t::ts ->
-      let _loc = loc_of_ctyp t in Ast.TySta (_loc, t, (tySta_of_list ts))
+  | t::ts -> let _loc = loc_of_ctyp t in TySta (_loc, t, (tySta_of_list ts))
 let tyApp_of_list =
   function
-  | [] -> Ast.TyNil ghost
+  | [] -> TyNil ghost
   | t::[] -> t
   | t::ts ->
       List.fold_left
-        (fun x  y  -> let _loc = loc_of_ctyp x in Ast.TyApp (_loc, x, y)) t
-        ts
+        (fun x  y  -> let _loc = loc_of_ctyp x in TyApp (_loc, x, y)) t ts
 let tyVarApp_of_list (_loc,ls) =
   let aux =
     function
-    | [] -> Ast.TyNil ghost
-    | t::[] -> Ast.TyQuo (_loc, t)
+    | [] -> TyNil ghost
+    | t::[] -> TyQuo (_loc, t)
     | t::ts ->
-        List.fold_left
-          (fun x  y  -> Ast.TyApp (_loc, x, (Ast.TyQuo (_loc, y))))
-          (Ast.TyQuo (_loc, t)) ts in
+        List.fold_left (fun x  y  -> TyApp (_loc, x, (TyQuo (_loc, y))))
+          (TyQuo (_loc, t)) ts in
   aux ls
 let rec stSem_of_list =
   function
-  | [] -> Ast.StNil ghost
+  | [] -> StNil ghost
   | t::[] -> t
   | t::ts ->
-      let _loc = loc_of_str_item t in Ast.StSem (_loc, t, (stSem_of_list ts))
+      let _loc = loc_of_str_item t in StSem (_loc, t, (stSem_of_list ts))
 let rec sgSem_of_list =
   function
-  | [] -> Ast.SgNil ghost
+  | [] -> SgNil ghost
   | t::[] -> t
   | t::ts ->
-      let _loc = loc_of_sig_item t in Ast.SgSem (_loc, t, (sgSem_of_list ts))
+      let _loc = loc_of_sig_item t in SgSem (_loc, t, (sgSem_of_list ts))
 let rec biAnd_of_list =
   function
-  | [] -> Ast.BiNil ghost
+  | [] -> BiNil ghost
   | b::[] -> b
   | b::bs ->
-      let _loc = loc_of_binding b in Ast.BiAnd (_loc, b, (biAnd_of_list bs))
+      let _loc = loc_of_binding b in BiAnd (_loc, b, (biAnd_of_list bs))
 let rec rbSem_of_list =
   function
-  | [] -> Ast.RbNil ghost
+  | [] -> RbNil ghost
   | b::[] -> b
   | b::bs ->
-      let _loc = loc_of_rec_binding b in
-      Ast.RbSem (_loc, b, (rbSem_of_list bs))
+      let _loc = loc_of_rec_binding b in RbSem (_loc, b, (rbSem_of_list bs))
 let rec wcAnd_of_list =
   function
-  | [] -> Ast.WcNil ghost
+  | [] -> WcNil ghost
   | w::[] -> w
   | w::ws ->
-      let _loc = loc_of_with_constr w in
-      Ast.WcAnd (_loc, w, (wcAnd_of_list ws))
+      let _loc = loc_of_with_constr w in WcAnd (_loc, w, (wcAnd_of_list ws))
 let rec idAcc_of_list =
   function
   | [] -> assert false
   | i::[] -> i
-  | i::is ->
-      let _loc = loc_of_ident i in Ast.IdAcc (_loc, i, (idAcc_of_list is))
+  | i::is -> let _loc = loc_of_ident i in IdAcc (_loc, i, (idAcc_of_list is))
 let rec idApp_of_list =
   function
   | [] -> assert false
   | i::[] -> i
-  | i::is ->
-      let _loc = loc_of_ident i in Ast.IdApp (_loc, i, (idApp_of_list is))
+  | i::is -> let _loc = loc_of_ident i in IdApp (_loc, i, (idApp_of_list is))
 let rec mcOr_of_list =
   function
-  | [] -> Ast.McNil ghost
+  | [] -> McNil ghost
   | x::[] -> x
   | x::xs ->
-      let _loc = loc_of_match_case x in Ast.McOr (_loc, x, (mcOr_of_list xs))
+      let _loc = loc_of_match_case x in McOr (_loc, x, (mcOr_of_list xs))
 let rec mbAnd_of_list =
   function
-  | [] -> Ast.MbNil ghost
+  | [] -> MbNil ghost
   | x::[] -> x
   | x::xs ->
       let _loc = loc_of_module_binding x in
-      Ast.MbAnd (_loc, x, (mbAnd_of_list xs))
+      MbAnd (_loc, x, (mbAnd_of_list xs))
 let rec meApp_of_list =
   function
   | [] -> assert false
   | x::[] -> x
   | x::xs ->
-      let _loc = loc_of_module_expr x in
-      Ast.MeApp (_loc, x, (meApp_of_list xs))
+      let _loc = loc_of_module_expr x in MeApp (_loc, x, (meApp_of_list xs))
 let rec ceAnd_of_list =
   function
-  | [] -> Ast.CeNil ghost
+  | [] -> CeNil ghost
   | x::[] -> x
   | x::xs ->
-      let _loc = loc_of_class_expr x in
-      Ast.CeAnd (_loc, x, (ceAnd_of_list xs))
+      let _loc = loc_of_class_expr x in CeAnd (_loc, x, (ceAnd_of_list xs))
 let rec ctAnd_of_list =
   function
-  | [] -> Ast.CtNil ghost
+  | [] -> CtNil ghost
   | x::[] -> x
   | x::xs ->
-      let _loc = loc_of_class_type x in
-      Ast.CtAnd (_loc, x, (ctAnd_of_list xs))
+      let _loc = loc_of_class_type x in CtAnd (_loc, x, (ctAnd_of_list xs))
 let rec cgSem_of_list =
   function
-  | [] -> Ast.CgNil ghost
+  | [] -> CgNil ghost
   | x::[] -> x
   | x::xs ->
       let _loc = loc_of_class_sig_item x in
-      Ast.CgSem (_loc, x, (cgSem_of_list xs))
+      CgSem (_loc, x, (cgSem_of_list xs))
 let rec crSem_of_list =
   function
-  | [] -> Ast.CrNil ghost
+  | [] -> CrNil ghost
   | x::[] -> x
   | x::xs ->
       let _loc = loc_of_class_str_item x in
-      Ast.CrSem (_loc, x, (crSem_of_list xs))
+      CrSem (_loc, x, (crSem_of_list xs))
 let rec paSem_of_list =
   function
-  | [] -> Ast.PaNil ghost
+  | [] -> PaNil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_patt x in Ast.PaSem (_loc, x, (paSem_of_list xs))
+  | x::xs -> let _loc = loc_of_patt x in PaSem (_loc, x, (paSem_of_list xs))
 let rec paCom_of_list =
   function
-  | [] -> Ast.PaNil ghost
+  | [] -> PaNil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_patt x in Ast.PaCom (_loc, x, (paCom_of_list xs))
+  | x::xs -> let _loc = loc_of_patt x in PaCom (_loc, x, (paCom_of_list xs))
 let rec exSem_of_list =
   function
-  | [] -> Ast.ExNil ghost
+  | [] -> ExNil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_expr x in Ast.ExSem (_loc, x, (exSem_of_list xs))
+  | x::xs -> let _loc = loc_of_expr x in ExSem (_loc, x, (exSem_of_list xs))
 let rec exCom_of_list =
   function
-  | [] -> Ast.ExNil ghost
+  | [] -> ExNil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_expr x in Ast.ExCom (_loc, x, (exCom_of_list xs))
+  | x::xs -> let _loc = loc_of_expr x in ExCom (_loc, x, (exCom_of_list xs))
 let exApp_of_list =
   function
-  | [] -> Ast.ExNil ghost
+  | [] -> ExNil ghost
   | t::[] -> t
   | t::ts ->
       List.fold_left
-        (fun x  y  -> let _loc = loc_of_expr x in Ast.ExApp (_loc, x, y)) t
-        ts
+        (fun x  y  -> let _loc = loc_of_expr x in ExApp (_loc, x, y)) t ts
 let ty_of_stl =
   function
-  | (_loc,s,[]) -> Ast.TyId (_loc, (Ast.IdUid (_loc, s)))
+  | (_loc,s,[]) -> TyId (_loc, (IdUid (_loc, s)))
   | (_loc,s,tl) ->
-      Ast.TyOf
-        (_loc, (Ast.TyId (_loc, (Ast.IdUid (_loc, s)))), (tyAnd_of_list tl))
+      TyOf (_loc, (TyId (_loc, (IdUid (_loc, s)))), (tyAnd_of_list tl))
 let ty_of_sbt =
   function
   | (_loc,s,true ,t) ->
-      Ast.TyCol
-        (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, s)))),
-          (Ast.TyMut (_loc, t)))
-  | (_loc,s,false ,t) ->
-      Ast.TyCol (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, s)))), t)
-let bi_of_pe (p,e) = let _loc = loc_of_patt p in Ast.BiEq (_loc, p, e)
+      TyCol (_loc, (TyId (_loc, (IdLid (_loc, s)))), (TyMut (_loc, t)))
+  | (_loc,s,false ,t) -> TyCol (_loc, (TyId (_loc, (IdLid (_loc, s)))), t)
+let bi_of_pe (p,e) = let _loc = loc_of_patt p in BiEq (_loc, p, e)
 let sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l)
 let record_type_of_list l = tySem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = biAnd_of_list (List.map bi_of_pe l)
 let rec pel_of_binding =
   function
-  | Ast.BiAnd (_loc,b1,b2) -> (pel_of_binding b1) @ (pel_of_binding b2)
-  | Ast.BiEq (_loc,p,e) -> [(p, e)]
+  | BiAnd (_loc,b1,b2) -> (pel_of_binding b1) @ (pel_of_binding b2)
+  | BiEq (_loc,p,e) -> [(p, e)]
   | _ -> assert false
 let rec list_of_binding x acc =
   match x with
-  | Ast.BiAnd (_loc,b1,b2) -> list_of_binding b1 (list_of_binding b2 acc)
+  | BiAnd (_loc,b1,b2) -> list_of_binding b1 (list_of_binding b2 acc)
   | t -> t :: acc
 let rec list_of_rec_binding x acc =
   match x with
-  | Ast.RbSem (_loc,b1,b2) ->
-      list_of_rec_binding b1 (list_of_rec_binding b2 acc)
+  | RbSem (_loc,b1,b2) -> list_of_rec_binding b1 (list_of_rec_binding b2 acc)
   | t -> t :: acc
 let rec list_of_with_constr x acc =
   match x with
-  | Ast.WcAnd (_loc,w1,w2) ->
-      list_of_with_constr w1 (list_of_with_constr w2 acc)
+  | WcAnd (_loc,w1,w2) -> list_of_with_constr w1 (list_of_with_constr w2 acc)
   | t -> t :: acc
 let rec list_of_ctyp x acc =
   match x with
-  | Ast.TyNil _loc -> acc
-  | Ast.TyAmp (_loc,x,y)|Ast.TyCom (_loc,x,y)|Ast.TySta (_loc,x,y)|Ast.TySem
-      (_loc,x,y)|Ast.TyAnd (_loc,x,y)|Ast.TyOr (_loc,x,y) ->
-      list_of_ctyp x (list_of_ctyp y acc)
+  | TyNil _loc -> acc
+  | TyAmp (_loc,x,y)|TyCom (_loc,x,y)|TySta (_loc,x,y)|TySem (_loc,x,y)|TyAnd
+      (_loc,x,y)|TyOr (_loc,x,y) -> list_of_ctyp x (list_of_ctyp y acc)
   | x -> x :: acc
 let rec list_of_patt x acc =
   match x with
-  | Ast.PaNil _loc -> acc
-  | Ast.PaCom (_loc,x,y)|Ast.PaSem (_loc,x,y) ->
-      list_of_patt x (list_of_patt y acc)
+  | PaNil _loc -> acc
+  | PaCom (_loc,x,y)|PaSem (_loc,x,y) -> list_of_patt x (list_of_patt y acc)
   | x -> x :: acc
 let rec list_of_expr x acc =
   match x with
-  | Ast.ExNil _loc -> acc
-  | Ast.ExCom (_loc,x,y)|Ast.ExSem (_loc,x,y) ->
-      list_of_expr x (list_of_expr y acc)
+  | ExNil _loc -> acc
+  | ExCom (_loc,x,y)|ExSem (_loc,x,y) -> list_of_expr x (list_of_expr y acc)
   | x -> x :: acc
 let rec list_of_str_item x acc =
   match x with
-  | Ast.StNil _loc -> acc
-  | Ast.StSem (_loc,x,y) -> list_of_str_item x (list_of_str_item y acc)
+  | StNil _loc -> acc
+  | StSem (_loc,x,y) -> list_of_str_item x (list_of_str_item y acc)
   | x -> x :: acc
 let rec list_of_sig_item x acc =
   match x with
-  | Ast.SgNil _loc -> acc
-  | Ast.SgSem (_loc,x,y) -> list_of_sig_item x (list_of_sig_item y acc)
+  | SgNil _loc -> acc
+  | SgSem (_loc,x,y) -> list_of_sig_item x (list_of_sig_item y acc)
   | x -> x :: acc
 let rec list_of_class_sig_item x acc =
   match x with
-  | Ast.CgNil _loc -> acc
-  | Ast.CgSem (_loc,x,y) ->
+  | CgNil _loc -> acc
+  | CgSem (_loc,x,y) ->
       list_of_class_sig_item x (list_of_class_sig_item y acc)
   | x -> x :: acc
 let rec list_of_class_str_item x acc =
   match x with
-  | Ast.CrNil _loc -> acc
-  | Ast.CrSem (_loc,x,y) ->
+  | CrNil _loc -> acc
+  | CrSem (_loc,x,y) ->
       list_of_class_str_item x (list_of_class_str_item y acc)
   | x -> x :: acc
 let rec list_of_class_type x acc =
   match x with
-  | Ast.CtAnd (_loc,x,y) -> list_of_class_type x (list_of_class_type y acc)
+  | CtAnd (_loc,x,y) -> list_of_class_type x (list_of_class_type y acc)
   | x -> x :: acc
 let rec list_of_class_expr x acc =
   match x with
-  | Ast.CeAnd (_loc,x,y) -> list_of_class_expr x (list_of_class_expr y acc)
+  | CeAnd (_loc,x,y) -> list_of_class_expr x (list_of_class_expr y acc)
   | x -> x :: acc
 let rec list_of_module_expr x acc =
   match x with
-  | Ast.MeApp (_loc,x,y) -> list_of_module_expr x (list_of_module_expr y acc)
+  | MeApp (_loc,x,y) -> list_of_module_expr x (list_of_module_expr y acc)
   | x -> x :: acc
 let rec list_of_match_case x acc =
   match x with
-  | Ast.McNil _loc -> acc
-  | Ast.McOr (_loc,x,y) -> list_of_match_case x (list_of_match_case y acc)
+  | McNil _loc -> acc
+  | McOr (_loc,x,y) -> list_of_match_case x (list_of_match_case y acc)
   | x -> x :: acc
 let rec list_of_ident x acc =
   match x with
-  | Ast.IdAcc (_loc,x,y)|Ast.IdApp (_loc,x,y) ->
+  | IdAcc (_loc,x,y)|IdApp (_loc,x,y) ->
       list_of_ident x (list_of_ident y acc)
   | x -> x :: acc
 let rec list_of_module_binding x acc =
   match x with
-  | Ast.MbAnd (_loc,x,y) ->
+  | MbAnd (_loc,x,y) ->
       list_of_module_binding x (list_of_module_binding y acc)
   | x -> x :: acc
 module Meta =
@@ -7717,91 +7684,79 @@ class clean_ast =
     inherit  map as super
     method! with_constr wc =
       match super#with_constr wc with
-      | Ast.WcAnd (_loc,Ast.WcNil _l,wc)|Ast.WcAnd (_loc,wc,Ast.WcNil _l) ->
-          wc
+      | WcAnd (_loc,WcNil _l,wc)|WcAnd (_loc,wc,WcNil _l) -> wc
       | wc -> wc
     method! expr e =
       match super#expr e with
-      | Ast.ExLet (_loc,_,Ast.BiNil _l,e)|Ast.ExRec
-          (_loc,Ast.RbNil _l,e)|Ast.ExCom (_loc,Ast.ExNil _l,e)|Ast.ExCom
-          (_loc,e,Ast.ExNil _l)|Ast.ExSem (_loc,Ast.ExNil _l,e)|Ast.ExSem
-          (_loc,e,Ast.ExNil _l) -> e
+      | ExLet (_loc,_,BiNil _l,e)|ExRec (_loc,RbNil _l,e)|ExCom
+          (_loc,ExNil _l,e)|ExCom (_loc,e,ExNil _l)|ExSem
+          (_loc,ExNil _l,e)|ExSem (_loc,e,ExNil _l) -> e
       | e -> e
     method! patt p =
       match super#patt p with
-      | Ast.PaAli (_loc,p,Ast.PaNil _l)|Ast.PaOrp
-          (_loc,Ast.PaNil _l,p)|Ast.PaOrp (_loc,p,Ast.PaNil _l)|Ast.PaCom
-          (_loc,Ast.PaNil _l,p)|Ast.PaCom (_loc,p,Ast.PaNil _l)|Ast.PaSem
-          (_loc,Ast.PaNil _l,p)|Ast.PaSem (_loc,p,Ast.PaNil _l) -> p
+      | PaAli (_loc,p,PaNil _l)|PaOrp (_loc,PaNil _l,p)|PaOrp
+          (_loc,p,PaNil _l)|PaCom (_loc,PaNil _l,p)|PaCom
+          (_loc,p,PaNil _l)|PaSem (_loc,PaNil _l,p)|PaSem (_loc,p,PaNil _l)
+          -> p
       | p -> p
     method! match_case mc =
       match super#match_case mc with
-      | Ast.McOr (_loc,Ast.McNil _l,mc)|Ast.McOr (_loc,mc,Ast.McNil _l) -> mc
+      | McOr (_loc,McNil _l,mc)|McOr (_loc,mc,McNil _l) -> mc
       | mc -> mc
     method! binding bi =
       match super#binding bi with
-      | Ast.BiAnd (_loc,Ast.BiNil _l,bi)|Ast.BiAnd (_loc,bi,Ast.BiNil _l) ->
-          bi
+      | BiAnd (_loc,BiNil _l,bi)|BiAnd (_loc,bi,BiNil _l) -> bi
       | bi -> bi
     method! rec_binding rb =
       match super#rec_binding rb with
-      | Ast.RbSem (_loc,Ast.RbNil _l,bi)|Ast.RbSem (_loc,bi,Ast.RbNil _l) ->
-          bi
+      | RbSem (_loc,RbNil _l,bi)|RbSem (_loc,bi,RbNil _l) -> bi
       | bi -> bi
     method! module_binding mb =
       match super#module_binding mb with
-      | Ast.MbAnd (_loc,Ast.MbNil _l,mb)|Ast.MbAnd (_loc,mb,Ast.MbNil _l) ->
-          mb
+      | MbAnd (_loc,MbNil _l,mb)|MbAnd (_loc,mb,MbNil _l) -> mb
       | mb -> mb
     method! ctyp t =
       match super#ctyp t with
-      | Ast.TyPol (_loc,Ast.TyNil _l,t)|Ast.TyAli
-          (_loc,Ast.TyNil _l,t)|Ast.TyAli (_loc,t,Ast.TyNil _l)|Ast.TyArr
-          (_loc,t,Ast.TyNil _l)|Ast.TyArr (_loc,Ast.TyNil _l,t)|Ast.TyOr
-          (_loc,Ast.TyNil _l,t)|Ast.TyOr (_loc,t,Ast.TyNil _l)|Ast.TyOf
-          (_loc,t,Ast.TyNil _l)|Ast.TyAnd (_loc,Ast.TyNil _l,t)|Ast.TyAnd
-          (_loc,t,Ast.TyNil _l)|Ast.TySem (_loc,t,Ast.TyNil _l)|Ast.TySem
-          (_loc,Ast.TyNil _l,t)|Ast.TyCom (_loc,Ast.TyNil _l,t)|Ast.TyCom
-          (_loc,t,Ast.TyNil _l)|Ast.TyAmp (_loc,t,Ast.TyNil _l)|Ast.TyAmp
-          (_loc,Ast.TyNil _l,t)|Ast.TySta (_loc,Ast.TyNil _l,t)|Ast.TySta
-          (_loc,t,Ast.TyNil _l) -> t
+      | TyPol (_loc,TyNil _l,t)|TyAli (_loc,TyNil _l,t)|TyAli
+          (_loc,t,TyNil _l)|TyArr (_loc,t,TyNil _l)|TyArr
+          (_loc,TyNil _l,t)|TyOr (_loc,TyNil _l,t)|TyOr
+          (_loc,t,TyNil _l)|TyOf (_loc,t,TyNil _l)|TyAnd
+          (_loc,TyNil _l,t)|TyAnd (_loc,t,TyNil _l)|TySem
+          (_loc,t,TyNil _l)|TySem (_loc,TyNil _l,t)|TyCom
+          (_loc,TyNil _l,t)|TyCom (_loc,t,TyNil _l)|TyAmp
+          (_loc,t,TyNil _l)|TyAmp (_loc,TyNil _l,t)|TySta
+          (_loc,TyNil _l,t)|TySta (_loc,t,TyNil _l) -> t
       | t -> t
     method! sig_item sg =
       match super#sig_item sg with
-      | Ast.SgSem (_loc,Ast.SgNil _l,sg)|Ast.SgSem (_loc,sg,Ast.SgNil _l) ->
-          sg
-      | Ast.SgTyp (_loc,Ast.TyNil _l) -> Ast.SgNil _loc
+      | SgSem (_loc,SgNil _l,sg)|SgSem (_loc,sg,SgNil _l) -> sg
+      | SgTyp (_loc,TyNil _l) -> SgNil _loc
       | sg -> sg
     method! str_item st =
       match super#str_item st with
-      | Ast.StSem (_loc,Ast.StNil _l,st)|Ast.StSem (_loc,st,Ast.StNil _l) ->
-          st
-      | Ast.StTyp (_loc,Ast.TyNil _l) -> Ast.StNil _loc
-      | Ast.StVal (_loc,_,Ast.BiNil _l) -> Ast.StNil _loc
+      | StSem (_loc,StNil _l,st)|StSem (_loc,st,StNil _l) -> st
+      | StTyp (_loc,TyNil _l) -> StNil _loc
+      | StVal (_loc,_,BiNil _l) -> StNil _loc
       | st -> st
     method! module_type mt =
       match super#module_type mt with
-      | Ast.MtWit (_loc,mt,Ast.WcNil _l) -> mt
+      | MtWit (_loc,mt,WcNil _l) -> mt
       | mt -> mt
     method! class_expr ce =
       match super#class_expr ce with
-      | Ast.CeAnd (_loc,Ast.CeNil _l,ce)|Ast.CeAnd (_loc,ce,Ast.CeNil _l) ->
-          ce
+      | CeAnd (_loc,CeNil _l,ce)|CeAnd (_loc,ce,CeNil _l) -> ce
       | ce -> ce
     method! class_type ct =
       match super#class_type ct with
-      | Ast.CtAnd (_loc,Ast.CtNil _l,ct)|Ast.CtAnd (_loc,ct,Ast.CtNil _l) ->
-          ct
+      | CtAnd (_loc,CtNil _l,ct)|CtAnd (_loc,ct,CtNil _l) -> ct
       | ct -> ct
     method! class_sig_item csg =
       match super#class_sig_item csg with
-      | Ast.CgSem (_loc,Ast.CgNil _l,csg)|Ast.CgSem (_loc,csg,Ast.CgNil _l)
-          -> csg
+      | CgSem (_loc,CgNil _l,csg)|CgSem (_loc,csg,CgNil _l) -> csg
       | csg -> csg
     method! class_str_item cst =
       match super#class_str_item cst with
-      | Ast.CrSem (_loc,Ast.CrNil _l,cst)|Ast.CrSem (_loc,cst,Ast.CrNil _l)
-          -> cst
+      | CrSem (_loc,CrNil _l,cst)|CrSem (_loc,cst,CrNil _l) -> cst
       | cst -> cst
   end
 class reloc _loc = object  inherit  map method! loc _ = _loc end
@@ -7810,8 +7765,8 @@ let wildcarder =
     inherit  map as super
     method! patt =
       function
-      | Ast.PaId (_loc,Ast.IdLid (_,_)) -> Ast.PaAny _loc
-      | Ast.PaAli (_loc,p,_) -> self#patt p
+      | PaId (_loc,IdLid (_,_)) -> PaAny _loc
+      | PaAli (_loc,p,_) -> self#patt p
       | p -> super#patt p
   end
 let match_pre =
@@ -7819,24 +7774,24 @@ let match_pre =
     inherit  map
     method! match_case =
       function
-      | Ast.McArr (_loc,p,Ast.ExNil _,e) ->
-          Ast.McArr
-            (_loc, p, (Ast.ExNil _loc),
-              (Ast.ExFun
+      | McArr (_loc,p,ExNil _,e) ->
+          McArr
+            (_loc, p, (ExNil _loc),
+              (ExFun
                  (_loc,
-                   (Ast.McArr
-                      (_loc, (Ast.PaId (_loc, (Ast.IdUid (_loc, "()")))),
-                        (Ast.ExNil _loc), e)))))
-      | Ast.McArr (_loc,p,e,e1) ->
-          Ast.McArr
+                   (McArr
+                      (_loc, (PaId (_loc, (IdUid (_loc, "()")))),
+                        (ExNil _loc), e)))))
+      | McArr (_loc,p,e,e1) ->
+          McArr
             (_loc, p, e,
-              (Ast.ExFun
+              (ExFun
                  (_loc,
-                   (Ast.McArr
-                      (_loc, (Ast.PaId (_loc, (Ast.IdUid (_loc, "()")))),
-                        (Ast.ExNil _loc), e1)))))
-      | Ast.McOr (_loc,a1,a2) ->
-          Ast.McOr (_loc, (self#match_case a1), (self#match_case a2))
-      | Ast.McNil _loc -> Ast.McNil _loc
-      | Ast.McAnt (_loc,x) -> Ast.McAnt (_loc, (add_context x "lettry"))
+                   (McArr
+                      (_loc, (PaId (_loc, (IdUid (_loc, "()")))),
+                        (ExNil _loc), e1)))))
+      | McOr (_loc,a1,a2) ->
+          McOr (_loc, (self#match_case a1), (self#match_case a2))
+      | McNil _loc -> McNil _loc
+      | McAnt (_loc,x) -> McAnt (_loc, (add_context x "lettry"))
   end

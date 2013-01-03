@@ -1,3 +1,4 @@
+open Ast
 module Ast = Camlp4Ast
 open LibUtil
 let _loc = FanLoc.ghost
@@ -17,79 +18,71 @@ let base1_types =
   ("char", `Exist, `Def);
   ("unit",
     (`Custom
-       (Ast.StVal
-          (_loc, Ast.ReNil,
-            (Ast.BiEq
-               (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "pp_print_unit")))),
-                 (Ast.ExTyc
+       (StVal
+          (_loc, ReNil,
+            (BiEq
+               (_loc, (PaId (_loc, (IdLid (_loc, "pp_print_unit")))),
+                 (ExTyc
                     (_loc,
-                      (Ast.ExFun
+                      (ExFun
                          (_loc,
-                           (Ast.McArr
-                              (_loc,
-                                (Ast.PaId (_loc, (Ast.IdLid (_loc, "fmt")))),
-                                (Ast.ExNil _loc),
-                                (Ast.ExFun
+                           (McArr
+                              (_loc, (PaId (_loc, (IdLid (_loc, "fmt")))),
+                                (ExNil _loc),
+                                (ExFun
                                    (_loc,
-                                     (Ast.McArr
-                                        (_loc, (Ast.PaAny _loc),
-                                          (Ast.ExNil _loc),
-                                          (Ast.ExApp
+                                     (McArr
+                                        (_loc, (PaAny _loc), (ExNil _loc),
+                                          (ExApp
                                              (_loc,
-                                               (Ast.ExApp
+                                               (ExApp
                                                   (_loc,
-                                                    (Ast.ExId
+                                                    (ExId
                                                        (_loc,
-                                                         (Ast.IdAcc
+                                                         (IdAcc
                                                             (_loc,
-                                                              (Ast.IdUid
+                                                              (IdUid
                                                                  (_loc,
                                                                    "Format")),
-                                                              (Ast.IdLid
+                                                              (IdLid
                                                                  (_loc,
                                                                    "fprintf")))))),
-                                                    (Ast.ExId
+                                                    (ExId
                                                        (_loc,
-                                                         (Ast.IdLid
-                                                            (_loc, "fmt")))))),
-                                               (Ast.ExStr (_loc, "()")))))))))))),
-                      (Ast.TyArr
+                                                         (IdLid (_loc, "fmt")))))),
+                                               (ExStr (_loc, "()")))))))))))),
+                      (TyArr
                          (_loc,
-                           (Ast.TyId
+                           (TyId
                               (_loc,
-                                (Ast.IdAcc
-                                   (_loc, (Ast.IdUid (_loc, "Format")),
-                                     (Ast.IdLid (_loc, "formatter")))))),
-                           (Ast.TyArr
-                              (_loc,
-                                (Ast.TyId (_loc, (Ast.IdLid (_loc, "unit")))),
-                                (Ast.TyId (_loc, (Ast.IdLid (_loc, "unit"))))))))))))))),
+                                (IdAcc
+                                   (_loc, (IdUid (_loc, "Format")),
+                                     (IdLid (_loc, "formatter")))))),
+                           (TyArr
+                              (_loc, (TyId (_loc, (IdLid (_loc, "unit")))),
+                                (TyId (_loc, (IdLid (_loc, "unit"))))))))))))))),
     (`Custom
-       (Ast.StVal
-          (_loc, Ast.ReNil,
-            (Ast.BiEq
-               (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "eq_unit")))),
-                 (Ast.ExTyc
+       (StVal
+          (_loc, ReNil,
+            (BiEq
+               (_loc, (PaId (_loc, (IdLid (_loc, "eq_unit")))),
+                 (ExTyc
                     (_loc,
-                      (Ast.ExFun
+                      (ExFun
                          (_loc,
-                           (Ast.McArr
-                              (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
-                                (Ast.ExFun
+                           (McArr
+                              (_loc, (PaAny _loc), (ExNil _loc),
+                                (ExFun
                                    (_loc,
-                                     (Ast.McArr
-                                        (_loc, (Ast.PaAny _loc),
-                                          (Ast.ExNil _loc),
-                                          (Ast.ExId
-                                             (_loc,
-                                               (Ast.IdLid (_loc, "true")))))))))))),
-                      (Ast.TyArr
-                         (_loc,
-                           (Ast.TyId (_loc, (Ast.IdLid (_loc, "unit")))),
-                           (Ast.TyArr
-                              (_loc,
-                                (Ast.TyId (_loc, (Ast.IdLid (_loc, "unit")))),
-                                (Ast.TyId (_loc, (Ast.IdLid (_loc, "bool"))))))))))))))))]
+                                     (McArr
+                                        (_loc, (PaAny _loc), (ExNil _loc),
+                                          (ExId
+                                             (_loc, (IdLid (_loc, "true")))))))))))),
+                      (TyArr
+                         (_loc, (TyId (_loc, (IdLid (_loc, "unit")))),
+                           (TyArr
+                              (_loc, (TyId (_loc, (IdLid (_loc, "unit")))),
+                                (TyId (_loc, (IdLid (_loc, "bool"))))))))))))))))]
 let ty_metas =
   base1_types |> (List.map (fun (str,print,eq)  -> { str; print; eq }))
 let print_base1 =
@@ -98,73 +91,71 @@ let print_base1 =
       (List.map
          (fun { str; print;_}  ->
             let ty =
-              Ast.TyArr
+              TyArr
                 (_loc,
-                  (Ast.TyId
+                  (TyId
                      (_loc,
-                       (Ast.IdAcc
-                          (_loc, (Ast.IdUid (_loc, "Format")),
-                            (Ast.IdLid (_loc, "formatter")))))),
-                  (Ast.TyArr
-                     (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, str)))),
-                       (Ast.TyId (_loc, (Ast.IdLid (_loc, "unit"))))))) in
+                       (IdAcc
+                          (_loc, (IdUid (_loc, "Format")),
+                            (IdLid (_loc, "formatter")))))),
+                  (TyArr
+                     (_loc, (TyId (_loc, (IdLid (_loc, str)))),
+                       (TyId (_loc, (IdLid (_loc, "unit"))))))) in
             let name = "pp_print_" ^ str in
             match print with
             | `Exist ->
-                Ast.StVal
-                  (_loc, Ast.ReNil,
-                    (Ast.BiEq
-                       (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))),
-                         (Ast.ExId (_loc, (Ast.IdLid (_loc, name)))))))
+                StVal
+                  (_loc, ReNil,
+                    (BiEq
+                       (_loc, (PaId (_loc, (IdLid (_loc, name)))),
+                         (ExId (_loc, (IdLid (_loc, name)))))))
             | `Custom s -> s
             | `Fmt c ->
-                Ast.StVal
-                  (_loc, Ast.ReNil,
-                    (Ast.BiEq
-                       (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))),
-                         (Ast.ExTyc
+                StVal
+                  (_loc, ReNil,
+                    (BiEq
+                       (_loc, (PaId (_loc, (IdLid (_loc, name)))),
+                         (ExTyc
                             (_loc,
-                              (Ast.ExFun
+                              (ExFun
                                  (_loc,
-                                   (Ast.McArr
+                                   (McArr
                                       (_loc,
-                                        (Ast.PaId
-                                           (_loc, (Ast.IdLid (_loc, "fmt")))),
-                                        (Ast.ExNil _loc),
-                                        (Ast.ExFun
+                                        (PaId (_loc, (IdLid (_loc, "fmt")))),
+                                        (ExNil _loc),
+                                        (ExFun
                                            (_loc,
-                                             (Ast.McArr
+                                             (McArr
                                                 (_loc,
-                                                  (Ast.PaId
+                                                  (PaId
                                                      (_loc,
-                                                       (Ast.IdLid (_loc, "a")))),
-                                                  (Ast.ExNil _loc),
-                                                  (Ast.ExApp
+                                                       (IdLid (_loc, "a")))),
+                                                  (ExNil _loc),
+                                                  (ExApp
                                                      (_loc,
-                                                       (Ast.ExApp
+                                                       (ExApp
                                                           (_loc,
-                                                            (Ast.ExApp
+                                                            (ExApp
                                                                (_loc,
-                                                                 (Ast.ExId
+                                                                 (ExId
                                                                     (_loc,
-                                                                    (Ast.IdAcc
+                                                                    (IdAcc
                                                                     (_loc,
-                                                                    (Ast.IdUid
+                                                                    (IdUid
                                                                     (_loc,
                                                                     "Format")),
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "fprintf")))))),
-                                                                 (Ast.ExId
+                                                                 (ExId
                                                                     (_loc,
-                                                                    (Ast.IdLid
+                                                                    (IdLid
                                                                     (_loc,
                                                                     "fmt")))))),
-                                                            (Ast.ExStr
-                                                               (_loc, c)))),
-                                                       (Ast.ExId
+                                                            (ExStr (_loc, c)))),
+                                                       (ExId
                                                           (_loc,
-                                                            (Ast.IdLid
+                                                            (IdLid
                                                                (_loc, "a")))))))))))))),
                               ty))))))) in
   Ast.stSem_of_list items
@@ -176,87 +167,85 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
       (List.map
          (fun x  ->
             let ty =
-              Ast.TyArr
-                (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, x)))),
-                  (Ast.TyId (_loc, (Ast.IdLid (_loc, x))))) in
-            Ast.CrMth
-              (_loc, x, Ast.OvNil, Ast.PrNil,
-                (Ast.ExFun
+              TyArr
+                (_loc, (TyId (_loc, (IdLid (_loc, x)))),
+                  (TyId (_loc, (IdLid (_loc, x))))) in
+            CrMth
+              (_loc, x, OvNil, PrNil,
+                (ExFun
                    (_loc,
-                     (Ast.McArr
-                        (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "x")))),
-                          (Ast.ExNil _loc),
-                          (Ast.ExId (_loc, (Ast.IdLid (_loc, "x")))))))), ty))) in
+                     (McArr
+                        (_loc, (PaId (_loc, (IdLid (_loc, "x")))),
+                          (ExNil _loc), (ExId (_loc, (IdLid (_loc, "x")))))))),
+                ty))) in
   let v2 =
     ty_names |>
       (List.map
          (fun x  ->
             let ty =
-              Ast.TyArr
-                (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, x)))),
-                  (Ast.TyArr
-                     (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, x)))),
-                       (Ast.TyId (_loc, (Ast.IdLid (_loc, x))))))) in
-            Ast.CrMth
-              (_loc, x, Ast.OvNil, Ast.PrNil,
-                (Ast.ExFun
+              TyArr
+                (_loc, (TyId (_loc, (IdLid (_loc, x)))),
+                  (TyArr
+                     (_loc, (TyId (_loc, (IdLid (_loc, x)))),
+                       (TyId (_loc, (IdLid (_loc, x))))))) in
+            CrMth
+              (_loc, x, OvNil, PrNil,
+                (ExFun
                    (_loc,
-                     (Ast.McArr
-                        (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, "x")))),
-                          (Ast.ExNil _loc),
-                          (Ast.ExFun
+                     (McArr
+                        (_loc, (PaId (_loc, (IdLid (_loc, "x")))),
+                          (ExNil _loc),
+                          (ExFun
                              (_loc,
-                               (Ast.McArr
-                                  (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
-                                    (Ast.ExId (_loc, (Ast.IdLid (_loc, "x")))))))))))),
+                               (McArr
+                                  (_loc, (PaAny _loc), (ExNil _loc),
+                                    (ExId (_loc, (IdLid (_loc, "x")))))))))))),
                 ty))) in
   let v3 =
     ty_names |>
       (List.map
          (fun x  ->
             let ty =
-              Ast.TyArr
-                (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, x)))),
-                  (Ast.TyQuo (_loc, "self_type"))) in
-            Ast.CrMth
-              (_loc, x, Ast.OvNil, Ast.PrNil,
-                (Ast.ExFun
+              TyArr
+                (_loc, (TyId (_loc, (IdLid (_loc, x)))),
+                  (TyQuo (_loc, "self_type"))) in
+            CrMth
+              (_loc, x, OvNil, PrNil,
+                (ExFun
                    (_loc,
-                     (Ast.McArr
-                        (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
-                          (Ast.ExId (_loc, (Ast.IdLid (_loc, "self")))))))),
-                ty))) in
+                     (McArr
+                        (_loc, (PaAny _loc), (ExNil _loc),
+                          (ExId (_loc, (IdLid (_loc, "self")))))))), ty))) in
   let v4 =
     ty_names |>
       (List.map
          (fun x  ->
             let ty =
-              Ast.TyArr
-                (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, x)))),
-                  (Ast.TyArr
-                     (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, x)))),
-                       (Ast.TyQuo (_loc, "self_type"))))) in
-            Ast.CrMth
-              (_loc, x, Ast.OvNil, Ast.PrNil,
-                (Ast.ExFun
+              TyArr
+                (_loc, (TyId (_loc, (IdLid (_loc, x)))),
+                  (TyArr
+                     (_loc, (TyId (_loc, (IdLid (_loc, x)))),
+                       (TyQuo (_loc, "self_type"))))) in
+            CrMth
+              (_loc, x, OvNil, PrNil,
+                (ExFun
                    (_loc,
-                     (Ast.McArr
-                        (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
-                          (Ast.ExFun
+                     (McArr
+                        (_loc, (PaAny _loc), (ExNil _loc),
+                          (ExFun
                              (_loc,
-                               (Ast.McArr
-                                  (_loc, (Ast.PaAny _loc), (Ast.ExNil _loc),
-                                    (Ast.ExId
-                                       (_loc, (Ast.IdLid (_loc, "self")))))))))))),
+                               (McArr
+                                  (_loc, (PaAny _loc), (ExNil _loc),
+                                    (ExId (_loc, (IdLid (_loc, "self")))))))))))),
                 ty))) in
   let v5 =
     ty_names |>
       (List.map
          (fun x  ->
-            Ast.CrMth
-              (_loc, x, Ast.OvNil, Ast.PrNil,
-                (Ast.ExId (_loc, (Ast.IdLid (_loc, ("pp_print_" ^ x))))),
-                (Ast.TyNil _loc)))) in
+            CrMth
+              (_loc, x, OvNil, PrNil,
+                (ExId (_loc, (IdLid (_loc, ("pp_print_" ^ x))))),
+                (TyNil _loc)))) in
   ((Ast.crSem_of_list v1), (Ast.crSem_of_list v2), (Ast.crSem_of_list v3),
     (Ast.crSem_of_list v4), (Ast.crSem_of_list v5))
 let eq_base1 =
@@ -265,21 +254,20 @@ let eq_base1 =
       (List.map
          (fun { str; eq;_}  ->
             let ty =
-              Ast.TyArr
-                (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, str)))),
-                  (Ast.TyArr
-                     (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, str)))),
-                       (Ast.TyId (_loc, (Ast.IdLid (_loc, "bool"))))))) in
+              TyArr
+                (_loc, (TyId (_loc, (IdLid (_loc, str)))),
+                  (TyArr
+                     (_loc, (TyId (_loc, (IdLid (_loc, str)))),
+                       (TyId (_loc, (IdLid (_loc, "bool"))))))) in
             let name = "eq_" ^ str in
             match eq with
             | `Def ->
-                Ast.StVal
-                  (_loc, Ast.ReNil,
-                    (Ast.BiEq
-                       (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))),
-                         (Ast.ExTyc
-                            (_loc,
-                              (Ast.ExId (_loc, (Ast.IdLid (_loc, "=")))), ty)))))
+                StVal
+                  (_loc, ReNil,
+                    (BiEq
+                       (_loc, (PaId (_loc, (IdLid (_loc, name)))),
+                         (ExTyc
+                            (_loc, (ExId (_loc, (IdLid (_loc, "=")))), ty)))))
             | `Custom s -> s)) in
   Ast.stSem_of_list items
 let _ =

@@ -7,102 +7,95 @@ class printer =
   object (self : 'self)
     method longident _loc i =
       match i with
-      | Lident s -> Ast.IdLid (_loc, s)
+      | Lident s -> IdLid (_loc, s)
       | Ldot (y,s) ->
-          Ast.IdAcc (_loc, (self#longident _loc y), (Ast.IdLid (_loc, s)))
+          IdAcc (_loc, (self#longident _loc y), (IdLid (_loc, s)))
       | Lapply (a,b) ->
-          Ast.IdApp (_loc, (self#longident _loc a), (self#longident _loc b))
+          IdApp (_loc, (self#longident _loc a), (self#longident _loc b))
     method longident_loc i = self#longident i.loc i.txt
     method gen_cases _loc (lst : (pattern* expression) list) =
       List.map
         (fun (p,e)  ->
            match e.pexp_desc with
            | Pexp_when (e1,e2) ->
-               Ast.McArr
-                 (_loc, (self#pattern p), (self#expr e1), (self#expr e2))
+               McArr (_loc, (self#pattern p), (self#expr e1), (self#expr e2))
            | _ ->
-               Ast.McArr
-                 (_loc, (self#pattern p), (Ast.ExNil _loc),
+               McArr
+                 (_loc, (self#pattern p), (ExNil _loc),
                    (self#expr (e : expression )))) lst
     method constant_expr _loc i =
       match i with
-      | Const_int32 i -> Ast.ExInt32 (_loc, (Int32.to_string i))
-      | Const_int i -> Ast.ExInt (_loc, (string_of_int i))
-      | Const_int64 i -> Ast.ExInt64 (_loc, (Int64.to_string i))
-      | Const_float i -> Ast.ExFlo (_loc, i)
-      | Const_nativeint i -> Ast.ExNativeInt (_loc, (Nativeint.to_string i))
-      | Const_char i -> Ast.ExChr (_loc, (Char.escaped i))
-      | Const_string i -> Ast.ExStr (_loc, (Ast.safe_string_escaped i))
+      | Const_int32 i -> ExInt32 (_loc, (Int32.to_string i))
+      | Const_int i -> ExInt (_loc, (string_of_int i))
+      | Const_int64 i -> ExInt64 (_loc, (Int64.to_string i))
+      | Const_float i -> ExFlo (_loc, i)
+      | Const_nativeint i -> ExNativeInt (_loc, (Nativeint.to_string i))
+      | Const_char i -> ExChr (_loc, (Char.escaped i))
+      | Const_string i -> ExStr (_loc, (Ast.safe_string_escaped i))
     method constant_patt _loc i =
       match i with
-      | Const_int32 i -> Ast.PaInt32 (_loc, (Int32.to_string i))
-      | Const_int i -> Ast.PaInt (_loc, (string_of_int i))
-      | Const_int64 i -> Ast.PaInt64 (_loc, (Int64.to_string i))
-      | Const_float i -> Ast.PaFlo (_loc, i)
-      | Const_nativeint i -> Ast.PaNativeInt (_loc, (Nativeint.to_string i))
-      | Const_char i -> Ast.PaChr (_loc, (Char.escaped i))
-      | Const_string i -> Ast.PaStr (_loc, (Ast.safe_string_escaped i))
+      | Const_int32 i -> PaInt32 (_loc, (Int32.to_string i))
+      | Const_int i -> PaInt (_loc, (string_of_int i))
+      | Const_int64 i -> PaInt64 (_loc, (Int64.to_string i))
+      | Const_float i -> PaFlo (_loc, i)
+      | Const_nativeint i -> PaNativeInt (_loc, (Nativeint.to_string i))
+      | Const_char i -> PaChr (_loc, (Char.escaped i))
+      | Const_string i -> PaStr (_loc, (Ast.safe_string_escaped i))
     method mutable_flag =
-      function | Immutable  -> Ast.MuNil | Mutable  -> Ast.MuMutable
+      function | Immutable  -> MuNil | Mutable  -> MuMutable
     method virtual_flag =
-      function | Concrete  -> Ast.ViNil | Virtual  -> Ast.ViVirtual
+      function | Concrete  -> ViNil | Virtual  -> ViVirtual
     method rec_flag =
-      function
-      | Nonrecursive  -> Ast.ReNil
-      | Recursive |Default  -> Ast.ReRecursive
-    method direction_flag =
-      function | Upto  -> Ast.DiTo | Downto  -> Ast.DiDownto
-    method private_flag =
-      function | Public  -> Ast.PrNil | Private  -> Ast.PrPrivate
+      function | Nonrecursive  -> ReNil | Recursive |Default  -> ReRecursive
+    method direction_flag = function | Upto  -> DiTo | Downto  -> DiDownto
+    method private_flag = function | Public  -> PrNil | Private  -> PrPrivate
     method core_type { ptyp_desc = ty; ptyp_loc = _loc } =
       match ty with
-      | Ptyp_any  -> Ast.TyAny _loc
-      | Ptyp_var s -> Ast.TyId (_loc, (Ast.IdLid (_loc, s)))
+      | Ptyp_any  -> TyAny _loc
+      | Ptyp_var s -> TyId (_loc, (IdLid (_loc, s)))
       | Ptyp_arrow (label,t1,t2) ->
           (match label with
-           | "" -> Ast.TyArr (_loc, (self#core_type t1), (self#core_type t2))
+           | "" -> TyArr (_loc, (self#core_type t1), (self#core_type t2))
            | s ->
                if (s.[0]) = '?'
                then
-                 Ast.TyArr
-                   (_loc, (Ast.TyOlb (_loc, label, (self#core_type t1))),
+                 TyArr
+                   (_loc, (TyOlb (_loc, label, (self#core_type t1))),
                      (self#core_type t2))
                else
-                 Ast.TyArr
-                   (_loc, (Ast.TyLab (_loc, label, (self#core_type t1))),
+                 TyArr
+                   (_loc, (TyLab (_loc, label, (self#core_type t1))),
                      (self#core_type t2)))
       | Ptyp_tuple (x::xs) ->
-          Ast.TyTup
+          TyTup
             (_loc,
-              (Ast.TySta
+              (TySta
                  (_loc, (self#core_type x),
                    (Ast.tySta_of_list (List.map self#core_type xs)))))
       | Ptyp_tuple [] -> assert false
       | Ptyp_alias (ty,s) ->
-          Ast.TyAli
-            (_loc, (self#core_type ty),
-              (Ast.TyId (_loc, (Ast.IdLid (_loc, s)))))
+          TyAli (_loc, (self#core_type ty), (TyId (_loc, (IdLid (_loc, s)))))
       | Ptyp_variant (rfs,closed,labels) ->
           let ls =
             List.map
               (function
                | Rinherit t -> self#core_type t
-               | Rtag (label,_b,[]) -> Ast.TyVrn (_loc, label)
+               | Rtag (label,_b,[]) -> TyVrn (_loc, label)
                | Rtag (label,_b,ls) ->
-                   Ast.TyOfAmp
-                     (_loc, (Ast.TyVrn (_loc, label)),
+                   TyOfAmp
+                     (_loc, (TyVrn (_loc, label)),
                        (Ast.tyAmp_of_list (List.map self#core_type ls)))) rfs in
           (match (closed, labels) with
-           | (true ,None ) -> Ast.TyVrnEq (_loc, (Ast.tyOr_of_list ls))
+           | (true ,None ) -> TyVrnEq (_loc, (Ast.tyOr_of_list ls))
            | (true ,Some x) ->
                let u =
-                 (List.map (fun x  -> Ast.TyVrn (_loc, x)) x) |>
+                 (List.map (fun x  -> TyVrn (_loc, x)) x) |>
                    Camlp4Ast.tyApp_of_list in
-               Ast.TyVrnInfSup (_loc, (Ast.tyOr_of_list ls), u)
-           | (false ,_) -> Ast.TyVrnSup (_loc, (Ast.tyOr_of_list ls)))
+               TyVrnInfSup (_loc, (Ast.tyOr_of_list ls), u)
+           | (false ,_) -> TyVrnSup (_loc, (Ast.tyOr_of_list ls)))
       | Ptyp_constr (lid_loc,ts) ->
           Camlp4Ast.tyApp_of_list
-            ((Ast.TyId (_loc, (self#longident_loc lid_loc))) ::
+            ((TyId (_loc, (self#longident_loc lid_loc))) ::
             (List.map self#core_type ts))
       | Ptyp_object cfs ->
           let row_var = ref false in
@@ -112,100 +105,93 @@ class printer =
                  match cf with
                  | Pfield (lab,ty) ->
                      let t =
-                       Ast.TyCol
-                         (_loc, (Ast.TyId (_loc, (Ast.IdLid (_loc, lab)))),
+                       TyCol
+                         (_loc, (TyId (_loc, (IdLid (_loc, lab)))),
                            (self#core_type ty)) in
-                     Ast.TySem (_loc, acc, t)
-                 | Pfield_var  -> acc) (Ast.TyNil _loc) cfs in
+                     TySem (_loc, acc, t)
+                 | Pfield_var  -> acc) (TyNil _loc) cfs in
           if row_var.contents
-          then Ast.TyObj (_loc, res, Ast.RvRowVar)
-          else Ast.TyObj (_loc, res, Ast.RvNil)
+          then TyObj (_loc, res, RvRowVar)
+          else TyObj (_loc, res, RvNil)
       | Ptyp_class (lid_loc,cts,_lows) ->
-          Ast.tyApp_of_list ((Ast.TyCls (_loc, (self#longident_loc lid_loc)))
-            :: (List.map self#core_type cts))
+          Ast.tyApp_of_list ((TyCls (_loc, (self#longident_loc lid_loc))) ::
+            (List.map self#core_type cts))
       | Ptyp_poly (ls,ty) ->
-          Ast.TyPol
+          TyPol
             (_loc, (Ast.tyVarApp_of_list (_loc, ls)), (self#core_type ty))
       | Ptyp_package (lid,ls) ->
           let with_constrs =
             List.map
               (fun (lid,ty)  ->
-                 Ast.WcTyp
-                   (_loc, (Ast.TyId (_loc, (self#longident_loc lid))),
+                 WcTyp
+                   (_loc, (TyId (_loc, (self#longident_loc lid))),
                      (self#core_type ty))) ls in
-          Ast.TyPkg
+          TyPkg
             (_loc,
-              (Ast.MtWit
-                 (_loc, (Ast.MtId (_loc, (self#longident_loc lid))),
+              (MtWit
+                 (_loc, (MtId (_loc, (self#longident_loc lid))),
                    (Ast.wcAnd_of_list with_constrs))))
     method pattern { ppat_desc = x; ppat_loc = _loc } =
       match x with
-      | Ppat_any  -> Ast.PaAny _loc
-      | Ppat_var { txt;_} -> Ast.PaId (_loc, (Ast.IdLid (_loc, txt)))
+      | Ppat_any  -> PaAny _loc
+      | Ppat_var { txt;_} -> PaId (_loc, (IdLid (_loc, txt)))
       | Ppat_alias (p,{ txt;_}) ->
-          Ast.PaAli
-            (_loc, (self#pattern p),
-              (Ast.PaId (_loc, (Ast.IdLid (_loc, txt)))))
+          PaAli (_loc, (self#pattern p), (PaId (_loc, (IdLid (_loc, txt)))))
       | Ppat_constant c -> self#constant_patt _loc c
       | Ppat_tuple [] -> assert false
       | Ppat_tuple (x::xs) ->
-          Ast.PaTup
+          PaTup
             (_loc,
-              (Ast.PaCom
+              (PaCom
                  (_loc, (self#pattern x),
                    (Ast.paCom_of_list (List.map self#pattern xs)))))
       | Ppat_construct (lid_loc,opt,_b) ->
           (match opt with
-           | None  -> Ast.PaId (_loc, (self#longident_loc lid_loc))
+           | None  -> PaId (_loc, (self#longident_loc lid_loc))
            | Some x ->
-               Ast.PaApp
-                 (_loc, (Ast.PaId (_loc, (self#longident_loc lid_loc))),
+               PaApp
+                 (_loc, (PaId (_loc, (self#longident_loc lid_loc))),
                    (self#pattern x)))
       | Ppat_variant (label,opt) ->
           (match opt with
-           | Some o ->
-               Ast.PaApp (_loc, (Ast.PaVrn (_loc, label)), (self#pattern o))
-           | None  -> Ast.PaVrn (_loc, label))
+           | Some o -> PaApp (_loc, (PaVrn (_loc, label)), (self#pattern o))
+           | None  -> PaVrn (_loc, label))
       | Ppat_record (lst,closed) ->
           let ls =
             List.map
               (fun (lid_loc,p)  ->
-                 Ast.PaEq
-                   (_loc, (self#longident_loc lid_loc), (self#pattern p)))
+                 PaEq (_loc, (self#longident_loc lid_loc), (self#pattern p)))
               lst in
           (match closed with
-           | Closed  -> Ast.PaRec (_loc, (Ast.paSem_of_list ls))
+           | Closed  -> PaRec (_loc, (Ast.paSem_of_list ls))
            | Open  ->
-               Ast.PaRec
-                 (_loc,
-                   (Ast.PaSem
-                      (_loc, (Ast.paSem_of_list ls), (Ast.PaAny _loc)))))
+               PaRec
+                 (_loc, (PaSem (_loc, (Ast.paSem_of_list ls), (PaAny _loc)))))
       | Ppat_array ls ->
           let ls = List.map self#pattern ls in
-          Ast.PaArr (_loc, (Ast.paSem_of_list ls))
-      | Ppat_or (p1,p2) ->
-          Ast.PaOrp (_loc, (self#pattern p1), (self#pattern p2))
+          PaArr (_loc, (Ast.paSem_of_list ls))
+      | Ppat_or (p1,p2) -> PaOrp (_loc, (self#pattern p1), (self#pattern p2))
       | Ppat_constraint (p1,ty) ->
-          Ast.PaTyc (_loc, (self#pattern p1), (self#core_type ty))
-      | Ppat_type lid_loc -> Ast.PaTyp (_loc, (self#longident_loc lid_loc))
-      | Ppat_lazy p -> Ast.PaLaz (_loc, (self#pattern p))
-      | Ppat_unpack { txt;_} -> Ast.PaMod (_loc, txt)
+          PaTyc (_loc, (self#pattern p1), (self#core_type ty))
+      | Ppat_type lid_loc -> PaTyp (_loc, (self#longident_loc lid_loc))
+      | Ppat_lazy p -> PaLaz (_loc, (self#pattern p))
+      | Ppat_unpack { txt;_} -> PaMod (_loc, txt)
     method expr { pexp_desc = x; pexp_loc = _loc } =
       match x with
-      | Pexp_ident lid_loc -> Ast.ExId (_loc, (self#longident_loc lid_loc))
+      | Pexp_ident lid_loc -> ExId (_loc, (self#longident_loc lid_loc))
       | Pexp_constant c -> self#constant_expr _loc c
       | Pexp_let (recf,lst,e) ->
           let recf = self#rec_flag recf in
           let bindings =
             List.map
-              (fun (p,e)  -> Ast.BiEq (_loc, (self#pattern p), (self#expr e)))
+              (fun (p,e)  -> BiEq (_loc, (self#pattern p), (self#expr e)))
               lst in
-          Ast.ExLet (_loc, recf, (Ast.biAnd_of_list bindings), (self#expr e))
+          ExLet (_loc, recf, (Ast.biAnd_of_list bindings), (self#expr e))
       | Pexp_function (label,eo,lst) ->
           (match label with
            | "" ->
                let cases = self#gen_cases _loc lst in
-               Ast.ExFun (_loc, (Ast.mcOr_of_list cases))
+               ExFun (_loc, (Ast.mcOr_of_list cases))
            | _ ->
                (match lst with
                 | (p,e)::[] ->
@@ -213,218 +199,202 @@ class printer =
                     then
                       (match eo with
                        | Some o ->
-                           Ast.ExFun
+                           ExFun
                              (_loc,
-                               (Ast.McArr
+                               (McArr
                                   (_loc,
-                                    (Ast.PaOlbi
+                                    (PaOlbi
                                        (_loc, label, (self#pattern p),
-                                         (self#expr o))), (Ast.ExNil _loc),
+                                         (self#expr o))), (ExNil _loc),
                                     (self#expr e))))
                        | None  ->
-                           Ast.ExFun
+                           ExFun
                              (_loc,
-                               (Ast.McArr
-                                  (_loc,
-                                    (Ast.PaOlb
-                                       (_loc, label, (Ast.PaNil _loc))),
-                                    (Ast.ExNil _loc), (self#expr e)))))
+                               (McArr
+                                  (_loc, (PaOlb (_loc, label, (PaNil _loc))),
+                                    (ExNil _loc), (self#expr e)))))
                     else
-                      Ast.ExFun
+                      ExFun
                         (_loc,
-                          (Ast.McArr
-                             (_loc,
-                               (Ast.PaLab (_loc, label, (Ast.PaNil _loc))),
-                               (Ast.ExNil _loc), (self#expr e))))
+                          (McArr
+                             (_loc, (PaLab (_loc, label, (PaNil _loc))),
+                               (ExNil _loc), (self#expr e))))
                 | _ -> assert false))
       | Pexp_apply (e,lst) ->
           let args =
             List.map
               (fun (label,e)  ->
                  let v = self#expr e in
-                 if label = "" then v else Ast.ExLab (_loc, label, v)) lst in
+                 if label = "" then v else ExLab (_loc, label, v)) lst in
           Camlp4Ast.exApp_of_list ((self#expr e) :: args)
       | Pexp_match (e,lst) ->
           let cases = self#gen_cases _loc lst in
-          Ast.ExMat (_loc, (self#expr e), (Ast.mcOr_of_list cases))
+          ExMat (_loc, (self#expr e), (Ast.mcOr_of_list cases))
       | Pexp_try (e,lst) ->
           let cases = self#gen_cases _loc lst in
-          Ast.ExTry (_loc, (self#expr e), (Ast.mcOr_of_list cases))
+          ExTry (_loc, (self#expr e), (Ast.mcOr_of_list cases))
       | Pexp_tuple [] -> assert false
       | Pexp_tuple (x::xs) ->
-          Ast.ExTup
+          ExTup
             (_loc,
-              (Ast.ExCom
+              (ExCom
                  (_loc, (self#expr x),
                    (Ast.exCom_of_list (List.map self#expr xs)))))
       | Pexp_construct (lid_loc,eo,_) ->
           (match eo with
-           | None  -> Ast.ExId (_loc, (self#longident_loc lid_loc))
+           | None  -> ExId (_loc, (self#longident_loc lid_loc))
            | Some v ->
-               Ast.ExApp
-                 (_loc, (Ast.ExId (_loc, (self#longident_loc lid_loc))),
+               ExApp
+                 (_loc, (ExId (_loc, (self#longident_loc lid_loc))),
                    (self#expr v)))
       | Pexp_variant (label,eo) ->
           (match eo with
-           | Some e ->
-               Ast.ExApp (_loc, (Ast.ExVrn (_loc, label)), (self#expr e))
-           | None  -> Ast.ExVrn (_loc, label))
+           | Some e -> ExApp (_loc, (ExVrn (_loc, label)), (self#expr e))
+           | None  -> ExVrn (_loc, label))
       | Pexp_record (lst,eo) ->
           let bindings =
             List.map
               (fun (lid,e)  ->
-                 Ast.RbEq (_loc, (self#longident_loc lid), (self#expr e)))
-              lst in
+                 RbEq (_loc, (self#longident_loc lid), (self#expr e))) lst in
           (match eo with
            | Some e ->
-               Ast.ExRec (_loc, (Ast.rbSem_of_list bindings), (self#expr e))
+               ExRec (_loc, (Ast.rbSem_of_list bindings), (self#expr e))
            | None  ->
-               Ast.ExRec
-                 (_loc, (Ast.rbSem_of_list bindings), (Ast.ExNil _loc)))
+               ExRec (_loc, (Ast.rbSem_of_list bindings), (ExNil _loc)))
       | Pexp_field (e,lid_loc) ->
-          Ast.ExAcc
+          ExAcc
             (_loc, (self#expr e),
-              (Ast.ExId (_loc, (self#longident_loc lid_loc))))
+              (ExId (_loc, (self#longident_loc lid_loc))))
       | Pexp_setfield (e1,lid_loc,e2) ->
-          Ast.ExAss
+          ExAss
             (_loc,
-              (Ast.ExAcc
+              (ExAcc
                  (_loc, (self#expr e1),
-                   (Ast.ExId (_loc, (self#longident_loc lid_loc))))),
+                   (ExId (_loc, (self#longident_loc lid_loc))))),
               (self#expr e2))
       | Pexp_array lst ->
-          Ast.ExArr (_loc, (Ast.exSem_of_list (List.map self#expr lst)))
+          ExArr (_loc, (Ast.exSem_of_list (List.map self#expr lst)))
       | Pexp_ifthenelse (e1,e2,e3) ->
           (match e3 with
            | Some e3 ->
-               Ast.ExIfe
-                 (_loc, (self#expr e1), (self#expr e2), (self#expr e3))
+               ExIfe (_loc, (self#expr e1), (self#expr e2), (self#expr e3))
            | None  ->
-               Ast.ExIfe
+               ExIfe
                  (_loc, (self#expr e1), (self#expr e2),
-                   (Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))))))
-      | Pexp_sequence (e1,e2) ->
-          Ast.ExApp (_loc, (self#expr e1), (self#expr e2))
-      | Pexp_while (e1,e2) ->
-          Ast.ExWhi (_loc, (self#expr e1), (self#expr e2))
+                   (ExId (_loc, (IdUid (_loc, "()"))))))
+      | Pexp_sequence (e1,e2) -> ExApp (_loc, (self#expr e1), (self#expr e2))
+      | Pexp_while (e1,e2) -> ExWhi (_loc, (self#expr e1), (self#expr e2))
       | Pexp_for ({ txt;_},e1,e2,df,e3) ->
-          Ast.ExFor
+          ExFor
             (_loc, txt, (self#expr e1), (self#expr e2),
               (self#direction_flag df), (self#expr e3))
       | Pexp_constraint (e1,ot1,ot2) ->
           (match (ot1, ot2) with
            | (None ,None ) -> self#expr e1
            | (Some t1,Some t2) ->
-               Ast.ExCoe
+               ExCoe
                  (_loc, (self#expr e1), (self#core_type t1),
                    (self#core_type t2))
            | (Some t1,None ) ->
-               Ast.ExTyc (_loc, (self#expr e1), (self#core_type t1))
+               ExTyc (_loc, (self#expr e1), (self#core_type t1))
            | (None ,Some t2) ->
-               Ast.ExCoe
-                 (_loc, (self#expr e1), (Ast.TyNil _loc),
-                   (self#core_type t2)))
+               ExCoe
+                 (_loc, (self#expr e1), (TyNil _loc), (self#core_type t2)))
       | Pexp_when _ -> assert false
-      | Pexp_send (e,txt) -> Ast.ExSnd (_loc, (self#expr e), txt)
-      | Pexp_new lid_loc -> Ast.ExNew (_loc, (self#longident_loc lid_loc))
+      | Pexp_send (e,txt) -> ExSnd (_loc, (self#expr e), txt)
+      | Pexp_new lid_loc -> ExNew (_loc, (self#longident_loc lid_loc))
       | Pexp_setinstvar ({ txt;_},e) ->
-          Ast.ExAss
-            (_loc, (Ast.ExId (_loc, (Ast.IdLid (_loc, txt)))), (self#expr e))
+          ExAss (_loc, (ExId (_loc, (IdLid (_loc, txt)))), (self#expr e))
       | Pexp_override lst ->
           let lst =
             List.map
               (fun ({ txt;_},e)  ->
-                 Ast.RbEq (_loc, (Ast.IdLid (_loc, txt)), (self#expr e))) lst in
-          Ast.ExOvr (_loc, (Ast.rbSem_of_list lst))
+                 RbEq (_loc, (IdLid (_loc, txt)), (self#expr e))) lst in
+          ExOvr (_loc, (Ast.rbSem_of_list lst))
       | Pexp_letmodule ({ txt;_},me,e) ->
-          Ast.ExLmd (_loc, txt, (self#module_expr me), (self#expr e))
-      | Pexp_assert e -> Ast.ExAsr (_loc, (self#expr e))
-      | Pexp_assertfalse  -> Ast.ExAsf _loc
-      | Pexp_lazy e -> Ast.ExLaz (_loc, (self#expr e))
+          ExLmd (_loc, txt, (self#module_expr me), (self#expr e))
+      | Pexp_assert e -> ExAsr (_loc, (self#expr e))
+      | Pexp_assertfalse  -> ExAsf _loc
+      | Pexp_lazy e -> ExLaz (_loc, (self#expr e))
       | Pexp_poly _ -> assert false
       | Pexp_object { pcstr_pat = pat; pcstr_fields = fs } ->
-          Ast.ExObj (_loc, (self#pattern pat), (self#class_fields fs))
-      | Pexp_newtype (str,e) -> Ast.ExFUN (_loc, str, (self#expr e))
-      | Pexp_pack me -> Ast.ExPkg (_loc, (self#module_expr me))
+          ExObj (_loc, (self#pattern pat), (self#class_fields fs))
+      | Pexp_newtype (str,e) -> ExFUN (_loc, str, (self#expr e))
+      | Pexp_pack me -> ExPkg (_loc, (self#module_expr me))
       | Pexp_open (lid_loc,e) ->
-          Ast.ExOpI (_loc, (self#longident_loc lid_loc), (self#expr e))
+          ExOpI (_loc, (self#longident_loc lid_loc), (self#expr e))
     method module_expr { pmod_desc = x; pmod_loc = _loc } =
       (match x with
-       | Pmod_ident lid_loc -> Ast.MeId (_loc, (self#longident_loc lid_loc))
-       | Pmod_structure s -> Ast.MeStr (_loc, (self#structure s))
+       | Pmod_ident lid_loc -> MeId (_loc, (self#longident_loc lid_loc))
+       | Pmod_structure s -> MeStr (_loc, (self#structure s))
        | Pmod_functor ({ txt;_},mty,me) ->
-           Ast.MeFun
-             (_loc, txt, (self#module_type mty), (self#module_expr me))
+           MeFun (_loc, txt, (self#module_type mty), (self#module_expr me))
        | Pmod_apply (me1,me2) ->
-           Ast.MeApp (_loc, (self#module_expr me1), (self#module_expr me2))
+           MeApp (_loc, (self#module_expr me1), (self#module_expr me2))
        | Pmod_constraint (me,mty) ->
-           Ast.MeTyc (_loc, (self#module_expr me), (self#module_type mty))
-       | Pmod_unpack e -> Ast.MePkg (_loc, (self#expr e)) : Ast.module_expr )
+           MeTyc (_loc, (self#module_expr me), (self#module_type mty))
+       | Pmod_unpack e -> MePkg (_loc, (self#expr e)) : Ast.module_expr )
     method lhs_type_declaration (params,variance,({ loc;_} as lid_loc)) =
       let u =
         List.map2
           (fun p  v  ->
              match (p, v) with
              | ((false ,false ),Some { txt; loc = _loc }) ->
-                 Ast.TyQuo (_loc, txt)
+                 TyQuo (_loc, txt)
              | ((false ,false ),None ) ->
-                 let _loc = FanLoc.ghost in Ast.TyAny _loc
-             | ((true ,false ),Some { txt; loc = _loc }) ->
-                 Ast.TyQuP (_loc, txt)
+                 let _loc = FanLoc.ghost in TyAny _loc
+             | ((true ,false ),Some { txt; loc = _loc }) -> TyQuP (_loc, txt)
              | ((true ,false ),None ) ->
                  let _loc = FanLoc.ghost in Ast.TyAnP _loc
-             | ((false ,true ),Some { txt; loc = _loc }) ->
-                 Ast.TyQuM (_loc, txt)
+             | ((false ,true ),Some { txt; loc = _loc }) -> TyQuM (_loc, txt)
              | ((false ,true ),None ) ->
                  let _loc = FanLoc.ghost in Ast.TyAnM _loc
              | _ -> assert false) variance params in
-      Camlp4Ast.tyApp_of_list ((Ast.TyId (loc, (self#longident_loc lid_loc)))
-        :: u)
+      Camlp4Ast.tyApp_of_list ((TyId (loc, (self#longident_loc lid_loc))) ::
+        u)
     method with_constraint (({ loc = _loc;_} as lid1),w) =
       match w with
       | Pwith_type
           { ptype_params = ls; ptype_manifest = Some ty; ptype_variance;_} ->
-          Ast.WcTyp
+          WcTyp
             (_loc, (self#lhs_type_declaration (ls, ptype_variance, lid1)),
               (self#core_type ty))
       | Pwith_typesubst
           { ptype_params = ls; ptype_manifest = Some ty; ptype_variance;_} ->
-          Ast.WcTyS
+          WcTyS
             (_loc, (self#lhs_type_declaration (ls, ptype_variance, lid1)),
               (self#core_type ty))
       | Pwith_type _|Pwith_typesubst _ -> assert false
       | Pwith_module lid2 ->
-          Ast.WcMod
-            (_loc, (self#longident_loc lid1), (self#longident_loc lid2))
+          WcMod (_loc, (self#longident_loc lid1), (self#longident_loc lid2))
       | Pwith_modsubst lid2 ->
-          Ast.WcMoS
-            (_loc, (self#longident_loc lid1), (self#longident_loc lid2))
+          WcMoS (_loc, (self#longident_loc lid1), (self#longident_loc lid2))
     method module_type { pmty_desc = x; pmty_loc = _loc } =
       (match x with
-       | Pmty_ident lid_loc -> Ast.MtId (_loc, (self#longident_loc lid_loc))
-       | Pmty_signature s -> Ast.MtSig (_loc, (self#signature s))
+       | Pmty_ident lid_loc -> MtId (_loc, (self#longident_loc lid_loc))
+       | Pmty_signature s -> MtSig (_loc, (self#signature s))
        | Pmty_functor ({ txt;_},mty1,mty2) ->
-           Ast.MtFun
+           MtFun
              (_loc, txt, (self#module_type mty1), (self#module_type mty2))
        | Pmty_with (mt1,lst) ->
            let lst = List.map self#with_constraint lst in
-           Ast.MtWit (_loc, (self#module_type mt1), (Ast.wcAnd_of_list lst))
-       | Pmty_typeof me -> Ast.MtOf (_loc, (self#module_expr me)) : Ast.module_type )
+           MtWit (_loc, (self#module_type mt1), (Ast.wcAnd_of_list lst))
+       | Pmty_typeof me -> MtOf (_loc, (self#module_expr me)) : Ast.module_type )
     method structure_item { pstr_desc = x; pstr_loc = _loc } =
       (match x with
-       | Pstr_eval e -> Ast.StExp (_loc, (self#expr e))
+       | Pstr_eval e -> StExp (_loc, (self#expr e))
        | Pstr_value (rf,lst) ->
            let bindings =
              List.map
-               (fun (p,e)  ->
-                  Ast.BiEq (_loc, (self#pattern p), (self#expr e))) lst in
-           Ast.StVal (_loc, (self#rec_flag rf), (Ast.biAnd_of_list bindings))
+               (fun (p,e)  -> BiEq (_loc, (self#pattern p), (self#expr e)))
+               lst in
+           StVal (_loc, (self#rec_flag rf), (Ast.biAnd_of_list bindings))
        | Pstr_module ({ txt;_},me) ->
-           Ast.StMod (_loc, txt, (self#module_expr me))
+           StMod (_loc, txt, (self#module_expr me))
        | Pstr_modtype ({ txt;_},mty) ->
-           Ast.StMty (_loc, txt, (self#module_type mty))
-       | Pstr_open lid -> Ast.StOpn (_loc, (self#longident_loc lid))
-       | Pstr_include me -> Ast.StInc (_loc, (self#module_expr me))
+           StMty (_loc, txt, (self#module_type mty))
+       | Pstr_open lid -> StOpn (_loc, (self#longident_loc lid))
+       | Pstr_include me -> StInc (_loc, (self#module_expr me))
        | Pstr_class_type _|Pstr_class _|Pstr_recmodule _|Pstr_exn_rebind
            _|Pstr_exception _|Pstr_primitive _|Pstr_type _ -> assert false : 
       Ast.str_item )

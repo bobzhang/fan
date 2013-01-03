@@ -1,3 +1,4 @@
+open Ast
 open FanGrammar
 open FanGrammarTools
 open PreCast.Syntax
@@ -123,65 +124,50 @@ let _ =
                   (let mk =
                      match t with
                      | `static t ->
-                         Ast.ExId
-                           (_loc,
-                             (Ast.IdAcc (_loc, t, (Ast.IdLid (_loc, "mk")))))
+                         ExId (_loc, (IdAcc (_loc, t, (IdLid (_loc, "mk")))))
                      | `dynamic (x,t) ->
-                         Ast.ExApp
+                         ExApp
                            (_loc,
-                             (Ast.ExId
+                             (ExId
                                 (_loc,
-                                  (Ast.IdAcc
-                                     (_loc, t,
-                                       (Ast.IdLid (_loc, "mk_dynamic")))))),
-                             (Ast.ExId (_loc, x))) in
+                                  (IdAcc
+                                     (_loc, t, (IdLid (_loc, "mk_dynamic")))))),
+                             (ExId (_loc, x))) in
                    let rest =
                      List.map
                        (fun (_loc,x,descr,ty)  ->
                           match (descr, ty) with
                           | (Some d,None ) ->
-                              Ast.StVal
-                                (_loc, Ast.ReNil,
-                                  (Ast.BiEq
-                                     (_loc,
-                                       (Ast.PaId
-                                          (_loc, (Ast.IdLid (_loc, x)))),
-                                       (Ast.ExApp
-                                          (_loc, mk, (Ast.ExStr (_loc, d)))))))
+                              StVal
+                                (_loc, ReNil,
+                                  (BiEq
+                                     (_loc, (PaId (_loc, (IdLid (_loc, x)))),
+                                       (ExApp (_loc, mk, (ExStr (_loc, d)))))))
                           | (Some d,Some typ) ->
-                              Ast.StVal
-                                (_loc, Ast.ReNil,
-                                  (Ast.BiEq
-                                     (_loc,
-                                       (Ast.PaId
-                                          (_loc, (Ast.IdLid (_loc, x)))),
-                                       (Ast.ExTyc
+                              StVal
+                                (_loc, ReNil,
+                                  (BiEq
+                                     (_loc, (PaId (_loc, (IdLid (_loc, x)))),
+                                       (ExTyc
                                           (_loc,
-                                            (Ast.ExApp
-                                               (_loc, mk,
-                                                 (Ast.ExStr (_loc, d)))),
+                                            (ExApp
+                                               (_loc, mk, (ExStr (_loc, d)))),
                                             typ)))))
                           | (None ,None ) ->
-                              Ast.StVal
-                                (_loc, Ast.ReNil,
-                                  (Ast.BiEq
-                                     (_loc,
-                                       (Ast.PaId
-                                          (_loc, (Ast.IdLid (_loc, x)))),
-                                       (Ast.ExApp
-                                          (_loc, mk, (Ast.ExStr (_loc, x)))))))
+                              StVal
+                                (_loc, ReNil,
+                                  (BiEq
+                                     (_loc, (PaId (_loc, (IdLid (_loc, x)))),
+                                       (ExApp (_loc, mk, (ExStr (_loc, x)))))))
                           | (None ,Some typ) ->
-                              Ast.StVal
-                                (_loc, Ast.ReNil,
-                                  (Ast.BiEq
-                                     (_loc,
-                                       (Ast.PaId
-                                          (_loc, (Ast.IdLid (_loc, x)))),
-                                       (Ast.ExTyc
+                              StVal
+                                (_loc, ReNil,
+                                  (BiEq
+                                     (_loc, (PaId (_loc, (IdLid (_loc, x)))),
+                                       (ExTyc
                                           (_loc,
-                                            (Ast.ExApp
-                                               (_loc, mk,
-                                                 (Ast.ExStr (_loc, x)))),
+                                            (ExApp
+                                               (_loc, mk, (ExStr (_loc, x)))),
                                             typ)))))) ls in
                    Ast.stSem_of_list rest : 'nonterminals ))))])]);
   Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
@@ -195,14 +181,13 @@ let _ =
                   (let rest =
                      List.map
                        (fun x  ->
-                          Ast.ExApp
+                          ExApp
                             (_loc,
-                              (Ast.ExId
+                              (ExId
                                  (_loc,
-                                   (Ast.IdAcc
-                                      (_loc, t, (Ast.IdLid (_loc, "clear")))))),
-                              (Ast.ExId (_loc, (Ast.IdLid (_loc, x)))))) ls in
-                   Ast.ExSeq (_loc, (Ast.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
+                                   (IdAcc (_loc, t, (IdLid (_loc, "clear")))))),
+                              (ExId (_loc, (IdLid (_loc, x)))))) ls in
+                   ExSeq (_loc, (Ast.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
     (None,
       [(None, None,
@@ -233,7 +218,7 @@ let _ =
                (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
                   (_loc : FanLoc.t)  ->
                   (let () = grammar_module_name := old in
-                   Ast.ExSeq (_loc, (Ast.exSem_of_list es)) : 'delete_rule_body ))))])]);
+                   ExSeq (_loc, (Ast.exSem_of_list es)) : 'delete_rule_body ))))])]);
   Gram.extend (delete_rules : 'delete_rules Gram.t )
     (None,
       [(None, None,
@@ -256,17 +241,17 @@ let _ =
                      List.map
                        (fun sl  ->
                           let (e,b) = expr_of_delete_rule _loc n sl in
-                          Ast.ExApp
+                          ExApp
                             (_loc,
-                              (Ast.ExApp
+                              (ExApp
                                  (_loc,
-                                   (Ast.ExId
+                                   (ExId
                                       (_loc,
-                                        (Ast.IdAcc
+                                        (IdAcc
                                            (_loc, (gm ()),
-                                             (Ast.IdLid (_loc, "delete_rule")))))),
+                                             (IdLid (_loc, "delete_rule")))))),
                                    e)), b)) sls in
-                   Ast.ExSeq (_loc, (Ast.exSem_of_list rest)) : 'delete_rules ))))])]);
+                   ExSeq (_loc, (Ast.exSem_of_list rest)) : 'delete_rules ))))])]);
   Gram.extend (qualuid : 'qualuid Gram.t )
     (None,
       [(None, None,
@@ -280,8 +265,7 @@ let _ =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `UID x ->
-                      (Ast.IdAcc (_loc, (Ast.IdUid (_loc, x)), xs) : 
-                      'qualuid )
+                      (IdAcc (_loc, (IdUid (_loc, x)), xs) : 'qualuid )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `UID _ -> true | _ -> false)),
@@ -289,7 +273,7 @@ let _ =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID x -> (Ast.IdUid (_loc, x) : 'qualuid )
+                 | `UID x -> (IdUid (_loc, x) : 'qualuid )
                  | _ -> assert false)))])]);
   Gram.extend (qualid : 'qualid Gram.t )
     (None,
@@ -304,8 +288,7 @@ let _ =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `UID x ->
-                      (Ast.IdAcc (_loc, (Ast.IdUid (_loc, x)), xs) : 
-                      'qualid )
+                      (IdAcc (_loc, (IdUid (_loc, x)), xs) : 'qualid )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `UID _ -> true | _ -> false)),
@@ -313,7 +296,7 @@ let _ =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID i -> (Ast.IdUid (_loc, i) : 'qualid )
+                 | `UID i -> (IdUid (_loc, i) : 'qualid )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `LID _ -> true | _ -> false)),
@@ -321,7 +304,7 @@ let _ =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `LID i -> (Ast.IdLid (_loc, i) : 'qualid )
+                 | `LID i -> (IdLid (_loc, i) : 'qualid )
                  | _ -> assert false)))])]);
   Gram.extend (t_qualid : 't_qualid Gram.t )
     (None,
@@ -336,8 +319,7 @@ let _ =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `UID x ->
-                      (Ast.IdAcc (_loc, (Ast.IdUid (_loc, x)), xs) : 
-                      't_qualid )
+                      (IdAcc (_loc, (IdUid (_loc, x)), xs) : 't_qualid )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `UID _ -> true | _ -> false)),
@@ -350,7 +332,7 @@ let _ =
               (fun (__fan_2 : [> FanToken.t])  _  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match (__fan_2, __fan_0) with
-                 | (`LID "t",`UID x) -> (Ast.IdUid (_loc, x) : 't_qualid )
+                 | (`LID "t",`UID x) -> (IdUid (_loc, x) : 't_qualid )
                  | _ -> assert false)))])]);
   Gram.extend (locals : 'locals Gram.t )
     (None,
@@ -420,7 +402,7 @@ let _ =
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `UID ("First"|"Last" as x) ->
-                      (Ast.ExVrn (_loc, x) : 'position )
+                      (ExVrn (_loc, x) : 'position )
                   | _ -> assert false)));
          ([`Stoken
              (((function
@@ -433,7 +415,7 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `UID ("Before"|"After"|"Level" as x) ->
-                     (Ast.ExApp (_loc, (Ast.ExVrn (_loc, x)), n) : 'position )
+                     (ExApp (_loc, (ExVrn (_loc, x)), n) : 'position )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `UID _ -> true | _ -> false)),
@@ -486,8 +468,7 @@ let _ =
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID ("LA"|"RA"|"NA" as x) ->
-                      (Ast.ExVrn (_loc, x) : 'assoc )
+                  | `UID ("LA"|"RA"|"NA" as x) -> (ExVrn (_loc, x) : 'assoc )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `UID _ -> true | _ -> false)),
@@ -663,25 +644,22 @@ let _ =
                       let restrict =
                         List.fold_left
                           (fun acc  (x,y)  ->
-                             Ast.ExApp
+                             ExApp
                                (_loc,
-                                 (Ast.ExApp
+                                 (ExApp
                                     (_loc,
-                                      (Ast.ExId
-                                         (_loc, (Ast.IdLid (_loc, "&&")))),
+                                      (ExId (_loc, (IdLid (_loc, "&&")))),
                                       acc)),
-                                 (Ast.ExApp
+                                 (ExApp
                                     (_loc,
-                                      (Ast.ExApp
+                                      (ExApp
                                          (_loc,
-                                           (Ast.ExId
-                                              (_loc, (Ast.IdLid (_loc, "=")))),
+                                           (ExId (_loc, (IdLid (_loc, "=")))),
                                            x)), y))))
-                          (Ast.ExApp
+                          (ExApp
                              (_loc,
-                               (Ast.ExApp
-                                  (_loc,
-                                    (Ast.ExId (_loc, (Ast.IdLid (_loc, "=")))),
+                               (ExApp
+                                  (_loc, (ExId (_loc, (IdLid (_loc, "=")))),
                                     x)), y)) ys in
                       mk_tok _loc ~restrict ~pattern:p (`STtok _loc) : 
                  'symbol ))));
@@ -751,7 +729,7 @@ let _ =
          [([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
             (Gram.mk_action
                (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
-                  (Ast.PaVrn (_loc, s) : 'simple_patt ))));
+                  (PaVrn (_loc, s) : 'simple_patt ))));
          ([`Skeyword "`";
           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
           `Stoken
@@ -762,9 +740,9 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `ANT ((""|"anti" as n),s) ->
-                     (Ast.PaApp
-                        (_loc, (Ast.PaVrn (_loc, v)),
-                          (Ast.PaAnt (_loc, (mk_anti ~c:"patt" n s)))) : 
+                     (PaApp
+                        (_loc, (PaVrn (_loc, v)),
+                          (PaAnt (_loc, (mk_anti ~c:"patt" n s)))) : 
                      'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
@@ -777,8 +755,7 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `STR (_,v) ->
-                     (Ast.PaApp
-                        (_loc, (Ast.PaVrn (_loc, s)), (Ast.PaStr (_loc, v))) : 
+                     (PaApp (_loc, (PaVrn (_loc, s)), (PaStr (_loc, v))) : 
                      'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
@@ -790,18 +767,16 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `LID x ->
-                     (Ast.PaApp
-                        (_loc, (Ast.PaVrn (_loc, s)),
-                          (Ast.PaId (_loc, (Ast.IdLid (_loc, x))))) : 
-                     'simple_patt )
+                     (PaApp
+                        (_loc, (PaVrn (_loc, s)),
+                          (PaId (_loc, (IdLid (_loc, x))))) : 'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
           `Skeyword "_"],
            (Gram.mk_action
               (fun _  (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
-                 (Ast.PaApp (_loc, (Ast.PaVrn (_loc, s)), (Ast.PaAny _loc)) : 
-                 'simple_patt ))));
+                 (PaApp (_loc, (PaVrn (_loc, s)), (PaAny _loc)) : 'simple_patt ))));
          ([`Skeyword "`";
           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
           `Skeyword "(";
@@ -813,10 +788,10 @@ let _ =
               (fun _  (v : 'internal_patt list)  _  (s : 'a_ident)  _ 
                  (_loc : FanLoc.t)  ->
                  (match v with
-                  | x::[] -> Ast.PaApp (_loc, (Ast.PaVrn (_loc, s)), x)
+                  | x::[] -> PaApp (_loc, (PaVrn (_loc, s)), x)
                   | x::xs ->
-                      Ast.PaApp
-                        (_loc, (Ast.PaApp (_loc, (Ast.PaVrn (_loc, s)), x)),
+                      PaApp
+                        (_loc, (PaApp (_loc, (PaVrn (_loc, s)), x)),
                           (Ast.paCom_of_list xs))
                   | _ -> assert false : 'simple_patt ))))])]);
   Gram.extend (internal_patt : 'internal_patt Gram.t )
@@ -826,13 +801,13 @@ let _ =
             (Gram.mk_action
                (fun (p2 : 'internal_patt)  _  (p1 : 'internal_patt) 
                   (_loc : FanLoc.t)  ->
-                  (Ast.PaAli (_loc, p1, p2) : 'internal_patt ))))]);
+                  (PaAli (_loc, p1, p2) : 'internal_patt ))))]);
       ((Some "|"), None,
         [([`Sself; `Skeyword "|"; `Sself],
            (Gram.mk_action
               (fun (p2 : 'internal_patt)  _  (p1 : 'internal_patt) 
                  (_loc : FanLoc.t)  ->
-                 (Ast.PaOrp (_loc, p1, p2) : 'internal_patt ))))]);
+                 (PaOrp (_loc, p1, p2) : 'internal_patt ))))]);
       ((Some "simple"), None,
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
@@ -840,18 +815,18 @@ let _ =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `STR (_,s) -> (Ast.PaStr (_loc, s) : 'internal_patt )
+                 | `STR (_,s) -> (PaStr (_loc, s) : 'internal_patt )
                  | _ -> assert false)));
         ([`Skeyword "_"],
           (Gram.mk_action
-             (fun _  (_loc : FanLoc.t)  -> (Ast.PaAny _loc : 'internal_patt ))));
+             (fun _  (_loc : FanLoc.t)  -> (PaAny _loc : 'internal_patt ))));
         ([`Stoken
             (((function | `LID _ -> true | _ -> false)), (`Normal, "`LID _"))],
           (Gram.mk_action
              (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                 match __fan_0 with
                 | `LID x ->
-                    (Ast.PaId (_loc, (Ast.IdLid (_loc, x))) : 'internal_patt )
+                    (PaId (_loc, (IdLid (_loc, x))) : 'internal_patt )
                 | _ -> assert false)));
         ([`Skeyword "("; `Sself; `Skeyword ")"],
           (Gram.mk_action
@@ -866,12 +841,11 @@ let _ =
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `LID i ->
-                      (Ast.PaId (_loc, (Ast.IdLid (_loc, i))) : 'pattern )
+                  | `LID i -> (PaId (_loc, (IdLid (_loc, i))) : 'pattern )
                   | _ -> assert false)));
          ([`Skeyword "_"],
            (Gram.mk_action
-              (fun _  (_loc : FanLoc.t)  -> (Ast.PaAny _loc : 'pattern ))));
+              (fun _  (_loc : FanLoc.t)  -> (PaAny _loc : 'pattern ))));
          ([`Skeyword "("; `Sself; `Skeyword ")"],
            (Gram.mk_action
               (fun _  (p : 'pattern)  _  (_loc : FanLoc.t)  ->
@@ -884,8 +858,7 @@ let _ =
            (Gram.mk_action
               (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
                  (_loc : FanLoc.t)  ->
-                 (Ast.PaTup
-                    (_loc, (Ast.PaCom (_loc, p1, (Ast.paCom_of_list ps)))) : 
+                 (PaTup (_loc, (PaCom (_loc, p1, (Ast.paCom_of_list ps)))) : 
                  'pattern ))))])]);
   Gram.extend (string : 'string Gram.t )
     (None,
@@ -896,7 +869,7 @@ let _ =
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `STR (_,s) -> (Ast.ExStr (_loc, s) : 'string )
+                  | `STR (_,s) -> (ExStr (_loc, s) : 'string )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `ANT ("",_) -> true | _ -> false)),
@@ -946,7 +919,7 @@ let _ =
          [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
             (Gram.mk_action
                (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (Ast.ExId (_loc, (Ast.IdLid (_loc, i))) : 'simple_expr ))));
+                  (ExId (_loc, (IdLid (_loc, i))) : 'simple_expr ))));
          ([`Skeyword "(";
           `Snterm (Gram.obj (expr : 'expr Gram.t ));
           `Skeyword ")"],

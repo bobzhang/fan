@@ -1,3 +1,4 @@
+open Ast
 module Ast = Camlp4Ast
 open Lib
 open LibUtil
@@ -59,7 +60,7 @@ let define ~expr  ~patt  eo x =
                         | `UID _ ->
                             (let el =
                                match param with
-                               | Ast.ExTup (_loc,e) -> Ast.list_of_expr e []
+                               | ExTup (_loc,e) -> Ast.list_of_expr e []
                                | e -> [e] in
                              if (List.length el) = (List.length sl)
                              then
@@ -82,7 +83,7 @@ let define ~expr  ~patt  eo x =
                         | `UID _ ->
                             (let pl =
                                match param with
-                               | Ast.PaTup (_loc,p) -> Ast.list_of_patt p []
+                               | PaTup (_loc,p) -> Ast.list_of_patt p []
                                | p -> [p] in
                              if (List.length pl) = (List.length sl)
                              then
@@ -126,11 +127,9 @@ let undef ~expr  ~patt  x =
   with | Not_found  -> ()
 let parse_def ~expr  ~patt  s =
   match Gram.parse_string expr ~loc:(FanLoc.mk "<command line>") s with
-  | Ast.ExId (_loc,Ast.IdUid (_,n)) -> define ~expr ~patt None n
-  | Ast.ExApp
-      (_loc,Ast.ExApp
-       (_,Ast.ExId (_,Ast.IdLid (_,"=")),Ast.ExId (_,Ast.IdUid (_,n))),e)
-      -> define ~expr ~patt (Some ([], e)) n
+  | ExId (_loc,IdUid (_,n)) -> define ~expr ~patt None n
+  | ExApp (_loc,ExApp (_,ExId (_,IdLid (_,"=")),ExId (_,IdUid (_,n))),e) ->
+      define ~expr ~patt (Some ([], e)) n
   | _ -> invalid_arg s
 let include_dirs = ref []
 let add_include_dir str =

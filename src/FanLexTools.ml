@@ -1,4 +1,5 @@
 (* NFA *)
+open Ast;
 open LibUtil;
 type node = { 
   id : int; 
