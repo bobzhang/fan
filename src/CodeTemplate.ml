@@ -1,6 +1,6 @@
 open Ast;
 
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 open LibUtil;
 
 let _loc =FanLoc.ghost ;

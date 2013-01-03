@@ -3,7 +3,7 @@ open Format
 open LibUtil
 open Lib
 open Lib.Basic
-module Ast = Camlp4Ast
+module Ast = FanAst
 open FSig
 module Make(S:FSig.Config) = struct
   open Expr open Ident

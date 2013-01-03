@@ -245,7 +245,7 @@ module type SyntaxPlugin = functor (Syn:Camlp4Syntax) -> sig end ;
 (** generate two printers to be registered*)
 module type PrinterPlugin = functor (Syn:Camlp4Syntax) -> PrinterImpl;
 
-(* module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> Parser.S ; *)
+(* module type OCAML_PARSER = functor (Ast:FanAst) -> Parser.S ; *)
 module type ParserPlugin = functor (Syn:Camlp4Syntax) -> ParserImpl;
 (* module type ASTFILTER_PLUGIN  = functor (F:AstFilters.S) -> sig end ; *)
 

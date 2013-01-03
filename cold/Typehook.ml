@@ -3,7 +3,7 @@ open Ast
 open FSig
 open Format
 open Lib
-module Ast = Camlp4Ast
+module Ast = FanAst
 let keep = ref false
 type plugin = 
   {

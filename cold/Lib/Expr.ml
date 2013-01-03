@@ -2,7 +2,7 @@ open Ast
 open LibUtil
 open Basic
 open FanUtil
-module Ast = Camlp4Ast
+module Ast = FanAst
 let rec sep_dot_expr acc =
   function
   | ExAcc (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1
@@ -438,13 +438,13 @@ class subst loc env =
 class type antiquot_filter
   =
   object 
-    inherit Camlp4Ast.map
+    inherit FanAst.map
     method get_captured_variables : (Ast.expr* Ast.expr) list
     method clear_captured_variables : unit
   end
 let capture_antiquot: antiquot_filter =
   object 
-    inherit  Camlp4Ast.map as super
+    inherit  FanAst.map as super
     val mutable constraints = []
     method! patt =
       function

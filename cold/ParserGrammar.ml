@@ -5,7 +5,7 @@ open PreCast.Syntax
 open LibUtil
 open Lib
 open FanUtil
-module Ast = Camlp4Ast
+module Ast = FanAst
 let _ = FanConfig.antiquotations := true
 let nonterminals = Gram.mk "nonterminals"
 let nonterminalsclear = Gram.mk "nonterminalsclear"

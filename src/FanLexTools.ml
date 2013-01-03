@@ -241,7 +241,7 @@ let rec simplify min max = function
     
 (*  the generated code depends on [next] [backtrack] [start] [Error] *)
 
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 let _loc = FanLoc.ghost;
 
   

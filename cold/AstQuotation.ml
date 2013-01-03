@@ -3,30 +3,12 @@ open LibUtil
 open FanUtil
 open Lib.Meta
 open Format
-open StdLib
-let _ = ()
 type quotation_error_message =  
   | Finding
   | Expanding
   | ParsingResult of FanLoc.t* string
   | NoName 
 type quotation_error = (string* string* quotation_error_message* exn) 
-let pp_print_quotation_error_message:
-  'fmt -> quotation_error_message -> 'result =
-  fun fmt  ->
-    function
-    | Finding  -> Format.fprintf fmt "Finding"
-    | Expanding  -> Format.fprintf fmt "Expanding"
-    | ParsingResult (a0,a1) ->
-        Format.fprintf fmt "@[<1>(ParsingResult@ %a@ %a)@]" FanLoc.pp_print_t
-          a0 pp_print_string a1
-    | NoName  -> Format.fprintf fmt "NoName"
-let pp_print_quotation_error: 'fmt -> quotation_error -> 'result =
-  fun fmt  a0  ->
-    (fun fmt  (a0,a1,a2,a3)  ->
-       Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_string a0
-         pp_print_string a1 pp_print_quotation_error_message a2 pp_print_exn
-         a3) fmt a0
 exception QuotationError of quotation_error
 type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
 module ExpKey = DynAst.Pack(struct

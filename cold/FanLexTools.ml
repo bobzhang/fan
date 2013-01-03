@@ -149,7 +149,7 @@ let rec simplify min max =
         then simplify min max no
         else Lte (i, (simplify min i yes), (simplify (i + 1) max no))
   | x -> x
-module Ast = Camlp4Ast
+module Ast = FanAst
 let _loc = FanLoc.ghost
 let get_tables ~tables  () =
   let t = Hashtbl.fold (fun key  x  accu  -> (x, key) :: accu) tables [] in

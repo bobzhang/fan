@@ -12,7 +12,7 @@ let fibm y =
   match y with
   | ExInt (_loc,x) -> ExInt (_loc, (string_of_int (fib (int_of_string x))))
   | x ->
-      let _loc = Camlp4Ast.loc_of_expr x in
+      let _loc = FanAst.loc_of_expr x in
       ExApp (_loc, (ExId (_loc, (IdLid (_loc, "fib")))), x)
 let _ = register_macro ("FIB", fibm)
 open LibUtil
@@ -35,7 +35,7 @@ let generate_fibs =
 let _ = register_macro ("GFIB", generate_fibs)
 let macro_expander =
   object (self)
-    inherit  Camlp4Ast.map as super
+    inherit  FanAst.map as super
     method! expr =
       function
       | ExApp (_loc,ExId (_,IdUid (_,a)),y) ->

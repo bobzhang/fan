@@ -3,7 +3,7 @@ open Longident
 open Asttypes
 open Lib
 open FanUtil
-open Camlp4Ast
+open FanAst
 open ParsetreeHelper
 let mkvirtual =
   function | ViVirtual  -> Virtual | ViNil  -> Concrete | _ -> assert false
@@ -23,14 +23,14 @@ let ident_tag i =
     | IdApp (_loc,i1,i2) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
-         | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifer")
+         | _ -> error (FanAst.loc_of_ident i) "invalid long identifer")
     | IdUid (_loc,s) ->
         (match (acc, s) with
          | (None ,"") -> None
          | (None ,s) -> Some ((lident s), `uident)
          | (Some (_,(`uident|`app)),"") -> acc
          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
-         | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier")
+         | _ -> error (FanAst.loc_of_ident i) "invalid long identifier")
     | IdLid (_loc,s) ->
         let x =
           match acc with

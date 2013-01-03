@@ -1,5 +1,5 @@
 open Ast;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 open Lib;
 open LibUtil;
 type item_or_def 'a =

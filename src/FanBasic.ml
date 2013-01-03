@@ -1,5 +1,5 @@
 (*
-   Basic module contains utility functions to manipulate Camlp4Ast
+   Basic module contains utility functions to manipulate FanAst
    This module is mainly provided to generate code. For simplicity,
    we don't take care of Location.(Should be FIXED later)
  *)

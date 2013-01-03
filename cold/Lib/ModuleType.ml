@@ -1,4 +1,4 @@
-open Camlp4Ast
+open FanAst
 let app0 mt1 mt2 =
   match (mt1, mt2) with
   | (MtId (_loc,i1),MtId (_,i2)) -> MtId (_loc, (IdApp (_loc, i1, i2)))

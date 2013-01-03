@@ -6,7 +6,7 @@ open LibUtil;
 open Basic;
 open FSig;
 open Ast;
-module Ast = Camlp4Ast; (* it has a nested  Ast module, FIXME *)
+module Ast = FanAst; (* it has a nested  Ast module, FIXME *)
 
 DEFINE GETLOC(expr)= Ast.loc_of_patt expr;
 

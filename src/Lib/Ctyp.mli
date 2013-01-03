@@ -63,7 +63,7 @@ val abstract_list : ctyp -> int option
 val eq : ctyp -> ctyp -> bool
 val eq_list : ctyp list -> ctyp list -> bool
 (* val mk_transform_type_eq : *)
-(*   unit -> Camlp4Ast.map *)
+(*   unit -> FanAst.map *)
   
 val transform_module_types : FSig.module_types ->
   (string * ident * int) list * FSig.module_types

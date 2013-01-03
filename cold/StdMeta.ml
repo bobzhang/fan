@@ -1,5 +1,4 @@
 open Ast
-module Ast = Camlp4Ast
 open LibUtil
 module Expr = struct
   let meta_int _loc i = ExInt (_loc, (string_of_int i))
@@ -19,10 +18,28 @@ module Expr = struct
       (_loc,
         (RbEq (_loc, (IdLid (_loc, "contents")), (mf_a _loc i.contents))),
         (ExNil _loc))
+  let mklist loc =
+    let rec loop top =
+      function
+      | [] -> ExId (loc, (IdUid (loc, "[]")))
+      | e1::el ->
+          let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+          ExApp
+            (_loc, (ExApp (_loc, (ExId (_loc, (IdUid (_loc, "::")))), e1)),
+              (loop false el)) in
+    loop true
+  let mkarray loc arr =
+    let rec loop top =
+      function
+      | [] -> ExId (loc, (IdUid (loc, "[]")))
+      | e1::el ->
+          let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+          ExArr (_loc, (ExSem (_loc, e1, (loop false el)))) in
+    let items = arr |> Array.to_list in loop true items
   let meta_list mf_a _loc ls =
-    Lib.Expr.mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
+    mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
   let meta_array mf_a _loc ls =
-    Lib.Expr.mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
+    mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
   let meta_option mf_a _loc =
     function
     | None  -> ExId (_loc, (IdUid (_loc, "None")))
@@ -49,10 +66,28 @@ module Patt = struct
     PaRec
       (_loc,
         (PaEq (_loc, (IdLid (_loc, "contents")), (mf_a _loc i.contents))))
+  let mklist loc =
+    let rec loop top =
+      function
+      | [] -> PaId (loc, (IdUid (loc, "[]")))
+      | e1::el ->
+          let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+          PaApp
+            (_loc, (PaApp (_loc, (PaId (_loc, (IdUid (_loc, "::")))), e1)),
+              (loop false el)) in
+    loop true
+  let mkarray loc arr =
+    let rec loop top =
+      function
+      | [] -> PaId (loc, (IdUid (loc, "[]")))
+      | e1::el ->
+          let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+          PaArr (_loc, (PaSem (_loc, e1, (loop false el)))) in
+    let items = arr |> Array.to_list in loop true items
   let meta_list mf_a _loc ls =
-    Lib.Patt.mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
+    mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
   let meta_array mf_a _loc ls =
-    Lib.Patt.mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
+    mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
   let meta_option mf_a _loc =
     function
     | None  -> PaId (_loc, (IdUid (_loc, "None")))

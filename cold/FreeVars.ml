@@ -1,7 +1,7 @@
 open LibUtil
 class ['accu] c_fold_pattern_vars f init =
   object 
-    inherit  Camlp4Ast.fold as super
+    inherit  FanAst.fold as super
     val acc = init
     method acc : 'accu= acc
     method! patt =
@@ -22,7 +22,7 @@ let rec fold_binding_vars f bi acc =
 class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
   SSet.empty) free_init =
   object (o)
-    inherit  Camlp4Ast.fold as super
+    inherit  FanAst.fold as super
     val free = (free_init : 'accu )
     val env = (env_init : SSet.t )
     method free = free

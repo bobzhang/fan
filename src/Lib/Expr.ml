@@ -13,7 +13,7 @@ open Ast;
 open LibUtil;
 open Basic;
 open FanUtil;
-module Ast= Camlp4Ast; (* it contains a module named Meta *)
+module Ast= FanAst; (* it contains a module named Meta *)
 
 
 (*
@@ -249,14 +249,14 @@ end;
 
 
 class type antiquot_filter =object
-  inherit Camlp4Ast.map;
+  inherit FanAst.map;
   method get_captured_variables: list (Ast.expr * Ast.expr);
   method clear_captured_variables: unit;
 end;
   
 (* We don't do any parsing for antiquots here, so it's parser-independent *)  
 let capture_antiquot : antiquot_filter = object
-  inherit Camlp4Ast.map as super;
+  inherit FanAst.map as super;
   val mutable constraints =[];
   method! patt = fun
   [ {:patt@_loc| $anti:s |} | {:patt@_loc| $str:s |} as p when is_antiquot s -> begin
@@ -648,7 +648,7 @@ let unknown len =
   
 (* let normalize = object *)
 (*   val expr:Ast.expr; *)
-(*   inherit Camlp4Ast.fold as super; *)
+(*   inherit FanAst.fold as super; *)
 (*   method! patt = with "patt" fun *)
 (*     [ {| $_ |} -> {| "_" |} *)
 (*     | {| $lid:_ |} -> {| "_" |} *)

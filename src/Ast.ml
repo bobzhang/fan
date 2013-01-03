@@ -431,3 +431,28 @@ type loc = FanLoc.t
     | CrVvr of loc and string and mutable_flag and ctyp
     | CrAnt of loc and string (* $s$ *) ];
   |};
+
+
+let safe_string_escaped s =
+  if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
+  else String.escaped s;
+
+
+external loc_of_ctyp : ctyp -> FanLoc.t = "%field0";
+external loc_of_patt : patt -> FanLoc.t = "%field0";
+external loc_of_expr : expr -> FanLoc.t = "%field0";
+external loc_of_module_type : module_type -> FanLoc.t = "%field0";
+external loc_of_module_expr : module_expr -> FanLoc.t = "%field0";
+external loc_of_sig_item : sig_item -> FanLoc.t = "%field0";
+external loc_of_str_item : str_item -> FanLoc.t = "%field0";
+external loc_of_class_type : class_type -> FanLoc.t = "%field0";
+external loc_of_class_sig_item : class_sig_item -> FanLoc.t = "%field0";
+external loc_of_class_expr : class_expr -> FanLoc.t = "%field0";
+external loc_of_class_str_item : class_str_item -> FanLoc.t = "%field0";
+external loc_of_with_constr : with_constr -> FanLoc.t = "%field0";
+external loc_of_binding : binding -> FanLoc.t = "%field0";
+external loc_of_rec_binding : rec_binding -> FanLoc.t = "%field0";
+external loc_of_module_binding : module_binding -> FanLoc.t = "%field0";
+external loc_of_match_case : match_case -> FanLoc.t = "%field0";
+external loc_of_ident : ident -> FanLoc.t = "%field0";
+  

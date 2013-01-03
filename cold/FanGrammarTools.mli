@@ -1,22 +1,23 @@
 open FanGrammar
+open Ast
 val print_warning : FanLoc.t -> string -> unit
 
 val prefix : string
 val meta_action : bool ref
-val grammar_module_name : Ast.ident ref
-val gm : unit -> Ast.ident
+val grammar_module_name : ident ref
+val gm : unit -> ident
 val mk_entry :
   name:name ->
-  pos:Ast.expr option -> levels:level list -> entry
+  pos:expr option -> levels:level list -> entry
 val mk_level :
   label:string option ->
-  assoc:Ast.expr option -> rules:rule list -> level
+  assoc:expr option -> rules:rule list -> level
 val mk_rule :
-  prod:symbol list -> action:Ast.expr option -> rule
+  prod:symbol list -> action:expr option -> rule
 val mk_symbol :
-  ?pattern:Ast.patt option ->
+  ?pattern:patt option ->
   text:text -> styp:styp -> symbol
-val string_of_patt : Camlp4Ast.Ast.patt -> string
+val string_of_patt : patt -> string
 
 val check_not_tok : symbol -> unit
     
@@ -25,44 +26,44 @@ val new_type_var: unit -> string
 val gensym: unit -> int ref
 val gen_lid: unit -> string
     
-val retype_rule_list_without_patterns:  Ast.loc -> rule list -> rule list
+val retype_rule_list_without_patterns:  loc -> rule list -> rule list
 exception NotneededTyping
-val make_ctyp : styp -> string -> Ast.ctyp option
+val make_ctyp : styp -> string -> ctyp option
 val make_ctyp_patt :
-  styp -> string -> Ast.patt -> Ast.patt
+  styp -> string -> patt -> patt
 val make_ctyp_expr :
-  styp -> string -> Ast.expr -> Ast.expr
+  styp -> string -> expr -> expr
 val text_of_action :
-  Ast.loc ->
-  symbol list -> string -> Ast.expr option -> string -> Ast.expr
+  loc ->
+  symbol list -> string -> expr option -> string -> expr
 val mk_srules :
-  Ast.loc ->
+  loc ->
   string ->
-  rule list -> string -> (text list * Ast.expr) list
-val make_expr : name -> string -> text -> Ast.expr
+  rule list -> string -> (text list * expr) list
+val make_expr : name -> string -> text -> expr
 val make_expr_rules :
-    loc -> name -> (text list * Ast.expr) list -> string -> Ast.expr
+    loc -> name -> (text list * expr) list -> string -> expr
 val expr_of_delete_rule :
-  Ast.loc -> name -> symbol list -> Ast.expr * Ast.expr
-val mk_name : Ast.loc -> Ast.ident -> name
+  loc -> name -> symbol list -> expr * expr
+val mk_name : loc -> ident -> name
 val mk_slist :
   loc ->
   bool -> symbol option -> symbol -> text
 val text_of_entry :
-  Ast.loc -> entry -> Ast.expr * Ast.expr * Ast.expr
+  loc -> entry -> expr * expr * expr
 val let_in_of_extend :
-  Ast.loc ->
-  Ast.ident option -> name list option -> Ast.expr -> Ast.expr
+  loc ->
+  ident option -> name list option -> expr -> expr
 val text_of_functorial_extend :
-  Ast.loc ->
-  Ast.ident option ->
-  name list option -> entry list -> Ast.expr
+  loc ->
+  ident option ->
+  name list option -> entry list -> expr
 val mk_tok :
-  Ast.loc ->
-  ?restrict:Ast.expr ->
-  pattern:Ast.patt -> styp -> symbol
+  loc ->
+  ?restrict:expr ->
+  pattern:patt -> styp -> symbol
 val sfold :
   ?sep:symbol ->
   loc ->
   string list ->
-  Ast.expr -> Ast.expr -> symbol -> symbol
+  expr -> expr -> symbol -> symbol

@@ -1,5 +1,5 @@
 open Ast;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 open Lib;
 open LibUtil;  
 open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
@@ -60,7 +60,7 @@ AstQuotation.of_str_item ~name:"lex.regexp" ~entry:declare_regexp;
   
 (*
 let change_ids suffix = object
-  inherit Camlp4Ast.map (* as super *);
+  inherit FanAst.map (* as super *);
   method! ident = with "ident" function
     [ {|$lid:s|}  when String.length s > 6 && String.sub s 0 6 = "__ulex" -> {|$(lid:s^suffix)|}
     | i -> i];

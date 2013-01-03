@@ -1,5 +1,5 @@
 
-open Camlp4Ast;
+open FanAst;
 #default_quotation "module_type";;
 
 let app0 mt1 mt2 =

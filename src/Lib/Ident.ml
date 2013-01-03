@@ -1,6 +1,6 @@
 open Ast;
 #default_quotation "ident";;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 open LibUtil;
 (*
   {[
@@ -174,6 +174,6 @@ let ident_map_full f x =
     {| $(lid:f s ) |}];
 
 let eq t1 t2 =
-  let strip_locs t = (Ast.map_loc (fun _ -> FanLoc.ghost))#ident t in
+  let strip_locs t = (FanAst.map_loc (fun _ -> FanLoc.ghost))#ident t in
   strip_locs t1 = strip_locs t2;
 

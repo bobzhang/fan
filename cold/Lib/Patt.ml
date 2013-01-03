@@ -2,7 +2,7 @@ open LibUtil
 open Basic
 open FSig
 open Ast
-module Ast = Camlp4Ast
+module Ast = FanAst
 let _loc = FanLoc.ghost
 let app a b = PaApp (_loc, a, b)
 let comma a b = PaCom (_loc, a, b)

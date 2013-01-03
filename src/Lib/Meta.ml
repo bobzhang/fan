@@ -1,5 +1,5 @@
 open Ast;
-module Ast = Camlp4Ast; (* FIXME: rename it into Camlp4Ast later *)
+module Ast = FanAst; (* FIXME: rename it into FanAst later *)
 
 (* never used before *)    
 module MetaLocVar : Ast.META_LOC= struct

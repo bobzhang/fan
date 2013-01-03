@@ -2,7 +2,7 @@ open Parsetree
 open Asttypes
 open Longident
 open LibUtil
-module Ast = Camlp4Ast
+module Ast = FanAst
 class printer =
   object (self : 'self)
     method longident _loc i =
@@ -90,13 +90,12 @@ class printer =
            | (true ,Some x) ->
                let u =
                  (List.map (fun x  -> TyVrn (_loc, x)) x) |>
-                   Camlp4Ast.tyApp_of_list in
+                   FanAst.tyApp_of_list in
                TyVrnInfSup (_loc, (Ast.tyOr_of_list ls), u)
            | (false ,_) -> TyVrnSup (_loc, (Ast.tyOr_of_list ls)))
       | Ptyp_constr (lid_loc,ts) ->
-          Camlp4Ast.tyApp_of_list
-            ((TyId (_loc, (self#longident_loc lid_loc))) ::
-            (List.map self#core_type ts))
+          FanAst.tyApp_of_list ((TyId (_loc, (self#longident_loc lid_loc)))
+            :: (List.map self#core_type ts))
       | Ptyp_object cfs ->
           let row_var = ref false in
           let res =
@@ -226,7 +225,7 @@ class printer =
               (fun (label,e)  ->
                  let v = self#expr e in
                  if label = "" then v else ExLab (_loc, label, v)) lst in
-          Camlp4Ast.exApp_of_list ((self#expr e) :: args)
+          FanAst.exApp_of_list ((self#expr e) :: args)
       | Pexp_match (e,lst) ->
           let cases = self#gen_cases _loc lst in
           ExMat (_loc, (self#expr e), (Ast.mcOr_of_list cases))
@@ -350,8 +349,7 @@ class printer =
              | ((false ,true ),None ) ->
                  let _loc = FanLoc.ghost in Ast.TyAnM _loc
              | _ -> assert false) variance params in
-      Camlp4Ast.tyApp_of_list ((TyId (loc, (self#longident_loc lid_loc))) ::
-        u)
+      FanAst.tyApp_of_list ((TyId (loc, (self#longident_loc lid_loc))) :: u)
     method with_constraint (({ loc = _loc;_} as lid1),w) =
       match w with
       | Pwith_type

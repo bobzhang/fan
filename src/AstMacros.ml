@@ -73,7 +73,7 @@ let rec fib = fun
 let fibm  y =
   match y with
   [ {:expr|$int:x|}  -> {:expr| $(`int:fib (int_of_string x))|}
-  |  x -> let _loc = Camlp4Ast.loc_of_expr x in {:expr| fib $x |} ];
+  |  x -> let _loc = FanAst.loc_of_expr x in {:expr| fib $x |} ];
 
 register_macro ("FIB",fibm);      
 
@@ -106,7 +106,7 @@ GFIB 10;
     
 
 let macro_expander = object(self)
-  inherit Camlp4Ast.map as super;
+  inherit FanAst.map as super;
   method! expr = with "expr" fun
   [{| $uid:a $y |} ->
     let try f = Hashtbl.find macro_expanders a in

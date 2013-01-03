@@ -6,7 +6,7 @@ open Ast;
   ]}
 
 *)
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 open Lib;
 open lang "expr";
 

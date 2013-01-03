@@ -52,6 +52,10 @@ begin
     ("Fold2",gen_fold2);] |> List.iter Typehook.register;
 end;
 
+(* +-----------------------------------------------------------------+
+   | Map generator                                                   |
+   +-----------------------------------------------------------------+ *)
+
 
 let (gen_map,gen_map2) = with "expr"
   let mk_variant cons params =

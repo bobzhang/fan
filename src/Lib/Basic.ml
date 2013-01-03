@@ -3,7 +3,7 @@ open LibUtil;
 open Ast;  
 
 (*
-   Basic module contains utility functions to manipulate Camlp4Ast
+   Basic module contains utility functions to manipulate Ast
    This module is mainly provided to generate code. For simplicity,
    we don't take care of Location.
  *)

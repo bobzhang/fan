@@ -23,11 +23,31 @@ let meta_bool _loc =
 let meta_ref mf_a _loc i =
   {| {contents= $(mf_a _loc !i) } |};
   (* << {val = .$ mf_a _loc i.val $. } >> ;  *)
+
+(* [mklist] and [mkarray]
+   duplicated with ExprPatt to remove cyclic dependency *)
+let mklist loc =
+  let rec loop top =  fun
+    [ [] -> {@loc| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
+        {| [$e1 :: $(loop false el)] |} ] in loop true ;
+let mkarray loc arr =
+  let rec loop top =  fun
+    [ [] -> {@loc| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
+        {| [| $e1 ; $(loop false el) |] |} ] in
+  let items = arr |> Array.to_list in 
+  loop true items;
   
 let meta_list mf_a _loc  ls =
-  MKLIST _loc (List.map (fun x -> mf_a _loc x ) ls ) ;
+  mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) ;
+  
 let meta_array mf_a _loc ls =
-  MKARRAY _loc (Array.map (fun x -> mf_a _loc x) ls)  ;
+  mkarray _loc (Array.map (fun x -> mf_a _loc x) ls)  ;
   
 let meta_option mf_a _loc  = fun
   [ None -> {|None|}

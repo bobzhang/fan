@@ -1,5 +1,5 @@
 open Ast
-module Ast = Camlp4Ast
+module Ast = FanAst
 module MetaLocVar : Ast.META_LOC =
   struct
   let meta_loc_patt _loc _ =

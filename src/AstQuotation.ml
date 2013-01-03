@@ -4,10 +4,12 @@ open FanUtil;
 open Lib.Meta;
 
 open Format;
-open StdLib;
+(* open StdLib; *)
+(* FIXME order is in-correct 
 {:fans|keep on; <++ "Print"; |};
+ *)
 
-{:ocaml|
+(* {:ocaml| *)
 type quotation_error_message =
     [ Finding
     | Expanding
@@ -18,7 +20,7 @@ type quotation_error_message =
    the second argument is the position tag 
  *)
 type quotation_error = (string * string * quotation_error_message * exn); 
-|};
+(* |}; *)
 
 
 

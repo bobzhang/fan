@@ -3,7 +3,7 @@ open Format
 open Lib
 open LibUtil
 module MetaAst = FanAst.Make(Lib.Meta.MetaGhostLoc)
-module Ast = Camlp4Ast
+module Ast = FanAst
 open FanGrammar
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 let prefix = "__fan_"
@@ -88,11 +88,11 @@ let make_ctyp styp tvar =
 let make_ctyp_patt styp tvar patt =
   match make_ctyp styp tvar with
   | None  -> patt
-  | Some t -> let _loc = Camlp4Ast.loc_of_patt patt in PaTyc (_loc, patt, t)
+  | Some t -> let _loc = FanAst.loc_of_patt patt in PaTyc (_loc, patt, t)
 let make_ctyp_expr styp tvar expr =
   match make_ctyp styp tvar with
   | None  -> expr
-  | Some t -> let _loc = Camlp4Ast.loc_of_expr expr in ExTyc (_loc, expr, t)
+  | Some t -> let _loc = FanAst.loc_of_expr expr in ExTyc (_loc, expr, t)
 let rec make_expr entry tvar =
   function
   | `TXmeta (_loc,n,tl,e,t) ->
@@ -274,7 +274,7 @@ let text_of_action _loc psl rtvar act tvar =
          | Some (PaAli (_loc,PaApp (_,_,PaTup (_,PaAny _)),p)) ->
              let p = make_ctyp_patt s.styp tvar p in
              ExFun (_loc, (McArr (_loc, p, (ExNil _loc), txt)))
-         | Some p when Camlp4Ast.is_irrefut_patt p ->
+         | Some p when FanAst.is_irrefut_patt p ->
              let p = make_ctyp_patt s.styp tvar p in
              ExFun (_loc, (McArr (_loc, p, (ExNil _loc), txt)))
          | Some _ ->
@@ -423,9 +423,9 @@ let text_of_functorial_extend _loc gram locals el =
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
   | None  ->
-      let no_variable = Camlp4Ast.wildcarder#patt pattern in
+      let no_variable = FanAst.wildcarder#patt pattern in
       let match_fun =
-        if Camlp4Ast.is_irrefut_patt no_variable
+        if FanAst.is_irrefut_patt no_variable
         then
           ExFun
             (_loc,
@@ -447,7 +447,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
       let text = `TXtok (_loc, match_fun, "Normal", descr) in
       { text; styp; pattern = (Some pattern) }
   | Some restrict ->
-      let p' = Camlp4Ast.wildcarder#patt pattern in
+      let p' = FanAst.wildcarder#patt pattern in
       let match_fun =
         ExFun
           (_loc,

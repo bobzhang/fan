@@ -1,5 +1,5 @@
 open Ast
-module Ast = Camlp4Ast
+module Ast = FanAst
 open Lib
 type spat_comp =  
   | SpTrm of FanLoc.t* Ast.patt* Ast.expr option

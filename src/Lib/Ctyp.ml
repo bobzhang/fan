@@ -1,7 +1,7 @@
 
 #default_quotation "ctyp";;
 open Ast;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 open LibUtil;
 open Format;
 open Basic;
@@ -291,7 +291,7 @@ let mk_obj class_name  base body =
 let is_recursive ty_dcl = match ty_dcl with
   [ Ast.TyDcl (_, name, _, ctyp, _)  ->
     let obj = object(self:'self_type)
-      inherit Camlp4Ast.fold as super;
+      inherit FanAst.fold as super;
       val mutable is_recursive = false;
       method! ctyp = fun
         [ {| $lid:i |} when i = name -> begin 
@@ -335,7 +335,7 @@ let is_abstract = fun
 let abstract_list = fun
   [ Ast.TyDcl (_, _, lst, {| |}, _) -> Some (List.length lst) | _ -> None];
 let eq t1 t2 =
-  let strip_locs t = (Camlp4Ast.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
+  let strip_locs t = (FanAst.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
   strip_locs t1 = strip_locs t2;
   
 let eq_list t1 t2 =
@@ -381,7 +381,7 @@ let eq_list t1 t2 =
  *)
 let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50;
-  inherit Camlp4Ast.map as super;
+  inherit FanAst.map as super;
   method! str_item = fun
     [ 
      {:str_item| type $(Ast.TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
