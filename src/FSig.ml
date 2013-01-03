@@ -62,6 +62,9 @@ type full_id_transform =
     (* pass the string, and << .$old$. .$return$. >>  *)      
     | `Obj of string -> string ];
 
+open StdLib;
+{:fans|keep on; <++ "Print"; |};
+{:ocaml|
 type named_type =
     (string*ctyp)
 and and_types =
@@ -70,7 +73,7 @@ and types =
     [= `Mutual of and_types
     | `Single of named_type ]
 and module_types = list types;
-
+  |};
 
 type obj_dest =
   [Obj of k

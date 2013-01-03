@@ -33,6 +33,7 @@ type plugin_name = string ;
 let filters : Hashtbl.t plugin_name plugin = Hashtbl.create 30;
   
 let show_code =  ref false;
+let print_collect_module_types = ref false;
   
 let register  ?filter ?position (name,f) =
   if Hashtbl.mem filters name
@@ -136,7 +137,13 @@ end;
 (*
   Entrance is  [module_expr]
   Choose [module_expr] as an entrace point to make the traversal
-  more modular
+  more modular.
+  Usage
+  {[
+  let v =  {:module_expr| struct $s end |} in
+  let module_expr =
+  (Typehook.traversal ())#module_expr v 
+  ]}
  *)  
 let traversal () : traversal  = object (self:'self_type)
   inherit Ast.map as super;
@@ -158,10 +165,12 @@ let traversal () : traversal  = object (self:'self_type)
     cur_and_types <-  f cur_and_types;
   (* entrance *)  
   method! module_expr = with "str_item" fun
-    [ {:module_expr| struct $u end |}  -> 
-      let () = self#in_module in 
-      let res = self#str_item u in 
-      let module_types = List.rev (self#get_cur_module_types) in
+    [ {:module_expr| struct $u end |}  ->  begin 
+      self#in_module ;
+      let res = self#str_item u ;
+      let module_types = List.rev (self#get_cur_module_types) ;
+      if !print_collect_module_types then
+        eprintf "@[%a@]@." FSig.pp_print_module_types module_types ;
       let result =
         Hashtbl.fold
           (fun _ {activate;position;transform;filter} acc
@@ -169,7 +178,7 @@ let traversal () : traversal  = object (self:'self_type)
               let module_types =
                 match filter with
                 [Some x -> apply_filter x module_types
-                |None -> module_types] in   
+                |None -> module_types] in
               if activate then
                 let code = transform module_types in 
                 match position with
@@ -182,13 +191,10 @@ let traversal () : traversal  = object (self:'self_type)
                 |None -> 
                   {| $acc; $code |} ]
             else  acc) filters
-          (if !keep then res else {| |} ) in 
-      (* let items = <<
-       *   .$res$.;
-       *   .$gen (List.rev (self#get_cur_module_types))$. >> ; *)
-      let () = self#out_module in 
+          (if !keep then res else {| |} );
+      self#out_module ;
       {:module_expr| struct $result end |}  
-
+    end
     | x -> super#module_expr x ];
 
   method! str_item  = with "str_item" fun
@@ -201,8 +207,10 @@ let traversal () : traversal  = object (self:'self_type)
       (if !keep then x else {| |} )
     end
     | {| type $((Ast.TyDcl (_, name, _, _, _) as t)) |} as x -> begin
-        self#update_cur_module_types (fun lst -> [`Single (name,t) :: lst]);
-       (* if keep.val then x else {| |} *)
+        let item =  `Single (name,t) ;
+          eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
+        self#update_cur_module_types (fun lst -> [ item :: lst]);
+       (* if !keep then x else {| |} *)
        x (* always keep *)
     end
     | ( {| let $_ |}  | {| module type $_ = $_ |}  | {| include $_ |}

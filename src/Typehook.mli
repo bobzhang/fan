@@ -1,6 +1,8 @@
 open Ast
   
 val keep : bool ref
+val print_collect_module_types: bool ref
+
 type plugin = {
   transform : FSig.module_types -> str_item;
   mutable activate : bool;

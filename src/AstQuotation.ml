@@ -4,10 +4,10 @@ open FanUtil;
 open Lib.Meta;
 
 open Format;
-(* open StdLib; *)
-(* FIXME order is in-correct 
-{:fans|keep on; <++ "Print"; |};
- *)
+open StdLib;
+
+(* FIXME order is in-correct  *)
+{:fans|keep on; (* <++ "Print"; *) |};
 
 (* {:ocaml| *)
 type quotation_error_message =

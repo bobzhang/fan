@@ -114,5 +114,4 @@ open ParserLex;;
 (* #load "Utf16.cmo";; *)
 #load_rec "Ulexing.cma";;
 module O = Obj;;
-
-
+open Ast;;

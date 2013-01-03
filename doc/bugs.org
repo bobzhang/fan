@@ -123,3 +123,6 @@
   But if I do bootstrap fan.native,(tried 3 times not to get a fix point) 
 
   
+
+* evaluation order
+  ocaml evaluation order is not specified....
