@@ -7,10 +7,61 @@ open LibUtil
 (* open FanAst *)
 open FanPAst  
 open ParsetreeHelper
+
+(* FOR BOOTSTRAPPING processes isolated here *)
+(*
+let rec view_app acc = fun
+  [{|$f $a |} -> view_app [a::acc] f
+  | f -> (f,acc)] *)
+let rec view_app_ctyp acc =
+  function | `TyApp (_loc,f,a) -> view_app_ctyp (a :: acc) f | f -> (f, acc)
+let rec view_app_expr acc =
+  function | `ExApp (_loc,f,a) -> view_app_expr (a :: acc) f | f -> (f, acc)
+let rec view_app_class_expr acc =
+  function | `CeApp (_loc,f,a) -> view_app_class_expr (a :: acc) f | f -> (f, acc)
+
+let rec name_tags_ctyp =
+  function
+  | `TyApp (_loc,t1,t2) -> (name_tags_ctyp t1) @ (name_tags_ctyp t2)
+  | `TyVrn (_loc,s) -> [s]
+  | _ -> assert false
+
+let rec to_var_list_ctyp =
+  function
+  | `TyApp (_loc,t1,t2) -> (to_var_list_ctyp t1) @ (to_var_list_ctyp t2)
+  | `TyQuo (_loc,s) -> [s]
+  | _ -> assert false
+
+let list_of_opt_ctyp ot acc =
+  match ot with | `TyNil _loc -> acc | t -> list_of_ctyp t acc
+
+let rec normalize_acc =
+  function
+  | `IdAcc (_loc,i1,i2) ->
+      `ExAcc (_loc, (normalize_acc i1), (normalize_acc i2))
+  | `IdApp (_loc,i1,i2) ->
+      `ExApp (_loc, (normalize_acc i1), (normalize_acc i2))
+  | `IdAnt (_loc,_)|`IdUid (_loc,_)|`IdLid (_loc,_) as i -> `ExId (_loc, i)
+        
+let rec sep_dot_expr acc =
+  function
+  | `ExAcc (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1
+  | `ExId (loc,`IdUid (_,s)) as e ->
+      (match acc with
+       | [] -> [(loc, [], e)]
+       | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
+  | `ExId (_loc,(`IdAcc (_l,_,_) as i)) ->
+      sep_dot_expr acc (normalize_acc i)
+  | e -> ((loc_of_expr e), [], e) :: acc      
+(* end *)
+      
 let mkvirtual =
   function | `ViVirtual  -> Virtual | `ViNil  -> Concrete | _ -> assert false
 let mkdirection =
   function | `DiTo  -> Upto | `DiDownto  -> Downto | _ -> assert false
+
+
+      
 let mkrf =
   function
   | `ReRecursive  -> Recursive
@@ -88,7 +139,7 @@ let rec ctyp =
       mktyp loc (Ptyp_alias ((ctyp t), i))
   | `TyAny loc -> mktyp loc Ptyp_any
   | `TyApp (loc,_,_) as f ->
-      let (f,al) = (* Ctyp.view_app [] f  *) undefined in
+      let (f,al) = view_app_ctyp [] f  in
       let (is_cls,li) = ctyp_long_id f in
       if is_cls
       then mktyp loc (Ptyp_class (li, (List.map ctyp al), []))
@@ -106,18 +157,18 @@ let rec ctyp =
   | `TyPkg (loc,pt) ->
       let (i,cs) = package_type pt in mktyp loc (Ptyp_package (i, cs))
   | `TyPol (loc,t1,t2) ->
-      mktyp loc (Ptyp_poly (((* Ctyp.to_var_list t1 *) undefined), (ctyp t2)))
+      mktyp loc (Ptyp_poly ((to_var_list_ctyp t1 ), (ctyp t2)))
   | `TyQuo (loc,s) -> mktyp loc (Ptyp_var s)
   | `TyTup (loc,`TySta (_,t1,t2)) ->
       mktyp loc
-        (Ptyp_tuple (List.map ctyp (* (list_of_ctyp t1 (list_of_ctyp t2 [])) *) undefined))
+        (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 [])) ))
   | `TyVrnEq (loc,t) -> mktyp loc (Ptyp_variant ((row_field t), true, None))
   | `TyVrnSup (loc,t) -> mktyp loc (Ptyp_variant ((row_field t), false, None))
   | `TyVrnInf (loc,t) ->
       mktyp loc (Ptyp_variant ((row_field t), true, (Some [])))
   |`TyVrnInfSup (loc,t,t') ->
       mktyp loc
-        (Ptyp_variant ((row_field t), true, (Some ((* Ctyp.name_tags t' *) undefined ))))
+        (Ptyp_variant ((row_field t), true, (Some (name_tags_ctyp t' ))))
   |`TyLab (loc,_,_) -> error loc "labelled type not allowed here"
   |`TyMan (loc,_,_) -> error loc "manifest type not allowed here"
   |`TyOlb (loc,_,_) -> error loc "labelled type not allowed here"
@@ -140,9 +191,9 @@ and row_field =
   | `TyNil _loc -> []
   | `TyVrn (_loc,i) -> [Rtag (i, true, [])]
   | `TyOfAmp (_loc,`TyVrn (_,i),t) ->
-      [Rtag (i, true, (List.map ctyp ((* list_of_ctyp *)undefined t [])))]
+      [Rtag (i, true, (List.map ctyp (list_of_ctyp t [])))]
   | `TyOf (_loc,`TyVrn (_,i),t) ->
-      [Rtag (i, false, (List.map ctyp ((* list_of_ctyp *)undefined t [])))]
+      [Rtag (i, false, (List.map ctyp (list_of_ctyp t [])))]
   | `TyOr (_loc,t1,t2) -> (row_field t1) @ (row_field t2)
   | t -> [Rinherit (ctyp t)]
 and meth_list fl acc =
@@ -192,9 +243,9 @@ let mkvariant =
   function
   | `TyId (loc,`IdUid (sloc,s)) -> ((with_loc s sloc), [], None, loc)
   | `TyOf (loc,`TyId (_,`IdUid (sloc,s)),t) ->
-      ((with_loc s sloc), (List.map ctyp ((* list_of_ctyp *)undefined t [])), None, loc)
+      ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])), None, loc)
   | `TyCol (loc,`TyId (_,`IdUid (sloc,s)),`TyArr (_,t,u)) ->
-      ((with_loc s sloc), (List.map ctyp ((* list_of_ctyp *)undefined t [])),
+      ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])),
         (Some (ctyp u)), loc)
   | `TyCol (loc,`TyId (_,`IdUid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), loc)
@@ -208,11 +259,11 @@ let rec type_decl tl cl loc m pflag =
       else type_decl tl cl loc m true t
   | `TyRec (_loc,t) ->
       mktype loc tl cl
-        (Ptype_record (List.map mktrecord ((* list_of_ctyp *)undefined t [])))
+        (Ptype_record (List.map mktrecord (list_of_ctyp t [])))
         (mkprivate' pflag) m
   | `TySum (_loc,t) ->
       mktype loc tl cl
-        (Ptype_variant (List.map mkvariant ((* list_of_ctyp *)undefined t [])))
+        (Ptype_variant (List.map mkvariant (list_of_ctyp t [])))
         (mkprivate' pflag) m
   | t ->
       if m <> None
@@ -435,7 +486,7 @@ let rec expr =
   function
   | `ExAcc (_loc,_,_)|`ExId (_loc,`IdAcc (_,_,_)) as e ->
       let (e,l) =
-        match `Expr.sep_dot_expr [] e with
+        match sep_dot_expr [] e with
         | (loc,ml,`ExId (sloc,`IdUid (_,s)))::l ->
             ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)
         | (loc,ml,`ExId (sloc,`IdLid (_,s)))::l ->
@@ -454,7 +505,7 @@ let rec expr =
       e
   | `ExAnt (loc,_) -> error loc "antiquotation not allowed here"
   | `ExApp (loc,_,_) as f ->
-      let (f,al) = `Expr.view_app [] f in
+      let (f,al) = view_app_expr [] f  in
       let al = List.map label_expr al in
       (match (expr f).pexp_desc with
        | Pexp_construct (li,None ,_) ->
@@ -853,7 +904,7 @@ and class_type =
   | `CtCon (loc,`ViNil ,id,tl) ->
       mkcty loc
         (Pcty_constr
-           ((long_class_ident id), (List.map ctyp ((* Ctyp.list_of_opt tl [] *) undefined))))
+           ((long_class_ident id), (List.map ctyp (list_of_opt_ctyp tl [] ))))
   | `CtFun (loc,`TyLab (_,lab,t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (class_type ct)))
   | `CtFun (loc,`TyOlb (loc1,lab,t),ct) ->
@@ -921,13 +972,13 @@ and class_sig_item c l =
 and class_expr =
   function
   | `CeApp (loc,_,_) as c ->
-      let (ce,el) = ClassExpr.view_app [] c in
+      let (ce,el) = view_app_class_expr [] c in
       let el = List.map label_expr el in
       mkcl loc (Pcl_apply ((class_expr ce), el))
   | `CeCon (loc,`ViNil ,id,tl) ->
       mkcl loc
         (Pcl_constr
-           ((long_class_ident id), (List.map ctyp ((* Ctyp.list_of_opt tl [] *) undefined))))
+           ((long_class_ident id), (List.map ctyp (list_of_opt_ctyp tl [] ))))
   | `CeFun (loc,`PaLab (_,lab,po),ce) ->
       mkcl loc
         (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
