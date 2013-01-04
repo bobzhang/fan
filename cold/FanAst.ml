@@ -2957,7 +2957,7 @@ module Make(MetaLoc:META_LOC) =
                      (meta_ctyp _loc a3))),
                 (meta_list
                    (fun _loc  (a0,a1)  ->
-                      Ast.ExTup
+                      ExTup
                         (_loc,
                           (ExCom
                              (_loc, (meta_ctyp _loc a0), (meta_ctyp _loc a1)))))

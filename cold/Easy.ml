@@ -7,7 +7,8 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
   ExApp
     (_loc, (ExId (_loc, (IdLid (_loc, "failwith")))),
       (ExStr (_loc, "arity >= 2 in other branches"))))
-   ~id:(id : basic_id_transform)  ~names  ~mk_tuple  ~mk_record  mk_variant =
+   ?cons_transform  ~id:(id : basic_id_transform)  ~names  ~mk_tuple 
+  ~mk_record  mk_variant =
   let module M = struct
     let mk_variant = mk_variant let mk_tuple = mk_tuple let arity = arity
     let left_type_variable = `Pre "mf_" let right_type_variable = `Pre "mf_"
@@ -27,6 +28,7 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
         let patt = Patt.tuple_of_number (PaAny _loc) arity in
         McArr (_loc, patt, (ExNil _loc), trail)
       else McNil _loc let names = names let mk_record = mk_record
+    let cons_transform = cons_transform
     end in
     let module MM = Frame.Make(M) in
       let open MM in
@@ -35,7 +37,7 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
   ExApp
     (_loc, (ExId (_loc, (IdLid (_loc, "failwith")))),
       (ExStr (_loc, "arity >= 2 in other branches"))))
-   ~kind  ~base  ~class_name  =
+   ?cons_transform  ~kind  ~base  ~class_name  =
   let make ~names  ~mk_tuple  ~mk_record  mk_variant =
     let module M = struct
       let mk_variant = mk_variant let mk_tuple = mk_tuple let arity = arity
@@ -55,6 +57,7 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
           let patt = Patt.tuple_of_number (PaAny _loc) arity in
           McArr (_loc, patt, (ExNil _loc), trail)
         else McNil _loc let names = names let mk_record = mk_record
+      let cons_transform = cons_transform
       end in
       let module MM = Frame.Make(M) in
         let open MM in

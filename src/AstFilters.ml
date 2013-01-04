@@ -1,16 +1,17 @@
 
 open LibUtil;
+open Ast ;
 
 type key = string;
 type filter 'a = 'a -> 'a;
   
-let interf_filters: Hashtbl.t key (filter Ast.sig_item) = Hashtbl.create 40;
-let implem_filters: Hashtbl.t key (filter Ast.str_item) = Hashtbl.create 40;
-let topphrase_filters: Hashtbl.t key (filter Ast.str_item) = Hashtbl.create 40;
+let interf_filters: Hashtbl.t key (filter sig_item) = Hashtbl.create 40;
+let implem_filters: Hashtbl.t key (filter str_item) = Hashtbl.create 40;
+let topphrase_filters: Hashtbl.t key (filter str_item) = Hashtbl.create 40;
 
-let applied_interf_filters:  Queue.t (string * filter Ast.sig_item) = Queue.create ();
-let applied_implem_filters:  Queue.t (string *filter Ast.str_item) = Queue.create ();
-let applied_topphrase_filters:  Queue.t (string * filter Ast.str_item) = Queue.create ();
+let applied_interf_filters:  Queue.t (string * filter sig_item) = Queue.create ();
+let applied_implem_filters:  Queue.t (string *filter str_item) = Queue.create ();
+let applied_topphrase_filters:  Queue.t (string * filter str_item) = Queue.create ();
   
 let apply_interf_filters  i = Queue.fold (fun ast (_name,f) -> f ast) i applied_interf_filters;
 let apply_implem_filters  i = Queue.fold (fun ast (_name,f) -> f ast) i applied_implem_filters;

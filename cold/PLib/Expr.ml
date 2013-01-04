@@ -586,11 +586,11 @@ let tuple_of_list lst =
 let of_vstr_number name i =
   let item = (List.init i (fun i  -> ExId (_loc, (xid i)))) |> tuple_of_list in
   ExApp (_loc, (ExVrn (_loc, name)), item)
-let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
+let gen_tuple_n ~arity  cons n =
   let args =
     List.init arity
       (fun i  -> List.init n (fun j  -> ExId (_loc, (xid ~off:i j)))) in
-  let pat = of_str (cons_transform cons) in
+  let pat = of_str cons in
   (List.map (fun lst  -> apply pat lst) args) |> tuple_of_list
 let tuple _loc =
   function
@@ -640,14 +640,6 @@ let mep_comma x y =
            (ExApp
               (_loc, (ExId (_loc, (IdUid (_loc, "PaCom")))),
                 (ExId (_loc, (IdLid (_loc, "_loc")))))), x)), y)
-let mvep_comma x y =
-  ExApp
-    (_loc, (ExVrn (_loc, "PaCom")),
-      (ExTup
-         (_loc,
-           (ExCom
-              (_loc, (ExId (_loc, (IdLid (_loc, "_loc")))),
-                (ExCom (_loc, x, y)))))))
 let mee_comma x y =
   ExApp
     (_loc,
@@ -696,6 +688,17 @@ let vep_app x y =
            (ExCom
               (_loc, (ExId (_loc, (IdLid (_loc, "_loc")))),
                 (ExCom (_loc, x, y)))))))
+let mk_tuple_ep =
+  function
+  | [] -> assert false
+  | x::[] -> x
+  | xs ->
+      ExApp
+        (_loc,
+          (ExApp
+             (_loc, (ExId (_loc, (IdUid (_loc, "PaTup")))),
+               (ExId (_loc, (IdLid (_loc, "_loc")))))),
+          (List.reduce_right mep_comma xs))
 let mep_of_str s =
   let u =
     ExApp
@@ -723,14 +726,6 @@ let mee_of_str s =
 let vee_of_str s =
   ExApp
     (_loc, (ExVrn (_loc, "ExVrn")),
-      (ExTup
-         (_loc,
-           (ExCom
-              (_loc, (ExId (_loc, (IdLid (_loc, "_loc")))),
-                (ExStr (_loc, s)))))))
-let vep_of_str s =
-  ExApp
-    (_loc, (ExVrn (_loc, "PaVrn")),
       (ExTup
          (_loc,
            (ExCom
@@ -840,29 +835,6 @@ let mk_tuple_vee =
                (ExCom
                   (_loc, (ExId (_loc, (IdLid (_loc, "_loc")))),
                     (List.reduce_right mvee_comma xs))))))
-let mk_tuple_ep =
-  function
-  | [] -> assert false
-  | x::[] -> x
-  | xs ->
-      ExApp
-        (_loc,
-          (ExApp
-             (_loc, (ExId (_loc, (IdUid (_loc, "PaTup")))),
-               (ExId (_loc, (IdLid (_loc, "_loc")))))),
-          (List.reduce_right mep_comma xs))
-let mk_tuple_vep =
-  function
-  | [] -> assert false
-  | x::[] -> x
-  | xs ->
-      ExApp
-        (_loc, (ExVrn (_loc, "PaTup")),
-          (ExTup
-             (_loc,
-               (ExCom
-                  (_loc, (ExId (_loc, (IdLid (_loc, "_loc")))),
-                    (List.reduce_right mvep_comma xs))))))
 let mee_record_col label expr =
   ExApp
     (_loc,

@@ -9,22 +9,21 @@ type vrn =
   | TyAbstr 
 type trail_info = (vrn* int) 
 type col =  {
-  col_label: string;
-  col_mutable: bool;
-  col_ctyp: ctyp} 
+  label: string;
+  is_mutable: bool;
+  ctyp: ctyp} 
 type ty_info = 
   {
-  ty_name_expr: expr;
-  ty_expr: expr;
-  ty_id_expr: expr;
-  ty_id_patt: patt;
-  ty_id_exprs: expr list;
-  ty_id_patts: patt list} 
-type record_col = 
-  {
-  record_label: string;
-  record_mutable: bool;
-  record_info: ty_info} 
+  name_expr: expr;
+  expr: expr;
+  id_expr: expr;
+  id_patt: patt;
+  id_exprs: expr list;
+  id_patts: patt list} 
+type record_col =  {
+  label: string;
+  is_mutable: bool;
+  info: ty_info} 
 type record_info = record_col list 
 type basic_id_transform =
   [ `Pre of string | `Post of string | `Fun of string -> string] 
@@ -75,6 +74,7 @@ module type Config =
     val left_type_id : basic_id_transform
     val trail : trail_info -> match_case
     val names : string list
+    val cons_transform : (string -> string) option
   end
 type warning_type =  
   | Abstract of string

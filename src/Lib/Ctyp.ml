@@ -168,9 +168,10 @@ let gen_ty_of_tydcl ~off tydcl =
    @raise Invalid_argument 
 
    {[
-   list_of_record <:ctyp< u:int; m:mutable int >>;
-   [{Sig.label="u"; Sig.is_mutable=false; Sig.ctyp=TyId  (IdLid  "int")};
-    {Sig.label="m"; Sig.is_mutable=true; Sig.ctyp=TyId  (IdLid  "int")}]
+     L.Ctyp.list_of_record {:ctyp| u:int;m:mutable int |};
+     - : FSig.col list =
+     [{label = "u"; is_mutable = false; ctyp = TyId (, IdLid (, "int"))};
+      {label = "m"; is_mutable = true; ctyp = TyId (, IdLid (, "int"))}]
    ]}
    
  *)

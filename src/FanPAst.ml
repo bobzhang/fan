@@ -1,8 +1,20 @@
-open StdLib;  
-{:fans|keep off; <++ "MetaExpr2", "MetaPatt2";|};
 
+module type META_LOC = sig
+      (** The first location is where to put the returned pattern.
+          Generally it's _loc to match with {:patt| ... |} quotations.
+          The second location is the one to treat. *)
+    val meta_loc_patt : FanLoc.t -> FanLoc.t -> PAst.patt;
+      (** The first location is where to put the returned expression.
+          Generally it's _loc to match with {:expr| ... |} quotations.
+          The second location is the one to treat. *)
+    val meta_loc_expr : FanLoc.t -> FanLoc.t -> PAst.expr;
+end;
+open FanUtil;  
+open StdLib;
 
+{:fans|keep off; <++ "MetaExpr2", "MetaPatt2","FMap","FFold","FPrint","FOPrint";|};
 
+include PAst;
   
 {:ocaml|
    type loc = FanLoc.t
@@ -406,20 +418,10 @@ open StdLib;
 
 
 
-module type META_LOC = sig
-      (** The first location is where to put the returned pattern.
-          Generally it's _loc to match with {:patt| ... |} quotations.
-          The second location is the one to treat. *)
-    val meta_loc_patt : FanLoc.t -> FanLoc.t -> PAst.patt;
-      (** The first location is where to put the returned expression.
-          Generally it's _loc to match with {:expr| ... |} quotations.
-          The second location is the one to treat. *)
-    val meta_loc_expr : FanLoc.t -> FanLoc.t -> PAst.expr;
-end;
-
 module Make(MetaLoc:META_LOC) = struct
 
-  open Ast;
+
+
   module Expr (* : sig *)
   (*   val meta_class_str_item: loc -> class_str_item -> PAst.expr; *)
   (* end  *)= struct
@@ -455,4 +457,231 @@ end;
 
 
 
+(* to be replaced later *)
+let rec list_of_binding x acc =
+  match x with
+  [ `BiAnd (_loc,b1,b2) -> list_of_binding b1 (list_of_binding b2 acc)
+  | t -> [t :: acc]];
+let rec list_of_rec_binding x acc =
+  match x with
+  [ `RbSem (_loc,b1,b2) -> list_of_rec_binding b1 (list_of_rec_binding b2 acc)
+  | t -> [t :: acc]];
+let rec list_of_with_constr x acc =
+  match x with
+  [ `WcAnd (_loc,w1,w2) -> list_of_with_constr w1 (list_of_with_constr w2 acc)
+  | t -> [t :: acc]];
+let rec list_of_ctyp x acc =
+  match x with
+  [ `TyNil _loc -> acc
+  | `TyAmp (_loc,x,y)|`TyCom (_loc,x,y)|`TySta (_loc,x,y)|`TySem (_loc,x,y)|`TyAnd
+      (_loc,x,y)|`TyOr (_loc,x,y) -> list_of_ctyp x (list_of_ctyp y acc)
+  | x -> [x :: acc]];
+let rec list_of_patt x acc =
+  match x with
+  [ `PaNil _loc -> acc
+  | `PaCom (_loc,x,y)|`PaSem (_loc,x,y) -> list_of_patt x (list_of_patt y acc)
+  | x -> [x :: acc]];
+let rec list_of_expr x acc =
+  match x with
+  [ `ExNil _loc -> acc
+  | `ExCom (_loc,x,y)|`ExSem (_loc,x,y) -> list_of_expr x (list_of_expr y acc)
+  | x -> [x :: acc]];
+let rec list_of_str_item x acc =
+  match x with
+  [ `StNil _loc -> acc
+  | `StSem (_loc,x,y) -> list_of_str_item x (list_of_str_item y acc)
+  | x -> [x :: acc]];
+let rec list_of_sig_item x acc =
+  match x with
+  [ `SgNil _loc -> acc
+  | `SgSem (_loc,x,y) -> list_of_sig_item x (list_of_sig_item y acc)
+  | x -> [x :: acc]];
+let rec list_of_class_sig_item x acc =
+  match x with
+  [ `CgNil _loc -> acc
+  | `CgSem (_loc,x,y) ->
+      list_of_class_sig_item x (list_of_class_sig_item y acc)
+  | x -> [x :: acc] ];
+let rec list_of_class_str_item x acc =
+  match x with
+  [ `CrNil _loc -> acc
+  | `CrSem (_loc,x,y) ->
+      list_of_class_str_item x (list_of_class_str_item y acc)
+  | x -> [x :: acc] ];
+let rec list_of_class_type x acc =
+  match x with
+  [ `CtAnd (_loc,x,y) -> list_of_class_type x (list_of_class_type y acc)
+  | x -> [x :: acc]];
+let rec list_of_class_expr x acc =
+  match x with
+  [ `CeAnd (_loc,x,y) -> list_of_class_expr x (list_of_class_expr y acc)
+  | x -> [x :: acc] ];
+let rec list_of_module_expr x acc =
+  match x with
+  [ `MeApp (_loc,x,y) -> list_of_module_expr x (list_of_module_expr y acc)
+  | x -> [x :: acc]];
+let rec list_of_match_case x acc =
+  match x with
+  [ `McNil _loc -> acc
+  | `McOr (_loc,x,y) -> list_of_match_case x (list_of_match_case y acc)
+  | x -> [x :: acc] ]; 
+let rec list_of_ident x acc =
+  match x with
+  [ `IdAcc (_loc,x,y)|`IdApp (_loc,x,y) ->
+      list_of_ident x (list_of_ident y acc)
+  | x -> [x :: acc] ];
+let rec list_of_module_binding x acc =
+  match x with
+  [ `MbAnd (_loc,x,y) ->
+      list_of_module_binding x (list_of_module_binding y acc)
+  | x -> [x :: acc] ];
+let map_expr f =
+  object  inherit  map as super;  method! expr x = f (super#expr x); end;
+let map_patt f =
+  object  inherit  map as super; method! patt x = f (super#patt x); end;
+let map_ctyp f =
+  object  inherit  map as super; method! ctyp x = f (super#ctyp x); end;
+let map_str_item f =
+  object  inherit  map as super; method! str_item x = f (super#str_item x); end;
+let map_sig_item f =
+  object  inherit  map as super; method! sig_item x = f (super#sig_item x); end;
+let map_loc f =
+  object  inherit  map as super; method! loc x = f (super#loc x); end;
+class clean_ast =
+  object 
+    inherit  map as super;
+    method! with_constr wc =
+      match super#with_constr wc with
+      [ `WcAnd (_loc,`WcNil _l,wc)|`WcAnd (_loc,wc,`WcNil _l) -> wc
+      | wc -> wc];
+    method! expr e =
+      match super#expr e with
+      [ `ExLet (_loc,_,`BiNil _l,e)|`ExRec (_loc,`RbNil _l,e)|`ExCom
+          (_loc,`ExNil _l,e)|`ExCom (_loc,e,`ExNil _l)|`ExSem
+          (_loc,`ExNil _l,e)|`ExSem (_loc,e,`ExNil _l) -> e
+      | e -> e];
+    method! patt p =
+      match super#patt p with
+      [ `PaAli (_loc,p,`PaNil _l)|`PaOrp (_loc,`PaNil _l,p)|`PaOrp
+          (_loc,p,`PaNil _l)|`PaCom (_loc,`PaNil _l,p)|`PaCom
+          (_loc,p,`PaNil _l)|`PaSem (_loc,`PaNil _l,p)|`PaSem (_loc,p,`PaNil _l)
+          -> p
+      | p -> p];
+    method! match_case mc =
+      match super#match_case mc with
+      [ `McOr (_loc,`McNil _l,mc)|`McOr (_loc,mc,`McNil _l) -> mc
+      | mc -> mc];
+    method! binding bi =
+      match super#binding bi with
+      [ `BiAnd (_loc,`BiNil _l,bi)|`BiAnd (_loc,bi,`BiNil _l) -> bi
+      | bi -> bi];
+    method! rec_binding rb =
+      match super#rec_binding rb with
+      [ `RbSem (_loc,`RbNil _l,bi)|`RbSem (_loc,bi,`RbNil _l) -> bi
+      | bi -> bi];
+    method! module_binding mb =
+      match super#module_binding mb with
+      [ `MbAnd (_loc,`MbNil _l,mb)|`MbAnd (_loc,mb,`MbNil _l) -> mb
+      | mb -> mb];
+    method! ctyp t =
+      match super#ctyp t with
+      [ `TyPol (_loc,`TyNil _l,t)|`TyAli (_loc,`TyNil _l,t)|`TyAli
+          (_loc,t,`TyNil _l)|`TyArr (_loc,t,`TyNil _l)|`TyArr
+          (_loc,`TyNil _l,t)|`TyOr (_loc,`TyNil _l,t)|`TyOr
+          (_loc,t,`TyNil _l)|`TyOf (_loc,t,`TyNil _l)|`TyAnd
+          (_loc,`TyNil _l,t)|`TyAnd (_loc,t,`TyNil _l)|`TySem
+          (_loc,t,`TyNil _l)|`TySem (_loc,`TyNil _l,t)|`TyCom
+          (_loc,`TyNil _l,t)|`TyCom (_loc,t,`TyNil _l)|`TyAmp
+          (_loc,t,`TyNil _l)|`TyAmp (_loc,`TyNil _l,t)|`TySta
+          (_loc,`TyNil _l,t)|`TySta (_loc,t,`TyNil _l) -> t
+      | t -> t];
+    method! sig_item sg =
+      match super#sig_item sg with
+      [ `SgSem (_loc,`SgNil _l,sg)|`SgSem (_loc,sg,`SgNil _l) -> sg
+      | `SgTyp (_loc,`TyNil _l) -> `SgNil _loc
+      | sg -> sg];
+    method! str_item st =
+      match super#str_item st with
+      [ `StSem (_loc,`StNil _l,st)|`StSem (_loc,st,`StNil _l) -> st
+      | `StTyp (_loc,`TyNil _l) -> `StNil _loc
+      | `StVal (_loc,_,`BiNil _l) -> `StNil _loc
+      | st -> st];
+    method! module_type mt =
+      match super#module_type mt with
+      [ `MtWit (_loc,mt,`WcNil _l) -> mt
+      | mt -> mt];
+    method! class_expr ce =
+      match super#class_expr ce with
+      [ `CeAnd (_loc,`CeNil _l,ce)|`CeAnd (_loc,ce,`CeNil _l) -> ce
+      | ce -> ce];
+    method! class_type ct =
+      match super#class_type ct with
+      [ `CtAnd (_loc,`CtNil _l,ct)|`CtAnd (_loc,ct,`CtNil _l) -> ct
+      | ct -> ct];
+    method! class_sig_item csg =
+      match super#class_sig_item csg with
+      [ `CgSem (_loc,`CgNil _l,csg)|`CgSem (_loc,csg,`CgNil _l) -> csg
+      | csg -> csg];
+    method! class_str_item cst =
+      match super#class_str_item cst with
+      [ `CrSem (_loc,`CrNil _l,cst)|`CrSem (_loc,cst,`CrNil _l) -> cst
+      | cst -> cst];
+  end;
+class reloc _loc = object  inherit  map; method! loc _ = _loc; end;
+let wildcarder =
+  object (self)
+    inherit  map as super;
+    method! patt =
+      function
+      [ `PaId (_loc,`IdLid (_,_)) -> `PaAny _loc
+      | `PaAli (_loc,p,_) -> self#patt p
+      | p -> super#patt p];
+  end;
+let match_pre =
+  object (self)
+    inherit  map;
+    method! match_case =
+      function
+      [ `McArr (_loc,p,`ExNil _,e) ->
+          `McArr
+            (_loc, p, (`ExNil _loc),
+              (`ExFun
+                 (_loc,
+                   (`McArr
+                      (_loc, (`PaId (_loc, (`IdUid (_loc, "()")))),
+                        (`ExNil _loc), e)))))
+      | `McArr (_loc,p,e,e1) ->
+          `McArr
+            (_loc, p, e,
+              (`ExFun
+                 (_loc,
+                   (`McArr
+                      (_loc, (`PaId (_loc, (`IdUid (_loc, "()")))),
+                        (`ExNil _loc), e1)))))
+      | `McOr (_loc,a1,a2) ->
+          `McOr (_loc, (self#match_case a1), (self#match_case a2))
+      | `McNil _loc -> `McNil _loc
+      | `McAnt (_loc,x) -> `McAnt (_loc, (add_context x "lettry"))];
+  end;
 
+
+let rec is_module_longident =
+  function
+  [ `IdAcc (_loc,_,i) -> is_module_longident i
+  | `IdApp (_loc,i1,i2) ->
+      (is_module_longident i1) && (is_module_longident i2)
+  | `IdUid (_loc,_) -> true
+  | _ -> false ];
+      
+let ident_of_expr =
+  let error () =
+    invalid_arg "ident_of_expr: this expression is not an identifier" in
+  let rec self =
+    function
+    [ `ExApp (_loc,e1,e2) -> `IdApp (_loc, (self e1), (self e2))
+    | `ExAcc (_loc,e1,e2) -> `IdAcc (_loc, (self e1), (self e2))
+    | `ExId (_loc,`IdLid (_,_)) -> error ()
+    | `ExId (_loc,i) -> if is_module_longident i then i else error ()
+    | _ -> error () ] in
+  function [ `ExId (_loc,i) -> i | `ExApp (_loc,_,_) -> error () | t -> self t ] ;
+      

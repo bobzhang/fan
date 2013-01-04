@@ -72,7 +72,7 @@ val gen_tuple_first : number:int -> off:int -> expr
 val gen_tuple_second : number:int -> off:int -> expr
 val tuple_of_number : expr -> int -> expr
 val tuple_of_list : expr list -> expr
-val gen_tuple_n : arity:int -> string -> int -> expr
+val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> expr
 val tuple : loc -> expr list -> expr
 val mkumin : loc -> string -> expr -> expr
 val mk_assert : expr -> expr

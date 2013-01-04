@@ -2,6 +2,7 @@ open Format
 let failwithf fmt = ksprintf failwith fmt
 let prerr_endlinef fmt = ksprintf prerr_endline fmt
 let invalid_argf fmt = kprintf invalid_arg fmt
+let undefined = failwith "undefined"    
 let memoize f =
   let cache = Hashtbl.create 101 in
   fun v  ->

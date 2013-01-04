@@ -18,17 +18,16 @@ module Make(S:FSig.Config) = struct
             exit 2)
          else check_valid name) S.names
   let mapi_expr simple_expr_of_ctyp i (y : Ast.ctyp) =
-    let ty_name_expr = simple_expr_of_ctyp y in
-    let base = ty_name_expr +> S.names in
-    let ty_id_exprs =
+    let name_expr = simple_expr_of_ctyp y in
+    let base = name_expr +> S.names in
+    let id_exprs =
       List.init S.arity (fun index  -> ExId (_loc, (xid ~off:index i)))
-    and ty_id_patts =
+    and id_patts =
       List.init S.arity (fun index  -> PaId (_loc, (xid ~off:index i))) in
-    let ty_id_expr = Expr.tuple_of_list ty_id_exprs in
-    let ty_id_patt = Patt.tuple_of_list ty_id_patts in
-    let ty_expr = apply base ty_id_exprs in
-    { ty_name_expr; ty_expr; ty_id_expr; ty_id_exprs; ty_id_patt; ty_id_patts
-    }
+    let id_expr = Expr.tuple_of_list id_exprs in
+    let id_patt = Patt.tuple_of_list id_patts in
+    let expr = apply base id_exprs in
+    { name_expr; expr; id_expr; id_exprs; id_patt; id_patts }
   let tuple_expr_of_ctyp simple_expr_of_ctyp ty =
     let open ErrorMonad in
       let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in
@@ -121,7 +120,9 @@ module Make(S:FSig.Config) = struct
     let open ErrorMonad in
       let f cons tyargs acc =
         let args_length = List.length tyargs in
-        let p = Patt.gen_tuple_n ~arity:S.arity cons args_length in
+        let p =
+          Patt.gen_tuple_n ?cons_transform:S.cons_transform ~arity:S.arity
+            cons args_length in
         let mk (cons,tyargs) =
           let exprs = List.mapi (mapi_expr simple_expr_of_ctyp) tyargs in
           S.mk_variant cons exprs in
@@ -162,7 +163,7 @@ module Make(S:FSig.Config) = struct
   let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp =
     let open ErrorMonad in
       function
-      | Ast.TyDcl (_,_,tyvars,ctyp,_constraints) ->
+      | TyDcl (_,_,tyvars,ctyp,_constraints) ->
           let ctyp =
             match ctyp with
             | TyMan (_loc,_,ctyp)|TyPrv (_loc,ctyp) -> ctyp
@@ -175,13 +176,12 @@ module Make(S:FSig.Config) = struct
                  List.mapi
                    (fun i  x  ->
                       match x with
-                      | { col_label; col_mutable; col_ctyp } ->
+                      | { label; is_mutable; ctyp } ->
                           {
-                            record_info =
-                              (mapi_expr (unwrap simple_expr_of_ctyp) i
-                                 col_ctyp);
-                            record_label = col_label;
-                            record_mutable = col_mutable
+                            info =
+                              (mapi_expr (unwrap simple_expr_of_ctyp) i ctyp);
+                            label;
+                            is_mutable
                           }) cols in
                mk_prefix tyvars
                  (currying ~arity:S.arity

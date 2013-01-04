@@ -9,7 +9,7 @@ let comma a b = PaCom (_loc, a, b)
 let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
-  let _loc = FanLoc.merge (loc_of_patt a) (loc_of_patt b) in
+  let _loc = FanLoc.merge (Ast.loc_of_patt a) (Ast.loc_of_patt b) in
   PaSem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
@@ -48,7 +48,7 @@ let mklist loc =
     function
     | [] -> PaId (_loc, (IdUid (_loc, "[]")))
     | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_patt e1) loc in
         PaApp
           (_loc, (PaApp (_loc, (PaId (_loc, (IdUid (_loc, "::")))), e1)),
             (loop false el)) in
@@ -56,13 +56,13 @@ let mklist loc =
 let rec apply accu =
   function
   | [] -> accu
-  | x::xs -> let _loc = loc_of_patt x in apply (PaApp (_loc, accu, x)) xs
+  | x::xs -> let _loc = Ast.loc_of_patt x in apply (PaApp (_loc, accu, x)) xs
 let mkarray loc arr =
   let rec loop top =
     function
     | [] -> PaId (_loc, (IdUid (_loc, "[]")))
     | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_patt e1) loc in
         PaArr (_loc, (PaSem (_loc, e1, (loop false el)))) in
   let items = arr |> Array.to_list in loop true items
 let of_str s =
@@ -112,11 +112,11 @@ let tuple_of_list lst =
 let of_vstr_number name i =
   let item = (List.init i (fun i  -> PaId (_loc, (xid i)))) |> tuple_of_list in
   PaApp (_loc, (PaVrn (_loc, name)), item)
-let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
+let gen_tuple_n ~arity  cons n =
   let args =
     List.init arity
       (fun i  -> List.init n (fun j  -> PaId (_loc, (xid ~off:i j)))) in
-  let pat = of_str (cons_transform cons) in
+  let pat = of_str cons in
   (List.map (fun lst  -> apply pat lst) args) |> tuple_of_list
 let tuple _loc =
   function
@@ -126,8 +126,8 @@ let tuple _loc =
 let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi
-      (fun i  ({ label;_} : col)  ->
-         PaEq (_loc, (IdLid (_loc, label)), (PaId (_loc, (xid ~off i)))))
+      (fun i  { col_label;_}  ->
+         PaEq (_loc, (IdLid (_loc, col_label)), (PaId (_loc, (xid ~off i)))))
       cols in
   let res =
     zfold_left ~start:1 ~until:(arity - 1)

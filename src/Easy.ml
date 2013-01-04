@@ -16,6 +16,7 @@ let gen_str_item
     ?module_name
     ?(arity=1)
     ?(trail= {:expr| failwith "arity >= 2 in other branches" |} )
+    ?cons_transform
     ~id:(id:basic_id_transform)  ~names  
     (* you must specify when arity >=2 *)
     ~mk_tuple  ~mk_record mk_variant =
@@ -37,6 +38,8 @@ let gen_str_item
       else {:match_case| |} ;
     let names = names ;
     let mk_record = mk_record ;
+    let cons_transform = cons_transform;
+        
   end in
   let module MM = Frame.Make(M) in
   MM.(str_item_of_module_types ?module_name normal_simple_expr_of_ctyp);
@@ -45,6 +48,7 @@ let gen_object
     ?module_name
     ?(arity=1)
     ?(trail= {:expr| failwith "arity >= 2 in other branches" |} )
+    ?cons_transform
     ~kind
     ~base
     ~class_name = 
@@ -68,6 +72,7 @@ let gen_object
        else {:match_case| |} ;
      let names = names ;
      let mk_record = mk_record;
+     let cons_transform = cons_transform;
    end in
   let module MM = Frame.Make(M) in
   MM.(obj_of_module_types

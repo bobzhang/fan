@@ -120,6 +120,9 @@ module type Config = sig
 
   val trail: trail_info -> match_case;
   val names: list string;
+
+  (* transforming the constructor name(it only has effect in the pattern part) *)  
+  val cons_transform: option (string->string);  
 end; 
 
 
