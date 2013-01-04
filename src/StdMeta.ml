@@ -1,4 +1,4 @@
-open Ast;
+(* open Ast; *)
 (* module Ast = FanAst; *)
 open LibUtil;
 #default_quotation "expr";;
@@ -18,7 +18,7 @@ module Patt = struct
   INCLUDE "src/MetaTemplate.ml";
 end;
 
-
+(*
 module PExpr = struct
   let meta_int _loc i = `ExInt (_loc, (string_of_int i));
   let meta_int32 _loc i = `ExInt32 (_loc, (Int32.to_string i));
@@ -27,7 +27,7 @@ module PExpr = struct
   let meta_float _loc i = `ExFlo (_loc, (FanUtil.float_repres i));
   let meta_string _loc i = `ExStr (_loc, (Ast.safe_string_escaped i));
   let meta_char _loc i = `ExChr (_loc, (Char.escaped i));
-  let meta_unit _loc _ : PAst.expr= `ExId (_loc, (`IdUid (_loc, "()")));
+  let meta_unit _loc _ = `ExId (_loc, (`IdUid (_loc, "()")));
   let meta_bool _loc =
     function
     [ true  -> `ExId (_loc, (`IdLid (_loc, "true")))
@@ -38,7 +38,7 @@ module PExpr = struct
       function
       [ [] -> `ExId (loc, (`IdUid (loc, "[]")))
       | [e1::el] ->
-          let _loc = (* FanLoc.ghost in *) if top then loc else FanLoc.merge (PAst.loc_of_expr e1) loc in
+          let _loc = (* FanLoc.ghost in *) if top then loc else FanLoc.merge (loc_of_expr e1) loc in
           `ExApp
             (_loc, (`ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e1)),
               (loop false el))] in
@@ -57,7 +57,7 @@ module PPatt = struct
   let meta_float _loc i = `PaFlo (_loc, (FanUtil.float_repres i));
   let meta_string _loc i = `PaStr (_loc, (Ast.safe_string_escaped i));
   let meta_char _loc i = `PaChr (_loc, (Char.escaped i));
-  let meta_unit _loc _ : PAst.patt= `PaId (_loc, (`IdUid (_loc, "()")));
+  let meta_unit _loc _ = `PaId (_loc, (`IdUid (_loc, "()")));
   let meta_bool _loc =
     function
     [ true  -> `PaId (_loc, (`IdLid (_loc, "true")))
@@ -68,7 +68,7 @@ module PPatt = struct
       function
       [ [] -> `PaId (loc, (`IdUid (loc, "[]")))
       | [e1::el] ->
-          let _loc = (* FanLoc.ghost in *) if top then loc else FanLoc.merge (PAst.loc_of_patt e1) loc in
+          let _loc = (* FanLoc.ghost in *) if top then loc else FanLoc.merge (loc_of_patt e1) loc in
           `PaApp
             (_loc, (`PaApp (_loc, (`PaId (_loc, (`IdUid (_loc, "::")))), e1)),
               (loop false el))] in
@@ -77,3 +77,4 @@ module PPatt = struct
     mklist _loc (List.map (fun x  -> mf_a _loc x) ls);
       
 end;
+*)

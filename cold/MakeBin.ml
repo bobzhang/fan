@@ -92,39 +92,39 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
      clear (); phr)
   let rec sig_handler =
     function
-    | SgDir (_loc,"load",ExStr (_,s)) -> (rewrite_and_load "" s; None)
-    | SgDir (_loc,"directory",ExStr (_,s)) ->
+    | `SgDir (_loc,"load",`ExStr (_,s)) -> (rewrite_and_load "" s; None)
+    | `SgDir (_loc,"directory",`ExStr (_,s)) ->
         (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-    | SgDir (_loc,"use",ExStr (_,s)) ->
+    | `SgDir (_loc,"use",`ExStr (_,s)) ->
         Some
           (parse_file ~directive_handler:sig_handler s
              PreCast.CurrentParser.parse_interf)
-    | SgDir (_loc,"default_quotation",ExStr (_,s)) ->
+    | `SgDir (_loc,"default_quotation",`ExStr (_,s)) ->
         (AstQuotation.default := s; None)
-    | SgDir (_loc,"filter",ExStr (_,s)) ->
+    | `SgDir (_loc,"filter",`ExStr (_,s)) ->
         (AstFilters.use_interf_filter s; None)
-    | SgDir (loc,x,_) ->
+    | `SgDir (loc,x,_) ->
         FanLoc.raise loc
           (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
     | _ -> assert false
   let rec str_handler =
     function
-    | StDir (_loc,"load",ExStr (_,s)) -> (rewrite_and_load "" s; None)
-    | StDir (_loc,"directory",ExStr (_,s)) ->
+    | `StDir (_loc,"load",`ExStr (_,s)) -> (rewrite_and_load "" s; None)
+    | `StDir (_loc,"directory",`ExStr (_,s)) ->
         (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-    | StDir (_loc,"use",ExStr (_,s)) ->
+    | `StDir (_loc,"use",`ExStr (_,s)) ->
         Some
           (parse_file ~directive_handler:str_handler s
              PreCast.CurrentParser.parse_implem)
-    | StDir (_loc,"default_quotation",ExStr (_,s)) ->
+    | `StDir (_loc,"default_quotation",`ExStr (_,s)) ->
         (AstQuotation.default := s; None)
-    | StDir (_loc,"lang_at",ExApp (_,ExStr (_,tag),ExStr (_,quot))) ->
+    | `StDir (_loc,"lang_at",`ExApp (_,`ExStr (_,tag),`ExStr (_,quot))) ->
         (AstQuotation.default_at_pos tag quot; None)
-    | StDir (_loc,"lang_clear",ExNil _) ->
+    | `StDir (_loc,"lang_clear",`ExNil _) ->
         (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
-    | StDir (_loc,"filter",ExStr (_,s)) ->
+    | `StDir (_loc,"filter",`ExStr (_,s)) ->
         (AstFilters.use_implem_filter s; None)
-    | StDir (loc,x,_) ->
+    | `StDir (loc,x,_) ->
         FanLoc.raise loc
           (XStream.Error (x ^ "bad directive camlp4 can not handled "))
     | _ -> assert false

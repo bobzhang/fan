@@ -220,7 +220,7 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
       let exp_ast = patt_filter meta_ast in
       (* BOOTSTRAPPING *)
       let rec subst_first_loc name =  with "patt" fun
-        [ {| (* Ast. *) $uid:u $_ |} -> {| (* Ast. *)$uid:u $lid:name |}
+        [ {| (* Ast. *) (* ` *)$uid:u $_ |} -> {| (* Ast. *)$uid:u $lid:name |}
         | {| $a $b |} -> {| $(subst_first_loc name a) $b |}
         | p -> p ] in 
       match loc_name_opt with

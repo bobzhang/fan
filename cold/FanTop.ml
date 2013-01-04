@@ -45,11 +45,11 @@ let use_file token_stream =
     if stopped_at_directive <> None
     then
       match pl with
-      | (StDir (_loc,"load",ExStr (_,s)))::[] ->
+      | (`StDir (_loc,"load",`ExStr (_,s)))::[] ->
           (Topdirs.dir_load Format.std_formatter s; loop ())
-      | (StDir (_loc,"directory",ExStr (_,s)))::[] ->
+      | (`StDir (_loc,"directory",`ExStr (_,s)))::[] ->
           (Topdirs.dir_directory s; loop ())
-      | (StDir (_loc,"default_quotation",ExStr (_,s)))::[] ->
+      | (`StDir (_loc,"default_quotation",`ExStr (_,s)))::[] ->
           (AstQuotation.set_default s; loop ())
       | _ -> (pl, false)
     else (pl, true) in

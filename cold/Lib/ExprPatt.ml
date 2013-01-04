@@ -58,16 +58,16 @@ let mkarray loc arr =
    It is applied to both expr and patt
    {[
    of_str "`A";
-   ExVrn  "A" || PaVrn "A"
+   `ExVrn  "A" || `PaVrn "A"
    
    of_str "A";
-   ExId  (IdUid  "A")
+   `ExId  (`IdUid  "A")
 
    of_str "abs";
-   ExId  (IdLid  "abs")
+   `ExId  (`IdLid  "abs")
 
    of_str "&&";
-   ExId  (IdLid  "&&")
+   `ExId  (`IdLid  "&&")
    ]}
   *)
 let of_str s =

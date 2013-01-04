@@ -234,7 +234,7 @@ let parse_include_file_smart file =
 let parse_module_type str =
   try
     match Gram.parse_string module_type str with
-    | MtId (_loc,i) -> i
+    | `MtId (_loc,i) -> i
     | _ ->
         (eprintf "the module type %s is not a simple module type" str; exit 2)
   with | _ -> (eprintf "%s is not a valid module_type" str; exit 2)

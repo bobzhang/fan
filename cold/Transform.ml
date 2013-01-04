@@ -1,4 +1,4 @@
-open Ast
+(* open Ast *)
 open Format
 open LibUtil
 open Lib
@@ -8,17 +8,17 @@ let transform =
   let _loc = FanLoc.ghost in
   let open Lib.Ident in
     function
-    | `Pre pre -> (fun x  -> ExId (_loc, (ident_map (fun x  -> pre ^ x) x)))
+    | `Pre pre -> (fun x  -> `ExId (_loc, (ident_map (fun x  -> pre ^ x) x)))
     | `Post post ->
-        (fun x  -> ExId (_loc, (ident_map (fun x  -> x ^ post) x)))
-    | `Fun f -> (fun x  -> ExId (_loc, (ident_map f x)))
-    | `Last f -> (fun x  -> ExId (_loc, (ident_map_of_ident f x)))
-    | `Ident f -> (fun x  -> ExId (_loc, (f x)))
-    | `Idents f -> (fun x  -> ExId (_loc, (f (list_of_acc_ident x []))))
+        (fun x  -> `ExId (_loc, (ident_map (fun x  -> x ^ post) x)))
+    | `Fun f -> (fun x  -> `ExId (_loc, (ident_map f x)))
+    | `Last f -> (fun x  -> `ExId (_loc, (ident_map_of_ident f x)))
+    | `Ident f -> (fun x  -> `ExId (_loc, (f x)))
+    | `Idents f -> (fun x  -> `ExId (_loc, (f (list_of_acc_ident x []))))
     | `Obj f ->
         (function
-         | IdLid (_loc,x) ->
-             ExSnd (_loc, (ExId (_loc, (IdLid (_loc, "self")))), (f x))
+         | `IdLid (_loc,x) ->
+             `ExSnd (_loc, (`ExId (_loc, (`IdLid (_loc, "self")))), (f x))
          | t ->
              let dest = map_to_string t in
              let src = Lib.Ident.to_string.contents t in
@@ -27,7 +27,7 @@ let transform =
                 (Hashtbl.add Basic.conversion_table src dest;
                  eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest)
               else ();
-              ExSnd (_loc, (ExId (_loc, (IdLid (_loc, "self")))), (f dest))))
+              `ExSnd (_loc, (`ExId (_loc, (`IdLid (_loc, "self")))), (f dest))))
 let basic_transform =
   function
   | `Pre pre -> (fun x  -> pre ^ x)
@@ -38,5 +38,5 @@ let right_transform =
   function
   | #basic_id_transform as x ->
       let f = basic_transform x in
-      (fun x  -> ExId (_loc, (IdLid (_loc, (f x)))))
+      (fun x  -> `ExId (_loc, (`IdLid (_loc, (f x)))))
   | `Exp f -> f

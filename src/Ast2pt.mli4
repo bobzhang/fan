@@ -1,10 +1,8 @@
-open PAst
+open Ast
 open Format
   
 val mkvirtual : virtual_flag -> Asttypes.virtual_flag
-
 val mkdirection : direction_flag -> Asttypes.direction_flag
-
 val mkrf : rec_flag -> Asttypes.rec_flag
 
 val ident_tag : ident -> Longident.t * [> `app | `lident | `uident ]

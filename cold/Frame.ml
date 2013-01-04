@@ -1,4 +1,4 @@
-open Ast
+(* open Ast *)
 open Format
 open LibUtil
 open Lib
@@ -21,9 +21,9 @@ module Make(S:FSig.Config) = struct
     let name_expr = simple_expr_of_ctyp y in
     let base = name_expr +> S.names in
     let id_exprs =
-      List.init S.arity (fun index  -> ExId (_loc, (xid ~off:index i)))
+      List.init S.arity (fun index  -> `ExId (_loc, (xid ~off:index i)))
     and id_patts =
-      List.init S.arity (fun index  -> PaId (_loc, (xid ~off:index i))) in
+      List.init S.arity (fun index  -> `PaId (_loc, (xid ~off:index i))) in
     let id_expr = Expr.tuple_of_list id_exprs in
     let id_patt = Patt.tuple_of_list id_patts in
     let expr = apply base id_exprs in
@@ -32,13 +32,13 @@ module Make(S:FSig.Config) = struct
     let open ErrorMonad in
       let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in
       match ty with
-      | TyTup (_loc,t) ->
+      | `TyTup (_loc,t) ->
           let ls = Ast.list_of_ctyp t [] in
           let len = List.length ls in
           let patt = Patt.mk_tuple ~arity:S.arity ~number:len in
           let tys = List.mapi (mapi_expr simple_expr_of_ctyp) ls in
           S.names <+
-            (currying [McArr (_loc, patt, (ExNil _loc), (S.mk_tuple tys))]
+            (currying [`McArr (_loc, patt, (`ExNil _loc), (S.mk_tuple tys))]
                ~arity:S.arity)
       | _ -> invalid_arg & (sprintf "tuple_expr_of_ctyp {|%s|}\n" "")
   let rec normal_simple_expr_of_ctyp cxt ty =
@@ -49,21 +49,21 @@ module Make(S:FSig.Config) = struct
         let tyvar = right_transform S.right_type_variable in
         let rec aux =
           function
-          | TyId (_loc,IdLid (_,id)) ->
+          | `TyId (_loc,`IdLid (_,id)) ->
               if Hashset.mem cxt id
-              then ExId (_loc, (IdLid (_loc, (left_trans id))))
-              else right_trans (IdLid (_loc, id))
-          | TyId (_loc,id) -> right_trans id
-          | TyTup (_loc,_t) as ty ->
+              then `ExId (_loc, (`IdLid (_loc, (left_trans id))))
+              else right_trans (`IdLid (_loc, id))
+          | `TyId (_loc,id) -> right_trans id
+          | `TyTup (_loc,_t) as ty ->
               tuple_expr_of_ctyp (normal_simple_expr_of_ctyp cxt) ty
-          | TyApp (_loc,t1,t2) -> ExApp (_loc, (aux t1), (aux t2))
-          | TyQuo (_loc,s) -> tyvar s
-          | TyArr (_loc,t1,t2) ->
+          | `TyApp (_loc,t1,t2) -> `ExApp (_loc, (aux t1), (aux t2))
+          | `TyQuo (_loc,s) -> tyvar s
+          | `TyArr (_loc,t1,t2) ->
               aux
-                (TyApp
+                (`TyApp
                    (_loc,
-                     (TyApp
-                        (_loc, (TyId (_loc, (IdLid (_loc, "arrow")))), t1)),
+                     (`TyApp
+                        (_loc, (`TyId (_loc, (`IdLid (_loc, "arrow")))), t1)),
                      t2))
           | ty -> raise (Unhandled ty) in
         try return & (aux ty)
@@ -81,33 +81,33 @@ module Make(S:FSig.Config) = struct
         let tyvar = right_transform S.right_type_variable in
         let rec aux =
           function
-          | TyId (_loc,id) -> trans id
-          | TyQuo (_loc,s) -> tyvar s
-          | TyApp (_loc,_,_) as ty ->
+          | `TyId (_loc,id) -> trans id
+          | `TyQuo (_loc,s) -> tyvar s
+          | `TyApp (_loc,_,_) as ty ->
               (match Ctyp.list_of_app ty with
-               | (TyId (_loc,tctor))::ls ->
+               | (`TyId (_loc,tctor))::ls ->
                    (ls |>
                       (List.map
                          (function
-                          | TyQuo (_loc,s) ->
-                              ExId (_loc, (IdLid (_loc, (var s))))
+                          | `TyQuo (_loc,s) ->
+                              `ExId (_loc, (`IdLid (_loc, (var s))))
                           | t ->
-                              ExFun
+                              `ExFun
                                 (_loc,
-                                  (McArr
+                                  (`McArr
                                      (_loc,
-                                       (PaId (_loc, (IdLid (_loc, "self")))),
-                                       (ExNil _loc), (aux t)))))))
+                                       (`PaId (_loc, (`IdLid (_loc, "self")))),
+                                       (`ExNil _loc), (aux t)))))))
                      |> (apply (trans tctor))
                | _ -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp")
-          | TyArr (_loc,t1,t2) ->
+          | `TyArr (_loc,t1,t2) ->
               aux
-                (TyApp
+                (`TyApp
                    (_loc,
-                     (TyApp
-                        (_loc, (TyId (_loc, (IdLid (_loc, "arrow")))), t1)),
+                     (`TyApp
+                        (_loc, (`TyId (_loc, (`IdLid (_loc, "arrow")))), t1)),
                      t2))
-          | TyTup (_loc,_) as ty ->
+          | `TyTup (_loc,_) as ty ->
               tuple_expr_of_ctyp obj_simple_expr_of_ctyp ty
           | ty -> raise (Unhandled ty) in
         try return & (aux ty)
@@ -126,16 +126,16 @@ module Make(S:FSig.Config) = struct
         let mk (cons,tyargs) =
           let exprs = List.mapi (mapi_expr simple_expr_of_ctyp) tyargs in
           S.mk_variant cons exprs in
-        let e = mk (cons, tyargs) in (McArr (_loc, p, (ExNil _loc), e)) ::
+        let e = mk (cons, tyargs) in (`McArr (_loc, p, (`ExNil _loc), e)) ::
           acc in
       let info =
-        match ty with
-        | TySum (_loc,t) -> (TyVrn, (List.length (Ast.list_of_ctyp t [])))
-        | TyVrnEq (_loc,t) ->
+        match ty with (* FIXME*)
+        | `TySum (_loc,t) -> (TyVrn, (List.length (Ast.list_of_ctyp t [])))
+        | `TyVrnEq (_loc,t) ->
             (TyVrnEq, (List.length (Ast.list_of_ctyp t [])))
-        | TyVrnSup (_loc,t) ->
+        | `TyVrnSup (_loc,t) ->
             (TyVrnSup, (List.length (Ast.list_of_ctyp t [])))
-        | TyVrnInf (_loc,t) ->
+        | `TyVrnInf (_loc,t) ->
             (TyVrnInf, (List.length (Ast.list_of_ctyp t [])))
         | _ -> invalid_arg (sprintf "expr_of_ctyp {|%s|} " "") in
       (Ctyp.reduce_data_ctors ty [] f) >>=
@@ -152,24 +152,24 @@ module Make(S:FSig.Config) = struct
       let varf = basic_transform S.left_type_variable in
       let f var acc =
         match var with
-        | TyQuP (_loc,s)|TyQuM (_loc,s)|TyQuo (_loc,s) ->
-            ExFun
+        | `TyQuP (_loc,s)|`TyQuM (_loc,s)|`TyQuo (_loc,s) ->
+            `ExFun
               (_loc,
-                (McArr
-                   (_loc, (PaId (_loc, (IdLid (_loc, (varf s))))),
-                     (ExNil _loc), acc)))
+                (`McArr
+                   (_loc, (`PaId (_loc, (`IdLid (_loc, (varf s))))),
+                     (`ExNil _loc), acc)))
         | _ -> (Ctyp.eprint.contents var; invalid_arg "mk_prefix") in
       List.fold_right f vars (S.names <+ acc)
   let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp =
     let open ErrorMonad in
       function
-      | TyDcl (_,_,tyvars,ctyp,_constraints) ->
+      | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
           let ctyp =
             match ctyp with
-            | TyMan (_loc,_,ctyp)|TyPrv (_loc,ctyp) -> ctyp
+            | `TyMan (_loc,_,ctyp)|`TyPrv (_loc,ctyp) -> ctyp
             | _ -> ctyp in
           (match ctyp with
-           | TyRec (_loc,t) ->
+           | `TyRec (_loc,t) ->
                let cols = Ctyp.list_of_record t in
                let patt = Patt.mk_record ~arity:S.arity cols in
                let info =
@@ -185,7 +185,7 @@ module Make(S:FSig.Config) = struct
                           }) cols in
                mk_prefix tyvars
                  (currying ~arity:S.arity
-                    [McArr (_loc, patt, (ExNil _loc), (S.mk_record info))])
+                    [`McArr (_loc, patt, (`ExNil _loc), (S.mk_record info))])
            | _ ->
                let process =
                  (fun ctyp  ->
@@ -213,17 +213,17 @@ module Make(S:FSig.Config) = struct
           let fun_expr =
             fun_of_tydcl simple_expr_of_ctyp
               (expr_of_ctyp (unwrap simple_expr_of_ctyp)) tydcl in
-          BiEq
-            (_loc, (PaId (_loc, (IdLid (_loc, (tctor_var name))))),
-              (ExTyc (_loc, fun_expr, ty)))
+          `BiEq
+            (_loc, (`PaId (_loc, (`IdLid (_loc, (tctor_var name))))),
+              (`ExTyc (_loc, fun_expr, ty)))
         else
           (eprintf "Warning: %s as a abstract type no structure generated\n"
              "";
-           BiEq
-             (_loc, (PaId (_loc, (IdLid (_loc, (tctor_var name))))),
-               (ExApp
-                  (_loc, (ExId (_loc, (IdLid (_loc, "failwithf")))),
-                    (ExStr (_loc, "Abstract data type not implemented"))))))
+           `BiEq
+             (_loc, (`PaId (_loc, (`IdLid (_loc, (tctor_var name))))),
+               (`ExApp
+                  (_loc, (`ExId (_loc, (`IdLid (_loc, "failwithf")))),
+                    (`ExStr (_loc, "Abstract data type not implemented"))))))
   let str_item_of_module_types ?module_name  simple_expr_of_ctyp_with_cxt
     (lst : module_types) =
     let cxt = Hashset.create 50 in
@@ -233,23 +233,23 @@ module Make(S:FSig.Config) = struct
       | `Mutual named_types ->
           let binding =
             match named_types with
-            | [] -> BiNil _loc
+            | [] -> `BiNil _loc
             | xs ->
                 (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
                  List.reduce_right_with
-                   ~compose:(fun x  y  -> BiAnd (_loc, x, y))
+                   ~compose:(fun x  y  -> `BiAnd (_loc, x, y))
                    ~f:(fun (name,ty)  -> mk_binding name ty) xs) in
-          StVal (_loc, ReRecursive, binding)
+          `StVal (_loc, `ReRecursive, binding)
       | `Single (name,tydcl) ->
           (Hashset.add cxt name;
            (let rec_flag =
-              if Ctyp.is_recursive tydcl then Ast.ReRecursive else Ast.ReNil
+              if Ctyp.is_recursive tydcl then `ReRecursive else `ReNil
             and binding = mk_binding name tydcl in
-            StVal (_loc, rec_flag, binding))) in
+            `StVal (_loc, rec_flag, binding))) in
     let item = Ast.stSem_of_list (List.map fs lst) in
     match module_name with
     | None  -> item
-    | Some m -> StMod (_loc, m, (MeStr (_loc, item)))
+    | Some m -> `StMod (_loc, m, (`MeStr (_loc, item)))
   let obj_of_module_types ?module_name  base class_name simple_expr_of_ctyp
     (k : FSig.k) (lst : module_types) =
     let open ErrorMonad in
@@ -260,10 +260,10 @@ module Make(S:FSig.Config) = struct
       let mk_type (_name,tydcl) =
         let (name,len) = Ctyp.name_length_of_tydcl tydcl in
         Ctyp.mk_method_type ~number:S.arity ~prefix:S.names
-          ((IdLid (_loc, name)), len) (Obj k) in
+          ((`IdLid (_loc, name)), len) (Obj k) in
       let mk_class_str_item (name,tydcl) =
         let ty = mk_type (name, tydcl) in
-        CrMth (_loc, name, OvNil, PrNil, (f tydcl), ty) in
+        `CrMth (_loc, name, `OvNil, `PrNil, (f tydcl), ty) in
       let fs (ty : types) =
         match ty with
         | `Mutual named_types ->
@@ -274,12 +274,12 @@ module Make(S:FSig.Config) = struct
                  let ty_str = "" in
                  let () = Hashtbl.add tbl ty_str (Abstract ty_str) in
                  let ty = mk_type (name, tydcl) in
-                 CrMth (_loc, name, OvNil, PrNil, (unknown n), ty)
+                 `CrMth (_loc, name, `OvNil, `PrNil, (unknown n), ty)
              | None  -> mk_class_str_item named_type) in
       let (extras,lst) = Ctyp.transform_module_types lst in
       let body =
-        List.fold_left (fun acc  types  -> CrSem (_loc, acc, (fs types)))
-          (CrNil _loc) lst in
+        List.fold_left (fun acc  types  -> `CrSem (_loc, acc, (fs types)))
+          (`CrNil _loc) lst in
       let body =
         let items =
           List.map
@@ -288,11 +288,11 @@ module Make(S:FSig.Config) = struct
                  Ctyp.mk_method_type ~number:S.arity ~prefix:S.names
                    (src, len) (Obj k) in
                let () = Hashtbl.add tbl dest (Qualified dest) in
-               CrMth (_loc, dest, OvNil, PrNil, (unknown len), ty)) extras in
-        CrSem (_loc, body, (Ast.crSem_of_list items)) in
+               `CrMth (_loc, dest, `OvNil, `PrNil, (unknown len), ty)) extras in
+        `CrSem (_loc, body, (Ast.crSem_of_list items)) in
       let v = Ctyp.mk_obj class_name base body in
       Hashtbl.iter (fun _  v  -> eprintf "%s" (string_of_warning_type v)) tbl;
       (match module_name with
        | None  -> v
-       | Some u -> StMod (_loc, u, (MeStr (_loc, v))))
+       | Some u -> `StMod (_loc, u, (`MeStr (_loc, v))))
   end

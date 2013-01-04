@@ -37,7 +37,7 @@ let sem a b =
   decompose a left associative  application to  an identifier  and
    a list of small ast nodes.
 
-  Unlike com [a,(b,c),d], the Ast node will introduce [ExTup],
+  Unlike com [a,(b,c),d], the Ast node will introduce [`ExTup],
   for [f (g a) b], there is no intermediate node.
   
   {[
@@ -79,7 +79,7 @@ let list_of_com ty =
 
 (*
   right associative sem
-  [ {| 1;(2;3);4 |} ] will introduce an intermedate [ExSeq] here,
+  [ {| 1;(2;3);4 |} ] will introduce an intermedate [`ExSeq] here,
   but dumping it is illegal
 
   Example:
@@ -103,8 +103,8 @@ let list_of_sem ty =
   {[
   vew_app [] {| a b c d|};
   - : L.Expr.Ast.expr * L.Expr.Ast.expr list =
-  (ExId (, IdLid (, "a")),
-  [ExId (, IdLid (, "b")); ExId (, IdLid (, "c")); ExId (, IdLid (, "d"))])
+  (`ExId (, `IdLid (, "a")),
+  [`ExId (, `IdLid (, "b")); `ExId (, `IdLid (, "c")); `ExId (, `IdLid (, "d"))])
   ]}
  *)
 let rec view_app acc = fun

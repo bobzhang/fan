@@ -1,4 +1,4 @@
-open Ast
+(* open Ast *)
 open LibUtil
 type node = 
   {
@@ -98,7 +98,7 @@ let table_prefix = "__table_"
 let state_prefix = "__state_"
 let partition_prefix = "__partition_"
 let lexer_module_name =
-  let _loc = FanLoc.ghost in ref (IdUid (_loc, "Ulexing"))
+  let _loc = FanLoc.ghost in ref (`IdUid (_loc, "Ulexing"))
 let gm () = lexer_module_name.contents
 let mk_table_name i = Printf.sprintf "%s%i" table_prefix i
 let mk_state_name i = Printf.sprintf "__state_%i" i
@@ -173,120 +173,120 @@ let output_byte_array v =
     (output_byte b ((v.(i)) land 255);
      if (i land 15) = 15 then Buffer.add_string b "\\\n    " else ())
   done;
-  (let s = Buffer.contents b in ExStr (_loc, s))
+  (let s = Buffer.contents b in `ExStr (_loc, s))
 let table (n,t) =
-  StVal
-    (_loc, ReNil,
-      (BiEq (_loc, (PaId (_loc, (IdLid (_loc, n)))), (output_byte_array t))))
+  `StVal
+    (_loc, `ReNil,
+      (`BiEq (_loc, (`PaId (_loc, (`IdLid (_loc, n)))), (output_byte_array t))))
 let binding_table (n,t) =
-  BiEq (_loc, (PaId (_loc, (IdLid (_loc, n)))), (output_byte_array t))
+  `BiEq (_loc, (`PaId (_loc, (`IdLid (_loc, n)))), (output_byte_array t))
 let partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
     | Lte (i,yes,no) ->
-        ExIfe
+        `ExIfe
           (_loc,
-            (ExApp
+            (`ExApp
                (_loc,
-                 (ExApp
-                    (_loc, (ExId (_loc, (IdLid (_loc, "<=")))),
-                      (ExId (_loc, (IdLid (_loc, "c")))))),
-                 (ExInt (_loc, (string_of_int i))))), (gen_tree yes),
+                 (`ExApp
+                    (_loc, (`ExId (_loc, (`IdLid (_loc, "<=")))),
+                      (`ExId (_loc, (`IdLid (_loc, "c")))))),
+                 (`ExInt (_loc, (string_of_int i))))), (gen_tree yes),
             (gen_tree no))
-    | Return i -> ExInt (_loc, (string_of_int i))
+    | Return i -> `ExInt (_loc, (string_of_int i))
     | Table (offset,t) ->
         let c =
           if offset = 0
-          then ExId (_loc, (IdLid (_loc, "c")))
+          then `ExId (_loc, (`IdLid (_loc, "c")))
           else
-            ExApp
+            `ExApp
               (_loc,
-                (ExApp
-                   (_loc, (ExId (_loc, (IdLid (_loc, "-")))),
-                     (ExId (_loc, (IdLid (_loc, "c")))))),
-                (ExInt (_loc, (string_of_int offset)))) in
-        ExApp
+                (`ExApp
+                   (_loc, (`ExId (_loc, (`IdLid (_loc, "-")))),
+                     (`ExId (_loc, (`IdLid (_loc, "c")))))),
+                (`ExInt (_loc, (string_of_int offset)))) in
+        `ExApp
           (_loc,
-            (ExApp
-               (_loc, (ExId (_loc, (IdLid (_loc, "-")))),
-                 (ExApp
+            (`ExApp
+               (_loc, (`ExId (_loc, (`IdLid (_loc, "-")))),
+                 (`ExApp
                     (_loc,
-                      (ExId
+                      (`ExId
                          (_loc,
-                           (IdAcc
-                              (_loc, (IdUid (_loc, "Char")),
-                                (IdLid (_loc, "code")))))),
-                      (ExSte
+                           (`IdAcc
+                              (_loc, (`IdUid (_loc, "Char")),
+                                (`IdLid (_loc, "code")))))),
+                      (`ExSte
                          (_loc,
-                           (ExId
+                           (`ExId
                               (_loc,
-                                (IdLid
+                                (`IdLid
                                    (_loc, (table_name ~tables ~counter t))))),
-                           c)))))), (ExInt (_loc, "1"))) in
+                           c)))))), (`ExInt (_loc, "1"))) in
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  StVal
-    (_loc, ReNil,
-      (BiEq
-         (_loc, (PaId (_loc, (IdLid (_loc, f)))),
-           (ExFun
+  `StVal
+    (_loc, `ReNil,
+      (`BiEq
+         (_loc, (`PaId (_loc, (`IdLid (_loc, f)))),
+           (`ExFun
               (_loc,
-                (McArr
-                   (_loc, (PaId (_loc, (IdLid (_loc, "c")))), (ExNil _loc),
+                (`McArr
+                   (_loc, (`PaId (_loc, (`IdLid (_loc, "c")))), (`ExNil _loc),
                      body)))))))
 let binding_partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
     | Lte (i,yes,no) ->
-        ExIfe
+        `ExIfe
           (_loc,
-            (ExApp
+            (`ExApp
                (_loc,
-                 (ExApp
-                    (_loc, (ExId (_loc, (IdLid (_loc, "<=")))),
-                      (ExId (_loc, (IdLid (_loc, "c")))))),
-                 (ExInt (_loc, (string_of_int i))))), (gen_tree yes),
+                 (`ExApp
+                    (_loc, (`ExId (_loc, (`IdLid (_loc, "<=")))),
+                      (`ExId (_loc, (`IdLid (_loc, "c")))))),
+                 (`ExInt (_loc, (string_of_int i))))), (gen_tree yes),
             (gen_tree no))
-    | Return i -> ExInt (_loc, (string_of_int i))
+    | Return i -> `ExInt (_loc, (string_of_int i))
     | Table (offset,t) ->
         let c =
           if offset = 0
-          then ExId (_loc, (IdLid (_loc, "c")))
+          then `ExId (_loc, (`IdLid (_loc, "c")))
           else
-            ExApp
+            `ExApp
               (_loc,
-                (ExApp
-                   (_loc, (ExId (_loc, (IdLid (_loc, "-")))),
-                     (ExId (_loc, (IdLid (_loc, "c")))))),
-                (ExInt (_loc, (string_of_int offset)))) in
-        ExApp
+                (`ExApp
+                   (_loc, (`ExId (_loc, (`IdLid (_loc, "-")))),
+                     (`ExId (_loc, (`IdLid (_loc, "c")))))),
+                (`ExInt (_loc, (string_of_int offset)))) in
+        `ExApp
           (_loc,
-            (ExApp
-               (_loc, (ExId (_loc, (IdLid (_loc, "-")))),
-                 (ExApp
+            (`ExApp
+               (_loc, (`ExId (_loc, (`IdLid (_loc, "-")))),
+                 (`ExApp
                     (_loc,
-                      (ExId
+                      (`ExId
                          (_loc,
-                           (IdAcc
-                              (_loc, (IdUid (_loc, "Char")),
-                                (IdLid (_loc, "code")))))),
-                      (ExSte
+                           (`IdAcc
+                              (_loc, (`IdUid (_loc, "Char")),
+                                (`IdLid (_loc, "code")))))),
+                      (`ExSte
                          (_loc,
-                           (ExId
+                           (`ExId
                               (_loc,
-                                (IdLid
+                                (`IdLid
                                    (_loc, (table_name ~tables ~counter t))))),
-                           c)))))), (ExInt (_loc, "1"))) in
+                           c)))))), (`ExInt (_loc, "1"))) in
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  BiEq
-    (_loc, (PaId (_loc, (IdLid (_loc, f)))),
-      (ExFun
+  `BiEq
+    (_loc, (`PaId (_loc, (`IdLid (_loc, f)))),
+      (`ExFun
          (_loc,
-           (McArr
-              (_loc, (PaId (_loc, (IdLid (_loc, "c")))), (ExNil _loc), body)))))
+           (`McArr
+              (_loc, (`PaId (_loc, (`IdLid (_loc, "c")))), (`ExNil _loc), body)))))
 let best_final final =
   let fin = ref None in
   Array.iteri
@@ -299,75 +299,75 @@ let gen_definition _loc l =
     if (Array.length trans) = 0
     then
       match best_final final with
-      | Some i -> ExInt (_loc, (string_of_int i))
+      | Some i -> `ExInt (_loc, (string_of_int i))
       | None  -> assert false
     else
       (let f = mk_state_name state in
-       ExApp
-         (_loc, (ExId (_loc, (IdLid (_loc, f)))),
-           (ExId (_loc, (IdLid (_loc, "lexbuf")))))) in
+       `ExApp
+         (_loc, (`ExId (_loc, (`IdLid (_loc, f)))),
+           (`ExId (_loc, (`IdLid (_loc, "lexbuf")))))) in
   let gen_state auto _loc i (part,trans,final) =
     let f = mk_state_name i in
     let p = mk_partition_name part in
     let cases =
       Array.mapi
         (fun i  j  ->
-           McArr
-             (_loc, (PaInt (_loc, (string_of_int i))), (ExNil _loc),
+           `McArr
+             (_loc, (`PaInt (_loc, (string_of_int i))), (`ExNil _loc),
                (call_state auto j))) trans in
     let cases = Array.to_list cases in
     let body =
-      ExMat
+      `ExMat
         (_loc,
-          (ExApp
-             (_loc, (ExId (_loc, (IdLid (_loc, p)))),
-               (ExApp
+          (`ExApp
+             (_loc, (`ExId (_loc, (`IdLid (_loc, p)))),
+               (`ExApp
                   (_loc,
-                    (ExId
+                    (`ExId
                        (_loc,
-                         (IdAcc (_loc, (gm ()), (IdLid (_loc, "next")))))),
-                    (ExId (_loc, (IdLid (_loc, "lexbuf")))))))),
-          (McOr
+                         (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "next")))))),
+                    (`ExId (_loc, (`IdLid (_loc, "lexbuf")))))))),
+          (`McOr
              (_loc, (Ast.mcOr_of_list cases),
-               (McArr
-                  (_loc, (PaAny _loc), (ExNil _loc),
-                    (ExApp
+               (`McArr
+                  (_loc, (`PaAny _loc), (`ExNil _loc),
+                    (`ExApp
                        (_loc,
-                         (ExId
+                         (`ExId
                             (_loc,
-                              (IdAcc
-                                 (_loc, (gm ()), (IdLid (_loc, "backtrack")))))),
-                         (ExId (_loc, (IdLid (_loc, "lexbuf"))))))))))) in
+                              (`IdAcc
+                                 (_loc, (gm ()), (`IdLid (_loc, "backtrack")))))),
+                         (`ExId (_loc, (`IdLid (_loc, "lexbuf"))))))))))) in
     let ret body =
-      BiEq
-        (_loc, (PaId (_loc, (IdLid (_loc, f)))),
-          (ExFun
+      `BiEq
+        (_loc, (`PaId (_loc, (`IdLid (_loc, f)))),
+          (`ExFun
              (_loc,
-               (McArr
-                  (_loc, (PaId (_loc, (IdLid (_loc, "lexbuf")))),
-                    (ExNil _loc), body))))) in
+               (`McArr
+                  (_loc, (`PaId (_loc, (`IdLid (_loc, "lexbuf")))),
+                    (`ExNil _loc), body))))) in
     match best_final final with
     | None  -> ret body
     | Some i ->
         if (Array.length trans) = 0
-        then BiNil _loc
+        then `BiNil _loc
         else
           ret
-            (ExSeq
+            (`ExSeq
                (_loc,
-                 (ExSem
+                 (`ExSem
                     (_loc,
-                      (ExApp
+                      (`ExApp
                          (_loc,
-                           (ExApp
+                           (`ExApp
                               (_loc,
-                                (ExId
+                                (`ExId
                                    (_loc,
-                                     (IdAcc
+                                     (`IdAcc
                                         (_loc, (gm ()),
-                                          (IdLid (_loc, "mark")))))),
-                                (ExId (_loc, (IdLid (_loc, "lexbuf")))))),
-                           (ExInt (_loc, (string_of_int i))))), body)))) in
+                                          (`IdLid (_loc, "mark")))))),
+                                (`ExId (_loc, (`IdLid (_loc, "lexbuf")))))),
+                           (`ExInt (_loc, (string_of_int i))))), body)))) in
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
@@ -375,7 +375,7 @@ let gen_definition _loc l =
   let cases =
     Array.mapi
       (fun i  (_,e)  ->
-         McArr (_loc, (PaInt (_loc, (string_of_int i))), (ExNil _loc), e))
+         `McArr (_loc, (`PaInt (_loc, (string_of_int i))), (`ExNil _loc), e))
       brs in
   let table_counter = ref 0 in
   let tables = Hashtbl.create 31 in
@@ -391,61 +391,61 @@ let gen_definition _loc l =
          (get_tables ~tables ())) in
   let b =
     let len = Array.length states in
-    if len > 1 then Ast.ReRecursive else Ast.ReNil in
-  ExFun
+    if len > 1 then `ReRecursive else `ReNil in
+  `ExFun
     (_loc,
-      (McArr
-         (_loc, (PaId (_loc, (IdLid (_loc, "lexbuf")))), (ExNil _loc),
-           (ExLet
-              (_loc, ReNil, (Ast.biAnd_of_list tables),
-                (ExLet
-                   (_loc, ReNil, (Ast.biAnd_of_list parts),
-                     (ExLet
+      (`McArr
+         (_loc, (`PaId (_loc, (`IdLid (_loc, "lexbuf")))), (`ExNil _loc),
+           (`ExLet
+              (_loc, `ReNil, (Ast.biAnd_of_list tables),
+                (`ExLet
+                   (_loc, `ReNil, (Ast.biAnd_of_list parts),
+                     (`ExLet
                         (_loc, b, (Ast.biAnd_of_list (Array.to_list states)),
-                          (ExSeq
+                          (`ExSeq
                              (_loc,
-                               (ExSem
+                               (`ExSem
                                   (_loc,
-                                    (ExApp
+                                    (`ExApp
                                        (_loc,
-                                         (ExId
+                                         (`ExId
                                             (_loc,
-                                              (IdAcc
+                                              (`IdAcc
                                                  (_loc, (gm ()),
-                                                   (IdLid (_loc, "start")))))),
-                                         (ExId
-                                            (_loc, (IdLid (_loc, "lexbuf")))))),
-                                    (ExMat
+                                                   (`IdLid (_loc, "start")))))),
+                                         (`ExId
+                                            (_loc, (`IdLid (_loc, "lexbuf")))))),
+                                    (`ExMat
                                        (_loc,
-                                         (ExApp
+                                         (`ExApp
                                             (_loc,
-                                              (ExId
+                                              (`ExId
                                                  (_loc,
-                                                   (IdLid
+                                                   (`IdLid
                                                       (_loc,
                                                         (mk_state_name 0))))),
-                                              (ExId
+                                              (`ExId
                                                  (_loc,
-                                                   (IdLid (_loc, "lexbuf")))))),
-                                         (McOr
+                                                   (`IdLid (_loc, "lexbuf")))))),
+                                         (`McOr
                                             (_loc,
                                               (Ast.mcOr_of_list
                                                  (Array.to_list cases)),
-                                              (McArr
-                                                 (_loc, (PaAny _loc),
-                                                   (ExNil _loc),
-                                                   (ExApp
+                                              (`McArr
+                                                 (_loc, (`PaAny _loc),
+                                                   (`ExNil _loc),
+                                                   (`ExApp
                                                       (_loc,
-                                                        (ExId
+                                                        (`ExId
                                                            (_loc,
-                                                             (IdLid
+                                                             (`IdLid
                                                                 (_loc,
                                                                   "raise")))),
-                                                        (ExId
+                                                        (`ExId
                                                            (_loc,
-                                                             (IdAcc
+                                                             (`IdAcc
                                                                 (_loc,
                                                                   (gm ()),
-                                                                  (IdUid
+                                                                  (`IdUid
                                                                     (_loc,
                                                                     "Error")))))))))))))))))))))))))))

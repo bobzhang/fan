@@ -16,7 +16,7 @@ let setup_op_parser entry p =
     (fun (__strm : _ XStream.t)  ->
        match XStream.peek __strm with
        | Some ((`KEYWORD x|`SYMBOL x),_loc) when p x ->
-           (XStream.junk __strm; ExId (_loc, (IdLid (_loc, x))))
+           (XStream.junk __strm; `ExId (_loc, (`IdLid (_loc, x))))
        | _ -> raise XStream.Failure)
 let rec infix_kwds_filter (__strm : _ XStream.t) =
   match XStream.peek __strm with

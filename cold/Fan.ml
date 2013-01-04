@@ -11,11 +11,11 @@ let _ =
   of_str_item_with_filter ~name:"ocaml" ~entry:str_items
     ~filter:(fun s  ->
                let _loc = Ast.loc_of_str_item s in
-               let v = MeStr (_loc, s) in
+               let v = `MeStr (_loc, s) in
                let module_expr = (Typehook.traversal ())#module_expr v in
                let code =
                  match module_expr with
-                 | MeStr (_loc,item) -> item
+                 | `MeStr (_loc,item) -> item
                  | _ -> failwith "can not find items back " in
                if Typehook.show_code.contents
                then
@@ -115,10 +115,10 @@ let _ =
     ~mexpr:ME.meta_direction_flag ~mpatt:MP.meta_direction_flag ~expr_filter
     ~patt_filter
 let _ =
-  add "str" DynAst.expr_tag (fun _loc  _loc_option  s  -> ExStr (_loc, s))
+  add "str" DynAst.expr_tag (fun _loc  _loc_option  s  -> `ExStr (_loc, s))
 let _ =
   add "str" DynAst.str_item_tag
-    (fun _loc  _loc_option  s  -> StExp (_loc, (ExStr (_loc, s))))
+    (fun _loc  _loc_option  s  -> `StExp (_loc, (`ExStr (_loc, s))))
 let _ =
   Options.add
     ("-dlang", (FanArg.Set_string AstQuotation.default),

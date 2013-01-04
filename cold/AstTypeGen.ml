@@ -7,14 +7,14 @@ open Lib.Basic
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
   (function
-   | [] -> ExId (_loc, (IdLid (_loc, "true")))
+   | [] -> `ExId (_loc, (`IdLid (_loc, "true")))
    | ls ->
        List.reduce_left_with
          ~compose:(fun x  y  ->
-                     ExApp
+                     `ExApp
                        (_loc,
-                         (ExApp
-                            (_loc, (ExId (_loc, (IdLid (_loc, "&&")))), x)),
+                         (`ExApp
+                            (_loc, (`ExId (_loc, (`IdLid (_loc, "&&")))), x)),
                          y)) ~f:(fun { expr;_}  -> expr) ls : FSig.ty_info
                                                                 list -> 
                                                                 expr )
@@ -25,19 +25,19 @@ let mk_record_eq: FSig.record_col list -> expr =
 let gen_eq =
   gen_str_item ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
     ~mk_record:mk_record_eq mk_variant_eq
-    ~trail:(ExId (_loc, (IdLid (_loc, "false"))))
+    ~trail:(`ExId (_loc, (`IdLid (_loc, "false"))))
 let _ = [("Eq", gen_eq)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (function
-       | [] -> ExId (_loc, (IdLid (_loc, "self")))
+       | [] -> `ExId (_loc, (`IdLid (_loc, "self")))
        | ls ->
            List.reduce_right
              (fun v  acc  ->
-                ExLet
-                  (_loc, ReNil,
-                    (BiEq (_loc, (PaId (_loc, (IdLid (_loc, "self")))), v)),
+                `ExLet
+                  (_loc, `ReNil,
+                    (`BiEq (_loc, (`PaId (_loc, (`IdLid (_loc, "self")))), v)),
                     acc)) ls) in
   let mk_tuple = mk_variant "" in
   let mk_record cols =
@@ -46,9 +46,9 @@ let (gen_fold,gen_fold2) =
       ~class_name:"fold" mk_variant ~names:[]),
     (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
        ~class_name:"fold2" mk_variant ~names:[] ~arity:2
-       ~trail:(ExApp
-                 (_loc, (ExId (_loc, (IdLid (_loc, "invalid_arg")))),
-                   (ExStr (_loc, "fold2 failure"))))))
+       ~trail:(`ExApp
+                 (_loc, (`ExId (_loc, (`IdLid (_loc, "invalid_arg")))),
+                   (`ExStr (_loc, "fold2 failure"))))))
 let _ =
   [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
 let (gen_map,gen_map2) =
@@ -63,9 +63,9 @@ let (gen_map,gen_map2) =
       ~class_name:"map" mk_variant ~names:[]),
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
        ~class_name:"map2" mk_variant ~names:[] ~arity:2
-       ~trail:(ExApp
-                 (_loc, (ExId (_loc, (IdLid (_loc, "invalid_arg")))),
-                   (ExStr (_loc, "map2 failure"))))))
+       ~trail:(`ExApp
+                 (_loc, (`ExId (_loc, (`IdLid (_loc, "invalid_arg")))),
+                   (`ExStr (_loc, "map2 failure"))))))
 let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
 let mk_variant_meta_expr cons params =
@@ -73,14 +73,14 @@ let mk_variant_meta_expr cons params =
   if String.ends_with cons "Ant"
   then
     match len with
-    | n when n > 1 -> of_ident_number (IdUid (_loc, "ExAnt")) len
+    | n when n > 1 -> of_ident_number (`IdUid (_loc, "`ExAnt")) len
     | 1 ->
-        ExApp
+        `ExApp
           (_loc,
-            (ExApp
-               (_loc, (ExId (_loc, (IdUid (_loc, "ExAnt")))),
-                 (ExId (_loc, (IdLid (_loc, "_loc")))))),
-            (ExId (_loc, (xid 0))))
+            (`ExApp
+               (_loc, (`ExId (_loc, (`IdUid (_loc, "`ExAnt")))),
+                 (`ExId (_loc, (`IdLid (_loc, "_loc")))))),
+            (`ExId (_loc, (xid 0))))
     | _ -> failwithf "%s can not be handled" cons
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
@@ -99,14 +99,14 @@ let mk_variant_meta_patt cons params =
   if String.ends_with cons "Ant"
   then
     match len with
-    | n when n > 1 -> of_ident_number (IdUid (_loc, "PaAnt")) len
+    | n when n > 1 -> of_ident_number (`IdUid (_loc, "`PaAnt")) len
     | 1 ->
-        ExApp
+        `ExApp
           (_loc,
-            (ExApp
-               (_loc, (ExId (_loc, (IdUid (_loc, "PaAnt")))),
-                 (ExId (_loc, (IdLid (_loc, "_loc")))))),
-            (ExId (_loc, (xid 0))))
+            (`ExApp
+               (_loc, (`ExId (_loc, (`IdUid (_loc, "`PaAnt")))),
+                 (`ExId (_loc, (`IdLid (_loc, "_loc")))))),
+            (`ExId (_loc, (xid 0))))
     | _ -> failwithf "%s can not be handled" cons
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
@@ -141,22 +141,22 @@ let (gen_map,gen_map2) =
     (gen_object ~kind:Map ~mk_tuple ~mk_record
        ~cons_transform:(fun x  -> "`" ^ x) ~base:"mapbase2"
        ~class_name:"map2" mk_variant ~names:[] ~arity:2
-       ~trail:(ExApp
-                 (_loc, (ExId (_loc, (IdLid (_loc, "invalid_arg")))),
-                   (ExStr (_loc, "map2 failure"))))))
+       ~trail:(`ExApp
+                 (_loc, (`ExId (_loc, (`IdLid (_loc, "invalid_arg")))),
+                   (`ExStr (_loc, "map2 failure"))))))
 let _ =
   [("FMap", gen_map); ("FMap2", gen_map2)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (function
-       | [] -> ExId (_loc, (IdLid (_loc, "self")))
+       | [] -> `ExId (_loc, (`IdLid (_loc, "self")))
        | ls ->
            List.reduce_right
              (fun v  acc  ->
-                ExLet
-                  (_loc, ReNil,
-                    (BiEq (_loc, (PaId (_loc, (IdLid (_loc, "self")))), v)),
+                `ExLet
+                  (_loc, `ReNil,
+                    (`BiEq (_loc, (`PaId (_loc, (`IdLid (_loc, "self")))), v)),
                     acc)) ls) in
   let mk_tuple = mk_variant "" in
   let mk_record cols =
@@ -167,9 +167,9 @@ let (gen_fold,gen_fold2) =
     (gen_object ~kind:Fold ~mk_tuple ~mk_record
        ~cons_transform:(fun x  -> "`" ^ x) ~base:"foldbase2"
        ~class_name:"fold2" mk_variant ~names:[] ~arity:2
-       ~trail:(ExApp
-                 (_loc, (ExId (_loc, (IdLid (_loc, "invalid_arg")))),
-                   (ExStr (_loc, "fold2 failure"))))))
+       ~trail:(`ExApp
+                 (_loc, (`ExId (_loc, (`IdLid (_loc, "invalid_arg")))),
+                   (`ExStr (_loc, "fold2 failure"))))))
 let _ =
   [("FFold", gen_fold); ("FFold2", gen_fold2)] |>
     (List.iter Typehook.register)
@@ -179,14 +179,14 @@ let mk_variant_meta_expr cons params =
   then
     match len with
     | 1 ->
-        ExApp
-          (_loc, (ExVrn (_loc, "ExAnt")),
-            (ExTup
+        `ExApp
+          (_loc, (`ExVrn (_loc, "`ExAnt")),
+            (`ExTup
                (_loc,
-                 (ExCom
-                    (_loc, (ExId (_loc, (IdLid (_loc, "_loc")))),
-                      (ExId (_loc, (xid 0))))))))
-    | n when n > 1 -> of_vstr_number "ExAnt" len
+                 (`ExCom
+                    (_loc, (`ExId (_loc, (`IdLid (_loc, "_loc")))),
+                      (`ExId (_loc, (xid 0))))))))
+    | n when n > 1 -> of_vstr_number "`ExAnt" len
     | _ -> failwithf "%s can not be handled" cons
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
@@ -206,14 +206,14 @@ let mk_variant_meta_patt cons params =
   then
     match len with
     | 1 ->
-        ExApp
-          (_loc, (ExVrn (_loc, "PaAnt")),
-            (ExTup
+        `ExApp
+          (_loc, (`ExVrn (_loc, "`PaAnt")),
+            (`ExTup
                (_loc,
-                 (ExCom
-                    (_loc, (ExId (_loc, (IdLid (_loc, "_loc")))),
-                      (ExId (_loc, (xid 0))))))))
-    | n when n > 1 -> of_vstr_number "PaAnt" len
+                 (`ExCom
+                    (_loc, (`ExId (_loc, (`IdLid (_loc, "_loc")))),
+                      (`ExId (_loc, (xid 0))))))))
+    | n when n > 1 -> of_vstr_number "`PaAnt" len
     | _ -> failwithf "%s can not be handled" cons
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
@@ -237,17 +237,17 @@ let extract info =
   (info |> (List.map (fun { name_expr; id_expr;_}  -> [name_expr; id_expr])))
     |> List.concat
 let mkfmt pre sep post fields =
-  ExApp
+  `ExApp
     (_loc,
-      (ExApp
+      (`ExApp
          (_loc,
-           (ExId
+           (`ExId
               (_loc,
-                (IdAcc
-                   (_loc, (IdUid (_loc, "Format")),
-                     (IdLid (_loc, "fprintf")))))),
-           (ExId (_loc, (IdLid (_loc, "fmt")))))),
-      (ExStr (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
+                (`IdAcc
+                   (_loc, (`IdUid (_loc, "Format")),
+                     (`IdLid (_loc, "fprintf")))))),
+           (`ExId (_loc, (`IdLid (_loc, "fmt")))))),
+      (`ExStr (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
 let mk_variant_print cons params =
   let len = List.length params in
   let pre =
