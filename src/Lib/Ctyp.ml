@@ -178,10 +178,10 @@ let list_of_record ty =
   try 
     ty |> list_of_sem |> List.map (
        fun
-         [ {| $lid:col_label : mutable $col_ctyp  |} ->
-           {col_label; col_ctyp; col_mutable=true}
-         | {| $lid:col_label :  $col_ctyp  |} ->
-           {col_label; col_ctyp; col_mutable=false}
+         [ {| $lid:label : mutable $ctyp  |} ->
+           {label; ctyp; is_mutable=true}
+         | {| $lid:label :  $ctyp  |} ->
+           {label; ctyp; is_mutable=false}
          | t0 -> raise & Unhandled t0 ])
   with
     [Unhandled t0 ->

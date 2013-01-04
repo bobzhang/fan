@@ -427,3 +427,72 @@
       (* value virtual (mutable)? s : t *)
     | `CrVvr of (loc * string * mutable_flag * ctyp)
     | `CrAnt of (loc * string) (* $s$ *) ]; 
+
+
+let loc_of_ctyp : ctyp -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+let loc_of_patt : patt -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+  
+let loc_of_expr : expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+      
+
+  
+let loc_of_module_type : module_type -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_module_expr : module_expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+    
+let loc_of_sig_item : sig_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+
+let loc_of_str_item : str_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_type : class_type -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_sig_item : class_sig_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_expr : class_expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_str_item : class_str_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_with_constr : with_constr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_binding : binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_rec_binding : rec_binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_module_binding : module_binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_match_case : match_case -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_ident : ident -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+

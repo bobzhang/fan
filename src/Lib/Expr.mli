@@ -90,8 +90,13 @@ val mee_app : expr -> expr -> expr
 
 val vee_app : expr -> expr -> expr
 val vep_app : expr -> expr -> expr
-val vee_of_str : string -> expr    
-val mk_tuple_ep : expr list -> expr
+    
+val vee_of_str : string -> expr
+val vep_of_str: string -> expr
+    
+val mk_tuple_ep: expr list -> expr
+val mk_tuple_vep: expr list -> expr
+    
 val mep_of_str : string -> expr
 
 val mee_of_str : string -> expr

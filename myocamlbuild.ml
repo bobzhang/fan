@@ -770,6 +770,7 @@ let define_context_for_root r =
     def (r // "Grammar") [r];
     def (r // "Lex") [r];
     def (r // "Lib") [r];
+    def (r // "PLib") [r];
     def ("test") ["src"];
     def "testr" ["src"];
     def "llvm" ["src"];

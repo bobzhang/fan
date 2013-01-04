@@ -15,6 +15,7 @@ open FSig;
 module Make(S:FSig.Config) = struct   
   open Expr;
   open Ident;
+
   (* we preserve some keywords to avoid variable capture *)
   List.iter (fun name ->
     if List.mem name preserve  then begin 
@@ -25,22 +26,24 @@ module Make(S:FSig.Config) = struct
     end
     else check_valid name) S.names;
   
+
   (* collect the partial evaluated Ast node  and meta data   *)      
   let mapi_expr simple_expr_of_ctyp i (y:Ast.ctyp)  =
-    let ty_name_expr = simple_expr_of_ctyp y in 
-    let base = ty_name_expr  +> S.names in
+    let name_expr = simple_expr_of_ctyp y in 
+    let base = name_expr  +> S.names in
     (** FIXME as a tuple it is useful when arity> 1??? *)
-    let ty_id_exprs =
+    let id_exprs =
       (List.init S.arity (fun index  -> {| $(id:xid ~off:index i) |} ))
-    and ty_id_patts =
+    and id_patts =
       (List.init S.arity (fun index  -> {:patt| $(id:xid ~off:index i) |}))in
-    let ty_id_expr = Expr.tuple_of_list  ty_id_exprs  in
-    let ty_id_patt = Patt.tuple_of_list ty_id_patts in 
-    let ty_expr = apply base ty_id_exprs  in
-    {ty_name_expr; ty_expr; ty_id_expr; ty_id_exprs; ty_id_patt; ty_id_patts};       
+    let id_expr = Expr.tuple_of_list  id_exprs  in
+    let id_patt = Patt.tuple_of_list id_patts in 
+    let expr = apply base id_exprs  in
+    {name_expr; expr; id_expr; id_exprs; id_patt; id_patts};       
 
   (* @raise Invalid_argument when type can not be handled  *)  
-  let tuple_expr_of_ctyp simple_expr_of_ctyp ty = ErrorMonad.(
+  let tuple_expr_of_ctyp simple_expr_of_ctyp ty =
+    let open ErrorMonad in 
     let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in 
     match ty with
     [ {|  ($tup:t) |}  -> 
@@ -52,7 +55,7 @@ module Make(S:FSig.Config) = struct
                     [ {:match_case| $pat:patt -> $(S.mk_tuple tys ) |} ] ~arity:S.arity)
     | _  -> invalid_arg &
         sprintf  "tuple_expr_of_ctyp {|%s|}\n" "" (*FIXME*)
-          (* (!Ctyp.to_string  ty) *)]);
+          (* (!Ctyp.to_string  ty) *)];
 
 
   (*
@@ -68,7 +71,7 @@ module Make(S:FSig.Config) = struct
    *)    
   let rec  normal_simple_expr_of_ctyp cxt ty =
     let open Transform in
-    ErrorMonad.(
+    let open ErrorMonad in
     let right_trans = transform S.right_type_id in
     let left_trans = basic_transform S.left_type_id in 
     let tyvar = right_transform S.right_type_variable  in 
@@ -89,7 +92,7 @@ module Make(S:FSig.Config) = struct
       [Unhandled _t ->
         fail & sprintf "normal_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
           "" ""
-          (* (!Ctyp.to_string t) (!Ctyp.to_string ty) *) ]) ;
+          (* (!Ctyp.to_string t) (!Ctyp.to_string ty) *) ] ;
 
 
   (*
@@ -173,7 +176,7 @@ module Make(S:FSig.Config) = struct
       return (currying ~arity:S.arity res ));
 
 
-  let mk_prefix  vars (acc:Ast.expr)  =
+  let mk_prefix  vars (acc:Ast.expr)  = with {"patt":"ctyp"}
     let open Transform in 
     let varf = basic_transform S.left_type_variable in
     let  f var acc = match var with
@@ -186,27 +189,30 @@ module Make(S:FSig.Config) = struct
 
   (*
     Given type declarations, generate corresponding
-    Ast node represent the function
+    Ast node represent the [function]
     (combine both expr_of_ctyp and simple_expr_of_ctyp) *)  
-  let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp  = let open ErrorMonad in fun
-    [ Ast.TyDcl (_, _, tyvars, ctyp, _constraints) ->
-        let ctyp =  match ctyp with
-        [
-         ( {| $_ == $ctyp |} (* the latter reifys the structure *)
-        | {| private $ctyp |} ) -> ctyp | _ -> ctyp ] in
+  let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp  = with {"patt":"ctyp"}
+    let open ErrorMonad in fun
+    [ TyDcl (_, _, tyvars, ctyp, _constraints) ->
+        let ctyp =
+          match ctyp with
+          [ ( {| $_ == $ctyp |} (* the latter reifys the structure which is not used here *)
+          |  {| private $ctyp |} ) -> ctyp
+          | _ -> ctyp ] in
         match ctyp with
         [ {|  { $t}  |} ->
           (* FIXME the error message is wrong when using lang_at *)
           let cols =  Ctyp.list_of_record t  in
           let patt = Patt.mk_record ~arity:S.arity  cols in
           let info =
-            List.mapi (fun i x ->  match x with
-                [ {col_label;col_mutable;col_ctyp} ->
-                       {record_info = (mapi_expr
+            List.mapi
+              (fun i x ->  match x with
+                [ {label;is_mutable;ctyp} ->
+                       {info = (mapi_expr
                            (unwrap simple_expr_of_ctyp)) (* unwrap here *)
-                          i col_ctyp  ;
-                        record_label = col_label;
-                        record_mutable = col_mutable}
+                          i ctyp  ;
+                        label = label;
+                        is_mutable = is_mutable}
                 ] ) cols in
             (* For single tuple pattern match this can be optimized
                by the ocaml compiler
@@ -237,6 +243,7 @@ module Make(S:FSig.Config) = struct
               (*FIXME*)
               (* (!Ctyp.to_string tydcl) *)) ];
 
+  (* *)    
   let binding_of_tydcl simple_expr_of_ctyp _name tydcl =
     let open ErrorMonad in
     let open Transform in 

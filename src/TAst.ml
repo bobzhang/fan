@@ -428,11 +428,11 @@ module Make(MetaLoc:META_LOC) = struct
     __MetaExpr__;
   end;
     
-  (* module Patt =struct *)
-  (*   open StdMeta.Patt; *)
-  (*   let meta_loc = MetaLoc.meta_loc_patt; *)
-  (*   __MetaPatt__; *)
-  (* end; *)
+  module Patt =struct
+    open StdMeta.PPatt;
+    let meta_loc = MetaLoc.meta_loc_patt;
+    __MetaPatt__;
+  end;
   (* module Expr = struct __MetaExpr__; end; *)
 end;
 

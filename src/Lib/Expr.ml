@@ -402,6 +402,9 @@ let (<+<) patts acc =
   
 let mep_comma x y =  {| {:patt| $($x), $($y) |} |};
   (* {| Ast.PaCom _loc $x $y |}; *)
+let mvep_comma x y =
+  {|`PaCom(_loc,$x,$y)|};
+  
 let mee_comma x y = {| {| $($x), $($y) |} |};
   (* {| Ast.ExCom _loc $x $y |}; *)
 let mvee_comma x y = {| `ExCom (_loc,$x,$y) |};
@@ -415,24 +418,6 @@ let mep_app x y = {| {:patt| $($x) $($y) |}|};
 let vep_app x y = {| `PaApp (_loc,$x,$y)|};
   
 
-(*
-  We want to generate code 
-   {[
-   {:expr| {:patt| (A,B,C) |} |}
-   ]}
-  But [A],[B],[C] should be parameterized here 
-  Example:
-  {[
-  mk_tuple_ep [{|a|}; {|b|} ] = {| {:patt| ($($(lid:"a")),$($(lid:"b"))) |} |};
-  - : bool = true
-  ]}
- *)
-let mk_tuple_ep = fun 
-   [ [] -> assert false
-   | [x] -> x
-   | xs  -> (* {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |} *)
-         {| {:patt|$(tup: $(List.reduce_right mep_comma xs))|} |} ];
-  
 (*
    
   Example:
@@ -471,7 +456,9 @@ let mee_of_str s =
 
 let vee_of_str s =
   {| `ExVrn (_loc,$str:s) |};
-  
+
+let vep_of_str s =
+  {| `PaVrn (_loc,$str:s)|};
 (*
   Examples:
   {[
@@ -551,6 +538,28 @@ let mk_tuple_vee = fun
   | xs  ->
       {| `ExTup (_loc, $(List.reduce_right mvee_comma xs)) |}];
 
+(*
+  We want to generate code 
+   {[
+   {:expr| {:patt| (A,B,C) |} |}
+   ]}
+  But [A],[B],[C] should be parameterized here 
+  Example:
+  {[
+  mk_tuple_ep [{|a|}; {|b|} ] = {| {:patt| ($($(lid:"a")),$($(lid:"b"))) |} |};
+  - : bool = true
+  ]}
+ *)
+let mk_tuple_ep = fun 
+  [ [] -> assert false
+  | [x] -> x
+  | xs  -> (* {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |} *)
+      {| {:patt|$(tup: $(List.reduce_right mep_comma xs))|} |} ];
+
+let mk_tuple_vep = fun
+  [[] -> assert false
+  |[x] -> x
+  |xs -> {| `PaTup (_loc,$(List.reduce_right mvep_comma xs))|} ];
   
   
 (*

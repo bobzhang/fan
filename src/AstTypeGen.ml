@@ -18,11 +18,11 @@ let mk_variant_eq _cons : list FSig.ty_info  -> (* Ast. *)expr  = with "expr" fu
   [ [] -> {|true|}
   | ls -> List.reduce_left_with
         ~compose:(fun x y -> {| $x && $y|}  )
-        ~f:(fun [{(* FSig. *)ty_expr;_} -> ty_expr]) ls ];
+        ~f:(fun [{(* FSig. *)expr;_} -> expr]) ls ];
   
 let mk_tuple_eq exprs = mk_variant_eq "" exprs ;
 let mk_record_eq : list FSig.record_col -> (* Ast. *)expr  = fun cols -> 
-    cols |> List.map (fun [ {(* FSig. *)record_info;_} -> record_info])
+    cols |> List.map (fun [ {(* FSig. *)info;_} -> info])
          |> mk_variant_eq "" ;
     
 let gen_eq = with "expr"
@@ -44,13 +44,13 @@ let gen_eq = with "expr"
 let (gen_fold,gen_fold2) = with "expr"
   let mk_variant _cons params = 
     params
-    |> List.map (fun [{ty_expr;_} -> ty_expr])
+    |> List.map (fun [{expr;_} -> expr])
     |> (fun
         [ [] -> {|self|}
         | ls -> List.reduce_right (fun v acc -> {| let self = $v in $acc |}) ls ]) in
   let mk_tuple  = mk_variant ""  in 
   let mk_record cols =
-    cols |> List.map (fun [ {(* record_label; *) record_info ; _ } -> record_info ] )
+    cols |> List.map (fun [ {(* label; *) info ; _ } -> info ] )
          |> mk_variant "" in 
   (gen_object ~kind:Fold ~mk_tuple ~mk_record
      ~base:"foldbase" ~class_name:"fold" mk_variant ~names:[],
@@ -70,12 +70,12 @@ end;
 
 let (gen_map,gen_map2) = with "expr"
   let mk_variant cons params =
-    params |> List.map (fun [ {ty_expr;_} -> ty_expr]) |> apply (of_str cons) in
+    params |> List.map (fun [ {expr;_} -> expr]) |> apply (of_str cons) in
   let mk_tuple params =
-    params |> List.map (fun [{ty_expr; _ } -> ty_expr]) |> tuple_of_list in 
+    params |> List.map (fun [{expr; _ } -> expr]) |> tuple_of_list in 
   let mk_record cols =
-    cols |> List.map (fun [ {record_label; record_info={ty_expr;_ } ; _ }  ->
-          (record_label,ty_expr) ] )  |> mk_record   in
+    cols |> List.map (fun [ {label; info={expr;_ } ; _ }  ->
+          (label,expr) ] )  |> mk_record   in
   (gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
      mk_variant ~names:[],
@@ -102,14 +102,14 @@ let mk_variant_meta_expr cons params = with "expr"
       | _ ->  failwithf "%s can not be handled" cons]
     else
       params
-      |> List.map (fun [ {ty_expr;_} -> ty_expr ])
+      |> List.map (fun [ {expr;_} -> expr ])
       |> List.fold_left mee_app (mee_of_str cons)  ;
         
 let mk_record_meta_expr cols = cols |> List.map
-  (fun [ {record_label; record_info={ty_expr;_};_} -> (record_label, ty_expr)]) |> mk_record_ee ;
+  (fun [ {label; info={expr;_};_} -> (label, expr)]) |> mk_record_ee ;
 
 let mk_tuple_meta_expr params =
-    params |> List.map (fun [{ty_expr;_} -> ty_expr]) |> mk_tuple_ee ;
+    params |> List.map (fun [{expr;_} -> expr]) |> mk_tuple_ee ;
 
 let gen_meta_expr = 
   gen_str_item  ~id:(`Pre "meta_")  ~names:["_loc"]
@@ -126,16 +126,16 @@ let mk_variant_meta_patt cons params = with "expr"
       | _ -> failwithf "%s can not be handled" cons ]
     else
       params
-      |> List.map (fun [ {ty_expr;_} -> ty_expr ])
+      |> List.map (fun [ {expr;_} -> expr ])
       |> List.fold_left mep_app (mep_of_str cons);
         
 let mk_record_meta_patt cols = cols |> List.map
-      (fun [ {record_label; record_info={ty_expr;_};_}
-             -> (record_label, ty_expr)])
+      (fun [ {label; info={expr;_};_}
+             -> (label, expr)])
          |> mk_record_ep ;
 
 let mk_tuple_meta_patt params = params |> List.map
-      (fun [{ty_expr;_} -> ty_expr]) |> mk_tuple_ep;
+      (fun [{expr;_} -> expr]) |> mk_tuple_ep;
 
 let gen_meta_patt =
   gen_str_item  ~id:(`Pre "meta_")
@@ -174,14 +174,14 @@ let mk_variant_meta_expr cons params = with "expr"
       | _ ->  failwithf "%s can not be handled" cons]
     else
       params
-      |> List.map (fun [ {ty_expr;_} -> ty_expr ])
+      |> List.map (fun [ {expr;_} -> expr ])
       |> List.fold_left (* mee_app *)vee_app ((* mee_of_str *)vee_of_str cons)  ;
         
 let mk_record_meta_expr cols = cols |> List.map
-  (fun [ {record_label; record_info={ty_expr;_};_} -> (record_label, ty_expr)]) |> mk_record_ee ;
+  (fun [ {label; info={expr;_};_} -> (label, expr)]) |> mk_record_ee ;
 
 let mk_tuple_meta_expr params =
-    params |> List.map (fun [{ty_expr;_} -> ty_expr]) |> (* mk_tuple_ee *) mk_tuple_vee;
+    params |> List.map (fun [{expr;_} -> expr]) |> (* mk_tuple_ee *) mk_tuple_vee;
 
 let gen_meta_expr = 
   gen_str_item  ~id:(`Pre "meta_")  ~names:["_loc"]
@@ -200,16 +200,16 @@ let mk_variant_meta_patt cons params = with "expr"
       | _ -> failwithf "%s can not be handled" cons ]
     else
       params
-      |> List.map (fun [ {ty_expr;_} -> ty_expr ])
-      |> List.fold_left mep_app (mep_of_str cons);
+      |> List.map (fun [ {expr;_} -> expr ])
+      |> List.fold_left (* mep_app *) vep_app ((* mep_of_str *)vep_of_str cons);
         
 let mk_record_meta_patt cols = cols |> List.map
-      (fun [ {record_label; record_info={ty_expr;_};_}
-             -> (record_label, ty_expr)])
+      (fun [ {label; info={expr;_};_}
+             -> (label, expr)])
          |> mk_record_ep ;
 
 let mk_tuple_meta_patt params = params |> List.map
-      (fun [{ty_expr;_} -> ty_expr]) |> mk_tuple_ep;
+      (fun [{expr;_} -> expr]) |> (* mk_tuple_ep *) mk_tuple_vep;
 
 let gen_meta_patt =
   gen_str_item  ~id:(`Pre "meta_")
@@ -236,7 +236,7 @@ Typehook.register
    +-----------------------------------------------------------------+ *)
   
 let extract info = info
-    |> List.map (fun [{ty_name_expr;ty_id_expr;_} -> [ty_name_expr;ty_id_expr] ])
+    |> List.map (fun [{name_expr;id_expr;_} -> [name_expr;id_expr] ])
     |> List.concat ;
 
 let mkfmt pre sep post fields = with "expr"
@@ -259,9 +259,9 @@ let mk_tuple_print params =
     
 let mk_record_print cols = 
     let pre = cols
-       |> List.map (fun [ {record_label;_} -> record_label^":%a" ])
+       |> List.map (fun [ {label;_} -> label^":%a" ])
        |>  mkfmt "@[<hv 1>{" ";@," "}@]" in 
-    cols |> List.map(fun [ {record_info;_} -> record_info ])
+    cols |> List.map(fun [ {info;_} -> info ])
          |> extract |> apply pre  ;
   
 let gen_print =
