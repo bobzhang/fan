@@ -750,8 +750,7 @@ let _ =
                  | `ANT ((""|"anti" as n),s) ->
                      (`PaApp
                         (_loc, (`PaVrn (_loc, v)),
-                          (`Ant (_loc, (mk_anti ~c:"patt" n s)))) : 
-                     'simple_patt )
+                          (`Ant (_loc, (mk_anti ~c:"patt" n s)))) : 'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));

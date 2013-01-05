@@ -8562,8 +8562,7 @@ let rec is_irrefut_patt =
   | `PaVrn (_loc,_)|`PaStr (_loc,_)|`PaRng (_loc,_,_)|`PaFlo (_loc,_)|
       `PaNativeInt (_loc,_)|`PaInt64 (_loc,_)|`PaInt32 (_loc,_)|`PaInt
                                                                   (_loc,_)|
-      `PaChr (_loc,_)|`PaTyp (_loc,_)|`PaArr (_loc,_)|`Ant (_loc,_) ->
-      false
+      `PaChr (_loc,_)|`PaTyp (_loc,_)|`PaArr (_loc,_)|`Ant (_loc,_) -> false
 let rec is_constructor =
   function
   | `IdAcc (_loc,_,i) -> is_constructor i

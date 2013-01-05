@@ -63,7 +63,7 @@ include PAst;
     | `IdApp of loc and ident and ident (* i i *)
     | `IdLid of loc and string (* foo *)
     | `IdUid of loc and string (* Bar *)
-    | `IAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
    and ctyp =
     [ `TyNil of loc
     | `TyAli of loc and ctyp and ctyp (* t as t *) (* list 'a as 'a *)

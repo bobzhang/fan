@@ -3,7 +3,6 @@ open LibUtil
 open Easy
 open FSig
 open Lib.Expr
-
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
   (function

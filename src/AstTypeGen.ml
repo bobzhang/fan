@@ -278,8 +278,8 @@ let mk_variant_meta_patt cons params = with "expr"
     if String.ends_with cons "Ant" then
       (* match len with *)
       (* [  *)
-      (*   1 -> {| `PaAnt (_loc,  $(id:xid 0))  |} *)
-      (* | n when n > 1 -> *) of_vstr_number "PAnt" len (* of_ident_number {:ident| Ant |} len *)
+      (*   1 -> {| `Ant (_loc,  $(id:xid 0))  |} *)
+      (* | n when n > 1 -> *) of_vstr_number "Ant" len (* of_ident_number {:ident| Ant |} len *)
       (* | _ -> failwithf "%s can not be handled" cons ] *)
     else
       params

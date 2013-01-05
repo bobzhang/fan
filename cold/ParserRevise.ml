@@ -691,8 +691,7 @@ let apply () =
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `ANT ((""|"sigi"|"anti"|"list" as n),s) ->
-                       (`Ant (_loc, (mk_anti ~c:"sig_item" n s)) : 
-                       'sig_item )
+                       (`Ant (_loc, (mk_anti ~c:"sig_item" n s)) : 'sig_item )
                    | _ -> assert false)));
           ([`Stoken
               (((function | `QUOTATION _ -> true | _ -> false)),
@@ -822,8 +821,7 @@ let apply () =
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `ANT ((""|"sigi"|"anti"|"list" as n),s) ->
-                       (`Ant (_loc, (mk_anti n ~c:"sig_item" s)) : 
-                       'sig_items )
+                       (`Ant (_loc, (mk_anti n ~c:"sig_item" s)) : 'sig_items )
                    | _ -> assert false)));
           ([`Stoken
               (((function
@@ -4847,8 +4845,7 @@ let apply () =
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `ANT ((""|"stri"|"anti"|"list" as n),s) ->
-                       (`Ant (_loc, (mk_anti n ~c:"str_item" s)) : 
-                       'str_items )
+                       (`Ant (_loc, (mk_anti n ~c:"str_item" s)) : 'str_items )
                    | _ -> assert false)));
           ([`Stoken
               (((function
@@ -5474,8 +5471,7 @@ let apply () =
                   (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `ANT (("virtual" as n),s) ->
-                      (let anti =
-                         `Ant (_loc, (mk_anti ~c:"class_expr" n s)) in
+                      (let anti = `Ant (_loc, (mk_anti ~c:"class_expr" n s)) in
                        `CeCon (_loc, anti, i, ot) : 'class_expr_quot )
                   | _ -> assert false)));
           ([`Snterm (Gram.obj (class_expr : 'class_expr Gram.t ))],
@@ -5502,8 +5498,7 @@ let apply () =
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `ANT ((""|"cdcl"|"anti"|"list" as n),s) ->
-                      (`Ant (_loc, (mk_anti ~c:"class_expr" n s)) : 
-                      'class_declaration )
+                      (`Ant (_loc, (mk_anti ~c:"class_expr" n s)) : 'class_declaration )
                   | _ -> assert false)));
           ([`Stoken
               (((function | `QUOTATION _ -> true | _ -> false)),
@@ -5608,8 +5603,7 @@ let apply () =
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `ANT ((""|"cexp"|"anti" as n),s) ->
-                      (`Ant (_loc, (mk_anti ~c:"class_expr" n s)) : 
-                      'class_expr )
+                      (`Ant (_loc, (mk_anti ~c:"class_expr" n s)) : 'class_expr )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
@@ -5682,8 +5676,7 @@ let apply () =
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `ANT ((""|"typ"|"anti"|"list" as n),s) ->
-                     (`Ant (_loc, (mk_anti ~c:"class_type" n s)) : 
-                     'class_description )
+                     (`Ant (_loc, (mk_anti ~c:"class_type" n s)) : 'class_description )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
@@ -5722,8 +5715,7 @@ let apply () =
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `ANT ((""|"typ"|"anti"|"list" as n),s) ->
-                     (`Ant (_loc, (mk_anti ~c:"class_type" n s)) : 
-                     'class_type_declaration )
+                     (`Ant (_loc, (mk_anti ~c:"class_type" n s)) : 'class_type_declaration )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
@@ -5827,8 +5819,7 @@ let apply () =
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `ANT ((""|"ctyp"|"anti" as n),s) ->
-                      (`Ant (_loc, (mk_anti ~c:"class_type" n s)) : 
-                      'class_type )
+                      (`Ant (_loc, (mk_anti ~c:"class_type" n s)) : 'class_type )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
