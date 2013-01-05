@@ -103,7 +103,7 @@ module Make(MetaLoc:META_LOC) = struct
                              (_loc, (`ExVrn (_loc, "`CrVvr")),
                                (meta_loc _loc a0))), (meta_string _loc a1))),
                      (meta_mutable_flag _loc a2))), (meta_ctyp _loc a3))
-        | `CrAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_class_expr: 'loc -> class_expr -> 'result =
       fun _loc  ->
         function
@@ -180,7 +180,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`CeEq")), (meta_loc _loc a0))),
                      (meta_class_expr _loc a1))), (meta_class_expr _loc a2))
-        | `CeAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
       fun _loc  ->
         function
@@ -245,7 +245,7 @@ module Make(MetaLoc:META_LOC) = struct
                              (_loc, (`ExVrn (_loc, "`CgVir")),
                                (meta_loc _loc a0))), (meta_string _loc a1))),
                      (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
-        | `CgAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_class_type: 'loc -> class_type -> 'result =
       fun _loc  ->
         function
@@ -303,7 +303,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`CtEq")), (meta_loc _loc a0))),
                      (meta_class_type _loc a1))), (meta_class_type _loc a2))
-        | `CtAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_str_item: 'loc -> str_item -> 'result =
       fun _loc  ->
         function
@@ -406,7 +406,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`StVal")), (meta_loc _loc a0))),
                      (meta_rec_flag _loc a1))), (meta_binding _loc a2))
-        | `StAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_module_expr: 'loc -> module_expr -> 'result =
       fun _loc  ->
         function
@@ -457,7 +457,7 @@ module Make(MetaLoc:META_LOC) = struct
               (_loc,
                 (`ExApp (_loc, (`ExVrn (_loc, "`MePkg")), (meta_loc _loc a0))),
                 (meta_expr _loc a1))
-        | `MeAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_match_case: 'loc -> match_case -> 'result =
       fun _loc  ->
         function
@@ -482,7 +482,7 @@ module Make(MetaLoc:META_LOC) = struct
                              (_loc, (`ExVrn (_loc, "`McArr")),
                                (meta_loc _loc a0))), (meta_patt _loc a1))),
                      (meta_expr _loc a2))), (meta_expr _loc a3))
-        | `McAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_module_binding: 'loc -> module_binding -> 'result =
       fun _loc  ->
         function
@@ -517,7 +517,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`MbCol")), (meta_loc _loc a0))),
                      (meta_string _loc a1))), (meta_module_type _loc a2))
-        | `MbAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_rec_binding: 'loc -> rec_binding -> 'result =
       fun _loc  ->
         function
@@ -540,7 +540,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`RbEq")), (meta_loc _loc a0))),
                      (meta_ident _loc a1))), (meta_expr _loc a2))
-        | `RbAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_binding: 'loc -> binding -> 'result =
       fun _loc  ->
         function
@@ -562,7 +562,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`BiEq")), (meta_loc _loc a0))),
                      (meta_patt _loc a1))), (meta_expr _loc a2))
-        | `BiAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_with_constr: 'loc -> with_constr -> 'result =
       fun _loc  ->
         function
@@ -609,7 +609,7 @@ module Make(MetaLoc:META_LOC) = struct
                         (_loc, (`ExVrn (_loc, "`WcAnd")), (meta_loc _loc a0))),
                      (meta_with_constr _loc a1))),
                 (meta_with_constr _loc a2))
-        | `WcAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_sig_item: 'loc -> sig_item -> 'result =
       fun _loc  ->
         function
@@ -703,7 +703,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`SgVal")), (meta_loc _loc a0))),
                      (meta_string _loc a1))), (meta_ctyp _loc a2))
-        | `SgAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_module_type: 'loc -> module_type -> 'result =
       fun _loc  ->
         function
@@ -750,7 +750,7 @@ module Make(MetaLoc:META_LOC) = struct
               (_loc,
                 (`ExApp (_loc, (`ExVrn (_loc, "`MtOf")), (meta_loc _loc a0))),
                 (meta_module_expr _loc a1))
-        | `MtAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_expr: 'loc -> expr -> 'result =
       fun _loc  ->
         function
@@ -769,7 +769,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`ExAcc")), (meta_loc _loc a0))),
                      (meta_expr _loc a1))), (meta_expr _loc a2))
-        | `ExAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
         | `ExApp (a0,a1,a2) ->
             `ExApp
               (_loc,
@@ -1075,7 +1075,7 @@ module Make(MetaLoc:META_LOC) = struct
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "`PaAli")), (meta_loc _loc a0))),
                      (meta_patt _loc a1))), (meta_patt _loc a2))
-        | `PaAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
         | `PaAny a0 ->
             `ExApp (_loc, (`ExVrn (_loc, "`PaAny")), (meta_loc _loc a0))
         | `PaApp (a0,a1,a2) ->
@@ -1500,7 +1500,7 @@ module Make(MetaLoc:META_LOC) = struct
               (_loc,
                 (`ExApp (_loc, (`ExVrn (_loc, "`TyPkg")), (meta_loc _loc a0))),
                 (meta_module_type _loc a1))
-        | `TyAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_ident: 'loc -> ident -> 'result =
       fun _loc  ->
         function
@@ -1530,7 +1530,7 @@ module Make(MetaLoc:META_LOC) = struct
               (_loc,
                 (`ExApp (_loc, (`ExVrn (_loc, "`IdUid")), (meta_loc _loc a0))),
                 (meta_string _loc a1))
-        | `IdAnt (a0,a1) -> `ExAnt (a0, a1)
+        | `Ant (a0,a1) -> `Ant (a0, a1)
     and meta_meta_list :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
@@ -1542,7 +1542,7 @@ module Make(MetaLoc:META_LOC) = struct
               (_loc,
                 (`ExApp (_loc, (`ExVrn (_loc, "`LCons")), (mf_a _loc a0))),
                 (meta_meta_list mf_a _loc a1))
-        | `LAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_meta_option :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) ->
@@ -1551,54 +1551,54 @@ module Make(MetaLoc:META_LOC) = struct
         function
         | `ONone  -> `ExVrn (_loc, "`ONone")
         | `OSome a0 -> `ExApp (_loc, (`ExVrn (_loc, "`OSome")), (mf_a _loc a0))
-        | `OAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
       fun _loc  ->
         function
         | `RvRowVar  -> `ExVrn (_loc, "`RvRowVar")
         | `RvNil  -> `ExVrn (_loc, "`RvNil")
-        | `RvAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
         | `OvOverride  -> `ExVrn (_loc, "`OvOverride")
         | `OvNil  -> `ExVrn (_loc, "`OvNil")
-        | `OvAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
         function
         | `ViVirtual  -> `ExVrn (_loc, "`ViVirtual")
         | `ViNil  -> `ExVrn (_loc, "`ViNil")
-        | `ViAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_private_flag: 'loc -> private_flag -> 'result =
       fun _loc  ->
         function
         | `PrPrivate  -> `ExVrn (_loc, "`PrPrivate")
         | `PrNil  -> `ExVrn (_loc, "`PrNil")
-        | `PrAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
       fun _loc  ->
         function
         | `MuMutable  -> `ExVrn (_loc, "`MuMutable")
         | `MuNil  -> `ExVrn (_loc, "`MuNil")
-        | `MuAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_direction_flag: 'loc -> direction_flag -> 'result =
       fun _loc  ->
         function
         | `DiTo  -> `ExVrn (_loc, "`DiTo")
         | `DiDownto  -> `ExVrn (_loc, "`DiDownto")
-        | `DiAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_rec_flag: 'loc -> rec_flag -> 'result =
       fun _loc  ->
         function
         | `ReRecursive  -> `ExVrn (_loc, "`ReRecursive")
         | `ReNil  -> `ExVrn (_loc, "`ReNil")
-        | `ReAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     and meta_meta_bool: 'loc -> meta_bool -> 'result =
       fun _loc  ->
         function
         | `BTrue  -> `ExVrn (_loc, "`BTrue")
         | `BFalse  -> `ExVrn (_loc, "`BFalse")
-        | `BAnt a0 -> `ExAnt (_loc, a0)
+        | `Ant a0 -> `Ant (_loc, a0)
     end
   end

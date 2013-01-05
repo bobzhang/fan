@@ -130,11 +130,11 @@ let rec ctyp =
   | `TyOf (loc,_,_) -> error loc "type1 of type2 not allowed here"
   | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
   | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
-  | `TyAnt (loc,_) -> error loc "antiquotation not allowed here"
+  | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `TyOfAmp (_,_,_)|`TyAmp (_,_,_)|`TySta (_,_,_)|`TyCom (_,_,_)|`TyVrn
                                                                     (_,_)|
       `TyQuM (_,_)|`TyQuP (_,_)|`TyDcl (_,_,_,_,_)|`TyAnP _|`TyAnM _|
-      `TyTypePol (_,_,_)|`TyObj (_,_,`RvAnt _)|`TyNil _|`TyTup (_,_) ->
+      `TyTypePol (_,_,_)|`TyObj (_,_,`Ant _)|`TyNil _|`TyTup (_,_) ->
       assert false
 and row_field =
   function
@@ -228,7 +228,7 @@ let rec list_of_meta_list =
   function
   | `LNil -> []
   | `LCons (x,xs) -> x :: (list_of_meta_list xs)
-  | `LAnt _ -> assert false
+  | `Ant _ -> assert false
 let mkmutable =
   function | `MuMutable -> Mutable | `MuNil -> Immutable | _ -> assert false
 let paolab lab p =
@@ -299,7 +299,7 @@ let rec mkwithc wc acc =
   | `WcMoS (_loc,i1,i2) ->
       ((long_uident i1), (Pwith_modsubst (long_uident i2))) :: acc
   | `WcAnd (_loc,wc1,wc2) -> mkwithc wc1 (mkwithc wc2 acc)
-  | `WcAnt (loc,_) -> error loc "bad with constraint (antiquotation)"
+  | `Ant (loc,_) -> error loc "bad with constraint (antiquotation)"
 let rec patt_fa al =
   function | `PaApp (_,f,a) -> patt_fa (a :: al) f | f -> (f, al)
 let rec deep_mkrangepat loc c1 c2 =
@@ -336,7 +336,7 @@ let rec patt =
         | (`PaId (_loc,`IdLid (sloc,s)),p) -> (p, (with_loc s sloc))
         | _ -> error loc "invalid alias pattern" in
       mkpat loc (Ppat_alias ((patt p), i))
-  | `PaAnt (loc,_) -> error loc "antiquotation not allowed here"
+  | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `PaAny loc -> mkpat loc Ppat_any
   | `PaApp (loc,`PaId (_,`IdUid (sloc,s)),`PaTup (_,`PaAny loc_any)) ->
       mkpat loc
@@ -454,7 +454,7 @@ let rec expr =
              | _ -> error (loc_of_expr e2) "lowercase identifier expected")
           (_loc, e) l in
       e
-  | `ExAnt (loc,_) -> error loc "antiquotation not allowed here"
+  | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `ExApp (loc,_,_) as f ->
       let (f,al) = Expr.view_app [] f in
       let al = List.map label_expr al in
@@ -729,7 +729,7 @@ and module_type =
   | `MtWit (loc,mt,wc) ->
       mkmty loc (Pmty_with ((module_type mt), (mkwithc wc [])))
   | `MtOf (loc,me) -> mkmty loc (Pmty_typeof (module_expr me))
-  | `MtAnt (_loc,_) -> assert false
+  | `Ant (_loc,_) -> assert false
 and sig_item s l =
   match s with
   | `SgNil _loc -> l
@@ -774,7 +774,7 @@ and sig_item s l =
   | `SgVal (loc,n,t) ->
       (mksig loc (Psig_value ((with_loc n loc), (mkvalue_desc loc t [])))) ::
       l
-  | `SgAnt (loc,_) -> error loc "antiquotation in sig_item"
+  | `Ant (loc,_) -> error loc "antiquotation in sig_item"
 and module_sig_binding x acc =
   match x with
   | `MbAnd (_loc,x,y) -> module_sig_binding x (module_sig_binding y acc)
@@ -806,7 +806,7 @@ and module_expr =
                  ((expr e),
                    (Some (mktyp loc (Ptyp_package (package_type pt)))), None))))
   | `MePkg (loc,e) -> mkmod loc (Pmod_unpack (expr e))
-  | `MeAnt (loc,_) -> error loc "antiquotation in module_expr"
+  | `Ant (loc,_) -> error loc "antiquotation in module_expr"
 and str_item s l =
   match s with
   | `StNil _loc -> l
@@ -851,7 +851,7 @@ and str_item s l =
   | `StTyp (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl []))) :: l
   | `StVal (loc,rf,bi) ->
       (mkstr loc (Pstr_value ((mkrf rf), (binding bi [])))) :: l
-  | `StAnt (loc,_) -> error loc "antiquotation in str_item"
+  | `Ant (loc,_) -> error loc "antiquotation in str_item"
 and class_type =
   function
   | `CtCon (loc,`ViNil,id,tl) ->
@@ -872,7 +872,7 @@ and class_type =
            { pcsig_self = (ctyp t); pcsig_fields = cil; pcsig_loc = loc })
   | `CtCon (loc,_,_,_) ->
       error loc "invalid virtual class inside a class type"
-  | `CtAnt (_,_)|`CtEq (_,_,_)|`CtCol (_,_,_)|`CtAnd (_,_,_)|`CtNil _ ->
+  | `Ant (_,_)|`CtEq (_,_,_)|`CtCol (_,_,_)|`CtAnd (_,_,_)|`CtNil _ ->
       assert false
 and class_info_class_expr ci =
   match ci with
@@ -925,7 +925,7 @@ and class_sig_item c l =
       (mkctf loc (Pctf_val (s, (mkmutable b), (mkvirtual v), (ctyp t)))) :: l
   | `CgVir (loc,s,b,t) ->
       (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t))))) :: l
-  | `CgAnt (_,_) -> assert false
+  | `Ant (_,_) -> assert false
 and class_expr =
   function
   | `CeApp (loc,_,_) as c ->
@@ -960,7 +960,7 @@ and class_expr =
       mkcl loc (Pcl_constraint ((class_expr ce), (class_type ct)))
   | `CeCon (loc,_,_,_) ->
       error loc "invalid virtual class inside a class expression"
-  | `CeAnt (_,_)|`CeEq (_,_,_)|`CeAnd (_,_,_)|`CeNil _ -> assert false
+  | `Ant (_,_)|`CeEq (_,_,_)|`CeAnd (_,_,_)|`CeNil _ -> assert false
 and class_str_item c l =
   match c with
   | `CrNil _ -> l
@@ -992,7 +992,7 @@ and class_str_item c l =
   | `CrVvr (loc,s,mf,t) ->
       (mkcf loc (Pcf_valvirt ((with_loc s loc), (mkmutable mf), (ctyp t))))
       :: l
-  | `CrAnt (_,_) -> assert false
+  | `Ant (_,_) -> assert false
 let sig_item ast = sig_item ast []
 let str_item ast = str_item ast []
 let directive =

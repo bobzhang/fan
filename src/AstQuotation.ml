@@ -304,23 +304,23 @@ let antiquot_expander ~parse_patt ~parse_expr = object
         ~decorate:(fun n e ->
           let len = String.length n in 
           match n with
-          [ "antisig_item" -> {| `SgAnt ($(mloc _loc), $e) |}
-          | "antistr_item" -> {| `StAnt ($(mloc _loc), $e) |}
-          | "antictyp" -> {| `TyAnt ($(mloc _loc), $e) |}
-          | "antipatt" -> {| `PaAnt ($(mloc _loc), $e) |}
-          | "antiexpr" -> {| `ExAnt ($(mloc _loc), $e) |}
-          | "antimodule_type" -> {| `MtAnt($(mloc _loc), $e) |}
-          | "antimodule_expr" -> {| `MeAnt ($(mloc _loc), $e) |}
-          | "anticlass_type" -> {| `CtAnt ($(mloc _loc), $e) |}
-          | "anticlass_expr" -> {| `CeAnt ($(mloc _loc), $e) |}
-          | "anticlass_sig_item" -> {| `CgAnt ($(mloc _loc), $e) |}
-          | "anticlass_str_item" -> {| `CrAnt ($(mloc _loc), $e) |}
-          | "antiwith_constr" -> {| `WcAnt ($(mloc _loc), $e) |}
-          | "antibinding" -> {| `BiAnt ($(mloc _loc), $e) |}
-          | "antirec_binding" -> {| `RbAnt ($(mloc _loc), $e) |}
-          | "antimatch_case" -> {| `McAnt ($(mloc _loc), $e) |}
-          | "antimodule_binding" -> {| `MbAnt ($(mloc _loc), $e) |}
-          | "antiident" -> {| `IdAnt ($(mloc _loc), $e) |}
+          [ "antisig_item" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antistr_item" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antictyp" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antipatt" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antiexpr" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antimodule_type" -> {| `Ant($(mloc _loc), $e) |}
+          | "antimodule_expr" -> {| `Ant ($(mloc _loc), $e) |}
+          | "anticlass_type" -> {| `Ant ($(mloc _loc), $e) |}
+          | "anticlass_expr" -> {| `Ant ($(mloc _loc), $e) |}
+          | "anticlass_sig_item" -> {| `Ant ($(mloc _loc), $e) |}
+          | "anticlass_str_item" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antiwith_constr" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antibinding" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antirec_binding" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antimatch_case" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antimodule_binding" -> {| `Ant ($(mloc _loc), $e) |}
+          | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
           | "tupexpr" -> {| `ExTup ($(mloc _loc), $e)|}
           | "tuppatt" -> {| `PaTup ($(mloc _loc), $e)|}
           | "seqexpr" -> {| `ExSeq ($(mloc _loc), $e) |}
@@ -350,7 +350,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern")
           | _ -> e ])
       | p -> super#patt p ];
-    method! expr = with "expr" fun (* `ExAnt keeps the right location, `ExStr does not *)
+    method! expr = with "expr" fun (* `Ant keeps the right location, `ExStr does not *)
       [ {@_loc| $anti:s |} | {@_loc| $str:s |} as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
@@ -453,11 +453,11 @@ let antiquot_expander ~parse_patt ~parse_expr = object
 
             (* staging problems here *)      
             | "listmatch_case" -> {| Ast.mcOr_of_list $e |}
-            | "antimatch_case" -> {|  `McAnt ($(mloc _loc), $e) |}
+            | "antimatch_case" -> {|  `Ant ($(mloc _loc), $e) |}
             | "listmatch_caselettry" ->
                 {| ((Ast.match_pre)#match_case (Ast.mcOr_of_list $e)) |}
             | "antimatch_caselettry" ->
-                {| Ast.match_pre#match_case (`McAnt ($(mloc _loc), $e)) |}
+                {| Ast.match_pre#match_case (`Ant ($(mloc _loc), $e)) |}
             | "match_caselettry" ->
                 {| Ast.match_pre#match_case $e |}
                   
@@ -466,30 +466,30 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "listexpr," -> {| Ast.exCom_of_list $e |}
             | "listexpr;" -> {| Ast.exSem_of_list $e |}
             | "listforall" -> {| Ast.tyVarApp_of_list $e |}
-            | "antisig_item" -> {| `SgAnt ($(mloc _loc), $e) |}
-            | "antistr_item" -> {| `StAnt ($(mloc _loc), $e) |}
-            | "antictyp" -> {| `TyAnt ($(mloc _loc), $e) |}
-            | "antipatt" -> {| `PaAnt ($(mloc _loc), $e) |}
-            | "antiexpr" -> {| `ExAnt( $(mloc _loc), $e) |}
-            | "antimodule_type" -> {| `MtAnt ($(mloc _loc), $e) |}
-            | "antimodule_expr" -> {| `MeAnt ($(mloc _loc), $e) |}
-            | "anticlass_type" -> {| `CtAnt ($(mloc _loc), $e) |}
-            | "anticlass_expr" -> {| `CeAnt ($(mloc _loc), $e) |}
-            | "anticlass_sig_item" -> {| `CgAnt ($(mloc _loc), $e) |}
-            | "anticlass_str_item" -> {| `CrAnt ($(mloc _loc), $e) |}
-            | "antiwith_constr" -> {| `WcAnt ($(mloc _loc), $e) |}
-            | "antibinding" -> {| `BiAnt ($(mloc _loc), $e) |}
-            | "antirec_binding" -> {| `RbAnt ($(mloc _loc), $e) |}
+            | "antisig_item" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antistr_item" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antictyp" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antipatt" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antiexpr" -> {| `Ant( $(mloc _loc), $e) |}
+            | "antimodule_type" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antimodule_expr" -> {| `Ant ($(mloc _loc), $e) |}
+            | "anticlass_type" -> {| `Ant ($(mloc _loc), $e) |}
+            | "anticlass_expr" -> {| `Ant ($(mloc _loc), $e) |}
+            | "anticlass_sig_item" -> {| `Ant ($(mloc _loc), $e) |}
+            | "anticlass_str_item" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antiwith_constr" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antibinding" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antirec_binding" -> {| `Ant ($(mloc _loc), $e) |}
 
-            | "antimodule_binding" -> {| `MbAnt ($(mloc _loc), $e) |}
-            | "antiident" -> {| `IdAnt ($(mloc _loc), $e) |}
-            | "antidirection_flag" -> {| `DiAnt  $e |}
-            | "antioverride_flag" -> {| `OvAnt $e |}
-            | "antiprivate_flag" -> {| `PrAnt $e |}
-            | "antimutable_flag" -> {| `MuAnt $e|}
-            | "antivirtual_flag" -> {| `ViAnt $e|}
-            | "antirow_var_flag" -> {| `RvAnt $e|}
-            | "antirec_flag" -> {| `ReAnt $e|}
+            | "antimodule_binding" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
+            | "antidirection_flag" -> {| `Ant  $e |}
+            | "antioverride_flag" -> {| `Ant $e |}
+            | "antiprivate_flag" -> {| `Ant $e |}
+            | "antimutable_flag" -> {| `Ant $e|}
+            | "antivirtual_flag" -> {| `Ant $e|}
+            | "antirow_var_flag" -> {| `Ant $e|}
+            | "antirec_flag" -> {| `Ant $e|}
             | _ -> e ])
       | e -> super#expr e ];
   end;
@@ -521,7 +521,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
 (*           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern") *)
 (*           | _ -> e ]) *)
 (*       | p -> super#patt p ]; *)
-(*     method! expr = with "expr" fun (\* `ExAnt keeps the right location, `ExStr does not *\) *)
+(*     method! expr = with "expr" fun (\* `Ant keeps the right location, `ExStr does not *\) *)
 (*       [ {| $anti:s |} | {| $str:s |} as e -> *)
 (*           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in *)
 (*           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc *)
@@ -562,7 +562,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
 (*             | "`boolexpr" -> *)
 (*                 let x = {|`IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in *)
 (*                 {| {| $(id:$x)  |} |} *)
-(*             | "antiexpr" -> {| `ExAnt $(mloc _loc) $e |} *)
+(*             | "antiexpr" -> {| `Ant $(mloc _loc) $e |} *)
 (*             | _ -> e ]) *)
 (*       | e -> super#expr e ]; *)
 (*   end; *)

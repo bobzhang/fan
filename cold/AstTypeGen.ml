@@ -3,7 +3,7 @@ open LibUtil
 open Easy
 open FSig
 open Lib.Expr
-open Lib.Basic
+
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
   (function
@@ -71,7 +71,7 @@ let _ =
 let mk_variant_meta_expr cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then of_vstr_number "ExAnt" len
+  then of_vstr_number "Ant" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (List.fold_left mee_app (mee_of_str cons))
@@ -87,7 +87,7 @@ let gen_meta_expr =
 let mk_variant_meta_patt cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then of_vstr_number "PaAnt" len
+  then of_vstr_number "Ant" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (List.fold_left mep_app (mep_of_str cons))
@@ -156,7 +156,7 @@ let _ =
 let mk_variant_meta_expr cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then of_vstr_number "ExAnt" len
+  then of_vstr_number "Ant" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (List.fold_left vee_app (vee_of_str cons))
@@ -172,7 +172,7 @@ let gen_meta_expr =
 let mk_variant_meta_patt cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then of_vstr_number "PaAnt" len
+  then of_vstr_number "Ant" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (List.fold_left vep_app (vep_of_str cons))

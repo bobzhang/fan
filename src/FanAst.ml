@@ -20,49 +20,49 @@ type loc = FanLoc.t
    and meta_bool =
     [= `BTrue
     | `BFalse
-    | `BAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and rec_flag =
     [= `ReRecursive
     | `ReNil
-    | `ReAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and direction_flag =
     [= `DiTo
     | `DiDownto
-    | `DiAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and mutable_flag =
     [= `MuMutable
     | `MuNil
-    | `MuAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and private_flag =
     [= `PrPrivate
     | `PrNil
-    | `PrAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and virtual_flag =
     [= `ViVirtual
     | `ViNil
-    | `ViAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and override_flag =
     [= `OvOverride
     | `OvNil
-    | `OvAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and row_var_flag =
     [= `RvRowVar
     | `RvNil
-    | `RvAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and meta_option 'a =
     [= `ONone
     | `OSome of 'a
-    | `OAnt of (loc*string) ]
+    | `Ant of (loc*string) ]
    and meta_list 'a =
     [= `LNil
     | `LCons of ('a * meta_list 'a)
-    | `LAnt of (loc * string) ] (* FIXME `LAnt no location *)
+    | `Ant of (loc * string) ] (* FIXME `Ant no location *)
    and ident =
     [= `IdAcc of (loc * ident * ident) (* i . i *)
     | `IdApp of (loc * ident * ident) (* i i *)
     | `IdLid of (loc * string) (* foo *)
     | `IdUid of (loc * string) (* `Bar *)
-    | `IdAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
    and ctyp =
     [= `TyNil of loc
     | `TyAli of (loc * ctyp * ctyp) (* t as t *) (* list 'a as 'a *)
@@ -105,13 +105,13 @@ type loc = FanLoc.t
     | `TyAmp of (loc * ctyp * ctyp) (* t & t *)
     | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
     | `TyPkg of (loc * module_type) (* (module S) *)
-    | `TyAnt of (loc * string) (* $s$ *)
+    | `Ant of (loc * string) (* $s$ *)
     ]
    and patt =
     [= `PaNil of loc
     | `PaId  of (loc * ident) (* i *)
     | `PaAli of (loc * patt * patt) (* p as p *) (* (Node x y as n) *)
-    | `PaAnt of (loc * string) (* $s$ *)
+    | `Ant of (loc * string) (* $s$ *)
     | `PaAny of loc (* _ *)
     | `PaApp of (loc * patt * patt) (* p p *) (* fun x y -> *)
     | `PaArr of (loc * patt) (* [| p |] *)
@@ -143,7 +143,7 @@ type loc = FanLoc.t
     [= `ExNil of loc
     | `ExId  of (loc * ident) (* i *)
     | `ExAcc of (loc * expr * expr) (* e.e *)
-    | `ExAnt of (loc * string) (* $s$ *)
+    | `Ant of (loc * string) (* $s$ *)
     | `ExApp of (loc * expr * expr) (* e e *)
     | `ExAre of (loc * expr * expr) (* e.(e) *)
     | `ExArr of (loc * expr) (* [| e |] *)
@@ -221,7 +221,7 @@ type loc = FanLoc.t
     | `MtWit of (loc * module_type * with_constr)
       (* module type of m *)
     | `MtOf of (loc * module_expr)
-    | `MtAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and sig_item =
     [= `SgNil of loc
       (* class cict *)
@@ -250,7 +250,7 @@ type loc = FanLoc.t
     | `SgTyp of (loc * ctyp)
       (* value s : t *)
     | `SgVal of (loc * string * ctyp)
-    | `SgAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and with_constr =
     [= `WcNil of loc
       (* type t = t *)
@@ -263,21 +263,21 @@ type loc = FanLoc.t
     | `WcMoS of (loc * ident * ident)
       (* wc * wc *)
     | `WcAnd of (loc * with_constr * with_constr)
-    | `WcAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and binding =
     [= `BiNil of loc
       (* bi and bi *) (* let a = 42 and c = 43 *)
     | `BiAnd of (loc * binding * binding)
       (* p = e *) (* let patt = expr *)
     | `BiEq  of (loc * patt * expr)
-    | `BiAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and rec_binding =
     [= `RbNil of loc
       (* rb ; rb *)
     | `RbSem of (loc * rec_binding * rec_binding)
       (* i = e *)
     | `RbEq  of (loc * ident * expr)
-    | `RbAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and module_binding =
     [= `MbNil of loc
       (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
@@ -286,7 +286,7 @@ type loc = FanLoc.t
     | `MbColEq  of (loc * string * module_type * module_expr)
       (* s : mt *)
     | `MbCol  of (loc * string * module_type)
-    | `MbAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and match_case =
     [= `McNil of loc
       (* a | a *)
@@ -294,7 +294,7 @@ type loc = FanLoc.t
       (* p (when e)? -> e *)
     | `McArr of (loc * patt * expr * expr)
     (* | `McArrow of loc and patt and option expr and expr (\* FIXME *\) *)
-    | `McAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and module_expr =
     [= `MeNil of loc
       (* i *)
@@ -310,7 +310,7 @@ type loc = FanLoc.t
       (* (value e) *)
       (* (value e : S) which is represented as (value (e : S)) *)
     | `MePkg of (loc * expr)
-    | `MeAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and str_item =
     [= `StNil of loc
       (* class cice *)
@@ -341,7 +341,7 @@ type loc = FanLoc.t
     | `StTyp of (loc * ctyp)
       (* value (rec)? bi *)
     | `StVal of (loc * rec_flag * binding)
-    | `StAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and class_type =
     [= `CtNil of loc
       (* (virtual)? i ([ t ])? *)
@@ -357,7 +357,7 @@ type loc = FanLoc.t
       (* ct = ct *)
     | `CtEq  of (loc * class_type * class_type)
       (* $s$ *)
-    | `CtAnt of (loc * string) ]
+    | `Ant of (loc * string) ]
   and class_sig_item =
     [= `CgNil of loc
       (* type t = t *)
@@ -372,7 +372,7 @@ type loc = FanLoc.t
     | `CgVal of (loc * string * mutable_flag * virtual_flag * ctyp)
       (* method virtual (private)? s : t *)
     | `CgVir of (loc * string * private_flag * ctyp)
-    | `CgAnt of (loc * string) (* $s$ *) ]
+    | `Ant of (loc * string) (* $s$ *) ]
   and class_expr =
     [= `CeNil of loc
       (* ce e *)
@@ -392,7 +392,7 @@ type loc = FanLoc.t
       (* ce = ce *)
     | `CeEq  of (loc * class_expr * class_expr)
       (* $s$ *)
-    | `CeAnt of (loc * string) ]
+    | `Ant of (loc * string) ]
   and class_str_item =
     [= `CrNil of loc
       (* cst ; cst *)
@@ -411,7 +411,7 @@ type loc = FanLoc.t
     | `CrVir of (loc * string * private_flag * ctyp)
       (* value virtual (mutable)? s : t *)
     | `CrVvr of (loc * string * mutable_flag * ctyp)
-    | `CrAnt of (loc * string) (* $s$ *) ]; 
+    | `Ant of (loc * string) (* $s$ *) ]; 
 
 |};
 

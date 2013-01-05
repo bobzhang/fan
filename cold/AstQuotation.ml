@@ -242,7 +242,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     inherit  Ast.map as super
     method! patt =
       function
-      | `PaAnt (_loc,s)|`PaStr (_loc,s) as p ->
+      | `Ant (_loc,s)|`PaStr (_loc,s) as p ->
           let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
           handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
             ~decorate:(fun n  e  ->
@@ -252,103 +252,103 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "SgAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antistr_item" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "StAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antictyp" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "TyAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antipatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antiexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antimodule_type" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "MtAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antimodule_expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "MeAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "anticlass_type" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "CtAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "anticlass_expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "CeAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "anticlass_sig_item" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "CgAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "anticlass_str_item" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "CrAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antiwith_constr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "WcAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antibinding" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "BiAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antirec_binding" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "RbAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antimatch_case" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "McAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antimodule_binding" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "MbAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "antiident" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "IdAnt")),
+                                    (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
                          | "tupexpr" ->
                              `PaApp
@@ -482,7 +482,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
       | p -> super#patt p
     method! expr =
       function
-      | `ExAnt (_loc,s)|`ExStr (_loc,s) as e ->
+      | `Ant (_loc,s)|`ExStr (_loc,s) as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n  e  ->
@@ -1000,7 +1000,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  e)
                          | "antimatch_case" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "McAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "listmatch_caselettry" ->
@@ -1035,7 +1035,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (`IdLid (_loc, "match_pre")))))),
                                       "match_case")),
                                  (`ExApp
-                                    (_loc, (`ExVrn (_loc, "McAnt")),
+                                    (_loc, (`ExVrn (_loc, "Ant")),
                                       (`ExTup
                                          (_loc,
                                            (`ExCom (_loc, (mloc _loc), e)))))))
@@ -1097,98 +1097,98 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  e)
                          | "antisig_item" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "SgAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antistr_item" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "StAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antictyp" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "TyAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antipatt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antiexpr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antimodule_type" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "MtAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antimodule_expr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "MeAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "anticlass_type" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "CtAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "anticlass_expr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "CeAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "anticlass_sig_item" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "CgAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "anticlass_str_item" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "CrAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antiwith_constr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "WcAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antibinding" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "BiAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antirec_binding" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "RbAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antimodule_binding" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "MbAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antiident" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "IdAnt")),
+                               (_loc, (`ExVrn (_loc, "Ant")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antidirection_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "DiAnt")), e)
+                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
                          | "antioverride_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "OvAnt")), e)
+                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
                          | "antiprivate_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "PrAnt")), e)
+                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
                          | "antimutable_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "MuAnt")), e)
+                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
                          | "antivirtual_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "ViAnt")), e)
+                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
                          | "antirow_var_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "RvAnt")), e)
+                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
                          | "antirec_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "ReAnt")), e)
+                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
                          | _ -> e)
       | e -> super#expr e
   end

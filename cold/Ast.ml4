@@ -5,49 +5,49 @@ type loc = FanLoc.t
 and meta_bool =  
   | BTrue
   | BFalse
-  | BAnt of string 
+  | Ant of string 
 and rec_flag =  
   | ReRecursive
   | ReNil
-  | ReAnt of string 
+  | Ant of string 
 and direction_flag =  
   | DiTo
   | DiDownto
-  | DiAnt of string 
+  | Ant of string 
 and mutable_flag =  
   | MuMutable
   | MuNil
-  | MuAnt of string 
+  | Ant of string 
 and private_flag =  
   | PrPrivate
   | PrNil
-  | PrAnt of string 
+  | Ant of string 
 and virtual_flag =  
   | ViVirtual
   | ViNil
-  | ViAnt of string 
+  | Ant of string 
 and override_flag =  
   | OvOverride
   | OvNil
-  | OvAnt of string 
+  | Ant of string 
 and row_var_flag =  
   | RvRowVar
   | RvNil
-  | RvAnt of string 
+  | Ant of string 
 and 'a meta_option =  
   | ONone
   | OSome of 'a
-  | OAnt of string 
+  | Ant of string 
 and 'a meta_list =  
   | LNil
   | LCons of 'a* 'a meta_list
-  | LAnt of string 
+  | Ant of string 
 and ident =  
   | IdAcc of loc* ident* ident
   | IdApp of loc* ident* ident
   | IdLid of loc* string
   | IdUid of loc* string
-  | IdAnt of loc* string 
+  | Ant of loc* string 
 and ctyp =  
   | TyNil of loc
   | TyAli of loc* ctyp* ctyp
@@ -88,12 +88,12 @@ and ctyp =
   | TyAmp of loc* ctyp* ctyp
   | TyOfAmp of loc* ctyp* ctyp
   | TyPkg of loc* module_type
-  | TyAnt of loc* string 
+  | Ant of loc* string 
 and patt =  
   | PaNil of loc
   | PaId of loc* ident
   | PaAli of loc* patt* patt
-  | PaAnt of loc* string
+  | Ant of loc* string
   | PaAny of loc
   | PaApp of loc* patt* patt
   | PaArr of loc* patt
@@ -123,7 +123,7 @@ and expr =
   | ExNil of loc
   | ExId of loc* ident
   | ExAcc of loc* expr* expr
-  | ExAnt of loc* string
+  | Ant of loc* string
   | ExApp of loc* expr* expr
   | ExAre of loc* expr* expr
   | ExArr of loc* expr
@@ -172,7 +172,7 @@ and module_type =
   | MtSig of loc* sig_item
   | MtWit of loc* module_type* with_constr
   | MtOf of loc* module_expr
-  | MtAnt of loc* string 
+  | Ant of loc* string 
 and sig_item =  
   | SgNil of loc
   | SgCls of loc* class_type
@@ -188,7 +188,7 @@ and sig_item =
   | SgOpn of loc* ident
   | SgTyp of loc* ctyp
   | SgVal of loc* string* ctyp
-  | SgAnt of loc* string 
+  | Ant of loc* string 
 and with_constr =  
   | WcNil of loc
   | WcTyp of loc* ctyp* ctyp
@@ -196,28 +196,28 @@ and with_constr =
   | WcTyS of loc* ctyp* ctyp
   | WcMoS of loc* ident* ident
   | WcAnd of loc* with_constr* with_constr
-  | WcAnt of loc* string 
+  | Ant of loc* string 
 and binding =  
   | BiNil of loc
   | BiAnd of loc* binding* binding
   | BiEq of loc* patt* expr
-  | BiAnt of loc* string 
+  | Ant of loc* string 
 and rec_binding =  
   | RbNil of loc
   | RbSem of loc* rec_binding* rec_binding
   | RbEq of loc* ident* expr
-  | RbAnt of loc* string 
+  | Ant of loc* string 
 and module_binding =  
   | MbNil of loc
   | MbAnd of loc* module_binding* module_binding
   | MbColEq of loc* string* module_type* module_expr
   | MbCol of loc* string* module_type
-  | MbAnt of loc* string 
+  | Ant of loc* string 
 and match_case =  
   | McNil of loc
   | McOr of loc* match_case* match_case
   | McArr of loc* patt* expr* expr
-  | McAnt of loc* string 
+  | Ant of loc* string 
 and module_expr =  
   | MeNil of loc
   | MeId of loc* ident
@@ -226,7 +226,7 @@ and module_expr =
   | MeStr of loc* str_item
   | MeTyc of loc* module_expr* module_type
   | MePkg of loc* expr
-  | MeAnt of loc* string 
+  | Ant of loc* string 
 and str_item =  
   | StNil of loc
   | StCls of loc* class_expr
@@ -243,7 +243,7 @@ and str_item =
   | StOpn of loc* ident
   | StTyp of loc* ctyp
   | StVal of loc* rec_flag* binding
-  | StAnt of loc* string 
+  | Ant of loc* string 
 and class_type =  
   | CtNil of loc
   | CtCon of loc* virtual_flag* ident* ctyp
@@ -252,7 +252,7 @@ and class_type =
   | CtAnd of loc* class_type* class_type
   | CtCol of loc* class_type* class_type
   | CtEq of loc* class_type* class_type
-  | CtAnt of loc* string 
+  | Ant of loc* string 
 and class_sig_item =  
   | CgNil of loc
   | CgCtr of loc* ctyp* ctyp
@@ -261,7 +261,7 @@ and class_sig_item =
   | CgMth of loc* string* private_flag* ctyp
   | CgVal of loc* string* mutable_flag* virtual_flag* ctyp
   | CgVir of loc* string* private_flag* ctyp
-  | CgAnt of loc* string 
+  | Ant of loc* string 
 and class_expr =  
   | CeNil of loc
   | CeApp of loc* class_expr* expr
@@ -272,7 +272,7 @@ and class_expr =
   | CeTyc of loc* class_expr* class_type
   | CeAnd of loc* class_expr* class_expr
   | CeEq of loc* class_expr* class_expr
-  | CeAnt of loc* string 
+  | Ant of loc* string 
 and class_str_item =  
   | CrNil of loc
   | CrSem of loc* class_str_item* class_str_item
@@ -283,7 +283,7 @@ and class_str_item =
   | CrVal of loc* string* override_flag* mutable_flag* expr
   | CrVir of loc* string* private_flag* ctyp
   | CrVvr of loc* string* mutable_flag* ctyp
-  | CrAnt of loc* string 
+  | Ant of loc* string 
 class print =
   object (self : 'self_type)
     inherit  printbase
@@ -317,8 +317,8 @@ class print =
         | CrVvr (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(CrVvr@ %a@ %a@ %a@ %a)@]" self#loc a0
               self#string a1 self#mutable_flag a2 self#ctyp a3
-        | CrAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(CrAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method class_expr : 'fmt -> class_expr -> 'result=
       fun fmt  ->
@@ -348,8 +348,8 @@ class print =
         | CeEq (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(CeEq@ %a@ %a@ %a)@]" self#loc a0
               self#class_expr a1 self#class_expr a2
-        | CeAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(CeAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method class_sig_item : 'fmt -> class_sig_item -> 'result=
       fun fmt  ->
@@ -374,8 +374,8 @@ class print =
         | CgVir (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(CgVir@ %a@ %a@ %a@ %a)@]" self#loc a0
               self#string a1 self#private_flag a2 self#ctyp a3
-        | CgAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(CgAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method class_type : 'fmt -> class_type -> 'result=
       fun fmt  ->
@@ -399,8 +399,8 @@ class print =
         | CtEq (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(CtEq@ %a@ %a@ %a)@]" self#loc a0
               self#class_type a1 self#class_type a2
-        | CtAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(CtAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method str_item : 'fmt -> str_item -> 'result=
       fun fmt  ->
@@ -449,8 +449,8 @@ class print =
         | StVal (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(StVal@ %a@ %a@ %a)@]" self#loc a0
               self#rec_flag a1 self#binding a2
-        | StAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(StAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method module_expr : 'fmt -> module_expr -> 'result=
       fun fmt  ->
@@ -474,8 +474,8 @@ class print =
         | MePkg (a0,a1) ->
             Format.fprintf fmt "@[<1>(MePkg@ %a@ %a)@]" self#loc a0 self#expr
               a1
-        | MeAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(MeAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method match_case : 'fmt -> match_case -> 'result=
       fun fmt  ->
@@ -487,8 +487,8 @@ class print =
         | McArr (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(McArr@ %a@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#expr a2 self#expr a3
-        | McAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(McAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method module_binding : 'fmt -> module_binding -> 'result=
       fun fmt  ->
@@ -503,8 +503,8 @@ class print =
         | MbCol (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(MbCol@ %a@ %a@ %a)@]" self#loc a0
               self#string a1 self#module_type a2
-        | MbAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(MbAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method rec_binding : 'fmt -> rec_binding -> 'result=
       fun fmt  ->
@@ -516,8 +516,8 @@ class print =
         | RbEq (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(RbEq@ %a@ %a@ %a)@]" self#loc a0
               self#ident a1 self#expr a2
-        | RbAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(RbAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method binding : 'fmt -> binding -> 'result=
       fun fmt  ->
@@ -529,8 +529,8 @@ class print =
         | BiEq (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(BiEq@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#expr a2
-        | BiAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(BiAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method with_constr : 'fmt -> with_constr -> 'result=
       fun fmt  ->
@@ -551,8 +551,8 @@ class print =
         | WcAnd (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(WcAnd@ %a@ %a@ %a)@]" self#loc a0
               self#with_constr a1 self#with_constr a2
-        | WcAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(WcAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method sig_item : 'fmt -> sig_item -> 'result=
       fun fmt  ->
@@ -598,8 +598,8 @@ class print =
         | SgVal (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(SgVal@ %a@ %a@ %a)@]" self#loc a0
               self#string a1 self#ctyp a2
-        | SgAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(SgAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method module_type : 'fmt -> module_type -> 'result=
       fun fmt  ->
@@ -623,8 +623,8 @@ class print =
         | MtOf (a0,a1) ->
             Format.fprintf fmt "@[<1>(MtOf@ %a@ %a)@]" self#loc a0
               self#module_expr a1
-        | MtAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(MtAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method expr : 'fmt -> expr -> 'result=
       fun fmt  ->
@@ -636,8 +636,8 @@ class print =
         | ExAcc (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(ExAcc@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#expr a2
-        | ExAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(ExAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
         | ExApp (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(ExApp@ %a@ %a@ %a)@]" self#loc a0
@@ -768,8 +768,8 @@ class print =
         | PaAli (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(PaAli@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#patt a2
-        | PaAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(PaAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
         | PaAny a0 -> Format.fprintf fmt "@[<1>(PaAny@ %a)@]" self#loc a0
         | PaApp (a0,a1,a2) ->
@@ -961,8 +961,8 @@ class print =
         | TyPkg (a0,a1) ->
             Format.fprintf fmt "@[<1>(TyPkg@ %a@ %a)@]" self#loc a0
               self#module_type a1
-        | TyAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(TyAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method ident : 'fmt -> ident -> 'result=
       fun fmt  ->
@@ -979,8 +979,8 @@ class print =
         | IdUid (a0,a1) ->
             Format.fprintf fmt "@[<1>(IdUid@ %a@ %a)@]" self#loc a0
               self#string a1
-        | IdAnt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(IdAnt@ %a@ %a)@]" self#loc a0
+        | Ant (a0,a1) ->
+            Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" self#loc a0
               self#string a1
     method meta_list :
       'all_a0 .
@@ -992,7 +992,7 @@ class print =
         | LCons (a0,a1) ->
             Format.fprintf fmt "@[<1>(LCons@ %a@ %a)@]" (mf_a self) a0
               (self#meta_list mf_a) a1
-        | LAnt a0 -> Format.fprintf fmt "@[<1>(LAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method meta_option :
       'all_a0 .
         ('self_type -> 'fmt -> 'all_a0 -> 'result) ->
@@ -1001,55 +1001,55 @@ class print =
         function
         | ONone  -> Format.fprintf fmt "ONone"
         | OSome a0 -> Format.fprintf fmt "@[<1>(OSome@ %a)@]" (mf_a self) a0
-        | OAnt a0 -> Format.fprintf fmt "@[<1>(OAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method row_var_flag : 'fmt -> row_var_flag -> 'result=
       fun fmt  ->
         function
         | RvRowVar  -> Format.fprintf fmt "RvRowVar"
         | RvNil  -> Format.fprintf fmt "RvNil"
-        | RvAnt a0 -> Format.fprintf fmt "@[<1>(RvAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method override_flag : 'fmt -> override_flag -> 'result=
       fun fmt  ->
         function
         | OvOverride  -> Format.fprintf fmt "OvOverride"
         | OvNil  -> Format.fprintf fmt "OvNil"
-        | OvAnt a0 -> Format.fprintf fmt "@[<1>(OvAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method virtual_flag : 'fmt -> virtual_flag -> 'result=
       fun fmt  ->
         function
         | ViVirtual  -> Format.fprintf fmt "ViVirtual"
         | ViNil  -> Format.fprintf fmt "ViNil"
-        | ViAnt a0 -> Format.fprintf fmt "@[<1>(ViAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method private_flag : 'fmt -> private_flag -> 'result=
       fun fmt  ->
         function
         | PrPrivate  -> Format.fprintf fmt "PrPrivate"
         | PrNil  -> Format.fprintf fmt "PrNil"
-        | PrAnt a0 -> Format.fprintf fmt "@[<1>(PrAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method mutable_flag : 'fmt -> mutable_flag -> 'result=
       fun fmt  ->
         function
         | MuMutable  -> Format.fprintf fmt "MuMutable"
         | MuNil  -> Format.fprintf fmt "MuNil"
-        | MuAnt a0 -> Format.fprintf fmt "@[<1>(MuAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method direction_flag : 'fmt -> direction_flag -> 'result=
       fun fmt  ->
         function
         | DiTo  -> Format.fprintf fmt "DiTo"
         | DiDownto  -> Format.fprintf fmt "DiDownto"
-        | DiAnt a0 -> Format.fprintf fmt "@[<1>(DiAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method rec_flag : 'fmt -> rec_flag -> 'result=
       fun fmt  ->
         function
         | ReRecursive  -> Format.fprintf fmt "ReRecursive"
         | ReNil  -> Format.fprintf fmt "ReNil"
-        | ReAnt a0 -> Format.fprintf fmt "@[<1>(ReAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method meta_bool : 'fmt -> meta_bool -> 'result=
       fun fmt  ->
         function
         | BTrue  -> Format.fprintf fmt "BTrue"
         | BFalse  -> Format.fprintf fmt "BFalse"
-        | BAnt a0 -> Format.fprintf fmt "@[<1>(BAnt@ %a)@]" self#string a0
+        | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" self#string a0
     method loc : 'fmt -> loc -> 'result= fun fmt  a0  -> self#fanloc_t fmt a0
     method fanloc_t : 'fmt -> FanLoc.t -> 'result= self#unknown
   end
@@ -1083,8 +1083,8 @@ let rec pp_print_class_str_item: 'fmt -> class_str_item -> 'result =
     | CrVvr (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(CrVvr@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1 pp_print_mutable_flag a2 pp_print_ctyp a3
-    | CrAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(CrAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_class_expr: 'fmt -> class_expr -> 'result =
   fun fmt  ->
@@ -1114,8 +1114,8 @@ and pp_print_class_expr: 'fmt -> class_expr -> 'result =
     | CeEq (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(CeEq@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_class_expr a1 pp_print_class_expr a2
-    | CeAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(CeAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_class_sig_item: 'fmt -> class_sig_item -> 'result =
   fun fmt  ->
@@ -1140,8 +1140,8 @@ and pp_print_class_sig_item: 'fmt -> class_sig_item -> 'result =
     | CgVir (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(CgVir@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1 pp_print_private_flag a2 pp_print_ctyp a3
-    | CgAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(CgAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_class_type: 'fmt -> class_type -> 'result =
   fun fmt  ->
@@ -1165,8 +1165,8 @@ and pp_print_class_type: 'fmt -> class_type -> 'result =
     | CtEq (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(CtEq@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_class_type a1 pp_print_class_type a2
-    | CtAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(CtAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_str_item: 'fmt -> str_item -> 'result =
   fun fmt  ->
@@ -1215,8 +1215,8 @@ and pp_print_str_item: 'fmt -> str_item -> 'result =
     | StVal (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(StVal@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_rec_flag a1 pp_print_binding a2
-    | StAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(StAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_module_expr: 'fmt -> module_expr -> 'result =
   fun fmt  ->
@@ -1240,8 +1240,8 @@ and pp_print_module_expr: 'fmt -> module_expr -> 'result =
     | MePkg (a0,a1) ->
         Format.fprintf fmt "@[<1>(MePkg@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1
-    | MeAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(MeAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_match_case: 'fmt -> match_case -> 'result =
   fun fmt  ->
@@ -1253,8 +1253,8 @@ and pp_print_match_case: 'fmt -> match_case -> 'result =
     | McArr (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(McArr@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1 pp_print_expr a2 pp_print_expr a3
-    | McAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(McAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_module_binding: 'fmt -> module_binding -> 'result =
   fun fmt  ->
@@ -1269,8 +1269,8 @@ and pp_print_module_binding: 'fmt -> module_binding -> 'result =
     | MbCol (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(MbCol@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1 pp_print_module_type a2
-    | MbAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(MbAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_rec_binding: 'fmt -> rec_binding -> 'result =
   fun fmt  ->
@@ -1282,8 +1282,8 @@ and pp_print_rec_binding: 'fmt -> rec_binding -> 'result =
     | RbEq (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(RbEq@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ident a1 pp_print_expr a2
-    | RbAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(RbAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_binding: 'fmt -> binding -> 'result =
   fun fmt  ->
@@ -1295,8 +1295,8 @@ and pp_print_binding: 'fmt -> binding -> 'result =
     | BiEq (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(BiEq@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1 pp_print_expr a2
-    | BiAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(BiAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_with_constr: 'fmt -> with_constr -> 'result =
   fun fmt  ->
@@ -1317,8 +1317,8 @@ and pp_print_with_constr: 'fmt -> with_constr -> 'result =
     | WcAnd (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(WcAnd@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_with_constr a1 pp_print_with_constr a2
-    | WcAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(WcAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_sig_item: 'fmt -> sig_item -> 'result =
   fun fmt  ->
@@ -1364,8 +1364,8 @@ and pp_print_sig_item: 'fmt -> sig_item -> 'result =
     | SgVal (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(SgVal@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1 pp_print_ctyp a2
-    | SgAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(SgAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_module_type: 'fmt -> module_type -> 'result =
   fun fmt  ->
@@ -1389,8 +1389,8 @@ and pp_print_module_type: 'fmt -> module_type -> 'result =
     | MtOf (a0,a1) ->
         Format.fprintf fmt "@[<1>(MtOf@ %a@ %a)@]" pp_print_loc a0
           pp_print_module_expr a1
-    | MtAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(MtAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_expr: 'fmt -> expr -> 'result =
   fun fmt  ->
@@ -1402,8 +1402,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | ExAcc (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(ExAcc@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_expr a2
-    | ExAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(ExAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
     | ExApp (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(ExApp@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -1534,8 +1534,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
     | PaAli (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(PaAli@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1 pp_print_patt a2
-    | PaAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(PaAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
     | PaAny a0 -> Format.fprintf fmt "@[<1>(PaAny@ %a)@]" pp_print_loc a0
     | PaApp (a0,a1,a2) ->
@@ -1727,8 +1727,8 @@ and pp_print_ctyp: 'fmt -> ctyp -> 'result =
     | TyPkg (a0,a1) ->
         Format.fprintf fmt "@[<1>(TyPkg@ %a@ %a)@]" pp_print_loc a0
           pp_print_module_type a1
-    | TyAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(TyAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_ident: 'fmt -> ident -> 'result =
   fun fmt  ->
@@ -1745,8 +1745,8 @@ and pp_print_ident: 'fmt -> ident -> 'result =
     | IdUid (a0,a1) ->
         Format.fprintf fmt "@[<1>(IdUid@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
-    | IdAnt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(IdAnt@ %a@ %a)@]" pp_print_loc a0
+    | Ant (a0,a1) ->
+        Format.fprintf fmt "@[<1>(Ant@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
 and pp_print_meta_list :
   'all_a0 .
@@ -1757,7 +1757,7 @@ and pp_print_meta_list :
     | LCons (a0,a1) ->
         Format.fprintf fmt "@[<1>(LCons@ %a@ %a)@]" mf_a a0
           (pp_print_meta_list mf_a) a1
-    | LAnt a0 -> Format.fprintf fmt "@[<1>(LAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_meta_option :
   'all_a0 .
     ('fmt -> 'all_a0 -> 'result) -> 'fmt -> 'all_a0 meta_option -> 'result=
@@ -1765,55 +1765,55 @@ and pp_print_meta_option :
     function
     | ONone  -> Format.fprintf fmt "ONone"
     | OSome a0 -> Format.fprintf fmt "@[<1>(OSome@ %a)@]" mf_a a0
-    | OAnt a0 -> Format.fprintf fmt "@[<1>(OAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_row_var_flag: 'fmt -> row_var_flag -> 'result =
   fun fmt  ->
     function
     | RvRowVar  -> Format.fprintf fmt "RvRowVar"
     | RvNil  -> Format.fprintf fmt "RvNil"
-    | RvAnt a0 -> Format.fprintf fmt "@[<1>(RvAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_override_flag: 'fmt -> override_flag -> 'result =
   fun fmt  ->
     function
     | OvOverride  -> Format.fprintf fmt "OvOverride"
     | OvNil  -> Format.fprintf fmt "OvNil"
-    | OvAnt a0 -> Format.fprintf fmt "@[<1>(OvAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_virtual_flag: 'fmt -> virtual_flag -> 'result =
   fun fmt  ->
     function
     | ViVirtual  -> Format.fprintf fmt "ViVirtual"
     | ViNil  -> Format.fprintf fmt "ViNil"
-    | ViAnt a0 -> Format.fprintf fmt "@[<1>(ViAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_private_flag: 'fmt -> private_flag -> 'result =
   fun fmt  ->
     function
     | PrPrivate  -> Format.fprintf fmt "PrPrivate"
     | PrNil  -> Format.fprintf fmt "PrNil"
-    | PrAnt a0 -> Format.fprintf fmt "@[<1>(PrAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_mutable_flag: 'fmt -> mutable_flag -> 'result =
   fun fmt  ->
     function
     | MuMutable  -> Format.fprintf fmt "MuMutable"
     | MuNil  -> Format.fprintf fmt "MuNil"
-    | MuAnt a0 -> Format.fprintf fmt "@[<1>(MuAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_direction_flag: 'fmt -> direction_flag -> 'result =
   fun fmt  ->
     function
     | DiTo  -> Format.fprintf fmt "DiTo"
     | DiDownto  -> Format.fprintf fmt "DiDownto"
-    | DiAnt a0 -> Format.fprintf fmt "@[<1>(DiAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_rec_flag: 'fmt -> rec_flag -> 'result =
   fun fmt  ->
     function
     | ReRecursive  -> Format.fprintf fmt "ReRecursive"
     | ReNil  -> Format.fprintf fmt "ReNil"
-    | ReAnt a0 -> Format.fprintf fmt "@[<1>(ReAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_meta_bool: 'fmt -> meta_bool -> 'result =
   fun fmt  ->
     function
     | BTrue  -> Format.fprintf fmt "BTrue"
     | BFalse  -> Format.fprintf fmt "BFalse"
-    | BAnt a0 -> Format.fprintf fmt "@[<1>(BAnt@ %a)@]" pp_print_string a0
+    | Ant a0 -> Format.fprintf fmt "@[<1>(Ant@ %a)@]" pp_print_string a0
 and pp_print_loc: 'fmt -> loc -> 'result =
   fun fmt  a0  -> FanLoc.pp_print_t fmt a0
 let safe_string_escaped s =

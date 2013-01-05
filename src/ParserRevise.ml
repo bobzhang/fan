@@ -909,21 +909,21 @@ let apply () = begin
       method_opt_override:
       [ "method"; "!" -> {:override_flag| ! |}
       | "method"; `ANT (((""|"override"|"anti") as n),s) ->
-          `OvAnt (_loc,mk_anti ~c:"override_flag" n s)
+          `Ant (_loc,mk_anti ~c:"override_flag" n s)
             (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s)|} *)
       | "method" -> {:override_flag||}  ] 
       opt_override:
       [ "!" -> {:override_flag| ! |}
       | `ANT ((("!"|"override"|"anti") as n),s) ->
           (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |} *)
-          `OvAnt (_loc,mk_anti ~c:"override_flag" n s)
+          `Ant (_loc,mk_anti ~c:"override_flag" n s)
       | -> {:override_flag||} ]
       
       value_val_opt_override:
       [ "val"; "!" -> {:override_flag| ! |}
       | "val"; `ANT (((""|"override"|"anti") as n),s) ->
           (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |} *)
-            `OvAnt (_loc,mk_anti ~c:"override_flag" n s)
+            `Ant (_loc,mk_anti ~c:"override_flag" n s)
       | "val" -> {:override_flag||}   ] 
       opt_as_lident:  [ "as"; a_LIDENT{i} -> i  | -> ""  ] 
       label:[ a_LIDENT{i} -> i ]
@@ -932,38 +932,38 @@ let apply () = begin
       | "downto" -> {:direction_flag| downto |}
       | `ANT (("to"|"anti"|"" as n),s) ->
           (* {:direction_flag|$(anti:mk_anti ~c:"direction_flag" n s)|} *)
-          `DiAnt (_loc,mk_anti ~c:"direction_flag" n s)
+          `Ant (_loc,mk_anti ~c:"direction_flag" n s)
       ]
 
       opt_private:
       [ "private" -> {:private_flag| private |}
       | `ANT (("private"|"anti" as n),s) ->
           (* {:private_flag| $(anti:mk_anti ~c:"private_flag" n s)|} *)
-          `PrAnt (_loc,mk_anti ~c:"private_flag" n s)
+          `Ant (_loc,mk_anti ~c:"private_flag" n s)
       | -> {:private_flag||}  ] 
       opt_mutable:
       [ "mutable" -> {:mutable_flag| mutable |}
       | `ANT (("mutable"|"anti" as n),s) ->
           (* {:mutable_flag| $(anti:mk_anti ~c:"mutable_flag" n s) |} *)
-          `MuAnt (_loc,mk_anti ~c:"mutable_flag" n s)
+          `Ant (_loc,mk_anti ~c:"mutable_flag" n s)
       | -> {:mutable_flag||}  ] 
       opt_virtual:
       [ "virtual" -> {:virtual_flag| virtual |}
       | `ANT (("virtual"|"anti" as n),s) ->
           (* {:virtual_flag|$(anti:(mk_anti ~c:"virtual_flag" n s))|} *)
-            (* let _ =  *)`ViAnt (_loc,mk_anti ~c:"virtual_flag" n s)
+            (* let _ =  *)`Ant (_loc,mk_anti ~c:"virtual_flag" n s)
       | -> {:virtual_flag||}  ] 
       opt_dot_dot:
       [ ".." -> {:row_var_flag| .. |}
       | `ANT ((".."|"anti" as n),s) ->
           (* {:row_var_flag|$(anti:mk_anti ~c:"row_var_flag" n s) |} *)
-          (* let _ =  *)`RvAnt (_loc,mk_anti ~c:"row_var_flag" n s)
+          (* let _ =  *)`Ant (_loc,mk_anti ~c:"row_var_flag" n s)
       | -> {:row_var_flag||}  ]
       opt_rec:
       [ "rec" -> {:rec_flag| rec |}
       | `ANT (("rec"|"anti" as n),s) ->
           (* {:rec_flag|$(anti:mk_anti ~c:"rec_flag" n s) |} *)
-            `ReAnt (_loc,mk_anti ~c:"rec_flag" n s)
+            `Ant (_loc,mk_anti ~c:"rec_flag" n s)
       | -> {:rec_flag||} ] 
       a_UIDENT:
       [ `ANT ((""|"uid" as n),s) -> mk_anti n s
@@ -978,7 +978,7 @@ let apply () = begin
       [ "?"; `ANT (("" as n),s); ":" -> mk_anti n s
       | `OPTLABEL s -> s ] 
       string_list:
-      [ `ANT ((""|"str_list"),s) -> `LAnt (_loc,mk_anti "str_list" s)
+      [ `ANT ((""|"str_list"),s) -> `Ant (_loc,mk_anti "str_list" s)
       | `STR (_, x); S{xs} -> `LCons x xs
       | `STR (_, x) -> `LCons x `LNil ] 
       semi: [ ";" -> () ]
@@ -1144,7 +1144,7 @@ let apply () = begin
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
       | "virtual";   class_name_and_param{(i, ot)} ->  {| virtual $lid:i [ $ot ] |}
       | `ANT (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
-          let anti = `ViAnt (_loc,mk_anti ~c:"class_expr" n s) in
+          let anti = `Ant (_loc,mk_anti ~c:"class_expr" n s) in
           {| $virtual:anti $id:i [ $ot ] |}
       | class_expr{x} -> x
       | -> {||} ]
@@ -1200,7 +1200,7 @@ let apply () = begin
       | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
       | "virtual";  class_name_and_param{(i, ot)} -> {| virtual $lid:i [ $ot ] |}
       | `ANT (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
-          let anti = `ViAnt (_loc,mk_anti ~c:"class_type" n s) in
+          let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
           {| $virtual:anti $id:i [ $ot ] |}
       | class_type_plus{x} -> x
       | -> {||}   ]

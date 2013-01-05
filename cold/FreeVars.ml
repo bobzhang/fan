@@ -20,7 +20,7 @@ let rec fold_binding_vars f bi acc =
       fold_binding_vars f bi1 (fold_binding_vars f bi2 acc)
   | `BiEq (_loc,p,_) -> fold_pattern_vars f p acc
   | `BiNil _loc -> acc
-  | `BiAnt (_loc,_) -> assert false
+  | `Ant (_loc,_) -> assert false
 class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
   SSet.empty) free_init =
   object (o)

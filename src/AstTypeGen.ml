@@ -5,7 +5,7 @@ open Easy;
 
 open FSig;
 open Lib.Expr;
-open Lib.Basic;
+
 
 let _loc = FanLoc.ghost;
 
@@ -99,8 +99,8 @@ let mk_variant_meta_expr cons params = with "expr"
     let len = List.length params in 
     if String.ends_with cons "Ant" then
       (* match len with *)
-      (* [ n when n > 1 -> *) (* of_ident_number {:ident| `ExAnt |} len *) of_vstr_number "ExAnt" len
-      (* | 1 ->  {| `ExAnt (_loc,  $(id:xid 0))  |} *)
+      (* [ n when n > 1 -> *) (* of_ident_number {:ident| `Ant |} len *) of_vstr_number "Ant" len
+      (* | 1 ->  {| `Ant (_loc,  $(id:xid 0))  |} *)
       (* | _ ->  failwithf "%s can not be handled" cons] *)
     else
       params
@@ -123,8 +123,8 @@ let mk_variant_meta_patt cons params = with "expr"
     let len = List.length params in 
     if String.ends_with cons "Ant" then
       (* match len with *)
-      (* [ n when n > 1 -> *) (* of_ident_number {:ident| `PaAnt |} len *) of_vstr_number "PaAnt" len
-      (* | 1 -> {| `PaAnt (_loc,  $(id:xid 0))  |} *)
+      (* [ n when n > 1 -> *) (* of_ident_number {:ident| `Ant |} len *) of_vstr_number "Ant" len
+      (* | 1 -> {| `Ant (_loc,  $(id:xid 0))  |} *)
       (* | _ -> failwithf "%s can not be handled" cons ] *)
     else
       params
@@ -251,8 +251,8 @@ let mk_variant_meta_expr cons params = with "expr"
     if String.ends_with cons "Ant" then
       (* match len with *)
       (* [  *)
-      (*  1 ->  {| `ExAnt (_loc,  $(id:xid 0))  |} *)
-      (* | n when n > 1 -> *) (* of_ident_number {:ident| ExAnt |} len *) of_vstr_number "ExAnt" len
+      (*  1 ->  {| `Ant (_loc,  $(id:xid 0))  |} *)
+      (* | n when n > 1 -> *) (* of_ident_number {:ident| Ant |} len *) of_vstr_number "Ant" len
       (* | _ ->  failwithf "%s can not be handled" cons] *)
     else
       params
@@ -279,7 +279,7 @@ let mk_variant_meta_patt cons params = with "expr"
       (* match len with *)
       (* [  *)
       (*   1 -> {| `PaAnt (_loc,  $(id:xid 0))  |} *)
-      (* | n when n > 1 -> *) of_vstr_number "PaAnt" len (* of_ident_number {:ident| PaAnt |} len *)
+      (* | n when n > 1 -> *) of_vstr_number "PAnt" len (* of_ident_number {:ident| Ant |} len *)
       (* | _ -> failwithf "%s can not be handled" cons ] *)
     else
       params

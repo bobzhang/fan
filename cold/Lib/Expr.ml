@@ -14,7 +14,7 @@ let rec sep_dot_expr acc =
   | e -> ((Ast.loc_of_expr e), [], e) :: acc
 let mksequence ?loc  =
   function
-  | `ExSem (_loc,_,_)|`ExAnt (_loc,_) as e ->
+  | `ExSem (_loc,_,_)|`Ant (_loc,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
       `ExSeq (_loc, e)
   | e -> e
@@ -459,7 +459,7 @@ let capture_antiquot: antiquot_filter =
     val mutable constraints = []
     method! patt =
       function
-      | `PaAnt (_loc,s)|`PaStr (_loc,s) as p when is_antiquot s ->
+      | `Ant (_loc,s)|`PaStr (_loc,s) as p when is_antiquot s ->
           (match view_antiquot s with
            | Some (_name,code) ->
                let cons = `ExId (_loc, (`IdLid (_loc, code))) in

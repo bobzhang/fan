@@ -21,49 +21,49 @@ include PAst;
    and meta_bool =
     [ `BTrue
     | `BFalse
-    | `BAnt of string ]
+    | `Ant of string ]
    and rec_flag =
     [ `ReRecursive
     | `ReNil
-    | `ReAnt of string ]
+    | `Ant of string ]
    and direction_flag =
     [ `DiTo
     | `DiDownto
-    | `DiAnt of string ]
+    | `Ant of string ]
    and mutable_flag =
     [ `MuMutable
     | `MuNil
-    | `MuAnt of string ]
+    | `Ant of string ]
    and private_flag =
     [ `PrPrivate
     | `PrNil
-    | `PrAnt of string ]
+    | `Ant of string ]
    and virtual_flag =
     [ `ViVirtual
     | `ViNil
-    | `ViAnt of string ]
+    | `Ant of string ]
    and override_flag =
     [ `OvOverride
     | `OvNil
-    | `OvAnt of string ]
+    | `Ant of string ]
    and row_var_flag =
     [ `RvRowVar
     | `RvNil
-    | `RvAnt of string ]
+    | `Ant of string ]
    and meta_option 'a =
     [ `ONone
     | `OSome of 'a
-    | `OAnt of string ]
+    | `Ant of string ]
    and meta_list 'a =
     [ `LNil
     | `LCons of 'a and meta_list 'a
-    | `LAnt of string ]
+    | `Ant of string ]
    and ident =
     [ `IdAcc of loc and ident and ident (* i . i *)
     | `IdApp of loc and ident and ident (* i i *)
     | `IdLid of loc and string (* foo *)
     | `IdUid of loc and string (* Bar *)
-    | `IdAnt of loc and string (* $s$ *) ]
+    | `IAnt of loc and string (* $s$ *) ]
    and ctyp =
     [ `TyNil of loc
     | `TyAli of loc and ctyp and ctyp (* t as t *) (* list 'a as 'a *)
@@ -107,13 +107,13 @@ include PAst;
     | `TyAmp of loc and ctyp and ctyp (* t & t *)
     | `TyOfAmp of loc and ctyp and ctyp (* t of & t *)
     | `TyPkg of loc and module_type (* (module S) *)
-    | `TyAnt of loc and string (* $s$ *)
+    | `Ant of loc and string (* $s$ *)
     ]
    and patt =
     [ `PaNil of loc
     | `PaId  of loc and ident (* i *)
     | `PaAli of loc and patt and patt (* p as p *) (* (Node x y as n) *)
-    | `PaAnt of loc and string (* $s$ *)
+    | `Ant of loc and string (* $s$ *)
     | `PaAny of loc (* _ *)
     | `PaApp of loc and patt and patt (* p p *) (* fun x y -> *)
     | `PaArr of loc and patt (* [| p |] *)
@@ -145,7 +145,7 @@ include PAst;
     [ `ExNil of loc
     | `ExId  of loc and ident (* i *)
     | `ExAcc of loc and expr and expr (* e.e *)
-    | `ExAnt of loc and string (* $s$ *)
+    | `Ant of loc and string (* $s$ *)
     | `ExApp of loc and expr and expr (* e e *)
     | `ExAre of loc and expr and expr (* e.(e) *)
     | `ExArr of loc and expr (* [| e |] *)
@@ -223,7 +223,7 @@ include PAst;
     | `MtWit of loc and module_type and with_constr
       (* module type of m *)
     | `MtOf of loc and module_expr
-    | `MtAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and sig_item =
     [ `SgNil of loc
       (* class cict *)
@@ -252,7 +252,7 @@ include PAst;
     | `SgTyp of loc and ctyp
       (* value s : t *)
     | `SgVal of loc and string and ctyp
-    | `SgAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and with_constr =
     [ `WcNil of loc
       (* type t = t *)
@@ -265,21 +265,21 @@ include PAst;
     | `WcMoS of loc and ident and ident
       (* wc and wc *)
     | `WcAnd of loc and with_constr and with_constr
-    | `WcAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and binding =
     [ `BiNil of loc
       (* bi and bi *) (* let a = 42 and c = 43 *)
     | `BiAnd of loc and binding and binding
       (* p = e *) (* let patt = expr *)
     | `BiEq  of loc and patt and expr
-    | `BiAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and rec_binding =
     [ `RbNil of loc
       (* rb ; rb *)
     | `RbSem of loc and rec_binding and rec_binding
       (* i = e *)
     | `RbEq  of loc and ident and expr
-    | `RbAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and module_binding =
     [ `MbNil of loc
       (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
@@ -288,7 +288,7 @@ include PAst;
     | `MbColEq  of loc and string and module_type and module_expr
       (* s : mt *)
     | `MbCol  of loc and string and module_type
-    | `MbAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and match_case =
     [ `McNil of loc
       (* a | a *)
@@ -296,7 +296,7 @@ include PAst;
       (* p (when e)? -> e *)
     | `McArr of loc and patt and expr and expr
     (* | McArrow of loc and patt and option expr and expr (\* FIXME *\) *)
-    | `McAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and module_expr =
     [ `MeNil of loc
       (* i *)
@@ -312,7 +312,7 @@ include PAst;
       (* (value e) *)
       (* (value e : S) which is represented as (value (e : S)) *)
     | `MePkg of loc and expr
-    | `MeAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and str_item =
     [ `StNil of loc
       (* class cice *)
@@ -343,7 +343,7 @@ include PAst;
     | `StTyp of loc and ctyp
       (* value (rec)? bi *)
     | `StVal of loc and rec_flag and binding
-    | `StAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and class_type =
     [ `CtNil of loc
       (* (virtual)? i ([ t ])? *)
@@ -359,7 +359,7 @@ include PAst;
       (* ct = ct *)
     | `CtEq  of loc and class_type and class_type
       (* $s$ *)
-    | `CtAnt of loc and string ]
+    | `Ant of loc and string ]
   and class_sig_item =
     [ `CgNil of loc
       (* type t = t *)
@@ -374,7 +374,7 @@ include PAst;
     | `CgVal of loc and string and mutable_flag and virtual_flag and ctyp
       (* method virtual (private)? s : t *)
     | `CgVir of loc and string and private_flag and ctyp
-    | `CgAnt of loc and string (* $s$ *) ]
+    | `Ant of loc and string (* $s$ *) ]
   and class_expr =
     [ `CeNil of loc
       (* ce e *)
@@ -394,7 +394,7 @@ include PAst;
       (* ce = ce *)
     | `CeEq  of loc and class_expr and class_expr
       (* $s$ *)
-    | `CeAnt of loc and string ]
+    | `Ant of loc and string ]
   and class_str_item =
     [ `CrNil of loc
       (* cst ; cst *)
@@ -413,7 +413,7 @@ include PAst;
     | `CrVir of loc and string and private_flag and ctyp
       (* value virtual (mutable)? s : t *)
     | `CrVvr of loc and string and mutable_flag and ctyp
-    | `CrAnt of loc and string (* $s$ *) ];
+    | `Ant of loc and string (* $s$ *) ];
   |};
 
 
@@ -662,7 +662,7 @@ let match_pre =
       | `McOr (_loc,a1,a2) ->
           `McOr (_loc, (self#match_case a1), (self#match_case a2))
       | `McNil _loc -> `McNil _loc
-      | `McAnt (_loc,x) -> `McAnt (_loc, (add_context x "lettry"))];
+      | `Ant (_loc,x) -> `Ant (_loc, (add_context x "lettry"))];
   end;
 
 

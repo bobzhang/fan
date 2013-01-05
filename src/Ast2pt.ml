@@ -168,11 +168,11 @@ let rec ctyp = fun (* ctyp -> core_type *)
   | `TyOf (loc,_,_) -> error loc "type1 of type2 not allowed here"
   | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
   | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
-  | `TyAnt (loc,_) -> error loc "antiquotation not allowed here"
+  | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `TyOfAmp (_, _, _) |`TyAmp (_, _, _) |`TySta (_, _, _) |
     `TyCom (_, _, _) |`TyVrn (_, _) |`TyQuM (_, _) |`TyQuP (_, _) |`TyDcl (_, _, _, _, _) |
     `TyAnP _ | `TyAnM _ | `TyTypePol (_, _, _) |
-    `TyObj (_, _, (`RvAnt _)) | `TyNil _ | `TyTup (_,_) ->
+    `TyObj (_, _, (`Ant _)) | `TyNil _ | `TyTup (_,_) ->
       assert false ]
 and row_field = fun (* ctyp -> row_field list*)
   [ {:ctyp||} -> []
@@ -260,7 +260,7 @@ let mkvalue_desc loc t p = {pval_type = ctyp t; pval_prim = p; pval_loc =  loc};
 let rec list_of_meta_list =fun
   [ `LNil -> []
   | `LCons (x, xs) -> [x :: list_of_meta_list xs]
-  | `LAnt _ -> assert false ];
+  | `Ant _ -> assert false ];
 
 let mkmutable = fun
   [ {:mutable_flag| mutable |} -> Mutable
@@ -368,7 +368,7 @@ let rec patt = fun
         | ({:patt| $(id:{:ident@sloc| $lid:s |}) |}, p) -> (p, with_loc s sloc)
         | _ -> error loc "invalid alias pattern" ] in
        mkpat loc (Ppat_alias (patt p) i)
-  | `PaAnt (loc,_) -> error loc "antiquotation not allowed here"
+  | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `PaAny loc -> mkpat loc Ppat_any
   | {:patt@loc| $(id:{:ident@sloc| $uid:s |}) $(tup:{:patt@loc_any| _ |}) |} ->
       mkpat loc (Ppat_construct (lident_with_loc  s sloc)
@@ -498,7 +498,7 @@ let rec expr = fun (* expr -> expression*)
           | _ -> error (loc_of_expr e2) "lowercase identifier expected" ])
         (_loc, e) l in
     e
-  | `ExAnt (loc,_) -> error loc "antiquotation not allowed here"
+  | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `ExApp (loc, _, _) as f ->
       let (f, al) = Expr.view_app [] f in
       let al = List.map label_expr al in
@@ -878,7 +878,7 @@ and class_type = fun (* class_type -> class_type *)
                })
   | `CtCon (loc,_,_,_) ->
         error loc "invalid virtual class inside a class type"
-  | `CtAnt (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `CtAnd (_, _, _) | `CtNil _ ->
+  | `Ant (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `CtAnd (_, _, _) | `CtNil _ ->
       assert false ]
     
 and class_info_class_expr ci =
@@ -926,7 +926,7 @@ and class_sig_item c l = match c with (* class_sig_item -> class_type_field list
       [mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l]
   | `CgVir (loc,s,b,t) ->
       [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
-  | `CgAnt (_,_) -> assert false ]
+  | `Ant (_,_) -> assert false ]
 and class_expr = fun (* class_expr -> class_expr *)
   [ `CeApp (loc, _, _) as c ->
     let (ce, el) = ClassExpr.view_app [] c in
@@ -961,7 +961,7 @@ and class_expr = fun (* class_expr -> class_expr *)
       mkcl loc (Pcl_constraint (class_expr ce) (class_type ct))
   | `CeCon (loc,_,_,_) ->
       error loc "invalid virtual class inside a class expression"
-  | `CeAnt (_, _) | `CeEq (_, _, _) | `CeAnd (_, _, _) | `CeNil _ -> assert false ]
+  | `Ant (_, _) | `CeEq (_, _, _) | `CeAnd (_, _, _) | `CeNil _ -> assert false ]
 and class_str_item c l =
     match c with (*class_str_item -> class_field list -> class_field list*)
   [ `CrNil _ -> l
@@ -985,7 +985,7 @@ and class_str_item c l =
       [mkcf loc (Pcf_virt (with_loc s loc, mkprivate pf, mkpolytype (ctyp t))) :: l]
   | `CrVvr (loc,s,mf,t) ->
       [mkcf loc (Pcf_valvirt (with_loc s loc, mkmutable mf, ctyp t)) :: l]
-  | `CrAnt (_,_) -> assert false ];
+  | `Ant (_,_) -> assert false ];
 (* sig_item -> signature *)  
 let sig_item ast = sig_item ast [];
 let str_item ast = str_item ast [];

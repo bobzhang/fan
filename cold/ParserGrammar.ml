@@ -750,7 +750,7 @@ let _ =
                  | `ANT ((""|"anti" as n),s) ->
                      (`PaApp
                         (_loc, (`PaVrn (_loc, v)),
-                          (`PaAnt (_loc, (mk_anti ~c:"patt" n s)))) : 
+                          (`Ant (_loc, (mk_anti ~c:"patt" n s)))) : 
                      'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";

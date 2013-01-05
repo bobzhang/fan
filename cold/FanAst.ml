@@ -50,8 +50,8 @@ class map =
             (((fun (a0,a1,a2,a3)  ->
                  ((self#loc a0), (self#string a1), (self#mutable_flag a2),
                    (self#ctyp a3)))) a0)
-      | `CrAnt a0 ->
-          `CrAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method class_expr : class_expr -> class_expr=
       function
       | `CeNil a0 -> `CeNil (self#loc a0)
@@ -93,8 +93,8 @@ class map =
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#class_expr a1), (self#class_expr a2))))
                a0)
-      | `CeAnt a0 ->
-          `CeAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method class_sig_item : class_sig_item -> class_sig_item=
       function
       | `CgNil a0 -> `CgNil (self#loc a0)
@@ -125,8 +125,8 @@ class map =
             (((fun (a0,a1,a2,a3)  ->
                  ((self#loc a0), (self#string a1), (self#private_flag a2),
                    (self#ctyp a3)))) a0)
-      | `CgAnt a0 ->
-          `CgAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method class_type : class_type -> class_type=
       function
       | `CtNil a0 -> `CtNil (self#loc a0)
@@ -159,8 +159,8 @@ class map =
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#class_type a1), (self#class_type a2))))
                a0)
-      | `CtAnt a0 ->
-          `CtAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method str_item : str_item -> str_item=
       function
       | `StNil a0 -> `StNil (self#loc a0)
@@ -214,8 +214,8 @@ class map =
           `StVal
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#rec_flag a1), (self#binding a2)))) a0)
-      | `StAnt a0 ->
-          `StAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method module_expr : module_expr -> module_expr=
       function
       | `MeNil a0 -> `MeNil (self#loc a0)
@@ -240,8 +240,8 @@ class map =
                    (self#module_type a2)))) a0)
       | `MePkg a0 ->
           `MePkg (((fun (a0,a1)  -> ((self#loc a0), (self#expr a1)))) a0)
-      | `MeAnt a0 ->
-          `MeAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method match_case : match_case -> match_case=
       function
       | `McNil a0 -> `McNil (self#loc a0)
@@ -255,8 +255,8 @@ class map =
             (((fun (a0,a1,a2,a3)  ->
                  ((self#loc a0), (self#patt a1), (self#expr a2),
                    (self#expr a3)))) a0)
-      | `McAnt a0 ->
-          `McAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method module_binding : module_binding -> module_binding=
       function
       | `MbNil a0 -> `MbNil (self#loc a0)
@@ -275,8 +275,8 @@ class map =
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#module_type a2))))
                a0)
-      | `MbAnt a0 ->
-          `MbAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method rec_binding : rec_binding -> rec_binding=
       function
       | `RbNil a0 -> `RbNil (self#loc a0)
@@ -289,8 +289,8 @@ class map =
           `RbEq
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#ident a1), (self#expr a2)))) a0)
-      | `RbAnt a0 ->
-          `RbAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method binding : binding -> binding=
       function
       | `BiNil a0 -> `BiNil (self#loc a0)
@@ -302,8 +302,8 @@ class map =
           `BiEq
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#patt a1), (self#expr a2)))) a0)
-      | `BiAnt a0 ->
-          `BiAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method with_constr : with_constr -> with_constr=
       function
       | `WcNil a0 -> `WcNil (self#loc a0)
@@ -328,8 +328,8 @@ class map =
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#with_constr a1),
                    (self#with_constr a2)))) a0)
-      | `WcAnt a0 ->
-          `WcAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method sig_item : sig_item -> sig_item=
       function
       | `SgNil a0 -> `SgNil (self#loc a0)
@@ -378,8 +378,8 @@ class map =
           `SgVal
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#ctyp a2)))) a0)
-      | `SgAnt a0 ->
-          `SgAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method module_type : module_type -> module_type=
       function
       | `MtNil a0 -> `MtNil (self#loc a0)
@@ -402,8 +402,8 @@ class map =
       | `MtOf a0 ->
           `MtOf
             (((fun (a0,a1)  -> ((self#loc a0), (self#module_expr a1)))) a0)
-      | `MtAnt a0 ->
-          `MtAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method expr : expr -> expr=
       function
       | `ExNil a0 -> `ExNil (self#loc a0)
@@ -413,8 +413,8 @@ class map =
           `ExAcc
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#expr a2)))) a0)
-      | `ExAnt a0 ->
-          `ExAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `ExApp a0 ->
           `ExApp
             (((fun (a0,a1,a2)  ->
@@ -558,8 +558,8 @@ class map =
           `PaAli
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#patt a1), (self#patt a2)))) a0)
-      | `PaAnt a0 ->
-          `PaAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `PaAny a0 -> `PaAny (self#loc a0)
       | `PaApp a0 ->
           `PaApp
@@ -752,8 +752,8 @@ class map =
       | `TyPkg a0 ->
           `TyPkg
             (((fun (a0,a1)  -> ((self#loc a0), (self#module_type a1)))) a0)
-      | `TyAnt a0 ->
-          `TyAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method ident : ident -> ident=
       function
       | `IdAcc a0 ->
@@ -768,8 +768,8 @@ class map =
           `IdLid (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `IdUid a0 ->
           `IdUid (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `IdAnt a0 ->
-          `IdAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method meta_list :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
@@ -781,8 +781,8 @@ class map =
             `LCons
               (((fun (a0,a1)  -> ((mf_a self a0), (self#meta_list mf_a a1))))
                  a0)
-        | `LAnt a0 ->
-            `LAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+        | `Ant a0 ->
+            `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method meta_option :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
@@ -791,56 +791,56 @@ class map =
         function
         | `ONone -> `ONone
         | `OSome a0 -> `OSome (mf_a self a0)
-        | `OAnt a0 ->
-            `OAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+        | `Ant a0 ->
+            `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method row_var_flag : row_var_flag -> row_var_flag=
       function
       | `RvRowVar -> `RvRowVar
       | `RvNil -> `RvNil
-      | `RvAnt a0 ->
-          `RvAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method override_flag : override_flag -> override_flag=
       function
       | `OvOverride -> `OvOverride
       | `OvNil -> `OvNil
-      | `OvAnt a0 ->
-          `OvAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method virtual_flag : virtual_flag -> virtual_flag=
       function
       | `ViVirtual -> `ViVirtual
       | `ViNil -> `ViNil
-      | `ViAnt a0 ->
-          `ViAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method private_flag : private_flag -> private_flag=
       function
       | `PrPrivate -> `PrPrivate
       | `PrNil -> `PrNil
-      | `PrAnt a0 ->
-          `PrAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method mutable_flag : mutable_flag -> mutable_flag=
       function
       | `MuMutable -> `MuMutable
       | `MuNil -> `MuNil
-      | `MuAnt a0 ->
-          `MuAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method direction_flag : direction_flag -> direction_flag=
       function
       | `DiTo -> `DiTo
       | `DiDownto -> `DiDownto
-      | `DiAnt a0 ->
-          `DiAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method rec_flag : rec_flag -> rec_flag=
       function
       | `ReRecursive -> `ReRecursive
       | `ReNil -> `ReNil
-      | `ReAnt a0 ->
-          `ReAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method meta_bool : meta_bool -> meta_bool=
       function
       | `BTrue -> `BTrue
       | `BFalse -> `BFalse
-      | `BAnt a0 ->
-          `BAnt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Ant a0 ->
+          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method loc : loc -> loc= fun a0  -> self#fanloc_t a0
     method fanloc_t : FanLoc.t -> FanLoc.t= self#unknown
   end
@@ -894,8 +894,8 @@ class print =
               (fun fmt  (a0,a1,a2,a3)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#mutable_flag a2 self#ctyp a3) a0
-        | `CrAnt a0 ->
-            Format.fprintf fmt "@[<1>(`CrAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -943,8 +943,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#class_expr a1 self#class_expr a2) a0
-        | `CeAnt a0 ->
-            Format.fprintf fmt "@[<1>(`CeAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -983,8 +983,8 @@ class print =
               (fun fmt  (a0,a1,a2,a3)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#private_flag a2 self#ctyp a3) a0
-        | `CgAnt a0 ->
-            Format.fprintf fmt "@[<1>(`CgAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1022,8 +1022,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#class_type a1 self#class_type a2) a0
-        | `CtAnt a0 ->
-            Format.fprintf fmt "@[<1>(`CtAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1103,8 +1103,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#rec_flag a1 self#binding a2) a0
-        | `StAnt a0 ->
-            Format.fprintf fmt "@[<1>(`StAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1142,8 +1142,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#expr
                    a1) a0
-        | `MeAnt a0 ->
-            Format.fprintf fmt "@[<1>(`MeAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1161,8 +1161,8 @@ class print =
               (fun fmt  (a0,a1,a2,a3)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" self#loc a0
                    self#patt a1 self#expr a2 self#expr a3) a0
-        | `McAnt a0 ->
-            Format.fprintf fmt "@[<1>(`McAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1185,8 +1185,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#module_type a2) a0
-        | `MbAnt a0 ->
-            Format.fprintf fmt "@[<1>(`MbAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1204,8 +1204,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#ident a1 self#expr a2) a0
-        | `RbAnt a0 ->
-            Format.fprintf fmt "@[<1>(`RbAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1223,8 +1223,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#patt a1 self#expr a2) a0
-        | `BiAnt a0 ->
-            Format.fprintf fmt "@[<1>(`BiAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1257,8 +1257,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#with_constr a1 self#with_constr a2) a0
-        | `WcAnt a0 ->
-            Format.fprintf fmt "@[<1>(`WcAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1332,8 +1332,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#ctyp a2) a0
-        | `SgAnt a0 ->
-            Format.fprintf fmt "@[<1>(`SgAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1371,8 +1371,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#module_expr a1) a0
-        | `MtAnt a0 ->
-            Format.fprintf fmt "@[<1>(`MtAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1390,8 +1390,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#expr a2) a0
-        | `ExAnt a0 ->
-            Format.fprintf fmt "@[<1>(`ExAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1606,8 +1606,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#patt a1 self#patt a2) a0
-        | `PaAnt a0 ->
-            Format.fprintf fmt "@[<1>(`PaAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1919,8 +1919,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#module_type a1) a0
-        | `TyAnt a0 ->
-            Format.fprintf fmt "@[<1>(`TyAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1947,8 +1947,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `IdAnt a0 ->
-            Format.fprintf fmt "@[<1>(`IdAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1964,8 +1964,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" (mf_a self) a0
                    (self#meta_list mf_a) a1) a0
-        | `LAnt a0 ->
-            Format.fprintf fmt "@[<1>(`LAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1978,8 +1978,8 @@ class print =
         | `ONone -> Format.fprintf fmt "`ONone"
         | `OSome a0 ->
             Format.fprintf fmt "@[<1>(`OSome@ %a)@]" (mf_a self) a0
-        | `OAnt a0 ->
-            Format.fprintf fmt "@[<1>(`OAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1988,8 +1988,8 @@ class print =
         function
         | `RvRowVar -> Format.fprintf fmt "`RvRowVar"
         | `RvNil -> Format.fprintf fmt "`RvNil"
-        | `RvAnt a0 ->
-            Format.fprintf fmt "@[<1>(`RvAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1998,8 +1998,8 @@ class print =
         function
         | `OvOverride -> Format.fprintf fmt "`OvOverride"
         | `OvNil -> Format.fprintf fmt "`OvNil"
-        | `OvAnt a0 ->
-            Format.fprintf fmt "@[<1>(`OvAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2008,8 +2008,8 @@ class print =
         function
         | `ViVirtual -> Format.fprintf fmt "`ViVirtual"
         | `ViNil -> Format.fprintf fmt "`ViNil"
-        | `ViAnt a0 ->
-            Format.fprintf fmt "@[<1>(`ViAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2018,8 +2018,8 @@ class print =
         function
         | `PrPrivate -> Format.fprintf fmt "`PrPrivate"
         | `PrNil -> Format.fprintf fmt "`PrNil"
-        | `PrAnt a0 ->
-            Format.fprintf fmt "@[<1>(`PrAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2028,8 +2028,8 @@ class print =
         function
         | `MuMutable -> Format.fprintf fmt "`MuMutable"
         | `MuNil -> Format.fprintf fmt "`MuNil"
-        | `MuAnt a0 ->
-            Format.fprintf fmt "@[<1>(`MuAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2038,8 +2038,8 @@ class print =
         function
         | `DiTo -> Format.fprintf fmt "`DiTo"
         | `DiDownto -> Format.fprintf fmt "`DiDownto"
-        | `DiAnt a0 ->
-            Format.fprintf fmt "@[<1>(`DiAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2048,8 +2048,8 @@ class print =
         function
         | `ReRecursive -> Format.fprintf fmt "`ReRecursive"
         | `ReNil -> Format.fprintf fmt "`ReNil"
-        | `ReAnt a0 ->
-            Format.fprintf fmt "@[<1>(`ReAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2058,8 +2058,8 @@ class print =
         function
         | `BTrue -> Format.fprintf fmt "`BTrue"
         | `BFalse -> Format.fprintf fmt "`BFalse"
-        | `BAnt a0 ->
-            Format.fprintf fmt "@[<1>(`BAnt@ %a)@]"
+        | `Ant a0 ->
+            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2111,7 +2111,7 @@ class fold =
               let self = self#loc a0 in
               let self = self#string a1 in
               let self = self#mutable_flag a2 in self#ctyp a3)) a0
-      | `CrAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method class_expr : class_expr -> 'self_type=
       function
@@ -2150,7 +2150,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#class_expr a1 in self#class_expr a2)) a0
-      | `CeAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method class_sig_item : class_sig_item -> 'self_type=
       function
@@ -2182,7 +2182,7 @@ class fold =
               let self = self#loc a0 in
               let self = self#string a1 in
               let self = self#private_flag a2 in self#ctyp a3)) a0
-      | `CgAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method class_type : class_type -> 'self_type=
       function
@@ -2212,7 +2212,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#class_type a1 in self#class_type a2)) a0
-      | `CtAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method str_item : str_item -> 'self_type=
       function
@@ -2264,7 +2264,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#rec_flag a1 in self#binding a2)) a0
-      | `StAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method module_expr : module_expr -> 'self_type=
       function
@@ -2288,7 +2288,7 @@ class fold =
               let self = self#module_expr a1 in self#module_type a2)) a0
       | `MePkg a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#expr a1)) a0
-      | `MeAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method match_case : match_case -> 'self_type=
       function
@@ -2302,7 +2302,7 @@ class fold =
               let self = self#loc a0 in
               let self = self#patt a1 in
               let self = self#expr a2 in self#expr a3)) a0
-      | `McAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method module_binding : module_binding -> 'self_type=
       function
@@ -2321,7 +2321,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#module_type a2)) a0
-      | `MbAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method rec_binding : rec_binding -> 'self_type=
       function
@@ -2334,7 +2334,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#ident a1 in self#expr a2)) a0
-      | `RbAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method binding : binding -> 'self_type=
       function
@@ -2347,7 +2347,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#patt a1 in self#expr a2)) a0
-      | `BiAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method with_constr : with_constr -> 'self_type=
       function
@@ -2372,7 +2372,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#with_constr a1 in self#with_constr a2)) a0
-      | `WcAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method sig_item : sig_item -> 'self_type=
       function
@@ -2419,7 +2419,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#ctyp a2)) a0
-      | `SgAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method module_type : module_type -> 'self_type=
       function
@@ -2442,7 +2442,7 @@ class fold =
       | `MtOf a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#module_expr a1))
             a0
-      | `MtAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method expr : expr -> 'self_type=
       function
@@ -2453,7 +2453,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#expr a2)) a0
-      | `ExAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `ExApp a0 ->
           ((fun (a0,a1,a2)  ->
@@ -2596,7 +2596,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#patt a1 in self#patt a2)) a0
-      | `PaAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `PaAny a0 -> self#loc a0
       | `PaApp a0 ->
@@ -2790,7 +2790,7 @@ class fold =
       | `TyPkg a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#module_type a1))
             a0
-      | `TyAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method ident : ident -> 'self_type=
       function
@@ -2806,7 +2806,7 @@ class fold =
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `IdUid a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `IdAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method meta_list :
       'all_a0 .
@@ -2818,7 +2818,7 @@ class fold =
         | `LCons a0 ->
             ((fun (a0,a1)  ->
                 let self = mf_a self a0 in self#meta_list mf_a a1)) a0
-        | `LAnt a0 ->
+        | `Ant a0 ->
             ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method meta_option :
       'all_a0 .
@@ -2828,55 +2828,55 @@ class fold =
         function
         | `ONone -> self
         | `OSome a0 -> mf_a self a0
-        | `OAnt a0 ->
+        | `Ant a0 ->
             ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method row_var_flag : row_var_flag -> 'self_type=
       function
       | `RvRowVar -> self
       | `RvNil -> self
-      | `RvAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method override_flag : override_flag -> 'self_type=
       function
       | `OvOverride -> self
       | `OvNil -> self
-      | `OvAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method virtual_flag : virtual_flag -> 'self_type=
       function
       | `ViVirtual -> self
       | `ViNil -> self
-      | `ViAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method private_flag : private_flag -> 'self_type=
       function
       | `PrPrivate -> self
       | `PrNil -> self
-      | `PrAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method mutable_flag : mutable_flag -> 'self_type=
       function
       | `MuMutable -> self
       | `MuNil -> self
-      | `MuAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method direction_flag : direction_flag -> 'self_type=
       function
       | `DiTo -> self
       | `DiDownto -> self
-      | `DiAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method rec_flag : rec_flag -> 'self_type=
       function
       | `ReRecursive -> self
       | `ReNil -> self
-      | `ReAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method meta_bool : meta_bool -> 'self_type=
       function
       | `BTrue -> self
       | `BFalse -> self
-      | `BAnt a0 ->
+      | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method loc : loc -> 'self_type= fun a0  -> self#fanloc_t a0
     method fanloc_t : FanLoc.t -> 'self_type= self#unknown
@@ -2930,8 +2930,8 @@ let rec pp_print_class_str_item: 'fmt -> class_str_item -> 'result =
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_mutable_flag a2 pp_print_ctyp a3)
           a0
-    | `CrAnt a0 ->
-        Format.fprintf fmt "@[<1>(`CrAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -2981,8 +2981,8 @@ and pp_print_class_expr: 'fmt -> class_expr -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_class_expr a1 pp_print_class_expr a2) a0
-    | `CeAnt a0 ->
-        Format.fprintf fmt "@[<1>(`CeAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3023,8 +3023,8 @@ and pp_print_class_sig_item: 'fmt -> class_sig_item -> 'result =
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_private_flag a2 pp_print_ctyp a3)
           a0
-    | `CgAnt a0 ->
-        Format.fprintf fmt "@[<1>(`CgAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3063,8 +3063,8 @@ and pp_print_class_type: 'fmt -> class_type -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_class_type a1 pp_print_class_type a2) a0
-    | `CtAnt a0 ->
-        Format.fprintf fmt "@[<1>(`CtAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3143,8 +3143,8 @@ and pp_print_str_item: 'fmt -> str_item -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_rec_flag a1 pp_print_binding a2) a0
-    | `StAnt a0 ->
-        Format.fprintf fmt "@[<1>(`StAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3183,8 +3183,8 @@ and pp_print_module_expr: 'fmt -> module_expr -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1) a0
-    | `MeAnt a0 ->
-        Format.fprintf fmt "@[<1>(`MeAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3202,8 +3202,8 @@ and pp_print_match_case: 'fmt -> match_case -> 'result =
           (fun fmt  (a0,a1,a2,a3)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_patt a1 pp_print_expr a2 pp_print_expr a3) a0
-    | `McAnt a0 ->
-        Format.fprintf fmt "@[<1>(`McAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3227,8 +3227,8 @@ and pp_print_module_binding: 'fmt -> module_binding -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_module_type a2) a0
-    | `MbAnt a0 ->
-        Format.fprintf fmt "@[<1>(`MbAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3246,8 +3246,8 @@ and pp_print_rec_binding: 'fmt -> rec_binding -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_ident a1 pp_print_expr a2) a0
-    | `RbAnt a0 ->
-        Format.fprintf fmt "@[<1>(`RbAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3265,8 +3265,8 @@ and pp_print_binding: 'fmt -> binding -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_patt a1 pp_print_expr a2) a0
-    | `BiAnt a0 ->
-        Format.fprintf fmt "@[<1>(`BiAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3299,8 +3299,8 @@ and pp_print_with_constr: 'fmt -> with_constr -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_with_constr a1 pp_print_with_constr a2) a0
-    | `WcAnt a0 ->
-        Format.fprintf fmt "@[<1>(`WcAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3374,8 +3374,8 @@ and pp_print_sig_item: 'fmt -> sig_item -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_ctyp a2) a0
-    | `SgAnt a0 ->
-        Format.fprintf fmt "@[<1>(`SgAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3414,8 +3414,8 @@ and pp_print_module_type: 'fmt -> module_type -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_module_expr a1) a0
-    | `MtAnt a0 ->
-        Format.fprintf fmt "@[<1>(`MtAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3433,8 +3433,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_expr a2) a0
-    | `ExAnt a0 ->
-        Format.fprintf fmt "@[<1>(`ExAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3651,8 +3651,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_patt a1 pp_print_patt a2) a0
-    | `PaAnt a0 ->
-        Format.fprintf fmt "@[<1>(`PaAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3964,8 +3964,8 @@ and pp_print_ctyp: 'fmt -> ctyp -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_module_type a1) a0
-    | `TyAnt a0 ->
-        Format.fprintf fmt "@[<1>(`TyAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3992,8 +3992,8 @@ and pp_print_ident: 'fmt -> ident -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `IdAnt a0 ->
-        Format.fprintf fmt "@[<1>(`IdAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4008,8 +4008,8 @@ and pp_print_meta_list :
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" mf_a a0
                (pp_print_meta_list mf_a) a1) a0
-    | `LAnt a0 ->
-        Format.fprintf fmt "@[<1>(`LAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4020,8 +4020,8 @@ and pp_print_meta_option :
     function
     | `ONone -> Format.fprintf fmt "`ONone"
     | `OSome a0 -> Format.fprintf fmt "@[<1>(`OSome@ %a)@]" mf_a a0
-    | `OAnt a0 ->
-        Format.fprintf fmt "@[<1>(`OAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4030,8 +4030,8 @@ and pp_print_row_var_flag: 'fmt -> row_var_flag -> 'result =
     function
     | `RvRowVar -> Format.fprintf fmt "`RvRowVar"
     | `RvNil -> Format.fprintf fmt "`RvNil"
-    | `RvAnt a0 ->
-        Format.fprintf fmt "@[<1>(`RvAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4040,8 +4040,8 @@ and pp_print_override_flag: 'fmt -> override_flag -> 'result =
     function
     | `OvOverride -> Format.fprintf fmt "`OvOverride"
     | `OvNil -> Format.fprintf fmt "`OvNil"
-    | `OvAnt a0 ->
-        Format.fprintf fmt "@[<1>(`OvAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4050,8 +4050,8 @@ and pp_print_virtual_flag: 'fmt -> virtual_flag -> 'result =
     function
     | `ViVirtual -> Format.fprintf fmt "`ViVirtual"
     | `ViNil -> Format.fprintf fmt "`ViNil"
-    | `ViAnt a0 ->
-        Format.fprintf fmt "@[<1>(`ViAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4060,8 +4060,8 @@ and pp_print_private_flag: 'fmt -> private_flag -> 'result =
     function
     | `PrPrivate -> Format.fprintf fmt "`PrPrivate"
     | `PrNil -> Format.fprintf fmt "`PrNil"
-    | `PrAnt a0 ->
-        Format.fprintf fmt "@[<1>(`PrAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4070,8 +4070,8 @@ and pp_print_mutable_flag: 'fmt -> mutable_flag -> 'result =
     function
     | `MuMutable -> Format.fprintf fmt "`MuMutable"
     | `MuNil -> Format.fprintf fmt "`MuNil"
-    | `MuAnt a0 ->
-        Format.fprintf fmt "@[<1>(`MuAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4080,8 +4080,8 @@ and pp_print_direction_flag: 'fmt -> direction_flag -> 'result =
     function
     | `DiTo -> Format.fprintf fmt "`DiTo"
     | `DiDownto -> Format.fprintf fmt "`DiDownto"
-    | `DiAnt a0 ->
-        Format.fprintf fmt "@[<1>(`DiAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4090,8 +4090,8 @@ and pp_print_rec_flag: 'fmt -> rec_flag -> 'result =
     function
     | `ReRecursive -> Format.fprintf fmt "`ReRecursive"
     | `ReNil -> Format.fprintf fmt "`ReNil"
-    | `ReAnt a0 ->
-        Format.fprintf fmt "@[<1>(`ReAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4100,8 +4100,8 @@ and pp_print_meta_bool: 'fmt -> meta_bool -> 'result =
     function
     | `BTrue -> Format.fprintf fmt "`BTrue"
     | `BFalse -> Format.fprintf fmt "`BFalse"
-    | `BAnt a0 ->
-        Format.fprintf fmt "@[<1>(`BAnt@ %a)@]"
+    | `Ant a0 ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4224,7 +4224,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`ExCom
                                       (_loc, (meta_mutable_flag _loc a2),
                                         (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CrAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_class_expr: 'loc -> class_expr -> 'result =
       fun _loc  ->
         function
@@ -4324,7 +4324,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_class_expr _loc a1),
                                    (meta_class_expr _loc a2)))))))) _loc a0))
-        | `CeAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
       fun _loc  ->
         function
@@ -4405,7 +4405,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`ExCom
                                       (_loc, (meta_private_flag _loc a2),
                                         (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CgAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_class_type: 'loc -> class_type -> 'result =
       fun _loc  ->
         function
@@ -4480,7 +4480,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_class_type _loc a1),
                                    (meta_class_type _loc a2)))))))) _loc a0))
-        | `CtAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_str_item: 'loc -> str_item -> 'result =
       fun _loc  ->
         function
@@ -4630,7 +4630,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_rec_flag _loc a1),
                                    (meta_binding _loc a2)))))))) _loc a0))
-        | `StAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_module_expr: 'loc -> module_expr -> 'result =
       fun _loc  ->
         function
@@ -4699,7 +4699,7 @@ module Make(MetaLoc:META_LOC) =
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
                    _loc a0))
-        | `MeAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_match_case: 'loc -> match_case -> 'result =
       fun _loc  ->
         function
@@ -4729,7 +4729,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`ExCom
                                       (_loc, (meta_expr _loc a2),
                                         (meta_expr _loc a3)))))))))) _loc a0))
-        | `McAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_module_binding: 'loc -> module_binding -> 'result =
       fun _loc  ->
         function
@@ -4772,7 +4772,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_string _loc a1),
                                    (meta_module_type _loc a2)))))))) _loc a0))
-        | `MbAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_rec_binding: 'loc -> rec_binding -> 'result =
       fun _loc  ->
         function
@@ -4800,7 +4800,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_ident _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `RbAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_binding: 'loc -> binding -> 'result =
       fun _loc  ->
         function
@@ -4828,7 +4828,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_patt _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `BiAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_with_constr: 'loc -> with_constr -> 'result =
       fun _loc  ->
         function
@@ -4889,7 +4889,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_with_constr _loc a1),
                                    (meta_with_constr _loc a2)))))))) _loc a0))
-        | `WcAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_sig_item: 'loc -> sig_item -> 'result =
       fun _loc  ->
         function
@@ -5027,7 +5027,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_string _loc a1),
                                    (meta_ctyp _loc a2)))))))) _loc a0))
-        | `SgAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_module_type: 'loc -> module_type -> 'result =
       fun _loc  ->
         function
@@ -5094,7 +5094,7 @@ module Make(MetaLoc:META_LOC) =
                          (`ExCom
                             (_loc, (meta_loc _loc a0),
                               (meta_module_expr _loc a1)))))) _loc a0))
-        | `MtAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_expr: 'loc -> expr -> 'result =
       fun _loc  ->
         function
@@ -5120,7 +5120,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_expr _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `ExAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
         | `ExApp a0 ->
             `ExApp
               (_loc, (`ExVrn (_loc, "ExApp")),
@@ -5561,7 +5561,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_patt _loc a1),
                                    (meta_patt _loc a2)))))))) _loc a0))
-        | `PaAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
         | `PaAny a0 ->
             `ExApp (_loc, (`ExVrn (_loc, "PaAny")), (meta_loc _loc a0))
         | `PaApp a0 ->
@@ -6182,7 +6182,7 @@ module Make(MetaLoc:META_LOC) =
                          (`ExCom
                             (_loc, (meta_loc _loc a0),
                               (meta_module_type _loc a1)))))) _loc a0))
-        | `TyAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_ident: 'loc -> ident -> 'result =
       fun _loc  ->
         function
@@ -6226,7 +6226,7 @@ module Make(MetaLoc:META_LOC) =
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `IdAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_meta_list :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
@@ -6242,7 +6242,7 @@ module Make(MetaLoc:META_LOC) =
                          (`ExCom
                             (_loc, (mf_a _loc a0),
                               (meta_meta_list mf_a _loc a1)))))) _loc a0))
-        | `LAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_meta_option :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) ->
@@ -6252,55 +6252,55 @@ module Make(MetaLoc:META_LOC) =
         | `ONone -> `ExVrn (_loc, "ONone")
         | `OSome a0 ->
             `ExApp (_loc, (`ExVrn (_loc, "OSome")), (mf_a _loc a0))
-        | `OAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
       fun _loc  ->
         function
         | `RvRowVar -> `ExVrn (_loc, "RvRowVar")
         | `RvNil -> `ExVrn (_loc, "RvNil")
-        | `RvAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
         | `OvOverride -> `ExVrn (_loc, "OvOverride")
         | `OvNil -> `ExVrn (_loc, "OvNil")
-        | `OvAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
         function
         | `ViVirtual -> `ExVrn (_loc, "ViVirtual")
         | `ViNil -> `ExVrn (_loc, "ViNil")
-        | `ViAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_private_flag: 'loc -> private_flag -> 'result =
       fun _loc  ->
         function
         | `PrPrivate -> `ExVrn (_loc, "PrPrivate")
         | `PrNil -> `ExVrn (_loc, "PrNil")
-        | `PrAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
       fun _loc  ->
         function
         | `MuMutable -> `ExVrn (_loc, "MuMutable")
         | `MuNil -> `ExVrn (_loc, "MuNil")
-        | `MuAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_direction_flag: 'loc -> direction_flag -> 'result =
       fun _loc  ->
         function
         | `DiTo -> `ExVrn (_loc, "DiTo")
         | `DiDownto -> `ExVrn (_loc, "DiDownto")
-        | `DiAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_rec_flag: 'loc -> rec_flag -> 'result =
       fun _loc  ->
         function
         | `ReRecursive -> `ExVrn (_loc, "ReRecursive")
         | `ReNil -> `ExVrn (_loc, "ReNil")
-        | `ReAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_meta_bool: 'loc -> meta_bool -> 'result =
       fun _loc  ->
         function
         | `BTrue -> `ExVrn (_loc, "BTrue")
         | `BFalse -> `ExVrn (_loc, "BFalse")
-        | `BAnt a0 -> `ExAnt a0
+        | `Ant a0 -> `Ant a0
     end
   module Patt = struct
     open StdMeta.Patt let meta_loc = MetaLoc.meta_loc_patt
@@ -6417,7 +6417,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`PaCom
                                       (_loc, (meta_mutable_flag _loc a2),
                                         (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CrAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_class_expr: 'loc -> class_expr -> 'result =
       fun _loc  ->
         function
@@ -6517,7 +6517,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_class_expr _loc a1),
                                    (meta_class_expr _loc a2)))))))) _loc a0))
-        | `CeAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
       fun _loc  ->
         function
@@ -6598,7 +6598,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`PaCom
                                       (_loc, (meta_private_flag _loc a2),
                                         (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CgAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_class_type: 'loc -> class_type -> 'result =
       fun _loc  ->
         function
@@ -6673,7 +6673,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_class_type _loc a1),
                                    (meta_class_type _loc a2)))))))) _loc a0))
-        | `CtAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_str_item: 'loc -> str_item -> 'result =
       fun _loc  ->
         function
@@ -6823,7 +6823,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_rec_flag _loc a1),
                                    (meta_binding _loc a2)))))))) _loc a0))
-        | `StAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_module_expr: 'loc -> module_expr -> 'result =
       fun _loc  ->
         function
@@ -6892,7 +6892,7 @@ module Make(MetaLoc:META_LOC) =
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
                    _loc a0))
-        | `MeAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_match_case: 'loc -> match_case -> 'result =
       fun _loc  ->
         function
@@ -6922,7 +6922,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`PaCom
                                       (_loc, (meta_expr _loc a2),
                                         (meta_expr _loc a3)))))))))) _loc a0))
-        | `McAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_module_binding: 'loc -> module_binding -> 'result =
       fun _loc  ->
         function
@@ -6965,7 +6965,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_string _loc a1),
                                    (meta_module_type _loc a2)))))))) _loc a0))
-        | `MbAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_rec_binding: 'loc -> rec_binding -> 'result =
       fun _loc  ->
         function
@@ -6993,7 +6993,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_ident _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `RbAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_binding: 'loc -> binding -> 'result =
       fun _loc  ->
         function
@@ -7021,7 +7021,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_patt _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `BiAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_with_constr: 'loc -> with_constr -> 'result =
       fun _loc  ->
         function
@@ -7082,7 +7082,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_with_constr _loc a1),
                                    (meta_with_constr _loc a2)))))))) _loc a0))
-        | `WcAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_sig_item: 'loc -> sig_item -> 'result =
       fun _loc  ->
         function
@@ -7220,7 +7220,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_string _loc a1),
                                    (meta_ctyp _loc a2)))))))) _loc a0))
-        | `SgAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_module_type: 'loc -> module_type -> 'result =
       fun _loc  ->
         function
@@ -7287,7 +7287,7 @@ module Make(MetaLoc:META_LOC) =
                          (`PaCom
                             (_loc, (meta_loc _loc a0),
                               (meta_module_expr _loc a1)))))) _loc a0))
-        | `MtAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_expr: 'loc -> expr -> 'result =
       fun _loc  ->
         function
@@ -7313,7 +7313,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_expr _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `ExAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
         | `ExApp a0 ->
             `PaApp
               (_loc, (`PaVrn (_loc, "ExApp")),
@@ -7754,7 +7754,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_patt _loc a1),
                                    (meta_patt _loc a2)))))))) _loc a0))
-        | `PaAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
         | `PaAny a0 ->
             `PaApp (_loc, (`PaVrn (_loc, "PaAny")), (meta_loc _loc a0))
         | `PaApp a0 ->
@@ -8375,7 +8375,7 @@ module Make(MetaLoc:META_LOC) =
                          (`PaCom
                             (_loc, (meta_loc _loc a0),
                               (meta_module_type _loc a1)))))) _loc a0))
-        | `TyAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_ident: 'loc -> ident -> 'result =
       fun _loc  ->
         function
@@ -8419,7 +8419,7 @@ module Make(MetaLoc:META_LOC) =
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `IdAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_meta_list :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
@@ -8435,7 +8435,7 @@ module Make(MetaLoc:META_LOC) =
                          (`PaCom
                             (_loc, (mf_a _loc a0),
                               (meta_meta_list mf_a _loc a1)))))) _loc a0))
-        | `LAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_meta_option :
       'all_a0 .
         ('loc -> 'all_a0 -> 'result) ->
@@ -8445,55 +8445,55 @@ module Make(MetaLoc:META_LOC) =
         | `ONone -> `PaVrn (_loc, "ONone")
         | `OSome a0 ->
             `PaApp (_loc, (`PaVrn (_loc, "OSome")), (mf_a _loc a0))
-        | `OAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
       fun _loc  ->
         function
         | `RvRowVar -> `PaVrn (_loc, "RvRowVar")
         | `RvNil -> `PaVrn (_loc, "RvNil")
-        | `RvAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
         | `OvOverride -> `PaVrn (_loc, "OvOverride")
         | `OvNil -> `PaVrn (_loc, "OvNil")
-        | `OvAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
         function
         | `ViVirtual -> `PaVrn (_loc, "ViVirtual")
         | `ViNil -> `PaVrn (_loc, "ViNil")
-        | `ViAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_private_flag: 'loc -> private_flag -> 'result =
       fun _loc  ->
         function
         | `PrPrivate -> `PaVrn (_loc, "PrPrivate")
         | `PrNil -> `PaVrn (_loc, "PrNil")
-        | `PrAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
       fun _loc  ->
         function
         | `MuMutable -> `PaVrn (_loc, "MuMutable")
         | `MuNil -> `PaVrn (_loc, "MuNil")
-        | `MuAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_direction_flag: 'loc -> direction_flag -> 'result =
       fun _loc  ->
         function
         | `DiTo -> `PaVrn (_loc, "DiTo")
         | `DiDownto -> `PaVrn (_loc, "DiDownto")
-        | `DiAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_rec_flag: 'loc -> rec_flag -> 'result =
       fun _loc  ->
         function
         | `ReRecursive -> `PaVrn (_loc, "ReRecursive")
         | `ReNil -> `PaVrn (_loc, "ReNil")
-        | `ReAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     and meta_meta_bool: 'loc -> meta_bool -> 'result =
       fun _loc  ->
         function
         | `BTrue -> `PaVrn (_loc, "BTrue")
         | `BFalse -> `PaVrn (_loc, "BFalse")
-        | `BAnt a0 -> `PaAnt a0
+        | `Ant a0 -> `Ant a0
     end
   end
 let rec is_module_longident =
@@ -8562,14 +8562,14 @@ let rec is_irrefut_patt =
   | `PaVrn (_loc,_)|`PaStr (_loc,_)|`PaRng (_loc,_,_)|`PaFlo (_loc,_)|
       `PaNativeInt (_loc,_)|`PaInt64 (_loc,_)|`PaInt32 (_loc,_)|`PaInt
                                                                   (_loc,_)|
-      `PaChr (_loc,_)|`PaTyp (_loc,_)|`PaArr (_loc,_)|`PaAnt (_loc,_) ->
+      `PaChr (_loc,_)|`PaTyp (_loc,_)|`PaArr (_loc,_)|`Ant (_loc,_) ->
       false
 let rec is_constructor =
   function
   | `IdAcc (_loc,_,i) -> is_constructor i
   | `IdUid (_loc,_) -> true
   | `IdLid (_loc,_)|`IdApp (_loc,_,_) -> false
-  | `IdAnt (_loc,_) -> assert false
+  | `Ant (_loc,_) -> assert false
 let is_patt_constructor =
   function
   | `PaId (_loc,i) -> is_constructor i
@@ -8986,5 +8986,5 @@ let match_pre =
       | `McOr (_loc,a1,a2) ->
           `McOr (_loc, (self#match_case a1), (self#match_case a2))
       | `McNil _loc -> `McNil _loc
-      | `McAnt (_loc,x) -> `McAnt (_loc, (add_context x "lettry"))
+      | `Ant (_loc,x) -> `Ant (_loc, (add_context x "lettry"))
   end
