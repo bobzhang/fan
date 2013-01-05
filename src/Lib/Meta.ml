@@ -1,4 +1,4 @@
-open Ast;
+(* open Ast; *)
 module Ast = FanAst; (* FIXME: rename it into FanAst later *)
 
 (* never used before *)    

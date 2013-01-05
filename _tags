@@ -23,3 +23,4 @@ true:use_unix
 
 <{cold,src}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 <{cold,src}/Fan.ml>: warn(-33)
+true: warn(-41)

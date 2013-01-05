@@ -1,6 +1,6 @@
 (** Main signatures for Fan *)
 open Format;
-open Ast;
+open FanAst;
 type vrn =
     [TyVrn
     | TyVrnEq

@@ -1,4 +1,4 @@
-open Ast;
+(* open Ast; *)
 open LibUtil;
 open FanUtil;
 open Lib.Meta;
@@ -219,10 +219,19 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
       let meta_ast = mpatt _loc ast in
       let exp_ast = patt_filter meta_ast in
       (* BOOTSTRAPPING *)
-      let rec subst_first_loc name =  with "patt" fun
-        [ {| (* Ast. *) (* ` *)$uid:u $_ |} -> {| (* Ast. *)$uid:u $lid:name |}
-        | {| $a $b |} -> {| $(subst_first_loc name a) $b |}
-        | p -> p ] in 
+      let rec subst_first_loc name : Ast.patt -> Ast.patt =  with "patt" fun
+        [
+         `PaApp(loc, `PaVrn (_,u), (`PaTup (_, `PaCom (_,_,rest)))) ->
+         `PaApp(loc, `PaVrn(loc,u),(`PaTup (loc,`PaCom(loc,`PaId(_loc,`IdLid (_loc,name)),rest))))
+        | `PaApp(_loc,`PaVrn(_,u),`PaAny _) ->
+            `PaApp(_loc, `PaVrn(_loc,u), `PaId(_loc,`IdLid(_loc,name)))
+        | `PaApp(_loc,a,b) -> `PaApp (_loc, subst_first_loc name a , b)
+              
+        (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
+        |p -> p ] in
+
+      (* fun [{:patt| `a ($loc,b,c)|} -> b] *)
+          
       match loc_name_opt with
       [ None -> subst_first_loc (!FanLoc.name) exp_ast
       | Some "_" -> exp_ast
@@ -295,129 +304,130 @@ let antiquot_expander ~parse_patt ~parse_expr = object
         ~decorate:(fun n e ->
           let len = String.length n in 
           match n with
-          [ "antisig_item" -> {| (* Ast. *)SgAnt ($(mloc _loc), $e) |}
-          | "antistr_item" -> {| (* Ast. *)StAnt ($(mloc _loc), $e) |}
-          | "antictyp" -> {| (* Ast. *)TyAnt ($(mloc _loc), $e) |}
-          | "antipatt" -> {| (* Ast. *)PaAnt ($(mloc _loc), $e) |}
-          | "antiexpr" -> {| (* Ast. *)ExAnt ($(mloc _loc), $e) |}
-          | "antimodule_type" -> {| (* Ast. *)MtAnt($(mloc _loc), $e) |}
-          | "antimodule_expr" -> {| (* Ast. *)MeAnt ($(mloc _loc), $e) |}
-          | "anticlass_type" -> {| (* Ast. *)CtAnt ($(mloc _loc), $e) |}
-          | "anticlass_expr" -> {| (* Ast. *)CeAnt ($(mloc _loc), $e) |}
-          | "anticlass_sig_item" -> {| (* Ast. *)CgAnt ($(mloc _loc), $e) |}
-          | "anticlass_str_item" -> {| (* Ast. *)CrAnt ($(mloc _loc), $e) |}
-          | "antiwith_constr" -> {| (* Ast. *)WcAnt ($(mloc _loc), $e) |}
-          | "antibinding" -> {| (* Ast. *)BiAnt ($(mloc _loc), $e) |}
-          | "antirec_binding" -> {| (* Ast. *)RbAnt ($(mloc _loc), $e) |}
-          | "antimatch_case" -> {| (* Ast. *)McAnt ($(mloc _loc), $e) |}
-          | "antimodule_binding" -> {| (* Ast. *)MbAnt ($(mloc _loc), $e) |}
-          | "antiident" -> {| (* Ast. *)IdAnt ($(mloc _loc), $e) |}
-          | "tupexpr" -> {|(* Ast. *)ExTup ($(mloc _loc), $e)|}
-          | "tuppatt" -> {|(* Ast. *)PaTup ($(mloc _loc), $e)|}
-          | "seqexpr" -> {|(* Ast. *)ExSeq ($(mloc _loc), $e) |}
+          [ "antisig_item" -> {| `SgAnt ($(mloc _loc), $e) |}
+          | "antistr_item" -> {| `StAnt ($(mloc _loc), $e) |}
+          | "antictyp" -> {| `TyAnt ($(mloc _loc), $e) |}
+          | "antipatt" -> {| `PaAnt ($(mloc _loc), $e) |}
+          | "antiexpr" -> {| `ExAnt ($(mloc _loc), $e) |}
+          | "antimodule_type" -> {| `MtAnt($(mloc _loc), $e) |}
+          | "antimodule_expr" -> {| `MeAnt ($(mloc _loc), $e) |}
+          | "anticlass_type" -> {| `CtAnt ($(mloc _loc), $e) |}
+          | "anticlass_expr" -> {| `CeAnt ($(mloc _loc), $e) |}
+          | "anticlass_sig_item" -> {| `CgAnt ($(mloc _loc), $e) |}
+          | "anticlass_str_item" -> {| `CrAnt ($(mloc _loc), $e) |}
+          | "antiwith_constr" -> {| `WcAnt ($(mloc _loc), $e) |}
+          | "antibinding" -> {| `BiAnt ($(mloc _loc), $e) |}
+          | "antirec_binding" -> {| `RbAnt ($(mloc _loc), $e) |}
+          | "antimatch_case" -> {| `McAnt ($(mloc _loc), $e) |}
+          | "antimodule_binding" -> {| `MbAnt ($(mloc _loc), $e) |}
+          | "antiident" -> {| `IdAnt ($(mloc _loc), $e) |}
+          | "tupexpr" -> {| `ExTup ($(mloc _loc), $e)|}
+          | "tuppatt" -> {| `PaTup ($(mloc _loc), $e)|}
+          | "seqexpr" -> {| `ExSeq ($(mloc _loc), $e) |}
                 
-          | "uidexpr" -> {| (* Ast. *)IdUid ($(mloc _loc), $e) |} (* use Ant instead *)
-          | "lidexpr" -> {| (* Ast. *)IdLid ($(mloc _loc), $e) |}
+          | "uidexpr" -> {| `IdUid ($(mloc _loc), $e) |} (* use Ant instead *)
+          | "lidexpr" -> {| `IdLid ($(mloc _loc), $e) |}
                 
-          | "uidident" -> {| (* Ast. *)IdUid ($(mloc _loc), $e)|}
-          | "lidident" -> {| (* Ast. *)IdLid ($(mloc _loc), $e)|}
+          | "uidident" -> {| `IdUid ($(mloc _loc), $e)|}
+          | "lidident" -> {| `IdLid ($(mloc _loc), $e)|}
 
-          | "flopatt" -> {| (* Ast. *)PaFlo ($(mloc _loc), $e) |}
-          | "intpatt" -> {| (* Ast. *)PaInt ($(mloc _loc), $e) |}
-          | "int32patt" -> {| (* Ast. *)PaInt32 ($(mloc _loc), $e)|}
-          | "int64patt" -> {| (* Ast. *)PaInt64 ($(mloc _loc), $e)|}
-          | "nativeintpatt" -> {| (* Ast. *)PaNativeInt ($(mloc _loc),$e)|}
-          | "chrpatt" -> {|(* Ast. *)PaChr ($(mloc _loc), $e) |}
-          | "strpatt" -> {|(* Ast. *)PaStr ($(mloc _loc),$e) |}
+          | "flopatt" -> {| `PaFlo ($(mloc _loc), $e) |}
+          | "intpatt" -> {| `PaInt ($(mloc _loc), $e) |}
+                (* {| `PaX (u,b,g)|} *)
+          | "int32patt" -> {| `PaInt32 ($(mloc _loc), $e)|}
+          | "int64patt" -> {| `PaInt64 ($(mloc _loc), $e)|}
+          | "nativeintpatt" -> {| `PaNativeInt ($(mloc _loc),$e)|}
+          | "chrpatt" -> {| `PaChr ($(mloc _loc), $e) |}
+          | "strpatt" -> {| `PaStr ($(mloc _loc),$e) |}
                 
-          | "strexpr" -> {| (* Ast. *)ExStr ($(mloc _loc), $e) |}
-          | "chrexpr" -> {| (* Ast. *)ExChr ($(mloc _loc), $e) |}
-          | "intexpr" -> {| (* Ast. *)ExInt ($(mloc _loc), $e) |}
-          | "int32expr" -> {| (* Ast. *)ExInt32 ($(mloc _loc), $e) |}
-          | "int64expr" -> {|(* Ast. *)ExInt64 ($(mloc _loc), $e)|}
-          | "floexpr" -> {| (* Ast. *)ExFlo ($(mloc _loc), $e) |}
-          | "nativeintexpr" -> {|(* Ast. *)ExNativeInt ($(mloc _loc), $e) |}
+          | "strexpr" -> {| `ExStr ($(mloc _loc), $e) |}
+          | "chrexpr" -> {| `ExChr ($(mloc _loc), $e) |}
+          | "intexpr" -> {| `ExInt ($(mloc _loc), $e) |}
+          | "int32expr" -> {| `ExInt32 ($(mloc _loc), $e) |}
+          | "int64expr" -> {| `ExInt64 ($(mloc _loc), $e)|}
+          | "floexpr" -> {| `ExFlo ($(mloc _loc), $e) |}
+          | "nativeintexpr" -> {| `ExNativeInt ($(mloc _loc), $e) |}
           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern")
           | _ -> e ])
       | p -> super#patt p ];
-    method! expr = with "expr" fun (* ExAnt keeps the right location, ExStr does not *)
+    method! expr = with "expr" fun (* `ExAnt keeps the right location, `ExStr does not *)
       [ {@_loc| $anti:s |} | {@_loc| $str:s |} as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n e -> (* e is the parsed Ast node already *)
             match n with
-            ["tupexpr" ->   {| (* Ast. *)ExTup $(mloc _loc) $e |}
-            | "tuppatt" ->  {|(* Ast. *)PaTup $(mloc _loc) $e |}
-            | "seqexpr" -> {| (* Ast. *)ExSeq $(mloc _loc) $e |}
+            ["tupexpr" ->   {| `ExTup ($(mloc _loc), $e) |}
+            | "tuppatt" ->  {| `PaTup ($(mloc _loc), $e) |}
+            | "seqexpr" -> {| `ExSeq ($(mloc _loc), $e) |}
 
-            | "uidexpr" -> {| (* Ast. *)IdUid $(mloc _loc) $e |} (* use Ant instead *)
-            | "lidexpr" -> {| (* Ast. *)IdLid $(mloc _loc) $e |}
+            | "uidexpr" -> {| `IdUid ($(mloc _loc), $e) |} (* use Ant instead *)
+            | "lidexpr" -> {| `IdLid ($(mloc _loc), $e) |}
 
-            | "uidident"->  {| (* Ast. *)IdUid $(mloc _loc) $e |}
-            | "lidident" -> {| (* Ast. *)IdLid $(mloc _loc) $e |}
-            | "strexpr" -> {| (* Ast. *)ExStr $(mloc _loc) $e |}
-            | "chrexpr" -> {| (* Ast. *)ExChr $(mloc _loc) $e |}
-            | "intexpr" -> {| (* Ast. *)ExInt $(mloc _loc) $e |}
-            | "int32expr" -> {| (* Ast. *)ExInt32 $(mloc _loc) $e |}
-            | "int64expr" -> {|(* Ast. *)ExInt64 $(mloc _loc) $e|}
-            | "floexpr" -> {| (* Ast. *)ExFlo $(mloc _loc) $e |}
-            | "nativeintexpr" -> {|(* Ast. *)ExNativeInt $(mloc _loc) $e |}
+            | "uidident"->  {| `IdUid ($(mloc _loc), $e) |}
+            | "lidident" -> {| `IdLid ($(mloc _loc), $e) |}
+            | "strexpr" -> {| `ExStr ($(mloc _loc), $e) |}
+            | "chrexpr" -> {| `ExChr ($(mloc _loc), $e) |}
+            | "intexpr" -> {| `ExInt ($(mloc _loc), $e) |}
+            | "int32expr" -> {| `ExInt32 ($(mloc _loc), $e) |}
+            | "int64expr" -> {| `ExInt64 ($(mloc _loc), $e) |}
+            | "floexpr" -> {| `ExFlo ($(mloc _loc), $e) |}
+            | "nativeintexpr" -> {|`ExNativeInt ($(mloc _loc), $e) |}
             | "`nativeintexpr" ->
                 let e = {| Nativeint.to_string $e |} in
-                {|(* Ast. *)ExNativeInt $(mloc _loc) $e |}
+                {| `ExNativeInt ($(mloc _loc), $e) |}
             | "`intexpr" ->
                 let e = {|string_of_int $e |} in
-                {|(* Ast. *)ExInt $(mloc _loc) $e |}
+                {| `ExInt ($(mloc _loc), $e) |}
             | "`int32expr" ->
                 let e = {|Int32.to_string $e |} in
-                {|(* Ast. *)ExInt32 $(mloc _loc) $e |}
+                {| `ExInt32 ($(mloc _loc), $e) |}
             | "`int64expr" ->
                 let e = {|Int64.to_string $e |} in
-                {|(* Ast. *)ExInt64 $(mloc _loc) $e |}
+                {| `ExInt64 ($(mloc _loc), $e) |}
             | "`chrexpr" ->
                 let e = {|Char.escaped $e|} in
-                {|(* Ast. *)ExChr $(mloc _loc) $e |}
+                {| `ExChr ($(mloc _loc), $e) |}
             | "`strexpr" ->
                 let e = {|Ast.safe_string_escaped $e |} in
-                {|(* Ast. *)ExStr $(mloc _loc) $e |}
+                {| `ExStr ($(mloc _loc), $e) |}
             | "`floexpr" ->
                 let e = {| FanUtil.float_repres $e |} in 
-                {|(* Ast. *)ExFlo $(mloc _loc) $e |}
+                {| `ExFlo ($(mloc _loc), $e) |}
             | "`boolexpr" ->
-                let x = {|(* Ast. *)IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in
+                let x = {| `IdLid ($(mloc _loc), (if $e then "true" else "false" )) |} in
                 {| {| $(id:$x)  |} |}
 
-            | "flopatt" -> {| (* Ast. *)PaFlo $(mloc _loc) $e |}
-            | "intpatt" -> {| (* Ast. *)PaInt $(mloc _loc) $e |}
-            | "int32patt" -> {| (* Ast. *)PaInt32 $(mloc _loc) $e|}
-            | "int64patt" -> {| (* Ast. *)PaInt64 $(mloc _loc) $e|}
-            | "nativeintpatt" -> {| (* Ast. *)PaNativeInt $(mloc _loc) $e|}
-            | "chrpatt" -> {|(* Ast. *)PaChr ($(mloc _loc), $e) |}
-            | "strpatt" -> {|(* Ast. *)PaStr ($(mloc _loc),$e) |}
+            | "flopatt" -> {| `PaFlo ($(mloc _loc), $e) |}
+            | "intpatt" -> {| `PaInt ($(mloc _loc), $e) |}
+            | "int32patt" -> {| `PaInt32 ($(mloc _loc), $e) |}
+            | "int64patt" -> {| `PaInt64 ($(mloc _loc), $e) |}
+            | "nativeintpatt" -> {| `PaNativeInt ($(mloc _loc), $e)|}
+            | "chrpatt" -> {| `PaChr ($(mloc _loc), $e) |}
+            | "strpatt" -> {| `PaStr ($(mloc _loc),$e) |}
 
             | "`nativeintpatt" ->
                 let e = {| Nativeint.to_string $e |} in
-                {|(* Ast. *)PaNativeInt $(mloc _loc) $e |}
+                {| `PaNativeInt ($(mloc _loc), $e) |}
             | "`intpatt" ->
                 let e = {|string_of_int $e |} in
-                {|(* Ast. *)PaInt $(mloc _loc) $e |}
+                {| `PaInt ($(mloc _loc), $e) |}
             | "`int32patt" ->
                 let e = {|Int32.to_string $e |} in
-                {|(* Ast. *)PaInt32 $(mloc _loc) $e |}
+                {| `PaInt32 ($(mloc _loc), $e) |}
             | "`int64patt" ->
                 let e = {|Int64.to_string $e |} in
-                {|(* Ast. *)PaInt64 $(mloc _loc) $e |}
+                {| `PaInt64 ($(mloc _loc), $e) |}
             | "`chrpatt" ->
                 let e = {|Char.escaped $e|} in
-                {|(* Ast. *)PaChr $(mloc _loc) $e |}
+                {| `PaChr ($(mloc _loc), $e) |}
             | "`strpatt" ->
                 let e = {|Ast.safe_string_escaped $e |} in
-                {|(* Ast. *)PaStr $(mloc _loc) $e |}
+                {| `PaStr ($(mloc _loc), $e) |}
             | "`flopatt" ->
                 let e = {| FanUtil.float_repres $e |} in 
-                {|(* Ast. *)PaFlo $(mloc _loc) $e |}
+                {| `PaFlo ($(mloc _loc), $e) |}
             (* | "`boolpatt" -> *)
-            (*     let x = {|(* Ast. *)IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in *)
+            (*     let x = {|(* Ast. *)`IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in *)
             (*     {| {:patt| $(id:$x)  |} |} *)
                   
             | "liststr_item" -> {| Ast.stSem_of_list $e |}
@@ -443,11 +453,11 @@ let antiquot_expander ~parse_patt ~parse_expr = object
 
             (* staging problems here *)      
             | "listmatch_case" -> {| Ast.mcOr_of_list $e |}
-            | "antimatch_case" -> {| (* Ast.*) McAnt $(mloc _loc) $e |}
+            | "antimatch_case" -> {|  `McAnt ($(mloc _loc), $e) |}
             | "listmatch_caselettry" ->
                 {| ((Ast.match_pre)#match_case (Ast.mcOr_of_list $e)) |}
             | "antimatch_caselettry" ->
-                {| Ast.match_pre#match_case ((* Ast. *) McAnt $(mloc _loc) $e) |}
+                {| Ast.match_pre#match_case (`McAnt ($(mloc _loc), $e)) |}
             | "match_caselettry" ->
                 {| Ast.match_pre#match_case $e |}
                   
@@ -456,30 +466,30 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "listexpr," -> {| Ast.exCom_of_list $e |}
             | "listexpr;" -> {| Ast.exSem_of_list $e |}
             | "listforall" -> {| Ast.tyVarApp_of_list $e |}
-            | "antisig_item" -> {| (* Ast. *)SgAnt $(mloc _loc) $e |}
-            | "antistr_item" -> {| (* Ast. *)StAnt $(mloc _loc) $e |}
-            | "antictyp" -> {| (* Ast. *)TyAnt $(mloc _loc) $e |}
-            | "antipatt" -> {| (* Ast. *)PaAnt $(mloc _loc) $e |}
-            | "antiexpr" -> {| (* Ast. *)ExAnt $(mloc _loc) $e |}
-            | "antimodule_type" -> {| (* Ast. *)MtAnt $(mloc _loc) $e |}
-            | "antimodule_expr" -> {| (* Ast. *)MeAnt $(mloc _loc) $e |}
-            | "anticlass_type" -> {| (* Ast. *)CtAnt $(mloc _loc) $e |}
-            | "anticlass_expr" -> {| (* Ast. *)CeAnt $(mloc _loc) $e |}
-            | "anticlass_sig_item" -> {| (* Ast. *)CgAnt $(mloc _loc) $e |}
-            | "anticlass_str_item" -> {| (* Ast. *)CrAnt $(mloc _loc) $e |}
-            | "antiwith_constr" -> {| (* Ast. *)WcAnt $(mloc _loc) $e |}
-            | "antibinding" -> {| (* Ast. *)BiAnt $(mloc _loc) $e |}
-            | "antirec_binding" -> {| (* Ast. *)RbAnt $(mloc _loc) $e |}
+            | "antisig_item" -> {| `SgAnt ($(mloc _loc), $e) |}
+            | "antistr_item" -> {| `StAnt ($(mloc _loc), $e) |}
+            | "antictyp" -> {| `TyAnt ($(mloc _loc), $e) |}
+            | "antipatt" -> {| `PaAnt ($(mloc _loc), $e) |}
+            | "antiexpr" -> {| `ExAnt( $(mloc _loc), $e) |}
+            | "antimodule_type" -> {| `MtAnt ($(mloc _loc), $e) |}
+            | "antimodule_expr" -> {| `MeAnt ($(mloc _loc), $e) |}
+            | "anticlass_type" -> {| `CtAnt ($(mloc _loc), $e) |}
+            | "anticlass_expr" -> {| `CeAnt ($(mloc _loc), $e) |}
+            | "anticlass_sig_item" -> {| `CgAnt ($(mloc _loc), $e) |}
+            | "anticlass_str_item" -> {| `CrAnt ($(mloc _loc), $e) |}
+            | "antiwith_constr" -> {| `WcAnt ($(mloc _loc), $e) |}
+            | "antibinding" -> {| `BiAnt ($(mloc _loc), $e) |}
+            | "antirec_binding" -> {| `RbAnt ($(mloc _loc), $e) |}
 
-            | "antimodule_binding" -> {| (* Ast. *)MbAnt $(mloc _loc) $e |}
-            | "antiident" -> {| (* Ast. *)IdAnt $(mloc _loc) $e |}
-            | "antidirection_flag" -> {| (* Ast. *)DiAnt  $e |}
-            | "antioverride_flag" -> {| (* Ast. *)OvAnt $e |}
-            | "antiprivate_flag" -> {|(* Ast. *)PrAnt $e |}
-            | "antimutable_flag" -> {|(* Ast. *)MuAnt $e|}
-            | "antivirtual_flag" -> {|(* Ast. *)ViAnt $e|}
-            | "antirow_var_flag" -> {|(* Ast. *)RvAnt $e|}
-            | "antirec_flag" -> {|(* Ast. *)ReAnt $e|}
+            | "antimodule_binding" -> {| `MbAnt ($(mloc _loc), $e) |}
+            | "antiident" -> {| `IdAnt ($(mloc _loc), $e) |}
+            | "antidirection_flag" -> {| `DiAnt  $e |}
+            | "antioverride_flag" -> {| `OvAnt $e |}
+            | "antiprivate_flag" -> {| `PrAnt $e |}
+            | "antimutable_flag" -> {| `MuAnt $e|}
+            | "antivirtual_flag" -> {| `ViAnt $e|}
+            | "antirow_var_flag" -> {| `RvAnt $e|}
+            | "antirec_flag" -> {| `ReAnt $e|}
             | _ -> e ])
       | e -> super#expr e ];
   end;
@@ -497,67 +507,67 @@ let antiquot_expander ~parse_patt ~parse_expr = object
 (*         ~decorate:(fun n e -> *)
 (*           let len = String.length n in  *)
 (*           match n with *)
-(*           [ "tupexpr" -> {|Ast.ExTup ($(mloc _loc), $e)|} *)
-(*           | "seqexpr" -> {|Ast.ExSeq ($(mloc _loc), $e) |} *)
-(*           | "uidexpr" -> {| Ast.IdUid ($(mloc _loc), $e) |} (\* use Ant instead *\) *)
-(*           | "lidexpr" -> {| Ast.IdLid ($(mloc _loc), $e) |} *)
-(*           | "strexpr" -> {| Ast.ExStr ($(mloc _loc), $e) |} *)
-(*           | "chrexpr" -> {| Ast.ExChr ($(mloc _loc), $e) |} *)
-(*           | "intexpr" -> {| Ast.ExInt ($(mloc _loc), $e) |} *)
-(*           | "int32expr" -> {| Ast.ExInt32 ($(mloc _loc), $e) |} *)
-(*           | "int64expr" -> {|Ast.ExInt64 ($(mloc _loc), $e)|} *)
+(*           [ "tupexpr" -> {|`ExTup ($(mloc _loc), $e)|} *)
+(*           | "seqexpr" -> {|`ExSeq ($(mloc _loc), $e) |} *)
+(*           | "uidexpr" -> {| `IdUid ($(mloc _loc), $e) |} (\* use Ant instead *\) *)
+(*           | "lidexpr" -> {| `IdLid ($(mloc _loc), $e) |} *)
+(*           | "strexpr" -> {| `ExStr ($(mloc _loc), $e) |} *)
+(*           | "chrexpr" -> {| `ExChr ($(mloc _loc), $e) |} *)
+(*           | "intexpr" -> {| `ExInt ($(mloc _loc), $e) |} *)
+(*           | "int32expr" -> {| `ExInt32 ($(mloc _loc), $e) |} *)
+(*           | "int64expr" -> {|`ExInt64 ($(mloc _loc), $e)|} *)
 (*           | "floexpr" -> {| Ast.ExFlo ($(mloc _loc), $e) |} *)
-(*           | "nativeintexpr" -> {|Ast.ExNativeInt ($(mloc _loc), $e) |} *)
+(*           | "nativeintexpr" -> {|`ExNativeInt ($(mloc _loc), $e) |} *)
 (*           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern") *)
 (*           | _ -> e ]) *)
 (*       | p -> super#patt p ]; *)
-(*     method! expr = with "expr" fun (\* ExAnt keeps the right location, ExStr does not *\) *)
+(*     method! expr = with "expr" fun (\* `ExAnt keeps the right location, `ExStr does not *\) *)
 (*       [ {| $anti:s |} | {| $str:s |} as e -> *)
 (*           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in *)
 (*           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc *)
 (*             ~decorate:(fun n e -> (\* e is the parsed Ast node already *\) *)
 (*             match n with *)
-(*             ["tupexpr" ->   {| Ast.ExTup $(mloc _loc) $e |} *)
-(*             | "seqexpr" -> {| Ast.ExSeq $(mloc _loc) $e |} *)
-(*             | "uidexpr" -> {| Ast.IdUid $(mloc _loc) $e |} (\* use Ant instead *\) *)
-(*             | "lidexpr" -> {| Ast.IdLid $(mloc _loc) $e |} *)
-(*             | "strexpr" -> {| Ast.ExStr $(mloc _loc) $e |} *)
-(*             | "chrexpr" -> {| Ast.ExChr $(mloc _loc) $e |} *)
-(*             | "intexpr" -> {| Ast.ExInt $(mloc _loc) $e |} *)
-(*             | "int32expr" -> {| Ast.ExInt32 $(mloc _loc) $e |} *)
-(*             | "int64expr" -> {|Ast.ExInt64 $(mloc _loc) $e|} *)
+(*             ["tupexpr" ->   {| `ExTup $(mloc _loc) $e |} *)
+(*             | "seqexpr" -> {| `ExSeq $(mloc _loc) $e |} *)
+(*             | "uidexpr" -> {| `IdUid $(mloc _loc) $e |} (\* use Ant instead *\) *)
+(*             | "lidexpr" -> {| `IdLid $(mloc _loc) $e |} *)
+(*             | "strexpr" -> {| `ExStr $(mloc _loc) $e |} *)
+(*             | "chrexpr" -> {| `ExChr $(mloc _loc) $e |} *)
+(*             | "intexpr" -> {| `ExInt $(mloc _loc) $e |} *)
+(*             | "int32expr" -> {| `ExInt32 $(mloc _loc) $e |} *)
+(*             | "int64expr" -> {|`ExInt64 $(mloc _loc) $e|} *)
 (*             | "floexpr" -> {| Ast.ExFlo $(mloc _loc) $e |} *)
-(*             | "nativeintexpr" -> {|Ast.ExNativeInt $(mloc _loc) $e |} *)
+(*             | "nativeintexpr" -> {|`ExNativeInt $(mloc _loc) $e |} *)
 (*             | "`nativeintexpr" -> *)
 (*                 let e = {| Nativeint.to_string $e |} in *)
-(*                 {|Ast.ExNativeInt $(mloc _loc) $e |} *)
+(*                 {|`ExNativeInt $(mloc _loc) $e |} *)
 (*             | "`intexpr" -> *)
 (*                 let e = {|string_of_int $e |} in *)
-(*                 {|Ast.ExInt $(mloc _loc) $e |} *)
+(*                 {|`ExInt $(mloc _loc) $e |} *)
 (*             | "`int32expr" -> *)
 (*                 let e = {|Int32.to_string $e |} in *)
-(*                 {|Ast.ExInt32 $(mloc _loc) $e |} *)
+(*                 {|`ExInt32 $(mloc _loc) $e |} *)
 (*             | "`int64expr" -> *)
 (*                 let e = {|Int64.to_string $e |} in *)
-(*                 {|Ast.ExInt64 $(mloc _loc) $e |} *)
+(*                 {|`ExInt64 $(mloc _loc) $e |} *)
 (*             | "`chrexpr" -> *)
 (*                 let e = {|Char.escaped $e|} in *)
-(*                 {|Ast.ExChr $(mloc _loc) $e |} *)
+(*                 {|`ExChr $(mloc _loc) $e |} *)
 (*             | "`strexpr" -> *)
 (*                 let e = {|Ast.safe_string_escaped $e |} in *)
-(*                 {|Ast.ExStr $(mloc _loc) $e |} *)
+(*                 {|`ExStr $(mloc _loc) $e |} *)
 (*             | "`floexpr" -> *)
 (*                 let e = {| FanUtil.float_repres $e |} in  *)
 (*                 {|Ast.ExFlo $(mloc _loc) $e |} *)
 (*             | "`boolexpr" -> *)
-(*                 let x = {|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in *)
+(*                 let x = {|`IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in *)
 (*                 {| {| $(id:$x)  |} |} *)
-(*             | "antiexpr" -> {| Ast.ExAnt $(mloc _loc) $e |} *)
+(*             | "antiexpr" -> {| `ExAnt $(mloc _loc) $e |} *)
 (*             | _ -> e ]) *)
 (*       | e -> super#expr e ]; *)
 (*   end; *)
 
-                (* {| {| $(id: $({|Ast.IdLid $(mloc _loc) (if $e then "true" else "false" ) |}))  |} |} *)
+                (* {| {| $(id: $({|`IdLid $(mloc _loc) (if $e then "true" else "false" ) |}))  |} |} *)
                   
 
                   (* {| $(lid:if e then "true" else "false") |} *)
@@ -566,27 +576,27 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                   (* {:expr@here|$`bool:x|} *)
                   (*
                     let _ =
-  Ast.ExApp
+  `ExApp
     (_loc,
-      (Ast.ExApp
+      (`ExApp
          (_loc,
-           (Ast.ExId
+           (`ExId
               (_loc,
-                (Ast.IdAcc
-                   (_loc, (Ast.IdUid (_loc, "Ast")),
-                     (Ast.IdUid (_loc, "ExId")))))),
-           (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-      (Ast.ExApp
+                (`IdAcc
+                   (_loc, (`IdUid (_loc, "Ast")),
+                     (`IdUid (_loc, "`ExId")))))),
+           (`ExId (_loc, (`IdLid (_loc, "_loc")))))),
+      (`ExApp
          (_loc,
-           (Ast.ExApp
+           (`ExApp
               (_loc,
-                (Ast.ExId
+                (`ExId
                    (_loc,
-                     (Ast.IdAcc
-                        (_loc, (Ast.IdUid (_loc, "Ast")),
-                          (Ast.IdUid (_loc, "IdLid")))))),
-                (Ast.ExId (_loc, (Ast.IdLid (_loc, "_loc")))))),
-           (Ast.ExIfe
-              (_loc, e, (Ast.ExStr (_loc, "true")),
-                (Ast.ExStr (_loc, "false")))))))
+                     (`IdAcc
+                        (_loc, (`IdUid (_loc, "Ast")),
+                          (`IdUid (_loc, "`IdLid")))))),
+                (`ExId (_loc, (`IdLid (_loc, "_loc")))))),
+           (`ExIfe
+              (_loc, e, (`ExStr (_loc, "true")),
+                (`ExStr (_loc, "false")))))))
                    *)

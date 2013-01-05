@@ -98,10 +98,10 @@ end;
 let mk_variant_meta_expr cons params = with "expr"
     let len = List.length params in 
     if String.ends_with cons "Ant" then
-      match len with
-      [ n when n > 1 -> of_ident_number {:ident| (* Ast. *)ExAnt |} len
-      | 1 ->  {| (* Ast. *)ExAnt _loc  $(id:xid 0)  |}
-      | _ ->  failwithf "%s can not be handled" cons]
+      (* match len with *)
+      (* [ n when n > 1 -> *) (* of_ident_number {:ident| `ExAnt |} len *) of_vstr_number "ExAnt" len
+      (* | 1 ->  {| `ExAnt (_loc,  $(id:xid 0))  |} *)
+      (* | _ ->  failwithf "%s can not be handled" cons] *)
     else
       params
       |> List.map (fun [ {expr;_} -> expr ])
@@ -122,10 +122,10 @@ let gen_meta_expr =
 let mk_variant_meta_patt cons params = with "expr"
     let len = List.length params in 
     if String.ends_with cons "Ant" then
-      match len with
-      [ n when n > 1 -> of_ident_number {:ident| (* Ast. *)PaAnt |} len
-      | 1 -> {| (* Ast. *)PaAnt _loc  $(id:xid 0)  |}
-      | _ -> failwithf "%s can not be handled" cons ]
+      (* match len with *)
+      (* [ n when n > 1 -> *) (* of_ident_number {:ident| `PaAnt |} len *) of_vstr_number "PaAnt" len
+      (* | 1 -> {| `PaAnt (_loc,  $(id:xid 0))  |} *)
+      (* | _ -> failwithf "%s can not be handled" cons ] *)
     else
       params
       |> List.map (fun [ {expr;_} -> expr ])
@@ -249,11 +249,11 @@ end;
 let mk_variant_meta_expr cons params = with "expr"
     let len = List.length params in 
     if String.ends_with cons "Ant" then
-      match len with
-      [ 
-       1 ->  {| `ExAnt (_loc,  $(id:xid 0))  |}
-      | n when n > 1 -> (* of_ident_number {:ident| ExAnt |} len *) of_vstr_number "ExAnt" len
-      | _ ->  failwithf "%s can not be handled" cons]
+      (* match len with *)
+      (* [  *)
+      (*  1 ->  {| `ExAnt (_loc,  $(id:xid 0))  |} *)
+      (* | n when n > 1 -> *) (* of_ident_number {:ident| ExAnt |} len *) of_vstr_number "ExAnt" len
+      (* | _ ->  failwithf "%s can not be handled" cons] *)
     else
       params
       |> List.map (fun [ {expr;_} -> expr ])
@@ -276,11 +276,11 @@ let gen_meta_expr =
 let mk_variant_meta_patt cons params = with "expr"
     let len = List.length params in 
     if String.ends_with cons "Ant" then
-      match len with
-      [ 
-        1 -> {| `PaAnt (_loc,  $(id:xid 0))  |}
-      | n when n > 1 -> of_vstr_number "PaAnt" len (* of_ident_number {:ident| PaAnt |} len *)
-      | _ -> failwithf "%s can not be handled" cons ]
+      (* match len with *)
+      (* [  *)
+      (*   1 -> {| `PaAnt (_loc,  $(id:xid 0))  |} *)
+      (* | n when n > 1 -> *) of_vstr_number "PaAnt" len (* of_ident_number {:ident| PaAnt |} len *)
+      (* | _ -> failwithf "%s can not be handled" cons ] *)
     else
       params
       |> List.map (fun [ {expr;_} -> expr ])

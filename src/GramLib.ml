@@ -1,5 +1,5 @@
 open LibUtil;
-open Ast;
+(* open Ast; *)
 module Ast = FanAst;
 (* test wheter revised or not hack*)  
 (* let test_patt_lessminus = *)

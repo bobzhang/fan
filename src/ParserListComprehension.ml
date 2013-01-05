@@ -1,4 +1,4 @@
-open Ast;
+(* open Ast; *)
 module Ast = FanAst;
 open PreCast.Syntax;
 open Lib;

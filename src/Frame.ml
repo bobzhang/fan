@@ -1,4 +1,4 @@
-open Ast;
+(* open Ast; *)
 (* This module builds a generic framework *)
 
 #default_quotation "expr";;
@@ -195,7 +195,7 @@ module Make(S:FSig.Config) = struct
     (combine both expr_of_ctyp and simple_expr_of_ctyp) *)  
   let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp  = with {"patt":"ctyp"}
     let open ErrorMonad in fun
-    [ TyDcl (_, _, tyvars, ctyp, _constraints) ->
+    [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
         let ctyp =
           match ctyp with
           [ ( {| $_ == $ctyp |} (* the latter reifys the structure is used here *)
@@ -291,8 +291,8 @@ module Make(S:FSig.Config) = struct
       | `Single (name,tydcl) -> begin 
           Hashset.add cxt name;
           let rec_flag =
-            if Ctyp.is_recursive tydcl then Ast.ReRecursive
-            else Ast.ReNil 
+            if Ctyp.is_recursive tydcl then `ReRecursive
+            else `ReNil 
           and binding = mk_binding name tydcl in 
           {:str_item| let $rec:rec_flag  $binding |}
       end ] in

@@ -37,43 +37,43 @@ type loc = FanLoc.t
    and meta_bool =
     [= `BTrue
     | `BFalse
-    | `BAnt of string ]
+    | `BAnt of (loc*string) ]
    and rec_flag =
     [= `ReRecursive
     | `ReNil
-    | `ReAnt of string ]
+    | `ReAnt of (loc*string) ]
    and direction_flag =
     [= `DiTo
     | `DiDownto
-    | `DiAnt of string ]
+    | `DiAnt of (loc*string) ]
    and mutable_flag =
     [= `MuMutable
     | `MuNil
-    | `MuAnt of string ]
+    | `MuAnt of (loc*string) ]
    and private_flag =
     [= `PrPrivate
     | `PrNil
-    | `PrAnt of string ]
+    | `PrAnt of (loc*string) ]
    and virtual_flag =
     [= `ViVirtual
     | `ViNil
-    | `ViAnt of string ]
+    | `ViAnt of (loc*string) ]
    and override_flag =
     [= `OvOverride
     | `OvNil
-    | `OvAnt of string ]
+    | `OvAnt of (loc*string) ]
    and row_var_flag =
     [= `RvRowVar
     | `RvNil
-    | `RvAnt of string ]
+    | `RvAnt of (loc*string) ]
    and meta_option 'a =
     [= `ONone
     | `OSome of 'a
-    | `OAnt of string ]
+    | `OAnt of (loc*string) ]
    and meta_list 'a =
     [= `LNil
     | `LCons of ('a * meta_list 'a)
-    | `LAnt of string ]
+    | `LAnt of (loc * string) ] (* FIXME `LAnt no location *)
    and ident =
     [= `IdAcc of (loc * ident * ident) (* i . i *)
     | `IdApp of (loc * ident * ident) (* i i *)
@@ -497,3 +497,9 @@ let loc_of_match_case : match_case -> FanLoc.t =
 let loc_of_ident : ident -> FanLoc.t =
   fun x -> Obj.(magic ( field (field (repr x) 1) 0));
 
+
+
+let safe_string_escaped s =
+  if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
+  else String.escaped s;
+    

@@ -546,7 +546,7 @@ let rec expr =
             Pexp_setinstvar ((with_loc lab lloc), (expr v))
         | `ExSte (loc,e1,e2) ->
             Pexp_apply
-              ((mkexp loc (Pexp_ident (array_function loc "`String" "set"))),
+              ((mkexp loc (Pexp_ident (array_function loc "String" "set"))),
                 [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
         | _ -> error loc "bad left part of assignment" in
       mkexp loc e
@@ -647,7 +647,7 @@ let rec expr =
   | `ExSte (loc,e1,e2) ->
       mkexp loc
         (Pexp_apply
-           ((mkexp loc (Pexp_ident (array_function loc "`String" "get"))),
+           ((mkexp loc (Pexp_ident (array_function loc "String" "get"))),
              [("", (expr e1)); ("", (expr e2))]))
   | `ExStr (loc,s) ->
       mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))

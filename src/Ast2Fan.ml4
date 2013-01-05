@@ -345,11 +345,11 @@ class printer = object(self:'self)
            | ((true,false),Some{txt;loc=_loc}) ->
                {| +' $txt|}
            | ((true,false),None) ->
-               let _loc = FanLoc.ghost in Ast.TyAnP _loc 
+               let _loc = FanLoc.ghost in `TyAnP _loc 
            | ((false,true),Some {txt;loc=_loc} ) ->
                {| - ' $txt |}
            | ((false,true),None) ->
-               let _loc = FanLoc.ghost in Ast.TyAnM _loc
+               let _loc = FanLoc.ghost in `TyAnM _loc
            | _ -> assert false ]) variance params  in
        FanAst.tyApp_of_list
          [

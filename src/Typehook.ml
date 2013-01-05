@@ -1,5 +1,5 @@
 open LibUtil;
-open Ast;
+(* open Ast; *)
 open FSig;
 open Format;
 open Lib;
@@ -91,19 +91,19 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
      | {|exception $_ |}  | {| class $_ |}  | {| class type $_ |}
      | {| # $_ |}  | {| module $_:$_ |}    | {| module type $_ = $_ |}
      | {| module rec $_ |}  | {| open $_ |} ) -> {| |} (* For sig_item, keep does not make sense. *)
-     | {@_| type $((Ast.TyDcl (_loc,name,vars, ctyp, constraints) as x)) |} -> begin
+     | {@_| type $((`TyDcl (_loc,name,vars, ctyp, constraints) as x)) |} -> begin
              let x = 
                match (Ctyp.qualified_app_list ctyp, qualified)with
               [(Some ({:ident|$i.$_ |},ls),Some q) when
                 (Ident.eq i q && Ctyp.eq_list ls vars )->
                    (* type u 'a = Loc.u 'a *)       
-                  Ast.TyDcl _loc name vars {:ctyp||} constraints
+                  `TyDcl _loc name vars {:ctyp||} constraints
                |(_,_) -> super#ctyp x ] in 
              let y = {:str_item| type $x  |} in
              let () =  type_defs <- {:str_item| $type_defs ; $y |} in      
              {| type $x |}  
      end
-     | {| type $ty |} -> (* TyAnd case *) begin
+     | {| type $ty |} -> (* `TyAnd case *) begin
          let x = super#ctyp ty in
          let () = type_defs <- {:str_item| $type_defs ; $({:str_item|type $x |}) |} in
          {|type $x |} 
@@ -206,7 +206,7 @@ let traversal () : traversal  = object (self:'self_type)
       self#out_and_types;
       (if !keep then x else {| |} )
     end
-    | {| type $((Ast.TyDcl (_, name, _, _, _) as t)) |} as x -> begin
+    | {| type $((`TyDcl (_, name, _, _, _) as t)) |} as x -> begin
         let item =  `Single (name,t) ;
           eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
         self#update_cur_module_types (fun lst -> [ item :: lst]);
@@ -218,7 +218,7 @@ let traversal () : traversal  = object (self:'self_type)
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
     |  x ->  super#str_item x  ];
   method! ctyp = fun
-    [ Ast.TyDcl (_, name, _, _, _) as t -> begin
+    [ `TyDcl (_, name, _, _, _) as t -> begin
       if self#is_in_and_types then
         self#update_cur_and_types (fun lst -> [ (name,t) :: lst] )
       else ();

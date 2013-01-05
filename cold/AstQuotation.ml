@@ -172,9 +172,6 @@ let add_quotation ~expr_filter  ~patt_filter  ~mexpr  ~mpatt  name entry =
            function
            | `PaApp (_loc,`PaVrn (_,u),_) ->
                `PaApp (_loc, `PaVrn (_loc,u),`PaId (_loc, `IdLid (_loc,name)) )
-               (* `PaApp *)
-               (*   (_loc, (`PaId (_loc, (`IdUid (_loc, u)))), *)
-               (*     (`PaId (_loc, (`IdLid (_loc, name))))) *)
            | `PaApp (_loc,a,b) -> `PaApp (_loc, (subst_first_loc name a), b)
            | p -> p in
          match loc_name_opt with
@@ -236,7 +233,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     inherit  Ast.map as super
     method! patt =
       function
-      | `PaAnt (_loc,s)|`PaStr (_loc,s) as p ->
+      | `PaAnt(_loc,s)|`PaStr  (_loc,s) as p ->
           let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
           handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
             ~decorate:(fun n  e  ->
@@ -246,383 +243,311 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`SgAnt")))),
+                                    (_loc, (`PaVrn (_loc, "SgAnt")),
                                       (mloc _loc))), e)
                          | "antistr_item" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`StAnt")))),
+                                    (_loc, (`PaVrn (_loc, "StAnt")),
                                       (mloc _loc))), e)
                          | "antictyp" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`TyAnt")))),
+                                    (_loc, (`PaVrn (_loc, "TyAnt")),
                                       (mloc _loc))), e)
                          | "antipatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`PaAnt")))),
+                                    (_loc, (`PaVrn (_loc, "PaAnt")),
                                       (mloc _loc))), e)
                          | "antiexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExAnt")))),
+                                    (_loc, (`PaVrn (_loc, "ExAnt")),
                                       (mloc _loc))), e)
                          | "antimodule_type" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`MtAnt")))),
+                                    (_loc, (`PaVrn (_loc, "MtAnt")),
                                       (mloc _loc))), e)
                          | "antimodule_expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`MeAnt")))),
+                                    (_loc, (`PaVrn (_loc, "MeAnt")),
                                       (mloc _loc))), e)
                          | "anticlass_type" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`CtAnt")))),
+                                    (_loc, (`PaVrn (_loc, "CtAnt")),
                                       (mloc _loc))), e)
                          | "anticlass_expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`CeAnt")))),
+                                    (_loc, (`PaVrn (_loc, "CeAnt")),
                                       (mloc _loc))), e)
                          | "anticlass_sig_item" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`CgAnt")))),
+                                    (_loc, (`PaVrn (_loc, "CgAnt")),
                                       (mloc _loc))), e)
                          | "anticlass_str_item" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`CrAnt")))),
+                                    (_loc, (`PaVrn (_loc, "CrAnt")),
                                       (mloc _loc))), e)
                          | "antiwith_constr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`WcAnt")))),
+                                    (_loc, (`PaVrn (_loc, "WcAnt")),
                                       (mloc _loc))), e)
                          | "antibinding" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`BiAnt")))),
+                                    (_loc, (`PaVrn (_loc, "BiAnt")),
                                       (mloc _loc))), e)
                          | "antirec_binding" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`RbAnt")))),
+                                    (_loc, (`PaVrn (_loc, "RbAnt")),
                                       (mloc _loc))), e)
                          | "antimatch_case" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`McAnt")))),
+                                    (_loc, (`PaVrn (_loc, "McAnt")),
                                       (mloc _loc))), e)
                          | "antimodule_binding" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`MbAnt")))),
+                                    (_loc, (`PaVrn (_loc, "MbAnt")),
                                       (mloc _loc))), e)
                          | "antiident" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`IdAnt")))),
+                                    (_loc, (`PaVrn (_loc, "IdAnt")),
                                       (mloc _loc))), e)
                          | "tupexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExTup")))),
+                                    (_loc, (`PaVrn (_loc, "ExTup")),
                                       (mloc _loc))), e)
                          | "tuppatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`PaTup")))),
+                                    (_loc, (`PaVrn (_loc, "PaTup")),
                                       (mloc _loc))), e)
                          | "seqexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExSeq")))),
+                                    (_loc, (`PaVrn (_loc, "ExSeq")),
                                       (mloc _loc))), e)
                          | "uidexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`IdUid")))),
+                                    (_loc, (`PaVrn (_loc, "IdUid")),
                                       (mloc _loc))), e)
                          | "lidexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`IdLid")))),
+                                    (_loc, (`PaVrn (_loc, "IdLid")),
                                       (mloc _loc))), e)
                          | "uidident" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`IdUid")))),
+                                    (_loc, (`PaVrn (_loc, "IdUid")),
                                       (mloc _loc))), e)
                          | "lidident" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`IdLid")))),
+                                    (_loc, (`PaVrn (_loc, "IdLid")),
                                       (mloc _loc))), e)
                          | "flopatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`PaFlo")))),
+                                    (_loc, (`PaVrn (_loc, "PaFlo")),
                                       (mloc _loc))), e)
                          | "intpatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`PaInt")))),
+                                    (_loc, (`PaVrn (_loc, "PaInt")),
                                       (mloc _loc))), e)
                          | "int32patt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`PaInt32")))),
+                                    (_loc, (`PaVrn (_loc, "PaInt32")),
                                       (mloc _loc))), e)
                          | "int64patt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`PaInt64")))),
+                                    (_loc, (`PaVrn (_loc, "PaInt64")),
                                       (mloc _loc))), e)
                          | "nativeintpatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId
-                                         (_loc,
-                                           (`IdUid (_loc, "`PaNativeInt")))),
+                                    (_loc, (`PaVrn (_loc, "PaNativeInt")),
                                       (mloc _loc))), e)
                          | "chrpatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`PaChr")))),
+                                    (_loc, (`PaVrn (_loc, "PaChr")),
                                       (mloc _loc))), e)
                          | "strpatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`PaStr")))),
+                                    (_loc, (`PaVrn (_loc, "PaStr")),
                                       (mloc _loc))), e)
                          | "strexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExStr")))),
+                                    (_loc, (`PaVrn (_loc, "ExStr")),
                                       (mloc _loc))), e)
                          | "chrexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExChr")))),
+                                    (_loc, (`PaVrn (_loc, "ExChr")),
                                       (mloc _loc))), e)
                          | "intexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExInt")))),
+                                    (_loc, (`PaVrn (_loc, "ExInt")),
                                       (mloc _loc))), e)
                          | "int32expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExInt32")))),
+                                    (_loc, (`PaVrn (_loc, "ExInt32")),
                                       (mloc _loc))), e)
                          | "int64expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExInt64")))),
+                                    (_loc, (`PaVrn (_loc, "ExInt64")),
                                       (mloc _loc))), e)
                          | "floexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId (_loc, (`IdUid (_loc, "`ExFlo")))),
+                                    (_loc, (`PaVrn (_loc, "ExFlo")),
                                       (mloc _loc))), e)
                          | "nativeintexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc,
-                                      (`PaId
-                                         (_loc,
-                                           (`IdUid (_loc, "`ExNativeInt")))),
+                                    (_loc, (`PaVrn (_loc, "ExNativeInt")),
                                       (mloc _loc))), e)
-                         | x when (len > 0) && ((x.[0]) = '`') ->
-                             failwith (x ^ "is not allowed in pattern")
+                         | x when (len > 0) && ((String.get x 0) = '`')
+                             -> failwith (x ^ "is not allowed in pattern")
                          | _ -> e)
       | p -> super#patt p
     method! expr =
       function
-      | `ExAnt (_loc,s)|`ExStr (_loc,s) as e ->
+      |  `ExAnt  (_loc,s)| `ExStr  (_loc,s) as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n  e  ->
                          match n with
                          | "tupexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExTup")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExTup")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "tuppatt" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaTup")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaTup")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "seqexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExSeq")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExSeq")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "uidexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`IdUid")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "IdUid")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "lidexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`IdLid")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "IdLid")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "uidident" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`IdUid")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "IdUid")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "lidident" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`IdLid")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "IdLid")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "strexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExStr")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExStr")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "chrexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExChr")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExChr")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "intexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExInt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExInt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "int32expr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExInt32")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExInt32")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "int64expr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExInt64")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExInt64")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "floexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExFlo")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExFlo")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "nativeintexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId
-                                         (_loc,
-                                           (`IdUid (_loc, "`ExNativeInt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExNativeInt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`nativeintexpr" ->
                              let e =
                                `ExApp
@@ -635,26 +560,21 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId
-                                         (_loc,
-                                           (`IdUid (_loc, "`ExNativeInt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExNativeInt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`intexpr" ->
                              let e =
                                `ExApp
                                  (_loc,
                                    (`ExId
-                                      (_loc, (`IdLid (_loc, "string_of_int")))),
+                                      (_loc,
+                                        (`IdLid (_loc, "string_of_int")))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExInt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExInt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`int32expr" ->
                              let e =
                                `ExApp
@@ -666,11 +586,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExInt32")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExInt32")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`int64expr" ->
                              let e =
                                `ExApp
@@ -682,11 +600,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExInt64")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExInt64")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`chrexpr" ->
                              let e =
                                `ExApp
@@ -698,11 +614,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "escaped")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExChr")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExChr")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`strexpr" ->
                              let e =
                                `ExApp
@@ -715,11 +629,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (_loc, "safe_string_escaped")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExStr")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExStr")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`floexpr" ->
                              let e =
                                `ExApp
@@ -731,74 +643,60 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "float_repres")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExFlo")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExFlo")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`boolexpr" ->
                              let x =
                                `ExApp
-                                 (_loc,
-                                   (`ExApp
+                                 (_loc, (`ExVrn (_loc, "IdLid")),
+                                   (`ExTup
                                       (_loc,
-                                        (`ExId (_loc, (`IdUid (_loc, "`IdLid")))),
-                                        (mloc _loc))),
-                                   (`ExIfe
-                                      (_loc, e, (`ExStr (_loc, "true")),
-                                        (`ExStr (_loc, "false"))))) in
+                                        (`ExCom
+                                           (_loc, (mloc _loc),
+                                             (`ExIfe
+                                                (_loc, e,
+                                                  (`ExStr (_loc, "true")),
+                                                  (`ExStr (_loc, "false"))))))))) in
                              `ExApp
                                (_loc,
                                  (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExId")))),
+                                    (_loc, (`ExVrn (_loc, "ExId")),
                                       (`ExId (_loc, (`IdLid (_loc, "_loc")))))),
                                  x)
                          | "flopatt" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaFlo")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaFlo")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "intpatt" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaInt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaInt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "int32patt" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaInt32")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaInt32")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "int64patt" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaInt64")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaInt64")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "nativeintpatt" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId
-                                         (_loc,
-                                           (`IdUid (_loc, "`PaNativeInt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaNativeInt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "chrpatt" ->
                              `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`PaChr")))),
+                               (_loc, (`ExVrn (_loc, "PaChr")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "strpatt" ->
                              `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`PaStr")))),
+                               (_loc, (`ExVrn (_loc, "PaStr")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`nativeintpatt" ->
@@ -813,26 +711,21 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId
-                                         (_loc,
-                                           (`IdUid (_loc, "`PaNativeInt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaNativeInt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`intpatt" ->
                              let e =
                                `ExApp
                                  (_loc,
                                    (`ExId
-                                      (_loc, (`IdLid (_loc, "string_of_int")))),
+                                      (_loc,
+                                        (`IdLid (_loc, "string_of_int")))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaInt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaInt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`int32patt" ->
                              let e =
                                `ExApp
@@ -844,11 +737,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaInt32")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaInt32")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`int64patt" ->
                              let e =
                                `ExApp
@@ -860,11 +751,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaInt64")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaInt64")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`chrpatt" ->
                              let e =
                                `ExApp
@@ -876,11 +765,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "escaped")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaChr")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaChr")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`strpatt" ->
                              let e =
                                `ExApp
@@ -893,11 +780,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (_loc, "safe_string_escaped")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaStr")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaStr")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`flopatt" ->
                              let e =
                                `ExApp
@@ -909,11 +794,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`IdLid (_loc, "float_repres")))))),
                                    e) in
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaFlo")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaFlo")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "liststr_item" ->
                              `ExApp
                                (_loc,
@@ -1105,11 +988,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  e)
                          | "antimatch_case" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`McAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "McAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "listmatch_caselettry" ->
                              `ExApp
                                (_loc,
@@ -1127,7 +1008,8 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc,
                                            (`IdAcc
                                               (_loc, (`IdUid (_loc, "Ast")),
-                                                (`IdLid (_loc, "mcOr_of_list")))))),
+                                                (`IdLid
+                                                   (_loc, "mcOr_of_list")))))),
                                       e)))
                          | "antimatch_caselettry" ->
                              `ExApp
@@ -1141,12 +1023,10 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (`IdLid (_loc, "match_pre")))))),
                                       "match_case")),
                                  (`ExApp
-                                    (_loc,
-                                      (`ExApp
+                                    (_loc, (`ExVrn (_loc, "McAnt")),
+                                      (`ExTup
                                          (_loc,
-                                           (`ExId
-                                              (_loc, (`IdUid (_loc, "`McAnt")))),
-                                           (mloc _loc))), e)))
+                                           (`ExCom (_loc, (mloc _loc), e)))))))
                          | "match_caselettry" ->
                              `ExApp
                                (_loc,
@@ -1205,144 +1085,1221 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  e)
                          | "antisig_item" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`SgAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "SgAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antistr_item" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`StAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "StAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antictyp" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`TyAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "TyAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antipatt" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`PaAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "PaAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antiexpr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`ExAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "ExAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antimodule_type" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`MtAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "MtAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antimodule_expr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`MeAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "MeAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "anticlass_type" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`CtAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "CtAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "anticlass_expr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`CeAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "CeAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "anticlass_sig_item" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`CgAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "CgAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "anticlass_str_item" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`CrAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "CrAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antiwith_constr" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`WcAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "WcAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antibinding" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`BiAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "BiAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antirec_binding" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`RbAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "RbAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antimodule_binding" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`MbAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "MbAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antiident" ->
                              `ExApp
-                               (_loc,
-                                 (`ExApp
-                                    (_loc,
-                                      (`ExId (_loc, (`IdUid (_loc, "`IdAnt")))),
-                                      (mloc _loc))), e)
+                               (_loc, (`ExVrn (_loc, "IdAnt")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antidirection_flag" ->
-                             `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`DiAnt")))),
-                                 e)
+                             `ExApp (_loc, (`ExVrn (_loc, "DiAnt")), e)
                          | "antioverride_flag" ->
-                             `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`OvAnt")))),
-                                 e)
+                             `ExApp (_loc, (`ExVrn (_loc, "OvAnt")), e)
                          | "antiprivate_flag" ->
-                             `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`PrAnt")))),
-                                 e)
+                             `ExApp (_loc, (`ExVrn (_loc, "PrAnt")), e)
                          | "antimutable_flag" ->
-                             `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`MuAnt")))),
-                                 e)
+                             `ExApp (_loc, (`ExVrn (_loc, "MuAnt")), e)
                          | "antivirtual_flag" ->
-                             `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`ViAnt")))),
-                                 e)
+                             `ExApp (_loc, (`ExVrn (_loc, "ViAnt")), e)
                          | "antirow_var_flag" ->
-                             `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`RvAnt")))),
-                                 e)
+                             `ExApp (_loc, (`ExVrn (_loc, "RvAnt")), e)
                          | "antirec_flag" ->
-                             `ExApp
-                               (_loc, (`ExId (_loc, (`IdUid (_loc, "`ReAnt")))),
-                                 e)
+                             `ExApp (_loc, (`ExVrn (_loc, "ReAnt")), e)
                          | _ -> e)
       | e -> super#expr e
-  end
+  end    
+(* let antiquot_expander ~parse_patt  ~parse_expr  = *)
+(*   object  *)
+(*     inherit  Ast.map as super *)
+(*     method! patt = *)
+(*       function *)
+(*       | `PaAnt (_loc,s)|`PaStr (_loc,s) as p -> *)
+(*           let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in *)
+(*           handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc *)
+(*             ~decorate:(fun n  e  -> *)
+(*                          let len = String.length n in *)
+(*                          match n with *)
+(*                          | "antisig_item" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                      `PaVrn (_loc,"SgAnt"), *)
+(*                                       (\* (`PaId (_loc, (`IdUid (_loc, "`SgAnt")))) ,*\) *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antistr_item" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                      `PaVrn(_loc,"StAnt"), *)
+(*                                       (\* (`PaId (_loc, (`IdUid (_loc, "`StAnt")))), *\) *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antictyp" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                      `PaVrn(_loc,"TyAnt"), *)
+(*                                       (\* (`PaId (_loc, (`IdUid (_loc, "`TyAnt")))), *\) *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antipatt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                      `PaVrn(_loc,"PaAnt"), *)
+(*                                       (\* (`PaId (_loc, (`IdUid (_loc, "`PaAnt")))), *\) *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antiexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                      `PaVrn(_loc,"ExAnt"), *)
+(*                                       (\* (`PaId (_loc, (`IdUid (_loc, "`ExAnt")))), *\) *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antimodule_type" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                      `PaVrn(_loc,"MtAnt"), *)
+(*                                       (\* (`PaId (_loc, (`IdUid (_loc, "`MtAnt")))), *\) *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antimodule_expr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                      `PaVrn(_loc,"MeAnt"), *)
+(*                                       (\* (`PaId (_loc, (`IdUid (_loc, "`MeAnt")))), *\) *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "anticlass_type" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                      `PaVrn(_loc,"CtAnt"), *)
+(*                                       (\* (`PaId (_loc, (`IdUid (_loc, "`CtAnt")))), *\) *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "anticlass_expr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`CeAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "anticlass_sig_item" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`CgAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "anticlass_str_item" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`CrAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antiwith_constr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`WcAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antibinding" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`BiAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antirec_binding" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`RbAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antimatch_case" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`McAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antimodule_binding" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`MbAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "antiident" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`IdAnt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "tupexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`ExTup")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "tuppatt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`PaTup")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "seqexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`ExSeq")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "uidexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`IdUid")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "lidexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`IdLid")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "uidident" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`IdUid")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "lidident" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`IdLid")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "flopatt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`PaFlo")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "intpatt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`PaInt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "int32patt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`PaInt32")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "int64patt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`PaInt64")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "nativeintpatt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId *)
+(*                                          (_loc, *)
+(*                                            (`IdUid (_loc, "`PaNativeInt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "chrpatt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`PaChr")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "strpatt" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`PaStr")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "strexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`ExStr")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "chrexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`ExChr")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "intexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`ExInt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "int32expr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`ExInt32")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "int64expr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`ExInt64")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "floexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId (_loc, (`IdUid (_loc, "`ExFlo")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "nativeintexpr" -> *)
+(*                              `PaApp *)
+(*                                (_loc, *)
+(*                                  (`PaApp *)
+(*                                     (_loc, *)
+(*                                       (`PaId *)
+(*                                          (_loc, *)
+(*                                            (`IdUid (_loc, "`ExNativeInt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | x when (len > 0) && ((x.[0]) = '`') -> *)
+(*                              failwith (x ^ "is not allowed in pattern") *)
+(*                          | _ -> e) *)
+(*       | p -> super#patt p *)
+(*     method! expr = *)
+(*       function *)
+(*       | `ExAnt (_loc,s)|`ExStr (_loc,s) as e -> *)
+(*           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in *)
+(*           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc *)
+(*             ~decorate:(fun n  e  -> *)
+(*                          match n with *)
+(*                          | "tupexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExTup")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "tuppatt" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`PaTup")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "seqexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExSeq")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "uidexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`IdUid")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "lidexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`IdLid")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "uidident" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`IdUid")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "lidident" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`IdLid")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "strexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExStr")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "chrexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExChr")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "intexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExInt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "int32expr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExInt32")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "int64expr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExInt64")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "floexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExFlo")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "nativeintexpr" -> *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId *)
+(*                                          (_loc, *)
+(*                                            (`IdUid (_loc, "`ExNativeInt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "`nativeintexpr" -> *)
+(*                              let e = *)
+(*                                `ExApp *)
+(*                                  (_loc, *)
+(*                                    (`ExId *)
+(*                                       (_loc, *)
+(*                                         (`IdAcc *)
+(*                                            (_loc, *)
+(*                                              (`IdUid (_loc, "Nativeint")), *)
+(*                                              (`IdLid (_loc, "to_string")))))), *)
+(*                                    e) in *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId *)
+(*                                          (_loc, *)
+(*                                            (`IdUid (_loc, "`ExNativeInt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "`intexpr" -> *)
+(*                              let e = *)
+(*                                `ExApp *)
+(*                                  (_loc, *)
+(*                                    (`ExId *)
+(*                                       (_loc, (`IdLid (_loc, "string_of_int")))), *)
+(*                                    e) in *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExInt")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "`int32expr" -> *)
+(*                              let e = *)
+(*                                `ExApp *)
+(*                                  (_loc, *)
+(*                                    (`ExId *)
+(*                                       (_loc, *)
+(*                                         (`IdAcc *)
+(*                                            (_loc, (`IdUid (_loc, "Int32")), *)
+(*                                              (`IdLid (_loc, "to_string")))))), *)
+(*                                    e) in *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExInt32")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "`int64expr" -> *)
+(*                              let e = *)
+(*                                `ExApp *)
+(*                                  (_loc, *)
+(*                                    (`ExId *)
+(*                                       (_loc, *)
+(*                                         (`IdAcc *)
+(*                                            (_loc, (`IdUid (_loc, "Int64")), *)
+(*                                              (`IdLid (_loc, "to_string")))))), *)
+(*                                    e) in *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExInt64")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "`chrexpr" -> *)
+(*                              let e = *)
+(*                                `ExApp *)
+(*                                  (_loc, *)
+(*                                    (`ExId *)
+(*                                       (_loc, *)
+(*                                         (`IdAcc *)
+(*                                            (_loc, (`IdUid (_loc, "Char")), *)
+(*                                              (`IdLid (_loc, "escaped")))))), *)
+(*                                    e) in *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExChr")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "`strexpr" -> *)
+(*                              let e = *)
+(*                                `ExApp *)
+(*                                  (_loc, *)
+(*                                    (`ExId *)
+(*                                       (_loc, *)
+(*                                         (`IdAcc *)
+(*                                            (_loc, (`IdUid (_loc, "Ast")), *)
+(*                                              (`IdLid *)
+(*                                                 (_loc, "safe_string_escaped")))))), *)
+(*                                    e) in *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExStr")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "`floexpr" -> *)
+(*                              let e = *)
+(*                                `ExApp *)
+(*                                  (_loc, *)
+(*                                    (`ExId *)
+(*                                       (_loc, *)
+(*                                         (`IdAcc *)
+(*                                            (_loc, (`IdUid (_loc, "FanUtil")), *)
+(*                                              (`IdLid (_loc, "float_repres")))))), *)
+(*                                    e) in *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExFlo")))), *)
+(*                                       (mloc _loc))), e) *)
+(*                          | "`boolexpr" -> *)
+(*                              let x = *)
+(*                                `ExApp *)
+(*                                  (_loc, *)
+(*                                    (`ExApp *)
+(*                                       (_loc, *)
+(*                                         (`ExId (_loc, (`IdUid (_loc, "`IdLid")))), *)
+(*                                         (mloc _loc))), *)
+(*                                    (`ExIfe *)
+(*                                       (_loc, e, (`ExStr (_loc, "true")), *)
+(*                                         (`ExStr (_loc, "false"))))) in *)
+(*                              `ExApp *)
+(*                                (_loc, *)
+(*                                  (`ExApp *)
+(*                                     (_loc, *)
+(*                                       (`ExId (_loc, (`IdUid (_loc, "`ExId")))), *)
+(*                                       (`ExId (_loc, (`IdLid (_loc, "_loc")))))), *)
+  (*                                x) *)
+  (*                        | "flopatt" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaFlo")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "intpatt" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaInt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "int32patt" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaInt32")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "int64patt" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaInt64")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "nativeintpatt" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId *)
+  (*                                        (_loc, *)
+  (*                                          (`IdUid (_loc, "`PaNativeInt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "chrpatt" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`PaChr")))), *)
+  (*                                (`ExTup *)
+  (*                                   (_loc, (`ExCom (_loc, (mloc _loc), e))))) *)
+  (*                        | "strpatt" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`PaStr")))), *)
+  (*                                (`ExTup *)
+  (*                                   (_loc, (`ExCom (_loc, (mloc _loc), e))))) *)
+  (*                        | "`nativeintpatt" -> *)
+  (*                            let e = *)
+  (*                              `ExApp *)
+  (*                                (_loc, *)
+  (*                                  (`ExId *)
+  (*                                     (_loc, *)
+  (*                                       (`IdAcc *)
+  (*                                          (_loc, *)
+  (*                                            (`IdUid (_loc, "Nativeint")), *)
+  (*                                            (`IdLid (_loc, "to_string")))))), *)
+  (*                                  e) in *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId *)
+  (*                                        (_loc, *)
+  (*                                          (`IdUid (_loc, "`PaNativeInt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "`intpatt" -> *)
+  (*                            let e = *)
+  (*                              `ExApp *)
+  (*                                (_loc, *)
+  (*                                  (`ExId *)
+  (*                                     (_loc, (`IdLid (_loc, "string_of_int")))), *)
+  (*                                  e) in *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaInt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "`int32patt" -> *)
+  (*                            let e = *)
+  (*                              `ExApp *)
+  (*                                (_loc, *)
+  (*                                  (`ExId *)
+  (*                                     (_loc, *)
+  (*                                       (`IdAcc *)
+  (*                                          (_loc, (`IdUid (_loc, "Int32")), *)
+  (*                                            (`IdLid (_loc, "to_string")))))), *)
+  (*                                  e) in *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaInt32")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "`int64patt" -> *)
+  (*                            let e = *)
+  (*                              `ExApp *)
+  (*                                (_loc, *)
+  (*                                  (`ExId *)
+  (*                                     (_loc, *)
+  (*                                       (`IdAcc *)
+  (*                                          (_loc, (`IdUid (_loc, "Int64")), *)
+  (*                                            (`IdLid (_loc, "to_string")))))), *)
+  (*                                  e) in *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaInt64")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "`chrpatt" -> *)
+  (*                            let e = *)
+  (*                              `ExApp *)
+  (*                                (_loc, *)
+  (*                                  (`ExId *)
+  (*                                     (_loc, *)
+  (*                                       (`IdAcc *)
+  (*                                          (_loc, (`IdUid (_loc, "Char")), *)
+  (*                                            (`IdLid (_loc, "escaped")))))), *)
+  (*                                  e) in *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaChr")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "`strpatt" -> *)
+  (*                            let e = *)
+  (*                              `ExApp *)
+  (*                                (_loc, *)
+  (*                                  (`ExId *)
+  (*                                     (_loc, *)
+  (*                                       (`IdAcc *)
+  (*                                          (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                            (`IdLid *)
+  (*                                               (_loc, "safe_string_escaped")))))), *)
+  (*                                  e) in *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaStr")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "`flopatt" -> *)
+  (*                            let e = *)
+  (*                              `ExApp *)
+  (*                                (_loc, *)
+  (*                                  (`ExId *)
+  (*                                     (_loc, *)
+  (*                                       (`IdAcc *)
+  (*                                          (_loc, (`IdUid (_loc, "FanUtil")), *)
+  (*                                            (`IdLid (_loc, "float_repres")))))), *)
+  (*                                  e) in *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaFlo")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "liststr_item" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "stSem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listsig_item" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "sgSem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listclass_sig_item" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "cgSem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listclass_str_item" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "crSem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listmodule_expr" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "meApp_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listmodule_type" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "mtApp_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listmodule_binding" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "mbAnd_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listbinding" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "biAnd_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listbinding;" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "biSem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listrec_binding" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "rbSem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listclass_type" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "ctAnd_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listclass_expr" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "ceAnd_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listident" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "idAcc_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listctypand" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "tyAnd_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listctyp;" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "tySem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listctyp*" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "tySta_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listctyp|" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "tyOr_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listctyp," -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "tyCom_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listctyp&" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "tyAmp_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listwith_constr" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "wcAnd_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listmatch_case" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "mcOr_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "antimatch_case" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`McAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "listmatch_caselettry" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExSnd *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId *)
+  (*                                        (_loc, *)
+  (*                                          (`IdAcc *)
+  (*                                             (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                               (`IdLid (_loc, "match_pre")))))), *)
+  (*                                     "match_case")), *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId *)
+  (*                                        (_loc, *)
+  (*                                          (`IdAcc *)
+  (*                                             (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                               (`IdLid (_loc, "mcOr_of_list")))))), *)
+  (*                                     e))) *)
+  (*                        | "antimatch_caselettry" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExSnd *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId *)
+  (*                                        (_loc, *)
+  (*                                          (`IdAcc *)
+  (*                                             (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                               (`IdLid (_loc, "match_pre")))))), *)
+  (*                                     "match_case")), *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExApp *)
+  (*                                        (_loc, *)
+  (*                                          (`ExId *)
+  (*                                             (_loc, (`IdUid (_loc, "`McAnt")))), *)
+  (*                                          (mloc _loc))), e))) *)
+  (*                        | "match_caselettry" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExSnd *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId *)
+  (*                                        (_loc, *)
+  (*                                          (`IdAcc *)
+  (*                                             (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                               (`IdLid (_loc, "match_pre")))))), *)
+  (*                                     "match_case")), e) *)
+  (*                        | "listpatt," -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "paCom_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listpatt;" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "paSem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listexpr," -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "exCom_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listexpr;" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "exSem_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "listforall" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExId *)
+  (*                                   (_loc, *)
+  (*                                     (`IdAcc *)
+  (*                                        (_loc, (`IdUid (_loc, "Ast")), *)
+  (*                                          (`IdLid (_loc, "tyVarApp_of_list")))))), *)
+  (*                                e) *)
+  (*                        | "antisig_item" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`SgAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antistr_item" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`StAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antictyp" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`TyAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antipatt" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`PaAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antiexpr" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`ExAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antimodule_type" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`MtAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antimodule_expr" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`MeAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "anticlass_type" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`CtAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "anticlass_expr" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`CeAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "anticlass_sig_item" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`CgAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "anticlass_str_item" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`CrAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antiwith_constr" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`WcAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antibinding" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`BiAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antirec_binding" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`RbAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antimodule_binding" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`MbAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antiident" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, *)
+  (*                                (`ExApp *)
+  (*                                   (_loc, *)
+  (*                                     (`ExId (_loc, (`IdUid (_loc, "`IdAnt")))), *)
+  (*                                     (mloc _loc))), e) *)
+  (*                        | "antidirection_flag" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`DiAnt")))), *)
+  (*                                e) *)
+  (*                        | "antioverride_flag" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`OvAnt")))), *)
+  (*                                e) *)
+  (*                        | "antiprivate_flag" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`PrAnt")))), *)
+  (*                                e) *)
+  (*                        | "antimutable_flag" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`MuAnt")))), *)
+  (*                                e) *)
+  (*                        | "antivirtual_flag" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`ViAnt")))), *)
+  (*                                e) *)
+  (*                        | "antirow_var_flag" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`RvAnt")))), *)
+  (*                                e) *)
+  (*                        | "antirec_flag" -> *)
+  (*                            `ExApp *)
+  (*                              (_loc, (`ExId (_loc, (`IdUid (_loc, "`ReAnt")))), *)
+  (*                                e) *)
+  (*                        | _ -> e) *)
+  (*     | e -> super#expr e *)
+  (* end *)

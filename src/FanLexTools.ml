@@ -389,9 +389,9 @@ let gen_definition _loc l =
     let len = Array.length states in
     if  len > 1 then begin 
       (* prerr_endlinef "length %d" len; *) (* FIXME *)
-      Ast.ReRecursive
+      `ReRecursive
     end else
-    Ast.ReNil  in (* FIXME *)
+    `ReNil  in (* FIXME *)
   {:expr|
   fun lexbuf ->
     let $list:tables in

@@ -1,4 +1,4 @@
-open Ast;
+(* open Ast; *)
 
 (*
   {:macro|M a b c|}
@@ -15,7 +15,7 @@ open Ast;
   fib 32 -->
      fib 31 + fib 30
 
-     -- ExApp
+     -- `ExApp
      --
   {:str_item| g |};
 
@@ -23,7 +23,7 @@ open Ast;
      
 
   -- macro.str_item
-     StExp ..  
+     `StExp ..  
 
   1. the position where macro quotation appears
      - class_str_item

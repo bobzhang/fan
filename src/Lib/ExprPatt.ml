@@ -179,8 +179,11 @@ let tuple_of_list lst =
 
 
 let of_vstr_number name i =
-  let item = List.init i (fun i -> {|$(id:xid i) |} ) |> tuple_of_list in 
-   {| `$name $item |};
+  let items = List.init i (fun i -> {|$(id:xid i) |} ) in
+  if items = [] then {|`$name|}
+  else
+    let item = items |> tuple_of_list in
+    {| `$name $item |};
     
 (*
   {[

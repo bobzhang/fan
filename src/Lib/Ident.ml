@@ -1,4 +1,3 @@
-open Ast;
 #default_quotation "ident";;
 module Ast = FanAst;
 open LibUtil;

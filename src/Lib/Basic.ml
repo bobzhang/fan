@@ -1,6 +1,6 @@
 open Format;
 open LibUtil;
-open Ast;  
+(* open Ast;   *)
 
 (*
    Basic module contains utility functions to manipulate Ast

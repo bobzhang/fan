@@ -1,6 +1,6 @@
 
 open LibUtil;
-open Ast;
+(* open Ast; *)
 module Ast = FanAst;
 module MetaLoc = struct
    (* this makes sense here, because, for list operation

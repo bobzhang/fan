@@ -1,4 +1,4 @@
-open Ast;
+(* open Ast; *)
 open PreCast.Syntax;
 open Lib;
 open LibUtil;
@@ -555,6 +555,7 @@ let apply () = begin
         | "("; S{p}; "as"; S{p2}; ")" -> {| ($p as $p2) |}
         | "("; S{p}; ","; comma_patt{pl}; ")" -> {| ($p, $pl) |}
         | "`"; a_ident{s} -> {| ` $s |}
+          (* duplicated may be removed later with [patt Level "apply"] *)
         | "#"; type_longident{i} -> {| # $i |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
         | "_" -> {| _ |}
@@ -666,8 +667,8 @@ let apply () = begin
       | "'"; a_ident{i} -> {| '$lid:i |}
       | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
       | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
-      | "+"; "_" -> Ast.TyAnP _loc   (* FIXME *)
-      | "-"; "_" -> Ast.TyAnM _loc  
+      | "+"; "_" -> `TyAnP _loc   (* FIXME *)
+      | "-"; "_" -> `TyAnM _loc  
       | "_" -> {| _ |}  ]
       type_longident_and_parameters:
       [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
@@ -723,7 +724,7 @@ let apply () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
       |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
-        -> Ast.TyDcl _loc n tpl tk cl ]
+        -> `TyDcl _loc n tpl tk cl ]
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
       opt_eq_ctyp:
@@ -846,7 +847,7 @@ let apply () = begin
         | `LID i -> {| $lid:i |}
         | `UID i -> {| $uid:i |}
         | `UID s ; "." ; S{j} -> {|$uid:s.$j|}
-        | "("; S{i};S{j}; ")" -> Ast.IdApp _loc i j  ] }
+        | "("; S{i};S{j}; ")" -> `IdApp _loc i j  ] }
       ident:
       [ `ANT ((""|"id"|"anti"|"list" |"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
       | `ANT (("lid" as n), s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
@@ -908,45 +909,61 @@ let apply () = begin
       method_opt_override:
       [ "method"; "!" -> {:override_flag| ! |}
       | "method"; `ANT (((""|"override"|"anti") as n),s) ->
-          Ast.OvAnt (mk_anti ~c:"override_flag" n s)
+          `OvAnt (_loc,mk_anti ~c:"override_flag" n s)
             (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s)|} *)
       | "method" -> {:override_flag||}  ] 
       opt_override:
       [ "!" -> {:override_flag| ! |}
       | `ANT ((("!"|"override"|"anti") as n),s) ->
-          {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |}
+          (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |} *)
+          `OvAnt (_loc,mk_anti ~c:"override_flag" n s)
       | -> {:override_flag||} ]
       
       value_val_opt_override:
       [ "val"; "!" -> {:override_flag| ! |}
-      | "val"; `ANT (((""|"override"|"anti") as n),s) -> {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |}
+      | "val"; `ANT (((""|"override"|"anti") as n),s) ->
+          (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |} *)
+            `OvAnt (_loc,mk_anti ~c:"override_flag" n s)
       | "val" -> {:override_flag||}   ] 
       opt_as_lident:  [ "as"; a_LIDENT{i} -> i  | -> ""  ] 
       label:[ a_LIDENT{i} -> i ]
       direction_flag:
       [ "to" -> {:direction_flag| to |}
       | "downto" -> {:direction_flag| downto |}
-      | `ANT (("to"|"anti"|"" as n),s) -> {:direction_flag|$(anti:mk_anti ~c:"direction_flag" n s)|} ]
+      | `ANT (("to"|"anti"|"" as n),s) ->
+          (* {:direction_flag|$(anti:mk_anti ~c:"direction_flag" n s)|} *)
+          `DiAnt (_loc,mk_anti ~c:"direction_flag" n s)
+      ]
 
       opt_private:
       [ "private" -> {:private_flag| private |}
-      | `ANT (("private"|"anti" as n),s) -> {:private_flag| $(anti:mk_anti ~c:"private_flag" n s)|}
+      | `ANT (("private"|"anti" as n),s) ->
+          (* {:private_flag| $(anti:mk_anti ~c:"private_flag" n s)|} *)
+          `PrAnt (_loc,mk_anti ~c:"private_flag" n s)
       | -> {:private_flag||}  ] 
       opt_mutable:
       [ "mutable" -> {:mutable_flag| mutable |}
-      | `ANT (("mutable"|"anti" as n),s) -> {:mutable_flag| $(anti:mk_anti ~c:"mutable_flag" n s) |}
+      | `ANT (("mutable"|"anti" as n),s) ->
+          (* {:mutable_flag| $(anti:mk_anti ~c:"mutable_flag" n s) |} *)
+          `MuAnt (_loc,mk_anti ~c:"mutable_flag" n s)
       | -> {:mutable_flag||}  ] 
       opt_virtual:
       [ "virtual" -> {:virtual_flag| virtual |}
-      | `ANT (("virtual"|"anti" as n),s) -> {:virtual_flag|$(anti:(mk_anti ~c:"virtual_flag" n s))|}
+      | `ANT (("virtual"|"anti" as n),s) ->
+          (* {:virtual_flag|$(anti:(mk_anti ~c:"virtual_flag" n s))|} *)
+            (* let _ =  *)`ViAnt (_loc,mk_anti ~c:"virtual_flag" n s)
       | -> {:virtual_flag||}  ] 
       opt_dot_dot:
       [ ".." -> {:row_var_flag| .. |}
-      | `ANT ((".."|"anti" as n),s) -> {:row_var_flag|$(anti:mk_anti ~c:"row_var_flag" n s) |}
+      | `ANT ((".."|"anti" as n),s) ->
+          (* {:row_var_flag|$(anti:mk_anti ~c:"row_var_flag" n s) |} *)
+          (* let _ =  *)`RvAnt (_loc,mk_anti ~c:"row_var_flag" n s)
       | -> {:row_var_flag||}  ]
       opt_rec:
       [ "rec" -> {:rec_flag| rec |}
-      | `ANT (("rec"|"anti" as n),s) -> {:rec_flag|$(anti:mk_anti ~c:"rec_flag" n s) |}
+      | `ANT (("rec"|"anti" as n),s) ->
+          (* {:rec_flag|$(anti:mk_anti ~c:"rec_flag" n s) |} *)
+            `ReAnt (_loc,mk_anti ~c:"rec_flag" n s)
       | -> {:rec_flag||} ] 
       a_UIDENT:
       [ `ANT ((""|"uid" as n),s) -> mk_anti n s
@@ -961,9 +978,9 @@ let apply () = begin
       [ "?"; `ANT (("" as n),s); ":" -> mk_anti n s
       | `OPTLABEL s -> s ] 
       string_list:
-      [ `ANT ((""|"str_list"),s) -> Ast.LAnt (mk_anti "str_list" s)
-      | `STR (_, x); S{xs} -> Ast.LCons x xs
-      | `STR (_, x) -> Ast.LCons x Ast.LNil ] 
+      [ `ANT ((""|"str_list"),s) -> `LAnt (_loc,mk_anti "str_list" s)
+      | `STR (_, x); S{xs} -> `LCons x xs
+      | `STR (_, x) -> `LCons x `LNil ] 
       semi: [ ";" -> () ]
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ direction_flag{x} -> x ] 
@@ -1127,7 +1144,7 @@ let apply () = begin
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
       | "virtual";   class_name_and_param{(i, ot)} ->  {| virtual $lid:i [ $ot ] |}
       | `ANT (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
-          let anti = Ast.ViAnt (mk_anti ~c:"class_expr" n s) in
+          let anti = `ViAnt (_loc,mk_anti ~c:"class_expr" n s) in
           {| $virtual:anti $id:i [ $ot ] |}
       | class_expr{x} -> x
       | -> {||} ]
@@ -1183,7 +1200,7 @@ let apply () = begin
       | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
       | "virtual";  class_name_and_param{(i, ot)} -> {| virtual $lid:i [ $ot ] |}
       | `ANT (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
-          let anti = Ast.ViAnt (mk_anti ~c:"class_type" n s) in
+          let anti = `ViAnt (_loc,mk_anti ~c:"class_type" n s) in
           {| $virtual:anti $id:i [ $ot ] |}
       | class_type_plus{x} -> x
       | -> {||}   ]
