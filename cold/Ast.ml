@@ -12,7 +12,7 @@ and 'a meta_list =
   [ `LNil | `LCons of ('a* 'a meta_list) | `Ant of (loc* string)] 
 and ident =
   [ `IdAcc of (loc* ident* ident) | `IdApp of (loc* ident* ident)
-  | `IdLid of (loc* string) | `IdUid of (loc* string)
+  | `Lid of (loc* string) | `Uid of (loc* string)
   | `Ant of (loc* string)] 
 and ctyp =
   [ `TyNil of loc | `TyAli of (loc* ctyp* ctyp) | `TyAny of loc

@@ -6,14 +6,14 @@ open Lib.Expr
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
   (function
-   | [] -> `ExId (_loc, (`IdLid (_loc, "true")))
+   | [] -> `ExId (_loc, (`Lid (_loc, "true")))
    | ls ->
        List.reduce_left_with
          ~compose:(fun x  y  ->
                      `ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExId (_loc, (`IdLid (_loc, "&&")))), x)),
+                            (_loc, (`ExId (_loc, (`Lid (_loc, "&&")))), x)),
                          y)) ~f:(fun { expr;_}  -> expr) ls : FSig.ty_info
                                                                 list -> 
                                                                 expr )
@@ -24,19 +24,19 @@ let mk_record_eq: FSig.record_col list -> expr =
 let gen_eq =
   gen_str_item ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
     ~mk_record:mk_record_eq mk_variant_eq
-    ~trail:(`ExId (_loc, (`IdLid (_loc, "false"))))
+    ~trail:(`ExId (_loc, (`Lid (_loc, "false"))))
 let _ = [("Eq", gen_eq)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (function
-       | [] -> `ExId (_loc, (`IdLid (_loc, "self")))
+       | [] -> `ExId (_loc, (`Lid (_loc, "self")))
        | ls ->
            List.reduce_right
              (fun v  acc  ->
                 `ExLet
                   (_loc, `ReNil,
-                    (`BiEq (_loc, (`PaId (_loc, (`IdLid (_loc, "self")))), v)),
+                    (`BiEq (_loc, (`PaId (_loc, (`Lid (_loc, "self")))), v)),
                     acc)) ls) in
   let mk_tuple = mk_variant "" in
   let mk_record cols =
@@ -46,7 +46,7 @@ let (gen_fold,gen_fold2) =
     (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
        ~class_name:"fold2" mk_variant ~names:[] ~arity:2
        ~trail:(`ExApp
-                 (_loc, (`ExId (_loc, (`IdLid (_loc, "invalid_arg")))),
+                 (_loc, (`ExId (_loc, (`Lid (_loc, "invalid_arg")))),
                    (`ExStr (_loc, "fold2 failure"))))))
 let _ =
   [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
@@ -63,7 +63,7 @@ let (gen_map,gen_map2) =
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
        ~class_name:"map2" mk_variant ~names:[] ~arity:2
        ~trail:(`ExApp
-                 (_loc, (`ExId (_loc, (`IdLid (_loc, "invalid_arg")))),
+                 (_loc, (`ExId (_loc, (`Lid (_loc, "invalid_arg")))),
                    (`ExStr (_loc, "map2 failure"))))))
 let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
@@ -116,9 +116,9 @@ let mkfmt pre sep post fields =
            (`ExId
               (_loc,
                 (`IdAcc
-                   (_loc, (`IdUid (_loc, "Format")),
-                     (`IdLid (_loc, "fprintf")))))),
-           (`ExId (_loc, (`IdLid (_loc, "fmt")))))),
+                   (_loc, (`Uid (_loc, "Format")),
+                     (`Lid (_loc, "fprintf")))))),
+           (`ExId (_loc, (`Lid (_loc, "fmt")))))),
       (`ExStr (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
 let mk_variant_print cons params =
   let len = List.length params in

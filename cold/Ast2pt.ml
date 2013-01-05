@@ -17,21 +17,21 @@ let mkrf =
 let ident_tag i =
   let rec self i acc =
     match i with
-    | `IdAcc (_loc,`IdLid (_,"*predef*"),`IdLid (_,"option")) ->
+    | `IdAcc (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) ->
         Some ((ldot (lident "*predef*") "option"), `lident)
     | `IdAcc (_loc,i1,i2) -> self i2 (self i1 acc)
     | `IdApp (_loc,i1,i2) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
          | _ -> error (FanAst.loc_of_ident i) "invalid long identifer")
-    | `IdUid (_loc,s) ->
+    | `Uid (_loc,s) ->
         (match (acc, s) with
          | (None ,"") -> None
          | (None ,s) -> Some ((lident s), `uident)
          | (Some (_,(`uident|`app)),"") -> acc
          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
          | _ -> error (FanAst.loc_of_ident i) "invalid long identifier")
-    | `IdLid (_loc,s) ->
+    | `Lid (_loc,s) ->
         let x =
           match acc with
           | None  -> lident s
@@ -73,7 +73,7 @@ let ctyp_long_id t =
 let predef_option loc =
   `TyId
     (loc,
-      (`IdAcc (loc, (`IdLid (loc, "*predef*")), (`IdLid (loc, "option")))))
+      (`IdAcc (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
 let rec ctyp =
   function
   | `TyId (loc,i) ->
@@ -150,7 +150,7 @@ and meth_list fl acc =
   match fl with
   | `TyNil _loc -> acc
   | `TySem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
-  | `TyCol (loc,`TyId (_,`IdLid (_,lab)),t) ->
+  | `TyCol (loc,`TyId (_,`Lid (_,lab)),t) ->
       (mkfield loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
   | _ -> assert false
 and package_type_constraints wc acc =
@@ -184,20 +184,20 @@ let mkprivate =
   function | `PrPrivate -> Private | `PrNil -> Public | _ -> assert false
 let mktrecord =
   function
-  | `TyCol (loc,`TyId (_,`IdLid (sloc,s)),`TyMut (_,t)) ->
+  | `TyCol (loc,`TyId (_,`Lid (sloc,s)),`TyMut (_,t)) ->
       ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), loc)
-  | `TyCol (loc,`TyId (_,`IdLid (sloc,s)),t) ->
+  | `TyCol (loc,`TyId (_,`Lid (sloc,s)),t) ->
       ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), loc)
   | _ -> assert false
 let mkvariant =
   function
-  | `TyId (loc,`IdUid (sloc,s)) -> ((with_loc s sloc), [], None, loc)
-  | `TyOf (loc,`TyId (_,`IdUid (sloc,s)),t) ->
+  | `TyId (loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, loc)
+  | `TyOf (loc,`TyId (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])), None, loc)
-  | `TyCol (loc,`TyId (_,`IdUid (sloc,s)),`TyArr (_,t,u)) ->
+  | `TyCol (loc,`TyId (_,`Uid (sloc,s)),`TyArr (_,t,u)) ->
       ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])),
         (Some (ctyp u)), loc)
-  | `TyCol (loc,`TyId (_,`IdUid (sloc,s)),t) ->
+  | `TyCol (loc,`TyId (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), loc)
   | _ -> assert false
 let rec type_decl tl cl loc m pflag =
@@ -233,7 +233,7 @@ let mkmutable =
   function | `MuMutable -> Mutable | `MuNil -> Immutable | _ -> assert false
 let paolab lab p =
   match (lab, p) with
-  | ("",(`PaId (_loc,`IdLid (_,i))|`PaTyc (_loc,`PaId (_,`IdLid (_,i)),_)))
+  | ("",(`PaId (_loc,`Lid (_,i))|`PaTyc (_loc,`PaId (_,`Lid (_,i)),_)))
       -> i
   | ("",p) -> error (loc_of_patt p) "bad ast in label"
   | _ -> lab
@@ -323,22 +323,22 @@ let rec mkrangepat loc c1 c2 =
              (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
 let rec patt =
   function
-  | `PaId (loc,`IdLid (_,("true"|"false" as txt))) ->
+  | `PaId (loc,`Lid (_,("true"|"false" as txt))) ->
       let p = Ppat_construct ({ txt = (Lident txt); loc }, None, false) in
       mkpat loc p
-  | `PaId (loc,`IdLid (sloc,s)) -> mkpat loc (Ppat_var (with_loc s sloc))
+  | `PaId (loc,`Lid (sloc,s)) -> mkpat loc (Ppat_var (with_loc s sloc))
   | `PaId (loc,i) ->
       let p = Ppat_construct ((long_uident i), None, false) in mkpat loc p
   | `PaAli (loc,p1,p2) ->
       let (p,i) =
         match (p1, p2) with
-        | (p,`PaId (_loc,`IdLid (sloc,s))) -> (p, (with_loc s sloc))
-        | (`PaId (_loc,`IdLid (sloc,s)),p) -> (p, (with_loc s sloc))
+        | (p,`PaId (_loc,`Lid (sloc,s))) -> (p, (with_loc s sloc))
+        | (`PaId (_loc,`Lid (sloc,s)),p) -> (p, (with_loc s sloc))
         | _ -> error loc "invalid alias pattern" in
       mkpat loc (Ppat_alias ((patt p), i))
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `PaAny loc -> mkpat loc Ppat_any
-  | `PaApp (loc,`PaId (_,`IdUid (sloc,s)),`PaTup (_,`PaAny loc_any)) ->
+  | `PaApp (loc,`PaId (_,`Uid (sloc,s)),`PaTup (_,`PaAny loc_any)) ->
       mkpat loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
@@ -438,9 +438,9 @@ let rec expr =
   | `ExAcc (_loc,_,_)|`ExId (_loc,`IdAcc (_,_,_)) as e ->
       let (e,l) =
         match Expr.sep_dot_expr [] e with
-        | (loc,ml,`ExId (sloc,`IdUid (_,s)))::l ->
+        | (loc,ml,`ExId (sloc,`Uid (_,s)))::l ->
             ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)
-        | (loc,ml,`ExId (sloc,`IdLid (_,s)))::l ->
+        | (loc,ml,`ExId (sloc,`Lid (_,s)))::l ->
             ((mkexp loc (Pexp_ident (mkli sloc s ml))), l)
         | (_,[],e)::l -> ((expr e), l)
         | _ -> error _loc "bad ast in expression" in
@@ -448,7 +448,7 @@ let rec expr =
         List.fold_left
           (fun (loc_bp,e1)  (loc_ep,ml,e2)  ->
              match e2 with
-             | `ExId (sloc,`IdLid (_,s)) ->
+             | `ExId (sloc,`Lid (_,s)) ->
                  let loc = FanLoc.merge loc_bp loc_ep in
                  (loc, (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
              | _ -> error (loc_of_expr e2) "lowercase identifier expected")
@@ -481,7 +481,7 @@ let rec expr =
   | `ExAss (loc,e,v) ->
       let e =
         match e with
-        | `ExAcc (loc,x,`ExId (_,`IdLid (_,"contents"))) ->
+        | `ExAcc (loc,x,`ExId (_,`Lid (_,"contents"))) ->
             Pexp_apply
               ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
                 [("", (expr x)); ("", (expr v))])
@@ -493,7 +493,7 @@ let rec expr =
             Pexp_apply
               ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
                 [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
-        | `ExId (lloc,`IdLid (_,lab)) ->
+        | `ExId (lloc,`Lid (_,lab)) ->
             Pexp_setinstvar ((with_loc lab lloc), (expr v))
         | `ExSte (loc,e1,e2) ->
             Pexp_apply
@@ -588,7 +588,7 @@ let rec expr =
   | `ExSeq (_loc,e) ->
       let rec loop =
         function
-        | [] -> expr (`ExId (_loc, (`IdUid (_loc, "()"))))
+        | [] -> expr (`ExId (_loc, (`Uid (_loc, "()"))))
         | e::[] -> expr e
         | e::el ->
             let _loc = FanLoc.merge (loc_of_expr e) _loc in
@@ -609,13 +609,13 @@ let rec expr =
   | `ExTup (loc,_) -> error loc "singleton tuple"
   | `ExTyc (loc,e,t) ->
       mkexp loc (Pexp_constraint ((expr e), (Some (ctyp t)), None))
-  | `ExId (loc,`IdUid (_,"()")) ->
+  | `ExId (loc,`Uid (_,"()")) ->
       mkexp loc (Pexp_construct ((lident_with_loc "()" loc), None, true))
-  | `ExId (loc,`IdLid (_,("true"|"false" as s))) ->
+  | `ExId (loc,`Lid (_,("true"|"false" as s))) ->
       mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
-  | `ExId (loc,`IdLid (_,s)) ->
+  | `ExId (loc,`Lid (_,s)) ->
       mkexp loc (Pexp_ident (lident_with_loc s loc))
-  | `ExId (loc,`IdUid (_,s)) ->
+  | `ExId (loc,`Uid (_,s)) ->
       mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
   | `ExVrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
   | `ExWhi (loc,e1,el) ->
@@ -636,11 +636,11 @@ let rec expr =
   | `ExId (_,_)|`ExNil _ as e -> error (loc_of_expr e) "invalid expr"
 and patt_of_lab _loc lab =
   function
-  | `PaNil _loc -> patt (`PaId (_loc, (`IdLid (_loc, lab))))
+  | `PaNil _loc -> patt (`PaId (_loc, (`Lid (_loc, lab))))
   | p -> patt p
 and expr_of_lab _loc lab =
   function
-  | `ExNil _loc -> expr (`ExId (_loc, (`IdLid (_loc, lab))))
+  | `ExNil _loc -> expr (`ExId (_loc, (`Lid (_loc, lab))))
   | e -> expr e
 and label_expr =
   function
@@ -651,12 +651,12 @@ and binding x acc =
   match x with
   | `BiAnd (_loc,x,y) -> binding x (binding y acc)
   | `BiEq
-      (_loc,`PaId (sloc,`IdLid (_,bind_name)),`ExTyc
+      (_loc,`PaId (sloc,`Lid (_,bind_name)),`ExTyc
                                                 (_,e,`TyTypePol (_,vs,ty)))
       ->
       let rec id_to_string x =
         match x with
-        | `TyId (_loc,`IdLid (_,x)) -> [x]
+        | `TyId (_loc,`Lid (_,x)) -> [x]
         | `TyApp (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
         | _ -> assert false in
       let vars = id_to_string vs in
@@ -701,7 +701,7 @@ and mkideexp x acc =
   match x with
   | `RbNil _loc -> acc
   | `RbSem (_loc,x,y) -> mkideexp x (mkideexp y acc)
-  | `RbEq (_loc,`IdLid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
+  | `RbEq (_loc,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
   | _ -> assert false
 and mktype_decl x acc =
   match x with
@@ -745,9 +745,9 @@ and sig_item s l =
       :: l
   | `SgSem (_loc,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
   | `SgDir (_,_,_) -> l
-  | `SgExc (loc,`TyId (_,`IdUid (_,s))) ->
+  | `SgExc (loc,`TyId (_,`Uid (_,s))) ->
       (mksig loc (Psig_exception ((with_loc s loc), []))) :: l
-  | `SgExc (loc,`TyOf (_,`TyId (_,`IdUid (_,s)),t)) ->
+  | `SgExc (loc,`TyOf (_,`TyId (_,`Uid (_,s)),t)) ->
       (mksig loc
          (Psig_exception
             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
@@ -822,16 +822,16 @@ and str_item s l =
       :: l
   | `StSem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
   | `StDir (_,_,_) -> l
-  | `StExc (loc,`TyId (_,`IdUid (_,s)),`ONone) ->
+  | `StExc (loc,`TyId (_,`Uid (_,s)),`ONone) ->
       (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
-  | `StExc (loc,`TyOf (_,`TyId (_,`IdUid (_,s)),t),`ONone) ->
+  | `StExc (loc,`TyOf (_,`TyId (_,`Uid (_,s)),t),`ONone) ->
       (mkstr loc
          (Pstr_exception
             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
       :: l
-  | `StExc (loc,`TyId (_,`IdUid (_,s)),`OSome i) ->
+  | `StExc (loc,`TyId (_,`Uid (_,s)),`OSome i) ->
       (mkstr loc (Pstr_exn_rebind ((with_loc s loc), (ident i)))) :: l
-  | `StExc (loc,`TyOf (_,`TyId (_,`IdUid (_,_)),_),`OSome _) ->
+  | `StExc (loc,`TyOf (_,`TyId (_,`Uid (_,_)),_),`OSome _) ->
       error loc "type in exception alias"
   | `StExc (_,_,_) -> assert false
   | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
@@ -876,7 +876,7 @@ and class_type =
       assert false
 and class_info_class_expr ci =
   match ci with
-  | `CeEq (_,`CeCon (loc,vir,`IdLid (nloc,name),params),ce) ->
+  | `CeEq (_,`CeCon (loc,vir,`Lid (nloc,name),params),ce) ->
       let (loc_params,(params,variance)) =
         match params with
         | `TyNil _loc -> (loc, ([], []))
@@ -892,10 +892,10 @@ and class_info_class_expr ci =
   | ce -> error (loc_of_class_expr ce) "bad class definition"
 and class_info_class_type ci =
   match ci with
-  | `CtEq (_,`CtCon (loc,vir,`IdLid (nloc,name),params),ct)|`CtCol
+  | `CtEq (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct)|`CtCol
                                                               (_,`CtCon
                                                                    (loc,vir,
-                                                                    `IdLid
+                                                                    `Lid
                                                                     (nloc,name),params),ct)
       ->
       let (loc_params,(params,variance)) =
@@ -1000,8 +1000,8 @@ let directive =
   | `ExNil _loc -> Pdir_none
   | `ExStr (_,s) -> Pdir_string s
   | `ExInt (_,i) -> Pdir_int (int_of_string i)
-  | `ExId (_loc,`IdLid (_,"true")) -> Pdir_bool true
-  | `ExId (_loc,`IdLid (_,"false")) -> Pdir_bool false
+  | `ExId (_loc,`Lid (_,"true")) -> Pdir_bool true
+  | `ExId (_loc,`Lid (_,"false")) -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e))
 let phrase =
   function

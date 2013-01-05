@@ -803,10 +803,10 @@ class map =
           `IdApp
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#ident a1), (self#ident a2)))) a0)
-      | `IdLid a0 ->
-          `IdLid (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `IdUid a0 ->
-          `IdUid (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Lid a0 ->
+          `Lid (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Uid a0 ->
+          `Uid (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method meta_list :
@@ -1976,13 +1976,13 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#ident a1 self#ident a2) a0
-        | `IdLid a0 ->
-            Format.fprintf fmt "@[<1>(`IdLid@ %a)@]"
+        | `Lid a0 ->
+            Format.fprintf fmt "@[<1>(`Lid@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `IdUid a0 ->
-            Format.fprintf fmt "@[<1>(`IdUid@ %a)@]"
+        | `Uid a0 ->
+            Format.fprintf fmt "@[<1>(`Uid@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2841,9 +2841,9 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#ident a1 in self#ident a2)) a0
-      | `IdLid a0 ->
+      | `Lid a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `IdUid a0 ->
+      | `Uid a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
@@ -4021,13 +4021,13 @@ and pp_print_ident: 'fmt -> ident -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_ident a1 pp_print_ident a2) a0
-    | `IdLid a0 ->
-        Format.fprintf fmt "@[<1>(`IdLid@ %a)@]"
+    | `Lid a0 ->
+        Format.fprintf fmt "@[<1>(`Lid@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `IdUid a0 ->
-        Format.fprintf fmt "@[<1>(`IdUid@ %a)@]"
+    | `Uid a0 ->
+        Format.fprintf fmt "@[<1>(`Uid@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4154,31 +4154,31 @@ module MExpr = struct
   let meta_float _loc i = `ExFlo (_loc, (FanUtil.float_repres i))
   let meta_string _loc i = `ExStr (_loc, (safe_string_escaped i))
   let meta_char _loc i = `ExChr (_loc, (Char.escaped i))
-  let meta_unit _loc _ = `ExId (_loc, (`IdUid (_loc, "()")))
+  let meta_unit _loc _ = `ExId (_loc, (`Uid (_loc, "()")))
   let meta_bool _loc =
     function
-    | true  -> `ExId (_loc, (`IdLid (_loc, "true")))
-    | false  -> `ExId (_loc, (`IdLid (_loc, "false")))
+    | true  -> `ExId (_loc, (`Lid (_loc, "true")))
+    | false  -> `ExId (_loc, (`Lid (_loc, "false")))
   let meta_ref mf_a _loc i =
     `ExRec
       (_loc,
-        (`RbEq (_loc, (`IdLid (_loc, "contents")), (mf_a _loc i.contents))),
+        (`RbEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))),
         (`ExNil _loc))
   let mklist loc =
     let rec loop top =
       function
-      | [] -> `ExId (loc, (`IdUid (loc, "[]")))
+      | [] -> `ExId (loc, (`Uid (loc, "[]")))
       | e1::el ->
           let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
           `ExApp
             (_loc,
-              (`ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e1)),
+              (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e1)),
               (loop false el)) in
     loop true
   let mkarray loc arr =
     let rec loop top =
       function
-      | [] -> `ExId (loc, (`IdUid (loc, "[]")))
+      | [] -> `ExId (loc, (`Uid (loc, "[]")))
       | e1::el ->
           let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
           `ExArr (_loc, (`ExSem (_loc, e1, (loop false el)))) in
@@ -4189,9 +4189,9 @@ module MExpr = struct
     mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
   let meta_option mf_a _loc =
     function
-    | None  -> `ExId (_loc, (`IdUid (_loc, "None")))
+    | None  -> `ExId (_loc, (`Uid (_loc, "None")))
     | Some x ->
-        `ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "Some")))), (mf_a _loc x))
+        `ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
   let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
     (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
     invalid_arg "meta_arrow not implemented"
@@ -4204,30 +4204,30 @@ module MPatt = struct
   let meta_float _loc i = `PaFlo (_loc, (FanUtil.float_repres i))
   let meta_string _loc i = `PaStr (_loc, (safe_string_escaped i))
   let meta_char _loc i = `PaChr (_loc, (Char.escaped i))
-  let meta_unit _loc _ = `PaId (_loc, (`IdUid (_loc, "()")))
+  let meta_unit _loc _ = `PaId (_loc, (`Uid (_loc, "()")))
   let meta_bool _loc =
     function
-    | true  -> `PaId (_loc, (`IdLid (_loc, "true")))
-    | false  -> `PaId (_loc, (`IdLid (_loc, "false")))
+    | true  -> `PaId (_loc, (`Lid (_loc, "true")))
+    | false  -> `PaId (_loc, (`Lid (_loc, "false")))
   let meta_ref mf_a _loc i =
     `PaRec
       (_loc,
-        (`PaEq (_loc, (`IdLid (_loc, "contents")), (mf_a _loc i.contents))))
+        (`PaEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
   let mklist loc =
     let rec loop top =
       function
-      | [] -> `PaId (loc, (`IdUid (loc, "[]")))
+      | [] -> `PaId (loc, (`Uid (loc, "[]")))
       | e1::el ->
           let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
           `PaApp
             (_loc,
-              (`PaApp (_loc, (`PaId (_loc, (`IdUid (_loc, "::")))), e1)),
+              (`PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "::")))), e1)),
               (loop false el)) in
     loop true
   let mkarray loc arr =
     let rec loop top =
       function
-      | [] -> `PaId (loc, (`IdUid (loc, "[]")))
+      | [] -> `PaId (loc, (`Uid (loc, "[]")))
       | e1::el ->
           let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
           `PaArr (_loc, (`PaSem (_loc, e1, (loop false el)))) in
@@ -4238,9 +4238,9 @@ module MPatt = struct
     mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
   let meta_option mf_a _loc =
     function
-    | None  -> `PaId (_loc, (`IdUid (_loc, "None")))
+    | None  -> `PaId (_loc, (`Uid (_loc, "None")))
     | Some x ->
-        `PaApp (_loc, (`PaId (_loc, (`IdUid (_loc, "Some")))), (mf_a _loc x))
+        `PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
   let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
     (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
     invalid_arg "meta_arrow not implemented"
@@ -6346,18 +6346,18 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_ident _loc a1),
                                    (meta_ident _loc a2)))))))) _loc a0))
-        | `IdLid a0 ->
+        | `Lid a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "IdLid")),
+              (_loc, (`ExVrn (_loc, "Lid")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `IdUid a0 ->
+        | `Uid a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "IdUid")),
+              (_loc, (`ExVrn (_loc, "Uid")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
@@ -8539,18 +8539,18 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_ident _loc a1),
                                    (meta_ident _loc a2)))))))) _loc a0))
-        | `IdLid a0 ->
+        | `Lid a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "IdLid")),
+              (_loc, (`PaVrn (_loc, "Lid")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `IdUid a0 ->
+        | `Uid a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "IdUid")),
+              (_loc, (`PaVrn (_loc, "Uid")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
@@ -8639,7 +8639,7 @@ let rec is_module_longident =
   | `IdAcc (_loc,_,i) -> is_module_longident i
   | `IdApp (_loc,i1,i2) ->
       (is_module_longident i1) && (is_module_longident i2)
-  | `IdUid (_loc,_) -> true
+  | `Uid (_loc,_) -> true
   | _ -> false
 let ident_of_expr =
   let error () =
@@ -8648,7 +8648,7 @@ let ident_of_expr =
     function
     | `ExApp (_loc,e1,e2) -> `IdApp (_loc, (self e1), (self e2))
     | `ExAcc (_loc,e1,e2) -> `IdAcc (_loc, (self e1), (self e2))
-    | `ExId (_loc,`IdLid (_,_)) -> error ()
+    | `ExId (_loc,`Lid (_,_)) -> error ()
     | `ExId (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
   function
@@ -8660,7 +8660,7 @@ let ident_of_ctyp =
   let rec self =
     function
     | `TyApp (_loc,t1,t2) -> `IdApp (_loc, (self t1), (self t2))
-    | `TyId (_loc,`IdLid (_,_)) -> error ()
+    | `TyId (_loc,`Lid (_,_)) -> error ()
     | `TyId (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
   function | `TyId (_loc,i) -> i | t -> self t
@@ -8670,14 +8670,14 @@ let ident_of_patt =
   let rec self =
     function
     | `PaApp (_loc,p1,p2) -> `IdApp (_loc, (self p1), (self p2))
-    | `PaId (_loc,`IdLid (_,_)) -> error ()
+    | `PaId (_loc,`Lid (_,_)) -> error ()
     | `PaId (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
   function | `PaId (_loc,i) -> i | p -> self p
 let rec is_irrefut_patt =
   function
-  | `PaId (_loc,`IdLid (_,_)) -> true
-  | `PaId (_loc,`IdUid (_,"()")) -> true
+  | `PaId (_loc,`Lid (_,_)) -> true
+  | `PaId (_loc,`Uid (_,"()")) -> true
   | `PaAny _loc -> true
   | `PaNil _loc -> true
   | `PaAli (_loc,x,y) -> (is_irrefut_patt x) && (is_irrefut_patt y)
@@ -8704,8 +8704,8 @@ let rec is_irrefut_patt =
 let rec is_constructor =
   function
   | `IdAcc (_loc,_,i) -> is_constructor i
-  | `IdUid (_loc,_) -> true
-  | `IdLid (_loc,_)|`IdApp (_loc,_,_) -> false
+  | `Uid (_loc,_) -> true
+  | `Lid (_loc,_)|`IdApp (_loc,_,_) -> false
   | `Ant (_loc,_) -> assert false
 let is_patt_constructor =
   function
@@ -8882,14 +8882,14 @@ let exApp_of_list =
         (fun x  y  -> let _loc = loc_of_expr x in `ExApp (_loc, x, y)) t ts
 let ty_of_stl =
   function
-  | (_loc,s,[]) -> `TyId (_loc, (`IdUid (_loc, s)))
+  | (_loc,s,[]) -> `TyId (_loc, (`Uid (_loc, s)))
   | (_loc,s,tl) ->
-      `TyOf (_loc, (`TyId (_loc, (`IdUid (_loc, s)))), (tyAnd_of_list tl))
+      `TyOf (_loc, (`TyId (_loc, (`Uid (_loc, s)))), (tyAnd_of_list tl))
 let ty_of_sbt =
   function
   | (_loc,s,true ,t) ->
-      `TyCol (_loc, (`TyId (_loc, (`IdLid (_loc, s)))), (`TyMut (_loc, t)))
-  | (_loc,s,false ,t) -> `TyCol (_loc, (`TyId (_loc, (`IdLid (_loc, s)))), t)
+      `TyCol (_loc, (`TyId (_loc, (`Lid (_loc, s)))), (`TyMut (_loc, t)))
+  | (_loc,s,false ,t) -> `TyCol (_loc, (`TyId (_loc, (`Lid (_loc, s)))), t)
 let bi_of_pe (p,e) = let _loc = loc_of_patt p in `BiEq (_loc, p, e)
 let sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l)
 let record_type_of_list l = tySem_of_list (List.map ty_of_sbt l)
@@ -9095,7 +9095,7 @@ let wildcarder =
     inherit  map as super
     method! patt =
       function
-      | `PaId (_loc,`IdLid (_,_)) -> `PaAny _loc
+      | `PaId (_loc,`Lid (_,_)) -> `PaAny _loc
       | `PaAli (_loc,p,_) -> self#patt p
       | p -> super#patt p
   end
@@ -9110,7 +9110,7 @@ let match_pre =
               (`ExFun
                  (_loc,
                    (`McArr
-                      (_loc, (`PaId (_loc, (`IdUid (_loc, "()")))),
+                      (_loc, (`PaId (_loc, (`Uid (_loc, "()")))),
                         (`ExNil _loc), e)))))
       | `McArr (_loc,p,e,e1) ->
           `McArr
@@ -9118,7 +9118,7 @@ let match_pre =
               (`ExFun
                  (_loc,
                    (`McArr
-                      (_loc, (`PaId (_loc, (`IdUid (_loc, "()")))),
+                      (_loc, (`PaId (_loc, (`Uid (_loc, "()")))),
                         (`ExNil _loc), e1)))))
       | `McOr (_loc,a1,a2) ->
           `McOr (_loc, (self#match_case a1), (self#match_case a2))

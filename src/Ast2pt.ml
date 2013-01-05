@@ -115,7 +115,7 @@ let ctyp_long_id t = match t with
 
 
 let predef_option loc =
-  `TyId (loc, `IdAcc (loc, `IdLid (loc, "*predef*"), `IdLid (loc, "option")));
+  `TyId (loc, `IdAcc (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
 
 let rec ctyp = fun (* ctyp -> core_type *)
   [ `TyId (loc, i) ->
@@ -456,7 +456,7 @@ let override_flag loc = fun
 
 (*
   {[
-  expr (`ExId (_loc, ( (`IdAcc (_loc, `IdUid (_loc, "U"), `IdLid(_loc,"g"))) )));;
+  expr (`ExId (_loc, ( (`IdAcc (_loc, `Uid (_loc, "U"), `Lid(_loc,"g"))) )));;
   - : Parsetree.expression =
   {Parsetree.pexp_desc =
   Parsetree.Pexp_ident
@@ -537,7 +537,7 @@ let rec expr = fun (* expr -> expression*)
                     Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))
                       [("", expr e1); ("", expr e2); ("", expr v)]
                 | {:expr@lloc| $lid:lab |}  ->
-                    (* FIXME `ExId (lloc, `IdLid (_, lab)) vs `ExId(_,`IdLid(lloc,lab)) *)
+                    (* FIXME `ExId (lloc, `Lid (_, lab)) vs `ExId(_,`Lid(lloc,lab)) *)
                     Pexp_setinstvar (with_loc lab lloc) (expr v)
                 | `ExSte (loc, e1, e2) ->
                     Pexp_apply
@@ -883,7 +883,7 @@ and class_type = fun (* class_type -> class_type *)
     
 and class_info_class_expr ci =
     match ci with (* class_expr -> class_declaration*)
-    [ `CeEq (_, (`CeCon (loc, vir, (`IdLid (nloc, name)), params)), ce) ->
+    [ `CeEq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
       let (loc_params, (params, variance)) =
         match params with
         [ {:ctyp||} -> (loc, ([], []))
@@ -897,8 +897,8 @@ and class_info_class_expr ci =
   | ce -> error (loc_of_class_expr ce) "bad class definition" ]
 and class_info_class_type ci =
     match ci with (* class_type -> class_description*)
-    [ `CtEq (_, (`CtCon (loc, vir, (`IdLid (nloc, name)), params)), ct)
-    | `CtCol (_, (`CtCon (loc, vir, (`IdLid (nloc, name)), params)), ct)
+    [ `CtEq (_, (`CtCon (loc, vir, (`Lid (nloc, name)), params)), ct)
+    | `CtCol (_, (`CtCon (loc, vir, (`Lid (nloc, name)), params)), ct)
       ->
         let (loc_params, (params, variance)) =
           match params with

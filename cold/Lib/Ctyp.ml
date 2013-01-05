@@ -99,11 +99,11 @@ let of_id_len ~off  (id,len) =
   apply (`TyId (_loc, id))
     (List.init len (fun i  -> `TyQuo (_loc, (allx ~off i))))
 let of_name_len ~off  (name,len) =
-  let id = `IdLid (_loc, name) in of_id_len ~off (id, len)
+  let id = `Lid (_loc, name) in of_id_len ~off (id, len)
 let ty_name_of_tydcl =
   function
   | `TyDcl (_,name,tyvars,_,_) ->
-      apply (`TyId (_loc, (`IdLid (_loc, name)))) tyvars
+      apply (`TyId (_loc, (`Lid (_loc, name)))) tyvars
   | tydcl ->
       invalid_arg &
         ((sprintf "ctyp_of_tydcl{|%s|}\n") & (to_string.contents tydcl))
@@ -114,9 +114,9 @@ let list_of_record ty =
     (ty |> list_of_sem) |>
       (List.map
          (function
-          | `TyCol (_loc,`TyId (_,`IdLid (_,label)),`TyMut (_,ctyp)) ->
+          | `TyCol (_loc,`TyId (_,`Lid (_,label)),`TyMut (_,ctyp)) ->
               { label; ctyp; is_mutable = true }
-          | `TyCol (_loc,`TyId (_,`IdLid (_,label)),ctyp) ->
+          | `TyCol (_loc,`TyId (_,`Lid (_,label)),ctyp) ->
               { label; ctyp; is_mutable = false }
           | t0 -> raise & (Unhandled t0)))
   with
@@ -161,24 +161,24 @@ let mk_method_type ~number  ~prefix  (id,len) (k : obj_dest) =
     (let quantifiers = gen_quantifiers ~arity:quant len in
      `TyPol (_loc, quantifiers, (params +> base)))
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : obj_dest) =
-  let id = `IdLid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
+  let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
 let mk_obj class_name base body =
   `StCls
     (_loc,
       (`CeEq
          (_loc,
-           (`CeCon (_loc, `ViNil, (`IdLid (_loc, class_name)), (`TyNil _loc))),
+           (`CeCon (_loc, `ViNil, (`Lid (_loc, class_name)), (`TyNil _loc))),
            (`CeStr
               (_loc,
                 (`PaTyc
-                   (_loc, (`PaId (_loc, (`IdLid (_loc, "self")))),
+                   (_loc, (`PaId (_loc, (`Lid (_loc, "self")))),
                      (`TyQuo (_loc, "self_type")))),
                 (`CrSem
                    (_loc,
                      (`CrInh
                         (_loc, `OvNil,
                           (`CeCon
-                             (_loc, `ViNil, (`IdLid (_loc, base)),
+                             (_loc, `ViNil, (`Lid (_loc, base)),
                                (`TyNil _loc))), "")), body)))))))
 let is_recursive ty_dcl =
   match ty_dcl with
@@ -189,7 +189,7 @@ let is_recursive ty_dcl =
           val mutable is_recursive = false
           method! ctyp =
             function
-            | `TyId (_loc,`IdLid (_,i)) when i = name ->
+            | `TyId (_loc,`Lid (_,i)) when i = name ->
                 (is_recursive <- true; self)
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
@@ -203,10 +203,10 @@ let qualified_app_list =
   function
   | `TyApp (_loc,_,_) as x ->
       (match list_of_app x with
-       | (`TyId (_loc,`IdLid (_,_)))::_ -> None
+       | (`TyId (_loc,`Lid (_,_)))::_ -> None
        | (`TyId (_loc,i))::ys -> Some (i, ys)
        | _ -> None)
-  | `TyId (_loc,`IdLid (_,_))|`TyId (_loc,`IdUid (_,_)) -> None
+  | `TyId (_loc,`Lid (_,_))|`TyId (_loc,`Uid (_,_)) -> None
   | `TyId (_loc,i) -> Some (i, [])
   | _ -> None
 let is_abstract =
@@ -248,7 +248,7 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = Ident.map_to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           app_of_list ((`TyId (_loc, (`IdLid (_loc, dest)))) :: lst))
+           app_of_list ((`TyId (_loc, (`Lid (_loc, dest)))) :: lst))
       | None  ->
           (match x with
            | `TyMan (_loc,x,ctyp) -> `TyMan (_loc, x, (super#ctyp ctyp))
@@ -271,11 +271,11 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
   let open ErrorMonad in
     let rec loop acc t =
       match t with
-      | `TyOf (_loc,`TyId (_,`IdUid (_,cons)),tys) ->
+      | `TyOf (_loc,`TyId (_,`Uid (_,cons)),tys) ->
           f cons (FanAst.list_of_ctyp tys []) acc
       | `TyOf (_loc,`TyVrn (_,cons),tys) ->
           f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
-      | `TyId (_loc,`IdUid (_,cons)) -> f cons [] acc
+      | `TyId (_loc,`Uid (_,cons)) -> f cons [] acc
       | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
       | `TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
       | `TySum (_loc,ty)|`TyVrnEq (_loc,ty)|`TyVrnInf (_loc,ty)|`TyVrnSup

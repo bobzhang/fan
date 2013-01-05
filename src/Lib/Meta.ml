@@ -26,8 +26,8 @@ module MetaLoc : FanAst.META_LOC= struct
       (Ast.PaId
          (_loc,
            (Ast.IdAcc
-              (_loc, (Ast.IdUid (_loc, "FanLoc")),
-                (Ast.IdLid (_loc, "of_tuple")))))),
+              (_loc, (Ast.Uid (_loc, "FanLoc")),
+                (Ast.Lid (_loc, "of_tuple")))))),
       (Ast.PaTup
          (_loc,
            (Ast.PaCom
@@ -53,8 +53,8 @@ module MetaLoc : FanAst.META_LOC= struct
                                (Ast.PaInt (_loc, (string_of_int f))))),
                           (Ast.PaInt (_loc, (string_of_int g))))),
                      (if h
-                      then Ast.PaId (_loc, (Ast.IdLid (_loc, "true")))
-                      else Ast.PaId (_loc, (Ast.IdLid (_loc, "false")))))))))))
+                      then Ast.PaId (_loc, (Ast.Lid (_loc, "true")))
+                      else Ast.PaId (_loc, (Ast.Lid (_loc, "false")))))))))))
      *)
   let meta_loc_expr _loc location =
     let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in

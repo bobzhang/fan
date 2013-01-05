@@ -24,7 +24,7 @@ let app  mt1 mt2 =
    {[
    app {| A |} {| B |};
 
-   MtId  (IdApp  (IdUid  "A") (IdUid  "B"))
+   MtId  (IdApp  (Uid  "A") (Uid  "B"))
    ]}
    Here we need define [module_type_app], since
    {[
@@ -49,7 +49,7 @@ let acc mt1 mt2 =
 (**
    {[
    acc {| A |} {| B |};
-   MtId  (IdAcc  (IdUid  "A") (IdUid  "B"))
+   MtId  (IdAcc  (Uid  "A") (Uid  "B"))
    ]}
  *)      
 

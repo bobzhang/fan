@@ -170,8 +170,8 @@ let gen_ty_of_tydcl ~off tydcl =
    {[
      L.Ctyp.list_of_record {:ctyp| u:int;m:mutable int |};
      - : FSig.col list =
-     [{label = "u"; is_mutable = false; ctyp = TyId (, IdLid (, "int"))};
-      {label = "m"; is_mutable = true; ctyp = TyId (, IdLid (, "int"))}]
+     [{label = "u"; is_mutable = false; ctyp = TyId (, Lid (, "int"))};
+      {label = "m"; is_mutable = true; ctyp = TyId (, Lid (, "int"))}]
    ]}
    
  *)
@@ -315,7 +315,7 @@ let is_recursive ty_dcl = match ty_dcl with
   ( <:sig_item< type tbl 'a = Ident.tbl 'a >> |> fun
     [ <:sig_item< type .$FanAst.TyDcl _loc _ _ x _ $. >>
      -> qualified_app_list x ]);
-  Some (IdAcc  (IdUid  "Ident") (IdLid  "tbl"), [TyQuo  "a"])
+  Some (IdAcc  (Uid  "Ident") (Lid  "tbl"), [TyQuo  "a"])
   ]}
   
  *)  
@@ -451,9 +451,9 @@ let transform_module_types  lst =
         do{ prerr_endline s; List.append xs acc })  ;
     A
     B
-   TyId  (IdLid  "float");
-    TyApp  (TyId  (IdLid  "option")) (TyId  (IdLid  "int"));
-    TyId  (IdLid  "float")
+   TyId  (Lid  "float");
+    TyApp  (TyId  (Lid  "option")) (TyId  (Lid  "int"));
+    TyId  (Lid  "float")
     ]}
     @return result type to indicate error
     FIXME a good  support for arrow types?

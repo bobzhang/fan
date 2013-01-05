@@ -7,7 +7,7 @@ open FanGrammar
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 let prefix = "__fan_"
 let meta_action = ref false
-let grammar_module_name = let _loc = FanLoc.ghost in ref (`IdUid (_loc, ""))
+let grammar_module_name = let _loc = FanLoc.ghost in ref (`Uid (_loc, ""))
 let gm () = grammar_module_name.contents
 let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
@@ -41,7 +41,7 @@ let retype_rule_list_without_patterns _loc rl =
              prod =
                [{
                   s with
-                  pattern = (Some (`PaId (_loc, (`IdLid (_loc, "x")))))
+                  pattern = (Some (`PaId (_loc, (`Lid (_loc, "x")))))
                 }];
              action =
                (Some
@@ -51,17 +51,17 @@ let retype_rule_list_without_patterns _loc rl =
                           (_loc,
                             (`IdAcc
                                (_loc, (gm ()),
-                                 (`IdLid (_loc, "string_of_token")))))),
-                       (`ExId (_loc, (`IdLid (_loc, "x")))))))
+                                 (`Lid (_loc, "string_of_token")))))),
+                       (`ExId (_loc, (`Lid (_loc, "x")))))))
            }
        | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
            {
              prod =
                [{
                   s with
-                  pattern = (Some (`PaId (_loc, (`IdLid (_loc, "x")))))
+                  pattern = (Some (`PaId (_loc, (`Lid (_loc, "x")))))
                 }];
-             action = (Some (`ExId (_loc, (`IdLid (_loc, "x")))))
+             action = (Some (`ExId (_loc, (`Lid (_loc, "x")))))
            }
        | { prod = []; action = Some _ } as r -> r
        | _ -> raise Exit) rl
@@ -70,7 +70,7 @@ exception NotneededTyping
 let make_ctyp styp tvar =
   let rec aux =
     function
-    | `STlid (_loc,s) -> `TyId (_loc, (`IdLid (_loc, s)))
+    | `STlid (_loc,s) -> `TyId (_loc, (`Lid (_loc, s)))
     | `STapp (_loc,t1,t2) -> `TyApp (_loc, (aux t1), (aux t2))
     | `STquo (_loc,s) -> `TyQuo (_loc, s)
     | `STself (_loc,x) ->
@@ -85,7 +85,7 @@ let make_ctyp styp tvar =
             (`TyId
                (_loc,
                  (`IdAcc
-                    (_loc, (`IdUid (_loc, "FanToken")), (`IdLid (_loc, "t")))))))
+                    (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
     | `STtyp t -> t in
   try Some (aux styp) with | NotneededTyping  -> None
 let make_ctyp_patt styp tvar patt =
@@ -117,8 +117,8 @@ let rec make_expr entry tvar =
                                    (`IdAcc
                                       (_loc, (gm ()),
                                         (`IdAcc
-                                           (_loc, (`IdUid (_loc, "Action")),
-                                             (`IdLid (_loc, "mk")))))))),
+                                           (_loc, (`Uid (_loc, "Action")),
+                                             (`Lid (_loc, "mk")))))))),
                               (make_ctyp_expr t tvar e))))))))))
   | `TXlist (_loc,min,t,ts) ->
       let txt = make_expr entry "" t.text in
@@ -153,7 +153,7 @@ let rec make_expr entry tvar =
                               (`ExId
                                  (_loc,
                                    (`IdAcc
-                                      (_loc, (gm ()), (`IdLid (_loc, "obj")))))),
+                                      (_loc, (gm ()), (`Lid (_loc, "obj")))))),
                               (`ExTyc
                                  (_loc, (n.expr),
                                    (`TyApp
@@ -162,7 +162,7 @@ let rec make_expr entry tvar =
                                            (_loc,
                                              (`IdAcc
                                                 (_loc, (gm ()),
-                                                  (`IdLid (_loc, "t")))))),
+                                                  (`Lid (_loc, "t")))))),
                                         (`TyQuo (_loc, (n.tvar))))))))),
                          (`ExStr (_loc, lab)))))))
        | None  ->
@@ -175,7 +175,7 @@ let rec make_expr entry tvar =
                     (_loc,
                       (`ExId
                          (_loc,
-                           (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "obj")))))),
+                           (`IdAcc (_loc, (gm ()), (`Lid (_loc, "obj")))))),
                       (`ExTyc
                          (_loc, (n.expr),
                            (`TyApp
@@ -183,7 +183,7 @@ let rec make_expr entry tvar =
                                 (`TyId
                                    (_loc,
                                      (`IdAcc
-                                        (_loc, (gm ()), (`IdLid (_loc, "t")))))),
+                                        (_loc, (gm ()), (`Lid (_loc, "t")))))),
                                 (`TyQuo (_loc, (n.tvar)))))))))))
   | `TXopt (_loc,t) ->
       `ExApp (_loc, (`ExVrn (_loc, "Sopt")), (make_expr entry "" t))
@@ -197,7 +197,7 @@ let rec make_expr entry tvar =
           (`ExApp
              (_loc,
                (`ExId
-                  (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "srules")))))),
+                  (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "srules")))))),
                (entry.expr))), (make_expr_rules _loc entry rl ""))
   | `TXtok (_loc,match_fun,attr,descr) ->
       `ExApp
@@ -220,11 +220,11 @@ and make_expr_rules _loc n rl tvar =
             Expr.mklist _loc (List.map (fun t  -> make_expr n tvar t) sl) in
           `ExTup (_loc, (`ExCom (_loc, sl, action)))) rl)
 let text_of_action _loc psl rtvar act tvar =
-  let locid = `PaId (_loc, (`IdLid (_loc, (FanLoc.name.contents)))) in
+  let locid = `PaId (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
   let act =
     match act with
     | Some act -> act
-    | None  -> `ExId (_loc, (`IdUid (_loc, "()"))) in
+    | None  -> `ExId (_loc, (`Uid (_loc, "()"))) in
   let (_,tok_match_pl) =
     List.fold_lefti
       (fun i  tok_match_pl  x  ->
@@ -233,9 +233,9 @@ let text_of_action _loc psl rtvar act tvar =
              let id = prefix ^ (string_of_int i) in
              Some
                ((match tok_match_pl with
-                 | None  -> ((`ExId (_loc, (`IdLid (_loc, id)))), p)
+                 | None  -> ((`ExId (_loc, (`Lid (_loc, id)))), p)
                  | Some (oe,op) ->
-                     ((`ExCom (_loc, (`ExId (_loc, (`IdLid (_loc, id)))), oe)),
+                     ((`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, id)))), oe)),
                        (`PaCom (_loc, p, op)))))
          | _ -> tok_match_pl) None psl in
   let e =
@@ -269,8 +269,8 @@ let text_of_action _loc psl rtvar act tvar =
                   (`TyId
                      (_loc,
                        (`IdAcc
-                          (_loc, (`IdUid (_loc, "FanLoc")),
-                            (`IdLid (_loc, "t")))))))), (`ExNil _loc), e2))) in
+                          (_loc, (`Uid (_loc, "FanLoc")),
+                            (`Lid (_loc, "t")))))))), (`ExNil _loc), e2))) in
   let (_,txt) =
     List.fold_lefti
       (fun i  txt  s  ->
@@ -287,7 +287,7 @@ let text_of_action _loc psl rtvar act tvar =
          | Some _ ->
              let p =
                make_ctyp_patt s.styp tvar
-                 (`PaId (_loc, (`IdLid (_loc, (prefix ^ (string_of_int i)))))) in
+                 (`PaId (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))))) in
              `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))) e psl in
   let txt =
     if meta_action.contents
@@ -297,12 +297,12 @@ let text_of_action _loc psl rtvar act tvar =
           (`ExId
              (_loc,
                (`IdAcc
-                  (_loc, (`IdUid (_loc, "Obj")), (`IdLid (_loc, "magic")))))),
+                  (_loc, (`Uid (_loc, "Obj")), (`Lid (_loc, "magic")))))),
           (MetaAst.Expr.meta_expr _loc txt))
     else txt in
   `ExApp
     (_loc,
-      (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "mk_action")))))),
+      (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
       txt)
 let mk_srules loc t rl tvar =
   List.map
@@ -316,9 +316,9 @@ let expr_of_delete_rule _loc n sl =
          `ExApp
            (_loc,
              (`ExApp
-                (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))),
+                (_loc, (`ExId (_loc, (`Uid (_loc, "::")))),
                   (make_expr n "" s.text))), e)) sl
-      (`ExId (_loc, (`IdUid (_loc, "[]")))) in
+      (`ExId (_loc, (`Uid (_loc, "[]")))) in
   ((n.expr), sl)
 let mk_name _loc i =
   { expr = (`ExId (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
@@ -331,12 +331,12 @@ let text_of_entry _loc e =
       (_loc, (x.expr),
         (`TyApp
            (_loc,
-             (`TyId (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "t")))))),
+             (`TyId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
              (`TyQuo (_loc, (x.tvar)))))) in
   let pos =
     match e.pos with
-    | Some pos -> `ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "Some")))), pos)
-    | None  -> `ExId (_loc, (`IdUid (_loc, "None"))) in
+    | Some pos -> `ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))), pos)
+    | None  -> `ExId (_loc, (`Uid (_loc, "None"))) in
   let txt =
     List.fold_right
       (fun level  txt  ->
@@ -344,25 +344,25 @@ let text_of_entry _loc e =
            match level.label with
            | Some lab ->
                `ExApp
-                 (_loc, (`ExId (_loc, (`IdUid (_loc, "Some")))),
+                 (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))),
                    (`ExStr (_loc, lab)))
-           | None  -> `ExId (_loc, (`IdUid (_loc, "None"))) in
+           | None  -> `ExId (_loc, (`Uid (_loc, "None"))) in
          let ass =
            match level.assoc with
            | Some ass ->
-               `ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "Some")))), ass)
-           | None  -> `ExId (_loc, (`IdUid (_loc, "None"))) in
+               `ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))), ass)
+           | None  -> `ExId (_loc, (`Uid (_loc, "None"))) in
          let txt =
            let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
            let e = make_expr_rules _loc e.name rl (e.name).tvar in
            `ExApp
              (_loc,
                (`ExApp
-                  (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))),
+                  (_loc, (`ExId (_loc, (`Uid (_loc, "::")))),
                     (`ExTup
                        (_loc, (`ExCom (_loc, lab, (`ExCom (_loc, ass, e)))))))),
                txt) in
-         txt) e.levels (`ExId (_loc, (`IdUid (_loc, "[]")))) in
+         txt) e.levels (`ExId (_loc, (`Uid (_loc, "[]")))) in
   (ent, pos, txt)
 let let_in_of_extend _loc gram gl default =
   let entry_mk =
@@ -370,25 +370,25 @@ let let_in_of_extend _loc gram gl default =
     | Some g ->
         `ExApp
           (_loc,
-            (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "mk")))))),
+            (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk")))))),
             (`ExId (_loc, g)))
-    | None  -> `ExId (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "mk"))))) in
+    | None  -> `ExId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
   let local_binding_of_name =
     function
-    | { expr = `ExId (_,`IdLid (_,i)); tvar = x; loc = _loc } ->
+    | { expr = `ExId (_,`Lid (_,i)); tvar = x; loc = _loc } ->
         `BiEq
-          (_loc, (`PaId (_loc, (`IdLid (_loc, i)))),
+          (_loc, (`PaId (_loc, (`Lid (_loc, i)))),
             (`ExTyc
                (_loc,
                  (`ExApp
                     (_loc,
-                      (`ExId (_loc, (`IdLid (_loc, "grammar_entry_create")))),
+                      (`ExId (_loc, (`Lid (_loc, "grammar_entry_create")))),
                       (`ExStr (_loc, i)))),
                  (`TyApp
                     (_loc,
                       (`TyId
                          (_loc,
-                           (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "t")))))),
+                           (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
                       (`TyQuo (_loc, x)))))))
     | _ -> failwith "internal error in the Grammar extension" in
   match gl with
@@ -406,7 +406,7 @@ let let_in_of_extend _loc gram gl default =
              (_loc, `ReNil,
                (`BiEq
                   (_loc,
-                    (`PaId (_loc, (`IdLid (_loc, "grammar_entry_create")))),
+                    (`PaId (_loc, (`Lid (_loc, "grammar_entry_create")))),
                     entry_mk)), (`ExLet (_loc, `ReNil, locals, default))))
 let text_of_functorial_extend _loc gram locals el =
   let args =
@@ -420,10 +420,10 @@ let text_of_functorial_extend _loc gram locals el =
                   (_loc,
                     (`ExId
                        (_loc,
-                         (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "extend")))))),
+                         (`IdAcc (_loc, (gm ()), (`Lid (_loc, "extend")))))),
                     ent)), (`ExTup (_loc, (`ExCom (_loc, pos, txt)))))) el in
     match el with
-    | [] -> `ExId (_loc, (`IdUid (_loc, "()")))
+    | [] -> `ExId (_loc, (`Uid (_loc, "()")))
     | e::[] -> e
     | e::el ->
         `ExSeq
@@ -441,7 +441,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
             (_loc,
               (`McArr
                  (_loc, no_variable, (`ExNil _loc),
-                   (`ExId (_loc, (`IdLid (_loc, "true")))))))
+                   (`ExId (_loc, (`Lid (_loc, "true")))))))
         else
           `ExFun
             (_loc,
@@ -449,10 +449,10 @@ let mk_tok _loc ?restrict  ~pattern  styp =
                  (_loc,
                    (`McArr
                       (_loc, no_variable, (`ExNil _loc),
-                        (`ExId (_loc, (`IdLid (_loc, "true")))))),
+                        (`ExId (_loc, (`Lid (_loc, "true")))))),
                    (`McArr
                       (_loc, (`PaAny _loc), (`ExNil _loc),
-                        (`ExId (_loc, (`IdLid (_loc, "false"))))))))) in
+                        (`ExId (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt no_variable in
       let text = `TXtok (_loc, match_fun, "Normal", descr) in
       { text; styp; pattern = (Some pattern) }
@@ -465,10 +465,10 @@ let mk_tok _loc ?restrict  ~pattern  styp =
                (_loc,
                  (`McArr
                     (_loc, pattern, restrict,
-                      (`ExId (_loc, (`IdLid (_loc, "true")))))),
+                      (`ExId (_loc, (`Lid (_loc, "true")))))),
                  (`McArr
                     (_loc, (`PaAny _loc), (`ExNil _loc),
-                      (`ExId (_loc, (`IdLid (_loc, "false"))))))))) in
+                      (`ExId (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt pattern in
       let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
       { text; styp; pattern = (Some p') }
@@ -485,7 +485,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
         (`ExApp
            (_loc,
              (`ExId
-                (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, foldfun)))))),
+                (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, foldfun)))))),
              f)), e) in
   let t =
     `STapp
@@ -499,7 +499,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
                         (_loc,
                           (`IdAcc
                              (_loc, (gm ()),
-                               (`IdLid (_loc, ("fold" ^ suffix))))))),
+                               (`Lid (_loc, ("fold" ^ suffix))))))),
                      (`TyAny _loc)))), (s.styp))), styp) in
   let text =
     `TXmeta

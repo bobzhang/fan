@@ -222,9 +222,9 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
       let rec subst_first_loc name : patt -> patt =  with "patt" fun
         [
          `PaApp(loc, `PaVrn (_,u), (`PaTup (_, `PaCom (_,_,rest)))) ->
-         `PaApp(loc, `PaVrn(loc,u),(`PaTup (loc,`PaCom(loc,`PaId(_loc,`IdLid (_loc,name)),rest))))
+         `PaApp(loc, `PaVrn(loc,u),(`PaTup (loc,`PaCom(loc,`PaId(_loc,`Lid (_loc,name)),rest))))
         | `PaApp(_loc,`PaVrn(_,u),`PaAny _) ->
-            `PaApp(_loc, `PaVrn(_loc,u), `PaId(_loc,`IdLid(_loc,name)))
+            `PaApp(_loc, `PaVrn(_loc,u), `PaId(_loc,`Lid(_loc,name)))
         | `PaApp(_loc,a,b) -> `PaApp (_loc, subst_first_loc name a , b)
               
         (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
@@ -334,11 +334,11 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "tuppatt" -> {| `PaTup ($(mloc _loc), $e)|}
           | "seqexpr" -> {| `ExSeq ($(mloc _loc), $e) |}
                 
-          | "uidexpr" -> {| `IdUid ($(mloc _loc), $e) |} (* use Ant instead *)
-          | "lidexpr" -> {| `IdLid ($(mloc _loc), $e) |}
+          | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
+          | "lidexpr" -> {| `Lid ($(mloc _loc), $e) |}
                 
-          | "uidident" -> {| `IdUid ($(mloc _loc), $e)|}
-          | "lidident" -> {| `IdLid ($(mloc _loc), $e)|}
+          | "uidident" -> {| `Uid ($(mloc _loc), $e)|}
+          | "lidident" -> {| `Lid ($(mloc _loc), $e)|}
 
           | "flopatt" -> {| `PaFlo ($(mloc _loc), $e) |}
           | "intpatt" -> {| `PaInt ($(mloc _loc), $e) |}
@@ -369,11 +369,11 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "tuppatt" ->  {| `PaTup ($(mloc _loc), $e) |}
             | "seqexpr" -> {| `ExSeq ($(mloc _loc), $e) |}
 
-            | "uidexpr" -> {| `IdUid ($(mloc _loc), $e) |} (* use Ant instead *)
-            | "lidexpr" -> {| `IdLid ($(mloc _loc), $e) |}
+            | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
+            | "lidexpr" -> {| `Lid ($(mloc _loc), $e) |}
 
-            | "uidident"->  {| `IdUid ($(mloc _loc), $e) |}
-            | "lidident" -> {| `IdLid ($(mloc _loc), $e) |}
+            | "uidident"->  {| `Uid ($(mloc _loc), $e) |}
+            | "lidident" -> {| `Lid ($(mloc _loc), $e) |}
             | "strexpr" -> {| `ExStr ($(mloc _loc), $e) |}
             | "chrexpr" -> {| `ExChr ($(mloc _loc), $e) |}
             | "intexpr" -> {| `ExInt ($(mloc _loc), $e) |}
@@ -404,7 +404,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 let e = {| FanUtil.float_repres $e |} in 
                 {| `ExFlo ($(mloc _loc), $e) |}
             | "`boolexpr" ->
-                let x = {| `IdLid ($(mloc _loc), (if $e then "true" else "false" )) |} in
+                let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
                 {| {| $(id:$x)  |} |}
 
             | "flopatt" -> {| `PaFlo ($(mloc _loc), $e) |}

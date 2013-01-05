@@ -28,16 +28,16 @@ module Ast= FanAst; (* it contains a module named Meta *)
   {[
   sep_dot_expr [] {|A.B.g.U.E.h.i|};
   - : (loc * string list * expr) list =
-  [(, ["A"; "B"], ExId (, IdLid (, "g")));
-  (, ["U"; "E"], ExId (, IdLid (, "h"))); (, [], ExId (, IdLid (, "i")))]
+  [(, ["A"; "B"], ExId (, Lid (, "g")));
+  (, ["U"; "E"], ExId (, Lid (, "h"))); (, [], ExId (, Lid (, "i")))]
 
   sep_dot_expr [] {|A.B.g.i|};
   - : (loc * string list * expr) list =
-  [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "i")))]
+  [(, ["A"; "B"], ExId (, Lid (, "g"))); (, [], ExId (, Lid (, "i")))]
 
   sep_dot_expr [] {|$(uid:"").i|};
   - : (loc * string list * expr) list =
-  [(, [""], ExId (, IdLid (, "i")))]
+  [(, [""], ExId (, Lid (, "i")))]
 
   ]}
  *)
@@ -321,7 +321,7 @@ INCLUDE "src/Lib/ExprPatt.ml";
    - : expr = ExInt (, "-3")
    mkumin _loc "-." {| a |};
    - : expr =
-   ExApp (, ExId (, IdLid (, "~-.")), ExId (, IdLid (, "a")))
+   ExApp (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
    ]}
  *)  
 let mkumin loc prefix arg =
@@ -438,7 +438,7 @@ let mep_of_str  s =
   else
    let u = {| {:ident| $(uid:$str:s) |} |} in 
    {| {:patt| $(id:$u) |} |};
-    (* let u = {| Ast.IdUid _loc $str:s |} in *)
+    (* let u = {| Ast.Uid _loc $str:s |} in *)
   (* {| Ast.PaId _loc $u |}; *)
 
 (*
@@ -465,16 +465,16 @@ let mee_of_str s =
     (_loc,
       (`ExApp
          (_loc, (`ExVrn (_loc, "ExId")),
-           (`ExId (_loc, (`IdLid (_loc, "_loc")))))),
+           (`ExId (_loc, (`Lid (_loc, "_loc")))))),
       (`ExApp
-         (_loc, (`ExVrn (_loc, "IdUid")),
+         (_loc, (`ExVrn (_loc, "Uid")),
            (`ExTup
               (_loc,
-                (`ExCom (_loc, (`ExId (_loc, (`IdLid (_loc, "_loc")))), s)))))))
+                (`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), s)))))))
          
-         `ExId (_loc, (`IdUid (_loc, "A")))
-         {:expr| `IdUid (_loc,"A") |}
-         {:expr| `ExId (_loc, (`IdUid (_loc, "A"))) |}
+         `ExId (_loc, (`Uid (_loc, "A")))
+         {:expr| `Uid (_loc,"A") |}
+         {:expr| `ExId (_loc, (`Uid (_loc, "A"))) |}
          {:expr| {:expr| A |}|}
          {| {| A |}|}
        *)
@@ -539,11 +539,11 @@ let meee_of_str s =
   First we need to construct this part
   {[
   (ExApp 
-       (ExApp  (ExId  (IdAcc  (IdUid  "Ast") (IdUid  "RbEq")))
-         (ExId  (IdLid  "_loc")))
+       (ExApp  (ExId  (IdAcc  (Uid  "Ast") (Uid  "RbEq")))
+         (ExId  (Lid  "_loc")))
        (ExApp 
-         (ExApp  (ExId  (IdAcc  (IdUid  "Ast") (IdUid  "IdLid")))
-           (ExId  (IdLid  "_loc")))
+         (ExApp  (ExId  (IdAcc  (Uid  "Ast") (Uid  "Lid")))
+           (ExId  (Lid  "_loc")))
          (ExStr  "u")))
   ]}
   given string input u
@@ -560,7 +560,7 @@ let meee_of_str s =
 (*    ]} *)
 (*  *\)   *)
 (* let mep_record_left str = *)
-(*   let u = {| Ast.IdLid _loc $str:str |} in *)
+(*   let u = {| Ast.Lid _loc $str:str |} in *)
 (*   {| Ast.PaEq _loc $u |}; *)
   
   

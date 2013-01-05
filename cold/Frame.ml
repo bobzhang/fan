@@ -49,10 +49,10 @@ module Make(S:FSig.Config) = struct
         let tyvar = right_transform S.right_type_variable in
         let rec aux =
           function
-          | `TyId (_loc,`IdLid (_,id)) ->
+          | `TyId (_loc,`Lid (_,id)) ->
               if Hashset.mem cxt id
-              then `ExId (_loc, (`IdLid (_loc, (left_trans id))))
-              else right_trans (`IdLid (_loc, id))
+              then `ExId (_loc, (`Lid (_loc, (left_trans id))))
+              else right_trans (`Lid (_loc, id))
           | `TyId (_loc,id) -> right_trans id
           | `TyTup (_loc,_t) as ty ->
               tuple_expr_of_ctyp (normal_simple_expr_of_ctyp cxt) ty
@@ -63,7 +63,7 @@ module Make(S:FSig.Config) = struct
                 (`TyApp
                    (_loc,
                      (`TyApp
-                        (_loc, (`TyId (_loc, (`IdLid (_loc, "arrow")))), t1)),
+                        (_loc, (`TyId (_loc, (`Lid (_loc, "arrow")))), t1)),
                      t2))
           | ty -> raise (Unhandled ty) in
         try return & (aux ty)
@@ -90,13 +90,13 @@ module Make(S:FSig.Config) = struct
                       (List.map
                          (function
                           | `TyQuo (_loc,s) ->
-                              `ExId (_loc, (`IdLid (_loc, (var s))))
+                              `ExId (_loc, (`Lid (_loc, (var s))))
                           | t ->
                               `ExFun
                                 (_loc,
                                   (`McArr
                                      (_loc,
-                                       (`PaId (_loc, (`IdLid (_loc, "self")))),
+                                       (`PaId (_loc, (`Lid (_loc, "self")))),
                                        (`ExNil _loc), (aux t)))))))
                      |> (apply (trans tctor))
                | _ -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp")
@@ -105,7 +105,7 @@ module Make(S:FSig.Config) = struct
                 (`TyApp
                    (_loc,
                      (`TyApp
-                        (_loc, (`TyId (_loc, (`IdLid (_loc, "arrow")))), t1)),
+                        (_loc, (`TyId (_loc, (`Lid (_loc, "arrow")))), t1)),
                      t2))
           | `TyTup (_loc,_) as ty ->
               tuple_expr_of_ctyp obj_simple_expr_of_ctyp ty
@@ -157,7 +157,7 @@ module Make(S:FSig.Config) = struct
             `ExFun
               (_loc,
                 (`McArr
-                   (_loc, (`PaId (_loc, (`IdLid (_loc, (varf s))))),
+                   (_loc, (`PaId (_loc, (`Lid (_loc, (varf s))))),
                      (`ExNil _loc), acc)))
         | _ -> (Ctyp.eprint.contents var; invalid_arg "mk_prefix") in
       List.fold_right f vars (S.names <+ acc)
@@ -215,15 +215,15 @@ module Make(S:FSig.Config) = struct
             fun_of_tydcl simple_expr_of_ctyp
               (expr_of_ctyp (unwrap simple_expr_of_ctyp)) tydcl in
           `BiEq
-            (_loc, (`PaId (_loc, (`IdLid (_loc, (tctor_var name))))),
+            (_loc, (`PaId (_loc, (`Lid (_loc, (tctor_var name))))),
               (`ExTyc (_loc, fun_expr, ty)))
         else
           (eprintf "Warning: %s as a abstract type no structure generated\n"
              "";
            `BiEq
-             (_loc, (`PaId (_loc, (`IdLid (_loc, (tctor_var name))))),
+             (_loc, (`PaId (_loc, (`Lid (_loc, (tctor_var name))))),
                (`ExApp
-                  (_loc, (`ExId (_loc, (`IdLid (_loc, "failwithf")))),
+                  (_loc, (`ExId (_loc, (`Lid (_loc, "failwithf")))),
                     (`ExStr (_loc, "Abstract data type not implemented"))))))
   let str_item_of_module_types ?module_name  simple_expr_of_ctyp_with_cxt
     (lst : module_types) =
@@ -261,7 +261,7 @@ module Make(S:FSig.Config) = struct
       let mk_type (_name,tydcl) =
         let (name,len) = Ctyp.name_length_of_tydcl tydcl in
         Ctyp.mk_method_type ~number:S.arity ~prefix:S.names
-          ((`IdLid (_loc, name)), len) (Obj k) in
+          ((`Lid (_loc, name)), len) (Obj k) in
       let mk_class_str_item (name,tydcl) =
         let ty = mk_type (name, tydcl) in
         `CrMth (_loc, name, `OvNil, `PrNil, (f tydcl), ty) in

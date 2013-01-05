@@ -6,7 +6,7 @@ class ['accu] c_fold_pattern_vars f init =
     method acc : 'accu= acc
     method! patt =
       function
-      | `PaId (_loc,`IdLid (_,s))|`PaLab (_loc,s,`PaNil _)|`PaOlb
+      | `PaId (_loc,`Lid (_,s))|`PaLab (_loc,s,`PaNil _)|`PaOlb
                                                              (_loc,s,
                                                               `PaNil _)
           -> {<acc = f s acc>}
@@ -34,7 +34,7 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
     method add_binding bi = {<env = fold_binding_vars SSet.add bi env>}
     method! expr =
       function
-      | `ExId (_loc,`IdLid (_,s))|`ExLab (_loc,s,`ExNil _)|`ExOlb
+      | `ExId (_loc,`Lid (_,s))|`ExLab (_loc,s,`ExNil _)|`ExOlb
                                                              (_loc,s,
                                                               `ExNil _)
           -> if SSet.mem s env then o else {<free = f s free>}

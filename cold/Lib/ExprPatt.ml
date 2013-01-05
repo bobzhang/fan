@@ -61,13 +61,13 @@ let mkarray loc arr =
    ExVrn  "A" || PaVrn "A"
    
    of_str "A";
-   ExId  (IdUid  "A")
+   ExId  (Uid  "A")
 
    of_str "abs";
-   ExId  (IdLid  "abs")
+   ExId  (Lid  "abs")
 
    of_str "&&";
-   ExId  (IdLid  "&&")
+   ExId  (Lid  "&&")
    ]}
   *)
 let of_str s =

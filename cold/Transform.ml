@@ -16,8 +16,8 @@ let transform =
     | `Idents f -> (fun x  -> `ExId (_loc, (f (list_of_acc_ident x []))))
     | `Obj f ->
         (function
-         | `IdLid (_loc,x) ->
-             `ExSnd (_loc, (`ExId (_loc, (`IdLid (_loc, "self")))), (f x))
+         | `Lid (_loc,x) ->
+             `ExSnd (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), (f x))
          | t ->
              let dest = map_to_string t in
              let src = Lib.Ident.to_string.contents t in
@@ -27,7 +27,7 @@ let transform =
                  eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest)
               else ();
               `ExSnd
-                (_loc, (`ExId (_loc, (`IdLid (_loc, "self")))), (f dest))))
+                (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), (f dest))))
 let basic_transform =
   function
   | `Pre pre -> (fun x  -> pre ^ x)
@@ -38,5 +38,5 @@ let right_transform =
   function
   | #basic_id_transform as x ->
       let f = basic_transform x in
-      (fun x  -> `ExId (_loc, (`IdLid (_loc, (f x)))))
+      (fun x  -> `ExId (_loc, (`Lid (_loc, (f x)))))
   | `Exp f -> f

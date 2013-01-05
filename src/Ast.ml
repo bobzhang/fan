@@ -77,8 +77,8 @@ type loc = FanLoc.t
    and ident =
     [= `IdAcc of (loc * ident * ident) (* i . i *)
     | `IdApp of (loc * ident * ident) (* i i *)
-    | `IdLid of (loc * string) (* foo *)
-    | `IdUid of (loc * string) (* `Bar *)
+    | `Lid of (loc * string) (* foo *)
+    | `Uid of (loc * string) (* `Bar *)
     | `Ant of (loc * string) (* $s$ *) ]
    and ctyp =
     [= `TyNil of loc

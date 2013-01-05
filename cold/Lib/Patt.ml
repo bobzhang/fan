@@ -44,12 +44,12 @@ let tuple_of_list =
 let mklist loc =
   let rec loop top =
     function
-    | [] -> `PaId (_loc, (`IdUid (_loc, "[]")))
+    | [] -> `PaId (_loc, (`Uid (_loc, "[]")))
     | e1::el ->
         let _loc =
           if top then loc else FanLoc.merge (FanAst.loc_of_patt e1) loc in
         `PaApp
-          (_loc, (`PaApp (_loc, (`PaId (_loc, (`IdUid (_loc, "::")))), e1)),
+          (_loc, (`PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "::")))), e1)),
             (loop false el)) in
   loop true
 let rec apply accu =
@@ -60,7 +60,7 @@ let rec apply accu =
 let mkarray loc arr =
   let rec loop top =
     function
-    | [] -> `PaId (_loc, (`IdUid (_loc, "[]")))
+    | [] -> `PaId (_loc, (`Uid (_loc, "[]")))
     | e1::el ->
         let _loc =
           if top then loc else FanLoc.merge (FanAst.loc_of_patt e1) loc in
@@ -73,12 +73,12 @@ let of_str s =
   else
     (match s.[0] with
      | '`' -> `PaVrn (_loc, (String.sub s 1 (len - 1)))
-     | x when Char.is_uppercase x -> `PaId (_loc, (`IdUid (_loc, s)))
-     | _ -> `PaId (_loc, (`IdLid (_loc, s))))
+     | x when Char.is_uppercase x -> `PaId (_loc, (`Uid (_loc, s)))
+     | _ -> `PaId (_loc, (`Lid (_loc, s))))
 let of_ident_number cons n =
   apply (`PaId (_loc, cons)) (List.init n (fun i  -> `PaId (_loc, (xid i))))
 let (+>) f names =
-  apply f (List.map (fun lid  -> `PaId (_loc, (`IdLid (_loc, lid)))) names)
+  apply f (List.map (fun lid  -> `PaId (_loc, (`Lid (_loc, lid)))) names)
 let gen_tuple_first ~number  ~off  =
   match number with
   | 1 -> `PaId (_loc, (xid ~off 0))
@@ -125,14 +125,14 @@ let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   (List.map (fun lst  -> apply pat lst) args) |> tuple_of_list
 let tuple _loc =
   function
-  | [] -> `PaId (_loc, (`IdUid (_loc, "()")))
+  | [] -> `PaId (_loc, (`Uid (_loc, "()")))
   | p::[] -> p
   | e::es -> `PaTup (_loc, (`PaCom (_loc, e, (FanAst.paCom_of_list es))))
 let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi
       (fun i  ({ label;_} : col)  ->
-         `PaEq (_loc, (`IdLid (_loc, label)), (`PaId (_loc, (xid ~off i)))))
+         `PaEq (_loc, (`Lid (_loc, label)), (`PaId (_loc, (xid ~off i)))))
       cols in
   let res =
     zfold_left ~start:1 ~until:(arity - 1)

@@ -59,7 +59,7 @@ let rec lid_of_ident =
    {[
    uid_of_ident {|A.(B.G.h)|};
 
-   Some (IdAcc  (IdUid  "A") (IdAcc  (IdUid  "B") (IdUid  "G")))
+   Some (IdAcc  (Uid  "A") (IdAcc  (Uid  "B") (Uid  "G")))
    ]}
   *)
 let uid_of_ident =
@@ -79,7 +79,7 @@ let uid_of_ident =
 (**
    {[
     list_of_acc_ident  {| A.B.c |} [];
-    [IdUid  "A"; IdUid  "B"; IdLid  "c"]
+    [Uid  "A"; Uid  "B"; Lid  "c"]
    ]}
  *)    
 let rec list_of_acc_ident x acc =
@@ -119,13 +119,13 @@ let map_to_string ident =
    For qualified identifier, we only use the last qulifier.
    {[
    ident_map (fun x -> "meta_" ^ x ) <:ident< A.B.g >> ;
-   IdAcc  (IdUid  "B") (IdLid  "meta_g")
+   IdAcc  (Uid  "B") (Lid  "meta_g")
 
    ident_map (fun x -> "meta_" ^ x ) <:ident< B.g >> ;
-   IdAcc  (IdUid  "B") (IdLid  "meta_g")
+   IdAcc  (Uid  "B") (Lid  "meta_g")
 
    ident_map (fun x -> "meta_" ^ x ) <:ident< g >> ;
-   ident = IdLid  "meta_g"
+   ident = Lid  "meta_g"
 
    ]}
  *)

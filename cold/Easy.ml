@@ -4,7 +4,7 @@ open Lib
 let _loc = FanLoc.ghost
 let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
   `ExApp
-    (_loc, (`ExId (_loc, (`IdLid (_loc, "failwith")))),
+    (_loc, (`ExId (_loc, (`Lid (_loc, "failwith")))),
       (`ExStr (_loc, "arity >= 2 in other branches"))))
    ?cons_transform  ~id:(id : basic_id_transform)  ~names  ~mk_tuple 
   ~mk_record  mk_variant =
@@ -19,8 +19,8 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
           `Last
             ((fun s  ->
                 `IdAcc
-                  (_loc, (`IdUid (_loc, m)),
-                    (`IdLid (_loc, (basic_transform id s))))))
+                  (_loc, (`Uid (_loc, m)),
+                    (`Lid (_loc, (basic_transform id s))))))
     let trail (_,number) =
       if number > 1
       then
@@ -34,7 +34,7 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
         str_item_of_module_types ?module_name normal_simple_expr_of_ctyp
 let gen_object ?module_name  ?(arity= 1)  ?(trail=
   `ExApp
-    (_loc, (`ExId (_loc, (`IdLid (_loc, "failwith")))),
+    (_loc, (`ExId (_loc, (`Lid (_loc, "failwith")))),
       (`ExStr (_loc, "arity >= 2 in other branches"))))
    ?cons_transform  ~kind  ~base  ~class_name  =
   let make ~names  ~mk_tuple  ~mk_record  mk_variant =
@@ -46,8 +46,8 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
           (fun v  ->
              let v = basic_transform left_type_variable v in
              `ExApp
-               (_loc, (`ExId (_loc, (`IdLid (_loc, v)))),
-                 (`ExId (_loc, (`IdLid (_loc, "self"))))))
+               (_loc, (`ExId (_loc, (`Lid (_loc, v)))),
+                 (`ExId (_loc, (`Lid (_loc, "self"))))))
       let left_type_id = `Pre ""
       let right_type_id = `Obj (basic_transform left_type_id)
       let trail (_,number) =

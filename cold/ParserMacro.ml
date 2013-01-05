@@ -171,7 +171,7 @@ let apply () =
           ([`Snterm (Gram.obj (endif : 'endif Gram.t ))],
             (Gram.mk_action
                (fun _  (_loc : FanLoc.t)  ->
-                  (`ExId (_loc, (`IdUid (_loc, "()"))) : 'else_expr ))))])]);
+                  (`ExId (_loc, (`Uid (_loc, "()"))) : 'else_expr ))))])]);
    Gram.extend (smlist_then : 'smlist_then Gram.t )
      (None,
        [(None, None,

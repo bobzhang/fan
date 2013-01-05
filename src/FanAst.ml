@@ -133,8 +133,8 @@ type loc = FanLoc.t
    and ident =
     [= `IdAcc of (loc * ident * ident) (* i . i *)
     | `IdApp of (loc * ident * ident) (* i i *)
-    | `IdLid of (loc * string) (* foo *)
-    | `IdUid of (loc * string) (* `Bar *)
+    | `Lid of (loc * string) (* foo *)
+    | `Uid of (loc * string) (* `Bar *)
     | `Ant of (loc * string) (* $s$ *) ]
    and ctyp =
     [= `TyNil of loc
@@ -559,16 +559,16 @@ let ident_of_expr =
 
   ident_of_ctyp {:ctyp| A.B |} ; ;     
   - : ident =
-  `IdAcc (, `IdUid (, "A"),
-  `IdUid (, "B"))
+  `IdAcc (, `Uid (, "A"),
+  `Uid (, "B"))
 
   {:ctyp| A.B |} ; ;
   - : ctyp =
-  `TyId (, `IdAcc (, `IdUid (, "A"), `IdUid (, "B")))
+  `TyId (, `IdAcc (, `Uid (, "A"), `Uid (, "B")))
 
   ident_of_ctyp {:ctyp| (A B).t |} ; ;
   - : ident =
-  `IdAcc (, `IdApp (, `IdUid (, "A"), `IdUid (, "B")), `IdLid (, "t"))  ]}
+  `IdAcc (, `IdApp (, `Uid (, "A"), `Uid (, "B")), `Lid (, "t"))  ]}
  *)
 let ident_of_ctyp =
   let error () =
