@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 
 (*
   {:macro|M a b c|}
@@ -46,10 +46,10 @@
  *)
 type key = string;
 
-type expander =  Ast.expr -> Ast.expr;
+type expander =  expr -> expr;
 
 (*
-   Ast.expr -> Ast.str_item
+   expr -> str_item
 *)
   
 let macro_expanders: Hashtbl.t key expander = Hashtbl.create 40 ;

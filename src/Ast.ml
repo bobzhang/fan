@@ -1,7 +1,7 @@
 (* Note: when you modify these types you must increment
    ast magic numbers defined in FanConfig.ml. *)
 (** Signature for OCaml syntax trees. *) (*
-    This signature is an extension of {!Ast}
+
     It provides:
       - Types for all kinds of structure.
       - Map: A base class for map traversals.

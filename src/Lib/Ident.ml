@@ -125,7 +125,7 @@ let map_to_string ident =
    IdAcc  (IdUid  "B") (IdLid  "meta_g")
 
    ident_map (fun x -> "meta_" ^ x ) <:ident< g >> ;
-   Camlp4.PreCast.Ast.ident = IdLid  "meta_g"
+   ident = IdLid  "meta_g"
 
    ]}
  *)
@@ -142,7 +142,7 @@ let ident_map f x =
       | _ -> invalid_arg ("ident_map identifier" ^ !to_string x ) ]];          
 
 (* the same as [ident_map] except f is of type
-   [string -> Ast.ident ]
+   [string -> ident ]
  *)
 let ident_map_of_ident f x =
   let lst = list_of_acc_ident x [] in
@@ -165,7 +165,7 @@ let ident_map_of_ident f x =
    [A.B.meta_s]
  *)  
 let ident_map_full f x =
-  let _loc = Ast.loc_of_ident x in 
+  let _loc = FanAst.loc_of_ident x in 
   match (uid_of_ident x ,lid_of_ident x ) with
   [(Some pre, s) ->
     {| $pre.$(lid:f s) |} 

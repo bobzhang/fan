@@ -1,6 +1,6 @@
 
 #default_quotation "ctyp";;
-(* open Ast; *)
+open Ast;
 module Ast = FanAst;
 open LibUtil;
 open Format;
@@ -20,7 +20,7 @@ let rec to_var_list =  fun
 
 let list_of_opt ot acc = match ot with
   [ {||} -> acc
-  | t -> Ast.list_of_ctyp t acc ];
+  | t -> FanAst.list_of_ctyp t acc ];
 
 
 let rec name_tags = fun
@@ -46,7 +46,7 @@ let rec to_generalized = fun
 let to_string  =
   ref (fun _ -> failwith "Ctyp.to_string foward declaration, not implemented yet");
   (* to_string_of_printer FanBasic.p_ctyp ; *)
-let eprint : ref (Ast.ctyp -> unit) =
+let eprint : ref (ctyp -> unit) =
   ref (fun _ -> failwith "Ctyp.eprint foward declaration, not implemented yet");
          (* eprintf "@[%a@]@." !FanBasic.p_ctyp v ; *)
 
@@ -55,7 +55,7 @@ let eprint : ref (Ast.ctyp -> unit) =
   
 let _loc = FanLoc.ghost ; (* FIXME *)
 
-DEFINE GETLOC(expr)= Ast.loc_of_ctyp expr;  
+DEFINE GETLOC(expr)= FanAst.loc_of_ctyp expr;  
 INCLUDE "src/Lib/CommonStructure.ml";  
 (*
    compose type abstractions
@@ -313,7 +313,7 @@ let is_recursive ty_dcl = match ty_dcl with
   Here the order matters
   {[
   ( <:sig_item< type tbl 'a = Ident.tbl 'a >> |> fun
-    [ <:sig_item< type .$Ast.TyDcl _loc _ _ x _ $. >>
+    [ <:sig_item< type .$FanAst.TyDcl _loc _ _ x _ $. >>
      -> qualified_app_list x ]);
   Some (IdAcc  (IdUid  "Ident") (IdLid  "tbl"), [TyQuo  "a"])
   ]}
@@ -394,7 +394,7 @@ let mk_transform_type_eq () = object(self:'self_type)
           (* Manual substitution
              [type u 'a 'b = Loc.t 'a 'b]
              [type u int = Loc.t int]
-             This case can not happen [type u Ast.int = Loc.t Ast.int ]
+             This case can not happen [type u FanAst.int = Loc.t FanAst.int ]
            *)
            let src = i and dest = Ident.map_to_string i in begin
              Hashtbl.replace transformers dest (src,List.length lst);
@@ -460,18 +460,18 @@ let transform_module_types  lst =
     FIXME moved to astbuild?
     [ A of [`a | `b] and int ]
  *)
-let reduce_data_ctors (ty:Ast.ctyp)  (init:'a) (f:  string -> list Ast.ctyp -> 'e)  =
+let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
   ErrorMonad.(
   (* antiquotation list can not be recognized in pattern
 	    language the same applies to `int, int they behave the
 	    same *)
 	let rec loop acc t = match t with
 	[ {| $uid:cons of $tys |} ->
-	  f cons (Ast.list_of_ctyp tys []) acc
+	  f cons (FanAst.list_of_ctyp tys []) acc
 
         | {| `$uid:cons of $tys |} ->
             f ("`" ^ cons)
-              (Ast.list_of_ctyp tys []) acc
+              (FanAst.list_of_ctyp tys []) acc
 	| {| $uid:cons |} ->
 	    f cons [] acc
               

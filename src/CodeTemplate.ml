@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 
 module Ast = FanAst;
 open LibUtil;
@@ -7,8 +7,8 @@ let _loc =FanLoc.ghost ;
 
 type ty_meta = {
     str:string;
-    print: [= `Exist | `Custom of Ast.str_item | `Fmt of string];
-    eq: [= `Def | `Custom of Ast.str_item]
+    print: [= `Exist | `Custom of str_item | `Fmt of string];
+    eq: [= `Def | `Custom of str_item]
   };
 
 let base1_types = with "str_item"

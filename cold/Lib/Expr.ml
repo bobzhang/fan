@@ -1,3 +1,4 @@
+open Ast
 open LibUtil
 open Basic
 open FanUtil
@@ -11,7 +12,7 @@ let rec sep_dot_expr acc =
        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
   | `ExId (_loc,(`IdAcc (_l,_,_) as i)) ->
       sep_dot_expr acc (Ident.normalize_acc i)
-  | e -> ((Ast.loc_of_expr e), [], e) :: acc
+  | e -> ((FanAst.loc_of_expr e), [], e) :: acc
 let mksequence ?loc  =
   function
   | `ExSem (_loc,_,_)|`Ant (_loc,_) as e ->
@@ -32,7 +33,7 @@ let bigarray_get loc arr arg =
   let coords =
     match arg with
     | `ExTup (_loc,`ExCom (_,e1,e2))|`ExCom (_loc,e1,e2) ->
-        Ast.list_of_expr e1 (Ast.list_of_expr e2 [])
+        FanAst.list_of_expr e1 (FanAst.list_of_expr e2 [])
     | _ -> [arg] in
   match coords with
   | [] -> failwith "bigarray_get null list"
@@ -98,7 +99,7 @@ let bigarray_get loc arr arg =
                   (loc, c1,
                     (`ExSem
                        (loc, c2,
-                         (`ExSem (loc, c3, (Ast.exSem_of_list coords))))))))))
+                         (`ExSem (loc, c3, (FanAst.exSem_of_list coords))))))))))
 let bigarray_set loc var newval =
   match var with
   | `ExApp
@@ -226,7 +227,7 @@ let map loc p e l =
   match (p, e) with
   | (`PaId (_loc,`IdLid (_,x)),`ExId (_,`IdLid (_,y))) when x = y -> l
   | _ ->
-      if Ast.is_irrefut_patt p
+      if FanAst.is_irrefut_patt p
       then
         `ExApp
           (loc,
@@ -309,7 +310,7 @@ let map loc p e l =
                                                   (loc, (`IdLid (loc, "l")))))))))))))))),
                  l)), (`ExId (loc, (`IdUid (loc, "[]")))))
 let filter loc p b l =
-  if Ast.is_irrefut_patt p
+  if FanAst.is_irrefut_patt p
   then
     `ExApp
       (loc,
@@ -383,7 +384,7 @@ let substp loc env =
   loop
 class subst loc env =
   object 
-    inherit  (Ast.reloc loc) as super
+    inherit  (FanAst.reloc loc) as super
     method! expr =
       function
       | `ExId (_loc,`IdLid (_,x))|`ExId (_loc,`IdUid (_,x)) as e ->
@@ -394,7 +395,7 @@ class subst loc env =
             (_loc,`ExId (_,`IdUid (_,"LOCATION_OF")),`ExId (_,`IdUid (_,x)))
           as e ->
           (try
-             let loc = Ast.loc_of_expr (List.assoc x env) in
+             let loc = FanAst.loc_of_expr (List.assoc x env) in
              let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple loc in
              `ExApp
                (_loc,
@@ -450,7 +451,7 @@ class type antiquot_filter
   =
   object 
     inherit FanAst.map
-    method get_captured_variables : (Ast.expr* Ast.expr) list
+    method get_captured_variables : (expr* expr) list
     method clear_captured_variables : unit
   end
 let capture_antiquot: antiquot_filter =
@@ -494,7 +495,7 @@ let comma a b = `ExCom (_loc, a, b)
 let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
-  let _loc = FanLoc.merge (Ast.loc_of_expr a) (Ast.loc_of_expr b) in
+  let _loc = FanLoc.merge (FanAst.loc_of_expr a) (FanAst.loc_of_expr b) in
   `ExSem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
@@ -533,7 +534,8 @@ let mklist loc =
     function
     | [] -> `ExId (_loc, (`IdUid (_loc, "[]")))
     | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_expr e1) loc in
+        let _loc =
+          if top then loc else FanLoc.merge (FanAst.loc_of_expr e1) loc in
         `ExApp
           (_loc, (`ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e1)),
             (loop false el)) in
@@ -542,13 +544,14 @@ let rec apply accu =
   function
   | [] -> accu
   | x::xs ->
-      let _loc = Ast.loc_of_expr x in apply (`ExApp (_loc, accu, x)) xs
+      let _loc = FanAst.loc_of_expr x in apply (`ExApp (_loc, accu, x)) xs
 let mkarray loc arr =
   let rec loop top =
     function
     | [] -> `ExId (_loc, (`IdUid (_loc, "[]")))
     | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (Ast.loc_of_expr e1) loc in
+        let _loc =
+          if top then loc else FanLoc.merge (FanAst.loc_of_expr e1) loc in
         `ExArr (_loc, (`ExSem (_loc, e1, (loop false el)))) in
   let items = arr |> Array.to_list in loop true items
 let of_str s =

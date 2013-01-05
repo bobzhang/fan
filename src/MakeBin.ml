@@ -45,9 +45,9 @@ let just_print_applied_parsers () =
 AstParsers.use_parsers
     [ "revise";
       "stream";
-      (* "debug"; *)
       "macro";
-      "ListComprehension"(* ;"lexer" *)];
+      "ListComprehension"
+    ];
   
 type file_kind =
   [ Intf of string
@@ -80,7 +80,8 @@ module Camlp4Bin
      module DynLoader = DynLoader.Make (struct end);
       (* let plugins = Hashtbl.create 50;      *)
      let (objext,libext) =
-        if DynLoader.is_native then (".cmxs",".cmxs")
+        if DynLoader.is_native then
+          (".cmxs",".cmxs")
         else (".cmo",".cma");
      let rewrite_and_load n x =
         let dyn_loader = !DynLoader.instance () in 
@@ -203,14 +204,14 @@ module Camlp4Bin
         begin
           !rcall_callback ();
           match x with
-          [ Intf file_name -> task (process_intf (* dyn_loader *)) file_name
-          | Impl file_name -> task (process_impl (* dyn_loader *)) file_name
+          [ Intf file_name -> task (process_intf ) file_name
+          | Impl file_name -> task (process_impl ) file_name
           | Str s ->
               begin
                 let (f, o) = Filename.open_temp_file "from_string" ".ml";
                 output_string o s;
                 close_out o;
-                task (process_impl (* dyn_loader *)) f;
+                task process_impl  f;
                 at_exit (fun () -> Sys.remove f);
               end
           | ModuleImpl file_name -> rewrite_and_load "" file_name

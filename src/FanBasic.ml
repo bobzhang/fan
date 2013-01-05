@@ -3,11 +3,11 @@
    This module is mainly provided to generate code. For simplicity,
    we don't take care of Location.(Should be FIXED later)
  *)
-(* open Ast; *)
+open Ast;
 open LibUtil;
 open Format;
-exception Unhandled of Ast.ctyp ;
-exception Finished of Ast.expr;
+exception Unhandled of ctyp ;
+exception Finished of expr;
 let _loc = FanLoc.ghost;
 let unit_literal = {:expr| () |} ;
 
@@ -18,7 +18,7 @@ let x ?(off=0) (i:int)    =
     let base = Char.(code 'a' + off |> chr) in
     String.of_char base ^ string_of_int i;
     
-let xid ?(off=0) (i:int) : Ast.ident  =
+let xid ?(off=0) (i:int) : ident  =
   {:ident| $(lid:x ~off i) |} ;
   
 let allx ?(off=0) i =  "all_" ^x ~off i ;

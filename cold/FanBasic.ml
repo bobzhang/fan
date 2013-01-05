@@ -1,7 +1,8 @@
+open Ast
 open LibUtil
 open Format
-exception Unhandled of Ast.ctyp
-exception Finished of Ast.expr
+exception Unhandled of ctyp
+exception Finished of expr
 let _loc = FanLoc.ghost
 let unit_literal = `ExId (_loc, (`IdUid (_loc, "()")))
 let x ?(off= 0)  (i : int) =
@@ -10,7 +11,7 @@ let x ?(off= 0)  (i : int) =
   else
     (let base = let open Char in ((code 'a') + off) |> chr in
      (String.of_char base) ^ (string_of_int i))
-let xid ?(off= 0)  (i : int) = (`IdLid (_loc, (x ~off i)) : Ast.ident )
+let xid ?(off= 0)  (i : int) = (`IdLid (_loc, (x ~off i)) : ident )
 let allx ?(off= 0)  i = "all_" ^ (x ~off i)
 let allxid ?(off= 0)  i = `IdLid (_loc, (allx ~off i))
 let check_valid str =

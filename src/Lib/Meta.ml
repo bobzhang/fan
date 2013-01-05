@@ -2,7 +2,7 @@
 module Ast = FanAst; (* FIXME: rename it into FanAst later *)
 
 (* never used before *)    
-module MetaLocVar : Ast.META_LOC= struct
+module MetaLocVar : FanAst.META_LOC= struct
   let meta_loc_patt _loc _ = {:patt| $(lid:!FanLoc.name) |};
   let meta_loc_expr _loc _ = {:expr| $(lid:!FanLoc.name) |};
 end;
@@ -11,7 +11,7 @@ end;
 
 (* module MetaGhostLoc *)
 
-module MetaLoc : Ast.META_LOC= struct
+module MetaLoc : FanAst.META_LOC= struct
   (* FIXME *)
   let meta_loc_patt _loc _location =
     failwith  "MetaLoc.meta_loc_patt not implemented yet"  ;
@@ -64,7 +64,7 @@ module MetaLoc : Ast.META_LOC= struct
        $(if h then {:expr| true |} else {:expr| false |} )) |};
 end;
   
-module MetaGhostLoc : Ast.META_LOC= struct (* MetaAction *)
+module MetaGhostLoc : FanAst.META_LOC= struct (* MetaAction *)
   (* let meta_loc_patt _loc _ = *)
   (*   {:patt| FanLoc.ghost |}; (\* FIXME *\) *)
   let meta_loc_patt _loc _ = failwith "MetaGhostLoc.meta_loc_patt not implemented";

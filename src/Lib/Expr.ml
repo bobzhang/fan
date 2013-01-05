@@ -1,5 +1,5 @@
-(* open Format; *)
-(* open lang "expr"; *)
+
+open Ast;
 #default_quotation     "expr";;
 
 
@@ -27,16 +27,16 @@ module Ast= FanAst; (* it contains a module named Meta *)
 
   {[
   sep_dot_expr [] {|A.B.g.U.E.h.i|};
-  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
+  - : (loc * string list * expr) list =
   [(, ["A"; "B"], ExId (, IdLid (, "g")));
   (, ["U"; "E"], ExId (, IdLid (, "h"))); (, [], ExId (, IdLid (, "i")))]
 
   sep_dot_expr [] {|A.B.g.i|};
-  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
+  - : (loc * string list * expr) list =
   [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "i")))]
 
   sep_dot_expr [] {|$(uid:"").i|};
-  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
+  - : (loc * string list * expr) list =
   [(, [""], ExId (, IdLid (, "i")))]
 
   ]}
@@ -51,7 +51,7 @@ let rec sep_dot_expr acc = fun
       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
   | {| $(id:({:ident@_l| $_.$_ |} as i)) |} ->
       sep_dot_expr acc (Ident.normalize_acc i)
-  | e -> [(Ast.loc_of_expr e, [], e) :: acc] ];
+  | e -> [(FanAst.loc_of_expr e, [], e) :: acc] ];
 
 
 
@@ -92,7 +92,7 @@ let bigarray_get loc arr arg =
   let coords =
     match arg with
     [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
-      Ast.list_of_expr e1 (Ast.list_of_expr e2 [])
+      FanAst.list_of_expr e1 (FanAst.list_of_expr e2 [])
     | _ -> [arg] ] in
   match coords with
   [ [] -> failwith "bigarray_get null list"
@@ -100,7 +100,7 @@ let bigarray_get loc arr arg =
   | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
   | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {@loc| $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } |} ];
+      {@loc| $arr.{$c1,$c2,$c3,$(FanAst.exSem_of_list coords) } |} ];
 
 
 (*
@@ -149,7 +149,7 @@ let map loc p e l =
   match (p, e) with
   [ ({:patt| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
-      if Ast.is_irrefut_patt p then
+      if FanAst.is_irrefut_patt p then
         {@loc| List.map (fun $p -> $e) $l |}
       else
         {@loc| List.fold_right
@@ -159,7 +159,7 @@ let map loc p e l =
 
 
 let filter loc p b l =
-    if Ast.is_irrefut_patt p then
+    if FanAst.is_irrefut_patt p then
       {@loc| List.filter (fun $p -> $b) $l |}
     else
       {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
@@ -223,7 +223,7 @@ let substp loc env =
   try to convert the expr meaning into patt and use that instead
  *)  
 class subst loc env = object
-  inherit Ast.reloc loc as super;
+  inherit FanAst.reloc loc as super;
   method! expr =
     fun
     [ {| $lid:x |} | {| $uid:x |} as e ->
@@ -231,7 +231,7 @@ class subst loc env = object
         [ Not_found -> super#expr e ]
     | {| LOCATION_OF $lid:x |} | {| LOCATION_OF $uid:x |} as e ->
         try
-          let loc = Ast.loc_of_expr (List.assoc x env) in
+          let loc = FanAst.loc_of_expr (List.assoc x env) in
           let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
           {| FanLoc.of_tuple
             ($`str:a, $`int:b, $`int:c, $`int:d,
@@ -250,7 +250,7 @@ end;
 
 class type antiquot_filter =object
   inherit FanAst.map;
-  method get_captured_variables: list (Ast.expr * Ast.expr);
+  method get_captured_variables: list (expr * expr);
   method clear_captured_variables: unit;
 end;
   
@@ -308,7 +308,7 @@ let fun_args _loc args body =
 
 
 let _loc = FanLoc.ghost ;
-DEFINE GETLOC(expr)= Ast.loc_of_expr expr;  
+DEFINE GETLOC(expr)= FanAst.loc_of_expr expr;  
 INCLUDE "src/Lib/CommonStructure.ml";
 INCLUDE "src/Lib/ExprPatt.ml";
 
@@ -318,9 +318,9 @@ INCLUDE "src/Lib/ExprPatt.ml";
    and [(~-.)] as a prefix [(-.)]
    {[
    mkumin _loc "-." {| 3 |};
-   - : L.Expr.Ast.expr = ExInt (, "-3")
+   - : expr = ExInt (, "-3")
    mkumin _loc "-." {| a |};
-   - : L.Expr.Ast.expr =
+   - : expr =
    ExApp (, ExId (, IdLid (, "~-.")), ExId (, IdLid (, "a")))
    ]}
  *)  
@@ -344,7 +344,7 @@ let mk_assert  =  fun
   Example:
   {[
   mk_record [("a",{|3|});("b",{|4|})] ;
-  - : L.Expr.Ast.expr = { a = 3; b = 4 }
+  - : expr = { a = 3; b = 4 }
 
   ]}
   FIXME: label is lid, it can be more precise
@@ -366,7 +366,7 @@ let failure =
   Example:
   {[
   ["a";"b"] <+ {|3|};
-  - : L.Expr.Ast.expr = fun a  b  -> 3
+  - : expr = fun a  b  -> 3
   ]}
  *)
 let (<+) names acc  =
@@ -376,7 +376,7 @@ let (<+) names acc  =
   Example:
   {[
   [{:patt|a|}; {:patt|b|} ] <+< {|3|};
-  - : L.Expr.Ast.expr = fun a  b  -> 3
+  - : expr = fun a  b  -> 3
   ]}
  *)  
 let (<+<) patts acc =
@@ -394,27 +394,27 @@ let (<+<) patts acc =
 (*
   {[
   mep_app {| a |} {|g |};
-  - : L.Expr.Ast.expr = Ast.PaApp (_loc, a, g)
+  - : expr = Ast.PaApp (_loc, a, g)
   mee_app {:expr|f a |} {:expr|g |};
-  - : L.Expr.Ast.expr = Ast.ExApp (_loc, (f a), g)
+  - : expr = Ast.ExApp (_loc, (f a), g)
    ]}
  *)
   
 let mep_comma x y =  {| {:patt| $($x), $($y) |} |};
-  (* {| Ast.PaCom _loc $x $y |}; *)
+  (* {| `PaCom (_loc, $x, $y) |}; *)
 let mvep_comma x y =
   {|`PaCom(_loc,$x,$y)|};
   
 let mee_comma x y = {| {| $($x), $($y) |} |};
-  (* {| Ast.ExCom _loc $x $y |}; *)
+  (* {| `ExCom (_loc, $x, $y) |}; *)
 let mvee_comma x y = {| `ExCom (_loc,$x,$y) |};
 
 let mee_app x y = {| {| $($x) $($y) |}|};
-  (* {| Ast.ExApp _loc $x $y |}; *)
+  (* {| `ExApp(_loc, $x, $y) |}; *)
 let vee_app x y = {| `ExApp (_loc,$x,$y) |};
   
 let mep_app x y = {| {:patt| $($x) $($y) |}|};
-  (* {| Ast.PaApp _loc $x $y |};        *)
+  (* {| `PaApp (_loc, $x, $y) |};        *)
 let vep_app x y = {| `PaApp (_loc,$x,$y)|};
   
 
@@ -592,7 +592,8 @@ let mk_tuple_vee = fun
 let mk_tuple_ep = fun 
   [ [] -> assert false
   | [x] -> x
-  | xs  -> (* {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |} *)
+  | xs  ->
+    (* {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |} *)
       {| {:patt|$(tup: $(List.reduce_right mep_comma xs))|} |} ];
 
 let mk_tuple_vep = fun
@@ -686,7 +687,7 @@ let gen_curry_n acc ~arity cons n =
 (*
   Example:
   {[
-   let u  =  Ast.list_of_match_case {:match_case|
+   let u  =  FanAst.list_of_match_case {:match_case|
   (A0 (a0, a1),A0 (b0, b1)) -> 1
   |   (A1 (a0, a1), A1 (b0, b1)) -> 2
   |   (A2 (a0, a1), A2 (b0, b1)) -> 3 |} [] in currying ~arity:2 u ;

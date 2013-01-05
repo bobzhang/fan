@@ -11,11 +11,11 @@ module MetaLoc = struct
 end;
 module MetaAst = FanAst.Make MetaLoc;
 AstFilters.register_str_item_filter ("lift",(fun ast ->
-  let _loc = Ast.loc_of_str_item ast in
+  let _loc = FanAst.loc_of_str_item ast in
   {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |})); (* FIXME Loc => FanLoc*)
 
 let add_debug_expr e =
-  let _loc = Ast.loc_of_expr e in
+  let _loc = FanAst.loc_of_expr e in
   let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
   {:expr|
       try $e  with
@@ -36,7 +36,7 @@ let rec map_match_case =
 
 
 AstFilters.register_str_item_filter ("exception",object
-  inherit Ast.map as super;
+  inherit FanAst.map as super;
   method! expr = fun
   [ {:expr@_loc| fun [ $m ] |}  -> {:expr| fun [ $(map_match_case m) ] |}
   | x -> super#expr x ];
@@ -45,10 +45,10 @@ AstFilters.register_str_item_filter ("exception",object
   | st -> super#str_item st ];
 end#str_item);
 
-AstFilters.register_str_item_filter ("strip",(new Ast.reloc  FanLoc.ghost)#str_item);
+AstFilters.register_str_item_filter ("strip",(new FanAst.reloc  FanLoc.ghost)#str_item);
 
 let decorate_binding decorate_fun = object
-  inherit Ast.map as super;
+  inherit FanAst.map as super;
   method! binding = fun
     [ {:binding| $lid:id = $( ({:expr@_| fun [ $_ ] |} as e)) |} ->
       {:binding| $lid:id = $(decorate_fun id e) |}
@@ -56,7 +56,7 @@ let decorate_binding decorate_fun = object
   end#binding;
 
 let decorate decorate_fun = object (o)
-  inherit Ast.map as super;
+  inherit FanAst.map as super;
   method! str_item = fun
     [ {:str_item@_loc| let $rec:r $b |} ->
       {:str_item| let $rec:r $(decorate_binding decorate_fun b) |}
@@ -70,7 +70,7 @@ end;
 
 let decorate_this_expr e id =
   let buf = Buffer.create 42 in
-  let _loc = Ast.loc_of_expr e in
+  let _loc = FanAst.loc_of_expr e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
   {:expr| let () = Camlp4prof.count $`str:s in $e |};
@@ -88,7 +88,7 @@ let rec decorate_fun id =
 
 AstFilters.register_str_item_filter("profile", (decorate decorate_fun)#str_item);
 AstFilters.register_str_item_filter
-    ("trash",(Ast.map_str_item
+    ("trash",(FanAst.map_str_item
       (fun
        [ {:str_item@_loc| module Camlp4Trash = $_ |} ->
             {:str_item||}
@@ -107,12 +107,12 @@ let map_expr = with "expr" fun
          $(if h then {| true |} else {| false |} )) |}
   | e -> e];
 
-AstFilters.register_str_item_filter ("trash_nothing",(Ast.map_expr map_expr)#str_item);
+AstFilters.register_str_item_filter ("trash_nothing",(FanAst.map_expr map_expr)#str_item);
   
 (* [s] should starts with "__" *)
 let make_filter (s,code) =
   let f = with "str_item" fun
   [ {| $lid:s'|} when s =s' -> code
   | e -> e  ] in
-  ("filter_"^s, (Ast.map_str_item f )#str_item);
+  ("filter_"^s, (FanAst.map_str_item f )#str_item);
 

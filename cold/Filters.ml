@@ -10,7 +10,7 @@ let _ =
   AstFilters.register_str_item_filter
     ("lift",
       (fun ast  ->
-         let _loc = Ast.loc_of_str_item ast in
+         let _loc = FanAst.loc_of_str_item ast in
          `StExp
            (_loc,
              (`ExLet
@@ -24,7 +24,7 @@ let _ =
                                  (`IdLid (_loc, "ghost")))))))),
                   (MetaAst.Expr.meta_str_item _loc ast))))))
 let add_debug_expr e =
-  let _loc = Ast.loc_of_expr e in
+  let _loc = FanAst.loc_of_expr e in
   let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
   `ExTry
     (_loc, e,
@@ -100,7 +100,7 @@ let _ =
   AstFilters.register_str_item_filter
     ("exception",
       ((object 
-          inherit  Ast.map as super
+          inherit  FanAst.map as super
           method! expr =
             function
             | `ExFun (_loc,m) -> `ExFun (_loc, (map_match_case m))
@@ -112,10 +112,10 @@ let _ =
         end)#str_item))
 let _ =
   AstFilters.register_str_item_filter
-    ("strip", (((new Ast.reloc) FanLoc.ghost)#str_item))
+    ("strip", (((new FanAst.reloc) FanLoc.ghost)#str_item))
 let decorate_binding decorate_fun =
   (object 
-     inherit  Ast.map as super
+     inherit  FanAst.map as super
      method! binding =
        function
        | `BiEq (_loc,`PaId (_,`IdLid (_,id)),(`ExFun (_,_) as e)) ->
@@ -125,7 +125,7 @@ let decorate_binding decorate_fun =
    end)#binding
 let decorate decorate_fun =
   object (o)
-    inherit  Ast.map as super
+    inherit  FanAst.map as super
     method! str_item =
       function
       | `StVal (_loc,r,b) ->
@@ -140,7 +140,7 @@ let decorate decorate_fun =
   end
 let decorate_this_expr e id =
   let buf = Buffer.create 42 in
-  let _loc = Ast.loc_of_expr e in
+  let _loc = FanAst.loc_of_expr e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
   `ExLet
@@ -171,7 +171,7 @@ let _ =
 let _ =
   AstFilters.register_str_item_filter
     ("trash",
-      ((Ast.map_str_item
+      ((FanAst.map_str_item
           (function | `StMod (_loc,"Camlp4Trash",_) -> `StNil _loc | st -> st))#str_item))
 let map_expr =
   function
@@ -231,10 +231,10 @@ let map_expr =
   | e -> e
 let _ =
   AstFilters.register_str_item_filter
-    ("trash_nothing", ((Ast.map_expr map_expr)#str_item))
+    ("trash_nothing", ((FanAst.map_expr map_expr)#str_item))
 let make_filter (s,code) =
   let f =
     function
     | `StExp (_loc,`ExId (_,`IdLid (_,s'))) when s = s' -> code
     | e -> e in
-  (("filter_" ^ s), ((Ast.map_str_item f)#str_item))
+  (("filter_" ^ s), ((FanAst.map_str_item f)#str_item))

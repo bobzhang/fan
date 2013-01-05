@@ -1,12 +1,13 @@
+open Ast
 module Ast = FanAst
 open Lib
 type spat_comp =  
-  | SpTrm of FanLoc.t* Ast.patt* Ast.expr option
-  | SpNtr of FanLoc.t* Ast.patt* Ast.expr
-  | SpStr of FanLoc.t* Ast.patt 
+  | SpTrm of FanLoc.t* patt* expr option
+  | SpNtr of FanLoc.t* patt* expr
+  | SpStr of FanLoc.t* patt 
 type sexp_comp =  
-  | SeTrm of FanLoc.t* Ast.expr
-  | SeNtr of FanLoc.t* Ast.expr 
+  | SeTrm of FanLoc.t* expr
+  | SeNtr of FanLoc.t* expr 
 let grammar_module_name = ref "XStream"
 let gm () = grammar_module_name.contents
 let strm_n = "__strm"
@@ -75,7 +76,7 @@ and is_constr_apply =
   | `ExApp (_loc,x,_) -> is_constr_apply x
   | _ -> false
 let rec subst v e =
-  let _loc = Ast.loc_of_expr e in
+  let _loc = FanAst.loc_of_expr e in
   match e with
   | `ExId (_loc,`IdLid (_,x)) ->
       let x = if x = v then strm_n else x in `ExId (_loc, (`IdLid (_loc, x)))

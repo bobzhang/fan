@@ -10,7 +10,7 @@ module MP = MetaQAst.Patt
 let _ =
   of_str_item_with_filter ~name:"ocaml" ~entry:str_items
     ~filter:(fun s  ->
-               let _loc = Ast.loc_of_str_item s in
+               let _loc = loc_of_str_item s in
                let v = `MeStr (_loc, s) in
                let module_expr = (Typehook.traversal ())#module_expr v in
                let code =

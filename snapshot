@@ -8,7 +8,7 @@ ocamlbuild $(find src | grep -v .# |  grep '\(ml\|mll\|mli\|mlpack\)$' | perl -p
 # ocamlbuild $(find src | grep mli$ | perl -pe 's|.*?/|tmp/|')
 # ocamlbuild $(find src | grep mlpack$ | perl -pe 's|.*?/|tmp/|')
 
-# rm -rf cold # do the cleaning, in case some files are discarded 
+rm -rf cold # do the cleaning, in case some files are discarded 
 # mkdir cold
 
 cp -rf _build/tmp/ cold

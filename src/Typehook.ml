@@ -1,5 +1,5 @@
 open LibUtil;
-(* open Ast; *)
+open Ast;
 open FSig;
 open Format;
 open Lib;
@@ -8,7 +8,7 @@ module Ast = FanAst;
 (** A Hook To Ast Filters *)
 let keep = ref false;
 type plugin = {
-    transform:(module_types -> Ast.str_item);
+    transform:(module_types -> str_item);
     activate: mutable bool;
     position: option string;
     filter: option (string->bool);
@@ -83,7 +83,7 @@ let plugin_remove plugin =
    {:sig_item| type $x |}
  *)  
 let filter_type_defs ?qualified () = object (* (self:'self_type) *)
-  inherit Ast.map as super;
+  inherit FanAst.map as super;
   val mutable type_defs = let _loc = FanLoc.ghost in {:str_item||} ;
   method! sig_item = with "sig_item" fun
     [
@@ -123,7 +123,7 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
 end;
 
 class type traversal = object
-  inherit Ast.map;
+  inherit FanAst.map;
   method get_cur_module_types: FSig.module_types;
   method get_cur_and_types: FSig.and_types;
   (* method in_and_types: *)
@@ -146,7 +146,7 @@ end;
   ]}
  *)  
 let traversal () : traversal  = object (self:'self_type)
-  inherit Ast.map as super;
+  inherit FanAst.map as super;
   val module_types_stack : Stack.t module_types = Stack.create ();
   val mutable cur_and_types : and_types= [];
   val mutable and_group = false;

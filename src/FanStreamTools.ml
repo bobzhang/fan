@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 (*
   identifiers referenced:
   {[
@@ -11,12 +11,12 @@ open Lib;
 open lang "expr";
 
 type spat_comp =
-  [ SpTrm of FanLoc.t and Ast.patt and option Ast.expr
-  | SpNtr of FanLoc.t and Ast.patt and Ast.expr
-  | SpStr of FanLoc.t and Ast.patt ];
+  [ SpTrm of FanLoc.t and patt and option expr
+  | SpNtr of FanLoc.t and patt and expr
+  | SpStr of FanLoc.t and patt ];
 
 type sexp_comp =
-  [ SeTrm of FanLoc.t and Ast.expr | SeNtr of FanLoc.t and Ast.expr ];
+  [ SeTrm of FanLoc.t and expr | SeNtr of FanLoc.t and expr ];
 
 (* default module name ["Stream"] for compatibility *)
 let grammar_module_name = ref "XStream"; (* BOOTSTRAPPING *)
@@ -73,7 +73,7 @@ and is_constr_apply = fun
   | _ -> false ];
 
 let rec subst v e =
-  let _loc = Ast.loc_of_expr e in
+  let _loc = FanAst.loc_of_expr e in
   match e with
   [ {| $lid:x |} ->
       let x = if x = v then strm_n else x in

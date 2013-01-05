@@ -1,5 +1,5 @@
 (* {:fans|keep on ; <+ "Print"; |}; *)
-
+open Ast;
 (* {:ocaml| *)
 type tag 'a =
  [ Ctyp
@@ -39,23 +39,23 @@ let string_of_tag = fun
  | Rec_binding -> "rec_binding"
  | Module_binding -> "module_binding" ];
   
-let ctyp_tag : tag Ast.ctyp = Ctyp;
-let patt_tag : tag Ast.patt = Patt;
-let expr_tag : tag Ast.expr = Expr;
-let module_type_tag : tag Ast.module_type = Module_type;
-let sig_item_tag : tag Ast.sig_item = Sig_item;
-let with_constr_tag : tag Ast.with_constr = With_constr;
-let module_expr_tag : tag Ast.module_expr = Module_expr;
-let str_item_tag : tag Ast.str_item = Str_item;
-let class_type_tag : tag Ast.class_type = Class_type;
-let class_sig_item_tag : tag Ast.class_sig_item = Class_sig_item;
-let class_expr_tag : tag Ast.class_expr = Class_expr;
-let class_str_item_tag : tag Ast.class_str_item = Class_str_item;
-let match_case_tag : tag Ast.match_case = Match_case;
-let ident_tag : tag Ast.ident = Ident;
-let binding_tag : tag Ast.binding = Binding;
-let rec_binding_tag : tag Ast.rec_binding  = Rec_binding;
-let module_binding_tag : tag Ast.module_binding = Module_binding;
+let ctyp_tag : tag ctyp = Ctyp;
+let patt_tag : tag patt = Patt;
+let expr_tag : tag expr = Expr;
+let module_type_tag : tag module_type = Module_type;
+let sig_item_tag : tag sig_item = Sig_item;
+let with_constr_tag : tag with_constr = With_constr;
+let module_expr_tag : tag module_expr = Module_expr;
+let str_item_tag : tag str_item = Str_item;
+let class_type_tag : tag class_type = Class_type;
+let class_sig_item_tag : tag class_sig_item = Class_sig_item;
+let class_expr_tag : tag class_expr = Class_expr;
+let class_str_item_tag : tag class_str_item = Class_str_item;
+let match_case_tag : tag match_case = Match_case;
+let ident_tag : tag ident = Ident;
+let binding_tag : tag binding = Binding;
+let rec_binding_tag : tag rec_binding  = Rec_binding;
+let module_binding_tag : tag module_binding = Module_binding;
 
 type dyn;
   

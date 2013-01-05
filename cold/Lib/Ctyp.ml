@@ -1,3 +1,4 @@
+open Ast
 module Ast = FanAst
 open LibUtil
 open Format
@@ -9,7 +10,7 @@ let rec to_var_list =
   | `TyQuo (_loc,s) -> [s]
   | _ -> assert false
 let list_of_opt ot acc =
-  match ot with | `TyNil _loc -> acc | t -> Ast.list_of_ctyp t acc
+  match ot with | `TyNil _loc -> acc | t -> FanAst.list_of_ctyp t acc
 let rec name_tags =
   function
   | `TyApp (_loc,t1,t2) -> (name_tags t1) @ (name_tags t2)
@@ -24,7 +25,7 @@ let to_string =
   ref
     (fun _  ->
        failwith "Ctyp.to_string foward declaration, not implemented yet")
-let eprint: (Ast.ctyp -> unit) ref =
+let eprint: (ctyp -> unit) ref =
   ref
     (fun _  -> failwith "Ctyp.eprint foward declaration, not implemented yet")
 let _loc = FanLoc.ghost
@@ -33,7 +34,7 @@ let comma a b = `TyCom (_loc, a, b)
 let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
-  let _loc = FanLoc.merge (Ast.loc_of_ctyp a) (Ast.loc_of_ctyp b) in
+  let _loc = FanLoc.merge (FanAst.loc_of_ctyp a) (FanAst.loc_of_ctyp b) in
   `TySem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
@@ -265,15 +266,15 @@ let transform_module_types lst =
            `Mutual (List.map (fun (s,ty)  -> (s, (obj#ctyp ty))) ls)
        | `Single (s,ty) -> `Single (s, (obj#ctyp ty))) lst in
   let new_types = obj#type_transformers in (new_types, item1)
-let reduce_data_ctors (ty : Ast.ctyp) (init : 'a)
-  (f : string -> Ast.ctyp list -> 'e) =
+let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
+  =
   let open ErrorMonad in
     let rec loop acc t =
       match t with
       | `TyOf (_loc,`TyId (_,`IdUid (_,cons)),tys) ->
-          f cons (Ast.list_of_ctyp tys []) acc
+          f cons (FanAst.list_of_ctyp tys []) acc
       | `TyOf (_loc,`TyVrn (_,cons),tys) ->
-          f ("`" ^ cons) (Ast.list_of_ctyp tys []) acc
+          f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
       | `TyId (_loc,`IdUid (_,cons)) -> f cons [] acc
       | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
       | `TyOr (_loc,t1,t2) -> loop (loop acc t1) t2

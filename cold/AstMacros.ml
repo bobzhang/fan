@@ -1,5 +1,6 @@
+open Ast
 type key = string 
-type expander = Ast.expr -> Ast.expr 
+type expander = expr -> expr 
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40
 let register_macro (k,f) = Hashtbl.replace macro_expanders k f
 let rec fib =

@@ -1,4 +1,5 @@
 open LibUtil
+open Ast
 open FSig
 open Format
 open Lib
@@ -6,7 +7,7 @@ module Ast = FanAst
 let keep = ref false
 type plugin = 
   {
-  transform: module_types -> Ast.str_item;
+  transform: module_types -> str_item;
   mutable activate: bool;
   position: string option;
   filter: (string -> bool) option} 
@@ -52,7 +53,7 @@ let plugin_remove plugin =
     ()
 let filter_type_defs ?qualified  () =
   object 
-    inherit  Ast.map as super
+    inherit  FanAst.map as super
     val mutable type_defs = let _loc = FanLoc.ghost in `StNil _loc
     method! sig_item =
       function
@@ -91,7 +92,7 @@ let filter_type_defs ?qualified  () =
 class type traversal
   =
   object 
-    inherit Ast.map
+    inherit FanAst.map
     method get_cur_module_types : FSig.module_types
     method get_cur_and_types : FSig.and_types
     method update_cur_and_types : (FSig.and_types -> FSig.and_types) -> unit
@@ -100,7 +101,7 @@ class type traversal
   end
 let traversal () =
   (object (self : 'self_type)
-     inherit  Ast.map as super
+     inherit  FanAst.map as super
      val module_types_stack = (Stack.create () : module_types Stack.t )
      val mutable cur_and_types = ([] : and_types )
      val mutable and_group = false

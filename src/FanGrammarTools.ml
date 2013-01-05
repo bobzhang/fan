@@ -89,7 +89,7 @@ let retype_rule_list_without_patterns _loc rl =
 exception NotneededTyping ;
 
 (*
-  translate [styp] into [Ast.ctyp],
+  translate [styp] into [ctyp],
   given the assumption that the entry output [tvar] type
  *)
 let  make_ctyp  styp tvar = 

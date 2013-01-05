@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 open LibUtil;
 open FanUtil;
 open Lib.Meta;
@@ -219,7 +219,7 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
       let meta_ast = mpatt _loc ast in
       let exp_ast = patt_filter meta_ast in
       (* BOOTSTRAPPING *)
-      let rec subst_first_loc name : Ast.patt -> Ast.patt =  with "patt" fun
+      let rec subst_first_loc name : patt -> patt =  with "patt" fun
         [
          `PaApp(loc, `PaVrn (_,u), (`PaTup (_, `PaCom (_,_,rest)))) ->
          `PaApp(loc, `PaVrn(loc,u),(`PaTup (loc,`PaCom(loc,`PaId(_loc,`IdLid (_loc,name)),rest))))
@@ -294,7 +294,7 @@ end;
 
 
 let antiquot_expander ~parse_patt ~parse_expr = object
-  inherit Ast.map as super;
+  inherit FanAst.map as super;
   method! patt =
     with "patt"
     fun
@@ -426,11 +426,9 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "`flopatt" ->
                 let e = {| FanUtil.float_repres $e |} in 
                 {| `PaFlo ($(mloc _loc), $e) |}
-            (* | "`boolpatt" -> *)
-            (*     let x = {|(* Ast. *)`IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in *)
-            (*     {| {:patt| $(id:$x)  |} |} *)
                   
             | "liststr_item" -> {| Ast.stSem_of_list $e |}
+                  (* {|$(uid:"FanAst").stSem_of_list $e |} *)
             | "listsig_item" -> {| Ast.sgSem_of_list $e |}
             | "listclass_sig_item" -> {| Ast.cgSem_of_list $e |}
             | "listclass_str_item" -> {| Ast.crSem_of_list $e |}
@@ -496,107 +494,3 @@ let antiquot_expander ~parse_patt ~parse_expr = object
 
 
   
-(* let anti ~parse_patt ~parse_expr = object *)
-(*   inherit Ast.map as super; *)
-(*   method! patt = *)
-(*     with "patt" *)
-(*     fun *)
-(*     [ {| $anti:s |} | {| $str:s |} as p -> *)
-(*       let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in *)
-(*       handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc *)
-(*         ~decorate:(fun n e -> *)
-(*           let len = String.length n in  *)
-(*           match n with *)
-(*           [ "tupexpr" -> {|`ExTup ($(mloc _loc), $e)|} *)
-(*           | "seqexpr" -> {|`ExSeq ($(mloc _loc), $e) |} *)
-(*           | "uidexpr" -> {| `IdUid ($(mloc _loc), $e) |} (\* use Ant instead *\) *)
-(*           | "lidexpr" -> {| `IdLid ($(mloc _loc), $e) |} *)
-(*           | "strexpr" -> {| `ExStr ($(mloc _loc), $e) |} *)
-(*           | "chrexpr" -> {| `ExChr ($(mloc _loc), $e) |} *)
-(*           | "intexpr" -> {| `ExInt ($(mloc _loc), $e) |} *)
-(*           | "int32expr" -> {| `ExInt32 ($(mloc _loc), $e) |} *)
-(*           | "int64expr" -> {|`ExInt64 ($(mloc _loc), $e)|} *)
-(*           | "floexpr" -> {| Ast.ExFlo ($(mloc _loc), $e) |} *)
-(*           | "nativeintexpr" -> {|`ExNativeInt ($(mloc _loc), $e) |} *)
-(*           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern") *)
-(*           | _ -> e ]) *)
-(*       | p -> super#patt p ]; *)
-(*     method! expr = with "expr" fun (\* `Ant keeps the right location, `ExStr does not *\) *)
-(*       [ {| $anti:s |} | {| $str:s |} as e -> *)
-(*           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in *)
-(*           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc *)
-(*             ~decorate:(fun n e -> (\* e is the parsed Ast node already *\) *)
-(*             match n with *)
-(*             ["tupexpr" ->   {| `ExTup $(mloc _loc) $e |} *)
-(*             | "seqexpr" -> {| `ExSeq $(mloc _loc) $e |} *)
-(*             | "uidexpr" -> {| `IdUid $(mloc _loc) $e |} (\* use Ant instead *\) *)
-(*             | "lidexpr" -> {| `IdLid $(mloc _loc) $e |} *)
-(*             | "strexpr" -> {| `ExStr $(mloc _loc) $e |} *)
-(*             | "chrexpr" -> {| `ExChr $(mloc _loc) $e |} *)
-(*             | "intexpr" -> {| `ExInt $(mloc _loc) $e |} *)
-(*             | "int32expr" -> {| `ExInt32 $(mloc _loc) $e |} *)
-(*             | "int64expr" -> {|`ExInt64 $(mloc _loc) $e|} *)
-(*             | "floexpr" -> {| Ast.ExFlo $(mloc _loc) $e |} *)
-(*             | "nativeintexpr" -> {|`ExNativeInt $(mloc _loc) $e |} *)
-(*             | "`nativeintexpr" -> *)
-(*                 let e = {| Nativeint.to_string $e |} in *)
-(*                 {|`ExNativeInt $(mloc _loc) $e |} *)
-(*             | "`intexpr" -> *)
-(*                 let e = {|string_of_int $e |} in *)
-(*                 {|`ExInt $(mloc _loc) $e |} *)
-(*             | "`int32expr" -> *)
-(*                 let e = {|Int32.to_string $e |} in *)
-(*                 {|`ExInt32 $(mloc _loc) $e |} *)
-(*             | "`int64expr" -> *)
-(*                 let e = {|Int64.to_string $e |} in *)
-(*                 {|`ExInt64 $(mloc _loc) $e |} *)
-(*             | "`chrexpr" -> *)
-(*                 let e = {|Char.escaped $e|} in *)
-(*                 {|`ExChr $(mloc _loc) $e |} *)
-(*             | "`strexpr" -> *)
-(*                 let e = {|Ast.safe_string_escaped $e |} in *)
-(*                 {|`ExStr $(mloc _loc) $e |} *)
-(*             | "`floexpr" -> *)
-(*                 let e = {| FanUtil.float_repres $e |} in  *)
-(*                 {|Ast.ExFlo $(mloc _loc) $e |} *)
-(*             | "`boolexpr" -> *)
-(*                 let x = {|`IdLid $(mloc _loc) (if $e then "true" else "false" ) |} in *)
-(*                 {| {| $(id:$x)  |} |} *)
-(*             | "antiexpr" -> {| `Ant $(mloc _loc) $e |} *)
-(*             | _ -> e ]) *)
-(*       | e -> super#expr e ]; *)
-(*   end; *)
-
-                (* {| {| $(id: $({|`IdLid $(mloc _loc) (if $e then "true" else "false" ) |}))  |} |} *)
-                  
-
-                  (* {| $(lid:if e then "true" else "false") |} *)
-                  (* {| {| $(lid:if $e then "true" else "false") |} |} *)
-
-                  (* {:expr@here|$`bool:x|} *)
-                  (*
-                    let _ =
-  `ExApp
-    (_loc,
-      (`ExApp
-         (_loc,
-           (`ExId
-              (_loc,
-                (`IdAcc
-                   (_loc, (`IdUid (_loc, "Ast")),
-                     (`IdUid (_loc, "`ExId")))))),
-           (`ExId (_loc, (`IdLid (_loc, "_loc")))))),
-      (`ExApp
-         (_loc,
-           (`ExApp
-              (_loc,
-                (`ExId
-                   (_loc,
-                     (`IdAcc
-                        (_loc, (`IdUid (_loc, "Ast")),
-                          (`IdUid (_loc, "`IdLid")))))),
-                (`ExId (_loc, (`IdLid (_loc, "_loc")))))),
-           (`ExIfe
-              (_loc, e, (`ExStr (_loc, "true")),
-                (`ExStr (_loc, "false")))))))
-                   *)

@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 (* This module builds a generic framework *)
 
 #default_quotation "expr";;
@@ -28,7 +28,7 @@ module Make(S:FSig.Config) = struct
   
 
   (* collect the partial evaluated Ast node  and meta data   *)      
-  let mapi_expr simple_expr_of_ctyp i (y:Ast.ctyp)  = with {"patt":"ctyp"}
+  let mapi_expr simple_expr_of_ctyp i (y:ctyp)  = with {"patt":"ctyp"}
     let name_expr = simple_expr_of_ctyp y in 
     let base = name_expr  +> S.names in
     (** FIXME as a tuple it is useful when arity> 1??? *)
@@ -47,7 +47,7 @@ module Make(S:FSig.Config) = struct
     let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in 
     match ty with
     [ {|  ($tup:t) |}  -> 
-      let ls = Ast.list_of_ctyp t [] in
+      let ls = FanAst.list_of_ctyp t [] in
       let len = List.length ls in
       let patt = Patt.mk_tuple ~arity:S.arity ~number:len in
       let tys = List.mapi (mapi_expr  simple_expr_of_ctyp) ls in
@@ -144,7 +144,7 @@ module Make(S:FSig.Config) = struct
     assume input is  variant type
     accept variant input type to generate  a function expression 
    *)  
-  let expr_of_ctyp  simple_expr_of_ctyp (ty:Ast.ctyp)  = with {"patt":"ctyp"}
+  let expr_of_ctyp  simple_expr_of_ctyp (ty:ctyp)  = with {"patt":"ctyp"}
     let open ErrorMonad in 
     let f  cons tyargs acc = 
         let args_length = List.length tyargs in  (* ` is not needed here *)
@@ -160,10 +160,10 @@ module Make(S:FSig.Config) = struct
         (* {:match_case| $acc$ | $p$ -> $e$  |} in *)
     let info = match ty with
       (* FIXME TyVrnInfSup to be added *)
-      [ {|  [ $t]  |}  -> (TyVrn, List.length (Ast.list_of_ctyp t []))
-      | {| [= $t ] |} -> (TyVrnEq, List.length (Ast.list_of_ctyp t []))
-      | {| [> $t ] |} -> (TyVrnSup,List.length (Ast.list_of_ctyp t []))
-      | {| [< $t ] |} -> (TyVrnInf,List.length (Ast.list_of_ctyp t []))
+      [ {|  [ $t]  |}  -> (TyVrn, List.length (FanAst.list_of_ctyp t []))
+      | {| [= $t ] |} -> (TyVrnEq, List.length (FanAst.list_of_ctyp t []))
+      | {| [> $t ] |} -> (TyVrnSup,List.length (FanAst.list_of_ctyp t []))
+      | {| [< $t ] |} -> (TyVrnInf,List.length (FanAst.list_of_ctyp t []))
       | _ ->
           invalid_arg
             (sprintf "expr_of_ctyp {|%s|} " "" (*FIXME*)
@@ -178,7 +178,7 @@ module Make(S:FSig.Config) = struct
       return (currying ~arity:S.arity res ));
 
 
-  let mk_prefix  vars (acc:Ast.expr)  = with {"patt":"ctyp"}
+  let mk_prefix  vars (acc:expr)  = with {"patt":"ctyp"}
     let open Transform in 
     let varf = basic_transform S.left_type_variable in
     let  f var acc = match var with

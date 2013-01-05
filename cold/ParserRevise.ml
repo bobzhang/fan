@@ -211,7 +211,8 @@ let apply () =
                try symb __strm
                with | XStream.Failure  -> raise (XStream.Error "") in
              let s = __strm in
-             let _loc = FanLoc.merge (Ast.loc_of_expr al) (Ast.loc_of_expr a) in
+             let _loc =
+               FanLoc.merge (FanAst.loc_of_expr al) (Ast.loc_of_expr a) in
              kont (`ExSem (_loc, al, a)) s))
        | _ -> al in
      fun (__strm : _ XStream.t)  -> let a = symb __strm in kont a __strm);
@@ -2081,7 +2082,7 @@ let apply () =
                   (let i =
                      match x with
                      | `Ant (loc,s) -> `Ant (loc, s)
-                     | p -> Ast.ident_of_patt p in
+                     | p -> FanAst.ident_of_patt p in
                    `PaEq (_loc, i, y) : 'patt_quot ))));
           ([`Snterm (Gram.obj (patt : 'patt Gram.t ))],
             (Gram.mk_action
@@ -2163,7 +2164,7 @@ let apply () =
                   (match p2 with
                    | `PaTup (_loc,p) ->
                        List.fold_left (fun p1  p2  -> `PaApp (_loc, p1, p2))
-                         p1 (Ast.list_of_patt p [])
+                         p1 (FanAst.list_of_patt p [])
                    | _ -> `PaApp (_loc, p1, p2) : 'patt ))));
          ([`Snterm (Gram.obj (patt_constr : 'patt_constr Gram.t ))],
            (Gram.mk_action
@@ -3556,7 +3557,7 @@ let apply () =
             (Gram.mk_action
                (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
                   (let t = `TyApp (_loc, t1, t2) in
-                   try `TyId (_loc, (Ast.ident_of_ctyp t))
+                   try `TyId (_loc, (FanAst.ident_of_ctyp t))
                    with | Invalid_argument _ -> t : 'ctyp ))))]);
        ((Some "."), (Some `LA),
          [([`Sself; `Skeyword "."; `Sself],
@@ -3566,7 +3567,7 @@ let apply () =
                      `TyId
                        (_loc,
                          (`IdAcc
-                            (_loc, (Ast.ident_of_ctyp t1),
+                            (_loc, (FanAst.ident_of_ctyp t1),
                               (Ast.ident_of_ctyp t2))))
                    with | Invalid_argument s -> raise (XStream.Error s) : 
                   'ctyp ))))]);
@@ -3803,7 +3804,7 @@ let apply () =
                   (let (tl,rt) = Ctyp.to_generalized t in
                    `TyCol
                      (_loc, (`TyId (_loc, (`IdUid (_loc, s)))),
-                       (`TyArr (_loc, (Ast.tyAnd_of_list tl), rt))) : 
+                       (`TyArr (_loc, (FanAst.tyAnd_of_list tl), rt))) : 
                   'constructor_declarations ))));
           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
             (Gram.mk_action
@@ -5286,7 +5287,7 @@ let apply () =
                           (cst : 'e__7 ))))])],
             (Gram.mk_action
                (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->
-                  (Ast.crSem_of_list l : 'class_structure ))))])]);
+                  (FanAst.crSem_of_list l : 'class_structure ))))])]);
    Gram.extend (class_str_item : 'class_str_item Gram.t )
      (None,
        [(None, None,

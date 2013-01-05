@@ -98,7 +98,7 @@ let apply () = begin
       [ [< (`KEYWORD ";", _); a = symb; 's >] ->
         let _loc =
           FanLoc.merge
-            (Ast.loc_of_expr al) (Ast.loc_of_expr a) in
+            (FanAst.loc_of_expr al) (Ast.loc_of_expr a) in
         kont {:expr| $al; $a |} s
       | [< >] -> al ] in
     parser [< a = symb; 's >] -> kont a s
@@ -496,7 +496,7 @@ let apply () = begin
            let i =
              match x with
              [ {@loc| $anti:s |} -> {:ident@loc| $anti:s |}
-             | p -> Ast.ident_of_patt p ] in
+             | p -> FanAst.ident_of_patt p ] in
            {| $i = $y |}   (* {:patt| x=  y|} *)
        | patt{x} -> x
        | -> {||} ]
@@ -521,7 +521,7 @@ let apply () = begin
           match p2 with
             [ {| ($tup:p) |} ->
               List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
-                (Ast.list_of_patt p [])
+                (FanAst.list_of_patt p [])
             | _ -> {|$p1 $p2 |}  ]
         | patt_constr{p1} -> p1
         | "lazy"; S{p} -> {| lazy $p |}  ]
@@ -755,11 +755,11 @@ let apply () = begin
        "apply" LA
         [ S{t1}; S{t2} ->
           let t = {| $t1 $t2 |} in
-          try {| $(id:Ast.ident_of_ctyp t) |}
+          try {| $(id:FanAst.ident_of_ctyp t) |}
           with [ Invalid_argument _ -> t ]]
        "." LA
         [ S{t1}; "."; S{t2} ->
-            try {| $(id:Ast.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) |}
+            try {| $(id:FanAst.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) |}
             with [ Invalid_argument s -> raise (XStream.Error s) ] ]
        "simple"
         [ "'"; a_ident{i} -> {| '$i |}
@@ -799,7 +799,7 @@ let apply () = begin
       | a_UIDENT{s}; "of"; constructor_arg_list{t} ->  {| $uid:s of $t |}
       | a_UIDENT{s}; ":"; ctyp{t} ->
           let (tl, rt) = Ctyp.to_generalized t in
-          {| $uid:s : ($(Ast.tyAnd_of_list tl) -> $rt) |}
+          {| $uid:s : ($(FanAst.tyAnd_of_list tl) -> $rt) |}
       | a_UIDENT{s} ->  {| $uid:s |}  ]
       constructor_declaration:
       [ `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1089,7 +1089,7 @@ let apply () = begin
         [ `ANT ((""|"cst"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_str_item" n s) |}
         | `ANT ((""|"cst"|"anti"|"list" as n),s); semi; S{cst} ->
             {| $(anti:mk_anti ~c:"class_str_item" n s); $cst |}
-        | L0 [ class_str_item{cst}; semi -> cst ]{l} -> Ast.crSem_of_list l  ]
+        | L0 [ class_str_item{cst}; semi -> cst ]{l} -> FanAst.crSem_of_list l  ]
       class_str_item:
         [ `ANT ((""|"cst"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"class_str_item" n s) |}

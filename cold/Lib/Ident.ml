@@ -69,7 +69,7 @@ let ident_map_of_ident f x =
        | q::(`IdLid (_loc,y))::[] -> `IdAcc (_loc, q, (f y))
        | _ -> invalid_arg ("ident_map identifier" ^ (to_string.contents x)))
 let ident_map_full f x =
-  let _loc = Ast.loc_of_ident x in
+  let _loc = FanAst.loc_of_ident x in
   match ((uid_of_ident x), (lid_of_ident x)) with
   | (Some pre,s) -> `IdAcc (_loc, pre, (`IdLid (_loc, (f s))))
   | (None ,s) -> `IdLid (_loc, (f s))

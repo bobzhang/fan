@@ -1,12 +1,12 @@
 module Ast = FanAst
-module MetaLocVar : Ast.META_LOC =
+module MetaLocVar : FanAst.META_LOC =
   struct
   let meta_loc_patt _loc _ =
     `PaId (_loc, (`IdLid (_loc, (FanLoc.name.contents))))
   let meta_loc_expr _loc _ =
     `ExId (_loc, (`IdLid (_loc, (FanLoc.name.contents))))
   end 
-module MetaLoc : Ast.META_LOC =
+module MetaLoc : FanAst.META_LOC =
   struct
   let meta_loc_patt _loc _location =
     failwith "MetaLoc.meta_loc_patt not implemented yet"
@@ -47,7 +47,7 @@ module MetaLoc : Ast.META_LOC =
                         then `ExId (_loc, (`IdLid (_loc, "true")))
                         else `ExId (_loc, (`IdLid (_loc, "false")))))))))))
   end 
-module MetaGhostLoc : Ast.META_LOC =
+module MetaGhostLoc : FanAst.META_LOC =
   struct
   let meta_loc_patt _loc _ =
     failwith "MetaGhostLoc.meta_loc_patt not implemented"

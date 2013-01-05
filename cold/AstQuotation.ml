@@ -1,3 +1,4 @@
+open Ast
 open LibUtil
 open FanUtil
 open Lib.Meta
@@ -182,7 +183,7 @@ let add_quotation ~expr_filter  ~patt_filter  ~mexpr  ~mpatt  name entry =
                   (_loc, (`PaVrn (_loc, u)),
                     (`PaId (_loc, (`IdLid (_loc, name)))))
             | `PaApp (_loc,a,b) -> `PaApp (_loc, (subst_first_loc name a), b)
-            | p -> p : Ast.patt -> Ast.patt ) in
+            | p -> p : patt -> patt ) in
          match loc_name_opt with
          | None  -> subst_first_loc FanLoc.name.contents exp_ast
          | Some "_" -> exp_ast
@@ -239,7 +240,7 @@ module MetaLocQuotation =
   end
 let antiquot_expander ~parse_patt  ~parse_expr  =
   object 
-    inherit  Ast.map as super
+    inherit  FanAst.map as super
     method! patt =
       function
       | `Ant (_loc,s)|`PaStr (_loc,s) as p ->

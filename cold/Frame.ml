@@ -1,3 +1,4 @@
+open Ast
 open Format
 open LibUtil
 open Lib
@@ -16,7 +17,7 @@ module Make(S:FSig.Config) = struct
             List.iter (fun s  -> eprintf "%s\n" s) preserve;
             exit 2)
          else check_valid name) S.names
-  let mapi_expr simple_expr_of_ctyp i (y : Ast.ctyp) =
+  let mapi_expr simple_expr_of_ctyp i (y : ctyp) =
     let name_expr = simple_expr_of_ctyp y in
     let base = name_expr +> S.names in
     let id_exprs =
@@ -32,7 +33,7 @@ module Make(S:FSig.Config) = struct
       let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in
       match ty with
       | `TyTup (_loc,t) ->
-          let ls = Ast.list_of_ctyp t [] in
+          let ls = FanAst.list_of_ctyp t [] in
           let len = List.length ls in
           let patt = Patt.mk_tuple ~arity:S.arity ~number:len in
           let tys = List.mapi (mapi_expr simple_expr_of_ctyp) ls in
@@ -115,7 +116,7 @@ module Make(S:FSig.Config) = struct
             fail &
               (sprintf "obj_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
                  "" "")
-  let expr_of_ctyp simple_expr_of_ctyp (ty : Ast.ctyp) =
+  let expr_of_ctyp simple_expr_of_ctyp (ty : ctyp) =
     let open ErrorMonad in
       let f cons tyargs acc =
         let args_length = List.length tyargs in
@@ -129,13 +130,14 @@ module Make(S:FSig.Config) = struct
           acc in
       let info =
         match ty with
-        | `TySum (_loc,t) -> (TyVrn, (List.length (Ast.list_of_ctyp t [])))
+        | `TySum (_loc,t) ->
+            (TyVrn, (List.length (FanAst.list_of_ctyp t [])))
         | `TyVrnEq (_loc,t) ->
-            (TyVrnEq, (List.length (Ast.list_of_ctyp t [])))
+            (TyVrnEq, (List.length (FanAst.list_of_ctyp t [])))
         | `TyVrnSup (_loc,t) ->
-            (TyVrnSup, (List.length (Ast.list_of_ctyp t [])))
+            (TyVrnSup, (List.length (FanAst.list_of_ctyp t [])))
         | `TyVrnInf (_loc,t) ->
-            (TyVrnInf, (List.length (Ast.list_of_ctyp t [])))
+            (TyVrnInf, (List.length (FanAst.list_of_ctyp t [])))
         | _ -> invalid_arg (sprintf "expr_of_ctyp {|%s|} " "") in
       (Ctyp.reduce_data_ctors ty [] f) >>=
         (fun res  ->
@@ -146,7 +148,7 @@ module Make(S:FSig.Config) = struct
                else res in
              List.rev t in
            return (currying ~arity:S.arity res))
-  let mk_prefix vars (acc : Ast.expr) =
+  let mk_prefix vars (acc : expr) =
     let open Transform in
       let varf = basic_transform S.left_type_variable in
       let f var acc =
