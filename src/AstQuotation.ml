@@ -292,6 +292,15 @@ module MetaLocQuotation = struct
   let meta_loc_patt _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
 end;
 
+(* let module_name _loc = *)
+(*   let _loc = FanLoc.ghost in ref {:ident| $(uid:"Ast")|} ; *)
+
+let gm () =
+  match !FanConfig.compilation_unit with
+  [Some "FanAst" -> begin (* eprintf "Compilation unit: FanAst";  *)"" end
+  | Some _ -> begin (* eprintf "Compilation unit: %s@." x;  *)"FanAst" end
+  | None -> begin (* eprintf "Compilation unit None@." ;  *)"FanAst" end];  
+  (* !module_name; *)
 
 let antiquot_expander ~parse_patt ~parse_expr = object
   inherit FanAst.map as super;
@@ -388,7 +397,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 let e = {|Char.escaped $e|} in
                 {| `ExChr ($(mloc _loc), $e) |}
             | "`strexpr" ->
-                let e = {|Ast.safe_string_escaped $e |} in
+                let e = {|$(uid:gm()).safe_string_escaped $e |} in
+                (* {| $(uid:gm()).safe_string_escaped $e|} *)
                 {| `ExStr ($(mloc _loc), $e) |}
             | "`floexpr" ->
                 let e = {| FanUtil.float_repres $e |} in 
@@ -421,49 +431,49 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 let e = {|Char.escaped $e|} in
                 {| `PaChr ($(mloc _loc), $e) |}
             | "`strpatt" ->
-                let e = {|Ast.safe_string_escaped $e |} in
+                let e = {|$(uid:gm()).safe_string_escaped $e |} in
                 {| `PaStr ($(mloc _loc), $e) |}
             | "`flopatt" ->
                 let e = {| FanUtil.float_repres $e |} in 
                 {| `PaFlo ($(mloc _loc), $e) |}
                   
-            | "liststr_item" -> {| Ast.stSem_of_list $e |}
+            | "liststr_item" -> {| $(uid:gm()).stSem_of_list $e |}
                   (* {|$(uid:"FanAst").stSem_of_list $e |} *)
-            | "listsig_item" -> {| Ast.sgSem_of_list $e |}
-            | "listclass_sig_item" -> {| Ast.cgSem_of_list $e |}
-            | "listclass_str_item" -> {| Ast.crSem_of_list $e |}
-            | "listmodule_expr" -> {| Ast.meApp_of_list $e |}
-            | "listmodule_type" -> {| Ast.mtApp_of_list $e |}
-            | "listmodule_binding" -> {| Ast.mbAnd_of_list $e |}
-            | "listbinding" -> {| Ast.biAnd_of_list $e |}
-            | "listbinding;" -> {| Ast.biSem_of_list $e |}
-            | "listrec_binding" -> {| Ast.rbSem_of_list $e |}
-            | "listclass_type" -> {| Ast.ctAnd_of_list $e |}
-            | "listclass_expr" -> {| Ast.ceAnd_of_list $e |}
-            | "listident" -> {| Ast.idAcc_of_list $e |}
-            | "listctypand" -> {| Ast.tyAnd_of_list $e |}
-            | "listctyp;" -> {| Ast.tySem_of_list $e |}
-            | "listctyp*" -> {| Ast.tySta_of_list $e |}
-            | "listctyp|" -> {| Ast.tyOr_of_list $e |}
-            | "listctyp," -> {| Ast.tyCom_of_list $e |}
-            | "listctyp&" -> {| Ast.tyAmp_of_list $e |}
-            | "listwith_constr" -> {| Ast.wcAnd_of_list $e |}
+            | "listsig_item" -> {| $(uid:gm()).sgSem_of_list $e |}
+            | "listclass_sig_item" -> {| $(uid:gm()).cgSem_of_list $e |}
+            | "listclass_str_item" -> {| $(uid:gm()).crSem_of_list $e |}
+            | "listmodule_expr" -> {| $(uid:gm()).meApp_of_list $e |}
+            | "listmodule_type" -> {| $(uid:gm()).mtApp_of_list $e |}
+            | "listmodule_binding" -> {| $(uid:gm()).mbAnd_of_list $e |}
+            | "listbinding" -> {| $(uid:gm()).biAnd_of_list $e |}
+            | "listbinding;" -> {| $(uid:gm()).biSem_of_list $e |}
+            | "listrec_binding" -> {| $(uid:gm()).rbSem_of_list $e |}
+            | "listclass_type" -> {| $(uid:gm()).ctAnd_of_list $e |}
+            | "listclass_expr" -> {| $(uid:gm()).ceAnd_of_list $e |}
+            | "listident" -> {| $(uid:gm()).idAcc_of_list $e |}
+            | "listctypand" -> {| $(uid:gm()).tyAnd_of_list $e |}
+            | "listctyp;" -> {| $(uid:gm()).tySem_of_list $e |}
+            | "listctyp*" -> {| $(uid:gm()).tySta_of_list $e |}
+            | "listctyp|" -> {| $(uid:gm()).tyOr_of_list $e |}
+            | "listctyp," -> {| $(uid:gm()).tyCom_of_list $e |}
+            | "listctyp&" -> {| $(uid:gm()).tyAmp_of_list $e |}
+            | "listwith_constr" -> {| $(uid:gm()).wcAnd_of_list $e |}
 
             (* staging problems here *)      
-            | "listmatch_case" -> {| Ast.mcOr_of_list $e |}
+            | "listmatch_case" -> {| $(uid:gm()).mcOr_of_list $e |}
             | "antimatch_case" -> {|  `Ant ($(mloc _loc), $e) |}
             | "listmatch_caselettry" ->
-                {| ((Ast.match_pre)#match_case (Ast.mcOr_of_list $e)) |}
+                {| (($(uid:gm()).match_pre)#match_case ($(uid:gm()).mcOr_of_list $e)) |}
             | "antimatch_caselettry" ->
-                {| Ast.match_pre#match_case (`Ant ($(mloc _loc), $e)) |}
+                {| $(uid:gm()).match_pre#match_case (`Ant ($(mloc _loc), $e)) |}
             | "match_caselettry" ->
-                {| Ast.match_pre#match_case $e |}
+                {| $(uid:gm()).match_pre#match_case $e |}
                   
-            | "listpatt," -> {| Ast.paCom_of_list $e |}
-            | "listpatt;" -> {| Ast.paSem_of_list $e |}
-            | "listexpr," -> {| Ast.exCom_of_list $e |}
-            | "listexpr;" -> {| Ast.exSem_of_list $e |}
-            | "listforall" -> {| Ast.tyVarApp_of_list $e |}
+            | "listpatt," -> {| $(uid:gm()).paCom_of_list $e |}
+            | "listpatt;" -> {| $(uid:gm()).paSem_of_list $e |}
+            | "listexpr," -> {| $(uid:gm()).exCom_of_list $e |}
+            | "listexpr;" -> {| $(uid:gm()).exSem_of_list $e |}
+            | "listforall" -> {| $(uid:gm()).tyVarApp_of_list $e |}
             | "antisig_item" -> {| `Ant ($(mloc _loc), $e) |}
             | "antistr_item" -> {| `Ant ($(mloc _loc), $e) |}
             | "antictyp" -> {| `Ant ($(mloc _loc), $e) |}

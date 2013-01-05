@@ -247,7 +247,7 @@ module Make(S:FSig.Config) = struct
               if Ctyp.is_recursive tydcl then `ReRecursive else `ReNil
             and binding = mk_binding name tydcl in
             `StVal (_loc, rec_flag, binding))) in
-    let item = Ast.stSem_of_list (List.map fs lst) in
+    let item = FanAst.stSem_of_list (List.map fs lst) in
     match module_name with
     | None  -> item
     | Some m -> `StMod (_loc, m, (`MeStr (_loc, item)))
@@ -268,7 +268,7 @@ module Make(S:FSig.Config) = struct
       let fs (ty : types) =
         match ty with
         | `Mutual named_types ->
-            Ast.crSem_of_list (List.map mk_class_str_item named_types)
+            FanAst.crSem_of_list (List.map mk_class_str_item named_types)
         | `Single ((name,tydcl) as named_type) ->
             (match Ctyp.abstract_list tydcl with
              | Some n ->
@@ -290,7 +290,7 @@ module Make(S:FSig.Config) = struct
                    (src, len) (Obj k) in
                let () = Hashtbl.add tbl dest (Qualified dest) in
                `CrMth (_loc, dest, `OvNil, `PrNil, (unknown len), ty)) extras in
-        `CrSem (_loc, body, (Ast.crSem_of_list items)) in
+        `CrSem (_loc, body, (FanAst.crSem_of_list items)) in
       let v = Ctyp.mk_obj class_name base body in
       Hashtbl.iter (fun _  v  -> eprintf "%s" (string_of_warning_type v)) tbl;
       (match module_name with

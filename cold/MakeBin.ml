@@ -1,9 +1,13 @@
 open Format
 open LibUtil
 let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
+let just_print_compilation_unit () =
+  (match FanConfig.compilation_unit.contents with
+   | Some v -> printf "%s@." v
+   | None  -> printf "null");
+  exit 0
 let print_version () =
   eprintf "Camlp4 version %s@." FanConfig.version; exit 0
-let print_stdlib () = printf "%s@." FanConfig.camlp4_standard_library; exit 0
 let warn_noassert () =
   eprintf
     "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
@@ -142,8 +146,18 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     let dyn_loader = DynLoader.instance.contents () in
     rcall_callback.contents ();
     (match x with
-     | Intf file_name -> task process_intf file_name
-     | Impl file_name -> task process_impl file_name
+     | Intf file_name ->
+         (FanConfig.compilation_unit :=
+            (Some
+               (String.capitalize
+                  (let open Filename in chop_extension (basename file_name))));
+          task process_intf file_name)
+     | Impl file_name ->
+         (FanConfig.compilation_unit :=
+            (Some
+               (String.capitalize
+                  (let open Filename in chop_extension (basename file_name))));
+          task process_impl file_name)
      | Str s ->
          let (f,o) = Filename.open_temp_file "from_string" ".ml" in
          (output_string o s;
@@ -156,8 +170,6 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
   let initial_spec_list =
     [("-I", (FanArg.String ((fun x  -> input_file (IncludeDir x)))),
        "<directory>  Add directory in search patch for object files.");
-    ("-where", (FanArg.Unit print_stdlib),
-      "Print camlp4 library directory and exit.");
     ("-nolib", (FanArg.Clear search_stdlib),
       "No automatic search for object files in library directory.");
     ("-intf", (FanArg.String ((fun x  -> input_file (Intf x)))),
@@ -182,6 +194,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     ("-v", (FanArg.Unit print_version), "Print Camlp4 version and exit.");
     ("-version", (FanArg.Unit just_print_the_version),
       "Print Camlp4 version number and exit.");
+    ("-compilation-unit", (FanArg.Unit just_print_compilation_unit),
+      "Print the current compilation unit");
     ("-vnum", (FanArg.Unit just_print_the_version),
       "Print Camlp4 version number and exit.");
     ("-no_quot", (FanArg.Clear FanConfig.quotations),

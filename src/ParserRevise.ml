@@ -410,6 +410,9 @@ let apply () = begin
        sequence: (*FIXME*)
        [ "let"; opt_rec{rf}; binding{bi}; "in"; expr{e}; sequence'{k} ->
          k {| let $rec:rf $bi in $e |}
+       | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a}; sequence'{k}
+         ->
+          k {| let try $rec:r $bi in $x with [ $a ] |}
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
            {| let $rec:rf $bi in $(Expr.mksequence ~loc:_loc el) |}
        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; expr{e}; sequence'{k} ->

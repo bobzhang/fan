@@ -210,7 +210,8 @@ let rec make_expr entry tvar =
                        (_loc,
                          (`ExCom
                             (_loc, (`ExVrn (_loc, attr)),
-                              (`ExStr (_loc, (Ast.safe_string_escaped descr))))))))))))
+                              (`ExStr
+                                 (_loc, (FanAst.safe_string_escaped descr))))))))))))
 and make_expr_rules _loc n rl tvar =
   Expr.mklist _loc
     (List.map

@@ -1,15 +1,13 @@
 open LibUtil
 open Basic
 open FSig
-open Ast
-module Ast = FanAst
 let _loc = FanLoc.ghost
 let app a b = `PaApp (_loc, a, b)
 let comma a b = `PaCom (_loc, a, b)
 let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
-  let _loc = FanLoc.merge (loc_of_patt a) (loc_of_patt b) in
+  let _loc = FanLoc.merge (FanAst.loc_of_patt a) (FanAst.loc_of_patt b) in
   `PaSem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
@@ -48,7 +46,8 @@ let mklist loc =
     function
     | [] -> `PaId (_loc, (`IdUid (_loc, "[]")))
     | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+        let _loc =
+          if top then loc else FanLoc.merge (FanAst.loc_of_patt e1) loc in
         `PaApp
           (_loc, (`PaApp (_loc, (`PaId (_loc, (`IdUid (_loc, "::")))), e1)),
             (loop false el)) in
@@ -56,13 +55,15 @@ let mklist loc =
 let rec apply accu =
   function
   | [] -> accu
-  | x::xs -> let _loc = loc_of_patt x in apply (`PaApp (_loc, accu, x)) xs
+  | x::xs ->
+      let _loc = FanAst.loc_of_patt x in apply (`PaApp (_loc, accu, x)) xs
 let mkarray loc arr =
   let rec loop top =
     function
     | [] -> `PaId (_loc, (`IdUid (_loc, "[]")))
     | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+        let _loc =
+          if top then loc else FanLoc.merge (FanAst.loc_of_patt e1) loc in
         `PaArr (_loc, (`PaSem (_loc, e1, (loop false el)))) in
   let items = arr |> Array.to_list in loop true items
 let of_str s =
@@ -126,7 +127,7 @@ let tuple _loc =
   function
   | [] -> `PaId (_loc, (`IdUid (_loc, "()")))
   | p::[] -> p
-  | e::es -> `PaTup (_loc, (`PaCom (_loc, e, (Ast.paCom_of_list es))))
+  | e::es -> `PaTup (_loc, (`PaCom (_loc, e, (FanAst.paCom_of_list es))))
 let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi
@@ -135,9 +136,9 @@ let mk_record ?(arity= 1)  cols =
       cols in
   let res =
     zfold_left ~start:1 ~until:(arity - 1)
-      ~acc:(`PaRec (_loc, (Ast.paSem_of_list (mk_list 0))))
+      ~acc:(`PaRec (_loc, (FanAst.paSem_of_list (mk_list 0))))
       (fun acc  i  ->
-         comma acc (`PaRec (_loc, (Ast.paSem_of_list (mk_list i))))) in
+         comma acc (`PaRec (_loc, (FanAst.paSem_of_list (mk_list i))))) in
   if arity > 1 then `PaTup (_loc, res) else res
 let mk_tuple ~arity  ~number  =
   match arity with

@@ -251,7 +251,7 @@ let _ =
                           (x : 'e__3 ))))])],
             (Gram.mk_action
                (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
-                  (`ExSeq (_loc, (Ast.exSem_of_list xs)) : 'fan_quots ))))])])
+                  (`ExSeq (_loc, (FanAst.exSem_of_list xs)) : 'fan_quots ))))])])
 let _ =
   PreCast.Syntax.Options.add
     ("-keep", (FanArg.Set keep), "Keep the included type definitions");

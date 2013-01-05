@@ -9,9 +9,82 @@ module type META_LOC = sig
           The second location is the one to treat. *)
     val meta_loc_expr : FanLoc.t -> FanLoc.t -> expr;
 end;
-open FanUtil;  
+open FanUtil;
+open LibUtil;  
 open StdLib;
 
+let loc_of_ctyp : ctyp -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+let loc_of_patt : patt -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+  
+let loc_of_expr : expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+      
+
+  
+let loc_of_module_type : module_type -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_module_expr : module_expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+    
+let loc_of_sig_item : sig_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+
+let loc_of_str_item : str_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_type : class_type -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_sig_item : class_sig_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_expr : class_expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_str_item : class_str_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_with_constr : with_constr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_binding : binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_rec_binding : rec_binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_module_binding : module_binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_match_case : match_case -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_ident : ident -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+
+let safe_string_escaped s =
+  if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
+  else String.escaped s;
+  
 {:fans|keep off; <++ "MetaExpr", "MetaPatt","Map","Fold","Print","OPrint";|};
 
 {:ocaml|
@@ -417,21 +490,30 @@ type loc = FanLoc.t
 
 
 
+#default_quotation "expr";;
+DEFINE GETLOC(x) = loc_of_expr(x);
+module MExpr = struct
+  INCLUDE "src/MetaTemplate.ml"; (* FIXME INCLUDE as a langauge :default *)
+end;
+
+#default_quotation "patt"  ;;
+DEFINE GETLOC(x) = loc_of_patt(x);
+module MPatt = struct
+  INCLUDE "src/MetaTemplate.ml";
+end;
+
 
 module Make(MetaLoc:META_LOC) = struct
-  module Expr (* : sig *)
-  (*   val meta_class_str_item: loc -> class_str_item -> PAst.expr; *)
-  (* end  *)= struct
-    open StdMeta.Expr;
+  module Expr = struct
+    open MExpr;
     let meta_loc = MetaLoc.meta_loc_expr;
     __MetaExpr__;
   end;
   module Patt =struct
-    open StdMeta.Patt;
+    open MPatt;
     let meta_loc = MetaLoc.meta_loc_patt;
     __MetaPatt__;
   end;
-  (* module Expr = struct __MetaExpr__; end; *)
 end;
     
 

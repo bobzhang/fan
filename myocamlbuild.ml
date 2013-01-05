@@ -810,7 +810,8 @@ let () =
     "src/Lib/Ctyp.ml" |-? ["src/Lib/CommonStructure.ml" ];
     "src/Lib/Expr.ml" |-? ["src/Lib/CommonStructure.ml"; "src/Lib/ExprPatt.ml" ];
     "src/Lib/Patt.ml" |-? ["src/Lib/CommonStructure.ml"; "src/Lib/ExprPatt.ml" ];
-    "src/StdMeta.ml"   |-? ["src/MetaTemplate.ml"]; 
+    "src/StdMeta.ml"   |-? ["src/MetaTemplate.ml"];
+    "src/FanAst.ml"   |-? ["src/MetaTemplate.ml"]; 
   end;;
 
 

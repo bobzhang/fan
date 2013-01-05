@@ -5,7 +5,46 @@ module type META_LOC =
     val meta_loc_expr : FanLoc.t -> FanLoc.t -> expr
   end
 open FanUtil
+open LibUtil
 open StdLib
+let loc_of_ctyp: ctyp -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_patt: patt -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_expr: expr -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_module_type: module_type -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_module_expr: module_expr -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_sig_item: sig_item -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_str_item: str_item -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_class_type: class_type -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_class_sig_item: class_sig_item -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_class_expr: class_expr -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_class_str_item: class_str_item -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_with_constr: with_constr -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_binding: binding -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_rec_binding: rec_binding -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_module_binding: module_binding -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_match_case: match_case -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of_ident: ident -> FanLoc.t =
+  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let safe_string_escaped s =
+  if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
+  then s
+  else String.escaped s
 let _ = ()
 class map =
   object (self : 'self_type)
@@ -4107,10 +4146,109 @@ and pp_print_meta_bool: 'fmt -> meta_bool -> 'result =
                pp_print_string a1) a0
 and pp_print_loc: 'fmt -> loc -> 'result =
   fun fmt  a0  -> FanLoc.pp_print_t fmt a0
+module MExpr = struct
+  let meta_int _loc i = `ExInt (_loc, (string_of_int i))
+  let meta_int32 _loc i = `ExInt32 (_loc, (Int32.to_string i))
+  let meta_int64 _loc i = `ExInt64 (_loc, (Int64.to_string i))
+  let meta_nativeint _loc i = `ExNativeInt (_loc, (Nativeint.to_string i))
+  let meta_float _loc i = `ExFlo (_loc, (FanUtil.float_repres i))
+  let meta_string _loc i = `ExStr (_loc, (safe_string_escaped i))
+  let meta_char _loc i = `ExChr (_loc, (Char.escaped i))
+  let meta_unit _loc _ = `ExId (_loc, (`IdUid (_loc, "()")))
+  let meta_bool _loc =
+    function
+    | true  -> `ExId (_loc, (`IdLid (_loc, "true")))
+    | false  -> `ExId (_loc, (`IdLid (_loc, "false")))
+  let meta_ref mf_a _loc i =
+    `ExRec
+      (_loc,
+        (`RbEq (_loc, (`IdLid (_loc, "contents")), (mf_a _loc i.contents))),
+        (`ExNil _loc))
+  let mklist loc =
+    let rec loop top =
+      function
+      | [] -> `ExId (loc, (`IdUid (loc, "[]")))
+      | e1::el ->
+          let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+          `ExApp
+            (_loc,
+              (`ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e1)),
+              (loop false el)) in
+    loop true
+  let mkarray loc arr =
+    let rec loop top =
+      function
+      | [] -> `ExId (loc, (`IdUid (loc, "[]")))
+      | e1::el ->
+          let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+          `ExArr (_loc, (`ExSem (_loc, e1, (loop false el)))) in
+    let items = arr |> Array.to_list in loop true items
+  let meta_list mf_a _loc ls =
+    mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
+  let meta_array mf_a _loc ls =
+    mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
+  let meta_option mf_a _loc =
+    function
+    | None  -> `ExId (_loc, (`IdUid (_loc, "None")))
+    | Some x ->
+        `ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "Some")))), (mf_a _loc x))
+  let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
+    (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
+    invalid_arg "meta_arrow not implemented"
+  end
+module MPatt = struct
+  let meta_int _loc i = `PaInt (_loc, (string_of_int i))
+  let meta_int32 _loc i = `PaInt32 (_loc, (Int32.to_string i))
+  let meta_int64 _loc i = `PaInt64 (_loc, (Int64.to_string i))
+  let meta_nativeint _loc i = `PaNativeInt (_loc, (Nativeint.to_string i))
+  let meta_float _loc i = `PaFlo (_loc, (FanUtil.float_repres i))
+  let meta_string _loc i = `PaStr (_loc, (safe_string_escaped i))
+  let meta_char _loc i = `PaChr (_loc, (Char.escaped i))
+  let meta_unit _loc _ = `PaId (_loc, (`IdUid (_loc, "()")))
+  let meta_bool _loc =
+    function
+    | true  -> `PaId (_loc, (`IdLid (_loc, "true")))
+    | false  -> `PaId (_loc, (`IdLid (_loc, "false")))
+  let meta_ref mf_a _loc i =
+    `PaRec
+      (_loc,
+        (`PaEq (_loc, (`IdLid (_loc, "contents")), (mf_a _loc i.contents))))
+  let mklist loc =
+    let rec loop top =
+      function
+      | [] -> `PaId (loc, (`IdUid (loc, "[]")))
+      | e1::el ->
+          let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+          `PaApp
+            (_loc,
+              (`PaApp (_loc, (`PaId (_loc, (`IdUid (_loc, "::")))), e1)),
+              (loop false el)) in
+    loop true
+  let mkarray loc arr =
+    let rec loop top =
+      function
+      | [] -> `PaId (loc, (`IdUid (loc, "[]")))
+      | e1::el ->
+          let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+          `PaArr (_loc, (`PaSem (_loc, e1, (loop false el)))) in
+    let items = arr |> Array.to_list in loop true items
+  let meta_list mf_a _loc ls =
+    mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
+  let meta_array mf_a _loc ls =
+    mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
+  let meta_option mf_a _loc =
+    function
+    | None  -> `PaId (_loc, (`IdUid (_loc, "None")))
+    | Some x ->
+        `PaApp (_loc, (`PaId (_loc, (`IdUid (_loc, "Some")))), (mf_a _loc x))
+  let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
+    (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
+    invalid_arg "meta_arrow not implemented"
+  end
 module Make(MetaLoc:META_LOC) =
   struct
   module Expr = struct
-    open StdMeta.Expr let meta_loc = MetaLoc.meta_loc_expr
+    open MExpr let meta_loc = MetaLoc.meta_loc_expr
     let rec meta_class_str_item: 'loc -> class_str_item -> 'result =
       fun _loc  ->
         function
@@ -6303,7 +6441,7 @@ module Make(MetaLoc:META_LOC) =
         | `Ant a0 -> `Ant a0
     end
   module Patt = struct
-    open StdMeta.Patt let meta_loc = MetaLoc.meta_loc_patt
+    open MPatt let meta_loc = MetaLoc.meta_loc_patt
     let rec meta_class_str_item: 'loc -> class_str_item -> 'result =
       fun _loc  ->
         function

@@ -173,7 +173,7 @@ let _ =
                                             (`ExApp
                                                (_loc, mk, (`ExStr (_loc, x)))),
                                             typ)))))) ls in
-                   Ast.stSem_of_list rest : 'nonterminals ))))])]);
+                   FanAst.stSem_of_list rest : 'nonterminals ))))])]);
   Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
     (None,
       [(None, None,
@@ -192,7 +192,7 @@ let _ =
                                    (`IdAcc
                                       (_loc, t, (`IdLid (_loc, "clear")))))),
                               (`ExId (_loc, (`IdLid (_loc, x)))))) ls in
-                   `ExSeq (_loc, (Ast.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
+                   `ExSeq (_loc, (FanAst.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
     (None,
       [(None, None,
@@ -223,7 +223,7 @@ let _ =
                (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
                   (_loc : FanLoc.t)  ->
                   (let () = grammar_module_name := old in
-                   `ExSeq (_loc, (Ast.exSem_of_list es)) : 'delete_rule_body ))))])]);
+                   `ExSeq (_loc, (FanAst.exSem_of_list es)) : 'delete_rule_body ))))])]);
   Gram.extend (delete_rules : 'delete_rules Gram.t )
     (None,
       [(None, None,
@@ -256,7 +256,7 @@ let _ =
                                            (_loc, (gm ()),
                                              (`IdLid (_loc, "delete_rule")))))),
                                    e)), b)) sls in
-                   `ExSeq (_loc, (Ast.exSem_of_list rest)) : 'delete_rules ))))])]);
+                   `ExSeq (_loc, (FanAst.exSem_of_list rest)) : 'delete_rules ))))])]);
   Gram.extend (qualuid : 'qualuid Gram.t )
     (None,
       [(None, None,
@@ -800,7 +800,7 @@ let _ =
                   | x::xs ->
                       `PaApp
                         (_loc, (`PaApp (_loc, (`PaVrn (_loc, s)), x)),
-                          (Ast.paCom_of_list xs))
+                          (FanAst.paCom_of_list xs))
                   | _ -> assert false : 'simple_patt ))))])]);
   Gram.extend (internal_patt : 'internal_patt Gram.t )
     (None,
@@ -866,7 +866,8 @@ let _ =
            (Gram.mk_action
               (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
                  (_loc : FanLoc.t)  ->
-                 (`PaTup (_loc, (`PaCom (_loc, p1, (Ast.paCom_of_list ps)))) : 
+                 (`PaTup
+                    (_loc, (`PaCom (_loc, p1, (FanAst.paCom_of_list ps)))) : 
                  'pattern ))))])]);
   Gram.extend (string : 'string Gram.t )
     (None,

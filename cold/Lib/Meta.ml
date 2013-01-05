@@ -22,7 +22,7 @@ module MetaLoc : FanAst.META_LOC =
         (`ExTup
            (_loc,
              (`ExCom
-                (_loc, (`ExStr (_loc, (Ast.safe_string_escaped a))),
+                (_loc, (`ExStr (_loc, (FanAst.safe_string_escaped a))),
                   (`ExCom
                      (_loc,
                        (`ExCom

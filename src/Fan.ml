@@ -20,7 +20,7 @@ module MP = MetaQAst.Patt;
 
 of_str_item_with_filter ~name:"ocaml" ~entry:str_items
   ~filter:(fun s ->
-    let _loc = loc_of_str_item s in 
+    let _loc = FanAst.loc_of_str_item s in 
     let v =  {:module_expr| struct $s end |} in
     let module_expr =
       (Typehook.traversal ())#module_expr v in

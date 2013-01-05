@@ -407,7 +407,8 @@ class subst loc env =
                  (`ExTup
                     (_loc,
                       (`ExCom
-                         (_loc, (`ExStr (_loc, (Ast.safe_string_escaped a))),
+                         (_loc,
+                           (`ExStr (_loc, (FanAst.safe_string_escaped a))),
                            (`ExCom
                               (_loc,
                                 (`ExCom
@@ -615,7 +616,7 @@ let tuple _loc =
   function
   | [] -> `ExId (_loc, (`IdUid (_loc, "()")))
   | p::[] -> p
-  | e::es -> `ExTup (_loc, (`ExCom (_loc, e, (Ast.exCom_of_list es))))
+  | e::es -> `ExTup (_loc, (`ExCom (_loc, e, (FanAst.exCom_of_list es))))
 let mkumin loc prefix arg =
   match arg with
   | `ExInt (_loc,n) -> `ExInt (loc, (String.neg n))
@@ -633,7 +634,7 @@ let mk_record label_exprs =
     List.map
       (fun (label,expr)  -> `RbEq (_loc, (`IdLid (_loc, label)), expr))
       label_exprs in
-  `ExRec (_loc, (Ast.rbSem_of_list rec_bindings), (`ExNil _loc))
+  `ExRec (_loc, (FanAst.rbSem_of_list rec_bindings), (`ExNil _loc))
 let failure =
   `ExApp
     (_loc, (`ExId (_loc, (`IdLid (_loc, "raise")))),
@@ -1079,8 +1080,9 @@ let currying match_cases ~arity  =
     let names = List.init arity (fun i  -> x ~off:i 0) in
     let exprs = List.map (fun s  -> `ExId (_loc, (`IdLid (_loc, s)))) names in
     names <+
-      (`ExMat (_loc, (tuple_of_list exprs), (Ast.mcOr_of_list match_cases)))
-  else `ExFun (_loc, (Ast.mcOr_of_list match_cases))
+      (`ExMat
+         (_loc, (tuple_of_list exprs), (FanAst.mcOr_of_list match_cases)))
+  else `ExFun (_loc, (FanAst.mcOr_of_list match_cases))
 let unknown len =
   if len = 0
   then `ExSnd (_loc, (`ExId (_loc, (`IdLid (_loc, "self")))), "unknown")

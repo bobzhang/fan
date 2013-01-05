@@ -74,7 +74,7 @@ let add_debug_expr e =
                                                    (`IdLid (_loc, "eprintf")))))),
                                          (`ExStr
                                             (_loc,
-                                              (Ast.safe_string_escaped msg))))),
+                                              (FanAst.safe_string_escaped msg))))),
                                     (`ExApp
                                        (_loc,
                                          (`ExId
@@ -154,7 +154,7 @@ let decorate_this_expr e id =
                      (`IdAcc
                         (_loc, (`IdUid (_loc, "Camlp4prof")),
                           (`IdLid (_loc, "count")))))),
-                (`ExStr (_loc, (Ast.safe_string_escaped s))))))), e)
+                (`ExStr (_loc, (FanAst.safe_string_escaped s))))))), e)
 let rec decorate_fun id =
   let decorate = decorate decorate_fun in
   let decorate_expr = decorate#expr in
@@ -184,11 +184,12 @@ let map_expr =
                                                               `ExNil _,e))
       -> e
   | `ExId (_loc,`IdLid (_,"__FILE__")) ->
-      `ExStr (_loc, (Ast.safe_string_escaped (FanLoc.file_name _loc)))
+      `ExStr (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
   | `ExId (_loc,`IdLid (_,"__PWD__")) ->
       `ExStr
         (_loc,
-          (Ast.safe_string_escaped (Filename.dirname (FanLoc.file_name _loc))))
+          (FanAst.safe_string_escaped
+             (Filename.dirname (FanLoc.file_name _loc))))
   | `ExId (_loc,`IdLid (_,"__LOCATION__")) ->
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
       `ExApp
@@ -201,7 +202,7 @@ let map_expr =
           (`ExTup
              (_loc,
                (`ExCom
-                  (_loc, (`ExStr (_loc, (Ast.safe_string_escaped a))),
+                  (_loc, (`ExStr (_loc, (FanAst.safe_string_escaped a))),
                     (`ExCom
                        (_loc,
                          (`ExCom

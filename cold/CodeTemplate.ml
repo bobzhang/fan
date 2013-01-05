@@ -159,7 +159,7 @@ let print_base1 =
                                                             (`IdLid
                                                                (_loc, "a")))))))))))))),
                               ty))))))) in
-  Ast.stSem_of_list items
+  FanAst.stSem_of_list items
 let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_base_1,fold_class_str_item_base_2,print_class_str_item_base)
   =
   let ty_names = ty_metas |> (List.map (fun { str;_}  -> str)) in
@@ -247,8 +247,9 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               (_loc, x, `OvNil, `PrNil,
                 (`ExId (_loc, (`IdLid (_loc, ("pp_print_" ^ x))))),
                 (`TyNil _loc)))) in
-  ((Ast.crSem_of_list v1), (Ast.crSem_of_list v2), (Ast.crSem_of_list v3),
-    (Ast.crSem_of_list v4), (Ast.crSem_of_list v5))
+  ((FanAst.crSem_of_list v1), (FanAst.crSem_of_list v2),
+    (FanAst.crSem_of_list v3), (FanAst.crSem_of_list v4),
+    (FanAst.crSem_of_list v5))
 let eq_base1 =
   let items =
     ty_metas |>
@@ -270,7 +271,7 @@ let eq_base1 =
                          (`ExTyc
                             (_loc, (`ExId (_loc, (`IdLid (_loc, "=")))), ty)))))
             | `Custom s -> s)) in
-  Ast.stSem_of_list items
+  FanAst.stSem_of_list items
 let _ =
   let open AstInjection in
     register_inject_class_str_item
