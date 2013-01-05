@@ -59,8 +59,8 @@ type loc = FanLoc.t
     | `ViNil
     | `Ant of (loc*string) ]
    and override_flag =
-    [= `OvOverride
-    | `OvNil
+    [= `OvOverride of loc 
+    | `OvNil of loc 
     | `Ant of (loc*string) ]
    and row_var_flag =
     [= `RvRowVar

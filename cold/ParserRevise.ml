@@ -4455,7 +4455,7 @@ let apply () =
           [([`Skeyword "method"; `Skeyword "!"],
              (Gram.mk_action
                 (fun _  _  (_loc : FanLoc.t)  ->
-                   (`OvOverride : 'method_opt_override ))));
+                   (`OvOverride _loc: 'method_opt_override ))));
           ([`Skeyword "method";
            `Stoken
              (((function
@@ -4471,13 +4471,13 @@ let apply () =
                   | _ -> assert false)));
           ([`Skeyword "method"],
             (Gram.mk_action
-               (fun _  (_loc : FanLoc.t)  -> (`OvNil : 'method_opt_override ))))])]);
+               (fun _  (_loc : FanLoc.t)  -> (`OvNil _loc : 'method_opt_override ))))])]);
    Gram.extend (opt_override : 'opt_override Gram.t )
      (None,
        [(None, None,
           [([`Skeyword "!"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (`OvOverride : 'opt_override ))));
+                (fun _  (_loc : FanLoc.t)  -> (`OvOverride _loc: 'opt_override ))));
           ([`Stoken
               (((function
                  | `ANT (("!"|"override"|"anti"),_) -> true
@@ -4492,14 +4492,14 @@ let apply () =
                   | _ -> assert false)));
           ([],
             (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> (`OvNil : 'opt_override ))))])]);
+               (fun (_loc : FanLoc.t)  -> (`OvNil _loc : 'opt_override ))))])]);
    Gram.extend (value_val_opt_override : 'value_val_opt_override Gram.t )
      (None,
        [(None, None,
           [([`Skeyword "val"; `Skeyword "!"],
              (Gram.mk_action
                 (fun _  _  (_loc : FanLoc.t)  ->
-                   (`OvOverride : 'value_val_opt_override ))));
+                   (`OvOverride _loc: 'value_val_opt_override ))));
           ([`Skeyword "val";
            `Stoken
              (((function
@@ -4516,7 +4516,7 @@ let apply () =
           ([`Skeyword "val"],
             (Gram.mk_action
                (fun _  (_loc : FanLoc.t)  ->
-                  (`OvNil : 'value_val_opt_override ))))])]);
+                  (`OvNil _loc : 'value_val_opt_override ))))])]);
    Gram.extend (opt_as_lident : 'opt_as_lident Gram.t )
      (None,
        [(None, None,
@@ -5367,12 +5367,12 @@ let apply () =
             (Gram.mk_action
                (fun (t : 'poly_type)  _  (l : 'label)  _  (mf : 'opt_mutable)
                    (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->
-                  (if o <> `OvNil
-                   then
-                     raise
+                  (match o with
+                  |`OvNil _  -> (`CrVvr (_loc, l, mf, t) : 'class_str_item)
+                  | _ ->
+                      raise
                        (XStream.Error
-                          "override (!) is incompatible with virtual")
-                   else `CrVvr (_loc, l, mf, t) : 'class_str_item ))));
+                          "override (!) is incompatible with virtual")  ))));
           ([`Snterm
               (Gram.obj
                  (value_val_opt_override : 'value_val_opt_override Gram.t ));
@@ -5384,12 +5384,13 @@ let apply () =
             (Gram.mk_action
                (fun (t : 'poly_type)  _  (l : 'label)  (mf : 'opt_mutable)  _
                    (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->
-                  (if o <> `OvNil
-                   then
-                     raise
+                     (match o with
+                     |`OvNil _ -> (`CrVvr (_loc, l, mf, t) : 'class_str_item)
+                     | _ ->
+                         raise
                        (XStream.Error
                           "override (!) is incompatible with virtual")
-                   else `CrVvr (_loc, l, mf, t) : 'class_str_item ))));
+                     ))));
           ([`Snterm
               (Gram.obj (method_opt_override : 'method_opt_override Gram.t ));
            `Skeyword "virtual";
@@ -5400,12 +5401,14 @@ let apply () =
             (Gram.mk_action
                (fun (t : 'poly_type)  _  (l : 'label)  (pf : 'opt_private)  _
                    (o : 'method_opt_override)  (_loc : FanLoc.t)  ->
-                  (if o <> `OvNil
-                   then
+                  (match o with
+                  |`OvNil _ -> (`CrVir (_loc, l, pf, t) : 'class_str_item)
+                  | _ -> 
+
                      raise
                        (XStream.Error
-                          "override (!) is incompatible with virtual")
-                   else `CrVir (_loc, l, pf, t) : 'class_str_item ))));
+                          "override (!) is incompatible with virtual")))));
+
           ([`Snterm
               (Gram.obj (method_opt_override : 'method_opt_override Gram.t ));
            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
@@ -5427,12 +5430,9 @@ let apply () =
             (Gram.mk_action
                (fun (t : 'poly_type)  _  (l : 'label)  _  (pf : 'opt_private)
                    (o : 'method_opt_override)  (_loc : FanLoc.t)  ->
-                  (if o <> `OvNil
-                   then
-                     raise
-                       (XStream.Error
-                          "override (!) is incompatible with virtual")
-                   else `CrVir (_loc, l, pf, t) : 'class_str_item ))));
+                  (match o with
+                  | `OvNil _ -> (`CrVir (_loc, l, pf, t) : 'class_str_item)
+                  | _ -> `CrVir (_loc, l, pf, t) : 'class_str_item))));
           ([`Snterm (Gram.obj (type_constraint : 'type_constraint Gram.t ));
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword "=";

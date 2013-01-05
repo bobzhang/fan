@@ -428,8 +428,8 @@ and mklabpat =
   | p -> error (loc_of_patt p) "invalid pattern"
 let override_flag loc =
   function
-  | `OvOverride -> Override
-  | `OvNil -> Fresh
+  | `OvOverride _ -> Override
+  | `OvNil _  -> Fresh
   | _ -> error loc "antiquotation not allowed here"
 let rec expr =
   function

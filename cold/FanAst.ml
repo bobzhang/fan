@@ -840,8 +840,8 @@ class map =
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method override_flag : override_flag -> override_flag=
       function
-      | `OvOverride -> `OvOverride
-      | `OvNil -> `OvNil
+      | `OvOverride a0 -> `OvOverride (self#loc a0)
+      | `OvNil a0 -> `OvNil (self#loc a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method virtual_flag : virtual_flag -> virtual_flag=
@@ -2035,8 +2035,9 @@ class print =
     method override_flag : 'fmt -> override_flag -> 'result=
       fun fmt  ->
         function
-        | `OvOverride -> Format.fprintf fmt "`OvOverride"
-        | `OvNil -> Format.fprintf fmt "`OvNil"
+        | `OvOverride a0 ->
+            Format.fprintf fmt "@[<1>(`OvOverride@ %a)@]" self#loc a0
+        | `OvNil a0 -> Format.fprintf fmt "@[<1>(`OvNil@ %a)@]" self#loc a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2877,8 +2878,8 @@ class fold =
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method override_flag : override_flag -> 'self_type=
       function
-      | `OvOverride -> self
-      | `OvNil -> self
+      | `OvOverride a0 -> self#loc a0
+      | `OvNil a0 -> self#loc a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method virtual_flag : virtual_flag -> 'self_type=
@@ -4077,8 +4078,9 @@ and pp_print_row_var_flag: 'fmt -> row_var_flag -> 'result =
 and pp_print_override_flag: 'fmt -> override_flag -> 'result =
   fun fmt  ->
     function
-    | `OvOverride -> Format.fprintf fmt "`OvOverride"
-    | `OvNil -> Format.fprintf fmt "`OvNil"
+    | `OvOverride a0 ->
+        Format.fprintf fmt "@[<1>(`OvOverride@ %a)@]" pp_print_loc a0
+    | `OvNil a0 -> Format.fprintf fmt "@[<1>(`OvNil@ %a)@]" pp_print_loc a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -6398,8 +6400,10 @@ module Make(MetaLoc:META_LOC) =
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
-        | `OvOverride -> `ExVrn (_loc, "OvOverride")
-        | `OvNil -> `ExVrn (_loc, "OvNil")
+        | `OvOverride a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "OvOverride")), (meta_loc _loc a0))
+        | `OvNil a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "OvNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
@@ -8591,8 +8595,10 @@ module Make(MetaLoc:META_LOC) =
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
-        | `OvOverride -> `PaVrn (_loc, "OvOverride")
-        | `OvNil -> `PaVrn (_loc, "OvNil")
+        | `OvOverride a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "OvOverride")), (meta_loc _loc a0))
+        | `OvNil a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "OvNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
