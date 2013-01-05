@@ -291,8 +291,8 @@ module Make(S:FSig.Config) = struct
       | `Single (name,tydcl) -> begin 
           Hashset.add cxt name;
           let rec_flag =
-            if Ctyp.is_recursive tydcl then `ReRecursive
-            else `ReNil 
+            if Ctyp.is_recursive tydcl then `Recursive _loc
+            else `ReNil  _loc
           and binding = mk_binding name tydcl in 
           {:str_item| let $rec:rec_flag  $binding |}
       end ] in

@@ -72,7 +72,7 @@ let apply () =
                         | (None ,_) -> mk_debug _loc m fmt section args
                         | (Some e,_) ->
                             `ExLet
-                              (_loc, `ReNil,
+                              (_loc, (`ReNil _loc),
                                 (`BiEq
                                    (_loc,
                                      (`PaId (_loc, (`Uid (_loc, "()")))),

@@ -167,7 +167,8 @@ let mk_obj class_name base body =
     (_loc,
       (`CeEq
          (_loc,
-           (`CeCon (_loc, `ViNil, (`Lid (_loc, class_name)), (`TyNil _loc))),
+           (`CeCon
+              (_loc, (`ViNil _loc), (`Lid (_loc, class_name)), (`TyNil _loc))),
            (`CeStr
               (_loc,
                 (`PaTyc
@@ -178,7 +179,7 @@ let mk_obj class_name base body =
                      (`CrInh
                         (_loc, (`OvNil _loc),
                           (`CeCon
-                             (_loc, `ViNil, (`Lid (_loc, base)),
+                             (_loc, (`ViNil _loc), (`Lid (_loc, base)),
                                (`TyNil _loc))), "")), body)))))))
 let is_recursive ty_dcl =
   match ty_dcl with

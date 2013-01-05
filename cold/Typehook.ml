@@ -160,9 +160,10 @@ let traversal () =
            (eprintf "Came across @[%a@]@." FSig.pp_print_types item;
             self#update_cur_module_types (fun lst  -> item :: lst);
             x)
-       | `StVal (_loc,`ReNil,_)|`StMty (_loc,_,_)|`StInc (_loc,_)|`StExt
+       | `StVal (_loc,`ReNil _,_)|`StMty (_loc,_,_)|`StInc (_loc,_)|`StExt
                                                                     (_loc,_,_,_)|
-           `StExp (_loc,_)|`StExc (_loc,_,`ONone)|`StDir (_loc,_,_) as x -> x
+           `StExp (_loc,_)|`StExc (_loc,_,`None _)|`StDir (_loc,_,_) as x ->
+           x
        | x -> super#str_item x
      method! ctyp =
        function

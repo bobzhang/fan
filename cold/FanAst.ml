@@ -815,7 +815,7 @@ class map =
           'all_a0 meta_list -> 'all_b0 meta_list=
       fun mf_a  ->
         function
-        | `LNil -> `LNil
+        | `LNil a0 -> `LNil (self#loc a0)
         | `LCons a0 ->
             `LCons
               (((fun (a0,a1)  -> ((mf_a self a0), (self#meta_list mf_a a1))))
@@ -828,56 +828,50 @@ class map =
           'all_a0 meta_option -> 'all_b0 meta_option=
       fun mf_a  ->
         function
-        | `ONone -> `ONone
-        | `OSome a0 -> `OSome (mf_a self a0)
+        | `None a0 -> `None (self#loc a0)
+        | `Some a0 -> `Some (mf_a self a0)
         | `Ant a0 ->
             `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method row_var_flag : row_var_flag -> row_var_flag=
       function
-      | `RvRowVar -> `RvRowVar
-      | `RvNil -> `RvNil
+      | `RowVar a0 -> `RowVar (self#loc a0)
+      | `RvNil a0 -> `RvNil (self#loc a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method override_flag : override_flag -> override_flag=
       function
-      | `OvOverride a0 -> `OvOverride (self#loc a0)
+      | `Override a0 -> `Override (self#loc a0)
       | `OvNil a0 -> `OvNil (self#loc a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method virtual_flag : virtual_flag -> virtual_flag=
       function
-      | `ViVirtual -> `ViVirtual
-      | `ViNil -> `ViNil
+      | `Virtual a0 -> `Virtual (self#loc a0)
+      | `ViNil a0 -> `ViNil (self#loc a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method private_flag : private_flag -> private_flag=
       function
-      | `PrPrivate -> `PrPrivate
-      | `PrNil -> `PrNil
+      | `Private a0 -> `Private (self#loc a0)
+      | `PrNil a0 -> `PrNil (self#loc a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method mutable_flag : mutable_flag -> mutable_flag=
       function
-      | `MuMutable -> `MuMutable
-      | `MuNil -> `MuNil
+      | `Mutable a0 -> `Mutable (self#loc a0)
+      | `MuNil a0 -> `MuNil (self#loc a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method direction_flag : direction_flag -> direction_flag=
       function
-      | `DiTo -> `DiTo
-      | `DiDownto -> `DiDownto
+      | `To a0 -> `To (self#loc a0)
+      | `Downto a0 -> `Downto (self#loc a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method rec_flag : rec_flag -> rec_flag=
       function
-      | `ReRecursive -> `ReRecursive
-      | `ReNil -> `ReNil
-      | `Ant a0 ->
-          `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-    method meta_bool : meta_bool -> meta_bool=
-      function
-      | `BTrue -> `BTrue
-      | `BFalse -> `BFalse
+      | `Recursive a0 -> `Recursive (self#loc a0)
+      | `ReNil a0 -> `ReNil (self#loc a0)
       | `Ant a0 ->
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method loc : loc -> loc= fun a0  -> self#fanloc_t a0
@@ -1997,7 +1991,7 @@ class print =
           'fmt -> 'all_a0 meta_list -> 'result=
       fun mf_a  fmt  ->
         function
-        | `LNil -> Format.fprintf fmt "`LNil"
+        | `LNil a0 -> Format.fprintf fmt "@[<1>(`LNil@ %a)@]" self#loc a0
         | `LCons a0 ->
             Format.fprintf fmt "@[<1>(`LCons@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2014,9 +2008,8 @@ class print =
           'fmt -> 'all_a0 meta_option -> 'result=
       fun mf_a  fmt  ->
         function
-        | `ONone -> Format.fprintf fmt "`ONone"
-        | `OSome a0 ->
-            Format.fprintf fmt "@[<1>(`OSome@ %a)@]" (mf_a self) a0
+        | `None a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" self#loc a0
+        | `Some a0 -> Format.fprintf fmt "@[<1>(`Some@ %a)@]" (mf_a self) a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2025,8 +2018,8 @@ class print =
     method row_var_flag : 'fmt -> row_var_flag -> 'result=
       fun fmt  ->
         function
-        | `RvRowVar -> Format.fprintf fmt "`RvRowVar"
-        | `RvNil -> Format.fprintf fmt "`RvNil"
+        | `RowVar a0 -> Format.fprintf fmt "@[<1>(`RowVar@ %a)@]" self#loc a0
+        | `RvNil a0 -> Format.fprintf fmt "@[<1>(`RvNil@ %a)@]" self#loc a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2035,8 +2028,8 @@ class print =
     method override_flag : 'fmt -> override_flag -> 'result=
       fun fmt  ->
         function
-        | `OvOverride a0 ->
-            Format.fprintf fmt "@[<1>(`OvOverride@ %a)@]" self#loc a0
+        | `Override a0 ->
+            Format.fprintf fmt "@[<1>(`Override@ %a)@]" self#loc a0
         | `OvNil a0 -> Format.fprintf fmt "@[<1>(`OvNil@ %a)@]" self#loc a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
@@ -2046,8 +2039,9 @@ class print =
     method virtual_flag : 'fmt -> virtual_flag -> 'result=
       fun fmt  ->
         function
-        | `ViVirtual -> Format.fprintf fmt "`ViVirtual"
-        | `ViNil -> Format.fprintf fmt "`ViNil"
+        | `Virtual a0 ->
+            Format.fprintf fmt "@[<1>(`Virtual@ %a)@]" self#loc a0
+        | `ViNil a0 -> Format.fprintf fmt "@[<1>(`ViNil@ %a)@]" self#loc a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2056,8 +2050,9 @@ class print =
     method private_flag : 'fmt -> private_flag -> 'result=
       fun fmt  ->
         function
-        | `PrPrivate -> Format.fprintf fmt "`PrPrivate"
-        | `PrNil -> Format.fprintf fmt "`PrNil"
+        | `Private a0 ->
+            Format.fprintf fmt "@[<1>(`Private@ %a)@]" self#loc a0
+        | `PrNil a0 -> Format.fprintf fmt "@[<1>(`PrNil@ %a)@]" self#loc a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2066,8 +2061,9 @@ class print =
     method mutable_flag : 'fmt -> mutable_flag -> 'result=
       fun fmt  ->
         function
-        | `MuMutable -> Format.fprintf fmt "`MuMutable"
-        | `MuNil -> Format.fprintf fmt "`MuNil"
+        | `Mutable a0 ->
+            Format.fprintf fmt "@[<1>(`Mutable@ %a)@]" self#loc a0
+        | `MuNil a0 -> Format.fprintf fmt "@[<1>(`MuNil@ %a)@]" self#loc a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2076,8 +2072,8 @@ class print =
     method direction_flag : 'fmt -> direction_flag -> 'result=
       fun fmt  ->
         function
-        | `DiTo -> Format.fprintf fmt "`DiTo"
-        | `DiDownto -> Format.fprintf fmt "`DiDownto"
+        | `To a0 -> Format.fprintf fmt "@[<1>(`To@ %a)@]" self#loc a0
+        | `Downto a0 -> Format.fprintf fmt "@[<1>(`Downto@ %a)@]" self#loc a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2086,18 +2082,9 @@ class print =
     method rec_flag : 'fmt -> rec_flag -> 'result=
       fun fmt  ->
         function
-        | `ReRecursive -> Format.fprintf fmt "`ReRecursive"
-        | `ReNil -> Format.fprintf fmt "`ReNil"
-        | `Ant a0 ->
-            Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
-              (fun fmt  (a0,a1)  ->
-                 Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
-                   self#string a1) a0
-    method meta_bool : 'fmt -> meta_bool -> 'result=
-      fun fmt  ->
-        function
-        | `BTrue -> Format.fprintf fmt "`BTrue"
-        | `BFalse -> Format.fprintf fmt "`BFalse"
+        | `Recursive a0 ->
+            Format.fprintf fmt "@[<1>(`Recursive@ %a)@]" self#loc a0
+        | `ReNil a0 -> Format.fprintf fmt "@[<1>(`ReNil@ %a)@]" self#loc a0
         | `Ant a0 ->
             Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2854,7 +2841,7 @@ class fold =
           'all_a0 meta_list -> 'self_type=
       fun mf_a  ->
         function
-        | `LNil -> self
+        | `LNil a0 -> self#loc a0
         | `LCons a0 ->
             ((fun (a0,a1)  ->
                 let self = mf_a self a0 in self#meta_list mf_a a1)) a0
@@ -2866,56 +2853,50 @@ class fold =
           'all_a0 meta_option -> 'self_type=
       fun mf_a  ->
         function
-        | `ONone -> self
-        | `OSome a0 -> mf_a self a0
+        | `None a0 -> self#loc a0
+        | `Some a0 -> mf_a self a0
         | `Ant a0 ->
             ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method row_var_flag : row_var_flag -> 'self_type=
       function
-      | `RvRowVar -> self
-      | `RvNil -> self
+      | `RowVar a0 -> self#loc a0
+      | `RvNil a0 -> self#loc a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method override_flag : override_flag -> 'self_type=
       function
-      | `OvOverride a0 -> self#loc a0
+      | `Override a0 -> self#loc a0
       | `OvNil a0 -> self#loc a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method virtual_flag : virtual_flag -> 'self_type=
       function
-      | `ViVirtual -> self
-      | `ViNil -> self
+      | `Virtual a0 -> self#loc a0
+      | `ViNil a0 -> self#loc a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method private_flag : private_flag -> 'self_type=
       function
-      | `PrPrivate -> self
-      | `PrNil -> self
+      | `Private a0 -> self#loc a0
+      | `PrNil a0 -> self#loc a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method mutable_flag : mutable_flag -> 'self_type=
       function
-      | `MuMutable -> self
-      | `MuNil -> self
+      | `Mutable a0 -> self#loc a0
+      | `MuNil a0 -> self#loc a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method direction_flag : direction_flag -> 'self_type=
       function
-      | `DiTo -> self
-      | `DiDownto -> self
+      | `To a0 -> self#loc a0
+      | `Downto a0 -> self#loc a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method rec_flag : rec_flag -> 'self_type=
       function
-      | `ReRecursive -> self
-      | `ReNil -> self
-      | `Ant a0 ->
-          ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-    method meta_bool : meta_bool -> 'self_type=
-      function
-      | `BTrue -> self
-      | `BFalse -> self
+      | `Recursive a0 -> self#loc a0
+      | `ReNil a0 -> self#loc a0
       | `Ant a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method loc : loc -> 'self_type= fun a0  -> self#fanloc_t a0
@@ -4042,7 +4023,7 @@ and pp_print_meta_list :
     ('fmt -> 'all_a0 -> 'result) -> 'fmt -> 'all_a0 meta_list -> 'result=
   fun mf_a  fmt  ->
     function
-    | `LNil -> Format.fprintf fmt "`LNil"
+    | `LNil a0 -> Format.fprintf fmt "@[<1>(`LNil@ %a)@]" pp_print_loc a0
     | `LCons a0 ->
         Format.fprintf fmt "@[<1>(`LCons@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -4058,8 +4039,8 @@ and pp_print_meta_option :
     ('fmt -> 'all_a0 -> 'result) -> 'fmt -> 'all_a0 meta_option -> 'result=
   fun mf_a  fmt  ->
     function
-    | `ONone -> Format.fprintf fmt "`ONone"
-    | `OSome a0 -> Format.fprintf fmt "@[<1>(`OSome@ %a)@]" mf_a a0
+    | `None a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" pp_print_loc a0
+    | `Some a0 -> Format.fprintf fmt "@[<1>(`Some@ %a)@]" mf_a a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -4068,8 +4049,8 @@ and pp_print_meta_option :
 and pp_print_row_var_flag: 'fmt -> row_var_flag -> 'result =
   fun fmt  ->
     function
-    | `RvRowVar -> Format.fprintf fmt "`RvRowVar"
-    | `RvNil -> Format.fprintf fmt "`RvNil"
+    | `RowVar a0 -> Format.fprintf fmt "@[<1>(`RowVar@ %a)@]" pp_print_loc a0
+    | `RvNil a0 -> Format.fprintf fmt "@[<1>(`RvNil@ %a)@]" pp_print_loc a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -4078,8 +4059,8 @@ and pp_print_row_var_flag: 'fmt -> row_var_flag -> 'result =
 and pp_print_override_flag: 'fmt -> override_flag -> 'result =
   fun fmt  ->
     function
-    | `OvOverride a0 ->
-        Format.fprintf fmt "@[<1>(`OvOverride@ %a)@]" pp_print_loc a0
+    | `Override a0 ->
+        Format.fprintf fmt "@[<1>(`Override@ %a)@]" pp_print_loc a0
     | `OvNil a0 -> Format.fprintf fmt "@[<1>(`OvNil@ %a)@]" pp_print_loc a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
@@ -4089,8 +4070,9 @@ and pp_print_override_flag: 'fmt -> override_flag -> 'result =
 and pp_print_virtual_flag: 'fmt -> virtual_flag -> 'result =
   fun fmt  ->
     function
-    | `ViVirtual -> Format.fprintf fmt "`ViVirtual"
-    | `ViNil -> Format.fprintf fmt "`ViNil"
+    | `Virtual a0 ->
+        Format.fprintf fmt "@[<1>(`Virtual@ %a)@]" pp_print_loc a0
+    | `ViNil a0 -> Format.fprintf fmt "@[<1>(`ViNil@ %a)@]" pp_print_loc a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -4099,8 +4081,9 @@ and pp_print_virtual_flag: 'fmt -> virtual_flag -> 'result =
 and pp_print_private_flag: 'fmt -> private_flag -> 'result =
   fun fmt  ->
     function
-    | `PrPrivate -> Format.fprintf fmt "`PrPrivate"
-    | `PrNil -> Format.fprintf fmt "`PrNil"
+    | `Private a0 ->
+        Format.fprintf fmt "@[<1>(`Private@ %a)@]" pp_print_loc a0
+    | `PrNil a0 -> Format.fprintf fmt "@[<1>(`PrNil@ %a)@]" pp_print_loc a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -4109,8 +4092,9 @@ and pp_print_private_flag: 'fmt -> private_flag -> 'result =
 and pp_print_mutable_flag: 'fmt -> mutable_flag -> 'result =
   fun fmt  ->
     function
-    | `MuMutable -> Format.fprintf fmt "`MuMutable"
-    | `MuNil -> Format.fprintf fmt "`MuNil"
+    | `Mutable a0 ->
+        Format.fprintf fmt "@[<1>(`Mutable@ %a)@]" pp_print_loc a0
+    | `MuNil a0 -> Format.fprintf fmt "@[<1>(`MuNil@ %a)@]" pp_print_loc a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -4119,8 +4103,8 @@ and pp_print_mutable_flag: 'fmt -> mutable_flag -> 'result =
 and pp_print_direction_flag: 'fmt -> direction_flag -> 'result =
   fun fmt  ->
     function
-    | `DiTo -> Format.fprintf fmt "`DiTo"
-    | `DiDownto -> Format.fprintf fmt "`DiDownto"
+    | `To a0 -> Format.fprintf fmt "@[<1>(`To@ %a)@]" pp_print_loc a0
+    | `Downto a0 -> Format.fprintf fmt "@[<1>(`Downto@ %a)@]" pp_print_loc a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -4129,18 +4113,9 @@ and pp_print_direction_flag: 'fmt -> direction_flag -> 'result =
 and pp_print_rec_flag: 'fmt -> rec_flag -> 'result =
   fun fmt  ->
     function
-    | `ReRecursive -> Format.fprintf fmt "`ReRecursive"
-    | `ReNil -> Format.fprintf fmt "`ReNil"
-    | `Ant a0 ->
-        Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
-          (fun fmt  (a0,a1)  ->
-             Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
-               pp_print_string a1) a0
-and pp_print_meta_bool: 'fmt -> meta_bool -> 'result =
-  fun fmt  ->
-    function
-    | `BTrue -> Format.fprintf fmt "`BTrue"
-    | `BFalse -> Format.fprintf fmt "`BFalse"
+    | `Recursive a0 ->
+        Format.fprintf fmt "@[<1>(`Recursive@ %a)@]" pp_print_loc a0
+    | `ReNil a0 -> Format.fprintf fmt "@[<1>(`ReNil@ %a)@]" pp_print_loc a0
     | `Ant a0 ->
         Format.fprintf fmt "@[<1>(`Ant@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -6370,7 +6345,8 @@ module Make(MetaLoc:META_LOC) =
         ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
       fun mf_a  _loc  ->
         function
-        | `LNil -> `ExVrn (_loc, "LNil")
+        | `LNil a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "LNil")), (meta_loc _loc a0))
         | `LCons a0 ->
             `ExApp
               (_loc, (`ExVrn (_loc, "LCons")),
@@ -6387,59 +6363,64 @@ module Make(MetaLoc:META_LOC) =
           'loc -> 'all_a0 meta_option -> 'result=
       fun mf_a  _loc  ->
         function
-        | `ONone -> `ExVrn (_loc, "ONone")
-        | `OSome a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "OSome")), (mf_a _loc a0))
+        | `None a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "None")), (meta_loc _loc a0))
+        | `Some a0 -> `ExApp (_loc, (`ExVrn (_loc, "Some")), (mf_a _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
       fun _loc  ->
         function
-        | `RvRowVar -> `ExVrn (_loc, "RvRowVar")
-        | `RvNil -> `ExVrn (_loc, "RvNil")
+        | `RowVar a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "RowVar")), (meta_loc _loc a0))
+        | `RvNil a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "RvNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
-        | `OvOverride a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "OvOverride")), (meta_loc _loc a0))
+        | `Override a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "Override")), (meta_loc _loc a0))
         | `OvNil a0 ->
             `ExApp (_loc, (`ExVrn (_loc, "OvNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
         function
-        | `ViVirtual -> `ExVrn (_loc, "ViVirtual")
-        | `ViNil -> `ExVrn (_loc, "ViNil")
+        | `Virtual a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "Virtual")), (meta_loc _loc a0))
+        | `ViNil a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "ViNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_private_flag: 'loc -> private_flag -> 'result =
       fun _loc  ->
         function
-        | `PrPrivate -> `ExVrn (_loc, "PrPrivate")
-        | `PrNil -> `ExVrn (_loc, "PrNil")
+        | `Private a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "Private")), (meta_loc _loc a0))
+        | `PrNil a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "PrNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
       fun _loc  ->
         function
-        | `MuMutable -> `ExVrn (_loc, "MuMutable")
-        | `MuNil -> `ExVrn (_loc, "MuNil")
+        | `Mutable a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "Mutable")), (meta_loc _loc a0))
+        | `MuNil a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "MuNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_direction_flag: 'loc -> direction_flag -> 'result =
       fun _loc  ->
         function
-        | `DiTo -> `ExVrn (_loc, "DiTo")
-        | `DiDownto -> `ExVrn (_loc, "DiDownto")
+        | `To a0 -> `ExApp (_loc, (`ExVrn (_loc, "To")), (meta_loc _loc a0))
+        | `Downto a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "Downto")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_rec_flag: 'loc -> rec_flag -> 'result =
       fun _loc  ->
         function
-        | `ReRecursive -> `ExVrn (_loc, "ReRecursive")
-        | `ReNil -> `ExVrn (_loc, "ReNil")
-        | `Ant a0 -> `Ant a0
-    and meta_meta_bool: 'loc -> meta_bool -> 'result =
-      fun _loc  ->
-        function
-        | `BTrue -> `ExVrn (_loc, "BTrue")
-        | `BFalse -> `ExVrn (_loc, "BFalse")
+        | `Recursive a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "Recursive")), (meta_loc _loc a0))
+        | `ReNil a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "ReNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     end
   module Patt = struct
@@ -8565,7 +8546,8 @@ module Make(MetaLoc:META_LOC) =
         ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
       fun mf_a  _loc  ->
         function
-        | `LNil -> `PaVrn (_loc, "LNil")
+        | `LNil a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "LNil")), (meta_loc _loc a0))
         | `LCons a0 ->
             `PaApp
               (_loc, (`PaVrn (_loc, "LCons")),
@@ -8582,59 +8564,64 @@ module Make(MetaLoc:META_LOC) =
           'loc -> 'all_a0 meta_option -> 'result=
       fun mf_a  _loc  ->
         function
-        | `ONone -> `PaVrn (_loc, "ONone")
-        | `OSome a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "OSome")), (mf_a _loc a0))
+        | `None a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "None")), (meta_loc _loc a0))
+        | `Some a0 -> `PaApp (_loc, (`PaVrn (_loc, "Some")), (mf_a _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
       fun _loc  ->
         function
-        | `RvRowVar -> `PaVrn (_loc, "RvRowVar")
-        | `RvNil -> `PaVrn (_loc, "RvNil")
+        | `RowVar a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "RowVar")), (meta_loc _loc a0))
+        | `RvNil a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "RvNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_override_flag: 'loc -> override_flag -> 'result =
       fun _loc  ->
         function
-        | `OvOverride a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "OvOverride")), (meta_loc _loc a0))
+        | `Override a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "Override")), (meta_loc _loc a0))
         | `OvNil a0 ->
             `PaApp (_loc, (`PaVrn (_loc, "OvNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
       fun _loc  ->
         function
-        | `ViVirtual -> `PaVrn (_loc, "ViVirtual")
-        | `ViNil -> `PaVrn (_loc, "ViNil")
+        | `Virtual a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "Virtual")), (meta_loc _loc a0))
+        | `ViNil a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "ViNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_private_flag: 'loc -> private_flag -> 'result =
       fun _loc  ->
         function
-        | `PrPrivate -> `PaVrn (_loc, "PrPrivate")
-        | `PrNil -> `PaVrn (_loc, "PrNil")
+        | `Private a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "Private")), (meta_loc _loc a0))
+        | `PrNil a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "PrNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
       fun _loc  ->
         function
-        | `MuMutable -> `PaVrn (_loc, "MuMutable")
-        | `MuNil -> `PaVrn (_loc, "MuNil")
+        | `Mutable a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "Mutable")), (meta_loc _loc a0))
+        | `MuNil a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "MuNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_direction_flag: 'loc -> direction_flag -> 'result =
       fun _loc  ->
         function
-        | `DiTo -> `PaVrn (_loc, "DiTo")
-        | `DiDownto -> `PaVrn (_loc, "DiDownto")
+        | `To a0 -> `PaApp (_loc, (`PaVrn (_loc, "To")), (meta_loc _loc a0))
+        | `Downto a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "Downto")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     and meta_rec_flag: 'loc -> rec_flag -> 'result =
       fun _loc  ->
         function
-        | `ReRecursive -> `PaVrn (_loc, "ReRecursive")
-        | `ReNil -> `PaVrn (_loc, "ReNil")
-        | `Ant a0 -> `Ant a0
-    and meta_meta_bool: 'loc -> meta_bool -> 'result =
-      fun _loc  ->
-        function
-        | `BTrue -> `PaVrn (_loc, "BTrue")
-        | `BFalse -> `PaVrn (_loc, "BFalse")
+        | `Recursive a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "Recursive")), (meta_loc _loc a0))
+        | `ReNil a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "ReNil")), (meta_loc _loc a0))
         | `Ant a0 -> `Ant a0
     end
   end

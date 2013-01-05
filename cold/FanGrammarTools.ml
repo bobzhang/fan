@@ -397,11 +397,12 @@ let let_in_of_extend _loc gram gl default =
                   `BiAnd (_loc, acc, (local_binding_of_name name))) xs
                (local_binding_of_name x) in
            `ExLet
-             (_loc, `ReNil,
+             (_loc, (`ReNil _loc),
                (`BiEq
                   (_loc,
                     (`PaId (_loc, (`Lid (_loc, "grammar_entry_create")))),
-                    entry_mk)), (`ExLet (_loc, `ReNil, locals, default))))
+                    entry_mk)),
+               (`ExLet (_loc, (`ReNil _loc), locals, default))))
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el =

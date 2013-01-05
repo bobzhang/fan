@@ -46,7 +46,7 @@ let rec handle_failure e =
         | `McArr (_loc,_,`ExNil _,e) -> handle_failure e
         | _ -> false in
       (handle_failure me) && (match_case_handle_failure a)
-  | `ExLet (_loc,`ReNil,bi,e) ->
+  | `ExLet (_loc,`ReNil _,bi,e) ->
       let rec binding_handle_failure =
         function
         | `BiAnd (_loc,b1,b2) ->
@@ -168,7 +168,7 @@ let stream_pattern_component skont ckont =
                       ckont))))
       else
         if is_raise_failure ckont
-        then `ExLet (_loc, `ReNil, (`BiEq (_loc, p, e)), skont)
+        then `ExLet (_loc, (`ReNil _loc), (`BiEq (_loc, p, e)), skont)
         else
           if
             Expr.pattern_eq_expression
@@ -202,7 +202,7 @@ let stream_pattern_component skont ckont =
                                     (_loc, (`Uid (_loc, (gm ()))),
                                       (`Uid (_loc, "Failure")))))),
                             (`ExNil _loc), ckont))) in
-               `ExLet (_loc, `ReNil, (`BiEq (_loc, p, tst)), skont))
+               `ExLet (_loc, (`ReNil _loc), (`BiEq (_loc, p, tst)), skont))
             else
               `ExMat
                 (_loc,
@@ -235,7 +235,7 @@ let stream_pattern_component skont ckont =
        with
        | Not_found  ->
            `ExLet
-             (_loc, `ReNil,
+             (_loc, (`ReNil _loc),
                (`BiEq (_loc, p, (`ExId (_loc, (`Lid (_loc, strm_n)))))),
                skont))
 let rec stream_pattern _loc epo e ekont =
@@ -244,7 +244,7 @@ let rec stream_pattern _loc epo e ekont =
       (match epo with
        | Some ep ->
            `ExLet
-             (_loc, `ReNil,
+             (_loc, (`ReNil _loc),
                (`BiEq
                   (_loc, ep,
                     (`ExApp
@@ -335,7 +335,7 @@ let cparser _loc bpo pc =
     match bpo with
     | Some bp ->
         `ExLet
-          (_loc, `ReNil,
+          (_loc, (`ReNil _loc),
             (`BiEq
                (_loc, bp,
                  (`ExApp
@@ -363,7 +363,7 @@ let cparser_match _loc me bpo pc =
     match bpo with
     | Some bp ->
         `ExLet
-          (_loc, `ReNil,
+          (_loc, (`ReNil _loc),
             (`BiEq
                (_loc, bp,
                  (`ExApp
@@ -379,7 +379,7 @@ let cparser_match _loc me bpo pc =
   | `ExId (_loc,`Lid (_,x)) when x = strm_n -> e
   | _ ->
       `ExLet
-        (_loc, `ReNil,
+        (_loc, (`ReNil _loc),
           (`BiEq
              (_loc,
                (`PaTyc

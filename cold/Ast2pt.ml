@@ -6,13 +6,19 @@ open FanUtil
 open FanAst
 open ParsetreeHelper
 let mkvirtual =
-  function | `ViVirtual -> Virtual | `ViNil -> Concrete | _ -> assert false
+  function
+  | `Virtual _loc -> Virtual
+  | `ViNil _loc -> Concrete
+  | _ -> assert false
 let mkdirection =
-  function | `DiTo -> Upto | `DiDownto -> Downto | _ -> assert false
+  function
+  | `To _loc -> Upto
+  | `Downto _loc -> Downto
+  | _ -> assert false
 let mkrf =
   function
-  | `ReRecursive -> Recursive
-  | `ReNil -> Nonrecursive
+  | `Recursive _loc -> Recursive
+  | `ReNil _loc -> Nonrecursive
   | _ -> assert false
 let ident_tag i =
   let rec self i acc =
@@ -97,8 +103,8 @@ let rec ctyp =
       let t1 = `TyApp (loc1, (predef_option loc1), t1) in
       mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
   | `TyArr (loc,t1,t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
-  | `TyObj (loc,fl,`RvNil) -> mktyp loc (Ptyp_object (meth_list fl []))
-  | `TyObj (loc,fl,`RvRowVar) ->
+  | `TyObj (loc,fl,`RvNil _) -> mktyp loc (Ptyp_object (meth_list fl []))
+  | `TyObj (loc,fl,`RowVar _) ->
       mktyp loc (Ptyp_object (meth_list fl [mkfield loc Pfield_var]))
   | `TyCls (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
   | `TyPkg (loc,pt) ->
@@ -180,7 +186,10 @@ let mktype loc tl cl tk tp tm =
   }
 let mkprivate' m = if m then Private else Public
 let mkprivate =
-  function | `PrPrivate -> Private | `PrNil -> Public | _ -> assert false
+  function
+  | `Private _loc -> Private
+  | `PrNil _loc -> Public
+  | _ -> assert false
 let mktrecord =
   function
   | `TyCol (loc,`TyId (_,`Lid (sloc,s)),`TyMut (_,t)) ->
@@ -225,11 +234,14 @@ let mkvalue_desc loc t p =
   { pval_type = (ctyp t); pval_prim = p; pval_loc = loc }
 let rec list_of_meta_list =
   function
-  | `LNil -> []
+  | `LNil _ -> []
   | `LCons (x,xs) -> x :: (list_of_meta_list xs)
   | `Ant _ -> assert false
 let mkmutable =
-  function | `MuMutable -> Mutable | `MuNil -> Immutable | _ -> assert false
+  function
+  | `Mutable _loc -> Mutable
+  | `MuNil _loc -> Immutable
+  | _ -> assert false
 let paolab lab p =
   match (lab, p) with
   | ("",(`PaId (_loc,`Lid (_,i))|`PaTyc (_loc,`PaId (_,`Lid (_,i)),_))) -> i
@@ -428,7 +440,7 @@ and mklabpat =
   | p -> error (loc_of_patt p) "invalid pattern"
 let override_flag loc =
   function
-  | `OvOverride _loc -> Override
+  | `Override _loc -> Override
   | `OvNil _loc -> Fresh
   | _ -> error loc "antiquotation not allowed here"
 let rec expr =
@@ -818,16 +830,16 @@ and str_item s l =
       :: l
   | `StSem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
   | `StDir (_,_,_) -> l
-  | `StExc (loc,`TyId (_,`Uid (_,s)),`ONone) ->
+  | `StExc (loc,`TyId (_,`Uid (_,s)),`None _) ->
       (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
-  | `StExc (loc,`TyOf (_,`TyId (_,`Uid (_,s)),t),`ONone) ->
+  | `StExc (loc,`TyOf (_,`TyId (_,`Uid (_,s)),t),`None _) ->
       (mkstr loc
          (Pstr_exception
             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
       :: l
-  | `StExc (loc,`TyId (_,`Uid (_,s)),`OSome i) ->
+  | `StExc (loc,`TyId (_,`Uid (_,s)),`Some i) ->
       (mkstr loc (Pstr_exn_rebind ((with_loc s loc), (ident i)))) :: l
-  | `StExc (loc,`TyOf (_,`TyId (_,`Uid (_,_)),_),`OSome _) ->
+  | `StExc (loc,`TyOf (_,`TyId (_,`Uid (_,_)),_),`Some _) ->
       error loc "type in exception alias"
   | `StExc (_,_,_) -> assert false
   | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
@@ -850,7 +862,7 @@ and str_item s l =
   | `Ant (loc,_) -> error loc "antiquotation in str_item"
 and class_type =
   function
-  | `CtCon (loc,`ViNil,id,tl) ->
+  | `CtCon (loc,`ViNil _,id,tl) ->
       mkcty loc
         (Pcty_constr
            ((long_class_ident id), (List.map ctyp (Ctyp.list_of_opt tl []))))
@@ -928,7 +940,7 @@ and class_expr =
       let (ce,el) = ClassExpr.view_app [] c in
       let el = List.map label_expr el in
       mkcl loc (Pcl_apply ((class_expr ce), el))
-  | `CeCon (loc,`ViNil,id,tl) ->
+  | `CeCon (loc,`ViNil _,id,tl) ->
       mkcl loc
         (Pcl_constr
            ((long_class_ident id), (List.map ctyp (Ctyp.list_of_opt tl []))))

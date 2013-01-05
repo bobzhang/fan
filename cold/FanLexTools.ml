@@ -175,7 +175,7 @@ let output_byte_array v =
   (let s = Buffer.contents b in `ExStr (_loc, s))
 let table (n,t) =
   `StVal
-    (_loc, `ReNil,
+    (_loc, (`ReNil _loc),
       (`BiEq (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))))
 let binding_table (n,t) =
   `BiEq (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))
@@ -225,7 +225,7 @@ let partition ~counter  ~tables  (i,p) =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
   `StVal
-    (_loc, `ReNil,
+    (_loc, (`ReNil _loc),
       (`BiEq
          (_loc, (`PaId (_loc, (`Lid (_loc, f)))),
            (`ExFun
@@ -387,15 +387,16 @@ let gen_definition _loc l =
       (List.sort (fun (i0,_)  (i1,_)  -> compare i0 i1)
          (get_tables ~tables ())) in
   let b =
-    let len = Array.length states in if len > 1 then `ReRecursive else `ReNil in
+    let len = Array.length states in
+    if len > 1 then `Recursive _loc else `ReNil _loc in
   `ExFun
     (_loc,
       (`McArr
          (_loc, (`PaId (_loc, (`Lid (_loc, "lexbuf")))), (`ExNil _loc),
            (`ExLet
-              (_loc, `ReNil, (FanAst.biAnd_of_list tables),
+              (_loc, (`ReNil _loc), (FanAst.biAnd_of_list tables),
                 (`ExLet
-                   (_loc, `ReNil, (FanAst.biAnd_of_list parts),
+                   (_loc, (`ReNil _loc), (FanAst.biAnd_of_list parts),
                      (`ExLet
                         (_loc, b,
                           (FanAst.biAnd_of_list (Array.to_list states)),

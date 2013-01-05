@@ -1,16 +1,15 @@
 type loc = FanLoc.t 
-and meta_bool = [ `BTrue | `BFalse | `Ant of (loc* string)] 
-and rec_flag = [ `ReRecursive | `ReNil | `Ant of (loc* string)] 
-and direction_flag = [ `DiTo | `DiDownto | `Ant of (loc* string)] 
-and mutable_flag = [ `MuMutable | `MuNil | `Ant of (loc* string)] 
-and private_flag = [ `PrPrivate | `PrNil | `Ant of (loc* string)] 
-and virtual_flag = [ `ViVirtual | `ViNil | `Ant of (loc* string)] 
+and rec_flag = [ `Recursive of loc | `ReNil of loc | `Ant of (loc* string)] 
+and direction_flag = [ `To of loc | `Downto of loc | `Ant of (loc* string)] 
+and mutable_flag = [ `Mutable of loc | `MuNil of loc | `Ant of (loc* string)] 
+and private_flag = [ `Private of loc | `PrNil of loc | `Ant of (loc* string)] 
+and virtual_flag = [ `Virtual of loc | `ViNil of loc | `Ant of (loc* string)] 
 and override_flag =
-  [ `OvOverride of loc | `OvNil of loc | `Ant of (loc* string)] 
-and row_var_flag = [ `RvRowVar | `RvNil | `Ant of (loc* string)] 
-and 'a meta_option = [ `ONone | `OSome of 'a | `Ant of (loc* string)] 
+  [ `Override of loc | `OvNil of loc | `Ant of (loc* string)] 
+and row_var_flag = [ `RowVar of loc | `RvNil of loc | `Ant of (loc* string)] 
+and 'a meta_option = [ `None of loc | `Some of 'a | `Ant of (loc* string)] 
 and 'a meta_list =
-  [ `LNil | `LCons of ('a* 'a meta_list) | `Ant of (loc* string)] 
+  [ `LNil of loc | `LCons of ('a* 'a meta_list) | `Ant of (loc* string)] 
 and ident =
   [ `IdAcc of (loc* ident* ident) | `IdApp of (loc* ident* ident)
   | `Lid of (loc* string) | `Uid of (loc* string) | `Ant of (loc* string)] 

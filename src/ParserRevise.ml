@@ -983,7 +983,7 @@ let apply () = begin
       string_list:
       [ `ANT ((""|"str_list"),s) -> `Ant (_loc,mk_anti "str_list" s)
       | `STR (_, x); S{xs} -> `LCons x xs
-      | `STR (_, x) -> `LCons x `LNil ] 
+      | `STR (_, x) -> `LCons x (`LNil _loc) ] 
       semi: [ ";" -> () ]
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ direction_flag{x} -> x ] 

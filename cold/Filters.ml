@@ -14,7 +14,7 @@ let _ =
          `StExp
            (_loc,
              (`ExLet
-                (_loc, `ReNil,
+                (_loc, (`ReNil _loc),
                   (`BiEq
                      (_loc, (`PaId (_loc, (`Lid (_loc, "loc")))),
                        (`ExId
@@ -142,7 +142,7 @@ let decorate_this_expr e id =
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
   `ExLet
-    (_loc, `ReNil,
+    (_loc, (`ReNil _loc),
       (`BiEq
          (_loc, (`PaId (_loc, (`Uid (_loc, "()")))),
            (`ExApp

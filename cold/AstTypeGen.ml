@@ -35,7 +35,7 @@ let (gen_fold,gen_fold2) =
            List.reduce_right
              (fun v  acc  ->
                 `ExLet
-                  (_loc, `ReNil,
+                  (_loc, (`ReNil _loc),
                     (`BiEq (_loc, (`PaId (_loc, (`Lid (_loc, "self")))), v)),
                     acc)) ls) in
   let mk_tuple = mk_variant "" in

@@ -34,44 +34,40 @@
 
 
 type loc = FanLoc.t
-   and meta_bool =
-    [= `BTrue
-    | `BFalse
-    | `Ant of (loc*string) ]
    and rec_flag =
-    [= `ReRecursive
-    | `ReNil
+    [= (* `ReRecursive of loc  *) `Recursive of loc 
+    | `ReNil of loc 
     | `Ant of (loc*string) ]
    and direction_flag =
-    [= `DiTo
-    | `DiDownto
+    [= (* `DiTo of loc  *) `To of loc
+    (* | `DiDownto of loc  *)| `Downto of loc
     | `Ant of (loc*string) ]
    and mutable_flag =
-    [= `MuMutable
-    | `MuNil
+    [= (* `MuMutable of loc  *) `Mutable of loc 
+    | `MuNil of loc 
     | `Ant of (loc*string) ]
    and private_flag =
-    [= `PrPrivate
-    | `PrNil
+    [= (* `PrPrivate of loc *) `Private of loc 
+    | `PrNil of loc 
     | `Ant of (loc*string) ]
    and virtual_flag =
-    [= `ViVirtual
-    | `ViNil
+    [= (* `ViVirtual of loc  *) `Virtual of loc 
+    | `ViNil of loc 
     | `Ant of (loc*string) ]
    and override_flag =
-    [= `OvOverride of loc 
+    [= (* `OvOverride of loc  *)`Override of loc 
     | `OvNil of loc 
     | `Ant of (loc*string) ]
    and row_var_flag =
-    [= `RvRowVar
-    | `RvNil
+    [= (* `RvRowVar of loc  *) `RowVar of loc 
+    | `RvNil of loc 
     | `Ant of (loc*string) ]
    and meta_option 'a =
-    [= `ONone
-    | `OSome of 'a
+    [= (* `ONone of loc  *) `None of loc 
+    | (* `OSome of 'a *) `Some of 'a
     | `Ant of (loc*string) ]
    and meta_list 'a =
-    [= `LNil
+    [= `LNil of loc
     | `LCons of ('a * meta_list 'a)
     | `Ant of (loc * string) ] (* FIXME `Ant no location *)
    and ident =

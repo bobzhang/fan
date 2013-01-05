@@ -258,7 +258,7 @@ let type_decl tl cl t loc = type_decl tl cl loc None false t;
 let mkvalue_desc loc t p = {pval_type = ctyp t; pval_prim = p; pval_loc =  loc};
 
 let rec list_of_meta_list =fun
-  [ `LNil -> []
+  [ `LNil _ -> []
   | `LCons (x, xs) -> [x :: list_of_meta_list xs]
   | `Ant _ -> assert false ];
 
@@ -857,7 +857,7 @@ and str_item s l = match s with (* str_item -> structure -> structure*)
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
   | {:str_item@loc| $anti:_ |} -> error loc "antiquotation in str_item" ]
 and class_type = fun (* class_type -> class_type *)
-  [ `CtCon (loc, `ViNil, id,tl) ->
+  [ `CtCon (loc, `ViNil _, id,tl) ->
     mkcty loc
       (Pcty_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
   | `CtFun (loc, (`TyLab (_, lab, t)), ct) ->
@@ -932,7 +932,7 @@ and class_expr = fun (* class_expr -> class_expr *)
     let (ce, el) = ClassExpr.view_app [] c in
     let el = List.map label_expr el in
     mkcl loc (Pcl_apply (class_expr ce) el)
-  | `CeCon (loc, `ViNil, id,tl) ->
+  | `CeCon (loc, `ViNil _, id,tl) ->
       mkcl loc
         (Pcl_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
   | `CeFun (loc, (`PaLab (_, lab, po)), ce) ->

@@ -139,13 +139,13 @@ let _ =
                           match (descr, ty) with
                           | (Some d,None ) ->
                               `StVal
-                                (_loc, `ReNil,
+                                (_loc, (`ReNil _loc),
                                   (`BiEq
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`ExStr (_loc, d)))))))
                           | (Some d,Some typ) ->
                               `StVal
-                                (_loc, `ReNil,
+                                (_loc, (`ReNil _loc),
                                   (`BiEq
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExTyc
@@ -155,13 +155,13 @@ let _ =
                                             typ)))))
                           | (None ,None ) ->
                               `StVal
-                                (_loc, `ReNil,
+                                (_loc, (`ReNil _loc),
                                   (`BiEq
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`ExStr (_loc, x)))))))
                           | (None ,Some typ) ->
                               `StVal
-                                (_loc, `ReNil,
+                                (_loc, (`ReNil _loc),
                                   (`BiEq
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExTyc

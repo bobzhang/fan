@@ -4455,7 +4455,7 @@ let apply () =
           [([`Skeyword "method"; `Skeyword "!"],
              (Gram.mk_action
                 (fun _  _  (_loc : FanLoc.t)  ->
-                   (`OvOverride _loc : 'method_opt_override ))));
+                   (`Override _loc : 'method_opt_override ))));
           ([`Skeyword "method";
            `Stoken
              (((function
@@ -4479,7 +4479,7 @@ let apply () =
           [([`Skeyword "!"],
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  ->
-                   (`OvOverride _loc : 'opt_override ))));
+                   (`Override _loc : 'opt_override ))));
           ([`Stoken
               (((function
                  | `ANT (("!"|"override"|"anti"),_) -> true
@@ -4501,7 +4501,7 @@ let apply () =
           [([`Skeyword "val"; `Skeyword "!"],
              (Gram.mk_action
                 (fun _  _  (_loc : FanLoc.t)  ->
-                   (`OvOverride _loc : 'value_val_opt_override ))));
+                   (`Override _loc : 'value_val_opt_override ))));
           ([`Skeyword "val";
            `Stoken
              (((function
@@ -4541,10 +4541,11 @@ let apply () =
        [(None, None,
           [([`Skeyword "to"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (`DiTo : 'direction_flag ))));
+                (fun _  (_loc : FanLoc.t)  -> (`To _loc : 'direction_flag ))));
           ([`Skeyword "downto"],
             (Gram.mk_action
-               (fun _  (_loc : FanLoc.t)  -> (`DiDownto : 'direction_flag ))));
+               (fun _  (_loc : FanLoc.t)  ->
+                  (`Downto _loc : 'direction_flag ))));
           ([`Stoken
               (((function | `ANT (("to"|"anti"|""),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"to\"|\"anti\"|\"\"),_)"))],
@@ -4560,7 +4561,8 @@ let apply () =
        [(None, None,
           [([`Skeyword "private"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (`PrPrivate : 'opt_private ))));
+                (fun _  (_loc : FanLoc.t)  ->
+                   (`Private _loc : 'opt_private ))));
           ([`Stoken
               (((function | `ANT (("private"|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"private\"|\"anti\"),_)"))],
@@ -4573,13 +4575,14 @@ let apply () =
                   | _ -> assert false)));
           ([],
             (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> (`PrNil : 'opt_private ))))])]);
+               (fun (_loc : FanLoc.t)  -> (`PrNil _loc : 'opt_private ))))])]);
    Gram.extend (opt_mutable : 'opt_mutable Gram.t )
      (None,
        [(None, None,
           [([`Skeyword "mutable"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (`MuMutable : 'opt_mutable ))));
+                (fun _  (_loc : FanLoc.t)  ->
+                   (`Mutable _loc : 'opt_mutable ))));
           ([`Stoken
               (((function | `ANT (("mutable"|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"mutable\"|\"anti\"),_)"))],
@@ -4592,13 +4595,14 @@ let apply () =
                   | _ -> assert false)));
           ([],
             (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> (`MuNil : 'opt_mutable ))))])]);
+               (fun (_loc : FanLoc.t)  -> (`MuNil _loc : 'opt_mutable ))))])]);
    Gram.extend (opt_virtual : 'opt_virtual Gram.t )
      (None,
        [(None, None,
           [([`Skeyword "virtual"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (`ViVirtual : 'opt_virtual ))));
+                (fun _  (_loc : FanLoc.t)  ->
+                   (`Virtual _loc : 'opt_virtual ))));
           ([`Stoken
               (((function | `ANT (("virtual"|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"virtual\"|\"anti\"),_)"))],
@@ -4611,13 +4615,14 @@ let apply () =
                   | _ -> assert false)));
           ([],
             (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> (`ViNil : 'opt_virtual ))))])]);
+               (fun (_loc : FanLoc.t)  -> (`ViNil _loc : 'opt_virtual ))))])]);
    Gram.extend (opt_dot_dot : 'opt_dot_dot Gram.t )
      (None,
        [(None, None,
           [([`Skeyword ".."],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (`RvRowVar : 'opt_dot_dot ))));
+                (fun _  (_loc : FanLoc.t)  ->
+                   (`RowVar _loc : 'opt_dot_dot ))));
           ([`Stoken
               (((function | `ANT ((".."|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"..\"|\"anti\"),_)"))],
@@ -4630,13 +4635,13 @@ let apply () =
                   | _ -> assert false)));
           ([],
             (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> (`RvNil : 'opt_dot_dot ))))])]);
+               (fun (_loc : FanLoc.t)  -> (`RvNil _loc : 'opt_dot_dot ))))])]);
    Gram.extend (opt_rec : 'opt_rec Gram.t )
      (None,
        [(None, None,
           [([`Skeyword "rec"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (`ReRecursive : 'opt_rec ))));
+                (fun _  (_loc : FanLoc.t)  -> (`Recursive _loc : 'opt_rec ))));
           ([`Stoken
               (((function | `ANT (("rec"|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"rec\"|\"anti\"),_)"))],
@@ -4647,7 +4652,8 @@ let apply () =
                       (`Ant (_loc, (mk_anti ~c:"rec_flag" n s)) : 'opt_rec )
                   | _ -> assert false)));
           ([],
-            (Gram.mk_action (fun (_loc : FanLoc.t)  -> (`ReNil : 'opt_rec ))))])]);
+            (Gram.mk_action
+               (fun (_loc : FanLoc.t)  -> (`ReNil _loc : 'opt_rec ))))])]);
    Gram.extend (a_UIDENT : 'a_UIDENT Gram.t )
      (None,
        [(None, None,
@@ -4756,7 +4762,7 @@ let apply () =
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `STR (_,x) -> (`LCons (x, `LNil) : 'string_list )
+                  | `STR (_,x) -> (`LCons (x, (`LNil _loc)) : 'string_list )
                   | _ -> assert false)))])]);
    Gram.extend (semi : 'semi Gram.t )
      (None,
@@ -4957,7 +4963,7 @@ let apply () =
                  (constructor_declaration : 'constructor_declaration Gram.t ))],
              (Gram.mk_action
                 (fun (t : 'constructor_declaration)  _  (_loc : FanLoc.t)  ->
-                   (`StExc (_loc, t, `ONone) : 'str_item ))));
+                   (`StExc (_loc, t, (`None _loc)) : 'str_item ))));
           ([`Skeyword "exception";
            `Snterm
              (Gram.obj
@@ -4967,7 +4973,7 @@ let apply () =
             (Gram.mk_action
                (fun (i : 'type_longident)  _  (t : 'constructor_declaration) 
                   _  (_loc : FanLoc.t)  ->
-                  (`StExc (_loc, t, (`OSome i)) : 'str_item ))));
+                  (`StExc (_loc, t, (`Some i)) : 'str_item ))));
           ([`Skeyword "external";
            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
            `Skeyword ":";
@@ -5490,7 +5496,7 @@ let apply () =
             (Gram.mk_action
                (fun ((i,ot) : 'class_name_and_param)  _  (_loc : FanLoc.t) 
                   ->
-                  (`CeCon (_loc, `ViVirtual, (`Lid (_loc, i)), ot) : 
+                  (`CeCon (_loc, (`Virtual _loc), (`Lid (_loc, i)), ot) : 
                   'class_expr_quot ))));
           ([`Stoken
               (((function | `ANT ("virtual",_) -> true | _ -> false)),
@@ -5685,11 +5691,12 @@ let apply () =
              (Gram.mk_action
                 (fun _  (t : 'comma_ctyp)  _  (ci : 'class_longident) 
                    (_loc : FanLoc.t)  ->
-                   (`CeCon (_loc, `ViNil, ci, t) : 'class_longident_and_param ))));
+                   (`CeCon (_loc, (`ViNil _loc), ci, t) : 'class_longident_and_param ))));
           ([`Snterm (Gram.obj (class_longident : 'class_longident Gram.t ))],
             (Gram.mk_action
                (fun (ci : 'class_longident)  (_loc : FanLoc.t)  ->
-                  (`CeCon (_loc, `ViNil, ci, (`TyNil _loc)) : 'class_longident_and_param ))))])]));
+                  (`CeCon (_loc, (`ViNil _loc), ci, (`TyNil _loc)) : 
+                  'class_longident_and_param ))))])]));
   Gram.extend (class_description : 'class_description Gram.t )
     (None,
       [(None, None,
@@ -5802,7 +5809,8 @@ let apply () =
             (Gram.obj (class_name_and_param : 'class_name_and_param Gram.t ))],
            (Gram.mk_action
               (fun ((i,ot) : 'class_name_and_param)  _  (_loc : FanLoc.t)  ->
-                 (`CtCon (_loc, `ViVirtual, (`Lid (_loc, i)), ot) : 'class_type_quot ))));
+                 (`CtCon (_loc, (`Virtual _loc), (`Lid (_loc, i)), ot) : 
+                 'class_type_quot ))));
          ([`Stoken
              (((function | `ANT ("virtual",_) -> true | _ -> false)),
                (`Normal, "`ANT (\"virtual\",_)"));
@@ -5890,10 +5898,10 @@ let apply () =
             (Gram.mk_action
                (fun _  (t : 'comma_ctyp)  _  (i : 'class_type_longident) 
                   (_loc : FanLoc.t)  ->
-                  (`CtCon (_loc, `ViNil, i, t) : 'class_type_longident_and_param ))));
+                  (`CtCon (_loc, (`ViNil _loc), i, t) : 'class_type_longident_and_param ))));
          ([`Snterm
              (Gram.obj (class_type_longident : 'class_type_longident Gram.t ))],
            (Gram.mk_action
               (fun (i : 'class_type_longident)  (_loc : FanLoc.t)  ->
-                 (`CtCon (_loc, `ViNil, i, (`TyNil _loc)) : 'class_type_longident_and_param ))))])])
+                 (`CtCon (_loc, (`ViNil _loc), i, (`TyNil _loc)) : 'class_type_longident_and_param ))))])])
 let _ = AstParsers.register_parser ("revise", apply)
