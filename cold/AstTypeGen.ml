@@ -116,8 +116,7 @@ let mkfmt pre sep post fields =
            (`ExId
               (_loc,
                 (`IdAcc
-                   (_loc, (`Uid (_loc, "Format")),
-                     (`Lid (_loc, "fprintf")))))),
+                   (_loc, (`Uid (_loc, "Format")), (`Lid (_loc, "fprintf")))))),
            (`ExId (_loc, (`Lid (_loc, "fmt")))))),
       (`ExStr (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
 let mk_variant_print cons params =

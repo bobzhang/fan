@@ -26,8 +26,7 @@ let transform =
                 (Hashtbl.add Basic.conversion_table src dest;
                  eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest)
               else ();
-              `ExSnd
-                (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), (f dest))))
+              `ExSnd (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), (f dest))))
 let basic_transform =
   function
   | `Pre pre -> (fun x  -> pre ^ x)

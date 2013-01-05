@@ -39,9 +39,7 @@ let retype_rule_list_without_patterns _loc rl =
            action = None  } ->
            {
              prod =
-               [{
-                  s with
-                  pattern = (Some (`PaId (_loc, (`Lid (_loc, "x")))))
+               [{ s with pattern = (Some (`PaId (_loc, (`Lid (_loc, "x")))))
                 }];
              action =
                (Some
@@ -57,9 +55,7 @@ let retype_rule_list_without_patterns _loc rl =
        | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
            {
              prod =
-               [{
-                  s with
-                  pattern = (Some (`PaId (_loc, (`Lid (_loc, "x")))))
+               [{ s with pattern = (Some (`PaId (_loc, (`Lid (_loc, "x")))))
                 }];
              action = (Some (`ExId (_loc, (`Lid (_loc, "x")))))
            }
@@ -269,8 +265,8 @@ let text_of_action _loc psl rtvar act tvar =
                   (`TyId
                      (_loc,
                        (`IdAcc
-                          (_loc, (`Uid (_loc, "FanLoc")),
-                            (`Lid (_loc, "t")))))))), (`ExNil _loc), e2))) in
+                          (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "t")))))))),
+             (`ExNil _loc), e2))) in
   let (_,txt) =
     List.fold_lefti
       (fun i  txt  s  ->
@@ -296,8 +292,7 @@ let text_of_action _loc psl rtvar act tvar =
         (_loc,
           (`ExId
              (_loc,
-               (`IdAcc
-                  (_loc, (`Uid (_loc, "Obj")), (`Lid (_loc, "magic")))))),
+               (`IdAcc (_loc, (`Uid (_loc, "Obj")), (`Lid (_loc, "magic")))))),
           (MetaAst.Expr.meta_expr _loc txt))
     else txt in
   `ExApp
@@ -387,8 +382,7 @@ let let_in_of_extend _loc gram gl default =
                  (`TyApp
                     (_loc,
                       (`TyId
-                         (_loc,
-                           (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
+                         (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
                       (`TyQuo (_loc, x)))))))
     | _ -> failwith "internal error in the Grammar extension" in
   match gl with
@@ -484,8 +478,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
       (_loc,
         (`ExApp
            (_loc,
-             (`ExId
-                (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, foldfun)))))),
+             (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, foldfun)))))),
              f)), e) in
   let t =
     `STapp

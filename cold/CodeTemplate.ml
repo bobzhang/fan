@@ -49,8 +49,7 @@ let base1_types =
                                                                    "fprintf")))))),
                                                     (`ExId
                                                        (_loc,
-                                                         (`Lid
-                                                            (_loc, "fmt")))))),
+                                                         (`Lid (_loc, "fmt")))))),
                                                (`ExStr (_loc, "()")))))))))))),
                       (`TyArr
                          (_loc,
@@ -156,8 +155,7 @@ let print_base1 =
                                                             (`ExStr (_loc, c)))),
                                                        (`ExId
                                                           (_loc,
-                                                            (`Lid
-                                                               (_loc, "a")))))))))))))),
+                                                            (`Lid (_loc, "a")))))))))))))),
                               ty))))))) in
   FanAst.stSem_of_list items
 let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_base_1,fold_class_str_item_base_2,print_class_str_item_base)
@@ -177,8 +175,8 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                    (_loc,
                      (`McArr
                         (_loc, (`PaId (_loc, (`Lid (_loc, "x")))),
-                          (`ExNil _loc),
-                          (`ExId (_loc, (`Lid (_loc, "x")))))))), ty))) in
+                          (`ExNil _loc), (`ExId (_loc, (`Lid (_loc, "x")))))))),
+                ty))) in
   let v2 =
     ty_names |>
       (List.map

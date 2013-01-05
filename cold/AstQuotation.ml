@@ -176,8 +176,7 @@ let add_quotation ~expr_filter  ~patt_filter  ~mexpr  ~mpatt  name entry =
                     (`PaTup
                        (loc,
                          (`PaCom
-                            (loc, (`PaId (_loc, (`Lid (_loc, name)))),
-                              rest)))))
+                            (loc, (`PaId (_loc, (`Lid (_loc, name)))), rest)))))
             | `PaApp (_loc,`PaVrn (_,u),`PaAny _) ->
                 `PaApp
                   (_loc, (`PaVrn (_loc, u)),
@@ -570,8 +569,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                    (`ExId
                                       (_loc,
                                         (`IdAcc
-                                           (_loc,
-                                             (`Uid (_loc, "Nativeint")),
+                                           (_loc, (`Uid (_loc, "Nativeint")),
                                              (`Lid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
@@ -583,8 +581,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                `ExApp
                                  (_loc,
                                    (`ExId
-                                      (_loc,
-                                        (`Lid (_loc, "string_of_int")))),
+                                      (_loc, (`Lid (_loc, "string_of_int")))),
                                    e) in
                              `ExApp
                                (_loc, (`ExVrn (_loc, "ExInt")),
@@ -626,8 +623,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (_loc,
                                         (`IdAcc
                                            (_loc, (`Uid (_loc, "Char")),
-                                             (`Lid (_loc, "escaped")))))),
-                                   e) in
+                                             (`Lid (_loc, "escaped")))))), e) in
                              `ExApp
                                (_loc, (`ExVrn (_loc, "ExChr")),
                                  (`ExTup
@@ -724,8 +720,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                    (`ExId
                                       (_loc,
                                         (`IdAcc
-                                           (_loc,
-                                             (`Uid (_loc, "Nativeint")),
+                                           (_loc, (`Uid (_loc, "Nativeint")),
                                              (`Lid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
@@ -737,8 +732,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                `ExApp
                                  (_loc,
                                    (`ExId
-                                      (_loc,
-                                        (`Lid (_loc, "string_of_int")))),
+                                      (_loc, (`Lid (_loc, "string_of_int")))),
                                    e) in
                              `ExApp
                                (_loc, (`ExVrn (_loc, "PaInt")),
@@ -780,8 +774,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (_loc,
                                         (`IdAcc
                                            (_loc, (`Uid (_loc, "Char")),
-                                             (`Lid (_loc, "escaped")))))),
-                                   e) in
+                                             (`Lid (_loc, "escaped")))))), e) in
                              `ExApp
                                (_loc, (`ExVrn (_loc, "PaChr")),
                                  (`ExTup
@@ -1017,8 +1010,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (`ExId
                                          (_loc,
                                            (`IdAcc
-                                              (_loc,
-                                                (`Uid (_loc, (gm ()))),
+                                              (_loc, (`Uid (_loc, (gm ()))),
                                                 (`Lid (_loc, "match_pre")))))),
                                       "match_case")),
                                  (`ExApp
@@ -1026,10 +1018,8 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (`ExId
                                          (_loc,
                                            (`IdAcc
-                                              (_loc,
-                                                (`Uid (_loc, (gm ()))),
-                                                (`Lid
-                                                   (_loc, "mcOr_of_list")))))),
+                                              (_loc, (`Uid (_loc, (gm ()))),
+                                                (`Lid (_loc, "mcOr_of_list")))))),
                                       e)))
                          | "antimatch_caselettry" ->
                              `ExApp
@@ -1039,8 +1029,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (`ExId
                                          (_loc,
                                            (`IdAcc
-                                              (_loc,
-                                                (`Uid (_loc, (gm ()))),
+                                              (_loc, (`Uid (_loc, (gm ()))),
                                                 (`Lid (_loc, "match_pre")))))),
                                       "match_case")),
                                  (`ExApp
@@ -1056,8 +1045,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (`ExId
                                          (_loc,
                                            (`IdAcc
-                                              (_loc,
-                                                (`Uid (_loc, (gm ()))),
+                                              (_loc, (`Uid (_loc, (gm ()))),
                                                 (`Lid (_loc, "match_pre")))))),
                                       "match_case")), e)
                          | "listpatt," ->

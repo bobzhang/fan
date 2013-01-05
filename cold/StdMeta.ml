@@ -25,8 +25,7 @@ module Expr = struct
       | e1::el ->
           let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
           `ExApp
-            (_loc,
-              (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e1)),
+            (_loc, (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e1)),
               (loop false el)) in
     loop true
   let mkarray loc arr =
@@ -74,8 +73,7 @@ module Patt = struct
       | e1::el ->
           let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
           `PaApp
-            (_loc,
-              (`PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "::")))), e1)),
+            (_loc, (`PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "::")))), e1)),
               (loop false el)) in
     loop true
   let mkarray loc arr =

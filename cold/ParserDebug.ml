@@ -27,8 +27,7 @@ let mk_debug_mode _loc =
         (_loc,
           (`IdAcc
              (_loc, (`Uid (_loc, m)),
-               (`IdAcc
-                  (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))))
+               (`IdAcc (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))))
 let mk_debug _loc m fmt section args =
   let call =
     Expr.apply
@@ -68,8 +67,7 @@ let apply () =
                   match (__fan_2, __fan_1) with
                   | (`STR (_,fmt),`LID section) ->
                       ((match (x, (debug_mode section)) with
-                        | (None ,false ) ->
-                            `ExId (_loc, (`Uid (_loc, "()")))
+                        | (None ,false ) -> `ExId (_loc, (`Uid (_loc, "()")))
                         | (Some e,false ) -> e
                         | (None ,_) -> mk_debug _loc m fmt section args
                         | (Some e,_) ->

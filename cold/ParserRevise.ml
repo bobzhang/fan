@@ -1074,8 +1074,7 @@ let apply () =
                                     (_loc,
                                       (`McArr
                                          (_loc,
-                                           (`PaId
-                                              (_loc, (`Uid (_loc, "()")))),
+                                           (`PaId (_loc, (`Uid (_loc, "()")))),
                                            (`ExNil _loc), x)))))),
                             (FanAst.match_pre#match_case a))),
                        (`ExId (_loc, (`Uid (_loc, "()"))))) : 'expr ))));
@@ -1106,8 +1105,7 @@ let apply () =
           ([`Skeyword "if"; `Sself; `Skeyword "then"; `Sself],
             (Gram.mk_action
                (fun (e2 : 'expr)  _  (e1 : 'expr)  _  (_loc : FanLoc.t)  ->
-                  (`ExIfe
-                     (_loc, e1, e2, (`ExId (_loc, (`Uid (_loc, "()"))))) : 
+                  (`ExIfe (_loc, e1, e2, (`ExId (_loc, (`Uid (_loc, "()"))))) : 
                   'expr ))));
           ([`Skeyword "do";
            `Snterm (Gram.obj (sequence : 'sequence Gram.t ));
@@ -1160,8 +1158,8 @@ let apply () =
                      (_loc,
                        (`ExAcc
                           (_loc, e1,
-                            (`ExId (_loc, (`Lid (_loc, "contents")))))),
-                       e2) : 'expr ))));
+                            (`ExId (_loc, (`Lid (_loc, "contents")))))), e2) : 
+                  'expr ))));
          ([`Sself; `Skeyword "<-"; `Sself],
            (Gram.mk_action
               (fun (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
@@ -1537,8 +1535,7 @@ let apply () =
           `Skeyword "]"],
            (Gram.mk_action
               (fun _  (mk_list : 'sem_expr_for_list)  _  (_loc : FanLoc.t) 
-                 -> (mk_list (`ExId (_loc, (`Uid (_loc, "[]")))) : 
-                 'expr ))));
+                 -> (mk_list (`ExId (_loc, (`Uid (_loc, "[]")))) : 'expr ))));
          ([`Skeyword "[|"; `Skeyword "|]"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
@@ -1710,8 +1707,7 @@ let apply () =
                                          (`McArr
                                             (_loc,
                                               (`PaId
-                                                 (_loc,
-                                                   (`Uid (_loc, "()")))),
+                                                 (_loc, (`Uid (_loc, "()")))),
                                               (`ExNil _loc), x)))))),
                                (FanAst.match_pre#match_case a))),
                           (`ExId (_loc, (`Uid (_loc, "()")))))) : 'sequence ))));
@@ -2335,8 +2331,7 @@ let apply () =
           `Skeyword "]"],
            (Gram.mk_action
               (fun _  (mk_list : 'sem_patt_for_list)  _  (_loc : FanLoc.t) 
-                 -> (mk_list (`PaId (_loc, (`Uid (_loc, "[]")))) : 
-                 'patt ))));
+                 -> (mk_list (`PaId (_loc, (`Uid (_loc, "[]")))) : 'patt ))));
          ([`Skeyword "[|"; `Skeyword "|]"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
@@ -4184,8 +4179,7 @@ let apply () =
                (fun (j : 'ident)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID s ->
-                      (`IdAcc (_loc, (`Uid (_loc, s)), j) : 'ident )
+                  | `UID s -> (`IdAcc (_loc, (`Uid (_loc, s)), j) : 'ident )
                   | _ -> assert false)))])]);
    Gram.extend
      (module_longident_dot_lparen : 'module_longident_dot_lparen Gram.t )
@@ -5802,8 +5796,7 @@ let apply () =
             (Gram.obj (class_name_and_param : 'class_name_and_param Gram.t ))],
            (Gram.mk_action
               (fun ((i,ot) : 'class_name_and_param)  _  (_loc : FanLoc.t)  ->
-                 (`CtCon (_loc, `ViVirtual, (`Lid (_loc, i)), ot) : 
-                 'class_type_quot ))));
+                 (`CtCon (_loc, `ViVirtual, (`Lid (_loc, i)), ot) : 'class_type_quot ))));
          ([`Stoken
              (((function | `ANT ("virtual",_) -> true | _ -> false)),
                (`Normal, "`ANT (\"virtual\",_)"));

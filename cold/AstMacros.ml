@@ -46,7 +46,7 @@ let macro_expander =
             | Not_found  ->
                 (fun ()  ->
                    `ExApp
-                     (_loc, (`ExId (_loc, (`Uid (_loc, a)))),
-                       (self#expr y))))) ()
+                     (_loc, (`ExId (_loc, (`Uid (_loc, a)))), (self#expr y)))))
+            ()
       | e -> super#expr e
   end

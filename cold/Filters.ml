@@ -82,10 +82,8 @@ let add_debug_expr e =
                                               (`IdAcc
                                                  (_loc,
                                                    (`Uid (_loc, "Printexc")),
-                                                   (`Lid
-                                                      (_loc, "to_string")))))),
-                                         (`ExId
-                                            (_loc, (`Lid (_loc, "exc")))))))),
+                                                   (`Lid (_loc, "to_string")))))),
+                                         (`ExId (_loc, (`Lid (_loc, "exc")))))))),
                                (`ExId (_loc, (`Uid (_loc, "()")))))),
                           (`ExApp
                              (_loc, (`ExId (_loc, (`Lid (_loc, "raise")))),
@@ -176,12 +174,11 @@ let _ =
 let map_expr =
   function
   | `ExApp (_loc,e,`ExId (_,`Uid (_,"NOTHING")))|`ExFun
-                                                     (_loc,`McArr
-                                                             (_,`PaId
-                                                                  (_,
-                                                                   `Uid
+                                                   (_loc,`McArr
+                                                           (_,`PaId
+                                                                (_,`Uid
                                                                     (_,"NOTHING")),
-                                                              `ExNil _,e))
+                                                            `ExNil _,e))
       -> e
   | `ExId (_loc,`Lid (_,"__FILE__")) ->
       `ExStr (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
@@ -197,8 +194,7 @@ let map_expr =
           (`ExId
              (_loc,
                (`IdAcc
-                  (_loc, (`Uid (_loc, "FanLoc")),
-                    (`Lid (_loc, "of_tuple")))))),
+                  (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
           (`ExTup
              (_loc,
                (`ExCom

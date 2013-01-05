@@ -141,15 +141,13 @@ let _ =
                               `StVal
                                 (_loc, `ReNil,
                                   (`BiEq
-                                     (_loc,
-                                       (`PaId (_loc, (`Lid (_loc, x)))),
+                                     (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`ExStr (_loc, d)))))))
                           | (Some d,Some typ) ->
                               `StVal
                                 (_loc, `ReNil,
                                   (`BiEq
-                                     (_loc,
-                                       (`PaId (_loc, (`Lid (_loc, x)))),
+                                     (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExTyc
                                           (_loc,
                                             (`ExApp
@@ -159,15 +157,13 @@ let _ =
                               `StVal
                                 (_loc, `ReNil,
                                   (`BiEq
-                                     (_loc,
-                                       (`PaId (_loc, (`Lid (_loc, x)))),
+                                     (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`ExStr (_loc, x)))))))
                           | (None ,Some typ) ->
                               `StVal
                                 (_loc, `ReNil,
                                   (`BiEq
-                                     (_loc,
-                                       (`PaId (_loc, (`Lid (_loc, x)))),
+                                     (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExTyc
                                           (_loc,
                                             (`ExApp
@@ -189,8 +185,7 @@ let _ =
                             (_loc,
                               (`ExId
                                  (_loc,
-                                   (`IdAcc
-                                      (_loc, t, (`Lid (_loc, "clear")))))),
+                                   (`IdAcc (_loc, t, (`Lid (_loc, "clear")))))),
                               (`ExId (_loc, (`Lid (_loc, x)))))) ls in
                    `ExSeq (_loc, (FanAst.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
@@ -660,15 +655,13 @@ let _ =
                                     (_loc,
                                       (`ExApp
                                          (_loc,
-                                           (`ExId
-                                              (_loc, (`Lid (_loc, "=")))),
+                                           (`ExId (_loc, (`Lid (_loc, "=")))),
                                            x)), y))))
                           (`ExApp
                              (_loc,
                                (`ExApp
-                                  (_loc,
-                                    (`ExId (_loc, (`Lid (_loc, "=")))), x)),
-                               y)) ys in
+                                  (_loc, (`ExId (_loc, (`Lid (_loc, "=")))),
+                                    x)), y)) ys in
                       mk_tok _loc ~restrict ~pattern:p (`STtok _loc) : 
                  'symbol ))));
          ([`Stoken

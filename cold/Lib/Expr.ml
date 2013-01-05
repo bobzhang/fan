@@ -79,8 +79,8 @@ let bigarray_get loc arr arg =
                                  (loc, (`Uid (loc, "Bigarray")),
                                    (`IdAcc
                                       (loc, (`Uid (loc, "Array3")),
-                                        (`Lid (loc, "get")))))))), arr)),
-                    c1)), c2)), c3)
+                                        (`Lid (loc, "get")))))))), arr)), c1)),
+               c2)), c3)
   | c1::c2::c3::coords ->
       `ExApp
         (loc,
@@ -107,8 +107,8 @@ let bigarray_set loc var newval =
               (_,`ExId
                    (_,`IdAcc
                         (_,`Uid (_,"Bigarray"),`IdAcc
-                                                   (_,`Uid (_,"Array1"),
-                                                    `Lid (_,"get")))),arr),c1)
+                                                 (_,`Uid (_,"Array1"),
+                                                  `Lid (_,"get")))),arr),c1)
       ->
       Some
         (`ExApp
@@ -131,9 +131,8 @@ let bigarray_set loc var newval =
                    (_,`ExId
                         (_,`IdAcc
                              (_,`Uid (_,"Bigarray"),`IdAcc
-                                                        (_,`Uid
-                                                             (_,"Array2"),
-                                                         `Lid (_,"get")))),arr),c1),c2)
+                                                      (_,`Uid (_,"Array2"),
+                                                       `Lid (_,"get")))),arr),c1),c2)
       ->
       Some
         (`ExApp
@@ -159,10 +158,9 @@ let bigarray_set loc var newval =
                         (_,`ExId
                              (_,`IdAcc
                                   (_,`Uid (_,"Bigarray"),`IdAcc
-                                                             (_,`Uid
-                                                                  (_,"Array3"),
-                                                              `Lid
-                                                                (_,"get")))),arr),c1),c2),c3)
+                                                           (_,`Uid
+                                                                (_,"Array3"),
+                                                            `Lid (_,"get")))),arr),c1),c2),c3)
       ->
       Some
         (`ExAss
@@ -180,8 +178,7 @@ let bigarray_set loc var newval =
                                       (`ExId
                                          (loc,
                                            (`IdAcc
-                                              (loc,
-                                                (`Uid (loc, "Bigarray")),
+                                              (loc, (`Uid (loc, "Bigarray")),
                                                 (`IdAcc
                                                    (loc,
                                                      (`Uid (loc, "Array3")),
@@ -193,8 +190,8 @@ let bigarray_set loc var newval =
               (_,`ExId
                    (_,`IdAcc
                         (_,`Uid (_,"Bigarray"),`IdAcc
-                                                   (_,`Uid (_,"Genarray"),
-                                                    `Lid (_,"get")))),arr),
+                                                 (_,`Uid (_,"Genarray"),
+                                                  `Lid (_,"get")))),arr),
        `ExArr (_,coords))
       ->
       Some
@@ -215,10 +212,8 @@ let bigarray_set loc var newval =
   | _ -> None
 let rec pattern_eq_expression p e =
   match (p, e) with
-  | (`PaId (_loc,`Lid (_,a)),`ExId (_,`Lid (_,b)))|(`PaId
-                                                          (_loc,`Uid (_,a)),
-                                                        `ExId
-                                                          (_,`Uid (_,b)))
+  | (`PaId (_loc,`Lid (_,a)),`ExId (_,`Lid (_,b)))|(`PaId (_loc,`Uid (_,a)),
+                                                    `ExId (_,`Uid (_,b)))
       -> a = b
   | (`PaApp (_loc,p1,p2),`ExApp (_,e1,e2)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
@@ -318,8 +313,7 @@ let filter loc p b l =
            (loc,
              (`ExId
                 (loc,
-                  (`IdAcc
-                     (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
+                  (`IdAcc (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
              (`ExFun (loc, (`McArr (loc, p, (`ExNil loc), b)))))), l)
   else
     `ExApp
@@ -328,8 +322,7 @@ let filter loc p b l =
            (loc,
              (`ExId
                 (loc,
-                  (`IdAcc
-                     (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
+                  (`IdAcc (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
              (`ExFun
                 (loc,
                   (`McOr
@@ -338,8 +331,7 @@ let filter loc p b l =
                           (loc, p, (`ExId (loc, (`Lid (loc, "true")))), b)),
                        (`McArr
                           (loc, (`PaAny loc), (`ExNil loc),
-                            (`ExId (loc, (`Lid (loc, "false")))))))))))),
-        l)
+                            (`ExId (loc, (`Lid (loc, "false")))))))))))), l)
 let concat _loc l =
   `ExApp
     (_loc,
@@ -389,10 +381,8 @@ class subst loc env =
       function
       | `ExId (_loc,`Lid (_,x))|`ExId (_loc,`Uid (_,x)) as e ->
           (try List.assoc x env with | Not_found  -> super#expr e)
-      | `ExApp
-          (_loc,`ExId (_,`Uid (_,"LOCATION_OF")),`ExId (_,`Lid (_,x)))|
-          `ExApp
-            (_loc,`ExId (_,`Uid (_,"LOCATION_OF")),`ExId (_,`Uid (_,x)))
+      | `ExApp (_loc,`ExId (_,`Uid (_,"LOCATION_OF")),`ExId (_,`Lid (_,x)))|
+          `ExApp (_loc,`ExId (_,`Uid (_,"LOCATION_OF")),`ExId (_,`Uid (_,x)))
           as e ->
           (try
              let loc = FanAst.loc_of_expr (List.assoc x env) in
@@ -631,8 +621,7 @@ let mk_assert =
   | e -> `ExAsr (_loc, e)
 let mk_record label_exprs =
   let rec_bindings =
-    List.map
-      (fun (label,expr)  -> `RbEq (_loc, (`Lid (_loc, label)), expr))
+    List.map (fun (label,expr)  -> `RbEq (_loc, (`Lid (_loc, label)), expr))
       label_exprs in
   `ExRec (_loc, (FanAst.rbSem_of_list rec_bindings), (`ExNil _loc))
 let failure =
@@ -647,8 +636,8 @@ let (<+) names acc =
        `ExFun
          (_loc,
            (`McArr
-              (_loc, (`PaId (_loc, (`Lid (_loc, name)))), (`ExNil _loc),
-                acc)))) names acc
+              (_loc, (`PaId (_loc, (`Lid (_loc, name)))), (`ExNil _loc), acc))))
+    names acc
 let (<+<) patts acc =
   List.fold_right
     (fun p  acc  -> `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), acc))))
@@ -741,8 +730,7 @@ let mep_of_str s =
      `ExApp
        (_loc, (`ExVrn (_loc, "PaId")),
          (`ExTup
-            (_loc,
-              (`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), u))))))
+            (_loc, (`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), u))))))
 let mee_of_str s =
   let len = String.length s in
   if (s.[0]) = '`'
@@ -767,8 +755,7 @@ let mee_of_str s =
      `ExApp
        (_loc, (`ExVrn (_loc, "ExId")),
          (`ExTup
-            (_loc,
-              (`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), u))))))
+            (_loc, (`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), u))))))
 let vee_of_str s =
   `ExApp
     (_loc, (`ExVrn (_loc, "ExVrn")),
@@ -902,8 +889,7 @@ let meee_of_str s =
                                                  (_loc,
                                                    (`ExId
                                                       (_loc,
-                                                        (`Lid
-                                                           (_loc, "_loc")))),
+                                                        (`Lid (_loc, "_loc")))),
                                                    (`ExCom
                                                       (_loc,
                                                         (`ExApp

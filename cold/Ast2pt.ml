@@ -72,8 +72,7 @@ let ctyp_long_id t =
   | t -> error (loc_of_ctyp t) "invalid type"
 let predef_option loc =
   `TyId
-    (loc,
-      (`IdAcc (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
+    (loc, (`IdAcc (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
 let rec ctyp =
   function
   | `TyId (loc,i) ->
@@ -233,8 +232,7 @@ let mkmutable =
   function | `MuMutable -> Mutable | `MuNil -> Immutable | _ -> assert false
 let paolab lab p =
   match (lab, p) with
-  | ("",(`PaId (_loc,`Lid (_,i))|`PaTyc (_loc,`PaId (_,`Lid (_,i)),_)))
-      -> i
+  | ("",(`PaId (_loc,`Lid (_,i))|`PaTyc (_loc,`PaId (_,`Lid (_,i)),_))) -> i
   | ("",p) -> error (loc_of_patt p) "bad ast in label"
   | _ -> lab
 let opt_private_ctyp =
@@ -613,8 +611,7 @@ let rec expr =
       mkexp loc (Pexp_construct ((lident_with_loc "()" loc), None, true))
   | `ExId (loc,`Lid (_,("true"|"false" as s))) ->
       mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
-  | `ExId (loc,`Lid (_,s)) ->
-      mkexp loc (Pexp_ident (lident_with_loc s loc))
+  | `ExId (loc,`Lid (_,s)) -> mkexp loc (Pexp_ident (lident_with_loc s loc))
   | `ExId (loc,`Uid (_,s)) ->
       mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
   | `ExVrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
@@ -651,8 +648,7 @@ and binding x acc =
   match x with
   | `BiAnd (_loc,x,y) -> binding x (binding y acc)
   | `BiEq
-      (_loc,`PaId (sloc,`Lid (_,bind_name)),`ExTyc
-                                                (_,e,`TyTypePol (_,vs,ty)))
+      (_loc,`PaId (sloc,`Lid (_,bind_name)),`ExTyc (_,e,`TyTypePol (_,vs,ty)))
       ->
       let rec id_to_string x =
         match x with
@@ -893,9 +889,9 @@ and class_info_class_expr ci =
 and class_info_class_type ci =
   match ci with
   | `CtEq (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct)|`CtCol
-                                                              (_,`CtCon
-                                                                   (loc,vir,
-                                                                    `Lid
+                                                            (_,`CtCon
+                                                                 (loc,vir,
+                                                                  `Lid
                                                                     (nloc,name),params),ct)
       ->
       let (loc_params,(params,variance)) =

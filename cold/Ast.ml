@@ -5,15 +5,14 @@ and direction_flag = [ `DiTo | `DiDownto | `Ant of (loc* string)]
 and mutable_flag = [ `MuMutable | `MuNil | `Ant of (loc* string)] 
 and private_flag = [ `PrPrivate | `PrNil | `Ant of (loc* string)] 
 and virtual_flag = [ `ViVirtual | `ViNil | `Ant of (loc* string)] 
-and override_flag = [ `OvOverride | `OvNil | `Ant of (loc* string)] 
+and override_flag = [ `Override | `OvNil | `Ant of (loc* string)] 
 and row_var_flag = [ `RvRowVar | `RvNil | `Ant of (loc* string)] 
 and 'a meta_option = [ `ONone | `OSome of 'a | `Ant of (loc* string)] 
 and 'a meta_list =
   [ `LNil | `LCons of ('a* 'a meta_list) | `Ant of (loc* string)] 
 and ident =
   [ `IdAcc of (loc* ident* ident) | `IdApp of (loc* ident* ident)
-  | `Lid of (loc* string) | `Uid of (loc* string)
-  | `Ant of (loc* string)] 
+  | `Lid of (loc* string) | `Uid of (loc* string) | `Ant of (loc* string)] 
 and ctyp =
   [ `TyNil of loc | `TyAli of (loc* ctyp* ctyp) | `TyAny of loc
   | `TyApp of (loc* ctyp* ctyp) | `TyArr of (loc* ctyp* ctyp)

@@ -176,8 +176,7 @@ let output_byte_array v =
 let table (n,t) =
   `StVal
     (_loc, `ReNil,
-      (`BiEq
-         (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))))
+      (`BiEq (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))))
 let binding_table (n,t) =
   `BiEq (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))
 let partition ~counter  ~tables  (i,p) =
@@ -220,8 +219,7 @@ let partition ~counter  ~tables  (i,p) =
                          (_loc,
                            (`ExId
                               (_loc,
-                                (`Lid
-                                   (_loc, (table_name ~tables ~counter t))))),
+                                (`Lid (_loc, (table_name ~tables ~counter t))))),
                            c)))))), (`ExInt (_loc, "1"))) in
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
@@ -233,8 +231,8 @@ let partition ~counter  ~tables  (i,p) =
            (`ExFun
               (_loc,
                 (`McArr
-                   (_loc, (`PaId (_loc, (`Lid (_loc, "c")))),
-                     (`ExNil _loc), body)))))))
+                   (_loc, (`PaId (_loc, (`Lid (_loc, "c")))), (`ExNil _loc),
+                     body)))))))
 let binding_partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
@@ -275,8 +273,7 @@ let binding_partition ~counter  ~tables  (i,p) =
                          (_loc,
                            (`ExId
                               (_loc,
-                                (`Lid
-                                   (_loc, (table_name ~tables ~counter t))))),
+                                (`Lid (_loc, (table_name ~tables ~counter t))))),
                            c)))))), (`ExInt (_loc, "1"))) in
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
@@ -286,8 +283,7 @@ let binding_partition ~counter  ~tables  (i,p) =
       (`ExFun
          (_loc,
            (`McArr
-              (_loc, (`PaId (_loc, (`Lid (_loc, "c")))), (`ExNil _loc),
-                body)))))
+              (_loc, (`PaId (_loc, (`Lid (_loc, "c")))), (`ExNil _loc), body)))))
 let best_final final =
   let fin = ref None in
   Array.iteri
@@ -337,8 +333,7 @@ let gen_definition _loc l =
                          (`ExId
                             (_loc,
                               (`IdAcc
-                                 (_loc, (gm ()),
-                                   (`Lid (_loc, "backtrack")))))),
+                                 (_loc, (gm ()), (`Lid (_loc, "backtrack")))))),
                          (`ExId (_loc, (`Lid (_loc, "lexbuf"))))))))))) in
     let ret body =
       `BiEq

@@ -17,8 +17,7 @@ module MetaLoc : FanAst.META_LOC =
         (`ExId
            (_loc,
              (`IdAcc
-                (_loc, (`Uid (_loc, "FanLoc")),
-                  (`Lid (_loc, "of_tuple")))))),
+                (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
         (`ExTup
            (_loc,
              (`ExCom
