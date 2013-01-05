@@ -1,4 +1,3 @@
-(* open Ast *)
 module Ast = FanAst
 module MetaLocVar : Ast.META_LOC =
   struct
@@ -18,7 +17,8 @@ module MetaLoc : Ast.META_LOC =
         (`ExId
            (_loc,
              (`IdAcc
-                (_loc, (`IdUid (_loc, "FanLoc")), (`IdLid (_loc, "of_tuple")))))),
+                (_loc, (`IdUid (_loc, "FanLoc")),
+                  (`IdLid (_loc, "of_tuple")))))),
         (`ExTup
            (_loc,
              (`ExCom

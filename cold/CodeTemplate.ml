@@ -1,4 +1,3 @@
-open Ast
 module Ast = FanAst
 open LibUtil
 let _loc = FanLoc.ghost
@@ -49,7 +48,8 @@ let base1_types =
                                                                    "fprintf")))))),
                                                     (`ExId
                                                        (_loc,
-                                                         (`IdLid (_loc, "fmt")))))),
+                                                         (`IdLid
+                                                            (_loc, "fmt")))))),
                                                (`ExStr (_loc, "()")))))))))))),
                       (`TyArr
                          (_loc,
@@ -176,8 +176,8 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                    (_loc,
                      (`McArr
                         (_loc, (`PaId (_loc, (`IdLid (_loc, "x")))),
-                          (`ExNil _loc), (`ExId (_loc, (`IdLid (_loc, "x")))))))),
-                ty))) in
+                          (`ExNil _loc),
+                          (`ExId (_loc, (`IdLid (_loc, "x")))))))), ty))) in
   let v2 =
     ty_names |>
       (List.map

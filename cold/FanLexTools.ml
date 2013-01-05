@@ -1,4 +1,4 @@
-(* open Ast *)
+open Ast
 open LibUtil
 type node = 
   {
@@ -177,7 +177,8 @@ let output_byte_array v =
 let table (n,t) =
   `StVal
     (_loc, `ReNil,
-      (`BiEq (_loc, (`PaId (_loc, (`IdLid (_loc, n)))), (output_byte_array t))))
+      (`BiEq
+         (_loc, (`PaId (_loc, (`IdLid (_loc, n)))), (output_byte_array t))))
 let binding_table (n,t) =
   `BiEq (_loc, (`PaId (_loc, (`IdLid (_loc, n)))), (output_byte_array t))
 let partition ~counter  ~tables  (i,p) =
@@ -233,8 +234,8 @@ let partition ~counter  ~tables  (i,p) =
            (`ExFun
               (_loc,
                 (`McArr
-                   (_loc, (`PaId (_loc, (`IdLid (_loc, "c")))), (`ExNil _loc),
-                     body)))))))
+                   (_loc, (`PaId (_loc, (`IdLid (_loc, "c")))),
+                     (`ExNil _loc), body)))))))
 let binding_partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
@@ -286,7 +287,8 @@ let binding_partition ~counter  ~tables  (i,p) =
       (`ExFun
          (_loc,
            (`McArr
-              (_loc, (`PaId (_loc, (`IdLid (_loc, "c")))), (`ExNil _loc), body)))))
+              (_loc, (`PaId (_loc, (`IdLid (_loc, "c")))), (`ExNil _loc),
+                body)))))
 let best_final final =
   let fin = ref None in
   Array.iteri
@@ -336,7 +338,8 @@ let gen_definition _loc l =
                          (`ExId
                             (_loc,
                               (`IdAcc
-                                 (_loc, (gm ()), (`IdLid (_loc, "backtrack")))))),
+                                 (_loc, (gm ()),
+                                   (`IdLid (_loc, "backtrack")))))),
                          (`ExId (_loc, (`IdLid (_loc, "lexbuf"))))))))))) in
     let ret body =
       `BiEq
@@ -390,8 +393,7 @@ let gen_definition _loc l =
       (List.sort (fun (i0,_)  (i1,_)  -> compare i0 i1)
          (get_tables ~tables ())) in
   let b =
-    let len = Array.length states in
-    if len > 1 then `ReRecursive else `ReNil in
+    let len = Array.length states in if len > 1 then `ReRecursive else `ReNil in
   `ExFun
     (_loc,
       (`McArr

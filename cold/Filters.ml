@@ -1,5 +1,4 @@
 open LibUtil
-open Ast
 module Ast = FanAst
 module MetaLoc =
   struct
@@ -83,8 +82,10 @@ let add_debug_expr e =
                                               (`IdAcc
                                                  (_loc,
                                                    (`IdUid (_loc, "Printexc")),
-                                                   (`IdLid (_loc, "to_string")))))),
-                                         (`ExId (_loc, (`IdLid (_loc, "exc")))))))),
+                                                   (`IdLid
+                                                      (_loc, "to_string")))))),
+                                         (`ExId
+                                            (_loc, (`IdLid (_loc, "exc")))))))),
                                (`ExId (_loc, (`IdUid (_loc, "()")))))),
                           (`ExApp
                              (_loc, (`ExId (_loc, (`IdLid (_loc, "raise")))),
@@ -175,7 +176,13 @@ let _ =
 let map_expr =
   function
   | `ExApp (_loc,e,`ExId (_,`IdUid (_,"NOTHING")))|`ExFun
-      (_loc,`McArr (_,`PaId (_,`IdUid (_,"NOTHING")),`ExNil _,e)) -> e
+                                                     (_loc,`McArr
+                                                             (_,`PaId
+                                                                  (_,
+                                                                   `IdUid
+                                                                    (_,"NOTHING")),
+                                                              `ExNil _,e))
+      -> e
   | `ExId (_loc,`IdLid (_,"__FILE__")) ->
       `ExStr (_loc, (Ast.safe_string_escaped (FanLoc.file_name _loc)))
   | `ExId (_loc,`IdLid (_,"__PWD__")) ->
@@ -213,7 +220,8 @@ let map_expr =
                                                   (`ExInt
                                                      (_loc,
                                                        (string_of_int c))))),
-                                             (`ExInt (_loc, (string_of_int d))))),
+                                             (`ExInt
+                                                (_loc, (string_of_int d))))),
                                         (`ExInt (_loc, (string_of_int e))))),
                                    (`ExInt (_loc, (string_of_int f))))),
                               (`ExInt (_loc, (string_of_int g))))),

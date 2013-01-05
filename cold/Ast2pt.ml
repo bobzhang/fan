@@ -1,71 +1,18 @@
 open Parsetree
 open Longident
 open Asttypes
-(* open PLib *)
+open Lib
 open FanUtil
-open LibUtil  
 open FanAst
-(* open FanPAst   *)
 open ParsetreeHelper
-
-(* FOR BOOTSTRAPPING processes isolated here *)
-(*
-let rec view_app acc = fun
-  [{|$f $a |} -> view_app [a::acc] f
-  | f -> (f,acc)] *)
-let rec view_app_ctyp acc =
-  function | `TyApp (_loc,f,a) -> view_app_ctyp (a :: acc) f | f -> (f, acc)
-let rec view_app_expr acc =
-  function | `ExApp (_loc,f,a) -> view_app_expr (a :: acc) f | f -> (f, acc)
-let rec view_app_class_expr acc =
-  function | `CeApp (_loc,f,a) -> view_app_class_expr (a :: acc) f | f -> (f, acc)
-
-let rec name_tags_ctyp =
-  function
-  | `TyApp (_loc,t1,t2) -> (name_tags_ctyp t1) @ (name_tags_ctyp t2)
-  | `TyVrn (_loc,s) -> [s]
-  | _ -> assert false
-
-let rec to_var_list_ctyp =
-  function
-  | `TyApp (_loc,t1,t2) -> (to_var_list_ctyp t1) @ (to_var_list_ctyp t2)
-  | `TyQuo (_loc,s) -> [s]
-  | _ -> assert false
-
-let list_of_opt_ctyp ot acc =
-  match ot with | `TyNil _loc -> acc | t -> list_of_ctyp t acc
-
-let rec normalize_acc =
-  function
-  | `IdAcc (_loc,i1,i2) ->
-      `ExAcc (_loc, (normalize_acc i1), (normalize_acc i2))
-  | `IdApp (_loc,i1,i2) ->
-      `ExApp (_loc, (normalize_acc i1), (normalize_acc i2))
-  | `IdAnt (_loc,_)|`IdUid (_loc,_)|`IdLid (_loc,_) as i -> `ExId (_loc, i)
-        
-let rec sep_dot_expr acc =
-  function
-  | `ExAcc (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1
-  | `ExId (loc,`IdUid (_,s)) as e ->
-      (match acc with
-       | [] -> [(loc, [], e)]
-       | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
-  | `ExId (_loc,(`IdAcc (_l,_,_) as i)) ->
-      sep_dot_expr acc (normalize_acc i)
-  | e -> ((loc_of_expr e), [], e) :: acc      
-(* end *)
-      
 let mkvirtual =
-  function | `ViVirtual  -> Virtual | `ViNil  -> Concrete | _ -> assert false
+  function | `ViVirtual -> Virtual | `ViNil -> Concrete | _ -> assert false
 let mkdirection =
-  function | `DiTo  -> Upto | `DiDownto  -> Downto | _ -> assert false
-
-
-      
+  function | `DiTo -> Upto | `DiDownto -> Downto | _ -> assert false
 let mkrf =
   function
-  | `ReRecursive  -> Recursive
-  | `ReNil  -> Nonrecursive
+  | `ReRecursive -> Recursive
+  | `ReNil -> Nonrecursive
   | _ -> assert false
 let ident_tag i =
   let rec self i acc =
@@ -76,14 +23,14 @@ let ident_tag i =
     | `IdApp (_loc,i1,i2) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
-         | _ -> error (Ast.loc_of_ident i) "invalid long identifer")
+         | _ -> error (FanAst.loc_of_ident i) "invalid long identifer")
     | `IdUid (_loc,s) ->
         (match (acc, s) with
          | (None ,"") -> None
          | (None ,s) -> Some ((lident s), `uident)
          | (Some (_,(`uident|`app)),"") -> acc
          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
-         | _ -> error (Ast.loc_of_ident i) "invalid long identifier")
+         | _ -> error (FanAst.loc_of_ident i) "invalid long identifier")
     | `IdLid (_loc,s) ->
         let x =
           match acc with
@@ -125,7 +72,8 @@ let ctyp_long_id t =
   | t -> error (loc_of_ctyp t) "invalid type"
 let predef_option loc =
   `TyId
-    (loc, (`IdAcc (loc, (`IdLid (loc, "*predef*")), (`IdLid (loc, "option")))))
+    (loc,
+      (`IdAcc (loc, (`IdLid (loc, "*predef*")), (`IdLid (loc, "option")))))
 let rec ctyp =
   function
   | `TyId (loc,i) ->
@@ -139,7 +87,7 @@ let rec ctyp =
       mktyp loc (Ptyp_alias ((ctyp t), i))
   | `TyAny loc -> mktyp loc Ptyp_any
   | `TyApp (loc,_,_) as f ->
-      let (f,al) = view_app_ctyp [] f  in
+      let (f,al) = Ctyp.view_app [] f in
       let (is_cls,li) = ctyp_long_id f in
       if is_cls
       then mktyp loc (Ptyp_class (li, (List.map ctyp al), []))
@@ -150,41 +98,43 @@ let rec ctyp =
       let t1 = `TyApp (loc1, (predef_option loc1), t1) in
       mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
   | `TyArr (loc,t1,t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
-  | `TyObj (loc,fl,`RvNil ) -> mktyp loc (Ptyp_object (meth_list fl []))
-  | `TyObj (loc,fl,`RvRowVar ) ->
+  | `TyObj (loc,fl,`RvNil) -> mktyp loc (Ptyp_object (meth_list fl []))
+  | `TyObj (loc,fl,`RvRowVar) ->
       mktyp loc (Ptyp_object (meth_list fl [mkfield loc Pfield_var]))
   | `TyCls (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
   | `TyPkg (loc,pt) ->
       let (i,cs) = package_type pt in mktyp loc (Ptyp_package (i, cs))
   | `TyPol (loc,t1,t2) ->
-      mktyp loc (Ptyp_poly ((to_var_list_ctyp t1 ), (ctyp t2)))
+      mktyp loc (Ptyp_poly ((Ctyp.to_var_list t1), (ctyp t2)))
   | `TyQuo (loc,s) -> mktyp loc (Ptyp_var s)
   | `TyTup (loc,`TySta (_,t1,t2)) ->
       mktyp loc
-        (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 [])) ))
+        (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
   | `TyVrnEq (loc,t) -> mktyp loc (Ptyp_variant ((row_field t), true, None))
-  | `TyVrnSup (loc,t) -> mktyp loc (Ptyp_variant ((row_field t), false, None))
+  | `TyVrnSup (loc,t) ->
+      mktyp loc (Ptyp_variant ((row_field t), false, None))
   | `TyVrnInf (loc,t) ->
       mktyp loc (Ptyp_variant ((row_field t), true, (Some [])))
-  |`TyVrnInfSup (loc,t,t') ->
+  | `TyVrnInfSup (loc,t,t') ->
       mktyp loc
-        (Ptyp_variant ((row_field t), true, (Some (name_tags_ctyp t' ))))
-  |`TyLab (loc,_,_) -> error loc "labelled type not allowed here"
-  |`TyMan (loc,_,_) -> error loc "manifest type not allowed here"
-  |`TyOlb (loc,_,_) -> error loc "labelled type not allowed here"
-  |`TyRec (loc,_) -> error loc "record type not allowed here"
-  |`TySum (loc,_) -> error loc "sum type not allowed here"
-  |`TyPrv (loc,_) -> error loc "private type not allowed here"
-  |`TyMut (loc,_) -> error loc "mutable type not allowed here"
-  |`TyOr (loc,_,_) -> error loc "type1 | type2 not allowed here"
-  |`TyAnd (loc,_,_) -> error loc "type1 and type2 not allowed here"
-  |`TyOf (loc,_,_) -> error loc "type1 of type2 not allowed here"
-  |`TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
-  |`TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
-  |`TyAnt (loc,_) -> error loc "antiquotation not allowed here"
-  |`TyOfAmp (_,_,_)|`TyAmp (_,_,_)|`TySta (_,_,_)|`TyCom (_,_,_)|`TyVrn
-      (_,_)|`TyQuM (_,_)|`TyQuP (_,_)|`TyDcl (_,_,_,_,_)|`TyAnP _|`TyAnM
-      _|`TyTypePol (_,_,_)|`TyObj (_,_,`RvAnt _)|`TyNil _|`TyTup (_,_) ->
+        (Ptyp_variant ((row_field t), true, (Some (Ctyp.name_tags t'))))
+  | `TyLab (loc,_,_) -> error loc "labelled type not allowed here"
+  | `TyMan (loc,_,_) -> error loc "manifest type not allowed here"
+  | `TyOlb (loc,_,_) -> error loc "labelled type not allowed here"
+  | `TyRec (loc,_) -> error loc "record type not allowed here"
+  | `TySum (loc,_) -> error loc "sum type not allowed here"
+  | `TyPrv (loc,_) -> error loc "private type not allowed here"
+  | `TyMut (loc,_) -> error loc "mutable type not allowed here"
+  | `TyOr (loc,_,_) -> error loc "type1 | type2 not allowed here"
+  | `TyAnd (loc,_,_) -> error loc "type1 and type2 not allowed here"
+  | `TyOf (loc,_,_) -> error loc "type1 of type2 not allowed here"
+  | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
+  | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
+  | `TyAnt (loc,_) -> error loc "antiquotation not allowed here"
+  | `TyOfAmp (_,_,_)|`TyAmp (_,_,_)|`TySta (_,_,_)|`TyCom (_,_,_)|`TyVrn
+                                                                    (_,_)|
+      `TyQuM (_,_)|`TyQuP (_,_)|`TyDcl (_,_,_,_,_)|`TyAnP _|`TyAnM _|
+      `TyTypePol (_,_,_)|`TyObj (_,_,`RvAnt _)|`TyNil _|`TyTup (_,_) ->
       assert false
 and row_field =
   function
@@ -231,7 +181,7 @@ let mktype loc tl cl tk tp tm =
   }
 let mkprivate' m = if m then Private else Public
 let mkprivate =
-  function | `PrPrivate  -> Private | `PrNil  -> Public | _ -> assert false
+  function | `PrPrivate -> Private | `PrNil -> Public | _ -> assert false
 let mktrecord =
   function
   | `TyCol (loc,`TyId (_,`IdLid (sloc,s)),`TyMut (_,t)) ->
@@ -276,14 +226,15 @@ let mkvalue_desc loc t p =
   { pval_type = (ctyp t); pval_prim = p; pval_loc = loc }
 let rec list_of_meta_list =
   function
-  | `LNil  -> []
+  | `LNil -> []
   | `LCons (x,xs) -> x :: (list_of_meta_list xs)
   | `LAnt _ -> assert false
 let mkmutable =
-  function | `MuMutable  -> Mutable | `MuNil  -> Immutable | _ -> assert false
+  function | `MuMutable -> Mutable | `MuNil -> Immutable | _ -> assert false
 let paolab lab p =
   match (lab, p) with
-  | ("",(`PaId (_loc,`IdLid (_,i))|`PaTyc (_loc,`PaId (_,`IdLid (_,i)),_))) -> i
+  | ("",(`PaId (_loc,`IdLid (_,i))|`PaTyc (_loc,`PaId (_,`IdLid (_,i)),_)))
+      -> i
   | ("",p) -> error (loc_of_patt p) "bad ast in label"
   | _ -> lab
 let opt_private_ctyp =
@@ -341,8 +292,8 @@ let rec mkwithc wc acc =
   | `WcNil _loc -> acc
   | `WcTyp (loc,id_tpl,ct) ->
       (mkwithtyp (fun x  -> Pwith_type x) loc id_tpl ct) :: acc
-  | `WcMod (_loc,i1,i2) -> ((long_uident i1), (Pwith_module (long_uident i2)))
-      :: acc
+  | `WcMod (_loc,i1,i2) ->
+      ((long_uident i1), (Pwith_module (long_uident i2))) :: acc
   | `WcTyS (loc,id_tpl,ct) ->
       (mkwithtyp (fun x  -> Pwith_typesubst x) loc id_tpl ct) :: acc
   | `WcMoS (_loc,i1,i2) ->
@@ -479,14 +430,14 @@ and mklabpat =
   | p -> error (loc_of_patt p) "invalid pattern"
 let override_flag loc =
   function
-  | `OvOverride  -> Override
-  | `OvNil  -> Fresh
+  | `OvOverride -> Override
+  | `OvNil -> Fresh
   | _ -> error loc "antiquotation not allowed here"
 let rec expr =
   function
   | `ExAcc (_loc,_,_)|`ExId (_loc,`IdAcc (_,_,_)) as e ->
       let (e,l) =
-        match sep_dot_expr [] e with
+        match Expr.sep_dot_expr [] e with
         | (loc,ml,`ExId (sloc,`IdUid (_,s)))::l ->
             ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)
         | (loc,ml,`ExId (sloc,`IdLid (_,s)))::l ->
@@ -505,7 +456,7 @@ let rec expr =
       e
   | `ExAnt (loc,_) -> error loc "antiquotation not allowed here"
   | `ExApp (loc,_,_) as f ->
-      let (f,al) = view_app_expr [] f  in
+      let (f,al) = Expr.view_app [] f in
       let al = List.map label_expr al in
       (match (expr f).pexp_desc with
        | Pexp_construct (li,None ,_) ->
@@ -662,7 +613,8 @@ let rec expr =
       mkexp loc (Pexp_construct ((lident_with_loc "()" loc), None, true))
   | `ExId (loc,`IdLid (_,("true"|"false" as s))) ->
       mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
-  | `ExId (loc,`IdLid (_,s)) -> mkexp loc (Pexp_ident (lident_with_loc s loc))
+  | `ExId (loc,`IdLid (_,s)) ->
+      mkexp loc (Pexp_ident (lident_with_loc s loc))
   | `ExId (loc,`IdUid (_,s)) ->
       mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
   | `ExVrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
@@ -699,7 +651,8 @@ and binding x acc =
   match x with
   | `BiAnd (_loc,x,y) -> binding x (binding y acc)
   | `BiEq
-      (_loc,`PaId (sloc,`IdLid (_,bind_name)),`ExTyc (_,e,`TyTypePol (_,vs,ty)))
+      (_loc,`PaId (sloc,`IdLid (_,bind_name)),`ExTyc
+                                                (_,e,`TyTypePol (_,vs,ty)))
       ->
       let rec id_to_string x =
         match x with
@@ -869,9 +822,9 @@ and str_item s l =
       :: l
   | `StSem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
   | `StDir (_,_,_) -> l
-  | `StExc (loc,`TyId (_,`IdUid (_,s)),`ONone ) ->
+  | `StExc (loc,`TyId (_,`IdUid (_,s)),`ONone) ->
       (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
-  | `StExc (loc,`TyOf (_,`TyId (_,`IdUid (_,s)),t),`ONone ) ->
+  | `StExc (loc,`TyOf (_,`TyId (_,`IdUid (_,s)),t),`ONone) ->
       (mkstr loc
          (Pstr_exception
             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
@@ -901,10 +854,10 @@ and str_item s l =
   | `StAnt (loc,_) -> error loc "antiquotation in str_item"
 and class_type =
   function
-  | `CtCon (loc,`ViNil ,id,tl) ->
+  | `CtCon (loc,`ViNil,id,tl) ->
       mkcty loc
         (Pcty_constr
-           ((long_class_ident id), (List.map ctyp (list_of_opt_ctyp tl [] ))))
+           ((long_class_ident id), (List.map ctyp (Ctyp.list_of_opt tl []))))
   | `CtFun (loc,`TyLab (_,lab,t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (class_type ct)))
   | `CtFun (loc,`TyOlb (loc1,lab,t),ct) ->
@@ -940,7 +893,11 @@ and class_info_class_expr ci =
 and class_info_class_type ci =
   match ci with
   | `CtEq (_,`CtCon (loc,vir,`IdLid (nloc,name),params),ct)|`CtCol
-      (_,`CtCon (loc,vir,`IdLid (nloc,name),params),ct) ->
+                                                              (_,`CtCon
+                                                                   (loc,vir,
+                                                                    `IdLid
+                                                                    (nloc,name),params),ct)
+      ->
       let (loc_params,(params,variance)) =
         match params with
         | `TyNil _loc -> (loc, ([], []))
@@ -972,13 +929,13 @@ and class_sig_item c l =
 and class_expr =
   function
   | `CeApp (loc,_,_) as c ->
-      let (ce,el) = view_app_class_expr [] c in
+      let (ce,el) = ClassExpr.view_app [] c in
       let el = List.map label_expr el in
       mkcl loc (Pcl_apply ((class_expr ce), el))
-  | `CeCon (loc,`ViNil ,id,tl) ->
+  | `CeCon (loc,`ViNil,id,tl) ->
       mkcl loc
         (Pcl_constr
-           ((long_class_ident id), (List.map ctyp (list_of_opt_ctyp tl [] ))))
+           ((long_class_ident id), (List.map ctyp (Ctyp.list_of_opt tl []))))
   | `CeFun (loc,`PaLab (_,lab,po),ce) ->
       mkcl loc
         (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
@@ -1056,23 +1013,4 @@ let print_expr f e = pp f "@[%a@]@." AstPrint.expression (expr e)
 let print_patt f e = pp f "@[%a@]@." AstPrint.pattern (patt e)
 let print_str_item f e = pp f "@[%a@]@." AstPrint.structure (str_item e)
 let print_ctyp f e = pp f "@[%a@]@." AstPrint.core_type (ctyp e)
-(* let _ = Ctyp.to_string := (LibUtil.to_string_of_printer print_ctyp) *)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+let _ = Ctyp.to_string := (LibUtil.to_string_of_printer print_ctyp)

@@ -1,4 +1,3 @@
-open Ast
 open PreCast.Syntax
 open Lib
 open LibUtil
@@ -28,7 +27,8 @@ let mk_debug_mode _loc =
         (_loc,
           (`IdAcc
              (_loc, (`IdUid (_loc, m)),
-               (`IdAcc (_loc, (`IdUid (_loc, "Debug")), (`IdLid (_loc, "mode")))))))
+               (`IdAcc
+                  (_loc, (`IdUid (_loc, "Debug")), (`IdLid (_loc, "mode")))))))
 let mk_debug _loc m fmt section args =
   let call =
     Expr.apply
@@ -68,7 +68,8 @@ let apply () =
                   match (__fan_2, __fan_1) with
                   | (`STR (_,fmt),`LID section) ->
                       ((match (x, (debug_mode section)) with
-                        | (None ,false ) -> `ExId (_loc, (`IdUid (_loc, "()")))
+                        | (None ,false ) ->
+                            `ExId (_loc, (`IdUid (_loc, "()")))
                         | (Some e,false ) -> e
                         | (None ,_) -> mk_debug _loc m fmt section args
                         | (Some e,_) ->

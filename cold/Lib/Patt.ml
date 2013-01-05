@@ -110,8 +110,12 @@ let tuple_of_list lst =
   | n when n > 1 -> `PaTup (_loc, (List.reduce_left comma lst))
   | _ -> invalid_arg "tuple_of_list n < 1"
 let of_vstr_number name i =
-  let item = (List.init i (fun i  -> `PaId (_loc, (xid i)))) |> tuple_of_list in
-  `PaApp (_loc, (`PaVrn (_loc, name)), item)
+  let items = List.init i (fun i  -> `PaId (_loc, (xid i))) in
+  if items = []
+  then `PaVrn (_loc, name)
+  else
+    (let item = items |> tuple_of_list in
+     `PaApp (_loc, (`PaVrn (_loc, name)), item))
 let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   let args =
     List.init arity

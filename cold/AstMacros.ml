@@ -1,4 +1,3 @@
-open Ast
 type key = string 
 type expander = Ast.expr -> Ast.expr 
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40
@@ -46,7 +45,7 @@ let macro_expander =
             | Not_found  ->
                 (fun ()  ->
                    `ExApp
-                     (_loc, (`ExId (_loc, (`IdUid (_loc, a)))), (self#expr y)))))
-            ()
+                     (_loc, (`ExId (_loc, (`IdUid (_loc, a)))),
+                       (self#expr y))))) ()
       | e -> super#expr e
   end

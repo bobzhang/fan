@@ -1,14 +1,15 @@
 type loc = FanLoc.t 
-and meta_bool = [ `BTrue | `BFalse | `BAnt of string] 
-and rec_flag = [ `ReRecursive | `ReNil | `ReAnt of string] 
-and direction_flag = [ `DiTo | `DiDownto | `DiAnt of string] 
-and mutable_flag = [ `MuMutable | `MuNil | `MuAnt of string] 
-and private_flag = [ `PrPrivate | `PrNil | `PrAnt of string] 
-and virtual_flag = [ `ViVirtual | `ViNil | `ViAnt of string] 
-and override_flag = [ `OvOverride | `OvNil | `OvAnt of string] 
-and row_var_flag = [ `RvRowVar | `RvNil | `RvAnt of string] 
-and 'a meta_option = [ `ONone | `OSome of 'a | `OAnt of string] 
-and 'a meta_list = [ `LNil | `LCons of ('a* 'a meta_list) | `LAnt of string] 
+and meta_bool = [ `BTrue | `BFalse | `BAnt of (loc* string)] 
+and rec_flag = [ `ReRecursive | `ReNil | `ReAnt of (loc* string)] 
+and direction_flag = [ `DiTo | `DiDownto | `DiAnt of (loc* string)] 
+and mutable_flag = [ `MuMutable | `MuNil | `MuAnt of (loc* string)] 
+and private_flag = [ `PrPrivate | `PrNil | `PrAnt of (loc* string)] 
+and virtual_flag = [ `ViVirtual | `ViNil | `ViAnt of (loc* string)] 
+and override_flag = [ `OvOverride | `OvNil | `OvAnt of (loc* string)] 
+and row_var_flag = [ `RvRowVar | `RvNil | `RvAnt of (loc* string)] 
+and 'a meta_option = [ `ONone | `OSome of 'a | `OAnt of (loc* string)] 
+and 'a meta_list =
+  [ `LNil | `LCons of ('a* 'a meta_list) | `LAnt of (loc* string)] 
 and ident =
   [ `IdAcc of (loc* ident* ident) | `IdApp of (loc* ident* ident)
   | `IdLid of (loc* string) | `IdUid of (loc* string)
@@ -149,12 +150,7 @@ and class_str_item =
   | `CrMth of (loc* string* override_flag* private_flag* expr* ctyp)
   | `CrVal of (loc* string* override_flag* mutable_flag* expr)
   | `CrVir of (loc* string* private_flag* ctyp)
-  | `CrVvr of (loc* string* mutable_flag* ctyp) | `CrAnt of (loc* string)]
-      
-let safe_string_escaped s =
-  if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
-  then s
-  else String.escaped s
+  | `CrVvr of (loc* string* mutable_flag* ctyp) | `CrAnt of (loc* string)] 
 let loc_of_ctyp: ctyp -> FanLoc.t =
   fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
 let loc_of_patt: patt -> FanLoc.t =
@@ -189,3 +185,7 @@ let loc_of_match_case: match_case -> FanLoc.t =
   fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
 let loc_of_ident: ident -> FanLoc.t =
   fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let safe_string_escaped s =
+  if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
+  then s
+  else String.escaped s

@@ -71,38 +71,10 @@ let _ =
 let mk_variant_meta_expr cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then
-    (* match len with *)
-    (* | n when n > 1 -> *) of_vstr_number "ExAnt" len
-    (* | 1 -> *)
-    (*     `ExApp *)
-    (*       (_loc, (`ExVrn (_loc, "ExAnt")), *)
-    (*         (`ExTup *)
-    (*            (_loc, *)
-    (*              (`ExCom *)
-    (*                 (_loc, (`ExId (_loc, (`IdLid (_loc, "_loc")))), *)
-    (*                   (`ExId (_loc, (xid 0)))))))) *)
-    (* | _ -> failwithf "%s can not be handled" cons *)
+  then of_vstr_number "ExAnt" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
-      (List.fold_left mee_app (mee_of_str cons))    
-(* let mk_variant_meta_expr cons params = *)
-(*   let len = List.length params in *)
-(*   if String.ends_with cons "Ant" *)
-(*   then *)
-(*     match len with *)
-(*     | n when n > 1 -> of_ident_number (`IdUid (_loc, "`ExAnt")) len *)
-(*     | 1 -> *)
-(*         `ExApp *)
-(*           (_loc, *)
-(*             (`ExApp *)
-(*                (_loc, (`ExId (_loc, (`IdUid (_loc, "`ExAnt")))), *)
-(*                  (`ExId (_loc, (`IdLid (_loc, "_loc")))))), *)
-(*             (`ExId (_loc, (xid 0)))) *)
-(*     | _ -> failwithf "%s can not be handled" cons *)
-(*   else *)
-(*     (params |> (List.map (fun { expr;_}  -> expr))) |> *)
-(*       (List.fold_left mee_app (mee_of_str cons)) *)
+      (List.fold_left mee_app (mee_of_str cons))
 let mk_record_meta_expr cols =
   (cols |> (List.map (fun { label; info = { expr;_};_}  -> (label, expr))))
     |> mk_record_ee
@@ -115,38 +87,10 @@ let gen_meta_expr =
 let mk_variant_meta_patt cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then
-    (* match len with *)
-    (* | n (\* when n > 1 *\) -> *) of_vstr_number "PaAnt" len
-    (* | 1 -> *)
-    (*     `ExApp *)
-    (*       (_loc, (`ExVrn (_loc, "PaAnt")), *)
-    (*         (`ExTup *)
-    (*            (_loc, *)
-    (*              (`ExCom *)
-    (*                 (_loc, (`ExId (_loc, (`IdLid (_loc, "_loc")))), *)
-    (*                   (`ExId (_loc, (xid 0)))))))) *)
-    (* | _ -> failwithf "%s can not be handled" cons *)
+  then of_vstr_number "PaAnt" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
-      (List.fold_left mep_app (mep_of_str cons))    
-(* let mk_variant_meta_patt cons params = *)
-(*   let len = List.length params in *)
-(*   if String.ends_with cons "Ant" *)
-(*   then *)
-(*     match len with *)
-(*     | n when n > 1 -> of_ident_number (`IdUid (_loc, "`PaAnt")) len *)
-(*     | 1 -> *)
-(*         `ExApp *)
-(*           (_loc, *)
-(*             (`ExApp *)
-(*                (_loc, (`ExId (_loc, (`IdUid (_loc, "`PaAnt")))), *)
-(*                  (`ExId (_loc, (`IdLid (_loc, "_loc")))))), *)
-(*             (`ExId (_loc, (xid 0)))) *)
-(*     | _ -> failwithf "%s can not be handled" cons *)
-(*   else *)
-(*     (params |> (List.map (fun { expr;_}  -> expr))) |> *)
-(*       (List.fold_left mep_app (mep_of_str cons)) *)
+      (List.fold_left mep_app (mep_of_str cons))
 let mk_record_meta_patt cols =
   (cols |> (List.map (fun { label; info = { expr;_};_}  -> (label, expr))))
     |> mk_record_ep
@@ -212,18 +156,7 @@ let _ =
 let mk_variant_meta_expr cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then
-    match len with
-    | 1 ->
-        `ExApp
-          (_loc, (`ExVrn (_loc, "`ExAnt")),
-            (`ExTup
-               (_loc,
-                 (`ExCom
-                    (_loc, (`ExId (_loc, (`IdLid (_loc, "_loc")))),
-                      (`ExId (_loc, (xid 0))))))))
-    | n when n > 1 -> of_vstr_number "`ExAnt" len
-    | _ -> failwithf "%s can not be handled" cons
+  then of_vstr_number "ExAnt" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (List.fold_left vee_app (vee_of_str cons))
@@ -239,18 +172,7 @@ let gen_meta_expr =
 let mk_variant_meta_patt cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then
-    match len with
-    | 1 ->
-        `ExApp
-          (_loc, (`ExVrn (_loc, "`PaAnt")),
-            (`ExTup
-               (_loc,
-                 (`ExCom
-                    (_loc, (`ExId (_loc, (`IdLid (_loc, "_loc")))),
-                      (`ExId (_loc, (xid 0))))))))
-    | n when n > 1 -> of_vstr_number "`PaAnt" len
-    | _ -> failwithf "%s can not be handled" cons
+  then of_vstr_number "PaAnt" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (List.fold_left vep_app (vep_of_str cons))

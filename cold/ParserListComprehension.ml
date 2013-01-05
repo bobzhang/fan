@@ -1,4 +1,3 @@
-open Ast
 module Ast = FanAst
 open PreCast.Syntax
 open Lib
@@ -38,15 +37,18 @@ let apply () =
                    (_loc : FanLoc.t)  ->
                    (`ExApp
                       (_loc,
-                        (`ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e)),
-                        (mk (`ExId (_loc, (`IdUid (_loc, "[]")))))) : 'comprehension_or_sem_expr_for_list ))));
+                        (`ExApp
+                           (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e)),
+                        (mk (`ExId (_loc, (`IdUid (_loc, "[]")))))) : 
+                   'comprehension_or_sem_expr_for_list ))));
           ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
            `Skeyword ";"],
             (Gram.mk_action
                (fun _  (e : 'expr)  (_loc : FanLoc.t)  ->
                   (`ExApp
                      (_loc,
-                       (`ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e)),
+                       (`ExApp
+                          (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e)),
                        (`ExId (_loc, (`IdUid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))));
           ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
            `Skeyword "|";
@@ -60,7 +62,8 @@ let apply () =
                (fun (e : 'expr)  (_loc : FanLoc.t)  ->
                   (`ExApp
                      (_loc,
-                       (`ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e)),
+                       (`ExApp
+                          (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e)),
                        (`ExId (_loc, (`IdUid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))))])]);
    Gram.extend (item : 'item Gram.t )
      (None,
@@ -107,7 +110,8 @@ let apply () =
                 (fun (last : 'expr)  _  (e : 'expr)  (_loc : FanLoc.t)  ->
                    (`ExApp
                       (_loc,
-                        (`ExApp (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e)),
+                        (`ExApp
+                           (_loc, (`ExId (_loc, (`IdUid (_loc, "::")))), e)),
                         last) : 'comprehension_or_sem_expr_for_list ))))])])
   else ()
 let _ = AstParsers.register_parser ("ListComprehension", apply)

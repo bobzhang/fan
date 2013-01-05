@@ -58,16 +58,16 @@ let mkarray loc arr =
    It is applied to both expr and patt
    {[
    of_str "`A";
-   `ExVrn  "A" || `PaVrn "A"
+   ExVrn  "A" || PaVrn "A"
    
    of_str "A";
-   `ExId  (`IdUid  "A")
+   ExId  (IdUid  "A")
 
    of_str "abs";
-   `ExId  (`IdLid  "abs")
+   ExId  (IdLid  "abs")
 
    of_str "&&";
-   `ExId  (`IdLid  "&&")
+   ExId  (IdLid  "&&")
    ]}
   *)
 let of_str s =
@@ -179,8 +179,11 @@ let tuple_of_list lst =
 
 
 let of_vstr_number name i =
-  let item = List.init i (fun i -> {|$(id:xid i) |} ) |> tuple_of_list in 
-   {| `$name $item |};
+  let items = List.init i (fun i -> {|$(id:xid i) |} ) in
+  if items = [] then {|`$name|}
+  else
+    let item = items |> tuple_of_list in
+    {| `$name $item |};
     
 (*
   {[

@@ -1,4 +1,3 @@
-open Ast
 module Ast = FanAst
 open Lib
 open LibUtil

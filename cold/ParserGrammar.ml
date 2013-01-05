@@ -1,4 +1,3 @@
-open Ast
 open FanGrammar
 open FanGrammarTools
 open PreCast.Syntax
@@ -124,7 +123,8 @@ let _ =
                   (let mk =
                      match t with
                      | `static t ->
-                         `ExId (_loc, (`IdAcc (_loc, t, (`IdLid (_loc, "mk")))))
+                         `ExId
+                           (_loc, (`IdAcc (_loc, t, (`IdLid (_loc, "mk")))))
                      | `dynamic (x,t) ->
                          `ExApp
                            (_loc,
@@ -141,13 +141,15 @@ let _ =
                               `StVal
                                 (_loc, `ReNil,
                                   (`BiEq
-                                     (_loc, (`PaId (_loc, (`IdLid (_loc, x)))),
+                                     (_loc,
+                                       (`PaId (_loc, (`IdLid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`ExStr (_loc, d)))))))
                           | (Some d,Some typ) ->
                               `StVal
                                 (_loc, `ReNil,
                                   (`BiEq
-                                     (_loc, (`PaId (_loc, (`IdLid (_loc, x)))),
+                                     (_loc,
+                                       (`PaId (_loc, (`IdLid (_loc, x)))),
                                        (`ExTyc
                                           (_loc,
                                             (`ExApp
@@ -157,13 +159,15 @@ let _ =
                               `StVal
                                 (_loc, `ReNil,
                                   (`BiEq
-                                     (_loc, (`PaId (_loc, (`IdLid (_loc, x)))),
+                                     (_loc,
+                                       (`PaId (_loc, (`IdLid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`ExStr (_loc, x)))))))
                           | (None ,Some typ) ->
                               `StVal
                                 (_loc, `ReNil,
                                   (`BiEq
-                                     (_loc, (`PaId (_loc, (`IdLid (_loc, x)))),
+                                     (_loc,
+                                       (`PaId (_loc, (`IdLid (_loc, x)))),
                                        (`ExTyc
                                           (_loc,
                                             (`ExApp
@@ -185,7 +189,8 @@ let _ =
                             (_loc,
                               (`ExId
                                  (_loc,
-                                   (`IdAcc (_loc, t, (`IdLid (_loc, "clear")))))),
+                                   (`IdAcc
+                                      (_loc, t, (`IdLid (_loc, "clear")))))),
                               (`ExId (_loc, (`IdLid (_loc, x)))))) ls in
                    `ExSeq (_loc, (Ast.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
@@ -468,7 +473,8 @@ let _ =
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID ("LA"|"RA"|"NA" as x) -> (`ExVrn (_loc, x) : 'assoc )
+                  | `UID ("LA"|"RA"|"NA" as x) ->
+                      (`ExVrn (_loc, x) : 'assoc )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `UID _ -> true | _ -> false)),
@@ -654,13 +660,15 @@ let _ =
                                     (_loc,
                                       (`ExApp
                                          (_loc,
-                                           (`ExId (_loc, (`IdLid (_loc, "=")))),
+                                           (`ExId
+                                              (_loc, (`IdLid (_loc, "=")))),
                                            x)), y))))
                           (`ExApp
                              (_loc,
                                (`ExApp
-                                  (_loc, (`ExId (_loc, (`IdLid (_loc, "=")))),
-                                    x)), y)) ys in
+                                  (_loc,
+                                    (`ExId (_loc, (`IdLid (_loc, "=")))), x)),
+                               y)) ys in
                       mk_tok _loc ~restrict ~pattern:p (`STtok _loc) : 
                  'symbol ))));
          ([`Stoken
@@ -776,7 +784,8 @@ let _ =
           `Skeyword "_"],
            (Gram.mk_action
               (fun _  (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
-                 (`PaApp (_loc, (`PaVrn (_loc, s)), (`PaAny _loc)) : 'simple_patt ))));
+                 (`PaApp (_loc, (`PaVrn (_loc, s)), (`PaAny _loc)) : 
+                 'simple_patt ))));
          ([`Skeyword "`";
           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
           `Skeyword "(";

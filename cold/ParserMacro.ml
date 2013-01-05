@@ -1,4 +1,3 @@
-open Ast
 open PreCast.Syntax
 open FanMacroTools
 open Lib
@@ -183,8 +182,9 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
                            (execute_macro_if_active_branch ~expr ~patt _loc
-                              (`StNil _loc) (fun a  b  -> `StSem (_loc, a, b))
-                              Then d : 'e__1 ))));
+                              (`StNil _loc)
+                              (fun a  b  -> `StSem (_loc, a, b)) Then d : 
+                           'e__1 ))));
                   ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
@@ -203,8 +203,9 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
                            (execute_macro_if_active_branch ~expr ~patt _loc
-                              (`StNil _loc) (fun a  b  -> `StSem (_loc, a, b))
-                              Else d : 'e__2 ))));
+                              (`StNil _loc)
+                              (fun a  b  -> `StSem (_loc, a, b)) Else d : 
+                           'e__2 ))));
                   ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
@@ -224,8 +225,9 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (d : 'macro_def_sig)  (_loc : FanLoc.t)  ->
                            (execute_macro_if_active_branch ~expr ~patt _loc
-                              (`SgNil _loc) (fun a  b  -> `SgSem (_loc, a, b))
-                              Then d : 'e__3 ))));
+                              (`SgNil _loc)
+                              (fun a  b  -> `SgSem (_loc, a, b)) Then d : 
+                           'e__3 ))));
                   ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
@@ -245,8 +247,9 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (d : 'macro_def_sig)  (_loc : FanLoc.t)  ->
                            (execute_macro_if_active_branch ~expr ~patt _loc
-                              (`SgNil _loc) (fun a  b  -> `SgSem (_loc, a, b))
-                              Else d : 'e__4 ))));
+                              (`SgNil _loc)
+                              (fun a  b  -> `SgSem (_loc, a, b)) Else d : 
+                           'e__4 ))));
                   ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action

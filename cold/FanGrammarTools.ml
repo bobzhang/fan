@@ -1,4 +1,3 @@
-open Ast
 open Format
 open Lib
 open LibUtil
@@ -40,7 +39,9 @@ let retype_rule_list_without_patterns _loc rl =
            action = None  } ->
            {
              prod =
-               [{ s with pattern = (Some (`PaId (_loc, (`IdLid (_loc, "x")))))
+               [{
+                  s with
+                  pattern = (Some (`PaId (_loc, (`IdLid (_loc, "x")))))
                 }];
              action =
                (Some
@@ -56,7 +57,9 @@ let retype_rule_list_without_patterns _loc rl =
        | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
            {
              prod =
-               [{ s with pattern = (Some (`PaId (_loc, (`IdLid (_loc, "x")))))
+               [{
+                  s with
+                  pattern = (Some (`PaId (_loc, (`IdLid (_loc, "x")))))
                 }];
              action = (Some (`ExId (_loc, (`IdLid (_loc, "x")))))
            }
@@ -247,13 +250,15 @@ let text_of_action _loc psl rtvar act tvar =
                    (`McArr
                       (_loc, (`PaTup (_loc, (`PaCom (_loc, p1, p2)))),
                         (`ExNil _loc), e1)),
-                   (`McArr (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc))))))
+                   (`McArr
+                      (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc))))))
       | Some (tok,match_) ->
           `ExMat
             (_loc, tok,
               (`McOr
                  (_loc, (`McArr (_loc, match_, (`ExNil _loc), e1)),
-                   (`McArr (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc)))))) in
+                   (`McArr
+                      (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc)))))) in
     `ExFun
       (_loc,
         (`McArr
@@ -270,7 +275,8 @@ let text_of_action _loc psl rtvar act tvar =
       (fun i  txt  s  ->
          match s.pattern with
          | None |Some (`PaAny _) ->
-             `ExFun (_loc, (`McArr (_loc, (`PaAny _loc), (`ExNil _loc), txt)))
+             `ExFun
+               (_loc, (`McArr (_loc, (`PaAny _loc), (`ExNil _loc), txt)))
          | Some (`PaAli (_loc,`PaApp (_,_,`PaTup (_,`PaAny _)),p)) ->
              let p = make_ctyp_patt s.styp tvar p in
              `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))
@@ -289,7 +295,8 @@ let text_of_action _loc psl rtvar act tvar =
         (_loc,
           (`ExId
              (_loc,
-               (`IdAcc (_loc, (`IdUid (_loc, "Obj")), (`IdLid (_loc, "magic")))))),
+               (`IdAcc
+                  (_loc, (`IdUid (_loc, "Obj")), (`IdLid (_loc, "magic")))))),
           (MetaAst.Expr.meta_expr _loc txt))
     else txt in
   `ExApp
@@ -379,7 +386,8 @@ let let_in_of_extend _loc gram gl default =
                  (`TyApp
                     (_loc,
                       (`TyId
-                         (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "t")))))),
+                         (_loc,
+                           (`IdAcc (_loc, (gm ()), (`IdLid (_loc, "t")))))),
                       (`TyQuo (_loc, x)))))))
     | _ -> failwith "internal error in the Grammar extension" in
   match gl with
@@ -418,7 +426,8 @@ let text_of_functorial_extend _loc gram locals el =
     | e::[] -> e
     | e::el ->
         `ExSeq
-          (_loc, (List.fold_left (fun acc  x  -> `ExSem (_loc, acc, x)) e el)) in
+          (_loc,
+            (List.fold_left (fun acc  x  -> `ExSem (_loc, acc, x)) e el)) in
   let_in_of_extend _loc gram locals args
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
@@ -474,7 +483,8 @@ let sfold ?sep  _loc (ns : string list) f e s =
       (_loc,
         (`ExApp
            (_loc,
-             (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, foldfun)))))),
+             (`ExId
+                (_loc, (`IdAcc (_loc, (gm ()), (`IdLid (_loc, foldfun)))))),
              f)), e) in
   let t =
     `STapp

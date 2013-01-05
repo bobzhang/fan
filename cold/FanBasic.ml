@@ -1,4 +1,3 @@
-open Ast
 open LibUtil
 open Format
 exception Unhandled of Ast.ctyp

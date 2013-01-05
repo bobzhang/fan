@@ -1,4 +1,3 @@
-open Ast
 open Transform
 open FSig
 open Lib
@@ -64,8 +63,3 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
           obj_of_module_types ?module_name base class_name
             obj_simple_expr_of_ctyp kind in
   make
-(*
-  {:str_item|
-  type u = [= `a of (int*int) | `b of int ]
-  |};
- *)

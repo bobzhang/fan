@@ -1,5 +1,4 @@
 open LibUtil
-(* open Ast *)
 open FSig
 open Format
 open Lib
@@ -57,10 +56,10 @@ let filter_type_defs ?qualified  () =
     val mutable type_defs = let _loc = FanLoc.ghost in `StNil _loc
     method! sig_item =
       function
-      | `SgVal (_loc,_,_)|`SgInc (_loc,_)|`SgExt (_loc,_,_,_)|`SgExc
-          (_loc,_)|`SgCls (_loc,_)|`SgClt (_loc,_)|`SgDir (_loc,_,`ExNil _)|`SgMod
-          (_loc,_,_)|`SgMty (_loc,_,_)|`SgRecMod (_loc,_)|`SgOpn (_loc,_) ->
-          `SgNil _loc
+      | `SgVal (_loc,_,_)|`SgInc (_loc,_)|`SgExt (_loc,_,_,_)|`SgExc (_loc,_)|
+          `SgCls (_loc,_)|`SgClt (_loc,_)|`SgDir (_loc,_,`ExNil _)|`SgMod
+                                                                    (_loc,_,_)|
+          `SgMty (_loc,_,_)|`SgRecMod (_loc,_)|`SgOpn (_loc,_) -> `SgNil _loc
       | `SgTyp (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
           let x =
             match ((Ctyp.qualified_app_list ctyp), qualified) with
@@ -69,7 +68,8 @@ let filter_type_defs ?qualified  () =
                 `TyDcl (_loc, name, vars, (`TyNil _loc), constraints)
             | (_,_) -> super#ctyp x in
           let y = `StTyp (_loc, x) in
-          let () = type_defs <- `StSem (_loc, type_defs, y) in `SgTyp (_loc, x)
+          let () = type_defs <- `StSem (_loc, type_defs, y) in
+          `SgTyp (_loc, x)
       | `SgTyp (_loc,ty) ->
           let x = super#ctyp ty in
           let () = type_defs <- `StSem (_loc, type_defs, (`StTyp (_loc, x))) in
@@ -83,7 +83,9 @@ let filter_type_defs ?qualified  () =
            | _ -> super#ident i)
       | i -> super#ident i
     method! ctyp =
-      function | `TyMan (_loc,_,ctyp) -> super#ctyp ctyp | ty -> super#ctyp ty
+      function
+      | `TyMan (_loc,_,ctyp) -> super#ctyp ctyp
+      | ty -> super#ctyp ty
     method get_type_defs = type_defs
   end
 class type traversal
@@ -157,9 +159,9 @@ let traversal () =
            (eprintf "Came across @[%a@]@." FSig.pp_print_types item;
             self#update_cur_module_types (fun lst  -> item :: lst);
             x)
-       | `StVal (_loc,`ReNil ,_)|`StMty (_loc,_,_)|`StInc (_loc,_)|`StExt
-           (_loc,_,_,_)|`StExp (_loc,_)|`StExc (_loc,_,`ONone )|`StDir (_loc,_,_)
-           as x -> x
+       | `StVal (_loc,`ReNil,_)|`StMty (_loc,_,_)|`StInc (_loc,_)|`StExt
+                                                                    (_loc,_,_,_)|
+           `StExp (_loc,_)|`StExc (_loc,_,`ONone)|`StDir (_loc,_,_) as x -> x
        | x -> super#str_item x
      method! ctyp =
        function

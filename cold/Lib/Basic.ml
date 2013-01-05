@@ -1,6 +1,5 @@
 open Format
 open LibUtil
-(* open Ast *)
 exception Unhandled of Ast.ctyp
 exception Finished of Ast.expr
 let _loc = FanLoc.ghost

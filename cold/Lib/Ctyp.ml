@@ -1,4 +1,3 @@
-(* open Ast *)
 module Ast = FanAst
 open LibUtil
 open Format
@@ -18,7 +17,8 @@ let rec name_tags =
   | _ -> assert false
 let rec to_generalized =
   function
-  | `TyArr (_loc,t1,t2) -> let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt)
+  | `TyArr (_loc,t1,t2) ->
+      let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt)
   | t -> ([], t)
 let to_string =
   ref
@@ -79,8 +79,8 @@ let tuple_sta_of_list =
   | x::[] -> x
   | xs -> `TyTup (_loc, (sta_of_list xs))
 let (<+) names ty =
-  List.fold_right (fun name  acc  -> `TyArr (_loc, (`TyQuo (_loc, name)), acc))
-    names ty
+  List.fold_right
+    (fun name  acc  -> `TyArr (_loc, (`TyQuo (_loc, name)), acc)) names ty
 let (+>) params base = List.fold_right arrow params base
 let name_length_of_tydcl =
   function
@@ -278,7 +278,8 @@ let reduce_data_ctors (ty : Ast.ctyp) (init : 'a)
       | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
       | `TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
       | `TySum (_loc,ty)|`TyVrnEq (_loc,ty)|`TyVrnInf (_loc,ty)|`TyVrnSup
-          (_loc,ty) -> loop acc ty
+                                                                  (_loc,ty)
+          -> loop acc ty
       | `TyNil _loc -> acc
       | t -> raise (Unhandled t) in
     try return & (loop init ty)

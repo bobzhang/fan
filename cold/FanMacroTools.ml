@@ -1,4 +1,3 @@
-open Ast
 module Ast = FanAst
 open Lib
 open LibUtil
@@ -128,7 +127,8 @@ let undef ~expr  ~patt  x =
 let parse_def ~expr  ~patt  s =
   match Gram.parse_string expr ~loc:(FanLoc.mk "<command line>") s with
   | `ExId (_loc,`IdUid (_,n)) -> define ~expr ~patt None n
-  | `ExApp (_loc,`ExApp (_,`ExId (_,`IdLid (_,"=")),`ExId (_,`IdUid (_,n))),e) ->
+  | `ExApp
+      (_loc,`ExApp (_,`ExId (_,`IdLid (_,"=")),`ExId (_,`IdUid (_,n))),e) ->
       define ~expr ~patt (Some ([], e)) n
   | _ -> invalid_arg s
 let include_dirs = ref []
