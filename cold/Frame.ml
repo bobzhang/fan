@@ -264,7 +264,7 @@ module Make(S:FSig.Config) = struct
           ((`Lid (_loc, name)), len) (Obj k) in
       let mk_class_str_item (name,tydcl) =
         let ty = mk_type (name, tydcl) in
-        `CrMth (_loc, name, `OvNil _loc, `PrNil, (f tydcl), ty) in
+        `CrMth (_loc, name, (`OvNil _loc), `PrNil, (f tydcl), ty) in
       let fs (ty : types) =
         match ty with
         | `Mutual named_types ->
@@ -275,7 +275,7 @@ module Make(S:FSig.Config) = struct
                  let ty_str = "" in
                  let () = Hashtbl.add tbl ty_str (Abstract ty_str) in
                  let ty = mk_type (name, tydcl) in
-                 `CrMth (_loc, name, `OvNil _loc, `PrNil, (unknown n), ty)
+                 `CrMth (_loc, name, (`OvNil _loc), `PrNil, (unknown n), ty)
              | None  -> mk_class_str_item named_type) in
       let (extras,lst) = Ctyp.transform_module_types lst in
       let body =
@@ -289,7 +289,8 @@ module Make(S:FSig.Config) = struct
                  Ctyp.mk_method_type ~number:S.arity ~prefix:S.names
                    (src, len) (Obj k) in
                let () = Hashtbl.add tbl dest (Qualified dest) in
-               `CrMth (_loc, dest, `OvNil _loc, `PrNil, (unknown len), ty)) extras in
+               `CrMth (_loc, dest, (`OvNil _loc), `PrNil, (unknown len), ty))
+            extras in
         `CrSem (_loc, body, (FanAst.crSem_of_list items)) in
       let v = Ctyp.mk_obj class_name base body in
       Hashtbl.iter (fun _  v  -> eprintf "%s" (string_of_warning_type v)) tbl;

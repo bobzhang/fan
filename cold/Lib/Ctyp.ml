@@ -176,7 +176,7 @@ let mk_obj class_name base body =
                 (`CrSem
                    (_loc,
                      (`CrInh
-                        (_loc, `OvNil _loc,
+                        (_loc, (`OvNil _loc),
                           (`CeCon
                              (_loc, `ViNil, (`Lid (_loc, base)),
                                (`TyNil _loc))), "")), body)))))))

@@ -170,7 +170,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                 (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
                   (`TyId (_loc, (`Lid (_loc, x))))) in
             `CrMth
-              (_loc, x, `OvNil _loc, `PrNil,
+              (_loc, x, (`OvNil _loc), `PrNil,
                 (`ExFun
                    (_loc,
                      (`McArr
@@ -188,7 +188,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                      (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
                        (`TyId (_loc, (`Lid (_loc, x))))))) in
             `CrMth
-              (_loc, x, `OvNil _loc, `PrNil,
+              (_loc, x, (`OvNil _loc), `PrNil,
                 (`ExFun
                    (_loc,
                      (`McArr
@@ -209,7 +209,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                 (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
                   (`TyQuo (_loc, "self_type"))) in
             `CrMth
-              (_loc, x, `OvNil _loc, `PrNil,
+              (_loc, x, (`OvNil _loc), `PrNil,
                 (`ExFun
                    (_loc,
                      (`McArr
@@ -226,7 +226,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                      (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
                        (`TyQuo (_loc, "self_type"))))) in
             `CrMth
-              (_loc, x, `OvNil _loc, `PrNil,
+              (_loc, x, (`OvNil _loc), `PrNil,
                 (`ExFun
                    (_loc,
                      (`McArr
@@ -242,7 +242,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
       (List.map
          (fun x  ->
             `CrMth
-              (_loc, x, `OvNil _loc, `PrNil,
+              (_loc, x, (`OvNil _loc), `PrNil,
                 (`ExId (_loc, (`Lid (_loc, ("pp_print_" ^ x))))),
                 (`TyNil _loc)))) in
   ((FanAst.crSem_of_list v1), (FanAst.crSem_of_list v2),
