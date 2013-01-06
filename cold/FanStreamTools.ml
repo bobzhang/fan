@@ -54,7 +54,7 @@ let rec handle_failure e =
         | `BiEq (_loc,_,e) -> handle_failure e
         | _ -> false in
       (binding_handle_failure bi) && (handle_failure e)
-  | `ExId (_loc,`Lid (_,_))|`ExInt (_loc,_)|`ExStr (_loc,_)|`ExChr (_loc,_)|
+  | `ExId (_loc,`Lid (_,_))|`Int (_loc,_)|`Str (_loc,_)|`Chr (_loc,_)|
       `ExFun (_loc,_)|`ExId (_loc,`Uid (_,_)) -> true
   | `ExApp (_loc,`ExId (_,`Lid (_,"raise")),e) ->
       (match e with
@@ -75,7 +75,7 @@ let rec subst v e =
   match e with
   | `ExId (_loc,`Lid (_,x)) ->
       let x = if x = v then strm_n else x in `ExId (_loc, (`Lid (_loc, x)))
-  | `ExId (_loc,`Uid (_,_))|`ExInt (_loc,_)|`ExChr (_loc,_)|`ExStr (_loc,_)|
+  | `ExId (_loc,`Uid (_,_))|`Int (_loc,_)|`Chr (_loc,_)|`Str (_loc,_)|
       `ExAcc (_loc,_,_) -> e
   | `ExLet (_loc,rf,bi,e) ->
       `ExLet (_loc, rf, (subst_binding v bi), (subst v e))
@@ -259,8 +259,7 @@ let rec stream_pattern _loc epo e ekont =
   | (spc,err)::spcl ->
       let skont =
         let ekont err =
-          let str =
-            match err with | Some estr -> estr | _ -> `ExStr (_loc, "") in
+          let str = match err with | Some estr -> estr | _ -> `Str (_loc, "") in
           `ExApp
             (_loc, (`ExId (_loc, (`Lid (_loc, "raise")))),
               (`ExApp
@@ -280,7 +279,7 @@ let stream_patterns_term _loc ekont tspel =
          let e =
            let ekont err =
              let str =
-               match err with | Some estr -> estr | _ -> `ExStr (_loc, "") in
+               match err with | Some estr -> estr | _ -> `Str (_loc, "") in
              `ExApp
                (_loc, (`ExId (_loc, (`Lid (_loc, "raise")))),
                  (`ExApp
@@ -394,9 +393,9 @@ let cparser_match _loc me bpo pc =
                me)), e)
 let rec not_computing =
   function
-  | `ExId (_loc,`Lid (_,_))|`ExId (_loc,`Uid (_,_))|`ExInt (_loc,_)|`ExFlo
+  | `ExId (_loc,`Lid (_,_))|`ExId (_loc,`Uid (_,_))|`Int (_loc,_)|`ExFlo
                                                                     (_loc,_)|
-      `ExChr (_loc,_)|`ExStr (_loc,_) -> true
+      `Chr (_loc,_)|`Str (_loc,_) -> true
   | `ExApp (_loc,x,y) -> (is_cons_apply_not_computing x) && (not_computing y)
   | _ -> false
 and is_cons_apply_not_computing =

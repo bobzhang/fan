@@ -1,13 +1,13 @@
 open Ast
 open LibUtil
 module Expr = struct
-  let meta_int _loc i = `ExInt (_loc, (string_of_int i))
-  let meta_int32 _loc i = `ExInt32 (_loc, (Int32.to_string i))
-  let meta_int64 _loc i = `ExInt64 (_loc, (Int64.to_string i))
-  let meta_nativeint _loc i = `ExNativeInt (_loc, (Nativeint.to_string i))
+  let meta_int _loc i = `Int (_loc, (string_of_int i))
+  let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
+  let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
+  let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
   let meta_float _loc i = `ExFlo (_loc, (FanUtil.float_repres i))
-  let meta_string _loc i = `ExStr (_loc, (FanAst.safe_string_escaped i))
-  let meta_char _loc i = `ExChr (_loc, (Char.escaped i))
+  let meta_string _loc i = `Str (_loc, (FanAst.safe_string_escaped i))
+  let meta_char _loc i = `Chr (_loc, (Char.escaped i))
   let meta_unit _loc _ = `ExId (_loc, (`Uid (_loc, "()")))
   let meta_bool _loc =
     function
@@ -50,13 +50,13 @@ module Expr = struct
     invalid_arg "meta_arrow not implemented"
   end
 module Patt = struct
-  let meta_int _loc i = `PaInt (_loc, (string_of_int i))
-  let meta_int32 _loc i = `PaInt32 (_loc, (Int32.to_string i))
-  let meta_int64 _loc i = `PaInt64 (_loc, (Int64.to_string i))
-  let meta_nativeint _loc i = `PaNativeInt (_loc, (Nativeint.to_string i))
+  let meta_int _loc i = `Int (_loc, (string_of_int i))
+  let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
+  let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
+  let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
   let meta_float _loc i = `PaFlo (_loc, (FanUtil.float_repres i))
-  let meta_string _loc i = `PaStr (_loc, (FanAst.safe_string_escaped i))
-  let meta_char _loc i = `PaChr (_loc, (Char.escaped i))
+  let meta_string _loc i = `Str (_loc, (FanAst.safe_string_escaped i))
+  let meta_char _loc i = `Chr (_loc, (Char.escaped i))
   let meta_unit _loc _ = `PaId (_loc, (`Uid (_loc, "()")))
   let meta_bool _loc =
     function

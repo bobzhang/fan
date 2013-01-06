@@ -361,8 +361,8 @@ let substp loc env =
     | `ExId (_loc,`Uid (_,x)) ->
         (try List.assoc x env
          with | Not_found  -> `PaId (loc, (`Uid (loc, x))))
-    | `ExInt (_loc,x) -> `PaInt (loc, x)
-    | `ExStr (_loc,s) -> `PaStr (loc, s)
+    | `Int (_loc,x) -> `Int (loc, x)
+    | `Str (_loc,s) -> `Str (loc, s)
     | `ExTup (_loc,x) -> `PaTup (loc, (loop x))
     | `ExCom (_loc,x1,x2) -> `PaCom (loc, (loop x1), (loop x2))
     | `ExRec (_loc,bi,`ExNil _) ->
@@ -398,7 +398,7 @@ class subst loc env =
                     (_loc,
                       (`ExCom
                          (_loc,
-                           (`ExStr (_loc, (FanAst.safe_string_escaped a))),
+                           (`Str (_loc, (FanAst.safe_string_escaped a))),
                            (`ExCom
                               (_loc,
                                 (`ExCom
@@ -411,21 +411,21 @@ class subst loc env =
                                                   (_loc,
                                                     (`ExCom
                                                        (_loc,
-                                                         (`ExInt
+                                                         (`Int
                                                             (_loc,
                                                               (string_of_int
                                                                  b))),
-                                                         (`ExInt
+                                                         (`Int
                                                             (_loc,
                                                               (string_of_int
                                                                  c))))),
-                                                    (`ExInt
+                                                    (`Int
                                                        (_loc,
                                                          (string_of_int d))))),
-                                               (`ExInt
+                                               (`Int
                                                   (_loc, (string_of_int e))))),
-                                          (`ExInt (_loc, (string_of_int f))))),
-                                     (`ExInt (_loc, (string_of_int g))))),
+                                          (`Int (_loc, (string_of_int f))))),
+                                     (`Int (_loc, (string_of_int g))))),
                                 (if h
                                  then `ExId (_loc, (`Lid (_loc, "true")))
                                  else `ExId (_loc, (`Lid (_loc, "false")))))))))))
@@ -451,7 +451,7 @@ let capture_antiquot: antiquot_filter =
     val mutable constraints = []
     method! patt =
       function
-      | `Ant (_loc,s)|`PaStr (_loc,s) as p when is_antiquot s ->
+      | `Ant (_loc,s)|`Str (_loc,s) as p when is_antiquot s ->
           (match view_antiquot s with
            | Some (_name,code) ->
                let cons = `ExId (_loc, (`Lid (_loc, code))) in
@@ -609,10 +609,10 @@ let tuple _loc =
   | e::es -> `ExTup (_loc, (`ExCom (_loc, e, (FanAst.exCom_of_list es))))
 let mkumin loc prefix arg =
   match arg with
-  | `ExInt (_loc,n) -> `ExInt (loc, (String.neg n))
-  | `ExInt32 (_loc,n) -> `ExInt32 (loc, (String.neg n))
-  | `ExInt64 (_loc,n) -> `ExInt64 (loc, (String.neg n))
-  | `ExNativeInt (_loc,n) -> `ExNativeInt (loc, (String.neg n))
+  | `Int (_loc,n) -> `Int (loc, (String.neg n))
+  | `Int32 (_loc,n) -> `Int32 (loc, (String.neg n))
+  | `Int64 (_loc,n) -> `Int64 (loc, (String.neg n))
+  | `NativeInt (_loc,n) -> `NativeInt (loc, (String.neg n))
   | `ExFlo (_loc,n) -> `ExFlo (loc, (String.neg n))
   | _ -> `ExApp (loc, (`ExId (loc, (`Lid (loc, ("~" ^ prefix))))), arg)
 let mk_assert =
@@ -629,7 +629,7 @@ let failure =
     (_loc, (`ExId (_loc, (`Lid (_loc, "raise")))),
       (`ExApp
          (_loc, (`ExId (_loc, (`Uid (_loc, "Failure")))),
-           (`ExStr (_loc, "metafilter: Cannot handle that kind of types ")))))
+           (`Str (_loc, "metafilter: Cannot handle that kind of types ")))))
 let (<+) names acc =
   List.fold_right
     (fun name  acc  ->
@@ -717,7 +717,7 @@ let mep_of_str s =
            (_loc,
              (`ExCom
                 (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                  (`ExStr (_loc, s)))))))
+                  (`Str (_loc, s)))))))
   else
     (let u =
        `ExApp
@@ -726,7 +726,7 @@ let mep_of_str s =
               (_loc,
                 (`ExCom
                    (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                     (`ExStr (_loc, s))))))) in
+                     (`Str (_loc, s))))))) in
      `ExApp
        (_loc, (`ExVrn (_loc, "PaId")),
          (`ExTup
@@ -742,7 +742,7 @@ let mee_of_str s =
            (_loc,
              (`ExCom
                 (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                  (`ExStr (_loc, s)))))))
+                  (`Str (_loc, s)))))))
   else
     (let u =
        `ExApp
@@ -751,7 +751,7 @@ let mee_of_str s =
               (_loc,
                 (`ExCom
                    (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                     (`ExStr (_loc, s))))))) in
+                     (`Str (_loc, s))))))) in
      `ExApp
        (_loc, (`ExVrn (_loc, "ExId")),
          (`ExTup
@@ -762,16 +762,14 @@ let vee_of_str s =
       (`ExTup
          (_loc,
            (`ExCom
-              (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                (`ExStr (_loc, s)))))))
+              (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
 let vep_of_str s =
   `ExApp
     (_loc, (`ExVrn (_loc, "PaVrn")),
       (`ExTup
          (_loc,
            (`ExCom
-              (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                (`ExStr (_loc, s)))))))
+              (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
 let meee_of_str s =
   let u =
     `ExApp
@@ -789,7 +787,7 @@ let meee_of_str s =
                                  (`ExCom
                                     (_loc,
                                       (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                                      (`ExStr (_loc, "Uid")))))))),
+                                      (`Str (_loc, "Uid")))))))),
                        (`ExApp
                           (_loc, (`ExVrn (_loc, "ExTup")),
                             (`ExTup
@@ -838,14 +836,14 @@ let meee_of_str s =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "_loc")))),
-                                                                    (`ExStr
+                                                                    (`Str
                                                                     (_loc,
                                                                     "_loc")))))))))))))),
                                                           (`ExApp
                                                              (_loc,
                                                                (`ExVrn
                                                                   (_loc,
-                                                                    "ExStr")),
+                                                                    "Str")),
                                                                (`ExTup
                                                                   (_loc,
                                                                     (
@@ -856,7 +854,7 @@ let meee_of_str s =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "_loc")))),
-                                                                    (`ExStr
+                                                                    (`Str
                                                                     (_loc, s))))))))))))))))))))))))))))) in
   `ExApp
     (_loc, (`ExVrn (_loc, "ExApp")),
@@ -873,7 +871,7 @@ let meee_of_str s =
                                (`ExCom
                                   (_loc,
                                     (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                                    (`ExStr (_loc, "ExId")))))))),
+                                    (`Str (_loc, "ExId")))))))),
                      (`ExApp
                         (_loc, (`ExVrn (_loc, "ExTup")),
                           (`ExTup
@@ -920,7 +918,7 @@ let meee_of_str s =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "_loc")))),
-                                                                    (`ExStr
+                                                                    (`Str
                                                                     (_loc,
                                                                     "_loc")))))))))))))),
                                                         u)))))))))))))))))))))
@@ -988,7 +986,7 @@ let mee_record_col label expr =
                                (`ExCom
                                   (_loc,
                                     (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                                    (`ExStr (_loc, label)))))))), expr)))))))
+                                    (`Str (_loc, label)))))))), expr)))))))
 let mep_record_col label expr =
   `ExApp
     (_loc, (`ExVrn (_loc, "PaEq")),
@@ -1005,7 +1003,7 @@ let mep_record_col label expr =
                                (`ExCom
                                   (_loc,
                                     (`ExId (_loc, (`Lid (_loc, "_loc")))),
-                                    (`ExStr (_loc, label)))))))), expr)))))))
+                                    (`Str (_loc, label)))))))), expr)))))))
 let mee_record_semi a b =
   `ExApp
     (_loc, (`ExVrn (_loc, "RbSem")),
@@ -1075,4 +1073,4 @@ let unknown len =
   else
     `ExApp
       (_loc, (`ExId (_loc, (`Lid (_loc, "failwith")))),
-        (`ExStr (_loc, "not implemented!")))
+        (`Str (_loc, "not implemented!")))

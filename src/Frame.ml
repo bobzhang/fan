@@ -14,7 +14,7 @@ open FSig;
 
 module Make(S:FSig.Config) = struct   
   open Expr;
-  open Ident;
+  (* open Ident; *)
 
   (* we preserve some keywords to avoid variable capture *)
   List.iter (fun name ->

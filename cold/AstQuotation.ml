@@ -247,7 +247,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     inherit  FanAst.map as super
     method! patt =
       function
-      | `Ant (_loc,s)|`PaStr (_loc,s) as p ->
+      | `Ant (_loc,s)|`Str (_loc,s) as p ->
           let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
           handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
             ~decorate:(fun n  e  ->
@@ -407,67 +407,67 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaInt")),
+                                    (_loc, (`PaVrn (_loc, "Int")),
                                       (mloc _loc))), e)
                          | "int32patt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaInt32")),
+                                    (_loc, (`PaVrn (_loc, "Int32")),
                                       (mloc _loc))), e)
                          | "int64patt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaInt64")),
+                                    (_loc, (`PaVrn (_loc, "Int64")),
                                       (mloc _loc))), e)
                          | "nativeintpatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaNativeInt")),
+                                    (_loc, (`PaVrn (_loc, "NativeInt")),
                                       (mloc _loc))), e)
                          | "chrpatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaChr")),
+                                    (_loc, (`PaVrn (_loc, "Chr")),
                                       (mloc _loc))), e)
                          | "strpatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaStr")),
+                                    (_loc, (`PaVrn (_loc, "Str")),
                                       (mloc _loc))), e)
                          | "strexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExStr")),
+                                    (_loc, (`PaVrn (_loc, "Str")),
                                       (mloc _loc))), e)
                          | "chrexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExChr")),
+                                    (_loc, (`PaVrn (_loc, "Chr")),
                                       (mloc _loc))), e)
                          | "intexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExInt")),
+                                    (_loc, (`PaVrn (_loc, "Int")),
                                       (mloc _loc))), e)
                          | "int32expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExInt32")),
+                                    (_loc, (`PaVrn (_loc, "Int32")),
                                       (mloc _loc))), e)
                          | "int64expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExInt64")),
+                                    (_loc, (`PaVrn (_loc, "Int64")),
                                       (mloc _loc))), e)
                          | "floexpr" ->
                              `PaApp
@@ -479,7 +479,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExNativeInt")),
+                                    (_loc, (`PaVrn (_loc, "NativeInt")),
                                       (mloc _loc))), e)
                          | x when (len > 0) && ((x.[0]) = '`') ->
                              failwith (x ^ "is not allowed in pattern")
@@ -487,7 +487,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
       | p -> super#patt p
     method! expr =
       function
-      | `Ant (_loc,s)|`ExStr (_loc,s) as e ->
+      | `Ant (_loc,s)|`Str (_loc,s) as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n  e  ->
@@ -529,27 +529,27 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "strexpr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExStr")),
+                               (_loc, (`ExVrn (_loc, "Str")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "chrexpr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExChr")),
+                               (_loc, (`ExVrn (_loc, "Chr")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "intexpr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExInt")),
+                               (_loc, (`ExVrn (_loc, "Int")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "int32expr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExInt32")),
+                               (_loc, (`ExVrn (_loc, "Int32")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "int64expr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExInt64")),
+                               (_loc, (`ExVrn (_loc, "Int64")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "floexpr" ->
@@ -559,7 +559,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "nativeintexpr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExNativeInt")),
+                               (_loc, (`ExVrn (_loc, "NativeInt")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`nativeintexpr" ->
@@ -573,7 +573,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`Lid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExNativeInt")),
+                               (_loc, (`ExVrn (_loc, "NativeInt")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`intexpr" ->
@@ -584,7 +584,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (_loc, (`Lid (_loc, "string_of_int")))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExInt")),
+                               (_loc, (`ExVrn (_loc, "Int")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`int32expr" ->
@@ -598,7 +598,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`Lid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExInt32")),
+                               (_loc, (`ExVrn (_loc, "Int32")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`int64expr" ->
@@ -612,7 +612,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`Lid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExInt64")),
+                               (_loc, (`ExVrn (_loc, "Int64")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`chrexpr" ->
@@ -625,7 +625,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (_loc, (`Uid (_loc, "Char")),
                                              (`Lid (_loc, "escaped")))))), e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExChr")),
+                               (_loc, (`ExVrn (_loc, "Chr")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`strexpr" ->
@@ -640,7 +640,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (_loc, "safe_string_escaped")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExStr")),
+                               (_loc, (`ExVrn (_loc, "Str")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`floexpr" ->
@@ -667,8 +667,8 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (_loc, (mloc _loc),
                                              (`ExIfe
                                                 (_loc, e,
-                                                  (`ExStr (_loc, "true")),
-                                                  (`ExStr (_loc, "false"))))))))) in
+                                                  (`Str (_loc, "true")),
+                                                  (`Str (_loc, "false"))))))))) in
                              `ExApp
                                (_loc, (`ExVrn (_loc, "ExId")),
                                  (`ExTup
@@ -685,32 +685,32 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "intpatt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaInt")),
+                               (_loc, (`ExVrn (_loc, "Int")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "int32patt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaInt32")),
+                               (_loc, (`ExVrn (_loc, "Int32")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "int64patt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaInt64")),
+                               (_loc, (`ExVrn (_loc, "Int64")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "nativeintpatt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaNativeInt")),
+                               (_loc, (`ExVrn (_loc, "NativeInt")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "chrpatt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaChr")),
+                               (_loc, (`ExVrn (_loc, "Chr")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "strpatt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaStr")),
+                               (_loc, (`ExVrn (_loc, "Str")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`nativeintpatt" ->
@@ -724,7 +724,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`Lid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaNativeInt")),
+                               (_loc, (`ExVrn (_loc, "NativeInt")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`intpatt" ->
@@ -735,7 +735,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (_loc, (`Lid (_loc, "string_of_int")))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaInt")),
+                               (_loc, (`ExVrn (_loc, "Int")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`int32patt" ->
@@ -749,7 +749,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`Lid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaInt32")),
+                               (_loc, (`ExVrn (_loc, "Int32")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`int64patt" ->
@@ -763,7 +763,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`Lid (_loc, "to_string")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaInt64")),
+                               (_loc, (`ExVrn (_loc, "Int64")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`chrpatt" ->
@@ -776,7 +776,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (_loc, (`Uid (_loc, "Char")),
                                              (`Lid (_loc, "escaped")))))), e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaChr")),
+                               (_loc, (`ExVrn (_loc, "Chr")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`strpatt" ->
@@ -791,7 +791,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                 (_loc, "safe_string_escaped")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaStr")),
+                               (_loc, (`ExVrn (_loc, "Str")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`flopatt" ->

@@ -5,7 +5,7 @@ let _loc = FanLoc.ghost
 let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
   `ExApp
     (_loc, (`ExId (_loc, (`Lid (_loc, "failwith")))),
-      (`ExStr (_loc, "arity >= 2 in other branches"))))
+      (`Str (_loc, "arity >= 2 in other branches"))))
    ?cons_transform  ~id:(id : basic_id_transform)  ~names  ~mk_tuple 
   ~mk_record  mk_variant =
   let module M = struct
@@ -35,7 +35,7 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
 let gen_object ?module_name  ?(arity= 1)  ?(trail=
   `ExApp
     (_loc, (`ExId (_loc, (`Lid (_loc, "failwith")))),
-      (`ExStr (_loc, "arity >= 2 in other branches"))))
+      (`Str (_loc, "arity >= 2 in other branches"))))
    ?cons_transform  ~kind  ~base  ~class_name  =
   let make ~names  ~mk_tuple  ~mk_record  mk_variant =
     let module M = struct

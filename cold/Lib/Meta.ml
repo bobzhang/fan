@@ -21,7 +21,7 @@ module MetaLoc : FanAst.META_LOC =
         (`ExTup
            (_loc,
              (`ExCom
-                (_loc, (`ExStr (_loc, (FanAst.safe_string_escaped a))),
+                (_loc, (`Str (_loc, (FanAst.safe_string_escaped a))),
                   (`ExCom
                      (_loc,
                        (`ExCom
@@ -34,14 +34,14 @@ module MetaLoc : FanAst.META_LOC =
                                          (_loc,
                                            (`ExCom
                                               (_loc,
-                                                (`ExInt
+                                                (`Int
                                                    (_loc, (string_of_int b))),
-                                                (`ExInt
+                                                (`Int
                                                    (_loc, (string_of_int c))))),
-                                           (`ExInt (_loc, (string_of_int d))))),
-                                      (`ExInt (_loc, (string_of_int e))))),
-                                 (`ExInt (_loc, (string_of_int f))))),
-                            (`ExInt (_loc, (string_of_int g))))),
+                                           (`Int (_loc, (string_of_int d))))),
+                                      (`Int (_loc, (string_of_int e))))),
+                                 (`Int (_loc, (string_of_int f))))),
+                            (`Int (_loc, (string_of_int g))))),
                        (if h
                         then `ExId (_loc, (`Lid (_loc, "true")))
                         else `ExId (_loc, (`Lid (_loc, "false")))))))))))

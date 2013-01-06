@@ -10,7 +10,7 @@ let rec fib =
   | _ -> invalid_arg "fib"
 let fibm y =
   match y with
-  | `ExInt (_loc,x) -> `ExInt (_loc, (string_of_int (fib (int_of_string x))))
+  | `Int (_loc,x) -> `Int (_loc, (string_of_int (fib (int_of_string x))))
   | x ->
       let _loc = FanAst.loc_of_expr x in
       `ExApp (_loc, (`ExId (_loc, (`Lid (_loc, "fib")))), x)
@@ -18,7 +18,7 @@ let _ = register_macro ("FIB", fibm)
 open LibUtil
 let generate_fibs =
   function
-  | `ExInt (_loc,x) ->
+  | `Int (_loc,x) ->
       let j = int_of_string x in
       let res =
         zfold_left ~until:j ~acc:(`ExNil _loc)
@@ -29,7 +29,7 @@ let generate_fibs =
                     (_loc, (`ExId (_loc, (`Lid (_loc, "print_int")))),
                       (`ExApp
                          (_loc, (`ExId (_loc, (`Uid (_loc, "FIB")))),
-                           (`ExInt (_loc, (string_of_int i))))))))) in
+                           (`Int (_loc, (string_of_int i))))))))) in
       `ExSeq (_loc, res)
   | e -> e
 let _ = register_macro ("GFIB", generate_fibs)

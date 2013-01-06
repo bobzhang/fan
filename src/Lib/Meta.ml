@@ -31,7 +31,7 @@ module MetaLoc : FanAst.META_LOC= struct
       (Ast.PaTup
          (_loc,
            (Ast.PaCom
-              (_loc, (Ast.PaStr (_loc, (Ast.safe_string_escaped a))),
+              (_loc, (Ast.Str (_loc, (Ast.safe_string_escaped a))),
                 (Ast.PaCom
                    (_loc,
                      (Ast.PaCom
@@ -44,14 +44,14 @@ module MetaLoc : FanAst.META_LOC= struct
                                        (_loc,
                                          (Ast.PaCom
                                             (_loc,
-                                              (Ast.PaInt
+                                              (Ast.Int
                                                  (_loc, (string_of_int b))),
-                                              (Ast.PaInt
+                                              (Ast.Int
                                                  (_loc, (string_of_int c))))),
-                                         (Ast.PaInt (_loc, (string_of_int d))))),
-                                    (Ast.PaInt (_loc, (string_of_int e))))),
-                               (Ast.PaInt (_loc, (string_of_int f))))),
-                          (Ast.PaInt (_loc, (string_of_int g))))),
+                                         (Ast.Int (_loc, (string_of_int d))))),
+                                    (Ast.Int (_loc, (string_of_int e))))),
+                               (Ast.Int (_loc, (string_of_int f))))),
+                          (Ast.Int (_loc, (string_of_int g))))),
                      (if h
                       then Ast.PaId (_loc, (Ast.Lid (_loc, "true")))
                       else Ast.PaId (_loc, (Ast.Lid (_loc, "false")))))))))))

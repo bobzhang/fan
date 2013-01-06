@@ -172,7 +172,7 @@ let output_byte_array v =
     (output_byte b ((v.(i)) land 255);
      if (i land 15) = 15 then Buffer.add_string b "\\\n    " else ())
   done;
-  (let s = Buffer.contents b in `ExStr (_loc, s))
+  (let s = Buffer.contents b in `Str (_loc, s))
 let table (n,t) =
   `StVal
     (_loc, (`ReNil _loc),
@@ -190,9 +190,9 @@ let partition ~counter  ~tables  (i,p) =
                  (`ExApp
                     (_loc, (`ExId (_loc, (`Lid (_loc, "<=")))),
                       (`ExId (_loc, (`Lid (_loc, "c")))))),
-                 (`ExInt (_loc, (string_of_int i))))), (gen_tree yes),
+                 (`Int (_loc, (string_of_int i))))), (gen_tree yes),
             (gen_tree no))
-    | Return i -> `ExInt (_loc, (string_of_int i))
+    | Return i -> `Int (_loc, (string_of_int i))
     | Table (offset,t) ->
         let c =
           if offset = 0
@@ -203,7 +203,7 @@ let partition ~counter  ~tables  (i,p) =
                 (`ExApp
                    (_loc, (`ExId (_loc, (`Lid (_loc, "-")))),
                      (`ExId (_loc, (`Lid (_loc, "c")))))),
-                (`ExInt (_loc, (string_of_int offset)))) in
+                (`Int (_loc, (string_of_int offset)))) in
         `ExApp
           (_loc,
             (`ExApp
@@ -220,7 +220,7 @@ let partition ~counter  ~tables  (i,p) =
                            (`ExId
                               (_loc,
                                 (`Lid (_loc, (table_name ~tables ~counter t))))),
-                           c)))))), (`ExInt (_loc, "1"))) in
+                           c)))))), (`Int (_loc, "1"))) in
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
@@ -244,9 +244,9 @@ let binding_partition ~counter  ~tables  (i,p) =
                  (`ExApp
                     (_loc, (`ExId (_loc, (`Lid (_loc, "<=")))),
                       (`ExId (_loc, (`Lid (_loc, "c")))))),
-                 (`ExInt (_loc, (string_of_int i))))), (gen_tree yes),
+                 (`Int (_loc, (string_of_int i))))), (gen_tree yes),
             (gen_tree no))
-    | Return i -> `ExInt (_loc, (string_of_int i))
+    | Return i -> `Int (_loc, (string_of_int i))
     | Table (offset,t) ->
         let c =
           if offset = 0
@@ -257,7 +257,7 @@ let binding_partition ~counter  ~tables  (i,p) =
                 (`ExApp
                    (_loc, (`ExId (_loc, (`Lid (_loc, "-")))),
                      (`ExId (_loc, (`Lid (_loc, "c")))))),
-                (`ExInt (_loc, (string_of_int offset)))) in
+                (`Int (_loc, (string_of_int offset)))) in
         `ExApp
           (_loc,
             (`ExApp
@@ -274,7 +274,7 @@ let binding_partition ~counter  ~tables  (i,p) =
                            (`ExId
                               (_loc,
                                 (`Lid (_loc, (table_name ~tables ~counter t))))),
-                           c)))))), (`ExInt (_loc, "1"))) in
+                           c)))))), (`Int (_loc, "1"))) in
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
@@ -296,7 +296,7 @@ let gen_definition _loc l =
     if (Array.length trans) = 0
     then
       match best_final final with
-      | Some i -> `ExInt (_loc, (string_of_int i))
+      | Some i -> `Int (_loc, (string_of_int i))
       | None  -> assert false
     else
       (let f = mk_state_name state in
@@ -310,7 +310,7 @@ let gen_definition _loc l =
       Array.mapi
         (fun i  j  ->
            `McArr
-             (_loc, (`PaInt (_loc, (string_of_int i))), (`ExNil _loc),
+             (_loc, (`Int (_loc, (string_of_int i))), (`ExNil _loc),
                (call_state auto j))) trans in
     let cases = Array.to_list cases in
     let body =
@@ -364,7 +364,7 @@ let gen_definition _loc l =
                                         (_loc, (gm ()),
                                           (`Lid (_loc, "mark")))))),
                                 (`ExId (_loc, (`Lid (_loc, "lexbuf")))))),
-                           (`ExInt (_loc, (string_of_int i))))), body)))) in
+                           (`Int (_loc, (string_of_int i))))), body)))) in
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
@@ -372,7 +372,7 @@ let gen_definition _loc l =
   let cases =
     Array.mapi
       (fun i  (_,e)  ->
-         `McArr (_loc, (`PaInt (_loc, (string_of_int i))), (`ExNil _loc), e))
+         `McArr (_loc, (`Int (_loc, (string_of_int i))), (`ExNil _loc), e))
       brs in
   let table_counter = ref 0 in
   let tables = Hashtbl.create 31 in

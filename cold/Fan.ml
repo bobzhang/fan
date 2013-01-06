@@ -115,10 +115,10 @@ let _ =
     ~mexpr:ME.meta_direction_flag ~mpatt:MP.meta_direction_flag ~expr_filter
     ~patt_filter
 let _ =
-  add "str" DynAst.expr_tag (fun _loc  _loc_option  s  -> `ExStr (_loc, s))
+  add "str" DynAst.expr_tag (fun _loc  _loc_option  s  -> `Str (_loc, s))
 let _ =
   add "str" DynAst.str_item_tag
-    (fun _loc  _loc_option  s  -> `StExp (_loc, (`ExStr (_loc, s))))
+    (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
 let _ =
   Options.add
     ("-dlang", (FanArg.Set_string AstQuotation.default),

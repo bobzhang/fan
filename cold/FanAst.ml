@@ -475,8 +475,8 @@ class map =
           `ExAss
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#expr a2)))) a0)
-      | `ExChr a0 ->
-          `ExChr (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Chr a0 ->
+          `Chr (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `ExCoe a0 ->
           `ExCoe
             (((fun (a0,a1,a2,a3)  ->
@@ -498,21 +498,21 @@ class map =
             (((fun (a0,a1,a2,a3)  ->
                  ((self#loc a0), (self#expr a1), (self#expr a2),
                    (self#expr a3)))) a0)
-      | `ExInt a0 ->
-          `ExInt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `ExInt32 a0 ->
-          `ExInt32 (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `ExInt64 a0 ->
-          `ExInt64 (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `ExNativeInt a0 ->
-          `ExNativeInt
+      | `Int a0 ->
+          `Int (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Int32 a0 ->
+          `Int32 (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Int64 a0 ->
+          `Int64 (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `NativeInt a0 ->
+          `NativeInt
             (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `ExLab a0 ->
           `ExLab
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#expr a2)))) a0)
-      | `ExLaz a0 ->
-          `ExLaz (((fun (a0,a1)  -> ((self#loc a0), (self#expr a1)))) a0)
+      | `Lazy a0 ->
+          `Lazy (((fun (a0,a1)  -> ((self#loc a0), (self#expr a1)))) a0)
       | `ExLet a0 ->
           `ExLet
             (((fun (a0,a1,a2,a3)  ->
@@ -555,8 +555,8 @@ class map =
           `ExSte
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#expr a2)))) a0)
-      | `ExStr a0 ->
-          `ExStr (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Str a0 ->
+          `Str (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `ExTry a0 ->
           `ExTry
             (((fun (a0,a1,a2)  ->
@@ -614,16 +614,16 @@ class map =
           `PaSem
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#patt a1), (self#patt a2)))) a0)
-      | `PaChr a0 ->
-          `PaChr (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `PaInt a0 ->
-          `PaInt (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `PaInt32 a0 ->
-          `PaInt32 (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `PaInt64 a0 ->
-          `PaInt64 (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `PaNativeInt a0 ->
-          `PaNativeInt
+      | `Chr a0 ->
+          `Chr (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Int a0 ->
+          `Int (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Int32 a0 ->
+          `Int32 (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Int64 a0 ->
+          `Int64 (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `NativeInt a0 ->
+          `NativeInt
             (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `PaFlo a0 ->
           `PaFlo (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
@@ -654,8 +654,8 @@ class map =
           `PaEq
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#ident a1), (self#patt a2)))) a0)
-      | `PaStr a0 ->
-          `PaStr (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Str a0 ->
+          `Str (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `PaTup a0 ->
           `PaTup (((fun (a0,a1)  -> ((self#loc a0), (self#patt a1)))) a0)
       | `PaTyc a0 ->
@@ -666,8 +666,8 @@ class map =
           `PaTyp (((fun (a0,a1)  -> ((self#loc a0), (self#ident a1)))) a0)
       | `PaVrn a0 ->
           `PaVrn (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `PaLaz a0 ->
-          `PaLaz (((fun (a0,a1)  -> ((self#loc a0), (self#patt a1)))) a0)
+      | `Lazy a0 ->
+          `Lazy (((fun (a0,a1)  -> ((self#loc a0), (self#patt a1)))) a0)
       | `PaMod a0 ->
           `PaMod (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method ctyp : ctyp -> ctyp=
@@ -1459,8 +1459,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#expr a2) a0
-        | `ExChr a0 ->
-            Format.fprintf fmt "@[<1>(`ExChr@ %a)@]"
+        | `Chr a0 ->
+            Format.fprintf fmt "@[<1>(`Chr@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1490,23 +1490,23 @@ class print =
               (fun fmt  (a0,a1,a2,a3)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#expr a2 self#expr a3) a0
-        | `ExInt a0 ->
-            Format.fprintf fmt "@[<1>(`ExInt@ %a)@]"
+        | `Int a0 ->
+            Format.fprintf fmt "@[<1>(`Int@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `ExInt32 a0 ->
-            Format.fprintf fmt "@[<1>(`ExInt32@ %a)@]"
+        | `Int32 a0 ->
+            Format.fprintf fmt "@[<1>(`Int32@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `ExInt64 a0 ->
-            Format.fprintf fmt "@[<1>(`ExInt64@ %a)@]"
+        | `Int64 a0 ->
+            Format.fprintf fmt "@[<1>(`Int64@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `ExNativeInt a0 ->
-            Format.fprintf fmt "@[<1>(`ExNativeInt@ %a)@]"
+        | `NativeInt a0 ->
+            Format.fprintf fmt "@[<1>(`NativeInt@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1515,8 +1515,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#expr a2) a0
-        | `ExLaz a0 ->
-            Format.fprintf fmt "@[<1>(`ExLaz@ %a)@]"
+        | `Lazy a0 ->
+            Format.fprintf fmt "@[<1>(`Lazy@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#expr
                    a1) a0
@@ -1575,8 +1575,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#expr a2) a0
-        | `ExStr a0 ->
-            Format.fprintf fmt "@[<1>(`ExStr@ %a)@]"
+        | `Str a0 ->
+            Format.fprintf fmt "@[<1>(`Str@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1665,28 +1665,28 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#patt a1 self#patt a2) a0
-        | `PaChr a0 ->
-            Format.fprintf fmt "@[<1>(`PaChr@ %a)@]"
+        | `Chr a0 ->
+            Format.fprintf fmt "@[<1>(`Chr@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `PaInt a0 ->
-            Format.fprintf fmt "@[<1>(`PaInt@ %a)@]"
+        | `Int a0 ->
+            Format.fprintf fmt "@[<1>(`Int@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `PaInt32 a0 ->
-            Format.fprintf fmt "@[<1>(`PaInt32@ %a)@]"
+        | `Int32 a0 ->
+            Format.fprintf fmt "@[<1>(`Int32@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `PaInt64 a0 ->
-            Format.fprintf fmt "@[<1>(`PaInt64@ %a)@]"
+        | `Int64 a0 ->
+            Format.fprintf fmt "@[<1>(`Int64@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `PaNativeInt a0 ->
-            Format.fprintf fmt "@[<1>(`PaNativeInt@ %a)@]"
+        | `NativeInt a0 ->
+            Format.fprintf fmt "@[<1>(`NativeInt@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1730,8 +1730,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#ident a1 self#patt a2) a0
-        | `PaStr a0 ->
-            Format.fprintf fmt "@[<1>(`PaStr@ %a)@]"
+        | `Str a0 ->
+            Format.fprintf fmt "@[<1>(`Str@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -1755,8 +1755,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `PaLaz a0 ->
-            Format.fprintf fmt "@[<1>(`PaLaz@ %a)@]"
+        | `Lazy a0 ->
+            Format.fprintf fmt "@[<1>(`Lazy@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#patt
                    a1) a0
@@ -2503,7 +2503,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#expr a2)) a0
-      | `ExChr a0 ->
+      | `Chr a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `ExCoe a0 ->
           ((fun (a0,a1,a2,a3)  ->
@@ -2526,19 +2526,19 @@ class fold =
               let self = self#loc a0 in
               let self = self#expr a1 in
               let self = self#expr a2 in self#expr a3)) a0
-      | `ExInt a0 ->
+      | `Int a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `ExInt32 a0 ->
+      | `Int32 a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `ExInt64 a0 ->
+      | `Int64 a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `ExNativeInt a0 ->
+      | `NativeInt a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `ExLab a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#expr a2)) a0
-      | `ExLaz a0 ->
+      | `Lazy a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#expr a1)) a0
       | `ExLet a0 ->
           ((fun (a0,a1,a2,a3)  ->
@@ -2581,7 +2581,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#expr a2)) a0
-      | `ExStr a0 ->
+      | `Str a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `ExTry a0 ->
           ((fun (a0,a1,a2)  ->
@@ -2640,15 +2640,15 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#patt a1 in self#patt a2)) a0
-      | `PaChr a0 ->
+      | `Chr a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `PaInt a0 ->
+      | `Int a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `PaInt32 a0 ->
+      | `Int32 a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `PaInt64 a0 ->
+      | `Int64 a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `PaNativeInt a0 ->
+      | `NativeInt a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `PaFlo a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
@@ -2679,7 +2679,7 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#ident a1 in self#patt a2)) a0
-      | `PaStr a0 ->
+      | `Str a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `PaTup a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#patt a1)) a0
@@ -2691,7 +2691,7 @@ class fold =
           ((fun (a0,a1)  -> let self = self#loc a0 in self#ident a1)) a0
       | `PaVrn a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `PaLaz a0 ->
+      | `Lazy a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#patt a1)) a0
       | `PaMod a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
@@ -3490,8 +3490,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_expr a2) a0
-    | `ExChr a0 ->
-        Format.fprintf fmt "@[<1>(`ExChr@ %a)@]"
+    | `Chr a0 ->
+        Format.fprintf fmt "@[<1>(`Chr@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3522,23 +3522,23 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1,a2,a3)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_expr a2 pp_print_expr a3) a0
-    | `ExInt a0 ->
-        Format.fprintf fmt "@[<1>(`ExInt@ %a)@]"
+    | `Int a0 ->
+        Format.fprintf fmt "@[<1>(`Int@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `ExInt32 a0 ->
-        Format.fprintf fmt "@[<1>(`ExInt32@ %a)@]"
+    | `Int32 a0 ->
+        Format.fprintf fmt "@[<1>(`Int32@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `ExInt64 a0 ->
-        Format.fprintf fmt "@[<1>(`ExInt64@ %a)@]"
+    | `Int64 a0 ->
+        Format.fprintf fmt "@[<1>(`Int64@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `ExNativeInt a0 ->
-        Format.fprintf fmt "@[<1>(`ExNativeInt@ %a)@]"
+    | `NativeInt a0 ->
+        Format.fprintf fmt "@[<1>(`NativeInt@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3547,8 +3547,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_expr a2) a0
-    | `ExLaz a0 ->
-        Format.fprintf fmt "@[<1>(`ExLaz@ %a)@]"
+    | `Lazy a0 ->
+        Format.fprintf fmt "@[<1>(`Lazy@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1) a0
@@ -3608,8 +3608,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_expr a2) a0
-    | `ExStr a0 ->
-        Format.fprintf fmt "@[<1>(`ExStr@ %a)@]"
+    | `Str a0 ->
+        Format.fprintf fmt "@[<1>(`Str@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3698,28 +3698,28 @@ and pp_print_patt: 'fmt -> patt -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_patt a1 pp_print_patt a2) a0
-    | `PaChr a0 ->
-        Format.fprintf fmt "@[<1>(`PaChr@ %a)@]"
+    | `Chr a0 ->
+        Format.fprintf fmt "@[<1>(`Chr@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `PaInt a0 ->
-        Format.fprintf fmt "@[<1>(`PaInt@ %a)@]"
+    | `Int a0 ->
+        Format.fprintf fmt "@[<1>(`Int@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `PaInt32 a0 ->
-        Format.fprintf fmt "@[<1>(`PaInt32@ %a)@]"
+    | `Int32 a0 ->
+        Format.fprintf fmt "@[<1>(`Int32@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `PaInt64 a0 ->
-        Format.fprintf fmt "@[<1>(`PaInt64@ %a)@]"
+    | `Int64 a0 ->
+        Format.fprintf fmt "@[<1>(`Int64@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `PaNativeInt a0 ->
-        Format.fprintf fmt "@[<1>(`PaNativeInt@ %a)@]"
+    | `NativeInt a0 ->
+        Format.fprintf fmt "@[<1>(`NativeInt@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3763,8 +3763,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_ident a1 pp_print_patt a2) a0
-    | `PaStr a0 ->
-        Format.fprintf fmt "@[<1>(`PaStr@ %a)@]"
+    | `Str a0 ->
+        Format.fprintf fmt "@[<1>(`Str@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -3788,8 +3788,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `PaLaz a0 ->
-        Format.fprintf fmt "@[<1>(`PaLaz@ %a)@]"
+    | `Lazy a0 ->
+        Format.fprintf fmt "@[<1>(`Lazy@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_patt a1) a0
@@ -4124,13 +4124,13 @@ and pp_print_rec_flag: 'fmt -> rec_flag -> 'result =
 and pp_print_loc: 'fmt -> loc -> 'result =
   fun fmt  a0  -> FanLoc.pp_print_t fmt a0
 module MExpr = struct
-  let meta_int _loc i = `ExInt (_loc, (string_of_int i))
-  let meta_int32 _loc i = `ExInt32 (_loc, (Int32.to_string i))
-  let meta_int64 _loc i = `ExInt64 (_loc, (Int64.to_string i))
-  let meta_nativeint _loc i = `ExNativeInt (_loc, (Nativeint.to_string i))
+  let meta_int _loc i = `Int (_loc, (string_of_int i))
+  let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
+  let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
+  let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
   let meta_float _loc i = `ExFlo (_loc, (FanUtil.float_repres i))
-  let meta_string _loc i = `ExStr (_loc, (safe_string_escaped i))
-  let meta_char _loc i = `ExChr (_loc, (Char.escaped i))
+  let meta_string _loc i = `Str (_loc, (safe_string_escaped i))
+  let meta_char _loc i = `Chr (_loc, (Char.escaped i))
   let meta_unit _loc _ = `ExId (_loc, (`Uid (_loc, "()")))
   let meta_bool _loc =
     function
@@ -4173,13 +4173,13 @@ module MExpr = struct
     invalid_arg "meta_arrow not implemented"
   end
 module MPatt = struct
-  let meta_int _loc i = `PaInt (_loc, (string_of_int i))
-  let meta_int32 _loc i = `PaInt32 (_loc, (Int32.to_string i))
-  let meta_int64 _loc i = `PaInt64 (_loc, (Int64.to_string i))
-  let meta_nativeint _loc i = `PaNativeInt (_loc, (Nativeint.to_string i))
+  let meta_int _loc i = `Int (_loc, (string_of_int i))
+  let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
+  let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
+  let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
   let meta_float _loc i = `PaFlo (_loc, (FanUtil.float_repres i))
-  let meta_string _loc i = `PaStr (_loc, (safe_string_escaped i))
-  let meta_char _loc i = `PaChr (_loc, (Char.escaped i))
+  let meta_string _loc i = `Str (_loc, (safe_string_escaped i))
+  let meta_char _loc i = `Chr (_loc, (Char.escaped i))
   let meta_unit _loc _ = `PaId (_loc, (`Uid (_loc, "()")))
   let meta_bool _loc =
     function
@@ -5298,9 +5298,9 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_expr _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `ExChr a0 ->
+        | `Chr a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "ExChr")),
+              (_loc, (`ExVrn (_loc, "Chr")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
@@ -5371,36 +5371,36 @@ module Make(MetaLoc:META_LOC) =
                                    (`ExCom
                                       (_loc, (meta_expr _loc a2),
                                         (meta_expr _loc a3)))))))))) _loc a0))
-        | `ExInt a0 ->
+        | `Int a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "ExInt")),
+              (_loc, (`ExVrn (_loc, "Int")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `ExInt32 a0 ->
+        | `Int32 a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "ExInt32")),
+              (_loc, (`ExVrn (_loc, "Int32")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `ExInt64 a0 ->
+        | `Int64 a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "ExInt64")),
+              (_loc, (`ExVrn (_loc, "Int64")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `ExNativeInt a0 ->
+        | `NativeInt a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "ExNativeInt")),
+              (_loc, (`ExVrn (_loc, "NativeInt")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
@@ -5418,9 +5418,9 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_string _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `ExLaz a0 ->
+        | `Lazy a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "ExLaz")),
+              (_loc, (`ExVrn (_loc, "Lazy")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
@@ -5547,9 +5547,9 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_expr _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `ExStr a0 ->
+        | `Str a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "ExStr")),
+              (_loc, (`ExVrn (_loc, "Str")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
@@ -5719,45 +5719,45 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_patt _loc a1),
                                    (meta_patt _loc a2)))))))) _loc a0))
-        | `PaChr a0 ->
+        | `Chr a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "PaChr")),
+              (_loc, (`ExVrn (_loc, "Chr")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaInt a0 ->
+        | `Int a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "PaInt")),
+              (_loc, (`ExVrn (_loc, "Int")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaInt32 a0 ->
+        | `Int32 a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "PaInt32")),
+              (_loc, (`ExVrn (_loc, "Int32")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaInt64 a0 ->
+        | `Int64 a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "PaInt64")),
+              (_loc, (`ExVrn (_loc, "Int64")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaNativeInt a0 ->
+        | `NativeInt a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "PaNativeInt")),
+              (_loc, (`ExVrn (_loc, "NativeInt")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
@@ -5850,9 +5850,9 @@ module Make(MetaLoc:META_LOC) =
                               (`ExCom
                                  (_loc, (meta_ident _loc a1),
                                    (meta_patt _loc a2)))))))) _loc a0))
-        | `PaStr a0 ->
+        | `Str a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "PaStr")),
+              (_loc, (`ExVrn (_loc, "Str")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
@@ -5897,9 +5897,9 @@ module Make(MetaLoc:META_LOC) =
                          (`ExCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaLaz a0 ->
+        | `Lazy a0 ->
             `ExApp
-              (_loc, (`ExVrn (_loc, "PaLaz")),
+              (_loc, (`ExVrn (_loc, "Lazy")),
                 (((fun _loc  (a0,a1)  ->
                      `ExTup
                        (_loc,
@@ -7499,9 +7499,9 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_expr _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `ExChr a0 ->
+        | `Chr a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "ExChr")),
+              (_loc, (`PaVrn (_loc, "Chr")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
@@ -7572,36 +7572,36 @@ module Make(MetaLoc:META_LOC) =
                                    (`PaCom
                                       (_loc, (meta_expr _loc a2),
                                         (meta_expr _loc a3)))))))))) _loc a0))
-        | `ExInt a0 ->
+        | `Int a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "ExInt")),
+              (_loc, (`PaVrn (_loc, "Int")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `ExInt32 a0 ->
+        | `Int32 a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "ExInt32")),
+              (_loc, (`PaVrn (_loc, "Int32")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `ExInt64 a0 ->
+        | `Int64 a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "ExInt64")),
+              (_loc, (`PaVrn (_loc, "Int64")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `ExNativeInt a0 ->
+        | `NativeInt a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "ExNativeInt")),
+              (_loc, (`PaVrn (_loc, "NativeInt")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
@@ -7619,9 +7619,9 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_string _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `ExLaz a0 ->
+        | `Lazy a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "ExLaz")),
+              (_loc, (`PaVrn (_loc, "Lazy")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
@@ -7748,9 +7748,9 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_expr _loc a1),
                                    (meta_expr _loc a2)))))))) _loc a0))
-        | `ExStr a0 ->
+        | `Str a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "ExStr")),
+              (_loc, (`PaVrn (_loc, "Str")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
@@ -7920,45 +7920,45 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_patt _loc a1),
                                    (meta_patt _loc a2)))))))) _loc a0))
-        | `PaChr a0 ->
+        | `Chr a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "PaChr")),
+              (_loc, (`PaVrn (_loc, "Chr")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaInt a0 ->
+        | `Int a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "PaInt")),
+              (_loc, (`PaVrn (_loc, "Int")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaInt32 a0 ->
+        | `Int32 a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "PaInt32")),
+              (_loc, (`PaVrn (_loc, "Int32")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaInt64 a0 ->
+        | `Int64 a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "PaInt64")),
+              (_loc, (`PaVrn (_loc, "Int64")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaNativeInt a0 ->
+        | `NativeInt a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "PaNativeInt")),
+              (_loc, (`PaVrn (_loc, "NativeInt")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
@@ -8051,9 +8051,9 @@ module Make(MetaLoc:META_LOC) =
                               (`PaCom
                                  (_loc, (meta_ident _loc a1),
                                    (meta_patt _loc a2)))))))) _loc a0))
-        | `PaStr a0 ->
+        | `Str a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "PaStr")),
+              (_loc, (`PaVrn (_loc, "Str")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
@@ -8098,9 +8098,9 @@ module Make(MetaLoc:META_LOC) =
                          (`PaCom
                             (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
                    _loc a0))
-        | `PaLaz a0 ->
+        | `Lazy a0 ->
             `PaApp
-              (_loc, (`PaVrn (_loc, "PaLaz")),
+              (_loc, (`PaVrn (_loc, "Lazy")),
                 (((fun _loc  (a0,a1)  ->
                      `PaTup
                        (_loc,
@@ -8685,13 +8685,14 @@ let rec is_irrefut_patt =
   | `PaOlbi (_loc,_,_,_) -> true
   | `PaLab (_loc,_,`PaNil _) -> true
   | `PaLab (_loc,_,p) -> is_irrefut_patt p
-  | `PaLaz (_loc,p) -> is_irrefut_patt p
+  | `Lazy (_loc,p) -> is_irrefut_patt p
   | `PaId (_loc,_) -> false
   | `PaMod (_loc,_) -> true
-  | `PaVrn (_loc,_)|`PaStr (_loc,_)|`PaRng (_loc,_,_)|`PaFlo (_loc,_)|
-      `PaNativeInt (_loc,_)|`PaInt64 (_loc,_)|`PaInt32 (_loc,_)|`PaInt
-                                                                  (_loc,_)|
-      `PaChr (_loc,_)|`PaTyp (_loc,_)|`PaArr (_loc,_)|`Ant (_loc,_) -> false
+  | `PaVrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`PaFlo (_loc,_)|`NativeInt
+                                                                    (_loc,_)|
+      `Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)|`Chr (_loc,_)|`PaTyp
+                                                                    (_loc,_)|
+      `PaArr (_loc,_)|`Ant (_loc,_) -> false
 let rec is_constructor =
   function
   | `IdAcc (_loc,_,i) -> is_constructor i

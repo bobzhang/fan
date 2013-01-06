@@ -35,36 +35,36 @@
 
 type loc = FanLoc.t
    and rec_flag =
-    [= (* `ReRecursive of loc  *) `Recursive of loc 
+    [= `Recursive of loc 
     | `ReNil of loc 
     | `Ant of (loc*string) ]
    and direction_flag =
-    [= (* `DiTo of loc  *) `To of loc
-    (* | `DiDownto of loc  *)| `Downto of loc
+    [= `To of loc
+    | `Downto of loc
     | `Ant of (loc*string) ]
    and mutable_flag =
-    [= (* `MuMutable of loc  *) `Mutable of loc 
+    [= `Mutable of loc 
     | `MuNil of loc 
     | `Ant of (loc*string) ]
    and private_flag =
-    [= (* `PrPrivate of loc *) `Private of loc 
+    [= `Private of loc 
     | `PrNil of loc 
     | `Ant of (loc*string) ]
    and virtual_flag =
-    [= (* `ViVirtual of loc  *) `Virtual of loc 
+    [= `Virtual of loc 
     | `ViNil of loc 
     | `Ant of (loc*string) ]
    and override_flag =
-    [= (* `OvOverride of loc  *)`Override of loc 
+    [= `Override of loc 
     | `OvNil of loc 
     | `Ant of (loc*string) ]
    and row_var_flag =
-    [= (* `RvRowVar of loc  *) `RowVar of loc 
+    [= `RowVar of loc 
     | `RvNil of loc 
     | `Ant of (loc*string) ]
    and meta_option 'a =
-    [= (* `ONone of loc  *) `None of loc 
-    | (* `OSome of 'a *) `Some of 'a
+    [= `None of loc 
+    |  `Some of 'a
     | `Ant of (loc*string) ]
    and meta_list 'a =
     [= `LNil of loc
@@ -118,8 +118,7 @@ type loc = FanLoc.t
     | `TyAmp of (loc * ctyp * ctyp) (* t & t *)
     | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
     | `TyPkg of (loc * module_type) (* (module S) *)
-    | `Ant of (loc * string) (* $s$ *)
-    ]
+    | `Ant of (loc * string) (* $s$ *)]
    and patt =
     [= `PaNil of loc
     | `PaId  of (loc * ident) (* i *)
@@ -130,11 +129,11 @@ type loc = FanLoc.t
     | `PaArr of (loc * patt) (* [| p |] *)
     | `PaCom of (loc * patt * patt) (* p, p *)
     | `PaSem of (loc * patt * patt) (* p; p *)
-    | `PaChr of (loc * string) (* c *) (* 'x' *)
-    | `PaInt of (loc * string)
-    | `PaInt32 of (loc * string)
-    | `PaInt64 of (loc * string)
-    | `PaNativeInt of (loc * string)
+    | `Chr of (loc * string) (* c *) (* 'x' *)
+    | `Int of (loc * string)
+    | `Int32 of (loc * string)
+    | `Int64 of (loc * string)
+    | `NativeInt of (loc * string)
     | `PaFlo of (loc * string)
     | `PaLab of (loc * string * patt) (* ~s or ~s:(p) *)
     (* ?s or ?s:(p) *)
@@ -145,12 +144,12 @@ type loc = FanLoc.t
     | `PaRng of (loc * patt * patt) (* p .. p *)
     | `PaRec of (loc * patt) (* { p } *)
     | `PaEq  of (loc * ident * patt) (* i = p *)
-    | `PaStr of (loc * string) (* s *)
+    | `Str of (loc * string) (* s *)
     | `PaTup of (loc * patt) (* ( p ) *)
     | `PaTyc of (loc * patt * ctyp) (* (p : t) *)
     | `PaTyp of (loc * ident) (* #i *)
     | `PaVrn of (loc * string) (* `s *)
-    | `PaLaz of (loc * patt) (* lazy p *)
+    | `Lazy of (loc * patt) (* lazy p *)
     | `PaMod of (loc * string) (* (module M) *) ]
   and expr =
     [= `ExNil of loc
@@ -164,19 +163,19 @@ type loc = FanLoc.t
     | `ExAsf of loc (* assert `False *)
     | `ExAsr of (loc * expr) (* assert e *)
     | `ExAss of (loc * expr * expr) (* e := e *)
-    | `ExChr of (loc * string) (* 'c' *)
+    | `Chr of (loc * string) (* 'c' *)
     | `ExCoe of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)
     | `ExFlo of (loc * string) (* 3.14 *)
       (* for s = e to/downto e do { e } *)
     | `ExFor of (loc * string * expr * expr * direction_flag * expr)
     | `ExFun of (loc * match_case) (* fun [ mc ] *)
     | `ExIfe of (loc * expr * expr * expr) (* if e then e else e *)
-    | `ExInt of (loc * string) (* 42 *)
-    | `ExInt32 of (loc * string)
-    | `ExInt64 of (loc * string)
-    | `ExNativeInt of (loc * string)
+    | `Int of (loc * string) (* 42 *)
+    | `Int32 of (loc * string)
+    | `Int64 of (loc * string)
+    | `NativeInt of (loc * string)
     | `ExLab of (loc * string * expr) (* ~s or ~s:e *)
-    | `ExLaz of (loc * expr) (* lazy e *)
+    | `Lazy of (loc * expr) (* lazy e *)
       (* let b in e or let rec b in e *)
     | `ExLet of (loc * rec_flag * binding * expr)
       (* let module s = me in e *)
@@ -200,7 +199,7 @@ type loc = FanLoc.t
       (* e.[e] *)
     | `ExSte of (loc * expr * expr)
       (* s *) (* "foo" *)
-    | `ExStr of (loc * string)
+    | `Str of (loc * string)
       (* try e with [ mc ] *)
     | `ExTry of (loc * expr * match_case)
       (* (e) *)

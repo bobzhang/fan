@@ -1335,7 +1335,7 @@ let apply () =
          ([`Skeyword "lazy"; `Sself],
            (Gram.mk_action
               (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->
-                 (`ExLaz (_loc, e) : 'expr ))))]);
+                 (`Lazy (_loc, e) : 'expr ))))]);
        ((Some "label"), (Some `NA),
          [([`Skeyword "~";
            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
@@ -1450,7 +1450,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `INT (_,s) -> (`ExInt (_loc, s) : 'expr )
+                 | `INT (_,s) -> (`Int (_loc, s) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `INT32 (_,_) -> true | _ -> false)),
@@ -1458,7 +1458,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `INT32 (_,s) -> (`ExInt32 (_loc, s) : 'expr )
+                 | `INT32 (_,s) -> (`Int32 (_loc, s) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `INT64 (_,_) -> true | _ -> false)),
@@ -1466,7 +1466,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `INT64 (_,s) -> (`ExInt64 (_loc, s) : 'expr )
+                 | `INT64 (_,s) -> (`Int64 (_loc, s) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `FLO (_,_) -> true | _ -> false)),
@@ -1482,7 +1482,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `CHAR (_,s) -> (`ExChr (_loc, s) : 'expr )
+                 | `CHAR (_,s) -> (`Chr (_loc, s) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
@@ -1490,7 +1490,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `STR (_,s) -> (`ExStr (_loc, s) : 'expr )
+                 | `STR (_,s) -> (`Str (_loc, s) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `NATIVEINT (_,_) -> true | _ -> false)),
@@ -1498,7 +1498,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `NATIVEINT (_,s) -> (`ExNativeInt (_loc, s) : 'expr )
+                 | `NATIVEINT (_,s) -> (`NativeInt (_loc, s) : 'expr )
                  | _ -> assert false)));
          ([`Stry
              (`Snterm
@@ -2198,7 +2198,7 @@ let apply () =
          ([`Skeyword "lazy"; `Sself],
            (Gram.mk_action
               (fun (p : 'patt)  _  (_loc : FanLoc.t)  ->
-                 (`PaLaz (_loc, p) : 'patt ))))]);
+                 (`Lazy (_loc, p) : 'patt ))))]);
        ((Some "simple"), None,
          [([`Stoken
               (((function
@@ -2226,7 +2226,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `INT (_,s) -> (`PaInt (_loc, s) : 'patt )
+                 | `INT (_,s) -> (`Int (_loc, s) : 'patt )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `INT32 (_,_) -> true | _ -> false)),
@@ -2234,7 +2234,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `INT32 (_,s) -> (`PaInt32 (_loc, s) : 'patt )
+                 | `INT32 (_,s) -> (`Int32 (_loc, s) : 'patt )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `INT64 (_,_) -> true | _ -> false)),
@@ -2242,7 +2242,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `INT64 (_,s) -> (`PaInt64 (_loc, s) : 'patt )
+                 | `INT64 (_,s) -> (`Int64 (_loc, s) : 'patt )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `FLO (_,_) -> true | _ -> false)),
@@ -2258,7 +2258,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `CHAR (_,s) -> (`PaChr (_loc, s) : 'patt )
+                 | `CHAR (_,s) -> (`Chr (_loc, s) : 'patt )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
@@ -2266,7 +2266,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `STR (_,s) -> (`PaStr (_loc, s) : 'patt )
+                 | `STR (_,s) -> (`Str (_loc, s) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -2275,7 +2275,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
-                 | `INT (_,s) -> (`PaInt (_loc, (String.neg s)) : 'patt )
+                 | `INT (_,s) -> (`Int (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -2284,7 +2284,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
-                 | `INT32 (_,s) -> (`PaInt32 (_loc, (String.neg s)) : 'patt )
+                 | `INT32 (_,s) -> (`Int32 (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -2293,7 +2293,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
-                 | `INT64 (_,s) -> (`PaInt64 (_loc, (String.neg s)) : 'patt )
+                 | `INT64 (_,s) -> (`Int64 (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -2303,7 +2303,7 @@ let apply () =
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
                  | `NATIVEINT (_,s) ->
-                     (`PaInt64 (_loc, (String.neg s)) : 'patt )
+                     (`Int64 (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
@@ -4561,8 +4561,7 @@ let apply () =
        [(None, None,
           [([`Skeyword "private"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  ->
-                   (`Private _loc : 'opt_private ))));
+                (fun _  (_loc : FanLoc.t)  -> (`Private _loc : 'opt_private ))));
           ([`Stoken
               (((function | `ANT (("private"|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"private\"|\"anti\"),_)"))],
@@ -4581,8 +4580,7 @@ let apply () =
        [(None, None,
           [([`Skeyword "mutable"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  ->
-                   (`Mutable _loc : 'opt_mutable ))));
+                (fun _  (_loc : FanLoc.t)  -> (`Mutable _loc : 'opt_mutable ))));
           ([`Stoken
               (((function | `ANT (("mutable"|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"mutable\"|\"anti\"),_)"))],
@@ -4601,8 +4599,7 @@ let apply () =
        [(None, None,
           [([`Skeyword "virtual"],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  ->
-                   (`Virtual _loc : 'opt_virtual ))));
+                (fun _  (_loc : FanLoc.t)  -> (`Virtual _loc : 'opt_virtual ))));
           ([`Stoken
               (((function | `ANT (("virtual"|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"virtual\"|\"anti\"),_)"))],
@@ -4621,8 +4618,7 @@ let apply () =
        [(None, None,
           [([`Skeyword ".."],
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  ->
-                   (`RowVar _loc : 'opt_dot_dot ))));
+                (fun _  (_loc : FanLoc.t)  -> (`RowVar _loc : 'opt_dot_dot ))));
           ([`Stoken
               (((function | `ANT ((".."|"anti"),_) -> true | _ -> false)),
                 (`Normal, "`ANT ((\"..\"|\"anti\"),_)"))],

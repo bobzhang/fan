@@ -142,7 +142,7 @@ let _ =
                                 (_loc, (`ReNil _loc),
                                   (`BiEq
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
-                                       (`ExApp (_loc, mk, (`ExStr (_loc, d)))))))
+                                       (`ExApp (_loc, mk, (`Str (_loc, d)))))))
                           | (Some d,Some typ) ->
                               `StVal
                                 (_loc, (`ReNil _loc),
@@ -151,14 +151,14 @@ let _ =
                                        (`ExTyc
                                           (_loc,
                                             (`ExApp
-                                               (_loc, mk, (`ExStr (_loc, d)))),
+                                               (_loc, mk, (`Str (_loc, d)))),
                                             typ)))))
                           | (None ,None ) ->
                               `StVal
                                 (_loc, (`ReNil _loc),
                                   (`BiEq
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
-                                       (`ExApp (_loc, mk, (`ExStr (_loc, x)))))))
+                                       (`ExApp (_loc, mk, (`Str (_loc, x)))))))
                           | (None ,Some typ) ->
                               `StVal
                                 (_loc, (`ReNil _loc),
@@ -167,7 +167,7 @@ let _ =
                                        (`ExTyc
                                           (_loc,
                                             (`ExApp
-                                               (_loc, mk, (`ExStr (_loc, x)))),
+                                               (_loc, mk, (`Str (_loc, x)))),
                                             typ)))))) ls in
                    FanAst.stSem_of_list rest : 'nonterminals ))))])]);
   Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
@@ -755,7 +755,7 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `STR (_,v) ->
-                     (`PaApp (_loc, (`PaVrn (_loc, s)), (`PaStr (_loc, v))) : 
+                     (`PaApp (_loc, (`PaVrn (_loc, s)), (`Str (_loc, v))) : 
                      'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
@@ -816,7 +816,7 @@ let _ =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `STR (_,s) -> (`PaStr (_loc, s) : 'internal_patt )
+                 | `STR (_,s) -> (`Str (_loc, s) : 'internal_patt )
                  | _ -> assert false)));
         ([`Skeyword "_"],
           (Gram.mk_action
@@ -871,7 +871,7 @@ let _ =
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `STR (_,s) -> (`ExStr (_loc, s) : 'string )
+                  | `STR (_,s) -> (`Str (_loc, s) : 'string )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `ANT ("",_) -> true | _ -> false)),

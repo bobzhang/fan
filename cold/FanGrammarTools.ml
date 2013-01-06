@@ -97,7 +97,7 @@ let rec make_expr entry tvar =
   | `TXmeta (_loc,n,tl,e,t) ->
       let el =
         Expr.mklist _loc (List.map (fun t  -> make_expr entry "" t) tl) in
-      let ns = Expr.mklist _loc (List.map (fun n  -> `ExStr (_loc, n)) n) in
+      let ns = Expr.mklist _loc (List.map (fun n  -> `Str (_loc, n)) n) in
       `ExApp
         (_loc, (`ExVrn (_loc, "Smeta")),
           (`ExTup
@@ -134,7 +134,7 @@ let rec make_expr entry tvar =
   | `TXnext _loc -> `ExVrn (_loc, "Snext")
   | `TXself _loc -> `ExVrn (_loc, "Sself")
   | `TXkwd (_loc,kwd) ->
-      `ExApp (_loc, (`ExVrn (_loc, "Skeyword")), (`ExStr (_loc, kwd)))
+      `ExApp (_loc, (`ExVrn (_loc, "Skeyword")), (`Str (_loc, kwd)))
   | `TXnterm (_loc,n,lev) ->
       (match lev with
        | Some lab ->
@@ -160,7 +160,7 @@ let rec make_expr entry tvar =
                                                 (_loc, (gm ()),
                                                   (`Lid (_loc, "t")))))),
                                         (`TyQuo (_loc, (n.tvar))))))))),
-                         (`ExStr (_loc, lab)))))))
+                         (`Str (_loc, lab)))))))
        | None  ->
            if n.tvar = tvar
            then `ExVrn (_loc, "Sself")
@@ -206,7 +206,7 @@ let rec make_expr entry tvar =
                        (_loc,
                          (`ExCom
                             (_loc, (`ExVrn (_loc, attr)),
-                              (`ExStr
+                              (`Str
                                  (_loc, (FanAst.safe_string_escaped descr))))))))))))
 and make_expr_rules _loc n rl tvar =
   Expr.mklist _loc
@@ -340,7 +340,7 @@ let text_of_entry _loc e =
            | Some lab ->
                `ExApp
                  (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))),
-                   (`ExStr (_loc, lab)))
+                   (`Str (_loc, lab)))
            | None  -> `ExId (_loc, (`Uid (_loc, "None"))) in
          let ass =
            match level.assoc with
@@ -378,7 +378,7 @@ let let_in_of_extend _loc gram gl default =
                  (`ExApp
                     (_loc,
                       (`ExId (_loc, (`Lid (_loc, "grammar_entry_create")))),
-                      (`ExStr (_loc, i)))),
+                      (`Str (_loc, i)))),
                  (`TyApp
                     (_loc,
                       (`TyId

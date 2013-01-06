@@ -50,7 +50,7 @@ let base1_types =
                                                     (`ExId
                                                        (_loc,
                                                          (`Lid (_loc, "fmt")))))),
-                                               (`ExStr (_loc, "()")))))))))))),
+                                               (`Str (_loc, "()")))))))))))),
                       (`TyArr
                          (_loc,
                            (`TyId
@@ -152,7 +152,7 @@ let print_base1 =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "fmt")))))),
-                                                            (`ExStr (_loc, c)))),
+                                                            (`Str (_loc, c)))),
                                                        (`ExId
                                                           (_loc,
                                                             (`Lid (_loc, "a")))))))))))))),

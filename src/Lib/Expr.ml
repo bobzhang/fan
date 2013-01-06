@@ -318,7 +318,7 @@ INCLUDE "src/Lib/ExprPatt.ml";
    and [(~-.)] as a prefix [(-.)]
    {[
    mkumin _loc "-." {| 3 |};
-   - : expr = ExInt (, "-3")
+   - : expr = Int (, "-3")
    mkumin _loc "-." {| a |};
    - : expr =
    ExApp (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
@@ -544,7 +544,7 @@ let meee_of_str s =
        (ExApp 
          (ExApp  (ExId  (IdAcc  (Uid  "Ast") (Uid  "Lid")))
            (ExId  (Lid  "_loc")))
-         (ExStr  "u")))
+         (Str  "u")))
   ]}
   given string input u
   we finally want to make 

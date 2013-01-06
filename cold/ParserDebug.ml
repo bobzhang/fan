@@ -40,9 +40,9 @@ let mk_debug _loc m fmt section args =
                      (`IdAcc
                         (_loc, (`Uid (_loc, "Debug")),
                           (`Lid (_loc, "printf")))))),
-                (`ExStr (_loc, section)))), (`ExStr (_loc, fmt)))) args in
+                (`Str (_loc, section)))), (`Str (_loc, fmt)))) args in
   `ExIfe
-    (_loc, (`ExApp (_loc, (mk_debug_mode _loc m), (`ExStr (_loc, section)))),
+    (_loc, (`ExApp (_loc, (mk_debug_mode _loc m), (`Str (_loc, section)))),
       call, (`ExId (_loc, (`Uid (_loc, "()")))))
 let apply () =
   let grammar_entry_create = Gram.mk in

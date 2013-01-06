@@ -392,21 +392,21 @@ let rec patt = fun
          error (loc_of_patt f)
            "this is not a constructor, it cannot be applied in a pattern" ]
      | `PaArr (loc,p) -> mkpat loc (Ppat_array (List.map patt (list_of_patt p [])))
-     | `PaChr (loc,s) ->
+     | `Chr (loc,s) ->
          mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
-     | `PaInt (loc,s) ->
+     | `Int (loc,s) ->
          let i = try int_of_string s with [
            Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int"
          ] in mkpat loc (Ppat_constant (Const_int i))
-     | `PaInt32 (loc, s) ->
+     | `Int32 (loc, s) ->
          let i32 = try Int32.of_string s with [
            Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int32"
          ] in mkpat loc (Ppat_constant (Const_int32 i32))
-     | `PaInt64 (loc, s) ->
+     | `Int64 (loc, s) ->
          let i64 = try Int64.of_string s with [
            Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int64"
          ] in mkpat loc (Ppat_constant (Const_int64 i64))
-     | `PaNativeInt (loc,s) ->
+     | `NativeInt (loc,s) ->
          let nati = try Nativeint.of_string s with [
            Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
          ] in mkpat loc (Ppat_constant (Const_nativeint nati))
@@ -416,7 +416,7 @@ let rec patt = fun
      | `PaOrp (loc, p1, p2) -> mkpat loc (Ppat_or (patt p1) (patt p2))
      | `PaRng (loc, p1, p2) ->
          match (p1, p2) with
-         [ (`PaChr (loc1, c1), `PaChr (loc2, c2)) ->
+         [ (`Chr (loc1, c1), `Chr (loc2, c2)) ->
            let c1 = char_of_char_token loc1 c1 in
             let c2 = char_of_char_token loc2 c2 in
            mkrangepat loc c1 c2
@@ -427,7 +427,7 @@ let rec patt = fun
              let (wildcards,ps) = List.partition is_wildcard ps in
              let is_closed = if wildcards = [] then Closed else Open in
              mkpat loc (Ppat_record (List.map mklabpat ps, is_closed))
-         | `PaStr (loc,s) ->
+         | `Str (loc,s) ->
              mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
          | {:patt@loc| ($p1, $p2) |} ->
              mkpat loc (Ppat_tuple
@@ -436,7 +436,7 @@ let rec patt = fun
          | `PaTyc (loc,p,t) -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
          | `PaTyp (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
          | `PaVrn (loc,s) -> mkpat loc (Ppat_variant s None)
-         | `PaLaz (loc,p) -> mkpat loc (Ppat_lazy (patt p))
+         | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
          | `PaMod (loc,m) -> mkpat loc (Ppat_unpack (with_loc m loc))
          | `PaEq (_, _, _) | `PaSem (_, _, _) | `PaCom (_, _, _) | `PaNil _ as p ->
              error (loc_of_patt p) "invalid pattern" ]
@@ -546,7 +546,7 @@ let rec expr = fun (* expr -> expression*)
                 | _ -> error loc "bad left part of assignment" ] in
           mkexp loc e
       | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
-      | `ExChr (loc,s) ->
+      | `Chr (loc,s) ->
           mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
       | `ExCoe (loc, e, t1, t2) ->
           let t1 =
@@ -573,24 +573,24 @@ let rec expr = fun (* expr -> expression*)
       | `ExFun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a []))
       | `ExIfe (loc, e1, e2, e3) ->
           mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) (Some (expr e3)))
-      | `ExInt (loc,s) ->
+      | `Int (loc,s) ->
           let i = try int_of_string s with [
             Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int"
           ] in mkexp loc (Pexp_constant (Const_int i))
-      | `ExInt32 (loc, s) ->
+      | `Int32 (loc, s) ->
           let i32 = try Int32.of_string s with [
             Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int32"
           ] in mkexp loc (Pexp_constant (Const_int32 i32))
-      | `ExInt64 (loc, s) ->
+      | `Int64 (loc, s) ->
           let i64 = try Int64.of_string s with [
             Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int64"
           ] in mkexp loc (Pexp_constant (Const_int64 i64))
-      | `ExNativeInt (loc,s) ->
+      | `NativeInt (loc,s) ->
           let nati = try Nativeint.of_string s with [
             Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
           ] in mkexp loc (Pexp_constant (Const_nativeint nati))
       | `ExLab (loc,_,_) -> error loc "labeled expression not allowed here"
-      | `ExLaz (loc,e) -> mkexp loc (Pexp_lazy (expr e))
+      | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (expr e))
       | `ExLet (loc,rf,bi,e) ->
           mkexp loc (Pexp_let (mkrf rf) (binding bi []) (expr e))
       | `ExLmd (loc,i,me,e) -> mkexp loc (Pexp_letmodule (with_loc i loc) (module_expr me) (expr e))
@@ -627,7 +627,7 @@ let rec expr = fun (* expr -> expression*)
             mkexp loc
               (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "String" "get")))
                  [("", expr e1); ("", expr e2)])
-        | `ExStr (loc,s) ->
+        | `Str (loc,s) ->
             mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
         | `ExTry (loc,e,a) -> mkexp loc (Pexp_try (expr e) (match_case a []))
         | {:expr@loc| ($e1, $e2) |} ->
@@ -992,8 +992,8 @@ let str_item ast = str_item ast [];
 (* expr -> directive_argument *)
 let directive = fun
   [ {:expr||} -> Pdir_none
-  | `ExStr (_,s) -> Pdir_string s
-  | `ExInt (_,i) -> Pdir_int (int_of_string i)
+  | `Str (_,s) -> Pdir_string s
+  | `Int (_,i) -> Pdir_int (int_of_string i)
   | {:expr| true |} -> Pdir_bool true
   | {:expr| false |} -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e)) ] ;

@@ -341,25 +341,25 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "lidident" -> {| `Lid ($(mloc _loc), $e)|}
 
           | "flopatt" -> {| `PaFlo ($(mloc _loc), $e) |}
-          | "intpatt" -> {| `PaInt ($(mloc _loc), $e) |}
+          | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
                 (* {| `PaX (u,b,g)|} *)
-          | "int32patt" -> {| `PaInt32 ($(mloc _loc), $e)|}
-          | "int64patt" -> {| `PaInt64 ($(mloc _loc), $e)|}
-          | "nativeintpatt" -> {| `PaNativeInt ($(mloc _loc),$e)|}
-          | "chrpatt" -> {| `PaChr ($(mloc _loc), $e) |}
-          | "strpatt" -> {| `PaStr ($(mloc _loc),$e) |}
+          | "int32patt" -> {| `Int32 ($(mloc _loc), $e)|}
+          | "int64patt" -> {| `Int64 ($(mloc _loc), $e)|}
+          | "nativeintpatt" -> {| `NativeInt ($(mloc _loc),$e)|}
+          | "chrpatt" -> {| `Chr ($(mloc _loc), $e) |}
+          | "strpatt" -> {| `Str ($(mloc _loc),$e) |}
                 
-          | "strexpr" -> {| `ExStr ($(mloc _loc), $e) |}
-          | "chrexpr" -> {| `ExChr ($(mloc _loc), $e) |}
-          | "intexpr" -> {| `ExInt ($(mloc _loc), $e) |}
-          | "int32expr" -> {| `ExInt32 ($(mloc _loc), $e) |}
-          | "int64expr" -> {| `ExInt64 ($(mloc _loc), $e)|}
+          | "strexpr" -> {| `Str ($(mloc _loc), $e) |}
+          | "chrexpr" -> {| `Chr ($(mloc _loc), $e) |}
+          | "intexpr" -> {| `Int ($(mloc _loc), $e) |}
+          | "int32expr" -> {| `Int32 ($(mloc _loc), $e) |}
+          | "int64expr" -> {| `Int64 ($(mloc _loc), $e)|}
           | "floexpr" -> {| `ExFlo ($(mloc _loc), $e) |}
-          | "nativeintexpr" -> {| `ExNativeInt ($(mloc _loc), $e) |}
+          | "nativeintexpr" -> {| `NativeInt ($(mloc _loc), $e) |}
           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern")
           | _ -> e ])
       | p -> super#patt p ];
-    method! expr = with "expr" fun (* `Ant keeps the right location, `ExStr does not *)
+    method! expr = with "expr" fun (* `Ant keeps the right location, `Str does not *)
       [ {@_loc| $anti:s |} | {@_loc| $str:s |} as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
@@ -374,32 +374,32 @@ let antiquot_expander ~parse_patt ~parse_expr = object
 
             | "uidident"->  {| `Uid ($(mloc _loc), $e) |}
             | "lidident" -> {| `Lid ($(mloc _loc), $e) |}
-            | "strexpr" -> {| `ExStr ($(mloc _loc), $e) |}
-            | "chrexpr" -> {| `ExChr ($(mloc _loc), $e) |}
-            | "intexpr" -> {| `ExInt ($(mloc _loc), $e) |}
-            | "int32expr" -> {| `ExInt32 ($(mloc _loc), $e) |}
-            | "int64expr" -> {| `ExInt64 ($(mloc _loc), $e) |}
+            | "strexpr" -> {| `Str ($(mloc _loc), $e) |}
+            | "chrexpr" -> {| `Chr ($(mloc _loc), $e) |}
+            | "intexpr" -> {| `Int ($(mloc _loc), $e) |}
+            | "int32expr" -> {| `Int32 ($(mloc _loc), $e) |}
+            | "int64expr" -> {| `Int64 ($(mloc _loc), $e) |}
             | "floexpr" -> {| `ExFlo ($(mloc _loc), $e) |}
-            | "nativeintexpr" -> {|`ExNativeInt ($(mloc _loc), $e) |}
+            | "nativeintexpr" -> {|`NativeInt ($(mloc _loc), $e) |}
             | "`nativeintexpr" ->
                 let e = {| Nativeint.to_string $e |} in
-                {| `ExNativeInt ($(mloc _loc), $e) |}
+                {| `NativeInt ($(mloc _loc), $e) |}
             | "`intexpr" ->
                 let e = {|string_of_int $e |} in
-                {| `ExInt ($(mloc _loc), $e) |}
+                {| `Int ($(mloc _loc), $e) |}
             | "`int32expr" ->
                 let e = {|Int32.to_string $e |} in
-                {| `ExInt32 ($(mloc _loc), $e) |}
+                {| `Int32 ($(mloc _loc), $e) |}
             | "`int64expr" ->
                 let e = {|Int64.to_string $e |} in
-                {| `ExInt64 ($(mloc _loc), $e) |}
+                {| `Int64 ($(mloc _loc), $e) |}
             | "`chrexpr" ->
                 let e = {|Char.escaped $e|} in
-                {| `ExChr ($(mloc _loc), $e) |}
+                {| `Chr ($(mloc _loc), $e) |}
             | "`strexpr" ->
                 let e = {|$(uid:gm()).safe_string_escaped $e |} in
                 (* {| $(uid:gm()).safe_string_escaped $e|} *)
-                {| `ExStr ($(mloc _loc), $e) |}
+                {| `Str ($(mloc _loc), $e) |}
             | "`floexpr" ->
                 let e = {| FanUtil.float_repres $e |} in 
                 {| `ExFlo ($(mloc _loc), $e) |}
@@ -408,31 +408,31 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 {| {| $(id:$x)  |} |}
 
             | "flopatt" -> {| `PaFlo ($(mloc _loc), $e) |}
-            | "intpatt" -> {| `PaInt ($(mloc _loc), $e) |}
-            | "int32patt" -> {| `PaInt32 ($(mloc _loc), $e) |}
-            | "int64patt" -> {| `PaInt64 ($(mloc _loc), $e) |}
-            | "nativeintpatt" -> {| `PaNativeInt ($(mloc _loc), $e)|}
-            | "chrpatt" -> {| `PaChr ($(mloc _loc), $e) |}
-            | "strpatt" -> {| `PaStr ($(mloc _loc),$e) |}
+            | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
+            | "int32patt" -> {| `Int32 ($(mloc _loc), $e) |}
+            | "int64patt" -> {| `Int64 ($(mloc _loc), $e) |}
+            | "nativeintpatt" -> {| `NativeInt ($(mloc _loc), $e)|}
+            | "chrpatt" -> {| `Chr ($(mloc _loc), $e) |}
+            | "strpatt" -> {| `Str ($(mloc _loc),$e) |}
 
             | "`nativeintpatt" ->
                 let e = {| Nativeint.to_string $e |} in
-                {| `PaNativeInt ($(mloc _loc), $e) |}
+                {| `NativeInt ($(mloc _loc), $e) |}
             | "`intpatt" ->
                 let e = {|string_of_int $e |} in
-                {| `PaInt ($(mloc _loc), $e) |}
+                {| `Int ($(mloc _loc), $e) |}
             | "`int32patt" ->
                 let e = {|Int32.to_string $e |} in
-                {| `PaInt32 ($(mloc _loc), $e) |}
+                {| `Int32 ($(mloc _loc), $e) |}
             | "`int64patt" ->
                 let e = {|Int64.to_string $e |} in
-                {| `PaInt64 ($(mloc _loc), $e) |}
+                {| `Int64 ($(mloc _loc), $e) |}
             | "`chrpatt" ->
                 let e = {|Char.escaped $e|} in
-                {| `PaChr ($(mloc _loc), $e) |}
+                {| `Chr ($(mloc _loc), $e) |}
             | "`strpatt" ->
                 let e = {|$(uid:gm()).safe_string_escaped $e |} in
-                {| `PaStr ($(mloc _loc), $e) |}
+                {| `Str ($(mloc _loc), $e) |}
             | "`flopatt" ->
                 let e = {| FanUtil.float_repres $e |} in 
                 {| `PaFlo ($(mloc _loc), $e) |}

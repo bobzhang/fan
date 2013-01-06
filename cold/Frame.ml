@@ -6,7 +6,7 @@ open Lib.Basic
 module Ast = FanAst
 open FSig
 module Make(S:FSig.Config) = struct
-  open Expr open Ident
+  open Expr
   let _ =
     List.iter
       (fun name  ->
@@ -224,7 +224,7 @@ module Make(S:FSig.Config) = struct
              (_loc, (`PaId (_loc, (`Lid (_loc, (tctor_var name))))),
                (`ExApp
                   (_loc, (`ExId (_loc, (`Lid (_loc, "failwithf")))),
-                    (`ExStr (_loc, "Abstract data type not implemented"))))))
+                    (`Str (_loc, "Abstract data type not implemented"))))))
   let str_item_of_module_types ?module_name  simple_expr_of_ctyp_with_cxt
     (lst : module_types) =
     let cxt = Hashset.create 50 in

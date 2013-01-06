@@ -47,7 +47,7 @@ let (gen_fold,gen_fold2) =
        ~class_name:"fold2" mk_variant ~names:[] ~arity:2
        ~trail:(`ExApp
                  (_loc, (`ExId (_loc, (`Lid (_loc, "invalid_arg")))),
-                   (`ExStr (_loc, "fold2 failure"))))))
+                   (`Str (_loc, "fold2 failure"))))))
 let _ =
   [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
 let (gen_map,gen_map2) =
@@ -64,7 +64,7 @@ let (gen_map,gen_map2) =
        ~class_name:"map2" mk_variant ~names:[] ~arity:2
        ~trail:(`ExApp
                  (_loc, (`ExId (_loc, (`Lid (_loc, "invalid_arg")))),
-                   (`ExStr (_loc, "map2 failure"))))))
+                   (`Str (_loc, "map2 failure"))))))
 let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
 let mk_variant_meta_expr cons params =
@@ -118,7 +118,7 @@ let mkfmt pre sep post fields =
                 (`IdAcc
                    (_loc, (`Uid (_loc, "Format")), (`Lid (_loc, "fprintf")))))),
            (`ExId (_loc, (`Lid (_loc, "fmt")))))),
-      (`ExStr (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
+      (`Str (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
 let mk_variant_print cons params =
   let len = List.length params in
   let pre =

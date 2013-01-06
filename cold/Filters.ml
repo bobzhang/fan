@@ -61,7 +61,7 @@ let add_debug_expr e =
                                          (`IdAcc
                                             (_loc, (`Uid (_loc, "Debug")),
                                               (`Lid (_loc, "mode")))))),
-                                    (`ExStr (_loc, "exc")))),
+                                    (`Str (_loc, "exc")))),
                                (`ExApp
                                   (_loc,
                                     (`ExApp
@@ -72,7 +72,7 @@ let add_debug_expr e =
                                                  (_loc,
                                                    (`Uid (_loc, "Format")),
                                                    (`Lid (_loc, "eprintf")))))),
-                                         (`ExStr
+                                         (`Str
                                             (_loc,
                                               (FanAst.safe_string_escaped msg))))),
                                     (`ExApp
@@ -152,7 +152,7 @@ let decorate_this_expr e id =
                      (`IdAcc
                         (_loc, (`Uid (_loc, "Camlp4prof")),
                           (`Lid (_loc, "count")))))),
-                (`ExStr (_loc, (FanAst.safe_string_escaped s))))))), e)
+                (`Str (_loc, (FanAst.safe_string_escaped s))))))), e)
 let rec decorate_fun id =
   let decorate = decorate decorate_fun in
   let decorate_expr = decorate#expr in
@@ -181,9 +181,9 @@ let map_expr =
                                                             `ExNil _,e))
       -> e
   | `ExId (_loc,`Lid (_,"__FILE__")) ->
-      `ExStr (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
+      `Str (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
   | `ExId (_loc,`Lid (_,"__PWD__")) ->
-      `ExStr
+      `Str
         (_loc,
           (FanAst.safe_string_escaped
              (Filename.dirname (FanLoc.file_name _loc))))
@@ -198,7 +198,7 @@ let map_expr =
           (`ExTup
              (_loc,
                (`ExCom
-                  (_loc, (`ExStr (_loc, (FanAst.safe_string_escaped a))),
+                  (_loc, (`Str (_loc, (FanAst.safe_string_escaped a))),
                     (`ExCom
                        (_loc,
                          (`ExCom
@@ -211,17 +211,16 @@ let map_expr =
                                            (_loc,
                                              (`ExCom
                                                 (_loc,
-                                                  (`ExInt
+                                                  (`Int
                                                      (_loc,
                                                        (string_of_int b))),
-                                                  (`ExInt
+                                                  (`Int
                                                      (_loc,
                                                        (string_of_int c))))),
-                                             (`ExInt
-                                                (_loc, (string_of_int d))))),
-                                        (`ExInt (_loc, (string_of_int e))))),
-                                   (`ExInt (_loc, (string_of_int f))))),
-                              (`ExInt (_loc, (string_of_int g))))),
+                                             (`Int (_loc, (string_of_int d))))),
+                                        (`Int (_loc, (string_of_int e))))),
+                                   (`Int (_loc, (string_of_int f))))),
+                              (`Int (_loc, (string_of_int g))))),
                          (if h
                           then `ExId (_loc, (`Lid (_loc, "true")))
                           else `ExId (_loc, (`Lid (_loc, "false")))))))))))
