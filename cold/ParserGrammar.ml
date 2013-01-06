@@ -148,7 +148,7 @@ let _ =
                                 (_loc, (`ReNil _loc),
                                   (`BiEq
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
-                                       (`ExTyc
+                                       (`Constraint_exp
                                           (_loc,
                                             (`ExApp
                                                (_loc, mk, (`Str (_loc, d)))),
@@ -164,7 +164,7 @@ let _ =
                                 (_loc, (`ReNil _loc),
                                   (`BiEq
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
-                                       (`ExTyc
+                                       (`Constraint_exp
                                           (_loc,
                                             (`ExApp
                                                (_loc, mk, (`Str (_loc, x)))),
@@ -187,7 +187,7 @@ let _ =
                                  (_loc,
                                    (`IdAcc (_loc, t, (`Lid (_loc, "clear")))))),
                               (`ExId (_loc, (`Lid (_loc, x)))))) ls in
-                   `ExSeq (_loc, (FanAst.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
+                   `Sequence (_loc, (FanAst.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
     (None,
       [(None, None,
@@ -218,7 +218,7 @@ let _ =
                (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
                   (_loc : FanLoc.t)  ->
                   (let () = grammar_module_name := old in
-                   `ExSeq (_loc, (FanAst.exSem_of_list es)) : 'delete_rule_body ))))])]);
+                   `Sequence (_loc, (FanAst.exSem_of_list es)) : 'delete_rule_body ))))])]);
   Gram.extend (delete_rules : 'delete_rules Gram.t )
     (None,
       [(None, None,
@@ -251,7 +251,7 @@ let _ =
                                            (_loc, (gm ()),
                                              (`Lid (_loc, "delete_rule")))))),
                                    e)), b)) sls in
-                   `ExSeq (_loc, (FanAst.exSem_of_list rest)) : 'delete_rules ))))])]);
+                   `Sequence (_loc, (FanAst.exSem_of_list rest)) : 'delete_rules ))))])]);
   Gram.extend (qualuid : 'qualuid Gram.t )
     (None,
       [(None, None,

@@ -17,7 +17,7 @@ let transform =
     | `Obj f ->
         (function
          | `Lid (_loc,x) ->
-             `ExSnd (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), (f x))
+             `Send (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), (f x))
          | t ->
              let dest = map_to_string t in
              let src = Lib.Ident.to_string.contents t in
@@ -26,7 +26,7 @@ let transform =
                 (Hashtbl.add Basic.conversion_table src dest;
                  eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest)
               else ();
-              `ExSnd (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), (f dest))))
+              `Send (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), (f dest))))
 let basic_transform =
   function
   | `Pre pre -> (fun x  -> pre ^ x)

@@ -332,7 +332,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
           | "tupexpr" -> {| `ExTup ($(mloc _loc), $e)|}
           | "tuppatt" -> {| `PaTup ($(mloc _loc), $e)|}
-          | "seqexpr" -> {| `ExSeq ($(mloc _loc), $e) |}
+          | "seqexpr" -> {| `Sequence ($(mloc _loc), $e) |}
                 
           | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
           | "lidexpr" -> {| `Lid ($(mloc _loc), $e) |}
@@ -340,7 +340,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "uidident" -> {| `Uid ($(mloc _loc), $e)|}
           | "lidident" -> {| `Lid ($(mloc _loc), $e)|}
 
-          | "flopatt" -> {| `PaFlo ($(mloc _loc), $e) |}
+          | "flopatt" -> {| `Flo ($(mloc _loc), $e) |}
           | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
                 (* {| `PaX (u,b,g)|} *)
           | "int32patt" -> {| `Int32 ($(mloc _loc), $e)|}
@@ -354,7 +354,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "intexpr" -> {| `Int ($(mloc _loc), $e) |}
           | "int32expr" -> {| `Int32 ($(mloc _loc), $e) |}
           | "int64expr" -> {| `Int64 ($(mloc _loc), $e)|}
-          | "floexpr" -> {| `ExFlo ($(mloc _loc), $e) |}
+          | "floexpr" -> {| `Flo ($(mloc _loc), $e) |}
           | "nativeintexpr" -> {| `NativeInt ($(mloc _loc), $e) |}
           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern")
           | _ -> e ])
@@ -367,7 +367,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             match n with
             ["tupexpr" ->   {| `ExTup ($(mloc _loc), $e) |}
             | "tuppatt" ->  {| `PaTup ($(mloc _loc), $e) |}
-            | "seqexpr" -> {| `ExSeq ($(mloc _loc), $e) |}
+            | "seqexpr" -> {| `Sequence ($(mloc _loc), $e) |}
 
             | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
             | "lidexpr" -> {| `Lid ($(mloc _loc), $e) |}
@@ -379,7 +379,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "intexpr" -> {| `Int ($(mloc _loc), $e) |}
             | "int32expr" -> {| `Int32 ($(mloc _loc), $e) |}
             | "int64expr" -> {| `Int64 ($(mloc _loc), $e) |}
-            | "floexpr" -> {| `ExFlo ($(mloc _loc), $e) |}
+            | "floexpr" -> {| `Flo ($(mloc _loc), $e) |}
             | "nativeintexpr" -> {|`NativeInt ($(mloc _loc), $e) |}
             | "`nativeintexpr" ->
                 let e = {| Nativeint.to_string $e |} in
@@ -402,12 +402,12 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 {| `Str ($(mloc _loc), $e) |}
             | "`floexpr" ->
                 let e = {| FanUtil.float_repres $e |} in 
-                {| `ExFlo ($(mloc _loc), $e) |}
+                {| `Flo ($(mloc _loc), $e) |}
             | "`boolexpr" ->
                 let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
                 {| {| $(id:$x)  |} |}
 
-            | "flopatt" -> {| `PaFlo ($(mloc _loc), $e) |}
+            | "flopatt" -> {| `Flo ($(mloc _loc), $e) |}
             | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
             | "int32patt" -> {| `Int32 ($(mloc _loc), $e) |}
             | "int64patt" -> {| `Int64 ($(mloc _loc), $e) |}
@@ -435,7 +435,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 {| `Str ($(mloc _loc), $e) |}
             | "`flopatt" ->
                 let e = {| FanUtil.float_repres $e |} in 
-                {| `PaFlo ($(mloc _loc), $e) |}
+                {| `Flo ($(mloc _loc), $e) |}
                   
             | "liststr_item" -> {| $(uid:gm()).stSem_of_list $e |}
                   (* {|$(uid:"FanAst").stSem_of_list $e |} *)

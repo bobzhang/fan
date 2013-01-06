@@ -34,7 +34,7 @@ let (gen_fold,gen_fold2) =
        | ls ->
            List.reduce_right
              (fun v  acc  ->
-                `ExLet
+                `Let_in
                   (_loc, (`ReNil _loc),
                     (`BiEq (_loc, (`PaId (_loc, (`Lid (_loc, "self")))), v)),
                     acc)) ls) in

@@ -132,7 +132,7 @@ class printer  ()= object(self:'self)
             | xs ->
                 let rec loop  f = function
                   | [x] -> fu f x
-                  | x::xs ->  pp f "%a%(%)%a" fu x sep loop xs 
+                  | x::xs ->  pp f "%a%(%)%a" fu x sep loop xs
                   | _ -> assert false in begin
                       pp f "%(%)%a%(%)" first loop xs last;
                   end in
@@ -914,8 +914,8 @@ class printer  ()= object(self:'self)
   method module_expr f x =
     match x.pmod_desc with
     | Pmod_structure (s) ->
-        pp f "struct@\n%a@\nend"
-          (self#list self#structure_item  ) s;
+        pp f "@[<hv2>struct@;@[<0>%a@]@;<1 -2>end@]"
+          (self#list self#structure_item  ~sep:"@\n") s;
     | Pmod_constraint (me, mt) ->
         pp f "@[<hov2>(%a@ :@ %a)@]"
           self#module_expr  me
@@ -1018,7 +1018,7 @@ class printer  ()= object(self:'self)
                 pp f " =@ %a"  self#module_expr  me 
             )) me 
     | Pstr_open (li) ->
-        pp f "open %a" self#longident_loc li;
+        pp f "@[<2>open@;%a@]" self#longident_loc li;
     | Pstr_modtype (s, mt) ->
         pp f "@[<2>module type %s =@;%a@]" s.txt self#module_type mt 
     | Pstr_class l ->

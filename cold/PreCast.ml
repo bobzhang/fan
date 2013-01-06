@@ -32,9 +32,7 @@ let current_printer () =
 let plugin ((module Id)  : (module Sig.Id))
   ((module Maker)  : (module Sig.PLUGIN)) =
   declare_dyn_module Id.name
-    (fun _  -> let module M = Maker(struct
-                 
-                 end) in ())
+    (fun _  -> let module M = Maker(struct  end) in ())
 let syntax_plugin ((module Id)  : (module Sig.Id))
   ((module Maker)  : (module Sig.SyntaxPlugin)) =
   declare_dyn_module Id.name (fun _  -> let module M = Maker(Syntax) in ())
@@ -75,24 +73,26 @@ let enable_auto isatty =
   if isatty ()
   then enable_ocaml_printer ()
   else enable_dump_ocaml_ast_printer ()
-module Printers = struct
-  module OCaml = PrinterOCaml.P module DumpOCamlAst = PrinterDumpOCamlAst.P
-  module DumpCamlp4Ast = PrinterDumpCamlp4Ast.P
-  module Null = PrinterNull.P
+module Printers =
+  struct
+    module OCaml = PrinterOCaml.P
+    module DumpOCamlAst = PrinterDumpOCamlAst.P
+    module DumpCamlp4Ast = PrinterDumpCamlp4Ast.P
+    module Null = PrinterNull.P
   end
 let _ = sig_item_parser := Syntax.parse_interf
 let _ = str_item_parser := Syntax.parse_implem
 module CurrentParser =
   struct
-  let parse_interf ?directive_handler  loc strm =
-    sig_item_parser.contents ?directive_handler loc strm
-  let parse_implem ?directive_handler  loc strm =
-    str_item_parser.contents ?directive_handler loc strm
+    let parse_interf ?directive_handler  loc strm =
+      sig_item_parser.contents ?directive_handler loc strm
+    let parse_implem ?directive_handler  loc strm =
+      str_item_parser.contents ?directive_handler loc strm
   end
 module CurrentPrinter =
   struct
-  let print_interf ?input_file  ?output_file  ast =
-    sig_item_printer.contents ?input_file ?output_file ast
-  let print_implem ?input_file  ?output_file  ast =
-    str_item_printer.contents ?input_file ?output_file ast
+    let print_interf ?input_file  ?output_file  ast =
+      sig_item_printer.contents ?input_file ?output_file ast
+    let print_implem ?input_file  ?output_file  ast =
+      str_item_printer.contents ?input_file ?output_file ast
   end

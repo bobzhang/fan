@@ -410,7 +410,7 @@ let rec patt = fun
          let nati = try Nativeint.of_string s with [
            Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
          ] in mkpat loc (Ppat_constant (Const_nativeint nati))
-     | `PaFlo (loc,s) -> mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
+     | `Flo (loc,s) -> mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
      | `PaLab (loc,_,_) -> error loc "labeled pattern not allowed here"
      | `PaOlb (loc, _, _) | `PaOlbi (loc,_,_,_) -> error loc "labeled pattern not allowed here"
      | `PaOrp (loc, p1, p2) -> mkpat loc (Ppat_or (patt p1) (patt p2))
@@ -539,7 +539,7 @@ let rec expr = fun (* expr -> expression*)
                 | {:expr@lloc| $lid:lab |}  ->
                     (* FIXME `ExId (lloc, `Lid (_, lab)) vs `ExId(_,`Lid(lloc,lab)) *)
                     Pexp_setinstvar (with_loc lab lloc) (expr v)
-                | `ExSte (loc, e1, e2) ->
+                | `String_dot (loc, e1, e2) ->
                     Pexp_apply
                       (mkexp loc (Pexp_ident (array_function loc "String" "set")))
                       [("", expr e1); ("", expr e2); ("", expr v)]
@@ -554,9 +554,9 @@ let rec expr = fun (* expr -> expression*)
             [ {:ctyp||} -> None
             | t -> Some (ctyp t) ] in
           mkexp loc (Pexp_constraint (expr e) t1 (Some (ctyp t2)))
-      | `ExFlo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
-      | `ExFor (loc, i, e1, e2, df, el) ->
-          let e3 = `ExSeq loc el in
+      | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
+      | `For_loop (loc, i, e1, e2, df, el) ->
+          let e3 = `Sequence loc el in
           mkexp loc (Pexp_for (with_loc i loc) (expr e1) (expr e2) (mkdirection df) (expr e3))
       | {:expr@loc| fun [ $(pat:`PaLab (_, lab, po)) when $w -> $e ] |} ->
           mkexp loc
@@ -570,7 +570,7 @@ let rec expr = fun (* expr -> expression*)
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e w)])
-      | `ExFun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a []))
+      | `Fun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a []))
       | `ExIfe (loc, e1, e2, e3) ->
           mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) (Some (expr e3)))
       | `Int (loc,s) ->
@@ -589,23 +589,23 @@ let rec expr = fun (* expr -> expression*)
           let nati = try Nativeint.of_string s with [
             Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
           ] in mkexp loc (Pexp_constant (Const_nativeint nati))
-      | `ExLab (loc,_,_) -> error loc "labeled expression not allowed here"
+      | `Label (loc,_,_) -> error loc "labeled expression not allowed here"
       | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (expr e))
-      | `ExLet (loc,rf,bi,e) ->
+      | `Let_in (loc,rf,bi,e) ->
           mkexp loc (Pexp_let (mkrf rf) (binding bi []) (expr e))
-      | `ExLmd (loc,i,me,e) -> mkexp loc (Pexp_letmodule (with_loc i loc) (module_expr me) (expr e))
-      | `ExMat (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a []))
-      | `ExNew (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
-    | `ExObj (loc,po,cfl) ->
+      | `Let_module (loc,i,me,e) -> mkexp loc (Pexp_letmodule (with_loc i loc) (module_expr me) (expr e))
+      | `Match (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a []))
+      | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
+    | `Obj (loc,po,cfl) ->
         let p =
           match po with
           [ {:patt||} -> {:patt@loc| _ |}
           | p -> p ] in
         let cil = class_str_item cfl [] in
         mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
-    | `ExOlb (loc,_,_) -> error loc "labeled expression not allowed here"
-    | `ExOvr (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
-    | `ExRec (loc,lel,eo) ->
+    | `Optional_label (loc,_,_) -> error loc "labeled expression not allowed here"
+    | `Override_instance (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
+    | `Record (loc,lel,eo) ->
         match lel with
         [ {:rec_binding||} -> error loc "empty record"
         | _ ->
@@ -614,7 +614,7 @@ let rec expr = fun (* expr -> expression*)
               [ {:expr||} -> None
               | e -> Some (expr e) ] in
             mkexp loc (Pexp_record (mklabexp lel []) eo) ]
-        | `ExSeq (_loc,e) ->
+        | `Sequence (_loc,e) ->
             let rec loop = fun
               [ [] -> expr {:expr| () |}
               | [e] -> expr e
@@ -622,18 +622,18 @@ let rec expr = fun (* expr -> expression*)
                   let _loc = FanLoc.merge (loc_of_expr e) _loc in
                   mkexp _loc (Pexp_sequence (expr e) (loop el)) ] in
             loop (list_of_expr e [])
-        | `ExSnd (loc,e,s) -> mkexp loc (Pexp_send (expr e) s)
-        | `ExSte (loc, e1, e2) ->
+        | `Send (loc,e,s) -> mkexp loc (Pexp_send (expr e) s)
+        | `String_dot (loc, e1, e2) ->
             mkexp loc
               (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "String" "get")))
                  [("", expr e1); ("", expr e2)])
         | `Str (loc,s) ->
             mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
-        | `ExTry (loc,e,a) -> mkexp loc (Pexp_try (expr e) (match_case a []))
+        | `Try (loc,e,a) -> mkexp loc (Pexp_try (expr e) (match_case a []))
         | {:expr@loc| ($e1, $e2) |} ->
             mkexp loc (Pexp_tuple (List.map expr (list_of_expr e1 (list_of_expr e2 []))))
         | {:expr@loc| ($tup:_) |} -> error loc "singleton tuple"
-        | `ExTyc (loc,e,t) -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
+        | `Constraint_exp (loc,e,t) -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
         | {:expr@loc| () |} ->
             mkexp loc (Pexp_construct (lident_with_loc "()" loc) None true)
 
@@ -645,8 +645,8 @@ let rec expr = fun (* expr -> expression*)
         | {:expr@loc| $uid:s |} ->
             mkexp loc (Pexp_construct (lident_with_loc  s loc) None true)
         | `ExVrn (loc,s) -> mkexp loc (Pexp_variant  s None)
-        | `ExWhi (loc, e1, el) ->
-            let e2 = `ExSeq loc el in
+        | `While (loc, e1, el) ->
+            let e2 = `Sequence loc el in
             mkexp loc (Pexp_while (expr e1) (expr e2))
         | {:expr@loc| let open $i in $e |} ->
             mkexp loc (Pexp_open (long_uident i) (expr e))
@@ -655,7 +655,7 @@ let rec expr = fun (* expr -> expression*)
                                         Some (mktyp loc (Ptyp_package (package_type pt))), None))
         | {:expr@loc| (module $me) |} ->
             mkexp loc (Pexp_pack (module_expr me))
-        | `ExFUN (loc,i,e) ->
+        | `Local_type_fun (loc,i,e) ->
             mkexp loc (Pexp_newtype i (expr e))
         | {:expr@loc| $_,$_ |} -> error loc "expr, expr: not allowed here"
         | {:expr@loc| $_;$_ |} ->
@@ -668,8 +668,8 @@ and expr_of_lab _loc lab = fun (* loc -> string -> expr -> expression*)
   [ {:expr||} -> expr {:expr| $lid:lab |}
   | e -> expr e ]
 and label_expr = fun (* expr -> label * expression *)
-  [ `ExLab (loc,lab,eo) -> (lab, expr_of_lab loc lab eo)
-  | `ExOlb (loc,lab,eo) -> ("?" ^ lab, expr_of_lab loc lab eo)
+  [ `Label (loc,lab,eo) -> (lab, expr_of_lab loc lab eo)
+  | `Optional_label (loc,lab,eo) -> ("?" ^ lab, expr_of_lab loc lab eo)
   | e -> ("", expr e) ]
 and binding x acc =  match x with (* binding -> (pattern * expression) list ->  (pattern * expression) list *)
   [ {:binding| $x and $y |} ->

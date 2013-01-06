@@ -30,7 +30,7 @@ let generate_fibs =
                       (`ExApp
                          (_loc, (`ExId (_loc, (`Uid (_loc, "FIB")))),
                            (`Int (_loc, (string_of_int i))))))))) in
-      `ExSeq (_loc, res)
+      `Sequence (_loc, res)
   | e -> e
 let _ = register_macro ("GFIB", generate_fibs)
 let macro_expander =

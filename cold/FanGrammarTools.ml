@@ -91,7 +91,8 @@ let make_ctyp_patt styp tvar patt =
 let make_ctyp_expr styp tvar expr =
   match make_ctyp styp tvar with
   | None  -> expr
-  | Some t -> let _loc = FanAst.loc_of_expr expr in `ExTyc (_loc, expr, t)
+  | Some t ->
+      let _loc = FanAst.loc_of_expr expr in `Constraint_exp (_loc, expr, t)
 let rec make_expr entry tvar =
   function
   | `TXmeta (_loc,n,tl,e,t) ->
@@ -150,7 +151,7 @@ let rec make_expr entry tvar =
                                  (_loc,
                                    (`IdAcc
                                       (_loc, (gm ()), (`Lid (_loc, "obj")))))),
-                              (`ExTyc
+                              (`Constraint_exp
                                  (_loc, (n.expr),
                                    (`TyApp
                                       (_loc,
@@ -172,7 +173,7 @@ let rec make_expr entry tvar =
                       (`ExId
                          (_loc,
                            (`IdAcc (_loc, (gm ()), (`Lid (_loc, "obj")))))),
-                      (`ExTyc
+                      (`Constraint_exp
                          (_loc, (n.expr),
                            (`TyApp
                               (_loc,
@@ -235,12 +236,12 @@ let text_of_action _loc psl rtvar act tvar =
                        (`PaCom (_loc, p, op)))))
          | _ -> tok_match_pl) None psl in
   let e =
-    let e1 = `ExTyc (_loc, act, (`TyQuo (_loc, rtvar))) in
+    let e1 = `Constraint_exp (_loc, act, (`TyQuo (_loc, rtvar))) in
     let e2 =
       match tok_match_pl with
       | None  -> e1
       | Some (`ExCom (_loc,t1,t2),`PaCom (_,p1,p2)) ->
-          `ExMat
+          `Match
             (_loc, (`ExTup (_loc, (`ExCom (_loc, t1, t2)))),
               (`McOr
                  (_loc,
@@ -250,13 +251,13 @@ let text_of_action _loc psl rtvar act tvar =
                    (`McArr
                       (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc))))))
       | Some (tok,match_) ->
-          `ExMat
+          `Match
             (_loc, tok,
               (`McOr
                  (_loc, (`McArr (_loc, match_, (`ExNil _loc), e1)),
                    (`McArr
                       (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc)))))) in
-    `ExFun
+    `Fun
       (_loc,
         (`McArr
            (_loc,
@@ -272,19 +273,18 @@ let text_of_action _loc psl rtvar act tvar =
       (fun i  txt  s  ->
          match s.pattern with
          | None |Some (`PaAny _) ->
-             `ExFun
-               (_loc, (`McArr (_loc, (`PaAny _loc), (`ExNil _loc), txt)))
+             `Fun (_loc, (`McArr (_loc, (`PaAny _loc), (`ExNil _loc), txt)))
          | Some (`PaAli (_loc,`PaApp (_,_,`PaTup (_,`PaAny _)),p)) ->
              let p = make_ctyp_patt s.styp tvar p in
-             `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))
+             `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))
          | Some p when FanAst.is_irrefut_patt p ->
              let p = make_ctyp_patt s.styp tvar p in
-             `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))
+             `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))
          | Some _ ->
              let p =
                make_ctyp_patt s.styp tvar
                  (`PaId (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))))) in
-             `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))) e psl in
+             `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))) e psl in
   let txt =
     if meta_action.contents
     then
@@ -322,7 +322,7 @@ let text_of_entry _loc e =
   let ent =
     let x = e.name in
     let _loc = (e.name).loc in
-    `ExTyc
+    `Constraint_exp
       (_loc, (x.expr),
         (`TyApp
            (_loc,
@@ -373,7 +373,7 @@ let let_in_of_extend _loc gram gl default =
     | { expr = `ExId (_,`Lid (_,i)); tvar = x; loc = _loc } ->
         `BiEq
           (_loc, (`PaId (_loc, (`Lid (_loc, i)))),
-            (`ExTyc
+            (`Constraint_exp
                (_loc,
                  (`ExApp
                     (_loc,
@@ -396,13 +396,13 @@ let let_in_of_extend _loc gram gl default =
                (fun name  acc  ->
                   `BiAnd (_loc, acc, (local_binding_of_name name))) xs
                (local_binding_of_name x) in
-           `ExLet
+           `Let_in
              (_loc, (`ReNil _loc),
                (`BiEq
                   (_loc,
                     (`PaId (_loc, (`Lid (_loc, "grammar_entry_create")))),
                     entry_mk)),
-               (`ExLet (_loc, (`ReNil _loc), locals, default))))
+               (`Let_in (_loc, (`ReNil _loc), locals, default))))
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el =
@@ -421,7 +421,7 @@ let text_of_functorial_extend _loc gram locals el =
     | [] -> `ExId (_loc, (`Uid (_loc, "()")))
     | e::[] -> e
     | e::el ->
-        `ExSeq
+        `Sequence
           (_loc,
             (List.fold_left (fun acc  x  -> `ExSem (_loc, acc, x)) e el)) in
   let_in_of_extend _loc gram locals args
@@ -432,13 +432,13 @@ let mk_tok _loc ?restrict  ~pattern  styp =
       let match_fun =
         if FanAst.is_irrefut_patt no_variable
         then
-          `ExFun
+          `Fun
             (_loc,
               (`McArr
                  (_loc, no_variable, (`ExNil _loc),
                    (`ExId (_loc, (`Lid (_loc, "true")))))))
         else
-          `ExFun
+          `Fun
             (_loc,
               (`McOr
                  (_loc,
@@ -454,7 +454,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
   | Some restrict ->
       let p' = FanAst.wildcarder#patt pattern in
       let match_fun =
-        `ExFun
+        `Fun
           (_loc,
             (`McOr
                (_loc,

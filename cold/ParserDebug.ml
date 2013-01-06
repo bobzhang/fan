@@ -71,7 +71,7 @@ let apply () =
                         | (Some e,false ) -> e
                         | (None ,_) -> mk_debug _loc m fmt section args
                         | (Some e,_) ->
-                            `ExLet
+                            `Let_in
                               (_loc, (`ReNil _loc),
                                 (`BiEq
                                    (_loc,

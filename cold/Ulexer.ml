@@ -46,18 +46,19 @@ let debug = ref false
 let opt_char_len = function | Some _ -> 1 | None  -> 0
 let print_opt_char fmt =
   function | Some c -> fprintf fmt "Some %c" c | None  -> fprintf fmt "None"
-module Stack = struct
-  include Stack
-  let push v stk =
-    if debug.contents
-    then Format.eprintf "Push %a@." print_opt_char v
-    else ();
-    push v stk
-  let pop stk =
-    if debug.contents
-    then Format.eprintf "Pop %a@." print_opt_char (top stk)
-    else ();
-    pop stk
+module Stack =
+  struct
+    include Stack
+    let push v stk =
+      if debug.contents
+      then Format.eprintf "Push %a@." print_opt_char v
+      else ();
+      push v stk
+    let pop stk =
+      if debug.contents
+      then Format.eprintf "Pop %a@." print_opt_char (top stk)
+      else ();
+      pop stk
   end
 let opt_char: char option Stack.t = Stack.create ()
 let turn_on_quotation_debug () = debug := true

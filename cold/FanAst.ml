@@ -475,24 +475,23 @@ class map =
           `ExAss
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#expr a2)))) a0)
-      | `Chr a0 ->
-          `Chr (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `ExCoe a0 ->
           `ExCoe
             (((fun (a0,a1,a2,a3)  ->
                  ((self#loc a0), (self#expr a1), (self#ctyp a2),
                    (self#ctyp a3)))) a0)
-      | `ExFlo a0 ->
-          `ExFlo (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `ExFor a0 ->
-          `ExFor
+      | `Flo a0 ->
+          `Flo (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Chr a0 ->
+          `Chr (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `For_loop a0 ->
+          `For_loop
             (((fun (a0,a1,a2,a3,a4,a5)  ->
                  ((self#loc a0), (self#string a1), (self#expr a2),
                    (self#expr a3), (self#direction_flag a4), (self#expr a5))))
                a0)
-      | `ExFun a0 ->
-          `ExFun
-            (((fun (a0,a1)  -> ((self#loc a0), (self#match_case a1)))) a0)
+      | `Fun a0 ->
+          `Fun (((fun (a0,a1)  -> ((self#loc a0), (self#match_case a1)))) a0)
       | `ExIfe a0 ->
           `ExIfe
             (((fun (a0,a1,a2,a3)  ->
@@ -507,58 +506,58 @@ class map =
       | `NativeInt a0 ->
           `NativeInt
             (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `ExLab a0 ->
-          `ExLab
+      | `Label a0 ->
+          `Label
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#expr a2)))) a0)
       | `Lazy a0 ->
           `Lazy (((fun (a0,a1)  -> ((self#loc a0), (self#expr a1)))) a0)
-      | `ExLet a0 ->
-          `ExLet
+      | `Let_in a0 ->
+          `Let_in
             (((fun (a0,a1,a2,a3)  ->
                  ((self#loc a0), (self#rec_flag a1), (self#binding a2),
                    (self#expr a3)))) a0)
-      | `ExLmd a0 ->
-          `ExLmd
+      | `Let_module a0 ->
+          `Let_module
             (((fun (a0,a1,a2,a3)  ->
                  ((self#loc a0), (self#string a1), (self#module_expr a2),
                    (self#expr a3)))) a0)
-      | `ExMat a0 ->
-          `ExMat
+      | `Match a0 ->
+          `Match
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#match_case a2)))) a0)
-      | `ExNew a0 ->
-          `ExNew (((fun (a0,a1)  -> ((self#loc a0), (self#ident a1)))) a0)
-      | `ExObj a0 ->
-          `ExObj
+      | `New a0 ->
+          `New (((fun (a0,a1)  -> ((self#loc a0), (self#ident a1)))) a0)
+      | `Obj a0 ->
+          `Obj
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#patt a1), (self#class_str_item a2))))
                a0)
-      | `ExOlb a0 ->
-          `ExOlb
+      | `Optional_label a0 ->
+          `Optional_label
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#expr a2)))) a0)
-      | `ExOvr a0 ->
-          `ExOvr
+      | `Override_instance a0 ->
+          `Override_instance
             (((fun (a0,a1)  -> ((self#loc a0), (self#rec_binding a1)))) a0)
-      | `ExRec a0 ->
-          `ExRec
+      | `Record a0 ->
+          `Record
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#rec_binding a1), (self#expr a2)))) a0)
-      | `ExSeq a0 ->
-          `ExSeq (((fun (a0,a1)  -> ((self#loc a0), (self#expr a1)))) a0)
-      | `ExSnd a0 ->
-          `ExSnd
+      | `Sequence a0 ->
+          `Sequence (((fun (a0,a1)  -> ((self#loc a0), (self#expr a1)))) a0)
+      | `Send a0 ->
+          `Send
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#string a2)))) a0)
-      | `ExSte a0 ->
-          `ExSte
+      | `String_dot a0 ->
+          `String_dot
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#expr a2)))) a0)
       | `Str a0 ->
           `Str (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `ExTry a0 ->
-          `ExTry
+      | `Try a0 ->
+          `Try
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#match_case a2)))) a0)
       | `ExTup a0 ->
@@ -567,26 +566,26 @@ class map =
           `ExCom
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#expr a2)))) a0)
-      | `ExTyc a0 ->
-          `ExTyc
+      | `Constraint_exp a0 ->
+          `Constraint_exp
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#ctyp a2)))) a0)
       | `ExVrn a0 ->
           `ExVrn (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `ExWhi a0 ->
-          `ExWhi
+      | `While a0 ->
+          `While
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#expr a1), (self#expr a2)))) a0)
-      | `ExOpI a0 ->
-          `ExOpI
+      | `Let_open a0 ->
+          `Let_open
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#ident a1), (self#expr a2)))) a0)
-      | `ExFUN a0 ->
-          `ExFUN
+      | `Local_type_fun a0 ->
+          `Local_type_fun
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#expr a2)))) a0)
-      | `ExPkg a0 ->
-          `ExPkg
+      | `Package_expr a0 ->
+          `Package_expr
             (((fun (a0,a1)  -> ((self#loc a0), (self#module_expr a1)))) a0)
     method patt : patt -> patt=
       function
@@ -625,8 +624,8 @@ class map =
       | `NativeInt a0 ->
           `NativeInt
             (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
-      | `PaFlo a0 ->
-          `PaFlo (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
+      | `Flo a0 ->
+          `Flo (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
       | `PaLab a0 ->
           `PaLab
             (((fun (a0,a1,a2)  ->
@@ -1459,29 +1458,29 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#expr a2) a0
-        | `Chr a0 ->
-            Format.fprintf fmt "@[<1>(`Chr@ %a)@]"
-              (fun fmt  (a0,a1)  ->
-                 Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
-                   self#string a1) a0
         | `ExCoe a0 ->
             Format.fprintf fmt "@[<1>(`ExCoe@ %a)@]"
               (fun fmt  (a0,a1,a2,a3)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#ctyp a2 self#ctyp a3) a0
-        | `ExFlo a0 ->
-            Format.fprintf fmt "@[<1>(`ExFlo@ %a)@]"
+        | `Flo a0 ->
+            Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `ExFor a0 ->
-            Format.fprintf fmt "@[<1>(`ExFor@ %a)@]"
+        | `Chr a0 ->
+            Format.fprintf fmt "@[<1>(`Chr@ %a)@]"
+              (fun fmt  (a0,a1)  ->
+                 Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
+                   self#string a1) a0
+        | `For_loop a0 ->
+            Format.fprintf fmt "@[<1>(`For_loop@ %a)@]"
               (fun fmt  (a0,a1,a2,a3,a4,a5)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a,@,%a,@,%a)@]"
                    self#loc a0 self#string a1 self#expr a2 self#expr a3
                    self#direction_flag a4 self#expr a5) a0
-        | `ExFun a0 ->
-            Format.fprintf fmt "@[<1>(`ExFun@ %a)@]"
+        | `Fun a0 ->
+            Format.fprintf fmt "@[<1>(`Fun@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#match_case a1) a0
@@ -1510,8 +1509,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `ExLab a0 ->
-            Format.fprintf fmt "@[<1>(`ExLab@ %a)@]"
+        | `Label a0 ->
+            Format.fprintf fmt "@[<1>(`Label@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#expr a2) a0
@@ -1520,58 +1519,58 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#expr
                    a1) a0
-        | `ExLet a0 ->
-            Format.fprintf fmt "@[<1>(`ExLet@ %a)@]"
+        | `Let_in a0 ->
+            Format.fprintf fmt "@[<1>(`Let_in@ %a)@]"
               (fun fmt  (a0,a1,a2,a3)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" self#loc a0
                    self#rec_flag a1 self#binding a2 self#expr a3) a0
-        | `ExLmd a0 ->
-            Format.fprintf fmt "@[<1>(`ExLmd@ %a)@]"
+        | `Let_module a0 ->
+            Format.fprintf fmt "@[<1>(`Let_module@ %a)@]"
               (fun fmt  (a0,a1,a2,a3)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#module_expr a2 self#expr a3) a0
-        | `ExMat a0 ->
-            Format.fprintf fmt "@[<1>(`ExMat@ %a)@]"
+        | `Match a0 ->
+            Format.fprintf fmt "@[<1>(`Match@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#match_case a2) a0
-        | `ExNew a0 ->
-            Format.fprintf fmt "@[<1>(`ExNew@ %a)@]"
+        | `New a0 ->
+            Format.fprintf fmt "@[<1>(`New@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#ident
                    a1) a0
-        | `ExObj a0 ->
-            Format.fprintf fmt "@[<1>(`ExObj@ %a)@]"
+        | `Obj a0 ->
+            Format.fprintf fmt "@[<1>(`Obj@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#patt a1 self#class_str_item a2) a0
-        | `ExOlb a0 ->
-            Format.fprintf fmt "@[<1>(`ExOlb@ %a)@]"
+        | `Optional_label a0 ->
+            Format.fprintf fmt "@[<1>(`Optional_label@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#expr a2) a0
-        | `ExOvr a0 ->
-            Format.fprintf fmt "@[<1>(`ExOvr@ %a)@]"
+        | `Override_instance a0 ->
+            Format.fprintf fmt "@[<1>(`Override_instance@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#rec_binding a1) a0
-        | `ExRec a0 ->
-            Format.fprintf fmt "@[<1>(`ExRec@ %a)@]"
+        | `Record a0 ->
+            Format.fprintf fmt "@[<1>(`Record@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#rec_binding a1 self#expr a2) a0
-        | `ExSeq a0 ->
-            Format.fprintf fmt "@[<1>(`ExSeq@ %a)@]"
+        | `Sequence a0 ->
+            Format.fprintf fmt "@[<1>(`Sequence@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#expr
                    a1) a0
-        | `ExSnd a0 ->
-            Format.fprintf fmt "@[<1>(`ExSnd@ %a)@]"
+        | `Send a0 ->
+            Format.fprintf fmt "@[<1>(`Send@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#string a2) a0
-        | `ExSte a0 ->
-            Format.fprintf fmt "@[<1>(`ExSte@ %a)@]"
+        | `String_dot a0 ->
+            Format.fprintf fmt "@[<1>(`String_dot@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#expr a2) a0
@@ -1580,8 +1579,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `ExTry a0 ->
-            Format.fprintf fmt "@[<1>(`ExTry@ %a)@]"
+        | `Try a0 ->
+            Format.fprintf fmt "@[<1>(`Try@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#match_case a2) a0
@@ -1595,8 +1594,8 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#expr a2) a0
-        | `ExTyc a0 ->
-            Format.fprintf fmt "@[<1>(`ExTyc@ %a)@]"
+        | `Constraint_exp a0 ->
+            Format.fprintf fmt "@[<1>(`Constraint_exp@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#ctyp a2) a0
@@ -1605,23 +1604,23 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `ExWhi a0 ->
-            Format.fprintf fmt "@[<1>(`ExWhi@ %a)@]"
+        | `While a0 ->
+            Format.fprintf fmt "@[<1>(`While@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#expr a1 self#expr a2) a0
-        | `ExOpI a0 ->
-            Format.fprintf fmt "@[<1>(`ExOpI@ %a)@]"
+        | `Let_open a0 ->
+            Format.fprintf fmt "@[<1>(`Let_open@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#ident a1 self#expr a2) a0
-        | `ExFUN a0 ->
-            Format.fprintf fmt "@[<1>(`ExFUN@ %a)@]"
+        | `Local_type_fun a0 ->
+            Format.fprintf fmt "@[<1>(`Local_type_fun@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#expr a2) a0
-        | `ExPkg a0 ->
-            Format.fprintf fmt "@[<1>(`ExPkg@ %a)@]"
+        | `Package_expr a0 ->
+            Format.fprintf fmt "@[<1>(`Package_expr@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#module_expr a1) a0
@@ -1690,8 +1689,8 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
-        | `PaFlo a0 ->
-            Format.fprintf fmt "@[<1>(`PaFlo@ %a)@]"
+        | `Flo a0 ->
+            Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
@@ -2503,23 +2502,23 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#expr a2)) a0
-      | `Chr a0 ->
-          ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `ExCoe a0 ->
           ((fun (a0,a1,a2,a3)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in
               let self = self#ctyp a2 in self#ctyp a3)) a0
-      | `ExFlo a0 ->
+      | `Flo a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `ExFor a0 ->
+      | `Chr a0 ->
+          ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
+      | `For_loop a0 ->
           ((fun (a0,a1,a2,a3,a4,a5)  ->
               let self = self#loc a0 in
               let self = self#string a1 in
               let self = self#expr a2 in
               let self = self#expr a3 in
               let self = self#direction_flag a4 in self#expr a5)) a0
-      | `ExFun a0 ->
+      | `Fun a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#match_case a1)) a0
       | `ExIfe a0 ->
           ((fun (a0,a1,a2,a3)  ->
@@ -2534,56 +2533,56 @@ class fold =
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `NativeInt a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `ExLab a0 ->
+      | `Label a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#expr a2)) a0
       | `Lazy a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#expr a1)) a0
-      | `ExLet a0 ->
+      | `Let_in a0 ->
           ((fun (a0,a1,a2,a3)  ->
               let self = self#loc a0 in
               let self = self#rec_flag a1 in
               let self = self#binding a2 in self#expr a3)) a0
-      | `ExLmd a0 ->
+      | `Let_module a0 ->
           ((fun (a0,a1,a2,a3)  ->
               let self = self#loc a0 in
               let self = self#string a1 in
               let self = self#module_expr a2 in self#expr a3)) a0
-      | `ExMat a0 ->
+      | `Match a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#match_case a2)) a0
-      | `ExNew a0 ->
+      | `New a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#ident a1)) a0
-      | `ExObj a0 ->
+      | `Obj a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#patt a1 in self#class_str_item a2)) a0
-      | `ExOlb a0 ->
+      | `Optional_label a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#expr a2)) a0
-      | `ExOvr a0 ->
+      | `Override_instance a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#rec_binding a1))
             a0
-      | `ExRec a0 ->
+      | `Record a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#rec_binding a1 in self#expr a2)) a0
-      | `ExSeq a0 ->
+      | `Sequence a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#expr a1)) a0
-      | `ExSnd a0 ->
+      | `Send a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#string a2)) a0
-      | `ExSte a0 ->
+      | `String_dot a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#expr a2)) a0
       | `Str a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `ExTry a0 ->
+      | `Try a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#match_case a2)) a0
@@ -2593,25 +2592,25 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#expr a2)) a0
-      | `ExTyc a0 ->
+      | `Constraint_exp a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#ctyp a2)) a0
       | `ExVrn a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `ExWhi a0 ->
+      | `While a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#expr a1 in self#expr a2)) a0
-      | `ExOpI a0 ->
+      | `Let_open a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#ident a1 in self#expr a2)) a0
-      | `ExFUN a0 ->
+      | `Local_type_fun a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#expr a2)) a0
-      | `ExPkg a0 ->
+      | `Package_expr a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#module_expr a1))
             a0
     method patt : patt -> 'self_type=
@@ -2650,7 +2649,7 @@ class fold =
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `NativeInt a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
-      | `PaFlo a0 ->
+      | `Flo a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `PaLab a0 ->
           ((fun (a0,a1,a2)  ->
@@ -3490,30 +3489,30 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_expr a2) a0
-    | `Chr a0 ->
-        Format.fprintf fmt "@[<1>(`Chr@ %a)@]"
-          (fun fmt  (a0,a1)  ->
-             Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
-               pp_print_string a1) a0
     | `ExCoe a0 ->
         Format.fprintf fmt "@[<1>(`ExCoe@ %a)@]"
           (fun fmt  (a0,a1,a2,a3)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_ctyp a2 pp_print_ctyp a3) a0
-    | `ExFlo a0 ->
-        Format.fprintf fmt "@[<1>(`ExFlo@ %a)@]"
+    | `Flo a0 ->
+        Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `ExFor a0 ->
-        Format.fprintf fmt "@[<1>(`ExFor@ %a)@]"
+    | `Chr a0 ->
+        Format.fprintf fmt "@[<1>(`Chr@ %a)@]"
+          (fun fmt  (a0,a1)  ->
+             Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
+               pp_print_string a1) a0
+    | `For_loop a0 ->
+        Format.fprintf fmt "@[<1>(`For_loop@ %a)@]"
           (fun fmt  (a0,a1,a2,a3,a4,a5)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a,@,%a,@,%a)@]"
                pp_print_loc a0 pp_print_string a1 pp_print_expr a2
                pp_print_expr a3 pp_print_direction_flag a4 pp_print_expr a5)
           a0
-    | `ExFun a0 ->
-        Format.fprintf fmt "@[<1>(`ExFun@ %a)@]"
+    | `Fun a0 ->
+        Format.fprintf fmt "@[<1>(`Fun@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_match_case a1) a0
@@ -3542,8 +3541,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `ExLab a0 ->
-        Format.fprintf fmt "@[<1>(`ExLab@ %a)@]"
+    | `Label a0 ->
+        Format.fprintf fmt "@[<1>(`Label@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_expr a2) a0
@@ -3552,59 +3551,59 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1) a0
-    | `ExLet a0 ->
-        Format.fprintf fmt "@[<1>(`ExLet@ %a)@]"
+    | `Let_in a0 ->
+        Format.fprintf fmt "@[<1>(`Let_in@ %a)@]"
           (fun fmt  (a0,a1,a2,a3)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_rec_flag a1 pp_print_binding a2 pp_print_expr a3) a0
-    | `ExLmd a0 ->
-        Format.fprintf fmt "@[<1>(`ExLmd@ %a)@]"
+    | `Let_module a0 ->
+        Format.fprintf fmt "@[<1>(`Let_module@ %a)@]"
           (fun fmt  (a0,a1,a2,a3)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_module_expr a2 pp_print_expr a3)
           a0
-    | `ExMat a0 ->
-        Format.fprintf fmt "@[<1>(`ExMat@ %a)@]"
+    | `Match a0 ->
+        Format.fprintf fmt "@[<1>(`Match@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_match_case a2) a0
-    | `ExNew a0 ->
-        Format.fprintf fmt "@[<1>(`ExNew@ %a)@]"
+    | `New a0 ->
+        Format.fprintf fmt "@[<1>(`New@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_ident a1) a0
-    | `ExObj a0 ->
-        Format.fprintf fmt "@[<1>(`ExObj@ %a)@]"
+    | `Obj a0 ->
+        Format.fprintf fmt "@[<1>(`Obj@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_patt a1 pp_print_class_str_item a2) a0
-    | `ExOlb a0 ->
-        Format.fprintf fmt "@[<1>(`ExOlb@ %a)@]"
+    | `Optional_label a0 ->
+        Format.fprintf fmt "@[<1>(`Optional_label@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_expr a2) a0
-    | `ExOvr a0 ->
-        Format.fprintf fmt "@[<1>(`ExOvr@ %a)@]"
+    | `Override_instance a0 ->
+        Format.fprintf fmt "@[<1>(`Override_instance@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_rec_binding a1) a0
-    | `ExRec a0 ->
-        Format.fprintf fmt "@[<1>(`ExRec@ %a)@]"
+    | `Record a0 ->
+        Format.fprintf fmt "@[<1>(`Record@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_rec_binding a1 pp_print_expr a2) a0
-    | `ExSeq a0 ->
-        Format.fprintf fmt "@[<1>(`ExSeq@ %a)@]"
+    | `Sequence a0 ->
+        Format.fprintf fmt "@[<1>(`Sequence@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1) a0
-    | `ExSnd a0 ->
-        Format.fprintf fmt "@[<1>(`ExSnd@ %a)@]"
+    | `Send a0 ->
+        Format.fprintf fmt "@[<1>(`Send@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_string a2) a0
-    | `ExSte a0 ->
-        Format.fprintf fmt "@[<1>(`ExSte@ %a)@]"
+    | `String_dot a0 ->
+        Format.fprintf fmt "@[<1>(`String_dot@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_expr a2) a0
@@ -3613,8 +3612,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `ExTry a0 ->
-        Format.fprintf fmt "@[<1>(`ExTry@ %a)@]"
+    | `Try a0 ->
+        Format.fprintf fmt "@[<1>(`Try@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_match_case a2) a0
@@ -3628,8 +3627,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_expr a2) a0
-    | `ExTyc a0 ->
-        Format.fprintf fmt "@[<1>(`ExTyc@ %a)@]"
+    | `Constraint_exp a0 ->
+        Format.fprintf fmt "@[<1>(`Constraint_exp@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_ctyp a2) a0
@@ -3638,23 +3637,23 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `ExWhi a0 ->
-        Format.fprintf fmt "@[<1>(`ExWhi@ %a)@]"
+    | `While a0 ->
+        Format.fprintf fmt "@[<1>(`While@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1 pp_print_expr a2) a0
-    | `ExOpI a0 ->
-        Format.fprintf fmt "@[<1>(`ExOpI@ %a)@]"
+    | `Let_open a0 ->
+        Format.fprintf fmt "@[<1>(`Let_open@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_ident a1 pp_print_expr a2) a0
-    | `ExFUN a0 ->
-        Format.fprintf fmt "@[<1>(`ExFUN@ %a)@]"
+    | `Local_type_fun a0 ->
+        Format.fprintf fmt "@[<1>(`Local_type_fun@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_expr a2) a0
-    | `ExPkg a0 ->
-        Format.fprintf fmt "@[<1>(`ExPkg@ %a)@]"
+    | `Package_expr a0 ->
+        Format.fprintf fmt "@[<1>(`Package_expr@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_module_expr a1) a0
@@ -3723,8 +3722,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-    | `PaFlo a0 ->
-        Format.fprintf fmt "@[<1>(`PaFlo@ %a)@]"
+    | `Flo a0 ->
+        Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
@@ -4123,4507 +4122,4603 @@ and pp_print_rec_flag: 'fmt -> rec_flag -> 'result =
                pp_print_string a1) a0
 and pp_print_loc: 'fmt -> loc -> 'result =
   fun fmt  a0  -> FanLoc.pp_print_t fmt a0
-module MExpr = struct
-  let meta_int _loc i = `Int (_loc, (string_of_int i))
-  let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
-  let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
-  let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
-  let meta_float _loc i = `ExFlo (_loc, (FanUtil.float_repres i))
-  let meta_string _loc i = `Str (_loc, (safe_string_escaped i))
-  let meta_char _loc i = `Chr (_loc, (Char.escaped i))
-  let meta_unit _loc _ = `ExId (_loc, (`Uid (_loc, "()")))
-  let meta_bool _loc =
-    function
-    | true  -> `ExId (_loc, (`Lid (_loc, "true")))
-    | false  -> `ExId (_loc, (`Lid (_loc, "false")))
-  let meta_ref mf_a _loc i =
-    `ExRec
-      (_loc,
-        (`RbEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))),
-        (`ExNil _loc))
-  let mklist loc =
-    let rec loop top =
+module MExpr =
+  struct
+    let meta_int _loc i = `Int (_loc, (string_of_int i))
+    let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
+    let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
+    let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
+    let meta_float _loc i = `Flo (_loc, (FanUtil.float_repres i))
+    let meta_string _loc i = `Str (_loc, (safe_string_escaped i))
+    let meta_char _loc i = `Chr (_loc, (Char.escaped i))
+    let meta_unit _loc _ = `ExId (_loc, (`Uid (_loc, "()")))
+    let meta_bool _loc =
       function
-      | [] -> `ExId (loc, (`Uid (loc, "[]")))
-      | e1::el ->
-          let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
-          `ExApp
-            (_loc, (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e1)),
-              (loop false el)) in
-    loop true
-  let mkarray loc arr =
-    let rec loop top =
+      | true  -> `ExId (_loc, (`Lid (_loc, "true")))
+      | false  -> `ExId (_loc, (`Lid (_loc, "false")))
+    let meta_ref mf_a _loc i =
+      `Record
+        (_loc,
+          (`RbEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))),
+          (`ExNil _loc))
+    let mklist loc =
+      let rec loop top =
+        function
+        | [] -> `ExId (loc, (`Uid (loc, "[]")))
+        | e1::el ->
+            let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+            `ExApp
+              (_loc,
+                (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e1)),
+                (loop false el)) in
+      loop true
+    let mkarray loc arr =
+      let rec loop top =
+        function
+        | [] -> `ExId (loc, (`Uid (loc, "[]")))
+        | e1::el ->
+            let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+            `ExArr (_loc, (`ExSem (_loc, e1, (loop false el)))) in
+      let items = arr |> Array.to_list in loop true items
+    let meta_list mf_a _loc ls =
+      mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
+    let meta_array mf_a _loc ls =
+      mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
+    let meta_option mf_a _loc =
       function
-      | [] -> `ExId (loc, (`Uid (loc, "[]")))
-      | e1::el ->
-          let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
-          `ExArr (_loc, (`ExSem (_loc, e1, (loop false el)))) in
-    let items = arr |> Array.to_list in loop true items
-  let meta_list mf_a _loc ls =
-    mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
-  let meta_array mf_a _loc ls =
-    mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
-  let meta_option mf_a _loc =
-    function
-    | None  -> `ExId (_loc, (`Uid (_loc, "None")))
-    | Some x ->
-        `ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
-  let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
-    (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
-    invalid_arg "meta_arrow not implemented"
+      | None  -> `ExId (_loc, (`Uid (_loc, "None")))
+      | Some x ->
+          `ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
+    let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
+      (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
+      invalid_arg "meta_arrow not implemented"
   end
-module MPatt = struct
-  let meta_int _loc i = `Int (_loc, (string_of_int i))
-  let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
-  let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
-  let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
-  let meta_float _loc i = `PaFlo (_loc, (FanUtil.float_repres i))
-  let meta_string _loc i = `Str (_loc, (safe_string_escaped i))
-  let meta_char _loc i = `Chr (_loc, (Char.escaped i))
-  let meta_unit _loc _ = `PaId (_loc, (`Uid (_loc, "()")))
-  let meta_bool _loc =
-    function
-    | true  -> `PaId (_loc, (`Lid (_loc, "true")))
-    | false  -> `PaId (_loc, (`Lid (_loc, "false")))
-  let meta_ref mf_a _loc i =
-    `PaRec
-      (_loc,
-        (`PaEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
-  let mklist loc =
-    let rec loop top =
+module MPatt =
+  struct
+    let meta_int _loc i = `Int (_loc, (string_of_int i))
+    let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
+    let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
+    let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
+    let meta_float _loc i = `Flo (_loc, (FanUtil.float_repres i))
+    let meta_string _loc i = `Str (_loc, (safe_string_escaped i))
+    let meta_char _loc i = `Chr (_loc, (Char.escaped i))
+    let meta_unit _loc _ = `PaId (_loc, (`Uid (_loc, "()")))
+    let meta_bool _loc =
       function
-      | [] -> `PaId (loc, (`Uid (loc, "[]")))
-      | e1::el ->
-          let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
-          `PaApp
-            (_loc, (`PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "::")))), e1)),
-              (loop false el)) in
-    loop true
-  let mkarray loc arr =
-    let rec loop top =
+      | true  -> `PaId (_loc, (`Lid (_loc, "true")))
+      | false  -> `PaId (_loc, (`Lid (_loc, "false")))
+    let meta_ref mf_a _loc i =
+      `PaRec
+        (_loc,
+          (`PaEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
+    let mklist loc =
+      let rec loop top =
+        function
+        | [] -> `PaId (loc, (`Uid (loc, "[]")))
+        | e1::el ->
+            let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+            `PaApp
+              (_loc,
+                (`PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "::")))), e1)),
+                (loop false el)) in
+      loop true
+    let mkarray loc arr =
+      let rec loop top =
+        function
+        | [] -> `PaId (loc, (`Uid (loc, "[]")))
+        | e1::el ->
+            let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+            `PaArr (_loc, (`PaSem (_loc, e1, (loop false el)))) in
+      let items = arr |> Array.to_list in loop true items
+    let meta_list mf_a _loc ls =
+      mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
+    let meta_array mf_a _loc ls =
+      mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
+    let meta_option mf_a _loc =
       function
-      | [] -> `PaId (loc, (`Uid (loc, "[]")))
-      | e1::el ->
-          let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
-          `PaArr (_loc, (`PaSem (_loc, e1, (loop false el)))) in
-    let items = arr |> Array.to_list in loop true items
-  let meta_list mf_a _loc ls =
-    mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
-  let meta_array mf_a _loc ls =
-    mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
-  let meta_option mf_a _loc =
-    function
-    | None  -> `PaId (_loc, (`Uid (_loc, "None")))
-    | Some x ->
-        `PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
-  let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
-    (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
-    invalid_arg "meta_arrow not implemented"
+      | None  -> `PaId (_loc, (`Uid (_loc, "None")))
+      | Some x ->
+          `PaApp (_loc, (`PaId (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
+    let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
+      (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
+      invalid_arg "meta_arrow not implemented"
   end
 module Make(MetaLoc:META_LOC) =
   struct
-  module Expr = struct
-    open MExpr let meta_loc = MetaLoc.meta_loc_expr
-    let rec meta_class_str_item: 'loc -> class_str_item -> 'result =
-      fun _loc  ->
-        function
-        | `CrNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "CrNil")), (meta_loc _loc a0))
-        | `CrSem a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CrSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_str_item _loc a1),
-                                   (meta_class_str_item _loc a2)))))))) _loc
-                   a0))
-        | `CrCtr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CrCtr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `CrInh a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CrInh")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_override_flag _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_class_expr _loc a2),
-                                        (meta_string _loc a3)))))))))) _loc
-                   a0))
-        | `CrIni a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CrIni")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `CrMth a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CrMth")),
-                (((fun _loc  (a0,a1,a2,a3,a4,a5)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_override_flag _loc a2),
-                                        (`ExCom
-                                           (_loc,
-                                             (meta_private_flag _loc a3),
-                                             (`ExCom
-                                                (_loc, (meta_expr _loc a4),
-                                                  (meta_ctyp _loc a5))))))))))))))
-                   _loc a0))
-        | `CrVal a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CrVal")),
-                (((fun _loc  (a0,a1,a2,a3,a4)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_override_flag _loc a2),
-                                        (`ExCom
-                                           (_loc,
-                                             (meta_mutable_flag _loc a3),
-                                             (meta_expr _loc a4))))))))))))
-                   _loc a0))
-        | `CrVir a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CrVir")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_private_flag _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CrVvr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CrVvr")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_mutable_flag _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_class_expr: 'loc -> class_expr -> 'result =
-      fun _loc  ->
-        function
-        | `CeNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "CeNil")), (meta_loc _loc a0))
-        | `CeApp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CeApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `CeCon a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CeCon")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_virtual_flag _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_ident _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CeFun a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CeFun")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_class_expr _loc a2)))))))) _loc a0))
-        | `CeLet a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CeLet")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_rec_flag _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_binding _loc a2),
-                                        (meta_class_expr _loc a3))))))))))
-                   _loc a0))
-        | `CeStr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CeStr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_class_str_item _loc a2)))))))) _loc
-                   a0))
-        | `CeTyc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CeTyc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_expr _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `CeAnd a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CeAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_expr _loc a1),
-                                   (meta_class_expr _loc a2)))))))) _loc a0))
-        | `CeEq a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CeEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_expr _loc a1),
-                                   (meta_class_expr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
-      fun _loc  ->
-        function
-        | `CgNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "CgNil")), (meta_loc _loc a0))
-        | `CgCtr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CgCtr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `CgSem a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CgSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_sig_item _loc a1),
-                                   (meta_class_sig_item _loc a2)))))))) _loc
-                   a0))
-        | `CgInh a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CgInh")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_type _loc a1)))))) _loc a0))
-        | `CgMth a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CgMth")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_private_flag _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CgVal a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CgVal")),
-                (((fun _loc  (a0,a1,a2,a3,a4)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_mutable_flag _loc a2),
-                                        (`ExCom
-                                           (_loc,
-                                             (meta_virtual_flag _loc a3),
-                                             (meta_ctyp _loc a4))))))))))))
-                   _loc a0))
-        | `CgVir a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CgVir")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_private_flag _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_class_type: 'loc -> class_type -> 'result =
-      fun _loc  ->
-        function
-        | `CtNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "CtNil")), (meta_loc _loc a0))
-        | `CtCon a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CtCon")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_virtual_flag _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_ident _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CtFun a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CtFun")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `CtSig a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CtSig")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_class_sig_item _loc a2)))))))) _loc
-                   a0))
-        | `CtAnd a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CtAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_type _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `CtCol a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CtCol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_type _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `CtEq a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "CtEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_class_type _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_str_item: 'loc -> str_item -> 'result =
-      fun _loc  ->
-        function
-        | `StNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "StNil")), (meta_loc _loc a0))
-        | `StCls a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StCls")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_expr _loc a1)))))) _loc a0))
-        | `StClt a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StClt")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_type _loc a1)))))) _loc a0))
-        | `StSem a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_str_item _loc a1),
-                                   (meta_str_item _loc a2)))))))) _loc a0))
-        | `StDir a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StDir")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `StExc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StExc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_meta_option meta_ident _loc a2))))))))
-                   _loc a0))
-        | `StExp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StExp")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `StExt a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StExt")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_ctyp _loc a2),
-                                        (meta_meta_list meta_string _loc a3))))))))))
-                   _loc a0))
-        | `StInc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StInc")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_expr _loc a1)))))) _loc a0))
-        | `StMod a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StMod")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_expr _loc a2)))))))) _loc a0))
-        | `StRecMod a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StRecMod")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_binding _loc a1)))))) _loc a0))
-        | `StMty a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StMty")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `StOpn a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StOpn")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `StTyp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StTyp")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `StVal a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "StVal")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_rec_flag _loc a1),
-                                   (meta_binding _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_module_expr: 'loc -> module_expr -> 'result =
-      fun _loc  ->
-        function
-        | `MeNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "MeNil")), (meta_loc _loc a0))
-        | `MeId a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MeId")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `MeApp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MeApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_module_expr _loc a1),
-                                   (meta_module_expr _loc a2)))))))) _loc a0))
-        | `MeFun a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MeFun")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_module_type _loc a2),
-                                        (meta_module_expr _loc a3))))))))))
-                   _loc a0))
-        | `MeStr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MeStr")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_str_item _loc a1)))))) _loc a0))
-        | `MeTyc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MeTyc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_module_expr _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `MePkg a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MePkg")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_match_case: 'loc -> match_case -> 'result =
-      fun _loc  ->
-        function
-        | `McNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "McNil")), (meta_loc _loc a0))
-        | `McOr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "McOr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_match_case _loc a1),
-                                   (meta_match_case _loc a2)))))))) _loc a0))
-        | `McArr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "McArr")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_expr _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_module_binding: 'loc -> module_binding -> 'result =
-      fun _loc  ->
-        function
-        | `MbNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "MbNil")), (meta_loc _loc a0))
-        | `MbAnd a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MbAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_module_binding _loc a1),
-                                   (meta_module_binding _loc a2)))))))) _loc
-                   a0))
-        | `MbColEq a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MbColEq")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_module_type _loc a2),
-                                        (meta_module_expr _loc a3))))))))))
-                   _loc a0))
-        | `MbCol a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MbCol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_rec_binding: 'loc -> rec_binding -> 'result =
-      fun _loc  ->
-        function
-        | `RbNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "RbNil")), (meta_loc _loc a0))
-        | `RbSem a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "RbSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_rec_binding _loc a1),
-                                   (meta_rec_binding _loc a2)))))))) _loc a0))
-        | `RbEq a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "RbEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_binding: 'loc -> binding -> 'result =
-      fun _loc  ->
-        function
-        | `BiNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "BiNil")), (meta_loc _loc a0))
-        | `BiAnd a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "BiAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_binding _loc a1),
-                                   (meta_binding _loc a2)))))))) _loc a0))
-        | `BiEq a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "BiEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_with_constr: 'loc -> with_constr -> 'result =
-      fun _loc  ->
-        function
-        | `WcNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "WcNil")), (meta_loc _loc a0))
-        | `WcTyp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "WcTyp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `WcMod a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "WcMod")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_ident _loc a2)))))))) _loc a0))
-        | `WcTyS a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "WcTyS")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `WcMoS a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "WcMoS")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_ident _loc a2)))))))) _loc a0))
-        | `WcAnd a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "WcAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_with_constr _loc a1),
-                                   (meta_with_constr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_sig_item: 'loc -> sig_item -> 'result =
-      fun _loc  ->
-        function
-        | `SgNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "SgNil")), (meta_loc _loc a0))
-        | `SgCls a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgCls")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_type _loc a1)))))) _loc a0))
-        | `SgClt a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgClt")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_type _loc a1)))))) _loc a0))
-        | `SgSem a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_sig_item _loc a1),
-                                   (meta_sig_item _loc a2)))))))) _loc a0))
-        | `SgDir a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgDir")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `SgExc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgExc")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `SgExt a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgExt")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_ctyp _loc a2),
-                                        (meta_meta_list meta_string _loc a3))))))))))
-                   _loc a0))
-        | `SgInc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgInc")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_type _loc a1)))))) _loc a0))
-        | `SgMod a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgMod")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `SgRecMod a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgRecMod")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_binding _loc a1)))))) _loc a0))
-        | `SgMty a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgMty")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `SgOpn a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgOpn")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `SgTyp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgTyp")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `SgVal a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "SgVal")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_module_type: 'loc -> module_type -> 'result =
-      fun _loc  ->
-        function
-        | `MtNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "MtNil")), (meta_loc _loc a0))
-        | `MtId a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MtId")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `MtFun a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MtFun")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_module_type _loc a2),
-                                        (meta_module_type _loc a3))))))))))
-                   _loc a0))
-        | `MtQuo a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MtQuo")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `MtSig a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MtSig")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_sig_item _loc a1)))))) _loc a0))
-        | `MtWit a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MtWit")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_module_type _loc a1),
-                                   (meta_with_constr _loc a2)))))))) _loc a0))
-        | `MtOf a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "MtOf")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_expr _loc a1)))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_expr: 'loc -> expr -> 'result =
-      fun _loc  ->
-        function
-        | `ExNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "ExNil")), (meta_loc _loc a0))
-        | `ExId a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExId")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `ExAcc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExAcc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-        | `ExApp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExAre a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExAre")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExArr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExArr")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExSem a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExAsf a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "ExAsf")), (meta_loc _loc a0))
-        | `ExAsr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExAsr")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExAss a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExAss")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Chr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Chr")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExCoe a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExCoe")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_ctyp _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `ExFlo a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExFlo")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExFor a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExFor")),
-                (((fun _loc  (a0,a1,a2,a3,a4,a5)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_expr _loc a2),
-                                        (`ExCom
-                                           (_loc, (meta_expr _loc a3),
-                                             (`ExCom
-                                                (_loc,
-                                                  (meta_direction_flag _loc
-                                                     a4),
-                                                  (meta_expr _loc a5))))))))))))))
-                   _loc a0))
-        | `ExFun a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExFun")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_match_case _loc a1)))))) _loc a0))
-        | `ExIfe a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExIfe")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_expr _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `Int a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Int")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int32 a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Int32")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int64 a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Int64")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `NativeInt a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "NativeInt")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExLab a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExLab")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Lazy a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Lazy")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExLet a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExLet")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_rec_flag _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_binding _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `ExLmd a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExLmd")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_module_expr _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `ExMat a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExMat")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_match_case _loc a2)))))))) _loc a0))
-        | `ExNew a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExNew")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `ExObj a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExObj")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_class_str_item _loc a2)))))))) _loc
-                   a0))
-        | `ExOlb a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExOlb")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExOvr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExOvr")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_rec_binding _loc a1)))))) _loc a0))
-        | `ExRec a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExRec")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_rec_binding _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExSeq a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExSeq")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExSnd a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExSnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_string _loc a2)))))))) _loc a0))
-        | `ExSte a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExSte")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Str a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Str")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExTry a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExTry")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_match_case _loc a2)))))))) _loc a0))
-        | `ExTup a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExTup")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExCom a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExCom")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExTyc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExTyc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `ExVrn a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExVrn")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExWhi a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExWhi")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExOpI a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExOpI")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExFUN a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExFUN")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExPkg a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "ExPkg")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_expr _loc a1)))))) _loc a0))
-    and meta_patt: 'loc -> patt -> 'result =
-      fun _loc  ->
-        function
-        | `PaNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "PaNil")), (meta_loc _loc a0))
-        | `PaId a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaId")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `PaAli a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaAli")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-        | `PaAny a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "PaAny")), (meta_loc _loc a0))
-        | `PaApp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaArr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaArr")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_patt _loc a1))))))
-                   _loc a0))
-        | `PaCom a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaCom")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaSem a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `Chr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Chr")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Int")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int32 a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Int32")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int64 a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Int64")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `NativeInt a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "NativeInt")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `PaFlo a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaFlo")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `PaLab a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaLab")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaOlb a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaOlb")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaOlbi a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaOlbi")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_patt _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `PaOrp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaOrp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaRng a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaRng")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaRec a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaRec")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_patt _loc a1))))))
-                   _loc a0))
-        | `PaEq a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `Str a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Str")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `PaTup a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaTup")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_patt _loc a1))))))
-                   _loc a0))
-        | `PaTyc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaTyc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `PaTyp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaTyp")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `PaVrn a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaVrn")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Lazy a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Lazy")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_patt _loc a1))))))
-                   _loc a0))
-        | `PaMod a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "PaMod")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-    and meta_ctyp: 'loc -> ctyp -> 'result =
-      fun _loc  ->
-        function
-        | `TyNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "TyNil")), (meta_loc _loc a0))
-        | `TyAli a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyAli")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyAny a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "TyAny")), (meta_loc _loc a0))
-        | `TyApp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyArr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyArr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyCls a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyCls")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `TyLab a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyLab")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyId a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyId")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `TyMan a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyMan")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyDcl a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyDcl")),
-                (((fun _loc  (a0,a1,a2,a3,a4)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`ExCom
-                                      (_loc, (meta_list meta_ctyp _loc a2),
-                                        (`ExCom
-                                           (_loc, (meta_ctyp _loc a3),
-                                             (meta_list
-                                                (fun _loc  (a0,a1)  ->
-                                                   `ExTup
-                                                     (_loc,
-                                                       (`ExCom
-                                                          (_loc,
-                                                            (meta_ctyp _loc
-                                                               a0),
-                                                            (meta_ctyp _loc
-                                                               a1))))) _loc
-                                                a4)))))))))))) _loc a0))
-        | `TyObj a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyObj")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_row_var_flag _loc a2)))))))) _loc a0))
-        | `TyOlb a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyOlb")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyPol a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyPol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyTypePol a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyTypePol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyQuo a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyQuo")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `TyQuP a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyQuP")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `TyQuM a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyQuM")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `TyAnP a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "TyAnP")), (meta_loc _loc a0))
-        | `TyAnM a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "TyAnM")), (meta_loc _loc a0))
-        | `TyVrn a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyVrn")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `TyRec a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyRec")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyCol a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyCol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TySem a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TySem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyCom a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyCom")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TySum a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TySum")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyOf a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyOf")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyAnd a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyOr a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyOr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyPrv a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyPrv")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyMut a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyMut")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyTup a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyTup")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TySta a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TySta")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyVrnEq a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyVrnEq")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyVrnSup a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyVrnSup")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyVrnInf a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyVrnInf")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyVrnInfSup a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyVrnInfSup")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyAmp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyAmp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyOfAmp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyOfAmp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyPkg a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "TyPkg")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_type _loc a1)))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_ident: 'loc -> ident -> 'result =
-      fun _loc  ->
-        function
-        | `IdAcc a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "IdAcc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_ident _loc a2)))))))) _loc a0))
-        | `IdApp a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "IdApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0),
-                              (`ExCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_ident _loc a2)))))))) _loc a0))
-        | `Lid a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Lid")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Uid a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "Uid")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_meta_list :
-      'all_a0 .
-        ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
-      fun mf_a  _loc  ->
-        function
-        | `LNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "LNil")), (meta_loc _loc a0))
-        | `LCons a0 ->
-            `ExApp
-              (_loc, (`ExVrn (_loc, "LCons")),
-                (((fun _loc  (a0,a1)  ->
-                     `ExTup
-                       (_loc,
-                         (`ExCom
-                            (_loc, (mf_a _loc a0),
-                              (meta_meta_list mf_a _loc a1)))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_meta_option :
-      'all_a0 .
-        ('loc -> 'all_a0 -> 'result) ->
-          'loc -> 'all_a0 meta_option -> 'result=
-      fun mf_a  _loc  ->
-        function
-        | `None a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "None")), (meta_loc _loc a0))
-        | `Some a0 -> `ExApp (_loc, (`ExVrn (_loc, "Some")), (mf_a _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
-      fun _loc  ->
-        function
-        | `RowVar a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "RowVar")), (meta_loc _loc a0))
-        | `RvNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "RvNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_override_flag: 'loc -> override_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Override a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "Override")), (meta_loc _loc a0))
-        | `OvNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "OvNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Virtual a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "Virtual")), (meta_loc _loc a0))
-        | `ViNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "ViNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_private_flag: 'loc -> private_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Private a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "Private")), (meta_loc _loc a0))
-        | `PrNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "PrNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Mutable a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "Mutable")), (meta_loc _loc a0))
-        | `MuNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "MuNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_direction_flag: 'loc -> direction_flag -> 'result =
-      fun _loc  ->
-        function
-        | `To a0 -> `ExApp (_loc, (`ExVrn (_loc, "To")), (meta_loc _loc a0))
-        | `Downto a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "Downto")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_rec_flag: 'loc -> rec_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Recursive a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "Recursive")), (meta_loc _loc a0))
-        | `ReNil a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "ReNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    end
-  module Patt = struct
-    open MPatt let meta_loc = MetaLoc.meta_loc_patt
-    let rec meta_class_str_item: 'loc -> class_str_item -> 'result =
-      fun _loc  ->
-        function
-        | `CrNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "CrNil")), (meta_loc _loc a0))
-        | `CrSem a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CrSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_str_item _loc a1),
-                                   (meta_class_str_item _loc a2)))))))) _loc
-                   a0))
-        | `CrCtr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CrCtr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `CrInh a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CrInh")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_override_flag _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_class_expr _loc a2),
-                                        (meta_string _loc a3)))))))))) _loc
-                   a0))
-        | `CrIni a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CrIni")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `CrMth a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CrMth")),
-                (((fun _loc  (a0,a1,a2,a3,a4,a5)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_override_flag _loc a2),
-                                        (`PaCom
-                                           (_loc,
-                                             (meta_private_flag _loc a3),
-                                             (`PaCom
-                                                (_loc, (meta_expr _loc a4),
-                                                  (meta_ctyp _loc a5))))))))))))))
-                   _loc a0))
-        | `CrVal a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CrVal")),
-                (((fun _loc  (a0,a1,a2,a3,a4)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_override_flag _loc a2),
-                                        (`PaCom
-                                           (_loc,
-                                             (meta_mutable_flag _loc a3),
-                                             (meta_expr _loc a4))))))))))))
-                   _loc a0))
-        | `CrVir a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CrVir")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_private_flag _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CrVvr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CrVvr")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_mutable_flag _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_class_expr: 'loc -> class_expr -> 'result =
-      fun _loc  ->
-        function
-        | `CeNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "CeNil")), (meta_loc _loc a0))
-        | `CeApp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CeApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `CeCon a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CeCon")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_virtual_flag _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_ident _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CeFun a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CeFun")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_class_expr _loc a2)))))))) _loc a0))
-        | `CeLet a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CeLet")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_rec_flag _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_binding _loc a2),
-                                        (meta_class_expr _loc a3))))))))))
-                   _loc a0))
-        | `CeStr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CeStr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_class_str_item _loc a2)))))))) _loc
-                   a0))
-        | `CeTyc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CeTyc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_expr _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `CeAnd a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CeAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_expr _loc a1),
-                                   (meta_class_expr _loc a2)))))))) _loc a0))
-        | `CeEq a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CeEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_expr _loc a1),
-                                   (meta_class_expr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
-      fun _loc  ->
-        function
-        | `CgNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "CgNil")), (meta_loc _loc a0))
-        | `CgCtr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CgCtr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `CgSem a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CgSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_sig_item _loc a1),
-                                   (meta_class_sig_item _loc a2)))))))) _loc
-                   a0))
-        | `CgInh a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CgInh")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_type _loc a1)))))) _loc a0))
-        | `CgMth a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CgMth")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_private_flag _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CgVal a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CgVal")),
-                (((fun _loc  (a0,a1,a2,a3,a4)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_mutable_flag _loc a2),
-                                        (`PaCom
-                                           (_loc,
-                                             (meta_virtual_flag _loc a3),
-                                             (meta_ctyp _loc a4))))))))))))
-                   _loc a0))
-        | `CgVir a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CgVir")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_private_flag _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_class_type: 'loc -> class_type -> 'result =
-      fun _loc  ->
-        function
-        | `CtNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "CtNil")), (meta_loc _loc a0))
-        | `CtCon a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CtCon")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_virtual_flag _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_ident _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `CtFun a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CtFun")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `CtSig a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CtSig")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_class_sig_item _loc a2)))))))) _loc
-                   a0))
-        | `CtAnd a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CtAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_type _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `CtCol a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CtCol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_type _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `CtEq a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "CtEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_class_type _loc a1),
-                                   (meta_class_type _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_str_item: 'loc -> str_item -> 'result =
-      fun _loc  ->
-        function
-        | `StNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "StNil")), (meta_loc _loc a0))
-        | `StCls a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StCls")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_expr _loc a1)))))) _loc a0))
-        | `StClt a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StClt")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_type _loc a1)))))) _loc a0))
-        | `StSem a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_str_item _loc a1),
-                                   (meta_str_item _loc a2)))))))) _loc a0))
-        | `StDir a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StDir")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `StExc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StExc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_meta_option meta_ident _loc a2))))))))
-                   _loc a0))
-        | `StExp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StExp")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `StExt a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StExt")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_ctyp _loc a2),
-                                        (meta_meta_list meta_string _loc a3))))))))))
-                   _loc a0))
-        | `StInc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StInc")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_expr _loc a1)))))) _loc a0))
-        | `StMod a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StMod")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_expr _loc a2)))))))) _loc a0))
-        | `StRecMod a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StRecMod")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_binding _loc a1)))))) _loc a0))
-        | `StMty a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StMty")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `StOpn a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StOpn")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `StTyp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StTyp")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `StVal a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "StVal")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_rec_flag _loc a1),
-                                   (meta_binding _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_module_expr: 'loc -> module_expr -> 'result =
-      fun _loc  ->
-        function
-        | `MeNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "MeNil")), (meta_loc _loc a0))
-        | `MeId a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MeId")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `MeApp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MeApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_module_expr _loc a1),
-                                   (meta_module_expr _loc a2)))))))) _loc a0))
-        | `MeFun a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MeFun")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_module_type _loc a2),
-                                        (meta_module_expr _loc a3))))))))))
-                   _loc a0))
-        | `MeStr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MeStr")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_str_item _loc a1)))))) _loc a0))
-        | `MeTyc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MeTyc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_module_expr _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `MePkg a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MePkg")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_match_case: 'loc -> match_case -> 'result =
-      fun _loc  ->
-        function
-        | `McNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "McNil")), (meta_loc _loc a0))
-        | `McOr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "McOr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_match_case _loc a1),
-                                   (meta_match_case _loc a2)))))))) _loc a0))
-        | `McArr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "McArr")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_expr _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_module_binding: 'loc -> module_binding -> 'result =
-      fun _loc  ->
-        function
-        | `MbNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "MbNil")), (meta_loc _loc a0))
-        | `MbAnd a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MbAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_module_binding _loc a1),
-                                   (meta_module_binding _loc a2)))))))) _loc
-                   a0))
-        | `MbColEq a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MbColEq")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_module_type _loc a2),
-                                        (meta_module_expr _loc a3))))))))))
-                   _loc a0))
-        | `MbCol a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MbCol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_rec_binding: 'loc -> rec_binding -> 'result =
-      fun _loc  ->
-        function
-        | `RbNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "RbNil")), (meta_loc _loc a0))
-        | `RbSem a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "RbSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_rec_binding _loc a1),
-                                   (meta_rec_binding _loc a2)))))))) _loc a0))
-        | `RbEq a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "RbEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_binding: 'loc -> binding -> 'result =
-      fun _loc  ->
-        function
-        | `BiNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "BiNil")), (meta_loc _loc a0))
-        | `BiAnd a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "BiAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_binding _loc a1),
-                                   (meta_binding _loc a2)))))))) _loc a0))
-        | `BiEq a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "BiEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_with_constr: 'loc -> with_constr -> 'result =
-      fun _loc  ->
-        function
-        | `WcNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "WcNil")), (meta_loc _loc a0))
-        | `WcTyp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "WcTyp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `WcMod a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "WcMod")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_ident _loc a2)))))))) _loc a0))
-        | `WcTyS a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "WcTyS")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `WcMoS a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "WcMoS")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_ident _loc a2)))))))) _loc a0))
-        | `WcAnd a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "WcAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_with_constr _loc a1),
-                                   (meta_with_constr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_sig_item: 'loc -> sig_item -> 'result =
-      fun _loc  ->
-        function
-        | `SgNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "SgNil")), (meta_loc _loc a0))
-        | `SgCls a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgCls")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_type _loc a1)))))) _loc a0))
-        | `SgClt a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgClt")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_class_type _loc a1)))))) _loc a0))
-        | `SgSem a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_sig_item _loc a1),
-                                   (meta_sig_item _loc a2)))))))) _loc a0))
-        | `SgDir a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgDir")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `SgExc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgExc")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `SgExt a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgExt")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_ctyp _loc a2),
-                                        (meta_meta_list meta_string _loc a3))))))))))
-                   _loc a0))
-        | `SgInc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgInc")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_type _loc a1)))))) _loc a0))
-        | `SgMod a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgMod")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `SgRecMod a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgRecMod")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_binding _loc a1)))))) _loc a0))
-        | `SgMty a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgMty")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_module_type _loc a2)))))))) _loc a0))
-        | `SgOpn a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgOpn")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `SgTyp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgTyp")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `SgVal a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "SgVal")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_module_type: 'loc -> module_type -> 'result =
-      fun _loc  ->
-        function
-        | `MtNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "MtNil")), (meta_loc _loc a0))
-        | `MtId a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MtId")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `MtFun a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MtFun")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_module_type _loc a2),
-                                        (meta_module_type _loc a3))))))))))
-                   _loc a0))
-        | `MtQuo a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MtQuo")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `MtSig a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MtSig")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_sig_item _loc a1)))))) _loc a0))
-        | `MtWit a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MtWit")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_module_type _loc a1),
-                                   (meta_with_constr _loc a2)))))))) _loc a0))
-        | `MtOf a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "MtOf")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_expr _loc a1)))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_expr: 'loc -> expr -> 'result =
-      fun _loc  ->
-        function
-        | `ExNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "ExNil")), (meta_loc _loc a0))
-        | `ExId a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExId")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `ExAcc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExAcc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-        | `ExApp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExAre a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExAre")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExArr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExArr")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExSem a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExAsf a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "ExAsf")), (meta_loc _loc a0))
-        | `ExAsr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExAsr")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExAss a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExAss")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Chr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Chr")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExCoe a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExCoe")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_ctyp _loc a2),
-                                        (meta_ctyp _loc a3)))))))))) _loc a0))
-        | `ExFlo a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExFlo")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExFor a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExFor")),
-                (((fun _loc  (a0,a1,a2,a3,a4,a5)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_expr _loc a2),
-                                        (`PaCom
-                                           (_loc, (meta_expr _loc a3),
-                                             (`PaCom
-                                                (_loc,
-                                                  (meta_direction_flag _loc
-                                                     a4),
-                                                  (meta_expr _loc a5))))))))))))))
-                   _loc a0))
-        | `ExFun a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExFun")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_match_case _loc a1)))))) _loc a0))
-        | `ExIfe a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExIfe")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_expr _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `Int a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Int")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int32 a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Int32")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int64 a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Int64")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `NativeInt a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "NativeInt")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExLab a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExLab")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Lazy a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Lazy")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExLet a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExLet")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_rec_flag _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_binding _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `ExLmd a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExLmd")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_module_expr _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `ExMat a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExMat")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_match_case _loc a2)))))))) _loc a0))
-        | `ExNew a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExNew")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `ExObj a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExObj")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_class_str_item _loc a2)))))))) _loc
-                   a0))
-        | `ExOlb a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExOlb")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExOvr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExOvr")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_rec_binding _loc a1)))))) _loc a0))
-        | `ExRec a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExRec")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_rec_binding _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExSeq a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExSeq")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExSnd a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExSnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_string _loc a2)))))))) _loc a0))
-        | `ExSte a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExSte")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `Str a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Str")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExTry a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExTry")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_match_case _loc a2)))))))) _loc a0))
-        | `ExTup a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExTup")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_expr _loc a1))))))
-                   _loc a0))
-        | `ExCom a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExCom")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExTyc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExTyc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `ExVrn a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExVrn")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `ExWhi a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExWhi")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_expr _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExOpI a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExOpI")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExFUN a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExFUN")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_expr _loc a2)))))))) _loc a0))
-        | `ExPkg a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "ExPkg")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_expr _loc a1)))))) _loc a0))
-    and meta_patt: 'loc -> patt -> 'result =
-      fun _loc  ->
-        function
-        | `PaNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "PaNil")), (meta_loc _loc a0))
-        | `PaId a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaId")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `PaAli a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaAli")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-        | `PaAny a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "PaAny")), (meta_loc _loc a0))
-        | `PaApp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaArr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaArr")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_patt _loc a1))))))
-                   _loc a0))
-        | `PaCom a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaCom")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaSem a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaSem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `Chr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Chr")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Int")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int32 a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Int32")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Int64 a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Int64")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `NativeInt a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "NativeInt")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `PaFlo a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaFlo")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `PaLab a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaLab")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaOlb a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaOlb")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaOlbi a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaOlbi")),
-                (((fun _loc  (a0,a1,a2,a3)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_patt _loc a2),
-                                        (meta_expr _loc a3)))))))))) _loc a0))
-        | `PaOrp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaOrp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaRng a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaRng")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `PaRec a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaRec")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_patt _loc a1))))))
-                   _loc a0))
-        | `PaEq a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaEq")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_patt _loc a2)))))))) _loc a0))
-        | `Str a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Str")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `PaTup a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaTup")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_patt _loc a1))))))
-                   _loc a0))
-        | `PaTyc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaTyc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_patt _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `PaTyp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaTyp")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `PaVrn a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaVrn")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Lazy a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Lazy")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_patt _loc a1))))))
-                   _loc a0))
-        | `PaMod a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "PaMod")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-    and meta_ctyp: 'loc -> ctyp -> 'result =
-      fun _loc  ->
-        function
-        | `TyNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "TyNil")), (meta_loc _loc a0))
-        | `TyAli a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyAli")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyAny a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "TyAny")), (meta_loc _loc a0))
-        | `TyApp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyArr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyArr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyCls a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyCls")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `TyLab a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyLab")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyId a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyId")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ident _loc a1))))))
-                   _loc a0))
-        | `TyMan a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyMan")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyDcl a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyDcl")),
-                (((fun _loc  (a0,a1,a2,a3,a4)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (`PaCom
-                                      (_loc, (meta_list meta_ctyp _loc a2),
-                                        (`PaCom
-                                           (_loc, (meta_ctyp _loc a3),
-                                             (meta_list
-                                                (fun _loc  (a0,a1)  ->
-                                                   `PaTup
-                                                     (_loc,
-                                                       (`PaCom
-                                                          (_loc,
-                                                            (meta_ctyp _loc
-                                                               a0),
-                                                            (meta_ctyp _loc
-                                                               a1))))) _loc
-                                                a4)))))))))))) _loc a0))
-        | `TyObj a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyObj")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_row_var_flag _loc a2)))))))) _loc a0))
-        | `TyOlb a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyOlb")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_string _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyPol a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyPol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyTypePol a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyTypePol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyQuo a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyQuo")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `TyQuP a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyQuP")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `TyQuM a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyQuM")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `TyAnP a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "TyAnP")), (meta_loc _loc a0))
-        | `TyAnM a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "TyAnM")), (meta_loc _loc a0))
-        | `TyVrn a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyVrn")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `TyRec a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyRec")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyCol a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyCol")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TySem a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TySem")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyCom a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyCom")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TySum a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TySum")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyOf a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyOf")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyAnd a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyAnd")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyOr a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyOr")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyPrv a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyPrv")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyMut a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyMut")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyTup a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyTup")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TySta a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TySta")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyVrnEq a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyVrnEq")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyVrnSup a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyVrnSup")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyVrnInf a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyVrnInf")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_ctyp _loc a1))))))
-                   _loc a0))
-        | `TyVrnInfSup a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyVrnInfSup")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyAmp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyAmp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyOfAmp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyOfAmp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ctyp _loc a1),
-                                   (meta_ctyp _loc a2)))))))) _loc a0))
-        | `TyPkg a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "TyPkg")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (meta_module_type _loc a1)))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_ident: 'loc -> ident -> 'result =
-      fun _loc  ->
-        function
-        | `IdAcc a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "IdAcc")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_ident _loc a2)))))))) _loc a0))
-        | `IdApp a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "IdApp")),
-                (((fun _loc  (a0,a1,a2)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0),
-                              (`PaCom
-                                 (_loc, (meta_ident _loc a1),
-                                   (meta_ident _loc a2)))))))) _loc a0))
-        | `Lid a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Lid")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Uid a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "Uid")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (meta_loc _loc a0), (meta_string _loc a1))))))
-                   _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_meta_list :
-      'all_a0 .
-        ('loc -> 'all_a0 -> 'result) -> 'loc -> 'all_a0 meta_list -> 'result=
-      fun mf_a  _loc  ->
-        function
-        | `LNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "LNil")), (meta_loc _loc a0))
-        | `LCons a0 ->
-            `PaApp
-              (_loc, (`PaVrn (_loc, "LCons")),
-                (((fun _loc  (a0,a1)  ->
-                     `PaTup
-                       (_loc,
-                         (`PaCom
-                            (_loc, (mf_a _loc a0),
-                              (meta_meta_list mf_a _loc a1)))))) _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_meta_option :
-      'all_a0 .
-        ('loc -> 'all_a0 -> 'result) ->
-          'loc -> 'all_a0 meta_option -> 'result=
-      fun mf_a  _loc  ->
-        function
-        | `None a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "None")), (meta_loc _loc a0))
-        | `Some a0 -> `PaApp (_loc, (`PaVrn (_loc, "Some")), (mf_a _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
-      fun _loc  ->
-        function
-        | `RowVar a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "RowVar")), (meta_loc _loc a0))
-        | `RvNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "RvNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_override_flag: 'loc -> override_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Override a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "Override")), (meta_loc _loc a0))
-        | `OvNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "OvNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Virtual a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "Virtual")), (meta_loc _loc a0))
-        | `ViNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "ViNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_private_flag: 'loc -> private_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Private a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "Private")), (meta_loc _loc a0))
-        | `PrNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "PrNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Mutable a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "Mutable")), (meta_loc _loc a0))
-        | `MuNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "MuNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_direction_flag: 'loc -> direction_flag -> 'result =
-      fun _loc  ->
-        function
-        | `To a0 -> `PaApp (_loc, (`PaVrn (_loc, "To")), (meta_loc _loc a0))
-        | `Downto a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "Downto")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    and meta_rec_flag: 'loc -> rec_flag -> 'result =
-      fun _loc  ->
-        function
-        | `Recursive a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "Recursive")), (meta_loc _loc a0))
-        | `ReNil a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "ReNil")), (meta_loc _loc a0))
-        | `Ant a0 -> `Ant a0
-    end
+    module Expr =
+      struct
+        open MExpr
+        let meta_loc = MetaLoc.meta_loc_expr
+        let rec meta_class_str_item: 'loc -> class_str_item -> 'result =
+          fun _loc  ->
+            function
+            | `CrNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "CrNil")), (meta_loc _loc a0))
+            | `CrSem a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CrSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_str_item _loc a1),
+                                       (meta_class_str_item _loc a2))))))))
+                       _loc a0))
+            | `CrCtr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CrCtr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `CrInh a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CrInh")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_override_flag _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_class_expr _loc a2),
+                                            (meta_string _loc a3))))))))))
+                       _loc a0))
+            | `CrIni a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CrIni")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `CrMth a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CrMth")),
+                    (((fun _loc  (a0,a1,a2,a3,a4,a5)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc,
+                                            (meta_override_flag _loc a2),
+                                            (`ExCom
+                                               (_loc,
+                                                 (meta_private_flag _loc a3),
+                                                 (`ExCom
+                                                    (_loc,
+                                                      (meta_expr _loc a4),
+                                                      (meta_ctyp _loc a5))))))))))))))
+                       _loc a0))
+            | `CrVal a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CrVal")),
+                    (((fun _loc  (a0,a1,a2,a3,a4)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc,
+                                            (meta_override_flag _loc a2),
+                                            (`ExCom
+                                               (_loc,
+                                                 (meta_mutable_flag _loc a3),
+                                                 (meta_expr _loc a4))))))))))))
+                       _loc a0))
+            | `CrVir a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CrVir")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_private_flag _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `CrVvr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CrVvr")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_mutable_flag _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_class_expr: 'loc -> class_expr -> 'result =
+          fun _loc  ->
+            function
+            | `CeNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "CeNil")), (meta_loc _loc a0))
+            | `CeApp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CeApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `CeCon a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CeCon")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_virtual_flag _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_ident _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `CeFun a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CeFun")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_class_expr _loc a2)))))))) _loc
+                       a0))
+            | `CeLet a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CeLet")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_rec_flag _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_binding _loc a2),
+                                            (meta_class_expr _loc a3))))))))))
+                       _loc a0))
+            | `CeStr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CeStr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_class_str_item _loc a2))))))))
+                       _loc a0))
+            | `CeTyc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CeTyc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_expr _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `CeAnd a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CeAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_expr _loc a1),
+                                       (meta_class_expr _loc a2)))))))) _loc
+                       a0))
+            | `CeEq a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CeEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_expr _loc a1),
+                                       (meta_class_expr _loc a2)))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
+          fun _loc  ->
+            function
+            | `CgNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "CgNil")), (meta_loc _loc a0))
+            | `CgCtr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CgCtr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `CgSem a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CgSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_sig_item _loc a1),
+                                       (meta_class_sig_item _loc a2))))))))
+                       _loc a0))
+            | `CgInh a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CgInh")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_type _loc a1)))))) _loc a0))
+            | `CgMth a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CgMth")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_private_flag _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `CgVal a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CgVal")),
+                    (((fun _loc  (a0,a1,a2,a3,a4)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_mutable_flag _loc a2),
+                                            (`ExCom
+                                               (_loc,
+                                                 (meta_virtual_flag _loc a3),
+                                                 (meta_ctyp _loc a4))))))))))))
+                       _loc a0))
+            | `CgVir a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CgVir")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_private_flag _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_class_type: 'loc -> class_type -> 'result =
+          fun _loc  ->
+            function
+            | `CtNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "CtNil")), (meta_loc _loc a0))
+            | `CtCon a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CtCon")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_virtual_flag _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_ident _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `CtFun a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CtFun")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `CtSig a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CtSig")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_class_sig_item _loc a2))))))))
+                       _loc a0))
+            | `CtAnd a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CtAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_type _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `CtCol a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CtCol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_type _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `CtEq a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "CtEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_class_type _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_str_item: 'loc -> str_item -> 'result =
+          fun _loc  ->
+            function
+            | `StNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "StNil")), (meta_loc _loc a0))
+            | `StCls a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StCls")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_expr _loc a1)))))) _loc a0))
+            | `StClt a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StClt")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_type _loc a1)))))) _loc a0))
+            | `StSem a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_str_item _loc a1),
+                                       (meta_str_item _loc a2)))))))) _loc a0))
+            | `StDir a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StDir")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `StExc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StExc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_meta_option meta_ident _loc a2))))))))
+                       _loc a0))
+            | `StExp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StExp")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `StExt a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StExt")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_ctyp _loc a2),
+                                            (meta_meta_list meta_string _loc
+                                               a3)))))))))) _loc a0))
+            | `StInc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StInc")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_expr _loc a1)))))) _loc a0))
+            | `StMod a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StMod")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_expr _loc a2)))))))) _loc
+                       a0))
+            | `StRecMod a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StRecMod")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_binding _loc a1)))))) _loc a0))
+            | `StMty a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StMty")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `StOpn a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StOpn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `StTyp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StTyp")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `StVal a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "StVal")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_rec_flag _loc a1),
+                                       (meta_binding _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_module_expr: 'loc -> module_expr -> 'result =
+          fun _loc  ->
+            function
+            | `MeNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "MeNil")), (meta_loc _loc a0))
+            | `MeId a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MeId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `MeApp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MeApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_module_expr _loc a1),
+                                       (meta_module_expr _loc a2)))))))) _loc
+                       a0))
+            | `MeFun a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MeFun")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_module_type _loc a2),
+                                            (meta_module_expr _loc a3))))))))))
+                       _loc a0))
+            | `MeStr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MeStr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_str_item _loc a1)))))) _loc a0))
+            | `MeTyc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MeTyc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_module_expr _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `MePkg a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MePkg")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_match_case: 'loc -> match_case -> 'result =
+          fun _loc  ->
+            function
+            | `McNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "McNil")), (meta_loc _loc a0))
+            | `McOr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "McOr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_match_case _loc a1),
+                                       (meta_match_case _loc a2)))))))) _loc
+                       a0))
+            | `McArr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "McArr")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_expr _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_module_binding: 'loc -> module_binding -> 'result =
+          fun _loc  ->
+            function
+            | `MbNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "MbNil")), (meta_loc _loc a0))
+            | `MbAnd a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MbAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_module_binding _loc a1),
+                                       (meta_module_binding _loc a2))))))))
+                       _loc a0))
+            | `MbColEq a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MbColEq")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_module_type _loc a2),
+                                            (meta_module_expr _loc a3))))))))))
+                       _loc a0))
+            | `MbCol a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MbCol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_rec_binding: 'loc -> rec_binding -> 'result =
+          fun _loc  ->
+            function
+            | `RbNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "RbNil")), (meta_loc _loc a0))
+            | `RbSem a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "RbSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_rec_binding _loc a1),
+                                       (meta_rec_binding _loc a2)))))))) _loc
+                       a0))
+            | `RbEq a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "RbEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_binding: 'loc -> binding -> 'result =
+          fun _loc  ->
+            function
+            | `BiNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "BiNil")), (meta_loc _loc a0))
+            | `BiAnd a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "BiAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_binding _loc a1),
+                                       (meta_binding _loc a2)))))))) _loc a0))
+            | `BiEq a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "BiEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_with_constr: 'loc -> with_constr -> 'result =
+          fun _loc  ->
+            function
+            | `WcNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "WcNil")), (meta_loc _loc a0))
+            | `WcTyp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "WcTyp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `WcMod a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "WcMod")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_ident _loc a2)))))))) _loc a0))
+            | `WcTyS a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "WcTyS")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `WcMoS a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "WcMoS")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_ident _loc a2)))))))) _loc a0))
+            | `WcAnd a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "WcAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_with_constr _loc a1),
+                                       (meta_with_constr _loc a2)))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_sig_item: 'loc -> sig_item -> 'result =
+          fun _loc  ->
+            function
+            | `SgNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "SgNil")), (meta_loc _loc a0))
+            | `SgCls a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgCls")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_type _loc a1)))))) _loc a0))
+            | `SgClt a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgClt")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_type _loc a1)))))) _loc a0))
+            | `SgSem a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_sig_item _loc a1),
+                                       (meta_sig_item _loc a2)))))))) _loc a0))
+            | `SgDir a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgDir")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `SgExc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgExc")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `SgExt a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgExt")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_ctyp _loc a2),
+                                            (meta_meta_list meta_string _loc
+                                               a3)))))))))) _loc a0))
+            | `SgInc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgInc")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_type _loc a1)))))) _loc a0))
+            | `SgMod a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgMod")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `SgRecMod a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgRecMod")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_binding _loc a1)))))) _loc a0))
+            | `SgMty a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgMty")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `SgOpn a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgOpn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `SgTyp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgTyp")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `SgVal a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "SgVal")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_module_type: 'loc -> module_type -> 'result =
+          fun _loc  ->
+            function
+            | `MtNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "MtNil")), (meta_loc _loc a0))
+            | `MtId a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MtId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `MtFun a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MtFun")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_module_type _loc a2),
+                                            (meta_module_type _loc a3))))))))))
+                       _loc a0))
+            | `MtQuo a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MtQuo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `MtSig a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MtSig")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_sig_item _loc a1)))))) _loc a0))
+            | `MtWit a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MtWit")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_module_type _loc a1),
+                                       (meta_with_constr _loc a2)))))))) _loc
+                       a0))
+            | `MtOf a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "MtOf")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_expr _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_expr: 'loc -> expr -> 'result =
+          fun _loc  ->
+            function
+            | `ExNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "ExNil")), (meta_loc _loc a0))
+            | `ExId a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `ExAcc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExAcc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+            | `ExApp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `ExAre a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExAre")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `ExArr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExArr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `ExSem a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `ExAsf a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "ExAsf")), (meta_loc _loc a0))
+            | `ExAsr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExAsr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `ExAss a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExAss")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `ExCoe a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExCoe")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_ctyp _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `Flo a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Flo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Chr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Chr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `For_loop a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "For_loop")),
+                    (((fun _loc  (a0,a1,a2,a3,a4,a5)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_expr _loc a2),
+                                            (`ExCom
+                                               (_loc, (meta_expr _loc a3),
+                                                 (`ExCom
+                                                    (_loc,
+                                                      (meta_direction_flag
+                                                         _loc a4),
+                                                      (meta_expr _loc a5))))))))))))))
+                       _loc a0))
+            | `Fun a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Fun")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_match_case _loc a1)))))) _loc a0))
+            | `ExIfe a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExIfe")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_expr _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `Int a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Int")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int32 a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Int32")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int64 a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Int64")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `NativeInt a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "NativeInt")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Label a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Label")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Lazy a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Lazy")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `Let_in a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Let_in")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_rec_flag _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_binding _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `Let_module a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Let_module")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_module_expr _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `Match a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Match")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_match_case _loc a2)))))))) _loc
+                       a0))
+            | `New a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "New")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `Obj a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Obj")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_class_str_item _loc a2))))))))
+                       _loc a0))
+            | `Optional_label a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Optional_label")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Override_instance a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Override_instance")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_rec_binding _loc a1)))))) _loc a0))
+            | `Record a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Record")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_rec_binding _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Sequence a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Sequence")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `Send a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Send")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_string _loc a2)))))))) _loc a0))
+            | `String_dot a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "String_dot")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Str a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Str")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Try a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Try")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_match_case _loc a2)))))))) _loc
+                       a0))
+            | `ExTup a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExTup")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `ExCom a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExCom")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Constraint_exp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Constraint_exp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `ExVrn a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "ExVrn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `While a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "While")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Let_open a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Let_open")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Local_type_fun a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Local_type_fun")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Package_expr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Package_expr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_expr _loc a1)))))) _loc a0))
+        and meta_patt: 'loc -> patt -> 'result =
+          fun _loc  ->
+            function
+            | `PaNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "PaNil")), (meta_loc _loc a0))
+            | `PaId a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `PaAli a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaAli")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+            | `PaAny a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "PaAny")), (meta_loc _loc a0))
+            | `PaApp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaArr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaArr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_patt _loc a1)))))) _loc a0))
+            | `PaCom a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaCom")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaSem a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `Chr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Chr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Int")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int32 a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Int32")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int64 a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Int64")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `NativeInt a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "NativeInt")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Flo a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Flo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `PaLab a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaLab")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaOlb a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaOlb")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaOlbi a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaOlbi")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc, (meta_patt _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `PaOrp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaOrp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaRng a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaRng")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaRec a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaRec")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_patt _loc a1)))))) _loc a0))
+            | `PaEq a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `Str a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Str")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `PaTup a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaTup")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_patt _loc a1)))))) _loc a0))
+            | `PaTyc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaTyc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `PaTyp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaTyp")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `PaVrn a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaVrn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Lazy a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Lazy")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_patt _loc a1)))))) _loc a0))
+            | `PaMod a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "PaMod")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+        and meta_ctyp: 'loc -> ctyp -> 'result =
+          fun _loc  ->
+            function
+            | `TyNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "TyNil")), (meta_loc _loc a0))
+            | `TyAli a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyAli")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyAny a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "TyAny")), (meta_loc _loc a0))
+            | `TyApp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyArr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyArr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyCls a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyCls")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `TyLab a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyLab")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyId a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `TyMan a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyMan")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyDcl a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyDcl")),
+                    (((fun _loc  (a0,a1,a2,a3,a4)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`ExCom
+                                          (_loc,
+                                            (meta_list meta_ctyp _loc a2),
+                                            (`ExCom
+                                               (_loc, (meta_ctyp _loc a3),
+                                                 (meta_list
+                                                    (fun _loc  (a0,a1)  ->
+                                                       `ExTup
+                                                         (_loc,
+                                                           (`ExCom
+                                                              (_loc,
+                                                                (meta_ctyp
+                                                                   _loc a0),
+                                                                (meta_ctyp
+                                                                   _loc a1)))))
+                                                    _loc a4)))))))))))) _loc
+                       a0))
+            | `TyObj a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyObj")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_row_var_flag _loc a2))))))))
+                       _loc a0))
+            | `TyOlb a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyOlb")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyPol a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyPol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyTypePol a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyTypePol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyQuo a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyQuo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `TyQuP a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyQuP")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `TyQuM a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyQuM")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `TyAnP a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "TyAnP")), (meta_loc _loc a0))
+            | `TyAnM a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "TyAnM")), (meta_loc _loc a0))
+            | `TyVrn a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyVrn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `TyRec a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyRec")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyCol a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyCol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TySem a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TySem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyCom a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyCom")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TySum a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TySum")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyOf a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyOf")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyAnd a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyOr a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyOr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyPrv a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyPrv")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyMut a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyMut")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyTup a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyTup")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TySta a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TySta")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyVrnEq a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyVrnEq")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyVrnSup a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyVrnSup")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyVrnInf a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyVrnInf")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyVrnInfSup a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyVrnInfSup")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyAmp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyAmp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyOfAmp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyOfAmp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyPkg a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyPkg")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_type _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_ident: 'loc -> ident -> 'result =
+          fun _loc  ->
+            function
+            | `IdAcc a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "IdAcc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_ident _loc a2)))))))) _loc a0))
+            | `IdApp a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "IdApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`ExCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_ident _loc a2)))))))) _loc a0))
+            | `Lid a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Lid")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Uid a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Uid")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_meta_list :
+          'all_a0 .
+            ('loc -> 'all_a0 -> 'result) ->
+              'loc -> 'all_a0 meta_list -> 'result=
+          fun mf_a  _loc  ->
+            function
+            | `LNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "LNil")), (meta_loc _loc a0))
+            | `LCons a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "LCons")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (mf_a _loc a0),
+                                  (meta_meta_list mf_a _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_meta_option :
+          'all_a0 .
+            ('loc -> 'all_a0 -> 'result) ->
+              'loc -> 'all_a0 meta_option -> 'result=
+          fun mf_a  _loc  ->
+            function
+            | `None a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "None")), (meta_loc _loc a0))
+            | `Some a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "Some")), (mf_a _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
+          fun _loc  ->
+            function
+            | `RowVar a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "RowVar")), (meta_loc _loc a0))
+            | `RvNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "RvNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_override_flag: 'loc -> override_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Override a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Override")), (meta_loc _loc a0))
+            | `OvNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "OvNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Virtual a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "Virtual")), (meta_loc _loc a0))
+            | `ViNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "ViNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_private_flag: 'loc -> private_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Private a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "Private")), (meta_loc _loc a0))
+            | `PrNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "PrNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Mutable a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "Mutable")), (meta_loc _loc a0))
+            | `MuNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "MuNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_direction_flag: 'loc -> direction_flag -> 'result =
+          fun _loc  ->
+            function
+            | `To a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "To")), (meta_loc _loc a0))
+            | `Downto a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "Downto")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_rec_flag: 'loc -> rec_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Recursive a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Recursive")), (meta_loc _loc a0))
+            | `ReNil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "ReNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+      end
+    module Patt =
+      struct
+        open MPatt
+        let meta_loc = MetaLoc.meta_loc_patt
+        let rec meta_class_str_item: 'loc -> class_str_item -> 'result =
+          fun _loc  ->
+            function
+            | `CrNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "CrNil")), (meta_loc _loc a0))
+            | `CrSem a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CrSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_str_item _loc a1),
+                                       (meta_class_str_item _loc a2))))))))
+                       _loc a0))
+            | `CrCtr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CrCtr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `CrInh a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CrInh")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_override_flag _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_class_expr _loc a2),
+                                            (meta_string _loc a3))))))))))
+                       _loc a0))
+            | `CrIni a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CrIni")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `CrMth a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CrMth")),
+                    (((fun _loc  (a0,a1,a2,a3,a4,a5)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc,
+                                            (meta_override_flag _loc a2),
+                                            (`PaCom
+                                               (_loc,
+                                                 (meta_private_flag _loc a3),
+                                                 (`PaCom
+                                                    (_loc,
+                                                      (meta_expr _loc a4),
+                                                      (meta_ctyp _loc a5))))))))))))))
+                       _loc a0))
+            | `CrVal a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CrVal")),
+                    (((fun _loc  (a0,a1,a2,a3,a4)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc,
+                                            (meta_override_flag _loc a2),
+                                            (`PaCom
+                                               (_loc,
+                                                 (meta_mutable_flag _loc a3),
+                                                 (meta_expr _loc a4))))))))))))
+                       _loc a0))
+            | `CrVir a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CrVir")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_private_flag _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `CrVvr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CrVvr")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_mutable_flag _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_class_expr: 'loc -> class_expr -> 'result =
+          fun _loc  ->
+            function
+            | `CeNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "CeNil")), (meta_loc _loc a0))
+            | `CeApp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CeApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `CeCon a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CeCon")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_virtual_flag _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_ident _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `CeFun a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CeFun")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_class_expr _loc a2)))))))) _loc
+                       a0))
+            | `CeLet a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CeLet")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_rec_flag _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_binding _loc a2),
+                                            (meta_class_expr _loc a3))))))))))
+                       _loc a0))
+            | `CeStr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CeStr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_class_str_item _loc a2))))))))
+                       _loc a0))
+            | `CeTyc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CeTyc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_expr _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `CeAnd a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CeAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_expr _loc a1),
+                                       (meta_class_expr _loc a2)))))))) _loc
+                       a0))
+            | `CeEq a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CeEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_expr _loc a1),
+                                       (meta_class_expr _loc a2)))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_class_sig_item: 'loc -> class_sig_item -> 'result =
+          fun _loc  ->
+            function
+            | `CgNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "CgNil")), (meta_loc _loc a0))
+            | `CgCtr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CgCtr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `CgSem a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CgSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_sig_item _loc a1),
+                                       (meta_class_sig_item _loc a2))))))))
+                       _loc a0))
+            | `CgInh a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CgInh")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_type _loc a1)))))) _loc a0))
+            | `CgMth a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CgMth")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_private_flag _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `CgVal a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CgVal")),
+                    (((fun _loc  (a0,a1,a2,a3,a4)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_mutable_flag _loc a2),
+                                            (`PaCom
+                                               (_loc,
+                                                 (meta_virtual_flag _loc a3),
+                                                 (meta_ctyp _loc a4))))))))))))
+                       _loc a0))
+            | `CgVir a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CgVir")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_private_flag _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_class_type: 'loc -> class_type -> 'result =
+          fun _loc  ->
+            function
+            | `CtNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "CtNil")), (meta_loc _loc a0))
+            | `CtCon a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CtCon")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_virtual_flag _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_ident _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `CtFun a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CtFun")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `CtSig a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CtSig")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_class_sig_item _loc a2))))))))
+                       _loc a0))
+            | `CtAnd a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CtAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_type _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `CtCol a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CtCol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_type _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `CtEq a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "CtEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_class_type _loc a1),
+                                       (meta_class_type _loc a2)))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_str_item: 'loc -> str_item -> 'result =
+          fun _loc  ->
+            function
+            | `StNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "StNil")), (meta_loc _loc a0))
+            | `StCls a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StCls")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_expr _loc a1)))))) _loc a0))
+            | `StClt a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StClt")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_type _loc a1)))))) _loc a0))
+            | `StSem a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_str_item _loc a1),
+                                       (meta_str_item _loc a2)))))))) _loc a0))
+            | `StDir a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StDir")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `StExc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StExc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_meta_option meta_ident _loc a2))))))))
+                       _loc a0))
+            | `StExp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StExp")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `StExt a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StExt")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_ctyp _loc a2),
+                                            (meta_meta_list meta_string _loc
+                                               a3)))))))))) _loc a0))
+            | `StInc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StInc")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_expr _loc a1)))))) _loc a0))
+            | `StMod a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StMod")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_expr _loc a2)))))))) _loc
+                       a0))
+            | `StRecMod a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StRecMod")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_binding _loc a1)))))) _loc a0))
+            | `StMty a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StMty")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `StOpn a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StOpn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `StTyp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StTyp")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `StVal a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "StVal")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_rec_flag _loc a1),
+                                       (meta_binding _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_module_expr: 'loc -> module_expr -> 'result =
+          fun _loc  ->
+            function
+            | `MeNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "MeNil")), (meta_loc _loc a0))
+            | `MeId a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MeId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `MeApp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MeApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_module_expr _loc a1),
+                                       (meta_module_expr _loc a2)))))))) _loc
+                       a0))
+            | `MeFun a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MeFun")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_module_type _loc a2),
+                                            (meta_module_expr _loc a3))))))))))
+                       _loc a0))
+            | `MeStr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MeStr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_str_item _loc a1)))))) _loc a0))
+            | `MeTyc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MeTyc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_module_expr _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `MePkg a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MePkg")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_match_case: 'loc -> match_case -> 'result =
+          fun _loc  ->
+            function
+            | `McNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "McNil")), (meta_loc _loc a0))
+            | `McOr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "McOr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_match_case _loc a1),
+                                       (meta_match_case _loc a2)))))))) _loc
+                       a0))
+            | `McArr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "McArr")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_expr _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_module_binding: 'loc -> module_binding -> 'result =
+          fun _loc  ->
+            function
+            | `MbNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "MbNil")), (meta_loc _loc a0))
+            | `MbAnd a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MbAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_module_binding _loc a1),
+                                       (meta_module_binding _loc a2))))))))
+                       _loc a0))
+            | `MbColEq a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MbColEq")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_module_type _loc a2),
+                                            (meta_module_expr _loc a3))))))))))
+                       _loc a0))
+            | `MbCol a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MbCol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_rec_binding: 'loc -> rec_binding -> 'result =
+          fun _loc  ->
+            function
+            | `RbNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "RbNil")), (meta_loc _loc a0))
+            | `RbSem a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "RbSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_rec_binding _loc a1),
+                                       (meta_rec_binding _loc a2)))))))) _loc
+                       a0))
+            | `RbEq a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "RbEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_binding: 'loc -> binding -> 'result =
+          fun _loc  ->
+            function
+            | `BiNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "BiNil")), (meta_loc _loc a0))
+            | `BiAnd a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "BiAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_binding _loc a1),
+                                       (meta_binding _loc a2)))))))) _loc a0))
+            | `BiEq a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "BiEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_with_constr: 'loc -> with_constr -> 'result =
+          fun _loc  ->
+            function
+            | `WcNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "WcNil")), (meta_loc _loc a0))
+            | `WcTyp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "WcTyp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `WcMod a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "WcMod")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_ident _loc a2)))))))) _loc a0))
+            | `WcTyS a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "WcTyS")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `WcMoS a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "WcMoS")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_ident _loc a2)))))))) _loc a0))
+            | `WcAnd a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "WcAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_with_constr _loc a1),
+                                       (meta_with_constr _loc a2)))))))) _loc
+                       a0))
+            | `Ant a0 -> `Ant a0
+        and meta_sig_item: 'loc -> sig_item -> 'result =
+          fun _loc  ->
+            function
+            | `SgNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "SgNil")), (meta_loc _loc a0))
+            | `SgCls a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgCls")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_type _loc a1)))))) _loc a0))
+            | `SgClt a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgClt")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_class_type _loc a1)))))) _loc a0))
+            | `SgSem a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_sig_item _loc a1),
+                                       (meta_sig_item _loc a2)))))))) _loc a0))
+            | `SgDir a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgDir")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `SgExc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgExc")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `SgExt a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgExt")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_ctyp _loc a2),
+                                            (meta_meta_list meta_string _loc
+                                               a3)))))))))) _loc a0))
+            | `SgInc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgInc")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_type _loc a1)))))) _loc a0))
+            | `SgMod a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgMod")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `SgRecMod a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgRecMod")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_binding _loc a1)))))) _loc a0))
+            | `SgMty a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgMty")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_module_type _loc a2)))))))) _loc
+                       a0))
+            | `SgOpn a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgOpn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `SgTyp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgTyp")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `SgVal a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "SgVal")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_module_type: 'loc -> module_type -> 'result =
+          fun _loc  ->
+            function
+            | `MtNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "MtNil")), (meta_loc _loc a0))
+            | `MtId a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MtId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `MtFun a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MtFun")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_module_type _loc a2),
+                                            (meta_module_type _loc a3))))))))))
+                       _loc a0))
+            | `MtQuo a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MtQuo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `MtSig a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MtSig")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_sig_item _loc a1)))))) _loc a0))
+            | `MtWit a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MtWit")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_module_type _loc a1),
+                                       (meta_with_constr _loc a2)))))))) _loc
+                       a0))
+            | `MtOf a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "MtOf")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_expr _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_expr: 'loc -> expr -> 'result =
+          fun _loc  ->
+            function
+            | `ExNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "ExNil")), (meta_loc _loc a0))
+            | `ExId a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `ExAcc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExAcc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+            | `ExApp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `ExAre a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExAre")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `ExArr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExArr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `ExSem a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `ExAsf a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "ExAsf")), (meta_loc _loc a0))
+            | `ExAsr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExAsr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `ExAss a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExAss")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `ExCoe a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExCoe")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_ctyp _loc a2),
+                                            (meta_ctyp _loc a3)))))))))) _loc
+                       a0))
+            | `Flo a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Flo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Chr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Chr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `For_loop a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "For_loop")),
+                    (((fun _loc  (a0,a1,a2,a3,a4,a5)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_expr _loc a2),
+                                            (`PaCom
+                                               (_loc, (meta_expr _loc a3),
+                                                 (`PaCom
+                                                    (_loc,
+                                                      (meta_direction_flag
+                                                         _loc a4),
+                                                      (meta_expr _loc a5))))))))))))))
+                       _loc a0))
+            | `Fun a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Fun")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_match_case _loc a1)))))) _loc a0))
+            | `ExIfe a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExIfe")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_expr _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `Int a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Int")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int32 a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Int32")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int64 a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Int64")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `NativeInt a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "NativeInt")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Label a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Label")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Lazy a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Lazy")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `Let_in a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Let_in")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_rec_flag _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_binding _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `Let_module a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Let_module")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_module_expr _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `Match a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Match")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_match_case _loc a2)))))))) _loc
+                       a0))
+            | `New a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "New")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `Obj a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Obj")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_class_str_item _loc a2))))))))
+                       _loc a0))
+            | `Optional_label a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Optional_label")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Override_instance a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Override_instance")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_rec_binding _loc a1)))))) _loc a0))
+            | `Record a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Record")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_rec_binding _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Sequence a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Sequence")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `Send a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Send")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_string _loc a2)))))))) _loc a0))
+            | `String_dot a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "String_dot")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Str a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Str")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Try a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Try")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_match_case _loc a2)))))))) _loc
+                       a0))
+            | `ExTup a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExTup")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_expr _loc a1)))))) _loc a0))
+            | `ExCom a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExCom")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Constraint_exp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Constraint_exp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `ExVrn a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "ExVrn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `While a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "While")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_expr _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Let_open a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Let_open")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Local_type_fun a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Local_type_fun")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_expr _loc a2)))))))) _loc a0))
+            | `Package_expr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Package_expr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_expr _loc a1)))))) _loc a0))
+        and meta_patt: 'loc -> patt -> 'result =
+          fun _loc  ->
+            function
+            | `PaNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "PaNil")), (meta_loc _loc a0))
+            | `PaId a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `PaAli a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaAli")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+            | `PaAny a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "PaAny")), (meta_loc _loc a0))
+            | `PaApp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaArr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaArr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_patt _loc a1)))))) _loc a0))
+            | `PaCom a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaCom")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaSem a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaSem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `Chr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Chr")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Int")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int32 a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Int32")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Int64 a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Int64")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `NativeInt a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "NativeInt")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Flo a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Flo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `PaLab a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaLab")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaOlb a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaOlb")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaOlbi a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaOlbi")),
+                    (((fun _loc  (a0,a1,a2,a3)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc, (meta_patt _loc a2),
+                                            (meta_expr _loc a3)))))))))) _loc
+                       a0))
+            | `PaOrp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaOrp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaRng a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaRng")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `PaRec a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaRec")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_patt _loc a1)))))) _loc a0))
+            | `PaEq a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaEq")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_patt _loc a2)))))))) _loc a0))
+            | `Str a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Str")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `PaTup a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaTup")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_patt _loc a1)))))) _loc a0))
+            | `PaTyc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaTyc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_patt _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `PaTyp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaTyp")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `PaVrn a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaVrn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Lazy a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Lazy")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_patt _loc a1)))))) _loc a0))
+            | `PaMod a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "PaMod")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+        and meta_ctyp: 'loc -> ctyp -> 'result =
+          fun _loc  ->
+            function
+            | `TyNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "TyNil")), (meta_loc _loc a0))
+            | `TyAli a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyAli")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyAny a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "TyAny")), (meta_loc _loc a0))
+            | `TyApp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyArr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyArr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyCls a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyCls")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `TyLab a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyLab")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyId a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyId")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ident _loc a1)))))) _loc a0))
+            | `TyMan a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyMan")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyDcl a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyDcl")),
+                    (((fun _loc  (a0,a1,a2,a3,a4)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (`PaCom
+                                          (_loc,
+                                            (meta_list meta_ctyp _loc a2),
+                                            (`PaCom
+                                               (_loc, (meta_ctyp _loc a3),
+                                                 (meta_list
+                                                    (fun _loc  (a0,a1)  ->
+                                                       `PaTup
+                                                         (_loc,
+                                                           (`PaCom
+                                                              (_loc,
+                                                                (meta_ctyp
+                                                                   _loc a0),
+                                                                (meta_ctyp
+                                                                   _loc a1)))))
+                                                    _loc a4)))))))))))) _loc
+                       a0))
+            | `TyObj a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyObj")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_row_var_flag _loc a2))))))))
+                       _loc a0))
+            | `TyOlb a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyOlb")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_string _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyPol a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyPol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyTypePol a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyTypePol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyQuo a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyQuo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `TyQuP a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyQuP")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `TyQuM a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyQuM")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `TyAnP a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "TyAnP")), (meta_loc _loc a0))
+            | `TyAnM a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "TyAnM")), (meta_loc _loc a0))
+            | `TyVrn a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyVrn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `TyRec a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyRec")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyCol a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyCol")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TySem a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TySem")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyCom a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyCom")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TySum a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TySum")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyOf a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyOf")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyAnd a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyAnd")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyOr a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyOr")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyPrv a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyPrv")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyMut a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyMut")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyTup a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyTup")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TySta a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TySta")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyVrnEq a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyVrnEq")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyVrnSup a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyVrnSup")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyVrnInf a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyVrnInf")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_ctyp _loc a1)))))) _loc a0))
+            | `TyVrnInfSup a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyVrnInfSup")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyAmp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyAmp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyOfAmp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyOfAmp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ctyp _loc a1),
+                                       (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyPkg a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyPkg")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_module_type _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_ident: 'loc -> ident -> 'result =
+          fun _loc  ->
+            function
+            | `IdAcc a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "IdAcc")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_ident _loc a2)))))))) _loc a0))
+            | `IdApp a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "IdApp")),
+                    (((fun _loc  (a0,a1,a2)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (`PaCom
+                                     (_loc, (meta_ident _loc a1),
+                                       (meta_ident _loc a2)))))))) _loc a0))
+            | `Lid a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Lid")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Uid a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Uid")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_meta_list :
+          'all_a0 .
+            ('loc -> 'all_a0 -> 'result) ->
+              'loc -> 'all_a0 meta_list -> 'result=
+          fun mf_a  _loc  ->
+            function
+            | `LNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "LNil")), (meta_loc _loc a0))
+            | `LCons a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "LCons")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (mf_a _loc a0),
+                                  (meta_meta_list mf_a _loc a1)))))) _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_meta_option :
+          'all_a0 .
+            ('loc -> 'all_a0 -> 'result) ->
+              'loc -> 'all_a0 meta_option -> 'result=
+          fun mf_a  _loc  ->
+            function
+            | `None a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "None")), (meta_loc _loc a0))
+            | `Some a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "Some")), (mf_a _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_row_var_flag: 'loc -> row_var_flag -> 'result =
+          fun _loc  ->
+            function
+            | `RowVar a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "RowVar")), (meta_loc _loc a0))
+            | `RvNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "RvNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_override_flag: 'loc -> override_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Override a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Override")), (meta_loc _loc a0))
+            | `OvNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "OvNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_virtual_flag: 'loc -> virtual_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Virtual a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "Virtual")), (meta_loc _loc a0))
+            | `ViNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "ViNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_private_flag: 'loc -> private_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Private a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "Private")), (meta_loc _loc a0))
+            | `PrNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "PrNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_mutable_flag: 'loc -> mutable_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Mutable a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "Mutable")), (meta_loc _loc a0))
+            | `MuNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "MuNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_direction_flag: 'loc -> direction_flag -> 'result =
+          fun _loc  ->
+            function
+            | `To a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "To")), (meta_loc _loc a0))
+            | `Downto a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "Downto")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+        and meta_rec_flag: 'loc -> rec_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Recursive a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Recursive")), (meta_loc _loc a0))
+            | `ReNil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "ReNil")), (meta_loc _loc a0))
+            | `Ant a0 -> `Ant a0
+      end
   end
 let rec is_module_longident =
   function
@@ -8688,7 +8783,7 @@ let rec is_irrefut_patt =
   | `Lazy (_loc,p) -> is_irrefut_patt p
   | `PaId (_loc,_) -> false
   | `PaMod (_loc,_) -> true
-  | `PaVrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`PaFlo (_loc,_)|`NativeInt
+  | `PaVrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)|`NativeInt
                                                                     (_loc,_)|
       `Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)|`Chr (_loc,_)|`PaTyp
                                                                     (_loc,_)|
@@ -8994,9 +9089,9 @@ class clean_ast =
       | wc -> wc
     method! expr e =
       match super#expr e with
-      | `ExLet (_loc,_,`BiNil _l,e)|`ExRec (_loc,`RbNil _l,e)|`ExCom
-                                                                (_loc,
-                                                                 `ExNil _l,e)|
+      | `Let_in (_loc,_,`BiNil _l,e)|`Record (_loc,`RbNil _l,e)|`ExCom
+                                                                  (_loc,
+                                                                   `ExNil _l,e)|
           `ExCom (_loc,e,`ExNil _l)|`ExSem (_loc,`ExNil _l,e)|`ExSem
                                                                 (_loc,e,
                                                                  `ExNil _l)
@@ -9099,7 +9194,7 @@ let match_pre =
       | `McArr (_loc,p,`ExNil _,e) ->
           `McArr
             (_loc, p, (`ExNil _loc),
-              (`ExFun
+              (`Fun
                  (_loc,
                    (`McArr
                       (_loc, (`PaId (_loc, (`Uid (_loc, "()")))),
@@ -9107,7 +9202,7 @@ let match_pre =
       | `McArr (_loc,p,e,e1) ->
           `McArr
             (_loc, p, e,
-              (`ExFun
+              (`Fun
                  (_loc,
                    (`McArr
                       (_loc, (`PaId (_loc, (`Uid (_loc, "()")))),

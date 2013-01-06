@@ -1,0 +1,10 @@
+#+OPTIONS: ^:{}
+
+
+
+* core variants
+
+#+BEGIN_EXAMPLE
+ExApp ExVrn
+ExTup ExCOm
+#+END_EXAMPLE

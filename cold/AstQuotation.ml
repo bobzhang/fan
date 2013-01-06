@@ -12,12 +12,8 @@ type quotation_error_message =
 type quotation_error = (string* string* quotation_error_message* exn) 
 exception QuotationError of quotation_error
 type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
-module ExpKey = DynAst.Pack(struct
-  type 'a t = unit 
-  end)
-module ExpFun = DynAst.Pack(struct
-  type 'a t = 'a expand_fun 
-  end)
+module ExpKey = DynAst.Pack(struct type 'a t = unit  end)
+module ExpFun = DynAst.Pack(struct type 'a t = 'a expand_fun  end)
 let current_loc_name = ref None
 let stack = Stack.create ()
 let current_quot () =
@@ -230,12 +226,12 @@ let of_expr_with_filter ~name  ~entry  ~filter  =
   add name DynAst.expr_tag expand_fun; add name DynAst.str_item_tag mk_fun
 module MetaLocQuotation =
   struct
-  let meta_loc_expr _loc loc =
-    match current_loc_name.contents with
-    | None  -> `ExId (_loc, (`Lid (_loc, (FanLoc.name.contents))))
-    | Some "here" -> MetaLoc.meta_loc_expr _loc loc
-    | Some x -> `ExId (_loc, (`Lid (_loc, x)))
-  let meta_loc_patt _loc _ = `PaAny _loc
+    let meta_loc_expr _loc loc =
+      match current_loc_name.contents with
+      | None  -> `ExId (_loc, (`Lid (_loc, (FanLoc.name.contents))))
+      | Some "here" -> MetaLoc.meta_loc_expr _loc loc
+      | Some x -> `ExId (_loc, (`Lid (_loc, x)))
+    let meta_loc_patt _loc _ = `PaAny _loc
   end
 let gm () =
   match FanConfig.compilation_unit.contents with
@@ -371,7 +367,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExSeq")),
+                                    (_loc, (`PaVrn (_loc, "Sequence")),
                                       (mloc _loc))), e)
                          | "uidexpr" ->
                              `PaApp
@@ -401,7 +397,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaFlo")),
+                                    (_loc, (`PaVrn (_loc, "Flo")),
                                       (mloc _loc))), e)
                          | "intpatt" ->
                              `PaApp
@@ -473,7 +469,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "ExFlo")),
+                                    (_loc, (`PaVrn (_loc, "Flo")),
                                       (mloc _loc))), e)
                          | "nativeintexpr" ->
                              `PaApp
@@ -504,7 +500,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "seqexpr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExSeq")),
+                               (_loc, (`ExVrn (_loc, "Sequence")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "uidexpr" ->
@@ -554,7 +550,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "floexpr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExFlo")),
+                               (_loc, (`ExVrn (_loc, "Flo")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "nativeintexpr" ->
@@ -654,7 +650,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`Lid (_loc, "float_repres")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "ExFlo")),
+                               (_loc, (`ExVrn (_loc, "Flo")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "`boolexpr" ->
@@ -680,7 +676,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            x)))))
                          | "flopatt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaFlo")),
+                               (_loc, (`ExVrn (_loc, "Flo")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "intpatt" ->
@@ -805,7 +801,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                              (`Lid (_loc, "float_repres")))))),
                                    e) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaFlo")),
+                               (_loc, (`ExVrn (_loc, "Flo")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "liststr_item" ->
@@ -1005,7 +1001,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                          | "listmatch_caselettry" ->
                              `ExApp
                                (_loc,
-                                 (`ExSnd
+                                 (`Send
                                     (_loc,
                                       (`ExId
                                          (_loc,
@@ -1024,7 +1020,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                          | "antimatch_caselettry" ->
                              `ExApp
                                (_loc,
-                                 (`ExSnd
+                                 (`Send
                                     (_loc,
                                       (`ExId
                                          (_loc,
@@ -1040,7 +1036,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                          | "match_caselettry" ->
                              `ExApp
                                (_loc,
-                                 (`ExSnd
+                                 (`Send
                                     (_loc,
                                       (`ExId
                                          (_loc,

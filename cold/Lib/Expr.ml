@@ -17,13 +17,13 @@ let mksequence ?loc  =
   function
   | `ExSem (_loc,_,_)|`Ant (_loc,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
-      `ExSeq (_loc, e)
+      `Sequence (_loc, e)
   | e -> e
 let mksequence' ?loc  =
   function
   | `ExSem (_loc,_,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
-      `ExSeq (_loc, e)
+      `Sequence (_loc, e)
   | e -> e
 let mkassert loc =
   function
@@ -232,7 +232,7 @@ let map loc p e l =
                     (loc,
                       (`IdAcc
                          (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
-                 (`ExFun (loc, (`McArr (loc, p, (`ExNil loc), e)))))), l)
+                 (`Fun (loc, (`McArr (loc, p, (`ExNil loc), e)))))), l)
       else
         `ExApp
           (loc,
@@ -245,7 +245,7 @@ let map loc p e l =
                            (`IdAcc
                               (loc, (`Uid (loc, "List")),
                                 (`Lid (loc, "fold_right")))))),
-                      (`ExFun
+                      (`Fun
                          (loc,
                            (`McOr
                               (loc,
@@ -254,7 +254,7 @@ let map loc p e l =
                                      (`ExId (loc, (`Lid (loc, "true")))),
                                      (`ExApp
                                         (loc,
-                                          (`ExFun
+                                          (`Fun
                                              (loc,
                                                (`McArr
                                                   (loc,
@@ -262,7 +262,7 @@ let map loc p e l =
                                                        (loc,
                                                          (`Lid (loc, "x")))),
                                                     (`ExNil loc),
-                                                    (`ExFun
+                                                    (`Fun
                                                        (loc,
                                                          (`McArr
                                                             (loc,
@@ -294,7 +294,7 @@ let map loc p e l =
                                           e)))),
                                 (`McArr
                                    (loc, (`PaAny loc), (`ExNil loc),
-                                     (`ExFun
+                                     (`Fun
                                         (loc,
                                           (`McArr
                                              (loc,
@@ -314,7 +314,7 @@ let filter loc p b l =
              (`ExId
                 (loc,
                   (`IdAcc (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
-             (`ExFun (loc, (`McArr (loc, p, (`ExNil loc), b)))))), l)
+             (`Fun (loc, (`McArr (loc, p, (`ExNil loc), b)))))), l)
   else
     `ExApp
       (loc,
@@ -323,7 +323,7 @@ let filter loc p b l =
              (`ExId
                 (loc,
                   (`IdAcc (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
-             (`ExFun
+             (`Fun
                 (loc,
                   (`McOr
                      (loc,
@@ -365,7 +365,7 @@ let substp loc env =
     | `Str (_loc,s) -> `Str (loc, s)
     | `ExTup (_loc,x) -> `PaTup (loc, (loop x))
     | `ExCom (_loc,x1,x2) -> `PaCom (loc, (loop x1), (loop x2))
-    | `ExRec (_loc,bi,`ExNil _) ->
+    | `Record (_loc,bi,`ExNil _) ->
         let rec substbi =
           function
           | `RbSem (_loc,b1,b2) -> `PaSem (loc, (substbi b1), (substbi b2))
@@ -472,14 +472,14 @@ let filter_patt_with_captured_variables patt =
 let fun_args _loc args body =
   if args = []
   then
-    `ExFun
+    `Fun
       (_loc,
         (`McArr
            (_loc, (`PaId (_loc, (`Uid (_loc, "()")))), (`ExNil _loc), body)))
   else
     List.fold_right
       (fun arg  body  ->
-         `ExFun (_loc, (`McArr (_loc, arg, (`ExNil _loc), body)))) args body
+         `Fun (_loc, (`McArr (_loc, arg, (`ExNil _loc), body)))) args body
 let _loc = FanLoc.ghost
 let app a b = `ExApp (_loc, a, b)
 let comma a b = `ExCom (_loc, a, b)
@@ -613,7 +613,7 @@ let mkumin loc prefix arg =
   | `Int32 (_loc,n) -> `Int32 (loc, (String.neg n))
   | `Int64 (_loc,n) -> `Int64 (loc, (String.neg n))
   | `NativeInt (_loc,n) -> `NativeInt (loc, (String.neg n))
-  | `ExFlo (_loc,n) -> `ExFlo (loc, (String.neg n))
+  | `Flo (_loc,n) -> `Flo (loc, (String.neg n))
   | _ -> `ExApp (loc, (`ExId (loc, (`Lid (loc, ("~" ^ prefix))))), arg)
 let mk_assert =
   function
@@ -623,7 +623,7 @@ let mk_record label_exprs =
   let rec_bindings =
     List.map (fun (label,expr)  -> `RbEq (_loc, (`Lid (_loc, label)), expr))
       label_exprs in
-  `ExRec (_loc, (FanAst.rbSem_of_list rec_bindings), (`ExNil _loc))
+  `Record (_loc, (FanAst.rbSem_of_list rec_bindings), (`ExNil _loc))
 let failure =
   `ExApp
     (_loc, (`ExId (_loc, (`Lid (_loc, "raise")))),
@@ -633,14 +633,14 @@ let failure =
 let (<+) names acc =
   List.fold_right
     (fun name  acc  ->
-       `ExFun
+       `Fun
          (_loc,
            (`McArr
               (_loc, (`PaId (_loc, (`Lid (_loc, name)))), (`ExNil _loc), acc))))
     names acc
 let (<+<) patts acc =
   List.fold_right
-    (fun p  acc  -> `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), acc))))
+    (fun p  acc  -> `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), acc))))
     patts acc
 let mep_comma x y =
   `ExApp
@@ -1025,7 +1025,7 @@ let mk_record_ee label_exprs =
     |>
     (fun es  ->
        `ExApp
-         (_loc, (`ExVrn (_loc, "ExRec")),
+         (_loc, (`ExVrn (_loc, "Record")),
            (`ExTup
               (_loc,
                 (`ExCom
@@ -1056,7 +1056,7 @@ let gen_curry_n acc ~arity  cons n =
       (fun i  -> List.init n (fun j  -> `PaId (_loc, (xid ~off:i j)))) in
   let pat = Patt.of_str cons in
   List.fold_right
-    (fun p  acc  -> `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), acc))))
+    (fun p  acc  -> `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), acc))))
     (List.map (fun lst  -> Patt.apply pat lst) args) acc
 let currying match_cases ~arity  =
   if arity >= 2
@@ -1064,12 +1064,12 @@ let currying match_cases ~arity  =
     let names = List.init arity (fun i  -> x ~off:i 0) in
     let exprs = List.map (fun s  -> `ExId (_loc, (`Lid (_loc, s)))) names in
     names <+
-      (`ExMat
+      (`Match
          (_loc, (tuple_of_list exprs), (FanAst.mcOr_of_list match_cases)))
-  else `ExFun (_loc, (FanAst.mcOr_of_list match_cases))
+  else `Fun (_loc, (FanAst.mcOr_of_list match_cases))
 let unknown len =
   if len = 0
-  then `ExSnd (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), "unknown")
+  then `Send (_loc, (`ExId (_loc, (`Lid (_loc, "self")))), "unknown")
   else
     `ExApp
       (_loc, (`ExId (_loc, (`Lid (_loc, "failwith")))),

@@ -3,10 +3,13 @@ open FanToken
 type assoc = [ `NA | `RA | `LA] 
 type position =
   [ `First | `Last | `Before of string | `After of string | `Level of string] 
-module Action = struct
-  type t = Obj.t  let mk: 'a -> t = Obj.repr let get: t -> 'a = Obj.obj
-  let getf: t -> 'a -> 'b = Obj.obj
-  let getf2: t -> 'a -> 'b -> 'c = Obj.obj
+module Action =
+  struct
+    type t = Obj.t 
+    let mk: 'a -> t = Obj.repr
+    let get: t -> 'a = Obj.obj
+    let getf: t -> 'a -> 'b = Obj.obj
+    let getf2: t -> 'a -> 'b -> 'c = Obj.obj
   end
 type 'a cont_parse = FanLoc.t -> Action.t -> 'a parse 
 type description = [ `Normal | `Antiquot] 

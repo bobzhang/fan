@@ -2,8 +2,8 @@ open LibUtil
 module Ast = FanAst
 module MetaLoc =
   struct
-  let meta_loc_patt _loc _ = `PaId (_loc, (`Lid (_loc, "loc")))
-  let meta_loc_expr _loc _ = `ExId (_loc, (`Lid (_loc, "loc")))
+    let meta_loc_patt _loc _ = `PaId (_loc, (`Lid (_loc, "loc")))
+    let meta_loc_expr _loc _ = `ExId (_loc, (`Lid (_loc, "loc")))
   end
 module MetaAst = FanAst.Make(MetaLoc)
 let _ =
@@ -13,7 +13,7 @@ let _ =
          let _loc = FanAst.loc_of_str_item ast in
          `StExp
            (_loc,
-             (`ExLet
+             (`Let_in
                 (_loc, (`ReNil _loc),
                   (`BiEq
                      (_loc, (`PaId (_loc, (`Lid (_loc, "loc")))),
@@ -26,7 +26,7 @@ let _ =
 let add_debug_expr e =
   let _loc = FanAst.loc_of_expr e in
   let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
-  `ExTry
+  `Try
     (_loc, e,
       (`McOr
          (_loc,
@@ -48,7 +48,7 @@ let add_debug_expr e =
                      (`ExId (_loc, (`Lid (_loc, "exc")))))))),
            (`McArr
               (_loc, (`PaId (_loc, (`Lid (_loc, "exc")))), (`ExNil _loc),
-                (`ExSeq
+                (`Sequence
                    (_loc,
                      (`ExSem
                         (_loc,
@@ -101,7 +101,7 @@ let _ =
           inherit  FanAst.map as super
           method! expr =
             function
-            | `ExFun (_loc,m) -> `ExFun (_loc, (map_match_case m))
+            | `Fun (_loc,m) -> `Fun (_loc, (map_match_case m))
             | x -> super#expr x
           method! str_item =
             function
@@ -116,7 +116,7 @@ let decorate_binding decorate_fun =
      inherit  FanAst.map as super
      method! binding =
        function
-       | `BiEq (_loc,`PaId (_,`Lid (_,id)),(`ExFun (_,_) as e)) ->
+       | `BiEq (_loc,`PaId (_,`Lid (_,id)),(`Fun (_,_) as e)) ->
            `BiEq
              (_loc, (`PaId (_loc, (`Lid (_loc, id)))), (decorate_fun id e))
        | b -> super#binding b
@@ -131,9 +131,9 @@ let decorate decorate_fun =
       | st -> super#str_item st
     method! expr =
       function
-      | `ExLet (_loc,r,b,e) ->
-          `ExLet (_loc, r, (decorate_binding decorate_fun b), (o#expr e))
-      | `ExFun (_loc,_) as e -> decorate_fun "<fun>" e
+      | `Let_in (_loc,r,b,e) ->
+          `Let_in (_loc, r, (decorate_binding decorate_fun b), (o#expr e))
+      | `Fun (_loc,_) as e -> decorate_fun "<fun>" e
       | e -> super#expr e
   end
 let decorate_this_expr e id =
@@ -141,7 +141,7 @@ let decorate_this_expr e id =
   let _loc = FanAst.loc_of_expr e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
-  `ExLet
+  `Let_in
     (_loc, (`ReNil _loc),
       (`BiEq
          (_loc, (`PaId (_loc, (`Uid (_loc, "()")))),
@@ -158,10 +158,10 @@ let rec decorate_fun id =
   let decorate_expr = decorate#expr in
   let decorate_match_case = decorate#match_case in
   function
-  | `ExFun (_loc,`McArr (_,p,`ExNil _,e)) ->
-      `ExFun (_loc, (`McArr (_loc, p, (`ExNil _loc), (decorate_fun id e))))
-  | `ExFun (_loc,m) ->
-      decorate_this_expr (`ExFun (_loc, (decorate_match_case m))) id
+  | `Fun (_loc,`McArr (_,p,`ExNil _,e)) ->
+      `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), (decorate_fun id e))))
+  | `Fun (_loc,m) ->
+      decorate_this_expr (`Fun (_loc, (decorate_match_case m))) id
   | e -> decorate_this_expr (decorate_expr e) id
 let _ =
   AstFilters.register_str_item_filter
@@ -173,7 +173,7 @@ let _ =
           (function | `StMod (_loc,"Camlp4Trash",_) -> `StNil _loc | st -> st))#str_item))
 let map_expr =
   function
-  | `ExApp (_loc,e,`ExId (_,`Uid (_,"NOTHING")))|`ExFun
+  | `ExApp (_loc,e,`ExId (_,`Uid (_,"NOTHING")))|`Fun
                                                    (_loc,`McArr
                                                            (_,`PaId
                                                                 (_,`Uid

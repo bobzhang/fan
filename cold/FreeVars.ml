@@ -33,18 +33,17 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
     method add_binding bi = {<env = fold_binding_vars SSet.add bi env>}
     method! expr =
       function
-      | `ExId (_loc,`Lid (_,s))|`ExLab (_loc,s,`ExNil _)|`ExOlb
+      | `ExId (_loc,`Lid (_,s))|`Label (_loc,s,`ExNil _)|`Optional_label
                                                            (_loc,s,`ExNil _)
           -> if SSet.mem s env then o else {<free = f s free>}
-      | `ExLet (_loc,`ReNil _,bi,e) ->
+      | `Let_in (_loc,`ReNil _,bi,e) ->
           (((o#add_binding bi)#expr e)#set_env env)#binding bi
-      | `ExLet (_loc,`Recursive _,bi,e) ->
+      | `Let_in (_loc,`Recursive _,bi,e) ->
           (((o#add_binding bi)#expr e)#binding bi)#set_env env
-      | `ExFor (_loc,s,e1,e2,_,e3) ->
+      | `For_loop (_loc,s,e1,e2,_,e3) ->
           ((((o#expr e1)#expr e2)#add_atom s)#expr e3)#set_env env
-      | `ExId (_loc,_)|`ExNew (_loc,_) -> o
-      | `ExObj (_loc,p,cst) ->
-          ((o#add_patt p)#class_str_item cst)#set_env env
+      | `ExId (_loc,_)|`New (_loc,_) -> o
+      | `Obj (_loc,p,cst) -> ((o#add_patt p)#class_str_item cst)#set_env env
       | e -> super#expr e
     method! match_case =
       function

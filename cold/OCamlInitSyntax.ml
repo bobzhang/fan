@@ -237,11 +237,12 @@ let parse_module_type str =
     | _ ->
         (eprintf "the module type %s is not a simple module type" str; exit 2)
   with | _ -> (eprintf "%s is not a valid module_type" str; exit 2)
-module Options = struct
-  type spec_list = (string* FanArg.spec* string) list 
-  let init_spec_list = ref []
-  let init spec_list = init_spec_list := spec_list
-  let add (name,spec,descr) =
-    init_spec_list := (init_spec_list.contents @ [(name, spec, descr)])
-  let adds ls = init_spec_list := (init_spec_list.contents @ ls)
+module Options =
+  struct
+    type spec_list = (string* FanArg.spec* string) list 
+    let init_spec_list = ref []
+    let init spec_list = init_spec_list := spec_list
+    let add (name,spec,descr) =
+      init_spec_list := (init_spec_list.contents @ [(name, spec, descr)])
+    let adds ls = init_spec_list := (init_spec_list.contents @ ls)
   end

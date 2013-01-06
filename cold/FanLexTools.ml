@@ -215,7 +215,7 @@ let partition ~counter  ~tables  (i,p) =
                            (`IdAcc
                               (_loc, (`Uid (_loc, "Char")),
                                 (`Lid (_loc, "code")))))),
-                      (`ExSte
+                      (`String_dot
                          (_loc,
                            (`ExId
                               (_loc,
@@ -228,7 +228,7 @@ let partition ~counter  ~tables  (i,p) =
     (_loc, (`ReNil _loc),
       (`BiEq
          (_loc, (`PaId (_loc, (`Lid (_loc, f)))),
-           (`ExFun
+           (`Fun
               (_loc,
                 (`McArr
                    (_loc, (`PaId (_loc, (`Lid (_loc, "c")))), (`ExNil _loc),
@@ -269,7 +269,7 @@ let binding_partition ~counter  ~tables  (i,p) =
                            (`IdAcc
                               (_loc, (`Uid (_loc, "Char")),
                                 (`Lid (_loc, "code")))))),
-                      (`ExSte
+                      (`String_dot
                          (_loc,
                            (`ExId
                               (_loc,
@@ -280,7 +280,7 @@ let binding_partition ~counter  ~tables  (i,p) =
   let f = mk_partition_name i in
   `BiEq
     (_loc, (`PaId (_loc, (`Lid (_loc, f)))),
-      (`ExFun
+      (`Fun
          (_loc,
            (`McArr
               (_loc, (`PaId (_loc, (`Lid (_loc, "c")))), (`ExNil _loc), body)))))
@@ -314,7 +314,7 @@ let gen_definition _loc l =
                (call_state auto j))) trans in
     let cases = Array.to_list cases in
     let body =
-      `ExMat
+      `Match
         (_loc,
           (`ExApp
              (_loc, (`ExId (_loc, (`Lid (_loc, p)))),
@@ -338,7 +338,7 @@ let gen_definition _loc l =
     let ret body =
       `BiEq
         (_loc, (`PaId (_loc, (`Lid (_loc, f)))),
-          (`ExFun
+          (`Fun
              (_loc,
                (`McArr
                   (_loc, (`PaId (_loc, (`Lid (_loc, "lexbuf")))),
@@ -350,7 +350,7 @@ let gen_definition _loc l =
         then `BiNil _loc
         else
           ret
-            (`ExSeq
+            (`Sequence
                (_loc,
                  (`ExSem
                     (_loc,
@@ -389,18 +389,18 @@ let gen_definition _loc l =
   let b =
     let len = Array.length states in
     if len > 1 then `Recursive _loc else `ReNil _loc in
-  `ExFun
+  `Fun
     (_loc,
       (`McArr
          (_loc, (`PaId (_loc, (`Lid (_loc, "lexbuf")))), (`ExNil _loc),
-           (`ExLet
+           (`Let_in
               (_loc, (`ReNil _loc), (FanAst.biAnd_of_list tables),
-                (`ExLet
+                (`Let_in
                    (_loc, (`ReNil _loc), (FanAst.biAnd_of_list parts),
-                     (`ExLet
+                     (`Let_in
                         (_loc, b,
                           (FanAst.biAnd_of_list (Array.to_list states)),
-                          (`ExSeq
+                          (`Sequence
                              (_loc,
                                (`ExSem
                                   (_loc,
@@ -413,7 +413,7 @@ let gen_definition _loc l =
                                                    (`Lid (_loc, "start")))))),
                                          (`ExId
                                             (_loc, (`Lid (_loc, "lexbuf")))))),
-                                    (`ExMat
+                                    (`Match
                                        (_loc,
                                          (`ExApp
                                             (_loc,

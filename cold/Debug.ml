@@ -1,8 +1,6 @@
 open Format
 open FanUtil
-module Debug = struct
-  let mode _ = false
-  end
+module Debug = struct let mode _ = false end
 type section = string 
 let out_channel =
   try
