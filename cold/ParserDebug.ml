@@ -19,35 +19,31 @@ let debug_mode =
 let mk_debug_mode _loc =
   function
   | None  ->
-      Ast.ExId
+      `ExId
         (_loc,
-          (Ast.IdAcc
-             (_loc, (Ast.IdUid (_loc, "Debug")), (Ast.IdLid (_loc, "mode")))))
+          (`IdAcc (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))
   | Some m ->
-      Ast.ExId
+      `ExId
         (_loc,
-          (Ast.IdAcc
-             (_loc, (Ast.IdUid (_loc, m)),
-               (Ast.IdAcc
-                  (_loc, (Ast.IdUid (_loc, "Debug")),
-                    (Ast.IdLid (_loc, "mode")))))))
+          (`IdAcc
+             (_loc, (`Uid (_loc, m)),
+               (`IdAcc (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))))
 let mk_debug _loc m fmt section args =
   let call =
     Expr.apply
-      (Ast.ExApp
+      (`ExApp
          (_loc,
-           (Ast.ExApp
+           (`ExApp
               (_loc,
-                (Ast.ExId
+                (`ExId
                    (_loc,
-                     (Ast.IdAcc
-                        (_loc, (Ast.IdUid (_loc, "Debug")),
-                          (Ast.IdLid (_loc, "printf")))))),
-                (Ast.ExStr (_loc, section)))), (Ast.ExStr (_loc, fmt)))) args in
-  Ast.ExIfe
-    (_loc,
-      (Ast.ExApp (_loc, (mk_debug_mode _loc m), (Ast.ExStr (_loc, section)))),
-      call, (Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))))
+                     (`IdAcc
+                        (_loc, (`Uid (_loc, "Debug")),
+                          (`Lid (_loc, "printf")))))),
+                (`Str (_loc, section)))), (`Str (_loc, fmt)))) args in
+  `ExIfe
+    (_loc, (`ExApp (_loc, (mk_debug_mode _loc m), (`Str (_loc, section)))),
+      call, (`ExId (_loc, (`Uid (_loc, "()")))))
 let apply () =
   let grammar_entry_create = Gram.mk in
   let start_debug: 'start_debug Gram.t = grammar_entry_create "start_debug"
@@ -71,17 +67,15 @@ let apply () =
                   match (__fan_2, __fan_1) with
                   | (`STR (_,fmt),`LID section) ->
                       ((match (x, (debug_mode section)) with
-                        | (None ,false ) ->
-                            Ast.ExId (_loc, (Ast.IdUid (_loc, "()")))
+                        | (None ,false ) -> `ExId (_loc, (`Uid (_loc, "()")))
                         | (Some e,false ) -> e
                         | (None ,_) -> mk_debug _loc m fmt section args
                         | (Some e,_) ->
-                            Ast.ExLet
-                              (_loc, Ast.ReNil,
-                                (Ast.BiEq
+                            `ExLet
+                              (_loc, (`ReNil _loc),
+                                (`BiEq
                                    (_loc,
-                                     (Ast.PaId
-                                        (_loc, (Ast.IdUid (_loc, "()")))),
+                                     (`PaId (_loc, (`Uid (_loc, "()")))),
                                      (mk_debug _loc m fmt section args))), e)) : 
                       'expr )
                   | _ -> assert false)))])]);

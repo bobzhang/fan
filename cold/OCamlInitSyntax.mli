@@ -1,1 +1,1 @@
-include Sig.Camlp4Syntax
+include Sig.Syntax

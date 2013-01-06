@@ -1,5 +1,5 @@
 open LibUtil
-module Ast = Camlp4Ast
+module Ast = FanAst
 let is_revised ~expr  ~sem_expr_for_list:(x : _ Gram.t)  =
   try
     Gram.delete_rule expr
@@ -15,7 +15,7 @@ let setup_op_parser entry p =
     (fun (__strm : _ XStream.t)  ->
        match XStream.peek __strm with
        | Some ((`KEYWORD x|`SYMBOL x),_loc) when p x ->
-           (XStream.junk __strm; Ast.ExId (_loc, (Ast.IdLid (_loc, x))))
+           (XStream.junk __strm; `ExId (_loc, (`Lid (_loc, x))))
        | _ -> raise XStream.Failure)
 let rec infix_kwds_filter (__strm : _ XStream.t) =
   match XStream.peek __strm with

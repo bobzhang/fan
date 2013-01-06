@@ -1,4 +1,5 @@
 (* NFA *)
+
 open LibUtil;
 type node = { 
   id : int; 
@@ -240,7 +241,7 @@ let rec simplify min max = function
     
 (*  the generated code depends on [next] [backtrack] [start] [Error] *)
 
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 let _loc = FanLoc.ghost;
 
   
@@ -388,9 +389,9 @@ let gen_definition _loc l =
     let len = Array.length states in
     if  len > 1 then begin 
       (* prerr_endlinef "length %d" len; *) (* FIXME *)
-      Ast.ReRecursive
+      `Recursive _loc
     end else
-    Ast.ReNil  in (* FIXME *)
+    `ReNil _loc  in (* FIXME *)
   {:expr|
   fun lexbuf ->
     let $list:tables in

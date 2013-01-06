@@ -1,10 +1,11 @@
+(* open Ast; *)
 open FanGrammar;
 open FanGrammarTools;
 open PreCast.Syntax;
 open LibUtil;
 open Lib;
 open FanUtil;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 
 FanConfig.antiquotations := true;
 

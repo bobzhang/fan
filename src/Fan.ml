@@ -1,13 +1,14 @@
 
 
-
+open Ast;
 include PreCast;
 
 open AstQuotation;
 open Lib.Meta;
 open Syntax;
 open LibUtil;
-module MetaQAst = Camlp4Ast.Meta.Make MetaLocQuotation;
+(* module MetaQAst = FanAst.Meta.Make MetaLocQuotation; *)
+module MetaQAst = FanAst.Make MetaLocQuotation;
 module ME = MetaQAst.Expr;
 module MP = MetaQAst.Patt;
 
@@ -19,7 +20,7 @@ module MP = MetaQAst.Patt;
 
 of_str_item_with_filter ~name:"ocaml" ~entry:str_items
   ~filter:(fun s ->
-    let _loc = Ast.loc_of_str_item s in 
+    let _loc = FanAst.loc_of_str_item s in 
     let v =  {:module_expr| struct $s end |} in
     let module_expr =
       (Typehook.traversal ())#module_expr v in
@@ -211,6 +212,7 @@ open ParserDebug;
 open ParserStream;
 open ParserLex;  
 open AstInjection;
-open FanGen;
+open AstTypeGen;
 open CodeTemplate;
+open Filters;  
 (* open FanEval; *)

@@ -2,7 +2,7 @@ open Parsetree;
 open Asttypes;
 open Longident;
 open LibUtil;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 
 
   
@@ -95,13 +95,13 @@ class printer = object(self:'self)
              [(true,None) ->
                {:ctyp| [= $list:ls ] |}
              |(true,Some x) ->
-                 let u = List.map (fun x -> {| `$lid:x |}) x |> Camlp4Ast.tyApp_of_list in
+                 let u = List.map (fun x -> {| `$lid:x |}) x |> FanAst.tyApp_of_list in
                 {:ctyp| [< $list:ls > $u ]|} 
              | (false,_ ) ->
                  {:ctyp| [> $list:ls ] |} ]  
                
        | Ptyp_constr (lid_loc,ts) ->
-           Camlp4Ast.tyApp_of_list
+           FanAst.tyApp_of_list
              [ {| $(id:self#longident_loc lid_loc) |} ::
                List.map self#core_type ts
              ]
@@ -226,7 +226,7 @@ class printer = object(self:'self)
                  else
                    {| ~ $label : $v |}
                ) lst in
-           Camlp4Ast.exApp_of_list [ self#expr e :: args]
+           FanAst.exApp_of_list [ self#expr e :: args]
        | Pexp_match (e, lst) ->
            let cases = self#gen_cases _loc lst in
            {| match $(self#expr e) with
@@ -345,13 +345,13 @@ class printer = object(self:'self)
            | ((true,false),Some{txt;loc=_loc}) ->
                {| +' $txt|}
            | ((true,false),None) ->
-               let _loc = FanLoc.ghost in Ast.TyAnP _loc 
+               let _loc = FanLoc.ghost in `TyAnP _loc 
            | ((false,true),Some {txt;loc=_loc} ) ->
                {| - ' $txt |}
            | ((false,true),None) ->
-               let _loc = FanLoc.ghost in Ast.TyAnM _loc
+               let _loc = FanLoc.ghost in `TyAnM _loc
            | _ -> assert false ]) variance params  in
-       Camlp4Ast.tyApp_of_list
+       FanAst.tyApp_of_list
          [
           {@loc| $(id:self#longident_loc lid_loc) |}::
           u] ;

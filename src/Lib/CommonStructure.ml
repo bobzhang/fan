@@ -102,9 +102,9 @@ let list_of_sem ty =
   Examples:
   {[
   vew_app [] {| a b c d|};
-  - : L.Expr.Ast.expr * L.Expr.Ast.expr list =
-  (ExId (, IdLid (, "a")),
-  [ExId (, IdLid (, "b")); ExId (, IdLid (, "c")); ExId (, IdLid (, "d"))])
+  - : expr * L.Expr.Ast.expr list =
+  (ExId (, Lid (, "a")),
+  [ExId (, Lid (, "b")); ExId (, Lid (, "c")); ExId (, Lid (, "d"))])
   ]}
  *)
 let rec view_app acc = fun

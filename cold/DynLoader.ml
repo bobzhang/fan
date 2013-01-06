@@ -20,12 +20,7 @@ module Make(U:sig  end) : S = struct
     if ocaml_stdlib
     then include_dir q FanConfig.ocaml_standard_library
     else ();
-    if camlp4_stdlib
-    then
-      (include_dir q FanConfig.camlp4_standard_library;
-       include_dir q
-         (Filename.concat FanConfig.camlp4_standard_library "Camlp4Printers"))
-    else ();
+    if camlp4_stdlib then () else ();
     include_dir q ".";
     q
   let find_in_path x name =

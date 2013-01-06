@@ -1,7 +1,7 @@
 (* open FanUtil; *)
 open LibUtil;
 class c_fold_pattern_vars ['accu] f init =  object
-  inherit Camlp4Ast.fold as super;
+  inherit FanAst.fold as super;
   val acc = init;
   method acc : 'accu = acc;
   method! patt = fun
@@ -20,7 +20,7 @@ let rec fold_binding_vars f bi acc = match bi with
   | {:binding| $anti:_ |} -> assert false ];
 
 class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.empty) free_init =  object (o)
-  inherit Camlp4Ast.fold as super;
+  inherit FanAst.fold as super;
   val free : 'accu = free_init;
   val env : SSet.t = env_init;
     

@@ -1,5 +1,5 @@
+(* open Ast; *)
 
-open Filters;
 open Format;
 open LibUtil;
 
@@ -9,12 +9,18 @@ open LibUtil;
   in-consistent behavior *)  
 let just_print_the_version () =
   begin  printf "%s@." FanConfig.version; exit 0 end ;
-      
+let just_print_compilation_unit () = begin 
+  match !FanConfig.compilation_unit with
+  [Some v -> printf "%s@." v
+  |None -> printf "null"];
+  exit 0 ;  
+end;
+
 let print_version () =
   begin eprintf "Camlp4 version %s@." FanConfig.version; exit 0 end;
       
-let print_stdlib () =
-  begin  printf "%s@." FanConfig.camlp4_standard_library; exit 0 end;
+(* let print_stdlib () = *)
+(*   begin  printf "%s@." FanConfig.camlp4_standard_library; exit 0 end; *)
       
 let warn_noassert () =
   begin
@@ -45,9 +51,9 @@ let just_print_applied_parsers () =
 AstParsers.use_parsers
     [ "revise";
       "stream";
-      (* "debug"; *)
       "macro";
-      "ListComprehension"(* ;"lexer" *)];
+      "ListComprehension"
+    ];
   
 type file_kind =
   [ Intf of string
@@ -80,7 +86,8 @@ module Camlp4Bin
      module DynLoader = DynLoader.Make (struct end);
       (* let plugins = Hashtbl.create 50;      *)
      let (objext,libext) =
-        if DynLoader.is_native then (".cmxs",".cmxs")
+        if DynLoader.is_native then
+          (".cmxs",".cmxs")
         else (".cmo",".cma");
      let rewrite_and_load n x =
         let dyn_loader = !DynLoader.instance () in 
@@ -123,8 +130,9 @@ module Camlp4Bin
         end;
      let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
      let output_file = ref None;                
-     let parse_file  ?directive_handler name pa =
-        let loc = FanLoc.mk name in begin
+     let parse_file  ?directive_handler name pa = begin 
+
+      let loc = FanLoc.mk name ;
           PreCast.Syntax.current_warning := print_warning;
           let ic = if name = "-" then stdin else open_in_bin name;
           let cs = XStream.of_channel ic;
@@ -186,14 +194,14 @@ module Camlp4Bin
       let process_intf  name =
         process ~directive_handler:sig_handler
           name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
-                (new Camlp4Ast.clean_ast)#sig_item
+                (new FanAst.clean_ast)#sig_item
                 AstFilters.apply_interf_filters;
       let process_impl  name =
         process ~directive_handler:str_handler
           name
           PreCast.CurrentParser.parse_implem
           PreCast.CurrentPrinter.print_implem
-          (new Camlp4Ast.clean_ast)#str_item
+          (new FanAst.clean_ast)#str_item
           AstFilters.apply_implem_filters
           (* gimd *);
 
@@ -203,14 +211,22 @@ module Camlp4Bin
         begin
           !rcall_callback ();
           match x with
-          [ Intf file_name -> task (process_intf (* dyn_loader *)) file_name
-          | Impl file_name -> task (process_impl (* dyn_loader *)) file_name
+          [ Intf file_name -> begin
+            FanConfig.compilation_unit :=
+              Some (String.capitalize (Filename.(chop_extension (basename file_name))));
+            task process_intf  file_name
+          end
+          | Impl file_name -> begin
+              FanConfig.compilation_unit :=
+                Some (String.capitalize (Filename.(chop_extension (basename file_name))));
+              task process_impl  file_name;
+          end
           | Str s ->
               begin
                 let (f, o) = Filename.open_temp_file "from_string" ".ml";
                 output_string o s;
                 close_out o;
-                task (process_impl (* dyn_loader *)) f;
+                task process_impl  f;
                 at_exit (fun () -> Sys.remove f);
               end
           | ModuleImpl file_name -> rewrite_and_load "" file_name
@@ -221,8 +237,8 @@ module Camlp4Bin
       let initial_spec_list =
         [("-I", FanArg.String (fun x -> input_file (IncludeDir x)),
           "<directory>  Add directory in search patch for object files.");
-         ("-where", FanArg.Unit print_stdlib,
-          "Print camlp4 library directory and exit.");
+         (* ("-where", FanArg.Unit print_stdlib, *)
+         (*  "Print camlp4 library directory and exit."); *)
          ("-nolib", FanArg.Clear search_stdlib,
           "No automatic search for object files in library directory.");
          ("-intf", FanArg.String (fun x -> input_file (Intf x)),
@@ -247,6 +263,8 @@ module Camlp4Bin
           "Print Camlp4 version and exit.");
          ("-version", FanArg.Unit just_print_the_version,
           "Print Camlp4 version number and exit.");
+         ("-compilation-unit", FanArg.Unit just_print_compilation_unit,
+           "Print the current compilation unit");
          ("-vnum", FanArg.Unit just_print_the_version,
           "Print Camlp4 version number and exit.");
          ("-no_quot", FanArg.Clear FanConfig.quotations,

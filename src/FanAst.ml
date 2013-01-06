@@ -1,40 +1,130 @@
-(* Enrich with some utility functions in Ast *)
-
-#filter "fold";;
-#filter "meta";;
-#filter "trash";;
+include Ast;
+module type META_LOC = sig
+      (** The first location is where to put the returned pattern.
+          Generally it's _loc to match with {:patt| ... |} quotations.
+          The second location is the one to treat. *)
+    val meta_loc_patt : FanLoc.t -> FanLoc.t -> patt;
+      (** The first location is where to put the returned expression.
+          Generally it's _loc to match with {:expr| ... |} quotations.
+          The second location is the one to treat. *)
+    val meta_loc_expr : FanLoc.t -> FanLoc.t -> expr;
+end;
 open FanUtil;
-open LibUtil;
-module Ast = struct
-  include Ast;
-  let safe_string_escaped s =
-    if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
-    else String.escaped s;
+open LibUtil;  
+open StdLib;
+
+let loc_of_ctyp : ctyp -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+let loc_of_patt : patt -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+  
+let loc_of_expr : expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+      
+
+  
+let loc_of_module_type : module_type -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_module_expr : module_expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+    
+let loc_of_sig_item : sig_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+
+let loc_of_str_item : str_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_type : class_type -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_sig_item : class_sig_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_expr : class_expr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_class_str_item : class_str_item -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_with_constr : with_constr -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_binding : binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_rec_binding : rec_binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_module_binding : module_binding -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_match_case : match_case -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+let loc_of_ident : ident -> FanLoc.t =
+  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+
+
+
+let safe_string_escaped s =
+  if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
+  else String.escaped s;
+  
+{:fans|keep off; <++ "MetaExpr", "MetaPatt","Map","Fold","Print","OPrint";|};
+
+{:ocaml|
+INCLUDE "src/Ast.ml";
+|};
+
+
+
+#default_quotation "expr";;
+DEFINE GETLOC(x) = loc_of_expr(x);
+module MExpr = struct
+  INCLUDE "src/MetaTemplate.ml"; (* FIXME INCLUDE as a langauge :default *)
 end;
 
-include Ast;
-
-external loc_of_ctyp : ctyp -> FanLoc.t = "%field0";
-external loc_of_patt : patt -> FanLoc.t = "%field0";
-external loc_of_expr : expr -> FanLoc.t = "%field0";
-external loc_of_module_type : module_type -> FanLoc.t = "%field0";
-external loc_of_module_expr : module_expr -> FanLoc.t = "%field0";
-external loc_of_sig_item : sig_item -> FanLoc.t = "%field0";
-external loc_of_str_item : str_item -> FanLoc.t = "%field0";
-external loc_of_class_type : class_type -> FanLoc.t = "%field0";
-external loc_of_class_sig_item : class_sig_item -> FanLoc.t = "%field0";
-external loc_of_class_expr : class_expr -> FanLoc.t = "%field0";
-external loc_of_class_str_item : class_str_item -> FanLoc.t = "%field0";
-external loc_of_with_constr : with_constr -> FanLoc.t = "%field0";
-external loc_of_binding : binding -> FanLoc.t = "%field0";
-external loc_of_rec_binding : rec_binding -> FanLoc.t = "%field0";
-external loc_of_module_binding : module_binding -> FanLoc.t = "%field0";
-external loc_of_match_case : match_case -> FanLoc.t = "%field0";
-external loc_of_ident : ident -> FanLoc.t = "%field0";
-
-let ghost = FanLoc.ghost;
+#default_quotation "patt"  ;;
+DEFINE GETLOC(x) = loc_of_patt(x);
+module MPatt = struct
+  INCLUDE "src/MetaTemplate.ml";
+end;
 
 
+module Make(MetaLoc:META_LOC) = struct
+  module Expr = struct
+    open MExpr;
+    let meta_loc = MetaLoc.meta_loc_expr;
+    __MetaExpr__;
+  end;
+  module Patt =struct
+    open MPatt;
+    let meta_loc = MetaLoc.meta_loc_patt;
+    __MetaPatt__;
+  end;
+end;
+    
+
+
+(* +-----------------------------------------------------------------+
+   | Other utilities for ast                                         |
+   +-----------------------------------------------------------------+ *)
+  
 (*
   {[
   is_module_longident {:ident| A.B.t |} ; 
@@ -47,6 +137,7 @@ let rec is_module_longident = fun
   [ {:ident| $_.$i |} -> is_module_longident i
   | {:ident| ($i1 $i2) |} ->
       is_module_longident i1 && is_module_longident i2
+
   | {:ident| $uid:_ |} -> true
   | _ -> false ];
 
@@ -63,6 +154,7 @@ let ident_of_expr =
     [ {:expr| $id:i |} -> i
     | {:expr| $_ $_ |} -> error ()
     | t -> self t ];
+
 (*
   {[
   ident_of_ctyp {:ctyp| list int |} ; ;
@@ -70,16 +162,16 @@ let ident_of_expr =
 
   ident_of_ctyp {:ctyp| A.B |} ; ;     
   - : ident =
-  IdAcc (, IdUid (, "A"),
-  IdUid (, "B"))
+  `IdAcc (, `Uid (, "A"),
+  `Uid (, "B"))
 
   {:ctyp| A.B |} ; ;
   - : ctyp =
-  TyId (, IdAcc (, IdUid (, "A"), IdUid (, "B")))
+  `TyId (, `IdAcc (, `Uid (, "A"), `Uid (, "B")))
 
   ident_of_ctyp {:ctyp| (A B).t |} ; ;
   - : ident =
-  IdAcc (, IdApp (, IdUid (, "A"), IdUid (, "B")), IdLid (, "t"))  ]}
+  `IdAcc (, `IdApp (, `Uid (, "A"), `Uid (, "B")), `Lid (, "t"))  ]}
  *)
 let ident_of_ctyp =
   let error () =
@@ -154,7 +246,7 @@ let rec is_expr_constructor = fun
     | {:expr| `$_ |} -> true
     | _ -> false ];
 
-
+let ghost = FanLoc.ghost ; (* to refine *)
 let rec tyOr_of_list = fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
@@ -450,184 +542,155 @@ let rec list_of_module_binding x acc = match x with
   [ {:module_binding| $x and $y |} ->
     list_of_module_binding x (list_of_module_binding y acc)
   | x -> [x :: acc] ];
-
-module Camlp4Trash = struct
-    INCLUDE "src/Ast.ml";
-end;
-
-module type META_LOC = sig
-      (** The first location is where to put the returned pattern.
-          Generally it's _loc to match with {:patt| ... |} quotations.
-          The second location is the one to treat. *)
-    val meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt;
-      (** The first location is where to put the returned expression.
-          Generally it's _loc to match with {:expr| ... |} quotations.
-          The second location is the one to treat. *)
-    val meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr;
-end;
-
   
-module Meta = struct
-    module Make (MetaLoc : META_LOC) = struct
-      let meta_loc = MetaLoc.meta_loc_expr;
-      module Expr = Filters.MetaGeneratorExpr Ast;
-      let meta_loc = MetaLoc.meta_loc_patt;
-      module Patt = Filters.MetaGeneratorPatt Ast;
-    end;
+let map_expr f = object
+  inherit map as super;
+  method! expr x = f (super#expr x);
+end;
+let map_patt f = object
+  inherit map as super;
+  method! patt x = f (super#patt x);
+end;
+let map_ctyp f = object
+  inherit map as super;
+  method! ctyp x = f (super#ctyp x);
+end;
+let map_str_item f = object
+  inherit map as super;
+  method! str_item x = f (super#str_item x);
+end;
+let map_sig_item f = object
+  inherit map as super;
+  method! sig_item x = f (super#sig_item x);
+end;
+let map_loc f = object
+  inherit map as super;
+  method! loc x = f (super#loc x);
+end;
 
-  end;
 
-  class map = Camlp4MapGenerator.generated;
+class clean_ast = object
+    
+  inherit map as super;
+  method! with_constr wc =
+    with "with_constr"
+    match super#with_constr wc with
+    [ {| $({@_l||})  and $wc |} |
+      {| $wc and $({@_l||} ) |} -> wc
+    | wc -> wc ];
+  method! expr e =
+    with "expr"
+    match super#expr e with
+    [ {| let $rec:_ $({:binding@_l||}) in $e |} |
+      {| { ($e) with $({:rec_binding@_l||})  } |} |
+      {| $({@_l||} ), $e |} |
+      {| $e, $({@_l||} ) |} |
+      {| $({@_l||}); $e |} |
+      {| $e; $({@_l||} ) |} -> e
+    | e -> e ];
+  method! patt p =
+    with "patt"
+    match super#patt p with
+    [ {| ( $p as $({@_l||} ) ) |} |
+      {| $({@_l||}) | $p |} |
+      {| $p | $({@_l||} ) |} |
+      {| $({@_l||} ), $p |} |
+      {| $p, $({@_l||} ) |} |
+      {| $({@_l||} ); $p |} |
+      {| $p; $({@_l||} ) |} -> p
+    | p -> p ];
+  method! match_case mc =
+    with "match_case"
+    match super#match_case mc with
+    [ {| $({@_l||} ) | $mc |} |
+      {| $mc | $({@_l||} ) |} -> mc
+    | mc -> mc ];
+  method! binding bi =
+    with "binding"
+    match super#binding bi with
+    [ {| $({@_l||} ) and $bi |} |
+      {| $bi and $({@_l||} ) |} -> bi
+    | bi -> bi ];
+  method! rec_binding rb =
+    with "rec_binding"
+    match super#rec_binding rb with
+    [ {| $({@_l||} ) ; $bi |} | {| $bi ; $({@_l||} ) |} -> bi
+    | bi -> bi ];
 
-  class fold = Camlp4FoldGenerator.generated;
+  method! module_binding mb =
+    with "module_binding"
+    match super#module_binding mb with
+    [ {| $({@_l||} ) and $mb |} |
+      {| $mb and $({@_l||} ) |} -> mb
+    | mb -> mb ];
 
-  let map_expr f = object
-    inherit map as super;
-    method! expr x = f (super#expr x);
-  end;
-  let map_patt f = object
-    inherit map as super;
-    method! patt x = f (super#patt x);
-  end;
-  let map_ctyp f = object
-    inherit map as super;
-    method! ctyp x = f (super#ctyp x);
-  end;
-  let map_str_item f = object
-    inherit map as super;
-    method! str_item x = f (super#str_item x);
-  end;
-  let map_sig_item f = object
-    inherit map as super;
-    method! sig_item x = f (super#sig_item x);
-  end;
-  let map_loc f = object
-    inherit map as super;
-    method! loc x = f (super#loc x);
-  end;
+  method! ctyp t =
+    with "ctyp"
+    match super#ctyp t with
+    [ {| ! $({@_l||} ) . $t |} |
+      {| $({@_l||} ) as $t |} |
+      {| $t as $({@_l||} ) |} |
+      {| $t -> $({@_l||} ) |} |
+      {| $({@_l||} ) -> $t |} |
+      {| $({@_l||} ) | $t |} |
+      {| $t | $({@_l||} ) |} |
+      {| $t of $({@_l||} ) |} |
+      {| $({@_l||} ) and $t |} |
+      {| $t and $({@_l||} ) |} |
+      {| $t; $({@_l||} ) |} |
+      {| $({@_l||} ); $t |} |
+      {| $({@_l||}), $t |} |
+      {| $t, $({@_l||} ) |} |
+      {| $t & $({@_l||} ) |} |
+      {| $({@_l||} ) & $t |} |
+      {| $({@_l||} ) * $t |} |
+      {| $t * $({@_l||} ) |} -> t
+    | t -> t ];
 
-  class clean_ast = object
-      
-    inherit map as super;
-    method! with_constr wc =
-      with "with_constr"
-      match super#with_constr wc with
-      [ {| $({@_l||})  and $wc |} |
-        {| $wc and $({@_l||} ) |} -> wc
-      | wc -> wc ];
-    method! expr e =
-      with "expr"
-      match super#expr e with
-      [ {| let $rec:_ $({:binding@_l||}) in $e |} |
-        {| { ($e) with $({:rec_binding@_l||})  } |} |
-        {| $({@_l||} ), $e |} |
-        {| $e, $({@_l||} ) |} |
-        {| $({@_l||}); $e |} |
-        {| $e; $({@_l||} ) |} -> e
-      | e -> e ];
-    method! patt p =
-      with "patt"
-      match super#patt p with
-      [ {| ( $p as $({@_l||} ) ) |} |
-        {| $({@_l||}) | $p |} |
-        {| $p | $({@_l||} ) |} |
-        {| $({@_l||} ), $p |} |
-        {| $p, $({@_l||} ) |} |
-        {| $({@_l||} ); $p |} |
-        {| $p; $({@_l||} ) |} -> p
-      | p -> p ];
-    method! match_case mc =
-      with "match_case"
-      match super#match_case mc with
-      [ {| $({@_l||} ) | $mc |} |
-        {| $mc | $({@_l||} ) |} -> mc
-      | mc -> mc ];
-    method! binding bi =
-      with "binding"
-      match super#binding bi with
-      [ {| $({@_l||} ) and $bi |} |
-        {| $bi and $({@_l||} ) |} -> bi
-      | bi -> bi ];
-    method! rec_binding rb =
-      with "rec_binding"
-      match super#rec_binding rb with
-      [ {| $({@_l||} ) ; $bi |} | {| $bi ; $({@_l||} ) |} -> bi
-      | bi -> bi ];
+  method! sig_item sg =
+    with "sig_item"
+    match super#sig_item sg with
+    [ {| $({@_l||}); $sg |} | {| $sg; $({@_l||} ) |} -> sg
+    | {| type $({:ctyp@_l||} ) |} -> {||}
+    | sg -> sg ];
 
-    method! module_binding mb =
-      with "module_binding"
-      match super#module_binding mb with
-      [ {| $({@_l||} ) and $mb |} |
-        {| $mb and $({@_l||} ) |} -> mb
-      | mb -> mb ];
+  method! str_item st =
+    with "str_item"
+    match super#str_item st with
+    [ {| $({@_l||} ); $st |} | {| $st; $({@_l||} ) |} -> st
+    | {| type $({:ctyp@_l||} ) |} -> {||}
+    | {| let $rec:_ $({:binding@_l||} ) |} -> {||}
+    | st -> st ];
 
-    method! ctyp t =
-      with "ctyp"
-      match super#ctyp t with
-      [ {| ! $({@_l||} ) . $t |} |
-        {| $({@_l||} ) as $t |} |
-        {| $t as $({@_l||} ) |} |
-        {| $t -> $({@_l||} ) |} |
-        {| $({@_l||} ) -> $t |} |
-        {| $({@_l||} ) | $t |} |
-        {| $t | $({@_l||} ) |} |
-        {| $t of $({@_l||} ) |} |
-        {| $({@_l||} ) and $t |} |
-        {| $t and $({@_l||} ) |} |
-        {| $t; $({@_l||} ) |} |
-        {| $({@_l||} ); $t |} |
-        {| $({@_l||}), $t |} |
-        {| $t, $({@_l||} ) |} |
-        {| $t & $({@_l||} ) |} |
-        {| $({@_l||} ) & $t |} |
-        {| $({@_l||} ) * $t |} |
-        {| $t * $({@_l||} ) |} -> t
-      | t -> t ];
+  method! module_type mt =
+    match super#module_type mt with
+    [ {:module_type| $mt with $({:with_constr@_l||} ) |} -> mt
+    | mt -> mt ];
 
-    method! sig_item sg =
-      with "sig_item"
-      match super#sig_item sg with
-      [ {| $({@_l||}); $sg |} | {| $sg; $({@_l||} ) |} -> sg
-      | {| type $({:ctyp@_l||} ) |} -> {||}
-      | sg -> sg ];
+  method! class_expr ce =
+    with "class_expr"
+    match super#class_expr ce with
+    [ {| $({@_l||} ) and $ce |} | {| $ce and $({@_l||} ) |} -> ce
+    | ce -> ce ];
 
-    method! str_item st =
-      with "str_item"
-      match super#str_item st with
-      [ {| $({@_l||} ); $st |} | {| $st; $({@_l||} ) |} -> st
-      | {| type $({:ctyp@_l||} ) |} -> {||}
-      | {| let $rec:_ $({:binding@_l||} ) |} -> {||}
-      | st -> st ];
+  method! class_type ct =
+    with "class_type"
+    match super#class_type ct with
+    [ {| $({@_l||} ) and $ct |} | {| $ct and $({@_l||} ) |} -> ct
+    | ct -> ct ];
 
-    method! module_type mt =
-      match super#module_type mt with
-      [ {:module_type| $mt with $({:with_constr@_l||} ) |} -> mt
-      | mt -> mt ];
+  method! class_sig_item csg =
+    with "class_sig_item"
+    match super#class_sig_item csg with
+    [ {| $({@_l||} ); $csg |} | {| $csg; $({@_l||} ) |} -> csg
+    | csg -> csg ];
 
-    method! class_expr ce =
-      with "class_expr"
-      match super#class_expr ce with
-      [ {| $({@_l||} ) and $ce |} | {| $ce and $({@_l||} ) |} -> ce
-      | ce -> ce ];
-
-    method! class_type ct =
-      with "class_type"
-      match super#class_type ct with
-      [ {| $({@_l||} ) and $ct |} | {| $ct and $({@_l||} ) |} -> ct
-      | ct -> ct ];
-
-    method! class_sig_item csg =
-      with "class_sig_item"
-      match super#class_sig_item csg with
-      [ {| $({@_l||} ); $csg |} | {| $csg; $({@_l||} ) |} -> csg
-      | csg -> csg ];
-
-    method! class_str_item cst =
-      with "class_str_item"
-      match super#class_str_item cst with
-      [ {| $({@_l||} ); $cst |} | {| $cst; $({@_l||} ) |} -> cst
-      | cst -> cst ];
-  end;
+  method! class_str_item cst =
+    with "class_str_item"
+    match super#class_str_item cst with
+    [ {| $({@_l||} ); $cst |} | {| $cst; $({@_l||} ) |} -> cst
+    | cst -> cst ];
+end;
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object
@@ -659,3 +722,20 @@ let match_pre = object (self)
    | {| |} -> {| |}
    | {| $anti:x |} -> {| $(anti: add_context x "lettry" ) |} ];
 end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

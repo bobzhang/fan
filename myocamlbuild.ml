@@ -770,6 +770,7 @@ let define_context_for_root r =
     def (r // "Grammar") [r];
     def (r // "Lex") [r];
     def (r // "Lib") [r];
+    def (r // "PLib") [r];
     def ("test") ["src"];
     def "testr" ["src"];
     def "llvm" ["src"];
@@ -789,14 +790,21 @@ let boot_flags =
   S[P ("boot"//"fan"); (* symlink fan to either fan.byte or fan.native *)
     A"-printer"; A"p"];;
 
-rule "code_boot: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
+rule "src->tmp: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
     (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
+
+(* rule "tmp->cold: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml") *)
+(*     (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));; *)
+
+(* copy_rule "tmp -> cold :ml -> ml" *)
+(*    ~insert:`top "tmp/%.ml" "cold/%.ml" *)
 
 rule "code_boot: mli -> mli" ~dep: "src/%.mli" ~prod:(tmp//"%.mli")
     (fan  (tmp//"%.mli") "src/%.mli" (tmp//"%.mli"));;
 
 rule "code_boot: mlpack -> mlpack" ~dep: "src/%.mlpack" ~prod:(tmp//"%.mlpack")
     (fan  (tmp//"%.mlpack") "src/%.mlpack" (tmp//"%.mlpack"));;
+
 rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
     (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
@@ -809,6 +817,8 @@ let () =
     "src/Lib/Ctyp.ml" |-? ["src/Lib/CommonStructure.ml" ];
     "src/Lib/Expr.ml" |-? ["src/Lib/CommonStructure.ml"; "src/Lib/ExprPatt.ml" ];
     "src/Lib/Patt.ml" |-? ["src/Lib/CommonStructure.ml"; "src/Lib/ExprPatt.ml" ];
+    "src/StdMeta.ml"   |-? ["src/MetaTemplate.ml"];
+    "src/FanAst.ml"   |-? ["src/MetaTemplate.ml"; "src/Ast.ml"]; 
   end;;
 
 

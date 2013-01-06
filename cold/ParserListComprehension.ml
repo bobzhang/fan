@@ -1,4 +1,4 @@
-module Ast = Camlp4Ast
+module Ast = FanAst
 open PreCast.Syntax
 open Lib
 open GramLib
@@ -35,23 +35,19 @@ let apply () =
              (Gram.mk_action
                 (fun (mk : 'sem_expr_for_list)  _  (e : 'expr) 
                    (_loc : FanLoc.t)  ->
-                   (Ast.ExApp
+                   (`ExApp
                       (_loc,
-                        (Ast.ExApp
-                           (_loc,
-                             (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), e)),
-                        (mk (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))))) : 
-                   'comprehension_or_sem_expr_for_list ))));
+                        (`ExApp
+                           (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
+                        (mk (`ExId (_loc, (`Uid (_loc, "[]")))))) : 'comprehension_or_sem_expr_for_list ))));
           ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
            `Skeyword ";"],
             (Gram.mk_action
                (fun _  (e : 'expr)  (_loc : FanLoc.t)  ->
-                  (Ast.ExApp
+                  (`ExApp
                      (_loc,
-                       (Ast.ExApp
-                          (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
-                            e)), (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]"))))) : 
-                  'comprehension_or_sem_expr_for_list ))));
+                       (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
+                       (`ExId (_loc, (`Uid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))));
           ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
            `Skeyword "|";
            `Slist1sep
@@ -62,12 +58,10 @@ let apply () =
           ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top")],
             (Gram.mk_action
                (fun (e : 'expr)  (_loc : FanLoc.t)  ->
-                  (Ast.ExApp
+                  (`ExApp
                      (_loc,
-                       (Ast.ExApp
-                          (_loc, (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
-                            e)), (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]"))))) : 
-                  'comprehension_or_sem_expr_for_list ))))])]);
+                       (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
+                       (`ExId (_loc, (`Uid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))))])]);
    Gram.extend (item : 'item Gram.t )
      (None,
        [(None, None,
@@ -101,22 +95,20 @@ let apply () =
               (Gram.mk_action
                  (fun (last : 'expr)  _  (mk : 'sem_expr_for_list)  _ 
                     (e : 'expr)  (_loc : FanLoc.t)  ->
-                    (Ast.ExApp
+                    (`ExApp
                        (_loc,
-                         (Ast.ExApp
-                            (_loc,
-                              (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), e)),
+                         (`ExApp
+                            (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
                          (mk last)) : 'comprehension_or_sem_expr_for_list ))));
            ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
             `Skeyword "::";
             `Snterm (Gram.obj (expr : 'expr Gram.t ))],
              (Gram.mk_action
                 (fun (last : 'expr)  _  (e : 'expr)  (_loc : FanLoc.t)  ->
-                   (Ast.ExApp
+                   (`ExApp
                       (_loc,
-                        (Ast.ExApp
-                           (_loc,
-                             (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))), e)),
+                        (`ExApp
+                           (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
                         last) : 'comprehension_or_sem_expr_for_list ))))])])
   else ()
 let _ = AstParsers.register_parser ("ListComprehension", apply)

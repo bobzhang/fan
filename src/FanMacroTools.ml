@@ -1,10 +1,10 @@
-
-module Ast = Camlp4Ast;
+open Ast;
+module Ast = FanAst;
 open Lib;
 open LibUtil;
 type item_or_def 'a =
     [ Str of 'a
-    | Def of string and option (list string * Ast.expr)
+    | Def of string and option (list string * expr)
     | Und of string
     | ITE of bool and list (item_or_def 'a) and list (item_or_def 'a)
     | Lazy of Lazy.t 'a ];
@@ -24,17 +24,17 @@ let define ~expr ~patt eo x  = begin
   [ Some ([], e) ->
     {:extend|Gram
         expr: Level "simple"
-          [ `UID $x -> (new Ast.reloc _loc)#expr e ]
+          [ `UID $x -> (new FanAst.reloc _loc)#expr e ]
         patt: Level "simple"
           [ `UID $x ->
             let p = Expr.substp _loc [] e
-            in (new Ast.reloc _loc)#patt p ] |}
+            in (new FanAst.reloc _loc)#patt p ] |}
   | Some (sl, e) ->
       {:extend| Gram
         expr: Level "apply"
         [ `UID $x; S{param} ->
           let el =  match param with 
-            [ {:expr| ($tup:e) |} -> Ast.list_of_expr e []
+            [ {:expr| ($tup:e) |} -> FanAst.list_of_expr e []
             | e -> [e] ]  in
           if List.length el = List.length sl then
             let env = List.combine sl el in
@@ -44,12 +44,12 @@ let define ~expr ~patt eo x  = begin
         patt: Level "simple"
         [ `UID $x; S{param} ->
           let pl = match param with
-            [ {:patt| ($tup:p) |} -> Ast.list_of_patt p []
+            [ {:patt| ($tup:p) |} -> FanAst.list_of_patt p []
             | p -> [p] ] in
           if List.length pl = List.length sl then
             let env = List.combine sl pl in
             let p = Expr.substp _loc env e in
-            (new Ast.reloc _loc)#patt p
+            (new FanAst.reloc _loc)#patt p
           else
             incorrect_number _loc pl sl ] |}
   | None -> () ];

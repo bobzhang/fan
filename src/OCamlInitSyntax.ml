@@ -1,7 +1,8 @@
+(* open Ast; *)
 open LibUtil;
 open Format;
 
-module Ast     = Camlp4Ast;
+module Ast     = FanAst;
 type warning = FanLoc.t -> string -> unit;
 let default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt;
 let current_warning = ref default_warning;

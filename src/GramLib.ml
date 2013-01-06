@@ -1,6 +1,6 @@
 open LibUtil;
-(* open FanUtil; *)
-module Ast = Camlp4Ast;
+(* open Ast; *)
+module Ast = FanAst;
 (* test wheter revised or not hack*)  
 (* let test_patt_lessminus = *)
 (*     Gram.of_parser "test_patt_lessminus" *)

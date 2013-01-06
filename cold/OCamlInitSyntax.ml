@@ -1,6 +1,6 @@
 open LibUtil
 open Format
-module Ast = Camlp4Ast
+module Ast = FanAst
 type warning = FanLoc.t -> string -> unit 
 let default_warning loc txt =
   Format.eprintf "<W> %a: %s@." FanLoc.print loc txt
@@ -212,10 +212,10 @@ let wrap directive_handler pa init_loc cs =
   loop init_loc
 let parse_implem ?(directive_handler= fun _  -> None)  _loc cs =
   let l = wrap directive_handler (Gram.parse implem) _loc cs in
-  Ast.stSem_of_list l
+  FanAst.stSem_of_list l
 let parse_interf ?(directive_handler= fun _  -> None)  _loc cs =
   let l = wrap directive_handler (Gram.parse interf) _loc cs in
-  Ast.sgSem_of_list l
+  FanAst.sgSem_of_list l
 let print_interf ?input_file:_  ?output_file:_  _ =
   failwith "No interface printer"
 let print_implem ?input_file:_  ?output_file:_  _ =
@@ -233,7 +233,7 @@ let parse_include_file_smart file =
 let parse_module_type str =
   try
     match Gram.parse_string module_type str with
-    | Ast.MtId (_loc,i) -> i
+    | `MtId (_loc,i) -> i
     | _ ->
         (eprintf "the module type %s is not a simple module type" str; exit 2)
   with | _ -> (eprintf "%s is not a valid module_type" str; exit 2)

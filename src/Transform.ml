@@ -1,8 +1,8 @@
-
+(* open Ast; *)
 open Format;
 open LibUtil;
 open Lib;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 open FSig;
 let transform =
   let _loc = FanLoc.ghost in

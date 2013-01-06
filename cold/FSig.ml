@@ -1,5 +1,5 @@
 open Format
-open Ast
+open FanAst
 type vrn =  
   | TyVrn
   | TyVrnEq
@@ -9,22 +9,21 @@ type vrn =
   | TyAbstr 
 type trail_info = (vrn* int) 
 type col =  {
-  col_label: string;
-  col_mutable: bool;
-  col_ctyp: ctyp} 
+  label: string;
+  is_mutable: bool;
+  ctyp: ctyp} 
 type ty_info = 
   {
-  ty_name_expr: expr;
-  ty_expr: expr;
-  ty_id_expr: expr;
-  ty_id_patt: patt;
-  ty_id_exprs: expr list;
-  ty_id_patts: patt list} 
-type record_col = 
-  {
-  record_label: string;
-  record_mutable: bool;
-  record_info: ty_info} 
+  name_expr: expr;
+  expr: expr;
+  id_expr: expr;
+  id_patt: patt;
+  id_exprs: expr list;
+  id_patts: patt list} 
+type record_col =  {
+  label: string;
+  is_mutable: bool;
+  info: ty_info} 
 type record_info = record_col list 
 type basic_id_transform =
   [ `Pre of string | `Post of string | `Fun of string -> string] 
@@ -33,10 +32,28 @@ type full_id_transform =
   [ basic_id_transform | `Idents of ident list -> ident
   | `Ident of ident -> ident | `Last of string -> ident
   | `Obj of string -> string] 
+open StdLib
+let _ = ()
 type named_type = (string* ctyp) 
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 
 and module_types = types list 
+let rec pp_print_module_types: 'fmt -> module_types -> 'result =
+  fun fmt  a0  -> pp_print_list pp_print_types fmt a0
+and pp_print_types: 'fmt -> types -> 'result =
+  fun fmt  ->
+    function
+    | `Mutual a0 ->
+        Format.fprintf fmt "@[<1>(`Mutual@ %a)@]" pp_print_and_types a0
+    | `Single a0 ->
+        Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type a0
+and pp_print_and_types: 'fmt -> and_types -> 'result =
+  fun fmt  a0  -> pp_print_list pp_print_named_type fmt a0
+and pp_print_named_type: 'fmt -> named_type -> 'result =
+  fun fmt  a0  ->
+    (fun fmt  (a0,a1)  ->
+       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string a0 pp_print_ctyp
+         a1) fmt a0
 type obj_dest =  
   | Obj of k
   | Str_item 
@@ -57,6 +74,7 @@ module type Config =
     val left_type_id : basic_id_transform
     val trail : trail_info -> match_case
     val names : string list
+    val cons_transform : (string -> string) option
   end
 type warning_type =  
   | Abstract of string

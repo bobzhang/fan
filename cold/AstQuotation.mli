@@ -46,9 +46,10 @@ val expand_quotation :
     result is dumped in the file [fname]. *)
 val dump_file : string option  ref 
 
+(* theoretically you can use [mexpr] which lift it into any type you can *)    
 val add_quotation:
-    expr_filter:('a -> Lib.Meta.Ast.expr) ->
-      patt_filter:('b -> Lib.Meta.Ast.patt) ->
+    expr_filter:('a -> expr) ->
+      patt_filter:('b -> patt) ->
         mexpr:(FanLoc.t -> 'c -> 'a) ->
           mpatt:(FanLoc.t -> 'c -> 'b) -> string -> 'c Gram.t -> unit
 
@@ -89,4 +90,4 @@ module MetaLocQuotation :
     val meta_loc_expr : loc -> loc -> expr
     val meta_loc_patt : loc -> 'a -> patt
   end
-val antiquot_expander : parse_patt:(loc -> string -> patt) ->  parse_expr:(loc -> string -> expr) ->  Camlp4Ast.map
+val antiquot_expander : parse_patt:(loc -> string -> patt) ->  parse_expr:(loc -> string -> expr) ->  FanAst.map

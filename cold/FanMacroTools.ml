@@ -1,9 +1,10 @@
-module Ast = Camlp4Ast
+open Ast
+module Ast = FanAst
 open Lib
 open LibUtil
 type 'a item_or_def =  
   | Str of 'a
-  | Def of string* (string list* Ast.expr) option
+  | Def of string* (string list* expr) option
   | Und of string
   | ITE of bool* 'a item_or_def list* 'a item_or_def list
   | Lazy of 'a Lazy.t 
@@ -27,7 +28,8 @@ let define ~expr  ~patt  eo x =
                   (Gram.mk_action
                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match __fan_0 with
-                        | `UID _ -> (((new Ast.reloc) _loc)#expr e : 'expr )
+                        | `UID _ ->
+                            (((new FanAst.reloc) _loc)#expr e : 'expr )
                         | _ -> assert false)))])]);
         Gram.extend (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
@@ -41,7 +43,7 @@ let define ~expr  ~patt  eo x =
                         match __fan_0 with
                         | `UID _ ->
                             (let p = Expr.substp _loc [] e in
-                             ((new Ast.reloc) _loc)#patt p : 'patt )
+                             ((new FanAst.reloc) _loc)#patt p : 'patt )
                         | _ -> assert false)))])]))
    | Some (sl,e) ->
        (Gram.extend (expr : 'expr Gram.t )
@@ -59,7 +61,7 @@ let define ~expr  ~patt  eo x =
                         | `UID _ ->
                             (let el =
                                match param with
-                               | Ast.ExTup (_loc,e) -> Ast.list_of_expr e []
+                               | `ExTup (_loc,e) -> FanAst.list_of_expr e []
                                | e -> [e] in
                              if (List.length el) = (List.length sl)
                              then
@@ -82,13 +84,13 @@ let define ~expr  ~patt  eo x =
                         | `UID _ ->
                             (let pl =
                                match param with
-                               | Ast.PaTup (_loc,p) -> Ast.list_of_patt p []
+                               | `PaTup (_loc,p) -> FanAst.list_of_patt p []
                                | p -> [p] in
                              if (List.length pl) = (List.length sl)
                              then
                                let env = List.combine sl pl in
                                let p = Expr.substp _loc env e in
-                               ((new Ast.reloc) _loc)#patt p
+                               ((new FanAst.reloc) _loc)#patt p
                              else incorrect_number _loc pl sl : 'patt )
                         | _ -> assert false)))])]))
    | None  -> ());
@@ -126,11 +128,9 @@ let undef ~expr  ~patt  x =
   with | Not_found  -> ()
 let parse_def ~expr  ~patt  s =
   match Gram.parse_string expr ~loc:(FanLoc.mk "<command line>") s with
-  | Ast.ExId (_loc,Ast.IdUid (_,n)) -> define ~expr ~patt None n
-  | Ast.ExApp
-      (_loc,Ast.ExApp
-       (_,Ast.ExId (_,Ast.IdLid (_,"=")),Ast.ExId (_,Ast.IdUid (_,n))),e)
-      -> define ~expr ~patt (Some ([], e)) n
+  | `ExId (_loc,`Uid (_,n)) -> define ~expr ~patt None n
+  | `ExApp (_loc,`ExApp (_,`ExId (_,`Lid (_,"=")),`ExId (_,`Uid (_,n))),e) ->
+      define ~expr ~patt (Some ([], e)) n
   | _ -> invalid_arg s
 let include_dirs = ref []
 let add_include_dir str =

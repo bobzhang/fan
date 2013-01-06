@@ -1,60 +1,57 @@
-module Ast = Camlp4Ast
-module MetaLocVar : Ast.META_LOC =
+module Ast = FanAst
+module MetaLocVar : FanAst.META_LOC =
   struct
   let meta_loc_patt _loc _ =
-    Ast.PaId (_loc, (Ast.IdLid (_loc, (FanLoc.name.contents))))
+    `PaId (_loc, (`Lid (_loc, (FanLoc.name.contents))))
   let meta_loc_expr _loc _ =
-    Ast.ExId (_loc, (Ast.IdLid (_loc, (FanLoc.name.contents))))
+    `ExId (_loc, (`Lid (_loc, (FanLoc.name.contents))))
   end 
-module MetaLoc : Ast.META_LOC =
+module MetaLoc : FanAst.META_LOC =
   struct
   let meta_loc_patt _loc _location =
     failwith "MetaLoc.meta_loc_patt not implemented yet"
   let meta_loc_expr _loc location =
     let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple location in
-    Ast.ExApp
+    `ExApp
       (_loc,
-        (Ast.ExId
+        (`ExId
            (_loc,
-             (Ast.IdAcc
-                (_loc, (Ast.IdUid (_loc, "FanLoc")),
-                  (Ast.IdLid (_loc, "of_tuple")))))),
-        (Ast.ExTup
+             (`IdAcc
+                (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
+        (`ExTup
            (_loc,
-             (Ast.ExCom
-                (_loc, (Ast.ExStr (_loc, (Ast.safe_string_escaped a))),
-                  (Ast.ExCom
+             (`ExCom
+                (_loc, (`Str (_loc, (FanAst.safe_string_escaped a))),
+                  (`ExCom
                      (_loc,
-                       (Ast.ExCom
+                       (`ExCom
                           (_loc,
-                            (Ast.ExCom
+                            (`ExCom
                                (_loc,
-                                 (Ast.ExCom
+                                 (`ExCom
                                     (_loc,
-                                      (Ast.ExCom
+                                      (`ExCom
                                          (_loc,
-                                           (Ast.ExCom
+                                           (`ExCom
                                               (_loc,
-                                                (Ast.ExInt
+                                                (`Int
                                                    (_loc, (string_of_int b))),
-                                                (Ast.ExInt
+                                                (`Int
                                                    (_loc, (string_of_int c))))),
-                                           (Ast.ExInt
-                                              (_loc, (string_of_int d))))),
-                                      (Ast.ExInt (_loc, (string_of_int e))))),
-                                 (Ast.ExInt (_loc, (string_of_int f))))),
-                            (Ast.ExInt (_loc, (string_of_int g))))),
+                                           (`Int (_loc, (string_of_int d))))),
+                                      (`Int (_loc, (string_of_int e))))),
+                                 (`Int (_loc, (string_of_int f))))),
+                            (`Int (_loc, (string_of_int g))))),
                        (if h
-                        then Ast.ExId (_loc, (Ast.IdLid (_loc, "true")))
-                        else Ast.ExId (_loc, (Ast.IdLid (_loc, "false")))))))))))
+                        then `ExId (_loc, (`Lid (_loc, "true")))
+                        else `ExId (_loc, (`Lid (_loc, "false")))))))))))
   end 
-module MetaGhostLoc : Ast.META_LOC =
+module MetaGhostLoc : FanAst.META_LOC =
   struct
   let meta_loc_patt _loc _ =
     failwith "MetaGhostLoc.meta_loc_patt not implemented"
   let meta_loc_expr _loc _ =
-    Ast.ExId
+    `ExId
       (_loc,
-        (Ast.IdAcc
-           (_loc, (Ast.IdUid (_loc, "FanLoc")), (Ast.IdLid (_loc, "ghost")))))
+        (`IdAcc (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "ghost")))))
   end 

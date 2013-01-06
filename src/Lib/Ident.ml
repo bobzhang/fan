@@ -1,6 +1,5 @@
-(* open Camlp4Ast; *)
 #default_quotation "ident";;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
 open LibUtil;
 (*
   {[
@@ -60,7 +59,7 @@ let rec lid_of_ident =
    {[
    uid_of_ident {|A.(B.G.h)|};
 
-   Some (IdAcc  (IdUid  "A") (IdAcc  (IdUid  "B") (IdUid  "G")))
+   Some (IdAcc  (Uid  "A") (IdAcc  (Uid  "B") (Uid  "G")))
    ]}
   *)
 let uid_of_ident =
@@ -80,7 +79,7 @@ let uid_of_ident =
 (**
    {[
     list_of_acc_ident  {| A.B.c |} [];
-    [IdUid  "A"; IdUid  "B"; IdLid  "c"]
+    [Uid  "A"; Uid  "B"; Lid  "c"]
    ]}
  *)    
 let rec list_of_acc_ident x acc =
@@ -120,13 +119,13 @@ let map_to_string ident =
    For qualified identifier, we only use the last qulifier.
    {[
    ident_map (fun x -> "meta_" ^ x ) <:ident< A.B.g >> ;
-   IdAcc  (IdUid  "B") (IdLid  "meta_g")
+   IdAcc  (Uid  "B") (Lid  "meta_g")
 
    ident_map (fun x -> "meta_" ^ x ) <:ident< B.g >> ;
-   IdAcc  (IdUid  "B") (IdLid  "meta_g")
+   IdAcc  (Uid  "B") (Lid  "meta_g")
 
    ident_map (fun x -> "meta_" ^ x ) <:ident< g >> ;
-   Camlp4.PreCast.Ast.ident = IdLid  "meta_g"
+   ident = Lid  "meta_g"
 
    ]}
  *)
@@ -143,7 +142,7 @@ let ident_map f x =
       | _ -> invalid_arg ("ident_map identifier" ^ !to_string x ) ]];          
 
 (* the same as [ident_map] except f is of type
-   [string -> Ast.ident ]
+   [string -> ident ]
  *)
 let ident_map_of_ident f x =
   let lst = list_of_acc_ident x [] in
@@ -166,7 +165,7 @@ let ident_map_of_ident f x =
    [A.B.meta_s]
  *)  
 let ident_map_full f x =
-  let _loc = Ast.loc_of_ident x in 
+  let _loc = FanAst.loc_of_ident x in 
   match (uid_of_ident x ,lid_of_ident x ) with
   [(Some pre, s) ->
     {| $pre.$(lid:f s) |} 
@@ -174,6 +173,6 @@ let ident_map_full f x =
     {| $(lid:f s ) |}];
 
 let eq t1 t2 =
-  let strip_locs t = (Ast.map_loc (fun _ -> FanLoc.ghost))#ident t in
+  let strip_locs t = (FanAst.map_loc (fun _ -> FanLoc.ghost))#ident t in
   strip_locs t1 = strip_locs t2;
 

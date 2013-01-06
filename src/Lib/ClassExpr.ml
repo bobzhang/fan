@@ -1,4 +1,5 @@
-open Camlp4Ast;
+
+(* open Ast; *)
 #default_quotation "class_expr";;
 (* INCLUDE "src/Lib/CommonStructure.ml"; *)
 

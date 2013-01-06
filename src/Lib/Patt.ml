@@ -5,9 +5,10 @@
 open LibUtil;
 open Basic;
 open FSig;
-module Ast = Camlp4Ast; (* it has a nested  Ast module, FIXME *)
+(* open Ast; *)
+(* module Ast = FanAst; (\* it has a nested  Ast module, FIXME *\) *)
 
-DEFINE GETLOC(expr)= Ast.loc_of_patt expr;
+DEFINE GETLOC(expr)= FanAst.loc_of_patt expr;
 
   
 
@@ -27,8 +28,8 @@ INCLUDE "src/Lib/ExprPatt.ml"  ;
  *)
 let mk_record ?(arity=1) cols =
   let mk_list off = 
-    List.mapi (fun i -> fun  [ {col_label;_} ->
-      {| $lid:col_label = $(id:xid ~off i )  |} ]) cols in
+    List.mapi (fun i -> fun  [ ({label;_}:col) ->
+      {| $lid:label = $(id:xid ~off i )  |} ]) cols in
   let res = zfold_left
       ~start:1 ~until:(arity-1) ~acc:({| { $(list:mk_list 0) } |} )
       (fun acc i -> comma acc {| { $(list:mk_list i) } |}  ) in

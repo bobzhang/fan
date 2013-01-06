@@ -1,3 +1,4 @@
+open Ast;
 open LibUtil;
 open Fan;
 let wrap parse_fun lb =
@@ -23,7 +24,7 @@ let wrap parse_fun lb =
 
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens
-      (Syntax.top_phrase : Gram.t (option Ast.str_item)) token_stream with
+      (Syntax.top_phrase : Gram.t (option str_item)) token_stream with
     [ Some str_item ->
         let str_item =
           (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) str_item in *)

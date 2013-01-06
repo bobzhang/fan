@@ -1,4 +1,4 @@
-module Ast = Camlp4Ast
+module Ast = FanAst
 open Lib
 open LibUtil
 open PreCast.Syntax
@@ -56,8 +56,7 @@ let _ =
                          Hashtbl.add FanLexTools.named_regexps x r) () : 
                    (_,'e__2,'e__3) Gram.foldsep )))],
             (Gram.mk_action
-               (fun _  (_loc : FanLoc.t)  ->
-                  (Ast.StNil _loc : 'declare_regexp ))))])]);
+               (fun _  (_loc : FanLoc.t)  -> (`StNil _loc : 'declare_regexp ))))])]);
   Gram.extend (regexps : 'regexps Gram.t )
     (None,
       [(None, None,

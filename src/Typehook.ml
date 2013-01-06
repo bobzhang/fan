@@ -1,29 +1,46 @@
 open LibUtil;
-
+open Ast;
 open FSig;
 open Format;
 open Lib;
-module Ast = Camlp4Ast;
+module Ast = FanAst;
   
 (** A Hook To Ast Filters *)
 let keep = ref false;
 type plugin = {
-    plugin_transform:(module_types -> Ast.str_item);
-    plugin_activate: mutable bool;
+    transform:(module_types -> str_item);
+    activate: mutable bool;
+    position: option string;
+    filter: option (string->bool);
   };
+
+let apply_filter f (m:module_types) : module_types = begin 
+  (* eprintf "applying filter@."; *)
+  let f  = (fun
+    [ (`Single (s,_) as x) ->
+      if f s then Some  x else None
+    | `Mutual ls ->
+       let x = List.filter_map (fun ((s,_) as x) -> if f s then Some x  else None) ls in
+       match x with
+       [ [] -> None
+       | [x] -> Some (`Single  x)
+       |  y -> Some (`Mutual y)]]) in
+  List.filter_map  f m ;
+end;
   
 type plugin_name = string ;
   
 let filters : Hashtbl.t plugin_name plugin = Hashtbl.create 30;
   
 let show_code =  ref false;
+let print_collect_module_types = ref false;
   
-let register  (name,filter) =
+let register  ?filter ?position (name,f) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
   else begin
    (* eprintf "%s filter registered@." name ; *)
-   Hashtbl.add filters name {plugin_transform=filter; plugin_activate=false} ;
+   Hashtbl.add filters name {transform=f; activate=false;position;filter} ;
   end;
 
 let show_modules () =
@@ -42,7 +59,7 @@ let show_modules () =
 
 let plugin_add plugin =
   let try v = Hashtbl.find filters plugin in
-  v.plugin_activate <- true
+  v.activate <- true
   with
   [Not_found -> begin
     show_modules ();
@@ -50,7 +67,7 @@ let plugin_add plugin =
   end];
 let plugin_remove plugin =
   let try v = Hashtbl.find filters plugin in
-  v.plugin_activate <- false
+  v.activate <- false
   with
     [Not_found -> begin 
       show_modules ();
@@ -66,7 +83,7 @@ let plugin_remove plugin =
    {:sig_item| type $x |}
  *)  
 let filter_type_defs ?qualified () = object (* (self:'self_type) *)
-  inherit Ast.map as super;
+  inherit FanAst.map as super;
   val mutable type_defs = let _loc = FanLoc.ghost in {:str_item||} ;
   method! sig_item = with "sig_item" fun
     [
@@ -74,19 +91,19 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
      | {|exception $_ |}  | {| class $_ |}  | {| class type $_ |}
      | {| # $_ |}  | {| module $_:$_ |}    | {| module type $_ = $_ |}
      | {| module rec $_ |}  | {| open $_ |} ) -> {| |} (* For sig_item, keep does not make sense. *)
-     | {@_| type $((Ast.TyDcl (_loc,name,vars, ctyp, constraints) as x)) |} -> begin
+     | {@_| type $((`TyDcl (_loc,name,vars, ctyp, constraints) as x)) |} -> begin
              let x = 
                match (Ctyp.qualified_app_list ctyp, qualified)with
               [(Some ({:ident|$i.$_ |},ls),Some q) when
                 (Ident.eq i q && Ctyp.eq_list ls vars )->
                    (* type u 'a = Loc.u 'a *)       
-                  Ast.TyDcl _loc name vars {:ctyp||} constraints
+                  `TyDcl _loc name vars {:ctyp||} constraints
                |(_,_) -> super#ctyp x ] in 
              let y = {:str_item| type $x  |} in
              let () =  type_defs <- {:str_item| $type_defs ; $y |} in      
              {| type $x |}  
      end
-     | {| type $ty |} -> (* TyAnd case *) begin
+     | {| type $ty |} -> (* `TyAnd case *) begin
          let x = super#ctyp ty in
          let () = type_defs <- {:str_item| $type_defs ; $({:str_item|type $x |}) |} in
          {|type $x |} 
@@ -106,7 +123,7 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
 end;
 
 class type traversal = object
-  inherit Ast.map;
+  inherit FanAst.map;
   method get_cur_module_types: FSig.module_types;
   method get_cur_and_types: FSig.and_types;
   (* method in_and_types: *)
@@ -120,10 +137,16 @@ end;
 (*
   Entrance is  [module_expr]
   Choose [module_expr] as an entrace point to make the traversal
-  more modular
+  more modular.
+  Usage
+  {[
+  let v =  {:module_expr| struct $s end |} in
+  let module_expr =
+  (Typehook.traversal ())#module_expr v 
+  ]}
  *)  
 let traversal () : traversal  = object (self:'self_type)
-  inherit Ast.map as super;
+  inherit FanAst.map as super;
   val module_types_stack : Stack.t module_types = Stack.create ();
   val mutable cur_and_types : and_types= [];
   val mutable and_group = false;
@@ -142,23 +165,36 @@ let traversal () : traversal  = object (self:'self_type)
     cur_and_types <-  f cur_and_types;
   (* entrance *)  
   method! module_expr = with "str_item" fun
-    [ {:module_expr| struct $u end |}  -> 
-      let () = self#in_module in 
-      let res = self#str_item u in 
-      let module_types = List.rev (self#get_cur_module_types) in
+    [ {:module_expr| struct $u end |}  ->  begin 
+      self#in_module ;
+      let res = self#str_item u ;
+      let module_types = List.rev (self#get_cur_module_types) ;
+      if !print_collect_module_types then
+        eprintf "@[%a@]@." FSig.pp_print_module_types module_types ;
       let result =
         Hashtbl.fold
-          (fun _ v acc
-            -> if v.plugin_activate then
-              {|$acc; $(v.plugin_transform module_types) |}
+          (fun _ {activate;position;transform;filter} acc
+            ->
+              let module_types =
+                match filter with
+                [Some x -> apply_filter x module_types
+                |None -> module_types] in
+              if activate then
+                let code = transform module_types in 
+                match position with
+                [Some x ->
+                  let (name,f) = Filters.make_filter (x,code) in begin 
+                    AstFilters.register_str_item_filter (name,f);
+                    AstFilters.use_implem_filter name ;
+                    acc
+                  end
+                |None -> 
+                  {| $acc; $code |} ]
             else  acc) filters
-          (if !keep then res else {| |} ) in 
-      (* let items = <<
-       *   .$res$.;
-       *   .$gen (List.rev (self#get_cur_module_types))$. >> ; *)
-      let () = self#out_module in 
+          (if !keep then res else {| |} );
+      self#out_module ;
       {:module_expr| struct $result end |}  
-
+    end
     | x -> super#module_expr x ];
 
   method! str_item  = with "str_item" fun
@@ -170,9 +206,11 @@ let traversal () : traversal  = object (self:'self_type)
       self#out_and_types;
       (if !keep then x else {| |} )
     end
-    | {| type $((Ast.TyDcl (_, name, _, _, _) as t)) |} as x -> begin
-        self#update_cur_module_types (fun lst -> [`Single (name,t) :: lst]);
-       (* if keep.val then x else {| |} *)
+    | {| type $((`TyDcl (_, name, _, _, _) as t)) |} as x -> begin
+        let item =  `Single (name,t) ;
+          eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
+        self#update_cur_module_types (fun lst -> [ item :: lst]);
+       (* if !keep then x else {| |} *)
        x (* always keep *)
     end
     | ( {| let $_ |}  | {| module type $_ = $_ |}  | {| include $_ |}
@@ -180,7 +218,7 @@ let traversal () : traversal  = object (self:'self_type)
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
     |  x ->  super#str_item x  ];
   method! ctyp = fun
-    [ Ast.TyDcl (_, name, _, _, _) as t -> begin
+    [ `TyDcl (_, name, _, _, _) as t -> begin
       if self#is_in_and_types then
         self#update_cur_and_types (fun lst -> [ (name,t) :: lst] )
       else ();
@@ -206,7 +244,7 @@ with "expr"
       [ "<+" ; `STR(_,plugin) -> begin plugin_add plugin; {| |} end
       | "<++"; L1 [`STR(_,x) -> x] SEP ","{plugins} ->
           begin List.iter plugin_add plugins; {| |}  end
-      | "clear" -> begin Hashtbl.iter (fun _  v -> v.plugin_activate <- false) filters; {| |} end
+      | "clear" -> begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end
       | "<--"; L1 [`STR(_,x) -> x] SEP ","{plugins} -> begin List.iter plugin_remove plugins ; {| |} end
       | "keep" ; "on" -> begin keep := true; {| |} end
       | "keep" ; "off" -> begin keep := false; {| |} end

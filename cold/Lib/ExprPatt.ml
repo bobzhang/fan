@@ -37,10 +37,20 @@ let rec apply accu = fun
 (*
   mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
   True
- *)  
-let mk_array arr =
-  let items = arr |> Array.to_list |> sem_of_list in 
-  {| [| $items |] |};  
+ *)
+let mkarray loc arr =
+  let rec loop top =  fun
+    [ [] -> {| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
+        {| [| $e1 ; $(loop false el) |] |} ] in
+  let items = arr |> Array.to_list in 
+  loop true items;
+  
+(* let mk_array arr = *)
+(*   let items = arr |> Array.to_list |> sem_of_list in  *)
+(*   {| [| $items |] |};   *)
 
 
 (*
@@ -51,13 +61,13 @@ let mk_array arr =
    ExVrn  "A" || PaVrn "A"
    
    of_str "A";
-   ExId  (IdUid  "A")
+   ExId  (Uid  "A")
 
    of_str "abs";
-   ExId  (IdLid  "abs")
+   ExId  (Lid  "abs")
 
    of_str "&&";
-   ExId  (IdLid  "&&")
+   ExId  (Lid  "&&")
    ]}
   *)
 let of_str s =
@@ -168,6 +178,13 @@ let tuple_of_list lst =
   | _ -> invalid_arg "tuple_of_list n < 1"] ;
 
 
+let of_vstr_number name i =
+  let items = List.init i (fun i -> {|$(id:xid i) |} ) in
+  if items = [] then {|`$name|}
+  else
+    let item = items |> tuple_of_list in
+    {| `$name $item |};
+    
 (*
   {[
     gen_tuple_n "X" 4 ~arity:2 |> opr#patt std_formatter ;
@@ -181,10 +198,10 @@ let tuple_of_list lst =
   ]}
   
 *)
-let gen_tuple_n ~arity cons n =
+let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {| $(id:xid ~off:i j) |} )) in
-  let pat = of_str cons in 
+  let pat = of_str (cons_transform cons) in 
   List.map (fun lst -> apply pat lst) args |> tuple_of_list ;
     
 

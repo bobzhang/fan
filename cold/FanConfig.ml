@@ -1,28 +1,10 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
 
 let ocaml_standard_library = Config.standard_library;;
 
-let camlp4_standard_library =
-  try Sys.getenv "CAMLP4LIB"
-  with Not_found ->
-    Filename.concat ocaml_standard_library "camlp4";;
+(* let camlp4_standard_library = *)
+(*   try Sys.getenv "CAMLP4LIB" *)
+(*   with Not_found -> *)
+(*     Filename.concat ocaml_standard_library "camlp4";; *)
 
 let version = Sys.ocaml_version;;
 let program_name = ref "camlp4";;
@@ -45,5 +27,6 @@ let fan_debug = ref false;;
 let conversion_table : (string, string) Hashtbl.t = Hashtbl.create 50
 
 
-let gram_warning_verbose = ref true;
+let gram_warning_verbose = ref true
 
+let compilation_unit = ref None

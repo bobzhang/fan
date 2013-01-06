@@ -1,6 +1,7 @@
 
-#default_quotation "ctyp";;  
-module Ast = Camlp4Ast;
+#default_quotation "ctyp";;
+open Ast;
+module Ast = FanAst;
 open LibUtil;
 open Format;
 open Basic;
@@ -19,7 +20,7 @@ let rec to_var_list =  fun
 
 let list_of_opt ot acc = match ot with
   [ {||} -> acc
-  | t -> Ast.list_of_ctyp t acc ];
+  | t -> FanAst.list_of_ctyp t acc ];
 
 
 let rec name_tags = fun
@@ -45,7 +46,7 @@ let rec to_generalized = fun
 let to_string  =
   ref (fun _ -> failwith "Ctyp.to_string foward declaration, not implemented yet");
   (* to_string_of_printer FanBasic.p_ctyp ; *)
-let eprint : ref (Ast.ctyp -> unit) =
+let eprint : ref (ctyp -> unit) =
   ref (fun _ -> failwith "Ctyp.eprint foward declaration, not implemented yet");
          (* eprintf "@[%a@]@." !FanBasic.p_ctyp v ; *)
 
@@ -54,7 +55,7 @@ let eprint : ref (Ast.ctyp -> unit) =
   
 let _loc = FanLoc.ghost ; (* FIXME *)
 
-DEFINE GETLOC(expr)= Ast.loc_of_ctyp expr;  
+DEFINE GETLOC(expr)= FanAst.loc_of_ctyp expr;  
 INCLUDE "src/Lib/CommonStructure.ml";  
 (*
    compose type abstractions
@@ -88,7 +89,7 @@ let (+>) params base = List.fold_right arrow params base;
    ]}
  *)
 let name_length_of_tydcl = fun 
-    [ Ast.TyDcl (_, name, tyvars, _, _) -> (name, List.length tyvars)
+    [ `TyDcl (_, name, tyvars, _, _) -> (name, List.length tyvars)
     | tydcl -> invalid_arg (
         sprintf "name_length_of_tydcl {|%s|}\n" & !to_string tydcl)];      
 
@@ -148,7 +149,7 @@ let of_name_len ~off (name,len) =
    ]}
  *)  
 let ty_name_of_tydcl  = fun 
-    [ Ast.TyDcl (_, name, tyvars, _, _) -> apply {| $lid:name |} tyvars
+    [ `TyDcl (_, name, tyvars, _, _) -> apply {| $lid:name |} tyvars
     | tydcl ->
         invalid_arg & sprintf "ctyp_of_tydcl{|%s|}\n" & !to_string tydcl];      
 
@@ -167,9 +168,10 @@ let gen_ty_of_tydcl ~off tydcl =
    @raise Invalid_argument 
 
    {[
-   list_of_record <:ctyp< u:int; m:mutable int >>;
-   [{Sig.label="u"; Sig.is_mutable=false; Sig.ctyp=TyId  (IdLid  "int")};
-    {Sig.label="m"; Sig.is_mutable=true; Sig.ctyp=TyId  (IdLid  "int")}]
+     L.Ctyp.list_of_record {:ctyp| u:int;m:mutable int |};
+     - : FSig.col list =
+     [{label = "u"; is_mutable = false; ctyp = TyId (, Lid (, "int"))};
+      {label = "m"; is_mutable = true; ctyp = TyId (, Lid (, "int"))}]
    ]}
    
  *)
@@ -177,10 +179,10 @@ let list_of_record ty =
   try 
     ty |> list_of_sem |> List.map (
        fun
-         [ {| $lid:col_label : mutable $col_ctyp  |} ->
-           {col_label; col_ctyp; col_mutable=true}
-         | {| $lid:col_label :  $col_ctyp  |} ->
-           {col_label; col_ctyp; col_mutable=false}
+         [ {| $lid:label : mutable $ctyp  |} ->
+           {label; ctyp; is_mutable=true}
+         | {| $lid:label :  $ctyp  |} ->
+           {label; ctyp; is_mutable=false}
          | t0 -> raise & Unhandled t0 ])
   with
     [Unhandled t0 ->
@@ -288,9 +290,9 @@ let mk_obj class_name  base body =
 
   
 let is_recursive ty_dcl = match ty_dcl with
-  [ Ast.TyDcl (_, name, _, ctyp, _)  ->
+  [ `TyDcl (_, name, _, ctyp, _)  ->
     let obj = object(self:'self_type)
-      inherit Camlp4Ast.fold as super;
+      inherit FanAst.fold as super;
       val mutable is_recursive = false;
       method! ctyp = fun
         [ {| $lid:i |} when i = name -> begin 
@@ -311,9 +313,9 @@ let is_recursive ty_dcl = match ty_dcl with
   Here the order matters
   {[
   ( <:sig_item< type tbl 'a = Ident.tbl 'a >> |> fun
-    [ <:sig_item< type .$Ast.TyDcl _loc _ _ x _ $. >>
+    [ <:sig_item< type .$FanAst.TyDcl _loc _ _ x _ $. >>
      -> qualified_app_list x ]);
-  Some (IdAcc  (IdUid  "Ident") (IdLid  "tbl"), [TyQuo  "a"])
+  Some (IdAcc  (Uid  "Ident") (Lid  "tbl"), [TyQuo  "a"])
   ]}
   
  *)  
@@ -329,12 +331,12 @@ let qualified_app_list = fun
   | _ -> None ];
 
 let is_abstract = fun 
-  [ Ast.TyDcl (_, _, _, {| |}, _) -> true | _ -> false];
+  [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false];
 
 let abstract_list = fun
-  [ Ast.TyDcl (_, _, lst, {| |}, _) -> Some (List.length lst) | _ -> None];
+  [ `TyDcl (_, _, lst, {| |}, _) -> Some (List.length lst) | _ -> None];
 let eq t1 t2 =
-  let strip_locs t = (Camlp4Ast.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
+  let strip_locs t = (FanAst.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
   strip_locs t1 = strip_locs t2;
   
 let eq_list t1 t2 =
@@ -380,10 +382,10 @@ let eq_list t1 t2 =
  *)
 let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50;
-  inherit Camlp4Ast.map as super;
+  inherit FanAst.map as super;
   method! str_item = fun
     [ 
-     {:str_item| type $(Ast.TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
+     {:str_item| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
        match qualified_app_list ctyp with
        [ Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
          if  not (eq_list vars lst) then 
@@ -392,7 +394,7 @@ let mk_transform_type_eq () = object(self:'self_type)
           (* Manual substitution
              [type u 'a 'b = Loc.t 'a 'b]
              [type u int = Loc.t int]
-             This case can not happen [type u Ast.int = Loc.t Ast.int ]
+             This case can not happen [type u FanAst.int = Loc.t FanAst.int ]
            *)
            let src = i and dest = Ident.map_to_string i in begin
              Hashtbl.replace transformers dest (src,List.length lst);
@@ -449,27 +451,27 @@ let transform_module_types  lst =
         do{ prerr_endline s; List.append xs acc })  ;
     A
     B
-   TyId  (IdLid  "float");
-    TyApp  (TyId  (IdLid  "option")) (TyId  (IdLid  "int"));
-    TyId  (IdLid  "float")
+   TyId  (Lid  "float");
+    TyApp  (TyId  (Lid  "option")) (TyId  (Lid  "int"));
+    TyId  (Lid  "float")
     ]}
     @return result type to indicate error
     FIXME a good  support for arrow types?
     FIXME moved to astbuild?
     [ A of [`a | `b] and int ]
  *)
-let reduce_data_ctors (ty:Ast.ctyp)  (init:'a) (f:  string -> list Ast.ctyp -> 'e)  =
+let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
   ErrorMonad.(
   (* antiquotation list can not be recognized in pattern
 	    language the same applies to `int, int they behave the
 	    same *)
 	let rec loop acc t = match t with
 	[ {| $uid:cons of $tys |} ->
-	  f cons (Ast.list_of_ctyp tys []) acc
+	  f cons (FanAst.list_of_ctyp tys []) acc
 
         | {| `$uid:cons of $tys |} ->
             f ("`" ^ cons)
-              (Ast.list_of_ctyp tys []) acc
+              (FanAst.list_of_ctyp tys []) acc
 	| {| $uid:cons |} ->
 	    f cons [] acc
               

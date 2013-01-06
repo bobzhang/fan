@@ -1,36 +1,37 @@
+open Ast
 type loc = FanLoc.t 
 type name =  {
-  expr: Ast.expr;
+  expr: expr;
   tvar: string;
   loc: loc} 
 type styp =
   [ `STlid of (loc* string) | `STapp of (loc* styp* styp)
   | `STquo of (loc* string) | `STself of (loc* string) | `STtok of loc
-  | `STtyp of Ast.ctyp] 
+  | `STtyp of ctyp] 
 type attr = string 
 type entry =  {
   name: name;
-  pos: Ast.expr option;
+  pos: expr option;
   levels: level list} 
 and level =  {
   label: string option;
-  assoc: Ast.expr option;
+  assoc: expr option;
   rules: rule list} 
 and rule =  {
   prod: symbol list;
-  action: Ast.expr option} 
+  action: expr option} 
 and symbol =  {
   text: text;
   styp: styp;
-  pattern: Ast.patt option} 
+  pattern: patt option} 
 and text =
-  [ `TXmeta of (loc* string list* text list* Ast.expr* styp)
+  [ `TXmeta of (loc* string list* text list* expr* styp)
   | `TXlist of (loc* bool* symbol* symbol option)
   | `TXnterm of (loc* name* string option) | `TXopt of (loc* text)
   | `TXtry of (loc* text) | `TXpeek of (loc* text)
-  | `TXrules of (loc* (text list* Ast.expr) list) | `TXself of loc
+  | `TXrules of (loc* (text list* expr) list) | `TXself of loc
   | `TXnext of loc | `TXkwd of (loc* string)
-  | `TXtok of (loc* Ast.expr* attr* string)] 
+  | `TXtok of (loc* expr* attr* string)] 
 type used =  
   | Unused
   | UsedScanned

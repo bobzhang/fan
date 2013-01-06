@@ -1,5 +1,5 @@
-(* open Format; *)
-(* open lang "expr"; *)
+
+open Ast;
 #default_quotation     "expr";;
 
 
@@ -9,11 +9,11 @@
 
 
 
-
+(* open Ast; *)
 open LibUtil;
 open Basic;
 open FanUtil;
-module Ast= Camlp4Ast; (* it contains a module named Meta *)
+module Ast= FanAst; (* it contains a module named Meta *)
 
 
 (*
@@ -27,17 +27,17 @@ module Ast= Camlp4Ast; (* it contains a module named Meta *)
 
   {[
   sep_dot_expr [] {|A.B.g.U.E.h.i|};
-  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
-  [(, ["A"; "B"], ExId (, IdLid (, "g")));
-  (, ["U"; "E"], ExId (, IdLid (, "h"))); (, [], ExId (, IdLid (, "i")))]
+  - : (loc * string list * expr) list =
+  [(, ["A"; "B"], ExId (, Lid (, "g")));
+  (, ["U"; "E"], ExId (, Lid (, "h"))); (, [], ExId (, Lid (, "i")))]
 
   sep_dot_expr [] {|A.B.g.i|};
-  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
-  [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "i")))]
+  - : (loc * string list * expr) list =
+  [(, ["A"; "B"], ExId (, Lid (, "g"))); (, [], ExId (, Lid (, "i")))]
 
   sep_dot_expr [] {|$(uid:"").i|};
-  - : (L.Expr.Ast.loc * string list * L.Expr.Ast.expr) list =
-  [(, [""], ExId (, IdLid (, "i")))]
+  - : (loc * string list * expr) list =
+  [(, [""], ExId (, Lid (, "i")))]
 
   ]}
  *)
@@ -51,7 +51,7 @@ let rec sep_dot_expr acc = fun
       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
   | {| $(id:({:ident@_l| $_.$_ |} as i)) |} ->
       sep_dot_expr acc (Ident.normalize_acc i)
-  | e -> [(Ast.loc_of_expr e, [], e) :: acc] ];
+  | e -> [(FanAst.loc_of_expr e, [], e) :: acc] ];
 
 
 
@@ -92,7 +92,7 @@ let bigarray_get loc arr arg =
   let coords =
     match arg with
     [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
-      Ast.list_of_expr e1 (Ast.list_of_expr e2 [])
+      FanAst.list_of_expr e1 (FanAst.list_of_expr e2 [])
     | _ -> [arg] ] in
   match coords with
   [ [] -> failwith "bigarray_get null list"
@@ -100,7 +100,7 @@ let bigarray_get loc arr arg =
   | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
   | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {@loc| $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } |} ];
+      {@loc| $arr.{$c1,$c2,$c3,$(FanAst.exSem_of_list coords) } |} ];
 
 
 (*
@@ -149,7 +149,7 @@ let map loc p e l =
   match (p, e) with
   [ ({:patt| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
-      if Ast.is_irrefut_patt p then
+      if FanAst.is_irrefut_patt p then
         {@loc| List.map (fun $p -> $e) $l |}
       else
         {@loc| List.fold_right
@@ -159,7 +159,7 @@ let map loc p e l =
 
 
 let filter loc p b l =
-    if Ast.is_irrefut_patt p then
+    if FanAst.is_irrefut_patt p then
       {@loc| List.filter (fun $p -> $b) $l |}
     else
       {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
@@ -223,7 +223,7 @@ let substp loc env =
   try to convert the expr meaning into patt and use that instead
  *)  
 class subst loc env = object
-  inherit Ast.reloc loc as super;
+  inherit FanAst.reloc loc as super;
   method! expr =
     fun
     [ {| $lid:x |} | {| $uid:x |} as e ->
@@ -231,7 +231,7 @@ class subst loc env = object
         [ Not_found -> super#expr e ]
     | {| LOCATION_OF $lid:x |} | {| LOCATION_OF $uid:x |} as e ->
         try
-          let loc = Ast.loc_of_expr (List.assoc x env) in
+          let loc = FanAst.loc_of_expr (List.assoc x env) in
           let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
           {| FanLoc.of_tuple
             ($`str:a, $`int:b, $`int:c, $`int:d,
@@ -249,14 +249,14 @@ end;
 
 
 class type antiquot_filter =object
-  inherit Camlp4Ast.map;
-  method get_captured_variables: list (Ast.expr * Ast.expr);
+  inherit FanAst.map;
+  method get_captured_variables: list (expr * expr);
   method clear_captured_variables: unit;
 end;
   
 (* We don't do any parsing for antiquots here, so it's parser-independent *)  
 let capture_antiquot : antiquot_filter = object
-  inherit Camlp4Ast.map as super;
+  inherit FanAst.map as super;
   val mutable constraints =[];
   method! patt = fun
   [ {:patt@_loc| $anti:s |} | {:patt@_loc| $str:s |} as p when is_antiquot s -> begin
@@ -308,7 +308,7 @@ let fun_args _loc args body =
 
 
 let _loc = FanLoc.ghost ;
-DEFINE GETLOC(expr)= Ast.loc_of_expr expr;  
+DEFINE GETLOC(expr)= FanAst.loc_of_expr expr;  
 INCLUDE "src/Lib/CommonStructure.ml";
 INCLUDE "src/Lib/ExprPatt.ml";
 
@@ -318,10 +318,10 @@ INCLUDE "src/Lib/ExprPatt.ml";
    and [(~-.)] as a prefix [(-.)]
    {[
    mkumin _loc "-." {| 3 |};
-   - : L.Expr.Ast.expr = ExInt (, "-3")
+   - : expr = Int (, "-3")
    mkumin _loc "-." {| a |};
-   - : L.Expr.Ast.expr =
-   ExApp (, ExId (, IdLid (, "~-.")), ExId (, IdLid (, "a")))
+   - : expr =
+   ExApp (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
    ]}
  *)  
 let mkumin loc prefix arg =
@@ -344,7 +344,7 @@ let mk_assert  =  fun
   Example:
   {[
   mk_record [("a",{|3|});("b",{|4|})] ;
-  - : L.Expr.Ast.expr = { a = 3; b = 4 }
+  - : expr = { a = 3; b = 4 }
 
   ]}
   FIXME: label is lid, it can be more precise
@@ -366,7 +366,7 @@ let failure =
   Example:
   {[
   ["a";"b"] <+ {|3|};
-  - : L.Expr.Ast.expr = fun a  b  -> 3
+  - : expr = fun a  b  -> 3
   ]}
  *)
 let (<+) names acc  =
@@ -376,7 +376,7 @@ let (<+) names acc  =
   Example:
   {[
   [{:patt|a|}; {:patt|b|} ] <+< {|3|};
-  - : L.Expr.Ast.expr = fun a  b  -> 3
+  - : expr = fun a  b  -> 3
   ]}
  *)  
 let (<+<) patts acc =
@@ -394,41 +394,30 @@ let (<+<) patts acc =
 (*
   {[
   mep_app {| a |} {|g |};
-  - : L.Expr.Ast.expr = Ast.PaApp (_loc, a, g)
+  - : expr = Ast.PaApp (_loc, a, g)
   mee_app {:expr|f a |} {:expr|g |};
-  - : L.Expr.Ast.expr = Ast.ExApp (_loc, (f a), g)
+  - : expr = Ast.ExApp (_loc, (f a), g)
    ]}
  *)
   
 let mep_comma x y =  {| {:patt| $($x), $($y) |} |};
-  (* {| Ast.PaCom _loc $x $y |}; *)
-let mep_app x y = {| {:patt| $($x) $($y) |}|};
-  (* {| Ast.PaApp _loc $x $y |};        *)
+  (* {| `PaCom (_loc, $x, $y) |}; *)
+let mvep_comma x y =
+  {|`PaCom(_loc,$x,$y)|};
+  
 let mee_comma x y = {| {| $($x), $($y) |} |};
-  (* {| Ast.ExCom _loc $x $y |}; *)
+  (* {| `ExCom (_loc, $x, $y) |}; *)
+let mvee_comma x y = {| `ExCom (_loc,$x,$y) |};
+
 let mee_app x y = {| {| $($x) $($y) |}|};
-  (* {| Ast.ExApp _loc $x $y |}; *)
-
+  (* {| `ExApp(_loc, $x, $y) |}; *)
+let vee_app x y = {| `ExApp (_loc,$x,$y) |};
+  
+let mep_app x y = {| {:patt| $($x) $($y) |}|};
+  (* {| `PaApp (_loc, $x, $y) |};        *)
+let vep_app x y = {| `PaApp (_loc,$x,$y)|};
   
 
-(*
-  We want to generate code 
-   {[
-   {:expr| {:patt| (A,B,C) |} |}
-   ]}
-  But [A],[B],[C] should be parameterized here 
-  Example:
-  {[
-  mk_tuple_ep [{|a|}; {|b|} ] = {| {:patt| ($($(lid:"a")),$($(lid:"b"))) |} |};
-  - : bool = true
-  ]}
- *)
-let mk_tuple_ep = fun 
-   [ [] -> assert false
-   | [x] -> x
-   | xs  -> (* {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |} *)
-         {| {:patt|$(tup: $(List.reduce_right mep_comma xs))|} |} ];
-  
 (*
    
   Example:
@@ -436,25 +425,79 @@ let mk_tuple_ep = fun
   mep_of_str "B" = {|{:patt| B |}|};
   - : bool = true
   ]}
+  FIXME
+  {|{:patt|`B|}|}
+  {|{:patt|B|}|}
  *)  
 
 let mep_of_str  s =
+  let len = String.length s in
+  if s.[0] = '`' then
+    let s = String.sub s 1 (len - 1 ) in
+    {| {:patt|`$($str:s)|}|}
+  else
    let u = {| {:ident| $(uid:$str:s) |} |} in 
    {| {:patt| $(id:$u) |} |};
-    (* let u = {| Ast.IdUid _loc $str:s |} in *)
+    (* let u = {| Ast.Uid _loc $str:s |} in *)
   (* {| Ast.PaId _loc $u |}; *)
 
 (*
+  FIXME bootstrap
   Here [s] should be a capital alphabet
   {[
   mee_of_str "A" = {| {| A |}|};
   - : bool = true
   ]}
+  FIXME
  *)   
 let mee_of_str s =
-  let u = {| {:ident| $(uid:$str:s) |} |} in
-  {| {| $(id:$u) |} |};
+  (* let u = {| |} *)
+  let len = String.length s in
+  if s.[0]='`' then
+    let s = String.sub s 1 (len - 1) in 
+    {| {| `$($str:s) |} |}
+  else
+    let u = {| {:ident| $(uid:$str:s) |} |} in
+    {| {| $(id:$u) |} |};
+    (* {| {| $(uid:$s)|}|} *)
+      (* {| A |}
+           `ExApp
+    (_loc,
+      (`ExApp
+         (_loc, (`ExVrn (_loc, "ExId")),
+           (`ExId (_loc, (`Lid (_loc, "_loc")))))),
+      (`ExApp
+         (_loc, (`ExVrn (_loc, "Uid")),
+           (`ExTup
+              (_loc,
+                (`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), s)))))))
+         
+         `ExId (_loc, (`Uid (_loc, "A")))
+         {:expr| `Uid (_loc,"A") |}
+         {:expr| `ExId (_loc, (`Uid (_loc, "A"))) |}
+         {:expr| {:expr| A |}|}
+         {| {| A |}|}
+       *)
 
+
+(*
+  {|{|A|}|}
+ *)  
+(*
+  {[
+  vee_of_str "A" = {| {|`A|} |};
+  true
+  ]}
+  BOOTSTRAPPING
+  *)
+(* let vee_of_str s = *)
+(*   {| ExVrn _loc $str:s|}; *)
+
+let vee_of_str s =
+  {| `ExVrn (_loc,$str:s) |};
+
+let vep_of_str s =
+  {| `PaVrn (_loc,$str:s)|};
 (*
   Examples:
   {[
@@ -496,12 +539,12 @@ let meee_of_str s =
   First we need to construct this part
   {[
   (ExApp 
-       (ExApp  (ExId  (IdAcc  (IdUid  "Ast") (IdUid  "RbEq")))
-         (ExId  (IdLid  "_loc")))
+       (ExApp  (ExId  (IdAcc  (Uid  "Ast") (Uid  "RbEq")))
+         (ExId  (Lid  "_loc")))
        (ExApp 
-         (ExApp  (ExId  (IdAcc  (IdUid  "Ast") (IdUid  "IdLid")))
-           (ExId  (IdLid  "_loc")))
-         (ExStr  "u")))
+         (ExApp  (ExId  (IdAcc  (Uid  "Ast") (Uid  "Lid")))
+           (ExId  (Lid  "_loc")))
+         (Str  "u")))
   ]}
   given string input u
   we finally want to make 
@@ -517,7 +560,7 @@ let meee_of_str s =
 (*    ]} *)
 (*  *\)   *)
 (* let mep_record_left str = *)
-(*   let u = {| Ast.IdLid _loc $str:str |} in *)
+(*   let u = {| Ast.Lid _loc $str:str |} in *)
 (*   {| Ast.PaEq _loc $u |}; *)
   
   
@@ -526,8 +569,38 @@ let mk_tuple_ee = fun
   [ [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
-      {| Ast.ExTup _loc $(List.reduce_right mee_comma xs) |}];
+      {| `ExTup (_loc, $(List.reduce_right mee_comma xs)) |}];
 
+let mk_tuple_vee = fun 
+  [ [] -> invalid_arg "mktupee arity is zero "
+  | [x] -> x
+  | xs  ->
+      {| `ExTup (_loc, $(List.reduce_right mvee_comma xs)) |}];
+
+(*
+  We want to generate code 
+   {[
+   {:expr| {:patt| (A,B,C) |} |}
+   ]}
+  But [A],[B],[C] should be parameterized here 
+  Example:
+  {[
+  mk_tuple_ep [{|a|}; {|b|} ] = {| {:patt| ($($(lid:"a")),$($(lid:"b"))) |} |};
+  - : bool = true
+  ]}
+ *)
+let mk_tuple_ep = fun 
+  [ [] -> assert false
+  | [x] -> x
+  | xs  ->
+    (* {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |} *)
+      {| {:patt|$(tup: $(List.reduce_right mep_comma xs))|} |} ];
+
+let mk_tuple_vep = fun
+  [[] -> assert false
+  |[x] -> x
+  |xs -> {| `PaTup (_loc,$(List.reduce_right mvep_comma xs))|} ];
+  
   
 (*
   Example:
@@ -614,7 +687,7 @@ let gen_curry_n acc ~arity cons n =
 (*
   Example:
   {[
-   let u  =  Ast.list_of_match_case {:match_case|
+   let u  =  FanAst.list_of_match_case {:match_case|
   (A0 (a0, a1),A0 (b0, b1)) -> 1
   |   (A1 (a0, a1), A1 (b0, b1)) -> 2
   |   (A2 (a0, a1), A2 (b0, b1)) -> 3 |} [] in currying ~arity:2 u ;
@@ -646,7 +719,7 @@ let unknown len =
   
 (* let normalize = object *)
 (*   val expr:Ast.expr; *)
-(*   inherit Camlp4Ast.fold as super; *)
+(*   inherit FanAst.fold as super; *)
 (*   method! patt = with "patt" fun *)
 (*     [ {| $_ |} -> {| "_" |} *)
 (*     | {| $lid:_ |} -> {| "_" |} *)

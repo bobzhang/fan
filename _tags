@@ -17,9 +17,10 @@ true:use_unix
 <{cold,src}/*.{p.native,native}>: pkg_dynlink, pkg_compiler-libs.common
 
 <{cold,src}/*.{byte,d.byte}>: pkg_dynlink, pkg_compiler-libs.toplevel
-<{cold,src}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,Sig,ParsetreeHelper,Ast2Fan}.{ml,mli}> : pkg_compiler-libs.common
+<{cold,src}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,PAst2pt,Sig,ParsetreeHelper,Ast2Fan}.{ml,mli}> : pkg_compiler-libs.common
 
 <{cold,src}/{FanTop,FanEval}.{ml,mli}>:pkg_compiler-libs.toplevel
 
 <{cold,src}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 <{cold,src}/Fan.ml>: warn(-33)
+true: warn(-41)

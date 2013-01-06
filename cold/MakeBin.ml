@@ -1,10 +1,13 @@
-open Filters
 open Format
 open LibUtil
 let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
+let just_print_compilation_unit () =
+  (match FanConfig.compilation_unit.contents with
+   | Some v -> printf "%s@." v
+   | None  -> printf "null");
+  exit 0
 let print_version () =
   eprintf "Camlp4 version %s@." FanConfig.version; exit 0
-let print_stdlib () = printf "%s@." FanConfig.camlp4_standard_library; exit 0
 let warn_noassert () =
   eprintf
     "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
@@ -92,42 +95,39 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
      clear (); phr)
   let rec sig_handler =
     function
-    | Ast.SgDir (_loc,"load",Ast.ExStr (_,s)) ->
-        (rewrite_and_load "" s; None)
-    | Ast.SgDir (_loc,"directory",Ast.ExStr (_,s)) ->
+    | `SgDir (_loc,"load",`Str (_,s)) -> (rewrite_and_load "" s; None)
+    | `SgDir (_loc,"directory",`Str (_,s)) ->
         (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-    | Ast.SgDir (_loc,"use",Ast.ExStr (_,s)) ->
+    | `SgDir (_loc,"use",`Str (_,s)) ->
         Some
           (parse_file ~directive_handler:sig_handler s
              PreCast.CurrentParser.parse_interf)
-    | Ast.SgDir (_loc,"default_quotation",Ast.ExStr (_,s)) ->
+    | `SgDir (_loc,"default_quotation",`Str (_,s)) ->
         (AstQuotation.default := s; None)
-    | Ast.SgDir (_loc,"filter",Ast.ExStr (_,s)) ->
+    | `SgDir (_loc,"filter",`Str (_,s)) ->
         (AstFilters.use_interf_filter s; None)
-    | Ast.SgDir (loc,x,_) ->
+    | `SgDir (loc,x,_) ->
         FanLoc.raise loc
           (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
     | _ -> assert false
   let rec str_handler =
     function
-    | Ast.StDir (_loc,"load",Ast.ExStr (_,s)) ->
-        (rewrite_and_load "" s; None)
-    | Ast.StDir (_loc,"directory",Ast.ExStr (_,s)) ->
+    | `StDir (_loc,"load",`Str (_,s)) -> (rewrite_and_load "" s; None)
+    | `StDir (_loc,"directory",`Str (_,s)) ->
         (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-    | Ast.StDir (_loc,"use",Ast.ExStr (_,s)) ->
+    | `StDir (_loc,"use",`Str (_,s)) ->
         Some
           (parse_file ~directive_handler:str_handler s
              PreCast.CurrentParser.parse_implem)
-    | Ast.StDir (_loc,"default_quotation",Ast.ExStr (_,s)) ->
+    | `StDir (_loc,"default_quotation",`Str (_,s)) ->
         (AstQuotation.default := s; None)
-    | Ast.StDir
-        (_loc,"lang_at",Ast.ExApp (_,Ast.ExStr (_,tag),Ast.ExStr (_,quot)))
-        -> (AstQuotation.default_at_pos tag quot; None)
-    | Ast.StDir (_loc,"lang_clear",Ast.ExNil _) ->
+    | `StDir (_loc,"lang_at",`ExApp (_,`Str (_,tag),`Str (_,quot))) ->
+        (AstQuotation.default_at_pos tag quot; None)
+    | `StDir (_loc,"lang_clear",`ExNil _) ->
         (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
-    | Ast.StDir (_loc,"filter",Ast.ExStr (_,s)) ->
+    | `StDir (_loc,"filter",`Str (_,s)) ->
         (AstFilters.use_implem_filter s; None)
-    | Ast.StDir (loc,x,_) ->
+    | `StDir (loc,x,_) ->
         FanLoc.raise loc
           (XStream.Error (x ^ "bad directive camlp4 can not handled "))
     | _ -> assert false
@@ -137,17 +137,27 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
   let process_intf name =
     process ~directive_handler:sig_handler name
       PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
-      (new Camlp4Ast.clean_ast)#sig_item AstFilters.apply_interf_filters
+      (new FanAst.clean_ast)#sig_item AstFilters.apply_interf_filters
   let process_impl name =
     process ~directive_handler:str_handler name
       PreCast.CurrentParser.parse_implem PreCast.CurrentPrinter.print_implem
-      (new Camlp4Ast.clean_ast)#str_item AstFilters.apply_implem_filters
+      (new FanAst.clean_ast)#str_item AstFilters.apply_implem_filters
   let input_file x =
     let dyn_loader = DynLoader.instance.contents () in
     rcall_callback.contents ();
     (match x with
-     | Intf file_name -> task process_intf file_name
-     | Impl file_name -> task process_impl file_name
+     | Intf file_name ->
+         (FanConfig.compilation_unit :=
+            (Some
+               (String.capitalize
+                  (let open Filename in chop_extension (basename file_name))));
+          task process_intf file_name)
+     | Impl file_name ->
+         (FanConfig.compilation_unit :=
+            (Some
+               (String.capitalize
+                  (let open Filename in chop_extension (basename file_name))));
+          task process_impl file_name)
      | Str s ->
          let (f,o) = Filename.open_temp_file "from_string" ".ml" in
          (output_string o s;
@@ -160,8 +170,6 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
   let initial_spec_list =
     [("-I", (FanArg.String ((fun x  -> input_file (IncludeDir x)))),
        "<directory>  Add directory in search patch for object files.");
-    ("-where", (FanArg.Unit print_stdlib),
-      "Print camlp4 library directory and exit.");
     ("-nolib", (FanArg.Clear search_stdlib),
       "No automatic search for object files in library directory.");
     ("-intf", (FanArg.String ((fun x  -> input_file (Intf x)))),
@@ -186,6 +194,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     ("-v", (FanArg.Unit print_version), "Print Camlp4 version and exit.");
     ("-version", (FanArg.Unit just_print_the_version),
       "Print Camlp4 version number and exit.");
+    ("-compilation-unit", (FanArg.Unit just_print_compilation_unit),
+      "Print the current compilation unit");
     ("-vnum", (FanArg.Unit just_print_the_version),
       "Print Camlp4 version number and exit.");
     ("-no_quot", (FanArg.Clear FanConfig.quotations),

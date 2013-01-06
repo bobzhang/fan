@@ -1,4 +1,4 @@
-(* open Format; *)
+open Ast;
 
 (*
   {:macro|M a b c|}
@@ -15,7 +15,7 @@
   fib 32 -->
      fib 31 + fib 30
 
-     -- ExApp
+     -- `ExApp
      --
   {:str_item| g |};
 
@@ -23,7 +23,7 @@
      
 
   -- macro.str_item
-     StExp ..  
+     `StExp ..  
 
   1. the position where macro quotation appears
      - class_str_item
@@ -46,10 +46,10 @@
  *)
 type key = string;
 
-type expander =  Ast.expr -> Ast.expr;
+type expander =  expr -> expr;
 
 (*
-   Ast.expr -> Ast.str_item
+   expr -> str_item
 *)
   
 let macro_expanders: Hashtbl.t key expander = Hashtbl.create 40 ;
@@ -73,7 +73,7 @@ let rec fib = fun
 let fibm  y =
   match y with
   [ {:expr|$int:x|}  -> {:expr| $(`int:fib (int_of_string x))|}
-  |  x -> let _loc = Camlp4Ast.loc_of_expr x in {:expr| fib $x |} ];
+  |  x -> let _loc = FanAst.loc_of_expr x in {:expr| fib $x |} ];
 
 register_macro ("FIB",fibm);      
 
@@ -106,7 +106,7 @@ GFIB 10;
     
 
 let macro_expander = object(self)
-  inherit Camlp4Ast.map as super;
+  inherit FanAst.map as super;
   method! expr = with "expr" fun
   [{| $uid:a $y |} ->
     let try f = Hashtbl.find macro_expanders a in

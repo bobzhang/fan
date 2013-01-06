@@ -1,9 +1,10 @@
-
+(* open Ast; *)
 open Format;
 open Lib;
 open LibUtil;
-module MetaAst = Camlp4Ast.Meta.Make Lib.Meta.MetaGhostLoc ;
-module Ast = Camlp4Ast;
+(* module MetaAst = FanAst.Meta.Make Lib.Meta.MetaGhostLoc ; *)
+module MetaAst = FanAst.Make Lib.Meta.MetaGhostLoc;  
+module Ast = FanAst;
 open FanGrammar;
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
@@ -88,7 +89,7 @@ let retype_rule_list_without_patterns _loc rl =
 exception NotneededTyping ;
 
 (*
-  translate [styp] into [Ast.ctyp],
+  translate [styp] into [ctyp],
   given the assumption that the entry output [tvar] type
  *)
 let  make_ctyp  styp tvar = 
@@ -111,12 +112,12 @@ let  make_ctyp  styp tvar =
 let make_ctyp_patt styp tvar patt = 
   match make_ctyp styp tvar with
   [ None -> patt (* FIXME *)
-  | Some t -> let _loc = Camlp4Ast.loc_of_patt patt in {:patt| ($patt : $t) |} ];
+  | Some t -> let _loc = FanAst.loc_of_patt patt in {:patt| ($patt : $t) |} ];
 
 let make_ctyp_expr styp tvar expr = 
   match make_ctyp styp tvar with
   [ None -> expr
-  | Some t -> let _loc = Camlp4Ast.loc_of_expr expr in {:expr| ($expr : $t) |} ];
+  | Some t -> let _loc = FanAst.loc_of_expr expr in {:expr| ($expr : $t) |} ];
 
 (* transform [text] to [expr] which represents [symbol]
    compute the [lhs]
@@ -212,7 +213,7 @@ let text_of_action _loc  psl  rtvar act tvar = with "expr"
         [ None | Some {:patt@_| _ |} -> {| fun _ -> $txt |}
         | Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
             let p = make_ctyp_patt s.styp tvar p in  {| fun $p -> $txt |}
-        | Some p when Camlp4Ast.is_irrefut_patt p ->
+        | Some p when FanAst.is_irrefut_patt p ->
             let p = make_ctyp_patt s.styp tvar p in
             {| fun $p -> $txt |}
         | Some _ ->
@@ -326,9 +327,9 @@ let text_of_functorial_extend _loc  gram locals el =
 let mk_tok _loc ?restrict ~pattern styp = with "expr"
  match restrict with
  [ None ->
-   let no_variable = Camlp4Ast.wildcarder#patt pattern in
+   let no_variable = FanAst.wildcarder#patt pattern in
    let match_fun =
-     if Camlp4Ast.is_irrefut_patt no_variable
+     if FanAst.is_irrefut_patt no_variable
      then 
        {| fun [ $pat:no_variable -> true ] |}
      else {| fun [$pat:no_variable -> true | _ -> false ] |} in 
@@ -336,7 +337,7 @@ let mk_tok _loc ?restrict ~pattern styp = with "expr"
    let text = `TXtok (_loc, match_fun, "Normal", descr) in
    {text; styp; pattern = Some pattern }
  | Some restrict ->
-     let p'= Camlp4Ast.wildcarder#patt pattern in
+     let p'= FanAst.wildcarder#patt pattern in
      let match_fun = 
        {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
      let descr = string_of_patt pattern in
@@ -381,7 +382,7 @@ let sfold ?sep _loc  (ns:list string)  f e s =
   (*       ((tok_match_pl, i) as accu) *)
   (*       -> fun *)
   (*         [ { pattern = None; _ } -> accu *)
-  (*         | { pattern = Some p ; _} when Camlp4Ast.is_irrefut_patt p -> accu *)
+  (*         | { pattern = Some p ; _} when FanAst.is_irrefut_patt p -> accu *)
   (*         | { pattern = Some p; text=`TXtok (_, _,  _, _) ; _ } -> *)
   (*             let id = prefix ^ string_of_int i in *)
   (*             (Some *)

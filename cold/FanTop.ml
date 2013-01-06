@@ -1,3 +1,4 @@
+open Ast
 open LibUtil
 open Fan
 let wrap parse_fun lb =
@@ -19,7 +20,7 @@ let wrap parse_fun lb =
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens
-          (Syntax.top_phrase : Ast.str_item option Gram.t ) token_stream
+          (Syntax.top_phrase : str_item option Gram.t ) token_stream
   with
   | Some str_item ->
       let str_item = AstFilters.apply_topphrase_filters str_item in
@@ -44,11 +45,11 @@ let use_file token_stream =
     if stopped_at_directive <> None
     then
       match pl with
-      | (Ast.StDir (_loc,"load",Ast.ExStr (_,s)))::[] ->
+      | (`StDir (_loc,"load",`Str (_,s)))::[] ->
           (Topdirs.dir_load Format.std_formatter s; loop ())
-      | (Ast.StDir (_loc,"directory",Ast.ExStr (_,s)))::[] ->
+      | (`StDir (_loc,"directory",`Str (_,s)))::[] ->
           (Topdirs.dir_directory s; loop ())
-      | (Ast.StDir (_loc,"default_quotation",Ast.ExStr (_,s)))::[] ->
+      | (`StDir (_loc,"default_quotation",`Str (_,s)))::[] ->
           (AstQuotation.set_default s; loop ())
       | _ -> (pl, false)
     else (pl, true) in
