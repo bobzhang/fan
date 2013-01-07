@@ -8,3 +8,8 @@
 ExApp ExVrn ExTup ExCom
 PaApp PaVrn PaTup PaCom
 #+END_EXAMPLE
+
+
+1.
+  define closed and open variant both
+  open is allowed only for one level?
