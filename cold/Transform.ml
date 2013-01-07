@@ -1,7 +1,6 @@
 open Format
 open LibUtil
 open Lib
-module Ast = FanAst
 open FSig
 let transform =
   let _loc = FanLoc.ghost in

@@ -1,5 +1,4 @@
 open Ast
-module Ast = FanAst
 open Lib
 type spat_comp =  
   | SpTrm of FanLoc.t* patt* expr option

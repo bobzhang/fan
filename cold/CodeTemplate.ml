@@ -1,5 +1,4 @@
 open Ast
-module Ast = FanAst
 open LibUtil
 let _loc = FanLoc.ghost
 type ty_meta = 

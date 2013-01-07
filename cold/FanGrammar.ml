@@ -5,9 +5,9 @@ type name =  {
   tvar: string;
   loc: loc} 
 type styp =
-  [ `STlid of (loc* string) | `STapp of (loc* styp* styp)
-  | `STquo of (loc* string) | `STself of (loc* string) | `STtok of loc
-  | `STtyp of ctyp] 
+  [ `TyId of (loc* ident) | `TyApp of (loc* styp* styp)
+  | `TyQuo of (loc* string) | `Self of (loc* string) | `Tok of loc
+  | `Type of ctyp] 
 type attr = string 
 type entry =  {
   name: name;

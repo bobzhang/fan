@@ -212,7 +212,7 @@ let apply () =
                with | XStream.Failure  -> raise (XStream.Error "") in
              let s = __strm in
              let _loc =
-               FanLoc.merge (FanAst.loc_of_expr al) (Ast.loc_of_expr a) in
+               FanLoc.merge (FanAst.loc_of_expr al) (FanAst.loc_of_expr a) in
              kont (`Sem (_loc, al, a)) s))
        | _ -> al in
      fun (__strm : _ XStream.t)  -> let a = symb __strm in kont a __strm);
@@ -3581,7 +3581,7 @@ let apply () =
                        (_loc,
                          (`IdAcc
                             (_loc, (FanAst.ident_of_ctyp t1),
-                              (Ast.ident_of_ctyp t2))))
+                              (FanAst.ident_of_ctyp t2))))
                    with | Invalid_argument s -> raise (XStream.Error s) : 
                   'ctyp ))))]);
        ((Some "simple"), None,

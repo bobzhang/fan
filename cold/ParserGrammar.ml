@@ -4,7 +4,6 @@ open PreCast.Syntax
 open LibUtil
 open Lib
 open FanUtil
-module Ast = FanAst
 let _ = FanConfig.antiquotations := true
 let nonterminals = Gram.mk "nonterminals"
 let nonterminalsclear = Gram.mk "nonterminalsclear"
@@ -553,7 +552,9 @@ let _ =
                   | `UID ("L0"|"L1" as x) ->
                       (let () = check_not_tok s in
                        let styp =
-                         `STapp (_loc, (`STlid (_loc, "list")), (s.styp)) in
+                         `TyApp
+                           (_loc, (`TyId (_loc, (`Lid (_loc, "list")))),
+                             (s.styp)) in
                        let text =
                          mk_slist _loc
                            (match x with
@@ -574,7 +575,9 @@ let _ =
                  | `UID "OPT" ->
                      (let () = check_not_tok s in
                       let styp =
-                        `STapp (_loc, (`STlid (_loc, "option")), (s.styp)) in
+                        `TyApp
+                          (_loc, (`TyId (_loc, (`Lid (_loc, "option")))),
+                            (s.styp)) in
                       let text = `TXopt (_loc, (s.text)) in
                       mk_symbol ~text ~styp ~pattern:None : 'symbol )
                  | _ -> assert false)));
@@ -612,7 +615,7 @@ let _ =
                  match __fan_0 with
                  | `UID "S" ->
                      (mk_symbol ~text:(`TXself _loc)
-                        ~styp:(`STself (_loc, "S")) ~pattern:None : 'symbol )
+                        ~styp:(`Self (_loc, "S")) ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `UID "N" -> true | _ -> false)),
@@ -622,7 +625,7 @@ let _ =
                  match __fan_0 with
                  | `UID "N" ->
                      (mk_symbol ~text:(`TXnext _loc)
-                        ~styp:(`STself (_loc, "N")) ~pattern:None : 'symbol )
+                        ~styp:(`Self (_loc, "N")) ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Skeyword "[";
           `Slist1sep
@@ -633,13 +636,13 @@ let _ =
                  (let rl = retype_rule_list_without_patterns _loc rl in
                   let t = new_type_var () in
                   mk_symbol ~text:(`TXrules (_loc, (mk_srules _loc t rl "")))
-                    ~styp:(`STquo (_loc, t)) ~pattern:None : 'symbol ))));
+                    ~styp:(`TyQuo (_loc, t)) ~pattern:None : 'symbol ))));
          ([`Snterm (Gram.obj (simple_patt : 'simple_patt Gram.t ))],
            (Gram.mk_action
               (fun (p : 'simple_patt)  (_loc : FanLoc.t)  ->
                  (let (p,ls) = Expr.filter_patt_with_captured_variables p in
                   match ls with
-                  | [] -> mk_tok _loc ~pattern:p (`STtok _loc)
+                  | [] -> mk_tok _loc ~pattern:p (`Tok _loc)
                   | (x,y)::ys ->
                       let restrict =
                         List.fold_left
@@ -660,7 +663,7 @@ let _ =
                                (`ExApp
                                   (_loc, (`Id (_loc, (`Lid (_loc, "=")))), x)),
                                y)) ys in
-                      mk_tok _loc ~restrict ~pattern:p (`STtok _loc) : 
+                      mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 
                  'symbol ))));
          ([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
@@ -669,7 +672,7 @@ let _ =
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `STR (_,s) ->
-                     (mk_symbol ~text:(`TXkwd (_loc, s)) ~styp:(`STtok _loc)
+                     (mk_symbol ~text:(`TXkwd (_loc, s)) ~styp:(`Tok _loc)
                         ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Snterm (Gram.obj (name : 'name Gram.t ));
@@ -690,7 +693,7 @@ let _ =
            (Gram.mk_action
               (fun (lev : 'e__10 option)  (n : 'name)  (_loc : FanLoc.t)  ->
                  (mk_symbol ~text:(`TXnterm (_loc, n, lev))
-                    ~styp:(`STquo (_loc, (n.tvar))) ~pattern:None : 'symbol ))));
+                    ~styp:(`TyQuo (_loc, (n.tvar))) ~pattern:None : 'symbol ))));
          ([`Stoken
              (((function | `ANT (("nt"|""),_) -> true | _ -> false)),
                (`Normal, "`ANT ((\"nt\"|\"\"),_)"));
@@ -716,7 +719,7 @@ let _ =
                      (let i = parse_ident _loc s in
                       let n = mk_name _loc i in
                       mk_symbol ~text:(`TXnterm (_loc, n, lev))
-                        ~styp:(`STquo (_loc, (n.tvar))) ~pattern:None : 
+                        ~styp:(`TyQuo (_loc, (n.tvar))) ~pattern:None : 
                      'symbol )
                  | _ -> assert false)));
          ([`Skeyword "("; `Sself; `Skeyword ")"],

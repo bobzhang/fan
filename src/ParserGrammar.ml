@@ -148,7 +148,8 @@ FanConfig.antiquotations := true;
   symbol:
   [ `UID ("L0"| "L1" as x); S{s}; OPT [`UID "SEP"; symbol{t} -> t ]{sep } ->
     let () = check_not_tok s in
-    let styp = `STapp _loc (`STlid _loc "list") s.styp in
+    (* let styp = `STapp _loc (`STlid _loc "list") s.styp in *)
+    let styp = {:ctyp| list  $(s.styp) |} in 
     let text = mk_slist _loc
         (match x with
          ["L0" -> false | "L1" -> true
@@ -156,7 +157,7 @@ FanConfig.antiquotations := true;
        mk_symbol ~text ~styp ~pattern:None
   |`UID "OPT"; S{s}  ->
       let () = check_not_tok s in
-      let styp = `STapp _loc (`STlid _loc "option") s.styp in
+      let styp = {:ctyp| option $(s.styp) |} in 
       let text = `TXopt _loc s.text in
       mk_symbol  ~text ~styp ~pattern:None
   |`UID "TRY"; S{s} ->
@@ -166,23 +167,23 @@ FanConfig.antiquotations := true;
       let text = `TXpeek _loc s.text in
       mk_symbol ~text ~styp:(s.styp) ~pattern:None
   | `UID "S" ->
-      mk_symbol  ~text:(`TXself _loc)  ~styp:(`STself _loc "S") ~pattern:None
+      mk_symbol  ~text:(`TXself _loc)  ~styp:(`Self _loc "S") ~pattern:None
   |`UID "N" ->
-      mk_symbol  ~text:(`TXnext _loc)   ~styp:(`STself _loc "N") ~pattern:None
+      mk_symbol  ~text:(`TXnext _loc)   ~styp:(`Self _loc "N") ~pattern:None
   | "["; L1 rule SEP "|"{rl}; "]" ->
       let rl = retype_rule_list_without_patterns _loc rl in
       let t = new_type_var () in
       mk_symbol  ~text:(`TXrules _loc (mk_srules _loc t rl ""))
-        ~styp:(`STquo _loc t) ~pattern:None
+        ~styp:({:ctyp|'$t |}) ~pattern:None
   | simple_patt{p} -> 
     let (p,ls) = Expr.filter_patt_with_captured_variables p in
     match ls with
-    [ [] -> mk_tok _loc ~pattern:p (`STtok _loc)
+    [ [] -> mk_tok _loc ~pattern:p (`Tok _loc)
     | [(x,y)::ys] ->
         let restrict =
           List.fold_left (fun acc (x,y) -> {:expr| $acc && ( $x = $y ) |} )
             {:expr| $x = $y |} ys  in 
-        mk_tok _loc ~restrict ~pattern:p (`STtok _loc) ]
+        mk_tok _loc ~restrict ~pattern:p (`Tok _loc) ]
         (* | `UID ("UID"|"LID" as x) ; `ANT ((""),s) -> *)
         (*    let i = AntiquotSyntax.parse_ident _loc s in *)
         (*    let lid = gen_lid () in  *)
@@ -191,16 +192,16 @@ FanConfig.antiquotations := true;
         (*      {:expr| fun [$pat:pattern when $lid:lid = $lid:i -> true | _ -> false ] |} in *)
         (*    let descr = `TXtok _loc match_fun "Normal" (x^) *)
         (*    {text;} *)
-        (*    mk_tok _loc ~pattern (`STtok _loc) *)
+        (*    mk_tok _loc ~pattern (`Tok _loc) *)
         
     | `STR (_, s) ->
-        mk_symbol  ~text:(`TXkwd _loc s) ~styp:(`STtok _loc) ~pattern:None
+        mk_symbol  ~text:(`TXkwd _loc s) ~styp:(`Tok _loc) ~pattern:None
     | name{n};  OPT [`UID "Level"; `STR (_, s) -> s ]{lev} ->
-        mk_symbol  ~text:(`TXnterm _loc n lev) ~styp:(`STquo _loc n.tvar) ~pattern:None
+        mk_symbol  ~text:(`TXnterm _loc n lev) ~styp:({:ctyp|'$(n.tvar)|}) ~pattern:None
     | `ANT(("nt"|""),s); OPT [`UID "Level"; `STR (_, s) -> s ]{lev} ->
         let i = (* AntiquotSyntax. *)parse_ident _loc s in
         let n = mk_name _loc i in
-        mk_symbol ~text:(`TXnterm _loc n lev) ~styp:(`STquo _loc n.tvar) ~pattern:None
+        mk_symbol ~text:(`TXnterm _loc n lev) ~styp:({:ctyp|'$(n.tvar)|}) ~pattern:None
     | "("; S{s}; ")" -> s ]
   
 

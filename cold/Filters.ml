@@ -1,5 +1,4 @@
 open LibUtil
-module Ast = FanAst
 module MetaLoc =
   struct
     let meta_loc_patt _loc _ = `Id (_loc, (`Lid (_loc, "loc")))

@@ -1,8 +1,8 @@
+open Ast
 open Format
 open Lib
 open LibUtil
 module MetaAst = FanAst.Make(Lib.Meta.MetaGhostLoc)
-module Ast = FanAst
 open FanGrammar
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 let prefix = "__fan_"
@@ -35,7 +35,7 @@ let retype_rule_list_without_patterns _loc rl =
   try
     List.map
       (function
-       | { prod = ({ pattern = None ; styp = `STtok _;_} as s)::[];
+       | { prod = ({ pattern = None ; styp = `Tok _;_} as s)::[];
            action = None  } ->
            {
              prod =
@@ -61,27 +61,28 @@ let retype_rule_list_without_patterns _loc rl =
        | _ -> raise Exit) rl
   with | Exit  -> rl
 exception NotneededTyping
-let make_ctyp styp tvar =
-  let rec aux =
-    function
-    | `STlid (_loc,s) -> `TyId (_loc, (`Lid (_loc, s)))
-    | `STapp (_loc,t1,t2) -> `TyApp (_loc, (aux t1), (aux t2))
-    | `STquo (_loc,s) -> `TyQuo (_loc, s)
-    | `STself (_loc,x) ->
-        if tvar = ""
-        then
-          FanLoc.raise _loc
-            (XStream.Error ("'" ^ (x ^ "' illegal in anonymous entry level")))
-        else `TyQuo (_loc, tvar)
-    | `STtok _loc ->
-        `TyVrnSup
-          (_loc,
-            (`TyId
-               (_loc,
-                 (`IdAcc
-                    (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
-    | `STtyp t -> t in
-  try Some (aux styp) with | NotneededTyping  -> None
+let make_ctyp (styp : styp) tvar =
+  (let rec aux =
+     function
+     | `TyId (_loc,s) -> `TyId (_loc, s)
+     | `TyQuo (_loc,s) -> `TyQuo (_loc, s)
+     | `TyApp (_loc,t1,t2) -> `TyApp (_loc, (aux t1), (aux t2))
+     | `Self (_loc,x) ->
+         if tvar = ""
+         then
+           FanLoc.raise _loc
+             (XStream.Error
+                ("'" ^ (x ^ "' illegal in anonymous entry level")))
+         else `TyQuo (_loc, tvar)
+     | `Tok _loc ->
+         `TyVrnSup
+           (_loc,
+             (`TyId
+                (_loc,
+                  (`IdAcc
+                     (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
+     | `Type t -> t in
+   try Some (aux styp) with | NotneededTyping  -> None : ctyp option )
 let make_ctyp_patt styp tvar patt =
   match make_ctyp styp tvar with
   | None  -> patt
@@ -465,7 +466,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
   let n = List.hd ns in
   let foldfun =
     try (List.assoc n fs) ^ suffix with | Not_found  -> invalid_arg "sfold" in
-  let styp = `STquo (_loc, (new_type_var ())) in
+  let styp = `TyQuo (_loc, (new_type_var ())) in
   let e =
     `ExApp
       (_loc,
@@ -473,12 +474,12 @@ let sfold ?sep  _loc (ns : string list) f e s =
            (_loc,
              (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, foldfun)))))),
              f)), e) in
-  let t =
-    `STapp
+  let (t :styp)=
+    `TyApp
       (_loc,
-        (`STapp
+        (`TyApp
            (_loc,
-             (`STtyp
+             (`Type
                 (`TyApp
                    (_loc,
                      (`TyId

@@ -1,4 +1,3 @@
-module Ast = FanAst
 open PreCast.Syntax
 open Lib
 open GramLib

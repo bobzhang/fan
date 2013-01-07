@@ -1,5 +1,4 @@
 open LibUtil
-module Ast = FanAst
 let is_revised ~expr  ~sem_expr_for_list:(x : _ Gram.t)  =
   try
     Gram.delete_rule expr

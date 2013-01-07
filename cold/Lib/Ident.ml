@@ -1,4 +1,3 @@
-module Ast = FanAst
 open LibUtil
 let rec normalize_acc =
   function

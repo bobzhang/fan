@@ -1,5 +1,4 @@
 open Ast
-module Ast = FanAst
 open LibUtil
 open Format
 open Basic

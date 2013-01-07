@@ -1,4 +1,3 @@
-module Ast = FanAst
 module MetaLocVar : FanAst.META_LOC =
   struct
     let meta_loc_patt _loc _ =

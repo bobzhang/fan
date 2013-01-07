@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 open Format;
 open Lib;
 open LibUtil;
@@ -70,7 +70,7 @@ let retype_rule_list_without_patterns _loc rl =
   try
     List.map(fun
       (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
-    [ {prod = [({pattern = None; styp = `STtok _ ;_} as s)]; action = None} ->
+    [ {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
       {prod =
        [{ (s) with pattern = Some {:patt| x |} }];
        action = Some {:expr| $(id:gm()).string_of_token x |}}
@@ -91,7 +91,8 @@ exception NotneededTyping ;
   translate [styp] into [ctyp],
   given the assumption that the entry output [tvar] type
  *)
-let  make_ctyp  styp tvar = 
+
+(*let  make_ctyp  styp tvar = 
   let rec aux  = with "ctyp" fun  
     [ `STlid (_loc, s) -> {| $lid:s |}
     | `STapp (_loc, t1, t2) -> {| $(aux t1) $(aux t2 ) |}
@@ -104,7 +105,22 @@ let  make_ctyp  styp tvar =
     | `STtok _loc ->  {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
     | `STtyp t -> t ] in
     try Some (aux styp) with [NotneededTyping -> None ];
-
+*)
+    
+let  make_ctyp  (styp:styp) tvar : option ctyp = 
+  let rec aux  = with "ctyp" fun  
+    [ {|$id:s|}  -> {| $id:s |}
+    | {|'$s|} -> {|'$s|}
+    | {| $t1 $t2|} -> {| $(aux t1) $(aux t2) |}
+    | `Self (_loc, x) ->
+        if tvar = "" then
+          FanLoc.raise _loc
+            (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
+        else {| '$tvar |}
+    | `Tok _loc ->  {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
+    | `Type t -> t ] in
+    try Some (aux styp) with [NotneededTyping -> None ];
+      
 (*
   {[ [styp] generates type constraints which are used to constrain patt ]}
 *)    
@@ -343,15 +359,19 @@ let mk_tok _loc ?restrict ~pattern styp = with "expr"
      let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} ] ;
    
-let sfold ?sep _loc  (ns:list string)  f e s =
+let sfold ?sep _loc  (ns:list string)  f e s = with "ctyp"
   let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in
   let suffix = match sep with [None -> ""|Some  _ -> "sep"] in
   let n = List.hd ns in 
   let foldfun =
     try List.assoc n fs ^ suffix  with [Not_found -> invalid_arg "sfold"] in
-  let styp = `STquo _loc (new_type_var ()) in
+  let styp = (* `STquo _loc (new_type_var ()) *) {| '$(new_type_var ()) |} in
   let e = {:expr| $(id:gm()).$lid:foldfun $f $e |} in
-  let t = `STapp _loc (`STapp _loc (`STtyp {:ctyp| $(id:gm()).$(lid:"fold"^suffix) _ |}) s.styp) styp in
+  
+  (* let t = `STapp _loc (`STapp _loc (`STtyp {:ctyp| $(id:gm()).$(lid:"fold"^suffix) _ |}) s.styp) styp in *)
+  let( t:styp) =
+    {| $(`Type {| $(id:gm()).$(lid:"fold"^suffix) _ |})
+      $(s.styp) $styp |} in 
   let text = `TXmeta _loc ns (match sep with [None -> [s.text] | Some sep -> [s.text;sep.text] ])  e t   in 
   {text ; styp ; pattern = None } ;
 
