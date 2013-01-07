@@ -86,7 +86,8 @@ let safe_string_escaped s =
   else String.escaped s;
   
 {:fans|keep off;
- derive (Map2 Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint); |};
+ derive
+   (Map2 Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint); |};
 
   
 {:ocaml|

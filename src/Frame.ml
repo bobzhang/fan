@@ -33,13 +33,15 @@ module Make(S:FSig.Config) = struct
     let base = name_expr  +> S.names in
     (** FIXME as a tuple it is useful when arity> 1??? *)
     let id_exprs =
-      (List.init S.arity (fun index  -> {| $(id:xid ~off:index i) |} ))
-    and id_patts =
-      (List.init S.arity (fun index  -> {:patt| $(id:xid ~off:index i) |}))in
+      (List.init S.arity (fun index  -> {| $(id:xid ~off:index i) |} )) in 
+    let exp0 = List.hd id_exprs in 
+    let id_patts =
+      (List.init S.arity (fun index  -> {:patt| $(id:xid ~off:index i) |})) in 
+    let pat0 = List.hd id_patts in
     let id_expr = Expr.tuple_of_list  id_exprs  in
     let id_patt = Patt.tuple_of_list id_patts in 
     let expr = apply base id_exprs  in
-    {name_expr; expr; id_expr; id_exprs; id_patt; id_patts};       
+    {name_expr; expr; id_expr; id_exprs; id_patt; id_patts;exp0;pat0};       
 
   (* @raise Invalid_argument when type can not be handled  *)  
   let tuple_expr_of_ctyp simple_expr_of_ctyp ty = with {"patt":"ctyp"}

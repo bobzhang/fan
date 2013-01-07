@@ -16,6 +16,8 @@ type ty_info =
   {
   name_expr: expr;
   expr: expr;
+  exp0: expr;
+  pat0: patt;
   id_expr: expr;
   id_patt: patt;
   id_exprs: expr list;
@@ -38,8 +40,13 @@ type named_type = (string* ctyp)
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 
 and module_types = types list 
-let rec pp_print_module_types: 'fmt -> module_types -> 'result =
-  fun fmt  a0  -> pp_print_list pp_print_types fmt a0
+let rec pp_print_named_type: 'fmt -> named_type -> 'result =
+  fun fmt  a0  ->
+    (fun fmt  (a0,a1)  ->
+       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string a0 pp_print_ctyp
+         a1) fmt a0
+and pp_print_and_types: 'fmt -> and_types -> 'result =
+  fun fmt  a0  -> pp_print_list pp_print_named_type fmt a0
 and pp_print_types: 'fmt -> types -> 'result =
   fun fmt  ->
     function
@@ -47,13 +54,8 @@ and pp_print_types: 'fmt -> types -> 'result =
         Format.fprintf fmt "@[<1>(`Mutual@ %a)@]" pp_print_and_types a0
     | `Single a0 ->
         Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type a0
-and pp_print_and_types: 'fmt -> and_types -> 'result =
-  fun fmt  a0  -> pp_print_list pp_print_named_type fmt a0
-and pp_print_named_type: 'fmt -> named_type -> 'result =
-  fun fmt  a0  ->
-    (fun fmt  (a0,a1)  ->
-       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string a0 pp_print_ctyp
-         a1) fmt a0
+and pp_print_module_types: 'fmt -> module_types -> 'result =
+  fun fmt  a0  -> pp_print_list pp_print_types fmt a0
 type obj_dest =  
   | Obj of k
   | Str_item 

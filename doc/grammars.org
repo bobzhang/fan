@@ -1368,4 +1368,10 @@ https://bitbucket.org/camlspotter/orakuda/src/68da1890e85c?at=default
    #+END_SRC
 
 
+
+ #+BEGIN_EXAMPLE
+wc -l `find _build/cold -name '*.ml' -or -name '*.mli'`
+wc -l `find _build/cold -name '*.ml' -or -name '*.mli' | sed s/cold/src/`
+#+END_EXAMPLE
+
    

@@ -25,6 +25,10 @@ type ty_info = {
     expr: expr;
     (* int -> [meta_int fmt x0] *)
 
+    exp0: expr;
+    (* ai *)
+    pat0: patt;
+    (* ai *)
     id_expr: expr ;
     (* (ai,bi) *)
 

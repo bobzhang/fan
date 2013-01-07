@@ -51,12 +51,29 @@ let _ =
   [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
 let (gen_map,gen_map2) =
   let mk_variant cons params =
-    (params |> (List.map (fun { expr;_}  -> expr))) |> (apply (of_str cons)) in
+    let result =
+      (params |> (List.map (fun { exp0;_}  -> exp0))) |>
+        (apply (of_str cons)) in
+    List.fold_right
+      (fun { expr; pat0;_}  res  ->
+         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
+      params result in
   let mk_tuple params =
-    (params |> (List.map (fun { expr;_}  -> expr))) |> tuple_of_list in
+    let result =
+      (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_of_list in
+    List.fold_right
+      (fun { expr; pat0;_}  res  ->
+         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
+      params result in
   let mk_record cols =
-    (cols |> (List.map (fun { label; info = { expr;_};_}  -> (label, expr))))
-      |> mk_record in
+    let result =
+      (cols |>
+         (List.map (fun { label; info = { exp0;_};_}  -> (label, exp0))))
+        |> mk_record in
+    List.fold_right
+      (fun { info = { expr; pat0;_};_}  res  ->
+         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res)) cols
+      result in
   ((gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase"
       ~class_name:"map" mk_variant ~names:[]),
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"

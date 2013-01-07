@@ -21,13 +21,15 @@ module Make(S:FSig.Config) =
       let name_expr = simple_expr_of_ctyp y in
       let base = name_expr +> S.names in
       let id_exprs =
-        List.init S.arity (fun index  -> `Id (_loc, (xid ~off:index i)))
-      and id_patts =
         List.init S.arity (fun index  -> `Id (_loc, (xid ~off:index i))) in
+      let exp0 = List.hd id_exprs in
+      let id_patts =
+        List.init S.arity (fun index  -> `Id (_loc, (xid ~off:index i))) in
+      let pat0 = List.hd id_patts in
       let id_expr = Expr.tuple_of_list id_exprs in
       let id_patt = Patt.tuple_of_list id_patts in
       let expr = apply base id_exprs in
-      { name_expr; expr; id_expr; id_exprs; id_patt; id_patts }
+      { name_expr; expr; id_expr; id_exprs; id_patt; id_patts; exp0; pat0 }
     let tuple_expr_of_ctyp simple_expr_of_ctyp ty =
       let open ErrorMonad in
         let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in
