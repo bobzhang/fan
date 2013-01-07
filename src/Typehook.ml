@@ -3,7 +3,7 @@ open Ast;
 open FSig;
 open Format;
 open Lib;
-module Ast = FanAst;
+
   
 (** A Hook To Ast Filters *)
 let keep = ref false;

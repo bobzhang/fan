@@ -5,7 +5,7 @@ open PreCast.Syntax;
 open LibUtil;
 open Lib;
 open FanUtil;
-module Ast = FanAst;
+
 
 FanConfig.antiquotations := true;
 

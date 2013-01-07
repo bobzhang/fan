@@ -5,8 +5,8 @@
 open LibUtil;
 open Basic;
 open FSig;
-(* open Ast; *)
-(* module Ast = FanAst; (\* it has a nested  Ast module, FIXME *\) *)
+
+
 
 DEFINE GETLOC(expr)= FanAst.loc_of_patt expr;
 

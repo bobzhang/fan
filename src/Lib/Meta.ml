@@ -1,5 +1,5 @@
 (* open Ast; *)
-module Ast = FanAst; (* FIXME: rename it into FanAst later *)
+
 
 (* never used before *)    
 module MetaLocVar : FanAst.META_LOC= struct

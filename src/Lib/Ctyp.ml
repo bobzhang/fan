@@ -1,7 +1,7 @@
 
 #default_quotation "ctyp";;
 open Ast;
-module Ast = FanAst;
+
 open LibUtil;
 open Format;
 open Basic;

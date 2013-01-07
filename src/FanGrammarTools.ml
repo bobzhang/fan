@@ -2,9 +2,8 @@
 open Format;
 open Lib;
 open LibUtil;
-(* module MetaAst = FanAst.Meta.Make Lib.Meta.MetaGhostLoc ; *)
 module MetaAst = FanAst.Make Lib.Meta.MetaGhostLoc;  
-module Ast = FanAst;
+
 open FanGrammar;
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print;  

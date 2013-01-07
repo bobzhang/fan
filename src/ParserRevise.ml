@@ -98,7 +98,7 @@ let apply () = begin
       [ [< (`KEYWORD ";", _); a = symb; 's >] ->
         let _loc =
           FanLoc.merge
-            (FanAst.loc_of_expr al) (Ast.loc_of_expr a) in
+            (FanAst.loc_of_expr al) (FanAst.loc_of_expr a) in
         kont {:expr| $al; $a |} s
       | [< >] -> al ] in
     parser [< a = symb; 's >] -> kont a s
@@ -762,7 +762,7 @@ let apply () = begin
           with [ Invalid_argument _ -> t ]]
        "." LA
         [ S{t1}; "."; S{t2} ->
-            try {| $(id:FanAst.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) |}
+            try {| $(id:FanAst.ident_of_ctyp t1).$(id:FanAst.ident_of_ctyp t2) |}
             with [ Invalid_argument s -> raise (XStream.Error s) ] ]
        "simple"
         [ "'"; a_ident{i} -> {| '$i |}

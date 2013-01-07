@@ -9,7 +9,7 @@ open Format;
 open LibUtil;
 open Lib;
 open Lib.Basic;
-module Ast = FanAst;
+(* module Ast = FanAst; *)
 open FSig;  
 
 module Make(S:FSig.Config) = struct   
