@@ -200,4 +200,32 @@ let gen_print_obj =
 [("Print",gen_print);
  ("OPrint",gen_print_obj)] |> List.iter Typehook.register;
 
+(* +-----------------------------------------------------------------+
+   | Iter geneartor                                                  |
+   +-----------------------------------------------------------------+ *)
+let mk_variant_iter _cons params :expr = with "expr"
+  let lst = params
+   |> List.map (fun [{name_expr; id_expr;_} -> {| $name_expr $id_expr |}]) in
+  {| begin $list:lst end |};
 
+let mk_tuple_iter params : expr =
+  mk_variant_iter "" params;
+
+let mk_record_iter cols = with "expr"
+  let lst =
+    cols |>
+    List.map
+    (fun [{info={name_expr; id_expr;_};_} -> {| $name_expr $id_expr |}]) in
+  {|begin $list:lst end |};
+
+let gen_iter =
+  gen_object ~kind:Iter
+    (* ~id:(`Pre "iter_") *)
+    ~base:"iterbase"
+    ~class_name:"iter"
+    ~names:[] 
+    ~mk_tuple:mk_tuple_iter
+    ~mk_record:mk_record_iter
+    mk_variant_iter;
+
+("OIter",gen_iter) |> Typehook.register;

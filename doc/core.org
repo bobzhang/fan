@@ -13,3 +13,4 @@ PaApp PaVrn PaTup PaCom
 1.
   define closed and open variant both
   open is allowed only for one level?
+  associating antiquotation with each terminal instead!

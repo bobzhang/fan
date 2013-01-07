@@ -47,7 +47,9 @@ let print_base1 = with "str_item"
   
 let (map_class_str_item_base_1, map_class_str_item_base_2,
        fold_class_str_item_base_1, fold_class_str_item_base_2,
-      print_class_str_item_base)=
+      print_class_str_item_base,
+     iter_class_str_item_base_1
+    ) =  with "class_str_item"
   let ty_names = ty_metas |> List.map (fun [{str;_} -> str]) in
   let v1 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> $lid:x |} in
@@ -63,8 +65,10 @@ let (map_class_str_item_base_1, map_class_str_item_base_2,
               {:class_str_item| method $lid:x : $ty = fun _ _ -> self |} ) in
   let v5 = ty_names |> List.map (fun x ->
     {:class_str_item| method $lid:x = $(lid:"pp_print_"^x) |} ) in
-  with "class_str_item"
-  ({|$list:v1|},{|$list:v2|},{|$list:v3|},{|$list:v4|},{|$list:v5|});
+  let v6 = ty_names |> List.map
+    (fun x -> {| method $lid:x : ($lid:x -> unit) = fun _ -> () |}) in 
+  ({|$list:v1|},{|$list:v2|},{|$list:v3|},
+   {|$list:v4|},{|$list:v5|},{|$list:v6|});
 
 let eq_base1 = with "str_item"
   let items = ty_metas |> List.map (fun [
@@ -88,8 +92,11 @@ let open AstInjection in begin
   (* val print_class_str_item_base : class_str_item *)
   register_inject_class_str_item
     ("print_class_str_item_base",print_class_str_item_base);
+  register_inject_class_str_item
+    ("iter_class_str_item_base_1", iter_class_str_item_base_1);
   register_inject_str_item ("eq_base1",eq_base1);
   register_inject_str_item ("print_base1",print_base1);
+
 end;
 
 

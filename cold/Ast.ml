@@ -1,4 +1,8 @@
 type loc = FanLoc.t 
+and literal =
+  [ `Chr of (loc* string) | `Int of (loc* string) | `Int32 of (loc* string)
+  | `Int64 of (loc* string) | `NativeInt of (loc* string)
+  | `Str of (loc* string)] 
 and rec_flag = [ `Recursive of loc | `ReNil of loc | `Ant of (loc* string)] 
 and direction_flag = [ `To of loc | `Downto of loc | `Ant of (loc* string)] 
 and mutable_flag = [ `Mutable of loc | `MuNil of loc | `Ant of (loc* string)] 
@@ -53,22 +57,23 @@ and expr =
   | `ExAre of (loc* expr* expr) | `Array of (loc* expr)
   | `Sem of (loc* expr* expr) | `ExAsf of loc | `ExAsr of (loc* expr)
   | `ExAss of (loc* expr* expr) | `ExCoe of (loc* expr* ctyp* ctyp)
-  | `Flo of (loc* string) | `Chr of (loc* string)
+  | `Flo of (loc* string)
   | `For of (loc* string* expr* expr* direction_flag* expr)
   | `Fun of (loc* match_case) | `ExIfe of (loc* expr* expr* expr)
-  | `Int of (loc* string) | `Int32 of (loc* string) | `Int64 of (loc* string)
-  | `NativeInt of (loc* string) | `Label of (loc* string* expr)
+  | `Chr of (loc* string) | `Int of (loc* string) | `Int32 of (loc* string)
+  | `Int64 of (loc* string) | `NativeInt of (loc* string)
+  | `Str of (loc* string) | `Label of (loc* string* expr)
   | `Lazy of (loc* expr) | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* string* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* string* expr)
   | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding* expr)
   | `Sequence of (loc* expr) | `Send of (loc* expr* string)
-  | `StringDot of (loc* expr* expr) | `Str of (loc* string)
-  | `Try of (loc* expr* match_case) | `ExTup of (loc* expr)
-  | `ExCom of (loc* expr* expr) | `Constraint_exp of (loc* expr* ctyp)
-  | `ExVrn of (loc* string) | `While of (loc* expr* expr)
-  | `Let_open of (loc* ident* expr) | `LocalTypeFun of (loc* string* expr)
+  | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
+  | `ExTup of (loc* expr) | `ExCom of (loc* expr* expr)
+  | `Constraint_exp of (loc* expr* ctyp) | `ExVrn of (loc* string)
+  | `While of (loc* expr* expr) | `Let_open of (loc* ident* expr)
+  | `LocalTypeFun of (loc* string* expr)
   | `Package_expr of (loc* module_expr)] 
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)

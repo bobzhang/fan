@@ -85,8 +85,10 @@ let safe_string_escaped s =
   if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
   else String.escaped s;
   
-{:fans|keep off; <++ "MetaExpr", "MetaPatt","Map","Fold","Print","OPrint";|};
+{:fans|keep off;
+ <++ "OIter" , "MetaExpr", "MetaPatt","Map","Fold","Print","OPrint";|};
 
+  
 {:ocaml|
 INCLUDE "src/Ast.ml";
 |};

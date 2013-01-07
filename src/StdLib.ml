@@ -3,7 +3,7 @@ open LibUtil;
   
 {:inject.str_item| eq_base1  |};
 {:inject.str_item| print_base1  |};
-  
+
 let eq_option mf_a x y =
   match (x,y) with
   [ (None,None) -> true
@@ -90,7 +90,27 @@ class mapbase = object (self:'self_type)
   method unknown: !'a. 'a -> 'a = fun x ->x;         
 end ;
 
-
+  
+class iterbase = object(self:'self)
+  {:inject.class_str_item| iter_class_str_item_base_1 |};
+  method list: ! 'a0. ('self_type -> 'a0 -> 'unit) -> (list 'a0 -> unit) =
+    fun mf_a ls -> List.iter (mf_a self) ls ;
+  method array: ! 'a0 . ('self_type -> 'a0 -> unit) -> (array 'a0 -> unit) =
+    fun mf_a arr->
+      Array.iter (fun x -> mf_a self x) arr;
+  method option:
+      ! 'a . ('self_type -> 'a -> unit) -> (option 'a -> unit ) =
+    fun mf_a oa -> match oa with
+      [None -> ()
+      |Some x -> mf_a self x ];
+  method arrow: ! 'a0 'a1 'b0 'b1 .
+      ('self_type -> 'a0 -> unit) -> ('self_type -> 'a1 -> unit) ->
+        ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
+          failwith "not implemented in iter arrow";
+  method ref: !'a . ('self_type ->'a -> unit) -> (ref 'a -> unit) =
+    fun mf_a -> fun [ x  ->  (mf_a self !x)];
+  method unknown: !'a. 'a -> unit = fun _-> ();
+end;
     
 
 class mapbase2 = object (self:'self_type)

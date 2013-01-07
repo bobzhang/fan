@@ -32,8 +32,16 @@
  *)
 
 
+   type loc = FanLoc.t
 
-type loc = FanLoc.t
+    and  literal =
+    [= `Chr of (loc * string) (* 'c' *)
+    | `Int of (loc * string) (* 42 *)
+    | `Int32 of (loc * string)
+    | `Int64 of (loc * string)
+    | `NativeInt of (loc * string)
+      (* s *) (* "foo" *)
+    | `Str of (loc * string)]   
    and rec_flag =
     [= `Recursive of loc 
     | `ReNil of loc 
@@ -166,14 +174,19 @@ type loc = FanLoc.t
     | `ExCoe of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)
     | `Flo of (loc * string)
       (* for s = e to/downto e do { e } *)
-    | `Chr of (loc * string) (* 'c' *)
+
     | `For of (loc * string * expr * expr * direction_flag * expr)
     | `Fun of (loc * match_case) (* fun [ mc ] *)
     | `ExIfe of (loc * expr * expr * expr) (* if e then e else e *)
+
+    | `Chr of (loc * string) (* 'c' *)
     | `Int of (loc * string) (* 42 *)
     | `Int32 of (loc * string)
     | `Int64 of (loc * string)
     | `NativeInt of (loc * string)
+      (* s *) (* "foo" *)
+    | `Str of (loc * string)
+          
     | `Label of (loc * string * expr) (* ~s or ~s:e *)
     | `Lazy of (loc * expr) (* lazy e *)
       (* let b in e or let rec b in e *)
@@ -198,8 +211,7 @@ type loc = FanLoc.t
     | `Send of (loc * expr * string)
       (* e.[e] *)
     | `StringDot of (loc * expr * expr)
-      (* s *) (* "foo" *)
-    | `Str of (loc * string)
+
       (* try e with [ mc ] *)
     | `Try of (loc * expr * match_case)
       (* (e) *)

@@ -124,6 +124,32 @@ class mapbase =
       fun mf_a  x  -> ref (mf_a self x.contents)
     method unknown : 'a . 'a -> 'a= fun x  -> x
   end
+class iterbase =
+  object (self : 'self)
+    method int : int -> unit= fun _  -> ()
+    method int32 : int32 -> unit= fun _  -> ()
+    method int64 : int64 -> unit= fun _  -> ()
+    method nativeint : nativeint -> unit= fun _  -> ()
+    method float : float -> unit= fun _  -> ()
+    method string : string -> unit= fun _  -> ()
+    method bool : bool -> unit= fun _  -> ()
+    method char : char -> unit= fun _  -> ()
+    method unit : unit -> unit= fun _  -> ()
+    method list : 'a0 . ('self_type -> 'a0 -> 'unit) -> 'a0 list -> unit=
+      fun mf_a  ls  -> List.iter (mf_a self) ls
+    method array : 'a0 . ('self_type -> 'a0 -> unit) -> 'a0 array -> unit=
+      fun mf_a  arr  -> Array.iter (fun x  -> mf_a self x) arr
+    method option : 'a . ('self_type -> 'a -> unit) -> 'a option -> unit=
+      fun mf_a  oa  -> match oa with | None  -> () | Some x -> mf_a self x
+    method arrow :
+      'a0 'a1 'b0 'b1 .
+        ('self_type -> 'a0 -> unit) ->
+          ('self_type -> 'a1 -> unit) -> ('a0 -> 'a1) -> 'b0 -> 'b1=
+      fun _mf_a  _mf_b  _f  -> failwith "not implemented in iter arrow"
+    method ref : 'a . ('self_type -> 'a -> unit) -> 'a ref -> unit=
+      fun mf_a  x  -> mf_a self x.contents
+    method unknown : 'a . 'a -> unit= fun _  -> ()
+  end
 class mapbase2 =
   object (self : 'self_type)
     method int : int -> int -> int= fun x  _  -> x

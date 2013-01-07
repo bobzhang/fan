@@ -156,7 +156,7 @@ let print_base1 =
                                                             (`Lid (_loc, "a")))))))))))))),
                               ty))))))) in
   FanAst.stSem_of_list items
-let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_base_1,fold_class_str_item_base_2,print_class_str_item_base)
+let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_base_1,fold_class_str_item_base_2,print_class_str_item_base,iter_class_str_item_base_1)
   =
   let ty_names = ty_metas |> (List.map (fun { str;_}  -> str)) in
   let v1 =
@@ -240,9 +240,23 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
             `CrMth
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
                 (`Id (_loc, (`Lid (_loc, ("pp_print_" ^ x))))), (`Nil _loc)))) in
+  let v6 =
+    ty_names |>
+      (List.map
+         (fun x  ->
+            `CrMth
+              (_loc, x, (`OvNil _loc), (`PrNil _loc),
+                (`Fun
+                   (_loc,
+                     (`Case
+                        (_loc, (`Any _loc), (`Nil _loc),
+                          (`Id (_loc, (`Uid (_loc, "()")))))))),
+                (`TyArr
+                   (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
+                     (`TyId (_loc, (`Lid (_loc, "unit"))))))))) in
   ((FanAst.crSem_of_list v1), (FanAst.crSem_of_list v2),
     (FanAst.crSem_of_list v3), (FanAst.crSem_of_list v4),
-    (FanAst.crSem_of_list v5))
+    (FanAst.crSem_of_list v5), (FanAst.crSem_of_list v6))
 let eq_base1 =
   let items =
     ty_metas |>
@@ -277,5 +291,7 @@ let _ =
       ("fold_class_str_item_base_2", fold_class_str_item_base_2);
     register_inject_class_str_item
       ("print_class_str_item_base", print_class_str_item_base);
+    register_inject_class_str_item
+      ("iter_class_str_item_base_1", iter_class_str_item_base_1);
     register_inject_str_item ("eq_base1", eq_base1);
     register_inject_str_item ("print_base1", print_base1)

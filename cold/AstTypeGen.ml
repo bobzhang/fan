@@ -146,3 +146,21 @@ let gen_print_obj =
 let _ =
   [("Print", gen_print); ("OPrint", gen_print_obj)] |>
     (List.iter Typehook.register)
+let mk_variant_iter _cons params =
+  (let lst =
+     params |>
+       (List.map
+          (fun { name_expr; id_expr;_}  -> `ExApp (_loc, name_expr, id_expr))) in
+   `Sequence (_loc, (FanAst.exSem_of_list lst)) : expr )
+let mk_tuple_iter params = (mk_variant_iter "" params : expr )
+let mk_record_iter cols =
+  let lst =
+    cols |>
+      (List.map
+         (fun { info = { name_expr; id_expr;_};_}  ->
+            `ExApp (_loc, name_expr, id_expr))) in
+  `Sequence (_loc, (FanAst.exSem_of_list lst))
+let gen_iter =
+  gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
+    ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter mk_variant_iter
+let _ = ("OIter", gen_iter) |> Typehook.register
