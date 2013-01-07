@@ -47,10 +47,11 @@ let (gen_fold,gen_fold2) = with "expr"
     |> List.map (fun [{expr;_} -> expr])
     |> (fun
         [ [] -> {|self|}
-        | ls -> List.reduce_right (fun v acc -> {| let self = $v in $acc |}) ls ]) in
+        | ls ->
+            List.reduce_right (fun v acc -> {| let self = $v in $acc |}) ls ]) in
   let mk_tuple  = mk_variant ""  in 
   let mk_record cols =
-    cols |> List.map (fun [ {(* label; *) info ; _ } -> info ] )
+    cols |> List.map (fun [ {info ; _ } -> info ] )
          |> mk_variant "" in 
   (gen_object ~kind:Fold ~mk_tuple ~mk_record
      ~base:"foldbase" ~class_name:"fold" mk_variant ~names:[],
@@ -98,10 +99,7 @@ end;
 let mk_variant_meta_expr cons params = with "expr"
     let len = List.length params in 
     if String.ends_with cons "Ant" then
-      (* match len with *)
-      (* [ n when n > 1 -> *) (* of_ident_number {:ident| `Ant |} len *) of_vstr_number "Ant" len
-      (* | 1 ->  {| `Ant (_loc,  $(id:xid 0))  |} *)
-      (* | _ ->  failwithf "%s can not be handled" cons] *)
+      of_vstr_number "Ant" len
     else
       params
       |> List.map (fun [ {expr;_} -> expr ])
@@ -117,7 +115,6 @@ let gen_meta_expr =
   gen_str_item  ~id:(`Pre "meta_")  ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_expr
     ~mk_record:mk_record_meta_expr mk_variant_meta_expr;
-    (* ~module_name:"MetaExpr";     *)
 
 (* FIXME: should we diffierentiate between  the case [n > 1] and [n = 1] *)  
 let mk_variant_meta_patt cons params = with "expr"

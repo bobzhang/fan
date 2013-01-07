@@ -241,11 +241,12 @@ let g = Gram.create_gram ();
 with "expr"
     {:extend|Gram
       fan_quot:
-      [ "<+" ; `STR(_,plugin) -> begin plugin_add plugin; {| |} end
-      | "<++"; L1 [`STR(_,x) -> x] SEP ","{plugins} ->
+      ["derive";"("; L1 [`LID x -> x | `UID x  -> x]{plugins}; ")" ->
           begin List.iter plugin_add plugins; {| |}  end
-      | "clear" -> begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end
-      | "<--"; L1 [`STR(_,x) -> x] SEP ","{plugins} -> begin List.iter plugin_remove plugins ; {| |} end
+      | "unload"; L1 [`LID x  -> x | `UID x -> x ] SEP ","{plugins} ->
+          begin List.iter plugin_remove plugins ; {| |} end
+      | "clear" ->
+          begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end
       | "keep" ; "on" -> begin keep := true; {| |} end
       | "keep" ; "off" -> begin keep := false; {| |} end
       | "show_code"; "on" -> begin show_code := true; {| |} end

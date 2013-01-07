@@ -2965,6 +2965,1480 @@ class fold =
     method loc : loc -> 'self_type= fun a0  -> self#fanloc_t a0
     method fanloc_t : FanLoc.t -> 'self_type= self#unknown
   end
+class fold2 =
+  object (self : 'self_type)
+    inherit  foldbase2
+    method class_str_item : class_str_item -> class_str_item -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`CrSem a0,`CrSem b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_str_item a1 b1 in
+                    self#class_str_item a2 b2)) a0 b0
+        | (`Eq a0,`Eq b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`Inherit a0,`Inherit b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#override_flag a1 b1 in
+                    let self = self#class_expr a2 b2 in self#string a3 b3))
+              a0 b0
+        | (`Initializer a0,`Initializer b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#expr a1 b1)) a0 b0
+        | (`CrMth a0,`CrMth b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3,a4,a5),(b0,b1,b2,b3,b4,b5)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#override_flag a2 b2 in
+                    let self = self#private_flag a3 b3 in
+                    let self = self#expr a4 b4 in self#ctyp a5 b5)) a0 b0
+        | (`CrVal a0,`CrVal b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3,a4),(b0,b1,b2,b3,b4)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#override_flag a2 b2 in
+                    let self = self#mutable_flag a3 b3 in self#expr a4 b4))
+              a0 b0
+        | (`CrVir a0,`CrVir b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#private_flag a2 b2 in self#ctyp a3 b3))
+              a0 b0
+        | (`CrVvr a0,`CrVvr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#mutable_flag a2 b2 in self#ctyp a3 b3))
+              a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method class_expr : class_expr -> class_expr -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`CeApp a0,`CeApp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_expr a1 b1 in self#expr a2 b2)) a0
+              b0
+        | (`CeCon a0,`CeCon b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#virtual_flag a1 b1 in
+                    let self = self#ident a2 b2 in self#ctyp a3 b3)) a0 b0
+        | (`CeFun a0,`CeFun b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#class_expr a2 b2)) a0
+              b0
+        | (`CeLet a0,`CeLet b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#rec_flag a1 b1 in
+                    let self = self#binding a2 b2 in self#class_expr a3 b3))
+              a0 b0
+        | (`Obj a0,`Obj b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#class_str_item a2 b2))
+              a0 b0
+        | (`CeTyc a0,`CeTyc b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_expr a1 b1 in self#class_type a2 b2))
+              a0 b0
+        | (`And a0,`And b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_expr a1 b1 in self#class_expr a2 b2))
+              a0 b0
+        | (`Eq a0,`Eq b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_expr a1 b1 in self#class_expr a2 b2))
+              a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method class_sig_item : class_sig_item -> class_sig_item -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Eq a0,`Eq b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`Sem a0,`Sem b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_sig_item a1 b1 in
+                    self#class_sig_item a2 b2)) a0 b0
+        | (`Inherit a0,`Inherit b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#class_type a1 b1)) a0
+              b0
+        | (`Method a0,`Method b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#private_flag a2 b2 in self#ctyp a3 b3))
+              a0 b0
+        | (`CgVal a0,`CgVal b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3,a4),(b0,b1,b2,b3,b4)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#mutable_flag a2 b2 in
+                    let self = self#virtual_flag a3 b3 in self#ctyp a4 b4))
+              a0 b0
+        | (`CgVir a0,`CgVir b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#private_flag a2 b2 in self#ctyp a3 b3))
+              a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method class_type : class_type -> class_type -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`CtNil a0,`CtNil b0) -> self#loc a0 b0
+        | (`CtCon a0,`CtCon b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#virtual_flag a1 b1 in
+                    let self = self#ident a2 b2 in self#ctyp a3 b3)) a0 b0
+        | (`CtFun a0,`CtFun b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#class_type a2 b2)) a0
+              b0
+        | (`CtSig a0,`CtSig b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#class_sig_item a2 b2))
+              a0 b0
+        | (`CtAnd a0,`CtAnd b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_type a1 b1 in self#class_type a2 b2))
+              a0 b0
+        | (`CtCol a0,`CtCol b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_type a1 b1 in self#class_type a2 b2))
+              a0 b0
+        | (`CtEq a0,`CtEq b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#class_type a1 b1 in self#class_type a2 b2))
+              a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method str_item : str_item -> str_item -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Class a0,`Class b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#class_expr a1 b1)) a0
+              b0
+        | (`ClassType a0,`ClassType b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#class_type a1 b1)) a0
+              b0
+        | (`Sem a0,`Sem b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#str_item a1 b1 in self#str_item a2 b2))
+              a0 b0
+        | (`Directive a0,`Directive b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Exception a0,`Exception b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in
+                    self#meta_option (fun self  -> self#ident) a2 b2)) a0 b0
+        | (`StExp a0,`StExp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#expr a1 b1)) a0 b0
+        | (`External a0,`External b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#ctyp a2 b2 in
+                    self#meta_list (fun self  -> self#string) a3 b3)) a0 b0
+        | (`Include a0,`Include b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#module_expr a1 b1)) a0
+              b0
+        | (`Module a0,`Module b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#module_expr a2 b2))
+              a0 b0
+        | (`RecModule a0,`RecModule b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#module_binding a1 b1))
+              a0 b0
+        | (`ModuleType a0,`ModuleType b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#module_type a2 b2))
+              a0 b0
+        | (`Open a0,`Open b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`Type a0,`Type b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`Value a0,`Value b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#rec_flag a1 b1 in self#binding a2 b2)) a0
+              b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method module_expr : module_expr -> module_expr -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Id a0,`Id b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`MeApp a0,`MeApp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#module_expr a1 b1 in
+                    self#module_expr a2 b2)) a0 b0
+        | (`Functor a0,`Functor b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#module_type a2 b2 in
+                    self#module_expr a3 b3)) a0 b0
+        | (`Struct a0,`Struct b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#str_item a1 b1)) a0 b0
+        | (`ModuleExprConstraint a0,`ModuleExprConstraint b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#module_expr a1 b1 in
+                    self#module_type a2 b2)) a0 b0
+        | (`PackageModule a0,`PackageModule b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#expr a1 b1)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method match_case : match_case -> match_case -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`McOr a0,`McOr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#match_case a1 b1 in self#match_case a2 b2))
+              a0 b0
+        | (`Case a0,`Case b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in
+                    let self = self#expr a2 b2 in self#expr a3 b3)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method module_binding : module_binding -> module_binding -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`And a0,`And b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#module_binding a1 b1 in
+                    self#module_binding a2 b2)) a0 b0
+        | (`ModuleBind a0,`ModuleBind b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#module_type a2 b2 in
+                    self#module_expr a3 b3)) a0 b0
+        | (`ModuleConstraint a0,`ModuleConstraint b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#module_type a2 b2))
+              a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method rec_binding : rec_binding -> rec_binding -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Sem a0,`Sem b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#rec_binding a1 b1 in
+                    self#rec_binding a2 b2)) a0 b0
+        | (`RecBind a0,`RecBind b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ident a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method binding : binding -> binding -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`And a0,`And b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#binding a1 b1 in self#binding a2 b2)) a0
+              b0
+        | (`Bind a0,`Bind b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method with_constr : with_constr -> with_constr -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`TypeEq a0,`TypeEq b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`ModuleEq a0,`ModuleEq b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ident a1 b1 in self#ident a2 b2)) a0 b0
+        | (`TypeSubst a0,`TypeSubst b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`ModuleSubst a0,`ModuleSubst b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ident a1 b1 in self#ident a2 b2)) a0 b0
+        | (`And a0,`And b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#with_constr a1 b1 in
+                    self#with_constr a2 b2)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method sig_item : sig_item -> sig_item -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Class a0,`Class b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#class_type a1 b1)) a0
+              b0
+        | (`ClassType a0,`ClassType b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#class_type a1 b1)) a0
+              b0
+        | (`Sem a0,`Sem b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#sig_item a1 b1 in self#sig_item a2 b2))
+              a0 b0
+        | (`Directive a0,`Directive b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Exception a0,`Exception b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`External a0,`External b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#ctyp a2 b2 in
+                    self#meta_list (fun self  -> self#string) a3 b3)) a0 b0
+        | (`Include a0,`Include b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#module_type a1 b1)) a0
+              b0
+        | (`Module a0,`Module b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#module_type a2 b2))
+              a0 b0
+        | (`RecModule a0,`RecModule b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#module_binding a1 b1))
+              a0 b0
+        | (`ModuleType a0,`ModuleType b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#module_type a2 b2))
+              a0 b0
+        | (`Open a0,`Open b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`Type a0,`Type b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`Value a0,`Value b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method module_type : module_type -> module_type -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Id a0,`Id b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`MtFun a0,`MtFun b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#module_type a2 b2 in
+                    self#module_type a3 b3)) a0 b0
+        | (`MtQuo a0,`MtQuo b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Sig a0,`Sig b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#sig_item a1 b1)) a0 b0
+        | (`MtWit a0,`MtWit b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#module_type a1 b1 in
+                    self#with_constr a2 b2)) a0 b0
+        | (`Of a0,`Of b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#module_expr a1 b1)) a0
+              b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method expr : expr -> expr -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Id a0,`Id b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`ExAcc a0,`ExAcc b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`ExApp a0,`ExApp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#expr a2 b2)) a0 b0
+        | (`ExAre a0,`ExAre b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Array a0,`Array b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#expr a1 b1)) a0 b0
+        | (`Sem a0,`Sem b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#expr a2 b2)) a0 b0
+        | (`ExAsf a0,`ExAsf b0) -> self#loc a0 b0
+        | (`ExAsr a0,`ExAsr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#expr a1 b1)) a0 b0
+        | (`ExAss a0,`ExAss b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#expr a2 b2)) a0 b0
+        | (`ExCoe a0,`ExCoe b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in
+                    let self = self#ctyp a2 b2 in self#ctyp a3 b3)) a0 b0
+        | (`Flo a0,`Flo b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`For a0,`For b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3,a4,a5),(b0,b1,b2,b3,b4,b5)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#expr a2 b2 in
+                    let self = self#expr a3 b3 in
+                    let self = self#direction_flag a4 b4 in self#expr a5 b5))
+              a0 b0
+        | (`Fun a0,`Fun b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#match_case a1 b1)) a0
+              b0
+        | (`ExIfe a0,`ExIfe b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in
+                    let self = self#expr a2 b2 in self#expr a3 b3)) a0 b0
+        | (`Chr a0,`Chr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int a0,`Int b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int32 a0,`Int32 b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int64 a0,`Int64 b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`NativeInt a0,`NativeInt b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Str a0,`Str b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Label a0,`Label b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Lazy a0,`Lazy b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#expr a1 b1)) a0 b0
+        | (`LetIn a0,`LetIn b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#rec_flag a1 b1 in
+                    let self = self#binding a2 b2 in self#expr a3 b3)) a0 b0
+        | (`LetModule a0,`LetModule b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#module_expr a2 b2 in self#expr a3 b3)) a0
+              b0
+        | (`Match a0,`Match b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#match_case a2 b2)) a0
+              b0
+        | (`New a0,`New b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`Obj a0,`Obj b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#class_str_item a2 b2))
+              a0 b0
+        | (`OptLabl a0,`OptLabl b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#expr a2 b2)) a0 b0
+        | (`OvrInst a0,`OvrInst b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#rec_binding a1 b1)) a0
+              b0
+        | (`Record a0,`Record b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#rec_binding a1 b1 in self#expr a2 b2)) a0
+              b0
+        | (`Sequence a0,`Sequence b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#expr a1 b1)) a0 b0
+        | (`Send a0,`Send b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#string a2 b2)) a0 b0
+        | (`StringDot a0,`StringDot b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Try a0,`Try b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#match_case a2 b2)) a0
+              b0
+        | (`ExTup a0,`ExTup b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#expr a1 b1)) a0 b0
+        | (`ExCom a0,`ExCom b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Constraint_exp a0,`Constraint_exp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`ExVrn a0,`ExVrn b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`While a0,`While b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#expr a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Let_open a0,`Let_open b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ident a1 b1 in self#expr a2 b2)) a0 b0
+        | (`LocalTypeFun a0,`LocalTypeFun b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#expr a2 b2)) a0 b0
+        | (`Package_expr a0,`Package_expr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#module_expr a1 b1)) a0
+              b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method patt : patt -> patt -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Id a0,`Id b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`Alias a0,`Alias b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#patt a2 b2)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Any a0,`Any b0) -> self#loc a0 b0
+        | (`PaApp a0,`PaApp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#patt a2 b2)) a0 b0
+        | (`Array a0,`Array b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#patt a1 b1)) a0 b0
+        | (`PaCom a0,`PaCom b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#patt a2 b2)) a0 b0
+        | (`Sem a0,`Sem b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#patt a2 b2)) a0 b0
+        | (`Chr a0,`Chr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int a0,`Int b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int32 a0,`Int32 b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int64 a0,`Int64 b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`NativeInt a0,`NativeInt b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Flo a0,`Flo b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`PaLab a0,`PaLab b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#patt a2 b2)) a0 b0
+        | (`PaOlb a0,`PaOlb b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#patt a2 b2)) a0 b0
+        | (`PaOlbi a0,`PaOlbi b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#patt a2 b2 in self#expr a3 b3)) a0 b0
+        | (`PaOrp a0,`PaOrp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#patt a2 b2)) a0 b0
+        | (`PaRng a0,`PaRng b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#patt a2 b2)) a0 b0
+        | (`PaRec a0,`PaRec b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#patt a1 b1)) a0 b0
+        | (`PaEq a0,`PaEq b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ident a1 b1 in self#patt a2 b2)) a0 b0
+        | (`Str a0,`Str b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`PaTup a0,`PaTup b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#patt a1 b1)) a0 b0
+        | (`PaTyc a0,`PaTyc b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#patt a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`PaTyp a0,`PaTyp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`PaVrn a0,`PaVrn b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Lazy a0,`Lazy b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#patt a1 b1)) a0 b0
+        | (`PaMod a0,`PaMod b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method ctyp : ctyp -> ctyp -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Alias a0,`Alias b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`Any a0,`Any b0) -> self#loc a0 b0
+        | (`TyApp a0,`TyApp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyArr a0,`TyArr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyCls a0,`TyCls b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`TyLab a0,`TyLab b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyId a0,`TyId b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ident a1 b1)) a0 b0
+        | (`TyMan a0,`TyMan b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyDcl a0,`TyDcl b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2,a3,a4),(b0,b1,b2,b3,b4)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in
+                    let self = self#list (fun self  -> self#ctyp) a2 b2 in
+                    let self = self#ctyp a3 b3 in
+                    self#list
+                      (fun self  a0  b0  ->
+                         match (a0, b0) with
+                         | ((a0,a1),(b0,b1)) ->
+                             let self = self#ctyp a0 b0 in self#ctyp a1 b1)
+                      a4 b4)) a0 b0
+        | (`TyObj a0,`TyObj b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#row_var_flag a2 b2))
+              a0 b0
+        | (`TyOlb a0,`TyOlb b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#string a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyPol a0,`TyPol b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyTypePol a0,`TyTypePol b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyQuo a0,`TyQuo b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`TyQuP a0,`TyQuP b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`TyQuM a0,`TyQuM b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`TyAnP a0,`TyAnP b0) -> self#loc a0 b0
+        | (`TyAnM a0,`TyAnM b0) -> self#loc a0 b0
+        | (`TyVrn a0,`TyVrn b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`TyRec a0,`TyRec b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`TyCol a0,`TyCol b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TySem a0,`TySem b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`Com a0,`Com b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`Sum a0,`Sum b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`Of a0,`Of b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`And a0,`And b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyOr a0,`TyOr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`Private a0,`Private b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`Mutable a0,`Mutable b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`Tup a0,`Tup b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`Sta a0,`Sta b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyVrnEq a0,`TyVrnEq b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`TyVrnSup a0,`TyVrnSup b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`TyVrnInf a0,`TyVrnInf b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#ctyp a1 b1)) a0 b0
+        | (`TyVrnInfSup a0,`TyVrnInfSup b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyAmp a0,`TyAmp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyOfAmp a0,`TyOfAmp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`Package a0,`Package b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#module_type a1 b1)) a0
+              b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method ident : ident -> ident -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`IdAcc a0,`IdAcc b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ident a1 b1 in self#ident a2 b2)) a0 b0
+        | (`IdApp a0,`IdApp b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1,a2),(b0,b1,b2)) ->
+                    let self = self#loc a0 b0 in
+                    let self = self#ident a1 b1 in self#ident a2 b2)) a0 b0
+        | (`Lid a0,`Lid b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Uid a0,`Uid b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method meta_list :
+      'all_a0 .
+        ('self_type -> 'all_a0 -> 'all_a0 -> 'self_type) ->
+          'all_a0 meta_list -> 'all_a0 meta_list -> 'self_type=
+      fun mf_a  a0  b0  ->
+        match (a0, b0) with
+        | (`LNil a0,`LNil b0) -> self#loc a0 b0
+        | (`LCons a0,`LCons b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = mf_a self a0 b0 in self#meta_list mf_a a1 b1))
+              a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method meta_option :
+      'all_a0 .
+        ('self_type -> 'all_a0 -> 'all_a0 -> 'self_type) ->
+          'all_a0 meta_option -> 'all_a0 meta_option -> 'self_type=
+      fun mf_a  a0  b0  ->
+        match (a0, b0) with
+        | (`None a0,`None b0) -> self#loc a0 b0
+        | (`Some a0,`Some b0) -> mf_a self a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method row_var_flag : row_var_flag -> row_var_flag -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`RowVar a0,`RowVar b0) -> self#loc a0 b0
+        | (`RvNil a0,`RvNil b0) -> self#loc a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method override_flag : override_flag -> override_flag -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Override a0,`Override b0) -> self#loc a0 b0
+        | (`OvNil a0,`OvNil b0) -> self#loc a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method virtual_flag : virtual_flag -> virtual_flag -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Virtual a0,`Virtual b0) -> self#loc a0 b0
+        | (`ViNil a0,`ViNil b0) -> self#loc a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method private_flag : private_flag -> private_flag -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Private a0,`Private b0) -> self#loc a0 b0
+        | (`PrNil a0,`PrNil b0) -> self#loc a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method mutable_flag : mutable_flag -> mutable_flag -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Mutable a0,`Mutable b0) -> self#loc a0 b0
+        | (`MuNil a0,`MuNil b0) -> self#loc a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method direction_flag : direction_flag -> direction_flag -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`To a0,`To b0) -> self#loc a0 b0
+        | (`Downto a0,`Downto b0) -> self#loc a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method rec_flag : rec_flag -> rec_flag -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Recursive a0,`Recursive b0) -> self#loc a0 b0
+        | (`ReNil a0,`ReNil b0) -> self#loc a0 b0
+        | (`Ant a0,`Ant b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method literal : literal -> literal -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Chr a0,`Chr b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int a0,`Int b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int32 a0,`Int32 b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Int64 a0,`Int64 b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`NativeInt a0,`NativeInt b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Str a0,`Str b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (_,_) -> invalid_arg "fold2 failure"
+    method loc : loc -> loc -> 'self_type= fun a0  a1  -> self#fanloc_t a0 a1
+    method fanloc_t : FanLoc.t -> FanLoc.t -> 'self_type= self#unknown
+  end
 let rec pp_print_class_str_item: 'fmt -> class_str_item -> 'result =
   fun fmt  ->
     function
@@ -4782,6 +6256,1634 @@ class iter =
       | `Str a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
     method loc : loc -> 'result= fun a0  -> self#fanloc_t a0
     method fanloc_t : FanLoc.t -> 'result= self#unknown
+  end
+class map2 =
+  object (self : 'self_type)
+    inherit  mapbase2
+    method class_str_item :
+      class_str_item -> class_str_item -> class_str_item=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`CrSem a0,`CrSem b0) ->
+            `CrSem
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_str_item a1 b1),
+                         (self#class_str_item a2 b2)))) a0 b0)
+        | (`Eq a0,`Eq b0) ->
+            `Eq
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`Inherit a0,`Inherit b0) ->
+            `Inherit
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#override_flag a1 b1),
+                         (self#class_expr a2 b2), (self#string a3 b3)))) a0
+                 b0)
+        | (`Initializer a0,`Initializer b0) ->
+            `Initializer
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1)))) a0 b0)
+        | (`CrMth a0,`CrMth b0) ->
+            `CrMth
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3,a4,a5),(b0,b1,b2,b3,b4,b5)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#override_flag a2 b2),
+                         (self#private_flag a3 b3), (self#expr a4 b4),
+                         (self#ctyp a5 b5)))) a0 b0)
+        | (`CrVal a0,`CrVal b0) ->
+            `CrVal
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3,a4),(b0,b1,b2,b3,b4)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#override_flag a2 b2),
+                         (self#mutable_flag a3 b3), (self#expr a4 b4)))) a0
+                 b0)
+        | (`CrVir a0,`CrVir b0) ->
+            `CrVir
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#private_flag a2 b2), (self#ctyp a3 b3)))) a0
+                 b0)
+        | (`CrVvr a0,`CrVvr b0) ->
+            `CrVvr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#mutable_flag a2 b2), (self#ctyp a3 b3)))) a0
+                 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method class_expr : class_expr -> class_expr -> class_expr=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`CeApp a0,`CeApp b0) ->
+            `CeApp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`CeCon a0,`CeCon b0) ->
+            `CeCon
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#virtual_flag a1 b1),
+                         (self#ident a2 b2), (self#ctyp a3 b3)))) a0 b0)
+        | (`CeFun a0,`CeFun b0) ->
+            `CeFun
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#class_expr a2 b2)))) a0 b0)
+        | (`CeLet a0,`CeLet b0) ->
+            `CeLet
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#rec_flag a1 b1),
+                         (self#binding a2 b2), (self#class_expr a3 b3)))) a0
+                 b0)
+        | (`Obj a0,`Obj b0) ->
+            `Obj
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#class_str_item a2 b2)))) a0 b0)
+        | (`CeTyc a0,`CeTyc b0) ->
+            `CeTyc
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_expr a1 b1),
+                         (self#class_type a2 b2)))) a0 b0)
+        | (`And a0,`And b0) ->
+            `And
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_expr a1 b1),
+                         (self#class_expr a2 b2)))) a0 b0)
+        | (`Eq a0,`Eq b0) ->
+            `Eq
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_expr a1 b1),
+                         (self#class_expr a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method class_sig_item :
+      class_sig_item -> class_sig_item -> class_sig_item=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Eq a0,`Eq b0) ->
+            `Eq
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`Sem a0,`Sem b0) ->
+            `Sem
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_sig_item a1 b1),
+                         (self#class_sig_item a2 b2)))) a0 b0)
+        | (`Inherit a0,`Inherit b0) ->
+            `Inherit
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#class_type a1 b1)))) a0 b0)
+        | (`Method a0,`Method b0) ->
+            `Method
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#private_flag a2 b2), (self#ctyp a3 b3)))) a0
+                 b0)
+        | (`CgVal a0,`CgVal b0) ->
+            `CgVal
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3,a4),(b0,b1,b2,b3,b4)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#mutable_flag a2 b2),
+                         (self#virtual_flag a3 b3), (self#ctyp a4 b4)))) a0
+                 b0)
+        | (`CgVir a0,`CgVir b0) ->
+            `CgVir
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#private_flag a2 b2), (self#ctyp a3 b3)))) a0
+                 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method class_type : class_type -> class_type -> class_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`CtNil a0,`CtNil b0) -> `CtNil (self#loc a0 b0)
+        | (`CtCon a0,`CtCon b0) ->
+            `CtCon
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#virtual_flag a1 b1),
+                         (self#ident a2 b2), (self#ctyp a3 b3)))) a0 b0)
+        | (`CtFun a0,`CtFun b0) ->
+            `CtFun
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#class_type a2 b2)))) a0 b0)
+        | (`CtSig a0,`CtSig b0) ->
+            `CtSig
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#class_sig_item a2 b2)))) a0 b0)
+        | (`CtAnd a0,`CtAnd b0) ->
+            `CtAnd
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_type a1 b1),
+                         (self#class_type a2 b2)))) a0 b0)
+        | (`CtCol a0,`CtCol b0) ->
+            `CtCol
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_type a1 b1),
+                         (self#class_type a2 b2)))) a0 b0)
+        | (`CtEq a0,`CtEq b0) ->
+            `CtEq
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#class_type a1 b1),
+                         (self#class_type a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method str_item : str_item -> str_item -> str_item=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Class a0,`Class b0) ->
+            `Class
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#class_expr a1 b1)))) a0 b0)
+        | (`ClassType a0,`ClassType b0) ->
+            `ClassType
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#class_type a1 b1)))) a0 b0)
+        | (`Sem a0,`Sem b0) ->
+            `Sem
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#str_item a1 b1),
+                         (self#str_item a2 b2)))) a0 b0)
+        | (`Directive a0,`Directive b0) ->
+            `Directive
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Exception a0,`Exception b0) ->
+            `Exception
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#meta_option (fun self  -> self#ident) a2 b2))))
+                 a0 b0)
+        | (`StExp a0,`StExp b0) ->
+            `StExp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1)))) a0 b0)
+        | (`External a0,`External b0) ->
+            `External
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#ctyp a2 b2),
+                         (self#meta_list (fun self  -> self#string) a3 b3))))
+                 a0 b0)
+        | (`Include a0,`Include b0) ->
+            `Include
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#module_expr a1 b1)))) a0 b0)
+        | (`Module a0,`Module b0) ->
+            `Module
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_expr a2 b2)))) a0 b0)
+        | (`RecModule a0,`RecModule b0) ->
+            `RecModule
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#module_binding a1 b1)))) a0
+                 b0)
+        | (`ModuleType a0,`ModuleType b0) ->
+            `ModuleType
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_type a2 b2)))) a0 b0)
+        | (`Open a0,`Open b0) ->
+            `Open
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`Type a0,`Type b0) ->
+            `Type
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`Value a0,`Value b0) ->
+            `Value
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#rec_flag a1 b1),
+                         (self#binding a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method module_expr : module_expr -> module_expr -> module_expr=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Id a0,`Id b0) ->
+            `Id
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`MeApp a0,`MeApp b0) ->
+            `MeApp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#module_expr a1 b1),
+                         (self#module_expr a2 b2)))) a0 b0)
+        | (`Functor a0,`Functor b0) ->
+            `Functor
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_type a2 b2), (self#module_expr a3 b3))))
+                 a0 b0)
+        | (`Struct a0,`Struct b0) ->
+            `Struct
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#str_item a1 b1)))) a0 b0)
+        | (`ModuleExprConstraint a0,`ModuleExprConstraint b0) ->
+            `ModuleExprConstraint
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#module_expr a1 b1),
+                         (self#module_type a2 b2)))) a0 b0)
+        | (`PackageModule a0,`PackageModule b0) ->
+            `PackageModule
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method match_case : match_case -> match_case -> match_case=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`McOr a0,`McOr b0) ->
+            `McOr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#match_case a1 b1),
+                         (self#match_case a2 b2)))) a0 b0)
+        | (`Case a0,`Case b0) ->
+            `Case
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#expr a2 b2), (self#expr a3 b3)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method module_binding :
+      module_binding -> module_binding -> module_binding=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`And a0,`And b0) ->
+            `And
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#module_binding a1 b1),
+                         (self#module_binding a2 b2)))) a0 b0)
+        | (`ModuleBind a0,`ModuleBind b0) ->
+            `ModuleBind
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_type a2 b2), (self#module_expr a3 b3))))
+                 a0 b0)
+        | (`ModuleConstraint a0,`ModuleConstraint b0) ->
+            `ModuleConstraint
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_type a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method rec_binding : rec_binding -> rec_binding -> rec_binding=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Sem a0,`Sem b0) ->
+            `Sem
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#rec_binding a1 b1),
+                         (self#rec_binding a2 b2)))) a0 b0)
+        | (`RecBind a0,`RecBind b0) ->
+            `RecBind
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method binding : binding -> binding -> binding=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`And a0,`And b0) ->
+            `And
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#binding a1 b1),
+                         (self#binding a2 b2)))) a0 b0)
+        | (`Bind a0,`Bind b0) ->
+            `Bind
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method with_constr : with_constr -> with_constr -> with_constr=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`TypeEq a0,`TypeEq b0) ->
+            `TypeEq
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`ModuleEq a0,`ModuleEq b0) ->
+            `ModuleEq
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1),
+                         (self#ident a2 b2)))) a0 b0)
+        | (`TypeSubst a0,`TypeSubst b0) ->
+            `TypeSubst
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`ModuleSubst a0,`ModuleSubst b0) ->
+            `ModuleSubst
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1),
+                         (self#ident a2 b2)))) a0 b0)
+        | (`And a0,`And b0) ->
+            `And
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#with_constr a1 b1),
+                         (self#with_constr a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method sig_item : sig_item -> sig_item -> sig_item=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Class a0,`Class b0) ->
+            `Class
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#class_type a1 b1)))) a0 b0)
+        | (`ClassType a0,`ClassType b0) ->
+            `ClassType
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#class_type a1 b1)))) a0 b0)
+        | (`Sem a0,`Sem b0) ->
+            `Sem
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#sig_item a1 b1),
+                         (self#sig_item a2 b2)))) a0 b0)
+        | (`Directive a0,`Directive b0) ->
+            `Directive
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Exception a0,`Exception b0) ->
+            `Exception
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`External a0,`External b0) ->
+            `External
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#ctyp a2 b2),
+                         (self#meta_list (fun self  -> self#string) a3 b3))))
+                 a0 b0)
+        | (`Include a0,`Include b0) ->
+            `Include
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#module_type a1 b1)))) a0 b0)
+        | (`Module a0,`Module b0) ->
+            `Module
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_type a2 b2)))) a0 b0)
+        | (`RecModule a0,`RecModule b0) ->
+            `RecModule
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#module_binding a1 b1)))) a0
+                 b0)
+        | (`ModuleType a0,`ModuleType b0) ->
+            `ModuleType
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_type a2 b2)))) a0 b0)
+        | (`Open a0,`Open b0) ->
+            `Open
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`Type a0,`Type b0) ->
+            `Type
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`Value a0,`Value b0) ->
+            `Value
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method module_type : module_type -> module_type -> module_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Id a0,`Id b0) ->
+            `Id
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`MtFun a0,`MtFun b0) ->
+            `MtFun
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_type a2 b2), (self#module_type a3 b3))))
+                 a0 b0)
+        | (`MtQuo a0,`MtQuo b0) ->
+            `MtQuo
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Sig a0,`Sig b0) ->
+            `Sig
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#sig_item a1 b1)))) a0 b0)
+        | (`MtWit a0,`MtWit b0) ->
+            `MtWit
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#module_type a1 b1),
+                         (self#with_constr a2 b2)))) a0 b0)
+        | (`Of a0,`Of b0) ->
+            `Of
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#module_expr a1 b1)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method expr : expr -> expr -> expr=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Id a0,`Id b0) ->
+            `Id
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`ExAcc a0,`ExAcc b0) ->
+            `ExAcc
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`ExApp a0,`ExApp b0) ->
+            `ExApp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`ExAre a0,`ExAre b0) ->
+            `ExAre
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Array a0,`Array b0) ->
+            `Array
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1)))) a0 b0)
+        | (`Sem a0,`Sem b0) ->
+            `Sem
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`ExAsf a0,`ExAsf b0) -> `ExAsf (self#loc a0 b0)
+        | (`ExAsr a0,`ExAsr b0) ->
+            `ExAsr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1)))) a0 b0)
+        | (`ExAss a0,`ExAss b0) ->
+            `ExAss
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`ExCoe a0,`ExCoe b0) ->
+            `ExCoe
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#ctyp a2 b2), (self#ctyp a3 b3)))) a0 b0)
+        | (`Flo a0,`Flo b0) ->
+            `Flo
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`For a0,`For b0) ->
+            `For
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3,a4,a5),(b0,b1,b2,b3,b4,b5)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#expr a2 b2), (self#expr a3 b3),
+                         (self#direction_flag a4 b4), (self#expr a5 b5)))) a0
+                 b0)
+        | (`Fun a0,`Fun b0) ->
+            `Fun
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#match_case a1 b1)))) a0 b0)
+        | (`ExIfe a0,`ExIfe b0) ->
+            `ExIfe
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2), (self#expr a3 b3)))) a0 b0)
+        | (`Chr a0,`Chr b0) ->
+            `Chr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int a0,`Int b0) ->
+            `Int
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int32 a0,`Int32 b0) ->
+            `Int32
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int64 a0,`Int64 b0) ->
+            `Int64
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`NativeInt a0,`NativeInt b0) ->
+            `NativeInt
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Str a0,`Str b0) ->
+            `Str
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Label a0,`Label b0) ->
+            `Label
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Lazy a0,`Lazy b0) ->
+            `Lazy
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1)))) a0 b0)
+        | (`LetIn a0,`LetIn b0) ->
+            `LetIn
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#rec_flag a1 b1),
+                         (self#binding a2 b2), (self#expr a3 b3)))) a0 b0)
+        | (`LetModule a0,`LetModule b0) ->
+            `LetModule
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#module_expr a2 b2), (self#expr a3 b3)))) a0 b0)
+        | (`Match a0,`Match b0) ->
+            `Match
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#match_case a2 b2)))) a0 b0)
+        | (`New a0,`New b0) ->
+            `New
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`Obj a0,`Obj b0) ->
+            `Obj
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#class_str_item a2 b2)))) a0 b0)
+        | (`OptLabl a0,`OptLabl b0) ->
+            `OptLabl
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`OvrInst a0,`OvrInst b0) ->
+            `OvrInst
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#rec_binding a1 b1)))) a0 b0)
+        | (`Record a0,`Record b0) ->
+            `Record
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#rec_binding a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Sequence a0,`Sequence b0) ->
+            `Sequence
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1)))) a0 b0)
+        | (`Send a0,`Send b0) ->
+            `Send
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#string a2 b2)))) a0 b0)
+        | (`StringDot a0,`StringDot b0) ->
+            `StringDot
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Try a0,`Try b0) ->
+            `Try
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#match_case a2 b2)))) a0 b0)
+        | (`ExTup a0,`ExTup b0) ->
+            `ExTup
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1)))) a0 b0)
+        | (`ExCom a0,`ExCom b0) ->
+            `ExCom
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Constraint_exp a0,`Constraint_exp b0) ->
+            `Constraint_exp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`ExVrn a0,`ExVrn b0) ->
+            `ExVrn
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`While a0,`While b0) ->
+            `While
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#expr a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Let_open a0,`Let_open b0) ->
+            `Let_open
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`LocalTypeFun a0,`LocalTypeFun b0) ->
+            `LocalTypeFun
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#expr a2 b2)))) a0 b0)
+        | (`Package_expr a0,`Package_expr b0) ->
+            `Package_expr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#module_expr a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method patt : patt -> patt -> patt=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Id a0,`Id b0) ->
+            `Id
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`Alias a0,`Alias b0) ->
+            `Alias
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Any a0,`Any b0) -> `Any (self#loc a0 b0)
+        | (`PaApp a0,`PaApp b0) ->
+            `PaApp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`Array a0,`Array b0) ->
+            `Array
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1)))) a0 b0)
+        | (`PaCom a0,`PaCom b0) ->
+            `PaCom
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`Sem a0,`Sem b0) ->
+            `Sem
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`Chr a0,`Chr b0) ->
+            `Chr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int a0,`Int b0) ->
+            `Int
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int32 a0,`Int32 b0) ->
+            `Int32
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int64 a0,`Int64 b0) ->
+            `Int64
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`NativeInt a0,`NativeInt b0) ->
+            `NativeInt
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Flo a0,`Flo b0) ->
+            `Flo
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`PaLab a0,`PaLab b0) ->
+            `PaLab
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`PaOlb a0,`PaOlb b0) ->
+            `PaOlb
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`PaOlbi a0,`PaOlbi b0) ->
+            `PaOlbi
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3),(b0,b1,b2,b3)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#patt a2 b2), (self#expr a3 b3)))) a0 b0)
+        | (`PaOrp a0,`PaOrp b0) ->
+            `PaOrp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`PaRng a0,`PaRng b0) ->
+            `PaRng
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`PaRec a0,`PaRec b0) ->
+            `PaRec
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1)))) a0 b0)
+        | (`PaEq a0,`PaEq b0) ->
+            `PaEq
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1),
+                         (self#patt a2 b2)))) a0 b0)
+        | (`Str a0,`Str b0) ->
+            `Str
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`PaTup a0,`PaTup b0) ->
+            `PaTup
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1)))) a0 b0)
+        | (`PaTyc a0,`PaTyc b0) ->
+            `PaTyc
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`PaTyp a0,`PaTyp b0) ->
+            `PaTyp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`PaVrn a0,`PaVrn b0) ->
+            `PaVrn
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Lazy a0,`Lazy b0) ->
+            `Lazy
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#patt a1 b1)))) a0 b0)
+        | (`PaMod a0,`PaMod b0) ->
+            `PaMod
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method ctyp : ctyp -> ctyp -> ctyp=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> `Nil (self#loc a0 b0)
+        | (`Alias a0,`Alias b0) ->
+            `Alias
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`Any a0,`Any b0) -> `Any (self#loc a0 b0)
+        | (`TyApp a0,`TyApp b0) ->
+            `TyApp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyArr a0,`TyArr b0) ->
+            `TyArr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyCls a0,`TyCls b0) ->
+            `TyCls
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`TyLab a0,`TyLab b0) ->
+            `TyLab
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyId a0,`TyId b0) ->
+            `TyId
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1)))) a0 b0)
+        | (`TyMan a0,`TyMan b0) ->
+            `TyMan
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyDcl a0,`TyDcl b0) ->
+            `TyDcl
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2,a3,a4),(b0,b1,b2,b3,b4)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#list (fun self  -> self#ctyp) a2 b2),
+                         (self#ctyp a3 b3),
+                         (self#list
+                            (fun self  a0  b0  ->
+                               match (a0, b0) with
+                               | ((a0,a1),(b0,b1)) ->
+                                   ((self#ctyp a0 b0), (self#ctyp a1 b1))) a4
+                            b4)))) a0 b0)
+        | (`TyObj a0,`TyObj b0) ->
+            `TyObj
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#row_var_flag a2 b2)))) a0 b0)
+        | (`TyOlb a0,`TyOlb b0) ->
+            `TyOlb
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#string a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyPol a0,`TyPol b0) ->
+            `TyPol
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyTypePol a0,`TyTypePol b0) ->
+            `TyTypePol
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyQuo a0,`TyQuo b0) ->
+            `TyQuo
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`TyQuP a0,`TyQuP b0) ->
+            `TyQuP
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`TyQuM a0,`TyQuM b0) ->
+            `TyQuM
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`TyAnP a0,`TyAnP b0) -> `TyAnP (self#loc a0 b0)
+        | (`TyAnM a0,`TyAnM b0) -> `TyAnM (self#loc a0 b0)
+        | (`TyVrn a0,`TyVrn b0) ->
+            `TyVrn
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`TyRec a0,`TyRec b0) ->
+            `TyRec
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`TyCol a0,`TyCol b0) ->
+            `TyCol
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TySem a0,`TySem b0) ->
+            `TySem
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`Com a0,`Com b0) ->
+            `Com
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`Sum a0,`Sum b0) ->
+            `Sum
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`Of a0,`Of b0) ->
+            `Of
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`And a0,`And b0) ->
+            `And
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyOr a0,`TyOr b0) ->
+            `TyOr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`Private a0,`Private b0) ->
+            `Private
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`Mutable a0,`Mutable b0) ->
+            `Mutable
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`Tup a0,`Tup b0) ->
+            `Tup
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`Sta a0,`Sta b0) ->
+            `Sta
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyVrnEq a0,`TyVrnEq b0) ->
+            `TyVrnEq
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`TyVrnSup a0,`TyVrnSup b0) ->
+            `TyVrnSup
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`TyVrnInf a0,`TyVrnInf b0) ->
+            `TyVrnInf
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1)))) a0 b0)
+        | (`TyVrnInfSup a0,`TyVrnInfSup b0) ->
+            `TyVrnInfSup
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyAmp a0,`TyAmp b0) ->
+            `TyAmp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`TyOfAmp a0,`TyOfAmp b0) ->
+            `TyOfAmp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ctyp a1 b1),
+                         (self#ctyp a2 b2)))) a0 b0)
+        | (`Package a0,`Package b0) ->
+            `Package
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#module_type a1 b1)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method ident : ident -> ident -> ident=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`IdAcc a0,`IdAcc b0) ->
+            `IdAcc
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1),
+                         (self#ident a2 b2)))) a0 b0)
+        | (`IdApp a0,`IdApp b0) ->
+            `IdApp
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1,a2),(b0,b1,b2)) ->
+                       ((self#loc a0 b0), (self#ident a1 b1),
+                         (self#ident a2 b2)))) a0 b0)
+        | (`Lid a0,`Lid b0) ->
+            `Lid
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Uid a0,`Uid b0) ->
+            `Uid
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method meta_list :
+      'all_a0 'all_b0 .
+        ('self_type -> 'all_a0 -> 'all_a0 -> 'all_b0) ->
+          'all_a0 meta_list -> 'all_a0 meta_list -> 'all_b0 meta_list=
+      fun mf_a  a0  b0  ->
+        match (a0, b0) with
+        | (`LNil a0,`LNil b0) -> `LNil (self#loc a0 b0)
+        | (`LCons a0,`LCons b0) ->
+            `LCons
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((mf_a self a0 b0), (self#meta_list mf_a a1 b1)))) a0
+                 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method meta_option :
+      'all_a0 'all_b0 .
+        ('self_type -> 'all_a0 -> 'all_a0 -> 'all_b0) ->
+          'all_a0 meta_option -> 'all_a0 meta_option -> 'all_b0 meta_option=
+      fun mf_a  a0  b0  ->
+        match (a0, b0) with
+        | (`None a0,`None b0) -> `None (self#loc a0 b0)
+        | (`Some a0,`Some b0) -> `Some (mf_a self a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method row_var_flag : row_var_flag -> row_var_flag -> row_var_flag=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`RowVar a0,`RowVar b0) -> `RowVar (self#loc a0 b0)
+        | (`RvNil a0,`RvNil b0) -> `RvNil (self#loc a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method override_flag : override_flag -> override_flag -> override_flag=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Override a0,`Override b0) -> `Override (self#loc a0 b0)
+        | (`OvNil a0,`OvNil b0) -> `OvNil (self#loc a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method virtual_flag : virtual_flag -> virtual_flag -> virtual_flag=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Virtual a0,`Virtual b0) -> `Virtual (self#loc a0 b0)
+        | (`ViNil a0,`ViNil b0) -> `ViNil (self#loc a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method private_flag : private_flag -> private_flag -> private_flag=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Private a0,`Private b0) -> `Private (self#loc a0 b0)
+        | (`PrNil a0,`PrNil b0) -> `PrNil (self#loc a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method mutable_flag : mutable_flag -> mutable_flag -> mutable_flag=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Mutable a0,`Mutable b0) -> `Mutable (self#loc a0 b0)
+        | (`MuNil a0,`MuNil b0) -> `MuNil (self#loc a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method direction_flag :
+      direction_flag -> direction_flag -> direction_flag=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`To a0,`To b0) -> `To (self#loc a0 b0)
+        | (`Downto a0,`Downto b0) -> `Downto (self#loc a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method rec_flag : rec_flag -> rec_flag -> rec_flag=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Recursive a0,`Recursive b0) -> `Recursive (self#loc a0 b0)
+        | (`ReNil a0,`ReNil b0) -> `ReNil (self#loc a0 b0)
+        | (`Ant a0,`Ant b0) ->
+            `Ant
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method literal : literal -> literal -> literal=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Chr a0,`Chr b0) ->
+            `Chr
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int a0,`Int b0) ->
+            `Int
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int32 a0,`Int32 b0) ->
+            `Int32
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Int64 a0,`Int64 b0) ->
+            `Int64
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`NativeInt a0,`NativeInt b0) ->
+            `NativeInt
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (`Str a0,`Str b0) ->
+            `Str
+              (((fun a0  b0  ->
+                   match (a0, b0) with
+                   | ((a0,a1),(b0,b1)) ->
+                       ((self#loc a0 b0), (self#string a1 b1)))) a0 b0)
+        | (_,_) -> invalid_arg "map2 failure"
+    method loc : loc -> loc -> loc= fun a0  a1  -> self#fanloc_t a0 a1
+    method fanloc_t : FanLoc.t -> FanLoc.t -> FanLoc.t= self#unknown
   end
 module MExpr =
   struct

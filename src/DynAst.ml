@@ -1,4 +1,4 @@
-(* {:fans|keep on ; <+ "Print"; |}; *)
+(* {:fans|keep on ; derive (Print); |}; *)
 open Ast;
 (* {:ocaml| *)
 type tag 'a =

@@ -7,7 +7,7 @@ open Format;
 (* open StdLib; *)
 
 (* FIXME order is in-correct  *)
-{:fans|keep on; (* <++ "Print"; *) |};
+{:fans|keep on; (* derive (Print); *) |};
 
 (* {:ocaml| *)
 type quotation_error_message =

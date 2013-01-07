@@ -70,7 +70,7 @@ type full_id_transform =
     | `Obj of string -> string ];
 
 open StdLib;
-{:fans|keep on; <++ "Print"; |};
+{:fans|keep on; derive (Print); |};
 {:ocaml|
 type named_type =
     (string*ctyp)
