@@ -245,21 +245,19 @@ let text_of_action _loc psl rtvar act tvar =
             (_loc, (`ExTup (_loc, (`ExCom (_loc, t1, t2)))),
               (`McOr
                  (_loc,
-                   (`McArr
+                   (`Case
                       (_loc, (`PaTup (_loc, (`PaCom (_loc, p1, p2)))),
                         (`ExNil _loc), e1)),
-                   (`McArr
-                      (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc))))))
+                   (`Case (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc))))))
       | Some (tok,match_) ->
           `Match
             (_loc, tok,
               (`McOr
-                 (_loc, (`McArr (_loc, match_, (`ExNil _loc), e1)),
-                   (`McArr
-                      (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc)))))) in
+                 (_loc, (`Case (_loc, match_, (`ExNil _loc), e1)),
+                   (`Case (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc)))))) in
     `Fun
       (_loc,
-        (`McArr
+        (`Case
            (_loc,
              (`PaTyc
                 (_loc, locid,
@@ -273,18 +271,18 @@ let text_of_action _loc psl rtvar act tvar =
       (fun i  txt  s  ->
          match s.pattern with
          | None |Some (`PaAny _) ->
-             `Fun (_loc, (`McArr (_loc, (`PaAny _loc), (`ExNil _loc), txt)))
+             `Fun (_loc, (`Case (_loc, (`PaAny _loc), (`ExNil _loc), txt)))
          | Some (`PaAli (_loc,`PaApp (_,_,`PaTup (_,`PaAny _)),p)) ->
              let p = make_ctyp_patt s.styp tvar p in
-             `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))
+             `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), txt)))
          | Some p when FanAst.is_irrefut_patt p ->
              let p = make_ctyp_patt s.styp tvar p in
-             `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))
+             `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), txt)))
          | Some _ ->
              let p =
                make_ctyp_patt s.styp tvar
                  (`PaId (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))))) in
-             `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), txt)))) e psl in
+             `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), txt)))) e psl in
   let txt =
     if meta_action.contents
     then
@@ -371,7 +369,7 @@ let let_in_of_extend _loc gram gl default =
   let local_binding_of_name =
     function
     | { expr = `ExId (_,`Lid (_,i)); tvar = x; loc = _loc } ->
-        `BiEq
+        `Bind
           (_loc, (`PaId (_loc, (`Lid (_loc, i)))),
             (`Constraint_exp
                (_loc,
@@ -394,11 +392,11 @@ let let_in_of_extend _loc gram gl default =
            let locals =
              List.fold_right
                (fun name  acc  ->
-                  `BiAnd (_loc, acc, (local_binding_of_name name))) xs
+                  `And (_loc, acc, (local_binding_of_name name))) xs
                (local_binding_of_name x) in
            `Let_in
              (_loc, (`ReNil _loc),
-               (`BiEq
+               (`Bind
                   (_loc,
                     (`PaId (_loc, (`Lid (_loc, "grammar_entry_create")))),
                     entry_mk)),
@@ -434,7 +432,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
         then
           `Fun
             (_loc,
-              (`McArr
+              (`Case
                  (_loc, no_variable, (`ExNil _loc),
                    (`ExId (_loc, (`Lid (_loc, "true")))))))
         else
@@ -442,10 +440,10 @@ let mk_tok _loc ?restrict  ~pattern  styp =
             (_loc,
               (`McOr
                  (_loc,
-                   (`McArr
+                   (`Case
                       (_loc, no_variable, (`ExNil _loc),
                         (`ExId (_loc, (`Lid (_loc, "true")))))),
-                   (`McArr
+                   (`Case
                       (_loc, (`PaAny _loc), (`ExNil _loc),
                         (`ExId (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt no_variable in
@@ -458,10 +456,10 @@ let mk_tok _loc ?restrict  ~pattern  styp =
           (_loc,
             (`McOr
                (_loc,
-                 (`McArr
+                 (`Case
                     (_loc, pattern, restrict,
                       (`ExId (_loc, (`Lid (_loc, "true")))))),
-                 (`McArr
+                 (`Case
                     (_loc, (`PaAny _loc), (`ExNil _loc),
                       (`ExId (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt pattern in

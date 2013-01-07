@@ -80,37 +80,40 @@ and module_type =
   | `MtWit of (loc* module_type* with_constr) | `MtOf of (loc* module_expr)
   | `Ant of (loc* string)] 
 and sig_item =
-  [ `SgNil of loc | `SgCls of (loc* class_type) | `SgClt of (loc* class_type)
-  | `SgSem of (loc* sig_item* sig_item) | `SgDir of (loc* string* expr)
-  | `SgExc of (loc* ctyp) | `SgExt of (loc* string* ctyp* string meta_list)
-  | `SgInc of (loc* module_type) | `SgMod of (loc* string* module_type)
-  | `SgRecMod of (loc* module_binding) | `SgMty of (loc* string* module_type)
-  | `SgOpn of (loc* ident) | `SgTyp of (loc* ctyp)
-  | `SgVal of (loc* string* ctyp) | `Ant of (loc* string)] 
-and with_constr =
-  [ `WcNil of loc | `WcTyp of (loc* ctyp* ctyp)
-  | `WcMod of (loc* ident* ident) | `WcTyS of (loc* ctyp* ctyp)
-  | `WcMoS of (loc* ident* ident) | `WcAnd of (loc* with_constr* with_constr)
+  [ `Nil of loc | `Class of (loc* class_type)
+  | `ClassType of (loc* class_type) | `Sem of (loc* sig_item* sig_item)
+  | `Directive of (loc* string* expr) | `Exception of (loc* ctyp)
+  | `External of (loc* string* ctyp* string meta_list)
+  | `Include of (loc* module_type) | `Module of (loc* string* module_type)
+  | `RecModule of (loc* module_binding)
+  | `ModuleType of (loc* string* module_type) | `Open of (loc* ident)
+  | `Type of (loc* ctyp) | `Value of (loc* string* ctyp)
   | `Ant of (loc* string)] 
+and with_constr =
+  [ `Nil of loc | `TypeEq of (loc* ctyp* ctyp)
+  | `ModuleEq of (loc* ident* ident) | `TypeSubst of (loc* ctyp* ctyp)
+  | `ModuleSubst of (loc* ident* ident)
+  | `And of (loc* with_constr* with_constr) | `Ant of (loc* string)] 
 and binding =
-  [ `BiNil of loc | `BiAnd of (loc* binding* binding)
-  | `BiEq of (loc* patt* expr) | `Ant of (loc* string)] 
+  [ `Nil of loc | `And of (loc* binding* binding)
+  | `Bind of (loc* patt* expr) | `Ant of (loc* string)] 
 and rec_binding =
-  [ `RbNil of loc | `RbSem of (loc* rec_binding* rec_binding)
-  | `RbEq of (loc* ident* expr) | `Ant of (loc* string)] 
+  [ `Nil of loc | `Sem of (loc* rec_binding* rec_binding)
+  | `RecBind of (loc* ident* expr) | `Ant of (loc* string)] 
 and module_binding =
-  [ `MbNil of loc | `MbAnd of (loc* module_binding* module_binding)
-  | `MbColEq of (loc* string* module_type* module_expr)
-  | `MbCol of (loc* string* module_type) | `Ant of (loc* string)] 
+  [ `Nil of loc | `And of (loc* module_binding* module_binding)
+  | `ModuleBind of (loc* string* module_type* module_expr)
+  | `ModuleConstraint of (loc* string* module_type) | `Ant of (loc* string)] 
 and match_case =
-  [ `McNil of loc | `McOr of (loc* match_case* match_case)
-  | `McArr of (loc* patt* expr* expr) | `Ant of (loc* string)] 
+  [ `Nil of loc | `McOr of (loc* match_case* match_case)
+  | `Case of (loc* patt* expr* expr) | `Ant of (loc* string)] 
 and module_expr =
-  [ `MeNil of loc | `MeId of (loc* ident)
+  [ `Nil of loc | `Id of (loc* ident)
   | `MeApp of (loc* module_expr* module_expr)
-  | `MeFun of (loc* string* module_type* module_expr)
-  | `MeStr of (loc* str_item) | `MeTyc of (loc* module_expr* module_type)
-  | `MePkg of (loc* expr) | `Ant of (loc* string)] 
+  | `Functor of (loc* string* module_type* module_expr)
+  | `Struct of (loc* str_item)
+  | `ModuleExprConstraint of (loc* module_expr* module_type)
+  | `PackageModule of (loc* expr) | `Ant of (loc* string)] 
 and str_item =
   [ `StNil of loc | `StCls of (loc* class_expr) | `StClt of (loc* class_type)
   | `StSem of (loc* str_item* str_item) | `StDir of (loc* string* expr)

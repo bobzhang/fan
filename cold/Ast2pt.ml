@@ -156,9 +156,9 @@ and meth_list fl acc =
   | _ -> assert false
 and package_type_constraints wc acc =
   match wc with
-  | `WcNil _loc -> acc
-  | `WcTyp (_loc,`TyId (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
-  | `WcAnd (_loc,wc1,wc2) ->
+  | `Nil _loc -> acc
+  | `TypeEq (_loc,`TyId (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
+  | `And (_loc,wc1,wc2) ->
       package_type_constraints wc1 (package_type_constraints wc2 acc)
   | _ ->
       error (loc_of_with_constr wc)
@@ -295,16 +295,16 @@ let mkwithtyp pwith_type loc id_tpl ct =
        }))
 let rec mkwithc wc acc =
   match wc with
-  | `WcNil _loc -> acc
-  | `WcTyp (loc,id_tpl,ct) ->
+  | `Nil _loc -> acc
+  | `TypeEq (loc,id_tpl,ct) ->
       (mkwithtyp (fun x  -> Pwith_type x) loc id_tpl ct) :: acc
-  | `WcMod (_loc,i1,i2) ->
+  | `ModuleEq (_loc,i1,i2) ->
       ((long_uident i1), (Pwith_module (long_uident i2))) :: acc
-  | `WcTyS (loc,id_tpl,ct) ->
+  | `TypeSubst (loc,id_tpl,ct) ->
       (mkwithtyp (fun x  -> Pwith_typesubst x) loc id_tpl ct) :: acc
-  | `WcMoS (_loc,i1,i2) ->
+  | `ModuleSubst (_loc,i1,i2) ->
       ((long_uident i1), (Pwith_modsubst (long_uident i2))) :: acc
-  | `WcAnd (_loc,wc1,wc2) -> mkwithc wc1 (mkwithc wc2 acc)
+  | `And (_loc,wc1,wc2) -> mkwithc wc1 (mkwithc wc2 acc)
   | `Ant (loc,_) -> error loc "bad with constraint (antiquotation)"
 let rec patt_fa al =
   function | `PaApp (_,f,a) -> patt_fa (a :: al) f | f -> (f, al)
@@ -521,16 +521,16 @@ let rec expr =
         (Pexp_for
            ((with_loc i loc), (expr e1), (expr e2), (mkdirection df),
              (expr e3)))
-  | `Fun (loc,`McArr (_,`PaLab (_,lab,po),w,e)) ->
+  | `Fun (loc,`Case (_,`PaLab (_,lab,po),w,e)) ->
       mkexp loc
         (Pexp_function
            (lab, None, [((patt_of_lab loc lab po), (when_expr e w))]))
-  | `Fun (loc,`McArr (_,`PaOlbi (_,lab,p,e1),w,e2)) ->
+  | `Fun (loc,`Case (_,`PaOlbi (_,lab,p,e1),w,e2)) ->
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
            (("?" ^ lab), (Some (expr e1)), [((patt p), (when_expr e2 w))]))
-  | `Fun (loc,`McArr (_,`PaOlb (_,lab,p),w,e)) ->
+  | `Fun (loc,`Case (_,`PaOlb (_,lab,p),w,e)) ->
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
@@ -589,7 +589,7 @@ let rec expr =
       mkexp loc (Pexp_override (mkideexp iel []))
   | `Record (loc,lel,eo) ->
       (match lel with
-       | `RbNil _loc -> error loc "empty record"
+       | `Nil _loc -> error loc "empty record"
        | _ ->
            let eo = match eo with | `ExNil _loc -> None | e -> Some (expr e) in
            mkexp loc (Pexp_record ((mklabexp lel []), eo)))
@@ -629,7 +629,7 @@ let rec expr =
       let e2 = `Sequence (loc, el) in
       mkexp loc (Pexp_while ((expr e1), (expr e2)))
   | `Let_open (loc,i,e) -> mkexp loc (Pexp_open ((long_uident i), (expr e)))
-  | `Package_expr (loc,`MeTyc (_,me,pt)) ->
+  | `Package_expr (loc,`ModuleExprConstraint (_,me,pt)) ->
       mkexp loc
         (Pexp_constraint
            ((mkexp loc (Pexp_pack (module_expr me))),
@@ -656,8 +656,8 @@ and label_expr =
   | e -> ("", (expr e))
 and binding x acc =
   match x with
-  | `BiAnd (_loc,x,y) -> binding x (binding y acc)
-  | `BiEq
+  | `And (_loc,x,y) -> binding x (binding y acc)
+  | `Bind
       (_loc,`PaId (sloc,`Lid (_,bind_name)),`Constraint_exp
                                               (_,e,`TyTypePol (_,vs,ty)))
       ->
@@ -684,16 +684,16 @@ and binding x acc =
              ((mkpat (Ppat_var (with_loc bind_name sloc))),
                (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
       let e = mk_newtypes vars in (pat, e) :: acc
-  | `BiEq (_loc,p,`Constraint_exp (_,e,`TyPol (_,vs,ty))) ->
+  | `Bind (_loc,p,`Constraint_exp (_,e,`TyPol (_,vs,ty))) ->
       ((patt (`PaTyc (_loc, p, (`TyPol (_loc, vs, ty))))), (expr e)) :: acc
-  | `BiEq (_loc,p,e) -> ((patt p), (expr e)) :: acc
-  | `BiNil _loc -> acc
+  | `Bind (_loc,p,e) -> ((patt p), (expr e)) :: acc
+  | `Nil _loc -> acc
   | _ -> assert false
 and match_case x acc =
   match x with
   | `McOr (_loc,x,y) -> match_case x (match_case y acc)
-  | `McArr (_loc,p,w,e) -> ((patt p), (when_expr e w)) :: acc
-  | `McNil _loc -> acc
+  | `Case (_loc,p,w,e) -> ((patt p), (when_expr e w)) :: acc
+  | `Nil _loc -> acc
   | _ -> assert false
 and when_expr e w =
   match w with
@@ -701,14 +701,14 @@ and when_expr e w =
   | w -> mkexp (loc_of_expr w) (Pexp_when ((expr w), (expr e)))
 and mklabexp x acc =
   match x with
-  | `RbSem (_loc,x,y) -> mklabexp x (mklabexp y acc)
-  | `RbEq (_loc,i,e) -> ((ident i), (expr e)) :: acc
+  | `Sem (_loc,x,y) -> mklabexp x (mklabexp y acc)
+  | `RecBind (_loc,i,e) -> ((ident i), (expr e)) :: acc
   | _ -> assert false
 and mkideexp x acc =
   match x with
-  | `RbNil _loc -> acc
-  | `RbSem (_loc,x,y) -> mkideexp x (mkideexp y acc)
-  | `RbEq (_loc,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
+  | `Nil _loc -> acc
+  | `Sem (_loc,x,y) -> mkideexp x (mkideexp y acc)
+  | `RecBind (_loc,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
   | _ -> assert false
 and mktype_decl x acc =
   match x with
@@ -739,80 +739,81 @@ and module_type =
   | `Ant (_loc,_) -> assert false
 and sig_item s l =
   match s with
-  | `SgNil _loc -> l
-  | `SgCls (loc,cd) ->
+  | `Nil _loc -> l
+  | `Class (loc,cd) ->
       (mksig loc
          (Psig_class
             (List.map class_info_class_type (list_of_class_type cd []))))
       :: l
-  | `SgClt (loc,ctd) ->
+  | `ClassType (loc,ctd) ->
       (mksig loc
          (Psig_class_type
             (List.map class_info_class_type (list_of_class_type ctd []))))
       :: l
-  | `SgSem (_loc,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
-  | `SgDir (_,_,_) -> l
-  | `SgExc (loc,`TyId (_,`Uid (_,s))) ->
+  | `Sem (_loc,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
+  | `Directive (_,_,_) -> l
+  | `Exception (loc,`TyId (_,`Uid (_,s))) ->
       (mksig loc (Psig_exception ((with_loc s loc), []))) :: l
-  | `SgExc (loc,`TyOf (_,`TyId (_,`Uid (_,s)),t)) ->
+  | `Exception (loc,`TyOf (_,`TyId (_,`Uid (_,s)),t)) ->
       (mksig loc
          (Psig_exception
             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
       :: l
-  | `SgExc (_,_) -> assert false
-  | `SgExt (loc,n,t,sl) ->
+  | `Exception (_,_) -> assert false
+  | `External (loc,n,t,sl) ->
       (mksig loc
          (Psig_value
             ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
       :: l
-  | `SgInc (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
-  | `SgMod (loc,n,mt) ->
+  | `Include (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
+  | `Module (loc,n,mt) ->
       (mksig loc (Psig_module ((with_loc n loc), (module_type mt)))) :: l
-  | `SgRecMod (loc,mb) ->
+  | `RecModule (loc,mb) ->
       (mksig loc (Psig_recmodule (module_sig_binding mb []))) :: l
-  | `SgMty (loc,n,mt) ->
+  | `ModuleType (loc,n,mt) ->
       let si =
         match mt with
         | `MtQuo (_,_) -> Pmodtype_abstract
         | _ -> Pmodtype_manifest (module_type mt) in
       (mksig loc (Psig_modtype ((with_loc n loc), si))) :: l
-  | `SgOpn (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
-  | `SgTyp (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl []))) :: l
-  | `SgVal (loc,n,t) ->
+  | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
+  | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl []))) :: l
+  | `Value (loc,n,t) ->
       (mksig loc (Psig_value ((with_loc n loc), (mkvalue_desc loc t [])))) ::
       l
   | `Ant (loc,_) -> error loc "antiquotation in sig_item"
 and module_sig_binding x acc =
   match x with
-  | `MbAnd (_loc,x,y) -> module_sig_binding x (module_sig_binding y acc)
-  | `MbCol (loc,s,mt) -> ((with_loc s loc), (module_type mt)) :: acc
+  | `And (_loc,x,y) -> module_sig_binding x (module_sig_binding y acc)
+  | `ModuleConstraint (loc,s,mt) -> ((with_loc s loc), (module_type mt)) ::
+      acc
   | _ -> assert false
 and module_str_binding x acc =
   match x with
-  | `MbAnd (_loc,x,y) -> module_str_binding x (module_str_binding y acc)
-  | `MbColEq (loc,s,mt,me) ->
+  | `And (_loc,x,y) -> module_str_binding x (module_str_binding y acc)
+  | `ModuleBind (loc,s,mt,me) ->
       ((with_loc s loc), (module_type mt), (module_expr me)) :: acc
   | _ -> assert false
 and module_expr =
   function
-  | `MeNil loc -> error loc "nil module expression"
-  | `MeId (loc,i) -> mkmod loc (Pmod_ident (long_uident i))
+  | `Nil loc -> error loc "nil module expression"
+  | `Id (loc,i) -> mkmod loc (Pmod_ident (long_uident i))
   | `MeApp (loc,me1,me2) ->
       mkmod loc (Pmod_apply ((module_expr me1), (module_expr me2)))
-  | `MeFun (loc,n,mt,me) ->
+  | `Functor (loc,n,mt,me) ->
       mkmod loc
         (Pmod_functor ((with_loc n loc), (module_type mt), (module_expr me)))
-  | `MeStr (loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
-  | `MeTyc (loc,me,mt) ->
+  | `Struct (loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
+  | `ModuleExprConstraint (loc,me,mt) ->
       mkmod loc (Pmod_constraint ((module_expr me), (module_type mt)))
-  | `MePkg (loc,`Constraint_exp (_,e,`TyPkg (_,pt))) ->
+  | `PackageModule (loc,`Constraint_exp (_,e,`TyPkg (_,pt))) ->
       mkmod loc
         (Pmod_unpack
            (mkexp loc
               (Pexp_constraint
                  ((expr e),
                    (Some (mktyp loc (Ptyp_package (package_type pt)))), None))))
-  | `MePkg (loc,e) -> mkmod loc (Pmod_unpack (expr e))
+  | `PackageModule (loc,e) -> mkmod loc (Pmod_unpack (expr e))
   | `Ant (loc,_) -> error loc "antiquotation in module_expr"
 and str_item s l =
   match s with

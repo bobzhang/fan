@@ -231,7 +231,7 @@ let map loc p e l =
                     (loc,
                       (`IdAcc
                          (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
-                 (`Fun (loc, (`McArr (loc, p, (`ExNil loc), e)))))), l)
+                 (`Fun (loc, (`Case (loc, p, (`ExNil loc), e)))))), l)
       else
         `ExApp
           (loc,
@@ -248,14 +248,14 @@ let map loc p e l =
                          (loc,
                            (`McOr
                               (loc,
-                                (`McArr
+                                (`Case
                                    (loc, p,
                                      (`ExId (loc, (`Lid (loc, "true")))),
                                      (`ExApp
                                         (loc,
                                           (`Fun
                                              (loc,
-                                               (`McArr
+                                               (`Case
                                                   (loc,
                                                     (`PaId
                                                        (loc,
@@ -263,7 +263,7 @@ let map loc p e l =
                                                     (`ExNil loc),
                                                     (`Fun
                                                        (loc,
-                                                         (`McArr
+                                                         (`Case
                                                             (loc,
                                                               (`PaId
                                                                  (loc,
@@ -291,11 +291,11 @@ let map loc p e l =
                                                                     (loc,
                                                                     "xs")))))))))))))),
                                           e)))),
-                                (`McArr
+                                (`Case
                                    (loc, (`PaAny loc), (`ExNil loc),
                                      (`Fun
                                         (loc,
-                                          (`McArr
+                                          (`Case
                                              (loc,
                                                (`PaId
                                                   (loc, (`Lid (loc, "l")))),
@@ -313,7 +313,7 @@ let filter loc p b l =
              (`ExId
                 (loc,
                   (`IdAcc (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
-             (`Fun (loc, (`McArr (loc, p, (`ExNil loc), b)))))), l)
+             (`Fun (loc, (`Case (loc, p, (`ExNil loc), b)))))), l)
   else
     `ExApp
       (loc,
@@ -326,9 +326,9 @@ let filter loc p b l =
                 (loc,
                   (`McOr
                      (loc,
-                       (`McArr
+                       (`Case
                           (loc, p, (`ExId (loc, (`Lid (loc, "true")))), b)),
-                       (`McArr
+                       (`Case
                           (loc, (`PaAny loc), (`ExNil loc),
                             (`ExId (loc, (`Lid (loc, "false")))))))))))), l)
 let concat _loc l =
@@ -367,8 +367,8 @@ let substp loc env =
     | `Record (_loc,bi,`ExNil _) ->
         let rec substbi =
           function
-          | `RbSem (_loc,b1,b2) -> `PaSem (loc, (substbi b1), (substbi b2))
-          | `RbEq (_loc,i,e) -> `PaEq (loc, i, (loop e))
+          | `Sem (_loc,b1,b2) -> `PaSem (loc, (substbi b1), (substbi b2))
+          | `RecBind (_loc,i,e) -> `PaEq (loc, i, (loop e))
           | _ -> bad_patt _loc in
         `PaRec (loc, (substbi bi))
     | _ -> bad_patt loc in
@@ -473,12 +473,12 @@ let fun_args _loc args body =
   then
     `Fun
       (_loc,
-        (`McArr
+        (`Case
            (_loc, (`PaId (_loc, (`Uid (_loc, "()")))), (`ExNil _loc), body)))
   else
     List.fold_right
       (fun arg  body  ->
-         `Fun (_loc, (`McArr (_loc, arg, (`ExNil _loc), body)))) args body
+         `Fun (_loc, (`Case (_loc, arg, (`ExNil _loc), body)))) args body
 let _loc = FanLoc.ghost
 let app a b = `ExApp (_loc, a, b)
 let comma a b = `ExCom (_loc, a, b)
@@ -620,7 +620,8 @@ let mk_assert =
   | e -> `ExAsr (_loc, e)
 let mk_record label_exprs =
   let rec_bindings =
-    List.map (fun (label,expr)  -> `RbEq (_loc, (`Lid (_loc, label)), expr))
+    List.map
+      (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
       label_exprs in
   `Record (_loc, (FanAst.rbSem_of_list rec_bindings), (`ExNil _loc))
 let failure =
@@ -634,13 +635,13 @@ let (<+) names acc =
     (fun name  acc  ->
        `Fun
          (_loc,
-           (`McArr
+           (`Case
               (_loc, (`PaId (_loc, (`Lid (_loc, name)))), (`ExNil _loc), acc))))
     names acc
 let (<+<) patts acc =
   List.fold_right
-    (fun p  acc  -> `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), acc))))
-    patts acc
+    (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), acc)))) patts
+    acc
 let mep_comma x y =
   `ExApp
     (_loc, (`ExVrn (_loc, "PaCom")),
@@ -971,7 +972,7 @@ let mk_tuple_vep =
                     (List.reduce_right mvep_comma xs))))))
 let mee_record_col label expr =
   `ExApp
-    (_loc, (`ExVrn (_loc, "RbEq")),
+    (_loc, (`ExVrn (_loc, "RecBind")),
       (`ExTup
          (_loc,
            (`ExCom
@@ -1005,7 +1006,7 @@ let mep_record_col label expr =
                                     (`Str (_loc, label)))))))), expr)))))))
 let mee_record_semi a b =
   `ExApp
-    (_loc, (`ExVrn (_loc, "RbSem")),
+    (_loc, (`ExVrn (_loc, "Sem")),
       (`ExTup
          (_loc,
            (`ExCom
@@ -1055,7 +1056,7 @@ let gen_curry_n acc ~arity  cons n =
       (fun i  -> List.init n (fun j  -> `PaId (_loc, (xid ~off:i j)))) in
   let pat = Patt.of_str cons in
   List.fold_right
-    (fun p  acc  -> `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), acc))))
+    (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), acc))))
     (List.map (fun lst  -> Patt.apply pat lst) args) acc
 let currying match_cases ~arity  =
   if arity >= 2

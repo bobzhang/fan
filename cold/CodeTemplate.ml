@@ -20,18 +20,18 @@ let base1_types =
     (`Custom
        (`StVal
           (_loc, (`ReNil _loc),
-            (`BiEq
+            (`Bind
                (_loc, (`PaId (_loc, (`Lid (_loc, "pp_print_unit")))),
                  (`Constraint_exp
                     (_loc,
                       (`Fun
                          (_loc,
-                           (`McArr
+                           (`Case
                               (_loc, (`PaId (_loc, (`Lid (_loc, "fmt")))),
                                 (`ExNil _loc),
                                 (`Fun
                                    (_loc,
-                                     (`McArr
+                                     (`Case
                                         (_loc, (`PaAny _loc), (`ExNil _loc),
                                           (`ExApp
                                              (_loc,
@@ -64,17 +64,17 @@ let base1_types =
     (`Custom
        (`StVal
           (_loc, (`ReNil _loc),
-            (`BiEq
+            (`Bind
                (_loc, (`PaId (_loc, (`Lid (_loc, "eq_unit")))),
                  (`Constraint_exp
                     (_loc,
                       (`Fun
                          (_loc,
-                           (`McArr
+                           (`Case
                               (_loc, (`PaAny _loc), (`ExNil _loc),
                                 (`Fun
                                    (_loc,
-                                     (`McArr
+                                     (`Case
                                         (_loc, (`PaAny _loc), (`ExNil _loc),
                                           (`ExId
                                              (_loc, (`Lid (_loc, "true")))))))))))),
@@ -106,26 +106,26 @@ let print_base1 =
             | `Exist ->
                 `StVal
                   (_loc, (`ReNil _loc),
-                    (`BiEq
+                    (`Bind
                        (_loc, (`PaId (_loc, (`Lid (_loc, name)))),
                          (`ExId (_loc, (`Lid (_loc, name)))))))
             | `Custom s -> s
             | `Fmt c ->
                 `StVal
                   (_loc, (`ReNil _loc),
-                    (`BiEq
+                    (`Bind
                        (_loc, (`PaId (_loc, (`Lid (_loc, name)))),
                          (`Constraint_exp
                             (_loc,
                               (`Fun
                                  (_loc,
-                                   (`McArr
+                                   (`Case
                                       (_loc,
                                         (`PaId (_loc, (`Lid (_loc, "fmt")))),
                                         (`ExNil _loc),
                                         (`Fun
                                            (_loc,
-                                             (`McArr
+                                             (`Case
                                                 (_loc,
                                                   (`PaId
                                                      (_loc,
@@ -173,7 +173,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
                 (`Fun
                    (_loc,
-                     (`McArr
+                     (`Case
                         (_loc, (`PaId (_loc, (`Lid (_loc, "x")))),
                           (`ExNil _loc), (`ExId (_loc, (`Lid (_loc, "x")))))))),
                 ty))) in
@@ -191,12 +191,12 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
                 (`Fun
                    (_loc,
-                     (`McArr
+                     (`Case
                         (_loc, (`PaId (_loc, (`Lid (_loc, "x")))),
                           (`ExNil _loc),
                           (`Fun
                              (_loc,
-                               (`McArr
+                               (`Case
                                   (_loc, (`PaAny _loc), (`ExNil _loc),
                                     (`ExId (_loc, (`Lid (_loc, "x")))))))))))),
                 ty))) in
@@ -212,7 +212,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
                 (`Fun
                    (_loc,
-                     (`McArr
+                     (`Case
                         (_loc, (`PaAny _loc), (`ExNil _loc),
                           (`ExId (_loc, (`Lid (_loc, "self")))))))), ty))) in
   let v4 =
@@ -229,11 +229,11 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
                 (`Fun
                    (_loc,
-                     (`McArr
+                     (`Case
                         (_loc, (`PaAny _loc), (`ExNil _loc),
                           (`Fun
                              (_loc,
-                               (`McArr
+                               (`Case
                                   (_loc, (`PaAny _loc), (`ExNil _loc),
                                     (`ExId (_loc, (`Lid (_loc, "self")))))))))))),
                 ty))) in
@@ -264,7 +264,7 @@ let eq_base1 =
             | `Def ->
                 `StVal
                   (_loc, (`ReNil _loc),
-                    (`BiEq
+                    (`Bind
                        (_loc, (`PaId (_loc, (`Lid (_loc, name)))),
                          (`Constraint_exp
                             (_loc, (`ExId (_loc, (`Lid (_loc, "=")))), ty)))))

@@ -140,13 +140,13 @@ let _ =
                           | (Some d,None ) ->
                               `StVal
                                 (_loc, (`ReNil _loc),
-                                  (`BiEq
+                                  (`Bind
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`Str (_loc, d)))))))
                           | (Some d,Some typ) ->
                               `StVal
                                 (_loc, (`ReNil _loc),
-                                  (`BiEq
+                                  (`Bind
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`Constraint_exp
                                           (_loc,
@@ -156,13 +156,13 @@ let _ =
                           | (None ,None ) ->
                               `StVal
                                 (_loc, (`ReNil _loc),
-                                  (`BiEq
+                                  (`Bind
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`Str (_loc, x)))))))
                           | (None ,Some typ) ->
                               `StVal
                                 (_loc, (`ReNil _loc),
-                                  (`BiEq
+                                  (`Bind
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`Constraint_exp
                                           (_loc,

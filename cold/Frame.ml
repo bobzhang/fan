@@ -39,8 +39,7 @@ module Make(S:FSig.Config) =
             let patt = Patt.mk_tuple ~arity:S.arity ~number:len in
             let tys = List.mapi (mapi_expr simple_expr_of_ctyp) ls in
             S.names <+
-              (currying
-                 [`McArr (_loc, patt, (`ExNil _loc), (S.mk_tuple tys))]
+              (currying [`Case (_loc, patt, (`ExNil _loc), (S.mk_tuple tys))]
                  ~arity:S.arity)
         | _ -> invalid_arg & (sprintf "tuple_expr_of_ctyp {|%s|}\n" "")
     let rec normal_simple_expr_of_ctyp cxt ty =
@@ -96,7 +95,7 @@ module Make(S:FSig.Config) =
                             | t ->
                                 `Fun
                                   (_loc,
-                                    (`McArr
+                                    (`Case
                                        (_loc,
                                          (`PaId (_loc, (`Lid (_loc, "self")))),
                                          (`ExNil _loc), (aux t)))))))
@@ -129,8 +128,8 @@ module Make(S:FSig.Config) =
           let mk (cons,tyargs) =
             let exprs = List.mapi (mapi_expr simple_expr_of_ctyp) tyargs in
             S.mk_variant cons exprs in
-          let e = mk (cons, tyargs) in (`McArr (_loc, p, (`ExNil _loc), e))
-            :: acc in
+          let e = mk (cons, tyargs) in (`Case (_loc, p, (`ExNil _loc), e)) ::
+            acc in
         let info =
           match ty with
           | `TySum (_loc,t) ->
@@ -159,7 +158,7 @@ module Make(S:FSig.Config) =
           | `TyQuP (_loc,s)|`TyQuM (_loc,s)|`TyQuo (_loc,s) ->
               `Fun
                 (_loc,
-                  (`McArr
+                  (`Case
                      (_loc, (`PaId (_loc, (`Lid (_loc, (varf s))))),
                        (`ExNil _loc), acc)))
           | _ -> (Ctyp.eprint.contents var; invalid_arg "mk_prefix") in
@@ -190,7 +189,7 @@ module Make(S:FSig.Config) =
                             }) cols in
                  mk_prefix tyvars
                    (currying ~arity:S.arity
-                      [`McArr (_loc, patt, (`ExNil _loc), (S.mk_record info))])
+                      [`Case (_loc, patt, (`ExNil _loc), (S.mk_record info))])
              | _ ->
                  let process =
                    (fun ctyp  ->
@@ -218,13 +217,13 @@ module Make(S:FSig.Config) =
             let fun_expr =
               fun_of_tydcl simple_expr_of_ctyp
                 (expr_of_ctyp (unwrap simple_expr_of_ctyp)) tydcl in
-            `BiEq
+            `Bind
               (_loc, (`PaId (_loc, (`Lid (_loc, (tctor_var name))))),
                 (`Constraint_exp (_loc, fun_expr, ty)))
           else
             (eprintf
                "Warning: %s as a abstract type no structure generated\n" "";
-             `BiEq
+             `Bind
                (_loc, (`PaId (_loc, (`Lid (_loc, (tctor_var name))))),
                  (`ExApp
                     (_loc, (`ExId (_loc, (`Lid (_loc, "failwithf")))),
@@ -238,11 +237,11 @@ module Make(S:FSig.Config) =
         | `Mutual named_types ->
             let binding =
               match named_types with
-              | [] -> `BiNil _loc
+              | [] -> `Nil _loc
               | xs ->
                   (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
                    List.reduce_right_with
-                     ~compose:(fun x  y  -> `BiAnd (_loc, x, y))
+                     ~compose:(fun x  y  -> `And (_loc, x, y))
                      ~f:(fun (name,ty)  -> mk_binding name ty) xs) in
             `StVal (_loc, (`Recursive _loc), binding)
         | `Single (name,tydcl) ->
@@ -256,7 +255,7 @@ module Make(S:FSig.Config) =
       let item = FanAst.stSem_of_list (List.map fs lst) in
       match module_name with
       | None  -> item
-      | Some m -> `StMod (_loc, m, (`MeStr (_loc, item)))
+      | Some m -> `StMod (_loc, m, (`Struct (_loc, item)))
     let obj_of_module_types ?module_name  base class_name simple_expr_of_ctyp
       (k : FSig.k) (lst : module_types) =
       let open ErrorMonad in
@@ -306,5 +305,5 @@ module Make(S:FSig.Config) =
           tbl;
         (match module_name with
          | None  -> v
-         | Some u -> `StMod (_loc, u, (`MeStr (_loc, v))))
+         | Some u -> `StMod (_loc, u, (`Struct (_loc, v))))
   end

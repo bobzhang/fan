@@ -97,18 +97,18 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
        clear (); phr)
     let rec sig_handler =
       function
-      | `SgDir (_loc,"load",`Str (_,s)) -> (rewrite_and_load "" s; None)
-      | `SgDir (_loc,"directory",`Str (_,s)) ->
+      | `Directive (_loc,"load",`Str (_,s)) -> (rewrite_and_load "" s; None)
+      | `Directive (_loc,"directory",`Str (_,s)) ->
           (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-      | `SgDir (_loc,"use",`Str (_,s)) ->
+      | `Directive (_loc,"use",`Str (_,s)) ->
           Some
             (parse_file ~directive_handler:sig_handler s
                PreCast.CurrentParser.parse_interf)
-      | `SgDir (_loc,"default_quotation",`Str (_,s)) ->
+      | `Directive (_loc,"default_quotation",`Str (_,s)) ->
           (AstQuotation.default := s; None)
-      | `SgDir (_loc,"filter",`Str (_,s)) ->
+      | `Directive (_loc,"filter",`Str (_,s)) ->
           (AstFilters.use_interf_filter s; None)
-      | `SgDir (loc,x,_) ->
+      | `Directive (loc,x,_) ->
           FanLoc.raise loc
             (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
       | _ -> assert false

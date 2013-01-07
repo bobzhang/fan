@@ -17,7 +17,7 @@ module Expr =
     let meta_ref mf_a _loc i =
       `Record
         (_loc,
-          (`RbEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))),
+          (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))),
           (`ExNil _loc))
     let mklist loc =
       let rec loop top =

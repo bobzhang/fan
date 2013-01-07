@@ -33,11 +33,11 @@ let app  mt1 mt2 =
    ]}
    but for module_expr
    {[
-     |	MeId of loc * ident
+     |	Id of loc * ident
      |	MeApp of loc * module_expr * module_expr
    ]}
    since we require that for module_type_app operation, only
-   MeId can be used as app operation.
+   Id can be used as app operation.
 *)      
 
 

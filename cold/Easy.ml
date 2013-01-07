@@ -29,8 +29,8 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
         if number > 1
         then
           let patt = Patt.tuple_of_number (`PaAny _loc) arity in
-          `McArr (_loc, patt, (`ExNil _loc), trail)
-        else `McNil _loc
+          `Case (_loc, patt, (`ExNil _loc), trail)
+        else `Nil _loc
       let names = names
       let mk_record = mk_record
       let cons_transform = cons_transform
@@ -63,8 +63,8 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
           if number > 1
           then
             let patt = Patt.tuple_of_number (`PaAny _loc) arity in
-            `McArr (_loc, patt, (`ExNil _loc), trail)
-          else `McNil _loc
+            `Case (_loc, patt, (`ExNil _loc), trail)
+          else `Nil _loc
         let names = names
         let mk_record = mk_record
         let cons_transform = cons_transform

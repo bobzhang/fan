@@ -176,9 +176,9 @@ let output_byte_array v =
 let table (n,t) =
   `StVal
     (_loc, (`ReNil _loc),
-      (`BiEq (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))))
+      (`Bind (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))))
 let binding_table (n,t) =
-  `BiEq (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))
+  `Bind (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))
 let partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
@@ -226,11 +226,11 @@ let partition ~counter  ~tables  (i,p) =
   let f = mk_partition_name i in
   `StVal
     (_loc, (`ReNil _loc),
-      (`BiEq
+      (`Bind
          (_loc, (`PaId (_loc, (`Lid (_loc, f)))),
            (`Fun
               (_loc,
-                (`McArr
+                (`Case
                    (_loc, (`PaId (_loc, (`Lid (_loc, "c")))), (`ExNil _loc),
                      body)))))))
 let binding_partition ~counter  ~tables  (i,p) =
@@ -278,11 +278,11 @@ let binding_partition ~counter  ~tables  (i,p) =
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  `BiEq
+  `Bind
     (_loc, (`PaId (_loc, (`Lid (_loc, f)))),
       (`Fun
          (_loc,
-           (`McArr
+           (`Case
               (_loc, (`PaId (_loc, (`Lid (_loc, "c")))), (`ExNil _loc), body)))))
 let best_final final =
   let fin = ref None in
@@ -309,7 +309,7 @@ let gen_definition _loc l =
     let cases =
       Array.mapi
         (fun i  j  ->
-           `McArr
+           `Case
              (_loc, (`Int (_loc, (string_of_int i))), (`ExNil _loc),
                (call_state auto j))) trans in
     let cases = Array.to_list cases in
@@ -326,7 +326,7 @@ let gen_definition _loc l =
                     (`ExId (_loc, (`Lid (_loc, "lexbuf")))))))),
           (`McOr
              (_loc, (FanAst.mcOr_of_list cases),
-               (`McArr
+               (`Case
                   (_loc, (`PaAny _loc), (`ExNil _loc),
                     (`ExApp
                        (_loc,
@@ -336,18 +336,18 @@ let gen_definition _loc l =
                                  (_loc, (gm ()), (`Lid (_loc, "backtrack")))))),
                          (`ExId (_loc, (`Lid (_loc, "lexbuf"))))))))))) in
     let ret body =
-      `BiEq
+      `Bind
         (_loc, (`PaId (_loc, (`Lid (_loc, f)))),
           (`Fun
              (_loc,
-               (`McArr
+               (`Case
                   (_loc, (`PaId (_loc, (`Lid (_loc, "lexbuf")))),
                     (`ExNil _loc), body))))) in
     match best_final final with
     | None  -> ret body
     | Some i ->
         if (Array.length trans) = 0
-        then `BiNil _loc
+        then `Nil _loc
         else
           ret
             (`Sequence
@@ -372,7 +372,7 @@ let gen_definition _loc l =
   let cases =
     Array.mapi
       (fun i  (_,e)  ->
-         `McArr (_loc, (`Int (_loc, (string_of_int i))), (`ExNil _loc), e))
+         `Case (_loc, (`Int (_loc, (string_of_int i))), (`ExNil _loc), e))
       brs in
   let table_counter = ref 0 in
   let tables = Hashtbl.create 31 in
@@ -391,7 +391,7 @@ let gen_definition _loc l =
     if len > 1 then `Recursive _loc else `ReNil _loc in
   `Fun
     (_loc,
-      (`McArr
+      (`Case
          (_loc, (`PaId (_loc, (`Lid (_loc, "lexbuf")))), (`ExNil _loc),
            (`Let_in
               (_loc, (`ReNil _loc), (FanAst.biAnd_of_list tables),
@@ -429,7 +429,7 @@ let gen_definition _loc l =
                                             (_loc,
                                               (FanAst.mcOr_of_list
                                                  (Array.to_list cases)),
-                                              (`McArr
+                                              (`Case
                                                  (_loc, (`PaAny _loc),
                                                    (`ExNil _loc),
                                                    (`ExApp

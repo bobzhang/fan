@@ -15,7 +15,7 @@ let _ =
            (_loc,
              (`Let_in
                 (_loc, (`ReNil _loc),
-                  (`BiEq
+                  (`Bind
                      (_loc, (`PaId (_loc, (`Lid (_loc, "loc")))),
                        (`ExId
                           (_loc,
@@ -30,7 +30,7 @@ let add_debug_expr e =
     (_loc, e,
       (`McOr
          (_loc,
-           (`McArr
+           (`Case
               (_loc,
                 (`PaAli
                    (_loc,
@@ -46,7 +46,7 @@ let add_debug_expr e =
                 (`ExApp
                    (_loc, (`ExId (_loc, (`Lid (_loc, "raise")))),
                      (`ExId (_loc, (`Lid (_loc, "exc")))))))),
-           (`McArr
+           (`Case
               (_loc, (`PaId (_loc, (`Lid (_loc, "exc")))), (`ExNil _loc),
                 (`Sequence
                    (_loc,
@@ -92,7 +92,7 @@ let rec map_match_case =
   function
   | `McOr (_loc,m1,m2) ->
       `McOr (_loc, (map_match_case m1), (map_match_case m2))
-  | `McArr (_loc,p,w,e) -> `McArr (_loc, p, w, (add_debug_expr e))
+  | `Case (_loc,p,w,e) -> `Case (_loc, p, w, (add_debug_expr e))
   | m -> m
 let _ =
   AstFilters.register_str_item_filter
@@ -116,8 +116,8 @@ let decorate_binding decorate_fun =
      inherit  FanAst.map as super
      method! binding =
        function
-       | `BiEq (_loc,`PaId (_,`Lid (_,id)),(`Fun (_,_) as e)) ->
-           `BiEq
+       | `Bind (_loc,`PaId (_,`Lid (_,id)),(`Fun (_,_) as e)) ->
+           `Bind
              (_loc, (`PaId (_loc, (`Lid (_loc, id)))), (decorate_fun id e))
        | b -> super#binding b
    end)#binding
@@ -143,7 +143,7 @@ let decorate_this_expr e id =
   let s = Buffer.contents buf in
   `Let_in
     (_loc, (`ReNil _loc),
-      (`BiEq
+      (`Bind
          (_loc, (`PaId (_loc, (`Uid (_loc, "()")))),
            (`ExApp
               (_loc,
@@ -158,8 +158,8 @@ let rec decorate_fun id =
   let decorate_expr = decorate#expr in
   let decorate_match_case = decorate#match_case in
   function
-  | `Fun (_loc,`McArr (_,p,`ExNil _,e)) ->
-      `Fun (_loc, (`McArr (_loc, p, (`ExNil _loc), (decorate_fun id e))))
+  | `Fun (_loc,`Case (_,p,`ExNil _,e)) ->
+      `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), (decorate_fun id e))))
   | `Fun (_loc,m) ->
       decorate_this_expr (`Fun (_loc, (decorate_match_case m))) id
   | e -> decorate_this_expr (decorate_expr e) id
@@ -174,7 +174,7 @@ let _ =
 let map_expr =
   function
   | `ExApp (_loc,e,`ExId (_,`Uid (_,"NOTHING")))
-    |`Fun (_loc,`McArr (_,`PaId (_,`Uid (_,"NOTHING")),`ExNil _,e)) -> e
+    |`Fun (_loc,`Case (_,`PaId (_,`Uid (_,"NOTHING")),`ExNil _,e)) -> e
   | `ExId (_loc,`Lid (_,"__FILE__")) ->
       `Str (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
   | `ExId (_loc,`Lid (_,"__PWD__")) ->

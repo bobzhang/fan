@@ -57,11 +57,12 @@ let filter_type_defs ?qualified  () =
     val mutable type_defs = let _loc = FanLoc.ghost in `StNil _loc
     method! sig_item =
       function
-      | `SgVal (_loc,_,_)|`SgInc (_loc,_)|`SgExt (_loc,_,_,_)|`SgExc (_loc,_)
-        |`SgCls (_loc,_)|`SgClt (_loc,_)|`SgDir (_loc,_,`ExNil _)
-        |`SgMod (_loc,_,_)|`SgMty (_loc,_,_)|`SgRecMod (_loc,_)
-        |`SgOpn (_loc,_) -> `SgNil _loc
-      | `SgTyp (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
+      | `Value (_loc,_,_)|`Include (_loc,_)|`External (_loc,_,_,_)
+        |`Exception (_loc,_)|`Class (_loc,_)|`ClassType (_loc,_)
+        |`Directive (_loc,_,`ExNil _)|`Module (_loc,_,_)
+        |`ModuleType (_loc,_,_)|`RecModule (_loc,_)|`Open (_loc,_) ->
+          `Nil _loc
+      | `Type (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
           let x =
             match ((Ctyp.qualified_app_list ctyp), qualified) with
             | (Some (`IdAcc (_loc,i,_),ls),Some q) when
@@ -70,11 +71,11 @@ let filter_type_defs ?qualified  () =
             | (_,_) -> super#ctyp x in
           let y = `StTyp (_loc, x) in
           let () = type_defs <- `StSem (_loc, type_defs, y) in
-          `SgTyp (_loc, x)
-      | `SgTyp (_loc,ty) ->
+          `Type (_loc, x)
+      | `Type (_loc,ty) ->
           let x = super#ctyp ty in
           let () = type_defs <- `StSem (_loc, type_defs, (`StTyp (_loc, x))) in
-          `SgTyp (_loc, x)
+          `Type (_loc, x)
       | x -> super#sig_item x
     method! ident =
       function
@@ -117,7 +118,7 @@ let traversal () =
      method update_cur_and_types f = cur_and_types <- f cur_and_types
      method! module_expr =
        function
-       | `MeStr (_loc,u) ->
+       | `Struct (_loc,u) ->
            (self#in_module;
             (let res = self#str_item u in
              let module_types = List.rev self#get_cur_module_types in
@@ -143,7 +144,7 @@ let traversal () =
                        | None  -> `StSem (_loc, acc, code)
                      else acc) filters
                   (if keep.contents then res else `StNil _loc) in
-              self#out_module; `MeStr (_loc, result))))
+              self#out_module; `Struct (_loc, result))))
        | x -> super#module_expr x
      method! str_item =
        function

@@ -73,7 +73,7 @@ let apply () =
                         | (Some e,_) ->
                             `Let_in
                               (_loc, (`ReNil _loc),
-                                (`BiEq
+                                (`Bind
                                    (_loc,
                                      (`PaId (_loc, (`Uid (_loc, "()")))),
                                      (mk_debug _loc m fmt section args))), e)) : 

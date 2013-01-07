@@ -328,15 +328,13 @@ class printer  ()= object(self:'self)
             else pp f "%s" s.txt ) s (* RA*)
     | Ppat_or (p1, p2) -> (* *)
         (match p1 with
-        | {ppat_desc=Ppat_constant (Const_char a);_} -> begin 
-            match pattern_or_helper a p2 with
+        | {ppat_desc=Ppat_constant (Const_char a);_} -> 
+            (match pattern_or_helper a p2 with
             |Some b -> pp f "@[<2>%C..%C@]" a b 
             |None ->
-                pp f "@[<hov0>%a@]" (self#list ~sep:"@,|" self#pattern ) (list_of_pattern [] x)
-                (* self#list  ~sep:"@,|" self#pattern f (list_of_pattern [] x) *) end
+                pp f "@[<hov0>%a@]" (self#list ~sep:"@,|" self#pattern ) (list_of_pattern [] x))
         | _ ->
             pp f "@[<hov0>%a@]" (self#list ~sep:"@,|" self#pattern) (list_of_pattern [] x)
-            (* self#list ~sep:"@,|" self#pattern f (list_of_pattern [] x)  *)
         )
     | _ -> self#pattern1 f x
   method pattern1 (f:Format.formatter) (x:pattern) :unit =

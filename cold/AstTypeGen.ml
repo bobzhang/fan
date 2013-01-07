@@ -36,7 +36,7 @@ let (gen_fold,gen_fold2) =
              (fun v  acc  ->
                 `Let_in
                   (_loc, (`ReNil _loc),
-                    (`BiEq (_loc, (`PaId (_loc, (`Lid (_loc, "self")))), v)),
+                    (`Bind (_loc, (`PaId (_loc, (`Lid (_loc, "self")))), v)),
                     acc)) ls) in
   let mk_tuple = mk_variant "" in
   let mk_record cols =

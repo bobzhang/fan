@@ -326,7 +326,7 @@ let rec mkwithc wc acc = match wc with
       [(long_uident i1, Pwith_module (long_uident i2)) :: acc]
   | {:with_constr@loc| type $id_tpl := $ct |} ->
       [mkwithtyp (fun x -> Pwith_typesubst x) loc id_tpl ct :: acc]
-  | {:with_constr| module $i1 := $i2 |} (*`WcMoS _ i1 i2*) ->
+  | {:with_constr| module $i1 := $i2 |} (*`ModuleSubst _ i1 i2*) ->
       [(long_uident i1, Pwith_modsubst (long_uident i2)) :: acc]
   | {:with_constr| $wc1 and $wc2 |} -> mkwithc wc1 (mkwithc wc2 acc)
   | {:with_constr@loc| $anti:_ |} ->
@@ -762,35 +762,35 @@ and module_type = fun (*module_type -> module_type*)
   | {:module_type| $anti:_ |} -> assert false ]
 and sig_item s l = match s with (* sig_item -> signature -> signature*)
   [ {:sig_item||} -> l
-  | `SgCls (loc,cd) ->
+  | `Class (loc,cd) ->
       [mksig loc (Psig_class
                     (List.map class_info_class_type (list_of_class_type cd []))) :: l]
-  | `SgClt (loc,ctd) ->
+  | `ClassType (loc,ctd) ->
       [mksig loc (Psig_class_type
                     (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
   | {:sig_item| $sg1; $sg2 |} -> sig_item sg1 (sig_item sg2 l)
-  | `SgDir (_,_,_) -> l
+  | `Directive (_,_,_) -> l
   | {:sig_item@loc| exception $uid:s |} ->
       [mksig loc (Psig_exception (with_loc s loc) []) :: l]
   | {:sig_item@loc| exception $uid:s of $t |} ->
       [mksig loc (Psig_exception (with_loc s loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l]
-  | `SgExc (_,_) -> assert false (*FIXME*)
-  | `SgExt (loc, n, t, sl) ->
+  | `Exception (_,_) -> assert false (*FIXME*)
+  | `External (loc, n, t, sl) ->
       [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
-  | `SgInc (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
-  | `SgMod (loc,n,mt) -> [mksig loc (Psig_module (with_loc n loc) (module_type mt)) :: l]
-  | `SgRecMod (loc,mb) ->
+  | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
+  | `Module (loc,n,mt) -> [mksig loc (Psig_module (with_loc n loc) (module_type mt)) :: l]
+  | `RecModule (loc,mb) ->
       [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
-  | `SgMty (loc,n,mt) ->
+  | `ModuleType (loc,n,mt) ->
       let si =  match mt with
       [ `MtQuo (_,_) -> Pmodtype_abstract
       | _ -> Pmodtype_manifest (module_type mt) ] in
       [mksig loc (Psig_modtype (with_loc n loc) si) :: l]
-  | `SgOpn (loc,id) ->
+  | `Open (loc,id) ->
       [mksig loc (Psig_open (long_uident id)) :: l]
-  | `SgTyp (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
-  | `SgVal (loc,n,t) -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l]
+  | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
+  | `Value (loc,n,t) -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l]
   | {:sig_item@loc| $anti:_ |} -> error loc "antiquotation in sig_item" ]
 and module_sig_binding x acc = match x with (* module_binding -> (string loc * module_type) list -> (string loc * module_type) list*)
   [ {:module_binding| $x and $y |} ->

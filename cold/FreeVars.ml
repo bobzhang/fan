@@ -14,10 +14,10 @@ let fold_pattern_vars f p init =
   (((new c_fold_pattern_vars) f init)#patt p)#acc
 let rec fold_binding_vars f bi acc =
   match bi with
-  | `BiAnd (_loc,bi1,bi2) ->
+  | `And (_loc,bi1,bi2) ->
       fold_binding_vars f bi1 (fold_binding_vars f bi2 acc)
-  | `BiEq (_loc,p,_) -> fold_pattern_vars f p acc
-  | `BiNil _loc -> acc
+  | `Bind (_loc,p,_) -> fold_pattern_vars f p acc
+  | `Nil _loc -> acc
   | `Ant (_loc,_) -> assert false
 class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
   SSet.empty) free_init =
@@ -46,7 +46,7 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
       | e -> super#expr e
     method! match_case =
       function
-      | `McArr (_loc,p,e1,e2) ->
+      | `Case (_loc,p,e1,e2) ->
           (((o#add_patt p)#expr e1)#expr e2)#set_env env
       | m -> super#match_case m
     method! str_item =
@@ -74,7 +74,7 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
       | cst -> super#class_str_item cst
     method! module_expr =
       function
-      | `MeStr (_loc,st) -> (o#str_item st)#set_env env
+      | `Struct (_loc,st) -> (o#str_item st)#set_env env
       | me -> super#module_expr me
   end
 let free_vars env_init e =

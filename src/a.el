@@ -55,10 +55,57 @@
 (let ((e ))
   
   )
-
 (setq v
       (hash-table/from-list
-         "MtFun" "Functor"
-         
+       "WcTyS" "TypeSubst"
+       "WcMoS" "ModuleSubst"
+       "McNil" "Nil"
+       "McOr" "Or"
+       "McArr" "Case"
+       "MeNil" "Nil"
+       "MeId" "Id"
+       "MeFun" "Functor"
+       "MeStr" "Struct"
+       "MeTyc" "ModuleExprConstraint"
+       "MePkg" "PackageModule"
          ))
+;; (setq v
+;;       (hash-table/from-list
+;;        "WcNil" "Nil"
+;;        "WcTyp" "TypeEq"
+;;        "WcMod" "ModuleEq"
+;;        "WcTys" "TypeSubst"
+;;        "WcMos" "ModuleSubst"
+;;        "WcAnd" "And"
+;;        "BiNil" "Nil"
+;;        "BiAnd" "And"
+;;        "BiEq" "Bind"
+;;        "RbNil" "Nil"
+;;        "RbSem" "Sem"
+;;        "RbEq" "RecBind"
+;;        "MbNil" "Nil"
+;;        "MbAnd" "And"
+;;        "MbColEq" "ModuleBind"
+;;        "MbCol" "ModuleConstraint"
+;;          ))
+
+
+;; (setq v
+;;       (hash-table/from-list
+;;          "SgNil" "Nil"
+;;          "SgCls" "Class"
+;;          "SgClt" "ClassType"
+;;          "SgSem" "Sem"
+;;          "SgDir" "Directive"
+;;          "SgExc" "Exception"
+;;          "SgExt" "External"
+;;          "SgInc" "Include"
+;;          "SgMod" "Module"
+;;          "SgRecMod" "RecModule"
+;;          "SgMty" "ModuleType"
+;;          "SgOpn" "Open"
+;;          "SgTyp" "Type"
+;;          "SgVal" "Value"
+;;          ))
+
 ;;; a.el ends here

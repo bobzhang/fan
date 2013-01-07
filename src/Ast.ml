@@ -235,93 +235,93 @@ type loc = FanLoc.t
     | `MtOf of (loc * module_expr)
     | `Ant of (loc * string) (* $s$ *) ]
   and sig_item =
-    [= `SgNil of loc
+    [= `Nil of loc
       (* class cict *)
-    | `SgCls of (loc * class_type)
+    | `Class of (loc * class_type)
       (* class type cict *)
-    | `SgClt of (loc * class_type)
+    | `ClassType of (loc * class_type)
       (* sg ; sg *)
-    | `SgSem of (loc * sig_item * sig_item)
+    | `Sem of (loc * sig_item * sig_item)
       (* # s or # s e *)
-    | `SgDir of (loc * string * expr) (* semantics *)
+    | `Directive of (loc * string * expr) (* semantics *)
       (* exception t *)
-    | `SgExc of (loc * ctyp)
+    | `Exception of (loc * ctyp)
       (* external s : t = s ... s *)
-    | `SgExt of (loc * string * ctyp * meta_list string)
+    | `External of (loc * string * ctyp * meta_list string)
       (* include mt *)
-    | `SgInc of (loc * module_type)
+    | `Include of (loc * module_type)
       (* module s : mt *)
-    | `SgMod of (loc * string * module_type)
+    | `Module of (loc * string * module_type)
       (* module rec mb *)
-    | `SgRecMod of (loc * module_binding)
+    | `RecModule of (loc * module_binding)
       (* module type s = mt *)
-    | `SgMty of (loc * string * module_type)
+    | `ModuleType of (loc * string * module_type)
       (* open i *)
-    | `SgOpn of (loc * ident)
+    | `Open of (loc * ident)
       (* type t *)
-    | `SgTyp of (loc * ctyp)
+    | `Type of (loc * ctyp)
       (* value s : t *)
-    | `SgVal of (loc * string * ctyp)
+    | `Value of (loc * string * ctyp)
     | `Ant of (loc * string) (* $s$ *) ]
   and with_constr =
-    [= `WcNil of loc
+    [= `Nil of loc
       (* type t = t *)
-    | `WcTyp of (loc * ctyp * ctyp)
+    | `TypeEq of (loc * ctyp * ctyp)
       (* module i = i *)
-    | `WcMod of (loc * ident * ident)
+    | `ModuleEq of (loc * ident * ident)
       (* type t := t *)
-    | `WcTyS of (loc * ctyp * ctyp)
+    | `TypeSubst of (loc * ctyp * ctyp)
       (* module i := i *)
-    | `WcMoS of (loc * ident * ident)
+    | `ModuleSubst of (loc * ident * ident)
       (* wc * wc *)
-    | `WcAnd of (loc * with_constr * with_constr)
+    | `And of (loc * with_constr * with_constr)
     | `Ant of (loc * string) (* $s$ *) ]
   and binding =
-    [= `BiNil of loc
+    [= `Nil of loc
       (* bi and bi *) (* let a = 42 and c = 43 *)
-    | `BiAnd of (loc * binding * binding)
+    | `And of (loc * binding * binding)
       (* p = e *) (* let patt = expr *)
-    | `BiEq  of (loc * patt * expr)
+    | `Bind  of (loc * patt * expr)
     | `Ant of (loc * string) (* $s$ *) ]
   and rec_binding =
-    [= `RbNil of loc
+    [= `Nil of loc
       (* rb ; rb *)
-    | `RbSem of (loc * rec_binding * rec_binding)
+    | `Sem of (loc * rec_binding * rec_binding)
       (* i = e *)
-    | `RbEq  of (loc * ident * expr)
+    | `RecBind  of (loc * ident * expr)
     | `Ant of (loc * string) (* $s$ *) ]
   and module_binding =
-    [= `MbNil of loc
+    [= `Nil of loc
       (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
-    | `MbAnd of (loc * module_binding * module_binding)
+    | `And of (loc * module_binding * module_binding)
       (* s : mt = me *)
-    | `MbColEq  of (loc * string * module_type * module_expr)
+    | `ModuleBind  of (loc * string * module_type * module_expr)
       (* s : mt *)
-    | `MbCol  of (loc * string * module_type)
+    | `ModuleConstraint  of (loc * string * module_type)
     | `Ant of (loc * string) (* $s$ *) ]
   and match_case =
-    [= `McNil of loc
+    [= `Nil of loc
       (* a | a *)
     | `McOr of (loc * match_case * match_case)
       (* p (when e)? -> e *)
-    | `McArr of (loc * patt * expr * expr)
-    (* | `McArrow of loc and patt and option expr and expr (\* FIXME *\) *)
+    | `Case of (loc * patt * expr * expr)
+    (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
     | `Ant of (loc * string) (* $s$ *) ]
   and module_expr =
-    [= `MeNil of loc
+    [= `Nil of loc
       (* i *)
-    | `MeId  of (loc * ident)
+    | `Id  of (loc * ident)
       (* me me *)
     | `MeApp of (loc * module_expr * module_expr)
       (* functor (s : mt) -> me *)
-    | `MeFun of (loc * string * module_type * module_expr)
+    | `Functor of (loc * string * module_type * module_expr)
       (* struct st end *)
-    | `MeStr of (loc * str_item)
+    | `Struct of (loc * str_item)
       (* (me : mt) *)
-    | `MeTyc of (loc * module_expr * module_type)
+    | `ModuleExprConstraint of (loc * module_expr * module_type)
       (* (value e) *)
       (* (value e : S) which is represented as (value (e : S)) *)
-    | `MePkg of (loc * expr)
+    | `PackageModule of (loc * expr)
     | `Ant of (loc * string) (* $s$ *) ]
   and str_item =
     [= `StNil of loc
