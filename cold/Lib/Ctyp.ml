@@ -163,7 +163,7 @@ let mk_method_type ~number  ~prefix  (id,len) (k : obj_dest) =
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : obj_dest) =
   let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
 let mk_obj class_name base body =
-  `StCls
+  `Class
     (_loc,
       (`CeEq
          (_loc,
@@ -232,7 +232,7 @@ let mk_transform_type_eq () =
     inherit  FanAst.map as super
     method! str_item =
       function
-      | `StTyp (_loc,`TyDcl (_,_name,vars,ctyp,_)) as x ->
+      | `Type (_loc,`TyDcl (_,_name,vars,ctyp,_)) as x ->
           (match qualified_app_list ctyp with
            | Some (i,lst) ->
                if not (eq_list vars lst)
@@ -240,7 +240,7 @@ let mk_transform_type_eq () =
                else
                  (let src = i and dest = Ident.map_to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
-                  `StNil _loc)
+                  `Nil _loc)
            | None  -> super#str_item x)
       | x -> super#str_item x
     method! ctyp x =
@@ -290,4 +290,4 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
           (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}"
              (to_string.contents t0) (to_string.contents ty))
 let of_str_item =
-  function | `StTyp (_loc,x) -> x | _ -> invalid_arg "Ctyp.of_str_item"
+  function | `Type (_loc,x) -> x | _ -> invalid_arg "Ctyp.of_str_item"

@@ -138,13 +138,13 @@ let _ =
                        (fun (_loc,x,descr,ty)  ->
                           match (descr, ty) with
                           | (Some d,None ) ->
-                              `StVal
+                              `Value
                                 (_loc, (`ReNil _loc),
                                   (`Bind
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`Str (_loc, d)))))))
                           | (Some d,Some typ) ->
-                              `StVal
+                              `Value
                                 (_loc, (`ReNil _loc),
                                   (`Bind
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
@@ -154,13 +154,13 @@ let _ =
                                                (_loc, mk, (`Str (_loc, d)))),
                                             typ)))))
                           | (None ,None ) ->
-                              `StVal
+                              `Value
                                 (_loc, (`ReNil _loc),
                                   (`Bind
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),
                                        (`ExApp (_loc, mk, (`Str (_loc, x)))))))
                           | (None ,Some typ) ->
-                              `StVal
+                              `Value
                                 (_loc, (`ReNil _loc),
                                   (`Bind
                                      (_loc, (`PaId (_loc, (`Lid (_loc, x)))),

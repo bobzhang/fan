@@ -55,20 +55,64 @@
 (let ((e ))
   
   )
+
 (setq v
       (hash-table/from-list
-       "WcTyS" "TypeSubst"
-       "WcMoS" "ModuleSubst"
-       "McNil" "Nil"
-       "McOr" "Or"
-       "McArr" "Case"
-       "MeNil" "Nil"
-       "MeId" "Id"
-       "MeFun" "Functor"
-       "MeStr" "Struct"
-       "MeTyc" "ModuleExprConstraint"
-       "MePkg" "PackageModule"
+       "CgNil" "Nil"
+       "CgCtr" "TypeEq"
+       "CgSem" "Sem"
+       "CgInh"  "Inherit"
+       "CgMth" "Method"
+       "CgVal" "Value"
+       "CgVir" "Virtual"
+
+       "CeNil" "Nil"
+       "CeStr" "Obj"
+       "CeTyc" "CEConstraint"
+       "CeAnd" "And"
+       "CeEq" "ClassExprEq"
+
+       "CrNil" "Nil"
+       "CrSem" "Sem"
+       "CrCtr" "TypeEq"
+       "CrInh" "Inherit"
+       "CrIni" "Initializer"
+       "CrMth" "Method"
+       "CrVal" "Value"
+       "CrVir" "Virtual"
+       "CrVvr" "VirtualMethod"
          ))
+;; (setq v
+;;       (hash-table/from-list
+;;        "StNil" "Nil"
+;;        "StCls" "Class"
+;;        "StClt" "ClassType"
+;;        "StSem" "Sem"
+;;        "StDir" "Directive"
+;;        "StExc" "Exception"
+;;        "StExt" "External"
+;;        "StInc" "Include"
+;;        "StMod" "Module"
+;;        "StRecMod" "RecModule"
+;;        "StMty" "ModuleType"
+;;        "StOpn" "Open"
+;;        "StTyp" "Type"
+;;        "StVal" "Value"
+;;          ))
+;; (setq v
+;;       (hash-table/from-list
+;;        "WcTyS" "TypeSubst"
+;;        "WcMoS" "ModuleSubst"
+;;        "McNil" "Nil"
+;;        "McOr" "Or"
+;;        "McArr" "Case"
+;;        "MeNil" "Nil"
+;;        "MeId" "Id"
+;;        "MeFun" "Functor"
+;;        "MeStr" "Struct"
+;;        "MeTyc" "ModuleExprConstraint"
+;;        "MePkg" "PackageModule"
+;;          ))
 ;; (setq v
 ;;       (hash-table/from-list
 ;;        "WcNil" "Nil"

@@ -54,7 +54,7 @@ let plugin_remove plugin =
 let filter_type_defs ?qualified  () =
   object 
     inherit  FanAst.map as super
-    val mutable type_defs = let _loc = FanLoc.ghost in `StNil _loc
+    val mutable type_defs = let _loc = FanLoc.ghost in `Nil _loc
     method! sig_item =
       function
       | `Value (_loc,_,_)|`Include (_loc,_)|`External (_loc,_,_,_)
@@ -69,12 +69,11 @@ let filter_type_defs ?qualified  () =
                 (Ident.eq i q) && (Ctyp.eq_list ls vars) ->
                 `TyDcl (_loc, name, vars, (`TyNil _loc), constraints)
             | (_,_) -> super#ctyp x in
-          let y = `StTyp (_loc, x) in
-          let () = type_defs <- `StSem (_loc, type_defs, y) in
-          `Type (_loc, x)
+          let y = `Type (_loc, x) in
+          let () = type_defs <- `Sem (_loc, type_defs, y) in `Type (_loc, x)
       | `Type (_loc,ty) ->
           let x = super#ctyp ty in
-          let () = type_defs <- `StSem (_loc, type_defs, (`StTyp (_loc, x))) in
+          let () = type_defs <- `Sem (_loc, type_defs, (`Type (_loc, x))) in
           `Type (_loc, x)
       | x -> super#sig_item x
     method! ident =
@@ -141,29 +140,29 @@ let traversal () =
                            (AstFilters.register_str_item_filter (name, f);
                             AstFilters.use_implem_filter name;
                             acc)
-                       | None  -> `StSem (_loc, acc, code)
+                       | None  -> `Sem (_loc, acc, code)
                      else acc) filters
-                  (if keep.contents then res else `StNil _loc) in
+                  (if keep.contents then res else `Nil _loc) in
               self#out_module; `Struct (_loc, result))))
        | x -> super#module_expr x
      method! str_item =
        function
-       | `StTyp (_loc,`TyAnd (_,_,_)) as x ->
+       | `Type (_loc,`TyAnd (_,_,_)) as x ->
            (self#in_and_types;
             (let _ = super#str_item x in
              self#update_cur_module_types
                (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                   lst);
              self#out_and_types;
-             if keep.contents then x else `StNil _loc))
-       | `StTyp (_loc,(`TyDcl (_,name,_,_,_) as t)) as x ->
+             if keep.contents then x else `Nil _loc))
+       | `Type (_loc,(`TyDcl (_,name,_,_,_) as t)) as x ->
            let item = `Single (name, t) in
            (eprintf "Came across @[%a@]@." FSig.pp_print_types item;
             self#update_cur_module_types (fun lst  -> item :: lst);
             x)
-       | `StVal (_loc,`ReNil _,_)|`StMty (_loc,_,_)|`StInc (_loc,_)
-         |`StExt (_loc,_,_,_)|`StExp (_loc,_)|`StExc (_loc,_,`None _)
-         |`StDir (_loc,_,_) as x -> x
+       | `Value (_loc,`ReNil _,_)|`ModuleType (_loc,_,_)|`Include (_loc,_)
+         |`External (_loc,_,_,_)|`StExp (_loc,_)|`Exception (_loc,_,`None _)
+         |`Directive (_loc,_,_) as x -> x
        | x -> super#str_item x
      method! ctyp =
        function

@@ -202,55 +202,55 @@ class map =
           `Ant (((fun (a0,a1)  -> ((self#loc a0), (self#string a1)))) a0)
     method str_item : str_item -> str_item=
       function
-      | `StNil a0 -> `StNil (self#loc a0)
-      | `StCls a0 ->
-          `StCls
+      | `Nil a0 -> `Nil (self#loc a0)
+      | `Class a0 ->
+          `Class
             (((fun (a0,a1)  -> ((self#loc a0), (self#class_expr a1)))) a0)
-      | `StClt a0 ->
-          `StClt
+      | `ClassType a0 ->
+          `ClassType
             (((fun (a0,a1)  -> ((self#loc a0), (self#class_type a1)))) a0)
-      | `StSem a0 ->
-          `StSem
+      | `Sem a0 ->
+          `Sem
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#str_item a1), (self#str_item a2)))) a0)
-      | `StDir a0 ->
-          `StDir
+      | `Directive a0 ->
+          `Directive
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#expr a2)))) a0)
-      | `StExc a0 ->
-          `StExc
+      | `Exception a0 ->
+          `Exception
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#ctyp a1),
                    (self#meta_option (fun self  -> self#ident) a2)))) a0)
       | `StExp a0 ->
           `StExp (((fun (a0,a1)  -> ((self#loc a0), (self#expr a1)))) a0)
-      | `StExt a0 ->
-          `StExt
+      | `External a0 ->
+          `External
             (((fun (a0,a1,a2,a3)  ->
                  ((self#loc a0), (self#string a1), (self#ctyp a2),
                    (self#meta_list (fun self  -> self#string) a3)))) a0)
-      | `StInc a0 ->
-          `StInc
+      | `Include a0 ->
+          `Include
             (((fun (a0,a1)  -> ((self#loc a0), (self#module_expr a1)))) a0)
-      | `StMod a0 ->
-          `StMod
+      | `Module a0 ->
+          `Module
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#module_expr a2))))
                a0)
-      | `StRecMod a0 ->
-          `StRecMod
+      | `RecModule a0 ->
+          `RecModule
             (((fun (a0,a1)  -> ((self#loc a0), (self#module_binding a1)))) a0)
-      | `StMty a0 ->
-          `StMty
+      | `ModuleType a0 ->
+          `ModuleType
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#string a1), (self#module_type a2))))
                a0)
-      | `StOpn a0 ->
-          `StOpn (((fun (a0,a1)  -> ((self#loc a0), (self#ident a1)))) a0)
-      | `StTyp a0 ->
-          `StTyp (((fun (a0,a1)  -> ((self#loc a0), (self#ctyp a1)))) a0)
-      | `StVal a0 ->
-          `StVal
+      | `Open a0 ->
+          `Open (((fun (a0,a1)  -> ((self#loc a0), (self#ident a1)))) a0)
+      | `Type a0 ->
+          `Type (((fun (a0,a1)  -> ((self#loc a0), (self#ctyp a1)))) a0)
+      | `Value a0 ->
+          `Value
             (((fun (a0,a1,a2)  ->
                  ((self#loc a0), (self#rec_flag a1), (self#binding a2)))) a0)
       | `Ant a0 ->
@@ -1064,29 +1064,29 @@ class print =
     method str_item : 'fmt -> str_item -> 'result=
       fun fmt  ->
         function
-        | `StNil a0 -> Format.fprintf fmt "@[<1>(`StNil@ %a)@]" self#loc a0
-        | `StCls a0 ->
-            Format.fprintf fmt "@[<1>(`StCls@ %a)@]"
+        | `Nil a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" self#loc a0
+        | `Class a0 ->
+            Format.fprintf fmt "@[<1>(`Class@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#class_expr a1) a0
-        | `StClt a0 ->
-            Format.fprintf fmt "@[<1>(`StClt@ %a)@]"
+        | `ClassType a0 ->
+            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#class_type a1) a0
-        | `StSem a0 ->
-            Format.fprintf fmt "@[<1>(`StSem@ %a)@]"
+        | `Sem a0 ->
+            Format.fprintf fmt "@[<1>(`Sem@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#str_item a1 self#str_item a2) a0
-        | `StDir a0 ->
-            Format.fprintf fmt "@[<1>(`StDir@ %a)@]"
+        | `Directive a0 ->
+            Format.fprintf fmt "@[<1>(`Directive@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#expr a2) a0
-        | `StExc a0 ->
-            Format.fprintf fmt "@[<1>(`StExc@ %a)@]"
+        | `Exception a0 ->
+            Format.fprintf fmt "@[<1>(`Exception@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#ctyp a1 (self#meta_option (fun self  -> self#ident))
@@ -1096,44 +1096,44 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#expr
                    a1) a0
-        | `StExt a0 ->
-            Format.fprintf fmt "@[<1>(`StExt@ %a)@]"
+        | `External a0 ->
+            Format.fprintf fmt "@[<1>(`External@ %a)@]"
               (fun fmt  (a0,a1,a2,a3)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#ctyp a2
                    (self#meta_list (fun self  -> self#string)) a3) a0
-        | `StInc a0 ->
-            Format.fprintf fmt "@[<1>(`StInc@ %a)@]"
+        | `Include a0 ->
+            Format.fprintf fmt "@[<1>(`Include@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#module_expr a1) a0
-        | `StMod a0 ->
-            Format.fprintf fmt "@[<1>(`StMod@ %a)@]"
+        | `Module a0 ->
+            Format.fprintf fmt "@[<1>(`Module@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#module_expr a2) a0
-        | `StRecMod a0 ->
-            Format.fprintf fmt "@[<1>(`StRecMod@ %a)@]"
+        | `RecModule a0 ->
+            Format.fprintf fmt "@[<1>(`RecModule@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#module_binding a1) a0
-        | `StMty a0 ->
-            Format.fprintf fmt "@[<1>(`StMty@ %a)@]"
+        | `ModuleType a0 ->
+            Format.fprintf fmt "@[<1>(`ModuleType@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#string a1 self#module_type a2) a0
-        | `StOpn a0 ->
-            Format.fprintf fmt "@[<1>(`StOpn@ %a)@]"
+        | `Open a0 ->
+            Format.fprintf fmt "@[<1>(`Open@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#ident
                    a1) a0
-        | `StTyp a0 ->
-            Format.fprintf fmt "@[<1>(`StTyp@ %a)@]"
+        | `Type a0 ->
+            Format.fprintf fmt "@[<1>(`Type@ %a)@]"
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0 self#ctyp
                    a1) a0
-        | `StVal a0 ->
-            Format.fprintf fmt "@[<1>(`StVal@ %a)@]"
+        | `Value a0 ->
+            Format.fprintf fmt "@[<1>(`Value@ %a)@]"
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#rec_flag a1 self#binding a2) a0
@@ -2244,51 +2244,51 @@ class fold =
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
     method str_item : str_item -> 'self_type=
       function
-      | `StNil a0 -> self#loc a0
-      | `StCls a0 ->
+      | `Nil a0 -> self#loc a0
+      | `Class a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#class_expr a1)) a0
-      | `StClt a0 ->
+      | `ClassType a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#class_type a1)) a0
-      | `StSem a0 ->
+      | `Sem a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#str_item a1 in self#str_item a2)) a0
-      | `StDir a0 ->
+      | `Directive a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#expr a2)) a0
-      | `StExc a0 ->
+      | `Exception a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#ctyp a1 in
               self#meta_option (fun self  -> self#ident) a2)) a0
       | `StExp a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#expr a1)) a0
-      | `StExt a0 ->
+      | `External a0 ->
           ((fun (a0,a1,a2,a3)  ->
               let self = self#loc a0 in
               let self = self#string a1 in
               let self = self#ctyp a2 in
               self#meta_list (fun self  -> self#string) a3)) a0
-      | `StInc a0 ->
+      | `Include a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#module_expr a1))
             a0
-      | `StMod a0 ->
+      | `Module a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#module_expr a2)) a0
-      | `StRecMod a0 ->
+      | `RecModule a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#module_binding a1))
             a0
-      | `StMty a0 ->
+      | `ModuleType a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#string a1 in self#module_type a2)) a0
-      | `StOpn a0 ->
+      | `Open a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#ident a1)) a0
-      | `StTyp a0 ->
+      | `Type a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#ctyp a1)) a0
-      | `StVal a0 ->
+      | `Value a0 ->
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#rec_flag a1 in self#binding a2)) a0
@@ -3093,29 +3093,29 @@ and pp_print_class_type: 'fmt -> class_type -> 'result =
 and pp_print_str_item: 'fmt -> str_item -> 'result =
   fun fmt  ->
     function
-    | `StNil a0 -> Format.fprintf fmt "@[<1>(`StNil@ %a)@]" pp_print_loc a0
-    | `StCls a0 ->
-        Format.fprintf fmt "@[<1>(`StCls@ %a)@]"
+    | `Nil a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc a0
+    | `Class a0 ->
+        Format.fprintf fmt "@[<1>(`Class@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_class_expr a1) a0
-    | `StClt a0 ->
-        Format.fprintf fmt "@[<1>(`StClt@ %a)@]"
+    | `ClassType a0 ->
+        Format.fprintf fmt "@[<1>(`ClassType@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_class_type a1) a0
-    | `StSem a0 ->
-        Format.fprintf fmt "@[<1>(`StSem@ %a)@]"
+    | `Sem a0 ->
+        Format.fprintf fmt "@[<1>(`Sem@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_str_item a1 pp_print_str_item a2) a0
-    | `StDir a0 ->
-        Format.fprintf fmt "@[<1>(`StDir@ %a)@]"
+    | `Directive a0 ->
+        Format.fprintf fmt "@[<1>(`Directive@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_expr a2) a0
-    | `StExc a0 ->
-        Format.fprintf fmt "@[<1>(`StExc@ %a)@]"
+    | `Exception a0 ->
+        Format.fprintf fmt "@[<1>(`Exception@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_ctyp a1 (pp_print_meta_option pp_print_ident) a2) a0
@@ -3124,44 +3124,44 @@ and pp_print_str_item: 'fmt -> str_item -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_expr a1) a0
-    | `StExt a0 ->
-        Format.fprintf fmt "@[<1>(`StExt@ %a)@]"
+    | `External a0 ->
+        Format.fprintf fmt "@[<1>(`External@ %a)@]"
           (fun fmt  (a0,a1,a2,a3)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_ctyp a2
                (pp_print_meta_list pp_print_string) a3) a0
-    | `StInc a0 ->
-        Format.fprintf fmt "@[<1>(`StInc@ %a)@]"
+    | `Include a0 ->
+        Format.fprintf fmt "@[<1>(`Include@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_module_expr a1) a0
-    | `StMod a0 ->
-        Format.fprintf fmt "@[<1>(`StMod@ %a)@]"
+    | `Module a0 ->
+        Format.fprintf fmt "@[<1>(`Module@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_module_expr a2) a0
-    | `StRecMod a0 ->
-        Format.fprintf fmt "@[<1>(`StRecMod@ %a)@]"
+    | `RecModule a0 ->
+        Format.fprintf fmt "@[<1>(`RecModule@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_module_binding a1) a0
-    | `StMty a0 ->
-        Format.fprintf fmt "@[<1>(`StMty@ %a)@]"
+    | `ModuleType a0 ->
+        Format.fprintf fmt "@[<1>(`ModuleType@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1 pp_print_module_type a2) a0
-    | `StOpn a0 ->
-        Format.fprintf fmt "@[<1>(`StOpn@ %a)@]"
+    | `Open a0 ->
+        Format.fprintf fmt "@[<1>(`Open@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_ident a1) a0
-    | `StTyp a0 ->
-        Format.fprintf fmt "@[<1>(`StTyp@ %a)@]"
+    | `Type a0 ->
+        Format.fprintf fmt "@[<1>(`Type@ %a)@]"
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_ctyp a1) a0
-    | `StVal a0 ->
-        Format.fprintf fmt "@[<1>(`StVal@ %a)@]"
+    | `Value a0 ->
+        Format.fprintf fmt "@[<1>(`Value@ %a)@]"
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_rec_flag a1 pp_print_binding a2) a0
@@ -4621,29 +4621,29 @@ module Make(MetaLoc:META_LOC) =
         and meta_str_item: 'loc -> str_item -> 'result =
           fun _loc  ->
             function
-            | `StNil a0 ->
-                `ExApp (_loc, (`ExVrn (_loc, "StNil")), (meta_loc _loc a0))
-            | `StCls a0 ->
+            | `Nil a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "Nil")), (meta_loc _loc a0))
+            | `Class a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StCls")),
+                  (_loc, (`ExVrn (_loc, "Class")),
                     (((fun _loc  (a0,a1)  ->
                          `ExTup
                            (_loc,
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_class_expr _loc a1)))))) _loc a0))
-            | `StClt a0 ->
+            | `ClassType a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StClt")),
+                  (_loc, (`ExVrn (_loc, "ClassType")),
                     (((fun _loc  (a0,a1)  ->
                          `ExTup
                            (_loc,
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_class_type _loc a1)))))) _loc a0))
-            | `StSem a0 ->
+            | `Sem a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StSem")),
+                  (_loc, (`ExVrn (_loc, "Sem")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `ExTup
                            (_loc,
@@ -4652,9 +4652,9 @@ module Make(MetaLoc:META_LOC) =
                                   (`ExCom
                                      (_loc, (meta_str_item _loc a1),
                                        (meta_str_item _loc a2)))))))) _loc a0))
-            | `StDir a0 ->
+            | `Directive a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StDir")),
+                  (_loc, (`ExVrn (_loc, "Directive")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `ExTup
                            (_loc,
@@ -4663,9 +4663,9 @@ module Make(MetaLoc:META_LOC) =
                                   (`ExCom
                                      (_loc, (meta_string _loc a1),
                                        (meta_expr _loc a2)))))))) _loc a0))
-            | `StExc a0 ->
+            | `Exception a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StExc")),
+                  (_loc, (`ExVrn (_loc, "Exception")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `ExTup
                            (_loc,
@@ -4684,9 +4684,9 @@ module Make(MetaLoc:META_LOC) =
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_expr _loc a1)))))) _loc a0))
-            | `StExt a0 ->
+            | `External a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StExt")),
+                  (_loc, (`ExVrn (_loc, "External")),
                     (((fun _loc  (a0,a1,a2,a3)  ->
                          `ExTup
                            (_loc,
@@ -4698,18 +4698,18 @@ module Make(MetaLoc:META_LOC) =
                                           (_loc, (meta_ctyp _loc a2),
                                             (meta_meta_list meta_string _loc
                                                a3)))))))))) _loc a0))
-            | `StInc a0 ->
+            | `Include a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StInc")),
+                  (_loc, (`ExVrn (_loc, "Include")),
                     (((fun _loc  (a0,a1)  ->
                          `ExTup
                            (_loc,
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_module_expr _loc a1)))))) _loc a0))
-            | `StMod a0 ->
+            | `Module a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StMod")),
+                  (_loc, (`ExVrn (_loc, "Module")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `ExTup
                            (_loc,
@@ -4719,18 +4719,18 @@ module Make(MetaLoc:META_LOC) =
                                      (_loc, (meta_string _loc a1),
                                        (meta_module_expr _loc a2)))))))) _loc
                        a0))
-            | `StRecMod a0 ->
+            | `RecModule a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StRecMod")),
+                  (_loc, (`ExVrn (_loc, "RecModule")),
                     (((fun _loc  (a0,a1)  ->
                          `ExTup
                            (_loc,
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_module_binding _loc a1)))))) _loc a0))
-            | `StMty a0 ->
+            | `ModuleType a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StMty")),
+                  (_loc, (`ExVrn (_loc, "ModuleType")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `ExTup
                            (_loc,
@@ -4740,27 +4740,27 @@ module Make(MetaLoc:META_LOC) =
                                      (_loc, (meta_string _loc a1),
                                        (meta_module_type _loc a2)))))))) _loc
                        a0))
-            | `StOpn a0 ->
+            | `Open a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StOpn")),
+                  (_loc, (`ExVrn (_loc, "Open")),
                     (((fun _loc  (a0,a1)  ->
                          `ExTup
                            (_loc,
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_ident _loc a1)))))) _loc a0))
-            | `StTyp a0 ->
+            | `Type a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StTyp")),
+                  (_loc, (`ExVrn (_loc, "Type")),
                     (((fun _loc  (a0,a1)  ->
                          `ExTup
                            (_loc,
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_ctyp _loc a1)))))) _loc a0))
-            | `StVal a0 ->
+            | `Value a0 ->
                 `ExApp
-                  (_loc, (`ExVrn (_loc, "StVal")),
+                  (_loc, (`ExVrn (_loc, "Value")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `ExTup
                            (_loc,
@@ -6868,29 +6868,29 @@ module Make(MetaLoc:META_LOC) =
         and meta_str_item: 'loc -> str_item -> 'result =
           fun _loc  ->
             function
-            | `StNil a0 ->
-                `PaApp (_loc, (`PaVrn (_loc, "StNil")), (meta_loc _loc a0))
-            | `StCls a0 ->
+            | `Nil a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "Nil")), (meta_loc _loc a0))
+            | `Class a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StCls")),
+                  (_loc, (`PaVrn (_loc, "Class")),
                     (((fun _loc  (a0,a1)  ->
                          `PaTup
                            (_loc,
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_class_expr _loc a1)))))) _loc a0))
-            | `StClt a0 ->
+            | `ClassType a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StClt")),
+                  (_loc, (`PaVrn (_loc, "ClassType")),
                     (((fun _loc  (a0,a1)  ->
                          `PaTup
                            (_loc,
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_class_type _loc a1)))))) _loc a0))
-            | `StSem a0 ->
+            | `Sem a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StSem")),
+                  (_loc, (`PaVrn (_loc, "Sem")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `PaTup
                            (_loc,
@@ -6899,9 +6899,9 @@ module Make(MetaLoc:META_LOC) =
                                   (`PaCom
                                      (_loc, (meta_str_item _loc a1),
                                        (meta_str_item _loc a2)))))))) _loc a0))
-            | `StDir a0 ->
+            | `Directive a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StDir")),
+                  (_loc, (`PaVrn (_loc, "Directive")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `PaTup
                            (_loc,
@@ -6910,9 +6910,9 @@ module Make(MetaLoc:META_LOC) =
                                   (`PaCom
                                      (_loc, (meta_string _loc a1),
                                        (meta_expr _loc a2)))))))) _loc a0))
-            | `StExc a0 ->
+            | `Exception a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StExc")),
+                  (_loc, (`PaVrn (_loc, "Exception")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `PaTup
                            (_loc,
@@ -6931,9 +6931,9 @@ module Make(MetaLoc:META_LOC) =
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_expr _loc a1)))))) _loc a0))
-            | `StExt a0 ->
+            | `External a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StExt")),
+                  (_loc, (`PaVrn (_loc, "External")),
                     (((fun _loc  (a0,a1,a2,a3)  ->
                          `PaTup
                            (_loc,
@@ -6945,18 +6945,18 @@ module Make(MetaLoc:META_LOC) =
                                           (_loc, (meta_ctyp _loc a2),
                                             (meta_meta_list meta_string _loc
                                                a3)))))))))) _loc a0))
-            | `StInc a0 ->
+            | `Include a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StInc")),
+                  (_loc, (`PaVrn (_loc, "Include")),
                     (((fun _loc  (a0,a1)  ->
                          `PaTup
                            (_loc,
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_module_expr _loc a1)))))) _loc a0))
-            | `StMod a0 ->
+            | `Module a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StMod")),
+                  (_loc, (`PaVrn (_loc, "Module")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `PaTup
                            (_loc,
@@ -6966,18 +6966,18 @@ module Make(MetaLoc:META_LOC) =
                                      (_loc, (meta_string _loc a1),
                                        (meta_module_expr _loc a2)))))))) _loc
                        a0))
-            | `StRecMod a0 ->
+            | `RecModule a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StRecMod")),
+                  (_loc, (`PaVrn (_loc, "RecModule")),
                     (((fun _loc  (a0,a1)  ->
                          `PaTup
                            (_loc,
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_module_binding _loc a1)))))) _loc a0))
-            | `StMty a0 ->
+            | `ModuleType a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StMty")),
+                  (_loc, (`PaVrn (_loc, "ModuleType")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `PaTup
                            (_loc,
@@ -6987,27 +6987,27 @@ module Make(MetaLoc:META_LOC) =
                                      (_loc, (meta_string _loc a1),
                                        (meta_module_type _loc a2)))))))) _loc
                        a0))
-            | `StOpn a0 ->
+            | `Open a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StOpn")),
+                  (_loc, (`PaVrn (_loc, "Open")),
                     (((fun _loc  (a0,a1)  ->
                          `PaTup
                            (_loc,
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_ident _loc a1)))))) _loc a0))
-            | `StTyp a0 ->
+            | `Type a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StTyp")),
+                  (_loc, (`PaVrn (_loc, "Type")),
                     (((fun _loc  (a0,a1)  ->
                          `PaTup
                            (_loc,
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_ctyp _loc a1)))))) _loc a0))
-            | `StVal a0 ->
+            | `Value a0 ->
                 `PaApp
-                  (_loc, (`PaVrn (_loc, "StVal")),
+                  (_loc, (`PaVrn (_loc, "Value")),
                     (((fun _loc  (a0,a1,a2)  ->
                          `PaTup
                            (_loc,
@@ -8855,10 +8855,10 @@ let tyVarApp_of_list (_loc,ls) =
   aux ls
 let rec stSem_of_list =
   function
-  | [] -> `StNil ghost
+  | [] -> `Nil ghost
   | t::[] -> t
   | t::ts ->
-      let _loc = loc_of_str_item t in `StSem (_loc, t, (stSem_of_list ts))
+      let _loc = loc_of_str_item t in `Sem (_loc, t, (stSem_of_list ts))
 let rec sgSem_of_list =
   function
   | [] -> `Nil ghost
@@ -9019,8 +9019,8 @@ let rec list_of_expr x acc =
   | x -> x :: acc
 let rec list_of_str_item x acc =
   match x with
-  | `StNil _loc -> acc
-  | `StSem (_loc,x,y) -> list_of_str_item x (list_of_str_item y acc)
+  | `Nil _loc -> acc
+  | `Sem (_loc,x,y) -> list_of_str_item x (list_of_str_item y acc)
   | x -> x :: acc
 let rec list_of_sig_item x acc =
   match x with
@@ -9133,9 +9133,9 @@ class clean_ast =
       | sg -> sg
     method! str_item st =
       match super#str_item st with
-      | `StSem (_loc,`StNil _l,st)|`StSem (_loc,st,`StNil _l) -> st
-      | `StTyp (_loc,`TyNil _l) -> `StNil _loc
-      | `StVal (_loc,_,`Nil _l) -> `StNil _loc
+      | `Sem (_loc,`Nil _l,st)|`Sem (_loc,st,`Nil _l) -> st
+      | `Type (_loc,`TyNil _l) -> `Nil _loc
+      | `Value (_loc,_,`Nil _l) -> `Nil _loc
       | st -> st
     method! module_type mt =
       match super#module_type mt with

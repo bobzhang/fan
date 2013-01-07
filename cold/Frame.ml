@@ -243,7 +243,7 @@ module Make(S:FSig.Config) =
                    List.reduce_right_with
                      ~compose:(fun x  y  -> `And (_loc, x, y))
                      ~f:(fun (name,ty)  -> mk_binding name ty) xs) in
-            `StVal (_loc, (`Recursive _loc), binding)
+            `Value (_loc, (`Recursive _loc), binding)
         | `Single (name,tydcl) ->
             (Hashset.add cxt name;
              (let rec_flag =
@@ -251,11 +251,11 @@ module Make(S:FSig.Config) =
                 then `Recursive _loc
                 else `ReNil _loc
               and binding = mk_binding name tydcl in
-              `StVal (_loc, rec_flag, binding))) in
+              `Value (_loc, rec_flag, binding))) in
       let item = FanAst.stSem_of_list (List.map fs lst) in
       match module_name with
       | None  -> item
-      | Some m -> `StMod (_loc, m, (`Struct (_loc, item)))
+      | Some m -> `Module (_loc, m, (`Struct (_loc, item)))
     let obj_of_module_types ?module_name  base class_name simple_expr_of_ctyp
       (k : FSig.k) (lst : module_types) =
       let open ErrorMonad in
@@ -305,5 +305,5 @@ module Make(S:FSig.Config) =
           tbl;
         (match module_name with
          | None  -> v
-         | Some u -> `StMod (_loc, u, (`Struct (_loc, v))))
+         | Some u -> `Module (_loc, u, (`Struct (_loc, v))))
   end

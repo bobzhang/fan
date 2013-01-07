@@ -174,7 +174,7 @@ let output_byte_array v =
   done;
   (let s = Buffer.contents b in `Str (_loc, s))
 let table (n,t) =
-  `StVal
+  `Value
     (_loc, (`ReNil _loc),
       (`Bind (_loc, (`PaId (_loc, (`Lid (_loc, n)))), (output_byte_array t))))
 let binding_table (n,t) =
@@ -224,7 +224,7 @@ let partition ~counter  ~tables  (i,p) =
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  `StVal
+  `Value
     (_loc, (`ReNil _loc),
       (`Bind
          (_loc, (`PaId (_loc, (`Lid (_loc, f)))),

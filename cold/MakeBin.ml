@@ -114,22 +114,22 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       | _ -> assert false
     let rec str_handler =
       function
-      | `StDir (_loc,"load",`Str (_,s)) -> (rewrite_and_load "" s; None)
-      | `StDir (_loc,"directory",`Str (_,s)) ->
+      | `Directive (_loc,"load",`Str (_,s)) -> (rewrite_and_load "" s; None)
+      | `Directive (_loc,"directory",`Str (_,s)) ->
           (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-      | `StDir (_loc,"use",`Str (_,s)) ->
+      | `Directive (_loc,"use",`Str (_,s)) ->
           Some
             (parse_file ~directive_handler:str_handler s
                PreCast.CurrentParser.parse_implem)
-      | `StDir (_loc,"default_quotation",`Str (_,s)) ->
+      | `Directive (_loc,"default_quotation",`Str (_,s)) ->
           (AstQuotation.default := s; None)
-      | `StDir (_loc,"lang_at",`ExApp (_,`Str (_,tag),`Str (_,quot))) ->
+      | `Directive (_loc,"lang_at",`ExApp (_,`Str (_,tag),`Str (_,quot))) ->
           (AstQuotation.default_at_pos tag quot; None)
-      | `StDir (_loc,"lang_clear",`ExNil _) ->
+      | `Directive (_loc,"lang_clear",`ExNil _) ->
           (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
-      | `StDir (_loc,"filter",`Str (_,s)) ->
+      | `Directive (_loc,"filter",`Str (_,s)) ->
           (AstFilters.use_implem_filter s; None)
-      | `StDir (loc,x,_) ->
+      | `Directive (loc,x,_) ->
           FanLoc.raise loc
             (XStream.Error (x ^ "bad directive camlp4 can not handled "))
       | _ -> assert false

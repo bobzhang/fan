@@ -1102,11 +1102,11 @@ let apply () = begin
         | value_val_opt_override{o}; opt_mutable{mf}; label{lab}; cvalue_binding{e}
           ->
             {| val $override:o $mutable:mf $lab = $e |}
-        | value_val_opt_override{o}; opt_mutable{mf}; "virtual"; label{l}; ":";
-              poly_type{t} ->
-                match o with
-                [ {:override_flag@_||} ->{| val virtual $mutable:mf $l : $t |}
-                | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
+        (* | value_val_opt_override{o}; opt_mutable{mf}; "virtual"; label{l}; ":"; *)
+        (*       poly_type{t} -> *)
+        (*         match o with *)
+        (*         [ {:override_flag@_||} ->{| val virtual $mutable:mf $l : $t |} *)
+        (*         | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]   *)
 
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; label{l}; ":";
                 poly_type{t} ->
@@ -1123,11 +1123,11 @@ let apply () = begin
         | method_opt_override{o}; opt_private{pf}; label{l}; opt_polyt{topt};
                 fun_binding{e} ->
             {| method $override:o $private:pf $l : $topt = $e |}
-        | method_opt_override{o}; opt_private{pf}; "virtual"; label{l}; ":";
-             poly_type{t} ->
-               match o with
-                [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |}
-                | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
+        (* | method_opt_override{o}; opt_private{pf}; "virtual"; label{l}; ":"; *)
+        (*      poly_type{t} -> *)
+        (*        match o with *)
+        (*         [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |} *)
+        (*         | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]   *)
 
         | type_constraint; ctyp{t1}; "="; ctyp{t2} ->  {| type $t1 = $t2 |}
         | "initializer"; expr{se} -> {| initializer $se |} ]

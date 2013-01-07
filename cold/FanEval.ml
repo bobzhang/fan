@@ -10,4 +10,4 @@ let _ =
     ~entry:PreCast.Syntax.str_items
     ~filter:(fun s  ->
                eval_ast Format.err_formatter s;
-               (let _loc = FanLoc.ghost in `StNil _loc))
+               (let _loc = FanLoc.ghost in `Nil _loc))

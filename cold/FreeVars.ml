@@ -51,9 +51,9 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
       | m -> super#match_case m
     method! str_item =
       function
-      | `StExt (_loc,s,t,_) -> (o#ctyp t)#add_atom s
-      | `StVal (_loc,`ReNil _,bi) -> (o#binding bi)#add_binding bi
-      | `StVal (_loc,`Recursive _,bi) -> (o#add_binding bi)#binding bi
+      | `External (_loc,s,t,_) -> (o#ctyp t)#add_atom s
+      | `Value (_loc,`ReNil _,bi) -> (o#binding bi)#add_binding bi
+      | `Value (_loc,`Recursive _,bi) -> (o#add_binding bi)#binding bi
       | st -> super#str_item st
     method! class_expr =
       function

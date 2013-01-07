@@ -105,7 +105,7 @@ let _ =
             | x -> super#expr x
           method! str_item =
             function
-            | `StMod (_loc,"Debug",_) as st -> st
+            | `Module (_loc,"Debug",_) as st -> st
             | st -> super#str_item st
         end)#str_item))
 let _ =
@@ -126,8 +126,8 @@ let decorate decorate_fun =
     inherit  FanAst.map as super
     method! str_item =
       function
-      | `StVal (_loc,r,b) ->
-          `StVal (_loc, r, (decorate_binding decorate_fun b))
+      | `Value (_loc,r,b) ->
+          `Value (_loc, r, (decorate_binding decorate_fun b))
       | st -> super#str_item st
     method! expr =
       function
@@ -170,7 +170,7 @@ let _ =
   AstFilters.register_str_item_filter
     ("trash",
       ((FanAst.map_str_item
-          (function | `StMod (_loc,"Camlp4Trash",_) -> `StNil _loc | st -> st))#str_item))
+          (function | `Module (_loc,"Camlp4Trash",_) -> `Nil _loc | st -> st))#str_item))
 let map_expr =
   function
   | `ExApp (_loc,e,`ExId (_,`Uid (_,"NOTHING")))

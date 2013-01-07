@@ -115,14 +115,16 @@ and module_expr =
   | `ModuleExprConstraint of (loc* module_expr* module_type)
   | `PackageModule of (loc* expr) | `Ant of (loc* string)] 
 and str_item =
-  [ `StNil of loc | `StCls of (loc* class_expr) | `StClt of (loc* class_type)
-  | `StSem of (loc* str_item* str_item) | `StDir of (loc* string* expr)
-  | `StExc of (loc* ctyp* ident meta_option) | `StExp of (loc* expr)
-  | `StExt of (loc* string* ctyp* string meta_list)
-  | `StInc of (loc* module_expr) | `StMod of (loc* string* module_expr)
-  | `StRecMod of (loc* module_binding) | `StMty of (loc* string* module_type)
-  | `StOpn of (loc* ident) | `StTyp of (loc* ctyp)
-  | `StVal of (loc* rec_flag* binding) | `Ant of (loc* string)] 
+  [ `Nil of loc | `Class of (loc* class_expr)
+  | `ClassType of (loc* class_type) | `Sem of (loc* str_item* str_item)
+  | `Directive of (loc* string* expr)
+  | `Exception of (loc* ctyp* ident meta_option) | `StExp of (loc* expr)
+  | `External of (loc* string* ctyp* string meta_list)
+  | `Include of (loc* module_expr) | `Module of (loc* string* module_expr)
+  | `RecModule of (loc* module_binding)
+  | `ModuleType of (loc* string* module_type) | `Open of (loc* ident)
+  | `Type of (loc* ctyp) | `Value of (loc* rec_flag* binding)
+  | `Ant of (loc* string)] 
 and class_type =
   [ `CtNil of loc | `CtCon of (loc* virtual_flag* ident* ctyp)
   | `CtFun of (loc* ctyp* class_type) | `CtSig of (loc* ctyp* class_sig_item)

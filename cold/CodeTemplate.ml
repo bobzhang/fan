@@ -18,7 +18,7 @@ let base1_types =
   ("char", `Exist, `Def);
   ("unit",
     (`Custom
-       (`StVal
+       (`Value
           (_loc, (`ReNil _loc),
             (`Bind
                (_loc, (`PaId (_loc, (`Lid (_loc, "pp_print_unit")))),
@@ -62,7 +62,7 @@ let base1_types =
                               (_loc, (`TyId (_loc, (`Lid (_loc, "unit")))),
                                 (`TyId (_loc, (`Lid (_loc, "unit"))))))))))))))),
     (`Custom
-       (`StVal
+       (`Value
           (_loc, (`ReNil _loc),
             (`Bind
                (_loc, (`PaId (_loc, (`Lid (_loc, "eq_unit")))),
@@ -104,14 +104,14 @@ let print_base1 =
             let name = "pp_print_" ^ str in
             match print with
             | `Exist ->
-                `StVal
+                `Value
                   (_loc, (`ReNil _loc),
                     (`Bind
                        (_loc, (`PaId (_loc, (`Lid (_loc, name)))),
                          (`ExId (_loc, (`Lid (_loc, name)))))))
             | `Custom s -> s
             | `Fmt c ->
-                `StVal
+                `Value
                   (_loc, (`ReNil _loc),
                     (`Bind
                        (_loc, (`PaId (_loc, (`Lid (_loc, name)))),
@@ -262,7 +262,7 @@ let eq_base1 =
             let name = "eq_" ^ str in
             match eq with
             | `Def ->
-                `StVal
+                `Value
                   (_loc, (`ReNil _loc),
                     (`Bind
                        (_loc, (`PaId (_loc, (`Lid (_loc, name)))),

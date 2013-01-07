@@ -817,47 +817,47 @@ and module_expr =
   | `Ant (loc,_) -> error loc "antiquotation in module_expr"
 and str_item s l =
   match s with
-  | `StNil _loc -> l
-  | `StCls (loc,cd) ->
+  | `Nil _loc -> l
+  | `Class (loc,cd) ->
       (mkstr loc
          (Pstr_class
             (List.map class_info_class_expr (list_of_class_expr cd []))))
       :: l
-  | `StClt (loc,ctd) ->
+  | `ClassType (loc,ctd) ->
       (mkstr loc
          (Pstr_class_type
             (List.map class_info_class_type (list_of_class_type ctd []))))
       :: l
-  | `StSem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
-  | `StDir (_,_,_) -> l
-  | `StExc (loc,`TyId (_,`Uid (_,s)),`None _) ->
+  | `Sem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
+  | `Directive (_,_,_) -> l
+  | `Exception (loc,`TyId (_,`Uid (_,s)),`None _) ->
       (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
-  | `StExc (loc,`TyOf (_,`TyId (_,`Uid (_,s)),t),`None _) ->
+  | `Exception (loc,`TyOf (_,`TyId (_,`Uid (_,s)),t),`None _) ->
       (mkstr loc
          (Pstr_exception
             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
       :: l
-  | `StExc (loc,`TyId (_,`Uid (_,s)),`Some i) ->
+  | `Exception (loc,`TyId (_,`Uid (_,s)),`Some i) ->
       (mkstr loc (Pstr_exn_rebind ((with_loc s loc), (ident i)))) :: l
-  | `StExc (loc,`TyOf (_,`TyId (_,`Uid (_,_)),_),`Some _) ->
+  | `Exception (loc,`TyOf (_,`TyId (_,`Uid (_,_)),_),`Some _) ->
       error loc "type in exception alias"
-  | `StExc (_,_,_) -> assert false
+  | `Exception (_,_,_) -> assert false
   | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
-  | `StExt (loc,n,t,sl) ->
+  | `External (loc,n,t,sl) ->
       (mkstr loc
          (Pstr_primitive
             ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
       :: l
-  | `StInc (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
-  | `StMod (loc,n,me) ->
+  | `Include (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
+  | `Module (loc,n,me) ->
       (mkstr loc (Pstr_module ((with_loc n loc), (module_expr me)))) :: l
-  | `StRecMod (loc,mb) ->
+  | `RecModule (loc,mb) ->
       (mkstr loc (Pstr_recmodule (module_str_binding mb []))) :: l
-  | `StMty (loc,n,mt) ->
+  | `ModuleType (loc,n,mt) ->
       (mkstr loc (Pstr_modtype ((with_loc n loc), (module_type mt)))) :: l
-  | `StOpn (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
-  | `StTyp (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl []))) :: l
-  | `StVal (loc,rf,bi) ->
+  | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
+  | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl []))) :: l
+  | `Value (loc,rf,bi) ->
       (mkstr loc (Pstr_value ((mkrf rf), (binding bi [])))) :: l
   | `Ant (loc,_) -> error loc "antiquotation in str_item"
 and class_type =
@@ -1009,7 +1009,7 @@ let directive =
   | e -> Pdir_ident (ident_noloc (ident_of_expr e))
 let phrase =
   function
-  | `StDir (_,d,dp) -> Ptop_dir (d, (directive dp))
+  | `Directive (_,d,dp) -> Ptop_dir (d, (directive dp))
   | si -> Ptop_def (str_item si)
 open Format
 let pp = fprintf
