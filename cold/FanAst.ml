@@ -8783,11 +8783,9 @@ let rec is_irrefut_patt =
   | `Lazy (_loc,p) -> is_irrefut_patt p
   | `PaId (_loc,_) -> false
   | `PaMod (_loc,_) -> true
-  | `PaVrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)|`NativeInt
-                                                                    (_loc,_)|
-      `Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)|`Chr (_loc,_)|`PaTyp
-                                                                    (_loc,_)|
-      `PaArr (_loc,_)|`Ant (_loc,_) -> false
+  | `PaVrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)
+    |`NativeInt (_loc,_)|`Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)
+    |`Chr (_loc,_)|`PaTyp (_loc,_)|`PaArr (_loc,_)|`Ant (_loc,_) -> false
 let rec is_constructor =
   function
   | `IdAcc (_loc,_,i) -> is_constructor i
@@ -9003,8 +9001,8 @@ let rec list_of_with_constr x acc =
 let rec list_of_ctyp x acc =
   match x with
   | `TyNil _loc -> acc
-  | `TyAmp (_loc,x,y)|`TyCom (_loc,x,y)|`TySta (_loc,x,y)|`TySem (_loc,x,y)|
-      `TyAnd (_loc,x,y)|`TyOr (_loc,x,y) ->
+  | `TyAmp (_loc,x,y)|`TyCom (_loc,x,y)|`TySta (_loc,x,y)|`TySem (_loc,x,y)
+    |`TyAnd (_loc,x,y)|`TyOr (_loc,x,y) ->
       list_of_ctyp x (list_of_ctyp y acc)
   | x -> x :: acc
 let rec list_of_patt x acc =
@@ -9089,23 +9087,16 @@ class clean_ast =
       | wc -> wc
     method! expr e =
       match super#expr e with
-      | `Let_in (_loc,_,`BiNil _l,e)|`Record (_loc,`RbNil _l,e)|`ExCom
-                                                                  (_loc,
-                                                                   `ExNil _l,e)|
-          `ExCom (_loc,e,`ExNil _l)|`ExSem (_loc,`ExNil _l,e)|`ExSem
-                                                                (_loc,e,
-                                                                 `ExNil _l)
-          -> e
+      | `Let_in (_loc,_,`BiNil _l,e)|`Record (_loc,`RbNil _l,e)
+        |`ExCom (_loc,`ExNil _l,e)|`ExCom (_loc,e,`ExNil _l)
+        |`ExSem (_loc,`ExNil _l,e)|`ExSem (_loc,e,`ExNil _l) -> e
       | e -> e
     method! patt p =
       match super#patt p with
-      | `PaAli (_loc,p,`PaNil _l)|`PaOrp (_loc,`PaNil _l,p)|`PaOrp
-                                                              (_loc,p,
-                                                               `PaNil _l)|
-          `PaCom (_loc,`PaNil _l,p)|`PaCom (_loc,p,`PaNil _l)|`PaSem
-                                                                (_loc,
-                                                                 `PaNil _l,p)|
-          `PaSem (_loc,p,`PaNil _l) -> p
+      | `PaAli (_loc,p,`PaNil _l)|`PaOrp (_loc,`PaNil _l,p)
+        |`PaOrp (_loc,p,`PaNil _l)|`PaCom (_loc,`PaNil _l,p)
+        |`PaCom (_loc,p,`PaNil _l)|`PaSem (_loc,`PaNil _l,p)
+        |`PaSem (_loc,p,`PaNil _l) -> p
       | p -> p
     method! match_case mc =
       match super#match_case mc with
@@ -9125,24 +9116,15 @@ class clean_ast =
       | mb -> mb
     method! ctyp t =
       match super#ctyp t with
-      | `TyPol (_loc,`TyNil _l,t)|`TyAli (_loc,`TyNil _l,t)|`TyAli
-                                                              (_loc,t,
-                                                               `TyNil _l)|
-          `TyArr (_loc,t,`TyNil _l)|`TyArr (_loc,`TyNil _l,t)|`TyOr
-                                                                (_loc,
-                                                                 `TyNil _l,t)|
-          `TyOr (_loc,t,`TyNil _l)|`TyOf (_loc,t,`TyNil _l)|`TyAnd
-                                                              (_loc,`TyNil _l,t)|
-          `TyAnd (_loc,t,`TyNil _l)|`TySem (_loc,t,`TyNil _l)|`TySem
-                                                                (_loc,
-                                                                 `TyNil _l,t)|
-          `TyCom (_loc,`TyNil _l,t)|`TyCom (_loc,t,`TyNil _l)|`TyAmp
-                                                                (_loc,t,
-                                                                 `TyNil _l)|
-          `TyAmp (_loc,`TyNil _l,t)|`TySta (_loc,`TyNil _l,t)|`TySta
-                                                                (_loc,t,
-                                                                 `TyNil _l)
-          -> t
+      | `TyPol (_loc,`TyNil _l,t)|`TyAli (_loc,`TyNil _l,t)
+        |`TyAli (_loc,t,`TyNil _l)|`TyArr (_loc,t,`TyNil _l)
+        |`TyArr (_loc,`TyNil _l,t)|`TyOr (_loc,`TyNil _l,t)
+        |`TyOr (_loc,t,`TyNil _l)|`TyOf (_loc,t,`TyNil _l)
+        |`TyAnd (_loc,`TyNil _l,t)|`TyAnd (_loc,t,`TyNil _l)
+        |`TySem (_loc,t,`TyNil _l)|`TySem (_loc,`TyNil _l,t)
+        |`TyCom (_loc,`TyNil _l,t)|`TyCom (_loc,t,`TyNil _l)
+        |`TyAmp (_loc,t,`TyNil _l)|`TyAmp (_loc,`TyNil _l,t)
+        |`TySta (_loc,`TyNil _l,t)|`TySta (_loc,t,`TyNil _l) -> t
       | t -> t
     method! sig_item sg =
       match super#sig_item sg with

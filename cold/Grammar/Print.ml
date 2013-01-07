@@ -74,8 +74,8 @@ class text_grammar =
           pp f "%a%s" self#description description content
       | `Skeyword s -> pp f "%S" s
       | `Stree t -> self#tree f t
-      | `Smeta (_,_,_)|`Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _|
-          `Slist1sep (_,_)|`Sopt _|`Stry _|`Speek _ as s ->
+      | `Smeta (_,_,_)|`Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _
+        |`Slist1sep (_,_)|`Sopt _|`Stry _|`Speek _ as s ->
           pp f "(%a)" self#symbol s
     method rule f symbols =
       pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@ ") symbols

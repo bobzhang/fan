@@ -89,9 +89,9 @@ let match_keyword kwd =
   function | `KEYWORD kwd' when kwd = kwd' -> true | _ -> false
 let extract_string: [> t] -> string =
   function
-  | `KEYWORD s|`SYMBOL s|`LID s|`UID s|`INT (_,s)|`INT32 (_,s)|`INT64 (_,s)|
-      `NATIVEINT (_,s)|`FLO (_,s)|`CHAR (_,s)|`STR (_,s)|`LABEL s|`OPTLABEL s|
-      `COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
+  | `KEYWORD s|`SYMBOL s|`LID s|`UID s|`INT (_,s)|`INT32 (_,s)|`INT64 (_,s)
+    |`NATIVEINT (_,s)|`FLO (_,s)|`CHAR (_,s)|`STR (_,s)|`LABEL s|`OPTLABEL s
+    |`COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
   | tok ->
       invalid_arg
         ("Cannot extract a string from this token: " ^ (to_string tok))

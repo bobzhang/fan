@@ -173,13 +173,8 @@ let _ =
           (function | `StMod (_loc,"Camlp4Trash",_) -> `StNil _loc | st -> st))#str_item))
 let map_expr =
   function
-  | `ExApp (_loc,e,`ExId (_,`Uid (_,"NOTHING")))|`Fun
-                                                   (_loc,`McArr
-                                                           (_,`PaId
-                                                                (_,`Uid
-                                                                    (_,"NOTHING")),
-                                                            `ExNil _,e))
-      -> e
+  | `ExApp (_loc,e,`ExId (_,`Uid (_,"NOTHING")))
+    |`Fun (_loc,`McArr (_,`PaId (_,`Uid (_,"NOTHING")),`ExNil _,e)) -> e
   | `ExId (_loc,`Lid (_,"__FILE__")) ->
       `Str (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
   | `ExId (_loc,`Lid (_,"__PWD__")) ->

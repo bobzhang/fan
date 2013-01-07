@@ -1432,16 +1432,20 @@ let apply () =
          ([`Stoken
              (((function
                 | `ANT
-                    (("exp"|""|"anti"|"`bool"|"tup"|"seq"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"),_)
+                    (("exp"|""|"anti"|"`bool"|"tup"|"seq"|"int"|"`int"
+                      |"int32"|"`int32"|"int64"|"`int64"|"nativeint"
+                      |"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"),_)
                     -> true
                 | _ -> false)),
                (`Normal,
-                 "`ANT\n  ((\"exp\"|\"\"|\"anti\"|\"`bool\"|\"tup\"|\"seq\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"|\"`int64\"|\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
+                 "`ANT\n  ((\"exp\"|\"\"|\"anti\"|\"`bool\"|\"tup\"|\"seq\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"\n    |\"`int64\"|\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `ANT
-                     (("exp"|""|"anti"|"`bool"|"tup"|"seq"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"
+                     (("exp"|""|"anti"|"`bool"|"tup"|"seq"|"int"|"`int"
+                       |"int32"|"`int32"|"int64"|"`int64"|"nativeint"
+                       |"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"
                          as n),s)
                      -> (`Ant (_loc, (mk_anti ~c:"expr" n s)) : 'expr )
                  | _ -> assert false)));
@@ -2204,17 +2208,20 @@ let apply () =
          [([`Stoken
               (((function
                  | `ANT
-                     ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"),_)
+                     ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"
+                       |"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"
+                       |"`flo"|"chr"|"`chr"|"str"|"`str"),_)
                      -> true
                  | _ -> false)),
                 (`Normal,
-                  "`ANT\n  ((\"\"|\"pat\"|\"anti\"|\"tup\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"|\"`int64\"|\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
+                  "`ANT\n  ((\"\"|\"pat\"|\"anti\"|\"tup\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"|\"`int64\"\n    |\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `ANT
-                      ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"
-                          as n),s)
+                      ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"
+                        |"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"
+                        |"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
                       -> (`Ant (_loc, (mk_anti ~c:"patt" n s)) : 'patt )
                   | _ -> assert false)));
          ([`Snterm (Gram.obj (ident : 'ident Gram.t ))],

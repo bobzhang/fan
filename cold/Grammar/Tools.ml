@@ -33,11 +33,11 @@ let logically_eq_symbols entry =
     | (`Sself,`Snterm e2) -> entry.ename = e2.ename
     | (`Snterml (e1,l1),`Snterml (e2,l2)) ->
         (e1.ename = e2.ename) && (l1 = l2)
-    | (`Slist0 s1,`Slist0 s2)|(`Slist1 s1,`Slist1 s2)|(`Sopt s1,`Sopt s2)|
-        (`Speek s1,`Speek s2)|(`Stry s1,`Stry s2) -> eq_symbol s1 s2
-    | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))|(`Slist1sep (s1,sep1),
-                                                   `Slist1sep (s2,sep2))
-        -> (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
+    | (`Slist0 s1,`Slist0 s2)|(`Slist1 s1,`Slist1 s2)|(`Sopt s1,`Sopt s2)
+      |(`Speek s1,`Speek s2)|(`Stry s1,`Stry s2) -> eq_symbol s1 s2
+    | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))
+      |(`Slist1sep (s1,sep1),`Slist1sep (s2,sep2)) ->
+        (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
     | (`Stree t1,`Stree t2) -> eq_tree t1 t2
     | (`Stoken (_,s1),`Stoken (_,s2)) -> eq_Stoken_ids s1 s2
     | _ -> s1 = s2
@@ -53,11 +53,11 @@ let rec eq_symbol s1 s2 =
   match (s1, s2) with
   | (`Snterm e1,`Snterm e2) -> e1 == e2
   | (`Snterml (e1,l1),`Snterml (e2,l2)) -> (e1 == e2) && (l1 = l2)
-  | (`Slist0 s1,`Slist0 s2)|(`Slist1 s1,`Slist1 s2)|(`Sopt s1,`Sopt s2)|
-      (`Speek s1,`Speek s2)|(`Stry s1,`Stry s2) -> eq_symbol s1 s2
-  | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))|(`Slist1sep (s1,sep1),
-                                                 `Slist1sep (s2,sep2))
-      -> (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
+  | (`Slist0 s1,`Slist0 s2)|(`Slist1 s1,`Slist1 s2)|(`Sopt s1,`Sopt s2)
+    |(`Speek s1,`Speek s2)|(`Stry s1,`Stry s2) -> eq_symbol s1 s2
+  | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))
+    |(`Slist1sep (s1,sep1),`Slist1sep (s2,sep2)) ->
+      (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
   | (`Stree _,`Stree _) -> false
   | (`Stoken (_,s1),`Stoken (_,s2)) -> eq_Stoken_ids s1 s2
   | _ -> s1 = s2

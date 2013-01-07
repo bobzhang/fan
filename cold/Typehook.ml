@@ -57,10 +57,10 @@ let filter_type_defs ?qualified  () =
     val mutable type_defs = let _loc = FanLoc.ghost in `StNil _loc
     method! sig_item =
       function
-      | `SgVal (_loc,_,_)|`SgInc (_loc,_)|`SgExt (_loc,_,_,_)|`SgExc (_loc,_)|
-          `SgCls (_loc,_)|`SgClt (_loc,_)|`SgDir (_loc,_,`ExNil _)|`SgMod
-                                                                    (_loc,_,_)|
-          `SgMty (_loc,_,_)|`SgRecMod (_loc,_)|`SgOpn (_loc,_) -> `SgNil _loc
+      | `SgVal (_loc,_,_)|`SgInc (_loc,_)|`SgExt (_loc,_,_,_)|`SgExc (_loc,_)
+        |`SgCls (_loc,_)|`SgClt (_loc,_)|`SgDir (_loc,_,`ExNil _)
+        |`SgMod (_loc,_,_)|`SgMty (_loc,_,_)|`SgRecMod (_loc,_)
+        |`SgOpn (_loc,_) -> `SgNil _loc
       | `SgTyp (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
           let x =
             match ((Ctyp.qualified_app_list ctyp), qualified) with
@@ -160,10 +160,9 @@ let traversal () =
            (eprintf "Came across @[%a@]@." FSig.pp_print_types item;
             self#update_cur_module_types (fun lst  -> item :: lst);
             x)
-       | `StVal (_loc,`ReNil _,_)|`StMty (_loc,_,_)|`StInc (_loc,_)|`StExt
-                                                                    (_loc,_,_,_)|
-           `StExp (_loc,_)|`StExc (_loc,_,`None _)|`StDir (_loc,_,_) as x ->
-           x
+       | `StVal (_loc,`ReNil _,_)|`StMty (_loc,_,_)|`StInc (_loc,_)
+         |`StExt (_loc,_,_,_)|`StExp (_loc,_)|`StExc (_loc,_,`None _)
+         |`StDir (_loc,_,_) as x -> x
        | x -> super#str_item x
      method! ctyp =
        function

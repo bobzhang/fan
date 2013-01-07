@@ -45,4 +45,29 @@
 
 
 
+(setq
+ v
+ (hash-table/from-list
+ "ExLet" "Let_in"
+ "ExFor" "For_loop"
+ "ExLmd" "Let_module"
+ "ExFun" "Fun"
+ "ExLab" "Label"
+ "ExMat" "Match"
+ "ExNew" "New"
+ "ExObj" "Obj"
+ "ExOlb" "Optional_label"
+ "ExOvr" "Override_instance"
+ "ExRec" "Record"
+ "ExSeq" "Sequence"
+ "ExSnd" "Send"
+ "ExSte" "String_dot"
+ "ExTry" "Try"
+ "ExTyc" "Constraint_exp"
+ "ExWhi" "While"
+ "ExOpI" "Let_open"
+ "ExFUN" "Local_type_fun"
+ "ExPkg" "Package_expr"
+ ))
+
 ;;; a.el ends here

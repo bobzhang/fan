@@ -133,10 +133,9 @@ let rec ctyp =
   | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
   | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | `TyOfAmp (_,_,_)|`TyAmp (_,_,_)|`TySta (_,_,_)|`TyCom (_,_,_)|`TyVrn
-                                                                    (_,_)|
-      `TyQuM (_,_)|`TyQuP (_,_)|`TyDcl (_,_,_,_,_)|`TyAnP _|`TyAnM _|
-      `TyTypePol (_,_,_)|`TyObj (_,_,`Ant _)|`TyNil _|`TyTup (_,_) ->
+  | `TyOfAmp (_,_,_)|`TyAmp (_,_,_)|`TySta (_,_,_)|`TyCom (_,_,_)
+    |`TyVrn (_,_)|`TyQuM (_,_)|`TyQuP (_,_)|`TyDcl (_,_,_,_,_)|`TyAnP _
+    |`TyAnM _|`TyTypePol (_,_,_)|`TyObj (_,_,`Ant _)|`TyNil _|`TyTup (_,_) ->
       assert false
 and row_field =
   function
@@ -900,12 +899,8 @@ and class_info_class_expr ci =
   | ce -> error (loc_of_class_expr ce) "bad class definition"
 and class_info_class_type ci =
   match ci with
-  | `CtEq (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct)|`CtCol
-                                                            (_,`CtCon
-                                                                 (loc,vir,
-                                                                  `Lid
-                                                                    (nloc,name),params),ct)
-      ->
+  | `CtEq (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct)
+    |`CtCol (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct) ->
       let (loc_params,(params,variance)) =
         match params with
         | `TyNil _loc -> (loc, ([], []))

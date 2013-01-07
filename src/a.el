@@ -56,4 +56,9 @@
   
   )
 
+(setq v
+      (hash-table/from-list
+         "MtFun" "Functor"
+         
+         ))
 ;;; a.el ends here

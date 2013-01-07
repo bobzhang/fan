@@ -212,9 +212,8 @@ let bigarray_set loc var newval =
   | _ -> None
 let rec pattern_eq_expression p e =
   match (p, e) with
-  | (`PaId (_loc,`Lid (_,a)),`ExId (_,`Lid (_,b)))|(`PaId (_loc,`Uid (_,a)),
-                                                    `ExId (_,`Uid (_,b)))
-      -> a = b
+  | (`PaId (_loc,`Lid (_,a)),`ExId (_,`Lid (_,b)))
+    |(`PaId (_loc,`Uid (_,a)),`ExId (_,`Uid (_,b))) -> a = b
   | (`PaApp (_loc,p1,p2),`ExApp (_,e1,e2)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
   | _ -> false
@@ -381,8 +380,8 @@ class subst loc env =
       function
       | `ExId (_loc,`Lid (_,x))|`ExId (_loc,`Uid (_,x)) as e ->
           (try List.assoc x env with | Not_found  -> super#expr e)
-      | `ExApp (_loc,`ExId (_,`Uid (_,"LOCATION_OF")),`ExId (_,`Lid (_,x)))|
-          `ExApp (_loc,`ExId (_,`Uid (_,"LOCATION_OF")),`ExId (_,`Uid (_,x)))
+      | `ExApp (_loc,`ExId (_,`Uid (_,"LOCATION_OF")),`ExId (_,`Lid (_,x)))
+        |`ExApp (_loc,`ExId (_,`Uid (_,"LOCATION_OF")),`ExId (_,`Uid (_,x)))
           as e ->
           (try
              let loc = FanAst.loc_of_expr (List.assoc x env) in

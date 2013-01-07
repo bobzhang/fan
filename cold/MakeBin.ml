@@ -71,7 +71,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       (match (n, (String.lowercase x)) with
        | (("Printers"|""),("pr_o.cmo"|"o"|"ocaml"|"camlp4ocamlprinter.cmo"))
            -> PreCast.enable_ocaml_printer ()
-       | (("Printers"|""),("pr_dump.cmo"|"p"|"dumpocaml"|"camlp4ocamlastdumper.cmo"))
+       | (("Printers"|""),("pr_dump.cmo"|"p"|"dumpocaml"
+                           |"camlp4ocamlastdumper.cmo"))
            -> PreCast.enable_dump_ocaml_ast_printer ()
        | (("Printers"|""),("d"|"dumpcamlp4"|"camlp4astdumper.cmo")) ->
            PreCast.enable_dump_camlp4_ast_printer ()

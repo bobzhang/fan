@@ -5,6 +5,6 @@
 * core variants
 
 #+BEGIN_EXAMPLE
-ExApp ExVrn
-ExTup ExCOm
+ExApp ExVrn ExTup ExCom
+PaApp PaVrn PaTup PaCom
 #+END_EXAMPLE

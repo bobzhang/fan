@@ -332,9 +332,11 @@ class printer  ()= object(self:'self)
             match pattern_or_helper a p2 with
             |Some b -> pp f "@[<2>%C..%C@]" a b 
             |None ->
-                self#list  ~sep:"|" self#pattern f (list_of_pattern [] x) end
+                pp f "@[<hov0>%a@]" (self#list ~sep:"@,|" self#pattern ) (list_of_pattern [] x)
+                (* self#list  ~sep:"@,|" self#pattern f (list_of_pattern [] x) *) end
         | _ ->
-            self#list ~sep:"|" self#pattern f (list_of_pattern [] x) 
+            pp f "@[<hov0>%a@]" (self#list ~sep:"@,|" self#pattern) (list_of_pattern [] x)
+            (* self#list ~sep:"@,|" self#pattern f (list_of_pattern [] x)  *)
         )
     | _ -> self#pattern1 f x
   method pattern1 (f:Format.formatter) (x:pattern) :unit =

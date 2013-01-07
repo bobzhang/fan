@@ -243,7 +243,7 @@ type loc = FanLoc.t
       (* sg ; sg *)
     | `SgSem of (loc * sig_item * sig_item)
       (* # s or # s e *)
-    | `SgDir of (loc * string * expr)
+    | `SgDir of (loc * string * expr) (* semantics *)
       (* exception t *)
     | `SgExc of (loc * ctyp)
       (* external s : t = s ... s *)
