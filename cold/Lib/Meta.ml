@@ -2,9 +2,9 @@ module Ast = FanAst
 module MetaLocVar : FanAst.META_LOC =
   struct
     let meta_loc_patt _loc _ =
-      `PaId (_loc, (`Lid (_loc, (FanLoc.name.contents))))
+      `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
     let meta_loc_expr _loc _ =
-      `ExId (_loc, (`Lid (_loc, (FanLoc.name.contents))))
+      `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
   end 
 module MetaLoc : FanAst.META_LOC =
   struct
@@ -14,7 +14,7 @@ module MetaLoc : FanAst.META_LOC =
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple location in
       `ExApp
         (_loc,
-          (`ExId
+          (`Id
              (_loc,
                (`IdAcc
                   (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
@@ -45,15 +45,15 @@ module MetaLoc : FanAst.META_LOC =
                                    (`Int (_loc, (string_of_int f))))),
                               (`Int (_loc, (string_of_int g))))),
                          (if h
-                          then `ExId (_loc, (`Lid (_loc, "true")))
-                          else `ExId (_loc, (`Lid (_loc, "false")))))))))))
+                          then `Id (_loc, (`Lid (_loc, "true")))
+                          else `Id (_loc, (`Lid (_loc, "false")))))))))))
   end 
 module MetaGhostLoc : FanAst.META_LOC =
   struct
     let meta_loc_patt _loc _ =
       failwith "MetaGhostLoc.meta_loc_patt not implemented"
     let meta_loc_expr _loc _ =
-      `ExId
+      `Id
         (_loc,
           (`IdAcc (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "ghost")))))
   end 

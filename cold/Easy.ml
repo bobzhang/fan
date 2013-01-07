@@ -4,7 +4,7 @@ open Lib
 let _loc = FanLoc.ghost
 let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
   `ExApp
-    (_loc, (`ExId (_loc, (`Lid (_loc, "failwith")))),
+    (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
       (`Str (_loc, "arity >= 2 in other branches"))))
    ?cons_transform  ~id:(id : basic_id_transform)  ~names  ~mk_tuple 
   ~mk_record  mk_variant =
@@ -28,8 +28,8 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
       let trail (_,number) =
         if number > 1
         then
-          let patt = Patt.tuple_of_number (`PaAny _loc) arity in
-          `Case (_loc, patt, (`ExNil _loc), trail)
+          let patt = Patt.tuple_of_number (`Any _loc) arity in
+          `Case (_loc, patt, (`Nil _loc), trail)
         else `Nil _loc
       let names = names
       let mk_record = mk_record
@@ -40,7 +40,7 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
         str_item_of_module_types ?module_name normal_simple_expr_of_ctyp
 let gen_object ?module_name  ?(arity= 1)  ?(trail=
   `ExApp
-    (_loc, (`ExId (_loc, (`Lid (_loc, "failwith")))),
+    (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
       (`Str (_loc, "arity >= 2 in other branches"))))
    ?cons_transform  ~kind  ~base  ~class_name  =
   let make ~names  ~mk_tuple  ~mk_record  mk_variant =
@@ -55,15 +55,15 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
             (fun v  ->
                let v = basic_transform left_type_variable v in
                `ExApp
-                 (_loc, (`ExId (_loc, (`Lid (_loc, v)))),
-                   (`ExId (_loc, (`Lid (_loc, "self"))))))
+                 (_loc, (`Id (_loc, (`Lid (_loc, v)))),
+                   (`Id (_loc, (`Lid (_loc, "self"))))))
         let left_type_id = `Pre ""
         let right_type_id = `Obj (basic_transform left_type_id)
         let trail (_,number) =
           if number > 1
           then
-            let patt = Patt.tuple_of_number (`PaAny _loc) arity in
-            `Case (_loc, patt, (`ExNil _loc), trail)
+            let patt = Patt.tuple_of_number (`Any _loc) arity in
+            `Case (_loc, patt, (`Nil _loc), trail)
           else `Nil _loc
         let names = names
         let mk_record = mk_record

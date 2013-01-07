@@ -22,9 +22,9 @@ module Make(S:FSig.Config) =
       let name_expr = simple_expr_of_ctyp y in
       let base = name_expr +> S.names in
       let id_exprs =
-        List.init S.arity (fun index  -> `ExId (_loc, (xid ~off:index i)))
+        List.init S.arity (fun index  -> `Id (_loc, (xid ~off:index i)))
       and id_patts =
-        List.init S.arity (fun index  -> `PaId (_loc, (xid ~off:index i))) in
+        List.init S.arity (fun index  -> `Id (_loc, (xid ~off:index i))) in
       let id_expr = Expr.tuple_of_list id_exprs in
       let id_patt = Patt.tuple_of_list id_patts in
       let expr = apply base id_exprs in
@@ -33,13 +33,13 @@ module Make(S:FSig.Config) =
       let open ErrorMonad in
         let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in
         match ty with
-        | `TyTup (_loc,t) ->
+        | `Tup (_loc,t) ->
             let ls = FanAst.list_of_ctyp t [] in
             let len = List.length ls in
             let patt = Patt.mk_tuple ~arity:S.arity ~number:len in
             let tys = List.mapi (mapi_expr simple_expr_of_ctyp) ls in
             S.names <+
-              (currying [`Case (_loc, patt, (`ExNil _loc), (S.mk_tuple tys))]
+              (currying [`Case (_loc, patt, (`Nil _loc), (S.mk_tuple tys))]
                  ~arity:S.arity)
         | _ -> invalid_arg & (sprintf "tuple_expr_of_ctyp {|%s|}\n" "")
     let rec normal_simple_expr_of_ctyp cxt ty =
@@ -52,10 +52,10 @@ module Make(S:FSig.Config) =
             function
             | `TyId (_loc,`Lid (_,id)) ->
                 if Hashset.mem cxt id
-                then `ExId (_loc, (`Lid (_loc, (left_trans id))))
+                then `Id (_loc, (`Lid (_loc, (left_trans id))))
                 else right_trans (`Lid (_loc, id))
             | `TyId (_loc,id) -> right_trans id
-            | `TyTup (_loc,_t) as ty ->
+            | `Tup (_loc,_t) as ty ->
                 tuple_expr_of_ctyp (normal_simple_expr_of_ctyp cxt) ty
             | `TyApp (_loc,t1,t2) -> `ExApp (_loc, (aux t1), (aux t2))
             | `TyQuo (_loc,s) -> tyvar s
@@ -91,14 +91,14 @@ module Make(S:FSig.Config) =
                         (List.map
                            (function
                             | `TyQuo (_loc,s) ->
-                                `ExId (_loc, (`Lid (_loc, (var s))))
+                                `Id (_loc, (`Lid (_loc, (var s))))
                             | t ->
                                 `Fun
                                   (_loc,
                                     (`Case
                                        (_loc,
-                                         (`PaId (_loc, (`Lid (_loc, "self")))),
-                                         (`ExNil _loc), (aux t)))))))
+                                         (`Id (_loc, (`Lid (_loc, "self")))),
+                                         (`Nil _loc), (aux t)))))))
                        |> (apply (trans tctor))
                  | _ -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp")
             | `TyArr (_loc,t1,t2) ->
@@ -108,7 +108,7 @@ module Make(S:FSig.Config) =
                        (`TyApp
                           (_loc, (`TyId (_loc, (`Lid (_loc, "arrow")))), t1)),
                        t2))
-            | `TyTup (_loc,_) as ty ->
+            | `Tup (_loc,_) as ty ->
                 tuple_expr_of_ctyp obj_simple_expr_of_ctyp ty
             | ty -> raise (Unhandled ty) in
           try return & (aux ty)
@@ -128,11 +128,11 @@ module Make(S:FSig.Config) =
           let mk (cons,tyargs) =
             let exprs = List.mapi (mapi_expr simple_expr_of_ctyp) tyargs in
             S.mk_variant cons exprs in
-          let e = mk (cons, tyargs) in (`Case (_loc, p, (`ExNil _loc), e)) ::
+          let e = mk (cons, tyargs) in (`Case (_loc, p, (`Nil _loc), e)) ::
             acc in
         let info =
           match ty with
-          | `TySum (_loc,t) ->
+          | `Sum (_loc,t) ->
               (TyVrn, (List.length (FanAst.list_of_ctyp t [])))
           | `TyVrnEq (_loc,t) ->
               (TyVrnEq, (List.length (FanAst.list_of_ctyp t [])))
@@ -159,8 +159,8 @@ module Make(S:FSig.Config) =
               `Fun
                 (_loc,
                   (`Case
-                     (_loc, (`PaId (_loc, (`Lid (_loc, (varf s))))),
-                       (`ExNil _loc), acc)))
+                     (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))),
+                       (`Nil _loc), acc)))
           | _ -> (Ctyp.eprint.contents var; invalid_arg "mk_prefix") in
         List.fold_right f vars (S.names <+ acc)
     let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp =
@@ -169,7 +169,7 @@ module Make(S:FSig.Config) =
         | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
             let ctyp =
               match ctyp with
-              | `TyMan (_loc,_,ctyp)|`TyPrv (_loc,ctyp) -> ctyp
+              | `TyMan (_loc,_,ctyp)|`Private (_loc,ctyp) -> ctyp
               | _ -> ctyp in
             (match ctyp with
              | `TyRec (_loc,t) ->
@@ -189,7 +189,7 @@ module Make(S:FSig.Config) =
                             }) cols in
                  mk_prefix tyvars
                    (currying ~arity:S.arity
-                      [`Case (_loc, patt, (`ExNil _loc), (S.mk_record info))])
+                      [`Case (_loc, patt, (`Nil _loc), (S.mk_record info))])
              | _ ->
                  let process =
                    (fun ctyp  ->
@@ -218,15 +218,15 @@ module Make(S:FSig.Config) =
               fun_of_tydcl simple_expr_of_ctyp
                 (expr_of_ctyp (unwrap simple_expr_of_ctyp)) tydcl in
             `Bind
-              (_loc, (`PaId (_loc, (`Lid (_loc, (tctor_var name))))),
+              (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
                 (`Constraint_exp (_loc, fun_expr, ty)))
           else
             (eprintf
                "Warning: %s as a abstract type no structure generated\n" "";
              `Bind
-               (_loc, (`PaId (_loc, (`Lid (_loc, (tctor_var name))))),
+               (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
                  (`ExApp
-                    (_loc, (`ExId (_loc, (`Lid (_loc, "failwithf")))),
+                    (_loc, (`Id (_loc, (`Lid (_loc, "failwithf")))),
                       (`Str (_loc, "Abstract data type not implemented"))))))
     let str_item_of_module_types ?module_name  simple_expr_of_ctyp_with_cxt
       (lst : module_types) =
@@ -287,7 +287,7 @@ module Make(S:FSig.Config) =
         let (extras,lst) = Ctyp.transform_module_types lst in
         let body =
           List.fold_left (fun acc  types  -> `CrSem (_loc, acc, (fs types)))
-            (`CrNil _loc) lst in
+            (`Nil _loc) lst in
         let body =
           let items =
             List.map

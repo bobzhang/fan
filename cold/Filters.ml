@@ -2,8 +2,8 @@ open LibUtil
 module Ast = FanAst
 module MetaLoc =
   struct
-    let meta_loc_patt _loc _ = `PaId (_loc, (`Lid (_loc, "loc")))
-    let meta_loc_expr _loc _ = `ExId (_loc, (`Lid (_loc, "loc")))
+    let meta_loc_patt _loc _ = `Id (_loc, (`Lid (_loc, "loc")))
+    let meta_loc_expr _loc _ = `Id (_loc, (`Lid (_loc, "loc")))
   end
 module MetaAst = FanAst.Make(MetaLoc)
 let _ =
@@ -13,11 +13,11 @@ let _ =
          let _loc = FanAst.loc_of_str_item ast in
          `StExp
            (_loc,
-             (`Let_in
+             (`LetIn
                 (_loc, (`ReNil _loc),
                   (`Bind
-                     (_loc, (`PaId (_loc, (`Lid (_loc, "loc")))),
-                       (`ExId
+                     (_loc, (`Id (_loc, (`Lid (_loc, "loc")))),
+                       (`Id
                           (_loc,
                             (`IdAcc
                                (_loc, (`Uid (_loc, "FanLoc")),
@@ -32,31 +32,31 @@ let add_debug_expr e =
          (_loc,
            (`Case
               (_loc,
-                (`PaAli
+                (`Alias
                    (_loc,
                      (`PaOrp
                         (_loc,
-                          (`PaId
+                          (`Id
                              (_loc,
                                (`IdAcc
                                   (_loc, (`Uid (_loc, "XStream")),
                                     (`Uid (_loc, "Failure")))))),
-                          (`PaId (_loc, (`Uid (_loc, "Exit")))))),
-                     (`PaId (_loc, (`Lid (_loc, "exc")))))), (`ExNil _loc),
+                          (`Id (_loc, (`Uid (_loc, "Exit")))))),
+                     (`Id (_loc, (`Lid (_loc, "exc")))))), (`Nil _loc),
                 (`ExApp
-                   (_loc, (`ExId (_loc, (`Lid (_loc, "raise")))),
-                     (`ExId (_loc, (`Lid (_loc, "exc")))))))),
+                   (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
+                     (`Id (_loc, (`Lid (_loc, "exc")))))))),
            (`Case
-              (_loc, (`PaId (_loc, (`Lid (_loc, "exc")))), (`ExNil _loc),
+              (_loc, (`Id (_loc, (`Lid (_loc, "exc")))), (`Nil _loc),
                 (`Sequence
                    (_loc,
-                     (`ExSem
+                     (`Sem
                         (_loc,
                           (`ExIfe
                              (_loc,
                                (`ExApp
                                   (_loc,
-                                    (`ExId
+                                    (`Id
                                        (_loc,
                                          (`IdAcc
                                             (_loc, (`Uid (_loc, "Debug")),
@@ -66,7 +66,7 @@ let add_debug_expr e =
                                   (_loc,
                                     (`ExApp
                                        (_loc,
-                                         (`ExId
+                                         (`Id
                                             (_loc,
                                               (`IdAcc
                                                  (_loc,
@@ -77,17 +77,17 @@ let add_debug_expr e =
                                               (FanAst.safe_string_escaped msg))))),
                                     (`ExApp
                                        (_loc,
-                                         (`ExId
+                                         (`Id
                                             (_loc,
                                               (`IdAcc
                                                  (_loc,
                                                    (`Uid (_loc, "Printexc")),
                                                    (`Lid (_loc, "to_string")))))),
-                                         (`ExId (_loc, (`Lid (_loc, "exc")))))))),
-                               (`ExId (_loc, (`Uid (_loc, "()")))))),
+                                         (`Id (_loc, (`Lid (_loc, "exc")))))))),
+                               (`Id (_loc, (`Uid (_loc, "()")))))),
                           (`ExApp
-                             (_loc, (`ExId (_loc, (`Lid (_loc, "raise")))),
-                               (`ExId (_loc, (`Lid (_loc, "exc")))))))))))))))
+                             (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
+                               (`Id (_loc, (`Lid (_loc, "exc")))))))))))))))
 let rec map_match_case =
   function
   | `McOr (_loc,m1,m2) ->
@@ -116,9 +116,8 @@ let decorate_binding decorate_fun =
      inherit  FanAst.map as super
      method! binding =
        function
-       | `Bind (_loc,`PaId (_,`Lid (_,id)),(`Fun (_,_) as e)) ->
-           `Bind
-             (_loc, (`PaId (_loc, (`Lid (_loc, id)))), (decorate_fun id e))
+       | `Bind (_loc,`Id (_,`Lid (_,id)),(`Fun (_,_) as e)) ->
+           `Bind (_loc, (`Id (_loc, (`Lid (_loc, id)))), (decorate_fun id e))
        | b -> super#binding b
    end)#binding
 let decorate decorate_fun =
@@ -131,8 +130,8 @@ let decorate decorate_fun =
       | st -> super#str_item st
     method! expr =
       function
-      | `Let_in (_loc,r,b,e) ->
-          `Let_in (_loc, r, (decorate_binding decorate_fun b), (o#expr e))
+      | `LetIn (_loc,r,b,e) ->
+          `LetIn (_loc, r, (decorate_binding decorate_fun b), (o#expr e))
       | `Fun (_loc,_) as e -> decorate_fun "<fun>" e
       | e -> super#expr e
   end
@@ -141,13 +140,13 @@ let decorate_this_expr e id =
   let _loc = FanAst.loc_of_expr e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
-  `Let_in
+  `LetIn
     (_loc, (`ReNil _loc),
       (`Bind
-         (_loc, (`PaId (_loc, (`Uid (_loc, "()")))),
+         (_loc, (`Id (_loc, (`Uid (_loc, "()")))),
            (`ExApp
               (_loc,
-                (`ExId
+                (`Id
                    (_loc,
                      (`IdAcc
                         (_loc, (`Uid (_loc, "Camlp4prof")),
@@ -158,8 +157,8 @@ let rec decorate_fun id =
   let decorate_expr = decorate#expr in
   let decorate_match_case = decorate#match_case in
   function
-  | `Fun (_loc,`Case (_,p,`ExNil _,e)) ->
-      `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), (decorate_fun id e))))
+  | `Fun (_loc,`Case (_,p,`Nil _,e)) ->
+      `Fun (_loc, (`Case (_loc, p, (`Nil _loc), (decorate_fun id e))))
   | `Fun (_loc,m) ->
       decorate_this_expr (`Fun (_loc, (decorate_match_case m))) id
   | e -> decorate_this_expr (decorate_expr e) id
@@ -173,20 +172,20 @@ let _ =
           (function | `Module (_loc,"Camlp4Trash",_) -> `Nil _loc | st -> st))#str_item))
 let map_expr =
   function
-  | `ExApp (_loc,e,`ExId (_,`Uid (_,"NOTHING")))
-    |`Fun (_loc,`Case (_,`PaId (_,`Uid (_,"NOTHING")),`ExNil _,e)) -> e
-  | `ExId (_loc,`Lid (_,"__FILE__")) ->
+  | `ExApp (_loc,e,`Id (_,`Uid (_,"NOTHING")))
+    |`Fun (_loc,`Case (_,`Id (_,`Uid (_,"NOTHING")),`Nil _,e)) -> e
+  | `Id (_loc,`Lid (_,"__FILE__")) ->
       `Str (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
-  | `ExId (_loc,`Lid (_,"__PWD__")) ->
+  | `Id (_loc,`Lid (_,"__PWD__")) ->
       `Str
         (_loc,
           (FanAst.safe_string_escaped
              (Filename.dirname (FanLoc.file_name _loc))))
-  | `ExId (_loc,`Lid (_,"__LOCATION__")) ->
+  | `Id (_loc,`Lid (_,"__LOCATION__")) ->
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
       `ExApp
         (_loc,
-          (`ExId
+          (`Id
              (_loc,
                (`IdAcc
                   (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
@@ -217,15 +216,13 @@ let map_expr =
                                    (`Int (_loc, (string_of_int f))))),
                               (`Int (_loc, (string_of_int g))))),
                          (if h
-                          then `ExId (_loc, (`Lid (_loc, "true")))
-                          else `ExId (_loc, (`Lid (_loc, "false")))))))))))
+                          then `Id (_loc, (`Lid (_loc, "true")))
+                          else `Id (_loc, (`Lid (_loc, "false")))))))))))
   | e -> e
 let _ =
   AstFilters.register_str_item_filter
     ("trash_nothing", ((FanAst.map_expr map_expr)#str_item))
 let make_filter (s,code) =
   let f =
-    function
-    | `StExp (_loc,`ExId (_,`Lid (_,s'))) when s = s' -> code
-    | e -> e in
+    function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
   (("filter_" ^ s), ((FanAst.map_str_item f)#str_item))

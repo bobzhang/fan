@@ -19,11 +19,11 @@ let debug_mode =
 let mk_debug_mode _loc =
   function
   | None  ->
-      `ExId
+      `Id
         (_loc,
           (`IdAcc (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))
   | Some m ->
-      `ExId
+      `Id
         (_loc,
           (`IdAcc
              (_loc, (`Uid (_loc, m)),
@@ -35,7 +35,7 @@ let mk_debug _loc m fmt section args =
          (_loc,
            (`ExApp
               (_loc,
-                (`ExId
+                (`Id
                    (_loc,
                      (`IdAcc
                         (_loc, (`Uid (_loc, "Debug")),
@@ -43,7 +43,7 @@ let mk_debug _loc m fmt section args =
                 (`Str (_loc, section)))), (`Str (_loc, fmt)))) args in
   `ExIfe
     (_loc, (`ExApp (_loc, (mk_debug_mode _loc m), (`Str (_loc, section)))),
-      call, (`ExId (_loc, (`Uid (_loc, "()")))))
+      call, (`Id (_loc, (`Uid (_loc, "()")))))
 let apply () =
   let grammar_entry_create = Gram.mk in
   let start_debug: 'start_debug Gram.t = grammar_entry_create "start_debug"
@@ -67,15 +67,14 @@ let apply () =
                   match (__fan_2, __fan_1) with
                   | (`STR (_,fmt),`LID section) ->
                       ((match (x, (debug_mode section)) with
-                        | (None ,false ) -> `ExId (_loc, (`Uid (_loc, "()")))
+                        | (None ,false ) -> `Id (_loc, (`Uid (_loc, "()")))
                         | (Some e,false ) -> e
                         | (None ,_) -> mk_debug _loc m fmt section args
                         | (Some e,_) ->
-                            `Let_in
+                            `LetIn
                               (_loc, (`ReNil _loc),
                                 (`Bind
-                                   (_loc,
-                                     (`PaId (_loc, (`Uid (_loc, "()")))),
+                                   (_loc, (`Id (_loc, (`Uid (_loc, "()")))),
                                      (mk_debug _loc m fmt section args))), e)) : 
                       'expr )
                   | _ -> assert false)))])]);

@@ -59,15 +59,14 @@ let filter_type_defs ?qualified  () =
       function
       | `Value (_loc,_,_)|`Include (_loc,_)|`External (_loc,_,_,_)
         |`Exception (_loc,_)|`Class (_loc,_)|`ClassType (_loc,_)
-        |`Directive (_loc,_,`ExNil _)|`Module (_loc,_,_)
-        |`ModuleType (_loc,_,_)|`RecModule (_loc,_)|`Open (_loc,_) ->
-          `Nil _loc
+        |`Directive (_loc,_,`Nil _)|`Module (_loc,_,_)|`ModuleType (_loc,_,_)
+        |`RecModule (_loc,_)|`Open (_loc,_) -> `Nil _loc
       | `Type (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
           let x =
             match ((Ctyp.qualified_app_list ctyp), qualified) with
             | (Some (`IdAcc (_loc,i,_),ls),Some q) when
                 (Ident.eq i q) && (Ctyp.eq_list ls vars) ->
-                `TyDcl (_loc, name, vars, (`TyNil _loc), constraints)
+                `TyDcl (_loc, name, vars, (`Nil _loc), constraints)
             | (_,_) -> super#ctyp x in
           let y = `Type (_loc, x) in
           let () = type_defs <- `Sem (_loc, type_defs, y) in `Type (_loc, x)
@@ -147,7 +146,7 @@ let traversal () =
        | x -> super#module_expr x
      method! str_item =
        function
-       | `Type (_loc,`TyAnd (_,_,_)) as x ->
+       | `Type (_loc,`And (_,_,_)) as x ->
            (self#in_and_types;
             (let _ = super#str_item x in
              self#update_cur_module_types
@@ -188,7 +187,7 @@ let _ =
                (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                   match __fan_1 with
                   | `STR (_,plugin) ->
-                      ((plugin_add plugin; `ExNil _loc) : 'fan_quot )
+                      ((plugin_add plugin; `Nil _loc) : 'fan_quot )
                   | _ -> assert false)));
          ([`Skeyword "<++";
           `Slist1sep
@@ -203,12 +202,12 @@ let _ =
                          | _ -> assert false)))]), (`Skeyword ","))],
            (Gram.mk_action
               (fun (plugins : 'e__1 list)  _  (_loc : FanLoc.t)  ->
-                 (List.iter plugin_add plugins; `ExNil _loc : 'fan_quot ))));
+                 (List.iter plugin_add plugins; `Nil _loc : 'fan_quot ))));
          ([`Skeyword "clear"],
            (Gram.mk_action
               (fun _  (_loc : FanLoc.t)  ->
                  (Hashtbl.iter (fun _  v  -> v.activate <- false) filters;
-                  `ExNil _loc : 'fan_quot ))));
+                  `Nil _loc : 'fan_quot ))));
          ([`Skeyword "<--";
           `Slist1sep
             ((Gram.srules fan_quot
@@ -222,23 +221,23 @@ let _ =
                          | _ -> assert false)))]), (`Skeyword ","))],
            (Gram.mk_action
               (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->
-                 (List.iter plugin_remove plugins; `ExNil _loc : 'fan_quot ))));
+                 (List.iter plugin_remove plugins; `Nil _loc : 'fan_quot ))));
          ([`Skeyword "keep"; `Skeyword "on"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
-                 (keep := true; `ExNil _loc : 'fan_quot ))));
+                 (keep := true; `Nil _loc : 'fan_quot ))));
          ([`Skeyword "keep"; `Skeyword "off"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
-                 (keep := false; `ExNil _loc : 'fan_quot ))));
+                 (keep := false; `Nil _loc : 'fan_quot ))));
          ([`Skeyword "show_code"; `Skeyword "on"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
-                 (show_code := true; `ExNil _loc : 'fan_quot ))));
+                 (show_code := true; `Nil _loc : 'fan_quot ))));
          ([`Skeyword "show_code"; `Skeyword "off"],
            (Gram.mk_action
               (fun _  _  (_loc : FanLoc.t)  ->
-                 (show_code := false; `ExNil _loc : 'fan_quot ))))])]);
+                 (show_code := false; `Nil _loc : 'fan_quot ))))])]);
   Gram.extend (fan_quots : 'fan_quots Gram.t )
     (None,
       [(None, None,

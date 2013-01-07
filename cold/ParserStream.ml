@@ -104,10 +104,10 @@ let apply () =
          [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
             (Gram.mk_action
                (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (`PaId (_loc, (`Lid (_loc, i))) : 'parser_ipatt ))));
+                  (`Id (_loc, (`Lid (_loc, i))) : 'parser_ipatt ))));
          ([`Skeyword "_"],
            (Gram.mk_action
-              (fun _  (_loc : FanLoc.t)  -> (`PaAny _loc : 'parser_ipatt ))))])]);
+              (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'parser_ipatt ))))])]);
   Gram.extend (parser_case_list : 'parser_case_list Gram.t )
     (None,
       [(None, None,

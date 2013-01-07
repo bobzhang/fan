@@ -125,7 +125,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
           (AstQuotation.default := s; None)
       | `Directive (_loc,"lang_at",`ExApp (_,`Str (_,tag),`Str (_,quot))) ->
           (AstQuotation.default_at_pos tag quot; None)
-      | `Directive (_loc,"lang_clear",`ExNil _) ->
+      | `Directive (_loc,"lang_clear",`Nil _) ->
           (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
       | `Directive (_loc,"filter",`Str (_,s)) ->
           (AstFilters.use_implem_filter s; None)

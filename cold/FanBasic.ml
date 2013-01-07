@@ -4,7 +4,7 @@ open Format
 exception Unhandled of ctyp
 exception Finished of expr
 let _loc = FanLoc.ghost
-let unit_literal = `ExId (_loc, (`Uid (_loc, "()")))
+let unit_literal = `Id (_loc, (`Uid (_loc, "()")))
 let x ?(off= 0)  (i : int) =
   if off > 25
   then invalid_arg "unsupported offset in x "

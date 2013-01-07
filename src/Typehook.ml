@@ -103,7 +103,7 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
              let () =  type_defs <- {:str_item| $type_defs ; $y |} in      
              {| type $x |}  
      end
-     | {| type $ty |} -> (* `TyAnd case *) begin
+     | {| type $ty |} -> (* `And case *) begin
          let x = super#ctyp ty in
          let () = type_defs <- {:str_item| $type_defs ; $({:str_item|type $x |}) |} in
          {|type $x |} 

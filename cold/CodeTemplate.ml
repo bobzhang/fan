@@ -21,23 +21,23 @@ let base1_types =
        (`Value
           (_loc, (`ReNil _loc),
             (`Bind
-               (_loc, (`PaId (_loc, (`Lid (_loc, "pp_print_unit")))),
+               (_loc, (`Id (_loc, (`Lid (_loc, "pp_print_unit")))),
                  (`Constraint_exp
                     (_loc,
                       (`Fun
                          (_loc,
                            (`Case
-                              (_loc, (`PaId (_loc, (`Lid (_loc, "fmt")))),
-                                (`ExNil _loc),
+                              (_loc, (`Id (_loc, (`Lid (_loc, "fmt")))),
+                                (`Nil _loc),
                                 (`Fun
                                    (_loc,
                                      (`Case
-                                        (_loc, (`PaAny _loc), (`ExNil _loc),
+                                        (_loc, (`Any _loc), (`Nil _loc),
                                           (`ExApp
                                              (_loc,
                                                (`ExApp
                                                   (_loc,
-                                                    (`ExId
+                                                    (`Id
                                                        (_loc,
                                                          (`IdAcc
                                                             (_loc,
@@ -47,7 +47,7 @@ let base1_types =
                                                               (`Lid
                                                                  (_loc,
                                                                    "fprintf")))))),
-                                                    (`ExId
+                                                    (`Id
                                                        (_loc,
                                                          (`Lid (_loc, "fmt")))))),
                                                (`Str (_loc, "()")))))))))))),
@@ -65,19 +65,18 @@ let base1_types =
        (`Value
           (_loc, (`ReNil _loc),
             (`Bind
-               (_loc, (`PaId (_loc, (`Lid (_loc, "eq_unit")))),
+               (_loc, (`Id (_loc, (`Lid (_loc, "eq_unit")))),
                  (`Constraint_exp
                     (_loc,
                       (`Fun
                          (_loc,
                            (`Case
-                              (_loc, (`PaAny _loc), (`ExNil _loc),
+                              (_loc, (`Any _loc), (`Nil _loc),
                                 (`Fun
                                    (_loc,
                                      (`Case
-                                        (_loc, (`PaAny _loc), (`ExNil _loc),
-                                          (`ExId
-                                             (_loc, (`Lid (_loc, "true")))))))))))),
+                                        (_loc, (`Any _loc), (`Nil _loc),
+                                          (`Id (_loc, (`Lid (_loc, "true")))))))))))),
                       (`TyArr
                          (_loc, (`TyId (_loc, (`Lid (_loc, "unit")))),
                            (`TyArr
@@ -107,37 +106,37 @@ let print_base1 =
                 `Value
                   (_loc, (`ReNil _loc),
                     (`Bind
-                       (_loc, (`PaId (_loc, (`Lid (_loc, name)))),
-                         (`ExId (_loc, (`Lid (_loc, name)))))))
+                       (_loc, (`Id (_loc, (`Lid (_loc, name)))),
+                         (`Id (_loc, (`Lid (_loc, name)))))))
             | `Custom s -> s
             | `Fmt c ->
                 `Value
                   (_loc, (`ReNil _loc),
                     (`Bind
-                       (_loc, (`PaId (_loc, (`Lid (_loc, name)))),
+                       (_loc, (`Id (_loc, (`Lid (_loc, name)))),
                          (`Constraint_exp
                             (_loc,
                               (`Fun
                                  (_loc,
                                    (`Case
                                       (_loc,
-                                        (`PaId (_loc, (`Lid (_loc, "fmt")))),
-                                        (`ExNil _loc),
+                                        (`Id (_loc, (`Lid (_loc, "fmt")))),
+                                        (`Nil _loc),
                                         (`Fun
                                            (_loc,
                                              (`Case
                                                 (_loc,
-                                                  (`PaId
+                                                  (`Id
                                                      (_loc,
                                                        (`Lid (_loc, "a")))),
-                                                  (`ExNil _loc),
+                                                  (`Nil _loc),
                                                   (`ExApp
                                                      (_loc,
                                                        (`ExApp
                                                           (_loc,
                                                             (`ExApp
                                                                (_loc,
-                                                                 (`ExId
+                                                                 (`Id
                                                                     (_loc,
                                                                     (`IdAcc
                                                                     (_loc,
@@ -147,13 +146,13 @@ let print_base1 =
                                                                     (`Lid
                                                                     (_loc,
                                                                     "fprintf")))))),
-                                                                 (`ExId
+                                                                 (`Id
                                                                     (_loc,
                                                                     (`Lid
                                                                     (_loc,
                                                                     "fmt")))))),
                                                             (`Str (_loc, c)))),
-                                                       (`ExId
+                                                       (`Id
                                                           (_loc,
                                                             (`Lid (_loc, "a")))))))))))))),
                               ty))))))) in
@@ -174,9 +173,8 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                 (`Fun
                    (_loc,
                      (`Case
-                        (_loc, (`PaId (_loc, (`Lid (_loc, "x")))),
-                          (`ExNil _loc), (`ExId (_loc, (`Lid (_loc, "x")))))))),
-                ty))) in
+                        (_loc, (`Id (_loc, (`Lid (_loc, "x")))), (`Nil _loc),
+                          (`Id (_loc, (`Lid (_loc, "x")))))))), ty))) in
   let v2 =
     ty_names |>
       (List.map
@@ -192,13 +190,12 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                 (`Fun
                    (_loc,
                      (`Case
-                        (_loc, (`PaId (_loc, (`Lid (_loc, "x")))),
-                          (`ExNil _loc),
+                        (_loc, (`Id (_loc, (`Lid (_loc, "x")))), (`Nil _loc),
                           (`Fun
                              (_loc,
                                (`Case
-                                  (_loc, (`PaAny _loc), (`ExNil _loc),
-                                    (`ExId (_loc, (`Lid (_loc, "x")))))))))))),
+                                  (_loc, (`Any _loc), (`Nil _loc),
+                                    (`Id (_loc, (`Lid (_loc, "x")))))))))))),
                 ty))) in
   let v3 =
     ty_names |>
@@ -213,8 +210,8 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                 (`Fun
                    (_loc,
                      (`Case
-                        (_loc, (`PaAny _loc), (`ExNil _loc),
-                          (`ExId (_loc, (`Lid (_loc, "self")))))))), ty))) in
+                        (_loc, (`Any _loc), (`Nil _loc),
+                          (`Id (_loc, (`Lid (_loc, "self")))))))), ty))) in
   let v4 =
     ty_names |>
       (List.map
@@ -230,12 +227,12 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                 (`Fun
                    (_loc,
                      (`Case
-                        (_loc, (`PaAny _loc), (`ExNil _loc),
+                        (_loc, (`Any _loc), (`Nil _loc),
                           (`Fun
                              (_loc,
                                (`Case
-                                  (_loc, (`PaAny _loc), (`ExNil _loc),
-                                    (`ExId (_loc, (`Lid (_loc, "self")))))))))))),
+                                  (_loc, (`Any _loc), (`Nil _loc),
+                                    (`Id (_loc, (`Lid (_loc, "self")))))))))))),
                 ty))) in
   let v5 =
     ty_names |>
@@ -243,8 +240,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
          (fun x  ->
             `CrMth
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
-                (`ExId (_loc, (`Lid (_loc, ("pp_print_" ^ x))))),
-                (`TyNil _loc)))) in
+                (`Id (_loc, (`Lid (_loc, ("pp_print_" ^ x))))), (`Nil _loc)))) in
   ((FanAst.crSem_of_list v1), (FanAst.crSem_of_list v2),
     (FanAst.crSem_of_list v3), (FanAst.crSem_of_list v4),
     (FanAst.crSem_of_list v5))
@@ -265,9 +261,9 @@ let eq_base1 =
                 `Value
                   (_loc, (`ReNil _loc),
                     (`Bind
-                       (_loc, (`PaId (_loc, (`Lid (_loc, name)))),
+                       (_loc, (`Id (_loc, (`Lid (_loc, name)))),
                          (`Constraint_exp
-                            (_loc, (`ExId (_loc, (`Lid (_loc, "=")))), ty)))))
+                            (_loc, (`Id (_loc, (`Lid (_loc, "=")))), ty)))))
             | `Custom s -> s)) in
   FanAst.stSem_of_list items
 let _ =

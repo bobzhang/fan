@@ -39,25 +39,23 @@ let retype_rule_list_without_patterns _loc rl =
            action = None  } ->
            {
              prod =
-               [{ s with pattern = (Some (`PaId (_loc, (`Lid (_loc, "x")))))
-                }];
+               [{ s with pattern = (Some (`Id (_loc, (`Lid (_loc, "x"))))) }];
              action =
                (Some
                   (`ExApp
                      (_loc,
-                       (`ExId
+                       (`Id
                           (_loc,
                             (`IdAcc
                                (_loc, (gm ()),
                                  (`Lid (_loc, "string_of_token")))))),
-                       (`ExId (_loc, (`Lid (_loc, "x")))))))
+                       (`Id (_loc, (`Lid (_loc, "x")))))))
            }
        | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
            {
              prod =
-               [{ s with pattern = (Some (`PaId (_loc, (`Lid (_loc, "x")))))
-                }];
-             action = (Some (`ExId (_loc, (`Lid (_loc, "x")))))
+               [{ s with pattern = (Some (`Id (_loc, (`Lid (_loc, "x"))))) }];
+             action = (Some (`Id (_loc, (`Lid (_loc, "x")))))
            }
        | { prod = []; action = Some _ } as r -> r
        | _ -> raise Exit) rl
@@ -109,7 +107,7 @@ let rec make_expr entry tvar =
                        (_loc, el,
                          (`ExApp
                             (_loc,
-                              (`ExId
+                              (`Id
                                  (_loc,
                                    (`IdAcc
                                       (_loc, (gm ()),
@@ -147,7 +145,7 @@ let rec make_expr entry tvar =
                        (_loc,
                          (`ExApp
                             (_loc,
-                              (`ExId
+                              (`Id
                                  (_loc,
                                    (`IdAcc
                                       (_loc, (gm ()), (`Lid (_loc, "obj")))))),
@@ -170,7 +168,7 @@ let rec make_expr entry tvar =
                (_loc, (`ExVrn (_loc, "Snterm")),
                  (`ExApp
                     (_loc,
-                      (`ExId
+                      (`Id
                          (_loc,
                            (`IdAcc (_loc, (gm ()), (`Lid (_loc, "obj")))))),
                       (`Constraint_exp
@@ -193,8 +191,7 @@ let rec make_expr entry tvar =
         (_loc,
           (`ExApp
              (_loc,
-               (`ExId
-                  (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "srules")))))),
+               (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "srules")))))),
                (entry.expr))), (make_expr_rules _loc entry rl ""))
   | `TXtok (_loc,match_fun,attr,descr) ->
       `ExApp
@@ -217,11 +214,11 @@ and make_expr_rules _loc n rl tvar =
             Expr.mklist _loc (List.map (fun t  -> make_expr n tvar t) sl) in
           `ExTup (_loc, (`ExCom (_loc, sl, action)))) rl)
 let text_of_action _loc psl rtvar act tvar =
-  let locid = `PaId (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
+  let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
   let act =
     match act with
     | Some act -> act
-    | None  -> `ExId (_loc, (`Uid (_loc, "()"))) in
+    | None  -> `Id (_loc, (`Uid (_loc, "()"))) in
   let (_,tok_match_pl) =
     List.fold_lefti
       (fun i  tok_match_pl  x  ->
@@ -230,9 +227,9 @@ let text_of_action _loc psl rtvar act tvar =
              let id = prefix ^ (string_of_int i) in
              Some
                ((match tok_match_pl with
-                 | None  -> ((`ExId (_loc, (`Lid (_loc, id)))), p)
+                 | None  -> ((`Id (_loc, (`Lid (_loc, id)))), p)
                  | Some (oe,op) ->
-                     ((`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, id)))), oe)),
+                     ((`ExCom (_loc, (`Id (_loc, (`Lid (_loc, id)))), oe)),
                        (`PaCom (_loc, p, op)))))
          | _ -> tok_match_pl) None psl in
   let e =
@@ -247,14 +244,14 @@ let text_of_action _loc psl rtvar act tvar =
                  (_loc,
                    (`Case
                       (_loc, (`PaTup (_loc, (`PaCom (_loc, p1, p2)))),
-                        (`ExNil _loc), e1)),
-                   (`Case (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc))))))
+                        (`Nil _loc), e1)),
+                   (`Case (_loc, (`Any _loc), (`Nil _loc), (`ExAsf _loc))))))
       | Some (tok,match_) ->
           `Match
             (_loc, tok,
               (`McOr
-                 (_loc, (`Case (_loc, match_, (`ExNil _loc), e1)),
-                   (`Case (_loc, (`PaAny _loc), (`ExNil _loc), (`ExAsf _loc)))))) in
+                 (_loc, (`Case (_loc, match_, (`Nil _loc), e1)),
+                   (`Case (_loc, (`Any _loc), (`Nil _loc), (`ExAsf _loc)))))) in
     `Fun
       (_loc,
         (`Case
@@ -265,37 +262,37 @@ let text_of_action _loc psl rtvar act tvar =
                      (_loc,
                        (`IdAcc
                           (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "t")))))))),
-             (`ExNil _loc), e2))) in
+             (`Nil _loc), e2))) in
   let (_,txt) =
     List.fold_lefti
       (fun i  txt  s  ->
          match s.pattern with
-         | None |Some (`PaAny _) ->
-             `Fun (_loc, (`Case (_loc, (`PaAny _loc), (`ExNil _loc), txt)))
-         | Some (`PaAli (_loc,`PaApp (_,_,`PaTup (_,`PaAny _)),p)) ->
+         | None |Some (`Any _) ->
+             `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), txt)))
+         | Some (`Alias (_loc,`PaApp (_,_,`PaTup (_,`Any _)),p)) ->
              let p = make_ctyp_patt s.styp tvar p in
-             `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), txt)))
+             `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
          | Some p when FanAst.is_irrefut_patt p ->
              let p = make_ctyp_patt s.styp tvar p in
-             `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), txt)))
+             `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
          | Some _ ->
              let p =
                make_ctyp_patt s.styp tvar
-                 (`PaId (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))))) in
-             `Fun (_loc, (`Case (_loc, p, (`ExNil _loc), txt)))) e psl in
+                 (`Id (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))))) in
+             `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))) e psl in
   let txt =
     if meta_action.contents
     then
       `ExApp
         (_loc,
-          (`ExId
+          (`Id
              (_loc,
                (`IdAcc (_loc, (`Uid (_loc, "Obj")), (`Lid (_loc, "magic")))))),
           (MetaAst.Expr.meta_expr _loc txt))
     else txt in
   `ExApp
     (_loc,
-      (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
+      (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
       txt)
 let mk_srules loc t rl tvar =
   List.map
@@ -309,12 +306,12 @@ let expr_of_delete_rule _loc n sl =
          `ExApp
            (_loc,
              (`ExApp
-                (_loc, (`ExId (_loc, (`Uid (_loc, "::")))),
+                (_loc, (`Id (_loc, (`Uid (_loc, "::")))),
                   (make_expr n "" s.text))), e)) sl
-      (`ExId (_loc, (`Uid (_loc, "[]")))) in
+      (`Id (_loc, (`Uid (_loc, "[]")))) in
   ((n.expr), sl)
 let mk_name _loc i =
-  { expr = (`ExId (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
+  { expr = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
 let mk_slist loc min sep symb = `TXlist (loc, min, symb, sep)
 let text_of_entry _loc e =
   let ent =
@@ -328,8 +325,8 @@ let text_of_entry _loc e =
              (`TyQuo (_loc, (x.tvar)))))) in
   let pos =
     match e.pos with
-    | Some pos -> `ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))), pos)
-    | None  -> `ExId (_loc, (`Uid (_loc, "None"))) in
+    | Some pos -> `ExApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), pos)
+    | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
   let txt =
     List.fold_right
       (fun level  txt  ->
@@ -337,45 +334,44 @@ let text_of_entry _loc e =
            match level.label with
            | Some lab ->
                `ExApp
-                 (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))),
+                 (_loc, (`Id (_loc, (`Uid (_loc, "Some")))),
                    (`Str (_loc, lab)))
-           | None  -> `ExId (_loc, (`Uid (_loc, "None"))) in
+           | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
          let ass =
            match level.assoc with
            | Some ass ->
-               `ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "Some")))), ass)
-           | None  -> `ExId (_loc, (`Uid (_loc, "None"))) in
+               `ExApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
+           | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
          let txt =
            let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
            let e = make_expr_rules _loc e.name rl (e.name).tvar in
            `ExApp
              (_loc,
                (`ExApp
-                  (_loc, (`ExId (_loc, (`Uid (_loc, "::")))),
+                  (_loc, (`Id (_loc, (`Uid (_loc, "::")))),
                     (`ExTup
                        (_loc, (`ExCom (_loc, lab, (`ExCom (_loc, ass, e)))))))),
                txt) in
-         txt) e.levels (`ExId (_loc, (`Uid (_loc, "[]")))) in
+         txt) e.levels (`Id (_loc, (`Uid (_loc, "[]")))) in
   (ent, pos, txt)
 let let_in_of_extend _loc gram gl default =
   let entry_mk =
     match gram with
     | Some g ->
         `ExApp
-          (_loc,
-            (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk")))))),
-            (`ExId (_loc, g)))
-    | None  -> `ExId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
+          (_loc, (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk")))))),
+            (`Id (_loc, g)))
+    | None  -> `Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
   let local_binding_of_name =
     function
-    | { expr = `ExId (_,`Lid (_,i)); tvar = x; loc = _loc } ->
+    | { expr = `Id (_,`Lid (_,i)); tvar = x; loc = _loc } ->
         `Bind
-          (_loc, (`PaId (_loc, (`Lid (_loc, i)))),
+          (_loc, (`Id (_loc, (`Lid (_loc, i)))),
             (`Constraint_exp
                (_loc,
                  (`ExApp
                     (_loc,
-                      (`ExId (_loc, (`Lid (_loc, "grammar_entry_create")))),
+                      (`Id (_loc, (`Lid (_loc, "grammar_entry_create")))),
                       (`Str (_loc, i)))),
                  (`TyApp
                     (_loc,
@@ -394,13 +390,12 @@ let let_in_of_extend _loc gram gl default =
                (fun name  acc  ->
                   `And (_loc, acc, (local_binding_of_name name))) xs
                (local_binding_of_name x) in
-           `Let_in
+           `LetIn
              (_loc, (`ReNil _loc),
                (`Bind
-                  (_loc,
-                    (`PaId (_loc, (`Lid (_loc, "grammar_entry_create")))),
+                  (_loc, (`Id (_loc, (`Lid (_loc, "grammar_entry_create")))),
                     entry_mk)),
-               (`Let_in (_loc, (`ReNil _loc), locals, default))))
+               (`LetIn (_loc, (`ReNil _loc), locals, default))))
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el =
@@ -411,17 +406,16 @@ let text_of_functorial_extend _loc gram locals el =
              (_loc,
                (`ExApp
                   (_loc,
-                    (`ExId
+                    (`Id
                        (_loc,
                          (`IdAcc (_loc, (gm ()), (`Lid (_loc, "extend")))))),
                     ent)), (`ExTup (_loc, (`ExCom (_loc, pos, txt)))))) el in
     match el with
-    | [] -> `ExId (_loc, (`Uid (_loc, "()")))
+    | [] -> `Id (_loc, (`Uid (_loc, "()")))
     | e::[] -> e
     | e::el ->
         `Sequence
-          (_loc,
-            (List.fold_left (fun acc  x  -> `ExSem (_loc, acc, x)) e el)) in
+          (_loc, (List.fold_left (fun acc  x  -> `Sem (_loc, acc, x)) e el)) in
   let_in_of_extend _loc gram locals args
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
@@ -433,19 +427,19 @@ let mk_tok _loc ?restrict  ~pattern  styp =
           `Fun
             (_loc,
               (`Case
-                 (_loc, no_variable, (`ExNil _loc),
-                   (`ExId (_loc, (`Lid (_loc, "true")))))))
+                 (_loc, no_variable, (`Nil _loc),
+                   (`Id (_loc, (`Lid (_loc, "true")))))))
         else
           `Fun
             (_loc,
               (`McOr
                  (_loc,
                    (`Case
-                      (_loc, no_variable, (`ExNil _loc),
-                        (`ExId (_loc, (`Lid (_loc, "true")))))),
+                      (_loc, no_variable, (`Nil _loc),
+                        (`Id (_loc, (`Lid (_loc, "true")))))),
                    (`Case
-                      (_loc, (`PaAny _loc), (`ExNil _loc),
-                        (`ExId (_loc, (`Lid (_loc, "false"))))))))) in
+                      (_loc, (`Any _loc), (`Nil _loc),
+                        (`Id (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt no_variable in
       let text = `TXtok (_loc, match_fun, "Normal", descr) in
       { text; styp; pattern = (Some pattern) }
@@ -458,10 +452,10 @@ let mk_tok _loc ?restrict  ~pattern  styp =
                (_loc,
                  (`Case
                     (_loc, pattern, restrict,
-                      (`ExId (_loc, (`Lid (_loc, "true")))))),
+                      (`Id (_loc, (`Lid (_loc, "true")))))),
                  (`Case
-                    (_loc, (`PaAny _loc), (`ExNil _loc),
-                      (`ExId (_loc, (`Lid (_loc, "false"))))))))) in
+                    (_loc, (`Any _loc), (`Nil _loc),
+                      (`Id (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt pattern in
       let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
       { text; styp; pattern = (Some p') }
@@ -477,7 +471,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
       (_loc,
         (`ExApp
            (_loc,
-             (`ExId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, foldfun)))))),
+             (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, foldfun)))))),
              f)), e) in
   let t =
     `STapp
@@ -492,7 +486,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
                           (`IdAcc
                              (_loc, (gm ()),
                                (`Lid (_loc, ("fold" ^ suffix))))))),
-                     (`TyAny _loc)))), (s.styp))), styp) in
+                     (`Any _loc)))), (s.styp))), styp) in
   let text =
     `TXmeta
       (_loc, ns,

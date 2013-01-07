@@ -6,8 +6,8 @@ class ['accu] c_fold_pattern_vars f init =
     method acc : 'accu= acc
     method! patt =
       function
-      | `PaId (_loc,`Lid (_,s))|`PaLab (_loc,s,`PaNil _)
-        |`PaOlb (_loc,s,`PaNil _) -> {<acc = f s acc>}
+      | `Id (_loc,`Lid (_,s))|`PaLab (_loc,s,`Nil _)|`PaOlb (_loc,s,`Nil _)
+          -> {<acc = f s acc>}
       | p -> super#patt p
   end
 let fold_pattern_vars f p init =
@@ -32,16 +32,15 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
     method add_binding bi = {<env = fold_binding_vars SSet.add bi env>}
     method! expr =
       function
-      | `ExId (_loc,`Lid (_,s))|`Label (_loc,s,`ExNil _)
-        |`Optional_label (_loc,s,`ExNil _) ->
-          if SSet.mem s env then o else {<free = f s free>}
-      | `Let_in (_loc,`ReNil _,bi,e) ->
+      | `Id (_loc,`Lid (_,s))|`Label (_loc,s,`Nil _)|`OptLabl (_loc,s,`Nil _)
+          -> if SSet.mem s env then o else {<free = f s free>}
+      | `LetIn (_loc,`ReNil _,bi,e) ->
           (((o#add_binding bi)#expr e)#set_env env)#binding bi
-      | `Let_in (_loc,`Recursive _,bi,e) ->
+      | `LetIn (_loc,`Recursive _,bi,e) ->
           (((o#add_binding bi)#expr e)#binding bi)#set_env env
-      | `For_loop (_loc,s,e1,e2,_,e3) ->
+      | `For (_loc,s,e1,e2,_,e3) ->
           ((((o#expr e1)#expr e2)#add_atom s)#expr e3)#set_env env
-      | `ExId (_loc,_)|`New (_loc,_) -> o
+      | `Id (_loc,_)|`New (_loc,_) -> o
       | `Obj (_loc,p,cst) -> ((o#add_patt p)#class_str_item cst)#set_env env
       | e -> super#expr e
     method! match_case =
@@ -62,13 +61,12 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
           (((o#binding bi)#add_binding bi)#class_expr ce)#set_env env
       | `CeLet (_loc,`Recursive _,bi,ce) ->
           (((o#add_binding bi)#binding bi)#class_expr ce)#set_env env
-      | `CeStr (_loc,p,cst) ->
-          ((o#add_patt p)#class_str_item cst)#set_env env
+      | `Obj (_loc,p,cst) -> ((o#add_patt p)#class_str_item cst)#set_env env
       | ce -> super#class_expr ce
     method! class_str_item =
       function
-      | `CrInh (_loc,_,_,"") as cst -> super#class_str_item cst
-      | `CrInh (_loc,_,ce,s) -> (o#class_expr ce)#add_atom s
+      | `Inherit (_loc,_,_,"") as cst -> super#class_str_item cst
+      | `Inherit (_loc,_,ce,s) -> (o#class_expr ce)#add_atom s
       | `CrVal (_loc,s,_,_,e) -> (o#expr e)#add_atom s
       | `CrVvr (_loc,s,_,t) -> (o#ctyp t)#add_atom s
       | cst -> super#class_str_item cst

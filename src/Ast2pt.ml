@@ -121,13 +121,13 @@ let rec ctyp = fun (* ctyp -> core_type *)
   [ `TyId (loc, i) ->
     let li = long_type_ident i in
     mktyp loc (Ptyp_constr li [])
-  | `TyAli (loc, t1, t2) ->
+  | `Alias (loc, t1, t2) ->
       let (t, i) =  match (t1, t2) with
       [ (t, `TyQuo (_, s)) -> (t, s)
       | (`TyQuo (_, s), t) -> (t, s)
       | _ -> error loc "invalid alias type" ] in
       mktyp loc (Ptyp_alias (ctyp t) i)
-  | `TyAny loc -> mktyp loc Ptyp_any
+  | `Any loc -> mktyp loc Ptyp_any
   | `TyApp (loc, _, _) as f ->
       let (f, al) = Ctyp.view_app [] f in
       let (is_cls, li) = ctyp_long_id f in
@@ -160,19 +160,19 @@ let rec ctyp = fun (* ctyp -> core_type *)
   | `TyMan (loc, _, _) -> error loc "manifest type not allowed here"
   | `TyOlb (loc,_,_) -> error loc "labelled type not allowed here"
   | `TyRec (loc,_) -> error loc "record type not allowed here"
-  | `TySum (loc,_) -> error loc "sum type not allowed here"
-  | `TyPrv (loc,_) -> error loc "private type not allowed here"
-  | `TyMut (loc,_) -> error loc "mutable type not allowed here"
+  | `Sum (loc,_) -> error loc "sum type not allowed here"
+  | `Private (loc,_) -> error loc "private type not allowed here"
+  | `Mutable (loc,_) -> error loc "mutable type not allowed here"
   | `TyOr (loc,_,_) -> error loc "type1 | type2 not allowed here"
-  | `TyAnd (loc,_,_) -> error loc "type1 and type2 not allowed here"
-  | `TyOf (loc,_,_) -> error loc "type1 of type2 not allowed here"
+  | `And (loc,_,_) -> error loc "type1 and type2 not allowed here"
+  | `Of (loc,_,_) -> error loc "type1 of type2 not allowed here"
   | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
   | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | `TyOfAmp (_, _, _) |`TyAmp (_, _, _) |`TySta (_, _, _) |
-    `TyCom (_, _, _) |`TyVrn (_, _) |`TyQuM (_, _) |`TyQuP (_, _) |`TyDcl (_, _, _, _, _) |
+  | `TyOfAmp (_, _, _) |`TyAmp (_, _, _) |`Sta (_, _, _) |
+    `Com (_, _, _) |`TyVrn (_, _) |`TyQuM (_, _) |`TyQuP (_, _) |`TyDcl (_, _, _, _, _) |
     `TyAnP _ | `TyAnM _ | `TyTypePol (_, _, _) |
-    `TyObj (_, _, (`Ant _)) | `TyNil _ | `TyTup (_,_) ->
+    `TyObj (_, _, (`Ant _)) | `Nil _ | `Tup (_,_) ->
       assert false ]
 and row_field = fun (* ctyp -> row_field list*)
   [ {:ctyp||} -> []
@@ -290,7 +290,7 @@ let rec optional_type_parameters t acc =  match t with
   | {:ctyp@loc| -'$s |} -> [(Some (with_loc s loc), (false, true)) :: acc]
   | `TyAnM _loc -> [(None, (false, true)) :: acc]
   | {:ctyp@loc| '$s |} -> [(Some (with_loc s loc), (false, false)) :: acc]
-  | `TyAny _loc -> [(None, (false, false)) :: acc]
+  | `Any _loc -> [(None, (false, false)) :: acc]
   | _ -> assert false ];
 
 let rec class_parameters t acc = match t with
@@ -361,7 +361,7 @@ let rec patt = fun
       let p = Ppat_construct (long_uident  i)
           None false 
       in mkpat loc p
-  | `PaAli (loc, p1, p2) ->
+  | `Alias (loc, p1, p2) ->
       let (p, i) =
         match (p1, p2) with
         [ (p, {:patt| $(id:{:ident@sloc| $lid:s |}) |}) -> (p, with_loc s sloc)
@@ -369,7 +369,7 @@ let rec patt = fun
         | _ -> error loc "invalid alias pattern" ] in
        mkpat loc (Ppat_alias (patt p) i)
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | `PaAny loc -> mkpat loc Ppat_any
+  | `Any loc -> mkpat loc Ppat_any
   | {:patt@loc| $(id:{:ident@sloc| $uid:s |}) $(tup:{:patt@loc_any| _ |}) |} ->
       mkpat loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
@@ -391,7 +391,7 @@ let rec patt = fun
      | _ ->
          error (loc_of_patt f)
            "this is not a constructor, it cannot be applied in a pattern" ]
-     | `PaArr (loc,p) -> mkpat loc (Ppat_array (List.map patt (list_of_patt p [])))
+     | `Array (loc,p) -> mkpat loc (Ppat_array (List.map patt (list_of_patt p [])))
      | `Chr (loc,s) ->
          mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
      | `Int (loc,s) ->
@@ -438,7 +438,7 @@ let rec patt = fun
          | `PaVrn (loc,s) -> mkpat loc (Ppat_variant s None)
          | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
          | `PaMod (loc,m) -> mkpat loc (Ppat_unpack (with_loc m loc))
-         | `PaEq (_, _, _) | `PaSem (_, _, _) | `PaCom (_, _, _) | `PaNil _ as p ->
+         | `PaEq (_, _, _) | `Sem (_, _, _) | `PaCom (_, _, _) | `Nil _ as p ->
              error (loc_of_patt p) "invalid pattern" ]
 and mklabpat = fun (* patt -> Longident.t loc * pattern*)
   [ {:patt| $i = $p |} -> (ident  i, patt p)
@@ -456,7 +456,7 @@ let override_flag loc = fun
 
 (*
   {[
-  expr (`ExId (_loc, ( (`IdAcc (_loc, `Uid (_loc, "U"), `Lid(_loc,"g"))) )));;
+  expr (`Id (_loc, ( (`IdAcc (_loc, `Uid (_loc, "U"), `Lid(_loc,"g"))) )));;
   - : Parsetree.expression =
   {Parsetree.pexp_desc =
   Parsetree.Pexp_ident
@@ -521,7 +521,7 @@ let rec expr = fun (* expr -> expression*)
           mkexp loc
             (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "get")))
                [("", expr e1); ("", expr e2)])
-      | `ExArr (loc,e) -> mkexp loc (Pexp_array (List.map expr (list_of_expr e [])))
+      | `Array (loc,e) -> mkexp loc (Pexp_array (List.map expr (list_of_expr e [])))
       | `ExAsf loc -> mkexp loc Pexp_assertfalse
       | `ExAss (loc,e,v) ->
           let e =
@@ -537,9 +537,9 @@ let rec expr = fun (* expr -> expression*)
                     Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))
                       [("", expr e1); ("", expr e2); ("", expr v)]
                 | {:expr@lloc| $lid:lab |}  ->
-                    (* FIXME `ExId (lloc, `Lid (_, lab)) vs `ExId(_,`Lid(lloc,lab)) *)
+                    (* FIXME `Id (lloc, `Lid (_, lab)) vs `Id(_,`Lid(lloc,lab)) *)
                     Pexp_setinstvar (with_loc lab lloc) (expr v)
-                | `String_dot (loc, e1, e2) ->
+                | `StringDot (loc, e1, e2) ->
                     Pexp_apply
                       (mkexp loc (Pexp_ident (array_function loc "String" "set")))
                       [("", expr e1); ("", expr e2); ("", expr v)]
@@ -555,7 +555,7 @@ let rec expr = fun (* expr -> expression*)
             | t -> Some (ctyp t) ] in
           mkexp loc (Pexp_constraint (expr e) t1 (Some (ctyp t2)))
       | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
-      | `For_loop (loc, i, e1, e2, df, el) ->
+      | `For (loc, i, e1, e2, df, el) ->
           let e3 = `Sequence loc el in
           mkexp loc (Pexp_for (with_loc i loc) (expr e1) (expr e2) (mkdirection df) (expr e3))
       | {:expr@loc| fun [ $(pat:`PaLab (_, lab, po)) when $w -> $e ] |} ->
@@ -591,9 +591,9 @@ let rec expr = fun (* expr -> expression*)
           ] in mkexp loc (Pexp_constant (Const_nativeint nati))
       | `Label (loc,_,_) -> error loc "labeled expression not allowed here"
       | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (expr e))
-      | `Let_in (loc,rf,bi,e) ->
+      | `LetIn (loc,rf,bi,e) ->
           mkexp loc (Pexp_let (mkrf rf) (binding bi []) (expr e))
-      | `Let_module (loc,i,me,e) -> mkexp loc (Pexp_letmodule (with_loc i loc) (module_expr me) (expr e))
+      | `LetModule (loc,i,me,e) -> mkexp loc (Pexp_letmodule (with_loc i loc) (module_expr me) (expr e))
       | `Match (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a []))
       | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
     | `Obj (loc,po,cfl) ->
@@ -603,8 +603,8 @@ let rec expr = fun (* expr -> expression*)
           | p -> p ] in
         let cil = class_str_item cfl [] in
         mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
-    | `Optional_label (loc,_,_) -> error loc "labeled expression not allowed here"
-    | `Override_instance (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
+    | `OptLabl (loc,_,_) -> error loc "labeled expression not allowed here"
+    | `OvrInst (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
     | `Record (loc,lel,eo) ->
         match lel with
         [ {:rec_binding||} -> error loc "empty record"
@@ -623,7 +623,7 @@ let rec expr = fun (* expr -> expression*)
                   mkexp _loc (Pexp_sequence (expr e) (loop el)) ] in
             loop (list_of_expr e [])
         | `Send (loc,e,s) -> mkexp loc (Pexp_send (expr e) s)
-        | `String_dot (loc, e1, e2) ->
+        | `StringDot (loc, e1, e2) ->
             mkexp loc
               (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "String" "get")))
                  [("", expr e1); ("", expr e2)])
@@ -655,12 +655,12 @@ let rec expr = fun (* expr -> expression*)
                                         Some (mktyp loc (Ptyp_package (package_type pt))), None))
         | {:expr@loc| (module $me) |} ->
             mkexp loc (Pexp_pack (module_expr me))
-        | `Local_type_fun (loc,i,e) ->
+        | `LocalTypeFun (loc,i,e) ->
             mkexp loc (Pexp_newtype i (expr e))
         | {:expr@loc| $_,$_ |} -> error loc "expr, expr: not allowed here"
         | {:expr@loc| $_;$_ |} ->
             error loc "expr; expr: not allowed here, use begin ... end or [|...|] to surround them" (* FIXME *)
-        | `ExId (_, _) | `ExNil _ as e -> error (loc_of_expr e) "invalid expr" ]
+        | `Id (_, _) | `Nil _ as e -> error (loc_of_expr e) "invalid expr" ]
 and patt_of_lab _loc lab =  fun (* loc -> string -> patt -> pattern *)
   [ {:patt||} -> patt {:patt| $lid:lab |}
   | p -> patt p ]
@@ -669,7 +669,7 @@ and expr_of_lab _loc lab = fun (* loc -> string -> expr -> expression*)
   | e -> expr e ]
 and label_expr = fun (* expr -> label * expression *)
   [ `Label (loc,lab,eo) -> (lab, expr_of_lab loc lab eo)
-  | `Optional_label (loc,lab,eo) -> ("?" ^ lab, expr_of_lab loc lab eo)
+  | `OptLabl (loc,lab,eo) -> ("?" ^ lab, expr_of_lab loc lab eo)
   | e -> ("", expr e) ]
 and binding x acc =  match x with (* binding -> (pattern * expression) list ->  (pattern * expression) list *)
   [ {:binding| $x and $y |} ->
@@ -883,7 +883,7 @@ and class_type = fun (* class_type -> class_type *)
     
 and class_info_class_expr ci =
     match ci with (* class_expr -> class_declaration*)
-    [ `CeEq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
+    [ `Eq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
       let (loc_params, (params, variance)) =
         match params with
         [ {:ctyp||} -> (loc, ([], []))
@@ -914,13 +914,13 @@ and class_info_class_type ci =
         "bad class/class type declaration/definition" ]
 and class_sig_item c l = match c with (* class_sig_item -> class_type_field list -> class_type_field list *)
   [ {:class_sig_item||} -> l
-  | `CgCtr (loc, t1, t2) ->
+  | `Eq (loc, t1, t2) ->
       [mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l]
   | {:class_sig_item| $csg1; $csg2 |} ->
       class_sig_item csg1 (class_sig_item csg2 l)
-  | `CgInh (loc,ct) ->
+  | `Inherit (loc,ct) ->
       [mkctf loc (Pctf_inher (class_type ct)) :: l]
-  | `CgMth (loc,s,pf,t) ->
+  | `Method (loc,s,pf,t) ->
       [mkctf loc (Pctf_meth (s, mkprivate pf, mkpolytype (ctyp t))) :: l]
   | `CgVal (loc, s, b, v, t) ->
       [mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l]
@@ -948,7 +948,7 @@ and class_expr = fun (* class_expr -> class_expr *)
   | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (patt p) (class_expr ce))
   | `CeLet (loc, rf, bi, ce) ->
       mkcl loc (Pcl_let (mkrf rf) (binding bi []) (class_expr ce))
-  | `CeStr (loc,po,cfl) ->
+  | `Obj (loc,po,cfl) ->
       let p = match po with
           [ {:patt||} -> {:patt@loc| _ |}
           | p -> p ] in
@@ -961,18 +961,18 @@ and class_expr = fun (* class_expr -> class_expr *)
       mkcl loc (Pcl_constraint (class_expr ce) (class_type ct))
   | `CeCon (loc,_,_,_) ->
       error loc "invalid virtual class inside a class expression"
-  | `Ant (_, _) | `CeEq (_, _, _) | `CeAnd (_, _, _) | `CeNil _ -> assert false ]
+  | `Ant (_, _) | `Eq (_, _, _) | `And (_, _, _) | `Nil _ -> assert false ]
 and class_str_item c l =
     match c with (*class_str_item -> class_field list -> class_field list*)
-  [ `CrNil _ -> l
-  | `CrCtr (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
+  [ `Nil _ -> l
+  | `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
   | {:class_str_item| $cst1; $cst2 |} ->
       class_str_item cst1 (class_str_item cst2 l)
-  | `CrInh (loc, ov, ce, pb)
+  | `Inherit (loc, ov, ce, pb)
     ->
       let opb = if pb = "" then None else Some pb in
       [mkcf loc (Pcf_inher (override_flag loc ov) (class_expr ce) opb) :: l]
-  | `CrIni (loc,e) -> [mkcf loc (Pcf_init (expr e)) :: l]
+  | `Initializer (loc,e) -> [mkcf loc (Pcf_init (expr e)) :: l]
   | `CrMth (loc, s, ov, pf, e, t) ->
       let t = match t with
       [ {:ctyp||} -> None

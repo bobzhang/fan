@@ -10,7 +10,7 @@ let rec to_var_list =
   | `TyQuo (_loc,s) -> [s]
   | _ -> assert false
 let list_of_opt ot acc =
-  match ot with | `TyNil _loc -> acc | t -> FanAst.list_of_ctyp t acc
+  match ot with | `Nil _loc -> acc | t -> FanAst.list_of_ctyp t acc
 let rec name_tags =
   function
   | `TyApp (_loc,t1,t2) -> (name_tags t1) @ (name_tags t2)
@@ -30,7 +30,7 @@ let eprint: (ctyp -> unit) ref =
     (fun _  -> failwith "Ctyp.eprint foward declaration, not implemented yet")
 let _loc = FanLoc.ghost
 let app a b = `TyApp (_loc, a, b)
-let comma a b = `TyCom (_loc, a, b)
+let comma a b = `Com (_loc, a, b)
 let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
@@ -40,37 +40,36 @@ let list_of_app ty =
   let rec loop t acc =
     match t with
     | `TyApp (_loc,t1,t2) -> loop t1 (t2 :: acc)
-    | `TyNil _loc -> acc
+    | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
 let list_of_com ty =
   let rec loop t acc =
     match t with
-    | `TyCom (_loc,t1,t2) -> t1 :: (loop t2 acc)
-    | `TyNil _loc -> acc
+    | `Com (_loc,t1,t2) -> t1 :: (loop t2 acc)
+    | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
 let list_of_sem ty =
   let rec loop t acc =
     match t with
     | `TySem (_loc,t1,t2) -> t1 :: (loop t2 acc)
-    | `TyNil _loc -> acc
+    | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
 let rec view_app acc =
   function | `TyApp (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
-let app_of_list = function | [] -> `TyNil _loc | l -> List.reduce_left app l
-let com_of_list =
-  function | [] -> `TyNil _loc | l -> List.reduce_right comma l
-let sem_of_list = function | [] -> `TyNil _loc | l -> List.reduce_right sem l
+let app_of_list = function | [] -> `Nil _loc | l -> List.reduce_left app l
+let com_of_list = function | [] -> `Nil _loc | l -> List.reduce_right comma l
+let sem_of_list = function | [] -> `Nil _loc | l -> List.reduce_right sem l
 let tuple_of_list =
   function
   | [] -> invalid_arg "tuple_of_list while list is empty"
   | x::[] -> x
-  | xs -> `TyTup (_loc, (com_of_list xs))
+  | xs -> `Tup (_loc, (com_of_list xs))
 let arrow a b = `TyArr (_loc, a, b)
 let (|->) = arrow
-let sta a b = `TySta (_loc, a, b)
+let sta a b = `Sta (_loc, a, b)
 let sta_of_list = List.reduce_right sta
 let arrow_of_list = List.reduce_right arrow
 let app_arrow lst acc = List.fold_right arrow lst acc
@@ -78,7 +77,7 @@ let tuple_sta_of_list =
   function
   | [] -> invalid_arg "tuple_sta__of_list while list is empty"
   | x::[] -> x
-  | xs -> `TyTup (_loc, (sta_of_list xs))
+  | xs -> `Tup (_loc, (sta_of_list xs))
 let (<+) names ty =
   List.fold_right
     (fun name  acc  -> `TyArr (_loc, (`TyQuo (_loc, name)), acc)) names ty
@@ -114,7 +113,7 @@ let list_of_record ty =
     (ty |> list_of_sem) |>
       (List.map
          (function
-          | `TyCol (_loc,`TyId (_,`Lid (_,label)),`TyMut (_,ctyp)) ->
+          | `TyCol (_loc,`TyId (_,`Lid (_,label)),`Mutable (_,ctyp)) ->
               { label; ctyp; is_mutable = true }
           | `TyCol (_loc,`TyId (_,`Lid (_,label)),ctyp) ->
               { label; ctyp; is_mutable = false }
@@ -165,22 +164,22 @@ let mk_method_type_of_name ~number  ~prefix  (name,len) (k : obj_dest) =
 let mk_obj class_name base body =
   `Class
     (_loc,
-      (`CeEq
+      (`Eq
          (_loc,
            (`CeCon
-              (_loc, (`ViNil _loc), (`Lid (_loc, class_name)), (`TyNil _loc))),
-           (`CeStr
+              (_loc, (`ViNil _loc), (`Lid (_loc, class_name)), (`Nil _loc))),
+           (`Obj
               (_loc,
                 (`PaTyc
-                   (_loc, (`PaId (_loc, (`Lid (_loc, "self")))),
+                   (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
                      (`TyQuo (_loc, "self_type")))),
                 (`CrSem
                    (_loc,
-                     (`CrInh
+                     (`Inherit
                         (_loc, (`OvNil _loc),
                           (`CeCon
                              (_loc, (`ViNil _loc), (`Lid (_loc, base)),
-                               (`TyNil _loc))), "")), body)))))))
+                               (`Nil _loc))), "")), body)))))))
 let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (_,name,_,ctyp,_) ->
@@ -196,7 +195,7 @@ let is_recursive ty_dcl =
           method is_recursive = is_recursive
         end in
       (obj#ctyp ctyp)#is_recursive
-  | `TyAnd (_loc,_,_) -> true
+  | `And (_loc,_,_) -> true
   | _ ->
       invalid_arg
         ("is_recursive not type declartion" ^ (to_string.contents ty_dcl))
@@ -210,11 +209,10 @@ let qualified_app_list =
   | `TyId (_loc,`Lid (_,_))|`TyId (_loc,`Uid (_,_)) -> None
   | `TyId (_loc,i) -> Some (i, [])
   | _ -> None
-let is_abstract =
-  function | `TyDcl (_,_,_,`TyNil _loc,_) -> true | _ -> false
+let is_abstract = function | `TyDcl (_,_,_,`Nil _loc,_) -> true | _ -> false
 let abstract_list =
   function
-  | `TyDcl (_,_,lst,`TyNil _loc,_) -> Some (List.length lst)
+  | `TyDcl (_,_,lst,`Nil _loc,_) -> Some (List.length lst)
   | _ -> None
 let eq t1 t2 =
   let strip_locs t = (FanAst.map_loc (fun _  -> FanLoc.ghost))#ctyp t in
@@ -272,16 +270,16 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
   let open ErrorMonad in
     let rec loop acc t =
       match t with
-      | `TyOf (_loc,`TyId (_,`Uid (_,cons)),tys) ->
+      | `Of (_loc,`TyId (_,`Uid (_,cons)),tys) ->
           f cons (FanAst.list_of_ctyp tys []) acc
-      | `TyOf (_loc,`TyVrn (_,cons),tys) ->
+      | `Of (_loc,`TyVrn (_,cons),tys) ->
           f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
       | `TyId (_loc,`Uid (_,cons)) -> f cons [] acc
       | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
       | `TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
-      | `TySum (_loc,ty)|`TyVrnEq (_loc,ty)|`TyVrnInf (_loc,ty)
+      | `Sum (_loc,ty)|`TyVrnEq (_loc,ty)|`TyVrnInf (_loc,ty)
         |`TyVrnSup (_loc,ty) -> loop acc ty
-      | `TyNil _loc -> acc
+      | `Nil _loc -> acc
       | t -> raise (Unhandled t) in
     try return & (loop init ty)
     with

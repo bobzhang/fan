@@ -37,17 +37,16 @@ let apply () =
                    (_loc : FanLoc.t)  ->
                    (`ExApp
                       (_loc,
-                        (`ExApp
-                           (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
-                        (mk (`ExId (_loc, (`Uid (_loc, "[]")))))) : 'comprehension_or_sem_expr_for_list ))));
+                        (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e)),
+                        (mk (`Id (_loc, (`Uid (_loc, "[]")))))) : 'comprehension_or_sem_expr_for_list ))));
           ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
            `Skeyword ";"],
             (Gram.mk_action
                (fun _  (e : 'expr)  (_loc : FanLoc.t)  ->
                   (`ExApp
                      (_loc,
-                       (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
-                       (`ExId (_loc, (`Uid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))));
+                       (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e)),
+                       (`Id (_loc, (`Uid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))));
           ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
            `Skeyword "|";
            `Slist1sep
@@ -60,8 +59,8 @@ let apply () =
                (fun (e : 'expr)  (_loc : FanLoc.t)  ->
                   (`ExApp
                      (_loc,
-                       (`ExApp (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
-                       (`ExId (_loc, (`Uid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))))])]);
+                       (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e)),
+                       (`Id (_loc, (`Uid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))))])]);
    Gram.extend (item : 'item Gram.t )
      (None,
        [(None, None,
@@ -97,8 +96,7 @@ let apply () =
                     (e : 'expr)  (_loc : FanLoc.t)  ->
                     (`ExApp
                        (_loc,
-                         (`ExApp
-                            (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
+                         (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e)),
                          (mk last)) : 'comprehension_or_sem_expr_for_list ))));
            ([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
             `Skeyword "::";
@@ -107,8 +105,7 @@ let apply () =
                 (fun (last : 'expr)  _  (e : 'expr)  (_loc : FanLoc.t)  ->
                    (`ExApp
                       (_loc,
-                        (`ExApp
-                           (_loc, (`ExId (_loc, (`Uid (_loc, "::")))), e)),
+                        (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e)),
                         last) : 'comprehension_or_sem_expr_for_list ))))])])
   else ()
 let _ = AstParsers.register_parser ("ListComprehension", apply)

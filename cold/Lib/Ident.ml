@@ -6,7 +6,7 @@ let rec normalize_acc =
       `ExAcc (_loc, (normalize_acc i1), (normalize_acc i2))
   | `IdApp (_loc,i1,i2) ->
       `ExApp (_loc, (normalize_acc i1), (normalize_acc i2))
-  | `Ant (_loc,_)|`Uid (_loc,_)|`Lid (_loc,_) as i -> `ExId (_loc, i)
+  | `Ant (_loc,_)|`Uid (_loc,_)|`Lid (_loc,_) as i -> `Id (_loc, i)
 let rec to_lid =
   function
   | `IdAcc (_loc,_,i) -> to_lid i

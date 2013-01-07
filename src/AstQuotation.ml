@@ -222,9 +222,9 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
       let rec subst_first_loc name : patt -> patt =  with "patt" fun
         [
          `PaApp(loc, `PaVrn (_,u), (`PaTup (_, `PaCom (_,_,rest)))) ->
-         `PaApp(loc, `PaVrn(loc,u),(`PaTup (loc,`PaCom(loc,`PaId(_loc,`Lid (_loc,name)),rest))))
-        | `PaApp(_loc,`PaVrn(_,u),`PaAny _) ->
-            `PaApp(_loc, `PaVrn(_loc,u), `PaId(_loc,`Lid(_loc,name)))
+         `PaApp(loc, `PaVrn(loc,u),(`PaTup (loc,`PaCom(loc,`Id(_loc,`Lid (_loc,name)),rest))))
+        | `PaApp(_loc,`PaVrn(_,u),`Any _) ->
+            `PaApp(_loc, `PaVrn(_loc,u), `Id(_loc,`Lid(_loc,name)))
         | `PaApp(_loc,a,b) -> `PaApp (_loc, subst_first_loc name a , b)
               
         (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
