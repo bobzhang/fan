@@ -6,17 +6,24 @@ type name  = { expr : expr; tvar : string; loc : loc };
 
 (* we need to define a new ADT only because
    we did not find a way to express `STself and `STtok yet  *)
+
 type styp =
  [= `STlid of (loc * string)
  | `STapp of (loc * styp * styp)
  | `STquo of (loc * string)
  | `STself of (loc * string)
  | `STtok of loc
- | `STtyp of ctyp ]
+ | `STtyp of ctyp ];
+
+
+type gtyp =
+ [=  ctyp
+ | `Self of (loc * string)
+ | `Tok of loc ];   
 (* and patt = *) (* FIXME subtyping soon*)
 (*  [= `PaApp of (loc * patt) *)
 (*  | `PaVrn of (loc * string) *)
-(*  | ] *);   
+(*  | ] *)  
 
 
 

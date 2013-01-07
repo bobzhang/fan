@@ -1,7 +1,7 @@
 
 open LibUtil;
 (* open Ast; *)
-(* module Ast = FanAst; *)
+
 module MetaLoc = struct
    (* this makes sense here, because, for list operation
       you don't care about the location representation here
