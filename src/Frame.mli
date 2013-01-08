@@ -47,7 +47,7 @@ val fun_of_tydcl :
   mk_record:(FSig.record_col list -> expr) ->
   (ctyp -> expr ) ->
   (ctyp -> expr ) ->
-  [> `TyDcl of 'a * 'b * ctyp list * ctyp * 'c ] -> expr
+  ctyp -> expr
 val binding_of_tydcl :
   ?cons_transform:(string -> string) ->
   (ctyp -> expr ) ->

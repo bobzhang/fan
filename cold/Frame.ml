@@ -70,7 +70,7 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
                  t2))
       | ty ->
           failwithf "normal_simple_expr_of_ctyp: %s type: \n "
-            (Ctyp.to_string.contents ty) in
+            (Ctyp.to_string ty) in
     aux ty
 let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable 
   ~right_type_variable  ?names  ?arity  ~mk_tuple  ty =
@@ -107,9 +107,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
           tuple_expr_of_ctyp ?arity ?names ~mk_tuple
             (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
                ~right_type_variable ?names ?arity ~mk_tuple) ty
-      | ty ->
-          failwithf "obj_simple_expr_of_ctyp %s\n"
-            (Ctyp.to_string.contents ty) in
+      | ty -> failwithf "obj_simple_expr_of_ctyp %s\n" (Ctyp.to_string ty) in
     aux ty
 let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
   ~mk_variant  simple_expr_of_ctyp (ty : ctyp) =
@@ -140,6 +138,39 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
       else res in
     List.rev t in
   currying ?arity res
+let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
+  ~mk_variant  simple_expr_of_ctyp (ty : ctyp) =
+  let f (cons,tyargs) =
+    (let len = List.length tyargs in
+     let p = Patt.gen_tuple_n ?cons_transform ~arity cons len in
+     let mk (cons,tyargs) =
+       let exps =
+         List.mapi (mapi_expr ~arity ~names simple_expr_of_ctyp) tyargs in
+       mk_variant cons exps in
+     let e = mk (cons, tyargs) in `Case (_loc, p, (`Nil _loc), e) : match_case ) in
+  let simple lid =
+    (let e = (simple_expr_of_ctyp (`TyId (_loc, lid))) +> names in
+     `Case
+       (_loc,
+         (`Alias
+            (_loc, (`PaTyp (_loc, lid)), (`Id (_loc, (`Lid (_loc, "x0")))))),
+         (`Nil _loc), (`ExApp (_loc, e, (`Id (_loc, (`Lid (_loc, "x0"))))))) : 
+    match_case ) in
+  let info = (TyVrnEq, (FanAst.list_of_ctyp ty [])) in
+  let ls = Ctyp.view_variant ty in
+  let res =
+    let res =
+      List.fold_left
+        (fun acc  x  ->
+           match x with
+           | `variant (cons,args) -> (f (cons, args)) :: acc
+           | `abbrev lid -> (simple lid) :: acc) [] ls in
+    let t =
+      if ((List.length res) >= 2) && (arity >= 2)
+      then (trail info) :: res
+      else res in
+    List.rev t in
+  currying ?arity res
 let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
   let open Transform in
     let varf = basic_transform left_type_variable in
@@ -151,45 +182,45 @@ let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
               (`Case
                  (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), (`Nil _loc),
                    acc)))
-      | _ -> (Ctyp.eprint.contents var; invalid_arg "mk_prefix") in
+      | _ -> (Ctyp.eprint var; invalid_arg "mk_prefix") in
     List.fold_right f vars (names <+ acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   simple_expr_of_ctyp expr_of_ctyp =
-  function
-  | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
-      let ctyp =
-        match ctyp with
-        | `TyMan (_loc,_,ctyp)|`Private (_loc,ctyp) -> ctyp
-        | _ -> ctyp in
-      (match ctyp with
-       | `TyRec (_loc,t) ->
-           let cols = Ctyp.list_of_record t in
-           let patt = Patt.mk_record ~arity cols in
-           let info =
-             List.mapi
-               (fun i  x  ->
-                  match x with
-                  | { label; is_mutable; ctyp } ->
-                      {
-                        info =
-                          (mapi_expr ~arity ~names simple_expr_of_ctyp i ctyp);
-                        label;
-                        is_mutable
-                      }) cols in
-           mk_prefix ~names ~left_type_variable tyvars
-             (currying ?arity
-                [`Case (_loc, patt, (`Nil _loc), (mk_record info))])
-       | _ ->
-           let process ctyp =
-             match ctyp with
-             | `TyId (_loc,_)|`Tup (_loc,_)|`TyApp (_loc,_,_)|`TyQuo (_loc,_)
-               |`TyArr (_loc,_,_) ->
-                 let expr = simple_expr_of_ctyp ctyp in
-                 eta_expand (expr +> names) arity
-             | _ -> expr_of_ctyp ctyp in
-           let funct = process ctyp in
-           mk_prefix ~names ~left_type_variable tyvars funct)
-  | _tydcl -> invalid_arg (sprintf "fun_of_tydcl <<%s>>\n" "")
+  (function
+   | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
+       let ctyp =
+         match ctyp with
+         | `TyMan (_loc,_,ctyp)|`Private (_loc,ctyp) -> ctyp
+         | _ -> ctyp in
+       (match ctyp with
+        | `TyRec (_loc,t) ->
+            let cols = Ctyp.list_of_record t in
+            let patt = Patt.mk_record ~arity cols in
+            let info =
+              List.mapi
+                (fun i  x  ->
+                   match x with
+                   | { label; is_mutable; ctyp } ->
+                       {
+                         info =
+                           (mapi_expr ~arity ~names simple_expr_of_ctyp i
+                              ctyp);
+                         label;
+                         is_mutable
+                       }) cols in
+            mk_prefix ~names ~left_type_variable tyvars
+              (currying ~arity
+                 [`Case (_loc, patt, (`Nil _loc), (mk_record info))])
+        | `TyId (_loc,_)|`Tup (_loc,_)|`TyApp (_loc,_,_)|`TyQuo (_loc,_)
+          |`TyArr (_loc,_,_) ->
+            let expr = simple_expr_of_ctyp ctyp in
+            let funct = eta_expand (expr +> names) arity in
+            mk_prefix ~names ~left_type_variable tyvars funct
+        | _ ->
+            let funct = expr_of_ctyp ctyp in
+            mk_prefix ~names ~left_type_variable tyvars funct)
+   | _tydcl -> failwithf "fun_of_tydcl <<%s>>\n" (Ctyp.to_string _tydcl) : 
+  ctyp -> expr )
 let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 
   ~mk_record  =

@@ -10,8 +10,7 @@ open FSig;
 open Lib.Expr;
 
 (* preserved keywords for the generator *)
-let preserve =
-  ["self"; "self_type"; "unit"; "result"];
+let preserve =  ["self"; "self_type"; "unit"; "result"];
 
 let check names =
     (* we preserve some keywords to avoid variable capture *)
@@ -52,8 +51,6 @@ let mapi_expr ?(arity=1) ?(names=[])
  *)  
 let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     simple_expr_of_ctyp (ty:ctyp) : expr = with {patt:ctyp}
-  (* let open ErrorMonad in  *)
-  (* let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in  *)
   match ty with
   [ {|  ($tup:t) |}  -> 
     let ls = FanAst.list_of_ctyp t [] in
@@ -64,7 +61,7 @@ let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
                   [ {:match_case| $pat:patt -> $(mk_tuple tys ) |} ] ?arity)
   | _  -> invalid_arg &
       sprintf  "tuple_expr_of_ctyp {|%s|}\n" "" (*FIXME*)
-        (* (!Ctyp.to_string  ty) *)];
+        (* (Ctyp.to_string  ty) *)];
   
 (*
  @supported types type application: list int
@@ -105,7 +102,7 @@ let rec  normal_simple_expr_of_ctyp
         aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
     | ty ->
         failwithf
-          "normal_simple_expr_of_ctyp: %s type: \n " (!Ctyp.to_string ty)
+          "normal_simple_expr_of_ctyp: %s type: \n " (Ctyp.to_string ty)
         (* raise (Unhandled  ty ) *) ] in
   aux ty;
 
@@ -132,7 +129,6 @@ let rec obj_simple_expr_of_ctyp
     ?names ?arity ~mk_tuple
       ty = with {patt:ctyp}
   let open Transform in 
-  (* let open ErrorMonad in  *)
   let trans = transform right_type_id in
   let var = basic_transform left_type_variable in
   let tyvar = right_transform right_type_variable  in 
@@ -159,7 +155,7 @@ let rec obj_simple_expr_of_ctyp
              ?names
              ?arity
              ~mk_tuple) ty 
-    | ty -> failwithf "obj_simple_expr_of_ctyp %s\n" (!Ctyp.to_string ty) ] in
+    | ty -> failwithf "obj_simple_expr_of_ctyp %s\n" (Ctyp.to_string ty) ] in
   aux ty ;
 
 (*
@@ -168,14 +164,8 @@ let rec obj_simple_expr_of_ctyp
   assume input is  variant type
   accept variant input type to generate  a function expression 
  *)  
-let expr_of_ctyp
-    ?cons_transform
-    ?(arity=1)
-    ?(names=[])
-    ~trail
-    ~mk_variant
+let expr_of_ctyp ?cons_transform ?(arity=1) ?(names=[]) ~trail ~mk_variant
     simple_expr_of_ctyp (ty:ctyp)  = with {patt:ctyp}
-  (* let open ErrorMonad in  *)
   let f  cons tyargs acc : list match_case = 
       let args_length = List.length tyargs in  (* ` is not needed here *)
         let p =
@@ -188,28 +178,6 @@ let expr_of_ctyp
           mk_variant cons exprs in
       let e = mk (cons,tyargs) in
       [ {:match_case| $pat:p -> $e |} :: acc ] in  begin 
-  (* match ty with *)
-  (* [ {| [= $t ] |} | {| [> $t]|} *)
-  (* | {| [< $t > $_ ] |} | {| [<$t ]|} -> *)
-  (*   let ls = view_variant t   in *)
-  (*   List.fold_left *)
-  (*     (fun acc x -> *)
-  (*       match x with *)
-  (*       [ `varaint (cons,tyargs) ->    *)
-  (*         f cons tyargs acc *)
-  (*       | `abbrev c -> *)
-  (*           simple_expr_of_ctyp ctyp >>= *)
-  (*               (fun expr -> *)
-  (*                 return & eta_expand (expr+>S.names) S.arity ) *)
-  (*       ] *)
-  (*     ) [] ls  >>= *)
-  (*   (fun res -> *)
-  (*     return (currying ?arity:S.arity res) *)
-  (*   ) *)
-  (* | {| [ $t ]|} -> *)
-  (*     let ls = view_adt t in *)
-      
-  (* ]; *)
   let info =
     match ty with
     (* FIXME TyVrnInfSup to be added *)
@@ -220,7 +188,7 @@ let expr_of_ctyp
     | _ ->
         invalid_arg
           (sprintf "expr_of_ctyp {|%s|} " "" (*FIXME*)
-             (* & !Ctyp.to_string ty *)) ] in 
+             (* & Ctyp.to_string ty *)) ] in 
   let res = Ctyp.reduce_data_ctors ty  [] f (* >>= (fun res -> *) in
   let res =
     let t =
@@ -229,9 +197,40 @@ let expr_of_ctyp
         [ trail info :: res ]
       else res in
     List.rev t in 
-    (* return *) (currying ?arity res )
+  currying ?arity res 
   end;
 
+(* return a [expr] node  *)  
+let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant
+    simple_expr_of_ctyp (ty:ctyp) = with {patt:ctyp;expr:match_case}
+  let f (cons,tyargs) :  match_case=
+    let len = List.length tyargs in
+    let p = Patt.gen_tuple_n ?cons_transform ~arity cons len in
+    let mk (cons,tyargs) =
+      let exps = List.mapi (mapi_expr ~arity ~names simple_expr_of_ctyp) tyargs in
+      mk_variant cons exps in
+    let e = mk (cons,tyargs) in
+    {| $pat:p -> $e |} in 
+  (* for the case [`a | b ] *)
+  let simple lid :match_case=
+    let e = (simple_expr_of_ctyp {:ctyp|$id:lid|}) +> names  in
+    {| (#$lid as x0) -> $e x0  |} in
+  (* FIXME, be more precise  *)
+  let info = (TyVrnEq, FanAst.list_of_ctyp ty []) in
+  let ls = Ctyp.view_variant ty in
+  let res =
+    let res = List.fold_left
+      (fun  acc x ->
+        match x with
+        [ (`variant (cons,args)) -> [f (cons,args)::acc]
+        | `abbrev (lid) ->  [simple lid :: acc ] ])  [] ls in
+  let t =
+    if List.length res >= 2 && arity >= 2 then
+      [trail info :: res]
+    else res in
+  List.rev t in
+  currying ?arity res ;
+  
 let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
   with {patt:ctyp}
   let open Transform in 
@@ -240,7 +239,7 @@ let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
   [ {| +' $s |} | {| -' $s |}
   | {| ' $s |} ->
       {| fun $(lid: varf s) -> $acc |}
-  | _ -> begin  !Ctyp.eprint var ;
+  | _ -> begin  Ctyp.eprint var ;
    invalid_arg "mk_prefix";end ] in
   List.fold_right f vars ( names <+ acc);
 
@@ -250,21 +249,19 @@ let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
   (combine both expr_of_ctyp and simple_expr_of_ctyp) *)  
 let fun_of_tydcl
     ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record 
-    simple_expr_of_ctyp expr_of_ctyp  =
-  with {patt:ctyp}
-  (* let open ErrorMonad in*) fun
+    simple_expr_of_ctyp expr_of_ctyp : ctyp -> expr  =
+  with {patt:ctyp}  fun
   [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
       let ctyp =
         match ctyp with
         [ ( {| $_ == $ctyp |} (* the latter reifys the structure is used here *)
         |  {| private $ctyp |} ) -> ctyp
         | _ -> ctyp ] in
-      match ctyp with
-      [ {|  { $t}  |} ->
-        (* FIXME the error message is wrong when using lang_at *)
-        let cols =  Ctyp.list_of_record t  in
-        let patt = Patt.mk_record ~arity  cols in
-        let info =
+        match ctyp with (* FIXME the error message is wrong when using lang_at *)
+        [ {|  { $t}  |} ->       
+          let cols =  Ctyp.list_of_record t  in
+          let patt = Patt.mk_record ~arity  cols in
+          let info =
           List.mapi
             (fun i x ->  match x with
               [ {label;is_mutable;ctyp} ->
@@ -275,45 +272,24 @@ let fun_of_tydcl
                       is_mutable = is_mutable}
               ] ) cols in
           (* For single tuple pattern match this can be optimized
-             by the ocaml compiler
-           *)
-        mk_prefix ~names ~left_type_variable
-          tyvars
-          (currying ?arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
+             by the ocaml compiler *)
+        mk_prefix ~names ~left_type_variable tyvars
+            (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
+      | {| $id:_|} | {| $tup:_|} | {| $_ $_ |} | {| '$_ |} | {| $_ -> $_ |} ->
+          let expr = simple_expr_of_ctyp ctyp in
+          let funct = eta_expand (expr+>names) arity  in
+          mk_prefix ~names ~left_type_variable tyvars funct 
+          
       | _ ->
-          let process =
-            (fun ctyp ->
-              match ctyp with
-             [ {| $id:_|} | {| $tup:_|} | {| $_ $_ |} | {| '$_ |} | {| $_ -> $_ |}
-             ->
-               let expr = simple_expr_of_ctyp ctyp in
-               eta_expand (expr+>names) arity 
-             | _ ->
-                 expr_of_ctyp ctyp]) in  
-                  (* simple_expr_of_ctyp ctyp >>= *)
-              (*   (fun expr -> *)
-              (*     return & eta_expand (expr+>names) arity )) *)
-              (* (\* t -> pp_print_t -> fun (a,b) -> pp_print_t (a,b) *\) *)
-              (* <|>  expr_of_ctyp in  *)
-                (* for [expr_of_ctyp]
-                   appending names was delayed to be
-                     handled in mkcon *)
-          let funct = process ctyp in 
-            (* match process ctyp  with *)
-            (* [ Left result  ->  result *)
-            (* | Right str -> *)
-            (*      invalid_arg *)
-            (*        (sprintf "fun_of_tydcl{|%s|}\n%s" "" (\*FIXME*\) *)
-            (*                     (\* (!Ctyp.to_string ctyp) *\) str)] in *)
+          let funct = expr_of_ctyp ctyp in  
+          (* for [expr_of_ctyp]
+             appending names was delayed to be
+             handled in mkcon *)
           mk_prefix ~names ~left_type_variable tyvars funct ]
   | _tydcl -> 
-      invalid_arg
-        ( sprintf "fun_of_tydcl <<%s>>\n"
-            ""
-            (*FIXME*)
-            (* (!Ctyp.to_string tydcl) *)) ];
+      failwithf  "fun_of_tydcl <<%s>>\n" (Ctyp.to_string _tydcl) ];
 
-(* *)    
+
 let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     tydcl ?(arity=1) ?(names=[]) ~trail ~mk_variant
     ~left_type_id ~left_type_variable
@@ -342,7 +318,7 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     {:binding| $(lid:tctor_var name) : $ty = $fun_expr |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n" "" (*FIXME*)
-      (* (!Ctyp.to_string tydcl) *);
+      (* (Ctyp.to_string tydcl) *);
     {:binding| $(lid:tctor_var  name) =
     failwithf $(str:"Abstract data type not implemented") |};
   end ;
@@ -425,7 +401,7 @@ let obj_of_module_types
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          [ Some n  -> begin
-           let ty_str =  (* (!Ctyp.to_string tydcl) FIXME *) "" in
+           let ty_str =  (* (Ctyp.to_string tydcl) FIXME *) "" in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let ty = mk_type (name,tydcl) in
            {:class_str_item| method $lid:name : $ty= $(unknown n) |}

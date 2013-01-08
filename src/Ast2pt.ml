@@ -1022,4 +1022,4 @@ let print_str_item f e =
 let print_ctyp f e =
   pp f "@[%a@]@." AstPrint.core_type (ctyp e) ;
 
-Ctyp.to_string := LibUtil.to_string_of_printer print_ctyp;  
+(* Ctyp.to_string := LibUtil.to_string_of_printer print_ctyp;   *)

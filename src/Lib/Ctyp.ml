@@ -44,10 +44,11 @@ let rec to_generalized = fun
    ]}
  *)
 let to_string  =
-  ref (fun _ -> failwith "Ctyp.to_string foward declaration, not implemented yet");
+   (to_string_of_printer FanAst.dump#ctyp);
+  (* ref (fun _ -> failwith "Ctyp.to_string foward declaration, not implemented yet"); *)
   (* to_string_of_printer FanBasic.p_ctyp ; *)
-let eprint : ref (ctyp -> unit) =
-  ref (fun c -> eprintf "@[%a@]" FanAst.dump#ctyp c );
+let eprint :  (ctyp -> unit) =
+  (fun c -> eprintf "@[%a@]" FanAst.dump#ctyp c );
 
 
   
@@ -89,7 +90,7 @@ let (+>) params base = List.fold_right arrow params base;
 let name_length_of_tydcl = fun 
     [ `TyDcl (_, name, tyvars, _, _) -> (name, List.length tyvars)
     | tydcl -> invalid_arg (
-        sprintf "name_length_of_tydcl {|%s|}\n" & !to_string tydcl)];      
+        sprintf "name_length_of_tydcl {|%s|}\n" & to_string tydcl)];      
 
 
 
@@ -149,7 +150,7 @@ let of_name_len ~off (name,len) =
 let ty_name_of_tydcl  = fun 
     [ `TyDcl (_, name, tyvars, _, _) -> apply {| $lid:name |} tyvars
     | tydcl ->
-        invalid_arg & sprintf "ctyp_of_tydcl{|%s|}\n" & !to_string tydcl];      
+        invalid_arg & sprintf "ctyp_of_tydcl{|%s|}\n" & to_string tydcl];      
 
 (*
   {[
@@ -186,7 +187,7 @@ let list_of_record ty =
     [Unhandled t0 ->
       invalid_arg &
       (sprintf "list_of_record inner: {|%s|} outer: {|%s|}"
-                     (!to_string t0) (!to_string ty)) ];
+                     (to_string t0) (to_string ty)) ];
 
   
 (*
@@ -303,7 +304,7 @@ let is_recursive ty_dcl = match ty_dcl with
     end in
     (obj#ctyp ctyp)#is_recursive
   | {| $_ and $_ |} -> true
-  | _ -> invalid_arg ("is_recursive not type declartion" ^ !to_string ty_dcl)];
+  | _ -> invalid_arg ("is_recursive not type declartion" ^ to_string ty_dcl)];
 
 
 (*
@@ -475,7 +476,7 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
     | {| |} -> acc
           (* we don't handle the type constructs  below *)
     | t ->
-        failwithf "reduce_data_ctors: %s\n" (!to_string t)
+        failwithf "reduce_data_ctors: %s\n" (to_string t)
 (* raise (Unhandled t) *) ] in
   loop init ty
   (* try *)
@@ -484,8 +485,8 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
   (*   [Unhandled t0  -> *)
   (*     fail *)
   (*       (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}"  *)
-  (*          (!to_string t0 ) *)
-  (*          (!to_string ty)) ] *);
+  (*          (to_string t0 ) *)
+  (*          (to_string ty)) ] *);
     
 let view_adt (t:ctyp) =
   (* let t = match t with [ {| [ $t ] |} -> t | _ -> assert false] in *)
@@ -507,20 +508,24 @@ let view_adt (t:ctyp) =
       | `Flo of (loc * string)
       | `NativeInt of (loc * string)
         (* s *) (* "foo" *)
-      | `Str of (loc * string) | u | list int | [= `b | `c ] ] |};
+        | `Str of (loc * string) | u | list int | [= `b | `c ] ] |};
+
+  type v = [= `b];
+  type u = [= `a | v ];
+  let pp_print_u = function
+  [ `a -> pp_print "%a"
+  | #v -> pp_print_v 
+  ]
   ]}
  *)    
 let view_variant (t:ctyp) : list vbranch =
-  (* let open ErrorMonad in *)
-  (* let t = match t with *)
-  (*   [  {| [>$t] |} | {| [< $t ] |} *)
-  (*   | {| [=$t]|}  | {| [< $t > $_ ]|}-> t *)
-  (*   | _ -> assert false] in *)
   let lst = FanAst.list_of_ctyp t []  in
   List.map (
   fun [ {|`$cons of $tup:t |}  ->  `variant (cons,FanAst.list_of_ctyp t [])
       | {| `$cons |} -> `variant (cons, [])
-      | u -> `abbrev u ] ) lst 
+      | {| $id:i|} -> `abbrev i  
+      (* | {|$lid:x|} -> `abbrev x  *)
+      | u -> failwithf "view_variant %s" (to_string u) ] ) lst 
 ;
 
     

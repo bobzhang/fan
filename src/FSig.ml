@@ -47,7 +47,7 @@ type ty_info = {
 
 type vbranch =
    [= `variant of (string* list ctyp)
-   | `abbrev of ctyp ];
+   | `abbrev of ident (* ctyp *) ];
 type branch =
    [= `branch of (string * list ctyp) ];
 (* Feed to user to compose an expression node *)

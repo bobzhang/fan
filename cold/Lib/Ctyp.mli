@@ -8,9 +8,9 @@ val name_tags : ctyp -> string list
 
 val to_generalized : ctyp -> ctyp list * ctyp
 
-val to_string : (ctyp -> string) ref
+val to_string : (ctyp -> string)
 
-val eprint : (ctyp -> unit) ref
+val eprint : (ctyp -> unit) 
 
 (* val _loc : FanLoc.t *)
 

@@ -20,12 +20,8 @@ let rec to_generalized =
   | `TyArr (_loc,t1,t2) ->
       let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt)
   | t -> ([], t)
-let to_string =
-  ref
-    (fun _  ->
-       failwith "Ctyp.to_string foward declaration, not implemented yet")
-let eprint: (ctyp -> unit) ref =
-  ref (fun c  -> eprintf "@[%a@]" FanAst.dump#ctyp c)
+let to_string = to_string_of_printer FanAst.dump#ctyp
+let eprint: ctyp -> unit = fun c  -> eprintf "@[%a@]" FanAst.dump#ctyp c
 let _loc = FanLoc.ghost
 let app a b = `TyApp (_loc, a, b)
 let comma a b = `Com (_loc, a, b)
@@ -84,8 +80,7 @@ let name_length_of_tydcl =
   | `TyDcl (_,name,tyvars,_,_) -> (name, (List.length tyvars))
   | tydcl ->
       invalid_arg
-        ((sprintf "name_length_of_tydcl {|%s|}\n") &
-           (to_string.contents tydcl))
+        ((sprintf "name_length_of_tydcl {|%s|}\n") & (to_string tydcl))
 let gen_quantifiers ~arity  n =
   ((List.init arity
       (fun i  -> List.init n (fun j  -> `TyQuo (_loc, (allx ~off:i j)))))
@@ -101,8 +96,7 @@ let ty_name_of_tydcl =
   | `TyDcl (_,name,tyvars,_,_) ->
       apply (`TyId (_loc, (`Lid (_loc, name)))) tyvars
   | tydcl ->
-      invalid_arg &
-        ((sprintf "ctyp_of_tydcl{|%s|}\n") & (to_string.contents tydcl))
+      invalid_arg & ((sprintf "ctyp_of_tydcl{|%s|}\n") & (to_string tydcl))
 let gen_ty_of_tydcl ~off  tydcl =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record ty =
@@ -118,8 +112,8 @@ let list_of_record ty =
   with
   | Unhandled t0 ->
       invalid_arg &
-        (sprintf "list_of_record inner: {|%s|} outer: {|%s|}"
-           (to_string.contents t0) (to_string.contents ty))
+        (sprintf "list_of_record inner: {|%s|} outer: {|%s|}" (to_string t0)
+           (to_string ty))
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta_of_list
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let mk_method_type ~number  ~prefix  (id,len) (k : obj_dest) =
@@ -194,8 +188,7 @@ let is_recursive ty_dcl =
       (obj#ctyp ctyp)#is_recursive
   | `And (_loc,_,_) -> true
   | _ ->
-      invalid_arg
-        ("is_recursive not type declartion" ^ (to_string.contents ty_dcl))
+      invalid_arg ("is_recursive not type declartion" ^ (to_string ty_dcl))
 let qualified_app_list =
   function
   | `TyApp (_loc,_,_) as x ->
@@ -276,7 +269,7 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
     | `Sum (_loc,ty)|`TyVrnEq (_loc,ty)|`TyVrnInf (_loc,ty)
       |`TyVrnSup (_loc,ty) -> loop acc ty
     | `Nil _loc -> acc
-    | t -> failwithf "reduce_data_ctors: %s\n" (to_string.contents t) in
+    | t -> failwithf "reduce_data_ctors: %s\n" (to_string t) in
   loop init ty
 let view_adt (t : ctyp) =
   let bs = FanAst.list_of_ctyp t [] in
@@ -293,6 +286,7 @@ let view_variant (t : ctyp) =
       | `Of (_loc,`TyVrn (_,cons),`Tup (_,t)) ->
           `variant (cons, (FanAst.list_of_ctyp t []))
       | `TyVrn (_loc,cons) -> `variant (cons, [])
-      | u -> `abbrev u) lst : vbranch list )
+      | `TyId (_loc,i) -> `abbrev i
+      | u -> failwithf "view_variant %s" (to_string u)) lst : vbranch list )
 let of_str_item =
   function | `Type (_loc,x) -> x | _ -> invalid_arg "Ctyp.of_str_item"
