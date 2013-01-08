@@ -342,12 +342,6 @@ class map =
           `TyQuM a0
       | `TyAnP a0 -> let a0 = self#loc a0 in `TyAnP a0
       | `TyAnM a0 -> let a0 = self#loc a0 in `TyAnM a0
-      | `TyVrn a0 ->
-          let a0 =
-            (fun (a0,a1)  ->
-               let a0 = self#loc a0 in let a1 = self#string a1 in (a0, a1))
-              a0 in
-          `TyVrn a0
       | `TyRec a0 ->
           let a0 =
             (fun (a0,a1)  ->
@@ -422,6 +416,12 @@ class map =
                let a1 = self#ctyp a1 in let a2 = self#ctyp a2 in (a0, a1, a2))
               a0 in
           `Sta a0
+      | `TyVrn a0 ->
+          let a0 =
+            (fun (a0,a1)  ->
+               let a0 = self#loc a0 in let a1 = self#string a1 in (a0, a1))
+              a0 in
+          `TyVrn a0
       | `TyVrnEq a0 ->
           let a0 =
             (fun (a0,a1)  ->
@@ -1860,11 +1860,6 @@ class print =
                    self#string a1) a0
         | `TyAnP a0 -> Format.fprintf fmt "@[<1>(`TyAnP@ %a)@]" self#loc a0
         | `TyAnM a0 -> Format.fprintf fmt "@[<1>(`TyAnM@ %a)@]" self#loc a0
-        | `TyVrn a0 ->
-            Format.fprintf fmt "@[<1>(`TyVrn@ %a)@]"
-              (fun fmt  (a0,a1)  ->
-                 Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
-                   self#string a1) a0
         | `TyRec a0 ->
             Format.fprintf fmt "@[<1>(`TyRec@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -1925,6 +1920,11 @@ class print =
               (fun fmt  (a0,a1,a2)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" self#loc a0
                    self#ctyp a1 self#ctyp a2) a0
+        | `TyVrn a0 ->
+            Format.fprintf fmt "@[<1>(`TyVrn@ %a)@]"
+              (fun fmt  (a0,a1)  ->
+                 Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
+                   self#string a1) a0
         | `TyVrnEq a0 ->
             Format.fprintf fmt "@[<1>(`TyVrnEq@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -3013,8 +3013,6 @@ class fold =
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `TyAnP a0 -> self#loc a0
       | `TyAnM a0 -> self#loc a0
-      | `TyVrn a0 ->
-          ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `TyRec a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#ctyp a1)) a0
       | `TyCol a0 ->
@@ -3053,6 +3051,8 @@ class fold =
           ((fun (a0,a1,a2)  ->
               let self = self#loc a0 in
               let self = self#ctyp a1 in self#ctyp a2)) a0
+      | `TyVrn a0 ->
+          ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `TyVrnEq a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#ctyp a1)) a0
       | `TyVrnSup a0 ->
@@ -3962,11 +3962,6 @@ class fold2 =
                     let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
         | (`TyAnP a0,`TyAnP b0) -> self#loc a0 b0
         | (`TyAnM a0,`TyAnM b0) -> self#loc a0 b0
-        | (`TyVrn a0,`TyVrn b0) ->
-            ((fun a0  b0  ->
-                match (a0, b0) with
-                | ((a0,a1),(b0,b1)) ->
-                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
         | (`TyRec a0,`TyRec b0) ->
             ((fun a0  b0  ->
                 match (a0, b0) with
@@ -4034,6 +4029,11 @@ class fold2 =
                 | ((a0,a1,a2),(b0,b1,b2)) ->
                     let self = self#loc a0 b0 in
                     let self = self#ctyp a1 b1 in self#ctyp a2 b2)) a0 b0
+        | (`TyVrn a0,`TyVrn b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
         | (`TyVrnEq a0,`TyVrnEq b0) ->
             ((fun a0  b0  ->
                 match (a0, b0) with
@@ -5414,11 +5414,6 @@ and pp_print_ctyp: 'fmt -> ctyp -> 'result =
                pp_print_string a1) a0
     | `TyAnP a0 -> Format.fprintf fmt "@[<1>(`TyAnP@ %a)@]" pp_print_loc a0
     | `TyAnM a0 -> Format.fprintf fmt "@[<1>(`TyAnM@ %a)@]" pp_print_loc a0
-    | `TyVrn a0 ->
-        Format.fprintf fmt "@[<1>(`TyVrn@ %a)@]"
-          (fun fmt  (a0,a1)  ->
-             Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
-               pp_print_string a1) a0
     | `TyRec a0 ->
         Format.fprintf fmt "@[<1>(`TyRec@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -5479,6 +5474,11 @@ and pp_print_ctyp: 'fmt -> ctyp -> 'result =
           (fun fmt  (a0,a1,a2)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a,@,%a)@]" pp_print_loc a0
                pp_print_ctyp a1 pp_print_ctyp a2) a0
+    | `TyVrn a0 ->
+        Format.fprintf fmt "@[<1>(`TyVrn@ %a)@]"
+          (fun fmt  (a0,a1)  ->
+             Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
+               pp_print_string a1) a0
     | `TyVrnEq a0 ->
         Format.fprintf fmt "@[<1>(`TyVrnEq@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -6527,7 +6527,6 @@ class iter =
       | `TyQuM a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
       | `TyAnP a0 -> self#loc a0
       | `TyAnM a0 -> self#loc a0
-      | `TyVrn a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
       | `TyRec a0 -> ((fun (a0,a1)  -> self#loc a0; self#ctyp a1)) a0
       | `TyCol a0 ->
           ((fun (a0,a1,a2)  -> self#loc a0; self#ctyp a1; self#ctyp a2)) a0
@@ -6547,6 +6546,7 @@ class iter =
       | `Tup a0 -> ((fun (a0,a1)  -> self#loc a0; self#ctyp a1)) a0
       | `Sta a0 ->
           ((fun (a0,a1,a2)  -> self#loc a0; self#ctyp a1; self#ctyp a2)) a0
+      | `TyVrn a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
       | `TyVrnEq a0 -> ((fun (a0,a1)  -> self#loc a0; self#ctyp a1)) a0
       | `TyVrnSup a0 -> ((fun (a0,a1)  -> self#loc a0; self#ctyp a1)) a0
       | `TyVrnInf a0 -> ((fun (a0,a1)  -> self#loc a0; self#ctyp a1)) a0
@@ -7378,14 +7378,6 @@ class map2 =
             `TyQuM a0
         | (`TyAnP a0,`TyAnP b0) -> let a0 = self#loc a0 b0 in `TyAnP a0
         | (`TyAnM a0,`TyAnM b0) -> let a0 = self#loc a0 b0 in `TyAnM a0
-        | (`TyVrn a0,`TyVrn b0) ->
-            let a0 =
-              (fun a0  b0  ->
-                 match (a0, b0) with
-                 | ((a0,a1),(b0,b1)) ->
-                     let a0 = self#loc a0 b0 in
-                     let a1 = self#string a1 b1 in (a0, a1)) a0 b0 in
-            `TyVrn a0
         | (`TyRec a0,`TyRec b0) ->
             let a0 =
               (fun a0  b0  ->
@@ -7489,6 +7481,14 @@ class map2 =
                      let a1 = self#ctyp a1 b1 in
                      let a2 = self#ctyp a2 b2 in (a0, a1, a2)) a0 b0 in
             `Sta a0
+        | (`TyVrn a0,`TyVrn b0) ->
+            let a0 =
+              (fun a0  b0  ->
+                 match (a0, b0) with
+                 | ((a0,a1),(b0,b1)) ->
+                     let a0 = self#loc a0 b0 in
+                     let a1 = self#string a1 b1 in (a0, a1)) a0 b0 in
+            `TyVrn a0
         | (`TyVrnEq a0,`TyVrnEq b0) ->
             let a0 =
               (fun a0  b0  ->
@@ -9565,15 +9565,6 @@ module Make(MetaLoc:META_LOC) =
                 `ExApp (_loc, (`ExVrn (_loc, "TyAnP")), (meta_loc _loc a0))
             | `TyAnM a0 ->
                 `ExApp (_loc, (`ExVrn (_loc, "TyAnM")), (meta_loc _loc a0))
-            | `TyVrn a0 ->
-                `ExApp
-                  (_loc, (`ExVrn (_loc, "TyVrn")),
-                    (((fun _loc  (a0,a1)  ->
-                         `ExTup
-                           (_loc,
-                             (`ExCom
-                                (_loc, (meta_loc _loc a0),
-                                  (meta_string _loc a1)))))) _loc a0))
             | `TyRec a0 ->
                 `ExApp
                   (_loc, (`ExVrn (_loc, "TyRec")),
@@ -9696,6 +9687,15 @@ module Make(MetaLoc:META_LOC) =
                                   (`ExCom
                                      (_loc, (meta_ctyp _loc a1),
                                        (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyVrn a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "TyVrn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
             | `TyVrnEq a0 ->
                 `ExApp
                   (_loc, (`ExVrn (_loc, "TyVrnEq")),
@@ -11878,15 +11878,6 @@ module Make(MetaLoc:META_LOC) =
                 `PaApp (_loc, (`PaVrn (_loc, "TyAnP")), (meta_loc _loc a0))
             | `TyAnM a0 ->
                 `PaApp (_loc, (`PaVrn (_loc, "TyAnM")), (meta_loc _loc a0))
-            | `TyVrn a0 ->
-                `PaApp
-                  (_loc, (`PaVrn (_loc, "TyVrn")),
-                    (((fun _loc  (a0,a1)  ->
-                         `PaTup
-                           (_loc,
-                             (`PaCom
-                                (_loc, (meta_loc _loc a0),
-                                  (meta_string _loc a1)))))) _loc a0))
             | `TyRec a0 ->
                 `PaApp
                   (_loc, (`PaVrn (_loc, "TyRec")),
@@ -12009,6 +12000,15 @@ module Make(MetaLoc:META_LOC) =
                                   (`PaCom
                                      (_loc, (meta_ctyp _loc a1),
                                        (meta_ctyp _loc a2)))))))) _loc a0))
+            | `TyVrn a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "TyVrn")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
             | `TyVrnEq a0 ->
                 `PaApp
                   (_loc, (`PaVrn (_loc, "TyVrnEq")),

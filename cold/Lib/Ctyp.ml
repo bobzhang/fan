@@ -285,5 +285,21 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
         fail
           (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}"
              (to_string.contents t0) (to_string.contents ty))
+let view_adt (t : ctyp) =
+  let bs = FanAst.list_of_ctyp t [] in
+  List.map
+    (function
+     | `TyId (_loc,`Uid (_,cons)) -> `branch (cons, [])
+     | `Of (_loc,`TyId (_,`Uid (_,cons)),t) ->
+         `branch (cons, (FanAst.list_of_ctyp t []))
+     | _ -> assert false) bs
+let view_variant (t : ctyp) =
+  (let lst = FanAst.list_of_ctyp t [] in
+   List.map
+     (function
+      | `Of (_loc,`TyVrn (_,cons),`Tup (_,t)) ->
+          `variant (cons, (FanAst.list_of_ctyp t []))
+      | `TyVrn (_loc,cons) -> `variant (cons, [])
+      | u -> `abbrev u) lst : vbranch list )
 let of_str_item =
   function | `Type (_loc,x) -> x | _ -> invalid_arg "Ctyp.of_str_item"

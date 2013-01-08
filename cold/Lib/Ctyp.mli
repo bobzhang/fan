@@ -74,3 +74,6 @@ val reduce_data_ctors :
 
 (* @raise Invalid_argument *)        
 val of_str_item: str_item -> ctyp 
+
+val view_adt: ctyp -> FSig.branch list
+val view_variant: ctyp -> FSig.vbranch list    

@@ -43,6 +43,11 @@ type ty_info = {
   }
 ;
 
+type vbranch =
+   [= `variant of (string* list ctyp)
+   | `abbrev of ctyp ];
+type branch =
+   [= `branch of (string * list ctyp) ];
 (* Feed to user to compose an expression node *)
 type record_col = {
     label: string ;

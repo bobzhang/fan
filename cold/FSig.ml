@@ -22,6 +22,8 @@ type ty_info =
   id_patt: patt;
   id_exprs: expr list;
   id_patts: patt list} 
+type vbranch = [ `variant of (string* ctyp list) | `abbrev of ctyp] 
+type branch = [ `branch of (string* ctyp list)] 
 type record_col =  {
   label: string;
   is_mutable: bool;

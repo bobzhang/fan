@@ -206,6 +206,7 @@ module type Syntax =
     val entry : FanGrammar.entry Gram.t
     val extend_body : expr Gram.t
     val delete_rule_body : expr Gram.t
+    val dot_lstrings : string list Gram.t
     val parse_expr : FanLoc.t -> string -> expr
     val parse_patt : FanLoc.t -> string -> patt
     val parse_ident : FanLoc.t -> string -> ident

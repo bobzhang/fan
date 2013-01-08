@@ -122,15 +122,15 @@ module Make(S:FSig.Config) =
     let expr_of_ctyp simple_expr_of_ctyp (ty : ctyp) =
       let open ErrorMonad in
         let f cons tyargs acc =
-          let args_length = List.length tyargs in
-          let p =
-            Patt.gen_tuple_n ?cons_transform:S.cons_transform ~arity:S.arity
-              cons args_length in
-          let mk (cons,tyargs) =
-            let exprs = List.mapi (mapi_expr simple_expr_of_ctyp) tyargs in
-            S.mk_variant cons exprs in
-          let e = mk (cons, tyargs) in (`Case (_loc, p, (`Nil _loc), e)) ::
-            acc in
+          (let args_length = List.length tyargs in
+           let p =
+             Patt.gen_tuple_n ?cons_transform:S.cons_transform ~arity:S.arity
+               cons args_length in
+           let mk (cons,tyargs) =
+             let exprs = List.mapi (mapi_expr simple_expr_of_ctyp) tyargs in
+             S.mk_variant cons exprs in
+           let e = mk (cons, tyargs) in (`Case (_loc, p, (`Nil _loc), e)) ::
+             acc : match_case list ) in
         let info =
           match ty with
           | `Sum (_loc,t) ->

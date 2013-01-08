@@ -55,6 +55,8 @@ let print_warning loc txt = !current_warning loc txt;
   optional_type_parameter  method_opt_override  value_val_opt_override  unquoted_typevars  lang
   (* for the grammar module *)  
   symbol  rule  rule_list  psymbol  level  level_list  entry  extend_body  delete_rule_body
+
+  dot_lstrings
 |};
   
 let antiquot_expr = Gram.eoi_entry expr ; 

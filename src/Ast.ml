@@ -107,7 +107,7 @@
     | `TyQuM of (loc * string) (* -'s *)
     | `TyAnP of loc (* +_ *)
     | `TyAnM of loc (* -_ *)
-    | `TyVrn of (loc * string) (* `s *)
+
     | `TyRec of (loc * ctyp) (* { t } *) (* { foo : int ; bar : mutable string } *)
     | `TyCol of (loc * ctyp * ctyp) (* t : t *)
     | `TySem of (loc * ctyp * ctyp) (* t; t *)
@@ -120,10 +120,13 @@
     | `Mutable of (loc * ctyp) (* mutable t *)
     | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
     | `Sta of (loc * ctyp * ctyp) (* t * t *)
+
+    | `TyVrn of (loc * string) (* `s *)          
     | `TyVrnEq of (loc * ctyp) (* [ = t ] *)
     | `TyVrnSup of (loc * ctyp) (* [ > t ] *)
     | `TyVrnInf of (loc * ctyp) (* [ < t ] *)
     | `TyVrnInfSup of (loc * ctyp * ctyp) (* [ < t > t ] *)
+          
     | `TyAmp of (loc * ctyp * ctyp) (* t & t *)
     | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
     | `Package of (loc * module_type) (* (module S) *)

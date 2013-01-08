@@ -4,7 +4,7 @@ open Ast
 val comma : patt -> patt -> patt
 
 val app : patt -> patt -> patt
-(* val ( <$ ) : patt -> patt -> patt *)
+
 
 val sem : patt -> patt -> patt
 val list_of_app : patt -> patt list

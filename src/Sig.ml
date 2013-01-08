@@ -217,7 +217,7 @@ module type Syntax = sig
   val entry: Gram.t FanGrammar.entry;
   val extend_body: Gram.t expr;
   val delete_rule_body: Gram.t expr;
-
+  val dot_lstrings: Gram.t (list string);  
   val parse_expr: FanLoc.t -> string -> expr;
     (**  generally "patt; EOI". *)
   val parse_patt: FanLoc.t -> string -> patt;
@@ -226,7 +226,7 @@ module type Syntax = sig
 
   val expr_filter: expr -> expr;
   val patt_filter: patt -> patt;
-
+    
   module Options:sig
     type spec_list = list (string * FanArg.spec * string);
     val init : spec_list -> unit;

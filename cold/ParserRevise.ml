@@ -960,19 +960,22 @@ let apply () =
        [(None, None,
           [([`Slist1sep
                ((Gram.srules pos_exprs
-                   [([`Stoken
-                        (((function | `STR (_,_) -> true | _ -> false)),
-                          (`Normal, "`STR (_,_)"));
+                   [([`Snterm
+                        (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ));
                      `Skeyword ":";
-                     `Stoken
-                       (((function | `STR (_,_) -> true | _ -> false)),
-                         (`Normal, "`STR (_,_)"))],
+                     `Snterm
+                       (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
                       (Gram.mk_action
-                         (fun (__fan_2 : [> FanToken.t])  _ 
-                            (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                            match (__fan_2, __fan_0) with
-                            | (`STR (_,y),`STR (_,x)) -> ((x, y) : 'e__2 )
-                            | _ -> assert false)))]), (`Skeyword ";"))],
+                         (fun (rs : 'dot_lstrings)  _  (ls : 'dot_lstrings) 
+                            (_loc : FanLoc.t)  ->
+                            (((String.concat "." ls), (String.concat "." rs)) : 
+                            'e__2 ))));
+                   ([`Snterm
+                       (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
+                     (Gram.mk_action
+                        (fun (ls : 'dot_lstrings)  (_loc : FanLoc.t)  ->
+                           (let x = String.concat "." ls in (x, x) : 
+                           'e__2 ))))]), (`Skeyword ";"))],
              (Gram.mk_action
                 (fun (xys : 'e__2 list)  (_loc : FanLoc.t)  ->
                    (let old = AstQuotation.map.contents in
@@ -4167,6 +4170,28 @@ let apply () =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `UID s -> (`IdAcc (_loc, (`Uid (_loc, s)), j) : 'ident )
+                  | _ -> assert false)))])]);
+   Gram.extend (dot_lstrings : 'dot_lstrings Gram.t )
+     (None,
+       [(None, None,
+          [([`Stoken
+               (((function | `LID _ -> true | _ -> false)),
+                 (`Normal, "`LID _"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `LID i -> ([i] : 'dot_lstrings )
+                   | _ -> assert false)));
+          ([`Stoken
+              (((function | `LID _ -> true | _ -> false)),
+                (`Normal, "`LID _"));
+           `Skeyword ".";
+           `Sself],
+            (Gram.mk_action
+               (fun (xs : 'dot_lstrings)  _  (__fan_0 : [> FanToken.t]) 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `LID i -> (i :: xs : 'dot_lstrings )
                   | _ -> assert false)))])]);
    Gram.extend
      (module_longident_dot_lparen : 'module_longident_dot_lparen Gram.t )

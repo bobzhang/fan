@@ -28,7 +28,7 @@ module Make(S:FSig.Config) = struct
   
 
   (* collect the partial evaluated Ast node  and meta data   *)      
-  let mapi_expr simple_expr_of_ctyp i (y:ctyp)  = with {"patt":"ctyp"}
+  let mapi_expr simple_expr_of_ctyp i (y:ctyp)  = with {patt:ctyp}
     let name_expr = simple_expr_of_ctyp y in 
     let base = name_expr  +> S.names in
     (** FIXME as a tuple it is useful when arity> 1??? *)
@@ -44,7 +44,7 @@ module Make(S:FSig.Config) = struct
     {name_expr; expr; id_expr; id_exprs; id_patt; id_patts;exp0;pat0};       
 
   (* @raise Invalid_argument when type can not be handled  *)  
-  let tuple_expr_of_ctyp simple_expr_of_ctyp ty = with {"patt":"ctyp"}
+  let tuple_expr_of_ctyp simple_expr_of_ctyp ty = with {patt:ctyp}
     let open ErrorMonad in 
     let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in 
     match ty with
@@ -71,7 +71,7 @@ module Make(S:FSig.Config) = struct
    return type is result
   Plz supply current type [type list 'a] =>  [list]
    *)    
-  let rec  normal_simple_expr_of_ctyp cxt ty = with {"patt":"ctyp"}
+  let rec  normal_simple_expr_of_ctyp cxt ty = with {patt:ctyp}
     let open Transform in
     let open ErrorMonad in
     let right_trans = transform S.right_type_id in
@@ -111,7 +111,7 @@ module Make(S:FSig.Config) = struct
         self#m_list (fun self -> self#tree mf_a)
    *)      
   let rec obj_simple_expr_of_ctyp
-        ty = with {"patt":"ctyp"}
+        ty = with {patt:ctyp}
     let open Transform in 
     ErrorMonad.(
     let trans = transform S.right_type_id in
@@ -146,9 +146,9 @@ module Make(S:FSig.Config) = struct
     assume input is  variant type
     accept variant input type to generate  a function expression 
    *)  
-  let expr_of_ctyp  simple_expr_of_ctyp (ty:ctyp)  = with {"patt":"ctyp"}
+  let expr_of_ctyp  simple_expr_of_ctyp (ty:ctyp)  = with {patt:ctyp}
     let open ErrorMonad in 
-    let f  cons tyargs acc = 
+    let f  cons tyargs acc : list match_case = 
         let args_length = List.length tyargs in  (* ` is not needed here *)
           let p =
             (* calling gen_tuple_n*)
@@ -158,8 +158,29 @@ module Make(S:FSig.Config) = struct
             let exprs = List.mapi (mapi_expr simple_expr_of_ctyp) tyargs in
             S.mk_variant cons exprs in
         let e = mk (cons,tyargs) in
-        [ {:match_case| $pat:p -> $e |} :: acc ] in 
-        (* {:match_case| $acc$ | $p$ -> $e$  |} in *)
+        [ {:match_case| $pat:p -> $e |} :: acc ] in  begin 
+    (* match ty with *)
+    (* [ {| [= $t ] |} | {| [> $t]|} *)
+    (* | {| [< $t > $_ ] |} | {| [<$t ]|} -> *)
+    (*   let ls = view_variant t   in *)
+    (*   List.fold_left *)
+    (*     (fun acc x -> *)
+    (*       match x with *)
+    (*       [ `varaint (cons,tyargs) ->    *)
+    (*         f cons tyargs acc *)
+    (*       | `abbrev c -> *)
+    (*           simple_expr_of_ctyp ctyp >>= *)
+    (*               (fun expr -> *)
+    (*                 return & eta_expand (expr+>S.names) S.arity ) *)
+    (*       ] *)
+    (*     ) [] ls  >>= *)
+    (*   (fun res -> *)
+    (*     return (currying ~arity:S.arity res) *)
+    (*   ) *)
+    (* | {| [ $t ]|} -> *)
+    (*     let ls = view_adt t in *)
+        
+    (* ]; *)
     let info =
       match ty with
       (* FIXME TyVrnInfSup to be added *)
@@ -178,10 +199,11 @@ module Make(S:FSig.Config) = struct
           [ S.trail info :: res ]
         else res in
       List.rev t in 
-      return (currying ~arity:S.arity res ));
+      return (currying ~arity:S.arity res ))
+ end;
 
 
-  let mk_prefix  vars (acc:expr)  = with {"patt":"ctyp"}
+  let mk_prefix  vars (acc:expr)  = with {patt:ctyp}
     let open Transform in 
     let varf = basic_transform S.left_type_variable in
     let  f var acc = match var with
@@ -196,7 +218,7 @@ module Make(S:FSig.Config) = struct
     Given type declarations, generate corresponding
     Ast node represent the [function]
     (combine both expr_of_ctyp and simple_expr_of_ctyp) *)  
-  let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp  = with {"patt":"ctyp"}
+  let fun_of_tydcl simple_expr_of_ctyp expr_of_ctyp  = with {patt:ctyp}
     let open ErrorMonad in fun
     [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
         let ctyp =
@@ -252,7 +274,7 @@ module Make(S:FSig.Config) = struct
               (* (!Ctyp.to_string tydcl) *)) ];
 
   (* *)    
-  let binding_of_tydcl simple_expr_of_ctyp _name tydcl = with {"patt":"ctyp"}
+  let binding_of_tydcl simple_expr_of_ctyp _name tydcl = with {patt:ctyp}
     let open ErrorMonad in
     let open Transform in 
     let tctor_var = basic_transform S.left_type_id in
@@ -311,7 +333,7 @@ module Make(S:FSig.Config) = struct
      all the types in one module will derive a class 
     *)
   let obj_of_module_types ?module_name base class_name  simple_expr_of_ctyp
-      (k:FSig.k) (lst:module_types) = with {"patt":"ctyp"}
+      (k:FSig.k) (lst:module_types) = with {patt:ctyp}
     let open ErrorMonad in 
     let tbl = Hashtbl.create 50 in 
       let f  = fun_of_tydcl simple_expr_of_ctyp

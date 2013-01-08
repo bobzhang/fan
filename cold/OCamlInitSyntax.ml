@@ -186,6 +186,7 @@ let level_list = Gram.mk "level_list"
 let entry = Gram.mk "entry"
 let extend_body = Gram.mk "extend_body"
 let delete_rule_body = Gram.mk "delete_rule_body"
+let dot_lstrings = Gram.mk "dot_lstrings"
 let antiquot_expr = Gram.eoi_entry expr
 let antiquot_patt = Gram.eoi_entry patt
 let antiquot_ident = Gram.eoi_entry ident

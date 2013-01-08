@@ -485,12 +485,43 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
         (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}" 
            (!to_string t0 )
            (!to_string ty)) ];
+    
+let view_adt (t:ctyp) =
+  (* let t = match t with [ {| [ $t ] |} -> t | _ -> assert false] in *)
+  let bs = FanAst.list_of_ctyp t [] in
+  List.map
+    (fun
+      [ {|$uid:cons|} ->
+        `branch (cons,[])
+       | {|$uid:cons of $t|} ->
+           `branch (cons, FanAst.list_of_ctyp t [])
+       | _ -> assert false ]) bs
+  ;
 (*
-let reduce_variant (ty:ctyp) (init:'a) (f: string -> list ctyp -> 'e) =
-  let open ErrorMonad in
-  let rec loop acc  =  fun
-    [ {| [ $t ] |} | {| [= > $t] |} |] in
-  
-*)
+  {[
+  L.Ctyp.reduce_variant {:ctyp| [= `Chr of (loc * string) (* 'c' *)
+    | `Int of   (loc * string) (* 42 *)
+      | `Int32 of (loc * string)
+      | `Int64 of (loc * string)
+      | `Flo of (loc * string)
+      | `NativeInt of (loc * string)
+        (* s *) (* "foo" *)
+      | `Str of (loc * string) | u | list int | [= `b | `c ] ] |};
+  ]}
+ *)    
+let view_variant (t:ctyp) : list vbranch =
+  (* let open ErrorMonad in *)
+  (* let t = match t with *)
+  (*   [  {| [>$t] |} | {| [< $t ] |} *)
+  (*   | {| [=$t]|}  | {| [< $t > $_ ]|}-> t *)
+  (*   | _ -> assert false] in *)
+  let lst = FanAst.list_of_ctyp t []  in
+  List.map (
+  fun [ {|`$cons of $tup:t |}  ->  `variant (cons,FanAst.list_of_ctyp t [])
+      | {| `$cons |} -> `variant (cons, [])
+      | u -> `abbrev u ] ) lst 
+;
+
+    
 let of_str_item = fun
   [ {:str_item|type $x|} -> x | _ -> invalid_arg "Ctyp.of_str_item" ];

@@ -260,13 +260,24 @@ let apply () = begin
        [ `STR(_,s) ->
         begin let old = !AstQuotation.default;  AstQuotation.default := s; old end ]
        pos_exprs:
-       [ L1 [ `STR(_,x); ":";`STR(_,y) -> (x,y) ] SEP ";"{xys}  ->
-         begin
-           let old = !AstQuotation.map;
-           AstQuotation.map := SMap.add_list xys old;
+       [ L1[dot_lstrings{ls};":";dot_lstrings{rs}
+            -> (String.concat "." ls, String.concat "." rs)
+            | dot_lstrings{ls} ->
+                let x = String.concat "." ls in
+                (x,x) ] SEP ";"{xys} -> begin
+         let old = !AstQuotation.map;
+         AstQuotation.map := SMap.add_list xys old;
            old
-         end
+       end
        ]
+       (* pos_exprs: *)
+       (* [ L1 [ `STR(_,x); ":";`STR(_,y) -> (x,y) ] SEP ";"{xys}  -> *)
+       (*   begin *)
+       (*     let old = !AstQuotation.map; *)
+       (*     AstQuotation.map := SMap.add_list xys old; *)
+       (*     old *)
+       (*   end *)
+       (* ] *)
        fun_def_patt:
        ["(";"type";a_LIDENT{i};")" -> fun e -> {|fun (type $i) -> $e |}
        | ipatt{p} -> fun e -> {| fun $p -> $e |}
@@ -851,13 +862,17 @@ let apply () = begin
         | `UID s ; "." ; S{j} -> {|$uid:s.$j|}
         | "("; S{i};S{j}; ")" -> `IdApp _loc i j  ] }
       ident:
-      [ `ANT ((""|"id"|"anti"|"list" |"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      [ `ANT ((""|"id"|"anti"|"list" |"uid" as n),s) ->
+        {| $(anti:mk_anti ~c:"ident" n s) |}
       | `ANT (("lid" as n), s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-      | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} -> {| $(anti:mk_anti ~c:"ident" n s).$i |}
+      | `ANT ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} ->
+          {| $(anti:mk_anti ~c:"ident" n s).$i |}
       | `LID i -> {| $lid:i |}
       | `UID i -> {| $uid:i |}
       | `UID s ; "." ; S{j} -> {|$uid:s.$j|}  ]
-      
+      dot_lstrings:
+      [ `LID i -> [i]
+      | `LID i ; "." ; S {xs} -> [i::xs] ]
       module_longident_dot_lparen:
       [ `ANT ((""|"id"|"anti"|"list"|"uid" as n),s); "."; "(" ->   {| $(anti:mk_anti ~c:"ident" n s) |}
 

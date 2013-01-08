@@ -193,7 +193,7 @@ let bad_patt _loc =
    has a special meaning, then that replacment will be used
  *)  
 let substp loc env =
-  let rec loop = with {"patt":"expr";"expr":"patt"} fun
+  let rec loop = with {patt:expr;expr:patt} fun
     [ {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
     | {| |} -> {@loc| |}
     | {| $lid:x |} ->
@@ -207,7 +207,7 @@ let substp loc env =
     | {| $tup:x |} -> {@loc| $(tup:loop x) |}
     | {| $x1, $x2 |} -> {@loc| $(loop x1), $(loop x2) |}
     | {| { $bi } |} ->
-        let rec substbi = with {"patt":"rec_binding";"expr":"patt"} fun
+        let rec substbi = with {patt:rec_binding;expr:patt} fun
           [ {| $b1; $b2 |} -> {@loc| $(substbi b1); $(substbi b2) |}
           | {| $id:i = $e |} -> {@loc| $i = $(loop e) |}
           | _ -> bad_patt _loc ] in
