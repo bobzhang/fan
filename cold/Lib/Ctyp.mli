@@ -18,7 +18,7 @@ val app : ctyp -> ctyp -> ctyp
 
 val comma : ctyp -> ctyp -> ctyp
 
-val ( <$ ) : ctyp -> ctyp -> ctyp
+(* val ( <$ ) : ctyp -> ctyp -> ctyp *)
 
 val apply : ctyp -> ctyp list -> ctyp
 

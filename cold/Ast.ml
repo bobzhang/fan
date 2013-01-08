@@ -1,9 +1,9 @@
 type loc = FanLoc.t 
-and literal =
+type literal =
   [ `Chr of (loc* string) | `Int of (loc* string) | `Int32 of (loc* string)
-  | `Int64 of (loc* string) | `NativeInt of (loc* string)
-  | `Str of (loc* string)] 
-and rec_flag = [ `Recursive of loc | `ReNil of loc | `Ant of (loc* string)] 
+  | `Int64 of (loc* string) | `Flo of (loc* string)
+  | `NativeInt of (loc* string) | `Str of (loc* string)] 
+type rec_flag = [ `Recursive of loc | `ReNil of loc | `Ant of (loc* string)] 
 and direction_flag = [ `To of loc | `Downto of loc | `Ant of (loc* string)] 
 and mutable_flag = [ `Mutable of loc | `MuNil of loc | `Ant of (loc* string)] 
 and private_flag = [ `Private of loc | `PrNil of loc | `Ant of (loc* string)] 

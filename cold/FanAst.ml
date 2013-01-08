@@ -76,6 +76,12 @@ class map =
                let a0 = self#loc a0 in let a1 = self#string a1 in (a0, a1))
               a0 in
           `Int64 a0
+      | `Flo a0 ->
+          let a0 =
+            (fun (a0,a1)  ->
+               let a0 = self#loc a0 in let a1 = self#string a1 in (a0, a1))
+              a0 in
+          `Flo a0
       | `NativeInt a0 ->
           let a0 =
             (fun (a0,a1)  ->
@@ -1619,6 +1625,11 @@ class print =
               (fun fmt  (a0,a1)  ->
                  Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
                    self#string a1) a0
+        | `Flo a0 ->
+            Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
+              (fun fmt  (a0,a1)  ->
+                 Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#loc a0
+                   self#string a1) a0
         | `NativeInt a0 ->
             Format.fprintf fmt "@[<1>(`NativeInt@ %a)@]"
               (fun fmt  (a0,a1)  ->
@@ -2855,6 +2866,8 @@ class fold =
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `Int64 a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
+      | `Flo a0 ->
+          ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `NativeInt a0 ->
           ((fun (a0,a1)  -> let self = self#loc a0 in self#string a1)) a0
       | `Str a0 ->
@@ -3687,6 +3700,11 @@ class fold2 =
                 | ((a0,a1),(b0,b1)) ->
                     let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
         | (`Int64 a0,`Int64 b0) ->
+            ((fun a0  b0  ->
+                match (a0, b0) with
+                | ((a0,a1),(b0,b1)) ->
+                    let self = self#loc a0 b0 in self#string a1 b1)) a0 b0
+        | (`Flo a0,`Flo b0) ->
             ((fun a0  b0  ->
                 match (a0, b0) with
                 | ((a0,a1),(b0,b1)) ->
@@ -5138,9 +5156,9 @@ class fold2 =
         | (_,_) -> invalid_arg "fold2 failure"
     method fanloc_t : FanLoc.t -> FanLoc.t -> 'self_type= self#unknown
   end
-let rec pp_print_loc: 'fmt -> loc -> 'result =
+let pp_print_loc: 'fmt -> loc -> 'result =
   fun fmt  a0  -> FanLoc.pp_print_t fmt a0
-and pp_print_literal: 'fmt -> literal -> 'result =
+let pp_print_literal: 'fmt -> literal -> 'result =
   fun fmt  ->
     function
     | `Chr a0 ->
@@ -5163,6 +5181,11 @@ and pp_print_literal: 'fmt -> literal -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
+    | `Flo a0 ->
+        Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
+          (fun fmt  (a0,a1)  ->
+             Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
+               pp_print_string a1) a0
     | `NativeInt a0 ->
         Format.fprintf fmt "@[<1>(`NativeInt@ %a)@]"
           (fun fmt  (a0,a1)  ->
@@ -5173,7 +5196,7 @@ and pp_print_literal: 'fmt -> literal -> 'result =
           (fun fmt  (a0,a1)  ->
              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_loc a0
                pp_print_string a1) a0
-and pp_print_rec_flag: 'fmt -> rec_flag -> 'result =
+let rec pp_print_rec_flag: 'fmt -> rec_flag -> 'result =
   fun fmt  ->
     function
     | `Recursive a0 ->
@@ -6402,6 +6425,7 @@ class iter =
       | `Int a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
       | `Int32 a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
       | `Int64 a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
+      | `Flo a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
       | `NativeInt a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
       | `Str a0 -> ((fun (a0,a1)  -> self#loc a0; self#string a1)) a0
     method rec_flag : rec_flag -> 'result=
@@ -6995,6 +7019,14 @@ class map2 =
                      let a0 = self#loc a0 b0 in
                      let a1 = self#string a1 b1 in (a0, a1)) a0 b0 in
             `Int64 a0
+        | (`Flo a0,`Flo b0) ->
+            let a0 =
+              (fun a0  b0  ->
+                 match (a0, b0) with
+                 | ((a0,a1),(b0,b1)) ->
+                     let a0 = self#loc a0 b0 in
+                     let a1 = self#string a1 b1 in (a0, a1)) a0 b0 in
+            `Flo a0
         | (`NativeInt a0,`NativeInt b0) ->
             let a0 =
               (fun a0  b0  ->
@@ -9153,7 +9185,7 @@ module Make(MetaLoc:META_LOC) =
       struct
         open MExpr
         let meta_loc = MetaLoc.meta_loc_expr
-        let rec meta_literal: 'loc -> literal -> 'result =
+        let meta_literal: 'loc -> literal -> 'result =
           fun _loc  ->
             function
             | `Chr a0 ->
@@ -9192,6 +9224,15 @@ module Make(MetaLoc:META_LOC) =
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_string _loc a1)))))) _loc a0))
+            | `Flo a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Flo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `ExTup
+                           (_loc,
+                             (`ExCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
             | `NativeInt a0 ->
                 `ExApp
                   (_loc, (`ExVrn (_loc, "NativeInt")),
@@ -9210,7 +9251,7 @@ module Make(MetaLoc:META_LOC) =
                              (`ExCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_string _loc a1)))))) _loc a0))
-        and meta_rec_flag: 'loc -> rec_flag -> 'result =
+        let rec meta_rec_flag: 'loc -> rec_flag -> 'result =
           fun _loc  ->
             function
             | `Recursive a0 ->
@@ -11457,7 +11498,7 @@ module Make(MetaLoc:META_LOC) =
       struct
         open MPatt
         let meta_loc = MetaLoc.meta_loc_patt
-        let rec meta_literal: 'loc -> literal -> 'result =
+        let meta_literal: 'loc -> literal -> 'result =
           fun _loc  ->
             function
             | `Chr a0 ->
@@ -11496,6 +11537,15 @@ module Make(MetaLoc:META_LOC) =
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_string _loc a1)))))) _loc a0))
+            | `Flo a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Flo")),
+                    (((fun _loc  (a0,a1)  ->
+                         `PaTup
+                           (_loc,
+                             (`PaCom
+                                (_loc, (meta_loc _loc a0),
+                                  (meta_string _loc a1)))))) _loc a0))
             | `NativeInt a0 ->
                 `PaApp
                   (_loc, (`PaVrn (_loc, "NativeInt")),
@@ -11514,7 +11564,7 @@ module Make(MetaLoc:META_LOC) =
                              (`PaCom
                                 (_loc, (meta_loc _loc a0),
                                   (meta_string _loc a1)))))) _loc a0))
-        and meta_rec_flag: 'loc -> rec_flag -> 'result =
+        let rec meta_rec_flag: 'loc -> rec_flag -> 'result =
           fun _loc  ->
             function
             | `Recursive a0 ->

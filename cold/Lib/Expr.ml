@@ -474,7 +474,6 @@ let fun_args _loc args body =
 let _loc = FanLoc.ghost
 let app a b = `ExApp (_loc, a, b)
 let comma a b = `ExCom (_loc, a, b)
-let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
   let _loc = FanLoc.merge (FanAst.loc_of_expr a) (FanAst.loc_of_expr b) in

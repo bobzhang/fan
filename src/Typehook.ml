@@ -208,7 +208,7 @@ let traversal () : traversal  = object (self:'self_type)
     end
     | {| type $((`TyDcl (_, name, _, _, _) as t)) |} as x -> begin
         let item =  `Single (name,t) ;
-          eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
+        if !print_collect_module_types then eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
         self#update_cur_module_types (fun lst -> [ item :: lst]);
        (* if !keep then x else {| |} *)
        x (* always keep *)

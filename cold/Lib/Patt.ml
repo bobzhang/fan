@@ -4,7 +4,6 @@ open FSig
 let _loc = FanLoc.ghost
 let app a b = `PaApp (_loc, a, b)
 let comma a b = `PaCom (_loc, a, b)
-let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
   let _loc = FanLoc.merge (FanAst.loc_of_patt a) (FanAst.loc_of_patt b) in

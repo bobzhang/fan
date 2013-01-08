@@ -12,7 +12,7 @@ let comma a b = {| $a, $b |};
 (*
    Left associativity
  *)  
-let ( <$ ) = app;
+(* let ( <$ ) = app; *)
 
 
 (*

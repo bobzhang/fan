@@ -150,8 +150,8 @@ and meth_list fl acc =
   match fl with
   | `Nil _loc -> acc
   | `TySem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
-  | `TyCol (loc,`TyId (_,`Lid (_,lab)),t) ->
-      (mkfield loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
+  | `TyCol (_loc,`TyId (_,`Lid (_,lab)),t) ->
+      (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
   | _ -> assert false
 and package_type_constraints wc acc =
   match wc with

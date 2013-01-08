@@ -174,32 +174,34 @@ let rec ctyp = fun (* ctyp -> core_type *)
     `TyAnP _ | `TyAnM _ | `TyTypePol (_, _, _) |
     `TyObj (_, _, (`Ant _)) | `Nil _ | `Tup (_,_) ->
       assert false ]
-and row_field = fun (* ctyp -> row_field list*)
-  [ {:ctyp||} -> []
-  | {:ctyp| `$i |} -> [Rtag i true []]
-  | {:ctyp| `$i of & $t |} -> [Rtag i true (List.map ctyp (list_of_ctyp t []))]
-  | {:ctyp| `$i of $t |} -> [Rtag i false (List.map ctyp (list_of_ctyp t []))]
-  | {:ctyp| $t1 | $t2 |} -> row_field t1 @ row_field t2
+and row_field = with "ctyp" fun 
+  [ {||} -> []
+  | {| `$i |} -> [Rtag i true []]
+  | {| `$i of & $t |} -> [Rtag i true (List.map ctyp (list_of_ctyp t []))]
+  | {| `$i of $t |} -> [Rtag i false (List.map ctyp (list_of_ctyp t []))]
+  | {| $t1 | $t2 |} -> row_field t1 @ row_field t2
   | t -> [Rinherit (ctyp t)] ]
-and meth_list fl acc = match fl with (* ctyp -> core_field_type list -> core_field_type list *)
-  [ {:ctyp||} -> acc
-  | {:ctyp| $t1; $t2 |} -> meth_list t1 (meth_list t2 acc)
-  | {:ctyp@loc| $lid:lab : $t |} ->
-      [mkfield loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
+and meth_list fl acc = with "ctyp"
+  match fl with
+  [ {||} -> acc
+  | {| $t1; $t2 |} -> meth_list t1 (meth_list t2 acc)
+  | {| $lid:lab : $t |} ->
+      [mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
   | _ -> assert false ]
 
-and package_type_constraints wc acc = match wc with
-  [ {:with_constr||} -> acc
-  | {:with_constr| type $id:id = $ct |} ->
+and package_type_constraints wc acc = with "with_constr"
+  match wc with
+  [ {||} -> acc
+  | {| type $id:id = $ct |} ->
       [(ident id, ctyp ct) :: acc]
-  | {:with_constr| $wc1 and $wc2 |} ->
+  | {| $wc1 and $wc2 |} ->
       package_type_constraints wc1 (package_type_constraints wc2 acc)
   | _ -> error (loc_of_with_constr wc) "unexpected `with constraint' for a package type" ]
 
-and package_type : module_type -> package_type = fun
-  [ {:module_type| $id:i with $wc |} ->
+and package_type : module_type -> package_type = with "module_type" fun
+  [ {| $id:i with $wc |} ->
     (long_uident i, package_type_constraints wc [])
-  | {:module_type| $id:i |} -> (long_uident i, [])
+  | {| $id:i |} -> (long_uident i, [])
   | mt -> error (loc_of_module_type mt) "unexpected package type" ] ;
 
 let mktype loc tl cl tk tp tm =

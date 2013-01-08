@@ -48,9 +48,9 @@ val fun_args : loc -> patt list -> expr -> expr
 val _loc : FanLoc.t
 
 val app : expr -> expr -> expr
-
+(* val ( <$ ) : expr -> expr -> expr *)
 val comma : expr -> expr -> expr
-val ( <$ ) : expr -> expr -> expr
+
 val sem : expr -> expr -> expr
 val list_of_app : expr -> expr list
 val list_of_com : expr -> expr list

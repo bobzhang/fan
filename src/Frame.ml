@@ -160,7 +160,8 @@ module Make(S:FSig.Config) = struct
         let e = mk (cons,tyargs) in
         [ {:match_case| $pat:p -> $e |} :: acc ] in 
         (* {:match_case| $acc$ | $p$ -> $e$  |} in *)
-    let info = match ty with
+    let info =
+      match ty with
       (* FIXME TyVrnInfSup to be added *)
       [ {|  [ $t]  |}  -> (TyVrn, List.length (FanAst.list_of_ctyp t []))
       | {| [= $t ] |} -> (TyVrnEq, List.length (FanAst.list_of_ctyp t []))

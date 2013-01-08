@@ -32,17 +32,18 @@
  *)
 
 
-   type loc = FanLoc.t
+   type loc = FanLoc.t;
 
-    and  literal =
+    type literal =
     [= `Chr of (loc * string) (* 'c' *)
     | `Int of (loc * string) (* 42 *)
     | `Int32 of (loc * string)
     | `Int64 of (loc * string)
+    | `Flo of (loc * string)
     | `NativeInt of (loc * string)
       (* s *) (* "foo" *)
-    | `Str of (loc * string)]   
-   and rec_flag =
+    | `Str of (loc * string)];   
+   type rec_flag =
     [= `Recursive of loc 
     | `ReNil of loc 
     | `Ant of (loc*string) ]
@@ -186,7 +187,7 @@
     | `NativeInt of (loc * string)
       (* s *) (* "foo" *)
     | `Str of (loc * string)
-          
+    (* | literal      *)
     | `Label of (loc * string * expr) (* ~s or ~s:e *)
     | `Lazy of (loc * expr) (* lazy e *)
       (* let b in e or let rec b in e *)

@@ -212,7 +212,7 @@ let antifollowident =   identchar +
 let uident = uppercase identchar *
     
 let not_star_symbolchar =
-  ['$' '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
+  [(* '$' *) '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
 let symbolchar = '*' | not_star_symbolchar
 let quotchar =
   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']

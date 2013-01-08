@@ -446,9 +446,9 @@ let transform_module_types  lst =
 (* 
    {[
     reduce_data_ctors
-    {| A of option int and float | B of float |} []
+    {:ctyp| A of option int and float | B of float |} []
       (fun  s xs acc ->
-        do{ prerr_endline s; List.append xs acc })  ;
+         (prerr_endline s;  [xs :: acc] ))  ;
     A
     B
    TyId  (Lid  "float");
@@ -461,41 +461,36 @@ let transform_module_types  lst =
     [ A of [`a | `b] and int ]
  *)
 let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
-  ErrorMonad.(
-  (* antiquotation list can not be recognized in pattern
-	    language the same applies to `int, int they behave the
-	    same *)
-	let rec loop acc t = match t with
-	[ {| $uid:cons of $tys |} ->
-	  f cons (FanAst.list_of_ctyp tys []) acc
-
-        | {| `$uid:cons of $tys |} ->
-            f ("`" ^ cons)
-              (FanAst.list_of_ctyp tys []) acc
-	| {| $uid:cons |} ->
-	    f cons [] acc
-              
-        | {|  `$uid:cons |} ->
-            f ("`"^cons) [] acc
-              
-	| {| $t1 | $t2 |} ->
-	    loop (loop acc t1) t2
-              
-        | ( {| [ $ty  ] |}  | {| [= $ty ] |} 
-        | {| [< $ty ] |}  | {| [> $ty ] |} )  ->
-            loop  acc ty     
-        | {| |} -> acc
-            (* we don't handle the type constructs  below *)
-        | t ->  raise (Unhandled t) ] in
-        try
-           return & loop init ty
-        with
-         [Unhandled t0  ->
-           fail
-           (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}" 
-              (!to_string t0 )
-              (!to_string ty)) ]);
+  let open ErrorMonad in 
+  let rec loop acc t =
+    match t with
+    [ {| $uid:cons of $tys |} ->
+      f cons (FanAst.list_of_ctyp tys []) acc
+    | {| `$cons of $tys |} ->
+        f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
+    | {| $uid:cons |} -> f cons [] acc
+    | {|  `$cons |} -> f ("`"^cons) [] acc
+    | {| $t1 | $t2 |} -> loop (loop acc t1) t2
+    | ( {| [ $ty  ] |}  | {| [= $ty ] |} 
+    | {| [< $ty ] |}  | {| [> $ty ] |} )  ->
+        loop  acc ty     
+    | {| |} -> acc
+          (* we don't handle the type constructs  below *)
+    | t ->  raise (Unhandled t) ] in
+  try
+    return & loop init ty
+  with
+    [Unhandled t0  ->
+      fail
+        (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}" 
+           (!to_string t0 )
+           (!to_string ty)) ];
+(*
+let reduce_variant (ty:ctyp) (init:'a) (f: string -> list ctyp -> 'e) =
+  let open ErrorMonad in
+  let rec loop acc  =  fun
+    [ {| [ $t ] |} | {| [= > $t] |} |] in
   
-
+*)
 let of_str_item = fun
   [ {:str_item|type $x|} -> x | _ -> invalid_arg "Ctyp.of_str_item" ];

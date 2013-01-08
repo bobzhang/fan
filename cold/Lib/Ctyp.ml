@@ -30,7 +30,6 @@ let eprint: (ctyp -> unit) ref =
 let _loc = FanLoc.ghost
 let app a b = `TyApp (_loc, a, b)
 let comma a b = `Com (_loc, a, b)
-let (<$) = app
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
   let _loc = FanLoc.merge (FanAst.loc_of_ctyp a) (FanAst.loc_of_ctyp b) in

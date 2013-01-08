@@ -777,14 +777,13 @@ let apply () = begin
         | "("; S{t}; ")" -> t
         | "["; "]" -> {| [ ] |}
         | "["; constructor_declarations{t}; "]" -> {| [ $t ] |}
-        | "["; "="; row_field{rfl}; "]" ->   {| [ = $rfl ] |}
-        | "["; ">"; "]" -> {| [ > $({||}) ] |}
+        | "["; "="; row_field{rfl}; "]" ->   {| [ = $rfl ] |} (* polymorphic variant *)
+        | "["; ">"; "]" ->   {| [> ]|}
         | "["; ">"; row_field{rfl}; "]" ->    {| [ > $rfl ] |}
         | "["; "<"; row_field{rfl}; "]" ->     {| [ < $rfl ] |}
         | "["; "<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->   {| [ < $rfl > $ntl ] |}
         | "[<"; row_field{rfl}; "]" ->    {| [ < $rfl ] |}
-        | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->
-            {| [ < $rfl > $ntl ] |}
+        | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" -> {| [ < $rfl > $ntl ] |}
         | "{"; label_declaration_list{t}; "}" -> {| { $t } |}
         | "#"; class_longident{i} -> {| # $i |}
         | "<"; opt_meth_list{t}; ">" -> t
