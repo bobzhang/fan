@@ -22,8 +22,8 @@ let mk_record_eq: FSig.record_col list -> expr =
     (cols |> (List.map (fun { info;_}  -> info))) |> (mk_variant_eq "")
 let gen_eq =
   gen_str_item ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
-    ~mk_record:mk_record_eq mk_variant_eq
-    ~trail:(`Id (_loc, (`Lid (_loc, "false"))))
+    ~mk_record:mk_record_eq ~mk_variant:mk_variant_eq
+    ~trail:(`Id (_loc, (`Lid (_loc, "false")))) ()
 let _ = [("Eq", gen_eq)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
@@ -41,12 +41,12 @@ let (gen_fold,gen_fold2) =
   let mk_record cols =
     (cols |> (List.map (fun { info;_}  -> info))) |> (mk_variant "") in
   ((gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase"
-      ~class_name:"fold" mk_variant ~names:[]),
+      ~class_name:"fold" ~mk_variant ~names:[] ()),
     (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
-       ~class_name:"fold2" mk_variant ~names:[] ~arity:2
+       ~class_name:"fold2" ~mk_variant ~names:[] ~arity:2
        ~trail:(`ExApp
                  (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
-                   (`Str (_loc, "fold2 failure"))))))
+                   (`Str (_loc, "fold2 failure")))) ()))
 let _ =
   [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
 let (gen_map,gen_map2) =
@@ -75,12 +75,12 @@ let (gen_map,gen_map2) =
          `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res)) cols
       result in
   ((gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase"
-      ~class_name:"map" mk_variant ~names:[]),
+      ~class_name:"map" ~mk_variant ~names:[] ()),
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
-       ~class_name:"map2" mk_variant ~names:[] ~arity:2
+       ~class_name:"map2" ~mk_variant ~names:[] ~arity:2
        ~trail:(`ExApp
                  (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
-                   (`Str (_loc, "map2 failure"))))))
+                   (`Str (_loc, "map2 failure")))) ()))
 let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
 let mk_variant_meta_expr cons params =
@@ -98,7 +98,7 @@ let mk_tuple_meta_expr params =
 let gen_meta_expr =
   gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_expr ~mk_record:mk_record_meta_expr
-    mk_variant_meta_expr
+    ~mk_variant:mk_variant_meta_expr ()
 let mk_variant_meta_patt cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
@@ -114,7 +114,7 @@ let mk_tuple_meta_patt params =
 let gen_meta_patt =
   gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_patt ~mk_record:mk_record_meta_patt
-    mk_variant_meta_patt
+    ~mk_variant:mk_variant_meta_patt ()
 let _ =
   Typehook.register ~position:"__MetaExpr__" ~filter:(fun s  -> s <> "loc")
     ("MetaExpr", gen_meta_expr)
@@ -155,11 +155,11 @@ let mk_record_print cols =
   ((cols |> (List.map (fun { info;_}  -> info))) |> extract) |> (apply pre)
 let gen_print =
   gen_str_item ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_tuple:mk_tuple_print
-    ~mk_record:mk_record_print mk_variant_print
+    ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
 let gen_print_obj =
   gen_object ~kind:Iter ~mk_tuple:mk_tuple_print ~base:"printbase"
     ~class_name:"print" ~names:["fmt"] ~mk_record:mk_record_print
-    mk_variant_print
+    ~mk_variant:mk_variant_print ()
 let _ =
   [("Print", gen_print); ("OPrint", gen_print_obj)] |>
     (List.iter Typehook.register)
@@ -179,5 +179,6 @@ let mk_record_iter cols =
   `Sequence (_loc, (FanAst.exSem_of_list lst))
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
-    ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter mk_variant_iter
+    ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter
+    ~mk_variant:mk_variant_iter ()
 let _ = ("OIter", gen_iter) |> Typehook.register

@@ -30,8 +30,8 @@ let gen_eq = with "expr"
     ~arity:2
     ~mk_tuple:mk_tuple_eq
     ~mk_record:mk_record_eq
-    mk_variant_eq
-    ~trail: {|false|} ;
+    ~mk_variant:mk_variant_eq
+    ~trail: {|false|} ();
   
 [ ("Eq",gen_eq) ; ] |> List.iter Typehook.register;
 
@@ -54,11 +54,11 @@ let (gen_fold,gen_fold2) = with "expr"
     cols |> List.map (fun [ {info ; _ } -> info ] )
          |> mk_variant "" in 
   (gen_object ~kind:Fold ~mk_tuple ~mk_record
-     ~base:"foldbase" ~class_name:"fold" mk_variant ~names:[],
+     ~base:"foldbase" ~class_name:"fold" ~mk_variant ~names:[] (),
    gen_object ~kind:Fold ~mk_tuple ~mk_record
      ~base:"foldbase2" ~class_name:"fold2"
-     mk_variant ~names:[]
-     ~arity:2 ~trail: {|invalid_arg "fold2 failure" |} ) ;
+     ~mk_variant ~names:[]
+     ~arity:2 ~trail: {|invalid_arg "fold2 failure" |} () ) ;
 begin  
    [("Fold",gen_fold);
     ("Fold2",gen_fold2);] |> List.iter Typehook.register;
@@ -74,27 +74,27 @@ let (gen_map,gen_map2) = with "expr"
     let result =
       params |> List.map (fun [{exp0;_} -> exp0]) |> apply (of_str cons) in 
     List.fold_right
-      (fun {(* id_patt; *)expr;pat0;_} res ->
+      (fun {expr;pat0;_} res ->
               {|let $pat:pat0 = $expr in $res |})  params result in
   let mk_tuple params =
     let result = 
       params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_of_list in
     List.fold_right
-      (fun {(* id_patt; *)expr;pat0;_} res ->
+      (fun {expr;pat0;_} res ->
         {| let $pat:pat0 = $expr in $res |}) params result in 
   let mk_record cols =
     let result = 
     cols |> List.map (fun [ {label; info={(* id_expr; *)exp0;_ } ; _ }  ->
           (label,exp0) ] )  |> mk_record   in
     List.fold_right
-      (fun {info={(* id_patt; *) expr;pat0;_};_} res ->
+      (fun {info={expr;pat0;_};_} res ->
         {|let $pat:pat0 = $expr in $res |}) cols result in
   (gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
-     mk_variant ~names:[],
+     ~mk_variant ~names:[] (),
    gen_object ~kind:Map ~mk_tuple ~mk_record
-     ~base:"mapbase2" ~class_name:"map2" mk_variant ~names:[]
-     ~arity:2 ~trail: {|  invalid_arg "map2 failure" |} );
+     ~base:"mapbase2" ~class_name:"map2" ~mk_variant ~names:[]
+     ~arity:2 ~trail: {|  invalid_arg "map2 failure" |} ());
 
 begin
   [("Map",gen_map);
@@ -126,7 +126,7 @@ let mk_tuple_meta_expr params =
 let gen_meta_expr = 
   gen_str_item  ~id:(`Pre "meta_")  ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_expr
-    ~mk_record:mk_record_meta_expr mk_variant_meta_expr;
+    ~mk_record:mk_record_meta_expr ~mk_variant:mk_variant_meta_expr ();
 
 (* FIXME: should we diffierentiate between  the case [n > 1] and [n = 1] *)  
 let mk_variant_meta_patt cons params = with "expr"
@@ -151,7 +151,7 @@ let gen_meta_patt =
     ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_patt
     ~mk_record:mk_record_meta_patt
-    mk_variant_meta_patt;
+    ~mk_variant:mk_variant_meta_patt ();
 
 (* add hock FIXME*)  
 Typehook.register
@@ -199,12 +199,15 @@ let mk_record_print cols =
   
 let gen_print =
   gen_str_item  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
-    ~mk_tuple:mk_tuple_print  ~mk_record:mk_record_print   mk_variant_print;    
+    ~mk_tuple:mk_tuple_print  ~mk_record:mk_record_print
+    ~mk_variant:mk_variant_print ()
+    ;    
 
 let gen_print_obj =
   gen_object ~kind:Iter ~mk_tuple:mk_tuple_print
     ~base:"printbase" ~class_name:"print"
-    ~names:["fmt"]  ~mk_record:mk_record_print mk_variant_print;
+    ~names:["fmt"]  ~mk_record:mk_record_print
+    ~mk_variant:mk_variant_print ();
 
 [("Print",gen_print);
  ("OPrint",gen_print_obj)] |> List.iter Typehook.register;
@@ -229,12 +232,12 @@ let mk_record_iter cols = with "expr"
 
 let gen_iter =
   gen_object ~kind:Iter
-    (* ~id:(`Pre "iter_") *)
     ~base:"iterbase"
     ~class_name:"iter"
     ~names:[] 
     ~mk_tuple:mk_tuple_iter
     ~mk_record:mk_record_iter
-    mk_variant_iter;
+    ~mk_variant:mk_variant_iter
+    ();
 
 ("OIter",gen_iter) |> Typehook.register;
