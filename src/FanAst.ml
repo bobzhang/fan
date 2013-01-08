@@ -728,7 +728,7 @@ end;
 
 
 
-
+let dump = new print;
 
 
 

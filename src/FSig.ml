@@ -1,6 +1,8 @@
 (** Main signatures for Fan *)
-open Format;
+
+open LibUtil;
 open FanAst;
+
 type vrn =
     [TyVrn
     | TyVrnEq
@@ -62,7 +64,7 @@ type record_info = list record_col ;
 type basic_id_transform =
     [ = `Pre of string
     | `Post of string
-    | `Fun of string -> string ];
+    | `Fun of id string ];
 
 type rhs_basic_id_transform =
     [ = basic_id_transform
@@ -76,20 +78,20 @@ type full_id_transform =
     (* just pass the ident to user do ident transform *)
     | `Last of string -> ident
     (* pass the string, and << .$old$. .$return$. >>  *)      
-    | `Obj of string -> string ];
+    | `Obj of id string ];
 
 open StdLib;
+
 {:fans|keep on; derive (Print); |};
+
 {:ocaml|
-type named_type =
-    (string*ctyp)
+type named_type = (string*ctyp)
 and and_types =
     list named_type
 and types =
     [= `Mutual of and_types
     | `Single of named_type ]
 and module_types = list types;
-  |};
 
 type obj_dest =
   [Obj of k
@@ -99,9 +101,16 @@ and k =
   | Iter (* Iter style *) 
   | Map (* Map style *)];
 
-(* preserved keywords for the generator *)
-let preserve =
-  ["self"; "self_type"; "unit"; "result"];
+type warning_type =
+  [ Abstract of string 
+  | Qualified of string ];
+ 
+  |};
+
+
+
+
+(*
 module type Config = sig
   val mk_variant:(string -> list ty_info  -> expr);
   val mk_tuple: (list ty_info -> expr );    
@@ -133,17 +142,14 @@ module type Config = sig
   (* transforming the constructor name(it only has effect in the pattern part) *)  
   val cons_transform: option (string->string);  
 end; 
+*)
 
 
-type warning_type =
-  [ Abstract of string 
-  | Qualified of string ];
-
-let string_of_warning_type =
-  sprintf "Warning: %a\n" (fun _ ->
-    fun
-      [Abstract s -> "Abstract: " ^ s
-      |Qualified s -> "Qualified: " ^ s]
-                          );
+(* let string_of_warning_type = *)
+(*   sprintf "Warning: %a\n" (fun _ -> *)
+(*     fun *)
+(*       [Abstract s -> "Abstract: " ^ s *)
+(*       |Qualified s -> "Qualified: " ^ s] *)
+(*                           ); *)
   
 

@@ -1,18 +1,17 @@
 open Ast;
 (* This module builds a generic framework *)
-
 #default_quotation "expr";;
-
-
 
 open Format;
 open LibUtil;
 open Lib;
 open Lib.Basic;
-
 open FSig;  
 open Lib.Expr;
 
+(* preserved keywords for the generator *)
+let preserve =
+  ["self"; "self_type"; "unit"; "result"];
 
 let check names =
     (* we preserve some keywords to avoid variable capture *)
@@ -25,9 +24,15 @@ let check names =
     end
     else check_valid name) names;
 
-(* collect the partial evaluated Ast node  and meta data   *)      
-let mapi_expr ~arity ~names
-    simple_expr_of_ctyp i (y:ctyp)  = with {patt:ctyp}
+(* collect the [partial evaluated Ast node]
+   and meta data
+   The input [y] is handled by
+   [simple_expr_of_ctyp], generally it will
+   be  exlcuding adt or variant type
+ *)      
+let mapi_expr ?(arity=1) ?(names=[])
+    (simple_expr_of_ctyp:ctyp->expr) (i:int) (y:ctyp)  : FSig.ty_info =
+  with {patt:ctyp;expr}
   let name_expr = simple_expr_of_ctyp y in 
   let base = name_expr  +> names in
   (** FIXME as a tuple it is useful when arity> 1??? *)
@@ -42,25 +47,25 @@ let mapi_expr ~arity ~names
   let expr = apply base id_exprs  in
   {name_expr; expr; id_expr; id_exprs; id_patt; id_patts;exp0;pat0};       
 
-(* @raise Invalid_argument when type can not be handled  *)  
-let tuple_expr_of_ctyp
-    ~arity ~names ~mk_tuple
-    simple_expr_of_ctyp ty = with {patt:ctyp}
-  let open ErrorMonad in 
-  let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in 
+(* @raise Invalid_argument when type can not be handled
+   
+ *)  
+let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
+    simple_expr_of_ctyp (ty:ctyp) : expr = with {patt:ctyp}
+  (* let open ErrorMonad in  *)
+  (* let simple_expr_of_ctyp = unwrap simple_expr_of_ctyp in  *)
   match ty with
   [ {|  ($tup:t) |}  -> 
     let ls = FanAst.list_of_ctyp t [] in
     let len = List.length ls in
-    let patt = Patt.mk_tuple ~arity ~number:len in
+    let patt = Patt.mk_tuple ?arity ~number:len in
     let tys = List.mapi (mapi_expr ~arity ~names  simple_expr_of_ctyp) ls in
     names <+ (currying
-                  [ {:match_case| $pat:patt -> $(mk_tuple tys ) |} ] ~arity)
+                  [ {:match_case| $pat:patt -> $(mk_tuple tys ) |} ] ?arity)
   | _  -> invalid_arg &
       sprintf  "tuple_expr_of_ctyp {|%s|}\n" "" (*FIXME*)
         (* (!Ctyp.to_string  ty) *)];
-
-
+  
 (*
  @supported types type application: list int
      basic type: int
@@ -73,37 +78,39 @@ let tuple_expr_of_ctyp
 Plz supply current type [type list 'a] =>  [list]
  *)    
 let rec  normal_simple_expr_of_ctyp
-    ~arity ~names ~mk_tuple
+    ?arity ?names ~mk_tuple
     ~right_type_id ~left_type_id
     ~right_type_variable
-    cxt ty = with {patt:ctyp}
+    cxt ty = 
   let open Transform in
-  let open ErrorMonad in
+  (* let open ErrorMonad in *)
   let right_trans = transform right_type_id in
   let left_trans = basic_transform left_type_id in 
   let tyvar = right_transform right_type_variable  in 
-  let rec aux = fun 
+  let rec aux = with {patt:ctyp;expr} fun 
     [ {| $lid:id |} -> 
       if Hashset.mem cxt id then {| $(lid:left_trans id) |}
       else right_trans {:ident| $lid:id |} 
     | {| $id:id |} ->   right_trans id
       (* recursive call here *)
     | {| $tup:_t |} as ty ->
-        tuple_expr_of_ctyp  ~arity ~names ~mk_tuple
+        tuple_expr_of_ctyp  ?arity ?names ~mk_tuple
           (normal_simple_expr_of_ctyp
-             ~arity ~names ~mk_tuple
+             ?arity ?names ~mk_tuple
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
-    | {| $t1 $t2 |} ->  {:expr| $(aux t1) $(aux t2) |} 
-    | {|  ' $s |} ->   tyvar s
-    | {|$t1 -> $t2 |} -> 
-        aux {:ctyp| $(lid:"arrow") $t1 $t2 |} 
-    | ty ->  raise (Unhandled  ty ) ] in
-  try return & aux ty with
-    [Unhandled _t ->
-      fail & sprintf "normal_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
-        "" ""
-        (* (!Ctyp.to_string t) (!Ctyp.to_string ty) *) ] ;
+    | {| $t1 $t2 |} ->  {| $(aux t1) $(aux t2) |} 
+    | {|  '$s |} ->   tyvar s
+    | {|$t1 -> $t2 |} ->
+        aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
+    | ty ->
+        failwithf
+          "normal_simple_expr_of_ctyp: %s type: \n " (!Ctyp.to_string ty)
+        (* raise (Unhandled  ty ) *) ] in
+  aux ty;
+
+
+
 
 (*
    list int ==>
@@ -122,17 +129,17 @@ let rec obj_simple_expr_of_ctyp
     ~right_type_id
     ~left_type_variable
     ~right_type_variable
-    ~names ~arity ~mk_tuple
+    ?names ?arity ~mk_tuple
       ty = with {patt:ctyp}
   let open Transform in 
-  let open ErrorMonad in 
+  (* let open ErrorMonad in  *)
   let trans = transform right_type_id in
   let var = basic_transform left_type_variable in
   let tyvar = right_transform right_type_variable  in 
   let rec aux = fun
     [ {| $id:id |} -> trans id
     | {|  '$s |} ->   tyvar s
-    | {:ctyp| $_  $_ |} as ty ->
+    | {| $_ $_ |} as ty ->
         match  Ctyp.list_of_app ty  with
         [ [ {| $id:tctor |} :: ls ] ->
           ls |> List.map
@@ -144,22 +151,16 @@ let rec obj_simple_expr_of_ctyp
         aux {:ctyp| $(lid:"arrow") $t1 $t2 |} 
     | {|  $tup:_  |} as ty ->
         tuple_expr_of_ctyp
-          ~arity ~names ~mk_tuple
+          ?arity ?names ~mk_tuple
           (obj_simple_expr_of_ctyp
              ~right_type_id
              ~left_type_variable
              ~right_type_variable
-             ~names
-             ~arity
+             ?names
+             ?arity
              ~mk_tuple) ty 
-    | ty -> raise (Unhandled ty) ] in
-  try return & aux ty with
-    [Unhandled _t0 -> fail &
-      sprintf
-        "obj_simple_expr_of_ctyp inner:{|%s|} outer:{|%s|}\n"
-        "" "" (* FIXME *)
-        (* (!Ctyp.to_string t0) (!Ctyp.to_string ty) *) ] ;
-
+    | ty -> failwithf "obj_simple_expr_of_ctyp %s\n" (!Ctyp.to_string ty) ] in
+  aux ty ;
 
 (*
   accept [simple_expr_of_ctyp]
@@ -169,18 +170,18 @@ let rec obj_simple_expr_of_ctyp
  *)  
 let expr_of_ctyp
     ?cons_transform
-    ~arity
-    ~names
+    ?(arity=1)
+    ?(names=[])
     ~trail
     ~mk_variant
     simple_expr_of_ctyp (ty:ctyp)  = with {patt:ctyp}
-  let open ErrorMonad in 
+  (* let open ErrorMonad in  *)
   let f  cons tyargs acc : list match_case = 
       let args_length = List.length tyargs in  (* ` is not needed here *)
         let p =
           (* calling gen_tuple_n*)
           Patt.gen_tuple_n ?cons_transform ~arity  cons args_length in
-          (* Fan_expr.gen_curry_n acc ~arity:S.arity cons args_length in  *)
+          (* Fan_expr.gen_curry_n acc ?arity:S.arity cons args_length in  *)
         let mk (cons,tyargs) =
           let exprs = List.mapi (mapi_expr ~arity ~names
                                    simple_expr_of_ctyp) tyargs in
@@ -203,7 +204,7 @@ let expr_of_ctyp
   (*       ] *)
   (*     ) [] ls  >>= *)
   (*   (fun res -> *)
-  (*     return (currying ~arity:S.arity res) *)
+  (*     return (currying ?arity:S.arity res) *)
   (*   ) *)
   (* | {| [ $t ]|} -> *)
   (*     let ls = view_adt t in *)
@@ -220,17 +221,18 @@ let expr_of_ctyp
         invalid_arg
           (sprintf "expr_of_ctyp {|%s|} " "" (*FIXME*)
              (* & !Ctyp.to_string ty *)) ] in 
-  Ctyp.reduce_data_ctors ty  [] f >>= (fun res ->
-    let res = let t =
+  let res = Ctyp.reduce_data_ctors ty  [] f (* >>= (fun res -> *) in
+  let res =
+    let t =
       (* only under this case we need trailing  *)
       if List.length res >= 2 && arity >= 2 then
         [ trail info :: res ]
       else res in
     List.rev t in 
-    return (currying ~arity res ))
+    (* return *) (currying ?arity res )
   end;
 
-let mk_prefix  vars (acc:expr) ~names  ~left_type_variable=
+let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
   with {patt:ctyp}
   let open Transform in 
   let varf = basic_transform left_type_variable in
@@ -247,10 +249,10 @@ let mk_prefix  vars (acc:expr) ~names  ~left_type_variable=
   Ast node represent the [function]
   (combine both expr_of_ctyp and simple_expr_of_ctyp) *)  
 let fun_of_tydcl
-    ~names ~arity ~left_type_variable ~mk_record (* ~left_type_variable *)
+    ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record 
     simple_expr_of_ctyp expr_of_ctyp  =
   with {patt:ctyp}
-  let open ErrorMonad in fun
+  (* let open ErrorMonad in*) fun
   [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
       let ctyp =
         match ctyp with
@@ -267,7 +269,7 @@ let fun_of_tydcl
             (fun i x ->  match x with
               [ {label;is_mutable;ctyp} ->
                      {info = (mapi_expr ~arity ~names
-                         (unwrap simple_expr_of_ctyp)) (* unwrap here *)
+                         ((* unwrap *) simple_expr_of_ctyp)) (* unwrap here *)
                         i ctyp  ;
                       label = label;
                       is_mutable = is_mutable}
@@ -277,25 +279,32 @@ let fun_of_tydcl
            *)
         mk_prefix ~names ~left_type_variable
           tyvars
-          (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
+          (currying ?arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
       | _ ->
           let process =
             (fun ctyp ->
-                simple_expr_of_ctyp ctyp >>=
-                (fun expr ->
-                  return & eta_expand (expr+>names) arity ))
-              (* t -> pp_print_t -> fun (a,b) -> pp_print_t (a,b) *)
-              <|>  expr_of_ctyp in 
+              match ctyp with
+             [ {| $id:_|} | {| $tup:_|} | {| $_ $_ |} | {| '$_ |} | {| $_ -> $_ |}
+             ->
+               let expr = simple_expr_of_ctyp ctyp in
+               eta_expand (expr+>names) arity 
+             | _ ->
+                 expr_of_ctyp ctyp]) in  
+                  (* simple_expr_of_ctyp ctyp >>= *)
+              (*   (fun expr -> *)
+              (*     return & eta_expand (expr+>names) arity )) *)
+              (* (\* t -> pp_print_t -> fun (a,b) -> pp_print_t (a,b) *\) *)
+              (* <|>  expr_of_ctyp in  *)
                 (* for [expr_of_ctyp]
                    appending names was delayed to be
                      handled in mkcon *)
-          let funct =
-            match process ctyp  with
-            [ Left result  ->  result
-            | Right str ->
-                 invalid_arg
-                   (sprintf "fun_of_tydcl{|%s|}\n%s" "" (*FIXME*)
-                                (* (!Ctyp.to_string ctyp) *) str)] in
+          let funct = process ctyp in 
+            (* match process ctyp  with *)
+            (* [ Left result  ->  result *)
+            (* | Right str -> *)
+            (*      invalid_arg *)
+            (*        (sprintf "fun_of_tydcl{|%s|}\n%s" "" (\*FIXME*\) *)
+            (*                     (\* (!Ctyp.to_string ctyp) *\) str)] in *)
           mk_prefix ~names ~left_type_variable tyvars funct ]
   | _tydcl -> 
       invalid_arg
@@ -306,12 +315,12 @@ let fun_of_tydcl
 
 (* *)    
 let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
-    tydcl ~arity ~names ~trail ~mk_variant
+    tydcl ?(arity=1) ?(names=[]) ~trail ~mk_variant
     ~left_type_id ~left_type_variable
     ~mk_record
      : binding
     = with {patt:ctyp}
-  let open ErrorMonad in
+  (* let open ErrorMonad in *)
   let open Transform in 
   let tctor_var = basic_transform left_type_id in
   let (name,len) = Ctyp.name_length_of_tydcl tydcl in 
@@ -329,7 +338,7 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
            ~names
            ~trail
            ~mk_variant
-           (unwrap simple_expr_of_ctyp)) tydcl  in
+           ((* unwrap *) simple_expr_of_ctyp)) tydcl  in
     {:binding| $(lid:tctor_var name) : $ty = $fun_expr |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n" "" (*FIXME*)
@@ -339,14 +348,14 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
   end ;
 
 let str_item_of_module_types ?module_name ?cons_transform
-    ~arity ~names ~trail ~mk_variant ~left_type_id ~left_type_variable
+    ?arity ?names ~trail ~mk_variant ~left_type_id ~left_type_variable
     ~mk_record
     simple_expr_of_ctyp_with_cxt
     (lst:module_types)  =
   let cxt  = Hashset.create 50 in 
   let mk_binding (* : string -> ctyp -> binding *) =
-    binding_of_tydcl ?cons_transform ~arity
-      ~names ~trail ~mk_variant ~left_type_id ~left_type_variable ~mk_record
+    binding_of_tydcl ?cons_transform ?arity
+      ?names ~trail ~mk_variant ~left_type_id ~left_type_variable ~mk_record
       (simple_expr_of_ctyp_with_cxt cxt) in
   (* return new types as generated  new context *)
   let fs (ty:types) : str_item= match ty with
@@ -384,21 +393,24 @@ let str_item_of_module_types ?module_name ?cons_transform
 let obj_of_module_types
     ?cons_transform
     ?module_name
-    ~arity ~names ~trail  (* ~names *)
+    ?(arity=1) ?(names=[]) ~trail  
     ~left_type_variable
     ~mk_record
     ~mk_variant
      base
     class_name  simple_expr_of_ctyp
     (k:FSig.k) (lst:module_types) = with {patt:ctyp}
-  let open ErrorMonad in 
+  (* let open ErrorMonad in  *)
   let tbl = Hashtbl.create 50 in 
-    let f  = fun_of_tydcl ~names ~arity ~left_type_variable ~mk_record (* ~left_type_variable *)
+    let f  =
+      fun_of_tydcl ~names
+        ~arity ~left_type_variable
+        ~mk_record 
         simple_expr_of_ctyp
         (expr_of_ctyp ?cons_transform
            ~arity ~names
            ~trail ~mk_variant
-           (unwrap simple_expr_of_ctyp)) in
+           ((* unwrap *) simple_expr_of_ctyp)) in
     let mk_type (_name,tydcl) =
         let (name,len) = Ctyp.name_length_of_tydcl tydcl in
         Ctyp.mk_method_type ~number:arity ~prefix:names
@@ -435,7 +447,8 @@ let obj_of_module_types
             $lid:dest : $ty = $(unknown len) |} ) extras in
       {:class_str_item| $body ; $list:items |} in  begin 
       let v = Ctyp.mk_obj class_name  base body;
-      Hashtbl.iter (fun _ v -> eprintf "%s" (string_of_warning_type v))
+      Hashtbl.iter (fun _ v ->
+        eprintf "%a" FSig.pp_print_warning_type  v)
       tbl;
       match module_name with
       [None -> v

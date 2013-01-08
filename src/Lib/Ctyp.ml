@@ -47,9 +47,7 @@ let to_string  =
   ref (fun _ -> failwith "Ctyp.to_string foward declaration, not implemented yet");
   (* to_string_of_printer FanBasic.p_ctyp ; *)
 let eprint : ref (ctyp -> unit) =
-  ref (fun _ -> failwith "Ctyp.eprint foward declaration, not implemented yet");
-         (* eprintf "@[%a@]@." !FanBasic.p_ctyp v ; *)
-
+  ref (fun c -> eprintf "@[%a@]" FanAst.dump#ctyp c );
 
 
   
@@ -461,7 +459,7 @@ let transform_module_types  lst =
     [ A of [`a | `b] and int ]
  *)
 let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
-  let open ErrorMonad in 
+  (* let open ErrorMonad in  *)
   let rec loop acc t =
     match t with
     [ {| $uid:cons of $tys |} ->
@@ -476,15 +474,18 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
         loop  acc ty     
     | {| |} -> acc
           (* we don't handle the type constructs  below *)
-    | t ->  raise (Unhandled t) ] in
-  try
-    return & loop init ty
-  with
-    [Unhandled t0  ->
-      fail
-        (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}" 
-           (!to_string t0 )
-           (!to_string ty)) ];
+    | t ->
+        failwithf "reduce_data_ctors: %s\n" (!to_string t)
+(* raise (Unhandled t) *) ] in
+  loop init ty
+  (* try *)
+  (*   return & loop init ty *)
+  (* with *)
+  (*   [Unhandled t0  -> *)
+  (*     fail *)
+  (*       (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}"  *)
+  (*          (!to_string t0 ) *)
+  (*          (!to_string ty)) ] *);
     
 let view_adt (t:ctyp) =
   (* let t = match t with [ {| [ $t ] |} -> t | _ -> assert false] in *)

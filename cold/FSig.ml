@@ -1,4 +1,4 @@
-open Format
+open LibUtil
 open FanAst
 type vrn =  
   | TyVrn
@@ -30,18 +30,27 @@ type record_col =  {
   info: ty_info} 
 type record_info = record_col list 
 type basic_id_transform =
-  [ `Pre of string | `Post of string | `Fun of string -> string] 
+  [ `Pre of string | `Post of string | `Fun of string id] 
 type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> expr] 
 type full_id_transform =
   [ basic_id_transform | `Idents of ident list -> ident
-  | `Ident of ident -> ident | `Last of string -> ident
-  | `Obj of string -> string] 
+  | `Ident of ident -> ident | `Last of string -> ident | `Obj of string id] 
 open StdLib
 let _ = ()
 type named_type = (string* ctyp) 
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 
 and module_types = types list 
+type obj_dest =  
+  | Obj of k
+  | Str_item 
+and k =  
+  | Fold
+  | Iter
+  | Map 
+type warning_type =  
+  | Abstract of string
+  | Qualified of string 
 let rec pp_print_named_type: 'fmt -> named_type -> 'result =
   fun fmt  a0  ->
     (fun fmt  (a0,a1)  ->
@@ -58,34 +67,21 @@ and pp_print_types: 'fmt -> types -> 'result =
         Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type a0
 and pp_print_module_types: 'fmt -> module_types -> 'result =
   fun fmt  a0  -> pp_print_list pp_print_types fmt a0
-type obj_dest =  
-  | Obj of k
-  | Str_item 
-and k =  
-  | Fold
-  | Iter
-  | Map 
-let preserve = ["self"; "self_type"; "unit"; "result"]
-module type Config =
-  sig
-    val mk_variant : string -> ty_info list -> expr
-    val mk_tuple : ty_info list -> expr
-    val mk_record : record_info -> expr
-    val arity : int
-    val left_type_variable : basic_id_transform
-    val right_type_variable : rhs_basic_id_transform
-    val right_type_id : full_id_transform
-    val left_type_id : basic_id_transform
-    val trail : trail_info -> match_case
-    val names : string list
-    val cons_transform : (string -> string) option
-  end
-type warning_type =  
-  | Abstract of string
-  | Qualified of string 
-let string_of_warning_type =
-  sprintf "Warning: %a\n"
-    (fun _  ->
-       function
-       | Abstract s -> "Abstract: " ^ s
-       | Qualified s -> "Qualified: " ^ s)
+let rec pp_print_obj_dest: 'fmt -> obj_dest -> 'result =
+  fun fmt  ->
+    function
+    | Obj a0 -> Format.fprintf fmt "@[<1>(Obj@ %a)@]" pp_print_k a0
+    | Str_item  -> Format.fprintf fmt "Str_item"
+and pp_print_k: 'fmt -> k -> 'result =
+  fun fmt  ->
+    function
+    | Fold  -> Format.fprintf fmt "Fold"
+    | Iter  -> Format.fprintf fmt "Iter"
+    | Map  -> Format.fprintf fmt "Map"
+let pp_print_warning_type: 'fmt -> warning_type -> 'result =
+  fun fmt  ->
+    function
+    | Abstract a0 ->
+        Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string a0
+    | Qualified a0 ->
+        Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string a0

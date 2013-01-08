@@ -25,8 +25,7 @@ let to_string =
     (fun _  ->
        failwith "Ctyp.to_string foward declaration, not implemented yet")
 let eprint: (ctyp -> unit) ref =
-  ref
-    (fun _  -> failwith "Ctyp.eprint foward declaration, not implemented yet")
+  ref (fun c  -> eprintf "@[%a@]" FanAst.dump#ctyp c)
 let _loc = FanLoc.ghost
 let app a b = `TyApp (_loc, a, b)
 let comma a b = `Com (_loc, a, b)
@@ -265,26 +264,20 @@ let transform_module_types lst =
   let new_types = obj#type_transformers in (new_types, item1)
 let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
   =
-  let open ErrorMonad in
-    let rec loop acc t =
-      match t with
-      | `Of (_loc,`TyId (_,`Uid (_,cons)),tys) ->
-          f cons (FanAst.list_of_ctyp tys []) acc
-      | `Of (_loc,`TyVrn (_,cons),tys) ->
-          f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
-      | `TyId (_loc,`Uid (_,cons)) -> f cons [] acc
-      | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
-      | `TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
-      | `Sum (_loc,ty)|`TyVrnEq (_loc,ty)|`TyVrnInf (_loc,ty)
-        |`TyVrnSup (_loc,ty) -> loop acc ty
-      | `Nil _loc -> acc
-      | t -> raise (Unhandled t) in
-    try return & (loop init ty)
-    with
-    | Unhandled t0 ->
-        fail
-          (sprintf "reduce_data_ctors inner {|%s|} outer {|%s|}"
-             (to_string.contents t0) (to_string.contents ty))
+  let rec loop acc t =
+    match t with
+    | `Of (_loc,`TyId (_,`Uid (_,cons)),tys) ->
+        f cons (FanAst.list_of_ctyp tys []) acc
+    | `Of (_loc,`TyVrn (_,cons),tys) ->
+        f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
+    | `TyId (_loc,`Uid (_,cons)) -> f cons [] acc
+    | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
+    | `TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
+    | `Sum (_loc,ty)|`TyVrnEq (_loc,ty)|`TyVrnInf (_loc,ty)
+      |`TyVrnSup (_loc,ty) -> loop acc ty
+    | `Nil _loc -> acc
+    | t -> failwithf "reduce_data_ctors: %s\n" (to_string.contents t) in
+  loop init ty
 let view_adt (t : ctyp) =
   let bs = FanAst.list_of_ctyp t [] in
   List.map

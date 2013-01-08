@@ -96,7 +96,7 @@ let callcc  (type u) (f: cont u-> u)  =
   with [M.Return u -> u];
   
 
-
+type id 'a = 'a -> 'a;
 
 module List = struct
   include List;

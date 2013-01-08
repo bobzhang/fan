@@ -39,6 +39,7 @@ type 'a cont = 'a -> exn
 let callcc (type u) (f : u cont -> u) =
   let module M = struct exception Return of u end in
     try f (fun x  -> raise (M.Return x)) with | M.Return u -> u
+type 'a id = 'a -> 'a 
 module List =
   struct
     include List
