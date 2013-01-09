@@ -41,10 +41,10 @@ type named_type = (string* ctyp)
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 
 and module_types = types list 
-type obj_dest =  
-  | Obj of k
+type destination =  
+  | Obj of kind
   | Str_item 
-and k =  
+and kind =  
   | Fold
   | Iter
   | Map 
@@ -67,12 +67,12 @@ and pp_print_types: 'fmt -> types -> 'result =
         Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type a0
 and pp_print_module_types: 'fmt -> module_types -> 'result =
   fun fmt  a0  -> pp_print_list pp_print_types fmt a0
-let rec pp_print_obj_dest: 'fmt -> obj_dest -> 'result =
+let rec pp_print_destination: 'fmt -> destination -> 'result =
   fun fmt  ->
     function
-    | Obj a0 -> Format.fprintf fmt "@[<1>(Obj@ %a)@]" pp_print_k a0
+    | Obj a0 -> Format.fprintf fmt "@[<1>(Obj@ %a)@]" pp_print_kind a0
     | Str_item  -> Format.fprintf fmt "Str_item"
-and pp_print_k: 'fmt -> k -> 'result =
+and pp_print_kind: 'fmt -> kind -> 'result =
   fun fmt  ->
     function
     | Fold  -> Format.fprintf fmt "Fold"

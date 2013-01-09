@@ -93,10 +93,10 @@ and types =
     | `Single of named_type ]
 and module_types = list types;
 
-type obj_dest =
-  [Obj of k
+type destination =
+  [Obj of kind
   |Str_item]
-and k =
+and kind =
   [ Fold
   | Iter (* Iter style *) 
   | Map (* Map style *)];

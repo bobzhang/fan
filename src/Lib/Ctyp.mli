@@ -51,10 +51,12 @@ val gen_tuple_n : ctyp -> int -> ctyp
 val repeat_arrow_n : ctyp -> int -> ctyp
 val mk_method_type :
   number:int ->
-  prefix:string list -> ident * int -> FSig.obj_dest -> ctyp
+  prefix:string list -> ident * int -> FSig.destination -> ctyp
 val mk_method_type_of_name :
   number:int ->
-  prefix:string list -> string * int -> FSig.obj_dest -> ctyp
+  prefix:string list -> string * int -> FSig.destination -> ctyp
+val mk_dest_type: destination:FSig.destination -> ident * int -> ctyp 
+        
 val mk_obj : string -> string -> class_str_item -> str_item
 val is_recursive : ctyp -> bool
 val qualified_app_list : ctyp -> (ident * ctyp list) option

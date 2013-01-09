@@ -16,7 +16,7 @@ val gen_object :
   ?arity:int ->
   ?trail:expr ->
   ?cons_transform:(string -> string) ->
-  kind:FSig.k ->
+  kind:FSig.kind ->
   base:string ->
   class_name:string ->
   names:string list ->

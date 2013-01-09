@@ -41,13 +41,15 @@ val mk_prefix :
   left_type_variable:FSig.basic_id_transform ->
   expr
 val fun_of_tydcl :
-  ?names:string list ->
-  ?arity:int ->
-  left_type_variable:FSig.basic_id_transform ->
-  mk_record:(FSig.record_col list -> expr) ->
-  (ctyp -> expr ) ->
-  (ctyp -> expr ) ->
-  ctyp -> expr
+    ?names:string list ->
+    ?arity:int ->
+    left_type_variable:FSig.basic_id_transform ->
+    mk_record:(FSig.record_col list -> expr) ->
+    destination:FSig.destination -> 
+      (ctyp -> expr ) ->
+        (ctyp -> expr ) ->
+          (ctyp -> ctyp -> expr) ->  (* labeld as variant *)
+            ctyp -> expr
 val binding_of_tydcl :
   ?cons_transform:(string -> string) ->
   (ctyp -> expr ) ->
@@ -70,7 +72,7 @@ val str_item_of_module_types :
   left_type_id:FSig.basic_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
     mk_record:(FSig.record_col list -> expr) ->
-      ((string, unit) Hashtbl.t -> ctyp -> expr (* LibUtil.ErrorMonad.result *)) ->
+      ((string, unit) Hashtbl.t -> ctyp -> expr ) ->
   FSig.module_types -> str_item
       
 val obj_of_module_types :
@@ -81,9 +83,6 @@ val obj_of_module_types :
   trail:(FSig.vrn * int -> match_case) ->
   left_type_variable:FSig.basic_id_transform ->
   mk_record:(FSig.record_col list -> expr) ->
-  mk_variant:(string -> FSig.ty_info list -> expr) ->
-  string ->
-  string ->
-  (ctyp -> expr (* LibUtil.ErrorMonad.result *)) ->
-  FSig.k -> FSig.module_types -> str_item
+  mk_variant:(string -> FSig.ty_info list -> expr) -> string ->  string ->  (ctyp -> expr ) ->
+  FSig.kind -> FSig.module_types -> str_item
   

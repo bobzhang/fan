@@ -633,12 +633,12 @@ let (<+<) patts acc =
     acc
 let mep_comma x y =
   `ExApp
-    (_loc, (`ExVrn (_loc, "PaCom")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, x, y)))))))
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "PaCom")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let mvep_comma x y =
   `ExApp
     (_loc, (`ExVrn (_loc, "PaCom")),
@@ -649,12 +649,12 @@ let mvep_comma x y =
                 (`ExCom (_loc, x, y)))))))
 let mee_comma x y =
   `ExApp
-    (_loc, (`ExVrn (_loc, "ExCom")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, x, y)))))))
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "ExCom")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let mvee_comma x y =
   `ExApp
     (_loc, (`ExVrn (_loc, "ExCom")),
@@ -665,12 +665,12 @@ let mvee_comma x y =
                 (`ExCom (_loc, x, y)))))))
 let mee_app x y =
   `ExApp
-    (_loc, (`ExVrn (_loc, "ExApp")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, x, y)))))))
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "ExApp")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let vee_app x y =
   `ExApp
     (_loc, (`ExVrn (_loc, "ExApp")),
@@ -681,12 +681,12 @@ let vee_app x y =
                 (`ExCom (_loc, x, y)))))))
 let mep_app x y =
   `ExApp
-    (_loc, (`ExVrn (_loc, "PaApp")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, x, y)))))))
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "PaApp")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let vep_app x y =
   `ExApp
     (_loc, (`ExVrn (_loc, "PaApp")),
@@ -701,11 +701,10 @@ let mep_of_str s =
   then
     let s = String.sub s 1 (len - 1) in
     `ExApp
-      (_loc, (`ExVrn (_loc, "PaVrn")),
-        (`ExTup
-           (_loc,
-             (`ExCom
-                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
+      (_loc,
+        (`ExApp
+           (_loc, (`ExVrn (_loc, "PaVrn")),
+             (`Id (_loc, (`Lid (_loc, "_loc")))))), (`Str (_loc, s)))
   else
     (let u =
        `ExApp
@@ -716,20 +715,20 @@ let mep_of_str s =
                    (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                      (`Str (_loc, s))))))) in
      `ExApp
-       (_loc, (`ExVrn (_loc, "Id")),
-         (`ExTup
-            (_loc, (`ExCom (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), u))))))
+       (_loc,
+         (`ExApp
+            (_loc, (`ExVrn (_loc, "Id")),
+              (`Id (_loc, (`Lid (_loc, "_loc")))))), u))
 let mee_of_str s =
   let len = String.length s in
   if (s.[0]) = '`'
   then
     let s = String.sub s 1 (len - 1) in
     `ExApp
-      (_loc, (`ExVrn (_loc, "ExVrn")),
-        (`ExTup
-           (_loc,
-             (`ExCom
-                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
+      (_loc,
+        (`ExApp
+           (_loc, (`ExVrn (_loc, "ExVrn")),
+             (`Id (_loc, (`Lid (_loc, "_loc")))))), (`Str (_loc, s)))
   else
     (let u =
        `ExApp
@@ -740,9 +739,10 @@ let mee_of_str s =
                    (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                      (`Str (_loc, s))))))) in
      `ExApp
-       (_loc, (`ExVrn (_loc, "Id")),
-         (`ExTup
-            (_loc, (`ExCom (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), u))))))
+       (_loc,
+         (`ExApp
+            (_loc, (`ExVrn (_loc, "Id")),
+              (`Id (_loc, (`Lid (_loc, "_loc")))))), u))
 let vee_of_str s =
   `ExApp
     (_loc, (`ExVrn (_loc, "ExVrn")),
@@ -760,152 +760,79 @@ let vep_of_str s =
 let meee_of_str s =
   let u =
     `ExApp
-      (_loc, (`ExVrn (_loc, "ExApp")),
-        (`ExTup
+      (_loc,
+        (`ExApp
            (_loc,
-             (`ExCom
-                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                  (`ExCom
+             (`ExApp
+                (_loc, (`ExVrn (_loc, "ExApp")),
+                  (`Id (_loc, (`Lid (_loc, "_loc")))))),
+             (`ExApp
+                (_loc,
+                  (`ExApp
+                     (_loc, (`ExVrn (_loc, "ExVrn")),
+                       (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                  (`Str (_loc, "Uid")))))),
+        (`ExApp
+           (_loc,
+             (`ExApp
+                (_loc, (`ExVrn (_loc, "ExTup")),
+                  (`Id (_loc, (`Lid (_loc, "_loc")))))),
+             (`ExApp
+                (_loc,
+                  (`ExApp
                      (_loc,
                        (`ExApp
-                          (_loc, (`ExVrn (_loc, "ExVrn")),
-                            (`ExTup
-                               (_loc,
-                                 (`ExCom
-                                    (_loc,
-                                      (`Id (_loc, (`Lid (_loc, "_loc")))),
-                                      (`Str (_loc, "Uid")))))))),
+                          (_loc, (`ExVrn (_loc, "ExCom")),
+                            (`Id (_loc, (`Lid (_loc, "_loc")))))),
                        (`ExApp
-                          (_loc, (`ExVrn (_loc, "ExTup")),
-                            (`ExTup
+                          (_loc,
+                            (`ExApp
+                               (_loc, (`ExVrn (_loc, "Id")),
+                                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                            (`ExApp
                                (_loc,
-                                 (`ExCom
-                                    (_loc,
-                                      (`Id (_loc, (`Lid (_loc, "_loc")))),
-                                      (`ExApp
-                                         (_loc, (`ExVrn (_loc, "ExCom")),
-                                           (`ExTup
-                                              (_loc,
-                                                (`ExCom
-                                                   (_loc,
-                                                     (`Id
-                                                        (_loc,
-                                                          (`Lid
-                                                             (_loc, "_loc")))),
-                                                     (`ExCom
-                                                        (_loc,
-                                                          (`ExApp
-                                                             (_loc,
-                                                               (`ExVrn
-                                                                  (_loc,
-                                                                    "Id")),
-                                                               (`ExTup
-                                                                  (_loc,
-                                                                    (
-                                                                    `ExCom
-                                                                    (_loc,
-                                                                    (`Id
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "_loc")))),
-                                                                    (`ExApp
-                                                                    (_loc,
-                                                                    (`ExVrn
-                                                                    (_loc,
-                                                                    "Lid")),
-                                                                    (`ExTup
-                                                                    (_loc,
-                                                                    (`ExCom
-                                                                    (_loc,
-                                                                    (`Id
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "_loc")))),
-                                                                    (`Str
-                                                                    (_loc,
-                                                                    "_loc")))))))))))))),
-                                                          (`ExApp
-                                                             (_loc,
-                                                               (`ExVrn
-                                                                  (_loc,
-                                                                    "Str")),
-                                                               (`ExTup
-                                                                  (_loc,
-                                                                    (
-                                                                    `ExCom
-                                                                    (_loc,
-                                                                    (`Id
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "_loc")))),
-                                                                    (`Str
-                                                                    (_loc, s))))))))))))))))))))))))))))) in
+                                 (`ExApp
+                                    (_loc, (`ExVrn (_loc, "Lid")),
+                                      (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                                 (`Str (_loc, "_loc")))))))),
+                  (`ExApp
+                     (_loc, (`ExVrn (_loc, "Str")),
+                       (`ExTup
+                          (_loc,
+                            (`ExCom
+                               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
+                                 (`Str (_loc, s))))))))))))) in
   `ExApp
-    (_loc, (`ExVrn (_loc, "ExApp")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "ExApp")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))),
+           (`ExApp
+              (_loc,
+                (`ExApp
                    (_loc,
                      (`ExApp
-                        (_loc, (`ExVrn (_loc, "ExVrn")),
-                          (`ExTup
-                             (_loc,
-                               (`ExCom
-                                  (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                                    (`Str (_loc, "Id")))))))),
+                        (_loc, (`ExVrn (_loc, "ExApp")),
+                          (`Id (_loc, (`Lid (_loc, "_loc")))))),
                      (`ExApp
-                        (_loc, (`ExVrn (_loc, "ExTup")),
-                          (`ExTup
-                             (_loc,
-                               (`ExCom
-                                  (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                                    (`ExApp
-                                       (_loc, (`ExVrn (_loc, "ExCom")),
-                                         (`ExTup
-                                            (_loc,
-                                              (`ExCom
-                                                 (_loc,
-                                                   (`Id
-                                                      (_loc,
-                                                        (`Lid (_loc, "_loc")))),
-                                                   (`ExCom
-                                                      (_loc,
-                                                        (`ExApp
-                                                           (_loc,
-                                                             (`ExVrn
-                                                                (_loc, "Id")),
-                                                             (`ExTup
-                                                                (_loc,
-                                                                  (`ExCom
-                                                                    (_loc,
-                                                                    (`Id
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "_loc")))),
-                                                                    (`ExApp
-                                                                    (_loc,
-                                                                    (`ExVrn
-                                                                    (_loc,
-                                                                    "Lid")),
-                                                                    (`ExTup
-                                                                    (_loc,
-                                                                    (`ExCom
-                                                                    (_loc,
-                                                                    (`Id
-                                                                    (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "_loc")))),
-                                                                    (`Str
-                                                                    (_loc,
-                                                                    "_loc")))))))))))))),
-                                                        u)))))))))))))))))))))
+                        (_loc,
+                          (`ExApp
+                             (_loc, (`ExVrn (_loc, "ExVrn")),
+                               (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                          (`Str (_loc, "Id")))))),
+                (`ExApp
+                   (_loc,
+                     (`ExApp
+                        (_loc, (`ExVrn (_loc, "Id")),
+                          (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                     (`ExApp
+                        (_loc,
+                          (`ExApp
+                             (_loc, (`ExVrn (_loc, "Lid")),
+                               (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                          (`Str (_loc, "_loc")))))))))), u)
 let mk_tuple_ee =
   function
   | [] -> invalid_arg "mktupee arity is zero "
@@ -956,79 +883,76 @@ let mk_tuple_vep =
                     (List.reduce_right mvep_comma xs))))))
 let mee_record_col label expr =
   `ExApp
-    (_loc, (`ExVrn (_loc, "RecBind")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "RecBind")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))),
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "Lid")),
+                (`ExTup
                    (_loc,
-                     (`ExApp
-                        (_loc, (`ExVrn (_loc, "Lid")),
-                          (`ExTup
-                             (_loc,
-                               (`ExCom
-                                  (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                                    (`Str (_loc, label)))))))), expr)))))))
+                     (`ExCom
+                        (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
+                          (`Str (_loc, label)))))))))), expr)
 let mep_record_col label expr =
   `ExApp
-    (_loc, (`ExVrn (_loc, "PaEq")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "PaEq")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))),
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "Lid")),
+                (`ExTup
                    (_loc,
-                     (`ExApp
-                        (_loc, (`ExVrn (_loc, "Lid")),
-                          (`ExTup
-                             (_loc,
-                               (`ExCom
-                                  (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                                    (`Str (_loc, label)))))))), expr)))))))
+                     (`ExCom
+                        (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
+                          (`Str (_loc, label)))))))))), expr)
 let mee_record_semi a b =
   `ExApp
-    (_loc, (`ExVrn (_loc, "Sem")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, a, b)))))))
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "Sem")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
 let mep_record_semi a b =
   `ExApp
-    (_loc, (`ExVrn (_loc, "Sem")),
-      (`ExTup
+    (_loc,
+      (`ExApp
          (_loc,
-           (`ExCom
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, a, b)))))))
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "Sem")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
 let mk_record_ee label_exprs =
   (label_exprs |> (List.map (fun (label,expr)  -> mee_record_col label expr)))
     |>
     (fun es  ->
        `ExApp
-         (_loc, (`ExVrn (_loc, "Record")),
-           (`ExTup
+         (_loc,
+           (`ExApp
               (_loc,
-                (`ExCom
-                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                     (`ExCom
-                        (_loc, (List.reduce_right mee_record_semi es),
-                          (`ExApp
-                             (_loc, (`ExVrn (_loc, "Nil")),
-                               (`Id (_loc, (`Lid (_loc, "_loc"))))))))))))))
+                (`ExApp
+                   (_loc, (`ExVrn (_loc, "Record")),
+                     (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                (List.reduce_right mee_record_semi es))),
+           (`ExApp
+              (_loc, (`ExVrn (_loc, "Nil")),
+                (`Id (_loc, (`Lid (_loc, "_loc"))))))))
 let mk_record_ep label_exprs =
   let open List in
     (label_exprs |> (map (fun (label,expr)  -> mep_record_col label expr)))
       |>
       (fun es  ->
          `ExApp
-           (_loc, (`ExVrn (_loc, "PaRec")),
-             (`ExTup
-                (_loc,
-                  (`ExCom
-                     (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                       (List.reduce_right mep_record_semi es)))))))
+           (_loc,
+             (`ExApp
+                (_loc, (`ExVrn (_loc, "PaRec")),
+                  (`Id (_loc, (`Lid (_loc, "_loc")))))),
+             (List.reduce_right mep_record_semi es)))
 let eta_expand expr number =
   let names = List.init number (fun i  -> x ~off:0 i) in
   names <+ (expr +> names)

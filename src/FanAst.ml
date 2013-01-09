@@ -471,11 +471,12 @@ let rec list_of_with_constr x acc = match x with
     list_of_with_constr w1 (list_of_with_constr w2 acc)
   | t -> [t :: acc] ];
 
-let rec list_of_ctyp x acc =  match x with
-  [ {:ctyp||} -> acc
-  | {:ctyp| $x & $y |} | {:ctyp| $x, $y |} |
-    {:ctyp| $x * $y |} | {:ctyp| $x; $y |} |
-    {:ctyp| $x and $y |} | {:ctyp| $x | $y |} ->
+let rec list_of_ctyp x acc =
+  with "ctyp" match x with
+  [ {||} -> acc
+  | {| $x & $y |} | {| $x, $y |} |
+    {| $x * $y |} | {| $x; $y |} |
+    {| $x and $y |} | {| $x | $y |} ->
         list_of_ctyp x (list_of_ctyp y acc)
   | x -> [x :: acc] ];
 
@@ -725,7 +726,6 @@ let match_pre = object (self)
    | {| |} -> {| |}
    | {| $anti:x |} -> {| $(anti: add_context x "lettry" ) |} ];
 end;
-
 
 
 let dump = new print;

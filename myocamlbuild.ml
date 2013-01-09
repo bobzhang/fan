@@ -821,7 +821,8 @@ let () =
     "src/FanAst.ml"   |-? ["src/MetaTemplate.ml"; "src/Ast.ml"]; 
   end;;
 
-
+(* copy_rule "_build/src/FanAst.ml -> src/TAst.ml" *)
+(*   ~insert *)
 copy_rule "src/FanDriver.byte -> boot/FanDriver.byte"
   ~insert:`top "src/FanDriver.byte" "boot/FanDriver.byte";;
 copy_rule "src/FanDriver.native -> boot/FanDriver.native"

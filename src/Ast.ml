@@ -183,13 +183,15 @@
     | `Fun of (loc * match_case) (* fun [ mc ] *)
     | `ExIfe of (loc * expr * expr * expr) (* if e then e else e *)
 
-    | `Chr of (loc * string) (* 'c' *)
-    | `Int of (loc * string) (* 42 *)
-    | `Int32 of (loc * string)
-    | `Int64 of (loc * string)
-    | `NativeInt of (loc * string)
-      (* s *) (* "foo" *)
-    | `Str of (loc * string)
+    (* | `Chr of (loc * string) (\* 'c' *\) *)
+    (* | `Int of (loc * string) (\* 42 *\) *)
+    (* | `Int32 of (loc * string) *)
+    (* | `Int64 of (loc * string) *)
+    (* | `NativeInt of (loc * string) *)
+    (*   (\* s *\) (\* "foo" *\) *)
+    (* | `Str of (loc * string) *)
+    | literal
+
     (* | literal      *)
     | `Label of (loc * string * expr) (* ~s or ~s:e *)
     | `Lazy of (loc * expr) (* lazy e *)

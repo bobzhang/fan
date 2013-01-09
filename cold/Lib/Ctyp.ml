@@ -116,7 +116,7 @@ let list_of_record ty =
            (to_string ty))
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta_of_list
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
-let mk_method_type ~number  ~prefix  (id,len) (k : obj_dest) =
+let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   let prefix =
     List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
   let app_src =
@@ -150,7 +150,17 @@ let mk_method_type ~number  ~prefix  (id,len) (k : obj_dest) =
   else
     (let quantifiers = gen_quantifiers ~arity:quant len in
      `TyPol (_loc, quantifiers, (params +> base)))
-let mk_method_type_of_name ~number  ~prefix  (name,len) (k : obj_dest) =
+let mk_dest_type ~destination  (id,len) =
+  let result_type = `TyQuo (_loc, "result")
+  and self_type = `TyQuo (_loc, "self_type") in
+  let (_quant,dst) =
+    match destination with
+    | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
+    | Obj (Iter ) -> (1, result_type)
+    | Obj (Fold ) -> (1, self_type)
+    | Str_item  -> (1, result_type) in
+  dst
+let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
 let mk_obj class_name base body =
   `Class
@@ -285,6 +295,7 @@ let view_variant (t : ctyp) =
      (function
       | `Of (_loc,`TyVrn (_,cons),`Tup (_,t)) ->
           `variant (cons, (FanAst.list_of_ctyp t []))
+      | `Of (_loc,`TyVrn (_,cons),t) -> `variant (cons, [t])
       | `TyVrn (_loc,cons) -> `variant (cons, [])
       | `TyId (_loc,i) -> `abbrev i
       | u -> failwithf "view_variant %s" (to_string u)) lst : vbranch list )

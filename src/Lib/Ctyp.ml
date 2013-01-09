@@ -214,12 +214,13 @@ let repeat_arrow_n ty n =
   [result] is a keyword
   {[
   let (name,len) =
-    ( <:str_item< type list 'a  'b = [A of int | B of 'a] >> |>
-     fun [ <:str_item<type .$x$. >> -> name_length_of_tydcl x]);
+    ( {:str_item| type list 'a  'b = [A of int | B of 'a] |}
+      |>
+      fun [ {:str_item|type $x |} -> name_length_of_tydcl x]);
 
 
   let f = mk_method_type ~number:2 ~prefix:["fmt"]
-  (<:ident< .$lid:name$. >>,len);
+  ({:ident| $lid:name |},len);
 
   open Fan_sig;
   
@@ -248,35 +249,56 @@ let repeat_arrow_n ty n =
     ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
       'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
  *)  
-let mk_method_type ~number ~prefix (id,len) (k:obj_dest)  =
+let mk_method_type ~number ~prefix (id,len) (k:destination)  =
   (** FIXME A type variable name need to be valid *)
   let prefix = List.map
       (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
     app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
   let result_type = {| 'result |} and self_type = {| 'self_type |} in 
-  let (quant,dst) = match k with
+  let (quant,dst) =
+    match k with
     [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)
     |Str_item -> (1,result_type)] in 
-  let params = List.init len (fun i
-    -> let app_src = app_arrow
-        (List.init number (fun _ -> {|  '$(lid:allx ~off:0 i)  |} )) in
-      match k with
-        [Obj u  ->
-          let dst = match  u with
-          [ Map -> {|  '$(lid:allx ~off:1 i) |}
-          | Iter -> result_type
-          | Fold-> self_type ] in
-          (self_type |-> (prefix <+ (app_src dst)))
-        |Str_item -> prefix <+ (app_src result_type)]) in 
+  let params =
+    List.init len
+      (fun i
+        ->
+          let app_src = app_arrow
+              (List.init number (fun _ -> {|  '$(lid:allx ~off:0 i)  |} )) in
+          match k with
+          [Obj u  ->
+              let dst =
+                match  u with
+                [ Map -> {|  '$(lid:allx ~off:1 i) |}
+                | Iter -> result_type
+                | Fold-> self_type ] in
+              (self_type |-> (prefix <+ (app_src dst)))
+          |Str_item -> prefix <+ (app_src result_type)]) in 
   let base = prefix <+ (app_src dst) in
-  if len = 0 then base
+  if len = 0 then
+    (base)
   else let quantifiers = gen_quantifiers ~arity:quant len in
-    {| ! $quantifiers . $(params +> base) |};
+    ({| ! $quantifiers . $(params +> base) |});
 
-let mk_method_type_of_name ~number ~prefix (name,len) (k:obj_dest)  =
+(* FIXME : merge with [mk_type_of] *)  
+let mk_dest_type (* ~prefix *) (* ~number *) ~destination (id,len) =
+  (* let prefix = List.map *)
+  (*     (fun s -> String.drop_while (fun c -> c = '_') s) prefix in  *)
+  (* let app_src   = *)
+  (*   app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in *)
+  let result_type = {| 'result |} and self_type = {| 'self_type |} in 
+  let (_quant,dst) =
+    match destination with
+    [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
+    |Obj Iter -> (1, result_type)
+    |Obj Fold -> (1, self_type)
+    |Str_item -> (1,result_type)] in dst;
+
+(* *)  
+let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
   let id = {:ident| $lid:name |} in
   mk_method_type ~number ~prefix (id,len) k ;
 
@@ -521,7 +543,8 @@ let view_adt (t:ctyp) =
 let view_variant (t:ctyp) : list vbranch =
   let lst = FanAst.list_of_ctyp t []  in
   List.map (
-  fun [ {|`$cons of $tup:t |}  ->  `variant (cons,FanAst.list_of_ctyp t [])
+  fun [ {| `$cons of $tup:t |}  ->  `variant (cons,FanAst.list_of_ctyp t [])
+      | {| `$cons of $t |} -> `variant (cons, [t])
       | {| `$cons |} -> `variant (cons, [])
       | {| $id:i|} -> `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)

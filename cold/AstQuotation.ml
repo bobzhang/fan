@@ -666,13 +666,11 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                   (`Str (_loc, "true")),
                                                   (`Str (_loc, "false"))))))))) in
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "Id")),
-                                 (`ExTup
-                                    (_loc,
-                                      (`ExCom
-                                         (_loc,
-                                           (`Id (_loc, (`Lid (_loc, "_loc")))),
-                                           x)))))
+                               (_loc,
+                                 (`ExApp
+                                    (_loc, (`ExVrn (_loc, "Id")),
+                                      (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                                 x)
                          | "flopatt" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Flo")),
