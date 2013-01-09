@@ -143,7 +143,7 @@ module Camlp4Bin
           clear ();
           phr
         end;
-       let  rec sig_handler  = with "sig_item"
+       let  rec sig_handler  = with sig_item
           (fun
             [ {| #load $str:s |} ->
               begin rewrite_and_load "" s; None end
@@ -159,7 +159,7 @@ module Camlp4Bin
                 FanLoc.raise loc (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
             | _ -> assert false
             ] );
-      let rec str_handler = with "str_item"
+      let rec str_handler = with str_item
           (fun
             [ {| #load $str:s |} ->
               begin rewrite_and_load "" s; None end

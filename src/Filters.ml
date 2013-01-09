@@ -94,7 +94,7 @@ AstFilters.register_str_item_filter
             {:str_item||}
        | st -> st ]))#str_item);
 
-let map_expr = with "expr" fun
+let map_expr = with expr fun
   [ {| $e NOTHING |} | {| fun [NOTHING  -> $e] |} -> e
   | {| __FILE__ |} -> {| $(`str:FanLoc.file_name _loc) |}
   | {| __PWD__ |} ->
@@ -109,9 +109,9 @@ let map_expr = with "expr" fun
 
 AstFilters.register_str_item_filter ("trash_nothing",(FanAst.map_expr map_expr)#str_item);
   
-(* [s] should starts with "__" *)
+(* [s] should starts with __ *)
 let make_filter (s,code) =
-  let f = with "str_item" fun
+  let f = with str_item fun
   [ {| $lid:s'|} when s =s' -> code
   | e -> e  ] in
   ("filter_"^s, (FanAst.map_str_item f )#str_item);

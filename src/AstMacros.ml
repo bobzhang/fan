@@ -79,7 +79,7 @@ register_macro ("FIB",fibm);
 
 open LibUtil;
     
-let generate_fibs = with "expr" fun
+let generate_fibs = with expr fun
   [ {:expr|$int:x|} ->
     let j = int_of_string x in
     let res = zfold_left ~until:j ~acc:{||} (fun acc i -> {| $acc; print_int (FIB $`int:i) |}) in
@@ -107,7 +107,7 @@ GFIB 10;
 
 let macro_expander = object(self)
   inherit FanAst.map as super;
-  method! expr = with "expr" fun
+  method! expr = with expr fun
   [{| $uid:a $y |} ->
     let try f = Hashtbl.find macro_expanders a in
     self#expr (f y)

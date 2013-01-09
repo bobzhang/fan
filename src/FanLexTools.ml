@@ -332,7 +332,7 @@ let best_final final =
  *)  
 let gen_definition _loc l =
 
-  let call_state auto state = with "expr"
+  let call_state auto state = with expr
     let (_,trans,final) = auto.(state) in
     if Array.length trans = 0 then
       match best_final final with

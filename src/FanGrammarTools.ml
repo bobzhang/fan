@@ -93,7 +93,7 @@ exception NotneededTyping ;
  *)
 
 (*let  make_ctyp  styp tvar = 
-  let rec aux  = with "ctyp" fun  
+  let rec aux  = with ctyp fun  
     [ `STlid (_loc, s) -> {| $lid:s |}
     | `STapp (_loc, t1, t2) -> {| $(aux t1) $(aux t2 ) |}
     | `STquo (_loc, s) -> {| '$s |}
@@ -108,7 +108,7 @@ exception NotneededTyping ;
 *)
     
 let  make_ctyp  (styp:styp) tvar : option ctyp = 
-  let rec aux  = with "ctyp" fun  
+  let rec aux  = with ctyp fun  
     [ {|$id:s|}  -> {| $id:s |}
     | {|'$s|} -> {|'$s|}
     | {| $t1 $t2|} -> {| $(aux t1) $(aux t2) |}
@@ -137,7 +137,7 @@ let make_ctyp_expr styp tvar expr =
 (* transform [text] to [expr] which represents [symbol]
    compute the [lhs]
  *)    
-let rec make_expr entry tvar = with "expr"
+let rec make_expr entry tvar = with expr
   fun
   [ `TXmeta (_loc, n, tl, e, t) ->
     let el = Expr.mklist _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
@@ -177,7 +177,7 @@ let rec make_expr entry tvar = with "expr"
   | `TXtok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, (`$uid:attr, $`str:descr)) |} ]
 (* the [rhs] was computed, compute the [lhs] *)    
-and make_expr_rules _loc n rl tvar = with "expr"
+and make_expr_rules _loc n rl tvar = with expr
   Expr.mklist _loc
     (List.map (fun (sl,action) ->
       let sl = Expr.mklist _loc (List.map (fun t -> make_expr n tvar t) sl) in
@@ -187,7 +187,7 @@ and make_expr_rules _loc n rl tvar = with "expr"
    [rtvar] stands for the type of the return value
    [tvar] refers to the current entry's type
  *)
-let text_of_action _loc  psl  rtvar act tvar = with "expr"
+let text_of_action _loc  psl  rtvar act tvar = with expr
   let locid = {:patt| $(lid:!FanLoc.name) |} in 
   let act =
     match act with
@@ -249,7 +249,7 @@ let mk_srules loc t rl tvar =
       (sl, ac)) rl ;
     
 
-let expr_of_delete_rule _loc n sl =  with "expr"
+let expr_of_delete_rule _loc n sl =  with expr
    let sl =
     List.fold_right
       (fun s e -> {| [$(make_expr n "" s.text) :: $e ] |}) sl {| [] |}  in
@@ -260,7 +260,7 @@ let mk_name _loc i = {expr = {:expr| $id:i |}; tvar = Ident.tvar_of_ident i; loc
   
 let mk_slist loc min sep symb = `TXlist loc min symb sep ;
   
-let text_of_entry  _loc e =  with "expr"
+let text_of_entry  _loc e =  with expr
   let ent =
     let x = e.name in
     let _loc = e.name.loc in
@@ -339,7 +339,7 @@ let text_of_functorial_extend _loc  gram locals el =
 
 
 (* generate TXtok *)  
-let mk_tok _loc ?restrict ~pattern styp = with "expr"
+let mk_tok _loc ?restrict ~pattern styp = with expr
  match restrict with
  [ None ->
    let no_variable = FanAst.wildcarder#patt pattern in
@@ -359,7 +359,7 @@ let mk_tok _loc ?restrict ~pattern styp = with "expr"
      let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} ] ;
    
-let sfold ?sep _loc  (ns:list string)  f e s = with "ctyp"
+let sfold ?sep _loc  (ns:list string)  f e s = with ctyp
   let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in
   let suffix = match sep with [None -> ""|Some  _ -> "sep"] in
   let n = List.hd ns in 

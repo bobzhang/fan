@@ -61,7 +61,7 @@ AstQuotation.of_str_item ~name:"lex.regexp" ~entry:declare_regexp;
 (*
 let change_ids suffix = object
   inherit FanAst.map (* as super *);
-  method! ident = with "ident" function
+  method! ident = with ident function
     [ {|$lid:s|}  when String.length s > 6 && String.sub s 0 6 = "__ulex" -> {|$(lid:s^suffix)|}
     | i -> i];
 end;

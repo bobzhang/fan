@@ -14,7 +14,7 @@ let _loc = FanLoc.ghost;
    | Eq generator                                                    |
    +-----------------------------------------------------------------+ *)
 
-let mk_variant_eq _cons : list FSig.ty_info  -> expr  = with "expr" fun 
+let mk_variant_eq _cons : list FSig.ty_info  -> expr  = with expr fun 
   [ [] -> {|true|}
   | ls -> List.reduce_left_with
         ~compose:(fun x y -> {| $x && $y|}  )
@@ -25,15 +25,19 @@ let mk_record_eq : list FSig.record_col -> expr  = fun cols ->
     cols |> List.map (fun [ {(* FSig. *)info;_} -> info])
          |> mk_variant_eq "" ;
     
-let gen_eq = with "expr"
-  gen_str_item ~id:(`Pre "eq_")  ~names:[]
+let (gen_eq,gen_eqobj) = with expr
+  (gen_str_item ~id:(`Pre "eq_")  ~names:[]
     ~arity:2
     ~mk_tuple:mk_tuple_eq
     ~mk_record:mk_record_eq
     ~mk_variant:mk_variant_eq
-    ~trail: {|false|} ();
+    ~trail: {|false|} (),
+   gen_object ~kind:Iter ~mk_tuple:mk_tuple_eq ~mk_record:mk_record_eq
+     ~base:"eqbase" ~class_name:"eq"
+     ~mk_variant:mk_variant_eq ~names:[]
+     ~arity:2 ~trail: {|false|} ()) ;
   
-[ ("Eq",gen_eq) ; ] |> List.iter Typehook.register;
+[ ("Eq",gen_eq) ; ("OEq",gen_eqobj) ] |> List.iter Typehook.register;
 
 
 (* +-----------------------------------------------------------------+
@@ -41,7 +45,7 @@ let gen_eq = with "expr"
    +-----------------------------------------------------------------+ *)
 
 
-let (gen_fold,gen_fold2) = with "expr"
+let (gen_fold,gen_fold2) = with expr
   let mk_variant _cons params = 
     params
     |> List.map (fun [{expr;_} -> expr])
@@ -69,7 +73,7 @@ end;
    +-----------------------------------------------------------------+ *)
 
 
-let (gen_map,gen_map2) = with "expr"
+let (gen_map,gen_map2) = with expr
   let mk_variant cons params =
     let result =
       params |> List.map (fun [{exp0;_} -> exp0]) |> apply (of_str cons) in 
@@ -108,7 +112,7 @@ end;
    | Meta generator                                                  |
    +-----------------------------------------------------------------+ *)
   
-let mk_variant_meta_expr cons params = with "expr"
+let mk_variant_meta_expr cons params = with expr
     let len = List.length params in 
     if String.ends_with cons "Ant" then
       of_vstr_number "Ant" len
@@ -129,7 +133,7 @@ let gen_meta_expr =
     ~mk_record:mk_record_meta_expr ~mk_variant:mk_variant_meta_expr ();
 
 (* FIXME: should we diffierentiate between  the case [n > 1] and [n = 1] *)  
-let mk_variant_meta_patt cons params = with "expr"
+let mk_variant_meta_patt cons params = with expr
     let len = List.length params in 
     if String.ends_with cons "Ant" then
        of_vstr_number "Ant" len
@@ -172,7 +176,7 @@ let extract info = info
     |> List.map (fun [{name_expr;id_expr;_} -> [name_expr;id_expr] ])
     |> List.concat ;
 
-let mkfmt pre sep post fields = with "expr"
+let mkfmt pre sep post fields = with expr
     {| Format.fprintf fmt  $(str: pre^ String.concat sep fields ^ post) |} ;
   
 let mk_variant_print cons params =
@@ -215,7 +219,7 @@ let gen_print_obj =
 (* +-----------------------------------------------------------------+
    | Iter geneartor                                                  |
    +-----------------------------------------------------------------+ *)
-let mk_variant_iter _cons params :expr = with "expr"
+let mk_variant_iter _cons params :expr = with expr
   let lst = params
    |> List.map (fun [{name_expr; id_expr;_} -> {| $name_expr $id_expr |}]) in
   {| begin $list:lst end |};
@@ -223,7 +227,7 @@ let mk_variant_iter _cons params :expr = with "expr"
 let mk_tuple_iter params : expr =
   mk_variant_iter "" params;
 
-let mk_record_iter cols = with "expr"
+let mk_record_iter cols = with expr
   let lst =
     cols |>
     List.map

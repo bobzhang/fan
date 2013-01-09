@@ -46,6 +46,667 @@ let safe_string_escaped s =
   then s
   else String.escaped s
 let _ = ()
+class eq =
+  object (self : 'self_type)
+    inherit  eqbase
+    method loc : loc -> loc -> 'result= fun a0  a1  -> self#fanloc_t a0 a1
+    method literal : literal -> literal -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Chr (a0,a1),`Chr (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Int (a0,a1),`Int (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Int32 (a0,a1),`Int32 (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Int64 (a0,a1),`Int64 (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Flo (a0,a1),`Flo (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`NativeInt (a0,a1),`NativeInt (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Str (a0,a1),`Str (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method rec_flag : rec_flag -> rec_flag -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Recursive a0,`Recursive b0) -> self#loc a0 b0
+        | (`ReNil a0,`ReNil b0) -> self#loc a0 b0
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method direction_flag : direction_flag -> direction_flag -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`To a0,`To b0) -> self#loc a0 b0
+        | (`Downto a0,`Downto b0) -> self#loc a0 b0
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method mutable_flag : mutable_flag -> mutable_flag -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Mutable a0,`Mutable b0) -> self#loc a0 b0
+        | (`MuNil a0,`MuNil b0) -> self#loc a0 b0
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method private_flag : private_flag -> private_flag -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Private a0,`Private b0) -> self#loc a0 b0
+        | (`PrNil a0,`PrNil b0) -> self#loc a0 b0
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method virtual_flag : virtual_flag -> virtual_flag -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Virtual a0,`Virtual b0) -> self#loc a0 b0
+        | (`ViNil a0,`ViNil b0) -> self#loc a0 b0
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method override_flag : override_flag -> override_flag -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Override a0,`Override b0) -> self#loc a0 b0
+        | (`OvNil a0,`OvNil b0) -> self#loc a0 b0
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method row_var_flag : row_var_flag -> row_var_flag -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`RowVar a0,`RowVar b0) -> self#loc a0 b0
+        | (`RvNil a0,`RvNil b0) -> self#loc a0 b0
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method meta_option :
+      'all_a0 .
+        ('self_type -> 'all_a0 -> 'all_a0 -> 'result) ->
+          'all_a0 meta_option -> 'all_a0 meta_option -> 'result=
+      fun mf_a  a0  b0  ->
+        match (a0, b0) with
+        | (`None a0,`None b0) -> self#loc a0 b0
+        | (`Some a0,`Some b0) -> mf_a self a0 b0
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method meta_list :
+      'all_a0 .
+        ('self_type -> 'all_a0 -> 'all_a0 -> 'result) ->
+          'all_a0 meta_list -> 'all_a0 meta_list -> 'result=
+      fun mf_a  a0  b0  ->
+        match (a0, b0) with
+        | (`LNil a0,`LNil b0) -> self#loc a0 b0
+        | (`LCons (a0,a1),`LCons (b0,b1)) ->
+            (mf_a self a0 b0) && (self#meta_list mf_a a1 b1)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method ident : ident -> ident -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`IdAcc (a0,a1,a2),`IdAcc (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ident a1 b1)) && (self#ident a2 b2)
+        | (`IdApp (a0,a1,a2),`IdApp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ident a1 b1)) && (self#ident a2 b2)
+        | (`Lid (a0,a1),`Lid (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Uid (a0,a1),`Uid (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method ctyp : ctyp -> ctyp -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Alias (a0,a1,a2),`Alias (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`Any a0,`Any b0) -> self#loc a0 b0
+        | (`TyApp (a0,a1,a2),`TyApp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyArr (a0,a1,a2),`TyArr (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyCls (a0,a1),`TyCls (b0,b1)) ->
+            (self#loc a0 b0) && (self#ident a1 b1)
+        | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#ctyp a2 b2)
+        | (`TyId (a0,a1),`TyId (b0,b1)) ->
+            (self#loc a0 b0) && (self#ident a1 b1)
+        | (`TyMan (a0,a1,a2),`TyMan (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyDcl (a0,a1,a2,a3,a4),`TyDcl (b0,b1,b2,b3,b4)) ->
+            ((((self#loc a0 b0) && (self#string a1 b1)) &&
+                (self#list (fun self  -> self#ctyp) a2 b2))
+               && (self#ctyp a3 b3))
+              &&
+              (self#list
+                 (fun self  a0  b0  ->
+                    match (a0, b0) with
+                    | ((a0,a1),(b0,b1)) ->
+                        (self#ctyp a0 b0) && (self#ctyp a1 b1)) a4 b4)
+        | (`TyObj (a0,a1,a2),`TyObj (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) &&
+              (self#row_var_flag a2 b2)
+        | (`TyOlb (a0,a1,a2),`TyOlb (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#ctyp a2 b2)
+        | (`TyPol (a0,a1,a2),`TyPol (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyTypePol (a0,a1,a2),`TyTypePol (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyQuo (a0,a1),`TyQuo (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`TyQuP (a0,a1),`TyQuP (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`TyQuM (a0,a1),`TyQuM (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`TyAnP a0,`TyAnP b0) -> self#loc a0 b0
+        | (`TyAnM a0,`TyAnM b0) -> self#loc a0 b0
+        | (`TyRec (a0,a1),`TyRec (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`TyCol (a0,a1,a2),`TyCol (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TySem (a0,a1,a2),`TySem (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`Sum (a0,a1),`Sum (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`Of (a0,a1,a2),`Of (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`And (a0,a1,a2),`And (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyOr (a0,a1,a2),`TyOr (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`Private (a0,a1),`Private (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`Mutable (a0,a1),`Mutable (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`Tup (a0,a1),`Tup (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`Sta (a0,a1,a2),`Sta (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyVrn (a0,a1),`TyVrn (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`TyVrnEq (a0,a1),`TyVrnEq (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`TyVrnSup (a0,a1),`TyVrnSup (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`TyVrnInf (a0,a1),`TyVrnInf (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`TyVrnInfSup (a0,a1,a2),`TyVrnInfSup (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyAmp (a0,a1,a2),`TyAmp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`TyOfAmp (a0,a1,a2),`TyOfAmp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`Package (a0,a1),`Package (b0,b1)) ->
+            (self#loc a0 b0) && (self#module_type a1 b1)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method patt : patt -> patt -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Id (a0,a1),`Id (b0,b1)) -> (self#loc a0 b0) && (self#ident a1 b1)
+        | (`Alias (a0,a1,a2),`Alias (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Any a0,`Any b0) -> self#loc a0 b0
+        | (`PaApp (a0,a1,a2),`PaApp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
+        | (`Array (a0,a1),`Array (b0,b1)) ->
+            (self#loc a0 b0) && (self#patt a1 b1)
+        | (`PaCom (a0,a1,a2),`PaCom (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
+        | ((#literal as a0),(#literal as b0)) ->
+            (self#literal a0 b0 :>'result)
+        | (`PaLab (a0,a1,a2),`PaLab (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#patt a2 b2)
+        | (`PaOlb (a0,a1,a2),`PaOlb (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#patt a2 b2)
+        | (`PaOlbi (a0,a1,a2,a3),`PaOlbi (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) && (self#patt a2 b2))
+              && (self#expr a3 b3)
+        | (`PaOrp (a0,a1,a2),`PaOrp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
+        | (`PaRng (a0,a1,a2),`PaRng (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
+        | (`PaRec (a0,a1),`PaRec (b0,b1)) ->
+            (self#loc a0 b0) && (self#patt a1 b1)
+        | (`PaEq (a0,a1,a2),`PaEq (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ident a1 b1)) && (self#patt a2 b2)
+        | (`PaTup (a0,a1),`PaTup (b0,b1)) ->
+            (self#loc a0 b0) && (self#patt a1 b1)
+        | (`PaTyc (a0,a1,a2),`PaTyc (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#ctyp a2 b2)
+        | (`PaTyp (a0,a1),`PaTyp (b0,b1)) ->
+            (self#loc a0 b0) && (self#ident a1 b1)
+        | (`PaVrn (a0,a1),`PaVrn (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Lazy (a0,a1),`Lazy (b0,b1)) ->
+            (self#loc a0 b0) && (self#patt a1 b1)
+        | (`PaMod (a0,a1),`PaMod (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method expr : expr -> expr -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Id (a0,a1),`Id (b0,b1)) -> (self#loc a0 b0) && (self#ident a1 b1)
+        | (`ExAcc (a0,a1,a2),`ExAcc (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`ExApp (a0,a1,a2),`ExApp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
+        | (`ExAre (a0,a1,a2),`ExAre (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
+        | (`Array (a0,a1),`Array (b0,b1)) ->
+            (self#loc a0 b0) && (self#expr a1 b1)
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
+        | (`ExAsf a0,`ExAsf b0) -> self#loc a0 b0
+        | (`ExAsr (a0,a1),`ExAsr (b0,b1)) ->
+            (self#loc a0 b0) && (self#expr a1 b1)
+        | (`ExAss (a0,a1,a2),`ExAss (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
+        | (`ExCoe (a0,a1,a2,a3),`ExCoe (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#expr a1 b1)) && (self#ctyp a2 b2)) &&
+              (self#ctyp a3 b3)
+        | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
+            (((((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2))
+                && (self#expr a3 b3))
+               && (self#direction_flag a4 b4))
+              && (self#expr a5 b5)
+        | (`Fun (a0,a1),`Fun (b0,b1)) ->
+            (self#loc a0 b0) && (self#match_case a1 b1)
+        | (`ExIfe (a0,a1,a2,a3),`ExIfe (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)) &&
+              (self#expr a3 b3)
+        | ((#literal as a0),(#literal as b0)) ->
+            (self#literal a0 b0 :>'result)
+        | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+        | (`Lazy (a0,a1),`Lazy (b0,b1)) ->
+            (self#loc a0 b0) && (self#expr a1 b1)
+        | (`LetIn (a0,a1,a2,a3),`LetIn (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#rec_flag a1 b1)) &&
+               (self#binding a2 b2))
+              && (self#expr a3 b3)
+        | (`LetModule (a0,a1,a2,a3),`LetModule (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) &&
+               (self#module_expr a2 b2))
+              && (self#expr a3 b3)
+        | (`Match (a0,a1,a2),`Match (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) &&
+              (self#match_case a2 b2)
+        | (`New (a0,a1),`New (b0,b1)) ->
+            (self#loc a0 b0) && (self#ident a1 b1)
+        | (`Obj (a0,a1,a2),`Obj (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) &&
+              (self#class_str_item a2 b2)
+        | (`OptLabl (a0,a1,a2),`OptLabl (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+        | (`OvrInst (a0,a1),`OvrInst (b0,b1)) ->
+            (self#loc a0 b0) && (self#rec_binding a1 b1)
+        | (`Record (a0,a1,a2),`Record (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#rec_binding a1 b1)) &&
+              (self#expr a2 b2)
+        | (`Sequence (a0,a1),`Sequence (b0,b1)) ->
+            (self#loc a0 b0) && (self#expr a1 b1)
+        | (`Send (a0,a1,a2),`Send (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#string a2 b2)
+        | (`StringDot (a0,a1,a2),`StringDot (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
+        | (`Try (a0,a1,a2),`Try (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) &&
+              (self#match_case a2 b2)
+        | (`ExTup (a0,a1),`ExTup (b0,b1)) ->
+            (self#loc a0 b0) && (self#expr a1 b1)
+        | (`ExCom (a0,a1,a2),`ExCom (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
+        | (`Constraint_exp (a0,a1,a2),`Constraint_exp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#ctyp a2 b2)
+        | (`ExVrn (a0,a1),`ExVrn (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`While (a0,a1,a2),`While (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
+        | (`Let_open (a0,a1,a2),`Let_open (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ident a1 b1)) && (self#expr a2 b2)
+        | (`LocalTypeFun (a0,a1,a2),`LocalTypeFun (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+        | (`Package_expr (a0,a1),`Package_expr (b0,b1)) ->
+            (self#loc a0 b0) && (self#module_expr a1 b1)
+        | (_,_) -> false
+    method module_type : module_type -> module_type -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Id (a0,a1),`Id (b0,b1)) -> (self#loc a0 b0) && (self#ident a1 b1)
+        | (`MtFun (a0,a1,a2,a3),`MtFun (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) &&
+               (self#module_type a2 b2))
+              && (self#module_type a3 b3)
+        | (`MtQuo (a0,a1),`MtQuo (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (`Sig (a0,a1),`Sig (b0,b1)) ->
+            (self#loc a0 b0) && (self#sig_item a1 b1)
+        | (`MtWit (a0,a1,a2),`MtWit (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#module_type a1 b1)) &&
+              (self#with_constr a2 b2)
+        | (`Of (a0,a1),`Of (b0,b1)) ->
+            (self#loc a0 b0) && (self#module_expr a1 b1)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method sig_item : sig_item -> sig_item -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Class (a0,a1),`Class (b0,b1)) ->
+            (self#loc a0 b0) && (self#class_type a1 b1)
+        | (`ClassType (a0,a1),`ClassType (b0,b1)) ->
+            (self#loc a0 b0) && (self#class_type a1 b1)
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#sig_item a1 b1)) &&
+              (self#sig_item a2 b2)
+        | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+        | (`Exception (a0,a1),`Exception (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`External (a0,a1,a2,a3),`External (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) && (self#ctyp a2 b2))
+              && (self#meta_list (fun self  -> self#string) a3 b3)
+        | (`Include (a0,a1),`Include (b0,b1)) ->
+            (self#loc a0 b0) && (self#module_type a1 b1)
+        | (`Module (a0,a1,a2),`Module (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) &&
+              (self#module_type a2 b2)
+        | (`RecModule (a0,a1),`RecModule (b0,b1)) ->
+            (self#loc a0 b0) && (self#module_binding a1 b1)
+        | (`ModuleType (a0,a1,a2),`ModuleType (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) &&
+              (self#module_type a2 b2)
+        | (`Open (a0,a1),`Open (b0,b1)) ->
+            (self#loc a0 b0) && (self#ident a1 b1)
+        | (`Type (a0,a1),`Type (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`Value (a0,a1,a2),`Value (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#ctyp a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method with_constr : with_constr -> with_constr -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`TypeEq (a0,a1,a2),`TypeEq (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`ModuleEq (a0,a1,a2),`ModuleEq (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ident a1 b1)) && (self#ident a2 b2)
+        | (`TypeSubst (a0,a1,a2),`TypeSubst (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`ModuleSubst (a0,a1,a2),`ModuleSubst (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ident a1 b1)) && (self#ident a2 b2)
+        | (`And (a0,a1,a2),`And (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#with_constr a1 b1)) &&
+              (self#with_constr a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method binding : binding -> binding -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`And (a0,a1,a2),`And (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#binding a1 b1)) &&
+              (self#binding a2 b2)
+        | (`Bind (a0,a1,a2),`Bind (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#expr a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method rec_binding : rec_binding -> rec_binding -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#rec_binding a1 b1)) &&
+              (self#rec_binding a2 b2)
+        | (`RecBind (a0,a1,a2),`RecBind (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ident a1 b1)) && (self#expr a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method module_binding : module_binding -> module_binding -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`And (a0,a1,a2),`And (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#module_binding a1 b1)) &&
+              (self#module_binding a2 b2)
+        | (`ModuleBind (a0,a1,a2,a3),`ModuleBind (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) &&
+               (self#module_type a2 b2))
+              && (self#module_expr a3 b3)
+        | (`ModuleConstraint (a0,a1,a2),`ModuleConstraint (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) &&
+              (self#module_type a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method match_case : match_case -> match_case -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`McOr (a0,a1,a2),`McOr (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#match_case a1 b1)) &&
+              (self#match_case a2 b2)
+        | (`Case (a0,a1,a2,a3),`Case (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#patt a1 b1)) && (self#expr a2 b2)) &&
+              (self#expr a3 b3)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method module_expr : module_expr -> module_expr -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Id (a0,a1),`Id (b0,b1)) -> (self#loc a0 b0) && (self#ident a1 b1)
+        | (`MeApp (a0,a1,a2),`MeApp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#module_expr a1 b1)) &&
+              (self#module_expr a2 b2)
+        | (`Functor (a0,a1,a2,a3),`Functor (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) &&
+               (self#module_type a2 b2))
+              && (self#module_expr a3 b3)
+        | (`Struct (a0,a1),`Struct (b0,b1)) ->
+            (self#loc a0 b0) && (self#str_item a1 b1)
+        | (`ModuleExprConstraint (a0,a1,a2),`ModuleExprConstraint (b0,b1,b2))
+            ->
+            ((self#loc a0 b0) && (self#module_expr a1 b1)) &&
+              (self#module_type a2 b2)
+        | (`PackageModule (a0,a1),`PackageModule (b0,b1)) ->
+            (self#loc a0 b0) && (self#expr a1 b1)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method str_item : str_item -> str_item -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Class (a0,a1),`Class (b0,b1)) ->
+            (self#loc a0 b0) && (self#class_expr a1 b1)
+        | (`ClassType (a0,a1),`ClassType (b0,b1)) ->
+            (self#loc a0 b0) && (self#class_type a1 b1)
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#str_item a1 b1)) &&
+              (self#str_item a2 b2)
+        | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+        | (`Exception (a0,a1,a2),`Exception (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) &&
+              (self#meta_option (fun self  -> self#ident) a2 b2)
+        | (`StExp (a0,a1),`StExp (b0,b1)) ->
+            (self#loc a0 b0) && (self#expr a1 b1)
+        | (`External (a0,a1,a2,a3),`External (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) && (self#ctyp a2 b2))
+              && (self#meta_list (fun self  -> self#string) a3 b3)
+        | (`Include (a0,a1),`Include (b0,b1)) ->
+            (self#loc a0 b0) && (self#module_expr a1 b1)
+        | (`Module (a0,a1,a2),`Module (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) &&
+              (self#module_expr a2 b2)
+        | (`RecModule (a0,a1),`RecModule (b0,b1)) ->
+            (self#loc a0 b0) && (self#module_binding a1 b1)
+        | (`ModuleType (a0,a1,a2),`ModuleType (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#string a1 b1)) &&
+              (self#module_type a2 b2)
+        | (`Open (a0,a1),`Open (b0,b1)) ->
+            (self#loc a0 b0) && (self#ident a1 b1)
+        | (`Type (a0,a1),`Type (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
+        | (`Value (a0,a1,a2),`Value (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#rec_flag a1 b1)) &&
+              (self#binding a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method class_type : class_type -> class_type -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`CtNil a0,`CtNil b0) -> self#loc a0 b0
+        | (`CtCon (a0,a1,a2,a3),`CtCon (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#virtual_flag a1 b1)) &&
+               (self#ident a2 b2))
+              && (self#ctyp a3 b3)
+        | (`CtFun (a0,a1,a2),`CtFun (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) &&
+              (self#class_type a2 b2)
+        | (`CtSig (a0,a1,a2),`CtSig (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) &&
+              (self#class_sig_item a2 b2)
+        | (`CtAnd (a0,a1,a2),`CtAnd (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_type a1 b1)) &&
+              (self#class_type a2 b2)
+        | (`CtCol (a0,a1,a2),`CtCol (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_type a1 b1)) &&
+              (self#class_type a2 b2)
+        | (`CtEq (a0,a1,a2),`CtEq (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_type a1 b1)) &&
+              (self#class_type a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method class_sig_item : class_sig_item -> class_sig_item -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`Eq (a0,a1,a2),`Eq (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_sig_item a1 b1)) &&
+              (self#class_sig_item a2 b2)
+        | (`Inherit (a0,a1),`Inherit (b0,b1)) ->
+            (self#loc a0 b0) && (self#class_type a1 b1)
+        | (`Method (a0,a1,a2,a3),`Method (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) &&
+               (self#private_flag a2 b2))
+              && (self#ctyp a3 b3)
+        | (`CgVal (a0,a1,a2,a3,a4),`CgVal (b0,b1,b2,b3,b4)) ->
+            ((((self#loc a0 b0) && (self#string a1 b1)) &&
+                (self#mutable_flag a2 b2))
+               && (self#virtual_flag a3 b3))
+              && (self#ctyp a4 b4)
+        | (`CgVir (a0,a1,a2,a3),`CgVir (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) &&
+               (self#private_flag a2 b2))
+              && (self#ctyp a3 b3)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method class_expr : class_expr -> class_expr -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`CeApp (a0,a1,a2),`CeApp (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_expr a1 b1)) &&
+              (self#expr a2 b2)
+        | (`CeCon (a0,a1,a2,a3),`CeCon (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#virtual_flag a1 b1)) &&
+               (self#ident a2 b2))
+              && (self#ctyp a3 b3)
+        | (`CeFun (a0,a1,a2),`CeFun (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) &&
+              (self#class_expr a2 b2)
+        | (`CeLet (a0,a1,a2,a3),`CeLet (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#rec_flag a1 b1)) &&
+               (self#binding a2 b2))
+              && (self#class_expr a3 b3)
+        | (`Obj (a0,a1,a2),`Obj (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#patt a1 b1)) &&
+              (self#class_str_item a2 b2)
+        | (`CeTyc (a0,a1,a2),`CeTyc (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_expr a1 b1)) &&
+              (self#class_type a2 b2)
+        | (`And (a0,a1,a2),`And (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_expr a1 b1)) &&
+              (self#class_expr a2 b2)
+        | (`Eq (a0,a1,a2),`Eq (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_expr a1 b1)) &&
+              (self#class_expr a2 b2)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method class_str_item : class_str_item -> class_str_item -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Nil a0,`Nil b0) -> self#loc a0 b0
+        | (`CrSem (a0,a1,a2),`CrSem (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#class_str_item a1 b1)) &&
+              (self#class_str_item a2 b2)
+        | (`Eq (a0,a1,a2),`Eq (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
+        | (`Inherit (a0,a1,a2,a3),`Inherit (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#override_flag a1 b1)) &&
+               (self#class_expr a2 b2))
+              && (self#string a3 b3)
+        | (`Initializer (a0,a1),`Initializer (b0,b1)) ->
+            (self#loc a0 b0) && (self#expr a1 b1)
+        | (`CrMth (a0,a1,a2,a3,a4,a5),`CrMth (b0,b1,b2,b3,b4,b5)) ->
+            (((((self#loc a0 b0) && (self#string a1 b1)) &&
+                 (self#override_flag a2 b2))
+                && (self#private_flag a3 b3))
+               && (self#expr a4 b4))
+              && (self#ctyp a5 b5)
+        | (`CrVal (a0,a1,a2,a3,a4),`CrVal (b0,b1,b2,b3,b4)) ->
+            ((((self#loc a0 b0) && (self#string a1 b1)) &&
+                (self#override_flag a2 b2))
+               && (self#mutable_flag a3 b3))
+              && (self#expr a4 b4)
+        | (`CrVir (a0,a1,a2,a3),`CrVir (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) &&
+               (self#private_flag a2 b2))
+              && (self#ctyp a3 b3)
+        | (`CrVvr (a0,a1,a2,a3),`CrVvr (b0,b1,b2,b3)) ->
+            (((self#loc a0 b0) && (self#string a1 b1)) &&
+               (self#mutable_flag a2 b2))
+              && (self#ctyp a3 b3)
+        | (`Ant (a0,a1),`Ant (b0,b1)) ->
+            (self#loc a0 b0) && (self#string a1 b1)
+        | (_,_) -> false
+    method fanloc_t : FanLoc.t -> FanLoc.t -> 'result= self#unknown
+  end
 class map =
   object (self : 'self_type)
     inherit  mapbase
@@ -294,19 +955,7 @@ class map =
       | `Sem (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in let a2 = self#patt a2 in `Sem (a0, a1, a2)
-      | `Chr (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `Chr (a0, a1)
-      | `Int (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `Int (a0, a1)
-      | `Int32 (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `Int32 (a0, a1)
-      | `Int64 (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `Int64 (a0, a1)
-      | `NativeInt (a0,a1) ->
-          let a0 = self#loc a0 in
-          let a1 = self#string a1 in `NativeInt (a0, a1)
-      | `Flo (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `Flo (a0, a1)
+      | #literal as a0 -> (self#literal a0 :>patt)
       | `PaLab (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#string a1 in
@@ -334,8 +983,6 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ident a1 in
           let a2 = self#patt a2 in `PaEq (a0, a1, a2)
-      | `Str (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `Str (a0, a1)
       | `PaTup (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#patt a1 in `PaTup (a0, a1)
       | `PaTyc (a0,a1,a2) ->
@@ -386,8 +1033,6 @@ class map =
           let a1 = self#expr a1 in
           let a2 = self#ctyp a2 in
           let a3 = self#ctyp a3 in `ExCoe (a0, a1, a2, a3)
-      | `Flo (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `Flo (a0, a1)
       | `For (a0,a1,a2,a3,a4,a5) ->
           let a0 = self#loc a0 in
           let a1 = self#string a1 in
@@ -1140,24 +1785,7 @@ class print =
         | `Sem (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#patt a2
-        | `Chr (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Chr@ %a@ %a)@]" self#loc a0
-              self#string a1
-        | `Int (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Int@ %a@ %a)@]" self#loc a0
-              self#string a1
-        | `Int32 (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Int32@ %a@ %a)@]" self#loc a0
-              self#string a1
-        | `Int64 (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Int64@ %a@ %a)@]" self#loc a0
-              self#string a1
-        | `NativeInt (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`NativeInt@ %a@ %a)@]" self#loc a0
-              self#string a1
-        | `Flo (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" self#loc a0
-              self#string a1
+        | #literal as a0 -> (self#literal fmt a0 :>'result)
         | `PaLab (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`PaLab@ %a@ %a@ %a)@]" self#loc a0
               self#string a1 self#patt a2
@@ -1179,9 +1807,6 @@ class print =
         | `PaEq (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a@ %a)@]" self#loc a0
               self#ident a1 self#patt a2
-        | `Str (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" self#loc a0
-              self#string a1
         | `PaTup (a0,a1) ->
             Format.fprintf fmt "@[<1>(`PaTup@ %a@ %a)@]" self#loc a0
               self#patt a1
@@ -1235,9 +1860,6 @@ class print =
         | `ExCoe (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`ExCoe@ %a@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#ctyp a2 self#ctyp a3
-        | `Flo (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" self#loc a0
-              self#string a1
         | `For (a0,a1,a2,a3,a4,a5) ->
             Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a@ %a)@]"
               self#loc a0 self#string a1 self#expr a2 self#expr a3
@@ -1816,12 +2438,7 @@ class fold =
           let self = self#loc a0 in let self = self#patt a1 in self#patt a2
       | `Sem (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#patt a2
-      | `Chr (a0,a1) -> let self = self#loc a0 in self#string a1
-      | `Int (a0,a1) -> let self = self#loc a0 in self#string a1
-      | `Int32 (a0,a1) -> let self = self#loc a0 in self#string a1
-      | `Int64 (a0,a1) -> let self = self#loc a0 in self#string a1
-      | `NativeInt (a0,a1) -> let self = self#loc a0 in self#string a1
-      | `Flo (a0,a1) -> let self = self#loc a0 in self#string a1
+      | #literal as a0 -> (self#literal a0 :>'self_type)
       | `PaLab (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#string a1 in self#patt a2
       | `PaOlb (a0,a1,a2) ->
@@ -1837,7 +2454,6 @@ class fold =
       | `PaRec (a0,a1) -> let self = self#loc a0 in self#patt a1
       | `PaEq (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ident a1 in self#patt a2
-      | `Str (a0,a1) -> let self = self#loc a0 in self#string a1
       | `PaTup (a0,a1) -> let self = self#loc a0 in self#patt a1
       | `PaTyc (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#ctyp a2
@@ -1866,7 +2482,6 @@ class fold =
       | `ExCoe (a0,a1,a2,a3) ->
           let self = self#loc a0 in
           let self = self#expr a1 in let self = self#ctyp a2 in self#ctyp a3
-      | `Flo (a0,a1) -> let self = self#loc a0 in self#string a1
       | `For (a0,a1,a2,a3,a4,a5) ->
           let self = self#loc a0 in
           let self = self#string a1 in
@@ -2436,18 +3051,8 @@ class fold2 =
         | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#patt a1 b1 in self#patt a2 b2
-        | (`Chr (a0,a1),`Chr (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
-        | (`Int (a0,a1),`Int (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
-        | (`Int32 (a0,a1),`Int32 (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
-        | (`Int64 (a0,a1),`Int64 (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
-        | (`NativeInt (a0,a1),`NativeInt (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
-        | (`Flo (a0,a1),`Flo (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
+        | ((#literal as a0),(#literal as b0)) ->
+            (self#literal a0 b0 :>'self_type)
         | (`PaLab (a0,a1,a2),`PaLab (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#string a1 b1 in self#patt a2 b2
@@ -2469,8 +3074,6 @@ class fold2 =
         | (`PaEq (a0,a1,a2),`PaEq (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ident a1 b1 in self#patt a2 b2
-        | (`Str (a0,a1),`Str (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
         | (`PaTup (a0,a1),`PaTup (b0,b1)) ->
             let self = self#loc a0 b0 in self#patt a1 b1
         | (`PaTyc (a0,a1,a2),`PaTyc (b0,b1,b2)) ->
@@ -2517,8 +3120,6 @@ class fold2 =
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in
             let self = self#ctyp a2 b2 in self#ctyp a3 b3
-        | (`Flo (a0,a1),`Flo (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
         | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
             let self = self#loc a0 b0 in
             let self = self#string a1 b1 in
@@ -3206,24 +3807,7 @@ and pp_print_patt: 'fmt -> patt -> 'result =
     | `Sem (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1 pp_print_patt a2
-    | `Chr (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Chr@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
-    | `Int (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Int@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
-    | `Int32 (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Int32@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
-    | `Int64 (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Int64@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
-    | `NativeInt (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`NativeInt@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
-    | `Flo (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
+    | #literal as a0 -> (pp_print_literal fmt a0 :>'result)
     | `PaLab (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`PaLab@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1 pp_print_patt a2
@@ -3245,9 +3829,6 @@ and pp_print_patt: 'fmt -> patt -> 'result =
     | `PaEq (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ident a1 pp_print_patt a2
-    | `Str (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
     | `PaTup (a0,a1) ->
         Format.fprintf fmt "@[<1>(`PaTup@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1
@@ -3301,9 +3882,6 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | `ExCoe (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`ExCoe@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_ctyp a2 pp_print_ctyp a3
-    | `Flo (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
     | `For (a0,a1,a2,a3,a4,a5) ->
         Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a@ %a)@]"
           pp_print_loc a0 pp_print_string a1 pp_print_expr a2 pp_print_expr
@@ -3853,12 +4431,7 @@ class iter =
       | `Array (a0,a1) -> (self#loc a0; self#patt a1)
       | `PaCom (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `Sem (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
-      | `Chr (a0,a1) -> (self#loc a0; self#string a1)
-      | `Int (a0,a1) -> (self#loc a0; self#string a1)
-      | `Int32 (a0,a1) -> (self#loc a0; self#string a1)
-      | `Int64 (a0,a1) -> (self#loc a0; self#string a1)
-      | `NativeInt (a0,a1) -> (self#loc a0; self#string a1)
-      | `Flo (a0,a1) -> (self#loc a0; self#string a1)
+      | #literal as a0 -> (self#literal a0 :>'result)
       | `PaLab (a0,a1,a2) -> (self#loc a0; self#string a1; self#patt a2)
       | `PaOlb (a0,a1,a2) -> (self#loc a0; self#string a1; self#patt a2)
       | `PaOlbi (a0,a1,a2,a3) ->
@@ -3867,7 +4440,6 @@ class iter =
       | `PaRng (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `PaRec (a0,a1) -> (self#loc a0; self#patt a1)
       | `PaEq (a0,a1,a2) -> (self#loc a0; self#ident a1; self#patt a2)
-      | `Str (a0,a1) -> (self#loc a0; self#string a1)
       | `PaTup (a0,a1) -> (self#loc a0; self#patt a1)
       | `PaTyc (a0,a1,a2) -> (self#loc a0; self#patt a1; self#ctyp a2)
       | `PaTyp (a0,a1) -> (self#loc a0; self#ident a1)
@@ -3889,7 +4461,6 @@ class iter =
       | `ExAss (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `ExCoe (a0,a1,a2,a3) ->
           (self#loc a0; self#expr a1; self#ctyp a2; self#ctyp a3)
-      | `Flo (a0,a1) -> (self#loc a0; self#string a1)
       | `For (a0,a1,a2,a3,a4,a5) ->
           (self#loc a0;
            self#string a1;
@@ -4455,24 +5026,7 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
             let a2 = self#patt a2 b2 in `Sem (a0, a1, a2)
-        | (`Chr (a0,a1),`Chr (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Chr (a0, a1)
-        | (`Int (a0,a1),`Int (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Int (a0, a1)
-        | (`Int32 (a0,a1),`Int32 (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Int32 (a0, a1)
-        | (`Int64 (a0,a1),`Int64 (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Int64 (a0, a1)
-        | (`NativeInt (a0,a1),`NativeInt (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `NativeInt (a0, a1)
-        | (`Flo (a0,a1),`Flo (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Flo (a0, a1)
+        | ((#literal as a0),(#literal as b0)) -> (self#literal a0 b0 :>patt)
         | (`PaLab (a0,a1,a2),`PaLab (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#string a1 b1 in
@@ -4501,9 +5055,6 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ident a1 b1 in
             let a2 = self#patt a2 b2 in `PaEq (a0, a1, a2)
-        | (`Str (a0,a1),`Str (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Str (a0, a1)
         | (`PaTup (a0,a1),`PaTup (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in `PaTup (a0, a1)
@@ -4566,9 +5117,6 @@ class map2 =
             let a1 = self#expr a1 b1 in
             let a2 = self#ctyp a2 b2 in
             let a3 = self#ctyp a3 b3 in `ExCoe (a0, a1, a2, a3)
-        | (`Flo (a0,a1),`Flo (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Flo (a0, a1)
         | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#string a1 b1 in
@@ -5721,42 +6269,7 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "Sem")),
                               (meta_loc _loc a0))), (meta_patt _loc a1))),
                     (meta_patt _loc a2))
-            | `Chr (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "Chr")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `Int (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "Int")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `Int32 (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "Int32")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `Int64 (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "Int64")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `NativeInt (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "NativeInt")),
-                         (meta_loc _loc a0))), (meta_string _loc a1))
-            | `Flo (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "Flo")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
+            | #literal as a0 -> (meta_literal _loc a0 :>'result)
             | `PaLab (a0,a1,a2) ->
                 `ExApp
                   (_loc,
@@ -5820,12 +6333,6 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "PaEq")),
                               (meta_loc _loc a0))), (meta_ident _loc a1))),
                     (meta_patt _loc a2))
-            | `Str (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "Str")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
             | `PaTup (a0,a1) ->
                 `ExApp
                   (_loc,
@@ -5946,12 +6453,6 @@ module Make(MetaLoc:META_LOC) =
                                  (_loc, (`ExVrn (_loc, "ExCoe")),
                                    (meta_loc _loc a0))), (meta_expr _loc a1))),
                          (meta_ctyp _loc a2))), (meta_ctyp _loc a3))
-            | `Flo (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "Flo")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
             | `For (a0,a1,a2,a3,a4,a5) ->
                 `ExApp
                   (_loc,
@@ -7500,42 +8001,7 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "Sem")),
                               (meta_loc _loc a0))), (meta_patt _loc a1))),
                     (meta_patt _loc a2))
-            | `Chr (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "Chr")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `Int (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "Int")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `Int32 (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "Int32")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `Int64 (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "Int64")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `NativeInt (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "NativeInt")),
-                         (meta_loc _loc a0))), (meta_string _loc a1))
-            | `Flo (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "Flo")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
+            | #literal as a0 -> (meta_literal _loc a0 :>'result)
             | `PaLab (a0,a1,a2) ->
                 `PaApp
                   (_loc,
@@ -7599,12 +8065,6 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "PaEq")),
                               (meta_loc _loc a0))), (meta_ident _loc a1))),
                     (meta_patt _loc a2))
-            | `Str (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "Str")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
             | `PaTup (a0,a1) ->
                 `PaApp
                   (_loc,
@@ -7725,12 +8185,6 @@ module Make(MetaLoc:META_LOC) =
                                  (_loc, (`PaVrn (_loc, "ExCoe")),
                                    (meta_loc _loc a0))), (meta_expr _loc a1))),
                          (meta_ctyp _loc a2))), (meta_ctyp _loc a3))
-            | `Flo (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "Flo")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
             | `For (a0,a1,a2,a3,a4,a5) ->
                 `PaApp
                   (_loc,

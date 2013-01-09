@@ -482,7 +482,6 @@ let transform_module_types  lst =
     [ A of [`a | `b] and int ]
  *)
 let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
-  (* let open ErrorMonad in  *)
   let rec loop acc t =
     match t with
     [ {| $uid:cons of $tys |} ->
@@ -492,14 +491,9 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
     | {| $uid:cons |} -> f cons [] acc
     | {|  `$cons |} -> f ("`"^cons) [] acc
     | {| $t1 | $t2 |} -> loop (loop acc t1) t2
-    | ( {| [ $ty  ] |}  | {| [= $ty ] |} 
-    | {| [< $ty ] |}  | {| [> $ty ] |} )  ->
-        loop  acc ty     
-    | {| |} -> acc
-          (* we don't handle the type constructs  below *)
+    | {| |} -> acc  (* we don't handle the type constructs  below *)
     | t ->
-        failwithf "reduce_data_ctors: %s\n" (to_string t)
-(* raise (Unhandled t) *) ] in
+        failwithf "reduce_data_ctors: %s\n" (to_string t) ] in
   loop init ty
   (* try *)
   (*   return & loop init ty *)

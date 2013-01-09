@@ -219,7 +219,7 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
       let meta_ast = mpatt _loc ast in
       let exp_ast = patt_filter meta_ast in
       (* BOOTSTRAPPING *)
-      let rec subst_first_loc name : patt -> patt =  with "patt" fun
+      let rec subst_first_loc name : patt -> patt =  with patt fun
         [
          `PaApp(loc, `PaVrn (_,u), (`PaTup (_, `PaCom (_,_,rest)))) ->
          `PaApp(loc, `PaVrn(loc,u),(`PaTup (loc,`PaCom(loc,`Id(_loc,`Lid (_loc,name)),rest))))
@@ -305,7 +305,7 @@ let gm () =
 let antiquot_expander ~parse_patt ~parse_expr = object
   inherit FanAst.map as super;
   method! patt =
-    with "patt"
+    with patt
     fun
     [ {| $anti:s |} | {| $str:s |} as p ->
       let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
@@ -359,7 +359,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern")
           | _ -> e ])
       | p -> super#patt p ];
-    method! expr = with "expr" fun (* `Ant keeps the right location, `Str does not *)
+    method! expr = with expr fun (* `Ant keeps the right location, `Str does not *)
       [ {@_loc| $anti:s |} | {@_loc| $str:s |} as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc

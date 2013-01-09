@@ -120,16 +120,7 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
        mk_variant cons exprs in
      let e = mk (cons, tyargs) in (`Case (_loc, p, (`Nil _loc), e)) :: acc : 
     match_case list ) in
-  let info =
-    match ty with
-    | `Sum (_loc,t) -> (TyVrn, (List.length (FanAst.list_of_ctyp t [])))
-    | `TyVrnEq (_loc,t) ->
-        (TyVrnEq, (List.length (FanAst.list_of_ctyp t [])))
-    | `TyVrnSup (_loc,t) ->
-        (TyVrnSup, (List.length (FanAst.list_of_ctyp t [])))
-    | `TyVrnInf (_loc,t) ->
-        (TyVrnInf, (List.length (FanAst.list_of_ctyp t [])))
-    | _ -> invalid_arg (sprintf "expr_of_ctyp {|%s|} " "") in
+  let info = (TyVrn, (List.length (FanAst.list_of_ctyp ty []))) in
   let res = Ctyp.reduce_data_ctors ty [] f in
   let res =
     let t =
@@ -218,10 +209,12 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
           |`TyVrnInfSup (_loc,t,_) ->
             let case = expr_of_variant result_type t in
             mk_prefix ~names ~left_type_variable tyvars case
-        | _ ->
+        | `Sum (_loc,ctyp) ->
             let funct = expr_of_ctyp ctyp in
-            mk_prefix ~names ~left_type_variable tyvars funct)
-   | _tydcl -> failwithf "fun_of_tydcl <<%s>>\n" (Ctyp.to_string _tydcl) : 
+            mk_prefix ~names ~left_type_variable tyvars funct
+        | t -> failwithf "unhandled type %s" (Ctyp.to_string t))
+   | _tydcl ->
+       failwithf "impossible:fun_of_tydcl <<%s>>\n" (Ctyp.to_string _tydcl) : 
   expr )
 let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 

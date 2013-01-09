@@ -20,11 +20,14 @@ let mk_tuple_eq exprs = mk_variant_eq "" exprs
 let mk_record_eq: FSig.record_col list -> expr =
   fun cols  ->
     (cols |> (List.map (fun { info;_}  -> info))) |> (mk_variant_eq "")
-let gen_eq =
-  gen_str_item ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
-    ~mk_record:mk_record_eq ~mk_variant:mk_variant_eq
-    ~trail:(`Id (_loc, (`Lid (_loc, "false")))) ()
-let _ = [("Eq", gen_eq)] |> (List.iter Typehook.register)
+let (gen_eq,gen_eqobj) =
+  ((gen_str_item ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
+      ~mk_record:mk_record_eq ~mk_variant:mk_variant_eq
+      ~trail:(`Id (_loc, (`Lid (_loc, "false")))) ()),
+    (gen_object ~kind:Iter ~mk_tuple:mk_tuple_eq ~mk_record:mk_record_eq
+       ~base:"eqbase" ~class_name:"eq" ~mk_variant:mk_variant_eq ~names:[]
+       ~arity:2 ~trail:(`Id (_loc, (`Lid (_loc, "false")))) ()))
+let _ = [("Eq", gen_eq); ("OEq", gen_eqobj)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { expr;_}  -> expr))) |>

@@ -40,7 +40,7 @@ FanConfig.antiquotations := true;
          | "(";a_LIDENT{x}; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")"
            -> (_loc,x,y,Some t) ] {ls}
        ->
-       with "str_item"
+       with str_item
        let mk =
          match t with
          [`static t -> {:expr| $id:t.mk |}

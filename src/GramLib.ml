@@ -89,7 +89,7 @@ let parse_include_file rule file  =
 
 
   (* let mk_semi_list nt nts = *)
-  (*   with "rec_binding" *)
+  (*   with rec_binding *)
   (*   {:extend|Gram *)
   (*     nts:[ nt{b1};";";S{b2} -> {|$b1;$b2|} | nt{b1};";" -> b1 | nt{b1} -> b1 ] *)
   (*   |}; *)

@@ -173,17 +173,17 @@ let expr_of_ctyp ?cons_transform ?(arity=1) ?(names=[]) ~trail ~mk_variant
           mk_variant cons exprs in
       let e = mk (cons,tyargs) in
       [ {:match_case| $pat:p -> $e |} :: acc ] in  begin 
-  let info =
-    match ty with
-    (* FIXME TyVrnInfSup to be added *)
-    [ {|  [ $t]  |}  -> (TyVrn, List.length (FanAst.list_of_ctyp t []))
-    | {| [= $t ] |} -> (TyVrnEq, List.length (FanAst.list_of_ctyp t []))
-    | {| [> $t ] |} -> (TyVrnSup,List.length (FanAst.list_of_ctyp t []))
-    | {| [< $t ] |} -> (TyVrnInf,List.length (FanAst.list_of_ctyp t []))
-    | _ ->
-        invalid_arg
-          (sprintf "expr_of_ctyp {|%s|} " "" (*FIXME*)
-             (* & Ctyp.to_string ty *)) ] in 
+  let info = (TyVrn, List.length (FanAst.list_of_ctyp ty [])) in 
+    (* match ty with *)
+    (* (\* FIXME TyVrnInfSup to be added *\) *)
+    (* [ {|  [ $t]  |}  -> (TyVrn, List.length (FanAst.list_of_ctyp t [])) *)
+    (* | {| [= $t ] |} -> (TyVrnEq, List.length (FanAst.list_of_ctyp t [])) *)
+    (* | {| [> $t ] |} -> (TyVrnSup,List.length (FanAst.list_of_ctyp t [])) *)
+    (* | {| [< $t ] |} -> (TyVrnInf,List.length (FanAst.list_of_ctyp t [])) *)
+    (* | _ -> *)
+    (*     invalid_arg *)
+    (*       (sprintf "expr_of_ctyp {|%s|} " "" (\*FIXME*\) *)
+    (*          (\* & Ctyp.to_string ty *\)) ] in  *)
   let res = Ctyp.reduce_data_ctors ty  [] f (* >>= (fun res -> *) in
   let res =
     let t =
@@ -283,15 +283,18 @@ let fun_of_tydcl
           
           let case =  expr_of_variant result_type t (* result_type *) in
           mk_prefix ~names ~left_type_variable tyvars case
-         (* FIXME be more precise *)   
-      | _ ->
+         (* FIXME be more precise *)
+      | {| [$ctyp]|} -> 
           let funct = expr_of_ctyp ctyp in  
           (* for [expr_of_ctyp]
              appending names was delayed to be
              handled in mkcon *)
-          mk_prefix ~names ~left_type_variable tyvars funct ]
+          mk_prefix ~names ~left_type_variable tyvars funct
+       | t ->
+           failwithf  "unhandled type %s" (Ctyp.to_string t)
+        ]
   | _tydcl -> 
-      failwithf  "fun_of_tydcl <<%s>>\n" (Ctyp.to_string _tydcl) ];
+      failwithf  "impossible:fun_of_tydcl <<%s>>\n" (Ctyp.to_string _tydcl) ];
 
 
 let binding_of_tydcl ?cons_transform simple_expr_of_ctyp

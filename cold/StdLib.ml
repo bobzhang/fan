@@ -150,6 +150,42 @@ class iterbase =
       fun mf_a  x  -> mf_a self x.contents
     method unknown : 'a . 'a -> unit= fun _  -> ()
   end
+class eqbase =
+  object (self : 'self)
+    method int : int -> int -> bool= fun x  y  -> x = y
+    method int32 : int32 -> int32 -> bool= fun x  y  -> x = y
+    method int64 : int64 -> int64 -> bool= fun x  y  -> x = y
+    method nativeint : nativeint -> nativeint -> bool= fun x  y  -> x = y
+    method float : float -> float -> bool= fun x  y  -> x = y
+    method string : string -> string -> bool= fun x  y  -> x = y
+    method bool : bool -> bool -> bool= fun x  y  -> x = y
+    method char : char -> char -> bool= fun x  y  -> x = y
+    method unit : unit -> unit -> bool= fun x  y  -> x = y
+    method list :
+      'a0 .
+        ('self_type -> 'a0 -> 'a0 -> bool) -> 'a0 list -> 'a0 list -> bool=
+      fun mf_a  xs  ys  -> List.for_all2 (mf_a self) xs ys
+    method array :
+      'a0 .
+        ('self_type -> 'a0 -> 'a0 -> bool) -> 'a0 array -> 'a0 array -> bool=
+      fun mf_a  xs  ys  -> Array.for_all2 (mf_a self) xs ys
+    method option :
+      'a . ('self_type -> 'a -> 'a -> bool) -> 'a option -> 'a option -> bool=
+      fun mf_a  x  y  ->
+        match (x, y) with
+        | (None ,None ) -> true
+        | (Some x,Some y) -> mf_a self x y
+        | (_,_) -> false
+    method arrow :
+      'a0 'a1 'b0 'b1 .
+        ('self_type -> 'a0 -> bool) ->
+          ('self_type -> 'a1 -> bool) -> ('a0 -> 'a1) -> 'b0 -> 'b1=
+      fun _mf_a  _mf_b  _f  -> failwith "not implemented in iter arrow"
+    method ref :
+      'a . ('self_type -> 'a -> 'a -> bool) -> 'a ref -> 'a ref -> bool=
+      fun mf_a  x  y  -> mf_a self x.contents y.contents
+    method unknown : 'a . 'a -> 'a -> bool= fun _  _  -> true
+  end
 class mapbase2 =
   object (self : 'self_type)
     method int : int -> int -> int= fun x  _  -> x

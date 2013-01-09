@@ -108,10 +108,33 @@ class iterbase = object(self:'self)
         ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
           failwith "not implemented in iter arrow";
   method ref: !'a . ('self_type ->'a -> unit) -> (ref 'a -> unit) =
-    fun mf_a -> fun [ x  ->  (mf_a self !x)];
+    fun mf_a x  ->  mf_a self !x;
   method unknown: !'a. 'a -> unit = fun _-> ();
 end;
-    
+
+
+class eqbase = object(self:'self)
+  {:inject.class_str_item| eq_class_str_item_base_2 |};
+  method list: ! 'a0. ('self_type -> 'a0 -> 'a0 -> bool) -> (list 'a0 -> list 'a0 -> bool) =
+    fun mf_a xs ys -> List.for_all2  (mf_a self) xs ys ;
+  method array: ! 'a0 . ('self_type -> 'a0 ->'a0 -> bool) -> (array 'a0 -> array 'a0-> bool) =
+    fun mf_a xs ys -> Array.for_all2  (mf_a self) xs ys ;
+  method option:
+      ! 'a . ('self_type -> 'a -> 'a-> bool) -> (option 'a -> option 'a -> bool ) =
+    fun mf_a x y-> match (x, y) with
+    [(None,None) -> true
+    |(Some x,Some y) -> (mf_a self x y)
+    | (_,_) -> false ];
+
+  method arrow: ! 'a0 'a1 'b0 'b1 .
+      ('self_type -> 'a0 -> bool) -> ('self_type -> 'a1 -> bool) ->
+        ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
+          failwith "not implemented in iter arrow";
+  method ref: !'a . ('self_type ->'a -> 'a-> bool) -> (ref 'a -> ref 'a -> bool) =
+    fun mf_a x y -> mf_a self !x !y;
+  method unknown: !'a. 'a -> 'a -> bool = fun _ _ -> true;
+end;
+
 
 class mapbase2 = object (self:'self_type)
   {:inject.class_str_item|map_class_str_item_base_2|};  

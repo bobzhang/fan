@@ -8,14 +8,14 @@ module Ast = FanAst;
   
 class printer = object(self:'self)
     method longident _loc i = 
-      with "ident" match i with
+      with ident match i with
       [ Lident s -> {|$lid:s|}
       | Ldot(y,s) -> {| $(id:self#longident _loc y).$lid:s|}
       | Lapply(a,b) -> {| ($(id:self#longident _loc a) $(id:self#longident _loc b)) |}]  ;
     method longident_loc i =
       self#longident i.loc i.txt;
     method gen_cases  _loc (lst: list (pattern*expression)) =
-     with "match_case" 
+     with match_case 
      List.map
      (fun (p,e) ->
        match e.pexp_desc with
@@ -25,7 +25,7 @@ class printer = object(self:'self)
           {|$(pat:self#pattern p) -> $(self#expr (e:expression)) |} ]) lst ;
 
     method constant_expr _loc i=
-      with "expr" match i with 
+      with expr match i with 
       [Const_int32 i -> {|$`int32:i|}
       |Const_int i -> {|$`int:i|}
       |Const_int64 i -> {|$`int64:i|}
@@ -34,7 +34,7 @@ class printer = object(self:'self)
       |Const_char i -> {|$`chr:i|}
       |Const_string i -> {|$`str:i|} ];
      method constant_patt _loc i =
-      with "patt" match i with 
+      with patt match i with 
       [Const_int32 i -> {|$`int32:i|}
       |Const_int i -> {|$`int:i|}
       |Const_int64 i -> {|$`int64:i|}
@@ -43,27 +43,27 @@ class printer = object(self:'self)
       |Const_char i -> {|$`chr:i|}
       |Const_string i -> {|$`str:i|} ];
      method mutable_flag =
-       with "mutable_flag" fun 
+       with mutable_flag fun 
       [ Immutable -> {||}
       | Mutable -> {|mutable|}];
      method virtual_flag =
-       with "virtual_flag" fun
+       with virtual_flag fun
        [Concrete-> {||}
        |Virtual -> {| virtual |}];
      method rec_flag =
-       with "rec_flag" fun
+       with rec_flag fun
        [ Nonrecursive -> {||}
        | Recursive | Default -> {| rec |}] ;
      method direction_flag =
-       with "direction_flag" fun
+       with direction_flag fun
        [ Upto -> {|to|}
        | Downto -> {|downto|}];
      method private_flag =
-       with "private_flag" fun
+       with private_flag fun
        [Public -> {||}
        |Private -> {|private|}];
      method core_type {ptyp_desc=ty;ptyp_loc=_loc} =
-       with "ctyp" match ty with
+       with ctyp match ty with
        [ Ptyp_any -> {| _ |}
        | Ptyp_var s -> {| $lid:s |}
        | Ptyp_arrow (label,t1,t2) ->
@@ -143,7 +143,7 @@ class printer = object(self:'self)
            {|(module $(id:self#longident_loc lid) with $(list:with_constrs) )|}
       ];
      method pattern {ppat_desc=x;ppat_loc=_loc} =
-       with "patt" match x with
+       with patt match x with
        [Ppat_any -> {| _ |}
        |Ppat_var {txt;_} -> {| $lid:txt|}
        |Ppat_alias (p,{txt;_}) ->
@@ -190,7 +190,7 @@ class printer = object(self:'self)
             {| (module $txt )|}
         ];
      method expr {pexp_desc=x;pexp_loc=_loc} =
-       with "expr" match x with
+       with expr match x with
        [Pexp_ident (lid_loc) ->
          {| $(id: self#longident_loc lid_loc) |}
        | Pexp_constant c ->
@@ -319,7 +319,7 @@ class printer = object(self:'self)
         ];
 
      method module_expr {pmod_desc=x;pmod_loc = _loc} : Ast.module_expr =
-       with "module_expr" match x with
+       with module_expr match x with
        [ Pmod_ident lid_loc ->
          {| $(id:self#longident_loc lid_loc) |}
        | Pmod_structure s ->
@@ -334,7 +334,7 @@ class printer = object(self:'self)
            {| (val $(self#expr e)) |}
        ];
      method lhs_type_declaration (params,variance,({loc;_} as lid_loc)) =
-       with "ctyp"
+       with ctyp
        let u = List.map2
          (fun p v ->
            match (p,v) with
@@ -356,7 +356,7 @@ class printer = object(self:'self)
           {@loc| $(id:self#longident_loc lid_loc) |}::
           u] ;
      method with_constraint  (({loc=_loc;_} as lid1),w)  =
-       with "with_constr" match w with
+       with with_constr match w with
        [ Pwith_type ({ptype_params=ls;ptype_manifest=Some ty;ptype_variance;_} ) -> 
            {| type $(self#lhs_type_declaration (ls, ptype_variance,lid1))
                  = $(self#core_type ty)|}
@@ -371,7 +371,7 @@ class printer = object(self:'self)
        ] ;
      
      method module_type {pmty_desc=x;pmty_loc=_loc}:Ast.module_type =
-       with "module_type" match x with
+       with module_type match x with
        [Pmty_ident lid_loc -> {| $(id:self#longident_loc lid_loc ) |}
        |Pmty_signature s ->
            {| sig $(self#signature s) end |}
@@ -385,7 +385,7 @@ class printer = object(self:'self)
        ];  
 
      method structure_item {pstr_desc=x;pstr_loc=_loc} : Ast.str_item =
-       with "str_item" match x with
+       with str_item match x with
        [Pstr_eval e -> {| $(exp:self#expr e) |}
        |Pstr_value (rf,lst) ->
            let bindings =
@@ -422,7 +422,7 @@ class printer = object(self:'self)
      method class_expr {pcl_desc=x;pcl_loc=_loc} : Ast.class_expr = assert false;
      method class_type ({pci_expr;_}: class_infos class_type)  : Ast.class_type = assert false;
   (*    method class_types ls = *)
-  (*      with "class_type_declaration" *)
+  (*      with class_type_declaration *)
   (*      {| $(list:List.map self#class_type ls ) |} ; *)
   (* {:class_type| object end |} *)
   (*   {:class_type| $a and $b |} *)

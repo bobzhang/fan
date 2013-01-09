@@ -945,16 +945,12 @@ let apply () =
    Gram.extend (lang : 'lang Gram.t )
      (None,
        [(None, None,
-          [([`Stoken
-               (((function | `STR (_,_) -> true | _ -> false)),
-                 (`Normal, "`STR (_,_)"))],
+          [([`Snterm (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
              (Gram.mk_action
-                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `STR (_,s) ->
-                       (let old = AstQuotation.default.contents in
-                        (AstQuotation.default := s; old) : 'lang )
-                   | _ -> assert false)))])]);
+                (fun (ls : 'dot_lstrings)  (_loc : FanLoc.t)  ->
+                   (let s = String.concat "." ls in
+                    let old = AstQuotation.default.contents in
+                    AstQuotation.default := s; old : 'lang ))))])]);
    Gram.extend (pos_exprs : 'pos_exprs Gram.t )
      (None,
        [(None, None,

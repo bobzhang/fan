@@ -87,7 +87,7 @@ let safe_string_escaped s =
   
 {:fans|keep off;
  derive
-   (Map2 Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint); |};
+   (Map2 Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq); |};
 
   
 {:ocaml|
@@ -202,7 +202,7 @@ let ident_of_patt =
     | p -> self p ];
 
 
-let rec is_irrefut_patt = with "patt"
+let rec is_irrefut_patt = with patt
     fun
     [ {| $lid:_ |} -> true
     | {| () |} -> true
@@ -472,7 +472,7 @@ let rec list_of_with_constr x acc = match x with
   | t -> [t :: acc] ];
 
 let rec list_of_ctyp x acc =
-  with "ctyp" match x with
+  with ctyp match x with
   [ {||} -> acc
   | {| $x & $y |} | {| $x, $y |} |
     {| $x * $y |} | {| $x; $y |} |
@@ -577,13 +577,13 @@ class clean_ast = object
     
   inherit map as super;
   method! with_constr wc =
-    with "with_constr"
+    with with_constr
     match super#with_constr wc with
     [ {| $({@_l||})  and $wc |} |
       {| $wc and $({@_l||} ) |} -> wc
     | wc -> wc ];
   method! expr e =
-    with "expr"
+    with expr
     match super#expr e with
     [ {| let $rec:_ $({:binding@_l||}) in $e |} |
       {| { ($e) with $({:rec_binding@_l||})  } |} |
@@ -593,7 +593,7 @@ class clean_ast = object
       {| $e; $({@_l||} ) |} -> e
     | e -> e ];
   method! patt p =
-    with "patt"
+    with patt
     match super#patt p with
     [ {| ( $p as $({@_l||} ) ) |} |
       {| $({@_l||}) | $p |} |
@@ -604,32 +604,32 @@ class clean_ast = object
       {| $p; $({@_l||} ) |} -> p
     | p -> p ];
   method! match_case mc =
-    with "match_case"
+    with match_case
     match super#match_case mc with
     [ {| $({@_l||} ) | $mc |} |
       {| $mc | $({@_l||} ) |} -> mc
     | mc -> mc ];
   method! binding bi =
-    with "binding"
+    with binding
     match super#binding bi with
     [ {| $({@_l||} ) and $bi |} |
       {| $bi and $({@_l||} ) |} -> bi
     | bi -> bi ];
   method! rec_binding rb =
-    with "rec_binding"
+    with rec_binding
     match super#rec_binding rb with
     [ {| $({@_l||} ) ; $bi |} | {| $bi ; $({@_l||} ) |} -> bi
     | bi -> bi ];
 
   method! module_binding mb =
-    with "module_binding"
+    with module_binding
     match super#module_binding mb with
     [ {| $({@_l||} ) and $mb |} |
       {| $mb and $({@_l||} ) |} -> mb
     | mb -> mb ];
 
   method! ctyp t =
-    with "ctyp"
+    with ctyp
     match super#ctyp t with
     [ {| ! $({@_l||} ) . $t |} |
       {| $({@_l||} ) as $t |} |
@@ -652,14 +652,14 @@ class clean_ast = object
     | t -> t ];
 
   method! sig_item sg =
-    with "sig_item"
+    with sig_item
     match super#sig_item sg with
     [ {| $({@_l||}); $sg |} | {| $sg; $({@_l||} ) |} -> sg
     | {| type $({:ctyp@_l||} ) |} -> {||}
     | sg -> sg ];
 
   method! str_item st =
-    with "str_item"
+    with str_item
     match super#str_item st with
     [ {| $({@_l||} ); $st |} | {| $st; $({@_l||} ) |} -> st
     | {| type $({:ctyp@_l||} ) |} -> {||}
@@ -672,25 +672,25 @@ class clean_ast = object
     | mt -> mt ];
 
   method! class_expr ce =
-    with "class_expr"
+    with class_expr
     match super#class_expr ce with
     [ {| $({@_l||} ) and $ce |} | {| $ce and $({@_l||} ) |} -> ce
     | ce -> ce ];
 
   method! class_type ct =
-    with "class_type"
+    with class_type
     match super#class_type ct with
     [ {| $({@_l||} ) and $ct |} | {| $ct and $({@_l||} ) |} -> ct
     | ct -> ct ];
 
   method! class_sig_item csg =
-    with "class_sig_item"
+    with class_sig_item
     match super#class_sig_item csg with
     [ {| $({@_l||} ); $csg |} | {| $csg; $({@_l||} ) |} -> csg
     | csg -> csg ];
 
   method! class_str_item cst =
-    with "class_str_item"
+    with class_str_item
     match super#class_str_item cst with
     [ {| $({@_l||} ); $cst |} | {| $cst; $({@_l||} ) |} -> cst
     | cst -> cst ];
@@ -719,7 +719,7 @@ end;
 
 let match_pre = object (self)
   inherit map; (* as super; *)
-  method! match_case = with "match_case" fun
+  method! match_case = with match_case fun
    [ {| $pat:p -> $e |} -> {| $pat:p -> fun () -> $e |}
    | {| $pat:p when $e -> $e1 |} -> {| $pat:p when $e -> fun () -> $e1 |}
    | {| $a1 | $a2 |} -> {| $(self#match_case a1) | $(self#match_case a2) |}

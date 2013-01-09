@@ -334,6 +334,17 @@ module Array =
              done in
            result)
     let filter_map f a = filter_opt (map f a)
+    let for_all2 p xs ys =
+      let n = length xs in
+      let _ =
+        if (length ys) <> n
+        then raise (Invalid_argument "Array.for_all2")
+        else () in
+      let rec loop i =
+        if i = n
+        then true
+        else if p (xs.(i)) (ys.(i)) then loop (succ i) else false in
+      loop 0
   end
 module type STREAM =
   sig

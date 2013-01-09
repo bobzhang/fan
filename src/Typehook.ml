@@ -85,7 +85,7 @@ let plugin_remove plugin =
 let filter_type_defs ?qualified () = object (* (self:'self_type) *)
   inherit FanAst.map as super;
   val mutable type_defs = let _loc = FanLoc.ghost in {:str_item||} ;
-  method! sig_item = with "sig_item" fun
+  method! sig_item = with sig_item fun
     [
      ( {| val $_ : $_ |} | {| include $_ |} | {| external $_ : $_ = $_ |}
      | {|exception $_ |}  | {| class $_ |}  | {| class type $_ |}
@@ -164,7 +164,7 @@ let traversal () : traversal  = object (self:'self_type)
   method update_cur_and_types f = 
     cur_and_types <-  f cur_and_types;
   (* entrance *)  
-  method! module_expr = with "str_item" fun
+  method! module_expr = with str_item fun
     [ {:module_expr| struct $u end |}  ->  begin 
       self#in_module ;
       let res = self#str_item u ;
@@ -197,7 +197,7 @@ let traversal () : traversal  = object (self:'self_type)
     end
     | x -> super#module_expr x ];
 
-  method! str_item  = with "str_item" fun
+  method! str_item  = with str_item fun
     [ {| type $_ and $_ |} as x -> begin
       self#in_and_types;
       let _ = super#str_item x ;
@@ -238,7 +238,7 @@ let g = Gram.create_gram ();
   fan_quot fan_quots
 |};
 
-with "expr"
+with expr
     {:extend|Gram
       fan_quot:
       ["derive";"("; L1 [`LID x -> x | `UID x  -> x]{plugins}; ")" ->

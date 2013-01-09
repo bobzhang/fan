@@ -276,8 +276,6 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
     | `TyId (_loc,`Uid (_,cons)) -> f cons [] acc
     | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
     | `TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
-    | `Sum (_loc,ty)|`TyVrnEq (_loc,ty)|`TyVrnInf (_loc,ty)
-      |`TyVrnSup (_loc,ty) -> loop acc ty
     | `Nil _loc -> acc
     | t -> failwithf "reduce_data_ctors: %s\n" (to_string t) in
   loop init ty

@@ -141,12 +141,7 @@
     | `Array of (loc * patt) (* [| p |] *)
     | `PaCom of (loc * patt * patt) (* p, p *)
     | `Sem of (loc * patt * patt) (* p; p *)
-    | `Chr of (loc * string) (* c *) (* 'x' *)
-    | `Int of (loc * string)
-    | `Int32 of (loc * string)
-    | `Int64 of (loc * string)
-    | `NativeInt of (loc * string)
-    | `Flo of (loc * string)
+    | literal
     | `PaLab of (loc * string * patt) (* ~s or ~s:(p) *)
     (* ?s or ?s:(p) *)
     | `PaOlb of (loc * string * patt)
@@ -156,7 +151,7 @@
     | `PaRng of (loc * patt * patt) (* p .. p *)
     | `PaRec of (loc * patt) (* { p } *)
     | `PaEq  of (loc * ident * patt) (* i = p *)
-    | `Str of (loc * string) (* s *)
+
     | `PaTup of (loc * patt) (* ( p ) *)
     | `PaTyc of (loc * patt * ctyp) (* (p : t) *)
     | `PaTyp of (loc * ident) (* #i *)
@@ -176,23 +171,13 @@
     | `ExAsr of (loc * expr) (* assert e *)
     | `ExAss of (loc * expr * expr) (* e := e *)
     | `ExCoe of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)
-    | `Flo of (loc * string)
+
       (* for s = e to/downto e do { e } *)
 
     | `For of (loc * string * expr * expr * direction_flag * expr)
     | `Fun of (loc * match_case) (* fun [ mc ] *)
     | `ExIfe of (loc * expr * expr * expr) (* if e then e else e *)
-
-    (* | `Chr of (loc * string) (\* 'c' *\) *)
-    (* | `Int of (loc * string) (\* 42 *\) *)
-    (* | `Int32 of (loc * string) *)
-    (* | `Int64 of (loc * string) *)
-    (* | `NativeInt of (loc * string) *)
-    (*   (\* s *\) (\* "foo" *\) *)
-    (* | `Str of (loc * string) *)
     | literal
-
-    (* | literal      *)
     | `Label of (loc * string * expr) (* ~s or ~s:e *)
     | `Lazy of (loc * expr) (* lazy e *)
       (* let b in e or let rec b in e *)
