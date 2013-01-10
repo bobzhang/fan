@@ -29,10 +29,6 @@ echo "Second round building finished; now do the comparison"
 if cmp _build/src/$target _build/boot/$target
 then
     echo fixpoint for $target
-    # git add .
-    # git add -u
-    # read -p 'Commit message:' v 
-    # git commit -m "$v"
     ocamlbuild -quiet foo.otarget
 else
     echo $target is different, you should rebootstrap it by cleaning, building and call this script  

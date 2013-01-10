@@ -182,7 +182,7 @@ let partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
     | Lte (i,yes,no) ->
-        `ExIfe
+        `IfThenElse
           (_loc,
             (`ExApp
                (_loc,
@@ -236,7 +236,7 @@ let binding_partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
     | Lte (i,yes,no) ->
-        `ExIfe
+        `IfThenElse
           (_loc,
             (`ExApp
                (_loc,
@@ -348,7 +348,7 @@ let gen_definition _loc l =
         then `Nil _loc
         else
           ret
-            (`Sequence
+            (`Seq
                (_loc,
                  (`Sem
                     (_loc,
@@ -397,7 +397,7 @@ let gen_definition _loc l =
                      (`LetIn
                         (_loc, b,
                           (FanAst.biAnd_of_list (Array.to_list states)),
-                          (`Sequence
+                          (`Seq
                              (_loc,
                                (`Sem
                                   (_loc,

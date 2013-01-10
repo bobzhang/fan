@@ -100,7 +100,7 @@ let stream_pattern_component skont ckont =
                   (_loc,
                     (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)),
                     (`Nil _loc),
-                    (`Sequence
+                    (`Seq
                        (_loc,
                          (`Sem
                             (_loc,
@@ -120,7 +120,7 @@ let stream_pattern_component skont ckont =
                   (_loc,
                     (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)),
                     w,
-                    (`Sequence
+                    (`Seq
                        (_loc,
                          (`Sem
                             (_loc,
@@ -136,7 +136,7 @@ let stream_pattern_component skont ckont =
             (_loc,`Case
                     (_,`PaTyc
                          (_,`Id (_,`Lid (_,v)),`TyApp
-                                                 (_,`TyId
+                                                 (_,`Id
                                                       (_,`IdAcc
                                                            (_,`Uid (_,m),
                                                             `Lid (_,"t"))),
@@ -281,7 +281,7 @@ let stream_patterns_term _loc ekont tspel =
                               (_loc, (`Uid (_loc, (gm ()))),
                                 (`Uid (_loc, "Error")))))), str))) in
            let skont = stream_pattern _loc epo e ekont spcl in
-           `Sequence
+           `Seq
              (_loc,
                (`Sem
                   (_loc,
@@ -341,7 +341,7 @@ let cparser _loc bpo pc =
       (_loc, (`Id (_loc, (`Lid (_loc, strm_n)))),
         (`TyApp
            (_loc,
-             (`TyId
+             (`Id
                 (_loc,
                   (`IdAcc (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "t")))))),
              (`Any _loc)))) in
@@ -375,7 +375,7 @@ let cparser_match _loc me bpo pc =
                   (_loc, (`Id (_loc, (`Lid (_loc, strm_n)))),
                     (`TyApp
                        (_loc,
-                         (`TyId
+                         (`Id
                             (_loc,
                               (`IdAcc
                                  (_loc, (`Uid (_loc, (gm ()))),

@@ -86,6 +86,58 @@ let (gen_map,gen_map2) =
                    (`Str (_loc, "map2 failure")))) ()))
 let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
+let gen_strip =
+  let mk_variant cons params =
+    let result =
+      ((List.tl params) |> (List.map (fun { exp0;_}  -> exp0))) |>
+        (apply (of_str cons)) in
+    List.fold_right
+      (fun { expr; pat0; ty;_}  res  ->
+         match ty with
+         | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
+           |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
+           |`Id (_loc,`Lid (_,"loc"))
+           |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`TyApp
+              (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
+             -> res
+         | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
+      (List.tl params) result in
+  let mk_tuple params =
+    let result =
+      (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_of_list in
+    List.fold_right
+      (fun { expr; pat0; ty;_}  res  ->
+         match ty with
+         | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
+           |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
+           |`Id (_loc,`Lid (_,"loc"))
+           |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`TyApp
+              (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
+             -> res
+         | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
+      params result in
+  let mk_record cols =
+    let result =
+      (cols |>
+         (List.map (fun { label; info = { exp0;_};_}  -> (label, exp0))))
+        |> mk_record in
+    List.fold_right
+      (fun { info = { expr; pat0; ty;_};_}  res  ->
+         match ty with
+         | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
+           |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
+           |`Id (_loc,`Lid (_,"loc"))
+           |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`TyApp
+              (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
+             -> res
+         | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
+      cols result in
+  gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
+    ~names:[] ()
+let _ = Typehook.register ~filter:(fun s  -> s <> "loc") ("Strip", gen_strip)
 let mk_variant_meta_expr cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
@@ -171,7 +223,7 @@ let mk_variant_iter _cons params =
      params |>
        (List.map
           (fun { name_expr; id_expr;_}  -> `ExApp (_loc, name_expr, id_expr))) in
-   `Sequence (_loc, (FanAst.exSem_of_list lst)) : expr )
+   `Seq (_loc, (FanAst.exSem_of_list lst)) : expr )
 let mk_tuple_iter params = (mk_variant_iter "" params : expr )
 let mk_record_iter cols =
   let lst =
@@ -179,7 +231,7 @@ let mk_record_iter cols =
       (List.map
          (fun { info = { name_expr; id_expr;_};_}  ->
             `ExApp (_loc, name_expr, id_expr))) in
-  `Sequence (_loc, (FanAst.exSem_of_list lst))
+  `Seq (_loc, (FanAst.exSem_of_list lst))
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
     ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter

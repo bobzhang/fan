@@ -52,14 +52,14 @@ let base1_types =
                                                (`Str (_loc, "()")))))))))))),
                       (`TyArr
                          (_loc,
-                           (`TyId
+                           (`Id
                               (_loc,
                                 (`IdAcc
                                    (_loc, (`Uid (_loc, "Format")),
                                      (`Lid (_loc, "formatter")))))),
                            (`TyArr
-                              (_loc, (`TyId (_loc, (`Lid (_loc, "unit")))),
-                                (`TyId (_loc, (`Lid (_loc, "unit"))))))))))))))),
+                              (_loc, (`Id (_loc, (`Lid (_loc, "unit")))),
+                                (`Id (_loc, (`Lid (_loc, "unit"))))))))))))))),
     (`Custom
        (`Value
           (_loc, (`ReNil _loc),
@@ -77,10 +77,10 @@ let base1_types =
                                         (_loc, (`Any _loc), (`Nil _loc),
                                           (`Id (_loc, (`Lid (_loc, "true")))))))))))),
                       (`TyArr
-                         (_loc, (`TyId (_loc, (`Lid (_loc, "unit")))),
+                         (_loc, (`Id (_loc, (`Lid (_loc, "unit")))),
                            (`TyArr
-                              (_loc, (`TyId (_loc, (`Lid (_loc, "unit")))),
-                                (`TyId (_loc, (`Lid (_loc, "bool"))))))))))))))))]
+                              (_loc, (`Id (_loc, (`Lid (_loc, "unit")))),
+                                (`Id (_loc, (`Lid (_loc, "bool"))))))))))))))))]
 let ty_metas =
   base1_types |> (List.map (fun (str,print,eq)  -> { str; print; eq }))
 let print_base1 =
@@ -91,14 +91,14 @@ let print_base1 =
             let ty =
               `TyArr
                 (_loc,
-                  (`TyId
+                  (`Id
                      (_loc,
                        (`IdAcc
                           (_loc, (`Uid (_loc, "Format")),
                             (`Lid (_loc, "formatter")))))),
                   (`TyArr
-                     (_loc, (`TyId (_loc, (`Lid (_loc, str)))),
-                       (`TyId (_loc, (`Lid (_loc, "unit"))))))) in
+                     (_loc, (`Id (_loc, (`Lid (_loc, str)))),
+                       (`Id (_loc, (`Lid (_loc, "unit"))))))) in
             let name = "pp_print_" ^ str in
             match print with
             | `Exist ->
@@ -165,8 +165,8 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
          (fun x  ->
             let ty =
               `TyArr
-                (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
-                  (`TyId (_loc, (`Lid (_loc, x))))) in
+                (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                  (`Id (_loc, (`Lid (_loc, x))))) in
             `CrMth
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
                 (`Fun
@@ -180,10 +180,10 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
          (fun x  ->
             let ty =
               `TyArr
-                (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
+                (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`TyArr
-                     (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
-                       (`TyId (_loc, (`Lid (_loc, x))))))) in
+                     (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                       (`Id (_loc, (`Lid (_loc, x))))))) in
             `CrMth
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
                 (`Fun
@@ -202,7 +202,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
          (fun x  ->
             let ty =
               `TyArr
-                (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
+                (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`TyQuo (_loc, "self_type"))) in
             `CrMth
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
@@ -217,9 +217,9 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
          (fun x  ->
             let ty =
               `TyArr
-                (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
+                (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`TyArr
-                     (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
+                     (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                        (`TyQuo (_loc, "self_type"))))) in
             `CrMth
               (_loc, x, (`OvNil _loc), (`PrNil _loc),
@@ -252,8 +252,8 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                         (_loc, (`Any _loc), (`Nil _loc),
                           (`Id (_loc, (`Uid (_loc, "()")))))))),
                 (`TyArr
-                   (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
-                     (`TyId (_loc, (`Lid (_loc, "unit"))))))))) in
+                   (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                     (`Id (_loc, (`Lid (_loc, "unit"))))))))) in
   let v7 =
     ty_names |>
       (List.map
@@ -277,10 +277,10 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                                               (`Id (_loc, (`Lid (_loc, "x")))))),
                                          (`Id (_loc, (`Lid (_loc, "y")))))))))))))),
                 (`TyArr
-                   (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
+                   (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                      (`TyArr
-                        (_loc, (`TyId (_loc, (`Lid (_loc, x)))),
-                          (`TyId (_loc, (`Lid (_loc, "bool"))))))))))) in
+                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                          (`Id (_loc, (`Lid (_loc, "bool"))))))))))) in
   ((FanAst.crSem_of_list v1), (FanAst.crSem_of_list v2),
     (FanAst.crSem_of_list v3), (FanAst.crSem_of_list v4),
     (FanAst.crSem_of_list v5), (FanAst.crSem_of_list v6),
@@ -292,10 +292,10 @@ let eq_base1 =
          (fun { str; eq;_}  ->
             let ty =
               `TyArr
-                (_loc, (`TyId (_loc, (`Lid (_loc, str)))),
+                (_loc, (`Id (_loc, (`Lid (_loc, str)))),
                   (`TyArr
-                     (_loc, (`TyId (_loc, (`Lid (_loc, str)))),
-                       (`TyId (_loc, (`Lid (_loc, "bool"))))))) in
+                     (_loc, (`Id (_loc, (`Lid (_loc, str)))),
+                       (`Id (_loc, (`Lid (_loc, "bool"))))))) in
             let name = "eq_" ^ str in
             match eq with
             | `Def ->

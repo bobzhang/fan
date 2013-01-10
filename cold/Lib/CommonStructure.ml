@@ -79,7 +79,7 @@ let list_of_com ty =
 
 (*
   right associative sem
-  [ {| 1;(2;3);4 |} ] will introduce an intermedate [Sequence] here,
+  [ {| 1;(2;3);4 |} ] will introduce an intermedate [Seq] here,
   but dumping it is illegal
 
   Example:

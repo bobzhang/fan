@@ -367,7 +367,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Sequence")),
+                                    (_loc, (`PaVrn (_loc, "Seq")),
                                       (mloc _loc))), e)
                          | "uidexpr" ->
                              `PaApp
@@ -500,7 +500,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "seqexpr" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "Sequence")),
+                               (_loc, (`ExVrn (_loc, "Seq")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "uidexpr" ->
@@ -661,7 +661,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (_loc,
                                         (`ExCom
                                            (_loc, (mloc _loc),
-                                             (`ExIfe
+                                             (`IfThenElse
                                                 (_loc, e,
                                                   (`Str (_loc, "true")),
                                                   (`Str (_loc, "false"))))))))) in

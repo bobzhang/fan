@@ -18,7 +18,7 @@ type styp =
 *)
 type styp =
  [=
-  `TyId of (loc * ident )
+  `Id of (loc * ident )
  | `TyApp of (loc * styp * styp)
  | `TyQuo of (loc * string)
  | `Self of (loc * string)

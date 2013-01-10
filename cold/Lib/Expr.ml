@@ -17,13 +17,13 @@ let mksequence ?loc  =
   function
   | `Sem (_loc,_,_)|`Ant (_loc,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
-      `Sequence (_loc, e)
+      `Seq (_loc, e)
   | e -> e
 let mksequence' ?loc  =
   function
   | `Sem (_loc,_,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
-      `Sequence (_loc, e)
+      `Seq (_loc, e)
   | e -> e
 let mkassert loc =
   function | `Id (_loc,`Lid (_,"false")) -> `ExAsf loc | e -> `ExAsr (loc, e)

@@ -1,3 +1,60 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+t str_item {:str| external $i : $t = "gho" $x $y "gho" |} ;
+- : Ast.str_item =
+`External
+  (, "\\$:i", `Ant (, "\\$ctyp:t"), `LCons ("gho", `Ant (, "\\$str_list:x")))
+
+
+ t str_item {:str| external $i : $t = "gho" $x $y "gho" |} |> ME.meta_str_item _loc ;
+- : FanAst.expr =
+`ExApp
+  (,
+   `ExApp
+     (,
+      `ExApp
+        (, `ExApp (, `ExVrn (, "External"), `Id (, `Lid (, "_loc"))),
+         `Str (, "\\$:i")),
+      `Ant (, "\\$ctyp:t")),
+   `ExApp
+     (, `ExApp (, `ExVrn (, "LCons"), `Str (, "gho")),
+      `Ant (, "\\$str_list:x")))
+
+t str_item {:str| external $i : $t = "gho" $x $y "gho" |} |> ME.meta_str_item _loc |> expr_filter;
+- : Ast.expr =
+`ExApp
+  (,
+   `ExApp
+     (,
+      `ExApp
+        (, `ExApp (, `ExVrn (, "External"), `Id (, `Lid (, "_loc"))),
+         `Id (, `Lid (, "i"))),
+      `Id (, `Lid (, "t"))),
+   `ExApp
+     (, `ExApp (, `ExVrn (, "LCons"), `Str (, "gho")), `Id (, `Lid (, "x"))))  
+
+
+
+
+
+
+
+
 (* A file demonstrate how meta works*)
 
 let u = Ast.ExInt _loc "\\$int:\"32\""; (* came from $(int:"32") *)

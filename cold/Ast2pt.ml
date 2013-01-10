@@ -62,23 +62,22 @@ let long_uident_noloc i =
 let long_uident i = with_loc (long_uident_noloc i) (loc_of_ident i)
 let rec ctyp_long_id_prefix t =
   match t with
-  | `TyId (_loc,i) -> ident_noloc i
+  | `Id (_loc,i) -> ident_noloc i
   | `TyApp (_loc,m1,m2) ->
       let li1 = ctyp_long_id_prefix m1 in
       let li2 = ctyp_long_id_prefix m2 in Lapply (li1, li2)
   | t -> error (loc_of_ctyp t) "invalid module expression"
 let ctyp_long_id t =
   match t with
-  | `TyId (_loc,i) -> (false, (long_type_ident i))
+  | `Id (_loc,i) -> (false, (long_type_ident i))
   | `TyApp (loc,_,_) -> error loc "invalid type name"
   | `TyCls (_,i) -> (true, (ident i))
   | t -> error (loc_of_ctyp t) "invalid type"
 let predef_option loc =
-  `TyId
-    (loc, (`IdAcc (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
+  `Id (loc, (`IdAcc (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
 let rec ctyp =
   function
-  | `TyId (loc,i) ->
+  | `Id (loc,i) ->
       let li = long_type_ident i in mktyp loc (Ptyp_constr (li, []))
   | `Alias (loc,t1,t2) ->
       let (t,i) =
@@ -127,7 +126,7 @@ let rec ctyp =
   | `Sum (loc,_) -> error loc "sum type not allowed here"
   | `Private (loc,_) -> error loc "private type not allowed here"
   | `Mutable (loc,_) -> error loc "mutable type not allowed here"
-  | `TyOr (loc,_,_) -> error loc "type1 | type2 not allowed here"
+  | `Or (loc,_,_) -> error loc "type1 | type2 not allowed here"
   | `And (loc,_,_) -> error loc "type1 and type2 not allowed here"
   | `Of (loc,_,_) -> error loc "type1 of type2 not allowed here"
   | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
@@ -144,19 +143,19 @@ and row_field =
       [Rtag (i, true, (List.map ctyp (list_of_ctyp t [])))]
   | `Of (_loc,`TyVrn (_,i),t) ->
       [Rtag (i, false, (List.map ctyp (list_of_ctyp t [])))]
-  | `TyOr (_loc,t1,t2) -> (row_field t1) @ (row_field t2)
+  | `Or (_loc,t1,t2) -> (row_field t1) @ (row_field t2)
   | t -> [Rinherit (ctyp t)]
 and meth_list fl acc =
   match fl with
   | `Nil _loc -> acc
   | `TySem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
-  | `TyCol (_loc,`TyId (_,`Lid (_,lab)),t) ->
+  | `TyCol (_loc,`Id (_,`Lid (_,lab)),t) ->
       (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
   | _ -> assert false
 and package_type_constraints wc acc =
   match wc with
   | `Nil _loc -> acc
-  | `TypeEq (_loc,`TyId (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
+  | `TypeEq (_loc,`Id (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
   | `And (_loc,wc1,wc2) ->
       package_type_constraints wc1 (package_type_constraints wc2 acc)
   | _ ->
@@ -187,20 +186,20 @@ let mkprivate =
   | _ -> assert false
 let mktrecord =
   function
-  | `TyCol (loc,`TyId (_,`Lid (sloc,s)),`Mutable (_,t)) ->
+  | `TyCol (loc,`Id (_,`Lid (sloc,s)),`Mutable (_,t)) ->
       ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), loc)
-  | `TyCol (loc,`TyId (_,`Lid (sloc,s)),t) ->
+  | `TyCol (loc,`Id (_,`Lid (sloc,s)),t) ->
       ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), loc)
   | _ -> assert false
 let mkvariant =
   function
-  | `TyId (loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, loc)
-  | `Of (loc,`TyId (_,`Uid (sloc,s)),t) ->
+  | `Id (loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, loc)
+  | `Of (loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])), None, loc)
-  | `TyCol (loc,`TyId (_,`Uid (sloc,s)),`TyArr (_,t,u)) ->
+  | `TyCol (loc,`Id (_,`Uid (sloc,s)),`TyArr (_,t,u)) ->
       ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])),
         (Some (ctyp u)), loc)
-  | `TyCol (loc,`TyId (_,`Uid (sloc,s)),t) ->
+  | `TyCol (loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), loc)
   | _ -> assert false
 let rec type_decl tl cl loc m pflag =
@@ -275,7 +274,7 @@ let rec type_parameters_and_type_name t acc =
   match t with
   | `TyApp (_loc,t1,t2) ->
       type_parameters_and_type_name t1 (optional_type_parameters t2 acc)
-  | `TyId (_loc,i) -> ((ident i), acc)
+  | `Id (_loc,i) -> ((ident i), acc)
   | _ -> assert false
 let mkwithtyp pwith_type loc id_tpl ct =
   let (id,tpl) = type_parameters_and_type_name id_tpl [] in
@@ -515,7 +514,7 @@ let rec expr =
   | `Flo (loc,s) ->
       mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
   | `For (loc,i,e1,e2,df,el) ->
-      let e3 = `Sequence (loc, el) in
+      let e3 = `Seq (loc, el) in
       mkexp loc
         (Pexp_for
            ((with_loc i loc), (expr e1), (expr e2), (mkdirection df),
@@ -535,7 +534,7 @@ let rec expr =
         (Pexp_function
            (("?" ^ lab), None, [((patt_of_lab loc lab p), (when_expr e w))]))
   | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (match_case a [])))
-  | `ExIfe (loc,e1,e2,e3) ->
+  | `IfThenElse (loc,e1,e2,e3) ->
       mkexp loc (Pexp_ifthenelse ((expr e1), (expr e2), (Some (expr e3))))
   | `Int (loc,s) ->
       let i =
@@ -590,7 +589,7 @@ let rec expr =
        | _ ->
            let eo = match eo with | `Nil _loc -> None | e -> Some (expr e) in
            mkexp loc (Pexp_record ((mklabexp lel []), eo)))
-  | `Sequence (_loc,e) ->
+  | `Seq (_loc,e) ->
       let rec loop =
         function
         | [] -> expr (`Id (_loc, (`Uid (_loc, "()"))))
@@ -623,7 +622,7 @@ let rec expr =
       mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
   | `ExVrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
   | `While (loc,e1,el) ->
-      let e2 = `Sequence (loc, el) in
+      let e2 = `Seq (loc, el) in
       mkexp loc (Pexp_while ((expr e1), (expr e2)))
   | `Let_open (loc,i,e) -> mkexp loc (Pexp_open ((long_uident i), (expr e)))
   | `Package_expr (loc,`ModuleExprConstraint (_,me,pt)) ->
@@ -656,7 +655,7 @@ and binding x acc =
       ->
       let rec id_to_string x =
         match x with
-        | `TyId (_loc,`Lid (_,x)) -> [x]
+        | `Id (_loc,`Lid (_,x)) -> [x]
         | `TyApp (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
         | _ -> assert false in
       let vars = id_to_string vs in
@@ -745,9 +744,9 @@ and sig_item s l =
       :: l
   | `Sem (_loc,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
   | `Directive (_,_,_) -> l
-  | `Exception (loc,`TyId (_,`Uid (_,s))) ->
+  | `Exception (loc,`Id (_,`Uid (_,s))) ->
       (mksig loc (Psig_exception ((with_loc s loc), []))) :: l
-  | `Exception (loc,`Of (_,`TyId (_,`Uid (_,s)),t)) ->
+  | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
       (mksig loc
          (Psig_exception
             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
@@ -823,16 +822,16 @@ and str_item s l =
       :: l
   | `Sem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
   | `Directive (_,_,_) -> l
-  | `Exception (loc,`TyId (_,`Uid (_,s)),`None _) ->
+  | `Exception (loc,`Id (_,`Uid (_,s)),`None _) ->
       (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
-  | `Exception (loc,`Of (_,`TyId (_,`Uid (_,s)),t),`None _) ->
+  | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t),`None _) ->
       (mkstr loc
          (Pstr_exception
             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
       :: l
-  | `Exception (loc,`TyId (_,`Uid (_,s)),`Some i) ->
+  | `Exception (loc,`Id (_,`Uid (_,s)),`Some i) ->
       (mkstr loc (Pstr_exn_rebind ((with_loc s loc), (ident i)))) :: l
-  | `Exception (loc,`Of (_,`TyId (_,`Uid (_,_)),_),`Some _) ->
+  | `Exception (loc,`Of (_,`Id (_,`Uid (_,_)),_),`Some _) ->
       error loc "type in exception alias"
   | `Exception (_,_,_) -> assert false
   | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
@@ -873,7 +872,7 @@ and class_type =
            { pcsig_self = (ctyp t); pcsig_fields = cil; pcsig_loc = loc })
   | `CtCon (loc,_,_,_) ->
       error loc "invalid virtual class inside a class type"
-  | `Ant (_,_)|`CtEq (_,_,_)|`CtCol (_,_,_)|`CtAnd (_,_,_)|`CtNil _ ->
+  | `Ant (_,_)|`CtEq (_,_,_)|`CtCol (_,_,_)|`CtAnd (_,_,_)|`Nil _ ->
       assert false
 and class_info_class_expr ci =
   match ci with

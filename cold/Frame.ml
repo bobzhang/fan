@@ -29,7 +29,8 @@ let mapi_expr ?(arity= 1)  ?(names= [])  (simple_expr_of_ctyp : ctyp -> expr)
    let id_expr = Expr.tuple_of_list id_exprs in
    let id_patt = Patt.tuple_of_list id_patts in
    let expr = apply base id_exprs in
-   { name_expr; expr; id_expr; id_exprs; id_patt; id_patts; exp0; pat0 } : 
+   let ty = y in
+   { name_expr; expr; id_expr; id_exprs; id_patt; id_patts; exp0; pat0; ty } : 
   FSig.ty_info )
 let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
   simple_expr_of_ctyp (ty : ctyp) =
@@ -51,11 +52,11 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
     let tyvar = right_transform right_type_variable in
     let rec aux =
       function
-      | `TyId (_loc,`Lid (_,id)) ->
+      | `Id (_loc,`Lid (_,id)) ->
           if Hashset.mem cxt id
           then `Id (_loc, (`Lid (_loc, (left_trans id))))
           else right_trans (`Lid (_loc, id))
-      | `TyId (_loc,id) -> right_trans id
+      | `Id (_loc,id) -> right_trans id
       | `Tup (_loc,_t) as ty ->
           tuple_expr_of_ctyp ?arity ?names ~mk_tuple
             (normal_simple_expr_of_ctyp ?arity ?names ~mk_tuple
@@ -66,7 +67,7 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
           aux
             (`TyApp
                (_loc,
-                 (`TyApp (_loc, (`TyId (_loc, (`Lid (_loc, "arrow")))), t1)),
+                 (`TyApp (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)),
                  t2))
       | ty ->
           failwithf "normal_simple_expr_of_ctyp: %s type: \n "
@@ -80,11 +81,11 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
     let tyvar = right_transform right_type_variable in
     let rec aux =
       function
-      | `TyId (_loc,id) -> trans id
+      | `Id (_loc,id) -> trans id
       | `TyQuo (_loc,s) -> tyvar s
       | `TyApp (_loc,_,_) as ty ->
           (match Ctyp.list_of_app ty with
-           | (`TyId (_loc,tctor))::ls ->
+           | (`Id (_loc,tctor))::ls ->
                (ls |>
                   (List.map
                      (function
@@ -101,7 +102,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
           aux
             (`TyApp
                (_loc,
-                 (`TyApp (_loc, (`TyId (_loc, (`Lid (_loc, "arrow")))), t1)),
+                 (`TyApp (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)),
                  t2))
       | `Tup (_loc,_) as ty ->
           tuple_expr_of_ctyp ?arity ?names ~mk_tuple
@@ -140,7 +141,7 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
        mk_variant cons exps in
      let e = mk (cons, tyargs) in `Case (_loc, p, (`Nil _loc), e) : match_case ) in
   let simple lid =
-    (let e = (simple_expr_of_ctyp (`TyId (_loc, lid))) +> names in
+    (let e = (simple_expr_of_ctyp (`Id (_loc, lid))) +> names in
      MatchCase.gen_tuple_abbrev ~arity result lid e : match_case ) in
   let info = (TyVrnEq, (List.length (FanAst.list_of_ctyp ty []))) in
   let ls = Ctyp.view_variant ty in
@@ -200,7 +201,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             mk_prefix ~names ~left_type_variable tyvars
               (currying ~arity
                  [`Case (_loc, patt, (`Nil _loc), (mk_record info))])
-        | `TyId (_loc,_)|`Tup (_loc,_)|`TyApp (_loc,_,_)|`TyQuo (_loc,_)
+        | `Id (_loc,_)|`Tup (_loc,_)|`TyApp (_loc,_,_)|`TyQuo (_loc,_)
           |`TyArr (_loc,_,_) ->
             let expr = simple_expr_of_ctyp ctyp in
             let funct = eta_expand (expr +> names) arity in

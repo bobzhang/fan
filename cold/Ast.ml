@@ -4,24 +4,30 @@ type literal =
   | `Int64 of (loc* string) | `Flo of (loc* string)
   | `NativeInt of (loc* string) | `Str of (loc* string)] 
 type rec_flag = [ `Recursive of loc | `ReNil of loc | `Ant of (loc* string)] 
-and direction_flag = [ `To of loc | `Downto of loc | `Ant of (loc* string)] 
-and mutable_flag = [ `Mutable of loc | `MuNil of loc | `Ant of (loc* string)] 
-and private_flag = [ `Private of loc | `PrNil of loc | `Ant of (loc* string)] 
-and virtual_flag = [ `Virtual of loc | `ViNil of loc | `Ant of (loc* string)] 
-and override_flag =
+type direction_flag = [ `To of loc | `Downto of loc | `Ant of (loc* string)] 
+type mutable_flag =
+  [ `Mutable of loc | `MuNil of loc | `Ant of (loc* string)] 
+type private_flag =
+  [ `Private of loc | `PrNil of loc | `Ant of (loc* string)] 
+type virtual_flag =
+  [ `Virtual of loc | `ViNil of loc | `Ant of (loc* string)] 
+type override_flag =
   [ `Override of loc | `OvNil of loc | `Ant of (loc* string)] 
-and row_var_flag = [ `RowVar of loc | `RvNil of loc | `Ant of (loc* string)] 
-and 'a meta_option = [ `None of loc | `Some of 'a | `Ant of (loc* string)] 
-and 'a meta_list =
+type row_var_flag = [ `RowVar of loc | `RvNil of loc | `Ant of (loc* string)] 
+type 'a meta_option = [ `None of loc | `Some of 'a | `Ant of (loc* string)] 
+type 'a meta_list =
   [ `LNil of loc | `LCons of ('a* 'a meta_list) | `Ant of (loc* string)] 
-and ident =
-  [ `IdAcc of (loc* ident* ident) | `IdApp of (loc* ident* ident)
-  | `Lid of (loc* string) | `Uid of (loc* string) | `Ant of (loc* string)] 
-and ctyp =
+type alident = [ `Lid of (loc* string) | `Ant of (loc* string)] 
+type auident = [ `Uid of (loc* string) | `Ant of (loc* string)] 
+type astring = [ `C of (loc* string) | `Ant of (loc* string)] 
+type ident =
+  [ `IdAcc of (loc* ident* ident) | `IdApp of (loc* ident* ident) | alident
+  | auident] 
+type ctyp =
   [ `Nil of loc | `Alias of (loc* ctyp* ctyp) | `Any of loc
   | `TyApp of (loc* ctyp* ctyp) | `TyArr of (loc* ctyp* ctyp)
   | `TyCls of (loc* ident) | `TyLab of (loc* string* ctyp)
-  | `TyId of (loc* ident) | `TyMan of (loc* ctyp* ctyp)
+  | `Id of (loc* ident) | `TyMan of (loc* ctyp* ctyp)
   | `TyDcl of (loc* string* ctyp list* ctyp* (ctyp* ctyp) list)
   | `TyObj of (loc* ctyp* row_var_flag) | `TyOlb of (loc* string* ctyp)
   | `TyPol of (loc* ctyp* ctyp) | `TyTypePol of (loc* ctyp* ctyp)
@@ -30,7 +36,7 @@ and ctyp =
   | `TyRec of (loc* ctyp) | `TyCol of (loc* ctyp* ctyp)
   | `TySem of (loc* ctyp* ctyp) | `Com of (loc* ctyp* ctyp)
   | `Sum of (loc* ctyp) | `Of of (loc* ctyp* ctyp)
-  | `And of (loc* ctyp* ctyp) | `TyOr of (loc* ctyp* ctyp)
+  | `And of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp)
   | `Private of (loc* ctyp) | `Mutable of (loc* ctyp) | `Tup of (loc* ctyp)
   | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* string)
   | `TyVrnEq of (loc* ctyp) | `TyVrnSup of (loc* ctyp)
@@ -53,21 +59,21 @@ and expr =
   | `Ant of (loc* string) | `ExApp of (loc* expr* expr)
   | `ExAre of (loc* expr* expr) | `Array of (loc* expr)
   | `Sem of (loc* expr* expr) | `ExAsf of loc | `ExAsr of (loc* expr)
-  | `ExAss of (loc* expr* expr) | `ExCoe of (loc* expr* ctyp* ctyp)
+  | `ExAss of (loc* expr* expr)
   | `For of (loc* string* expr* expr* direction_flag* expr)
-  | `Fun of (loc* match_case) | `ExIfe of (loc* expr* expr* expr) | literal
-  | `Label of (loc* string* expr) | `Lazy of (loc* expr)
+  | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
+  | literal | `Label of (loc* string* expr) | `Lazy of (loc* expr)
   | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* string* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* string* expr)
   | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding* expr)
-  | `Sequence of (loc* expr) | `Send of (loc* expr* string)
+  | `Seq of (loc* expr) | `Send of (loc* expr* string)
   | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
   | `ExTup of (loc* expr) | `ExCom of (loc* expr* expr)
-  | `Constraint_exp of (loc* expr* ctyp) | `ExVrn of (loc* string)
-  | `While of (loc* expr* expr) | `Let_open of (loc* ident* expr)
-  | `LocalTypeFun of (loc* string* expr)
+  | `Constraint_exp of (loc* expr* ctyp) | `ExCoe of (loc* expr* ctyp* ctyp)
+  | `ExVrn of (loc* string) | `While of (loc* expr* expr)
+  | `Let_open of (loc* ident* expr) | `LocalTypeFun of (loc* string* expr)
   | `Package_expr of (loc* module_expr)] 
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)
@@ -122,7 +128,7 @@ and str_item =
   | `Type of (loc* ctyp) | `Value of (loc* rec_flag* binding)
   | `Ant of (loc* string)] 
 and class_type =
-  [ `CtNil of loc | `CtCon of (loc* virtual_flag* ident* ctyp)
+  [ `Nil of loc | `CtCon of (loc* virtual_flag* ident* ctyp)
   | `CtFun of (loc* ctyp* class_type) | `CtSig of (loc* ctyp* class_sig_item)
   | `CtAnd of (loc* class_type* class_type)
   | `CtCol of (loc* class_type* class_type)

@@ -115,10 +115,10 @@ let ctyp_long_id t = match t with
 
 
 let predef_option loc =
-  `TyId (loc, `IdAcc (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
+  `Id (loc, `IdAcc (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
 
 let rec ctyp = fun (* ctyp -> core_type *)
-  [ `TyId (loc, i) ->
+  [ `Id (loc, i) ->
     let li = long_type_ident i in
     mktyp loc (Ptyp_constr li [])
   | `Alias (loc, t1, t2) ->
@@ -163,7 +163,7 @@ let rec ctyp = fun (* ctyp -> core_type *)
   | `Sum (loc,_) -> error loc "sum type not allowed here"
   | `Private (loc,_) -> error loc "private type not allowed here"
   | `Mutable (loc,_) -> error loc "mutable type not allowed here"
-  | `TyOr (loc,_,_) -> error loc "type1 | type2 not allowed here"
+  | `Or (loc,_,_) -> error loc "type1 | type2 not allowed here"
   | `And (loc,_,_) -> error loc "type1 and type2 not allowed here"
   | `Of (loc,_,_) -> error loc "type1 of type2 not allowed here"
   | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
@@ -558,7 +558,7 @@ let rec expr = fun (* expr -> expression*)
           mkexp loc (Pexp_constraint (expr e) t1 (Some (ctyp t2)))
       | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
       | `For (loc, i, e1, e2, df, el) ->
-          let e3 = `Sequence loc el in
+          let e3 = `Seq loc el in
           mkexp loc (Pexp_for (with_loc i loc) (expr e1) (expr e2) (mkdirection df) (expr e3))
       | {:expr@loc| fun [ $(pat:`PaLab (_, lab, po)) when $w -> $e ] |} ->
           mkexp loc
@@ -573,7 +573,7 @@ let rec expr = fun (* expr -> expression*)
           mkexp loc
             (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e w)])
       | `Fun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a []))
-      | `ExIfe (loc, e1, e2, e3) ->
+      | `IfThenElse (loc, e1, e2, e3) ->
           mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) (Some (expr e3)))
       | `Int (loc,s) ->
           let i = try int_of_string s with [
@@ -616,7 +616,7 @@ let rec expr = fun (* expr -> expression*)
               [ {:expr||} -> None
               | e -> Some (expr e) ] in
             mkexp loc (Pexp_record (mklabexp lel []) eo) ]
-        | `Sequence (_loc,e) ->
+        | `Seq (_loc,e) ->
             let rec loop = fun
               [ [] -> expr {:expr| () |}
               | [e] -> expr e
@@ -648,7 +648,7 @@ let rec expr = fun (* expr -> expression*)
             mkexp loc (Pexp_construct (lident_with_loc  s loc) None true)
         | `ExVrn (loc,s) -> mkexp loc (Pexp_variant  s None)
         | `While (loc, e1, el) ->
-            let e2 = `Sequence loc el in
+            let e2 = `Seq loc el in
             mkexp loc (Pexp_while (expr e1) (expr e2))
         | {:expr@loc| let open $i in $e |} ->
             mkexp loc (Pexp_open (long_uident i) (expr e))
@@ -880,7 +880,7 @@ and class_type = fun (* class_type -> class_type *)
                })
   | `CtCon (loc,_,_,_) ->
         error loc "invalid virtual class inside a class type"
-  | `Ant (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `CtAnd (_, _, _) | `CtNil _ ->
+  | `Ant (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `CtAnd (_, _, _) | `Nil _ ->
       assert false ]
     
 and class_info_class_expr ci =

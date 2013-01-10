@@ -13,81 +13,38 @@ open FanUtil;
 open LibUtil;  
 open StdLib;
 
-let loc_of_ctyp : ctyp -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-let loc_of_patt : patt -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-  
-let loc_of_expr : expr -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-      
-
-  
-let loc_of_module_type : module_type -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_module_expr : module_expr -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-    
-let loc_of_sig_item : sig_item -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-
-let loc_of_str_item : str_item -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_class_type : class_type -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_class_sig_item : class_sig_item -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_class_expr : class_expr -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_class_str_item : class_str_item -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_with_constr : with_constr -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_binding : binding -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_rec_binding : rec_binding -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_module_binding : module_binding -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_match_case : match_case -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-
-
-let loc_of_ident : ident -> FanLoc.t =
-  fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+DEFINE QUICK_LOC = fun x -> Obj.(magic ( field (field (repr x) 1) 0));
+let loc_of_ctyp : ctyp -> FanLoc.t = QUICK_LOC;
+let loc_of_patt : patt -> FanLoc.t = QUICK_LOC;
+let loc_of_expr : expr -> FanLoc.t = QUICK_LOC;
+let loc_of_module_type : module_type -> FanLoc.t = QUICK_LOC;
+let loc_of_module_expr : module_expr -> FanLoc.t = QUICK_LOC;
+let loc_of_sig_item : sig_item -> FanLoc.t = QUICK_LOC;
+let loc_of_str_item : str_item -> FanLoc.t = QUICK_LOC;
+let loc_of_class_type : class_type -> FanLoc.t = QUICK_LOC;
+let loc_of_class_sig_item : class_sig_item -> FanLoc.t =QUICK_LOC;
+let loc_of_class_expr : class_expr -> FanLoc.t = QUICK_LOC;
+let loc_of_class_str_item : class_str_item -> FanLoc.t = QUICK_LOC;
+let loc_of_with_constr : with_constr -> FanLoc.t = QUICK_LOC;
+let loc_of_binding : binding -> FanLoc.t = QUICK_LOC;
+let loc_of_rec_binding : rec_binding -> FanLoc.t = QUICK_LOC;
+let loc_of_module_binding : module_binding -> FanLoc.t = QUICK_LOC;
+let loc_of_match_case : match_case -> FanLoc.t = QUICK_LOC;
+let loc_of_ident : ident -> FanLoc.t = QUICK_LOC;
 
 
 
 let safe_string_escaped s =
   if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
   else String.escaped s;
+
+let strip_loc_list f lst =
+  List.map f lst ;
   
 {:fans|keep off;
  derive
-   (Map2 Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq); |};
+   (Map2
+      Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq (* Strip *)); |};
 
   
 {:ocaml|
@@ -170,7 +127,7 @@ let ident_of_expr =
 
   {:ctyp| A.B |} ; ;
   - : ctyp =
-  `TyId (, `IdAcc (, `Uid (, "A"), `Uid (, "B")))
+  `Id (, `IdAcc (, `Uid (, "A"), `Uid (, "B")))
 
   ident_of_ctyp {:ctyp| (A B).t |} ; ;
   - : ident =

@@ -185,7 +185,7 @@ let _ =
                                  (_loc,
                                    (`IdAcc (_loc, t, (`Lid (_loc, "clear")))))),
                               (`Id (_loc, (`Lid (_loc, x)))))) ls in
-                   `Sequence (_loc, (FanAst.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
+                   `Seq (_loc, (FanAst.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
     (None,
       [(None, None,
@@ -216,7 +216,7 @@ let _ =
                (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
                   (_loc : FanLoc.t)  ->
                   (let () = grammar_module_name := old in
-                   `Sequence (_loc, (FanAst.exSem_of_list es)) : 'delete_rule_body ))))])]);
+                   `Seq (_loc, (FanAst.exSem_of_list es)) : 'delete_rule_body ))))])]);
   Gram.extend (delete_rules : 'delete_rules Gram.t )
     (None,
       [(None, None,
@@ -249,7 +249,7 @@ let _ =
                                            (_loc, (gm ()),
                                              (`Lid (_loc, "delete_rule")))))),
                                    e)), b)) sls in
-                   `Sequence (_loc, (FanAst.exSem_of_list rest)) : 'delete_rules ))))])]);
+                   `Seq (_loc, (FanAst.exSem_of_list rest)) : 'delete_rules ))))])]);
   Gram.extend (qualuid : 'qualuid Gram.t )
     (None,
       [(None, None,
@@ -553,7 +553,7 @@ let _ =
                       (let () = check_not_tok s in
                        let styp =
                          `TyApp
-                           (_loc, (`TyId (_loc, (`Lid (_loc, "list")))),
+                           (_loc, (`Id (_loc, (`Lid (_loc, "list")))),
                              (s.styp)) in
                        let text =
                          mk_slist _loc
@@ -576,7 +576,7 @@ let _ =
                      (let () = check_not_tok s in
                       let styp =
                         `TyApp
-                          (_loc, (`TyId (_loc, (`Lid (_loc, "option")))),
+                          (_loc, (`Id (_loc, (`Lid (_loc, "option")))),
                             (s.styp)) in
                       let text = `TXopt (_loc, (s.text)) in
                       mk_symbol ~text ~styp ~pattern:None : 'symbol )

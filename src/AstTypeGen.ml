@@ -106,8 +106,51 @@ begin
   |> List.iter Typehook.register;
 end;
 
+(* +-----------------------------------------------------------------+
+   | Strip generator                                                 |
+   +-----------------------------------------------------------------+ *)
   
-  
+let gen_strip = with {patt:ctyp;expr}
+  let mk_variant cons params =
+    let result =
+      (List.tl params) |> List.map (fun [{exp0;_} -> exp0]) |> apply (of_str cons) in 
+    List.fold_right
+      (fun {expr;pat0;ty;_} res ->
+        match ty with
+        [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|} |
+        {|list string|} | {|meta_list string|}->
+          res
+        | _ -> {|let $pat:pat0 = $expr in $res |}] 
+              )  (List.tl params) result in
+  let mk_tuple params =
+    let result = 
+      params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_of_list in
+    List.fold_right
+      (fun {expr;pat0;ty;_} res ->
+        match ty with
+        [ {|int|} | {|string |} |{|int32|} | {|nativeint|} |
+        {|loc|} | {|list string|} | {|meta_list string|}->
+          res
+        | _ -> {|let $pat:pat0 = $expr in $res |}]) params result in 
+  let mk_record cols =
+    let result = 
+    cols |> List.map (fun [ {label; info={exp0;_ } ; _ }  ->
+          (label,exp0) ] )  |> mk_record   in
+    List.fold_right
+      (fun {info={expr;pat0;ty;_};_} res ->
+        match ty with
+        [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|}
+        | {|list string|} | {| meta_list string|}->
+          res
+        | _ -> {|let $pat:pat0 = $expr in $res |}]
+        (* {|let $pat:pat0 = $expr in $res |} *)) cols result in
+  (gen_str_item) ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
+Typehook.register
+    ~filter:(fun s -> s<>"loc")
+    ("Strip",gen_strip);
+
+(* [("Strip",gen_strip)] |> List.iter Typehook.register;   *)
+(*       (\* ~filter:(fun s -> s<> "loc") *\) *)
 (* +-----------------------------------------------------------------+
    | Meta generator                                                  |
    +-----------------------------------------------------------------+ *)

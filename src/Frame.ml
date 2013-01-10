@@ -43,7 +43,8 @@ let mapi_expr ?(arity=1) ?(names=[]) (simple_expr_of_ctyp:ctyp->expr) (i:int) (y
   let id_expr = Expr.tuple_of_list  id_exprs  in
   let id_patt = Patt.tuple_of_list id_patts in 
   let expr = apply base id_exprs  in
-  {name_expr; expr; id_expr; id_exprs; id_patt; id_patts;exp0;pat0};       
+  let ty = y in 
+  {name_expr; expr; id_expr; id_exprs; id_patt; id_patts;exp0;pat0;ty};       
 
 (* @raise Invalid_argument when type can not be handled *)  
 let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple

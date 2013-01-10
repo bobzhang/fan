@@ -41,7 +41,7 @@ let mk_debug _loc m fmt section args =
                         (_loc, (`Uid (_loc, "Debug")),
                           (`Lid (_loc, "printf")))))),
                 (`Str (_loc, section)))), (`Str (_loc, fmt)))) args in
-  `ExIfe
+  `IfThenElse
     (_loc, (`ExApp (_loc, (mk_debug_mode _loc m), (`Str (_loc, section)))),
       call, (`Id (_loc, (`Uid (_loc, "()")))))
 let apply () =

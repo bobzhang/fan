@@ -47,11 +47,11 @@ let add_debug_expr e =
                      (`Id (_loc, (`Lid (_loc, "exc")))))))),
            (`Case
               (_loc, (`Id (_loc, (`Lid (_loc, "exc")))), (`Nil _loc),
-                (`Sequence
+                (`Seq
                    (_loc,
                      (`Sem
                         (_loc,
-                          (`ExIfe
+                          (`IfThenElse
                              (_loc,
                                (`ExApp
                                   (_loc,

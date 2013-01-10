@@ -87,14 +87,14 @@ let gen_quantifiers ~arity  n =
      |> List.concat)
     |> app_of_list
 let of_id_len ~off  (id,len) =
-  apply (`TyId (_loc, id))
+  apply (`Id (_loc, id))
     (List.init len (fun i  -> `TyQuo (_loc, (allx ~off i))))
 let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
 let ty_name_of_tydcl =
   function
   | `TyDcl (_,name,tyvars,_,_) ->
-      apply (`TyId (_loc, (`Lid (_loc, name)))) tyvars
+      apply (`Id (_loc, (`Lid (_loc, name)))) tyvars
   | tydcl ->
       invalid_arg & ((sprintf "ctyp_of_tydcl{|%s|}\n") & (to_string tydcl))
 let gen_ty_of_tydcl ~off  tydcl =
@@ -104,9 +104,9 @@ let list_of_record ty =
     (ty |> list_of_sem) |>
       (List.map
          (function
-          | `TyCol (_loc,`TyId (_,`Lid (_,label)),`Mutable (_,ctyp)) ->
+          | `TyCol (_loc,`Id (_,`Lid (_,label)),`Mutable (_,ctyp)) ->
               { label; ctyp; is_mutable = true }
-          | `TyCol (_loc,`TyId (_,`Lid (_,label)),ctyp) ->
+          | `TyCol (_loc,`Id (_,`Lid (_,label)),ctyp) ->
               { label; ctyp; is_mutable = false }
           | t0 -> raise & (Unhandled t0)))
   with
@@ -190,7 +190,7 @@ let is_recursive ty_dcl =
           val mutable is_recursive = false
           method! ctyp =
             function
-            | `TyId (_loc,`Lid (_,i)) when i = name ->
+            | `Id (_loc,`Lid (_,i)) when i = name ->
                 (is_recursive <- true; self)
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
@@ -203,11 +203,11 @@ let qualified_app_list =
   function
   | `TyApp (_loc,_,_) as x ->
       (match list_of_app x with
-       | (`TyId (_loc,`Lid (_,_)))::_ -> None
-       | (`TyId (_loc,i))::ys -> Some (i, ys)
+       | (`Id (_loc,`Lid (_,_)))::_ -> None
+       | (`Id (_loc,i))::ys -> Some (i, ys)
        | _ -> None)
-  | `TyId (_loc,`Lid (_,_))|`TyId (_loc,`Uid (_,_)) -> None
-  | `TyId (_loc,i) -> Some (i, [])
+  | `Id (_loc,`Lid (_,_))|`Id (_loc,`Uid (_,_)) -> None
+  | `Id (_loc,i) -> Some (i, [])
   | _ -> None
 let is_abstract = function | `TyDcl (_,_,_,`Nil _loc,_) -> true | _ -> false
 let abstract_list =
@@ -247,7 +247,7 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = Ident.map_to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           app_of_list ((`TyId (_loc, (`Lid (_loc, dest)))) :: lst))
+           app_of_list ((`Id (_loc, (`Lid (_loc, dest)))) :: lst))
       | None  ->
           (match x with
            | `TyMan (_loc,x,ctyp) -> `TyMan (_loc, x, (super#ctyp ctyp))
@@ -269,13 +269,13 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
   =
   let rec loop acc t =
     match t with
-    | `Of (_loc,`TyId (_,`Uid (_,cons)),tys) ->
+    | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
         f cons (FanAst.list_of_ctyp tys []) acc
     | `Of (_loc,`TyVrn (_,cons),tys) ->
         f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
-    | `TyId (_loc,`Uid (_,cons)) -> f cons [] acc
+    | `Id (_loc,`Uid (_,cons)) -> f cons [] acc
     | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
-    | `TyOr (_loc,t1,t2) -> loop (loop acc t1) t2
+    | `Or (_loc,t1,t2) -> loop (loop acc t1) t2
     | `Nil _loc -> acc
     | t -> failwithf "reduce_data_ctors: %s\n" (to_string t) in
   loop init ty
@@ -283,8 +283,8 @@ let view_adt (t : ctyp) =
   let bs = FanAst.list_of_ctyp t [] in
   List.map
     (function
-     | `TyId (_loc,`Uid (_,cons)) -> `branch (cons, [])
-     | `Of (_loc,`TyId (_,`Uid (_,cons)),t) ->
+     | `Id (_loc,`Uid (_,cons)) -> `branch (cons, [])
+     | `Of (_loc,`Id (_,`Uid (_,cons)),t) ->
          `branch (cons, (FanAst.list_of_ctyp t []))
      | _ -> assert false) bs
 let view_variant (t : ctyp) =
@@ -295,7 +295,7 @@ let view_variant (t : ctyp) =
           `variant (cons, (FanAst.list_of_ctyp t []))
       | `Of (_loc,`TyVrn (_,cons),t) -> `variant (cons, [t])
       | `TyVrn (_loc,cons) -> `variant (cons, [])
-      | `TyId (_loc,i) -> `abbrev i
+      | `Id (_loc,i) -> `abbrev i
       | u -> failwithf "view_variant %s" (to_string u)) lst : vbranch list )
 let of_str_item =
   function | `Type (_loc,x) -> x | _ -> invalid_arg "Ctyp.of_str_item"

@@ -42,6 +42,9 @@ type ty_info = {
 
     id_patts: list patt;
     (* [ai;bi;ci]*)
+
+    ty: ctyp;
+    (* int *) 
   }
 ;
 

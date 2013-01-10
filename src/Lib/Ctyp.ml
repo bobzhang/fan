@@ -169,8 +169,8 @@ let gen_ty_of_tydcl ~off tydcl =
    {[
      L.Ctyp.list_of_record {:ctyp| u:int;m:mutable int |};
      - : FSig.col list =
-     [{label = "u"; is_mutable = false; ctyp = TyId (, Lid (, "int"))};
-      {label = "m"; is_mutable = true; ctyp = TyId (, Lid (, "int"))}]
+     [{label = "u"; is_mutable = false; ctyp = Id (, Lid (, "int"))};
+      {label = "m"; is_mutable = true; ctyp = Id (, Lid (, "int"))}]
    ]}
    
  *)
@@ -472,9 +472,9 @@ let transform_module_types  lst =
          (prerr_endline s;  [xs :: acc] ))  ;
     A
     B
-   TyId  (Lid  "float");
-    TyApp  (TyId  (Lid  "option")) (TyId  (Lid  "int"));
-    TyId  (Lid  "float")
+   Id  (Lid  "float");
+    TyApp  (Id  (Lid  "option")) (Id  (Lid  "int"));
+    Id  (Lid  "float")
     ]}
     @return result type to indicate error
     FIXME a good  support for arrow types?

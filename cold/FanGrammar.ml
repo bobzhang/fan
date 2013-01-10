@@ -5,7 +5,7 @@ type name =  {
   tvar: string;
   loc: loc} 
 type styp =
-  [ `TyId of (loc* ident) | `TyApp of (loc* styp* styp)
+  [ `Id of (loc* ident) | `TyApp of (loc* styp* styp)
   | `TyQuo of (loc* string) | `Self of (loc* string) | `Tok of loc
   | `Type of ctyp] 
 type attr = string 

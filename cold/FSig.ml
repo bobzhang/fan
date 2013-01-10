@@ -21,7 +21,8 @@ type ty_info =
   id_expr: expr;
   id_patt: patt;
   id_exprs: expr list;
-  id_patts: patt list} 
+  id_patts: patt list;
+  ty: ctyp} 
 type vbranch = [ `variant of (string* ctyp list) | `abbrev of ident] 
 type branch = [ `branch of (string* ctyp list)] 
 type record_col =  {

@@ -46,46 +46,57 @@
    type rec_flag =
     [= `Recursive of loc 
     | `ReNil of loc 
-    | `Ant of (loc*string) ]
-   and direction_flag =
+    | `Ant of (loc*string) ];
+
+   type direction_flag =
     [= `To of loc
     | `Downto of loc
-    | `Ant of (loc*string) ]
-   and mutable_flag =
+    | `Ant of (loc*string) ];
+
+  type mutable_flag =
     [= `Mutable of loc 
     | `MuNil of loc 
-    | `Ant of (loc*string) ]
-   and private_flag =
+    | `Ant of (loc*string) ];
+
+   type private_flag =
     [= `Private of loc 
     | `PrNil of loc 
-    | `Ant of (loc*string) ]
-   and virtual_flag =
+    | `Ant of (loc*string) ];
+   type virtual_flag =
     [= `Virtual of loc 
     | `ViNil of loc 
-    | `Ant of (loc*string) ]
-   and override_flag =
+    | `Ant of (loc*string) ];
+   type override_flag =
     [= `Override of loc 
     | `OvNil of loc 
-    | `Ant of (loc*string) ]
-   and row_var_flag =
+    | `Ant of (loc*string) ];
+   type row_var_flag =
     [= `RowVar of loc 
     | `RvNil of loc 
-    | `Ant of (loc*string) ]
-   and meta_option 'a =
+    | `Ant of (loc*string) ];
+   type meta_option 'a =
     [= `None of loc 
     |  `Some of 'a
-    | `Ant of (loc*string) ]
-   and meta_list 'a =
+    | `Ant of (loc*string) ];
+   type meta_list 'a =
     [= `LNil of loc
     | `LCons of ('a * meta_list 'a)
-    | `Ant of (loc * string) ] (* FIXME `Ant no location *)
-   and ident =
+    | `Ant of (loc * string) ]; (* FIXME `Ant no location *)
+   type alident =
+    [= `Lid of (loc * string)
+    | `Ant of (loc * string)];
+   type auident =
+    [= `Uid of (loc * string)
+    | `Ant of (loc * string)];
+   type astring =
+    [= `C of (loc * string)
+    | `Ant of (loc * string) ];
+   type ident =
     [= `IdAcc of (loc * ident * ident) (* i . i *)
     | `IdApp of (loc * ident * ident) (* i i *)
-    | `Lid of (loc * string) (* foo *)
-    | `Uid of (loc * string) (* `Bar *)
-    | `Ant of (loc * string) (* $s$ *) ]
-   and ctyp =
+    | alident
+    | auident];
+   type ctyp =
     [= `Nil of loc
     | `Alias of (loc * ctyp * ctyp) (* t as t *) (* list 'a as 'a *)
     | `Any of loc (* _ *)
@@ -93,7 +104,7 @@
     | `TyArr of (loc * ctyp * ctyp) (* t -> t *) (* int -> string *)
     | `TyCls of (loc * ident) (* #i *) (* #point *)
     | `TyLab of (loc * string * ctyp) (* ~s:t *)
-    | `TyId  of (loc * ident) (* i *) (* `Lazy.t *)
+    | `Id  of (loc * ident) (* i *) (* `Lazy.t *)
     | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)
       (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
     | `TyDcl of (loc * string * list ctyp * ctyp * list (ctyp * ctyp))
@@ -115,7 +126,7 @@
     | `Sum of (loc * ctyp) (* [ t ] *) (* [ A of int * string | B ] *)
     | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)
     | `And of (loc * ctyp * ctyp) (* t * t *)
-    | `TyOr  of (loc * ctyp * ctyp) (* t | t *)
+    | `Or  of (loc * ctyp * ctyp) (* t | t *)
     | `Private of (loc * ctyp) (* private t *)
     | `Mutable of (loc * ctyp) (* mutable t *)
     | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
@@ -170,13 +181,13 @@
     | `ExAsf of loc (* assert `False *)
     | `ExAsr of (loc * expr) (* assert e *)
     | `ExAss of (loc * expr * expr) (* e := e *)
-    | `ExCoe of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)
 
       (* for s = e to/downto e do { e } *)
-
     | `For of (loc * string * expr * expr * direction_flag * expr)
     | `Fun of (loc * match_case) (* fun [ mc ] *)
-    | `ExIfe of (loc * expr * expr * expr) (* if e then e else e *)
+
+    | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
+          
     | literal
     | `Label of (loc * string * expr) (* ~s or ~s:e *)
     | `Lazy of (loc * expr) (* lazy e *)
@@ -197,7 +208,7 @@
       (* { rb } or { (e) with rb } *)
     | `Record of (loc * rec_binding * expr)
       (* do { e } *)
-    | `Sequence of (loc * expr)
+    | `Seq of (loc * expr)
       (* e#s *)
     | `Send of (loc * expr * string)
       (* e.[e] *)
@@ -211,6 +222,7 @@
     | `ExCom of (loc * expr * expr)
       (* (e : t) *)
     | `Constraint_exp of (loc * expr * ctyp)
+    | `ExCoe of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)          
       (* `s *)
     | `ExVrn of (loc * string)
       (* while e do { e } *)
@@ -358,7 +370,7 @@
     | `Value of (loc * rec_flag * binding)
     | `Ant of (loc * string) (* $s$ *) ]
   and class_type =
-    [= `CtNil of loc
+    [= `Nil of loc
       (* (virtual)? i ([ t ])? *)
     | `CtCon of (loc * virtual_flag * ident * ctyp)
       (* [t] -> ct *)

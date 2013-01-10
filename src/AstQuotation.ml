@@ -332,7 +332,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
           | "tupexpr" -> {| `ExTup ($(mloc _loc), $e)|}
           | "tuppatt" -> {| `PaTup ($(mloc _loc), $e)|}
-          | "seqexpr" -> {| `Sequence ($(mloc _loc), $e) |}
+          | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
                 
           | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
           | "lidexpr" -> {| `Lid ($(mloc _loc), $e) |}
@@ -367,7 +367,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             match n with
             ["tupexpr" ->   {| `ExTup ($(mloc _loc), $e) |}
             | "tuppatt" ->  {| `PaTup ($(mloc _loc), $e) |}
-            | "seqexpr" -> {| `Sequence ($(mloc _loc), $e) |}
+            | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
 
             | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
             | "lidexpr" -> {| `Lid ($(mloc _loc), $e) |}

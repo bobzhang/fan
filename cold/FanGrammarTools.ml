@@ -64,7 +64,7 @@ exception NotneededTyping
 let make_ctyp (styp : styp) tvar =
   (let rec aux =
      function
-     | `TyId (_loc,s) -> `TyId (_loc, s)
+     | `Id (_loc,s) -> `Id (_loc, s)
      | `TyQuo (_loc,s) -> `TyQuo (_loc, s)
      | `TyApp (_loc,t1,t2) -> `TyApp (_loc, (aux t1), (aux t2))
      | `Self (_loc,x) ->
@@ -77,7 +77,7 @@ let make_ctyp (styp : styp) tvar =
      | `Tok _loc ->
          `TyVrnSup
            (_loc,
-             (`TyId
+             (`Id
                 (_loc,
                   (`IdAcc
                      (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
@@ -154,7 +154,7 @@ let rec make_expr entry tvar =
                                  (_loc, (n.expr),
                                    (`TyApp
                                       (_loc,
-                                        (`TyId
+                                        (`Id
                                            (_loc,
                                              (`IdAcc
                                                 (_loc, (gm ()),
@@ -176,7 +176,7 @@ let rec make_expr entry tvar =
                          (_loc, (n.expr),
                            (`TyApp
                               (_loc,
-                                (`TyId
+                                (`Id
                                    (_loc,
                                      (`IdAcc
                                         (_loc, (gm ()), (`Lid (_loc, "t")))))),
@@ -259,7 +259,7 @@ let text_of_action _loc psl rtvar act tvar =
            (_loc,
              (`PaTyc
                 (_loc, locid,
-                  (`TyId
+                  (`Id
                      (_loc,
                        (`IdAcc
                           (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "t")))))))),
@@ -321,8 +321,7 @@ let text_of_entry _loc e =
     `Constraint_exp
       (_loc, (x.expr),
         (`TyApp
-           (_loc,
-             (`TyId (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
+           (_loc, (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
              (`TyQuo (_loc, (x.tvar)))))) in
   let pos =
     match e.pos with
@@ -376,7 +375,7 @@ let let_in_of_extend _loc gram gl default =
                       (`Str (_loc, i)))),
                  (`TyApp
                     (_loc,
-                      (`TyId
+                      (`Id
                          (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
                       (`TyQuo (_loc, x)))))))
     | _ -> failwith "internal error in the Grammar extension" in
@@ -415,7 +414,7 @@ let text_of_functorial_extend _loc gram locals el =
     | [] -> `Id (_loc, (`Uid (_loc, "()")))
     | e::[] -> e
     | e::el ->
-        `Sequence
+        `Seq
           (_loc, (List.fold_left (fun acc  x  -> `Sem (_loc, acc, x)) e el)) in
   let_in_of_extend _loc gram locals args
 let mk_tok _loc ?restrict  ~pattern  styp =
@@ -482,7 +481,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
              (`Type
                 (`TyApp
                    (_loc,
-                     (`TyId
+                     (`Id
                         (_loc,
                           (`IdAcc
                              (_loc, (gm ()),

@@ -263,10 +263,6 @@ let apply () = begin
          AstQuotation.default := s;
         old
        end]
-        
-       (* lang: *)
-       (* [ `STR(_,s) -> *)
-       (*  begin let old = !AstQuotation.default;  AstQuotation.default := s; old end ] *)
        pos_exprs:
        [ L1[dot_lstrings{ls};":";dot_lstrings{rs}
             -> (String.concat "." ls, String.concat "." rs)
@@ -276,16 +272,7 @@ let apply () = begin
          let old = !AstQuotation.map;
          AstQuotation.map := SMap.add_list xys old;
            old
-       end
-       ]
-       (* pos_exprs: *)
-       (* [ L1 [ `STR(_,x); ":";`STR(_,y) -> (x,y) ] SEP ";"{xys}  -> *)
-       (*   begin *)
-       (*     let old = !AstQuotation.map; *)
-       (*     AstQuotation.map := SMap.add_list xys old; *)
-       (*     old *)
-       (*   end *)
-       (* ] *)
+       end]
        fun_def_patt:
        ["(";"type";a_LIDENT{i};")" -> fun e -> {|fun (type $i) -> $e |}
        | ipatt{p} -> fun e -> {| fun $p -> $e |}
@@ -670,6 +657,7 @@ let apply () = begin
       | more_ctyp{x}; "&"; amp_ctyp{y} -> {| $x & $y |}
       | more_ctyp{x}; "and"; constructor_arg_list{y} -> {| $x and $y |}
       | more_ctyp{x} -> x
+      | "type"; type_declaration{t} -> t   
       | -> {||}  ]
       more_ctyp:
       [ "mutable"; S{x} -> {| mutable $x |}
@@ -682,16 +670,8 @@ let apply () = begin
       | "'"; a_ident{i} -> {| '$lid:i |}
       | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
       | "-"; "'"; a_ident{i} -> {| -'$lid:i |} ]
-      type_ident_and_parameters: [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl) ]
-      optional_type_parameter: (* overlapps with type_parameter *)
-      [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_ident{i} -> {| '$lid:i |}
-      | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
-      | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
-      | "+"; "_" -> `TyAnP _loc   (* FIXME *)
-      | "-"; "_" -> `TyAnM _loc  
-      | "_" -> {| _ |}  ]
+
+      
       type_longident_and_parameters:
       [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
       | `ANT ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] 
@@ -740,18 +720,33 @@ let apply () = begin
       | "`"; a_ident{i} -> {| `$i |}  ]
       opt_polyt:
       [ ":"; poly_type{t} -> t  | -> {||} ]
+      
       type_declaration:
       [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `ANT (("list" as n),s) ->          {| $(anti:mk_anti ~c:"ctypand" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
       |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
-        -> `TyDcl _loc n tpl tk cl ]
+        -> `TyDcl (_loc, n, tpl, tk, cl) ]
+      type_ident_and_parameters:
+      [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl)]
+      (* | a_LIDENT{i}; `ANT((""|"anti" as n),s) -> ] *)
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
       opt_eq_ctyp:
-      [ "="; type_kind{tk} -> tk | -> {||} ] 
-      type_kind: [ ctyp{t} -> t ] 
+      [ "="; type_kind{tk} -> tk | -> {||} ]
+      type_kind: [ ctyp{t} -> t ]
+      (* refer type_parameter *)
+      optional_type_parameter: (* overlapps with type_parameter *)
+      [ `ANT ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | "'"; a_ident{i} -> {| '$lid:i |}
+      | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
+      | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
+      | "+"; "_" -> `TyAnP _loc   (* FIXME *)
+      | "-"; "_" -> `TyAnM _loc  
+      | "_" -> {| _ |}  ]
+      
       typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `ANT ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1004,8 +999,8 @@ let apply () = begin
       | `OPTLABEL s -> s ] 
       string_list:
       [ `ANT ((""|"str_list"),s) -> `Ant (_loc,mk_anti "str_list" s)
-      | `STR (_, x); S{xs} -> `LCons x xs
-      | `STR (_, x) -> `LCons x (`LNil _loc) ] 
+      | `STR (_, x); S{xs} -> `LCons (x, xs)
+      | `STR (_, x) -> `LCons (x, (`LNil _loc)) ] 
       semi: [ ";" -> () ]
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ direction_flag{x} -> x ] 
@@ -1124,12 +1119,6 @@ let apply () = begin
         | value_val_opt_override{o}; opt_mutable{mf}; label{lab}; cvalue_binding{e}
           ->
             {| val $override:o $mutable:mf $lab = $e |}
-        (* | value_val_opt_override{o}; opt_mutable{mf}; "virtual"; label{l}; ":"; *)
-        (*       poly_type{t} -> *)
-        (*         match o with *)
-        (*         [ {:override_flag@_||} ->{| val virtual $mutable:mf $l : $t |} *)
-        (*         | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]   *)
-
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; label{l}; ":";
                 poly_type{t} ->
                 match o with
@@ -1140,17 +1129,9 @@ let apply () = begin
                 match o with
                 [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
-
-
         | method_opt_override{o}; opt_private{pf}; label{l}; opt_polyt{topt};
                 fun_binding{e} ->
             {| method $override:o $private:pf $l : $topt = $e |}
-        (* | method_opt_override{o}; opt_private{pf}; "virtual"; label{l}; ":"; *)
-        (*      poly_type{t} -> *)
-        (*        match o with *)
-        (*         [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |} *)
-        (*         | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]   *)
-
         | type_constraint; ctyp{t1}; "="; ctyp{t2} ->  {| type $t1 = $t2 |}
         | "initializer"; expr{se} -> {| initializer $se |} ]
       class_str_item_quot:
