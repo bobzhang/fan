@@ -393,6 +393,12 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Lid")),
                                       (mloc _loc))), e)
+                         | "lida_lident" ->
+                             `PaApp
+                               (_loc,
+                                 (`PaApp
+                                    (_loc, (`PaVrn (_loc, "Lid")),
+                                      (mloc _loc))), e)
                          | "flopatt" ->
                              `PaApp
                                (_loc,
@@ -1167,19 +1173,45 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antidirection_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Ant")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antioverride_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Ant")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antiprivate_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Ant")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antimutable_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Ant")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antivirtual_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Ant")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antirow_var_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Ant")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "antirec_flag" ->
-                             `ExApp (_loc, (`ExVrn (_loc, "Ant")), e)
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Ant")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
+                         | "lida_lident" ->
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Lid")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | _ -> e)
       | e -> super#expr e
   end

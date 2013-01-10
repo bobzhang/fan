@@ -768,22 +768,22 @@ class map =
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
           'all_a0 meta_option -> 'all_b0 meta_option=
-      fun mf_a  ->
+      fun (type t) mf_a  ->
         function
         | `None a0 -> let a0 = self#loc a0 in `None a0
         | `Some a0 -> let a0 = mf_a self a0 in `Some a0
-        | #ant as a0 -> (self#ant a0 : 'a meta_option (* :>'all_b0 meta_option *))
+        | #ant as a0 -> (self#ant a0 : ant :>  t meta_option  )
     method meta_list :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
           'all_a0 meta_list -> 'all_b0 meta_list=
-      fun mf_a  ->
+      fun (type t) mf_a  ->
         function
         | `LNil a0 -> let a0 = self#loc a0 in `LNil a0
         | `LCons (a0,a1) ->
             let a0 = mf_a self a0 in
             let a1 = self#meta_list mf_a a1 in `LCons (a0, a1)
-        | #ant as a0 -> (self#ant a0 :>'all_b0 meta_list)
+        | #ant as a0 -> (self#ant a0 :>  t meta_list)
     method alident : alident -> alident=
       function
       | `Lid (a0,a1) ->
@@ -4746,24 +4746,24 @@ class map2 =
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_a0 -> 'all_b0) ->
           'all_a0 meta_option -> 'all_a0 meta_option -> 'all_b0 meta_option=
-      fun mf_a  a0  b0  ->
+      fun (type u) mf_a  a0  b0  ->
         match (a0, b0) with
         | (`None a0,`None b0) -> let a0 = self#loc a0 b0 in `None a0
         | (`Some a0,`Some b0) -> let a0 = mf_a self a0 b0 in `Some a0
         | ((#ant as a0),(#ant as b0)) ->
-            (self#ant a0 b0 :>'all_b0 meta_option)
+            (self#ant a0 b0 :> u meta_option)
         | (_,_) -> invalid_arg "map2 failure"
     method meta_list :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_a0 -> 'all_b0) ->
           'all_a0 meta_list -> 'all_a0 meta_list -> 'all_b0 meta_list=
-      fun mf_a  a0  b0  ->
+      fun (type u) mf_a  a0  b0  ->
         match (a0, b0) with
         | (`LNil a0,`LNil b0) -> let a0 = self#loc a0 b0 in `LNil a0
         | (`LCons (a0,a1),`LCons (b0,b1)) ->
             let a0 = mf_a self a0 b0 in
             let a1 = self#meta_list mf_a a1 b1 in `LCons (a0, a1)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'all_b0 meta_list)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :> u meta_list)
         | (_,_) -> invalid_arg "map2 failure"
     method alident : alident -> alident -> alident=
       fun a0  b0  ->

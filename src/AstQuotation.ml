@@ -339,7 +339,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 
           | "uidident" -> {| `Uid ($(mloc _loc), $e)|}
           | "lidident" -> {| `Lid ($(mloc _loc), $e)|}
-
+          | "lida_lident" -> {|`Lid($(mloc _loc), $e)|}
+                
           | "flopatt" -> {| `Flo ($(mloc _loc), $e) |}
           | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
                 (* {| `PaX (u,b,g)|} *)
@@ -488,16 +489,16 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "antiwith_constr" -> {| `Ant ($(mloc _loc), $e) |}
             | "antibinding" -> {| `Ant ($(mloc _loc), $e) |}
             | "antirec_binding" -> {| `Ant ($(mloc _loc), $e) |}
-
             | "antimodule_binding" -> {| `Ant ($(mloc _loc), $e) |}
             | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
-            | "antidirection_flag" -> {| `Ant  $e |}
-            | "antioverride_flag" -> {| `Ant $e |}
-            | "antiprivate_flag" -> {| `Ant $e |}
-            | "antimutable_flag" -> {| `Ant $e|}
-            | "antivirtual_flag" -> {| `Ant $e|}
-            | "antirow_var_flag" -> {| `Ant $e|}
-            | "antirec_flag" -> {| `Ant $e|}
+            | "antidirection_flag" -> {| `Ant  ($(mloc _loc), $e) |}
+            | "antioverride_flag" -> {| `Ant  ($(mloc _loc), $e) |}
+            | "antiprivate_flag" ->  {| `Ant  ($(mloc _loc), $e) |}
+            | "antimutable_flag" ->  {| `Ant  ($(mloc _loc), $e) |}
+            | "antivirtual_flag" ->  {| `Ant  ($(mloc _loc), $e) |}
+            | "antirow_var_flag" -> {| `Ant  ($(mloc _loc), $e) |}
+            | "antirec_flag" -> {| `Ant  ($(mloc _loc), $e) |}
+            | "lida_lident" -> {|`Lid($(mloc _loc), $e)|}
             | _ -> e ])
       | e -> super#expr e ];
   end;
