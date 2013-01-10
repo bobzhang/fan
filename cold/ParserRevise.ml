@@ -1,3 +1,4 @@
+open Ast
 open PreCast.Syntax
 open Lib
 open LibUtil

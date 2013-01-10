@@ -2,7 +2,6 @@ open Ast;
 open LibUtil;
 open FanUtil;
 open Lib.Meta;
-
 open Format;
 (* open StdLib; *)
 
@@ -63,16 +62,21 @@ let update (pos,str) =
   map := SMap.add pos str !map;
 
 let translate = ref (fun x -> x);
-let clear_map () =
-  map := SMap.empty;
-let clear_default () =
-  default:="";
-let default_at_pos pos str =
-  update (pos,str); 
-let expanders_table =
-  (ref [] : ref (list ((string * ExpKey.pack) * ExpFun.pack)));
-let set_default s =
-  default := s;
+
+let clear_map () =  map := SMap.empty;
+
+let clear_default () = default:="";
+
+let default_at_pos pos str =  update (pos,str); 
+
+(*
+  The key is [string*ExpKey.pack]
+ *)
+type key = (string * ExpKey.pack);
+module QMap =MapMake (struct type t =key ; let compare = compare; end);  
+let expanders_table =ref QMap.empty;  
+(* let expanders_table =  (ref [] : ref (list ((string * ExpKey.pack) * ExpFun.pack))); *)
+let set_default s =  default := s;
 
 (* If the quotation has a name, it has a higher precedence,
    otherwise the [position table] has a precedence, otherwise
@@ -82,17 +86,15 @@ let expander_name ~pos:(pos:string) (name:string) =
   (* let str = DynAst.string_of_tag pos_tag in *)
   let u = !translate name in 
   if u = "" then
-    (* Hashtbl.find_default ~default:(!default) default_tbl pos *)
     SMap.find_default ~default:(!default)  pos !map
   else u;
 
-let add name tag f =
-  let elt = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
-  expanders_table := [elt :: !expanders_table];
+let add name (tag :DynAst.tag 'a) (f:expand_fun 'a) =
+  let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
+  expanders_table := QMap.add k v !expanders_table ;
 
 (* called by [expand] *)    
 let expand_quotation loc ~expander pos_tag quot =
-  (* debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in *)
   let open FanToken in
   let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
   try expander loc loc_name_opt quot.q_contents with
@@ -104,26 +106,30 @@ let expand_quotation loc ~expander pos_tag quot =
   | exc ->
       let exc1 = QuotationError (quot.q_name, pos_tag, Expanding, exc) in
       raise (FanLoc.Exc_located loc exc1) ];
+
+(* The table is indexed by [quotation name] and [tag] *)
+let find loc name tag =
+  let key = (expander_name ~pos:(DynAst.string_of_tag tag) name, ExpKey.pack tag ()) in
+  let try pack = QMap.find key !expanders_table in
+  ExpFun.unpack tag pack
+  with
+    [Not_found ->
+      let pos_tag = DynAst.string_of_tag tag in
+      if name="" then raise
+          (FanLoc.raise loc (QuotationError (name,pos_tag,NoName,Not_found)))
+      else
+        raise Not_found
+  | e -> raise e  ];     
+
 (*
-  [tag] is used to help find the expander
+  [tag] is used to help find the expander,
+  is passed by the parser function at parsing time
  *)
 let expand loc (quotation:FanToken.quotation) tag =
   let open FanToken in
   let pos_tag = DynAst.string_of_tag tag in
   let name = quotation.q_name in
-  (* debug quot "handle_quotation: name: %s, str: %S@." name quotation.q_contents in *)
-  let find name tag =
-    let key = (expander_name ~pos:(DynAst.string_of_tag tag) name, ExpKey.pack tag ()) in
-    let try pack = List.assoc key !expanders_table in
-    ExpFun.unpack tag pack
-    with
-      [Not_found ->
-        if name="" then raise
-            (FanLoc.Exc_located loc (QuotationError (name,pos_tag,NoName,Not_found)))
-        else
-          raise Not_found
-     | e -> raise e  ] in 
-  let try expander = find name tag
+  let try expander = find loc name tag
   and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc)  in begin
     Stack.push  quotation.q_name stack;
     finally (fun _ -> Stack.pop stack) begin fun _ ->
@@ -151,7 +157,7 @@ let quotation_error_to_string (name, position, ctx, exn) =
       [ Finding -> begin
         pp "finding quotation";
         bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
-        List.iter begin fun ((s,t),_) ->
+        (* List *)QMap.iter begin fun (s,t) _ ->
           bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
             s ExpKey.print_tag t
         end !expanders_table;
@@ -251,8 +257,7 @@ let make_parser entry =
 
 DEFINE REGISTER(tag) = fun  ~name ~entry -> add name tag (make_parser entry);
 DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter -> 
-  add name DynAst.str_item_tag
-    (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
+  add name tag (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
 
   
 let of_str_item = REGISTER(DynAst.str_item_tag);
@@ -260,7 +265,7 @@ let of_str_item_with_filter = REGISTER_FILTER(DynAst.str_item_tag);
 let of_patt  = REGISTER(DynAst.patt_tag);
 let of_patt_with_filter  = REGISTER_FILTER(DynAst.patt_tag);  
 let of_class_str_item  = REGISTER(DynAst.class_str_item_tag);
-let of_class_str_item_with_filter  = REGISTER_FILTER(DynAst.patt_tag);  
+let of_class_str_item_with_filter  = REGISTER_FILTER(DynAst.class_str_item_tag);  
 let of_match_case = REGISTER(DynAst.match_case_tag);
 let of_match_case_with_filter = REGISTER_FILTER(DynAst.match_case_tag);  
   
@@ -437,9 +442,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "`flopatt" ->
                 let e = {| FanUtil.float_repres $e |} in 
                 {| `Flo ($(mloc _loc), $e) |}
-                  
             | "liststr_item" -> {| $(uid:gm()).stSem_of_list $e |}
-                  (* {|$(uid:"FanAst").stSem_of_list $e |} *)
             | "listsig_item" -> {| $(uid:gm()).sgSem_of_list $e |}
             | "listclass_sig_item" -> {| $(uid:gm()).cgSem_of_list $e |}
             | "listclass_str_item" -> {| $(uid:gm()).crSem_of_list $e |}

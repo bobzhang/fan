@@ -729,55 +729,55 @@ and module_type: Ast.module_type -> Parsetree.module_type =
       mkmty loc (Pmty_with ((module_type mt), (mkwithc wc [])))
   | `Of (loc,me) -> mkmty loc (Pmty_typeof (module_expr me))
   | `Ant (_loc,_) -> assert false
-and sig_item s l =
-  match s with
-  | `Nil _loc -> l
-  | `Class (loc,cd) ->
-      (mksig loc
-         (Psig_class
-            (List.map class_info_class_type (list_of_class_type cd []))))
-      :: l
-  | `ClassType (loc,ctd) ->
-      (mksig loc
-         (Psig_class_type
-            (List.map class_info_class_type (list_of_class_type ctd []))))
-      :: l
-  | `Sem (_loc,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
-  | `Directive (_,_,_) -> l
-  | `Exception (loc,`Id (_,`Uid (_,s))) ->
-      (mksig loc (Psig_exception ((with_loc s loc), []))) :: l
-  | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
-      (mksig loc
-         (Psig_exception
-            ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
-      :: l
-  | `Exception (_,_) -> assert false
-  | `External (loc,n,t,sl) ->
-      let n =
-        match n with
-        | `Lid (_,n) -> n
-        | `Ant (loc,_) -> error loc "antiquotation in sig_item" in
-      (mksig loc
-         (Psig_value
-            ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
-        :: l
-  | `Include (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
-  | `Module (loc,n,mt) ->
-      (mksig loc (Psig_module ((with_loc n loc), (module_type mt)))) :: l
-  | `RecModule (loc,mb) ->
-      (mksig loc (Psig_recmodule (module_sig_binding mb []))) :: l
-  | `ModuleType (loc,n,mt) ->
-      let si =
-        match mt with
-        | `MtQuo (_,_) -> Pmodtype_abstract
-        | _ -> Pmodtype_manifest (module_type mt) in
-      (mksig loc (Psig_modtype ((with_loc n loc), si))) :: l
-  | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
-  | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl []))) :: l
-  | `Value (loc,n,t) ->
-      (mksig loc (Psig_value ((with_loc n loc), (mkvalue_desc loc t [])))) ::
-      l
-  | `Ant (loc,_) -> error loc "antiquotation in sig_item"
+and sig_item (s : sig_item) (l : signature) =
+  (match s with
+   | `Nil _loc -> l
+   | `Class (loc,cd) ->
+       (mksig loc
+          (Psig_class
+             (List.map class_info_class_type (list_of_class_type cd []))))
+       :: l
+   | `ClassType (loc,ctd) ->
+       (mksig loc
+          (Psig_class_type
+             (List.map class_info_class_type (list_of_class_type ctd []))))
+       :: l
+   | `Sem (_loc,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
+   | `Directive (_,_,_) -> l
+   | `Exception (loc,`Id (_,`Uid (_,s))) ->
+       (mksig loc (Psig_exception ((with_loc s loc), []))) :: l
+   | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
+       (mksig loc
+          (Psig_exception
+             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
+       :: l
+   | `Exception (_,_) -> assert false
+   | `External (loc,n,t,sl) ->
+       let n =
+         match n with
+         | `Lid (_,n) -> n
+         | `Ant (loc,_) -> error loc "antiquotation in sig_item" in
+       (mksig loc
+          (Psig_value
+             ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
+         :: l
+   | `Include (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
+   | `Module (loc,n,mt) ->
+       (mksig loc (Psig_module ((with_loc n loc), (module_type mt)))) :: l
+   | `RecModule (loc,mb) ->
+       (mksig loc (Psig_recmodule (module_sig_binding mb []))) :: l
+   | `ModuleType (loc,n,mt) ->
+       let si =
+         match mt with
+         | `MtQuo (_,_) -> Pmodtype_abstract
+         | _ -> Pmodtype_manifest (module_type mt) in
+       (mksig loc (Psig_modtype ((with_loc n loc), si))) :: l
+   | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
+   | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl []))) :: l
+   | `Value (loc,n,t) ->
+       (mksig loc (Psig_value ((with_loc n loc), (mkvalue_desc loc t []))))
+       :: l
+   | `Ant (loc,_) -> error loc "antiquotation in sig_item" : signature )
 and module_sig_binding x acc =
   match x with
   | `And (_loc,x,y) -> module_sig_binding x (module_sig_binding y acc)
@@ -811,55 +811,53 @@ and module_expr =
                    (Some (mktyp loc (Ptyp_package (package_type pt)))), None))))
   | `PackageModule (loc,e) -> mkmod loc (Pmod_unpack (expr e))
   | `Ant (loc,_) -> error loc "antiquotation in module_expr"
-and str_item s l =
-  match s with
-  | `Nil _loc -> l
-  | `Class (loc,cd) ->
-      (mkstr loc
-         (Pstr_class
-            (List.map class_info_class_expr (list_of_class_expr cd []))))
-      :: l
-  | `ClassType (loc,ctd) ->
-      (mkstr loc
-         (Pstr_class_type
-            (List.map class_info_class_type (list_of_class_type ctd []))))
-      :: l
-  | `Sem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
-  | `Directive (_,_,_) -> l
-  | `Exception (loc,`Id (_,`Uid (_,s)),`None _) ->
-      (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
-  | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t),`None _) ->
-      (mkstr loc
-         (Pstr_exception
-            ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
-      :: l
-  | `Exception (loc,`Id (_,`Uid (_,s)),`Some i) ->
-      (mkstr loc (Pstr_exn_rebind ((with_loc s loc), (ident i)))) :: l
-  | `Exception (loc,`Of (_,`Id (_,`Uid (_,_)),_),`Some _) ->
-      error loc "type in exception alias"
-  | `Exception (_,_,_) -> assert false
-  | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
-  | `External (loc,n,t,sl) ->
-      let n =
-        match n with
-        | `Lid (_,n) -> n
-        | `Ant (loc,_) -> error loc "antiquotation in sig_item" in
-      (mkstr loc
-         (Pstr_primitive
-            ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
-        :: l
-  | `Include (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
-  | `Module (loc,n,me) ->
-      (mkstr loc (Pstr_module ((with_loc n loc), (module_expr me)))) :: l
-  | `RecModule (loc,mb) ->
-      (mkstr loc (Pstr_recmodule (module_str_binding mb []))) :: l
-  | `ModuleType (loc,n,mt) ->
-      (mkstr loc (Pstr_modtype ((with_loc n loc), (module_type mt)))) :: l
-  | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
-  | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl []))) :: l
-  | `Value (loc,rf,bi) ->
-      (mkstr loc (Pstr_value ((mkrf rf), (binding bi [])))) :: l
-  | `Ant (loc,_) -> error loc "antiquotation in str_item"
+and str_item (s : str_item) (l : structure) =
+  (match s with
+   | `Nil _loc -> l
+   | `Class (loc,cd) ->
+       (mkstr loc
+          (Pstr_class
+             (List.map class_info_class_expr (list_of_class_expr cd []))))
+       :: l
+   | `ClassType (loc,ctd) ->
+       (mkstr loc
+          (Pstr_class_type
+             (List.map class_info_class_type (list_of_class_type ctd []))))
+       :: l
+   | `Sem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
+   | `Directive (_,_,_) -> l
+   | `Exception (loc,`Id (_,`Uid (_,s)),`None _) ->
+       (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
+   | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t),`None _) ->
+       (mkstr loc
+          (Pstr_exception
+             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
+       :: l
+   | `Exception (loc,`Id (_,`Uid (_,s)),`Some i) ->
+       (mkstr loc (Pstr_exn_rebind ((with_loc s loc), (ident i)))) :: l
+   | `Exception (loc,`Of (_,`Id (_,`Uid (_,_)),_),`Some _) ->
+       error loc "type in exception alias"
+   | `Exception (_,_,_) -> assert false
+   | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
+   | `External (loc,`Lid (_,n),t,sl) ->
+       (mkstr loc
+          (Pstr_primitive
+             ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
+       :: l
+   | `Include (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
+   | `Module (loc,n,me) ->
+       (mkstr loc (Pstr_module ((with_loc n loc), (module_expr me)))) :: l
+   | `RecModule (loc,mb) ->
+       (mkstr loc (Pstr_recmodule (module_str_binding mb []))) :: l
+   | `ModuleType (loc,n,mt) ->
+       (mkstr loc (Pstr_modtype ((with_loc n loc), (module_type mt)))) :: l
+   | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
+   | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl []))) :: l
+   | `Value (loc,rf,bi) ->
+       (mkstr loc (Pstr_value ((mkrf rf), (binding bi [])))) :: l
+   | x ->
+       let loc = FanAst.loc_of_str_item x in
+       error loc "antiquotation in str_item" : structure )
 and class_type =
   function
   | `CtCon (loc,`ViNil _,id,tl) ->
@@ -997,13 +995,13 @@ and class_str_item c l =
       (mkcf loc (Pcf_valvirt ((with_loc s loc), (mkmutable mf), (ctyp t))))
       :: l
   | `Ant (_,_) -> assert false
-let sig_item ast = sig_item ast []
+let sig_item (ast : sig_item) = (sig_item ast [] : signature )
 let str_item ast = str_item ast []
-let directive =
+let directive: expr -> directive_argument =
   function
   | `Nil _loc -> Pdir_none
-  | `Str (_,s) -> Pdir_string s
-  | `Int (_,i) -> Pdir_int (int_of_string i)
+  | `Str (_loc,s) -> Pdir_string s
+  | `Int (_loc,i) -> Pdir_int (int_of_string i)
   | `Id (_loc,`Lid (_,"true")) -> Pdir_bool true
   | `Id (_loc,`Lid (_,"false")) -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e))

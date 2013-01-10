@@ -762,19 +762,20 @@ and module_type : Ast.module_type -> Parsetree.module_type = fun (*module_type -
   | {:module_type@loc| module type of $me |} ->
       mkmty loc (Pmty_typeof (module_expr me))
   | {:module_type| $anti:_ |} -> assert false ]
-and sig_item s l = match s with (* sig_item -> signature -> signature*)
-  [ {:sig_item||} -> l
+and sig_item (s:sig_item) (l:signature) :signature =
+  with sig_item(* signature *) match s with 
+  [ {||} -> l
   | `Class (loc,cd) ->
       [mksig loc (Psig_class
                     (List.map class_info_class_type (list_of_class_type cd []))) :: l]
   | `ClassType (loc,ctd) ->
       [mksig loc (Psig_class_type
                     (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
-  | {:sig_item| $sg1; $sg2 |} -> sig_item sg1 (sig_item sg2 l)
+  | {| $sg1; $sg2 |} -> sig_item sg1 (sig_item sg2 l)
   | `Directive (_,_,_) -> l
-  | {:sig_item@loc| exception $uid:s |} ->
+  | {@loc| exception $uid:s |} ->
       [mksig loc (Psig_exception (with_loc s loc) []) :: l]
-  | {:sig_item@loc| exception $uid:s of $t |} ->
+  | {@loc| exception $uid:s of $t |} ->
       [mksig loc (Psig_exception (with_loc s loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l]
   | `Exception (_,_) -> assert false (*FIXME*)
@@ -795,7 +796,7 @@ and sig_item s l = match s with (* sig_item -> signature -> signature*)
       [mksig loc (Psig_open (long_uident id)) :: l]
   | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
   | `Value (loc,n,t) -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l]
-  | {:sig_item@loc| $anti:_ |} -> error loc "antiquotation in sig_item" ]
+  | {@loc| $anti:_ |} -> error loc "antiquotation in sig_item" ]
 and module_sig_binding x acc = match x with (* module_binding -> (string loc * module_type) list -> (string loc * module_type) list*)
   [ {:module_binding| $x and $y |} ->
     module_sig_binding x (module_sig_binding y acc)
@@ -827,7 +828,8 @@ and module_expr =   fun (* module_expr -> module_expr *)
   | {:module_expr@loc| (val $e) |} ->
       mkmod loc (Pmod_unpack (expr e))
   | {:module_expr@loc| $anti:_ |} -> error loc "antiquotation in module_expr" ]
-and str_item s l = with str_item match s with (* str_item -> structure -> structure*)
+and str_item (s:str_item) (l:structure) : structure =
+ with str_item match s with 
   [ {||} -> l
   | `Class (loc,cd) ->
       [mkstr loc (Pstr_class
@@ -848,10 +850,10 @@ and str_item s l = with str_item match s with (* str_item -> structure -> struct
       error loc "type in exception alias"
   | `Exception (_,_,_) -> assert false (*FIXME*)
   | `StExp (loc,e) -> [mkstr loc (Pstr_eval (expr e)) :: l]
-  | `External (loc, n, t, sl) ->
-      let n = match n with
-        [`Lid (_,n) -> n | `Ant(loc,_) -> error loc "antiquotation in sig_item"] in
-      [mkstr loc (Pstr_primitive (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
+  | {@loc|external $(lid:n) : $t = $sl |} ->
+      (*$lid:n behave different here mainl the location*)
+      [mkstr loc
+         (Pstr_primitive (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | `Include (loc,me) -> [mkstr loc (Pstr_include (module_expr me)) :: l]
   | `Module (loc,n,me) -> [mkstr loc (Pstr_module (with_loc n loc) (module_expr me)) :: l]
   | `RecModule (loc,mb) ->
@@ -862,7 +864,10 @@ and str_item s l = with str_item match s with (* str_item -> structure -> struct
   | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl [])) :: l]
   | `Value (loc,rf,bi) ->
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
-  | {@loc| $anti:_ |} -> error loc "antiquotation in str_item" ]
+
+  | x (* {@loc| $anti:_ |} *) ->
+      let loc = FanAst.loc_of_str_item x in
+      error loc "antiquotation in str_item" ]
 and class_type = fun (* class_type -> class_type *)
   [ `CtCon (loc, `ViNil _, id,tl) ->
     mkcty loc
@@ -993,16 +998,16 @@ and class_str_item c l =
   | `CrVvr (loc,s,mf,t) ->
       [mkcf loc (Pcf_valvirt (with_loc s loc, mkmutable mf, ctyp t)) :: l]
   | `Ant (_,_) -> assert false ];
-(* sig_item -> signature *)  
-let sig_item ast = sig_item ast [];
+
+let sig_item (ast:sig_item) : signature = sig_item ast [];
 let str_item ast = str_item ast [];
-(* expr -> directive_argument *)
-let directive = fun
-  [ {:expr||} -> Pdir_none
-  | `Str (_,s) -> Pdir_string s
-  | `Int (_,i) -> Pdir_int (int_of_string i)
-  | {:expr| true |} -> Pdir_bool true
-  | {:expr| false |} -> Pdir_bool false
+
+let directive : expr -> directive_argument = with expr fun
+  [ {||} -> Pdir_none
+  | {|$str:s|} -> Pdir_string s
+  | {|$int:i|} -> Pdir_int (int_of_string i)
+  | {| true |} -> Pdir_bool true
+  | {| false |} -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e)) ] ;
 (* str_item -> phrase *)  
 let phrase = fun

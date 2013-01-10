@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 open PreCast.Syntax;
 open Lib;
 open LibUtil;
@@ -593,6 +593,7 @@ let apply () = begin
         | "("; S{p}; "as"; S{p2}; ")" -> {| ($p as $p2) |}
         | "("; S{p}; ","; comma_ipatt{pl}; ")" -> {| ($p, $pl) |}
         | a_LIDENT{s} -> {| $lid:s |}
+        (* | a_lident{s} -> {| $(id:(s:>ident)) |} *)
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag                            
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $i : $p |}
