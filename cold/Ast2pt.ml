@@ -716,7 +716,7 @@ and mktype_decl x acc =
            cloc))
         :: acc
   | _ -> assert false
-and module_type =
+and module_type: Ast.module_type -> Parsetree.module_type =
   function
   | `Nil loc -> error loc "abstract/nil module type not allowed here"
   | `Id (loc,i) -> mkmty loc (Pmty_ident (long_uident i))
@@ -753,10 +753,14 @@ and sig_item s l =
       :: l
   | `Exception (_,_) -> assert false
   | `External (loc,n,t,sl) ->
+      let n =
+        match n with
+        | `Lid (_,n) -> n
+        | `Ant (loc,_) -> error loc "antiquotation in sig_item" in
       (mksig loc
          (Psig_value
             ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
-      :: l
+        :: l
   | `Include (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
   | `Module (loc,n,mt) ->
       (mksig loc (Psig_module ((with_loc n loc), (module_type mt)))) :: l
@@ -836,10 +840,14 @@ and str_item s l =
   | `Exception (_,_,_) -> assert false
   | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
   | `External (loc,n,t,sl) ->
+      let n =
+        match n with
+        | `Lid (_,n) -> n
+        | `Ant (loc,_) -> error loc "antiquotation in sig_item" in
       (mkstr loc
          (Pstr_primitive
             ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
-      :: l
+        :: l
   | `Include (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
   | `Module (loc,n,me) ->
       (mkstr loc (Pstr_module ((with_loc n loc), (module_expr me)))) :: l

@@ -712,13 +712,13 @@ let apply () =
                (fun (t : 'constructor_declaration)  _  (_loc : FanLoc.t)  ->
                   (`Exception (_loc, t) : 'sig_item ))));
           ([`Skeyword "external";
-           `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (string_list : 'string_list Gram.t ))],
             (Gram.mk_action
-               (fun (sl : 'string_list)  _  (t : 'ctyp)  _  (i : 'a_LIDENT) 
+               (fun (sl : 'string_list)  _  (t : 'ctyp)  _  (i : 'a_lident) 
                   _  (_loc : FanLoc.t)  ->
                   (`External (_loc, i, t, sl) : 'sig_item ))));
           ([`Skeyword "include";
@@ -4700,6 +4700,74 @@ let apply () =
                   match __fan_0 with
                   | `LID s -> (s : 'a_LIDENT )
                   | _ -> assert false)))])]);
+   Gram.extend (a_string : 'a_string Gram.t )
+     (None,
+       [(None, None,
+          [([`Stoken
+               (((function | `ANT ((""|"lid"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"lid\"),_)"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT ((""|"lid" as n),s) ->
+                       (`Ant (_loc, (mk_anti n s)) : 'a_string )
+                   | _ -> assert false)));
+          ([`Stoken
+              (((function | `LID _ -> true | _ -> false)),
+                (`Normal, "`LID _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `LID s -> (`C (_loc, s) : 'a_string )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `UID _ -> true | _ -> false)),
+                (`Normal, "`UID _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `UID s -> (`C (_loc, s) : 'a_string )
+                  | _ -> assert false)))])]);
+   Gram.extend (a_lident : 'a_lident Gram.t )
+     (None,
+       [(None, None,
+          [([`Stoken
+               (((function | `ANT ((""|"lid"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"lid\"),_)"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT ((""|"lid" as n),s) ->
+                       (`Ant (_loc, (mk_anti ~c:"a_lident" n s)) : 'a_lident )
+                   | _ -> assert false)));
+          ([`Stoken
+              (((function | `LID _ -> true | _ -> false)),
+                (`Normal, "`LID _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `LID s -> (`Lid (_loc, s) : 'a_lident )
+                  | _ -> assert false)))])]);
+   Gram.extend (a_uident : 'a_uident Gram.t )
+     (None,
+       [(None, None,
+          [([`Stoken
+               (((function | `ANT ((""|"lid"),_) -> true | _ -> false)),
+                 (`Normal, "`ANT ((\"\"|\"lid\"),_)"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `ANT ((""|"lid" as n),s) ->
+                       (`Ant (_loc, (mk_anti ~c:"a_uident" n s)) : 'a_uident )
+                   | _ -> assert false)));
+          ([`Stoken
+              (((function | `UID _ -> true | _ -> false)),
+                (`Normal, "`UID _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `UID s -> (`Uid (_loc, s) : 'a_uident )
+                  | _ -> assert false)))])]);
    Gram.extend (a_LABEL : 'a_LABEL Gram.t )
      (None,
        [(None, None,
@@ -4983,13 +5051,13 @@ let apply () =
                   _  (_loc : FanLoc.t)  ->
                   (`Exception (_loc, t, (`Some i)) : 'str_item ))));
           ([`Skeyword "external";
-           `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (string_list : 'string_list Gram.t ))],
             (Gram.mk_action
-               (fun (sl : 'string_list)  _  (t : 'ctyp)  _  (i : 'a_LIDENT) 
+               (fun (sl : 'string_list)  _  (t : 'ctyp)  _  (i : 'a_lident) 
                   _  (_loc : FanLoc.t)  ->
                   (`External (_loc, i, t, sl) : 'str_item ))));
           ([`Skeyword "include";

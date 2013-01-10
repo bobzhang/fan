@@ -131,8 +131,7 @@ class eq =
         match (a0, b0) with
         | (`None a0,`None b0) -> self#loc a0 b0
         | (`Some a0,`Some b0) -> mf_a self a0 b0
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
     method meta_list :
       'all_a0 .
@@ -143,8 +142,7 @@ class eq =
         | (`LNil a0,`LNil b0) -> self#loc a0 b0
         | (`LCons (a0,a1),`LCons (b0,b1)) ->
             (mf_a self a0 b0) && (self#meta_list mf_a a1 b1)
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
     method alident : alident -> alident -> 'result=
       fun a0  b0  ->
@@ -774,8 +772,7 @@ class map =
         function
         | `None a0 -> let a0 = self#loc a0 in `None a0
         | `Some a0 -> let a0 = mf_a self a0 in `Some a0
-        | `Ant (a0,a1) ->
-            let a0 = self#loc a0 in let a1 = self#string a1 in `Ant (a0, a1)
+        | #ant as a0 -> (self#ant a0 : 'a meta_option (* :>'all_b0 meta_option *))
     method meta_list :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
@@ -786,8 +783,7 @@ class map =
         | `LCons (a0,a1) ->
             let a0 = mf_a self a0 in
             let a1 = self#meta_list mf_a a1 in `LCons (a0, a1)
-        | `Ant (a0,a1) ->
-            let a0 = self#loc a0 in let a1 = self#string a1 in `Ant (a0, a1)
+        | #ant as a0 -> (self#ant a0 :>'all_b0 meta_list)
     method alident : alident -> alident=
       function
       | `Lid (a0,a1) ->
@@ -1584,9 +1580,7 @@ class print =
         function
         | `None a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" self#loc a0
         | `Some a0 -> Format.fprintf fmt "@[<1>(`Some@ %a)@]" (mf_a self) a0
-        | `Ant (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc a0
-              self#string a1
+        | #ant as a0 -> (self#ant fmt a0 :>'result)
     method meta_list :
       'all_a0 .
         ('self_type -> 'fmt -> 'all_a0 -> 'result) ->
@@ -1597,9 +1591,7 @@ class print =
         | `LCons (a0,a1) ->
             Format.fprintf fmt "@[<1>(`LCons@ %a@ %a)@]" (mf_a self) a0
               (self#meta_list mf_a) a1
-        | `Ant (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc a0
-              self#string a1
+        | #ant as a0 -> (self#ant fmt a0 :>'result)
     method alident : 'fmt -> alident -> 'result=
       fun fmt  ->
         function
@@ -2298,7 +2290,7 @@ class fold =
         function
         | `None a0 -> self#loc a0
         | `Some a0 -> mf_a self a0
-        | `Ant (a0,a1) -> let self = self#loc a0 in self#string a1
+        | #ant as a0 -> (self#ant a0 :>'self_type)
     method meta_list :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'self_type) ->
@@ -2307,7 +2299,7 @@ class fold =
         function
         | `LNil a0 -> self#loc a0
         | `LCons (a0,a1) -> let self = mf_a self a0 in self#meta_list mf_a a1
-        | `Ant (a0,a1) -> let self = self#loc a0 in self#string a1
+        | #ant as a0 -> (self#ant a0 :>'self_type)
     method alident : alident -> 'self_type=
       function
       | `Lid (a0,a1) -> let self = self#loc a0 in self#string a1
@@ -2862,8 +2854,7 @@ class fold2 =
         match (a0, b0) with
         | (`None a0,`None b0) -> self#loc a0 b0
         | (`Some a0,`Some b0) -> mf_a self a0 b0
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method meta_list :
       'all_a0 .
@@ -2874,8 +2865,7 @@ class fold2 =
         | (`LNil a0,`LNil b0) -> self#loc a0 b0
         | (`LCons (a0,a1),`LCons (b0,b1)) ->
             let self = mf_a self a0 b0 in self#meta_list mf_a a1 b1
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method alident : alident -> alident -> 'self_type=
       fun a0  b0  ->
@@ -3593,9 +3583,7 @@ let pp_print_meta_option :
     function
     | `None a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" pp_print_loc a0
     | `Some a0 -> Format.fprintf fmt "@[<1>(`Some@ %a)@]" mf_a a0
-    | `Ant (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
+    | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 let rec pp_print_meta_list :
   'all_a0 .
     ('fmt -> 'all_a0 -> 'result) -> 'fmt -> 'all_a0 meta_list -> 'result=
@@ -3605,9 +3593,7 @@ let rec pp_print_meta_list :
     | `LCons (a0,a1) ->
         Format.fprintf fmt "@[<1>(`LCons@ %a@ %a)@]" mf_a a0
           (pp_print_meta_list mf_a) a1
-    | `Ant (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
+    | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 let pp_print_alident: 'fmt -> alident -> 'result =
   fun fmt  ->
     function
@@ -4305,7 +4291,7 @@ class iter =
         function
         | `None a0 -> self#loc a0
         | `Some a0 -> mf_a self a0
-        | `Ant (a0,a1) -> (self#loc a0; self#string a1)
+        | #ant as a0 -> (self#ant a0 :>'result)
     method meta_list :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'result) -> 'all_a0 meta_list -> 'result=
@@ -4313,7 +4299,7 @@ class iter =
         function
         | `LNil a0 -> self#loc a0
         | `LCons (a0,a1) -> (mf_a self a0; self#meta_list mf_a a1)
-        | `Ant (a0,a1) -> (self#loc a0; self#string a1)
+        | #ant as a0 -> (self#ant a0 :>'result)
     method alident : alident -> 'result=
       function
       | `Lid (a0,a1) -> (self#loc a0; self#string a1)
@@ -4764,9 +4750,8 @@ class map2 =
         match (a0, b0) with
         | (`None a0,`None b0) -> let a0 = self#loc a0 b0 in `None a0
         | (`Some a0,`Some b0) -> let a0 = mf_a self a0 b0 in `Some a0
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Ant (a0, a1)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 :>'all_b0 meta_option)
         | (_,_) -> invalid_arg "map2 failure"
     method meta_list :
       'all_a0 'all_b0 .
@@ -4778,9 +4763,7 @@ class map2 =
         | (`LCons (a0,a1),`LCons (b0,b1)) ->
             let a0 = mf_a self a0 b0 in
             let a1 = self#meta_list mf_a a1 b1 in `LCons (a0, a1)
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Ant (a0, a1)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'all_b0 meta_list)
         | (_,_) -> invalid_arg "map2 failure"
     method alident : alident -> alident -> alident=
       fun a0  b0  ->
@@ -5810,7 +5793,7 @@ module Make(MetaLoc:META_LOC) =
                 `ExApp (_loc, (`ExVrn (_loc, "None")), (meta_loc _loc a0))
             | `Some a0 ->
                 `ExApp (_loc, (`ExVrn (_loc, "Some")), (mf_a _loc a0))
-            | `Ant (a0,a1) -> `Ant (a0, a1)
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let rec meta_meta_list :
           'all_a0 .
             ('loc -> 'all_a0 -> 'result) ->
@@ -5824,7 +5807,7 @@ module Make(MetaLoc:META_LOC) =
                   (_loc,
                     (`ExApp (_loc, (`ExVrn (_loc, "LCons")), (mf_a _loc a0))),
                     (meta_meta_list mf_a _loc a1))
-            | `Ant (a0,a1) -> `Ant (a0, a1)
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let meta_alident: 'loc -> alident -> 'result =
           fun _loc  ->
             function
@@ -7560,7 +7543,7 @@ module Make(MetaLoc:META_LOC) =
                 `PaApp (_loc, (`PaVrn (_loc, "None")), (meta_loc _loc a0))
             | `Some a0 ->
                 `PaApp (_loc, (`PaVrn (_loc, "Some")), (mf_a _loc a0))
-            | `Ant (a0,a1) -> `Ant (a0, a1)
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let rec meta_meta_list :
           'all_a0 .
             ('loc -> 'all_a0 -> 'result) ->
@@ -7574,7 +7557,7 @@ module Make(MetaLoc:META_LOC) =
                   (_loc,
                     (`PaApp (_loc, (`PaVrn (_loc, "LCons")), (mf_a _loc a0))),
                     (meta_meta_list mf_a _loc a1))
-            | `Ant (a0,a1) -> `Ant (a0, a1)
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let meta_alident: 'loc -> alident -> 'result =
           fun _loc  ->
             function

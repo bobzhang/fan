@@ -32,8 +32,8 @@
  *)
 
 
-   type loc = FanLoc.t;
-
+    type loc = FanLoc.t;
+    type ant = [= `Ant of (loc * string)];
     type literal =
     [= `Chr of (loc * string) (* 'c' *)
     | `Int of (loc * string) (* 42 *)
@@ -46,51 +46,51 @@
    type rec_flag =
     [= `Recursive of loc 
     | `ReNil of loc 
-    | `Ant of (loc*string) ];
+    | ant];
 
    type direction_flag =
     [= `To of loc
     | `Downto of loc
-    | `Ant of (loc*string) ];
+    | ant ];
 
   type mutable_flag =
     [= `Mutable of loc 
     | `MuNil of loc 
-    | `Ant of (loc*string) ];
+    | ant ];
 
    type private_flag =
     [= `Private of loc 
     | `PrNil of loc 
-    | `Ant of (loc*string) ];
+    | ant ];
    type virtual_flag =
     [= `Virtual of loc 
     | `ViNil of loc 
-    | `Ant of (loc*string) ];
+    | ant ];
    type override_flag =
     [= `Override of loc 
     | `OvNil of loc 
-    | `Ant of (loc*string) ];
+    | ant ];
    type row_var_flag =
     [= `RowVar of loc 
     | `RvNil of loc 
-    | `Ant of (loc*string) ];
+    | ant ];
    type meta_option 'a =
     [= `None of loc 
     |  `Some of 'a
-    | `Ant of (loc*string) ];
+    | `Ant of (loc * string) ];
    type meta_list 'a =
     [= `LNil of loc
     | `LCons of ('a * meta_list 'a)
     | `Ant of (loc * string) ]; (* FIXME `Ant no location *)
    type alident =
     [= `Lid of (loc * string)
-    | `Ant of (loc * string)];
+    | ant];
    type auident =
     [= `Uid of (loc * string)
-    | `Ant of (loc * string)];
+    | ant];
    type astring =
     [= `C of (loc * string)
-    | `Ant of (loc * string) ];
+    | ant ];
    type ident =
     [= `IdAcc of (loc * ident * ident) (* i . i *)
     | `IdApp of (loc * ident * ident) (* i i *)
@@ -141,12 +141,12 @@
     | `TyAmp of (loc * ctyp * ctyp) (* t & t *)
     | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
     | `Package of (loc * module_type) (* (module S) *)
-    | `Ant of (loc * string) (* $s$ *)]
+    | ant (* $s$ *)]
    and patt =
     [= `Nil of loc
     | `Id  of (loc * ident) (* i *)
     | `Alias of (loc * patt * patt) (* p as p *) (* (Node x y as n) *)
-    | `Ant of (loc * string) (* $s$ *)
+    | ant (* $s$ *)
     | `Any of loc (* _ *)
     | `PaApp of (loc * patt * patt) (* p p *) (* fun x y -> *)
     | `Array of (loc * patt) (* [| p |] *)
@@ -173,7 +173,7 @@
     [= `Nil of loc
     | `Id  of (loc * ident) (* i *)
     | `ExAcc of (loc * expr * expr) (* e.e *)
-    | `Ant of (loc * string) (* $s$ *)
+    | ant (* $s$ *)
     | `ExApp of (loc * expr * expr) (* e e *)
     | `ExAre of (loc * expr * expr) (* e.(e) *)
     | `Array of (loc * expr) (* [| e |] *)
@@ -248,7 +248,7 @@
     | `MtWit of (loc * module_type * with_constr)
       (* module type of m *)
     | `Of of (loc * module_expr)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and sig_item =
     [= `Nil of loc
       (* class cict *)
@@ -262,7 +262,7 @@
       (* exception t *)
     | `Exception of (loc * ctyp)
       (* external s : t = s ... s *)
-    | `External of (loc * string * ctyp * meta_list string)
+    | `External of (loc * alident (* string *) * ctyp * meta_list string)
       (* include mt *)
     | `Include of (loc * module_type)
       (* module s : mt *)
@@ -277,7 +277,7 @@
     | `Type of (loc * ctyp)
       (* value s : t *)
     | `Value of (loc * string * ctyp)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and with_constr =
     [= `Nil of loc
       (* type t = t *)
@@ -290,21 +290,21 @@
     | `ModuleSubst of (loc * ident * ident)
       (* wc * wc *)
     | `And of (loc * with_constr * with_constr)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and binding =
     [= `Nil of loc
       (* bi and bi *) (* let a = 42 and c = 43 *)
     | `And of (loc * binding * binding)
       (* p = e *) (* let patt = expr *)
     | `Bind  of (loc * patt * expr)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and rec_binding =
     [= `Nil of loc
       (* rb ; rb *)
     | `Sem of (loc * rec_binding * rec_binding)
       (* i = e *)
     | `RecBind  of (loc * ident * expr)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and module_binding =
     [= `Nil of loc
       (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
@@ -313,7 +313,7 @@
     | `ModuleBind  of (loc * string * module_type * module_expr)
       (* s : mt *)
     | `ModuleConstraint  of (loc * string * module_type)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and match_case =
     [= `Nil of loc
       (* a | a *)
@@ -321,7 +321,7 @@
       (* p (when e)? -> e *)
     | `Case of (loc * patt * expr * expr)
     (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and module_expr =
     [= `Nil of loc
       (* i *)
@@ -337,7 +337,7 @@
       (* (value e) *)
       (* (value e : S) which is represented as (value (e : S)) *)
     | `PackageModule of (loc * expr)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and str_item =
     [= `Nil of loc
       (* class cice *)
@@ -353,7 +353,7 @@
       (* e *)
     | `StExp of (loc * expr)
       (* external s : t = s ... s *)
-    | `External of (loc * string * ctyp * meta_list string)
+    | `External of (loc * alident (*string*) * ctyp * meta_list string)
       (* include me *)
     | `Include of (loc * module_expr)
       (* module s = me *)
@@ -368,7 +368,7 @@
     | `Type of (loc * ctyp)
       (* value (rec)? bi *)
     | `Value of (loc * rec_flag * binding)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and class_type =
     [= `Nil of loc
       (* (virtual)? i ([ t ])? *)
@@ -384,7 +384,7 @@
       (* ct = ct *)
     | `CtEq  of (loc * class_type * class_type)
       (* $s$ *)
-    | `Ant of (loc * string) ]
+    | ant ]
   and class_sig_item =
     [= `Nil of loc
       (* type t = t *)
@@ -399,7 +399,7 @@
     | `CgVal of (loc * string * mutable_flag * virtual_flag * ctyp)
       (* method virtual (private)? s : t *)
     | `CgVir of (loc * string * private_flag * ctyp)
-    | `Ant of (loc * string) (* $s$ *) ]
+    | ant (* $s$ *) ]
   and class_expr =
     [= `Nil of loc
       (* ce e *)
@@ -419,7 +419,7 @@
       (* ce = ce *)
     | `Eq  of (loc * class_expr * class_expr)
       (* $s$ *)
-    | `Ant of (loc * string) ]
+    | ant ]
   and class_str_item =
     [= `Nil of loc
       (* cst ; cst *)
@@ -438,7 +438,11 @@
     | `CrVir of (loc * string * private_flag * ctyp)
       (* value virtual (mutable)? s : t *)
     | `CrVvr of (loc * string * mutable_flag * ctyp)
-    | `Ant of (loc * string) (* $s$ *) ]; 
+    | ant (* $s$ *) ]; 
 
 
     
+(*
+  let a (x: [= `External of (loc * [= `Lid of (loc*string)] * ctyp * meta_list string)  ]) =
+  (x:> str_item);
+ *)

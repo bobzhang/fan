@@ -57,6 +57,9 @@ let print_warning loc txt = !current_warning loc txt;
   symbol  rule  rule_list  psymbol  level  level_list  entry  extend_body  delete_rule_body
 
   dot_lstrings
+  a_string
+  a_lident
+  a_uident
 |};
   
 let antiquot_expr = Gram.eoi_entry expr ; 

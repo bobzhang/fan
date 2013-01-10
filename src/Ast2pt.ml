@@ -749,7 +749,7 @@ and mktype_decl x acc =
       [(with_loc c cloc,
         type_decl (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
   | _ -> assert false ]
-and module_type = fun (*module_type -> module_type*)
+and module_type : Ast.module_type -> Parsetree.module_type = fun (*module_type -> module_type*)
   [ {:module_type@loc||} -> error loc "abstract/nil module type not allowed here"
   | {:module_type@loc| $id:i |} -> mkmty loc (Pmty_ident (long_uident i))
   | {:module_type@loc| functor ($n : $nt) -> $mt |} ->
@@ -779,6 +779,8 @@ and sig_item s l = match s with (* sig_item -> signature -> signature*)
                     (List.map ctyp (list_of_ctyp t []))) :: l]
   | `Exception (_,_) -> assert false (*FIXME*)
   | `External (loc, n, t, sl) ->
+      let n = match n with
+        [`Lid (_,n) -> n | `Ant(loc,_) -> error loc "antiquotation in sig_item"] in
       [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
   | `Module (loc,n,mt) -> [mksig loc (Psig_module (with_loc n loc) (module_type mt)) :: l]
@@ -825,28 +827,31 @@ and module_expr =   fun (* module_expr -> module_expr *)
   | {:module_expr@loc| (val $e) |} ->
       mkmod loc (Pmod_unpack (expr e))
   | {:module_expr@loc| $anti:_ |} -> error loc "antiquotation in module_expr" ]
-and str_item s l = match s with (* str_item -> structure -> structure*)
-  [ {:str_item||} -> l
+and str_item s l = with str_item match s with (* str_item -> structure -> structure*)
+  [ {||} -> l
   | `Class (loc,cd) ->
       [mkstr loc (Pstr_class
            (List.map class_info_class_expr (list_of_class_expr cd []))) :: l]
   | `ClassType (loc,ctd) ->
       [mkstr loc (Pstr_class_type
                     (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
-  | {:str_item| $st1; $st2 |} -> str_item st1 (str_item st2 l)
+  | {| $st1; $st2 |} -> str_item st1 (str_item st2 l)
   | `Directive (_,_,_) -> l
-  | {:str_item@loc| exception $uid:s |} ->
+  | {@loc| exception $uid:s |} ->
       [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
-  | {:str_item@loc| exception $uid:s of $t |} ->
+  | {@loc| exception $uid:s of $t |} ->
       [mkstr loc (Pstr_exception (with_loc s loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l ]
-  | {:str_item@loc| exception $uid:s = $i |} ->
+  | {@loc| exception $uid:s = $i |} ->
       [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ]
-  | {:str_item@loc| exception $uid:_ of $_ = $_ |} ->
+  | {@loc| exception $uid:_ of $_ = $_ |} ->
       error loc "type in exception alias"
   | `Exception (_,_,_) -> assert false (*FIXME*)
   | `StExp (loc,e) -> [mkstr loc (Pstr_eval (expr e)) :: l]
-  | `External (loc, n, t, sl) -> [mkstr loc (Pstr_primitive (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
+  | `External (loc, n, t, sl) ->
+      let n = match n with
+        [`Lid (_,n) -> n | `Ant(loc,_) -> error loc "antiquotation in sig_item"] in
+      [mkstr loc (Pstr_primitive (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | `Include (loc,me) -> [mkstr loc (Pstr_include (module_expr me)) :: l]
   | `Module (loc,n,me) -> [mkstr loc (Pstr_module (with_loc n loc) (module_expr me)) :: l]
   | `RecModule (loc,mb) ->
@@ -857,7 +862,7 @@ and str_item s l = match s with (* str_item -> structure -> structure*)
   | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl [])) :: l]
   | `Value (loc,rf,bi) ->
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
-  | {:str_item@loc| $anti:_ |} -> error loc "antiquotation in str_item" ]
+  | {@loc| $anti:_ |} -> error loc "antiquotation in str_item" ]
 and class_type = fun (* class_type -> class_type *)
   [ `CtCon (loc, `ViNil _, id,tl) ->
     mkcty loc

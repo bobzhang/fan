@@ -211,7 +211,11 @@ let apply () = begin
     [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
     | `QUOTATION x -> AstQuotation.expand _loc x DynAst.sig_item_tag
     | "exception"; constructor_declaration{t} ->  {| exception $t |}
-    | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} -> {| external $i : $t = $sl |}
+    (* | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} *)
+    (*   -> {| external $i : $t = $sl |} *)
+    | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
+        (* {| external $|} *)
+          {| external $i : $t = $sl |} (* FIXME *)
     | "include"; module_type{mt} -> {| include $mt |}
     | "module"; a_UIDENT{i}; module_declaration{mt} ->  {| module $i : $mt |}
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
@@ -990,7 +994,18 @@ let apply () = begin
       | `UID s -> s ]
       a_LIDENT:
       [ `ANT ((""|"lid" as n),s) -> mk_anti n s
-      | `LID s -> s ] 
+      | `LID s -> s ]
+      a_string:
+      [ `ANT((""|"lid") as n,s) -> `Ant (_loc, mk_anti n s)
+      |  `LID s -> `C (_loc, s )
+      |  `UID s -> `C (_loc,s)]
+      a_lident:
+      [ `ANT((""|"lid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_lident" n s)
+      | `LID s  -> `Lid (_loc, s) ]
+
+      a_uident:
+      [ `ANT((""|"lid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_uident" n s)
+      | `UID s  -> `Uid (_loc, s) ]
       a_LABEL:
       [ "~"; `ANT (("" as n),s); ":" -> mk_anti n s
       | `LABEL s -> s ] 
@@ -1040,8 +1055,11 @@ let apply () = begin
             {| exception $t |}
         | "exception"; constructor_declaration{t}; "="; type_longident{i} ->
             {| exception $t = $i |}
-        | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} ->
-            {| external $i : $t = $sl |}
+        (* | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} -> *)
+        (*     {| external $i : $t = $sl |} *)
+        | "external"; a_lident{i};":"; ctyp{t};"="; string_list{sl} ->
+            {| external $i: $t = $sl |}
+              
         | "include"; module_expr{me} -> {| include $me |}
         | "module"; a_UIDENT{i}; module_binding0{mb} ->
             {| module $i = $mb |}
