@@ -159,7 +159,7 @@ let ident_of_patt =
     | p -> self p ];
 
 
-let rec is_irrefut_patt = with patt
+let rec is_irrefut_patt : patt -> bool = with patt
     fun
     [ {| $lid:_ |} -> true
     | {| () |} -> true
@@ -177,8 +177,10 @@ let rec is_irrefut_patt = with patt
     | {| ? $_ |} -> true
     | {| ? $_ : ($_ ) |} -> (* is_irrefut_patt p *) true
     | {| ? $_ : ($_ = $_) |} -> (* is_irrefut_patt p *) true
-    | {| ~ $_ |} -> true
-    | {| ~ $_ : $p |} -> is_irrefut_patt p
+    | `Label(_,_,`Nil _) -> true 
+    (* | {| ~ $_ |} -> true *)
+    (* | {| ~ $_ : $p |} -> is_irrefut_patt p *)
+    | `Label(_,_,p) -> is_irrefut_patt p 
     | {| lazy $p |} -> is_irrefut_patt p
     | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
     | {| (module $_) |} -> true

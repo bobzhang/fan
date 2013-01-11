@@ -220,33 +220,32 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
 let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 
   ~mk_record  =
-  (let open Transform in
-     let tctor_var = basic_transform left_type_id in
-     let (name,len) = Ctyp.name_length_of_tydcl tydcl in
-     let ty =
-       Ctyp.mk_method_type_of_name ~number:arity ~prefix:names (name, len)
-         Str_item in
-     if not (Ctyp.is_abstract tydcl)
-     then
-       let fun_expr =
-         fun_of_tydcl ~destination:Str_item ~names ~arity ~left_type_variable
-           ~mk_record simple_expr_of_ctyp
-           (expr_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
-              simple_expr_of_ctyp)
-           (expr_of_variant ?cons_transform ~arity ~names ~trail ~mk_variant
-              simple_expr_of_ctyp) tydcl in
+  let open Transform in
+    let tctor_var = basic_transform left_type_id in
+    let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+    let ty =
+      Ctyp.mk_method_type_of_name ~number:arity ~prefix:names (name, len)
+        Str_item in
+    if not (Ctyp.is_abstract tydcl)
+    then
+      let fun_expr =
+        fun_of_tydcl ~destination:Str_item ~names ~arity ~left_type_variable
+          ~mk_record simple_expr_of_ctyp
+          (expr_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
+             simple_expr_of_ctyp)
+          (expr_of_variant ?cons_transform ~arity ~names ~trail ~mk_variant
+             simple_expr_of_ctyp) tydcl in
+      `Bind
+        (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
+          (`Constraint_exp (_loc, fun_expr, ty)))
+    else
+      (eprintf "Warning: %s as a abstract type no structure generated\n"
+         (Ctyp.to_string tydcl);
        `Bind
          (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
-           (`Constraint_exp (_loc, fun_expr, ty)))
-     else
-       (eprintf "Warning: %s as a abstract type no structure generated\n"
-          (Ctyp.to_string tydcl);
-        `Bind
-          (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
-            (`ExApp
-               (_loc, (`Id (_loc, (`Lid (_loc, "failwithf")))),
-                 (`Str (_loc, "Abstract data type not implemented")))))) : 
-  binding )
+           (`ExApp
+              (_loc, (`Id (_loc, (`Lid (_loc, "failwithf")))),
+                (`Str (_loc, "Abstract data type not implemented"))))))
 let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names 
   ~trail  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_expr_of_ctyp_with_cxt (lst : module_types) =

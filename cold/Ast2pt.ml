@@ -408,7 +408,7 @@ let rec patt: patt -> pattern =
       mkpat loc (Ppat_constant (Const_nativeint nati))
   | `Flo (loc,s) ->
       mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
-  | `PaLab (loc,_,_) -> error loc "labeled pattern not allowed here"
+  | `Label (loc,_,_) -> error loc "labeled pattern not allowed here"
   | `PaOlb (loc,_,_)|`PaOlbi (loc,_,_,_) ->
       error loc "labeled pattern not allowed here"
   | `PaOrp (loc,p1,p2) -> mkpat loc (Ppat_or ((patt p1), (patt p2)))
@@ -530,11 +530,14 @@ let rec expr: expr -> expression =
              (Pexp_for
                 ((with_loc i sloc), (expr e1), (expr e2), (mkdirection df),
                   (expr e3)))
-       | `Ant (_loc,i) -> error _loc "antiquotation not expected here")
-  | `Fun (loc,`Case (_,`PaLab (_,lab,po),w,e)) ->
-      mkexp loc
-        (Pexp_function
-           (lab, None, [((patt_of_lab loc lab po), (when_expr e w))]))
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+  | `Fun (loc,`Case (_,`Label (_,lab,po),w,e)) ->
+      (match lab with
+       | `Lid (_loc,lab) ->
+           mkexp loc
+             (Pexp_function
+                (lab, None, [((patt_of_lab loc lab po), (when_expr e w))]))
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Fun (loc,`Case (_,`PaOlbi (_,lab,p,e1),w,e2)) ->
       let lab = paolab lab p in
       mkexp loc
@@ -965,9 +968,12 @@ and class_expr =
       mkcl loc
         (Pcl_constr
            ((long_class_ident id), (List.map ctyp (Ctyp.list_of_opt tl []))))
-  | `CeFun (loc,`PaLab (_,lab,po),ce) ->
-      mkcl loc
-        (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
+  | `CeFun (loc,`Label (_,lab,po),ce) ->
+      (match lab with
+       | `Lid (_loc,lab) ->
+           mkcl loc
+             (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `CeFun (loc,`PaOlbi (_,lab,p,e),ce) ->
       let lab = paolab lab p in
       mkcl loc

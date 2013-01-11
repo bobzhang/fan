@@ -302,7 +302,7 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     tydcl ?(arity=1) ?(names=[]) ~trail ~mk_variant
     ~left_type_id ~left_type_variable
     ~mk_record (* ~destination *)
-     : binding
+     (* : binding *)
     = with {patt:ctyp}
 
   let open Transform in 

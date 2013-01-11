@@ -154,7 +154,7 @@
     | `PaCom of (loc * patt * patt) (* p, p *)
     | `Sem of (loc * patt * patt) (* p; p *)
     | literal
-    | `PaLab of (loc * string * patt) (* ~s or ~s:(p) *)
+    | `Label of (loc * (* string *)alident * patt) (* ~s or ~s:(p) *)
     (* ?s or ?s:(p) *)
     | `PaOlb of (loc * string * patt)
     (* ?s:(p = e) or ?(p = e) *)

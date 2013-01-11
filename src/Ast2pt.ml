@@ -431,7 +431,7 @@ let rec patt : patt -> pattern = with patt fun
            Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
          ] in mkpat loc (Ppat_constant (Const_nativeint nati))
      | `Flo (loc,s) -> mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
-     | `PaLab (loc,_,_) -> error loc "labeled pattern not allowed here"
+     | `Label (loc,_,_) -> error loc "labeled pattern not allowed here"
      | `PaOlb (loc, _, _) | `PaOlbi (loc,_,_,_) -> error loc "labeled pattern not allowed here"
      | `PaOrp (loc, p1, p2) -> mkpat loc (Ppat_or (patt p1) (patt p2))
      | `PaRng (loc, p1, p2) ->
@@ -582,11 +582,14 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
             let e3 = `Seq loc el in
             mkexp loc (Pexp_for (with_loc i sloc)
                          (expr e1) (expr e2) (mkdirection df) (expr e3))
-          | `Ant(_loc,i) -> ANT_ERROR]  
-      | {@loc| fun [ $(pat:`PaLab (_, lab, po)) when $w -> $e ] |} ->
+          | `Ant(_loc,_) -> ANT_ERROR]  
+      | {@loc| fun [ $(pat:`Label (_, lab, po)) when $w -> $e ] |} ->
+          match lab with
+         [`Lid (_loc,lab) ->    
           mkexp loc
             (Pexp_function lab None
                [(patt_of_lab loc lab po, when_expr e w)])
+          |`Ant(_loc,_) -> ANT_ERROR]
       | {@loc| fun [ $(pat:`PaOlbi (_, lab, p, e1)) when $w -> $e2 ] |} ->
           let lab = paolab lab p in
           mkexp loc
@@ -994,9 +997,12 @@ and class_expr = fun (* class_expr -> class_expr *)
   | `CeCon (loc, `ViNil _, id,tl) ->
       mkcl loc
         (Pcl_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
-  | `CeFun (loc, (`PaLab (_, lab, po)), ce) ->
+  | `CeFun (loc, (`Label (_, lab, po)), ce) ->
+      match lab with
+      [`Lid (_loc,lab) ->   
       mkcl loc
         (Pcl_fun lab None (patt_of_lab loc lab po) (class_expr ce))
+      |`Ant(_loc,_) -> ANT_ERROR ]
   | `CeFun (loc, (`PaOlbi (_, lab, p, e)), ce) ->
       let lab = paolab lab p in
       mkcl loc (Pcl_fun ("?" ^ lab) (Some (expr e)) (patt p) (class_expr ce))

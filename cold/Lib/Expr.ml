@@ -215,63 +215,65 @@ let rec pattern_eq_expression p e =
   | (`PaApp (_loc,p1,p2),`ExApp (_,e1,e2)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
   | _ -> false
-let map loc p e l =
-  match (p, e) with
-  | (`Id (_loc,`Lid (_,x)),`Id (_,`Lid (_,y))) when x = y -> l
-  | _ ->
-      if FanAst.is_irrefut_patt p
-      then
-        `ExApp
-          (loc,
-            (`ExApp
-               (loc,
-                 (`Id
-                    (loc,
-                      (`IdAcc
-                         (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
-                 (`Fun (loc, (`Case (loc, p, (`Nil loc), e)))))), l)
-      else
-        `ExApp
-          (loc,
-            (`ExApp
-               (loc,
-                 (`ExApp
-                    (loc,
-                      (`Id
-                         (loc,
-                           (`IdAcc
-                              (loc, (`Uid (loc, "List")),
-                                (`Lid (loc, "fold_right")))))),
-                      (`Fun
-                         (loc,
-                           (`McOr
-                              (loc,
-                                (`Case
-                                   (loc, p,
-                                     (`Id (loc, (`Lid (loc, "true")))),
-                                     (`ExApp
-                                        (loc,
-                                          (`Fun
-                                             (loc,
-                                               (`Case
-                                                  (loc,
-                                                    (`Id
-                                                       (loc,
-                                                         (`Lid (loc, "x")))),
-                                                    (`Nil loc),
-                                                    (`Fun
-                                                       (loc,
-                                                         (`Case
-                                                            (loc,
-                                                              (`Id
-                                                                 (loc,
-                                                                   (`Lid
+let map loc (p : patt) (e : expr) (l : expr) =
+  (match (p, e) with
+   | (`Id (_loc,`Lid (_,x)),`Id (_,`Lid (_,y))) when x = y -> l
+   | _ ->
+       if FanAst.is_irrefut_patt p
+       then
+         `ExApp
+           (loc,
+             (`ExApp
+                (loc,
+                  (`Id
+                     (loc,
+                       (`IdAcc
+                          (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
+                  (`Fun (loc, (`Case (loc, p, (`Nil loc), e)))))), l)
+       else
+         `ExApp
+           (loc,
+             (`ExApp
+                (loc,
+                  (`ExApp
+                     (loc,
+                       (`Id
+                          (loc,
+                            (`IdAcc
+                               (loc, (`Uid (loc, "List")),
+                                 (`Lid (loc, "fold_right")))))),
+                       (`Fun
+                          (loc,
+                            (`McOr
+                               (loc,
+                                 (`Case
+                                    (loc, p,
+                                      (`Id (loc, (`Lid (loc, "true")))),
+                                      (`ExApp
+                                         (loc,
+                                           (`Fun
+                                              (loc,
+                                                (`Case
+                                                   (loc,
+                                                     (`Id
+                                                        (loc,
+                                                          (`Lid (loc, "x")))),
+                                                     (`Nil loc),
+                                                     (`Fun
+                                                        (loc,
+                                                          (`Case
+                                                             (loc,
+                                                               (`Id
+                                                                  (loc,
+                                                                    (
+                                                                    `Lid
                                                                     (loc,
                                                                     "xs")))),
-                                                              (`Nil loc),
-                                                              (`ExApp
-                                                                 (loc,
-                                                                   (`ExApp
+                                                               (`Nil loc),
+                                                               (`ExApp
+                                                                  (loc,
+                                                                    (
+                                                                    `ExApp
                                                                     (loc,
                                                                     (`Id
                                                                     (loc,
@@ -283,22 +285,23 @@ let map loc p e l =
                                                                     (`Lid
                                                                     (loc,
                                                                     "x")))))),
-                                                                   (`Id
+                                                                    (
+                                                                    `Id
                                                                     (loc,
                                                                     (`Lid
                                                                     (loc,
                                                                     "xs")))))))))))))),
-                                          e)))),
-                                (`Case
-                                   (loc, (`Any loc), (`Nil loc),
-                                     (`Fun
-                                        (loc,
-                                          (`Case
-                                             (loc,
-                                               (`Id (loc, (`Lid (loc, "l")))),
-                                               (`Nil loc),
-                                               (`Id (loc, (`Lid (loc, "l")))))))))))))))),
-                 l)), (`Id (loc, (`Uid (loc, "[]")))))
+                                           e)))),
+                                 (`Case
+                                    (loc, (`Any loc), (`Nil loc),
+                                      (`Fun
+                                         (loc,
+                                           (`Case
+                                              (loc,
+                                                (`Id (loc, (`Lid (loc, "l")))),
+                                                (`Nil loc),
+                                                (`Id (loc, (`Lid (loc, "l")))))))))))))))),
+                  l)), (`Id (loc, (`Uid (loc, "[]"))))) : expr )
 let filter loc p b l =
   if FanAst.is_irrefut_patt p
   then

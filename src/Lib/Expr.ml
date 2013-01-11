@@ -144,8 +144,8 @@ let rec pattern_eq_expression p e =
 (* +-----------------------------------------------------------------+
    | utilities for list comprehension                                |
    +-----------------------------------------------------------------+ *)
-    
-let map loc p e l =
+(* loc -> patt -> expr -> expr -> expr     *)
+let map loc (p:patt) (e:expr) (l:expr) :expr =
   match (p, e) with
   [ ({:patt| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->

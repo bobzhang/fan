@@ -6,7 +6,7 @@ class ['accu] c_fold_pattern_vars f init =
     method acc : 'accu= acc
     method! patt =
       function
-      | `Id (_loc,`Lid (_,s))|`PaLab (_loc,s,`Nil _)|`PaOlb (_loc,s,`Nil _)
+      | `Id (_loc,`Lid (_,s))|`Label (_loc,s,`Nil _)|`PaOlb (_loc,s,`Nil _)
           -> {<acc = f s acc>}
       | p -> super#patt p
   end

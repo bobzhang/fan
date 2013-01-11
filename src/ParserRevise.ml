@@ -361,15 +361,10 @@ let apply () = begin
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
         | `LABEL i; S{e} -> {| ~ $lid:i : $e |}
         (* Same remark for ?a:b *)
-        | `OPTLABEL i; S{e} ->
-            (* {| ? $i : $e |} *)
-            `OptLabl (_loc, `Lid(_loc,i), e)
-        | "?"; (* a_LIDENT *)a_lident{i}; ":"; S{e} ->
-            `OptLabl (_loc, i, e)
-            (* {| ? $i : $e |} *)
-        | "?"; (* a_LIDENT *)a_lident{i} ->
-            `OptLabl (_loc, i, (`Nil _loc))]
-            (* {| ? $i |} ] *)
+        | `OPTLABEL i; S{e} -> {| ? $lid:i : $e |}
+        | "?"; a_lident{i}; ":"; S{e} ->
+            {| ? $i : $e |}
+        | "?"; a_lident{i} -> {| ? $i |} ] 
        "." LA
         [ S{e1}; "."; "("; S{e2}; ")" -> {| $e1 .( $e2 ) |}
         | S{e1}; "."; "["; S{e2}; "]" -> {| $e1 .[ $e2 ] |}
@@ -512,7 +507,7 @@ let apply () = begin
        patt_quot:
        [ patt{x}; ","; comma_patt{y} -> {| $x, $y |}
        | patt{x}; ";"; sem_patt{y} -> {| $x; $y |}
-       | patt{x}; "="; patt{y} -> (*FIXME*)
+       | patt{x}; "="; patt{y} -> 
            let i =
              match x with
              [ {@loc| $anti:s |} -> {:ident@loc| $anti:s |}
@@ -521,9 +516,7 @@ let apply () = begin
        | patt{x} -> x
        | -> {||} ]
        patt_as_patt_opt:
-       [ patt{p1}; "as"; (* patt{p2} *)a_lident{s} ->
-         (* `Alias (_loc,p1,s) *)
-         {| ($p1 as $s) |}
+       [ patt{p1}; "as"; a_lident{s} -> {| ($p1 as $s) |}
        | patt{p} -> p ]
        opt_class_self_patt:
        [ "("; patt{p}; ")" -> p
@@ -583,10 +576,17 @@ let apply () = begin
         | "#"; type_longident{i} -> {| # $i |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
         | "_" -> {| _ |}
-        | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
-        | "~"; `Ant ((""|"lid" as n),i); ":"; S{p} -> {| ~ $(mk_anti n i) : $p |}
-        | "~"; `Ant ((""|"lid" as n),i) -> {| ~ $(mk_anti n i) |}
-        | "~"; `Lid i -> {| ~ $i |}
+        | `LABEL i; S{p} ->
+            `Label(_loc,`Lid(_loc,i),p)
+            (* {| ~ $lid:i : $p |} *)
+        | "~"; a_lident{i}; ":"; S{p} -> (* CHANGE *)
+            `Label(_loc,i,p)
+        | "~"; a_lident{i} ->
+            `Label(_loc,i,`Nil _loc)
+        (* | "~"; `Ant ((""|"lid" as n),i); ":"; S{p} -> *)
+        (*     {| ~ $(mk_anti n i) : $p |} *)
+        (* | "~"; `Ant ((""|"lid" as n),i) -> {| ~ $(mk_anti n i) |} *)
+        (* | "~"; `Lid i -> {| ~ $i |} *)
         | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p
         | "?"; `Ant ((""|"lid" as n),i); ":"; "("; patt_tcon{p}; eq_expr{f}; ")" -> f (mk_anti n i) p
         | "?"; `Lid i ->
@@ -610,10 +610,14 @@ let apply () = begin
         | a_lident{s} -> {| $(id:(s:>ident)) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag                            
         | "_" -> {| _ |}
-        | `LABEL i; S{p} -> {| ~ $i : $p |}
-        | "~"; `Ant ((""|"lid" as n),i); ":"; S{p} -> {| ~ $(mk_anti n i) : $p |}
-        | "~"; `Ant ((""|"lid" as n),i) -> {| ~ $(mk_anti n i) |}
-        | "~"; `Lid i -> {| ~ $i |}
+        | `LABEL i; S{p} -> (* {| ~ $i : $p |} *)
+            `Label(_loc,`Lid(_loc,i), p)
+        | "~"; a_lident{i};":";S{p} ->
+            `Label(_loc,i,p)
+        (* | "~"; `Ant ((""|"lid" as n),i); ":"; S{p} -> {| ~ $(mk_anti n i) : $p |} *)
+        (* | "~"; `Ant ((""|"lid" as n),i) -> {| ~ $(mk_anti n i) |} *)
+        (* | "~"; `Lid i -> {| ~ $i |} *)
+        | "~"; a_lident{i} -> `Label (_loc,i,`Nil _loc)
         | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p
         | "?"; `Ant ((""|"lid" as n),i); ":"; "("; patt_tcon{p}; eq_expr{f}; ")"
           -> f (mk_anti n i) p

@@ -2423,39 +2423,19 @@ let apply () =
               (fun (p : 'patt)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)
                   ->
                  match __fan_0 with
-                 | `LABEL i -> (`PaLab (_loc, i, p) : 'patt )
+                 | `LABEL i -> (`Label (_loc, (`Lid (_loc, i)), p) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "~";
-          `Stoken
-            (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-              (`Normal, "`Ant ((\"\"|\"lid\"),_)"));
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
           `Sself],
            (Gram.mk_action
-              (fun (p : 'patt)  _  (__fan_1 : [> FanToken.t])  _ 
-                 (_loc : FanLoc.t)  ->
-                 match __fan_1 with
-                 | `Ant ((""|"lid" as n),i) ->
-                     (`PaLab (_loc, (mk_anti n i), p) : 'patt )
-                 | _ -> assert false)));
-         ([`Skeyword "~";
-          `Stoken
-            (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-              (`Normal, "`Ant ((\"\"|\"lid\"),_)"))],
+              (fun (p : 'patt)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                 (`Label (_loc, i, p) : 'patt ))));
+         ([`Skeyword "~"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            (Gram.mk_action
-              (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                 match __fan_1 with
-                 | `Ant ((""|"lid" as n),i) ->
-                     (`PaLab (_loc, (mk_anti n i), (`Nil _loc)) : 'patt )
-                 | _ -> assert false)));
-         ([`Skeyword "~";
-          `Stoken
-            (((function | `Lid _ -> true | _ -> false)), (`Normal, "`Lid _"))],
-           (Gram.mk_action
-              (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                 match __fan_1 with
-                 | `Lid i -> (`PaLab (_loc, i, (`Nil _loc)) : 'patt )
-                 | _ -> assert false)));
+              (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                 (`Label (_loc, i, (`Nil _loc)) : 'patt ))));
          ([`Stoken
              (((function | `OPTLABEL _ -> true | _ -> false)),
                (`Normal, "`OPTLABEL _"));
@@ -2612,40 +2592,20 @@ let apply () =
                (fun (p : 'ipatt)  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `LABEL i -> (`PaLab (_loc, i, p) : 'ipatt )
+                  | `LABEL i ->
+                      (`Label (_loc, (`Lid (_loc, i)), p) : 'ipatt )
                   | _ -> assert false)));
           ([`Skeyword "~";
-           `Stoken
-             (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-               (`Normal, "`Ant ((\"\"|\"lid\"),_)"));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Sself],
             (Gram.mk_action
-               (fun (p : 'ipatt)  _  (__fan_1 : [> FanToken.t])  _ 
-                  (_loc : FanLoc.t)  ->
-                  match __fan_1 with
-                  | `Ant ((""|"lid" as n),i) ->
-                      (`PaLab (_loc, (mk_anti n i), p) : 'ipatt )
-                  | _ -> assert false)));
-          ([`Skeyword "~";
-           `Stoken
-             (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-               (`Normal, "`Ant ((\"\"|\"lid\"),_)"))],
+               (fun (p : 'ipatt)  _  (i : 'a_lident)  _  (_loc : FanLoc.t) 
+                  -> (`Label (_loc, i, p) : 'ipatt ))));
+          ([`Skeyword "~"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
-               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                  match __fan_1 with
-                  | `Ant ((""|"lid" as n),i) ->
-                      (`PaLab (_loc, (mk_anti n i), (`Nil _loc)) : 'ipatt )
-                  | _ -> assert false)));
-          ([`Skeyword "~";
-           `Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`Normal, "`Lid _"))],
-            (Gram.mk_action
-               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                  match __fan_1 with
-                  | `Lid i -> (`PaLab (_loc, i, (`Nil _loc)) : 'ipatt )
-                  | _ -> assert false)));
+               (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                  (`Label (_loc, i, (`Nil _loc)) : 'ipatt ))));
           ([`Stoken
               (((function | `OPTLABEL _ -> true | _ -> false)),
                 (`Normal, "`OPTLABEL _"));
