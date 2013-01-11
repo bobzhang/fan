@@ -165,7 +165,7 @@ let rec is_irrefut_patt = with patt
     | {| () |} -> true
     | {| _ |} -> true
     | {||} -> true (* why not *)
-    | {| ($x as $y) |} -> is_irrefut_patt x && is_irrefut_patt y
+    | {| ($x as $_) |} -> is_irrefut_patt x (* && is_irrefut_patt y *)
     | {| { $p } |} -> is_irrefut_patt p
     | {| $_ = $p |} -> is_irrefut_patt p
     | {| $p1; $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
@@ -552,7 +552,7 @@ class clean_ast = object
   method! patt p =
     with patt
     match super#patt p with
-    [ {| ( $p as $({@_l||} ) ) |} |
+    [ (* {| ( $p as $({@_l||} ) ) |} | *)
       {| $({@_l||}) | $p |} |
       {| $p | $({@_l||} ) |} |
       {| $({@_l||} ), $p |} |

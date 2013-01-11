@@ -271,7 +271,7 @@ let text_of_action _loc psl rtvar act tvar =
          | None |Some (`Any _) ->
              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), txt)))
          | Some (`Alias (_loc,`PaApp (_,_,`PaTup (_,`Any _)),p)) ->
-             let p = make_ctyp_patt s.styp tvar p in
+             let p = make_ctyp_patt s.styp tvar (`Id (_loc, (p :>ident))) in
              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
          | Some p when FanAst.is_irrefut_patt p ->
              let p = make_ctyp_patt s.styp tvar p in

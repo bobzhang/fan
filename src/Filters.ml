@@ -1,6 +1,6 @@
 
 open LibUtil;
-(* open Ast; *)
+open Ast;
 
 module MetaLoc = struct
    (* this makes sense here, because, for list operation
@@ -14,24 +14,24 @@ AstFilters.register_str_item_filter ("lift",(fun ast ->
   let _loc = FanAst.loc_of_str_item ast in
   {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |})); (* FIXME Loc => FanLoc*)
 
-let add_debug_expr e =
+let add_debug_expr (e:expr) : expr =
   let _loc = FanAst.loc_of_expr e in
   let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
   {:expr|
       try $e  with
-      [ XStream.Failure | Exit as exc -> raise exc
+      [ XStream.Failure | Exit as exc -> raise exc (* FIXME *)
       | exc -> begin
           if Debug.mode "exc" then
             Format.eprintf $`str:msg (Printexc.to_string exc) else ();
           raise exc
         end ] |};
 
-let rec map_match_case =
+let rec map_match_case : match_case -> match_case  = with match_case 
   fun
-  [ {:match_case@_loc| $m1 | $m2 |} ->
-      {:match_case| $(map_match_case m1) | $(map_match_case m2) |}
-  | {:match_case@_loc| $pat:p when $w -> $e |} ->
-      {:match_case@_loc| $pat:p when $w -> $(add_debug_expr e) |}
+  [ {| $m1 | $m2 |} ->
+      {| $(map_match_case m1) | $(map_match_case m2) |}
+  | {| $pat:p when $w -> $e |} ->
+      {| $pat:p when $w -> $(add_debug_expr e) |}
   | m -> m ];
 
 

@@ -211,11 +211,8 @@ let apply () = begin
     [ `ANT ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
     | `QUOTATION x -> AstQuotation.expand _loc x DynAst.sig_item_tag
     | "exception"; constructor_declaration{t} ->  {| exception $t |}
-    (* | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} *)
-    (*   -> {| external $i : $t = $sl |} *)
     | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
-        (* {| external $|} *)
-          {| external $i : $t = $sl |} (* FIXME *)
+        {| external $i : $t = $sl |} 
     | "include"; module_type{mt} -> {| include $mt |}
     | "module"; a_UIDENT{i}; module_declaration{mt} ->  {| module $i : $mt |}
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
@@ -223,7 +220,7 @@ let apply () = begin
     | "module"; "type"; a_ident{i} ->  {| module type $i |}
     | "open"; module_longident{i} -> {| open $i |}
     | "type"; type_declaration{t} -> {| type $t |}
-    | "val"; a_LIDENT{i}; ":"; ctyp{t} ->  {| val $i : $t |}
+    | "val"; a_LIDENT{i}; ":"; ctyp{t} ->  {| val $i : $t |} (* FIXME*)
     | "class"; class_description{cd} ->    {| class $cd |}
     | "class"; "type"; class_type_declaration{ctd} ->  {| class type $ctd |} ]
     (* mli entrance *)    
@@ -257,7 +254,7 @@ let apply () = begin
       | ":>"; ctyp{t}; "="; expr{e} -> {| ($e :> $t) |} ]
       fun_binding:
       { RA
-          [ "("; "type"; a_LIDENT{i}; ")"; S{e} -> {| fun (type $i) -> $e |}
+          [ "("; "type"; a_LIDENT{i}; ")"; S{e} -> {| fun (type $i) -> $e |} (* FIXME*)
           | ipatt{p}; S{e} -> {| fun $p -> $e |}
           | cvalue_binding{bi} -> bi  ] }
        lang:
@@ -278,7 +275,7 @@ let apply () = begin
            old
        end]
        fun_def_patt:
-       ["(";"type";a_LIDENT{i};")" -> fun e -> {|fun (type $i) -> $e |}
+       ["(";"type";a_LIDENT{i};")" -> fun e -> {|fun (type $i) -> $e |} (* FIXME *)
        | ipatt{p} -> fun e -> {| fun $p -> $e |}
        | ipatt{p}; "when"; expr{w} -> fun e -> {|fun $p when $w -> $e |} ]
        fun_def:
@@ -306,7 +303,7 @@ let apply () = begin
 
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "with";"{"; pos_exprs{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
-        | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
+        | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do"; (* FIXME*)
             sequence{seq}; "done" -> {| for $i = $e1 $to:df $e2 do $seq done |}
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
             {|while $e do $seq done |}   ]  
@@ -355,8 +352,8 @@ let apply () = begin
         | "new"; class_longident{i} -> {| new $i |}
         | "lazy"; S{e} -> {| lazy $e |} ]
        "label" NA
-        [ "~"; a_LIDENT{i}; ":"; S{e} -> {| ~ $i : $e |}
-        | "~"; a_LIDENT{i} -> {| ~ $i |}
+        [ "~"; a_LIDENT{i}; ":"; S{e} -> {| ~ $i : $e |} (* FIXME*)
+        | "~"; a_LIDENT{i} -> {| ~ $i |} (* FIXME *)
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
         | `LABEL i; S{e} -> {| ~ $i : $e |}
         (* Same remark for ?a:b *)
@@ -514,7 +511,9 @@ let apply () = begin
        | patt{x} -> x
        | -> {||} ]
        patt_as_patt_opt:
-       [ patt{p1}; "as"; patt{p2} -> {| ($p1 as $p2) |}
+       [ patt{p1}; "as"; (* patt{p2} *)a_lident{s} ->
+         (* `Alias (_loc,p1,s) *)
+         {| ($p1 as $s) |}
        | patt{p} -> p ]
        opt_class_self_patt:
        [ "("; patt{p}; ")" -> p
@@ -565,7 +564,9 @@ let apply () = begin
         | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" -> {| ((module $m) : (module $pt)) |}
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
-        | "("; S{p}; "as"; S{p2}; ")" -> {| ($p as $p2) |}
+        | "("; S{p}; "as"; (* S{p2}; *) a_lident{s}; ")" -> {| ($p as $s )|}
+            (* `Alias (_loc,p,s) *)
+            (* {| ($p as $lid:p2) |} *)
         | "("; S{p}; ","; comma_patt{pl}; ")" -> {| ($p, $pl) |}
         | "`"; a_ident{s} -> {| ` $s |}
           (* duplicated may be removed later with [patt Level "apply"] *)
@@ -590,10 +591,12 @@ let apply () = begin
         | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" -> {| ((module $m) : (module $pt)) |}
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
-        | "("; S{p}; "as"; S{p2}; ")" -> {| ($p as $p2) |}
+        | "("; S{p}; "as"; (* S{p2}; *)a_lident{s}; ")" ->
+            (* `Alias(_loc,p,s) *)
+            {| ($p as $s) |}
         | "("; S{p}; ","; comma_ipatt{pl}; ")" -> {| ($p, $pl) |}
-        | a_LIDENT{s} -> {| $lid:s |}
-        (* | a_lident{s} -> {| $(id:(s:>ident)) |} *)
+        (* | a_LIDENT{s} -> {| $lid:s |} *)
+        | a_lident{s} -> {| $(id:(s:>ident)) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag                            
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $i : $p |}
@@ -621,8 +624,10 @@ let apply () = begin
        | patt{p} -> p ]
        ipatt_tcon:
        [ `ANT((""|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s ) |}
-       | a_LIDENT{i} -> {| $lid:i |}
-       | a_LIDENT{i};":"; ctyp{t} -> {| ($lid:i : $t) |}]
+       (* | a_LIDENT{i} -> {| $lid:i |} *)
+       | a_lident{i} -> {|$(id:(i:>ident))|}
+       | a_lident{i}; ":"; ctyp{t} -> {| ($(id:(i:>ident)) : $t) |}
+       (* | a_LIDENT{i};":"; ctyp{t} -> {| ($lid:i : $t) |} *)]
        eq_expr:
        [ "="; expr{e} -> fun i p -> {| ? $i : ($p = $e) |}
        | -> fun i p -> {| ? $i : ($p) |} ]

@@ -145,7 +145,8 @@
    and patt =
     [= `Nil of loc
     | `Id  of (loc * ident) (* i *)
-    | `Alias of (loc * patt * patt) (* p as p *) (* (Node x y as n) *)
+    (* | `Alias of (loc * patt * patt) (\* p as p *\) (\* (Node x y as n) *\) *)
+    | `Alias of (loc * patt * alident)
     | ant (* $s$ *)
     | `Any of loc (* _ *)
     | `PaApp of (loc * patt * patt) (* p p *) (* fun x y -> *)
@@ -445,4 +446,8 @@
 (*
   let a (x: [= `External of (loc * [= `Lid of (loc*string)] * ctyp * meta_list string)  ]) =
   (x:> str_item);
+  
+  
+  {:patt| (A x as y)|}
+  {:patt| (y as A x)|}
  *)

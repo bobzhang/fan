@@ -271,7 +271,7 @@ class eq =
         | (`Nil a0,`Nil b0) -> self#loc a0 b0
         | (`Id (a0,a1),`Id (b0,b1)) -> (self#loc a0 b0) && (self#ident a1 b1)
         | (`Alias (a0,a1,a2),`Alias (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
+            ((self#loc a0 b0) && (self#patt a1 b1)) && (self#alident a2 b2)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (`Any a0,`Any b0) -> self#loc a0 b0
         | (`PaApp (a0,a1,a2),`PaApp (b0,b1,b2)) ->
@@ -943,7 +943,7 @@ class map =
       | `Alias (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in
-          let a2 = self#patt a2 in `Alias (a0, a1, a2)
+          let a2 = self#alident a2 in `Alias (a0, a1, a2)
       | #ant as a0 -> (self#ant a0 :>patt)
       | `Any a0 -> let a0 = self#loc a0 in `Any a0
       | `PaApp (a0,a1,a2) ->
@@ -1759,7 +1759,7 @@ class print =
               a1
         | `Alias (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" self#loc a0
-              self#patt a1 self#patt a2
+              self#patt a1 self#alident a2
         | #ant as a0 -> (self#ant fmt a0 :>'result)
         | `Any a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" self#loc a0
         | `PaApp (a0,a1,a2) ->
@@ -2402,7 +2402,8 @@ class fold =
       | `Nil a0 -> self#loc a0
       | `Id (a0,a1) -> let self = self#loc a0 in self#ident a1
       | `Alias (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#patt a1 in self#patt a2
+          let self = self#loc a0 in
+          let self = self#patt a1 in self#alident a2
       | #ant as a0 -> (self#ant a0 :>'self_type)
       | `Any a0 -> self#loc a0
       | `PaApp (a0,a1,a2) ->
@@ -3026,7 +3027,7 @@ class fold2 =
             let self = self#loc a0 b0 in self#ident a1 b1
         | (`Alias (a0,a1,a2),`Alias (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#patt a1 b1 in self#patt a2 b2
+            let self = self#patt a1 b1 in self#alident a2 b2
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (`Any a0,`Any b0) -> self#loc a0 b0
         | (`PaApp (a0,a1,a2),`PaApp (b0,b1,b2)) ->
@@ -3767,7 +3768,7 @@ and pp_print_patt: 'fmt -> patt -> 'result =
           pp_print_ident a1
     | `Alias (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_patt a1 pp_print_patt a2
+          pp_print_patt a1 pp_print_alident a2
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
     | `Any a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc a0
     | `PaApp (a0,a1,a2) ->
@@ -4384,7 +4385,7 @@ class iter =
       function
       | `Nil a0 -> self#loc a0
       | `Id (a0,a1) -> (self#loc a0; self#ident a1)
-      | `Alias (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
+      | `Alias (a0,a1,a2) -> (self#loc a0; self#patt a1; self#alident a2)
       | #ant as a0 -> (self#ant a0 :>'result)
       | `Any a0 -> self#loc a0
       | `PaApp (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
@@ -4973,7 +4974,7 @@ class map2 =
         | (`Alias (a0,a1,a2),`Alias (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
-            let a2 = self#patt a2 b2 in `Alias (a0, a1, a2)
+            let a2 = self#alident a2 b2 in `Alias (a0, a1, a2)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>patt)
         | (`Any a0,`Any b0) -> let a0 = self#loc a0 b0 in `Any a0
         | (`PaApp (a0,a1,a2),`PaApp (b0,b1,b2)) ->
@@ -6187,7 +6188,7 @@ module Make(MetaLoc:META_LOC) =
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Alias")),
                               (meta_loc _loc a0))), (meta_patt _loc a1))),
-                    (meta_patt _loc a2))
+                    (meta_alident _loc a2))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
             | `Any a0 ->
                 `ExApp (_loc, (`ExVrn (_loc, "Any")), (meta_loc _loc a0))
@@ -7937,7 +7938,7 @@ module Make(MetaLoc:META_LOC) =
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "Alias")),
                               (meta_loc _loc a0))), (meta_patt _loc a1))),
-                    (meta_patt _loc a2))
+                    (meta_alident _loc a2))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
             | `Any a0 ->
                 `PaApp (_loc, (`PaVrn (_loc, "Any")), (meta_loc _loc a0))
@@ -9235,7 +9236,7 @@ let rec is_irrefut_patt =
   | `Id (_loc,`Uid (_,"()")) -> true
   | `Any _loc -> true
   | `Nil _loc -> true
-  | `Alias (_loc,x,y) -> (is_irrefut_patt x) && (is_irrefut_patt y)
+  | `Alias (_loc,x,_) -> is_irrefut_patt x
   | `PaRec (_loc,p) -> is_irrefut_patt p
   | `PaEq (_loc,_,p) -> is_irrefut_patt p
   | `Sem (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
@@ -9557,10 +9558,9 @@ class clean_ast =
       | e -> e
     method! patt p =
       match super#patt p with
-      | `Alias (_loc,p,`Nil _l)|`PaOrp (_loc,`Nil _l,p)
-        |`PaOrp (_loc,p,`Nil _l)|`PaCom (_loc,`Nil _l,p)
-        |`PaCom (_loc,p,`Nil _l)|`Sem (_loc,`Nil _l,p)|`Sem (_loc,p,`Nil _l)
-          -> p
+      | `PaOrp (_loc,`Nil _l,p)|`PaOrp (_loc,p,`Nil _l)
+        |`PaCom (_loc,`Nil _l,p)|`PaCom (_loc,p,`Nil _l)
+        |`Sem (_loc,`Nil _l,p)|`Sem (_loc,p,`Nil _l) -> p
       | p -> p
     method! match_case mc =
       match super#match_case mc with

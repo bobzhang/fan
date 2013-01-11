@@ -41,7 +41,7 @@ type ctyp =
   | `TyAmp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
   | `Package of (loc* module_type) | ant] 
 and patt =
-  [ `Nil of loc | `Id of (loc* ident) | `Alias of (loc* patt* patt) | 
+  [ `Nil of loc | `Id of (loc* ident) | `Alias of (loc* patt* alident) | 
     ant
   | `Any of loc | `PaApp of (loc* patt* patt) | `Array of (loc* patt)
   | `PaCom of (loc* patt* patt) | `Sem of (loc* patt* patt) | literal

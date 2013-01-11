@@ -7,20 +7,20 @@ open FanAst;
 open ParsetreeHelper;
 
 
-let mkvirtual = fun
-  [ {:virtual_flag| virtual |} -> Virtual
-  | {:virtual_flag||} -> Concrete
+let mkvirtual = with virtual_flag fun
+  [ {| virtual |} -> Virtual
+  | {||} -> Concrete
   | _ -> assert false ];
 
-let mkdirection = fun
-  [ {:direction_flag| to |} -> Upto
-  | {:direction_flag| downto |} -> Downto
+let mkdirection = with direction_flag fun
+  [ {| to |} -> Upto
+  | {| downto |} -> Downto
   | _ -> assert false ];
 
-let mkrf = fun
-    [ {:rec_flag| rec |} -> Recursive
-    | {:rec_flag||} -> Nonrecursive
-    | _ -> assert false ];
+let mkrf = with rec_flag fun
+  [ {| rec |} -> Recursive
+  | {||} -> Nonrecursive
+  | _ -> assert false ];
 
 
 (*
@@ -96,20 +96,20 @@ let long_uident_noloc  i =
 let long_uident  i =
   with_loc (long_uident_noloc  i) (loc_of_ident i);
 
-let rec ctyp_long_id_prefix t = match t with
-    [ {:ctyp| $id:i |} -> ident_noloc i
-    | {:ctyp| $m1 $m2 |} ->
+let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
+  with ctyp match t with
+  [ {| $id:i |} -> ident_noloc i
+  | {| $m1 $m2 |} ->
         let li1 = ctyp_long_id_prefix m1 in
         let li2 = ctyp_long_id_prefix m2 in
         Lapply li1 li2
-    | t -> error (loc_of_ctyp t) "invalid module expression" ]
-  ;
+  | t -> error (loc_of_ctyp t) "invalid module expression" ] ;
 
-let ctyp_long_id t = match t with
-  [ {:ctyp| $id:i |} ->
+let ctyp_long_id (t:ctyp) : (bool *  Location.loc Longident.t) =
+  with ctyp match t with
+  [ {| $id:i |} ->
     (false, long_type_ident i)
-  | `TyApp (loc, _, _) ->
-      error loc "invalid type name"
+  | {| $_ $_ |} -> error _loc "invalid type name"
   | `TyCls (_, i) -> (true, ident i)
   | t -> error (loc_of_ctyp t) "invalid type" ] ;
 
@@ -117,45 +117,48 @@ let ctyp_long_id t = match t with
 let predef_option loc =
   `Id (loc, `IdAcc (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
 
-let rec ctyp = fun (* ctyp -> core_type *)
-  [ `Id (loc, i) ->
+let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun 
+  [ {|$id:i|} ->
     let li = long_type_ident i in
-    mktyp loc (Ptyp_constr li [])
-  | `Alias (loc, t1, t2) ->
+    mktyp _loc (Ptyp_constr li [])
+  | {| $t1 as $t2 |}(* `Alias (loc, t1, t2) *) ->
       let (t, i) =  match (t1, t2) with
       [ (t, `TyQuo (_, s)) -> (t, s)
       | (`TyQuo (_, s), t) -> (t, s)
-      | _ -> error loc "invalid alias type" ] in
-      mktyp loc (Ptyp_alias (ctyp t) i)
-  | `Any loc -> mktyp loc Ptyp_any
-  | `TyApp (loc, _, _) as f ->
+      | _ -> error _loc "invalid alias type" ] in
+      mktyp _loc (Ptyp_alias (ctyp t) i)
+  | {| _ |}(* `Any loc *) -> mktyp _loc Ptyp_any
+  | ({| $_ $_ |} as f )(* `TyApp (loc, _, _) as f *) ->
       let (f, al) = Ctyp.view_app [] f in
       let (is_cls, li) = ctyp_long_id f in
-      if is_cls then mktyp loc (Ptyp_class li (List.map ctyp al) [])
-      else mktyp loc (Ptyp_constr li (List.map ctyp al))
+      if is_cls then mktyp _loc (Ptyp_class li (List.map ctyp al) [])
+      else mktyp _loc (Ptyp_constr li (List.map ctyp al))
   | `TyArr (loc, (`TyLab (_, lab, t1)), t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
   | `TyArr (loc, (`TyOlb (loc1, lab, t1)), t2) ->
       let t1 = `TyApp loc1 (predef_option loc1) t1 in
       mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
   | `TyArr (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
-  | {:ctyp@loc| < $fl > |} -> mktyp loc (Ptyp_object (meth_list fl []))
-  | {:ctyp@loc| < $fl .. > |} ->
-      mktyp loc (Ptyp_object (meth_list fl [mkfield loc Pfield_var]))
+  | {| < $fl > |} -> mktyp _loc (Ptyp_object (meth_list fl []))
+  | {| < $fl .. > |} ->
+      mktyp _loc (Ptyp_object (meth_list fl [mkfield _loc Pfield_var]))
   | `TyCls (loc, id) ->
       mktyp loc (Ptyp_class (ident id) [] [])
-  | {:ctyp@loc| (module $pt) |} ->
+  | {| (module $pt) |} ->
       let (i, cs) = package_type pt in
-      mktyp loc (Ptyp_package i cs)
+      mktyp _loc (Ptyp_package i cs)
   | `TyPol (loc, t1, t2) -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
   | `TyQuo (loc, s) -> mktyp loc (Ptyp_var s)
-  | {:ctyp@loc| ($t1 * $t2) |} ->
+  | {@loc| ($t1 * $t2) |} ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
-  | {:ctyp@loc| [ = $t ] |} -> mktyp loc (Ptyp_variant (row_field t) true None)
-  | {:ctyp@loc| [ > $t ] |} -> mktyp loc (Ptyp_variant (row_field t) false None)
-  | {:ctyp@loc| [ < $t ] |} -> mktyp loc (Ptyp_variant (row_field t) true (Some []))
-  | {:ctyp@loc| [ < $t > $t' ] |} ->
-      mktyp loc (Ptyp_variant (row_field t) true (Some (Ctyp.name_tags t')))
+  | {| [ = $t ] |} ->
+      mktyp _loc (Ptyp_variant (row_field t) true None)
+  | {| [ > $t ] |} ->
+      mktyp _loc (Ptyp_variant (row_field t) false None)
+  | {| [ < $t ] |} ->
+      mktyp _loc (Ptyp_variant (row_field t) true (Some []))
+  | {| [ < $t > $t' ] |} ->
+      mktyp _loc (Ptyp_variant (row_field t) true (Some (Ctyp.name_tags t')))
   | `TyLab (loc, _, _) -> error loc "labelled type not allowed here"
   | `TyMan (loc, _, _) -> error loc "manifest type not allowed here"
   | `TyOlb (loc,_,_) -> error loc "labelled type not allowed here"
@@ -174,35 +177,37 @@ let rec ctyp = fun (* ctyp -> core_type *)
     `TyAnP _ | `TyAnM _ | `TyTypePol (_, _, _) |
     `TyObj (_, _, (`Ant _)) | `Nil _ | `Tup (_,_) ->
       assert false ]
-and row_field = with ctyp fun 
+and row_field : ctyp -> list row_field = with ctyp fun 
   [ {||} -> []
   | {| `$i |} -> [Rtag i true []]
   | {| `$i of & $t |} -> [Rtag i true (List.map ctyp (list_of_ctyp t []))]
   | {| `$i of $t |} -> [Rtag i false (List.map ctyp (list_of_ctyp t []))]
   | {| $t1 | $t2 |} -> row_field t1 @ row_field t2
   | t -> [Rinherit (ctyp t)] ]
-and meth_list fl acc = with ctyp
-  match fl with
+and meth_list (fl:ctyp) (acc: list core_field_type) : list core_field_type =
+  with ctyp match fl with
   [ {||} -> acc
   | {| $t1; $t2 |} -> meth_list t1 (meth_list t2 acc)
   | {| $lid:lab : $t |} ->
       [mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
   | _ -> assert false ]
 
-and package_type_constraints wc acc = with with_constr
-  match wc with
-  [ {||} -> acc
-  | {| type $id:id = $ct |} ->
-      [(ident id, ctyp ct) :: acc]
-  | {| $wc1 and $wc2 |} ->
-      package_type_constraints wc1 (package_type_constraints wc2 acc)
-  | _ -> error (loc_of_with_constr wc) "unexpected `with constraint' for a package type" ]
+and package_type_constraints (wc:with_constr)
+    (acc: list (Asttypes.loc Longident.t  *core_type))
+    : list (Asttypes.loc Longident.t  *core_type) =
+    with with_constr match wc with
+    [ {||} -> acc
+    | {| type $id:id = $ct |} ->  [(ident id, ctyp ct) :: acc]
+    | {| $wc1 and $wc2 |} ->
+        package_type_constraints wc1 (package_type_constraints wc2 acc)
+    | _ -> error (loc_of_with_constr wc) "unexpected `with constraint' for a package type" ]
 
-and package_type : module_type -> package_type = with module_type fun
-  [ {| $id:i with $wc |} ->
-    (long_uident i, package_type_constraints wc [])
-  | {| $id:i |} -> (long_uident i, [])
-  | mt -> error (loc_of_module_type mt) "unexpected package type" ] ;
+and package_type : module_type -> package_type =
+    with module_type fun
+    [ {| $id:i with $wc |} ->
+      (long_uident i, package_type_constraints wc [])
+    | {| $id:i |} -> (long_uident i, [])
+    | mt -> error (loc_of_module_type mt) "unexpected package type" ] ;
 
 let mktype loc tl cl tk tp tm =
   let (params, variance) = List.split tl in
@@ -210,48 +215,54 @@ let mktype loc tl cl tk tp tm =
    ptype_private = tp; ptype_manifest = tm; ptype_loc =  loc;
    ptype_variance = variance} ;
 let mkprivate' m = if m then Private else Public;
-let mkprivate = fun
-  [ {:private_flag| private |} -> Private
-  | {:private_flag||} -> Public
+
+let mkprivate = with private_flag fun
+  [ {| private |} -> Private
+  | {||} -> Public
   | _ -> assert false ];
-let mktrecord = fun
-  [ {:ctyp@loc| $(id:{:ident@sloc| $lid:s |}) : mutable $t |} ->
-    (with_loc s sloc, Mutable, mkpolytype (ctyp t),  loc)
-  | {:ctyp@loc| $(id:{:ident@sloc| $lid:s |}) : $t |} ->
-      (with_loc s sloc, Immutable, mkpolytype (ctyp t),  loc)
+let mktrecord : ctyp ->  (Asttypes.loc string * Asttypes.mutable_flag * core_type *  loc)=
+  with ctyp fun
+  [ {| $(id:{:ident@sloc| $lid:s |}) : mutable $t |} ->
+    (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
+  | {| $(id:{:ident@sloc| $lid:s |}) : $t |} ->
+      (with_loc s sloc, Immutable, mkpolytype (ctyp t),  _loc)
   | _ -> assert false (*FIXME*) ];
   
-let mkvariant = fun
-  [ {:ctyp@loc| $(id:{:ident@sloc| $uid:s |}) |} ->
-    (with_loc  s sloc, [], None,  loc)
-  | {:ctyp@loc| $(id:{:ident@sloc| $uid:s |}) of $t |} ->
-      (with_loc  s sloc, List.map ctyp (list_of_ctyp t []), None,  loc)
-  | {:ctyp@loc| $(id:{:ident@sloc| $uid:s |}) : ($t -> $u) |} ->
-      (with_loc s sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  loc)
-  | {:ctyp@loc| $(id:{:ident@sloc| $uid:s |}) : $t |} ->
-      (with_loc  s sloc, [], Some (ctyp t),  loc)
+let mkvariant : ctyp ->
+  (  Asttypes.loc string  * list core_type * option core_type * loc ) =
+  with ctyp fun
+  [ {| $(id:{:ident@sloc| $uid:s |}) |} ->
+    (with_loc  s sloc, [], None,  _loc)
+  | {| $(id:{:ident@sloc| $uid:s |}) of $t |} ->
+      (with_loc  s sloc, List.map ctyp (list_of_ctyp t []), None,  _loc)
+  | {| $(id:{:ident@sloc| $uid:s |}) : ($t -> $u) |} ->
+      (with_loc s sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  _loc)
+  | {| $(id:{:ident@sloc| $uid:s |}) : $t |} ->
+      (with_loc  s sloc, [], Some (ctyp t),  _loc)
 
   | _ -> assert false (*FIXME*) ];
   
-let rec type_decl tl cl loc m pflag = fun
-  [ {:ctyp| $t1 == $t2 |} ->
+let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool)))
+    (cl: list (core_type * core_type * Location.t))
+    loc m pflag : ctyp -> type_declaration = with ctyp fun
+  [ {| $t1 == $t2 |} ->
     type_decl tl cl loc (Some (ctyp t1)) pflag t2
-  | {:ctyp| private $t |} ->
+  | {| private $t |} ->
       if pflag then
         error _loc "multiple private keyword used, use only one instead"
       else
         type_decl tl cl loc m true t
-  | {:ctyp| { $t } |} ->
+  | {| { $t } |} ->
       mktype loc tl cl
         (Ptype_record (List.map mktrecord (list_of_ctyp t []))) (mkprivate' pflag) m
-  | {:ctyp| [ $t ] |} ->
+  | {| [ $t ] |} ->
       mktype loc tl cl
         (Ptype_variant (List.map mkvariant (list_of_ctyp t []))) (mkprivate' pflag) m
   | t ->
       if m <> None then
         error loc "only one manifest type allowed by definition" else
       let m = match t with
-      [ {:ctyp||} -> None
+      [ {||} -> None
       | _ -> Some (ctyp t) ] in
       mktype loc tl cl Ptype_abstract (mkprivate' pflag) m ] ;
 
@@ -264,42 +275,47 @@ let rec list_of_meta_list =fun
   | `LCons (x, xs) -> [x :: list_of_meta_list xs]
   | `Ant _ -> assert false ];
 
-let mkmutable = fun
-  [ {:mutable_flag| mutable |} -> Mutable
-  | {:mutable_flag||} -> Immutable
+let mkmutable = with mutable_flag fun
+  [ {| mutable |} -> Mutable
+  | {||} -> Immutable
   | _ -> assert false ];
 
-let paolab lab p = match (lab, p) with
-  [ ("", {:patt| $lid:i |} | {:patt| ($lid:i : $_) |}) -> i
+let paolab (lab:string) (p:patt) : string =
+  with patt match (lab, p) with
+  [ ("", {| $lid:i |} | {| ($lid:i : $_) |}) -> i
   | ("", p) -> error (loc_of_patt p) "bad ast in label"
   | _ -> lab ] ;
 
-let opt_private_ctyp = fun
-  [ {:ctyp| private $t |} -> (Ptype_abstract, Private, ctyp t)
+let opt_private_ctyp : ctyp ->
+  (type_kind * Asttypes.private_flag * core_type) = with ctyp fun
+  [ {| private $t |} -> (Ptype_abstract, Private, ctyp t)
   | t -> (Ptype_abstract, Public, ctyp t) ];
 
-let rec type_parameters t acc = match t with
-  [ {:ctyp| $t1 $t2 |} -> type_parameters t1 (type_parameters t2 acc)
-  | {:ctyp| +'$s |} -> [(s, (true, false)) :: acc]
-  | {:ctyp| -'$s |} -> [(s, (false, true)) :: acc]
-  | {:ctyp| '$s |} -> [(s, (false, false)) :: acc]
+let rec type_parameters (t:ctyp) acc =
+  with ctyp match t with
+  [ {| $t1 $t2 |} -> type_parameters t1 (type_parameters t2 acc)
+  | {| +'$s |} -> [(s, (true, false)) :: acc]
+  | {| -'$s |} -> [(s, (false, true)) :: acc]
+  | {| '$s |} -> [(s, (false, false)) :: acc]
   | _ -> assert false ];
 
-let rec optional_type_parameters t acc =  match t with
-  [ {:ctyp| $t1 $t2 |} -> optional_type_parameters t1 (optional_type_parameters t2 acc)
-  | {:ctyp@loc| +'$s |} -> [(Some (with_loc s loc), (true, false)) :: acc]
+let rec optional_type_parameters (t:ctyp) acc =
+  with ctyp match t with
+  [ {| $t1 $t2 |} -> optional_type_parameters t1 (optional_type_parameters t2 acc)
+  | {| +'$s |} -> [(Some (with_loc s _loc), (true, false)) :: acc]
   | `TyAnP _loc  -> [(None, (true, false)) :: acc]
-  | {:ctyp@loc| -'$s |} -> [(Some (with_loc s loc), (false, true)) :: acc]
+  | {| -'$s |} -> [(Some (with_loc s _loc), (false, true)) :: acc]
   | `TyAnM _loc -> [(None, (false, true)) :: acc]
-  | {:ctyp@loc| '$s |} -> [(Some (with_loc s loc), (false, false)) :: acc]
-  | `Any _loc -> [(None, (false, false)) :: acc]
+  | {| '$s |} -> [(Some (with_loc s _loc), (false, false)) :: acc]
+  | {| _ |}  -> [(None, (false, false)) :: acc]
   | _ -> assert false ];
 
-let rec class_parameters t acc = match t with
-  [ {:ctyp| $t1, $t2 |} -> class_parameters t1 (class_parameters t2 acc)
-  | {:ctyp@loc| +'$s |} -> [(with_loc s loc, (true, false)) :: acc]
-  | {:ctyp@loc| -'$s |} -> [(with_loc s loc, (false, true)) :: acc]
-  | {:ctyp@loc| '$s |} -> [(with_loc s loc, (false, false)) :: acc]
+let rec class_parameters (t:ctyp) acc =
+  with ctyp match t with
+  [ {| $t1, $t2 |} -> class_parameters t1 (class_parameters t2 acc)
+  | {| +'$s |} -> [(with_loc s _loc, (true, false)) :: acc]
+  | {| -'$s |} -> [(with_loc s _loc, (false, true)) :: acc]
+  | {| '$s |} -> [(with_loc s _loc, (false, false)) :: acc]
   | _ -> assert false ];
 
 let rec type_parameters_and_type_name t acc =  match t with
@@ -320,19 +336,20 @@ let mkwithtyp pwith_type loc id_tpl ct =
       ptype_manifest = Some ct;
       ptype_loc =  loc; ptype_variance = variance});
   
-let rec mkwithc wc acc = match wc with
-  [ {:with_constr||} -> acc
-  | {:with_constr@loc| type $id_tpl = $ct |} ->
-     [mkwithtyp (fun x -> Pwith_type x) loc id_tpl ct :: acc]
-  | {:with_constr| module $i1 = $i2 |} ->
-      [(long_uident i1, Pwith_module (long_uident i2)) :: acc]
-  | {:with_constr@loc| type $id_tpl := $ct |} ->
-      [mkwithtyp (fun x -> Pwith_typesubst x) loc id_tpl ct :: acc]
-  | {:with_constr| module $i1 := $i2 |} (*`ModuleSubst _ i1 i2*) ->
-      [(long_uident i1, Pwith_modsubst (long_uident i2)) :: acc]
-  | {:with_constr| $wc1 and $wc2 |} -> mkwithc wc1 (mkwithc wc2 acc)
-  | {:with_constr@loc| $anti:_ |} ->
-      error loc "bad with constraint (antiquotation)" ];
+let rec mkwithc (wc:with_constr) acc =
+    with with_constr match wc with
+    [ {||} -> acc
+    | {| type $id_tpl = $ct |} ->
+        [mkwithtyp (fun x -> Pwith_type x) _loc id_tpl ct :: acc]
+    | {| module $i1 = $i2 |} ->
+        [(long_uident i1, Pwith_module (long_uident i2)) :: acc]
+    | {| type $id_tpl := $ct |} ->
+        [mkwithtyp (fun x -> Pwith_typesubst x) _loc id_tpl ct :: acc]
+    | {| module $i1 := $i2 |} ->
+        [(long_uident i1, Pwith_modsubst (long_uident i2)) :: acc]
+    | {| $wc1 and $wc2 |} -> mkwithc wc1 (mkwithc wc2 acc)
+    | {| $anti:_ |} ->
+        error _loc "bad with constraint (antiquotation)" ];
 
 let rec patt_fa al = fun
   [ `PaApp (_,f,a) -> patt_fa [a :: al] f
@@ -353,27 +370,28 @@ let rec mkrangepat loc c1 c2 =
       (Ppat_or (mkghpat loc (Ppat_constant (Const_char c1)))
          (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2));
 
-let rec patt = fun
-  [ {:patt@loc| $(lid:("true"|"false" as txt)) |}  ->
-    let p = Ppat_construct ({txt=Lident txt;loc}) None false in
-    mkpat loc p 
-  | {:patt@loc| $(id:{:ident@sloc| $lid:s |}) |} ->
-    mkpat loc (Ppat_var (with_loc s sloc))
-  | {:patt@loc| $id:i |} ->
-      let p = Ppat_construct (long_uident  i)
-          None false 
-      in mkpat loc p
-  | `Alias (loc, p1, p2) ->
-      let (p, i) =
-        match (p1, p2) with
-        [ (p, {:patt| $(id:{:ident@sloc| $lid:s |}) |}) -> (p, with_loc s sloc)
-        | ({:patt| $(id:{:ident@sloc| $lid:s |}) |}, p) -> (p, with_loc s sloc)
-        | _ -> error loc "invalid alias pattern" ] in
-       mkpat loc (Ppat_alias (patt p) i)
+let rec patt : patt -> pattern = with patt fun
+  [ {| $(lid:("true"|"false" as txt)) |}  ->
+    let p = Ppat_construct ({txt=Lident txt;loc=_loc}) None false in
+    mkpat _loc p 
+  | {| $(id:{:ident@sloc| $lid:s |}) |} -> mkpat _loc (Ppat_var (with_loc s sloc))
+  | {| $id:i |} ->
+      let p = Ppat_construct (long_uident  i) None false 
+      in mkpat _loc p
+  | (* {| ($p1 as $p2) |} *) `Alias (_loc, p1, x)->
+      match x with
+      [`Lid (sloc,s) -> mkpat _loc (Ppat_alias ((patt p1), with_loc s sloc))
+      | `Ant (_loc,_) -> error _loc "invalid antiquotations"]  
+      (* let (p, i) = *)
+      (*   match (p1, p2) with *)
+      (*   [ (p, {| $(id:{:ident@sloc| $lid:s |}) |}) -> (p, with_loc s sloc) *)
+      (*   (\* | ({| $(id:{:ident@sloc| $lid:s |}) |}, p) -> (p, with_loc s sloc) *\) *)
+      (*   | _ -> error _loc "invalid alias pattern" ] in *)
+       (* mkpat _loc (Ppat_alias (patt p) i) *)
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | `Any loc -> mkpat loc Ppat_any
-  | {:patt@loc| $(id:{:ident@sloc| $uid:s |}) $(tup:{:patt@loc_any| _ |}) |} ->
-      mkpat loc (Ppat_construct (lident_with_loc  s sloc)
+  | {| _ |} -> mkpat _loc Ppat_any
+  | {| $(id:{:ident@sloc| $uid:s |}) $(tup:{@loc_any| _ |}) |} ->
+      mkpat _loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
   | `PaApp (loc, _, _) as f ->
      let (f, al) = patt_fa [] f in
@@ -425,16 +443,16 @@ let rec patt = fun
          | _ -> error loc "range pattern allowed only for characters" ]
          | `PaRec (loc,p) ->
              let ps = list_of_patt p [] in
-             let is_wildcard = fun [ {:patt| _ |} -> true | _ -> false ] in
+             let is_wildcard = fun [ {| _ |} -> true | _ -> false ] in
              let (wildcards,ps) = List.partition is_wildcard ps in
              let is_closed = if wildcards = [] then Closed else Open in
              mkpat loc (Ppat_record (List.map mklabpat ps, is_closed))
          | `Str (loc,s) ->
              mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
-         | {:patt@loc| ($p1, $p2) |} ->
+         | {@loc| ($p1, $p2) |} ->
              mkpat loc (Ppat_tuple
                           (List.map patt (list_of_patt p1 (list_of_patt p2 []))))
-         | {:patt@loc| ($tup:_) |} -> error loc "singleton tuple pattern"
+         | {@loc| ($tup:_) |} -> error loc "singleton tuple pattern"
          | `PaTyc (loc,p,t) -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
          | `PaTyp (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
          | `PaVrn (loc,s) -> mkpat loc (Ppat_variant s None)
@@ -442,15 +460,16 @@ let rec patt = fun
          | `PaMod (loc,m) -> mkpat loc (Ppat_unpack (with_loc m loc))
          | `PaEq (_, _, _) | `Sem (_, _, _) | `PaCom (_, _, _) | `Nil _ as p ->
              error (loc_of_patt p) "invalid pattern" ]
-and mklabpat = fun (* patt -> Longident.t loc * pattern*)
-  [ {:patt| $i = $p |} -> (ident  i, patt p)
+
+and mklabpat : patt -> (Asttypes.loc Longident.t  * pattern) = with patt fun
+  [ {| $i = $p |} -> (ident  i, patt p)
   | p -> error (loc_of_patt p) "invalid pattern" ];
   
 
 
-let override_flag loc = fun
-  [ {:override_flag| ! |} -> Override
-  | {:override_flag||} -> Fresh
+let override_flag loc = with override_flag fun
+  [ {| ! |} -> Override
+  | {||} -> Fresh
   |  _ -> error loc "antiquotation not allowed here" ];
 
   
@@ -479,14 +498,14 @@ let override_flag loc = fun
   pexp_loc = }
   ]}
  *)
-let rec expr = fun (* expr -> expression*)
-  [ (* `ExAcc (loc, _, _)   *){:expr| $_ . $_ |}|
-   {:expr| $(id:{:ident@_| $_ . $_ |}) |} as e ->
+let rec expr : expr -> expression = with expr fun (* expr -> expression*)
+  [ {| $_ . $_ |}|
+   {| $(id:{:ident@_| $_ . $_ |}) |} as e ->
     let (e, l) =
       match Expr.sep_dot_expr [] e with
-      [ [(loc, ml, {:expr@sloc| $uid:s |}) :: l] ->
+      [ [(loc, ml, {@sloc| $uid:s |}) :: l] ->
         (mkexp loc (Pexp_construct (mkli sloc  s ml) None false(* ca *)), l)
-      | [(loc, ml, {:expr@sloc| $lid:s |}) :: l] ->
+      | [(loc, ml, {@sloc| $lid:s |}) :: l] ->
           (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
       | [(_, [], e) :: l] -> (expr e, l)
       | _ -> error _loc "bad ast in expression" ] in
@@ -494,7 +513,7 @@ let rec expr = fun (* expr -> expression*)
       List.fold_left
         (fun (loc_bp, e1) (loc_ep, ml, e2) ->
           match e2 with
-          [ {:expr@sloc| $lid:s |} ->
+          [ {@sloc| $lid:s |} ->
               let loc = FanLoc.merge loc_bp loc_ep
               in  (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
           | _ -> error (loc_of_expr e2) "lowercase identifier expected" ])
@@ -528,7 +547,7 @@ let rec expr = fun (* expr -> expression*)
       | `ExAss (loc,e,v) ->
           let e =
             match e with
-            [ {:expr@loc| $x.contents |} -> (* FIXME *)
+            [ {@loc| $x.contents |} -> (* FIXME *)
               Pexp_apply (mkexp loc (Pexp_ident (lident_with_loc ":=" loc)))
                 [("", expr x); ("", expr v)]
             | `ExAcc (loc,_,_) ->
@@ -538,7 +557,7 @@ let rec expr = fun (* expr -> expression*)
                 | `ExAre (loc, e1, e2) ->
                     Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))
                       [("", expr e1); ("", expr e2); ("", expr v)]
-                | {:expr@lloc| $lid:lab |}  ->
+                | {@lloc| $lid:lab |}  ->
                     (* FIXME `Id (lloc, `Lid (_, lab)) vs `Id(_,`Lid(lloc,lab)) *)
                     Pexp_setinstvar (with_loc lab lloc) (expr v)
                 | `StringDot (loc, e1, e2) ->
@@ -560,15 +579,15 @@ let rec expr = fun (* expr -> expression*)
       | `For (loc, i, e1, e2, df, el) ->
           let e3 = `Seq loc el in
           mkexp loc (Pexp_for (with_loc i loc) (expr e1) (expr e2) (mkdirection df) (expr e3))
-      | {:expr@loc| fun [ $(pat:`PaLab (_, lab, po)) when $w -> $e ] |} ->
+      | {@loc| fun [ $(pat:`PaLab (_, lab, po)) when $w -> $e ] |} ->
           mkexp loc
             (Pexp_function lab None
                [(patt_of_lab loc lab po, when_expr e w)])
-      | {:expr@loc| fun [ $(pat:`PaOlbi (_, lab, p, e1)) when $w -> $e2 ] |} ->
+      | {@loc| fun [ $(pat:`PaOlbi (_, lab, p, e1)) when $w -> $e2 ] |} ->
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) (Some (expr e1)) [(patt p, when_expr e2 w)])
-      | {:expr@loc|fun [ $(pat:`PaOlb (_, lab, p)) when $w -> $e ] |} ->
+      | {@loc|fun [ $(pat:`PaOlb (_, lab, p)) when $w -> $e ] |} ->
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e w)])
@@ -613,12 +632,12 @@ let rec expr = fun (* expr -> expression*)
         | _ ->
             let eo =
               match eo with
-              [ {:expr||} -> None
+              [ {||} -> None
               | e -> Some (expr e) ] in
             mkexp loc (Pexp_record (mklabexp lel []) eo) ]
         | `Seq (_loc,e) ->
             let rec loop = fun
-              [ [] -> expr {:expr| () |}
+              [ [] -> expr {| () |}
               | [e] -> expr e
               | [e :: el] ->
                   let _loc = FanLoc.merge (loc_of_expr e) _loc in
@@ -632,35 +651,35 @@ let rec expr = fun (* expr -> expression*)
         | `Str (loc,s) ->
             mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
         | `Try (loc,e,a) -> mkexp loc (Pexp_try (expr e) (match_case a []))
-        | {:expr@loc| ($e1, $e2) |} ->
+        | {@loc| ($e1, $e2) |} ->
             mkexp loc (Pexp_tuple (List.map expr (list_of_expr e1 (list_of_expr e2 []))))
-        | {:expr@loc| ($tup:_) |} -> error loc "singleton tuple"
+        | {@loc| ($tup:_) |} -> error loc "singleton tuple"
         | `Constraint_exp (loc,e,t) -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
-        | {:expr@loc| () |} ->
+        | {@loc| () |} ->
             mkexp loc (Pexp_construct (lident_with_loc "()" loc) None true)
 
-        | {:expr@loc| $(lid:("true"|"false" as s)) |} ->
+        | {@loc| $(lid:("true"|"false" as s)) |} ->
             mkexp loc (Pexp_construct (lident_with_loc s loc) None true)
               
-        | {:expr@loc| $lid:s |} ->
+        | {@loc| $lid:s |} ->
             mkexp loc (Pexp_ident (lident_with_loc s loc))
-        | {:expr@loc| $uid:s |} ->
+        | {@loc| $uid:s |} ->
             mkexp loc (Pexp_construct (lident_with_loc  s loc) None true)
         | `ExVrn (loc,s) -> mkexp loc (Pexp_variant  s None)
         | `While (loc, e1, el) ->
             let e2 = `Seq loc el in
             mkexp loc (Pexp_while (expr e1) (expr e2))
-        | {:expr@loc| let open $i in $e |} ->
+        | {@loc| let open $i in $e |} ->
             mkexp loc (Pexp_open (long_uident i) (expr e))
-        | {:expr@loc| (module $me : $pt) |} ->
+        | {@loc| (module $me : $pt) |} ->
             mkexp loc (Pexp_constraint (mkexp loc (Pexp_pack (module_expr me)),
                                         Some (mktyp loc (Ptyp_package (package_type pt))), None))
-        | {:expr@loc| (module $me) |} ->
+        | {@loc| (module $me) |} ->
             mkexp loc (Pexp_pack (module_expr me))
         | `LocalTypeFun (loc,i,e) ->
             mkexp loc (Pexp_newtype i (expr e))
-        | {:expr@loc| $_,$_ |} -> error loc "expr, expr: not allowed here"
-        | {:expr@loc| $_;$_ |} ->
+        | {@loc| $_,$_ |} -> error loc "expr, expr: not allowed here"
+        | {@loc| $_;$_ |} ->
             error loc "expr; expr: not allowed here, use begin ... end or [|...|] to surround them" (* FIXME *)
         | `Id (_, _) | `Nil _ as e -> error (loc_of_expr e) "invalid expr" ]
 and patt_of_lab _loc lab =  fun (* loc -> string -> patt -> pattern *)
@@ -704,25 +723,34 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
   | {:binding| $p = $e |} -> [(patt p, expr e) :: acc]
   | {:binding||} -> acc
   | _ -> assert false ]
-and match_case x acc =  match x with (* match_case -> (pattern * expression) list -> (pattern * expression) list*)
-  [ {:match_case| $x | $y |} -> match_case x (match_case y acc)
-  | {:match_case| $pat:p when $w -> $e |} ->
+and match_case (x:match_case) (acc: list (pattern*expression))
+    : list (pattern * expression) =
+  with match_case match x with
+  [ {| $x | $y |} -> match_case x (match_case y acc)
+  | {| $pat:p when $w -> $e |} ->
       [(patt p, when_expr e w) :: acc]
-  | {:match_case||} -> acc
+  | {||} -> acc
   | _ -> assert false ]
-and when_expr e w = match w with (* expr -> expr -> expression*)
-  [ {:expr||} -> expr e
+and when_expr (e:expr) (w:expr) : expression  =
+  with expr match w with 
+  [ {||} -> expr e
   | w -> mkexp (loc_of_expr w) (Pexp_when (expr w) (expr e)) ]
-and mklabexp x acc = match x with (* rec_binding ->  (Longident.t loc * expression) list -> (Longident.t loc * expression) list *)
-  [ {:rec_binding| $x; $y |} ->
+and mklabexp (x:rec_binding)
+    (acc: list (Asttypes.loc Longident.t  * expression)) :
+    list (Asttypes.loc Longident.t  * expression) =
+  with rec_binding match x with 
+  [ {| $x; $y |} ->
     mklabexp x (mklabexp y acc)
-  | {:rec_binding| $id:i = $e |} -> [(ident  i, expr e) :: acc]
+  | {| $id:i = $e |} -> [(ident  i, expr e) :: acc]
   | _ -> assert false ]
-and mkideexp x acc =match x with (* rec_binding -> (string loc * expression) list ->  (string loc * expression) list *)
-  [ {:rec_binding||} -> acc
-  | {:rec_binding| $x; $y |} ->
-      mkideexp x (mkideexp y acc)
-  | {:rec_binding| $(id: {:ident@sloc| $lid:s |}) = $e |} -> [(with_loc s sloc, expr e) :: acc]
+and mkideexp (x:rec_binding)
+    (acc: list (Asttypes.loc string * expression)) :
+    list (Asttypes.loc string * expression) = 
+  with rec_binding match x with 
+  [ {||} -> acc
+  | {| $x; $y |} ->  mkideexp x (mkideexp y acc)
+  | {| $(id: {:ident@sloc| $lid:s |}) = $e |} ->
+      [(with_loc s sloc, expr e) :: acc]
   | _ -> assert false ]
 
 (* Example:
@@ -749,21 +777,22 @@ and mktype_decl x acc =
       [(with_loc c cloc,
         type_decl (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
   | _ -> assert false ]
-and module_type : Ast.module_type -> Parsetree.module_type = fun (*module_type -> module_type*)
-  [ {:module_type@loc||} -> error loc "abstract/nil module type not allowed here"
-  | {:module_type@loc| $id:i |} -> mkmty loc (Pmty_ident (long_uident i))
-  | {:module_type@loc| functor ($n : $nt) -> $mt |} ->
+and module_type : Ast.module_type -> Parsetree.module_type =
+  with module_type fun 
+  [ {@loc||} -> error loc "abstract/nil module type not allowed here"
+  | {@loc| $id:i |} -> mkmty loc (Pmty_ident (long_uident i))
+  | {@loc| functor ($n : $nt) -> $mt |} ->
       mkmty loc (Pmty_functor (with_loc n loc) (module_type nt) (module_type mt))
-  | {:module_type@loc| '$_ |} -> error loc "module type variable not allowed here"
-  | {:module_type@loc| sig $sl end |} ->
+  | {@loc| '$_ |} -> error loc "module type variable not allowed here"
+  | {@loc| sig $sl end |} ->
       mkmty loc (Pmty_signature (sig_item sl []))
-  | {:module_type@loc| $mt with $wc |} ->
+  | {@loc| $mt with $wc |} ->
       mkmty loc (Pmty_with (module_type mt) (mkwithc wc []))
-  | {:module_type@loc| module type of $me |} ->
+  | {@loc| module type of $me |} ->
       mkmty loc (Pmty_typeof (module_expr me))
-  | {:module_type| $anti:_ |} -> assert false ]
+  | {| $anti:_ |} -> assert false ]
 and sig_item (s:sig_item) (l:signature) :signature =
-  with sig_item(* signature *) match s with 
+  with sig_item match s with 
   [ {||} -> l
   | `Class (loc,cd) ->
       [mksig loc (Psig_class

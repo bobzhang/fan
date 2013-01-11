@@ -2114,10 +2114,10 @@ let apply () =
        [(None, None,
           [([`Snterm (Gram.obj (patt : 'patt Gram.t ));
             `Skeyword "as";
-            `Snterm (Gram.obj (patt : 'patt Gram.t ))],
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
              (Gram.mk_action
-                (fun (p2 : 'patt)  _  (p1 : 'patt)  (_loc : FanLoc.t)  ->
-                   (`Alias (_loc, p1, p2) : 'patt_as_patt_opt ))));
+                (fun (s : 'a_lident)  _  (p1 : 'patt)  (_loc : FanLoc.t)  ->
+                   (`Alias (_loc, p1, s) : 'patt_as_patt_opt ))));
           ([`Snterm (Gram.obj (patt : 'patt Gram.t ))],
             (Gram.mk_action
                (fun (p : 'patt)  (_loc : FanLoc.t)  ->
@@ -2376,10 +2376,14 @@ let apply () =
            (Gram.mk_action
               (fun _  (t : 'ctyp)  _  (p : 'patt)  _  (_loc : FanLoc.t)  ->
                  (`PaTyc (_loc, p, t) : 'patt ))));
-         ([`Skeyword "("; `Sself; `Skeyword "as"; `Sself; `Skeyword ")"],
+         ([`Skeyword "(";
+          `Sself;
+          `Skeyword "as";
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+          `Skeyword ")"],
            (Gram.mk_action
-              (fun _  (p2 : 'patt)  _  (p : 'patt)  _  (_loc : FanLoc.t)  ->
-                 (`Alias (_loc, p, p2) : 'patt ))));
+              (fun _  (s : 'a_lident)  _  (p : 'patt)  _  (_loc : FanLoc.t) 
+                 -> (`Alias (_loc, p, s) : 'patt ))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ",";
@@ -2566,10 +2570,14 @@ let apply () =
             (Gram.mk_action
                (fun _  (t : 'ctyp)  _  (p : 'ipatt)  _  (_loc : FanLoc.t)  ->
                   (`PaTyc (_loc, p, t) : 'ipatt ))));
-          ([`Skeyword "("; `Sself; `Skeyword "as"; `Sself; `Skeyword ")"],
+          ([`Skeyword "(";
+           `Sself;
+           `Skeyword "as";
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+           `Skeyword ")"],
             (Gram.mk_action
-               (fun _  (p2 : 'ipatt)  _  (p : 'ipatt)  _  (_loc : FanLoc.t) 
-                  -> (`Alias (_loc, p, p2) : 'ipatt ))));
+               (fun _  (s : 'a_lident)  _  (p : 'ipatt)  _  (_loc : FanLoc.t)
+                   -> (`Alias (_loc, p, s) : 'ipatt ))));
           ([`Skeyword "(";
            `Sself;
            `Skeyword ",";
@@ -2579,10 +2587,10 @@ let apply () =
                (fun _  (pl : 'comma_ipatt)  _  (p : 'ipatt)  _ 
                   (_loc : FanLoc.t)  ->
                   (`PaTup (_loc, (`PaCom (_loc, p, pl))) : 'ipatt ))));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
-               (fun (s : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (`Lid (_loc, s))) : 'ipatt ))));
+               (fun (s : 'a_lident)  (_loc : FanLoc.t)  ->
+                  (`Id (_loc, (s :>ident)) : 'ipatt ))));
           ([`Stoken
               (((function | `QUOTATION _ -> true | _ -> false)),
                 (`Normal, "`QUOTATION _"))],
@@ -2777,17 +2785,16 @@ let apply () =
                    | `ANT ((""|"anti" as n),s) ->
                        (`Ant (_loc, (mk_anti ~c:"patt" n s)) : 'ipatt_tcon )
                    | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
-               (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (`Lid (_loc, i))) : 'ipatt_tcon ))));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+               (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
+                  (`Id (_loc, (i :>ident)) : 'ipatt_tcon ))));
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'ctyp)  _  (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (`PaTyc (_loc, (`Id (_loc, (`Lid (_loc, i)))), t) : 
-                  'ipatt_tcon ))))])]);
+               (fun (t : 'ctyp)  _  (i : 'a_lident)  (_loc : FanLoc.t)  ->
+                  (`PaTyc (_loc, (`Id (_loc, (i :>ident))), t) : 'ipatt_tcon ))))])]);
    Gram.extend (eq_expr : 'eq_expr Gram.t )
      (None,
        [(None, None,

@@ -798,11 +798,13 @@ let _ =
   Gram.extend (internal_patt : 'internal_patt Gram.t )
     (None,
       [((Some "as"), None,
-         [([`Sself; `Skeyword "as"; `Sself],
+         [([`Sself;
+           `Skeyword "as";
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
-               (fun (p2 : 'internal_patt)  _  (p1 : 'internal_patt) 
+               (fun (s : 'a_lident)  _  (p1 : 'internal_patt) 
                   (_loc : FanLoc.t)  ->
-                  (`Alias (_loc, p1, p2) : 'internal_patt ))))]);
+                  (`Alias (_loc, p1, s) : 'internal_patt ))))]);
       ((Some "|"), None,
         [([`Sself; `Skeyword "|"; `Sself],
            (Gram.mk_action

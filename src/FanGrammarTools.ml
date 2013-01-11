@@ -227,7 +227,7 @@ let text_of_action _loc  psl  rtvar act tvar = with expr
         match s.pattern with
         [ None | Some {:patt@_| _ |} -> {| fun _ -> $txt |}
         | Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
-            let p = make_ctyp_patt s.styp tvar p in  {| fun $p -> $txt |}
+            let p = make_ctyp_patt s.styp tvar {:patt| $(id:(p:>ident)) |} in  {| fun $p -> $txt |}
         | Some p when FanAst.is_irrefut_patt p ->
             let p = make_ctyp_patt s.styp tvar p in
             {| fun $p -> $txt |}

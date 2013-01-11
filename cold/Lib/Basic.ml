@@ -11,7 +11,7 @@ let x ?(off= 0)  (i : int) =
   else
     (let base = let open Char in ((code 'a') + off) |> chr in
      (String.of_char base) ^ (string_of_int i))
-let xid ?(off= 0)  (i : int) = (`Lid (_loc, (x ~off i)) : ident )
+let xid ?(off= 0)  (i : int) = `Lid (_loc, (x ~off i))
 let allx ?(off= 0)  i = "all_" ^ (x ~off i)
 let allxid ?(off= 0)  i = `Lid (_loc, (allx ~off i))
 let check_valid str =

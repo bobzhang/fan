@@ -1,4 +1,5 @@
 open LibUtil
+open Ast
 module MetaLoc =
   struct
     let meta_loc_patt _loc _ = `Id (_loc, (`Lid (_loc, "loc")))
@@ -22,72 +23,74 @@ let _ =
                                (_loc, (`Uid (_loc, "FanLoc")),
                                  (`Lid (_loc, "ghost")))))))),
                   (MetaAst.Expr.meta_str_item _loc ast))))))
-let add_debug_expr e =
-  let _loc = FanAst.loc_of_expr e in
-  let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
-  `Try
-    (_loc, e,
-      (`McOr
-         (_loc,
-           (`Case
-              (_loc,
-                (`Alias
-                   (_loc,
-                     (`PaOrp
-                        (_loc,
-                          (`Id
-                             (_loc,
-                               (`IdAcc
-                                  (_loc, (`Uid (_loc, "XStream")),
-                                    (`Uid (_loc, "Failure")))))),
-                          (`Id (_loc, (`Uid (_loc, "Exit")))))),
-                     (`Id (_loc, (`Lid (_loc, "exc")))))), (`Nil _loc),
-                (`ExApp
-                   (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
-                     (`Id (_loc, (`Lid (_loc, "exc")))))))),
-           (`Case
-              (_loc, (`Id (_loc, (`Lid (_loc, "exc")))), (`Nil _loc),
-                (`Seq
-                   (_loc,
-                     (`Sem
-                        (_loc,
-                          (`IfThenElse
-                             (_loc,
-                               (`ExApp
-                                  (_loc,
-                                    (`Id
-                                       (_loc,
-                                         (`IdAcc
-                                            (_loc, (`Uid (_loc, "Debug")),
-                                              (`Lid (_loc, "mode")))))),
-                                    (`Str (_loc, "exc")))),
-                               (`ExApp
-                                  (_loc,
-                                    (`ExApp
-                                       (_loc,
-                                         (`Id
-                                            (_loc,
-                                              (`IdAcc
-                                                 (_loc,
-                                                   (`Uid (_loc, "Format")),
-                                                   (`Lid (_loc, "eprintf")))))),
-                                         (`Str
-                                            (_loc,
-                                              (FanAst.safe_string_escaped msg))))),
-                                    (`ExApp
-                                       (_loc,
-                                         (`Id
-                                            (_loc,
-                                              (`IdAcc
-                                                 (_loc,
-                                                   (`Uid (_loc, "Printexc")),
-                                                   (`Lid (_loc, "to_string")))))),
-                                         (`Id (_loc, (`Lid (_loc, "exc")))))))),
-                               (`Id (_loc, (`Uid (_loc, "()")))))),
-                          (`ExApp
-                             (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
-                               (`Id (_loc, (`Lid (_loc, "exc")))))))))))))))
-let rec map_match_case =
+let add_debug_expr (e : expr) =
+  (let _loc = FanAst.loc_of_expr e in
+   let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
+   `Try
+     (_loc, e,
+       (`McOr
+          (_loc,
+            (`Case
+               (_loc,
+                 (`Alias
+                    (_loc,
+                      (`PaOrp
+                         (_loc,
+                           (`Id
+                              (_loc,
+                                (`IdAcc
+                                   (_loc, (`Uid (_loc, "XStream")),
+                                     (`Uid (_loc, "Failure")))))),
+                           (`Id (_loc, (`Uid (_loc, "Exit")))))),
+                      (`Lid (_loc, "exc")))), (`Nil _loc),
+                 (`ExApp
+                    (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
+                      (`Id (_loc, (`Lid (_loc, "exc")))))))),
+            (`Case
+               (_loc, (`Id (_loc, (`Lid (_loc, "exc")))), (`Nil _loc),
+                 (`Seq
+                    (_loc,
+                      (`Sem
+                         (_loc,
+                           (`IfThenElse
+                              (_loc,
+                                (`ExApp
+                                   (_loc,
+                                     (`Id
+                                        (_loc,
+                                          (`IdAcc
+                                             (_loc, (`Uid (_loc, "Debug")),
+                                               (`Lid (_loc, "mode")))))),
+                                     (`Str (_loc, "exc")))),
+                                (`ExApp
+                                   (_loc,
+                                     (`ExApp
+                                        (_loc,
+                                          (`Id
+                                             (_loc,
+                                               (`IdAcc
+                                                  (_loc,
+                                                    (`Uid (_loc, "Format")),
+                                                    (`Lid (_loc, "eprintf")))))),
+                                          (`Str
+                                             (_loc,
+                                               (FanAst.safe_string_escaped
+                                                  msg))))),
+                                     (`ExApp
+                                        (_loc,
+                                          (`Id
+                                             (_loc,
+                                               (`IdAcc
+                                                  (_loc,
+                                                    (`Uid (_loc, "Printexc")),
+                                                    (`Lid (_loc, "to_string")))))),
+                                          (`Id (_loc, (`Lid (_loc, "exc")))))))),
+                                (`Id (_loc, (`Uid (_loc, "()")))))),
+                           (`ExApp
+                              (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
+                                (`Id (_loc, (`Lid (_loc, "exc"))))))))))))))) : 
+  expr )
+let rec map_match_case: match_case -> match_case =
   function
   | `McOr (_loc,m1,m2) ->
       `McOr (_loc, (map_match_case m1), (map_match_case m2))

@@ -220,7 +220,9 @@ FanConfig.antiquotations := true;
   internal_patt "patt":
   {
    "as"
-     [ S{p1} ; "as"; S{p2} -> {| ($p1 as $p2) |}]  
+     [
+      S{p1} ; "as"; (* S{p2} *)a_lident{s} -> (* `Alias (_loc,p1,s) *)
+        {| ($p1 as $s) |} ]
      "|"
      [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
      "simple"

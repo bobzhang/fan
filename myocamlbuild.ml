@@ -332,6 +332,7 @@ module Driver = struct
   let infer_dparsetree = infer_with_error_channel ["-c";"-dparsetree"] "infer_dparsetree"
   let infer_dtypedtree = infer_with_error_channel ["-c"; "-dtypedtree"] "infer_dtypedtree"
   let infer_instr =  infer_with_error_channel ["-dinstr"] "infer_instr"
+  let infer_dsource = infer_with_error_channel ["-dsource"] "infer_source"
   let infer_dclambda =  infer_with_error_channel
       ~ocamlc:Options.ocamlopt ["-dclambda"] "infer_dclambda"
   let infer_dcmm = infer_with_error_channel
@@ -392,6 +393,11 @@ open Driver;;
    rule "ocaml: ml & ml.depends  -> .dclambda"
      ~prod:"%.dclambda" ~deps:["%.ml";"%.ml.depends"]
      (infer_dclambda "%.ml" "%.dclambda");
+
+   rule "ocaml: ml & ml.depends  -> .dsource"
+     ~prod:"%.dsource" ~deps:["%.ml";"%.ml.depends"]
+     (infer_dsource "%.ml" "%.dsource");
+   
    rule "ocaml: ml & ml.depends  -> .dcmm"
      ~prod:"%.dcmm" ~deps:["%.ml";"%.ml.depends"]
      (infer_dcmm "%.ml" "%.dcmm");

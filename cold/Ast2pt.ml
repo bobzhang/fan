@@ -60,64 +60,66 @@ let long_uident_noloc i =
   | (i,`app) -> i
   | _ -> error (loc_of_ident i) "uppercase identifier expected"
 let long_uident i = with_loc (long_uident_noloc i) (loc_of_ident i)
-let rec ctyp_long_id_prefix t =
-  match t with
-  | `Id (_loc,i) -> ident_noloc i
-  | `TyApp (_loc,m1,m2) ->
-      let li1 = ctyp_long_id_prefix m1 in
-      let li2 = ctyp_long_id_prefix m2 in Lapply (li1, li2)
-  | t -> error (loc_of_ctyp t) "invalid module expression"
-let ctyp_long_id t =
-  match t with
-  | `Id (_loc,i) -> (false, (long_type_ident i))
-  | `TyApp (loc,_,_) -> error loc "invalid type name"
-  | `TyCls (_,i) -> (true, (ident i))
-  | t -> error (loc_of_ctyp t) "invalid type"
+let rec ctyp_long_id_prefix (t : ctyp) =
+  (match t with
+   | `Id (_loc,i) -> ident_noloc i
+   | `TyApp (_loc,m1,m2) ->
+       let li1 = ctyp_long_id_prefix m1 in
+       let li2 = ctyp_long_id_prefix m2 in Lapply (li1, li2)
+   | t -> error (loc_of_ctyp t) "invalid module expression" : Longident.t )
+let ctyp_long_id (t : ctyp) =
+  (match t with
+   | `Id (_loc,i) -> (false, (long_type_ident i))
+   | `TyApp (_loc,_,_) -> error _loc "invalid type name"
+   | `TyCls (_,i) -> (true, (ident i))
+   | t -> error (loc_of_ctyp t) "invalid type" : (bool* Longident.t
+                                                   Location.loc) )
 let predef_option loc =
   `Id (loc, (`IdAcc (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
-let rec ctyp =
+let rec ctyp: ctyp -> Parsetree.core_type =
   function
-  | `Id (loc,i) ->
-      let li = long_type_ident i in mktyp loc (Ptyp_constr (li, []))
-  | `Alias (loc,t1,t2) ->
+  | `Id (_loc,i) ->
+      let li = long_type_ident i in mktyp _loc (Ptyp_constr (li, []))
+  | `Alias (_loc,t1,t2) ->
       let (t,i) =
         match (t1, t2) with
         | (t,`TyQuo (_,s)) -> (t, s)
         | (`TyQuo (_,s),t) -> (t, s)
-        | _ -> error loc "invalid alias type" in
-      mktyp loc (Ptyp_alias ((ctyp t), i))
-  | `Any loc -> mktyp loc Ptyp_any
-  | `TyApp (loc,_,_) as f ->
+        | _ -> error _loc "invalid alias type" in
+      mktyp _loc (Ptyp_alias ((ctyp t), i))
+  | `Any _loc -> mktyp _loc Ptyp_any
+  | `TyApp (_loc,_,_) as f ->
       let (f,al) = Ctyp.view_app [] f in
       let (is_cls,li) = ctyp_long_id f in
       if is_cls
-      then mktyp loc (Ptyp_class (li, (List.map ctyp al), []))
-      else mktyp loc (Ptyp_constr (li, (List.map ctyp al)))
+      then mktyp _loc (Ptyp_class (li, (List.map ctyp al), []))
+      else mktyp _loc (Ptyp_constr (li, (List.map ctyp al)))
   | `TyArr (loc,`TyLab (_,lab,t1),t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
   | `TyArr (loc,`TyOlb (loc1,lab,t1),t2) ->
       let t1 = `TyApp (loc1, (predef_option loc1), t1) in
       mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
   | `TyArr (loc,t1,t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
-  | `TyObj (loc,fl,`RvNil _) -> mktyp loc (Ptyp_object (meth_list fl []))
-  | `TyObj (loc,fl,`RowVar _) ->
-      mktyp loc (Ptyp_object (meth_list fl [mkfield loc Pfield_var]))
+  | `TyObj (_loc,fl,`RvNil _) -> mktyp _loc (Ptyp_object (meth_list fl []))
+  | `TyObj (_loc,fl,`RowVar _) ->
+      mktyp _loc (Ptyp_object (meth_list fl [mkfield _loc Pfield_var]))
   | `TyCls (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
-  | `Package (loc,pt) ->
-      let (i,cs) = package_type pt in mktyp loc (Ptyp_package (i, cs))
+  | `Package (_loc,pt) ->
+      let (i,cs) = package_type pt in mktyp _loc (Ptyp_package (i, cs))
   | `TyPol (loc,t1,t2) ->
       mktyp loc (Ptyp_poly ((Ctyp.to_var_list t1), (ctyp t2)))
   | `TyQuo (loc,s) -> mktyp loc (Ptyp_var s)
   | `Tup (loc,`Sta (_,t1,t2)) ->
       mktyp loc
         (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
-  | `TyVrnEq (loc,t) -> mktyp loc (Ptyp_variant ((row_field t), true, None))
-  | `TyVrnSup (loc,t) ->
-      mktyp loc (Ptyp_variant ((row_field t), false, None))
-  | `TyVrnInf (loc,t) ->
-      mktyp loc (Ptyp_variant ((row_field t), true, (Some [])))
-  | `TyVrnInfSup (loc,t,t') ->
-      mktyp loc
+  | `TyVrnEq (_loc,t) ->
+      mktyp _loc (Ptyp_variant ((row_field t), true, None))
+  | `TyVrnSup (_loc,t) ->
+      mktyp _loc (Ptyp_variant ((row_field t), false, None))
+  | `TyVrnInf (_loc,t) ->
+      mktyp _loc (Ptyp_variant ((row_field t), true, (Some [])))
+  | `TyVrnInfSup (_loc,t,t') ->
+      mktyp _loc
         (Ptyp_variant ((row_field t), true, (Some (Ctyp.name_tags t'))))
   | `TyLab (loc,_,_) -> error loc "labelled type not allowed here"
   | `TyMan (loc,_,_) -> error loc "manifest type not allowed here"
@@ -135,7 +137,7 @@ let rec ctyp =
   | `TyOfAmp (_,_,_)|`TyAmp (_,_,_)|`Sta (_,_,_)|`Com (_,_,_)|`TyVrn (_,_)
     |`TyQuM (_,_)|`TyQuP (_,_)|`TyDcl (_,_,_,_,_)|`TyAnP _|`TyAnM _
     |`TyTypePol (_,_,_)|`TyObj (_,_,`Ant _)|`Nil _|`Tup (_,_) -> assert false
-and row_field =
+and row_field: ctyp -> row_field list =
   function
   | `Nil _loc -> []
   | `TyVrn (_loc,i) -> [Rtag (i, true, [])]
@@ -145,22 +147,26 @@ and row_field =
       [Rtag (i, false, (List.map ctyp (list_of_ctyp t [])))]
   | `Or (_loc,t1,t2) -> (row_field t1) @ (row_field t2)
   | t -> [Rinherit (ctyp t)]
-and meth_list fl acc =
-  match fl with
-  | `Nil _loc -> acc
-  | `TySem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
-  | `TyCol (_loc,`Id (_,`Lid (_,lab)),t) ->
-      (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
-  | _ -> assert false
-and package_type_constraints wc acc =
-  match wc with
-  | `Nil _loc -> acc
-  | `TypeEq (_loc,`Id (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
-  | `And (_loc,wc1,wc2) ->
-      package_type_constraints wc1 (package_type_constraints wc2 acc)
-  | _ ->
-      error (loc_of_with_constr wc)
-        "unexpected `with constraint' for a package type"
+and meth_list (fl : ctyp) (acc : core_field_type list) =
+  (match fl with
+   | `Nil _loc -> acc
+   | `TySem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
+   | `TyCol (_loc,`Id (_,`Lid (_,lab)),t) ->
+       (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
+   | _ -> assert false : core_field_type list )
+and package_type_constraints (wc : with_constr)
+  (acc : (Longident.t Asttypes.loc* core_type) list) =
+  (match wc with
+   | `Nil _loc -> acc
+   | `TypeEq (_loc,`Id (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
+   | `And (_loc,wc1,wc2) ->
+       package_type_constraints wc1 (package_type_constraints wc2 acc)
+   | _ ->
+       error (loc_of_with_constr wc)
+         "unexpected `with constraint' for a package type" : (Longident.t
+                                                               Asttypes.loc*
+                                                               core_type)
+                                                               list )
 and package_type: module_type -> package_type =
   function
   | `MtWit (_loc,`Id (_,i),wc) ->
@@ -184,45 +190,49 @@ let mkprivate =
   | `Private _loc -> Private
   | `PrNil _loc -> Public
   | _ -> assert false
-let mktrecord =
+let mktrecord:
+  ctyp -> (string Asttypes.loc* Asttypes.mutable_flag* core_type* loc) =
   function
-  | `TyCol (loc,`Id (_,`Lid (sloc,s)),`Mutable (_,t)) ->
-      ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), loc)
-  | `TyCol (loc,`Id (_,`Lid (sloc,s)),t) ->
-      ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), loc)
+  | `TyCol (_loc,`Id (_,`Lid (sloc,s)),`Mutable (_,t)) ->
+      ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), _loc)
+  | `TyCol (_loc,`Id (_,`Lid (sloc,s)),t) ->
+      ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), _loc)
   | _ -> assert false
-let mkvariant =
+let mkvariant:
+  ctyp -> (string Asttypes.loc* core_type list* core_type option* loc) =
   function
-  | `Id (loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, loc)
-  | `Of (loc,`Id (_,`Uid (sloc,s)),t) ->
-      ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])), None, loc)
-  | `TyCol (loc,`Id (_,`Uid (sloc,s)),`TyArr (_,t,u)) ->
+  | `Id (_loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, _loc)
+  | `Of (_loc,`Id (_,`Uid (sloc,s)),t) ->
+      ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])), None, _loc)
+  | `TyCol (_loc,`Id (_,`Uid (sloc,s)),`TyArr (_,t,u)) ->
       ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])),
-        (Some (ctyp u)), loc)
-  | `TyCol (loc,`Id (_,`Uid (sloc,s)),t) ->
-      ((with_loc s sloc), [], (Some (ctyp t)), loc)
+        (Some (ctyp u)), _loc)
+  | `TyCol (_loc,`Id (_,`Uid (sloc,s)),t) ->
+      ((with_loc s sloc), [], (Some (ctyp t)), _loc)
   | _ -> assert false
-let rec type_decl tl cl loc m pflag =
-  function
-  | `TyMan (_loc,t1,t2) -> type_decl tl cl loc (Some (ctyp t1)) pflag t2
-  | `Private (_loc,t) ->
-      if pflag
-      then error _loc "multiple private keyword used, use only one instead"
-      else type_decl tl cl loc m true t
-  | `TyRec (_loc,t) ->
-      mktype loc tl cl
-        (Ptype_record (List.map mktrecord (list_of_ctyp t [])))
-        (mkprivate' pflag) m
-  | `Sum (_loc,t) ->
-      mktype loc tl cl
-        (Ptype_variant (List.map mkvariant (list_of_ctyp t [])))
-        (mkprivate' pflag) m
-  | t ->
-      if m <> None
-      then error loc "only one manifest type allowed by definition"
-      else
-        (let m = match t with | `Nil _loc -> None | _ -> Some (ctyp t) in
-         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m)
+let rec type_decl (tl : (string Asttypes.loc option* (bool* bool)) list)
+  (cl : (core_type* core_type* Location.t) list) loc m pflag =
+  (function
+   | `TyMan (_loc,t1,t2) -> type_decl tl cl loc (Some (ctyp t1)) pflag t2
+   | `Private (_loc,t) ->
+       if pflag
+       then error _loc "multiple private keyword used, use only one instead"
+       else type_decl tl cl loc m true t
+   | `TyRec (_loc,t) ->
+       mktype loc tl cl
+         (Ptype_record (List.map mktrecord (list_of_ctyp t [])))
+         (mkprivate' pflag) m
+   | `Sum (_loc,t) ->
+       mktype loc tl cl
+         (Ptype_variant (List.map mkvariant (list_of_ctyp t [])))
+         (mkprivate' pflag) m
+   | t ->
+       if m <> None
+       then error loc "only one manifest type allowed by definition"
+       else
+         (let m = match t with | `Nil _loc -> None | _ -> Some (ctyp t) in
+          mktype loc tl cl Ptype_abstract (mkprivate' pflag) m) : ctyp ->
+                                                                    type_declaration )
 let type_decl tl cl t loc = type_decl tl cl loc None false t
 let mkvalue_desc loc t p =
   { pval_type = (ctyp t); pval_prim = p; pval_loc = loc }
@@ -236,39 +246,39 @@ let mkmutable =
   | `Mutable _loc -> Mutable
   | `MuNil _loc -> Immutable
   | _ -> assert false
-let paolab lab p =
-  match (lab, p) with
-  | ("",(`Id (_loc,`Lid (_,i))|`PaTyc (_loc,`Id (_,`Lid (_,i)),_))) -> i
-  | ("",p) -> error (loc_of_patt p) "bad ast in label"
-  | _ -> lab
-let opt_private_ctyp =
+let paolab (lab : string) (p : patt) =
+  (match (lab, p) with
+   | ("",(`Id (_loc,`Lid (_,i))|`PaTyc (_loc,`Id (_,`Lid (_,i)),_))) -> i
+   | ("",p) -> error (loc_of_patt p) "bad ast in label"
+   | _ -> lab : string )
+let opt_private_ctyp: ctyp -> (type_kind* Asttypes.private_flag* core_type) =
   function
   | `Private (_loc,t) -> (Ptype_abstract, Private, (ctyp t))
   | t -> (Ptype_abstract, Public, (ctyp t))
-let rec type_parameters t acc =
+let rec type_parameters (t : ctyp) acc =
   match t with
   | `TyApp (_loc,t1,t2) -> type_parameters t1 (type_parameters t2 acc)
   | `TyQuP (_loc,s) -> (s, (true, false)) :: acc
   | `TyQuM (_loc,s) -> (s, (false, true)) :: acc
   | `TyQuo (_loc,s) -> (s, (false, false)) :: acc
   | _ -> assert false
-let rec optional_type_parameters t acc =
+let rec optional_type_parameters (t : ctyp) acc =
   match t with
   | `TyApp (_loc,t1,t2) ->
       optional_type_parameters t1 (optional_type_parameters t2 acc)
-  | `TyQuP (loc,s) -> ((Some (with_loc s loc)), (true, false)) :: acc
+  | `TyQuP (_loc,s) -> ((Some (with_loc s _loc)), (true, false)) :: acc
   | `TyAnP _loc -> (None, (true, false)) :: acc
-  | `TyQuM (loc,s) -> ((Some (with_loc s loc)), (false, true)) :: acc
+  | `TyQuM (_loc,s) -> ((Some (with_loc s _loc)), (false, true)) :: acc
   | `TyAnM _loc -> (None, (false, true)) :: acc
-  | `TyQuo (loc,s) -> ((Some (with_loc s loc)), (false, false)) :: acc
+  | `TyQuo (_loc,s) -> ((Some (with_loc s _loc)), (false, false)) :: acc
   | `Any _loc -> (None, (false, false)) :: acc
   | _ -> assert false
-let rec class_parameters t acc =
+let rec class_parameters (t : ctyp) acc =
   match t with
   | `Com (_loc,t1,t2) -> class_parameters t1 (class_parameters t2 acc)
-  | `TyQuP (loc,s) -> ((with_loc s loc), (true, false)) :: acc
-  | `TyQuM (loc,s) -> ((with_loc s loc), (false, true)) :: acc
-  | `TyQuo (loc,s) -> ((with_loc s loc), (false, false)) :: acc
+  | `TyQuP (_loc,s) -> ((with_loc s _loc), (true, false)) :: acc
+  | `TyQuM (_loc,s) -> ((with_loc s _loc), (false, true)) :: acc
+  | `TyQuo (_loc,s) -> ((with_loc s _loc), (false, false)) :: acc
   | _ -> assert false
 let rec type_parameters_and_type_name t acc =
   match t with
@@ -291,19 +301,19 @@ let mkwithtyp pwith_type loc id_tpl ct =
          ptype_loc = loc;
          ptype_variance = variance
        }))
-let rec mkwithc wc acc =
+let rec mkwithc (wc : with_constr) acc =
   match wc with
   | `Nil _loc -> acc
-  | `TypeEq (loc,id_tpl,ct) ->
-      (mkwithtyp (fun x  -> Pwith_type x) loc id_tpl ct) :: acc
+  | `TypeEq (_loc,id_tpl,ct) ->
+      (mkwithtyp (fun x  -> Pwith_type x) _loc id_tpl ct) :: acc
   | `ModuleEq (_loc,i1,i2) ->
       ((long_uident i1), (Pwith_module (long_uident i2))) :: acc
-  | `TypeSubst (loc,id_tpl,ct) ->
-      (mkwithtyp (fun x  -> Pwith_typesubst x) loc id_tpl ct) :: acc
+  | `TypeSubst (_loc,id_tpl,ct) ->
+      (mkwithtyp (fun x  -> Pwith_typesubst x) _loc id_tpl ct) :: acc
   | `ModuleSubst (_loc,i1,i2) ->
       ((long_uident i1), (Pwith_modsubst (long_uident i2))) :: acc
   | `And (_loc,wc1,wc2) -> mkwithc wc1 (mkwithc wc2 acc)
-  | `Ant (loc,_) -> error loc "bad with constraint (antiquotation)"
+  | `Ant (_loc,_) -> error _loc "bad with constraint (antiquotation)"
 let rec patt_fa al =
   function | `PaApp (_,f,a) -> patt_fa (a :: al) f | f -> (f, al)
 let rec deep_mkrangepat loc c1 c2 =
@@ -325,25 +335,24 @@ let rec mkrangepat loc c1 c2 =
         (Ppat_or
            ((mkghpat loc (Ppat_constant (Const_char c1))),
              (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
-let rec patt =
+let rec patt: patt -> pattern =
   function
-  | `Id (loc,`Lid (_,("true"|"false" as txt))) ->
-      let p = Ppat_construct ({ txt = (Lident txt); loc }, None, false) in
-      mkpat loc p
-  | `Id (loc,`Lid (sloc,s)) -> mkpat loc (Ppat_var (with_loc s sloc))
-  | `Id (loc,i) ->
-      let p = Ppat_construct ((long_uident i), None, false) in mkpat loc p
-  | `Alias (loc,p1,p2) ->
-      let (p,i) =
-        match (p1, p2) with
-        | (p,`Id (_loc,`Lid (sloc,s))) -> (p, (with_loc s sloc))
-        | (`Id (_loc,`Lid (sloc,s)),p) -> (p, (with_loc s sloc))
-        | _ -> error loc "invalid alias pattern" in
-      mkpat loc (Ppat_alias ((patt p), i))
+  | `Id (_loc,`Lid (_,("true"|"false" as txt))) ->
+      let p =
+        Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) in
+      mkpat _loc p
+  | `Id (_loc,`Lid (sloc,s)) -> mkpat _loc (Ppat_var (with_loc s sloc))
+  | `Id (_loc,i) ->
+      let p = Ppat_construct ((long_uident i), None, false) in mkpat _loc p
+  | `Alias (_loc,p1,x) ->
+      (match x with
+       | `Lid (sloc,s) ->
+           mkpat _loc (Ppat_alias ((patt p1), (with_loc s sloc)))
+       | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | `Any loc -> mkpat loc Ppat_any
-  | `PaApp (loc,`Id (_,`Uid (sloc,s)),`PaTup (_,`Any loc_any)) ->
-      mkpat loc
+  | `Any _loc -> mkpat _loc Ppat_any
+  | `PaApp (_loc,`Id (_,`Uid (sloc,s)),`PaTup (_,`Any loc_any)) ->
+      mkpat _loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
   | `PaApp (loc,_,_) as f ->
@@ -428,7 +437,7 @@ let rec patt =
   | `PaMod (loc,m) -> mkpat loc (Ppat_unpack (with_loc m loc))
   | `PaEq (_,_,_)|`Sem (_,_,_)|`PaCom (_,_,_)|`Nil _ as p ->
       error (loc_of_patt p) "invalid pattern"
-and mklabpat =
+and mklabpat: patt -> (Longident.t Asttypes.loc* pattern) =
   function
   | `PaEq (_loc,i,p) -> ((ident i), (patt p))
   | p -> error (loc_of_patt p) "invalid pattern"
@@ -437,7 +446,7 @@ let override_flag loc =
   | `Override _loc -> Override
   | `OvNil _loc -> Fresh
   | _ -> error loc "antiquotation not allowed here"
-let rec expr =
+let rec expr: expr -> expression =
   function
   | `ExAcc (_loc,_,_)|`Id (_loc,`IdAcc (_,_,_)) as e ->
       let (e,l) =
@@ -681,27 +690,29 @@ and binding x acc =
   | `Bind (_loc,p,e) -> ((patt p), (expr e)) :: acc
   | `Nil _loc -> acc
   | _ -> assert false
-and match_case x acc =
-  match x with
-  | `McOr (_loc,x,y) -> match_case x (match_case y acc)
-  | `Case (_loc,p,w,e) -> ((patt p), (when_expr e w)) :: acc
-  | `Nil _loc -> acc
-  | _ -> assert false
-and when_expr e w =
-  match w with
-  | `Nil _loc -> expr e
-  | w -> mkexp (loc_of_expr w) (Pexp_when ((expr w), (expr e)))
-and mklabexp x acc =
-  match x with
-  | `Sem (_loc,x,y) -> mklabexp x (mklabexp y acc)
-  | `RecBind (_loc,i,e) -> ((ident i), (expr e)) :: acc
-  | _ -> assert false
-and mkideexp x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `Sem (_loc,x,y) -> mkideexp x (mkideexp y acc)
-  | `RecBind (_loc,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
-  | _ -> assert false
+and match_case (x : match_case) (acc : (pattern* expression) list) =
+  (match x with
+   | `McOr (_loc,x,y) -> match_case x (match_case y acc)
+   | `Case (_loc,p,w,e) -> ((patt p), (when_expr e w)) :: acc
+   | `Nil _loc -> acc
+   | _ -> assert false : (pattern* expression) list )
+and when_expr (e : expr) (w : expr) =
+  (match w with
+   | `Nil _loc -> expr e
+   | w -> mkexp (loc_of_expr w) (Pexp_when ((expr w), (expr e))) : expression )
+and mklabexp (x : rec_binding)
+  (acc : (Longident.t Asttypes.loc* expression) list) =
+  (match x with
+   | `Sem (_loc,x,y) -> mklabexp x (mklabexp y acc)
+   | `RecBind (_loc,i,e) -> ((ident i), (expr e)) :: acc
+   | _ -> assert false : (Longident.t Asttypes.loc* expression) list )
+and mkideexp (x : rec_binding) (acc : (string Asttypes.loc* expression) list)
+  =
+  (match x with
+   | `Nil _loc -> acc
+   | `Sem (_loc,x,y) -> mkideexp x (mkideexp y acc)
+   | `RecBind (_loc,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
+   | _ -> assert false : (string Asttypes.loc* expression) list )
 and mktype_decl x acc =
   match x with
   | `And (_loc,x,y) -> mktype_decl x (mktype_decl y acc)
