@@ -11,13 +11,13 @@ let apply () =
       stream_patt_comp_err_list stream_begin stream_end stream_patt
       parser_case parser_case_list stream_expr stream_quot; 
     expr: Level "top"
-        [ "parser";  OPT [ `UID(n) -> n]  {name}; OPT parser_ipatt{po}; parser_case_list{pcl}
+        [ "parser";  OPT [ `Uid(n) -> n]  {name}; OPT parser_ipatt{po}; parser_case_list{pcl}
           ->
             match name with
             [ Some o ->
               Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cparser _loc po pcl)
             | None -> cparser _loc po pcl]
-        | "match"; S{e}; "with"; "parser";  OPT [`UID(n) -> n ] {name}; OPT parser_ipatt{po};
+        | "match"; S{e}; "with"; "parser";  OPT [`Uid(n) -> n ] {name}; OPT parser_ipatt{po};
           parser_case_list{pcl}
           ->
             match name with
@@ -44,7 +44,7 @@ let apply () =
      parser_case:
      [ "[<"; stream_patt{sp}; stream_end; OPT parser_ipatt{po}; "->"; expr{e}
         ->   (sp, po, e) ] 
-     stream_begin: [ "[<"; OPT [ "!"; `UID(n)->n]{name} -> name  ]   
+     stream_begin: [ "[<"; OPT [ "!"; `Uid(n)->n]{name} -> name  ]   
      stream_end:   [ ">]" -> () ] 
      stream_quot:  [ "'" -> () ]
      stream_expr:  [ expr{e} -> e ] 

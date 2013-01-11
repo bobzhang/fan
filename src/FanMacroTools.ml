@@ -24,15 +24,15 @@ let define ~expr ~patt eo x  = begin
   [ Some ([], e) ->
     {:extend|Gram
         expr: Level "simple"
-          [ `UID $x -> (new FanAst.reloc _loc)#expr e ]
+          [ `Uid $x -> (new FanAst.reloc _loc)#expr e ]
         patt: Level "simple"
-          [ `UID $x ->
+          [ `Uid $x ->
             let p = Expr.substp _loc [] e
             in (new FanAst.reloc _loc)#patt p ] |}
   | Some (sl, e) ->
       {:extend| Gram
         expr: Level "apply"
-        [ `UID $x; S{param} ->
+        [ `Uid $x; S{param} ->
           let el =  match param with 
             [ {:expr| ($tup:e) |} -> FanAst.list_of_expr e []
             | e -> [e] ]  in
@@ -42,7 +42,7 @@ let define ~expr ~patt eo x  = begin
           else
             incorrect_number _loc el sl ]
         patt: Level "simple"
-        [ `UID $x; S{param} ->
+        [ `Uid $x; S{param} ->
           let pl = match param with
             [ {:patt| ($tup:p) |} -> FanAst.list_of_patt p []
             | p -> [p] ] in
@@ -61,8 +61,8 @@ let undef ~expr ~patt x =
     begin
       let eo = List.assoc x !defined in
       match eo with
-        [ Some ([], _) -> {:delete| Gram expr: [`UID $x ]  patt: [`UID $x ] |}
-        | Some (_, _) ->  {:delete| Gram expr: [`UID $x; S ] patt: [`UID $x; S] |}
+        [ Some ([], _) -> {:delete| Gram expr: [`Uid $x ]  patt: [`Uid $x ] |}
+        | Some (_, _) ->  {:delete| Gram expr: [`Uid $x; S ] patt: [`Uid $x; S] |}
         | None -> () ];
         defined := List.remove x !defined;
     end

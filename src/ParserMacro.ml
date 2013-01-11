@@ -68,7 +68,7 @@ let apply () = begin
     | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]  
     endif: [ "END" -> () | "ENDIF" -> () ]
     opt_macro_value:
-    [ "("; L1 [ `LID x -> x ] SEP ","{pl}; ")"; "="; expr{e} -> Some (pl, e)
+    [ "("; L1 [ `Lid x -> x ] SEP ","{pl}; ")"; "="; expr{e} -> Some (pl, e)
     | "="; expr{e} -> Some ([], e)
     | -> None ]
 
@@ -77,7 +77,7 @@ let apply () = begin
       if is_defined i then e1 else e2
     | "IFNDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
         if is_defined i then e2 else e1
-    | "DEFINE"; `LID i; "="; expr{def}; "IN"; expr{body} ->
+    | "DEFINE"; `Lid i; "="; expr{def}; "IN"; expr{body} ->
         (new Expr.subst _loc [(i, def)])#expr body ] 
     patt:
     [ "IFDEF"; uident{i}; "THEN"; patt{p1};  "ELSE"; patt{p2}; endif ->
@@ -85,7 +85,7 @@ let apply () = begin
     | "IFNDEF"; uident{i}; "THEN"; patt{p1}; "ELSE"; patt{p2}; endif ->
         if is_defined i then p2 else p1 ]
     uident:
-    [ `UID i -> i ]
+    [ `Uid i -> i ]
     (* dirty hack to allow polymorphic variants using the introduced keywords.FIXME *)
 
     expr: Before "simple"

@@ -31,12 +31,12 @@ let apply () =
            `Sopt
              (Gram.srules expr
                 [([`Stoken
-                     (((function | `UID _ -> true | _ -> false)),
-                       (`Normal, "`UID _"))],
+                     (((function | `Uid _ -> true | _ -> false)),
+                       (`Normal, "`Uid _"))],
                    (Gram.mk_action
                       (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                          match __fan_0 with
-                         | `UID n -> (n : 'e__1 )
+                         | `Uid n -> (n : 'e__1 )
                          | _ -> assert false)))]);
            `Sopt (`Snterm (Gram.obj (parser_ipatt : 'parser_ipatt Gram.t )));
            `Snterm (Gram.obj (parser_case_list : 'parser_case_list Gram.t ))],
@@ -55,12 +55,12 @@ let apply () =
           `Sopt
             (Gram.srules expr
                [([`Stoken
-                    (((function | `UID _ -> true | _ -> false)),
-                      (`Normal, "`UID _"))],
+                    (((function | `Uid _ -> true | _ -> false)),
+                      (`Normal, "`Uid _"))],
                   (Gram.mk_action
                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match __fan_0 with
-                        | `UID n -> (n : 'e__2 )
+                        | `Uid n -> (n : 'e__2 )
                         | _ -> assert false)))]);
           `Sopt (`Snterm (Gram.obj (parser_ipatt : 'parser_ipatt Gram.t )));
           `Snterm (Gram.obj (parser_case_list : 'parser_case_list Gram.t ))],
@@ -144,13 +144,13 @@ let apply () =
              (Gram.srules stream_begin
                 [([`Skeyword "!";
                   `Stoken
-                    (((function | `UID _ -> true | _ -> false)),
-                      (`Normal, "`UID _"))],
+                    (((function | `Uid _ -> true | _ -> false)),
+                      (`Normal, "`Uid _"))],
                    (Gram.mk_action
                       (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t) 
                          ->
                          match __fan_1 with
-                         | `UID n -> (n : 'e__3 )
+                         | `Uid n -> (n : 'e__3 )
                          | _ -> assert false)))])],
             (Gram.mk_action
                (fun (name : 'e__3 option)  _  (_loc : FanLoc.t)  ->

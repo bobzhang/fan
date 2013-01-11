@@ -32,15 +32,15 @@ let _ =
               (["FOLD1"; "SEP"],
                 [Gram.srules declare_regexp
                    [([`Stoken
-                        (((function | `LID _ -> true | _ -> false)),
-                          (`Normal, "`LID _"));
+                        (((function | `Lid _ -> true | _ -> false)),
+                          (`Normal, "`Lid _"));
                      `Skeyword ":";
                      `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
                       (Gram.mk_action
                          (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t]) 
                             (_loc : FanLoc.t)  ->
                             match __fan_0 with
-                            | `LID x -> ((x, r) : 'e__2 )
+                            | `Lid x -> ((x, r) : 'e__2 )
                             | _ -> assert false)))];
                 `Skeyword ";"],
                 (Gram.Action.mk
@@ -125,11 +125,11 @@ let _ =
                 (FanLexTools.chars (LexSet.difference LexSet.any cc) : 
                 'regexp ))));
         ([`Stoken
-            (((function | `LID _ -> true | _ -> false)), (`Normal, "`LID _"))],
+            (((function | `Lid _ -> true | _ -> false)), (`Normal, "`Lid _"))],
           (Gram.mk_action
              (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                 match __fan_0 with
-                | `LID x ->
+                | `Lid x ->
                     ((try Hashtbl.find FanLexTools.named_regexps x
                       with
                       | Not_found  ->

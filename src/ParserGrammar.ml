@@ -86,20 +86,20 @@ FanConfig.antiquotations := true;
     {:expr| begin $list:rest end |}   ]
 
   qualuid:
-  [ `UID x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
-  | `UID x -> {:ident| $uid:x |} ] 
+  [ `Uid x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
+  | `Uid x -> {:ident| $uid:x |} ] 
 
   qualid:
-  [ `UID x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
-  | `UID i -> {:ident| $uid:i |}
-  | `LID i -> {:ident| $lid:i |} ]
+  [ `Uid x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
+  | `Uid i -> {:ident| $uid:i |}
+  | `Lid i -> {:ident| $lid:i |} ]
 
   t_qualid:
-  [ `UID x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
-  | `UID x; "."; `LID "t" -> {:ident| $uid:x |} ] 
+  [ `Uid x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
+  | `Uid x; "."; `Lid "t" -> {:ident| $uid:x |} ] 
 
   locals:
-  [ `LID "local"; ":"; L1 name{sl}; ";" -> sl ]
+  [ `Lid "local"; ":"; L1 name{sl}; ";" -> sl ]
   name:[ qualid{il} -> mk_name _loc il ] 
 
   entry_name:
@@ -118,10 +118,10 @@ FanConfig.antiquotations := true;
          mk_entry ~name:p ~pos ~levels
      end]
   position:
-  [ `UID ("First"|"Last" as x ) ->   {:expr| `$uid:x |}
-  | `UID ("Before" | "After" | "Level" as x) ; string{n} ->
+  [ `Uid ("First"|"Last" as x ) ->   {:expr| `$uid:x |}
+  | `Uid ("Before" | "After" | "Level" as x) ; string{n} ->
     {:expr| `$uid:x  $n |}
-  | `UID x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
+  | `Uid x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
   level_list:
   [ "{"; L1 level {ll}; "}" -> ll  | level {l} -> [l]] (* FIXME L1 does not work here *)
 
@@ -131,8 +131,8 @@ FanConfig.antiquotations := true;
    (* FIXME a conflict {:extend|Gram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
 
   assoc:
-  [ `UID ("LA"|"RA"|"NA" as x) ->     {:expr| `$uid:x |} 
-  | `UID x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
+  [ `Uid ("LA"|"RA"|"NA" as x) ->     {:expr| `$uid:x |} 
+  | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
   rule_list:
   [ "["; "]" -> [] | "["; L1 rule SEP "|"{rules}; "]" ->  retype_rule_list_without_patterns _loc rules ]
@@ -146,7 +146,7 @@ FanConfig.antiquotations := true;
     match p with [Some _ -> {(s) with pattern = p } | None -> s]  ] 
 
   symbol:
-  [ `UID ("L0"| "L1" as x); S{s}; OPT [`UID "SEP"; symbol{t} -> t ]{sep } ->
+  [ `Uid ("L0"| "L1" as x); S{s}; OPT [`Uid "SEP"; symbol{t} -> t ]{sep } ->
     let () = check_not_tok s in
     (* let styp = `STapp _loc (`STlid _loc "list") s.styp in *)
     let styp = {:ctyp| list  $(s.styp) |} in 
@@ -155,20 +155,20 @@ FanConfig.antiquotations := true;
          ["L0" -> false | "L1" -> true
          | _ -> failwithf "only (L0|L1) allowed here"]) sep s in
        mk_symbol ~text ~styp ~pattern:None
-  |`UID "OPT"; S{s}  ->
+  |`Uid "OPT"; S{s}  ->
       let () = check_not_tok s in
       let styp = {:ctyp| option $(s.styp) |} in 
       let text = `TXopt _loc s.text in
       mk_symbol  ~text ~styp ~pattern:None
-  |`UID "TRY"; S{s} ->
+  |`Uid "TRY"; S{s} ->
       let text = `TXtry _loc s.text in
       mk_symbol  ~text ~styp:(s.styp) ~pattern:None
-  | `UID "PEEK"; S{s} ->
+  | `Uid "PEEK"; S{s} ->
       let text = `TXpeek _loc s.text in
       mk_symbol ~text ~styp:(s.styp) ~pattern:None
-  | `UID "S" ->
+  | `Uid "S" ->
       mk_symbol  ~text:(`TXself _loc)  ~styp:(`Self _loc "S") ~pattern:None
-  |`UID "N" ->
+  |`Uid "N" ->
       mk_symbol  ~text:(`TXnext _loc)   ~styp:(`Self _loc "N") ~pattern:None
   | "["; L1 rule SEP "|"{rl}; "]" ->
       let rl = retype_rule_list_without_patterns _loc rl in
@@ -184,7 +184,7 @@ FanConfig.antiquotations := true;
           List.fold_left (fun acc (x,y) -> {:expr| $acc && ( $x = $y ) |} )
             {:expr| $x = $y |} ys  in 
         mk_tok _loc ~restrict ~pattern:p (`Tok _loc) ]
-        (* | `UID ("UID"|"LID" as x) ; `ANT ((""),s) -> *)
+        (* | `Uid ("Uid"|"Lid" as x) ; `Ant ((""),s) -> *)
         (*    let i = AntiquotSyntax.parse_ident _loc s in *)
         (*    let lid = gen_lid () in  *)
         (*    let pattern = {:patt| `$x $lid:lid  |} in *)
@@ -196,9 +196,9 @@ FanConfig.antiquotations := true;
         
     | `STR (_, s) ->
         mk_symbol  ~text:(`TXkwd _loc s) ~styp:(`Tok _loc) ~pattern:None
-    | name{n};  OPT [`UID "Level"; `STR (_, s) -> s ]{lev} ->
+    | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
         mk_symbol  ~text:(`TXnterm _loc n lev) ~styp:({:ctyp|'$(n.tvar)|}) ~pattern:None
-    | `ANT(("nt"|""),s); OPT [`UID "Level"; `STR (_, s) -> s ]{lev} ->
+    | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
         let i = (* AntiquotSyntax. *)parse_ident _loc s in
         let n = mk_name _loc i in
         mk_symbol ~text:(`TXnterm _loc n lev) ~styp:({:ctyp|'$(n.tvar)|}) ~pattern:None
@@ -207,9 +207,9 @@ FanConfig.antiquotations := true;
 
   simple_patt "patt":
    ["`"; a_ident{s}  -> {| `$s |}
-   |"`"; a_ident{v}; `ANT (("" | "anti" as n) ,s) -> {| `$v $(anti:mk_anti ~c:"patt" n s)|}
+   |"`"; a_ident{v}; `Ant (("" | "anti" as n) ,s) -> {| `$v $(anti:mk_anti ~c:"patt" n s)|}
    |"`"; a_ident{s}; `STR(_,v) -> {| `$s $str:v |}
-   |"`"; a_ident{s}; `LID x  ->  {| `$s $lid:x |}
+   |"`"; a_ident{s}; `Lid x  ->  {| `$s $lid:x |}
    |"`"; a_ident{s}; "_" ->  {| `$s _ |}           
    |"`"; a_ident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
        match v with
@@ -228,23 +228,23 @@ FanConfig.antiquotations := true;
      "simple"
      [ `STR(_,s) -> {| $str:s|}
      | "_" -> {| _ |}
-     | `LID x   ->  {| $lid:x|}
+     | `Lid x   ->  {| $lid:x|}
      | "("; S{p}; ")" -> p] }
 
   pattern:
-  [ `LID i -> {:patt| $lid:i |}
+  [ `Lid i -> {:patt| $lid:i |}
   | "_" -> {:patt| _ |}
   | "("; pattern{p}; ")" -> {:patt| $p |}
   | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
   string:
   [ `STR (_, s) -> {:expr| $str:s |}
-  | `ANT ("", s) -> parse_expr _loc s ] (*suport antiquot for string*)
+  | `Ant ("", s) -> parse_expr _loc s ] (*suport antiquot for string*)
 
 
   symbol: 
-  [`UID ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; S{s} ->
+  [`Uid ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; S{s} ->
      sfold _loc [x] f e s
-   |`UID ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; S{s};`UID ("SEP" as y); symbol{sep}  ->
+   |`Uid ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; S{s};`Uid ("SEP" as y); symbol{sep}  ->
        sfold ~sep _loc [x;y] f e s  ]
 
   simple_expr:

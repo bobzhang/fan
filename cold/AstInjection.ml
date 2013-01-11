@@ -17,12 +17,12 @@ let _ =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `LID _ -> true | _ -> false)),
-                (`Normal, "`LID _"))],
+              (((function | `Lid _ -> true | _ -> false)),
+                (`Normal, "`Lid _"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `LID x ->
+                  | `Lid x ->
                       ((try Hashtbl.find inject_expr_tbl x
                         with
                         | Not_found  ->
@@ -33,12 +33,12 @@ let _ =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `LID _ -> true | _ -> false)),
-                (`Normal, "`LID _"))],
+              (((function | `Lid _ -> true | _ -> false)),
+                (`Normal, "`Lid _"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `LID x ->
+                  | `Lid x ->
                       ((try Hashtbl.find inject_str_item_tbl x
                         with
                         | Not_found  ->
@@ -49,12 +49,12 @@ let _ =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `LID _ -> true | _ -> false)),
-                (`Normal, "`LID _"))],
+              (((function | `Lid _ -> true | _ -> false)),
+                (`Normal, "`Lid _"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `LID x ->
+                  | `Lid x ->
                       ((try Hashtbl.find inject_class_str_item_tbl x
                         with
                         | Not_found  ->

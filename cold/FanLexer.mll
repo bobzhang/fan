@@ -276,8 +276,8 @@ rule token c = parse
        | blank + as x                                                   { `BLANKS x }
        | "~" (lowercase identchar * as x) ':'                            { `LABEL x }
        | "?" (lowercase identchar * as x) ':'                         { `OPTLABEL x }
-       | lowercase identchar * as x                                     { `LID x }
-       | uppercase identchar * as x                                     { `UID x }
+       | lowercase identchar * as x                                     { `Lid x }
+       | uppercase identchar * as x                                     { `Uid x }
        | int_literal  ('l'|'L'|'n')? as x
            {try cvt_int_literal x with Failure _ -> err (Literal_overflow x) (FanLoc.of_lexbuf lexbuf)}
        | float_literal as f
@@ -469,8 +469,8 @@ and quotation c = parse
 (* FIXME should support more flexible syntax ${:str|x hgoshgo|} $"Aghioho" *)
 and dollar c = parse
     | ('`'? (identchar*|['.' '!']+) as name) ':' (antifollowident as x)
-        {move_start_p (String.length name + 1) c;  `ANT(name,x)}
-    | lident as x    { `ANT("",x) }
+        {move_start_p (String.length name + 1) c;  `Ant(name,x)}
+    | lident as x    { `Ant("",x) }
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {
       antiquot name 0 {(c) with loc = FanLoc.move_pos (3+String.length name) c.loc} c.lexbuf
       }
@@ -482,7 +482,7 @@ and antiquot name depth c  = parse
     | ')'                      {
       if depth = 0 then
         let () = set_start_p c in (* only cares about FanLoc.start_pos *)
-        `ANT(name, buff_contents c)
+        `Ant(name, buff_contents c)
       else store_parse (antiquot name (depth-1)) c }
     | '(' {    store_parse (antiquot name (depth+1)) c }
         

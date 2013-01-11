@@ -19,7 +19,7 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
         else ();
         Hashtbl.add FanLexTools.named_regexps x r
     end) (())
-        [`LID x ; ":"; regexp{r} -> (x,r)]  SEP ";" -> {:str_item| |}]
+        [`Lid x ; ":"; regexp{r} -> (x,r)]  SEP ";" -> {:str_item| |}]
     regexps:
     ["{" ; L1 regexp SEP ";"{xs};"}"  -> Array.of_list xs ]  
     regexp:
@@ -35,7 +35,7 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
      |`STR(s,_) -> FanLexTools.of_string s
      |"["; ch_class{cc};"]" -> FanLexTools.chars cc
      | "[^"; ch_class{cc}; "]" -> FanLexTools.chars (LexSet.difference LexSet.any cc)         
-     |`LID x ->
+     |`Lid x ->
          try  Hashtbl.find FanLexTools.named_regexps x
          with Not_found ->
            failwithf "referenced to unbound named  regexp  `%s'" x  ]}

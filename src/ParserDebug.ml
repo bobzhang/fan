@@ -31,7 +31,7 @@ let mk_debug _loc m fmt section args =
 let apply () =   
 {:extend| Gram local: start_debug end_or_in ;  
   expr "expr":
-   [ start_debug{m}; `LID section; `STR (_, fmt);
+   [ start_debug{m}; `Lid section; `STR (_, fmt);
      L0 expr Level "."{args}; end_or_in{x} ->
     match (x, debug_mode section) with
     [ (None,   false) -> {| () |}
@@ -42,8 +42,8 @@ let apply () =
   [ "end" -> None
   | "in"; expr{e} -> Some e  ] 
   start_debug:
-  [ `LID "debug" -> None
-  | `LID "camlp4_debug" -> Some "Camlp4"  ]  |};
+  [ `Lid "debug" -> None
+  | `Lid "camlp4_debug" -> Some "Camlp4"  ]  |};
 
 AstParsers.register_parser ("debug",apply);  
   

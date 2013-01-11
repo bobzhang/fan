@@ -254,90 +254,90 @@ let _ =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `UID _ -> true | _ -> false)),
-                (`Normal, "`UID _"));
+              (((function | `Uid _ -> true | _ -> false)),
+                (`Normal, "`Uid _"));
            `Skeyword ".";
            `Sself],
             (Gram.mk_action
                (fun (xs : 'qualuid)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID x ->
+                  | `Uid x ->
                       (`IdAcc (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                   | _ -> assert false)));
          ([`Stoken
-             (((function | `UID _ -> true | _ -> false)),
-               (`Normal, "`UID _"))],
+             (((function | `Uid _ -> true | _ -> false)),
+               (`Normal, "`Uid _"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID x -> (`Uid (_loc, x) : 'qualuid )
+                 | `Uid x -> (`Uid (_loc, x) : 'qualuid )
                  | _ -> assert false)))])]);
   Gram.extend (qualid : 'qualid Gram.t )
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `UID _ -> true | _ -> false)),
-                (`Normal, "`UID _"));
+              (((function | `Uid _ -> true | _ -> false)),
+                (`Normal, "`Uid _"));
            `Skeyword ".";
            `Sself],
             (Gram.mk_action
                (fun (xs : 'qualid)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID x ->
+                  | `Uid x ->
                       (`IdAcc (_loc, (`Uid (_loc, x)), xs) : 'qualid )
                   | _ -> assert false)));
          ([`Stoken
-             (((function | `UID _ -> true | _ -> false)),
-               (`Normal, "`UID _"))],
+             (((function | `Uid _ -> true | _ -> false)),
+               (`Normal, "`Uid _"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID i -> (`Uid (_loc, i) : 'qualid )
+                 | `Uid i -> (`Uid (_loc, i) : 'qualid )
                  | _ -> assert false)));
          ([`Stoken
-             (((function | `LID _ -> true | _ -> false)),
-               (`Normal, "`LID _"))],
+             (((function | `Lid _ -> true | _ -> false)),
+               (`Normal, "`Lid _"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `LID i -> (`Lid (_loc, i) : 'qualid )
+                 | `Lid i -> (`Lid (_loc, i) : 'qualid )
                  | _ -> assert false)))])]);
   Gram.extend (t_qualid : 't_qualid Gram.t )
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `UID _ -> true | _ -> false)),
-                (`Normal, "`UID _"));
+              (((function | `Uid _ -> true | _ -> false)),
+                (`Normal, "`Uid _"));
            `Skeyword ".";
            `Sself],
             (Gram.mk_action
                (fun (xs : 't_qualid)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID x ->
+                  | `Uid x ->
                       (`IdAcc (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
                   | _ -> assert false)));
          ([`Stoken
-             (((function | `UID _ -> true | _ -> false)),
-               (`Normal, "`UID _"));
+             (((function | `Uid _ -> true | _ -> false)),
+               (`Normal, "`Uid _"));
           `Skeyword ".";
           `Stoken
-            (((function | `LID "t" -> true | _ -> false)),
-              (`Normal, "`LID \"t\""))],
+            (((function | `Lid "t" -> true | _ -> false)),
+              (`Normal, "`Lid \"t\""))],
            (Gram.mk_action
               (fun (__fan_2 : [> FanToken.t])  _  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match (__fan_2, __fan_0) with
-                 | (`LID "t",`UID x) -> (`Uid (_loc, x) : 't_qualid )
+                 | (`Lid "t",`Uid x) -> (`Uid (_loc, x) : 't_qualid )
                  | _ -> assert false)))])]);
   Gram.extend (locals : 'locals Gram.t )
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `LID "local" -> true | _ -> false)),
-                (`Normal, "`LID \"local\""));
+              (((function | `Lid "local" -> true | _ -> false)),
+                (`Normal, "`Lid \"local\""));
            `Skeyword ":";
            `Slist1 (`Snterm (Gram.obj (name : 'name Gram.t )));
            `Skeyword ";"],
@@ -345,7 +345,7 @@ let _ =
                (fun _  (sl : 'name list)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `LID "local" -> (sl : 'locals )
+                  | `Lid "local" -> (sl : 'locals )
                   | _ -> assert false)))])]);
   Gram.extend (name : 'name Gram.t )
     (None,
@@ -394,34 +394,34 @@ let _ =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `UID ("First"|"Last") -> true | _ -> false)),
-                (`Normal, "`UID (\"First\"|\"Last\")"))],
+              (((function | `Uid ("First"|"Last") -> true | _ -> false)),
+                (`Normal, "`Uid (\"First\"|\"Last\")"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID ("First"|"Last" as x) ->
+                  | `Uid ("First"|"Last" as x) ->
                       (`ExVrn (_loc, x) : 'position )
                   | _ -> assert false)));
          ([`Stoken
              (((function
-                | `UID ("Before"|"After"|"Level") -> true
+                | `Uid ("Before"|"After"|"Level") -> true
                 | _ -> false)),
-               (`Normal, "`UID (\"Before\"|\"After\"|\"Level\")"));
+               (`Normal, "`Uid (\"Before\"|\"After\"|\"Level\")"));
           `Snterm (Gram.obj (string : 'string Gram.t ))],
            (Gram.mk_action
               (fun (n : 'string)  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID ("Before"|"After"|"Level" as x) ->
+                 | `Uid ("Before"|"After"|"Level" as x) ->
                      (`ExApp (_loc, (`ExVrn (_loc, x)), n) : 'position )
                  | _ -> assert false)));
          ([`Stoken
-             (((function | `UID _ -> true | _ -> false)),
-               (`Normal, "`UID _"))],
+             (((function | `Uid _ -> true | _ -> false)),
+               (`Normal, "`Uid _"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID x ->
+                 | `Uid x ->
                      (failwithf
                         "%s is not the right position:(First|Last) or (Before|After|Level)"
                         x : 'position )
@@ -461,21 +461,21 @@ let _ =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `UID ("LA"|"RA"|"NA") -> true | _ -> false)),
-                (`Normal, "`UID (\"LA\"|\"RA\"|\"NA\")"))],
+              (((function | `Uid ("LA"|"RA"|"NA") -> true | _ -> false)),
+                (`Normal, "`Uid (\"LA\"|\"RA\"|\"NA\")"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID ("LA"|"RA"|"NA" as x) ->
+                  | `Uid ("LA"|"RA"|"NA" as x) ->
                       (`ExVrn (_loc, x) : 'assoc )
                   | _ -> assert false)));
          ([`Stoken
-             (((function | `UID _ -> true | _ -> false)),
-               (`Normal, "`UID _"))],
+             (((function | `Uid _ -> true | _ -> false)),
+               (`Normal, "`Uid _"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID x ->
+                 | `Uid x ->
                      (failwithf
                         "%s is not a correct associativity:(LA|RA|NA)" x : 
                      'assoc )
@@ -530,26 +530,26 @@ let _ =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `UID ("L0"|"L1") -> true | _ -> false)),
-                (`Normal, "`UID (\"L0\"|\"L1\")"));
+              (((function | `Uid ("L0"|"L1") -> true | _ -> false)),
+                (`Normal, "`Uid (\"L0\"|\"L1\")"));
            `Sself;
            `Sopt
              (Gram.srules symbol
                 [([`Stoken
-                     (((function | `UID "SEP" -> true | _ -> false)),
-                       (`Normal, "`UID \"SEP\""));
+                     (((function | `Uid "SEP" -> true | _ -> false)),
+                       (`Normal, "`Uid \"SEP\""));
                   `Snterm (Gram.obj (symbol : 'symbol Gram.t ))],
                    (Gram.mk_action
                       (fun (t : 'symbol)  (__fan_0 : [> FanToken.t]) 
                          (_loc : FanLoc.t)  ->
                          match __fan_0 with
-                         | `UID "SEP" -> (t : 'e__9 )
+                         | `Uid "SEP" -> (t : 'e__9 )
                          | _ -> assert false)))])],
             (Gram.mk_action
                (fun (sep : 'e__9 option)  (s : 'symbol) 
                   (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID ("L0"|"L1" as x) ->
+                  | `Uid ("L0"|"L1" as x) ->
                       (let () = check_not_tok s in
                        let styp =
                          `TyApp
@@ -565,14 +565,14 @@ let _ =
                        mk_symbol ~text ~styp ~pattern:None : 'symbol )
                   | _ -> assert false)));
          ([`Stoken
-             (((function | `UID "OPT" -> true | _ -> false)),
-               (`Normal, "`UID \"OPT\""));
+             (((function | `Uid "OPT" -> true | _ -> false)),
+               (`Normal, "`Uid \"OPT\""));
           `Sself],
            (Gram.mk_action
               (fun (s : 'symbol)  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID "OPT" ->
+                 | `Uid "OPT" ->
                      (let () = check_not_tok s in
                       let styp =
                         `TyApp
@@ -582,48 +582,48 @@ let _ =
                       mk_symbol ~text ~styp ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Stoken
-             (((function | `UID "TRY" -> true | _ -> false)),
-               (`Normal, "`UID \"TRY\""));
+             (((function | `Uid "TRY" -> true | _ -> false)),
+               (`Normal, "`Uid \"TRY\""));
           `Sself],
            (Gram.mk_action
               (fun (s : 'symbol)  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID "TRY" ->
+                 | `Uid "TRY" ->
                      (let text = `TXtry (_loc, (s.text)) in
                       mk_symbol ~text ~styp:(s.styp) ~pattern:None : 
                      'symbol )
                  | _ -> assert false)));
          ([`Stoken
-             (((function | `UID "PEEK" -> true | _ -> false)),
-               (`Normal, "`UID \"PEEK\""));
+             (((function | `Uid "PEEK" -> true | _ -> false)),
+               (`Normal, "`Uid \"PEEK\""));
           `Sself],
            (Gram.mk_action
               (fun (s : 'symbol)  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID "PEEK" ->
+                 | `Uid "PEEK" ->
                      (let text = `TXpeek (_loc, (s.text)) in
                       mk_symbol ~text ~styp:(s.styp) ~pattern:None : 
                      'symbol )
                  | _ -> assert false)));
          ([`Stoken
-             (((function | `UID "S" -> true | _ -> false)),
-               (`Normal, "`UID \"S\""))],
+             (((function | `Uid "S" -> true | _ -> false)),
+               (`Normal, "`Uid \"S\""))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID "S" ->
+                 | `Uid "S" ->
                      (mk_symbol ~text:(`TXself _loc)
                         ~styp:(`Self (_loc, "S")) ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Stoken
-             (((function | `UID "N" -> true | _ -> false)),
-               (`Normal, "`UID \"N\""))],
+             (((function | `Uid "N" -> true | _ -> false)),
+               (`Normal, "`Uid \"N\""))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `UID "N" ->
+                 | `Uid "N" ->
                      (mk_symbol ~text:(`TXnext _loc)
                         ~styp:(`Self (_loc, "N")) ~pattern:None : 'symbol )
                  | _ -> assert false)));
@@ -679,8 +679,8 @@ let _ =
           `Sopt
             (Gram.srules symbol
                [([`Stoken
-                    (((function | `UID "Level" -> true | _ -> false)),
-                      (`Normal, "`UID \"Level\""));
+                    (((function | `Uid "Level" -> true | _ -> false)),
+                      (`Normal, "`Uid \"Level\""));
                  `Stoken
                    (((function | `STR (_,_) -> true | _ -> false)),
                      (`Normal, "`STR (_,_)"))],
@@ -688,20 +688,20 @@ let _ =
                      (fun (__fan_1 : [> FanToken.t]) 
                         (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match (__fan_1, __fan_0) with
-                        | (`STR (_,s),`UID "Level") -> (s : 'e__10 )
+                        | (`STR (_,s),`Uid "Level") -> (s : 'e__10 )
                         | _ -> assert false)))])],
            (Gram.mk_action
               (fun (lev : 'e__10 option)  (n : 'name)  (_loc : FanLoc.t)  ->
                  (mk_symbol ~text:(`TXnterm (_loc, n, lev))
                     ~styp:(`TyQuo (_loc, (n.tvar))) ~pattern:None : 'symbol ))));
          ([`Stoken
-             (((function | `ANT (("nt"|""),_) -> true | _ -> false)),
-               (`Normal, "`ANT ((\"nt\"|\"\"),_)"));
+             (((function | `Ant (("nt"|""),_) -> true | _ -> false)),
+               (`Normal, "`Ant ((\"nt\"|\"\"),_)"));
           `Sopt
             (Gram.srules symbol
                [([`Stoken
-                    (((function | `UID "Level" -> true | _ -> false)),
-                      (`Normal, "`UID \"Level\""));
+                    (((function | `Uid "Level" -> true | _ -> false)),
+                      (`Normal, "`Uid \"Level\""));
                  `Stoken
                    (((function | `STR (_,_) -> true | _ -> false)),
                      (`Normal, "`STR (_,_)"))],
@@ -709,13 +709,13 @@ let _ =
                      (fun (__fan_1 : [> FanToken.t]) 
                         (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match (__fan_1, __fan_0) with
-                        | (`STR (_,s),`UID "Level") -> (s : 'e__11 )
+                        | (`STR (_,s),`Uid "Level") -> (s : 'e__11 )
                         | _ -> assert false)))])],
            (Gram.mk_action
               (fun (lev : 'e__11 option)  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `ANT (("nt"|""),s) ->
+                 | `Ant (("nt"|""),s) ->
                      (let i = parse_ident _loc s in
                       let n = mk_name _loc i in
                       mk_symbol ~text:(`TXnterm (_loc, n, lev))
@@ -735,13 +735,13 @@ let _ =
          ([`Skeyword "`";
           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
           `Stoken
-            (((function | `ANT ((""|"anti"),_) -> true | _ -> false)),
-              (`Normal, "`ANT ((\"\"|\"anti\"),_)"))],
+            (((function | `Ant ((""|"anti"),_) -> true | _ -> false)),
+              (`Normal, "`Ant ((\"\"|\"anti\"),_)"))],
            (Gram.mk_action
               (fun (__fan_2 : [> FanToken.t])  (v : 'a_ident)  _ 
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
-                 | `ANT ((""|"anti" as n),s) ->
+                 | `Ant ((""|"anti" as n),s) ->
                      (`PaApp
                         (_loc, (`PaVrn (_loc, v)),
                           (`Ant (_loc, (mk_anti ~c:"patt" n s)))) : 'simple_patt )
@@ -762,12 +762,12 @@ let _ =
          ([`Skeyword "`";
           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
           `Stoken
-            (((function | `LID _ -> true | _ -> false)), (`Normal, "`LID _"))],
+            (((function | `Lid _ -> true | _ -> false)), (`Normal, "`Lid _"))],
            (Gram.mk_action
               (fun (__fan_2 : [> FanToken.t])  (s : 'a_ident)  _ 
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
-                 | `LID x ->
+                 | `Lid x ->
                      (`PaApp
                         (_loc, (`PaVrn (_loc, s)),
                           (`Id (_loc, (`Lid (_loc, x))))) : 'simple_patt )
@@ -824,11 +824,11 @@ let _ =
           (Gram.mk_action
              (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'internal_patt ))));
         ([`Stoken
-            (((function | `LID _ -> true | _ -> false)), (`Normal, "`LID _"))],
+            (((function | `Lid _ -> true | _ -> false)), (`Normal, "`Lid _"))],
           (Gram.mk_action
              (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                 match __fan_0 with
-                | `LID x -> (`Id (_loc, (`Lid (_loc, x))) : 'internal_patt )
+                | `Lid x -> (`Id (_loc, (`Lid (_loc, x))) : 'internal_patt )
                 | _ -> assert false)));
         ([`Skeyword "("; `Sself; `Skeyword ")"],
           (Gram.mk_action
@@ -838,12 +838,12 @@ let _ =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `LID _ -> true | _ -> false)),
-                (`Normal, "`LID _"))],
+              (((function | `Lid _ -> true | _ -> false)),
+                (`Normal, "`Lid _"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `LID i -> (`Id (_loc, (`Lid (_loc, i))) : 'pattern )
+                  | `Lid i -> (`Id (_loc, (`Lid (_loc, i))) : 'pattern )
                   | _ -> assert false)));
          ([`Skeyword "_"],
            (Gram.mk_action
@@ -875,19 +875,19 @@ let _ =
                   | `STR (_,s) -> (`Str (_loc, s) : 'string )
                   | _ -> assert false)));
          ([`Stoken
-             (((function | `ANT ("",_) -> true | _ -> false)),
-               (`Normal, "`ANT (\"\",_)"))],
+             (((function | `Ant ("",_) -> true | _ -> false)),
+               (`Normal, "`Ant (\"\",_)"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `ANT ("",s) -> (parse_expr _loc s : 'string )
+                 | `Ant ("",s) -> (parse_expr _loc s : 'string )
                  | _ -> assert false)))])]);
   Gram.extend (symbol : 'symbol Gram.t )
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `UID ("FOLD0"|"FOLD1") -> true | _ -> false)),
-                (`Normal, "`UID (\"FOLD0\"|\"FOLD1\")"));
+              (((function | `Uid ("FOLD0"|"FOLD1") -> true | _ -> false)),
+                (`Normal, "`Uid (\"FOLD0\"|\"FOLD1\")"));
            `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
            `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
            `Sself],
@@ -895,25 +895,25 @@ let _ =
                (fun (s : 'symbol)  (e : 'simple_expr)  (f : 'simple_expr) 
                   (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `UID ("FOLD0"|"FOLD1" as x) ->
+                  | `Uid ("FOLD0"|"FOLD1" as x) ->
                       (sfold _loc [x] f e s : 'symbol )
                   | _ -> assert false)));
          ([`Stoken
-             (((function | `UID ("FOLD0"|"FOLD1") -> true | _ -> false)),
-               (`Normal, "`UID (\"FOLD0\"|\"FOLD1\")"));
+             (((function | `Uid ("FOLD0"|"FOLD1") -> true | _ -> false)),
+               (`Normal, "`Uid (\"FOLD0\"|\"FOLD1\")"));
           `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
           `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
           `Sself;
           `Stoken
-            (((function | `UID "SEP" -> true | _ -> false)),
-              (`Normal, "`UID \"SEP\""));
+            (((function | `Uid "SEP" -> true | _ -> false)),
+              (`Normal, "`Uid \"SEP\""));
           `Sself],
            (Gram.mk_action
               (fun (sep : 'symbol)  (__fan_4 : [> FanToken.t])  (s : 'symbol)
                   (e : 'simple_expr)  (f : 'simple_expr) 
                  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match (__fan_4, __fan_0) with
-                 | (`UID ("SEP" as y),`UID ("FOLD0"|"FOLD1" as x)) ->
+                 | (`Uid ("SEP" as y),`Uid ("FOLD0"|"FOLD1" as x)) ->
                      (sfold ~sep _loc [x; y] f e s : 'symbol )
                  | _ -> assert false)))])]);
   Gram.extend (simple_expr : 'simple_expr Gram.t )

@@ -22,17 +22,17 @@ let register_inject_class_str_item (k,f) =
   
 {:extend| Gram
   inject_expr:
-  [`LID x ->
+  [`Lid x ->
      try Hashtbl.find inject_expr_tbl x 
      with [Not_found -> failwithf "inject.expr %s not found" x ]]
 
   inject_str_item:
-  [`LID x ->
+  [`Lid x ->
      try Hashtbl.find inject_str_item_tbl x
      with [Not_found -> failwithf "inject.expr %s not found" x ]]
 
   inject_class_str_item:
-  [`LID x ->
+  [`Lid x ->
      try Hashtbl.find inject_class_str_item_tbl x
      with [Not_found -> failwithf "inject.expr %s not found" x ]]
 |};

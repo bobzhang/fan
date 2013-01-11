@@ -241,9 +241,9 @@ let g = Gram.create_gram ();
 with expr
     {:extend|Gram
       fan_quot:
-      ["derive";"("; L1 [`LID x -> x | `UID x  -> x]{plugins}; ")" ->
+      ["derive";"("; L1 [`Lid x -> x | `Uid x  -> x]{plugins}; ")" ->
           begin List.iter plugin_add plugins; {| |}  end
-      | "unload"; L1 [`LID x  -> x | `UID x -> x ] SEP ","{plugins} ->
+      | "unload"; L1 [`Lid x  -> x | `Uid x -> x ] SEP ","{plugins} ->
           begin List.iter plugin_remove plugins ; {| |} end
       | "clear" ->
           begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end

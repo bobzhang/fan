@@ -31,7 +31,7 @@ let rec infix_kwds_filter (__strm : _ XStream.t) =
               | Some (`KEYWORD ")",_) ->
                   (XStream.junk __strm;
                    (let xs = __strm in
-                    XStream.lcons (fun _  -> ((`LID i), _loc))
+                    XStream.lcons (fun _  -> ((`Lid i), _loc))
                       (XStream.slazy (fun _  -> infix_kwds_filter xs))))
               | _ -> raise (XStream.Error "")))
         | _ ->

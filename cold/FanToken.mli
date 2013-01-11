@@ -8,8 +8,8 @@ type quotation ={
 type t =
   [  `KEYWORD of string
   | `SYMBOL of string
-  | `LID of string
-  | `UID of string
+  | `Lid of string
+  | `Uid of string
   | `ESCAPED_IDENT of string (* (+)*)
   | `INT of (int * string )
   | `INT32 of (int32 * string )
@@ -21,7 +21,7 @@ type t =
   | `LABEL of string
   | `OPTLABEL of string
   | `QUOTATION of quotation
-  | `ANT of (string * string )
+  | `Ant of (string * string )
   | `COMMENT of string
   | `BLANKS of string
   | `NEWLINE
@@ -47,7 +47,7 @@ type 'a parse = stream -> 'a
 
 type filter = stream -> stream
 
-val print_basic_error: Format.formatter -> error -> unit
+val pp_print_error: Format.formatter -> error -> unit
 
 val string_of_error_msg: error -> string
 

@@ -53,8 +53,8 @@ let apply () =
       [(None, None,
          [([`Snterm (Gram.obj (start_debug : 'start_debug Gram.t ));
            `Stoken
-             (((function | `LID _ -> true | _ -> false)),
-               (`Normal, "`LID _"));
+             (((function | `Lid _ -> true | _ -> false)),
+               (`Normal, "`Lid _"));
            `Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"));
@@ -65,7 +65,7 @@ let apply () =
                   (__fan_2 : [> FanToken.t])  (__fan_1 : [> FanToken.t]) 
                   (m : 'start_debug)  (_loc : FanLoc.t)  ->
                   match (__fan_2, __fan_1) with
-                  | (`STR (_,fmt),`LID section) ->
+                  | (`STR (_,fmt),`Lid section) ->
                       ((match (x, (debug_mode section)) with
                         | (None ,false ) -> `Id (_loc, (`Uid (_loc, "()")))
                         | (Some e,false ) -> e
@@ -92,19 +92,19 @@ let apply () =
     (None,
       [(None, None,
          [([`Stoken
-              (((function | `LID "debug" -> true | _ -> false)),
-                (`Normal, "`LID \"debug\""))],
+              (((function | `Lid "debug" -> true | _ -> false)),
+                (`Normal, "`Lid \"debug\""))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `LID "debug" -> (None : 'start_debug )
+                  | `Lid "debug" -> (None : 'start_debug )
                   | _ -> assert false)));
          ([`Stoken
-             (((function | `LID "camlp4_debug" -> true | _ -> false)),
-               (`Normal, "`LID \"camlp4_debug\""))],
+             (((function | `Lid "camlp4_debug" -> true | _ -> false)),
+               (`Normal, "`Lid \"camlp4_debug\""))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `LID "camlp4_debug" -> (Some "Camlp4" : 'start_debug )
+                 | `Lid "camlp4_debug" -> (Some "Camlp4" : 'start_debug )
                  | _ -> assert false)))])])
 let _ = AstParsers.register_parser ("debug", apply)

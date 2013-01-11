@@ -268,13 +268,13 @@ let apply () =
             `Slist1sep
               ((Gram.srules opt_macro_value
                   [([`Stoken
-                       (((function | `LID _ -> true | _ -> false)),
-                         (`Normal, "`LID _"))],
+                       (((function | `Lid _ -> true | _ -> false)),
+                         (`Normal, "`Lid _"))],
                      (Gram.mk_action
                         (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
                            ->
                            match __fan_0 with
-                           | `LID x -> (x : 'e__5 )
+                           | `Lid x -> (x : 'e__5 )
                            | _ -> assert false)))]), (`Skeyword ","));
             `Skeyword ")";
             `Skeyword "=";
@@ -312,8 +312,8 @@ let apply () =
                   (if is_defined i then e2 else e1 : 'expr ))));
           ([`Skeyword "DEFINE";
            `Stoken
-             (((function | `LID _ -> true | _ -> false)),
-               (`Normal, "`LID _"));
+             (((function | `Lid _ -> true | _ -> false)),
+               (`Normal, "`Lid _"));
            `Skeyword "=";
            `Sself;
            `Skeyword "IN";
@@ -322,7 +322,7 @@ let apply () =
                (fun (body : 'expr)  _  (def : 'expr)  _ 
                   (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                   match __fan_1 with
-                  | `LID i ->
+                  | `Lid i ->
                       (((new Expr.subst) _loc [(i, def)])#expr body : 
                       'expr )
                   | _ -> assert false)))])]);
@@ -355,12 +355,12 @@ let apply () =
      (None,
        [(None, None,
           [([`Stoken
-               (((function | `UID _ -> true | _ -> false)),
-                 (`Normal, "`UID _"))],
+               (((function | `Uid _ -> true | _ -> false)),
+                 (`Normal, "`Uid _"))],
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `UID i -> (i : 'uident )
+                   | `Uid i -> (i : 'uident )
                    | _ -> assert false)))])]);
    Gram.extend (expr : 'expr Gram.t )
      ((Some (`Before "simple")),

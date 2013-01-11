@@ -185,20 +185,20 @@ let _ =
            `Slist1
              (Gram.srules fan_quot
                 [([`Stoken
-                     (((function | `LID _ -> true | _ -> false)),
-                       (`Normal, "`LID _"))],
+                     (((function | `Lid _ -> true | _ -> false)),
+                       (`Normal, "`Lid _"))],
                    (Gram.mk_action
                       (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                          match __fan_0 with
-                         | `LID x -> (x : 'e__1 )
+                         | `Lid x -> (x : 'e__1 )
                          | _ -> assert false)));
                 ([`Stoken
-                    (((function | `UID _ -> true | _ -> false)),
-                      (`Normal, "`UID _"))],
+                    (((function | `Uid _ -> true | _ -> false)),
+                      (`Normal, "`Uid _"))],
                   (Gram.mk_action
                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match __fan_0 with
-                        | `UID x -> (x : 'e__1 )
+                        | `Uid x -> (x : 'e__1 )
                         | _ -> assert false)))]);
            `Skeyword ")"],
             (Gram.mk_action
@@ -208,20 +208,20 @@ let _ =
           `Slist1sep
             ((Gram.srules fan_quot
                 [([`Stoken
-                     (((function | `LID _ -> true | _ -> false)),
-                       (`Normal, "`LID _"))],
+                     (((function | `Lid _ -> true | _ -> false)),
+                       (`Normal, "`Lid _"))],
                    (Gram.mk_action
                       (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                          match __fan_0 with
-                         | `LID x -> (x : 'e__2 )
+                         | `Lid x -> (x : 'e__2 )
                          | _ -> assert false)));
                 ([`Stoken
-                    (((function | `UID _ -> true | _ -> false)),
-                      (`Normal, "`UID _"))],
+                    (((function | `Uid _ -> true | _ -> false)),
+                      (`Normal, "`Uid _"))],
                   (Gram.mk_action
                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match __fan_0 with
-                        | `UID x -> (x : 'e__2 )
+                        | `Uid x -> (x : 'e__2 )
                         | _ -> assert false)))]), (`Skeyword ","))],
            (Gram.mk_action
               (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->

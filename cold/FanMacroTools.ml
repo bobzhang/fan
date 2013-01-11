@@ -22,12 +22,12 @@ let define ~expr  ~patt  eo x =
             [(None, None,
                [([`Stoken
                     (((function
-                       | `UID __fan__x when x = __fan__x -> true
-                       | _ -> false)), (`Antiquot, "`UID __fan__x"))],
+                       | `Uid __fan__x when x = __fan__x -> true
+                       | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
                   (Gram.mk_action
                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match __fan_0 with
-                        | `UID _ ->
+                        | `Uid _ ->
                             (((new FanAst.reloc) _loc)#expr e : 'expr )
                         | _ -> assert false)))])]);
         Gram.extend (patt : 'patt Gram.t )
@@ -35,12 +35,12 @@ let define ~expr  ~patt  eo x =
             [(None, None,
                [([`Stoken
                     (((function
-                       | `UID __fan__x when x = __fan__x -> true
-                       | _ -> false)), (`Antiquot, "`UID __fan__x"))],
+                       | `Uid __fan__x when x = __fan__x -> true
+                       | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
                   (Gram.mk_action
                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match __fan_0 with
-                        | `UID _ ->
+                        | `Uid _ ->
                             (let p = Expr.substp _loc [] e in
                              ((new FanAst.reloc) _loc)#patt p : 'patt )
                         | _ -> assert false)))])]))
@@ -50,14 +50,14 @@ let define ~expr  ~patt  eo x =
             [(None, None,
                [([`Stoken
                     (((function
-                       | `UID __fan__x when x = __fan__x -> true
-                       | _ -> false)), (`Antiquot, "`UID __fan__x"));
+                       | `Uid __fan__x when x = __fan__x -> true
+                       | _ -> false)), (`Antiquot, "`Uid __fan__x"));
                  `Sself],
                   (Gram.mk_action
                      (fun (param : 'expr)  (__fan_0 : [> FanToken.t]) 
                         (_loc : FanLoc.t)  ->
                         match __fan_0 with
-                        | `UID _ ->
+                        | `Uid _ ->
                             (let el =
                                match param with
                                | `ExTup (_loc,e) -> FanAst.list_of_expr e []
@@ -73,14 +73,14 @@ let define ~expr  ~patt  eo x =
             [(None, None,
                [([`Stoken
                     (((function
-                       | `UID __fan__x when x = __fan__x -> true
-                       | _ -> false)), (`Antiquot, "`UID __fan__x"));
+                       | `Uid __fan__x when x = __fan__x -> true
+                       | _ -> false)), (`Antiquot, "`Uid __fan__x"));
                  `Sself],
                   (Gram.mk_action
                      (fun (param : 'patt)  (__fan_0 : [> FanToken.t]) 
                         (_loc : FanLoc.t)  ->
                         match __fan_0 with
-                        | `UID _ ->
+                        | `Uid _ ->
                             (let pl =
                                match param with
                                | `PaTup (_loc,p) -> FanAst.list_of_patt p []
@@ -102,25 +102,25 @@ let undef ~expr  ~patt  x =
          (Gram.delete_rule expr
             [`Stoken
                (((function
-                  | `UID __fan__x when x = __fan__x -> true
-                  | _ -> false)), (`Antiquot, "`UID __fan__x"))];
+                  | `Uid __fan__x when x = __fan__x -> true
+                  | _ -> false)), (`Antiquot, "`Uid __fan__x"))];
           Gram.delete_rule patt
             [`Stoken
                (((function
-                  | `UID __fan__x when x = __fan__x -> true
-                  | _ -> false)), (`Antiquot, "`UID __fan__x"))])
+                  | `Uid __fan__x when x = __fan__x -> true
+                  | _ -> false)), (`Antiquot, "`Uid __fan__x"))])
      | Some (_,_) ->
          (Gram.delete_rule expr
             [`Stoken
                (((function
-                  | `UID __fan__x when x = __fan__x -> true
-                  | _ -> false)), (`Antiquot, "`UID __fan__x"));
+                  | `Uid __fan__x when x = __fan__x -> true
+                  | _ -> false)), (`Antiquot, "`Uid __fan__x"));
             `Sself];
           Gram.delete_rule patt
             [`Stoken
                (((function
-                  | `UID __fan__x when x = __fan__x -> true
-                  | _ -> false)), (`Antiquot, "`UID __fan__x"));
+                  | `Uid __fan__x when x = __fan__x -> true
+                  | _ -> false)), (`Antiquot, "`Uid __fan__x"));
             `Sself])
      | None  -> ());
     defined := (List.remove x defined.contents)
