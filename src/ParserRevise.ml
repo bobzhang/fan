@@ -567,26 +567,16 @@ let apply () = begin
         | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" -> {| ((module $m) : (module $pt)) |}
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
-        | "("; S{p}; "as"; (* S{p2}; *) a_lident{s}; ")" -> {| ($p as $s )|}
-            (* `Alias (_loc,p,s) *)
-            (* {| ($p as $lid:p2) |} *)
+        | "("; S{p}; "as";  a_lident{s}; ")" -> {| ($p as $s )|}
         | "("; S{p}; ","; comma_patt{pl}; ")" -> {| ($p, $pl) |}
         | "`"; a_ident{s} -> {| ` $s |}
           (* duplicated may be removed later with [patt Level "apply"] *)
         | "#"; type_longident{i} -> {| # $i |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
         | "_" -> {| _ |}
-        | `LABEL i; S{p} ->
-            `Label(_loc,`Lid(_loc,i),p)
-            (* {| ~ $lid:i : $p |} *)
-        | "~"; a_lident{i}; ":"; S{p} -> (* CHANGE *)
-            `Label(_loc,i,p)
-        | "~"; a_lident{i} ->
-            `Label(_loc,i,`Nil _loc)
-        (* | "~"; `Ant ((""|"lid" as n),i); ":"; S{p} -> *)
-        (*     {| ~ $(mk_anti n i) : $p |} *)
-        (* | "~"; `Ant ((""|"lid" as n),i) -> {| ~ $(mk_anti n i) |} *)
-        (* | "~"; `Lid i -> {| ~ $i |} *)
+        | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
+        | "~"; a_lident{i}; ":"; S{p} -> (* CHANGE *) {| ~$i : $p|}
+        | "~"; a_lident{i} -> {| ~$i |}
         | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p
         | "?"; `Ant ((""|"lid" as n),i); ":"; "("; patt_tcon{p}; eq_expr{f}; ")" -> f (mk_anti n i) p
         | "?"; `Lid i ->
@@ -610,13 +600,8 @@ let apply () = begin
         | a_lident{s} -> {| $(id:(s:>ident)) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag                            
         | "_" -> {| _ |}
-        | `LABEL i; S{p} -> (* {| ~ $i : $p |} *)
-            `Label(_loc,`Lid(_loc,i), p)
-        | "~"; a_lident{i};":";S{p} ->
-            `Label(_loc,i,p)
-        (* | "~"; `Ant ((""|"lid" as n),i); ":"; S{p} -> {| ~ $(mk_anti n i) : $p |} *)
-        (* | "~"; `Ant ((""|"lid" as n),i) -> {| ~ $(mk_anti n i) |} *)
-        (* | "~"; `Lid i -> {| ~ $i |} *)
+        | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
+        | "~"; a_lident{i};":";S{p} -> {| ~$i : $p|}
         | "~"; a_lident{i} -> `Label (_loc,i,`Nil _loc)
         | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p
         | "?"; `Ant ((""|"lid" as n),i); ":"; "("; patt_tcon{p}; eq_expr{f}; ")"
