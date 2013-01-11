@@ -220,7 +220,7 @@ let apply () = begin
     | "module"; "type"; a_ident{i} ->  {| module type $i |}
     | "open"; module_longident{i} -> {| open $i |}
     | "type"; type_declaration{t} -> {| type $t |}
-    | "val"; a_LIDENT{i}; ":"; ctyp{t} ->  {| val $i : $t |} (* FIXME*)
+    | "val"; a_lident{i}; ":"; ctyp{t} -> {| val $i : $t |} 
     | "class"; class_description{cd} ->    {| class $cd |}
     | "class"; "type"; class_type_declaration{ctd} ->  {| class type $ctd |} ]
     (* mli entrance *)    

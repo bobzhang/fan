@@ -785,10 +785,14 @@ and sig_item (s : sig_item) (l : signature) =
        (mksig loc (Psig_modtype ((with_loc n loc), si))) :: l
    | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl []))) :: l
-   | `Value (loc,n,t) ->
-       (mksig loc (Psig_value ((with_loc n loc), (mkvalue_desc loc t []))))
-       :: l
-   | `Ant (loc,_) -> error loc "antiquotation in sig_item" : signature )
+   | `Val (loc,n,t) ->
+       (match n with
+        | `Lid (sloc,n) ->
+            (mksig loc
+               (Psig_value ((with_loc n sloc), (mkvalue_desc loc t []))))
+            :: l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+   | `Ant (_loc,_) -> error _loc "antiquotation in sig_item" : signature )
 and module_sig_binding x acc =
   match x with
   | `And (_loc,x,y) -> module_sig_binding x (module_sig_binding y acc)

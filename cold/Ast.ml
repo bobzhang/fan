@@ -86,7 +86,7 @@ and sig_item =
   | `Include of (loc* module_type) | `Module of (loc* string* module_type)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* string* module_type) | `Open of (loc* ident)
-  | `Type of (loc* ctyp) | `Value of (loc* string* ctyp) | ant] 
+  | `Type of (loc* ctyp) | `Val of (loc* alident* ctyp) | ant] 
 and with_constr =
   [ `Nil of loc | `TypeEq of (loc* ctyp* ctyp)
   | `ModuleEq of (loc* ident* ident) | `TypeSubst of (loc* ctyp* ctyp)

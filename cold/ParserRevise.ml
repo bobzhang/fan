@@ -768,12 +768,12 @@ let apply () =
                (fun (t : 'type_declaration)  _  (_loc : FanLoc.t)  ->
                   (`Type (_loc, t) : 'sig_item ))));
           ([`Skeyword "val";
-           `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'ctyp)  _  (i : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
-                  (`Value (_loc, i, t) : 'sig_item ))));
+               (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                  (`Val (_loc, i, t) : 'sig_item ))));
           ([`Skeyword "class";
            `Snterm
              (Gram.obj (class_description : 'class_description Gram.t ))],

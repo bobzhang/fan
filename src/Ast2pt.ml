@@ -6,7 +6,7 @@ open FanUtil;
 open FanAst;
 open ParsetreeHelper;
 
-
+DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
 let mkvirtual = with virtual_flag fun
   [ {| virtual |} -> Virtual
   | {||} -> Concrete
@@ -824,8 +824,13 @@ and sig_item (s:sig_item) (l:signature) :signature =
   | `Open (loc,id) ->
       [mksig loc (Psig_open (long_uident id)) :: l]
   | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
-  | `Value (loc,n,t) -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l]
-  | {@loc| $anti:_ |} -> error loc "antiquotation in sig_item" ]
+  | `Val (loc,n,t) ->
+        match n with
+        [`Lid(sloc,n) ->
+          [mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l]
+        |`Ant(_loc,_) -> ANT_ERROR ] 
+      (* [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l] *)
+  | {| $anti:_ |} -> error _loc "antiquotation in sig_item" ]
 and module_sig_binding x acc = match x with (* module_binding -> (string loc * module_type) list -> (string loc * module_type) list*)
   [ {:module_binding| $x and $y |} ->
     module_sig_binding x (module_sig_binding y acc)

@@ -56,7 +56,7 @@ let filter_type_defs ?qualified  () =
     val mutable type_defs = let _loc = FanLoc.ghost in `Nil _loc
     method! sig_item =
       function
-      | `Value (_loc,_,_)|`Include (_loc,_)|`External (_loc,_,_,_)
+      | `Val (_loc,_,_)|`Include (_loc,_)|`External (_loc,_,_,_)
         |`Exception (_loc,_)|`Class (_loc,_)|`ClassType (_loc,_)
         |`Directive (_loc,_,`Nil _)|`Module (_loc,_,_)|`ModuleType (_loc,_,_)
         |`RecModule (_loc,_)|`Open (_loc,_) -> `Nil _loc

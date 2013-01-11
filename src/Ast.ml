@@ -259,11 +259,11 @@
       (* sg ; sg *)
     | `Sem of (loc * sig_item * sig_item)
       (* # s or # s e *)
-    | `Directive of (loc * (* string *)alident * expr) (* semantics *)
+    | `Directive of (loc * alident * expr) (* semantics *)
       (* exception t *)
     | `Exception of (loc * ctyp)
       (* external s : t = s ... s *)
-    | `External of (loc * alident (* string *) * ctyp * meta_list string)
+    | `External of (loc * alident  * ctyp * meta_list string)
       (* include mt *)
     | `Include of (loc * module_type)
       (* module s : mt *)
@@ -277,7 +277,7 @@
       (* type t *)
     | `Type of (loc * ctyp)
       (* value s : t *)
-    | `Value of (loc * string * ctyp)
+    | (* `Value *) `Val of (loc * alident(* string *) * ctyp)
     | ant (* $s$ *) ]
   and with_constr =
     [= `Nil of loc

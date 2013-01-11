@@ -42,3 +42,4 @@ stats
 stat/
 log
 progress/
+*TAst.ml
