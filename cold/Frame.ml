@@ -325,7 +325,8 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
         extras in
     `CrSem (_loc, body, (FanAst.crSem_of_list items)) in
   let v = Ctyp.mk_obj class_name base body in
-  Hashtbl.iter (fun _  v  -> eprintf "%a" FSig.pp_print_warning_type v) tbl;
+  Hashtbl.iter (fun _  v  -> eprintf "@[%a@]@." FSig.pp_print_warning_type v)
+    tbl;
   (match module_name with
    | None  -> v
    | Some u -> `Module (_loc, u, (`Struct (_loc, v))))

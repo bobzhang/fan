@@ -362,8 +362,7 @@ let apply () = begin
         | `LABEL i; S{e} -> {| ~ $lid:i : $e |}
         (* Same remark for ?a:b *)
         | `OPTLABEL i; S{e} -> {| ? $lid:i : $e |}
-        | "?"; a_lident{i}; ":"; S{e} ->
-            {| ? $i : $e |}
+        | "?"; a_lident{i}; ":"; S{e} -> {| ? $i : $e |}
         | "?"; a_lident{i} -> {| ? $i |} ] 
        "." LA
         [ S{e1}; "."; "("; S{e2}; ")" -> {| $e1 .( $e2 ) |}
@@ -577,14 +576,29 @@ let apply () = begin
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i}; ":"; S{p} -> (* CHANGE *) {| ~$i : $p|}
         | "~"; a_lident{i} -> {| ~$i |}
-        | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p
-        | "?"; `Ant ((""|"lid" as n),i); ":"; "("; patt_tcon{p}; eq_expr{f}; ")" -> f (mk_anti n i) p
-        | "?"; `Lid i ->
-            {| ? $i |}
+        | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" ->
+            `PaOlbi(_loc,`Lid(_loc,i),p,e)
+        | `OPTLABEL i; "("; patt_tcon{p}; ")"  ->
+            `PaOlb(_loc,`Lid(_loc,i),p )
+        | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; "="; expr{e}; ")" ->
+            `PaOlbi(_loc,i,p,e)
+        | "?"; a_lident{i}; ":";"("; patt_tcon{p}; ")"  ->
+            (* `PaOlbi(_loc,i,p,`Nil _loc  ) *) `PaOlb(_loc,i,p)
+
+        (* | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p *)
+        (* | "?"; `Ant ((""|"lid" as n),i); ":"; "("; patt_tcon{p}; eq_expr{f}; ")" -> *)
+        (*     f (mk_anti n i) p *)
+
+        | "?"; (* `Lid i  *)a_lident{i}-> `PaOlb(_loc,i,(`Nil _loc))
+            (* {| ? $i |} *)
             (* `OptLabl (_loc, `Lid(_loc,i), (`Nil _loc)) *)
-        | "?"; `Ant ((""|"lid" as n),i) -> {| ? $(mk_anti n i) |}
-        | "?"; "("; ipatt_tcon{p}; ")" ->   {| ? ($p) |}
-        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" -> {| ? ($p = $e) |} ] }
+        (* | "?"; `Ant ((""|"lid" as n),i) -> {| ? $(mk_anti n i) |} *)
+        | "?"; "("; ipatt_tcon{p}; ")" ->
+            (* {| ? ($p) |} *)
+            `PaOlb(_loc,`Lid(_loc,""), p)
+        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
+            `PaOlbi(_loc,`Lid(_loc,""),p,e)
+            (* {| ? ($p = $e) |} *) ] }
        ipatt:
         [ "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
         | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
@@ -603,13 +617,33 @@ let apply () = begin
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i};":";S{p} -> {| ~$i : $p|}
         | "~"; a_lident{i} -> `Label (_loc,i,`Nil _loc)
-        | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p
-        | "?"; `Ant ((""|"lid" as n),i); ":"; "("; patt_tcon{p}; eq_expr{f}; ")"
-          -> f (mk_anti n i) p
-        | "?"; `Lid i -> {| ? $i |}
-        | "?"; `Ant ((""|"lid" as n),i) -> {| ? $(mk_anti n i) |}
-        | "?"; "("; ipatt_tcon{p}; ")" ->  {| ? ($p) |}
-        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" -> {| ? ($p = $e) |} ]
+              
+
+        | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" ->
+            `PaOlbi(_loc,`Lid(_loc,i),p,e)
+        | `OPTLABEL i; "("; patt_tcon{p}; ")"  ->
+            `PaOlb(_loc,`Lid(_loc,i),p(* ,`Nil _loc *)  )
+              
+        (* | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p *)
+
+        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" ->
+            `PaOlbi(_loc,i,p,e)
+        | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  ->
+            `PaOlb(_loc,i,p )
+              
+        (* | "?"; (\* `Ant ((""|"lid" as n),i) *\)a_lident{i} *)
+        (*       ; ":"; "("; patt_tcon{p}; eq_expr{f}; ")" -> *)
+        (*         f (mk_anti n i) p *)
+        (* | "?"; `Lid i -> {| ? $i |} *)
+        | "?"; a_lident{i} -> `PaOlb(_loc,i,`Nil(_loc))
+        (* | "?"; `Ant ((""|"lid" as n),i) -> {| ? $(mk_anti n i) |} *)
+        | "?"; "("; ipatt_tcon{p}; ")" ->
+            `PaOlb (_loc, `Lid(_loc,""), p)
+            (* {| ? ($p) |} *)
+        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
+            `PaOlbi(_loc,`Lid(_loc,""),p,e)
+            (* {| ? ($p = $e) |} *)
+        ]
        sem_patt:
        [`Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
        | patt{p1}; ";"; S{p2} -> {| $p1; $p2 |} 
@@ -627,8 +661,11 @@ let apply () = begin
        | a_lident{i} -> {|$(id:(i:>ident))|}
        | a_lident{i}; ":"; ctyp{t} -> {| ($(id:(i:>ident)) : $t) |}]
        eq_expr:
-       [ "="; expr{e} -> fun i p -> {| ? $i : ($p = $e) |}
-       | -> fun i p -> {| ? $i : ($p) |} ]
+       [ "="; expr{e} -> fun i p ->  `PaOlbi (_loc, i, p, e)
+         (* {| ? $i : ($p = $e) |} *)
+       | -> fun i p -> `PaOlb(_loc,i,p)
+           (* {| ? $i : ($p) |} *)
+      ]
        comma_ipatt:
        [ S{p1}; ","; S{p2} -> {| $p1, $p2 |}
        | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt," n s) |}

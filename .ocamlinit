@@ -116,3 +116,6 @@ open ParserLex;;
 module O = Obj;;
 open Ast;;
 open L.Expr;;
+
+(* test dump *)
+let t_dump s =  t str_item s |> Ast2pt.str_item;;

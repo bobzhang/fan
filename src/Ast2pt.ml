@@ -591,10 +591,16 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
                [(patt_of_lab loc lab po, when_expr e w)])
           |`Ant(_loc,_) -> ANT_ERROR]
       | {@loc| fun [ $(pat:`PaOlbi (_, lab, p, e1)) when $w -> $e2 ] |} ->
+          let lab = match lab with
+            [`Lid(_loc,l) -> l
+            |`Ant(_loc,_) -> ANT_ERROR] in
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) (Some (expr e1)) [(patt p, when_expr e2 w)])
       | {@loc|fun [ $(pat:`PaOlb (_, lab, p)) when $w -> $e ] |} ->
+          let lab = match lab with
+            [ `Lid(_loc,l) -> l
+            | `Ant (_loc,_) -> ANT_ERROR ] in 
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e w)])
@@ -690,7 +696,8 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
         | {@loc| $_,$_ |} -> error loc "expr, expr: not allowed here"
         | {@loc| $_;$_ |} ->
             error loc "expr; expr: not allowed here, use begin ... end or [|...|] to surround them" (* FIXME *)
-        | `Id (_, _) | `Nil _ as e -> error (loc_of_expr e) "invalid expr" ]
+        | `Id (_, _) | `Nil _ as e ->
+            error (loc_of_expr e) "invalid expr" ]
 and patt_of_lab _loc lab =  fun (* loc -> string -> patt -> pattern *)
   [ {:patt||} -> patt {:patt| $lid:lab |}
   | p -> patt p ]
@@ -1004,9 +1011,13 @@ and class_expr = fun (* class_expr -> class_expr *)
         (Pcl_fun lab None (patt_of_lab loc lab po) (class_expr ce))
       |`Ant(_loc,_) -> ANT_ERROR ]
   | `CeFun (loc, (`PaOlbi (_, lab, p, e)), ce) ->
+      let lab = match lab with [`Lid(_loc,i) -> i | `Ant(_loc,_) -> ANT_ERROR] in
       let lab = paolab lab p in
       mkcl loc (Pcl_fun ("?" ^ lab) (Some (expr e)) (patt p) (class_expr ce))
   | `CeFun (loc, (`PaOlb (_, lab, p)), ce) ->
+      let lab = match lab with
+        [`Lid(_loc,l) -> l
+        |`Ant(_loc,_) -> ANT_ERROR] in
       let lab = paolab lab p in
       mkcl loc
         (Pcl_fun ("?" ^ lab) None (patt_of_lab loc lab p) (class_expr ce))

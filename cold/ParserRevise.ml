@@ -2441,54 +2441,61 @@ let apply () =
                (`Normal, "`OPTLABEL _"));
           `Skeyword "(";
           `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
-          `Snterm (Gram.obj (eq_expr : 'eq_expr Gram.t ));
+          `Skeyword "=";
+          `Snterm (Gram.obj (expr : 'expr Gram.t ));
           `Skeyword ")"],
            (Gram.mk_action
-              (fun _  (f : 'eq_expr)  (p : 'patt_tcon)  _ 
+              (fun _  (e : 'expr)  _  (p : 'patt_tcon)  _ 
                  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `OPTLABEL i -> (f i p : 'patt )
+                 | `OPTLABEL i ->
+                     (`PaOlbi (_loc, (`Lid (_loc, i)), p, e) : 'patt )
+                 | _ -> assert false)));
+         ([`Stoken
+             (((function | `OPTLABEL _ -> true | _ -> false)),
+               (`Normal, "`OPTLABEL _"));
+          `Skeyword "(";
+          `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
+          `Skeyword ")"],
+           (Gram.mk_action
+              (fun _  (p : 'patt_tcon)  _  (__fan_0 : [> FanToken.t]) 
+                 (_loc : FanLoc.t)  ->
+                 match __fan_0 with
+                 | `OPTLABEL i ->
+                     (`PaOlb (_loc, (`Lid (_loc, i)), p) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "?";
-          `Stoken
-            (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-              (`Normal, "`Ant ((\"\"|\"lid\"),_)"));
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
           `Skeyword "(";
           `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
-          `Snterm (Gram.obj (eq_expr : 'eq_expr Gram.t ));
+          `Skeyword "=";
+          `Snterm (Gram.obj (expr : 'expr Gram.t ));
           `Skeyword ")"],
            (Gram.mk_action
-              (fun _  (f : 'eq_expr)  (p : 'patt_tcon)  _  _ 
-                 (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                 match __fan_1 with
-                 | `Ant ((""|"lid" as n),i) -> (f (mk_anti n i) p : 'patt )
-                 | _ -> assert false)));
+              (fun _  (e : 'expr)  _  (p : 'patt_tcon)  _  _  (i : 'a_lident)
+                  _  (_loc : FanLoc.t)  -> (`PaOlbi (_loc, i, p, e) : 
+                 'patt ))));
          ([`Skeyword "?";
-          `Stoken
-            (((function | `Lid _ -> true | _ -> false)), (`Normal, "`Lid _"))],
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+          `Skeyword ":";
+          `Skeyword "(";
+          `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
+          `Skeyword ")"],
            (Gram.mk_action
-              (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                 match __fan_1 with
-                 | `Lid i -> (`PaOlb (_loc, i, (`Nil _loc)) : 'patt )
-                 | _ -> assert false)));
-         ([`Skeyword "?";
-          `Stoken
-            (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-              (`Normal, "`Ant ((\"\"|\"lid\"),_)"))],
+              (fun _  (p : 'patt_tcon)  _  _  (i : 'a_lident)  _ 
+                 (_loc : FanLoc.t)  -> (`PaOlb (_loc, i, p) : 'patt ))));
+         ([`Skeyword "?"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            (Gram.mk_action
-              (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                 match __fan_1 with
-                 | `Ant ((""|"lid" as n),i) ->
-                     (`PaOlb (_loc, (mk_anti n i), (`Nil _loc)) : 'patt )
-                 | _ -> assert false)));
+              (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                 (`PaOlb (_loc, i, (`Nil _loc)) : 'patt ))));
          ([`Skeyword "?";
           `Skeyword "(";
           `Snterm (Gram.obj (ipatt_tcon : 'ipatt_tcon Gram.t ));
           `Skeyword ")"],
            (Gram.mk_action
               (fun _  (p : 'ipatt_tcon)  _  _  (_loc : FanLoc.t)  ->
-                 (`PaOlb (_loc, "", p) : 'patt ))));
+                 (`PaOlb (_loc, (`Lid (_loc, "")), p) : 'patt ))));
          ([`Skeyword "?";
           `Skeyword "(";
           `Snterm (Gram.obj (ipatt_tcon : 'ipatt_tcon Gram.t ));
@@ -2497,7 +2504,8 @@ let apply () =
           `Skeyword ")"],
            (Gram.mk_action
               (fun _  (e : 'expr)  _  (p : 'ipatt_tcon)  _  _ 
-                 (_loc : FanLoc.t)  -> (`PaOlbi (_loc, "", p, e) : 'patt ))))])]);
+                 (_loc : FanLoc.t)  ->
+                 (`PaOlbi (_loc, (`Lid (_loc, "")), p, e) : 'patt ))))])]);
    Gram.extend (ipatt : 'ipatt Gram.t )
      (None,
        [(None, None,
@@ -2611,55 +2619,61 @@ let apply () =
                 (`Normal, "`OPTLABEL _"));
            `Skeyword "(";
            `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
-           `Snterm (Gram.obj (eq_expr : 'eq_expr Gram.t ));
+           `Skeyword "=";
+           `Snterm (Gram.obj (expr : 'expr Gram.t ));
            `Skeyword ")"],
             (Gram.mk_action
-               (fun _  (f : 'eq_expr)  (p : 'patt_tcon)  _ 
+               (fun _  (e : 'expr)  _  (p : 'patt_tcon)  _ 
                   (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `OPTLABEL i -> (f i p : 'ipatt )
+                  | `OPTLABEL i ->
+                      (`PaOlbi (_loc, (`Lid (_loc, i)), p, e) : 'ipatt )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `OPTLABEL _ -> true | _ -> false)),
+                (`Normal, "`OPTLABEL _"));
+           `Skeyword "(";
+           `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
+           `Skeyword ")"],
+            (Gram.mk_action
+               (fun _  (p : 'patt_tcon)  _  (__fan_0 : [> FanToken.t]) 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `OPTLABEL i ->
+                      (`PaOlb (_loc, (`Lid (_loc, i)), p) : 'ipatt )
                   | _ -> assert false)));
           ([`Skeyword "?";
-           `Stoken
-             (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-               (`Normal, "`Ant ((\"\"|\"lid\"),_)"));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Skeyword "(";
            `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
-           `Snterm (Gram.obj (eq_expr : 'eq_expr Gram.t ));
+           `Skeyword "=";
+           `Snterm (Gram.obj (expr : 'expr Gram.t ));
            `Skeyword ")"],
             (Gram.mk_action
-               (fun _  (f : 'eq_expr)  (p : 'patt_tcon)  _  _ 
-                  (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                  match __fan_1 with
-                  | `Ant ((""|"lid" as n),i) -> (f (mk_anti n i) p : 'ipatt )
-                  | _ -> assert false)));
+               (fun _  (e : 'expr)  _  (p : 'patt_tcon)  _  _ 
+                  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                  (`PaOlbi (_loc, i, p, e) : 'ipatt ))));
           ([`Skeyword "?";
-           `Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`Normal, "`Lid _"))],
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+           `Skeyword ":";
+           `Skeyword "(";
+           `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
+           `Skeyword ")"],
             (Gram.mk_action
-               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                  match __fan_1 with
-                  | `Lid i -> (`PaOlb (_loc, i, (`Nil _loc)) : 'ipatt )
-                  | _ -> assert false)));
-          ([`Skeyword "?";
-           `Stoken
-             (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-               (`Normal, "`Ant ((\"\"|\"lid\"),_)"))],
+               (fun _  (p : 'patt_tcon)  _  _  (i : 'a_lident)  _ 
+                  (_loc : FanLoc.t)  -> (`PaOlb (_loc, i, p) : 'ipatt ))));
+          ([`Skeyword "?"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
-               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                  match __fan_1 with
-                  | `Ant ((""|"lid" as n),i) ->
-                      (`PaOlb (_loc, (mk_anti n i), (`Nil _loc)) : 'ipatt )
-                  | _ -> assert false)));
+               (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                  (`PaOlb (_loc, i, (`Nil _loc)) : 'ipatt ))));
           ([`Skeyword "?";
            `Skeyword "(";
            `Snterm (Gram.obj (ipatt_tcon : 'ipatt_tcon Gram.t ));
            `Skeyword ")"],
             (Gram.mk_action
                (fun _  (p : 'ipatt_tcon)  _  _  (_loc : FanLoc.t)  ->
-                  (`PaOlb (_loc, "", p) : 'ipatt ))));
+                  (`PaOlb (_loc, (`Lid (_loc, "")), p) : 'ipatt ))));
           ([`Skeyword "?";
            `Skeyword "(";
            `Snterm (Gram.obj (ipatt_tcon : 'ipatt_tcon Gram.t ));
@@ -2668,7 +2682,8 @@ let apply () =
            `Skeyword ")"],
             (Gram.mk_action
                (fun _  (e : 'expr)  _  (p : 'ipatt_tcon)  _  _ 
-                  (_loc : FanLoc.t)  -> (`PaOlbi (_loc, "", p, e) : 'ipatt ))))])]);
+                  (_loc : FanLoc.t)  ->
+                  (`PaOlbi (_loc, (`Lid (_loc, "")), p, e) : 'ipatt ))))])]);
    Gram.extend (sem_patt : 'sem_patt Gram.t )
      (None,
        [(None, None,

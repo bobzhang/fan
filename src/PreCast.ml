@@ -11,7 +11,7 @@ let str_item_printer =
 let callbacks = Queue.create ();
 let loaded_modules = ref [];
 
-(* iter and remove from the Queue *)  
+(* iter and remove from the Queue *)
 let iter_and_take_callbacks f =
   let rec loop () = loop (f (Queue.take callbacks)) in
   try loop () with [ Queue.Empty -> () ];
@@ -35,7 +35,7 @@ let current_printer () = (!str_item_printer, !sig_item_printer);
 
 
   
-let plugin (module Id:Sig.Id) (module Maker:Sig.PLUGIN) = 
+let plugin (module Id:Sig.Id) (module Maker:Sig.PLUGIN) =
   declare_dyn_module Id.name (fun _ -> let module M = Maker (struct end) in ());
 
 let syntax_plugin (module Id:Sig.Id) (module Maker:Sig.SyntaxPlugin) =

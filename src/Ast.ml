@@ -145,8 +145,7 @@
    and patt =
     [= `Nil of loc
     | `Id  of (loc * ident) (* i *)
-    (* | `Alias of (loc * patt * patt) (\* p as p *\) (\* (Node x y as n) *\) *)
-    | `Alias of (loc * patt * alident)
+    | `Alias of (loc * patt * alident) (* p as p *) (* (Node x y as n) *)
     | ant (* $s$ *)
     | `Any of loc (* _ *)
     | `PaApp of (loc * patt * patt) (* p p *) (* fun x y -> *)
@@ -154,11 +153,11 @@
     | `PaCom of (loc * patt * patt) (* p, p *)
     | `Sem of (loc * patt * patt) (* p; p *)
     | literal
-    | `Label of (loc * (* string *)alident * patt) (* ~s or ~s:(p) *)
+    | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
     (* ?s or ?s:(p) *)
-    | `PaOlb of (loc * string * patt)
+    | `PaOlb of (loc * (* string *)alident * patt)
     (* ?s:(p = e) or ?(p = e) *)
-    | `PaOlbi of (loc * string * patt * expr)
+    | `PaOlbi of (loc * (* string *)alident * patt * expr)
     | `PaOrp of (loc * patt * patt) (* p | p *)
     | `PaRng of (loc * patt * patt) (* p .. p *)
     | `PaRec of (loc * patt) (* { p } *)

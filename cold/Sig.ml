@@ -94,7 +94,7 @@ module type Syntax =
     val direction_flag : direction_flag Gram.t
     val direction_flag_quot : direction_flag Gram.t
     val dummy : unit Gram.t
-    val eq_expr : (string -> patt -> patt) Gram.t
+    val eq_expr : (alident -> patt -> patt) Gram.t
     val expr : expr Gram.t
     val expr_eoi : expr Gram.t
     val expr_quot : expr Gram.t

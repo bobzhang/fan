@@ -428,7 +428,7 @@ let obj_of_module_types
       {:class_str_item| $body ; $list:items |} in  begin 
       let v = Ctyp.mk_obj class_name  base body;
       Hashtbl.iter (fun _ v ->
-        eprintf "%a" FSig.pp_print_warning_type  v)
+        eprintf "@[%a@]@." FSig.pp_print_warning_type  v)
       tbl;
       match module_name with
       [None -> v

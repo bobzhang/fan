@@ -539,11 +539,19 @@ let rec expr: expr -> expression =
                 (lab, None, [((patt_of_lab loc lab po), (when_expr e w))]))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Fun (loc,`Case (_,`PaOlbi (_,lab,p,e1),w,e2)) ->
+      let lab =
+        match lab with
+        | `Lid (_loc,l) -> l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
            (("?" ^ lab), (Some (expr e1)), [((patt p), (when_expr e2 w))]))
   | `Fun (loc,`Case (_,`PaOlb (_,lab,p),w,e)) ->
+      let lab =
+        match lab with
+        | `Lid (_loc,l) -> l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
@@ -975,10 +983,18 @@ and class_expr =
              (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `CeFun (loc,`PaOlbi (_,lab,p,e),ce) ->
+      let lab =
+        match lab with
+        | `Lid (_loc,i) -> i
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
       let lab = paolab lab p in
       mkcl loc
         (Pcl_fun (("?" ^ lab), (Some (expr e)), (patt p), (class_expr ce)))
   | `CeFun (loc,`PaOlb (_,lab,p),ce) ->
+      let lab =
+        match lab with
+        | `Lid (_loc,l) -> l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
       let lab = paolab lab p in
       mkcl loc
         (Pcl_fun
