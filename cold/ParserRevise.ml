@@ -928,11 +928,11 @@ let apply () =
        [(None, (Some `RA),
           [([`Skeyword "(";
             `Skeyword "type";
-            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Skeyword ")";
             `Sself],
              (Gram.mk_action
-                (fun (e : 'fun_binding)  _  (i : 'a_LIDENT)  _  _ 
+                (fun (e : 'fun_binding)  _  (i : 'a_lident)  _  _ 
                    (_loc : FanLoc.t)  ->
                    (`LocalTypeFun (_loc, i, e) : 'fun_binding ))));
           ([`Snterm (Gram.obj (ipatt : 'ipatt Gram.t )); `Sself],
@@ -983,10 +983,10 @@ let apply () =
        [(None, None,
           [([`Skeyword "(";
             `Skeyword "type";
-            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Skeyword ")"],
              (Gram.mk_action
-                (fun _  (i : 'a_LIDENT)  _  _  (_loc : FanLoc.t)  ->
+                (fun _  (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->
                    (fun e  -> `LocalTypeFun (_loc, i, e) : 'fun_def_patt ))));
           ([`Snterm (Gram.obj (ipatt : 'ipatt Gram.t ))],
             (Gram.mk_action

@@ -232,7 +232,7 @@
     | `Let_open of (loc * ident * expr)
       (* fun (type t) -> e *)
       (* let f x (type t) y z = e *)
-    | `LocalTypeFun of (loc * string * expr)
+    | `LocalTypeFun of (loc * (* string *) alident * expr)
       (* (module ME : S) which is represented as (module (ME : S)) *)
     | `Package_expr of (loc * module_expr) ]
   and module_type =
@@ -277,7 +277,7 @@
       (* type t *)
     | `Type of (loc * ctyp)
       (* value s : t *)
-    | (* `Value *) `Val of (loc * alident(* string *) * ctyp)
+    |  `Val of (loc * alident * ctyp)
     | ant (* $s$ *) ]
   and with_constr =
     [= `Nil of loc

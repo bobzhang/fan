@@ -397,7 +397,7 @@ class eq =
         | (`Let_open (a0,a1,a2),`Let_open (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ident a1 b1)) && (self#expr a2 b2)
         | (`LocalTypeFun (a0,a1,a2),`LocalTypeFun (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+            ((self#loc a0 b0) && (self#alident a1 b1)) && (self#expr a2 b2)
         | (`Package_expr (a0,a1),`Package_expr (b0,b1)) ->
             (self#loc a0 b0) && (self#module_expr a1 b1)
         | (_,_) -> false
@@ -1125,7 +1125,7 @@ class map =
           let a2 = self#expr a2 in `Let_open (a0, a1, a2)
       | `LocalTypeFun (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#expr a2 in `LocalTypeFun (a0, a1, a2)
       | `Package_expr (a0,a1) ->
           let a0 = self#loc a0 in
@@ -1921,7 +1921,7 @@ class print =
               self#ident a1 self#expr a2
         | `LocalTypeFun (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a@ %a)@]" self#loc
-              a0 self#string a1 self#expr a2
+              a0 self#alident a1 self#expr a2
         | `Package_expr (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Package_expr@ %a@ %a)@]" self#loc a0
               self#module_expr a1
@@ -2513,7 +2513,8 @@ class fold =
       | `Let_open (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ident a1 in self#expr a2
       | `LocalTypeFun (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#string a1 in self#expr a2
+          let self = self#loc a0 in
+          let self = self#alident a1 in self#expr a2
       | `Package_expr (a0,a1) ->
           let self = self#loc a0 in self#module_expr a1
     method module_type : module_type -> 'self_type=
@@ -3187,7 +3188,7 @@ class fold2 =
             let self = self#ident a1 b1 in self#expr a2 b2
         | (`LocalTypeFun (a0,a1,a2),`LocalTypeFun (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#expr a2 b2
+            let self = self#alident a1 b1 in self#expr a2 b2
         | (`Package_expr (a0,a1),`Package_expr (b0,b1)) ->
             let self = self#loc a0 b0 in self#module_expr a1 b1
         | (_,_) -> invalid_arg "fold2 failure"
@@ -3936,7 +3937,7 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           pp_print_ident a1 pp_print_expr a2
     | `LocalTypeFun (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a@ %a)@]" pp_print_loc
-          a0 pp_print_string a1 pp_print_expr a2
+          a0 pp_print_alident a1 pp_print_expr a2
     | `Package_expr (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Package_expr@ %a@ %a)@]" pp_print_loc a0
           pp_print_module_expr a1
@@ -4466,7 +4467,7 @@ class iter =
       | `While (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `Let_open (a0,a1,a2) -> (self#loc a0; self#ident a1; self#expr a2)
       | `LocalTypeFun (a0,a1,a2) ->
-          (self#loc a0; self#string a1; self#expr a2)
+          (self#loc a0; self#alident a1; self#expr a2)
       | `Package_expr (a0,a1) -> (self#loc a0; self#module_expr a1)
     method module_type : module_type -> 'result=
       function
@@ -5182,7 +5183,7 @@ class map2 =
             let a2 = self#expr a2 b2 in `Let_open (a0, a1, a2)
         | (`LocalTypeFun (a0,a1,a2),`LocalTypeFun (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#expr a2 b2 in `LocalTypeFun (a0, a1, a2)
         | (`Package_expr (a0,a1),`Package_expr (b0,b1)) ->
             let a0 = self#loc a0 b0 in
@@ -6629,7 +6630,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "LocalTypeFun")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `Package_expr (a0,a1) ->
                 `ExApp
@@ -8380,7 +8381,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "LocalTypeFun")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `Package_expr (a0,a1) ->
                 `PaApp

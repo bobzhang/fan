@@ -677,7 +677,9 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
         | {@loc| (module $me) |} ->
             mkexp loc (Pexp_pack (module_expr me))
         | `LocalTypeFun (loc,i,e) ->
-            mkexp loc (Pexp_newtype i (expr e))
+            match i with 
+            [ `Lid(_loc,i) -> mkexp loc (Pexp_newtype i (expr e))
+            | `Ant(_loc,_) -> ANT_ERROR ]
         | {@loc| $_,$_ |} -> error loc "expr, expr: not allowed here"
         | {@loc| $_;$_ |} ->
             error loc "expr; expr: not allowed here, use begin ... end or [|...|] to surround them" (* FIXME *)

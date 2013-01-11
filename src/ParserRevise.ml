@@ -254,7 +254,8 @@ let apply () = begin
       | ":>"; ctyp{t}; "="; expr{e} -> {| ($e :> $t) |} ]
       fun_binding:
       { RA
-          [ "("; "type"; a_LIDENT{i}; ")"; S{e} -> {| fun (type $i) -> $e |} (* FIXME*)
+          [ "("; "type"; a_lident{i}; ")"; S{e} ->
+            {| fun (type $i) -> $e |} 
           | ipatt{p}; S{e} -> {| fun $p -> $e |}
           | cvalue_binding{bi} -> bi  ] }
        lang:
@@ -275,7 +276,8 @@ let apply () = begin
            old
        end]
        fun_def_patt:
-       ["(";"type";a_LIDENT{i};")" -> fun e -> {|fun (type $i) -> $e |} (* FIXME *)
+       ["(";"type";a_lident{i};")" ->
+         fun e -> {|fun (type $i) -> $e |} 
        | ipatt{p} -> fun e -> {| fun $p -> $e |}
        | ipatt{p}; "when"; expr{w} -> fun e -> {|fun $p when $w -> $e |} ]
        fun_def:

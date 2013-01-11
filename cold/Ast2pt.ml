@@ -640,7 +640,10 @@ let rec expr: expr -> expression =
            ((mkexp loc (Pexp_pack (module_expr me))),
              (Some (mktyp loc (Ptyp_package (package_type pt)))), None))
   | `Package_expr (loc,me) -> mkexp loc (Pexp_pack (module_expr me))
-  | `LocalTypeFun (loc,i,e) -> mkexp loc (Pexp_newtype (i, (expr e)))
+  | `LocalTypeFun (loc,i,e) ->
+      (match i with
+       | `Lid (_loc,i) -> mkexp loc (Pexp_newtype (i, (expr e)))
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `ExCom (loc,_,_) -> error loc "expr, expr: not allowed here"
   | `Sem (loc,_,_) ->
       error loc
