@@ -290,7 +290,7 @@ class eq =
             ((self#loc a0 b0) && (self#alident a1 b1)) && (self#patt a2 b2)
         | (`PaOlbi (a0,a1,a2,a3),`PaOlbi (b0,b1,b2,b3)) ->
             (((self#loc a0 b0) && (self#alident a1 b1)) && (self#patt a2 b2))
-              && (self#expr a3 b3)
+              && (self#meta_option (fun self  -> self#expr) a3 b3)
         | (`PaOrp (a0,a1,a2),`PaOrp (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
         | (`PaRng (a0,a1,a2),`PaRng (b0,b1,b2)) ->
@@ -973,7 +973,8 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
           let a2 = self#patt a2 in
-          let a3 = self#expr a3 in `PaOlbi (a0, a1, a2, a3)
+          let a3 = self#meta_option (fun self  -> self#expr) a3 in
+          `PaOlbi (a0, a1, a2, a3)
       | `PaOrp (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in
@@ -1785,7 +1786,8 @@ class print =
               self#alident a1 self#patt a2
         | `PaOlbi (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a@ %a)@]" self#loc a0
-              self#alident a1 self#patt a2 self#expr a3
+              self#alident a1 self#patt a2
+              (self#meta_option (fun self  -> self#expr)) a3
         | `PaOrp (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`PaOrp@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#patt a2
@@ -2426,7 +2428,8 @@ class fold =
       | `PaOlbi (a0,a1,a2,a3) ->
           let self = self#loc a0 in
           let self = self#alident a1 in
-          let self = self#patt a2 in self#expr a3
+          let self = self#patt a2 in
+          self#meta_option (fun self  -> self#expr) a3
       | `PaOrp (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#patt a2
       | `PaRng (a0,a1,a2) ->
@@ -3064,7 +3067,8 @@ class fold2 =
         | (`PaOlbi (a0,a1,a2,a3),`PaOlbi (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
             let self = self#alident a1 b1 in
-            let self = self#patt a2 b2 in self#expr a3 b3
+            let self = self#patt a2 b2 in
+            self#meta_option (fun self  -> self#expr) a3 b3
         | (`PaOrp (a0,a1,a2),`PaOrp (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#patt a1 b1 in self#patt a2 b2
@@ -3805,7 +3809,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
           pp_print_alident a1 pp_print_patt a2
     | `PaOlbi (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_alident a1 pp_print_patt a2 pp_print_expr a3
+          pp_print_alident a1 pp_print_patt a2
+          (pp_print_meta_option pp_print_expr) a3
     | `PaOrp (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`PaOrp@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1 pp_print_patt a2
@@ -4409,7 +4414,10 @@ class iter =
       | `Label (a0,a1,a2) -> (self#loc a0; self#alident a1; self#patt a2)
       | `PaOlb (a0,a1,a2) -> (self#loc a0; self#alident a1; self#patt a2)
       | `PaOlbi (a0,a1,a2,a3) ->
-          (self#loc a0; self#alident a1; self#patt a2; self#expr a3)
+          (self#loc a0;
+           self#alident a1;
+           self#patt a2;
+           self#meta_option (fun self  -> self#expr) a3)
       | `PaOrp (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `PaRng (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `PaRec (a0,a1) -> (self#loc a0; self#patt a1)
@@ -5018,7 +5026,8 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
             let a2 = self#patt a2 b2 in
-            let a3 = self#expr a3 b3 in `PaOlbi (a0, a1, a2, a3)
+            let a3 = self#meta_option (fun self  -> self#expr) a3 b3 in
+            `PaOlbi (a0, a1, a2, a3)
         | (`PaOrp (a0,a1,a2),`PaOrp (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
@@ -6269,7 +6278,7 @@ module Make(MetaLoc:META_LOC) =
                                  (_loc, (`ExVrn (_loc, "PaOlbi")),
                                    (meta_loc _loc a0))),
                               (meta_alident _loc a1))), (meta_patt _loc a2))),
-                    (meta_expr _loc a3))
+                    (meta_meta_option meta_expr _loc a3))
             | `PaOrp (a0,a1,a2) ->
                 `ExApp
                   (_loc,
@@ -8020,7 +8029,7 @@ module Make(MetaLoc:META_LOC) =
                                  (_loc, (`PaVrn (_loc, "PaOlbi")),
                                    (meta_loc _loc a0))),
                               (meta_alident _loc a1))), (meta_patt _loc a2))),
-                    (meta_expr _loc a3))
+                    (meta_meta_option meta_expr _loc a3))
             | `PaOrp (a0,a1,a2) ->
                 `PaApp
                   (_loc,

@@ -196,11 +196,11 @@ let rec is_irrefut_patt : patt -> bool = with patt
     ];      
       
 
-let rec is_constructor =  fun
-    [ {:ident| $_.$i |} -> is_constructor i
-    | {:ident| $uid:_ |} -> true
-    | {:ident| $lid:_ |} | {:ident| ($_ $_) |} -> false
-    | {:ident| $anti:_ |} -> assert false ];
+let rec is_constructor =  with ident fun
+    [ {| $_.$i |} -> is_constructor i
+    | {| $uid:_ |} -> true
+    | {| $lid:_ |} | {| ($_ $_) |} -> false
+    | {| $anti:_ |} -> assert false ];
 
 let is_patt_constructor = fun
     [ {:patt| $id:i |} -> is_constructor i
