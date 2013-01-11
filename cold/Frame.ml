@@ -38,10 +38,10 @@ let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
    | `Tup (_loc,t) ->
        let ls = FanAst.list_of_ctyp t [] in
        let len = List.length ls in
-       let patt = Patt.mk_tuple ?arity ~number:len in
+       let patt = Patt.mk_tuple ~arity ~number:len in
        let tys = List.mapi (mapi_expr ~arity ~names simple_expr_of_ctyp) ls in
        names <+
-         (currying [`Case (_loc, patt, (`Nil _loc), (mk_tuple tys))] ?arity)
+         (currying [`Case (_loc, patt, (`Nil _loc), (mk_tuple tys))] ~arity)
    | _ -> invalid_arg & (sprintf "tuple_expr_of_ctyp {|%s|}\n" "") : 
   expr )
 let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
@@ -129,7 +129,7 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
       then (trail info) :: res
       else res in
     List.rev t in
-  currying ?arity res
+  currying ~arity res
 let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
   ~mk_variant  simple_expr_of_ctyp result ty =
   let f (cons,tyargs) =
@@ -157,7 +157,7 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
       then (trail info) :: res
       else res in
     List.rev t in
-  currying ?arity res
+  currying ~arity res
 let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
   let open Transform in
     let varf = basic_transform left_type_variable in

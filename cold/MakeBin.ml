@@ -1,3 +1,4 @@
+open Ast
 open Format
 open LibUtil
 let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
@@ -95,42 +96,45 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
        let phr =
          try pa ?directive_handler loc cs with | x -> (clear (); raise x) in
        clear (); phr)
-    let rec sig_handler =
+    let rec sig_handler: sig_item -> sig_item option =
       function
-      | `Directive (_loc,"load",`Str (_,s)) -> (rewrite_and_load "" s; None)
-      | `Directive (_loc,"directory",`Str (_,s)) ->
+      | `Directive (_loc,`Lid (_,"load"),`Str (_,s)) ->
+          (rewrite_and_load "" s; None)
+      | `Directive (_loc,`Lid (_,"directory"),`Str (_,s)) ->
           (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-      | `Directive (_loc,"use",`Str (_,s)) ->
+      | `Directive (_loc,`Lid (_,"use"),`Str (_,s)) ->
           Some
             (parse_file ~directive_handler:sig_handler s
                PreCast.CurrentParser.parse_interf)
-      | `Directive (_loc,"default_quotation",`Str (_,s)) ->
+      | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
           (AstQuotation.default := s; None)
-      | `Directive (_loc,"filter",`Str (_,s)) ->
+      | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
           (AstFilters.use_interf_filter s; None)
-      | `Directive (loc,x,_) ->
-          FanLoc.raise loc
+      | `Directive (_loc,`Lid (_,x),_) ->
+          FanLoc.raise _loc
             (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
       | _ -> assert false
     let rec str_handler =
       function
-      | `Directive (_loc,"load",`Str (_,s)) -> (rewrite_and_load "" s; None)
-      | `Directive (_loc,"directory",`Str (_,s)) ->
+      | `Directive (_loc,`Lid (_,"load"),`Str (_,s)) ->
+          (rewrite_and_load "" s; None)
+      | `Directive (_loc,`Lid (_,"directory"),`Str (_,s)) ->
           (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-      | `Directive (_loc,"use",`Str (_,s)) ->
+      | `Directive (_loc,`Lid (_,"use"),`Str (_,s)) ->
           Some
             (parse_file ~directive_handler:str_handler s
                PreCast.CurrentParser.parse_implem)
-      | `Directive (_loc,"default_quotation",`Str (_,s)) ->
+      | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
           (AstQuotation.default := s; None)
-      | `Directive (_loc,"lang_at",`ExApp (_,`Str (_,tag),`Str (_,quot))) ->
+      | `Directive
+          (_loc,`Lid (_,"lang_at"),`ExApp (_,`Str (_,tag),`Str (_,quot))) ->
           (AstQuotation.default_at_pos tag quot; None)
-      | `Directive (_loc,"lang_clear",`Nil _) ->
+      | `Directive (_loc,`Lid (_,"lang_clear"),`Nil _) ->
           (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
-      | `Directive (_loc,"filter",`Str (_,s)) ->
+      | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
           (AstFilters.use_implem_filter s; None)
-      | `Directive (loc,x,_) ->
-          FanLoc.raise loc
+      | `Directive (_loc,`Lid (_,x),_) ->
+          FanLoc.raise _loc
             (XStream.Error (x ^ "bad directive camlp4 can not handled "))
       | _ -> assert false
     let process ?directive_handler  name pa pr clean fold_filters =

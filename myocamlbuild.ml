@@ -611,7 +611,7 @@ module Default = struct
                                         (* A" 4-6-7-9-27..29"; *)
                                       ];
     Options.ocamlopt   := ocamlfind & S[A"ocamlopt";
-                                        A"-annot";
+                                        (* A"-annot"; *)
                                         A"-w";
                                         A"+a-4-32-30";
                                         (* A"-unsafe"; *)

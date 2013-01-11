@@ -433,7 +433,7 @@ class eq =
             ((self#loc a0 b0) && (self#sig_item a1 b1)) &&
               (self#sig_item a2 b2)
         | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+            ((self#loc a0 b0) && (self#alident a1 b1)) && (self#expr a2 b2)
         | (`Exception (a0,a1),`Exception (b0,b1)) ->
             (self#loc a0 b0) && (self#ctyp a1 b1)
         | (`External (a0,a1,a2,a3),`External (b0,b1,b2,b3)) ->
@@ -558,7 +558,7 @@ class eq =
             ((self#loc a0 b0) && (self#str_item a1 b1)) &&
               (self#str_item a2 b2)
         | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+            ((self#loc a0 b0) && (self#alident a1 b1)) && (self#expr a2 b2)
         | (`Exception (a0,a1,a2),`Exception (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) &&
               (self#meta_option (fun self  -> self#ident) a2 b2)
@@ -1167,7 +1167,7 @@ class map =
           let a2 = self#sig_item a2 in `Sem (a0, a1, a2)
       | `Directive (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#expr a2 in `Directive (a0, a1, a2)
       | `Exception (a0,a1) ->
           let a0 = self#loc a0 in
@@ -1319,7 +1319,7 @@ class map =
           let a2 = self#str_item a2 in `Sem (a0, a1, a2)
       | `Directive (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#expr a2 in `Directive (a0, a1, a2)
       | `Exception (a0,a1,a2) ->
           let a0 = self#loc a0 in
@@ -1963,7 +1963,7 @@ class print =
               self#sig_item a1 self#sig_item a2
         | `Directive (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#expr a2
+              self#alident a1 self#expr a2
         | `Exception (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Exception@ %a@ %a)@]" self#loc a0
               self#ctyp a1
@@ -2099,7 +2099,7 @@ class print =
               self#str_item a1 self#str_item a2
         | `Directive (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#expr a2
+              self#alident a1 self#expr a2
         | `Exception (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Exception@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 (self#meta_option (fun self  -> self#ident)) a2
@@ -2540,7 +2540,8 @@ class fold =
           let self = self#loc a0 in
           let self = self#sig_item a1 in self#sig_item a2
       | `Directive (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#string a1 in self#expr a2
+          let self = self#loc a0 in
+          let self = self#alident a1 in self#expr a2
       | `Exception (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `External (a0,a1,a2,a3) ->
           let self = self#loc a0 in
@@ -2644,7 +2645,8 @@ class fold =
           let self = self#loc a0 in
           let self = self#str_item a1 in self#str_item a2
       | `Directive (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#string a1 in self#expr a2
+          let self = self#loc a0 in
+          let self = self#alident a1 in self#expr a2
       | `Exception (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#ctyp a1 in
@@ -3222,7 +3224,7 @@ class fold2 =
             let self = self#sig_item a1 b1 in self#sig_item a2 b2
         | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#expr a2 b2
+            let self = self#alident a1 b1 in self#expr a2 b2
         | (`Exception (a0,a1),`Exception (b0,b1)) ->
             let self = self#loc a0 b0 in self#ctyp a1 b1
         | (`External (a0,a1,a2,a3),`External (b0,b1,b2,b3)) ->
@@ -3359,7 +3361,7 @@ class fold2 =
             let self = self#str_item a1 b1 in self#str_item a2 b2
         | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#expr a2 b2
+            let self = self#alident a1 b1 in self#expr a2 b2
         | (`Exception (a0,a1,a2),`Exception (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in
@@ -3975,7 +3977,7 @@ and pp_print_sig_item: 'fmt -> sig_item -> 'result =
           pp_print_sig_item a1 pp_print_sig_item a2
     | `Directive (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_expr a2
+          pp_print_alident a1 pp_print_expr a2
     | `Exception (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Exception@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1
@@ -4112,7 +4114,7 @@ and pp_print_str_item: 'fmt -> str_item -> 'result =
           pp_print_str_item a1 pp_print_str_item a2
     | `Directive (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_expr a2
+          pp_print_alident a1 pp_print_expr a2
     | `Exception (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Exception@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 (pp_print_meta_option pp_print_ident) a2
@@ -4486,7 +4488,7 @@ class iter =
       | `Class (a0,a1) -> (self#loc a0; self#class_type a1)
       | `ClassType (a0,a1) -> (self#loc a0; self#class_type a1)
       | `Sem (a0,a1,a2) -> (self#loc a0; self#sig_item a1; self#sig_item a2)
-      | `Directive (a0,a1,a2) -> (self#loc a0; self#string a1; self#expr a2)
+      | `Directive (a0,a1,a2) -> (self#loc a0; self#alident a1; self#expr a2)
       | `Exception (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `External (a0,a1,a2,a3) ->
           (self#loc a0;
@@ -4570,7 +4572,7 @@ class iter =
       | `Class (a0,a1) -> (self#loc a0; self#class_expr a1)
       | `ClassType (a0,a1) -> (self#loc a0; self#class_type a1)
       | `Sem (a0,a1,a2) -> (self#loc a0; self#str_item a1; self#str_item a2)
-      | `Directive (a0,a1,a2) -> (self#loc a0; self#string a1; self#expr a2)
+      | `Directive (a0,a1,a2) -> (self#loc a0; self#alident a1; self#expr a2)
       | `Exception (a0,a1,a2) ->
           (self#loc a0;
            self#ctyp a1;
@@ -5228,7 +5230,7 @@ class map2 =
             let a2 = self#sig_item a2 b2 in `Sem (a0, a1, a2)
         | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#expr a2 b2 in `Directive (a0, a1, a2)
         | (`Exception (a0,a1),`Exception (b0,b1)) ->
             let a0 = self#loc a0 b0 in
@@ -5400,7 +5402,7 @@ class map2 =
             let a2 = self#str_item a2 b2 in `Sem (a0, a1, a2)
         | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#expr a2 b2 in `Directive (a0, a1, a2)
         | (`Exception (a0,a1,a2),`Exception (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
@@ -6718,7 +6720,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Directive")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `Exception (a0,a1) ->
                 `ExApp
@@ -7045,7 +7047,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Directive")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `Exception (a0,a1,a2) ->
                 `ExApp
@@ -8469,7 +8471,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "Directive")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `Exception (a0,a1) ->
                 `PaApp
@@ -8796,7 +8798,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "Directive")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `Exception (a0,a1,a2) ->
                 `PaApp

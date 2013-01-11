@@ -802,10 +802,10 @@ and sig_item (s:sig_item) (l:signature) :signature =
                     (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
   | {| $sg1; $sg2 |} -> sig_item sg1 (sig_item sg2 l)
   | `Directive (_,_,_) -> l
-  | {@loc| exception $uid:s |} ->
-      [mksig loc (Psig_exception (with_loc s loc) []) :: l]
-  | {@loc| exception $uid:s of $t |} ->
-      [mksig loc (Psig_exception (with_loc s loc)
+  | {| exception $uid:s |} ->
+      [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
+  | {| exception $uid:s of $t |} ->
+      [mksig _loc (Psig_exception (with_loc s _loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l]
   | `Exception (_,_) -> assert false (*FIXME*)
   | `External (loc, n, t, sl) ->
@@ -1043,8 +1043,9 @@ let directive : expr -> directive_argument = with expr fun
   | {| false |} -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e)) ] ;
 (* str_item -> phrase *)  
-let phrase = fun
-  [ `Directive (_,d,dp) -> Ptop_dir d (directive dp)
+let phrase : str_item -> toplevel_phrase = fun
+  [ `Directive (_, `Lid(_,d),dp) -> Ptop_dir d (directive dp)
+  | `Directive (_, `Ant(_loc,_),_) -> error _loc "antiquotation not allowed"
   | si -> Ptop_def (str_item si) ];
 
 open Format;

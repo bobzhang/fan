@@ -755,12 +755,12 @@ and sig_item (s : sig_item) (l : signature) =
        :: l
    | `Sem (_loc,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
    | `Directive (_,_,_) -> l
-   | `Exception (loc,`Id (_,`Uid (_,s))) ->
-       (mksig loc (Psig_exception ((with_loc s loc), []))) :: l
-   | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
-       (mksig loc
+   | `Exception (_loc,`Id (_,`Uid (_,s))) ->
+       (mksig _loc (Psig_exception ((with_loc s _loc), []))) :: l
+   | `Exception (_loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
+       (mksig _loc
           (Psig_exception
-             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
+             ((with_loc s _loc), (List.map ctyp (list_of_ctyp t [])))))
        :: l
    | `Exception (_,_) -> assert false
    | `External (loc,n,t,sl) ->
@@ -1021,9 +1021,10 @@ let directive: expr -> directive_argument =
   | `Id (_loc,`Lid (_,"true")) -> Pdir_bool true
   | `Id (_loc,`Lid (_,"false")) -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e))
-let phrase =
+let phrase: str_item -> toplevel_phrase =
   function
-  | `Directive (_,d,dp) -> Ptop_dir (d, (directive dp))
+  | `Directive (_,`Lid (_,d),dp) -> Ptop_dir (d, (directive dp))
+  | `Directive (_,`Ant (_loc,_),_) -> error _loc "antiquotation not allowed"
   | si -> Ptop_def (str_item si)
 open Format
 let pp = fprintf

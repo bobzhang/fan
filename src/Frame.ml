@@ -53,10 +53,10 @@ let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
   [ {|  ($tup:t) |}  -> 
     let ls = FanAst.list_of_ctyp t [] in
     let len = List.length ls in
-    let patt = Patt.mk_tuple ?arity ~number:len in
+    let patt = Patt.mk_tuple ~arity ~number:len in
     let tys = List.mapi (mapi_expr ~arity ~names  simple_expr_of_ctyp) ls in
     names <+ (currying
-                  [ {:match_case| $pat:patt -> $(mk_tuple tys ) |} ] ?arity)
+                  [ {:match_case| $pat:patt -> $(mk_tuple tys ) |} ] ~arity)
   | _  -> invalid_arg &
       sprintf  "tuple_expr_of_ctyp {|%s|}\n" "" (*FIXME*)
         (* (Ctyp.to_string  ty) *)];
@@ -193,7 +193,7 @@ let expr_of_ctyp ?cons_transform ?(arity=1) ?(names=[]) ~trail ~mk_variant
         [ trail info :: res ]
       else res in
     List.rev t in 
-  currying ?arity res 
+  currying ~arity res 
   end;
 
 (* return a [expr] node  *)  
@@ -228,7 +228,7 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant  (*
       [trail info :: res]
     else res in
   List.rev t in
-  currying ?arity res ;
+  currying ~arity res ;
   
 let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
   with {patt:ctyp}

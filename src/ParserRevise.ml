@@ -200,7 +200,7 @@ let apply () = begin
   with sig_item
   {:extend|Gram
     sig_item_quot:
-    [ "#"; a_LIDENT{n}; opt_expr{dp} -> {| # $n $dp |}
+    [ "#"; a_lident{s}; opt_expr{dp} -> {| # $s $dp |}
     | sig_item{sg1}; semi; S{sg2} ->
         match sg2 with
         [ {||} -> sg1
@@ -225,7 +225,7 @@ let apply () = begin
     | "class"; "type"; class_type_declaration{ctd} ->  {| class type $ctd |} ]
     (* mli entrance *)    
     interf:
-    [ "#"; a_LIDENT{n}; opt_expr{dp};  ";;" -> ([ {| # $n $dp |} ],  Some _loc)
+    [ "#"; a_lident{n}; opt_expr{dp};  ";;" -> ([ {| # $n $dp |} ],  Some _loc)
     | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
     | `EOI -> ([], None) ]
     sig_items:
@@ -595,7 +595,6 @@ let apply () = begin
             (* `Alias(_loc,p,s) *)
             {| ($p as $s) |}
         | "("; S{p}; ","; comma_ipatt{pl}; ")" -> {| ($p, $pl) |}
-        (* | a_LIDENT{s} -> {| $lid:s |} *)
         | a_lident{s} -> {| $(id:(s:>ident)) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag                            
         | "_" -> {| _ |}
@@ -624,10 +623,8 @@ let apply () = begin
        | patt{p} -> p ]
        ipatt_tcon:
        [ `Ant((""|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s ) |}
-       (* | a_LIDENT{i} -> {| $lid:i |} *)
        | a_lident{i} -> {|$(id:(i:>ident))|}
-       | a_lident{i}; ":"; ctyp{t} -> {| ($(id:(i:>ident)) : $t) |}
-       (* | a_LIDENT{i};":"; ctyp{t} -> {| ($lid:i : $t) |} *)]
+       | a_lident{i}; ":"; ctyp{t} -> {| ($(id:(i:>ident)) : $t) |}]
        eq_expr:
        [ "="; expr{e} -> fun i p -> {| ? $i : ($p = $e) |}
        | -> fun i p -> {| ? $i : ($p) |} ]
@@ -740,7 +737,6 @@ let apply () = begin
         -> `TyDcl (_loc, n, tpl, tk, cl) ]
       type_ident_and_parameters:
       [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl)]
-      (* | a_LIDENT{i}; `Ant((""|"anti" as n),s) -> ] *)
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
       opt_eq_ctyp:
@@ -918,20 +914,16 @@ let apply () = begin
         "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
         "simple"
-        [ `Ant ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+        [ `Ant ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s) ->
+          {| $(anti:mk_anti ~c:"ident" n s) |}
         | `Lid i -> {|$lid:i|}
         | `Uid i -> {|$uid:i|}
-
-        (* | a_LIDENT{i} -> {| $lid:i |} *)
-        (* | a_UIDENT{i} -> {| $uid:i |} *)
         | "("; S{i}; ")" -> i ] }
       label_longident:
       [ `Ant ((""|"id"|"anti"|"list"|"lid" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
       | `Lid i -> {|$lid:i|}
       | `Uid i; "."; S{l} -> {|$uid:i.$l|}
-      | `Ant((""|"uid" as n),s); "."; S{l} -> {|$(anti:mk_anti ~c:"ident" n s).$l|}
-      (* | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |} *)
-      (* | a_LIDENT{i} -> {| $lid:i |} *) ]
+      | `Ant((""|"uid" as n),s); "."; S{l} -> {|$(anti:mk_anti ~c:"ident" n s).$l|} ]
       class_type_longident: [ type_longident{x} -> x ]
       val_longident:[ ident{x} -> x ]
       class_longident:
@@ -1039,7 +1031,7 @@ let apply () = begin
     {:extend|Gram
     (* ml entrance *)    
       implem:
-      [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ],  Some _loc)
+      [ "#"; a_lident{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ],  Some _loc)
       | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
       | `EOI -> ([], None) ]
       str_items: (* FIXME dump seems to be incorrect *)
@@ -1047,11 +1039,12 @@ let apply () = begin
       | `Ant ((""|"stri"|"anti"|"list" as n),s); semi; S{st} -> {| $(anti:mk_anti n ~c:"str_item" s); $st |}
       | L0 [ str_item{st}; semi -> st ]{l} -> {| $list:l |} ]
       top_phrase:
-      [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> Some {| # $n $dp |}
+      [ "#"; a_lident{n}; opt_expr{dp}; ";;" ->
+        Some {| # $n $dp |}
       | str_item{st}; semi -> Some st
       | `EOI -> None ]
       str_item_quot:
-      [ "#"; a_LIDENT{n}; opt_expr{dp} -> {| # $n $dp |}
+      [ "#"; a_lident{n}; opt_expr{dp} -> {| # $n $dp |}
       | str_item{st1}; semi; S{st2} ->
           match st2 with
           [ {||} -> st1
@@ -1064,8 +1057,6 @@ let apply () = begin
             {| exception $t |}
         | "exception"; constructor_declaration{t}; "="; type_longident{i} ->
             {| exception $t = $i |}
-        (* | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} -> *)
-        (*     {| external $i : $t = $sl |} *)
         | "external"; a_lident{i};":"; ctyp{t};"="; string_list{sl} ->
             {| external $i: $t = $sl |}
               

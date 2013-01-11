@@ -660,11 +660,11 @@ let apply () =
      (None,
        [(None, None,
           [([`Skeyword "#";
-            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ))],
              (Gram.mk_action
-                (fun (dp : 'opt_expr)  (n : 'a_LIDENT)  _  (_loc : FanLoc.t) 
-                   -> (`Directive (_loc, n, dp) : 'sig_item_quot ))));
+                (fun (dp : 'opt_expr)  (s : 'a_lident)  _  (_loc : FanLoc.t) 
+                   -> (`Directive (_loc, s, dp) : 'sig_item_quot ))));
           ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
            `Snterm (Gram.obj (semi : 'semi Gram.t ));
            `Sself],
@@ -792,11 +792,11 @@ let apply () =
      (None,
        [(None, None,
           [([`Skeyword "#";
-            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ));
             `Skeyword ";;"],
              (Gram.mk_action
-                (fun _  (dp : 'opt_expr)  (n : 'a_LIDENT)  _ 
+                (fun _  (dp : 'opt_expr)  (n : 'a_lident)  _ 
                    (_loc : FanLoc.t)  ->
                    (([`Directive (_loc, n, dp)], (Some _loc)) : 'interf ))));
           ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
@@ -4939,11 +4939,11 @@ let apply () =
      (None,
        [(None, None,
           [([`Skeyword "#";
-            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ));
             `Skeyword ";;"],
              (Gram.mk_action
-                (fun _  (dp : 'opt_expr)  (n : 'a_LIDENT)  _ 
+                (fun _  (dp : 'opt_expr)  (n : 'a_lident)  _ 
                    (_loc : FanLoc.t)  ->
                    (([`Directive (_loc, n, dp)], (Some _loc)) : 'implem ))));
           ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
@@ -5003,11 +5003,11 @@ let apply () =
      (None,
        [(None, None,
           [([`Skeyword "#";
-            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ));
             `Skeyword ";;"],
              (Gram.mk_action
-                (fun _  (dp : 'opt_expr)  (n : 'a_LIDENT)  _ 
+                (fun _  (dp : 'opt_expr)  (n : 'a_lident)  _ 
                    (_loc : FanLoc.t)  ->
                    (Some (`Directive (_loc, n, dp)) : 'top_phrase ))));
           ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
@@ -5026,10 +5026,10 @@ let apply () =
      (None,
        [(None, None,
           [([`Skeyword "#";
-            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ))],
              (Gram.mk_action
-                (fun (dp : 'opt_expr)  (n : 'a_LIDENT)  _  (_loc : FanLoc.t) 
+                (fun (dp : 'opt_expr)  (n : 'a_lident)  _  (_loc : FanLoc.t) 
                    -> (`Directive (_loc, n, dp) : 'str_item_quot ))));
           ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
            `Snterm (Gram.obj (semi : 'semi Gram.t ));

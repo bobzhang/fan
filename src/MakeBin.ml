@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 
 open Format;
 open LibUtil;
@@ -143,45 +143,46 @@ module Camlp4Bin
           clear ();
           phr
         end;
-       let  rec sig_handler  = with sig_item
+       let  rec sig_handler  : sig_item -> option sig_item= with sig_item
           (fun
-            [ {| #load $str:s |} ->
-              begin rewrite_and_load "" s; None end
+            [{| #load $str:s |}-> begin rewrite_and_load "" s; None end
             | {| #directory $str:s |} ->
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
-            | {| #use $str:s |} ->
-                Some (parse_file  ~directive_handler:sig_handler s PreCast.CurrentParser.parse_interf )
+            | {| #use $str:s|} ->
+                Some (parse_file
+                        ~directive_handler:sig_handler s PreCast.CurrentParser.parse_interf )
             | {| #default_quotation $str:s |} ->
                 begin AstQuotation.default := s; None end
-            | {| #filter $str:s |} ->
+            | {| #$({:ident@_|filter|}) $str:s |} ->
                 begin AstFilters.use_interf_filter s; None ; end 
-            | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
-                FanLoc.raise loc (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
+            | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)
+                FanLoc.raise _loc
+                  (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
             | _ -> assert false
             ] );
       let rec str_handler = with str_item
           (fun
-            [ {| #load $str:s |} ->
-              begin rewrite_and_load "" s; None end
+            [ {| #load $str:s |} -> begin rewrite_and_load "" s; None end
             | {| #directory $str:s |} ->
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
             | {| #use $str:s |} ->
-                Some (parse_file  ~directive_handler:str_handler s PreCast.CurrentParser.parse_implem )
+                Some (parse_file  ~directive_handler:str_handler s
+                        PreCast.CurrentParser.parse_implem )
             | {| #default_quotation $str:s |} ->
                 begin AstQuotation.default := s; None end
-            | {| #lang_at $str:tag $str:quot |} ->
+            | {| #lang_at $str:tag $str:quot |}
+              ->
                 begin AstQuotation.default_at_pos tag quot; None end
             | {| #lang_clear |} -> begin 
-                (* AstQuotation.default:=""; *)
-                (* Hashtbl.clear AstQuotation.default_tbl; *)
                 AstQuotation.clear_map ();
                 AstQuotation.clear_default ();
                 None
             end
-            | {| #filter $str:s |} ->
+            | {| #filter $str:s|} ->
                 begin AstFilters.use_implem_filter s; None ; end 
-            | {@loc| # $x $_ |} -> (* FIXME pattern match should give _loc automatically *)
-                FanLoc.raise loc (XStream.Error (x ^ "bad directive camlp4 can not handled "))
+            | {| #$lid:x $_ |} ->
+                (* FIXME pattern match should give _loc automatically *)
+                FanLoc.raise _loc (XStream.Error (x ^ "bad directive camlp4 can not handled "))
             | _ -> assert false
             ] );
       let process  ?directive_handler name pa pr clean fold_filters =
