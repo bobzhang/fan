@@ -2780,19 +2780,6 @@ let apply () =
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (i : 'a_lident)  (_loc : FanLoc.t)  ->
                   (`PaTyc (_loc, (`Id (_loc, (i :>ident))), t) : 'ipatt_tcon ))))])]);
-   Gram.extend (eq_expr : 'eq_expr Gram.t )
-     (None,
-       [(None, None,
-          [([`Skeyword "="; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-             (Gram.mk_action
-                (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->
-                   (fun i  p  -> `PaOlbi (_loc, i, p, (`Some e)) : 'eq_expr ))));
-          ([],
-            (Gram.mk_action
-               (fun (_loc : FanLoc.t)  ->
-                  (fun i  p  ->
-                     `PaOlbi (_loc, (`Lid (_loc, "")), p, (`None _loc)) : 
-                  'eq_expr ))))])]);
    Gram.extend (comma_ipatt : 'comma_ipatt Gram.t )
      (None,
        [(None, None,

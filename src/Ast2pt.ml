@@ -432,7 +432,7 @@ let rec patt : patt -> pattern = with patt fun
          ] in mkpat loc (Ppat_constant (Const_nativeint nati))
      | `Flo (loc,s) -> mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
      | `Label (loc,_,_) -> error loc "labeled pattern not allowed here"
-     | `PaOlb (loc, _, _) | `PaOlbi (loc,_,_,_) -> error loc "labeled pattern not allowed here"
+     (* | `PaOlb (loc, _, _) *) | `PaOlbi (loc,_,_,_) -> error loc "labeled pattern not allowed here"
      | `PaOrp (loc, p1, p2) -> mkpat loc (Ppat_or (patt p1) (patt p2))
      | `PaRng (loc, p1, p2) ->
          match (p1, p2) with
@@ -607,13 +607,13 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
           |`Ant(_loc,_) -> ANT_ERROR
           ]
           
-      | {@loc|fun [ $(pat:`PaOlb (_, lab, p)) when $w -> $e ] |} ->
-          let lab = match lab with
-            [ `Lid(_loc,l) -> l
-            | `Ant (_loc,_) -> ANT_ERROR ] in 
-          let lab = paolab lab p in
-          mkexp loc
-            (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e w)])
+      (* | {@loc|fun [ $(pat:`PaOlb (_, lab, p)) when $w -> $e ] |} -> *)
+      (*     let lab = match lab with *)
+      (*       [ `Lid(_loc,l) -> l *)
+      (*       | `Ant (_loc,_) -> ANT_ERROR ] in  *)
+      (*     let lab = paolab lab p in *)
+      (*     mkexp loc *)
+      (*       (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e w)]) *)
       | `Fun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a []))
       | `IfThenElse (loc, e1, e2, e3) ->
           mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) (Some (expr e3)))
@@ -1006,7 +1006,7 @@ and class_sig_item c l = match c with (* class_sig_item -> class_type_field list
   | `CgVir (loc,s,b,t) ->
       [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
   | `Ant (_,_) -> assert false ]
-and class_expr = fun (* class_expr -> class_expr *)
+and class_expr : class_expr -> Parsetree.class_expr = fun (* class_expr -> class_expr *)
   [ `CeApp (loc, _, _) as c ->
     let (ce, el) = ClassExpr.view_app [] c in
     let el = List.map label_expr el in
@@ -1031,13 +1031,13 @@ and class_expr = fun (* class_expr -> class_expr *)
       |`Ant(_loc,_) -> ANT_ERROR
       ]  
 
-  | `CeFun (loc, (`PaOlb (_, lab, p)), ce) ->
-      let lab = match lab with
-        [`Lid(_loc,l) -> l
-        |`Ant(_loc,_) -> ANT_ERROR] in
-      let lab = paolab lab p in
-      mkcl loc
-        (Pcl_fun ("?" ^ lab) None (patt_of_lab loc lab p) (class_expr ce))
+  (* | `CeFun (loc, (`PaOlb (_, lab, p)), ce) -> *)
+  (*     let lab = match lab with *)
+  (*       [`Lid(_loc,l) -> l *)
+  (*       |`Ant(_loc,_) -> ANT_ERROR] in *)
+  (*     let lab = paolab lab p in *)
+  (*     mkcl loc *)
+  (*       (Pcl_fun ("?" ^ lab) None (patt_of_lab loc lab p) (class_expr ce)) *)
   | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (patt p) (class_expr ce))
   | `CeLet (loc, rf, bi, ce) ->
       mkcl loc (Pcl_let (mkrf rf) (binding bi []) (class_expr ce))

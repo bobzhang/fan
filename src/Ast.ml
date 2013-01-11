@@ -155,7 +155,7 @@
     | literal
     | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
     (* ?s or ?s:(p) *)
-    | `PaOlb of (loc * alident * patt)
+    (* | `PaOlb of (loc * alident * patt) *)
     (* ?s:(p = e) or ?(p = e) *)
     | `PaOlbi of (loc *alident * patt * meta_option expr)
     | `PaOrp of (loc * patt * patt) (* p | p *)

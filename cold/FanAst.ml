@@ -286,8 +286,6 @@ class eq =
             (self#literal a0 b0 :>'result)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#alident a1 b1)) && (self#patt a2 b2)
-        | (`PaOlb (a0,a1,a2),`PaOlb (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#alident a1 b1)) && (self#patt a2 b2)
         | (`PaOlbi (a0,a1,a2,a3),`PaOlbi (b0,b1,b2,b3)) ->
             (((self#loc a0 b0) && (self#alident a1 b1)) && (self#patt a2 b2))
               && (self#meta_option (fun self  -> self#expr) a3 b3)
@@ -965,10 +963,6 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
           let a2 = self#patt a2 in `Label (a0, a1, a2)
-      | `PaOlb (a0,a1,a2) ->
-          let a0 = self#loc a0 in
-          let a1 = self#alident a1 in
-          let a2 = self#patt a2 in `PaOlb (a0, a1, a2)
       | `PaOlbi (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
@@ -1781,9 +1775,6 @@ class print =
         | `Label (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc a0
               self#alident a1 self#patt a2
-        | `PaOlb (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`PaOlb@ %a@ %a@ %a)@]" self#loc a0
-              self#alident a1 self#patt a2
         | `PaOlbi (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a@ %a)@]" self#loc a0
               self#alident a1 self#patt a2
@@ -2422,9 +2413,6 @@ class fold =
       | `Label (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#alident a1 in self#patt a2
-      | `PaOlb (a0,a1,a2) ->
-          let self = self#loc a0 in
-          let self = self#alident a1 in self#patt a2
       | `PaOlbi (a0,a1,a2,a3) ->
           let self = self#loc a0 in
           let self = self#alident a1 in
@@ -3059,9 +3047,6 @@ class fold2 =
         | ((#literal as a0),(#literal as b0)) ->
             (self#literal a0 b0 :>'self_type)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
-            let self = self#loc a0 b0 in
-            let self = self#alident a1 b1 in self#patt a2 b2
-        | (`PaOlb (a0,a1,a2),`PaOlb (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#alident a1 b1 in self#patt a2 b2
         | (`PaOlbi (a0,a1,a2,a3),`PaOlbi (b0,b1,b2,b3)) ->
@@ -3804,9 +3789,6 @@ and pp_print_patt: 'fmt -> patt -> 'result =
     | `Label (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_alident a1 pp_print_patt a2
-    | `PaOlb (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`PaOlb@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_alident a1 pp_print_patt a2
     | `PaOlbi (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_alident a1 pp_print_patt a2
@@ -4412,7 +4394,6 @@ class iter =
       | `Sem (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | #literal as a0 -> (self#literal a0 :>'result)
       | `Label (a0,a1,a2) -> (self#loc a0; self#alident a1; self#patt a2)
-      | `PaOlb (a0,a1,a2) -> (self#loc a0; self#alident a1; self#patt a2)
       | `PaOlbi (a0,a1,a2,a3) ->
           (self#loc a0;
            self#alident a1;
@@ -5018,10 +4999,6 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
             let a2 = self#patt a2 b2 in `Label (a0, a1, a2)
-        | (`PaOlb (a0,a1,a2),`PaOlb (b0,b1,b2)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#alident a1 b1 in
-            let a2 = self#patt a2 b2 in `PaOlb (a0, a1, a2)
         | (`PaOlbi (a0,a1,a2,a3),`PaOlbi (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
@@ -6256,15 +6233,6 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Label")),
-                              (meta_loc _loc a0))), (meta_alident _loc a1))),
-                    (meta_patt _loc a2))
-            | `PaOlb (a0,a1,a2) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc,
-                         (`ExApp
-                            (_loc, (`ExVrn (_loc, "PaOlb")),
                               (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_patt _loc a2))
             | `PaOlbi (a0,a1,a2,a3) ->
@@ -8009,15 +7977,6 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "Label")),
                               (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_patt _loc a2))
-            | `PaOlb (a0,a1,a2) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc,
-                         (`PaApp
-                            (_loc, (`PaVrn (_loc, "PaOlb")),
-                              (meta_loc _loc a0))), (meta_alident _loc a1))),
-                    (meta_patt _loc a2))
             | `PaOlbi (a0,a1,a2,a3) ->
                 `PaApp
                   (_loc,
@@ -9270,8 +9229,6 @@ let rec is_irrefut_patt: patt -> bool =
   | `PaApp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `PaTyc (_loc,p,_) -> is_irrefut_patt p
   | `PaTup (_loc,pl) -> is_irrefut_patt pl
-  | `PaOlb (_loc,_,`Nil _) -> true
-  | `PaOlb (_loc,_,p) -> is_irrefut_patt p
   | `PaOlbi (_loc,_,p,_) -> is_irrefut_patt p
   | `Label (_,_,`Nil _) -> true
   | `Label (_,_,p) -> is_irrefut_patt p

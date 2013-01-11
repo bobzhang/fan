@@ -45,7 +45,7 @@ and patt =
     ant
   | `Any of loc | `PaApp of (loc* patt* patt) | `Array of (loc* patt)
   | `PaCom of (loc* patt* patt) | `Sem of (loc* patt* patt) | literal
-  | `Label of (loc* alident* patt) | `PaOlb of (loc* alident* patt)
+  | `Label of (loc* alident* patt)
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `PaOrp of (loc* patt* patt) | `PaRng of (loc* patt* patt)
   | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt)

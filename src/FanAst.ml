@@ -175,8 +175,8 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | {| ($p : $_) |} -> is_irrefut_patt p
     | {| ($tup:pl) |} -> is_irrefut_patt pl
 
-    | `PaOlb(_loc,_,`Nil _) -> true
-    | `PaOlb (_loc,_,p) -> is_irrefut_patt p
+    (* | `PaOlb(_loc,_,`Nil _) -> true *)
+    (* | `PaOlb (_loc,_,p) -> is_irrefut_patt p *)
     | `PaOlbi(_loc,_,p,_) -> is_irrefut_patt p 
     (* | {| ? $_ |} -> true           *)
     (* | {| ? $_ : ($_ ) |} -> (\* is_irrefut_patt p *\) true *)
