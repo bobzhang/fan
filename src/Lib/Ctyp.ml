@@ -305,7 +305,7 @@ let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
 
 let mk_obj class_name  base body =
   {:str_item| class $lid:class_name = object (self:'self_type)
-    inherit $lid:base;
+    inherit $lid:base (* as $(`None _loc) *); (* FIXME*)
     $body;
   end |};
 

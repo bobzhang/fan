@@ -955,7 +955,10 @@ let apply () = begin
           (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |} *)
             `Ant (_loc,mk_anti ~c:"override_flag" n s)
       | "val" -> {:override_flag||}   ] 
-      opt_as_lident:  [ "as"; a_LIDENT{i} -> i  | -> ""  ] 
+      opt_as_lident:
+      [ "as"; (* a_LIDENT *)a_lident{i} -> `Some i
+      | -> `None _loc
+      | `ANT ((""|"as") as n,s) -> `Ant(_loc, mk_anti n s)] 
       label:[ a_LIDENT{i} -> i ]
       direction_flag:
       [ "to" -> {:direction_flag| to |}
@@ -1139,7 +1142,9 @@ let apply () = begin
             {| $(anti:mk_anti ~c:"class_str_item" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_str_item_tag
         | "inherit"; opt_override{o}; class_expr{ce}; opt_as_lident{pb} ->
-            {| inherit $override:o $ce as $pb |}
+            {| inherit $override:o $ce $as:pb |}
+            (* (\* let _ =  *\)`Inherit (_loc, o, ce, pb) *)
+              
         | value_val_opt_override{o}; opt_mutable{mf}; label{lab}; cvalue_binding{e}
           ->
             {| val $override:o $mutable:mf $lab = $e |}

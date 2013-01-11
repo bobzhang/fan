@@ -180,7 +180,7 @@ let mk_obj class_name base body =
                         (_loc, (`OvNil _loc),
                           (`CeCon
                              (_loc, (`ViNil _loc), (`Lid (_loc, base)),
-                               (`Nil _loc))), "")), body)))))))
+                               (`Nil _loc))), (`None _loc))), body)))))))
 let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (_,name,_,ctyp,_) ->

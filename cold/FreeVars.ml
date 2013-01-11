@@ -65,8 +65,8 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
       | ce -> super#class_expr ce
     method! class_str_item =
       function
-      | `Inherit (_loc,_,_,"") as cst -> super#class_str_item cst
-      | `Inherit (_loc,_,ce,s) -> (o#class_expr ce)#add_atom s
+      | `Inherit (_loc,_,_,`None _) as cst -> super#class_str_item cst
+      | `Inherit (_loc,_,ce,`Some s) -> (o#class_expr ce)#add_atom s
       | `CrVal (_loc,s,_,_,e) -> (o#expr e)#add_atom s
       | `CrVvr (_loc,s,_,t) -> (o#ctyp t)#add_atom s
       | cst -> super#class_str_item cst

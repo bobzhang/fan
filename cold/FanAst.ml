@@ -681,7 +681,7 @@ class eq =
         | (`Inherit (a0,a1,a2,a3),`Inherit (b0,b1,b2,b3)) ->
             (((self#loc a0 b0) && (self#override_flag a1 b1)) &&
                (self#class_expr a2 b2))
-              && (self#string a3 b3)
+              && (self#meta_option (fun self  -> self#alident) a3 b3)
         | (`Initializer (a0,a1),`Initializer (b0,b1)) ->
             (self#loc a0 b0) && (self#expr a1 b1)
         | (`CrMth (a0,a1,a2,a3,a4,a5),`CrMth (b0,b1,b2,b3,b4,b5)) ->
@@ -1468,7 +1468,8 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#override_flag a1 in
           let a2 = self#class_expr a2 in
-          let a3 = self#string a3 in `Inherit (a0, a1, a2, a3)
+          let a3 = self#meta_option (fun self  -> self#alident) a3 in
+          `Inherit (a0, a1, a2, a3)
       | `Initializer (a0,a1) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in `Initializer (a0, a1)
@@ -2219,7 +2220,8 @@ class print =
               self#ctyp a1 self#ctyp a2
         | `Inherit (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a@ %a)@]" self#loc
-              a0 self#override_flag a1 self#class_expr a2 self#string a3
+              a0 self#override_flag a1 self#class_expr a2
+              (self#meta_option (fun self  -> self#alident)) a3
         | `Initializer (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" self#loc a0
               self#expr a1
@@ -2755,7 +2757,8 @@ class fold =
       | `Inherit (a0,a1,a2,a3) ->
           let self = self#loc a0 in
           let self = self#override_flag a1 in
-          let self = self#class_expr a2 in self#string a3
+          let self = self#class_expr a2 in
+          self#meta_option (fun self  -> self#alident) a3
       | `Initializer (a0,a1) -> let self = self#loc a0 in self#expr a1
       | `CrMth (a0,a1,a2,a3,a4,a5) ->
           let self = self#loc a0 in
@@ -3484,7 +3487,8 @@ class fold2 =
         | (`Inherit (a0,a1,a2,a3),`Inherit (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
             let self = self#override_flag a1 b1 in
-            let self = self#class_expr a2 b2 in self#string a3 b3
+            let self = self#class_expr a2 b2 in
+            self#meta_option (fun self  -> self#alident) a3 b3
         | (`Initializer (a0,a1),`Initializer (b0,b1)) ->
             let self = self#loc a0 b0 in self#expr a1 b1
         | (`CrMth (a0,a1,a2,a3,a4,a5),`CrMth (b0,b1,b2,b3,b4,b5)) ->
@@ -4229,8 +4233,8 @@ and pp_print_class_str_item: 'fmt -> class_str_item -> 'result =
           pp_print_ctyp a1 pp_print_ctyp a2
     | `Inherit (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a@ %a)@]" pp_print_loc
-          a0 pp_print_override_flag a1 pp_print_class_expr a2 pp_print_string
-          a3
+          a0 pp_print_override_flag a1 pp_print_class_expr a2
+          (pp_print_meta_option pp_print_alident) a3
     | `Initializer (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1
@@ -4648,7 +4652,7 @@ class iter =
           (self#loc a0;
            self#override_flag a1;
            self#class_expr a2;
-           self#string a3)
+           self#meta_option (fun self  -> self#alident) a3)
       | `Initializer (a0,a1) -> (self#loc a0; self#expr a1)
       | `CrMth (a0,a1,a2,a3,a4,a5) ->
           (self#loc a0;
@@ -5560,7 +5564,8 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#override_flag a1 b1 in
             let a2 = self#class_expr a2 b2 in
-            let a3 = self#string a3 b3 in `Inherit (a0, a1, a2, a3)
+            let a3 = self#meta_option (fun self  -> self#alident) a3 b3 in
+            `Inherit (a0, a1, a2, a3)
         | (`Initializer (a0,a1),`Initializer (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in `Initializer (a0, a1)
@@ -7376,7 +7381,8 @@ module Make(MetaLoc:META_LOC) =
                                  (_loc, (`ExVrn (_loc, "Inherit")),
                                    (meta_loc _loc a0))),
                               (meta_override_flag _loc a1))),
-                         (meta_class_expr _loc a2))), (meta_string _loc a3))
+                         (meta_class_expr _loc a2))),
+                    (meta_meta_option meta_alident _loc a3))
             | `Initializer (a0,a1) ->
                 `ExApp
                   (_loc,
@@ -9126,7 +9132,8 @@ module Make(MetaLoc:META_LOC) =
                                  (_loc, (`PaVrn (_loc, "Inherit")),
                                    (meta_loc _loc a0))),
                               (meta_override_flag _loc a1))),
-                         (meta_class_expr _loc a2))), (meta_string _loc a3))
+                         (meta_class_expr _loc a2))),
+                    (meta_meta_option meta_alident _loc a3))
             | `Initializer (a0,a1) ->
                 `PaApp
                   (_loc,

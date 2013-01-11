@@ -147,7 +147,7 @@ and class_expr =
 and class_str_item =
   [ `Nil of loc | `CrSem of (loc* class_str_item* class_str_item)
   | `Eq of (loc* ctyp* ctyp)
-  | `Inherit of (loc* override_flag* class_expr* string)
+  | `Inherit of (loc* override_flag* class_expr* alident meta_option)
   | `Initializer of (loc* expr)
   | `CrMth of (loc* string* override_flag* private_flag* expr* ctyp)
   | `CrVal of (loc* string* override_flag* mutable_flag* expr)

@@ -4543,13 +4543,22 @@ let apply () =
      (None,
        [(None, None,
           [([`Skeyword "as";
-            `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
              (Gram.mk_action
-                (fun (i : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
-                   (i : 'opt_as_lident ))));
+                (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                   (`Some i : 'opt_as_lident ))));
           ([],
             (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> ("" : 'opt_as_lident ))))])]);
+               (fun (_loc : FanLoc.t)  -> (`None _loc : 'opt_as_lident ))));
+          ([`Stoken
+              (((function | `ANT ((""|"as"),_) -> true | _ -> false)),
+                (`Normal, "`ANT ((\"\"|\"as\"),_)"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `ANT ((""|"as" as n),s) ->
+                      (`Ant (_loc, (mk_anti n s)) : 'opt_as_lident )
+                  | _ -> assert false)))])]);
    Gram.extend (label : 'label Gram.t )
      (None,
        [(None, None,

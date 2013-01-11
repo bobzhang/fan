@@ -1003,15 +1003,19 @@ and class_expr = fun (* class_expr -> class_expr *)
   | `CeCon (loc,_,_,_) ->
       error loc "invalid virtual class inside a class expression"
   | `Ant (_, _) | `Eq (_, _, _) | `And (_, _, _) | `Nil _ -> assert false ]
-and class_str_item c l =
+and class_str_item (c:class_str_item) l =
     match c with (*class_str_item -> class_field list -> class_field list*)
   [ `Nil _ -> l
   | `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
   | {:class_str_item| $cst1; $cst2 |} ->
       class_str_item cst1 (class_str_item cst2 l)
-  | `Inherit (loc, ov, ce, pb)
-    ->
-      let opb = if pb = "" then None else Some pb in
+  | `Inherit (loc, ov, ce, pb) ->
+      let opb = match pb with
+      [`None _ -> None
+      |`Some (`Lid (_,x) ) -> Some x
+      |`Some (`Ant (_loc,_))
+      |`Ant (_loc,_) -> error _loc "antiquotation not allowed here"] in  
+      (* let opb = if pb = "" then None else Some pb in *)
       [mkcf loc (Pcf_inher (override_flag loc ov) (class_expr ce) opb) :: l]
   | `Initializer (loc,e) -> [mkcf loc (Pcf_init (expr e)) :: l]
   | `CrMth (loc, s, ov, pf, e, t) ->
