@@ -184,13 +184,13 @@
     | `ExAss of (loc * expr * expr) (* e := e *)
 
       (* for s = e to/downto e do { e } *)
-    | `For of (loc * string * expr * expr * direction_flag * expr)
+    | `For of (loc * alident(* string *) * expr * expr * direction_flag * expr)
     | `Fun of (loc * match_case) (* fun [ mc ] *)
 
     | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
           
     | literal
-    | `Label of (loc * string * expr) (* ~s or ~s:e *)
+    | `Label of (loc * alident(* string *) * expr) (* ~s or ~s:e *)
     | `Lazy of (loc * expr) (* lazy e *)
       (* let b in e or let rec b in e *)
     | `LetIn of (loc * rec_flag * binding * expr)

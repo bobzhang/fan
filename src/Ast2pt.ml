@@ -577,8 +577,12 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
           mkexp loc (Pexp_constraint (expr e) t1 (Some (ctyp t2)))
       | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
       | `For (loc, i, e1, e2, df, el) ->
-          let e3 = `Seq loc el in
-          mkexp loc (Pexp_for (with_loc i loc) (expr e1) (expr e2) (mkdirection df) (expr e3))
+          match i with
+          [`Lid(sloc,i) ->
+            let e3 = `Seq loc el in
+            mkexp loc (Pexp_for (with_loc i sloc)
+                         (expr e1) (expr e2) (mkdirection df) (expr e3))
+          | `Ant(_loc,i) -> ANT_ERROR]  
       | {@loc| fun [ $(pat:`PaLab (_, lab, po)) when $w -> $e ] |} ->
           mkexp loc
             (Pexp_function lab None
@@ -690,8 +694,12 @@ and patt_of_lab _loc lab =  fun (* loc -> string -> patt -> pattern *)
 and expr_of_lab _loc lab = fun (* loc -> string -> expr -> expression*)
   [ {:expr||} -> expr {:expr| $lid:lab |}
   | e -> expr e ]
-and label_expr = fun (* expr -> label * expression *)
-  [ `Label (loc,lab,eo) -> (lab, expr_of_lab loc lab eo)
+and label_expr : expr -> (Asttypes.label*expression) = fun (* expr -> label * expression *)
+  [ `Label (loc,lab,eo) ->
+    match lab with
+    [ `Lid (_,lab) ->
+      (lab, expr_of_lab loc lab eo)
+    | `Ant(_loc,_) -> ANT_ERROR]
   | `OptLabl (loc,lab,eo) -> ("?" ^ lab, expr_of_lab loc lab eo)
   | e -> ("", expr e) ]
 and binding x acc =  match x with (* binding -> (pattern * expression) list ->  (pattern * expression) list *)

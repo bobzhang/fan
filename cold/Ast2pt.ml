@@ -523,11 +523,14 @@ let rec expr: expr -> expression =
   | `Flo (loc,s) ->
       mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
   | `For (loc,i,e1,e2,df,el) ->
-      let e3 = `Seq (loc, el) in
-      mkexp loc
-        (Pexp_for
-           ((with_loc i loc), (expr e1), (expr e2), (mkdirection df),
-             (expr e3)))
+      (match i with
+       | `Lid (sloc,i) ->
+           let e3 = `Seq (loc, el) in
+           mkexp loc
+             (Pexp_for
+                ((with_loc i sloc), (expr e1), (expr e2), (mkdirection df),
+                  (expr e3)))
+       | `Ant (_loc,i) -> error _loc "antiquotation not expected here")
   | `Fun (loc,`Case (_,`PaLab (_,lab,po),w,e)) ->
       mkexp loc
         (Pexp_function
@@ -653,9 +656,12 @@ and patt_of_lab _loc lab =
   function | `Nil _loc -> patt (`Id (_loc, (`Lid (_loc, lab)))) | p -> patt p
 and expr_of_lab _loc lab =
   function | `Nil _loc -> expr (`Id (_loc, (`Lid (_loc, lab)))) | e -> expr e
-and label_expr =
+and label_expr: expr -> (Asttypes.label* expression) =
   function
-  | `Label (loc,lab,eo) -> (lab, (expr_of_lab loc lab eo))
+  | `Label (loc,lab,eo) ->
+      (match lab with
+       | `Lid (_,lab) -> (lab, (expr_of_lab loc lab eo))
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `OptLabl (loc,lab,eo) -> (("?" ^ lab), (expr_of_lab loc lab eo))
   | e -> ("", (expr e))
 and binding x acc =

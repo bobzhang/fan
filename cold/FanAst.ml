@@ -334,7 +334,8 @@ class eq =
         | (`ExAss (a0,a1,a2),`ExAss (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
         | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
-            (((((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2))
+            (((((self#loc a0 b0) && (self#alident a1 b1)) &&
+                 (self#expr a2 b2))
                 && (self#expr a3 b3))
                && (self#direction_flag a4 b4))
               && (self#expr a5 b5)
@@ -346,7 +347,7 @@ class eq =
         | ((#literal as a0),(#literal as b0)) ->
             (self#literal a0 b0 :>'result)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+            ((self#loc a0 b0) && (self#alident a1 b1)) && (self#expr a2 b2)
         | (`Lazy (a0,a1),`Lazy (b0,b1)) ->
             (self#loc a0 b0) && (self#expr a1 b1)
         | (`LetIn (a0,a1,a2,a3),`LetIn (b0,b1,b2,b3)) ->
@@ -1033,7 +1034,7 @@ class map =
           let a2 = self#expr a2 in `ExAss (a0, a1, a2)
       | `For (a0,a1,a2,a3,a4,a5) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#expr a2 in
           let a3 = self#expr a3 in
           let a4 = self#direction_flag a4 in
@@ -1049,7 +1050,7 @@ class map =
       | #literal as a0 -> (self#literal a0 :>expr)
       | `Label (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#expr a2 in `Label (a0, a1, a2)
       | `Lazy (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#expr a1 in `Lazy (a0, a1)
@@ -1847,7 +1848,7 @@ class print =
               self#expr a1 self#expr a2
         | `For (a0,a1,a2,a3,a4,a5) ->
             Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a@ %a)@]"
-              self#loc a0 self#string a1 self#expr a2 self#expr a3
+              self#loc a0 self#alident a1 self#expr a2 self#expr a3
               self#direction_flag a4 self#expr a5
         | `Fun (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Fun@ %a@ %a)@]" self#loc a0
@@ -1858,7 +1859,7 @@ class print =
         | #literal as a0 -> (self#literal fmt a0 :>'result)
         | `Label (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#expr a2
+              self#alident a1 self#expr a2
         | `Lazy (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" self#loc a0 self#expr
               a1
@@ -2458,7 +2459,7 @@ class fold =
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
       | `For (a0,a1,a2,a3,a4,a5) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#alident a1 in
           let self = self#expr a2 in
           let self = self#expr a3 in
           let self = self#direction_flag a4 in self#expr a5
@@ -2468,7 +2469,8 @@ class fold =
           let self = self#expr a1 in let self = self#expr a2 in self#expr a3
       | #literal as a0 -> (self#literal a0 :>'self_type)
       | `Label (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#string a1 in self#expr a2
+          let self = self#loc a0 in
+          let self = self#alident a1 in self#expr a2
       | `Lazy (a0,a1) -> let self = self#loc a0 in self#expr a1
       | `LetIn (a0,a1,a2,a3) ->
           let self = self#loc a0 in
@@ -3114,7 +3116,7 @@ class fold2 =
             let self = self#expr a1 b1 in self#expr a2 b2
         | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#alident a1 b1 in
             let self = self#expr a2 b2 in
             let self = self#expr a3 b3 in
             let self = self#direction_flag a4 b4 in self#expr a5 b5
@@ -3128,7 +3130,7 @@ class fold2 =
             (self#literal a0 b0 :>'self_type)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#expr a2 b2
+            let self = self#alident a1 b1 in self#expr a2 b2
         | (`Lazy (a0,a1),`Lazy (b0,b1)) ->
             let self = self#loc a0 b0 in self#expr a1 b1
         | (`LetIn (a0,a1,a2,a3),`LetIn (b0,b1,b2,b3)) ->
@@ -3863,7 +3865,7 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           pp_print_expr a1 pp_print_expr a2
     | `For (a0,a1,a2,a3,a4,a5) ->
         Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a@ %a)@]"
-          pp_print_loc a0 pp_print_string a1 pp_print_expr a2 pp_print_expr
+          pp_print_loc a0 pp_print_alident a1 pp_print_expr a2 pp_print_expr
           a3 pp_print_direction_flag a4 pp_print_expr a5
     | `Fun (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Fun@ %a@ %a)@]" pp_print_loc a0
@@ -3874,7 +3876,7 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | #literal as a0 -> (pp_print_literal fmt a0 :>'result)
     | `Label (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_expr a2
+          pp_print_alident a1 pp_print_expr a2
     | `Lazy (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1
@@ -4430,7 +4432,7 @@ class iter =
       | `ExAss (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `For (a0,a1,a2,a3,a4,a5) ->
           (self#loc a0;
-           self#string a1;
+           self#alident a1;
            self#expr a2;
            self#expr a3;
            self#direction_flag a4;
@@ -4439,7 +4441,7 @@ class iter =
       | `IfThenElse (a0,a1,a2,a3) ->
           (self#loc a0; self#expr a1; self#expr a2; self#expr a3)
       | #literal as a0 -> (self#literal a0 :>'result)
-      | `Label (a0,a1,a2) -> (self#loc a0; self#string a1; self#expr a2)
+      | `Label (a0,a1,a2) -> (self#loc a0; self#alident a1; self#expr a2)
       | `Lazy (a0,a1) -> (self#loc a0; self#expr a1)
       | `LetIn (a0,a1,a2,a3) ->
           (self#loc a0; self#rec_flag a1; self#binding a2; self#expr a3)
@@ -5086,7 +5088,7 @@ class map2 =
             let a2 = self#expr a2 b2 in `ExAss (a0, a1, a2)
         | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#expr a2 b2 in
             let a3 = self#expr a3 b3 in
             let a4 = self#direction_flag a4 b4 in
@@ -5102,7 +5104,7 @@ class map2 =
         | ((#literal as a0),(#literal as b0)) -> (self#literal a0 b0 :>expr)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#expr a2 b2 in `Label (a0, a1, a2)
         | (`Lazy (a0,a1),`Lazy (b0,b1)) ->
             let a0 = self#loc a0 b0 in
@@ -6421,7 +6423,7 @@ module Make(MetaLoc:META_LOC) =
                                         (`ExApp
                                            (_loc, (`ExVrn (_loc, "For")),
                                              (meta_loc _loc a0))),
-                                        (meta_string _loc a1))),
+                                        (meta_alident _loc a1))),
                                    (meta_expr _loc a2))),
                               (meta_expr _loc a3))),
                          (meta_direction_flag _loc a4))),
@@ -6451,7 +6453,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Label")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `Lazy (a0,a1) ->
                 `ExApp
@@ -8172,7 +8174,7 @@ module Make(MetaLoc:META_LOC) =
                                         (`PaApp
                                            (_loc, (`PaVrn (_loc, "For")),
                                              (meta_loc _loc a0))),
-                                        (meta_string _loc a1))),
+                                        (meta_alident _loc a1))),
                                    (meta_expr _loc a2))),
                               (meta_expr _loc a3))),
                          (meta_direction_flag _loc a4))),
@@ -8202,7 +8204,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "Label")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `Lazy (a0,a1) ->
                 `PaApp

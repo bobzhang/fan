@@ -1128,7 +1128,7 @@ let apply () =
                   (_loc : FanLoc.t)  -> (AstQuotation.map := old; x : 
                   'expr ))));
           ([`Skeyword "for";
-           `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword "=";
            `Sself;
            `Snterm (Gram.obj (direction_flag : 'direction_flag Gram.t ));
@@ -1138,7 +1138,7 @@ let apply () =
            `Skeyword "done"],
             (Gram.mk_action
                (fun _  (seq : 'sequence)  _  (e2 : 'expr) 
-                  (df : 'direction_flag)  (e1 : 'expr)  _  (i : 'a_LIDENT)  _
+                  (df : 'direction_flag)  (e1 : 'expr)  _  (i : 'a_lident)  _
                    (_loc : FanLoc.t)  ->
                   (`For (_loc, i, e1, e2, df, seq) : 'expr ))));
           ([`Skeyword "while";
@@ -1329,15 +1329,15 @@ let apply () =
                  (`Lazy (_loc, e) : 'expr ))))]);
        ((Some "label"), (Some `NA),
          [([`Skeyword "~";
-           `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Sself],
             (Gram.mk_action
-               (fun (e : 'expr)  _  (i : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
+               (fun (e : 'expr)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
                   (`Label (_loc, i, e) : 'expr ))));
-         ([`Skeyword "~"; `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+         ([`Skeyword "~"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            (Gram.mk_action
-              (fun (i : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
+              (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
                  (`Label (_loc, i, (`Nil _loc)) : 'expr ))));
          ([`Stoken
              (((function | `LABEL _ -> true | _ -> false)),
@@ -1347,7 +1347,7 @@ let apply () =
               (fun (e : 'expr)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)
                   ->
                  match __fan_0 with
-                 | `LABEL i -> (`Label (_loc, i, e) : 'expr )
+                 | `LABEL i -> (`Label (_loc, (`Lid (_loc, i)), e) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `OPTLABEL _ -> true | _ -> false)),

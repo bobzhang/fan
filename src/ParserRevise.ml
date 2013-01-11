@@ -305,8 +305,9 @@ let apply () = begin
 
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "with";"{"; pos_exprs{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
-        | "for"; a_LIDENT{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do"; (* FIXME*)
-            sequence{seq}; "done" -> {| for $i = $e1 $to:df $e2 do $seq done |}
+        | "for"; a_lident{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
+            sequence{seq}; "done" ->
+              {| for $i = $e1 $to:df $e2 do $seq done |}
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
             {|while $e do $seq done |}   ]  
        ":=" NA
@@ -354,10 +355,11 @@ let apply () = begin
         | "new"; class_longident{i} -> {| new $i |}
         | "lazy"; S{e} -> {| lazy $e |} ]
        "label" NA
-        [ "~"; a_LIDENT{i}; ":"; S{e} -> {| ~ $i : $e |} (* FIXME*)
-        | "~"; a_LIDENT{i} -> {| ~ $i |} (* FIXME *)
+        [ "~"; a_lident{i}; ":"; S{e} ->
+          {| ~ $i : $e |}
+        | "~"; a_lident{i} -> {| ~ $i |} 
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
-        | `LABEL i; S{e} -> {| ~ $i : $e |}
+        | `LABEL i; S{e} -> {| ~ $lid:i : $e |}
         (* Same remark for ?a:b *)
         | `OPTLABEL i; S{e} -> {| ? $i : $e |}
         | "?"; a_LIDENT{i}; ":"; S{e} -> {| ? $i : $e |}

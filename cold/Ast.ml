@@ -57,9 +57,9 @@ and expr =
   | `ExApp of (loc* expr* expr) | `ExAre of (loc* expr* expr)
   | `Array of (loc* expr) | `Sem of (loc* expr* expr) | `ExAsf of loc
   | `ExAsr of (loc* expr) | `ExAss of (loc* expr* expr)
-  | `For of (loc* string* expr* expr* direction_flag* expr)
+  | `For of (loc* alident* expr* expr* direction_flag* expr)
   | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
-  | literal | `Label of (loc* string* expr) | `Lazy of (loc* expr)
+  | literal | `Label of (loc* alident* expr) | `Lazy of (loc* expr)
   | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* string* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
