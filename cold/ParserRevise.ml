@@ -1357,18 +1357,19 @@ let apply () =
               (fun (e : 'expr)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)
                   ->
                  match __fan_0 with
-                 | `OPTLABEL i -> (`OptLabl (_loc, i, e) : 'expr )
+                 | `OPTLABEL i ->
+                     (`OptLabl (_loc, (`Lid (_loc, i)), e) : 'expr )
                  | _ -> assert false)));
          ([`Skeyword "?";
-          `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
           `Sself],
            (Gram.mk_action
-              (fun (e : 'expr)  _  (i : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
+              (fun (e : 'expr)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
                  (`OptLabl (_loc, i, e) : 'expr ))));
-         ([`Skeyword "?"; `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+         ([`Skeyword "?"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            (Gram.mk_action
-              (fun (i : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
+              (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
                  (`OptLabl (_loc, i, (`Nil _loc)) : 'expr ))))]);
        ((Some "."), (Some `LA),
          [([`Sself; `Skeyword "."; `Skeyword "("; `Sself; `Skeyword ")"],

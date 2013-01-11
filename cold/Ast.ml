@@ -63,7 +63,7 @@ and expr =
   | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* string* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
-  | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* string* expr)
+  | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
   | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding* expr)
   | `Seq of (loc* expr) | `Send of (loc* expr* string)
   | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)

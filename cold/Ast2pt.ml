@@ -662,7 +662,10 @@ and label_expr: expr -> (Asttypes.label* expression) =
       (match lab with
        | `Lid (_,lab) -> (lab, (expr_of_lab loc lab eo))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `OptLabl (loc,lab,eo) -> (("?" ^ lab), (expr_of_lab loc lab eo))
+  | `OptLabl (loc,lab,eo) ->
+      (match lab with
+       | `Lid (_loc,lab) -> (("?" ^ lab), (expr_of_lab loc lab eo))
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | e -> ("", (expr e))
 and binding x acc =
   match x with

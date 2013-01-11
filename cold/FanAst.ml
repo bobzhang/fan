@@ -367,7 +367,7 @@ class eq =
             ((self#loc a0 b0) && (self#patt a1 b1)) &&
               (self#class_str_item a2 b2)
         | (`OptLabl (a0,a1,a2),`OptLabl (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) && (self#expr a2 b2)
+            ((self#loc a0 b0) && (self#alident a1 b1)) && (self#expr a2 b2)
         | (`OvrInst (a0,a1),`OvrInst (b0,b1)) ->
             (self#loc a0 b0) && (self#rec_binding a1 b1)
         | (`Record (a0,a1,a2),`Record (b0,b1,b2)) ->
@@ -1076,7 +1076,7 @@ class map =
           let a2 = self#class_str_item a2 in `Obj (a0, a1, a2)
       | `OptLabl (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#expr a2 in `OptLabl (a0, a1, a2)
       | `OvrInst (a0,a1) ->
           let a0 = self#loc a0 in
@@ -1880,7 +1880,7 @@ class print =
               self#patt a1 self#class_str_item a2
         | `OptLabl (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#expr a2
+              self#alident a1 self#expr a2
         | `OvrInst (a0,a1) ->
             Format.fprintf fmt "@[<1>(`OvrInst@ %a@ %a)@]" self#loc a0
               self#rec_binding a1
@@ -2488,7 +2488,8 @@ class fold =
           let self = self#loc a0 in
           let self = self#patt a1 in self#class_str_item a2
       | `OptLabl (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#string a1 in self#expr a2
+          let self = self#loc a0 in
+          let self = self#alident a1 in self#expr a2
       | `OvrInst (a0,a1) -> let self = self#loc a0 in self#rec_binding a1
       | `Record (a0,a1,a2) ->
           let self = self#loc a0 in
@@ -3151,7 +3152,7 @@ class fold2 =
             let self = self#patt a1 b1 in self#class_str_item a2 b2
         | (`OptLabl (a0,a1,a2),`OptLabl (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#expr a2 b2
+            let self = self#alident a1 b1 in self#expr a2 b2
         | (`OvrInst (a0,a1),`OvrInst (b0,b1)) ->
             let self = self#loc a0 b0 in self#rec_binding a1 b1
         | (`Record (a0,a1,a2),`Record (b0,b1,b2)) ->
@@ -3897,7 +3898,7 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           pp_print_patt a1 pp_print_class_str_item a2
     | `OptLabl (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_expr a2
+          pp_print_alident a1 pp_print_expr a2
     | `OvrInst (a0,a1) ->
         Format.fprintf fmt "@[<1>(`OvrInst@ %a@ %a)@]" pp_print_loc a0
           pp_print_rec_binding a1
@@ -4451,7 +4452,7 @@ class iter =
       | `New (a0,a1) -> (self#loc a0; self#ident a1)
       | `Obj (a0,a1,a2) ->
           (self#loc a0; self#patt a1; self#class_str_item a2)
-      | `OptLabl (a0,a1,a2) -> (self#loc a0; self#string a1; self#expr a2)
+      | `OptLabl (a0,a1,a2) -> (self#loc a0; self#alident a1; self#expr a2)
       | `OvrInst (a0,a1) -> (self#loc a0; self#rec_binding a1)
       | `Record (a0,a1,a2) ->
           (self#loc a0; self#rec_binding a1; self#expr a2)
@@ -5132,7 +5133,7 @@ class map2 =
             let a2 = self#class_str_item a2 b2 in `Obj (a0, a1, a2)
         | (`OptLabl (a0,a1,a2),`OptLabl (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#expr a2 b2 in `OptLabl (a0, a1, a2)
         | (`OvrInst (a0,a1),`OvrInst (b0,b1)) ->
             let a0 = self#loc a0 b0 in
@@ -6516,7 +6517,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "OptLabl")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `OvrInst (a0,a1) ->
                 `ExApp
@@ -8267,7 +8268,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "OptLabl")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
             | `OvrInst (a0,a1) ->
                 `PaApp

@@ -203,7 +203,8 @@
       (* object ((p))? (cst)? end *)
     | `Obj of (loc * patt * class_str_item)
       (* ?s or ?s:e *)
-    | `OptLabl of (loc * string * expr)
+    | `OptLabl of (loc * (* string *)alident * expr)
+          
       (* {< rb >} *)
     | `OvrInst of (loc * rec_binding)
       (* { rb } or { (e) with rb } *)

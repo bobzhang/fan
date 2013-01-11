@@ -700,7 +700,10 @@ and label_expr : expr -> (Asttypes.label*expression) = fun (* expr -> label * ex
     [ `Lid (_,lab) ->
       (lab, expr_of_lab loc lab eo)
     | `Ant(_loc,_) -> ANT_ERROR]
-  | `OptLabl (loc,lab,eo) -> ("?" ^ lab, expr_of_lab loc lab eo)
+  | `OptLabl (loc,lab,eo) ->
+      match lab with 
+      [`Lid (_loc,lab) -> ("?" ^ lab, expr_of_lab loc lab eo)
+      |`Ant(_loc,_) -> ANT_ERROR]
   | e -> ("", expr e) ]
 and binding x acc =  match x with (* binding -> (pattern * expression) list ->  (pattern * expression) list *)
   [ {:binding| $x and $y |} ->
