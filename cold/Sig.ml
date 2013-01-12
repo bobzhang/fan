@@ -43,6 +43,7 @@ module type Syntax =
     val a_string : astring Gram.t
     val a_lident : [ `Lid of (loc* string) | ant] Gram.t
     val a_uident : auident Gram.t
+    val aident : ident Gram.t
     val a_NATIVEINT : string Gram.t
     val a_OPTLABEL : string Gram.t
     val a_STRING : string Gram.t

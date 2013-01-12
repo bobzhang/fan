@@ -265,8 +265,10 @@
     | `External of (loc * alident  * ctyp * meta_list string)
       (* include mt *)
     | `Include of (loc * module_type)
-      (* module s : mt *)
-    | `Module of (loc * string * module_type)
+
+    (* module s : mt *)
+    | `Module of (loc * (* string *)auident * module_type)
+          
       (* module rec mb *)
     | `RecModule of (loc * module_binding)
       (* module type s = mt *)
@@ -356,8 +358,10 @@
     | `External of (loc * alident  * ctyp * meta_list string)
       (* include me *)
     | `Include of (loc * module_expr)
+
       (* module s = me *)
-    | `Module of (loc * string * module_expr)
+    | `Module of (loc * (* string *)auident * module_expr)
+          
       (* module rec mb *)
     | `RecModule of (loc * module_binding)
       (* module type s = mt *)

@@ -441,7 +441,7 @@ class eq =
         | (`Include (a0,a1),`Include (b0,b1)) ->
             (self#loc a0 b0) && (self#module_type a1 b1)
         | (`Module (a0,a1,a2),`Module (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) &&
+            ((self#loc a0 b0) && (self#auident a1 b1)) &&
               (self#module_type a2 b2)
         | (`RecModule (a0,a1),`RecModule (b0,b1)) ->
             (self#loc a0 b0) && (self#module_binding a1 b1)
@@ -569,7 +569,7 @@ class eq =
         | (`Include (a0,a1),`Include (b0,b1)) ->
             (self#loc a0 b0) && (self#module_expr a1 b1)
         | (`Module (a0,a1,a2),`Module (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) &&
+            ((self#loc a0 b0) && (self#auident a1 b1)) &&
               (self#module_expr a2 b2)
         | (`RecModule (a0,a1),`RecModule (b0,b1)) ->
             (self#loc a0 b0) && (self#module_binding a1 b1)
@@ -1179,7 +1179,7 @@ class map =
           let a1 = self#module_type a1 in `Include (a0, a1)
       | `Module (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#auident a1 in
           let a2 = self#module_type a2 in `Module (a0, a1, a2)
       | `RecModule (a0,a1) ->
           let a0 = self#loc a0 in
@@ -1335,7 +1335,7 @@ class map =
           let a1 = self#module_expr a1 in `Include (a0, a1)
       | `Module (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#auident a1 in
           let a2 = self#module_expr a2 in `Module (a0, a1, a2)
       | `RecModule (a0,a1) ->
           let a0 = self#loc a0 in
@@ -1970,7 +1970,7 @@ class print =
               self#module_type a1
         | `Module (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#module_type a2
+              self#auident a1 self#module_type a2
         | `RecModule (a0,a1) ->
             Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" self#loc a0
               self#module_binding a1
@@ -2109,7 +2109,7 @@ class print =
               self#module_expr a1
         | `Module (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#module_expr a2
+              self#auident a1 self#module_expr a2
         | `RecModule (a0,a1) ->
             Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" self#loc a0
               self#module_binding a1
@@ -2551,7 +2551,7 @@ class fold =
       | `Include (a0,a1) -> let self = self#loc a0 in self#module_type a1
       | `Module (a0,a1,a2) ->
           let self = self#loc a0 in
-          let self = self#string a1 in self#module_type a2
+          let self = self#auident a1 in self#module_type a2
       | `RecModule (a0,a1) ->
           let self = self#loc a0 in self#module_binding a1
       | `ModuleType (a0,a1,a2) ->
@@ -2661,7 +2661,7 @@ class fold =
       | `Include (a0,a1) -> let self = self#loc a0 in self#module_expr a1
       | `Module (a0,a1,a2) ->
           let self = self#loc a0 in
-          let self = self#string a1 in self#module_expr a2
+          let self = self#auident a1 in self#module_expr a2
       | `RecModule (a0,a1) ->
           let self = self#loc a0 in self#module_binding a1
       | `ModuleType (a0,a1,a2) ->
@@ -3235,7 +3235,7 @@ class fold2 =
             let self = self#loc a0 b0 in self#module_type a1 b1
         | (`Module (a0,a1,a2),`Module (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#module_type a2 b2
+            let self = self#auident a1 b1 in self#module_type a2 b2
         | (`RecModule (a0,a1),`RecModule (b0,b1)) ->
             let self = self#loc a0 b0 in self#module_binding a1 b1
         | (`ModuleType (a0,a1,a2),`ModuleType (b0,b1,b2)) ->
@@ -3376,7 +3376,7 @@ class fold2 =
             let self = self#loc a0 b0 in self#module_expr a1 b1
         | (`Module (a0,a1,a2),`Module (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#module_expr a2 b2
+            let self = self#auident a1 b1 in self#module_expr a2 b2
         | (`RecModule (a0,a1),`RecModule (b0,b1)) ->
             let self = self#loc a0 b0 in self#module_binding a1 b1
         | (`ModuleType (a0,a1,a2),`ModuleType (b0,b1,b2)) ->
@@ -3987,7 +3987,7 @@ and pp_print_sig_item: 'fmt -> sig_item -> 'result =
           pp_print_module_type a1
     | `Module (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_module_type a2
+          pp_print_auident a1 pp_print_module_type a2
     | `RecModule (a0,a1) ->
         Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" pp_print_loc a0
           pp_print_module_binding a1
@@ -4127,7 +4127,7 @@ and pp_print_str_item: 'fmt -> str_item -> 'result =
           pp_print_module_expr a1
     | `Module (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_module_expr a2
+          pp_print_auident a1 pp_print_module_expr a2
     | `RecModule (a0,a1) ->
         Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" pp_print_loc a0
           pp_print_module_binding a1
@@ -4496,7 +4496,7 @@ class iter =
            self#meta_list (fun self  -> self#string) a3)
       | `Include (a0,a1) -> (self#loc a0; self#module_type a1)
       | `Module (a0,a1,a2) ->
-          (self#loc a0; self#string a1; self#module_type a2)
+          (self#loc a0; self#auident a1; self#module_type a2)
       | `RecModule (a0,a1) -> (self#loc a0; self#module_binding a1)
       | `ModuleType (a0,a1,a2) ->
           (self#loc a0; self#string a1; self#module_type a2)
@@ -4584,7 +4584,7 @@ class iter =
            self#meta_list (fun self  -> self#string) a3)
       | `Include (a0,a1) -> (self#loc a0; self#module_expr a1)
       | `Module (a0,a1,a2) ->
-          (self#loc a0; self#string a1; self#module_expr a2)
+          (self#loc a0; self#auident a1; self#module_expr a2)
       | `RecModule (a0,a1) -> (self#loc a0; self#module_binding a1)
       | `ModuleType (a0,a1,a2) ->
           (self#loc a0; self#string a1; self#module_type a2)
@@ -5242,7 +5242,7 @@ class map2 =
             let a1 = self#module_type a1 b1 in `Include (a0, a1)
         | (`Module (a0,a1,a2),`Module (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#auident a1 b1 in
             let a2 = self#module_type a2 b2 in `Module (a0, a1, a2)
         | (`RecModule (a0,a1),`RecModule (b0,b1)) ->
             let a0 = self#loc a0 b0 in
@@ -5419,7 +5419,7 @@ class map2 =
             let a1 = self#module_expr a1 b1 in `Include (a0, a1)
         | (`Module (a0,a1,a2),`Module (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#auident a1 b1 in
             let a2 = self#module_expr a2 b2 in `Module (a0, a1, a2)
         | (`RecModule (a0,a1),`RecModule (b0,b1)) ->
             let a0 = self#loc a0 b0 in
@@ -6740,7 +6740,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Module")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_auident _loc a1))),
                     (meta_module_type _loc a2))
             | `RecModule (a0,a1) ->
                 `ExApp
@@ -7076,7 +7076,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Module")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_auident _loc a1))),
                     (meta_module_expr _loc a2))
             | `RecModule (a0,a1) ->
                 `ExApp
@@ -8482,7 +8482,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "Module")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_auident _loc a1))),
                     (meta_module_type _loc a2))
             | `RecModule (a0,a1) ->
                 `PaApp
@@ -8818,7 +8818,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "Module")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_auident _loc a1))),
                     (meta_module_expr _loc a2))
             | `RecModule (a0,a1) ->
                 `PaApp

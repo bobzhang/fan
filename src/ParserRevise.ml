@@ -215,7 +215,7 @@ let apply () = begin
     | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
         {| external $i : $t = $sl |} 
     | "include"; module_type{mt} -> {| include $mt |}
-    | "module"; a_UIDENT{i}; module_declaration{mt} ->  {| module $i : $mt |}
+    | "module"; (* a_UIDENT *)a_uident{i}; module_declaration{mt} ->  {| module $i : $mt |}
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
     | "module"; "type"; a_ident{i}; "="; module_type{mt} ->  {| module type $i = $mt |}
     | "module"; "type"; a_ident{i} ->  {| module type $i |}
@@ -862,6 +862,7 @@ let apply () = begin
     with ident
     {:extend|Gram
       a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
+      aident: [ a_lident{i} -> (i:>ident) | a_uident{i} -> (i:>ident)]
       ident_quot:
       { "."
         [ S{i}; "."; S{j} -> {| $i.$j  |} ]
@@ -1008,7 +1009,7 @@ let apply () = begin
       | `Lid s  -> `Lid (_loc, s) ]
 
       a_uident:
-      [ `Ant((""|"lid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_uident" n s)
+      [ `Ant((""|"uid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_uident" n s)
       | `Uid s  -> `Uid (_loc, s) ]
       
       string_list:
@@ -1059,7 +1060,7 @@ let apply () = begin
             {| external $i: $t = $sl |}
               
         | "include"; module_expr{me} -> {| include $me |}
-        | "module"; a_UIDENT{i}; module_binding0{mb} ->
+        | "module"; (* a_UIDENT *)a_uident{i}; module_binding0{mb} ->
             {| module $i = $mb |}
         | "module"; "rec"; module_binding{mb} ->
             {| module rec $mb |}

@@ -107,7 +107,7 @@ let _ =
             | x -> super#expr x
           method! str_item =
             function
-            | `Module (_loc,"Debug",_) as st -> st
+            | `Module (_loc,`Uid (_,"Debug"),_) as st -> st
             | st -> super#str_item st
         end)#str_item))
 let _ =
@@ -167,11 +167,6 @@ let rec decorate_fun id =
 let _ =
   AstFilters.register_str_item_filter
     ("profile", ((decorate decorate_fun)#str_item))
-let _ =
-  AstFilters.register_str_item_filter
-    ("trash",
-      ((FanAst.map_str_item
-          (function | `Module (_loc,"Camlp4Trash",_) -> `Nil _loc | st -> st))#str_item))
 let map_expr =
   function
   | `ExApp (_loc,e,`Id (_,`Uid (_,"NOTHING")))

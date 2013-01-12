@@ -345,7 +345,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "uidident" -> {| `Uid ($(mloc _loc), $e)|}
           | "lidident" -> {| `Lid ($(mloc _loc), $e)|}
           | "lida_lident" -> {|`Lid($(mloc _loc), $e)|}
-                
+          | "uida_uident" -> {|`Uid($(mloc _loc), $e)|}                
           | "flopatt" -> {| `Flo ($(mloc _loc), $e) |}
           | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
                 (* {| `PaX (u,b,g)|} *)
@@ -503,6 +503,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "antirow_var_flag" -> {| `Ant  ($(mloc _loc), $e) |}
             | "antirec_flag" -> {| `Ant  ($(mloc _loc), $e) |}
             | "lida_lident" -> {|`Lid($(mloc _loc), $e)|}
+            | "uida_uident" -> {|`Uid($(mloc _loc), $e)|}                  
             | _ -> e ])
       | e -> super#expr e ];
   end;

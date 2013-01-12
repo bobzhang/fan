@@ -87,12 +87,6 @@ let rec decorate_fun id =
   | e -> decorate_this_expr (decorate_expr e) id ];
 
 AstFilters.register_str_item_filter("profile", (decorate decorate_fun)#str_item);
-AstFilters.register_str_item_filter
-    ("trash",(FanAst.map_str_item
-      (fun
-       [ {:str_item@_loc| module Camlp4Trash = $_ |} ->
-            {:str_item||}
-       | st -> st ]))#str_item);
 
 let map_expr = with expr fun
   [ {| $e NOTHING |} | {| fun [NOTHING  -> $e] |} -> e

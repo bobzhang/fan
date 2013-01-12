@@ -815,7 +815,11 @@ and sig_item (s : sig_item) (l : signature) =
          :: l
    | `Include (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
    | `Module (loc,n,mt) ->
-       (mksig loc (Psig_module ((with_loc n loc), (module_type mt)))) :: l
+       (match n with
+        | `Uid (sloc,n) ->
+            (mksig loc (Psig_module ((with_loc n sloc), (module_type mt))))
+            :: l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
    | `RecModule (loc,mb) ->
        (mksig loc (Psig_recmodule (module_sig_binding mb []))) :: l
    | `ModuleType (loc,n,mt) ->
@@ -902,7 +906,11 @@ and str_item (s : str_item) (l : structure) =
        :: l
    | `Include (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
    | `Module (loc,n,me) ->
-       (mkstr loc (Pstr_module ((with_loc n loc), (module_expr me)))) :: l
+       (match n with
+        | `Uid (sloc,n) ->
+            (mkstr loc (Pstr_module ((with_loc n sloc), (module_expr me))))
+            :: l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
    | `RecModule (loc,mb) ->
        (mkstr loc (Pstr_recmodule (module_str_binding mb []))) :: l
    | `ModuleType (loc,n,mt) ->

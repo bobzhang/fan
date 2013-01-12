@@ -728,11 +728,11 @@ let apply () =
                (fun (mt : 'module_type)  _  (_loc : FanLoc.t)  ->
                   (`Include (_loc, mt) : 'sig_item ))));
           ([`Skeyword "module";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Snterm
              (Gram.obj (module_declaration : 'module_declaration Gram.t ))],
             (Gram.mk_action
-               (fun (mt : 'module_declaration)  (i : 'a_UIDENT)  _ 
+               (fun (mt : 'module_declaration)  (i : 'a_uident)  _ 
                   (_loc : FanLoc.t)  -> (`Module (_loc, i, mt) : 'sig_item ))));
           ([`Skeyword "module";
            `Skeyword "rec";
@@ -4060,6 +4060,17 @@ let apply () =
           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
             (Gram.mk_action
                (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  -> (i : 'a_ident ))))])]);
+   Gram.extend (aident : 'aident Gram.t )
+     (None,
+       [(None, None,
+          [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+             (Gram.mk_action
+                (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
+                   ((i :>ident) : 'aident ))));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
+            (Gram.mk_action
+               (fun (i : 'a_uident)  (_loc : FanLoc.t)  ->
+                  ((i :>ident) : 'aident ))))])]);
    Gram.extend (ident_quot : 'ident_quot Gram.t )
      (None,
        [((Some "."), None,
@@ -4793,12 +4804,12 @@ let apply () =
      (None,
        [(None, None,
           [([`Stoken
-               (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-                 (`Normal, "`Ant ((\"\"|\"lid\"),_)"))],
+               (((function | `Ant ((""|"uid"),_) -> true | _ -> false)),
+                 (`Normal, "`Ant ((\"\"|\"uid\"),_)"))],
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `Ant ((""|"lid" as n),s) ->
+                   | `Ant ((""|"uid" as n),s) ->
                        (`Ant (_loc, (mk_anti ~c:"a_uident" n s)) : 'a_uident )
                    | _ -> assert false)));
           ([`Stoken
@@ -5065,10 +5076,10 @@ let apply () =
                (fun (me : 'module_expr)  _  (_loc : FanLoc.t)  ->
                   (`Include (_loc, me) : 'str_item ))));
           ([`Skeyword "module";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Snterm (Gram.obj (module_binding0 : 'module_binding0 Gram.t ))],
             (Gram.mk_action
-               (fun (mb : 'module_binding0)  (i : 'a_UIDENT)  _ 
+               (fun (mb : 'module_binding0)  (i : 'a_uident)  _ 
                   (_loc : FanLoc.t)  -> (`Module (_loc, i, mb) : 'str_item ))));
           ([`Skeyword "module";
            `Skeyword "rec";

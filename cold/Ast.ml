@@ -84,7 +84,7 @@ and sig_item =
   | `ClassType of (loc* class_type) | `Sem of (loc* sig_item* sig_item)
   | `Directive of (loc* alident* expr) | `Exception of (loc* ctyp)
   | `External of (loc* alident* ctyp* string meta_list)
-  | `Include of (loc* module_type) | `Module of (loc* string* module_type)
+  | `Include of (loc* module_type) | `Module of (loc* auident* module_type)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* string* module_type) | `Open of (loc* ident)
   | `Type of (loc* ctyp) | `Val of (loc* alident* ctyp) | ant] 
@@ -119,7 +119,7 @@ and str_item =
   | `Directive of (loc* alident* expr)
   | `Exception of (loc* ctyp* ident meta_option) | `StExp of (loc* expr)
   | `External of (loc* alident* ctyp* string meta_list)
-  | `Include of (loc* module_expr) | `Module of (loc* string* module_expr)
+  | `Include of (loc* module_expr) | `Module of (loc* auident* module_expr)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* string* module_type) | `Open of (loc* ident)
   | `Type of (loc* ctyp) | `Value of (loc* rec_flag* binding) | ant] 

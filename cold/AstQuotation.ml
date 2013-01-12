@@ -402,6 +402,12 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Lid")),
                                       (mloc _loc))), e)
+                         | "uida_uident" ->
+                             `PaApp
+                               (_loc,
+                                 (`PaApp
+                                    (_loc, (`PaVrn (_loc, "Uid")),
+                                      (mloc _loc))), e)
                          | "flopatt" ->
                              `PaApp
                                (_loc,
@@ -1213,6 +1219,11 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                          | "lida_lident" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Lid")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
+                         | "uida_uident" ->
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "Uid")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | _ -> e)

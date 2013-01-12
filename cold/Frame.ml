@@ -275,7 +275,7 @@ let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names
   let item = FanAst.stSem_of_list (List.map fs lst) in
   match module_name with
   | None  -> item
-  | Some m -> `Module (_loc, m, (`Struct (_loc, item)))
+  | Some m -> `Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item)))
 let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
   [])  ~trail  ~left_type_variable  ~mk_record  ~mk_variant  base class_name
   simple_expr_of_ctyp (k : kind) (lst : module_types) =
@@ -331,4 +331,4 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
     tbl;
   (match module_name with
    | None  -> v
-   | Some u -> `Module (_loc, u, (`Struct (_loc, v))))
+   | Some u -> `Module (_loc, (`Uid (_loc, u)), (`Struct (_loc, v))))

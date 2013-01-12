@@ -861,14 +861,19 @@ and sig_item (s:sig_item) (l:signature) :signature =
         [`Lid (_,n) -> n | `Ant(loc,_) -> error loc "antiquotation in sig_item"] in
       [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
-  | `Module (loc,n,mt) -> [mksig loc (Psig_module (with_loc n loc) (module_type mt)) :: l]
+  | `Module (loc,n,mt) ->
+      match n with
+      [`Uid(sloc,n) ->    
+        [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
+      |`Ant(_loc,_) ->
+          ANT_ERROR]
   | `RecModule (loc,mb) ->
       [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
   | `ModuleType (loc,n,mt) ->
       let si =  match mt with
       [ `MtQuo (_,_) -> Pmodtype_abstract
       | _ -> Pmodtype_manifest (module_type mt) ] in
-      [mksig loc (Psig_modtype (with_loc n loc) si) :: l]
+        [mksig loc (Psig_modtype (with_loc n loc) si) :: l]
   | `Open (loc,id) ->
       [mksig loc (Psig_open (long_uident id)) :: l]
   | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
@@ -937,7 +942,11 @@ and str_item (s:str_item) (l:structure) : structure =
       [mkstr loc
          (Pstr_primitive (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | `Include (loc,me) -> [mkstr loc (Pstr_include (module_expr me)) :: l]
-  | `Module (loc,n,me) -> [mkstr loc (Pstr_module (with_loc n loc) (module_expr me)) :: l]
+  | `Module (loc,n,me) ->
+      match n with
+      [`Uid(sloc,n) ->
+        [mkstr loc (Pstr_module (with_loc n sloc) (module_expr me)) :: l]
+      |`Ant(_loc,_) -> ANT_ERROR]
   | `RecModule (loc,mb) ->
       [mkstr loc (Pstr_recmodule (module_str_binding mb [])) :: l]
   | `ModuleType (loc,n,mt) -> [mkstr loc (Pstr_modtype (with_loc n loc) (module_type mt)) :: l]
