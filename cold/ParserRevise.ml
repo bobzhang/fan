@@ -5421,10 +5421,10 @@ let apply () =
               (Gram.obj
                  (value_val_opt_override : 'value_val_opt_override Gram.t ));
            `Snterm (Gram.obj (opt_mutable : 'opt_mutable Gram.t ));
-           `Snterm (Gram.obj (label : 'label Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Snterm (Gram.obj (cvalue_binding : 'cvalue_binding Gram.t ))],
             (Gram.mk_action
-               (fun (e : 'cvalue_binding)  (lab : 'label) 
+               (fun (e : 'cvalue_binding)  (lab : 'a_lident) 
                   (mf : 'opt_mutable)  (o : 'value_val_opt_override) 
                   (_loc : FanLoc.t)  ->
                   (`CrVal (_loc, lab, o, mf, e) : 'class_str_item ))));
@@ -5433,12 +5433,12 @@ let apply () =
                  (value_val_opt_override : 'value_val_opt_override Gram.t ));
            `Skeyword "virtual";
            `Snterm (Gram.obj (opt_mutable : 'opt_mutable Gram.t ));
-           `Snterm (Gram.obj (label : 'label Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'poly_type)  _  (l : 'label)  (mf : 'opt_mutable)  _
-                   (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->
+               (fun (t : 'poly_type)  _  (l : 'a_lident)  (mf : 'opt_mutable)
+                   _  (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->
                   (match o with
                    | `OvNil _ -> `CrVvr (_loc, l, mf, t)
                    | _ ->
@@ -5450,12 +5450,12 @@ let apply () =
               (Gram.obj (method_opt_override : 'method_opt_override Gram.t ));
            `Skeyword "virtual";
            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
-           `Snterm (Gram.obj (label : 'label Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'poly_type)  _  (l : 'label)  (pf : 'opt_private)  _
-                   (o : 'method_opt_override)  (_loc : FanLoc.t)  ->
+               (fun (t : 'poly_type)  _  (l : 'a_lident)  (pf : 'opt_private)
+                   _  (o : 'method_opt_override)  (_loc : FanLoc.t)  ->
                   (match o with
                    | `OvNil _ -> `CrVir (_loc, l, pf, t)
                    | _ ->

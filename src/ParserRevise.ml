@@ -491,8 +491,7 @@ let apply () = begin
         | label_longident{i} -> {| $id:i = $(lid:Ident.to_lid i) |} ]
         field_expr:
         [ `Ant ((""|"bi"|"anti" |"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |}
-        (* | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |} *)
-        | (* label *)a_lident{l}; "=";  expr Level "top"{e} ->
+        | a_lident{l}; "=";  expr Level "top"{e} ->
             `RecBind (_loc, (l:>ident), e) (* {| $lid:l = $e |} *) ]
         label_expr_list:
         [ label_expr{b1}; ";"; S{b2} -> {| $b1 ; $b2 |}
@@ -1130,20 +1129,20 @@ let apply () = begin
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_str_item_tag
         | "inherit"; opt_override{o}; class_expr{ce}; opt_as_lident{pb} ->
             {| inherit $!:o $ce $as:pb |}
-        | value_val_opt_override{o}; opt_mutable{mf}; label{lab}; cvalue_binding{e}
+        | value_val_opt_override{o}; opt_mutable{mf}; a_lident{lab}; cvalue_binding{e}
           ->
             {| val $override:o $mutable:mf $lab = $e |}
-        | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; label{l}; ":";
+        | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; a_lident{l}; ":";
                 poly_type{t} ->
                 match o with
                 [ {:override_flag@_||} ->{| val virtual $mutable:mf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]                    
-        | method_opt_override{o}; "virtual"; opt_private{pf}; label{l}; ":";
+        | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
                 poly_type{t} ->
                 match o with
                 [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
-        | method_opt_override{o}; opt_private{pf}; label{l}; opt_polyt{topt};
+        | method_opt_override{o}; opt_private{pf}; label(* a_lident *){l}; opt_polyt{topt};
                 fun_binding{e} ->
             {| method $override:o $private:pf $l : $topt = $e |}
         | type_constraint; ctyp{t1}; "="; ctyp{t2} ->  {| type $t1 = $t2 |}

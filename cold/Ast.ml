@@ -151,6 +151,6 @@ and class_str_item =
   | `Inherit of (loc* override_flag* class_expr* alident meta_option)
   | `Initializer of (loc* expr)
   | `CrMth of (loc* string* override_flag* private_flag* expr* ctyp)
-  | `CrVal of (loc* string* override_flag* mutable_flag* expr)
-  | `CrVir of (loc* string* private_flag* ctyp)
-  | `CrVvr of (loc* string* mutable_flag* ctyp) | ant] 
+  | `CrVal of (loc* alident* override_flag* mutable_flag* expr)
+  | `CrVir of (loc* alident* private_flag* ctyp)
+  | `CrVvr of (loc* alident* mutable_flag* ctyp) | ant] 

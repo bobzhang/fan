@@ -690,16 +690,16 @@ class eq =
                && (self#expr a4 b4))
               && (self#ctyp a5 b5)
         | (`CrVal (a0,a1,a2,a3,a4),`CrVal (b0,b1,b2,b3,b4)) ->
-            ((((self#loc a0 b0) && (self#string a1 b1)) &&
+            ((((self#loc a0 b0) && (self#alident a1 b1)) &&
                 (self#override_flag a2 b2))
                && (self#mutable_flag a3 b3))
               && (self#expr a4 b4)
         | (`CrVir (a0,a1,a2,a3),`CrVir (b0,b1,b2,b3)) ->
-            (((self#loc a0 b0) && (self#string a1 b1)) &&
+            (((self#loc a0 b0) && (self#alident a1 b1)) &&
                (self#private_flag a2 b2))
               && (self#ctyp a3 b3)
         | (`CrVvr (a0,a1,a2,a3),`CrVvr (b0,b1,b2,b3)) ->
-            (((self#loc a0 b0) && (self#string a1 b1)) &&
+            (((self#loc a0 b0) && (self#alident a1 b1)) &&
                (self#mutable_flag a2 b2))
               && (self#ctyp a3 b3)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
@@ -1478,18 +1478,18 @@ class map =
           let a5 = self#ctyp a5 in `CrMth (a0, a1, a2, a3, a4, a5)
       | `CrVal (a0,a1,a2,a3,a4) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#override_flag a2 in
           let a3 = self#mutable_flag a3 in
           let a4 = self#expr a4 in `CrVal (a0, a1, a2, a3, a4)
       | `CrVir (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#private_flag a2 in
           let a3 = self#ctyp a3 in `CrVir (a0, a1, a2, a3)
       | `CrVvr (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#mutable_flag a2 in
           let a3 = self#ctyp a3 in `CrVvr (a0, a1, a2, a3)
       | #ant as a0 -> (self#ant a0 :>class_str_item)
@@ -2225,14 +2225,14 @@ class print =
               self#private_flag a3 self#expr a4 self#ctyp a5
         | `CrVal (a0,a1,a2,a3,a4) ->
             Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" 
-              self#loc a0 self#string a1 self#override_flag a2
+              self#loc a0 self#alident a1 self#override_flag a2
               self#mutable_flag a3 self#expr a4
         | `CrVir (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`CrVir@ %a@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#private_flag a2 self#ctyp a3
+              self#alident a1 self#private_flag a2 self#ctyp a3
         | `CrVvr (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`CrVvr@ %a@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#mutable_flag a2 self#ctyp a3
+              self#alident a1 self#mutable_flag a2 self#ctyp a3
         | #ant as a0 -> (self#ant fmt a0 :>'result)
     method fanloc_t : 'fmt -> FanLoc.t -> 'result= self#unknown
   end
@@ -2771,16 +2771,16 @@ class fold =
           let self = self#expr a4 in self#ctyp a5
       | `CrVal (a0,a1,a2,a3,a4) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#alident a1 in
           let self = self#override_flag a2 in
           let self = self#mutable_flag a3 in self#expr a4
       | `CrVir (a0,a1,a2,a3) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#alident a1 in
           let self = self#private_flag a2 in self#ctyp a3
       | `CrVvr (a0,a1,a2,a3) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#alident a1 in
           let self = self#mutable_flag a2 in self#ctyp a3
       | #ant as a0 -> (self#ant a0 :>'self_type)
     method fanloc_t : FanLoc.t -> 'self_type= self#unknown
@@ -3500,16 +3500,16 @@ class fold2 =
             let self = self#expr a4 b4 in self#ctyp a5 b5
         | (`CrVal (a0,a1,a2,a3,a4),`CrVal (b0,b1,b2,b3,b4)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#alident a1 b1 in
             let self = self#override_flag a2 b2 in
             let self = self#mutable_flag a3 b3 in self#expr a4 b4
         | (`CrVir (a0,a1,a2,a3),`CrVir (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#alident a1 b1 in
             let self = self#private_flag a2 b2 in self#ctyp a3 b3
         | (`CrVvr (a0,a1,a2,a3),`CrVvr (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#alident a1 b1 in
             let self = self#mutable_flag a2 b2 in self#ctyp a3 b3
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
@@ -4243,14 +4243,14 @@ and pp_print_class_str_item: 'fmt -> class_str_item -> 'result =
           pp_print_private_flag a3 pp_print_expr a4 pp_print_ctyp a5
     | `CrVal (a0,a1,a2,a3,a4) ->
         Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
-          a0 pp_print_string a1 pp_print_override_flag a2
+          a0 pp_print_alident a1 pp_print_override_flag a2
           pp_print_mutable_flag a3 pp_print_expr a4
     | `CrVir (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`CrVir@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_private_flag a2 pp_print_ctyp a3
+          pp_print_alident a1 pp_print_private_flag a2 pp_print_ctyp a3
     | `CrVvr (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`CrVvr@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_mutable_flag a2 pp_print_ctyp a3
+          pp_print_alident a1 pp_print_mutable_flag a2 pp_print_ctyp a3
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 class iter =
   object (self : 'self_type)
@@ -4664,14 +4664,14 @@ class iter =
            self#ctyp a5)
       | `CrVal (a0,a1,a2,a3,a4) ->
           (self#loc a0;
-           self#string a1;
+           self#alident a1;
            self#override_flag a2;
            self#mutable_flag a3;
            self#expr a4)
       | `CrVir (a0,a1,a2,a3) ->
-          (self#loc a0; self#string a1; self#private_flag a2; self#ctyp a3)
+          (self#loc a0; self#alident a1; self#private_flag a2; self#ctyp a3)
       | `CrVvr (a0,a1,a2,a3) ->
-          (self#loc a0; self#string a1; self#mutable_flag a2; self#ctyp a3)
+          (self#loc a0; self#alident a1; self#mutable_flag a2; self#ctyp a3)
       | #ant as a0 -> (self#ant a0 :>'result)
     method fanloc_t : FanLoc.t -> 'result= self#unknown
   end
@@ -5576,18 +5576,18 @@ class map2 =
             let a5 = self#ctyp a5 b5 in `CrMth (a0, a1, a2, a3, a4, a5)
         | (`CrVal (a0,a1,a2,a3,a4),`CrVal (b0,b1,b2,b3,b4)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#override_flag a2 b2 in
             let a3 = self#mutable_flag a3 b3 in
             let a4 = self#expr a4 b4 in `CrVal (a0, a1, a2, a3, a4)
         | (`CrVir (a0,a1,a2,a3),`CrVir (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#private_flag a2 b2 in
             let a3 = self#ctyp a3 b3 in `CrVir (a0, a1, a2, a3)
         | (`CrVvr (a0,a1,a2,a3),`CrVvr (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#mutable_flag a2 b2 in
             let a3 = self#ctyp a3 b3 in `CrVvr (a0, a1, a2, a3)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>class_str_item)
@@ -7408,7 +7408,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`ExApp
                                       (_loc, (`ExVrn (_loc, "CrVal")),
                                         (meta_loc _loc a0))),
-                                   (meta_string _loc a1))),
+                                   (meta_alident _loc a1))),
                               (meta_override_flag _loc a2))),
                          (meta_mutable_flag _loc a3))), (meta_expr _loc a4))
             | `CrVir (a0,a1,a2,a3) ->
@@ -7421,7 +7421,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExApp
                                  (_loc, (`ExVrn (_loc, "CrVir")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_alident _loc a1))),
                          (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
             | `CrVvr (a0,a1,a2,a3) ->
                 `ExApp
@@ -7433,7 +7433,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExApp
                                  (_loc, (`ExVrn (_loc, "CrVvr")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_alident _loc a1))),
                          (meta_mutable_flag _loc a2))), (meta_ctyp _loc a3))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
       end
@@ -9150,7 +9150,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`PaApp
                                       (_loc, (`PaVrn (_loc, "CrVal")),
                                         (meta_loc _loc a0))),
-                                   (meta_string _loc a1))),
+                                   (meta_alident _loc a1))),
                               (meta_override_flag _loc a2))),
                          (meta_mutable_flag _loc a3))), (meta_expr _loc a4))
             | `CrVir (a0,a1,a2,a3) ->
@@ -9163,7 +9163,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaApp
                                  (_loc, (`PaVrn (_loc, "CrVir")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_alident _loc a1))),
                          (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
             | `CrVvr (a0,a1,a2,a3) ->
                 `PaApp
@@ -9175,7 +9175,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaApp
                                  (_loc, (`PaVrn (_loc, "CrVvr")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_alident _loc a1))),
                          (meta_mutable_flag _loc a2))), (meta_ctyp _loc a3))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
       end

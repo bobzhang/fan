@@ -975,31 +975,31 @@ and class_info_class_type ci =
   | ct ->
       error (loc_of_class_type ct)
         "bad class/class type declaration/definition"
-and class_sig_item (c : class_sig_item) l =
-  match c with
-  | `Nil _loc -> l
-  | `Eq (loc,t1,t2) -> (mkctf loc (Pctf_cstr ((ctyp t1), (ctyp t2)))) :: l
-  | `Sem (_loc,csg1,csg2) -> class_sig_item csg1 (class_sig_item csg2 l)
-  | `Inherit (loc,ct) -> (mkctf loc (Pctf_inher (class_type ct))) :: l
-  | `Method (loc,s,pf,t) ->
-      (match s with
-       | `Lid (_,s) ->
-           (mkctf loc (Pctf_meth (s, (mkprivate pf), (mkpolytype (ctyp t)))))
-           :: l
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `CgVal (loc,s,b,v,t) ->
-      (match s with
-       | `Lid (_,s) ->
-           (mkctf loc (Pctf_val (s, (mkmutable b), (mkvirtual v), (ctyp t))))
-           :: l
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `CgVir (loc,s,b,t) ->
-      (match s with
-       | `Lid (_,s) ->
-           (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t)))))
-           :: l
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `Ant (_,_) -> assert false
+and class_sig_item (c : class_sig_item) (l : class_type_field list) =
+  (match c with
+   | `Nil _loc -> l
+   | `Eq (loc,t1,t2) -> (mkctf loc (Pctf_cstr ((ctyp t1), (ctyp t2)))) :: l
+   | `Sem (_loc,csg1,csg2) -> class_sig_item csg1 (class_sig_item csg2 l)
+   | `Inherit (loc,ct) -> (mkctf loc (Pctf_inher (class_type ct))) :: l
+   | `Method (loc,s,pf,t) ->
+       (match s with
+        | `Lid (_,s) ->
+            (mkctf loc (Pctf_meth (s, (mkprivate pf), (mkpolytype (ctyp t)))))
+            :: l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+   | `CgVal (loc,s,b,v,t) ->
+       (match s with
+        | `Lid (_,s) ->
+            (mkctf loc (Pctf_val (s, (mkmutable b), (mkvirtual v), (ctyp t))))
+            :: l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+   | `CgVir (loc,s,b,t) ->
+       (match s with
+        | `Lid (_,s) ->
+            (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t)))))
+            :: l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+   | `Ant (_,_) -> assert false : class_type_field list )
 and class_expr: class_expr -> Parsetree.class_expr =
   function
   | `CeApp (loc,_,_) as c ->
@@ -1069,18 +1069,29 @@ and class_str_item (c : class_str_item) l =
             ((with_loc s loc), (mkprivate pf), (override_flag loc ov), e)))
         :: l
   | `CrVal (loc,s,ov,mf,e) ->
-      (mkcf loc
-         (Pcf_val
-            ((with_loc s loc), (mkmutable mf), (override_flag loc ov),
-              (expr e))))
-      :: l
+      (match s with
+       | `Lid (sloc,s) ->
+           (mkcf loc
+              (Pcf_val
+                 ((with_loc s loc), (mkmutable mf), (override_flag loc ov),
+                   (expr e))))
+           :: l
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `CrVir (loc,s,pf,t) ->
-      (mkcf loc
-         (Pcf_virt ((with_loc s loc), (mkprivate pf), (mkpolytype (ctyp t)))))
-      :: l
+      (match s with
+       | `Lid (sloc,s) ->
+           (mkcf loc
+              (Pcf_virt
+                 ((with_loc s loc), (mkprivate pf), (mkpolytype (ctyp t)))))
+           :: l
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `CrVvr (loc,s,mf,t) ->
-      (mkcf loc (Pcf_valvirt ((with_loc s loc), (mkmutable mf), (ctyp t))))
-      :: l
+      (match s with
+       | `Lid (sloc,s) ->
+           (mkcf loc
+              (Pcf_valvirt ((with_loc s loc), (mkmutable mf), (ctyp t))))
+           :: l
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Ant (_,_) -> assert false
 let sig_item (ast : sig_item) = (sig_item ast [] : signature )
 let str_item ast = str_item ast []
