@@ -546,7 +546,7 @@ let apply () =
        [((Some "top"), None,
           [([`Skeyword "functor";
             `Skeyword "(";
-            `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+            `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
             `Skeyword ":";
             `Sself;
             `Skeyword ")";
@@ -554,7 +554,7 @@ let apply () =
             `Sself],
              (Gram.mk_action
                 (fun (mt : 'module_type)  _  _  (t : 'module_type)  _ 
-                   (i : 'a_UIDENT)  _  _  (_loc : FanLoc.t)  ->
+                   (i : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
                    (`MtFun (_loc, i, t, mt) : 'module_type ))))]);
        ((Some "with"), None,
          [([`Sself;
@@ -637,14 +637,14 @@ let apply () =
                 (fun (mt : 'module_type)  _  (_loc : FanLoc.t)  ->
                    (mt : 'module_declaration ))));
           ([`Skeyword "(";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
            `Skeyword ")";
            `Sself],
             (Gram.mk_action
                (fun (mt : 'module_declaration)  _  (t : 'module_type)  _ 
-                  (i : 'a_UIDENT)  _  (_loc : FanLoc.t)  ->
+                  (i : 'a_uident)  _  (_loc : FanLoc.t)  ->
                   (`MtFun (_loc, i, t, mt) : 'module_declaration ))))])]);
    Gram.extend (module_type_quot : 'module_type_quot Gram.t )
      (None,

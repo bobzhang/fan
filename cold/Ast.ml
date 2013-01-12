@@ -75,7 +75,7 @@ and expr =
   | `Package_expr of (loc* module_expr)] 
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)
-  | `MtFun of (loc* string* module_type* module_type)
+  | `MtFun of (loc* auident* module_type* module_type)
   | `MtQuo of (loc* string) | `Sig of (loc* sig_item)
   | `MtWit of (loc* module_type* with_constr) | `Of of (loc* module_expr)
   | ant] 

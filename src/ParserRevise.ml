@@ -173,7 +173,7 @@ let apply () = begin
     {:extend|Gram
       module_type:
       { "top"
-        [ "functor"; "("; a_UIDENT{i}; ":"; S{t}; ")"; "->"; S{mt} ->
+        [ "functor"; "("; a_uident{i}; ":"; S{t}; ")"; "->"; S{mt} ->
             {| functor ( $i : $t ) -> $mt |} ]
         "with"
         [ S{mt}; "with"; with_constr{wc} ->  {| $mt with $wc |} ]
@@ -193,7 +193,8 @@ let apply () = begin
       module_declaration:
       { RA
         [ ":"; module_type{mt} -> {| $mt |}
-        | "("; a_UIDENT{i}; ":"; module_type{t}; ")"; S{mt} -> {| functor ( $i : $t ) -> $mt |} ] }
+        | "("; (* a_UIDENT *)a_uident{i}; ":"; module_type{t}; ")"; S{mt} ->
+            {| functor ( $i : $t ) -> $mt |} ] }
       module_type_quot:
       [ module_type{x} -> x | -> {:module_type||} ]  |};
 

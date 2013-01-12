@@ -827,7 +827,10 @@ and module_type : Ast.module_type -> Parsetree.module_type =
   [ {@loc||} -> error loc "abstract/nil module type not allowed here"
   | {@loc| $id:i |} -> mkmty loc (Pmty_ident (long_uident i))
   | {@loc| functor ($n : $nt) -> $mt |} ->
-      mkmty loc (Pmty_functor (with_loc n loc) (module_type nt) (module_type mt))
+      match n with
+      [`Uid(sloc,n) ->
+        mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
+      |`Ant(_loc,_) -> ANT_ERROR]
   | {@loc| '$_ |} -> error loc "module type variable not allowed here"
   | {@loc| sig $sl end |} ->
       mkmty loc (Pmty_signature (sig_item sl []))
@@ -1095,23 +1098,23 @@ and class_str_item (c:class_str_item) l =
       let e = mkexp loc (Pexp_poly (expr e) t) in
       match s with
       [`Lid(sloc,s) ->   
-        [mkcf loc (Pcf_meth (with_loc s loc, mkprivate pf, override_flag loc ov, e)) :: l]
+        [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
       |`Ant(_loc,_) -> ANT_ERROR]
   | `CrVal (loc, s, ov, mf, e) ->
       match s with
       [`Lid(sloc,s) ->   
-        [mkcf loc (Pcf_val (with_loc s loc, mkmutable mf, override_flag loc ov, expr e)) :: l]
+        [mkcf loc (Pcf_val (with_loc s sloc, mkmutable mf, override_flag loc ov, expr e)) :: l]
       |`Ant(_loc,_) -> ANT_ERROR]
   | `CrVir (loc,s,pf,t) ->
       match s with
       [`Lid(sloc,s)->  
-        [mkcf loc (Pcf_virt (with_loc s loc, mkprivate pf, mkpolytype (ctyp t))) :: l]
+        [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
       |`Ant(_loc,_) ->
           ANT_ERROR]
   | `CrVvr (loc,s,mf,t) ->
       match s with
       [`Lid(sloc,s) -> 
-        [mkcf loc (Pcf_valvirt (with_loc s loc, mkmutable mf, ctyp t)) :: l]
+        [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]
       |`Ant(_loc,_) -> ANT_ERROR]
   | `Ant (_,_) -> assert false ];
 

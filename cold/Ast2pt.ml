@@ -769,8 +769,12 @@ and module_type: Ast.module_type -> Parsetree.module_type =
   | `Nil loc -> error loc "abstract/nil module type not allowed here"
   | `Id (loc,i) -> mkmty loc (Pmty_ident (long_uident i))
   | `MtFun (loc,n,nt,mt) ->
-      mkmty loc
-        (Pmty_functor ((with_loc n loc), (module_type nt), (module_type mt)))
+      (match n with
+       | `Uid (sloc,n) ->
+           mkmty loc
+             (Pmty_functor
+                ((with_loc n sloc), (module_type nt), (module_type mt)))
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `MtQuo (loc,_) -> error loc "module type variable not allowed here"
   | `Sig (loc,sl) -> mkmty loc (Pmty_signature (sig_item sl []))
   | `MtWit (loc,mt,wc) ->
@@ -1068,7 +1072,7 @@ and class_str_item (c : class_str_item) l =
        | `Lid (sloc,s) ->
            (mkcf loc
               (Pcf_meth
-                 ((with_loc s loc), (mkprivate pf), (override_flag loc ov),
+                 ((with_loc s sloc), (mkprivate pf), (override_flag loc ov),
                    e)))
            :: l
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
@@ -1077,7 +1081,7 @@ and class_str_item (c : class_str_item) l =
        | `Lid (sloc,s) ->
            (mkcf loc
               (Pcf_val
-                 ((with_loc s loc), (mkmutable mf), (override_flag loc ov),
+                 ((with_loc s sloc), (mkmutable mf), (override_flag loc ov),
                    (expr e))))
            :: l
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
@@ -1086,14 +1090,14 @@ and class_str_item (c : class_str_item) l =
        | `Lid (sloc,s) ->
            (mkcf loc
               (Pcf_virt
-                 ((with_loc s loc), (mkprivate pf), (mkpolytype (ctyp t)))))
+                 ((with_loc s sloc), (mkprivate pf), (mkpolytype (ctyp t)))))
            :: l
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `CrVvr (loc,s,mf,t) ->
       (match s with
        | `Lid (sloc,s) ->
            (mkcf loc
-              (Pcf_valvirt ((with_loc s loc), (mkmutable mf), (ctyp t))))
+              (Pcf_valvirt ((with_loc s sloc), (mkmutable mf), (ctyp t))))
            :: l
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Ant (_,_) -> assert false
