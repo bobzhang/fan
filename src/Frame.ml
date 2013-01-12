@@ -422,7 +422,7 @@ let obj_of_module_types
     let body =
       let items = List.map (fun (dest,src,len) ->
         let ty = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
-        let () = Hashtbl.add tbl dest (Qualified dest) in 
+        let () = Hashtbl.add tbl dest (Qualified dest) in
         {:class_str_item| method
             $lid:dest : $ty = $(unknown len) |} ) extras in
       {:class_str_item| $body ; $list:items |} in  begin 

@@ -5466,11 +5466,11 @@ let apply () =
           ([`Snterm
               (Gram.obj (method_opt_override : 'method_opt_override Gram.t ));
            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
-           `Snterm (Gram.obj (label : 'label Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Snterm (Gram.obj (opt_polyt : 'opt_polyt Gram.t ));
            `Snterm (Gram.obj (fun_binding : 'fun_binding Gram.t ))],
             (Gram.mk_action
-               (fun (e : 'fun_binding)  (topt : 'opt_polyt)  (l : 'label) 
+               (fun (e : 'fun_binding)  (topt : 'opt_polyt)  (l : 'a_lident) 
                   (pf : 'opt_private)  (o : 'method_opt_override) 
                   (_loc : FanLoc.t)  ->
                   (`CrMth (_loc, l, o, pf, e, topt) : 'class_str_item ))));

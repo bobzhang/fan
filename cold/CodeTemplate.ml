@@ -167,13 +167,14 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               `TyArr
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`Id (_loc, (`Lid (_loc, x))))) in
+            let exp =
+              `Fun
+                (_loc,
+                  (`Case
+                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))), (`Nil _loc),
+                       (`Id (_loc, (`Lid (_loc, "x"))))))) in
             `CrMth
-              (_loc, x, (`OvNil _loc), (`PrNil _loc),
-                (`Fun
-                   (_loc,
-                     (`Case
-                        (_loc, (`Id (_loc, (`Lid (_loc, "x")))), (`Nil _loc),
-                          (`Id (_loc, (`Lid (_loc, "x")))))))), ty))) in
+              (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   let v2 =
     ty_names |>
       (List.map
@@ -184,18 +185,18 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                   (`TyArr
                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                        (`Id (_loc, (`Lid (_loc, x))))))) in
+            let exp =
+              `Fun
+                (_loc,
+                  (`Case
+                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))), (`Nil _loc),
+                       (`Fun
+                          (_loc,
+                            (`Case
+                               (_loc, (`Any _loc), (`Nil _loc),
+                                 (`Id (_loc, (`Lid (_loc, "x"))))))))))) in
             `CrMth
-              (_loc, x, (`OvNil _loc), (`PrNil _loc),
-                (`Fun
-                   (_loc,
-                     (`Case
-                        (_loc, (`Id (_loc, (`Lid (_loc, "x")))), (`Nil _loc),
-                          (`Fun
-                             (_loc,
-                               (`Case
-                                  (_loc, (`Any _loc), (`Nil _loc),
-                                    (`Id (_loc, (`Lid (_loc, "x")))))))))))),
-                ty))) in
+              (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   let v3 =
     ty_names |>
       (List.map
@@ -204,13 +205,14 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               `TyArr
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`TyQuo (_loc, "self_type"))) in
+            let exp =
+              `Fun
+                (_loc,
+                  (`Case
+                     (_loc, (`Any _loc), (`Nil _loc),
+                       (`Id (_loc, (`Lid (_loc, "self"))))))) in
             `CrMth
-              (_loc, x, (`OvNil _loc), (`PrNil _loc),
-                (`Fun
-                   (_loc,
-                     (`Case
-                        (_loc, (`Any _loc), (`Nil _loc),
-                          (`Id (_loc, (`Lid (_loc, "self")))))))), ty))) in
+              (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   let v4 =
     ty_names |>
       (List.map
@@ -221,66 +223,71 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                   (`TyArr
                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                        (`TyQuo (_loc, "self_type"))))) in
+            let exp =
+              `Fun
+                (_loc,
+                  (`Case
+                     (_loc, (`Any _loc), (`Nil _loc),
+                       (`Fun
+                          (_loc,
+                            (`Case
+                               (_loc, (`Any _loc), (`Nil _loc),
+                                 (`Id (_loc, (`Lid (_loc, "self"))))))))))) in
             `CrMth
-              (_loc, x, (`OvNil _loc), (`PrNil _loc),
-                (`Fun
-                   (_loc,
-                     (`Case
-                        (_loc, (`Any _loc), (`Nil _loc),
-                          (`Fun
-                             (_loc,
-                               (`Case
-                                  (_loc, (`Any _loc), (`Nil _loc),
-                                    (`Id (_loc, (`Lid (_loc, "self")))))))))))),
-                ty))) in
+              (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   let v5 =
     ty_names |>
       (List.map
          (fun x  ->
+            let exp = `Id (_loc, (`Lid (_loc, ("pp_print_" ^ x)))) in
+            let ty = `Nil _loc in
             `CrMth
-              (_loc, x, (`OvNil _loc), (`PrNil _loc),
-                (`Id (_loc, (`Lid (_loc, ("pp_print_" ^ x))))), (`Nil _loc)))) in
+              (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   let v6 =
     ty_names |>
       (List.map
          (fun x  ->
+            let ty =
+              `TyArr
+                (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                  (`Id (_loc, (`Lid (_loc, "unit"))))) in
+            let exp =
+              `Fun
+                (_loc,
+                  (`Case
+                     (_loc, (`Any _loc), (`Nil _loc),
+                       (`Id (_loc, (`Uid (_loc, "()"))))))) in
             `CrMth
-              (_loc, x, (`OvNil _loc), (`PrNil _loc),
-                (`Fun
-                   (_loc,
-                     (`Case
-                        (_loc, (`Any _loc), (`Nil _loc),
-                          (`Id (_loc, (`Uid (_loc, "()")))))))),
-                (`TyArr
-                   (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                     (`Id (_loc, (`Lid (_loc, "unit"))))))))) in
+              (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   let v7 =
     ty_names |>
       (List.map
          (fun x  ->
+            let exp =
+              `Fun
+                (_loc,
+                  (`Case
+                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))), (`Nil _loc),
+                       (`Fun
+                          (_loc,
+                            (`Case
+                               (_loc, (`Id (_loc, (`Lid (_loc, "y")))),
+                                 (`Nil _loc),
+                                 (`ExApp
+                                    (_loc,
+                                      (`ExApp
+                                         (_loc,
+                                           (`Id (_loc, (`Lid (_loc, "=")))),
+                                           (`Id (_loc, (`Lid (_loc, "x")))))),
+                                      (`Id (_loc, (`Lid (_loc, "y"))))))))))))) in
+            let ty =
+              `TyArr
+                (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                  (`TyArr
+                     (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                       (`Id (_loc, (`Lid (_loc, "bool"))))))) in
             `CrMth
-              (_loc, x, (`OvNil _loc), (`PrNil _loc),
-                (`Fun
-                   (_loc,
-                     (`Case
-                        (_loc, (`Id (_loc, (`Lid (_loc, "x")))), (`Nil _loc),
-                          (`Fun
-                             (_loc,
-                               (`Case
-                                  (_loc, (`Id (_loc, (`Lid (_loc, "y")))),
-                                    (`Nil _loc),
-                                    (`ExApp
-                                       (_loc,
-                                         (`ExApp
-                                            (_loc,
-                                              (`Id (_loc, (`Lid (_loc, "=")))),
-                                              (`Id (_loc, (`Lid (_loc, "x")))))),
-                                         (`Id (_loc, (`Lid (_loc, "y")))))))))))))),
-                (`TyArr
-                   (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                     (`TyArr
-                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                          (`Id (_loc, (`Lid (_loc, "bool"))))))))))) in
+              (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   ((FanAst.crSem_of_list v1), (FanAst.crSem_of_list v2),
     (FanAst.crSem_of_list v3), (FanAst.crSem_of_list v4),
     (FanAst.crSem_of_list v5), (FanAst.crSem_of_list v6),

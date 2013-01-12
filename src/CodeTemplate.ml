@@ -56,22 +56,34 @@ let (map_class_str_item_base_1,
   let ty_names = ty_metas |> List.map (fun [{str;_} -> str]) in
   let v1 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> $lid:x |} in
-              {:class_str_item| method $lid:x : $ty = fun x -> x |} ) in 
+              let exp = {:expr|fun x -> x |} in
+              {| method $lid:x : $ty = $exp |} ) in 
   let v2 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> $lid:x -> $lid:x |} in
-              {:class_str_item| method $lid:x : $ty = fun x _ -> x |} ) in
+              let exp = {:expr| fun x _ ->  x|} in
+              {| method $lid:x : $ty = $exp |} ) in
   let v3 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> 'self_type |} in
-              {:class_str_item| method $lid:x : $ty = fun _ -> self |} ) in 
+              let exp = {:expr|fun _ -> self |} in 
+              {| method $lid:x : $ty = $exp |} ) in 
   let v4 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> $lid:x -> 'self_type |} in
-              {:class_str_item| method $lid:x : $ty = fun _ _ -> self |} ) in
+              let exp = {:expr|fun _ _ -> self |} in
+              {| method $lid:x : $ty = $exp |} ) in
   let v5 = ty_names |> List.map (fun x ->
-    {:class_str_item| method $lid:x = $(lid:"pp_print_"^x) |} ) in
+    let exp = {:expr|$(lid:"pp_print_"^x)|} in
+    let ty = {:ctyp||} in
+    {| method $lid:x : $ty = $exp  |} ) in
   let v6 = ty_names |> List.map
-    (fun x -> {| method $lid:x : ($lid:x -> unit) = fun _ -> () |}) in
+    (fun x ->
+      let ty = {:ctyp| $lid:x -> unit |} in
+      let exp = {:expr| fun _ -> () |} in
+      {| method $lid:x : $ty = $exp  |}) in
   let v7 = ty_names |> List.map
-    (fun x -> {| method $lid:x : ($lid:x -> $lid:x -> bool) = fun x y -> x = y |} ) in
+    (fun x ->
+      let exp = {:expr|fun x y -> x = y|} in
+      let ty = {:ctyp| $lid:x -> $lid:x -> bool |} in
+      {| method $lid:x : $ty = $exp  |}) in
   ({|$list:v1|},{|$list:v2|},{|$list:v3|},
    {|$list:v4|},{|$list:v5|},{|$list:v6|},{|$list:v7|});
 

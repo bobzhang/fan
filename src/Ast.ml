@@ -431,16 +431,16 @@
     | `Initializer of (loc * expr)
 
       (* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)
-    | `CrMth of (loc * string(* alident *) * override_flag * private_flag * expr * ctyp)
+    | `CrMth of (loc * (* string *)alident * override_flag * private_flag * expr * ctyp)
 
     (* value(!)? (mutable)? s = e *)
-    | `CrVal of (loc * (* string *) alident * override_flag * mutable_flag * expr)
+    | `CrVal of (loc *  alident * override_flag * mutable_flag * expr)
 
      (* method virtual (private)? s : t *)
-    | `CrVir of (loc * (* string *) alident * private_flag * ctyp)
+    | `CrVir of (loc * alident * private_flag * ctyp)
 
     (* val virtual (mutable)? s : t *)
-    | `CrVvr of (loc * (* string *)alident * mutable_flag * ctyp)
+    | `CrVvr of (loc * alident * mutable_flag * ctyp)
     | ant (* $s$ *) ]; 
 
 

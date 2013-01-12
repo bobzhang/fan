@@ -150,7 +150,7 @@ and class_str_item =
   | `Eq of (loc* ctyp* ctyp)
   | `Inherit of (loc* override_flag* class_expr* alident meta_option)
   | `Initializer of (loc* expr)
-  | `CrMth of (loc* string* override_flag* private_flag* expr* ctyp)
+  | `CrMth of (loc* alident* override_flag* private_flag* expr* ctyp)
   | `CrVal of (loc* alident* override_flag* mutable_flag* expr)
   | `CrVir of (loc* alident* private_flag* ctyp)
   | `CrVvr of (loc* alident* mutable_flag* ctyp) | ant] 

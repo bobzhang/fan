@@ -1142,7 +1142,7 @@ let apply () = begin
                 match o with
                 [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
-        | method_opt_override{o}; opt_private{pf}; label(* a_lident *){l}; opt_polyt{topt};
+        | method_opt_override{o}; opt_private{pf}; (* label *)a_lident{l}; opt_polyt{topt};
                 fun_binding{e} ->
             {| method $override:o $private:pf $l : $topt = $e |}
         | type_constraint; ctyp{t1}; "="; ctyp{t2} ->  {| type $t1 = $t2 |}

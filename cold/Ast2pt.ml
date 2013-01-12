@@ -1064,10 +1064,14 @@ and class_str_item (c : class_str_item) l =
       let t =
         match t with | `Nil _loc -> None | t -> Some (mkpolytype (ctyp t)) in
       let e = mkexp loc (Pexp_poly ((expr e), t)) in
-      (mkcf loc
-         (Pcf_meth
-            ((with_loc s loc), (mkprivate pf), (override_flag loc ov), e)))
-        :: l
+      (match s with
+       | `Lid (sloc,s) ->
+           (mkcf loc
+              (Pcf_meth
+                 ((with_loc s loc), (mkprivate pf), (override_flag loc ov),
+                   e)))
+           :: l
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `CrVal (loc,s,ov,mf,e) ->
       (match s with
        | `Lid (sloc,s) ->
