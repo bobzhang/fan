@@ -3577,16 +3577,23 @@ let apply () =
            (Gram.mk_action
               (fun (t : 'ctyp)  (i : 'a_LABEL)  (_loc : FanLoc.t)  ->
                  (`TyLab (_loc, i, t) : 'ctyp ))));
+         ([`Stoken
+             (((function | `OPTLABEL _ -> true | _ -> false)),
+               (`Normal, "`OPTLABEL _"));
+          `Sself],
+           (Gram.mk_action
+              (fun (t : 'ctyp)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)
+                  ->
+                 match __fan_0 with
+                 | `OPTLABEL s ->
+                     (`TyOlb (_loc, (`Lid (_loc, s)), t) : 'ctyp )
+                 | _ -> assert false)));
          ([`Skeyword "?";
-          `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
           `Sself],
            (Gram.mk_action
-              (fun (t : 'ctyp)  _  (i : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
-                 (`TyOlb (_loc, i, t) : 'ctyp ))));
-         ([`Snterm (Gram.obj (a_OPTLABEL : 'a_OPTLABEL Gram.t )); `Sself],
-           (Gram.mk_action
-              (fun (t : 'ctyp)  (i : 'a_OPTLABEL)  (_loc : FanLoc.t)  ->
+              (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
                  (`TyOlb (_loc, i, t) : 'ctyp ))))]);
        ((Some "apply"), (Some `LA),
          [([`Sself; `Sself],
@@ -4815,27 +4822,6 @@ let apply () =
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `LABEL s -> (s : 'a_LABEL )
-                  | _ -> assert false)))])]);
-   Gram.extend (a_OPTLABEL : 'a_OPTLABEL Gram.t )
-     (None,
-       [(None, None,
-          [([`Skeyword "?";
-            `Stoken
-              (((function | `Ant ("",_) -> true | _ -> false)),
-                (`Normal, "`Ant (\"\",_)"));
-            `Skeyword ":"],
-             (Gram.mk_action
-                (fun _  (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                   match __fan_1 with
-                   | `Ant (("" as n),s) -> (mk_anti n s : 'a_OPTLABEL )
-                   | _ -> assert false)));
-          ([`Stoken
-              (((function | `OPTLABEL _ -> true | _ -> false)),
-                (`Normal, "`OPTLABEL _"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `OPTLABEL s -> (s : 'a_OPTLABEL )
                   | _ -> assert false)))])]);
    Gram.extend (string_list : 'string_list Gram.t )
      (None,

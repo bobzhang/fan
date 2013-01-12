@@ -26,7 +26,7 @@ type ctyp =
   | `TyCls of (loc* ident) | `TyLab of (loc* string* ctyp)
   | `Id of (loc* ident) | `TyMan of (loc* ctyp* ctyp)
   | `TyDcl of (loc* string* ctyp list* ctyp* (ctyp* ctyp) list)
-  | `TyObj of (loc* ctyp* row_var_flag) | `TyOlb of (loc* string* ctyp)
+  | `TyObj of (loc* ctyp* row_var_flag) | `TyOlb of (loc* alident* ctyp)
   | `TyPol of (loc* ctyp* ctyp) | `TyTypePol of (loc* ctyp* ctyp)
   | `TyQuo of (loc* string) | `TyQuP of (loc* string)
   | `TyQuM of (loc* string) | `TyAnP of loc | `TyAnM of loc

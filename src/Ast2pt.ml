@@ -136,6 +136,8 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
   | `TyArr (loc, (`TyLab (_, lab, t1)), t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
   | `TyArr (loc, (`TyOlb (loc1, lab, t1)), t2) ->
+      let lab =
+        match lab with [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in 
       let t1 = `TyApp loc1 (predef_option loc1) t1 in
       mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
   | `TyArr (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
@@ -942,6 +944,8 @@ and class_type = fun (* class_type -> class_type *)
   | `CtFun (loc, (`TyLab (_, lab, t)), ct) ->
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))
   | `CtFun (loc, (`TyOlb (loc1, lab, t)), ct) ->
+      let lab = match lab with
+        [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in
       let t = `TyApp loc1 (predef_option loc1) t in
       mkcty loc (Pcty_fun ("?" ^ lab) (ctyp t) (class_type ct))
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun "" (ctyp t) (class_type ct))

@@ -210,7 +210,7 @@ class eq =
             ((self#loc a0 b0) && (self#ctyp a1 b1)) &&
               (self#row_var_flag a2 b2)
         | (`TyOlb (a0,a1,a2),`TyOlb (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) && (self#ctyp a2 b2)
+            ((self#loc a0 b0) && (self#alident a1 b1)) && (self#ctyp a2 b2)
         | (`TyPol (a0,a1,a2),`TyPol (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`TyTypePol (a0,a1,a2),`TyTypePol (b0,b1,b2)) ->
@@ -859,7 +859,7 @@ class map =
           let a2 = self#row_var_flag a2 in `TyObj (a0, a1, a2)
       | `TyOlb (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#ctyp a2 in `TyOlb (a0, a1, a2)
       | `TyPol (a0,a1,a2) ->
           let a0 = self#loc a0 in
@@ -1668,7 +1668,7 @@ class print =
               self#ctyp a1 self#row_var_flag a2
         | `TyOlb (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyOlb@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#ctyp a2
+              self#alident a1 self#ctyp a2
         | `TyPol (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyPol@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
@@ -2352,7 +2352,8 @@ class fold =
           let self = self#loc a0 in
           let self = self#ctyp a1 in self#row_var_flag a2
       | `TyOlb (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#string a1 in self#ctyp a2
+          let self = self#loc a0 in
+          let self = self#alident a1 in self#ctyp a2
       | `TyPol (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `TyTypePol (a0,a1,a2) ->
@@ -2955,7 +2956,7 @@ class fold2 =
             let self = self#ctyp a1 b1 in self#row_var_flag a2 b2
         | (`TyOlb (a0,a1,a2),`TyOlb (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#ctyp a2 b2
+            let self = self#alident a1 b1 in self#ctyp a2 b2
         | (`TyPol (a0,a1,a2),`TyPol (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
@@ -3682,7 +3683,7 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
           pp_print_ctyp a1 pp_print_row_var_flag a2
     | `TyOlb (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyOlb@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_ctyp a2
+          pp_print_alident a1 pp_print_ctyp a2
     | `TyPol (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyPol@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
@@ -4352,7 +4353,7 @@ class iter =
            self#list (fun self  (a0,a1)  -> self#ctyp a0; self#ctyp a1) a4)
       | `TyObj (a0,a1,a2) ->
           (self#loc a0; self#ctyp a1; self#row_var_flag a2)
-      | `TyOlb (a0,a1,a2) -> (self#loc a0; self#string a1; self#ctyp a2)
+      | `TyOlb (a0,a1,a2) -> (self#loc a0; self#alident a1; self#ctyp a2)
       | `TyPol (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyTypePol (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyQuo (a0,a1) -> (self#loc a0; self#string a1)
@@ -4873,7 +4874,7 @@ class map2 =
             let a2 = self#row_var_flag a2 b2 in `TyObj (a0, a1, a2)
         | (`TyOlb (a0,a1,a2),`TyOlb (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#ctyp a2 b2 in `TyOlb (a0, a1, a2)
         | (`TyPol (a0,a1,a2),`TyPol (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
@@ -5979,7 +5980,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "TyOlb")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_ctyp _loc a2))
             | `TyPol (a0,a1,a2) ->
                 `ExApp
@@ -7721,7 +7722,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "TyOlb")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_ctyp _loc a2))
             | `TyPol (a0,a1,a2) ->
                 `PaApp

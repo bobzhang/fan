@@ -774,8 +774,9 @@ let apply () = begin
        "label" NA
         [ "~"; a_LIDENT{i}; ":"; S{t} ->  {| ~ $i : $t |}
         | a_LABEL{i}; S{t}  ->  {| ~ $i : $t |}
-        | "?"; a_LIDENT{i}; ":"; S{t} ->  {| ? $i : $t |}
-        | a_OPTLABEL{i}; S{t} ->  {| ? $i : $t |} ]
+        | `OPTLABEL s ; S{t} ->
+            `TyOlb(_loc,`Lid(_loc,s),t)
+        | "?"; a_lident{i}; ":"; S{t} -> {| ? $i : $t |}]
        "apply" LA
         [ S{t1}; S{t2} ->
           let t = {| $t1 $t2 |} in
@@ -1011,9 +1012,7 @@ let apply () = begin
       a_LABEL:
       [ "~"; `Ant (("" as n),s); ":" -> mk_anti n s
       | `LABEL s -> s ] 
-      a_OPTLABEL:
-      [ "?"; `Ant (("" as n),s); ":" -> mk_anti n s
-      | `OPTLABEL s -> s ] 
+      
       string_list:
       [ `Ant ((""|"str_list"),s) -> `Ant (_loc,mk_anti "str_list" s)
       | `STR (_, x); S{xs} -> `LCons (x, xs)
