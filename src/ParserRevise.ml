@@ -609,9 +609,6 @@ let apply () = begin
         | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$i:($p=$e)|}
         | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
             {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|}
-            (* (\* {| ?$i : ($p $(opt: `Ant(_loc, mk_anti n s )) )|} *\) *)
-            (*   `PaOlbi (_loc, i, p, (`Ant (_loc, (mk_anti n s)))) *)
-            
         | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  -> {| ? $i:($p)|}
         | "?"; a_lident{i} -> {| ? $i |}
         | "?"; "("; ipatt_tcon{p}; ")" -> {| ? ($p) |}
