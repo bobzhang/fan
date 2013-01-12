@@ -492,7 +492,8 @@ let apply () = begin
         field_expr:
         [ `Ant ((""|"bi"|"anti" |"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |}
         (* | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |} *)
-        | label{l}; "=";  expr Level "top"{e} -> {| $lid:l = $e |} ]
+        | (* label *)a_lident{l}; "=";  expr Level "top"{e} ->
+            `RecBind (_loc, (l:>ident), e) (* {| $lid:l = $e |} *) ]
         label_expr_list:
         [ label_expr{b1}; ";"; S{b2} -> {| $b1 ; $b2 |}
         | label_expr{b1}; ";"            -> b1

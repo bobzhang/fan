@@ -208,7 +208,7 @@
       (* do { e } *)
     | `Seq of (loc * expr)
       (* e#s *)
-    | `Send of (loc * expr * alident(* string *))
+    | `Send of (loc * expr * alident)
       (* e.[e] *)
     | `StringDot of (loc * expr * expr)
       (* try e with [ mc ] *)

@@ -2033,12 +2033,12 @@ let apply () =
                        (`Ant (_loc, (mk_anti ~c:"rec_binding" n s)) : 
                        'field_expr )
                    | _ -> assert false)));
-          ([`Snterm (Gram.obj (label : 'label Gram.t ));
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword "=";
            `Snterml ((Gram.obj (expr : 'expr Gram.t )), "top")],
             (Gram.mk_action
-               (fun (e : 'expr)  _  (l : 'label)  (_loc : FanLoc.t)  ->
-                  (`RecBind (_loc, (`Lid (_loc, l)), e) : 'field_expr ))))])]);
+               (fun (e : 'expr)  _  (l : 'a_lident)  (_loc : FanLoc.t)  ->
+                  (`RecBind (_loc, (l :>ident), e) : 'field_expr ))))])]);
    Gram.extend (label_expr_list : 'label_expr_list Gram.t )
      (None,
        [(None, None,
