@@ -9230,8 +9230,8 @@ let rec is_irrefut_patt: patt -> bool =
   | `PaTyc (_loc,p,_) -> is_irrefut_patt p
   | `PaTup (_loc,pl) -> is_irrefut_patt pl
   | `PaOlbi (_loc,_,p,_) -> is_irrefut_patt p
-  | `Label (_,_,`Nil _) -> true
-  | `Label (_,_,p) -> is_irrefut_patt p
+  | `Label (_loc,_,`Nil _) -> true
+  | `Label (_loc,_,p) -> is_irrefut_patt p
   | `Lazy (_loc,p) -> is_irrefut_patt p
   | `Id (_loc,_) -> false
   | `PaMod (_loc,_) -> true

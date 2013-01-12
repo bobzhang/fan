@@ -174,18 +174,9 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | {| $p1 $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
     | {| ($p : $_) |} -> is_irrefut_patt p
     | {| ($tup:pl) |} -> is_irrefut_patt pl
-
-    (* | `PaOlb(_loc,_,`Nil _) -> true *)
-    (* | `PaOlb (_loc,_,p) -> is_irrefut_patt p *)
-    | `PaOlbi(_loc,_,p,_) -> is_irrefut_patt p 
-    (* | {| ? $_ |} -> true           *)
-    (* | {| ? $_ : ($_ ) |} -> (\* is_irrefut_patt p *\) true *)
-    (* | {| ? $_ : ($_ = $_) |} -> (\* is_irrefut_patt p *\) true *)
-
-    (* | {| ~ $_ |} -> true *)
-    (* | {| ~ $_ : $p |} -> is_irrefut_patt p *)
-    | `Label(_,_,`Nil _) -> true           
-    | `Label(_,_,p) -> is_irrefut_patt p 
+    | {| ? $_ : ($p =  $opt:_ ) |} -> is_irrefut_patt p
+    | {| ~ $_ |} -> true
+    | {| ~ $_: $p |} -> is_irrefut_patt p
     | {| lazy $p |} -> is_irrefut_patt p
     | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
     | {| (module $_) |} -> true

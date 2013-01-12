@@ -1028,16 +1028,7 @@ and class_expr : class_expr -> Parsetree.class_expr = fun (* class_expr -> class
         mkcl loc (Pcl_fun ("?" ^ lab) None (patt_of_lab loc lab p) (class_expr ce))
       |`Some e ->
           mkcl loc (Pcl_fun ("?" ^ lab) (Some (expr e)) (patt p) (class_expr ce))
-      |`Ant(_loc,_) -> ANT_ERROR
-      ]  
-
-  (* | `CeFun (loc, (`PaOlb (_, lab, p)), ce) -> *)
-  (*     let lab = match lab with *)
-  (*       [`Lid(_loc,l) -> l *)
-  (*       |`Ant(_loc,_) -> ANT_ERROR] in *)
-  (*     let lab = paolab lab p in *)
-  (*     mkcl loc *)
-  (*       (Pcl_fun ("?" ^ lab) None (patt_of_lab loc lab p) (class_expr ce)) *)
+      |`Ant(_loc,_) -> ANT_ERROR]  
   | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (patt p) (class_expr ce))
   | `CeLet (loc, rf, bi, ce) ->
       mkcl loc (Pcl_let (mkrf rf) (binding bi []) (class_expr ce))

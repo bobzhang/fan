@@ -579,6 +579,10 @@ let apply () = begin
         | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$lid:i : ($p=$e)|}
         | `OPTLABEL i; "("; patt_tcon{p}; ")"  -> {| ? $lid:i : ($p)|}
         | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$i:($p=$e)|}
+        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
+            {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|}
+
+            
         | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  -> {| ? $i:($p)|}
         | "?"; a_lident{i} -> {| ? $i |}
         | "?"; "("; ipatt_tcon{p}; ")" -> {| ? ($p) |}
@@ -599,10 +603,15 @@ let apply () = begin
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i};":";S{p} -> {| ~$i : $p|}
-        | "~"; a_lident{i} -> `Label (_loc,i,`Nil _loc)
+        | "~"; a_lident{i} ->  {| ~$i|}
         | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$lid:i : ($p=$e)|}
         | `OPTLABEL i; "("; patt_tcon{p}; ")"  -> {| ? $lid:i : ($p)|}
         | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$i:($p=$e)|}
+        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
+            {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|}
+            (* (\* {| ?$i : ($p $(opt: `Ant(_loc, mk_anti n s )) )|} *\) *)
+            (*   `PaOlbi (_loc, i, p, (`Ant (_loc, (mk_anti n s)))) *)
+            
         | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  -> {| ? $i:($p)|}
         | "?"; a_lident{i} -> {| ? $i |}
         | "?"; "("; ipatt_tcon{p}; ")" -> {| ? ($p) |}

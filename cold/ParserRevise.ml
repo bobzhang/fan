@@ -2483,6 +2483,24 @@ let apply () =
           `Skeyword ":";
           `Skeyword "(";
           `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
+          `Skeyword "=";
+          `Stoken
+            (((function | `Ant ("opt",_) -> true | _ -> false)),
+              (`Normal, "`Ant (\"opt\",_)"));
+          `Skeyword ")"],
+           (Gram.mk_action
+              (fun _  (__fan_6 : [> FanToken.t])  _  (p : 'patt_tcon)  _  _ 
+                 (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                 match __fan_6 with
+                 | `Ant (("opt" as n),s) ->
+                     (`PaOlbi (_loc, i, p, (`Ant (_loc, (mk_anti n s)))) : 
+                     'patt )
+                 | _ -> assert false)));
+         ([`Skeyword "?";
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+          `Skeyword ":";
+          `Skeyword "(";
+          `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
           `Skeyword ")"],
            (Gram.mk_action
               (fun _  (p : 'patt_tcon)  _  _  (i : 'a_lident)  _ 
@@ -2660,6 +2678,24 @@ let apply () =
                (fun _  (e : 'expr)  _  (p : 'patt_tcon)  _  _ 
                   (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
                   (`PaOlbi (_loc, i, p, (`Some e)) : 'ipatt ))));
+          ([`Skeyword "?";
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+           `Skeyword ":";
+           `Skeyword "(";
+           `Snterm (Gram.obj (patt_tcon : 'patt_tcon Gram.t ));
+           `Skeyword "=";
+           `Stoken
+             (((function | `Ant ("opt",_) -> true | _ -> false)),
+               (`Normal, "`Ant (\"opt\",_)"));
+           `Skeyword ")"],
+            (Gram.mk_action
+               (fun _  (__fan_6 : [> FanToken.t])  _  (p : 'patt_tcon)  _  _ 
+                  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                  match __fan_6 with
+                  | `Ant (("opt" as n),s) ->
+                      (`PaOlbi (_loc, i, p, (`Ant (_loc, (mk_anti n s)))) : 
+                      'ipatt )
+                  | _ -> assert false)));
           ([`Skeyword "?";
            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
