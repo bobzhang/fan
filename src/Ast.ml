@@ -192,7 +192,7 @@
       (* let b in e or let rec b in e *)
     | `LetIn of (loc * rec_flag * binding * expr)
       (* let module s = me in e *)
-    | `LetModule of (loc * (* string *)auident * module_expr * expr)
+    | `LetModule of (loc * auident * module_expr * expr)
       (* match e with [ mc ] *)
     | `Match of (loc * expr * match_case)
       (* new i *)
@@ -201,7 +201,6 @@
     | `Obj of (loc * patt * class_str_item)
       (* ?s or ?s:e *)
     | `OptLabl of (loc *alident * expr)
-          
       (* {< rb >} *)
     | `OvrInst of (loc * rec_binding)
       (* { rb } or { (e) with rb } *)
@@ -209,10 +208,9 @@
       (* do { e } *)
     | `Seq of (loc * expr)
       (* e#s *)
-    | `Send of (loc * expr * string)
+    | `Send of (loc * expr * alident(* string *))
       (* e.[e] *)
     | `StringDot of (loc * expr * expr)
-
       (* try e with [ mc ] *)
     | `Try of (loc * expr * match_case)
       (* (e) *)
@@ -230,7 +228,7 @@
     | `Let_open of (loc * ident * expr)
       (* fun (type t) -> e *)
       (* let f x (type t) y z = e *)
-    | `LocalTypeFun of (loc * (* string *) alident * expr)
+    | `LocalTypeFun of (loc *  alident * expr)
       (* (module ME : S) which is represented as (module (ME : S)) *)
     | `Package_expr of (loc * module_expr) ]
   and module_type =

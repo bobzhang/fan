@@ -1,8 +1,9 @@
 open Format
 open LibUtil
 open Lib
+open Ast
 open FSig
-let transform =
+let transform: full_id_transform -> ident -> expr =
   let _loc = FanLoc.ghost in
   let open Lib.Ident in
     function
@@ -16,7 +17,9 @@ let transform =
     | `Obj f ->
         (function
          | `Lid (_loc,x) ->
-             `Send (_loc, (`Id (_loc, (`Lid (_loc, "self")))), (f x))
+             `Send
+               (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
+                 (`Lid (_loc, (f x))))
          | t ->
              let dest = map_to_string t in
              let src = Lib.Ident.to_string.contents t in
@@ -25,7 +28,9 @@ let transform =
                 (Hashtbl.add Basic.conversion_table src dest;
                  eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest)
               else ();
-              `Send (_loc, (`Id (_loc, (`Lid (_loc, "self")))), (f dest))))
+              `Send
+                (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
+                  (`Lid (_loc, (f dest))))))
 let basic_transform =
   function
   | `Pre pre -> (fun x  -> pre ^ x)

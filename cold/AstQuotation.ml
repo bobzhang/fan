@@ -1014,7 +1014,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (`IdAcc
                                               (_loc, (`Uid (_loc, (gm ()))),
                                                 (`Lid (_loc, "match_pre")))))),
-                                      "match_case")),
+                                      (`Lid (_loc, "match_case")))),
                                  (`ExApp
                                     (_loc,
                                       (`Id
@@ -1033,7 +1033,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (`IdAcc
                                               (_loc, (`Uid (_loc, (gm ()))),
                                                 (`Lid (_loc, "match_pre")))))),
-                                      "match_case")),
+                                      (`Lid (_loc, "match_case")))),
                                  (`ExApp
                                     (_loc, (`ExVrn (_loc, "Ant")),
                                       (`ExTup
@@ -1049,7 +1049,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                            (`IdAcc
                                               (_loc, (`Uid (_loc, (gm ()))),
                                                 (`Lid (_loc, "match_pre")))))),
-                                      "match_case")), e)
+                                      (`Lid (_loc, "match_case")))), e)
                          | "listpatt," ->
                              `ExApp
                                (_loc,

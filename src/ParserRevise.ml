@@ -370,7 +370,7 @@ let apply () = begin
         | S{e1}; "."; "["; S{e2}; "]" -> {| $e1 .[ $e2 ] |}
         | S{e1}; "."; "{"; comma_expr{e2}; "}" -> Expr.bigarray_get _loc e1 e2
         | S{e1}; "."; S{e2} -> {| $e1 . $e2 |}
-        | S{e}; "#"; label{lab} -> {| $e # $lab |} ]
+        | S{e}; "#"; a_lident{lab} -> {| $e # $lab |} ]
        "~-" NA
         [ "!"; S{e} ->  {| ! $e|}
         | prefixop{f}; S{e} -> {| $f $e |} ]

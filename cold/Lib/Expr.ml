@@ -978,7 +978,9 @@ let currying match_cases ~arity  =
   else `Fun (_loc, (FanAst.mcOr_of_list match_cases))
 let unknown len =
   if len = 0
-  then `Send (_loc, (`Id (_loc, (`Lid (_loc, "self")))), "unknown")
+  then
+    `Send
+      (_loc, (`Id (_loc, (`Lid (_loc, "self")))), (`Lid (_loc, "unknown")))
   else
     `ExApp
       (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),

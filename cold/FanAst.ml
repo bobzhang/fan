@@ -374,7 +374,7 @@ class eq =
         | (`Seq (a0,a1),`Seq (b0,b1)) ->
             (self#loc a0 b0) && (self#expr a1 b1)
         | (`Send (a0,a1,a2),`Send (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#string a2 b2)
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#alident a2 b2)
         | (`StringDot (a0,a1,a2),`StringDot (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
         | (`Try (a0,a1,a2),`Try (b0,b1,b2)) ->
@@ -1085,7 +1085,7 @@ class map =
       | `Send (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
-          let a2 = self#string a2 in `Send (a0, a1, a2)
+          let a2 = self#alident a2 in `Send (a0, a1, a2)
       | `StringDot (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
@@ -1885,7 +1885,7 @@ class print =
               a1
         | `Send (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Send@ %a@ %a@ %a)@]" self#loc a0
-              self#expr a1 self#string a2
+              self#expr a1 self#alident a2
         | `StringDot (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`StringDot@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#expr a2
@@ -2491,7 +2491,8 @@ class fold =
           let self = self#rec_binding a1 in self#expr a2
       | `Seq (a0,a1) -> let self = self#loc a0 in self#expr a1
       | `Send (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#expr a1 in self#string a2
+          let self = self#loc a0 in
+          let self = self#expr a1 in self#alident a2
       | `StringDot (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
       | `Try (a0,a1,a2) ->
@@ -3155,7 +3156,7 @@ class fold2 =
             let self = self#loc a0 b0 in self#expr a1 b1
         | (`Send (a0,a1,a2),`Send (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#expr a1 b1 in self#string a2 b2
+            let self = self#expr a1 b1 in self#alident a2 b2
         | (`StringDot (a0,a1,a2),`StringDot (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#expr a2 b2
@@ -3901,7 +3902,7 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           pp_print_expr a1
     | `Send (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Send@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_expr a1 pp_print_string a2
+          pp_print_expr a1 pp_print_alident a2
     | `StringDot (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`StringDot@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_expr a2
@@ -4450,7 +4451,7 @@ class iter =
       | `Record (a0,a1,a2) ->
           (self#loc a0; self#rec_binding a1; self#expr a2)
       | `Seq (a0,a1) -> (self#loc a0; self#expr a1)
-      | `Send (a0,a1,a2) -> (self#loc a0; self#expr a1; self#string a2)
+      | `Send (a0,a1,a2) -> (self#loc a0; self#expr a1; self#alident a2)
       | `StringDot (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `Try (a0,a1,a2) -> (self#loc a0; self#expr a1; self#match_case a2)
       | `ExTup (a0,a1) -> (self#loc a0; self#expr a1)
@@ -5138,7 +5139,7 @@ class map2 =
         | (`Send (a0,a1,a2),`Send (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
-            let a2 = self#string a2 b2 in `Send (a0, a1, a2)
+            let a2 = self#alident a2 b2 in `Send (a0, a1, a2)
         | (`StringDot (a0,a1,a2),`StringDot (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
@@ -6529,7 +6530,7 @@ module Make(MetaLoc:META_LOC) =
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Send")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
-                    (meta_string _loc a2))
+                    (meta_alident _loc a2))
             | `StringDot (a0,a1,a2) ->
                 `ExApp
                   (_loc,
@@ -8271,7 +8272,7 @@ module Make(MetaLoc:META_LOC) =
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "Send")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
-                    (meta_string _loc a2))
+                    (meta_alident _loc a2))
             | `StringDot (a0,a1,a2) ->
                 `PaApp
                   (_loc,

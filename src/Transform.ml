@@ -2,9 +2,9 @@
 open Format;
 open LibUtil;
 open Lib;
-
+open Ast;
 open FSig;
-let transform =
+let transform : full_id_transform -> ident -> expr =
   let _loc = FanLoc.ghost in
   let open Lib.Ident in with expr fun 
   [ `Pre pre ->
@@ -21,7 +21,7 @@ let transform =
   | `Idents f ->
       fun [x -> {| $(id: f (list_of_acc_ident x []) )  |}  ]
   | `Obj f ->
-      fun [ {:ident| $lid:x |}  -> {| self# $(f x) |}
+      fun [ {:ident| $lid:x |}  -> {| self# $(lid: f x) |}
           | t -> begin
             let dest =  map_to_string t;
             let src = !Lib.Ident.to_string t;
@@ -30,7 +30,8 @@ let transform =
               eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;
             end
             else ();
-            {| self# $(f dest) |} (*todo  set its default let to self#unknown *)
+              {| self# $(lid:f dest) |}
+                (*todo  set its default let to self#unknown *)
           end]  ];
 
 let basic_transform = fun 

@@ -713,7 +713,7 @@ let currying match_cases ~arity =
 
 let unknown len =
   if len = 0 then
-    {| self#unknown|}
+    {| self# $(`Lid (_loc, "unknown")) |} (* FIXME*)
   else {| failwith $(str:"not implemented!") |};
 
   

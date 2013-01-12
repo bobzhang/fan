@@ -467,7 +467,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "listmatch_case" -> {| $(uid:gm()).mcOr_of_list $e |}
             | "antimatch_case" -> {|  `Ant ($(mloc _loc), $e) |}
             | "listmatch_caselettry" ->
-                {| (($(uid:gm()).match_pre)#match_case ($(uid:gm()).mcOr_of_list $e)) |}
+                {| (($(uid:gm()).match_pre)#match_case
+                      ($(uid:gm()).mcOr_of_list $e)) |}
             | "antimatch_caselettry" ->
                 {| $(uid:gm()).match_pre#match_case (`Ant ($(mloc _loc), $e)) |}
             | "match_caselettry" ->

@@ -674,7 +674,11 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
                   let _loc = FanLoc.merge (loc_of_expr e) _loc in
                   mkexp _loc (Pexp_sequence (expr e) (loop el)) ] in
             loop (list_of_expr e [])
-        | `Send (loc,e,s) -> mkexp loc (Pexp_send (expr e) s)
+        | `Send (loc,e,s) ->
+            match s with
+            [`Lid(_loc,s) ->   
+              mkexp loc (Pexp_send (expr e) s)
+            |`Ant(_loc,s) -> ANT_ERROR]
         | `StringDot (loc, e1, e2) ->
             mkexp loc
               (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "String" "get")))

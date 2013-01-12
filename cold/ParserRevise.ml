@@ -1395,9 +1395,9 @@ let apply () =
                  (`ExAcc (_loc, e1, e2) : 'expr ))));
          ([`Sself;
           `Skeyword "#";
-          `Snterm (Gram.obj (label : 'label Gram.t ))],
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            (Gram.mk_action
-              (fun (lab : 'label)  _  (e : 'expr)  (_loc : FanLoc.t)  ->
+              (fun (lab : 'a_lident)  _  (e : 'expr)  (_loc : FanLoc.t)  ->
                  (`Send (_loc, e, lab) : 'expr ))))]);
        ((Some "~-"), (Some `NA),
          [([`Skeyword "!"; `Sself],

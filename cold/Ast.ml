@@ -66,7 +66,7 @@ and expr =
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
   | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding* expr)
-  | `Seq of (loc* expr) | `Send of (loc* expr* string)
+  | `Seq of (loc* expr) | `Send of (loc* expr* alident)
   | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
   | `ExTup of (loc* expr) | `ExCom of (loc* expr* expr)
   | `Constraint_exp of (loc* expr* ctyp) | `ExCoe of (loc* expr* ctyp* ctyp)
