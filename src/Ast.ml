@@ -391,11 +391,13 @@
       (* inherit ct *)
     | `Inherit of (loc * class_type)
       (* method s : t or method private s : t *)
-    | `Method of (loc * string * private_flag * ctyp)
-      (* value (virtual)? (mutable)? s : t *)
-    | `CgVal of (loc * string * mutable_flag * virtual_flag * ctyp)
-      (* method virtual (private)? s : t *)
-    | `CgVir of (loc * string * private_flag * ctyp)
+    | `Method of (loc * (* string *)alident * private_flag * ctyp)
+
+    (* val (virtual)? (mutable)? s : t *)
+    | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
+
+     (* method virtual (private)? s : t *)
+    | `CgVir of (loc *  alident * private_flag * ctyp)
     | ant (* $s$ *) ]
   and class_expr =
     [= `Nil of loc

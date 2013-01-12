@@ -1110,14 +1110,12 @@ let apply () = begin
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_sig_item_tag
       | "inherit"; class_type{cs} ->   {| inherit $cs |}
-      | "val"; opt_mutable{mf}; opt_virtual{mv}; label{l}; ":"; ctyp{t} ->
+      | "val"; opt_mutable{mf}; opt_virtual{mv};a_lident{l}; ":"; ctyp{t} ->
           {| val $mutable:mf $virtual:mv $l : $t |}
-      | "method"; "virtual"; opt_private{pf}; label{l}; ":"; poly_type{t} ->
+      | "method"; "virtual"; opt_private{pf}; a_lident{l}; ":"; poly_type{t} ->
           {| method virtual $private:pf $l : $t |}
-      | "method"; opt_private{pf}; label{l}; ":"; poly_type{t} ->
+      | "method"; opt_private{pf}; a_lident{l}; ":"; poly_type{t} ->
           {| method $private:pf $l : $t |}
-      | "method"; opt_private{pf}; "virtual"; label{l}; ":"; poly_type{t} ->
-          {| method virtual $private:pf $l : $t |}
       | type_constraint; ctyp{t1}; "="; ctyp{t2} -> {| type $t1 = $t2 |} ] |};  
   with class_str_item
     {:extend|Gram
@@ -1132,8 +1130,6 @@ let apply () = begin
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_str_item_tag
         | "inherit"; opt_override{o}; class_expr{ce}; opt_as_lident{pb} ->
             {| inherit $!:o $ce $as:pb |}
-
-              
         | value_val_opt_override{o}; opt_mutable{mf}; label{lab}; cvalue_binding{e}
           ->
             {| val $override:o $mutable:mf $lab = $e |}

@@ -622,16 +622,16 @@ class eq =
         | (`Inherit (a0,a1),`Inherit (b0,b1)) ->
             (self#loc a0 b0) && (self#class_type a1 b1)
         | (`Method (a0,a1,a2,a3),`Method (b0,b1,b2,b3)) ->
-            (((self#loc a0 b0) && (self#string a1 b1)) &&
+            (((self#loc a0 b0) && (self#alident a1 b1)) &&
                (self#private_flag a2 b2))
               && (self#ctyp a3 b3)
         | (`CgVal (a0,a1,a2,a3,a4),`CgVal (b0,b1,b2,b3,b4)) ->
-            ((((self#loc a0 b0) && (self#string a1 b1)) &&
+            ((((self#loc a0 b0) && (self#alident a1 b1)) &&
                 (self#mutable_flag a2 b2))
                && (self#virtual_flag a3 b3))
               && (self#ctyp a4 b4)
         | (`CgVir (a0,a1,a2,a3),`CgVir (b0,b1,b2,b3)) ->
-            (((self#loc a0 b0) && (self#string a1 b1)) &&
+            (((self#loc a0 b0) && (self#alident a1 b1)) &&
                (self#private_flag a2 b2))
               && (self#ctyp a3 b3)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
@@ -1397,18 +1397,18 @@ class map =
           let a1 = self#class_type a1 in `Inherit (a0, a1)
       | `Method (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#private_flag a2 in
           let a3 = self#ctyp a3 in `Method (a0, a1, a2, a3)
       | `CgVal (a0,a1,a2,a3,a4) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#mutable_flag a2 in
           let a3 = self#virtual_flag a3 in
           let a4 = self#ctyp a4 in `CgVal (a0, a1, a2, a3, a4)
       | `CgVir (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#private_flag a2 in
           let a3 = self#ctyp a3 in `CgVir (a0, a1, a2, a3)
       | #ant as a0 -> (self#ant a0 :>class_sig_item)
@@ -2164,14 +2164,14 @@ class print =
               self#class_type a1
         | `Method (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#private_flag a2 self#ctyp a3
+              self#alident a1 self#private_flag a2 self#ctyp a3
         | `CgVal (a0,a1,a2,a3,a4) ->
             Format.fprintf fmt "@[<1>(`CgVal@ %a@ %a@ %a@ %a@ %a)@]" 
-              self#loc a0 self#string a1 self#mutable_flag a2
+              self#loc a0 self#alident a1 self#mutable_flag a2
               self#virtual_flag a3 self#ctyp a4
         | `CgVir (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#private_flag a2 self#ctyp a3
+              self#alident a1 self#private_flag a2 self#ctyp a3
         | #ant as a0 -> (self#ant fmt a0 :>'result)
     method class_expr : 'fmt -> class_expr -> 'result=
       fun fmt  ->
@@ -2707,16 +2707,16 @@ class fold =
       | `Inherit (a0,a1) -> let self = self#loc a0 in self#class_type a1
       | `Method (a0,a1,a2,a3) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#alident a1 in
           let self = self#private_flag a2 in self#ctyp a3
       | `CgVal (a0,a1,a2,a3,a4) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#alident a1 in
           let self = self#mutable_flag a2 in
           let self = self#virtual_flag a3 in self#ctyp a4
       | `CgVir (a0,a1,a2,a3) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#alident a1 in
           let self = self#private_flag a2 in self#ctyp a3
       | #ant as a0 -> (self#ant a0 :>'self_type)
     method class_expr : class_expr -> 'self_type=
@@ -3430,16 +3430,16 @@ class fold2 =
             let self = self#loc a0 b0 in self#class_type a1 b1
         | (`Method (a0,a1,a2,a3),`Method (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#alident a1 b1 in
             let self = self#private_flag a2 b2 in self#ctyp a3 b3
         | (`CgVal (a0,a1,a2,a3,a4),`CgVal (b0,b1,b2,b3,b4)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#alident a1 b1 in
             let self = self#mutable_flag a2 b2 in
             let self = self#virtual_flag a3 b3 in self#ctyp a4 b4
         | (`CgVir (a0,a1,a2,a3),`CgVir (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#alident a1 b1 in
             let self = self#private_flag a2 b2 in self#ctyp a3 b3
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
@@ -4182,14 +4182,14 @@ and pp_print_class_sig_item: 'fmt -> class_sig_item -> 'result =
           pp_print_class_type a1
     | `Method (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_private_flag a2 pp_print_ctyp a3
+          pp_print_alident a1 pp_print_private_flag a2 pp_print_ctyp a3
     | `CgVal (a0,a1,a2,a3,a4) ->
         Format.fprintf fmt "@[<1>(`CgVal@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
-          a0 pp_print_string a1 pp_print_mutable_flag a2
+          a0 pp_print_alident a1 pp_print_mutable_flag a2
           pp_print_virtual_flag a3 pp_print_ctyp a4
     | `CgVir (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_private_flag a2 pp_print_ctyp a3
+          pp_print_alident a1 pp_print_private_flag a2 pp_print_ctyp a3
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 and pp_print_class_expr: 'fmt -> class_expr -> 'result =
   fun fmt  ->
@@ -4615,15 +4615,15 @@ class iter =
           (self#loc a0; self#class_sig_item a1; self#class_sig_item a2)
       | `Inherit (a0,a1) -> (self#loc a0; self#class_type a1)
       | `Method (a0,a1,a2,a3) ->
-          (self#loc a0; self#string a1; self#private_flag a2; self#ctyp a3)
+          (self#loc a0; self#alident a1; self#private_flag a2; self#ctyp a3)
       | `CgVal (a0,a1,a2,a3,a4) ->
           (self#loc a0;
-           self#string a1;
+           self#alident a1;
            self#mutable_flag a2;
            self#virtual_flag a3;
            self#ctyp a4)
       | `CgVir (a0,a1,a2,a3) ->
-          (self#loc a0; self#string a1; self#private_flag a2; self#ctyp a3)
+          (self#loc a0; self#alident a1; self#private_flag a2; self#ctyp a3)
       | #ant as a0 -> (self#ant a0 :>'result)
     method class_expr : class_expr -> 'result=
       function
@@ -5489,18 +5489,18 @@ class map2 =
             let a1 = self#class_type a1 b1 in `Inherit (a0, a1)
         | (`Method (a0,a1,a2,a3),`Method (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#private_flag a2 b2 in
             let a3 = self#ctyp a3 b3 in `Method (a0, a1, a2, a3)
         | (`CgVal (a0,a1,a2,a3,a4),`CgVal (b0,b1,b2,b3,b4)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#mutable_flag a2 b2 in
             let a3 = self#virtual_flag a3 b3 in
             let a4 = self#ctyp a4 b4 in `CgVal (a0, a1, a2, a3, a4)
         | (`CgVir (a0,a1,a2,a3),`CgVir (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#private_flag a2 b2 in
             let a3 = self#ctyp a3 b3 in `CgVir (a0, a1, a2, a3)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>class_sig_item)
@@ -7220,7 +7220,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExApp
                                  (_loc, (`ExVrn (_loc, "Method")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_alident _loc a1))),
                          (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
             | `CgVal (a0,a1,a2,a3,a4) ->
                 `ExApp
@@ -7234,7 +7234,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`ExApp
                                       (_loc, (`ExVrn (_loc, "CgVal")),
                                         (meta_loc _loc a0))),
-                                   (meta_string _loc a1))),
+                                   (meta_alident _loc a1))),
                               (meta_mutable_flag _loc a2))),
                          (meta_virtual_flag _loc a3))), (meta_ctyp _loc a4))
             | `CgVir (a0,a1,a2,a3) ->
@@ -7247,7 +7247,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExApp
                                  (_loc, (`ExVrn (_loc, "CgVir")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_alident _loc a1))),
                          (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
         and meta_class_expr: 'loc -> class_expr -> 'result =
@@ -8962,7 +8962,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaApp
                                  (_loc, (`PaVrn (_loc, "Method")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_alident _loc a1))),
                          (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
             | `CgVal (a0,a1,a2,a3,a4) ->
                 `PaApp
@@ -8976,7 +8976,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`PaApp
                                       (_loc, (`PaVrn (_loc, "CgVal")),
                                         (meta_loc _loc a0))),
-                                   (meta_string _loc a1))),
+                                   (meta_alident _loc a1))),
                               (meta_mutable_flag _loc a2))),
                          (meta_virtual_flag _loc a3))), (meta_ctyp _loc a4))
             | `CgVir (a0,a1,a2,a3) ->
@@ -8989,7 +8989,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaApp
                                  (_loc, (`PaVrn (_loc, "CgVir")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_alident _loc a1))),
                          (meta_private_flag _loc a2))), (meta_ctyp _loc a3))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
         and meta_class_expr: 'loc -> class_expr -> 'result =

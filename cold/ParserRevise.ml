@@ -5308,42 +5308,32 @@ let apply () =
           ([`Skeyword "val";
            `Snterm (Gram.obj (opt_mutable : 'opt_mutable Gram.t ));
            `Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
-           `Snterm (Gram.obj (label : 'label Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'ctyp)  _  (l : 'label)  (mv : 'opt_virtual) 
+               (fun (t : 'ctyp)  _  (l : 'a_lident)  (mv : 'opt_virtual) 
                   (mf : 'opt_mutable)  _  (_loc : FanLoc.t)  ->
                   (`CgVal (_loc, l, mf, mv, t) : 'class_sig_item ))));
           ([`Skeyword "method";
            `Skeyword "virtual";
            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
-           `Snterm (Gram.obj (label : 'label Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'poly_type)  _  (l : 'label)  (pf : 'opt_private)  _
-                   _  (_loc : FanLoc.t)  ->
+               (fun (t : 'poly_type)  _  (l : 'a_lident)  (pf : 'opt_private)
+                   _  _  (_loc : FanLoc.t)  ->
                   (`CgVir (_loc, l, pf, t) : 'class_sig_item ))));
           ([`Skeyword "method";
            `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
-           `Snterm (Gram.obj (label : 'label Gram.t ));
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'poly_type)  _  (l : 'label)  (pf : 'opt_private)  _
-                   (_loc : FanLoc.t)  ->
+               (fun (t : 'poly_type)  _  (l : 'a_lident)  (pf : 'opt_private)
+                   _  (_loc : FanLoc.t)  ->
                   (`Method (_loc, l, pf, t) : 'class_sig_item ))));
-          ([`Skeyword "method";
-           `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
-           `Skeyword "virtual";
-           `Snterm (Gram.obj (label : 'label Gram.t ));
-           `Skeyword ":";
-           `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
-            (Gram.mk_action
-               (fun (t : 'poly_type)  _  (l : 'label)  _  (pf : 'opt_private)
-                   _  (_loc : FanLoc.t)  ->
-                  (`CgVir (_loc, l, pf, t) : 'class_sig_item ))));
           ([`Snterm (Gram.obj (type_constraint : 'type_constraint Gram.t ));
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword "=";

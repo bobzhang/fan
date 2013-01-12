@@ -635,7 +635,7 @@ let rec expr: expr -> expression =
   | `Send (loc,e,s) ->
       (match s with
        | `Lid (_loc,s) -> mkexp loc (Pexp_send ((expr e), s))
-       | `Ant (_loc,s) -> error _loc "antiquotation not expected here")
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `StringDot (loc,e1,e2) ->
       mkexp loc
         (Pexp_apply
@@ -975,18 +975,30 @@ and class_info_class_type ci =
   | ct ->
       error (loc_of_class_type ct)
         "bad class/class type declaration/definition"
-and class_sig_item c l =
+and class_sig_item (c : class_sig_item) l =
   match c with
   | `Nil _loc -> l
   | `Eq (loc,t1,t2) -> (mkctf loc (Pctf_cstr ((ctyp t1), (ctyp t2)))) :: l
   | `Sem (_loc,csg1,csg2) -> class_sig_item csg1 (class_sig_item csg2 l)
   | `Inherit (loc,ct) -> (mkctf loc (Pctf_inher (class_type ct))) :: l
   | `Method (loc,s,pf,t) ->
-      (mkctf loc (Pctf_meth (s, (mkprivate pf), (mkpolytype (ctyp t))))) :: l
+      (match s with
+       | `Lid (_,s) ->
+           (mkctf loc (Pctf_meth (s, (mkprivate pf), (mkpolytype (ctyp t)))))
+           :: l
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `CgVal (loc,s,b,v,t) ->
-      (mkctf loc (Pctf_val (s, (mkmutable b), (mkvirtual v), (ctyp t)))) :: l
+      (match s with
+       | `Lid (_,s) ->
+           (mkctf loc (Pctf_val (s, (mkmutable b), (mkvirtual v), (ctyp t))))
+           :: l
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `CgVir (loc,s,b,t) ->
-      (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t))))) :: l
+      (match s with
+       | `Lid (_,s) ->
+           (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t)))))
+           :: l
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Ant (_,_) -> assert false
 and class_expr: class_expr -> Parsetree.class_expr =
   function

@@ -133,9 +133,9 @@ and class_sig_item =
   [ `Nil of loc | `Eq of (loc* ctyp* ctyp)
   | `Sem of (loc* class_sig_item* class_sig_item)
   | `Inherit of (loc* class_type)
-  | `Method of (loc* string* private_flag* ctyp)
-  | `CgVal of (loc* string* mutable_flag* virtual_flag* ctyp)
-  | `CgVir of (loc* string* private_flag* ctyp) | ant] 
+  | `Method of (loc* alident* private_flag* ctyp)
+  | `CgVal of (loc* alident* mutable_flag* virtual_flag* ctyp)
+  | `CgVir of (loc* alident* private_flag* ctyp) | ant] 
 and class_expr =
   [ `Nil of loc | `CeApp of (loc* class_expr* expr)
   | `CeCon of (loc* virtual_flag* ident* ctyp)

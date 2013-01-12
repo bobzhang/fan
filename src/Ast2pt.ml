@@ -678,7 +678,7 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
             match s with
             [`Lid(_loc,s) ->   
               mkexp loc (Pexp_send (expr e) s)
-            |`Ant(_loc,s) -> ANT_ERROR]
+            |`Ant(_loc,_) -> ANT_ERROR]
         | `StringDot (loc, e1, e2) ->
             mkexp loc
               (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "String" "get")))
@@ -1007,20 +1007,32 @@ and class_info_class_type ci =
        pci_variance = variance}
   | ct -> error (loc_of_class_type ct)
         "bad class/class type declaration/definition" ]
-and class_sig_item c l = match c with (* class_sig_item -> class_type_field list -> class_type_field list *)
-  [ {:class_sig_item||} -> l
+and class_sig_item (c:class_sig_item) l =
+    with class_sig_item
+     match c with (* class_sig_item -> class_type_field list -> class_type_field list *)
+  [ {||} -> l
   | `Eq (loc, t1, t2) ->
       [mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l]
-  | {:class_sig_item| $csg1; $csg2 |} ->
+  | {| $csg1; $csg2 |} ->
       class_sig_item csg1 (class_sig_item csg2 l)
   | `Inherit (loc,ct) ->
       [mkctf loc (Pctf_inher (class_type ct)) :: l]
   | `Method (loc,s,pf,t) ->
-      [mkctf loc (Pctf_meth (s, mkprivate pf, mkpolytype (ctyp t))) :: l]
+      match s with
+      [`Lid(_,s) ->   
+        [mkctf loc (Pctf_meth (s, mkprivate pf, mkpolytype (ctyp t))) :: l]
+      |`Ant(_loc,_) ->
+          ANT_ERROR ]
   | `CgVal (loc, s, b, v, t) ->
-      [mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l]
+      match s with
+      [`Lid(_,s) ->   
+        [mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l]
+      |`Ant(_loc,_) -> ANT_ERROR]
   | `CgVir (loc,s,b,t) ->
-      [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
+      match s with
+      [`Lid(_,s) ->
+          [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
+      |`Ant(_loc,_) -> ANT_ERROR] 
   | `Ant (_,_) -> assert false ]
 and class_expr : class_expr -> Parsetree.class_expr = fun (* class_expr -> class_expr *)
   [ `CeApp (loc, _, _) as c ->
