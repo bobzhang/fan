@@ -134,6 +134,8 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
       if is_cls then mktyp _loc (Ptyp_class li (List.map ctyp al) [])
       else mktyp _loc (Ptyp_constr li (List.map ctyp al))
   | `TyArr (loc, (`TyLab (_, lab, t1)), t2) ->
+      let lab = match lab with
+        [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in 
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
   | `TyArr (loc, (`TyOlb (loc1, lab, t1)), t2) ->
       let lab =
@@ -942,6 +944,8 @@ and class_type = fun (* class_type -> class_type *)
     mkcty loc
       (Pcty_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
   | `CtFun (loc, (`TyLab (_, lab, t)), ct) ->
+      let lab = match lab with
+        [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))
   | `CtFun (loc, (`TyOlb (loc1, lab, t)), ct) ->
       let lab = match lab with

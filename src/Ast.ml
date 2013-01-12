@@ -103,7 +103,7 @@
     | `TyApp of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
     | `TyArr of (loc * ctyp * ctyp) (* t -> t *) (* int -> string *)
     | `TyCls of (loc * ident) (* #i *) (* #point *)
-    | `TyLab of (loc * string * ctyp) (* ~s:t *)
+    | `TyLab of (loc * alident(* string *) * ctyp) (* ~s:t *)
     | `Id  of (loc * ident) (* i *) (* `Lazy.t *)
     | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)
       (* type t 'a 'b 'c = t constraint t = t constraint t = t *)

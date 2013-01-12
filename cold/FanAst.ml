@@ -192,7 +192,7 @@ class eq =
         | (`TyCls (a0,a1),`TyCls (b0,b1)) ->
             (self#loc a0 b0) && (self#ident a1 b1)
         | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) && (self#ctyp a2 b2)
+            ((self#loc a0 b0) && (self#alident a1 b1)) && (self#ctyp a2 b2)
         | (`Id (a0,a1),`Id (b0,b1)) -> (self#loc a0 b0) && (self#ident a1 b1)
         | (`TyMan (a0,a1,a2),`TyMan (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
@@ -834,7 +834,7 @@ class map =
           let a0 = self#loc a0 in let a1 = self#ident a1 in `TyCls (a0, a1)
       | `TyLab (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#ctyp a2 in `TyLab (a0, a1, a2)
       | `Id (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#ident a1 in `Id (a0, a1)
@@ -1648,7 +1648,7 @@ class print =
               self#ident a1
         | `TyLab (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyLab@ %a@ %a@ %a)@]" self#loc a0
-              self#string a1 self#ctyp a2
+              self#alident a1 self#ctyp a2
         | `Id (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" self#loc a0 self#ident
               a1
@@ -2336,7 +2336,8 @@ class fold =
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `TyCls (a0,a1) -> let self = self#loc a0 in self#ident a1
       | `TyLab (a0,a1,a2) ->
-          let self = self#loc a0 in let self = self#string a1 in self#ctyp a2
+          let self = self#loc a0 in
+          let self = self#alident a1 in self#ctyp a2
       | `Id (a0,a1) -> let self = self#loc a0 in self#ident a1
       | `TyMan (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
@@ -2935,7 +2936,7 @@ class fold2 =
             let self = self#loc a0 b0 in self#ident a1 b1
         | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#ctyp a2 b2
+            let self = self#alident a1 b1 in self#ctyp a2 b2
         | (`Id (a0,a1),`Id (b0,b1)) ->
             let self = self#loc a0 b0 in self#ident a1 b1
         | (`TyMan (a0,a1,a2),`TyMan (b0,b1,b2)) ->
@@ -3663,7 +3664,7 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
           pp_print_ident a1
     | `TyLab (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyLab@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1 pp_print_ctyp a2
+          pp_print_alident a1 pp_print_ctyp a2
     | `Id (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" pp_print_loc a0
           pp_print_ident a1
@@ -4342,7 +4343,7 @@ class iter =
       | `TyApp (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyArr (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyCls (a0,a1) -> (self#loc a0; self#ident a1)
-      | `TyLab (a0,a1,a2) -> (self#loc a0; self#string a1; self#ctyp a2)
+      | `TyLab (a0,a1,a2) -> (self#loc a0; self#alident a1; self#ctyp a2)
       | `Id (a0,a1) -> (self#loc a0; self#ident a1)
       | `TyMan (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyDcl (a0,a1,a2,a3,a4) ->
@@ -4846,7 +4847,7 @@ class map2 =
             let a1 = self#ident a1 b1 in `TyCls (a0, a1)
         | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#ctyp a2 b2 in `TyLab (a0, a1, a2)
         | (`Id (a0,a1),`Id (b0,b1)) ->
             let a0 = self#loc a0 b0 in
@@ -5926,7 +5927,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "TyLab")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_ctyp _loc a2))
             | `Id (a0,a1) ->
                 `ExApp
@@ -7668,7 +7669,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "TyLab")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_ctyp _loc a2))
             | `Id (a0,a1) ->
                 `PaApp

@@ -772,10 +772,9 @@ let apply () = begin
        "arrow" RA
         [ S{t1}; "->"; S{t2} ->  {| $t1 -> $t2 |} ]
        "label" NA
-        [ "~"; a_LIDENT{i}; ":"; S{t} ->  {| ~ $i : $t |}
-        | a_LABEL{i}; S{t}  ->  {| ~ $i : $t |}
-        | `OPTLABEL s ; S{t} ->
-            `TyOlb(_loc,`Lid(_loc,s),t)
+        [ "~"; a_lident{i}; ":"; S{t} -> {| ~ $i : $t |}
+        | `LABEL s ; ":"; S{t} -> {| ~$lid:i : $t |}
+        | `OPTLABEL s ; S{t} -> {| ?$lid:i : $t |}
         | "?"; a_lident{i}; ":"; S{t} -> {| ? $i : $t |}]
        "apply" LA
         [ S{t1}; S{t2} ->
@@ -1009,9 +1008,6 @@ let apply () = begin
       a_uident:
       [ `Ant((""|"lid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_uident" n s)
       | `Uid s  -> `Uid (_loc, s) ]
-      a_LABEL:
-      [ "~"; `Ant (("" as n),s); ":" -> mk_anti n s
-      | `LABEL s -> s ] 
       
       string_list:
       [ `Ant ((""|"str_list"),s) -> `Ant (_loc,mk_anti "str_list" s)
