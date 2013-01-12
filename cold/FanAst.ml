@@ -353,7 +353,7 @@ class eq =
                (self#binding a2 b2))
               && (self#expr a3 b3)
         | (`LetModule (a0,a1,a2,a3),`LetModule (b0,b1,b2,b3)) ->
-            (((self#loc a0 b0) && (self#string a1 b1)) &&
+            (((self#loc a0 b0) && (self#auident a1 b1)) &&
                (self#module_expr a2 b2))
               && (self#expr a3 b3)
         | (`Match (a0,a1,a2),`Match (b0,b1,b2)) ->
@@ -1056,7 +1056,7 @@ class map =
           let a3 = self#expr a3 in `LetIn (a0, a1, a2, a3)
       | `LetModule (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#auident a1 in
           let a2 = self#module_expr a2 in
           let a3 = self#expr a3 in `LetModule (a0, a1, a2, a3)
       | `Match (a0,a1,a2) ->
@@ -1861,7 +1861,7 @@ class print =
               self#rec_flag a1 self#binding a2 self#expr a3
         | `LetModule (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" 
-              self#loc a0 self#string a1 self#module_expr a2 self#expr a3
+              self#loc a0 self#auident a1 self#module_expr a2 self#expr a3
         | `Match (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#match_case a2
@@ -2473,7 +2473,7 @@ class fold =
           let self = self#binding a2 in self#expr a3
       | `LetModule (a0,a1,a2,a3) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#auident a1 in
           let self = self#module_expr a2 in self#expr a3
       | `Match (a0,a1,a2) ->
           let self = self#loc a0 in
@@ -3133,7 +3133,7 @@ class fold2 =
             let self = self#binding a2 b2 in self#expr a3 b3
         | (`LetModule (a0,a1,a2,a3),`LetModule (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#auident a1 b1 in
             let self = self#module_expr a2 b2 in self#expr a3 b3
         | (`Match (a0,a1,a2),`Match (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
@@ -3877,7 +3877,7 @@ and pp_print_expr: 'fmt -> expr -> 'result =
           pp_print_rec_flag a1 pp_print_binding a2 pp_print_expr a3
     | `LetModule (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" pp_print_loc
-          a0 pp_print_string a1 pp_print_module_expr a2 pp_print_expr a3
+          a0 pp_print_auident a1 pp_print_module_expr a2 pp_print_expr a3
     | `Match (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Match@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_match_case a2
@@ -4440,7 +4440,7 @@ class iter =
       | `LetIn (a0,a1,a2,a3) ->
           (self#loc a0; self#rec_flag a1; self#binding a2; self#expr a3)
       | `LetModule (a0,a1,a2,a3) ->
-          (self#loc a0; self#string a1; self#module_expr a2; self#expr a3)
+          (self#loc a0; self#auident a1; self#module_expr a2; self#expr a3)
       | `Match (a0,a1,a2) -> (self#loc a0; self#expr a1; self#match_case a2)
       | `New (a0,a1) -> (self#loc a0; self#ident a1)
       | `Obj (a0,a1,a2) ->
@@ -5107,7 +5107,7 @@ class map2 =
             let a3 = self#expr a3 b3 in `LetIn (a0, a1, a2, a3)
         | (`LetModule (a0,a1,a2,a3),`LetModule (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#auident a1 b1 in
             let a2 = self#module_expr a2 b2 in
             let a3 = self#expr a3 b3 in `LetModule (a0, a1, a2, a3)
         | (`Match (a0,a1,a2),`Match (b0,b1,b2)) ->
@@ -6465,7 +6465,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExApp
                                  (_loc, (`ExVrn (_loc, "LetModule")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_auident _loc a1))),
                          (meta_module_expr _loc a2))), (meta_expr _loc a3))
             | `Match (a0,a1,a2) ->
                 `ExApp
@@ -8207,7 +8207,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaApp
                                  (_loc, (`PaVrn (_loc, "LetModule")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_auident _loc a1))),
                          (meta_module_expr _loc a2))), (meta_expr _loc a3))
             | `Match (a0,a1,a2) ->
                 `PaApp

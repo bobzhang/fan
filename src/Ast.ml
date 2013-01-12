@@ -103,7 +103,7 @@
     | `TyApp of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
     | `TyArr of (loc * ctyp * ctyp) (* t -> t *) (* int -> string *)
     | `TyCls of (loc * ident) (* #i *) (* #point *)
-    | `TyLab of (loc * alident(* string *) * ctyp) (* ~s:t *)
+    | `TyLab of (loc * alident * ctyp) (* ~s:t *)
     | `Id  of (loc * ident) (* i *) (* `Lazy.t *)
     | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)
       (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
@@ -181,18 +181,18 @@
     | `ExAss of (loc * expr * expr) (* e := e *)
 
       (* for s = e to/downto e do { e } *)
-    | `For of (loc * alident(* string *) * expr * expr * direction_flag * expr)
+    | `For of (loc * alident * expr * expr * direction_flag * expr)
     | `Fun of (loc * match_case) (* fun [ mc ] *)
 
     | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
           
     | literal
-    | `Label of (loc * alident(* string *) * expr) (* ~s or ~s:e *)
+    | `Label of (loc * alident * expr) (* ~s or ~s:e *)
     | `Lazy of (loc * expr) (* lazy e *)
       (* let b in e or let rec b in e *)
     | `LetIn of (loc * rec_flag * binding * expr)
       (* let module s = me in e *)
-    | `LetModule of (loc * string * module_expr * expr)
+    | `LetModule of (loc * (* string *)auident * module_expr * expr)
       (* match e with [ mc ] *)
     | `Match of (loc * expr * match_case)
       (* new i *)

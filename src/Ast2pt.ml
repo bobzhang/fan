@@ -641,7 +641,11 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
       | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (expr e))
       | `LetIn (loc,rf,bi,e) ->
           mkexp loc (Pexp_let (mkrf rf) (binding bi []) (expr e))
-      | `LetModule (loc,i,me,e) -> mkexp loc (Pexp_letmodule (with_loc i loc) (module_expr me) (expr e))
+      | `LetModule (loc,i,me,e) ->
+          match i with
+          [`Uid(sloc,i) ->
+            mkexp loc (Pexp_letmodule (with_loc i sloc) (module_expr me) (expr e))
+          |`Ant(_loc,_) -> ANT_ERROR]
       | `Match (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a []))
       | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
     | `Obj (loc,po,cfl) ->

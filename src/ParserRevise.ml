@@ -291,9 +291,10 @@ let apply () = begin
         "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
             {| let $rec:r $bi in $x |}
-        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; S{e} ->
+        | "let"; "module"; a_uident(* a_UIDENT *){m}; module_binding0{mb}; "in"; S{e} ->
             {| let module $m = $mb in $e |}
-        | "let"; "open"; module_longident{i}; "in"; S{e} -> {| let open $id:i in $e |}
+        | "let"; "open"; module_longident{i}; "in"; S{e} ->
+            {| let open $id:i in $e |}
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a} ->
             {| let try $rec:r $bi in $x with [ $a ] |}
         | "match"; S{e}; "with"; match_case{a} -> {|match $e with [$a]|}
@@ -426,9 +427,9 @@ let apply () = begin
           k {| let try $rec:r $bi in $x with [ $a ] |}
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
            {| let $rec:rf $bi in $(Expr.mksequence ~loc:_loc el) |}
-       | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; expr{e}; sequence'{k} ->
-           k {| let module $m = $mb in $e |}
-       | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; ";"; S{el} ->
+       | "let"; "module"; a_uident{m}; module_binding0{mb}; "in";
+           expr{e}; sequence'{k} -> k {| let module $m = $mb in $e |}
+       | "let"; "module"; a_uident{m}; module_binding0{mb}; ";"; S{el} ->
            {| let module $m = $mb in $(Expr.mksequence ~loc:_loc el) |}
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
            {| let open $id:i in $e |}
@@ -773,8 +774,8 @@ let apply () = begin
         [ S{t1}; "->"; S{t2} ->  {| $t1 -> $t2 |} ]
        "label" NA
         [ "~"; a_lident{i}; ":"; S{t} -> {| ~ $i : $t |}
-        | `LABEL s ; ":"; S{t} -> {| ~$lid:i : $t |}
-        | `OPTLABEL s ; S{t} -> {| ?$lid:i : $t |}
+        | `LABEL s ; ":"; S{t} -> {| ~$lid:s : $t |}
+        | `OPTLABEL s ; S{t} -> {| ?$lid:s : $t |}
         | "?"; a_lident{i}; ":"; S{t} -> {| ? $i : $t |}]
        "apply" LA
         [ S{t1}; S{t2} ->
@@ -1076,7 +1077,7 @@ let apply () = begin
         | "let"; opt_rec{r}; binding{bi} ->   match bi with
             [ {:binding| _ = $e |} -> {| $exp:e |}
             | _ -> {| let $rec:r $bi |} ]
-        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; expr{e} ->
+        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; expr{e} ->
               {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; expr{e} -> {| let open $id:i in $e |}
               

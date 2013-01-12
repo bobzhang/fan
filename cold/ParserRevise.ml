@@ -1035,12 +1035,12 @@ let apply () =
                    (_loc : FanLoc.t)  -> (`LetIn (_loc, r, bi, x) : 'expr ))));
           ([`Skeyword "let";
            `Skeyword "module";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Snterm (Gram.obj (module_binding0 : 'module_binding0 Gram.t ));
            `Skeyword "in";
            `Sself],
             (Gram.mk_action
-               (fun (e : 'expr)  _  (mb : 'module_binding0)  (m : 'a_UIDENT) 
+               (fun (e : 'expr)  _  (mb : 'module_binding0)  (m : 'a_uident) 
                   _  _  (_loc : FanLoc.t)  ->
                   (`LetModule (_loc, m, mb, e) : 'expr ))));
           ([`Skeyword "let";
@@ -1719,24 +1719,24 @@ let apply () =
                   'sequence ))));
           ([`Skeyword "let";
            `Skeyword "module";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Snterm (Gram.obj (module_binding0 : 'module_binding0 Gram.t ));
            `Skeyword "in";
            `Snterm (Gram.obj (expr : 'expr Gram.t ));
            `Snterm (Gram.obj (sequence' : 'sequence' Gram.t ))],
             (Gram.mk_action
                (fun (k : 'sequence')  (e : 'expr)  _  (mb : 'module_binding0)
-                   (m : 'a_UIDENT)  _  _  (_loc : FanLoc.t)  ->
+                   (m : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
                   (k (`LetModule (_loc, m, mb, e)) : 'sequence ))));
           ([`Skeyword "let";
            `Skeyword "module";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Snterm (Gram.obj (module_binding0 : 'module_binding0 Gram.t ));
            `Skeyword ";";
            `Sself],
             (Gram.mk_action
                (fun (el : 'sequence)  _  (mb : 'module_binding0) 
-                  (m : 'a_UIDENT)  _  _  (_loc : FanLoc.t)  ->
+                  (m : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
                   (`LetModule (_loc, m, mb, (Expr.mksequence ~loc:_loc el)) : 
                   'sequence ))));
           ([`Skeyword "let";
@@ -3582,7 +3582,7 @@ let apply () =
               (fun (t : 'ctyp)  _  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `LABEL s -> (`TyLab (_loc, (`Lid (_loc, i)), t) : 'ctyp )
+                 | `LABEL s -> (`TyLab (_loc, (`Lid (_loc, s)), t) : 'ctyp )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `OPTLABEL _ -> true | _ -> false)),
@@ -3593,7 +3593,7 @@ let apply () =
                   ->
                  match __fan_0 with
                  | `OPTLABEL s ->
-                     (`TyOlb (_loc, (`Lid (_loc, i)), t) : 'ctyp )
+                     (`TyOlb (_loc, (`Lid (_loc, s)), t) : 'ctyp )
                  | _ -> assert false)));
          ([`Skeyword "?";
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
@@ -5128,12 +5128,12 @@ let apply () =
                    | _ -> `Value (_loc, r, bi) : 'str_item ))));
           ([`Skeyword "let";
            `Skeyword "module";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Snterm (Gram.obj (module_binding0 : 'module_binding0 Gram.t ));
            `Skeyword "in";
            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
             (Gram.mk_action
-               (fun (e : 'expr)  _  (mb : 'module_binding0)  (m : 'a_UIDENT) 
+               (fun (e : 'expr)  _  (mb : 'module_binding0)  (m : 'a_uident) 
                   _  _  (_loc : FanLoc.t)  ->
                   (`StExp (_loc, (`LetModule (_loc, m, mb, e))) : 'str_item ))));
           ([`Skeyword "let";

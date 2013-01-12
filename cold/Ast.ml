@@ -62,7 +62,7 @@ and expr =
   | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
   | literal | `Label of (loc* alident* expr) | `Lazy of (loc* expr)
   | `LetIn of (loc* rec_flag* binding* expr)
-  | `LetModule of (loc* string* module_expr* expr)
+  | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
   | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding* expr)
