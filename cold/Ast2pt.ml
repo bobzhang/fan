@@ -2,6 +2,7 @@ open Parsetree
 open Longident
 open Asttypes
 open Lib
+open LibUtil
 open FanUtil
 open FanAst
 open ParsetreeHelper
@@ -270,30 +271,33 @@ let rec type_parameters (t : ctyp) acc =
   | `TyQuM (_loc,s) -> (s, (false, true)) :: acc
   | `TyQuo (_loc,s) -> (s, (false, false)) :: acc
   | _ -> assert false
-let rec optional_type_parameters (t : ctyp) acc =
-  match t with
-  | `TyApp (_loc,t1,t2) ->
-      optional_type_parameters t1 (optional_type_parameters t2 acc)
-  | `TyQuP (_loc,s) -> ((Some (with_loc s _loc)), (true, false)) :: acc
-  | `TyAnP _loc -> (None, (true, false)) :: acc
-  | `TyQuM (_loc,s) -> ((Some (with_loc s _loc)), (false, true)) :: acc
-  | `TyAnM _loc -> (None, (false, true)) :: acc
-  | `TyQuo (_loc,s) -> ((Some (with_loc s _loc)), (false, false)) :: acc
-  | `Any _loc -> (None, (false, false)) :: acc
-  | _ -> assert false
-let rec class_parameters (t : ctyp) acc =
-  match t with
-  | `Com (_loc,t1,t2) -> class_parameters t1 (class_parameters t2 acc)
-  | `TyQuP (_loc,s) -> ((with_loc s _loc), (true, false)) :: acc
-  | `TyQuM (_loc,s) -> ((with_loc s _loc), (false, true)) :: acc
-  | `TyQuo (_loc,s) -> ((with_loc s _loc), (false, false)) :: acc
-  | _ -> assert false
-let rec type_parameters_and_type_name t acc =
-  match t with
-  | `TyApp (_loc,t1,t2) ->
-      type_parameters_and_type_name t1 (optional_type_parameters t2 acc)
-  | `Id (_loc,i) -> ((ident i), acc)
-  | _ -> assert false
+let paramater_map (x : ctyp) =
+  match x with
+  | `TyQuP (_loc,s) -> ((Some (s +> _loc)), (true, false))
+  | `TyAnP _loc -> (None, (true, false))
+  | `TyAnM _loc -> (None, (false, true))
+  | `TyQuo (_loc,s) -> ((Some (s +> _loc)), (false, false))
+  | `Any _loc -> (None, (false, false))
+  | _ -> failwith "parameter_map"
+let optional_type_parameters (t : ctyp)
+  (acc : (string Asttypes.loc option* (bool* bool)) list) =
+  (List.map paramater_map (FanAst.list_of_ctyp_app t [])) @ acc
+let class_parameters (t : ctyp)
+  (acc : (string Asttypes.loc* (bool* bool)) list) =
+  (List.map
+     (fun x  ->
+        match paramater_map x with
+        | (Some x,v) -> (x, v)
+        | (None ,_) -> failwithf "class_parameters")
+     (FanAst.list_of_ctyp_com t []))
+    @ acc
+let type_parameters_and_type_name t acc =
+  let rec aux t acc =
+    match t with
+    | `TyApp (_loc,t1,t2) -> aux t1 (optional_type_parameters t2 acc)
+    | `Id (_loc,i) -> ((ident i), acc)
+    | _ -> assert false in
+  aux t acc
 let mkwithtyp pwith_type loc id_tpl ct =
   let (id,tpl) = type_parameters_and_type_name id_tpl [] in
   let (params,variance) = List.split tpl in
@@ -761,7 +765,8 @@ and mkideexp (x : rec_binding) (acc : (string Asttypes.loc* expression) list)
    | `Sem (_loc,x,y) -> mkideexp x (mkideexp y acc)
    | `RecBind (_loc,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
    | _ -> assert false : (string Asttypes.loc* expression) list )
-and mktype_decl x acc =
+and mktype_decl (x : ctyp)
+  (acc : (string Asttypes.loc* type_declaration) list) =
   match x with
   | `And (_loc,x,y) -> mktype_decl x (mktype_decl y acc)
   | `TyDcl (cloc,c,tl,td,cl) ->
@@ -983,7 +988,7 @@ and class_type =
       error loc "invalid virtual class inside a class type"
   | `Ant (_,_)|`CtEq (_,_,_)|`CtCol (_,_,_)|`CtAnd (_,_,_)|`Nil _ ->
       assert false
-and class_info_class_expr ci =
+and class_info_class_expr (ci : class_expr) =
   match ci with
   | `Eq (_,`CeCon (loc,vir,`Lid (nloc,name),params),ce) ->
       let (loc_params,(params,variance)) =

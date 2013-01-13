@@ -247,11 +247,11 @@ let  tyApp_of_list = fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
     | [t::ts] ->
-
         List.fold_left
           (fun x y -> let _loc = loc_of_ctyp  x in {:ctyp| $x $y |}) t ts];
 
         (* let _loc = loc_of_ctyp t in {:ctyp| $t  $(tyApp_of_list ts) |} ]; *)
+  
 (* LA *)
 let tyVarApp_of_list (_loc,ls)=
   let  aux = fun 
@@ -436,6 +436,21 @@ let rec list_of_ctyp x acc =
         list_of_ctyp x (list_of_ctyp y acc)
   | x -> [x :: acc] ];
 
+let rec list_of_ctyp_app (x:ctyp) (acc:list ctyp) : list ctyp =
+  with ctyp match x with
+  [
+   {| $t1 $t2|} ->
+    list_of_ctyp_app t1 (list_of_ctyp_app t2 acc)
+  | {||} -> acc (* remove the nil *)
+  | x -> [x::acc] ]  ;
+    
+let rec list_of_ctyp_com (x:ctyp) (acc:list ctyp): list ctyp =
+  with ctyp match x with
+  [ {| $t1 , $t2 |} ->
+    list_of_ctyp_com t1 (list_of_ctyp_com t2 acc)
+  | {||} -> acc
+  | x -> [x::acc]]  ;
+    
 let rec list_of_patt x acc = match x with
   [ {:patt||} -> acc
   | {:patt| $x, $y |} | {:patt| $x; $y |} ->

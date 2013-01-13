@@ -3450,33 +3450,6 @@ let apply () =
                 (fun (tpl : 'optional_type_parameter list)  (i : 'a_lident) 
                    (_loc : FanLoc.t)  ->
                    ((i, tpl) : 'type_ident_and_parameters ))))])]);
-   Gram.extend (constrain : 'constrain Gram.t )
-     (None,
-       [(None, None,
-          [([`Skeyword "constraint";
-            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-            `Skeyword "=";
-            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-             (Gram.mk_action
-                (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                   ((t1, t2) : 'constrain ))))])]);
-   Gram.extend (opt_eq_ctyp : 'opt_eq_ctyp Gram.t )
-     (None,
-       [(None, None,
-          [([`Skeyword "=";
-            `Snterm (Gram.obj (type_kind : 'type_kind Gram.t ))],
-             (Gram.mk_action
-                (fun (tk : 'type_kind)  _  (_loc : FanLoc.t)  ->
-                   (tk : 'opt_eq_ctyp ))));
-          ([],
-            (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'opt_eq_ctyp ))))])]);
-   Gram.extend (type_kind : 'type_kind Gram.t )
-     (None,
-       [(None, None,
-          [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-             (Gram.mk_action
-                (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'type_kind ))))])]);
    Gram.extend (optional_type_parameter : 'optional_type_parameter Gram.t )
      (None,
        [(None, None,
@@ -3526,6 +3499,33 @@ let apply () =
             (Gram.mk_action
                (fun _  (_loc : FanLoc.t)  ->
                   (`Any _loc : 'optional_type_parameter ))))])]);
+   Gram.extend (constrain : 'constrain Gram.t )
+     (None,
+       [(None, None,
+          [([`Skeyword "constraint";
+            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+            `Skeyword "=";
+            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+             (Gram.mk_action
+                (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
+                   ((t1, t2) : 'constrain ))))])]);
+   Gram.extend (opt_eq_ctyp : 'opt_eq_ctyp Gram.t )
+     (None,
+       [(None, None,
+          [([`Skeyword "=";
+            `Snterm (Gram.obj (type_kind : 'type_kind Gram.t ))],
+             (Gram.mk_action
+                (fun (tk : 'type_kind)  _  (_loc : FanLoc.t)  ->
+                   (tk : 'opt_eq_ctyp ))));
+          ([],
+            (Gram.mk_action
+               (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'opt_eq_ctyp ))))])]);
+   Gram.extend (type_kind : 'type_kind Gram.t )
+     (None,
+       [(None, None,
+          [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+             (Gram.mk_action
+                (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'type_kind ))))])]);
    Gram.extend (typevars : 'typevars Gram.t )
      (None,
        [(None, None,

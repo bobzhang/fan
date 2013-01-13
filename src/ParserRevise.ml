@@ -756,21 +756,23 @@ let apply () = begin
         -> `TyDcl (_loc, n, tpl, tk, cl) ]
       type_ident_and_parameters:
       [ a_lident{i}; L0 optional_type_parameter{tpl} -> (i, tpl)]
-      constrain:
-      [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
-      opt_eq_ctyp:
-      [ "="; type_kind{tk} -> tk | -> {||} ]
-      type_kind: [ ctyp{t} -> t ]
       (* refer type_parameter *)
       optional_type_parameter: (* overlapps with type_parameter *)
       [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | "'"; a_ident{i} -> {| '$lid:i |}
-      | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
+      | "+"; "'"; a_ident{i} ->
+          {| +'$lid:i |}
       | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
       | "+"; "_" -> `TyAnP _loc   (* FIXME *)
       | "-"; "_" -> `TyAnM _loc  
       | "_" -> {| _ |}  ]
+
+      constrain:
+      [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
+      opt_eq_ctyp:
+      [ "="; type_kind{tk} -> tk | -> {||} ]
+      type_kind: [ ctyp{t} -> t ]
       
       typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}

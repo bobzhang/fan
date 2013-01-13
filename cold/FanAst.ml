@@ -123,6 +123,14 @@ class eq =
         | (`RvNil a0,`RvNil b0) -> self#loc a0 b0
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
+    method position_flag : position_flag -> position_flag -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Positive a0,`Positive b0) -> self#loc a0 b0
+        | (`Negative a0,`Negative b0) -> self#loc a0 b0
+        | (`Normal a0,`Normal b0) -> self#loc a0 b0
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
+        | (_,_) -> false
     method meta_option :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'all_a0 -> 'result) ->
@@ -766,6 +774,12 @@ class map =
       | `RowVar a0 -> let a0 = self#loc a0 in `RowVar a0
       | `RvNil a0 -> let a0 = self#loc a0 in `RvNil a0
       | #ant as a0 -> (self#ant a0 :>row_var_flag)
+    method position_flag : position_flag -> position_flag=
+      function
+      | `Positive a0 -> let a0 = self#loc a0 in `Positive a0
+      | `Negative a0 -> let a0 = self#loc a0 in `Negative a0
+      | `Normal a0 -> let a0 = self#loc a0 in `Normal a0
+      | #ant as a0 -> (self#ant a0 :>position_flag)
     method meta_option :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
@@ -1577,6 +1591,15 @@ class print =
         | `RowVar a0 -> Format.fprintf fmt "@[<1>(`RowVar@ %a)@]" self#loc a0
         | `RvNil a0 -> Format.fprintf fmt "@[<1>(`RvNil@ %a)@]" self#loc a0
         | #ant as a0 -> (self#ant fmt a0 :>'result)
+    method position_flag : 'fmt -> position_flag -> 'result=
+      fun fmt  ->
+        function
+        | `Positive a0 ->
+            Format.fprintf fmt "@[<1>(`Positive@ %a)@]" self#loc a0
+        | `Negative a0 ->
+            Format.fprintf fmt "@[<1>(`Negative@ %a)@]" self#loc a0
+        | `Normal a0 -> Format.fprintf fmt "@[<1>(`Normal@ %a)@]" self#loc a0
+        | #ant as a0 -> (self#ant fmt a0 :>'result)
     method meta_option :
       'all_a0 .
         ('self_type -> 'fmt -> 'all_a0 -> 'result) ->
@@ -2291,6 +2314,12 @@ class fold =
       | `RowVar a0 -> self#loc a0
       | `RvNil a0 -> self#loc a0
       | #ant as a0 -> (self#ant a0 :>'self_type)
+    method position_flag : position_flag -> 'self_type=
+      function
+      | `Positive a0 -> self#loc a0
+      | `Negative a0 -> self#loc a0
+      | `Normal a0 -> self#loc a0
+      | #ant as a0 -> (self#ant a0 :>'self_type)
     method meta_option :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'self_type) ->
@@ -2867,6 +2896,14 @@ class fold2 =
         match (a0, b0) with
         | (`RowVar a0,`RowVar b0) -> self#loc a0 b0
         | (`RvNil a0,`RvNil b0) -> self#loc a0 b0
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
+        | (_,_) -> invalid_arg "fold2 failure"
+    method position_flag : position_flag -> position_flag -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Positive a0,`Positive b0) -> self#loc a0 b0
+        | (`Negative a0,`Negative b0) -> self#loc a0 b0
+        | (`Normal a0,`Normal b0) -> self#loc a0 b0
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method meta_option :
@@ -3602,6 +3639,15 @@ let pp_print_row_var_flag: 'fmt -> row_var_flag -> 'result =
     | `RowVar a0 -> Format.fprintf fmt "@[<1>(`RowVar@ %a)@]" pp_print_loc a0
     | `RvNil a0 -> Format.fprintf fmt "@[<1>(`RvNil@ %a)@]" pp_print_loc a0
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
+let pp_print_position_flag: 'fmt -> position_flag -> 'result =
+  fun fmt  ->
+    function
+    | `Positive a0 ->
+        Format.fprintf fmt "@[<1>(`Positive@ %a)@]" pp_print_loc a0
+    | `Negative a0 ->
+        Format.fprintf fmt "@[<1>(`Negative@ %a)@]" pp_print_loc a0
+    | `Normal a0 -> Format.fprintf fmt "@[<1>(`Normal@ %a)@]" pp_print_loc a0
+    | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 let pp_print_meta_option :
   'all_a0 .
     ('fmt -> 'all_a0 -> 'result) -> 'fmt -> 'all_a0 meta_option -> 'result=
@@ -4312,6 +4358,12 @@ class iter =
       | `RowVar a0 -> self#loc a0
       | `RvNil a0 -> self#loc a0
       | #ant as a0 -> (self#ant a0 :>'result)
+    method position_flag : position_flag -> 'result=
+      function
+      | `Positive a0 -> self#loc a0
+      | `Negative a0 -> self#loc a0
+      | `Normal a0 -> self#loc a0
+      | #ant as a0 -> (self#ant a0 :>'result)
     method meta_option :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'result) -> 'all_a0 meta_option -> 'result=
@@ -4774,6 +4826,16 @@ class map2 =
         | (`RowVar a0,`RowVar b0) -> let a0 = self#loc a0 b0 in `RowVar a0
         | (`RvNil a0,`RvNil b0) -> let a0 = self#loc a0 b0 in `RvNil a0
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>row_var_flag)
+        | (_,_) -> invalid_arg "map2 failure"
+    method position_flag : position_flag -> position_flag -> position_flag=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`Positive a0,`Positive b0) ->
+            let a0 = self#loc a0 b0 in `Positive a0
+        | (`Negative a0,`Negative b0) ->
+            let a0 = self#loc a0 b0 in `Negative a0
+        | (`Normal a0,`Normal b0) -> let a0 = self#loc a0 b0 in `Normal a0
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>position_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method meta_option :
       'all_a0 'all_b0 .
@@ -5818,6 +5880,18 @@ module Make(MetaLoc:META_LOC) =
                 `ExApp (_loc, (`ExVrn (_loc, "RowVar")), (meta_loc _loc a0))
             | `RvNil a0 ->
                 `ExApp (_loc, (`ExVrn (_loc, "RvNil")), (meta_loc _loc a0))
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
+        let meta_position_flag: 'loc -> position_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Positive a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Positive")), (meta_loc _loc a0))
+            | `Negative a0 ->
+                `ExApp
+                  (_loc, (`ExVrn (_loc, "Negative")), (meta_loc _loc a0))
+            | `Normal a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "Normal")), (meta_loc _loc a0))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let meta_meta_option :
           'all_a0 .
@@ -7563,6 +7637,18 @@ module Make(MetaLoc:META_LOC) =
                 `PaApp (_loc, (`PaVrn (_loc, "RowVar")), (meta_loc _loc a0))
             | `RvNil a0 ->
                 `PaApp (_loc, (`PaVrn (_loc, "RvNil")), (meta_loc _loc a0))
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
+        let meta_position_flag: 'loc -> position_flag -> 'result =
+          fun _loc  ->
+            function
+            | `Positive a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Positive")), (meta_loc _loc a0))
+            | `Negative a0 ->
+                `PaApp
+                  (_loc, (`PaVrn (_loc, "Negative")), (meta_loc _loc a0))
+            | `Normal a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "Normal")), (meta_loc _loc a0))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let meta_meta_option :
           'all_a0 .
@@ -9478,6 +9564,16 @@ let rec list_of_ctyp x acc =
   | `TyAmp (_loc,x,y)|`Com (_loc,x,y)|`Sta (_loc,x,y)|`TySem (_loc,x,y)
     |`And (_loc,x,y)|`Or (_loc,x,y) -> list_of_ctyp x (list_of_ctyp y acc)
   | x -> x :: acc
+let rec list_of_ctyp_app (x : ctyp) (acc : ctyp list) =
+  (match x with
+   | `TyApp (_loc,t1,t2) -> list_of_ctyp_app t1 (list_of_ctyp_app t2 acc)
+   | `Nil _loc -> acc
+   | x -> x :: acc : ctyp list )
+let rec list_of_ctyp_com (x : ctyp) (acc : ctyp list) =
+  (match x with
+   | `Com (_loc,t1,t2) -> list_of_ctyp_com t1 (list_of_ctyp_com t2 acc)
+   | `Nil _loc -> acc
+   | x -> x :: acc : ctyp list )
 let rec list_of_patt x acc =
   match x with
   | `Nil _loc -> acc

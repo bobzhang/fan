@@ -11,6 +11,8 @@ type private_flag = [ `Private of loc | `PrNil of loc | ant]
 type virtual_flag = [ `Virtual of loc | `ViNil of loc | ant] 
 type override_flag = [ `Override of loc | `OvNil of loc | ant] 
 type row_var_flag = [ `RowVar of loc | `RvNil of loc | ant] 
+type position_flag =
+  [ `Positive of loc | `Negative of loc | `Normal of loc | ant] 
 type 'a meta_option = [ `None of loc | `Some of 'a | `Ant of (loc* string)] 
 type 'a meta_list =
   [ `LNil of loc | `LCons of ('a* 'a meta_list) | `Ant of (loc* string)] 

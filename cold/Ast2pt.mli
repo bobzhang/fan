@@ -84,28 +84,28 @@ val type_parameters :
 
 val optional_type_parameters :
   ctyp ->
-  (string Location.loc option * (bool * bool)) list ->
-  (string Location.loc option * (bool * bool)) list
+  (string Asttypes.loc option * (bool * bool)) list ->
+  (string Asttypes.loc option * (bool * bool)) list
       
 val class_parameters :
   ctyp ->
-  (string Location.loc * (bool * bool)) list ->
-  (string Location.loc * (bool * bool)) list
+  (string Asttypes.loc * (bool * bool)) list ->
+  (string Asttypes.loc * (bool * bool)) list
       
 val type_parameters_and_type_name :
   ctyp ->
-  (string Location.loc option * (bool * bool)) list ->
-  Longident.t Location.loc *
-  (string Location.loc option * (bool * bool)) list
+  (string Asttypes.loc option * (bool * bool)) list ->
+  Longident.t Asttypes.loc *
+  (string Asttypes.loc option * (bool * bool)) list
 
 val mkwithtyp :
   (Parsetree.type_declaration -> 'a) ->
-  Location.t -> ctyp -> ctyp -> Longident.t Location.loc * 'a
+  Location.t -> ctyp -> ctyp -> Longident.t Asttypes.loc * 'a
 
 val mkwithc :
   with_constr ->
-  (Longident.t Location.loc * Parsetree.with_constraint) list ->
-  (Longident.t Location.loc * Parsetree.with_constraint) list
+  (Longident.t Asttypes.loc * Parsetree.with_constraint) list ->
+  (Longident.t Asttypes.loc * Parsetree.with_constraint) list
       
 val patt_fa :  patt list -> patt -> patt * patt list
       

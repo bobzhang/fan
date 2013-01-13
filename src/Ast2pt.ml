@@ -2,6 +2,7 @@ open Parsetree;
 open Longident;
 open Asttypes;
 open Lib;
+open LibUtil;
 open FanUtil;
 open FanAst;
 open ParsetreeHelper;
@@ -224,6 +225,7 @@ let mkprivate = with private_flag fun
   [ {| private |} -> Private
   | {||} -> Public
   | _ -> assert false ];
+
 let mktrecord : ctyp ->  (Asttypes.loc string * Asttypes.mutable_flag * core_type *  loc)=
   with ctyp fun
   [ {| $(id:{:ident@sloc| $lid:s |}) : mutable $t |} ->
@@ -303,31 +305,66 @@ let rec type_parameters (t:ctyp) acc =
   | {| '$s |} -> [(s, (false, false)) :: acc]
   | _ -> assert false ];
 
-let rec optional_type_parameters (t:ctyp) acc =
-  with ctyp match t with
-  [ {| $t1 $t2 |} -> optional_type_parameters t1 (optional_type_parameters t2 acc)
-  | {| +'$s |} -> [(Some (with_loc s _loc), (true, false)) :: acc]
-  | `TyAnP _loc  -> [(None, (true, false)) :: acc]
-  | {| -'$s |} -> [(Some (with_loc s _loc), (false, true)) :: acc]
-  | `TyAnM _loc -> [(None, (false, true)) :: acc]
-  | {| '$s |} -> [(Some (with_loc s _loc), (false, false)) :: acc]
-  | {| _ |}  -> [(None, (false, false)) :: acc]
-  | _ -> assert false ];
+let paramater_map (x:ctyp) =
+  with ctyp match x with
+  [ {| +'$s|} ->
+    (Some (s+>_loc),(true,false))
+  | `TyAnP _loc ->
+      (None,(true,false))
+  | `TyAnM _loc ->
+      (None,(false,true))
+  | {| '$s|} ->
+      (Some (s+>_loc),(false,false))
+  | {| _ |} ->
+      (None,(false,false))
+  | _ -> failwith "parameter_map"  ];
+    
+let optional_type_parameters (t:ctyp)
+    (acc:  list (option (Asttypes.loc string) * (bool * bool)) ) =
+  List.map paramater_map (FanAst.list_of_ctyp_app t []) @ acc ;
+  (* let rec aux t acc = *)
+  (*   with ctyp match t with *)
+  (*   [ {| $t1 $t2 |} -> aux t1 (aux t2 acc) *)
+  (*   | {| +'$s |} -> *)
+  (*       [(Some ( s +> _loc), (true, false)) :: acc] *)
+  (*   | `TyAnP _loc  -> *)
+  (*       [(None, (true, false)) :: acc] *)
+  (*   | {| -'$s |} -> *)
+  (*       [(Some ( s +> _loc), (false, true)) :: acc] *)
+  (*   | `TyAnM _loc -> *)
+  (*       [(None, (false, true)) :: acc] *)
+  (*   | {| '$s |} -> *)
+  (*       [(Some ( s +> _loc), (false, false)) :: acc] *)
+  (*   | {| _ |}  -> *)
+  (*       [(None, (false, false)) :: acc] *)
+  (*   | _ -> assert false ] in aux t acc; *)
 
-let rec class_parameters (t:ctyp) acc =
-  with ctyp match t with
-  [ {| $t1, $t2 |} -> class_parameters t1 (class_parameters t2 acc)
-  | {| +'$s |} -> [(with_loc s _loc, (true, false)) :: acc]
-  | {| -'$s |} -> [(with_loc s _loc, (false, true)) :: acc]
-  | {| '$s |} -> [(with_loc s _loc, (false, false)) :: acc]
-  | _ -> assert false ];
+(*
+  it should always return [Some] instead of None
+ *)  
+let  class_parameters (t:ctyp)
+    (acc: list (Asttypes.loc string * (bool * bool))) =
+  List.map
+    (fun x ->
+      match paramater_map x with
+      [(Some x,v) -> (x,v)
+      | (None,_) -> failwithf "class_parameters"])  
+          (FanAst.list_of_ctyp_com t []) @ acc ;
+  (* let rec aux t acc = *)
+  (*   with ctyp match t with *)
+  (*   [ {| $t1, $t2 |} -> aux t1 (aux t2 acc) *)
+  (*   | {| +'$s |} -> [( s +> _loc, (true, false)) :: acc] *)
+  (*   | {| -'$s |} -> [( s +> _loc, (false, true)) :: acc] *)
+  (*   | {| '$s |} -> [( s +> _loc, (false, false)) :: acc] *)
+  (*   | _ -> assert false ] in aux t acc; *)
 
-let rec type_parameters_and_type_name t acc =  match t with
+let type_parameters_and_type_name t acc =
+  let rec aux t acc = 
+  match t with
   [ {:ctyp| $t1 $t2 |} ->
-    type_parameters_and_type_name t1
-      (optional_type_parameters t2 acc)
+    aux t1 (optional_type_parameters t2 acc)
   | {:ctyp| $id:i |} -> (ident i, acc)
-  | _ -> assert false ];
+  | _ -> assert false ] in aux t acc;
 
 let mkwithtyp pwith_type loc id_tpl ct =
   let (id, tpl) = type_parameters_and_type_name id_tpl [] in
@@ -820,8 +857,10 @@ and mkideexp (x:rec_binding)
    ]}
    
  *)    
-and mktype_decl x acc =
-  match x with (* ctyp -> (string loc * type_declaration) list -> (string loc * type_declaration) list*)
+and mktype_decl (x:ctyp)
+    (acc: list (Asttypes.loc string * type_declaration))
+    =
+  match x with 
   [ {:ctyp| $x and $y |} ->
     mktype_decl x (mktype_decl y acc)
   | `TyDcl (cloc, c, tl, td, cl) ->
@@ -833,8 +872,9 @@ and mktype_decl x acc =
           cl  in
       match c with
       [`Lid(sloc,c)->   
-      [(with_loc c sloc,
-        type_decl (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
+        [(with_loc c sloc,
+          type_decl
+            (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
       |`Ant(_loc,_) -> ANT_ERROR]
   | _ -> assert false ]
 and module_type : Ast.module_type -> Parsetree.module_type =
@@ -1022,7 +1062,7 @@ and class_type = fun (* class_type -> class_type *)
   | `Ant (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `CtAnd (_, _, _) | `Nil _ ->
       assert false ]
     
-and class_info_class_expr ci =
+and class_info_class_expr (ci:class_expr) =
     match ci with (* class_expr -> class_declaration*)
     [ `Eq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
       let (loc_params, (params, variance)) =

@@ -74,6 +74,13 @@
     [= `RowVar of loc 
     | `RvNil of loc 
     | ant ];
+
+   type position_flag =
+    [= `Positive of loc
+    | `Negative of loc
+    | `Normal of loc
+    |ant];
+
    type meta_option 'a =
     [= `None of loc 
     |  `Some of 'a
@@ -116,12 +123,17 @@
     | `TyOlb of (loc * alident * ctyp) (* ?s:t *)
     | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
     | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
+
     | `TyQuo of (loc * string) (* 's *)
     | `TyQuP of (loc * string) (* +'s *)
     | `TyQuM of (loc * string) (* -'s *)
+          
     | `TyAnP of loc (* +_ *)
     | `TyAnM of loc (* -_ *)
 
+    (*  +'s -'s 's +_ -_ *)      
+    (* | `Quote of (loc * position_flag * meta_option alident) *)
+          
     | `TyRec of (loc * ctyp) (* { t } *) (* { foo : int ; bar : mutable string } *)
     | `TyCol of (loc * ctyp * ctyp) (* t : t *)
     | `TySem of (loc * ctyp * ctyp) (* t; t *)
