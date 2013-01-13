@@ -34,7 +34,7 @@ let apply () = begin
     class_type_plus class_type_quot comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
     constrain constructor_arg_list constructor_declaration constructor_declarations ctyp ctyp_quot
     cvalue_binding direction_flag dummy eq_expr expr expr_eoi expr_quot field_expr field_expr_list fun_binding
-    fun_def ident ident_quot implem interf ipatt ipatt_tcon patt_tcon label label_declaration label_declaration_list
+    fun_def ident ident_quot implem interf ipatt ipatt_tcon patt_tcon (* label *) label_declaration label_declaration_list
     label_expr_list label_expr label_longident label_patt label_patt_list  let_binding meth_list
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
@@ -849,7 +849,7 @@ let apply () = begin
       | a_lident{s}; ":"; "mutable"; poly_type{t} ->
           {|$(id:(s:>ident)) : mutable $t |}]
       class_name_and_param:
-      [ (* a_LIDENT *)a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
+      [ a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
       | a_lident{i} -> (i, {||})  ]
       comma_type_parameter:
       [ S{t1}; ","; S{t2} -> {| $t1, $t2 |}
@@ -958,7 +958,7 @@ let apply () = begin
       [ "as"; a_lident{i} -> `Some i
       | -> `None _loc
       | `Ant ((""|"as") as n,s) -> `Ant(_loc, mk_anti n s)] 
-      label:[ a_LIDENT{i} -> i ]
+      (* label:[ a_LIDENT{i} -> i ] *)
       direction_flag:
       [ "to" -> {:direction_flag| to |}
       | "downto" -> {:direction_flag| downto |}
@@ -1147,7 +1147,7 @@ let apply () = begin
                 match o with
                 [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
-        | method_opt_override{o}; opt_private{pf}; (* label *)a_lident{l}; opt_polyt{topt};
+        | method_opt_override{o}; opt_private{pf}; a_lident{l}; opt_polyt{topt};
                 fun_binding{e} ->
             {| method $override:o $private:pf $l : $topt = $e |}
         | type_constraint; ctyp{t1}; "="; ctyp{t2} ->  {| type $t1 = $t2 |}
@@ -1168,7 +1168,6 @@ let apply () = begin
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
       | "virtual";   class_name_and_param{(i, ot)} ->
             {| virtual $((i:>ident)) [ $ot ]|}
-
       | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
           let anti = `Ant (_loc,mk_anti ~c:"class_expr" n s) in
           {| $virtual:anti $id:i [ $ot ] |}
