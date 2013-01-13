@@ -701,7 +701,9 @@ let apply () = begin
       [ `Ant ((""|"typ" as n),s)        -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s)          -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
       | `QUOTATION x                       -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_LIDENT{lab}; ":"; poly_type{t} -> {| $lid:lab : $t |} ]
+      | a_lident{lab}; ":"; poly_type{t} ->
+            {| $(id:(lab:>ident)) : $t |}
+      ]
       opt_meth_list:
       [ meth_list{(ml, v) } -> {| < $ml $(..:v) > |}
       | opt_dot_dot{v}     -> {| < $(..:v) > |}  ]

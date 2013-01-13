@@ -3201,14 +3201,13 @@ let apply () =
                   | `QUOTATION x ->
                       (AstQuotation.expand _loc x DynAst.ctyp_tag : 'meth_decl )
                   | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'poly_type)  _  (lab : 'a_LIDENT)  (_loc : FanLoc.t)
+               (fun (t : 'poly_type)  _  (lab : 'a_lident)  (_loc : FanLoc.t)
                    ->
-                  (`TyCol (_loc, (`Id (_loc, (`Lid (_loc, lab)))), t) : 
-                  'meth_decl ))))])]);
+                  (`TyCol (_loc, (`Id (_loc, (lab :>ident))), t) : 'meth_decl ))))])]);
    Gram.extend (opt_meth_list : 'opt_meth_list Gram.t )
      (None,
        [(None, None,
