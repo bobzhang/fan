@@ -1167,9 +1167,8 @@ let apply () = begin
       [ S{ce1}; "and"; S{ce2} -> {| $ce1 and $ce2 |}
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
       | "virtual";   class_name_and_param{(i, ot)} ->
-          (* {| virtual $lid:i [ $ot ] |} *)
-            (* {| virtual $id:i [ $ot ]|} *)
-            `CeCon (_loc, (`Virtual _loc), (i:>ident), ot)
+            {| virtual $((i:>ident)) [ $ot ]|}
+
       | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
           let anti = `Ant (_loc,mk_anti ~c:"class_expr" n s) in
           {| $virtual:anti $id:i [ $ot ] |}
@@ -1228,8 +1227,8 @@ let apply () = begin
       | S{ct1}; "="; S{ct2} -> {| $ct1 = $ct2 |}
       | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
       | "virtual";  class_name_and_param{(i, ot)} ->
-          (* {| virtual $lid:i [ $ot ] |} *)
-           `CtCon (_loc, (`Virtual _loc), (i:>ident), ot)
+          {| virtual $((i:>ident)) [ $ot ] |}
+
       | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
           let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
           {| $virtual:anti $id:i [ $ot ] |}
