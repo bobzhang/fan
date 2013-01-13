@@ -694,18 +694,18 @@ let apply () = begin
       | "'"; a_lident{i} -> {| '$i |}
       | "+"; "'"; a_lident{i} -> {| +'$i |}
       | "-"; "'"; a_lident{i} -> {| -'$i |}
-      | "+"; "_" -> `Quote(_loc,`Positive _loc, `None _loc)
-      | "-"; "_" -> `Quote(_loc,`Negative _loc, `None _loc)
-      (* | "_" -> {| _ |}  *)]
-      optional_type_parameter: (* overlapps with type_parameter *)
-      [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_lident{i} -> {| '$i |}
-      | "+"; "'"; a_lident{i} -> {| +'$i |}
-      | "-"; "'"; a_lident{i} -> {| -'$i |}
-      | "+"; "_" -> `Quote(_loc,`Positive _loc, `None _loc)
-      | "-"; "_" -> `Quote(_loc,`Negative _loc, `None _loc)
-      | "_" -> {| _ |}  ]
+      | "+"; "_" ->  {| + _|}
+      | "-"; "_" ->  {| - _ |}
+      | "_" -> {| _ |}]
+      (* optional_type_parameter: (\* overlapps with type_parameter *\) *)
+      (* [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |} *)
+      (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
+      (* | "'"; a_lident{i} -> {| '$i |} *)
+      (* | "+"; "'"; a_lident{i} -> {| +'$i |} *)
+      (* | "-"; "'"; a_lident{i} -> {| -'$i |} *)
+      (* | "+"; "_" -> `Quote(_loc,`Positive _loc, `None _loc) *)
+      (* | "-"; "_" -> `Quote(_loc,`Negative _loc, `None _loc) *)
+      (* | "_" -> {| _ |}  ] *)
       type_longident_and_parameters:
       [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
       | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] 
@@ -766,7 +766,7 @@ let apply () = begin
       |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
         -> `TyDcl (_loc, n, tpl, tk, cl) ]
       type_ident_and_parameters:
-      [ a_lident{i}; L0 optional_type_parameter{tpl} -> (i, tpl)]
+      [ a_lident{i}; L0 (* optional_type_parameter *)type_parameter{tpl} -> (i, tpl)]
 
 
 

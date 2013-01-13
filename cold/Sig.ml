@@ -195,7 +195,6 @@ module type Syntax =
     val module_longident_dot_lparen : ident Gram.t
     val sequence' : (expr -> expr) Gram.t
     val fun_def : expr Gram.t
-    val optional_type_parameter : ctyp Gram.t
     val method_opt_override : override_flag Gram.t
     val value_val_opt_override : override_flag Gram.t
     val unquoted_typevars : ctyp Gram.t

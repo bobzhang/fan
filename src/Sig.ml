@@ -209,7 +209,7 @@ module type Syntax = sig
   val module_longident_dot_lparen: Gram.t ident;
   val sequence':Gram.t (expr -> expr); 
   val fun_def: Gram.t expr;
-  val optional_type_parameter:  Gram.t ctyp;
+
   val method_opt_override: Gram.t override_flag;
   val value_val_opt_override: Gram.t override_flag;
   val unquoted_typevars:Gram.t ctyp;
