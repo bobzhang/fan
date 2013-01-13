@@ -636,7 +636,9 @@ let _ =
                  (let rl = retype_rule_list_without_patterns _loc rl in
                   let t = new_type_var () in
                   mk_symbol ~text:(`TXrules (_loc, (mk_srules _loc t rl "")))
-                    ~styp:(`TyQuo (_loc, t)) ~pattern:None : 'symbol ))));
+                    ~styp:(`Quote
+                             (_loc, (`Normal _loc), (`Some (`Lid (_loc, t)))))
+                    ~pattern:None : 'symbol ))));
          ([`Snterm (Gram.obj (simple_patt : 'simple_patt Gram.t ))],
            (Gram.mk_action
               (fun (p : 'simple_patt)  (_loc : FanLoc.t)  ->
@@ -693,7 +695,10 @@ let _ =
            (Gram.mk_action
               (fun (lev : 'e__10 option)  (n : 'name)  (_loc : FanLoc.t)  ->
                  (mk_symbol ~text:(`TXnterm (_loc, n, lev))
-                    ~styp:(`TyQuo (_loc, (n.tvar))) ~pattern:None : 'symbol ))));
+                    ~styp:(`Quote
+                             (_loc, (`Normal _loc),
+                               (`Some (`Lid (_loc, (n.tvar))))))
+                    ~pattern:None : 'symbol ))));
          ([`Stoken
              (((function | `Ant (("nt"|""),_) -> true | _ -> false)),
                (`Normal, "`Ant ((\"nt\"|\"\"),_)"));
@@ -719,8 +724,10 @@ let _ =
                      (let i = parse_ident _loc s in
                       let n = mk_name _loc i in
                       mk_symbol ~text:(`TXnterm (_loc, n, lev))
-                        ~styp:(`TyQuo (_loc, (n.tvar))) ~pattern:None : 
-                     'symbol )
+                        ~styp:(`Quote
+                                 (_loc, (`Normal _loc),
+                                   (`Some (`Lid (_loc, (n.tvar))))))
+                        ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Skeyword "("; `Sself; `Skeyword ")"],
            (Gram.mk_action

@@ -174,7 +174,8 @@ FanConfig.antiquotations := true;
       let rl = retype_rule_list_without_patterns _loc rl in
       let t = new_type_var () in
       mk_symbol  ~text:(`TXrules _loc (mk_srules _loc t rl ""))
-        ~styp:({:ctyp|'$t |}) ~pattern:None
+        ~styp:({:ctyp|'$lid:t |} )
+        ~pattern:None
   | simple_patt{p} -> 
     let (p,ls) = Expr.filter_patt_with_captured_variables p in
     match ls with
@@ -197,11 +198,13 @@ FanConfig.antiquotations := true;
     | `STR (_, s) ->
         mk_symbol  ~text:(`TXkwd _loc s) ~styp:(`Tok _loc) ~pattern:None
     | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
-        mk_symbol  ~text:(`TXnterm _loc n lev) ~styp:({:ctyp|'$(n.tvar)|}) ~pattern:None
+        mk_symbol  ~text:(`TXnterm _loc n lev)
+          ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
     | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
-        let i = (* AntiquotSyntax. *)parse_ident _loc s in
+        let i = parse_ident _loc s in
         let n = mk_name _loc i in
-        mk_symbol ~text:(`TXnterm _loc n lev) ~styp:({:ctyp|'$(n.tvar)|}) ~pattern:None
+        mk_symbol ~text:(`TXnterm _loc n lev)
+          ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
     | "("; S{s}; ")" -> s ]
   
 

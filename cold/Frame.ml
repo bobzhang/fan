@@ -62,7 +62,9 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
             (normal_simple_expr_of_ctyp ?arity ?names ~mk_tuple
                ~right_type_id ~left_type_id ~right_type_variable cxt) ty
       | `TyApp (_loc,t1,t2) -> `ExApp (_loc, (aux t1), (aux t2))
-      | `TyQuo (_loc,s) -> tyvar s
+      | `Quote (_loc,`Normal _,`Some `Lid (_,s))
+        |`Quote (_loc,`Positive _,`Some `Lid (_,s))
+        |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> tyvar s
       | `TyArr (_loc,t1,t2) ->
           aux
             (`TyApp
@@ -82,14 +84,19 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
     let rec aux =
       function
       | `Id (_loc,id) -> trans id
-      | `TyQuo (_loc,s) -> tyvar s
+      | `Quote (_loc,`Normal _,`Some `Lid (_,s))
+        |`Quote (_loc,`Positive _,`Some `Lid (_,s))
+        |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> tyvar s
       | `TyApp (_loc,_,_) as ty ->
           (match Ctyp.list_of_app ty with
            | (`Id (_loc,tctor))::ls ->
                (ls |>
                   (List.map
                      (function
-                      | `TyQuo (_loc,s) -> `Id (_loc, (`Lid (_loc, (var s))))
+                      | `Quote (_loc,`Normal _,`Some `Lid (_,s))
+                        |`Quote (_loc,`Positive _,`Some `Lid (_,s))
+                        |`Quote (_loc,`Negative _,`Some `Lid (_,s)) ->
+                          `Id (_loc, (`Lid (_loc, (var s))))
                       | t ->
                           `Fun
                             (_loc,
@@ -161,9 +168,11 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
 let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
   let open Transform in
     let varf = basic_transform left_type_variable in
-    let f var acc =
+    let f (var : ctyp) acc =
       match var with
-      | `TyQuP (_loc,s)|`TyQuM (_loc,s)|`TyQuo (_loc,s) ->
+      | `Quote (_loc,`Positive _,`Some `Lid (_,s))
+        |`Quote (_loc,`Negative _,`Some `Lid (_,s))
+        |`Quote (_loc,`Normal _,`Some `Lid (_,s)) ->
           `Fun
             (_loc,
               (`Case
@@ -201,8 +210,9 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             mk_prefix ~names ~left_type_variable tyvars
               (currying ~arity
                  [`Case (_loc, patt, (`Nil _loc), (mk_record info))])
-        | `Id (_loc,_)|`Tup (_loc,_)|`TyApp (_loc,_,_)|`TyQuo (_loc,_)
-          |`TyArr (_loc,_,_) ->
+        | `Id (_loc,_)|`Tup (_loc,_)|`TyApp (_loc,_,_)
+          |`Quote (_loc,`Normal _,`Some _)|`Quote (_loc,`Positive _,`Some _)
+          |`Quote (_loc,`Negative _,`Some _)|`TyArr (_loc,_,_) ->
             let expr = simple_expr_of_ctyp ctyp in
             let funct = eta_expand (expr +> names) arity in
             mk_prefix ~names ~left_type_variable tyvars funct

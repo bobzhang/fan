@@ -95,7 +95,9 @@ let rec  normal_simple_expr_of_ctyp
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
     | {| $t1 $t2 |} ->  {| $(aux t1) $(aux t2) |} 
-    | {|  '$s |} ->   tyvar s
+    | {|  '$lid:s |} 
+    | {| + '$lid:s |}
+    | {| - '$lid:s |} ->   tyvar s
     | {|$t1 -> $t2 |} ->
         aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
     | ty ->
@@ -130,12 +132,15 @@ let rec obj_simple_expr_of_ctyp
   let tyvar = right_transform right_type_variable  in 
   let rec aux = fun
     [ {| $id:id |} -> trans id
-    | {|  '$s |} ->   tyvar s
+    | {|  '$lid:s |} | {| + '$lid:s |}
+    | {| - '$lid:s|}->   tyvar s
     | {| $_ $_ |} as ty ->
         match  Ctyp.list_of_app ty  with
         [ [ {| $id:tctor |} :: ls ] ->
           ls |> List.map
-            (fun [ {|  '$s |} -> {:expr| $(lid:var s) |} 
+            (fun
+              [ {|  '$lid:s |} | {| +'$lid:s|} | {| -'$lid:s|}
+                -> {:expr| $(lid:var s) |} 
                  | t ->   {:expr| fun self -> $(aux t) |} ])
              |> apply (trans tctor)
         | _  -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp"]
@@ -234,11 +239,12 @@ let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
   with {patt:ctyp}
   let open Transform in 
   let varf = basic_transform left_type_variable in
-  let  f var acc = match var with
-  [ {| +' $s |} | {| -' $s |}
-  | {| ' $s |} ->
-      {| fun $(lid: varf s) -> $acc |}
-  | _ -> begin  Ctyp.eprint var ;
+  let  f (var:ctyp) acc =
+    match var with
+    [ {| +' $lid:s |} | {| -' $lid:s |}
+    | {| ' $lid:s |} ->
+        {| fun $(lid: varf s) -> $acc |}
+    | _ -> begin  Ctyp.eprint var ;
    invalid_arg "mk_prefix";end ] in
   List.fold_right f vars ( names <+ acc);
 
@@ -275,7 +281,8 @@ let fun_of_tydcl
              by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
             (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
-      | {| $id:_|} | {| $tup:_|} | {| $_ $_ |} | {| '$_ |} | {| $_ -> $_ |} ->
+      | {| $id:_|} | {| $tup:_|} | {| $_ $_ |} | {| '$_ |} | {| +'$_ |} | {| -'$_ |}
+      | {| $_ -> $_ |} ->
           let expr = simple_expr_of_ctyp ctyp in
           let funct = eta_expand (expr+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct

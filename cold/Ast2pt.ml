@@ -84,8 +84,7 @@ let rec ctyp: ctyp -> Parsetree.core_type =
   | `Alias (_loc,t1,t2) ->
       let (t,i) =
         match (t1, t2) with
-        | (t,`TyQuo (_,s)) -> (t, s)
-        | (`TyQuo (_,s),t) -> (t, s)
+        | (t,`Quote (_,_,`Some `Lid (_,s))) -> (t, s)
         | _ -> error _loc "invalid alias type" in
       mktyp _loc (Ptyp_alias ((ctyp t), i))
   | `Any _loc -> mktyp _loc Ptyp_any
@@ -117,7 +116,7 @@ let rec ctyp: ctyp -> Parsetree.core_type =
       let (i,cs) = package_type pt in mktyp _loc (Ptyp_package (i, cs))
   | `TyPol (loc,t1,t2) ->
       mktyp loc (Ptyp_poly ((Ctyp.to_var_list t1), (ctyp t2)))
-  | `TyQuo (loc,s) -> mktyp loc (Ptyp_var s)
+  | `Quote (_loc,`Normal _,`Some `Lid (_,s)) -> mktyp _loc (Ptyp_var s)
   | `Tup (loc,`Sta (_,t1,t2)) ->
       mktyp loc
         (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
@@ -143,9 +142,7 @@ let rec ctyp: ctyp -> Parsetree.core_type =
   | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
   | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | `TyOfAmp (_,_,_)|`TyAmp (_,_,_)|`Sta (_,_,_)|`Com (_,_,_)|`TyVrn (_,_)
-    |`TyQuM (_,_)|`TyQuP (_,_)|`TyDcl (_,_,_,_,_)|`TyAnP _|`TyAnM _
-    |`TyTypePol (_,_,_)|`TyObj (_,_,`Ant _)|`Nil _|`Tup (_,_) -> assert false
+  | _ -> assert false
 and row_field: ctyp -> row_field list =
   function
   | `Nil _loc -> []
@@ -264,29 +261,39 @@ let opt_private_ctyp: ctyp -> (type_kind* Asttypes.private_flag* core_type) =
   function
   | `Private (_loc,t) -> (Ptype_abstract, Private, (ctyp t))
   | t -> (Ptype_abstract, Public, (ctyp t))
-let rec type_parameters (t : ctyp) acc =
-  match t with
-  | `TyApp (_loc,t1,t2) -> type_parameters t1 (type_parameters t2 acc)
-  | `TyQuP (_loc,s) -> (s, (true, false)) :: acc
-  | `TyQuM (_loc,s) -> (s, (false, true)) :: acc
-  | `TyQuo (_loc,s) -> (s, (false, false)) :: acc
-  | _ -> assert false
-let paramater_map (x : ctyp) =
+let quote_map (x : ctyp) =
   match x with
-  | `TyQuP (_loc,s) -> ((Some (s +> _loc)), (true, false))
-  | `TyAnP _loc -> (None, (true, false))
-  | `TyAnM _loc -> (None, (false, true))
-  | `TyQuo (_loc,s) -> ((Some (s +> _loc)), (false, false))
-  | `Any _loc -> (None, (false, false))
-  | _ -> failwith "parameter_map"
+  | `Quote (_loc,p,s) ->
+      let tuple =
+        match p with
+        | `Positive _ -> (true, false)
+        | `Negative _ -> (false, true)
+        | `Normal _ -> (false, false)
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+      let s =
+        match s with
+        | `None _ -> None
+        | `Some `Lid (sloc,s) -> Some (s +> sloc)
+        | `Some `Ant (_loc,_)|`Ant (_loc,_) ->
+            error _loc "antiquotation not expected here" in
+      (s, tuple)
+  | _ -> failwith "quote_map"
+let type_parameters (t : ctyp) acc =
+  (List.map
+     (fun x  ->
+        match quote_map x with
+        | (Some { txt;_},v) -> (txt, v)
+        | (None ,_) -> failwithf "type_parameters")
+     (FanAst.list_of_ctyp_app t []))
+    @ acc
 let optional_type_parameters (t : ctyp)
   (acc : (string Asttypes.loc option* (bool* bool)) list) =
-  (List.map paramater_map (FanAst.list_of_ctyp_app t [])) @ acc
+  (List.map quote_map (FanAst.list_of_ctyp_app t [])) @ acc
 let class_parameters (t : ctyp)
   (acc : (string Asttypes.loc* (bool* bool)) list) =
   (List.map
      (fun x  ->
-        match paramater_map x with
+        match quote_map x with
         | (Some x,v) -> (x, v)
         | (None ,_) -> failwithf "class_parameters")
      (FanAst.list_of_ctyp_com t []))

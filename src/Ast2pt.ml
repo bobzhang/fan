@@ -123,9 +123,10 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
     let li = long_type_ident i in
     mktyp _loc (Ptyp_constr li [])
   | {| $t1 as $t2 |}(* `Alias (loc, t1, t2) *) ->
-      let (t, i) =  match (t1, t2) with
-      [ (t, `TyQuo (_, s)) -> (t, s)
-      | (`TyQuo (_, s), t) -> (t, s)
+      let (t, i) =
+      match (t1, t2) with
+      [ (t, (* `TyQuo (_, s) *) `Quote(_, _, `Some (`Lid(_,s)))) -> (t, s)
+      (* | (`TyQuo (_, s), t) -> (t, s) *)
       | _ -> error _loc "invalid alias type" ] in
       mktyp _loc (Ptyp_alias (ctyp t) i)
   | {| _ |}(* `Any loc *) -> mktyp _loc Ptyp_any
@@ -153,7 +154,9 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
       let (i, cs) = package_type pt in
       mktyp _loc (Ptyp_package i cs)
   | `TyPol (loc, t1, t2) -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
-  | `TyQuo (loc, s) -> mktyp loc (Ptyp_var s)
+  (* | `TyQuo (loc, s) -> mktyp loc (Ptyp_var s) *)
+  | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) ->
+      mktyp _loc (Ptyp_var s)
   | {@loc| ($t1 * $t2) |} ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
   | {| [ = $t ] |} ->
@@ -177,10 +180,11 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
   | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
   | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | `TyOfAmp (_, _, _) |`TyAmp (_, _, _) |`Sta (_, _, _) |
-    `Com (_, _, _) |`TyVrn (_, _) |`TyQuM (_, _) |`TyQuP (_, _) |`TyDcl (_, _, _, _, _) |
-    `TyAnP _ | `TyAnM _ | `TyTypePol (_, _, _) |
-    `TyObj (_, _, (`Ant _)) | `Nil _ | `Tup (_,_) ->
+  |  _ -> 
+  (* | `TyOfAmp (_, _, _) |`TyAmp (_, _, _) |`Sta (_, _, _) | *)
+  (*   `Com (_, _, _) |`TyVrn (_, _) |`TyQuM (_, _) |`TyQuP (_, _) |`TyDcl (_, _, _, _, _) | *)
+  (*   `TyAnP _ | `TyAnM _ | `TyTypePol (_, _, _) | *)
+  (*   `TyObj (_, _, (`Ant _)) | `Nil _ | `Tup (_,_)  -> *)
       assert false ]
 and row_field : ctyp -> list row_field = with ctyp fun 
   [ {||} -> []
@@ -297,47 +301,50 @@ let opt_private_ctyp : ctyp ->
   [ {| private $t |} -> (Ptype_abstract, Private, ctyp t)
   | t -> (Ptype_abstract, Public, ctyp t) ];
 
-let rec type_parameters (t:ctyp) acc =
-  with ctyp match t with
-  [ {| $t1 $t2 |} -> type_parameters t1 (type_parameters t2 acc)
-  | {| +'$s |} -> [(s, (true, false)) :: acc]
-  | {| -'$s |} -> [(s, (false, true)) :: acc]
-  | {| '$s |} -> [(s, (false, false)) :: acc]
-  | _ -> assert false ];
 
-let paramater_map (x:ctyp) =
-  with ctyp match x with
-  [ {| +'$s|} ->
-    (Some (s+>_loc),(true,false))
-  | `TyAnP _loc ->
-      (None,(true,false))
-  | `TyAnM _loc ->
-      (None,(false,true))
-  | {| '$s|} ->
-      (Some (s+>_loc),(false,false))
-  | {| _ |} ->
-      (None,(false,false))
-  | _ -> failwith "parameter_map"  ];
+(* let paramater_map (x:ctyp) = *)
+(*   with ctyp match x with *)
+(*   [ {| +'$lid:s|} -> *)
+(*     (Some (s+>_loc),(true,false)) *)
+(*   | `TyAnP _loc -> *)
+(*       (None,(true,false)) *)
+(*   | `TyAnM _loc -> *)
+(*       (None,(false,true)) *)
+(*   | {| '$lid:s|} -> *)
+(*       (Some (s+>_loc),(false,false)) *)
+(*   | {| _ |} -> *)
+(*       (None,(false,false)) *)
+(*   | _ -> failwith "parameter_map"  ]; *)
+
+let quote_map (x:ctyp) =
+  match x with
+  [`Quote (_loc,p,s) ->
+    let tuple = match p with
+    [`Positive _ -> (true,false)
+    |`Negative _ -> (false,true)
+    |`Normal _ -> (false,false)
+    |`Ant (_loc,_) -> ANT_ERROR ] in
+    let s = match s with
+    [`None _ -> None
+    |`Some (`Lid (sloc,s)) -> Some (s+>sloc)
+    |`Some (`Ant(_loc,_))
+    |`Ant (_loc,_) -> ANT_ERROR] in
+    (s,tuple)
+  | _ -> failwith "quote_map" ]  ;
+    
+let  type_parameters (t:ctyp) acc =
+  List.map
+    (fun x ->
+      match (* paramater_map *)quote_map x with
+      [(Some {txt;_} ,v) -> (txt,v)
+      |(None,_) ->
+          failwithf "type_parameters" ])
+    (FanAst.list_of_ctyp_app t []) @ acc;
+    
     
 let optional_type_parameters (t:ctyp)
     (acc:  list (option (Asttypes.loc string) * (bool * bool)) ) =
-  List.map paramater_map (FanAst.list_of_ctyp_app t []) @ acc ;
-  (* let rec aux t acc = *)
-  (*   with ctyp match t with *)
-  (*   [ {| $t1 $t2 |} -> aux t1 (aux t2 acc) *)
-  (*   | {| +'$s |} -> *)
-  (*       [(Some ( s +> _loc), (true, false)) :: acc] *)
-  (*   | `TyAnP _loc  -> *)
-  (*       [(None, (true, false)) :: acc] *)
-  (*   | {| -'$s |} -> *)
-  (*       [(Some ( s +> _loc), (false, true)) :: acc] *)
-  (*   | `TyAnM _loc -> *)
-  (*       [(None, (false, true)) :: acc] *)
-  (*   | {| '$s |} -> *)
-  (*       [(Some ( s +> _loc), (false, false)) :: acc] *)
-  (*   | {| _ |}  -> *)
-  (*       [(None, (false, false)) :: acc] *)
-  (*   | _ -> assert false ] in aux t acc; *)
+  List.map (* paramater_map *)quote_map (FanAst.list_of_ctyp_app t []) @ acc ;
 
 (*
   it should always return [Some] instead of None
@@ -346,17 +353,10 @@ let  class_parameters (t:ctyp)
     (acc: list (Asttypes.loc string * (bool * bool))) =
   List.map
     (fun x ->
-      match paramater_map x with
+      match (* paramater_map *)quote_map x with
       [(Some x,v) -> (x,v)
       | (None,_) -> failwithf "class_parameters"])  
           (FanAst.list_of_ctyp_com t []) @ acc ;
-  (* let rec aux t acc = *)
-  (*   with ctyp match t with *)
-  (*   [ {| $t1, $t2 |} -> aux t1 (aux t2 acc) *)
-  (*   | {| +'$s |} -> [( s +> _loc, (true, false)) :: acc] *)
-  (*   | {| -'$s |} -> [( s +> _loc, (false, true)) :: acc] *)
-  (*   | {| '$s |} -> [( s +> _loc, (false, false)) :: acc] *)
-  (*   | _ -> assert false ] in aux t acc; *)
 
 let type_parameters_and_type_name t acc =
   let rec aux t acc = 
@@ -423,12 +423,6 @@ let rec patt : patt -> pattern = with patt fun
       match x with
       [`Lid (sloc,s) -> mkpat _loc (Ppat_alias ((patt p1), with_loc s sloc))
       | `Ant (_loc,_) -> error _loc "invalid antiquotations"]  
-      (* let (p, i) = *)
-      (*   match (p1, p2) with *)
-      (*   [ (p, {| $(id:{:ident@sloc| $lid:s |}) |}) -> (p, with_loc s sloc) *)
-      (*   (\* | ({| $(id:{:ident@sloc| $lid:s |}) |}, p) -> (p, with_loc s sloc) *\) *)
-      (*   | _ -> error _loc "invalid alias pattern" ] in *)
-       (* mkpat _loc (Ppat_alias (patt p) i) *)
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | {| _ |} -> mkpat _loc Ppat_any
   | {| $(id:{:ident@sloc| $uid:s |}) $(tup:{@loc_any| _ |}) |} ->

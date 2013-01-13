@@ -30,8 +30,7 @@ type ctyp =
   | `TyDcl of (loc* alident* ctyp list* ctyp* (ctyp* ctyp) list)
   | `TyObj of (loc* ctyp* row_var_flag) | `TyOlb of (loc* alident* ctyp)
   | `TyPol of (loc* ctyp* ctyp) | `TyTypePol of (loc* ctyp* ctyp)
-  | `TyQuo of (loc* string) | `TyQuP of (loc* string)
-  | `TyQuM of (loc* string) | `TyAnP of loc | `TyAnM of loc
+  | `Quote of (loc* position_flag* alident meta_option)
   | `TyRec of (loc* ctyp) | `TyCol of (loc* ctyp* ctyp)
   | `TySem of (loc* ctyp* ctyp) | `Com of (loc* ctyp* ctyp)
   | `Sum of (loc* ctyp) | `Of of (loc* ctyp* ctyp)

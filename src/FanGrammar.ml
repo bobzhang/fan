@@ -20,7 +20,7 @@ type styp =
  [=
   `Id of (loc * ident )
  | `TyApp of (loc * styp * styp)
- | `TyQuo of (loc * string)
+ | `Quote of (loc * position_flag * meta_option alident)
  | `Self of (loc * string)
  | `Tok of loc
  | `Type of ctyp ];

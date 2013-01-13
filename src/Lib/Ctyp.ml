@@ -15,7 +15,7 @@ open FSig;
 let rec to_var_list =  fun
   [ {| $t1 $t2 |} ->
     to_var_list t1 @ to_var_list t2
-  | {| '$s |} -> [s]
+  | {| '$lid:s |} | {| + '$lid:s |} | {| - '$lid:s |}  -> [s]
   | _ -> assert false ];
 
 let list_of_opt ot acc = match ot with
@@ -76,7 +76,7 @@ let tuple_sta_of_list = fun
   
 let (<+) names ty =
   List.fold_right
-    (fun name acc -> {| '$name -> $acc |})
+    (fun name acc -> {| '$lid:name -> $acc |})
     names ty;
   
 let (+>) params base = List.fold_right arrow params base;    
@@ -104,7 +104,8 @@ let name_length_of_tydcl = fun
   quantifier variables can not be unified
  *)  
 let gen_quantifiers ~arity n  =
-  List.init arity (fun i -> List.init n (fun j -> {|  '$(lid:allx ~off:i j) |} ))
+  List.init arity
+    (fun i -> List.init n (fun j -> {|  '$(lid:allx ~off:i j) |} ))
   |> List.concat |> app_of_list;
 
 
@@ -115,7 +116,9 @@ let gen_quantifiers ~arity n  =
   ]}
  *)  
 let of_id_len ~off (id,len) =
-  apply {|$id:id |} (List.init len (fun i -> {|  '$(lid:allx ~off i) |} ));
+  apply {|$id:id |}
+    (List.init len
+       (fun i -> {|  '$(lid:allx ~off i) |}));
   
 (*
    {[
@@ -255,7 +258,8 @@ let mk_method_type ~number ~prefix (id,len) (k:destination)  =
       (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
     app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
-  let result_type = {| 'result |} and self_type = {| 'self_type |} in 
+  let result_type = {| 'result |}
+  and self_type = {| 'self_type |}  in 
   let (quant,dst) =
     match k with
     [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
@@ -267,7 +271,8 @@ let mk_method_type ~number ~prefix (id,len) (k:destination)  =
       (fun i
         ->
           let app_src = app_arrow
-              (List.init number (fun _ -> {|  '$(lid:allx ~off:0 i)  |} )) in
+              (List.init number
+                 (fun _ -> {|  '$(lid:allx ~off:0 i)  |} )) in
           match k with
           [Obj u  ->
               let dst =
@@ -284,12 +289,9 @@ let mk_method_type ~number ~prefix (id,len) (k:destination)  =
     ({| ! $quantifiers . $(params +> base) |});
 
 (* FIXME : merge with [mk_type_of] *)  
-let mk_dest_type (* ~prefix *) (* ~number *) ~destination (id,len) =
-  (* let prefix = List.map *)
-  (*     (fun s -> String.drop_while (fun c -> c = '_') s) prefix in  *)
-  (* let app_src   = *)
-  (*   app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in *)
-  let result_type = {| 'result |} and self_type = {| 'self_type |} in 
+let mk_dest_type  ~destination (id,len) =
+  let result_type = {| 'result |}
+  and self_type = {| 'self_type |} in 
   let (_quant,dst) =
     match destination with
     [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
@@ -304,8 +306,8 @@ let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
 
 
 let mk_obj class_name  base body =
-  {:str_item| class $lid:class_name = object (self:'self_type)
-    inherit $lid:base (* as $(`None _loc) *); (* FIXME*)
+  {:str_item| class $lid:class_name = object (self: 'self_type)
+    inherit $lid:base ;
     $body;
   end |};
 

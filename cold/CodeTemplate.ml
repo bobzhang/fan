@@ -204,7 +204,9 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
             let ty =
               `TyArr
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                  (`TyQuo (_loc, "self_type"))) in
+                  (`Quote
+                     (_loc, (`Normal _loc),
+                       (`Some (`Lid (_loc, "self_type")))))) in
             let exp =
               `Fun
                 (_loc,
@@ -222,7 +224,9 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`TyArr
                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                       (`TyQuo (_loc, "self_type"))))) in
+                       (`Quote
+                          (_loc, (`Normal _loc),
+                            (`Some (`Lid (_loc, "self_type")))))))) in
             let exp =
               `Fun
                 (_loc,

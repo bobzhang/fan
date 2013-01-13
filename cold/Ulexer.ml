@@ -1,4 +1,3 @@
-open FanUtil
 open LibUtil
 open Format
 open Lexing

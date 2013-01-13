@@ -223,14 +223,9 @@ class eq =
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`TyTypePol (a0,a1,a2),`TyTypePol (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
-        | (`TyQuo (a0,a1),`TyQuo (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
-        | (`TyQuP (a0,a1),`TyQuP (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
-        | (`TyQuM (a0,a1),`TyQuM (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
-        | (`TyAnP a0,`TyAnP b0) -> self#loc a0 b0
-        | (`TyAnM a0,`TyAnM b0) -> self#loc a0 b0
+        | (`Quote (a0,a1,a2),`Quote (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#position_flag a1 b1)) &&
+              (self#meta_option (fun self  -> self#alident) a2 b2)
         | (`TyRec (a0,a1),`TyRec (b0,b1)) ->
             (self#loc a0 b0) && (self#ctyp a1 b1)
         | (`TyCol (a0,a1,a2),`TyCol (b0,b1,b2)) ->
@@ -884,14 +879,11 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in
           let a2 = self#ctyp a2 in `TyTypePol (a0, a1, a2)
-      | `TyQuo (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `TyQuo (a0, a1)
-      | `TyQuP (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `TyQuP (a0, a1)
-      | `TyQuM (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `TyQuM (a0, a1)
-      | `TyAnP a0 -> let a0 = self#loc a0 in `TyAnP a0
-      | `TyAnM a0 -> let a0 = self#loc a0 in `TyAnM a0
+      | `Quote (a0,a1,a2) ->
+          let a0 = self#loc a0 in
+          let a1 = self#position_flag a1 in
+          let a2 = self#meta_option (fun self  -> self#alident) a2 in
+          `Quote (a0, a1, a2)
       | `TyRec (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#ctyp a1 in `TyRec (a0, a1)
       | `TyCol (a0,a1,a2) ->
@@ -1702,17 +1694,10 @@ class print =
         | `TyTypePol (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyTypePol@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
-        | `TyQuo (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`TyQuo@ %a@ %a)@]" self#loc a0
-              self#string a1
-        | `TyQuP (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`TyQuP@ %a@ %a)@]" self#loc a0
-              self#string a1
-        | `TyQuM (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`TyQuM@ %a@ %a)@]" self#loc a0
-              self#string a1
-        | `TyAnP a0 -> Format.fprintf fmt "@[<1>(`TyAnP@ %a)@]" self#loc a0
-        | `TyAnM a0 -> Format.fprintf fmt "@[<1>(`TyAnM@ %a)@]" self#loc a0
+        | `Quote (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" self#loc a0
+              self#position_flag a1
+              (self#meta_option (fun self  -> self#alident)) a2
         | `TyRec (a0,a1) ->
             Format.fprintf fmt "@[<1>(`TyRec@ %a@ %a)@]" self#loc a0
               self#ctyp a1
@@ -2393,11 +2378,10 @@ class fold =
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `TyTypePol (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
-      | `TyQuo (a0,a1) -> let self = self#loc a0 in self#string a1
-      | `TyQuP (a0,a1) -> let self = self#loc a0 in self#string a1
-      | `TyQuM (a0,a1) -> let self = self#loc a0 in self#string a1
-      | `TyAnP a0 -> self#loc a0
-      | `TyAnM a0 -> self#loc a0
+      | `Quote (a0,a1,a2) ->
+          let self = self#loc a0 in
+          let self = self#position_flag a1 in
+          self#meta_option (fun self  -> self#alident) a2
       | `TyRec (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `TyCol (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
@@ -3010,14 +2994,10 @@ class fold2 =
         | (`TyTypePol (a0,a1,a2),`TyTypePol (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
-        | (`TyQuo (a0,a1),`TyQuo (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
-        | (`TyQuP (a0,a1),`TyQuP (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
-        | (`TyQuM (a0,a1),`TyQuM (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
-        | (`TyAnP a0,`TyAnP b0) -> self#loc a0 b0
-        | (`TyAnM a0,`TyAnM b0) -> self#loc a0 b0
+        | (`Quote (a0,a1,a2),`Quote (b0,b1,b2)) ->
+            let self = self#loc a0 b0 in
+            let self = self#position_flag a1 b1 in
+            self#meta_option (fun self  -> self#alident) a2 b2
         | (`TyRec (a0,a1),`TyRec (b0,b1)) ->
             let self = self#loc a0 b0 in self#ctyp a1 b1
         | (`TyCol (a0,a1,a2),`TyCol (b0,b1,b2)) ->
@@ -3748,17 +3728,10 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
     | `TyTypePol (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyTypePol@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
-    | `TyQuo (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`TyQuo@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
-    | `TyQuP (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`TyQuP@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
-    | `TyQuM (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`TyQuM@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
-    | `TyAnP a0 -> Format.fprintf fmt "@[<1>(`TyAnP@ %a)@]" pp_print_loc a0
-    | `TyAnM a0 -> Format.fprintf fmt "@[<1>(`TyAnM@ %a)@]" pp_print_loc a0
+    | `Quote (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" pp_print_loc a0
+          pp_print_position_flag a1 (pp_print_meta_option pp_print_alident)
+          a2
     | `TyRec (a0,a1) ->
         Format.fprintf fmt "@[<1>(`TyRec@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1
@@ -4420,11 +4393,10 @@ class iter =
       | `TyOlb (a0,a1,a2) -> (self#loc a0; self#alident a1; self#ctyp a2)
       | `TyPol (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyTypePol (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
-      | `TyQuo (a0,a1) -> (self#loc a0; self#string a1)
-      | `TyQuP (a0,a1) -> (self#loc a0; self#string a1)
-      | `TyQuM (a0,a1) -> (self#loc a0; self#string a1)
-      | `TyAnP a0 -> self#loc a0
-      | `TyAnM a0 -> self#loc a0
+      | `Quote (a0,a1,a2) ->
+          (self#loc a0;
+           self#position_flag a1;
+           self#meta_option (fun self  -> self#alident) a2)
       | `TyRec (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `TyCol (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TySem (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
@@ -4961,17 +4933,11 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
             let a2 = self#ctyp a2 b2 in `TyTypePol (a0, a1, a2)
-        | (`TyQuo (a0,a1),`TyQuo (b0,b1)) ->
+        | (`Quote (a0,a1,a2),`Quote (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `TyQuo (a0, a1)
-        | (`TyQuP (a0,a1),`TyQuP (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `TyQuP (a0, a1)
-        | (`TyQuM (a0,a1),`TyQuM (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `TyQuM (a0, a1)
-        | (`TyAnP a0,`TyAnP b0) -> let a0 = self#loc a0 b0 in `TyAnP a0
-        | (`TyAnM a0,`TyAnM b0) -> let a0 = self#loc a0 b0 in `TyAnM a0
+            let a1 = self#position_flag a1 b1 in
+            let a2 = self#meta_option (fun self  -> self#alident) a2 b2 in
+            `Quote (a0, a1, a2)
         | (`TyRec (a0,a1),`TyRec (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in `TyRec (a0, a1)
@@ -6091,28 +6057,16 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "TyTypePol")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TyQuo (a0,a1) ->
+            | `Quote (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "TyQuo")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `TyQuP (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "TyQuP")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `TyQuM (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "TyQuM")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `TyAnP a0 ->
-                `ExApp (_loc, (`ExVrn (_loc, "TyAnP")), (meta_loc _loc a0))
-            | `TyAnM a0 ->
-                `ExApp (_loc, (`ExVrn (_loc, "TyAnM")), (meta_loc _loc a0))
+                       (_loc,
+                         (`ExApp
+                            (_loc, (`ExVrn (_loc, "Quote")),
+                              (meta_loc _loc a0))),
+                         (meta_position_flag _loc a1))),
+                    (meta_meta_option meta_alident _loc a2))
             | `TyRec (a0,a1) ->
                 `ExApp
                   (_loc,
@@ -7848,28 +7802,16 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "TyTypePol")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TyQuo (a0,a1) ->
+            | `Quote (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "TyQuo")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `TyQuP (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "TyQuP")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `TyQuM (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "TyQuM")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
-            | `TyAnP a0 ->
-                `PaApp (_loc, (`PaVrn (_loc, "TyAnP")), (meta_loc _loc a0))
-            | `TyAnM a0 ->
-                `PaApp (_loc, (`PaVrn (_loc, "TyAnM")), (meta_loc _loc a0))
+                       (_loc,
+                         (`PaApp
+                            (_loc, (`PaVrn (_loc, "Quote")),
+                              (meta_loc _loc a0))),
+                         (meta_position_flag _loc a1))),
+                    (meta_meta_option meta_alident _loc a2))
             | `TyRec (a0,a1) ->
                 `PaApp
                   (_loc,
@@ -9408,10 +9350,12 @@ let tyVarApp_of_list (_loc,ls) =
   let aux =
     function
     | [] -> `Nil ghost
-    | t::[] -> `TyQuo (_loc, t)
+    | t::[] -> `Quote (_loc, (`Normal _loc), (`Some t))
     | t::ts ->
-        List.fold_left (fun x  y  -> `TyApp (_loc, x, (`TyQuo (_loc, y))))
-          (`TyQuo (_loc, t)) ts in
+        List.fold_left
+          (fun x  y  ->
+             `TyApp (_loc, x, (`Quote (_loc, (`Normal _loc), (`Some y)))))
+          (`Quote (_loc, (`Normal _loc), (`Some t))) ts in
   aux ls
 let rec stSem_of_list =
   function

@@ -6,7 +6,9 @@ open FSig
 let rec to_var_list =
   function
   | `TyApp (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
-  | `TyQuo (_loc,s) -> [s]
+  | `Quote (_loc,`Normal _,`Some `Lid (_,s))
+    |`Quote (_loc,`Positive _,`Some `Lid (_,s))
+    |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> [s]
   | _ -> assert false
 let list_of_opt ot acc =
   match ot with | `Nil _loc -> acc | t -> FanAst.list_of_ctyp t acc
@@ -73,7 +75,10 @@ let tuple_sta_of_list =
   | xs -> `Tup (_loc, (sta_of_list xs))
 let (<+) names ty =
   List.fold_right
-    (fun name  acc  -> `TyArr (_loc, (`TyQuo (_loc, name)), acc)) names ty
+    (fun name  acc  ->
+       `TyArr
+         (_loc, (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, name))))),
+           acc)) names ty
 let (+>) params base = List.fold_right arrow params base
 let name_length_of_tydcl =
   function
@@ -83,12 +88,19 @@ let name_length_of_tydcl =
         ((sprintf "name_length_of_tydcl {|%s|}\n") & (to_string tydcl))
 let gen_quantifiers ~arity  n =
   ((List.init arity
-      (fun i  -> List.init n (fun j  -> `TyQuo (_loc, (allx ~off:i j)))))
+      (fun i  ->
+         List.init n
+           (fun j  ->
+              `Quote
+                (_loc, (`Normal _loc),
+                  (`Some (`Lid (_loc, (allx ~off:i j))))))))
      |> List.concat)
     |> app_of_list
 let of_id_len ~off  (id,len) =
   apply (`Id (_loc, id))
-    (List.init len (fun i  -> `TyQuo (_loc, (allx ~off i))))
+    (List.init len
+       (fun i  ->
+          `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (allx ~off i)))))))
 let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
 let ty_name_of_tydcl =
@@ -121,8 +133,10 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
     List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
   let app_src =
     app_arrow (List.init number (fun _  -> of_id_len ~off:0 (id, len))) in
-  let result_type = `TyQuo (_loc, "result")
-  and self_type = `TyQuo (_loc, "self_type") in
+  let result_type =
+    `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "result"))))
+  and self_type =
+    `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "self_type")))) in
   let (quant,dst) =
     match k with
     | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
@@ -134,12 +148,19 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
       (fun i  ->
          let app_src =
            app_arrow
-             (List.init number (fun _  -> `TyQuo (_loc, (allx ~off:0 i)))) in
+             (List.init number
+                (fun _  ->
+                   `Quote
+                     (_loc, (`Normal _loc),
+                       (`Some (`Lid (_loc, (allx ~off:0 i))))))) in
          match k with
          | Obj u ->
              let dst =
                match u with
-               | Map  -> `TyQuo (_loc, (allx ~off:1 i))
+               | Map  ->
+                   `Quote
+                     (_loc, (`Normal _loc),
+                       (`Some (`Lid (_loc, (allx ~off:1 i)))))
                | Iter  -> result_type
                | Fold  -> self_type in
              self_type |-> (prefix <+ (app_src dst))
@@ -151,8 +172,10 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
     (let quantifiers = gen_quantifiers ~arity:quant len in
      `TyPol (_loc, quantifiers, (params +> base)))
 let mk_dest_type ~destination  (id,len) =
-  let result_type = `TyQuo (_loc, "result")
-  and self_type = `TyQuo (_loc, "self_type") in
+  let result_type =
+    `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "result"))))
+  and self_type =
+    `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "self_type")))) in
   let (_quant,dst) =
     match destination with
     | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
@@ -173,7 +196,9 @@ let mk_obj class_name base body =
               (_loc,
                 (`PaTyc
                    (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
-                     (`TyQuo (_loc, "self_type")))),
+                     (`Quote
+                        (_loc, (`Normal _loc),
+                          (`Some (`Lid (_loc, "self_type"))))))),
                 (`CrSem
                    (_loc,
                      (`Inherit

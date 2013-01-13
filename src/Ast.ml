@@ -124,15 +124,15 @@
     | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
     | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
 
-    | `TyQuo of (loc * string) (* 's *)
-    | `TyQuP of (loc * string) (* +'s *)
-    | `TyQuM of (loc * string) (* -'s *)
+    (* | `TyQuo of (loc * string) (\* 's *\) *)
+    (* | `TyQuP of (loc * string) (\* +'s *\) *)
+    (* | `TyQuM of (loc * string) (\* -'s *\) *)
           
-    | `TyAnP of loc (* +_ *)
-    | `TyAnM of loc (* -_ *)
+    (* | `TyAnP of loc (\* +_ *\) *)
+    (* | `TyAnM of loc (\* -_ *\) *)
 
     (*  +'s -'s 's +_ -_ *)      
-    (* | `Quote of (loc * position_flag * meta_option alident) *)
+    | `Quote of (loc * position_flag * meta_option alident)
           
     | `TyRec of (loc * ctyp) (* { t } *) (* { foo : int ; bar : mutable string } *)
     | `TyCol of (loc * ctyp * ctyp) (* t : t *)

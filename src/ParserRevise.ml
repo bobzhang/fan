@@ -691,11 +691,21 @@ let apply () = begin
       type_parameter:
       [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_ident{i} -> {| '$lid:i |}
-      | "+"; "'"; a_ident{i} -> {| +'$lid:i |}
-      | "-"; "'"; a_ident{i} -> {| -'$lid:i |} ]
-
-      
+      | "'"; a_lident{i} -> {| '$i |}
+      | "+"; "'"; a_lident{i} -> {| +'$i |}
+      | "-"; "'"; a_lident{i} -> {| -'$i |}
+      | "+"; "_" -> `Quote(_loc,`Positive _loc, `None _loc)
+      | "-"; "_" -> `Quote(_loc,`Negative _loc, `None _loc)
+      (* | "_" -> {| _ |}  *)]
+      optional_type_parameter: (* overlapps with type_parameter *)
+      [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | "'"; a_lident{i} -> {| '$i |}
+      | "+"; "'"; a_lident{i} -> {| +'$i |}
+      | "-"; "'"; a_lident{i} -> {| -'$i |}
+      | "+"; "_" -> `Quote(_loc,`Positive _loc, `None _loc)
+      | "-"; "_" -> `Quote(_loc,`Negative _loc, `None _loc)
+      | "_" -> {| _ |}  ]
       type_longident_and_parameters:
       [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
       | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] 
@@ -703,6 +713,7 @@ let apply () = begin
       [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
       | type_parameter{t} -> fun acc -> {| $acc $t |}
       | -> fun t -> t  ]
+      
       opt_class_self_type:
       [ "("; ctyp{t}; ")" -> t | -> {||} ]
       type_constraint:
@@ -756,17 +767,8 @@ let apply () = begin
         -> `TyDcl (_loc, n, tpl, tk, cl) ]
       type_ident_and_parameters:
       [ a_lident{i}; L0 optional_type_parameter{tpl} -> (i, tpl)]
-      (* refer type_parameter *)
-      optional_type_parameter: (* overlapps with type_parameter *)
-      [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_ident{i} -> {| '$lid:i |}
-      | "+"; "'"; a_ident{i} ->
-          {| +'$lid:i |}
-      | "-"; "'"; a_ident{i} -> {| -'$lid:i |}
-      | "+"; "_" -> `TyAnP _loc   (* FIXME *)
-      | "-"; "_" -> `TyAnM _loc  
-      | "_" -> {| _ |}  ]
+
+
 
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
@@ -779,7 +781,7 @@ let apply () = begin
       | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant(("list" as n),s) ->     {| $(anti:mk_anti ~c:"forall" n s)|}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_ident{i} -> {| '$lid:i |} ]
+      | "'"; a_lident{i} -> {| '$i |}]
       ctyp:
       { "==" NA (* FIXME should be more restrict *)
         [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ]
@@ -806,7 +808,7 @@ let apply () = begin
             try {| $(id:FanAst.ident_of_ctyp t1).$(id:FanAst.ident_of_ctyp t2) |}
             with [ Invalid_argument s -> raise (XStream.Error s) ] ]
        "simple"
-        [ "'"; a_ident{i} -> {| '$i |}
+        [ "'"; a_lident{i} -> {| '$i |}
         | "_" -> {| _ |}
         | `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
         | `Ant (("tup" as n),s) ->  {| ($(tup:{| $(anti:mk_anti ~c:"ctyp" n s) |})) |}

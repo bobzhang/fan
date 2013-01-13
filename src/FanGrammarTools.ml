@@ -109,14 +109,13 @@ exception NotneededTyping ;
     
 let  make_ctyp  (styp:styp) tvar : option ctyp = 
   let rec aux  = with ctyp fun  
-    [ {|$id:s|}  -> {| $id:s |}
-    | {|'$s|} -> {|'$s|}
+    [ `Id _ | `Quote _ as x -> x  
     | {| $t1 $t2|} -> {| $(aux t1) $(aux t2) |}
     | `Self (_loc, x) ->
         if tvar = "" then
           FanLoc.raise _loc
             (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
-        else {| '$tvar |}
+        else {| '$lid:tvar |}
     | `Tok _loc ->  {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
     | `Type t -> t ] in
     try Some (aux styp) with [NotneededTyping -> None ];
@@ -162,13 +161,12 @@ let rec make_expr entry tvar = with expr
       match lev with
       [ Some lab ->
         {| `Snterml
-          (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar))), $str:lab) |} 
+          (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(lid:n.tvar) )), $str:lab) |} 
       | None ->
           if n.tvar = tvar then {| `Sself|}
           else
             {|
-            `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(n.tvar)))
-          |}   ]
+            `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(lid:n.tvar)))  |}   ]
   | `TXopt (_loc, t) -> {| `Sopt $(make_expr entry "" t) |}
   | `TXtry (_loc, t) -> {| `Stry $(make_expr entry "" t) |}
   | `TXpeek (_loc, t) -> {| `Speek $(make_expr entry "" t) |}
@@ -205,7 +203,7 @@ let text_of_action _loc  psl  rtvar act tvar = with expr
                  ({| $lid:id, $oe |}, {:patt|$p,$op |}) ]))
       | _ -> tok_match_pl]  ) None psl in
   let e =
-    let e1 = {| ($act : '$rtvar) |} in
+    let e1 = {| ($act : '$lid:rtvar ) |} in
     let e2 =
       match tok_match_pl with
       [ None -> e1
@@ -264,7 +262,7 @@ let text_of_entry  _loc e =  with expr
   let ent =
     let x = e.name in
     let _loc = e.name.loc in
-    {| ($(x.expr) : $(id:gm()).t '$(x.tvar)) |}   in
+    {| ($(x.expr) : $(id:gm()).t '$(lid:x.tvar)) |}   in
   let pos =
     match e.pos with
     [ Some pos -> {| Some $pos |}
@@ -302,7 +300,7 @@ let let_in_of_extend _loc gram gl  default =
     | None   -> {:expr| $(id:gm()).mk |} ] in
   let local_binding_of_name = fun
     [ {expr = {:expr@_| $lid:i |} ; tvar = x; loc = _loc} ->
-      {:binding| $lid:i =  (grammar_entry_create $str:i : $(id:gm()).t '$x) |}
+      {:binding| $lid:i =  (grammar_entry_create $str:i : $(id:gm()).t '$lid:x) |}
     | _ -> failwith "internal error in the Grammar extension" ]  in
   match gl with
   [ None -> default
@@ -365,10 +363,8 @@ let sfold ?sep _loc  (ns:list string)  f e s = with ctyp
   let n = List.hd ns in 
   let foldfun =
     try List.assoc n fs ^ suffix  with [Not_found -> invalid_arg "sfold"] in
-  let styp = (* `STquo _loc (new_type_var ()) *) {| '$(new_type_var ()) |} in
+  let styp = {| '$(lid:new_type_var ()) |} in
   let e = {:expr| $(id:gm()).$lid:foldfun $f $e |} in
-  
-  (* let t = `STapp _loc (`STapp _loc (`STtyp {:ctyp| $(id:gm()).$(lid:"fold"^suffix) _ |}) s.styp) styp in *)
   let( t:styp) =
     {| $(`Type {| $(id:gm()).$(lid:"fold"^suffix) _ |})
       $(s.styp) $styp |} in 

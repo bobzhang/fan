@@ -6,8 +6,8 @@ type name =  {
   loc: loc} 
 type styp =
   [ `Id of (loc* ident) | `TyApp of (loc* styp* styp)
-  | `TyQuo of (loc* string) | `Self of (loc* string) | `Tok of loc
-  | `Type of ctyp] 
+  | `Quote of (loc* position_flag* alident meta_option)
+  | `Self of (loc* string) | `Tok of loc | `Type of ctyp] 
 type attr = string 
 type entry =  {
   name: name;

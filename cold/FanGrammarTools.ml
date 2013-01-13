@@ -64,8 +64,7 @@ exception NotneededTyping
 let make_ctyp (styp : styp) tvar =
   (let rec aux =
      function
-     | `Id (_loc,s) -> `Id (_loc, s)
-     | `TyQuo (_loc,s) -> `TyQuo (_loc, s)
+     | `Id _|`Quote _ as x -> x
      | `TyApp (_loc,t1,t2) -> `TyApp (_loc, (aux t1), (aux t2))
      | `Self (_loc,x) ->
          if tvar = ""
@@ -73,7 +72,7 @@ let make_ctyp (styp : styp) tvar =
            FanLoc.raise _loc
              (XStream.Error
                 ("'" ^ (x ^ "' illegal in anonymous entry level")))
-         else `TyQuo (_loc, tvar)
+         else `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, tvar))))
      | `Tok _loc ->
          `TyVrnSup
            (_loc,
@@ -159,7 +158,9 @@ let rec make_expr entry tvar =
                                              (`IdAcc
                                                 (_loc, (gm ()),
                                                   (`Lid (_loc, "t")))))),
-                                        (`TyQuo (_loc, (n.tvar))))))))),
+                                        (`Quote
+                                           (_loc, (`Normal _loc),
+                                             (`Some (`Lid (_loc, (n.tvar)))))))))))),
                          (`Str (_loc, lab)))))))
        | None  ->
            if n.tvar = tvar
@@ -180,7 +181,9 @@ let rec make_expr entry tvar =
                                    (_loc,
                                      (`IdAcc
                                         (_loc, (gm ()), (`Lid (_loc, "t")))))),
-                                (`TyQuo (_loc, (n.tvar)))))))))))
+                                (`Quote
+                                   (_loc, (`Normal _loc),
+                                     (`Some (`Lid (_loc, (n.tvar))))))))))))))
   | `TXopt (_loc,t) ->
       `ExApp (_loc, (`ExVrn (_loc, "Sopt")), (make_expr entry "" t))
   | `TXtry (_loc,t) ->
@@ -234,7 +237,10 @@ let text_of_action _loc psl rtvar act tvar =
                        (`PaCom (_loc, p, op)))))
          | _ -> tok_match_pl) None psl in
   let e =
-    let e1 = `Constraint_exp (_loc, act, (`TyQuo (_loc, rtvar))) in
+    let e1 =
+      `Constraint_exp
+        (_loc, act,
+          (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, rtvar)))))) in
     let e2 =
       match tok_match_pl with
       | None  -> e1
@@ -322,7 +328,7 @@ let text_of_entry _loc e =
       (_loc, (x.expr),
         (`TyApp
            (_loc, (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
-             (`TyQuo (_loc, (x.tvar)))))) in
+             (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (x.tvar))))))))) in
   let pos =
     match e.pos with
     | Some pos -> `ExApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), pos)
@@ -377,7 +383,8 @@ let let_in_of_extend _loc gram gl default =
                     (_loc,
                       (`Id
                          (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
-                      (`TyQuo (_loc, x)))))))
+                      (`Quote
+                         (_loc, (`Normal _loc), (`Some (`Lid (_loc, x))))))))))
     | _ -> failwith "internal error in the Grammar extension" in
   match gl with
   | None  -> default
@@ -465,7 +472,8 @@ let sfold ?sep  _loc (ns : string list) f e s =
   let n = List.hd ns in
   let foldfun =
     try (List.assoc n fs) ^ suffix with | Not_found  -> invalid_arg "sfold" in
-  let styp = `TyQuo (_loc, (new_type_var ())) in
+  let styp =
+    `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (new_type_var ()))))) in
   let e =
     `ExApp
       (_loc,
