@@ -169,7 +169,12 @@
     | `PaTyp of (loc * ident) (* #i *)
     | `PaVrn of (loc * string) (* `s *)
     | `Lazy of (loc * patt) (* lazy p *)
-    | `PaMod of (loc * string) (* (module M) *) ]
+
+    (* | `PaMod of (loc * string) (\* (module M) *\) *)
+
+    (* (module M : ty ) *)      
+    | `ModuleUnpack of (loc * (* string *)auident * meta_option ctyp)
+   ]
   and expr =
     [= `Nil of loc
     | `Id  of (loc * ident) (* i *)

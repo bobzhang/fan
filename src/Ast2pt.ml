@@ -461,7 +461,19 @@ let rec patt : patt -> pattern = with patt fun
          | `PaTyp (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
          | `PaVrn (loc,s) -> mkpat loc (Ppat_variant s None)
          | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
-         | `PaMod (loc,m) -> mkpat loc (Ppat_unpack (with_loc m loc))
+         | `ModuleUnpack (loc,m,ty) ->
+             match m with
+             [`Uid(sloc,m) ->
+               match ty with
+               [`None _ ->
+                 mkpat loc (Ppat_unpack (with_loc m sloc))
+               |`Some ty ->
+                   mkpat loc
+                     (Ppat_constraint
+                        (mkpat sloc (Ppat_unpack (with_loc m sloc)))
+                        (ctyp ty))
+               |`Ant(_loc,_) -> ANT_ERROR]  
+             |`Ant(_loc,_) -> ANT_ERROR]  
          | `PaEq (_, _, _) | `Sem (_, _, _) | `PaCom (_, _, _) | `Nil _ as p ->
              error (loc_of_patt p) "invalid pattern" ]
 

@@ -51,7 +51,7 @@ and patt =
   | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt)
   | `PaTup of (loc* patt) | `PaTyc of (loc* patt* ctyp)
   | `PaTyp of (loc* ident) | `PaVrn of (loc* string) | `Lazy of (loc* patt)
-  | `PaMod of (loc* string)] 
+  | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and expr =
   [ `Nil of loc | `Id of (loc* ident) | `ExAcc of (loc* expr* expr) | 
     ant

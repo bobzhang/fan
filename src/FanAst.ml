@@ -179,11 +179,12 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | {| ~ $_: $p |} -> is_irrefut_patt p
     | {| lazy $p |} -> is_irrefut_patt p
     | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
-    | {| (module $_) |} -> true
+    | {| (module $_ : $opt:_ ) |} -> true
     | {| `$_ |} | {| $str:_ |} | {| $_ .. $_ |} |
       {| $flo:_ |} | {| $nativeint:_ |} | {| $int64:_ |} |
       {| $int32:_ |} | {| $int:_ |} | {| $chr:_ |} |
       {| #$_ |} | {| [| $_ |] |} | {| $anti:_ |} -> false
+          (* add here ModuleUnpack *)
     ];      
       
 

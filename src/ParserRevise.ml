@@ -573,10 +573,12 @@ let apply () = begin
         | "[|"; sem_patt{pl}; "|]" -> {| [| $pl |] |}
         | "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
         | "("; ")" -> {| () |}
-        | "("; "module"; a_UIDENT{m}; ")" -> {| (module $m) |}
-        | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" ->
-            {| ((module $m) : (module $pt)) |}
-              (* {| ( module $m : module $pt )|} *)
+        | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
+
+        | "("; "module"; a_uident{m}; ":"; package_type{pt}; ")" ->
+              {| ( module $m :  $pt )|}
+        | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
+            {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|}
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as";  a_lident{s}; ")" -> {| ($p as $s )|}
@@ -594,8 +596,6 @@ let apply () = begin
         | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$i:($p=$e)|}
         | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
             {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|}
-
-            
         | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  -> {| ? $i:($p)|}
         | "?"; a_lident{i} -> {| ? $i |}
         | "?"; "("; ipatt_tcon{p}; ")" -> {| ? ($p) |}
@@ -604,9 +604,11 @@ let apply () = begin
         [ "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
         | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
         | "("; ")" -> {| () |}
-        | "("; "module"; a_UIDENT{m}; ")" -> {| (module $m) |}
-        | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" ->
-            {| ((module $m) : (module $pt)) |}
+        | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
+        | "("; "module"; a_uident{m}; ":"; package_type{pt}; ")" ->
+              {| (module $m : $pt )|}
+        | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
+            {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|}
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as"; a_lident{s}; ")" -> {| ($p as $s) |}
@@ -1019,11 +1021,9 @@ let apply () = begin
       a_lident:
       [ `Ant((""|"lid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_lident" n s)
       | `Lid s  -> `Lid (_loc, s) ]
-
       a_uident:
       [ `Ant((""|"uid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_uident" n s)
       | `Uid s  -> `Uid (_loc, s) ]
-      
       string_list:
       [ `Ant ((""|"str_list"),s) -> `Ant (_loc,mk_anti "str_list" s)
       | `STR (_, x); S{xs} -> `LCons (x, xs)

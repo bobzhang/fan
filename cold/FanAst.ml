@@ -307,8 +307,9 @@ class eq =
             (self#loc a0 b0) && (self#string a1 b1)
         | (`Lazy (a0,a1),`Lazy (b0,b1)) ->
             (self#loc a0 b0) && (self#patt a1 b1)
-        | (`PaMod (a0,a1),`PaMod (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
+        | (`ModuleUnpack (a0,a1,a2),`ModuleUnpack (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#auident a1 b1)) &&
+              (self#meta_option (fun self  -> self#ctyp) a2 b2)
         | (_,_) -> false
     method expr : expr -> expr -> 'result=
       fun a0  b0  ->
@@ -995,8 +996,11 @@ class map =
           let a0 = self#loc a0 in let a1 = self#string a1 in `PaVrn (a0, a1)
       | `Lazy (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#patt a1 in `Lazy (a0, a1)
-      | `PaMod (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `PaMod (a0, a1)
+      | `ModuleUnpack (a0,a1,a2) ->
+          let a0 = self#loc a0 in
+          let a1 = self#auident a1 in
+          let a2 = self#meta_option (fun self  -> self#ctyp) a2 in
+          `ModuleUnpack (a0, a1, a2)
     method expr : expr -> expr=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1806,9 +1810,10 @@ class print =
         | `Lazy (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" self#loc a0 self#patt
               a1
-        | `PaMod (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`PaMod@ %a@ %a)@]" self#loc a0
-              self#string a1
+        | `ModuleUnpack (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a@ %a)@]" self#loc
+              a0 self#auident a1 (self#meta_option (fun self  -> self#ctyp))
+              a2
     method expr : 'fmt -> expr -> 'result=
       fun fmt  ->
         function
@@ -2433,7 +2438,10 @@ class fold =
       | `PaTyp (a0,a1) -> let self = self#loc a0 in self#ident a1
       | `PaVrn (a0,a1) -> let self = self#loc a0 in self#string a1
       | `Lazy (a0,a1) -> let self = self#loc a0 in self#patt a1
-      | `PaMod (a0,a1) -> let self = self#loc a0 in self#string a1
+      | `ModuleUnpack (a0,a1,a2) ->
+          let self = self#loc a0 in
+          let self = self#auident a1 in
+          self#meta_option (fun self  -> self#ctyp) a2
     method expr : expr -> 'self_type=
       function
       | `Nil a0 -> self#loc a0
@@ -3079,8 +3087,10 @@ class fold2 =
             let self = self#loc a0 b0 in self#string a1 b1
         | (`Lazy (a0,a1),`Lazy (b0,b1)) ->
             let self = self#loc a0 b0 in self#patt a1 b1
-        | (`PaMod (a0,a1),`PaMod (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
+        | (`ModuleUnpack (a0,a1,a2),`ModuleUnpack (b0,b1,b2)) ->
+            let self = self#loc a0 b0 in
+            let self = self#auident a1 b1 in
+            self#meta_option (fun self  -> self#ctyp) a2 b2
         | (_,_) -> invalid_arg "fold2 failure"
     method expr : expr -> expr -> 'self_type=
       fun a0  b0  ->
@@ -3823,9 +3833,9 @@ and pp_print_patt: 'fmt -> patt -> 'result =
     | `Lazy (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1
-    | `PaMod (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`PaMod@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
+    | `ModuleUnpack (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a@ %a)@]" pp_print_loc
+          a0 pp_print_auident a1 (pp_print_meta_option pp_print_ctyp) a2
 and pp_print_expr: 'fmt -> expr -> 'result =
   fun fmt  ->
     function
@@ -4411,7 +4421,10 @@ class iter =
       | `PaTyp (a0,a1) -> (self#loc a0; self#ident a1)
       | `PaVrn (a0,a1) -> (self#loc a0; self#string a1)
       | `Lazy (a0,a1) -> (self#loc a0; self#patt a1)
-      | `PaMod (a0,a1) -> (self#loc a0; self#string a1)
+      | `ModuleUnpack (a0,a1,a2) ->
+          (self#loc a0;
+           self#auident a1;
+           self#meta_option (fun self  -> self#ctyp) a2)
     method expr : expr -> 'result=
       function
       | `Nil a0 -> self#loc a0
@@ -5039,9 +5052,11 @@ class map2 =
         | (`Lazy (a0,a1),`Lazy (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in `Lazy (a0, a1)
-        | (`PaMod (a0,a1),`PaMod (b0,b1)) ->
+        | (`ModuleUnpack (a0,a1,a2),`ModuleUnpack (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `PaMod (a0, a1)
+            let a1 = self#auident a1 b1 in
+            let a2 = self#meta_option (fun self  -> self#ctyp) a2 b2 in
+            `ModuleUnpack (a0, a1, a2)
         | (_,_) -> invalid_arg "map2 failure"
     method expr : expr -> expr -> expr=
       fun a0  b0  ->
@@ -6316,12 +6331,15 @@ module Make(MetaLoc:META_LOC) =
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "Lazy")), (meta_loc _loc a0))),
                     (meta_patt _loc a1))
-            | `PaMod (a0,a1) ->
+            | `ModuleUnpack (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "PaMod")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
+                       (_loc,
+                         (`ExApp
+                            (_loc, (`ExVrn (_loc, "ModuleUnpack")),
+                              (meta_loc _loc a0))), (meta_auident _loc a1))),
+                    (meta_meta_option meta_ctyp _loc a2))
         and meta_expr: 'loc -> expr -> 'result =
           fun _loc  ->
             function
@@ -8058,12 +8076,15 @@ module Make(MetaLoc:META_LOC) =
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "Lazy")), (meta_loc _loc a0))),
                     (meta_patt _loc a1))
-            | `PaMod (a0,a1) ->
+            | `ModuleUnpack (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "PaMod")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
+                       (_loc,
+                         (`PaApp
+                            (_loc, (`PaVrn (_loc, "ModuleUnpack")),
+                              (meta_loc _loc a0))), (meta_auident _loc a1))),
+                    (meta_meta_option meta_ctyp _loc a2))
         and meta_expr: 'loc -> expr -> 'result =
           fun _loc  ->
             function
@@ -9237,7 +9258,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `Label (_loc,_,p) -> is_irrefut_patt p
   | `Lazy (_loc,p) -> is_irrefut_patt p
   | `Id (_loc,_) -> false
-  | `PaMod (_loc,_) -> true
+  | `ModuleUnpack (_loc,_,_) -> true
   | `PaVrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)
     |`NativeInt (_loc,_)|`Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)
     |`Chr (_loc,_)|`PaTyp (_loc,_)|`Array (_loc,_)|`Ant (_loc,_) -> false

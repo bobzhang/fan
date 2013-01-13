@@ -2349,22 +2349,38 @@ let apply () =
                  (`Id (_loc, (`Uid (_loc, "()"))) : 'patt ))));
          ([`Skeyword "(";
           `Skeyword "module";
-          `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+          `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
           `Skeyword ")"],
            (Gram.mk_action
-              (fun _  (m : 'a_UIDENT)  _  _  (_loc : FanLoc.t)  ->
-                 (`PaMod (_loc, m) : 'patt ))));
+              (fun _  (m : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
+                 (`ModuleUnpack (_loc, m, (`None _loc)) : 'patt ))));
          ([`Skeyword "(";
           `Skeyword "module";
-          `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+          `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (package_type : 'package_type Gram.t ));
           `Skeyword ")"],
            (Gram.mk_action
-              (fun _  (pt : 'package_type)  _  (m : 'a_UIDENT)  _  _ 
+              (fun _  (pt : 'package_type)  _  (m : 'a_uident)  _  _ 
                  (_loc : FanLoc.t)  ->
-                 (`PaTyc (_loc, (`PaMod (_loc, m)), (`Package (_loc, pt))) : 
+                 (`ModuleUnpack (_loc, m, (`Some (`Package (_loc, pt)))) : 
                  'patt ))));
+         ([`Skeyword "(";
+          `Skeyword "module";
+          `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
+          `Skeyword ":";
+          `Stoken
+            (((function | `Ant ("opt",_) -> true | _ -> false)),
+              (`Normal, "`Ant (\"opt\",_)"));
+          `Skeyword ")"],
+           (Gram.mk_action
+              (fun _  (__fan_4 : [> FanToken.t])  _  (m : 'a_uident)  _  _ 
+                 (_loc : FanLoc.t)  ->
+                 match __fan_4 with
+                 | `Ant (("opt" as n),s) ->
+                     (`ModuleUnpack (_loc, m, (`Ant (_loc, (mk_anti n s)))) : 
+                     'patt )
+                 | _ -> assert false)));
          ([`Skeyword "("; `Sself; `Skeyword ")"],
            (Gram.mk_action
               (fun _  (p : 'patt)  _  (_loc : FanLoc.t)  -> (p : 'patt ))));
@@ -2553,22 +2569,38 @@ let apply () =
                   (`Id (_loc, (`Uid (_loc, "()"))) : 'ipatt ))));
           ([`Skeyword "(";
            `Skeyword "module";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ")"],
             (Gram.mk_action
-               (fun _  (m : 'a_UIDENT)  _  _  (_loc : FanLoc.t)  ->
-                  (`PaMod (_loc, m) : 'ipatt ))));
+               (fun _  (m : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
+                  (`ModuleUnpack (_loc, m, (`None _loc)) : 'ipatt ))));
           ([`Skeyword "(";
            `Skeyword "module";
-           `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (package_type : 'package_type Gram.t ));
            `Skeyword ")"],
             (Gram.mk_action
-               (fun _  (pt : 'package_type)  _  (m : 'a_UIDENT)  _  _ 
+               (fun _  (pt : 'package_type)  _  (m : 'a_uident)  _  _ 
                   (_loc : FanLoc.t)  ->
-                  (`PaTyc (_loc, (`PaMod (_loc, m)), (`Package (_loc, pt))) : 
+                  (`ModuleUnpack (_loc, m, (`Some (`Package (_loc, pt)))) : 
                   'ipatt ))));
+          ([`Skeyword "(";
+           `Skeyword "module";
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
+           `Skeyword ":";
+           `Stoken
+             (((function | `Ant ("opt",_) -> true | _ -> false)),
+               (`Normal, "`Ant (\"opt\",_)"));
+           `Skeyword ")"],
+            (Gram.mk_action
+               (fun _  (__fan_4 : [> FanToken.t])  _  (m : 'a_uident)  _  _ 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_4 with
+                  | `Ant (("opt" as n),s) ->
+                      (`ModuleUnpack (_loc, m, (`Ant (_loc, (mk_anti n s)))) : 
+                      'ipatt )
+                  | _ -> assert false)));
           ([`Skeyword "("; `Sself; `Skeyword ")"],
             (Gram.mk_action
                (fun _  (p : 'ipatt)  _  (_loc : FanLoc.t)  -> (p : 'ipatt ))));
