@@ -413,8 +413,6 @@ class eq =
             (((self#loc a0 b0) && (self#auident a1 b1)) &&
                (self#module_type a2 b2))
               && (self#module_type a3 b3)
-        | (`MtQuo (a0,a1),`MtQuo (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
         | (`Sig (a0,a1),`Sig (b0,b1)) ->
             (self#loc a0 b0) && (self#sig_item a1 b1)
         | (`MtWit (a0,a1,a2),`MtWit (b0,b1,b2)) ->
@@ -1146,8 +1144,6 @@ class map =
           let a1 = self#auident a1 in
           let a2 = self#module_type a2 in
           let a3 = self#module_type a3 in `MtFun (a0, a1, a2, a3)
-      | `MtQuo (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `MtQuo (a0, a1)
       | `Sig (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#sig_item a1 in `Sig (a0, a1)
       | `MtWit (a0,a1,a2) ->
@@ -1942,9 +1938,6 @@ class print =
         | `MtFun (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`MtFun@ %a@ %a@ %a@ %a)@]" self#loc a0
               self#auident a1 self#module_type a2 self#module_type a3
-        | `MtQuo (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`MtQuo@ %a@ %a)@]" self#loc a0
-              self#string a1
         | `Sig (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" self#loc a0
               self#sig_item a1
@@ -2545,7 +2538,6 @@ class fold =
           let self = self#loc a0 in
           let self = self#auident a1 in
           let self = self#module_type a2 in self#module_type a3
-      | `MtQuo (a0,a1) -> let self = self#loc a0 in self#string a1
       | `Sig (a0,a1) -> let self = self#loc a0 in self#sig_item a1
       | `MtWit (a0,a1,a2) ->
           let self = self#loc a0 in
@@ -3226,8 +3218,6 @@ class fold2 =
             let self = self#loc a0 b0 in
             let self = self#auident a1 b1 in
             let self = self#module_type a2 b2 in self#module_type a3 b3
-        | (`MtQuo (a0,a1),`MtQuo (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
         | (`Sig (a0,a1),`Sig (b0,b1)) ->
             let self = self#loc a0 b0 in self#sig_item a1 b1
         | (`MtWit (a0,a1,a2),`MtWit (b0,b1,b2)) ->
@@ -3975,9 +3965,6 @@ and pp_print_module_type: 'fmt -> module_type -> 'result =
     | `MtFun (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`MtFun@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_auident a1 pp_print_module_type a2 pp_print_module_type a3
-    | `MtQuo (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`MtQuo@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
     | `Sig (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" pp_print_loc a0
           pp_print_sig_item a1
@@ -4512,7 +4499,6 @@ class iter =
            self#auident a1;
            self#module_type a2;
            self#module_type a3)
-      | `MtQuo (a0,a1) -> (self#loc a0; self#string a1)
       | `Sig (a0,a1) -> (self#loc a0; self#sig_item a1)
       | `MtWit (a0,a1,a2) ->
           (self#loc a0; self#module_type a1; self#with_constr a2)
@@ -5238,9 +5224,6 @@ class map2 =
             let a1 = self#auident a1 b1 in
             let a2 = self#module_type a2 b2 in
             let a3 = self#module_type a3 b3 in `MtFun (a0, a1, a2, a3)
-        | (`MtQuo (a0,a1),`MtQuo (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `MtQuo (a0, a1)
         | (`Sig (a0,a1),`Sig (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#sig_item a1 b1 in `Sig (a0, a1)
@@ -6692,12 +6675,6 @@ module Make(MetaLoc:META_LOC) =
                               (meta_auident _loc a1))),
                          (meta_module_type _loc a2))),
                     (meta_module_type _loc a3))
-            | `MtQuo (a0,a1) ->
-                `ExApp
-                  (_loc,
-                    (`ExApp
-                       (_loc, (`ExVrn (_loc, "MtQuo")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
             | `Sig (a0,a1) ->
                 `ExApp
                   (_loc,
@@ -8437,12 +8414,6 @@ module Make(MetaLoc:META_LOC) =
                               (meta_auident _loc a1))),
                          (meta_module_type _loc a2))),
                     (meta_module_type _loc a3))
-            | `MtQuo (a0,a1) ->
-                `PaApp
-                  (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, "MtQuo")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
             | `Sig (a0,a1) ->
                 `PaApp
                   (_loc,

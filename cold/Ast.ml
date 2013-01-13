@@ -77,9 +77,8 @@ and expr =
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)
   | `MtFun of (loc* auident* module_type* module_type)
-  | `MtQuo of (loc* string) | `Sig of (loc* sig_item)
-  | `MtWit of (loc* module_type* with_constr) | `Of of (loc* module_expr)
-  | ant] 
+  | `Sig of (loc* sig_item) | `MtWit of (loc* module_type* with_constr)
+  | `Of of (loc* module_expr) | ant] 
 and sig_item =
   [ `Nil of loc | `Class of (loc* class_type)
   | `ClassType of (loc* class_type) | `Sem of (loc* sig_item* sig_item)

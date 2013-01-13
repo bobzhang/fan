@@ -196,7 +196,7 @@ let apply () = begin
         [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_type" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_type_tag
         | module_longident_with_app{i} -> {| $id:i |}
-        | "'"; a_ident{i} -> {| ' $i |}
+        (* | "'"; a_ident{i} -> {| ' $i |} *)
         | "("; S{mt}; ")" -> {| $mt |}
         | "module"; "type"; "of"; module_expr{me} -> {| module type of $me |} ] }
       module_declaration:
@@ -688,6 +688,11 @@ let apply () = begin
       | "`"; a_ident{x} -> {| `$x |}
       | ctyp{x} -> x
       | type_parameter{x} -> x   ]
+      unquoted_typevars:
+      [ S{t1}; S{t2} -> {| $t1 $t2 |}
+      | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | a_lident{i} -> {| $(id:(i:>ident)) |}   ]
       type_parameter:
       [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
@@ -697,15 +702,6 @@ let apply () = begin
       | "+"; "_" ->  {| + _|}
       | "-"; "_" ->  {| - _ |}
       | "_" -> {| _ |}]
-      (* optional_type_parameter: (\* overlapps with type_parameter *\) *)
-      (* [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |} *)
-      (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
-      (* | "'"; a_lident{i} -> {| '$i |} *)
-      (* | "+"; "'"; a_lident{i} -> {| +'$i |} *)
-      (* | "-"; "'"; a_lident{i} -> {| -'$i |} *)
-      (* | "+"; "_" -> `Quote(_loc,`Positive _loc, `None _loc) *)
-      (* | "-"; "_" -> `Quote(_loc,`Negative _loc, `None _loc) *)
-      (* | "_" -> {| _ |}  ] *)
       type_longident_and_parameters:
       [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
       | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] 
@@ -734,11 +730,7 @@ let apply () = begin
       | opt_dot_dot{v}     -> {| < $(..:v) > |}  ]
       poly_type: [ ctyp{t} -> t ]
       package_type: [ module_type{p} -> p ] 
-      unquoted_typevars:
-      [ S{t1}; S{t2} -> {| $t1 $t2 |}
-      | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_ident{i} -> {| $lid:i |}   ] 
+       
       row_field:
       [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
@@ -766,7 +758,7 @@ let apply () = begin
       |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
         -> `TyDcl (_loc, n, tpl, tk, cl) ]
       type_ident_and_parameters:
-      [ a_lident{i}; L0 (* optional_type_parameter *)type_parameter{tpl} -> (i, tpl)]
+      [ a_lident{i}; L0 type_parameter{tpl} -> (i, tpl)]
 
 
 

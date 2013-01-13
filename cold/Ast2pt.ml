@@ -801,7 +801,6 @@ and module_type: Ast.module_type -> Parsetree.module_type =
              (Pmty_functor
                 ((with_loc n sloc), (module_type nt), (module_type mt)))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `MtQuo (loc,_) -> error loc "module type variable not allowed here"
   | `Sig (loc,sl) -> mkmty loc (Pmty_signature (sig_item sl []))
   | `MtWit (loc,mt,wc) ->
       mkmty loc (Pmty_with ((module_type mt), (mkwithc wc [])))
@@ -851,7 +850,7 @@ and sig_item (s : sig_item) (l : signature) =
    | `ModuleType (loc,n,mt) ->
        let si =
          match mt with
-         | `MtQuo (_,_) -> Pmodtype_abstract
+         | `Nil _ -> Pmodtype_abstract
          | _ -> Pmodtype_manifest (module_type mt) in
        (match n with
         | `Uid (sloc,n) -> (mksig loc (Psig_modtype ((with_loc n sloc), si)))

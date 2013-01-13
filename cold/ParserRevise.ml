@@ -612,10 +612,6 @@ let apply () =
            (Gram.mk_action
               (fun (i : 'module_longident_with_app)  (_loc : FanLoc.t)  ->
                  (`Id (_loc, i) : 'module_type ))));
-         ([`Skeyword "'"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
-           (Gram.mk_action
-              (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
-                 (`MtQuo (_loc, i) : 'module_type ))));
          ([`Skeyword "("; `Sself; `Skeyword ")"],
            (Gram.mk_action
               (fun _  (mt : 'module_type)  _  (_loc : FanLoc.t)  ->
@@ -3088,6 +3084,36 @@ let apply () =
             (Gram.mk_action
                (fun (x : 'type_parameter)  (_loc : FanLoc.t)  ->
                   (x : 'more_ctyp ))))])]);
+   Gram.extend (unquoted_typevars : 'unquoted_typevars Gram.t )
+     (None,
+       [(None, None,
+          [([`Sself; `Sself],
+             (Gram.mk_action
+                (fun (t2 : 'unquoted_typevars)  (t1 : 'unquoted_typevars) 
+                   (_loc : FanLoc.t)  ->
+                   (`TyApp (_loc, t1, t2) : 'unquoted_typevars ))));
+          ([`Stoken
+              (((function | `Ant ((""|"typ"),_) -> true | _ -> false)),
+                (`Normal, "`Ant ((\"\"|\"typ\"),_)"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Ant ((""|"typ" as n),s) ->
+                      (`Ant (_loc, (mk_anti ~c:"ctyp" n s)) : 'unquoted_typevars )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `QUOTATION _ -> true | _ -> false)),
+                (`Normal, "`QUOTATION _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `QUOTATION x ->
+                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'unquoted_typevars )
+                  | _ -> assert false)));
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+            (Gram.mk_action
+               (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
+                  (`Id (_loc, (i :>ident)) : 'unquoted_typevars ))))])]);
    Gram.extend (type_parameter : 'type_parameter Gram.t )
      (None,
        [(None, None,
@@ -3274,36 +3300,6 @@ let apply () =
              (Gram.mk_action
                 (fun (p : 'module_type)  (_loc : FanLoc.t)  ->
                    (p : 'package_type ))))])]);
-   Gram.extend (unquoted_typevars : 'unquoted_typevars Gram.t )
-     (None,
-       [(None, None,
-          [([`Sself; `Sself],
-             (Gram.mk_action
-                (fun (t2 : 'unquoted_typevars)  (t1 : 'unquoted_typevars) 
-                   (_loc : FanLoc.t)  ->
-                   (`TyApp (_loc, t1, t2) : 'unquoted_typevars ))));
-          ([`Stoken
-              (((function | `Ant ((""|"typ"),_) -> true | _ -> false)),
-                (`Normal, "`Ant ((\"\"|\"typ\"),_)"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `Ant ((""|"typ" as n),s) ->
-                      (`Ant (_loc, (mk_anti ~c:"ctyp" n s)) : 'unquoted_typevars )
-                  | _ -> assert false)));
-          ([`Stoken
-              (((function | `QUOTATION _ -> true | _ -> false)),
-                (`Normal, "`QUOTATION _"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'unquoted_typevars )
-                  | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
-            (Gram.mk_action
-               (fun (i : 'a_ident)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (`Lid (_loc, i))) : 'unquoted_typevars ))))])]);
    Gram.extend (row_field : 'row_field Gram.t )
      (None,
        [(None, None,

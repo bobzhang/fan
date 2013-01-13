@@ -301,21 +301,6 @@ let opt_private_ctyp : ctyp ->
   [ {| private $t |} -> (Ptype_abstract, Private, ctyp t)
   | t -> (Ptype_abstract, Public, ctyp t) ];
 
-
-(* let paramater_map (x:ctyp) = *)
-(*   with ctyp match x with *)
-(*   [ {| +'$lid:s|} -> *)
-(*     (Some (s+>_loc),(true,false)) *)
-(*   | `TyAnP _loc -> *)
-(*       (None,(true,false)) *)
-(*   | `TyAnM _loc -> *)
-(*       (None,(false,true)) *)
-(*   | {| '$lid:s|} -> *)
-(*       (Some (s+>_loc),(false,false)) *)
-(*   | {| _ |} -> *)
-(*       (None,(false,false)) *)
-(*   | _ -> failwith "parameter_map"  ]; *)
-
 let quote_map (x:ctyp) =
   match x with
   [`Quote (_loc,p,s) ->
@@ -880,7 +865,7 @@ and module_type : Ast.module_type -> Parsetree.module_type =
       [`Uid(sloc,n) ->
         mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
       |`Ant(_loc,_) -> ANT_ERROR]
-  | {@loc| '$_ |} -> error loc "module type variable not allowed here"
+  (* | {@loc| '$_ |} -> error loc "module type variable not allowed here" *)
   | {@loc| sig $sl end |} ->
       mkmty loc (Pmty_signature (sig_item sl []))
   | {@loc| $mt with $wc |} ->
@@ -920,7 +905,7 @@ and sig_item (s:sig_item) (l:signature) :signature =
       [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
   | `ModuleType (loc,n,mt) ->
       let si =  match mt with
-      [ `MtQuo (_,_) -> Pmodtype_abstract
+      [ (* `MtQuo (_,_)  *)`Nil _ -> Pmodtype_abstract
       | _ -> Pmodtype_manifest (module_type mt) ] in
       match n with
       [`Uid(sloc,n)->   
