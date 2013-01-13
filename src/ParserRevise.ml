@@ -845,8 +845,9 @@ let apply () = begin
       [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_LIDENT{s}; ":"; poly_type{t} ->      {| $lid:s : $t |}
-      | a_LIDENT{s}; ":"; "mutable"; poly_type{t} ->  {| $lid:s : mutable $t |}  ]
+      | a_lident{s}; ":"; poly_type{t} -> {| $(id:(s:>ident)) :$t|}
+      | a_lident{s}; ":"; "mutable"; poly_type{t} ->
+          {|$(id:(s:>ident)) : mutable $t |}]
       class_name_and_param:
       [ a_LIDENT{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
       | a_LIDENT{i} -> (i, {||})  ]

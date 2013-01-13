@@ -3964,24 +3964,23 @@ let apply () =
                   | `QUOTATION x ->
                       (AstQuotation.expand _loc x DynAst.ctyp_tag : 'label_declaration )
                   | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'poly_type)  _  (s : 'a_LIDENT)  (_loc : FanLoc.t) 
+               (fun (t : 'poly_type)  _  (s : 'a_lident)  (_loc : FanLoc.t) 
                   ->
-                  (`TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), t) : 
-                  'label_declaration ))));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+                  (`TyCol (_loc, (`Id (_loc, (s :>ident))), t) : 'label_declaration ))));
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
            `Skeyword "mutable";
            `Snterm (Gram.obj (poly_type : 'poly_type Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'poly_type)  _  _  (s : 'a_LIDENT) 
+               (fun (t : 'poly_type)  _  _  (s : 'a_lident) 
                   (_loc : FanLoc.t)  ->
                   (`TyCol
-                     (_loc, (`Id (_loc, (`Lid (_loc, s)))),
-                       (`Mutable (_loc, t))) : 'label_declaration ))))])]);
+                     (_loc, (`Id (_loc, (s :>ident))), (`Mutable (_loc, t))) : 
+                  'label_declaration ))))])]);
    Gram.extend (class_name_and_param : 'class_name_and_param Gram.t )
      (None,
        [(None, None,
