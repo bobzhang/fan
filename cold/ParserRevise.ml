@@ -3666,14 +3666,14 @@ let apply () =
                  | `QUOTATION x ->
                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'ctyp )
                  | _ -> assert false)));
-         ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            (Gram.mk_action
-              (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                 (`Id (_loc, (`Lid (_loc, i))) : 'ctyp ))));
-         ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
+              (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
+                 (`Id (_loc, (i :>ident)) : 'ctyp ))));
+         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
            (Gram.mk_action
-              (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                 (`Id (_loc, (`Uid (_loc, i))) : 'ctyp ))));
+              (fun (i : 'a_uident)  (_loc : FanLoc.t)  ->
+                 (`Id (_loc, (i :>ident)) : 'ctyp ))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword "*";

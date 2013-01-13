@@ -796,8 +796,8 @@ let apply () = begin
         | `Ant (("tup" as n),s) ->  {| ($(tup:{| $(anti:mk_anti ~c:"ctyp" n s) |})) |}
         | `Ant (("id" as n),s) ->   {| $(id:{:ident| $(anti:mk_anti ~c:"ident" n s) |}) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-        | a_LIDENT{i} -> {| $lid:i |}
-        | a_UIDENT{i} -> {| $uid:i |}
+        |  a_lident{i}->  {|$(id:(i:>ident))|}
+        | a_uident{i} -> {|$(id:(i:>ident))|}
         | "("; S{t}; "*"; star_ctyp{tl}; ")" ->  {| ( $t * $tl ) |}
         | "("; S{t}; ")" -> t
         | "["; "]" -> {| [ ] |}
