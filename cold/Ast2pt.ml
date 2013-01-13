@@ -857,8 +857,12 @@ and module_expr =
   | `MeApp (loc,me1,me2) ->
       mkmod loc (Pmod_apply ((module_expr me1), (module_expr me2)))
   | `Functor (loc,n,mt,me) ->
-      mkmod loc
-        (Pmod_functor ((with_loc n loc), (module_type mt), (module_expr me)))
+      (match n with
+       | `Uid (sloc,n) ->
+           mkmod loc
+             (Pmod_functor
+                ((with_loc n sloc), (module_type mt), (module_expr me)))
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Struct (loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
   | `ModuleExprConstraint (loc,me,mt) ->
       mkmod loc (Pmod_constraint ((module_expr me), (module_type mt)))

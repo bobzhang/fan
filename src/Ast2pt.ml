@@ -902,7 +902,10 @@ and module_expr =   fun (* module_expr -> module_expr *)
   | {:module_expr@loc| $me1 $me2 |} ->
       mkmod loc (Pmod_apply (module_expr me1) (module_expr me2))
   | {:module_expr@loc| functor ($n : $mt) -> $me |} ->
-      mkmod loc (Pmod_functor (with_loc n loc) (module_type mt) (module_expr me))
+      match n with
+      [`Uid(sloc,n) ->    
+      mkmod loc (Pmod_functor (with_loc n sloc) (module_type mt) (module_expr me))
+      |`Ant(_loc,_) -> ANT_ERROR]
   | {:module_expr@loc| struct $sl end |} ->
       mkmod loc (Pmod_structure (str_item sl []))
   | {:module_expr@loc| ($me : $mt) |} ->

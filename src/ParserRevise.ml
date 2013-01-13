@@ -111,14 +111,14 @@ let apply () = begin
       | -> {||} ]
       module_binding0:
       { RA
-        [ "("; a_UIDENT{m}; ":"; module_type{mt}; ")"; S{mb} ->
+        [ "("; a_uident{m}; ":"; module_type{mt}; ")"; S{mb} ->
             {| functor ( $m : $mt ) -> $mb |}
         | ":"; module_type{mt}; "="; module_expr{me} ->
             {| ( $me : $mt ) |}
         | "="; module_expr{me} -> {| $me |} ] }
       module_expr:
       { "top"
-        [ "functor"; "("; a_UIDENT{i}; ":"; module_type{t}; ")"; "->"; S{me} ->
+        [ "functor"; "("; a_uident{i}; ":"; module_type{t}; ")"; "->"; S{me} ->
             {| functor ( $i : $t ) -> $me |}
         | "struct"; str_items{st}; "end" ->
             {| struct $st end |} ]

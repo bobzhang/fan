@@ -532,7 +532,7 @@ class eq =
             ((self#loc a0 b0) && (self#module_expr a1 b1)) &&
               (self#module_expr a2 b2)
         | (`Functor (a0,a1,a2,a3),`Functor (b0,b1,b2,b3)) ->
-            (((self#loc a0 b0) && (self#string a1 b1)) &&
+            (((self#loc a0 b0) && (self#auident a1 b1)) &&
                (self#module_type a2 b2))
               && (self#module_expr a3 b3)
         | (`Struct (a0,a1),`Struct (b0,b1)) ->
@@ -1286,7 +1286,7 @@ class map =
           let a2 = self#module_expr a2 in `MeApp (a0, a1, a2)
       | `Functor (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#auident a1 in
           let a2 = self#module_type a2 in
           let a3 = self#module_expr a3 in `Functor (a0, a1, a2, a3)
       | `Struct (a0,a1) ->
@@ -2067,7 +2067,7 @@ class print =
               self#module_expr a1 self#module_expr a2
         | `Functor (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" self#loc
-              a0 self#string a1 self#module_type a2 self#module_expr a3
+              a0 self#auident a1 self#module_type a2 self#module_expr a3
         | `Struct (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" self#loc a0
               self#str_item a1
@@ -2629,7 +2629,7 @@ class fold =
           let self = self#module_expr a1 in self#module_expr a2
       | `Functor (a0,a1,a2,a3) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#auident a1 in
           let self = self#module_type a2 in self#module_expr a3
       | `Struct (a0,a1) -> let self = self#loc a0 in self#str_item a1
       | `ModuleExprConstraint (a0,a1,a2) ->
@@ -3335,7 +3335,7 @@ class fold2 =
             let self = self#module_expr a1 b1 in self#module_expr a2 b2
         | (`Functor (a0,a1,a2,a3),`Functor (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#auident a1 b1 in
             let self = self#module_type a2 b2 in self#module_expr a3 b3
         | (`Struct (a0,a1),`Struct (b0,b1)) ->
             let self = self#loc a0 b0 in self#str_item a1 b1
@@ -4084,7 +4084,7 @@ and pp_print_module_expr: 'fmt -> module_expr -> 'result =
           pp_print_module_expr a1 pp_print_module_expr a2
     | `Functor (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" pp_print_loc
-          a0 pp_print_string a1 pp_print_module_type a2 pp_print_module_expr
+          a0 pp_print_auident a1 pp_print_module_type a2 pp_print_module_expr
           a3
     | `Struct (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" pp_print_loc a0
@@ -4557,7 +4557,7 @@ class iter =
           (self#loc a0; self#module_expr a1; self#module_expr a2)
       | `Functor (a0,a1,a2,a3) ->
           (self#loc a0;
-           self#string a1;
+           self#auident a1;
            self#module_type a2;
            self#module_expr a3)
       | `Struct (a0,a1) -> (self#loc a0; self#str_item a1)
@@ -5365,7 +5365,7 @@ class map2 =
             let a2 = self#module_expr a2 b2 in `MeApp (a0, a1, a2)
         | (`Functor (a0,a1,a2,a3),`Functor (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#auident a1 b1 in
             let a2 = self#module_type a2 b2 in
             let a3 = self#module_expr a3 b3 in `Functor (a0, a1, a2, a3)
         | (`Struct (a0,a1),`Struct (b0,b1)) ->
@@ -6975,7 +6975,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExApp
                                  (_loc, (`ExVrn (_loc, "Functor")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_auident _loc a1))),
                          (meta_module_type _loc a2))),
                     (meta_module_expr _loc a3))
             | `Struct (a0,a1) ->
@@ -8717,7 +8717,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaApp
                                  (_loc, (`PaVrn (_loc, "Functor")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_auident _loc a1))),
                          (meta_module_type _loc a2))),
                     (meta_module_expr _loc a3))
             | `Struct (a0,a1) ->

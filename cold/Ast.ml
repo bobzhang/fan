@@ -109,7 +109,7 @@ and match_case =
 and module_expr =
   [ `Nil of loc | `Id of (loc* ident)
   | `MeApp of (loc* module_expr* module_expr)
-  | `Functor of (loc* string* module_type* module_expr)
+  | `Functor of (loc* auident* module_type* module_expr)
   | `Struct of (loc* str_item)
   | `ModuleExprConstraint of (loc* module_expr* module_type)
   | `PackageModule of (loc* expr) | ant] 

@@ -239,7 +239,7 @@
       (* i *) (* A.B.C *)
     | `Id  of (loc * ident)
       (* functor (s : mt) -> mt *)
-    | `MtFun of (loc * (* string *)auident * module_type * module_type)
+    | `MtFun of (loc * auident * module_type * module_type)
       (* 's *)
     | `MtQuo of (loc * string)
       (* sig sg end *)
@@ -271,14 +271,18 @@
           
       (* module rec mb *)
     | `RecModule of (loc * module_binding)
+
       (* module type s = mt *)
     | `ModuleType of (loc * string * module_type)
+          
       (* open i *)
     | `Open of (loc * ident)
       (* type t *)
     | `Type of (loc * ctyp)
-      (* value s : t *)
+
+      (* va s : t *)
     |  `Val of (loc * alident * ctyp)
+          
     | ant (* $s$ *) ]
   and with_constr =
     [= `Nil of loc
@@ -331,7 +335,7 @@
       (* me me *)
     | `MeApp of (loc * module_expr * module_expr)
       (* functor (s : mt) -> me *)
-    | `Functor of (loc * string * module_type * module_expr)
+    | `Functor of (loc * (* string *)auident * module_type * module_expr)
       (* struct st end *)
     | `Struct of (loc * str_item)
       (* (me : mt) *)
@@ -360,10 +364,11 @@
     | `Include of (loc * module_expr)
 
       (* module s = me *)
-    | `Module of (loc * (* string *)auident * module_expr)
+    | `Module of (loc * auident * module_expr)
           
       (* module rec mb *)
     | `RecModule of (loc * module_binding)
+
       (* module type s = mt *)
     | `ModuleType of (loc * string * module_type)
       (* open i *)

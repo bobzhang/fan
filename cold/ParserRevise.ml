@@ -231,14 +231,14 @@ let apply () =
      (None,
        [(None, (Some `RA),
           [([`Skeyword "(";
-            `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+            `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
             `Skeyword ":";
             `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
             `Skeyword ")";
             `Sself],
              (Gram.mk_action
                 (fun (mb : 'module_binding0)  _  (mt : 'module_type)  _ 
-                   (m : 'a_UIDENT)  _  (_loc : FanLoc.t)  ->
+                   (m : 'a_uident)  _  (_loc : FanLoc.t)  ->
                    (`Functor (_loc, m, mt, mb) : 'module_binding0 ))));
           ([`Skeyword ":";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
@@ -258,7 +258,7 @@ let apply () =
        [((Some "top"), None,
           [([`Skeyword "functor";
             `Skeyword "(";
-            `Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+            `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
             `Skeyword ":";
             `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
             `Skeyword ")";
@@ -266,7 +266,7 @@ let apply () =
             `Sself],
              (Gram.mk_action
                 (fun (me : 'module_expr)  _  _  (t : 'module_type)  _ 
-                   (i : 'a_UIDENT)  _  _  (_loc : FanLoc.t)  ->
+                   (i : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
                    (`Functor (_loc, i, t, me) : 'module_expr ))));
           ([`Skeyword "struct";
            `Snterm (Gram.obj (str_items : 'str_items Gram.t ));
