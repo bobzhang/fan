@@ -86,7 +86,6 @@ let apply () =
    Gram.clear ipatt;
    Gram.clear ipatt_tcon;
    Gram.clear patt_tcon;
-   Gram.clear label;
    Gram.clear label_declaration;
    Gram.clear label_declaration_list;
    Gram.clear label_expr_list;
@@ -359,21 +358,21 @@ let apply () =
                       (`Ant (_loc, (mk_anti ~c:"module_binding" n s)) : 
                       'module_binding_quot )
                   | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
             (Gram.mk_action
-               (fun (mt : 'module_type)  _  (m : 'a_UIDENT) 
+               (fun (mt : 'module_type)  _  (m : 'a_uident) 
                   (_loc : FanLoc.t)  ->
                   (`ModuleConstraint (_loc, m, mt) : 'module_binding_quot ))));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (module_expr : 'module_expr Gram.t ))],
             (Gram.mk_action
                (fun (me : 'module_expr)  _  (mt : 'module_type)  _ 
-                  (m : 'a_UIDENT)  (_loc : FanLoc.t)  ->
+                  (m : 'a_uident)  (_loc : FanLoc.t)  ->
                   (`ModuleBind (_loc, m, mt, me) : 'module_binding_quot ))));
           ([],
             (Gram.mk_action
@@ -409,14 +408,14 @@ let apply () =
                       (AstQuotation.expand _loc x DynAst.module_binding_tag : 
                       'module_binding )
                   | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (module_expr : 'module_expr Gram.t ))],
             (Gram.mk_action
                (fun (me : 'module_expr)  _  (mt : 'module_type)  _ 
-                  (m : 'a_UIDENT)  (_loc : FanLoc.t)  ->
+                  (m : 'a_uident)  (_loc : FanLoc.t)  ->
                   (`ModuleBind (_loc, m, mt, me) : 'module_binding ))))])]);
    Gram.extend (module_rec_declaration : 'module_rec_declaration Gram.t )
      (None,
@@ -449,11 +448,11 @@ let apply () =
                       (AstQuotation.expand _loc x DynAst.module_binding_tag : 
                       'module_rec_declaration )
                   | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
             (Gram.mk_action
-               (fun (mt : 'module_type)  _  (m : 'a_UIDENT) 
+               (fun (mt : 'module_type)  _  (m : 'a_uident) 
                   (_loc : FanLoc.t)  ->
                   (`ModuleConstraint (_loc, m, mt) : 'module_rec_declaration ))))])]));
   (Gram.extend (with_constr_quot : 'with_constr_quot Gram.t )
@@ -4592,12 +4591,6 @@ let apply () =
                   | `Ant ((""|"as" as n),s) ->
                       (`Ant (_loc, (mk_anti n s)) : 'opt_as_lident )
                   | _ -> assert false)))])]);
-   Gram.extend (label : 'label Gram.t )
-     (None,
-       [(None, None,
-          [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
-             (Gram.mk_action
-                (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  -> (i : 'label ))))])]);
    Gram.extend (direction_flag : 'direction_flag Gram.t )
      (None,
        [(None, None,

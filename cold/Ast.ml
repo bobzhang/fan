@@ -101,8 +101,8 @@ and rec_binding =
   | `RecBind of (loc* ident* expr) | ant] 
 and module_binding =
   [ `Nil of loc | `And of (loc* module_binding* module_binding)
-  | `ModuleBind of (loc* string* module_type* module_expr)
-  | `ModuleConstraint of (loc* string* module_type) | ant] 
+  | `ModuleBind of (loc* auident* module_type* module_expr)
+  | `ModuleConstraint of (loc* auident* module_type) | ant] 
 and match_case =
   [ `Nil of loc | `McOr of (loc* match_case* match_case)
   | `Case of (loc* patt* expr* expr) | ant] 

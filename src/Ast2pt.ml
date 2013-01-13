@@ -887,17 +887,26 @@ and sig_item (s:sig_item) (l:signature) :signature =
         |`Ant(_loc,_) -> ANT_ERROR ] 
       (* [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l] *)
   | {| $anti:_ |} -> error _loc "antiquotation in sig_item" ]
-and module_sig_binding x acc = match x with (* module_binding -> (string loc * module_type) list -> (string loc * module_type) list*)
+and module_sig_binding (x:module_binding) 
+        (acc: list (Asttypes.loc string * Parsetree.module_type))  =
+    with module_binding match x with 
   [ {:module_binding| $x and $y |} ->
     module_sig_binding x (module_sig_binding y acc)
-  | {:module_binding@loc| $uid:s : $mt |} ->
-      [(with_loc s loc, module_type mt) :: acc]
+  | (* {:module_binding@loc| $uid:s : $mt |} *) `ModuleConstraint(_loc,s,mt) ->
+      match s with
+      [`Uid(sloc,s) -> [(with_loc s sloc, module_type mt) :: acc]
+      |`Ant(_loc,_) -> ANT_ERROR]
   | _ -> assert false ]
-and module_str_binding x acc =  match x with (* module_binding ->  (string loc * module_type * module_expr) list ->  (string loc * module_type * module_expr) list*)
+and module_str_binding (x:Ast.module_binding) acc =
+    match x with 
   [ {:module_binding| $x and $y |} ->
       module_str_binding x (module_str_binding y acc)
-  | {:module_binding@loc| $uid:s : $mt = $me |} ->
-      [(with_loc s loc, module_type mt, module_expr me) :: acc]
+  | (* {:module_binding@loc| $uid:s : $mt = $me |} *)
+    `ModuleBind(_loc,s,mt,me)->
+      match s with
+      [`Uid(sloc,s) ->   
+        [(with_loc s sloc, module_type mt, module_expr me) :: acc]
+      |`Ant(_loc,_) -> ANT_ERROR]
   | _ -> assert false ]
 and module_expr =   fun (* module_expr -> module_expr *)
   [ {:module_expr@loc| |} -> error loc "nil module expression"

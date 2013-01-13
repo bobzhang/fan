@@ -503,11 +503,11 @@ class eq =
             ((self#loc a0 b0) && (self#module_binding a1 b1)) &&
               (self#module_binding a2 b2)
         | (`ModuleBind (a0,a1,a2,a3),`ModuleBind (b0,b1,b2,b3)) ->
-            (((self#loc a0 b0) && (self#string a1 b1)) &&
+            (((self#loc a0 b0) && (self#auident a1 b1)) &&
                (self#module_type a2 b2))
               && (self#module_expr a3 b3)
         | (`ModuleConstraint (a0,a1,a2),`ModuleConstraint (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#string a1 b1)) &&
+            ((self#loc a0 b0) && (self#auident a1 b1)) &&
               (self#module_type a2 b2)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
@@ -1254,12 +1254,12 @@ class map =
           let a2 = self#module_binding a2 in `And (a0, a1, a2)
       | `ModuleBind (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#auident a1 in
           let a2 = self#module_type a2 in
           let a3 = self#module_expr a3 in `ModuleBind (a0, a1, a2, a3)
       | `ModuleConstraint (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#auident a1 in
           let a2 = self#module_type a2 in `ModuleConstraint (a0, a1, a2)
       | #ant as a0 -> (self#ant a0 :>module_binding)
     method match_case : match_case -> match_case=
@@ -2038,11 +2038,11 @@ class print =
               self#module_binding a1 self#module_binding a2
         | `ModuleBind (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
-              self#loc a0 self#string a1 self#module_type a2 self#module_expr
-              a3
+              self#loc a0 self#auident a1 self#module_type a2
+              self#module_expr a3
         | `ModuleConstraint (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
-              self#loc a0 self#string a1 self#module_type a2
+              self#loc a0 self#auident a1 self#module_type a2
         | #ant as a0 -> (self#ant fmt a0 :>'result)
     method match_case : 'fmt -> match_case -> 'result=
       fun fmt  ->
@@ -2604,11 +2604,11 @@ class fold =
           let self = self#module_binding a1 in self#module_binding a2
       | `ModuleBind (a0,a1,a2,a3) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#auident a1 in
           let self = self#module_type a2 in self#module_expr a3
       | `ModuleConstraint (a0,a1,a2) ->
           let self = self#loc a0 in
-          let self = self#string a1 in self#module_type a2
+          let self = self#auident a1 in self#module_type a2
       | #ant as a0 -> (self#ant a0 :>'self_type)
     method match_case : match_case -> 'self_type=
       function
@@ -3304,11 +3304,11 @@ class fold2 =
             let self = self#module_binding a1 b1 in self#module_binding a2 b2
         | (`ModuleBind (a0,a1,a2,a3),`ModuleBind (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#auident a1 b1 in
             let self = self#module_type a2 b2 in self#module_expr a3 b3
         | (`ModuleConstraint (a0,a1,a2),`ModuleConstraint (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in self#module_type a2 b2
+            let self = self#auident a1 b1 in self#module_type a2 b2
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method match_case : match_case -> match_case -> 'self_type=
@@ -4055,11 +4055,11 @@ and pp_print_module_binding: 'fmt -> module_binding -> 'result =
           pp_print_module_binding a1 pp_print_module_binding a2
     | `ModuleBind (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
-          pp_print_loc a0 pp_print_string a1 pp_print_module_type a2
+          pp_print_loc a0 pp_print_auident a1 pp_print_module_type a2
           pp_print_module_expr a3
     | `ModuleConstraint (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
-          pp_print_loc a0 pp_print_string a1 pp_print_module_type a2
+          pp_print_loc a0 pp_print_auident a1 pp_print_module_type a2
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 and pp_print_match_case: 'fmt -> match_case -> 'result =
   fun fmt  ->
@@ -4535,11 +4535,11 @@ class iter =
           (self#loc a0; self#module_binding a1; self#module_binding a2)
       | `ModuleBind (a0,a1,a2,a3) ->
           (self#loc a0;
-           self#string a1;
+           self#auident a1;
            self#module_type a2;
            self#module_expr a3)
       | `ModuleConstraint (a0,a1,a2) ->
-          (self#loc a0; self#string a1; self#module_type a2)
+          (self#loc a0; self#auident a1; self#module_type a2)
       | #ant as a0 -> (self#ant a0 :>'result)
     method match_case : match_case -> 'result=
       function
@@ -5328,12 +5328,12 @@ class map2 =
             let a2 = self#module_binding a2 b2 in `And (a0, a1, a2)
         | (`ModuleBind (a0,a1,a2,a3),`ModuleBind (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#auident a1 b1 in
             let a2 = self#module_type a2 b2 in
             let a3 = self#module_expr a3 b3 in `ModuleBind (a0, a1, a2, a3)
         | (`ModuleConstraint (a0,a1,a2),`ModuleConstraint (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#auident a1 b1 in
             let a2 = self#module_type a2 b2 in `ModuleConstraint (a0, a1, a2)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>module_binding)
         | (_,_) -> invalid_arg "map2 failure"
@@ -6905,7 +6905,7 @@ module Make(MetaLoc:META_LOC) =
                               (`ExApp
                                  (_loc, (`ExVrn (_loc, "ModuleBind")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_auident _loc a1))),
                          (meta_module_type _loc a2))),
                     (meta_module_expr _loc a3))
             | `ModuleConstraint (a0,a1,a2) ->
@@ -6915,7 +6915,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "ModuleConstraint")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_auident _loc a1))),
                     (meta_module_type _loc a2))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
         and meta_match_case: 'loc -> match_case -> 'result =
@@ -8647,7 +8647,7 @@ module Make(MetaLoc:META_LOC) =
                               (`PaApp
                                  (_loc, (`PaVrn (_loc, "ModuleBind")),
                                    (meta_loc _loc a0))),
-                              (meta_string _loc a1))),
+                              (meta_auident _loc a1))),
                          (meta_module_type _loc a2))),
                     (meta_module_expr _loc a3))
             | `ModuleConstraint (a0,a1,a2) ->
@@ -8657,7 +8657,7 @@ module Make(MetaLoc:META_LOC) =
                        (_loc,
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "ModuleConstraint")),
-                              (meta_loc _loc a0))), (meta_string _loc a1))),
+                              (meta_loc _loc a0))), (meta_auident _loc a1))),
                     (meta_module_type _loc a2))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
         and meta_match_case: 'loc -> match_case -> 'result =

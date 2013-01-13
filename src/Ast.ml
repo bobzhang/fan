@@ -316,9 +316,10 @@
       (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
     | `And of (loc * module_binding * module_binding)
       (* s : mt = me *)
-    | `ModuleBind  of (loc * string * module_type * module_expr)
+    | `ModuleBind  of (loc * (* string *) auident * module_type * module_expr)
+
       (* s : mt *)
-    | `ModuleConstraint  of (loc * string * module_type)
+    | `ModuleConstraint  of (loc * (* string *)auident * module_type)
     | ant (* $s$ *) ]
   and match_case =
     [= `Nil of loc

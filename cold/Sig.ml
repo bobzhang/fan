@@ -108,7 +108,6 @@ module type Syntax =
     val ipatt : patt Gram.t
     val ipatt_tcon : patt Gram.t
     val patt_tcon : patt Gram.t
-    val label : string Gram.t
     val label_declaration : ctyp Gram.t
     val label_declaration_list : ctyp Gram.t
     val label_expr : rec_binding Gram.t

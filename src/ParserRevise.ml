@@ -142,19 +142,28 @@ let apply () = begin
         module_binding_quot:
         [ S{b1}; "and"; S{b2} ->  {| $b1 and $b2 |}
         | `Ant (("module_binding"|"anti"|"" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | a_UIDENT{m}; ":"; module_type{mt} ->  {| $uid:m : $mt |}
-        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} ->  {| $uid:m : $mt = $me |}
+        | a_uident{m}; ":"; module_type{mt} ->
+            (* {| $uid:m : $mt |} *) `ModuleConstraint(_loc,m,mt)
+            (* {| $m : $mt |} *)
+        | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
+            (* {| $uid:m : $mt = $me |} *)
+            `ModuleBind(_loc,m,mt,me)
         | -> {||} ]
         module_binding:
         [ S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
         | `Ant (("module_binding"|"anti"|"list" |"" as n),s) -> {| $(anti:mk_anti ~c:"module_binding" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_binding_tag
-        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} -> {| $uid:m : $mt = $me |} ]
+        | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
+            (* {| $uid:m : $mt = $me |} *)
+               `ModuleBind (_loc, m, mt, me)
+     ]
         module_rec_declaration:
         [ S{m1}; "and"; S{m2} -> {| $m1 and $m2 |}
         | `Ant ((""|"module_binding"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_binding_tag
-        | a_UIDENT{m}; ":"; module_type{mt} -> {| $uid:m : $mt |} ] |};
+        | a_uident{m}; ":"; module_type{mt} ->
+            `ModuleConstraint(_loc,m,mt)
+            (* {| $uid:m : $mt |} *) ] |};
 
   with with_constr
       {:extend|Gram
@@ -193,7 +202,7 @@ let apply () = begin
       module_declaration:
       { RA
         [ ":"; module_type{mt} -> {| $mt |}
-        | "("; (* a_UIDENT *)a_uident{i}; ":"; module_type{t}; ")"; S{mt} ->
+        | "("; a_uident{i}; ":"; module_type{t}; ")"; S{mt} ->
             {| functor ( $i : $t ) -> $mt |} ] }
       module_type_quot:
       [ module_type{x} -> x | -> {:module_type||} ]  |};
@@ -215,7 +224,7 @@ let apply () = begin
     | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
         {| external $i : $t = $sl |} 
     | "include"; module_type{mt} -> {| include $mt |}
-    | "module"; (* a_UIDENT *)a_uident{i}; module_declaration{mt} ->  {| module $i : $mt |}
+    | "module"; a_uident{i}; module_declaration{mt} ->  {| module $i : $mt |}
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
     | "module"; "type"; a_ident{i}; "="; module_type{mt} ->  {| module type $i = $mt |}
     | "module"; "type"; a_ident{i} ->  {| module type $i |}
@@ -292,7 +301,7 @@ let apply () = begin
         "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
             {| let $rec:r $bi in $x |}
-        | "let"; "module"; a_uident(* a_UIDENT *){m}; module_binding0{mb}; "in"; S{e} ->
+        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; S{e} ->
             {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
             {| let open $id:i in $e |}
@@ -894,17 +903,13 @@ let apply () = begin
 
       | `Uid i; "."; S{l} -> {|$uid:i.$l|}
       | `Uid i; "."; "(" -> {|$uid:i|}
-      | `Ant (("uid"|"" as n),s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l|}      
-      (* | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |} *)
-      (* | a_UIDENT{i}; "."; "(" -> {| $uid:i |} *) ]        
+      | `Ant (("uid"|"" as n),s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l|} ]     
       module_longident:
       [ `Ant ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
       | `Uid i; "."; S{l} -> {| $uid:i.$l|}
       | `Uid i -> {|$uid:i|}
       | `Ant ((""|"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-      | `Ant((""|"uid" as n), s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l |}
-      (* | a_UIDENT{m}; "."; S{l} -> {| $uid:m.$l |} *)
-      (* | a_UIDENT{i} -> {| $uid:i |} *) ]
+      | `Ant((""|"uid" as n), s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l |} ]
       module_longident_with_app:
       { "apply"
         [ S{i}; S{j} -> {| ($i $j) |} ]
@@ -958,7 +963,7 @@ let apply () = begin
       [ "as"; a_lident{i} -> `Some i
       | -> `None _loc
       | `Ant ((""|"as") as n,s) -> `Ant(_loc, mk_anti n s)] 
-      (* label:[ a_LIDENT{i} -> i ] *)
+
       direction_flag:
       [ "to" -> {:direction_flag| to |}
       | "downto" -> {:direction_flag| downto |}
@@ -1063,7 +1068,7 @@ let apply () = begin
             {| external $i: $t = $sl |}
               
         | "include"; module_expr{me} -> {| include $me |}
-        | "module"; (* a_UIDENT *)a_uident{i}; module_binding0{mb} ->
+        | "module"; a_uident{i}; module_binding0{mb} ->
             {| module $i = $mb |}
         | "module"; "rec"; module_binding{mb} ->
             {| module rec $mb |}

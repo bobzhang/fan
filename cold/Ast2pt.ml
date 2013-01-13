@@ -841,17 +841,23 @@ and sig_item (s : sig_item) (l : signature) =
             :: l
         | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
    | `Ant (_loc,_) -> error _loc "antiquotation in sig_item" : signature )
-and module_sig_binding x acc =
+and module_sig_binding (x : module_binding)
+  (acc : (string Asttypes.loc* Parsetree.module_type) list) =
   match x with
   | `And (_loc,x,y) -> module_sig_binding x (module_sig_binding y acc)
-  | `ModuleConstraint (loc,s,mt) -> ((with_loc s loc), (module_type mt)) ::
-      acc
+  | `ModuleConstraint (_loc,s,mt) ->
+      (match s with
+       | `Uid (sloc,s) -> ((with_loc s sloc), (module_type mt)) :: acc
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | _ -> assert false
-and module_str_binding x acc =
+and module_str_binding (x : Ast.module_binding) acc =
   match x with
   | `And (_loc,x,y) -> module_str_binding x (module_str_binding y acc)
-  | `ModuleBind (loc,s,mt,me) ->
-      ((with_loc s loc), (module_type mt), (module_expr me)) :: acc
+  | `ModuleBind (_loc,s,mt,me) ->
+      (match s with
+       | `Uid (sloc,s) ->
+           ((with_loc s sloc), (module_type mt), (module_expr me)) :: acc
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | _ -> assert false
 and module_expr =
   function
