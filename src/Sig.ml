@@ -79,7 +79,7 @@ module type Syntax = sig
   val class_info_for_class_type : Gram.t class_type;
   val class_longident : Gram.t ident;
   val class_longident_and_param : Gram.t class_expr;
-  val class_name_and_param : Gram.t (string * ctyp);
+  val class_name_and_param : Gram.t (alident(* string *) * ctyp);
   val class_sig_item : Gram.t class_sig_item;
   val class_sig_item_quot : Gram.t class_sig_item;
   val class_signature : Gram.t class_sig_item;

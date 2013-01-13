@@ -849,8 +849,8 @@ let apply () = begin
       | a_lident{s}; ":"; "mutable"; poly_type{t} ->
           {|$(id:(s:>ident)) : mutable $t |}]
       class_name_and_param:
-      [ a_LIDENT{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
-      | a_LIDENT{i} -> (i, {||})  ]
+      [ (* a_LIDENT *)a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
+      | a_lident{i} -> (i, {||})  ]
       comma_type_parameter:
       [ S{t1}; ","; S{t2} -> {| $t1, $t2 |}
       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp," n s) |}
@@ -1166,7 +1166,10 @@ let apply () = begin
       class_expr_quot:
       [ S{ce1}; "and"; S{ce2} -> {| $ce1 and $ce2 |}
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
-      | "virtual";   class_name_and_param{(i, ot)} ->  {| virtual $lid:i [ $ot ] |}
+      | "virtual";   class_name_and_param{(i, ot)} ->
+          (* {| virtual $lid:i [ $ot ] |} *)
+            (* {| virtual $id:i [ $ot ]|} *)
+            `CeCon (_loc, (`Virtual _loc), (i:>ident), ot)
       | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
           let anti = `Ant (_loc,mk_anti ~c:"class_expr" n s) in
           {| $virtual:anti $id:i [ $ot ] |}
@@ -1182,7 +1185,8 @@ let apply () = begin
       | ":"; class_type_plus{ct}; "="; class_expr{ce} -> {| ($ce : $ct) |}
       | ipatt{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
       class_info_for_class_expr:
-      [ opt_virtual{mv};  class_name_and_param{(i, ot)} -> {| $virtual:mv $lid:i [ $ot ] |}  ]
+      [ opt_virtual{mv};  class_name_and_param{(i, ot)} ->
+        {| $virtual:mv $(id:(i:>ident)) [ $ot ] |}  ]
       class_fun_def:
       [ ipatt{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; class_expr{ce} -> ce ]
       class_expr:
@@ -1217,12 +1221,15 @@ let apply () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
       | class_info_for_class_type{ci}; "="; class_type{ct} -> {| $ci = $ct |} ]
       class_info_for_class_type:
-      [ opt_virtual{mv};  class_name_and_param{(i, ot)} -> {| $virtual:mv $lid:i [ $ot ] |} ]
+      [ opt_virtual{mv};  class_name_and_param{(i, ot)} ->
+        {| $virtual:mv $(id:(i:>ident)) [ $ot ] |} ]
       class_type_quot:
       [ S{ct1}; "and"; S{ct2} -> {| $ct1 and $ct2 |}
       | S{ct1}; "="; S{ct2} -> {| $ct1 = $ct2 |}
       | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
-      | "virtual";  class_name_and_param{(i, ot)} -> {| virtual $lid:i [ $ot ] |}
+      | "virtual";  class_name_and_param{(i, ot)} ->
+          (* {| virtual $lid:i [ $ot ] |} *)
+           `CtCon (_loc, (`Virtual _loc), (i:>ident), ot)
       | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
           let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
           {| $virtual:anti $id:i [ $ot ] |}

@@ -3984,18 +3984,18 @@ let apply () =
    Gram.extend (class_name_and_param : 'class_name_and_param Gram.t )
      (None,
        [(None, None,
-          [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+          [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Skeyword "[";
             `Snterm
               (Gram.obj
                  (comma_type_parameter : 'comma_type_parameter Gram.t ));
             `Skeyword "]"],
              (Gram.mk_action
-                (fun _  (x : 'comma_type_parameter)  _  (i : 'a_LIDENT) 
+                (fun _  (x : 'comma_type_parameter)  _  (i : 'a_lident) 
                    (_loc : FanLoc.t)  -> ((i, x) : 'class_name_and_param ))));
-          ([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+          ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
-               (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
+               (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
                   ((i, (`Nil _loc)) : 'class_name_and_param ))))])]);
    Gram.extend (comma_type_parameter : 'comma_type_parameter Gram.t )
      (None,
@@ -5533,7 +5533,7 @@ let apply () =
             (Gram.mk_action
                (fun ((i,ot) : 'class_name_and_param)  _  (_loc : FanLoc.t) 
                   ->
-                  (`CeCon (_loc, (`Virtual _loc), (`Lid (_loc, i)), ot) : 
+                  (`CeCon (_loc, (`Virtual _loc), (i :>ident), ot) : 
                   'class_expr_quot ))));
           ([`Stoken
               (((function | `Ant ("virtual",_) -> true | _ -> false)),
@@ -5626,7 +5626,7 @@ let apply () =
              (Gram.mk_action
                 (fun ((i,ot) : 'class_name_and_param)  (mv : 'opt_virtual) 
                    (_loc : FanLoc.t)  ->
-                   (`CeCon (_loc, mv, (`Lid (_loc, i)), ot) : 'class_info_for_class_expr ))))])]);
+                   (`CeCon (_loc, mv, (i :>ident), ot) : 'class_info_for_class_expr ))))])]);
    Gram.extend (class_fun_def : 'class_fun_def Gram.t )
      (None,
        [(None, None,
@@ -5821,7 +5821,7 @@ let apply () =
             (Gram.mk_action
                (fun ((i,ot) : 'class_name_and_param)  (mv : 'opt_virtual) 
                   (_loc : FanLoc.t)  ->
-                  (`CtCon (_loc, mv, (`Lid (_loc, i)), ot) : 'class_info_for_class_type ))))])]);
+                  (`CtCon (_loc, mv, (i :>ident), ot) : 'class_info_for_class_type ))))])]);
   Gram.extend (class_type_quot : 'class_type_quot Gram.t )
     (None,
       [(None, None,
@@ -5845,8 +5845,7 @@ let apply () =
             (Gram.obj (class_name_and_param : 'class_name_and_param Gram.t ))],
            (Gram.mk_action
               (fun ((i,ot) : 'class_name_and_param)  _  (_loc : FanLoc.t)  ->
-                 (`CtCon (_loc, (`Virtual _loc), (`Lid (_loc, i)), ot) : 
-                 'class_type_quot ))));
+                 (`CtCon (_loc, (`Virtual _loc), (i :>ident), ot) : 'class_type_quot ))));
          ([`Stoken
              (((function | `Ant ("virtual",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"virtual\",_)"));

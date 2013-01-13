@@ -108,12 +108,12 @@
     | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)
 
      (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
-    | `TyDcl of (loc * (* string *)alident * list ctyp * ctyp * list (ctyp * ctyp))
+    | `TyDcl of (loc * alident * list ctyp * ctyp * list (ctyp * ctyp))
      (* FIXME, the location *)
           
       (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
     | `TyObj of (loc * ctyp * row_var_flag)
-    | `TyOlb of (loc * (* string *) alident * ctyp) (* ?s:t *)
+    | `TyOlb of (loc * alident * ctyp) (* ?s:t *)
     | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
     | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
     | `TyQuo of (loc * string) (* 's *)
