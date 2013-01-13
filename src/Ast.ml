@@ -170,11 +170,8 @@
     | `PaVrn of (loc * string) (* `s *)
     | `Lazy of (loc * patt) (* lazy p *)
 
-    (* | `PaMod of (loc * string) (\* (module M) *\) *)
-
     (* (module M : ty ) *)      
-    | `ModuleUnpack of (loc * (* string *)auident * meta_option ctyp)
-   ]
+    | `ModuleUnpack of (loc * (* string *)auident * meta_option ctyp)]
   and expr =
     [= `Nil of loc
     | `Id  of (loc * ident) (* i *)
@@ -278,7 +275,7 @@
     | `RecModule of (loc * module_binding)
 
       (* module type s = mt *)
-    | `ModuleType of (loc * string * module_type)
+    | `ModuleType of (loc * (* string *)auident * module_type)
           
       (* open i *)
     | `Open of (loc * ident)
@@ -376,7 +373,7 @@
     | `RecModule of (loc * module_binding)
 
       (* module type s = mt *)
-    | `ModuleType of (loc * string * module_type)
+    | `ModuleType of (loc * (* string *)auident * module_type)
       (* open i *)
     | `Open of (loc * ident)
       (* type t *)

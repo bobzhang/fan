@@ -841,7 +841,10 @@ and sig_item (s : sig_item) (l : signature) =
          match mt with
          | `MtQuo (_,_) -> Pmodtype_abstract
          | _ -> Pmodtype_manifest (module_type mt) in
-       (mksig loc (Psig_modtype ((with_loc n loc), si))) :: l
+       (match n with
+        | `Uid (sloc,n) -> (mksig loc (Psig_modtype ((with_loc n sloc), si)))
+            :: l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
    | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl []))) :: l
    | `Val (loc,n,t) ->
@@ -938,7 +941,11 @@ and str_item (s : str_item) (l : structure) =
    | `RecModule (loc,mb) ->
        (mkstr loc (Pstr_recmodule (module_str_binding mb []))) :: l
    | `ModuleType (loc,n,mt) ->
-       (mkstr loc (Pstr_modtype ((with_loc n loc), (module_type mt)))) :: l
+       (match n with
+        | `Uid (sloc,n) ->
+            (mkstr loc (Pstr_modtype ((with_loc n sloc), (module_type mt))))
+            :: l
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
    | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl []))) :: l
    | `Value (loc,rf,bi) ->

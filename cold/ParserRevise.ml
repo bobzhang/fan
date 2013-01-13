@@ -743,18 +743,18 @@ let apply () =
                   -> (`RecModule (_loc, mb) : 'sig_item ))));
           ([`Skeyword "module";
            `Skeyword "type";
-           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
             (Gram.mk_action
-               (fun (mt : 'module_type)  _  (i : 'a_ident)  _  _ 
+               (fun (mt : 'module_type)  _  (i : 'a_uident)  _  _ 
                   (_loc : FanLoc.t)  ->
                   (`ModuleType (_loc, i, mt) : 'sig_item ))));
           ([`Skeyword "module";
            `Skeyword "type";
-           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
             (Gram.mk_action
-               (fun (i : 'a_ident)  _  _  (_loc : FanLoc.t)  ->
+               (fun (i : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
                   (`ModuleType (_loc, i, (`Nil _loc)) : 'sig_item ))));
           ([`Skeyword "open";
            `Snterm (Gram.obj (module_longident : 'module_longident Gram.t ))],
@@ -5112,11 +5112,11 @@ let apply () =
                   (`RecModule (_loc, mb) : 'str_item ))));
           ([`Skeyword "module";
            `Skeyword "type";
-           `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
             (Gram.mk_action
-               (fun (mt : 'module_type)  _  (i : 'a_ident)  _  _ 
+               (fun (mt : 'module_type)  _  (i : 'a_uident)  _  _ 
                   (_loc : FanLoc.t)  ->
                   (`ModuleType (_loc, i, mt) : 'str_item ))));
           ([`Skeyword "open";

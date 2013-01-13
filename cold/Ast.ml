@@ -86,7 +86,7 @@ and sig_item =
   | `External of (loc* alident* ctyp* string meta_list)
   | `Include of (loc* module_type) | `Module of (loc* auident* module_type)
   | `RecModule of (loc* module_binding)
-  | `ModuleType of (loc* string* module_type) | `Open of (loc* ident)
+  | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
   | `Type of (loc* ctyp) | `Val of (loc* alident* ctyp) | ant] 
 and with_constr =
   [ `Nil of loc | `TypeEq of (loc* ctyp* ctyp)
@@ -121,7 +121,7 @@ and str_item =
   | `External of (loc* alident* ctyp* string meta_list)
   | `Include of (loc* module_expr) | `Module of (loc* auident* module_expr)
   | `RecModule of (loc* module_binding)
-  | `ModuleType of (loc* string* module_type) | `Open of (loc* ident)
+  | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
   | `Type of (loc* ctyp) | `Value of (loc* rec_flag* binding) | ant] 
 and class_type =
   [ `Nil of loc | `CtCon of (loc* virtual_flag* ident* ctyp)

@@ -226,8 +226,9 @@ let apply () = begin
     | "include"; module_type{mt} -> {| include $mt |}
     | "module"; a_uident{i}; module_declaration{mt} ->  {| module $i : $mt |}
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
-    | "module"; "type"; a_ident{i}; "="; module_type{mt} ->  {| module type $i = $mt |}
-    | "module"; "type"; a_ident{i} ->  {| module type $i |}
+    | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
+        {| module type $i = $mt |}
+    | "module"; "type"; a_uident{i} -> {| module type $i |}
     | "open"; module_longident{i} -> {| open $i |}
     | "type"; type_declaration{t} -> {| type $t |}
     | "val"; a_lident{i}; ":"; ctyp{t} -> {| val $i : $t |} 
@@ -1076,7 +1077,7 @@ let apply () = begin
             {| module $i = $mb |}
         | "module"; "rec"; module_binding{mb} ->
             {| module rec $mb |}
-        | "module"; "type"; a_ident{i}; "="; module_type{mt} ->
+        | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
             {| module type $i = $mt |}
         | "open"; `Lid "lang"; `STR(_,s) -> (* FIXME put in the directive table*)
             begin
