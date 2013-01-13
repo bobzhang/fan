@@ -77,7 +77,7 @@ let (<+) names ty =
 let (+>) params base = List.fold_right arrow params base
 let name_length_of_tydcl =
   function
-  | `TyDcl (_,name,tyvars,_,_) -> (name, (List.length tyvars))
+  | `TyDcl (_,`Lid (_,name),tyvars,_,_) -> (name, (List.length tyvars))
   | tydcl ->
       invalid_arg
         ((sprintf "name_length_of_tydcl {|%s|}\n") & (to_string tydcl))
@@ -93,7 +93,7 @@ let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
 let ty_name_of_tydcl =
   function
-  | `TyDcl (_,name,tyvars,_,_) ->
+  | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
       apply (`Id (_loc, (`Lid (_loc, name)))) tyvars
   | tydcl ->
       invalid_arg & ((sprintf "ctyp_of_tydcl{|%s|}\n") & (to_string tydcl))
@@ -183,7 +183,7 @@ let mk_obj class_name base body =
                                (`Nil _loc))), (`None _loc))), body)))))))
 let is_recursive ty_dcl =
   match ty_dcl with
-  | `TyDcl (_,name,_,ctyp,_) ->
+  | `TyDcl (_,`Lid (_,name),_,ctyp,_) ->
       let obj =
         object (self : 'self_type)
           inherit  FanAst.fold as super

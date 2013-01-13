@@ -197,7 +197,7 @@ class eq =
         | (`TyMan (a0,a1,a2),`TyMan (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`TyDcl (a0,a1,a2,a3,a4),`TyDcl (b0,b1,b2,b3,b4)) ->
-            ((((self#loc a0 b0) && (self#string a1 b1)) &&
+            ((((self#loc a0 b0) && (self#alident a1 b1)) &&
                 (self#list (fun self  -> self#ctyp) a2 b2))
                && (self#ctyp a3 b3))
               &&
@@ -844,7 +844,7 @@ class map =
           let a2 = self#ctyp a2 in `TyMan (a0, a1, a2)
       | `TyDcl (a0,a1,a2,a3,a4) ->
           let a0 = self#loc a0 in
-          let a1 = self#string a1 in
+          let a1 = self#alident a1 in
           let a2 = self#list (fun self  -> self#ctyp) a2 in
           let a3 = self#ctyp a3 in
           let a4 =
@@ -1657,8 +1657,8 @@ class print =
               self#ctyp a1 self#ctyp a2
         | `TyDcl (a0,a1,a2,a3,a4) ->
             Format.fprintf fmt "@[<1>(`TyDcl@ %a@ %a@ %a@ %a@ %a)@]" 
-              self#loc a0 self#string a1 (self#list (fun self  -> self#ctyp))
-              a2 self#ctyp a3
+              self#loc a0 self#alident a1
+              (self#list (fun self  -> self#ctyp)) a2 self#ctyp a3
               (self#list
                  (fun self  fmt  (a0,a1)  ->
                     Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#ctyp a0
@@ -2343,7 +2343,7 @@ class fold =
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `TyDcl (a0,a1,a2,a3,a4) ->
           let self = self#loc a0 in
-          let self = self#string a1 in
+          let self = self#alident a1 in
           let self = self#list (fun self  -> self#ctyp) a2 in
           let self = self#ctyp a3 in
           self#list
@@ -2945,7 +2945,7 @@ class fold2 =
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
         | (`TyDcl (a0,a1,a2,a3,a4),`TyDcl (b0,b1,b2,b3,b4)) ->
             let self = self#loc a0 b0 in
-            let self = self#string a1 b1 in
+            let self = self#alident a1 b1 in
             let self = self#list (fun self  -> self#ctyp) a2 b2 in
             let self = self#ctyp a3 b3 in
             self#list
@@ -3674,7 +3674,7 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
           pp_print_ctyp a1 pp_print_ctyp a2
     | `TyDcl (a0,a1,a2,a3,a4) ->
         Format.fprintf fmt "@[<1>(`TyDcl@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
-          a0 pp_print_string a1 (pp_print_list pp_print_ctyp) a2
+          a0 pp_print_alident a1 (pp_print_list pp_print_ctyp) a2
           pp_print_ctyp a3
           (pp_print_list
              (fun fmt  (a0,a1)  ->
@@ -4349,7 +4349,7 @@ class iter =
       | `TyMan (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyDcl (a0,a1,a2,a3,a4) ->
           (self#loc a0;
-           self#string a1;
+           self#alident a1;
            self#list (fun self  -> self#ctyp) a2;
            self#ctyp a3;
            self#list (fun self  (a0,a1)  -> self#ctyp a0; self#ctyp a1) a4)
@@ -4859,7 +4859,7 @@ class map2 =
             let a2 = self#ctyp a2 b2 in `TyMan (a0, a1, a2)
         | (`TyDcl (a0,a1,a2,a3,a4),`TyDcl (b0,b1,b2,b3,b4)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in
+            let a1 = self#alident a1 b1 in
             let a2 = self#list (fun self  -> self#ctyp) a2 b2 in
             let a3 = self#ctyp a3 b3 in
             let a4 =
@@ -5956,7 +5956,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`ExApp
                                       (_loc, (`ExVrn (_loc, "TyDcl")),
                                         (meta_loc _loc a0))),
-                                   (meta_string _loc a1))),
+                                   (meta_alident _loc a1))),
                               (meta_list meta_ctyp _loc a2))),
                          (meta_ctyp _loc a3))),
                     (meta_list
@@ -7698,7 +7698,7 @@ module Make(MetaLoc:META_LOC) =
                                    (`PaApp
                                       (_loc, (`PaVrn (_loc, "TyDcl")),
                                         (meta_loc _loc a0))),
-                                   (meta_string _loc a1))),
+                                   (meta_alident _loc a1))),
                               (meta_list meta_ctyp _loc a2))),
                          (meta_ctyp _loc a3))),
                     (meta_list

@@ -3409,14 +3409,14 @@ let apply () =
      (type_ident_and_parameters : 'type_ident_and_parameters Gram.t )
      (None,
        [(None, None,
-          [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+          [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
             `Slist0
               (`Snterm
                  (Gram.obj
                     (optional_type_parameter : 'optional_type_parameter
                                                  Gram.t )))],
              (Gram.mk_action
-                (fun (tpl : 'optional_type_parameter list)  (i : 'a_LIDENT) 
+                (fun (tpl : 'optional_type_parameter list)  (i : 'a_lident) 
                    (_loc : FanLoc.t)  ->
                    ((i, tpl) : 'type_ident_and_parameters ))))])]);
    Gram.extend (constrain : 'constrain Gram.t )

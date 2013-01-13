@@ -819,8 +819,11 @@ and mktype_decl x acc =
             let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
             (ctyp t1, ctyp t2,  loc))
           cl  in
-      [(with_loc c cloc,
+      match c with
+      [`Lid(sloc,c)->   
+      [(with_loc c sloc,
         type_decl (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
+      |`Ant(_loc,_) -> ANT_ERROR]
   | _ -> assert false ]
 and module_type : Ast.module_type -> Parsetree.module_type =
   with module_type fun 

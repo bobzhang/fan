@@ -88,7 +88,7 @@ let (+>) params base = List.fold_right arrow params base;
    ]}
  *)
 let name_length_of_tydcl = fun 
-    [ `TyDcl (_, name, tyvars, _, _) -> (name, List.length tyvars)
+    [ `TyDcl (_, `Lid(_,name), tyvars, _, _) -> (name, List.length tyvars)
     | tydcl -> invalid_arg (
         sprintf "name_length_of_tydcl {|%s|}\n" & to_string tydcl)];      
 
@@ -148,7 +148,7 @@ let of_name_len ~off (name,len) =
    ]}
  *)  
 let ty_name_of_tydcl  = fun 
-    [ `TyDcl (_, name, tyvars, _, _) -> apply {| $lid:name |} tyvars
+    [ `TyDcl (_, `Lid(_,name), tyvars, _, _) -> apply {| $lid:name |} tyvars
     | tydcl ->
         invalid_arg & sprintf "ctyp_of_tydcl{|%s|}\n" & to_string tydcl];      
 
@@ -311,7 +311,7 @@ let mk_obj class_name  base body =
 
   
 let is_recursive ty_dcl = match ty_dcl with
-  [ `TyDcl (_, name, _, ctyp, _)  ->
+  [ `TyDcl (_, `Lid(_,name), _, ctyp, _)  ->
     let obj = object(self:'self_type)
       inherit FanAst.fold as super;
       val mutable is_recursive = false;

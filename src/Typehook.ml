@@ -206,7 +206,7 @@ let traversal () : traversal  = object (self:'self_type)
       self#out_and_types;
       (if !keep then x else {| |} )
     end
-    | {| type $((`TyDcl (_, name, _, _, _) as t)) |} as x -> begin
+    | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> begin
         let item =  `Single (name,t) ;
         if !print_collect_module_types then eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
         self#update_cur_module_types (fun lst -> [ item :: lst]);
@@ -218,7 +218,7 @@ let traversal () : traversal  = object (self:'self_type)
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
     |  x ->  super#str_item x  ];
   method! ctyp = fun
-    [ `TyDcl (_, name, _, _, _) as t -> begin
+    [ `TyDcl (_, `Lid(_,name), _, _, _) as t -> begin
       if self#is_in_and_types then
         self#update_cur_and_types (fun lst -> [ (name,t) :: lst] )
       else ();

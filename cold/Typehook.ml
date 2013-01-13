@@ -153,7 +153,7 @@ let traversal () =
                   lst);
              self#out_and_types;
              if keep.contents then x else `Nil _loc))
-       | `Type (_loc,(`TyDcl (_,name,_,_,_) as t)) as x ->
+       | `Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) as x ->
            let item = `Single (name, t) in
            (if print_collect_module_types.contents
             then eprintf "Came across @[%a@]@." FSig.pp_print_types item
@@ -166,7 +166,7 @@ let traversal () =
        | x -> super#str_item x
      method! ctyp =
        function
-       | `TyDcl (_,name,_,_,_) as t ->
+       | `TyDcl (_,`Lid (_,name),_,_,_) as t ->
            (if self#is_in_and_types
             then self#update_cur_and_types (fun lst  -> (name, t) :: lst)
             else ();

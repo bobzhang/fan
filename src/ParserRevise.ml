@@ -741,7 +741,7 @@ let apply () = begin
       |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
         -> `TyDcl (_loc, n, tpl, tk, cl) ]
       type_ident_and_parameters:
-      [ a_LIDENT{i}; L0 optional_type_parameter{tpl} -> (i, tpl)]
+      [ a_lident{i}; L0 optional_type_parameter{tpl} -> (i, tpl)]
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
       opt_eq_ctyp:

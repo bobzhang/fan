@@ -108,7 +108,7 @@
     | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)
 
      (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
-    | `TyDcl of (loc * string * list ctyp * ctyp * list (ctyp * ctyp))
+    | `TyDcl of (loc * (* string *)alident * list ctyp * ctyp * list (ctyp * ctyp))
      (* FIXME, the location *)
           
       (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)

@@ -759,10 +759,13 @@ and mktype_decl x acc =
           (fun (t1,t2)  ->
              let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
              ((ctyp t1), (ctyp t2), loc)) cl in
-      ((with_loc c cloc),
-        (type_decl (List.fold_right optional_type_parameters tl []) cl td
-           cloc))
-        :: acc
+      (match c with
+       | `Lid (sloc,c) ->
+           ((with_loc c sloc),
+             (type_decl (List.fold_right optional_type_parameters tl []) cl
+                td cloc))
+           :: acc
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | _ -> assert false
 and module_type: Ast.module_type -> Parsetree.module_type =
   function
