@@ -3835,28 +3835,28 @@ let apply () =
                (fun (t2 : 'constructor_declarations)  _ 
                   (t1 : 'constructor_declarations)  (_loc : FanLoc.t)  ->
                   (`Or (_loc, t1, t2) : 'constructor_declarations ))));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword "of";
            `Snterm
              (Gram.obj (constructor_arg_list : 'constructor_arg_list Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'constructor_arg_list)  _  (s : 'a_UIDENT) 
+               (fun (t : 'constructor_arg_list)  _  (s : 'a_uident) 
                   (_loc : FanLoc.t)  ->
-                  (`Of (_loc, (`Id (_loc, (`Uid (_loc, s)))), t) : 'constructor_declarations ))));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+                  (`Of (_loc, (`Id (_loc, (s :>ident))), t) : 'constructor_declarations ))));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'ctyp)  _  (s : 'a_UIDENT)  (_loc : FanLoc.t)  ->
+               (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->
                   (let (tl,rt) = Ctyp.to_generalized t in
                    `TyCol
-                     (_loc, (`Id (_loc, (`Uid (_loc, s)))),
+                     (_loc, (`Id (_loc, (s :>ident))),
                        (`TyArr (_loc, (FanAst.tyAnd_of_list tl), rt))) : 
                   'constructor_declarations ))));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
             (Gram.mk_action
-               (fun (s : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (`Uid (_loc, s))) : 'constructor_declarations ))))])]);
+               (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->
+                  (`Id (_loc, (s :>ident)) : 'constructor_declarations ))))])]);
    Gram.extend (constructor_declaration : 'constructor_declaration Gram.t )
      (None,
        [(None, None,
@@ -3878,18 +3878,18 @@ let apply () =
                   | `QUOTATION x ->
                       (AstQuotation.expand _loc x DynAst.ctyp_tag : 'constructor_declaration )
                   | _ -> assert false)));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword "of";
            `Snterm
              (Gram.obj (constructor_arg_list : 'constructor_arg_list Gram.t ))],
             (Gram.mk_action
-               (fun (t : 'constructor_arg_list)  _  (s : 'a_UIDENT) 
+               (fun (t : 'constructor_arg_list)  _  (s : 'a_uident) 
                   (_loc : FanLoc.t)  ->
-                  (`Of (_loc, (`Id (_loc, (`Uid (_loc, s)))), t) : 'constructor_declaration ))));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
+                  (`Of (_loc, (`Id (_loc, (s :>ident))), t) : 'constructor_declaration ))));
+          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
             (Gram.mk_action
-               (fun (s : 'a_UIDENT)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (`Uid (_loc, s))) : 'constructor_declaration ))))])]);
+               (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->
+                  (`Id (_loc, (s :>ident)) : 'constructor_declaration ))))])]);
    Gram.extend (constructor_arg_list : 'constructor_arg_list Gram.t )
      (None,
        [(None, None,

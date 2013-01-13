@@ -574,7 +574,9 @@ let apply () = begin
         | "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
         | "("; ")" -> {| () |}
         | "("; "module"; a_UIDENT{m}; ")" -> {| (module $m) |}
-        | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" -> {| ((module $m) : (module $pt)) |}
+        | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" ->
+            {| ((module $m) : (module $pt)) |}
+              (* {| ( module $m : module $pt )|} *)
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as";  a_lident{s}; ")" -> {| ($p as $s )|}
@@ -832,16 +834,18 @@ let apply () = begin
       | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | S{t1}; "|"; S{t2} ->        {| $t1 | $t2 |}
-      | a_UIDENT{s}; "of"; constructor_arg_list{t} ->  {| $uid:s of $t |}
-      | a_UIDENT{s}; ":"; ctyp{t} ->
+      | a_uident{s}; "of"; constructor_arg_list{t} ->
+          {| $(id:(s:>ident)) of $t |}
+      | a_uident{s}; ":"; ctyp{t} ->
           let (tl, rt) = Ctyp.to_generalized t in
-          {| $uid:s : ($(FanAst.tyAnd_of_list tl) -> $rt) |}
-      | a_UIDENT{s} ->  {| $uid:s |}  ]
+            {| $(id:(s:>ident)) : ($(FanAst.tyAnd_of_list tl) -> $rt) |}
+      | a_uident{s} -> {| $(id:(s:>ident)) |} ]
       constructor_declaration:
       [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_UIDENT{s}; "of"; constructor_arg_list{t} ->   {| $uid:s of $t |}
-      | a_UIDENT{s} ->    {| $uid:s |}  ]
+      | a_uident{s}; "of"; constructor_arg_list{t} ->
+         {|$(id:(s:>ident)) of $t |}
+      | a_uident{s} ->   {|$(id:(s:>ident))|}  ]
       constructor_arg_list:
       [ `Ant (("list" as n),s) ->  {| $(anti:mk_anti ~c:"ctypand" n s) |}
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
