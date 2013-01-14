@@ -188,13 +188,17 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
   (*   `TyAnP _ | `TyAnM _ | `TyTypePol (_, _, _) | *)
   (*   `TyObj (_, _, (`Ant _)) | `Nil _ | `Tup (_,_)  -> *)
       assert false ]
-and row_field : ctyp -> list row_field = with ctyp fun 
+and row_field (x:ctyp) acc =
+    with ctyp match x with 
   [ {||} -> []
-  | {| `$i |} -> [Rtag i true []]
-  | {| `$i of & $t |} -> [Rtag i true (List.map ctyp (list_of_ctyp t []))]
-  | {| `$i of $t |} -> [Rtag i false (List.map ctyp (list_of_ctyp t []))]
-  | {| $t1 | $t2 |} -> row_field t1 @ row_field t2
-  | t -> [Rinherit (ctyp t)] ]
+  | {| `$i |} ->
+      [Rtag i true [] :: acc]
+  | {| `$i of & $t |} ->
+      [Rtag i true (List.map ctyp (list_of_ctyp t [])) :: acc ]
+  | {| `$i of $t |} ->
+      [Rtag i false (List.map ctyp (list_of_ctyp t [])) :: acc ]
+  | {| $t1 | $t2 |} -> row_field t1 ( row_field t2 acc)
+  | t -> [Rinherit (ctyp t) :: acc] ]
 and meth_list (fl:ctyp) (acc: list core_field_type) : list core_field_type =
   with ctyp match fl with
   [ {||} -> acc

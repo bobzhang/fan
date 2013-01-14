@@ -29,7 +29,7 @@ val predef_option : loc -> ctyp
 
 val ctyp : ctyp -> Parsetree.core_type
 
-val row_field : ctyp -> Parsetree.row_field list
+val row_field : ctyp -> Parsetree.row_field list -> Parsetree.row_field list
 
 val meth_list :
     ctyp ->

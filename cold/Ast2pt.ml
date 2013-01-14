@@ -121,14 +121,14 @@ let rec ctyp: ctyp -> Parsetree.core_type =
       mktyp loc
         (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
   | `TyVrnEq (_loc,t) ->
-      mktyp _loc (Ptyp_variant ((row_field t), true, None))
+      mktyp _loc (Ptyp_variant ((row_field t []), true, None))
   | `TyVrnSup (_loc,t) ->
-      mktyp _loc (Ptyp_variant ((row_field t), false, None))
+      mktyp _loc (Ptyp_variant ((row_field t []), false, None))
   | `TyVrnInf (_loc,t) ->
-      mktyp _loc (Ptyp_variant ((row_field t), true, (Some [])))
+      mktyp _loc (Ptyp_variant ((row_field t []), true, (Some [])))
   | `TyVrnInfSup (_loc,t,t') ->
       mktyp _loc
-        (Ptyp_variant ((row_field t), true, (Some (Ctyp.name_tags t'))))
+        (Ptyp_variant ((row_field t []), true, (Some (Ctyp.name_tags t'))))
   | `TyLab (loc,_,_) -> error loc "labelled type not allowed here"
   | `TyMan (loc,_,_) -> error loc "manifest type not allowed here"
   | `TyOlb (loc,_,_) -> error loc "labelled type not allowed here"
@@ -143,16 +143,16 @@ let rec ctyp: ctyp -> Parsetree.core_type =
   | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | _ -> assert false
-and row_field: ctyp -> row_field list =
-  function
+and row_field (x : ctyp) acc =
+  match x with
   | `Nil _loc -> []
-  | `TyVrn (_loc,i) -> [Rtag (i, true, [])]
+  | `TyVrn (_loc,i) -> (Rtag (i, true, [])) :: acc
   | `TyOfAmp (_loc,`TyVrn (_,i),t) ->
-      [Rtag (i, true, (List.map ctyp (list_of_ctyp t [])))]
+      (Rtag (i, true, (List.map ctyp (list_of_ctyp t [])))) :: acc
   | `Of (_loc,`TyVrn (_,i),t) ->
-      [Rtag (i, false, (List.map ctyp (list_of_ctyp t [])))]
-  | `Or (_loc,t1,t2) -> (row_field t1) @ (row_field t2)
-  | t -> [Rinherit (ctyp t)]
+      (Rtag (i, false, (List.map ctyp (list_of_ctyp t [])))) :: acc
+  | `Or (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
+  | t -> (Rinherit (ctyp t)) :: acc
 and meth_list (fl : ctyp) (acc : core_field_type list) =
   (match fl with
    | `Nil _loc -> acc

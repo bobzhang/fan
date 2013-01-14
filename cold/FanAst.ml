@@ -131,6 +131,13 @@ class eq =
         | (`Normal a0,`Normal b0) -> self#loc a0 b0
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
+    method meta_bool : meta_bool -> meta_bool -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`True a0,`True b0) -> self#loc a0 b0
+        | (`False a0,`False b0) -> self#loc a0 b0
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
+        | (_,_) -> false
     method meta_option :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'all_a0 -> 'result) ->
@@ -167,6 +174,14 @@ class eq =
         | (`Uid (a0,a1),`Uid (b0,b1)) ->
             (self#loc a0 b0) && (self#string a1 b1)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
+        | (_,_) -> false
+    method aident : aident -> aident -> 'result=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | ((#alident as a0),(#alident as b0)) ->
+            (self#alident a0 b0 :>'result)
+        | ((#auident as a0),(#auident as b0)) ->
+            (self#auident a0 b0 :>'result)
         | (_,_) -> false
     method astring : astring -> astring -> 'result=
       fun a0  b0  ->
@@ -773,6 +788,11 @@ class map =
       | `Negative a0 -> let a0 = self#loc a0 in `Negative a0
       | `Normal a0 -> let a0 = self#loc a0 in `Normal a0
       | #ant as a0 -> (self#ant a0 :>position_flag)
+    method meta_bool : meta_bool -> meta_bool=
+      function
+      | `True a0 -> let a0 = self#loc a0 in `True a0
+      | `False a0 -> let a0 = self#loc a0 in `False a0
+      | #ant as a0 -> (self#ant a0 :>meta_bool)
     method meta_option :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
@@ -805,6 +825,10 @@ class map =
       | `Uid (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#string a1 in `Uid (a0, a1)
       | #ant as a0 -> (self#ant a0 :>auident)
+    method aident : aident -> aident=
+      function
+      | #alident as a0 -> (self#alident a0 :>aident)
+      | #auident as a0 -> (self#auident a0 :>aident)
     method astring : astring -> astring=
       function
       | `C (a0,a1) ->
@@ -1588,6 +1612,12 @@ class print =
             Format.fprintf fmt "@[<1>(`Negative@ %a)@]" self#loc a0
         | `Normal a0 -> Format.fprintf fmt "@[<1>(`Normal@ %a)@]" self#loc a0
         | #ant as a0 -> (self#ant fmt a0 :>'result)
+    method meta_bool : 'fmt -> meta_bool -> 'result=
+      fun fmt  ->
+        function
+        | `True a0 -> Format.fprintf fmt "@[<1>(`True@ %a)@]" self#loc a0
+        | `False a0 -> Format.fprintf fmt "@[<1>(`False@ %a)@]" self#loc a0
+        | #ant as a0 -> (self#ant fmt a0 :>'result)
     method meta_option :
       'all_a0 .
         ('self_type -> 'fmt -> 'all_a0 -> 'result) ->
@@ -1626,6 +1656,11 @@ class print =
             Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" self#loc a0
               self#string a1
         | #ant as a0 -> (self#ant fmt a0 :>'result)
+    method aident : 'fmt -> aident -> 'result=
+      fun fmt  ->
+        function
+        | #alident as a0 -> (self#alident fmt a0 :>'result)
+        | #auident as a0 -> (self#auident fmt a0 :>'result)
     method astring : 'fmt -> astring -> 'result=
       fun fmt  ->
         function
@@ -2298,6 +2333,11 @@ class fold =
       | `Negative a0 -> self#loc a0
       | `Normal a0 -> self#loc a0
       | #ant as a0 -> (self#ant a0 :>'self_type)
+    method meta_bool : meta_bool -> 'self_type=
+      function
+      | `True a0 -> self#loc a0
+      | `False a0 -> self#loc a0
+      | #ant as a0 -> (self#ant a0 :>'self_type)
     method meta_option :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'self_type) ->
@@ -2324,6 +2364,10 @@ class fold =
       function
       | `Uid (a0,a1) -> let self = self#loc a0 in self#string a1
       | #ant as a0 -> (self#ant a0 :>'self_type)
+    method aident : aident -> 'self_type=
+      function
+      | #alident as a0 -> (self#alident a0 :>'self_type)
+      | #auident as a0 -> (self#auident a0 :>'self_type)
     method astring : astring -> 'self_type=
       function
       | `C (a0,a1) -> let self = self#loc a0 in self#string a1
@@ -2882,6 +2926,13 @@ class fold2 =
         | (`Normal a0,`Normal b0) -> self#loc a0 b0
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
+    method meta_bool : meta_bool -> meta_bool -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`True a0,`True b0) -> self#loc a0 b0
+        | (`False a0,`False b0) -> self#loc a0 b0
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
+        | (_,_) -> invalid_arg "fold2 failure"
     method meta_option :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'all_a0 -> 'self_type) ->
@@ -2918,6 +2969,14 @@ class fold2 =
         | (`Uid (a0,a1),`Uid (b0,b1)) ->
             let self = self#loc a0 b0 in self#string a1 b1
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
+        | (_,_) -> invalid_arg "fold2 failure"
+    method aident : aident -> aident -> 'self_type=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | ((#alident as a0),(#alident as b0)) ->
+            (self#alident a0 b0 :>'self_type)
+        | ((#auident as a0),(#auident as b0)) ->
+            (self#auident a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method astring : astring -> astring -> 'self_type=
       fun a0  b0  ->
@@ -3618,6 +3677,12 @@ let pp_print_position_flag: 'fmt -> position_flag -> 'result =
         Format.fprintf fmt "@[<1>(`Negative@ %a)@]" pp_print_loc a0
     | `Normal a0 -> Format.fprintf fmt "@[<1>(`Normal@ %a)@]" pp_print_loc a0
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
+let pp_print_meta_bool: 'fmt -> meta_bool -> 'result =
+  fun fmt  ->
+    function
+    | `True a0 -> Format.fprintf fmt "@[<1>(`True@ %a)@]" pp_print_loc a0
+    | `False a0 -> Format.fprintf fmt "@[<1>(`False@ %a)@]" pp_print_loc a0
+    | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 let pp_print_meta_option :
   'all_a0 .
     ('fmt -> 'all_a0 -> 'result) -> 'fmt -> 'all_a0 meta_option -> 'result=
@@ -3654,6 +3719,11 @@ let pp_print_auident: 'fmt -> auident -> 'result =
         Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
+let pp_print_aident: 'fmt -> aident -> 'result =
+  fun fmt  ->
+    function
+    | #alident as a0 -> (pp_print_alident fmt a0 :>'result)
+    | #auident as a0 -> (pp_print_auident fmt a0 :>'result)
 let pp_print_astring: 'fmt -> astring -> 'result =
   fun fmt  ->
     function
@@ -4324,6 +4394,11 @@ class iter =
       | `Negative a0 -> self#loc a0
       | `Normal a0 -> self#loc a0
       | #ant as a0 -> (self#ant a0 :>'result)
+    method meta_bool : meta_bool -> 'result=
+      function
+      | `True a0 -> self#loc a0
+      | `False a0 -> self#loc a0
+      | #ant as a0 -> (self#ant a0 :>'result)
     method meta_option :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'result) -> 'all_a0 meta_option -> 'result=
@@ -4348,6 +4423,10 @@ class iter =
       function
       | `Uid (a0,a1) -> (self#loc a0; self#string a1)
       | #ant as a0 -> (self#ant a0 :>'result)
+    method aident : aident -> 'result=
+      function
+      | #alident as a0 -> (self#alident a0 :>'result)
+      | #auident as a0 -> (self#auident a0 :>'result)
     method astring : astring -> 'result=
       function
       | `C (a0,a1) -> (self#loc a0; self#string a1)
@@ -4795,6 +4874,13 @@ class map2 =
         | (`Normal a0,`Normal b0) -> let a0 = self#loc a0 b0 in `Normal a0
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>position_flag)
         | (_,_) -> invalid_arg "map2 failure"
+    method meta_bool : meta_bool -> meta_bool -> meta_bool=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | (`True a0,`True b0) -> let a0 = self#loc a0 b0 in `True a0
+        | (`False a0,`False b0) -> let a0 = self#loc a0 b0 in `False a0
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>meta_bool)
+        | (_,_) -> invalid_arg "map2 failure"
     method meta_option :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_a0 -> 'all_b0) ->
@@ -4836,6 +4922,14 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#string a1 b1 in `Uid (a0, a1)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>auident)
+        | (_,_) -> invalid_arg "map2 failure"
+    method aident : aident -> aident -> aident=
+      fun a0  b0  ->
+        match (a0, b0) with
+        | ((#alident as a0),(#alident as b0)) ->
+            (self#alident a0 b0 :>aident)
+        | ((#auident as a0),(#auident as b0)) ->
+            (self#auident a0 b0 :>aident)
         | (_,_) -> invalid_arg "map2 failure"
     method astring : astring -> astring -> astring=
       fun a0  b0  ->
@@ -5842,6 +5936,14 @@ module Make(MetaLoc:META_LOC) =
             | `Normal a0 ->
                 `ExApp (_loc, (`ExVrn (_loc, "Normal")), (meta_loc _loc a0))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
+        let meta_meta_bool: 'loc -> meta_bool -> 'result =
+          fun _loc  ->
+            function
+            | `True a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "True")), (meta_loc _loc a0))
+            | `False a0 ->
+                `ExApp (_loc, (`ExVrn (_loc, "False")), (meta_loc _loc a0))
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let meta_meta_option :
           'all_a0 .
             ('loc -> 'all_a0 -> 'result) ->
@@ -5887,6 +5989,11 @@ module Make(MetaLoc:META_LOC) =
                        (_loc, (`ExVrn (_loc, "Uid")), (meta_loc _loc a0))),
                     (meta_string _loc a1))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
+        let meta_aident: 'loc -> aident -> 'result =
+          fun _loc  ->
+            function
+            | #alident as a0 -> (meta_alident _loc a0 :>'result)
+            | #auident as a0 -> (meta_auident _loc a0 :>'result)
         let meta_astring: 'loc -> astring -> 'result =
           fun _loc  ->
             function
@@ -7581,6 +7688,14 @@ module Make(MetaLoc:META_LOC) =
             | `Normal a0 ->
                 `PaApp (_loc, (`PaVrn (_loc, "Normal")), (meta_loc _loc a0))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
+        let meta_meta_bool: 'loc -> meta_bool -> 'result =
+          fun _loc  ->
+            function
+            | `True a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "True")), (meta_loc _loc a0))
+            | `False a0 ->
+                `PaApp (_loc, (`PaVrn (_loc, "False")), (meta_loc _loc a0))
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let meta_meta_option :
           'all_a0 .
             ('loc -> 'all_a0 -> 'result) ->
@@ -7626,6 +7741,11 @@ module Make(MetaLoc:META_LOC) =
                        (_loc, (`PaVrn (_loc, "Uid")), (meta_loc _loc a0))),
                     (meta_string _loc a1))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
+        let meta_aident: 'loc -> aident -> 'result =
+          fun _loc  ->
+            function
+            | #alident as a0 -> (meta_alident _loc a0 :>'result)
+            | #auident as a0 -> (meta_auident _loc a0 :>'result)
         let meta_astring: 'loc -> astring -> 'result =
           fun _loc  ->
             function
