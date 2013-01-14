@@ -42,11 +42,11 @@ let apply () = begin
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
     more_ctyp name_tags opt_as_lident opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot
-    opt_eq_ctyp opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
+    (* opt_eq_ctyp *) opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot   (* poly_type *) row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
     str_item str_item_quot str_items top_phrase (* type_constraint *) type_declaration type_ident_and_parameters
-    type_kind type_longident type_longident_and_parameters type_parameter type_parameters typevars 
+    (* type_kind *) type_longident type_longident_and_parameters type_parameter type_parameters typevars 
     val_longident with_constr with_constr_quot
       lang
   |};  
@@ -1098,8 +1098,6 @@ let apply_ctyp () = begin
       
       opt_class_self_type:
       [ "("; ctyp{t}; ")" -> t | -> {||} ]
-      (* type_constraint: *)
-      (* [ "type" | "constraint" -> () ]  *)
       meth_list:
       [ meth_decl{m}; ";"; S{(ml, v) }  -> ({| $m; $ml |}, v)
       | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
@@ -1139,16 +1137,14 @@ let apply_ctyp () = begin
       | `Ant (("list" as n),s) ->          {| $(anti:mk_anti ~c:"ctypand" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
-      |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
+      |  type_ident_and_parameters{(n, tpl)}; "="; ctyp{tk}; L0 constrain{cl}
         -> `TyDcl (_loc, n, tpl, tk, cl) ]
+      
       type_ident_and_parameters:
       [ a_lident{i}; L0 type_parameter{tpl} -> (i, tpl)]
 
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
-      opt_eq_ctyp:
-      [ "="; type_kind{tk} -> tk | -> {||} ]
-      type_kind: [ ctyp{t} -> t ]
       
       typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}

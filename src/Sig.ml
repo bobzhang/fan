@@ -151,7 +151,7 @@ module type Syntax = sig
   val opt_comma_ctyp : Gram.t ctyp;
   val opt_dot_dot : Gram.t row_var_flag;
   val row_var_flag_quot : Gram.t row_var_flag;
-  val opt_eq_ctyp : Gram.t ctyp;
+  (* val opt_eq_ctyp : Gram.t ctyp; *)
   val opt_expr : Gram.t expr;
   val opt_meth_list : Gram.t ctyp;
   val opt_mutable : Gram.t mutable_flag;
@@ -187,7 +187,7 @@ module type Syntax = sig
   (* val type_constraint : Gram.t unit; *)
   val type_declaration : Gram.t ctyp;
   val type_ident_and_parameters : Gram.t (alident(* string *) * list ctyp);
-  val type_kind : Gram.t ctyp;
+  (* val type_kind : Gram.t ctyp; *)
   val type_longident : Gram.t ident;
   val type_longident_and_parameters : Gram.t ctyp;
   val type_parameter : Gram.t ctyp;
