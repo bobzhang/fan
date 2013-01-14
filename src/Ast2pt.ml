@@ -154,19 +154,21 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
       let (i, cs) = package_type pt in
       mktyp _loc (Ptyp_package i cs)
   | `TyPol (loc, t1, t2) -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
-  (* | `TyQuo (loc, s) -> mktyp loc (Ptyp_var s) *)
+
   | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) ->
       mktyp _loc (Ptyp_var s)
+        
   | {@loc| ($t1 * $t2) |} ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
+        
   | {| [ = $t ] |} ->
-      mktyp _loc (Ptyp_variant (row_field t) true None)
+      mktyp _loc (Ptyp_variant (row_field t []) true None)
   | {| [ > $t ] |} ->
-      mktyp _loc (Ptyp_variant (row_field t) false None)
+      mktyp _loc (Ptyp_variant (row_field t []) false None)
   | {| [ < $t ] |} ->
-      mktyp _loc (Ptyp_variant (row_field t) true (Some []))
+      mktyp _loc (Ptyp_variant (row_field t []) true (Some []))
   | {| [ < $t > $t' ] |} ->
-      mktyp _loc (Ptyp_variant (row_field t) true (Some (Ctyp.name_tags t')))
+      mktyp _loc (Ptyp_variant (row_field t []) true (Some (Ctyp.name_tags t')))
   | `TyLab (loc, _, _) -> error loc "labelled type not allowed here"
   | `TyMan (loc, _, _) -> error loc "manifest type not allowed here"
   | `TyOlb (loc,_,_) -> error loc "labelled type not allowed here"

@@ -196,7 +196,6 @@ let apply () = begin
         [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_type" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_type_tag
         | module_longident_with_app{i} -> {| $id:i |}
-        (* | "'"; a_ident{i} -> {| ' $i |} *)
         | "("; S{mt}; ")" -> {| $mt |}
         | "module"; "type"; "of"; module_expr{me} -> {| module type of $me |} ] }
       module_declaration:

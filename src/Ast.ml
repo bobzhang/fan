@@ -81,6 +81,11 @@
     | `Normal of loc
     |ant];
 
+   type meta_bool =
+    [=`True of loc
+    |`False of loc
+    | ant];
+
    type meta_option 'a =
     [= `None of loc 
     |  `Some of 'a
@@ -95,6 +100,10 @@
    type auident =
     [= `Uid of (loc * string)
     | ant];
+   type aident =
+    [= alident
+    | auident ];
+
    type astring =
     [= `C of (loc * string)
     | ant ];
