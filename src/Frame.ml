@@ -29,7 +29,8 @@ let check names =
    [simple_expr_of_ctyp], generally it will
    be  exlcuding adt or variant type
  *)      
-let mapi_expr ?(arity=1) ?(names=[]) (simple_expr_of_ctyp:ctyp->expr) (i:int) (y:ctyp)  : FSig.ty_info =
+let mapi_expr ?(arity=1) ?(names=[]) (simple_expr_of_ctyp:ctyp->expr) (i:int) (y:ctyp)  :
+    FSig.ty_info =
   with {patt:ctyp;expr}
   let name_expr = simple_expr_of_ctyp y in 
   let base = name_expr  +> names in

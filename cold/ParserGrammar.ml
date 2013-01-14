@@ -4,6 +4,7 @@ open PreCast.Syntax
 open LibUtil
 open Lib
 open FanUtil
+open Ast
 let _ = FanConfig.antiquotations := true
 let nonterminals = Gram.mk "nonterminals"
 let nonterminalsclear = Gram.mk "nonterminalsclear"
@@ -172,19 +173,24 @@ let _ =
     (None,
       [(None, None,
          [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
-           `Slist0 (`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t )))],
+           `Slist0
+             (Gram.srules nonterminalsclear
+                [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+                   (Gram.mk_action
+                      (fun (x : 'a_lident)  (_loc : FanLoc.t)  ->
+                         (x : 'e__4 ))))])],
             (Gram.mk_action
-               (fun (ls : 'a_LIDENT list)  (t : 'qualuid)  (_loc : FanLoc.t) 
-                  ->
+               (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
                   (let rest =
                      List.map
                        (fun x  ->
+                          let _loc = FanAst.loc_of_ident (x :>ident) in
                           `ExApp
                             (_loc,
                               (`Id
                                  (_loc,
                                    (`IdAcc (_loc, t, (`Lid (_loc, "clear")))))),
-                              (`Id (_loc, (`Lid (_loc, x)))))) ls in
+                              (`Id (_loc, (x :>ident))))) ls in
                    `Seq (_loc, (FanAst.exSem_of_list rest)) : 'nonterminalsclear ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
     (None,
@@ -230,10 +236,10 @@ let _ =
                         (`Skeyword ";"))],
                     (Gram.mk_action
                        (fun (sl : 'psymbol list)  (_loc : FanLoc.t)  ->
-                          (sl : 'e__4 ))))]), (`Skeyword "|"));
+                          (sl : 'e__5 ))))]), (`Skeyword "|"));
            `Skeyword "]"],
             (Gram.mk_action
-               (fun _  (sls : 'e__4 list)  _  _  (n : 'name) 
+               (fun _  (sls : 'e__5 list)  _  _  (n : 'name) 
                   (_loc : FanLoc.t)  ->
                   (let rest =
                      List.map
@@ -366,10 +372,10 @@ let _ =
                    (Gram.mk_action
                       (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                          match __fan_0 with
-                         | `STR (_,x) -> (x : 'e__5 )
+                         | `STR (_,x) -> (x : 'e__6 )
                          | _ -> assert false)))])],
             (Gram.mk_action
-               (fun (name : 'e__5 option)  (il : 'qualid)  (_loc : FanLoc.t) 
+               (fun (name : 'e__6 option)  (il : 'qualid)  (_loc : FanLoc.t) 
                   ->
                   (((match name with
                      | Some x ->
@@ -449,13 +455,13 @@ let _ =
                     (Gram.mk_action
                        (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                           match __fan_0 with
-                          | `STR (_,x) -> (x : 'e__6 )
+                          | `STR (_,x) -> (x : 'e__7 )
                           | _ -> assert false)))]);
            `Sopt (`Snterm (Gram.obj (assoc : 'assoc Gram.t )));
            `Snterm (Gram.obj (rule_list : 'rule_list Gram.t ))],
             (Gram.mk_action
                (fun (rules : 'rule_list)  (assoc : 'assoc option) 
-                  (label : 'e__6 option)  (_loc : FanLoc.t)  ->
+                  (label : 'e__7 option)  (_loc : FanLoc.t)  ->
                   (mk_level ~label ~assoc ~rules : 'level ))))])]);
   Gram.extend (assoc : 'assoc Gram.t )
     (None,
@@ -504,9 +510,9 @@ let _ =
                 [([`Skeyword "->"; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
                    (Gram.mk_action
                       (fun (act : 'expr)  _  (_loc : FanLoc.t)  ->
-                         (act : 'e__7 ))))])],
+                         (act : 'e__8 ))))])],
             (Gram.mk_action
-               (fun (action : 'e__7 option)  (psl : 'psymbol list) 
+               (fun (action : 'e__8 option)  (psl : 'psymbol list) 
                   (_loc : FanLoc.t)  -> (mk_rule ~prod:psl ~action : 
                   'rule ))))])]);
   Gram.extend (psymbol : 'psymbol Gram.t )
@@ -520,9 +526,9 @@ let _ =
                   `Skeyword "}"],
                    (Gram.mk_action
                       (fun _  (p : 'pattern)  _  (_loc : FanLoc.t)  ->
-                         (p : 'e__8 ))))])],
+                         (p : 'e__9 ))))])],
             (Gram.mk_action
-               (fun (p : 'e__8 option)  (s : 'symbol)  (_loc : FanLoc.t)  ->
+               (fun (p : 'e__9 option)  (s : 'symbol)  (_loc : FanLoc.t)  ->
                   (match p with
                    | Some _ -> { s with pattern = p }
                    | None  -> s : 'psymbol ))))])]);
@@ -543,10 +549,10 @@ let _ =
                       (fun (t : 'symbol)  (__fan_0 : [> FanToken.t]) 
                          (_loc : FanLoc.t)  ->
                          match __fan_0 with
-                         | `Uid "SEP" -> (t : 'e__9 )
+                         | `Uid "SEP" -> (t : 'e__10 )
                          | _ -> assert false)))])],
             (Gram.mk_action
-               (fun (sep : 'e__9 option)  (s : 'symbol) 
+               (fun (sep : 'e__10 option)  (s : 'symbol) 
                   (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Uid ("L0"|"L1" as x) ->
@@ -690,10 +696,10 @@ let _ =
                      (fun (__fan_1 : [> FanToken.t]) 
                         (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match (__fan_1, __fan_0) with
-                        | (`STR (_,s),`Uid "Level") -> (s : 'e__10 )
+                        | (`STR (_,s),`Uid "Level") -> (s : 'e__11 )
                         | _ -> assert false)))])],
            (Gram.mk_action
-              (fun (lev : 'e__10 option)  (n : 'name)  (_loc : FanLoc.t)  ->
+              (fun (lev : 'e__11 option)  (n : 'name)  (_loc : FanLoc.t)  ->
                  (mk_symbol ~text:(`TXnterm (_loc, n, lev))
                     ~styp:(`Quote
                              (_loc, (`Normal _loc),
@@ -714,10 +720,10 @@ let _ =
                      (fun (__fan_1 : [> FanToken.t]) 
                         (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                         match (__fan_1, __fan_0) with
-                        | (`STR (_,s),`Uid "Level") -> (s : 'e__11 )
+                        | (`STR (_,s),`Uid "Level") -> (s : 'e__12 )
                         | _ -> assert false)))])],
            (Gram.mk_action
-              (fun (lev : 'e__11 option)  (__fan_0 : [> FanToken.t]) 
+              (fun (lev : 'e__12 option)  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `Ant (("nt"|""),s) ->

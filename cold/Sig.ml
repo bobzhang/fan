@@ -128,7 +128,6 @@ module type Syntax =
     val module_longident_with_app : ident Gram.t
     val module_rec_declaration : module_binding Gram.t
     val module_type : module_type Gram.t
-    val package_type : module_type Gram.t
     val module_type_quot : module_type Gram.t
     val more_ctyp : ctyp Gram.t
     val name_tags : ctyp Gram.t
@@ -156,7 +155,6 @@ module type Syntax =
     val patt_as_patt_opt : patt Gram.t
     val patt_eoi : patt Gram.t
     val patt_quot : patt Gram.t
-    val poly_type : ctyp Gram.t
     val row_field : ctyp Gram.t
     val sem_expr : expr Gram.t
     val sem_expr_for_list : (expr -> expr) Gram.t

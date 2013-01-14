@@ -141,7 +141,7 @@ module type Syntax = sig
   val module_longident_with_app : Gram.t ident;
   val module_rec_declaration : Gram.t module_binding;
   val module_type : Gram.t module_type;
-  val package_type : Gram.t module_type;
+  (* val package_type : Gram.t module_type; *)
   val module_type_quot : Gram.t module_type;
   val more_ctyp : Gram.t ctyp;
   val name_tags : Gram.t ctyp;
@@ -169,7 +169,7 @@ module type Syntax = sig
   val patt_as_patt_opt : Gram.t patt;
   val patt_eoi : Gram.t patt;
   val patt_quot : Gram.t patt;
-  val poly_type : Gram.t ctyp;
+  (* val poly_type : Gram.t ctyp; *)
   val row_field : Gram.t ctyp;
   val sem_expr : Gram.t expr;
   val sem_expr_for_list : Gram.t (expr -> expr);

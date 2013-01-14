@@ -25,12 +25,15 @@ let apply () = begin
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
     {:extend.clear|Gram
-    a_CHAR a_FLOAT a_INT a_INT32 a_INT64 a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING a_UIDENT a_ident
+    a_CHAR a_FLOAT
+      a_INT a_INT32 a_INT64
+      a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING a_UIDENT a_ident
     amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
     class_name_and_param class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
-    class_structure class_type class_type_declaration class_type_longident class_type_longident_and_param
+    class_structure
+      class_type class_type_declaration class_type_longident class_type_longident_and_param
     class_type_plus class_type_quot comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
     constrain constructor_arg_list constructor_declaration constructor_declarations ctyp ctyp_quot
     cvalue_binding direction_flag dummy eq_expr expr expr_eoi expr_quot field_expr field_expr_list fun_binding
@@ -40,7 +43,7 @@ let apply () = begin
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
     more_ctyp name_tags opt_as_lident opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot
     opt_eq_ctyp opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
-    patt patt_as_patt_opt patt_eoi patt_quot   poly_type row_field sem_expr
+    patt patt_as_patt_opt patt_eoi patt_quot   (* poly_type *) row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
     str_item str_item_quot str_items top_phrase type_constraint type_declaration type_ident_and_parameters
     type_kind type_longident type_longident_and_parameters type_parameter type_parameters typevars 
@@ -134,7 +137,7 @@ let apply () = begin
             {| ( $me : $mt ) |}
         | "("; S{me}; ")" -> {| $me |}
         | "("; "val"; expr{e}; ")" -> {| (val $e) |}  (* first class modules *)
-        | "("; "val"; expr{e}; ":"; package_type{p}; ")" ->
+        | "("; "val"; expr{e}; ":"; (* package_type *)module_type{p}; ")" ->
             {| (val $e : $p) |} ] } |};
 
   with module_binding
@@ -256,8 +259,8 @@ let apply () = begin
       [ "="; expr{e} -> e
       | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; expr{e} -> 
           let u = {:ctyp| ! $t1 . $t2 |} in  {| ($e : $u) |}
-      | ":"; poly_type{t}; "="; expr{e} -> {| ($e : $t) |}
-      | ":"; poly_type{t}; ":>"; ctyp{t2}; "="; expr{e} ->
+      | ":"; (* poly_type *)ctyp{t}; "="; expr{e} -> {| ($e : $t) |}
+      | ":"; (* poly_type *)ctyp{t}; ":>"; ctyp{t2}; "="; expr{e} ->
           match t with
           [ {:ctyp| ! $_ . $_ |} -> raise (XStream.Error "unexpected polytype here")
           | _ -> {| ($e : $t :> $t2) |} ]
@@ -427,7 +430,7 @@ let apply () = begin
         | "begin"; "end" -> {| () |}
         | "("; "module"; module_expr{me}; ")" ->
             {| (module $me) |}
-        | "("; "module"; module_expr{me}; ":"; package_type{pt}; ")" ->
+        | "("; "module"; module_expr{me}; ":"; (* package_type *)module_type{pt}; ")" ->
             {| (module $me : $pt) |}  ] }
        sequence: (*FIXME*)
        [ "let"; opt_rec{rf}; binding{bi}; "in"; expr{e}; sequence'{k} ->
@@ -575,7 +578,7 @@ let apply () = begin
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
 
-        | "("; "module"; a_uident{m}; ":"; package_type{pt}; ")" ->
+        | "("; "module"; a_uident{m}; ":"; (* package_type *)module_type{pt}; ")" ->
               {| ( module $m :  $pt )|}
         | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
             {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|}
@@ -605,7 +608,7 @@ let apply () = begin
         | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
-        | "("; "module"; a_uident{m}; ":"; package_type{pt}; ")" ->
+        | "("; "module"; a_uident{m}; ":"; (* package_type *)module_type{pt}; ")" ->
               {| (module $m : $pt )|}
         | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
             {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|}
@@ -664,215 +667,7 @@ let apply () = begin
        | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
        | label_longident{i}; "="; patt{p} -> {| $i = $p |}
        | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ] |};
-    with ctyp
-    {:extend|Gram
-      ctyp_quot:
-      [ more_ctyp{x}; ","; comma_ctyp{y} -> {| $x, $y |}
-      | more_ctyp{x}; ";"; label_declaration_list{y} -> {| $x; $y |}
-      | more_ctyp{x}; "|"; constructor_declarations{y} -> {| $x | $y |}
-      | more_ctyp{x}; "of"; constructor_arg_list{y} -> {| $x of $y |}
-      | more_ctyp{x}; "of"; constructor_arg_list{y}; "|"; constructor_declarations{z} -> {| $x of $y | $z |}
-      | more_ctyp{x}; "of"; "&"; amp_ctyp{y} -> {| $x of & $y |}
-      | more_ctyp{x}; "of"; "&"; amp_ctyp{y}; "|"; row_field{z} -> {| $x of & $y | $z |}
-      | more_ctyp{x}; ":"; more_ctyp{y} -> {| $x : $y |}
-      | more_ctyp{x}; ":"; more_ctyp{y}; ";"; label_declaration_list{z} -> {| $x : $y ; $z |}
-      | more_ctyp{x}; "*"; star_ctyp{y} -> {| $x * $y |}
-      | more_ctyp{x}; "&"; amp_ctyp{y} -> {| $x & $y |}
-      | more_ctyp{x}; "and"; constructor_arg_list{y} -> {| $x and $y |}
-      | more_ctyp{x} -> x
-      | "type"; type_declaration{t} -> t   
-      | -> {||}  ]
-      more_ctyp:
-      [ "mutable"; S{x} -> {| mutable $x |}
-      | "`"; a_ident{x} -> {| `$x |}
-      | ctyp{x} -> x
-      | type_parameter{x} -> x   ]
-      unquoted_typevars:
-      [ S{t1}; S{t2} -> {| $t1 $t2 |}
-      | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_lident{i} -> {| $(id:(i:>ident)) |}   ]
-      type_parameter:
-      [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_lident{i} -> {| '$i |}
-      | "+"; "'"; a_lident{i} -> {| +'$i |}
-      | "-"; "'"; a_lident{i} -> {| -'$i |}
-      | "+"; "_" ->  {| + _|}
-      | "-"; "_" ->  {| - _ |}
-      | "_" -> {| _ |}]
-      type_longident_and_parameters:
-      [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
-      | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] 
-      type_parameters:
-      [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
-      | type_parameter{t} -> fun acc -> {| $acc $t |}
-      | -> fun t -> t  ]
-      
-      opt_class_self_type:
-      [ "("; ctyp{t}; ")" -> t | -> {||} ]
-      type_constraint:
-      [ "type" | "constraint" -> () ] 
-      meth_list:
-      [ meth_decl{m}; ";"; S{(ml, v) }  -> ({| $m; $ml |}, v)
-      | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
-      | meth_decl{m}; opt_dot_dot{v}      -> (m, v)  ]
-      meth_decl:
-      [ `Ant ((""|"typ" as n),s)        -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `Ant (("list" as n),s)          -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
-      | `QUOTATION x                       -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_lident{lab}; ":"; poly_type{t} ->
-            {| $(id:(lab:>ident)) : $t |}
-      ]
-      opt_meth_list:
-      [ meth_list{(ml, v) } -> {| < $ml $(..:v) > |}
-      | opt_dot_dot{v}     -> {| < $(..:v) > |}  ]
-      poly_type: [ ctyp{t} -> t ]
-      package_type: [ module_type{p} -> p ] 
-       
-      row_field:
-      [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
-      | S{t1}; "|"; S{t2} -> {| $t1 | $t2 |}
-      | "`"; a_ident{i} -> {| `$i |}
-      | "`"; a_ident{i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
-      | "`"; a_ident{i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
-      | ctyp{t} -> t ] 
-      amp_ctyp:
-      [ S{t1}; "&"; S{t2} -> {| $t1 & $t2 |}
-      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp&" n s) |}
-      | ctyp{t} -> t ]
-      name_tags:
-      [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | S{t1}; S{t2} -> {| $t1 $t2 |}
-      | "`"; a_ident{i} -> {| `$i |}  ]
-      opt_polyt:
-      [ ":"; poly_type{t} -> t  | -> {||} ]
-      
-      type_declaration:
-      [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `Ant (("list" as n),s) ->          {| $(anti:mk_anti ~c:"ctypand" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
-      |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
-        -> `TyDcl (_loc, n, tpl, tk, cl) ]
-      type_ident_and_parameters:
-      [ a_lident{i}; L0 type_parameter{tpl} -> (i, tpl)]
-
-
-
-      constrain:
-      [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
-      opt_eq_ctyp:
-      [ "="; type_kind{tk} -> tk | -> {||} ]
-      type_kind: [ ctyp{t} -> t ]
-      
-      typevars:
-      [ S{t1}; S{t2} -> {| $t1 $t2 |}
-      | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `Ant(("list" as n),s) ->     {| $(anti:mk_anti ~c:"forall" n s)|}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_lident{i} -> {| '$i |}]
-      ctyp:
-      { "==" NA (* FIXME should be more restrict *)
-        [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ]
-       "private" NA
-        [ "private"; ctyp Level "alias"{t} -> {| private $t |} ]
-       "alias" LA
-        [ S{t1}; "as"; S{t2} ->   {| $t1 as $t2 |} ]
-       "forall" LA
-        [ "!"; typevars{t1}; "."; ctyp{t2} -> {| ! $t1 . $t2 |} ]
-       "arrow" RA
-        [ S{t1}; "->"; S{t2} ->  {| $t1 -> $t2 |} ]
-       "label" NA
-        [ "~"; a_lident{i}; ":"; S{t} -> {| ~ $i : $t |}
-        | `LABEL s ; ":"; S{t} -> {| ~$lid:s : $t |}
-        | `OPTLABEL s ; S{t} -> {| ?$lid:s : $t |}
-        | "?"; a_lident{i}; ":"; S{t} -> {| ? $i : $t |}]
-       "apply" LA
-        [ S{t1}; S{t2} ->
-          let t = {| $t1 $t2 |} in
-          try {| $(id:FanAst.ident_of_ctyp t) |}
-          with [ Invalid_argument _ -> t ]]
-       "." LA
-        [ S{t1}; "."; S{t2} ->
-            try {| $(id:FanAst.ident_of_ctyp t1).$(id:FanAst.ident_of_ctyp t2) |}
-            with [ Invalid_argument s -> raise (XStream.Error s) ] ]
-       "simple"
-        [ "'"; a_lident{i} -> {| '$i |}
-        | "_" -> {| _ |}
-        | `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | `Ant (("tup" as n),s) ->  {| ($(tup:{| $(anti:mk_anti ~c:"ctyp" n s) |})) |}
-        | `Ant (("id" as n),s) ->   {| $(id:{:ident| $(anti:mk_anti ~c:"ident" n s) |}) |}
-        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-        |  a_lident{i}->  {|$(id:(i:>ident))|}
-        | a_uident{i} -> {|$(id:(i:>ident))|}
-        | "("; S{t}; "*"; star_ctyp{tl}; ")" ->  {| ( $t * $tl ) |}
-        | "("; S{t}; ")" -> t
-        | "["; "]" -> {| [ ] |}
-        | "["; constructor_declarations{t}; "]" -> {| [ $t ] |}
-        | "["; "="; row_field{rfl}; "]" ->   {| [ = $rfl ] |} (* polymorphic variant *)
-        | "["; ">"; "]" ->   {| [> ]|}
-        | "["; ">"; row_field{rfl}; "]" ->    {| [ > $rfl ] |}
-        | "["; "<"; row_field{rfl}; "]" ->     {| [ < $rfl ] |}
-        | "["; "<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->   {| [ < $rfl > $ntl ] |}
-        | "[<"; row_field{rfl}; "]" ->    {| [ < $rfl ] |}
-        | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" -> {| [ < $rfl > $ntl ] |}
-        | "{"; label_declaration_list{t}; "}" -> {| { $t } |}
-        | "#"; class_longident{i} -> {| # $i |}
-        | "<"; opt_meth_list{t}; ">" -> t
-        | "("; "module"; package_type{p}; ")" -> {| (module $p) |}  ] }
-      star_ctyp:
-      [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp*" n s) |}
-      | S{t1}; "*"; S{t2} ->   {| $t1 * $t2 |}
-      | ctyp{t} -> t  ]
-      constructor_declarations:
-      [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | S{t1}; "|"; S{t2} ->        {| $t1 | $t2 |}
-      | a_uident{s}; "of"; constructor_arg_list{t} ->
-          {| $(id:(s:>ident)) of $t |}
-      | a_uident{s}; ":"; ctyp{t} ->
-          let (tl, rt) = Ctyp.to_generalized t in
-            {| $(id:(s:>ident)) : ($(FanAst.tyAnd_of_list tl) -> $rt) |}
-      | a_uident{s} -> {| $(id:(s:>ident)) |} ]
-      constructor_declaration:
-      [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_uident{s}; "of"; constructor_arg_list{t} ->
-         {|$(id:(s:>ident)) of $t |}
-      | a_uident{s} ->   {|$(id:(s:>ident))|}  ]
-      constructor_arg_list:
-      [ `Ant (("list" as n),s) ->  {| $(anti:mk_anti ~c:"ctypand" n s) |}
-      | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
-      | ctyp{t} -> t  ]
-      label_declaration_list:
-      [ label_declaration{t1}; ";"; S{t2} -> {| $t1; $t2 |}
-      | label_declaration{t1}; ";"            -> t1
-      | label_declaration{t1}                 -> t1  ]
-      label_declaration:
-      [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_lident{s}; ":"; poly_type{t} -> {| $(id:(s:>ident)) :$t|}
-      | a_lident{s}; ":"; "mutable"; poly_type{t} ->
-          {|$(id:(s:>ident)) : mutable $t |}]
-      class_name_and_param:
-      [ a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
-      | a_lident{i} -> (i, {||})  ]
-      comma_type_parameter:
-      [ S{t1}; ","; S{t2} -> {| $t1, $t2 |}
-      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp," n s) |}
-      | type_parameter{t} -> t  ]
-      opt_comma_ctyp:
-      [ "["; comma_ctyp{x}; "]" -> x
-      | -> {||}  ]
-      comma_ctyp:
-      [ S{t1}; ","; S{t2} -> {| $t1, $t2 |}
-      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp," n s) |}
-      | ctyp{t} -> t  ]  |};
+    
     with ident
     {:extend|Gram
       a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
@@ -1121,9 +916,9 @@ let apply () = begin
       | "inherit"; class_type{cs} ->   {| inherit $cs |}
       | "val"; opt_mutable{mf}; opt_virtual{mv};a_lident{l}; ":"; ctyp{t} ->
           {| val $mutable:mf $virtual:mv $l : $t |}
-      | "method"; "virtual"; opt_private{pf}; a_lident{l}; ":"; poly_type{t} ->
+      | "method"; "virtual"; opt_private{pf}; a_lident{l}; ":"; (* poly_type *)ctyp{t} ->
           {| method virtual $private:pf $l : $t |}
-      | "method"; opt_private{pf}; a_lident{l}; ":"; poly_type{t} ->
+      | "method"; opt_private{pf}; a_lident{l}; ":"; (* poly_type *)ctyp{t} ->
           {| method $private:pf $l : $t |}
       | type_constraint; ctyp{t1}; "="; ctyp{t2} -> {| type $t1 = $t2 |} ] |};  
   with class_str_item
@@ -1143,12 +938,12 @@ let apply () = begin
           ->
             {| val $override:o $mutable:mf $lab = $e |}
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; a_lident{l}; ":";
-                poly_type{t} ->
+                (* poly_type *)ctyp{t} ->
                 match o with
                 [ {:override_flag@_||} ->{| val virtual $mutable:mf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]                    
         | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
-                poly_type{t} ->
+                (* poly_type *)ctyp{t} ->
                 match o with
                 [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
@@ -1252,7 +1047,216 @@ let apply () = begin
       | class_type_longident{i} -> {| $id:i |}   ] |} ;
 end;
 
-AstParsers.register_parser ("revise",apply);
+
+let apply_ctyp () = begin
+  with ctyp
+    {:extend|Gram
+      ctyp_quot:
+      [ more_ctyp{x}; ","; comma_ctyp{y} -> {| $x, $y |}
+      | more_ctyp{x}; ";"; label_declaration_list{y} -> {| $x; $y |}
+      | more_ctyp{x}; "|"; constructor_declarations{y} -> {| $x | $y |}
+      | more_ctyp{x}; "of"; constructor_arg_list{y} -> {| $x of $y |}
+      | more_ctyp{x}; "of"; constructor_arg_list{y}; "|"; constructor_declarations{z} -> {| $x of $y | $z |}
+      | more_ctyp{x}; "of"; "&"; amp_ctyp{y} -> {| $x of & $y |}
+      | more_ctyp{x}; "of"; "&"; amp_ctyp{y}; "|"; row_field{z} -> {| $x of & $y | $z |}
+      | more_ctyp{x}; ":"; more_ctyp{y} -> {| $x : $y |}
+      | more_ctyp{x}; ":"; more_ctyp{y}; ";"; label_declaration_list{z} -> {| $x : $y ; $z |}
+      | more_ctyp{x}; "*"; star_ctyp{y} -> {| $x * $y |}
+      | more_ctyp{x}; "&"; amp_ctyp{y} -> {| $x & $y |}
+      | more_ctyp{x}; "and"; constructor_arg_list{y} -> {| $x and $y |}
+      | more_ctyp{x} -> x
+      | "type"; type_declaration{t} -> t   
+      | -> {||}  ]
+      more_ctyp:
+      [ "mutable"; S{x} -> {| mutable $x |}
+      | "`"; a_ident{x} -> {| `$x |}
+      | ctyp{x} -> x
+      | type_parameter{x} -> x   ]
+      unquoted_typevars:
+      [ S{t1}; S{t2} -> {| $t1 $t2 |}
+      | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | a_lident{i} -> {| $(id:(i:>ident)) |}   ]
+      type_parameter:
+      [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | "'"; a_lident{i} -> {| '$i |}
+      | "+"; "'"; a_lident{i} -> {| +'$i |}
+      | "-"; "'"; a_lident{i} -> {| -'$i |}
+      | "+"; "_" ->  {| + _|}
+      | "-"; "_" ->  {| - _ |}
+      | "_" -> {| _ |}]
+      type_longident_and_parameters:
+      [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
+      | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] 
+      type_parameters:
+      [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
+      | type_parameter{t} -> fun acc -> {| $acc $t |}
+      | -> fun t -> t  ]
+      
+      opt_class_self_type:
+      [ "("; ctyp{t}; ")" -> t | -> {||} ]
+      type_constraint:
+      [ "type" | "constraint" -> () ] 
+      meth_list:
+      [ meth_decl{m}; ";"; S{(ml, v) }  -> ({| $m; $ml |}, v)
+      | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
+      | meth_decl{m}; opt_dot_dot{v}      -> (m, v)  ]
+      meth_decl:
+      [ `Ant ((""|"typ" as n),s)        -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `Ant (("list" as n),s)          -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
+      | `QUOTATION x                       -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | a_lident{lab}; ":"; ctyp{t} ->
+            {| $(id:(lab:>ident)) : $t |}
+      ]
+      opt_meth_list:
+      [ meth_list{(ml, v) } -> {| < $ml $(..:v) > |}
+      | opt_dot_dot{v}     -> {| < $(..:v) > |}  ]
+       
+      row_field:
+      [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
+      | S{t1}; "|"; S{t2} -> {| $t1 | $t2 |}
+      | "`"; a_ident{i} -> {| `$i |}
+      | "`"; a_ident{i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
+      | "`"; a_ident{i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
+      | ctyp{t} -> t ] 
+      amp_ctyp:
+      [ S{t1}; "&"; S{t2} -> {| $t1 & $t2 |}
+      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp&" n s) |}
+      | ctyp{t} -> t ]
+      name_tags:
+      [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | S{t1}; S{t2} -> {| $t1 $t2 |}
+      | "`"; a_ident{i} -> {| `$i |}  ]
+      opt_polyt:
+      [ ":"; ctyp{t} -> t  | -> {||} ]
+      
+      type_declaration:
+      [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `Ant (("list" as n),s) ->          {| $(anti:mk_anti ~c:"ctypand" n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
+      |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk}; L0 constrain{cl}
+        -> `TyDcl (_loc, n, tpl, tk, cl) ]
+      type_ident_and_parameters:
+      [ a_lident{i}; L0 type_parameter{tpl} -> (i, tpl)]
+
+      constrain:
+      [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
+      opt_eq_ctyp:
+      [ "="; type_kind{tk} -> tk | -> {||} ]
+      type_kind: [ ctyp{t} -> t ]
+      
+      typevars:
+      [ S{t1}; S{t2} -> {| $t1 $t2 |}
+      | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `Ant(("list" as n),s) ->     {| $(anti:mk_anti ~c:"forall" n s)|}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | "'"; a_lident{i} -> {| '$i |}]
+      ctyp:
+      { "==" NA (* FIXME should be more restrict *)
+        [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ]
+       "private" NA
+        [ "private"; ctyp Level "alias"{t} -> {| private $t |} ]
+       "alias" LA
+        [ S{t1}; "as"; S{t2} ->   {| $t1 as $t2 |} ]
+       "forall" LA
+        [ "!"; typevars{t1}; "."; ctyp{t2} -> {| ! $t1 . $t2 |} ]
+       "arrow" RA
+        [ S{t1}; "->"; S{t2} ->  {| $t1 -> $t2 |} ]
+       "label" NA
+        [ "~"; a_lident{i}; ":"; S{t} -> {| ~ $i : $t |}
+        | `LABEL s ; ":"; S{t} -> {| ~$lid:s : $t |}
+        | `OPTLABEL s ; S{t} -> {| ?$lid:s : $t |}
+        | "?"; a_lident{i}; ":"; S{t} -> {| ? $i : $t |}]
+       "apply" LA
+        [ S{t1}; S{t2} ->
+          let t = {| $t1 $t2 |} in
+          try {| $(id:FanAst.ident_of_ctyp t) |}
+          with [ Invalid_argument _ -> t ]]
+       "." LA
+        [ S{t1}; "."; S{t2} ->
+            try {| $(id:FanAst.ident_of_ctyp t1).$(id:FanAst.ident_of_ctyp t2) |}
+            with [ Invalid_argument s -> raise (XStream.Error s) ] ]
+       "simple"
+        [ "'"; a_lident{i} -> {| '$i |}
+        | "_" -> {| _ |}
+        | `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+        | `Ant (("tup" as n),s) ->  {| ($(tup:{| $(anti:mk_anti ~c:"ctyp" n s) |})) |}
+        | `Ant (("id" as n),s) ->   {| $(id:{:ident| $(anti:mk_anti ~c:"ident" n s) |}) |}
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+        |  a_lident{i}->  {|$(id:(i:>ident))|}
+        | a_uident{i} -> {|$(id:(i:>ident))|}
+        | "("; S{t}; "*"; star_ctyp{tl}; ")" ->  {| ( $t * $tl ) |}
+        | "("; S{t}; ")" -> t
+        | "["; "]" -> {| [ ] |}
+        | "["; constructor_declarations{t}; "]" -> {| [ $t ] |}
+        | "["; "="; row_field{rfl}; "]" ->   {| [ = $rfl ] |} (* polymorphic variant *)
+        | "["; ">"; "]" ->   {| [> ]|}
+        | "["; ">"; row_field{rfl}; "]" ->    {| [ > $rfl ] |}
+        | "["; "<"; row_field{rfl}; "]" ->     {| [ < $rfl ] |}
+        | "["; "<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->   {| [ < $rfl > $ntl ] |}
+        | "[<"; row_field{rfl}; "]" ->    {| [ < $rfl ] |}
+        | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" -> {| [ < $rfl > $ntl ] |}
+        | "{"; label_declaration_list{t}; "}" -> {| { $t } |}
+        | "#"; class_longident{i} -> {| # $i |}
+        | "<"; opt_meth_list{t}; ">" -> t
+        | "("; "module"; module_type{p}; ")" -> {| (module $p) |}  ] }
+      star_ctyp:
+      [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp*" n s) |}
+      | S{t1}; "*"; S{t2} ->   {| $t1 * $t2 |}
+      | ctyp{t} -> t  ]
+      constructor_declarations:
+      [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | S{t1}; "|"; S{t2} ->        {| $t1 | $t2 |}
+      | a_uident{s}; "of"; constructor_arg_list{t} -> {| $(id:(s:>ident)) of $t |}
+      | a_uident{s}; ":"; ctyp{t} ->
+          let (tl, rt) = Ctyp.to_generalized t in
+            {| $(id:(s:>ident)) : ($(FanAst.tyAnd_of_list tl) -> $rt) |}
+      | a_uident{s} -> {| $(id:(s:>ident)) |} ]
+      constructor_declaration:
+      [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | a_uident{s}; "of"; constructor_arg_list{t} -> {|$(id:(s:>ident)) of $t |}
+      | a_uident{s} ->   {|$(id:(s:>ident))|}  ]
+      constructor_arg_list:
+      [ `Ant (("list" as n),s) ->  {| $(anti:mk_anti ~c:"ctypand" n s) |}
+      | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
+      | ctyp{t} -> t  ]
+      label_declaration_list:
+      [ label_declaration{t1}; ";"; S{t2} -> {| $t1; $t2 |}
+      | label_declaration{t1}; ";"            -> t1
+      | label_declaration{t1}                 -> t1  ]
+      label_declaration:
+      [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
+      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
+      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      | a_lident{s}; ":"; ctyp{t} -> {| $(id:(s:>ident)) :$t|}
+      | a_lident{s}; ":"; "mutable"; ctyp{t} ->
+          {|$(id:(s:>ident)) : mutable $t |}]
+      class_name_and_param:
+      [ a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
+      | a_lident{i} -> (i, {||})  ]
+      comma_type_parameter:
+      [ S{t1}; ","; S{t2} -> {| $t1, $t2 |}
+      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp," n s) |}
+      | type_parameter{t} -> t  ]
+      opt_comma_ctyp:
+      [ "["; comma_ctyp{x}; "]" -> x
+      | -> {||}  ]
+      comma_ctyp:
+      [ S{t1}; ","; S{t2} -> {| $t1, $t2 |}
+      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp," n s) |}
+      | ctyp{t} -> t  ]  |};
+end;
+
+  
+AstParsers.register_parser
+    ("revise",fun () -> begin apply (); apply_ctyp () end);
 
 
 

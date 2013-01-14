@@ -5,7 +5,7 @@ open PreCast.Syntax;
 open LibUtil;
 open Lib;
 open FanUtil;
-
+open Ast;
 
 FanConfig.antiquotations := true;
 
@@ -60,8 +60,10 @@ FanConfig.antiquotations := true;
                    {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
                    {| $list:rest |} ]
   nonterminalsclear:
-  [ qualuid{t}; L0 a_LIDENT {ls} ->
-    let rest = List.map (fun x -> {:expr| $id:t.clear $lid:x |}) ls in
+  [ qualuid{t}; L0 (* a_LIDENT *)[a_lident{x}->x ]{ls} ->
+    let rest = List.map (fun x ->
+      let _loc = FanAst.loc_of_ident (x:>ident) in
+      {:expr| $id:t.clear $(id:(x:>ident)) |}) ls in
     {:expr| begin $list:rest end |} ]
   extend_body:
   [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
