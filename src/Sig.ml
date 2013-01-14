@@ -184,7 +184,7 @@ module type Syntax = sig
   val str_item : Gram.t str_item;
   val str_item_quot : Gram.t str_item;
   val str_items : Gram.t str_item;
-  val type_constraint : Gram.t unit;
+  (* val type_constraint : Gram.t unit; *)
   val type_declaration : Gram.t ctyp;
   val type_ident_and_parameters : Gram.t (alident(* string *) * list ctyp);
   val type_kind : Gram.t ctyp;

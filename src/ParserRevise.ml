@@ -45,7 +45,7 @@ let apply () = begin
     opt_eq_ctyp opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot   (* poly_type *) row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
-    str_item str_item_quot str_items top_phrase type_constraint type_declaration type_ident_and_parameters
+    str_item str_item_quot str_items top_phrase (* type_constraint *) type_declaration type_ident_and_parameters
     type_kind type_longident type_longident_and_parameters type_parameter type_parameters typevars 
     val_longident with_constr with_constr_quot
       lang
@@ -920,7 +920,8 @@ let apply () = begin
           {| method virtual $private:pf $l : $t |}
       | "method"; opt_private{pf}; a_lident{l}; ":"; (* poly_type *)ctyp{t} ->
           {| method $private:pf $l : $t |}
-      | type_constraint; ctyp{t1}; "="; ctyp{t2} -> {| type $t1 = $t2 |} ] |};  
+      | (* type_constraint *)"constraint"; ctyp{t1}; "="; ctyp{t2} ->
+          (* {| type $t1 = $t2 |} *) {|constraint $t1 = $t2|} ] |};  
   with class_str_item
     {:extend|Gram
       class_structure:
@@ -950,7 +951,8 @@ let apply () = begin
         | method_opt_override{o}; opt_private{pf}; a_lident{l}; opt_polyt{topt};
                 fun_binding{e} ->
             {| method $override:o $private:pf $l : $topt = $e |}
-        | type_constraint; ctyp{t1}; "="; ctyp{t2} ->  {| type $t1 = $t2 |}
+        | (* type_constraint *) "constraint"; ctyp{t1}; "="; ctyp{t2} ->
+            (* {| type $t1 = $t2 |} *) {|constraint $t1 = $t2|}
         | "initializer"; expr{se} -> {| initializer $se |} ]
       class_str_item_quot:
         [ class_str_item{x1}; semi; S{x2} ->
@@ -1096,8 +1098,8 @@ let apply_ctyp () = begin
       
       opt_class_self_type:
       [ "("; ctyp{t}; ")" -> t | -> {||} ]
-      type_constraint:
-      [ "type" | "constraint" -> () ] 
+      (* type_constraint: *)
+      (* [ "type" | "constraint" -> () ]  *)
       meth_list:
       [ meth_decl{m}; ";"; S{(ml, v) }  -> ({| $m; $ml |}, v)
       | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)

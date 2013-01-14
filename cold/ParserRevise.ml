@@ -141,7 +141,6 @@ let apply () =
    Gram.clear str_item_quot;
    Gram.clear str_items;
    Gram.clear top_phrase;
-   Gram.clear type_constraint;
    Gram.clear type_declaration;
    Gram.clear type_ident_and_parameters;
    Gram.clear type_kind;
@@ -4244,7 +4243,7 @@ let apply () =
                (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ 
                   (_loc : FanLoc.t)  ->
                   (`Method (_loc, l, pf, t) : 'class_sig_item ))));
-          ([`Snterm (Gram.obj (type_constraint : 'type_constraint Gram.t ));
+          ([`Skeyword "constraint";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
@@ -4384,7 +4383,7 @@ let apply () =
                   (pf : 'opt_private)  (o : 'method_opt_override) 
                   (_loc : FanLoc.t)  ->
                   (`CrMth (_loc, l, o, pf, e, topt) : 'class_str_item ))));
-          ([`Snterm (Gram.obj (type_constraint : 'type_constraint Gram.t ));
+          ([`Skeyword "constraint";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
@@ -5093,15 +5092,6 @@ let apply_ctyp () =
          ([],
            (Gram.mk_action
               (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'opt_class_self_type ))))])]);
-  Gram.extend (type_constraint : 'type_constraint Gram.t )
-    (None,
-      [(None, None,
-         [([`Skeyword "type"],
-            (Gram.mk_action
-               (fun _  (_loc : FanLoc.t)  -> (() : 'type_constraint ))));
-         ([`Skeyword "constraint"],
-           (Gram.mk_action
-              (fun _  (_loc : FanLoc.t)  -> (() : 'type_constraint ))))])]);
   Gram.extend (meth_list : 'meth_list Gram.t )
     (None,
       [(None, None,
