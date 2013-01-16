@@ -29,7 +29,7 @@ echo "Second round building finished; now do the comparison"
 if cmp _build/src/$target _build/boot/$target
 then
     echo fixpoint for $target
-    ocamlbuild -quiet foo.otarget
+    # ocamlbuild -quiet foo.otarget
 else
     echo $target is different, you should rebootstrap it by cleaning, building and call this script  
 fi

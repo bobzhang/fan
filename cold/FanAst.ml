@@ -212,7 +212,7 @@ class eq =
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`TyArr (a0,a1,a2),`TyArr (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
-        | (`TyCls (a0,a1),`TyCls (b0,b1)) ->
+        | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             (self#loc a0 b0) && (self#ident a1 b1)
         | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#alident a1 b1)) && (self#ctyp a2 b2)
@@ -862,8 +862,9 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in
           let a2 = self#ctyp a2 in `TyArr (a0, a1, a2)
-      | `TyCls (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#ident a1 in `TyCls (a0, a1)
+      | `ClassPath (a0,a1) ->
+          let a0 = self#loc a0 in
+          let a1 = self#ident a1 in `ClassPath (a0, a1)
       | `TyLab (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
@@ -1693,8 +1694,8 @@ class print =
         | `TyArr (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyArr@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
-        | `TyCls (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`TyCls@ %a@ %a)@]" self#loc a0
+        | `ClassPath (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`ClassPath@ %a@ %a)@]" self#loc a0
               self#ident a1
         | `TyLab (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyLab@ %a@ %a@ %a)@]" self#loc a0
@@ -2390,7 +2391,7 @@ class fold =
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `TyArr (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
-      | `TyCls (a0,a1) -> let self = self#loc a0 in self#ident a1
+      | `ClassPath (a0,a1) -> let self = self#loc a0 in self#ident a1
       | `TyLab (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#alident a1 in self#ctyp a2
@@ -3013,7 +3014,7 @@ class fold2 =
         | (`TyArr (a0,a1,a2),`TyArr (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
-        | (`TyCls (a0,a1),`TyCls (b0,b1)) ->
+        | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             let self = self#loc a0 b0 in self#ident a1 b1
         | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
@@ -3756,8 +3757,8 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
     | `TyArr (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyArr@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
-    | `TyCls (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`TyCls@ %a@ %a)@]" pp_print_loc a0
+    | `ClassPath (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`ClassPath@ %a@ %a)@]" pp_print_loc a0
           pp_print_ident a1
     | `TyLab (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyLab@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4444,7 +4445,7 @@ class iter =
       | `Any a0 -> self#loc a0
       | `TyApp (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyArr (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
-      | `TyCls (a0,a1) -> (self#loc a0; self#ident a1)
+      | `ClassPath (a0,a1) -> (self#loc a0; self#ident a1)
       | `TyLab (a0,a1,a2) -> (self#loc a0; self#alident a1; self#ctyp a2)
       | `Id (a0,a1) -> (self#loc a0; self#ident a1)
       | `TyMan (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
@@ -4970,9 +4971,9 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
             let a2 = self#ctyp a2 b2 in `TyArr (a0, a1, a2)
-        | (`TyCls (a0,a1),`TyCls (b0,b1)) ->
+        | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#ident a1 b1 in `TyCls (a0, a1)
+            let a1 = self#ident a1 b1 in `ClassPath (a0, a1)
         | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
@@ -6060,12 +6061,12 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "TyArr")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TyCls (a0,a1) ->
+            | `ClassPath (a0,a1) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "TyCls")), (meta_loc _loc a0))),
-                    (meta_ident _loc a1))
+                       (_loc, (`ExVrn (_loc, "ClassPath")),
+                         (meta_loc _loc a0))), (meta_ident _loc a1))
             | `TyLab (a0,a1,a2) ->
                 `ExApp
                   (_loc,
@@ -7812,12 +7813,12 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "TyArr")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TyCls (a0,a1) ->
+            | `ClassPath (a0,a1) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "TyCls")), (meta_loc _loc a0))),
-                    (meta_ident _loc a1))
+                       (_loc, (`PaVrn (_loc, "ClassPath")),
+                         (meta_loc _loc a0))), (meta_ident _loc a1))
             | `TyLab (a0,a1,a2) ->
                 `PaApp
                   (_loc,

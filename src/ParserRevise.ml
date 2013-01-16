@@ -417,6 +417,7 @@ let apply () = begin
             {| { ($e) with $el } |}
         | "{<"; ">}" -> {| {<>} |}
         | "{<"; field_expr_list{fel}; ">}" -> {| {< $fel >} |}
+        (* | "("; "->"; L0 ")" *)
         | "("; ")" -> {| () |}
         | "("; S{e}; ":"; ctyp{t}; ")" -> {| ($e : $t) |}
         | "("; S{e}; ","; comma_expr{el}; ")" -> {| ( $e, $el ) |}
@@ -670,8 +671,13 @@ let apply () = begin
     
     with ident
     {:extend|Gram
+
+      (* parse [a] [B], depreacated  *)
       a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
+
+      (* parse [a] [B] *)
       aident: [ a_lident{i} -> (i:>ident) | a_uident{i} -> (i:>ident)]
+      
       ident_quot:
       { "."
         [ S{i}; "."; S{j} -> {| $i.$j  |} ]
@@ -683,6 +689,8 @@ let apply () = begin
         | `Uid i -> {| $uid:i |}
         | `Uid s ; "." ; S{j} -> {|$uid:s.$j|}
         | "("; S{i};S{j}; ")" -> `IdApp _loc i j  ] }
+
+      (* parse [a] [b], [a.b] [A.b]*)
       ident:
       [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) ->
         {| $(anti:mk_anti ~c:"ident" n s) |}
@@ -692,21 +700,29 @@ let apply () = begin
       | `Lid i -> {| $lid:i |}
       | `Uid i -> {| $uid:i |}
       | `Uid s ; "." ; S{j} -> {|$uid:s.$j|}  ]
+
+      (* parse [a.b.c] no antiquot *)
       dot_lstrings:
       [ `Lid i -> [i]
       | `Lid i ; "." ; S {xs} -> [i::xs] ]
+
+      (* parse [A.B.(] *)
       module_longident_dot_lparen:
-      [ `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; "(" ->   {| $(anti:mk_anti ~c:"ident" n s) |}
+      [ `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; "(" ->
+        {| $(anti:mk_anti ~c:"ident" n s) |}
 
       | `Uid i; "."; S{l} -> {|$uid:i.$l|}
       | `Uid i; "."; "(" -> {|$uid:i|}
-      | `Ant (("uid"|"" as n),s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l|} ]     
+      | `Ant (("uid"|"" as n),s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l|} ]
+      (* parse [A.B] *)
       module_longident:
-      [ `Ant ((""|"id"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      [ `Ant ((""|"id"|"anti"|"list" as n),s) ->
+        {| $(anti:mk_anti ~c:"ident" n s) |}
       | `Uid i; "."; S{l} -> {| $uid:i.$l|}
       | `Uid i -> {|$uid:i|}
       | `Ant ((""|"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
       | `Ant((""|"uid" as n), s); "."; S{l} -> {| $(anti:mk_anti ~c:"ident" n s).$l |} ]
+
       module_longident_with_app:
       { "apply"
         [ S{i}; S{j} -> {| ($i $j) |} ]
@@ -715,8 +731,9 @@ let apply () = begin
        "simple"
         [ `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
         | `Uid i -> {|$uid:i|}
-        (* | a_UIDENT{i} -> {| $uid:i |} *)
         | "("; S{i}; ")" -> i ] }
+
+      (* parse [(A B).c ]*)
       type_longident: (* FIXME *)
       { "apply" (* No parens *)
         [ S{i}; S{j} -> {| ($i $j) |} ]
@@ -728,15 +745,19 @@ let apply () = begin
         | `Lid i -> {|$lid:i|}
         | `Uid i -> {|$uid:i|}
         | "("; S{i}; ")" -> i ] }
+
       label_longident:
-      [ `Ant ((""|"id"|"anti"|"list"|"lid" as n),s) ->  {| $(anti:mk_anti ~c:"ident" n s) |}
+      [ `Ant ((""|"id"|"anti"|"list"|"lid" as n),s) ->
+        {| $(anti:mk_anti ~c:"ident" n s) |}
       | `Lid i -> {|$lid:i|}
       | `Uid i; "."; S{l} -> {|$uid:i.$l|}
       | `Ant((""|"uid" as n),s); "."; S{l} -> {|$(anti:mk_anti ~c:"ident" n s).$l|} ]
+      
       class_type_longident: [ type_longident{x} -> x ]
       val_longident:[ ident{x} -> x ]
       class_longident:
       [ label_longident{x} -> x ]
+      
       method_opt_override:
       [ "method"; "!" -> {:override_flag| ! |}
       | "method"; `Ant (((""|"override"|"anti") as n),s) ->
@@ -793,6 +814,8 @@ let apply () = begin
           (* {:row_var_flag|$(anti:mk_anti ~c:"row_var_flag" n s) |} *)
           (* let _ =  *)`Ant (_loc,mk_anti ~c:"row_var_flag" n s)
       | -> {:row_var_flag||}  ]
+
+      (*opt_rec@inline *)
       opt_rec:
       [ "rec" -> {:rec_flag| rec |}
       | `Ant (("rec"|"anti" as n),s) ->

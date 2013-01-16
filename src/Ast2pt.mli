@@ -11,7 +11,7 @@ val ident_noloc : ident -> Longident.t
 
 val ident : ident -> Longident.t Location.loc
 
-val long_lident : string -> ident -> Longident.t Location.loc
+val long_lident : err:string -> ident -> Longident.t Location.loc
 
 val long_type_ident : ident -> Longident.t Location.loc
 

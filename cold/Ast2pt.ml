@@ -6,19 +6,22 @@ open LibUtil
 open FanUtil
 open FanAst
 open ParsetreeHelper
-let mkvirtual =
+let mkvirtual: virtual_flag -> Asttypes.virtual_flag =
   function
-  | `Virtual _loc -> Virtual
-  | `ViNil _loc -> Concrete
-  | _ -> assert false
-let mkdirection =
-  function | `To _loc -> Upto | `Downto _loc -> Downto | _ -> assert false
-let mkrf =
+  | `Virtual _ -> Virtual
+  | `ViNil _ -> Concrete
+  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+let mkdirection: direction_flag -> Asttypes.direction_flag =
   function
-  | `Recursive _loc -> Recursive
-  | `ReNil _loc -> Nonrecursive
-  | _ -> assert false
-let ident_tag i =
+  | `To _ -> Upto
+  | `Downto _ -> Downto
+  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+let mkrf: rec_flag -> Asttypes.rec_flag =
+  function
+  | `Recursive _ -> Recursive
+  | `ReNil _ -> Nonrecursive
+  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+let ident_tag (i : ident) =
   let rec self i acc =
     match i with
     | `IdAcc (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) ->
@@ -42,25 +45,27 @@ let ident_tag i =
           | Some (acc,(`uident|`app)) -> ldot acc s
           | _ -> error (loc_of_ident i) "invalid long identifier" in
         Some (x, `lident)
-    | _ -> error (loc_of_ident i) "invalid long identifier" in
+    | `Ant (_,_) -> error (loc_of_ident i) "invalid long identifier" in
   match self i None with
   | Some x -> x
   | None  -> error (loc_of_ident i) "invalid long identifier "
 let ident_noloc i = fst (ident_tag i)
-let ident i = with_loc (ident_noloc i) (loc_of_ident i)
-let long_lident msg id =
+let ident (i : ident) =
+  (with_loc (ident_noloc i) (loc_of_ident i) : Longident.t Location.loc )
+let long_lident ~err  id =
   match ident_tag id with
-  | (i,`lident) -> with_loc i (loc_of_ident id)
-  | _ -> error (loc_of_ident id) msg
-let long_type_ident = long_lident "invalid long identifier type"
-let long_class_ident = long_lident "invalid class name"
+  | (i,`lident) -> i +> (loc_of_ident id)
+  | _ -> error (loc_of_ident id) err
+let long_type_ident: ident -> Longident.t Location.loc =
+  long_lident ~err:"invalid long identifier type"
+let long_class_ident = long_lident ~err:"invalid class name"
 let long_uident_noloc i =
   match ident_tag i with
   | (Ldot (i,s),`uident) -> ldot i s
   | (Lident s,`uident) -> lident s
   | (i,`app) -> i
   | _ -> error (loc_of_ident i) "uppercase identifier expected"
-let long_uident i = with_loc (long_uident_noloc i) (loc_of_ident i)
+let long_uident i = (long_uident_noloc i) +> (loc_of_ident i)
 let rec ctyp_long_id_prefix (t : ctyp) =
   (match t with
    | `Id (_loc,i) -> ident_noloc i
@@ -71,8 +76,7 @@ let rec ctyp_long_id_prefix (t : ctyp) =
 let ctyp_long_id (t : ctyp) =
   (match t with
    | `Id (_loc,i) -> (false, (long_type_ident i))
-   | `TyApp (_loc,_,_) -> error _loc "invalid type name"
-   | `TyCls (_,i) -> (true, (ident i))
+   | `ClassPath (_,i) -> (true, (ident i))
    | t -> error (loc_of_ctyp t) "invalid type" : (bool* Longident.t
                                                    Location.loc) )
 let predef_option loc =
@@ -111,7 +115,7 @@ let rec ctyp: ctyp -> Parsetree.core_type =
   | `TyObj (_loc,fl,`RvNil _) -> mktyp _loc (Ptyp_object (meth_list fl []))
   | `TyObj (_loc,fl,`RowVar _) ->
       mktyp _loc (Ptyp_object (meth_list fl [mkfield _loc Pfield_var]))
-  | `TyCls (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
+  | `ClassPath (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
   | `Package (_loc,pt) ->
       let (i,cs) = package_type pt in mktyp _loc (Ptyp_package (i, cs))
   | `TyPol (loc,t1,t2) ->

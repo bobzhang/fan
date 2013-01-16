@@ -118,7 +118,7 @@
     | `Any of loc (* _ *)
     | `TyApp of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
     | `TyArr of (loc * ctyp * ctyp) (* t -> t *) (* int -> string *)
-    | `TyCls of (loc * ident) (* #i *) (* #point *)
+    | (* `TyCls *)`ClassPath of (loc * ident) (* #i *) (* #point *)
     | `TyLab of (loc * alident * ctyp) (* ~s:t *)
     | `Id  of (loc * ident) (* i *) (* `Lazy.t *)
     | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)

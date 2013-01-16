@@ -87,9 +87,12 @@ let (gen_map,gen_map2) = with expr
       (fun {expr;pat0;_} res ->
         {| let $pat:pat0 = $expr in $res |}) params result in 
   let mk_record cols =
+    (* (->label,info.exp0) *)
     let result = 
-    cols |> List.map (fun [ {label; info={(* id_expr; *)exp0;_ } ; _ }  ->
-          (label,exp0) ] )  |> mk_record   in
+    cols |> List.map
+      (fun [ {label; info=({(* id_expr; *)exp0;_ } as info) ; _ }  ->
+        let _ = Obj.repr info in
+        (label,exp0) ] )  |> mk_record   in
     List.fold_right
       (fun {info={expr;pat0;_};_} res ->
         {|let $pat:pat0 = $expr in $res |}) cols result in

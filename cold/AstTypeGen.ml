@@ -71,7 +71,9 @@ let (gen_map,gen_map2) =
   let mk_record cols =
     let result =
       (cols |>
-         (List.map (fun { label; info = { exp0;_};_}  -> (label, exp0))))
+         (List.map
+            (fun { label; info = ({ exp0;_} as info);_}  ->
+               let _ = Obj.repr info in (label, exp0))))
         |> mk_record in
     List.fold_right
       (fun { info = { expr; pat0;_};_}  res  ->

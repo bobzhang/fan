@@ -8,23 +8,25 @@ open FanAst;
 open ParsetreeHelper;
 
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
-let mkvirtual = with virtual_flag fun
-  [ {| virtual |} -> Virtual
-  | {||} -> Concrete
-  | _ -> assert false ];
 
-let mkdirection = with direction_flag fun
-  [ {| to |} -> Upto
-  | {| downto |} -> Downto
-  | _ -> assert false ];
+let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
+  [ `Virtual _ -> Virtual
+  | `ViNil _  -> Concrete
+  | `Ant (_loc,_) -> ANT_ERROR ];
 
-let mkrf = with rec_flag fun
-  [ {| rec |} -> Recursive
-  | {||} -> Nonrecursive
-  | _ -> assert false ];
+let mkdirection : direction_flag -> Asttypes.direction_flag = fun
+  [ `To _ -> Upto
+  | `Downto _ -> Downto
+  | `Ant (_loc,_) -> ANT_ERROR ];
+
+let mkrf : rec_flag -> Asttypes.rec_flag = fun
+  [ `Recursive _  -> Recursive
+  | `ReNil _  -> Nonrecursive
+  | `Ant(_loc,_) -> ANT_ERROR ];
 
 
 (*
+  val ident_tag: ident -> Longident.t * [> `app | `lident | `uident ]
   {[
   ident_tag {:ident| $(uid:"").B.t|}
   - : Longident.t * [> `app | `lident | `uident ] =
@@ -48,44 +50,48 @@ let mkrf = with rec_flag fun
 
   If "", just remove it, this behavior should appear in other identifier as well FIXME
  *)
-let ident_tag i =
-  let rec self i acc =  match i with
-    [ {:ident| $(lid:"*predef*").$(lid:"option") |} ->
+let ident_tag (i:ident) =
+  let rec self i acc = with ident 
+    match i with
+    [ {| $(lid:"*predef*").$(lid:"option") |} ->
       (Some ((ldot (lident "*predef*") "option"), `lident))
-    | {:ident| $i1.$i2 |} ->
+    | {| $i1.$i2 |} ->
         self i2 (self i1 acc) (* take care of the order *)
-    | {:ident| ($i1 $i2) |} -> match ((self i1 None), (self i2 None),acc) with
+    | {| ($i1 $i2) |} -> match ((self i1 None), (self i2 None),acc) with
         (* FIXME uid required here, more precise *)
         [ (Some (l,_),Some (r,_),None) ->
           Some(Lapply l r,`app)
         | _ -> error (FanAst.loc_of_ident i) "invalid long identifer" ]
-    | {:ident| $uid:s |} -> match (acc,s) with
+    | {| $uid:s |} ->
+        match (acc,s) with
         [ (None,"") -> None 
         | (None,s) -> Some (lident s ,`uident) 
         | (Some (_, `uident | `app) ,"") -> acc
         | (Some (x, `uident | `app), s) -> Some (ldot x s, `uident)
         | _ -> error (FanAst.loc_of_ident i) "invalid long identifier" ]
-    | {:ident| $lid:s |} ->
+    | {| $lid:s |} ->
           let x = match acc with
             [ None -> lident s 
             | Some (acc, `uident | `app) -> ldot acc s
             | _ -> error (loc_of_ident i) "invalid long identifier" ]
           in Some (x, `lident)
-    | _ -> error (loc_of_ident i) "invalid long identifier" ]
-  in match self i None with [Some x -> x | None -> error (loc_of_ident i) "invalid long identifier "];
+    | `Ant(_,_) -> error (loc_of_ident i) "invalid long identifier" ]  in
+  match self i None
+  with [Some x -> x | None -> error (loc_of_ident i) "invalid long identifier "];
 
 let ident_noloc i = fst (ident_tag  i);
 
-let ident i =
+let ident (i:ident) : Location.loc Longident.t  =
   with_loc (ident_noloc  i) (loc_of_ident i);
 
-let long_lident msg id =
+let long_lident ~err id =
     match ident_tag id with
-    [ (i, `lident) -> with_loc i (loc_of_ident id)
-    | _ -> error (loc_of_ident id) msg ];
+    [ (i, `lident) -> i +> (loc_of_ident id)
+    | _ -> error (loc_of_ident id) err ];
 
-let long_type_ident = long_lident "invalid long identifier type";
-let long_class_ident = long_lident "invalid class name";
+let long_type_ident :ident -> Location.loc Longident.t =
+  long_lident ~err:"invalid long identifier type";
+let long_class_ident = long_lident ~err:"invalid class name";
 
 let long_uident_noloc  i =
     match ident_tag i with
@@ -95,12 +101,13 @@ let long_uident_noloc  i =
     | _ -> error (loc_of_ident i) "uppercase identifier expected" ];
 
 let long_uident  i =
-  with_loc (long_uident_noloc  i) (loc_of_ident i);
+   long_uident_noloc  i +> loc_of_ident i;
 
 let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
-  with ctyp match t with
-  [ {| $id:i |} -> ident_noloc i
-  | {| $m1 $m2 |} ->
+  (* with ctyp *)
+  match t with
+  [ (* {| $id:i |} *) `Id(_loc,i) -> ident_noloc i
+  | (* {| $m1 $m2 |} *) `TyApp(_loc,m1,m2) ->
         let li1 = ctyp_long_id_prefix m1 in
         let li2 = ctyp_long_id_prefix m2 in
         Lapply li1 li2
@@ -108,10 +115,9 @@ let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
 
 let ctyp_long_id (t:ctyp) : (bool *  Location.loc Longident.t) =
   with ctyp match t with
-  [ {| $id:i |} ->
+  [ (* {| $id:i |} *) `Id(_loc,i) ->
     (false, long_type_ident i)
-  | {| $_ $_ |} -> error _loc "invalid type name"
-  | `TyCls (_, i) -> (true, ident i)
+  | `ClassPath (_, i) -> (true, ident i)
   | t -> error (loc_of_ctyp t) "invalid type" ] ;
 
 
@@ -148,7 +154,7 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
   | {| < $fl > |} -> mktyp _loc (Ptyp_object (meth_list fl []))
   | {| < $fl .. > |} ->
       mktyp _loc (Ptyp_object (meth_list fl [mkfield _loc Pfield_var]))
-  | `TyCls (loc, id) ->
+  | `ClassPath (loc, id) ->
       mktyp loc (Ptyp_class (ident id) [] [])
   | {| (module $pt) |} ->
       let (i, cs) = package_type pt in

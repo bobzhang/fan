@@ -5594,7 +5594,7 @@ let apply_ctyp () =
          `Snterm (Gram.obj (class_longident : 'class_longident Gram.t ))],
           (Gram.mk_action
              (fun (i : 'class_longident)  _  (_loc : FanLoc.t)  ->
-                (`TyCls (_loc, i) : 'ctyp ))));
+                (`ClassPath (_loc, i) : 'ctyp ))));
         ([`Skeyword "<";
          `Snterm (Gram.obj (opt_meth_list : 'opt_meth_list Gram.t ));
          `Skeyword ">"],
