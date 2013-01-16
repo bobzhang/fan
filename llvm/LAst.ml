@@ -1,6 +1,5 @@
 open Llvm;
 
-
 type expr =
   [= `Number of float
   | `Variable of string
@@ -16,7 +15,6 @@ let g = Gram.create_gram ();
   (expr: Gram.t expr)
   (proto: Gram.t proto)
   (func: Gram.t func)
-  (* test *)
 |};
 
   
@@ -29,16 +27,17 @@ expr:
    [S{a};"*";S{b} -> `Binary ('*',a,b)
    |S{a};"/";S{b} -> `Binary ('/',a,b)]
    "call"
-   [ `Lid x; L0 expr SEP "," {ls} -> `Call(x,Array.of_list ls) ]  
+   [ `Lid x; "(";L0 expr SEP "," {ls};")" -> `Call(x,Array.of_list ls) ]  
    "simple"
    [`Flo(x,_) -> `Number x
    |`Lid x -> `Variable x 
    |"(";S{x};")" -> x ]}
   
 proto:
-  [ OPT "extern"; `LID x; "("; L0 [`LID x -> x ] SEP ","{ls}; ")" ->  `Prototype(x,Array.of_list ls) ]
+  [ OPT "extern"; `Lid x; "("; L0 [`Lid x -> x ] SEP ","{ls}; ")"
+    ->  `Prototype(x,Array.of_list ls) ]
 func:
-  [ "def"; `LID x; "("; L0 [`LID x -> x ] SEP "," {xs} ;")" ; expr{e} ->
+  [ "def"; `Lid x; "("; L0 [`Lid x -> x ] SEP "," {xs} ;")" ; expr{e} ->
     `Function(`Prototype(x,Array.of_list xs),e) ]
 |};
 
@@ -54,7 +53,7 @@ let double_type = double_type context;
 
 exception  Error of string;
 
-let rec codegen_expr = fun
+let rec codegen_expr : expr -> llvalue= fun
   [`Number n ->
     const_float double_type n 
   |`Variable name ->
@@ -88,7 +87,7 @@ let rec codegen_expr = fun
       build_call callee args "calltmp" builder  
   ];
   
-let  codegen_proto = fun
+let  codegen_proto  = fun
   [`Prototype(name,args) ->
     let doubles = Array.make (Array.length args) double_type in
     let ft = function_type double_type doubles in
