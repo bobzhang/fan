@@ -59,7 +59,7 @@ type t =
   | `INT32 of (int32 * string )
   | `INT64 of (int64 * string )
   | `NATIVEINT of (nativeint * string )
-  | `FLO of (float * string )
+  | `Flo of (float * string )
   | `CHAR of (char * string )
   | `STR of (string * string )
   | `LABEL of string
@@ -142,7 +142,7 @@ let match_keyword kwd =  fun
  *)  
 let extract_string : [> t] -> string = fun
   [ `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `INT (_, s) | `INT32 (_, s) |
-  `INT64 (_, s) | `NATIVEINT (_ ,s) | `FLO (_, s) | `CHAR (_, s) | `STR (_, s) |
+  `INT64 (_, s) | `NATIVEINT (_ ,s) | `Flo (_, s) | `CHAR (_, s) | `STR (_, s) |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->
       invalid_arg ("Cannot extract a string from this token: "^ to_string tok) ];

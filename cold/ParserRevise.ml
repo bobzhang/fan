@@ -114,7 +114,6 @@ let apply () =
    Gram.clear opt_class_self_type;
    Gram.clear opt_comma_ctyp;
    Gram.clear opt_dot_dot;
-   Gram.clear opt_eq_ctyp;
    Gram.clear opt_expr;
    Gram.clear opt_meth_list;
    Gram.clear opt_mutable;
@@ -143,7 +142,6 @@ let apply () =
    Gram.clear top_phrase;
    Gram.clear type_declaration;
    Gram.clear type_ident_and_parameters;
-   Gram.clear type_kind;
    Gram.clear type_longident;
    Gram.clear type_longident_and_parameters;
    Gram.clear type_parameter;
@@ -1457,12 +1455,12 @@ let apply () =
                  | `INT64 (_,s) -> (`Int64 (_loc, s) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
-             (((function | `FLO (_,_) -> true | _ -> false)),
-               (`Normal, "`FLO (_,_)"))],
+             (((function | `Flo (_,_) -> true | _ -> false)),
+               (`Normal, "`Flo (_,_)"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `FLO (_,s) -> (`Flo (_loc, s) : 'expr )
+                 | `Flo (_,s) -> (`Flo (_loc, s) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `CHAR (_,_) -> true | _ -> false)),
@@ -2234,12 +2232,12 @@ let apply () =
                  | `INT64 (_,s) -> (`Int64 (_loc, s) : 'patt )
                  | _ -> assert false)));
          ([`Stoken
-             (((function | `FLO (_,_) -> true | _ -> false)),
-               (`Normal, "`FLO (_,_)"))],
+             (((function | `Flo (_,_) -> true | _ -> false)),
+               (`Normal, "`Flo (_,_)"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `FLO (_,s) -> (`Flo (_loc, s) : 'patt )
+                 | `Flo (_,s) -> (`Flo (_loc, s) : 'patt )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `CHAR (_,_) -> true | _ -> false)),
@@ -2296,12 +2294,12 @@ let apply () =
                  | _ -> assert false)));
          ([`Skeyword "-";
           `Stoken
-            (((function | `FLO (_,_) -> true | _ -> false)),
-              (`Normal, "`FLO (_,_)"))],
+            (((function | `Flo (_,_) -> true | _ -> false)),
+              (`Normal, "`Flo (_,_)"))],
            (Gram.mk_action
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
-                 | `FLO (_,s) -> (`Flo (_loc, (String.neg s)) : 'patt )
+                 | `Flo (_,s) -> (`Flo (_loc, (String.neg s)) : 'patt )
                  | _ -> assert false)));
          ([`Skeyword "["; `Skeyword "]"],
            (Gram.mk_action
@@ -5295,12 +5293,23 @@ let apply_ctyp () =
              (Gram.obj
                 (type_ident_and_parameters : 'type_ident_and_parameters
                                                Gram.t ));
-          `Snterm (Gram.obj (opt_eq_ctyp : 'opt_eq_ctyp Gram.t ));
+          `Skeyword "=";
+          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
           `Slist0 (`Snterm (Gram.obj (constrain : 'constrain Gram.t )))],
            (Gram.mk_action
-              (fun (cl : 'constrain list)  (tk : 'opt_eq_ctyp) 
+              (fun (cl : 'constrain list)  (tk : 'ctyp)  _ 
                  ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t) 
-                 -> (`TyDcl (_loc, n, tpl, tk, cl) : 'type_declaration ))))])]);
+                 -> (`TyDcl (_loc, n, tpl, tk, cl) : 'type_declaration ))));
+         ([`Snterm
+             (Gram.obj
+                (type_ident_and_parameters : 'type_ident_and_parameters
+                                               Gram.t ));
+          `Slist0 (`Snterm (Gram.obj (constrain : 'constrain Gram.t )))],
+           (Gram.mk_action
+              (fun (cl : 'constrain list) 
+                 ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t) 
+                 ->
+                 (`TyDcl (_loc, n, tpl, (`Nil _loc), cl) : 'type_declaration ))))])]);
   Gram.extend
     (type_ident_and_parameters : 'type_ident_and_parameters Gram.t )
     (None,
@@ -5322,23 +5331,6 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
                   ((t1, t2) : 'constrain ))))])]);
-  Gram.extend (opt_eq_ctyp : 'opt_eq_ctyp Gram.t )
-    (None,
-      [(None, None,
-         [([`Skeyword "=";
-           `Snterm (Gram.obj (type_kind : 'type_kind Gram.t ))],
-            (Gram.mk_action
-               (fun (tk : 'type_kind)  _  (_loc : FanLoc.t)  ->
-                  (tk : 'opt_eq_ctyp ))));
-         ([],
-           (Gram.mk_action
-              (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'opt_eq_ctyp ))))])]);
-  Gram.extend (type_kind : 'type_kind Gram.t )
-    (None,
-      [(None, None,
-         [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-            (Gram.mk_action
-               (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'type_kind ))))])]);
   Gram.extend (typevars : 'typevars Gram.t )
     (None,
       [(None, None,

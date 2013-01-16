@@ -395,7 +395,7 @@ let apply () = begin
         | `INT(_,s) -> {|$int:s|}
         | `INT32(_,s) -> {|$int32:s|}
         | `INT64(_,s) -> {|$int64:s|}
-        | `FLO(_,s) -> {|$flo:s|}
+        | `Flo(_,s) -> {|$flo:s|}
         | `CHAR(_,s) -> {|$chr:s|}
         | `STR(_,s) -> {|$str:s|}
         | `NATIVEINT(_,s) -> {|$nativeint:s|}
@@ -561,14 +561,14 @@ let apply () = begin
         | `INT(_,s) -> {|$int:s|}
         | `INT32(_,s) -> {|$int32:s|}
         | `INT64(_,s) -> {|$int64:s|}
-        | `FLO(_,s) -> {|$flo:s|}
+        | `Flo(_,s) -> {|$flo:s|}
         | `CHAR(_,s) -> {|$chr:s|}
         | `STR(_,s) -> {|$str:s|}
         | "-"; `INT(_,s) -> {|$(int:String.neg s)|}
         | "-"; `INT32(_,s) -> {|$(int32:String.neg s)|}
         | "-"; `INT64(_,s) -> {|$(int64:String.neg s)|}
         | "-"; `NATIVEINT(_,s) -> {|$(int64:String.neg s)|}
-        | "-"; `FLO(_,s) -> {|$(flo:String.neg s)|}
+        | "-"; `Flo(_,s) -> {|$(flo:String.neg s)|}
         | "["; "]" -> {| [] |}
         | "["; sem_patt_for_list{mk_list}; "::"; patt{last}; "]" -> mk_list last
         | "["; sem_patt_for_list{mk_list}; "]" -> mk_list {| [] |}
@@ -1138,8 +1138,11 @@ let apply_ctyp () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
       |  type_ident_and_parameters{(n, tpl)}; "="; ctyp{tk}; L0 constrain{cl}
-        -> `TyDcl (_loc, n, tpl, tk, cl) ]
-      
+        -> `TyDcl (_loc, n, tpl, tk, cl)
+      | type_ident_and_parameters{(n,tpl)}; L0 constrain{cl} ->
+        `TyDcl(_loc,n,tpl,`Nil _loc,cl)
+      ]
+  
       type_ident_and_parameters:
       [ a_lident{i}; L0 type_parameter{tpl} -> (i, tpl)]
 

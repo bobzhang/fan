@@ -281,7 +281,7 @@ rule token c = parse
        | int_literal  ('l'|'L'|'n')? as x
            {try cvt_int_literal x with Failure _ -> err (Literal_overflow x) (FanLoc.of_lexbuf lexbuf)}
        | float_literal as f
-           { try  `FLO(float_of_string f, f) with Failure _ -> err (Literal_overflow f) (FanLoc.of_lexbuf lexbuf) }
+           { try  `Flo(float_of_string f, f) with Failure _ -> err (Literal_overflow f) (FanLoc.of_lexbuf lexbuf) }
        | '"'
            { with_curr_loc string c;
              let s = buff_contents c in `STR (TokenEval.string s, s)             }

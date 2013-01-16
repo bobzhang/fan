@@ -15,7 +15,7 @@ type t =
   | `INT32 of (int32 * string )
   | `INT64 of (int64 * string )
   | `NATIVEINT of (nativeint * string )
-  | `FLO of (float * string )
+  | `Flo of (float * string )
   | `CHAR of (char * string )
   | `STR of (string * string )
   | `LABEL of string

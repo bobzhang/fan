@@ -137,7 +137,6 @@ module type Syntax =
     val opt_comma_ctyp : ctyp Gram.t
     val opt_dot_dot : row_var_flag Gram.t
     val row_var_flag_quot : row_var_flag Gram.t
-    val opt_eq_ctyp : ctyp Gram.t
     val opt_expr : expr Gram.t
     val opt_meth_list : ctyp Gram.t
     val opt_mutable : mutable_flag Gram.t
@@ -171,7 +170,6 @@ module type Syntax =
     val str_items : str_item Gram.t
     val type_declaration : ctyp Gram.t
     val type_ident_and_parameters : (alident* ctyp list) Gram.t
-    val type_kind : ctyp Gram.t
     val type_longident : ident Gram.t
     val type_longident_and_parameters : ctyp Gram.t
     val type_parameter : ctyp Gram.t

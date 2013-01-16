@@ -10,7 +10,7 @@ type t =
   [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
   | `ESCAPED_IDENT of string | `INT of (int* string)
   | `INT32 of (int32* string) | `INT64 of (int64* string)
-  | `NATIVEINT of (nativeint* string) | `FLO of (float* string)
+  | `NATIVEINT of (nativeint* string) | `Flo of (float* string)
   | `CHAR of (char* string) | `STR of (string* string) | `LABEL of string
   | `OPTLABEL of string | `QUOTATION of quotation | `Ant of (string* string)
   | `COMMENT of string | `BLANKS of string | `NEWLINE
@@ -49,8 +49,8 @@ let pp_print_t: 'fmt -> t -> 'result =
     | `NATIVEINT (a0,a1) ->
         Format.fprintf fmt "@[<1>(`NATIVEINT@ %a@ %a)@]" pp_print_nativeint
           a0 pp_print_string a1
-    | `FLO (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`FLO@ %a@ %a)@]" pp_print_float a0
+    | `Flo (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" pp_print_float a0
           pp_print_string a1
     | `CHAR (a0,a1) ->
         Format.fprintf fmt "@[<1>(`CHAR@ %a@ %a)@]" pp_print_char a0
@@ -127,7 +127,7 @@ let match_keyword kwd =
 let extract_string: [> t] -> string =
   function
   | `KEYWORD s|`SYMBOL s|`Lid s|`Uid s|`INT (_,s)|`INT32 (_,s)|`INT64 (_,s)
-    |`NATIVEINT (_,s)|`FLO (_,s)|`CHAR (_,s)|`STR (_,s)|`LABEL s|`OPTLABEL s
+    |`NATIVEINT (_,s)|`Flo (_,s)|`CHAR (_,s)|`STR (_,s)|`LABEL s|`OPTLABEL s
     |`COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
   | tok ->
       invalid_arg

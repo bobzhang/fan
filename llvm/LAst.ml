@@ -29,10 +29,10 @@ expr:
    [S{a};"*";S{b} -> `Binary ('*',a,b)
    |S{a};"/";S{b} -> `Binary ('/',a,b)]
    "call"
-   [ `LID x; L0 expr SEP "," {ls} -> `Call(x,Array.of_list ls) ]  
+   [ `Lid x; L0 expr SEP "," {ls} -> `Call(x,Array.of_list ls) ]  
    "simple"
-   [`FLO(x,_) -> `Number x
-   |`LID x -> `Variable x 
+   [`Flo(x,_) -> `Number x
+   |`Lid x -> `Variable x 
    |"(";S{x};")" -> x ]}
   
 proto:
