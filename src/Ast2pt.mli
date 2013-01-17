@@ -78,9 +78,9 @@ val opt_private_ctyp :
   ctyp ->
   Parsetree.type_kind * Asttypes.private_flag * Parsetree.core_type
 
-val type_parameters :
-  ctyp ->
-  (string * (bool * bool)) list -> (string * (bool * bool)) list
+(* val type_parameters : *)
+(*   ctyp -> *)
+(*   (string * (bool * bool)) list -> (string * (bool * bool)) list *)
 
 val optional_type_parameters :
   ctyp ->
@@ -88,9 +88,8 @@ val optional_type_parameters :
   (string Asttypes.loc option * (bool * bool)) list
       
 val class_parameters :
-  ctyp ->
-  (string Asttypes.loc * (bool * bool)) list ->
-  (string Asttypes.loc * (bool * bool)) list
+    ctyp ->
+      (string Asttypes.loc * (bool * bool)) list
       
 val type_parameters_and_type_name :
   ctyp ->
@@ -152,7 +151,6 @@ val mkideexp :
       
 val mktype_decl :
   ctyp ->
-  (string Asttypes.loc * Parsetree.type_declaration) list ->
   (string Asttypes.loc * Parsetree.type_declaration) list
 
 val module_type : module_type -> Parsetree.module_type

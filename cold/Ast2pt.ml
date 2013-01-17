@@ -204,9 +204,8 @@ let mktrecord:
   | `TyCol (_loc,`Id (_,`Lid (sloc,s)),t) ->
       ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), _loc)
   | t -> errorf (loc_of_ctyp t) "mktrecord %s " (dump_ctyp t)
-let mkvariant:
-  ctyp -> (string Asttypes.loc* core_type list* core_type option* loc) =
-  function
+let mkvariant (x : ctyp) =
+  match x with
   | `Id (_loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, _loc)
   | `Of (_loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])), None, _loc)
@@ -280,28 +279,19 @@ let quote_map (x : ctyp) =
             error _loc "antiquotation not expected here" in
       (s, tuple)
   | t -> errorf (loc_of_ctyp x) "quote_map %s" (dump_ctyp t)
-let type_parameters (t : ctyp) acc =
-  (List.map
-     (fun x  ->
-        match quote_map x with
-        | (Some { txt;_},v) -> (txt, v)
-        | (None ,_) ->
-            errorf (loc_of_ctyp t) "type_parameters %s" (dump_ctyp t))
-     (FanAst.list_of_ctyp_app t []))
-    @ acc
 let optional_type_parameters (t : ctyp)
   (acc : (string Asttypes.loc option* (bool* bool)) list) =
   (List.map quote_map (FanAst.list_of_ctyp_app t [])) @ acc
-let class_parameters (t : ctyp)
-  (acc : (string Asttypes.loc* (bool* bool)) list) =
-  (List.map
-     (fun x  ->
-        match quote_map x with
-        | (Some x,v) -> (x, v)
-        | (None ,_) ->
-            errorf (loc_of_ctyp t) "class_parameters %s" (dump_ctyp t))
-     (FanAst.list_of_ctyp_com t []))
-    @ acc
+let class_parameters (t : ctyp) =
+  List.filter_map
+    (function
+     | `Nil _ -> None
+     | x ->
+         (match quote_map x with
+          | (Some x,v) -> Some (x, v)
+          | (None ,_) ->
+              errorf (loc_of_ctyp t) "class_parameters %s" (dump_ctyp t)))
+    (list_of_com t [])
 let type_parameters_and_type_name t acc =
   let rec aux t acc =
     match t with
@@ -778,21 +768,20 @@ and mkideexp (x : rec_binding) (acc : (string Asttypes.loc* expression) list)
    | `Sem (_loc,x,y) -> mkideexp x (mkideexp y acc)
    | `RecBind (_loc,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
    | _ -> assert false : (string Asttypes.loc* expression) list )
-and mktype_decl (x : ctyp)
-  (acc : (string Asttypes.loc* type_declaration) list) =
-  match x with
-  | `And (_loc,x,y) -> mktype_decl x (mktype_decl y acc)
-  | `TyDcl (cloc,`Lid (sloc,c),tl,td,cl) ->
-      let cl =
-        List.map
-          (fun (t1,t2)  ->
-             let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
-             ((ctyp t1), (ctyp t2), loc)) cl in
-      ((with_loc c sloc),
-        (type_decl (List.fold_right optional_type_parameters tl []) cl td
-           cloc))
-        :: acc
-  | t -> errorf (loc_of_ctyp t) "mktype_decl %s" (dump_ctyp t)
+and mktype_decl (x : ctyp) =
+  let tys = list_of_and x [] in
+  List.map
+    (function
+     | `TyDcl (cloc,`Lid (sloc,c),tl,td,cl) ->
+         let cl =
+           List.map
+             (fun (t1,t2)  ->
+                let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
+                ((ctyp t1), (ctyp t2), loc)) cl in
+         ((c +> sloc),
+           (type_decl (List.fold_right optional_type_parameters tl []) cl td
+              cloc))
+     | t -> errorf (loc_of_ctyp t) "mktype_decl %s" (dump_ctyp t)) tys
 and module_type: Ast.module_type -> Parsetree.module_type =
   function
   | `Nil loc -> error loc "abstract/nil module type not allowed here"
@@ -860,7 +849,7 @@ and sig_item (s : sig_item) (l : signature) =
             :: l
         | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
    | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
-   | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl []))) :: l
+   | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl))) :: l
    | `Val (loc,n,t) ->
        (match n with
         | `Lid (sloc,n) ->
@@ -961,7 +950,7 @@ and str_item (s : str_item) (l : structure) =
             :: l
         | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
    | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
-   | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl []))) :: l
+   | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl))) :: l
    | `Value (loc,rf,bi) ->
        (mkstr loc (Pstr_value ((mkrf rf), (binding bi [])))) :: l
    | x ->
@@ -1004,7 +993,7 @@ and class_info_class_expr (ci : class_expr) =
       let (loc_params,(params,variance)) =
         match params with
         | `Nil _loc -> (loc, ([], []))
-        | t -> ((loc_of_ctyp t), (List.split (class_parameters t []))) in
+        | t -> ((loc_of_ctyp t), (List.split (class_parameters t))) in
       {
         pci_virt = (mkvirtual vir);
         pci_params = (params, loc_params);
@@ -1023,7 +1012,7 @@ and class_info_class_type (ci : class_type) =
       let (loc_params,(params,variance)) =
         match params with
         | `Nil _loc -> (loc, ([], []))
-        | t -> ((loc_of_ctyp t), (List.split (class_parameters t []))) in
+        | t -> ((loc_of_ctyp t), (List.split (class_parameters t))) in
       {
         pci_virt = (mkvirtual vir);
         pci_params = (params, loc_params);

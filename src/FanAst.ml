@@ -411,6 +411,17 @@ let rec pel_of_binding =  fun
     | {:binding| $p = $e |} -> [(p, e)]
     | _ -> assert false ];
 
+let rec list_of_and x acc =
+  match x with
+  [`And(_,x,y) ->
+    list_of_and x (list_of_and y acc)
+  | _ -> [x::acc] ];
+let rec list_of_com x acc =
+  match x with
+  [`Com(_,x,y) ->
+    list_of_com x (list_of_com y acc)
+  | _ -> [x::acc]];
+    
 let rec list_of_binding x acc =
     match x with
     [ {:binding| $b1 and $b2 |} ->

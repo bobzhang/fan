@@ -293,8 +293,9 @@ let mktrecord : ctyp ->  (Asttypes.loc string * Asttypes.mutable_flag * core_typ
         (dump_ctyp t)
       (* assert false *) (*FIXME*) ];
   
-let mkvariant : ctyp ->
-  (  Asttypes.loc string  * list core_type * option core_type * loc ) = fun
+let mkvariant (x:ctyp)
+  (* (  Asttypes.loc string  * list core_type * option core_type * loc ) *) = (* fun *)
+  match x with
   [ (* {| $(id:{:ident@sloc| $uid:s |}) |} *)
     `Id(_loc,`Uid(sloc,s))
     ->
@@ -350,6 +351,7 @@ let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool)))
           | _ -> Some (ctyp t) ] in
         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m ] ;
 
+(* return a [type_declaration]*)      
 let type_decl tl cl t loc = type_decl tl cl loc None false t;
 
 let mkvalue_desc loc t p =
@@ -403,15 +405,15 @@ let quote_map (x:ctyp) =
   | t ->
       errorf (loc_of_ctyp x) "quote_map %s" (dump_ctyp t)]  ;
     
-let  type_parameters (t:ctyp) acc =
-  List.map
-    (fun x ->
-      match quote_map x with
-      [(Some {txt;_} ,v) -> (txt,v)
-      |(None,_) ->
-          errorf (loc_of_ctyp t)
-            "type_parameters %s" (dump_ctyp t) ])
-    (FanAst.list_of_ctyp_app t []) @ acc;
+(* let  type_parameters (t:ctyp) acc = *)
+(*   List.map *)
+(*     (fun x -> *)
+(*       match quote_map x with *)
+(*       [(Some {txt;_} ,v) -> (txt,v) *)
+(*       |(None,_) -> *)
+(*           errorf (loc_of_ctyp t) *)
+(*             "type_parameters %s" (dump_ctyp t) ]) *)
+(*     (FanAst.list_of_ctyp_app t []) @ acc; *)
     
     
 let optional_type_parameters (t:ctyp)
@@ -421,15 +423,17 @@ let optional_type_parameters (t:ctyp)
 (*
   it should always return [Some] instead of None
  *)  
-let  class_parameters (t:ctyp)
-    (acc: list (Asttypes.loc string * (bool * bool))) =
-  List.map
-    (fun x ->
-      match quote_map x with
-      [(Some x,v) -> (x,v)
-      | (None,_) ->
-          errorf (loc_of_ctyp t) "class_parameters %s" (dump_ctyp t)])  
-          (FanAst.list_of_ctyp_com t []) @ acc ;
+let  class_parameters (t:ctyp) =
+  List.filter_map
+    (fun
+      [`Nil _ -> None
+      | x ->
+          match quote_map x with
+          [(Some x,v) -> Some (x,v)
+          | (None,_) ->
+              errorf (loc_of_ctyp t) "class_parameters %s" (dump_ctyp t)] ])
+    (list_of_com t []);
+
 
 let type_parameters_and_type_name t acc =
   let rec aux t acc = 
@@ -941,7 +945,7 @@ and mkideexp (x:rec_binding)
 
 (* Example:
    {[
-   (Lib.Ctyp.of_str_item {:str_item|type u = int and v  = [A of u and b ] |},[])
+   (Lib.Ctyp.of_str_item {:str_item|type u = int and v  = [A of u and b ] |})
      ||> mktype_decl |> AstPrint.default#type_def_list f;
    type u = int 
    and v =  
@@ -949,28 +953,21 @@ and mkideexp (x:rec_binding)
    ]}
    
  *)    
-and mktype_decl (x:ctyp)
-    (acc: list (Asttypes.loc string * type_declaration))
-    =
-  match x with 
-  [ (* {:ctyp| $x and $y |} *)
-    `And(_loc,x,y) ->
-    mktype_decl x (mktype_decl y acc)
-  | `TyDcl (cloc, (* c *) `Lid(sloc,c), tl, td, cl) ->
-      let cl =
-        List.map
-          (fun (t1, t2) ->
-            let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
-            (ctyp t1, ctyp t2,  loc))
-          cl  in
-      (* match c with *)
-      (* [`Lid(sloc,c)->    *)
-        [(with_loc c sloc,
-          type_decl
-            (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
-      (* |`Ant(_loc,_) -> ANT_ERROR] *)
-  | t ->
-      errorf (loc_of_ctyp t)"mktype_decl %s" (dump_ctyp t) ]
+and mktype_decl (x:ctyp)  =
+  let tys = list_of_and x [] in
+  List.map
+    (fun 
+      [`TyDcl (cloc,`Lid(sloc,c),tl,td,cl) ->
+        let cl = List.map
+            (fun (t1,t2) ->
+              let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
+              (ctyp t1, ctyp t2, loc)) cl in
+        (c+>sloc,
+         type_decl
+           (List.fold_right optional_type_parameters tl [])
+           cl td cloc)
+      | t ->
+          errorf (loc_of_ctyp t) "mktype_decl %s" (dump_ctyp t)]) tys
 and module_type : Ast.module_type -> Parsetree.module_type =
   with module_type fun 
   [ {@loc||} -> error loc "abstract/nil module type not allowed here"
@@ -1028,7 +1025,7 @@ and sig_item (s:sig_item) (l:signature) :signature =
       |`Ant(_loc,_) -> ANT_ERROR]
   | `Open (loc,id) ->
       [mksig loc (Psig_open (long_uident id)) :: l]
-  | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
+  | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl )) :: l]
   | `Val (loc,n,t) ->
         match n with
         [`Lid(sloc,n) ->
@@ -1120,7 +1117,7 @@ and str_item (s:str_item) (l:structure) : structure =
       |`Ant(_loc,_) -> ANT_ERROR]
   | `Open (loc,id) ->
       [mkstr loc (Pstr_open (long_uident id)) :: l]
-  | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl [])) :: l]
+  | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl )) :: l]
   | `Value (loc,rf,bi) ->
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
 
@@ -1163,7 +1160,7 @@ and class_info_class_expr (ci:class_expr) =
         match params with
         [ (* {:ctyp||} *) `Nil _loc ->
           (loc, ([], []))
-        | t -> (loc_of_ctyp t, List.split (class_parameters t [])) ]  in
+        | t -> (loc_of_ctyp t, List.split (class_parameters t (* [] *))) ]  in
       {pci_virt = mkvirtual vir;
        pci_params = (params,  loc_params);
        pci_name = with_loc name nloc;
@@ -1181,7 +1178,7 @@ and class_info_class_type (ci:class_type) =
           match params with
           [ (* {:ctyp||} *) `Nil _loc ->
             (loc, ([], []))
-          | t -> (loc_of_ctyp t, List.split (class_parameters t [])) ] in
+          | t -> (loc_of_ctyp t, List.split (class_parameters t (* [] *))) ] in
       {pci_virt = mkvirtual vir;
        pci_params = (params,  loc_params);
        pci_name = with_loc name nloc;

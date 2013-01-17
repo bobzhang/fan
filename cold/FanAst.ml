@@ -9582,6 +9582,14 @@ let rec pel_of_binding =
   | `And (_loc,b1,b2) -> (pel_of_binding b1) @ (pel_of_binding b2)
   | `Bind (_loc,p,e) -> [(p, e)]
   | _ -> assert false
+let rec list_of_and x acc =
+  match x with
+  | `And (_,x,y) -> list_of_and x (list_of_and y acc)
+  | _ -> x :: acc
+let rec list_of_com x acc =
+  match x with
+  | `Com (_,x,y) -> list_of_com x (list_of_com y acc)
+  | _ -> x :: acc
 let rec list_of_binding x acc =
   match x with
   | `And (_loc,b1,b2) -> list_of_binding b1 (list_of_binding b2 acc)
