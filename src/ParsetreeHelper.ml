@@ -20,11 +20,15 @@ let mkghloc loc = FanLoc.ghostify loc;
 
 let error loc str = FanLoc.raise loc (Failure str);  
 
+let errorf loc fmt =
+  Format.ksprintf (fun s -> FanLoc.raise loc (Failure s))
+    fmt ;
 let mksig loc d = {psig_desc = d; psig_loc =  loc};
 let mkmod loc d = {pmod_desc = d; pmod_loc =  loc};
 let mkexp loc d = {pexp_desc = d; pexp_loc =  loc};
 let mkstr loc d = {pstr_desc = d; pstr_loc =  loc};
 let mkfield loc d = {pfield_desc = d; pfield_loc =  loc};
+
 let mkcty loc d = {pcty_desc = d; pcty_loc =  loc};
 let mkcl loc d = {pcl_desc = d; pcl_loc =  loc};
 let mkcf loc d = { pcf_desc = d; pcf_loc =  loc; };

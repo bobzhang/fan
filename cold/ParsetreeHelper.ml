@@ -10,6 +10,8 @@ let ldot l s = Ldot (l, s)
 let lapply l s = Lapply (l, s)
 let mkghloc loc = FanLoc.ghostify loc
 let error loc str = FanLoc.raise loc (Failure str)
+let errorf loc fmt =
+  Format.ksprintf (fun s  -> FanLoc.raise loc (Failure s)) fmt
 let mksig loc d = { psig_desc = d; psig_loc = loc }
 let mkmod loc d = { pmod_desc = d; pmod_loc = loc }
 let mkexp loc d = { pexp_desc = d; pexp_loc = loc }

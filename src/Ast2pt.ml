@@ -7,6 +7,15 @@ open FanUtil;
 open FanAst;
 open ParsetreeHelper;
 
+let dump_ctyp = to_string_of_printer dump#ctyp;
+let dump_with_constr = to_string_of_printer dump#with_constr;
+let dump_module_type = to_string_of_printer dump#module_type;
+let dump_expr = to_string_of_printer dump#expr;
+let dump_patt = to_string_of_printer dump#patt;
+let dump_class_type = to_string_of_printer dump#class_type;
+let dump_class_expr = to_string_of_printer dump#class_expr;
+
+  
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
 
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
@@ -125,192 +134,250 @@ let predef_option loc =
   `Id (loc, `IdAcc (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
 
 let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun 
-  [ {|$id:i|} ->
+  [ (* {|$id:i|} *)
+    `Id(_loc,i)->
     let li = long_type_ident i in
     mktyp _loc (Ptyp_constr li [])
-  | {| $t1 as $t2 |}(* `Alias (loc, t1, t2) *) ->
-      let (t, i) =
-      match (t1, t2) with
-      [ (t, (* `TyQuo (_, s) *) `Quote(_, _, `Some (`Lid(_,s)))) -> (t, s)
-      (* | (`TyQuo (_, s), t) -> (t, s) *)
-      | _ -> error _loc "invalid alias type" ] in
-      mktyp _loc (Ptyp_alias (ctyp t) i)
-  | {| _ |}(* `Any loc *) -> mktyp _loc Ptyp_any
-  | ({| $_ $_ |} as f )(* `TyApp (loc, _, _) as f *) ->
+  | (* {| $t1 as $t2 |} *)
+    `Alias (_loc, t1, (* t2 *) `Quote(_,_,`Some(`Lid(_,s)))) ->
+      mktyp _loc (Ptyp_alias (ctyp t1) s)
+  | (* {| _ |} *)
+    `Any _loc -> mktyp _loc Ptyp_any
+  | (* ({| $_ $_ |} as f ) *)
+    `TyApp (_loc, _, _) as f ->
       let (f, al) = Ctyp.view_app [] f in
       let (is_cls, li) = ctyp_long_id f in
       if is_cls then mktyp _loc (Ptyp_class li (List.map ctyp al) [])
       else mktyp _loc (Ptyp_constr li (List.map ctyp al))
-  | `TyArr (loc, (`TyLab (_, lab, t1)), t2) ->
-      let lab = match lab with
-        [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in 
+  | `TyArr (loc, (`TyLab (_,  `Lid(_,lab), t1)), t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
-  | `TyArr (loc, (`TyOlb (loc1, lab, t1)), t2) ->
-      let lab =
-        match lab with [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in 
+  | `TyArr (loc, (`TyOlb (loc1, `Lid(_,lab), t1)), t2) ->
       let t1 = `TyApp loc1 (predef_option loc1) t1 in
       mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
   | `TyArr (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
-  | {| < $fl > |} -> mktyp _loc (Ptyp_object (meth_list fl []))
-  | {| < $fl .. > |} ->
+  | (* {| < $fl > |} *)
+    `TyObj(_loc,fl,`RvNil _)
+    -> mktyp _loc (Ptyp_object (meth_list fl []))
+  | (* {| < $fl .. > |} *)
+    `TyObj(_loc,fl,`RowVar _)->
       mktyp _loc (Ptyp_object (meth_list fl [mkfield _loc Pfield_var]))
   | `ClassPath (loc, id) ->
       mktyp loc (Ptyp_class (ident id) [] [])
-  | {| (module $pt) |} ->
+  | (* {| (module $pt) |} *)
+    `Package(_loc,pt) ->
       let (i, cs) = package_type pt in
       mktyp _loc (Ptyp_package i cs)
   | `TyPol (loc, t1, t2) -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
 
-  | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) ->
-      mktyp _loc (Ptyp_var s)
+  | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) -> mktyp _loc (Ptyp_var s)
         
-  | {@loc| ($t1 * $t2) |} ->
+  | (* {@loc| ($t1 * $t2) |} *)
+    `Tup(loc,`Sta(_,t1,t2))
+    ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
-        
-  | {| [ = $t ] |} ->
+  | (* {| [ = $t ] |} *)
+    `TyVrnEq(_loc,t)
+    ->
       mktyp _loc (Ptyp_variant (row_field t []) true None)
-  | {| [ > $t ] |} ->
+  | (* {| [ > $t ] |} *)
+    `TyVrnSup(_loc,t)
+    ->
       mktyp _loc (Ptyp_variant (row_field t []) false None)
-  | {| [ < $t ] |} ->
+  | (* {| [ < $t ] |} *)
+    `TyVrnInf(_loc,t)
+    ->
       mktyp _loc (Ptyp_variant (row_field t []) true (Some []))
-  | {| [ < $t > $t' ] |} ->
+  | (* {| [ < $t > $t' ] |} *)
+    `TyVrnInfSup(_loc,t,t')
+    ->
       mktyp _loc (Ptyp_variant (row_field t []) true (Some (Ctyp.name_tags t')))
-  | `TyLab (loc, _, _) -> error loc "labelled type not allowed here"
-  | `TyMan (loc, _, _) -> error loc "manifest type not allowed here"
-  | `TyOlb (loc,_,_) -> error loc "labelled type not allowed here"
-  | `TyRec (loc,_) -> error loc "record type not allowed here"
-  | `Sum (loc,_) -> error loc "sum type not allowed here"
-  | `Private (loc,_) -> error loc "private type not allowed here"
-  | `Mutable (loc,_) -> error loc "mutable type not allowed here"
-  | `Or (loc,_,_) -> error loc "type1 | type2 not allowed here"
-  | `And (loc,_,_) -> error loc "type1 and type2 not allowed here"
-  | `Of (loc,_,_) -> error loc "type1 of type2 not allowed here"
-  | `TyCol (loc,_,_) -> error loc "type1 : type2 not allowed here"
-  | `TySem (loc,_,_) -> error loc "type1 ; type2 not allowed here"
-  | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  |  _ -> 
-  (* | `TyOfAmp (_, _, _) |`TyAmp (_, _, _) |`Sta (_, _, _) | *)
-  (*   `Com (_, _, _) |`TyVrn (_, _) |`TyQuM (_, _) |`TyQuP (_, _) |`TyDcl (_, _, _, _, _) | *)
-  (*   `TyAnP _ | `TyAnM _ | `TyTypePol (_, _, _) | *)
-  (*   `TyObj (_, _, (`Ant _)) | `Nil _ | `Tup (_,_)  -> *)
-      assert false ]
+
+  |  x ->
+      begin
+        Format.eprintf "dumping ctyp -> Parsetree.core_type error: @[%a@]@."
+          dump#ctyp x ;
+        exit 2;
+      end ]
 and row_field (x:ctyp) acc =
-    with ctyp match x with 
-  [ {||} -> []
-  | {| `$i |} ->
+  match x with 
+  [ (* {||} *)
+    `Nil _loc  -> []
+  | (* {| `$i |} *)
+    `TyVrn (_loc,i) ->
       [Rtag i true [] :: acc]
-  | {| `$i of & $t |} ->
+  | (* {| `$i of & $t |} *)
+    `TyOfAmp (_loc,`TyVrn(_,i),t) ->
       [Rtag i true (List.map ctyp (list_of_ctyp t [])) :: acc ]
-  | {| `$i of $t |} ->
+  | (* {| `$i of $t |} *)
+    `Of(_loc,`TyVrn(_,i),t) ->
       [Rtag i false (List.map ctyp (list_of_ctyp t [])) :: acc ]
-  | {| $t1 | $t2 |} -> row_field t1 ( row_field t2 acc)
+  | (* {| $t1 | $t2 |} *)
+    `Or(_loc,t1,t2) ->
+      row_field t1 ( row_field t2 acc)
   | t -> [Rinherit (ctyp t) :: acc] ]
 and meth_list (fl:ctyp) (acc: list core_field_type) : list core_field_type =
   with ctyp match fl with
-  [ {||} -> acc
-  | {| $t1; $t2 |} -> meth_list t1 (meth_list t2 acc)
-  | {| $lid:lab : $t |} ->
+  [ (* {||} *)
+    `Nil _-> acc
+  | (* {| $t1; $t2 |} *)
+    `TySem (_loc,t1,t2)
+    -> meth_list t1 (meth_list t2 acc)
+  | (* {| $lid:lab : $t |} *)
+    `TyCol(_loc,`Id(_,`Lid(_,lab)),t) ->
       [mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
-  | _ -> assert false ]
-
+  | x ->
+        errorf (FanAst.loc_of_ctyp x)
+          "meth_list ctyp -> core_field_type: %s"
+          (dump_ctyp x )]
 and package_type_constraints (wc:with_constr)
     (acc: list (Asttypes.loc Longident.t  *core_type))
     : list (Asttypes.loc Longident.t  *core_type) =
     with with_constr match wc with
-    [ {||} -> acc
-    | {| type $id:id = $ct |} ->  [(ident id, ctyp ct) :: acc]
-    | {| $wc1 and $wc2 |} ->
+    [ (* {||} *)
+      `Nil _ -> acc
+    | (* {| type $id:id = $ct |} *)
+      `TypeEq(_loc,`Id(_,id),ct) ->
+        [(ident id, ctyp ct) :: acc]
+    | (* {| $wc1 and $wc2 |} *) `And(_loc,wc1,wc2) ->
         package_type_constraints wc1 (package_type_constraints wc2 acc)
-    | _ -> error (loc_of_with_constr wc) "unexpected `with constraint' for a package type" ]
+    | _ -> errorf
+          (loc_of_with_constr wc)
+          "unexpected `with constraint:%s' for a package type"
+          (dump_with_constr wc) ]
 
 and package_type : module_type -> package_type =
     with module_type fun
-    [ {| $id:i with $wc |} ->
+    [ (* {| $id:i with $wc |} *)
+      `MtWit(_loc,`Id(_,i),wc) ->
       (long_uident i, package_type_constraints wc [])
-    | {| $id:i |} -> (long_uident i, [])
-    | mt -> error (loc_of_module_type mt) "unexpected package type" ] ;
+    | (* {| $id:i |} *)
+      `Id(_loc,i) -> (long_uident i, [])
+    | mt -> errorf
+          (loc_of_module_type mt)
+          "unexpected package type: %s"
+          (dump_module_type mt)] ;
 
 let mktype loc tl cl tk tp tm =
   let (params, variance) = List.split tl in
-  {ptype_params = params; ptype_cstrs = cl; ptype_kind = tk;
-   ptype_private = tp; ptype_manifest = tm; ptype_loc =  loc;
+  {ptype_params = params;
+   ptype_cstrs = cl;
+   ptype_kind = tk;
+   ptype_private = tp;
+   ptype_manifest = tm;
+   ptype_loc =  loc;
    ptype_variance = variance} ;
+  
 let mkprivate' m = if m then Private else Public;
 
-let mkprivate = with private_flag fun
-  [ {| private |} -> Private
-  | {||} -> Public
-  | _ -> assert false ];
+let mkprivate =  fun
+  [ `Private _ -> Private
+  | `PrNil _ -> Public
+  | `Ant(_loc,_)-> ANT_ERROR ];
 
 let mktrecord : ctyp ->  (Asttypes.loc string * Asttypes.mutable_flag * core_type *  loc)=
   with ctyp fun
-  [ {| $(id:{:ident@sloc| $lid:s |}) : mutable $t |} ->
+  [ (* {| $(id:{:ident@sloc| $lid:s |}) : mutable $t |} *)
+    `TyCol(_loc,`Id(_,`Lid(sloc,s)),`Mutable(_,t))
+    ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
-  | {| $(id:{:ident@sloc| $lid:s |}) : $t |} ->
+  | (* {| $(id:{:ident@sloc| $lid:s |}) : $t |} *)
+    `TyCol(_loc,`Id(_,`Lid(sloc,s)),t)
+    ->
       (with_loc s sloc, Immutable, mkpolytype (ctyp t),  _loc)
-  | _ -> assert false (*FIXME*) ];
+  | t ->
+      errorf (loc_of_ctyp t) "mktrecord %s "
+        (dump_ctyp t)
+      (* assert false *) (*FIXME*) ];
   
 let mkvariant : ctyp ->
-  (  Asttypes.loc string  * list core_type * option core_type * loc ) =
-  with ctyp fun
-  [ {| $(id:{:ident@sloc| $uid:s |}) |} ->
+  (  Asttypes.loc string  * list core_type * option core_type * loc ) = fun
+  [ (* {| $(id:{:ident@sloc| $uid:s |}) |} *)
+    `Id(_loc,`Uid(sloc,s))
+    ->
     (with_loc  s sloc, [], None,  _loc)
-  | {| $(id:{:ident@sloc| $uid:s |}) of $t |} ->
+  | (* {| $(id:{:ident@sloc| $uid:s |}) of $t |} *)
+    `Of(_loc,`Id(_,`Uid(sloc,s)),t)
+    ->
       (with_loc  s sloc, List.map ctyp (list_of_ctyp t []), None,  _loc)
-  | {| $(id:{:ident@sloc| $uid:s |}) : ($t -> $u) |} ->
+  | (* {| $(id:{:ident@sloc| $uid:s |}) : ($t -> $u) |} *)
+    `TyCol(_loc,`Id(_,`Uid(sloc,s)),`TyArr(_,t,u))
+    ->
       (with_loc s sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  _loc)
-  | {| $(id:{:ident@sloc| $uid:s |}) : $t |} ->
+  | (* {| $(id:{:ident@sloc| $uid:s |}) : $t |} *)
+    `TyCol(_loc,`Id(_,`Uid(sloc,s)),t)
+    ->
       (with_loc  s sloc, [], Some (ctyp t),  _loc)
 
-  | _ -> assert false (*FIXME*) ];
+  | t ->
+      errorf (loc_of_ctyp t) "mkvariant %s " (dump_ctyp t) ];
+
   
 let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool)))
     (cl: list (core_type * core_type * Location.t))
-    loc m pflag : ctyp -> type_declaration = with ctyp fun
-  [ {| $t1 == $t2 |} ->
+    loc m pflag : ctyp -> type_declaration = fun
+  [ (* {| $t1 == $t2 |} *)
+    `TyMan(_loc,t1,t2)
+    ->
     type_decl tl cl loc (Some (ctyp t1)) pflag t2
-  | {| private $t |} ->
+  | (* {| private $t |} *)
+    `Private(_loc,t)
+    ->
       if pflag then
         error _loc "multiple private keyword used, use only one instead"
       else
         type_decl tl cl loc m true t
-  | {| { $t } |} ->
+  | (* {| { $t } |} *)
+    `TyRec (_loc,t)
+    ->
       mktype loc tl cl
         (Ptype_record (List.map mktrecord (list_of_ctyp t []))) (mkprivate' pflag) m
-  | {| [ $t ] |} ->
+  | (* {| [ $t ] |} *)
+    `Sum(_loc,t) ->
       mktype loc tl cl
         (Ptype_variant (List.map mkvariant (list_of_ctyp t []))) (mkprivate' pflag) m
   | t ->
       if m <> None then
-        error loc "only one manifest type allowed by definition" else
-      let m = match t with
-      [ {||} -> None
-      | _ -> Some (ctyp t) ] in
-      mktype loc tl cl Ptype_abstract (mkprivate' pflag) m ] ;
+        error loc "only one manifest type allowed by definition"
+      else
+        let m =
+          match t with
+          [ (* {||} *) `Nil _loc  -> None
+          | _ -> Some (ctyp t) ] in
+        mktype loc tl cl Ptype_abstract (mkprivate' pflag) m ] ;
 
 let type_decl tl cl t loc = type_decl tl cl loc None false t;
 
-let mkvalue_desc loc t p = {pval_type = ctyp t; pval_prim = p; pval_loc =  loc};
+let mkvalue_desc loc t p =
+  {pval_type = ctyp t; pval_prim = p; pval_loc =  loc};
 
 let rec list_of_meta_list =fun
   [ `LNil _ -> []
   | `LCons (x, xs) -> [x :: list_of_meta_list xs]
-  | `Ant _ -> assert false ];
+  | `Ant (_loc,_) -> ANT_ERROR ];
 
-let mkmutable = with mutable_flag fun
-  [ {| mutable |} -> Mutable
-  | {||} -> Immutable
-  | _ -> assert false ];
+let mkmutable = fun
+  [ (* {| mutable |} *)
+    `Mutable _
+    -> Mutable
+  | (* {||} *)
+    `MuNil _ -> Immutable
+  | `Ant(_loc,_) -> ANT_ERROR ];
 
 let paolab (lab:string) (p:patt) : string =
-  with patt match (lab, p) with
-  [ ("", {| $lid:i |} | {| ($lid:i : $_) |}) -> i
-  | ("", p) -> error (loc_of_patt p) "bad ast in label"
+  (* with patt *)
+  match (lab, p) with
+  [ ("", (* {| $lid:i |} *)
+     (`Id(_loc,`Lid(_,i)) | `PaTyc(_loc,`Id(_,`Lid(_,i)),_)))
+        (* | {| ($lid:i : $_) |} *) -> i
+  | ("", p) ->
+      errorf (loc_of_patt p) "paolab %s" (dump_patt p)
+      (* error (loc_of_patt p) "bad ast in label" *)
   | _ -> lab ] ;
 
 let opt_private_ctyp : ctyp ->
-  (type_kind * Asttypes.private_flag * core_type) = with ctyp fun
-  [ {| private $t |} -> (Ptype_abstract, Private, ctyp t)
+  (type_kind * Asttypes.private_flag * core_type) = 
+  fun
+  [ (* {| private $t |} *) `Private (_,t)-> (Ptype_abstract, Private, ctyp t)
   | t -> (Ptype_abstract, Public, ctyp t) ];
 
 let quote_map (x:ctyp) =
@@ -321,27 +388,30 @@ let quote_map (x:ctyp) =
     |`Negative _ -> (false,true)
     |`Normal _ -> (false,false)
     |`Ant (_loc,_) -> ANT_ERROR ] in
-    let s = match s with
+    let s =
+    match s with
     [`None _ -> None
     |`Some (`Lid (sloc,s)) -> Some (s+>sloc)
     |`Some (`Ant(_loc,_))
     |`Ant (_loc,_) -> ANT_ERROR] in
     (s,tuple)
-  | _ -> failwith "quote_map" ]  ;
+  | t ->
+      errorf (loc_of_ctyp x) "quote_map %s" (dump_ctyp t)]  ;
     
 let  type_parameters (t:ctyp) acc =
   List.map
     (fun x ->
-      match (* paramater_map *)quote_map x with
+      match quote_map x with
       [(Some {txt;_} ,v) -> (txt,v)
       |(None,_) ->
-          failwithf "type_parameters" ])
+          errorf (loc_of_ctyp t)
+            "type_parameters %s" (dump_ctyp t) ])
     (FanAst.list_of_ctyp_app t []) @ acc;
     
     
 let optional_type_parameters (t:ctyp)
     (acc:  list (option (Asttypes.loc string) * (bool * bool)) ) =
-  List.map (* paramater_map *)quote_map (FanAst.list_of_ctyp_app t []) @ acc ;
+  List.map quote_map (FanAst.list_of_ctyp_app t []) @ acc ;
 
 (*
   it should always return [Some] instead of None
@@ -350,18 +420,25 @@ let  class_parameters (t:ctyp)
     (acc: list (Asttypes.loc string * (bool * bool))) =
   List.map
     (fun x ->
-      match (* paramater_map *)quote_map x with
+      match quote_map x with
       [(Some x,v) -> (x,v)
-      | (None,_) -> failwithf "class_parameters"])  
+      | (None,_) ->
+          errorf (loc_of_ctyp t) "class_parameters %s" (dump_ctyp t)])  
           (FanAst.list_of_ctyp_com t []) @ acc ;
 
 let type_parameters_and_type_name t acc =
   let rec aux t acc = 
   match t with
-  [ {:ctyp| $t1 $t2 |} ->
+  [ (* {:ctyp| $t1 $t2 |} *)
+    `TyApp(_loc,t1,t2)
+    ->
     aux t1 (optional_type_parameters t2 acc)
-  | {:ctyp| $id:i |} -> (ident i, acc)
-  | _ -> assert false ] in aux t acc;
+  | (* {:ctyp| $id:i |} *)
+    `Id(_loc,i)
+    -> (ident i, acc)
+  | x ->
+      errorf (loc_of_ctyp x) "type_parameters_and_type_name %s"
+        (dump_ctyp x) ] in aux t acc;
 
 let mkwithtyp pwith_type loc id_tpl ct =
   let (id, tpl) = type_parameters_and_type_name id_tpl [] in
@@ -376,17 +453,30 @@ let mkwithtyp pwith_type loc id_tpl ct =
   
 let rec mkwithc (wc:with_constr) acc =
     with with_constr match wc with
-    [ {||} -> acc
-    | {| type $id_tpl = $ct |} ->
+    [ (* {||} *)
+      `Nil _loc -> acc
+    | (* {| type $id_tpl = $ct |} *)
+      `TypeEq(_loc,id_tpl,ct)
+      ->
         [mkwithtyp (fun x -> Pwith_type x) _loc id_tpl ct :: acc]
-    | {| module $i1 = $i2 |} ->
+    | (* {| module $i1 = $i2 |} *)
+      `ModuleEq(_loc,i1,i2)
+      ->
         [(long_uident i1, Pwith_module (long_uident i2)) :: acc]
-    | {| type $id_tpl := $ct |} ->
+    | (* {| type $id_tpl := $ct |} *)
+      `TypeSubst(_loc,id_tpl,ct)
+      ->
         [mkwithtyp (fun x -> Pwith_typesubst x) _loc id_tpl ct :: acc]
-    | {| module $i1 := $i2 |} ->
+    | (* {| module $i1 := $i2 |} *)
+      `ModuleSubst(_loc,i1,i2)
+      ->
         [(long_uident i1, Pwith_modsubst (long_uident i2)) :: acc]
-    | {| $wc1 and $wc2 |} -> mkwithc wc1 (mkwithc wc2 acc)
-    | {| $anti:_ |} ->
+    | (* {| $wc1 and $wc2 |} *)
+      `And(_loc,wc1,wc2)
+      ->
+        mkwithc wc1 (mkwithc wc2 acc)
+    | (* {| $anti:_ |} *)
+      `Ant(_loc,_)->
         error _loc "bad with constraint (antiquotation)" ];
 
 let rec patt_fa al = fun
@@ -616,7 +706,7 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
       | `ExCoe (loc, e, t1, t2) ->
           let t1 =
             match t1 with
-            [ {:ctyp||} -> None
+            [ (* {:ctyp||} *)`Nil _ -> None
             | t -> Some (ctyp t) ] in
           mkexp loc (Pexp_constraint (expr e) t1 (Some (ctyp t2)))
       | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
@@ -780,12 +870,16 @@ and label_expr : expr -> (Asttypes.label*expression) = fun (* expr -> label * ex
 and binding x acc =  match x with (* binding -> (pattern * expression) list ->  (pattern * expression) list *)
   [ {:binding| $x and $y |} ->
     binding x (binding y acc)
-  | {:binding@_loc| $(pat: {:patt@sloc| $lid:bind_name |} ) = ($e : $(`TyTypePol (_, vs, ty))) |} ->
+  | {:binding@_loc| $(pat: {:patt@sloc| $lid:bind_name |} ) =
+    ($e : $(`TyTypePol (_, vs, ty))) |} ->
       (* this code is not pretty because it is temporary *)
       let rec id_to_string x = match x with
-      [ {:ctyp| $lid:x |} -> [x]
-      | {:ctyp| $x $y |} -> (id_to_string x) @ (id_to_string y)
-      | _ -> assert false]   in
+      [ (* {:ctyp| $lid:x |}  *) `Id(_loc,`Lid(_,x)) -> [x]
+      | (* {:ctyp| $x $y |} *)
+        `TyApp(_loc,x,y)
+        -> (id_to_string x) @ (id_to_string y)
+      | x -> (* assert false *)
+          errorf (loc_of_ctyp x) "id_to_string %s" (dump_ctyp x)]   in
       let vars = id_to_string vs in
       let ampersand_vars = List.map (fun x -> "&" ^ x) vars in
       let ty' = varify_constructors vars (ctyp ty) in
@@ -794,13 +888,14 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
       let e = mkexp (Pexp_constraint (expr e) (Some (ctyp ty)) None) in
       let rec mk_newtypes x =
         match x with
-         [ [newtype :: []] -> mkexp (Pexp_newtype(newtype, e))
+        [ [newtype :: []] -> mkexp (Pexp_newtype(newtype, e))
         | [newtype :: newtypes] ->
             mkexp(Pexp_newtype (newtype,mk_newtypes newtypes))
         | [] -> assert false] in
       let pat =
-        mkpat (Ppat_constraint (mkpat (Ppat_var (with_loc bind_name sloc)),
-                                mktyp _loc (Ptyp_poly ampersand_vars ty'))) in
+        mkpat (Ppat_constraint
+                 (mkpat (Ppat_var (with_loc bind_name sloc)),
+                  mktyp _loc (Ptyp_poly ampersand_vars ty'))) in
       let e = mk_newtypes vars in
       [( pat, e) :: acc]
   | {:binding@_loc| $p = ($e : ! $vs . $ty) |} ->
@@ -808,7 +903,8 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
   | {:binding| $p = $e |} -> [(patt p, expr e) :: acc]
   | {:binding||} -> acc
   | _ -> assert false ]
-and match_case (x:match_case) (acc: list (pattern*expression))
+and match_case (x:match_case)
+    (acc: list (pattern*expression))
     : list (pattern * expression) =
   with match_case match x with
   [ {| $x | $y |} -> match_case x (match_case y acc)
@@ -852,22 +948,24 @@ and mktype_decl (x:ctyp)
     (acc: list (Asttypes.loc string * type_declaration))
     =
   match x with 
-  [ {:ctyp| $x and $y |} ->
+  [ (* {:ctyp| $x and $y |} *)
+    `And(_loc,x,y) ->
     mktype_decl x (mktype_decl y acc)
-  | `TyDcl (cloc, c, tl, td, cl) ->
+  | `TyDcl (cloc, (* c *) `Lid(sloc,c), tl, td, cl) ->
       let cl =
         List.map
           (fun (t1, t2) ->
             let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
             (ctyp t1, ctyp t2,  loc))
           cl  in
-      match c with
-      [`Lid(sloc,c)->   
+      (* match c with *)
+      (* [`Lid(sloc,c)->    *)
         [(with_loc c sloc,
           type_decl
             (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | _ -> assert false ]
+      (* |`Ant(_loc,_) -> ANT_ERROR] *)
+  | t ->
+      errorf (loc_of_ctyp t)"mktype_decl %s" (dump_ctyp t) ]
 and module_type : Ast.module_type -> Parsetree.module_type =
   with module_type fun 
   [ {@loc||} -> error loc "abstract/nil module type not allowed here"
@@ -1040,7 +1138,7 @@ and class_type = fun (* class_type -> class_type *)
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun "" (ctyp t) (class_type ct))
   | `CtSig (loc,t_o,ctfl) ->
       let t = match t_o with
-      [ {:ctyp||} -> {:ctyp@loc| _ |}
+      [ (* {:ctyp||} *) `Nil _loc -> `Any loc (* {:ctyp@loc| _ |} *)
       | t -> t ] in
       let cil = class_sig_item ctfl [] in
       mkcty loc (Pcty_signature {
@@ -1048,17 +1146,18 @@ and class_type = fun (* class_type -> class_type *)
                  pcsig_fields = cil;
                  pcsig_loc =  loc;
                })
-  | `CtCon (loc,_,_,_) ->
-        error loc "invalid virtual class inside a class type"
+  | `CtCon (loc,_,_,_) as x ->
+        errorf loc "invalid virtual class inside a class type %s" (dump_class_type x)
   | `Ant (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `CtAnd (_, _, _) | `Nil _ ->
       assert false ]
     
 and class_info_class_expr (ci:class_expr) =
-    match ci with (* class_expr -> class_declaration*)
+    match ci with 
     [ `Eq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
       let (loc_params, (params, variance)) =
         match params with
-        [ {:ctyp||} -> (loc, ([], []))
+        [ (* {:ctyp||} *) `Nil _loc ->
+          (loc, ([], []))
         | t -> (loc_of_ctyp t, List.split (class_parameters t [])) ]  in
       {pci_virt = mkvirtual vir;
        pci_params = (params,  loc_params);
@@ -1066,15 +1165,17 @@ and class_info_class_expr (ci:class_expr) =
        pci_expr = class_expr ce;
        pci_loc =  loc;
        pci_variance = variance}
-  | ce -> error (loc_of_class_expr ce) "bad class definition" ]
-and class_info_class_type ci =
-    match ci with (* class_type -> class_description*)
+  | ce -> errorf  (loc_of_class_expr ce)
+        "bad class definition %s" (dump_class_expr ce) ]
+and class_info_class_type (ci:class_type) =
+    match ci with 
     [ `CtEq (_, (`CtCon (loc, vir, (`Lid (nloc, name)), params)), ct)
     | `CtCol (_, (`CtCon (loc, vir, (`Lid (nloc, name)), params)), ct)
       ->
         let (loc_params, (params, variance)) =
           match params with
-          [ {:ctyp||} -> (loc, ([], []))
+          [ (* {:ctyp||} *) `Nil _loc ->
+            (loc, ([], []))
           | t -> (loc_of_ctyp t, List.split (class_parameters t [])) ] in
       {pci_virt = mkvirtual vir;
        pci_params = (params,  loc_params);
@@ -1082,8 +1183,8 @@ and class_info_class_type ci =
        pci_expr = class_type ct;
        pci_loc =  loc;
        pci_variance = variance}
-  | ct -> error (loc_of_class_type ct)
-        "bad class/class type declaration/definition" ]
+  | ct -> errorf (loc_of_class_type ct)
+        "bad class/class type declaration/definition %s " (dump_class_type ct)]
 and class_sig_item (c:class_sig_item) (l: list class_type_field) : list class_type_field =
     with class_sig_item match c with 
     [ {||} -> l
@@ -1167,7 +1268,7 @@ and class_str_item (c:class_str_item) l =
   | `Initializer (loc,e) -> [mkcf loc (Pcf_init (expr e)) :: l]
   | `CrMth (loc, s, ov, pf, e, t) ->
       let t = match t with
-      [ {:ctyp||} -> None
+      [ (* {:ctyp||} *) `Nil _ -> None
       | t -> Some (mkpolytype (ctyp t)) ] in
       let e = mkexp loc (Pexp_poly (expr e) t) in
       match s with
