@@ -211,18 +211,18 @@ FanConfig.antiquotations := true;
   
 
   simple_patt "patt":
-   ["`"; a_ident{s}  -> (* {| `$s |} *) {|$vrn:s|}
-   |"`"; a_ident{v}; `Ant (("" | "anti" as n) ,s) ->
+   ["`"; luident{s}  -> (* {| `$s |} *) {|$vrn:s|}
+   |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
        {| $vrn:v $(anti:mk_anti ~c:"patt" n s)|}
-   |"`"; a_ident{s}; `STR(_,v) ->
+   |"`"; luident{s}; `STR(_,v) ->
        (* {| `$s $str:v |} *) {| $vrn:s $str:v|}
-   |"`"; a_ident{s}; `Lid x  ->
+   |"`"; luident{s}; `Lid x  ->
        (* {| `$s $lid:x |} *)
        {| $vrn:s $lid:x |}
-   |"`"; a_ident{s}; "_" ->
+   |"`"; luident{s}; "_" ->
         (* {| `$s _ |}*)
        {|$vrn:s _|}
-   |"`"; a_ident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
+   |"`"; luident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
        match v with
        [ [x] -> (* {| `$s $x |} *) {| $vrn:s $x |}
        | [x::xs] -> (* {| `$s ($x,$list:xs) |} *)
@@ -233,7 +233,7 @@ FanConfig.antiquotations := true;
   {
    "as"
      [
-      S{p1} ; "as"; (* S{p2} *)a_lident{s} -> (* `Alias (_loc,p1,s) *)
+      S{p1} ; "as";a_lident{s} -> (* `Alias (_loc,p1,s) *)
         {| ($p1 as $s) |} ]
      "|"
      [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]

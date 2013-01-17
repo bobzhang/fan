@@ -404,10 +404,7 @@ let apply () = begin
             {| let open $i in $e |}
         (* | TRY val_longident{i} -> {| $id:i |} *)
         | ident{i} -> {|$id:i|} (* FIXME logic was splitted here *)
-        | "`"; (* a_ident *)luident{s} ->
-             (* {| ` $s |} *)
-              `ExVrn (_loc,s)
-              (* {| $vrn:s|} *)
+        | "`"; luident{s} -> {| $vrn:s|}
         | "["; "]" -> {| [] |}
         | "[";sem_expr_for_list{mk_list}; "::"; expr{last}; "]" -> mk_list last
         | "["; sem_expr_for_list{mk_list}; "]" -> mk_list {| [] |}
@@ -543,10 +540,7 @@ let apply () = begin
        patt_constr:
        [module_longident{i} -> {| $id:i |}
 
-       |"`"; (* a_ident *)luident{s}  ->
-           (* {| `$s|} *)
-           `PaVrn(_loc,s)
-           (* {| $vrn:s|} *)
+       |"`"; luident{s}  -> {| $vrn:s|}
        |`Ant ((""|"pat"|"anti"|"vrn" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|} ]
        patt:
        { "|" LA
@@ -596,10 +590,7 @@ let apply () = begin
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as";  a_lident{s}; ")" -> {| ($p as $s )|}
         | "("; S{p}; ","; comma_patt{pl}; ")" -> {| ($p, $pl) |}
-        | "`"; (* a_ident *)luident{s} ->
-            (* {| ` $s |} *)
-            `PaVrn(_loc,s)
-            (* {|$vrn:s|} *)
+        | "`"; luident{s} -> {|$vrn:s|}
           (* duplicated may be removed later with [patt Level "apply"] *)
         | "#"; type_longident{i} -> {| # $i |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag

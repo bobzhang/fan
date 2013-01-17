@@ -741,17 +741,17 @@ let _ =
   Gram.extend (simple_patt : 'simple_patt Gram.t )
     (None,
       [(None, None,
-         [([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+         [([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
             (Gram.mk_action
-               (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
+               (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
                   (`PaVrn (_loc, s) : 'simple_patt ))));
          ([`Skeyword "`";
-          `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+          `Snterm (Gram.obj (luident : 'luident Gram.t ));
           `Stoken
             (((function | `Ant ((""|"anti"),_) -> true | _ -> false)),
               (`Normal, "`Ant ((\"\"|\"anti\"),_)"))],
            (Gram.mk_action
-              (fun (__fan_2 : [> FanToken.t])  (v : 'a_ident)  _ 
+              (fun (__fan_2 : [> FanToken.t])  (v : 'luident)  _ 
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `Ant ((""|"anti" as n),s) ->
@@ -760,12 +760,12 @@ let _ =
                           (`Ant (_loc, (mk_anti ~c:"patt" n s)))) : 'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
-          `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+          `Snterm (Gram.obj (luident : 'luident Gram.t ));
           `Stoken
             (((function | `STR (_,_) -> true | _ -> false)),
               (`Normal, "`STR (_,_)"))],
            (Gram.mk_action
-              (fun (__fan_2 : [> FanToken.t])  (s : 'a_ident)  _ 
+              (fun (__fan_2 : [> FanToken.t])  (s : 'luident)  _ 
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `STR (_,v) ->
@@ -773,11 +773,11 @@ let _ =
                      'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
-          `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+          `Snterm (Gram.obj (luident : 'luident Gram.t ));
           `Stoken
             (((function | `Lid _ -> true | _ -> false)), (`Normal, "`Lid _"))],
            (Gram.mk_action
-              (fun (__fan_2 : [> FanToken.t])  (s : 'a_ident)  _ 
+              (fun (__fan_2 : [> FanToken.t])  (s : 'luident)  _ 
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `Lid x ->
@@ -786,20 +786,20 @@ let _ =
                           (`Id (_loc, (`Lid (_loc, x))))) : 'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
-          `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+          `Snterm (Gram.obj (luident : 'luident Gram.t ));
           `Skeyword "_"],
            (Gram.mk_action
-              (fun _  (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
+              (fun _  (s : 'luident)  _  (_loc : FanLoc.t)  ->
                  (`PaApp (_loc, (`PaVrn (_loc, s)), (`Any _loc)) : 'simple_patt ))));
          ([`Skeyword "`";
-          `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+          `Snterm (Gram.obj (luident : 'luident Gram.t ));
           `Skeyword "(";
           `Slist1sep
             ((`Snterm (Gram.obj (internal_patt : 'internal_patt Gram.t ))),
               (`Skeyword ","));
           `Skeyword ")"],
            (Gram.mk_action
-              (fun _  (v : 'internal_patt list)  _  (s : 'a_ident)  _ 
+              (fun _  (v : 'internal_patt list)  _  (s : 'luident)  _ 
                  (_loc : FanLoc.t)  ->
                  (match v with
                   | x::[] -> `PaApp (_loc, (`PaVrn (_loc, s)), x)
