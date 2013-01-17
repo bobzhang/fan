@@ -704,10 +704,11 @@ let mep_of_str s =
   then
     let s = String.sub s 1 (len - 1) in
     `ExApp
-      (_loc,
-        (`ExApp
-           (_loc, (`ExVrn (_loc, "PaVrn")),
-             (`Id (_loc, (`Lid (_loc, "_loc")))))), (`Str (_loc, s)))
+      (_loc, (`ExVrn (_loc, "PaVrn")),
+        (`ExTup
+           (_loc,
+             (`ExCom
+                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
   else
     (let u =
        `ExApp
@@ -728,10 +729,11 @@ let mee_of_str s =
   then
     let s = String.sub s 1 (len - 1) in
     `ExApp
-      (_loc,
-        (`ExApp
-           (_loc, (`ExVrn (_loc, "ExVrn")),
-             (`Id (_loc, (`Lid (_loc, "_loc")))))), (`Str (_loc, s)))
+      (_loc, (`ExVrn (_loc, "ExVrn")),
+        (`ExTup
+           (_loc,
+             (`ExCom
+                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
   else
     (let u =
        `ExApp

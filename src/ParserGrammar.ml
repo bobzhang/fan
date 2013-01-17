@@ -120,9 +120,9 @@ FanConfig.antiquotations := true;
          mk_entry ~name:p ~pos ~levels
      end]
   position:
-  [ `Uid ("First"|"Last" as x ) ->   {:expr| `$uid:x |}
+  [ `Uid ("First"|"Last" as x ) ->   {:expr| $vrn:x |}
   | `Uid ("Before" | "After" | "Level" as x) ; string{n} ->
-    {:expr| `$uid:x  $n |}
+    {:expr| $vrn:x  $n |}
   | `Uid x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
   level_list:
   [ "{"; L1 level {ll}; "}" -> ll  | level {l} -> [l]] (* FIXME L1 does not work here *)
@@ -133,7 +133,7 @@ FanConfig.antiquotations := true;
    (* FIXME a conflict {:extend|Gram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
 
   assoc:
-  [ `Uid ("LA"|"RA"|"NA" as x) ->     {:expr| `$uid:x |} 
+  [ `Uid ("LA"|"RA"|"NA" as x) ->     {:expr| $vrn:x |} 
   | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
   rule_list:
@@ -211,15 +211,22 @@ FanConfig.antiquotations := true;
   
 
   simple_patt "patt":
-   ["`"; a_ident{s}  -> {| `$s |}
-   |"`"; a_ident{v}; `Ant (("" | "anti" as n) ,s) -> {| `$v $(anti:mk_anti ~c:"patt" n s)|}
-   |"`"; a_ident{s}; `STR(_,v) -> {| `$s $str:v |}
-   |"`"; a_ident{s}; `Lid x  ->  {| `$s $lid:x |}
-   |"`"; a_ident{s}; "_" ->  {| `$s _ |}           
+   ["`"; a_ident{s}  -> (* {| `$s |} *) {|$vrn:s|}
+   |"`"; a_ident{v}; `Ant (("" | "anti" as n) ,s) ->
+       {| $vrn:v $(anti:mk_anti ~c:"patt" n s)|}
+   |"`"; a_ident{s}; `STR(_,v) ->
+       (* {| `$s $str:v |} *) {| $vrn:s $str:v|}
+   |"`"; a_ident{s}; `Lid x  ->
+       (* {| `$s $lid:x |} *)
+       {| $vrn:s $lid:x |}
+   |"`"; a_ident{s}; "_" ->
+        (* {| `$s _ |}*)
+       {|$vrn:s _|}
    |"`"; a_ident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
        match v with
-       [ [x] -> {| `$s $x |}
-       | [x::xs] -> {| `$s ($x,$list:xs) |}
+       [ [x] -> (* {| `$s $x |} *) {| $vrn:s $x |}
+       | [x::xs] -> (* {| `$s ($x,$list:xs) |} *)
+           {|$vrn:s ($x,$list:xs)|}
        | _ -> assert false ]  ]
 
   internal_patt "patt":

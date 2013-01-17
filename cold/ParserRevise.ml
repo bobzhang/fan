@@ -1415,11 +1415,12 @@ let apply () =
                 | `Ant
                     (("exp"|""|"anti"|"`bool"|"tup"|"seq"|"int"|"`int"
                       |"int32"|"`int32"|"int64"|"`int64"|"nativeint"
-                      |"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"),_)
+                      |"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"
+                      |"vrn"),_)
                     -> true
                 | _ -> false)),
                (`Normal,
-                 "`Ant\n  ((\"exp\"|\"\"|\"anti\"|\"`bool\"|\"tup\"|\"seq\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"\n    |\"`int64\"|\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
+                 "`Ant\n  ((\"exp\"|\"\"|\"anti\"|\"`bool\"|\"tup\"|\"seq\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"\n    |\"`int64\"|\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"\n    |\"vrn\"),_)"))],
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
@@ -1427,7 +1428,7 @@ let apply () =
                      (("exp"|""|"anti"|"`bool"|"tup"|"seq"|"int"|"`int"
                        |"int32"|"`int32"|"int64"|"`int64"|"nativeint"
                        |"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"
-                         as n),s)
+                       |"vrn" as n),s)
                      -> (`Ant (_loc, (mk_anti ~c:"expr" n s)) : 'expr )
                  | _ -> assert false)));
          ([`Stoken
@@ -1500,9 +1501,9 @@ let apply () =
            (Gram.mk_action
               (fun (i : 'ident)  (_loc : FanLoc.t)  ->
                  (`Id (_loc, i) : 'expr ))));
-         ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+         ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
            (Gram.mk_action
-              (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
+              (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
                  (`ExVrn (_loc, s) : 'expr ))));
          ([`Skeyword "["; `Skeyword "]"],
            (Gram.mk_action
@@ -2142,17 +2143,19 @@ let apply () =
              (Gram.mk_action
                 (fun (i : 'module_longident)  (_loc : FanLoc.t)  ->
                    (`Id (_loc, i) : 'patt_constr ))));
-          ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+          ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
             (Gram.mk_action
-               (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
+               (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
                   (`PaVrn (_loc, s) : 'patt_constr ))));
           ([`Stoken
-              (((function | `Ant ((""|"pat"|"anti"),_) -> true | _ -> false)),
-                (`Normal, "`Ant ((\"\"|\"pat\"|\"anti\"),_)"))],
+              (((function
+                 | `Ant ((""|"pat"|"anti"|"vrn"),_) -> true
+                 | _ -> false)),
+                (`Normal, "`Ant ((\"\"|\"pat\"|\"anti\"|\"vrn\"),_)"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `Ant ((""|"pat"|"anti" as n),s) ->
+                  | `Ant ((""|"pat"|"anti"|"vrn" as n),s) ->
                       (`Ant (_loc, (mk_anti ~c:"patt" n s)) : 'patt_constr )
                   | _ -> assert false)))])]);
    Gram.extend (patt : 'patt Gram.t )
@@ -2188,19 +2191,19 @@ let apply () =
               (((function
                  | `Ant
                      ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"
-                       |"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"
+                       |"int64"|"`int64"|"vrn"|"nativeint"|"`nativeint"|"flo"
                        |"`flo"|"chr"|"`chr"|"str"|"`str"),_)
                      -> true
                  | _ -> false)),
                 (`Normal,
-                  "`Ant\n  ((\"\"|\"pat\"|\"anti\"|\"tup\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"|\"`int64\"\n    |\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
+                  "`Ant\n  ((\"\"|\"pat\"|\"anti\"|\"tup\"|\"int\"|\"`int\"|\"int32\"|\"`int32\"|\"int64\"|\"`int64\"\n    |\"vrn\"|\"nativeint\"|\"`nativeint\"|\"flo\"|\"`flo\"|\"chr\"|\"`chr\"|\"str\"|\"`str\"),_)"))],
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Ant
                       ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"
-                        |"int64"|"`int64"|"nativeint"|"`nativeint"|"flo"
-                        |"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
+                        |"int64"|"`int64"|"vrn"|"nativeint"|"`nativeint"
+                        |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
                       -> (`Ant (_loc, (mk_anti ~c:"patt" n s)) : 'patt )
                   | _ -> assert false)));
          ([`Snterm (Gram.obj (ident : 'ident Gram.t ))],
@@ -2401,9 +2404,9 @@ let apply () =
               (fun _  (pl : 'comma_patt)  _  (p : 'patt)  _ 
                  (_loc : FanLoc.t)  ->
                  (`PaTup (_loc, (`PaCom (_loc, p, pl))) : 'patt ))));
-         ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+         ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
            (Gram.mk_action
-              (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
+              (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
                  (`PaVrn (_loc, s) : 'patt ))));
          ([`Skeyword "#";
           `Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
@@ -2962,6 +2965,25 @@ let apply () =
           ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
             (Gram.mk_action
                (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  -> (i : 'a_ident ))))])]);
+   Gram.extend (luident : 'luident Gram.t )
+     (None,
+       [(None, None,
+          [([`Stoken
+               (((function | `Lid _ -> true | _ -> false)),
+                 (`Normal, "`Lid _"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Lid i -> (i : 'luident )
+                   | _ -> assert false)));
+          ([`Stoken
+              (((function | `Uid _ -> true | _ -> false)),
+                (`Normal, "`Uid _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Uid i -> (i : 'luident )
+                  | _ -> assert false)))])]);
    Gram.extend (aident : 'aident Gram.t )
      (None,
        [(None, None,

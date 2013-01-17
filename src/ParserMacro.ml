@@ -90,13 +90,13 @@ let apply () = begin
 
     expr: Before "simple"
     [ "`";  [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"| "DEFINE" | "IN" ]{kwd}
-      -> {:expr| `$uid:kwd |}
-    | "`"; a_ident{s} -> {:expr| ` $s |} ]
+      -> {:expr| $vrn:kwd |}
+    | "`"; luident{s} -> {:expr| $vrn:s |} ]
 
     patt: Before "simple"
     [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
-      {:patt| `$uid:kwd |}
-    | "`"; a_ident{s} -> {:patt| ` $s |} ] |};
+      {:patt| $vrn:kwd |}
+    | "`"; luident{s} -> {:patt| $vrn:s |} ] |};
   Options.add
     ("-D",
      (FanArg.String (parse_def ~expr ~patt)  ),

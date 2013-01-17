@@ -45,6 +45,7 @@ module type Syntax =
     val a_uident : auident Gram.t
     val aident : ident Gram.t
     val astr : astring Gram.t
+    val luident : string Gram.t
     val a_NATIVEINT : string Gram.t
     val a_OPTLABEL : string Gram.t
     val a_STRING : string Gram.t

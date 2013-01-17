@@ -173,7 +173,7 @@ let rec make_expr entry tvar = with expr
   | `TXrules (_loc, rl) ->
       {| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
   | `TXtok (_loc, match_fun, attr, descr) ->
-      {| `Stoken ($match_fun, (`$uid:attr, $`str:descr)) |} ]
+      {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ]
 (* the [rhs] was computed, compute the [lhs] *)    
 and make_expr_rules _loc n rl tvar = with expr
   Expr.mklist _loc

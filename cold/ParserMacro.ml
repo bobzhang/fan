@@ -402,9 +402,9 @@ let apply () =
              (Gram.mk_action
                 (fun (kwd : 'e__6)  _  (_loc : FanLoc.t)  ->
                    (`ExVrn (_loc, kwd) : 'expr ))));
-          ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+          ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
             (Gram.mk_action
-               (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
+               (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
                   (`ExVrn (_loc, s) : 'expr ))))])]);
    Gram.extend (patt : 'patt Gram.t )
      ((Some (`Before "simple")),
@@ -438,9 +438,9 @@ let apply () =
              (Gram.mk_action
                 (fun (kwd : 'e__7)  _  (_loc : FanLoc.t)  ->
                    (`PaVrn (_loc, kwd) : 'patt ))));
-          ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+          ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
             (Gram.mk_action
-               (fun (s : 'a_ident)  _  (_loc : FanLoc.t)  ->
+               (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
                   (`PaVrn (_loc, s) : 'patt ))))])]));
   Options.add
     ("-D", (FanArg.String (parse_def ~expr ~patt)),

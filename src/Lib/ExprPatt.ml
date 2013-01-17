@@ -77,7 +77,8 @@ let of_str s =
   else
     match s.[0] with
     [ '`' ->   
-        {| ` $(String.sub s 1 (len - 1)) |}
+        (* {| ` $(String.sub s 1 (len - 1)) |} *)
+      {|  $(vrn: String.sub s 1 (len - 1)) |}
     | x when Char.is_uppercase x -> {| $uid:s |}
     | _ -> {| $lid:s |} ];    
 
@@ -180,10 +181,16 @@ let tuple_of_list lst =
 
 let of_vstr_number name i =
   let items = List.init i (fun i -> {|$(id:xid i) |} ) in
-  if items = [] then {|`$name|}
+  if items = [] then
+    (* {|`$name|} *)
+   {|$vrn:name|}
   else
     let item = items |> tuple_of_list in
-    {| `$name $item |};
+    (* {| `$name $item |} *)
+    (* `PaApp (_loc, (`PaVrn (_loc, name)), item) (\* FIXME*\) *)
+    {| $vrn:name $item |}
+      
+    ;
     
 (*
   {[

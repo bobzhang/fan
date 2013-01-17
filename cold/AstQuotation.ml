@@ -492,6 +492,18 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "NativeInt")),
                                       (mloc _loc))), e)
+                         | "vrnexpr" ->
+                             `PaApp
+                               (_loc,
+                                 (`PaApp
+                                    (_loc, (`PaVrn (_loc, "ExVrn")),
+                                      (mloc _loc))), e)
+                         | "vrnpatt" ->
+                             `PaApp
+                               (_loc,
+                                 (`PaApp
+                                    (_loc, (`PaVrn (_loc, "PaVrn")),
+                                      (mloc _loc))), e)
                          | x when (len > 0) && ((x.[0]) = '`') ->
                              failwith (x ^ "is not allowed in pattern")
                          | _ -> e)
@@ -516,6 +528,16 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                          | "seqexpr" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Seq")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
+                         | "vrnexpr" ->
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "ExVrn")),
+                                 (`ExTup
+                                    (_loc, (`ExCom (_loc, (mloc _loc), e)))))
+                         | "vrnpatt" ->
+                             `ExApp
+                               (_loc, (`ExVrn (_loc, "PaVrn")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "uidexpr" ->

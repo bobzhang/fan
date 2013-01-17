@@ -180,7 +180,9 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | {| lazy $p |} -> is_irrefut_patt p
     | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
     | {| (module $_ : $opt:_ ) |} -> true
-    | {| `$_ |} | {| $str:_ |} | {| $_ .. $_ |} |
+    | (* {| `$_ |} *) `PaVrn (_loc,_)
+      (* {| $vrn:_ |} *)
+    | {| $str:_ |} | {| $_ .. $_ |} |
       {| $flo:_ |} | {| $nativeint:_ |} | {| $int64:_ |} |
       {| $int32:_ |} | {| $int:_ |} | {| $chr:_ |} |
       {| #$_ |} | {| [| $_ |] |} | {| $anti:_ |} -> false
@@ -196,13 +198,19 @@ let rec is_constructor =  with ident fun
 
 let is_patt_constructor = fun
     [ {:patt| $id:i |} -> is_constructor i
-    | {:patt| `$_ |} -> true
+    | (* {:patt| `$_ |} *)
+      (* {:patt| $vrn:_ |} *)
+      `PaVrn (_loc,_)
+      -> true
     | _ -> false ];
 
 let rec is_expr_constructor = fun
     [ {:expr| $id:i |} -> is_constructor i
     | {:expr| $e1.$e2 |} -> is_expr_constructor e1 && is_expr_constructor e2
-    | {:expr| `$_ |} -> true
+    | (* {:expr| `$_ |} *)
+      `ExVrn(_loc,_)
+      (* {:expr| $vrn:_ |} *)
+      -> true
     | _ -> false ];
 
 let ghost = FanLoc.ghost ; (* to refine *)

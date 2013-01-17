@@ -362,6 +362,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "int64expr" -> {| `Int64 ($(mloc _loc), $e)|}
           | "floexpr" -> {| `Flo ($(mloc _loc), $e) |}
           | "nativeintexpr" -> {| `NativeInt ($(mloc _loc), $e) |}
+          | "vrnexpr" -> {|`ExVrn ($(mloc _loc), $e)|}
+          | "vrnpatt" -> {|`PaVrn ($(mloc _loc),$e)|}
           | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern")
           | _ -> e ])
       | p -> super#patt p ];
@@ -374,7 +376,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             ["tupexpr" ->   {| `ExTup ($(mloc _loc), $e) |}
             | "tuppatt" ->  {| `PaTup ($(mloc _loc), $e) |}
             | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
-
+            | "vrnexpr" -> {| `ExVrn($(mloc _loc),$e)|}
+            | "vrnpatt" -> {| `PaVrn($(mloc _loc),$e)|}
             | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
             | "lidexpr" -> {| `Lid ($(mloc _loc), $e) |}
 

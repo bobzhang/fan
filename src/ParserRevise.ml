@@ -391,7 +391,8 @@ let apply () = begin
         [ `QUOTATION x -> AstQuotation.expand _loc x DynAst.expr_tag
         | `Ant (("exp"|""|"anti"|"`bool" |"tup"|"seq"|"int"|"`int"
                 |"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
-                |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s) -> {| $(anti:mk_anti ~c:"expr" n s) |}
+                |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" | "vrn" as n),s) ->
+                    {| $(anti:mk_anti ~c:"expr" n s) |}
         | `INT(_,s) -> {|$int:s|}
         | `INT32(_,s) -> {|$int32:s|}
         | `INT64(_,s) -> {|$int64:s|}
@@ -403,7 +404,10 @@ let apply () = begin
             {| let open $i in $e |}
         (* | TRY val_longident{i} -> {| $id:i |} *)
         | ident{i} -> {|$id:i|} (* FIXME logic was splitted here *)
-        | "`"; a_ident{s} -> {| ` $s |}
+        | "`"; (* a_ident *)luident{s} ->
+             (* {| ` $s |} *)
+              `ExVrn (_loc,s)
+              (* {| $vrn:s|} *)
         | "["; "]" -> {| [] |}
         | "[";sem_expr_for_list{mk_list}; "::"; expr{last}; "]" -> mk_list last
         | "["; sem_expr_for_list{mk_list}; "]" -> mk_list {| [] |}
@@ -538,8 +542,12 @@ let apply () = begin
        | -> {||} ]
        patt_constr:
        [module_longident{i} -> {| $id:i |}
-       |"`"; a_ident{s}  -> {| `$s|}
-       |`Ant ((""|"pat"|"anti" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|} ]
+
+       |"`"; (* a_ident *)luident{s}  ->
+           (* {| `$s|} *)
+           `PaVrn(_loc,s)
+           (* {| $vrn:s|} *)
+       |`Ant ((""|"pat"|"anti"|"vrn" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|} ]
        patt:
        { "|" LA
         [ S{p1}; "|"; S{p2} -> {| $p1 | $p2 |} ]
@@ -556,6 +564,7 @@ let apply () = begin
         | "lazy"; S{p} -> {| lazy $p |}  ]
        "simple"
         [ `Ant ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"
+                |"vrn"
                 |"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
           -> {| $(anti:mk_anti ~c:"patt" n s) |}
         | ident{i} -> {| $id:i |}
@@ -587,7 +596,10 @@ let apply () = begin
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as";  a_lident{s}; ")" -> {| ($p as $s )|}
         | "("; S{p}; ","; comma_patt{pl}; ")" -> {| ($p, $pl) |}
-        | "`"; a_ident{s} -> {| ` $s |}
+        | "`"; (* a_ident *)luident{s} ->
+            (* {| ` $s |} *)
+            `PaVrn(_loc,s)
+            (* {|$vrn:s|} *)
           (* duplicated may be removed later with [patt Level "apply"] *)
         | "#"; type_longident{i} -> {| # $i |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
@@ -674,7 +686,7 @@ let apply () = begin
 
       (* parse [a] [B], depreacated  *)
       a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
-
+      luident: [`Lid i -> i | `Uid i -> i]
       (* parse [a] [B] *)
       aident: [ a_lident{i} -> (i:>ident) | a_uident{i} -> (i:>ident)]
       astr:
@@ -1096,8 +1108,7 @@ let apply_ctyp () = begin
       | -> {||}  ]
       more_ctyp:
       [ "mutable"; S{x} -> {| mutable $x |}
-      | "`"; astr(* a_ident *){x} ->
-          {| `$x |}
+      | "`"; astr{x} -> {| `$x |}
       | ctyp{x} -> x
       | type_parameter{x} -> x   ]
       unquoted_typevars:
@@ -1143,9 +1154,9 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
       | S{t1}; "|"; S{t2} -> {| $t1 | $t2 |}
-      | "`"; astr(* a_ident *){i} -> {| `$i |}
-      | "`"; astr(* a_ident *){i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
-      | "`"; astr(* a_ident *){i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
+      | "`"; astr{i} -> {| `$i |}
+      | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
+      | "`"; astr{i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
       | ctyp{t} -> t ] 
       amp_ctyp:
       [ S{t1}; "&"; S{t2} -> {| $t1 & $t2 |}
@@ -1154,7 +1165,7 @@ let apply_ctyp () = begin
       name_tags:
       [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | S{t1}; S{t2} -> {| $t1 $t2 |}
-      | "`"; astr(* a_ident *){i} -> {| `$i |}  ]
+      | "`"; astr{i} -> {| `$i |}  ]
       opt_polyt:
       [ ":"; ctyp{t} -> t  | -> {||} ]
       

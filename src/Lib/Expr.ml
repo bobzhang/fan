@@ -434,7 +434,8 @@ let mep_of_str  s =
   let len = String.length s in
   if s.[0] = '`' then
     let s = String.sub s 1 (len - 1 ) in
-    {| {:patt|`$($str:s)|}|}
+    (* {| {:patt|`$($str:s)|}|} *)
+      {| {:patt|$(vrn:($str:s))|}|}
   else
    let u = {| {:ident| $(uid:$str:s) |} |} in 
    {| {:patt| $(id:$u) |} |};
@@ -455,7 +456,8 @@ let mee_of_str s =
   let len = String.length s in
   if s.[0]='`' then
     let s = String.sub s 1 (len - 1) in 
-    {| {| `$($str:s) |} |}
+    (* {| {| `$($str:s) |} |} *)
+    {|{|$(vrn:($str:s))|}|}
   else
     let u = {| {:ident| $(uid:$str:s) |} |} in
     {| {| $(id:$u) |} |};

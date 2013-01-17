@@ -61,6 +61,7 @@ let print_warning loc txt = !current_warning loc txt;
   a_string
   a_lident
   a_uident
+  luident
   astr
 |};
   
