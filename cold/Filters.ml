@@ -28,7 +28,7 @@ let add_debug_expr (e : expr) =
    let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
    `Try
      (_loc, e,
-       (`McOr
+       (`Or
           (_loc,
             (`Case
                (_loc,
@@ -92,8 +92,7 @@ let add_debug_expr (e : expr) =
   expr )
 let rec map_match_case: match_case -> match_case =
   function
-  | `McOr (_loc,m1,m2) ->
-      `McOr (_loc, (map_match_case m1), (map_match_case m2))
+  | `Or (_loc,m1,m2) -> `Or (_loc, (map_match_case m1), (map_match_case m2))
   | `Case (_loc,p,w,e) -> `Case (_loc, p, w, (add_debug_expr e))
   | m -> m
 let _ =

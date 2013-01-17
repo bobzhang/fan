@@ -381,11 +381,6 @@ let paolab (lab:string) (p:patt) : string =
       (* error (loc_of_patt p) "bad ast in label" *)
   | _ -> lab ] ;
 
-let opt_private_ctyp : ctyp ->
-  (type_kind * Asttypes.private_flag * core_type) = 
-  fun
-  [ (* {| private $t |} *) `Private (_,t)-> (Ptype_abstract, Private, ctyp t)
-  | t -> (Ptype_abstract, Public, ctyp t) ];
 
 let quote_map (x:ctyp) =
   match x with
@@ -405,24 +400,10 @@ let quote_map (x:ctyp) =
   | t ->
       errorf (loc_of_ctyp x) "quote_map %s" (dump_ctyp t)]  ;
     
-(* let  type_parameters (t:ctyp) acc = *)
-(*   List.map *)
-(*     (fun x -> *)
-(*       match quote_map x with *)
-(*       [(Some {txt;_} ,v) -> (txt,v) *)
-(*       |(None,_) -> *)
-(*           errorf (loc_of_ctyp t) *)
-(*             "type_parameters %s" (dump_ctyp t) ]) *)
-(*     (FanAst.list_of_ctyp_app t []) @ acc; *)
-    
-    
-let optional_type_parameters (t:ctyp)
-    (acc:  list (option (Asttypes.loc string) * (bool * bool)) ) =
-  List.map quote_map (FanAst.list_of_ctyp_app t []) @ acc ;
+let optional_type_parameters (t:ctyp) = 
+  List.map quote_map (FanAst.list_of_ctyp_app t []) ;
 
-(*
-  it should always return [Some] instead of None
- *)  
+(* ['a,'b,'c']*)
 let  class_parameters (t:ctyp) =
   List.filter_map
     (fun
@@ -435,59 +416,21 @@ let  class_parameters (t:ctyp) =
     (list_of_com t []);
 
 
-let type_parameters_and_type_name t acc =
+let type_parameters_and_type_name t (* acc *) =
   let rec aux t acc = 
   match t with
   [ (* {:ctyp| $t1 $t2 |} *)
-    `TyApp(_loc,t1,t2)
-    ->
-    aux t1 (optional_type_parameters t2 acc)
+    `TyApp(_loc,t1,t2) ->
+    aux t1 (optional_type_parameters t2 @ acc)
   | (* {:ctyp| $id:i |} *)
     `Id(_loc,i)
     -> (ident i, acc)
   | x ->
       errorf (loc_of_ctyp x) "type_parameters_and_type_name %s"
-        (dump_ctyp x) ] in aux t acc;
+        (dump_ctyp x) ] in aux t [];
 
-let mkwithtyp pwith_type loc id_tpl ct =
-  let (id, tpl) = type_parameters_and_type_name id_tpl [] in
-  let (params, variance) = List.split tpl in
-  let (kind, priv, ct) = opt_private_ctyp ct in
-  (id, pwith_type
-     {ptype_params = params; ptype_cstrs = [];
-      ptype_kind = kind;
-      ptype_private = priv;
-      ptype_manifest = Some ct;
-      ptype_loc =  loc; ptype_variance = variance});
   
-let rec mkwithc (wc:with_constr) acc =
-    with with_constr match wc with
-    [ (* {||} *)
-      `Nil _loc -> acc
-    | (* {| type $id_tpl = $ct |} *)
-      `TypeEq(_loc,id_tpl,ct)
-      ->
-        [mkwithtyp (fun x -> Pwith_type x) _loc id_tpl ct :: acc]
-    | (* {| module $i1 = $i2 |} *)
-      `ModuleEq(_loc,i1,i2)
-      ->
-        [(long_uident i1, Pwith_module (long_uident i2)) :: acc]
-    | (* {| type $id_tpl := $ct |} *)
-      `TypeSubst(_loc,id_tpl,ct)
-      ->
-        [mkwithtyp (fun x -> Pwith_typesubst x) _loc id_tpl ct :: acc]
-    | (* {| module $i1 := $i2 |} *)
-      `ModuleSubst(_loc,i1,i2)
-      ->
-        [(long_uident i1, Pwith_modsubst (long_uident i2)) :: acc]
-    | (* {| $wc1 and $wc2 |} *)
-      `And(_loc,wc1,wc2)
-      ->
-        mkwithc wc1 (mkwithc wc2 acc)
-    | (* {| $anti:_ |} *)
-      `Ant(_loc,_)->
-        error _loc "bad with constraint (antiquotation)" ];
-
+  
 let rec patt_fa al = fun
   [ `PaApp (_,f,a) -> patt_fa [a :: al] f
   | f -> (f, al) ];
@@ -964,27 +907,68 @@ and mktype_decl (x:ctyp)  =
               (ctyp t1, ctyp t2, loc)) cl in
         (c+>sloc,
          type_decl
-           (List.fold_right optional_type_parameters tl [])
+           (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl [])
            cl td cloc)
       | t ->
           errorf (loc_of_ctyp t) "mktype_decl %s" (dump_ctyp t)]) tys
 and module_type : Ast.module_type -> Parsetree.module_type =
-  with module_type fun 
-  [ {@loc||} -> error loc "abstract/nil module type not allowed here"
-  | {@loc| $id:i |} -> mkmty loc (Pmty_ident (long_uident i))
-  | {@loc| functor ($n : $nt) -> $mt |} ->
-      match n with
-      [`Uid(sloc,n) ->
-        mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
-      |`Ant(_loc,_) -> ANT_ERROR]
-  (* | {@loc| '$_ |} -> error loc "module type variable not allowed here" *)
-  | {@loc| sig $sl end |} ->
-      mkmty loc (Pmty_signature (sig_item sl []))
-  | {@loc| $mt with $wc |} ->
-      mkmty loc (Pmty_with (module_type mt) (mkwithc wc []))
-  | {@loc| module type of $me |} ->
-      mkmty loc (Pmty_typeof (module_expr me))
-  | {| $anti:_ |} -> assert false ]
+  let  mkwithc (wc:with_constr)  =
+    let opt_private_ctyp (x:ctyp) = 
+      match x with
+      [ `Private (_,t)-> (Ptype_abstract, Private, ctyp t)
+      | t -> (Ptype_abstract, Public, ctyp t) ] in
+    let mkwithtyp pwith_type loc id_tpl ct =
+      let (id, tpl) = type_parameters_and_type_name id_tpl in
+      let (params, variance) = List.split tpl in
+      let (kind, priv, ct) = opt_private_ctyp ct in
+      (id, pwith_type
+         {ptype_params = params; ptype_cstrs = [];
+          ptype_kind = kind;
+          ptype_private = priv;
+          ptype_manifest = Some ct;
+          ptype_loc =  loc; ptype_variance = variance}) in
+    let constrs = list_of_and wc [] in
+    List.filter_map (fun 
+      [ (* {||} *)
+        `Nil _loc -> None
+      | (* {| type $id_tpl = $ct |} *)
+        `TypeEq(_loc,id_tpl,ct)
+        ->
+          Some (mkwithtyp (fun x -> Pwith_type x) _loc id_tpl ct)
+      | (* {| module $i1 = $i2 |} *)
+        `ModuleEq(_loc,i1,i2)
+        ->
+          Some (long_uident i1, Pwith_module (long_uident i2))
+      | (* {| type $id_tpl := $ct |} *)
+        `TypeSubst(_loc,id_tpl,ct)
+        ->
+          Some (mkwithtyp (fun x -> Pwith_typesubst x) _loc id_tpl ct )
+      | (* {| module $i1 := $i2 |} *)
+        `ModuleSubst(_loc,i1,i2)
+        ->
+          Some (long_uident i1, Pwith_modsubst (long_uident i2))
+      | (* {| $anti:_ |} *)
+        t 
+        ->
+          errorf (loc_of_with_constr t)
+            "bad with constraint (antiquotation) : %s"
+            (dump_with_constr t)]) constrs in
+     with module_type fun 
+     [ {@loc||} -> error loc "abstract/nil module type not allowed here"
+     | {@loc| $id:i |} -> mkmty loc (Pmty_ident (long_uident i))
+     | {@loc| functor ($n : $nt) -> $mt |} ->
+         match n with
+         [`Uid(sloc,n) ->
+             mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
+         |`Ant(_loc,_) -> ANT_ERROR]
+      (* | {@loc| '$_ |} -> error loc "module type variable not allowed here" *)
+     | {@loc| sig $sl end |} ->
+         mkmty loc (Pmty_signature (sig_item sl []))
+     | {@loc| $mt with $wc |} ->
+         mkmty loc (Pmty_with (module_type mt) (mkwithc wc ))
+     | {@loc| module type of $me |} ->
+         mkmty loc (Pmty_typeof (module_expr me))
+     | {| $anti:_ |} -> assert false ]
 and sig_item (s:sig_item) (l:signature) :signature =
   with sig_item match s with 
   [ {||} -> l

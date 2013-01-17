@@ -106,7 +106,7 @@ and module_binding =
   | `ModuleBind of (loc* auident* module_type* module_expr)
   | `ModuleConstraint of (loc* auident* module_type) | ant] 
 and match_case =
-  [ `Nil of loc | `McOr of (loc* match_case* match_case)
+  [ `Nil of loc | `Or of (loc* match_case* match_case)
   | `Case of (loc* patt* expr* expr) | ant] 
 and module_expr =
   [ `Nil of loc | `Id of (loc* ident)

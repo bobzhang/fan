@@ -244,7 +244,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                  (`Lid (loc, "fold_right")))))),
                        (`Fun
                           (loc,
-                            (`McOr
+                            (`Or
                                (loc,
                                  (`Case
                                     (loc, p,
@@ -323,7 +323,7 @@ let filter loc p b l =
                   (`IdAcc (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
              (`Fun
                 (loc,
-                  (`McOr
+                  (`Or
                      (loc,
                        (`Case (loc, p, (`Id (loc, (`Lid (loc, "true")))), b)),
                        (`Case

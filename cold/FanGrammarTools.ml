@@ -247,7 +247,7 @@ let text_of_action _loc psl rtvar act tvar =
       | Some (`ExCom (_loc,t1,t2),`PaCom (_,p1,p2)) ->
           `Match
             (_loc, (`ExTup (_loc, (`ExCom (_loc, t1, t2)))),
-              (`McOr
+              (`Or
                  (_loc,
                    (`Case
                       (_loc, (`PaTup (_loc, (`PaCom (_loc, p1, p2)))),
@@ -256,7 +256,7 @@ let text_of_action _loc psl rtvar act tvar =
       | Some (tok,match_) ->
           `Match
             (_loc, tok,
-              (`McOr
+              (`Or
                  (_loc, (`Case (_loc, match_, (`Nil _loc), e1)),
                    (`Case (_loc, (`Any _loc), (`Nil _loc), (`ExAsf _loc)))))) in
     `Fun
@@ -439,7 +439,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
         else
           `Fun
             (_loc,
-              (`McOr
+              (`Or
                  (_loc,
                    (`Case
                       (_loc, no_variable, (`Nil _loc),
@@ -455,7 +455,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
       let match_fun =
         `Fun
           (_loc,
-            (`McOr
+            (`Or
                (_loc,
                  (`Case
                     (_loc, pattern, restrict,

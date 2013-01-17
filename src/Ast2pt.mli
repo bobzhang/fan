@@ -74,37 +74,20 @@ val mkmutable : mutable_flag -> Asttypes.mutable_flag
 
 val paolab : string -> patt -> string
 
-val opt_private_ctyp :
-  ctyp ->
-  Parsetree.type_kind * Asttypes.private_flag * Parsetree.core_type
 
-(* val type_parameters : *)
-(*   ctyp -> *)
-(*   (string * (bool * bool)) list -> (string * (bool * bool)) list *)
 
 val optional_type_parameters :
   ctyp ->
-  (string Asttypes.loc option * (bool * bool)) list ->
   (string Asttypes.loc option * (bool * bool)) list
       
 val class_parameters :
-    ctyp ->
-      (string Asttypes.loc * (bool * bool)) list
+  ctyp -> (string Asttypes.loc * (bool * bool)) list
       
 val type_parameters_and_type_name :
   ctyp ->
-  (string Asttypes.loc option * (bool * bool)) list ->
   Longident.t Asttypes.loc *
   (string Asttypes.loc option * (bool * bool)) list
 
-val mkwithtyp :
-  (Parsetree.type_declaration -> 'a) ->
-  Location.t -> ctyp -> ctyp -> Longident.t Asttypes.loc * 'a
-
-val mkwithc :
-  with_constr ->
-  (Longident.t Asttypes.loc * Parsetree.with_constraint) list ->
-  (Longident.t Asttypes.loc * Parsetree.with_constraint) list
       
 val patt_fa :  patt list -> patt -> patt * patt list
       

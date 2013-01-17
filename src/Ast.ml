@@ -342,7 +342,7 @@
   and match_case =
     [= `Nil of loc
       (* a | a *)
-    | `McOr of (loc * match_case * match_case)
+    | (* `McOr *)`Or of (loc * match_case * match_case)
       (* p (when e)? -> e *)
     | `Case of (loc * patt * expr * expr)
     (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)

@@ -322,7 +322,7 @@ let gen_definition _loc l =
                        (_loc,
                          (`IdAcc (_loc, (gm ()), (`Lid (_loc, "next")))))),
                     (`Id (_loc, (`Lid (_loc, "lexbuf")))))))),
-          (`McOr
+          (`Or
              (_loc, (FanAst.mcOr_of_list cases),
                (`Case
                   (_loc, (`Any _loc), (`Nil _loc),
@@ -421,7 +421,7 @@ let gen_definition _loc l =
                                               (`Id
                                                  (_loc,
                                                    (`Lid (_loc, "lexbuf")))))),
-                                         (`McOr
+                                         (`Or
                                             (_loc,
                                               (FanAst.mcOr_of_list
                                                  (Array.to_list cases)),

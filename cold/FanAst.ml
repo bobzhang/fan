@@ -532,7 +532,7 @@ class eq =
       fun a0  b0  ->
         match (a0, b0) with
         | (`Nil a0,`Nil b0) -> self#loc a0 b0
-        | (`McOr (a0,a1,a2),`McOr (b0,b1,b2)) ->
+        | (`Or (a0,a1,a2),`Or (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#match_case a1 b1)) &&
               (self#match_case a2 b2)
         | (`Case (a0,a1,a2,a3),`Case (b0,b1,b2,b3)) ->
@@ -1296,10 +1296,10 @@ class map =
     method match_case : match_case -> match_case=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
-      | `McOr (a0,a1,a2) ->
+      | `Or (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#match_case a1 in
-          let a2 = self#match_case a2 in `McOr (a0, a1, a2)
+          let a2 = self#match_case a2 in `Or (a0, a1, a2)
       | `Case (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in
@@ -2090,8 +2090,8 @@ class print =
       fun fmt  ->
         function
         | `Nil a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" self#loc a0
-        | `McOr (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`McOr@ %a@ %a@ %a)@]" self#loc a0
+        | `Or (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc a0
               self#match_case a1 self#match_case a2
         | `Case (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a@ %a)@]" self#loc a0
@@ -2671,7 +2671,7 @@ class fold =
     method match_case : match_case -> 'self_type=
       function
       | `Nil a0 -> self#loc a0
-      | `McOr (a0,a1,a2) ->
+      | `Or (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#match_case a1 in self#match_case a2
       | `Case (a0,a1,a2,a3) ->
@@ -3392,7 +3392,7 @@ class fold2 =
       fun a0  b0  ->
         match (a0, b0) with
         | (`Nil a0,`Nil b0) -> self#loc a0 b0
-        | (`McOr (a0,a1,a2),`McOr (b0,b1,b2)) ->
+        | (`Or (a0,a1,a2),`Or (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#match_case a1 b1 in self#match_case a2 b2
         | (`Case (a0,a1,a2,a3),`Case (b0,b1,b2,b3)) ->
@@ -4152,8 +4152,8 @@ and pp_print_match_case: 'fmt -> match_case -> 'result =
   fun fmt  ->
     function
     | `Nil a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc a0
-    | `McOr (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`McOr@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Or (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_match_case a1 pp_print_match_case a2
     | `Case (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4647,7 +4647,7 @@ class iter =
     method match_case : match_case -> 'result=
       function
       | `Nil a0 -> self#loc a0
-      | `McOr (a0,a1,a2) ->
+      | `Or (a0,a1,a2) ->
           (self#loc a0; self#match_case a1; self#match_case a2)
       | `Case (a0,a1,a2,a3) ->
           (self#loc a0; self#patt a1; self#expr a2; self#expr a3)
@@ -5462,10 +5462,10 @@ class map2 =
       fun a0  b0  ->
         match (a0, b0) with
         | (`Nil a0,`Nil b0) -> let a0 = self#loc a0 b0 in `Nil a0
-        | (`McOr (a0,a1,a2),`McOr (b0,b1,b2)) ->
+        | (`Or (a0,a1,a2),`Or (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#match_case a1 b1 in
-            let a2 = self#match_case a2 b2 in `McOr (a0, a1, a2)
+            let a2 = self#match_case a2 b2 in `Or (a0, a1, a2)
         | (`Case (a0,a1,a2,a3),`Case (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
@@ -7054,14 +7054,13 @@ module Make(MetaLoc:META_LOC) =
             function
             | `Nil a0 ->
                 `ExApp (_loc, (`ExVrn (_loc, "Nil")), (meta_loc _loc a0))
-            | `McOr (a0,a1,a2) ->
+            | `Or (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "McOr")),
-                              (meta_loc _loc a0))),
+                            (_loc, (`ExVrn (_loc, "Or")), (meta_loc _loc a0))),
                          (meta_match_case _loc a1))),
                     (meta_match_case _loc a2))
             | `Case (a0,a1,a2,a3) ->
@@ -8806,14 +8805,13 @@ module Make(MetaLoc:META_LOC) =
             function
             | `Nil a0 ->
                 `PaApp (_loc, (`PaVrn (_loc, "Nil")), (meta_loc _loc a0))
-            | `McOr (a0,a1,a2) ->
+            | `Or (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "McOr")),
-                              (meta_loc _loc a0))),
+                            (_loc, (`PaVrn (_loc, "Or")), (meta_loc _loc a0))),
                          (meta_match_case _loc a1))),
                     (meta_match_case _loc a2))
             | `Case (a0,a1,a2,a3) ->
@@ -9496,7 +9494,7 @@ let rec mcOr_of_list =
   | [] -> `Nil ghost
   | x::[] -> x
   | x::xs ->
-      let _loc = loc_of_match_case x in `McOr (_loc, x, (mcOr_of_list xs))
+      let _loc = loc_of_match_case x in `Or (_loc, x, (mcOr_of_list xs))
 let rec mbAnd_of_list =
   function
   | [] -> `Nil ghost
@@ -9665,7 +9663,7 @@ let rec list_of_module_expr x acc =
 let rec list_of_match_case x acc =
   match x with
   | `Nil _loc -> acc
-  | `McOr (_loc,x,y) -> list_of_match_case x (list_of_match_case y acc)
+  | `Or (_loc,x,y) -> list_of_match_case x (list_of_match_case y acc)
   | x -> x :: acc
 let rec list_of_ident x acc =
   match x with
@@ -9710,7 +9708,7 @@ class clean_ast =
       | p -> p
     method! match_case mc =
       match super#match_case mc with
-      | `McOr (_loc,`Nil _l,mc)|`McOr (_loc,mc,`Nil _l) -> mc
+      | `Or (_loc,`Nil _l,mc)|`Or (_loc,mc,`Nil _l) -> mc
       | mc -> mc
     method! binding bi =
       match super#binding bi with
@@ -9798,8 +9796,8 @@ let match_pre =
                    (`Case
                       (_loc, (`Id (_loc, (`Uid (_loc, "()")))), (`Nil _loc),
                         e1)))))
-      | `McOr (_loc,a1,a2) ->
-          `McOr (_loc, (self#match_case a1), (self#match_case a2))
+      | `Or (_loc,a1,a2) ->
+          `Or (_loc, (self#match_case a1), (self#match_case a2))
       | `Nil _loc -> `Nil _loc
       | `Ant (_loc,x) -> `Ant (_loc, (add_context x "lettry"))
   end

@@ -258,10 +258,6 @@ let paolab (lab : string) (p : patt) =
    | ("",(`Id (_loc,`Lid (_,i))|`PaTyc (_loc,`Id (_,`Lid (_,i)),_))) -> i
    | ("",p) -> errorf (loc_of_patt p) "paolab %s" (dump_patt p)
    | _ -> lab : string )
-let opt_private_ctyp: ctyp -> (type_kind* Asttypes.private_flag* core_type) =
-  function
-  | `Private (_,t) -> (Ptype_abstract, Private, (ctyp t))
-  | t -> (Ptype_abstract, Public, (ctyp t))
 let quote_map (x : ctyp) =
   match x with
   | `Quote (_loc,p,s) ->
@@ -279,9 +275,8 @@ let quote_map (x : ctyp) =
             error _loc "antiquotation not expected here" in
       (s, tuple)
   | t -> errorf (loc_of_ctyp x) "quote_map %s" (dump_ctyp t)
-let optional_type_parameters (t : ctyp)
-  (acc : (string Asttypes.loc option* (bool* bool)) list) =
-  (List.map quote_map (FanAst.list_of_ctyp_app t [])) @ acc
+let optional_type_parameters (t : ctyp) =
+  List.map quote_map (FanAst.list_of_ctyp_app t [])
 let class_parameters (t : ctyp) =
   List.filter_map
     (function
@@ -292,43 +287,15 @@ let class_parameters (t : ctyp) =
           | (None ,_) ->
               errorf (loc_of_ctyp t) "class_parameters %s" (dump_ctyp t)))
     (list_of_com t [])
-let type_parameters_and_type_name t acc =
+let type_parameters_and_type_name t =
   let rec aux t acc =
     match t with
-    | `TyApp (_loc,t1,t2) -> aux t1 (optional_type_parameters t2 acc)
+    | `TyApp (_loc,t1,t2) -> aux t1 ((optional_type_parameters t2) @ acc)
     | `Id (_loc,i) -> ((ident i), acc)
     | x ->
         errorf (loc_of_ctyp x) "type_parameters_and_type_name %s"
           (dump_ctyp x) in
-  aux t acc
-let mkwithtyp pwith_type loc id_tpl ct =
-  let (id,tpl) = type_parameters_and_type_name id_tpl [] in
-  let (params,variance) = List.split tpl in
-  let (kind,priv,ct) = opt_private_ctyp ct in
-  (id,
-    (pwith_type
-       {
-         ptype_params = params;
-         ptype_cstrs = [];
-         ptype_kind = kind;
-         ptype_private = priv;
-         ptype_manifest = (Some ct);
-         ptype_loc = loc;
-         ptype_variance = variance
-       }))
-let rec mkwithc (wc : with_constr) acc =
-  match wc with
-  | `Nil _loc -> acc
-  | `TypeEq (_loc,id_tpl,ct) ->
-      (mkwithtyp (fun x  -> Pwith_type x) _loc id_tpl ct) :: acc
-  | `ModuleEq (_loc,i1,i2) ->
-      ((long_uident i1), (Pwith_module (long_uident i2))) :: acc
-  | `TypeSubst (_loc,id_tpl,ct) ->
-      (mkwithtyp (fun x  -> Pwith_typesubst x) _loc id_tpl ct) :: acc
-  | `ModuleSubst (_loc,i1,i2) ->
-      ((long_uident i1), (Pwith_modsubst (long_uident i2))) :: acc
-  | `And (_loc,wc1,wc2) -> mkwithc wc1 (mkwithc wc2 acc)
-  | `Ant (_loc,_) -> error _loc "bad with constraint (antiquotation)"
+  aux t []
 let rec patt_fa al =
   function | `PaApp (_,f,a) -> patt_fa (a :: al) f | f -> (f, al)
 let rec deep_mkrangepat loc c1 c2 =
@@ -747,7 +714,7 @@ and binding x acc =
   | _ -> assert false
 and match_case (x : match_case) (acc : (pattern* expression) list) =
   (match x with
-   | `McOr (_loc,x,y) -> match_case x (match_case y acc)
+   | `Or (_loc,x,y) -> match_case x (match_case y acc)
    | `Case (_loc,p,w,e) -> ((patt p), (when_expr e w)) :: acc
    | `Nil _loc -> acc
    | _ -> assert false : (pattern* expression) list )
@@ -779,10 +746,48 @@ and mktype_decl (x : ctyp) =
                 let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
                 ((ctyp t1), (ctyp t2), loc)) cl in
          ((c +> sloc),
-           (type_decl (List.fold_right optional_type_parameters tl []) cl td
-              cloc))
+           (type_decl
+              (List.fold_right
+                 (fun x  acc  -> (optional_type_parameters x) @ acc) tl [])
+              cl td cloc))
      | t -> errorf (loc_of_ctyp t) "mktype_decl %s" (dump_ctyp t)) tys
 and module_type: Ast.module_type -> Parsetree.module_type =
+  let mkwithc (wc : with_constr) =
+    let opt_private_ctyp (x : ctyp) =
+      match x with
+      | `Private (_,t) -> (Ptype_abstract, Private, (ctyp t))
+      | t -> (Ptype_abstract, Public, (ctyp t)) in
+    let mkwithtyp pwith_type loc id_tpl ct =
+      let (id,tpl) = type_parameters_and_type_name id_tpl in
+      let (params,variance) = List.split tpl in
+      let (kind,priv,ct) = opt_private_ctyp ct in
+      (id,
+        (pwith_type
+           {
+             ptype_params = params;
+             ptype_cstrs = [];
+             ptype_kind = kind;
+             ptype_private = priv;
+             ptype_manifest = (Some ct);
+             ptype_loc = loc;
+             ptype_variance = variance
+           })) in
+    let constrs = list_of_and wc [] in
+    List.filter_map
+      (function
+       | `Nil _loc -> None
+       | `TypeEq (_loc,id_tpl,ct) ->
+           Some (mkwithtyp (fun x  -> Pwith_type x) _loc id_tpl ct)
+       | `ModuleEq (_loc,i1,i2) ->
+           Some ((long_uident i1), (Pwith_module (long_uident i2)))
+       | `TypeSubst (_loc,id_tpl,ct) ->
+           Some (mkwithtyp (fun x  -> Pwith_typesubst x) _loc id_tpl ct)
+       | `ModuleSubst (_loc,i1,i2) ->
+           Some ((long_uident i1), (Pwith_modsubst (long_uident i2)))
+       | t ->
+           errorf (loc_of_with_constr t)
+             "bad with constraint (antiquotation) : %s" (dump_with_constr t))
+      constrs in
   function
   | `Nil loc -> error loc "abstract/nil module type not allowed here"
   | `Id (loc,i) -> mkmty loc (Pmty_ident (long_uident i))
@@ -795,7 +800,7 @@ and module_type: Ast.module_type -> Parsetree.module_type =
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Sig (loc,sl) -> mkmty loc (Pmty_signature (sig_item sl []))
   | `MtWit (loc,mt,wc) ->
-      mkmty loc (Pmty_with ((module_type mt), (mkwithc wc [])))
+      mkmty loc (Pmty_with ((module_type mt), (mkwithc wc)))
   | `Of (loc,me) -> mkmty loc (Pmty_typeof (module_expr me))
   | `Ant (_loc,_) -> assert false
 and sig_item (s : sig_item) (l : signature) =
