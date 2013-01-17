@@ -49,8 +49,6 @@ module type Syntax =
     val a_NATIVEINT : string Gram.t
     val a_OPTLABEL : string Gram.t
     val a_STRING : string Gram.t
-    val a_UIDENT : string Gram.t
-    val a_ident : string Gram.t
     val amp_ctyp : ctyp Gram.t
     val and_ctyp : ctyp Gram.t
     val match_case : match_case Gram.t

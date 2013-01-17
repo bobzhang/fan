@@ -1,4 +1,4 @@
-(* open Ast; *)
+
 open FanGrammar;
 open FanGrammarTools;
 open PreCast.Syntax;
@@ -260,7 +260,7 @@ FanConfig.antiquotations := true;
        sfold ~sep _loc [x;y] f e s  ]
 
   simple_expr:
-   [ a_LIDENT{i} -> {:expr| $lid:i |}
+   [ (* a_LIDENT *)a_lident{i} -> {:expr| $(id:(i:>ident)) |}
    | "("; expr{e}; ")" -> e ]  |};
 
 AstQuotation.of_expr ~name:"extend" ~entry:extend_body;

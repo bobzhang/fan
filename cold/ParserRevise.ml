@@ -24,8 +24,6 @@ let apply () =
    Gram.clear a_NATIVEINT;
    Gram.clear a_OPTLABEL;
    Gram.clear a_STRING;
-   Gram.clear a_UIDENT;
-   Gram.clear a_ident;
    Gram.clear amp_ctyp;
    Gram.clear and_ctyp;
    Gram.clear match_case;
@@ -2956,16 +2954,7 @@ let apply () =
                   (`PaEq
                      (_loc, i, (`Id (_loc, (`Lid (_loc, (Ident.to_lid i)))))) : 
                   'label_patt ))))])]));
-  (Gram.extend (a_ident : 'a_ident Gram.t )
-     (None,
-       [(None, None,
-          [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
-             (Gram.mk_action
-                (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  -> (i : 'a_ident ))));
-          ([`Snterm (Gram.obj (a_UIDENT : 'a_UIDENT Gram.t ))],
-            (Gram.mk_action
-               (fun (i : 'a_UIDENT)  (_loc : FanLoc.t)  -> (i : 'a_ident ))))])]);
-   Gram.extend (luident : 'luident Gram.t )
+  (Gram.extend (luident : 'luident Gram.t )
      (None,
        [(None, None,
           [([`Stoken
@@ -3659,25 +3648,6 @@ let apply () =
           ([],
             (Gram.mk_action
                (fun (_loc : FanLoc.t)  -> (`ReNil _loc : 'opt_rec ))))])]);
-   Gram.extend (a_UIDENT : 'a_UIDENT Gram.t )
-     (None,
-       [(None, None,
-          [([`Stoken
-               (((function | `Ant ((""|"uid"),_) -> true | _ -> false)),
-                 (`Normal, "`Ant ((\"\"|\"uid\"),_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `Ant ((""|"uid" as n),s) -> (mk_anti n s : 'a_UIDENT )
-                   | _ -> assert false)));
-          ([`Stoken
-              (((function | `Uid _ -> true | _ -> false)),
-                (`Normal, "`Uid _"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `Uid s -> (s : 'a_UIDENT )
-                  | _ -> assert false)))])]);
    Gram.extend (a_LIDENT : 'a_LIDENT Gram.t )
      (None,
        [(None, None,

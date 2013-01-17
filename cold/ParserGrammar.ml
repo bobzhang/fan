@@ -932,10 +932,10 @@ let _ =
   Gram.extend (simple_expr : 'simple_expr Gram.t )
     (None,
       [(None, None,
-         [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+         [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
-               (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (`Lid (_loc, i))) : 'simple_expr ))));
+               (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
+                  (`Id (_loc, (i :>ident)) : 'simple_expr ))));
          ([`Skeyword "(";
           `Snterm (Gram.obj (expr : 'expr Gram.t ));
           `Skeyword ")"],

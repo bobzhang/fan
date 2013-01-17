@@ -1,4 +1,4 @@
-(* open Ast; *)
+open Ast;
 open PreCast.Syntax;
 open LibUtil;
 open FanStreamTools;
@@ -37,7 +37,7 @@ let apply () =
            Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cstream _loc sel)
          | None -> cstream _loc sel ] ]
      parser_ipatt:
-     [ a_LIDENT{i} -> {:patt| $lid:i |}  | "_" -> {:patt| _ |}  ]         
+     [ (* a_LIDENT *)a_lident{i} -> {:patt| $(id:(i:>ident)) |}  | "_" -> {:patt| _ |}  ]         
      parser_case_list:
      [ "["; L0 parser_case SEP "|"{pcl}; "]" -> pcl
      | parser_case{pc} -> [pc] ] 

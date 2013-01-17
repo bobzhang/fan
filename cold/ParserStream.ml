@@ -1,3 +1,4 @@
+open Ast
 open PreCast.Syntax
 open LibUtil
 open FanStreamTools
@@ -101,10 +102,10 @@ let apply () =
   Gram.extend (parser_ipatt : 'parser_ipatt Gram.t )
     (None,
       [(None, None,
-         [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+         [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
-               (fun (i : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (`Lid (_loc, i))) : 'parser_ipatt ))));
+               (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
+                  (`Id (_loc, (i :>ident)) : 'parser_ipatt ))));
          ([`Skeyword "_"],
            (Gram.mk_action
               (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'parser_ipatt ))))])]);

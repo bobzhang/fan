@@ -27,7 +27,7 @@ let apply () = begin
     {:extend.clear|Gram
     a_CHAR a_FLOAT
       a_INT a_INT32 a_INT64
-      a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING a_UIDENT a_ident
+      a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING (* a_UIDENT *)
     amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
@@ -676,7 +676,7 @@ let apply () = begin
     {:extend|Gram
 
       (* parse [a] [B], depreacated  *)
-      a_ident: [ a_LIDENT{i} -> i |  a_UIDENT{i} -> i ]
+
       luident: [`Lid i -> i | `Uid i -> i]
       (* parse [a] [B] *)
       aident: [ a_lident{i} -> (i:>ident) | a_uident{i} -> (i:>ident)]
@@ -827,9 +827,6 @@ let apply () = begin
           (* {:rec_flag|$(anti:mk_anti ~c:"rec_flag" n s) |} *)
             `Ant (_loc,mk_anti ~c:"rec_flag" n s)
       | -> {:rec_flag||} ] 
-      a_UIDENT:
-      [ `Ant ((""|"uid" as n),s) -> mk_anti n s
-      | `Uid s -> s ]
       a_LIDENT:
       [ `Ant ((""|"lid" as n),s) -> mk_anti n s
       | `Lid s -> s ]

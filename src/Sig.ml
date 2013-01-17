@@ -59,8 +59,8 @@ module type Syntax = sig
   val a_NATIVEINT : Gram.t string;
   val a_OPTLABEL : Gram.t string;
   val a_STRING : Gram.t string;
-  val a_UIDENT : Gram.t string;
-  val a_ident : Gram.t string;
+  (* val a_UIDENT : Gram.t string; *)
+  (* val a_ident : Gram.t string; *)
 
   val amp_ctyp : Gram.t ctyp;
   val and_ctyp : Gram.t ctyp;
