@@ -14,6 +14,8 @@ let dump_patt = to_string_of_printer dump#patt
 let dump_class_type = to_string_of_printer dump#class_type
 let dump_class_expr = to_string_of_printer dump#class_expr
 let dump_ident = to_string_of_printer dump#ident
+let dump_match_case = to_string_of_printer dump#match_case
+let dump_rec_binding = to_string_of_printer dump#rec_binding
 let mkvirtual: virtual_flag -> Asttypes.virtual_flag =
   function
   | `Virtual _ -> Virtual
@@ -549,7 +551,7 @@ let rec expr: expr -> expression =
                 (("?" ^ lab), (Some (expr e1)),
                   [((patt p), (when_expr e2 w))]))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (match_case a [])))
+  | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (match_case a)))
   | `IfThenElse (loc,e1,e2,e3) ->
       mkexp loc (Pexp_ifthenelse ((expr e1), (expr e2), (Some (expr e3))))
   | `Int (loc,s) ->
@@ -594,7 +596,7 @@ let rec expr: expr -> expression =
            mkexp loc
              (Pexp_letmodule ((with_loc i sloc), (module_expr me), (expr e)))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `Match (loc,e,a) -> mkexp loc (Pexp_match ((expr e), (match_case a [])))
+  | `Match (loc,e,a) -> mkexp loc (Pexp_match ((expr e), (match_case a)))
   | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
   | `Obj (loc,po,cfl) ->
       let p = match po with | `Nil _loc -> `Any loc | p -> p in
@@ -607,7 +609,7 @@ let rec expr: expr -> expression =
        | `Nil _loc -> error loc "empty record"
        | _ ->
            let eo = match eo with | `Nil _loc -> None | e -> Some (expr e) in
-           mkexp loc (Pexp_record ((mklabexp lel []), eo)))
+           mkexp loc (Pexp_record ((mklabexp lel), eo)))
   | `Seq (_loc,e) ->
       let rec loop =
         function
@@ -628,7 +630,7 @@ let rec expr: expr -> expression =
              [("", (expr e1)); ("", (expr e2))]))
   | `Str (loc,s) ->
       mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
-  | `Try (loc,e,a) -> mkexp loc (Pexp_try ((expr e), (match_case a [])))
+  | `Try (loc,e,a) -> mkexp loc (Pexp_try ((expr e), (match_case a)))
   | `ExTup (loc,`ExCom (_,e1,e2)) ->
       mkexp loc
         (Pexp_tuple (List.map expr (list_of_expr e1 (list_of_expr e2 []))))
@@ -712,22 +714,27 @@ and binding x acc =
   | `Bind (_loc,p,e) -> ((patt p), (expr e)) :: acc
   | `Nil _loc -> acc
   | _ -> assert false
-and match_case (x : match_case) (acc : (pattern* expression) list) =
-  (match x with
-   | `Or (_loc,x,y) -> match_case x (match_case y acc)
-   | `Case (_loc,p,w,e) -> ((patt p), (when_expr e w)) :: acc
-   | `Nil _loc -> acc
-   | _ -> assert false : (pattern* expression) list )
+and match_case (x : match_case) =
+  let cases = list_of_or x [] in
+  List.filter_map
+    (function
+     | `Nil _ -> None
+     | `Case (_loc,p,w,e) -> Some ((patt p), (when_expr e w))
+     | x -> errorf (loc_of_match_case x) "match_case %s" (dump_match_case x))
+    cases
 and when_expr (e : expr) (w : expr) =
   (match w with
    | `Nil _loc -> expr e
    | w -> mkexp (loc_of_expr w) (Pexp_when ((expr w), (expr e))) : expression )
-and mklabexp (x : rec_binding)
-  (acc : (Longident.t Asttypes.loc* expression) list) =
-  (match x with
-   | `Sem (_loc,x,y) -> mklabexp x (mklabexp y acc)
-   | `RecBind (_loc,i,e) -> ((ident i), (expr e)) :: acc
-   | _ -> assert false : (Longident.t Asttypes.loc* expression) list )
+and mklabexp (x : rec_binding) =
+  let bindings = list_of_sem x [] in
+  List.filter_map
+    (function
+     | `Nil _ -> None
+     | `RecBind (_loc,i,e) -> Some ((ident i), (expr e))
+     | x ->
+         errorf (loc_of_rec_binding x) "mklabexp : %s" (dump_rec_binding x))
+    bindings
 and mkideexp (x : rec_binding) (acc : (string Asttypes.loc* expression) list)
   =
   (match x with

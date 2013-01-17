@@ -15,7 +15,8 @@ let dump_patt = to_string_of_printer dump#patt;
 let dump_class_type = to_string_of_printer dump#class_type;
 let dump_class_expr = to_string_of_printer dump#class_expr;
 let dump_ident = to_string_of_printer dump#ident;
-  
+let dump_match_case = to_string_of_printer dump#match_case;
+let dump_rec_binding = to_string_of_printer dump#rec_binding;  
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
 
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
@@ -680,7 +681,6 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
           let lab = match lab with
             [`Lid(_loc,l) -> l
             |`Ant(_loc,_) -> ANT_ERROR] in
-          (* let e1 = *)
           match e1 with
           [`None _ ->
             let lab = paolab lab p in
@@ -690,17 +690,8 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
               let lab = paolab lab p in
               mkexp loc
             (Pexp_function ("?" ^ lab) (Some (expr e1)) [(patt p, when_expr e2 w)])
-          |`Ant(_loc,_) -> ANT_ERROR
-          ]
-          
-      (* | {@loc|fun [ $(pat:`PaOlb (_, lab, p)) when $w -> $e ] |} -> *)
-      (*     let lab = match lab with *)
-      (*       [ `Lid(_loc,l) -> l *)
-      (*       | `Ant (_loc,_) -> ANT_ERROR ] in  *)
-      (*     let lab = paolab lab p in *)
-      (*     mkexp loc *)
-      (*       (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e w)]) *)
-      | `Fun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a []))
+          |`Ant(_loc,_) -> ANT_ERROR]
+      | `Fun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a (* [] *)))
       | `IfThenElse (loc, e1, e2, e3) ->
           mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) (Some (expr e3)))
       | `Int (loc,s) ->
@@ -728,7 +719,7 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
           [`Uid(sloc,i) ->
             mkexp loc (Pexp_letmodule (with_loc i sloc) (module_expr me) (expr e))
           |`Ant(_loc,_) -> ANT_ERROR]
-      | `Match (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a []))
+      | `Match (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a (* [] *)))
       | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
     | `Obj (loc,po,cfl) ->
         let p =
@@ -747,7 +738,7 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
               match eo with
               [ {||} -> None
               | e -> Some (expr e) ] in
-            mkexp loc (Pexp_record (mklabexp lel []) eo) ]
+            mkexp loc (Pexp_record (mklabexp lel) eo) ]
         | `Seq (_loc,e) ->
             let rec loop = fun
               [ [] -> expr {| () |}
@@ -767,7 +758,7 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
                  [("", expr e1); ("", expr e2)])
         | `Str (loc,s) ->
             mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
-        | `Try (loc,e,a) -> mkexp loc (Pexp_try (expr e) (match_case a []))
+        | `Try (loc,e,a) -> mkexp loc (Pexp_try (expr e) (match_case a (* [] *)))
         | {@loc| ($e1, $e2) |} ->
             mkexp loc (Pexp_tuple (List.map expr (list_of_expr e1 (list_of_expr e2 []))))
         | {@loc| ($tup:_) |} -> error loc "singleton tuple"
@@ -855,27 +846,29 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
   | {:binding| $p = $e |} -> [(patt p, expr e) :: acc]
   | {:binding||} -> acc
   | _ -> assert false ]
-and match_case (x:match_case)
-    (acc: list (pattern*expression))
-    : list (pattern * expression) =
-  with match_case match x with
-  [ {| $x | $y |} -> match_case x (match_case y acc)
-  | {| $pat:p when $w -> $e |} ->
-      [(patt p, when_expr e w) :: acc]
-  | {||} -> acc
-  | _ -> assert false ]
+and match_case (x:match_case) = 
+  let cases = list_of_or x [] in
+  with match_case 
+  List.filter_map
+    (fun
+      [`Nil _ -> None
+      | {| $pat:p when $w -> $e |} ->
+        Some (patt p, when_expr e w)
+      | x -> errorf (loc_of_match_case x ) "match_case %s" (dump_match_case x ) ]) cases
 and when_expr (e:expr) (w:expr) : expression  =
   with expr match w with 
   [ {||} -> expr e
   | w -> mkexp (loc_of_expr w) (Pexp_when (expr w) (expr e)) ]
-and mklabexp (x:rec_binding)
-    (acc: list (Asttypes.loc Longident.t  * expression)) :
-    list (Asttypes.loc Longident.t  * expression) =
-  with rec_binding match x with 
-  [ {| $x; $y |} ->
-    mklabexp x (mklabexp y acc)
-  | {| $id:i = $e |} -> [(ident  i, expr e) :: acc]
-  | _ -> assert false ]
+
+and mklabexp (x:rec_binding)  =
+  let bindings = list_of_sem x [] in
+  with rec_binding 
+  List.filter_map
+    (fun
+      [ `Nil _ -> None
+      | {| $id:i = $e |} ->  Some (ident i, expr e)
+      |  x ->errorf (loc_of_rec_binding x) "mklabexp : %s"
+            (dump_rec_binding x) ]) bindings
 and mkideexp (x:rec_binding)
     (acc: list (Asttypes.loc string * expression)) :
     list (Asttypes.loc string * expression) = 

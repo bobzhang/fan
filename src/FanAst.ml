@@ -422,6 +422,17 @@ let rec list_of_com x acc =
     list_of_com x (list_of_com y acc)
   | _ -> [x::acc]];
     
+let rec list_of_or x acc =
+  match x with
+  [`Or(_,x,y) ->
+    list_of_or x (list_of_or y acc)
+  | _ -> [x::acc]]  ;
+let rec list_of_sem x acc =
+  match x with
+  [`Sem(_,x,y) ->
+    list_of_sem x (list_of_sem y acc)
+  | _ -> [x::acc]]  ;
+    
 let rec list_of_binding x acc =
     match x with
     [ {:binding| $b1 and $b2 |} ->
