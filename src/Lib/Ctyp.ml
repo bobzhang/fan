@@ -25,7 +25,9 @@ let list_of_opt ot acc = match ot with
 
 let rec name_tags = fun
   [ {| $t1 $t2 |} -> name_tags t1 @ name_tags t2
-  | {| `$s |} -> [s]
+  | (* {| `$s |} *)
+    `TyVrn (_, `C (_,s))
+    -> [s]
   | _ -> assert false ];
 
 (* here -> can not be used as a delimiter, if we remove quotations.*)  
@@ -486,13 +488,19 @@ let transform_module_types  lst =
 let reduce_data_ctors (ty:ctyp)  (init:'a) (f:  string -> list ctyp -> 'e)  =
   let rec loop acc t =
     match t with
-    [ {| $uid:cons of $tys |} ->
+    [ (* {| $uid:cons of $tys |} *)
+      `Of (_loc, (`Id (_, (`Uid (_, cons)))), tys)
+      ->
       f cons (FanAst.list_of_ctyp tys []) acc
-    | {| `$cons of $tys |} ->
+    | (* {| `$cons of $tys |} *)
+         `Of (_loc, (`TyVrn (_, `C (_,cons))), tys)
+      ->
         f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
-    | {| $uid:cons |} -> f cons [] acc
-    | {|  `$cons |} -> f ("`"^cons) [] acc
-    | {| $t1 | $t2 |} -> loop (loop acc t1) t2
+    | {| $uid:cons |}
+      -> f cons [] acc
+    (* | {|  `$cons |} -> f ("`"^cons) [] acc *)
+    | {| $t1 | $t2 |} ->
+        loop (loop acc t1) t2
     | {| |} -> acc  (* we don't handle the type constructs  below *)
     | t ->
         failwithf "reduce_data_ctors: %s\n" (to_string t) ] in
@@ -539,9 +547,17 @@ let view_adt (t:ctyp) =
 let view_variant (t:ctyp) : list vbranch =
   let lst = FanAst.list_of_ctyp t []  in
   List.map (
-  fun [ {| `$cons of $tup:t |}  ->  `variant (cons,FanAst.list_of_ctyp t [])
-      | {| `$cons of $t |} -> `variant (cons, [t])
-      | {| `$cons |} -> `variant (cons, [])
+  fun [ (* {| `$cons of $tup:t |} *)
+        `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Tup (_, t)))
+        ->
+        `variant (cons,FanAst.list_of_ctyp t [])
+      | (* {| `$cons of $t |} *)
+        `Of (_loc, (`TyVrn (_, `C(_,cons))), t)
+        -> `variant (cons, [t])
+      | (* {| `$cons |} *)
+        `TyVrn (_loc, `C (_,cons))
+        ->
+          `variant (cons, [])
       | {| $id:i|} -> `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
       | u -> failwithf "view_variant %s" (to_string u) ] ) lst 

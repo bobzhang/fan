@@ -146,11 +146,20 @@ let rec ctyp: ctyp -> Parsetree.core_type =
 and row_field (x : ctyp) acc =
   match x with
   | `Nil _loc -> []
-  | `TyVrn (_loc,i) -> (Rtag (i, true, [])) :: acc
+  | `TyVrn (_loc,i) ->
+      (match i with
+       | `C (_,i) -> (Rtag (i, true, [])) :: acc
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `TyOfAmp (_loc,`TyVrn (_,i),t) ->
-      (Rtag (i, true, (List.map ctyp (list_of_ctyp t [])))) :: acc
+      (match i with
+       | `C (_,i) -> (Rtag (i, true, (List.map ctyp (list_of_ctyp t [])))) ::
+           acc
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Of (_loc,`TyVrn (_,i),t) ->
-      (Rtag (i, false, (List.map ctyp (list_of_ctyp t [])))) :: acc
+      (match i with
+       | `C (_,i) -> (Rtag (i, false, (List.map ctyp (list_of_ctyp t []))))
+           :: acc
+       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Or (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
   | t -> (Rinherit (ctyp t)) :: acc
 and meth_list (fl : ctyp) (acc : core_field_type list) =
@@ -319,8 +328,8 @@ let rec mkrangepat loc c1 c2 =
         (Ppat_or
            ((mkghpat loc (Ppat_constant (Const_char c1))),
              (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
-let rec patt: patt -> pattern =
-  function
+let rec patt (x : patt) =
+  match x with
   | `Id (_loc,`Lid (_,("true"|"false" as txt))) ->
       let p =
         Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) in

@@ -54,7 +54,7 @@ module type Syntax = sig
   val a_lident: Gram.t [= `Lid of (loc*string) | ant] (* alident *);
   val a_uident: Gram.t auident;
   val aident: Gram.t ident;
-    
+  val astr: Gram.t astring;
   val a_NATIVEINT : Gram.t string;
   val a_OPTLABEL : Gram.t string;
   val a_STRING : Gram.t string;

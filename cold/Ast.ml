@@ -38,7 +38,7 @@ type ctyp =
   | `Sum of (loc* ctyp) | `Of of (loc* ctyp* ctyp)
   | `And of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp)
   | `Private of (loc* ctyp) | `Mutable of (loc* ctyp) | `Tup of (loc* ctyp)
-  | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* string)
+  | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* astring)
   | `TyVrnEq of (loc* ctyp) | `TyVrnSup of (loc* ctyp)
   | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
   | `TyAmp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)

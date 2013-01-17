@@ -266,7 +266,7 @@ class eq =
         | (`Sta (a0,a1,a2),`Sta (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`TyVrn (a0,a1),`TyVrn (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
+            (self#loc a0 b0) && (self#astring a1 b1)
         | (`TyVrnEq (a0,a1),`TyVrnEq (b0,b1)) ->
             (self#loc a0 b0) && (self#ctyp a1 b1)
         | (`TyVrnSup (a0,a1),`TyVrnSup (b0,b1)) ->
@@ -941,7 +941,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in let a2 = self#ctyp a2 in `Sta (a0, a1, a2)
       | `TyVrn (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#string a1 in `TyVrn (a0, a1)
+          let a0 = self#loc a0 in let a1 = self#astring a1 in `TyVrn (a0, a1)
       | `TyVrnEq (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#ctyp a1 in `TyVrnEq (a0, a1)
       | `TyVrnSup (a0,a1) ->
@@ -1768,7 +1768,7 @@ class print =
               self#ctyp a1 self#ctyp a2
         | `TyVrn (a0,a1) ->
             Format.fprintf fmt "@[<1>(`TyVrn@ %a@ %a)@]" self#loc a0
-              self#string a1
+              self#astring a1
         | `TyVrnEq (a0,a1) ->
             Format.fprintf fmt "@[<1>(`TyVrnEq@ %a@ %a)@]" self#loc a0
               self#ctyp a1
@@ -2439,7 +2439,7 @@ class fold =
       | `Tup (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `Sta (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
-      | `TyVrn (a0,a1) -> let self = self#loc a0 in self#string a1
+      | `TyVrn (a0,a1) -> let self = self#loc a0 in self#astring a1
       | `TyVrnEq (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `TyVrnSup (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `TyVrnInf (a0,a1) -> let self = self#loc a0 in self#ctyp a1
@@ -3082,7 +3082,7 @@ class fold2 =
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
         | (`TyVrn (a0,a1),`TyVrn (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
+            let self = self#loc a0 b0 in self#astring a1 b1
         | (`TyVrnEq (a0,a1),`TyVrnEq (b0,b1)) ->
             let self = self#loc a0 b0 in self#ctyp a1 b1
         | (`TyVrnSup (a0,a1),`TyVrnSup (b0,b1)) ->
@@ -3831,7 +3831,7 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
           pp_print_ctyp a1 pp_print_ctyp a2
     | `TyVrn (a0,a1) ->
         Format.fprintf fmt "@[<1>(`TyVrn@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
+          pp_print_astring a1
     | `TyVrnEq (a0,a1) ->
         Format.fprintf fmt "@[<1>(`TyVrnEq@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1
@@ -4476,7 +4476,7 @@ class iter =
       | `Mutable (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `Tup (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `Sta (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
-      | `TyVrn (a0,a1) -> (self#loc a0; self#string a1)
+      | `TyVrn (a0,a1) -> (self#loc a0; self#astring a1)
       | `TyVrnEq (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `TyVrnSup (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `TyVrnInf (a0,a1) -> (self#loc a0; self#ctyp a1)
@@ -5064,7 +5064,7 @@ class map2 =
             let a2 = self#ctyp a2 b2 in `Sta (a0, a1, a2)
         | (`TyVrn (a0,a1),`TyVrn (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `TyVrn (a0, a1)
+            let a1 = self#astring a1 b1 in `TyVrn (a0, a1)
         | (`TyVrnEq (a0,a1),`TyVrnEq (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in `TyVrnEq (a0, a1)
@@ -6254,7 +6254,7 @@ module Make(MetaLoc:META_LOC) =
                   (_loc,
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "TyVrn")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
+                    (meta_astring _loc a1))
             | `TyVrnEq (a0,a1) ->
                 `ExApp
                   (_loc,
@@ -8005,7 +8005,7 @@ module Make(MetaLoc:META_LOC) =
                   (_loc,
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "TyVrn")), (meta_loc _loc a0))),
-                    (meta_string _loc a1))
+                    (meta_astring _loc a1))
             | `TyVrnEq (a0,a1) ->
                 `PaApp
                   (_loc,

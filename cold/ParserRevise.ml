@@ -2973,6 +2973,33 @@ let apply () =
             (Gram.mk_action
                (fun (i : 'a_uident)  (_loc : FanLoc.t)  ->
                   ((i :>ident) : 'aident ))))])]);
+   Gram.extend (astr : 'astr Gram.t )
+     (None,
+       [(None, None,
+          [([`Stoken
+               (((function | `Lid _ -> true | _ -> false)),
+                 (`Normal, "`Lid _"))],
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Lid i -> (`C (_loc, i) : 'astr )
+                   | _ -> assert false)));
+          ([`Stoken
+              (((function | `Uid _ -> true | _ -> false)),
+                (`Normal, "`Uid _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Uid i -> (`C (_loc, i) : 'astr )
+                  | _ -> assert false)));
+          ([`Stoken
+              (((function | `Ant (_,_) -> true | _ -> false)),
+                (`Normal, "`Ant (_,_)"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Ant (n,s) -> (`Ant (_loc, (mk_anti n s)) : 'astr )
+                  | _ -> assert false)))])]);
    Gram.extend (ident_quot : 'ident_quot Gram.t )
      (None,
        [((Some "."), None,
@@ -4954,9 +4981,9 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun (x : 'more_ctyp)  _  (_loc : FanLoc.t)  ->
                   (`Mutable (_loc, x) : 'more_ctyp ))));
-         ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+         ([`Skeyword "`"; `Snterm (Gram.obj (astr : 'astr Gram.t ))],
            (Gram.mk_action
-              (fun (x : 'a_ident)  _  (_loc : FanLoc.t)  ->
+              (fun (x : 'astr)  _  (_loc : FanLoc.t)  ->
                  (`TyVrn (_loc, x) : 'more_ctyp ))));
          ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
            (Gram.mk_action
@@ -5183,26 +5210,25 @@ let apply_ctyp () =
            (Gram.mk_action
               (fun (t2 : 'row_field)  _  (t1 : 'row_field)  (_loc : FanLoc.t)
                   -> (`Or (_loc, t1, t2) : 'row_field ))));
-         ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+         ([`Skeyword "`"; `Snterm (Gram.obj (astr : 'astr Gram.t ))],
            (Gram.mk_action
-              (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
+              (fun (i : 'astr)  _  (_loc : FanLoc.t)  ->
                  (`TyVrn (_loc, i) : 'row_field ))));
          ([`Skeyword "`";
-          `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+          `Snterm (Gram.obj (astr : 'astr Gram.t ));
           `Skeyword "of";
           `Skeyword "&";
           `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ))],
            (Gram.mk_action
-              (fun (t : 'amp_ctyp)  _  _  (i : 'a_ident)  _ 
-                 (_loc : FanLoc.t)  ->
-                 (`TyOfAmp (_loc, (`TyVrn (_loc, i)), t) : 'row_field ))));
+              (fun (t : 'amp_ctyp)  _  _  (i : 'astr)  _  (_loc : FanLoc.t) 
+                 -> (`TyOfAmp (_loc, (`TyVrn (_loc, i)), t) : 'row_field ))));
          ([`Skeyword "`";
-          `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ));
+          `Snterm (Gram.obj (astr : 'astr Gram.t ));
           `Skeyword "of";
           `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ))],
            (Gram.mk_action
-              (fun (t : 'amp_ctyp)  _  (i : 'a_ident)  _  (_loc : FanLoc.t) 
-                 -> (`Of (_loc, (`TyVrn (_loc, i)), t) : 'row_field ))));
+              (fun (t : 'amp_ctyp)  _  (i : 'astr)  _  (_loc : FanLoc.t)  ->
+                 (`Of (_loc, (`TyVrn (_loc, i)), t) : 'row_field ))));
          ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
            (Gram.mk_action
               (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'row_field ))))])]);
@@ -5241,9 +5267,9 @@ let apply_ctyp () =
            (Gram.mk_action
               (fun (t2 : 'name_tags)  (t1 : 'name_tags)  (_loc : FanLoc.t) 
                  -> (`TyApp (_loc, t1, t2) : 'name_tags ))));
-         ([`Skeyword "`"; `Snterm (Gram.obj (a_ident : 'a_ident Gram.t ))],
+         ([`Skeyword "`"; `Snterm (Gram.obj (astr : 'astr Gram.t ))],
            (Gram.mk_action
-              (fun (i : 'a_ident)  _  (_loc : FanLoc.t)  ->
+              (fun (i : 'astr)  _  (_loc : FanLoc.t)  ->
                  (`TyVrn (_loc, i) : 'name_tags ))))])]);
   Gram.extend (opt_polyt : 'opt_polyt Gram.t )
     (None,

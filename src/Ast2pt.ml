@@ -209,13 +209,22 @@ and row_field (x:ctyp) acc =
     `Nil _loc  -> []
   | (* {| `$i |} *)
     `TyVrn (_loc,i) ->
-      [Rtag i true [] :: acc]
+      match i with
+      [`C (_,i) ->   
+        [Rtag i true [] :: acc]
+      |`Ant(_loc,_) -> ANT_ERROR]
   | (* {| `$i of & $t |} *)
     `TyOfAmp (_loc,`TyVrn(_,i),t) ->
-      [Rtag i true (List.map ctyp (list_of_ctyp t [])) :: acc ]
+      match i with
+      [`C (_,i) ->   
+        [Rtag i true (List.map ctyp (list_of_ctyp t [])) :: acc ]
+      |`Ant(_loc,_) -> ANT_ERROR ]
   | (* {| `$i of $t |} *)
     `Of(_loc,`TyVrn(_,i),t) ->
-      [Rtag i false (List.map ctyp (list_of_ctyp t [])) :: acc ]
+      match i with 
+      [`C (_,i) -> 
+       [Rtag i false (List.map ctyp (list_of_ctyp t [])) :: acc ]
+      |`Ant(_loc,_) -> ANT_ERROR]
   | (* {| $t1 | $t2 |} *)
     `Or(_loc,t1,t2) ->
       row_field t1 ( row_field t2 acc)
@@ -451,7 +460,8 @@ let rec mkrangepat loc c1 c2 =
       (Ppat_or (mkghpat loc (Ppat_constant (Const_char c1)))
          (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2));
 
-let rec patt : patt -> pattern = with patt fun
+let rec patt (x:patt) =
+  with patt  match x with 
   [ {| $(lid:("true"|"false" as txt)) |}  ->
     let p = Ppat_construct ({txt=Lident txt;loc=_loc}) None false in
     mkpat _loc p 

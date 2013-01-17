@@ -94,6 +94,7 @@
     [= `LNil of loc
     | `LCons of ('a * meta_list 'a)
     | `Ant of (loc * string) ]; (* FIXME `Ant no location *)
+
    type alident =
     [= `Lid of (loc * string)
     | ant];
@@ -149,7 +150,7 @@
     | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
     | `Sta of (loc * ctyp * ctyp) (* t * t *)
 
-    | `TyVrn of (loc * string) (* `s *)          
+    | `TyVrn of (loc * astring(* string *)) (* `s *)          
     | `TyVrnEq of (loc * ctyp) (* [ = t ] *)
     | `TyVrnSup of (loc * ctyp) (* [ > t ] *)
     | `TyVrnInf of (loc * ctyp) (* [ < t ] *)

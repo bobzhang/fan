@@ -677,7 +677,9 @@ let apply () = begin
 
       (* parse [a] [B] *)
       aident: [ a_lident{i} -> (i:>ident) | a_uident{i} -> (i:>ident)]
-      
+      astr:
+      [`Lid i -> `C (_loc,i) | `Uid i -> `C(_loc,i) |
+      `Ant (n,s) -> `Ant(_loc,mk_anti n s)]
       ident_quot:
       { "."
         [ S{i}; "."; S{j} -> {| $i.$j  |} ]
@@ -1094,7 +1096,8 @@ let apply_ctyp () = begin
       | -> {||}  ]
       more_ctyp:
       [ "mutable"; S{x} -> {| mutable $x |}
-      | "`"; a_ident{x} -> {| `$x |}
+      | "`"; astr(* a_ident *){x} ->
+          {| `$x |}
       | ctyp{x} -> x
       | type_parameter{x} -> x   ]
       unquoted_typevars:
@@ -1140,9 +1143,9 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
       | S{t1}; "|"; S{t2} -> {| $t1 | $t2 |}
-      | "`"; a_ident{i} -> {| `$i |}
-      | "`"; a_ident{i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
-      | "`"; a_ident{i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
+      | "`"; astr(* a_ident *){i} -> {| `$i |}
+      | "`"; astr(* a_ident *){i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
+      | "`"; astr(* a_ident *){i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
       | ctyp{t} -> t ] 
       amp_ctyp:
       [ S{t1}; "&"; S{t2} -> {| $t1 & $t2 |}
@@ -1151,7 +1154,7 @@ let apply_ctyp () = begin
       name_tags:
       [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | S{t1}; S{t2} -> {| $t1 $t2 |}
-      | "`"; a_ident{i} -> {| `$i |}  ]
+      | "`"; astr(* a_ident *){i} -> {| `$i |}  ]
       opt_polyt:
       [ ":"; ctyp{t} -> t  | -> {||} ]
       

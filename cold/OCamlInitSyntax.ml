@@ -184,6 +184,7 @@ let dot_lstrings = Gram.mk "dot_lstrings"
 let a_string = Gram.mk "a_string"
 let a_lident = Gram.mk "a_lident"
 let a_uident = Gram.mk "a_uident"
+let astr = Gram.mk "astr"
 let antiquot_expr = Gram.eoi_entry expr
 let antiquot_patt = Gram.eoi_entry patt
 let antiquot_ident = Gram.eoi_entry ident

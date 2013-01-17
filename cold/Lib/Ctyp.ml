@@ -15,7 +15,7 @@ let list_of_opt ot acc =
 let rec name_tags =
   function
   | `TyApp (_loc,t1,t2) -> (name_tags t1) @ (name_tags t2)
-  | `TyVrn (_loc,s) -> [s]
+  | `TyVrn (_,`C (_,s)) -> [s]
   | _ -> assert false
 let rec to_generalized =
   function
@@ -296,10 +296,9 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
     match t with
     | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
         f cons (FanAst.list_of_ctyp tys []) acc
-    | `Of (_loc,`TyVrn (_,cons),tys) ->
+    | `Of (_loc,`TyVrn (_,`C (_,cons)),tys) ->
         f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
     | `Id (_loc,`Uid (_,cons)) -> f cons [] acc
-    | `TyVrn (_loc,cons) -> f ("`" ^ cons) [] acc
     | `Or (_loc,t1,t2) -> loop (loop acc t1) t2
     | `Nil _loc -> acc
     | t -> failwithf "reduce_data_ctors: %s\n" (to_string t) in
@@ -316,10 +315,10 @@ let view_variant (t : ctyp) =
   (let lst = FanAst.list_of_ctyp t [] in
    List.map
      (function
-      | `Of (_loc,`TyVrn (_,cons),`Tup (_,t)) ->
+      | `Of (_loc,`TyVrn (_,`C (_,cons)),`Tup (_,t)) ->
           `variant (cons, (FanAst.list_of_ctyp t []))
-      | `Of (_loc,`TyVrn (_,cons),t) -> `variant (cons, [t])
-      | `TyVrn (_loc,cons) -> `variant (cons, [])
+      | `Of (_loc,`TyVrn (_,`C (_,cons)),t) -> `variant (cons, [t])
+      | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
       | `Id (_loc,i) -> `abbrev i
       | u -> failwithf "view_variant %s" (to_string u)) lst : vbranch list )
 let of_str_item =
