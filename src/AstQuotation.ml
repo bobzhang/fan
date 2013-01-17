@@ -312,7 +312,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
   method! patt =
     with patt
     fun
-    [ {| $anti:s |} | {| $str:s |} as p ->
+    [ {| $anti:s |} (* | {| $str:s |} *) as p ->
       let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
       handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
         ~decorate:(fun n e ->
@@ -368,7 +368,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | _ -> e ])
       | p -> super#patt p ];
     method! expr = with expr fun (* `Ant keeps the right location, `Str does not *)
-      [ {@_loc| $anti:s |} | {@_loc| $str:s |} as e ->
+      [ {| $anti:s |} (* | {@_loc| $str:s |} *) as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n e -> (* e is the parsed Ast node already *)

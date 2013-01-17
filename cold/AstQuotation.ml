@@ -246,7 +246,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     inherit  FanAst.map as super
     method! patt =
       function
-      | `Ant (_loc,s)|`Str (_loc,s) as p ->
+      | `Ant (_loc,s) as p ->
           let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
           handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
             ~decorate:(fun n  e  ->
@@ -510,7 +510,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
       | p -> super#patt p
     method! expr =
       function
-      | `Ant (_loc,s)|`Str (_loc,s) as e ->
+      | `Ant (_loc,s) as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n  e  ->
