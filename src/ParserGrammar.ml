@@ -34,10 +34,10 @@ FanConfig.antiquotations := true;
   [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
        |  qualuid{t} -> `static(t)]{t};
        L0
-         [ a_LIDENT{x} -> (_loc,x,None,None)
-         | "(";a_LIDENT{x};`STR(_,y); ")" ->(_loc,x,Some y,None)
-         | "(";a_LIDENT{x};`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-         | "(";a_LIDENT{x}; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")"
+         [ `Lid x  -> (_loc,x,None,None)
+         | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
+         | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
+         | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")"
            -> (_loc,x,y,Some t) ] {ls}
        ->
        with str_item
@@ -60,7 +60,7 @@ FanConfig.antiquotations := true;
                    {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
                    {| $list:rest |} ]
   nonterminalsclear:
-  [ qualuid{t}; L0 (* a_LIDENT *)[a_lident{x}->x ]{ls} ->
+  [ qualuid{t}; L0 [a_lident{x}->x ]{ls} ->
     let rest = List.map (fun x ->
       let _loc = FanAst.loc_of_ident (x:>ident) in
       {:expr| $id:t.clear $(id:(x:>ident)) |}) ls in
@@ -260,7 +260,7 @@ FanConfig.antiquotations := true;
        sfold ~sep _loc [x;y] f e s  ]
 
   simple_expr:
-   [ (* a_LIDENT *)a_lident{i} -> {:expr| $(id:(i:>ident)) |}
+   [ a_lident{i} -> {:expr| $(id:(i:>ident)) |}
    | "("; expr{e}; ")" -> e ]  |};
 
 AstQuotation.of_expr ~name:"extend" ~entry:extend_body;

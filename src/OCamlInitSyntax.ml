@@ -10,9 +10,16 @@ let print_warning loc txt = !current_warning loc txt;
 
 
 {:extend.create|Gram
-  a_CHAR a_FLOAT a_INT a_INT32 a_INT64 a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING a_UIDENT
-  a_ident aident
-  amp_ctyp and_ctyp match_case match_case0 binding class_declaration class_description
+  
+  a_ident
+  aident
+  amp_ctyp
+  and_ctyp
+  match_case
+  match_case0
+  binding
+  class_declaration
+  class_description
   class_expr class_fun_binding class_fun_def class_info_for_class_expr class_info_for_class_type
   class_longident class_longident_and_param class_name_and_param class_sig_item class_signature
   class_str_item class_structure class_type class_type_declaration

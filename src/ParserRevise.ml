@@ -25,9 +25,12 @@ let apply () = begin
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
     {:extend.clear|Gram
-    a_CHAR a_FLOAT
-      a_INT a_INT32 a_INT64
-      a_LABEL a_LIDENT a_NATIVEINT a_OPTLABEL a_STRING (* a_UIDENT *)
+    (* a_CHAR *) (* a_FLOAT *)
+      (* a_INT a_INT32 a_INT64 *)
+      (* a_LABEL *) (* a_LIDENT *) (* a_NATIVEINT *)
+      (* a_OPTLABEL *)
+      (* a_STRING *)
+      (* a_UIDENT *)
     amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
@@ -827,9 +830,7 @@ let apply () = begin
           (* {:rec_flag|$(anti:mk_anti ~c:"rec_flag" n s) |} *)
             `Ant (_loc,mk_anti ~c:"rec_flag" n s)
       | -> {:rec_flag||} ] 
-      a_LIDENT:
-      [ `Ant ((""|"lid" as n),s) -> mk_anti n s
-      | `Lid s -> s ]
+
       a_string:
       [ `Ant((""|"lid") as n,s) -> `Ant (_loc, mk_anti n s)
       |  `Lid s -> `C (_loc, s )

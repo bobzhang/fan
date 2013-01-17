@@ -14,17 +14,7 @@ let apply () =
   Options.add
     ("-help_seq", (FanArg.Unit help_sequences),
       "Print explanations about new sequences and exit.");
-  (Gram.clear a_CHAR;
-   Gram.clear a_FLOAT;
-   Gram.clear a_INT;
-   Gram.clear a_INT32;
-   Gram.clear a_INT64;
-   Gram.clear a_LABEL;
-   Gram.clear a_LIDENT;
-   Gram.clear a_NATIVEINT;
-   Gram.clear a_OPTLABEL;
-   Gram.clear a_STRING;
-   Gram.clear amp_ctyp;
+  (Gram.clear amp_ctyp;
    Gram.clear and_ctyp;
    Gram.clear match_case;
    Gram.clear match_case0;
@@ -3648,25 +3638,6 @@ let apply () =
           ([],
             (Gram.mk_action
                (fun (_loc : FanLoc.t)  -> (`ReNil _loc : 'opt_rec ))))])]);
-   Gram.extend (a_LIDENT : 'a_LIDENT Gram.t )
-     (None,
-       [(None, None,
-          [([`Stoken
-               (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-                 (`Normal, "`Ant ((\"\"|\"lid\"),_)"))],
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `Ant ((""|"lid" as n),s) -> (mk_anti n s : 'a_LIDENT )
-                   | _ -> assert false)));
-          ([`Stoken
-              (((function | `Lid _ -> true | _ -> false)),
-                (`Normal, "`Lid _"))],
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `Lid s -> (s : 'a_LIDENT )
-                  | _ -> assert false)))])]);
    Gram.extend (a_string : 'a_string Gram.t )
      (None,
        [(None, None,

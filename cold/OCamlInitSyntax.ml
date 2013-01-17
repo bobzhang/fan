@@ -6,17 +6,6 @@ let default_warning loc txt =
   Format.eprintf "<W> %a: %s@." FanLoc.print loc txt
 let current_warning = ref default_warning
 let print_warning loc txt = current_warning.contents loc txt
-let a_CHAR = Gram.mk "a_CHAR"
-let a_FLOAT = Gram.mk "a_FLOAT"
-let a_INT = Gram.mk "a_INT"
-let a_INT32 = Gram.mk "a_INT32"
-let a_INT64 = Gram.mk "a_INT64"
-let a_LABEL = Gram.mk "a_LABEL"
-let a_LIDENT = Gram.mk "a_LIDENT"
-let a_NATIVEINT = Gram.mk "a_NATIVEINT"
-let a_OPTLABEL = Gram.mk "a_OPTLABEL"
-let a_STRING = Gram.mk "a_STRING"
-let a_UIDENT = Gram.mk "a_UIDENT"
 let a_ident = Gram.mk "a_ident"
 let aident = Gram.mk "aident"
 let amp_ctyp = Gram.mk "amp_ctyp"

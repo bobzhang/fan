@@ -43,24 +43,12 @@ module type Syntax = sig
   val interf : Gram.t (list sig_item * option FanLoc.t);
   val implem : Gram.t (list str_item * option FanLoc.t);
   val top_phrase : Gram.t (option str_item);
-  val a_CHAR : Gram.t string;
-  val a_FLOAT : Gram.t string;
-  val a_INT : Gram.t string;
-  val a_INT32 : Gram.t string;
-  val a_INT64 : Gram.t string;
-  val a_LABEL : Gram.t string;
-  val a_LIDENT: Gram.t string;
   val a_string: Gram.t astring;
   val a_lident: Gram.t [= `Lid of (loc*string) | ant] (* alident *);
   val a_uident: Gram.t auident;
   val aident: Gram.t ident;
   val astr: Gram.t astring;
   val luident: Gram.t string;
-  val a_NATIVEINT : Gram.t string;
-  val a_OPTLABEL : Gram.t string;
-  val a_STRING : Gram.t string;
-  (* val a_UIDENT : Gram.t string; *)
-  (* val a_ident : Gram.t string; *)
 
   val amp_ctyp : Gram.t ctyp;
   val and_ctyp : Gram.t ctyp;

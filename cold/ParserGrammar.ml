@@ -68,24 +68,33 @@ let _ =
                       (`static t : 'e__1 ))))];
            `Slist0
              (Gram.srules nonterminals
-                [([`Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ))],
+                [([`Stoken
+                     (((function | `Lid _ -> true | _ -> false)),
+                       (`Normal, "`Lid _"))],
                    (Gram.mk_action
-                      (fun (x : 'a_LIDENT)  (_loc : FanLoc.t)  ->
-                         ((_loc, x, None, None) : 'e__3 ))));
+                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                         match __fan_0 with
+                         | `Lid x -> ((_loc, x, None, None) : 'e__3 )
+                         | _ -> assert false)));
                 ([`Skeyword "(";
-                 `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+                 `Stoken
+                   (((function | `Lid _ -> true | _ -> false)),
+                     (`Normal, "`Lid _"));
                  `Stoken
                    (((function | `STR (_,_) -> true | _ -> false)),
                      (`Normal, "`STR (_,_)"));
                  `Skeyword ")"],
                   (Gram.mk_action
-                     (fun _  (__fan_2 : [> FanToken.t])  (x : 'a_LIDENT)  _ 
-                        (_loc : FanLoc.t)  ->
-                        match __fan_2 with
-                        | `STR (_,y) -> ((_loc, x, (Some y), None) : 'e__3 )
+                     (fun _  (__fan_2 : [> FanToken.t]) 
+                        (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
+                        match (__fan_2, __fan_1) with
+                        | (`STR (_,y),`Lid x) ->
+                            ((_loc, x, (Some y), None) : 'e__3 )
                         | _ -> assert false)));
                 ([`Skeyword "(";
-                 `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+                 `Stoken
+                   (((function | `Lid _ -> true | _ -> false)),
+                     (`Normal, "`Lid _"));
                  `Stoken
                    (((function | `STR (_,_) -> true | _ -> false)),
                      (`Normal, "`STR (_,_)"));
@@ -93,13 +102,15 @@ let _ =
                  `Skeyword ")"],
                   (Gram.mk_action
                      (fun _  (t : 'ctyp)  (__fan_2 : [> FanToken.t]) 
-                        (x : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
-                        match __fan_2 with
-                        | `STR (_,y) ->
+                        (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
+                        match (__fan_2, __fan_1) with
+                        | (`STR (_,y),`Lid x) ->
                             ((_loc, x, (Some y), (Some t)) : 'e__3 )
                         | _ -> assert false)));
                 ([`Skeyword "(";
-                 `Snterm (Gram.obj (a_LIDENT : 'a_LIDENT Gram.t ));
+                 `Stoken
+                   (((function | `Lid _ -> true | _ -> false)),
+                     (`Normal, "`Lid _"));
                  `Skeyword ":";
                  `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
                  `Sopt
@@ -116,8 +127,10 @@ let _ =
                  `Skeyword ")"],
                   (Gram.mk_action
                      (fun _  (y : 'e__2 option)  (t : 'ctyp)  _ 
-                        (x : 'a_LIDENT)  _  (_loc : FanLoc.t)  ->
-                        ((_loc, x, y, (Some t)) : 'e__3 ))))])],
+                        (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
+                        match __fan_1 with
+                        | `Lid x -> ((_loc, x, y, (Some t)) : 'e__3 )
+                        | _ -> assert false)))])],
             (Gram.mk_action
                (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->
                   (let mk =
