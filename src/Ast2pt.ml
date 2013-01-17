@@ -14,7 +14,7 @@ let dump_expr = to_string_of_printer dump#expr;
 let dump_patt = to_string_of_printer dump#patt;
 let dump_class_type = to_string_of_printer dump#class_type;
 let dump_class_expr = to_string_of_printer dump#class_expr;
-
+let dump_ident = to_string_of_printer dump#ident;
   
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
 
@@ -70,23 +70,27 @@ let ident_tag (i:ident) =
         (* FIXME uid required here, more precise *)
         [ (Some (l,_),Some (r,_),None) ->
           Some(Lapply l r,`app)
-        | _ -> error (FanAst.loc_of_ident i) "invalid long identifer" ]
+        | _ -> errorf
+              (FanAst.loc_of_ident i) "invalid long identifer %s" (dump_ident i) ]
     | {| $uid:s |} ->
         match (acc,s) with
         [ (None,"") -> None 
         | (None,s) -> Some (lident s ,`uident) 
         | (Some (_, `uident | `app) ,"") -> acc
         | (Some (x, `uident | `app), s) -> Some (ldot x s, `uident)
-        | _ -> error (FanAst.loc_of_ident i) "invalid long identifier" ]
+        | _ ->
+            errorf (FanAst.loc_of_ident i) "invalid long identifier %s"
+              (dump_ident i)]
     | {| $lid:s |} ->
           let x = match acc with
             [ None -> lident s 
             | Some (acc, `uident | `app) -> ldot acc s
-            | _ -> error (loc_of_ident i) "invalid long identifier" ]
-          in Some (x, `lident)
+            | _ ->
+                errorf (loc_of_ident i) "invalid long identifier %s" (dump_ident i) ] in
+          Some (x, `lident)
     | `Ant(_,_) -> error (loc_of_ident i) "invalid long identifier" ]  in
-  match self i None
-  with [Some x -> x | None -> error (loc_of_ident i) "invalid long identifier "];
+  match self i None  with
+    [Some x -> x | None -> error (loc_of_ident i) "invalid long identifier "];
 
 let ident_noloc i = fst (ident_tag  i);
 
@@ -120,14 +124,14 @@ let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
         let li1 = ctyp_long_id_prefix m1 in
         let li2 = ctyp_long_id_prefix m2 in
         Lapply li1 li2
-  | t -> error (loc_of_ctyp t) "invalid module expression" ] ;
+  | t -> errorf (loc_of_ctyp t) "invalid module expression %s" (dump_ctyp t) ] ;
 
 let ctyp_long_id (t:ctyp) : (bool *  Location.loc Longident.t) =
   with ctyp match t with
   [ (* {| $id:i |} *) `Id(_loc,i) ->
     (false, long_type_ident i)
   | `ClassPath (_, i) -> (true, ident i)
-  | t -> error (loc_of_ctyp t) "invalid type" ] ;
+  | t -> errorf (loc_of_ctyp t) "invalid type %s" (dump_ctyp t) ] ;
 
 
 let predef_option loc =
@@ -337,7 +341,8 @@ let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool)))
         (Ptype_variant (List.map mkvariant (list_of_ctyp t []))) (mkprivate' pflag) m
   | t ->
       if m <> None then
-        error loc "only one manifest type allowed by definition"
+        errorf loc "only one manifest type allowed by definition %s"
+          (dump_ctyp t)
       else
         let m =
           match t with
