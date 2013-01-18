@@ -318,53 +318,35 @@ let antiquot_expander ~parse_patt ~parse_expr = object
         ~decorate:(fun n e ->
           let len = String.length n in 
           match n with
-          [ "antisig_item" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antistr_item" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antictyp" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antipatt" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antiexpr" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antimodule_type" (* -> {| `Ant($(mloc _loc), $e) |} *)
-          | "antimodule_expr" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "anticlass_type" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "anticlass_expr" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "anticlass_sig_item" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "anticlass_str_item" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antiwith_constr" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antibinding" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antirec_binding" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antimatch_case" (* -> {| `Ant ($(mloc _loc), $e) |} *)
-          | "antimodule_binding" (* -> {| `Ant ($(mloc _loc), $e) |} *)
+          [ "antisig_item" | "antistr_item" | "antictyp" | "antipatt"
+          | "antiexpr" | "antimodule_type" | "antimodule_expr"
+          | "anticlass_type" | "anticlass_expr" | "anticlass_sig_item"
+          | "anticlass_str_item" | "antiwith_constr" | "antibinding"
+          | "antirec_binding" | "antimatch_case" | "antimodule_binding"
           | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
-          | "tupexpr" (* -> {| `Tup ($(mloc _loc), $e)|} *)
+                
+          | "tupexpr"
           | "tuppatt" -> {| `Tup ($(mloc _loc), $e)|}
+
           | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
                 
-          | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
-          | "uidident" -> {| `Uid ($(mloc _loc), $e)|}
-          | "uida_uident" -> {|`Uid($(mloc _loc), $e)|}                
+          | "uidexpr" | "uidident" | "uida_uident" -> {|`Uid($(mloc _loc), $e)|}                
 
-          | "lidexpr" -> {| `Lid ($(mloc _loc), $e) |}
-          | "lidident" -> {| `Lid ($(mloc _loc), $e)|}
-          | "lida_lident" -> {|`Lid($(mloc _loc), $e)|}
+          | "lidexpr" | "lidident" | "lida_lident" -> {|`Lid($(mloc _loc), $e)|}
 
-          | "flopatt" (* -> {| `Flo ($(mloc _loc), $e) |} *)
-          | "floexpr" -> {| `Flo ($(mloc _loc), $e) |}
+          | "flopatt" | "floexpr" -> {| `Flo ($(mloc _loc), $e) |}
                 
-          | "intexpr" (* -> {| `Int ($(mloc _loc), $e) |} *)                
-          | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
+          | "intexpr" | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
 
-          | "int32patt" (* -> {| `Int32 ($(mloc _loc), $e)|} *)
-          | "int32expr" -> {| `Int32 ($(mloc _loc), $e) |}                
+          | "int32patt" | "int32expr" -> {| `Int32 ($(mloc _loc), $e) |}                
 
-          | "int64patt" (* -> {| `Int64 ($(mloc _loc), $e)|} *)
-          | "int64expr" -> {| `Int64 ($(mloc _loc), $e)|}
+          | "int64patt" | "int64expr" -> {| `Int64 ($(mloc _loc), $e)|}
                 
-          | "nativeintpatt" (* -> {| `NativeInt ($(mloc _loc),$e)|} *)
-          | "nativeintexpr" -> {| `NativeInt ($(mloc _loc), $e) |}
-          | "chrpatt" (* -> {| `Chr ($(mloc _loc), $e) |} *)
-          | "chrexpr" -> {| `Chr ($(mloc _loc), $e) |}
-          | "strpatt" (* -> {| `Str ($(mloc _loc),$e) |} *)
-          | "strexpr" -> {| `Str ($(mloc _loc), $e) |}
+          | "nativeintpatt" | "nativeintexpr" -> {| `NativeInt ($(mloc _loc), $e) |}
+
+          | "chrpatt" | "chrexpr" -> {| `Chr ($(mloc _loc), $e) |}
+
+          | "strpatt" | "strexpr" -> {| `Str ($(mloc _loc), $e) |}
                 
           | "vrnexpr" -> {|`ExVrn ($(mloc _loc), $e)|}
           | "vrnpatt" -> {|`PaVrn ($(mloc _loc),$e)|}
@@ -372,7 +354,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | _ -> e ])
       | p -> super#patt p ];
     method! expr = with expr fun (* `Ant keeps the right location, `Str does not *)
-      [ {| $anti:s |} (* | {@_loc| $str:s |} *) as e ->
+      [ {| $anti:s |} as e ->
           let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n e -> (* e is the parsed Ast node already *)
