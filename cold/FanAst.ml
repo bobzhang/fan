@@ -41,6 +41,17 @@ let loc_of_match_case: match_case -> FanLoc.t =
   fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
 let loc_of_ident: ident -> FanLoc.t =
   fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
+let loc_of x =
+  match x with
+  | `Nil _|`Id _|`ExAcc _|`Ant _|`ExApp _|`ExAre _|`Array _|`Sem _|`ExAsf _
+    |`ExAsr _|`ExAss _|`For _|`Fun _|`IfThenElse _|`Label _|`Lazy _|`LetIn _
+    |`LetModule _|`Match _|`New _|`Obj _|`OptLabl _|`OvrInst _|`Record _
+    |`Seq _|`Send _|`StringDot _|`Try _|`ExTup _|`ExCom _|`Constraint_exp _
+    |`ExCoe _|`ExVrn _|`While _|`Let_open _|`LocalTypeFun _|`Package_expr _
+    |`Chr _|`Int _|`Int32 _|`Int64 _|`Flo _|`NativeInt _|`Str _|`Alias _
+    |`Any _|`PaApp _|`Com _|`PaOlbi _|`PaOrp _|`PaRng _|`PaRec _|`PaEq _
+    |`Tup _|`PaTyc _|`PaTyp _|`PaVrn _|`ModuleUnpack _ ->
+      ((fun x  -> let open Obj in magic (field (field (repr x) 1) 0))) x
 let safe_string_escaped s =
   if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
   then s
@@ -296,7 +307,7 @@ class eq =
             ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
         | (`Array (a0,a1),`Array (b0,b1)) ->
             (self#loc a0 b0) && (self#patt a1 b1)
-        | (`PaCom (a0,a1,a2),`PaCom (b0,b1,b2)) ->
+        | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
         | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
@@ -315,7 +326,7 @@ class eq =
             (self#loc a0 b0) && (self#patt a1 b1)
         | (`PaEq (a0,a1,a2),`PaEq (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ident a1 b1)) && (self#patt a2 b2)
-        | (`PaTup (a0,a1),`PaTup (b0,b1)) ->
+        | (`Tup (a0,a1),`Tup (b0,b1)) ->
             (self#loc a0 b0) && (self#patt a1 b1)
         | (`PaTyc (a0,a1,a2),`PaTyc (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#patt a1 b1)) && (self#ctyp a2 b2)
@@ -981,10 +992,9 @@ class map =
           let a2 = self#patt a2 in `PaApp (a0, a1, a2)
       | `Array (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#patt a1 in `Array (a0, a1)
-      | `PaCom (a0,a1,a2) ->
+      | `Com (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#patt a1 in
-          let a2 = self#patt a2 in `PaCom (a0, a1, a2)
+          let a1 = self#patt a1 in let a2 = self#patt a2 in `Com (a0, a1, a2)
       | `Sem (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in let a2 = self#patt a2 in `Sem (a0, a1, a2)
@@ -1013,8 +1023,8 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ident a1 in
           let a2 = self#patt a2 in `PaEq (a0, a1, a2)
-      | `PaTup (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#patt a1 in `PaTup (a0, a1)
+      | `Tup (a0,a1) ->
+          let a0 = self#loc a0 in let a1 = self#patt a1 in `Tup (a0, a1)
       | `PaTyc (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in
@@ -1809,8 +1819,8 @@ class print =
         | `Array (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc a0
               self#patt a1
-        | `PaCom (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`PaCom@ %a@ %a@ %a)@]" self#loc a0
+        | `Com (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#patt a2
         | `Sem (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc a0
@@ -1835,9 +1845,9 @@ class print =
         | `PaEq (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a@ %a)@]" self#loc a0
               self#ident a1 self#patt a2
-        | `PaTup (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`PaTup@ %a@ %a)@]" self#loc a0
-              self#patt a1
+        | `Tup (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc a0 self#patt
+              a1
         | `PaTyc (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`PaTyc@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#ctyp a2
@@ -2463,7 +2473,7 @@ class fold =
       | `PaApp (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#patt a2
       | `Array (a0,a1) -> let self = self#loc a0 in self#patt a1
-      | `PaCom (a0,a1,a2) ->
+      | `Com (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#patt a2
       | `Sem (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#patt a2
@@ -2483,7 +2493,7 @@ class fold =
       | `PaRec (a0,a1) -> let self = self#loc a0 in self#patt a1
       | `PaEq (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ident a1 in self#patt a2
-      | `PaTup (a0,a1) -> let self = self#loc a0 in self#patt a1
+      | `Tup (a0,a1) -> let self = self#loc a0 in self#patt a1
       | `PaTyc (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#ctyp a2
       | `PaTyp (a0,a1) -> let self = self#loc a0 in self#ident a1
@@ -3118,7 +3128,7 @@ class fold2 =
             let self = self#patt a1 b1 in self#patt a2 b2
         | (`Array (a0,a1),`Array (b0,b1)) ->
             let self = self#loc a0 b0 in self#patt a1 b1
-        | (`PaCom (a0,a1,a2),`PaCom (b0,b1,b2)) ->
+        | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#patt a1 b1 in self#patt a2 b2
         | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
@@ -3145,7 +3155,7 @@ class fold2 =
         | (`PaEq (a0,a1,a2),`PaEq (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ident a1 b1 in self#patt a2 b2
-        | (`PaTup (a0,a1),`PaTup (b0,b1)) ->
+        | (`Tup (a0,a1),`Tup (b0,b1)) ->
             let self = self#loc a0 b0 in self#patt a1 b1
         | (`PaTyc (a0,a1,a2),`PaTyc (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
@@ -3872,8 +3882,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
     | `Array (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1
-    | `PaCom (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`PaCom@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Com (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1 pp_print_patt a2
     | `Sem (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -3898,8 +3908,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
     | `PaEq (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ident a1 pp_print_patt a2
-    | `PaTup (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`PaTup@ %a@ %a)@]" pp_print_loc a0
+    | `Tup (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1
     | `PaTyc (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`PaTyc@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4494,7 +4504,7 @@ class iter =
       | `Any a0 -> self#loc a0
       | `PaApp (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `Array (a0,a1) -> (self#loc a0; self#patt a1)
-      | `PaCom (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
+      | `Com (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `Sem (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | #literal as a0 -> (self#literal a0 :>'result)
       | `Label (a0,a1,a2) -> (self#loc a0; self#alident a1; self#patt a2)
@@ -4507,7 +4517,7 @@ class iter =
       | `PaRng (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `PaRec (a0,a1) -> (self#loc a0; self#patt a1)
       | `PaEq (a0,a1,a2) -> (self#loc a0; self#ident a1; self#patt a2)
-      | `PaTup (a0,a1) -> (self#loc a0; self#patt a1)
+      | `Tup (a0,a1) -> (self#loc a0; self#patt a1)
       | `PaTyc (a0,a1,a2) -> (self#loc a0; self#patt a1; self#ctyp a2)
       | `PaTyp (a0,a1) -> (self#loc a0; self#ident a1)
       | `PaVrn (a0,a1) -> (self#loc a0; self#string a1)
@@ -5111,10 +5121,10 @@ class map2 =
         | (`Array (a0,a1),`Array (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in `Array (a0, a1)
-        | (`PaCom (a0,a1,a2),`PaCom (b0,b1,b2)) ->
+        | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
-            let a2 = self#patt a2 b2 in `PaCom (a0, a1, a2)
+            let a2 = self#patt a2 b2 in `Com (a0, a1, a2)
         | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
@@ -5145,9 +5155,9 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ident a1 b1 in
             let a2 = self#patt a2 b2 in `PaEq (a0, a1, a2)
-        | (`PaTup (a0,a1),`PaTup (b0,b1)) ->
+        | (`Tup (a0,a1),`Tup (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#patt a1 b1 in `PaTup (a0, a1)
+            let a1 = self#patt a1 b1 in `Tup (a0, a1)
         | (`PaTyc (a0,a1,a2),`PaTyc (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
@@ -6344,13 +6354,13 @@ module Make(MetaLoc:META_LOC) =
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "Array")), (meta_loc _loc a0))),
                     (meta_patt _loc a1))
-            | `PaCom (a0,a1,a2) ->
+            | `Com (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "PaCom")),
+                            (_loc, (`ExVrn (_loc, "Com")),
                               (meta_loc _loc a0))), (meta_patt _loc a1))),
                     (meta_patt _loc a2))
             | `Sem (a0,a1,a2) ->
@@ -6417,11 +6427,11 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "PaEq")),
                               (meta_loc _loc a0))), (meta_ident _loc a1))),
                     (meta_patt _loc a2))
-            | `PaTup (a0,a1) ->
+            | `Tup (a0,a1) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "PaTup")), (meta_loc _loc a0))),
+                       (_loc, (`ExVrn (_loc, "Tup")), (meta_loc _loc a0))),
                     (meta_patt _loc a1))
             | `PaTyc (a0,a1,a2) ->
                 `ExApp
@@ -7858,9 +7868,9 @@ module Make(MetaLoc:META_LOC) =
                          (meta_ctyp _loc a3))),
                     (meta_list
                        (fun _loc  (a0,a1)  ->
-                          `PaTup
+                          `Tup
                             (_loc,
-                              (`PaCom
+                              (`Com
                                  (_loc, (meta_ctyp _loc a0),
                                    (meta_ctyp _loc a1))))) _loc a4))
             | `TyObj (a0,a1,a2) ->
@@ -8095,13 +8105,13 @@ module Make(MetaLoc:META_LOC) =
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "Array")), (meta_loc _loc a0))),
                     (meta_patt _loc a1))
-            | `PaCom (a0,a1,a2) ->
+            | `Com (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "PaCom")),
+                            (_loc, (`PaVrn (_loc, "Com")),
                               (meta_loc _loc a0))), (meta_patt _loc a1))),
                     (meta_patt _loc a2))
             | `Sem (a0,a1,a2) ->
@@ -8168,11 +8178,11 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "PaEq")),
                               (meta_loc _loc a0))), (meta_ident _loc a1))),
                     (meta_patt _loc a2))
-            | `PaTup (a0,a1) ->
+            | `Tup (a0,a1) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "PaTup")), (meta_loc _loc a0))),
+                       (_loc, (`PaVrn (_loc, "Tup")), (meta_loc _loc a0))),
                     (meta_patt _loc a1))
             | `PaTyc (a0,a1,a2) ->
                 `PaApp
@@ -9366,11 +9376,11 @@ let rec is_irrefut_patt: patt -> bool =
   | `PaRec (_loc,p) -> is_irrefut_patt p
   | `PaEq (_loc,_,p) -> is_irrefut_patt p
   | `Sem (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `PaCom (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | `Com (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `PaOrp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `PaApp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `PaTyc (_loc,p,_) -> is_irrefut_patt p
-  | `PaTup (_loc,pl) -> is_irrefut_patt pl
+  | `Tup (_loc,pl) -> is_irrefut_patt pl
   | `PaOlbi (_loc,_,p,_) -> is_irrefut_patt p
   | `Label (_loc,_,`Nil _) -> true
   | `Label (_loc,_,p) -> is_irrefut_patt p
@@ -9543,7 +9553,7 @@ let rec paCom_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs -> let _loc = loc_of_patt x in `PaCom (_loc, x, (paCom_of_list xs))
+  | x::xs -> let _loc = loc_of_patt x in `Com (_loc, x, (paCom_of_list xs))
 let rec exSem_of_list =
   function
   | [] -> `Nil ghost
@@ -9627,7 +9637,7 @@ let rec list_of_ctyp_com (x : ctyp) (acc : ctyp list) =
 let rec list_of_patt x acc =
   match x with
   | `Nil _loc -> acc
-  | `PaCom (_loc,x,y)|`Sem (_loc,x,y) -> list_of_patt x (list_of_patt y acc)
+  | `Com (_loc,x,y)|`Sem (_loc,x,y) -> list_of_patt x (list_of_patt y acc)
   | x -> x :: acc
 let rec list_of_expr x acc =
   match x with
@@ -9710,9 +9720,9 @@ class clean_ast =
       | e -> e
     method! patt p =
       match super#patt p with
-      | `PaOrp (_loc,`Nil _l,p)|`PaOrp (_loc,p,`Nil _l)
-        |`PaCom (_loc,`Nil _l,p)|`PaCom (_loc,p,`Nil _l)
-        |`Sem (_loc,`Nil _l,p)|`Sem (_loc,p,`Nil _l) -> p
+      | `PaOrp (_loc,`Nil _l,p)|`PaOrp (_loc,p,`Nil _l)|`Com (_loc,`Nil _l,p)
+        |`Com (_loc,p,`Nil _l)|`Sem (_loc,`Nil _l,p)|`Sem (_loc,p,`Nil _l) ->
+          p
       | p -> p
     method! match_case mc =
       match super#match_case mc with

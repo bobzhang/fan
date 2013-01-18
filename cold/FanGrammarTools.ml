@@ -234,7 +234,7 @@ let text_of_action _loc psl rtvar act tvar =
                  | None  -> ((`Id (_loc, (`Lid (_loc, id)))), p)
                  | Some (oe,op) ->
                      ((`ExCom (_loc, (`Id (_loc, (`Lid (_loc, id)))), oe)),
-                       (`PaCom (_loc, p, op)))))
+                       (`Com (_loc, p, op)))))
          | _ -> tok_match_pl) None psl in
   let e =
     let e1 =
@@ -244,13 +244,13 @@ let text_of_action _loc psl rtvar act tvar =
     let e2 =
       match tok_match_pl with
       | None  -> e1
-      | Some (`ExCom (_loc,t1,t2),`PaCom (_,p1,p2)) ->
+      | Some (`ExCom (_loc,t1,t2),`Com (_,p1,p2)) ->
           `Match
             (_loc, (`ExTup (_loc, (`ExCom (_loc, t1, t2)))),
               (`Or
                  (_loc,
                    (`Case
-                      (_loc, (`PaTup (_loc, (`PaCom (_loc, p1, p2)))),
+                      (_loc, (`Tup (_loc, (`Com (_loc, p1, p2)))),
                         (`Nil _loc), e1)),
                    (`Case (_loc, (`Any _loc), (`Nil _loc), (`ExAsf _loc))))))
       | Some (tok,match_) ->
@@ -276,7 +276,7 @@ let text_of_action _loc psl rtvar act tvar =
          match s.pattern with
          | None |Some (`Any _) ->
              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), txt)))
-         | Some (`Alias (_loc,`PaApp (_,_,`PaTup (_,`Any _)),p)) ->
+         | Some (`Alias (_loc,`PaApp (_,_,`Tup (_,`Any _)),p)) ->
              let p = make_ctyp_patt s.styp tvar (`Id (_loc, (p :>ident))) in
              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
          | Some p when FanAst.is_irrefut_patt p ->

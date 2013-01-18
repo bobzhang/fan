@@ -2067,7 +2067,7 @@ let apply () =
             `Snterm (Gram.obj (comma_patt : 'comma_patt Gram.t ))],
              (Gram.mk_action
                 (fun (y : 'comma_patt)  _  (x : 'patt)  (_loc : FanLoc.t)  ->
-                   (`PaCom (_loc, x, y) : 'patt_quot ))));
+                   (`Com (_loc, x, y) : 'patt_quot ))));
           ([`Snterm (Gram.obj (patt : 'patt Gram.t ));
            `Skeyword ";";
            `Snterm (Gram.obj (sem_patt : 'sem_patt Gram.t ))],
@@ -2163,7 +2163,7 @@ let apply () =
             (Gram.mk_action
                (fun (p2 : 'patt)  (p1 : 'patt_constr)  (_loc : FanLoc.t)  ->
                   (match p2 with
-                   | `PaTup (_loc,p) ->
+                   | `Tup (_loc,p) ->
                        List.fold_left (fun p1  p2  -> `PaApp (_loc, p1, p2))
                          p1 (FanAst.list_of_patt p [])
                    | _ -> `PaApp (_loc, p1, p2) : 'patt ))));
@@ -2391,7 +2391,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (pl : 'comma_patt)  _  (p : 'patt)  _ 
                  (_loc : FanLoc.t)  ->
-                 (`PaTup (_loc, (`PaCom (_loc, p, pl))) : 'patt ))));
+                 (`Tup (_loc, (`Com (_loc, p, pl))) : 'patt ))));
          ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
            (Gram.mk_action
               (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
@@ -2611,7 +2611,7 @@ let apply () =
             (Gram.mk_action
                (fun _  (pl : 'comma_ipatt)  _  (p : 'ipatt)  _ 
                   (_loc : FanLoc.t)  ->
-                  (`PaTup (_loc, (`PaCom (_loc, p, pl))) : 'ipatt ))));
+                  (`Tup (_loc, (`Com (_loc, p, pl))) : 'ipatt ))));
           ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
                (fun (s : 'a_lident)  (_loc : FanLoc.t)  ->
@@ -2837,7 +2837,7 @@ let apply () =
              (Gram.mk_action
                 (fun (p2 : 'comma_ipatt)  _  (p1 : 'comma_ipatt) 
                    (_loc : FanLoc.t)  ->
-                   (`PaCom (_loc, p1, p2) : 'comma_ipatt ))));
+                   (`Com (_loc, p1, p2) : 'comma_ipatt ))));
           ([`Stoken
               (((function | `Ant ("list",_) -> true | _ -> false)),
                 (`Normal, "`Ant (\"list\",_)"))],
@@ -2856,8 +2856,7 @@ let apply () =
           [([`Sself; `Skeyword ","; `Sself],
              (Gram.mk_action
                 (fun (p2 : 'comma_patt)  _  (p1 : 'comma_patt) 
-                   (_loc : FanLoc.t)  ->
-                   (`PaCom (_loc, p1, p2) : 'comma_patt ))));
+                   (_loc : FanLoc.t)  -> (`Com (_loc, p1, p2) : 'comma_patt ))));
           ([`Stoken
               (((function | `Ant ("list",_) -> true | _ -> false)),
                 (`Normal, "`Ant (\"list\",_)"))],

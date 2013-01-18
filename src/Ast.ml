@@ -168,7 +168,8 @@
     | `Any of loc (* _ *)
     | `PaApp of (loc * patt * patt) (* p p *) (* fun x y -> *)
     | `Array of (loc * patt) (* [| p |] *)
-    | `PaCom of (loc * patt * patt) (* p, p *)
+    (* | `PaCom of (loc * patt * patt) (\* p, p *\) *)
+    | `Com of (loc * patt * patt)
     | `Sem of (loc * patt * patt) (* p; p *)
     | literal
     | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
@@ -179,7 +180,8 @@
     | `PaRec of (loc * patt) (* { p } *)
     | `PaEq  of (loc * ident * patt) (* i = p *)
 
-    | `PaTup of (loc * patt) (* ( p ) *)
+    (* | `PaTup of (loc * patt) (\* ( p ) *\) *)
+    | `Tup of (loc * patt )
     | `PaTyc of (loc * patt * ctyp) (* (p : t) *)
     | `PaTyp of (loc * ident) (* #i *)
     | `PaVrn of (loc * string) (* `s *)
@@ -475,7 +477,12 @@
     | ant (* $s$ *) ]; 
 
 
-    
+(* type category = *)
+(*     [= ctyp|patt|expr|module_type *)
+(*     |module_expr|sig_item|str_item|class_type|class_sig_item *)
+(*     |class_expr|class_str_item|with_constr|binding *)
+(*     |rec_binding|module_binding]; *)
+
 (*
   let a (x: [= `External of (loc * [= `Lid of (loc*string)] * ctyp * meta_list string)  ]) =
   (x:> str_item);

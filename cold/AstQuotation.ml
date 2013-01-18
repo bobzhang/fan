@@ -169,13 +169,12 @@ let add_quotation ~expr_filter  ~patt_filter  ~mexpr  ~mpatt  name entry =
          let exp_ast = patt_filter meta_ast in
          let rec subst_first_loc name =
            (function
-            | `PaApp (loc,`PaVrn (_,u),`PaTup (_,`PaCom (_,_,rest))) ->
+            | `PaApp (loc,`PaVrn (_,u),`Tup (_,`Com (_,_,rest))) ->
                 `PaApp
                   (loc, (`PaVrn (loc, u)),
-                    (`PaTup
+                    (`Tup
                        (loc,
-                         (`PaCom
-                            (loc, (`Id (_loc, (`Lid (_loc, name)))), rest)))))
+                         (`Com (loc, (`Id (_loc, (`Lid (_loc, name)))), rest)))))
             | `PaApp (_loc,`PaVrn (_,u),`Any _) ->
                 `PaApp
                   (_loc, (`PaVrn (_loc, u)),
@@ -364,7 +363,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `PaApp
                                (_loc,
                                  (`PaApp
-                                    (_loc, (`PaVrn (_loc, "PaTup")),
+                                    (_loc, (`PaVrn (_loc, "Tup")),
                                       (mloc _loc))), e)
                          | "seqexpr" ->
                              `PaApp
@@ -522,7 +521,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "tuppatt" ->
                              `ExApp
-                               (_loc, (`ExVrn (_loc, "PaTup")),
+                               (_loc, (`ExVrn (_loc, "Tup")),
                                  (`ExTup
                                     (_loc, (`ExCom (_loc, (mloc _loc), e)))))
                          | "seqexpr" ->

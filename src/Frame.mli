@@ -4,7 +4,7 @@ val check : string list -> unit
 val mapi_expr :
   ?arity:int ->
   ?names:string list ->
-  (ctyp -> expr) -> int -> ctyp -> FSig.ty_info
+  f:(ctyp -> expr) -> int -> ctyp -> FSig.ty_info
 val tuple_expr_of_ctyp :
   ?arity:int ->
   ?names:string list ->

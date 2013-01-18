@@ -32,6 +32,75 @@ let loc_of_module_binding : module_binding -> FanLoc.t = QUICK_LOC;
 let loc_of_match_case : match_case -> FanLoc.t = QUICK_LOC;
 let loc_of_ident : ident -> FanLoc.t = QUICK_LOC;
 
+let loc_of x =
+  match x with 
+  [ `Nil _
+  | `Id _
+  | `ExAcc _
+  | `Ant _
+  | `ExApp _
+  | `ExAre _
+  | `Array _
+  | `Sem _
+  | `ExAsf _
+  | `ExAsr _
+  | `ExAss _
+  | `For _
+  | `Fun _
+  | `IfThenElse _
+  | `Label _
+  | `Lazy _
+  | `LetIn _
+  | `LetModule _
+  | `Match _
+  | `New _
+  | `Obj _
+  | `OptLabl _
+  | `OvrInst _
+  | `Record _
+  | `Seq _
+  | `Send _
+  | `StringDot _
+  | `Try _
+  | `ExTup _
+  | `ExCom _
+  | `Constraint_exp _
+  | `ExCoe _
+  | `ExVrn _
+  | `While _
+  | `Let_open _
+  | `LocalTypeFun _
+  | `Package_expr _
+  | `Chr _
+  | `Int _
+  | `Int32 _
+  | `Int64 _
+  | `Flo _
+  | `NativeInt _
+  | `Str _
+  (* | `Id _ *)
+  | `Alias _
+  | `Any _
+  | `PaApp _
+  (* | `Array _  *)
+  | `Com _
+  (* | `Sem _ *)
+  (* | `Label _ *)
+  | `PaOlbi _
+  | `PaOrp _
+  | `PaRng _
+  | `PaRec _
+  | `PaEq _
+  | `Tup _
+  | `PaTyc _
+  | `PaTyp _
+  | `PaVrn _
+  (* | `Lazy _ *)
+  | `ModuleUnpack _ 
+    ->  QUICK_LOC x];
+      
+
+  
 
 
 let safe_string_escaped s =

@@ -83,7 +83,7 @@ let define ~expr  ~patt  eo x =
                         | `Uid _ ->
                             (let pl =
                                match param with
-                               | `PaTup (_loc,p) -> FanAst.list_of_patt p []
+                               | `Tup (_loc,p) -> FanAst.list_of_patt p []
                                | p -> [p] in
                              if (List.length pl) = (List.length sl)
                              then

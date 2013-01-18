@@ -886,8 +886,7 @@ let _ =
            (Gram.mk_action
               (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
                  (_loc : FanLoc.t)  ->
-                 (`PaTup
-                    (_loc, (`PaCom (_loc, p1, (FanAst.paCom_of_list ps)))) : 
+                 (`Tup (_loc, (`Com (_loc, p1, (FanAst.paCom_of_list ps)))) : 
                  'pattern ))))])]);
   Gram.extend (string : 'string Gram.t )
     (None,

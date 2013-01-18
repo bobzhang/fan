@@ -227,8 +227,8 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
       (* BOOTSTRAPPING *)
       let rec subst_first_loc name : patt -> patt =  with patt fun
         [
-         `PaApp(loc, `PaVrn (_,u), (`PaTup (_, `PaCom (_,_,rest)))) ->
-         `PaApp(loc, `PaVrn(loc,u),(`PaTup (loc,`PaCom(loc,`Id(_loc,`Lid (_loc,name)),rest))))
+         `PaApp(loc, `PaVrn (_,u), (`Tup (_, `Com (_,_,rest)))) ->
+         `PaApp(loc, `PaVrn(loc,u),(`Tup (loc,`Com(loc,`Id(_loc,`Lid (_loc,name)),rest))))
         | `PaApp(_loc,`PaVrn(_,u),`Any _) ->
             `PaApp(_loc, `PaVrn(_loc,u), `Id(_loc,`Lid(_loc,name)))
         | `PaApp(_loc,a,b) -> `PaApp (_loc, subst_first_loc name a , b)
@@ -336,7 +336,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "antimodule_binding" -> {| `Ant ($(mloc _loc), $e) |}
           | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
           | "tupexpr" -> {| `ExTup ($(mloc _loc), $e)|}
-          | "tuppatt" -> {| `PaTup ($(mloc _loc), $e)|}
+          | "tuppatt" -> {| `Tup ($(mloc _loc), $e)|}
           | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
                 
           | "uidexpr" -> {| `Uid ($(mloc _loc), $e) |} (* use Ant instead *)
@@ -374,7 +374,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             ~decorate:(fun n e -> (* e is the parsed Ast node already *)
             match n with
             ["tupexpr" ->   {| `ExTup ($(mloc _loc), $e) |}
-            | "tuppatt" ->  {| `PaTup ($(mloc _loc), $e) |}
+            | "tuppatt" ->  {| `Tup ($(mloc _loc), $e) |}
             | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
             | "vrnexpr" -> {| `ExVrn($(mloc _loc),$e)|}
             | "vrnpatt" -> {| `PaVrn($(mloc _loc),$e)|}

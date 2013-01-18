@@ -358,8 +358,8 @@ let substp loc env =
         (try List.assoc x env with | Not_found  -> `Id (loc, (`Uid (loc, x))))
     | `Int (_loc,x) -> `Int (loc, x)
     | `Str (_loc,s) -> `Str (loc, s)
-    | `ExTup (_loc,x) -> `PaTup (loc, (loop x))
-    | `ExCom (_loc,x1,x2) -> `PaCom (loc, (loop x1), (loop x2))
+    | `ExTup (_loc,x) -> `Tup (loc, (loop x))
+    | `ExCom (_loc,x1,x2) -> `Com (loc, (loop x1), (loop x2))
     | `Record (_loc,bi,`Nil _) ->
         let rec substbi =
           function
@@ -479,7 +479,7 @@ let app a b = `ExApp (_loc, a, b)
 let comma a b = `ExCom (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
-  let _loc = FanLoc.merge (FanAst.loc_of_expr a) (FanAst.loc_of_expr b) in
+  let _loc = FanLoc.merge (FanAst.loc_of a) (FanAst.loc_of b) in
   `Sem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
@@ -517,8 +517,7 @@ let mklist loc =
     function
     | [] -> `Id (_loc, (`Uid (_loc, "[]")))
     | e1::el ->
-        let _loc =
-          if top then loc else FanLoc.merge (FanAst.loc_of_expr e1) loc in
+        let _loc = if top then loc else FanLoc.merge (FanAst.loc_of e1) loc in
         `ExApp
           (_loc, (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
             (loop false el)) in
@@ -526,15 +525,13 @@ let mklist loc =
 let rec apply accu =
   function
   | [] -> accu
-  | x::xs ->
-      let _loc = FanAst.loc_of_expr x in apply (`ExApp (_loc, accu, x)) xs
+  | x::xs -> let _loc = FanAst.loc_of x in apply (`ExApp (_loc, accu, x)) xs
 let mkarray loc arr =
   let rec loop top =
     function
     | [] -> `Id (_loc, (`Uid (_loc, "[]")))
     | e1::el ->
-        let _loc =
-          if top then loc else FanLoc.merge (FanAst.loc_of_expr e1) loc in
+        let _loc = if top then loc else FanLoc.merge (FanAst.loc_of e1) loc in
         `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
   let items = arr |> Array.to_list in loop true items
 let of_str s =
@@ -640,7 +637,7 @@ let mep_comma x y =
       (`ExApp
          (_loc,
            (`ExApp
-              (_loc, (`ExVrn (_loc, "PaCom")),
+              (_loc, (`ExVrn (_loc, "Com")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let mvep_comma x y =
   `ExApp
@@ -868,7 +865,7 @@ let mk_tuple_ep =
   | x::[] -> x
   | xs ->
       `ExApp
-        (_loc, (`ExVrn (_loc, "PaTup")),
+        (_loc, (`ExVrn (_loc, "Tup")),
           (`ExTup
              (_loc,
                (`ExCom

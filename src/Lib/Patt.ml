@@ -8,7 +8,7 @@ open FSig;
 
 
 
-DEFINE GETLOC(expr)= FanAst.loc_of_patt expr;
+DEFINE GETLOC(expr)= FanAst.loc_of(* _patt *) expr;
 
   
 

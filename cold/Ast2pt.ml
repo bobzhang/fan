@@ -344,7 +344,7 @@ let rec patt (x : patt) =
        | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `Any _loc -> mkpat _loc Ppat_any
-  | `PaApp (_loc,`Id (_,`Uid (sloc,s)),`PaTup (_,`Any loc_any)) ->
+  | `PaApp (_loc,`Id (_,`Uid (sloc,s)),`Tup (_,`Any loc_any)) ->
       mkpat _loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
@@ -418,10 +418,10 @@ let rec patt (x : patt) =
       mkpat loc (Ppat_record ((List.map mklabpat ps), is_closed))
   | `Str (loc,s) ->
       mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
-  | `PaTup (loc,`PaCom (_,p1,p2)) ->
+  | `Tup (loc,`Com (_,p1,p2)) ->
       mkpat loc
         (Ppat_tuple (List.map patt (list_of_patt p1 (list_of_patt p2 []))))
-  | `PaTup (loc,_) -> error loc "singleton tuple pattern"
+  | `Tup (loc,_) -> error loc "singleton tuple pattern"
   | `PaTyc (loc,p,t) -> mkpat loc (Ppat_constraint ((patt p), (ctyp t)))
   | `PaTyp (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
   | `PaVrn (loc,s) -> mkpat loc (Ppat_variant (s, None))
@@ -438,7 +438,7 @@ let rec patt (x : patt) =
                        (ctyp ty)))
             | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `PaEq (_,_,_)|`Sem (_,_,_)|`PaCom (_,_,_)|`Nil _ as p ->
+  | `PaEq (_,_,_)|`Sem (_,_,_)|`Com (_,_,_)|`Nil _ as p ->
       error (loc_of_patt p) "invalid pattern"
 and mklabpat: patt -> (Longident.t Asttypes.loc* pattern) =
   function

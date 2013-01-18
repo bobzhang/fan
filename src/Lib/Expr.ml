@@ -308,7 +308,7 @@ let fun_args _loc args body =
 
 
 let _loc = FanLoc.ghost ;
-DEFINE GETLOC(expr)= FanAst.loc_of_expr expr;  
+DEFINE GETLOC(expr)= FanAst.loc_of(* _expr *) expr;  
 INCLUDE "src/Lib/CommonStructure.ml";
 INCLUDE "src/Lib/ExprPatt.ml";
 

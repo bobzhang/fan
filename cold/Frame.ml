@@ -16,9 +16,9 @@ let check names =
           List.iter (fun s  -> eprintf "%s\n" s) preserve;
           exit 2)
        else check_valid name) names
-let mapi_expr ?(arity= 1)  ?(names= [])  (simple_expr_of_ctyp : ctyp -> expr)
-  (i : int) (y : ctyp) =
-  (let name_expr = simple_expr_of_ctyp y in
+let mapi_expr ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> expr)  (i : int)
+  (ty : ctyp) =
+  (let name_expr = f ty in
    let base = name_expr +> names in
    let id_exprs =
      List.init arity (fun index  -> `Id (_loc, (xid ~off:index i))) in
@@ -29,7 +29,6 @@ let mapi_expr ?(arity= 1)  ?(names= [])  (simple_expr_of_ctyp : ctyp -> expr)
    let id_expr = Expr.tuple_of_list id_exprs in
    let id_patt = Patt.tuple_of_list id_patts in
    let expr = apply base id_exprs in
-   let ty = y in
    { name_expr; expr; id_expr; id_exprs; id_patt; id_patts; exp0; pat0; ty } : 
   FSig.ty_info )
 let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
@@ -39,7 +38,8 @@ let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
        let ls = FanAst.list_of_ctyp t [] in
        let len = List.length ls in
        let patt = Patt.mk_tuple ~arity ~number:len in
-       let tys = List.mapi (mapi_expr ~arity ~names simple_expr_of_ctyp) ls in
+       let tys =
+         List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) ls in
        names <+
          (currying [`Case (_loc, patt, (`Nil _loc), (mk_tuple tys))] ~arity)
    | _ -> invalid_arg & (sprintf "tuple_expr_of_ctyp {|%s|}\n" "") : 
@@ -124,7 +124,7 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
      let p = Patt.gen_tuple_n ?cons_transform ~arity cons args_length in
      let mk (cons,tyargs) =
        let exprs =
-         List.mapi (mapi_expr ~arity ~names simple_expr_of_ctyp) tyargs in
+         List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
        mk_variant cons exprs in
      let e = mk (cons, tyargs) in (`Case (_loc, p, (`Nil _loc), e)) :: acc : 
     match_case list ) in
@@ -144,7 +144,7 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
      let p = Patt.gen_tuple_n ?cons_transform ~arity cons len in
      let mk (cons,tyargs) =
        let exps =
-         List.mapi (mapi_expr ~arity ~names simple_expr_of_ctyp) tyargs in
+         List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
        mk_variant cons exps in
      let e = mk (cons, tyargs) in `Case (_loc, p, (`Nil _loc), e) : match_case ) in
   let simple lid =
@@ -202,7 +202,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                    | { label; is_mutable; ctyp } ->
                        {
                          info =
-                           (mapi_expr ~arity ~names simple_expr_of_ctyp i
+                           (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp i
                               ctyp);
                          label;
                          is_mutable

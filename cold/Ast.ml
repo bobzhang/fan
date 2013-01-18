@@ -47,13 +47,13 @@ and patt =
   [ `Nil of loc | `Id of (loc* ident) | `Alias of (loc* patt* alident) | 
     ant
   | `Any of loc | `PaApp of (loc* patt* patt) | `Array of (loc* patt)
-  | `PaCom of (loc* patt* patt) | `Sem of (loc* patt* patt) | literal
+  | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt) | literal
   | `Label of (loc* alident* patt)
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `PaOrp of (loc* patt* patt) | `PaRng of (loc* patt* patt)
-  | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt)
-  | `PaTup of (loc* patt) | `PaTyc of (loc* patt* ctyp)
-  | `PaTyp of (loc* ident) | `PaVrn of (loc* string) | `Lazy of (loc* patt)
+  | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt) | `Tup of (loc* patt)
+  | `PaTyc of (loc* patt* ctyp) | `PaTyp of (loc* ident)
+  | `PaVrn of (loc* string) | `Lazy of (loc* patt)
   | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and expr =
   [ `Nil of loc | `Id of (loc* ident) | `ExAcc of (loc* expr* expr) | 
