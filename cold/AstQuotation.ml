@@ -275,37 +275,13 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Seq")),
                                       (mloc _loc))), e)
-                         | "uidexpr" ->
+                         | "uidexpr"|"uidident"|"uida_uident" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Uid")),
                                       (mloc _loc))), e)
-                         | "uidident" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Uid")),
-                                      (mloc _loc))), e)
-                         | "uida_uident" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Uid")),
-                                      (mloc _loc))), e)
-                         | "lidexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Lid")),
-                                      (mloc _loc))), e)
-                         | "lidident" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Lid")),
-                                      (mloc _loc))), e)
-                         | "lida_lident" ->
+                         | "lidexpr"|"lidident"|"lida_lident" ->
                              `PaApp
                                (_loc,
                                  (`PaApp

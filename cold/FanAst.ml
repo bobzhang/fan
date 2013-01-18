@@ -112,8 +112,7 @@ class eq =
         match (a0, b0) with
         | (`None a0,`None b0) -> self#loc a0 b0
         | (`Some a0,`Some b0) -> mf_a self a0 b0
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
     method meta_list :
       'all_a0 .
@@ -124,8 +123,7 @@ class eq =
         | (`LNil a0,`LNil b0) -> self#loc a0 b0
         | (`LCons (a0,a1),`LCons (b0,b1)) ->
             (mf_a self a0 b0) && (self#meta_list mf_a a1 b1)
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
     method alident : alident -> alident -> 'result=
       fun a0  b0  ->
@@ -716,48 +714,48 @@ class map =
       function
       | `Recursive a0 -> let a0 = self#loc a0 in `Recursive a0
       | `ReNil a0 -> let a0 = self#loc a0 in `ReNil a0
-      | #ant as a0 -> (self#ant a0 :>rec_flag)
+      | #ant as a0 -> (self#ant a0 : ant  :>rec_flag)
     method direction_flag : direction_flag -> direction_flag=
       function
       | `To a0 -> let a0 = self#loc a0 in `To a0
       | `Downto a0 -> let a0 = self#loc a0 in `Downto a0
-      | #ant as a0 -> (self#ant a0 :>direction_flag)
+      | #ant as a0 -> (self#ant a0 : ant  :>direction_flag)
     method mutable_flag : mutable_flag -> mutable_flag=
       function
       | `Mutable a0 -> let a0 = self#loc a0 in `Mutable a0
       | `MuNil a0 -> let a0 = self#loc a0 in `MuNil a0
-      | #ant as a0 -> (self#ant a0 :>mutable_flag)
+      | #ant as a0 -> (self#ant a0 : ant  :>mutable_flag)
     method private_flag : private_flag -> private_flag=
       function
       | `Private a0 -> let a0 = self#loc a0 in `Private a0
       | `PrNil a0 -> let a0 = self#loc a0 in `PrNil a0
-      | #ant as a0 -> (self#ant a0 :>private_flag)
+      | #ant as a0 -> (self#ant a0 : ant  :>private_flag)
     method virtual_flag : virtual_flag -> virtual_flag=
       function
       | `Virtual a0 -> let a0 = self#loc a0 in `Virtual a0
       | `ViNil a0 -> let a0 = self#loc a0 in `ViNil a0
-      | #ant as a0 -> (self#ant a0 :>virtual_flag)
+      | #ant as a0 -> (self#ant a0 : ant  :>virtual_flag)
     method override_flag : override_flag -> override_flag=
       function
       | `Override a0 -> let a0 = self#loc a0 in `Override a0
       | `OvNil a0 -> let a0 = self#loc a0 in `OvNil a0
-      | #ant as a0 -> (self#ant a0 :>override_flag)
+      | #ant as a0 -> (self#ant a0 : ant  :>override_flag)
     method row_var_flag : row_var_flag -> row_var_flag=
       function
       | `RowVar a0 -> let a0 = self#loc a0 in `RowVar a0
       | `RvNil a0 -> let a0 = self#loc a0 in `RvNil a0
-      | #ant as a0 -> (self#ant a0 :>row_var_flag)
+      | #ant as a0 -> (self#ant a0 : ant  :>row_var_flag)
     method position_flag : position_flag -> position_flag=
       function
       | `Positive a0 -> let a0 = self#loc a0 in `Positive a0
       | `Negative a0 -> let a0 = self#loc a0 in `Negative a0
       | `Normal a0 -> let a0 = self#loc a0 in `Normal a0
-      | #ant as a0 -> (self#ant a0 :>position_flag)
+      | #ant as a0 -> (self#ant a0 : ant  :>position_flag)
     method meta_bool : meta_bool -> meta_bool=
       function
       | `True a0 -> let a0 = self#loc a0 in `True a0
       | `False a0 -> let a0 = self#loc a0 in `False a0
-      | #ant as a0 -> (self#ant a0 :>meta_bool)
+      | #ant as a0 -> (self#ant a0 : ant  :>meta_bool)
     method meta_option :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
@@ -766,8 +764,7 @@ class map =
         function
         | `None a0 -> let a0 = self#loc a0 in `None a0
         | `Some a0 -> let a0 = mf_a self a0 in `Some a0
-        | `Ant (a0,a1) ->
-            let a0 = self#loc a0 in let a1 = self#string a1 in `Ant (a0, a1)
+        | #ant as a0 -> (self#ant a0 : ant  :>_ meta_option)
     method meta_list :
       'all_a0 'all_b0 .
         ('self_type -> 'all_a0 -> 'all_b0) ->
@@ -778,27 +775,26 @@ class map =
         | `LCons (a0,a1) ->
             let a0 = mf_a self a0 in
             let a1 = self#meta_list mf_a a1 in `LCons (a0, a1)
-        | `Ant (a0,a1) ->
-            let a0 = self#loc a0 in let a1 = self#string a1 in `Ant (a0, a1)
+        | #ant as a0 -> (self#ant a0 : ant  :>_ meta_list)
     method alident : alident -> alident=
       function
       | `Lid (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#string a1 in `Lid (a0, a1)
-      | #ant as a0 -> (self#ant a0 :>alident)
+      | #ant as a0 -> (self#ant a0 : ant  :>alident)
     method auident : auident -> auident=
       function
       | `Uid (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#string a1 in `Uid (a0, a1)
-      | #ant as a0 -> (self#ant a0 :>auident)
+      | #ant as a0 -> (self#ant a0 : ant  :>auident)
     method aident : aident -> aident=
       function
-      | #alident as a0 -> (self#alident a0 :>aident)
-      | #auident as a0 -> (self#auident a0 :>aident)
+      | #alident as a0 -> (self#alident a0 : alident  :>aident)
+      | #auident as a0 -> (self#auident a0 : auident  :>aident)
     method astring : astring -> astring=
       function
       | `C (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#string a1 in `C (a0, a1)
-      | #ant as a0 -> (self#ant a0 :>astring)
+      | #ant as a0 -> (self#ant a0 : ant  :>astring)
     method ident : ident -> ident=
       function
       | `IdAcc (a0,a1,a2) ->
@@ -809,8 +805,8 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ident a1 in
           let a2 = self#ident a2 in `IdApp (a0, a1, a2)
-      | #alident as a0 -> (self#alident a0 :>ident)
-      | #auident as a0 -> (self#auident a0 :>ident)
+      | #alident as a0 -> (self#alident a0 : alident  :>ident)
+      | #auident as a0 -> (self#auident a0 : auident  :>ident)
     method ctyp : ctyp -> ctyp=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -927,7 +923,7 @@ class map =
       | `Package (a0,a1) ->
           let a0 = self#loc a0 in
           let a1 = self#module_type a1 in `Package (a0, a1)
-      | #ant as a0 -> (self#ant a0 :>ctyp)
+      | #ant as a0 -> (self#ant a0 : ant  :>ctyp)
     method patt : patt -> patt=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -937,7 +933,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in
           let a2 = self#alident a2 in `Alias (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>patt)
+      | #ant as a0 -> (self#ant a0 : ant  :>patt)
       | `Any a0 -> let a0 = self#loc a0 in `Any a0
       | `PaApp (a0,a1,a2) ->
           let a0 = self#loc a0 in
@@ -951,7 +947,7 @@ class map =
       | `Sem (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in let a2 = self#patt a2 in `Sem (a0, a1, a2)
-      | #literal as a0 -> (self#literal a0 :>patt)
+      | #literal as a0 -> (self#literal a0 : literal  :>patt)
       | `Label (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
@@ -1002,7 +998,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
           let a2 = self#expr a2 in `ExAcc (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>expr)
+      | #ant as a0 -> (self#ant a0 : ant  :>expr)
       | `ExApp (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
@@ -1038,7 +1034,7 @@ class map =
           let a1 = self#expr a1 in
           let a2 = self#expr a2 in
           let a3 = self#expr a3 in `IfThenElse (a0, a1, a2, a3)
-      | #literal as a0 -> (self#literal a0 :>expr)
+      | #literal as a0 -> (self#literal a0 : literal  :>expr)
       | `Label (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
@@ -1140,7 +1136,7 @@ class map =
       | `ModuleTypeOf (a0,a1) ->
           let a0 = self#loc a0 in
           let a1 = self#module_expr a1 in `ModuleTypeOf (a0, a1)
-      | #ant as a0 -> (self#ant a0 :>module_type)
+      | #ant as a0 -> (self#ant a0 : ant  :>module_type)
     method sig_item : sig_item -> sig_item=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1189,7 +1185,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
           let a2 = self#ctyp a2 in `Val (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>sig_item)
+      | #ant as a0 -> (self#ant a0 : ant  :>sig_item)
     method with_constr : with_constr -> with_constr=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1213,7 +1209,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#with_constr a1 in
           let a2 = self#with_constr a2 in `And (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>with_constr)
+      | #ant as a0 -> (self#ant a0 : ant  :>with_constr)
     method binding : binding -> binding=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1225,7 +1221,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in
           let a2 = self#expr a2 in `Bind (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>binding)
+      | #ant as a0 -> (self#ant a0 : ant  :>binding)
     method rec_binding : rec_binding -> rec_binding=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1237,7 +1233,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ident a1 in
           let a2 = self#expr a2 in `RecBind (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>rec_binding)
+      | #ant as a0 -> (self#ant a0 : ant  :>rec_binding)
     method module_binding : module_binding -> module_binding=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1254,7 +1250,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#auident a1 in
           let a2 = self#module_type a2 in `ModuleConstraint (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>module_binding)
+      | #ant as a0 -> (self#ant a0 : ant  :>module_binding)
     method match_case : match_case -> match_case=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1267,7 +1263,7 @@ class map =
           let a1 = self#patt a1 in
           let a2 = self#expr a2 in
           let a3 = self#expr a3 in `Case (a0, a1, a2, a3)
-      | #ant as a0 -> (self#ant a0 :>match_case)
+      | #ant as a0 -> (self#ant a0 : ant  :>match_case)
     method module_expr : module_expr -> module_expr=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1292,7 +1288,7 @@ class map =
       | `PackageModule (a0,a1) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in `PackageModule (a0, a1)
-      | #ant as a0 -> (self#ant a0 :>module_expr)
+      | #ant as a0 -> (self#ant a0 : ant  :>module_expr)
     method str_item : str_item -> str_item=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1343,7 +1339,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#rec_flag a1 in
           let a2 = self#binding a2 in `Value (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>str_item)
+      | #ant as a0 -> (self#ant a0 : ant  :>str_item)
     method class_type : class_type -> class_type=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1372,7 +1368,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#class_type a1 in
           let a2 = self#class_type a2 in `CtEq (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>class_type)
+      | #ant as a0 -> (self#ant a0 : ant  :>class_type)
     method class_sig_item : class_sig_item -> class_sig_item=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1402,7 +1398,7 @@ class map =
           let a1 = self#alident a1 in
           let a2 = self#private_flag a2 in
           let a3 = self#ctyp a3 in `CgVir (a0, a1, a2, a3)
-      | #ant as a0 -> (self#ant a0 :>class_sig_item)
+      | #ant as a0 -> (self#ant a0 : ant  :>class_sig_item)
     method class_expr : class_expr -> class_expr=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1440,7 +1436,7 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#class_expr a1 in
           let a2 = self#class_expr a2 in `Eq (a0, a1, a2)
-      | #ant as a0 -> (self#ant a0 :>class_expr)
+      | #ant as a0 -> (self#ant a0 : ant  :>class_expr)
     method class_str_item : class_str_item -> class_str_item=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
@@ -1483,7 +1479,7 @@ class map =
           let a1 = self#alident a1 in
           let a2 = self#mutable_flag a2 in
           let a3 = self#ctyp a3 in `CrVvr (a0, a1, a2, a3)
-      | #ant as a0 -> (self#ant a0 :>class_str_item)
+      | #ant as a0 -> (self#ant a0 : ant  :>class_str_item)
     method fanloc_t : FanLoc.t -> FanLoc.t= self#unknown
   end
 class print =
@@ -1587,9 +1583,7 @@ class print =
         function
         | `None a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" self#loc a0
         | `Some a0 -> Format.fprintf fmt "@[<1>(`Some@ %a)@]" (mf_a self) a0
-        | `Ant (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc a0
-              self#string a1
+        | #ant as a0 -> (self#ant fmt a0 :>'result)
     method meta_list :
       'all_a0 .
         ('self_type -> 'fmt -> 'all_a0 -> 'result) ->
@@ -1600,9 +1594,7 @@ class print =
         | `LCons (a0,a1) ->
             Format.fprintf fmt "@[<1>(`LCons@ %a@ %a)@]" (mf_a self) a0
               (self#meta_list mf_a) a1
-        | `Ant (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc a0
-              self#string a1
+        | #ant as a0 -> (self#ant fmt a0 :>'result)
     method alident : 'fmt -> alident -> 'result=
       fun fmt  ->
         function
@@ -2307,7 +2299,7 @@ class fold =
         function
         | `None a0 -> self#loc a0
         | `Some a0 -> mf_a self a0
-        | `Ant (a0,a1) -> let self = self#loc a0 in self#string a1
+        | #ant as a0 -> (self#ant a0 :>'self_type)
     method meta_list :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'self_type) ->
@@ -2316,7 +2308,7 @@ class fold =
         function
         | `LNil a0 -> self#loc a0
         | `LCons (a0,a1) -> let self = mf_a self a0 in self#meta_list mf_a a1
-        | `Ant (a0,a1) -> let self = self#loc a0 in self#string a1
+        | #ant as a0 -> (self#ant a0 :>'self_type)
     method alident : alident -> 'self_type=
       function
       | `Lid (a0,a1) -> let self = self#loc a0 in self#string a1
@@ -3066,8 +3058,7 @@ class fold2 =
         match (a0, b0) with
         | (`None a0,`None b0) -> self#loc a0 b0
         | (`Some a0,`Some b0) -> mf_a self a0 b0
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method meta_list :
       'all_a0 .
@@ -3078,8 +3069,7 @@ class fold2 =
         | (`LNil a0,`LNil b0) -> self#loc a0 b0
         | (`LCons (a0,a1),`LCons (b0,b1)) ->
             let self = mf_a self a0 b0 in self#meta_list mf_a a1 b1
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method alident : alident -> alident -> 'self_type=
       fun a0  b0  ->
@@ -3813,9 +3803,7 @@ let pp_print_meta_option :
     function
     | `None a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" pp_print_loc a0
     | `Some a0 -> Format.fprintf fmt "@[<1>(`Some@ %a)@]" mf_a a0
-    | `Ant (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
+    | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 let rec pp_print_meta_list :
   'all_a0 .
     ('fmt -> 'all_a0 -> 'result) -> 'fmt -> 'all_a0 meta_list -> 'result=
@@ -3825,9 +3813,7 @@ let rec pp_print_meta_list :
     | `LCons (a0,a1) ->
         Format.fprintf fmt "@[<1>(`LCons@ %a@ %a)@]" mf_a a0
           (pp_print_meta_list mf_a) a1
-    | `Ant (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc a0
-          pp_print_string a1
+    | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 let pp_print_alident: 'fmt -> alident -> 'result =
   fun fmt  ->
     function
@@ -4529,7 +4515,7 @@ class iter =
         function
         | `None a0 -> self#loc a0
         | `Some a0 -> mf_a self a0
-        | `Ant (a0,a1) -> (self#loc a0; self#string a1)
+        | #ant as a0 -> (self#ant a0 :>'result)
     method meta_list :
       'all_a0 .
         ('self_type -> 'all_a0 -> 'result) -> 'all_a0 meta_list -> 'result=
@@ -4537,7 +4523,7 @@ class iter =
         function
         | `LNil a0 -> self#loc a0
         | `LCons (a0,a1) -> (mf_a self a0; self#meta_list mf_a a1)
-        | `Ant (a0,a1) -> (self#loc a0; self#string a1)
+        | #ant as a0 -> (self#ant a0 :>'result)
     method alident : alident -> 'result=
       function
       | `Lid (a0,a1) -> (self#loc a0; self#string a1)
@@ -4938,7 +4924,7 @@ class map2 =
         | (`Recursive a0,`Recursive b0) ->
             let a0 = self#loc a0 b0 in `Recursive a0
         | (`ReNil a0,`ReNil b0) -> let a0 = self#loc a0 b0 in `ReNil a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>rec_flag)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>rec_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method direction_flag :
       direction_flag -> direction_flag -> direction_flag=
@@ -4946,28 +4932,32 @@ class map2 =
         match (a0, b0) with
         | (`To a0,`To b0) -> let a0 = self#loc a0 b0 in `To a0
         | (`Downto a0,`Downto b0) -> let a0 = self#loc a0 b0 in `Downto a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>direction_flag)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>direction_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method mutable_flag : mutable_flag -> mutable_flag -> mutable_flag=
       fun a0  b0  ->
         match (a0, b0) with
         | (`Mutable a0,`Mutable b0) -> let a0 = self#loc a0 b0 in `Mutable a0
         | (`MuNil a0,`MuNil b0) -> let a0 = self#loc a0 b0 in `MuNil a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>mutable_flag)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>mutable_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method private_flag : private_flag -> private_flag -> private_flag=
       fun a0  b0  ->
         match (a0, b0) with
         | (`Private a0,`Private b0) -> let a0 = self#loc a0 b0 in `Private a0
         | (`PrNil a0,`PrNil b0) -> let a0 = self#loc a0 b0 in `PrNil a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>private_flag)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>private_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method virtual_flag : virtual_flag -> virtual_flag -> virtual_flag=
       fun a0  b0  ->
         match (a0, b0) with
         | (`Virtual a0,`Virtual b0) -> let a0 = self#loc a0 b0 in `Virtual a0
         | (`ViNil a0,`ViNil b0) -> let a0 = self#loc a0 b0 in `ViNil a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>virtual_flag)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>virtual_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method override_flag : override_flag -> override_flag -> override_flag=
       fun a0  b0  ->
@@ -4975,14 +4965,16 @@ class map2 =
         | (`Override a0,`Override b0) ->
             let a0 = self#loc a0 b0 in `Override a0
         | (`OvNil a0,`OvNil b0) -> let a0 = self#loc a0 b0 in `OvNil a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>override_flag)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>override_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method row_var_flag : row_var_flag -> row_var_flag -> row_var_flag=
       fun a0  b0  ->
         match (a0, b0) with
         | (`RowVar a0,`RowVar b0) -> let a0 = self#loc a0 b0 in `RowVar a0
         | (`RvNil a0,`RvNil b0) -> let a0 = self#loc a0 b0 in `RvNil a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>row_var_flag)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>row_var_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method position_flag : position_flag -> position_flag -> position_flag=
       fun a0  b0  ->
@@ -4992,14 +4984,15 @@ class map2 =
         | (`Negative a0,`Negative b0) ->
             let a0 = self#loc a0 b0 in `Negative a0
         | (`Normal a0,`Normal b0) -> let a0 = self#loc a0 b0 in `Normal a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>position_flag)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>position_flag)
         | (_,_) -> invalid_arg "map2 failure"
     method meta_bool : meta_bool -> meta_bool -> meta_bool=
       fun a0  b0  ->
         match (a0, b0) with
         | (`True a0,`True b0) -> let a0 = self#loc a0 b0 in `True a0
         | (`False a0,`False b0) -> let a0 = self#loc a0 b0 in `False a0
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>meta_bool)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>meta_bool)
         | (_,_) -> invalid_arg "map2 failure"
     method meta_option :
       'all_a0 'all_b0 .
@@ -5009,9 +5002,8 @@ class map2 =
         match (a0, b0) with
         | (`None a0,`None b0) -> let a0 = self#loc a0 b0 in `None a0
         | (`Some a0,`Some b0) -> let a0 = mf_a self a0 b0 in `Some a0
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Ant (a0, a1)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>_ meta_option)
         | (_,_) -> invalid_arg "map2 failure"
     method meta_list :
       'all_a0 'all_b0 .
@@ -5023,9 +5015,8 @@ class map2 =
         | (`LCons (a0,a1),`LCons (b0,b1)) ->
             let a0 = mf_a self a0 b0 in
             let a1 = self#meta_list mf_a a1 b1 in `LCons (a0, a1)
-        | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Ant (a0, a1)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>_ meta_list)
         | (_,_) -> invalid_arg "map2 failure"
     method alident : alident -> alident -> alident=
       fun a0  b0  ->
@@ -5033,7 +5024,7 @@ class map2 =
         | (`Lid (a0,a1),`Lid (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#string a1 b1 in `Lid (a0, a1)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>alident)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>alident)
         | (_,_) -> invalid_arg "map2 failure"
     method auident : auident -> auident -> auident=
       fun a0  b0  ->
@@ -5041,15 +5032,15 @@ class map2 =
         | (`Uid (a0,a1),`Uid (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#string a1 b1 in `Uid (a0, a1)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>auident)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>auident)
         | (_,_) -> invalid_arg "map2 failure"
     method aident : aident -> aident -> aident=
       fun a0  b0  ->
         match (a0, b0) with
         | ((#alident as a0),(#alident as b0)) ->
-            (self#alident a0 b0 :>aident)
+            (self#alident a0 b0 : alident  :>aident)
         | ((#auident as a0),(#auident as b0)) ->
-            (self#auident a0 b0 :>aident)
+            (self#auident a0 b0 : auident  :>aident)
         | (_,_) -> invalid_arg "map2 failure"
     method astring : astring -> astring -> astring=
       fun a0  b0  ->
@@ -5057,7 +5048,7 @@ class map2 =
         | (`C (a0,a1),`C (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#string a1 b1 in `C (a0, a1)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>astring)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>astring)
         | (_,_) -> invalid_arg "map2 failure"
     method ident : ident -> ident -> ident=
       fun a0  b0  ->
@@ -5070,8 +5061,10 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ident a1 b1 in
             let a2 = self#ident a2 b2 in `IdApp (a0, a1, a2)
-        | ((#alident as a0),(#alident as b0)) -> (self#alident a0 b0 :>ident)
-        | ((#auident as a0),(#auident as b0)) -> (self#auident a0 b0 :>ident)
+        | ((#alident as a0),(#alident as b0)) ->
+            (self#alident a0 b0 : alident  :>ident)
+        | ((#auident as a0),(#auident as b0)) ->
+            (self#auident a0 b0 : auident  :>ident)
         | (_,_) -> invalid_arg "map2 failure"
     method ctyp : ctyp -> ctyp -> ctyp=
       fun a0  b0  ->
@@ -5208,7 +5201,7 @@ class map2 =
         | (`Package (a0,a1),`Package (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#module_type a1 b1 in `Package (a0, a1)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>ctyp)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>ctyp)
         | (_,_) -> invalid_arg "map2 failure"
     method patt : patt -> patt -> patt=
       fun a0  b0  ->
@@ -5221,7 +5214,7 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
             let a2 = self#alident a2 b2 in `Alias (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>patt)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>patt)
         | (`Any a0,`Any b0) -> let a0 = self#loc a0 b0 in `Any a0
         | (`PaApp (a0,a1,a2),`PaApp (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
@@ -5238,7 +5231,8 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
             let a2 = self#patt a2 b2 in `Sem (a0, a1, a2)
-        | ((#literal as a0),(#literal as b0)) -> (self#literal a0 b0 :>patt)
+        | ((#literal as a0),(#literal as b0)) ->
+            (self#literal a0 b0 : literal  :>patt)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
@@ -5297,7 +5291,7 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
             let a2 = self#expr a2 b2 in `ExAcc (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>expr)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>expr)
         | (`ExApp (a0,a1,a2),`ExApp (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
@@ -5336,7 +5330,8 @@ class map2 =
             let a1 = self#expr a1 b1 in
             let a2 = self#expr a2 b2 in
             let a3 = self#expr a3 b3 in `IfThenElse (a0, a1, a2, a3)
-        | ((#literal as a0),(#literal as b0)) -> (self#literal a0 b0 :>expr)
+        | ((#literal as a0),(#literal as b0)) ->
+            (self#literal a0 b0 : literal  :>expr)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
@@ -5448,7 +5443,8 @@ class map2 =
         | (`ModuleTypeOf (a0,a1),`ModuleTypeOf (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#module_expr a1 b1 in `ModuleTypeOf (a0, a1)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>module_type)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>module_type)
         | (_,_) -> invalid_arg "map2 failure"
     method sig_item : sig_item -> sig_item -> sig_item=
       fun a0  b0  ->
@@ -5501,7 +5497,7 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
             let a2 = self#ctyp a2 b2 in `Val (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>sig_item)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>sig_item)
         | (_,_) -> invalid_arg "map2 failure"
     method with_constr : with_constr -> with_constr -> with_constr=
       fun a0  b0  ->
@@ -5527,7 +5523,8 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#with_constr a1 b1 in
             let a2 = self#with_constr a2 b2 in `And (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>with_constr)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>with_constr)
         | (_,_) -> invalid_arg "map2 failure"
     method binding : binding -> binding -> binding=
       fun a0  b0  ->
@@ -5541,7 +5538,7 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
             let a2 = self#expr a2 b2 in `Bind (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>binding)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>binding)
         | (_,_) -> invalid_arg "map2 failure"
     method rec_binding : rec_binding -> rec_binding -> rec_binding=
       fun a0  b0  ->
@@ -5555,7 +5552,8 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ident a1 b1 in
             let a2 = self#expr a2 b2 in `RecBind (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>rec_binding)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>rec_binding)
         | (_,_) -> invalid_arg "map2 failure"
     method module_binding :
       module_binding -> module_binding -> module_binding=
@@ -5575,7 +5573,8 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#auident a1 b1 in
             let a2 = self#module_type a2 b2 in `ModuleConstraint (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>module_binding)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>module_binding)
         | (_,_) -> invalid_arg "map2 failure"
     method match_case : match_case -> match_case -> match_case=
       fun a0  b0  ->
@@ -5590,7 +5589,7 @@ class map2 =
             let a1 = self#patt a1 b1 in
             let a2 = self#expr a2 b2 in
             let a3 = self#expr a3 b3 in `Case (a0, a1, a2, a3)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>match_case)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>match_case)
         | (_,_) -> invalid_arg "map2 failure"
     method module_expr : module_expr -> module_expr -> module_expr=
       fun a0  b0  ->
@@ -5620,7 +5619,8 @@ class map2 =
         | (`PackageModule (a0,a1),`PackageModule (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in `PackageModule (a0, a1)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>module_expr)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>module_expr)
         | (_,_) -> invalid_arg "map2 failure"
     method str_item : str_item -> str_item -> str_item=
       fun a0  b0  ->
@@ -5676,7 +5676,7 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#rec_flag a1 b1 in
             let a2 = self#binding a2 b2 in `Value (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>str_item)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>str_item)
         | (_,_) -> invalid_arg "map2 failure"
     method class_type : class_type -> class_type -> class_type=
       fun a0  b0  ->
@@ -5707,7 +5707,7 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#class_type a1 b1 in
             let a2 = self#class_type a2 b2 in `CtEq (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>class_type)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>class_type)
         | (_,_) -> invalid_arg "map2 failure"
     method class_sig_item :
       class_sig_item -> class_sig_item -> class_sig_item=
@@ -5741,7 +5741,8 @@ class map2 =
             let a1 = self#alident a1 b1 in
             let a2 = self#private_flag a2 b2 in
             let a3 = self#ctyp a3 b3 in `CgVir (a0, a1, a2, a3)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>class_sig_item)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>class_sig_item)
         | (_,_) -> invalid_arg "map2 failure"
     method class_expr : class_expr -> class_expr -> class_expr=
       fun a0  b0  ->
@@ -5781,7 +5782,7 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#class_expr a1 b1 in
             let a2 = self#class_expr a2 b2 in `Eq (a0, a1, a2)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>class_expr)
+        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 : ant  :>class_expr)
         | (_,_) -> invalid_arg "map2 failure"
     method class_str_item :
       class_str_item -> class_str_item -> class_str_item=
@@ -5828,7 +5829,8 @@ class map2 =
             let a1 = self#alident a1 b1 in
             let a2 = self#mutable_flag a2 b2 in
             let a3 = self#ctyp a3 b3 in `CrVvr (a0, a1, a2, a3)
-        | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>class_str_item)
+        | ((#ant as a0),(#ant as b0)) ->
+            (self#ant a0 b0 : ant  :>class_str_item)
         | (_,_) -> invalid_arg "map2 failure"
     method fanloc_t : FanLoc.t -> FanLoc.t -> FanLoc.t= self#unknown
   end
@@ -6072,7 +6074,7 @@ module Make(MetaLoc:META_LOC) =
                 `ExApp (_loc, (`ExVrn (_loc, "None")), (meta_loc _loc a0))
             | `Some a0 ->
                 `ExApp (_loc, (`ExVrn (_loc, "Some")), (mf_a _loc a0))
-            | `Ant (a0,a1) -> `Ant (a0, a1)
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let rec meta_meta_list :
           'all_a0 .
             ('loc -> 'all_a0 -> 'result) ->
@@ -6086,7 +6088,7 @@ module Make(MetaLoc:META_LOC) =
                   (_loc,
                     (`ExApp (_loc, (`ExVrn (_loc, "LCons")), (mf_a _loc a0))),
                     (meta_meta_list mf_a _loc a1))
-            | `Ant (a0,a1) -> `Ant (a0, a1)
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let meta_alident: 'loc -> alident -> 'result =
           fun _loc  ->
             function
@@ -7821,7 +7823,7 @@ module Make(MetaLoc:META_LOC) =
                 `PaApp (_loc, (`PaVrn (_loc, "None")), (meta_loc _loc a0))
             | `Some a0 ->
                 `PaApp (_loc, (`PaVrn (_loc, "Some")), (mf_a _loc a0))
-            | `Ant (a0,a1) -> `Ant (a0, a1)
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let rec meta_meta_list :
           'all_a0 .
             ('loc -> 'all_a0 -> 'result) ->
@@ -7835,7 +7837,7 @@ module Make(MetaLoc:META_LOC) =
                   (_loc,
                     (`PaApp (_loc, (`PaVrn (_loc, "LCons")), (mf_a _loc a0))),
                     (meta_meta_list mf_a _loc a1))
-            | `Ant (a0,a1) -> `Ant (a0, a1)
+            | #ant as a0 -> (meta_ant _loc a0 :>'result)
         let meta_alident: 'loc -> alident -> 'result =
           fun _loc  ->
             function

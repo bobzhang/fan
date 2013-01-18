@@ -295,7 +295,9 @@ let mk_dest_type  ~destination (id,len) =
   and self_type = {| 'self_type |} in 
   let (_quant,dst) =
     match destination with
-    [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
+    [Obj Map ->
+      (2, apply {|$id:id |} (List.init len (fun i -> {|  _ |})))
+      (* (2, (of_id_len ~off:1 (id,len))) *)
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)
     |Str_item -> (1,result_type)] in dst;

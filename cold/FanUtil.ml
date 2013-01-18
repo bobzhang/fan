@@ -44,10 +44,15 @@ let cvt_int_literal s =
   | 'L' -> `INT64 ((let open Int64 in neg (of_string ("-" ^ s))), s)
   | 'n' -> `NATIVEINT ((let open Nativeint in neg (of_string ("-" ^ s))), s)
   | _ -> `INT ((- (int_of_string ("-" ^ s))), s)
-type anti_cxt =  {
+type anti_cxt = 
+  {
   cxt: string;
-  decorations: string Queue.t;
+  sep: string option;
+  mutable decorations: string;
   content: string} 
+let mk_anti_cxt ?(c= "")  n s =
+  { cxt = c; decorations = n; content = s; sep = None }
+let add_anti_context s c = { s with decorations = (s.decorations ^ c) }
 let mk_anti ?(c= "")  n s = "\\$" ^ (n ^ (c ^ (":" ^ s)))
 let is_antiquot s =
   let len = String.length s in

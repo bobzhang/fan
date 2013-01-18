@@ -194,7 +194,7 @@ let expr_of_ctyp
   end;
 
 (* return a [expr] node  *)  
-let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant
+let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~destination
     simple_expr_of_ctyp result ty = with {patt:ctyp;expr:match_case}
   let f (cons,tyargs) :  match_case=
     let len = List.length tyargs in
@@ -207,10 +207,8 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant
   (* for the case [`a | b ] *)
   let simple lid :match_case=
     let e = (simple_expr_of_ctyp {:ctyp|$id:lid|}) +> names  in
-    (* let ty = Ctyp.mk_dest_type k *)
-    (* let (name,len) = Ctyp.name_length_of_tydcl tydcl in  *)
-    (* let ty = Ctyp.mk_dest_type destination ({:ident|$lid:name|},len) in *)
-    MatchCase.gen_tuple_abbrev ~arity result lid e in
+    (* special case handling *)
+    MatchCase.gen_tuple_abbrev ~arity ~annot:result ~destination lid e in
   (* FIXME, be more precise  *)
   let info = (TyVrnEq, List.length (FanAst.list_of_ctyp ty [])) in
   let ls = Ctyp.view_variant ty in
@@ -272,9 +270,7 @@ let fun_of_tydcl
              by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
             (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
-      | `Id _ | `Tup _ | `Quote _ | `Arrow _ | `TyApp _ 
-      (* | {| $id:_|} | {| $tup:_|} | {| $_ $_ |} | {| '$_ |} | {| +'$_ |} | {| -'$_ |} *)
-      (* | {| $_ -> $_ |} *) ->
+      | `Id _ | `Tup _ | `Quote _ | `Arrow _ | `TyApp _ ->
           let expr = simple_expr_of_ctyp ctyp in
           let funct = eta_expand (expr+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct
@@ -297,6 +293,7 @@ let fun_of_tydcl
  ];
 
 
+(* destination is [Str_item] *)          
 let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     tydcl ?(arity=1) ?(names=[]) ~trail ~mk_variant
     ~left_type_id ~left_type_variable
@@ -311,13 +308,16 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
       ~number:arity ~prefix:names (name,len) Str_item in
   if not ( Ctyp.is_abstract tydcl) then 
     let fun_expr =
-      fun_of_tydcl (* ~destination *) ~destination:Str_item
+      fun_of_tydcl  ~destination:Str_item
         ~names ~arity ~left_type_variable ~mk_record 
         simple_expr_of_ctyp
         (expr_of_ctyp
            ?cons_transform ~arity ~names ~trail ~mk_variant simple_expr_of_ctyp)
         (expr_of_variant
-           ?cons_transform ~arity ~names ~trail ~mk_variant simple_expr_of_ctyp) tydcl  in
+           ?cons_transform 
+           ~arity ~names ~trail ~mk_variant
+           ~destination:Str_item
+           simple_expr_of_ctyp) tydcl  in
     {:binding| $(lid:tctor_var name) : $ty = $fun_expr |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n"
@@ -329,12 +329,14 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
 let str_item_of_module_types ?module_name ?cons_transform
     ?arity ?names ~trail ~mk_variant ~left_type_id ~left_type_variable
     ~mk_record
+    (* ~destination *)
     simple_expr_of_ctyp_with_cxt
     (lst:module_types)  =
   let cxt  = Hashset.create 50 in 
   let mk_binding (* : string -> ctyp -> binding *) =
     binding_of_tydcl ?cons_transform ?arity
       ?names ~trail ~mk_variant ~left_type_id ~left_type_variable ~mk_record
+      (* ~destination *)
       (simple_expr_of_ctyp_with_cxt cxt) in
   (* return new types as generated  new context *)
   let fs (ty:types) : str_item= match ty with
@@ -373,9 +375,10 @@ let obj_of_module_types
     ?cons_transform
     ?module_name
     ?(arity=1) ?(names=[]) ~trail  
-    ~left_type_variable
+    ~left_type_variable:(left_type_variable:FSig.basic_id_transform)
     ~mk_record
     ~mk_variant
+    (* ~destination *)
      base
     class_name  simple_expr_of_ctyp (k:kind) (lst:module_types) = with {patt:ctyp}
   let tbl = Hashtbl.create 50 in 
@@ -389,6 +392,7 @@ let obj_of_module_types
            ~trail ~mk_variant
            simple_expr_of_ctyp)
         (expr_of_variant ?cons_transform
+           ~destination:(Obj k)
            ~arity ~names
            ~trail ~mk_variant
            simple_expr_of_ctyp) in

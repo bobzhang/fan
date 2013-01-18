@@ -11,6 +11,16 @@ val tuple_expr_of_ctyp :
   mk_tuple:(FSig.ty_info list -> expr) ->
   (ctyp -> expr ) ->
   ctyp -> expr
+
+val expr_of_variant:
+    ?cons_transform:(string -> string) ->
+  ?arity:int ->
+  ?names:string list ->
+  trail:(FSig.vrn * int -> match_case) ->
+  mk_variant:(string -> FSig.ty_info list -> expr) ->
+  destination:FSig.destination -> 
+  (ctyp -> expr) -> ctyp -> ctyp->  expr
+      
 val normal_simple_expr_of_ctyp :
   ?arity:int ->
   ?names:string list ->
@@ -60,7 +70,9 @@ val binding_of_tydcl :
   mk_variant:(string -> FSig.ty_info list -> expr) ->
   left_type_id:FSig.basic_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
-  mk_record:(FSig.record_col list -> expr) -> binding
+  mk_record:(FSig.record_col list -> expr) ->
+  (* destination:FSig.destination -> *)
+    binding
       
 val str_item_of_module_types :
   ?module_name:string ->
@@ -71,8 +83,9 @@ val str_item_of_module_types :
   mk_variant:(string -> FSig.ty_info list -> expr) ->
   left_type_id:FSig.basic_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
-    mk_record:(FSig.record_col list -> expr) ->
-      ((string, unit) Hashtbl.t -> ctyp -> expr ) ->
+  mk_record:(FSig.record_col list -> expr) ->
+  (* destination:FSig.destination ->  *)
+  ((string, unit) Hashtbl.t -> ctyp -> expr ) ->
   FSig.module_types -> str_item
       
 val obj_of_module_types :
@@ -83,6 +96,8 @@ val obj_of_module_types :
   trail:(FSig.vrn * int -> match_case) ->
   left_type_variable:FSig.basic_id_transform ->
   mk_record:(FSig.record_col list -> expr) ->
-  mk_variant:(string -> FSig.ty_info list -> expr) -> string ->  string ->  (ctyp -> expr ) ->
+  mk_variant:(string -> FSig.ty_info list -> expr) ->
+  (* destination:FSig.destination  -> *)
+     string ->  string ->  (ctyp -> expr ) -> 
   FSig.kind -> FSig.module_types -> str_item
   

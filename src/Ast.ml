@@ -89,11 +89,11 @@
    type meta_option 'a =
     [= `None of loc 
     |  `Some of 'a
-    | `Ant of (loc * string) ];
+    | ant];
    type meta_list 'a =
     [= `LNil of loc
     | `LCons of ('a * meta_list 'a)
-    | `Ant of (loc * string) ]; (* FIXME `Ant no location *)
+    | ant];
 
    type alident =
     [= `Lid of (loc * string)
@@ -119,15 +119,14 @@
     | `Any of loc (* _ *)
     | `TyApp of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
 
- (* | `Arrow of (loc * ctyp * ctyp) (\* t -> t *\) (\* int -> string *\) *)
     | `Arrow of (loc * ctyp * ctyp)
           
-    | (* `TyCls *)`ClassPath of (loc * ident) (* #i *) (* #point *)
+    | `ClassPath of (loc * ident) (* #i *) (* #point *)
 
-    (* | `TyLab of (loc * alident * ctyp) (\* ~s:t *\) *)
     | `Label of (loc * alident * ctyp) (* ~s:t *)
           
     | `Id  of (loc * ident) (* i *) (* `Lazy.t *)
+
     | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)
 
      (* type t 'a 'b 'c = t constraint t = t constraint t = t *)

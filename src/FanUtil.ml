@@ -55,17 +55,24 @@ let cvt_int_literal s =
   |'n' -> `NATIVEINT (Nativeint.(neg (of_string ("-" ^ s))),s)
   | _  -> `INT (- int_of_string ("-" ^ s),s) ];  
 
+
 type anti_cxt = {
     cxt:string;
-    decorations:Queue.t string;
+    sep: option string;
+    decorations: mutable string; (* keep it simple first*)
     content:string;
   };
 
-(* let mk_anti_cxt ?(c="") n s =  { *)
-(*   cxt = c; *)
-(*   decorations= begin  let q = Queue.create (); Queue.add n  *)
-(*  } *)
+let mk_anti_cxt ?(c="") n s =  {
+  cxt = c;
+  decorations= n;
+  content =s ;
+  sep=None;
+ };
     
+let add_anti_context s c =
+  {s with decorations = s.decorations ^ c};
+  
 (* c gives a finer control
    FIXME uses a structure data
  *)

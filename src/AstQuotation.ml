@@ -312,7 +312,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
   method! patt =
     with patt
     fun
-    [ {| $anti:s |} (* | {| $str:s |} *) as p ->
+    [ {| $anti:s |} as p ->
       let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
       handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
         ~decorate:(fun n e ->

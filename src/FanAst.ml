@@ -28,7 +28,6 @@ let strip_loc_list f lst =
       GenLoc
    ); |};
 
-  
 {:ocaml|INCLUDE "src/Ast.ml"; |};
 
 #default_quotation "expr";;

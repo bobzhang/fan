@@ -135,7 +135,7 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
     List.rev t in
   currying ~arity res
 let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
-  ~mk_variant  simple_expr_of_ctyp result ty =
+  ~mk_variant  ~destination  simple_expr_of_ctyp result ty =
   let f (cons,tyargs) =
     (let len = List.length tyargs in
      let p = Patt.gen_tuple_n ?cons_transform ~arity cons len in
@@ -146,7 +146,8 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
      let e = mk (cons, tyargs) in `Case (_loc, p, (`Nil _loc), e) : match_case ) in
   let simple lid =
     (let e = (simple_expr_of_ctyp (`Id (_loc, lid))) +> names in
-     MatchCase.gen_tuple_abbrev ~arity result lid e : match_case ) in
+     MatchCase.gen_tuple_abbrev ~arity ~annot:result ~destination lid e : 
+    match_case ) in
   let info = (TyVrnEq, (List.length (FanAst.list_of_ctyp ty []))) in
   let ls = Ctyp.view_variant ty in
   let res =
@@ -236,7 +237,7 @@ let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1)
           (expr_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
              simple_expr_of_ctyp)
           (expr_of_variant ?cons_transform ~arity ~names ~trail ~mk_variant
-             simple_expr_of_ctyp) tydcl in
+             ~destination:Str_item simple_expr_of_ctyp) tydcl in
       `Bind
         (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
           (`Constraint_exp (_loc, fun_expr, ty)))
@@ -279,16 +280,18 @@ let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names
   | None  -> item
   | Some m -> `Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item)))
 let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
-  [])  ~trail  ~left_type_variable  ~mk_record  ~mk_variant  base class_name
-  simple_expr_of_ctyp (k : kind) (lst : module_types) =
+  [])  ~trail 
+  ~left_type_variable:(left_type_variable : FSig.basic_id_transform) 
+  ~mk_record  ~mk_variant  base class_name simple_expr_of_ctyp (k : kind)
+  (lst : module_types) =
   let tbl = Hashtbl.create 50 in
   let f =
     fun_of_tydcl ~names ~destination:(Obj k) ~arity ~left_type_variable
       ~mk_record simple_expr_of_ctyp
       (expr_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
          simple_expr_of_ctyp)
-      (expr_of_variant ?cons_transform ~arity ~names ~trail ~mk_variant
-         simple_expr_of_ctyp) in
+      (expr_of_variant ?cons_transform ~destination:(Obj k) ~arity ~names
+         ~trail ~mk_variant simple_expr_of_ctyp) in
   let mk_type tydcl =
     let (name,len) = Ctyp.name_length_of_tydcl tydcl in
     Ctyp.mk_method_type ~number:arity ~prefix:names

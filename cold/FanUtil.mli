@@ -27,5 +27,7 @@ val string_of_string_token : FanLoc.t -> string -> string
 val remove_underscores : string -> string
 
 
-type anti_cxt 
+type anti_cxt
+val mk_anti_cxt: ?c:string -> string -> string -> anti_cxt
+val add_anti_context: anti_cxt -> string -> anti_cxt      
   
