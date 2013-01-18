@@ -963,10 +963,10 @@ and sig_item (s:sig_item) (l:signature) :signature =
   [ {||} -> l
   | `Class (loc,cd) ->
       [mksig loc (Psig_class
-                    (List.map class_info_class_type (list_of_class_type cd []))) :: l]
+                    (List.map class_info_class_type (list_of_and' cd []))) :: l]
   | `ClassType (loc,ctd) ->
       [mksig loc (Psig_class_type
-                    (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
+                    (List.map class_info_class_type (list_of_and' ctd []))) :: l]
   | {| $sg1; $sg2 |} -> sig_item sg1 (sig_item sg2 l)
   | `Directive (_,_,_) -> l
   | {| exception $uid:s |} ->
@@ -1054,10 +1054,10 @@ and str_item (s:str_item) (l:structure) : structure =
   [ {||} -> l
   | `Class (loc,cd) ->
       [mkstr loc (Pstr_class
-           (List.map class_info_class_expr (list_of_class_expr cd []))) :: l]
+           (List.map class_info_class_expr (list_of_and' cd []))) :: l]
   | `ClassType (loc,ctd) ->
       [mkstr loc (Pstr_class_type
-                    (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
+                    (List.map class_info_class_type (list_of_and' ctd []))) :: l]
   | {| $st1; $st2 |} -> str_item st1 (str_item st2 l)
   | `Directive (_,_,_) -> l
   | (* {@loc| exception $uid:s |} *)
@@ -1128,7 +1128,7 @@ and class_type = fun (* class_type -> class_type *)
                })
   | `CtCon (loc,_,_,_) as x ->
         errorf loc "invalid virtual class inside a class type %s" (dump_class_type x)
-  | `Ant (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `CtAnd (_, _, _) | `Nil _ ->
+  | `Ant (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `And (_, _, _) | `Nil _ ->
       assert false ]
     
 and class_info_class_expr (ci:class_expr) =

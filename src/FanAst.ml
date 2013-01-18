@@ -218,20 +218,21 @@ let rec sta_of_list = fun
   | [t::ts] -> let _loc = loc_of t in `Sta(_loc,t,sta_of_list ts)];
 
 let rec tyAmp_of_list =  fun
-    [ [] -> {:ctyp@ghost||}
+    [ [] -> `Nil ghost 
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of t in {:ctyp| $t & $(tyAmp_of_list ts) |} ];
+        let _loc = loc_of t in `TyAmp(_loc,t,tyAmp_of_list ts) ];
 
 
 (* LA *)  
-let  tyApp_of_list = fun
-    [ [] -> {:ctyp@ghost||}
+let rec tyApp_of_list = fun
+    [ [] -> `Nil ghost 
     | [t] -> t
     | [t::ts] ->
-        List.fold_left
-          (fun x y -> let _loc = loc_of  x in {:ctyp| $x $y |}) t ts];
-
+        let _loc = loc_of t in
+        `TyApp (_loc, t, (tyApp_of_list ts))
+        (* List.fold_left *)
+        (*   (fun x y -> let _loc = loc_of  x in {:ctyp| $x $y |}) t ts *)];
         (* let _loc = loc_of t in {:ctyp| $t  $(tyApp_of_list ts) |} ]; *)
   
 (* LA *)
@@ -248,25 +249,28 @@ let rec idAcc_of_list = fun
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of i in
-        {:ident| $i . $(idAcc_of_list is) |} ];
+        `IdAcc(_loc,i,idAcc_of_list is)
+        (* {:ident| $i . $(idAcc_of_list is) |} *) ];
 
 let rec idApp_of_list =  fun
     [ [] -> assert false
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of i in
-        {:ident| ($i $(idApp_of_list is)) |} ];
+        `IdApp (_loc, i, (idApp_of_list is))
+        (* {:ident| ($i $(idApp_of_list is)) |} *) ];
 
 let rec meApp_of_list = fun
     [ [] -> assert false
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of x in
-        {:module_expr| $x $(meApp_of_list xs) |} ];
+        `MeApp (_loc, x, (meApp_of_list xs))
+        (* {:module_expr| $x $(meApp_of_list xs) |} *) ];
 
 (* LA   *)
 let  exApp_of_list = fun
-    [ [] -> {:expr@ghost||}
+    [ [] -> `Nil ghost
     | [t] -> t
     | [t::ts] ->
         List.fold_left
@@ -356,21 +360,6 @@ let rec list_of_sem' x acc =
   |`Nil _ -> acc
   | _ -> [x::acc] ] ;
     
-let rec list_of_binding x acc =
-    match x with
-    [ {:binding| $b1 and $b2 |} ->
-         list_of_binding b1 (list_of_binding b2 acc)
-    | t -> [t :: acc] ];
-
-let rec list_of_rec_binding x acc =  match x with
-    [ {:rec_binding| $b1; $b2 |} ->
-         list_of_rec_binding b1 (list_of_rec_binding b2 acc)
-    | t -> [t :: acc] ];
-
-let rec list_of_with_constr x acc = match x with
-  [ {:with_constr| $w1 and $w2 |} ->
-    list_of_with_constr w1 (list_of_with_constr w2 acc)
-  | t -> [t :: acc] ];
 
 let rec list_of_ctyp x acc =
   with ctyp match x with
@@ -389,12 +378,6 @@ let rec list_of_ctyp_app (x:ctyp) (acc:list ctyp) : list ctyp =
   | {||} -> acc (* remove the nil *)
   | x -> [x::acc] ]  ;
     
-let rec list_of_ctyp_com (x:ctyp) (acc:list ctyp): list ctyp =
-  with ctyp match x with
-  [ {| $t1 , $t2 |} ->
-    list_of_ctyp_com t1 (list_of_ctyp_com t2 acc)
-  | {||} -> acc
-  | x -> [x::acc]]  ;
     
 let rec list_of_patt x acc = match x with
   [ {:patt||} -> acc
@@ -408,60 +391,18 @@ let rec list_of_expr x acc =  match x with
       list_of_expr x (list_of_expr y acc)
   | x -> [x :: acc] ];
 
-let rec list_of_str_item x acc = match x with
-  [ {:str_item||} -> acc
-  | {:str_item| $x; $y |} ->
-      list_of_str_item x (list_of_str_item y acc)
-  | x -> [x :: acc] ];
-
-let rec list_of_sig_item x acc = match x with
-  [ {:sig_item||} -> acc
-  | {:sig_item| $x; $y |} ->
-        list_of_sig_item x (list_of_sig_item y acc)
-  | x -> [x :: acc] ];
-
-let rec list_of_class_sig_item x acc =  match x with
-  [ {:class_sig_item||} -> acc
-  | {:class_sig_item| $x; $y |} ->
-      list_of_class_sig_item x (list_of_class_sig_item y acc)
-  | x -> [x :: acc] ];
-
-let rec list_of_class_str_item x acc =  match x with
-  [ {:class_str_item||} -> acc
-  | {:class_str_item| $x; $y |} ->
-      list_of_class_str_item x (list_of_class_str_item y acc)
-  | x -> [x :: acc] ];
-
-let rec list_of_class_type x acc =  match x with
-  [ {:class_type| $x and $y |} ->
-    list_of_class_type x (list_of_class_type y acc)
-  | x -> [x :: acc] ];
-
-let rec list_of_class_expr x acc = match x with
-  [ {:class_expr| $x and $y |} ->
-    list_of_class_expr x (list_of_class_expr y acc)
-  | x -> [x :: acc] ];
 
 let rec list_of_module_expr x acc = match x with
   [ {:module_expr| $x $y |} ->
     list_of_module_expr x (list_of_module_expr y acc)
   | x -> [x :: acc] ];
 
-let rec list_of_match_case x acc =  match x with
-  [ {:match_case||} -> acc
-  | {:match_case| $x | $y |} ->
-      list_of_match_case x (list_of_match_case y acc)
-  | x -> [x :: acc] ];
 
 let rec list_of_ident x acc = match x with
     [ {:ident| $x . $y |} | {:ident| ($x $y) |} ->
       list_of_ident x (list_of_ident y acc)
     | x -> [x :: acc] ];
 
-let rec list_of_module_binding x acc = match x with
-  [ {:module_binding| $x and $y |} ->
-    list_of_module_binding x (list_of_module_binding y acc)
-  | x -> [x :: acc] ];
   
 let map_expr f = object
   inherit map as super;

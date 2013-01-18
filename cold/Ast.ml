@@ -128,7 +128,7 @@ and str_item =
 and class_type =
   [ `Nil of loc | `CtCon of (loc* virtual_flag* ident* ctyp)
   | `CtFun of (loc* ctyp* class_type) | `CtSig of (loc* ctyp* class_sig_item)
-  | `CtAnd of (loc* class_type* class_type)
+  | `And of (loc* class_type* class_type)
   | `CtCol of (loc* class_type* class_type)
   | `CtEq of (loc* class_type* class_type) | ant] 
 and class_sig_item =

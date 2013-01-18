@@ -689,7 +689,7 @@ let gen_curry_n acc ~arity cons n =
 (*
   Example:
   {[
-   let u  =  FanAst.list_of_match_case {:match_case|
+   let u  =  FanAst.list_of_or' {:match_case|
   (A0 (a0, a1),A0 (b0, b1)) -> 1
   |   (A1 (a0, a1), A1 (b0, b1)) -> 2
   |   (A2 (a0, a1), A2 (b0, b1)) -> 3 |} [] in currying ~arity:2 u ;

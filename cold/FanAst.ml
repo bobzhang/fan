@@ -581,7 +581,7 @@ class eq =
         | (`CtSig (a0,a1,a2),`CtSig (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) &&
               (self#class_sig_item a2 b2)
-        | (`CtAnd (a0,a1,a2),`CtAnd (b0,b1,b2)) ->
+        | (`And (a0,a1,a2),`And (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#class_type a1 b1)) &&
               (self#class_type a2 b2)
         | (`CtCol (a0,a1,a2),`CtCol (b0,b1,b2)) ->
@@ -1360,10 +1360,10 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in
           let a2 = self#class_sig_item a2 in `CtSig (a0, a1, a2)
-      | `CtAnd (a0,a1,a2) ->
+      | `And (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#class_type a1 in
-          let a2 = self#class_type a2 in `CtAnd (a0, a1, a2)
+          let a2 = self#class_type a2 in `And (a0, a1, a2)
       | `CtCol (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#class_type a1 in
@@ -2141,8 +2141,8 @@ class print =
         | `CtSig (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`CtSig@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#class_sig_item a2
-        | `CtAnd (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`CtAnd@ %a@ %a@ %a)@]" self#loc a0
+        | `And (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc a0
               self#class_type a1 self#class_type a2
         | `CtCol (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a@ %a)@]" self#loc a0
@@ -2702,7 +2702,7 @@ class fold =
       | `CtSig (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#ctyp a1 in self#class_sig_item a2
-      | `CtAnd (a0,a1,a2) ->
+      | `And (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#class_type a1 in self#class_type a2
       | `CtCol (a0,a1,a2) ->
@@ -2933,7 +2933,6 @@ let loc_of =
   | `PaTyp (_loc,_) -> _loc
   | `PrNil _loc -> _loc
   | `MeApp (_loc,_,_) -> _loc
-  | `CtAnd (_loc,_,_) -> _loc
   | `Int (_loc,_) -> _loc
   | `Negative _loc -> _loc
   | `ExAcc (_loc,_,_) -> _loc
@@ -3605,7 +3604,7 @@ class fold2 =
         | (`CtSig (a0,a1,a2),`CtSig (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#class_sig_item a2 b2
-        | (`CtAnd (a0,a1,a2),`CtAnd (b0,b1,b2)) ->
+        | (`And (a0,a1,a2),`And (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#class_type a1 b1 in self#class_type a2 b2
         | (`CtCol (a0,a1,a2),`CtCol (b0,b1,b2)) ->
@@ -4367,8 +4366,8 @@ and pp_print_class_type: 'fmt -> class_type -> 'result =
     | `CtSig (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`CtSig@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_class_sig_item a2
-    | `CtAnd (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`CtAnd@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `And (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_class_type a1 pp_print_class_type a2
     | `CtCol (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4823,7 +4822,7 @@ class iter =
       | `CtFun (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#class_type a2)
       | `CtSig (a0,a1,a2) ->
           (self#loc a0; self#ctyp a1; self#class_sig_item a2)
-      | `CtAnd (a0,a1,a2) ->
+      | `And (a0,a1,a2) ->
           (self#loc a0; self#class_type a1; self#class_type a2)
       | `CtCol (a0,a1,a2) ->
           (self#loc a0; self#class_type a1; self#class_type a2)
@@ -5696,10 +5695,10 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
             let a2 = self#class_sig_item a2 b2 in `CtSig (a0, a1, a2)
-        | (`CtAnd (a0,a1,a2),`CtAnd (b0,b1,b2)) ->
+        | (`And (a0,a1,a2),`And (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#class_type a1 b1 in
-            let a2 = self#class_type a2 b2 in `CtAnd (a0, a1, a2)
+            let a2 = self#class_type a2 b2 in `And (a0, a1, a2)
         | (`CtCol (a0,a1,a2),`CtCol (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#class_type a1 b1 in
@@ -7396,13 +7395,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "CtSig")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_class_sig_item _loc a2))
-            | `CtAnd (a0,a1,a2) ->
+            | `And (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "CtAnd")),
+                            (_loc, (`ExVrn (_loc, "And")),
                               (meta_loc _loc a0))),
                          (meta_class_type _loc a1))),
                     (meta_class_type _loc a2))
@@ -9145,13 +9144,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "CtSig")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_class_sig_item _loc a2))
-            | `CtAnd (a0,a1,a2) ->
+            | `And (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "CtAnd")),
+                            (_loc, (`PaVrn (_loc, "And")),
                               (meta_loc _loc a0))),
                          (meta_class_type _loc a1))),
                     (meta_class_type _loc a2))
@@ -9543,13 +9542,11 @@ let rec tyAmp_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `TyAmp (_loc, t, (tyAmp_of_list ts))
-let tyApp_of_list =
+let rec tyApp_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts ->
-      List.fold_left
-        (fun x  y  -> let _loc = loc_of x in `TyApp (_loc, x, y)) t ts
+  | t::ts -> let _loc = loc_of t in `TyApp (_loc, t, (tyApp_of_list ts))
 let tyVarApp_of_list (_loc,ls) =
   let aux =
     function
@@ -9647,18 +9644,6 @@ let rec list_of_sem' x acc =
   | `Sem (_,x,y) -> list_of_sem' x (list_of_sem' y acc)
   | `Nil _ -> acc
   | _ -> x :: acc
-let rec list_of_binding x acc =
-  match x with
-  | `And (_loc,b1,b2) -> list_of_binding b1 (list_of_binding b2 acc)
-  | t -> t :: acc
-let rec list_of_rec_binding x acc =
-  match x with
-  | `Sem (_loc,b1,b2) -> list_of_rec_binding b1 (list_of_rec_binding b2 acc)
-  | t -> t :: acc
-let rec list_of_with_constr x acc =
-  match x with
-  | `And (_loc,w1,w2) -> list_of_with_constr w1 (list_of_with_constr w2 acc)
-  | t -> t :: acc
 let rec list_of_ctyp x acc =
   match x with
   | `Nil _loc -> acc
@@ -9668,11 +9653,6 @@ let rec list_of_ctyp x acc =
 let rec list_of_ctyp_app (x : ctyp) (acc : ctyp list) =
   (match x with
    | `TyApp (_loc,t1,t2) -> list_of_ctyp_app t1 (list_of_ctyp_app t2 acc)
-   | `Nil _loc -> acc
-   | x -> x :: acc : ctyp list )
-let rec list_of_ctyp_com (x : ctyp) (acc : ctyp list) =
-  (match x with
-   | `Com (_loc,t1,t2) -> list_of_ctyp_com t1 (list_of_ctyp_com t2 acc)
    | `Nil _loc -> acc
    | x -> x :: acc : ctyp list )
 let rec list_of_patt x acc =
@@ -9685,54 +9665,14 @@ let rec list_of_expr x acc =
   | `Nil _loc -> acc
   | `Com (_loc,x,y)|`Sem (_loc,x,y) -> list_of_expr x (list_of_expr y acc)
   | x -> x :: acc
-let rec list_of_str_item x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `Sem (_loc,x,y) -> list_of_str_item x (list_of_str_item y acc)
-  | x -> x :: acc
-let rec list_of_sig_item x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `Sem (_loc,x,y) -> list_of_sig_item x (list_of_sig_item y acc)
-  | x -> x :: acc
-let rec list_of_class_sig_item x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `Sem (_loc,x,y) ->
-      list_of_class_sig_item x (list_of_class_sig_item y acc)
-  | x -> x :: acc
-let rec list_of_class_str_item x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `Sem (_loc,x,y) ->
-      list_of_class_str_item x (list_of_class_str_item y acc)
-  | x -> x :: acc
-let rec list_of_class_type x acc =
-  match x with
-  | `CtAnd (_loc,x,y) -> list_of_class_type x (list_of_class_type y acc)
-  | x -> x :: acc
-let rec list_of_class_expr x acc =
-  match x with
-  | `And (_loc,x,y) -> list_of_class_expr x (list_of_class_expr y acc)
-  | x -> x :: acc
 let rec list_of_module_expr x acc =
   match x with
   | `MeApp (_loc,x,y) -> list_of_module_expr x (list_of_module_expr y acc)
-  | x -> x :: acc
-let rec list_of_match_case x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `Or (_loc,x,y) -> list_of_match_case x (list_of_match_case y acc)
   | x -> x :: acc
 let rec list_of_ident x acc =
   match x with
   | `IdAcc (_loc,x,y)|`IdApp (_loc,x,y) ->
       list_of_ident x (list_of_ident y acc)
-  | x -> x :: acc
-let rec list_of_module_binding x acc =
-  match x with
-  | `And (_loc,x,y) ->
-      list_of_module_binding x (list_of_module_binding y acc)
   | x -> x :: acc
 let map_expr f =
   object  inherit  map as super method! expr x = f (super#expr x) end
@@ -9813,7 +9753,7 @@ class clean_ast =
       | ce -> ce
     method! class_type ct =
       match super#class_type ct with
-      | `CtAnd (_loc,`Nil _l,ct)|`CtAnd (_loc,ct,`Nil _l) -> ct
+      | `And (_loc,`Nil _l,ct)|`And (_loc,ct,`Nil _l) -> ct
       | ct -> ct
     method! class_sig_item csg =
       match super#class_sig_item csg with

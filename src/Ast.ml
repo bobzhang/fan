@@ -425,7 +425,7 @@
       (* object ((t))? (csg)? end *)
     | `CtSig of (loc * ctyp * class_sig_item)
       (* ct and ct *)
-    | `CtAnd of (loc * class_type * class_type)
+    | `And of (loc * class_type * class_type)
       (* ct : ct *)
     | `CtCol of (loc * class_type * class_type)
       (* ct = ct *)

@@ -4615,7 +4615,7 @@ let apply () =
             (Gram.mk_action
                (fun (cd2 : 'class_description)  _  (cd1 : 'class_description)
                    (_loc : FanLoc.t)  ->
-                  (`CtAnd (_loc, cd1, cd2) : 'class_description ))));
+                  (`And (_loc, cd1, cd2) : 'class_description ))));
          ([`Stoken
              (((function
                 | `Ant ((""|"typ"|"anti"|"list"),_) -> true
@@ -4654,7 +4654,7 @@ let apply () =
             (Gram.mk_action
                (fun (cd2 : 'class_type_declaration)  _ 
                   (cd1 : 'class_type_declaration)  (_loc : FanLoc.t)  ->
-                  (`CtAnd (_loc, cd1, cd2) : 'class_type_declaration ))));
+                  (`And (_loc, cd1, cd2) : 'class_type_declaration ))));
          ([`Stoken
              (((function
                 | `Ant ((""|"typ"|"anti"|"list"),_) -> true
@@ -4704,7 +4704,7 @@ let apply () =
             (Gram.mk_action
                (fun (ct2 : 'class_type_quot)  _  (ct1 : 'class_type_quot) 
                   (_loc : FanLoc.t)  ->
-                  (`CtAnd (_loc, ct1, ct2) : 'class_type_quot ))));
+                  (`And (_loc, ct1, ct2) : 'class_type_quot ))));
          ([`Sself; `Skeyword "="; `Sself],
            (Gram.mk_action
               (fun (ct2 : 'class_type_quot)  _  (ct1 : 'class_type_quot) 
