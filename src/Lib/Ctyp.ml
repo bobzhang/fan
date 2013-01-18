@@ -56,7 +56,7 @@ let eprint :  (ctyp -> unit) =
   
 let _loc = FanLoc.ghost ; (* FIXME *)
 
-DEFINE GETLOC(expr)= FanAst.loc_of_ctyp expr;  
+DEFINE GETLOC(expr)= FanAst.loc_of expr;  
 INCLUDE "src/Lib/CommonStructure.ml";  
 (*
    compose type abstractions
@@ -190,7 +190,7 @@ let list_of_record (ty:ctyp) =
              (* {| $lid:label :  $ctyp  |} *) -> 
                {label; ctyp; is_mutable=false}
          | t0 ->
-             FanLoc.errorf (loc_of_ctyp t0)
+             FanLoc.errorf (loc_of t0)
                "list_of_record %s" (dump_ctyp t0) ]);
 
   
@@ -495,7 +495,7 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) ~compose
       `Id (_loc, (`Uid (_, cons)))
       -> compose  (f cons [] ) acc
     | t->
-        FanLoc.errorf (loc_of_ctyp t)
+        FanLoc.errorf (loc_of t)
           "reduce_data_ctors: %s" (dump_ctyp t)]) init  branches;
     
 let view_sum (t:ctyp) =
@@ -544,12 +544,12 @@ let view_variant (t:ctyp) : list vbranch =
           `variant (cons, [])
       |  `Id (_loc,i) -> `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
-      | u -> FanLoc.errorf (FanAst.loc_of_ctyp u)
+      | u -> FanLoc.errorf (FanAst.loc_of u)
             "view_variant %s" (FanAst.dump_ctyp u) ] ) lst ;
 
     
 let of_str_item = fun
   [ `Type(_,x) -> x
   | t ->
-      FanLoc.errorf (FanAst.loc_of_str_item t)
+      FanLoc.errorf (FanAst.loc_of t)
         "Ctyp.of_str_item %s" (dump_str_item t) ];

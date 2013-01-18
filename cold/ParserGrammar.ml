@@ -197,7 +197,7 @@ let _ =
                   (let rest =
                      List.map
                        (fun x  ->
-                          let _loc = FanAst.loc_of_ident (x :>ident) in
+                          let _loc = FanAst.loc_of (x :>ident) in
                           `ExApp
                             (_loc,
                               (`Id

@@ -12,7 +12,7 @@ let rec sep_dot_expr acc =
        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
   | `Id (_loc,(`IdAcc (_l,_,_) as i)) ->
       sep_dot_expr acc (Ident.normalize_acc i)
-  | e -> ((FanAst.loc_of_expr e), [], e) :: acc
+  | e -> ((FanAst.loc_of e), [], e) :: acc
 let mksequence ?loc  =
   function
   | `Sem (_loc,_,_)|`Ant (_loc,_) as e ->
@@ -380,7 +380,7 @@ class subst loc env =
         |`ExApp (_loc,`Id (_,`Uid (_,"LOCATION_OF")),`Id (_,`Uid (_,x))) as e
           ->
           (try
-             let loc = FanAst.loc_of_expr (List.assoc x env) in
+             let loc = FanAst.loc_of (List.assoc x env) in
              let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple loc in
              `ExApp
                (_loc,

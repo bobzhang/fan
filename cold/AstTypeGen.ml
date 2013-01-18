@@ -252,8 +252,7 @@ let generate (module_types : FSig.module_types) =
                let arity = List.length ls in Hashtbl.replace tbl s arity
            | _ -> ()) branches
     | _ ->
-        FanLoc.errorf (loc_of_ctyp ty) "generate module_types %s"
-          (dump_ctyp ty) in
+        FanLoc.errorf (loc_of ty) "generate module_types %s" (dump_ctyp ty) in
   let _ =
     List.iter
       (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)

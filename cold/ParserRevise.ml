@@ -195,8 +195,7 @@ let apply () =
                try symb __strm
                with | XStream.Failure  -> raise (XStream.Error "") in
              let s = __strm in
-             let _loc =
-               FanLoc.merge (FanAst.loc_of_expr al) (FanAst.loc_of_expr a) in
+             let _loc = FanLoc.merge (FanAst.loc_of al) (FanAst.loc_of a) in
              kont (`Sem (_loc, al, a)) s))
        | _ -> al in
      fun (__strm : _ XStream.t)  -> let a = symb __strm in kont a __strm);

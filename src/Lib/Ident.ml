@@ -1,5 +1,5 @@
 #default_quotation "ident";;
-
+open FanAst;
 open LibUtil;
 (*
   {[
@@ -33,7 +33,7 @@ let rec tvar_of_ident = fun
 
 
   
-let to_string = ref (fun _ -> failwithf "Ident.to_string not implemented yet");
+(* let to_string = ref (fun _ -> failwithf "Ident.to_string not implemented yet"); *)
 (*   to_string_of_printer opr#ident *)
 (* ; *)
 (* let eprint = ref (fun _ -> failwithf "Ident.eprint not implemented yet");   *)
@@ -52,7 +52,7 @@ let rec lid_of_ident =
     fun
     [ {| $_.$i |} -> lid_of_ident i
     | {| $lid:lid |} -> lid
-    | x  -> invalid_arg ("lid_of_ident" ^ !to_string x )  ]
+    | x  -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (FanAst.dump_ident x )  ]
 ;
 
 (**
@@ -111,7 +111,7 @@ let map_to_string ident =
   | {| ($a $b) |} -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end")
   | {| $lid:x |} -> x ^ acc
   | {| $uid:x |} -> String.lowercase x ^ acc
-  | _ -> invalid_arg & ("map_to_string: " ^ !to_string ident) ] in 
+  | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (dump_ident t)] in 
   aux ident "";
 
 
@@ -139,7 +139,8 @@ let ident_map f x =
       match List.drop (l-2) ls with
       [ [ q; {| $lid:y |} ] ->
         {| $q.$(lid: f y) |}
-      | _ -> invalid_arg ("ident_map identifier" ^ !to_string x ) ]];          
+      | _ ->
+          FanLoc.errorf (loc_of x) "ident_map: %s" (dump_ident x) ]];          
 
 (* the same as [ident_map] except f is of type
    [string -> ident ]
@@ -154,7 +155,7 @@ let ident_map_of_ident f x =
       match List.drop (l-2) ls with
       [ [ q; {|$lid:y|} ] ->
         {|$q.$(f y) |}
-      | _ -> invalid_arg ("ident_map identifier" ^ !to_string x )]];          
+      | _ -> FanLoc.errorf (loc_of x) "ident_map_of_ident: %s" (dump_ident x)]];          
     
 (**
    {[
@@ -165,7 +166,7 @@ let ident_map_of_ident f x =
    [A.B.meta_s]
  *)  
 let ident_map_full f x =
-  let _loc = FanAst.loc_of_ident x in 
+  let _loc = FanAst.loc_of x in 
   match (uid_of_ident x ,lid_of_ident x ) with
   [(Some pre, s) ->
     {| $pre.$(lid:f s) |} 

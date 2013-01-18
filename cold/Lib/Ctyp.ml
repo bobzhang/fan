@@ -29,7 +29,7 @@ let app a b = `TyApp (_loc, a, b)
 let comma a b = `Com (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
-  let _loc = FanLoc.merge (FanAst.loc_of_ctyp a) (FanAst.loc_of_ctyp b) in
+  let _loc = FanLoc.merge (FanAst.loc_of a) (FanAst.loc_of b) in
   `Sem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
@@ -119,8 +119,7 @@ let list_of_record (ty : ctyp) =
             { label; ctyp; is_mutable = true }
         | `TyCol (_,`Id (_,`Lid (_,label)),ctyp) ->
             { label; ctyp; is_mutable = false }
-        | t0 ->
-            FanLoc.errorf (loc_of_ctyp t0) "list_of_record %s" (dump_ctyp t0)))
+        | t0 -> FanLoc.errorf (loc_of t0) "list_of_record %s" (dump_ctyp t0)))
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta_of_list
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
@@ -294,9 +293,8 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) ~compose
        | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
            compose (f cons (list_of_and' tys [])) acc
        | `Id (_loc,`Uid (_,cons)) -> compose (f cons []) acc
-       | t ->
-           FanLoc.errorf (loc_of_ctyp t) "reduce_data_ctors: %s"
-             (dump_ctyp t)) init branches
+       | t -> FanLoc.errorf (loc_of t) "reduce_data_ctors: %s" (dump_ctyp t))
+    init branches
 let view_sum (t : ctyp) =
   let bs = FanAst.list_of_ctyp t [] in
   List.map
@@ -315,11 +313,10 @@ let view_variant (t : ctyp) =
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
       | `Id (_loc,i) -> `abbrev i
       | u ->
-          FanLoc.errorf (FanAst.loc_of_ctyp u) "view_variant %s"
+          FanLoc.errorf (FanAst.loc_of u) "view_variant %s"
             (FanAst.dump_ctyp u)) lst : vbranch list )
 let of_str_item =
   function
   | `Type (_,x) -> x
   | t ->
-      FanLoc.errorf (FanAst.loc_of_str_item t) "Ctyp.of_str_item %s"
-        (dump_str_item t)
+      FanLoc.errorf (FanAst.loc_of t) "Ctyp.of_str_item %s" (dump_str_item t)

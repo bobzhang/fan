@@ -62,7 +62,7 @@ FanConfig.antiquotations := true;
   nonterminalsclear:
   [ qualuid{t}; L0 [a_lident{x}->x ]{ls} ->
     let rest = List.map (fun x ->
-      let _loc = FanAst.loc_of_ident (x:>ident) in
+      let _loc = FanAst.loc_of (x:>ident) in
       {:expr| $id:t.clear $(id:(x:>ident)) |}) ls in
     {:expr| begin $list:rest end |} ]
   extend_body:

@@ -311,7 +311,7 @@ let generate (module_types:FSig.module_types) =
           | _ -> ()]) branches
     | _ ->
         FanLoc.errorf
-          (loc_of_ctyp ty) "generate module_types %s"
+          (loc_of ty) "generate module_types %s"
           (dump_ctyp ty) ] in   
   let _ = List.iter
       (fun

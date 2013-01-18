@@ -11,11 +11,11 @@ module MetaLoc = struct
 end;
 module MetaAst = FanAst.Make MetaLoc;
 AstFilters.register_str_item_filter ("lift",(fun ast ->
-  let _loc = FanAst.loc_of_str_item ast in
+  let _loc = FanAst.loc_of ast in
   {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |})); (* FIXME Loc => FanLoc*)
 
 let add_debug_expr (e:expr) : expr =
-  let _loc = FanAst.loc_of_expr e in
+  let _loc = FanAst.loc_of e in
   let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
   {:expr|
       try $e  with
@@ -70,7 +70,7 @@ end;
 
 let decorate_this_expr e id =
   let buf = Buffer.create 42 in
-  let _loc = FanAst.loc_of_expr e in
+  let _loc = FanAst.loc_of e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
   {:expr| let () = Camlp4prof.count $`str:s in $e |};

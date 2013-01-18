@@ -126,12 +126,12 @@ let  make_ctyp  (styp:styp) tvar : option ctyp =
 let make_ctyp_patt styp tvar patt = 
   match make_ctyp styp tvar with
   [ None -> patt (* FIXME *)
-  | Some t -> let _loc = FanAst.loc_of_patt patt in {:patt| ($patt : $t) |} ];
+  | Some t -> let _loc = FanAst.loc_of patt in {:patt| ($patt : $t) |} ];
 
 let make_ctyp_expr styp tvar expr = 
   match make_ctyp styp tvar with
   [ None -> expr
-  | Some t -> let _loc = FanAst.loc_of_expr expr in {:expr| ($expr : $t) |} ];
+  | Some t -> let _loc = FanAst.loc_of expr in {:expr| ($expr : $t) |} ];
 
 (* transform [text] to [expr] which represents [symbol]
    compute the [lhs]

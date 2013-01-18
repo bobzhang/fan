@@ -13,24 +13,24 @@ open FanUtil;
 open LibUtil;  
 open StdLib;
 
-DEFINE QUICK_LOC = fun x -> Obj.(magic ( field (field (repr x) 1) 0));
-let loc_of_ctyp : ctyp -> FanLoc.t = QUICK_LOC;
-let loc_of_patt : patt -> FanLoc.t = QUICK_LOC;
-let loc_of_expr : expr -> FanLoc.t = QUICK_LOC;
-let loc_of_module_type : module_type -> FanLoc.t = QUICK_LOC;
-let loc_of_module_expr : module_expr -> FanLoc.t = QUICK_LOC;
-let loc_of_sig_item : sig_item -> FanLoc.t = QUICK_LOC;
-let loc_of_str_item : str_item -> FanLoc.t = QUICK_LOC;
-let loc_of_class_type : class_type -> FanLoc.t = QUICK_LOC;
-let loc_of_class_sig_item : class_sig_item -> FanLoc.t =QUICK_LOC;
-let loc_of_class_expr : class_expr -> FanLoc.t = QUICK_LOC;
-let loc_of_class_str_item : class_str_item -> FanLoc.t = QUICK_LOC;
-let loc_of_with_constr : with_constr -> FanLoc.t = QUICK_LOC;
-let loc_of_binding : binding -> FanLoc.t = QUICK_LOC;
-let loc_of_rec_binding : rec_binding -> FanLoc.t = QUICK_LOC;
-let loc_of_module_binding : module_binding -> FanLoc.t = QUICK_LOC;
-let loc_of_match_case : match_case -> FanLoc.t = QUICK_LOC;
-let loc_of_ident : ident -> FanLoc.t = QUICK_LOC;
+(* DEFINE QUICK_LOC = fun x -> Obj.(magic ( field (field (repr x) 1) 0)); *)
+(* let loc_of : ctyp -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : patt -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : expr -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : module_type -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : module_expr -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : sig_item -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : str_item -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : class_type -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : class_sig_item -> FanLoc.t =QUICK_LOC; *)
+(* let loc_of : class_expr -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : class_str_item -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : with_constr -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : binding -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : rec_binding -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : module_binding -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : match_case -> FanLoc.t = QUICK_LOC; *)
+(* let loc_of : ident -> FanLoc.t = QUICK_LOC; *)
 
 (* let loc_of x = *)
 (*   match x with *)
@@ -126,13 +126,13 @@ INCLUDE "src/Ast.ml";
 
 
 #default_quotation "expr";;
-(* DEFINE GETLOC(x) = loc_of_expr(x); *)
+(* DEFINE GETLOC(x) = loc_of(x); *)
 module MExpr = struct
   INCLUDE "src/MetaTemplate.ml"; (* FIXME INCLUDE as a langauge :default *)
 end;
 
 #default_quotation "patt"  ;;
-(* DEFINE GETLOC(x) = loc_of_patt(x); *)
+(* DEFINE GETLOC(x) = loc_of(x); *)
 module MPatt = struct
   INCLUDE "src/MetaTemplate.ml";
 end;
@@ -290,37 +290,37 @@ let rec tyOr_of_list = fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in {:ctyp| $t | $(tyOr_of_list ts) |} ];
+        let _loc = loc_of t in {:ctyp| $t | $(tyOr_of_list ts) |} ];
 
 let rec tyAnd_of_list = fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in {:ctyp| $t and $(tyAnd_of_list ts) |} ];
+        let _loc = loc_of t in {:ctyp| $t and $(tyAnd_of_list ts) |} ];
 
 let rec tySem_of_list = fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in {:ctyp| $t ; $(tySem_of_list ts) |} ];
+        let _loc = loc_of t in {:ctyp| $t ; $(tySem_of_list ts) |} ];
 
 let rec tyCom_of_list = fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in {:ctyp| $t, $(tyCom_of_list ts) |} ];
+        let _loc = loc_of t in {:ctyp| $t, $(tyCom_of_list ts) |} ];
 
 let rec tyAmp_of_list =  fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in {:ctyp| $t & $(tyAmp_of_list ts) |} ];
+        let _loc = loc_of t in {:ctyp| $t & $(tyAmp_of_list ts) |} ];
 
 let rec tySta_of_list =  fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in {:ctyp| $t * $(tySta_of_list ts) |} ];
+        let _loc = loc_of t in {:ctyp| $t * $(tySta_of_list ts) |} ];
 
 (* LA *)  
 let  tyApp_of_list = fun
@@ -328,9 +328,9 @@ let  tyApp_of_list = fun
     | [t] -> t
     | [t::ts] ->
         List.fold_left
-          (fun x y -> let _loc = loc_of_ctyp  x in {:ctyp| $x $y |}) t ts];
+          (fun x y -> let _loc = loc_of  x in {:ctyp| $x $y |}) t ts];
 
-        (* let _loc = loc_of_ctyp t in {:ctyp| $t  $(tyApp_of_list ts) |} ]; *)
+        (* let _loc = loc_of t in {:ctyp| $t  $(tyApp_of_list ts) |} ]; *)
   
 (* LA *)
 let tyVarApp_of_list (_loc,ls)=
@@ -346,53 +346,53 @@ let rec stSem_of_list = fun
     [ [] -> {:str_item@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_str_item t in {:str_item| $t ; $(stSem_of_list ts) |} ];
+        let _loc = loc_of t in {:str_item| $t ; $(stSem_of_list ts) |} ];
   (* FIXME introduces Nil here *)    
 let rec sgSem_of_list = fun
     [ [] -> {:sig_item@ghost||}
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_sig_item t in {:sig_item| $t ; $(sgSem_of_list ts) |} ];
+        let _loc = loc_of t in {:sig_item| $t ; $(sgSem_of_list ts) |} ];
 
 let rec biAnd_of_list =  fun
     [ [] -> {:binding@ghost||}
     | [b] -> b
     | [b::bs] ->
-        let _loc = loc_of_binding b in {:binding| $b and $(biAnd_of_list bs) |} ];
+        let _loc = loc_of b in {:binding| $b and $(biAnd_of_list bs) |} ];
 
 let rec rbSem_of_list =  fun
     [ [] -> {:rec_binding@ghost||}
     | [b] -> b
     | [b::bs] ->
-        let _loc = loc_of_rec_binding b in
+        let _loc = loc_of b in
         {:rec_binding| $b; $(rbSem_of_list bs) |} ];
 
 let rec wcAnd_of_list = fun
     [ [] -> {:with_constr@ghost||}
     | [w] -> w
     | [w::ws] ->
-        let _loc = loc_of_with_constr w in
+        let _loc = loc_of w in
         {:with_constr| $w and $(wcAnd_of_list ws) |} ];
 
 let rec idAcc_of_list = fun
     [ [] -> assert false
     | [i] -> i
     | [i::is] ->
-        let _loc = loc_of_ident i in
+        let _loc = loc_of i in
         {:ident| $i . $(idAcc_of_list is) |} ];
 
 let rec idApp_of_list =  fun
     [ [] -> assert false
     | [i] -> i
     | [i::is] ->
-        let _loc = loc_of_ident i in
+        let _loc = loc_of i in
         {:ident| ($i $(idApp_of_list is)) |} ];
 
 let rec mcOr_of_list = fun
     [ [] -> {:match_case@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_match_case x in
+        let _loc = loc_of x in
         {:match_case| $x | $(mcOr_of_list xs) |} ];
   
 
@@ -400,70 +400,70 @@ let rec mbAnd_of_list = fun
     [ [] -> {:module_binding@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_module_binding x in
+        let _loc = loc_of x in
         {:module_binding| $x and $(mbAnd_of_list xs) |} ];
 
 let rec meApp_of_list = fun
     [ [] -> assert false
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_module_expr x in
+        let _loc = loc_of x in
         {:module_expr| $x $(meApp_of_list xs) |} ];
 
 let rec ceAnd_of_list =  fun
     [ [] -> {:class_expr@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_class_expr x in
+        let _loc = loc_of x in
         {:class_expr| $x and $(ceAnd_of_list xs) |} ];
 
 let rec ctAnd_of_list = fun
     [ [] -> {:class_type@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_class_type x in
+        let _loc = loc_of x in
         {:class_type| $x and $(ctAnd_of_list xs) |} ];
 
 let rec cgSem_of_list = fun
     [ [] -> {:class_sig_item@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_class_sig_item x in
+        let _loc = loc_of x in
         {:class_sig_item| $x; $(cgSem_of_list xs) |} ];
 
 let rec crSem_of_list = fun
     [ [] -> {:class_str_item@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_class_str_item x in
+        let _loc = loc_of x in
         {:class_str_item| $x; $(crSem_of_list xs) |} ];
 
 let rec paSem_of_list = fun
     [ [] -> {:patt@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_patt x in
+        let _loc = loc_of x in
         {:patt| $x; $(paSem_of_list xs) |} ];
 
 let rec paCom_of_list =  fun
     [ [] -> {:patt@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_patt x in
+        let _loc = loc_of x in
         {:patt| $x, $(paCom_of_list xs) |} ];
 
 let rec exSem_of_list =  fun
     [ [] -> {:expr@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_expr x in
+        let _loc = loc_of x in
         {:expr| $x; $(exSem_of_list xs) |} ];
 
 let rec exCom_of_list =  fun
     [ [] -> {:expr@ghost||}
     | [x] -> x
     | [x::xs] ->
-        let _loc = loc_of_expr x in
+        let _loc = loc_of x in
         {:expr| $x, $(exCom_of_list xs) |} ];
 (* LA *)  
 let  exApp_of_list = fun
@@ -471,7 +471,7 @@ let  exApp_of_list = fun
     | [t] -> t
     | [t::ts] ->
         List.fold_left
-          (fun x y -> let _loc = loc_of_expr  x in {:expr| $x $y |}) t ts];
+          (fun x y -> let _loc = loc_of  x in {:expr| $x $y |}) t ts];
 
 let ty_of_stl = fun
     [ (_loc, s, []) -> {:ctyp| $uid:s |}
@@ -483,7 +483,7 @@ let ty_of_sbt = fun
       (* {:ctyp| $lid:s : mutable $t |} *)
     | (_loc, s, false, t) -> {:ctyp| $lid:s : $t |} ];
 
-let bi_of_pe (p, e) = let _loc = loc_of_patt p in {:binding| $p = $e |};
+let bi_of_pe (p, e) = let _loc = loc_of p in {:binding| $p = $e |};
 let sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l);
 let record_type_of_list l = tySem_of_list (List.map ty_of_sbt l);
 let binding_of_pel l = biAnd_of_list (List.map bi_of_pe l);

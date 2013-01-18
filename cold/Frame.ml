@@ -70,7 +70,7 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
             (normal_simple_expr_of_ctyp ?arity ?names ~mk_tuple
                ~right_type_id ~left_type_id ~right_type_variable cxt) ty
       | ty ->
-          FanLoc.errorf (loc_of_ctyp ty) "normal_simple_expr_of_ctyp : %s"
+          FanLoc.errorf (loc_of ty) "normal_simple_expr_of_ctyp : %s"
             (dump_ctyp ty) in
     aux ty
 let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable 
@@ -99,7 +99,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                                    (`Nil _loc), (aux t)))))))
                  |> (apply (trans tctor))
            | _ ->
-               FanLoc.errorf (loc_of_ctyp ty)
+               FanLoc.errorf (loc_of ty)
                  "list_of_app in obj_simple_expr_of_ctyp: %s" (dump_ctyp ty))
       | `Arrow (_loc,t1,t2) ->
           aux
@@ -112,7 +112,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
             (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
                ~right_type_variable ?names ?arity ~mk_tuple) ty
       | ty ->
-          FanLoc.errorf (loc_of_ctyp ty) "obj_simple_expr_of_ctyp: %s"
+          FanLoc.errorf (loc_of ty) "obj_simple_expr_of_ctyp: %s"
             (dump_ctyp ty) in
     aux ty
 let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
@@ -173,7 +173,7 @@ let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
               (`Case
                  (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), (`Nil _loc),
                    acc)))
-      | t -> FanLoc.errorf (loc_of_ctyp t) "mk_prefix: %s" (dump_ctyp t) in
+      | t -> FanLoc.errorf (loc_of t) "mk_prefix: %s" (dump_ctyp t) in
     List.fold_right f vars (names <+ acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~destination  simple_expr_of_ctyp expr_of_ctyp expr_of_variant tydcl =
@@ -216,10 +216,8 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
         | `Sum (_,ctyp) ->
             let funct = expr_of_ctyp ctyp in
             mk_prefix ~names ~left_type_variable tyvars funct
-        | t ->
-            FanLoc.errorf (loc_of_ctyp t) "fun_of_tydcl inner %s"
-              (dump_ctyp t))
-   | t -> FanLoc.errorf (loc_of_ctyp t) "fun_of_tydcl outer %s" (dump_ctyp t) : 
+        | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl inner %s" (dump_ctyp t))
+   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_ctyp t) : 
   expr )
 let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 

@@ -22,7 +22,7 @@ let transform: full_id_transform -> ident -> expr =
                  (`Lid (_loc, (f x))))
          | t ->
              let dest = map_to_string t in
-             let src = Lib.Ident.to_string.contents t in
+             let src = FanAst.dump_ident t in
              (if not (Hashtbl.mem Basic.conversion_table src)
               then
                 (Hashtbl.add Basic.conversion_table src dest;

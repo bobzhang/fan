@@ -7,40 +7,6 @@ module type META_LOC =
 open FanUtil
 open LibUtil
 open StdLib
-let loc_of_ctyp: ctyp -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_patt: patt -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_expr: expr -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_module_type: module_type -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_module_expr: module_expr -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_sig_item: sig_item -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_str_item: str_item -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_class_type: class_type -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_class_sig_item: class_sig_item -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_class_expr: class_expr -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_class_str_item: class_str_item -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_with_constr: with_constr -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_binding: binding -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_rec_binding: rec_binding -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_module_binding: module_binding -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_match_case: match_case -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of_ident: ident -> FanLoc.t =
-  fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
 let safe_string_escaped s =
   if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
   then s
@@ -9552,39 +9518,39 @@ let rec tyOr_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts -> let _loc = loc_of_ctyp t in `Or (_loc, t, (tyOr_of_list ts))
+  | t::ts -> let _loc = loc_of t in `Or (_loc, t, (tyOr_of_list ts))
 let rec tyAnd_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts -> let _loc = loc_of_ctyp t in `And (_loc, t, (tyAnd_of_list ts))
+  | t::ts -> let _loc = loc_of t in `And (_loc, t, (tyAnd_of_list ts))
 let rec tySem_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts -> let _loc = loc_of_ctyp t in `Sem (_loc, t, (tySem_of_list ts))
+  | t::ts -> let _loc = loc_of t in `Sem (_loc, t, (tySem_of_list ts))
 let rec tyCom_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts -> let _loc = loc_of_ctyp t in `Com (_loc, t, (tyCom_of_list ts))
+  | t::ts -> let _loc = loc_of t in `Com (_loc, t, (tyCom_of_list ts))
 let rec tyAmp_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts -> let _loc = loc_of_ctyp t in `TyAmp (_loc, t, (tyAmp_of_list ts))
+  | t::ts -> let _loc = loc_of t in `TyAmp (_loc, t, (tyAmp_of_list ts))
 let rec tySta_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts -> let _loc = loc_of_ctyp t in `Sta (_loc, t, (tySta_of_list ts))
+  | t::ts -> let _loc = loc_of t in `Sta (_loc, t, (tySta_of_list ts))
 let tyApp_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts ->
       List.fold_left
-        (fun x  y  -> let _loc = loc_of_ctyp x in `TyApp (_loc, x, y)) t ts
+        (fun x  y  -> let _loc = loc_of x in `TyApp (_loc, x, y)) t ts
 let tyVarApp_of_list (_loc,ls) =
   let aux =
     function
@@ -9600,116 +9566,99 @@ let rec stSem_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts ->
-      let _loc = loc_of_str_item t in `Sem (_loc, t, (stSem_of_list ts))
+  | t::ts -> let _loc = loc_of t in `Sem (_loc, t, (stSem_of_list ts))
 let rec sgSem_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts ->
-      let _loc = loc_of_sig_item t in `Sem (_loc, t, (sgSem_of_list ts))
+  | t::ts -> let _loc = loc_of t in `Sem (_loc, t, (sgSem_of_list ts))
 let rec biAnd_of_list =
   function
   | [] -> `Nil ghost
   | b::[] -> b
-  | b::bs ->
-      let _loc = loc_of_binding b in `And (_loc, b, (biAnd_of_list bs))
+  | b::bs -> let _loc = loc_of b in `And (_loc, b, (biAnd_of_list bs))
 let rec rbSem_of_list =
   function
   | [] -> `Nil ghost
   | b::[] -> b
-  | b::bs ->
-      let _loc = loc_of_rec_binding b in `Sem (_loc, b, (rbSem_of_list bs))
+  | b::bs -> let _loc = loc_of b in `Sem (_loc, b, (rbSem_of_list bs))
 let rec wcAnd_of_list =
   function
   | [] -> `Nil ghost
   | w::[] -> w
-  | w::ws ->
-      let _loc = loc_of_with_constr w in `And (_loc, w, (wcAnd_of_list ws))
+  | w::ws -> let _loc = loc_of w in `And (_loc, w, (wcAnd_of_list ws))
 let rec idAcc_of_list =
   function
   | [] -> assert false
   | i::[] -> i
-  | i::is ->
-      let _loc = loc_of_ident i in `IdAcc (_loc, i, (idAcc_of_list is))
+  | i::is -> let _loc = loc_of i in `IdAcc (_loc, i, (idAcc_of_list is))
 let rec idApp_of_list =
   function
   | [] -> assert false
   | i::[] -> i
-  | i::is ->
-      let _loc = loc_of_ident i in `IdApp (_loc, i, (idApp_of_list is))
+  | i::is -> let _loc = loc_of i in `IdApp (_loc, i, (idApp_of_list is))
 let rec mcOr_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_match_case x in `Or (_loc, x, (mcOr_of_list xs))
+  | x::xs -> let _loc = loc_of x in `Or (_loc, x, (mcOr_of_list xs))
 let rec mbAnd_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_module_binding x in
-      `And (_loc, x, (mbAnd_of_list xs))
+  | x::xs -> let _loc = loc_of x in `And (_loc, x, (mbAnd_of_list xs))
 let rec meApp_of_list =
   function
   | [] -> assert false
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_module_expr x in `MeApp (_loc, x, (meApp_of_list xs))
+  | x::xs -> let _loc = loc_of x in `MeApp (_loc, x, (meApp_of_list xs))
 let rec ceAnd_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_class_expr x in `And (_loc, x, (ceAnd_of_list xs))
+  | x::xs -> let _loc = loc_of x in `And (_loc, x, (ceAnd_of_list xs))
 let rec ctAnd_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_class_type x in `CtAnd (_loc, x, (ctAnd_of_list xs))
+  | x::xs -> let _loc = loc_of x in `CtAnd (_loc, x, (ctAnd_of_list xs))
 let rec cgSem_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_class_sig_item x in
-      `Sem (_loc, x, (cgSem_of_list xs))
+  | x::xs -> let _loc = loc_of x in `Sem (_loc, x, (cgSem_of_list xs))
 let rec crSem_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs ->
-      let _loc = loc_of_class_str_item x in
-      `CrSem (_loc, x, (crSem_of_list xs))
+  | x::xs -> let _loc = loc_of x in `CrSem (_loc, x, (crSem_of_list xs))
 let rec paSem_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs -> let _loc = loc_of_patt x in `Sem (_loc, x, (paSem_of_list xs))
+  | x::xs -> let _loc = loc_of x in `Sem (_loc, x, (paSem_of_list xs))
 let rec paCom_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs -> let _loc = loc_of_patt x in `Com (_loc, x, (paCom_of_list xs))
+  | x::xs -> let _loc = loc_of x in `Com (_loc, x, (paCom_of_list xs))
 let rec exSem_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs -> let _loc = loc_of_expr x in `Sem (_loc, x, (exSem_of_list xs))
+  | x::xs -> let _loc = loc_of x in `Sem (_loc, x, (exSem_of_list xs))
 let rec exCom_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs -> let _loc = loc_of_expr x in `Com (_loc, x, (exCom_of_list xs))
+  | x::xs -> let _loc = loc_of x in `Com (_loc, x, (exCom_of_list xs))
 let exApp_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts ->
       List.fold_left
-        (fun x  y  -> let _loc = loc_of_expr x in `ExApp (_loc, x, y)) t ts
+        (fun x  y  -> let _loc = loc_of x in `ExApp (_loc, x, y)) t ts
 let ty_of_stl =
   function
   | (_loc,s,[]) -> `Id (_loc, (`Uid (_loc, s)))
@@ -9720,7 +9669,7 @@ let ty_of_sbt =
   | (_loc,s,true ,t) ->
       `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t)))
   | (_loc,s,false ,t) -> `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
-let bi_of_pe (p,e) = let _loc = loc_of_patt p in `Bind (_loc, p, e)
+let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
 let sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l)
 let record_type_of_list l = tySem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = biAnd_of_list (List.map bi_of_pe l)

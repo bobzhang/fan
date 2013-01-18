@@ -1,3 +1,4 @@
+open FanAst
 open LibUtil
 let rec normalize_acc =
   function
@@ -16,13 +17,11 @@ let rec tvar_of_ident =
   | `Lid (_loc,x)|`Uid (_loc,x) -> x
   | `IdAcc (_loc,`Uid (_,x),xs) -> x ^ ("__" ^ (tvar_of_ident xs))
   | _ -> failwith "internal error in the Grammar extension"
-let to_string =
-  ref (fun _  -> failwithf "Ident.to_string not implemented yet")
 let rec lid_of_ident =
   function
   | `IdAcc (_loc,_,i) -> lid_of_ident i
   | `Lid (_loc,lid) -> lid
-  | x -> invalid_arg ("lid_of_ident" ^ (to_string.contents x))
+  | x -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (FanAst.dump_ident x)
 let uid_of_ident =
   let rec aux =
     function
@@ -45,7 +44,7 @@ let map_to_string ident =
     | `IdApp (_loc,a,b) -> "app_" ^ ((aux a ("_to_" ^ (aux b acc))) ^ "_end")
     | `Lid (_loc,x) -> x ^ acc
     | `Uid (_loc,x) -> (String.lowercase x) ^ acc
-    | _ -> invalid_arg & ("map_to_string: " ^ (to_string.contents ident)) in
+    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (dump_ident t) in
   aux ident ""
 let ident_map f x =
   let lst = list_of_acc_ident x [] in
@@ -56,7 +55,7 @@ let ident_map f x =
       let l = List.length ls in
       (match List.drop (l - 2) ls with
        | q::(`Lid (_loc,y))::[] -> `IdAcc (_loc, q, (`Lid (_loc, (f y))))
-       | _ -> invalid_arg ("ident_map identifier" ^ (to_string.contents x)))
+       | _ -> FanLoc.errorf (loc_of x) "ident_map: %s" (dump_ident x))
 let ident_map_of_ident f x =
   let lst = list_of_acc_ident x [] in
   match lst with
@@ -66,9 +65,10 @@ let ident_map_of_ident f x =
       let l = List.length ls in
       (match List.drop (l - 2) ls with
        | q::(`Lid (_loc,y))::[] -> `IdAcc (_loc, q, (f y))
-       | _ -> invalid_arg ("ident_map identifier" ^ (to_string.contents x)))
+       | _ ->
+           FanLoc.errorf (loc_of x) "ident_map_of_ident: %s" (dump_ident x))
 let ident_map_full f x =
-  let _loc = FanAst.loc_of_ident x in
+  let _loc = FanAst.loc_of x in
   match ((uid_of_ident x), (lid_of_ident x)) with
   | (Some pre,s) -> `IdAcc (_loc, pre, (`Lid (_loc, (f s))))
   | (None ,s) -> `Lid (_loc, (f s))

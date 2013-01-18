@@ -85,12 +85,12 @@ let make_ctyp (styp : styp) tvar =
 let make_ctyp_patt styp tvar patt =
   match make_ctyp styp tvar with
   | None  -> patt
-  | Some t -> let _loc = FanAst.loc_of_patt patt in `PaTyc (_loc, patt, t)
+  | Some t -> let _loc = FanAst.loc_of patt in `PaTyc (_loc, patt, t)
 let make_ctyp_expr styp tvar expr =
   match make_ctyp styp tvar with
   | None  -> expr
   | Some t ->
-      let _loc = FanAst.loc_of_expr expr in `Constraint_exp (_loc, expr, t)
+      let _loc = FanAst.loc_of expr in `Constraint_exp (_loc, expr, t)
 let rec make_expr entry tvar =
   function
   | `TXmeta (_loc,n,tl,e,t) ->

@@ -102,7 +102,7 @@ let rec  normal_simple_expr_of_ctyp
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
     | ty ->
-        FanLoc.errorf (loc_of_ctyp ty) "normal_simple_expr_of_ctyp : %s" (dump_ctyp ty)] in
+        FanLoc.errorf (loc_of ty) "normal_simple_expr_of_ctyp : %s" (dump_ctyp ty)] in
   aux ty;
 
 
@@ -140,7 +140,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
               | t ->   {:expr| fun self -> $(aux t) |} ])
            |> apply (trans tctor)
         | _  ->
-            FanLoc.errorf  (loc_of_ctyp ty)
+            FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_expr_of_ctyp: %s"
               (dump_ctyp ty)]
     | `Arrow(_loc,t1,t2) -> 
@@ -150,7 +150,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
           (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
              ~right_type_variable ?names ?arity ~mk_tuple) ty 
     | ty ->
-        FanLoc.errorf (loc_of_ctyp ty) "obj_simple_expr_of_ctyp: %s" (dump_ctyp ty) ] in
+        FanLoc.errorf (loc_of ty) "obj_simple_expr_of_ctyp: %s" (dump_ctyp ty) ] in
   aux ty ;
 
 (*
@@ -235,7 +235,7 @@ let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
     [ `Quote(_,_,`Some(`Lid(_loc,s))) ->
         {| fun $(lid: varf s) -> $acc |}
     | t  ->
-        FanLoc.errorf (loc_of_ctyp t) "mk_prefix: %s" (dump_ctyp t)] in
+        FanLoc.errorf (loc_of t) "mk_prefix: %s" (dump_ctyp t)] in
   List.fold_right f vars ( names <+ acc);
 
 (*
@@ -290,10 +290,10 @@ let fun_of_tydcl
              handled in mkcon *)
           mk_prefix ~names ~left_type_variable tyvars funct
        | t ->
-           FanLoc.errorf  (loc_of_ctyp t)"fun_of_tydcl inner %s" (dump_ctyp t)
+           FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (dump_ctyp t)
         ]
   | t ->
-      FanLoc.errorf (loc_of_ctyp t) "fun_of_tydcl outer %s" (dump_ctyp t)
+      FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_ctyp t)
  ];
 
 

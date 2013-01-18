@@ -104,7 +104,7 @@ let apply () = begin
       [ [< (`KEYWORD ";", _); a = symb; 's >] ->
         let _loc =
           FanLoc.merge
-            (FanAst.loc_of_expr al) (FanAst.loc_of_expr a) in
+            (FanAst.loc_of al) (FanAst.loc_of a) in
         kont {:expr| $al; $a |} s
       | [< >] -> al ] in
     parser [< a = symb; 's >] -> kont a s
