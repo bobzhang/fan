@@ -378,18 +378,7 @@ let rec list_of_ctyp_app (x:ctyp) (acc:list ctyp) : list ctyp =
   | {||} -> acc (* remove the nil *)
   | x -> [x::acc] ]  ;
     
-    
-let rec list_of_patt x acc = match x with
-  [ {:patt||} -> acc
-  | {:patt| $x, $y |} | {:patt| $x; $y |} ->
-        list_of_patt x (list_of_patt y acc)
-  | x -> [x :: acc] ];
 
-let rec list_of_expr x acc =  match x with
-  [ {:expr||} -> acc
-  | {:expr| $x, $y |} | {:expr| $x; $y |} ->
-      list_of_expr x (list_of_expr y acc)
-  | x -> [x :: acc] ];
 
 
 let rec list_of_module_expr x acc = match x with
@@ -600,12 +589,4 @@ let dump_ident = to_string_of_printer dump#ident;
 let dump_match_case = to_string_of_printer dump#match_case;
 let dump_rec_binding = to_string_of_printer dump#rec_binding;  
 let dump_str_item = to_string_of_printer dump#str_item;
-
-
-
-
-
-
-
-
 

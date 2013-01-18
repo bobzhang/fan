@@ -34,7 +34,7 @@ let define ~expr ~patt eo x  = begin
         expr: Level "apply"
         [ `Uid $x; S{param} ->
           let el =  match param with 
-            [ {:expr| ($tup:e) |} -> FanAst.list_of_expr e []
+            [ {:expr| ($tup:e) |} -> FanAst.list_of_com' e []
             | e -> [e] ]  in
           if List.length el = List.length sl then
             let env = List.combine sl el in
@@ -44,7 +44,7 @@ let define ~expr ~patt eo x  = begin
         patt: Level "simple"
         [ `Uid $x; S{param} ->
           let pl = match param with
-            [ {:patt| ($tup:p) |} -> FanAst.list_of_patt p []
+            [ {:patt| ($tup:p) |} -> FanAst.list_of_com' p [] (* precise *)
             | p -> [p] ] in
           if List.length pl = List.length sl then
             let env = List.combine sl pl in

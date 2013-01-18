@@ -557,7 +557,7 @@ let apply () = begin
           match p2 with
             [ {| ($tup:p) |} ->
               List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
-                (FanAst.list_of_patt p [])
+                (FanAst.list_of_com' p []) (* precise *)
             | _ -> {|$p1 $p2 |}  ]
         | patt_constr{p1} -> p1
         | "lazy"; S{p} -> {| lazy $p |}  ]
