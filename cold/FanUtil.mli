@@ -29,5 +29,6 @@ val remove_underscores : string -> string
 
 type anti_cxt
 val mk_anti_cxt: ?c:string -> string -> string -> anti_cxt
-val add_anti_context: anti_cxt -> string -> anti_cxt      
+val add_anti_context: anti_cxt -> string -> anti_cxt
+val pp_print_anti_cxt : Format.formatter -> anti_cxt -> unit    
   

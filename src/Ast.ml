@@ -33,7 +33,12 @@
 
 
     type loc = FanLoc.t;
-    type ant = [= `Ant of (loc * string)];
+    type ant =
+        [ = `Ant of
+          (loc *
+             (* FanUtil.anti_cxt *)
+           string
+          )];
     type literal =
     [= `Chr of (loc * string) (* 'c' *)
     | `Int of (loc * string) (* 42 *)

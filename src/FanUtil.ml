@@ -55,14 +55,19 @@ let cvt_int_literal s =
   |'n' -> `NATIVEINT (Nativeint.(neg (of_string ("-" ^ s))),s)
   | _  -> `INT (- int_of_string ("-" ^ s),s) ];  
 
-
+open StdLib;    
+{:fans| keep on;
+ derive (Print );|};
+    
+{:ocaml|
 type anti_cxt = {
     cxt:string;
     sep: option string;
     decorations: mutable string; (* keep it simple first*)
     content:string;
   };
-
+  |};
+    
 let mk_anti_cxt ?(c="") n s =  {
   cxt = c;
   decorations= n;

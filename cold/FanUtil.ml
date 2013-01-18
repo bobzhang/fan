@@ -44,12 +44,20 @@ let cvt_int_literal s =
   | 'L' -> `INT64 ((let open Int64 in neg (of_string ("-" ^ s))), s)
   | 'n' -> `NATIVEINT ((let open Nativeint in neg (of_string ("-" ^ s))), s)
   | _ -> `INT ((- (int_of_string ("-" ^ s))), s)
+open StdLib
+let _ = ()
 type anti_cxt = 
   {
   cxt: string;
   sep: string option;
   mutable decorations: string;
   content: string} 
+let pp_print_anti_cxt: 'fmt -> anti_cxt -> 'result =
+  fun fmt  { cxt = a0; sep = a1; decorations = a2; content = a3 }  ->
+    Format.fprintf fmt
+      "@[<hv 1>{cxt:%a;@,sep:%a;@,decorations:%a;@,content:%a}@]"
+      pp_print_string a0 (pp_print_option pp_print_string) a1 pp_print_string
+      a2 pp_print_string a3
 let mk_anti_cxt ?(c= "")  n s =
   { cxt = c; decorations = n; content = s; sep = None }
 let add_anti_context s c = { s with decorations = (s.decorations ^ c) }
