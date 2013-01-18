@@ -251,115 +251,19 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
             ~decorate:(fun n  e  ->
                          let len = String.length n in
                          match n with
-                         | "antisig_item" ->
+                         | "antisig_item"|"antistr_item"|"antictyp"
+                           |"antipatt"|"antiexpr"|"antimodule_type"
+                           |"antimodule_expr"|"anticlass_type"
+                           |"anticlass_expr"|"anticlass_sig_item"
+                           |"anticlass_str_item"|"antiwith_constr"
+                           |"antibinding"|"antirec_binding"|"antimatch_case"
+                           |"antimodule_binding"|"antiident" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Ant")),
                                       (mloc _loc))), e)
-                         | "antistr_item" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antictyp" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antipatt" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antiexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antimodule_type" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antimodule_expr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "anticlass_type" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "anticlass_expr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "anticlass_sig_item" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "anticlass_str_item" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antiwith_constr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antibinding" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antirec_binding" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antimatch_case" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antimodule_binding" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "antiident" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Ant")),
-                                      (mloc _loc))), e)
-                         | "tupexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Tup")),
-                                      (mloc _loc))), e)
-                         | "tuppatt" ->
+                         | "tupexpr"|"tuppatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
@@ -377,17 +281,23 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Uid")),
                                       (mloc _loc))), e)
-                         | "lidexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Lid")),
-                                      (mloc _loc))), e)
                          | "uidident" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Uid")),
+                                      (mloc _loc))), e)
+                         | "uida_uident" ->
+                             `PaApp
+                               (_loc,
+                                 (`PaApp
+                                    (_loc, (`PaVrn (_loc, "Uid")),
+                                      (mloc _loc))), e)
+                         | "lidexpr" ->
+                             `PaApp
+                               (_loc,
+                                 (`PaApp
+                                    (_loc, (`PaVrn (_loc, "Lid")),
                                       (mloc _loc))), e)
                          | "lidident" ->
                              `PaApp
@@ -401,95 +311,47 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Lid")),
                                       (mloc _loc))), e)
-                         | "uida_uident" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Uid")),
-                                      (mloc _loc))), e)
-                         | "flopatt" ->
+                         | "flopatt"|"floexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Flo")),
                                       (mloc _loc))), e)
-                         | "intpatt" ->
+                         | "intexpr"|"intpatt" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Int")),
                                       (mloc _loc))), e)
-                         | "int32patt" ->
+                         | "int32patt"|"int32expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Int32")),
                                       (mloc _loc))), e)
-                         | "int64patt" ->
+                         | "int64patt"|"int64expr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Int64")),
                                       (mloc _loc))), e)
-                         | "nativeintpatt" ->
+                         | "nativeintpatt"|"nativeintexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "NativeInt")),
                                       (mloc _loc))), e)
-                         | "chrpatt" ->
+                         | "chrpatt"|"chrexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Chr")),
                                       (mloc _loc))), e)
-                         | "strpatt" ->
+                         | "strpatt"|"strexpr" ->
                              `PaApp
                                (_loc,
                                  (`PaApp
                                     (_loc, (`PaVrn (_loc, "Str")),
-                                      (mloc _loc))), e)
-                         | "strexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Str")),
-                                      (mloc _loc))), e)
-                         | "chrexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Chr")),
-                                      (mloc _loc))), e)
-                         | "intexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Int")),
-                                      (mloc _loc))), e)
-                         | "int32expr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Int32")),
-                                      (mloc _loc))), e)
-                         | "int64expr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Int64")),
-                                      (mloc _loc))), e)
-                         | "floexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "Flo")),
-                                      (mloc _loc))), e)
-                         | "nativeintexpr" ->
-                             `PaApp
-                               (_loc,
-                                 (`PaApp
-                                    (_loc, (`PaVrn (_loc, "NativeInt")),
                                       (mloc _loc))), e)
                          | "vrnexpr" ->
                              `PaApp
@@ -514,11 +376,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n  e  ->
                          match n with
-                         | "tupexpr" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Tup")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "tuppatt" ->
+                         | "tupexpr"|"tuppatt" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Tup")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
@@ -534,47 +392,39 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `ExApp
                                (_loc, (`ExVrn (_loc, "PaVrn")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "uidexpr" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Uid")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "lidexpr" ->
+                         | "lidident"|"lidexpr"|"lida_lident" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Lid")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "uidident" ->
+                         | "uida_uident"|"uidexpr"|"uidident" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Uid")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "lidident" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Lid")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "strexpr" ->
+                         | "strexpr"|"strpatt" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Str")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "chrexpr" ->
+                         | "chrpatt"|"chrexpr" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Chr")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "intexpr" ->
+                         | "intexpr"|"intpatt" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Int")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "int32expr" ->
+                         | "int32expr"|"int32patt" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Int32")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "int64expr" ->
+                         | "int64expr"|"int64patt" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Int64")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "floexpr" ->
+                         | "floexpr"|"flopatt" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Flo")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "nativeintexpr" ->
+                         | "nativeintexpr"|"nativeintpatt" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "NativeInt")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
@@ -684,34 +534,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc, (`ExVrn (_loc, "Id")),
                                       (`Id (_loc, (`Lid (_loc, "_loc")))))),
                                  x)
-                         | "flopatt" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Flo")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "intpatt" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Int")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "int32patt" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Int32")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "int64patt" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Int64")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "nativeintpatt" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "NativeInt")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "chrpatt" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Chr")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "strpatt" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Str")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
                          | "`nativeintpatt" ->
                              let e =
                                `ExApp
@@ -800,42 +622,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Flo")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "liststr_item" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "sem_of_list")))))),
-                                 e)
-                         | "listsig_item" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "sem_of_list")))))),
-                                 e)
-                         | "listclass_sig_item" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "sem_of_list")))))),
-                                 e)
-                         | "listclass_str_item" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "sem_of_list")))))),
-                                 e)
                          | "listmodule_expr" ->
                              `ExApp
                                (_loc,
@@ -854,60 +640,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (`Uid (_loc, (gm ()))),
                                            (`Lid (_loc, "mtApp_of_list")))))),
                                  e)
-                         | "listmodule_binding" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "and_of_list")))))),
-                                 e)
-                         | "listbinding" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "and_of_list")))))),
-                                 e)
-                         | "listbinding;" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "sem_of_list")))))),
-                                 e)
-                         | "listrec_binding" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "sem_of_list")))))),
-                                 e)
-                         | "listclass_type" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "and_of_list")))))),
-                                 e)
-                         | "listclass_expr" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "and_of_list")))))),
-                                 e)
                          | "listident" ->
                              `ExApp
                                (_loc,
@@ -917,7 +649,9 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (`Uid (_loc, (gm ()))),
                                            (`Lid (_loc, "idAcc_of_list")))))),
                                  e)
-                         | "listctypand" ->
+                         | "listbinding"|"listmodule_binding"
+                           |"listwith_constr"|"listclass_type"
+                           |"listclass_expr"|"listctypand" ->
                              `ExApp
                                (_loc,
                                  (`Id
@@ -925,15 +659,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (`IdAcc
                                          (_loc, (`Uid (_loc, (gm ()))),
                                            (`Lid (_loc, "and_of_list")))))),
-                                 e)
-                         | "listctyp;" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "sem_of_list")))))),
                                  e)
                          | "listctyp*" ->
                              `ExApp
@@ -944,7 +669,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (`Uid (_loc, (gm ()))),
                                            (`Lid (_loc, "sta_of_list")))))),
                                  e)
-                         | "listctyp|" ->
+                         | "listctyp|"|"listmatch_case" ->
                              `ExApp
                                (_loc,
                                  (`Id
@@ -952,15 +677,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                       (`IdAcc
                                          (_loc, (`Uid (_loc, (gm ()))),
                                            (`Lid (_loc, "or_of_list")))))),
-                                 e)
-                         | "listctyp," ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "com_of_list")))))),
                                  e)
                          | "listctyp&" ->
                              `ExApp
@@ -971,28 +687,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (`Uid (_loc, (gm ()))),
                                            (`Lid (_loc, "tyAmp_of_list")))))),
                                  e)
-                         | "listwith_constr" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "and_of_list")))))),
-                                 e)
-                         | "listmatch_case" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "or_of_list")))))),
-                                 e)
-                         | "antimatch_case" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
                          | "listmatch_caselettry" ->
                              `ExApp
                                (_loc,
@@ -1039,7 +733,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                               (_loc, (`Uid (_loc, (gm ()))),
                                                 (`Lid (_loc, "match_pre")))))),
                                       (`Lid (_loc, "match_case")))), e)
-                         | "listpatt," ->
+                         | "listctyp,"|"listpatt,"|"listexpr," ->
                              `ExApp
                                (_loc,
                                  (`Id
@@ -1048,25 +742,10 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (`Uid (_loc, (gm ()))),
                                            (`Lid (_loc, "com_of_list")))))),
                                  e)
-                         | "listpatt;" ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "sem_of_list")))))),
-                                 e)
-                         | "listexpr," ->
-                             `ExApp
-                               (_loc,
-                                 (`Id
-                                    (_loc,
-                                      (`IdAcc
-                                         (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "com_of_list")))))),
-                                 e)
-                         | "listexpr;" ->
+                         | "listbinding;"|"liststr_item"|"listsig_item"
+                           |"listclass_sig_item"|"listclass_str_item"
+                           |"listrec_binding"|"listctyp;"|"listpatt;"
+                           |"listexpr;" ->
                              `ExApp
                                (_loc,
                                  (`Id
@@ -1084,105 +763,19 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                          (_loc, (`Uid (_loc, (gm ()))),
                                            (`Lid (_loc, "tyVarApp_of_list")))))),
                                  e)
-                         | "antisig_item" ->
+                         | "antimatch_case"|"antisig_item"|"antistr_item"
+                           |"antictyp"|"antipatt"|"antiexpr"
+                           |"antimodule_type"|"antimodule_expr"
+                           |"anticlass_type"|"anticlass_expr"
+                           |"anticlass_sig_item"|"anticlass_str_item"
+                           |"antiwith_constr"|"antibinding"|"antirec_binding"
+                           |"antimodule_binding"|"antiident"
+                           |"antidirection_flag"|"antioverride_flag"
+                           |"antiprivate_flag"|"antimutable_flag"
+                           |"antivirtual_flag"|"antirow_var_flag"
+                           |"antirec_flag" ->
                              `ExApp
                                (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antistr_item" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antictyp" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antipatt" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antiexpr" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antimodule_type" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antimodule_expr" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "anticlass_type" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "anticlass_expr" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "anticlass_sig_item" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "anticlass_str_item" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antiwith_constr" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antibinding" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antirec_binding" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antimodule_binding" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antiident" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antidirection_flag" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antioverride_flag" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antiprivate_flag" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antimutable_flag" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antivirtual_flag" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antirow_var_flag" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "antirec_flag" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Ant")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "lida_lident" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Lid")),
-                                 (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-                         | "uida_uident" ->
-                             `ExApp
-                               (_loc, (`ExVrn (_loc, "Uid")),
                                  (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
                          | _ -> e)
       | e -> super#expr e
