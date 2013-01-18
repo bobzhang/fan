@@ -228,16 +228,15 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant
   currying ~arity res ;
   
 let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
-  with {patt:ctyp}
+  (* with {patt:ctyp} *)
   let open Transform in 
   let varf = basic_transform left_type_variable in
   let  f (var:ctyp) acc =
     match var with
-    [ {| +' $lid:s |} | {| -' $lid:s |}
-    | {| ' $lid:s |} ->
+    [ `Quote(_,_,`Some(`Lid(_loc,s))) ->
         {| fun $(lid: varf s) -> $acc |}
-    | _ -> begin  Ctyp.eprint var ;
-   invalid_arg "mk_prefix";end ] in
+    | t  ->
+        FanLoc.errorf (loc_of_ctyp t) "mk_prefix: %s" (dump_ctyp t)] in
   List.fold_right f vars ( names <+ acc);
 
 (*

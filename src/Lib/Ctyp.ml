@@ -498,27 +498,6 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) ~compose
     | t->
         FanLoc.errorf (loc_of_ctyp t)
           "reduce_data_ctors: %s" (dump_ctyp t)]) init  branches;
-  (* let rec loop acc t = *)
-  (*   match t with *)
-  (*   [ (\* {| $uid:cons of $tys |} *\) *)
-  (*     `Of (_loc, (`Id (_, (`Uid (_, cons)))), tys) *)
-  (*     -> *)
-  (*     f cons (FanAst.list_of_ctyp tys []) acc *)
-  (*   | (\* {| `$cons of $tys |} *\) *)
-  (*        `Of (_loc, (`TyVrn (_, `C (_,cons))), tys) *)
-  (*     -> *)
-  (*       f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc *)
-  (*   | (\* {| $uid:cons |} *\) *)
-  (*     `Id (_loc, (`Uid (_, cons))) *)
-  (*     -> f cons [] acc *)
-
-  (*   | (\* {| $t1 | $t2 |} *\) `Or(_loc,t1,t2)-> *)
-  (*       loop (loop acc t1) t2 *)
-  (*   | (\* {| |} *\) `Nil _  -> acc  (\* we don't handle the type constructs  below *\) *)
-  (*   | t -> *)
-  (*       FanLoc.errorf (FanAst.loc_of_ctyp t) *)
-  (*         "reduce_data_ctors: %s\n" (FanAst.dump_ctyp t) ] in *)
-  (* loop init ty; *)
     
 let view_sum (t:ctyp) =
   let bs = FanAst.list_of_ctyp t [] in
@@ -528,8 +507,8 @@ let view_sum (t:ctyp) =
         `branch (cons,[])
        | {|$uid:cons of $t|} ->
            `branch (cons, FanAst.list_of_ctyp t [])
-       | _ -> assert false ]) bs
-  ;
+       | _ -> assert false ]) bs ;
+
 (*
   {[
   L.Ctyp.reduce_variant {:ctyp| [= `Chr of (loc * string) (* 'c' *)
@@ -550,12 +529,13 @@ let view_sum (t:ctyp) =
   ]}
  *)    
 let view_variant (t:ctyp) : list vbranch =
-  let lst = FanAst.list_of_ctyp t []  in
+  (* let lst = FanAst.list_of_ctyp t []  in *)
+  let lst = list_of_or' t [] in 
   List.map (
   fun [ (* {| `$cons of $tup:t |} *)
         `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Tup (_, t)))
         ->
-        `variant (cons,FanAst.list_of_ctyp t [])
+        `variant (cons, list_of_star' t [])
       | (* {| `$cons of $t |} *)
         `Of (_loc, (`TyVrn (_, `C(_,cons))), t)
         -> `variant (cons, [t])
@@ -563,14 +543,14 @@ let view_variant (t:ctyp) : list vbranch =
         `TyVrn (_loc, `C (_,cons))
         ->
           `variant (cons, [])
-      | {| $id:i|} -> `abbrev i  
+      |  `Id (_loc,i) -> `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
       | u -> FanLoc.errorf (FanAst.loc_of_ctyp u)
             "view_variant %s" (FanAst.dump_ctyp u) ] ) lst ;
 
     
 let of_str_item = fun
-  [ {:str_item|type $x|} -> x
+  [ `Type(_,x) -> x
   | t ->
       FanLoc.errorf (FanAst.loc_of_str_item t)
         "Ctyp.of_str_item %s" (dump_str_item t) ];

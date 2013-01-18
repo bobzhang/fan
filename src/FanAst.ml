@@ -506,6 +506,19 @@ let rec list_of_com x acc =
   [`Com(_,x,y) ->
     list_of_com x (list_of_com y acc)
   | _ -> [x::acc]];
+
+let rec list_of_star' x acc =
+  match x with
+  [`Sta(_,x,y) ->
+    list_of_star' x (list_of_star' y acc)
+  | `Nil _ -> acc
+  | _ -> [x::acc]];
+    
+let rec list_of_star x acc =
+  match x with
+  [`Sta(_,x,y) ->
+    list_of_star x (list_of_star y acc)
+  | _ -> [x::acc] ]  ;
     
 let rec list_of_or x acc =
   match x with
