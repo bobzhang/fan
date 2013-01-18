@@ -4267,7 +4267,7 @@ let apply () =
                           (cst : 'e__7 ))))])],
             (Gram.mk_action
                (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->
-                  (FanAst.crSem_of_list l : 'class_structure ))))])]);
+                  (FanAst.sem_of_list l : 'class_structure ))))])]);
    Gram.extend (class_str_item : 'class_str_item Gram.t )
      (None,
        [(None, None,

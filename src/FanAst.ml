@@ -216,34 +216,6 @@ let rec sta_of_list = fun
   [ [] -> `Nil ghost
   | [t] -> t
   | [t::ts] -> let _loc = loc_of t in `Sta(_loc,t,sta_of_list ts)];
-let rec tyOr_of_list = fun
-    [ [] -> {:ctyp@ghost||}
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in {:ctyp| $t | $(tyOr_of_list ts) |} ];
-
-let rec tyAnd_of_list = fun
-    [ [] -> {:ctyp@ghost||}
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in {:ctyp| $t and $(tyAnd_of_list ts) |} ];
-
-let rec tySem_of_list = fun
-    [ [] -> {:ctyp@ghost||}
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in {:ctyp| $t ; $(tySem_of_list ts) |} ];
-
-let rec tyCom_of_list = fun
-    [ [] -> {:ctyp@ghost||}
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in {:ctyp| $t, $(tyCom_of_list ts) |} ];
-let rec tySta_of_list =  fun
-    [ [] -> {:ctyp@ghost||}
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in {:ctyp| $t * $(tySta_of_list ts) |} ];
 
 let rec tyAmp_of_list =  fun
     [ [] -> {:ctyp@ghost||}
@@ -271,39 +243,6 @@ let tyVarApp_of_list (_loc,ls)=
         List.fold_left (fun x y -> {:ctyp| $x '$y |}) {:ctyp| '$t |} ts ] in
   aux ls;
   
-  
-let rec stSem_of_list = fun
-    [ [] -> {:str_item@ghost||}
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in {:str_item| $t ; $(stSem_of_list ts) |} ];
-  (* FIXME introduces Nil here *)    
-let rec sgSem_of_list = fun
-    [ [] -> {:sig_item@ghost||}
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in {:sig_item| $t ; $(sgSem_of_list ts) |} ];
-
-let rec biAnd_of_list =  fun
-    [ [] -> {:binding@ghost||}
-    | [b] -> b
-    | [b::bs] ->
-        let _loc = loc_of b in {:binding| $b and $(biAnd_of_list bs) |} ];
-
-let rec rbSem_of_list =  fun
-    [ [] -> {:rec_binding@ghost||}
-    | [b] -> b
-    | [b::bs] ->
-        let _loc = loc_of b in
-        {:rec_binding| $b; $(rbSem_of_list bs) |} ];
-
-let rec wcAnd_of_list = fun
-    [ [] -> {:with_constr@ghost||}
-    | [w] -> w
-    | [w::ws] ->
-        let _loc = loc_of w in
-        {:with_constr| $w and $(wcAnd_of_list ws) |} ];
-
 let rec idAcc_of_list = fun
     [ [] -> assert false
     | [i] -> i
@@ -318,21 +257,6 @@ let rec idApp_of_list =  fun
         let _loc = loc_of i in
         {:ident| ($i $(idApp_of_list is)) |} ];
 
-let rec mcOr_of_list = fun
-    [ [] -> {:match_case@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:match_case| $x | $(mcOr_of_list xs) |} ];
-  
-
-let rec mbAnd_of_list = fun
-    [ [] -> {:module_binding@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:module_binding| $x and $(mbAnd_of_list xs) |} ];
-
 let rec meApp_of_list = fun
     [ [] -> assert false
     | [x] -> x
@@ -340,61 +264,6 @@ let rec meApp_of_list = fun
         let _loc = loc_of x in
         {:module_expr| $x $(meApp_of_list xs) |} ];
 
-let rec ceAnd_of_list =  fun
-    [ [] -> {:class_expr@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:class_expr| $x and $(ceAnd_of_list xs) |} ];
-
-let rec ctAnd_of_list = fun
-    [ [] -> {:class_type@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:class_type| $x and $(ctAnd_of_list xs) |} ];
-
-let rec cgSem_of_list = fun
-    [ [] -> {:class_sig_item@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:class_sig_item| $x; $(cgSem_of_list xs) |} ];
-
-let rec crSem_of_list = fun
-    [ [] -> {:class_str_item@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:class_str_item| $x; $(crSem_of_list xs) |} ];
-
-let rec paSem_of_list = fun
-    [ [] -> {:patt@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:patt| $x; $(paSem_of_list xs) |} ];
-
-let rec paCom_of_list =  fun
-    [ [] -> {:patt@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:patt| $x, $(paCom_of_list xs) |} ];
-
-let rec exSem_of_list =  fun
-    [ [] -> {:expr@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:expr| $x; $(exSem_of_list xs) |} ];
-
-let rec exCom_of_list =  fun
-    [ [] -> {:expr@ghost||}
-    | [x] -> x
-    | [x::xs] ->
-        let _loc = loc_of x in
-        {:expr| $x, $(exCom_of_list xs) |} ];
 (* LA   *)
 let  exApp_of_list = fun
     [ [] -> {:expr@ghost||}

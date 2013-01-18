@@ -9538,31 +9538,6 @@ let rec sta_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Sta (_loc, t, (sta_of_list ts))
-let rec tyOr_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `Or (_loc, t, (tyOr_of_list ts))
-let rec tyAnd_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `And (_loc, t, (tyAnd_of_list ts))
-let rec tySem_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `Sem (_loc, t, (tySem_of_list ts))
-let rec tyCom_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `Com (_loc, t, (tyCom_of_list ts))
-let rec tySta_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `Sta (_loc, t, (tySta_of_list ts))
 let rec tyAmp_of_list =
   function
   | [] -> `Nil ghost
@@ -9586,31 +9561,6 @@ let tyVarApp_of_list (_loc,ls) =
              `TyApp (_loc, x, (`Quote (_loc, (`Normal _loc), (`Some y)))))
           (`Quote (_loc, (`Normal _loc), (`Some t))) ts in
   aux ls
-let rec stSem_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `Sem (_loc, t, (stSem_of_list ts))
-let rec sgSem_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `Sem (_loc, t, (sgSem_of_list ts))
-let rec biAnd_of_list =
-  function
-  | [] -> `Nil ghost
-  | b::[] -> b
-  | b::bs -> let _loc = loc_of b in `And (_loc, b, (biAnd_of_list bs))
-let rec rbSem_of_list =
-  function
-  | [] -> `Nil ghost
-  | b::[] -> b
-  | b::bs -> let _loc = loc_of b in `Sem (_loc, b, (rbSem_of_list bs))
-let rec wcAnd_of_list =
-  function
-  | [] -> `Nil ghost
-  | w::[] -> w
-  | w::ws -> let _loc = loc_of w in `And (_loc, w, (wcAnd_of_list ws))
 let rec idAcc_of_list =
   function
   | [] -> assert false
@@ -9621,61 +9571,11 @@ let rec idApp_of_list =
   | [] -> assert false
   | i::[] -> i
   | i::is -> let _loc = loc_of i in `IdApp (_loc, i, (idApp_of_list is))
-let rec mcOr_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `Or (_loc, x, (mcOr_of_list xs))
-let rec mbAnd_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `And (_loc, x, (mbAnd_of_list xs))
 let rec meApp_of_list =
   function
   | [] -> assert false
   | x::[] -> x
   | x::xs -> let _loc = loc_of x in `MeApp (_loc, x, (meApp_of_list xs))
-let rec ceAnd_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `And (_loc, x, (ceAnd_of_list xs))
-let rec ctAnd_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `CtAnd (_loc, x, (ctAnd_of_list xs))
-let rec cgSem_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `Sem (_loc, x, (cgSem_of_list xs))
-let rec crSem_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `Sem (_loc, x, (crSem_of_list xs))
-let rec paSem_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `Sem (_loc, x, (paSem_of_list xs))
-let rec paCom_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `Com (_loc, x, (paCom_of_list xs))
-let rec exSem_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `Sem (_loc, x, (exSem_of_list xs))
-let rec exCom_of_list =
-  function
-  | [] -> `Nil ghost
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `Com (_loc, x, (exCom_of_list xs))
 let exApp_of_list =
   function
   | [] -> `Nil ghost

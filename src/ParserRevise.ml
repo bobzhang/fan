@@ -959,7 +959,7 @@ let apply () = begin
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_str_item" n s) |}
         | `Ant ((""|"cst"|"anti"|"list" as n),s); semi; S{cst} ->
             {| $(anti:mk_anti ~c:"class_str_item" n s); $cst |}
-        | L0 [ class_str_item{cst}; semi -> cst ]{l} -> FanAst.crSem_of_list l  ]
+        | L0 [ class_str_item{cst}; semi -> cst ]{l} -> FanAst.sem_of_list l  ]
       class_str_item:
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"class_str_item" n s) |}
