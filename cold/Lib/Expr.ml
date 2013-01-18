@@ -31,7 +31,7 @@ let bigarray_get loc arr arg =
   let coords =
     match arg with
     | `Tup (_loc,`Com (_,e1,e2))|`Com (_loc,e1,e2) ->
-        FanAst.list_of_expr e1 (FanAst.list_of_expr e2 [])
+        FanAst.list_of_com' e1 (FanAst.list_of_com' e2 [])
     | _ -> [arg] in
   match coords with
   | [] -> failwith "bigarray_get null list"

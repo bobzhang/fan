@@ -307,7 +307,13 @@ let generate (module_types:FSig.module_types) =
         (fun
           [`variant (s,ls) ->
             let arity = List.length ls in
-            Hashtbl.replace(* add *) tbl s arity
+            let try v = Hashtbl.find tbl s in
+            if v = arity then
+              ()
+            else
+              failwithf "%s has diffireent arities" s
+            with 
+              [Not_found -> Hashtbl.add tbl s arity]
           | _ -> ()]) branches
     | _ ->
         FanLoc.errorf

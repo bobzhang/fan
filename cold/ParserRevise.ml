@@ -2163,7 +2163,7 @@ let apply () =
                   (match p2 with
                    | `Tup (_loc,p) ->
                        List.fold_left (fun p1  p2  -> `PaApp (_loc, p1, p2))
-                         p1 (FanAst.list_of_patt p [])
+                         p1 (FanAst.list_of_com' p [])
                    | _ -> `PaApp (_loc, p1, p2) : 'patt ))));
          ([`Snterm (Gram.obj (patt_constr : 'patt_constr Gram.t ))],
            (Gram.mk_action

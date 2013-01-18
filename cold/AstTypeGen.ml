@@ -249,7 +249,15 @@ let generate (module_types : FSig.module_types) =
         List.iter
           (function
            | `variant (s,ls) ->
-               let arity = List.length ls in Hashtbl.replace tbl s arity
+               let arity = List.length ls in
+               ((try
+                   let v = Hashtbl.find tbl s in
+                   fun ()  ->
+                     if v = arity
+                     then ()
+                     else failwithf "%s has diffireent arities" s
+                 with | Not_found  -> (fun ()  -> Hashtbl.add tbl s arity)))
+                 ()
            | _ -> ()) branches
     | _ ->
         FanLoc.errorf (loc_of ty) "generate module_types %s" (dump_ctyp ty) in

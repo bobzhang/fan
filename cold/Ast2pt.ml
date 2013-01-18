@@ -346,7 +346,7 @@ let rec patt (x : patt) =
            error (loc_of f)
              "this is not a constructor, it cannot be applied in a pattern")
   | `Array (loc,p) ->
-      mkpat loc (Ppat_array (List.map patt (list_of_patt p [])))
+      mkpat loc (Ppat_array (List.map patt (list_of_sem' p [])))
   | `Chr (loc,s) ->
       mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
   | `Int (loc,s) ->
@@ -393,7 +393,7 @@ let rec patt (x : patt) =
            let c2 = char_of_char_token loc2 c2 in mkrangepat loc c1 c2
        | _ -> error loc "range pattern allowed only for characters")
   | `PaRec (loc,p) ->
-      let ps = list_of_patt p [] in
+      let ps = list_of_sem' p [] in
       let is_wildcard = function | `Any _loc -> true | _ -> false in
       let (wildcards,ps) = List.partition is_wildcard ps in
       let is_closed = if wildcards = [] then Closed else Open in
@@ -402,7 +402,7 @@ let rec patt (x : patt) =
       mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
   | `Tup (loc,`Com (_,p1,p2)) ->
       mkpat loc
-        (Ppat_tuple (List.map patt (list_of_patt p1 (list_of_patt p2 []))))
+        (Ppat_tuple (List.map patt (list_of_com' p1 (list_of_com' p2 []))))
   | `Tup (loc,_) -> error loc "singleton tuple pattern"
   | `PaTyc (loc,p,t) -> mkpat loc (Ppat_constraint ((patt p), (ctyp t)))
   | `PaTyp (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
@@ -474,7 +474,7 @@ let rec expr: expr -> expression =
            ((mkexp loc (Pexp_ident (array_function loc "Array" "get"))),
              [("", (expr e1)); ("", (expr e2))]))
   | `Array (loc,e) ->
-      mkexp loc (Pexp_array (List.map expr (list_of_expr e [])))
+      mkexp loc (Pexp_array (List.map expr (list_of_sem' e [])))
   | `ExAsf loc -> mkexp loc Pexp_assertfalse
   | `ExAss (loc,e,v) ->
       let e =
@@ -609,7 +609,7 @@ let rec expr: expr -> expression =
         | e::el ->
             let _loc = FanLoc.merge (loc_of e) _loc in
             mkexp _loc (Pexp_sequence ((expr e), (loop el))) in
-      loop (list_of_expr e [])
+      loop (list_of_sem' e [])
   | `Send (loc,e,s) ->
       (match s with
        | `Lid (_loc,s) -> mkexp loc (Pexp_send ((expr e), s))
@@ -624,7 +624,7 @@ let rec expr: expr -> expression =
   | `Try (loc,e,a) -> mkexp loc (Pexp_try ((expr e), (match_case a)))
   | `Tup (loc,`Com (_,e1,e2)) ->
       mkexp loc
-        (Pexp_tuple (List.map expr (list_of_expr e1 (list_of_expr e2 []))))
+        (Pexp_tuple (List.map expr (list_of_com' e1 (list_of_com' e2 []))))
   | `Tup (loc,_) -> error loc "singleton tuple"
   | `Constraint_exp (loc,e,t) ->
       mkexp loc (Pexp_constraint ((expr e), (Some (ctyp t)), None))

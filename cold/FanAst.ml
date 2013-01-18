@@ -9655,16 +9655,6 @@ let rec list_of_ctyp_app (x : ctyp) (acc : ctyp list) =
    | `TyApp (_loc,t1,t2) -> list_of_ctyp_app t1 (list_of_ctyp_app t2 acc)
    | `Nil _loc -> acc
    | x -> x :: acc : ctyp list )
-let rec list_of_patt x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `Com (_loc,x,y)|`Sem (_loc,x,y) -> list_of_patt x (list_of_patt y acc)
-  | x -> x :: acc
-let rec list_of_expr x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `Com (_loc,x,y)|`Sem (_loc,x,y) -> list_of_expr x (list_of_expr y acc)
-  | x -> x :: acc
 let rec list_of_module_expr x acc =
   match x with
   | `MeApp (_loc,x,y) -> list_of_module_expr x (list_of_module_expr y acc)
