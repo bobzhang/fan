@@ -220,7 +220,7 @@ and meth_list (fl:ctyp) (acc: list core_field_type) : list core_field_type =
   [ (* {||} *)
     `Nil _-> acc
   | (* {| $t1; $t2 |} *)
-    `TySem (_loc,t1,t2)
+    `Sem (_loc,t1,t2)
     -> meth_list t1 (meth_list t2 acc)
   | (* {| $lid:lab : $t |} *)
     `TyCol(_loc,`Id(_,`Lid(_,lab)),t) ->

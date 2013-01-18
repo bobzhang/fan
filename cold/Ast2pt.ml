@@ -153,7 +153,7 @@ and row_field (x : ctyp) acc =
 and meth_list (fl : ctyp) (acc : core_field_type list) =
   (match fl with
    | `Nil _ -> acc
-   | `TySem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
+   | `Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
    | `TyCol (_loc,`Id (_,`Lid (_,lab)),t) ->
        (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
    | x ->

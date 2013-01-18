@@ -4842,7 +4842,7 @@ let apply_ctyp () =
                (label_declaration_list : 'label_declaration_list Gram.t ))],
            (Gram.mk_action
               (fun (y : 'label_declaration_list)  _  (x : 'more_ctyp) 
-                 (_loc : FanLoc.t)  -> (`TySem (_loc, x, y) : 'ctyp_quot ))));
+                 (_loc : FanLoc.t)  -> (`Sem (_loc, x, y) : 'ctyp_quot ))));
          ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
           `Skeyword "|";
           `Snterm
@@ -4904,7 +4904,7 @@ let apply_ctyp () =
            (Gram.mk_action
               (fun (z : 'label_declaration_list)  _  (y : 'more_ctyp)  _ 
                  (x : 'more_ctyp)  (_loc : FanLoc.t)  ->
-                 (`TySem (_loc, (`TyCol (_loc, x, y)), z) : 'ctyp_quot ))));
+                 (`Sem (_loc, (`TyCol (_loc, x, y)), z) : 'ctyp_quot ))));
          ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
           `Skeyword "*";
           `Snterm (Gram.obj (star_ctyp : 'star_ctyp Gram.t ))],
@@ -5087,7 +5087,7 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun ((ml,v) : 'meth_list)  _  (m : 'meth_decl) 
                   (_loc : FanLoc.t)  ->
-                  (((`TySem (_loc, m, ml)), v) : 'meth_list ))));
+                  (((`Sem (_loc, m, ml)), v) : 'meth_list ))));
          ([`Snterm (Gram.obj (meth_decl : 'meth_decl Gram.t ));
           `Skeyword ";";
           `Snterm (Gram.obj (opt_dot_dot : 'opt_dot_dot Gram.t ))],
@@ -5744,7 +5744,7 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun (t2 : 'label_declaration_list)  _ 
                   (t1 : 'label_declaration)  (_loc : FanLoc.t)  ->
-                  (`TySem (_loc, t1, t2) : 'label_declaration_list ))));
+                  (`Sem (_loc, t1, t2) : 'label_declaration_list ))));
          ([`Snterm
              (Gram.obj (label_declaration : 'label_declaration Gram.t ));
           `Skeyword ";"],

@@ -179,20 +179,19 @@ let gen_ty_of_tydcl ~off tydcl =
    ]}
    
  *)
-let list_of_record ty =
-  try 
-    ty |> list_of_sem |> List.map (
+let list_of_record (ty:ctyp) =
+    list_of_sem' ty [] |> List.map (
        fun
-         [ {| $lid:label : mutable $ctyp  |} ->
-           {label; ctyp; is_mutable=true}
-         | {| $lid:label :  $ctyp  |} ->
-           {label; ctyp; is_mutable=false}
-         | t0 -> raise & Unhandled t0 ])
-  with
-    [Unhandled t0 ->
-      invalid_arg &
-      (sprintf "list_of_record inner: {|%s|} outer: {|%s|}"
-                     (to_string t0) (to_string ty)) ];
+         [ 
+           (* {| $lid:label : mutable $ctyp  |} *)
+           `TyCol (_, (`Id (_, (`Lid (_, label)))), (`Mutable (_, ctyp))) ->
+             {label; ctyp; is_mutable=true}
+         | `TyCol (_, (`Id (_, (`Lid (_, label)))), ctyp)
+             (* {| $lid:label :  $ctyp  |} *) -> 
+               {label; ctyp; is_mutable=false}
+         | t0 ->
+             FanLoc.errorf (loc_of_ctyp t0)
+               "list_of_record %s" (dump_ctyp t0) ]);
 
   
 (*

@@ -256,7 +256,7 @@ class eq =
             (self#loc a0 b0) && (self#ctyp a1 b1)
         | (`TyCol (a0,a1,a2),`TyCol (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
-        | (`TySem (a0,a1,a2),`TySem (b0,b1,b2)) ->
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
@@ -924,10 +924,9 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in
           let a2 = self#ctyp a2 in `TyCol (a0, a1, a2)
-      | `TySem (a0,a1,a2) ->
+      | `Sem (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#ctyp a1 in
-          let a2 = self#ctyp a2 in `TySem (a0, a1, a2)
+          let a1 = self#ctyp a1 in let a2 = self#ctyp a2 in `Sem (a0, a1, a2)
       | `Com (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in let a2 = self#ctyp a2 in `Com (a0, a1, a2)
@@ -1745,8 +1744,8 @@ class print =
         | `TyCol (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
-        | `TySem (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`TySem@ %a@ %a@ %a)@]" self#loc a0
+        | `Sem (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
         | `Com (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc a0
@@ -2432,7 +2431,7 @@ class fold =
       | `TyRec (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `TyCol (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
-      | `TySem (a0,a1,a2) ->
+      | `Sem (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `Com (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
@@ -3064,7 +3063,7 @@ class fold2 =
         | (`TyCol (a0,a1,a2),`TyCol (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
-        | (`TySem (a0,a1,a2),`TySem (b0,b1,b2)) ->
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
         | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
@@ -3808,8 +3807,8 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
     | `TyCol (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
-    | `TySem (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`TySem@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Sem (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
     | `Com (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4475,7 +4474,7 @@ class iter =
            self#meta_option (fun self  -> self#alident) a2)
       | `TyRec (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `TyCol (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
-      | `TySem (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
+      | `Sem (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `Com (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `Sum (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `Of (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
@@ -5035,10 +5034,10 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
             let a2 = self#ctyp a2 b2 in `TyCol (a0, a1, a2)
-        | (`TySem (a0,a1,a2),`TySem (b0,b1,b2)) ->
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
-            let a2 = self#ctyp a2 b2 in `TySem (a0, a1, a2)
+            let a2 = self#ctyp a2 b2 in `Sem (a0, a1, a2)
         | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
@@ -6182,13 +6181,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "TyCol")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TySem (a0,a1,a2) ->
+            | `Sem (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "TySem")),
+                            (_loc, (`ExVrn (_loc, "Sem")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
             | `Com (a0,a1,a2) ->
@@ -7933,13 +7932,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "TyCol")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TySem (a0,a1,a2) ->
+            | `Sem (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "TySem")),
+                            (_loc, (`PaVrn (_loc, "Sem")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
             | `Com (a0,a1,a2) ->
@@ -9422,7 +9421,7 @@ let rec tySem_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts -> let _loc = loc_of_ctyp t in `TySem (_loc, t, (tySem_of_list ts))
+  | t::ts -> let _loc = loc_of_ctyp t in `Sem (_loc, t, (tySem_of_list ts))
 let rec tyCom_of_list =
   function
   | [] -> `Nil ghost
@@ -9602,6 +9601,20 @@ let rec list_of_com x acc =
   match x with
   | `Com (_,x,y) -> list_of_com x (list_of_com y acc)
   | _ -> x :: acc
+let rec list_of_com' x acc =
+  match x with
+  | `Com (_,x,y) -> list_of_com' x (list_of_com' y acc)
+  | `Nil _ -> acc
+  | _ -> x :: acc
+let rec list_of_star' x acc =
+  match x with
+  | `Sta (_,x,y) -> list_of_star' x (list_of_star' y acc)
+  | `Nil _ -> acc
+  | _ -> x :: acc
+let rec list_of_star x acc =
+  match x with
+  | `Sta (_,x,y) -> list_of_star x (list_of_star y acc)
+  | _ -> x :: acc
 let rec list_of_or x acc =
   match x with
   | `Or (_,x,y) -> list_of_or x (list_of_or y acc)
@@ -9614,6 +9627,11 @@ let rec list_of_or' x acc =
 let rec list_of_sem x acc =
   match x with
   | `Sem (_,x,y) -> list_of_sem x (list_of_sem y acc)
+  | _ -> x :: acc
+let rec list_of_sem' x acc =
+  match x with
+  | `Sem (_,x,y) -> list_of_sem' x (list_of_sem' y acc)
+  | `Nil _ -> acc
   | _ -> x :: acc
 let rec list_of_binding x acc =
   match x with
@@ -9630,7 +9648,7 @@ let rec list_of_with_constr x acc =
 let rec list_of_ctyp x acc =
   match x with
   | `Nil _loc -> acc
-  | `TyAmp (_loc,x,y)|`Com (_loc,x,y)|`Sta (_loc,x,y)|`TySem (_loc,x,y)
+  | `TyAmp (_loc,x,y)|`Com (_loc,x,y)|`Sta (_loc,x,y)|`Sem (_loc,x,y)
     |`And (_loc,x,y)|`Or (_loc,x,y) -> list_of_ctyp x (list_of_ctyp y acc)
   | x -> x :: acc
 let rec list_of_ctyp_app (x : ctyp) (acc : ctyp list) =
@@ -9755,8 +9773,8 @@ class clean_ast =
         |`Alias (_loc,t,`Nil _l)|`Arrow (_loc,t,`Nil _l)
         |`Arrow (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
         |`Of (_loc,t,`Nil _l)|`And (_loc,`Nil _l,t)|`And (_loc,t,`Nil _l)
-        |`TySem (_loc,t,`Nil _l)|`TySem (_loc,`Nil _l,t)
-        |`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)|`TyAmp (_loc,t,`Nil _l)
+        |`Sem (_loc,t,`Nil _l)|`Sem (_loc,`Nil _l,t)|`Com (_loc,`Nil _l,t)
+        |`Com (_loc,t,`Nil _l)|`TyAmp (_loc,t,`Nil _l)
         |`TyAmp (_loc,`Nil _l,t)|`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l)
           -> t
       | t -> t

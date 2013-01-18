@@ -34,7 +34,7 @@ type ctyp =
   | `TyPol of (loc* ctyp* ctyp) | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
   | `TyRec of (loc* ctyp) | `TyCol of (loc* ctyp* ctyp)
-  | `TySem of (loc* ctyp* ctyp) | `Com of (loc* ctyp* ctyp)
+  | `Sem of (loc* ctyp* ctyp) | `Com of (loc* ctyp* ctyp)
   | `Sum of (loc* ctyp) | `Of of (loc* ctyp* ctyp)
   | `And of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp)
   | `Private of (loc* ctyp) | `Mutable of (loc* ctyp) | `Tup of (loc* ctyp)

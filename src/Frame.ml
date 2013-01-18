@@ -228,7 +228,6 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant
   currying ~arity res ;
   
 let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
-  (* with {patt:ctyp} *)
   let open Transform in 
   let varf = basic_transform left_type_variable in
   let  f (var:ctyp) acc =
@@ -247,17 +246,17 @@ let fun_of_tydcl
     ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record ~destination
     simple_expr_of_ctyp expr_of_ctyp expr_of_variant  tydcl :expr =   with {patt:ctyp}  
       
-      let  (name,len) = Ctyp.name_length_of_tydcl tydcl in
-      let result_type = Ctyp.mk_dest_type ~destination ({:ident|$lid:name|},len) in
+    let  (name,len) = Ctyp.name_length_of_tydcl tydcl in
+    let result_type = Ctyp.mk_dest_type ~destination ({:ident|$lid:name|},len) in
         match tydcl with 
         [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
-      let ctyp =
+        let ctyp =
         match ctyp with
         [ ( {| $_ == $ctyp |} (* the latter reifys the structure is used here *)
         |  {| private $ctyp |} ) -> ctyp
         | _ -> ctyp ] in
         match ctyp with (* FIXME the error message is wrong when using lang_at *)
-        [ {|  { $t}  |} ->       
+        [ (* {|  { $t}  |} *) `TyRec(_loc,t) ->       
           let cols =  Ctyp.list_of_record t  in
           let patt = Patt.mk_record ~arity  cols in
           let info =

@@ -30,7 +30,7 @@ let comma a b = `Com (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
   let _loc = FanLoc.merge (FanAst.loc_of_ctyp a) (FanAst.loc_of_ctyp b) in
-  `TySem (_loc, a, b)
+  `Sem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
     match t with
@@ -48,7 +48,7 @@ let list_of_com ty =
 let list_of_sem ty =
   let rec loop t acc =
     match t with
-    | `TySem (_loc,t1,t2) -> t1 :: (loop t2 acc)
+    | `Sem (_loc,t1,t2) -> t1 :: (loop t2 acc)
     | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
@@ -111,21 +111,16 @@ let ty_name_of_tydcl =
       invalid_arg & ((sprintf "ctyp_of_tydcl{|%s|}\n") & (to_string tydcl))
 let gen_ty_of_tydcl ~off  tydcl =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
-let list_of_record ty =
-  try
-    (ty |> list_of_sem) |>
-      (List.map
-         (function
-          | `TyCol (_loc,`Id (_,`Lid (_,label)),`Mutable (_,ctyp)) ->
-              { label; ctyp; is_mutable = true }
-          | `TyCol (_loc,`Id (_,`Lid (_,label)),ctyp) ->
-              { label; ctyp; is_mutable = false }
-          | t0 -> raise & (Unhandled t0)))
-  with
-  | Unhandled t0 ->
-      invalid_arg &
-        (sprintf "list_of_record inner: {|%s|} outer: {|%s|}" (to_string t0)
-           (to_string ty))
+let list_of_record (ty : ctyp) =
+  (list_of_sem' ty []) |>
+    (List.map
+       (function
+        | `TyCol (_,`Id (_,`Lid (_,label)),`Mutable (_,ctyp)) ->
+            { label; ctyp; is_mutable = true }
+        | `TyCol (_,`Id (_,`Lid (_,label)),ctyp) ->
+            { label; ctyp; is_mutable = false }
+        | t0 ->
+            FanLoc.errorf (loc_of_ctyp t0) "list_of_record %s" (dump_ctyp t0)))
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta_of_list
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
@@ -311,11 +306,11 @@ let view_sum (t : ctyp) =
          `branch (cons, (FanAst.list_of_ctyp t []))
      | _ -> assert false) bs
 let view_variant (t : ctyp) =
-  (let lst = FanAst.list_of_ctyp t [] in
+  (let lst = list_of_or' t [] in
    List.map
      (function
       | `Of (_loc,`TyVrn (_,`C (_,cons)),`Tup (_,t)) ->
-          `variant (cons, (FanAst.list_of_ctyp t []))
+          `variant (cons, (list_of_star' t []))
       | `Of (_loc,`TyVrn (_,`C (_,cons)),t) -> `variant (cons, [t])
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
       | `Id (_loc,i) -> `abbrev i
@@ -324,7 +319,7 @@ let view_variant (t : ctyp) =
             (FanAst.dump_ctyp u)) lst : vbranch list )
 let of_str_item =
   function
-  | `Type (_loc,x) -> x
+  | `Type (_,x) -> x
   | t ->
       FanLoc.errorf (FanAst.loc_of_str_item t) "Ctyp.of_str_item %s"
         (dump_str_item t)

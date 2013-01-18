@@ -506,7 +506,13 @@ let rec list_of_com x acc =
   [`Com(_,x,y) ->
     list_of_com x (list_of_com y acc)
   | _ -> [x::acc]];
-
+let rec list_of_com' x acc =
+  match x with
+  [`Com(_,x,y) ->
+    list_of_com' x (list_of_com' y acc)
+  |`Nil _ -> acc
+  | _ -> [x::acc] ]  ;
+    
 let rec list_of_star' x acc =
   match x with
   [`Sta(_,x,y) ->
@@ -538,6 +544,13 @@ let rec list_of_sem x acc =
   [`Sem(_,x,y) ->
     list_of_sem x (list_of_sem y acc)
   | _ -> [x::acc]]  ;
+
+let rec list_of_sem' x acc =
+  match x with
+  [`Sem(_,x,y) ->
+    list_of_sem' x (list_of_sem' y acc)
+  |`Nil _ -> acc
+  | _ -> [x::acc] ] ;
     
 let rec list_of_binding x acc =
     match x with

@@ -145,7 +145,8 @@
           
     | `TyRec of (loc * ctyp) (* { t } *) (* { foo : int ; bar : mutable string } *)
     | `TyCol of (loc * ctyp * ctyp) (* t : t *)
-    | `TySem of (loc * ctyp * ctyp) (* t; t *)
+    (* | `TySem of (loc * ctyp * ctyp) (\* t; t *\) *)
+    | `Sem of (loc * ctyp * ctyp) (* t; t *)
     | `Com of (loc * ctyp * ctyp) (* t, t *)
     | `Sum of (loc * ctyp) (* [ t ] *) (* [ A of int * string | B ] *)
     | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)

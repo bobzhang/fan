@@ -73,10 +73,6 @@ val transform_module_types : FSig.module_types ->
 val reduce_data_ctors:
     ctyp ->
       'a -> compose:('e -> 'a  -> 'a) -> (string -> FanAst.ctyp list -> 'e) -> 'a    
-(* val reduce_data_ctors : *)
-(*   ctyp -> *)
-(*     'a -> (string -> ctyp list -> 'a -> 'a) -> 'a(\* (\\* 'a LibUtil.ErrorMonad. *\\)result *\) *)
-
 (* @raise Invalid_argument *)        
 val of_str_item: str_item -> ctyp 
 

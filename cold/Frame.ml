@@ -167,15 +167,13 @@ let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
     let varf = basic_transform left_type_variable in
     let f (var : ctyp) acc =
       match var with
-      | `Quote (_loc,`Positive _,`Some `Lid (_,s))
-        |`Quote (_loc,`Negative _,`Some `Lid (_,s))
-        |`Quote (_loc,`Normal _,`Some `Lid (_,s)) ->
+      | `Quote (_,_,`Some `Lid (_loc,s)) ->
           `Fun
             (_loc,
               (`Case
                  (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), (`Nil _loc),
                    acc)))
-      | _ -> (Ctyp.eprint var; invalid_arg "mk_prefix") in
+      | t -> FanLoc.errorf (loc_of_ctyp t) "mk_prefix: %s" (dump_ctyp t) in
     List.fold_right f vars (names <+ acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~destination  simple_expr_of_ctyp expr_of_ctyp expr_of_variant tydcl =
