@@ -654,7 +654,7 @@ class eq =
       fun a0  b0  ->
         match (a0, b0) with
         | (`Nil a0,`Nil b0) -> self#loc a0 b0
-        | (`CrSem (a0,a1,a2),`CrSem (b0,b1,b2)) ->
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#class_str_item a1 b1)) &&
               (self#class_str_item a2 b2)
         | (`Eq (a0,a1,a2),`Eq (b0,b1,b2)) ->
@@ -1444,10 +1444,10 @@ class map =
     method class_str_item : class_str_item -> class_str_item=
       function
       | `Nil a0 -> let a0 = self#loc a0 in `Nil a0
-      | `CrSem (a0,a1,a2) ->
+      | `Sem (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#class_str_item a1 in
-          let a2 = self#class_str_item a2 in `CrSem (a0, a1, a2)
+          let a2 = self#class_str_item a2 in `Sem (a0, a1, a2)
       | `Eq (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in let a2 = self#ctyp a2 in `Eq (a0, a1, a2)
@@ -2208,8 +2208,8 @@ class print =
       fun fmt  ->
         function
         | `Nil a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" self#loc a0
-        | `CrSem (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`CrSem@ %a@ %a@ %a)@]" self#loc a0
+        | `Sem (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc a0
               self#class_str_item a1 self#class_str_item a2
         | `Eq (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc a0
@@ -2768,7 +2768,7 @@ class fold =
     method class_str_item : class_str_item -> 'self_type=
       function
       | `Nil a0 -> self#loc a0
-      | `CrSem (a0,a1,a2) ->
+      | `Sem (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#class_str_item a1 in self#class_str_item a2
       | `Eq (a0,a1,a2) ->
@@ -2819,7 +2819,6 @@ let loc_of =
   | `Sta (_loc,_,_) -> _loc
   | `Match (_loc,_,_) -> _loc
   | `Obj (_loc,_,_) -> _loc
-  | `CrSem (_loc,_,_) -> _loc
   | `TyPol (_loc,_,_) -> _loc
   | `Val (_loc,_,_) -> _loc
   | `C (_loc,_) -> _loc
@@ -3680,7 +3679,7 @@ class fold2 =
       fun a0  b0  ->
         match (a0, b0) with
         | (`Nil a0,`Nil b0) -> self#loc a0 b0
-        | (`CrSem (a0,a1,a2),`CrSem (b0,b1,b2)) ->
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#class_str_item a1 b1 in self#class_str_item a2 b2
         | (`Eq (a0,a1,a2),`Eq (b0,b1,b2)) ->
@@ -4435,8 +4434,8 @@ and pp_print_class_str_item: 'fmt -> class_str_item -> 'result =
   fun fmt  ->
     function
     | `Nil a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc a0
-    | `CrSem (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`CrSem@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Sem (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_class_str_item a1 pp_print_class_str_item a2
     | `Eq (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4870,7 +4869,7 @@ class iter =
     method class_str_item : class_str_item -> 'result=
       function
       | `Nil a0 -> self#loc a0
-      | `CrSem (a0,a1,a2) ->
+      | `Sem (a0,a1,a2) ->
           (self#loc a0; self#class_str_item a1; self#class_str_item a2)
       | `Eq (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `Inherit (a0,a1,a2,a3) ->
@@ -5790,10 +5789,10 @@ class map2 =
       fun a0  b0  ->
         match (a0, b0) with
         | (`Nil a0,`Nil b0) -> let a0 = self#loc a0 b0 in `Nil a0
-        | (`CrSem (a0,a1,a2),`CrSem (b0,b1,b2)) ->
+        | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#class_str_item a1 b1 in
-            let a2 = self#class_str_item a2 b2 in `CrSem (a0, a1, a2)
+            let a2 = self#class_str_item a2 b2 in `Sem (a0, a1, a2)
         | (`Eq (a0,a1,a2),`Eq (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
@@ -7588,13 +7587,13 @@ module Make(MetaLoc:META_LOC) =
             function
             | `Nil a0 ->
                 `ExApp (_loc, (`ExVrn (_loc, "Nil")), (meta_loc _loc a0))
-            | `CrSem (a0,a1,a2) ->
+            | `Sem (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "CrSem")),
+                            (_loc, (`ExVrn (_loc, "Sem")),
                               (meta_loc _loc a0))),
                          (meta_class_str_item _loc a1))),
                     (meta_class_str_item _loc a2))
@@ -9337,13 +9336,13 @@ module Make(MetaLoc:META_LOC) =
             function
             | `Nil a0 ->
                 `PaApp (_loc, (`PaVrn (_loc, "Nil")), (meta_loc _loc a0))
-            | `CrSem (a0,a1,a2) ->
+            | `Sem (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "CrSem")),
+                            (_loc, (`PaVrn (_loc, "Sem")),
                               (meta_loc _loc a0))),
                          (meta_class_str_item _loc a1))),
                     (meta_class_str_item _loc a2))
@@ -9514,6 +9513,31 @@ let rec is_expr_constructor =
   | `ExVrn (_loc,_) -> true
   | _ -> false
 let ghost = FanLoc.ghost
+let rec or_of_list =
+  function
+  | [] -> `Nil ghost
+  | t::[] -> t
+  | t::ts -> let _loc = loc_of t in `Or (_loc, t, (or_of_list ts))
+let rec and_of_list =
+  function
+  | [] -> `Nil ghost
+  | t::[] -> t
+  | t::ts -> let _loc = loc_of t in `And (_loc, t, (and_of_list ts))
+let rec sem_of_list =
+  function
+  | [] -> `Nil ghost
+  | t::[] -> t
+  | t::ts -> let _loc = loc_of t in `Sem (_loc, t, (sem_of_list ts))
+let rec com_of_list =
+  function
+  | [] -> `Nil ghost
+  | t::[] -> t
+  | t::ts -> let _loc = loc_of t in `Com (_loc, t, (com_of_list ts))
+let rec sta_of_list =
+  function
+  | [] -> `Nil ghost
+  | t::[] -> t
+  | t::ts -> let _loc = loc_of t in `Sta (_loc, t, (sta_of_list ts))
 let rec tyOr_of_list =
   function
   | [] -> `Nil ghost
@@ -9534,16 +9558,16 @@ let rec tyCom_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Com (_loc, t, (tyCom_of_list ts))
-let rec tyAmp_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `TyAmp (_loc, t, (tyAmp_of_list ts))
 let rec tySta_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Sta (_loc, t, (tySta_of_list ts))
+let rec tyAmp_of_list =
+  function
+  | [] -> `Nil ghost
+  | t::[] -> t
+  | t::ts -> let _loc = loc_of t in `TyAmp (_loc, t, (tyAmp_of_list ts))
 let tyApp_of_list =
   function
   | [] -> `Nil ghost
@@ -9631,7 +9655,7 @@ let rec crSem_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `CrSem (_loc, x, (crSem_of_list xs))
+  | x::xs -> let _loc = loc_of x in `Sem (_loc, x, (crSem_of_list xs))
 let rec paSem_of_list =
   function
   | [] -> `Nil ghost
@@ -9663,16 +9687,16 @@ let ty_of_stl =
   function
   | (_loc,s,[]) -> `Id (_loc, (`Uid (_loc, s)))
   | (_loc,s,tl) ->
-      `Of (_loc, (`Id (_loc, (`Uid (_loc, s)))), (tyAnd_of_list tl))
+      `Of (_loc, (`Id (_loc, (`Uid (_loc, s)))), (and_of_list tl))
 let ty_of_sbt =
   function
   | (_loc,s,true ,t) ->
       `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t)))
   | (_loc,s,false ,t) -> `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
 let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
-let sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l)
-let record_type_of_list l = tySem_of_list (List.map ty_of_sbt l)
-let binding_of_pel l = biAnd_of_list (List.map bi_of_pe l)
+let sum_type_of_list l = or_of_list (List.map ty_of_stl l)
+let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
+let binding_of_pel l = and_of_list (List.map bi_of_pe l)
 let rec pel_of_binding =
   function
   | `And (_loc,b1,b2) -> (pel_of_binding b1) @ (pel_of_binding b2)
@@ -9780,7 +9804,7 @@ let rec list_of_class_sig_item x acc =
 let rec list_of_class_str_item x acc =
   match x with
   | `Nil _loc -> acc
-  | `CrSem (_loc,x,y) ->
+  | `Sem (_loc,x,y) ->
       list_of_class_str_item x (list_of_class_str_item y acc)
   | x -> x :: acc
 let rec list_of_class_type x acc =
@@ -9897,7 +9921,7 @@ class clean_ast =
       | csg -> csg
     method! class_str_item cst =
       match super#class_str_item cst with
-      | `CrSem (_loc,`Nil _l,cst)|`CrSem (_loc,cst,`Nil _l) -> cst
+      | `Sem (_loc,`Nil _l,cst)|`Sem (_loc,cst,`Nil _l) -> cst
       | cst -> cst
   end
 class reloc _loc = object  inherit  map method! loc _ = _loc end

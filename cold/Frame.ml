@@ -274,7 +274,7 @@ let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names
              if Ctyp.is_recursive tydcl then `Recursive _loc else `ReNil _loc
            and binding = mk_binding tydcl in `Value (_loc, rec_flag, binding))) : 
     str_item ) in
-  let item = FanAst.stSem_of_list (List.map fs lst) in
+  let item = FanAst.sem_of_list (List.map fs lst) in
   match module_name with
   | None  -> item
   | Some m -> `Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item)))
@@ -301,7 +301,7 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
   let fs (ty : types) =
     match ty with
     | `Mutual named_types ->
-        FanAst.crSem_of_list (List.map mk_class_str_item named_types)
+        FanAst.sem_of_list (List.map mk_class_str_item named_types)
     | `Single ((name,tydcl) as named_type) ->
         (match Ctyp.abstract_list tydcl with
          | Some n ->
@@ -314,7 +314,7 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
          | None  -> mk_class_str_item named_type) in
   let (extras,lst) = Ctyp.transform_module_types lst in
   let body =
-    List.fold_left (fun acc  types  -> `CrSem (_loc, acc, (fs types)))
+    List.fold_left (fun acc  types  -> `Sem (_loc, acc, (fs types)))
       (`Nil _loc) lst in
   let body =
     let items =
@@ -327,7 +327,7 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
            `CrMth
              (_loc, (`Lid (_loc, dest)), (`OvNil _loc), (`PrNil _loc),
                (unknown len), ty)) extras in
-    `CrSem (_loc, body, (FanAst.crSem_of_list items)) in
+    `Sem (_loc, body, (FanAst.sem_of_list items)) in
   let v = Ctyp.mk_obj class_name base body in
   Hashtbl.iter (fun _  v  -> eprintf "@[%a@]@." FSig.pp_print_warning_type v)
     tbl;

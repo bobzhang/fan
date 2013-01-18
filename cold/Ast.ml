@@ -148,7 +148,7 @@ and class_expr =
   | `And of (loc* class_expr* class_expr)
   | `Eq of (loc* class_expr* class_expr) | ant] 
 and class_str_item =
-  [ `Nil of loc | `CrSem of (loc* class_str_item* class_str_item)
+  [ `Nil of loc | `Sem of (loc* class_str_item* class_str_item)
   | `Eq of (loc* ctyp* ctyp)
   | `Inherit of (loc* override_flag* class_expr* alident meta_option)
   | `Initializer of (loc* expr)

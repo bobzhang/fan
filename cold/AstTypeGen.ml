@@ -226,7 +226,7 @@ let mk_variant_iter _cons params =
      params |>
        (List.map
           (fun { name_expr; id_expr;_}  -> `ExApp (_loc, name_expr, id_expr))) in
-   `Seq (_loc, (FanAst.exSem_of_list lst)) : expr )
+   `Seq (_loc, (FanAst.sem_of_list lst)) : expr )
 let mk_tuple_iter params = (mk_variant_iter "" params : expr )
 let mk_record_iter cols =
   let lst =
@@ -234,7 +234,7 @@ let mk_record_iter cols =
       (List.map
          (fun { info = { name_expr; id_expr;_};_}  ->
             `ExApp (_loc, name_expr, id_expr))) in
-  `Seq (_loc, (FanAst.exSem_of_list lst))
+  `Seq (_loc, (FanAst.sem_of_list lst))
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
     ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter

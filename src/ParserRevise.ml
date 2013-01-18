@@ -1250,7 +1250,7 @@ let apply_ctyp () = begin
       | a_uident{s}; "of"; constructor_arg_list{t} -> {| $(id:(s:>ident)) of $t |}
       | a_uident{s}; ":"; ctyp{t} ->
           let (tl, rt) = Ctyp.to_generalized t in
-            {| $(id:(s:>ident)) : ($(FanAst.tyAnd_of_list tl) -> $rt) |}
+            {| $(id:(s:>ident)) : ($(FanAst.and_of_list tl) -> $rt) |}
       | a_uident{s} -> {| $(id:(s:>ident)) |} ]
       constructor_declaration:
       [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}

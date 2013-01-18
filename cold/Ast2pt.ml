@@ -1090,7 +1090,7 @@ and class_str_item (c : class_str_item) l =
   match c with
   | `Nil _ -> l
   | `Eq (loc,t1,t2) -> (mkcf loc (Pcf_constr ((ctyp t1), (ctyp t2)))) :: l
-  | `CrSem (_loc,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
+  | `Sem (_loc,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
   | `Inherit (loc,ov,ce,pb) ->
       let opb =
         match pb with

@@ -122,7 +122,7 @@ let tuple _loc =
   function
   | [] -> `Id (_loc, (`Uid (_loc, "()")))
   | p::[] -> p
-  | e::es -> `Tup (_loc, (`Com (_loc, e, (FanAst.paCom_of_list es))))
+  | e::es -> `Tup (_loc, (`Com (_loc, e, (FanAst.com_of_list es))))
 let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi
@@ -130,9 +130,9 @@ let mk_record ?(arity= 1)  cols =
          `PaEq (_loc, (`Lid (_loc, label)), (`Id (_loc, (xid ~off i))))) cols in
   let res =
     zfold_left ~start:1 ~until:(arity - 1)
-      ~acc:(`PaRec (_loc, (FanAst.paSem_of_list (mk_list 0))))
+      ~acc:(`PaRec (_loc, (FanAst.sem_of_list (mk_list 0))))
       (fun acc  i  ->
-         comma acc (`PaRec (_loc, (FanAst.paSem_of_list (mk_list i))))) in
+         comma acc (`PaRec (_loc, (FanAst.sem_of_list (mk_list i))))) in
   if arity > 1 then `Tup (_loc, res) else res
 let mk_tuple ~arity  ~number  =
   match arity with

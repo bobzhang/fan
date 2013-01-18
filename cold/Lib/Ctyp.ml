@@ -193,7 +193,7 @@ let mk_obj class_name base body =
                      (`Quote
                         (_loc, (`Normal _loc),
                           (`Some (`Lid (_loc, "self_type"))))))),
-                (`CrSem
+                (`Sem
                    (_loc,
                      (`Inherit
                         (_loc, (`OvNil _loc),

@@ -97,7 +97,7 @@ let bigarray_get loc arr arg =
                   (loc, c1,
                     (`Sem
                        (loc, c2,
-                         (`Sem (loc, c3, (FanAst.exSem_of_list coords))))))))))
+                         (`Sem (loc, c3, (FanAst.sem_of_list coords))))))))))
 let bigarray_set loc var newval =
   match var with
   | `ExApp
@@ -595,7 +595,7 @@ let tuple _loc =
   function
   | [] -> `Id (_loc, (`Uid (_loc, "()")))
   | p::[] -> p
-  | e::es -> `Tup (_loc, (`Com (_loc, e, (FanAst.exCom_of_list es))))
+  | e::es -> `Tup (_loc, (`Com (_loc, e, (FanAst.com_of_list es))))
 let mkumin loc prefix arg =
   match arg with
   | `Int (_loc,n) -> `Int (loc, (String.neg n))
@@ -613,7 +613,7 @@ let mk_record label_exprs =
     List.map
       (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
       label_exprs in
-  `Record (_loc, (FanAst.rbSem_of_list rec_bindings), (`Nil _loc))
+  `Record (_loc, (FanAst.sem_of_list rec_bindings), (`Nil _loc))
 let failure =
   `ExApp
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
@@ -972,9 +972,8 @@ let currying match_cases ~arity  =
     let names = List.init arity (fun i  -> x ~off:i 0) in
     let exprs = List.map (fun s  -> `Id (_loc, (`Lid (_loc, s)))) names in
     names <+
-      (`Match
-         (_loc, (tuple_of_list exprs), (FanAst.mcOr_of_list match_cases)))
-  else `Fun (_loc, (FanAst.mcOr_of_list match_cases))
+      (`Match (_loc, (tuple_of_list exprs), (FanAst.or_of_list match_cases)))
+  else `Fun (_loc, (FanAst.or_of_list match_cases))
 let unknown len =
   if len = 0
   then

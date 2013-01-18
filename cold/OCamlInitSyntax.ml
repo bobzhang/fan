@@ -201,10 +201,10 @@ let wrap directive_handler pa init_loc cs =
   loop init_loc
 let parse_implem ?(directive_handler= fun _  -> None)  _loc cs =
   let l = wrap directive_handler (Gram.parse implem) _loc cs in
-  FanAst.stSem_of_list l
+  FanAst.sem_of_list l
 let parse_interf ?(directive_handler= fun _  -> None)  _loc cs =
   let l = wrap directive_handler (Gram.parse interf) _loc cs in
-  FanAst.sgSem_of_list l
+  FanAst.sem_of_list l
 let print_interf ?input_file:_  ?output_file:_  _ =
   failwith "No interface printer"
 let print_implem ?input_file:_  ?output_file:_  _ =

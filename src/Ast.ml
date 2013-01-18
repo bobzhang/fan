@@ -472,7 +472,7 @@
   and class_str_item =
     [= `Nil of loc
       (* cst ; cst *)
-    | `CrSem of (loc * class_str_item * class_str_item)
+    | `Sem of (loc * class_str_item * class_str_item)
       (* type t = t *)
     | `Eq of (loc * ctyp * ctyp)
       (* inherit(!)? ce (as s)? *)

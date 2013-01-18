@@ -323,7 +323,7 @@ let gen_definition _loc l =
                          (`IdAcc (_loc, (gm ()), (`Lid (_loc, "next")))))),
                     (`Id (_loc, (`Lid (_loc, "lexbuf")))))))),
           (`Or
-             (_loc, (FanAst.mcOr_of_list cases),
+             (_loc, (FanAst.or_of_list cases),
                (`Case
                   (_loc, (`Any _loc), (`Nil _loc),
                     (`ExApp
@@ -391,12 +391,12 @@ let gen_definition _loc l =
       (`Case
          (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), (`Nil _loc),
            (`LetIn
-              (_loc, (`ReNil _loc), (FanAst.biAnd_of_list tables),
+              (_loc, (`ReNil _loc), (FanAst.and_of_list tables),
                 (`LetIn
-                   (_loc, (`ReNil _loc), (FanAst.biAnd_of_list parts),
+                   (_loc, (`ReNil _loc), (FanAst.and_of_list parts),
                      (`LetIn
                         (_loc, b,
-                          (FanAst.biAnd_of_list (Array.to_list states)),
+                          (FanAst.and_of_list (Array.to_list states)),
                           (`Seq
                              (_loc,
                                (`Sem
@@ -423,7 +423,7 @@ let gen_definition _loc l =
                                                    (`Lid (_loc, "lexbuf")))))),
                                          (`Or
                                             (_loc,
-                                              (FanAst.mcOr_of_list
+                                              (FanAst.or_of_list
                                                  (Array.to_list cases)),
                                               (`Case
                                                  (_loc, (`Any _loc),

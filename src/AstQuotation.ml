@@ -445,42 +445,42 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "`flopatt" ->
                 let e = {| FanUtil.float_repres $e |} in 
                 {| `Flo ($(mloc _loc), $e) |}
-            | "liststr_item" -> {| $(uid:gm()).stSem_of_list $e |}
-            | "listsig_item" -> {| $(uid:gm()).sgSem_of_list $e |}
-            | "listclass_sig_item" -> {| $(uid:gm()).cgSem_of_list $e |}
-            | "listclass_str_item" -> {| $(uid:gm()).crSem_of_list $e |}
-            | "listmodule_expr" -> {| $(uid:gm()).meApp_of_list $e |}
+            | "liststr_item" -> {| $(uid:gm()).sem_of_list $e |}
+            | "listsig_item" -> {| $(uid:gm()).sem_of_list $e |}
+            | "listclass_sig_item" -> {| $(uid:gm()).sem_of_list $e |}
+            | "listclass_str_item" -> {| $(uid:gm()).sem_of_list $e |}
+            | "listmodule_expr" -> {| $(uid:gm()).app_of_list $e |}
             | "listmodule_type" -> {| $(uid:gm()).mtApp_of_list $e |}
-            | "listmodule_binding" -> {| $(uid:gm()).mbAnd_of_list $e |}
-            | "listbinding" -> {| $(uid:gm()).biAnd_of_list $e |}
-            | "listbinding;" -> {| $(uid:gm()).biSem_of_list $e |}
-            | "listrec_binding" -> {| $(uid:gm()).rbSem_of_list $e |}
-            | "listclass_type" -> {| $(uid:gm()).ctAnd_of_list $e |}
-            | "listclass_expr" -> {| $(uid:gm()).ceAnd_of_list $e |}
+            | "listmodule_binding" -> {| $(uid:gm()).and_of_list $e |}
+            | "listbinding" -> {| $(uid:gm()).and_of_list $e |}
+            | "listbinding;" -> {| $(uid:gm()).sem_of_list $e |}
+            | "listrec_binding" -> {| $(uid:gm()).sem_of_list $e |}
+            | "listclass_type" -> {| $(uid:gm()).and_of_list $e |}
+            | "listclass_expr" -> {| $(uid:gm()).and_of_list $e |}
             | "listident" -> {| $(uid:gm()).idAcc_of_list $e |}
-            | "listctypand" -> {| $(uid:gm()).tyAnd_of_list $e |}
-            | "listctyp;" -> {| $(uid:gm()).tySem_of_list $e |}
-            | "listctyp*" -> {| $(uid:gm()).tySta_of_list $e |}
-            | "listctyp|" -> {| $(uid:gm()).tyOr_of_list $e |}
-            | "listctyp," -> {| $(uid:gm()).tyCom_of_list $e |}
+            | "listctypand" -> {| $(uid:gm()).and_of_list $e |}
+            | "listctyp;" -> {| $(uid:gm()).sem_of_list $e |}
+            | "listctyp*" -> {| $(uid:gm()).sta_of_list $e |}
+            | "listctyp|" -> {| $(uid:gm()).or_of_list $e |}
+            | "listctyp," -> {| $(uid:gm()).com_of_list $e |}
             | "listctyp&" -> {| $(uid:gm()).tyAmp_of_list $e |}
-            | "listwith_constr" -> {| $(uid:gm()).wcAnd_of_list $e |}
+            | "listwith_constr" -> {| $(uid:gm()).and_of_list $e |}
 
             (* staging problems here *)      
-            | "listmatch_case" -> {| $(uid:gm()).mcOr_of_list $e |}
+            | "listmatch_case" -> {| $(uid:gm()).or_of_list $e |}
             | "antimatch_case" -> {|  `Ant ($(mloc _loc), $e) |}
             | "listmatch_caselettry" ->
                 {| (($(uid:gm()).match_pre)#match_case
-                      ($(uid:gm()).mcOr_of_list $e)) |}
+                      ($(uid:gm()).or_of_list $e)) |}
             | "antimatch_caselettry" ->
                 {| $(uid:gm()).match_pre#match_case (`Ant ($(mloc _loc), $e)) |}
             | "match_caselettry" ->
                 {| $(uid:gm()).match_pre#match_case $e |}
                   
-            | "listpatt," -> {| $(uid:gm()).paCom_of_list $e |}
-            | "listpatt;" -> {| $(uid:gm()).paSem_of_list $e |}
-            | "listexpr," -> {| $(uid:gm()).exCom_of_list $e |}
-            | "listexpr;" -> {| $(uid:gm()).exSem_of_list $e |}
+            | "listpatt," -> {| $(uid:gm()).com_of_list $e |}
+            | "listpatt;" -> {| $(uid:gm()).sem_of_list $e |}
+            | "listexpr," -> {| $(uid:gm()).com_of_list $e |}
+            | "listexpr;" -> {| $(uid:gm()).sem_of_list $e |}
             | "listforall" -> {| $(uid:gm()).tyVarApp_of_list $e |}
             | "antisig_item" -> {| `Ant ($(mloc _loc), $e) |}
             | "antistr_item" -> {| `Ant ($(mloc _loc), $e) |}

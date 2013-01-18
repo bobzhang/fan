@@ -13,95 +13,6 @@ open FanUtil;
 open LibUtil;  
 open StdLib;
 
-(* DEFINE QUICK_LOC = fun x -> Obj.(magic ( field (field (repr x) 1) 0)); *)
-(* let loc_of : ctyp -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : patt -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : expr -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : module_type -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : module_expr -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : sig_item -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : str_item -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : class_type -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : class_sig_item -> FanLoc.t =QUICK_LOC; *)
-(* let loc_of : class_expr -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : class_str_item -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : with_constr -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : binding -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : rec_binding -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : module_binding -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : match_case -> FanLoc.t = QUICK_LOC; *)
-(* let loc_of : ident -> FanLoc.t = QUICK_LOC; *)
-
-(* let loc_of x = *)
-(*   match x with *)
-(*   [ `Nil _ *)
-(*   | `Id _ *)
-(*   | `ExAcc _ *)
-(*   | `Ant _ *)
-(*   | `ExApp _ *)
-(*   | `ExAre _ *)
-(*   | `Array _ *)
-(*   | `Sem _ *)
-(*   | `ExAsf _ *)
-(*   | `ExAsr _ *)
-(*   | `ExAss _ *)
-(*   | `For _ *)
-(*   | `Fun _ *)
-(*   | `IfThenElse _ *)
-(*   | `Label _ *)
-(*   | `Lazy _ *)
-(*   | `LetIn _ *)
-(*   | `LetModule _ *)
-(*   | `Match _ *)
-(*   | `New _ *)
-(*   | `Obj _ *)
-(*   | `OptLabl _ *)
-(*   | `OvrInst _ *)
-(*   | `Record _ *)
-(*   | `Seq _ *)
-(*   | `Send _ *)
-(*   | `StringDot _ *)
-(*   | `Try _ *)
-(*   | `Tup _ *)
-(*   | `Com _ *)
-(*   | `Constraint_exp _ *)
-(*   | `ExCoe _ *)
-(*   | `ExVrn _ *)
-(*   | `While _ *)
-(*   | `Let_open _ *)
-(*   | `LocalTypeFun _ *)
-(*   | `Package_expr _ *)
-(*   | `Chr _ *)
-(*   | `Int _ *)
-(*   | `Int32 _ *)
-(*   | `Int64 _ *)
-(*   | `Flo _ *)
-(*   | `NativeInt _ *)
-(*   | `Str _ *)
-(*   (\* | `Id _ *\) *)
-(*   | `Alias _ *)
-(*   | `Any _ *)
-(*   | `PaApp _ *)
-(*   (\* | `Array _  *\) *)
-(*   (\* | `Com _ *\) *)
-(*   (\* | `Sem _ *\) *)
-(*   (\* | `Label _ *\) *)
-(*   | `PaOlbi _ *)
-(*   | `PaOrp _ *)
-(*   | `PaRng _ *)
-(*   | `PaRec _ *)
-(*   | `PaEq _ *)
-(*   (\* | `Tup _ *\) *)
-(*   | `PaTyc _ *)
-(*   | `PaTyp _ *)
-(*   | `PaVrn _ *)
-(*   (\* | `Lazy _ *\) *)
-(*   | `ModuleUnpack _ *)
-(*     ->  QUICK_LOC x]; *)
-      
-
-  
-
 
 let safe_string_escaped s =
   if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
@@ -114,25 +25,18 @@ let strip_loc_list f lst =
  derive
    (Map2
       Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq (* Strip *)
-
       GenLoc
    ); |};
 
   
-{:ocaml|
-INCLUDE "src/Ast.ml";
-|};
-
-
+{:ocaml|INCLUDE "src/Ast.ml"; |};
 
 #default_quotation "expr";;
-(* DEFINE GETLOC(x) = loc_of(x); *)
 module MExpr = struct
   INCLUDE "src/MetaTemplate.ml"; (* FIXME INCLUDE as a langauge :default *)
 end;
 
 #default_quotation "patt"  ;;
-(* DEFINE GETLOC(x) = loc_of(x); *)
 module MPatt = struct
   INCLUDE "src/MetaTemplate.ml";
 end;
@@ -286,6 +190,32 @@ let rec is_expr_constructor = fun
     | _ -> false ];
 
 let ghost = FanLoc.ghost ; (* to refine *)
+
+let rec or_of_list = fun
+  [ [] -> `Nil ghost
+  | [t] -> t
+  | [t::ts] ->
+      let _loc = loc_of t in `Or(_loc,t,or_of_list ts)];
+
+let rec and_of_list = fun
+  [ [] -> `Nil ghost
+  | [t] -> t
+  | [t::ts] -> let _loc = loc_of t in `And(_loc,t,and_of_list ts)];
+
+let rec sem_of_list = fun
+  [ [] -> `Nil ghost
+  | [t] -> t
+  | [t::ts] -> let _loc = loc_of t in `Sem(_loc,t,sem_of_list ts) ];
+
+let rec com_of_list = fun
+  [ [] -> `Nil ghost
+  | [t] -> t
+  | [t::ts] ->
+      let _loc = loc_of t in `Com(_loc,t,com_of_list ts)  ];
+let rec sta_of_list = fun
+  [ [] -> `Nil ghost
+  | [t] -> t
+  | [t::ts] -> let _loc = loc_of t in `Sta(_loc,t,sta_of_list ts)];
 let rec tyOr_of_list = fun
     [ [] -> {:ctyp@ghost||}
     | [t] -> t
@@ -309,6 +239,11 @@ let rec tyCom_of_list = fun
     | [t] -> t
     | [t::ts] ->
         let _loc = loc_of t in {:ctyp| $t, $(tyCom_of_list ts) |} ];
+let rec tySta_of_list =  fun
+    [ [] -> {:ctyp@ghost||}
+    | [t] -> t
+    | [t::ts] ->
+        let _loc = loc_of t in {:ctyp| $t * $(tySta_of_list ts) |} ];
 
 let rec tyAmp_of_list =  fun
     [ [] -> {:ctyp@ghost||}
@@ -316,11 +251,6 @@ let rec tyAmp_of_list =  fun
     | [t::ts] ->
         let _loc = loc_of t in {:ctyp| $t & $(tyAmp_of_list ts) |} ];
 
-let rec tySta_of_list =  fun
-    [ [] -> {:ctyp@ghost||}
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in {:ctyp| $t * $(tySta_of_list ts) |} ];
 
 (* LA *)  
 let  tyApp_of_list = fun
@@ -465,7 +395,7 @@ let rec exCom_of_list =  fun
     | [x::xs] ->
         let _loc = loc_of x in
         {:expr| $x, $(exCom_of_list xs) |} ];
-(* LA *)  
+(* LA   *)
 let  exApp_of_list = fun
     [ [] -> {:expr@ghost||}
     | [t] -> t
@@ -475,7 +405,7 @@ let  exApp_of_list = fun
 
 let ty_of_stl = fun
     [ (_loc, s, []) -> {:ctyp| $uid:s |}
-    | (_loc, s, tl) -> {:ctyp| $uid:s of $(tyAnd_of_list tl) |} ];
+    | (_loc, s, tl) -> {:ctyp| $uid:s of $(and_of_list tl) |} ];
 
 let ty_of_sbt = fun
     [ (_loc, s, true, t) ->
@@ -484,9 +414,9 @@ let ty_of_sbt = fun
     | (_loc, s, false, t) -> {:ctyp| $lid:s : $t |} ];
 
 let bi_of_pe (p, e) = let _loc = loc_of p in {:binding| $p = $e |};
-let sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l);
-let record_type_of_list l = tySem_of_list (List.map ty_of_sbt l);
-let binding_of_pel l = biAnd_of_list (List.map bi_of_pe l);
+let sum_type_of_list l = or_of_list (List.map ty_of_stl l);
+let record_type_of_list l = sem_of_list (List.map ty_of_sbt l);
+let binding_of_pel l = and_of_list (List.map bi_of_pe l);
 
 let rec pel_of_binding =  fun
     [ {:binding| $b1 and $b2 |} -> pel_of_binding b1 @ pel_of_binding b2

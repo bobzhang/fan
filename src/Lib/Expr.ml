@@ -100,7 +100,7 @@ let bigarray_get loc arr arg =
   | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
   | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {@loc| $arr.{$c1,$c2,$c3,$(FanAst.exSem_of_list coords) } |} ];
+      {@loc| $arr.{$c1,$c2,$c3,$(FanAst.sem_of_list coords) } |} ];
 
 
 (*

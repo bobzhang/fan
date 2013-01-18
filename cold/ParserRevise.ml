@@ -829,7 +829,7 @@ let apply () =
                           (sg : 'e__1 ))))])],
             (Gram.mk_action
                (fun (l : 'e__1 list)  (_loc : FanLoc.t)  ->
-                  (FanAst.sgSem_of_list l : 'sig_items ))))])]));
+                  (FanAst.sem_of_list l : 'sig_items ))))])]));
   (let grammar_entry_create = Gram.mk in
    let fun_def_patt: 'fun_def_patt Gram.t =
      grammar_entry_create "fun_def_patt" in
@@ -1253,7 +1253,7 @@ let apply () =
            `Skeyword "]"],
             (Gram.mk_action
                (fun _  (a : 'match_case0 list)  _  _  (_loc : FanLoc.t)  ->
-                  (`Fun (_loc, (FanAst.mcOr_of_list a)) : 'expr ))));
+                  (`Fun (_loc, (FanAst.or_of_list a)) : 'expr ))));
          ([`Skeyword "function";
           `Skeyword "[";
           `Slist0sep
@@ -1262,7 +1262,7 @@ let apply () =
           `Skeyword "]"],
            (Gram.mk_action
               (fun _  (a : 'match_case0 list)  _  _  (_loc : FanLoc.t)  ->
-                 (`Fun (_loc, (FanAst.mcOr_of_list a)) : 'expr ))));
+                 (`Fun (_loc, (FanAst.or_of_list a)) : 'expr ))));
          ([`Skeyword "fun"; `Snterm (Gram.obj (fun_def : 'fun_def Gram.t ))],
            (Gram.mk_action
               (fun (e : 'fun_def)  _  (_loc : FanLoc.t)  -> (e : 'expr ))));
@@ -1907,7 +1907,7 @@ let apply () =
             `Skeyword "]"],
              (Gram.mk_action
                 (fun _  (l : 'match_case0 list)  _  (_loc : FanLoc.t)  ->
-                   (FanAst.mcOr_of_list l : 'match_case ))));
+                   (FanAst.or_of_list l : 'match_case ))));
           ([`Snterm (Gram.obj (patt : 'patt Gram.t ));
            `Skeyword "->";
            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
@@ -1954,7 +1954,7 @@ let apply () =
                  (`Skeyword "|"))],
              (Gram.mk_action
                 (fun (x : 'match_case0 list)  (_loc : FanLoc.t)  ->
-                   (FanAst.mcOr_of_list x : 'match_case_quot ))));
+                   (FanAst.or_of_list x : 'match_case_quot ))));
           ([],
             (Gram.mk_action
                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'match_case_quot ))))])]));
@@ -3874,7 +3874,7 @@ let apply () =
                           (st : 'e__5 ))))])],
             (Gram.mk_action
                (fun (l : 'e__5 list)  (_loc : FanLoc.t)  ->
-                  (FanAst.stSem_of_list l : 'str_items ))))])]);
+                  (FanAst.sem_of_list l : 'str_items ))))])]);
    Gram.extend (top_phrase : 'top_phrase Gram.t )
      (None,
        [(None, None,
@@ -4158,7 +4158,7 @@ let apply () =
                           (csg : 'e__6 ))))])],
             (Gram.mk_action
                (fun (l : 'e__6 list)  (_loc : FanLoc.t)  ->
-                  (FanAst.cgSem_of_list l : 'class_signature ))))])]);
+                  (FanAst.sem_of_list l : 'class_signature ))))])]);
    Gram.extend (class_sig_item : 'class_sig_item Gram.t )
      (None,
        [(None, None,
@@ -4252,7 +4252,7 @@ let apply () =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Ant ((""|"cst"|"anti"|"list" as n),s) ->
-                      (`CrSem
+                      (`Sem
                          (_loc,
                            (`Ant (_loc, (mk_anti ~c:"class_str_item" n s))),
                            cst) : 'class_structure )
@@ -4381,7 +4381,7 @@ let apply () =
                    (_loc : FanLoc.t)  ->
                    (match x2 with
                     | `Nil _loc -> x1
-                    | _ -> `CrSem (_loc, x1, x2) : 'class_str_item_quot ))));
+                    | _ -> `Sem (_loc, x1, x2) : 'class_str_item_quot ))));
           ([`Snterm (Gram.obj (class_str_item : 'class_str_item Gram.t ))],
             (Gram.mk_action
                (fun (x : 'class_str_item)  (_loc : FanLoc.t)  ->
@@ -5663,7 +5663,7 @@ let apply_ctyp () =
                  (let (tl,rt) = Ctyp.to_generalized t in
                   `TyCol
                     (_loc, (`Id (_loc, (s :>ident))),
-                      (`Arrow (_loc, (FanAst.tyAnd_of_list tl), rt))) : 
+                      (`Arrow (_loc, (FanAst.and_of_list tl), rt))) : 
                  'constructor_declarations ))));
          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
            (Gram.mk_action
