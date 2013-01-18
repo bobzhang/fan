@@ -335,7 +335,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | "antimatch_case" -> {| `Ant ($(mloc _loc), $e) |}
           | "antimodule_binding" -> {| `Ant ($(mloc _loc), $e) |}
           | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
-          | "tupexpr" -> {| `ExTup ($(mloc _loc), $e)|}
+          | "tupexpr" -> {| `Tup ($(mloc _loc), $e)|}
           | "tuppatt" -> {| `Tup ($(mloc _loc), $e)|}
           | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
                 
@@ -373,7 +373,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
             ~decorate:(fun n e -> (* e is the parsed Ast node already *)
             match n with
-            ["tupexpr" ->   {| `ExTup ($(mloc _loc), $e) |}
+            ["tupexpr" ->   {| `Tup ($(mloc _loc), $e) |}
             | "tuppatt" ->  {| `Tup ($(mloc _loc), $e) |}
             | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
             | "vrnexpr" -> {| `ExVrn($(mloc _loc),$e)|}

@@ -99,11 +99,11 @@ let rec make_expr entry tvar =
       let ns = Expr.mklist _loc (List.map (fun n  -> `Str (_loc, n)) n) in
       `ExApp
         (_loc, (`ExVrn (_loc, "Smeta")),
-          (`ExTup
+          (`Tup
              (_loc,
-               (`ExCom
+               (`Com
                   (_loc, ns,
-                    (`ExCom
+                    (`Com
                        (_loc, el,
                          (`ExApp
                             (_loc,
@@ -124,12 +124,12 @@ let rec make_expr entry tvar =
            let x = make_expr entry tvar s.text in
            `ExApp
              (_loc, (`ExVrn (_loc, "Slist0sep")),
-               (`ExTup (_loc, (`ExCom (_loc, txt, x)))))
+               (`Tup (_loc, (`Com (_loc, txt, x)))))
        | (true ,Some s) ->
            let x = make_expr entry tvar s.text in
            `ExApp
              (_loc, (`ExVrn (_loc, "Slist1sep")),
-               (`ExTup (_loc, (`ExCom (_loc, txt, x))))))
+               (`Tup (_loc, (`Com (_loc, txt, x))))))
   | `TXnext _loc -> `ExVrn (_loc, "Snext")
   | `TXself _loc -> `ExVrn (_loc, "Sself")
   | `TXkwd (_loc,kwd) ->
@@ -139,9 +139,9 @@ let rec make_expr entry tvar =
        | Some lab ->
            `ExApp
              (_loc, (`ExVrn (_loc, "Snterml")),
-               (`ExTup
+               (`Tup
                   (_loc,
-                    (`ExCom
+                    (`Com
                        (_loc,
                          (`ExApp
                             (_loc,
@@ -200,13 +200,13 @@ let rec make_expr entry tvar =
   | `TXtok (_loc,match_fun,attr,descr) ->
       `ExApp
         (_loc, (`ExVrn (_loc, "Stoken")),
-          (`ExTup
+          (`Tup
              (_loc,
-               (`ExCom
+               (`Com
                   (_loc, match_fun,
-                    (`ExTup
+                    (`Tup
                        (_loc,
-                         (`ExCom
+                         (`Com
                             (_loc, (`ExVrn (_loc, attr)),
                               (`Str
                                  (_loc, (FanAst.safe_string_escaped descr))))))))))))
@@ -216,7 +216,7 @@ and make_expr_rules _loc n rl tvar =
        (fun (sl,action)  ->
           let sl =
             Expr.mklist _loc (List.map (fun t  -> make_expr n tvar t) sl) in
-          `ExTup (_loc, (`ExCom (_loc, sl, action)))) rl)
+          `Tup (_loc, (`Com (_loc, sl, action)))) rl)
 let text_of_action _loc psl rtvar act tvar =
   let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
   let act =
@@ -233,7 +233,7 @@ let text_of_action _loc psl rtvar act tvar =
                ((match tok_match_pl with
                  | None  -> ((`Id (_loc, (`Lid (_loc, id)))), p)
                  | Some (oe,op) ->
-                     ((`ExCom (_loc, (`Id (_loc, (`Lid (_loc, id)))), oe)),
+                     ((`Com (_loc, (`Id (_loc, (`Lid (_loc, id)))), oe)),
                        (`Com (_loc, p, op)))))
          | _ -> tok_match_pl) None psl in
   let e =
@@ -244,9 +244,9 @@ let text_of_action _loc psl rtvar act tvar =
     let e2 =
       match tok_match_pl with
       | None  -> e1
-      | Some (`ExCom (_loc,t1,t2),`Com (_,p1,p2)) ->
+      | Some (`Com (_loc,t1,t2),`Com (_,p1,p2)) ->
           `Match
-            (_loc, (`ExTup (_loc, (`ExCom (_loc, t1, t2)))),
+            (_loc, (`Tup (_loc, (`Com (_loc, t1, t2)))),
               (`Or
                  (_loc,
                    (`Case
@@ -355,8 +355,7 @@ let text_of_entry _loc e =
              (_loc,
                (`ExApp
                   (_loc, (`Id (_loc, (`Uid (_loc, "::")))),
-                    (`ExTup
-                       (_loc, (`ExCom (_loc, lab, (`ExCom (_loc, ass, e)))))))),
+                    (`Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, e)))))))),
                txt) in
          txt) e.levels (`Id (_loc, (`Uid (_loc, "[]")))) in
   (ent, pos, txt)
@@ -416,7 +415,7 @@ let text_of_functorial_extend _loc gram locals el =
                     (`Id
                        (_loc,
                          (`IdAcc (_loc, (gm ()), (`Lid (_loc, "extend")))))),
-                    ent)), (`ExTup (_loc, (`ExCom (_loc, pos, txt)))))) el in
+                    ent)), (`Tup (_loc, (`Com (_loc, pos, txt)))))) el in
     match el with
     | [] -> `Id (_loc, (`Uid (_loc, "()")))
     | e::[] -> e

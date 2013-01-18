@@ -37,7 +37,7 @@ let sem a b =
   decompose a left associative  application to  an identifier  and
    a list of small ast nodes.
 
-  Unlike com [a,(b,c),d], the Ast node will introduce [ExTup],
+  Unlike com [a,(b,c),d], the Ast node will introduce [Tup],
   for [f (g a) b], there is no intermediate node.
   
   {[

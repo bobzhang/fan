@@ -842,7 +842,7 @@ let apply () =
             `Snterm (Gram.obj (comma_expr : 'comma_expr Gram.t ))],
              (Gram.mk_action
                 (fun (e2 : 'comma_expr)  _  (e1 : 'expr)  (_loc : FanLoc.t) 
-                   -> (`ExCom (_loc, e1, e2) : 'expr_quot ))));
+                   -> (`Com (_loc, e1, e2) : 'expr_quot ))));
           ([`Snterm (Gram.obj (expr : 'expr Gram.t ));
            `Skeyword ";";
            `Snterm (Gram.obj (sem_expr : 'sem_expr Gram.t ))],
@@ -1581,7 +1581,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (el : 'comma_expr)  _  (e : 'expr)  _ 
                  (_loc : FanLoc.t)  ->
-                 (`ExTup (_loc, (`ExCom (_loc, e, el))) : 'expr ))));
+                 (`Tup (_loc, (`Com (_loc, e, el))) : 'expr ))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ";";
@@ -1821,8 +1821,7 @@ let apply () =
           [([`Sself; `Skeyword ","; `Sself],
              (Gram.mk_action
                 (fun (e2 : 'comma_expr)  _  (e1 : 'comma_expr) 
-                   (_loc : FanLoc.t)  ->
-                   (`ExCom (_loc, e1, e2) : 'comma_expr ))));
+                   (_loc : FanLoc.t)  -> (`Com (_loc, e1, e2) : 'comma_expr ))));
           ([`Stoken
               (((function | `Ant ("list",_) -> true | _ -> false)),
                 (`Normal, "`Ant (\"list\",_)"))],

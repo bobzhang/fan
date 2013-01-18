@@ -17,21 +17,21 @@ module MetaLoc : FanAst.META_LOC =
              (_loc,
                (`IdAcc
                   (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
-          (`ExTup
+          (`Tup
              (_loc,
-               (`ExCom
+               (`Com
                   (_loc, (`Str (_loc, (FanAst.safe_string_escaped a))),
-                    (`ExCom
+                    (`Com
                        (_loc,
-                         (`ExCom
+                         (`Com
                             (_loc,
-                              (`ExCom
+                              (`Com
                                  (_loc,
-                                   (`ExCom
+                                   (`Com
                                       (_loc,
-                                        (`ExCom
+                                        (`Com
                                            (_loc,
-                                             (`ExCom
+                                             (`Com
                                                 (_loc,
                                                   (`Int
                                                      (_loc,

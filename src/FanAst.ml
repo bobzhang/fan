@@ -62,8 +62,8 @@ let loc_of x =
   | `Send _
   | `StringDot _
   | `Try _
-  | `ExTup _
-  | `ExCom _
+  | `Tup _
+  | `Com _
   | `Constraint_exp _
   | `ExCoe _
   | `ExVrn _

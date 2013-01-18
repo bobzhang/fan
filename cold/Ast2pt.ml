@@ -640,10 +640,10 @@ let rec expr: expr -> expression =
   | `Str (loc,s) ->
       mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
   | `Try (loc,e,a) -> mkexp loc (Pexp_try ((expr e), (match_case a)))
-  | `ExTup (loc,`ExCom (_,e1,e2)) ->
+  | `Tup (loc,`Com (_,e1,e2)) ->
       mkexp loc
         (Pexp_tuple (List.map expr (list_of_expr e1 (list_of_expr e2 []))))
-  | `ExTup (loc,_) -> error loc "singleton tuple"
+  | `Tup (loc,_) -> error loc "singleton tuple"
   | `Constraint_exp (loc,e,t) ->
       mkexp loc (Pexp_constraint ((expr e), (Some (ctyp t)), None))
   | `Id (loc,`Uid (_,"()")) ->
@@ -668,7 +668,7 @@ let rec expr: expr -> expression =
       (match i with
        | `Lid (_loc,i) -> mkexp loc (Pexp_newtype (i, (expr e)))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `ExCom (loc,_,_) -> error loc "expr, expr: not allowed here"
+  | `Com (loc,_,_) -> error loc "expr, expr: not allowed here"
   | `Sem (loc,_,_) ->
       error loc
         "expr; expr: not allowed here, use begin ... end or [|...|] to surround them"

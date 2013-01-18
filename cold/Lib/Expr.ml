@@ -30,7 +30,7 @@ let mkassert loc =
 let bigarray_get loc arr arg =
   let coords =
     match arg with
-    | `ExTup (_loc,`ExCom (_,e1,e2))|`ExCom (_loc,e1,e2) ->
+    | `Tup (_loc,`Com (_,e1,e2))|`Com (_loc,e1,e2) ->
         FanAst.list_of_expr e1 (FanAst.list_of_expr e2 [])
     | _ -> [arg] in
   match coords with
@@ -358,8 +358,8 @@ let substp loc env =
         (try List.assoc x env with | Not_found  -> `Id (loc, (`Uid (loc, x))))
     | `Int (_loc,x) -> `Int (loc, x)
     | `Str (_loc,s) -> `Str (loc, s)
-    | `ExTup (_loc,x) -> `Tup (loc, (loop x))
-    | `ExCom (_loc,x1,x2) -> `Com (loc, (loop x1), (loop x2))
+    | `Tup (_loc,x) -> `Tup (loc, (loop x))
+    | `Com (_loc,x1,x2) -> `Com (loc, (loop x1), (loop x2))
     | `Record (_loc,bi,`Nil _) ->
         let rec substbi =
           function
@@ -389,22 +389,22 @@ class subst loc env =
                       (`IdAcc
                          (_loc, (`Uid (_loc, "FanLoc")),
                            (`Lid (_loc, "of_tuple")))))),
-                 (`ExTup
+                 (`Tup
                     (_loc,
-                      (`ExCom
+                      (`Com
                          (_loc,
                            (`Str (_loc, (FanAst.safe_string_escaped a))),
-                           (`ExCom
+                           (`Com
                               (_loc,
-                                (`ExCom
+                                (`Com
                                    (_loc,
-                                     (`ExCom
+                                     (`Com
                                         (_loc,
-                                          (`ExCom
+                                          (`Com
                                              (_loc,
-                                               (`ExCom
+                                               (`Com
                                                   (_loc,
-                                                    (`ExCom
+                                                    (`Com
                                                        (_loc,
                                                          (`Int
                                                             (_loc,
@@ -476,7 +476,7 @@ let fun_args _loc args body =
       args body
 let _loc = FanLoc.ghost
 let app a b = `ExApp (_loc, a, b)
-let comma a b = `ExCom (_loc, a, b)
+let comma a b = `Com (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let sem a b =
   let _loc = FanLoc.merge (FanAst.loc_of a) (FanAst.loc_of b) in
@@ -491,7 +491,7 @@ let list_of_app ty =
 let list_of_com ty =
   let rec loop t acc =
     match t with
-    | `ExCom (_loc,t1,t2) -> t1 :: (loop t2 acc)
+    | `Com (_loc,t1,t2) -> t1 :: (loop t2 acc)
     | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
@@ -511,7 +511,7 @@ let tuple_of_list =
   function
   | [] -> invalid_arg "tuple_of_list while list is empty"
   | x::[] -> x
-  | xs -> `ExTup (_loc, (com_of_list xs))
+  | xs -> `Tup (_loc, (com_of_list xs))
 let mklist loc =
   let rec loop top =
     function
@@ -555,7 +555,7 @@ let gen_tuple_first ~number  ~off  =
         zfold_left ~start:1 ~until:(number - 1)
           ~acc:(`Id (_loc, (xid ~off 0)))
           (fun acc  i  -> comma acc (`Id (_loc, (xid ~off i)))) in
-      `ExTup (_loc, lst)
+      `Tup (_loc, lst)
   | _ -> invalid_arg "n < 1 in gen_tuple_first"
 let gen_tuple_second ~number  ~off  =
   match number with
@@ -565,18 +565,18 @@ let gen_tuple_second ~number  ~off  =
         zfold_left ~start:1 ~until:(number - 1)
           ~acc:(`Id (_loc, (xid ~off:0 off)))
           (fun acc  i  -> comma acc (`Id (_loc, (xid ~off:i off)))) in
-      `ExTup (_loc, lst)
+      `Tup (_loc, lst)
   | _ -> invalid_arg "n < 1 in gen_tuple_first "
 let tuple_of_number ast n =
   let res =
     zfold_left ~start:1 ~until:(n - 1) ~acc:ast
       (fun acc  _  -> comma acc ast) in
-  if n > 1 then `ExTup (_loc, res) else res
+  if n > 1 then `Tup (_loc, res) else res
 let tuple_of_list lst =
   let len = List.length lst in
   match len with
   | 1 -> List.hd lst
-  | n when n > 1 -> `ExTup (_loc, (List.reduce_left comma lst))
+  | n when n > 1 -> `Tup (_loc, (List.reduce_left comma lst))
   | _ -> invalid_arg "tuple_of_list n < 1"
 let of_vstr_number name i =
   let items = List.init i (fun i  -> `Id (_loc, (xid i))) in
@@ -595,7 +595,7 @@ let tuple _loc =
   function
   | [] -> `Id (_loc, (`Uid (_loc, "()")))
   | p::[] -> p
-  | e::es -> `ExTup (_loc, (`ExCom (_loc, e, (FanAst.exCom_of_list es))))
+  | e::es -> `Tup (_loc, (`Com (_loc, e, (FanAst.exCom_of_list es))))
 let mkumin loc prefix arg =
   match arg with
   | `Int (_loc,n) -> `Int (loc, (String.neg n))
@@ -642,27 +642,27 @@ let mep_comma x y =
 let mvep_comma x y =
   `ExApp
     (_loc, (`ExVrn (_loc, "PaCom")),
-      (`ExTup
+      (`Tup
          (_loc,
-           (`ExCom
+           (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, x, y)))))))
+                (`Com (_loc, x, y)))))))
 let mee_comma x y =
   `ExApp
     (_loc,
       (`ExApp
          (_loc,
            (`ExApp
-              (_loc, (`ExVrn (_loc, "ExCom")),
+              (_loc, (`ExVrn (_loc, "Com")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let mvee_comma x y =
   `ExApp
-    (_loc, (`ExVrn (_loc, "ExCom")),
-      (`ExTup
+    (_loc, (`ExVrn (_loc, "Com")),
+      (`Tup
          (_loc,
-           (`ExCom
+           (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, x, y)))))))
+                (`Com (_loc, x, y)))))))
 let mee_app x y =
   `ExApp
     (_loc,
@@ -674,11 +674,11 @@ let mee_app x y =
 let vee_app x y =
   `ExApp
     (_loc, (`ExVrn (_loc, "ExApp")),
-      (`ExTup
+      (`Tup
          (_loc,
-           (`ExCom
+           (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, x, y)))))))
+                (`Com (_loc, x, y)))))))
 let mep_app x y =
   `ExApp
     (_loc,
@@ -690,11 +690,11 @@ let mep_app x y =
 let vep_app x y =
   `ExApp
     (_loc, (`ExVrn (_loc, "PaApp")),
-      (`ExTup
+      (`Tup
          (_loc,
-           (`ExCom
+           (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`ExCom (_loc, x, y)))))))
+                (`Com (_loc, x, y)))))))
 let mep_of_str s =
   let len = String.length s in
   if (s.[0]) = '`'
@@ -702,17 +702,17 @@ let mep_of_str s =
     let s = String.sub s 1 (len - 1) in
     `ExApp
       (_loc, (`ExVrn (_loc, "PaVrn")),
-        (`ExTup
+        (`Tup
            (_loc,
-             (`ExCom
+             (`Com
                 (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
   else
     (let u =
        `ExApp
          (_loc, (`ExVrn (_loc, "Uid")),
-           (`ExTup
+           (`Tup
               (_loc,
-                (`ExCom
+                (`Com
                    (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                      (`Str (_loc, s))))))) in
      `ExApp
@@ -727,17 +727,17 @@ let mee_of_str s =
     let s = String.sub s 1 (len - 1) in
     `ExApp
       (_loc, (`ExVrn (_loc, "ExVrn")),
-        (`ExTup
+        (`Tup
            (_loc,
-             (`ExCom
+             (`Com
                 (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
   else
     (let u =
        `ExApp
          (_loc, (`ExVrn (_loc, "Uid")),
-           (`ExTup
+           (`Tup
               (_loc,
-                (`ExCom
+                (`Com
                    (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                      (`Str (_loc, s))))))) in
      `ExApp
@@ -748,16 +748,16 @@ let mee_of_str s =
 let vee_of_str s =
   `ExApp
     (_loc, (`ExVrn (_loc, "ExVrn")),
-      (`ExTup
+      (`Tup
          (_loc,
-           (`ExCom
+           (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
 let vep_of_str s =
   `ExApp
     (_loc, (`ExVrn (_loc, "PaVrn")),
-      (`ExTup
+      (`Tup
          (_loc,
-           (`ExCom
+           (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
 let meee_of_str s =
   let u =
@@ -777,14 +777,14 @@ let meee_of_str s =
         (`ExApp
            (_loc,
              (`ExApp
-                (_loc, (`ExVrn (_loc, "ExTup")),
+                (_loc, (`ExVrn (_loc, "Tup")),
                   (`Id (_loc, (`Lid (_loc, "_loc")))))),
              (`ExApp
                 (_loc,
                   (`ExApp
                      (_loc,
                        (`ExApp
-                          (_loc, (`ExVrn (_loc, "ExCom")),
+                          (_loc, (`ExVrn (_loc, "Com")),
                             (`Id (_loc, (`Lid (_loc, "_loc")))))),
                        (`ExApp
                           (_loc,
@@ -799,9 +799,9 @@ let meee_of_str s =
                                  (`Str (_loc, "_loc")))))))),
                   (`ExApp
                      (_loc, (`ExVrn (_loc, "Str")),
-                       (`ExTup
+                       (`Tup
                           (_loc,
-                            (`ExCom
+                            (`Com
                                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                                  (`Str (_loc, s))))))))))))) in
   `ExApp
@@ -841,10 +841,10 @@ let mk_tuple_ee =
   | x::[] -> x
   | xs ->
       `ExApp
-        (_loc, (`ExVrn (_loc, "ExTup")),
-          (`ExTup
+        (_loc, (`ExVrn (_loc, "Tup")),
+          (`Tup
              (_loc,
-               (`ExCom
+               (`Com
                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                     (List.reduce_right mee_comma xs))))))
 let mk_tuple_vee =
@@ -853,10 +853,10 @@ let mk_tuple_vee =
   | x::[] -> x
   | xs ->
       `ExApp
-        (_loc, (`ExVrn (_loc, "ExTup")),
-          (`ExTup
+        (_loc, (`ExVrn (_loc, "Tup")),
+          (`Tup
              (_loc,
-               (`ExCom
+               (`Com
                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                     (List.reduce_right mvee_comma xs))))))
 let mk_tuple_ep =
@@ -866,9 +866,9 @@ let mk_tuple_ep =
   | xs ->
       `ExApp
         (_loc, (`ExVrn (_loc, "Tup")),
-          (`ExTup
+          (`Tup
              (_loc,
-               (`ExCom
+               (`Com
                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                     (List.reduce_right mep_comma xs))))))
 let mk_tuple_vep =
@@ -878,9 +878,9 @@ let mk_tuple_vep =
   | xs ->
       `ExApp
         (_loc, (`ExVrn (_loc, "PaTup")),
-          (`ExTup
+          (`Tup
              (_loc,
-               (`ExCom
+               (`Com
                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                     (List.reduce_right mvep_comma xs))))))
 let mee_record_col label expr =
@@ -893,9 +893,9 @@ let mee_record_col label expr =
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
            (`ExApp
               (_loc, (`ExVrn (_loc, "Lid")),
-                (`ExTup
+                (`Tup
                    (_loc,
-                     (`ExCom
+                     (`Com
                         (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                           (`Str (_loc, label)))))))))), expr)
 let mep_record_col label expr =
@@ -908,9 +908,9 @@ let mep_record_col label expr =
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
            (`ExApp
               (_loc, (`ExVrn (_loc, "Lid")),
-                (`ExTup
+                (`Tup
                    (_loc,
-                     (`ExCom
+                     (`Com
                         (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                           (`Str (_loc, label)))))))))), expr)
 let mee_record_semi a b =

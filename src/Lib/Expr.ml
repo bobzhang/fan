@@ -406,8 +406,8 @@ let mvep_comma x y =
   {|`PaCom(_loc,$x,$y)|};
   
 let mee_comma x y = {| {| $($x), $($y) |} |};
-  (* {| `ExCom (_loc, $x, $y) |}; *)
-let mvee_comma x y = {| `ExCom (_loc,$x,$y) |};
+  (* {| `Com (_loc, $x, $y) |}; *)
+let mvee_comma x y = {| `Com (_loc,$x,$y) |};
 
 let mee_app x y = {| {| $($x) $($y) |}|};
   (* {| `ExApp(_loc, $x, $y) |}; *)
@@ -470,9 +470,9 @@ let mee_of_str s =
            (`ExId (_loc, (`Lid (_loc, "_loc")))))),
       (`ExApp
          (_loc, (`ExVrn (_loc, "Uid")),
-           (`ExTup
+           (`Tup
               (_loc,
-                (`ExCom (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), s)))))))
+                (`Com (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), s)))))))
          
          `ExId (_loc, (`Uid (_loc, "A")))
          {:expr| `Uid (_loc,"A") |}
@@ -571,13 +571,13 @@ let mk_tuple_ee = fun
   [ [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
-      {| `ExTup (_loc, $(List.reduce_right mee_comma xs)) |}];
+      {| `Tup (_loc, $(List.reduce_right mee_comma xs)) |}];
 
 let mk_tuple_vee = fun 
   [ [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
-      {| `ExTup (_loc, $(List.reduce_right mvee_comma xs)) |}];
+      {| `Tup (_loc, $(List.reduce_right mvee_comma xs)) |}];
 
 (*
   We want to generate code 

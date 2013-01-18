@@ -46,7 +46,7 @@ let loc_of x =
   | `Nil _|`Id _|`ExAcc _|`Ant _|`ExApp _|`ExAre _|`Array _|`Sem _|`ExAsf _
     |`ExAsr _|`ExAss _|`For _|`Fun _|`IfThenElse _|`Label _|`Lazy _|`LetIn _
     |`LetModule _|`Match _|`New _|`Obj _|`OptLabl _|`OvrInst _|`Record _
-    |`Seq _|`Send _|`StringDot _|`Try _|`ExTup _|`ExCom _|`Constraint_exp _
+    |`Seq _|`Send _|`StringDot _|`Try _|`Tup _|`Com _|`Constraint_exp _
     |`ExCoe _|`ExVrn _|`While _|`Let_open _|`LocalTypeFun _|`Package_expr _
     |`Chr _|`Int _|`Int32 _|`Int64 _|`Flo _|`NativeInt _|`Str _|`Alias _
     |`Any _|`PaApp _|`Com _|`PaOlbi _|`PaOrp _|`PaRng _|`PaRec _|`PaEq _
@@ -410,9 +410,9 @@ class eq =
         | (`Try (a0,a1,a2),`Try (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) &&
               (self#match_case a2 b2)
-        | (`ExTup (a0,a1),`ExTup (b0,b1)) ->
+        | (`Tup (a0,a1),`Tup (b0,b1)) ->
             (self#loc a0 b0) && (self#expr a1 b1)
-        | (`ExCom (a0,a1,a2),`ExCom (b0,b1,b2)) ->
+        | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
         | (`Constraint_exp (a0,a1,a2),`Constraint_exp (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#ctyp a2 b2)
@@ -1137,12 +1137,11 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
           let a2 = self#match_case a2 in `Try (a0, a1, a2)
-      | `ExTup (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#expr a1 in `ExTup (a0, a1)
-      | `ExCom (a0,a1,a2) ->
+      | `Tup (a0,a1) ->
+          let a0 = self#loc a0 in let a1 = self#expr a1 in `Tup (a0, a1)
+      | `Com (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#expr a1 in
-          let a2 = self#expr a2 in `ExCom (a0, a1, a2)
+          let a1 = self#expr a1 in let a2 = self#expr a2 in `Com (a0, a1, a2)
       | `Constraint_exp (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
@@ -1947,11 +1946,11 @@ class print =
         | `Try (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Try@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#match_case a2
-        | `ExTup (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`ExTup@ %a@ %a)@]" self#loc a0
-              self#expr a1
-        | `ExCom (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`ExCom@ %a@ %a@ %a)@]" self#loc a0
+        | `Tup (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc a0 self#expr
+              a1
+        | `Com (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#expr a2
         | `Constraint_exp (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Constraint_exp@ %a@ %a@ %a)@]"
@@ -2567,8 +2566,8 @@ class fold =
       | `Try (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#expr a1 in self#match_case a2
-      | `ExTup (a0,a1) -> let self = self#loc a0 in self#expr a1
-      | `ExCom (a0,a1,a2) ->
+      | `Tup (a0,a1) -> let self = self#loc a0 in self#expr a1
+      | `Com (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
       | `Constraint_exp (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#ctyp a2
@@ -3252,9 +3251,9 @@ class fold2 =
         | (`Try (a0,a1,a2),`Try (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#match_case a2 b2
-        | (`ExTup (a0,a1),`ExTup (b0,b1)) ->
+        | (`Tup (a0,a1),`Tup (b0,b1)) ->
             let self = self#loc a0 b0 in self#expr a1 b1
-        | (`ExCom (a0,a1,a2),`ExCom (b0,b1,b2)) ->
+        | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#expr a2 b2
         | (`Constraint_exp (a0,a1,a2),`Constraint_exp (b0,b1,b2)) ->
@@ -4009,11 +4008,11 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | `Try (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Try@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_match_case a2
-    | `ExTup (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`ExTup@ %a@ %a)@]" pp_print_loc a0
+    | `Tup (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1
-    | `ExCom (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`ExCom@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Com (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_expr a2
     | `Constraint_exp (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Constraint_exp@ %a@ %a@ %a)@]"
@@ -4568,8 +4567,8 @@ class iter =
       | `Send (a0,a1,a2) -> (self#loc a0; self#expr a1; self#alident a2)
       | `StringDot (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `Try (a0,a1,a2) -> (self#loc a0; self#expr a1; self#match_case a2)
-      | `ExTup (a0,a1) -> (self#loc a0; self#expr a1)
-      | `ExCom (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
+      | `Tup (a0,a1) -> (self#loc a0; self#expr a1)
+      | `Com (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `Constraint_exp (a0,a1,a2) ->
           (self#loc a0; self#expr a1; self#ctyp a2)
       | `ExCoe (a0,a1,a2,a3) ->
@@ -5282,13 +5281,13 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
             let a2 = self#match_case a2 b2 in `Try (a0, a1, a2)
-        | (`ExTup (a0,a1),`ExTup (b0,b1)) ->
+        | (`Tup (a0,a1),`Tup (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#expr a1 b1 in `ExTup (a0, a1)
-        | (`ExCom (a0,a1,a2),`ExCom (b0,b1,b2)) ->
+            let a1 = self#expr a1 b1 in `Tup (a0, a1)
+        | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
-            let a2 = self#expr a2 b2 in `ExCom (a0, a1, a2)
+            let a2 = self#expr a2 b2 in `Com (a0, a1, a2)
         | (`Constraint_exp (a0,a1,a2),`Constraint_exp (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
@@ -6117,9 +6116,9 @@ module Make(MetaLoc:META_LOC) =
                          (meta_ctyp _loc a3))),
                     (meta_list
                        (fun _loc  (a0,a1)  ->
-                          `ExTup
+                          `Tup
                             (_loc,
-                              (`ExCom
+                              (`Com
                                  (_loc, (meta_ctyp _loc a0),
                                    (meta_ctyp _loc a1))))) _loc a4))
             | `TyObj (a0,a1,a2) ->
@@ -6696,19 +6695,19 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "Try")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_match_case _loc a2))
-            | `ExTup (a0,a1) ->
+            | `Tup (a0,a1) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "ExTup")), (meta_loc _loc a0))),
+                       (_loc, (`ExVrn (_loc, "Tup")), (meta_loc _loc a0))),
                     (meta_expr _loc a1))
-            | `ExCom (a0,a1,a2) ->
+            | `Com (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "ExCom")),
+                            (_loc, (`ExVrn (_loc, "Com")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
             | `Constraint_exp (a0,a1,a2) ->
@@ -8447,19 +8446,19 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "Try")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_match_case _loc a2))
-            | `ExTup (a0,a1) ->
+            | `Tup (a0,a1) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "ExTup")), (meta_loc _loc a0))),
+                       (_loc, (`PaVrn (_loc, "Tup")), (meta_loc _loc a0))),
                     (meta_expr _loc a1))
-            | `ExCom (a0,a1,a2) ->
+            | `Com (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "ExCom")),
+                            (_loc, (`PaVrn (_loc, "Com")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
             | `Constraint_exp (a0,a1,a2) ->
@@ -9563,7 +9562,7 @@ let rec exCom_of_list =
   function
   | [] -> `Nil ghost
   | x::[] -> x
-  | x::xs -> let _loc = loc_of_expr x in `ExCom (_loc, x, (exCom_of_list xs))
+  | x::xs -> let _loc = loc_of_expr x in `Com (_loc, x, (exCom_of_list xs))
 let exApp_of_list =
   function
   | [] -> `Nil ghost
@@ -9642,7 +9641,7 @@ let rec list_of_patt x acc =
 let rec list_of_expr x acc =
   match x with
   | `Nil _loc -> acc
-  | `ExCom (_loc,x,y)|`Sem (_loc,x,y) -> list_of_expr x (list_of_expr y acc)
+  | `Com (_loc,x,y)|`Sem (_loc,x,y) -> list_of_expr x (list_of_expr y acc)
   | x -> x :: acc
 let rec list_of_str_item x acc =
   match x with
@@ -9715,8 +9714,8 @@ class clean_ast =
     method! expr e =
       match super#expr e with
       | `LetIn (_loc,_,`Nil _l,e)|`Record (_loc,`Nil _l,e)
-        |`ExCom (_loc,`Nil _l,e)|`ExCom (_loc,e,`Nil _l)
-        |`Sem (_loc,`Nil _l,e)|`Sem (_loc,e,`Nil _l) -> e
+        |`Com (_loc,`Nil _l,e)|`Com (_loc,e,`Nil _l)|`Sem (_loc,`Nil _l,e)
+        |`Sem (_loc,e,`Nil _l) -> e
       | e -> e
     method! patt p =
       match super#patt p with

@@ -182,6 +182,7 @@
 
     (* | `PaTup of (loc * patt) (\* ( p ) *\) *)
     | `Tup of (loc * patt )
+          
     | `PaTyc of (loc * patt * ctyp) (* (p : t) *)
     | `PaTyp of (loc * ident) (* #i *)
     | `PaVrn of (loc * string) (* `s *)
@@ -236,9 +237,13 @@
       (* try e with [ mc ] *)
     | `Try of (loc * expr * match_case)
       (* (e) *)
-    | `ExTup of (loc * expr)
+    (* | `ExTup of (loc * expr) *)
+    | `Tup of (loc * expr)
+          
       (* e, e *)
-    | `ExCom of (loc * expr * expr)
+    (* | `ExCom of (loc * expr * expr) *)
+    | `Com of (loc * expr * expr)
+          
       (* (e : t) *)
     | `Constraint_exp of (loc * expr * ctyp)
     | `ExCoe of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)          

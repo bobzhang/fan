@@ -71,7 +71,7 @@ and expr =
   | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding* expr)
   | `Seq of (loc* expr) | `Send of (loc* expr* alident)
   | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
-  | `ExTup of (loc* expr) | `ExCom of (loc* expr* expr)
+  | `Tup of (loc* expr) | `Com of (loc* expr* expr)
   | `Constraint_exp of (loc* expr* ctyp) | `ExCoe of (loc* expr* ctyp* ctyp)
   | `ExVrn of (loc* string) | `While of (loc* expr* expr)
   | `Let_open of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)

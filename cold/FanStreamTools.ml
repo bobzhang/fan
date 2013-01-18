@@ -75,8 +75,8 @@ let rec subst v e =
   | `LetIn (_loc,rf,bi,e) ->
       `LetIn (_loc, rf, (subst_binding v bi), (subst v e))
   | `ExApp (_loc,e1,e2) -> `ExApp (_loc, (subst v e1), (subst v e2))
-  | `ExTup (_loc,e) -> `ExTup (_loc, (subst v e))
-  | `ExCom (_loc,e1,e2) -> `ExCom (_loc, (subst v e1), (subst v e2))
+  | `Tup (_loc,e) -> `Tup (_loc, (subst v e))
+  | `Com (_loc,e1,e2) -> `Com (_loc, (subst v e1), (subst v e2))
   | _ -> raise Not_found
 and subst_binding v =
   function
