@@ -9593,6 +9593,11 @@ let rec list_of_and x acc =
   match x with
   | `And (_,x,y) -> list_of_and x (list_of_and y acc)
   | _ -> x :: acc
+let rec list_of_and' x acc =
+  match x with
+  | `And (_,x,y) -> list_of_and' x (list_of_and' y acc)
+  | `Nil _ -> acc
+  | _ -> x :: acc
 let rec list_of_com x acc =
   match x with
   | `Com (_,x,y) -> list_of_com x (list_of_com y acc)
@@ -9600,6 +9605,11 @@ let rec list_of_com x acc =
 let rec list_of_or x acc =
   match x with
   | `Or (_,x,y) -> list_of_or x (list_of_or y acc)
+  | _ -> x :: acc
+let rec list_of_or' x acc =
+  match x with
+  | `Or (_,x,y) -> list_of_or x (list_of_or' y acc)
+  | `Nil _ -> acc
   | _ -> x :: acc
 let rec list_of_sem x acc =
   match x with
@@ -9829,3 +9839,4 @@ let dump_class_expr = to_string_of_printer dump#class_expr
 let dump_ident = to_string_of_printer dump#ident
 let dump_match_case = to_string_of_printer dump#match_case
 let dump_rec_binding = to_string_of_printer dump#rec_binding
+let dump_str_item = to_string_of_printer dump#str_item

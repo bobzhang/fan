@@ -1,4 +1,4 @@
-open Ast
+open FanAst
 open LibUtil
 open Format
 open Basic
@@ -290,20 +290,19 @@ let transform_module_types lst =
            `Mutual (List.map (fun (s,ty)  -> (s, (obj#ctyp ty))) ls)
        | `Single (s,ty) -> `Single (s, (obj#ctyp ty))) lst in
   let new_types = obj#type_transformers in (new_types, item1)
-let reduce_data_ctors (ty : ctyp) (init : 'a) (f : string -> ctyp list -> 'e)
-  =
-  let rec loop acc t =
-    match t with
-    | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
-        f cons (FanAst.list_of_ctyp tys []) acc
-    | `Of (_loc,`TyVrn (_,`C (_,cons)),tys) ->
-        f ("`" ^ cons) (FanAst.list_of_ctyp tys []) acc
-    | `Id (_loc,`Uid (_,cons)) -> f cons [] acc
-    | `Or (_loc,t1,t2) -> loop (loop acc t1) t2
-    | `Nil _loc -> acc
-    | t -> failwithf "reduce_data_ctors: %s\n" (to_string t) in
-  loop init ty
-let view_adt (t : ctyp) =
+let reduce_data_ctors (ty : ctyp) (init : 'a) ~compose 
+  (f : string -> ctyp list -> 'e) =
+  let branches = list_of_or' ty [] in
+  List.fold_left
+    (fun acc  x  ->
+       match x with
+       | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
+           compose (f cons (list_of_and' tys [])) acc
+       | `Id (_loc,`Uid (_,cons)) -> compose (f cons []) acc
+       | t ->
+           FanLoc.errorf (loc_of_ctyp t) "reduce_data_ctors: %s"
+             (dump_ctyp t)) init branches
+let view_sum (t : ctyp) =
   let bs = FanAst.list_of_ctyp t [] in
   List.map
     (function
@@ -320,6 +319,12 @@ let view_variant (t : ctyp) =
       | `Of (_loc,`TyVrn (_,`C (_,cons)),t) -> `variant (cons, [t])
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
       | `Id (_loc,i) -> `abbrev i
-      | u -> failwithf "view_variant %s" (to_string u)) lst : vbranch list )
+      | u ->
+          FanLoc.errorf (FanAst.loc_of_ctyp u) "view_variant %s"
+            (FanAst.dump_ctyp u)) lst : vbranch list )
 let of_str_item =
-  function | `Type (_loc,x) -> x | _ -> invalid_arg "Ctyp.of_str_item"
+  function
+  | `Type (_loc,x) -> x
+  | t ->
+      FanLoc.errorf (FanAst.loc_of_str_item t) "Ctyp.of_str_item %s"
+        (dump_str_item t)

@@ -57,10 +57,6 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
           then `Id (_loc, (`Lid (_loc, (left_trans id))))
           else right_trans (`Lid (_loc, id))
       | `Id (_loc,id) -> right_trans id
-      | `Tup _ as ty ->
-          tuple_expr_of_ctyp ?arity ?names ~mk_tuple
-            (normal_simple_expr_of_ctyp ?arity ?names ~mk_tuple
-               ~right_type_id ~left_type_id ~right_type_variable cxt) ty
       | `TyApp (_loc,t1,t2) -> `ExApp (_loc, (aux t1), (aux t2))
       | `Quote (_loc,_,`Some `Lid (_,s)) -> tyvar s
       | `Arrow (_loc,t1,t2) ->
@@ -69,6 +65,10 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
                (_loc,
                  (`TyApp (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)),
                  t2))
+      | `Tup _ as ty ->
+          tuple_expr_of_ctyp ?arity ?names ~mk_tuple
+            (normal_simple_expr_of_ctyp ?arity ?names ~mk_tuple
+               ~right_type_id ~left_type_id ~right_type_variable cxt) ty
       | ty ->
           FanLoc.errorf (loc_of_ctyp ty) "normal_simple_expr_of_ctyp : %s"
             (dump_ctyp ty) in
@@ -82,18 +82,14 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
     let rec aux =
       function
       | `Id (_loc,id) -> trans id
-      | `Quote (_loc,`Normal _,`Some `Lid (_,s))
-        |`Quote (_loc,`Positive _,`Some `Lid (_,s))
-        |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> tyvar s
-      | `TyApp (_loc,_,_) as ty ->
+      | `Quote (_loc,_,`Some `Lid (_,s)) -> tyvar s
+      | `TyApp _ as ty ->
           (match Ctyp.list_of_app ty with
            | (`Id (_loc,tctor))::ls ->
                (ls |>
                   (List.map
                      (function
-                      | `Quote (_loc,`Normal _,`Some `Lid (_,s))
-                        |`Quote (_loc,`Positive _,`Some `Lid (_,s))
-                        |`Quote (_loc,`Negative _,`Some `Lid (_,s)) ->
+                      | `Quote (_loc,_,`Some `Lid (_,s)) ->
                           `Id (_loc, (`Lid (_loc, (var s))))
                       | t ->
                           `Fun
@@ -102,32 +98,35 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                                  (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
                                    (`Nil _loc), (aux t)))))))
                  |> (apply (trans tctor))
-           | _ -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp")
+           | _ ->
+               FanLoc.errorf (loc_of_ctyp ty)
+                 "list_of_app in obj_simple_expr_of_ctyp: %s" (dump_ctyp ty))
       | `Arrow (_loc,t1,t2) ->
           aux
             (`TyApp
                (_loc,
                  (`TyApp (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)),
                  t2))
-      | `Tup (_loc,_) as ty ->
+      | `Tup _ as ty ->
           tuple_expr_of_ctyp ?arity ?names ~mk_tuple
             (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
                ~right_type_variable ?names ?arity ~mk_tuple) ty
-      | ty -> failwithf "obj_simple_expr_of_ctyp %s\n" (Ctyp.to_string ty) in
+      | ty ->
+          FanLoc.errorf (loc_of_ctyp ty) "obj_simple_expr_of_ctyp: %s"
+            (dump_ctyp ty) in
     aux ty
 let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
   ~mk_variant  simple_expr_of_ctyp (ty : ctyp) =
-  let f cons tyargs acc =
+  let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
      let p = Patt.gen_tuple_n ?cons_transform ~arity cons args_length in
      let mk (cons,tyargs) =
        let exprs =
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
        mk_variant cons exprs in
-     let e = mk (cons, tyargs) in (`Case (_loc, p, (`Nil _loc), e)) :: acc : 
-    match_case list ) in
-  let info = (TyVrn, (List.length (FanAst.list_of_ctyp ty []))) in
-  let res = Ctyp.reduce_data_ctors ty [] f in
+     let e = mk (cons, tyargs) in `Case (_loc, p, (`Nil _loc), e) : match_case ) in
+  let info = (Sum, (List.length (FanAst.list_of_ctyp ty []))) in
+  let res: match_case list = Ctyp.reduce_data_ctors ty [] f ~compose:cons in
   let res =
     let t =
       if ((List.length res) >= 2) && (arity >= 2)

@@ -70,12 +70,11 @@ val eq_list : ctyp list -> ctyp list -> bool
 val transform_module_types : FSig.module_types ->
   (string * ident * int) list * FSig.module_types
 
-val reduce_data_ctors :
-  ctyp ->
-    'a -> (string -> ctyp list -> 'a -> 'a) -> 'a(* (\* 'a LibUtil.ErrorMonad. *\)result *)
-
+val reduce_data_ctors:
+    ctyp ->
+      'a -> compose:('e -> 'a  -> 'a) -> (string -> FanAst.ctyp list -> 'e) -> 'a    
 (* @raise Invalid_argument *)        
 val of_str_item: str_item -> ctyp 
 
-val view_adt: ctyp -> FSig.branch list
+val view_sum : ctyp -> FSig.branch list
 val view_variant: ctyp -> FSig.vbranch list    

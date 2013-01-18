@@ -1,7 +1,7 @@
 open LibUtil
 open FanAst
 type vrn =  
-  | TyVrn
+  | Sum
   | TyVrnEq
   | TyVrnSup
   | TyVrnInf

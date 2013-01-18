@@ -86,24 +86,21 @@ let rec  normal_simple_expr_of_ctyp
   let left_trans = basic_transform left_type_id in 
   let tyvar = right_transform right_type_variable  in 
   let rec aux = with {patt:ctyp;expr} fun
-    
-    [ (* {| $lid:id |} *)`Id(_loc,`Lid(_,id)) -> 
+    [ `Id(_loc,`Lid(_,id)) -> 
       if Hashset.mem cxt id then {| $(lid:left_trans id) |}
       else right_trans {:ident| $lid:id |} 
-    | `Id (_loc,id) ->   right_trans id
-      (* recursive call here *)
+    | `Id (_loc,id) ->   right_trans id (* recursive call here *)
+    | `TyApp(_loc,t1,t2) ->
+        {| $(aux t1) $(aux t2) |}
+    | `Quote (_loc,_,`Some(`Lid(_,s))) ->   tyvar s
+    | `Arrow(_loc,t1,t2) ->
+        aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
     | `Tup _  as ty ->
         tuple_expr_of_ctyp  ?arity ?names ~mk_tuple
           (normal_simple_expr_of_ctyp
              ?arity ?names ~mk_tuple
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
-    | `TyApp(_loc,t1,t2)(* {| $t1 $t2 |} *) ->
-        {| $(aux t1) $(aux t2) |}
-
-    | `Quote (_loc,_,`Some(`Lid(_,s))) ->   tyvar s
-    | {|$t1 -> $t2 |} ->
-        aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
     | ty ->
         FanLoc.errorf (loc_of_ctyp ty) "normal_simple_expr_of_ctyp : %s" (dump_ctyp ty)] in
   aux ty;
@@ -124,89 +121,80 @@ let rec  normal_simple_expr_of_ctyp
   m_list (tree 'a) ==>
       self#m_list (fun self -> self#tree mf_a)
  *)      
-let rec obj_simple_expr_of_ctyp
-    ~right_type_id
-    ~left_type_variable
-    ~right_type_variable
-    ?names ?arity ~mk_tuple
-      ty = with {patt:ctyp}
+let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_variable
+    ?names ?arity ~mk_tuple ty = with {patt:ctyp}
   let open Transform in 
   let trans = transform right_type_id in
   let var = basic_transform left_type_variable in
   let tyvar = right_transform right_type_variable  in 
   let rec aux = fun
-    [ {| $id:id |} -> trans id
-    | {|  '$lid:s |} | {| + '$lid:s |}
-    | {| - '$lid:s|}->   tyvar s
-    | {| $_ $_ |} as ty ->
+    [ `Id (_loc,id) -> trans id
+    | `Quote(_loc,_,`Some(`Lid(_,s))) ->   tyvar s
+    | `TyApp _  as ty ->
         match  Ctyp.list_of_app ty  with
         [ [ {| $id:tctor |} :: ls ] ->
+
           ls |> List.map
             (fun
-              [ {|  '$lid:s |} | {| +'$lid:s|} | {| -'$lid:s|}
-                -> {:expr| $(lid:var s) |} 
-                 | t ->   {:expr| fun self -> $(aux t) |} ])
-             |> apply (trans tctor)
-        | _  -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp"]
-    | {|$t1 -> $t2 |} -> 
-        aux {:ctyp| $(lid:"arrow") $t1 $t2 |} 
-    | {|  $tup:_  |} as ty ->
-        tuple_expr_of_ctyp
-          ?arity ?names ~mk_tuple
-          (obj_simple_expr_of_ctyp
-             ~right_type_id
-             ~left_type_variable
-             ~right_type_variable
-             ?names
-             ?arity
-             ~mk_tuple) ty 
-    | ty -> failwithf "obj_simple_expr_of_ctyp %s\n" (Ctyp.to_string ty) ] in
+              [ `Quote (_loc,_,`Some(`Lid(_,s))) -> {:expr| $(lid:var s) |} 
+              | t ->   {:expr| fun self -> $(aux t) |} ])
+           |> apply (trans tctor)
+        | _  ->
+            FanLoc.errorf  (loc_of_ctyp ty)
+              "list_of_app in obj_simple_expr_of_ctyp: %s"
+              (dump_ctyp ty)]
+    | `Arrow(_loc,t1,t2) -> 
+        aux {:ctyp| arrow $t1 $t2 |} 
+    | `Tup _  as ty ->
+        tuple_expr_of_ctyp ?arity ?names ~mk_tuple
+          (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
+             ~right_type_variable ?names ?arity ~mk_tuple) ty 
+    | ty ->
+        FanLoc.errorf (loc_of_ctyp ty) "obj_simple_expr_of_ctyp: %s" (dump_ctyp ty) ] in
   aux ty ;
 
 (*
   accept [simple_expr_of_ctyp]
-  call [reduce_data_ctors]  for variant types
-  assume input is  variant type
-  accept variant input type to generate  a function expression 
+  call [reduce_data_ctors]  for [sum types]
+  assume input is  [sum type]
+  accept input type to generate  a function expression 
  *)  
-let expr_of_ctyp ?cons_transform ?(arity=1) ?(names=[]) ~trail ~mk_variant
+let expr_of_ctyp
+    ?cons_transform
+    ?(arity=1)
+    ?(names=[])
+    ~trail ~mk_variant
     simple_expr_of_ctyp (ty:ctyp)  = with {patt:ctyp}
-  let f  cons tyargs acc : list match_case = 
-      let args_length = List.length tyargs in  (* ` is not needed here *)
-        let p =
-          (* calling gen_tuple_n*)
-          Patt.gen_tuple_n ?cons_transform ~arity  cons args_length in
-          (* Fan_expr.gen_curry_n acc ?arity:S.arity cons args_length in  *)
-        let mk (cons,tyargs) =
-          let exprs = List.mapi (mapi_expr ~arity ~names
-                                   ~f:simple_expr_of_ctyp) tyargs in
-          mk_variant cons exprs in
-      let e = mk (cons,tyargs) in
-      [ {:match_case| $pat:p -> $e |} :: acc ] in  begin 
-  let info = (TyVrn, List.length (FanAst.list_of_ctyp ty [])) in 
-    (* match ty with *)
-    (* (\* FIXME TyVrnInfSup to be added *\) *)
-    (* [ {|  [ $t]  |}  -> (TyVrn, List.length (FanAst.list_of_ctyp t [])) *)
-    (* | {| [= $t ] |} -> (TyVrnEq, List.length (FanAst.list_of_ctyp t [])) *)
-    (* | {| [> $t ] |} -> (TyVrnSup,List.length (FanAst.list_of_ctyp t [])) *)
-    (* | {| [< $t ] |} -> (TyVrnInf,List.length (FanAst.list_of_ctyp t [])) *)
-    (* | _ -> *)
-    (*     invalid_arg *)
-    (*       (sprintf "expr_of_ctyp {|%s|} " "" (\*FIXME*\) *)
-    (*          (\* & Ctyp.to_string ty *\)) ] in  *)
-  let res = Ctyp.reduce_data_ctors ty  [] f (* >>= (fun res -> *) in
-  let res =
-    let t =
-      (* only under this case we need trailing  *)
-      if List.length res >= 2 && arity >= 2 then
-        [ trail info :: res ]
-      else res in
-    List.rev t in 
-  currying ~arity res 
+  let f  (cons:string) (tyargs:list ctyp)  : match_case(* acc : list match_case *) = 
+    let args_length = List.length tyargs in  (* ` is not needed here *)
+    let p =
+      (* calling gen_tuple_n*)
+      Patt.gen_tuple_n ?cons_transform ~arity  cons args_length in
+    (* Fan_expr.gen_curry_n acc ?arity:S.arity cons args_length in  *)
+    let mk (cons,tyargs) =
+      let exprs = List.mapi (mapi_expr ~arity ~names
+                               ~f:simple_expr_of_ctyp) tyargs in
+      mk_variant cons exprs in
+    let e = mk (cons,tyargs) in
+    {:match_case| $pat:p -> $e |} in
+    (* [ {:match_case| $pat:p -> $e |} :: acc ] in *)
+  begin 
+
+    let info = (Sum, List.length (FanAst.list_of_ctyp ty [])) in 
+    let res : list match_case =
+      Ctyp.reduce_data_ctors ty  [] f ~compose:cons  in
+    let res =
+      let t =
+        (* only under this case we need trailing  *)
+        if List.length res >= 2 && arity >= 2 then
+          [ trail info :: res ]
+        else res in
+      List.rev t in 
+    currying ~arity res 
   end;
 
 (* return a [expr] node  *)  
-let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant  (* ~destination *)
+let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant
     simple_expr_of_ctyp result ty = with {patt:ctyp;expr:match_case}
   let f (cons,tyargs) :  match_case=
     let len = List.length tyargs in
