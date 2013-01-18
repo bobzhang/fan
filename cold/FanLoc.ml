@@ -203,3 +203,4 @@ let error_report (loc,s) =
      String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
    prerr_endline (sprintf "err: ^%s^" err_location))
 let string_loc = mk "<string>"
+let errorf loc fmt = Format.ksprintf (fun s  -> raise loc (Failure s)) fmt

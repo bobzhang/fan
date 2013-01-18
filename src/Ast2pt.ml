@@ -6,17 +6,7 @@ open LibUtil;
 open FanUtil;
 open FanAst;
 open ParsetreeHelper;
-
-let dump_ctyp = to_string_of_printer dump#ctyp;
-let dump_with_constr = to_string_of_printer dump#with_constr;
-let dump_module_type = to_string_of_printer dump#module_type;
-let dump_expr = to_string_of_printer dump#expr;
-let dump_patt = to_string_of_printer dump#patt;
-let dump_class_type = to_string_of_printer dump#class_type;
-let dump_class_expr = to_string_of_printer dump#class_expr;
-let dump_ident = to_string_of_printer dump#ident;
-let dump_match_case = to_string_of_printer dump#match_case;
-let dump_rec_binding = to_string_of_printer dump#rec_binding;  
+open FanLoc;
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
 
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
@@ -154,12 +144,12 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
       let (is_cls, li) = ctyp_long_id f in
       if is_cls then mktyp _loc (Ptyp_class li (List.map ctyp al) [])
       else mktyp _loc (Ptyp_constr li (List.map ctyp al))
-  | `TyArr (loc, (`TyLab (_,  `Lid(_,lab), t1)), t2) ->
+  | `Arrow (loc, (`Label (_,  `Lid(_,lab), t1)), t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
-  | `TyArr (loc, (`TyOlb (loc1, `Lid(_,lab), t1)), t2) ->
+  | `Arrow (loc, (`TyOlb (loc1, `Lid(_,lab), t1)), t2) ->
       let t1 = `TyApp loc1 (predef_option loc1) t1 in
       mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
-  | `TyArr (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
+  | `Arrow (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
   | (* {| < $fl > |} *)
     `TyObj(_loc,fl,`RvNil _)
     -> mktyp _loc (Ptyp_object (meth_list fl []))
@@ -198,11 +188,7 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
       mktyp _loc (Ptyp_variant (row_field t []) true (Some (Ctyp.name_tags t')))
 
   |  x ->
-      begin
-        Format.eprintf "dumping ctyp -> Parsetree.core_type error: @[%a@]@."
-          dump#ctyp x ;
-        exit 2;
-      end ]
+      errorf (loc_of_ctyp x) "ctyp: %s" (dump_ctyp x) ]
 and row_field (x:ctyp) acc =
   match x with 
   [ (* {||} *)
@@ -315,7 +301,7 @@ let mkvariant (x:ctyp)
     ->
       (with_loc  s sloc, List.map ctyp (list_of_ctyp t []), None,  _loc)
   | (* {| $(id:{:ident@sloc| $uid:s |}) : ($t -> $u) |} *)
-    `TyCol(_loc,`Id(_,`Uid(sloc,s)),`TyArr(_,t,u))
+    `TyCol(_loc,`Id(_,`Uid(sloc,s)),`Arrow(_,t,u))
     ->
       (with_loc s sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  _loc)
   | (* {| $(id:{:ident@sloc| $uid:s |}) : $t |} *)
@@ -1115,7 +1101,7 @@ and class_type = fun (* class_type -> class_type *)
   [ `CtCon (loc, `ViNil _, id,tl) ->
     mkcty loc
       (Pcty_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
-  | `CtFun (loc, (`TyLab (_, lab, t)), ct) ->
+  | `CtFun (loc, (`Label (_, lab, t)), ct) ->
       let lab = match lab with
         [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))

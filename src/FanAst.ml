@@ -83,7 +83,7 @@ let loc_of x =
   | `Any _
   | `PaApp _
   (* | `Array _  *)
-  | `Com _
+  (* | `Com _ *)
   (* | `Sem _ *)
   (* | `Label _ *)
   | `PaOlbi _
@@ -91,7 +91,7 @@ let loc_of x =
   | `PaRng _
   | `PaRec _
   | `PaEq _
-  | `Tup _
+  (* | `Tup _ *)
   | `PaTyc _
   | `PaTyp _
   | `PaVrn _
@@ -802,6 +802,16 @@ let dump = new print;
 
 
 
+let dump_ctyp = to_string_of_printer dump#ctyp;
+let dump_with_constr = to_string_of_printer dump#with_constr;
+let dump_module_type = to_string_of_printer dump#module_type;
+let dump_expr = to_string_of_printer dump#expr;
+let dump_patt = to_string_of_printer dump#patt;
+let dump_class_type = to_string_of_printer dump#class_type;
+let dump_class_expr = to_string_of_printer dump#class_expr;
+let dump_ident = to_string_of_printer dump#ident;
+let dump_match_case = to_string_of_printer dump#match_case;
+let dump_rec_binding = to_string_of_printer dump#rec_binding;  
 
 
 

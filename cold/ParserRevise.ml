@@ -5386,7 +5386,7 @@ let apply_ctyp () =
         [([`Sself; `Skeyword "->"; `Sself],
            (Gram.mk_action
               (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                 (`TyArr (_loc, t1, t2) : 'ctyp ))))]);
+                 (`Arrow (_loc, t1, t2) : 'ctyp ))))]);
       ((Some "label"), (Some `NA),
         [([`Skeyword "~";
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
@@ -5394,7 +5394,7 @@ let apply_ctyp () =
           `Sself],
            (Gram.mk_action
               (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                 (`TyLab (_loc, i, t) : 'ctyp ))));
+                 (`Label (_loc, i, t) : 'ctyp ))));
         ([`Stoken
             (((function | `LABEL _ -> true | _ -> false)),
               (`Normal, "`LABEL _"));
@@ -5404,7 +5404,7 @@ let apply_ctyp () =
              (fun (t : 'ctyp)  _  (__fan_0 : [> FanToken.t]) 
                 (_loc : FanLoc.t)  ->
                 match __fan_0 with
-                | `LABEL s -> (`TyLab (_loc, (`Lid (_loc, s)), t) : 'ctyp )
+                | `LABEL s -> (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp )
                 | _ -> assert false)));
         ([`Stoken
             (((function | `OPTLABEL _ -> true | _ -> false)),
@@ -5674,7 +5674,7 @@ let apply_ctyp () =
                  (let (tl,rt) = Ctyp.to_generalized t in
                   `TyCol
                     (_loc, (`Id (_loc, (s :>ident))),
-                      (`TyArr (_loc, (FanAst.tyAnd_of_list tl), rt))) : 
+                      (`Arrow (_loc, (FanAst.tyAnd_of_list tl), rt))) : 
                  'constructor_declarations ))));
          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
            (Gram.mk_action

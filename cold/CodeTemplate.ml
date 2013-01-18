@@ -50,14 +50,14 @@ let base1_types =
                                                        (_loc,
                                                          (`Lid (_loc, "fmt")))))),
                                                (`Str (_loc, "()")))))))))))),
-                      (`TyArr
+                      (`Arrow
                          (_loc,
                            (`Id
                               (_loc,
                                 (`IdAcc
                                    (_loc, (`Uid (_loc, "Format")),
                                      (`Lid (_loc, "formatter")))))),
-                           (`TyArr
+                           (`Arrow
                               (_loc, (`Id (_loc, (`Lid (_loc, "unit")))),
                                 (`Id (_loc, (`Lid (_loc, "unit"))))))))))))))),
     (`Custom
@@ -76,9 +76,9 @@ let base1_types =
                                      (`Case
                                         (_loc, (`Any _loc), (`Nil _loc),
                                           (`Id (_loc, (`Lid (_loc, "true")))))))))))),
-                      (`TyArr
+                      (`Arrow
                          (_loc, (`Id (_loc, (`Lid (_loc, "unit")))),
-                           (`TyArr
+                           (`Arrow
                               (_loc, (`Id (_loc, (`Lid (_loc, "unit")))),
                                 (`Id (_loc, (`Lid (_loc, "bool"))))))))))))))))]
 let ty_metas =
@@ -89,14 +89,14 @@ let print_base1 =
       (List.map
          (fun { str; print;_}  ->
             let ty =
-              `TyArr
+              `Arrow
                 (_loc,
                   (`Id
                      (_loc,
                        (`IdAcc
                           (_loc, (`Uid (_loc, "Format")),
                             (`Lid (_loc, "formatter")))))),
-                  (`TyArr
+                  (`Arrow
                      (_loc, (`Id (_loc, (`Lid (_loc, str)))),
                        (`Id (_loc, (`Lid (_loc, "unit"))))))) in
             let name = "pp_print_" ^ str in
@@ -164,7 +164,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
       (List.map
          (fun x  ->
             let ty =
-              `TyArr
+              `Arrow
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`Id (_loc, (`Lid (_loc, x))))) in
             let exp =
@@ -180,9 +180,9 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
       (List.map
          (fun x  ->
             let ty =
-              `TyArr
+              `Arrow
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                  (`TyArr
+                  (`Arrow
                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                        (`Id (_loc, (`Lid (_loc, x))))))) in
             let exp =
@@ -202,7 +202,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
       (List.map
          (fun x  ->
             let ty =
-              `TyArr
+              `Arrow
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`Quote
                      (_loc, (`Normal _loc),
@@ -220,9 +220,9 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
       (List.map
          (fun x  ->
             let ty =
-              `TyArr
+              `Arrow
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                  (`TyArr
+                  (`Arrow
                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                        (`Quote
                           (_loc, (`Normal _loc),
@@ -252,7 +252,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
       (List.map
          (fun x  ->
             let ty =
-              `TyArr
+              `Arrow
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`Id (_loc, (`Lid (_loc, "unit"))))) in
             let exp =
@@ -285,9 +285,9 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                                            (`Id (_loc, (`Lid (_loc, "x")))))),
                                       (`Id (_loc, (`Lid (_loc, "y"))))))))))))) in
             let ty =
-              `TyArr
+              `Arrow
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                  (`TyArr
+                  (`Arrow
                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                        (`Id (_loc, (`Lid (_loc, "bool"))))))) in
             `CrMth
@@ -302,9 +302,9 @@ let eq_base1 =
       (List.map
          (fun { str; eq;_}  ->
             let ty =
-              `TyArr
+              `Arrow
                 (_loc, (`Id (_loc, (`Lid (_loc, str)))),
-                  (`TyArr
+                  (`Arrow
                      (_loc, (`Id (_loc, (`Lid (_loc, str)))),
                        (`Id (_loc, (`Lid (_loc, "bool"))))))) in
             let name = "eq_" ^ str in

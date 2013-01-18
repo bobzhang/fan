@@ -49,8 +49,8 @@ let loc_of x =
     |`Seq _|`Send _|`StringDot _|`Try _|`Tup _|`Com _|`Constraint_exp _
     |`ExCoe _|`ExVrn _|`While _|`Let_open _|`LocalTypeFun _|`Package_expr _
     |`Chr _|`Int _|`Int32 _|`Int64 _|`Flo _|`NativeInt _|`Str _|`Alias _
-    |`Any _|`PaApp _|`Com _|`PaOlbi _|`PaOrp _|`PaRng _|`PaRec _|`PaEq _
-    |`Tup _|`PaTyc _|`PaTyp _|`PaVrn _|`ModuleUnpack _ ->
+    |`Any _|`PaApp _|`PaOlbi _|`PaOrp _|`PaRng _|`PaRec _|`PaEq _|`PaTyc _
+    |`PaTyp _|`PaVrn _|`ModuleUnpack _ ->
       ((fun x  -> let open Obj in magic (field (field (repr x) 1) 0))) x
 let safe_string_escaped s =
   if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
@@ -221,11 +221,11 @@ class eq =
         | (`Any a0,`Any b0) -> self#loc a0 b0
         | (`TyApp (a0,a1,a2),`TyApp (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
-        | (`TyArr (a0,a1,a2),`TyArr (b0,b1,b2)) ->
+        | (`Arrow (a0,a1,a2),`Arrow (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             (self#loc a0 b0) && (self#ident a1 b1)
-        | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
+        | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#alident a1 b1)) && (self#ctyp a2 b2)
         | (`Id (a0,a1),`Id (b0,b1)) -> (self#loc a0 b0) && (self#ident a1 b1)
         | (`TyMan (a0,a1,a2),`TyMan (b0,b1,b2)) ->
@@ -869,17 +869,17 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in
           let a2 = self#ctyp a2 in `TyApp (a0, a1, a2)
-      | `TyArr (a0,a1,a2) ->
+      | `Arrow (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in
-          let a2 = self#ctyp a2 in `TyArr (a0, a1, a2)
+          let a2 = self#ctyp a2 in `Arrow (a0, a1, a2)
       | `ClassPath (a0,a1) ->
           let a0 = self#loc a0 in
           let a1 = self#ident a1 in `ClassPath (a0, a1)
-      | `TyLab (a0,a1,a2) ->
+      | `Label (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
-          let a2 = self#ctyp a2 in `TyLab (a0, a1, a2)
+          let a2 = self#ctyp a2 in `Label (a0, a1, a2)
       | `Id (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#ident a1 in `Id (a0, a1)
       | `TyMan (a0,a1,a2) ->
@@ -1700,14 +1700,14 @@ class print =
         | `TyApp (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyApp@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
-        | `TyArr (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`TyArr@ %a@ %a@ %a)@]" self#loc a0
+        | `Arrow (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Arrow@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
         | `ClassPath (a0,a1) ->
             Format.fprintf fmt "@[<1>(`ClassPath@ %a@ %a)@]" self#loc a0
               self#ident a1
-        | `TyLab (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`TyLab@ %a@ %a@ %a)@]" self#loc a0
+        | `Label (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc a0
               self#alident a1 self#ctyp a2
         | `Id (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" self#loc a0 self#ident
@@ -2398,10 +2398,10 @@ class fold =
       | `Any a0 -> self#loc a0
       | `TyApp (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
-      | `TyArr (a0,a1,a2) ->
+      | `Arrow (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `ClassPath (a0,a1) -> let self = self#loc a0 in self#ident a1
-      | `TyLab (a0,a1,a2) ->
+      | `Label (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#alident a1 in self#ctyp a2
       | `Id (a0,a1) -> let self = self#loc a0 in self#ident a1
@@ -3020,12 +3020,12 @@ class fold2 =
         | (`TyApp (a0,a1,a2),`TyApp (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
-        | (`TyArr (a0,a1,a2),`TyArr (b0,b1,b2)) ->
+        | (`Arrow (a0,a1,a2),`Arrow (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
         | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             let self = self#loc a0 b0 in self#ident a1 b1
-        | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
+        | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#alident a1 b1 in self#ctyp a2 b2
         | (`Id (a0,a1),`Id (b0,b1)) ->
@@ -3763,14 +3763,14 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
     | `TyApp (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyApp@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
-    | `TyArr (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`TyArr@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Arrow (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Arrow@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
     | `ClassPath (a0,a1) ->
         Format.fprintf fmt "@[<1>(`ClassPath@ %a@ %a)@]" pp_print_loc a0
           pp_print_ident a1
-    | `TyLab (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`TyLab@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Label (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_alident a1 pp_print_ctyp a2
     | `Id (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" pp_print_loc a0
@@ -4453,9 +4453,9 @@ class iter =
       | `Alias (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `Any a0 -> self#loc a0
       | `TyApp (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
-      | `TyArr (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
+      | `Arrow (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `ClassPath (a0,a1) -> (self#loc a0; self#ident a1)
-      | `TyLab (a0,a1,a2) -> (self#loc a0; self#alident a1; self#ctyp a2)
+      | `Label (a0,a1,a2) -> (self#loc a0; self#alident a1; self#ctyp a2)
       | `Id (a0,a1) -> (self#loc a0; self#ident a1)
       | `TyMan (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyDcl (a0,a1,a2,a3,a4) ->
@@ -4976,17 +4976,17 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
             let a2 = self#ctyp a2 b2 in `TyApp (a0, a1, a2)
-        | (`TyArr (a0,a1,a2),`TyArr (b0,b1,b2)) ->
+        | (`Arrow (a0,a1,a2),`Arrow (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
-            let a2 = self#ctyp a2 b2 in `TyArr (a0, a1, a2)
+            let a2 = self#ctyp a2 b2 in `Arrow (a0, a1, a2)
         | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ident a1 b1 in `ClassPath (a0, a1)
-        | (`TyLab (a0,a1,a2),`TyLab (b0,b1,b2)) ->
+        | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
-            let a2 = self#ctyp a2 b2 in `TyLab (a0, a1, a2)
+            let a2 = self#ctyp a2 b2 in `Label (a0, a1, a2)
         | (`Id (a0,a1),`Id (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ident a1 b1 in `Id (a0, a1)
@@ -6061,13 +6061,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "TyApp")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TyArr (a0,a1,a2) ->
+            | `Arrow (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "TyArr")),
+                            (_loc, (`ExVrn (_loc, "Arrow")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
             | `ClassPath (a0,a1) ->
@@ -6076,13 +6076,13 @@ module Make(MetaLoc:META_LOC) =
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "ClassPath")),
                          (meta_loc _loc a0))), (meta_ident _loc a1))
-            | `TyLab (a0,a1,a2) ->
+            | `Label (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "TyLab")),
+                            (_loc, (`ExVrn (_loc, "Label")),
                               (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_ctyp _loc a2))
             | `Id (a0,a1) ->
@@ -7812,13 +7812,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "TyApp")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TyArr (a0,a1,a2) ->
+            | `Arrow (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "TyArr")),
+                            (_loc, (`PaVrn (_loc, "Arrow")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
             | `ClassPath (a0,a1) ->
@@ -7827,13 +7827,13 @@ module Make(MetaLoc:META_LOC) =
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "ClassPath")),
                          (meta_loc _loc a0))), (meta_ident _loc a1))
-            | `TyLab (a0,a1,a2) ->
+            | `Label (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "TyLab")),
+                            (_loc, (`PaVrn (_loc, "Label")),
                               (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_ctyp _loc a2))
             | `Id (a0,a1) ->
@@ -9742,8 +9742,8 @@ class clean_ast =
     method! ctyp t =
       match super#ctyp t with
       | `TyPol (_loc,`Nil _l,t)|`Alias (_loc,`Nil _l,t)
-        |`Alias (_loc,t,`Nil _l)|`TyArr (_loc,t,`Nil _l)
-        |`TyArr (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
+        |`Alias (_loc,t,`Nil _l)|`Arrow (_loc,t,`Nil _l)
+        |`Arrow (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
         |`Of (_loc,t,`Nil _l)|`And (_loc,`Nil _l,t)|`And (_loc,t,`Nil _l)
         |`TySem (_loc,t,`Nil _l)|`TySem (_loc,`Nil _l,t)
         |`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)|`TyAmp (_loc,t,`Nil _l)
@@ -9819,3 +9819,13 @@ let match_pre =
       | `Ant (_loc,x) -> `Ant (_loc, (add_context x "lettry"))
   end
 let dump = new print
+let dump_ctyp = to_string_of_printer dump#ctyp
+let dump_with_constr = to_string_of_printer dump#with_constr
+let dump_module_type = to_string_of_printer dump#module_type
+let dump_expr = to_string_of_printer dump#expr
+let dump_patt = to_string_of_printer dump#patt
+let dump_class_type = to_string_of_printer dump#class_type
+let dump_class_expr = to_string_of_printer dump#class_expr
+let dump_ident = to_string_of_printer dump#ident
+let dump_match_case = to_string_of_printer dump#match_case
+let dump_rec_binding = to_string_of_printer dump#rec_binding

@@ -1,4 +1,4 @@
-open Ast;
+(* open Ast; *)
 (* This module builds a generic framework *)
 #default_quotation "expr";;
 
@@ -8,7 +8,7 @@ open Lib;
 open Lib.Basic;
 open FSig;  
 open Lib.Expr;
-
+open FanAst;
 (* preserved keywords for the generator *)
 let preserve =  ["self"; "self_type"; "unit"; "result"];
 
@@ -51,18 +51,19 @@ let mapi_expr ?(arity=1) ?(names=[])
 (* @raise Invalid_argument when type can not be handled *)  
 let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     simple_expr_of_ctyp (ty:ctyp) : expr =
-  with {patt:ctyp}
   match ty with
-  [ {|  ($tup:t) |}  -> 
+  [ `Tup (_loc,t)  -> 
     let ls = FanAst.list_of_ctyp t [] in
     let len = List.length ls in
     let patt = Patt.mk_tuple ~arity ~number:len in
-    let tys = List.mapi (mapi_expr ~arity ~names  ~f:simple_expr_of_ctyp) ls in
+    let tys =
+      List.mapi
+        (mapi_expr ~arity ~names  ~f:simple_expr_of_ctyp) ls in
     names <+ (currying
                   [ {:match_case| $pat:patt -> $(mk_tuple tys ) |} ] ~arity)
-  | _  -> invalid_arg &
-      sprintf  "tuple_expr_of_ctyp {|%s|}\n" "" (*FIXME*)
-        (* (Ctyp.to_string  ty) *)];
+  | _  ->
+      FanLoc.errorf _loc
+        "tuple_expr_of_ctyp %s" (dump_ctyp ty)];
   
 (*
  @supported types type application: list int
@@ -81,30 +82,30 @@ let rec  normal_simple_expr_of_ctyp
     ~right_type_variable
     cxt ty = 
   let open Transform in
-  (* let open ErrorMonad in *)
   let right_trans = transform right_type_id in
   let left_trans = basic_transform left_type_id in 
   let tyvar = right_transform right_type_variable  in 
-  let rec aux = with {patt:ctyp;expr} fun 
-    [ {| $lid:id |} -> 
+  let rec aux = with {patt:ctyp;expr} fun
+    
+    [ (* {| $lid:id |} *)`Id(_loc,`Lid(_,id)) -> 
       if Hashset.mem cxt id then {| $(lid:left_trans id) |}
       else right_trans {:ident| $lid:id |} 
-    | {| $id:id |} ->   right_trans id
+    | `Id (_loc,id) ->   right_trans id
       (* recursive call here *)
-    | {| $tup:_t |} as ty ->
+    | `Tup _  as ty ->
         tuple_expr_of_ctyp  ?arity ?names ~mk_tuple
           (normal_simple_expr_of_ctyp
              ?arity ?names ~mk_tuple
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
-    | {| $t1 $t2 |} ->  {| $(aux t1) $(aux t2) |} 
-    | {|  '$lid:s |} 
-    | {| + '$lid:s |}
-    | {| - '$lid:s |} ->   tyvar s
+    | `TyApp(_loc,t1,t2)(* {| $t1 $t2 |} *) ->
+        {| $(aux t1) $(aux t2) |}
+
+    | `Quote (_loc,_,`Some(`Lid(_,s))) ->   tyvar s
     | {|$t1 -> $t2 |} ->
         aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
     | ty ->
-        failwithf "normal_simple_expr_of_ctyp: %s type: \n " (Ctyp.to_string ty)] in
+        FanLoc.errorf (loc_of_ctyp ty) "normal_simple_expr_of_ctyp : %s" (dump_ctyp ty)] in
   aux ty;
 
 

@@ -354,3 +354,5 @@ end ;
 
 let string_loc = mk "<string>";
     
+let errorf loc fmt =
+  Format.ksprintf (fun s -> raise loc (Failure s))   fmt ;

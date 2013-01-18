@@ -1,10 +1,10 @@
-open Ast
 open Format
 open LibUtil
 open Lib
 open Lib.Basic
 open FSig
 open Lib.Expr
+open FanAst
 let preserve = ["self"; "self_type"; "unit"; "result"]
 let check names =
   List.iter
@@ -42,7 +42,7 @@ let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) ls in
        names <+
          (currying [`Case (_loc, patt, (`Nil _loc), (mk_tuple tys))] ~arity)
-   | _ -> invalid_arg & (sprintf "tuple_expr_of_ctyp {|%s|}\n" "") : 
+   | _ -> FanLoc.errorf _loc "tuple_expr_of_ctyp %s" (dump_ctyp ty) : 
   expr )
 let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
   ~left_type_id  ~right_type_variable  cxt ty =
@@ -57,23 +57,21 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
           then `Id (_loc, (`Lid (_loc, (left_trans id))))
           else right_trans (`Lid (_loc, id))
       | `Id (_loc,id) -> right_trans id
-      | `Tup (_loc,_t) as ty ->
+      | `Tup _ as ty ->
           tuple_expr_of_ctyp ?arity ?names ~mk_tuple
             (normal_simple_expr_of_ctyp ?arity ?names ~mk_tuple
                ~right_type_id ~left_type_id ~right_type_variable cxt) ty
       | `TyApp (_loc,t1,t2) -> `ExApp (_loc, (aux t1), (aux t2))
-      | `Quote (_loc,`Normal _,`Some `Lid (_,s))
-        |`Quote (_loc,`Positive _,`Some `Lid (_,s))
-        |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> tyvar s
-      | `TyArr (_loc,t1,t2) ->
+      | `Quote (_loc,_,`Some `Lid (_,s)) -> tyvar s
+      | `Arrow (_loc,t1,t2) ->
           aux
             (`TyApp
                (_loc,
                  (`TyApp (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)),
                  t2))
       | ty ->
-          failwithf "normal_simple_expr_of_ctyp: %s type: \n "
-            (Ctyp.to_string ty) in
+          FanLoc.errorf (loc_of_ctyp ty) "normal_simple_expr_of_ctyp : %s"
+            (dump_ctyp ty) in
     aux ty
 let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable 
   ~right_type_variable  ?names  ?arity  ~mk_tuple  ty =
@@ -105,7 +103,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                                    (`Nil _loc), (aux t)))))))
                  |> (apply (trans tctor))
            | _ -> invalid_arg "list_of_app in obj_simple_expr_of_ctyp")
-      | `TyArr (_loc,t1,t2) ->
+      | `Arrow (_loc,t1,t2) ->
           aux
             (`TyApp
                (_loc,
@@ -212,7 +210,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  [`Case (_loc, patt, (`Nil _loc), (mk_record info))])
         | `Id (_loc,_)|`Tup (_loc,_)|`TyApp (_loc,_,_)
           |`Quote (_loc,`Normal _,`Some _)|`Quote (_loc,`Positive _,`Some _)
-          |`Quote (_loc,`Negative _,`Some _)|`TyArr (_loc,_,_) ->
+          |`Quote (_loc,`Negative _,`Some _)|`Arrow (_loc,_,_) ->
             let expr = simple_expr_of_ctyp ctyp in
             let funct = eta_expand (expr +> names) arity in
             mk_prefix ~names ~left_type_variable tyvars funct

@@ -64,3 +64,4 @@ val error_report: t * string -> unit
 val string_loc: t
 val of_positions: position -> position -> t
 val dummy_pos: position
+val errorf: t -> ('a, unit, string, 'b) format4 -> 'a

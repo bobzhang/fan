@@ -19,7 +19,7 @@ let rec name_tags =
   | _ -> assert false
 let rec to_generalized =
   function
-  | `TyArr (_loc,t1,t2) ->
+  | `Arrow (_loc,t1,t2) ->
       let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt)
   | t -> ([], t)
 let to_string = to_string_of_printer FanAst.dump#ctyp
@@ -62,7 +62,7 @@ let tuple_of_list =
   | [] -> invalid_arg "tuple_of_list while list is empty"
   | x::[] -> x
   | xs -> `Tup (_loc, (com_of_list xs))
-let arrow a b = `TyArr (_loc, a, b)
+let arrow a b = `Arrow (_loc, a, b)
 let (|->) = arrow
 let sta a b = `Sta (_loc, a, b)
 let sta_of_list = List.reduce_right sta
@@ -76,7 +76,7 @@ let tuple_sta_of_list =
 let (<+) names ty =
   List.fold_right
     (fun name  acc  ->
-       `TyArr
+       `Arrow
          (_loc, (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, name))))),
            acc)) names ty
 let (+>) params base = List.fold_right arrow params base
