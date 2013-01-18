@@ -184,7 +184,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
    | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
        let ctyp =
          match ctyp with
-         | `TyMan (_loc,_,ctyp)|`Private (_loc,ctyp) -> ctyp
+         | `TyMan (_,_,ctyp)|`Priv (_,ctyp) -> ctyp
          | _ -> ctyp in
        (match ctyp with
         | `TyRec (_loc,t) ->
@@ -205,22 +205,21 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             mk_prefix ~names ~left_type_variable tyvars
               (currying ~arity
                  [`Case (_loc, patt, (`Nil _loc), (mk_record info))])
-        | `Id (_loc,_)|`Tup (_loc,_)|`TyApp (_loc,_,_)
-          |`Quote (_loc,`Normal _,`Some _)|`Quote (_loc,`Positive _,`Some _)
-          |`Quote (_loc,`Negative _,`Some _)|`Arrow (_loc,_,_) ->
+        | `Id _|`Tup _|`Quote _|`Arrow _|`TyApp _ ->
             let expr = simple_expr_of_ctyp ctyp in
             let funct = eta_expand (expr +> names) arity in
             mk_prefix ~names ~left_type_variable tyvars funct
-        | `TyVrnEq (_loc,t)|`TyVrnSup (_loc,t)|`TyVrnInf (_loc,t)
-          |`TyVrnInfSup (_loc,t,_) ->
+        | `TyVrnEq (_,t)|`TyVrnSup (_,t)|`TyVrnInf (_,t)|`TyVrnInfSup (_,t,_)
+            ->
             let case = expr_of_variant result_type t in
             mk_prefix ~names ~left_type_variable tyvars case
-        | `Sum (_loc,ctyp) ->
+        | `Sum (_,ctyp) ->
             let funct = expr_of_ctyp ctyp in
             mk_prefix ~names ~left_type_variable tyvars funct
-        | t -> failwithf "unhandled type %s" (Ctyp.to_string t))
-   | _tydcl ->
-       failwithf "impossible:fun_of_tydcl <<%s>>\n" (Ctyp.to_string _tydcl) : 
+        | t ->
+            FanLoc.errorf (loc_of_ctyp t) "fun_of_tydcl inner %s"
+              (dump_ctyp t))
+   | t -> FanLoc.errorf (loc_of_ctyp t) "fun_of_tydcl outer %s" (dump_ctyp t) : 
   expr )
 let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 

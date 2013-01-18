@@ -161,7 +161,7 @@ let traversal () =
             self#update_cur_module_types (fun lst  -> item :: lst);
             x)
        | `Value (_loc,`ReNil _,_)|`ModuleType (_loc,_,_)|`Include (_loc,_)
-         |`External (_loc,_,_,_)|`StExp (_loc,_)|`Exception (_loc,_,`None _)
+         |`External (_loc,_,_,_)|`StExp (_loc,_)|`Exception (_loc,_)
          |`Directive (_loc,_,_) as x -> x
        | x -> super#str_item x
      method! ctyp =

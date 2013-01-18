@@ -61,8 +61,8 @@ let ident_tag (i:ident) =
         (* FIXME uid required here, more precise *)
         [ (Some (l,_),Some (r,_),None) ->
           Some(Lapply l r,`app)
-        | _ -> errorf
-              (FanAst.loc_of_ident i) "invalid long identifer %s" (dump_ident i) ]
+        | _ -> errorf (loc_of i)
+              (* (FanAst.loc_of_ident i) *) "invalid long identifer %s" (dump_ident i) ]
     | {| $uid:s |} ->
         match (acc,s) with
         [ (None,"") -> None 
@@ -277,7 +277,7 @@ let mkprivate =  fun
 let mktrecord : ctyp ->  (Asttypes.loc string * Asttypes.mutable_flag * core_type *  loc)=
   with ctyp fun
   [ (* {| $(id:{:ident@sloc| $lid:s |}) : mutable $t |} *)
-    `TyCol(_loc,`Id(_,`Lid(sloc,s)),`Mutable(_,t))
+    `TyCol(_loc,`Id(_,`Lid(sloc,s)),`Mut(_,t))
     ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
   | (* {| $(id:{:ident@sloc| $lid:s |}) : $t |} *)
@@ -321,7 +321,7 @@ let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool)))
     ->
     type_decl tl cl loc (Some (ctyp t1)) pflag t2
   | (* {| private $t |} *)
-    `Private(_loc,t)
+    `Priv(_loc,t)
     ->
       if pflag then
         error _loc "multiple private keyword used, use only one instead"
@@ -904,7 +904,7 @@ and module_type : Ast.module_type -> Parsetree.module_type =
   let  mkwithc (wc:with_constr)  =
     let opt_private_ctyp (x:ctyp) = 
       match x with
-      [ `Private (_,t)-> (Ptype_abstract, Private, ctyp t)
+      [ `Priv (_,t)-> (Ptype_abstract, Private, ctyp t)
       | t -> (Ptype_abstract, Public, ctyp t) ] in
     let mkwithtyp pwith_type loc id_tpl ct =
       let (id, tpl) = type_parameters_and_type_name id_tpl in
@@ -955,8 +955,8 @@ and module_type : Ast.module_type -> Parsetree.module_type =
          mkmty loc (Pmty_signature (sig_item sl []))
      | {@loc| $mt with $wc |} ->
          mkmty loc (Pmty_with (module_type mt) (mkwithc wc ))
-     | {@loc| module type of $me |} ->
-         mkmty loc (Pmty_typeof (module_expr me))
+     | (* {@loc| module type of $me |} *)`ModuleTypeOf(_loc,me) ->
+         mkmty _loc (Pmty_typeof (module_expr me))
      | {| $anti:_ |} -> assert false ]
 and sig_item (s:sig_item) (l:signature) :signature =
   with sig_item match s with 
@@ -1060,16 +1060,21 @@ and str_item (s:str_item) (l:structure) : structure =
                     (List.map class_info_class_type (list_of_class_type ctd []))) :: l]
   | {| $st1; $st2 |} -> str_item st1 (str_item st2 l)
   | `Directive (_,_,_) -> l
-  | {@loc| exception $uid:s |} ->
+  | (* {@loc| exception $uid:s |} *)
+      `Exception(loc,`Id(_,`Uid(_,s)))
+    ->
       [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
-  | {@loc| exception $uid:s of $t |} ->
+  | (* {@loc| exception $uid:s of $t |} *)
+    `Exception (loc, `Of (_, `Id (_, `Uid (_, s)), t))
+    ->
       [mkstr loc (Pstr_exception (with_loc s loc)
                     (List.map ctyp (list_of_ctyp t []))) :: l ]
-  | {@loc| exception $uid:s = $i |} ->
-      [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ]
-  | {@loc| exception $uid:_ of $_ = $_ |} ->
-      error loc "type in exception alias"
-  | `Exception (_,_,_) -> assert false (*FIXME*)
+   (* TODO *)     
+  (* | {@loc| exception $uid:s = $i |} -> *)
+  (*     [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ] *)
+  (* | {@loc| exception $uid:_ of $_ = $_ |} -> *)
+  (*     error loc "type in exception alias" *)
+  | `Exception (_,_) -> assert false (*FIXME*)
   | `StExp (loc,e) -> [mkstr loc (Pstr_eval (expr e)) :: l]
   | {@loc|external $(lid:n) : $t = $sl |} ->
       (*$lid:n behave different here mainl the location*)
@@ -1167,7 +1172,7 @@ and class_sig_item (c:class_sig_item) (l: list class_type_field) : list class_ty
         [mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l]
     | {| $csg1; $csg2 |} ->
         class_sig_item csg1 (class_sig_item csg2 l)
-    | `Inherit (loc,ct) ->
+    | `SigInherit (loc,ct) ->
         [mkctf loc (Pctf_inher (class_type ct)) :: l]
     | `Method (loc,s,pf,t) ->
         match s with

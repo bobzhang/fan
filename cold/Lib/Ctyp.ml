@@ -115,7 +115,7 @@ let list_of_record (ty : ctyp) =
   (list_of_sem' ty []) |>
     (List.map
        (function
-        | `TyCol (_,`Id (_,`Lid (_,label)),`Mutable (_,ctyp)) ->
+        | `TyCol (_,`Id (_,`Lid (_,label)),`Mut (_,ctyp)) ->
             { label; ctyp; is_mutable = true }
         | `TyCol (_,`Id (_,`Lid (_,label)),ctyp) ->
             { label; ctyp; is_mutable = false }

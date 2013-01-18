@@ -203,7 +203,9 @@ let apply () = begin
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_type_tag
         | module_longident_with_app{i} -> {| $id:i |}
         | "("; S{mt}; ")" -> {| $mt |}
-        | "module"; "type"; "of"; module_expr{me} -> {| module type of $me |} ] }
+        | "module"; "type"; "of"; module_expr{me} ->
+            `ModuleTypeOf(_loc,me)
+            (* {| module type of $me |} *) ] }
       module_declaration:
       { RA
         [ ":"; module_type{mt} -> {| $mt |}
@@ -882,9 +884,10 @@ let apply () = begin
       str_item:
       { "top"
         [ "exception"; constructor_declaration{t} ->
-            {| exception $t |}
-        | "exception"; constructor_declaration{t}; "="; type_longident{i} ->
-            {| exception $t = $i |}
+            (* {| exception $t |} *)
+            `Exception(_loc,t)
+        (* | "exception"; constructor_declaration{t}; "="; type_longident{i} -> *)
+        (*     {| exception $t = $i |} *)
         | "external"; a_lident{i};":"; ctyp{t};"="; string_list{sl} ->
             {| external $i: $t = $sl |}
               
@@ -939,7 +942,9 @@ let apply () = begin
       class_sig_item:
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_sig_item_tag
-      | "inherit"; class_type{cs} ->   {| inherit $cs |}
+      | "inherit"; class_type{cs} ->
+          `SigInherit(_loc,cs)
+          (* {| inherit $cs |} *)
       | "val"; opt_mutable{mf}; opt_virtual{mv};a_lident{l}; ":"; ctyp{t} ->
           {| val $mutable:mf $virtual:mv $l : $t |}
       | "method"; "virtual"; opt_private{pf}; a_lident{l}; ":"; (* poly_type *)ctyp{t} ->
@@ -1096,7 +1101,7 @@ let apply_ctyp () = begin
       | "type"; type_declaration{t} -> t   
       | -> {||}  ]
       more_ctyp:
-      [ "mutable"; S{x} -> {| mutable $x |}
+      [ "mutable"; S{x} -> (* {| mutable $x |} *)  `Mut (_loc, x)
       | "`"; astr{x} -> {| `$x |}
       | ctyp{x} -> x
       | type_parameter{x} -> x   ]
@@ -1185,7 +1190,9 @@ let apply_ctyp () = begin
       { "==" NA (* FIXME should be more restrict *)
         [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ]
        "private" NA
-        [ "private"; ctyp Level "alias"{t} -> {| private $t |} ]
+        [ "private"; ctyp Level "alias"{t} ->
+          `Priv(_loc,t)
+          (* {| private $t |} *) ]
        "alias" LA
         [ S{t1}; "as"; S{t2} ->   {| $t1 as $t2 |} ]
        "forall" LA
@@ -1264,7 +1271,9 @@ let apply_ctyp () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | a_lident{s}; ":"; ctyp{t} -> {| $(id:(s:>ident)) :$t|}
       | a_lident{s}; ":"; "mutable"; ctyp{t} ->
-          {|$(id:(s:>ident)) : mutable $t |}]
+          `TyCol (_loc, (`Id (_loc, (s :>ident))), (`Mut (_loc, t)))
+          (* {|$(id:(s:>ident)) : mutable $t |} *)
+      ]
       class_name_and_param:
       [ a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
       | a_lident{i} -> (i, {||})  ]

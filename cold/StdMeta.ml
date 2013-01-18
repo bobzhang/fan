@@ -24,7 +24,7 @@ module Expr =
         function
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
-            let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+            let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
             `ExApp
               (_loc, (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
                 (loop false el)) in
@@ -34,7 +34,7 @@ module Expr =
         function
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
-            let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+            let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
             `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
       let items = arr |> Array.to_list in loop true items
     let meta_list mf_a _loc ls =
@@ -73,7 +73,7 @@ module Patt =
         function
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
-            let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+            let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
             `PaApp
               (_loc, (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
                 (loop false el)) in
@@ -83,7 +83,7 @@ module Patt =
         function
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
-            let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+            let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
             `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
       let items = arr |> Array.to_list in loop true items
     let meta_list mf_a _loc ls =

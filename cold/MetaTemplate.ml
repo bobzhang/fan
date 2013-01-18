@@ -31,14 +31,14 @@ let mklist loc =
     [ [] -> {@loc| [] |}
     | [e1 :: el] ->
         let _loc =
-          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
+          if top then loc else FanLoc.merge ((* GETLOC *)loc_of (e1)) loc in
         {| [$e1 :: $(loop false el)] |} ] in loop true ;
 let mkarray loc arr =
   let rec loop top =  fun
     [ [] -> {@loc| [] |}
     | [e1 :: el] ->
         let _loc =
-          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
+          if top then loc else FanLoc.merge ((* GETLOC *)loc_of(e1)) loc in
         {| [| $e1 ; $(loop false el) |] |} ] in
   let items = arr |> Array.to_list in 
   loop true items;

@@ -201,8 +201,8 @@ let traversal () : traversal  = object (self:'self_type)
     [ {| type $_ and $_ |} as x -> begin
       self#in_and_types;
       let _ = super#str_item x ;
-      self#update_cur_module_types (
-        fun lst -> [`Mutual (List.rev self#get_cur_and_types) :: lst] );
+      self#update_cur_module_types
+          (fun lst -> [`Mutual (List.rev self#get_cur_and_types) :: lst] );
       self#out_and_types;
       (if !keep then x else {| |} )
     end
@@ -214,7 +214,8 @@ let traversal () : traversal  = object (self:'self_type)
        x (* always keep *)
     end
     | ( {| let $_ |}  | {| module type $_ = $_ |}  | {| include $_ |}
-    | {| external $_ : $_ = $_ |} | {| $exp:_ |}   | {| exception $_ |} 
+    | {| external $_ : $_ = $_ |} | {| $exp:_ |}   | `Exception (_loc,_)
+(* {| exception $_ |} *) 
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
     |  x ->  super#str_item x  ];
   method! ctyp = fun

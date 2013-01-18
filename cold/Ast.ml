@@ -37,7 +37,7 @@ type ctyp =
   | `Sem of (loc* ctyp* ctyp) | `Com of (loc* ctyp* ctyp)
   | `Sum of (loc* ctyp) | `Of of (loc* ctyp* ctyp)
   | `And of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp)
-  | `Private of (loc* ctyp) | `Mutable of (loc* ctyp) | `Tup of (loc* ctyp)
+  | `Priv of (loc* ctyp) | `Mut of (loc* ctyp) | `Tup of (loc* ctyp)
   | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* astring)
   | `TyVrnEq of (loc* ctyp) | `TyVrnSup of (loc* ctyp)
   | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
@@ -80,7 +80,7 @@ and module_type =
   [ `Nil of loc | `Id of (loc* ident)
   | `MtFun of (loc* auident* module_type* module_type)
   | `Sig of (loc* sig_item) | `MtWit of (loc* module_type* with_constr)
-  | `Of of (loc* module_expr) | ant] 
+  | `ModuleTypeOf of (loc* module_expr) | ant] 
 and sig_item =
   [ `Nil of loc | `Class of (loc* class_type)
   | `ClassType of (loc* class_type) | `Sem of (loc* sig_item* sig_item)
@@ -118,8 +118,8 @@ and module_expr =
 and str_item =
   [ `Nil of loc | `Class of (loc* class_expr)
   | `ClassType of (loc* class_type) | `Sem of (loc* str_item* str_item)
-  | `Directive of (loc* alident* expr)
-  | `Exception of (loc* ctyp* ident meta_option) | `StExp of (loc* expr)
+  | `Directive of (loc* alident* expr) | `Exception of (loc* ctyp)
+  | `StExp of (loc* expr)
   | `External of (loc* alident* ctyp* string meta_list)
   | `Include of (loc* module_expr) | `Module of (loc* auident* module_expr)
   | `RecModule of (loc* module_binding)
@@ -134,7 +134,7 @@ and class_type =
 and class_sig_item =
   [ `Nil of loc | `Eq of (loc* ctyp* ctyp)
   | `Sem of (loc* class_sig_item* class_sig_item)
-  | `Inherit of (loc* class_type)
+  | `SigInherit of (loc* class_type)
   | `Method of (loc* alident* private_flag* ctyp)
   | `CgVal of (loc* alident* mutable_flag* virtual_flag* ctyp)
   | `CgVir of (loc* alident* private_flag* ctyp) | ant] 

@@ -1,9 +1,10 @@
 
-open Ast;
+open FanAst;
 open LibUtil;
 open Easy;
 
 open FSig;
+open Lib;
 open Lib.Expr;
 
 
@@ -291,3 +292,41 @@ let gen_iter =
     ();
 
 ("OIter",gen_iter) |> Typehook.register;
+
+(* +-----------------------------------------------------------------+
+   | Get Location generator                                          |
+   +-----------------------------------------------------------------+ *)
+
+let generate (module_types:FSig.module_types) =
+  let tbl = Hashtbl.create 30 in
+  let aux (_,ty) =
+    match ty with
+    [`TyDcl(_,_,_,`TyVrnEq(_,t),_) ->
+      let branches = Ctyp.view_variant t in
+      List.iter
+        (fun
+          [`variant (s,ls) ->
+            let arity = List.length ls in
+            Hashtbl.replace(* add *) tbl s arity
+          | _ -> ()]) branches
+    | _ ->
+        FanLoc.errorf
+          (loc_of_ctyp ty) "generate module_types %s"
+          (dump_ctyp ty) ] in   
+  let _ = List.iter
+      (fun
+        [`Mutual tys ->
+          List.iter aux tys
+         |`Single t -> aux t]) module_types in
+  let case = Hashtbl.fold
+    (fun key arity acc ->
+      if arity= 1 then 
+        {:match_case| $vrn:key _loc  -> _loc | $acc |}
+      else
+        let pats =
+          [ {:patt| _loc|} :: List.init (arity - 1) (fun _ -> {:patt| _ |}) ] in
+        {:match_case| $vrn:key $(pat:(Patt.tuple_of_list pats)) -> _loc | $acc |} 
+        
+    ) tbl {:match_case||} in
+  {:str_item| let loc_of  = fun [ $case ]|};
+Typehook.register ~filter:(fun s -> s<> "loc") ("GenLoc",generate);

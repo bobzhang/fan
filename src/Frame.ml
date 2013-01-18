@@ -252,11 +252,12 @@ let fun_of_tydcl
         [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
         let ctyp =
         match ctyp with
-        [ ( {| $_ == $ctyp |} (* the latter reifys the structure is used here *)
-        |  {| private $ctyp |} ) -> ctyp
+        [ ( {@_| $_ == $ctyp |} (* the latter reifys the structure is used here *)
+        |  (* {| private $ctyp |} *)`Priv(_,ctyp) ) -> ctyp
         | _ -> ctyp ] in
         match ctyp with (* FIXME the error message is wrong when using lang_at *)
-        [ (* {|  { $t}  |} *) `TyRec(_loc,t) ->       
+        [ (* {|  { $t}  |} *)
+          `TyRec(_loc,t) ->       
           let cols =  Ctyp.list_of_record t  in
           let patt = Patt.mk_record ~arity  cols in
           let info =
@@ -271,28 +272,29 @@ let fun_of_tydcl
              by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
             (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
-      | {| $id:_|} | {| $tup:_|} | {| $_ $_ |} | {| '$_ |} | {| +'$_ |} | {| -'$_ |}
-      | {| $_ -> $_ |} ->
+      | `Id _ | `Tup _ | `Quote _ | `Arrow _ | `TyApp _ 
+      (* | {| $id:_|} | {| $tup:_|} | {| $_ $_ |} | {| '$_ |} | {| +'$_ |} | {| -'$_ |} *)
+      (* | {| $_ -> $_ |} *) ->
           let expr = simple_expr_of_ctyp ctyp in
           let funct = eta_expand (expr+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct
-
-      | {| [= $t]|} | {| [>$t] |} | {| [< $t ]|} | {| [< $t > $_ ]|} ->
-          
-          let case =  expr_of_variant result_type t (* result_type *) in
+      | `TyVrnEq(_,t) | `TyVrnSup(_,t) | `TyVrnInf(_,t)|`TyVrnInfSup(_,t,_) -> 
+      (* | {| [= $t]|} | {| [>$t] |} | {| [< $t ]|} | {| [< $t > $_ ]|} -> *)
+          let case =  expr_of_variant result_type t  in
           mk_prefix ~names ~left_type_variable tyvars case
          (* FIXME be more precise *)
-      | {| [$ctyp]|} -> 
+      | (* {| [$ctyp]|} *) `Sum (_,ctyp) -> 
           let funct = expr_of_ctyp ctyp in  
           (* for [expr_of_ctyp]
              appending names was delayed to be
              handled in mkcon *)
           mk_prefix ~names ~left_type_variable tyvars funct
        | t ->
-           failwithf  "unhandled type %s" (Ctyp.to_string t)
+           FanLoc.errorf  (loc_of_ctyp t)"fun_of_tydcl inner %s" (dump_ctyp t)
         ]
-  | _tydcl -> 
-      failwithf  "impossible:fun_of_tydcl <<%s>>\n" (Ctyp.to_string _tydcl) ];
+  | t ->
+      FanLoc.errorf (loc_of_ctyp t) "fun_of_tydcl outer %s" (dump_ctyp t)
+ ];
 
 
 let binding_of_tydcl ?cons_transform simple_expr_of_ctyp

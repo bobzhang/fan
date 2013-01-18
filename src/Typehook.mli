@@ -12,6 +12,7 @@ type plugin = {
 type plugin_name = string
 val filters : (plugin_name, plugin) LibUtil.Hashtbl.t
 val show_code : bool ref
+
 val register :
     ?filter:(string->bool) -> ?position:string ->
       plugin_name * (FSig.module_types -> str_item) -> unit

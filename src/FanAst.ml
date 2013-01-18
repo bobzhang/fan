@@ -32,72 +32,72 @@ let loc_of_module_binding : module_binding -> FanLoc.t = QUICK_LOC;
 let loc_of_match_case : match_case -> FanLoc.t = QUICK_LOC;
 let loc_of_ident : ident -> FanLoc.t = QUICK_LOC;
 
-let loc_of x =
-  match x with 
-  [ `Nil _
-  | `Id _
-  | `ExAcc _
-  | `Ant _
-  | `ExApp _
-  | `ExAre _
-  | `Array _
-  | `Sem _
-  | `ExAsf _
-  | `ExAsr _
-  | `ExAss _
-  | `For _
-  | `Fun _
-  | `IfThenElse _
-  | `Label _
-  | `Lazy _
-  | `LetIn _
-  | `LetModule _
-  | `Match _
-  | `New _
-  | `Obj _
-  | `OptLabl _
-  | `OvrInst _
-  | `Record _
-  | `Seq _
-  | `Send _
-  | `StringDot _
-  | `Try _
-  | `Tup _
-  | `Com _
-  | `Constraint_exp _
-  | `ExCoe _
-  | `ExVrn _
-  | `While _
-  | `Let_open _
-  | `LocalTypeFun _
-  | `Package_expr _
-  | `Chr _
-  | `Int _
-  | `Int32 _
-  | `Int64 _
-  | `Flo _
-  | `NativeInt _
-  | `Str _
-  (* | `Id _ *)
-  | `Alias _
-  | `Any _
-  | `PaApp _
-  (* | `Array _  *)
-  (* | `Com _ *)
-  (* | `Sem _ *)
-  (* | `Label _ *)
-  | `PaOlbi _
-  | `PaOrp _
-  | `PaRng _
-  | `PaRec _
-  | `PaEq _
-  (* | `Tup _ *)
-  | `PaTyc _
-  | `PaTyp _
-  | `PaVrn _
-  (* | `Lazy _ *)
-  | `ModuleUnpack _ 
-    ->  QUICK_LOC x];
+(* let loc_of x = *)
+(*   match x with *)
+(*   [ `Nil _ *)
+(*   | `Id _ *)
+(*   | `ExAcc _ *)
+(*   | `Ant _ *)
+(*   | `ExApp _ *)
+(*   | `ExAre _ *)
+(*   | `Array _ *)
+(*   | `Sem _ *)
+(*   | `ExAsf _ *)
+(*   | `ExAsr _ *)
+(*   | `ExAss _ *)
+(*   | `For _ *)
+(*   | `Fun _ *)
+(*   | `IfThenElse _ *)
+(*   | `Label _ *)
+(*   | `Lazy _ *)
+(*   | `LetIn _ *)
+(*   | `LetModule _ *)
+(*   | `Match _ *)
+(*   | `New _ *)
+(*   | `Obj _ *)
+(*   | `OptLabl _ *)
+(*   | `OvrInst _ *)
+(*   | `Record _ *)
+(*   | `Seq _ *)
+(*   | `Send _ *)
+(*   | `StringDot _ *)
+(*   | `Try _ *)
+(*   | `Tup _ *)
+(*   | `Com _ *)
+(*   | `Constraint_exp _ *)
+(*   | `ExCoe _ *)
+(*   | `ExVrn _ *)
+(*   | `While _ *)
+(*   | `Let_open _ *)
+(*   | `LocalTypeFun _ *)
+(*   | `Package_expr _ *)
+(*   | `Chr _ *)
+(*   | `Int _ *)
+(*   | `Int32 _ *)
+(*   | `Int64 _ *)
+(*   | `Flo _ *)
+(*   | `NativeInt _ *)
+(*   | `Str _ *)
+(*   (\* | `Id _ *\) *)
+(*   | `Alias _ *)
+(*   | `Any _ *)
+(*   | `PaApp _ *)
+(*   (\* | `Array _  *\) *)
+(*   (\* | `Com _ *\) *)
+(*   (\* | `Sem _ *\) *)
+(*   (\* | `Label _ *\) *)
+(*   | `PaOlbi _ *)
+(*   | `PaOrp _ *)
+(*   | `PaRng _ *)
+(*   | `PaRec _ *)
+(*   | `PaEq _ *)
+(*   (\* | `Tup _ *\) *)
+(*   | `PaTyc _ *)
+(*   | `PaTyp _ *)
+(*   | `PaVrn _ *)
+(*   (\* | `Lazy _ *\) *)
+(*   | `ModuleUnpack _ *)
+(*     ->  QUICK_LOC x]; *)
       
 
   
@@ -113,7 +113,10 @@ let strip_loc_list f lst =
 {:fans|keep off;
  derive
    (Map2
-      Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq (* Strip *)); |};
+      Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq (* Strip *)
+
+      GenLoc
+   ); |};
 
   
 {:ocaml|
@@ -123,13 +126,13 @@ INCLUDE "src/Ast.ml";
 
 
 #default_quotation "expr";;
-DEFINE GETLOC(x) = loc_of_expr(x);
+(* DEFINE GETLOC(x) = loc_of_expr(x); *)
 module MExpr = struct
   INCLUDE "src/MetaTemplate.ml"; (* FIXME INCLUDE as a langauge :default *)
 end;
 
 #default_quotation "patt"  ;;
-DEFINE GETLOC(x) = loc_of_patt(x);
+(* DEFINE GETLOC(x) = loc_of_patt(x); *)
 module MPatt = struct
   INCLUDE "src/MetaTemplate.ml";
 end;
@@ -475,7 +478,9 @@ let ty_of_stl = fun
     | (_loc, s, tl) -> {:ctyp| $uid:s of $(tyAnd_of_list tl) |} ];
 
 let ty_of_sbt = fun
-    [ (_loc, s, true, t) -> {:ctyp| $lid:s : mutable $t |}
+    [ (_loc, s, true, t) ->
+      `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t)))
+      (* {:ctyp| $lid:s : mutable $t |} *)
     | (_loc, s, false, t) -> {:ctyp| $lid:s : $t |} ];
 
 let bi_of_pe (p, e) = let _loc = loc_of_patt p in {:binding| $p = $e |};

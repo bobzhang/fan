@@ -606,7 +606,7 @@ let apply () =
           `Snterm (Gram.obj (module_expr : 'module_expr Gram.t ))],
            (Gram.mk_action
               (fun (me : 'module_expr)  _  _  _  (_loc : FanLoc.t)  ->
-                 (`Of (_loc, me) : 'module_type ))))])]);
+                 (`ModuleTypeOf (_loc, me) : 'module_type ))))])]);
    Gram.extend (module_declaration : 'module_declaration Gram.t )
      (None,
        [(None, (Some `RA),
@@ -3933,17 +3933,7 @@ let apply () =
                  (constructor_declaration : 'constructor_declaration Gram.t ))],
              (Gram.mk_action
                 (fun (t : 'constructor_declaration)  _  (_loc : FanLoc.t)  ->
-                   (`Exception (_loc, t, (`None _loc)) : 'str_item ))));
-          ([`Skeyword "exception";
-           `Snterm
-             (Gram.obj
-                (constructor_declaration : 'constructor_declaration Gram.t ));
-           `Skeyword "=";
-           `Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
-            (Gram.mk_action
-               (fun (i : 'type_longident)  _  (t : 'constructor_declaration) 
-                  _  (_loc : FanLoc.t)  ->
-                  (`Exception (_loc, t, (`Some i)) : 'str_item ))));
+                   (`Exception (_loc, t) : 'str_item ))));
           ([`Skeyword "external";
            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword ":";
@@ -4199,7 +4189,7 @@ let apply () =
            `Snterm (Gram.obj (class_type : 'class_type Gram.t ))],
             (Gram.mk_action
                (fun (cs : 'class_type)  _  (_loc : FanLoc.t)  ->
-                  (`Inherit (_loc, cs) : 'class_sig_item ))));
+                  (`SigInherit (_loc, cs) : 'class_sig_item ))));
           ([`Skeyword "val";
            `Snterm (Gram.obj (opt_mutable : 'opt_mutable Gram.t ));
            `Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
@@ -4941,7 +4931,7 @@ let apply_ctyp () =
          [([`Skeyword "mutable"; `Sself],
             (Gram.mk_action
                (fun (x : 'more_ctyp)  _  (_loc : FanLoc.t)  ->
-                  (`Mutable (_loc, x) : 'more_ctyp ))));
+                  (`Mut (_loc, x) : 'more_ctyp ))));
          ([`Skeyword "`"; `Snterm (Gram.obj (astr : 'astr Gram.t ))],
            (Gram.mk_action
               (fun (x : 'astr)  _  (_loc : FanLoc.t)  ->
@@ -5368,7 +5358,7 @@ let apply_ctyp () =
           `Snterml ((Gram.obj (ctyp : 'ctyp Gram.t )), "alias")],
            (Gram.mk_action
               (fun (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                 (`Private (_loc, t) : 'ctyp ))))]);
+                 (`Priv (_loc, t) : 'ctyp ))))]);
       ((Some "alias"), (Some `LA),
         [([`Sself; `Skeyword "as"; `Sself],
            (Gram.mk_action
@@ -5798,8 +5788,7 @@ let apply_ctyp () =
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
            (Gram.mk_action
               (fun (t : 'ctyp)  _  _  (s : 'a_lident)  (_loc : FanLoc.t)  ->
-                 (`TyCol
-                    (_loc, (`Id (_loc, (s :>ident))), (`Mutable (_loc, t))) : 
+                 (`TyCol (_loc, (`Id (_loc, (s :>ident))), (`Mut (_loc, t))) : 
                  'label_declaration ))))])]);
   Gram.extend (class_name_and_param : 'class_name_and_param Gram.t )
     (None,

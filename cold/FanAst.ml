@@ -41,17 +41,6 @@ let loc_of_match_case: match_case -> FanLoc.t =
   fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
 let loc_of_ident: ident -> FanLoc.t =
   fun x  -> let open Obj in magic (field (field (repr x) 1) 0)
-let loc_of x =
-  match x with
-  | `Nil _|`Id _|`ExAcc _|`Ant _|`ExApp _|`ExAre _|`Array _|`Sem _|`ExAsf _
-    |`ExAsr _|`ExAss _|`For _|`Fun _|`IfThenElse _|`Label _|`Lazy _|`LetIn _
-    |`LetModule _|`Match _|`New _|`Obj _|`OptLabl _|`OvrInst _|`Record _
-    |`Seq _|`Send _|`StringDot _|`Try _|`Tup _|`Com _|`Constraint_exp _
-    |`ExCoe _|`ExVrn _|`While _|`Let_open _|`LocalTypeFun _|`Package_expr _
-    |`Chr _|`Int _|`Int32 _|`Int64 _|`Flo _|`NativeInt _|`Str _|`Alias _
-    |`Any _|`PaApp _|`PaOlbi _|`PaOrp _|`PaRng _|`PaRec _|`PaEq _|`PaTyc _
-    |`PaTyp _|`PaVrn _|`ModuleUnpack _ ->
-      ((fun x  -> let open Obj in magic (field (field (repr x) 1) 0))) x
 let safe_string_escaped s =
   if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
   then s
@@ -268,9 +257,9 @@ class eq =
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`Or (a0,a1,a2),`Or (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
-        | (`Private (a0,a1),`Private (b0,b1)) ->
+        | (`Priv (a0,a1),`Priv (b0,b1)) ->
             (self#loc a0 b0) && (self#ctyp a1 b1)
-        | (`Mutable (a0,a1),`Mutable (b0,b1)) ->
+        | (`Mut (a0,a1),`Mut (b0,b1)) ->
             (self#loc a0 b0) && (self#ctyp a1 b1)
         | (`Tup (a0,a1),`Tup (b0,b1)) ->
             (self#loc a0 b0) && (self#ctyp a1 b1)
@@ -444,7 +433,7 @@ class eq =
         | (`MtWit (a0,a1,a2),`MtWit (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#module_type a1 b1)) &&
               (self#with_constr a2 b2)
-        | (`Of (a0,a1),`Of (b0,b1)) ->
+        | (`ModuleTypeOf (a0,a1),`ModuleTypeOf (b0,b1)) ->
             (self#loc a0 b0) && (self#module_expr a1 b1)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
@@ -586,9 +575,8 @@ class eq =
               (self#str_item a2 b2)
         | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#alident a1 b1)) && (self#expr a2 b2)
-        | (`Exception (a0,a1,a2),`Exception (b0,b1,b2)) ->
-            ((self#loc a0 b0) && (self#ctyp a1 b1)) &&
-              (self#meta_option (fun self  -> self#ident) a2 b2)
+        | (`Exception (a0,a1),`Exception (b0,b1)) ->
+            (self#loc a0 b0) && (self#ctyp a1 b1)
         | (`StExp (a0,a1),`StExp (b0,b1)) ->
             (self#loc a0 b0) && (self#expr a1 b1)
         | (`External (a0,a1,a2,a3),`External (b0,b1,b2,b3)) ->
@@ -647,7 +635,7 @@ class eq =
         | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#class_sig_item a1 b1)) &&
               (self#class_sig_item a2 b2)
-        | (`Inherit (a0,a1),`Inherit (b0,b1)) ->
+        | (`SigInherit (a0,a1),`SigInherit (b0,b1)) ->
             (self#loc a0 b0) && (self#class_type a1 b1)
         | (`Method (a0,a1,a2,a3),`Method (b0,b1,b2,b3)) ->
             (((self#loc a0 b0) && (self#alident a1 b1)) &&
@@ -941,10 +929,10 @@ class map =
       | `Or (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in let a2 = self#ctyp a2 in `Or (a0, a1, a2)
-      | `Private (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#ctyp a1 in `Private (a0, a1)
-      | `Mutable (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#ctyp a1 in `Mutable (a0, a1)
+      | `Priv (a0,a1) ->
+          let a0 = self#loc a0 in let a1 = self#ctyp a1 in `Priv (a0, a1)
+      | `Mut (a0,a1) ->
+          let a0 = self#loc a0 in let a1 = self#ctyp a1 in `Mut (a0, a1)
       | `Tup (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#ctyp a1 in `Tup (a0, a1)
       | `Sta (a0,a1,a2) ->
@@ -1183,9 +1171,9 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#module_type a1 in
           let a2 = self#with_constr a2 in `MtWit (a0, a1, a2)
-      | `Of (a0,a1) ->
+      | `ModuleTypeOf (a0,a1) ->
           let a0 = self#loc a0 in
-          let a1 = self#module_expr a1 in `Of (a0, a1)
+          let a1 = self#module_expr a1 in `ModuleTypeOf (a0, a1)
       | #ant as a0 -> (self#ant a0 :>module_type)
     method sig_item : sig_item -> sig_item=
       function
@@ -1356,11 +1344,9 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
           let a2 = self#expr a2 in `Directive (a0, a1, a2)
-      | `Exception (a0,a1,a2) ->
+      | `Exception (a0,a1) ->
           let a0 = self#loc a0 in
-          let a1 = self#ctyp a1 in
-          let a2 = self#meta_option (fun self  -> self#ident) a2 in
-          `Exception (a0, a1, a2)
+          let a1 = self#ctyp a1 in `Exception (a0, a1)
       | `StExp (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#expr a1 in `StExp (a0, a1)
       | `External (a0,a1,a2,a3) ->
@@ -1431,9 +1417,9 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#class_sig_item a1 in
           let a2 = self#class_sig_item a2 in `Sem (a0, a1, a2)
-      | `Inherit (a0,a1) ->
+      | `SigInherit (a0,a1) ->
           let a0 = self#loc a0 in
-          let a1 = self#class_type a1 in `Inherit (a0, a1)
+          let a1 = self#class_type a1 in `SigInherit (a0, a1)
       | `Method (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
@@ -1762,12 +1748,12 @@ class print =
         | `Or (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
-        | `Private (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Private@ %a@ %a)@]" self#loc a0
-              self#ctyp a1
-        | `Mutable (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Mutable@ %a@ %a)@]" self#loc a0
-              self#ctyp a1
+        | `Priv (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`Priv@ %a@ %a)@]" self#loc a0 self#ctyp
+              a1
+        | `Mut (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`Mut@ %a@ %a)@]" self#loc a0 self#ctyp
+              a1
         | `Tup (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc a0 self#ctyp
               a1
@@ -1988,8 +1974,8 @@ class print =
         | `MtWit (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`MtWit@ %a@ %a@ %a)@]" self#loc a0
               self#module_type a1 self#with_constr a2
-        | `Of (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Of@ %a@ %a)@]" self#loc a0
+        | `ModuleTypeOf (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" self#loc a0
               self#module_expr a1
         | #ant as a0 -> (self#ant fmt a0 :>'result)
     method sig_item : 'fmt -> sig_item -> 'result=
@@ -2144,9 +2130,9 @@ class print =
         | `Directive (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" self#loc a0
               self#alident a1 self#expr a2
-        | `Exception (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`Exception@ %a@ %a@ %a)@]" self#loc a0
-              self#ctyp a1 (self#meta_option (fun self  -> self#ident)) a2
+        | `Exception (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`Exception@ %a@ %a)@]" self#loc a0
+              self#ctyp a1
         | `StExp (a0,a1) ->
             Format.fprintf fmt "@[<1>(`StExp@ %a@ %a)@]" self#loc a0
               self#expr a1
@@ -2209,8 +2195,8 @@ class print =
         | `Sem (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc a0
               self#class_sig_item a1 self#class_sig_item a2
-        | `Inherit (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a)@]" self#loc a0
+        | `SigInherit (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`SigInherit@ %a@ %a)@]" self#loc a0
               self#class_type a1
         | `Method (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" self#loc a0
@@ -2442,8 +2428,8 @@ class fold =
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `Or (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
-      | `Private (a0,a1) -> let self = self#loc a0 in self#ctyp a1
-      | `Mutable (a0,a1) -> let self = self#loc a0 in self#ctyp a1
+      | `Priv (a0,a1) -> let self = self#loc a0 in self#ctyp a1
+      | `Mut (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `Tup (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `Sta (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
@@ -2595,7 +2581,8 @@ class fold =
       | `MtWit (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#module_type a1 in self#with_constr a2
-      | `Of (a0,a1) -> let self = self#loc a0 in self#module_expr a1
+      | `ModuleTypeOf (a0,a1) ->
+          let self = self#loc a0 in self#module_expr a1
       | #ant as a0 -> (self#ant a0 :>'self_type)
     method sig_item : sig_item -> 'self_type=
       function
@@ -2714,10 +2701,7 @@ class fold =
       | `Directive (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#alident a1 in self#expr a2
-      | `Exception (a0,a1,a2) ->
-          let self = self#loc a0 in
-          let self = self#ctyp a1 in
-          self#meta_option (fun self  -> self#ident) a2
+      | `Exception (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `StExp (a0,a1) -> let self = self#loc a0 in self#expr a1
       | `External (a0,a1,a2,a3) ->
           let self = self#loc a0 in
@@ -2770,7 +2754,7 @@ class fold =
       | `Sem (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#class_sig_item a1 in self#class_sig_item a2
-      | `Inherit (a0,a1) -> let self = self#loc a0 in self#class_type a1
+      | `SigInherit (a0,a1) -> let self = self#loc a0 in self#class_type a1
       | `Method (a0,a1,a2,a3) ->
           let self = self#loc a0 in
           let self = self#alident a1 in
@@ -2851,6 +2835,174 @@ class fold =
       | #ant as a0 -> (self#ant a0 :>'self_type)
     method fanloc_t : FanLoc.t -> 'self_type= self#unknown
   end
+let loc_of =
+  function
+  | `PaOlbi (_loc,_,_,_) -> _loc
+  | `Let_open (_loc,_,_) -> _loc
+  | `Any _loc -> _loc
+  | `TyVrnInf (_loc,_) -> _loc
+  | `PaVrn (_loc,_) -> _loc
+  | `Tup (_loc,_) -> _loc
+  | `PaApp (_loc,_,_) -> _loc
+  | `Array (_loc,_) -> _loc
+  | `MtFun (_loc,_,_,_) -> _loc
+  | `Id (_loc,_) -> _loc
+  | `Directive (_loc,_,_) -> _loc
+  | `TypeSubst (_loc,_,_) -> _loc
+  | `ModuleBind (_loc,_,_,_) -> _loc
+  | `Sta (_loc,_,_) -> _loc
+  | `Match (_loc,_,_) -> _loc
+  | `Obj (_loc,_,_) -> _loc
+  | `CrSem (_loc,_,_) -> _loc
+  | `TyPol (_loc,_,_) -> _loc
+  | `Val (_loc,_,_) -> _loc
+  | `C (_loc,_) -> _loc
+  | `Str (_loc,_) -> _loc
+  | `Or (_loc,_,_) -> _loc
+  | `New (_loc,_) -> _loc
+  | `MtWit (_loc,_,_) -> _loc
+  | `Value (_loc,_,_) -> _loc
+  | `Try (_loc,_,_) -> _loc
+  | `Downto _loc -> _loc
+  | `Normal _loc -> _loc
+  | `True _loc -> _loc
+  | `Sem (_loc,_,_) -> _loc
+  | `Send (_loc,_,_) -> _loc
+  | `Type (_loc,_) -> _loc
+  | `Chr (_loc,_) -> _loc
+  | `IfThenElse (_loc,_,_,_) -> _loc
+  | `ClassType (_loc,_) -> _loc
+  | `ModuleUnpack (_loc,_,_) -> _loc
+  | `CeTyc (_loc,_,_) -> _loc
+  | `CrVir (_loc,_,_,_) -> _loc
+  | `Package (_loc,_) -> _loc
+  | `LCons (_loc,_) -> _loc
+  | `While (_loc,_,_) -> _loc
+  | `CrMth (_loc,_,_,_,_,_) -> _loc
+  | `Struct (_loc,_) -> _loc
+  | `CeCon (_loc,_,_,_) -> _loc
+  | `TyMan (_loc,_,_) -> _loc
+  | `ExVrn (_loc,_) -> _loc
+  | `External (_loc,_,_,_) -> _loc
+  | `CgVal (_loc,_,_,_,_) -> _loc
+  | `Class (_loc,_) -> _loc
+  | `TyApp (_loc,_,_) -> _loc
+  | `LetIn (_loc,_,_,_) -> _loc
+  | `PaTyc (_loc,_,_) -> _loc
+  | `Seq (_loc,_) -> _loc
+  | `Quote (_loc,_,_) -> _loc
+  | `TypeEq (_loc,_,_) -> _loc
+  | `OptLabl (_loc,_,_) -> _loc
+  | `CtFun (_loc,_,_) -> _loc
+  | `PaOrp (_loc,_,_) -> _loc
+  | `Arrow (_loc,_,_) -> _loc
+  | `Bind (_loc,_,_) -> _loc
+  | `CtEq (_loc,_,_) -> _loc
+  | `Functor (_loc,_,_,_) -> _loc
+  | `NativeInt (_loc,_) -> _loc
+  | `Private _loc -> _loc
+  | `Virtual _loc -> _loc
+  | `RowVar _loc -> _loc
+  | `Sig (_loc,_) -> _loc
+  | `RecBind (_loc,_,_) -> _loc
+  | `Mutable _loc -> _loc
+  | `ReNil _loc -> _loc
+  | `Lazy (_loc,_) -> _loc
+  | `CeFun (_loc,_,_) -> _loc
+  | `ClassPath (_loc,_) -> _loc
+  | `False _loc -> _loc
+  | `IdAcc (_loc,_,_) -> _loc
+  | `Nil _loc -> _loc
+  | `Com (_loc,_,_) -> _loc
+  | `Int64 (_loc,_) -> _loc
+  | `TyVrnSup (_loc,_) -> _loc
+  | `ModuleTypeOf (_loc,_) -> _loc
+  | `To _loc -> _loc
+  | `LNil _loc -> _loc
+  | `TyCol (_loc,_,_) -> _loc
+  | `CgVir (_loc,_,_,_) -> _loc
+  | `Initializer (_loc,_) -> _loc
+  | `ModuleEq (_loc,_,_) -> _loc
+  | `Lid (_loc,_) -> _loc
+  | `Record (_loc,_,_) -> _loc
+  | `ExApp (_loc,_,_) -> _loc
+  | `Ant (_loc,_) -> _loc
+  | `Some _loc -> _loc
+  | `Package_expr (_loc,_) -> _loc
+  | `TyVrnEq (_loc,_) -> _loc
+  | `Label (_loc,_,_) -> _loc
+  | `TyTypePol (_loc,_,_) -> _loc
+  | `Priv (_loc,_) -> _loc
+  | `RvNil _loc -> _loc
+  | `Override _loc -> _loc
+  | `Include (_loc,_) -> _loc
+  | `Flo (_loc,_) -> _loc
+  | `Alias (_loc,_,_) -> _loc
+  | `StExp (_loc,_) -> _loc
+  | `Uid (_loc,_) -> _loc
+  | `TyObj (_loc,_,_) -> _loc
+  | `TyOlb (_loc,_,_) -> _loc
+  | `Of (_loc,_,_) -> _loc
+  | `OvrInst (_loc,_) -> _loc
+  | `Constraint_exp (_loc,_,_) -> _loc
+  | `OvNil _loc -> _loc
+  | `ModuleSubst (_loc,_,_) -> _loc
+  | `Mut (_loc,_) -> _loc
+  | `Positive _loc -> _loc
+  | `CrVal (_loc,_,_,_,_) -> _loc
+  | `ModuleConstraint (_loc,_,_) -> _loc
+  | `TyVrn (_loc,_) -> _loc
+  | `Case (_loc,_,_,_) -> _loc
+  | `ExAsr (_loc,_) -> _loc
+  | `Exception (_loc,_) -> _loc
+  | `CtCol (_loc,_,_) -> _loc
+  | `And (_loc,_,_) -> _loc
+  | `ExAre (_loc,_,_) -> _loc
+  | `ModuleExprConstraint (_loc,_,_) -> _loc
+  | `TyDcl (_loc,_,_,_,_) -> _loc
+  | `TyRec (_loc,_) -> _loc
+  | `Int32 (_loc,_) -> _loc
+  | `PaRng (_loc,_,_) -> _loc
+  | `RecModule (_loc,_) -> _loc
+  | `LocalTypeFun (_loc,_,_) -> _loc
+  | `PaTyp (_loc,_) -> _loc
+  | `PrNil _loc -> _loc
+  | `MeApp (_loc,_,_) -> _loc
+  | `CtAnd (_loc,_,_) -> _loc
+  | `Int (_loc,_) -> _loc
+  | `Negative _loc -> _loc
+  | `ExAcc (_loc,_,_) -> _loc
+  | `Fun (_loc,_) -> _loc
+  | `CeApp (_loc,_,_) -> _loc
+  | `ExAss (_loc,_,_) -> _loc
+  | `Eq (_loc,_,_) -> _loc
+  | `IdApp (_loc,_,_) -> _loc
+  | `LetModule (_loc,_,_,_) -> _loc
+  | `TyOfAmp (_loc,_,_) -> _loc
+  | `StringDot (_loc,_,_) -> _loc
+  | `For (_loc,_,_,_,_,_) -> _loc
+  | `CrVvr (_loc,_,_,_) -> _loc
+  | `CtCon (_loc,_,_,_) -> _loc
+  | `Recursive _loc -> _loc
+  | `TyVrnInfSup (_loc,_,_) -> _loc
+  | `CtSig (_loc,_,_) -> _loc
+  | `SigInherit (_loc,_) -> _loc
+  | `ModuleType (_loc,_,_) -> _loc
+  | `Inherit (_loc,_,_,_) -> _loc
+  | `MuNil _loc -> _loc
+  | `None _loc -> _loc
+  | `TyAmp (_loc,_,_) -> _loc
+  | `Method (_loc,_,_,_) -> _loc
+  | `Module (_loc,_,_) -> _loc
+  | `ExAsf _loc -> _loc
+  | `PackageModule (_loc,_) -> _loc
+  | `PaRec (_loc,_) -> _loc
+  | `CeLet (_loc,_,_,_) -> _loc
+  | `ExCoe (_loc,_,_,_) -> _loc
+  | `Open (_loc,_) -> _loc
+  | `ViNil _loc -> _loc
+  | `Sum (_loc,_) -> _loc
+  | `PaEq (_loc,_,_) -> _loc
 class fold2 =
   object (self : 'self_type)
     inherit  foldbase2
@@ -3080,9 +3232,9 @@ class fold2 =
         | (`Or (a0,a1,a2),`Or (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
-        | (`Private (a0,a1),`Private (b0,b1)) ->
+        | (`Priv (a0,a1),`Priv (b0,b1)) ->
             let self = self#loc a0 b0 in self#ctyp a1 b1
-        | (`Mutable (a0,a1),`Mutable (b0,b1)) ->
+        | (`Mut (a0,a1),`Mut (b0,b1)) ->
             let self = self#loc a0 b0 in self#ctyp a1 b1
         | (`Tup (a0,a1),`Tup (b0,b1)) ->
             let self = self#loc a0 b0 in self#ctyp a1 b1
@@ -3291,7 +3443,7 @@ class fold2 =
         | (`MtWit (a0,a1,a2),`MtWit (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#module_type a1 b1 in self#with_constr a2 b2
-        | (`Of (a0,a1),`Of (b0,b1)) ->
+        | (`ModuleTypeOf (a0,a1),`ModuleTypeOf (b0,b1)) ->
             let self = self#loc a0 b0 in self#module_expr a1 b1
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
@@ -3446,10 +3598,8 @@ class fold2 =
         | (`Directive (a0,a1,a2),`Directive (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#alident a1 b1 in self#expr a2 b2
-        | (`Exception (a0,a1,a2),`Exception (b0,b1,b2)) ->
-            let self = self#loc a0 b0 in
-            let self = self#ctyp a1 b1 in
-            self#meta_option (fun self  -> self#ident) a2 b2
+        | (`Exception (a0,a1),`Exception (b0,b1)) ->
+            let self = self#loc a0 b0 in self#ctyp a1 b1
         | (`StExp (a0,a1),`StExp (b0,b1)) ->
             let self = self#loc a0 b0 in self#expr a1 b1
         | (`External (a0,a1,a2,a3),`External (b0,b1,b2,b3)) ->
@@ -3511,7 +3661,7 @@ class fold2 =
         | (`Sem (a0,a1,a2),`Sem (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#class_sig_item a1 b1 in self#class_sig_item a2 b2
-        | (`Inherit (a0,a1),`Inherit (b0,b1)) ->
+        | (`SigInherit (a0,a1),`SigInherit (b0,b1)) ->
             let self = self#loc a0 b0 in self#class_type a1 b1
         | (`Method (a0,a1,a2,a3),`Method (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
@@ -3825,11 +3975,11 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
     | `Or (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
-    | `Private (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Private@ %a@ %a)@]" pp_print_loc a0
+    | `Priv (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`Priv@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1
-    | `Mutable (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Mutable@ %a@ %a)@]" pp_print_loc a0
+    | `Mut (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`Mut@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1
     | `Tup (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc a0
@@ -4050,8 +4200,8 @@ and pp_print_module_type: 'fmt -> module_type -> 'result =
     | `MtWit (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`MtWit@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_module_type a1 pp_print_with_constr a2
-    | `Of (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Of@ %a@ %a)@]" pp_print_loc a0
+    | `ModuleTypeOf (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" pp_print_loc a0
           pp_print_module_expr a1
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 and pp_print_sig_item: 'fmt -> sig_item -> 'result =
@@ -4207,9 +4357,9 @@ and pp_print_str_item: 'fmt -> str_item -> 'result =
     | `Directive (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_alident a1 pp_print_expr a2
-    | `Exception (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`Exception@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_ctyp a1 (pp_print_meta_option pp_print_ident) a2
+    | `Exception (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`Exception@ %a@ %a)@]" pp_print_loc a0
+          pp_print_ctyp a1
     | `StExp (a0,a1) ->
         Format.fprintf fmt "@[<1>(`StExp@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1
@@ -4272,8 +4422,8 @@ and pp_print_class_sig_item: 'fmt -> class_sig_item -> 'result =
     | `Sem (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_class_sig_item a1 pp_print_class_sig_item a2
-    | `Inherit (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a)@]" pp_print_loc a0
+    | `SigInherit (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`SigInherit@ %a@ %a)@]" pp_print_loc a0
           pp_print_class_type a1
     | `Method (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4480,8 +4630,8 @@ class iter =
       | `Of (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `And (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `Or (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
-      | `Private (a0,a1) -> (self#loc a0; self#ctyp a1)
-      | `Mutable (a0,a1) -> (self#loc a0; self#ctyp a1)
+      | `Priv (a0,a1) -> (self#loc a0; self#ctyp a1)
+      | `Mut (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `Tup (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `Sta (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyVrn (a0,a1) -> (self#loc a0; self#astring a1)
@@ -4590,7 +4740,7 @@ class iter =
       | `Sig (a0,a1) -> (self#loc a0; self#sig_item a1)
       | `MtWit (a0,a1,a2) ->
           (self#loc a0; self#module_type a1; self#with_constr a2)
-      | `Of (a0,a1) -> (self#loc a0; self#module_expr a1)
+      | `ModuleTypeOf (a0,a1) -> (self#loc a0; self#module_expr a1)
       | #ant as a0 -> (self#ant a0 :>'result)
     method sig_item : sig_item -> 'result=
       function
@@ -4683,10 +4833,7 @@ class iter =
       | `ClassType (a0,a1) -> (self#loc a0; self#class_type a1)
       | `Sem (a0,a1,a2) -> (self#loc a0; self#str_item a1; self#str_item a2)
       | `Directive (a0,a1,a2) -> (self#loc a0; self#alident a1; self#expr a2)
-      | `Exception (a0,a1,a2) ->
-          (self#loc a0;
-           self#ctyp a1;
-           self#meta_option (fun self  -> self#ident) a2)
+      | `Exception (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `StExp (a0,a1) -> (self#loc a0; self#expr a1)
       | `External (a0,a1,a2,a3) ->
           (self#loc a0;
@@ -4724,7 +4871,7 @@ class iter =
       | `Eq (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `Sem (a0,a1,a2) ->
           (self#loc a0; self#class_sig_item a1; self#class_sig_item a2)
-      | `Inherit (a0,a1) -> (self#loc a0; self#class_type a1)
+      | `SigInherit (a0,a1) -> (self#loc a0; self#class_type a1)
       | `Method (a0,a1,a2,a3) ->
           (self#loc a0; self#alident a1; self#private_flag a2; self#ctyp a3)
       | `CgVal (a0,a1,a2,a3,a4) ->
@@ -5057,12 +5204,12 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
             let a2 = self#ctyp a2 b2 in `Or (a0, a1, a2)
-        | (`Private (a0,a1),`Private (b0,b1)) ->
+        | (`Priv (a0,a1),`Priv (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#ctyp a1 b1 in `Private (a0, a1)
-        | (`Mutable (a0,a1),`Mutable (b0,b1)) ->
+            let a1 = self#ctyp a1 b1 in `Priv (a0, a1)
+        | (`Mut (a0,a1),`Mut (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#ctyp a1 b1 in `Mutable (a0, a1)
+            let a1 = self#ctyp a1 b1 in `Mut (a0, a1)
         | (`Tup (a0,a1),`Tup (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in `Tup (a0, a1)
@@ -5334,9 +5481,9 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#module_type a1 b1 in
             let a2 = self#with_constr a2 b2 in `MtWit (a0, a1, a2)
-        | (`Of (a0,a1),`Of (b0,b1)) ->
+        | (`ModuleTypeOf (a0,a1),`ModuleTypeOf (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#module_expr a1 b1 in `Of (a0, a1)
+            let a1 = self#module_expr a1 b1 in `ModuleTypeOf (a0, a1)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>module_type)
         | (_,_) -> invalid_arg "map2 failure"
     method sig_item : sig_item -> sig_item -> sig_item=
@@ -5529,11 +5676,9 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
             let a2 = self#expr a2 b2 in `Directive (a0, a1, a2)
-        | (`Exception (a0,a1,a2),`Exception (b0,b1,b2)) ->
+        | (`Exception (a0,a1),`Exception (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#ctyp a1 b1 in
-            let a2 = self#meta_option (fun self  -> self#ident) a2 b2 in
-            `Exception (a0, a1, a2)
+            let a1 = self#ctyp a1 b1 in `Exception (a0, a1)
         | (`StExp (a0,a1),`StExp (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in `StExp (a0, a1)
@@ -5613,9 +5758,9 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#class_sig_item a1 b1 in
             let a2 = self#class_sig_item a2 b2 in `Sem (a0, a1, a2)
-        | (`Inherit (a0,a1),`Inherit (b0,b1)) ->
+        | (`SigInherit (a0,a1),`SigInherit (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#class_type a1 b1 in `Inherit (a0, a1)
+            let a1 = self#class_type a1 b1 in `SigInherit (a0, a1)
         | (`Method (a0,a1,a2,a3),`Method (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
@@ -5747,7 +5892,7 @@ module MExpr =
         function
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
-            let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+            let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
             `ExApp
               (_loc, (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
                 (loop false el)) in
@@ -5757,7 +5902,7 @@ module MExpr =
         function
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
-            let _loc = if top then loc else FanLoc.merge (loc_of_expr e1) loc in
+            let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
             `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
       let items = arr |> Array.to_list in loop true items
     let meta_list mf_a _loc ls =
@@ -5796,7 +5941,7 @@ module MPatt =
         function
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
-            let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+            let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
             `PaApp
               (_loc, (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
                 (loop false el)) in
@@ -5806,7 +5951,7 @@ module MPatt =
         function
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
-            let _loc = if top then loc else FanLoc.merge (loc_of_patt e1) loc in
+            let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
             `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
       let items = arr |> Array.to_list in loop true items
     let meta_list mf_a _loc ls =
@@ -6230,17 +6375,17 @@ module Make(MetaLoc:META_LOC) =
                          (`ExApp
                             (_loc, (`ExVrn (_loc, "Or")), (meta_loc _loc a0))),
                          (meta_ctyp _loc a1))), (meta_ctyp _loc a2))
-            | `Private (a0,a1) ->
+            | `Priv (a0,a1) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "Private")), (meta_loc _loc a0))),
+                       (_loc, (`ExVrn (_loc, "Priv")), (meta_loc _loc a0))),
                     (meta_ctyp _loc a1))
-            | `Mutable (a0,a1) ->
+            | `Mut (a0,a1) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "Mutable")), (meta_loc _loc a0))),
+                       (_loc, (`ExVrn (_loc, "Mut")), (meta_loc _loc a0))),
                     (meta_ctyp _loc a1))
             | `Tup (a0,a1) ->
                 `ExApp
@@ -6807,11 +6952,12 @@ module Make(MetaLoc:META_LOC) =
                               (meta_loc _loc a0))),
                          (meta_module_type _loc a1))),
                     (meta_with_constr _loc a2))
-            | `Of (a0,a1) ->
+            | `ModuleTypeOf (a0,a1) ->
                 `ExApp
                   (_loc,
-                    (`ExApp (_loc, (`ExVrn (_loc, "Of")), (meta_loc _loc a0))),
-                    (meta_module_expr _loc a1))
+                    (`ExApp
+                       (_loc, (`ExVrn (_loc, "ModuleTypeOf")),
+                         (meta_loc _loc a0))), (meta_module_expr _loc a1))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
         and meta_sig_item: 'loc -> sig_item -> 'result =
           fun _loc  ->
@@ -7174,15 +7320,12 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "Directive")),
                               (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
-            | `Exception (a0,a1,a2) ->
+            | `Exception (a0,a1) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc,
-                         (`ExApp
-                            (_loc, (`ExVrn (_loc, "Exception")),
-                              (meta_loc _loc a0))), (meta_ctyp _loc a1))),
-                    (meta_meta_option meta_ident _loc a2))
+                       (_loc, (`ExVrn (_loc, "Exception")),
+                         (meta_loc _loc a0))), (meta_ctyp _loc a1))
             | `StExp (a0,a1) ->
                 `ExApp
                   (_loc,
@@ -7342,12 +7485,12 @@ module Make(MetaLoc:META_LOC) =
                               (meta_loc _loc a0))),
                          (meta_class_sig_item _loc a1))),
                     (meta_class_sig_item _loc a2))
-            | `Inherit (a0,a1) ->
+            | `SigInherit (a0,a1) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "Inherit")), (meta_loc _loc a0))),
-                    (meta_class_type _loc a1))
+                       (_loc, (`ExVrn (_loc, "SigInherit")),
+                         (meta_loc _loc a0))), (meta_class_type _loc a1))
             | `Method (a0,a1,a2,a3) ->
                 `ExApp
                   (_loc,
@@ -7981,17 +8124,17 @@ module Make(MetaLoc:META_LOC) =
                          (`PaApp
                             (_loc, (`PaVrn (_loc, "Or")), (meta_loc _loc a0))),
                          (meta_ctyp _loc a1))), (meta_ctyp _loc a2))
-            | `Private (a0,a1) ->
+            | `Priv (a0,a1) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "Private")), (meta_loc _loc a0))),
+                       (_loc, (`PaVrn (_loc, "Priv")), (meta_loc _loc a0))),
                     (meta_ctyp _loc a1))
-            | `Mutable (a0,a1) ->
+            | `Mut (a0,a1) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "Mutable")), (meta_loc _loc a0))),
+                       (_loc, (`PaVrn (_loc, "Mut")), (meta_loc _loc a0))),
                     (meta_ctyp _loc a1))
             | `Tup (a0,a1) ->
                 `PaApp
@@ -8558,11 +8701,12 @@ module Make(MetaLoc:META_LOC) =
                               (meta_loc _loc a0))),
                          (meta_module_type _loc a1))),
                     (meta_with_constr _loc a2))
-            | `Of (a0,a1) ->
+            | `ModuleTypeOf (a0,a1) ->
                 `PaApp
                   (_loc,
-                    (`PaApp (_loc, (`PaVrn (_loc, "Of")), (meta_loc _loc a0))),
-                    (meta_module_expr _loc a1))
+                    (`PaApp
+                       (_loc, (`PaVrn (_loc, "ModuleTypeOf")),
+                         (meta_loc _loc a0))), (meta_module_expr _loc a1))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
         and meta_sig_item: 'loc -> sig_item -> 'result =
           fun _loc  ->
@@ -8925,15 +9069,12 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "Directive")),
                               (meta_loc _loc a0))), (meta_alident _loc a1))),
                     (meta_expr _loc a2))
-            | `Exception (a0,a1,a2) ->
+            | `Exception (a0,a1) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc,
-                         (`PaApp
-                            (_loc, (`PaVrn (_loc, "Exception")),
-                              (meta_loc _loc a0))), (meta_ctyp _loc a1))),
-                    (meta_meta_option meta_ident _loc a2))
+                       (_loc, (`PaVrn (_loc, "Exception")),
+                         (meta_loc _loc a0))), (meta_ctyp _loc a1))
             | `StExp (a0,a1) ->
                 `PaApp
                   (_loc,
@@ -9093,12 +9234,12 @@ module Make(MetaLoc:META_LOC) =
                               (meta_loc _loc a0))),
                          (meta_class_sig_item _loc a1))),
                     (meta_class_sig_item _loc a2))
-            | `Inherit (a0,a1) ->
+            | `SigInherit (a0,a1) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "Inherit")), (meta_loc _loc a0))),
-                    (meta_class_type _loc a1))
+                       (_loc, (`PaVrn (_loc, "SigInherit")),
+                         (meta_loc _loc a0))), (meta_class_type _loc a1))
             | `Method (a0,a1,a2,a3) ->
                 `PaApp
                   (_loc,
@@ -9577,7 +9718,7 @@ let ty_of_stl =
 let ty_of_sbt =
   function
   | (_loc,s,true ,t) ->
-      `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mutable (_loc, t)))
+      `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t)))
   | (_loc,s,false ,t) -> `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
 let bi_of_pe (p,e) = let _loc = loc_of_patt p in `Bind (_loc, p, e)
 let sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l)

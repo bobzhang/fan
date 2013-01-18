@@ -1,7 +1,8 @@
-open Ast
+open FanAst
 open LibUtil
 open Easy
 open FSig
+open Lib
 open Lib.Expr
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
@@ -239,3 +240,51 @@ let gen_iter =
     ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter
     ~mk_variant:mk_variant_iter ()
 let _ = ("OIter", gen_iter) |> Typehook.register
+let generate (module_types : FSig.module_types) =
+  let tbl = Hashtbl.create 30 in
+  let aux (_,ty) =
+    match ty with
+    | `TyDcl (_,_,_,`TyVrnEq (_,t),_) ->
+        let branches = Ctyp.view_variant t in
+        List.iter
+          (function
+           | `variant (s,ls) ->
+               let arity = List.length ls in Hashtbl.replace tbl s arity
+           | _ -> ()) branches
+    | _ ->
+        FanLoc.errorf (loc_of_ctyp ty) "generate module_types %s"
+          (dump_ctyp ty) in
+  let _ =
+    List.iter
+      (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)
+      module_types in
+  let case =
+    Hashtbl.fold
+      (fun key  arity  acc  ->
+         if arity = 1
+         then
+           `Or
+             (_loc,
+               (`Case
+                  (_loc,
+                    (`PaApp
+                       (_loc, (`PaVrn (_loc, key)),
+                         (`Id (_loc, (`Lid (_loc, "_loc")))))), (`Nil _loc),
+                    (`Id (_loc, (`Lid (_loc, "_loc")))))), acc)
+         else
+           (let pats = (`Id (_loc, (`Lid (_loc, "_loc")))) ::
+              (List.init (arity - 1) (fun _  -> `Any _loc)) in
+            `Or
+              (_loc,
+                (`Case
+                   (_loc,
+                     (`PaApp
+                        (_loc, (`PaVrn (_loc, key)),
+                          (Patt.tuple_of_list pats))), (`Nil _loc),
+                     (`Id (_loc, (`Lid (_loc, "_loc")))))), acc))) tbl
+      (`Nil _loc) in
+  `Value
+    (_loc, (`ReNil _loc),
+      (`Bind
+         (_loc, (`Id (_loc, (`Lid (_loc, "loc_of")))), (`Fun (_loc, case)))))
+let _ = Typehook.register ~filter:(fun s  -> s <> "loc") ("GenLoc", generate)

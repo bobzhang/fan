@@ -152,8 +152,8 @@
     | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)
     | `And of (loc * ctyp * ctyp) (* t * t *)
     | `Or  of (loc * ctyp * ctyp) (* t | t *)
-    | `Private of (loc * ctyp) (* private t *)
-    | `Mutable of (loc * ctyp) (* mutable t *)
+    | `Priv of (loc * ctyp) (* private t *)
+    | `Mut of (loc * ctyp) (* mutable t *)
     | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
     | `Sta of (loc * ctyp * ctyp) (* t * t *)
 
@@ -280,7 +280,7 @@
       (* mt with wc *)
     | `MtWit of (loc * module_type * with_constr)
       (* module type of m *)
-    | `Of of (loc * module_expr)
+    | `ModuleTypeOf of (loc * module_expr)
     | ant (* $s$ *) ]
   and sig_item =
     [= `Nil of loc
@@ -388,7 +388,12 @@
       (* # s or # s e *)
     | `Directive of (loc * alident * expr)
       (* exception t or exception t = i *)
-    | `Exception of ( loc * ctyp * meta_option(*FIXME*) ident)
+    (* | `Exception of ( loc * ctyp * meta_option(\*FIXME*\) ident) *)
+    | `Exception of ( loc * ctyp)
+
+     (* TODO ExceptionRebind
+        http://caml.inria.fr/pub/docs/manual-ocaml/manual016.html
+      *)     
       (* e *)
     | `StExp of (loc * expr)
       (* external s : t = s ... s *)
@@ -434,7 +439,7 @@
       (* csg ; csg *)
     | `Sem of (loc * class_sig_item * class_sig_item)
       (* inherit ct *)
-    | `Inherit of (loc * class_type)
+    | `SigInherit of (loc * class_type)
       (* method s : t or method private s : t *)
     | `Method of (loc * alident * private_flag * ctyp)
 

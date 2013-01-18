@@ -184,7 +184,7 @@ let list_of_record (ty:ctyp) =
        fun
          [ 
            (* {| $lid:label : mutable $ctyp  |} *)
-           `TyCol (_, (`Id (_, (`Lid (_, label)))), (`Mutable (_, ctyp))) ->
+           `TyCol (_, (`Id (_, (`Lid (_, label)))), (`Mut (_, ctyp))) ->
              {label; ctyp; is_mutable=true}
          | `TyCol (_, (`Id (_, (`Lid (_, label)))), ctyp)
              (* {| $lid:label :  $ctyp  |} *) -> 
