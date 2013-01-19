@@ -2,7 +2,7 @@ open Ast
 
 val to_var_list : ctyp -> string list
 
-val list_of_opt : ctyp -> ctyp list -> ctyp list
+
 
 val name_tags : ctyp -> string list
 

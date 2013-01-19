@@ -18,9 +18,9 @@ let rec to_var_list =  fun
   | {| '$lid:s |} | {| + '$lid:s |} | {| - '$lid:s |}  -> [s]
   | _ -> assert false ];
 
-let list_of_opt ot acc = match ot with
-  [ {||} -> acc
-  | t -> FanAst.list_of_ctyp t acc ];
+(* let list_of_opt ot acc = match ot with *)
+(*   [ {||} -> acc *)
+(*   | t -> FanAst.list_of_ctyp t acc ]; *)
 
 
 let rec name_tags = fun
@@ -296,7 +296,7 @@ let mk_dest_type  ~destination (id,len) =
   let (_quant,dst) =
     match destination with
     [Obj Map ->
-      (2, apply {|$id:id |} (List.init len (fun i -> {|  _ |})))
+      (2, apply {|$id:id |} (List.init len (fun _ -> {|  _ |})))
       (* (2, (of_id_len ~off:1 (id,len))) *)
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)
@@ -501,13 +501,13 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) ~compose
           "reduce_data_ctors: %s" (dump_ctyp t)]) init  branches;
     
 let view_sum (t:ctyp) =
-  let bs = FanAst.list_of_ctyp t [] in
+  let bs = FanAst.list_of_or' t [] in
   List.map
     (fun
       [ {|$uid:cons|} ->
         `branch (cons,[])
        | {|$uid:cons of $t|} ->
-           `branch (cons, FanAst.list_of_ctyp t [])
+           `branch (cons, FanAst.list_of_and' t [])
        | _ -> assert false ]) bs ;
 
 (*
@@ -530,7 +530,7 @@ let view_sum (t:ctyp) =
   ]}
  *)    
 let view_variant (t:ctyp) : list vbranch =
-  (* let lst = FanAst.list_of_ctyp t []  in *)
+
   let lst = list_of_or' t [] in 
   List.map (
   fun [ (* {| `$cons of $tup:t |} *)

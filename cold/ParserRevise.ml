@@ -4905,7 +4905,7 @@ let apply_ctyp () =
           `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ))],
            (Gram.mk_action
               (fun (y : 'amp_ctyp)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) 
-                 -> (`TyAmp (_loc, x, y) : 'ctyp_quot ))));
+                 -> (`Amp (_loc, x, y) : 'ctyp_quot ))));
          ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
           `Skeyword "and";
           `Snterm
@@ -5188,7 +5188,7 @@ let apply_ctyp () =
          [([`Sself; `Skeyword "&"; `Sself],
             (Gram.mk_action
                (fun (t2 : 'amp_ctyp)  _  (t1 : 'amp_ctyp)  (_loc : FanLoc.t) 
-                  -> (`TyAmp (_loc, t1, t2) : 'amp_ctyp ))));
+                  -> (`Amp (_loc, t1, t2) : 'amp_ctyp ))));
          ([`Stoken
              (((function | `Ant ("list",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"list\",_)"))],

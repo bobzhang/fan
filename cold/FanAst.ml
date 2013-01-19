@@ -239,7 +239,7 @@ class eq =
             (self#loc a0 b0) && (self#ctyp a1 b1)
         | (`TyVrnInfSup (a0,a1,a2),`TyVrnInfSup (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
-        | (`TyAmp (a0,a1,a2),`TyAmp (b0,b1,b2)) ->
+        | (`Amp (a0,a1,a2),`Amp (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
         | (`TyOfAmp (a0,a1,a2),`TyOfAmp (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ctyp a1 b1)) && (self#ctyp a2 b2)
@@ -912,10 +912,9 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in
           let a2 = self#ctyp a2 in `TyVrnInfSup (a0, a1, a2)
-      | `TyAmp (a0,a1,a2) ->
+      | `Amp (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#ctyp a1 in
-          let a2 = self#ctyp a2 in `TyAmp (a0, a1, a2)
+          let a1 = self#ctyp a1 in let a2 = self#ctyp a2 in `Amp (a0, a1, a2)
       | `TyOfAmp (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#ctyp a1 in
@@ -1733,8 +1732,8 @@ class print =
         | `TyVrnInfSup (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyVrnInfSup@ %a@ %a@ %a)@]" self#loc
               a0 self#ctyp a1 self#ctyp a2
-        | `TyAmp (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`TyAmp@ %a@ %a@ %a)@]" self#loc a0
+        | `Amp (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Amp@ %a@ %a@ %a)@]" self#loc a0
               self#ctyp a1 self#ctyp a2
         | `TyOfAmp (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`TyOfAmp@ %a@ %a@ %a)@]" self#loc a0
@@ -2397,7 +2396,7 @@ class fold =
       | `TyVrnInf (a0,a1) -> let self = self#loc a0 in self#ctyp a1
       | `TyVrnInfSup (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
-      | `TyAmp (a0,a1,a2) ->
+      | `Amp (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
       | `TyOfAmp (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ctyp a1 in self#ctyp a2
@@ -2879,6 +2878,7 @@ let loc_of =
   | `TyCol (_loc,_,_) -> _loc
   | `CgVir (_loc,_,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
+  | `Amp (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
   | `Record (_loc,_,_) -> _loc
@@ -2947,7 +2947,6 @@ let loc_of =
   | `Inherit (_loc,_,_,_) -> _loc
   | `MuNil _loc -> _loc
   | `None _loc -> _loc
-  | `TyAmp (_loc,_,_) -> _loc
   | `Method (_loc,_,_,_) -> _loc
   | `Module (_loc,_,_) -> _loc
   | `ExAsf _loc -> _loc
@@ -3206,7 +3205,7 @@ class fold2 =
         | (`TyVrnInfSup (a0,a1,a2),`TyVrnInfSup (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
-        | (`TyAmp (a0,a1,a2),`TyAmp (b0,b1,b2)) ->
+        | (`Amp (a0,a1,a2),`Amp (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ctyp a1 b1 in self#ctyp a2 b2
         | (`TyOfAmp (a0,a1,a2),`TyOfAmp (b0,b1,b2)) ->
@@ -3952,8 +3951,8 @@ let rec pp_print_ctyp: 'fmt -> ctyp -> 'result =
     | `TyVrnInfSup (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyVrnInfSup@ %a@ %a@ %a)@]" pp_print_loc
           a0 pp_print_ctyp a1 pp_print_ctyp a2
-    | `TyAmp (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`TyAmp@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Amp (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Amp@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ctyp a1 pp_print_ctyp a2
     | `TyOfAmp (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`TyOfAmp@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4589,7 +4588,7 @@ class iter =
       | `TyVrnSup (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `TyVrnInf (a0,a1) -> (self#loc a0; self#ctyp a1)
       | `TyVrnInfSup (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
-      | `TyAmp (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
+      | `Amp (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `TyOfAmp (a0,a1,a2) -> (self#loc a0; self#ctyp a1; self#ctyp a2)
       | `Package (a0,a1) -> (self#loc a0; self#module_type a1)
       | #ant as a0 -> (self#ant a0 :>'result)
@@ -5190,10 +5189,10 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
             let a2 = self#ctyp a2 b2 in `TyVrnInfSup (a0, a1, a2)
-        | (`TyAmp (a0,a1,a2),`TyAmp (b0,b1,b2)) ->
+        | (`Amp (a0,a1,a2),`Amp (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
-            let a2 = self#ctyp a2 b2 in `TyAmp (a0, a1, a2)
+            let a2 = self#ctyp a2 b2 in `Amp (a0, a1, a2)
         | (`TyOfAmp (a0,a1,a2),`TyOfAmp (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ctyp a1 b1 in
@@ -6401,13 +6400,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "TyVrnInfSup")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TyAmp (a0,a1,a2) ->
+            | `Amp (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "TyAmp")),
+                            (_loc, (`ExVrn (_loc, "Amp")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
             | `TyOfAmp (a0,a1,a2) ->
@@ -8150,13 +8149,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "TyVrnInfSup")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
-            | `TyAmp (a0,a1,a2) ->
+            | `Amp (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "TyAmp")),
+                            (_loc, (`PaVrn (_loc, "Amp")),
                               (meta_loc _loc a0))), (meta_ctyp _loc a1))),
                     (meta_ctyp _loc a2))
             | `TyOfAmp (a0,a1,a2) ->
@@ -9539,11 +9538,11 @@ let rec sta_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Sta (_loc, t, (sta_of_list ts))
-let rec tyAmp_of_list =
+let rec amp_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `TyAmp (_loc, t, (tyAmp_of_list ts))
+  | t::ts -> let _loc = loc_of t in `Amp (_loc, t, (amp_of_list ts))
 let rec tyApp_of_list =
   function
   | [] -> `Nil ghost
@@ -9596,11 +9595,15 @@ let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
 let sum_type_of_list l = or_of_list (List.map ty_of_stl l)
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
-let rec pel_of_binding =
-  function
-  | `And (_loc,b1,b2) -> (pel_of_binding b1) @ (pel_of_binding b2)
-  | `Bind (_loc,p,e) -> [(p, e)]
-  | _ -> assert false
+let rec list_of_amp x acc =
+  match x with
+  | `And (_,x,y) -> list_of_amp x (list_of_amp y acc)
+  | _ -> x :: acc
+let rec list_of_amp' x acc =
+  match x with
+  | `And (_,x,y) -> list_of_amp' x (list_of_amp' y acc)
+  | `Nil _ -> acc
+  | _ -> x :: acc
 let rec list_of_and x acc =
   match x with
   | `And (_,x,y) -> list_of_and x (list_of_and y acc)
@@ -9646,12 +9649,6 @@ let rec list_of_sem' x acc =
   | `Sem (_,x,y) -> list_of_sem' x (list_of_sem' y acc)
   | `Nil _ -> acc
   | _ -> x :: acc
-let rec list_of_ctyp x acc =
-  match x with
-  | `Nil _loc -> acc
-  | `TyAmp (_loc,x,y)|`Com (_loc,x,y)|`Sta (_loc,x,y)|`Sem (_loc,x,y)
-    |`And (_loc,x,y)|`Or (_loc,x,y) -> list_of_ctyp x (list_of_ctyp y acc)
-  | x -> x :: acc
 let rec list_of_ctyp_app (x : ctyp) (acc : ctyp list) =
   (match x with
    | `TyApp (_loc,t1,t2) -> list_of_ctyp_app t1 (list_of_ctyp_app t2 acc)
@@ -9720,9 +9717,8 @@ class clean_ast =
         |`Arrow (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
         |`Of (_loc,t,`Nil _l)|`And (_loc,`Nil _l,t)|`And (_loc,t,`Nil _l)
         |`Sem (_loc,t,`Nil _l)|`Sem (_loc,`Nil _l,t)|`Com (_loc,`Nil _l,t)
-        |`Com (_loc,t,`Nil _l)|`TyAmp (_loc,t,`Nil _l)
-        |`TyAmp (_loc,`Nil _l,t)|`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l)
-          -> t
+        |`Com (_loc,t,`Nil _l)|`Amp (_loc,t,`Nil _l)|`Amp (_loc,`Nil _l,t)
+        |`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) -> t
       | t -> t
     method! sig_item sg =
       match super#sig_item sg with

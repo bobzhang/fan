@@ -10,8 +10,6 @@ let rec to_var_list =
     |`Quote (_loc,`Positive _,`Some `Lid (_,s))
     |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> [s]
   | _ -> assert false
-let list_of_opt ot acc =
-  match ot with | `Nil _loc -> acc | t -> FanAst.list_of_ctyp t acc
 let rec name_tags =
   function
   | `TyApp (_loc,t1,t2) -> (name_tags t1) @ (name_tags t2)
@@ -173,7 +171,7 @@ let mk_dest_type ~destination  (id,len) =
   let (_quant,dst) =
     match destination with
     | Obj (Map ) ->
-        (2, (apply (`Id (_loc, id)) (List.init len (fun i  -> `Any _loc))))
+        (2, (apply (`Id (_loc, id)) (List.init len (fun _  -> `Any _loc))))
     | Obj (Iter ) -> (1, result_type)
     | Obj (Fold ) -> (1, self_type)
     | Str_item  -> (1, result_type) in
@@ -297,12 +295,12 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) ~compose
        | t -> FanLoc.errorf (loc_of t) "reduce_data_ctors: %s" (dump_ctyp t))
     init branches
 let view_sum (t : ctyp) =
-  let bs = FanAst.list_of_ctyp t [] in
+  let bs = FanAst.list_of_or' t [] in
   List.map
     (function
      | `Id (_loc,`Uid (_,cons)) -> `branch (cons, [])
      | `Of (_loc,`Id (_,`Uid (_,cons)),t) ->
-         `branch (cons, (FanAst.list_of_ctyp t []))
+         `branch (cons, (FanAst.list_of_and' t []))
      | _ -> assert false) bs
 let view_variant (t : ctyp) =
   (let lst = list_of_or' t [] in

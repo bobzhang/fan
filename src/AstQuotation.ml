@@ -444,7 +444,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | "listctyp*" -> {| $(uid:gm()).sta_of_list $e |}
 
             | "listctyp|" | "listmatch_case" -> {| $(uid:gm()).or_of_list $e |}                  
-            | "listctyp&" -> {| $(uid:gm()).tyAmp_of_list $e |}
+            | "listctyp&" -> {| $(uid:gm()).amp_of_list $e |}
 
 
             | "listmatch_caselettry" ->

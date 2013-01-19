@@ -1059,7 +1059,7 @@ let apply () = begin
       | S{ct1}; "="; S{ct2} -> {| $ct1 = $ct2 |}
       | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
       | "virtual";  class_name_and_param{(i, ot)} ->
-          {| virtual $((i:>ident)) [ $ot ] |}
+          {| virtual $((i:>ident)) [ $ot ] |} (* types *)
 
       | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
           let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
@@ -1248,6 +1248,8 @@ let apply_ctyp () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | S{t1}; "|"; S{t2} ->        {| $t1 | $t2 |}
       | a_uident{s}; "of"; constructor_arg_list{t} -> {| $(id:(s:>ident)) of $t |}
+
+      (* GADT to be improved *)      
       | a_uident{s}; ":"; ctyp{t} ->
           let (tl, rt) = Ctyp.to_generalized t in
             {| $(id:(s:>ident)) : ($(FanAst.and_of_list tl) -> $rt) |}

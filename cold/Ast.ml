@@ -40,7 +40,7 @@ type ctyp =
   | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* astring)
   | `TyVrnEq of (loc* ctyp) | `TyVrnSup of (loc* ctyp)
   | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
-  | `TyAmp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
+  | `Amp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
   | `Package of (loc* module_type) | ant] 
 and patt =
   [ `Nil of loc | `Id of (loc* ident) | `Alias of (loc* patt* alident) | 

@@ -167,7 +167,7 @@
     | `TyVrnInf of (loc * ctyp) (* [ < t ] *)
     | `TyVrnInfSup of (loc * ctyp * ctyp) (* [ < t > t ] *)
           
-    | `TyAmp of (loc * ctyp * ctyp) (* t & t *)
+    | `Amp of (loc * ctyp * ctyp) (* t & t *)
     | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
     | `Package of (loc * module_type) (* (module S) *)
     | ant (* $s$ *)]
@@ -498,17 +498,3 @@
     | ant (* $s$ *) ]; 
 
 
-(* type category = *)
-(*     [= ctyp|patt|expr|module_type *)
-(*     |module_expr|sig_item|str_item|class_type|class_sig_item *)
-(*     |class_expr|class_str_item|with_constr|binding *)
-(*     |rec_binding|module_binding]; *)
-
-(*
-  let a (x: [= `External of (loc * [= `Lid of (loc*string)] * ctyp * meta_list string)  ]) =
-  (x:> str_item);
-  
-  
-  {:patt| (A x as y)|}
-  {:patt| (y as A x)|}
- *)

@@ -661,7 +661,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                     (_loc,
                                       (`IdAcc
                                          (_loc, (`Uid (_loc, (gm ()))),
-                                           (`Lid (_loc, "tyAmp_of_list")))))),
+                                           (`Lid (_loc, "amp_of_list")))))),
                                  e)
                          | "listmatch_caselettry" ->
                              `ExApp

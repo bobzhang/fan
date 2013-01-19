@@ -117,7 +117,7 @@ let rec ctyp: ctyp -> Parsetree.core_type =
   | `Quote (_loc,`Normal _,`Some `Lid (_,s)) -> mktyp _loc (Ptyp_var s)
   | `Tup (loc,`Sta (_,t1,t2)) ->
       mktyp loc
-        (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
+        (Ptyp_tuple (List.map ctyp (list_of_star' t1 (list_of_star' t2 []))))
   | `TyVrnEq (_loc,t) ->
       mktyp _loc (Ptyp_variant ((row_field t []), true, None))
   | `TyVrnSup (_loc,t) ->
@@ -137,12 +137,12 @@ and row_field (x : ctyp) acc =
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `TyOfAmp (_loc,`TyVrn (_,i),t) ->
       (match i with
-       | `C (_,i) -> (Rtag (i, true, (List.map ctyp (list_of_ctyp t [])))) ::
+       | `C (_,i) -> (Rtag (i, true, (List.map ctyp (list_of_amp' t [])))) ::
            acc
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Of (_loc,`TyVrn (_,i),t) ->
       (match i with
-       | `C (_,i) -> (Rtag (i, false, (List.map ctyp (list_of_ctyp t []))))
+       | `C (_,i) -> (Rtag (i, false, (List.map ctyp (list_of_amp' t []))))
            :: acc
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Or (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
@@ -203,9 +203,9 @@ let mkvariant (x : ctyp) =
   match x with
   | `Id (_loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, _loc)
   | `Of (_loc,`Id (_,`Uid (sloc,s)),t) ->
-      ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])), None, _loc)
+      ((with_loc s sloc), (List.map ctyp (list_of_and' t [])), None, _loc)
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),`Arrow (_,t,u)) ->
-      ((with_loc s sloc), (List.map ctyp (list_of_ctyp t [])),
+      ((with_loc s sloc), (List.map ctyp (list_of_and' t [])),
         (Some (ctyp u)), _loc)
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
@@ -220,11 +220,11 @@ let rec type_decl (tl : (string Asttypes.loc option* (bool* bool)) list)
        else type_decl tl cl loc m true t
    | `TyRec (_loc,t) ->
        mktype loc tl cl
-         (Ptype_record (List.map mktrecord (list_of_ctyp t [])))
+         (Ptype_record (List.map mktrecord (list_of_sem' t [])))
          (mkprivate' pflag) m
    | `Sum (_loc,t) ->
        mktype loc tl cl
-         (Ptype_variant (List.map mkvariant (list_of_ctyp t [])))
+         (Ptype_variant (List.map mkvariant (list_of_or' t [])))
          (mkprivate' pflag) m
    | t ->
        if m <> None
@@ -816,7 +816,7 @@ and sig_item (s : sig_item) (l : signature) =
    | `Exception (_loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
        (mksig _loc
           (Psig_exception
-             ((with_loc s _loc), (List.map ctyp (list_of_ctyp t [])))))
+             ((with_loc s _loc), (List.map ctyp (list_of_and' t [])))))
        :: l
    | `Exception (_,_) -> assert false
    | `External (loc,n,t,sl) ->
@@ -918,7 +918,7 @@ and str_item (s : str_item) (l : structure) =
    | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
        (mkstr loc
           (Pstr_exception
-             ((with_loc s loc), (List.map ctyp (list_of_ctyp t [])))))
+             ((with_loc s loc), (List.map ctyp (list_of_and' t [])))))
        :: l
    | `Exception (_,_) -> assert false
    | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
@@ -953,7 +953,7 @@ and class_type =
   | `CtCon (loc,`ViNil _,id,tl) ->
       mkcty loc
         (Pcty_constr
-           ((long_class_ident id), (List.map ctyp (Ctyp.list_of_opt tl []))))
+           ((long_class_ident id), (List.map ctyp (list_of_com' tl []))))
   | `CtFun (loc,`Label (_,lab,t),ct) ->
       let lab =
         match lab with
@@ -1048,7 +1048,7 @@ and class_expr: class_expr -> Parsetree.class_expr =
   | `CeCon (loc,`ViNil _,id,tl) ->
       mkcl loc
         (Pcl_constr
-           ((long_class_ident id), (List.map ctyp (Ctyp.list_of_opt tl []))))
+           ((long_class_ident id), (List.map ctyp (list_of_com' tl []))))
   | `CeFun (loc,`Label (_,lab,po),ce) ->
       (match lab with
        | `Lid (_loc,lab) ->

@@ -169,7 +169,8 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
   | (* {@loc| ($t1 * $t2) |} *)
     `Tup(loc,`Sta(_,t1,t2))
     ->
-      mktyp loc (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
+      mktyp loc (Ptyp_tuple (List.map ctyp (list_of_star' t1 (list_of_star' t2 []))))
+        (*precise*)
   | (* {| [ = $t ] |} *)
     `TyVrnEq(_loc,t)
     ->
@@ -203,13 +204,13 @@ and row_field (x:ctyp) acc =
     `TyOfAmp (_loc,`TyVrn(_,i),t) ->
       match i with
       [`C (_,i) ->   
-        [Rtag i true (List.map ctyp (list_of_ctyp t [])) :: acc ]
+        [Rtag i true (List.map ctyp (list_of_amp' t [])) :: acc ]
       |`Ant(_loc,_) -> ANT_ERROR ]
   | (* {| `$i of $t |} *)
     `Of(_loc,`TyVrn(_,i),t) ->
       match i with 
       [`C (_,i) -> 
-       [Rtag i false (List.map ctyp (list_of_ctyp t [])) :: acc ]
+       [Rtag i false (List.map ctyp (list_of_amp' t [])) :: acc ]
       |`Ant(_loc,_) -> ANT_ERROR]
   | (* {| $t1 | $t2 |} *)
     `Or(_loc,t1,t2) ->
@@ -299,11 +300,11 @@ let mkvariant (x:ctyp)
   | (* {| $(id:{:ident@sloc| $uid:s |}) of $t |} *)
     `Of(_loc,`Id(_,`Uid(sloc,s)),t)
     ->
-      (with_loc  s sloc, List.map ctyp (list_of_ctyp t []), None,  _loc)
+      (with_loc  s sloc, List.map ctyp (list_of_and' t []), None,  _loc)
   | (* {| $(id:{:ident@sloc| $uid:s |}) : ($t -> $u) |} *)
     `TyCol(_loc,`Id(_,`Uid(sloc,s)),`Arrow(_,t,u))
     ->
-      (with_loc s sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  _loc)
+      (with_loc s sloc, List.map ctyp (list_of_and' t []), Some (ctyp u),  _loc)
   | (* {| $(id:{:ident@sloc| $uid:s |}) : $t |} *)
     `TyCol(_loc,`Id(_,`Uid(sloc,s)),t)
     ->
@@ -331,11 +332,11 @@ let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool)))
     `TyRec (_loc,t)
     ->
       mktype loc tl cl
-        (Ptype_record (List.map mktrecord (list_of_ctyp t []))) (mkprivate' pflag) m
+        (Ptype_record (List.map mktrecord (list_of_sem' t []))) (mkprivate' pflag) m
   | (* {| [ $t ] |} *)
     `Sum(_loc,t) ->
       mktype loc tl cl
-        (Ptype_variant (List.map mkvariant (list_of_ctyp t []))) (mkprivate' pflag) m
+        (Ptype_variant (List.map mkvariant (list_of_or' t []))) (mkprivate' pflag) m
   | t ->
       if m <> None then
         errorf loc "only one manifest type allowed by definition %s"
@@ -973,7 +974,7 @@ and sig_item (s:sig_item) (l:signature) :signature =
       [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
   | {| exception $uid:s of $t |} ->
       [mksig _loc (Psig_exception (with_loc s _loc)
-                    (List.map ctyp (list_of_ctyp t []))) :: l]
+                    (List.map ctyp (list_of_and' t []))) :: l]
   | `Exception (_,_) -> assert false (*FIXME*)
   | `External (loc, n, t, sl) ->
       let n = match n with
@@ -1068,7 +1069,7 @@ and str_item (s:str_item) (l:structure) : structure =
     `Exception (loc, `Of (_, `Id (_, `Uid (_, s)), t))
     ->
       [mkstr loc (Pstr_exception (with_loc s loc)
-                    (List.map ctyp (list_of_ctyp t []))) :: l ]
+                    (List.map ctyp (list_of_and' t []))) :: l ]
    (* TODO *)     
   (* | {@loc| exception $uid:s = $i |} -> *)
   (*     [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ] *)
@@ -1105,7 +1106,7 @@ and str_item (s:str_item) (l:structure) : structure =
 and class_type = fun (* class_type -> class_type *)
   [ `CtCon (loc, `ViNil _, id,tl) ->
     mkcty loc
-      (Pcty_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
+      (Pcty_constr (long_class_ident id) (List.map ctyp (list_of_com' tl [])))
   | `CtFun (loc, (`Label (_, lab, t)), ct) ->
       let lab = match lab with
         [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in
@@ -1198,7 +1199,7 @@ and class_expr : class_expr -> Parsetree.class_expr = fun (* class_expr -> class
     mkcl loc (Pcl_apply (class_expr ce) el)
   | `CeCon (loc, `ViNil _, id,tl) ->
       mkcl loc
-        (Pcl_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
+        (Pcl_constr (long_class_ident id) (List.map ctyp (list_of_com' tl [])))
   | `CeFun (loc, (`Label (_, lab, po)), ce) ->
       match lab with
       [`Lid (_loc,lab) ->   

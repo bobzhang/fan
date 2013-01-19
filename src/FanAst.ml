@@ -216,11 +216,13 @@ let rec sta_of_list = fun
   | [t] -> t
   | [t::ts] -> let _loc = loc_of t in `Sta(_loc,t,sta_of_list ts)];
 
-let rec tyAmp_of_list =  fun
-    [ [] -> `Nil ghost 
-    | [t] -> t
-    | [t::ts] ->
-        let _loc = loc_of t in `TyAmp(_loc,t,tyAmp_of_list ts) ];
+let rec amp_of_list = fun
+  [ [] -> `Nil ghost
+  | [t] -> t
+  | [t::ts] ->
+      let _loc = loc_of t in
+      `Amp(_loc,t,amp_of_list ts)];
+  
 
 
 (* LA *)  
@@ -229,10 +231,8 @@ let rec tyApp_of_list = fun
     | [t] -> t
     | [t::ts] ->
         let _loc = loc_of t in
-        `TyApp (_loc, t, (tyApp_of_list ts))
-        (* List.fold_left *)
-        (*   (fun x y -> let _loc = loc_of  x in {:ctyp| $x $y |}) t ts *)];
-        (* let _loc = loc_of t in {:ctyp| $t  $(tyApp_of_list ts) |} ]; *)
+        `TyApp (_loc, t, (tyApp_of_list ts))];
+
   
 (* LA *)
 let tyVarApp_of_list (_loc,ls)=
@@ -248,24 +248,24 @@ let rec idAcc_of_list = fun
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of i in
-        `IdAcc(_loc,i,idAcc_of_list is)
-        (* {:ident| $i . $(idAcc_of_list is) |} *) ];
+        `IdAcc(_loc,i,idAcc_of_list is)];
+
 
 let rec idApp_of_list =  fun
     [ [] -> assert false
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of i in
-        `IdApp (_loc, i, (idApp_of_list is))
-        (* {:ident| ($i $(idApp_of_list is)) |} *) ];
+        `IdApp (_loc, i, (idApp_of_list is))];
+
 
 let rec meApp_of_list = fun
     [ [] -> assert false
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of x in
-        `MeApp (_loc, x, (meApp_of_list xs))
-        (* {:module_expr| $x $(meApp_of_list xs) |} *) ];
+        `MeApp (_loc, x, (meApp_of_list xs))];
+
 
 (* LA   *)
 let  exApp_of_list = fun
@@ -276,24 +276,43 @@ let  exApp_of_list = fun
           (fun x y -> let _loc = loc_of  x in {:expr| $x $y |}) t ts];
 
 let ty_of_stl = fun
-    [ (_loc, s, []) -> {:ctyp| $uid:s |}
-    | (_loc, s, tl) -> {:ctyp| $uid:s of $(and_of_list tl) |} ];
+    [ (_loc, s, []) ->
+      `Id(_loc,`Uid(_loc,s))
+      (* {:ctyp| $uid:s |} *)
+    | (_loc, s, tl) ->
+        `Of (_loc, `Id (_loc, `Uid (_loc, s)), and_of_list tl)];
+        (* {:ctyp| $uid:s of $(and_of_list tl) |} *) 
 
 let ty_of_sbt = fun
     [ (_loc, s, true, t) ->
       `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t)))
       (* {:ctyp| $lid:s : mutable $t |} *)
-    | (_loc, s, false, t) -> {:ctyp| $lid:s : $t |} ];
+    | (_loc, s, false, t) ->
+        `TyCol (_loc, `Id (_loc, `Lid (_loc, s)), t)];
+        (* {:ctyp| $lid:s : $t |}  *)
 
 let bi_of_pe (p, e) = let _loc = loc_of p in {:binding| $p = $e |};
+
 let sum_type_of_list l = or_of_list (List.map ty_of_stl l);
+
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l);
+
 let binding_of_pel l = and_of_list (List.map bi_of_pe l);
 
-let rec pel_of_binding =  fun
-    [ {:binding| $b1 and $b2 |} -> pel_of_binding b1 @ pel_of_binding b2
-    | {:binding| $p = $e |} -> [(p, e)]
-    | _ -> assert false ];
+  
+let rec list_of_amp x acc =
+  match x with
+  [`And(_,x,y) ->
+    list_of_amp x (list_of_amp y acc)
+  | _ -> [x::acc] ];
+
+let rec list_of_amp' x acc =
+  match x with
+  [`And(_,x,y) ->
+    list_of_amp' x (list_of_amp' y acc)
+  | `Nil _ -> acc
+  | _ -> [x::acc] ];    
+
 
 let rec list_of_and x acc =
   match x with
@@ -360,15 +379,6 @@ let rec list_of_sem' x acc =
   | _ -> [x::acc] ] ;
     
 
-let rec list_of_ctyp x acc =
-  with ctyp match x with
-  [ {||} -> acc
-  | {| $x & $y |} | {| $x, $y |} |
-    {| $x * $y |} | {| $x; $y |} |
-    {| $x and $y |} | {| $x | $y |} ->
-        list_of_ctyp x (list_of_ctyp y acc)
-  | x -> [x :: acc] ];
-
 let rec list_of_ctyp_app (x:ctyp) (acc:list ctyp) : list ctyp =
   with ctyp match x with
   [
@@ -419,7 +429,6 @@ end;
 
 
 class clean_ast = object
-    
   inherit map as super;
   method! with_constr wc =
     with with_constr
