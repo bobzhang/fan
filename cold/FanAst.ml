@@ -9558,6 +9558,14 @@ let rec amp_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Amp (_loc, t, (amp_of_list ts))
+let tuple_com y =
+  match y with
+  | [] -> failwith "tuple_com empty"
+  | x::[] -> x
+  | x::_ ->
+      let a = loc_of x in
+      let b = loc_of (List.last y) in
+      let _loc = FanLoc.merge a b in `Tup (_loc, (com_of_list y))
 let rec tyApp_of_list =
   function
   | [] -> `Nil ghost
@@ -9664,6 +9672,10 @@ let rec list_of_sem' x acc =
   | `Sem (_,x,y) -> list_of_sem' x (list_of_sem' y acc)
   | `Nil _ -> acc
   | _ -> x :: acc
+let sem a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Sem (_loc, a, b)
+let com a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Com (_loc, a, b)
 let rec list_of_ctyp_app (x : ctyp) (acc : ctyp list) =
   (match x with
    | `TyApp (_loc,t1,t2) -> list_of_ctyp_app t1 (list_of_ctyp_app t2 acc)

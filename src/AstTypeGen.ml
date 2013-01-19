@@ -83,7 +83,7 @@ let (gen_map,gen_map2) = with expr
               {|let $pat:pat0 = $expr in $res |})  params result in
   let mk_tuple params =
     let result = 
-      params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_of_list in
+      params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_com in
     List.fold_right
       (fun {expr;pat0;_} res ->
         {| let $pat:pat0 = $expr in $res |}) params result in 
@@ -128,7 +128,7 @@ let gen_strip = with {patt:ctyp;expr}
               )  (List.tl params) result in
   let mk_tuple params =
     let result = 
-      params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_of_list in
+      params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_com in
     List.fold_right
       (fun {expr;pat0;ty;_} res ->
         match ty with
@@ -331,7 +331,7 @@ let generate (module_types:FSig.module_types) =
       else
         let pats =
           [ {:patt| _loc|} :: List.init (arity - 1) (fun _ -> {:patt| _ |}) ] in
-        {:match_case| $vrn:key $(pat:(Patt.tuple_of_list pats)) -> _loc | $acc |} 
+        {:match_case| $vrn:key $(pat:(tuple_com pats)) -> _loc | $acc |} 
         
     ) tbl {:match_case||} in
   {:str_item| let loc_of  = fun [ $case ]|};

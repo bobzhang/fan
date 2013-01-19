@@ -7,7 +7,7 @@
 let app a b = {| $a $b |};
 
   
-let comma a b = {| $a, $b |};  
+(* let comma a b = {| $a, $b |};   *)
 
 (*
    Left associativity
@@ -26,9 +26,9 @@ let rec apply acc = fun
   [ [] -> acc
   | [x::xs] ->  apply (app acc x) xs];
 
-let sem a b =
-  let _loc = FanLoc.merge (GETLOC a) (GETLOC b) in
-  {| $a; $b  |} ;
+(* let sem a b = *)
+(*   let _loc = FanLoc.merge (GETLOC a) (GETLOC b) in *)
+(*   {| $a; $b  |} ; *)
 
   
 (*
@@ -69,13 +69,13 @@ let  list_of_app  ty  =
    (1, (2, 3), 4)
    ]}
  *)  
-let list_of_com ty = 
-  let rec loop t acc = match t with
-    [ {| $t1 , $t2 |} -> (* loop t2 [t1::acc]*)
-       [t1 :: (loop t2 acc) ]  
-    | {| |} -> acc 
-    | i -> [i::acc] ] in
-  loop ty [];
+(* let list_of_com ty =  *)
+(*   let rec loop t acc = match t with *)
+(*     [ {| $t1 , $t2 |} -> (\* loop t2 [t1::acc]*\) *)
+(*        [t1 :: (loop t2 acc) ]   *)
+(*     | {| |} -> acc  *)
+(*     | i -> [i::acc] ] in *)
+(*   loop ty []; *)
 
 (*
   right associative sem
@@ -88,13 +88,13 @@ let list_of_com ty =
    1; (2; 3); 4
   ]}
  *)
-let list_of_sem ty = 
-  let rec loop t acc =
-    match t with
-    [ {| $t1 ; $t2 |} ->  [t1 :: (loop t2 acc)]  
-    | {| |} -> acc 
-    | i -> [i::acc] ] in
-  loop ty [];
+(* let list_of_sem ty =  *)
+(*   let rec loop t acc = *)
+(*     match t with *)
+(*     [ {| $t1 ; $t2 |} ->  [t1 :: (loop t2 acc)]   *)
+(*     | {| |} -> acc  *)
+(*     | i -> [i::acc] ] in *)
+(*   loop ty []; *)
 
 (*
   It tries to decompose an app into the first argument, and the rest argument
@@ -118,13 +118,6 @@ let app_of_list = fun
   [ [] -> {| |}
   | l -> List.reduce_left app l ] ;  
 
-let com_of_list  = fun
-  [ [] -> {| |}
-  | l -> List.reduce_right comma l ];
-  
-let sem_of_list  = fun
-  [ [] -> {| |}
-  | l -> List.reduce_right sem l ]; 
   
 (*
    {[
@@ -132,10 +125,10 @@ let sem_of_list  = fun
    (a, b, c)
    ]}
  *)
-let tuple_of_list = fun
-  [ [] -> invalid_arg "tuple_of_list while list is empty"
-  | [x] -> x
-  | xs -> {| $(tup:com_of_list xs) |} ];
+(* let tuple_of_list = fun *)
+(*   [ [] -> invalid_arg "tuple_of_list while list is empty" *)
+(*   | [x] -> x *)
+(*   | xs -> {| $(tup:com_of_list xs) |} ]; *)
 
 
 

@@ -50,6 +50,10 @@ module List =
       match ls with
       | [] -> failwith "lastbut1 empty"
       | _ -> let l = List.rev ls in ((List.tl l), (List.hd l))
+    let last ls =
+      match ls with
+      | [] -> failwith "last empty"
+      | _ -> List.hd (List.rev ls)
     let split_at n xs =
       let rec aux n acc xs =
         match xs with

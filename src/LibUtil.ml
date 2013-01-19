@@ -125,7 +125,10 @@ module List = struct
     |  _ -> let l = List.rev ls in
      (List.tl l, List.hd l ) ];
     
-
+  let last ls =
+    match ls with
+    [ [] -> failwith "last empty"
+    | _ -> List.hd (List.rev ls) ];  
   (* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
   let  split_at n xs =
     let rec aux  n acc xs = 

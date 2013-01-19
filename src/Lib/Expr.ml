@@ -1,5 +1,5 @@
 
-open Ast;
+open FanAst;
 #default_quotation     "expr";;
 
 
@@ -322,7 +322,7 @@ let fun_args _loc args body =
 
 
 let _loc = FanLoc.ghost ;
-DEFINE GETLOC(expr)= FanAst.loc_of(* _expr *) expr;  
+(* DEFINE GETLOC(expr)= FanAst.loc_of(\* _expr *\) expr;   *)
 INCLUDE "src/Lib/CommonStructure.ml";
 INCLUDE "src/Lib/ExprPatt.ml";
 
@@ -723,7 +723,7 @@ let currying match_cases ~arity =
   if  arity >= 2 then 
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exprs = List.map (fun s-> {| $lid:s |} ) names in
-    names <+ {| match $(tuple_of_list exprs) with [ $list:match_cases ] |}
+    names <+ {| match $((* tuple_of_list *)tuple_com exprs) with [ $list:match_cases ] |}
   else {| fun [ $list:match_cases ] |};
 
 

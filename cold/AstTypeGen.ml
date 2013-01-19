@@ -63,8 +63,7 @@ let (gen_map,gen_map2) =
          `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       params result in
   let mk_tuple params =
-    let result =
-      (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_of_list in
+    let result = (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_com in
     List.fold_right
       (fun { expr; pat0;_}  res  ->
          `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
@@ -107,8 +106,7 @@ let gen_strip =
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       (List.tl params) result in
   let mk_tuple params =
-    let result =
-      (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_of_list in
+    let result = (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_com in
     List.fold_right
       (fun { expr; pat0; ty;_}  res  ->
          match ty with
@@ -285,11 +283,9 @@ let generate (module_types : FSig.module_types) =
               (_loc,
                 (`Case
                    (_loc,
-                     (`PaApp
-                        (_loc, (`PaVrn (_loc, key)),
-                          (Patt.tuple_of_list pats))), (`Nil _loc),
-                     (`Id (_loc, (`Lid (_loc, "_loc")))))), acc))) tbl
-      (`Nil _loc) in
+                     (`PaApp (_loc, (`PaVrn (_loc, key)), (tuple_com pats))),
+                     (`Nil _loc), (`Id (_loc, (`Lid (_loc, "_loc")))))), acc)))
+      tbl (`Nil _loc) in
   `Value
     (_loc, (`ReNil _loc),
       (`Bind

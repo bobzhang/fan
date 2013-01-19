@@ -20,7 +20,7 @@ let mklist loc =
     [ [] -> {| [] |}
     | [e1 :: el] ->
         let _loc =
-          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
+          if top then loc else FanLoc.merge (loc_of e1) loc in
         {| [$e1 :: $(loop false el)] |} ] in loop true ;
 
 (* It is the inverse operation by [view_app]
@@ -32,7 +32,7 @@ let mklist loc =
  *)
 let rec apply accu = fun
   [ [] -> accu
-  | [x :: xs] -> let _loc = GETLOC x in apply {| $accu $x |} xs ];
+  | [x :: xs] -> let _loc = loc_of x in apply {| $accu $x |} xs ];
   
 (*
   mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
@@ -43,7 +43,7 @@ let mkarray loc arr =
     [ [] -> {| [] |}
     | [e1 :: el] ->
         let _loc =
-          if top then loc else FanLoc.merge (GETLOC(e1)) loc in
+          if top then loc else FanLoc.merge (loc_of e1) loc in
         {| [| $e1 ; $(loop false el) |] |} ] in
   let items = arr |> Array.to_list in 
   loop true items;
@@ -122,7 +122,7 @@ let gen_tuple_first ~number ~off =
     let lst =
       zfold_left ~start:1 ~until:(number-1)
         ~acc:({| $(id:xid ~off 0 ) |})
-        (fun acc i -> comma acc {| $(id:xid ~off i) |} ) in
+        (fun acc i -> com acc {| $(id:xid ~off i) |} ) in
     {| $tup:lst |}
   | _ -> invalid_arg "n < 1 in gen_tuple_first" ];
 
@@ -140,7 +140,7 @@ let gen_tuple_second ~number ~off =
     let lst =
       zfold_left ~start:1 ~until:(number - 1)
         ~acc:({| $(id:xid ~off:0 off) |})
-        (fun acc i -> comma acc {| $(id:xid ~off:i off ) |} ) in
+        (fun acc i -> com acc {| $(id:xid ~off:i off ) |} ) in
     {| $tup:lst |}
   | _ -> 
         invalid_arg "n < 1 in gen_tuple_first "];    
@@ -159,7 +159,7 @@ let gen_tuple_second ~number ~off =
  *)    
 let tuple_of_number ast n =
   let res = zfold_left ~start:1 ~until:(n-1) ~acc:ast
-   (fun acc _ -> comma acc ast) in
+   (fun acc _ -> com acc ast) in
   if n > 1 then {| $tup:res |}
   else res;
 
@@ -171,12 +171,12 @@ let tuple_of_number ast n =
   (a, b, c)
   ]}
  *)
-let tuple_of_list lst =
-  let len = List.length lst in
-  match len with
-  [ 1  ->  List.hd lst
-  | n when n > 1 ->  {| $(tup:List.reduce_left comma lst) |} 
-  | _ -> invalid_arg "tuple_of_list n < 1"] ;
+(* let tuple_of_list lst = *)
+(*   let len = List.length lst in *)
+(*   match len with *)
+(*   [ 1  ->  List.hd lst *)
+(*   | n when n > 1 ->  {| $(tup:List.reduce_left com lst) |}  *)
+(*   | _ -> invalid_arg "tuple_of_list n < 1"] ; *)
 
 
 let of_vstr_number name i =
@@ -185,7 +185,7 @@ let of_vstr_number name i =
     (* {|`$name|} *)
    {|$vrn:name|}
   else
-    let item = items |> tuple_of_list in
+    let item = items |> tuple_com(* tuple_of_list *) in
     (* {| `$name $item |} *)
     (* `PaApp (_loc, (`PaVrn (_loc, name)), item) (\* FIXME*\) *)
     {| $vrn:name $item |}
@@ -209,7 +209,7 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {| $(id:xid ~off:i j) |} )) in
   let pat = of_str (cons_transform cons) in 
-  List.map (fun lst -> apply pat lst) args |> tuple_of_list ;
+  List.map (fun lst -> apply pat lst) args |> tuple_com(* tuple_of_list *) ;
     
 
   

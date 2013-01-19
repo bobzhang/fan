@@ -4,7 +4,7 @@ open LibUtil;
 
 
 
-open Ast;
+open FanAst;
 open Basic;
 (*
   An ad-hoc solution for [`a|a|`b] code generation, to imporove later
@@ -17,7 +17,7 @@ let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
       {:patt| (#$id:name as $(lid: x ~off:i 0 )) |})in
   let exps = List.init arity (fun i -> {:expr| $(id:xid ~off:i 0) |} ) in
   let e = Expr.apply e exps in 
-  let pat = args |> Patt.tuple_of_list in
+  let pat = args |>tuple_com in
   let open FSig in
   match destination with
   [Obj(Map) ->

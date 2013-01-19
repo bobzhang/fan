@@ -190,32 +190,39 @@ let rec is_expr_constructor = fun
 
 let ghost = FanLoc.ghost ; (* to refine *)
 
+(* RA *)  
 let rec or_of_list = fun
   [ [] -> `Nil ghost
   | [t] -> t
   | [t::ts] ->
       let _loc = loc_of t in `Or(_loc,t,or_of_list ts)];
 
+(* RA *)  
 let rec and_of_list = fun
   [ [] -> `Nil ghost
   | [t] -> t
   | [t::ts] -> let _loc = loc_of t in `And(_loc,t,and_of_list ts)];
 
+(* RA *)  
 let rec sem_of_list = fun
   [ [] -> `Nil ghost
   | [t] -> t
   | [t::ts] -> let _loc = loc_of t in `Sem(_loc,t,sem_of_list ts) ];
 
+(* RA *)  
 let rec com_of_list = fun
   [ [] -> `Nil ghost
   | [t] -> t
   | [t::ts] ->
       let _loc = loc_of t in `Com(_loc,t,com_of_list ts)  ];
+
+(* RA *)  
 let rec sta_of_list = fun
   [ [] -> `Nil ghost
   | [t] -> t
   | [t::ts] -> let _loc = loc_of t in `Sta(_loc,t,sta_of_list ts)];
 
+(* RA *)  
 let rec amp_of_list = fun
   [ [] -> `Nil ghost
   | [t] -> t
@@ -224,7 +231,16 @@ let rec amp_of_list = fun
       `Amp(_loc,t,amp_of_list ts)];
   
 
-
+let tuple_com y=
+  match y with 
+  [[] -> failwith "tuple_com empty"
+  |[x] -> x
+  | [x::_] ->
+      let a = loc_of x in
+      let b = loc_of (List.last y) in
+      let _loc = FanLoc.merge a b in 
+      `Tup _loc (com_of_list y) ];
+    
 (* LA *)  
 let rec tyApp_of_list = fun
     [ [] -> `Nil ghost 
@@ -378,7 +394,14 @@ let rec list_of_sem' x acc =
   |`Nil _ -> acc
   | _ -> [x::acc] ] ;
     
+let sem a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in
+  `Sem(_loc,a,b);
 
+let com a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in
+  `Com(_loc,a,b);
+  
 let rec list_of_ctyp_app (x:ctyp) (acc:list ctyp) : list ctyp =
   with ctyp match x with
   [

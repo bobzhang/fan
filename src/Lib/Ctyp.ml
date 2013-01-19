@@ -56,7 +56,7 @@ let eprint :  (ctyp -> unit) =
   
 let _loc = FanLoc.ghost ; (* FIXME *)
 
-DEFINE GETLOC(expr)= FanAst.loc_of expr;  
+(* DEFINE GETLOC(expr)= FanAst.loc_of expr;   *)
 INCLUDE "src/Lib/CommonStructure.ml";  
 (*
    compose type abstractions

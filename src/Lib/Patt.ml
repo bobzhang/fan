@@ -5,10 +5,10 @@
 open LibUtil;
 open Basic;
 open FSig;
+open FanAst;
 
 
-
-DEFINE GETLOC(expr)= FanAst.loc_of(* _patt *) expr;
+(* DEFINE GETLOC(expr)= FanAst.loc_of(\* _patt *\) expr; *)
 
   
 
@@ -32,7 +32,7 @@ let mk_record ?(arity=1) cols =
       {| $lid:label = $(id:xid ~off i )  |} ]) cols in
   let res = zfold_left
       ~start:1 ~until:(arity-1) ~acc:({| { $(list:mk_list 0) } |} )
-      (fun acc i -> comma acc {| { $(list:mk_list i) } |}  ) in
+      (fun acc i -> com acc {| { $(list:mk_list i) } |}  ) in
   if arity > 1 then
     {| $tup:res |}
   else res ;    
@@ -55,7 +55,7 @@ let mk_tuple ~arity ~number =
   | n when n > 1 -> 
       let e = zfold_left
         ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
-        (fun acc i -> comma acc (gen_tuple_first ~number ~off:i)) in
+        (fun acc i -> com acc (gen_tuple_first ~number ~off:i)) in
       {| $tup:e |}
   | _ -> invalid_arg "mk_tuple arity < 1 " ];        
 

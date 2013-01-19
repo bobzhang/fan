@@ -24,11 +24,7 @@ let to_string = to_string_of_printer FanAst.dump#ctyp
 let eprint: ctyp -> unit = fun c  -> eprintf "@[%a@]" FanAst.dump#ctyp c
 let _loc = FanLoc.ghost
 let app a b = `TyApp (_loc, a, b)
-let comma a b = `Com (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
-let sem a b =
-  let _loc = FanLoc.merge (FanAst.loc_of a) (FanAst.loc_of b) in
-  `Sem (_loc, a, b)
 let list_of_app ty =
   let rec loop t acc =
     match t with
@@ -36,30 +32,9 @@ let list_of_app ty =
     | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
-let list_of_com ty =
-  let rec loop t acc =
-    match t with
-    | `Com (_loc,t1,t2) -> t1 :: (loop t2 acc)
-    | `Nil _loc -> acc
-    | i -> i :: acc in
-  loop ty []
-let list_of_sem ty =
-  let rec loop t acc =
-    match t with
-    | `Sem (_loc,t1,t2) -> t1 :: (loop t2 acc)
-    | `Nil _loc -> acc
-    | i -> i :: acc in
-  loop ty []
 let rec view_app acc =
   function | `TyApp (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let app_of_list = function | [] -> `Nil _loc | l -> List.reduce_left app l
-let com_of_list = function | [] -> `Nil _loc | l -> List.reduce_right comma l
-let sem_of_list = function | [] -> `Nil _loc | l -> List.reduce_right sem l
-let tuple_of_list =
-  function
-  | [] -> invalid_arg "tuple_of_list while list is empty"
-  | x::[] -> x
-  | xs -> `Tup (_loc, (com_of_list xs))
 let arrow a b = `Arrow (_loc, a, b)
 let (|->) = arrow
 let sta a b = `Sta (_loc, a, b)

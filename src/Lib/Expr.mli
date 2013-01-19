@@ -49,16 +49,16 @@ val _loc : FanLoc.t
 
 val app : expr -> expr -> expr
 (* val ( <$ ) : expr -> expr -> expr *)
-val comma : expr -> expr -> expr
+(* val comma : expr -> expr -> expr *)
 
-val sem : expr -> expr -> expr
+(* val sem : expr -> expr -> expr *)
 val list_of_app : expr -> expr list
-val list_of_com : expr -> expr list
-val list_of_sem : expr -> expr list
+(* val list_of_com : expr -> expr list *)
+(* val list_of_sem : expr -> expr list *)
 val view_app : expr list -> expr -> expr * expr list
 val app_of_list : expr list -> expr
-val com_of_list : expr list -> expr
-val sem_of_list : expr list -> expr
+(* val com_of_list : expr list -> expr *)
+(* val sem_of_list : expr list -> expr *)
 
 val mklist : loc -> expr list -> expr
 val mkarray : loc -> expr array -> expr
@@ -71,7 +71,7 @@ val ( +> ) : expr -> string list -> expr
 val gen_tuple_first : number:int -> off:int -> expr
 val gen_tuple_second : number:int -> off:int -> expr
 val tuple_of_number : expr -> int -> expr
-val tuple_of_list : expr list -> expr
+(* val tuple_of_list : expr list -> expr *)
 val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> expr
 val tuple : loc -> expr list -> expr
 val mkumin : loc -> string -> expr -> expr

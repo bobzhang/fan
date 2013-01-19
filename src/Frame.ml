@@ -43,8 +43,8 @@ let mapi_expr ?(arity=1) ?(names=[])
   let id_patts =
     (List.init arity (fun index  -> {:patt| $(id:xid ~off:index i) |})) in 
   let pat0 = List.hd id_patts in
-  let id_expr = Expr.tuple_of_list  id_exprs  in
-  let id_patt = Patt.tuple_of_list id_patts in 
+  let id_expr = tuple_com  id_exprs  in
+  let id_patt = tuple_com id_patts in 
   let expr = apply base id_exprs  in
   {name_expr; expr; id_expr; id_exprs; id_patt; id_patts;exp0;pat0;ty};       
 

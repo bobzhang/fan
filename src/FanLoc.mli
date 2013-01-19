@@ -30,6 +30,7 @@ val of_lexbuf : Lexing.lexbuf -> t
 val start_pos: t -> position
 val stop_pos: t -> position
 val merge: t -> t -> t
+val (<+>): t -> t -> t     
 val join: t -> t
 val join_end: t -> t    
 val map:
