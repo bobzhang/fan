@@ -68,20 +68,25 @@ type anti_cxt = {
   };
   |};
     
-let mk_anti_cxt ?(c="") n s =  {
+let mk_anti ?(c="") ?sep n s =  {
   cxt = c;
   decorations= n;
   content =s ;
-  sep=None;
+  sep;
  };
     
-let add_anti_context s c =
+let add_context s c =
   {s with decorations = s.decorations ^ c};
+
+(* let add_context s c= *)
+(*   match view_antiquot s with *)
+(*   [Some(c1,n) -> "\\$" ^ c1 ^ c ^":" ^ n   *)
+(*   |None -> begin prerr_endline s ; assert false end ];   *)
   
 (* c gives a finer control
    FIXME uses a structure data
  *)
-let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s;
+(* let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s; *)
 
 (* let append_eLem el e = el @ [e]; *)
 
@@ -105,10 +110,6 @@ let view_antiquot s =
     with [Not_found  -> None]
   else None;
 
-let add_context s c=
-  match view_antiquot s with
-  [Some(c1,n) -> "\\$" ^ c1 ^ c ^":" ^ n  
-  |None -> begin prerr_endline s ; assert false end ];  
 
   
 let handle_antiquot_in_string ~s ~default ~parse ~loc ~decorate =

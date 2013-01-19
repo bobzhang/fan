@@ -21,7 +21,7 @@ class eq =
       fun a0  b0  ->
         match (a0, b0) with
         | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            (self#loc a0 b0) && (self#string a1 b1)
+            (self#loc a0 b0) && (self#fanutil_anti_cxt a1 b1)
     method literal : literal -> literal -> 'result=
       fun a0  b0  ->
         match (a0, b0) with
@@ -685,6 +685,8 @@ class eq =
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (_,_) -> false
     method fanloc_t : FanLoc.t -> FanLoc.t -> 'result= self#unknown
+    method fanutil_anti_cxt :
+      FanUtil.anti_cxt -> FanUtil.anti_cxt -> 'result= self#unknown
   end
 class map =
   object (self : 'self_type)
@@ -692,7 +694,8 @@ class map =
     method loc : loc -> loc= fun a0  -> self#fanloc_t a0
     method ant : ant -> ant=
       fun (`Ant (a0,a1))  ->
-        let a0 = self#loc a0 in let a1 = self#string a1 in `Ant (a0, a1)
+        let a0 = self#loc a0 in
+        let a1 = self#fanutil_anti_cxt a1 in `Ant (a0, a1)
     method literal : literal -> literal=
       function
       | `Chr (a0,a1) ->
@@ -1480,6 +1483,8 @@ class map =
           let a3 = self#ctyp a3 in `CrVvr (a0, a1, a2, a3)
       | #ant as a0 -> (self#ant a0 : ant  :>class_str_item)
     method fanloc_t : FanLoc.t -> FanLoc.t= self#unknown
+    method fanutil_anti_cxt : FanUtil.anti_cxt -> FanUtil.anti_cxt=
+      self#unknown
   end
 class print =
   object (self : 'self_type)
@@ -1487,7 +1492,8 @@ class print =
     method loc : 'fmt -> loc -> 'result= fun fmt  a0  -> self#fanloc_t fmt a0
     method ant : 'fmt -> ant -> 'result=
       fun fmt  (`Ant (a0,a1))  ->
-        Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc a0 self#string a1
+        Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc a0
+          self#fanutil_anti_cxt a1
     method literal : 'fmt -> literal -> 'result=
       fun fmt  ->
         function
@@ -2228,13 +2234,16 @@ class print =
               self#alident a1 self#mutable_flag a2 self#ctyp a3
         | #ant as a0 -> (self#ant fmt a0 :>'result)
     method fanloc_t : 'fmt -> FanLoc.t -> 'result= self#unknown
+    method fanutil_anti_cxt : 'fmt -> FanUtil.anti_cxt -> 'result=
+      self#unknown
   end
 class fold =
   object (self : 'self_type)
     inherit  foldbase
     method loc : loc -> 'self_type= fun a0  -> self#fanloc_t a0
     method ant : ant -> 'self_type=
-      fun (`Ant (a0,a1))  -> let self = self#loc a0 in self#string a1
+      fun (`Ant (a0,a1))  ->
+        let self = self#loc a0 in self#fanutil_anti_cxt a1
     method literal : literal -> 'self_type=
       function
       | `Chr (a0,a1) -> let self = self#loc a0 in self#string a1
@@ -2791,6 +2800,7 @@ class fold =
           let self = self#mutable_flag a2 in self#ctyp a3
       | #ant as a0 -> (self#ant a0 :>'self_type)
     method fanloc_t : FanLoc.t -> 'self_type= self#unknown
+    method fanutil_anti_cxt : FanUtil.anti_cxt -> 'self_type= self#unknown
   end
 let loc_of =
   function
@@ -2966,7 +2976,7 @@ class fold2 =
       fun a0  b0  ->
         match (a0, b0) with
         | (`Ant (a0,a1),`Ant (b0,b1)) ->
-            let self = self#loc a0 b0 in self#string a1 b1
+            let self = self#loc a0 b0 in self#fanutil_anti_cxt a1 b1
     method literal : literal -> literal -> 'self_type=
       fun a0  b0  ->
         match (a0, b0) with
@@ -3702,13 +3712,15 @@ class fold2 =
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method fanloc_t : FanLoc.t -> FanLoc.t -> 'self_type= self#unknown
+    method fanutil_anti_cxt :
+      FanUtil.anti_cxt -> FanUtil.anti_cxt -> 'self_type= self#unknown
   end
 let pp_print_loc: 'fmt -> loc -> 'result =
   fun fmt  a0  -> FanLoc.pp_print_t fmt a0
 let pp_print_ant: 'fmt -> ant -> 'result =
   fun fmt  (`Ant (a0,a1))  ->
     Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc a0
-      pp_print_string a1
+      FanUtil.pp_print_anti_cxt a1
 let pp_print_literal: 'fmt -> literal -> 'result =
   fun fmt  ->
     function
@@ -4451,7 +4463,7 @@ class iter =
     inherit  iterbase
     method loc : loc -> 'result= fun a0  -> self#fanloc_t a0
     method ant : ant -> 'result=
-      fun (`Ant (a0,a1))  -> self#loc a0; self#string a1
+      fun (`Ant (a0,a1))  -> self#loc a0; self#fanutil_anti_cxt a1
     method literal : literal -> 'result=
       function
       | `Chr (a0,a1) -> (self#loc a0; self#string a1)
@@ -4881,6 +4893,7 @@ class iter =
           (self#loc a0; self#alident a1; self#mutable_flag a2; self#ctyp a3)
       | #ant as a0 -> (self#ant a0 :>'result)
     method fanloc_t : FanLoc.t -> 'result= self#unknown
+    method fanutil_anti_cxt : FanUtil.anti_cxt -> 'result= self#unknown
   end
 class map2 =
   object (self : 'self_type)
@@ -4891,7 +4904,7 @@ class map2 =
         match (a0, b0) with
         | (`Ant (a0,a1),`Ant (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#string a1 b1 in `Ant (a0, a1)
+            let a1 = self#fanutil_anti_cxt a1 b1 in `Ant (a0, a1)
     method literal : literal -> literal -> literal=
       fun a0  b0  ->
         match (a0, b0) with
@@ -5832,6 +5845,8 @@ class map2 =
             (self#ant a0 b0 : ant  :>class_str_item)
         | (_,_) -> invalid_arg "map2 failure"
     method fanloc_t : FanLoc.t -> FanLoc.t -> FanLoc.t= self#unknown
+    method fanutil_anti_cxt :
+      FanUtil.anti_cxt -> FanUtil.anti_cxt -> FanUtil.anti_cxt= self#unknown
   end
 module MExpr =
   struct

@@ -578,7 +578,9 @@ let match_pre = object (self)
    | {| $pat:p when $e -> $e1 |} -> {| $pat:p when $e -> fun () -> $e1 |}
    | {| $a1 | $a2 |} -> {| $(self#match_case a1) | $(self#match_case a2) |}
    | {| |} -> {| |}
-   | {| $anti:x |} -> {| $(anti: add_context x "lettry" ) |} ];
+   | (* {| $anti:x |} *) `Ant(_loc,x) ->
+       `Ant(_loc, add_context x "lettry")
+       (* {| $(anti: add_context x "lettry" ) |} *) ];
 end;
 
 

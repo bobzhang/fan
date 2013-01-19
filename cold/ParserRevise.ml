@@ -5440,23 +5440,15 @@ let apply_ctyp () =
         ([`Skeyword "_"],
           (Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'ctyp ))));
         ([`Stoken
-            (((function | `Ant ((""|"typ"|"anti"),_) -> true | _ -> false)),
-              (`Normal, "`Ant ((\"\"|\"typ\"|\"anti\"),_)"))],
+            (((function
+               | `Ant ((""|"typ"|"anti"|"tup"),_) -> true
+               | _ -> false)),
+              (`Normal, "`Ant ((\"\"|\"typ\"|\"anti\"|\"tup\"),_)"))],
           (Gram.mk_action
              (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                 match __fan_0 with
-                | `Ant ((""|"typ"|"anti" as n),s) ->
+                | `Ant ((""|"typ"|"anti"|"tup" as n),s) ->
                     (`Ant (_loc, (mk_anti ~c:"ctyp" n s)) : 'ctyp )
-                | _ -> assert false)));
-        ([`Stoken
-            (((function | `Ant ("tup",_) -> true | _ -> false)),
-              (`Normal, "`Ant (\"tup\",_)"))],
-          (Gram.mk_action
-             (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                match __fan_0 with
-                | `Ant (("tup" as n),s) ->
-                    (`Tup (_loc, (`Ant (_loc, (mk_anti ~c:"ctyp" n s)))) : 
-                    'ctyp )
                 | _ -> assert false)));
         ([`Stoken
             (((function | `Ant ("id",_) -> true | _ -> false)),

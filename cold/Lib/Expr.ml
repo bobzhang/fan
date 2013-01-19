@@ -446,15 +446,14 @@ let capture_antiquot: antiquot_filter =
     val mutable constraints = []
     method! patt =
       function
-      | `Ant (_loc,s)|`Str (_loc,s) as p when is_antiquot s ->
-          (match view_antiquot s with
-           | Some (_name,code) ->
+      | `Ant (_loc,s) ->
+          (match s with
+           | { content = code;_} ->
                let cons = `Id (_loc, (`Lid (_loc, code))) in
                let code' = "__fan__" ^ code in
                let cons' = `Id (_loc, (`Lid (_loc, code'))) in
                let () = constraints <- (cons, cons') :: constraints in
-               `Id (_loc, (`Lid (_loc, code')))
-           | None  -> p)
+               `Id (_loc, (`Lid (_loc, code'))))
       | p -> super#patt p
     method get_captured_variables = constraints
     method clear_captured_variables = constraints <- []

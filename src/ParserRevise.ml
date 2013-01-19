@@ -25,13 +25,7 @@ let apply () = begin
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
     {:extend.clear|Gram
-    (* a_CHAR *) (* a_FLOAT *)
-      (* a_INT a_INT32 a_INT64 *)
-      (* a_LABEL *) (* a_LIDENT *) (* a_NATIVEINT *)
-      (* a_OPTLABEL *)
-      (* a_STRING *)
-      (* a_UIDENT *)
-    amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
+      amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
     class_name_and_param class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
@@ -40,16 +34,16 @@ let apply () = begin
     class_type_plus class_type_quot comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
     constrain constructor_arg_list constructor_declaration constructor_declarations ctyp ctyp_quot
     cvalue_binding direction_flag dummy eq_expr expr expr_eoi expr_quot field_expr field_expr_list fun_binding
-    fun_def ident ident_quot implem interf ipatt ipatt_tcon patt_tcon (* label *) label_declaration label_declaration_list
+    fun_def ident ident_quot implem interf ipatt ipatt_tcon patt_tcon label_declaration label_declaration_list
     label_expr_list label_expr label_longident label_patt label_patt_list  let_binding meth_list
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
     more_ctyp name_tags opt_as_lident opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot
-    (* opt_eq_ctyp *) opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
-    patt patt_as_patt_opt patt_eoi patt_quot   (* poly_type *) row_field sem_expr
+    opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
+    patt patt_as_patt_opt patt_eoi patt_quot row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
-    str_item str_item_quot str_items top_phrase (* type_constraint *) type_declaration type_ident_and_parameters
-    (* type_kind *) type_longident type_longident_and_parameters type_parameter type_parameters typevars 
+    str_item str_item_quot str_items top_phrase type_declaration type_ident_and_parameters
+    type_longident type_longident_and_parameters type_parameter type_parameters typevars 
     val_longident with_constr with_constr_quot
       lang
   |};  
@@ -1216,11 +1210,12 @@ let apply_ctyp () = begin
        "simple"
         [ "'"; a_lident{i} -> {| '$i |}
         | "_" -> {| _ |}
-        | `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
-        | `Ant (("tup" as n),s) ->  {| ($(tup:{| $(anti:mk_anti ~c:"ctyp" n s) |})) |}
-        | `Ant (("id" as n),s) ->   {| $(id:{:ident| $(anti:mk_anti ~c:"ident" n s) |}) |}
+        | `Ant ((""|"typ"|"anti"|"tup" as n),s) ->
+            {| $(anti:mk_anti ~c:"ctyp" n s) |}
+        | `Ant (("id" as n),s) ->
+            {| $(id:{:ident| $(anti:mk_anti ~c:"ident" n s) |}) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-        |  a_lident{i}->  {|$(id:(i:>ident))|}
+        | a_lident{i}->  {|$(id:(i:>ident))|}
         | a_uident{i} -> {|$(id:(i:>ident))|}
         | "("; S{t}; "*"; star_ctyp{tl}; ")" ->  {| ( $t * $tl ) |}
         | "("; S{t}; ")" -> t

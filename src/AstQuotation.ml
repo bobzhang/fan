@@ -297,9 +297,6 @@ module MetaLocQuotation = struct
   let meta_loc_patt _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
 end;
 
-(* let module_name _loc = *)
-(*   let _loc = FanLoc.ghost in ref {:ident| $(uid:"Ast")|} ; *)
-
 let gm () =
   match !FanConfig.compilation_unit with
   [Some "FanAst" -> begin (* eprintf "Compilation unit: FanAst";  *)"" end
@@ -312,171 +309,114 @@ let antiquot_expander ~parse_patt ~parse_expr = object
   method! patt =
     with patt
     fun
-    [ {| $anti:s |} as p ->
+    [`Ant(_loc, {cxt;sep;decorations;content=code}) -> 
       let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
-      handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
-        ~decorate:(fun n e ->
-          let len = String.length n in 
-          match n with
-          [ "antisig_item" | "antistr_item" | "antictyp" | "antipatt"
-          | "antiexpr" | "antimodule_type" | "antimodule_expr"
-          | "anticlass_type" | "anticlass_expr" | "anticlass_sig_item"
-          | "anticlass_str_item" | "antiwith_constr" | "antibinding"
-          | "antirec_binding" | "antimatch_case" | "antimodule_binding"
-          | "antiident" -> {| `Ant ($(mloc _loc), $e) |}
-                
-          | "tupexpr"
-          | "tuppatt" -> {| `Tup ($(mloc _loc), $e)|}
+      let e = parse_patt _loc code in 
+      match (decorations,cxt,sep) with
+      [("anti",_,_) -> {| `Ant ($(mloc _loc), $e) |}
+      |("uid",_,_) -> {|`Uid($(mloc _loc), $e)|}
+      |("lid",_,_) -> {|`Lid($(mloc _loc), $e)|}
 
-          | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
-                
-          | "uidexpr" | "uidident" | "uida_uident" -> {|`Uid($(mloc _loc), $e)|}                
-
-          | "lidexpr" | "lidident" | "lida_lident" -> {|`Lid($(mloc _loc), $e)|}
-
-          | "flopatt" | "floexpr" -> {| `Flo ($(mloc _loc), $e) |}
-                
-          | "intexpr" | "intpatt" -> {| `Int ($(mloc _loc), $e) |}
-
-          | "int32patt" | "int32expr" -> {| `Int32 ($(mloc _loc), $e) |}                
-
-          | "int64patt" | "int64expr" -> {| `Int64 ($(mloc _loc), $e)|}
-                
-          | "nativeintpatt" | "nativeintexpr" -> {| `NativeInt ($(mloc _loc), $e) |}
-
-          | "chrpatt" | "chrexpr" -> {| `Chr ($(mloc _loc), $e) |}
-
-          | "strpatt" | "strexpr" -> {| `Str ($(mloc _loc), $e) |}
-                
-          | "vrnexpr" -> {|`ExVrn ($(mloc _loc), $e)|}
-          | "vrnpatt" -> {|`PaVrn ($(mloc _loc),$e)|}
-          | x when (len > 0 && x.[0] = '`') -> failwith (x ^ "is not allowed in pattern")
-          | _ -> e ])
-      | p -> super#patt p ];
-    method! expr = with expr fun (* `Ant keeps the right location, `Str does not *)
-      [ {| $anti:s |} as e ->
-          let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
-          handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
-            ~decorate:(fun n e -> (* e is the parsed Ast node already *)
-            match n with
-            ["tupexpr" | "tuppatt" ->  {| `Tup ($(mloc _loc), $e) |}
-
-            | "seqexpr" -> {| `Seq ($(mloc _loc), $e) |}
-            | "vrnexpr" -> {| `ExVrn($(mloc _loc),$e)|}
-            | "vrnpatt" -> {| `PaVrn($(mloc _loc),$e)|}
-
-
-            | "lidident" | "lidexpr" | "lida_lident" -> {|`Lid($(mloc _loc), $e)|}
-
-            | "uida_uident" | "uidexpr" | "uidident"->  {| `Uid ($(mloc _loc), $e) |}
-
-            | "strexpr" | "strpatt" -> {| `Str ($(mloc _loc),$e) |}
-
-            | "chrpatt" | "chrexpr" -> {| `Chr ($(mloc _loc), $e) |}
-
-            | "intexpr" | "intpatt" -> {| `Int ($(mloc _loc), $e) |}                  
-
-            | "int32expr" | "int32patt" -> {| `Int32 ($(mloc _loc), $e) |}
-                  
-            | "int64expr" | "int64patt" -> {| `Int64 ($(mloc _loc), $e) |}
-
-            | "floexpr" | "flopatt" -> {| `Flo ($(mloc _loc), $e) |}
-
-            | "nativeintexpr" | "nativeintpatt" -> {| `NativeInt ($(mloc _loc), $e)|}
-
-            | "`nativeintexpr" ->
-                let e = {| Nativeint.to_string $e |} in
-                {| `NativeInt ($(mloc _loc), $e) |}
-            | "`intexpr" ->
-                let e = {|string_of_int $e |} in
-                {| `Int ($(mloc _loc), $e) |}
-            | "`int32expr" ->
-                let e = {|Int32.to_string $e |} in
-                {| `Int32 ($(mloc _loc), $e) |}
-            | "`int64expr" ->
-                let e = {|Int64.to_string $e |} in
-                {| `Int64 ($(mloc _loc), $e) |}
-            | "`chrexpr" ->
-                let e = {|Char.escaped $e|} in
-                {| `Chr ($(mloc _loc), $e) |}
-            | "`strexpr" ->
-                let e = {|$(uid:gm()).safe_string_escaped $e |} in
-                (* {| $(uid:gm()).safe_string_escaped $e|} *)
-                {| `Str ($(mloc _loc), $e) |}
-            | "`floexpr" ->
-                let e = {| FanUtil.float_repres $e |} in 
-                {| `Flo ($(mloc _loc), $e) |}
-            | "`boolexpr" ->
-                let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
-                {| {| $(id:$x)  |} |}
-
-
+      (* |("id","ctyp",_) -> {|`Id($(mloc _loc),$e)|} *)
             
-
-            | "`nativeintpatt" ->
-                let e = {| Nativeint.to_string $e |} in
-                {| `NativeInt ($(mloc _loc), $e) |}
-            | "`intpatt" ->
-                let e = {|string_of_int $e |} in
-                {| `Int ($(mloc _loc), $e) |}
-            | "`int32patt" ->
-                let e = {|Int32.to_string $e |} in
-                {| `Int32 ($(mloc _loc), $e) |}
-            | "`int64patt" ->
-                let e = {|Int64.to_string $e |} in
-                {| `Int64 ($(mloc _loc), $e) |}
-            | "`chrpatt" ->
+      |("tup",_,_) ->  {| `Tup ($(mloc _loc), $e)|}
+      |("seq",_,_) -> {| `Seq ($(mloc _loc), $e) |}
+      |("flo",_,_) -> {| `Flo($(mloc _loc), $e)|}
+      |("int",_,_) -> {| `Int ($(mloc _loc), $e)|}
+      |("int32",_,_)-> {| `Int32 ($(mloc _loc),$e)|}
+      |("int64",_,_) -> {| `Int64($(mloc _loc),$e)|}
+      |("nativeint",_,_) -> {|`NativeInt ($(mloc _loc),$e)|}
+      |("chr",_,_) -> {|`Chr($(mloc _loc),$e)|}
+      |("str",_,_) -> {|`Str($(mloc _loc),$e)|}
+      |("vrn","expr",_) -> {|`ExVrn($(mloc _loc),$e)|}
+      |("vrn","patt",_) -> {|`PaVrn($(mloc _loc),$e)|}
+      | _ -> super#patt e ]
+    | e -> super#patt e];
+    method! expr = with expr fun 
+      [`Ant(_loc,{cxt;sep;decorations;content=code}) ->
+        let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
+        let e = parse_expr _loc code in
+        match (decorations,cxt,sep) with
+          [ ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|}
+          | ("tup",_,_) -> {|`Tup($(mloc _loc),$e)|}
+          | ("seq",_,_) -> {|`Seq($(mloc _loc),$e)|}
+          | ("vrn","expr",_) -> {|`ExVrn($(mloc _loc),$e)|}
+          | ("vrn","patt",_) -> {|`PaVrn($(mloc _loc),$e)|}
+          | ("lid",_,_) -> {|`Lid($(mloc _loc),$e)|}
+          | ("uid",_,_) -> {|`Uid($(mloc _loc),$e)|}
+                
+          (* | ("id","ctyp",_) -> {|`Id($(mloc _loc),$e)|} *)
+                
+          | ("str",_,_) ->  {|`Str($(mloc _loc),$e)|}
+          | ("chr",_,_) -> {|`Chr ($(mloc _loc), $e)|} 
+          | ("int",_,_) -> {|`Int($(mloc _loc),$e)|}
+          | ("int32",_,_) -> {|`Int32($(mloc _loc),$e)|}
+          | ("int64",_,_) -> {|`Int64($(mloc _loc),$e)|}
+          | ("flo",_,_) -> {|`Flo($(mloc _loc),$e)|}
+          | ("nativeint",_,_) -> {|`NativeInt ($(mloc _loc),$e)|}
+          | ("`nativeint",_,_) ->
+              let e = {| Nativeint.to_string $e |} in
+              {| `NativeInt ($(mloc _loc), $e) |}
+          | ("`int",_,_) ->
+              let e = {|string_of_int $e |} in
+              {| `Int ($(mloc _loc), $e) |}
+          | ("`int32",_,_) ->
+              let e = {|Int32.to_string $e |} in
+              {| `Int32 ($(mloc _loc), $e) |}
+          | ("`int64",_,_) ->
+              let e = {|Int64.to_string $e |} in
+              {| `Int64 ($(mloc _loc), $e) |}
+          | ("`chr",_,_) ->
                 let e = {|Char.escaped $e|} in
                 {| `Chr ($(mloc _loc), $e) |}
-            | "`strpatt" ->
+          | ("`str",_,_) ->
                 let e = {|$(uid:gm()).safe_string_escaped $e |} in
                 {| `Str ($(mloc _loc), $e) |}
-            | "`flopatt" ->
-                let e = {| FanUtil.float_repres $e |} in 
-                {| `Flo ($(mloc _loc), $e) |}
+          | ("`flo",_,_) ->
+              let e = {| FanUtil.float_repres $e |} in 
+              {| `Flo ($(mloc _loc), $e) |}
+          | ("`bool",_,_) ->
+              let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
+              {| {| $(id:$x)  |} |}
 
-            | "listmodule_expr" -> {| $(uid:gm()).app_of_list $e |}
-            | "listmodule_type" -> {| $(uid:gm()).mtApp_of_list $e |}
-            | "listident" -> {| $(uid:gm()).idAcc_of_list $e |}
-            | "listbinding" | "listmodule_binding"
-            | "listwith_constr" | "listclass_type"
-            | "listclass_expr" | "listctypand" -> {| $(uid:gm()).and_of_list $e |}
-            | "listctyp*" -> {| $(uid:gm()).sta_of_list $e |}
+          | ("list","module_expr",_) ->
+              {| $(uid:gm()).app_of_list $e |}
+          | ("list","module_type",_) ->
+              {| $(uid:gm()).mtApp_of_list $e |}
+          | ("list","ident",_) -> 
+              {| $(uid:gm()).idAcc_of_list $e |}
+          | ("list",
+             ("binding"|"module_binding"|
+              "with_constr"|"class_type"|
+              "class_expr"|"ctypand"),_) ->
+                {| $(uid:gm()).and_of_list $e |}
+          |("list","ctyp*",_) ->
+              {| $(uid:gm()).sta_of_list $e |}
 
-            | "listctyp|" | "listmatch_case" -> {| $(uid:gm()).or_of_list $e |}                  
-            | "listctyp&" -> {| $(uid:gm()).amp_of_list $e |}
-
-
-            | "listmatch_caselettry" ->
-                {| (($(uid:gm()).match_pre)#match_case
-                      ($(uid:gm()).or_of_list $e)) |}
-            | "antimatch_caselettry" ->
-                {| $(uid:gm()).match_pre#match_case (`Ant ($(mloc _loc), $e)) |}
-            | "match_caselettry" ->
-                {| $(uid:gm()).match_pre#match_case $e |}
-
-            | "listctyp," | "listpatt," | "listexpr," -> {| $(uid:gm()).com_of_list $e |}
-
-            | "listbinding;" | "liststr_item"
-            | "listsig_item" | "listclass_sig_item"
-            | "listclass_str_item" | "listrec_binding"
-            | "listctyp;" | "listpatt;"
-            | "listexpr;" -> {| $(uid:gm()).sem_of_list $e |}
-
-            | "listforall" -> {| $(uid:gm()).tyVarApp_of_list $e |}
-
-            | "antimatch_case" | "antisig_item" | "antistr_item"
-            | "antictyp" | "antipatt" | "antiexpr" | "antimodule_type"
-            | "antimodule_expr" | "anticlass_type" | "anticlass_expr"
-            | "anticlass_sig_item" | "anticlass_str_item"
-            | "antiwith_constr" | "antibinding"
-            | "antirec_binding" | "antimodule_binding"
-            | "antiident" | "antidirection_flag"
-            | "antioverride_flag" | "antiprivate_flag"
-            | "antimutable_flag" | "antivirtual_flag"
-            | "antirow_var_flag" | "antirec_flag" -> {| `Ant  ($(mloc _loc), $e) |}
-            | _ -> e ])
-      | e -> super#expr e ];
+          |("list","ctyp|",_)
+          |("list","match_case",_) ->
+              {| $(uid:gm()).or_of_list $e |}
+          |("list","ctyp&",_) ->
+              {| $(uid:gm()).amp_of_list $e |}
+          |("listlettry","match_case",_) ->
+              {| (($(uid:gm()).match_pre)#match_case
+                    ($(uid:gm()).or_of_list $e)) |}
+          |("antilettry","match_case",_) ->
+              {| $(uid:gm()).match_pre#match_case (`Ant ($(mloc _loc), $e)) |}
+          |("lettry","match_case",_) ->
+              {| $(uid:gm()).match_pre#match_case $e |}
+          |("list",("ctyp,"|"patt,"|"expr,"),_) ->
+              {| $(uid:gm()).com_of_list $e |}
+          |("list",
+            ("binding;"|"str_item"
+            |"sig_item"|"class_sig_item"
+            |"class_str_item"|"rec_binding"
+            |"ctyp;"|"patt;"|"expr;"),_) ->
+                {| $(uid:gm()).sem_of_list $e |}
+          |("list","forall",_) ->
+              {| $(uid:gm()).tyVarApp_of_list $e |}
+          | _ -> super#expr e]
+        | e -> super#expr e];  
   end;
 
 

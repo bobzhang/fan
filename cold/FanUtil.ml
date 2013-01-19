@@ -58,10 +58,9 @@ let pp_print_anti_cxt: 'fmt -> anti_cxt -> 'result =
       "@[<hv 1>{cxt:%a;@,sep:%a;@,decorations:%a;@,content:%a}@]"
       pp_print_string a0 (pp_print_option pp_print_string) a1 pp_print_string
       a2 pp_print_string a3
-let mk_anti_cxt ?(c= "")  n s =
-  { cxt = c; decorations = n; content = s; sep = None }
-let add_anti_context s c = { s with decorations = (s.decorations ^ c) }
-let mk_anti ?(c= "")  n s = "\\$" ^ (n ^ (c ^ (":" ^ s)))
+let mk_anti ?(c= "")  ?sep  n s =
+  { cxt = c; decorations = n; content = s; sep }
+let add_context s c = { s with decorations = (s.decorations ^ c) }
 let is_antiquot s =
   let len = String.length s in
   (len > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
@@ -76,10 +75,6 @@ let view_antiquot s =
       Some (name, code)
     with | Not_found  -> None
   else None
-let add_context s c =
-  match view_antiquot s with
-  | Some (c1,n) -> "\\$" ^ (c1 ^ (c ^ (":" ^ n)))
-  | None  -> (prerr_endline s; assert false)
 let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
   if is_antiquot s
   then

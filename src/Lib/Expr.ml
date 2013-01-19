@@ -259,9 +259,13 @@ let capture_antiquot : antiquot_filter = object
   inherit FanAst.map as super;
   val mutable constraints =[];
   method! patt = fun
-  [ {:patt@_loc| $anti:s |} | {:patt@_loc| $str:s |} as p when is_antiquot s -> begin
-    match view_antiquot s with
-    [Some(_name,code) -> begin 
+  [ `Ant(_loc,s)
+      (* {:patt@_loc| $anti:s |} *)
+  (* | (\* {:patt@_loc| $str:s |} *\) *)
+  (*   `Str(_loc,s) as p when is_antiquot s *) -> (* begin *)
+      match s with
+     [ {content=code;_} ->
+       begin 
       (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)
       let cons = {| $lid:code |} in
       let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
@@ -269,8 +273,18 @@ let capture_antiquot : antiquot_filter = object
       let () = constraints <- [(cons,cons')::constraints]in 
       {:patt| $lid:code' |} (* only allows lidentifiers here *)
     end
-  | None -> p ];   
-  end
+     ]
+    (* match view_antiquot s with *)
+    (* [Some(_name,code) -> begin  *)
+    (*   (\* eprintf "Warning: the antiquot modifier %s is ignored@." name; *\) *)
+    (*   let cons = {| $lid:code |} in *)
+    (*   let code' = "__fan__"^code in  (\* prefix "fan__" FIXME *\) *)
+    (*   let cons' = {| $lid:code' |} in  *)
+    (*   let () = constraints <- [(cons,cons')::constraints]in  *)
+    (*   {:patt| $lid:code' |} (\* only allows lidentifiers here *\) *)
+    (* end *)
+  (* | None -> p ];    *)
+  (* end *)
   | p -> super#patt p ];
  method get_captured_variables =
    constraints;

@@ -36,8 +36,8 @@
     type ant =
         [ = `Ant of
           (loc *
-             (* FanUtil.anti_cxt *)
-           string
+             FanUtil.anti_cxt
+           (* string *)
           )];
     type literal =
     [= `Chr of (loc * string) (* 'c' *)

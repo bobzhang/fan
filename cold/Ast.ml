@@ -1,5 +1,5 @@
 type loc = FanLoc.t 
-type ant = [ `Ant of (loc* string)] 
+type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
 type literal =
   [ `Chr of (loc* string) | `Int of (loc* string) | `Int32 of (loc* string)
   | `Int64 of (loc* string) | `Flo of (loc* string)

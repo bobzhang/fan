@@ -10,7 +10,7 @@ val mk_anti : ?c:string -> string -> string -> string
 (* val append_eLem : 'a list -> 'a -> 'a list *)
 val is_antiquot : string -> bool
 val view_antiquot : string -> (string * string) option
-val add_context: string -> string -> string    
+
 val handle_antiquot_in_string :
   s:string ->
   default:'a ->
@@ -27,8 +27,17 @@ val string_of_string_token : FanLoc.t -> string -> string
 val remove_underscores : string -> string
 
 
-type anti_cxt
-val mk_anti_cxt: ?c:string -> string -> string -> anti_cxt
-val add_anti_context: anti_cxt -> string -> anti_cxt
+
+type anti_cxt = {
+    cxt:string;
+    sep:  string option;
+    mutable decorations:  string; (* keep it simple first*)
+    content:string;
+  }
+      
+(* val mk_anti_cxt: ?c:string -> string -> string -> anti_cxt *)
+val mk_anti: ?c:string -> ?sep:string -> string -> string -> anti_cxt    
+(* val add_anti_context: anti_cxt -> string -> anti_cxt *)
+val add_context: anti_cxt -> string -> anti_cxt        
 val pp_print_anti_cxt : Format.formatter -> anti_cxt -> unit    
   
