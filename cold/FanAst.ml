@@ -325,6 +325,8 @@ class eq =
         | (`IfThenElse (a0,a1,a2,a3),`IfThenElse (b0,b1,b2,b3)) ->
             (((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)) &&
               (self#expr a3 b3)
+        | (`IfThen (a0,a1,a2),`IfThen (b0,b1,b2)) ->
+            ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
         | ((#literal as a0),(#literal as b0)) ->
             (self#literal a0 b0 :>'result)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
@@ -1036,6 +1038,10 @@ class map =
           let a1 = self#expr a1 in
           let a2 = self#expr a2 in
           let a3 = self#expr a3 in `IfThenElse (a0, a1, a2, a3)
+      | `IfThen (a0,a1,a2) ->
+          let a0 = self#loc a0 in
+          let a1 = self#expr a1 in
+          let a2 = self#expr a2 in `IfThen (a0, a1, a2)
       | #literal as a0 -> (self#literal a0 : literal  :>expr)
       | `Label (a0,a1,a2) ->
           let a0 = self#loc a0 in
@@ -1851,6 +1857,9 @@ class print =
         | `IfThenElse (a0,a1,a2,a3) ->
             Format.fprintf fmt "@[<1>(`IfThenElse@ %a@ %a@ %a@ %a)@]"
               self#loc a0 self#expr a1 self#expr a2 self#expr a3
+        | `IfThen (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`IfThen@ %a@ %a@ %a)@]" self#loc a0
+              self#expr a1 self#expr a2
         | #literal as a0 -> (self#literal fmt a0 :>'result)
         | `Label (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc a0
@@ -2481,6 +2490,8 @@ class fold =
       | `IfThenElse (a0,a1,a2,a3) ->
           let self = self#loc a0 in
           let self = self#expr a1 in let self = self#expr a2 in self#expr a3
+      | `IfThen (a0,a1,a2) ->
+          let self = self#loc a0 in let self = self#expr a1 in self#expr a2
       | #literal as a0 -> (self#literal a0 :>'self_type)
       | `Label (a0,a1,a2) ->
           let self = self#loc a0 in
@@ -2869,6 +2880,7 @@ let loc_of =
   | `Private _loc -> _loc
   | `Virtual _loc -> _loc
   | `RowVar _loc -> _loc
+  | `IfThen (_loc,_,_) -> _loc
   | `Sig (_loc,_) -> _loc
   | `RecBind (_loc,_,_) -> _loc
   | `Mutable _loc -> _loc
@@ -3323,6 +3335,9 @@ class fold2 =
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in
             let self = self#expr a2 b2 in self#expr a3 b3
+        | (`IfThen (a0,a1,a2),`IfThen (b0,b1,b2)) ->
+            let self = self#loc a0 b0 in
+            let self = self#expr a1 b1 in self#expr a2 b2
         | ((#literal as a0),(#literal as b0)) ->
             (self#literal a0 b0 :>'self_type)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
@@ -4075,6 +4090,9 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | `IfThenElse (a0,a1,a2,a3) ->
         Format.fprintf fmt "@[<1>(`IfThenElse@ %a@ %a@ %a@ %a)@]"
           pp_print_loc a0 pp_print_expr a1 pp_print_expr a2 pp_print_expr a3
+    | `IfThen (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`IfThen@ %a@ %a@ %a)@]" pp_print_loc a0
+          pp_print_expr a1 pp_print_expr a2
     | #literal as a0 -> (pp_print_literal fmt a0 :>'result)
     | `Label (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4658,6 +4676,7 @@ class iter =
       | `Fun (a0,a1) -> (self#loc a0; self#match_case a1)
       | `IfThenElse (a0,a1,a2,a3) ->
           (self#loc a0; self#expr a1; self#expr a2; self#expr a3)
+      | `IfThen (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | #literal as a0 -> (self#literal a0 :>'result)
       | `Label (a0,a1,a2) -> (self#loc a0; self#alident a1; self#expr a2)
       | `Lazy (a0,a1) -> (self#loc a0; self#expr a1)
@@ -5342,6 +5361,10 @@ class map2 =
             let a1 = self#expr a1 b1 in
             let a2 = self#expr a2 b2 in
             let a3 = self#expr a3 b3 in `IfThenElse (a0, a1, a2, a3)
+        | (`IfThen (a0,a1,a2),`IfThen (b0,b1,b2)) ->
+            let a0 = self#loc a0 b0 in
+            let a1 = self#expr a1 b1 in
+            let a2 = self#expr a2 b2 in `IfThen (a0, a1, a2)
         | ((#literal as a0),(#literal as b0)) ->
             (self#literal a0 b0 : literal  :>expr)
         | (`Label (a0,a1,a2),`Label (b0,b1,b2)) ->
@@ -6698,6 +6721,15 @@ module Make(MetaLoc:META_LOC) =
                                  (_loc, (`ExVrn (_loc, "IfThenElse")),
                                    (meta_loc _loc a0))), (meta_expr _loc a1))),
                          (meta_expr _loc a2))), (meta_expr _loc a3))
+            | `IfThen (a0,a1,a2) ->
+                `ExApp
+                  (_loc,
+                    (`ExApp
+                       (_loc,
+                         (`ExApp
+                            (_loc, (`ExVrn (_loc, "IfThen")),
+                              (meta_loc _loc a0))), (meta_expr _loc a1))),
+                    (meta_expr _loc a2))
             | #literal as a0 -> (meta_literal _loc a0 :>'result)
             | `Label (a0,a1,a2) ->
                 `ExApp
@@ -8447,6 +8479,15 @@ module Make(MetaLoc:META_LOC) =
                                  (_loc, (`PaVrn (_loc, "IfThenElse")),
                                    (meta_loc _loc a0))), (meta_expr _loc a1))),
                          (meta_expr _loc a2))), (meta_expr _loc a3))
+            | `IfThen (a0,a1,a2) ->
+                `PaApp
+                  (_loc,
+                    (`PaApp
+                       (_loc,
+                         (`PaApp
+                            (_loc, (`PaVrn (_loc, "IfThen")),
+                              (meta_loc _loc a0))), (meta_expr _loc a1))),
+                    (meta_expr _loc a2))
             | #literal as a0 -> (meta_literal _loc a0 :>'result)
             | `Label (a0,a1,a2) ->
                 `PaApp

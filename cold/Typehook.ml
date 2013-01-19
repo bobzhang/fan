@@ -120,8 +120,7 @@ let traversal () =
             (let res = self#str_item u in
              let module_types = List.rev self#get_cur_module_types in
              if print_collect_module_types.contents
-             then eprintf "@[%a@]@." FSig.pp_print_module_types module_types
-             else ();
+             then eprintf "@[%a@]@." FSig.pp_print_module_types module_types;
              (let result =
                 Hashtbl.fold
                   (fun _  { activate; position; transform; filter }  acc  ->
@@ -156,8 +155,7 @@ let traversal () =
        | `Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) as x ->
            let item = `Single (name, t) in
            (if print_collect_module_types.contents
-            then eprintf "Came across @[%a@]@." FSig.pp_print_types item
-            else ();
+            then eprintf "Came across @[%a@]@." FSig.pp_print_types item;
             self#update_cur_module_types (fun lst  -> item :: lst);
             x)
        | `Value (_loc,`ReNil _,_)|`ModuleType (_loc,_,_)|`Include (_loc,_)

@@ -545,6 +545,8 @@ let rec expr: expr -> expression =
   | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (match_case a)))
   | `IfThenElse (loc,e1,e2,e3) ->
       mkexp loc (Pexp_ifthenelse ((expr e1), (expr e2), (Some (expr e3))))
+  | `IfThen (loc,e1,e2) ->
+      mkexp loc (Pexp_ifthenelse ((expr e1), (expr e2), None))
   | `Int (loc,s) ->
       let i =
         try int_of_string s

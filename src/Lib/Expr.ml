@@ -7,13 +7,10 @@ open FanAst;
    | the modules documented with [open Lib.Expr]                     |
    +-----------------------------------------------------------------+ *)
 
-
-
-(* open Ast; *)
 open LibUtil;
 open Basic;
 open FanUtil;
-module Ast= FanAst; (* it contains a module named Meta *)
+
 
 
 (*

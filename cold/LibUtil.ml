@@ -342,9 +342,7 @@ module Array =
     let for_all2 p xs ys =
       let n = length xs in
       let _ =
-        if (length ys) <> n
-        then raise (Invalid_argument "Array.for_all2")
-        else () in
+        if (length ys) <> n then raise (Invalid_argument "Array.for_all2") in
       let rec loop i =
         if i = n
         then true

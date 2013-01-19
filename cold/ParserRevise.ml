@@ -1081,9 +1081,7 @@ let apply () =
           ([`Skeyword "if"; `Sself; `Skeyword "then"; `Sself],
             (Gram.mk_action
                (fun (e2 : 'expr)  _  (e1 : 'expr)  _  (_loc : FanLoc.t)  ->
-                  (`IfThenElse
-                     (_loc, e1, e2, (`Id (_loc, (`Uid (_loc, "()"))))) : 
-                  'expr ))));
+                  (`IfThen (_loc, e1, e2) : 'expr ))));
           ([`Skeyword "do";
            `Snterm (Gram.obj (sequence : 'sequence Gram.t ));
            `Skeyword "done"],

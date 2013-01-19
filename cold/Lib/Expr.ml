@@ -2,7 +2,6 @@ open FanAst
 open LibUtil
 open Basic
 open FanUtil
-module Ast = FanAst
 let rec sep_dot_expr acc =
   function
   | `ExAcc (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1

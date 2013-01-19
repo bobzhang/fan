@@ -219,7 +219,7 @@
     | `Fun of (loc * match_case) (* fun [ mc ] *)
 
     | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
-          
+    | `IfThen of (loc * expr * expr) (* if e then e *)
     | literal
     | `Label of (loc * alident * expr) (* ~s or ~s:e *)
     | `Lazy of (loc * expr) (* lazy e *)
