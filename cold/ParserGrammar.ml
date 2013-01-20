@@ -835,8 +835,7 @@ let _ =
         [([`Sself; `Skeyword "|"; `Sself],
            (Gram.mk_action
               (fun (p2 : 'internal_patt)  _  (p1 : 'internal_patt) 
-                 (_loc : FanLoc.t)  ->
-                 (`PaOrp (_loc, p1, p2) : 'internal_patt ))))]);
+                 (_loc : FanLoc.t)  -> (`Or (_loc, p1, p2) : 'internal_patt ))))]);
       ((Some "simple"), None,
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),

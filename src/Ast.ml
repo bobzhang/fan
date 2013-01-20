@@ -188,16 +188,16 @@
      | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
      (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
      | `PaOlbi of (loc * alident * patt * meta_option expr)
-     | `PaOrp of (loc * patt * patt) (* p | p *)
+     | (* `Or *)`Or of (loc * patt * patt) (* p | p *)
      | `PaRng of (loc * patt * patt) (* p .. p *)
      | `PaRec of (loc * patt) (* { p } *)
      | `PaEq  of (loc * ident * patt) (* i = p *)
      | `Tup of (loc * patt )
-     | (* `PaTyc *) `Constraint of (loc * patt * ctyp) (* (p : t) *)
-     | (* `PaTyp *) `ClassPath of (loc * ident) (* #i *)
+     | `Constraint of (loc * patt * ctyp) (* (p : t) *)
+     | `ClassPath of (loc * ident) (* #i *)
      | `PaVrn of (loc * string) (* `s *)
      | `Lazy of (loc * patt) (* lazy p *)
-           (* (module M : ty ) *)      
+       (* (module M : ty ) *)      
      | `ModuleUnpack of (loc * (* string *)auident * meta_option ctyp)]
   and expr =
      [= `Nil of loc

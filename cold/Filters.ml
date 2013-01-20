@@ -34,7 +34,7 @@ let add_debug_expr (e : expr) =
                (_loc,
                  (`Alias
                     (_loc,
-                      (`PaOrp
+                      (`Or
                          (_loc,
                            (`Id
                               (_loc,

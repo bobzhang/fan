@@ -271,7 +271,7 @@ class eq =
         | (`PaOlbi (a0,a1,a2,a3),`PaOlbi (b0,b1,b2,b3)) ->
             (((self#loc a0 b0) && (self#alident a1 b1)) && (self#patt a2 b2))
               && (self#meta_option (fun self  -> self#expr) a3 b3)
-        | (`PaOrp (a0,a1,a2),`PaOrp (b0,b1,b2)) ->
+        | (`Or (a0,a1,a2),`Or (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
         | (`PaRng (a0,a1,a2),`PaRng (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#patt a1 b1)) && (self#patt a2 b2)
@@ -961,10 +961,9 @@ class map =
           let a2 = self#patt a2 in
           let a3 = self#meta_option (fun self  -> self#expr) a3 in
           `PaOlbi (a0, a1, a2, a3)
-      | `PaOrp (a0,a1,a2) ->
+      | `Or (a0,a1,a2) ->
           let a0 = self#loc a0 in
-          let a1 = self#patt a1 in
-          let a2 = self#patt a2 in `PaOrp (a0, a1, a2)
+          let a1 = self#patt a1 in let a2 = self#patt a2 in `Or (a0, a1, a2)
       | `PaRng (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in
@@ -1786,8 +1785,8 @@ class print =
             Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a@ %a)@]" self#loc a0
               self#alident a1 self#patt a2
               (self#meta_option (fun self  -> self#expr)) a3
-        | `PaOrp (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`PaOrp@ %a@ %a@ %a)@]" self#loc a0
+        | `Or (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#patt a2
         | `PaRng (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a@ %a)@]" self#loc a0
@@ -2445,7 +2444,7 @@ class fold =
           let self = self#alident a1 in
           let self = self#patt a2 in
           self#meta_option (fun self  -> self#expr) a3
-      | `PaOrp (a0,a1,a2) ->
+      | `Or (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#patt a2
       | `PaRng (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#patt a2
@@ -2871,7 +2870,6 @@ let loc_of =
   | `OptLabl (_loc,_,_) -> _loc
   | `Coercion (_loc,_,_,_) -> _loc
   | `CtFun (_loc,_,_) -> _loc
-  | `PaOrp (_loc,_,_) -> _loc
   | `Arrow (_loc,_,_) -> _loc
   | `Bind (_loc,_,_) -> _loc
   | `CtEq (_loc,_,_) -> _loc
@@ -3265,7 +3263,7 @@ class fold2 =
             let self = self#alident a1 b1 in
             let self = self#patt a2 b2 in
             self#meta_option (fun self  -> self#expr) a3 b3
-        | (`PaOrp (a0,a1,a2),`PaOrp (b0,b1,b2)) ->
+        | (`Or (a0,a1,a2),`Or (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#patt a1 b1 in self#patt a2 b2
         | (`PaRng (a0,a1,a2),`PaRng (b0,b1,b2)) ->
@@ -4015,8 +4013,8 @@ and pp_print_patt: 'fmt -> patt -> 'result =
         Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_alident a1 pp_print_patt a2
           (pp_print_meta_option pp_print_expr) a3
-    | `PaOrp (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`PaOrp@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Or (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1 pp_print_patt a2
     | `PaRng (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a@ %a)@]" pp_print_loc a0
@@ -4635,7 +4633,7 @@ class iter =
            self#alident a1;
            self#patt a2;
            self#meta_option (fun self  -> self#expr) a3)
-      | `PaOrp (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
+      | `Or (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `PaRng (a0,a1,a2) -> (self#loc a0; self#patt a1; self#patt a2)
       | `PaRec (a0,a1) -> (self#loc a0; self#patt a1)
       | `PaEq (a0,a1,a2) -> (self#loc a0; self#ident a1; self#patt a2)
@@ -5268,10 +5266,10 @@ class map2 =
             let a2 = self#patt a2 b2 in
             let a3 = self#meta_option (fun self  -> self#expr) a3 b3 in
             `PaOlbi (a0, a1, a2, a3)
-        | (`PaOrp (a0,a1,a2),`PaOrp (b0,b1,b2)) ->
+        | (`Or (a0,a1,a2),`Or (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
-            let a2 = self#patt a2 b2 in `PaOrp (a0, a1, a2)
+            let a2 = self#patt a2 b2 in `Or (a0, a1, a2)
         | (`PaRng (a0,a1,a2),`PaRng (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
@@ -6532,15 +6530,14 @@ module Make(MetaLoc:META_LOC) =
                                    (meta_loc _loc a0))),
                               (meta_alident _loc a1))), (meta_patt _loc a2))),
                     (meta_meta_option meta_expr _loc a3))
-            | `PaOrp (a0,a1,a2) ->
+            | `Or (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "PaOrp")),
-                              (meta_loc _loc a0))), (meta_patt _loc a1))),
-                    (meta_patt _loc a2))
+                            (_loc, (`ExVrn (_loc, "Or")), (meta_loc _loc a0))),
+                         (meta_patt _loc a1))), (meta_patt _loc a2))
             | `PaRng (a0,a1,a2) ->
                 `ExApp
                   (_loc,
@@ -8290,15 +8287,14 @@ module Make(MetaLoc:META_LOC) =
                                    (meta_loc _loc a0))),
                               (meta_alident _loc a1))), (meta_patt _loc a2))),
                     (meta_meta_option meta_expr _loc a3))
-            | `PaOrp (a0,a1,a2) ->
+            | `Or (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "PaOrp")),
-                              (meta_loc _loc a0))), (meta_patt _loc a1))),
-                    (meta_patt _loc a2))
+                            (_loc, (`PaVrn (_loc, "Or")), (meta_loc _loc a0))),
+                         (meta_patt _loc a1))), (meta_patt _loc a2))
             | `PaRng (a0,a1,a2) ->
                 `PaApp
                   (_loc,
@@ -9529,7 +9525,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `PaEq (_loc,_,p) -> is_irrefut_patt p
   | `Sem (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `Com (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `PaOrp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | `Or (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `PaApp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `Constraint (_loc,p,_) -> is_irrefut_patt p
   | `Tup (_loc,pl) -> is_irrefut_patt pl
@@ -9750,7 +9746,7 @@ class clean_ast =
       | e -> e
     method! patt p =
       match super#patt p with
-      | `PaOrp (_loc,`Nil _l,p)|`PaOrp (_loc,p,`Nil _l)|`Com (_loc,`Nil _l,p)
+      | `Or (_loc,`Nil _l,p)|`Or (_loc,p,`Nil _l)|`Com (_loc,`Nil _l,p)
         |`Com (_loc,p,`Nil _l)|`Sem (_loc,`Nil _l,p)|`Sem (_loc,p,`Nil _l) ->
           p
       | p -> p

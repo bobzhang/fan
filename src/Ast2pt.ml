@@ -417,7 +417,7 @@ let rec patt (x:patt) =
      | `Flo (loc,s) -> mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
      | `Label (loc,_,_) -> error loc "labeled pattern not allowed here"
      (* | `PaOlb (loc, _, _) *) | `PaOlbi (loc,_,_,_) -> error loc "labeled pattern not allowed here"
-     | `PaOrp (loc, p1, p2) -> mkpat loc (Ppat_or (patt p1) (patt p2))
+     | `Or (loc, p1, p2) -> mkpat loc (Ppat_or (patt p1) (patt p2))
      | `PaRng (loc, p1, p2) ->
          match (p1, p2) with
          [ (`Chr (loc1, c1), `Chr (loc2, c2)) ->

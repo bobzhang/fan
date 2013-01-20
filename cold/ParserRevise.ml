@@ -2148,7 +2148,7 @@ let apply () =
           [([`Sself; `Skeyword "|"; `Sself],
              (Gram.mk_action
                 (fun (p2 : 'patt)  _  (p1 : 'patt)  (_loc : FanLoc.t)  ->
-                   (`PaOrp (_loc, p1, p2) : 'patt ))))]);
+                   (`Or (_loc, p1, p2) : 'patt ))))]);
        ((Some ".."), (Some `NA),
          [([`Sself; `Skeyword ".."; `Sself],
             (Gram.mk_action

@@ -49,7 +49,7 @@ and patt =
   | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt) | literal
   | `Label of (loc* alident* patt)
   | `PaOlbi of (loc* alident* patt* expr meta_option)
-  | `PaOrp of (loc* patt* patt) | `PaRng of (loc* patt* patt)
+  | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
   | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt) | `Tup of (loc* patt)
   | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
   | `PaVrn of (loc* string) | `Lazy of (loc* patt)

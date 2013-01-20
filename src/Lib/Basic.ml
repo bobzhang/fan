@@ -40,7 +40,6 @@ let check_valid str =
            exit 2;
          end 
   else ();    
-(* let print_expr = fun _ -> failwithf "Basic.print_expr not implemented yet" *)
 
   
 let error_report (loc,s) = begin
