@@ -482,4 +482,5 @@
     | `CrVvr of (loc * alident * mutable_flag * ctyp)
     | ant (* $s$ *) ]; 
 
-
+(* let _loc = FanLoc.ghost; *)
+(* #filter "serialize";; *)

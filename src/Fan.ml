@@ -1,16 +1,15 @@
 
 
 open Ast;
+open Filters;  
 include PreCast;
 
 open AstQuotation;
 open Lib.Meta;
 open Syntax;
 open LibUtil;
-(* module MetaQAst = FanAst.Meta.Make MetaLocQuotation; *)
-module MetaQAst = FanAst.Make MetaLocQuotation;
-module ME = MetaQAst.Expr;
-module MP = MetaQAst.Patt;
+open AstQuotation;
+
 
 
 
@@ -214,5 +213,5 @@ open ParserLex;
 open AstInjection;
 open AstTypeGen;
 open CodeTemplate;
-open Filters;  
+
 (* open FanEval; *)

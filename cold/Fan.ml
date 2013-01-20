@@ -1,12 +1,11 @@
 open Ast
+open Filters
 include PreCast
 open AstQuotation
 open Lib.Meta
 open Syntax
 open LibUtil
-module MetaQAst = FanAst.Make(MetaLocQuotation)
-module ME = MetaQAst.Expr
-module MP = MetaQAst.Patt
+open AstQuotation
 let _ =
   of_str_item_with_filter ~name:"ocaml" ~entry:str_items
     ~filter:(fun s  ->
@@ -133,4 +132,3 @@ open ParserLex
 open AstInjection
 open AstTypeGen
 open CodeTemplate
-open Filters

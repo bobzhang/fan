@@ -122,7 +122,7 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {expr;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|} |
-        {|list string|} | {|meta_list string|}->
+        {|list string|} | {|meta_list string|} | {|FanUtil.anti_cxt |}->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}] 
               )  (List.tl params) result in
@@ -133,7 +133,7 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {expr;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} |
-        {|loc|} | {|list string|} | {|meta_list string|}->
+        {|loc|} | {|list string|} | {|meta_list string|} | {| FanUtil.anti_cxt |}->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}]) params result in 
   let mk_record cols =
@@ -144,17 +144,17 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {info={expr;pat0;ty;_};_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|}
-        | {|list string|} | {| meta_list string|}->
+        | {|list string|} | {| meta_list string|} | {|FanUtil.anti_cxt|}->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}]
         (* {|let $pat:pat0 = $expr in $res |} *)) cols result in
   (gen_str_item) ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
 Typehook.register
-    ~filter:(fun s -> s<>"loc")
+    ~filter:(fun s -> (s<>"loc"))
     ("Strip",gen_strip);
 
-(* [("Strip",gen_strip)] |> List.iter Typehook.register;   *)
-(*       (\* ~filter:(fun s -> s<> "loc") *\) *)
+
+  
 (* +-----------------------------------------------------------------+
    | Meta generator                                                  |
    +-----------------------------------------------------------------+ *)
@@ -336,3 +336,23 @@ let generate (module_types:FSig.module_types) =
     ) tbl {:match_case||} in
   {:str_item| let loc_of  = fun [ $case ]|};
 Typehook.register ~filter:(fun s -> s<> "loc") ("GenLoc",generate);
+
+
+(* +-----------------------------------------------------------------+
+   | Type Generator                                                  |
+   +-----------------------------------------------------------------+ *)
+
+  
+
+(* let map = object *)
+(*   inherit map as super; *)
+(*   method! ctyp c = *)
+(*     match c with *)
+(*     [ {}]   *)
+(* end; *)
+  
+(* let gen_type (module_types : FSig.module_types) = *)
+(*   let aux (_ty) = *)
+(*     match ty with *)
+(*     [`TyDcl(_,_,_,`Ty)]   *)
+  

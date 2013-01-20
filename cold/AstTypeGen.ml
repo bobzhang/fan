@@ -102,7 +102,8 @@ let gen_strip =
            |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
            |`TyApp
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-             -> res
+           |`Id (_loc,`IdAcc (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) ->
+             res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       (List.tl params) result in
   let mk_tuple params =
@@ -116,7 +117,8 @@ let gen_strip =
            |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
            |`TyApp
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-             -> res
+           |`Id (_loc,`IdAcc (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) ->
+             res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       params result in
   let mk_record cols =
@@ -133,7 +135,8 @@ let gen_strip =
            |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
            |`TyApp
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-             -> res
+           |`Id (_loc,`IdAcc (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) ->
+             res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       cols result in
   gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant

@@ -24,10 +24,11 @@ let strip_loc_list f lst =
 {:fans|keep off;
  derive
    (Map2
-      Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq (* Strip *)
-      GenLoc
+      Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq
+      GenLoc  Strip
    ); |};
 
+  
 {:ocaml|INCLUDE "src/Ast.ml"; |};
 
 #default_quotation "expr";;

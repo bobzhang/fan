@@ -110,3 +110,15 @@ let make_filter (s,code) =
   | e -> e  ] in
   ("filter_"^s, (FanAst.map_str_item f )#str_item);
 
+
+module MetaQAst = FanAst.Make AstQuotation.MetaLocQuotation;
+module ME = MetaQAst.Expr;
+module MP = MetaQAst.Patt;
+
+AstFilters.register_str_item_filter
+    ("serialize",
+     (fun x ->
+        let _loc = FanLoc.ghost in 
+        let y = ME.meta_str_item _loc x in 
+        {:str_item| $x; let __fan_repr_of_file = $y |}
+        ) );  

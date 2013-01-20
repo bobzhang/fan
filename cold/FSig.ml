@@ -53,25 +53,25 @@ type warning_type =
   | Abstract of string
   | Qualified of string 
 let rec pp_print_named_type: 'fmt -> named_type -> 'result =
-  fun fmt  a0  ->
-    (fun fmt  (a0,a1)  ->
-       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string a0 pp_print_ctyp
-         a1) fmt a0
+  fun fmt  _a0  ->
+    (fun fmt  (_a0,_a1)  ->
+       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string _a0
+         pp_print_ctyp _a1) fmt _a0
 and pp_print_and_types: 'fmt -> and_types -> 'result =
-  fun fmt  a0  -> pp_print_list pp_print_named_type fmt a0
+  fun fmt  _a0  -> pp_print_list pp_print_named_type fmt _a0
 and pp_print_types: 'fmt -> types -> 'result =
   fun fmt  ->
     function
-    | `Mutual a0 ->
-        Format.fprintf fmt "@[<1>(`Mutual@ %a)@]" pp_print_and_types a0
-    | `Single a0 ->
-        Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type a0
+    | `Mutual _a0 ->
+        Format.fprintf fmt "@[<1>(`Mutual@ %a)@]" pp_print_and_types _a0
+    | `Single _a0 ->
+        Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type _a0
 and pp_print_module_types: 'fmt -> module_types -> 'result =
-  fun fmt  a0  -> pp_print_list pp_print_types fmt a0
+  fun fmt  _a0  -> pp_print_list pp_print_types fmt _a0
 let rec pp_print_destination: 'fmt -> destination -> 'result =
   fun fmt  ->
     function
-    | Obj a0 -> Format.fprintf fmt "@[<1>(Obj@ %a)@]" pp_print_kind a0
+    | Obj _a0 -> Format.fprintf fmt "@[<1>(Obj@ %a)@]" pp_print_kind _a0
     | Str_item  -> Format.fprintf fmt "Str_item"
 and pp_print_kind: 'fmt -> kind -> 'result =
   fun fmt  ->
@@ -82,7 +82,7 @@ and pp_print_kind: 'fmt -> kind -> 'result =
 let pp_print_warning_type: 'fmt -> warning_type -> 'result =
   fun fmt  ->
     function
-    | Abstract a0 ->
-        Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string a0
-    | Qualified a0 ->
-        Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string a0
+    | Abstract _a0 ->
+        Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string _a0
+    | Qualified _a0 ->
+        Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string _a0
