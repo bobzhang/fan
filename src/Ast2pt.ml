@@ -661,63 +661,51 @@ let rec expr (x : expr) = with expr match x with
       [ [] | [_] -> errorf loc "tuple should have at least two items" (dump_expr x)
       | _ -> 
           mkexp loc (Pexp_tuple (List.map expr l))]
-  (* | {@loc| ($e1, $e2) |} -> *)
-  (*      mkexp loc (Pexp_tuple (List.map expr (list_of_com' e1 (list_of_com' e2 [])))) (\* precise *\) *)
-  (*  | {@loc| ($tup:_) |} -> error loc "singleton tuple" *)
    | `Constraint (loc,e,t) -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
-   | {@loc| () |} ->
-       mkexp loc (Pexp_construct (lident_with_loc "()" loc) None true)
-
-   | {@loc| $(lid:("true"|"false" as s)) |} ->
-       mkexp loc (Pexp_construct (lident_with_loc s loc) None true)
-              
-   | {@loc| $lid:s |} ->
-       mkexp loc (Pexp_ident (lident_with_loc s loc))
-   | {@loc| $uid:s |} ->
-       mkexp loc (Pexp_construct (lident_with_loc  s loc) None true)
+   | {| () |} ->
+       mkexp _loc (Pexp_construct (lident_with_loc "()" _loc) None true)
+   | {|$(lid: ("true"| "false" as s))|} ->
+       mkexp _loc (Pexp_construct (lident_with_loc s _loc) None true)
+   | `Id(_,`Lid(_loc,s)) ->
+       mkexp _loc (Pexp_ident (lident_with_loc s _loc))
+   | `Id(_,`Uid(_loc,s)) ->
+       mkexp _loc (Pexp_construct (lident_with_loc  s _loc) None true)
    | `ExVrn (loc,s) -> mkexp loc (Pexp_variant  s None)
    | `While (loc, e1, el) ->
        let e2 = `Seq loc el in
        mkexp loc (Pexp_while (expr e1) (expr e2))
-   | {@loc| let open $i in $e |} ->
-       mkexp loc (Pexp_open (long_uident i) (expr e))
-   | {@loc| (module $me : $pt) |} ->
-       mkexp loc (Pexp_constraint (mkexp loc (Pexp_pack (module_expr me)),
-                                   Some (mktyp loc (Ptyp_package (package_type pt))), None))
+   | `LetOpen(_loc,i,e) ->
+       mkexp _loc (Pexp_open (long_uident i) (expr e))
+   | {| (module $me : $pt) |} ->
+       mkexp _loc
+         (Pexp_constraint
+            (mkexp _loc (Pexp_pack (module_expr me)),
+             Some (mktyp _loc (Ptyp_package (package_type pt))), None))
    | {@loc| (module $me) |} ->
        mkexp loc (Pexp_pack (module_expr me))
    | `LocalTypeFun (loc,`Lid(_,i),e) -> mkexp loc (Pexp_newtype i (expr e))
    | x -> errorf (loc_of x ) "expr:%s" (dump_expr x) ]
-and patt_of_lab _loc lab =  fun (* loc -> string -> patt -> pattern *)
-  [ {:patt||} -> patt {:patt| $lid:lab |}
+and patt_of_lab _loc lab (x:patt)= match x with 
+  [ `Nil _  -> patt (`Id(_loc,`Lid(_loc,lab)))
   | p -> patt p ]
-and expr_of_lab _loc lab = fun (* loc -> string -> expr -> expression*)
-  [ {:expr||} -> expr {:expr| $lid:lab |}
+and expr_of_lab _loc lab (x:expr) = match x with
+  [ `Nil _  -> expr (`Id(_loc,`Lid(_loc,lab)))
   | e -> expr e ]
-and label_expr : expr -> (Asttypes.label*expression) = fun (* expr -> label * expression *)
-  [ `Label (loc,lab,eo) ->
-    match lab with
-    [ `Lid (_,lab) ->
+and label_expr (x : expr) = match x with 
+  [ `Label (loc,`Lid(_,lab),eo) ->
       (lab, expr_of_lab loc lab eo)
-    | `Ant(_loc,_) -> ANT_ERROR]
-  | `OptLabl (loc,lab,eo) ->
-      match lab with 
-      [`Lid (_loc,lab) -> ("?" ^ lab, expr_of_lab loc lab eo)
-      |`Ant(_loc,_) -> ANT_ERROR]
+  | `OptLabl (loc,`Lid(_,lab),eo) -> ("?" ^ lab, expr_of_lab loc lab eo)
   | e -> ("", expr e) ]
-and binding x acc =  match x with (* binding -> (pattern * expression) list ->  (pattern * expression) list *)
-  [ {:binding| $x and $y |} ->
+and binding (x:binding) acc =  match x with
+  [ `And(_,x,y) ->
     binding x (binding y acc)
   | {:binding@_loc| $(pat: {:patt@sloc| $lid:bind_name |} ) =
     ($e : $(`TyTypePol (_, vs, ty))) |} ->
-      (* this code is not pretty because it is temporary *)
+
       let rec id_to_string x = match x with
-      [ (* {:ctyp| $lid:x |}  *) `Id(_loc,`Lid(_,x)) -> [x]
-      | (* {:ctyp| $x $y |} *)
-        `TyApp(_loc,x,y)
-        -> (id_to_string x) @ (id_to_string y)
-      | x -> (* assert false *)
-          errorf (loc_of x) "id_to_string %s" (dump_ctyp x)]   in
+        [  `Id(_loc,`Lid(_,x)) -> [x]
+        | `TyApp(_loc,x,y) -> (id_to_string x) @ (id_to_string y)
+        | x -> errorf (loc_of x) "id_to_string %s" (dump_ctyp x)]   in
       let vars = id_to_string vs in
       let ampersand_vars = List.map (fun x -> "&" ^ x) vars in
       let ty' = varify_constructors vars (ctyp ty) in
@@ -738,21 +726,20 @@ and binding x acc =  match x with (* binding -> (pattern * expression) list ->  
       [( pat, e) :: acc]
   | {:binding@_loc| $p = ($e : ! $vs . $ty) |} ->
       [(patt {:patt| ($p : ! $vs . $ty ) |}, expr e) :: acc]
-  | {:binding| $p = $e |} -> [(patt p, expr e) :: acc]
-  | {:binding||} -> acc
+  | `Bind (_,p,e) -> [(patt p, expr e) :: acc]
+  | `Nil _  -> acc
   | _ -> assert false ]
 and match_case (x:match_case) = 
-  let cases = list_of_or x [] in
+  let cases = list_of_or' x [] in
   with match_case 
   List.filter_map
     (fun
       [`Nil _ -> None
-      | {| $pat:p when $w -> $e |} ->
-        Some (patt p, when_expr e w)
+      | `Case(_,p,w,e) -> Some (patt p, when_expr e w)
       | x -> errorf (loc_of x ) "match_case %s" (dump_match_case x ) ]) cases
 and when_expr (e:expr) (w:expr) : expression  =
-  with expr match w with 
-  [ {||} -> expr e
+  match w with 
+  [ `Nil _ -> expr e
   | w -> mkexp (loc_of w) (Pexp_when (expr w) (expr e)) ]
 
 and mklabexp (x:rec_binding)  =
@@ -761,16 +748,15 @@ and mklabexp (x:rec_binding)  =
   List.filter_map
     (fun
       [ `Nil _ -> None
-      | {| $id:i = $e |} ->  Some (ident i, expr e)
-      |  x ->errorf (loc_of x) "mklabexp : %s"
-            (dump_rec_binding x) ]) bindings
+      | `RecBind(_,i,e) ->  Some (ident i, expr e)
+      |  x ->errorf (loc_of x) "mklabexp : %s" (dump_rec_binding x) ]) bindings
 and mkideexp (x:rec_binding)
     (acc: list (Asttypes.loc string * expression)) :
     list (Asttypes.loc string * expression) = 
   with rec_binding match x with 
-  [ {||} -> acc
-  | {| $x; $y |} ->  mkideexp x (mkideexp y acc)
-  | {| $(id: {:ident@sloc| $lid:s |}) = $e |} ->
+  [ `Nil _ -> acc
+  | `Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
+  | `RecBind(_,`Lid(sloc,s),e) ->
       [(with_loc s sloc, expr e) :: acc]
   | _ -> assert false ]
 
@@ -932,7 +918,6 @@ and str_item (s:str_item) (l:structure) : structure =
   | `Exception (_,_) -> assert false (*FIXME*)
   | `StExp (loc,e) -> [mkstr loc (Pstr_eval (expr e)) :: l]
   | `External(loc,`Lid(sloc,n),t,sl) ->
-      (*$lid:n behave different here mainl the location*)
       [mkstr loc
          (Pstr_primitive (with_loc n sloc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | `Include (loc,me) -> [mkstr loc (Pstr_include (module_expr me)) :: l]
@@ -991,9 +976,9 @@ and class_info_class_type (ci:class_type) =
       ->
         let (loc_params, (params, variance)) =
           match params with
-          [ (* {:ctyp||} *) `Nil _loc ->
+          [  `Nil _loc ->
             (loc, ([], []))
-          | t -> (loc_of t, List.split (class_parameters t (* [] *))) ] in
+          | t -> (loc_of t, List.split (class_parameters t)) ] in
       {pci_virt = mkvirtual vir;
        pci_params = (params,  loc_params);
        pci_name = with_loc name nloc;
@@ -1115,4 +1100,6 @@ let print_str_item f e =
 let print_ctyp f e =
   pp f "@[%a@]@." AstPrint.core_type (ctyp e) ;
 
-(* Ctyp.to_string := LibUtil.to_string_of_printer print_ctyp;   *)
+
+
+

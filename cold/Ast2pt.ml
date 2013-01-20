@@ -602,45 +602,43 @@ let rec expr (x : expr) =
        | _ -> mkexp loc (Pexp_tuple (List.map expr l)))
   | `Constraint (loc,e,t) ->
       mkexp loc (Pexp_constraint ((expr e), (Some (ctyp t)), None))
-  | `Id (loc,`Uid (_,"()")) ->
-      mkexp loc (Pexp_construct ((lident_with_loc "()" loc), None, true))
-  | `Id (loc,`Lid (_,("true"|"false" as s))) ->
-      mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
-  | `Id (loc,`Lid (_,s)) -> mkexp loc (Pexp_ident (lident_with_loc s loc))
-  | `Id (loc,`Uid (_,s)) ->
-      mkexp loc (Pexp_construct ((lident_with_loc s loc), None, true))
+  | `Id (_loc,`Uid (_,"()")) ->
+      mkexp _loc (Pexp_construct ((lident_with_loc "()" _loc), None, true))
+  | `Id (_loc,`Lid (_,("true"|"false" as s))) ->
+      mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
+  | `Id (_,`Lid (_loc,s)) -> mkexp _loc (Pexp_ident (lident_with_loc s _loc))
+  | `Id (_,`Uid (_loc,s)) ->
+      mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
   | `ExVrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
   | `While (loc,e1,el) ->
       let e2 = `Seq (loc, el) in
       mkexp loc (Pexp_while ((expr e1), (expr e2)))
-  | `LetOpen (loc,i,e) -> mkexp loc (Pexp_open ((long_uident i), (expr e)))
-  | `Package_expr (loc,`Constraint (_,me,pt)) ->
-      mkexp loc
+  | `LetOpen (_loc,i,e) -> mkexp _loc (Pexp_open ((long_uident i), (expr e)))
+  | `Package_expr (_loc,`Constraint (_,me,pt)) ->
+      mkexp _loc
         (Pexp_constraint
-           ((mkexp loc (Pexp_pack (module_expr me))),
-             (Some (mktyp loc (Ptyp_package (package_type pt)))), None))
+           ((mkexp _loc (Pexp_pack (module_expr me))),
+             (Some (mktyp _loc (Ptyp_package (package_type pt)))), None))
   | `Package_expr (loc,me) -> mkexp loc (Pexp_pack (module_expr me))
   | `LocalTypeFun (loc,`Lid (_,i),e) ->
       mkexp loc (Pexp_newtype (i, (expr e)))
   | x -> errorf (loc_of x) "expr:%s" (dump_expr x)
-and patt_of_lab _loc lab =
-  function | `Nil _loc -> patt (`Id (_loc, (`Lid (_loc, lab)))) | p -> patt p
-and expr_of_lab _loc lab =
-  function | `Nil _loc -> expr (`Id (_loc, (`Lid (_loc, lab)))) | e -> expr e
-and label_expr: expr -> (Asttypes.label* expression) =
-  function
-  | `Label (loc,lab,eo) ->
-      (match lab with
-       | `Lid (_,lab) -> (lab, (expr_of_lab loc lab eo))
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `OptLabl (loc,lab,eo) ->
-      (match lab with
-       | `Lid (_loc,lab) -> (("?" ^ lab), (expr_of_lab loc lab eo))
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | e -> ("", (expr e))
-and binding x acc =
+and patt_of_lab _loc lab (x : patt) =
   match x with
-  | `And (_loc,x,y) -> binding x (binding y acc)
+  | `Nil _ -> patt (`Id (_loc, (`Lid (_loc, lab))))
+  | p -> patt p
+and expr_of_lab _loc lab (x : expr) =
+  match x with
+  | `Nil _ -> expr (`Id (_loc, (`Lid (_loc, lab))))
+  | e -> expr e
+and label_expr (x : expr) =
+  match x with
+  | `Label (loc,`Lid (_,lab),eo) -> (lab, (expr_of_lab loc lab eo))
+  | `OptLabl (loc,`Lid (_,lab),eo) -> (("?" ^ lab), (expr_of_lab loc lab eo))
+  | e -> ("", (expr e))
+and binding (x : binding) acc =
+  match x with
+  | `And (_,x,y) -> binding x (binding y acc)
   | `Bind
       (_loc,`Id (sloc,`Lid (_,bind_name)),`Constraint
                                             (_,e,`TyTypePol (_,vs,ty)))
@@ -671,33 +669,33 @@ and binding x acc =
   | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) ->
       ((patt (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))))), (expr e)) ::
       acc
-  | `Bind (_loc,p,e) -> ((patt p), (expr e)) :: acc
-  | `Nil _loc -> acc
+  | `Bind (_,p,e) -> ((patt p), (expr e)) :: acc
+  | `Nil _ -> acc
   | _ -> assert false
 and match_case (x : match_case) =
-  let cases = list_of_or x [] in
+  let cases = list_of_or' x [] in
   List.filter_map
     (function
      | `Nil _ -> None
-     | `Case (_loc,p,w,e) -> Some ((patt p), (when_expr e w))
+     | `Case (_,p,w,e) -> Some ((patt p), (when_expr e w))
      | x -> errorf (loc_of x) "match_case %s" (dump_match_case x)) cases
 and when_expr (e : expr) (w : expr) =
   (match w with
-   | `Nil _loc -> expr e
+   | `Nil _ -> expr e
    | w -> mkexp (loc_of w) (Pexp_when ((expr w), (expr e))) : expression )
 and mklabexp (x : rec_binding) =
   let bindings = list_of_sem x [] in
   List.filter_map
     (function
      | `Nil _ -> None
-     | `RecBind (_loc,i,e) -> Some ((ident i), (expr e))
+     | `RecBind (_,i,e) -> Some ((ident i), (expr e))
      | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_binding x)) bindings
 and mkideexp (x : rec_binding) (acc : (string Asttypes.loc* expression) list)
   =
   (match x with
-   | `Nil _loc -> acc
-   | `Sem (_loc,x,y) -> mkideexp x (mkideexp y acc)
-   | `RecBind (_loc,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
+   | `Nil _ -> acc
+   | `Sem (_,x,y) -> mkideexp x (mkideexp y acc)
+   | `RecBind (_,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
    | _ -> assert false : (string Asttypes.loc* expression) list )
 and mktype_decl (x : ctyp) =
   let tys = list_of_and x [] in
