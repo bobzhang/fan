@@ -68,7 +68,7 @@ FanConfig.antiquotations := true;
   nonterminalsclear:
   [ qualuid{t}; L0 [a_lident{x}->x ]{ls} ->
     let rest = List.map (fun x ->
-      let _loc = FanAst.loc_of (x:>ident) in
+      let _loc = loc_of x in
       {:expr| $id:t.clear $(id:(x:>ident)) |}) ls in
     {:expr| begin $list:rest end |} ]
 |};
@@ -156,20 +156,44 @@ FanConfig.antiquotations := true;
 
   (* parse qualified [X.X] *)
   qualuid:
-  [ `Uid x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
-  | `Uid x -> {:ident| $uid:x |} ] 
+  [ `Uid x; ".";  S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
+  | `Uid x -> `Uid(_loc,x) ] 
 
+
+  (* parse qualified [X.X] or [X.g]
+     {[
+     with str t qualid {| A.g|};
+     - : Ast.ident = `Dot (, `Uid (, "A"), `Lid (, "g"))
+     with str t qualid {| A.U |};
+     - : Ast.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
+     ]}
+     The second case is not needed, it should be fixed.
+   *)
+  (* qualid: *)
+  (* [ `Uid x; ".";  S{xs} -> `Dot(_loc,`Uid(_loc,x),xs) *)
+  (* | `Uid i -> `Uid(_loc,i) *)
+  (* | `Lid i -> `Lid(_loc,i) ] *)
   qualid:
-  [ `Uid x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
-  | `Uid i -> {:ident| $uid:i |}
-  | `Lid i -> {:ident| $lid:i |} ]
-
+  [ `Uid x ; "."; `Lid i -> `Dot(_loc,`Uid(_loc,x), `Lid(_loc,i))
+  | `Uid x ; "."; S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
+  | `Lid i -> `Lid(_loc,i)]
+  (* parse qualified path ending with [X.t]
+     {[
+     with str t t_qualid {| A.U.t |};
+     - : Ast.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
+     ]}
+   *)
   t_qualid:
-  [ `Uid x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
-  | `Uid x; "."; `Lid "t" -> {:ident| $uid:x |} ] 
+  [ `Uid x; ".";  S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
+  | `Uid x; "."; `Lid "t" -> `Uid(_loc,x) ] 
 
+
+  (* get local name entry list *)
+  
   locals:
   [ `Lid "local"; ":"; L1 name{sl}; ";" -> sl ]
+
+  (* stands for the non-terminal  *)
   name:[ qualid{il} -> mk_name _loc il ] 
 
   entry_name:

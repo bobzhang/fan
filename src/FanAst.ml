@@ -260,7 +260,7 @@ let tyVarApp_of_list (_loc,ls)=
         List.fold_left (fun x y -> {:ctyp| $x '$y |}) {:ctyp| '$t |} ts ] in
   aux ls;
 
-  
+(* RA *)  
 let rec dot_of_list' = fun
   [[] -> assert false
   |[i] -> i
