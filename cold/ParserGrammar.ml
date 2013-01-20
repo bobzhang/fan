@@ -299,28 +299,13 @@ let _ =
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"));
            `Skeyword ".";
-           `Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`Normal, "`Lid _"))],
+           `Sself],
             (Gram.mk_action
-               (fun (__fan_2 : [> FanToken.t])  _  (__fan_0 : [> FanToken.t])
-                   (_loc : FanLoc.t)  ->
-                  match (__fan_2, __fan_0) with
-                  | (`Lid i,`Uid x) ->
-                      (`Dot (_loc, (`Uid (_loc, x)), (`Lid (_loc, i))) : 
-                      'qualid )
+               (fun (xs : 'qualid)  _  (__fan_0 : [> FanToken.t]) 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Uid x -> (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
                   | _ -> assert false)));
-         ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`Normal, "`Uid _"));
-          `Skeyword ".";
-          `Sself],
-           (Gram.mk_action
-              (fun (xs : 'qualid)  _  (__fan_0 : [> FanToken.t]) 
-                 (_loc : FanLoc.t)  ->
-                 match __fan_0 with
-                 | `Uid x -> (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
-                 | _ -> assert false)));
          ([`Stoken
              (((function | `Lid _ -> true | _ -> false)),
                (`Normal, "`Lid _"))],

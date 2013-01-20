@@ -160,23 +160,16 @@ FanConfig.antiquotations := true;
   | `Uid x -> `Uid(_loc,x) ] 
 
 
-  (* parse qualified [X.X] or [X.g]
+  (* parse qualified  [X.Y.g]
      {[
-     with str t qualid {| A.g|};
-     - : Ast.ident = `Dot (, `Uid (, "A"), `Lid (, "g"))
-     with str t qualid {| A.U |};
-     - : Ast.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
+     with str t qualid {| A.B.g |};
+     - : Ast.ident = `Dot (, `Uid (, "A"), `Dot (, `Uid (, "B"), `Lid (, "g")))
      ]}
-     The second case is not needed, it should be fixed.
    *)
-  (* qualid: *)
-  (* [ `Uid x; ".";  S{xs} -> `Dot(_loc,`Uid(_loc,x),xs) *)
-  (* | `Uid i -> `Uid(_loc,i) *)
-  (* | `Lid i -> `Lid(_loc,i) ] *)
   qualid:
-  [ `Uid x ; "."; `Lid i -> `Dot(_loc,`Uid(_loc,x), `Lid(_loc,i))
-  | `Uid x ; "."; S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
+  [ `Uid x ; "."; S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
   | `Lid i -> `Lid(_loc,i)]
+
   (* parse qualified path ending with [X.t]
      {[
      with str t t_qualid {| A.U.t |};
