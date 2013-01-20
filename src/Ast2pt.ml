@@ -494,28 +494,27 @@ let override_flag loc = with override_flag fun
   pexp_loc = }
   ]}
  *)
-let rec expr : expr -> expression = with expr fun (* expr -> expression*)
-  [ {| $_ . $_ |}|
-   {| $(id:{:ident@_| $_ . $_ |}) |} as e ->
-    let (e, l) =
-      match Expr.sep_dot_expr [] e with
-      [ [(loc, ml, {@sloc| $uid:s |}) :: l] ->
-        (mkexp loc (Pexp_construct (mkli sloc  s ml) None false(* ca *)), l)
-      | [(loc, ml, {@sloc| $lid:s |}) :: l] ->
-          (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
-      | [(_, [], e) :: l] -> (expr e, l)
-      | _ -> error _loc "bad ast in expression" ] in
-    let (_, e) =
-      List.fold_left
-        (fun (loc_bp, e1) (loc_ep, ml, e2) ->
-          match e2 with
-          [ {@sloc| $lid:s |} ->
-              let loc = FanLoc.merge loc_bp loc_ep
-              in  (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
-          | _ -> error (loc_of e2) "lowercase identifier expected" ])
-        (_loc, e) l in
-    e
-  | `Ant (loc,_) -> error loc "antiquotation not allowed here"
+let rec expr (x : expr) = with expr match x with 
+  [ `ExAcc(_loc,_,_)|
+    `Id(_loc,`IdAcc _ ) ->
+      let (e, l) =
+        match Expr.sep_dot_expr [] x with
+        [ [(loc, ml, `Id(sloc,`Uid(_,s))) :: l] ->
+          (mkexp loc (Pexp_construct (mkli sloc  s ml) None false(* ca *)), l)
+        | [(loc, ml, `Id(sloc,`Lid(_,s))) :: l] ->
+            (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
+        | [(_, [], e) :: l] -> (expr e, l)
+        | _ -> errorf (loc_of x) "expr: %s" (dump_expr x) ] in
+      let (_, e) =
+        List.fold_left
+          (fun (loc_bp, e1) (loc_ep, ml, e2) ->
+            match e2 with
+            [ `Id(sloc,`Lid(_,s)) ->
+                let loc = FanLoc.merge loc_bp loc_ep in
+                (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
+            | _ -> error (loc_of e2) "lowercase identifier expected" ])
+          (_loc, e) l in
+      e
   | `ExApp (loc, _, _) as f ->
       let (f, al) = Expr.view_app [] f in
       let al = List.map label_expr al in
@@ -538,9 +537,13 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
       mkexp loc
         (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "get")))
            [("", expr e1); ("", expr e2)])
-  | `Array (loc,e) -> mkexp loc (Pexp_array (List.map expr (list_of_sem' e []))) (* be more precise*)
+  | `Array (loc,e) -> mkexp loc
+        (Pexp_array
+           (List.map expr (list_of_sem' e []))) (* be more precise*)
+  | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
   | `ExAsf loc -> mkexp loc Pexp_assertfalse
-  | `Assign (loc,e,v) ->
+  | (* {:expr| $e :=  $v|} *) (* FIXME refine to differentiate *)
+    `Assign (loc,e,v) ->
       let e =
         match e with
         [ {@loc| $x.contents |} -> (* FIXME *)
@@ -553,128 +556,114 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
             | `ArrayDot (loc, e1, e2) ->
                 Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))
                   [("", expr e1); ("", expr e2); ("", expr v)]
-            | {@lloc| $lid:lab |}  ->
-                (* FIXME `Id (lloc, `Lid (_, lab)) vs `Id(_,`Lid(lloc,lab)) *)
+            | `Id(_,`Lid(lloc,lab))  ->
                 Pexp_setinstvar (with_loc lab lloc) (expr v)
             | `StringDot (loc, e1, e2) ->
                 Pexp_apply
                   (mkexp loc (Pexp_ident (array_function loc "String" "set")))
                   [("", expr e1); ("", expr e2); ("", expr v)]
-            | _ -> error loc "bad left part of assignment" ] in
+            | x -> errorf loc "bad left part of assignment:%s" (dump_expr x) ] in
       mkexp loc e
-  | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
   | `Chr (loc,s) ->
       mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
   | `Coercion (loc, e, t1, t2) ->
-      let t1 =
-        match t1 with
-        [ (* {:ctyp||} *)`Nil _ -> None
+      let t1 = match t1 with
+        [ `Nil _ -> None
         | t -> Some (ctyp t) ] in
       mkexp loc (Pexp_constraint (expr e) t1 (Some (ctyp t2)))
   | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
-  | `For (loc, i, e1, e2, df, el) ->
-      match i with
-      [`Lid(sloc,i) ->
+  | `For (loc, `Lid(sloc,i), e1, e2, df, el) ->
         let e3 = `Seq loc el in
         mkexp loc (Pexp_for (with_loc i sloc)
                      (expr e1) (expr e2) (mkdirection df) (expr e3))
-      | `Ant(_loc,_) -> ANT_ERROR]  
-   | {@loc| fun [ $(pat:`Label (_, lab, po)) when $w -> $e ] |} ->
-       match lab with
-       [`Lid (_loc,lab) ->    
+  |  {@loc|fun [ ~$lid:lab : $po when $w -> $e ] |} -> 
          mkexp loc
            (Pexp_function lab None
               [(patt_of_lab loc lab po, when_expr e w)])
-       |`Ant(_loc,_) -> ANT_ERROR]
-   | {@loc| fun [ $(pat:`PaOlbi (_, lab, p, e1)) when $w -> $e2 ] |} ->
-       let lab =
-         match lab with
-         [`Lid(_loc,l) -> l
-         |`Ant(_loc,_) -> ANT_ERROR] in
-       match e1 with
-       [`None _ ->
-         let lab = paolab lab p in
-         mkexp loc
-           (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e2 w)])
-       |`Some e1 ->
-           let lab = paolab lab p in
-           mkexp loc
-             (Pexp_function ("?" ^ lab) (Some (expr e1)) [(patt p, when_expr e2 w)])
-       |`Ant(_loc,_) -> ANT_ERROR]
-   | `Fun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a (* [] *)))
-   | `IfThenElse (loc, e1, e2, e3) ->
-       mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) (Some (expr e3)))
-   | `IfThen (loc,e1,e2) ->
-       mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) None)
-   | `Int (loc,s) ->
-       let i = try int_of_string s with [
-         Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int"
-          ] in
-       mkexp loc (Pexp_constant (Const_int i))
-   | `Int32 (loc, s) ->
-       let i32 = try Int32.of_string s with [
-         Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int32"
-       ] in mkexp loc (Pexp_constant (Const_int32 i32))
-   | `Int64 (loc, s) ->
-       let i64 = try Int64.of_string s with [
-         Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int64"
-       ] in mkexp loc (Pexp_constant (Const_int64 i64))
-   | `NativeInt (loc,s) ->
-       let nati = try Nativeint.of_string s with [
-         Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
-       ] in mkexp loc (Pexp_constant (Const_nativeint nati))
-   | `Label (loc,_,_) -> error loc "labeled expression not allowed here"
-   | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (expr e))
-   | `LetIn (loc,rf,bi,e) ->
-       mkexp loc (Pexp_let (mkrf rf) (binding bi []) (expr e))
-   | `LetModule (loc,i,me,e) ->
-       match i with
-       [`Uid(sloc,i) ->
+  | {@loc| fun [ ?$lid:lab :($p  = $opt:e1) when $w -> $e2  ] |} -> 
+      match e1 with
+      [`None _ ->
+        let lab = paolab lab p in
+        mkexp loc
+          (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e2 w)])
+      |`Some e1 ->
+          let lab = paolab lab p in
+          mkexp loc
+            (Pexp_function ("?" ^ lab) (Some (expr e1)) [(patt p, when_expr e2 w)])
+      |`Ant(_loc,_) -> ANT_ERROR]
+  | `Fun (loc,a) -> mkexp loc (Pexp_function "" None (match_case a ))
+  | `IfThenElse (loc, e1, e2, e3) ->
+      mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) (Some (expr e3)))
+  | `IfThen (loc,e1,e2) ->
+      mkexp loc (Pexp_ifthenelse (expr e1) (expr e2) None)
+  | `Int (loc,s) ->
+      let i = try int_of_string s with [
+        Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int"
+      ] in
+      mkexp loc (Pexp_constant (Const_int i))
+  | `Int32 (loc, s) ->
+      let i32 = try Int32.of_string s with [
+        Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int32"
+      ] in mkexp loc (Pexp_constant (Const_int32 i32))
+  | `Int64 (loc, s) ->
+      let i64 = try Int64.of_string s with [
+        Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int64"
+      ] in mkexp loc (Pexp_constant (Const_int64 i64))
+  | `NativeInt (loc,s) ->
+      let nati = try Nativeint.of_string s with [
+        Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
+      ] in mkexp loc (Pexp_constant (Const_nativeint nati))
+  | `Label (loc,_,_) -> error loc "labeled expression not allowed here"
+  | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (expr e))
+  | `LetIn (loc,rf,bi,e) ->
+      mkexp loc (Pexp_let (mkrf rf) (binding bi []) (expr e))
+  | `LetModule (loc,`Uid(sloc,i),me,e) ->
          mkexp loc (Pexp_letmodule (with_loc i sloc) (module_expr me) (expr e))
-       |`Ant(_loc,_) -> ANT_ERROR]
-   | `Match (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a (* [] *)))
-   | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
-   | `Obj (loc,po,cfl) ->
-       let p =
+  | `Match (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a (* [] *)))
+  | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
+  | `Obj (loc,po,cfl) ->
+      let p =
          match po with
-         [ {:patt||} -> {:patt@loc| _ |}
+         [ `Nil _loc  -> `Any _loc 
          | p -> p ] in
        let cil = class_str_item cfl [] in
        mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
-   | `OptLabl (loc,_,_) -> error loc "labeled expression not allowed here"
-   | `OvrInst (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
-   | `Record (loc,lel,eo) ->
+  | `OvrInst (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
+  | `Record (loc,lel,eo) ->
        match lel with
-       [ {:rec_binding||} -> error loc "empty record"
+       [ `Nil _  -> error loc "empty record"
        | _ ->
-            let eo =
-              match eo with
-              [ {||} -> None
-              | e -> Some (expr e) ] in
-            mkexp loc (Pexp_record (mklabexp lel) eo) ]
-   | `Seq (_loc,e) ->
-       let rec loop = fun
-         [ [] -> expr {| () |}
-         | [e] -> expr e
-         | [e :: el] ->
-                  let _loc = FanLoc.merge (loc_of e) _loc in
-                  mkexp _loc (Pexp_sequence (expr e) (loop el)) ] in
-       loop (list_of_sem' e []) (*more precise *)
-   | `Send (loc,e,s) ->
-       match s with
-       [`Lid(_loc,s) ->   
-         mkexp loc (Pexp_send (expr e) s)
-       |`Ant(_loc,_) -> ANT_ERROR]
-   | `StringDot (loc, e1, e2) ->
-       mkexp loc
-         (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "String" "get")))
-            [("", expr e1); ("", expr e2)])
-   | `Str (loc,s) ->
-       mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
-   | `Try (loc,e,a) -> mkexp loc (Pexp_try (expr e) (match_case a (* [] *)))
-   | {@loc| ($e1, $e2) |} ->
-       mkexp loc (Pexp_tuple (List.map expr (list_of_com' e1 (list_of_com' e2 [])))) (* precise *)
-   | {@loc| ($tup:_) |} -> error loc "singleton tuple"
+           let eo =
+             match eo with
+             [ {||} -> None
+             | e -> Some (expr e) ] in
+           mkexp loc (Pexp_record (mklabexp lel) eo) ]
+  | `Seq (_loc,e) ->
+      let rec loop = fun
+        [ [] -> expr {| () |}
+        | [e] -> expr e
+        | [e :: el] ->
+            let _loc = FanLoc.merge (loc_of e) _loc in
+            mkexp _loc (Pexp_sequence (expr e) (loop el)) ] in
+      loop (list_of_sem' e []) 
+  | `Send (loc,e,`Lid(_,s)) -> mkexp loc (Pexp_send (expr e) s)
+        
+  | `StringDot (loc, e1, e2) ->
+      mkexp loc
+        (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "String" "get")))
+           [("", expr e1); ("", expr e2)])
+  | `Str (loc,s) ->
+      mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
+  | `Try (loc,e,a) -> mkexp loc (Pexp_try (expr e) (match_case a (* [] *)))
+  | `Tup (loc,e) ->
+      let l = list_of_com' e [] in
+      match l with
+      [ [] | [_] -> errorf loc "tuple should have at least two items" (dump_expr x)
+      | _ -> 
+          mkexp loc (Pexp_tuple (List.map expr l))]
+  (* | {@loc| ($e1, $e2) |} -> *)
+  (*      mkexp loc (Pexp_tuple (List.map expr (list_of_com' e1 (list_of_com' e2 [])))) (\* precise *\) *)
+  (*  | {@loc| ($tup:_) |} -> error loc "singleton tuple" *)
    | `Constraint (loc,e,t) -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
    | {@loc| () |} ->
        mkexp loc (Pexp_construct (lident_with_loc "()" loc) None true)
@@ -697,15 +686,8 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
                                    Some (mktyp loc (Ptyp_package (package_type pt))), None))
    | {@loc| (module $me) |} ->
        mkexp loc (Pexp_pack (module_expr me))
-   | `LocalTypeFun (loc,i,e) ->
-       match i with 
-       [ `Lid(_loc,i) -> mkexp loc (Pexp_newtype i (expr e))
-       | `Ant(_loc,_) -> ANT_ERROR ]
-   | {@loc| $_,$_ |} -> error loc "expr, expr: not allowed here"
-   | {@loc| $_;$_ |} ->
-       error loc "expr; expr: not allowed here, use begin ... end or [|...|] to surround them" (* FIXME *)
-   | `Id (_, _) | `Nil _ as e ->
-       error (loc_of e) "invalid expr" ]
+   | `LocalTypeFun (loc,`Lid(_,i),e) -> mkexp loc (Pexp_newtype i (expr e))
+   | x -> errorf (loc_of x ) "expr:%s" (dump_expr x) ]
 and patt_of_lab _loc lab =  fun (* loc -> string -> patt -> pattern *)
   [ {:patt||} -> patt {:patt| $lid:lab |}
   | p -> patt p ]
