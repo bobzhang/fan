@@ -488,7 +488,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                       (_loc,
                         (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "idAcc_of_list")))))), e)
+                             (`Lid (_loc, "dot_of_list'")))))), e)
            | ("list",("binding"|"module_binding"|"with_constr"|"class_type"
                       |"class_expr"|"ctypand"),_)
                ->

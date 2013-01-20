@@ -382,7 +382,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | ("list","module_type",_) ->
               {| $(uid:gm()).mtApp_of_list $e |}
           | ("list","ident",_) -> 
-              {| $(uid:gm()).idAcc_of_list $e |}
+              {| $(uid:gm()).dot_of_list' $e |}
           | ("list",
              ("binding"|"module_binding"|
               "with_constr"|"class_type"|

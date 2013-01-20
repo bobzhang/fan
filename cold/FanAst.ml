@@ -10542,11 +10542,11 @@ let tyVarApp_of_list (_loc,ls) =
              `TyApp (_loc, x, (`Quote (_loc, (`Normal _loc), (`Some y)))))
           (`Quote (_loc, (`Normal _loc), (`Some t))) ts in
   aux ls
-let rec idAcc_of_list =
+let rec dot_of_list' =
   function
   | [] -> assert false
   | i::[] -> i
-  | i::is -> let _loc = loc_of i in `Dot (_loc, i, (idAcc_of_list is))
+  | i::is -> let _loc = loc_of i in `Dot (_loc, i, (dot_of_list' is))
 let rec idApp_of_list =
   function
   | [] -> assert false
