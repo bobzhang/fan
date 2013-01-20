@@ -63,7 +63,7 @@ let filter_type_defs ?qualified  () =
       | `Type (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
           let x =
             match ((Ctyp.qualified_app_list ctyp), qualified) with
-            | (Some (`IdAcc (_loc,i,_),ls),Some q) when
+            | (Some (`Dot (_loc,i,_),ls),Some q) when
                 (Ident.eq i q) && (Ctyp.eq_list ls vars) ->
                 `TyDcl (_loc, name, vars, (`Nil _loc), constraints)
             | (_,_) -> super#ctyp x in
@@ -76,7 +76,7 @@ let filter_type_defs ?qualified  () =
       | x -> super#sig_item x
     method! ident =
       function
-      | `IdAcc (_loc,x,y) as i ->
+      | `Dot (_loc,x,y) as i ->
           (match qualified with
            | Some q when Ident.eq q x -> super#ident y
            | _ -> super#ident i)

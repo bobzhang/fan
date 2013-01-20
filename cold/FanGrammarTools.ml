@@ -7,8 +7,12 @@ open FanGrammar
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 let prefix = "__fan_"
 let meta_action = ref false
-let grammar_module_name = let _loc = FanLoc.ghost in ref (`Uid (_loc, ""))
-let gm () = grammar_module_name.contents
+let ghost = FanLoc.ghost
+let grammar_module_name = ref (`Uid (ghost, "Gram"))
+let gm () =
+  match FanConfig.compilation_unit.contents with
+  | Some "Gram" -> `Uid (ghost, "")
+  | Some _|None  -> grammar_module_name.contents
 let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
 let mk_rule ~prod  ~action  = { prod; action }
@@ -46,7 +50,7 @@ let retype_rule_list_without_patterns _loc rl =
                      (_loc,
                        (`Id
                           (_loc,
-                            (`IdAcc
+                            (`Dot
                                (_loc, (gm ()),
                                  (`Lid (_loc, "string_of_token")))))),
                        (`Id (_loc, (`Lid (_loc, "x")))))))
@@ -78,8 +82,7 @@ let make_ctyp (styp : styp) tvar =
            (_loc,
              (`Id
                 (_loc,
-                  (`IdAcc
-                     (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
+                  (`Dot (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
      | `Type t -> t in
    try Some (aux styp) with | NotneededTyping  -> None : ctyp option )
 let make_ctyp_patt styp tvar patt =
@@ -108,9 +111,9 @@ let rec make_expr entry tvar =
                             (_loc,
                               (`Id
                                  (_loc,
-                                   (`IdAcc
+                                   (`Dot
                                       (_loc, (gm ()),
-                                        (`IdAcc
+                                        (`Dot
                                            (_loc, (`Uid (_loc, "Action")),
                                              (`Lid (_loc, "mk")))))))),
                               (make_ctyp_expr t tvar e))))))))))
@@ -146,7 +149,7 @@ let rec make_expr entry tvar =
                             (_loc,
                               (`Id
                                  (_loc,
-                                   (`IdAcc
+                                   (`Dot
                                       (_loc, (gm ()), (`Lid (_loc, "obj")))))),
                               (`Constraint
                                  (_loc, (n.expr),
@@ -154,7 +157,7 @@ let rec make_expr entry tvar =
                                       (_loc,
                                         (`Id
                                            (_loc,
-                                             (`IdAcc
+                                             (`Dot
                                                 (_loc, (gm ()),
                                                   (`Lid (_loc, "t")))))),
                                         (`Quote
@@ -170,15 +173,14 @@ let rec make_expr entry tvar =
                  (`ExApp
                     (_loc,
                       (`Id
-                         (_loc,
-                           (`IdAcc (_loc, (gm ()), (`Lid (_loc, "obj")))))),
+                         (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))))),
                       (`Constraint
                          (_loc, (n.expr),
                            (`TyApp
                               (_loc,
                                 (`Id
                                    (_loc,
-                                     (`IdAcc
+                                     (`Dot
                                         (_loc, (gm ()), (`Lid (_loc, "t")))))),
                                 (`Quote
                                    (_loc, (`Normal _loc),
@@ -194,7 +196,7 @@ let rec make_expr entry tvar =
         (_loc,
           (`ExApp
              (_loc,
-               (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "srules")))))),
+               (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))))),
                (entry.expr))), (make_expr_rules _loc entry rl ""))
   | `TXtok (_loc,match_fun,attr,descr) ->
       `ExApp
@@ -266,7 +268,7 @@ let text_of_action _loc psl rtvar act tvar =
                 (_loc, locid,
                   (`Id
                      (_loc,
-                       (`IdAcc
+                       (`Dot
                           (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "t")))))))),
              (`Nil _loc), e2))) in
   let (_,txt) =
@@ -293,12 +295,11 @@ let text_of_action _loc psl rtvar act tvar =
         (_loc,
           (`Id
              (_loc,
-               (`IdAcc (_loc, (`Uid (_loc, "Obj")), (`Lid (_loc, "magic")))))),
+               (`Dot (_loc, (`Uid (_loc, "Obj")), (`Lid (_loc, "magic")))))),
           (MetaAst.Expr.meta_expr _loc txt))
     else txt in
   `ExApp
-    (_loc,
-      (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
+    (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
       txt)
 let mk_srules loc t rl tvar =
   List.map
@@ -326,7 +327,7 @@ let text_of_entry _loc e =
     `Constraint
       (_loc, (x.expr),
         (`TyApp
-           (_loc, (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
+           (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
              (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (x.tvar))))))))) in
   let pos =
     match e.pos with
@@ -363,9 +364,9 @@ let let_in_of_extend _loc gram gl default =
     match gram with
     | Some g ->
         `ExApp
-          (_loc, (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk")))))),
+          (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk")))))),
             (`Id (_loc, g)))
-    | None  -> `Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
+    | None  -> `Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
   let local_binding_of_name =
     function
     | { expr = `Id (_,`Lid (_,i)); tvar = x; loc = _loc } ->
@@ -379,8 +380,7 @@ let let_in_of_extend _loc gram gl default =
                       (`Str (_loc, i)))),
                  (`TyApp
                     (_loc,
-                      (`Id
-                         (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
+                      (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
                       (`Quote
                          (_loc, (`Normal _loc), (`Some (`Lid (_loc, x))))))))))
     | _ -> failwith "internal error in the Grammar extension" in
@@ -413,7 +413,7 @@ let text_of_functorial_extend _loc gram locals el =
                   (_loc,
                     (`Id
                        (_loc,
-                         (`IdAcc (_loc, (gm ()), (`Lid (_loc, "extend")))))),
+                         (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
                     ent)), (`Tup (_loc, (`Com (_loc, pos, txt)))))) el in
     match el with
     | [] -> `Id (_loc, (`Uid (_loc, "()")))
@@ -477,8 +477,8 @@ let sfold ?sep  _loc (ns : string list) f e s =
       (_loc,
         (`ExApp
            (_loc,
-             (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, foldfun)))))),
-             f)), e) in
+             (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, foldfun)))))), f)),
+        e) in
   let (t :styp)=
     `TyApp
       (_loc,
@@ -489,7 +489,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
                    (_loc,
                      (`Id
                         (_loc,
-                          (`IdAcc
+                          (`Dot
                              (_loc, (gm ()),
                                (`Lid (_loc, ("fold" ^ suffix))))))),
                      (`Any _loc)))), (s.styp))), styp) in

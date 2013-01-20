@@ -376,7 +376,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                    (_loc,
                      (`Id
                         (_loc,
-                          (`IdAcc
+                          (`Dot
                              (_loc, (`Uid (_loc, "Nativeint")),
                                (`Lid (_loc, "to_string")))))), e) in
                `ExApp
@@ -395,7 +395,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                    (_loc,
                      (`Id
                         (_loc,
-                          (`IdAcc
+                          (`Dot
                              (_loc, (`Uid (_loc, "Int32")),
                                (`Lid (_loc, "to_string")))))), e) in
                `ExApp
@@ -407,7 +407,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                    (_loc,
                      (`Id
                         (_loc,
-                          (`IdAcc
+                          (`Dot
                              (_loc, (`Uid (_loc, "Int64")),
                                (`Lid (_loc, "to_string")))))), e) in
                `ExApp
@@ -419,7 +419,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                    (_loc,
                      (`Id
                         (_loc,
-                          (`IdAcc
+                          (`Dot
                              (_loc, (`Uid (_loc, "Char")),
                                (`Lid (_loc, "escaped")))))), e) in
                `ExApp
@@ -431,7 +431,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                    (_loc,
                      (`Id
                         (_loc,
-                          (`IdAcc
+                          (`Dot
                              (_loc, (`Uid (_loc, (gm ()))),
                                (`Lid (_loc, "safe_string_escaped")))))), e) in
                `ExApp
@@ -443,7 +443,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                    (_loc,
                      (`Id
                         (_loc,
-                          (`IdAcc
+                          (`Dot
                              (_loc, (`Uid (_loc, "FanUtil")),
                                (`Lid (_loc, "float_repres")))))), e) in
                `ExApp
@@ -470,7 +470,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "app_of_list")))))), e)
            | ("list","module_type",_) ->
@@ -478,7 +478,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "mtApp_of_list")))))), e)
            | ("list","ident",_) ->
@@ -486,7 +486,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "idAcc_of_list")))))), e)
            | ("list",("binding"|"module_binding"|"with_constr"|"class_type"
@@ -496,7 +496,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "and_of_list")))))), e)
            | ("list","ctyp*",_) ->
@@ -504,7 +504,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "sta_of_list")))))), e)
            | ("list","ctyp|",_)|("list","match_case",_) ->
@@ -512,7 +512,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "or_of_list")))))), e)
            | ("list","ctyp&",_) ->
@@ -520,7 +520,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "amp_of_list")))))), e)
            | ("listlettry","match_case",_) ->
@@ -530,7 +530,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                       (_loc,
                         (`Id
                            (_loc,
-                             (`IdAcc
+                             (`Dot
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
                         (`Lid (_loc, "match_case")))),
@@ -538,7 +538,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                       (_loc,
                         (`Id
                            (_loc,
-                             (`IdAcc
+                             (`Dot
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "or_of_list")))))), e)))
            | ("antilettry","match_case",_) ->
@@ -548,7 +548,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                       (_loc,
                         (`Id
                            (_loc,
-                             (`IdAcc
+                             (`Dot
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
                         (`Lid (_loc, "match_case")))),
@@ -562,7 +562,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                       (_loc,
                         (`Id
                            (_loc,
-                             (`IdAcc
+                             (`Dot
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
                         (`Lid (_loc, "match_case")))), e)
@@ -571,7 +571,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "com_of_list")))))), e)
            | ("list",("binding;"|"str_item"|"sig_item"|"class_sig_item"
@@ -581,7 +581,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "sem_of_list")))))), e)
            | ("list","forall",_) ->
@@ -589,7 +589,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc,
                    (`Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "tyVarApp_of_list")))))), e)
            | _ -> super#expr e)

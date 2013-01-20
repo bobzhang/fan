@@ -38,7 +38,7 @@ let base1_types =
                                                   (_loc,
                                                     (`Id
                                                        (_loc,
-                                                         (`IdAcc
+                                                         (`Dot
                                                             (_loc,
                                                               (`Uid
                                                                  (_loc,
@@ -54,7 +54,7 @@ let base1_types =
                          (_loc,
                            (`Id
                               (_loc,
-                                (`IdAcc
+                                (`Dot
                                    (_loc, (`Uid (_loc, "Format")),
                                      (`Lid (_loc, "formatter")))))),
                            (`Arrow
@@ -93,7 +93,7 @@ let print_base1 =
                 (_loc,
                   (`Id
                      (_loc,
-                       (`IdAcc
+                       (`Dot
                           (_loc, (`Uid (_loc, "Format")),
                             (`Lid (_loc, "formatter")))))),
                   (`Arrow
@@ -137,7 +137,7 @@ let print_base1 =
                                                                (_loc,
                                                                  (`Id
                                                                     (_loc,
-                                                                    (`IdAcc
+                                                                    (`Dot
                                                                     (_loc,
                                                                     (`Uid
                                                                     (_loc,

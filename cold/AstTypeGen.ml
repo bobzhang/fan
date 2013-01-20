@@ -102,8 +102,7 @@ let gen_strip =
            |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
            |`TyApp
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`IdAcc (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) ->
-             res
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       (List.tl params) result in
   let mk_tuple params =
@@ -117,8 +116,7 @@ let gen_strip =
            |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
            |`TyApp
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`IdAcc (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) ->
-             res
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       params result in
   let mk_record cols =
@@ -135,8 +133,7 @@ let gen_strip =
            |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
            |`TyApp
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`IdAcc (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) ->
-             res
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       cols result in
   gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
@@ -190,7 +187,7 @@ let mkfmt pre sep post fields =
          (_loc,
            (`Id
               (_loc,
-                (`IdAcc
+                (`Dot
                    (_loc, (`Uid (_loc, "Format")), (`Lid (_loc, "fprintf")))))),
            (`Id (_loc, (`Lid (_loc, "fmt")))))),
       (`Str (_loc, (pre ^ ((String.concat sep fields) ^ post)))))

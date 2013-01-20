@@ -4,7 +4,7 @@ open PreCast.Syntax
 open LibUtil
 open Lib
 open FanUtil
-open Ast
+open FanAst
 let _ = FanConfig.antiquotations := true
 let nonterminals = Gram.mk "nonterminals"
 let nonterminalsclear = Gram.mk "nonterminalsclear"
@@ -27,29 +27,6 @@ let delete_rules = Gram.mk "delete_rules"
 let simple_patt = Gram.mk "simple_patt"
 let internal_patt = Gram.mk "internal_patt"
 let _ =
-  Gram.extend (extend_header : 'extend_header Gram.t )
-    (None,
-      [(None, None,
-         [([`Skeyword "(";
-           `Snterm (Gram.obj (qualid : 'qualid Gram.t ));
-           `Skeyword ":";
-           `Snterm (Gram.obj (t_qualid : 't_qualid Gram.t ));
-           `Skeyword ")"],
-            (Gram.mk_action
-               (fun _  (t : 't_qualid)  _  (i : 'qualid)  _ 
-                  (_loc : FanLoc.t)  ->
-                  (let old = gm () in
-                   let () = grammar_module_name := t in ((Some i), old) : 
-                  'extend_header ))));
-         ([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ))],
-           (Gram.mk_action
-              (fun (t : 'qualuid)  (_loc : FanLoc.t)  ->
-                 (let old = gm () in
-                  let () = grammar_module_name := t in (None, old) : 
-                 'extend_header ))));
-         ([],
-           (Gram.mk_action
-              (fun (_loc : FanLoc.t)  -> ((None, (gm ())) : 'extend_header ))))])]);
   Gram.extend (nonterminals : 'nonterminals Gram.t )
     (None,
       [(None, None,
@@ -136,13 +113,13 @@ let _ =
                   (let mk =
                      match t with
                      | `static t ->
-                         `Id (_loc, (`IdAcc (_loc, t, (`Lid (_loc, "mk")))))
+                         `Id (_loc, (`Dot (_loc, t, (`Lid (_loc, "mk")))))
                      | `dynamic (x,t) ->
                          `ExApp
                            (_loc,
                              (`Id
                                 (_loc,
-                                  (`IdAcc
+                                  (`Dot
                                      (_loc, t, (`Lid (_loc, "mk_dynamic")))))),
                              (`Id (_loc, x))) in
                    let rest =
@@ -202,9 +179,33 @@ let _ =
                             (_loc,
                               (`Id
                                  (_loc,
-                                   (`IdAcc (_loc, t, (`Lid (_loc, "clear")))))),
+                                   (`Dot (_loc, t, (`Lid (_loc, "clear")))))),
                               (`Id (_loc, (x :>ident))))) ls in
-                   `Seq (_loc, (FanAst.sem_of_list rest)) : 'nonterminalsclear ))))])]);
+                   `Seq (_loc, (FanAst.sem_of_list rest)) : 'nonterminalsclear ))))])])
+let _ =
+  Gram.extend (extend_header : 'extend_header Gram.t )
+    (None,
+      [(None, None,
+         [([`Skeyword "(";
+           `Snterm (Gram.obj (qualid : 'qualid Gram.t ));
+           `Skeyword ":";
+           `Snterm (Gram.obj (t_qualid : 't_qualid Gram.t ));
+           `Skeyword ")"],
+            (Gram.mk_action
+               (fun _  (t : 't_qualid)  _  (i : 'qualid)  _ 
+                  (_loc : FanLoc.t)  ->
+                  (let old = gm () in
+                   let () = grammar_module_name := t in ((Some i), old) : 
+                  'extend_header ))));
+         ([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ))],
+           (Gram.mk_action
+              (fun (t : 'qualuid)  (_loc : FanLoc.t)  ->
+                 (let old = gm () in
+                  let () = grammar_module_name := t in (None, old) : 
+                 'extend_header ))));
+         ([],
+           (Gram.mk_action
+              (fun (_loc : FanLoc.t)  -> ((None, (gm ())) : 'extend_header ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
     (None,
       [(None, None,
@@ -264,7 +265,7 @@ let _ =
                                  (_loc,
                                    (`Id
                                       (_loc,
-                                        (`IdAcc
+                                        (`Dot
                                            (_loc, (gm ()),
                                              (`Lid (_loc, "delete_rule")))))),
                                    e)), b)) sls in
@@ -281,8 +282,7 @@ let _ =
                (fun (xs : 'qualuid)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `Uid x ->
-                      (`IdAcc (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
+                  | `Uid x -> (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `Uid _ -> true | _ -> false)),
@@ -304,8 +304,7 @@ let _ =
                (fun (xs : 'qualid)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `Uid x ->
-                      (`IdAcc (_loc, (`Uid (_loc, x)), xs) : 'qualid )
+                  | `Uid x -> (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `Uid _ -> true | _ -> false)),
@@ -336,7 +335,7 @@ let _ =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Uid x ->
-                      (`IdAcc (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
+                      (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `Uid _ -> true | _ -> false)),

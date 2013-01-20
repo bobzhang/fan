@@ -1131,7 +1131,7 @@ let apply () =
                (fun (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
                   (`Assign
                      (_loc,
-                       (`ExAcc
+                       (`Dot
                           (_loc, e1, (`Id (_loc, (`Lid (_loc, "contents")))))),
                        e2) : 'expr ))));
          ([`Sself; `Skeyword "<-"; `Sself],
@@ -1368,7 +1368,7 @@ let apply () =
          ([`Sself; `Skeyword "."; `Sself],
            (Gram.mk_action
               (fun (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
-                 (`ExAcc (_loc, e1, e2) : 'expr ))));
+                 (`Dot (_loc, e1, e2) : 'expr ))));
          ([`Sself;
           `Skeyword "#";
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
@@ -1379,7 +1379,7 @@ let apply () =
          [([`Skeyword "!"; `Sself],
             (Gram.mk_action
                (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->
-                  (`ExAcc (_loc, e, (`Id (_loc, (`Lid (_loc, "contents"))))) : 
+                  (`Dot (_loc, e, (`Id (_loc, (`Lid (_loc, "contents"))))) : 
                   'expr ))));
          ([`Snterm (Gram.obj (prefixop : 'prefixop Gram.t )); `Sself],
            (Gram.mk_action
@@ -3003,7 +3003,7 @@ let apply () =
           [([`Sself; `Skeyword "."; `Sself],
              (Gram.mk_action
                 (fun (j : 'ident_quot)  _  (i : 'ident_quot) 
-                   (_loc : FanLoc.t)  -> (`IdAcc (_loc, i, j) : 'ident_quot ))))]);
+                   (_loc : FanLoc.t)  -> (`Dot (_loc, i, j) : 'ident_quot ))))]);
        ((Some "simple"), None,
          [([`Stoken
               (((function
@@ -3037,8 +3037,7 @@ let apply () =
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) ->
-                     (`IdAcc
-                        (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), i) : 
+                     (`Dot (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), i) : 
                      'ident_quot )
                  | _ -> assert false)));
          ([`Stoken
@@ -3067,7 +3066,7 @@ let apply () =
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `Uid s ->
-                     (`IdAcc (_loc, (`Uid (_loc, s)), j) : 'ident_quot )
+                     (`Dot (_loc, (`Uid (_loc, s)), j) : 'ident_quot )
                  | _ -> assert false)));
          ([`Skeyword "("; `Sself; `Sself; `Skeyword ")"],
            (Gram.mk_action
@@ -3109,7 +3108,7 @@ let apply () =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) ->
-                      (`IdAcc
+                      (`Dot
                          (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), i) : 
                       'ident )
                   | _ -> assert false)));
@@ -3138,7 +3137,7 @@ let apply () =
                (fun (j : 'ident)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `Uid s -> (`IdAcc (_loc, (`Uid (_loc, s)), j) : 'ident )
+                  | `Uid s -> (`Dot (_loc, (`Uid (_loc, s)), j) : 'ident )
                   | _ -> assert false)))])]);
    Gram.extend (dot_lstrings : 'dot_lstrings Gram.t )
      (None,
@@ -3190,7 +3189,7 @@ let apply () =
                   (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Uid i ->
-                      (`IdAcc (_loc, (`Uid (_loc, i)), l) : 'module_longident_dot_lparen )
+                      (`Dot (_loc, (`Uid (_loc, i)), l) : 'module_longident_dot_lparen )
                   | _ -> assert false)));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
@@ -3213,7 +3212,7 @@ let apply () =
                   (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Ant (("uid"|"" as n),s) ->
-                      (`IdAcc
+                      (`Dot
                          (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), l) : 
                       'module_longident_dot_lparen )
                   | _ -> assert false)))])]);
@@ -3241,7 +3240,7 @@ let apply () =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Uid i ->
-                      (`IdAcc (_loc, (`Uid (_loc, i)), l) : 'module_longident )
+                      (`Dot (_loc, (`Uid (_loc, i)), l) : 'module_longident )
                   | _ -> assert false)));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
@@ -3270,7 +3269,7 @@ let apply () =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Ant ((""|"uid" as n),s) ->
-                      (`IdAcc
+                      (`Dot
                          (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), l) : 
                       'module_longident )
                   | _ -> assert false)))])]);
@@ -3288,7 +3287,7 @@ let apply () =
             (Gram.mk_action
                (fun (j : 'module_longident_with_app)  _ 
                   (i : 'module_longident_with_app)  (_loc : FanLoc.t)  ->
-                  (`IdAcc (_loc, i, j) : 'module_longident_with_app ))))]);
+                  (`Dot (_loc, i, j) : 'module_longident_with_app ))))]);
        ((Some "simple"), None,
          [([`Stoken
               (((function
@@ -3326,7 +3325,7 @@ let apply () =
             (Gram.mk_action
                (fun (j : 'type_longident)  _  (i : 'type_longident) 
                   (_loc : FanLoc.t)  ->
-                  (`IdAcc (_loc, i, j) : 'type_longident ))))]);
+                  (`Dot (_loc, i, j) : 'type_longident ))))]);
        ((Some "simple"), None,
          [([`Stoken
               (((function
@@ -3393,7 +3392,7 @@ let apply () =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Uid i ->
-                      (`IdAcc (_loc, (`Uid (_loc, i)), l) : 'label_longident )
+                      (`Dot (_loc, (`Uid (_loc, i)), l) : 'label_longident )
                   | _ -> assert false)));
           ([`Stoken
               (((function | `Ant ((""|"uid"),_) -> true | _ -> false)),
@@ -3405,7 +3404,7 @@ let apply () =
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Ant ((""|"uid" as n),s) ->
-                      (`IdAcc
+                      (`Dot
                          (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), l) : 
                       'label_longident )
                   | _ -> assert false)))])]);
@@ -5426,7 +5425,7 @@ let apply_ctyp () =
                  (try
                     `Id
                       (_loc,
-                        (`IdAcc
+                        (`Dot
                            (_loc, (FanAst.ident_of_ctyp t1),
                              (FanAst.ident_of_ctyp t2))))
                   with | Invalid_argument s -> raise (XStream.Error s) : 

@@ -5,7 +5,7 @@ open PreCast.Syntax;
 open LibUtil;
 open Lib;
 open FanUtil;
-open Ast;
+open FanAst;
 
 FanConfig.antiquotations := true;
 
@@ -17,60 +17,126 @@ FanConfig.antiquotations := true;
   locals entry position assoc name string pattern simple_expr delete_rules
   simple_patt internal_patt|}  ;
 
-{:extend|Gram
-  extend_header:
-  [ "("; qualid{i}; ":"; t_qualid{t}; ")"
-     -> 
-       let old=gm() in 
-       let () = grammar_module_name := t in
-       (Some i,old)
-  | qualuid{t}  -> 
-      let old = gm() in
-      let () = grammar_module_name := t in 
-      (None,old)
-  | -> (None,gm())]
 
+{:extend|Gram
+  (*
+
+    {[
+    with str t nonterminals {| U a b c d|} |> Ast2pt.print_str_item f;
+    let a = U.mk "a"
+    let b = U.mk "b"
+    let c = U.mk "c"
+    let d = U.mk "d"
+    ]}
+    It is very simple, may be improved to a depend on a simple engine
+    It is used by language [extend.create]
+   *)
   nonterminals:
   [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
        |  qualuid{t} -> `static(t)]{t};
-       L0
-         [ `Lid x  -> (_loc,x,None,None)
-         | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
-         | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-         | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")"
-           -> (_loc,x,y,Some t) ] {ls}
-       ->
-       with str_item
-       let mk =
-         match t with
-         [`static t -> {:expr| $id:t.mk |}
-         |`dynamic(x,t) -> {:expr| $id:t.mk_dynamic $id:x |}] in   
-       let rest =
-         List.map
-           (fun
-             (_loc,x,descr,ty) ->
-               match (descr,ty) with
-               [(Some d,None) ->
-                   {| let $lid:x = $mk $str:d |}
-               | (Some d,Some typ) ->
-                   {| let $lid:x : $typ = $mk $str:d |}
-               |(None,None) ->
-                   {| let $lid:x = $mk $str:x  |}
-               | (None,Some typ) ->
-                   {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
-                   {| $list:rest |} ]
+    L0
+    [ `Lid x  -> (_loc,x,None,None)
+    | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
+    | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
+    | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
+    ->
+   with str_item
+   let mk =
+     match t with
+       [`static t -> {:expr| $id:t.mk |}
+       |`dynamic(x,t) -> {:expr| $id:t.mk_dynamic $id:x |}] in   
+   let rest =
+     List.map
+       (fun
+         (_loc,x,descr,ty) ->
+           match (descr,ty) with
+           [(Some d,None) ->
+             {| let $lid:x = $mk $str:d |}
+           | (Some d,Some typ) ->
+               {| let $lid:x : $typ = $mk $str:d |}
+           |(None,None) ->
+               {| let $lid:x = $mk $str:x  |}
+           | (None,Some typ) ->
+               {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
+               {| $list:rest |} ]
+  (* {[
+     with str t nonterminalsclear {| U a b c d|} |> Ast2pt.print_expr f;
+     U.clear a; U.clear b; U.clear c; U.clear d
+     ]}
+     It's used by language [extend.clear]
+   *)
   nonterminalsclear:
   [ qualuid{t}; L0 [a_lident{x}->x ]{ls} ->
     let rest = List.map (fun x ->
       let _loc = FanAst.loc_of (x:>ident) in
       {:expr| $id:t.clear $(id:(x:>ident)) |}) ls in
     {:expr| begin $list:rest end |} ]
+|};
+
+
+{:extend|Gram
+
+  (* parse the header, return the current [grammar] and
+     previous module name, it has side effect, and can not
+     be used alone
+     {[
+     with str t extend_header {| U.M |};
+     - : Ast.ident option * Ast.ident = (None, `Uid (, "Gram"))
+     with str t extend_header {| U |};
+     - : Ast.ident option * Ast.ident =
+     (None, `Dot (, `Uid (, "U"), `Uid (, "M")))
+      with str t extend_header {| (g:U.t) |};
+     - : Ast.ident option * Ast.ident = (Some (`Lid (, "g")), `Uid (, "U"))
+     ]}
+     It should be fixed by introducing more advanced grammar features
+   *)
+  extend_header:
+  [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
+       let old=gm() in 
+       let () = grammar_module_name := t in
+       (Some i,old)
+  | qualuid{t}  ->
+      let old = gm() in
+      let () = grammar_module_name := t in 
+      (None,old)
+  | -> (None,gm())]
+
+  (* the main entrance
+     return an already converted expression
+     {[
+     with str t extend_body  {|
+        nonterminalsclear:
+        [ qualuid{t}; L0 [a_lident{x}->x ]{ls} -> ()] |} |> Ast2pt.print_expr f;
+
+     Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
+     (None,
+    [(None, None,
+       [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
+         `Slist0
+           (Gram.srules nonterminalsclear
+              [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+                 (Gram.mk_action
+                    (fun (x : 'a_lident)  (_loc : FanLoc.t)  -> (x : 'e__7 ))))])],
+          (Gram.mk_action
+             (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
+                (() : 'nonterminalsclear ))))])])
+     ]}
+
+     the function [text_of_functorial_extend] is the driving force
+     it has type
+     {[ Ast.loc ->
+     Ast.ident option ->
+     FanGrammar.name list option -> FanGrammar.entry list -> Ast.expr
+     ]}
+   *) 
   extend_body:
   [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
     let res = text_of_functorial_extend _loc  gram locals el in 
     let () = grammar_module_name := old in
     res      ]
-  delete_rule_header: (*for side effets, parser action *)
+
+  (*for side effets, parser action *)
+  delete_rule_header:
   [ qualuid{g} ->
     let old = gm () in
     let () = grammar_module_name := g in
@@ -82,11 +148,13 @@ FanConfig.antiquotations := true;
        {:expr| begin $list:es end|}   ] 
   delete_rules:
   [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]" ->
-    let rest = List.map (fun sl  ->
-      let (e,b) = expr_of_delete_rule _loc n sl in
-      {:expr| $(id:gm()).delete_rule $e $b |}) sls in
-    {:expr| begin $list:rest end |}   ]
+    let rest = List.map
+        (fun sl  ->
+          let (e,b) = expr_of_delete_rule _loc n sl in
+          {:expr| $(id:gm()).delete_rule $e $b |}) sls in
+    {:expr| begin $list:rest end |}]
 
+  (* parse qualified [X.X] *)
   qualuid:
   [ `Uid x; ".";  S{xs} -> {:ident| $uid:x.$xs |}
   | `Uid x -> {:ident| $uid:x |} ] 
@@ -211,37 +279,29 @@ FanConfig.antiquotations := true;
   
 
   simple_patt "patt":
-   ["`"; luident{s}  -> (* {| `$s |} *) {|$vrn:s|}
+   ["`"; luident{s}  ->  {|$vrn:s|}
    |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
        {| $vrn:v $(anti:mk_anti ~c:"patt" n s)|}
-   |"`"; luident{s}; `STR(_,v) ->
-       (* {| `$s $str:v |} *) {| $vrn:s $str:v|}
-   |"`"; luident{s}; `Lid x  ->
-       (* {| `$s $lid:x |} *)
-       {| $vrn:s $lid:x |}
-   |"`"; luident{s}; "_" ->
-        (* {| `$s _ |}*)
-       {|$vrn:s _|}
+   |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|}
+   |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
+   |"`"; luident{s}; "_" -> {|$vrn:s _|}
    |"`"; luident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
        match v with
-       [ [x] -> (* {| `$s $x |} *) {| $vrn:s $x |}
-       | [x::xs] -> (* {| `$s ($x,$list:xs) |} *)
-           {|$vrn:s ($x,$list:xs)|}
+       [ [x] ->  {| $vrn:s $x |}
+       | [x::xs] -> {|$vrn:s ($x,$list:xs)|}
        | _ -> assert false ]  ]
 
   internal_patt "patt":
   {
    "as"
-     [
-      S{p1} ; "as";a_lident{s} -> (* `Alias (_loc,p1,s) *)
-        {| ($p1 as $s) |} ]
-     "|"
-     [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
-     "simple"
-     [ `STR(_,s) -> {| $str:s|}
-     | "_" -> {| _ |}
-     | `Lid x   ->  {| $lid:x|}
-     | "("; S{p}; ")" -> p] }
+     [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ]
+   "|"
+   [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
+   "simple"
+   [ `STR(_,s) -> {| $str:s|}
+   | "_" -> {| _ |}
+   | `Lid x   ->  {| $lid:x|}
+   | "("; S{p}; ")" -> p] }
 
   pattern:
   [ `Lid i -> {:patt| $lid:i |}
@@ -264,16 +324,12 @@ FanConfig.antiquotations := true;
    | "("; expr{e}; ")" -> e ]  |};
 
 AstQuotation.of_expr ~name:"extend" ~entry:extend_body;
-  (* built in extend support *)
 AstQuotation.of_expr ~name:"delete" ~entry:delete_rule_body;
-  (* built in delete support *)
-AstQuotation.of_expr ~name:"extend.clear"
-    ~entry:nonterminalsclear;
+AstQuotation.of_expr ~name:"extend.clear" ~entry:nonterminalsclear;
 
-AstQuotation.of_str_item ~name:"extend.create"
-    ~entry:nonterminals;
+AstQuotation.of_str_item ~name:"extend.create" ~entry:nonterminals;
 
-Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented"); (* FIXME *)
+Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented");
 
 
 

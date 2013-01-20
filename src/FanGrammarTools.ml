@@ -13,10 +13,15 @@ let prefix = "__fan_"  ;
   
 let meta_action = ref false;
   
+let ghost = FanLoc.ghost ;  
 let grammar_module_name =
-  let _loc = FanLoc.ghost in ref {:ident| $(uid:"")|} ;
+  ref (`Uid (ghost,"Gram")) ;
   
-let gm () = !grammar_module_name;
+let gm () =
+  match !FanConfig.compilation_unit with
+  [Some "Gram" -> `Uid(ghost,"")
+  |Some _ | None -> 
+      !grammar_module_name];
 
 let mk_entry ~name ~pos ~levels =
   {name;pos;levels};

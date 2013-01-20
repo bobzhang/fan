@@ -3,7 +3,7 @@ open LibUtil;
 open FanUtil;
 open Lib.Meta;
 open Format;
-(* open StdLib; *)
+
 
 (* FIXME order is in-correct  *)
 {:fans|keep on; (* derive (Print); *) |};
@@ -345,9 +345,6 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | ("vrn","patt",_) -> {|`PaVrn($(mloc _loc),$e)|}
           | ("lid",_,_) -> {|`Lid($(mloc _loc),$e)|}
           | ("uid",_,_) -> {|`Uid($(mloc _loc),$e)|}
-                
-          (* | ("id","ctyp",_) -> {|`Id($(mloc _loc),$e)|} *)
-                
           | ("str",_,_) ->  {|`Str($(mloc _loc),$e)|}
           | ("chr",_,_) -> {|`Chr ($(mloc _loc), $e)|} 
           | ("int",_,_) -> {|`Int($(mloc _loc),$e)|}

@@ -19,7 +19,7 @@ let _ =
                      (_loc, (`Id (_loc, (`Lid (_loc, "loc")))),
                        (`Id
                           (_loc,
-                            (`IdAcc
+                            (`Dot
                                (_loc, (`Uid (_loc, "FanLoc")),
                                  (`Lid (_loc, "ghost")))))))),
                   (MetaAst.Expr.meta_str_item _loc ast))))))
@@ -38,7 +38,7 @@ let add_debug_expr (e : expr) =
                          (_loc,
                            (`Id
                               (_loc,
-                                (`IdAcc
+                                (`Dot
                                    (_loc, (`Uid (_loc, "XStream")),
                                      (`Uid (_loc, "Failure")))))),
                            (`Id (_loc, (`Uid (_loc, "Exit")))))),
@@ -58,7 +58,7 @@ let add_debug_expr (e : expr) =
                                    (_loc,
                                      (`Id
                                         (_loc,
-                                          (`IdAcc
+                                          (`Dot
                                              (_loc, (`Uid (_loc, "Debug")),
                                                (`Lid (_loc, "mode")))))),
                                      (`Str (_loc, "exc")))),
@@ -68,7 +68,7 @@ let add_debug_expr (e : expr) =
                                         (_loc,
                                           (`Id
                                              (_loc,
-                                               (`IdAcc
+                                               (`Dot
                                                   (_loc,
                                                     (`Uid (_loc, "Format")),
                                                     (`Lid (_loc, "eprintf")))))),
@@ -80,7 +80,7 @@ let add_debug_expr (e : expr) =
                                         (_loc,
                                           (`Id
                                              (_loc,
-                                               (`IdAcc
+                                               (`Dot
                                                   (_loc,
                                                     (`Uid (_loc, "Printexc")),
                                                     (`Lid (_loc, "to_string")))))),
@@ -149,7 +149,7 @@ let decorate_this_expr e id =
               (_loc,
                 (`Id
                    (_loc,
-                     (`IdAcc
+                     (`Dot
                         (_loc, (`Uid (_loc, "Camlp4prof")),
                           (`Lid (_loc, "count")))))),
                 (`Str (_loc, (FanAst.safe_string_escaped s))))))), e)
@@ -183,7 +183,7 @@ let map_expr =
         (_loc,
           (`Id
              (_loc,
-               (`IdAcc
+               (`Dot
                   (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
           (`Tup
              (_loc,

@@ -45,8 +45,8 @@
 
 (setq v
       (hash-table/from-list
-       "PaTyc" "Constraint"
-       "PaTyp" "ClassPath"
+       "IdAcc" "Dot"
+       "ExAcc" "Dot"
        )
       )
 

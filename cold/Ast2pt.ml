@@ -25,9 +25,9 @@ let mkrf: rec_flag -> Asttypes.rec_flag =
 let ident_tag (i : ident) =
   let rec self i acc =
     match i with
-    | `IdAcc (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) ->
+    | `Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) ->
         Some ((ldot (lident "*predef*") "option"), `lident)
-    | `IdAcc (_loc,i1,i2) -> self i2 (self i1 acc)
+    | `Dot (_loc,i1,i2) -> self i2 (self i1 acc)
     | `IdApp (_loc,i1,i2) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
@@ -86,7 +86,7 @@ let ctyp_long_id (t : ctyp) =
                                                                 Longident.t
                                                                 Location.loc) )
 let predef_option loc =
-  `Id (loc, (`IdAcc (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
+  `Id (loc, (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
 let rec ctyp (x : ctyp) =
   match x with
   | `Id (_loc,i) ->
@@ -421,7 +421,7 @@ let override_flag loc =
   | _ -> error loc "antiquotation not allowed here"
 let rec expr (x : expr) =
   match x with
-  | `ExAcc (_loc,_,_)|`Id (_loc,`IdAcc _) ->
+  | `Dot (_loc,_,_)|`Id (_loc,`Dot _) ->
       let (e,l) =
         match Expr.sep_dot_expr [] x with
         | (loc,ml,`Id (sloc,`Uid (_,s)))::l ->
@@ -467,11 +467,11 @@ let rec expr (x : expr) =
   | `Assign (loc,e,v) ->
       let e =
         match e with
-        | `ExAcc (loc,x,`Id (_,`Lid (_,"contents"))) ->
+        | `Dot (loc,x,`Id (_,`Lid (_,"contents"))) ->
             Pexp_apply
               ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
                 [("", (expr x)); ("", (expr v))])
-        | `ExAcc (loc,_,_) ->
+        | `Dot (loc,_,_) ->
             (match (expr e).pexp_desc with
              | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (expr v))
              | _ -> error loc "bad record access")

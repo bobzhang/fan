@@ -17,7 +17,7 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
     | Some m ->
         `Last
           ((fun s  ->
-              `IdAcc
+              `Dot
                 (_loc, (`Uid (_loc, m)),
                   (`Lid (_loc, (basic_transform id s)))))) in
   let trail (_,number) =

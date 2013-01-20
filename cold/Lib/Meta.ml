@@ -15,7 +15,7 @@ module MetaLoc : FanAst.META_LOC =
         (_loc,
           (`Id
              (_loc,
-               (`IdAcc
+               (`Dot
                   (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
           (`Tup
              (_loc,
@@ -54,5 +54,5 @@ module MetaGhostLoc : FanAst.META_LOC =
     let meta_loc_expr _loc _ =
       `Id
         (_loc,
-          (`IdAcc (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "ghost")))))
+          (`Dot (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "ghost")))))
   end 

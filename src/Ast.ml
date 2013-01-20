@@ -113,7 +113,7 @@
     | ant ];
 
    type ident =
-    [= `IdAcc of (loc * ident * ident) (* i . i *)
+    [= `Dot of (loc * ident * ident) (* i . i *)
     | `IdApp of (loc * ident * ident) (* i i *)
     | alident
     | auident];
@@ -202,7 +202,7 @@
   and expr =
      [= `Nil of loc
      | `Id  of (loc * ident) (* i *)
-     | `ExAcc of (loc * expr * expr) (* e.e *)
+     | `Dot of (loc * expr * expr) (* e.e *)
      | ant (* $s$ *)
      | `ExApp of (loc * expr * expr) (* e e *)
      | `ArrayDot of (loc * expr * expr) (* e.(e) *)

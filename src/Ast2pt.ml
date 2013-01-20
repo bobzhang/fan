@@ -123,7 +123,7 @@ let ctyp_long_id (t:ctyp) : (bool *  Location.loc Longident.t) =
   | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) ] ;
 
 let predef_option loc =
-  `Id (loc, `IdAcc (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
+  `Id (loc, `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
 
 let rec ctyp (x:ctyp) = match x with 
   [`Id(_loc,i)-> let li = long_type_ident i in
@@ -473,7 +473,7 @@ let override_flag loc = with override_flag fun
 
 (*
   {[
-  expr (`Id (_loc, ( (`IdAcc (_loc, `Uid (_loc, "U"), `Lid(_loc,"g"))) )));;
+  expr (`Id (_loc, ( (`Dot (_loc, `Uid (_loc, "U"), `Lid(_loc,"g"))) )));;
   - : Parsetree.expression =
   {Parsetree.pexp_desc =
   Parsetree.Pexp_ident
@@ -495,8 +495,8 @@ let override_flag loc = with override_flag fun
   ]}
  *)
 let rec expr (x : expr) = with expr match x with 
-  [ `ExAcc(_loc,_,_)|
-    `Id(_loc,`IdAcc _ ) ->
+  [ `Dot(_loc,_,_)|
+    `Id(_loc,`Dot _ ) ->
       let (e, l) =
         match Expr.sep_dot_expr [] x with
         [ [(loc, ml, `Id(sloc,`Uid(_,s))) :: l] ->
@@ -549,7 +549,7 @@ let rec expr (x : expr) = with expr match x with
         [ {@loc| $x.contents |} -> (* FIXME *)
           Pexp_apply (mkexp loc (Pexp_ident (lident_with_loc ":=" loc)))
             [("", expr x); ("", expr v)]
-        | `ExAcc (loc,_,_) ->
+        | `Dot (loc,_,_) ->
             match (expr e).pexp_desc with
             [ Pexp_field (e, lab) -> Pexp_setfield e lab (expr v)
             | _ -> error loc "bad record access" ]

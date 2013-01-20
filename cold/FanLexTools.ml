@@ -211,7 +211,7 @@ let partition ~counter  ~tables  (i,p) =
                     (_loc,
                       (`Id
                          (_loc,
-                           (`IdAcc
+                           (`Dot
                               (_loc, (`Uid (_loc, "Char")),
                                 (`Lid (_loc, "code")))))),
                       (`StringDot
@@ -265,7 +265,7 @@ let binding_partition ~counter  ~tables  (i,p) =
                     (_loc,
                       (`Id
                          (_loc,
-                           (`IdAcc
+                           (`Dot
                               (_loc, (`Uid (_loc, "Char")),
                                 (`Lid (_loc, "code")))))),
                       (`StringDot
@@ -319,8 +319,7 @@ let gen_definition _loc l =
                (`ExApp
                   (_loc,
                     (`Id
-                       (_loc,
-                         (`IdAcc (_loc, (gm ()), (`Lid (_loc, "next")))))),
+                       (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "next")))))),
                     (`Id (_loc, (`Lid (_loc, "lexbuf")))))))),
           (`Or
              (_loc, (FanAst.or_of_list cases),
@@ -330,7 +329,7 @@ let gen_definition _loc l =
                        (_loc,
                          (`Id
                             (_loc,
-                              (`IdAcc
+                              (`Dot
                                  (_loc, (gm ()), (`Lid (_loc, "backtrack")))))),
                          (`Id (_loc, (`Lid (_loc, "lexbuf"))))))))))) in
     let ret body =
@@ -358,7 +357,7 @@ let gen_definition _loc l =
                               (_loc,
                                 (`Id
                                    (_loc,
-                                     (`IdAcc
+                                     (`Dot
                                         (_loc, (gm ()),
                                           (`Lid (_loc, "mark")))))),
                                 (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
@@ -405,7 +404,7 @@ let gen_definition _loc l =
                                        (_loc,
                                          (`Id
                                             (_loc,
-                                              (`IdAcc
+                                              (`Dot
                                                  (_loc, (gm ()),
                                                    (`Lid (_loc, "start")))))),
                                          (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
@@ -437,7 +436,7 @@ let gen_definition _loc l =
                                                                   "raise")))),
                                                         (`Id
                                                            (_loc,
-                                                             (`IdAcc
+                                                             (`Dot
                                                                 (_loc,
                                                                   (gm ()),
                                                                   (`Uid

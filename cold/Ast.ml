@@ -21,7 +21,7 @@ type auident = [ `Uid of (loc* string) | ant]
 type aident = [ alident | auident] 
 type astring = [ `C of (loc* string) | ant] 
 type ident =
-  [ `IdAcc of (loc* ident* ident) | `IdApp of (loc* ident* ident) | alident
+  [ `Dot of (loc* ident* ident) | `IdApp of (loc* ident* ident) | alident
   | auident] 
 type ctyp =
   [ `Nil of loc | `Alias of (loc* ctyp* ctyp) | `Any of loc
@@ -55,8 +55,7 @@ and patt =
   | `PaVrn of (loc* string) | `Lazy of (loc* patt)
   | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and expr =
-  [ `Nil of loc | `Id of (loc* ident) | `ExAcc of (loc* expr* expr) | 
-    ant
+  [ `Nil of loc | `Id of (loc* ident) | `Dot of (loc* expr* expr) | ant
   | `ExApp of (loc* expr* expr) | `ArrayDot of (loc* expr* expr)
   | `Array of (loc* expr) | `Sem of (loc* expr* expr) | `ExAsf of loc
   | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)

@@ -98,16 +98,16 @@ let ident_of_expr =
 
   ident_of_ctyp {:ctyp| A.B |} ; ;     
   - : ident =
-  `IdAcc (, `Uid (, "A"),
+  `Dot (, `Uid (, "A"),
   `Uid (, "B"))
 
   {:ctyp| A.B |} ; ;
   - : ctyp =
-  `Id (, `IdAcc (, `Uid (, "A"), `Uid (, "B")))
+  `Id (, `Dot (, `Uid (, "A"), `Uid (, "B")))
 
   ident_of_ctyp {:ctyp| (A B).t |} ; ;
   - : ident =
-  `IdAcc (, `IdApp (, `Uid (, "A"), `Uid (, "B")), `Lid (, "t"))  ]}
+  `Dot (, `IdApp (, `Uid (, "A"), `Uid (, "B")), `Lid (, "t"))  ]}
  *)
 let ident_of_ctyp =
   let error () =
@@ -265,7 +265,7 @@ let rec idAcc_of_list = fun
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of i in
-        `IdAcc(_loc,i,idAcc_of_list is)];
+        `Dot(_loc,i,idAcc_of_list is)];
 
 
 let rec idApp_of_list =  fun

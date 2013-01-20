@@ -158,7 +158,7 @@ class eq =
     method ident : ident -> ident -> 'result=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`IdAcc (_a0,_a1,_a2),`IdAcc (_b0,_b1,_b2)) ->
+        | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ident _a1 _b1)) &&
               (self#ident _a2 _b2)
         | (`IdApp (_a0,_a1,_a2),`IdApp (_b0,_b1,_b2)) ->
@@ -333,7 +333,7 @@ class eq =
         | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
         | (`Id (_a0,_a1),`Id (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
-        | (`ExAcc (_a0,_a1,_a2),`ExAcc (_b0,_b1,_b2)) ->
+        | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
               (self#expr _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result)
@@ -879,10 +879,10 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>astring)
     method ident : ident -> ident=
       function
-      | `IdAcc (_a0,_a1,_a2) ->
+      | `Dot (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in
-          let _a2 = self#ident _a2 in `IdAcc (_a0, _a1, _a2)
+          let _a2 = self#ident _a2 in `Dot (_a0, _a1, _a2)
       | `IdApp (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in
@@ -1102,10 +1102,10 @@ class map =
       | `Id (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in `Id (_a0, _a1)
-      | `ExAcc (_a0,_a1,_a2) ->
+      | `Dot (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `ExAcc (_a0, _a1, _a2)
+          let _a2 = self#expr _a2 in `Dot (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>expr)
       | `ExApp (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -1763,8 +1763,8 @@ class print =
     method ident : 'fmt -> ident -> 'result=
       fun fmt  ->
         function
-        | `IdAcc (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`IdAcc@ %a@ %a@ %a)@]" self#loc _a0
+        | `Dot (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" self#loc _a0
               self#ident _a1 self#ident _a2
         | `IdApp (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`IdApp@ %a@ %a@ %a)@]" self#loc _a0
@@ -1952,8 +1952,8 @@ class print =
         | `Id (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" self#loc _a0 self#ident
               _a1
-        | `ExAcc (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`ExAcc@ %a@ %a@ %a)@]" self#loc _a0
+        | `Dot (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" self#loc _a0
               self#expr _a1 self#expr _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result)
         | `ExApp (_a0,_a1,_a2) ->
@@ -2474,7 +2474,7 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method ident : ident -> 'self_type=
       function
-      | `IdAcc (_a0,_a1,_a2) ->
+      | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ident _a1 in self#ident _a2
       | `IdApp (_a0,_a1,_a2) ->
@@ -2621,7 +2621,7 @@ class fold =
       function
       | `Nil _a0 -> self#loc _a0
       | `Id (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
-      | `ExAcc (_a0,_a1,_a2) ->
+      | `Dot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#expr _a1 in self#expr _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
@@ -3082,9 +3082,9 @@ let strip_loc_astring: astring -> 'result =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result)
 let rec strip_loc_ident: ident -> 'result =
   function
-  | `IdAcc (_a0,_a1,_a2) ->
+  | `Dot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_ident _a2 in `IdAcc (_a1, _a2)
+      let _a2 = strip_loc_ident _a2 in `Dot (_a1, _a2)
   | `IdApp (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
       let _a2 = strip_loc_ident _a2 in `IdApp (_a1, _a2)
@@ -3231,9 +3231,9 @@ and strip_loc_expr: expr -> 'result =
   function
   | `Nil _a0 -> `Nil
   | `Id (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Id _a1
-  | `ExAcc (_a0,_a1,_a2) ->
+  | `Dot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `ExAcc (_a1, _a2)
+      let _a2 = strip_loc_expr _a2 in `Dot (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result)
   | `ExApp (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
@@ -3641,6 +3641,7 @@ let loc_of =
   | `LCons (_loc,_) -> _loc
   | `While (_loc,_,_) -> _loc
   | `CrMth (_loc,_,_,_,_,_) -> _loc
+  | `Dot (_loc,_,_) -> _loc
   | `Struct (_loc,_) -> _loc
   | `CeCon (_loc,_,_,_) -> _loc
   | `TyMan (_loc,_,_) -> _loc
@@ -3674,7 +3675,6 @@ let loc_of =
   | `CeFun (_loc,_,_) -> _loc
   | `ClassPath (_loc,_) -> _loc
   | `False _loc -> _loc
-  | `IdAcc (_loc,_,_) -> _loc
   | `Nil _loc -> _loc
   | `Com (_loc,_,_) -> _loc
   | `Int64 (_loc,_) -> _loc
@@ -3730,7 +3730,6 @@ let loc_of =
   | `MeApp (_loc,_,_) -> _loc
   | `Int (_loc,_) -> _loc
   | `Negative _loc -> _loc
-  | `ExAcc (_loc,_,_) -> _loc
   | `Fun (_loc,_) -> _loc
   | `CeApp (_loc,_,_) -> _loc
   | `Eq (_loc,_,_) -> _loc
@@ -3905,7 +3904,7 @@ class fold2 =
     method ident : ident -> ident -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`IdAcc (_a0,_a1,_a2),`IdAcc (_b0,_b1,_b2)) ->
+        | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ident _a1 _b1 in self#ident _a2 _b2
         | (`IdApp (_a0,_a1,_a2),`IdApp (_b0,_b1,_b2)) ->
@@ -4084,7 +4083,7 @@ class fold2 =
         | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
         | (`Id (_a0,_a1),`Id (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
-        | (`ExAcc (_a0,_a1,_a2),`ExAcc (_b0,_b1,_b2)) ->
+        | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#expr _a1 _b1 in self#expr _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
@@ -4657,8 +4656,8 @@ let pp_print_astring: 'fmt -> astring -> 'result =
 let rec pp_print_ident: 'fmt -> ident -> 'result =
   fun fmt  ->
     function
-    | `IdAcc (_a0,_a1,_a2) ->
-        Format.fprintf fmt "@[<1>(`IdAcc@ %a@ %a@ %a)@]" pp_print_loc _a0
+    | `Dot (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_ident _a1 pp_print_ident _a2
     | `IdApp (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`IdApp@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -4845,8 +4844,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | `Id (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" pp_print_loc _a0
           pp_print_ident _a1
-    | `ExAcc (_a0,_a1,_a2) ->
-        Format.fprintf fmt "@[<1>(`ExAcc@ %a@ %a@ %a)@]" pp_print_loc _a0
+    | `Dot (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_expr _a1 pp_print_expr _a2
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result)
     | `ExApp (_a0,_a1,_a2) ->
@@ -5362,8 +5361,7 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result)
     method ident : ident -> 'result=
       function
-      | `IdAcc (_a0,_a1,_a2) ->
-          (self#loc _a0; self#ident _a1; self#ident _a2)
+      | `Dot (_a0,_a1,_a2) -> (self#loc _a0; self#ident _a1; self#ident _a2)
       | `IdApp (_a0,_a1,_a2) ->
           (self#loc _a0; self#ident _a1; self#ident _a2)
       | #alident as _a0 -> (self#alident _a0 :>'result)
@@ -5459,7 +5457,7 @@ class iter =
       function
       | `Nil _a0 -> self#loc _a0
       | `Id (_a0,_a1) -> (self#loc _a0; self#ident _a1)
-      | `ExAcc (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
+      | `Dot (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result)
       | `ExApp (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
       | `ArrayDot (_a0,_a1,_a2) ->
@@ -5935,10 +5933,10 @@ class map2 =
     method ident : ident -> ident -> ident=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`IdAcc (_a0,_a1,_a2),`IdAcc (_b0,_b1,_b2)) ->
+        | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in
-            let _a2 = self#ident _a2 _b2 in `IdAcc (_a0, _a1, _a2)
+            let _a2 = self#ident _a2 _b2 in `Dot (_a0, _a1, _a2)
         | (`IdApp (_a0,_a1,_a2),`IdApp (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in
@@ -6169,10 +6167,10 @@ class map2 =
         | (`Id (_a0,_a1),`Id (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in `Id (_a0, _a1)
-        | (`ExAcc (_a0,_a1,_a2),`ExAcc (_b0,_b1,_b2)) ->
+        | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `ExAcc (_a0, _a1, _a2)
+            let _a2 = self#expr _a2 _b2 in `Dot (_a0, _a1, _a2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>expr)
         | (`ExApp (_a0,_a1,_a2),`ExApp (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -7026,13 +7024,13 @@ module Make(MetaLoc:META_LOC) =
         let rec meta_ident: 'loc -> ident -> 'result =
           fun _loc  ->
             function
-            | `IdAcc (_a0,_a1,_a2) ->
+            | `Dot (_a0,_a1,_a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "IdAcc")),
+                            (_loc, (`ExVrn (_loc, "Dot")),
                               (meta_loc _loc _a0))), (meta_ident _loc _a1))),
                     (meta_ident _loc _a2))
             | `IdApp (_a0,_a1,_a2) ->
@@ -7494,13 +7492,13 @@ module Make(MetaLoc:META_LOC) =
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "Id")), (meta_loc _loc _a0))),
                     (meta_ident _loc _a1))
-            | `ExAcc (_a0,_a1,_a2) ->
+            | `Dot (_a0,_a1,_a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "ExAcc")),
+                            (_loc, (`ExVrn (_loc, "Dot")),
                               (meta_loc _loc _a0))), (meta_expr _loc _a1))),
                     (meta_expr _loc _a2))
             | #ant as _a0 -> (meta_ant _loc _a0 :>'result)
@@ -8815,13 +8813,13 @@ module Make(MetaLoc:META_LOC) =
         let rec meta_ident: 'loc -> ident -> 'result =
           fun _loc  ->
             function
-            | `IdAcc (_a0,_a1,_a2) ->
+            | `Dot (_a0,_a1,_a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "IdAcc")),
+                            (_loc, (`PaVrn (_loc, "Dot")),
                               (meta_loc _loc _a0))), (meta_ident _loc _a1))),
                     (meta_ident _loc _a2))
             | `IdApp (_a0,_a1,_a2) ->
@@ -9283,13 +9281,13 @@ module Make(MetaLoc:META_LOC) =
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "Id")), (meta_loc _loc _a0))),
                     (meta_ident _loc _a1))
-            | `ExAcc (_a0,_a1,_a2) ->
+            | `Dot (_a0,_a1,_a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "ExAcc")),
+                            (_loc, (`PaVrn (_loc, "Dot")),
                               (meta_loc _loc _a0))), (meta_expr _loc _a1))),
                     (meta_expr _loc _a2))
             | #ant as _a0 -> (meta_ant _loc _a0 :>'result)
@@ -10413,7 +10411,7 @@ module Make(MetaLoc:META_LOC) =
   end
 let rec is_module_longident =
   function
-  | `IdAcc (_loc,_,i) -> is_module_longident i
+  | `Dot (_loc,_,i) -> is_module_longident i
   | `IdApp (_loc,i1,i2) ->
       (is_module_longident i1) && (is_module_longident i2)
   | `Uid (_loc,_) -> true
@@ -10424,7 +10422,7 @@ let ident_of_expr =
   let rec self =
     function
     | `ExApp (_loc,e1,e2) -> `IdApp (_loc, (self e1), (self e2))
-    | `ExAcc (_loc,e1,e2) -> `IdAcc (_loc, (self e1), (self e2))
+    | `Dot (_loc,e1,e2) -> `Dot (_loc, (self e1), (self e2))
     | `Id (_loc,`Lid (_,_)) -> error ()
     | `Id (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
@@ -10474,7 +10472,7 @@ let rec is_irrefut_patt: patt -> bool =
     |`Chr (_loc,_)|`ClassPath (_loc,_)|`Array (_loc,_)|`Ant (_loc,_) -> false
 let rec is_constructor =
   function
-  | `IdAcc (_loc,_,i) -> is_constructor i
+  | `Dot (_loc,_,i) -> is_constructor i
   | `Uid (_loc,_) -> true
   | `Lid (_loc,_)|`IdApp (_loc,_,_) -> false
   | `Ant (_loc,_) -> assert false
@@ -10486,8 +10484,7 @@ let is_patt_constructor =
 let rec is_expr_constructor =
   function
   | `Id (_loc,i) -> is_constructor i
-  | `ExAcc (_loc,e1,e2) ->
-      (is_expr_constructor e1) && (is_expr_constructor e2)
+  | `Dot (_loc,e1,e2) -> (is_expr_constructor e1) && (is_expr_constructor e2)
   | `ExVrn (_loc,_) -> true
   | _ -> false
 let ghost = FanLoc.ghost
@@ -10549,7 +10546,7 @@ let rec idAcc_of_list =
   function
   | [] -> assert false
   | i::[] -> i
-  | i::is -> let _loc = loc_of i in `IdAcc (_loc, i, (idAcc_of_list is))
+  | i::is -> let _loc = loc_of i in `Dot (_loc, i, (idAcc_of_list is))
 let rec idApp_of_list =
   function
   | [] -> assert false
@@ -10650,7 +10647,7 @@ let rec list_of_module_expr x acc =
   | x -> x :: acc
 let rec list_of_ident x acc =
   match x with
-  | `IdAcc (_loc,x,y)|`IdApp (_loc,x,y) ->
+  | `Dot (_loc,x,y)|`IdApp (_loc,x,y) ->
       list_of_ident x (list_of_ident y acc)
   | x -> x :: acc
 let map_expr f =

@@ -20,14 +20,13 @@ let mk_debug_mode _loc =
   function
   | None  ->
       `Id
-        (_loc,
-          (`IdAcc (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))
+        (_loc, (`Dot (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))
   | Some m ->
       `Id
         (_loc,
-          (`IdAcc
+          (`Dot
              (_loc, (`Uid (_loc, m)),
-               (`IdAcc (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))))
+               (`Dot (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))))
 let mk_debug _loc m fmt section args =
   let call =
     Expr.apply
@@ -37,7 +36,7 @@ let mk_debug _loc m fmt section args =
               (_loc,
                 (`Id
                    (_loc,
-                     (`IdAcc
+                     (`Dot
                         (_loc, (`Uid (_loc, "Debug")),
                           (`Lid (_loc, "printf")))))),
                 (`Str (_loc, section)))), (`Str (_loc, fmt)))) args in

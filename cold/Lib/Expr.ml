@@ -4,12 +4,12 @@ open Basic
 open FanUtil
 let rec sep_dot_expr acc =
   function
-  | `ExAcc (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1
+  | `Dot (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1
   | `Id (loc,`Uid (_,s)) as e ->
       (match acc with
        | [] -> [(loc, [], e)]
        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
-  | `Id (_loc,(`IdAcc (_l,_,_) as i)) ->
+  | `Id (_loc,(`Dot (_l,_,_) as i)) ->
       sep_dot_expr acc (Ident.normalize_acc i)
   | e -> ((FanAst.loc_of e), [], e) :: acc
 let mksequence ?loc  =
@@ -41,9 +41,9 @@ let bigarray_get loc arr arg =
              (loc,
                (`Id
                   (loc,
-                    (`IdAcc
+                    (`Dot
                        (loc, (`Uid (loc, "Bigarray")),
-                         (`IdAcc
+                         (`Dot
                             (loc, (`Uid (loc, "Array1")),
                               (`Lid (loc, "get")))))))), arr)), c1)
   | c1::c2::[] ->
@@ -55,9 +55,9 @@ let bigarray_get loc arr arg =
                   (loc,
                     (`Id
                        (loc,
-                         (`IdAcc
+                         (`Dot
                             (loc, (`Uid (loc, "Bigarray")),
-                              (`IdAcc
+                              (`Dot
                                  (loc, (`Uid (loc, "Array2")),
                                    (`Lid (loc, "get")))))))), arr)), c1)),
           c2)
@@ -72,9 +72,9 @@ let bigarray_get loc arr arg =
                        (loc,
                          (`Id
                             (loc,
-                              (`IdAcc
+                              (`Dot
                                  (loc, (`Uid (loc, "Bigarray")),
-                                   (`IdAcc
+                                   (`Dot
                                       (loc, (`Uid (loc, "Array3")),
                                         (`Lid (loc, "get")))))))), arr)), c1)),
                c2)), c3)
@@ -85,9 +85,9 @@ let bigarray_get loc arr arg =
              (loc,
                (`Id
                   (loc,
-                    (`IdAcc
+                    (`Dot
                        (loc, (`Uid (loc, "Bigarray")),
-                         (`IdAcc
+                         (`Dot
                             (loc, (`Uid (loc, "Genarray")),
                               (`Lid (loc, "get")))))))), arr)),
           (`Array
@@ -102,8 +102,8 @@ let bigarray_set loc var newval =
   | `ExApp
       (_loc,`ExApp
               (_,`Id
-                   (_,`IdAcc
-                        (_,`Uid (_,"Bigarray"),`IdAcc
+                   (_,`Dot
+                        (_,`Uid (_,"Bigarray"),`Dot
                                                  (_,`Uid (_,"Array1"),
                                                   `Lid (_,"get")))),arr),c1)
       ->
@@ -116,9 +116,9 @@ let bigarray_set loc var newval =
                      (loc,
                        (`Id
                           (loc,
-                            (`IdAcc
+                            (`Dot
                                (loc, (`Uid (loc, "Bigarray")),
-                                 (`IdAcc
+                                 (`Dot
                                     (loc, (`Uid (loc, "Array1")),
                                       (`Lid (loc, "set")))))))), arr)), c1)),
              newval))
@@ -126,8 +126,8 @@ let bigarray_set loc var newval =
       (_loc,`ExApp
               (_,`ExApp
                    (_,`Id
-                        (_,`IdAcc
-                             (_,`Uid (_,"Bigarray"),`IdAcc
+                        (_,`Dot
+                             (_,`Uid (_,"Bigarray"),`Dot
                                                       (_,`Uid (_,"Array2"),
                                                        `Lid (_,"get")))),arr),c1),c2)
       ->
@@ -142,9 +142,9 @@ let bigarray_set loc var newval =
                           (loc,
                             (`Id
                                (loc,
-                                 (`IdAcc
+                                 (`Dot
                                     (loc, (`Uid (loc, "Bigarray")),
-                                      (`IdAcc
+                                      (`Dot
                                          (loc, (`Uid (loc, "Array2")),
                                            (`Lid (loc, "set")))))))), arr)),
                        c1)), c2)), newval))
@@ -153,8 +153,8 @@ let bigarray_set loc var newval =
               (_,`ExApp
                    (_,`ExApp
                         (_,`Id
-                             (_,`IdAcc
-                                  (_,`Uid (_,"Bigarray"),`IdAcc
+                             (_,`Dot
+                                  (_,`Uid (_,"Bigarray"),`Dot
                                                            (_,`Uid
                                                                 (_,"Array3"),
                                                             `Lid (_,"get")))),arr),c1),c2),c3)
@@ -162,7 +162,7 @@ let bigarray_set loc var newval =
       Some
         (`Assign
            (loc,
-             (`ExAcc
+             (`Dot
                 (loc,
                   (`ExApp
                      (loc,
@@ -174,9 +174,9 @@ let bigarray_set loc var newval =
                                     (loc,
                                       (`Id
                                          (loc,
-                                           (`IdAcc
+                                           (`Dot
                                               (loc, (`Uid (loc, "Bigarray")),
-                                                (`IdAcc
+                                                (`Dot
                                                    (loc,
                                                      (`Uid (loc, "Array3")),
                                                      (`Lid (loc, "get")))))))),
@@ -185,8 +185,8 @@ let bigarray_set loc var newval =
   | `ExApp
       (_loc,`ExApp
               (_,`Id
-                   (_,`IdAcc
-                        (_,`Uid (_,"Bigarray"),`IdAcc
+                   (_,`Dot
+                        (_,`Uid (_,"Bigarray"),`Dot
                                                  (_,`Uid (_,"Genarray"),
                                                   `Lid (_,"get")))),arr),
        `Array (_,coords))
@@ -200,9 +200,9 @@ let bigarray_set loc var newval =
                      (loc,
                        (`Id
                           (loc,
-                            (`IdAcc
+                            (`Dot
                                (loc, (`Uid (loc, "Bigarray")),
-                                 (`IdAcc
+                                 (`Dot
                                     (loc, (`Uid (loc, "Genarray")),
                                       (`Lid (loc, "set")))))))), arr)),
                   (`Array (loc, coords)))), newval))
@@ -226,8 +226,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                 (loc,
                   (`Id
                      (loc,
-                       (`IdAcc
-                          (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
+                       (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
                   (`Fun (loc, (`Case (loc, p, (`Nil loc), e)))))), l)
        else
          `ExApp
@@ -238,7 +237,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                      (loc,
                        (`Id
                           (loc,
-                            (`IdAcc
+                            (`Dot
                                (loc, (`Uid (loc, "List")),
                                  (`Lid (loc, "fold_right")))))),
                        (`Fun
@@ -310,7 +309,7 @@ let filter loc p b l =
            (loc,
              (`Id
                 (loc,
-                  (`IdAcc (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
+                  (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
              (`Fun (loc, (`Case (loc, p, (`Nil loc), b)))))), l)
   else
     `ExApp
@@ -319,7 +318,7 @@ let filter loc p b l =
            (loc,
              (`Id
                 (loc,
-                  (`IdAcc (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
+                  (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
              (`Fun
                 (loc,
                   (`Or
@@ -333,7 +332,7 @@ let concat _loc l =
     (_loc,
       (`Id
          (_loc,
-           (`IdAcc (_loc, (`Uid (_loc, "List")), (`Lid (_loc, "concat")))))),
+           (`Dot (_loc, (`Uid (_loc, "List")), (`Lid (_loc, "concat")))))),
       l)
 let rec compr _loc e =
   function
@@ -385,7 +384,7 @@ class subst loc env =
                (_loc,
                  (`Id
                     (_loc,
-                      (`IdAcc
+                      (`Dot
                          (_loc, (`Uid (_loc, "FanLoc")),
                            (`Lid (_loc, "of_tuple")))))),
                  (`Tup
