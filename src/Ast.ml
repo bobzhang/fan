@@ -193,8 +193,8 @@
      | `PaRec of (loc * patt) (* { p } *)
      | `PaEq  of (loc * ident * patt) (* i = p *)
      | `Tup of (loc * patt )
-     | `PaTyc of (loc * patt * ctyp) (* (p : t) *)
-     | `PaTyp of (loc * ident) (* #i *)
+     | (* `PaTyc *) `Constraint of (loc * patt * ctyp) (* (p : t) *)
+     | (* `PaTyp *) `ClassPath of (loc * ident) (* #i *)
      | `PaVrn of (loc * string) (* `s *)
      | `Lazy of (loc * patt) (* lazy p *)
            (* (module M : ty ) *)      
@@ -266,21 +266,20 @@
      | `Package_expr of (loc * module_expr) ]
   and module_type =
     [= `Nil of loc
-      (* i *) (* A.B.C *)
+        (* i *) (* A.B.C *)
      | `Id  of (loc * ident)
        (* functor (s : mt) -> mt *)
      | `MtFun of (loc * auident * module_type * module_type)
-
-           (* sig sg end *)
+      (* sig sg end *)
      | `Sig of (loc * sig_item)
-           (* mt with wc *)
-     | (* `With *)`With of (loc * module_type * with_constr)
+      (* mt with wc *)
+     | `With of (loc * module_type * with_constr)
       (* module type of m *)
      | `ModuleTypeOf of (loc * module_expr)
      | ant (* $s$ *) ]
   and sig_item =
     [= `Nil of loc
-        (* class cict *)
+      (* class cict *)
      | `Class of (loc * class_type)
       (* class type cict *)
      | `ClassType of (loc * class_type)
@@ -290,36 +289,30 @@
      | `Directive of (loc * alident * expr) (* semantics *)
       (* exception t *)
      | `Exception of (loc * ctyp)
-           (* external s : t = s ... s *)
+     (* external s : t = s ... s *)
      | `External of (loc * alident  * ctyp * meta_list string)
       (* include mt *)
      | `Include of (loc * module_type)
-
-           (* module s : mt *)
+     (* module s : mt *)
      | `Module of (loc * (* string *)auident * module_type)
-          
       (* module rec mb *)
      | `RecModule of (loc * module_binding)
-
       (* module type s = mt *)
      | `ModuleType of (loc * (* string *)auident * module_type)
-          
       (* open i *)
      | `Open of (loc * ident)
       (* type t *)
      | `Type of (loc * ctyp)
-
       (* va s : t *)
      |  `Val of (loc * alident * ctyp)
-          
      | ant (* $s$ *) ]
   and with_constr =
     [= `Nil of loc
-      (* type t = t *)
+     (* type t = t *)
      | `TypeEq of (loc * ctyp * ctyp)
-           (* module i = i *)
+     (* module i = i *)
      | `ModuleEq of (loc * ident * ident)
-           (* type t := t *)
+     (* type t := t *)
      | `TypeSubst of (loc * ctyp * ctyp)
       (* module i := i *)
      | `ModuleSubst of (loc * ident * ident)
@@ -344,14 +337,14 @@
     [= `Nil of loc
       (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
      | `And of (loc * module_binding * module_binding)
-           (* s : mt = me *)
+      (* s : mt = me *)
      | `ModuleBind  of (loc *  auident * module_type * module_expr)
       (* s : mt *)
      | (* `Constraint *)`Constraint  of (loc * auident * module_type)
      | ant (* $s$ *) ]
   and match_case =
     [= `Nil of loc
-        (* a | a *)
+      (* a | a *)
      | `Or of (loc * match_case * match_case)
       (* p (when e)? -> e *)
      | `Case of (loc * patt * expr * expr)

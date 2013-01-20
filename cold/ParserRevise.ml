@@ -2115,7 +2115,7 @@ let apply () =
            `Skeyword ")"],
             (Gram.mk_action
                (fun _  (t : 'ctyp)  _  (p : 'patt)  _  (_loc : FanLoc.t)  ->
-                  (`PaTyc (_loc, p, t) : 'opt_class_self_patt ))));
+                  (`Constraint (_loc, p, t) : 'opt_class_self_patt ))));
           ([],
             (Gram.mk_action
                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'opt_class_self_patt ))))])]);
@@ -2370,7 +2370,7 @@ let apply () =
           `Skeyword ")"],
            (Gram.mk_action
               (fun _  (t : 'ctyp)  _  (p : 'patt)  _  (_loc : FanLoc.t)  ->
-                 (`PaTyc (_loc, p, t) : 'patt ))));
+                 (`Constraint (_loc, p, t) : 'patt ))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword "as";
@@ -2396,7 +2396,7 @@ let apply () =
           `Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
            (Gram.mk_action
               (fun (i : 'type_longident)  _  (_loc : FanLoc.t)  ->
-                 (`PaTyp (_loc, i) : 'patt ))));
+                 (`ClassPath (_loc, i) : 'patt ))));
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
@@ -2590,7 +2590,7 @@ let apply () =
            `Skeyword ")"],
             (Gram.mk_action
                (fun _  (t : 'ctyp)  _  (p : 'ipatt)  _  (_loc : FanLoc.t)  ->
-                  (`PaTyc (_loc, p, t) : 'ipatt ))));
+                  (`Constraint (_loc, p, t) : 'ipatt ))));
           ([`Skeyword "(";
            `Sself;
            `Skeyword "as";
@@ -2800,7 +2800,7 @@ let apply () =
             `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
              (Gram.mk_action
                 (fun (t : 'ctyp)  _  (p : 'patt)  (_loc : FanLoc.t)  ->
-                   (`PaTyc (_loc, p, t) : 'patt_tcon ))));
+                   (`Constraint (_loc, p, t) : 'patt_tcon ))));
           ([`Snterm (Gram.obj (patt : 'patt Gram.t ))],
             (Gram.mk_action
                (fun (p : 'patt)  (_loc : FanLoc.t)  -> (p : 'patt_tcon ))))])]);
@@ -2825,7 +2825,8 @@ let apply () =
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (i : 'a_lident)  (_loc : FanLoc.t)  ->
-                  (`PaTyc (_loc, (`Id (_loc, (i :>ident))), t) : 'ipatt_tcon ))))])]);
+                  (`Constraint (_loc, (`Id (_loc, (i :>ident))), t) : 
+                  'ipatt_tcon ))))])]);
    Gram.extend (comma_ipatt : 'comma_ipatt Gram.t )
      (None,
        [(None, None,

@@ -281,9 +281,9 @@ class eq =
             ((self#loc a0 b0) && (self#ident a1 b1)) && (self#patt a2 b2)
         | (`Tup (a0,a1),`Tup (b0,b1)) ->
             (self#loc a0 b0) && (self#patt a1 b1)
-        | (`PaTyc (a0,a1,a2),`PaTyc (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#patt a1 b1)) && (self#ctyp a2 b2)
-        | (`PaTyp (a0,a1),`PaTyp (b0,b1)) ->
+        | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             (self#loc a0 b0) && (self#ident a1 b1)
         | (`PaVrn (a0,a1),`PaVrn (b0,b1)) ->
             (self#loc a0 b0) && (self#string a1 b1)
@@ -977,12 +977,13 @@ class map =
           let a2 = self#patt a2 in `PaEq (a0, a1, a2)
       | `Tup (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#patt a1 in `Tup (a0, a1)
-      | `PaTyc (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#patt a1 in
-          let a2 = self#ctyp a2 in `PaTyc (a0, a1, a2)
-      | `PaTyp (a0,a1) ->
-          let a0 = self#loc a0 in let a1 = self#ident a1 in `PaTyp (a0, a1)
+          let a2 = self#ctyp a2 in `Constraint (a0, a1, a2)
+      | `ClassPath (a0,a1) ->
+          let a0 = self#loc a0 in
+          let a1 = self#ident a1 in `ClassPath (a0, a1)
       | `PaVrn (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#string a1 in `PaVrn (a0, a1)
       | `Lazy (a0,a1) ->
@@ -1800,11 +1801,11 @@ class print =
         | `Tup (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc a0 self#patt
               a1
-        | `PaTyc (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`PaTyc@ %a@ %a@ %a)@]" self#loc a0
+        | `Constraint (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc a0
               self#patt a1 self#ctyp a2
-        | `PaTyp (a0,a1) ->
-            Format.fprintf fmt "@[<1>(`PaTyp@ %a@ %a)@]" self#loc a0
+        | `ClassPath (a0,a1) ->
+            Format.fprintf fmt "@[<1>(`ClassPath@ %a@ %a)@]" self#loc a0
               self#ident a1
         | `PaVrn (a0,a1) ->
             Format.fprintf fmt "@[<1>(`PaVrn@ %a@ %a)@]" self#loc a0
@@ -2452,9 +2453,9 @@ class fold =
       | `PaEq (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ident a1 in self#patt a2
       | `Tup (a0,a1) -> let self = self#loc a0 in self#patt a1
-      | `PaTyc (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#patt a1 in self#ctyp a2
-      | `PaTyp (a0,a1) -> let self = self#loc a0 in self#ident a1
+      | `ClassPath (a0,a1) -> let self = self#loc a0 in self#ident a1
       | `PaVrn (a0,a1) -> let self = self#loc a0 in self#string a1
       | `Lazy (a0,a1) -> let self = self#loc a0 in self#patt a1
       | `ModuleUnpack (a0,a1,a2) ->
@@ -2864,7 +2865,6 @@ let loc_of =
   | `Class (_loc,_) -> _loc
   | `TyApp (_loc,_,_) -> _loc
   | `LetIn (_loc,_,_,_) -> _loc
-  | `PaTyc (_loc,_,_) -> _loc
   | `Seq (_loc,_) -> _loc
   | `Quote (_loc,_,_) -> _loc
   | `TypeEq (_loc,_,_) -> _loc
@@ -2905,8 +2905,8 @@ let loc_of =
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
   | `Record (_loc,_,_) -> _loc
-  | `ExApp (_loc,_,_) -> _loc
   | `Constraint (_loc,_,_) -> _loc
+  | `ExApp (_loc,_,_) -> _loc
   | `Ant (_loc,_) -> _loc
   | `Some _loc -> _loc
   | `Package_expr (_loc,_) -> _loc
@@ -2942,7 +2942,6 @@ let loc_of =
   | `PaRng (_loc,_,_) -> _loc
   | `RecModule (_loc,_) -> _loc
   | `LocalTypeFun (_loc,_,_) -> _loc
-  | `PaTyp (_loc,_) -> _loc
   | `PrNil _loc -> _loc
   | `MeApp (_loc,_,_) -> _loc
   | `Int (_loc,_) -> _loc
@@ -3279,10 +3278,10 @@ class fold2 =
             let self = self#ident a1 b1 in self#patt a2 b2
         | (`Tup (a0,a1),`Tup (b0,b1)) ->
             let self = self#loc a0 b0 in self#patt a1 b1
-        | (`PaTyc (a0,a1,a2),`PaTyc (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#patt a1 b1 in self#ctyp a2 b2
-        | (`PaTyp (a0,a1),`PaTyp (b0,b1)) ->
+        | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             let self = self#loc a0 b0 in self#ident a1 b1
         | (`PaVrn (a0,a1),`PaVrn (b0,b1)) ->
             let self = self#loc a0 b0 in self#string a1 b1
@@ -4031,11 +4030,11 @@ and pp_print_patt: 'fmt -> patt -> 'result =
     | `Tup (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1
-    | `PaTyc (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`PaTyc@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Constraint (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_patt a1 pp_print_ctyp a2
-    | `PaTyp (a0,a1) ->
-        Format.fprintf fmt "@[<1>(`PaTyp@ %a@ %a)@]" pp_print_loc a0
+    | `ClassPath (a0,a1) ->
+        Format.fprintf fmt "@[<1>(`ClassPath@ %a@ %a)@]" pp_print_loc a0
           pp_print_ident a1
     | `PaVrn (a0,a1) ->
         Format.fprintf fmt "@[<1>(`PaVrn@ %a@ %a)@]" pp_print_loc a0
@@ -4641,8 +4640,8 @@ class iter =
       | `PaRec (a0,a1) -> (self#loc a0; self#patt a1)
       | `PaEq (a0,a1,a2) -> (self#loc a0; self#ident a1; self#patt a2)
       | `Tup (a0,a1) -> (self#loc a0; self#patt a1)
-      | `PaTyc (a0,a1,a2) -> (self#loc a0; self#patt a1; self#ctyp a2)
-      | `PaTyp (a0,a1) -> (self#loc a0; self#ident a1)
+      | `Constraint (a0,a1,a2) -> (self#loc a0; self#patt a1; self#ctyp a2)
+      | `ClassPath (a0,a1) -> (self#loc a0; self#ident a1)
       | `PaVrn (a0,a1) -> (self#loc a0; self#string a1)
       | `Lazy (a0,a1) -> (self#loc a0; self#patt a1)
       | `ModuleUnpack (a0,a1,a2) ->
@@ -5287,13 +5286,13 @@ class map2 =
         | (`Tup (a0,a1),`Tup (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in `Tup (a0, a1)
-        | (`PaTyc (a0,a1,a2),`PaTyc (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#patt a1 b1 in
-            let a2 = self#ctyp a2 b2 in `PaTyc (a0, a1, a2)
-        | (`PaTyp (a0,a1),`PaTyp (b0,b1)) ->
+            let a2 = self#ctyp a2 b2 in `Constraint (a0, a1, a2)
+        | (`ClassPath (a0,a1),`ClassPath (b0,b1)) ->
             let a0 = self#loc a0 b0 in
-            let a1 = self#ident a1 b1 in `PaTyp (a0, a1)
+            let a1 = self#ident a1 b1 in `ClassPath (a0, a1)
         | (`PaVrn (a0,a1),`PaVrn (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#string a1 b1 in `PaVrn (a0, a1)
@@ -6572,21 +6571,21 @@ module Make(MetaLoc:META_LOC) =
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "Tup")), (meta_loc _loc a0))),
                     (meta_patt _loc a1))
-            | `PaTyc (a0,a1,a2) ->
+            | `Constraint (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "PaTyc")),
+                            (_loc, (`ExVrn (_loc, "Constraint")),
                               (meta_loc _loc a0))), (meta_patt _loc a1))),
                     (meta_ctyp _loc a2))
-            | `PaTyp (a0,a1) ->
+            | `ClassPath (a0,a1) ->
                 `ExApp
                   (_loc,
                     (`ExApp
-                       (_loc, (`ExVrn (_loc, "PaTyp")), (meta_loc _loc a0))),
-                    (meta_ident _loc a1))
+                       (_loc, (`ExVrn (_loc, "ClassPath")),
+                         (meta_loc _loc a0))), (meta_ident _loc a1))
             | `PaVrn (a0,a1) ->
                 `ExApp
                   (_loc,
@@ -8330,21 +8329,21 @@ module Make(MetaLoc:META_LOC) =
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "Tup")), (meta_loc _loc a0))),
                     (meta_patt _loc a1))
-            | `PaTyc (a0,a1,a2) ->
+            | `Constraint (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "PaTyc")),
+                            (_loc, (`PaVrn (_loc, "Constraint")),
                               (meta_loc _loc a0))), (meta_patt _loc a1))),
                     (meta_ctyp _loc a2))
-            | `PaTyp (a0,a1) ->
+            | `ClassPath (a0,a1) ->
                 `PaApp
                   (_loc,
                     (`PaApp
-                       (_loc, (`PaVrn (_loc, "PaTyp")), (meta_loc _loc a0))),
-                    (meta_ident _loc a1))
+                       (_loc, (`PaVrn (_loc, "ClassPath")),
+                         (meta_loc _loc a0))), (meta_ident _loc a1))
             | `PaVrn (a0,a1) ->
                 `PaApp
                   (_loc,
@@ -9532,7 +9531,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `Com (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `PaOrp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `PaApp (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `PaTyc (_loc,p,_) -> is_irrefut_patt p
+  | `Constraint (_loc,p,_) -> is_irrefut_patt p
   | `Tup (_loc,pl) -> is_irrefut_patt pl
   | `PaOlbi (_loc,_,p,_) -> is_irrefut_patt p
   | `Label (_loc,_,`Nil _) -> true
@@ -9542,7 +9541,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `ModuleUnpack (_loc,_,_) -> true
   | `PaVrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)
     |`NativeInt (_loc,_)|`Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)
-    |`Chr (_loc,_)|`PaTyp (_loc,_)|`Array (_loc,_)|`Ant (_loc,_) -> false
+    |`Chr (_loc,_)|`ClassPath (_loc,_)|`Array (_loc,_)|`Ant (_loc,_) -> false
 let rec is_constructor =
   function
   | `IdAcc (_loc,_,i) -> is_constructor i
@@ -9861,3 +9860,8 @@ let dump_ident = to_string_of_printer dump#ident
 let dump_match_case = to_string_of_printer dump#match_case
 let dump_rec_binding = to_string_of_printer dump#rec_binding
 let dump_str_item = to_string_of_printer dump#str_item
+let dump_sig_item = to_string_of_printer dump#sig_item
+let dump_module_binding = to_string_of_printer dump#module_binding
+let dump_module_expr = to_string_of_printer dump#module_expr
+let dump_class_sig_item = to_string_of_printer dump#class_sig_item
+let dump_class_str_item = to_string_of_printer dump#class_str_item

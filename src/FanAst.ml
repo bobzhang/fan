@@ -622,4 +622,8 @@ let dump_ident = to_string_of_printer dump#ident;
 let dump_match_case = to_string_of_printer dump#match_case;
 let dump_rec_binding = to_string_of_printer dump#rec_binding;  
 let dump_str_item = to_string_of_printer dump#str_item;
-
+let dump_sig_item = to_string_of_printer dump#sig_item;
+let dump_module_binding  = to_string_of_printer dump#module_binding;
+let dump_module_expr = to_string_of_printer dump#module_expr;  
+let dump_class_sig_item = to_string_of_printer dump#class_sig_item;
+let dump_class_str_item = to_string_of_printer dump#class_str_item;  

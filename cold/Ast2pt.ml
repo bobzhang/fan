@@ -87,8 +87,8 @@ let ctyp_long_id (t : ctyp) =
                                                                 Location.loc) )
 let predef_option loc =
   `Id (loc, (`IdAcc (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
-let rec ctyp: ctyp -> Parsetree.core_type =
-  function
+let rec ctyp (x : ctyp) =
+  match x with
   | `Id (_loc,i) ->
       let li = long_type_ident i in mktyp _loc (Ptyp_constr (li, []))
   | `Alias (_loc,t1,`Quote (_,_,`Some `Lid (_,s))) ->
@@ -131,20 +131,11 @@ let rec ctyp: ctyp -> Parsetree.core_type =
 and row_field (x : ctyp) acc =
   match x with
   | `Nil _loc -> []
-  | `TyVrn (_loc,i) ->
-      (match i with
-       | `C (_,i) -> (Rtag (i, true, [])) :: acc
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `TyOfAmp (_loc,`TyVrn (_,i),t) ->
-      (match i with
-       | `C (_,i) -> (Rtag (i, true, (List.map ctyp (list_of_amp' t [])))) ::
-           acc
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `Of (_loc,`TyVrn (_,i),t) ->
-      (match i with
-       | `C (_,i) -> (Rtag (i, false, (List.map ctyp (list_of_amp' t []))))
-           :: acc
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+  | `TyVrn (_loc,`C (_,i)) -> (Rtag (i, true, [])) :: acc
+  | `TyOfAmp (_loc,`TyVrn (_,`C (_,i)),t) ->
+      (Rtag (i, true, (List.map ctyp (list_of_amp' t [])))) :: acc
+  | `Of (_loc,`TyVrn (_,`C (_,i)),t) ->
+      (Rtag (i, false, (List.map ctyp (list_of_amp' t [])))) :: acc
   | `Or (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
   | t -> (Rinherit (ctyp t)) :: acc
 and meth_list (fl : ctyp) (acc : core_field_type list) =
@@ -153,9 +144,8 @@ and meth_list (fl : ctyp) (acc : core_field_type list) =
    | `Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
    | `TyCol (_loc,`Id (_,`Lid (_,lab)),t) ->
        (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
-   | x ->
-       errorf (FanAst.loc_of x) "meth_list ctyp -> core_field_type: %s"
-         (dump_ctyp x) : core_field_type list )
+   | x -> errorf (loc_of x) "meth_list: %s" (dump_ctyp x) : core_field_type
+                                                              list )
 and package_type_constraints (wc : with_constr)
   (acc : (Longident.t Asttypes.loc* core_type) list) =
   (match wc with
@@ -163,12 +153,11 @@ and package_type_constraints (wc : with_constr)
    | `TypeEq (_loc,`Id (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
    | `And (_loc,wc1,wc2) ->
        package_type_constraints wc1 (package_type_constraints wc2 acc)
-   | _ ->
-       errorf (loc_of wc)
-         "unexpected `with constraint:%s' for a package type"
-         (dump_with_constr wc) : (Longident.t Asttypes.loc* core_type) list )
-and package_type: module_type -> package_type =
-  function
+   | x ->
+       errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
+         (dump_with_constr x) : (Longident.t Asttypes.loc* core_type) list )
+and package_type (x : module_type) =
+  match x with
   | `With (_loc,`Id (_,i),wc) ->
       ((long_uident i), (package_type_constraints wc []))
   | `Id (_loc,i) -> ((long_uident i), [])
@@ -191,9 +180,8 @@ let mkprivate =
   | `Private _ -> Private
   | `PrNil _ -> Public
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
-let mktrecord:
-  ctyp -> (string Asttypes.loc* Asttypes.mutable_flag* core_type* loc) =
-  function
+let mktrecord (x : ctyp) =
+  match x with
   | `TyCol (_loc,`Id (_,`Lid (sloc,s)),`Mut (_,t)) ->
       ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), _loc)
   | `TyCol (_loc,`Id (_,`Lid (sloc,s)),t) ->
@@ -211,30 +199,29 @@ let mkvariant (x : ctyp) =
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
   | t -> errorf (loc_of t) "mkvariant %s " (dump_ctyp t)
 let rec type_decl (tl : (string Asttypes.loc option* (bool* bool)) list)
-  (cl : (core_type* core_type* Location.t) list) loc m pflag =
-  (function
-   | `TyMan (_loc,t1,t2) -> type_decl tl cl loc (Some (ctyp t1)) pflag t2
-   | `Priv (_loc,t) ->
-       if pflag
-       then error _loc "multiple private keyword used, use only one instead"
-       else type_decl tl cl loc m true t
-   | `TyRec (_loc,t) ->
-       mktype loc tl cl
-         (Ptype_record (List.map mktrecord (list_of_sem' t [])))
-         (mkprivate' pflag) m
-   | `Sum (_loc,t) ->
-       mktype loc tl cl
-         (Ptype_variant (List.map mkvariant (list_of_or' t [])))
-         (mkprivate' pflag) m
-   | t ->
-       if m <> None
-       then
-         errorf loc "only one manifest type allowed by definition %s"
-           (dump_ctyp t)
-       else
-         (let m = match t with | `Nil _loc -> None | _ -> Some (ctyp t) in
-          mktype loc tl cl Ptype_abstract (mkprivate' pflag) m) : ctyp ->
-                                                                    type_declaration )
+  (cl : (core_type* core_type* Location.t) list) loc m pflag (x : ctyp) =
+  match x with
+  | `TyMan (_loc,t1,t2) -> type_decl tl cl loc (Some (ctyp t1)) pflag t2
+  | `Priv (_loc,t) ->
+      if pflag
+      then error _loc "multiple private keyword used, use only one instead"
+      else type_decl tl cl loc m true t
+  | `TyRec (_loc,t) ->
+      mktype loc tl cl
+        (Ptype_record (List.map mktrecord (list_of_sem' t [])))
+        (mkprivate' pflag) m
+  | `Sum (_loc,t) ->
+      mktype loc tl cl
+        (Ptype_variant (List.map mkvariant (list_of_or' t [])))
+        (mkprivate' pflag) m
+  | t ->
+      if m <> None
+      then
+        errorf loc "only one manifest type allowed by definition %s"
+          (dump_ctyp t)
+      else
+        (let m = match t with | `Nil _loc -> None | _ -> Some (ctyp t) in
+         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m)
 let type_decl tl cl t loc = type_decl tl cl loc None false t
 let mkvalue_desc loc t p =
   { pval_type = (ctyp t); pval_prim = p; pval_loc = loc }
@@ -250,7 +237,8 @@ let mkmutable =
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
 let paolab (lab : string) (p : patt) =
   (match (lab, p) with
-   | ("",(`Id (_loc,`Lid (_,i))|`PaTyc (_loc,`Id (_,`Lid (_,i)),_))) -> i
+   | ("",(`Id (_loc,`Lid (_,i))|`Constraint (_loc,`Id (_,`Lid (_,i)),_))) ->
+       i
    | ("",p) -> errorf (loc_of p) "paolab %s" (dump_patt p)
    | _ -> lab : string )
 let quote_map (x : ctyp) =
@@ -404,8 +392,8 @@ let rec patt (x : patt) =
       mkpat loc
         (Ppat_tuple (List.map patt (list_of_com' p1 (list_of_com' p2 []))))
   | `Tup (loc,_) -> error loc "singleton tuple pattern"
-  | `PaTyc (loc,p,t) -> mkpat loc (Ppat_constraint ((patt p), (ctyp t)))
-  | `PaTyp (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
+  | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint ((patt p), (ctyp t)))
+  | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
   | `PaVrn (loc,s) -> mkpat loc (Ppat_variant (s, None))
   | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
   | `ModuleUnpack (loc,m,ty) ->
@@ -703,7 +691,8 @@ and binding x acc =
                (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
       let e = mk_newtypes vars in (pat, e) :: acc
   | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) ->
-      ((patt (`PaTyc (_loc, p, (`TyPol (_loc, vs, ty))))), (expr e)) :: acc
+      ((patt (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))))), (expr e)) ::
+      acc
   | `Bind (_loc,p,e) -> ((patt p), (expr e)) :: acc
   | `Nil _loc -> acc
   | _ -> assert false
@@ -769,10 +758,9 @@ and module_type: Ast.module_type -> Parsetree.module_type =
              ptype_loc = loc;
              ptype_variance = variance
            })) in
-    let constrs = list_of_and wc [] in
+    let constrs = list_of_and' wc [] in
     List.filter_map
       (function
-       | `Nil _loc -> None
        | `TypeEq (_loc,id_tpl,ct) ->
            Some (mkwithtyp (fun x  -> Pwith_type x) _loc id_tpl ct)
        | `ModuleEq (_loc,i1,i2) ->
@@ -785,23 +773,18 @@ and module_type: Ast.module_type -> Parsetree.module_type =
            errorf (loc_of t) "bad with constraint (antiquotation) : %s"
              (dump_with_constr t)) constrs in
   function
-  | `Nil loc -> error loc "abstract/nil module type not allowed here"
   | `Id (loc,i) -> mkmty loc (Pmty_ident (long_uident i))
-  | `MtFun (loc,n,nt,mt) ->
-      (match n with
-       | `Uid (sloc,n) ->
-           mkmty loc
-             (Pmty_functor
-                ((with_loc n sloc), (module_type nt), (module_type mt)))
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+  | `MtFun (loc,`Uid (sloc,n),nt,mt) ->
+      mkmty loc
+        (Pmty_functor ((with_loc n sloc), (module_type nt), (module_type mt)))
   | `Sig (loc,sl) -> mkmty loc (Pmty_signature (sig_item sl []))
   | `With (loc,mt,wc) ->
       mkmty loc (Pmty_with ((module_type mt), (mkwithc wc)))
   | `ModuleTypeOf (_loc,me) -> mkmty _loc (Pmty_typeof (module_expr me))
-  | `Ant (_loc,_) -> assert false
+  | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t)
 and sig_item (s : sig_item) (l : signature) =
   (match s with
-   | `Nil _loc -> l
+   | `Nil _ -> l
    | `Class (loc,cd) ->
        (mksig loc
           (Psig_class (List.map class_info_class_type (list_of_and' cd []))))
@@ -811,84 +794,59 @@ and sig_item (s : sig_item) (l : signature) =
           (Psig_class_type
              (List.map class_info_class_type (list_of_and' ctd []))))
        :: l
-   | `Sem (_loc,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
+   | `Sem (_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
    | `Directive (_,_,_) -> l
    | `Exception (_loc,`Id (_,`Uid (_,s))) ->
        (mksig _loc (Psig_exception ((with_loc s _loc), []))) :: l
-   | `Exception (_loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
+   | `Exception (_loc,`Of (_,`Id (_,`Uid (sloc,s)),t)) ->
        (mksig _loc
           (Psig_exception
-             ((with_loc s _loc), (List.map ctyp (list_of_and' t [])))))
+             ((with_loc s sloc), (List.map ctyp (list_of_and' t [])))))
        :: l
    | `Exception (_,_) -> assert false
-   | `External (loc,n,t,sl) ->
-       let n =
-         match n with
-         | `Lid (_,n) -> n
-         | `Ant (loc,_) -> error loc "antiquotation in sig_item" in
+   | `External (loc,`Lid (sloc,n),t,sl) ->
        (mksig loc
           (Psig_value
-             ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
-         :: l
+             ((with_loc n sloc), (mkvalue_desc loc t (list_of_meta_list sl)))))
+       :: l
    | `Include (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
-   | `Module (loc,n,mt) ->
-       (match n with
-        | `Uid (sloc,n) ->
-            (mksig loc (Psig_module ((with_loc n sloc), (module_type mt))))
-            :: l
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+   | `Module (loc,`Uid (sloc,n),mt) ->
+       (mksig loc (Psig_module ((with_loc n sloc), (module_type mt)))) :: l
    | `RecModule (loc,mb) ->
        (mksig loc (Psig_recmodule (module_sig_binding mb []))) :: l
-   | `ModuleType (loc,n,mt) ->
+   | `ModuleType (loc,`Uid (sloc,n),mt) ->
        let si =
          match mt with
          | `Nil _ -> Pmodtype_abstract
          | _ -> Pmodtype_manifest (module_type mt) in
-       (match n with
-        | `Uid (sloc,n) -> (mksig loc (Psig_modtype ((with_loc n sloc), si)))
-            :: l
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+       (mksig loc (Psig_modtype ((with_loc n sloc), si))) :: l
    | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl))) :: l
-   | `Val (loc,n,t) ->
-       (match n with
-        | `Lid (sloc,n) ->
-            (mksig loc
-               (Psig_value ((with_loc n sloc), (mkvalue_desc loc t []))))
-            :: l
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-   | `Ant (_loc,_) -> error _loc "antiquotation in sig_item" : signature )
+   | `Val (loc,`Lid (sloc,n),t) ->
+       (mksig loc (Psig_value ((with_loc n sloc), (mkvalue_desc loc t []))))
+       :: l
+   | t -> errorf (loc_of t) "sig_item: %s" (dump_sig_item t) : signature )
 and module_sig_binding (x : module_binding)
   (acc : (string Asttypes.loc* Parsetree.module_type) list) =
   match x with
-  | `And (_loc,x,y) -> module_sig_binding x (module_sig_binding y acc)
-  | `Constraint (_loc,s,mt) ->
-      (match s with
-       | `Uid (sloc,s) -> ((with_loc s sloc), (module_type mt)) :: acc
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | _ -> assert false
+  | `And (_,x,y) -> module_sig_binding x (module_sig_binding y acc)
+  | `Constraint (_loc,`Uid (sloc,s),mt) ->
+      ((with_loc s sloc), (module_type mt)) :: acc
+  | t -> errorf (loc_of t) "module_sig_binding: %s" (dump_module_binding t)
 and module_str_binding (x : Ast.module_binding) acc =
   match x with
-  | `And (_loc,x,y) -> module_str_binding x (module_str_binding y acc)
-  | `ModuleBind (_loc,s,mt,me) ->
-      (match s with
-       | `Uid (sloc,s) ->
-           ((with_loc s sloc), (module_type mt), (module_expr me)) :: acc
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | _ -> assert false
-and module_expr =
-  function
-  | `Nil loc -> error loc "nil module expression"
+  | `And (_,x,y) -> module_str_binding x (module_str_binding y acc)
+  | `ModuleBind (_loc,`Uid (sloc,s),mt,me) ->
+      ((with_loc s sloc), (module_type mt), (module_expr me)) :: acc
+  | t -> errorf (loc_of t) "module_str_binding: %s" (dump_module_binding t)
+and module_expr (x : Ast.module_expr) =
+  match x with
   | `Id (loc,i) -> mkmod loc (Pmod_ident (long_uident i))
   | `MeApp (loc,me1,me2) ->
       mkmod loc (Pmod_apply ((module_expr me1), (module_expr me2)))
-  | `Functor (loc,n,mt,me) ->
-      (match n with
-       | `Uid (sloc,n) ->
-           mkmod loc
-             (Pmod_functor
-                ((with_loc n sloc), (module_type mt), (module_expr me)))
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+  | `Functor (loc,`Uid (sloc,n),mt,me) ->
+      mkmod loc
+        (Pmod_functor ((with_loc n sloc), (module_type mt), (module_expr me)))
   | `Struct (loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
   | `Constraint (loc,me,mt) ->
       mkmod loc (Pmod_constraint ((module_expr me), (module_type mt)))
@@ -900,10 +858,10 @@ and module_expr =
                  ((expr e),
                    (Some (mktyp loc (Ptyp_package (package_type pt)))), None))))
   | `PackageModule (loc,e) -> mkmod loc (Pmod_unpack (expr e))
-  | `Ant (loc,_) -> error loc "antiquotation in module_expr"
+  | t -> errorf (loc_of t) "module_expr: %s" (dump_module_expr t)
 and str_item (s : str_item) (l : structure) =
   (match s with
-   | `Nil _loc -> l
+   | `Nil _ -> l
    | `Class (loc,cd) ->
        (mkstr loc
           (Pstr_class (List.map class_info_class_expr (list_of_and' cd []))))
@@ -913,7 +871,7 @@ and str_item (s : str_item) (l : structure) =
           (Pstr_class_type
              (List.map class_info_class_type (list_of_and' ctd []))))
        :: l
-   | `Sem (_loc,st1,st2) -> str_item st1 (str_item st2 l)
+   | `Sem (_,st1,st2) -> str_item st1 (str_item st2 l)
    | `Directive (_,_,_) -> l
    | `Exception (loc,`Id (_,`Uid (_,s))) ->
        (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
@@ -924,49 +882,32 @@ and str_item (s : str_item) (l : structure) =
        :: l
    | `Exception (_,_) -> assert false
    | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
-   | `External (loc,`Lid (_,n),t,sl) ->
+   | `External (loc,`Lid (sloc,n),t,sl) ->
        (mkstr loc
           (Pstr_primitive
-             ((with_loc n loc), (mkvalue_desc loc t (list_of_meta_list sl)))))
+             ((with_loc n sloc), (mkvalue_desc loc t (list_of_meta_list sl)))))
        :: l
    | `Include (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
-   | `Module (loc,n,me) ->
-       (match n with
-        | `Uid (sloc,n) ->
-            (mkstr loc (Pstr_module ((with_loc n sloc), (module_expr me))))
-            :: l
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+   | `Module (loc,`Uid (sloc,n),me) ->
+       (mkstr loc (Pstr_module ((with_loc n sloc), (module_expr me)))) :: l
    | `RecModule (loc,mb) ->
        (mkstr loc (Pstr_recmodule (module_str_binding mb []))) :: l
-   | `ModuleType (loc,n,mt) ->
-       (match n with
-        | `Uid (sloc,n) ->
-            (mkstr loc (Pstr_modtype ((with_loc n sloc), (module_type mt))))
-            :: l
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+   | `ModuleType (loc,`Uid (sloc,n),mt) ->
+       (mkstr loc (Pstr_modtype ((with_loc n sloc), (module_type mt)))) :: l
    | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl))) :: l
    | `Value (loc,rf,bi) ->
        (mkstr loc (Pstr_value ((mkrf rf), (binding bi [])))) :: l
-   | x -> let loc = FanAst.loc_of x in error loc "antiquotation in str_item" : 
-  structure )
-and class_type =
-  function
+   | x -> errorf (loc_of x) "str_item : %s" (dump_str_item x) : structure )
+and class_type (x : Ast.class_type) =
+  match x with
   | `CtCon (loc,`ViNil _,id,tl) ->
       mkcty loc
         (Pcty_constr
            ((long_class_ident id), (List.map ctyp (list_of_com' tl []))))
-  | `CtFun (loc,`Label (_,lab,t),ct) ->
-      let lab =
-        match lab with
-        | `Lid (_loc,lab) -> lab
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+  | `CtFun (loc,`Label (_,`Lid (_,lab),t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (class_type ct)))
-  | `CtFun (loc,`TyOlb (loc1,lab,t),ct) ->
-      let lab =
-        match lab with
-        | `Lid (_loc,lab) -> lab
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+  | `CtFun (loc,`TyOlb (loc1,`Lid (_,lab),t),ct) ->
       let t = `TyApp (loc1, (predef_option loc1), t) in
       mkcty loc (Pcty_fun (("?" ^ lab), (ctyp t), (class_type ct)))
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun ("", (ctyp t), (class_type ct)))
@@ -976,11 +917,7 @@ and class_type =
       mkcty loc
         (Pcty_signature
            { pcsig_self = (ctyp t); pcsig_fields = cil; pcsig_loc = loc })
-  | `CtCon (loc,_,_,_) as x ->
-      errorf loc "invalid virtual class inside a class type %s"
-        (dump_class_type x)
-  | `Ant (_,_)|`CtEq (_,_,_)|`CtCol (_,_,_)|`And (_,_,_)|`Nil _ ->
-      assert false
+  | x -> errorf (loc_of x) "class type: %s" (dump_class_type x)
 and class_info_class_expr (ci : class_expr) =
   match ci with
   | `Eq (_,`CeCon (loc,vir,`Lid (nloc,name),params),ce) ->
@@ -996,7 +933,7 @@ and class_info_class_expr (ci : class_expr) =
         pci_loc = loc;
         pci_variance = variance
       }
-  | ce -> errorf (loc_of ce) "bad class definition %s" (dump_class_expr ce)
+  | ce -> errorf (loc_of ce) "class_info_class_expr: %s" (dump_class_expr ce)
 and class_info_class_type (ci : class_type) =
   match ci with
   | `CtEq (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct)
@@ -1018,31 +955,22 @@ and class_info_class_type (ci : class_type) =
         (dump_class_type ct)
 and class_sig_item (c : class_sig_item) (l : class_type_field list) =
   (match c with
-   | `Nil _loc -> l
+   | `Nil _ -> l
    | `Eq (loc,t1,t2) -> (mkctf loc (Pctf_cstr ((ctyp t1), (ctyp t2)))) :: l
-   | `Sem (_loc,csg1,csg2) -> class_sig_item csg1 (class_sig_item csg2 l)
+   | `Sem (_,csg1,csg2) -> class_sig_item csg1 (class_sig_item csg2 l)
    | `SigInherit (loc,ct) -> (mkctf loc (Pctf_inher (class_type ct))) :: l
-   | `Method (loc,s,pf,t) ->
-       (match s with
-        | `Lid (_,s) ->
-            (mkctf loc (Pctf_meth (s, (mkprivate pf), (mkpolytype (ctyp t)))))
-            :: l
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-   | `CgVal (loc,s,b,v,t) ->
-       (match s with
-        | `Lid (_,s) ->
-            (mkctf loc (Pctf_val (s, (mkmutable b), (mkvirtual v), (ctyp t))))
-            :: l
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-   | `CgVir (loc,s,b,t) ->
-       (match s with
-        | `Lid (_,s) ->
-            (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t)))))
-            :: l
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-   | `Ant (_,_) -> assert false : class_type_field list )
-and class_expr: class_expr -> Parsetree.class_expr =
-  function
+   | `Method (loc,`Lid (_,s),pf,t) ->
+       (mkctf loc (Pctf_meth (s, (mkprivate pf), (mkpolytype (ctyp t))))) ::
+       l
+   | `CgVal (loc,`Lid (_,s),b,v,t) ->
+       (mkctf loc (Pctf_val (s, (mkmutable b), (mkvirtual v), (ctyp t)))) ::
+       l
+   | `CgVir (loc,`Lid (_,s),b,t) ->
+       (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t))))) :: l
+   | t -> errorf (loc_of t) "class_sig_item :%s" (dump_class_sig_item t) : 
+  class_type_field list )
+and class_expr (x : Ast.class_expr) =
+  match x with
   | `CeApp (loc,_,_) as c ->
       let (ce,el) = ClassExpr.view_app [] c in
       let el = List.map label_expr el in
@@ -1051,17 +979,10 @@ and class_expr: class_expr -> Parsetree.class_expr =
       mkcl loc
         (Pcl_constr
            ((long_class_ident id), (List.map ctyp (list_of_com' tl []))))
-  | `CeFun (loc,`Label (_,lab,po),ce) ->
-      (match lab with
-       | `Lid (_loc,lab) ->
-           mkcl loc
-             (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `CeFun (loc,`PaOlbi (_,lab,p,e),ce) ->
-      let lab =
-        match lab with
-        | `Lid (_loc,i) -> i
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+  | `CeFun (loc,`Label (_,`Lid (_loc,lab),po),ce) ->
+      mkcl loc
+        (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
+  | `CeFun (loc,`PaOlbi (_,`Lid (_loc,lab),p,e),ce) ->
       let lab = paolab lab p in
       (match e with
        | `None _ ->
@@ -1078,19 +999,17 @@ and class_expr: class_expr -> Parsetree.class_expr =
   | `CeLet (loc,rf,bi,ce) ->
       mkcl loc (Pcl_let ((mkrf rf), (binding bi []), (class_expr ce)))
   | `Obj (loc,po,cfl) ->
-      let p = match po with | `Nil _loc -> `Any loc | p -> p in
+      let p = match po with | `Nil _loc -> `Any _loc | p -> p in
       let cil = class_str_item cfl [] in
       mkcl loc (Pcl_structure { pcstr_pat = (patt p); pcstr_fields = cil })
   | `CeTyc (loc,ce,ct) ->
       mkcl loc (Pcl_constraint ((class_expr ce), (class_type ct)))
-  | `CeCon (loc,_,_,_) ->
-      error loc "invalid virtual class inside a class expression"
-  | `Ant (_,_)|`Eq (_,_,_)|`And (_,_,_)|`Nil _ -> assert false
+  | t -> errorf (loc_of t) "class_expr: %s" (dump_class_expr t)
 and class_str_item (c : class_str_item) l =
   match c with
   | `Nil _ -> l
   | `Eq (loc,t1,t2) -> (mkcf loc (Pcf_constr ((ctyp t1), (ctyp t2)))) :: l
-  | `Sem (_loc,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
+  | `Sem (_,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
   | `Inherit (loc,ov,ce,pb) ->
       let opb =
         match pb with
@@ -1101,54 +1020,39 @@ and class_str_item (c : class_str_item) l =
       (mkcf loc (Pcf_inher ((override_flag loc ov), (class_expr ce), opb)))
         :: l
   | `Initializer (loc,e) -> (mkcf loc (Pcf_init (expr e))) :: l
-  | `CrMth (loc,s,ov,pf,e,t) ->
+  | `CrMth (loc,`Lid (sloc,s),ov,pf,e,t) ->
       let t = match t with | `Nil _ -> None | t -> Some (mkpolytype (ctyp t)) in
       let e = mkexp loc (Pexp_poly ((expr e), t)) in
-      (match s with
-       | `Lid (sloc,s) ->
-           (mkcf loc
-              (Pcf_meth
-                 ((with_loc s sloc), (mkprivate pf), (override_flag loc ov),
-                   e)))
-           :: l
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `CrVal (loc,s,ov,mf,e) ->
-      (match s with
-       | `Lid (sloc,s) ->
-           (mkcf loc
-              (Pcf_val
-                 ((with_loc s sloc), (mkmutable mf), (override_flag loc ov),
-                   (expr e))))
-           :: l
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `CrVir (loc,s,pf,t) ->
-      (match s with
-       | `Lid (sloc,s) ->
-           (mkcf loc
-              (Pcf_virt
-                 ((with_loc s sloc), (mkprivate pf), (mkpolytype (ctyp t)))))
-           :: l
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `CrVvr (loc,s,mf,t) ->
-      (match s with
-       | `Lid (sloc,s) ->
-           (mkcf loc
-              (Pcf_valvirt ((with_loc s sloc), (mkmutable mf), (ctyp t))))
-           :: l
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `Ant (_,_) -> assert false
+      (mkcf loc
+         (Pcf_meth
+            ((with_loc s sloc), (mkprivate pf), (override_flag loc ov), e)))
+        :: l
+  | `CrVal (loc,`Lid (sloc,s),ov,mf,e) ->
+      (mkcf loc
+         (Pcf_val
+            ((with_loc s sloc), (mkmutable mf), (override_flag loc ov),
+              (expr e))))
+      :: l
+  | `CrVir (loc,`Lid (sloc,s),pf,t) ->
+      (mkcf loc
+         (Pcf_virt ((with_loc s sloc), (mkprivate pf), (mkpolytype (ctyp t)))))
+      :: l
+  | `CrVvr (loc,`Lid (sloc,s),mf,t) ->
+      (mkcf loc (Pcf_valvirt ((with_loc s sloc), (mkmutable mf), (ctyp t))))
+      :: l
+  | x -> errorf (loc_of x) "class_str_item: %s" (dump_class_str_item x)
 let sig_item (ast : sig_item) = (sig_item ast [] : signature )
 let str_item ast = str_item ast []
-let directive: expr -> directive_argument =
-  function
-  | `Nil _loc -> Pdir_none
-  | `Str (_loc,s) -> Pdir_string s
-  | `Int (_loc,i) -> Pdir_int (int_of_string i)
+let directive (x : expr) =
+  match x with
+  | `Nil _ -> Pdir_none
+  | `Str (_,s) -> Pdir_string s
+  | `Int (_,i) -> Pdir_int (int_of_string i)
   | `Id (_loc,`Lid (_,"true")) -> Pdir_bool true
   | `Id (_loc,`Lid (_,"false")) -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e))
-let phrase: str_item -> toplevel_phrase =
-  function
+let phrase (x : str_item) =
+  match x with
   | `Directive (_,`Lid (_,d),dp) -> Ptop_dir (d, (directive dp))
   | `Directive (_,`Ant (_loc,_),_) -> error _loc "antiquotation not allowed"
   | si -> Ptop_def (str_item si)

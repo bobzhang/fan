@@ -108,38 +108,30 @@ let long_uident  i =
    long_uident_noloc  i +> loc_of i;
 
 let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
-  (* with ctyp *)
   match t with
-  [ (* {| $id:i |} *) `Id(_loc,i) -> ident_noloc i
-  | (* {| $m1 $m2 |} *) `TyApp(_loc,m1,m2) ->
-        let li1 = ctyp_long_id_prefix m1 in
-        let li2 = ctyp_long_id_prefix m2 in
-        Lapply li1 li2
+  [`Id(_loc,i) -> ident_noloc i
+  | `TyApp(_loc,m1,m2) ->
+      let li1 = ctyp_long_id_prefix m1 in
+      let li2 = ctyp_long_id_prefix m2 in
+      Lapply li1 li2
   | t -> errorf (loc_of t) "invalid module expression %s" (dump_ctyp t) ] ;
 
 let ctyp_long_id (t:ctyp) : (bool *  Location.loc Longident.t) =
-  with ctyp match t with
-  [ (* {| $id:i |} *) `Id(_loc,i) ->
-    (false, long_type_ident i)
+  match t with
+  [  `Id(_loc,i) -> (false, long_type_ident i)
   | `ClassPath (_, i) -> (true, ident i)
   | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) ] ;
-
 
 let predef_option loc =
   `Id (loc, `IdAcc (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
 
-let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun 
-  [ (* {|$id:i|} *)
-    `Id(_loc,i)->
-    let li = long_type_ident i in
+let rec ctyp (x:ctyp) = match x with 
+  [`Id(_loc,i)-> let li = long_type_ident i in
     mktyp _loc (Ptyp_constr li [])
-  | (* {| $t1 as $t2 |} *)
-    `Alias (_loc, t1, (* t2 *) `Quote(_,_,`Some(`Lid(_,s)))) ->
+  | `Alias (_loc, t1, (* t2 *) `Quote(_,_,`Some(`Lid(_,s)))) ->
       mktyp _loc (Ptyp_alias (ctyp t1) s)
-  | (* {| _ |} *)
-    `Any _loc -> mktyp _loc Ptyp_any
-  | (* ({| $_ $_ |} as f ) *)
-    `TyApp (_loc, _, _) as f ->
+  | `Any _loc -> mktyp _loc Ptyp_any
+  | `TyApp (_loc, _, _) as f ->
       let (f, al) = Ctyp.view_app [] f in
       let (is_cls, li) = ctyp_long_id f in
       if is_cls then mktyp _loc (Ptyp_class li (List.map ctyp al) [])
@@ -150,111 +142,59 @@ let rec ctyp : ctyp -> Parsetree.core_type = with ctyp fun
       let t1 = `TyApp loc1 (predef_option loc1) t1 in
       mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
   | `Arrow (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
-  | (* {| < $fl > |} *)
-    `TyObj(_loc,fl,`RvNil _)
+  | `TyObj(_loc,fl,`RvNil _)
     -> mktyp _loc (Ptyp_object (meth_list fl []))
-  | (* {| < $fl .. > |} *)
-    `TyObj(_loc,fl,`RowVar _)->
+  | `TyObj(_loc,fl,`RowVar _)->
       mktyp _loc (Ptyp_object (meth_list fl [mkfield _loc Pfield_var]))
-  | `ClassPath (loc, id) ->
-      mktyp loc (Ptyp_class (ident id) [] [])
-  | (* {| (module $pt) |} *)
-    `Package(_loc,pt) ->
+  | `ClassPath (loc, id) -> mktyp loc (Ptyp_class (ident id) [] [])
+  | `Package(_loc,pt) ->
       let (i, cs) = package_type pt in
       mktyp _loc (Ptyp_package i cs)
   | `TyPol (loc, t1, t2) -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
-
   | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) -> mktyp _loc (Ptyp_var s)
-        
-  | (* {@loc| ($t1 * $t2) |} *)
-    `Tup(loc,`Sta(_,t1,t2))
-    ->
+  | `Tup(loc,`Sta(_,t1,t2)) ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_star' t1 (list_of_star' t2 []))))
-        (*precise*)
-  | (* {| [ = $t ] |} *)
-    `TyVrnEq(_loc,t)
-    ->
+  | `TyVrnEq(_loc,t) ->
       mktyp _loc (Ptyp_variant (row_field t []) true None)
-  | (* {| [ > $t ] |} *)
-    `TyVrnSup(_loc,t)
-    ->
+  | `TyVrnSup(_loc,t) ->
       mktyp _loc (Ptyp_variant (row_field t []) false None)
-  | (* {| [ < $t ] |} *)
-    `TyVrnInf(_loc,t)
-    ->
+  | `TyVrnInf(_loc,t) ->
       mktyp _loc (Ptyp_variant (row_field t []) true (Some []))
-  | (* {| [ < $t > $t' ] |} *)
-    `TyVrnInfSup(_loc,t,t')
-    ->
+  | `TyVrnInfSup(_loc,t,t') ->
       mktyp _loc (Ptyp_variant (row_field t []) true (Some (Ctyp.name_tags t')))
-
-  |  x ->
-      errorf (loc_of x) "ctyp: %s" (dump_ctyp x) ]
+  |  x -> errorf (loc_of x) "ctyp: %s" (dump_ctyp x) ]
 and row_field (x:ctyp) acc =
   match x with 
-  [ (* {||} *)
-    `Nil _loc  -> []
-  | (* {| `$i |} *)
-    `TyVrn (_loc,i) ->
-      match i with
-      [`C (_,i) ->   
-        [Rtag i true [] :: acc]
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | (* {| `$i of & $t |} *)
-    `TyOfAmp (_loc,`TyVrn(_,i),t) ->
-      match i with
-      [`C (_,i) ->   
+  [`Nil _loc  -> []
+  | `TyVrn (_loc,`C(_,i)) -> [Rtag i true [] :: acc]
+  | `TyOfAmp (_loc,`TyVrn(_,`C(_,i)),t) ->
         [Rtag i true (List.map ctyp (list_of_amp' t [])) :: acc ]
-      |`Ant(_loc,_) -> ANT_ERROR ]
-  | (* {| `$i of $t |} *)
-    `Of(_loc,`TyVrn(_,i),t) ->
-      match i with 
-      [`C (_,i) -> 
-       [Rtag i false (List.map ctyp (list_of_amp' t [])) :: acc ]
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | (* {| $t1 | $t2 |} *)
-    `Or(_loc,t1,t2) ->
-      row_field t1 ( row_field t2 acc)
+  | `Of(_loc,`TyVrn(_,`C(_,i)),t) ->
+      [Rtag i false (List.map ctyp (list_of_amp' t [])) :: acc ]
+  | `Or(_loc,t1,t2) -> row_field t1 ( row_field t2 acc)
   | t -> [Rinherit (ctyp t) :: acc] ]
-and meth_list (fl:ctyp) (acc: list core_field_type) : list core_field_type =
-  with ctyp match fl with
-  [ (* {||} *)
-    `Nil _-> acc
-  | (* {| $t1; $t2 |} *)
-    `Sem (_loc,t1,t2)
+and meth_list (fl:ctyp) (acc: list core_field_type) : list core_field_type = match fl with
+  [`Nil _-> acc
+  | `Sem (_loc,t1,t2)
     -> meth_list t1 (meth_list t2 acc)
-  | (* {| $lid:lab : $t |} *)
-    `TyCol(_loc,`Id(_,`Lid(_,lab)),t) ->
+  | `TyCol(_loc,`Id(_,`Lid(_,lab)),t) ->
       [mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
-  | x ->
-        errorf (FanAst.loc_of x)
-          "meth_list ctyp -> core_field_type: %s"
-          (dump_ctyp x )]
+  | x -> errorf (loc_of x) "meth_list: %s" (dump_ctyp x )]
 and package_type_constraints (wc:with_constr)
     (acc: list (Asttypes.loc Longident.t  *core_type))
-    : list (Asttypes.loc Longident.t  *core_type) =
-    with with_constr match wc with
-    [ (* {||} *)
-      `Nil _ -> acc
-    | (* {| type $id:id = $ct |} *)
-      `TypeEq(_loc,`Id(_,id),ct) ->
-        [(ident id, ctyp ct) :: acc]
-    | (* {| $wc1 and $wc2 |} *) `And(_loc,wc1,wc2) ->
+    : list (Asttypes.loc Longident.t  *core_type) =  match wc with
+    [`Nil _ -> acc
+    | `TypeEq(_loc,`Id(_,id),ct) -> [(ident id, ctyp ct) :: acc]
+    | `And(_loc,wc1,wc2) ->
         package_type_constraints wc1 (package_type_constraints wc2 acc)
-    | _ -> errorf
-          (loc_of wc)
-          "unexpected `with constraint:%s' for a package type"
-          (dump_with_constr wc) ]
+    | x -> errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
+          (dump_with_constr x) ]
 
-and package_type : module_type -> package_type =
-    with module_type fun
-    [ (* {| $id:i with $wc |} *)
-      `With(_loc,`Id(_,i),wc) ->
+and package_type (x : module_type) = match x with 
+    [`With(_loc,`Id(_,i),wc) ->
       (long_uident i, package_type_constraints wc [])
-    | (* {| $id:i |} *)
-      `Id(_loc,i) -> (long_uident i, [])
-    | mt -> errorf
-          (loc_of mt)
+    | `Id(_loc,i) -> (long_uident i, [])
+    | mt -> errorf (loc_of mt)
           "unexpected package type: %s"
           (dump_module_type mt)] ;
 
@@ -275,66 +215,42 @@ let mkprivate =  fun
   | `PrNil _ -> Public
   | `Ant(_loc,_)-> ANT_ERROR ];
 
-let mktrecord : ctyp ->  (Asttypes.loc string * Asttypes.mutable_flag * core_type *  loc)=
-  with ctyp fun
-  [ (* {| $(id:{:ident@sloc| $lid:s |}) : mutable $t |} *)
-    `TyCol(_loc,`Id(_,`Lid(sloc,s)),`Mut(_,t))
-    ->
+let mktrecord (x: ctyp)= match x with 
+  [`TyCol(_loc,`Id(_,`Lid(sloc,s)),`Mut(_,t)) ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
-  | (* {| $(id:{:ident@sloc| $lid:s |}) : $t |} *)
-    `TyCol(_loc,`Id(_,`Lid(sloc,s)),t)
-    ->
+  | `TyCol(_loc,`Id(_,`Lid(sloc,s)),t) ->
       (with_loc s sloc, Immutable, mkpolytype (ctyp t),  _loc)
-  | t ->
-      errorf (loc_of t) "mktrecord %s "
-        (dump_ctyp t)
-      (* assert false *) (*FIXME*) ];
+  | t -> errorf (loc_of t) "mktrecord %s "
+        (dump_ctyp t)];
   
-let mkvariant (x:ctyp)
-  (* (  Asttypes.loc string  * list core_type * option core_type * loc ) *) = (* fun *)
+let mkvariant (x:ctyp) = 
   match x with
-  [ (* {| $(id:{:ident@sloc| $uid:s |}) |} *)
-    `Id(_loc,`Uid(sloc,s))
-    ->
+  [`Id(_loc,`Uid(sloc,s)) ->
     (with_loc  s sloc, [], None,  _loc)
-  | (* {| $(id:{:ident@sloc| $uid:s |}) of $t |} *)
-    `Of(_loc,`Id(_,`Uid(sloc,s)),t)
-    ->
+  | `Of(_loc,`Id(_,`Uid(sloc,s)),t) ->
       (with_loc  s sloc, List.map ctyp (list_of_and' t []), None,  _loc)
-  | (* {| $(id:{:ident@sloc| $uid:s |}) : ($t -> $u) |} *)
-    `TyCol(_loc,`Id(_,`Uid(sloc,s)),`Arrow(_,t,u))
-    ->
+  | `TyCol(_loc,`Id(_,`Uid(sloc,s)),`Arrow(_,t,u)) -> (*GADT*)
       (with_loc s sloc, List.map ctyp (list_of_and' t []), Some (ctyp u),  _loc)
-  | (* {| $(id:{:ident@sloc| $uid:s |}) : $t |} *)
-    `TyCol(_loc,`Id(_,`Uid(sloc,s)),t)
-    ->
+  | `TyCol(_loc,`Id(_,`Uid(sloc,s)),t) ->
       (with_loc  s sloc, [], Some (ctyp t),  _loc)
-
-  | t ->
-      errorf (loc_of t) "mkvariant %s " (dump_ctyp t) ];
+  | t -> errorf (loc_of t) "mkvariant %s " (dump_ctyp t) ];
 
   
 let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool)))
     (cl: list (core_type * core_type * Location.t))
-    loc m pflag : ctyp -> type_declaration = fun
-  [ (* {| $t1 == $t2 |} *)
-    `TyMan(_loc,t1,t2)
-    ->
+    loc m pflag (x: ctyp) =
+  match x with 
+  [`TyMan(_loc,t1,t2) ->
     type_decl tl cl loc (Some (ctyp t1)) pflag t2
-  | (* {| private $t |} *)
-    `Priv(_loc,t)
-    ->
+  | `Priv(_loc,t) ->
       if pflag then
         error _loc "multiple private keyword used, use only one instead"
       else
         type_decl tl cl loc m true t
-  | (* {| { $t } |} *)
-    `TyRec (_loc,t)
-    ->
+  | `TyRec (_loc,t) ->
       mktype loc tl cl
         (Ptype_record (List.map mktrecord (list_of_sem' t []))) (mkprivate' pflag) m
-  | (* {| [ $t ] |} *)
-    `Sum(_loc,t) ->
+  | `Sum(_loc,t) ->
       mktype loc tl cl
         (Ptype_variant (List.map mkvariant (list_of_or' t []))) (mkprivate' pflag) m
   | t ->
@@ -344,7 +260,7 @@ let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool)))
       else
         let m =
           match t with
-          [ (* {||} *) `Nil _loc  -> None
+          [`Nil _loc  -> None
           | _ -> Some (ctyp t) ] in
         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m ] ;
 
@@ -360,22 +276,18 @@ let rec list_of_meta_list =fun
   | `Ant (_loc,_) -> ANT_ERROR ];
 
 let mkmutable = fun
-  [ (* {| mutable |} *)
-    `Mutable _
-    -> Mutable
-  | (* {||} *)
-    `MuNil _ -> Immutable
+  [`Mutable _ -> Mutable
+  | `MuNil _ -> Immutable
   | `Ant(_loc,_) -> ANT_ERROR ];
 
 let paolab (lab:string) (p:patt) : string =
-  (* with patt *)
   match (lab, p) with
   [ ("", (* {| $lid:i |} *)
-     (`Id(_loc,`Lid(_,i)) | `PaTyc(_loc,`Id(_,`Lid(_,i)),_)))
+     (`Id(_loc,`Lid(_,i)) | `Constraint(_loc,`Id(_,`Lid(_,i)),_)))
         (* | {| ($lid:i : $_) |} *) -> i
   | ("", p) ->
       errorf (loc_of p) "paolab %s" (dump_patt p)
-      (* error (loc_of p) "bad ast in label" *)
+
   | _ -> lab ] ;
 
 
@@ -525,8 +437,8 @@ let rec patt (x:patt) =
              mkpat loc (Ppat_tuple
                           (List.map patt (list_of_com' p1 (list_of_com' p2 []))))
          | {@loc| ($tup:_) |} -> error loc "singleton tuple pattern"
-         | `PaTyc (loc,p,t) -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
-         | `PaTyp (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
+         | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
+         | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
          | `PaVrn (loc,s) -> mkpat loc (Ppat_variant s None)
          | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
          | `ModuleUnpack (loc,m,ty) ->
@@ -921,156 +833,112 @@ and module_type : Ast.module_type -> Parsetree.module_type =
           ptype_private = priv;
           ptype_manifest = Some ct;
           ptype_loc =  loc; ptype_variance = variance}) in
-    let constrs = list_of_and wc [] in
+    let constrs = list_of_and' wc [] in
     List.filter_map (fun 
-      [ (* {||} *)
-        `Nil _loc -> None
-      | (* {| type $id_tpl = $ct |} *)
-        `TypeEq(_loc,id_tpl,ct)
-        ->
+      [`TypeEq(_loc,id_tpl,ct) ->
           Some (mkwithtyp (fun x -> Pwith_type x) _loc id_tpl ct)
-      | (* {| module $i1 = $i2 |} *)
-        `ModuleEq(_loc,i1,i2)
-        ->
+      | `ModuleEq(_loc,i1,i2) ->
           Some (long_uident i1, Pwith_module (long_uident i2))
-      | (* {| type $id_tpl := $ct |} *)
-        `TypeSubst(_loc,id_tpl,ct)
-        ->
+      | `TypeSubst(_loc,id_tpl,ct) ->
           Some (mkwithtyp (fun x -> Pwith_typesubst x) _loc id_tpl ct )
-      | (* {| module $i1 := $i2 |} *)
-        `ModuleSubst(_loc,i1,i2)
-        ->
+      | `ModuleSubst(_loc,i1,i2) ->
           Some (long_uident i1, Pwith_modsubst (long_uident i2))
-      | (* {| $anti:_ |} *)
-        t 
-        ->
-          errorf (loc_of t)
-            "bad with constraint (antiquotation) : %s"
-            (dump_with_constr t)]) constrs in
+      | t -> errorf (loc_of t) "bad with constraint (antiquotation) : %s" (dump_with_constr t)]) constrs in
      with module_type fun 
-     [ {@loc||} -> error loc "abstract/nil module type not allowed here"
-     | {@loc| $id:i |} -> mkmty loc (Pmty_ident (long_uident i))
-     | {@loc| functor ($n : $nt) -> $mt |} ->
-         match n with
-         [`Uid(sloc,n) ->
+     [ `Id(loc,i) -> mkmty loc (Pmty_ident (long_uident i))
+     | `MtFun(loc,`Uid(sloc,n),nt,mt) ->
              mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
-         |`Ant(_loc,_) -> ANT_ERROR]
-      (* | {@loc| '$_ |} -> error loc "module type variable not allowed here" *)
-     | {@loc| sig $sl end |} ->
+     | `Sig(loc,sl) ->
          mkmty loc (Pmty_signature (sig_item sl []))
-     | {@loc| $mt with $wc |} ->
+     | `With(loc,mt,wc) ->
          mkmty loc (Pmty_with (module_type mt) (mkwithc wc ))
-     | (* {@loc| module type of $me |} *)`ModuleTypeOf(_loc,me) ->
+     | `ModuleTypeOf(_loc,me) ->
          mkmty _loc (Pmty_typeof (module_expr me))
-     | {| $anti:_ |} -> assert false ]
+     | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t) ]
 and sig_item (s:sig_item) (l:signature) :signature =
   with sig_item match s with 
-  [ {||} -> l
+  [ `Nil _  -> l
   | `Class (loc,cd) ->
       [mksig loc (Psig_class
                     (List.map class_info_class_type (list_of_and' cd []))) :: l]
   | `ClassType (loc,ctd) ->
       [mksig loc (Psig_class_type
                     (List.map class_info_class_type (list_of_and' ctd []))) :: l]
-  | {| $sg1; $sg2 |} -> sig_item sg1 (sig_item sg2 l)
+  | `Sem(_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
   | `Directive (_,_,_) -> l
-  | {| exception $uid:s |} ->
+  | `Exception(_loc,`Id(_,`Uid(_,s))) ->
       [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
-  | {| exception $uid:s of $t |} ->
-      [mksig _loc (Psig_exception (with_loc s _loc)
+  | `Exception(_loc,`Of(_,`Id(_,`Uid(sloc,s)),t)) ->
+      [mksig _loc (Psig_exception (with_loc s sloc)
                     (List.map ctyp (list_of_and' t []))) :: l]
   | `Exception (_,_) -> assert false (*FIXME*)
-  | `External (loc, n, t, sl) ->
-      let n = match n with
-        [`Lid (_,n) -> n | `Ant(loc,_) -> error loc "antiquotation in sig_item"] in
-      [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
+  | `External (loc, `Lid(sloc,n), t, sl) ->
+      [mksig loc (Psig_value (with_loc n sloc)
+                    (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
-  | `Module (loc,n,mt) ->
-      match n with
-      [`Uid(sloc,n) ->    
+  | `Module (loc,`Uid(sloc,n),mt) ->
         [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
-      |`Ant(_loc,_) ->
-          ANT_ERROR]
   | `RecModule (loc,mb) ->
       [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
-  | `ModuleType (loc,n,mt) ->
+  | `ModuleType (loc,`Uid(sloc,n),mt) ->
       let si =  match mt with
-      [ (* `MtQuo (_,_)  *)`Nil _ -> Pmodtype_abstract
+      [ `Nil _ -> Pmodtype_abstract
       | _ -> Pmodtype_manifest (module_type mt) ] in
-      match n with
-      [`Uid(sloc,n)->   
-        [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
-      |`Ant(_loc,_) -> ANT_ERROR]
+      [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
   | `Open (loc,id) ->
       [mksig loc (Psig_open (long_uident id)) :: l]
   | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl )) :: l]
-  | `Val (loc,n,t) ->
-        match n with
-        [`Lid(sloc,n) ->
+  | `Val (loc,`Lid(sloc,n),t) ->
           [mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l]
-        |`Ant(_loc,_) -> ANT_ERROR ] 
-      (* [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l] *)
-  | {| $anti:_ |} -> error _loc "antiquotation in sig_item" ]
+  | t -> errorf (loc_of t) "sig_item: %s" (dump_sig_item t)]
 and module_sig_binding (x:module_binding) 
         (acc: list (Asttypes.loc string * Parsetree.module_type))  =
     with module_binding match x with 
-  [ {:module_binding| $x and $y |} ->
+  [ `And(_,x,y) ->
     module_sig_binding x (module_sig_binding y acc)
-  | (* {:module_binding@loc| $uid:s : $mt |} *) `Constraint(_loc,s,mt) ->
-      match s with
-      [`Uid(sloc,s) -> [(with_loc s sloc, module_type mt) :: acc]
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | _ -> assert false ]
+  | `Constraint(_loc,`Uid(sloc,s),mt) ->
+      [(with_loc s sloc, module_type mt) :: acc]
+  | t -> errorf (loc_of t) "module_sig_binding: %s" (dump_module_binding t) ]
 and module_str_binding (x:Ast.module_binding) acc =
     match x with 
-  [ {:module_binding| $x and $y |} ->
+  [ `And(_,x,y) ->
       module_str_binding x (module_str_binding y acc)
-  | (* {:module_binding@loc| $uid:s : $mt = $me |} *)
-    `ModuleBind(_loc,s,mt,me)->
-      match s with
-      [`Uid(sloc,s) ->   
+  | `ModuleBind(_loc,`Uid(sloc,s),mt,me)->
         [(with_loc s sloc, module_type mt, module_expr me) :: acc]
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | _ -> assert false ]
-and module_expr =   fun (* module_expr -> module_expr *)
-  [ {:module_expr@loc| |} -> error loc "nil module expression"
-  | {:module_expr@loc| $id:i |} -> mkmod loc (Pmod_ident (long_uident i))
-  | {:module_expr@loc| $me1 $me2 |} ->
+  | t -> errorf (loc_of t) "module_str_binding: %s" (dump_module_binding t)]
+and module_expr (x:Ast.module_expr)=
+  match x with 
+  [`Id(loc,i)   -> mkmod loc (Pmod_ident (long_uident i))
+  | `MeApp(loc,me1,me2) ->
       mkmod loc (Pmod_apply (module_expr me1) (module_expr me2))
-  | {:module_expr@loc| functor ($n : $mt) -> $me |} ->
-      match n with
-      [`Uid(sloc,n) ->    
+  | `Functor(loc,`Uid(sloc,n),mt,me) ->
       mkmod loc (Pmod_functor (with_loc n sloc) (module_type mt) (module_expr me))
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | {:module_expr@loc| struct $sl end |} ->
-      mkmod loc (Pmod_structure (str_item sl []))
-  | {:module_expr@loc| ($me : $mt) |} ->
+  | `Struct(loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
+  | `Constraint(loc,me,mt) ->
         mkmod loc (Pmod_constraint (module_expr me) (module_type mt))
-  | {:module_expr@loc| (val $e : $pt) |} ->
+  | `PackageModule(loc,`Constraint(_,e,`Package(_,pt))) ->
       mkmod loc (Pmod_unpack (
-                 mkexp loc (Pexp_constraint (expr e,
-                                             Some (mktyp loc (Ptyp_package (package_type pt))),
-                                             None))))
-  | {:module_expr@loc| (val $e) |} ->
+                 mkexp loc (Pexp_constraint
+                              (expr e,
+                               Some (mktyp loc (Ptyp_package (package_type pt))),
+                               None))))
+  | `PackageModule(loc,e) ->
       mkmod loc (Pmod_unpack (expr e))
-  | {:module_expr@loc| $anti:_ |} -> error loc "antiquotation in module_expr" ]
+  | t -> errorf (loc_of t) "module_expr: %s" (dump_module_expr t) ]
 and str_item (s:str_item) (l:structure) : structure =
- with str_item match s with 
-  [ {||} -> l
+  match s with 
+  [ `Nil _ -> l
   | `Class (loc,cd) ->
       [mkstr loc (Pstr_class
            (List.map class_info_class_expr (list_of_and' cd []))) :: l]
   | `ClassType (loc,ctd) ->
       [mkstr loc (Pstr_class_type
                     (List.map class_info_class_type (list_of_and' ctd []))) :: l]
-  | {| $st1; $st2 |} -> str_item st1 (str_item st2 l)
+  | `Sem(_,st1,st2) -> str_item st1 (str_item st2 l)
   | `Directive (_,_,_) -> l
-  | (* {@loc| exception $uid:s |} *)
-      `Exception(loc,`Id(_,`Uid(_,s)))
-    ->
+  | `Exception(loc,`Id(_,`Uid(_,s))) ->
       [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
-  | (* {@loc| exception $uid:s of $t |} *)
-    `Exception (loc, `Of (_, `Id (_, `Uid (_, s)), t))
+  | `Exception (loc, `Of (_, `Id (_, `Uid (_, s)), t))
     ->
       [mkstr loc (Pstr_exception (with_loc s loc)
                     (List.map ctyp (list_of_and' t []))) :: l ]
@@ -1081,77 +949,59 @@ and str_item (s:str_item) (l:structure) : structure =
   (*     error loc "type in exception alias" *)
   | `Exception (_,_) -> assert false (*FIXME*)
   | `StExp (loc,e) -> [mkstr loc (Pstr_eval (expr e)) :: l]
-  | {@loc|external $(lid:n) : $t = $sl |} ->
+  | `External(loc,`Lid(sloc,n),t,sl) ->
       (*$lid:n behave different here mainl the location*)
       [mkstr loc
-         (Pstr_primitive (with_loc n loc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
+         (Pstr_primitive (with_loc n sloc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
   | `Include (loc,me) -> [mkstr loc (Pstr_include (module_expr me)) :: l]
-  | `Module (loc,n,me) ->
-      match n with
-      [`Uid(sloc,n) ->
-        [mkstr loc (Pstr_module (with_loc n sloc) (module_expr me)) :: l]
-      |`Ant(_loc,_) -> ANT_ERROR]
+  | `Module (loc,`Uid(sloc,n),me) ->
+      [mkstr loc (Pstr_module (with_loc n sloc) (module_expr me)) :: l]
   | `RecModule (loc,mb) ->
       [mkstr loc (Pstr_recmodule (module_str_binding mb [])) :: l]
-  | `ModuleType (loc,n,mt) ->
-      match n with
-      [`Uid(sloc,n) -> 
+  | `ModuleType (loc,`Uid(sloc,n),mt) ->
           [mkstr loc (Pstr_modtype (with_loc n sloc) (module_type mt)) :: l]
-      |`Ant(_loc,_) -> ANT_ERROR]
   | `Open (loc,id) ->
       [mkstr loc (Pstr_open (long_uident id)) :: l]
   | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl )) :: l]
   | `Value (loc,rf,bi) ->
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
-
-  | x (* {@loc| $anti:_ |} *) ->
-      let loc = FanAst.loc_of x in
-      error loc "antiquotation in str_item" ]
-and class_type = fun (* class_type -> class_type *)
-  [ `CtCon (loc, `ViNil _, id,tl) ->
-    mkcty loc
-      (Pcty_constr (long_class_ident id) (List.map ctyp (list_of_com' tl [])))
-  | `CtFun (loc, (`Label (_, lab, t)), ct) ->
-      let lab = match lab with
-        [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in
+  | x-> errorf (loc_of x) "str_item : %s" (dump_str_item x) ]
+and class_type (x:Ast.class_type) = match x with
+ [ `CtCon (loc, `ViNil _, id,tl) ->
+   mkcty loc
+     (Pcty_constr (long_class_ident id) (List.map ctyp (list_of_com' tl [])))
+  | `CtFun (loc, (`Label (_, `Lid(_,lab), t)), ct) ->
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))
-  | `CtFun (loc, (`TyOlb (loc1, lab, t)), ct) ->
-      let lab = match lab with
-        [`Lid(_loc,lab) -> lab | `Ant(_loc,_) -> ANT_ERROR] in
+  | `CtFun (loc, (`TyOlb (loc1, `Lid(_,lab), t)), ct) ->
       let t = `TyApp loc1 (predef_option loc1) t in
       mkcty loc (Pcty_fun ("?" ^ lab) (ctyp t) (class_type ct))
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun "" (ctyp t) (class_type ct))
   | `CtSig (loc,t_o,ctfl) ->
       let t = match t_o with
-      [ (* {:ctyp||} *) `Nil _loc -> `Any loc (* {:ctyp@loc| _ |} *)
-      | t -> t ] in
+        [  `Nil _loc -> `Any loc
+        | t -> t ] in
       let cil = class_sig_item ctfl [] in
       mkcty loc (Pcty_signature {
                  pcsig_self = ctyp t;
                  pcsig_fields = cil;
-                 pcsig_loc =  loc;
-               })
-  | `CtCon (loc,_,_,_) as x ->
-        errorf loc "invalid virtual class inside a class type %s" (dump_class_type x)
-  | `Ant (_, _) | `CtEq (_, _, _) | `CtCol (_, _, _) | `And (_, _, _) | `Nil _ ->
-      assert false ]
+                 pcsig_loc =  loc;})
+  |  x -> errorf (loc_of x) "class type: %s" (dump_class_type x) ]
     
 and class_info_class_expr (ci:class_expr) =
     match ci with 
     [ `Eq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
       let (loc_params, (params, variance)) =
         match params with
-        [ (* {:ctyp||} *) `Nil _loc ->
+        [`Nil _loc ->
           (loc, ([], []))
-        | t -> (loc_of t, List.split (class_parameters t (* [] *))) ]  in
+        | t -> (loc_of t, List.split (class_parameters t)) ]  in
       {pci_virt = mkvirtual vir;
        pci_params = (params,  loc_params);
        pci_name = with_loc name nloc;
        pci_expr = class_expr ce;
        pci_loc =  loc;
        pci_variance = variance}
-  | ce -> errorf  (loc_of ce)
-        "bad class definition %s" (dump_class_expr ce) ]
+  | ce -> errorf  (loc_of ce) "class_info_class_expr: %s" (dump_class_expr ce) ]
 and class_info_class_type (ci:class_type) =
     match ci with 
     [ `CtEq (_, (`CtCon (loc, vir, (`Lid (nloc, name)), params)), ct)
@@ -1171,32 +1021,20 @@ and class_info_class_type (ci:class_type) =
   | ct -> errorf (loc_of ct)
         "bad class/class type declaration/definition %s " (dump_class_type ct)]
 and class_sig_item (c:class_sig_item) (l: list class_type_field) : list class_type_field =
-    with class_sig_item match c with 
-    [ {||} -> l
+    match c with 
+    [ `Nil _ -> l
     | `Eq (loc, t1, t2) ->
         [mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l]
-    | {| $csg1; $csg2 |} ->
-        class_sig_item csg1 (class_sig_item csg2 l)
-    | `SigInherit (loc,ct) ->
-        [mkctf loc (Pctf_inher (class_type ct)) :: l]
-    | `Method (loc,s,pf,t) ->
-        match s with
-          [`Lid(_,s) ->   
+    | `Sem(_,csg1,csg2) -> class_sig_item csg1 (class_sig_item csg2 l)
+    | `SigInherit (loc,ct) -> [mkctf loc (Pctf_inher (class_type ct)) :: l]
+    | `Method (loc,`Lid(_,s),pf,t) ->
             [mkctf loc (Pctf_meth (s, mkprivate pf, mkpolytype (ctyp t))) :: l]
-          |`Ant(_loc,_) ->
-            ANT_ERROR ]
-    | `CgVal (loc, s, b, v, t) ->
-        match s with
-        [`Lid(_,s) ->   
+    | `CgVal (loc, `Lid(_,s), b, v, t) ->
             [mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l]
-        |`Ant(_loc,_) -> ANT_ERROR]
-    | `CgVir (loc,s,b,t) ->
-      match s with
-      [`Lid(_,s) ->
+    | `CgVir (loc,`Lid(_,s),b,t) ->
           [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
-      |`Ant(_loc,_) -> ANT_ERROR] 
-    | `Ant (_,_) -> assert false ]
-and class_expr : class_expr -> Parsetree.class_expr = fun (* class_expr -> class_expr *)
+    | t -> errorf (loc_of t) "class_sig_item :%s" (dump_class_sig_item t) ]
+and class_expr  (x:Ast.class_expr) = match x with 
   [ `CeApp (loc, _, _) as c ->
     let (ce, el) = ClassExpr.view_app [] c in
     let el = List.map label_expr el in
@@ -1204,14 +1042,10 @@ and class_expr : class_expr -> Parsetree.class_expr = fun (* class_expr -> class
   | `CeCon (loc, `ViNil _, id,tl) ->
       mkcl loc
         (Pcl_constr (long_class_ident id) (List.map ctyp (list_of_com' tl [])))
-  | `CeFun (loc, (`Label (_, lab, po)), ce) ->
-      match lab with
-      [`Lid (_loc,lab) ->   
+  | `CeFun (loc, (`Label (_,`Lid(_loc,lab), po)), ce) ->
       mkcl loc
         (Pcl_fun lab None (patt_of_lab loc lab po) (class_expr ce))
-      |`Ant(_loc,_) -> ANT_ERROR ]
-  | `CeFun (loc, (`PaOlbi (_, lab, p, e)), ce) ->
-      let lab = match lab with [`Lid(_loc,i) -> i | `Ant(_loc,_) -> ANT_ERROR] in
+  | `CeFun (loc, (`PaOlbi (_, `Lid(_loc,lab), p, e)), ce) ->
       let lab = paolab lab p in
       match e with
       [`None _ ->
@@ -1224,24 +1058,23 @@ and class_expr : class_expr -> Parsetree.class_expr = fun (* class_expr -> class
       mkcl loc (Pcl_let (mkrf rf) (binding bi []) (class_expr ce))
   | `Obj (loc,po,cfl) ->
       let p = match po with
-          [ {:patt||} -> {:patt@loc| _ |}
+          [ `Nil _loc  -> `Any _loc
           | p -> p ] in
       let cil = class_str_item cfl [] in
-      mkcl loc (Pcl_structure {
-                pcstr_pat = patt p;
-                pcstr_fields = cil;
-              })
+      mkcl loc
+        (Pcl_structure {
+         pcstr_pat = patt p;
+         pcstr_fields = cil;
+       })
   | `CeTyc (loc,ce,ct) ->
       mkcl loc (Pcl_constraint (class_expr ce) (class_type ct))
-  | `CeCon (loc,_,_,_) ->
-      error loc "invalid virtual class inside a class expression"
-  | `Ant (_, _) | `Eq (_, _, _) | `And (_, _, _) | `Nil _ -> assert false ]
+  | t -> errorf (loc_of t) "class_expr: %s" (dump_class_expr t)]
+
 and class_str_item (c:class_str_item) l =
-    match c with (*class_str_item -> class_field list -> class_field list*)
+  match c with
   [ `Nil _ -> l
   | `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
-  | {:class_str_item| $cst1; $cst2 |} ->
-      class_str_item cst1 (class_str_item cst2 l)
+  | `Sem(_,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
   | `Inherit (loc, ov, ce, pb) ->
       let opb = match pb with
       [`None _ -> None
@@ -1251,45 +1084,33 @@ and class_str_item (c:class_str_item) l =
       (* let opb = if pb = "" then None else Some pb in *)
       [mkcf loc (Pcf_inher (override_flag loc ov) (class_expr ce) opb) :: l]
   | `Initializer (loc,e) -> [mkcf loc (Pcf_init (expr e)) :: l]
-  | `CrMth (loc, s, ov, pf, e, t) ->
+  | `CrMth (loc, `Lid(sloc,s), ov, pf, e, t) ->
       let t = match t with
-      [ (* {:ctyp||} *) `Nil _ -> None
+      [`Nil _ -> None
       | t -> Some (mkpolytype (ctyp t)) ] in
       let e = mkexp loc (Pexp_poly (expr e) t) in
-      match s with
-      [`Lid(sloc,s) ->   
-        [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | `CrVal (loc, s, ov, mf, e) ->
-      match s with
-      [`Lid(sloc,s) ->   
-        [mkcf loc (Pcf_val (with_loc s sloc, mkmutable mf, override_flag loc ov, expr e)) :: l]
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | `CrVir (loc,s,pf,t) ->
-      match s with
-      [`Lid(sloc,s)->  
+      [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
+  | `CrVal (loc, `Lid(sloc,s), ov, mf, e) ->
+      [mkcf loc (Pcf_val (with_loc s sloc, mkmutable mf, override_flag loc ov, expr e)) :: l]
+  | `CrVir (loc,`Lid(sloc,s),pf,t) ->
         [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
-      |`Ant(_loc,_) ->
-          ANT_ERROR]
-  | `CrVvr (loc,s,mf,t) ->
-      match s with
-      [`Lid(sloc,s) -> 
+  | `CrVvr (loc,`Lid(sloc,s),mf,t) ->
         [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]
-      |`Ant(_loc,_) -> ANT_ERROR]
-  | `Ant (_,_) -> assert false ];
+  | x  -> errorf  (loc_of  x) "class_str_item: %s" (dump_class_str_item x) ];
 
 let sig_item (ast:sig_item) : signature = sig_item ast [];
 let str_item ast = str_item ast [];
 
-let directive : expr -> directive_argument = with expr fun
-  [ {||} -> Pdir_none
-  | {|$str:s|} -> Pdir_string s
-  | {|$int:i|} -> Pdir_int (int_of_string i)
+let directive (x:expr) = with expr  match x with 
+  [ `Nil _ -> Pdir_none
+  | `Str(_,s) -> Pdir_string s
+  | `Int(_,i) -> Pdir_int (int_of_string i)
   | {| true |} -> Pdir_bool true
   | {| false |} -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e)) ] ;
-(* str_item -> phrase *)  
-let phrase : str_item -> toplevel_phrase = fun
+
+let phrase (x: str_item) =
+  match x with 
   [ `Directive (_, `Lid(_,d),dp) -> Ptop_dir d (directive dp)
   | `Directive (_, `Ant(_loc,_),_) -> error _loc "antiquotation not allowed"
   | si -> Ptop_def (str_item si) ];

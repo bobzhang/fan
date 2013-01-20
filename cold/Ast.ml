@@ -51,7 +51,7 @@ and patt =
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `PaOrp of (loc* patt* patt) | `PaRng of (loc* patt* patt)
   | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt) | `Tup of (loc* patt)
-  | `PaTyc of (loc* patt* ctyp) | `PaTyp of (loc* ident)
+  | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
   | `PaVrn of (loc* string) | `Lazy of (loc* patt)
   | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and expr =

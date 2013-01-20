@@ -134,7 +134,7 @@ let stream_pattern_component skont ckont =
         match e with
         | `Fun
             (_loc,`Case
-                    (_,`PaTyc
+                    (_,`Constraint
                          (_,`Id (_,`Lid (_,v)),`TyApp
                                                  (_,`Id
                                                       (_,`IdAcc
@@ -336,7 +336,7 @@ let cparser _loc bpo pc =
                       (`Id (_loc, (`Lid (_loc, strm_n)))))))), e)
     | None  -> e in
   let p =
-    `PaTyc
+    `Constraint
       (_loc, (`Id (_loc, (`Lid (_loc, strm_n)))),
         (`TyApp
            (_loc,
@@ -370,7 +370,7 @@ let cparser_match _loc me bpo pc =
         (_loc, (`ReNil _loc),
           (`Bind
              (_loc,
-               (`PaTyc
+               (`Constraint
                   (_loc, (`Id (_loc, (`Lid (_loc, strm_n)))),
                     (`TyApp
                        (_loc,

@@ -162,7 +162,7 @@ let mk_obj class_name base body =
               (_loc, (`ViNil _loc), (`Lid (_loc, class_name)), (`Nil _loc))),
            (`Obj
               (_loc,
-                (`PaTyc
+                (`Constraint
                    (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
                      (`Quote
                         (_loc, (`Normal _loc),

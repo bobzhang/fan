@@ -85,7 +85,7 @@ let make_ctyp (styp : styp) tvar =
 let make_ctyp_patt styp tvar patt =
   match make_ctyp styp tvar with
   | None  -> patt
-  | Some t -> let _loc = FanAst.loc_of patt in `PaTyc (_loc, patt, t)
+  | Some t -> let _loc = FanAst.loc_of patt in `Constraint (_loc, patt, t)
 let make_ctyp_expr styp tvar expr =
   match make_ctyp styp tvar with
   | None  -> expr
@@ -262,7 +262,7 @@ let text_of_action _loc psl rtvar act tvar =
       (_loc,
         (`Case
            (_loc,
-             (`PaTyc
+             (`Constraint
                 (_loc, locid,
                   (`Id
                      (_loc,
