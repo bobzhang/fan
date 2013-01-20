@@ -303,7 +303,7 @@ class eq =
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
         | (`ExApp (a0,a1,a2),`ExApp (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
-        | (`ExAre (a0,a1,a2),`ExAre (b0,b1,b2)) ->
+        | (`ArrayDot (a0,a1,a2),`ArrayDot (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
         | (`Array (a0,a1),`Array (b0,b1)) ->
             (self#loc a0 b0) && (self#expr a1 b1)
@@ -312,7 +312,7 @@ class eq =
         | (`ExAsf a0,`ExAsf b0) -> self#loc a0 b0
         | (`ExAsr (a0,a1),`ExAsr (b0,b1)) ->
             (self#loc a0 b0) && (self#expr a1 b1)
-        | (`ExAss (a0,a1,a2),`ExAss (b0,b1,b2)) ->
+        | (`Assign (a0,a1,a2),`Assign (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
         | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
             (((((self#loc a0 b0) && (self#alident a1 b1)) &&
@@ -369,16 +369,16 @@ class eq =
             (self#loc a0 b0) && (self#expr a1 b1)
         | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
-        | (`Constraint_exp (a0,a1,a2),`Constraint_exp (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#ctyp a2 b2)
-        | (`ExCoe (a0,a1,a2,a3),`ExCoe (b0,b1,b2,b3)) ->
+        | (`Coercion (a0,a1,a2,a3),`Coercion (b0,b1,b2,b3)) ->
             (((self#loc a0 b0) && (self#expr a1 b1)) && (self#ctyp a2 b2)) &&
               (self#ctyp a3 b3)
         | (`ExVrn (a0,a1),`ExVrn (b0,b1)) ->
             (self#loc a0 b0) && (self#string a1 b1)
         | (`While (a0,a1,a2),`While (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#expr a1 b1)) && (self#expr a2 b2)
-        | (`Let_open (a0,a1,a2),`Let_open (b0,b1,b2)) ->
+        | (`LetOpen (a0,a1,a2),`LetOpen (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#ident a1 b1)) && (self#expr a2 b2)
         | (`LocalTypeFun (a0,a1,a2),`LocalTypeFun (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#alident a1 b1)) && (self#expr a2 b2)
@@ -396,7 +396,7 @@ class eq =
               && (self#module_type a3 b3)
         | (`Sig (a0,a1),`Sig (b0,b1)) ->
             (self#loc a0 b0) && (self#sig_item a1 b1)
-        | (`MtWit (a0,a1,a2),`MtWit (b0,b1,b2)) ->
+        | (`With (a0,a1,a2),`With (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#module_type a1 b1)) &&
               (self#with_constr a2 b2)
         | (`ModuleTypeOf (a0,a1),`ModuleTypeOf (b0,b1)) ->
@@ -489,7 +489,7 @@ class eq =
             (((self#loc a0 b0) && (self#auident a1 b1)) &&
                (self#module_type a2 b2))
               && (self#module_expr a3 b3)
-        | (`ModuleConstraint (a0,a1,a2),`ModuleConstraint (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#auident a1 b1)) &&
               (self#module_type a2 b2)
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'result)
@@ -520,8 +520,7 @@ class eq =
               && (self#module_expr a3 b3)
         | (`Struct (a0,a1),`Struct (b0,b1)) ->
             (self#loc a0 b0) && (self#str_item a1 b1)
-        | (`ModuleExprConstraint (a0,a1,a2),`ModuleExprConstraint (b0,b1,b2))
-            ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             ((self#loc a0 b0) && (self#module_expr a1 b1)) &&
               (self#module_type a2 b2)
         | (`PackageModule (a0,a1),`PackageModule (b0,b1)) ->
@@ -1007,10 +1006,10 @@ class map =
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
           let a2 = self#expr a2 in `ExApp (a0, a1, a2)
-      | `ExAre (a0,a1,a2) ->
+      | `ArrayDot (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
-          let a2 = self#expr a2 in `ExAre (a0, a1, a2)
+          let a2 = self#expr a2 in `ArrayDot (a0, a1, a2)
       | `Array (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#expr a1 in `Array (a0, a1)
       | `Sem (a0,a1,a2) ->
@@ -1019,10 +1018,10 @@ class map =
       | `ExAsf a0 -> let a0 = self#loc a0 in `ExAsf a0
       | `ExAsr (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#expr a1 in `ExAsr (a0, a1)
-      | `ExAss (a0,a1,a2) ->
+      | `Assign (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
-          let a2 = self#expr a2 in `ExAss (a0, a1, a2)
+          let a2 = self#expr a2 in `Assign (a0, a1, a2)
       | `For (a0,a1,a2,a3,a4,a5) ->
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
@@ -1099,25 +1098,25 @@ class map =
       | `Com (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in let a2 = self#expr a2 in `Com (a0, a1, a2)
-      | `Constraint_exp (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
-          let a2 = self#ctyp a2 in `Constraint_exp (a0, a1, a2)
-      | `ExCoe (a0,a1,a2,a3) ->
+          let a2 = self#ctyp a2 in `Constraint (a0, a1, a2)
+      | `Coercion (a0,a1,a2,a3) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
           let a2 = self#ctyp a2 in
-          let a3 = self#ctyp a3 in `ExCoe (a0, a1, a2, a3)
+          let a3 = self#ctyp a3 in `Coercion (a0, a1, a2, a3)
       | `ExVrn (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#string a1 in `ExVrn (a0, a1)
       | `While (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in
           let a2 = self#expr a2 in `While (a0, a1, a2)
-      | `Let_open (a0,a1,a2) ->
+      | `LetOpen (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#ident a1 in
-          let a2 = self#expr a2 in `Let_open (a0, a1, a2)
+          let a2 = self#expr a2 in `LetOpen (a0, a1, a2)
       | `LocalTypeFun (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#alident a1 in
@@ -1137,10 +1136,10 @@ class map =
           let a3 = self#module_type a3 in `MtFun (a0, a1, a2, a3)
       | `Sig (a0,a1) ->
           let a0 = self#loc a0 in let a1 = self#sig_item a1 in `Sig (a0, a1)
-      | `MtWit (a0,a1,a2) ->
+      | `With (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#module_type a1 in
-          let a2 = self#with_constr a2 in `MtWit (a0, a1, a2)
+          let a2 = self#with_constr a2 in `With (a0, a1, a2)
       | `ModuleTypeOf (a0,a1) ->
           let a0 = self#loc a0 in
           let a1 = self#module_expr a1 in `ModuleTypeOf (a0, a1)
@@ -1254,10 +1253,10 @@ class map =
           let a1 = self#auident a1 in
           let a2 = self#module_type a2 in
           let a3 = self#module_expr a3 in `ModuleBind (a0, a1, a2, a3)
-      | `ModuleConstraint (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#auident a1 in
-          let a2 = self#module_type a2 in `ModuleConstraint (a0, a1, a2)
+          let a2 = self#module_type a2 in `Constraint (a0, a1, a2)
       | #ant as a0 -> (self#ant a0 : ant  :>module_binding)
     method match_case : match_case -> match_case=
       function
@@ -1289,10 +1288,10 @@ class map =
       | `Struct (a0,a1) ->
           let a0 = self#loc a0 in
           let a1 = self#str_item a1 in `Struct (a0, a1)
-      | `ModuleExprConstraint (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           let a0 = self#loc a0 in
           let a1 = self#module_expr a1 in
-          let a2 = self#module_type a2 in `ModuleExprConstraint (a0, a1, a2)
+          let a2 = self#module_type a2 in `Constraint (a0, a1, a2)
       | `PackageModule (a0,a1) ->
           let a0 = self#loc a0 in
           let a1 = self#expr a1 in `PackageModule (a0, a1)
@@ -1831,8 +1830,8 @@ class print =
         | `ExApp (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`ExApp@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#expr a2
-        | `ExAre (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`ExAre@ %a@ %a@ %a)@]" self#loc a0
+        | `ArrayDot (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#expr a2
         | `Array (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc a0
@@ -1844,8 +1843,8 @@ class print =
         | `ExAsr (a0,a1) ->
             Format.fprintf fmt "@[<1>(`ExAsr@ %a@ %a)@]" self#loc a0
               self#expr a1
-        | `ExAss (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`ExAss@ %a@ %a@ %a)@]" self#loc a0
+        | `Assign (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Assign@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#expr a2
         | `For (a0,a1,a2,a3,a4,a5) ->
             Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a@ %a)@]"
@@ -1909,20 +1908,20 @@ class print =
         | `Com (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#expr a2
-        | `Constraint_exp (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`Constraint_exp@ %a@ %a@ %a)@]"
-              self#loc a0 self#expr a1 self#ctyp a2
-        | `ExCoe (a0,a1,a2,a3) ->
-            Format.fprintf fmt "@[<1>(`ExCoe@ %a@ %a@ %a@ %a)@]" self#loc a0
-              self#expr a1 self#ctyp a2 self#ctyp a3
+        | `Constraint (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc a0
+              self#expr a1 self#ctyp a2
+        | `Coercion (a0,a1,a2,a3) ->
+            Format.fprintf fmt "@[<1>(`Coercion@ %a@ %a@ %a@ %a)@]" self#loc
+              a0 self#expr a1 self#ctyp a2 self#ctyp a3
         | `ExVrn (a0,a1) ->
             Format.fprintf fmt "@[<1>(`ExVrn@ %a@ %a)@]" self#loc a0
               self#string a1
         | `While (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`While@ %a@ %a@ %a)@]" self#loc a0
               self#expr a1 self#expr a2
-        | `Let_open (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`Let_open@ %a@ %a@ %a)@]" self#loc a0
+        | `LetOpen (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`LetOpen@ %a@ %a@ %a)@]" self#loc a0
               self#ident a1 self#expr a2
         | `LocalTypeFun (a0,a1,a2) ->
             Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a@ %a)@]" self#loc
@@ -1943,8 +1942,8 @@ class print =
         | `Sig (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" self#loc a0
               self#sig_item a1
-        | `MtWit (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`MtWit@ %a@ %a@ %a)@]" self#loc a0
+        | `With (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`With@ %a@ %a@ %a)@]" self#loc a0
               self#module_type a1 self#with_constr a2
         | `ModuleTypeOf (a0,a1) ->
             Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" self#loc a0
@@ -2048,9 +2047,9 @@ class print =
             Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
               self#loc a0 self#auident a1 self#module_type a2
               self#module_expr a3
-        | `ModuleConstraint (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
-              self#loc a0 self#auident a1 self#module_type a2
+        | `Constraint (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc a0
+              self#auident a1 self#module_type a2
         | #ant as a0 -> (self#ant fmt a0 :>'result)
     method match_case : 'fmt -> match_case -> 'result=
       fun fmt  ->
@@ -2079,9 +2078,9 @@ class print =
         | `Struct (a0,a1) ->
             Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" self#loc a0
               self#str_item a1
-        | `ModuleExprConstraint (a0,a1,a2) ->
-            Format.fprintf fmt "@[<1>(`ModuleExprConstraint@ %a@ %a@ %a)@]"
-              self#loc a0 self#module_expr a1 self#module_type a2
+        | `Constraint (a0,a1,a2) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc a0
+              self#module_expr a1 self#module_type a2
         | `PackageModule (a0,a1) ->
             Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" self#loc a0
               self#expr a1
@@ -2471,14 +2470,14 @@ class fold =
       | #ant as a0 -> (self#ant a0 :>'self_type)
       | `ExApp (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
-      | `ExAre (a0,a1,a2) ->
+      | `ArrayDot (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
       | `Array (a0,a1) -> let self = self#loc a0 in self#expr a1
       | `Sem (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
       | `ExAsf a0 -> self#loc a0
       | `ExAsr (a0,a1) -> let self = self#loc a0 in self#expr a1
-      | `ExAss (a0,a1,a2) ->
+      | `Assign (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
       | `For (a0,a1,a2,a3,a4,a5) ->
           let self = self#loc a0 in
@@ -2531,15 +2530,15 @@ class fold =
       | `Tup (a0,a1) -> let self = self#loc a0 in self#expr a1
       | `Com (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
-      | `Constraint_exp (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#ctyp a2
-      | `ExCoe (a0,a1,a2,a3) ->
+      | `Coercion (a0,a1,a2,a3) ->
           let self = self#loc a0 in
           let self = self#expr a1 in let self = self#ctyp a2 in self#ctyp a3
       | `ExVrn (a0,a1) -> let self = self#loc a0 in self#string a1
       | `While (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#expr a1 in self#expr a2
-      | `Let_open (a0,a1,a2) ->
+      | `LetOpen (a0,a1,a2) ->
           let self = self#loc a0 in let self = self#ident a1 in self#expr a2
       | `LocalTypeFun (a0,a1,a2) ->
           let self = self#loc a0 in
@@ -2555,7 +2554,7 @@ class fold =
           let self = self#auident a1 in
           let self = self#module_type a2 in self#module_type a3
       | `Sig (a0,a1) -> let self = self#loc a0 in self#sig_item a1
-      | `MtWit (a0,a1,a2) ->
+      | `With (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#module_type a1 in self#with_constr a2
       | `ModuleTypeOf (a0,a1) ->
@@ -2636,7 +2635,7 @@ class fold =
           let self = self#loc a0 in
           let self = self#auident a1 in
           let self = self#module_type a2 in self#module_expr a3
-      | `ModuleConstraint (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#auident a1 in self#module_type a2
       | #ant as a0 -> (self#ant a0 :>'self_type)
@@ -2662,7 +2661,7 @@ class fold =
           let self = self#auident a1 in
           let self = self#module_type a2 in self#module_expr a3
       | `Struct (a0,a1) -> let self = self#loc a0 in self#str_item a1
-      | `ModuleExprConstraint (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           let self = self#loc a0 in
           let self = self#module_expr a1 in self#module_type a2
       | `PackageModule (a0,a1) -> let self = self#loc a0 in self#expr a1
@@ -2816,7 +2815,6 @@ class fold =
 let loc_of =
   function
   | `PaOlbi (_loc,_,_,_) -> _loc
-  | `Let_open (_loc,_,_) -> _loc
   | `Any _loc -> _loc
   | `TyVrnInf (_loc,_) -> _loc
   | `PaVrn (_loc,_) -> _loc
@@ -2825,6 +2823,7 @@ let loc_of =
   | `Array (_loc,_) -> _loc
   | `MtFun (_loc,_,_,_) -> _loc
   | `Id (_loc,_) -> _loc
+  | `ArrayDot (_loc,_,_) -> _loc
   | `Directive (_loc,_,_) -> _loc
   | `TypeSubst (_loc,_,_) -> _loc
   | `ModuleBind (_loc,_,_,_) -> _loc
@@ -2837,10 +2836,10 @@ let loc_of =
   | `Str (_loc,_) -> _loc
   | `Or (_loc,_,_) -> _loc
   | `New (_loc,_) -> _loc
-  | `MtWit (_loc,_,_) -> _loc
   | `Value (_loc,_,_) -> _loc
   | `Try (_loc,_,_) -> _loc
   | `Downto _loc -> _loc
+  | `Assign (_loc,_,_) -> _loc
   | `Normal _loc -> _loc
   | `True _loc -> _loc
   | `Sem (_loc,_,_) -> _loc
@@ -2870,12 +2869,14 @@ let loc_of =
   | `Quote (_loc,_,_) -> _loc
   | `TypeEq (_loc,_,_) -> _loc
   | `OptLabl (_loc,_,_) -> _loc
+  | `Coercion (_loc,_,_,_) -> _loc
   | `CtFun (_loc,_,_) -> _loc
   | `PaOrp (_loc,_,_) -> _loc
   | `Arrow (_loc,_,_) -> _loc
   | `Bind (_loc,_,_) -> _loc
   | `CtEq (_loc,_,_) -> _loc
   | `Functor (_loc,_,_,_) -> _loc
+  | `With (_loc,_,_) -> _loc
   | `NativeInt (_loc,_) -> _loc
   | `Private _loc -> _loc
   | `Virtual _loc -> _loc
@@ -2905,6 +2906,7 @@ let loc_of =
   | `Lid (_loc,_) -> _loc
   | `Record (_loc,_,_) -> _loc
   | `ExApp (_loc,_,_) -> _loc
+  | `Constraint (_loc,_,_) -> _loc
   | `Ant (_loc,_) -> _loc
   | `Some _loc -> _loc
   | `Package_expr (_loc,_) -> _loc
@@ -2923,21 +2925,17 @@ let loc_of =
   | `TyOlb (_loc,_,_) -> _loc
   | `Of (_loc,_,_) -> _loc
   | `OvrInst (_loc,_) -> _loc
-  | `Constraint_exp (_loc,_,_) -> _loc
   | `OvNil _loc -> _loc
   | `ModuleSubst (_loc,_,_) -> _loc
   | `Mut (_loc,_) -> _loc
   | `Positive _loc -> _loc
   | `CrVal (_loc,_,_,_,_) -> _loc
-  | `ModuleConstraint (_loc,_,_) -> _loc
   | `TyVrn (_loc,_) -> _loc
   | `Case (_loc,_,_,_) -> _loc
   | `ExAsr (_loc,_) -> _loc
   | `Exception (_loc,_) -> _loc
   | `CtCol (_loc,_,_) -> _loc
   | `And (_loc,_,_) -> _loc
-  | `ExAre (_loc,_,_) -> _loc
-  | `ModuleExprConstraint (_loc,_,_) -> _loc
   | `TyDcl (_loc,_,_,_,_) -> _loc
   | `TyRec (_loc,_) -> _loc
   | `Int32 (_loc,_) -> _loc
@@ -2952,10 +2950,10 @@ let loc_of =
   | `ExAcc (_loc,_,_) -> _loc
   | `Fun (_loc,_) -> _loc
   | `CeApp (_loc,_,_) -> _loc
-  | `ExAss (_loc,_,_) -> _loc
   | `Eq (_loc,_,_) -> _loc
   | `IdApp (_loc,_,_) -> _loc
   | `LetModule (_loc,_,_,_) -> _loc
+  | `LetOpen (_loc,_,_) -> _loc
   | `TyOfAmp (_loc,_,_) -> _loc
   | `StringDot (_loc,_,_) -> _loc
   | `For (_loc,_,_,_,_,_) -> _loc
@@ -2975,7 +2973,6 @@ let loc_of =
   | `PackageModule (_loc,_) -> _loc
   | `PaRec (_loc,_) -> _loc
   | `CeLet (_loc,_,_,_) -> _loc
-  | `ExCoe (_loc,_,_,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ViNil _loc -> _loc
   | `Sum (_loc,_) -> _loc
@@ -3309,7 +3306,7 @@ class fold2 =
         | (`ExApp (a0,a1,a2),`ExApp (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#expr a2 b2
-        | (`ExAre (a0,a1,a2),`ExAre (b0,b1,b2)) ->
+        | (`ArrayDot (a0,a1,a2),`ArrayDot (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#expr a2 b2
         | (`Array (a0,a1),`Array (b0,b1)) ->
@@ -3320,7 +3317,7 @@ class fold2 =
         | (`ExAsf a0,`ExAsf b0) -> self#loc a0 b0
         | (`ExAsr (a0,a1),`ExAsr (b0,b1)) ->
             let self = self#loc a0 b0 in self#expr a1 b1
-        | (`ExAss (a0,a1,a2),`ExAss (b0,b1,b2)) ->
+        | (`Assign (a0,a1,a2),`Assign (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#expr a2 b2
         | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
@@ -3385,10 +3382,10 @@ class fold2 =
         | (`Com (a0,a1,a2),`Com (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#expr a2 b2
-        | (`Constraint_exp (a0,a1,a2),`Constraint_exp (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#ctyp a2 b2
-        | (`ExCoe (a0,a1,a2,a3),`ExCoe (b0,b1,b2,b3)) ->
+        | (`Coercion (a0,a1,a2,a3),`Coercion (b0,b1,b2,b3)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in
             let self = self#ctyp a2 b2 in self#ctyp a3 b3
@@ -3397,7 +3394,7 @@ class fold2 =
         | (`While (a0,a1,a2),`While (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#expr a1 b1 in self#expr a2 b2
-        | (`Let_open (a0,a1,a2),`Let_open (b0,b1,b2)) ->
+        | (`LetOpen (a0,a1,a2),`LetOpen (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#ident a1 b1 in self#expr a2 b2
         | (`LocalTypeFun (a0,a1,a2),`LocalTypeFun (b0,b1,b2)) ->
@@ -3418,7 +3415,7 @@ class fold2 =
             let self = self#module_type a2 b2 in self#module_type a3 b3
         | (`Sig (a0,a1),`Sig (b0,b1)) ->
             let self = self#loc a0 b0 in self#sig_item a1 b1
-        | (`MtWit (a0,a1,a2),`MtWit (b0,b1,b2)) ->
+        | (`With (a0,a1,a2),`With (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#module_type a1 b1 in self#with_constr a2 b2
         | (`ModuleTypeOf (a0,a1),`ModuleTypeOf (b0,b1)) ->
@@ -3521,7 +3518,7 @@ class fold2 =
             let self = self#loc a0 b0 in
             let self = self#auident a1 b1 in
             let self = self#module_type a2 b2 in self#module_expr a3 b3
-        | (`ModuleConstraint (a0,a1,a2),`ModuleConstraint (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#auident a1 b1 in self#module_type a2 b2
         | ((#ant as a0),(#ant as b0)) -> (self#ant a0 b0 :>'self_type)
@@ -3554,8 +3551,7 @@ class fold2 =
             let self = self#module_type a2 b2 in self#module_expr a3 b3
         | (`Struct (a0,a1),`Struct (b0,b1)) ->
             let self = self#loc a0 b0 in self#str_item a1 b1
-        | (`ModuleExprConstraint (a0,a1,a2),`ModuleExprConstraint (b0,b1,b2))
-            ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             let self = self#loc a0 b0 in
             let self = self#module_expr a1 b1 in self#module_type a2 b2
         | (`PackageModule (a0,a1),`PackageModule (b0,b1)) ->
@@ -4064,8 +4060,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | `ExApp (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`ExApp@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_expr a2
-    | `ExAre (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`ExAre@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `ArrayDot (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_expr a2
     | `Array (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc a0
@@ -4077,8 +4073,8 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | `ExAsr (a0,a1) ->
         Format.fprintf fmt "@[<1>(`ExAsr@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1
-    | `ExAss (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`ExAss@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `Assign (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Assign@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_expr a2
     | `For (a0,a1,a2,a3,a4,a5) ->
         Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a@ %a)@]"
@@ -4142,20 +4138,20 @@ and pp_print_expr: 'fmt -> expr -> 'result =
     | `Com (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_expr a2
-    | `Constraint_exp (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`Constraint_exp@ %a@ %a@ %a)@]"
-          pp_print_loc a0 pp_print_expr a1 pp_print_ctyp a2
-    | `ExCoe (a0,a1,a2,a3) ->
-        Format.fprintf fmt "@[<1>(`ExCoe@ %a@ %a@ %a@ %a)@]" pp_print_loc a0
-          pp_print_expr a1 pp_print_ctyp a2 pp_print_ctyp a3
+    | `Constraint (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc a0
+          pp_print_expr a1 pp_print_ctyp a2
+    | `Coercion (a0,a1,a2,a3) ->
+        Format.fprintf fmt "@[<1>(`Coercion@ %a@ %a@ %a@ %a)@]" pp_print_loc
+          a0 pp_print_expr a1 pp_print_ctyp a2 pp_print_ctyp a3
     | `ExVrn (a0,a1) ->
         Format.fprintf fmt "@[<1>(`ExVrn@ %a@ %a)@]" pp_print_loc a0
           pp_print_string a1
     | `While (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`While@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1 pp_print_expr a2
-    | `Let_open (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`Let_open@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `LetOpen (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`LetOpen@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_ident a1 pp_print_expr a2
     | `LocalTypeFun (a0,a1,a2) ->
         Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a@ %a)@]" pp_print_loc
@@ -4176,8 +4172,8 @@ and pp_print_module_type: 'fmt -> module_type -> 'result =
     | `Sig (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" pp_print_loc a0
           pp_print_sig_item a1
-    | `MtWit (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`MtWit@ %a@ %a@ %a)@]" pp_print_loc a0
+    | `With (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`With@ %a@ %a@ %a)@]" pp_print_loc a0
           pp_print_module_type a1 pp_print_with_constr a2
     | `ModuleTypeOf (a0,a1) ->
         Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" pp_print_loc a0
@@ -4281,9 +4277,9 @@ and pp_print_module_binding: 'fmt -> module_binding -> 'result =
         Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
           pp_print_loc a0 pp_print_auident a1 pp_print_module_type a2
           pp_print_module_expr a3
-    | `ModuleConstraint (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
-          pp_print_loc a0 pp_print_auident a1 pp_print_module_type a2
+    | `Constraint (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc a0
+          pp_print_auident a1 pp_print_module_type a2
     | #ant as a0 -> (pp_print_ant fmt a0 :>'result)
 and pp_print_match_case: 'fmt -> match_case -> 'result =
   fun fmt  ->
@@ -4313,9 +4309,9 @@ and pp_print_module_expr: 'fmt -> module_expr -> 'result =
     | `Struct (a0,a1) ->
         Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" pp_print_loc a0
           pp_print_str_item a1
-    | `ModuleExprConstraint (a0,a1,a2) ->
-        Format.fprintf fmt "@[<1>(`ModuleExprConstraint@ %a@ %a@ %a)@]"
-          pp_print_loc a0 pp_print_module_expr a1 pp_print_module_type a2
+    | `Constraint (a0,a1,a2) ->
+        Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc a0
+          pp_print_module_expr a1 pp_print_module_type a2
     | `PackageModule (a0,a1) ->
         Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" pp_print_loc a0
           pp_print_expr a1
@@ -4660,12 +4656,12 @@ class iter =
       | `ExAcc (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | #ant as a0 -> (self#ant a0 :>'result)
       | `ExApp (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
-      | `ExAre (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
+      | `ArrayDot (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `Array (a0,a1) -> (self#loc a0; self#expr a1)
       | `Sem (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `ExAsf a0 -> self#loc a0
       | `ExAsr (a0,a1) -> (self#loc a0; self#expr a1)
-      | `ExAss (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
+      | `Assign (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
       | `For (a0,a1,a2,a3,a4,a5) ->
           (self#loc a0;
            self#alident a1;
@@ -4698,13 +4694,12 @@ class iter =
       | `Try (a0,a1,a2) -> (self#loc a0; self#expr a1; self#match_case a2)
       | `Tup (a0,a1) -> (self#loc a0; self#expr a1)
       | `Com (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
-      | `Constraint_exp (a0,a1,a2) ->
-          (self#loc a0; self#expr a1; self#ctyp a2)
-      | `ExCoe (a0,a1,a2,a3) ->
+      | `Constraint (a0,a1,a2) -> (self#loc a0; self#expr a1; self#ctyp a2)
+      | `Coercion (a0,a1,a2,a3) ->
           (self#loc a0; self#expr a1; self#ctyp a2; self#ctyp a3)
       | `ExVrn (a0,a1) -> (self#loc a0; self#string a1)
       | `While (a0,a1,a2) -> (self#loc a0; self#expr a1; self#expr a2)
-      | `Let_open (a0,a1,a2) -> (self#loc a0; self#ident a1; self#expr a2)
+      | `LetOpen (a0,a1,a2) -> (self#loc a0; self#ident a1; self#expr a2)
       | `LocalTypeFun (a0,a1,a2) ->
           (self#loc a0; self#alident a1; self#expr a2)
       | `Package_expr (a0,a1) -> (self#loc a0; self#module_expr a1)
@@ -4718,7 +4713,7 @@ class iter =
            self#module_type a2;
            self#module_type a3)
       | `Sig (a0,a1) -> (self#loc a0; self#sig_item a1)
-      | `MtWit (a0,a1,a2) ->
+      | `With (a0,a1,a2) ->
           (self#loc a0; self#module_type a1; self#with_constr a2)
       | `ModuleTypeOf (a0,a1) -> (self#loc a0; self#module_expr a1)
       | #ant as a0 -> (self#ant a0 :>'result)
@@ -4779,7 +4774,7 @@ class iter =
            self#auident a1;
            self#module_type a2;
            self#module_expr a3)
-      | `ModuleConstraint (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           (self#loc a0; self#auident a1; self#module_type a2)
       | #ant as a0 -> (self#ant a0 :>'result)
     method match_case : match_case -> 'result=
@@ -4802,7 +4797,7 @@ class iter =
            self#module_type a2;
            self#module_expr a3)
       | `Struct (a0,a1) -> (self#loc a0; self#str_item a1)
-      | `ModuleExprConstraint (a0,a1,a2) ->
+      | `Constraint (a0,a1,a2) ->
           (self#loc a0; self#module_expr a1; self#module_type a2)
       | `PackageModule (a0,a1) -> (self#loc a0; self#expr a1)
       | #ant as a0 -> (self#ant a0 :>'result)
@@ -5327,10 +5322,10 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
             let a2 = self#expr a2 b2 in `ExApp (a0, a1, a2)
-        | (`ExAre (a0,a1,a2),`ExAre (b0,b1,b2)) ->
+        | (`ArrayDot (a0,a1,a2),`ArrayDot (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
-            let a2 = self#expr a2 b2 in `ExAre (a0, a1, a2)
+            let a2 = self#expr a2 b2 in `ArrayDot (a0, a1, a2)
         | (`Array (a0,a1),`Array (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in `Array (a0, a1)
@@ -5342,10 +5337,10 @@ class map2 =
         | (`ExAsr (a0,a1),`ExAsr (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in `ExAsr (a0, a1)
-        | (`ExAss (a0,a1,a2),`ExAss (b0,b1,b2)) ->
+        | (`Assign (a0,a1,a2),`Assign (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
-            let a2 = self#expr a2 b2 in `ExAss (a0, a1, a2)
+            let a2 = self#expr a2 b2 in `Assign (a0, a1, a2)
         | (`For (a0,a1,a2,a3,a4,a5),`For (b0,b1,b2,b3,b4,b5)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
@@ -5428,15 +5423,15 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
             let a2 = self#expr a2 b2 in `Com (a0, a1, a2)
-        | (`Constraint_exp (a0,a1,a2),`Constraint_exp (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
-            let a2 = self#ctyp a2 b2 in `Constraint_exp (a0, a1, a2)
-        | (`ExCoe (a0,a1,a2,a3),`ExCoe (b0,b1,b2,b3)) ->
+            let a2 = self#ctyp a2 b2 in `Constraint (a0, a1, a2)
+        | (`Coercion (a0,a1,a2,a3),`Coercion (b0,b1,b2,b3)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
             let a2 = self#ctyp a2 b2 in
-            let a3 = self#ctyp a3 b3 in `ExCoe (a0, a1, a2, a3)
+            let a3 = self#ctyp a3 b3 in `Coercion (a0, a1, a2, a3)
         | (`ExVrn (a0,a1),`ExVrn (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#string a1 b1 in `ExVrn (a0, a1)
@@ -5444,10 +5439,10 @@ class map2 =
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in
             let a2 = self#expr a2 b2 in `While (a0, a1, a2)
-        | (`Let_open (a0,a1,a2),`Let_open (b0,b1,b2)) ->
+        | (`LetOpen (a0,a1,a2),`LetOpen (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#ident a1 b1 in
-            let a2 = self#expr a2 b2 in `Let_open (a0, a1, a2)
+            let a2 = self#expr a2 b2 in `LetOpen (a0, a1, a2)
         | (`LocalTypeFun (a0,a1,a2),`LocalTypeFun (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#alident a1 b1 in
@@ -5471,10 +5466,10 @@ class map2 =
         | (`Sig (a0,a1),`Sig (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#sig_item a1 b1 in `Sig (a0, a1)
-        | (`MtWit (a0,a1,a2),`MtWit (b0,b1,b2)) ->
+        | (`With (a0,a1,a2),`With (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#module_type a1 b1 in
-            let a2 = self#with_constr a2 b2 in `MtWit (a0, a1, a2)
+            let a2 = self#with_constr a2 b2 in `With (a0, a1, a2)
         | (`ModuleTypeOf (a0,a1),`ModuleTypeOf (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#module_expr a1 b1 in `ModuleTypeOf (a0, a1)
@@ -5604,10 +5599,10 @@ class map2 =
             let a1 = self#auident a1 b1 in
             let a2 = self#module_type a2 b2 in
             let a3 = self#module_expr a3 b3 in `ModuleBind (a0, a1, a2, a3)
-        | (`ModuleConstraint (a0,a1,a2),`ModuleConstraint (b0,b1,b2)) ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#auident a1 b1 in
-            let a2 = self#module_type a2 b2 in `ModuleConstraint (a0, a1, a2)
+            let a2 = self#module_type a2 b2 in `Constraint (a0, a1, a2)
         | ((#ant as a0),(#ant as b0)) ->
             (self#ant a0 b0 : ant  :>module_binding)
         | (_,_) -> invalid_arg "map2 failure"
@@ -5645,12 +5640,10 @@ class map2 =
         | (`Struct (a0,a1),`Struct (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#str_item a1 b1 in `Struct (a0, a1)
-        | (`ModuleExprConstraint (a0,a1,a2),`ModuleExprConstraint (b0,b1,b2))
-            ->
+        | (`Constraint (a0,a1,a2),`Constraint (b0,b1,b2)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#module_expr a1 b1 in
-            let a2 = self#module_type a2 b2 in
-            `ModuleExprConstraint (a0, a1, a2)
+            let a2 = self#module_type a2 b2 in `Constraint (a0, a1, a2)
         | (`PackageModule (a0,a1),`PackageModule (b0,b1)) ->
             let a0 = self#loc a0 b0 in
             let a1 = self#expr a1 b1 in `PackageModule (a0, a1)
@@ -6644,13 +6637,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "ExApp")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
-            | `ExAre (a0,a1,a2) ->
+            | `ArrayDot (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "ExAre")),
+                            (_loc, (`ExVrn (_loc, "ArrayDot")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
             | `Array (a0,a1) ->
@@ -6676,13 +6669,13 @@ module Make(MetaLoc:META_LOC) =
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "ExAsr")), (meta_loc _loc a0))),
                     (meta_expr _loc a1))
-            | `ExAss (a0,a1,a2) ->
+            | `Assign (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "ExAss")),
+                            (_loc, (`ExVrn (_loc, "Assign")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
             | `For (a0,a1,a2,a3,a4,a5) ->
@@ -6866,16 +6859,16 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "Com")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
-            | `Constraint_exp (a0,a1,a2) ->
+            | `Constraint (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "Constraint_exp")),
+                            (_loc, (`ExVrn (_loc, "Constraint")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_ctyp _loc a2))
-            | `ExCoe (a0,a1,a2,a3) ->
+            | `Coercion (a0,a1,a2,a3) ->
                 `ExApp
                   (_loc,
                     (`ExApp
@@ -6883,7 +6876,7 @@ module Make(MetaLoc:META_LOC) =
                          (`ExApp
                             (_loc,
                               (`ExApp
-                                 (_loc, (`ExVrn (_loc, "ExCoe")),
+                                 (_loc, (`ExVrn (_loc, "Coercion")),
                                    (meta_loc _loc a0))), (meta_expr _loc a1))),
                          (meta_ctyp _loc a2))), (meta_ctyp _loc a3))
             | `ExVrn (a0,a1) ->
@@ -6901,13 +6894,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`ExVrn (_loc, "While")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
-            | `Let_open (a0,a1,a2) ->
+            | `LetOpen (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "Let_open")),
+                            (_loc, (`ExVrn (_loc, "LetOpen")),
                               (meta_loc _loc a0))), (meta_ident _loc a1))),
                     (meta_expr _loc a2))
             | `LocalTypeFun (a0,a1,a2) ->
@@ -6954,13 +6947,13 @@ module Make(MetaLoc:META_LOC) =
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "Sig")), (meta_loc _loc a0))),
                     (meta_sig_item _loc a1))
-            | `MtWit (a0,a1,a2) ->
+            | `With (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "MtWit")),
+                            (_loc, (`ExVrn (_loc, "With")),
                               (meta_loc _loc a0))),
                          (meta_module_type _loc a1))),
                     (meta_with_constr _loc a2))
@@ -7205,13 +7198,13 @@ module Make(MetaLoc:META_LOC) =
                               (meta_auident _loc a1))),
                          (meta_module_type _loc a2))),
                     (meta_module_expr _loc a3))
-            | `ModuleConstraint (a0,a1,a2) ->
+            | `Constraint (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "ModuleConstraint")),
+                            (_loc, (`ExVrn (_loc, "Constraint")),
                               (meta_loc _loc a0))), (meta_auident _loc a1))),
                     (meta_module_type _loc a2))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
@@ -7280,13 +7273,13 @@ module Make(MetaLoc:META_LOC) =
                     (`ExApp
                        (_loc, (`ExVrn (_loc, "Struct")), (meta_loc _loc a0))),
                     (meta_str_item _loc a1))
-            | `ModuleExprConstraint (a0,a1,a2) ->
+            | `Constraint (a0,a1,a2) ->
                 `ExApp
                   (_loc,
                     (`ExApp
                        (_loc,
                          (`ExApp
-                            (_loc, (`ExVrn (_loc, "ModuleExprConstraint")),
+                            (_loc, (`ExVrn (_loc, "Constraint")),
                               (meta_loc _loc a0))),
                          (meta_module_expr _loc a1))),
                     (meta_module_type _loc a2))
@@ -8402,13 +8395,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "ExApp")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
-            | `ExAre (a0,a1,a2) ->
+            | `ArrayDot (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "ExAre")),
+                            (_loc, (`PaVrn (_loc, "ArrayDot")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
             | `Array (a0,a1) ->
@@ -8434,13 +8427,13 @@ module Make(MetaLoc:META_LOC) =
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "ExAsr")), (meta_loc _loc a0))),
                     (meta_expr _loc a1))
-            | `ExAss (a0,a1,a2) ->
+            | `Assign (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "ExAss")),
+                            (_loc, (`PaVrn (_loc, "Assign")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
             | `For (a0,a1,a2,a3,a4,a5) ->
@@ -8624,16 +8617,16 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "Com")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
-            | `Constraint_exp (a0,a1,a2) ->
+            | `Constraint (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "Constraint_exp")),
+                            (_loc, (`PaVrn (_loc, "Constraint")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_ctyp _loc a2))
-            | `ExCoe (a0,a1,a2,a3) ->
+            | `Coercion (a0,a1,a2,a3) ->
                 `PaApp
                   (_loc,
                     (`PaApp
@@ -8641,7 +8634,7 @@ module Make(MetaLoc:META_LOC) =
                          (`PaApp
                             (_loc,
                               (`PaApp
-                                 (_loc, (`PaVrn (_loc, "ExCoe")),
+                                 (_loc, (`PaVrn (_loc, "Coercion")),
                                    (meta_loc _loc a0))), (meta_expr _loc a1))),
                          (meta_ctyp _loc a2))), (meta_ctyp _loc a3))
             | `ExVrn (a0,a1) ->
@@ -8659,13 +8652,13 @@ module Make(MetaLoc:META_LOC) =
                             (_loc, (`PaVrn (_loc, "While")),
                               (meta_loc _loc a0))), (meta_expr _loc a1))),
                     (meta_expr _loc a2))
-            | `Let_open (a0,a1,a2) ->
+            | `LetOpen (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "Let_open")),
+                            (_loc, (`PaVrn (_loc, "LetOpen")),
                               (meta_loc _loc a0))), (meta_ident _loc a1))),
                     (meta_expr _loc a2))
             | `LocalTypeFun (a0,a1,a2) ->
@@ -8712,13 +8705,13 @@ module Make(MetaLoc:META_LOC) =
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "Sig")), (meta_loc _loc a0))),
                     (meta_sig_item _loc a1))
-            | `MtWit (a0,a1,a2) ->
+            | `With (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "MtWit")),
+                            (_loc, (`PaVrn (_loc, "With")),
                               (meta_loc _loc a0))),
                          (meta_module_type _loc a1))),
                     (meta_with_constr _loc a2))
@@ -8963,13 +8956,13 @@ module Make(MetaLoc:META_LOC) =
                               (meta_auident _loc a1))),
                          (meta_module_type _loc a2))),
                     (meta_module_expr _loc a3))
-            | `ModuleConstraint (a0,a1,a2) ->
+            | `Constraint (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "ModuleConstraint")),
+                            (_loc, (`PaVrn (_loc, "Constraint")),
                               (meta_loc _loc a0))), (meta_auident _loc a1))),
                     (meta_module_type _loc a2))
             | #ant as a0 -> (meta_ant _loc a0 :>'result)
@@ -9038,13 +9031,13 @@ module Make(MetaLoc:META_LOC) =
                     (`PaApp
                        (_loc, (`PaVrn (_loc, "Struct")), (meta_loc _loc a0))),
                     (meta_str_item _loc a1))
-            | `ModuleExprConstraint (a0,a1,a2) ->
+            | `Constraint (a0,a1,a2) ->
                 `PaApp
                   (_loc,
                     (`PaApp
                        (_loc,
                          (`PaApp
-                            (_loc, (`PaVrn (_loc, "ModuleExprConstraint")),
+                            (_loc, (`PaVrn (_loc, "Constraint")),
                               (meta_loc _loc a0))),
                          (meta_module_expr _loc a1))),
                     (meta_module_type _loc a2))
@@ -9801,7 +9794,7 @@ class clean_ast =
       | st -> st
     method! module_type mt =
       match super#module_type mt with
-      | `MtWit (_loc,mt,`Nil _l) -> mt
+      | `With (_loc,mt,`Nil _l) -> mt
       | mt -> mt
     method! class_expr ce =
       match super#class_expr ce with

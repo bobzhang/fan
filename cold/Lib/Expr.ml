@@ -160,7 +160,7 @@ let bigarray_set loc var newval =
                                                             `Lid (_,"get")))),arr),c1),c2),c3)
       ->
       Some
-        (`ExAss
+        (`Assign
            (loc,
              (`ExAcc
                 (loc,

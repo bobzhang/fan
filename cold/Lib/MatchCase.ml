@@ -14,7 +14,7 @@ let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
     | Obj (Map ) ->
         `Case
           (_loc, pat, (`Nil _loc),
-            (`ExCoe (_loc, e, (`Id (_loc, name)), annot)))
+            (`Coercion (_loc, e, (`Id (_loc, name)), annot)))
     | _ ->
         `Case
-          (_loc, pat, (`Nil _loc), (`ExCoe (_loc, e, (`Nil _loc), annot)))
+          (_loc, pat, (`Nil _loc), (`Coercion (_loc, e, (`Nil _loc), annot)))

@@ -160,7 +160,7 @@ let _ =
                                 (_loc, (`ReNil _loc),
                                   (`Bind
                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                       (`Constraint_exp
+                                       (`Constraint
                                           (_loc,
                                             (`ExApp
                                                (_loc, mk, (`Str (_loc, d)))),
@@ -176,7 +176,7 @@ let _ =
                                 (_loc, (`ReNil _loc),
                                   (`Bind
                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                       (`Constraint_exp
+                                       (`Constraint
                                           (_loc,
                                             (`ExApp
                                                (_loc, mk, (`Str (_loc, x)))),

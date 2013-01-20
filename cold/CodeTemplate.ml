@@ -21,7 +21,7 @@ let base1_types =
           (_loc, (`ReNil _loc),
             (`Bind
                (_loc, (`Id (_loc, (`Lid (_loc, "pp_print_unit")))),
-                 (`Constraint_exp
+                 (`Constraint
                     (_loc,
                       (`Fun
                          (_loc,
@@ -65,7 +65,7 @@ let base1_types =
           (_loc, (`ReNil _loc),
             (`Bind
                (_loc, (`Id (_loc, (`Lid (_loc, "eq_unit")))),
-                 (`Constraint_exp
+                 (`Constraint
                     (_loc,
                       (`Fun
                          (_loc,
@@ -113,7 +113,7 @@ let print_base1 =
                   (_loc, (`ReNil _loc),
                     (`Bind
                        (_loc, (`Id (_loc, (`Lid (_loc, name)))),
-                         (`Constraint_exp
+                         (`Constraint
                             (_loc,
                               (`Fun
                                  (_loc,
@@ -313,7 +313,7 @@ let eq_base1 =
                   (_loc, (`ReNil _loc),
                     (`Bind
                        (_loc, (`Id (_loc, (`Lid (_loc, name)))),
-                         (`Constraint_exp
+                         (`Constraint
                             (_loc, (`Id (_loc, (`Lid (_loc, "=")))), ty)))))
             | `Custom s -> s)) in
   FanAst.sem_of_list items

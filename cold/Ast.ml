@@ -57,9 +57,9 @@ and patt =
 and expr =
   [ `Nil of loc | `Id of (loc* ident) | `ExAcc of (loc* expr* expr) | 
     ant
-  | `ExApp of (loc* expr* expr) | `ExAre of (loc* expr* expr)
+  | `ExApp of (loc* expr* expr) | `ArrayDot of (loc* expr* expr)
   | `Array of (loc* expr) | `Sem of (loc* expr* expr) | `ExAsf of loc
-  | `ExAsr of (loc* expr) | `ExAss of (loc* expr* expr)
+  | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
   | `For of (loc* alident* expr* expr* direction_flag* expr)
   | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
   | `IfThen of (loc* expr* expr) | literal | `Label of (loc* alident* expr)
@@ -71,14 +71,14 @@ and expr =
   | `Seq of (loc* expr) | `Send of (loc* expr* alident)
   | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
   | `Tup of (loc* expr) | `Com of (loc* expr* expr)
-  | `Constraint_exp of (loc* expr* ctyp) | `ExCoe of (loc* expr* ctyp* ctyp)
+  | `Constraint of (loc* expr* ctyp) | `Coercion of (loc* expr* ctyp* ctyp)
   | `ExVrn of (loc* string) | `While of (loc* expr* expr)
-  | `Let_open of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
+  | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)
   | `MtFun of (loc* auident* module_type* module_type)
-  | `Sig of (loc* sig_item) | `MtWit of (loc* module_type* with_constr)
+  | `Sig of (loc* sig_item) | `With of (loc* module_type* with_constr)
   | `ModuleTypeOf of (loc* module_expr) | ant] 
 and sig_item =
   [ `Nil of loc | `Class of (loc* class_type)
@@ -103,7 +103,7 @@ and rec_binding =
 and module_binding =
   [ `Nil of loc | `And of (loc* module_binding* module_binding)
   | `ModuleBind of (loc* auident* module_type* module_expr)
-  | `ModuleConstraint of (loc* auident* module_type) | ant] 
+  | `Constraint of (loc* auident* module_type) | ant] 
 and match_case =
   [ `Nil of loc | `Or of (loc* match_case* match_case)
   | `Case of (loc* patt* expr* expr) | ant] 
@@ -112,7 +112,7 @@ and module_expr =
   | `MeApp of (loc* module_expr* module_expr)
   | `Functor of (loc* auident* module_type* module_expr)
   | `Struct of (loc* str_item)
-  | `ModuleExprConstraint of (loc* module_expr* module_type)
+  | `Constraint of (loc* module_expr* module_type)
   | `PackageModule of (loc* expr) | ant] 
 and str_item =
   [ `Nil of loc | `Class of (loc* class_expr)

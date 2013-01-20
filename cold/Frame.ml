@@ -240,7 +240,7 @@ let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1)
              ~destination:Str_item simple_expr_of_ctyp) tydcl in
       `Bind
         (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
-          (`Constraint_exp (_loc, fun_expr, ty)))
+          (`Constraint (_loc, fun_expr, ty)))
     else
       (eprintf "Warning: %s as a abstract type no structure generated\n"
          (Ctyp.to_string tydcl);

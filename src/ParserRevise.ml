@@ -143,7 +143,7 @@ let apply () = begin
         [ S{b1}; "and"; S{b2} ->  {| $b1 and $b2 |}
         | `Ant (("module_binding"|"anti"|"" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
         | a_uident{m}; ":"; module_type{mt} ->
-            (* {| $uid:m : $mt |} *) `ModuleConstraint(_loc,m,mt)
+            (* {| $uid:m : $mt |} *) `Constraint(_loc,m,mt)
             (* {| $m : $mt |} *)
         | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
             (* {| $uid:m : $mt = $me |} *)
@@ -162,7 +162,7 @@ let apply () = begin
         | `Ant ((""|"module_binding"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_binding_tag
         | a_uident{m}; ":"; module_type{mt} ->
-            `ModuleConstraint(_loc,m,mt)
+            `Constraint(_loc,m,mt)
             (* {| $uid:m : $mt |} *) ] |};
 
   with with_constr

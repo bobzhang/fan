@@ -169,7 +169,7 @@ and package_type_constraints (wc : with_constr)
          (dump_with_constr wc) : (Longident.t Asttypes.loc* core_type) list )
 and package_type: module_type -> package_type =
   function
-  | `MtWit (_loc,`Id (_,i),wc) ->
+  | `With (_loc,`Id (_,i),wc) ->
       ((long_uident i), (package_type_constraints wc []))
   | `Id (_loc,i) -> ((long_uident i), [])
   | mt ->
@@ -468,7 +468,7 @@ let rec expr: expr -> expression =
              match al with | a::[] -> a | _ -> mkexp loc (Pexp_tuple al) in
            mkexp loc (Pexp_variant (s, (Some a)))
        | _ -> mkexp loc (Pexp_apply ((expr f), al)))
-  | `ExAre (loc,e1,e2) ->
+  | `ArrayDot (loc,e1,e2) ->
       mkexp loc
         (Pexp_apply
            ((mkexp loc (Pexp_ident (array_function loc "Array" "get"))),
@@ -476,7 +476,7 @@ let rec expr: expr -> expression =
   | `Array (loc,e) ->
       mkexp loc (Pexp_array (List.map expr (list_of_sem' e [])))
   | `ExAsf loc -> mkexp loc Pexp_assertfalse
-  | `ExAss (loc,e,v) ->
+  | `Assign (loc,e,v) ->
       let e =
         match e with
         | `ExAcc (loc,x,`Id (_,`Lid (_,"contents"))) ->
@@ -487,7 +487,7 @@ let rec expr: expr -> expression =
             (match (expr e).pexp_desc with
              | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (expr v))
              | _ -> error loc "bad record access")
-        | `ExAre (loc,e1,e2) ->
+        | `ArrayDot (loc,e1,e2) ->
             Pexp_apply
               ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
                 [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
@@ -502,7 +502,7 @@ let rec expr: expr -> expression =
   | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
   | `Chr (loc,s) ->
       mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
-  | `ExCoe (loc,e,t1,t2) ->
+  | `Coercion (loc,e,t1,t2) ->
       let t1 = match t1 with | `Nil _ -> None | t -> Some (ctyp t) in
       mkexp loc (Pexp_constraint ((expr e), t1, (Some (ctyp t2))))
   | `Flo (loc,s) ->
@@ -628,7 +628,7 @@ let rec expr: expr -> expression =
       mkexp loc
         (Pexp_tuple (List.map expr (list_of_com' e1 (list_of_com' e2 []))))
   | `Tup (loc,_) -> error loc "singleton tuple"
-  | `Constraint_exp (loc,e,t) ->
+  | `Constraint (loc,e,t) ->
       mkexp loc (Pexp_constraint ((expr e), (Some (ctyp t)), None))
   | `Id (loc,`Uid (_,"()")) ->
       mkexp loc (Pexp_construct ((lident_with_loc "()" loc), None, true))
@@ -641,8 +641,8 @@ let rec expr: expr -> expression =
   | `While (loc,e1,el) ->
       let e2 = `Seq (loc, el) in
       mkexp loc (Pexp_while ((expr e1), (expr e2)))
-  | `Let_open (loc,i,e) -> mkexp loc (Pexp_open ((long_uident i), (expr e)))
-  | `Package_expr (loc,`ModuleExprConstraint (_,me,pt)) ->
+  | `LetOpen (loc,i,e) -> mkexp loc (Pexp_open ((long_uident i), (expr e)))
+  | `Package_expr (loc,`Constraint (_,me,pt)) ->
       mkexp loc
         (Pexp_constraint
            ((mkexp loc (Pexp_pack (module_expr me))),
@@ -676,7 +676,7 @@ and binding x acc =
   match x with
   | `And (_loc,x,y) -> binding x (binding y acc)
   | `Bind
-      (_loc,`Id (sloc,`Lid (_,bind_name)),`Constraint_exp
+      (_loc,`Id (sloc,`Lid (_,bind_name)),`Constraint
                                             (_,e,`TyTypePol (_,vs,ty)))
       ->
       let rec id_to_string x =
@@ -702,7 +702,7 @@ and binding x acc =
              ((mkpat (Ppat_var (with_loc bind_name sloc))),
                (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
       let e = mk_newtypes vars in (pat, e) :: acc
-  | `Bind (_loc,p,`Constraint_exp (_,e,`TyPol (_,vs,ty))) ->
+  | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) ->
       ((patt (`PaTyc (_loc, p, (`TyPol (_loc, vs, ty))))), (expr e)) :: acc
   | `Bind (_loc,p,e) -> ((patt p), (expr e)) :: acc
   | `Nil _loc -> acc
@@ -795,7 +795,7 @@ and module_type: Ast.module_type -> Parsetree.module_type =
                 ((with_loc n sloc), (module_type nt), (module_type mt)))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Sig (loc,sl) -> mkmty loc (Pmty_signature (sig_item sl []))
-  | `MtWit (loc,mt,wc) ->
+  | `With (loc,mt,wc) ->
       mkmty loc (Pmty_with ((module_type mt), (mkwithc wc)))
   | `ModuleTypeOf (_loc,me) -> mkmty _loc (Pmty_typeof (module_expr me))
   | `Ant (_loc,_) -> assert false
@@ -862,7 +862,7 @@ and module_sig_binding (x : module_binding)
   (acc : (string Asttypes.loc* Parsetree.module_type) list) =
   match x with
   | `And (_loc,x,y) -> module_sig_binding x (module_sig_binding y acc)
-  | `ModuleConstraint (_loc,s,mt) ->
+  | `Constraint (_loc,s,mt) ->
       (match s with
        | `Uid (sloc,s) -> ((with_loc s sloc), (module_type mt)) :: acc
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
@@ -890,9 +890,9 @@ and module_expr =
                 ((with_loc n sloc), (module_type mt), (module_expr me)))
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `Struct (loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
-  | `ModuleExprConstraint (loc,me,mt) ->
+  | `Constraint (loc,me,mt) ->
       mkmod loc (Pmod_constraint ((module_expr me), (module_type mt)))
-  | `PackageModule (loc,`Constraint_exp (_,e,`Package (_,pt))) ->
+  | `PackageModule (loc,`Constraint (_,e,`Package (_,pt))) ->
       mkmod loc
         (Pmod_unpack
            (mkexp loc

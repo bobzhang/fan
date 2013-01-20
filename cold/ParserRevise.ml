@@ -229,7 +229,7 @@ let apply () =
             (Gram.mk_action
                (fun (me : 'module_expr)  _  (mt : 'module_type)  _ 
                   (_loc : FanLoc.t)  ->
-                  (`ModuleExprConstraint (_loc, me, mt) : 'module_binding0 ))));
+                  (`Constraint (_loc, me, mt) : 'module_binding0 ))));
           ([`Skeyword "=";
            `Snterm (Gram.obj (module_expr : 'module_expr Gram.t ))],
             (Gram.mk_action
@@ -297,7 +297,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (mt : 'module_type)  _  (me : 'module_expr)  _ 
                  (_loc : FanLoc.t)  ->
-                 (`ModuleExprConstraint (_loc, me, mt) : 'module_expr ))));
+                 (`Constraint (_loc, me, mt) : 'module_expr ))));
          ([`Skeyword "("; `Sself; `Skeyword ")"],
            (Gram.mk_action
               (fun _  (me : 'module_expr)  _  (_loc : FanLoc.t)  ->
@@ -319,7 +319,7 @@ let apply () =
               (fun _  (p : 'module_type)  _  (e : 'expr)  _  _ 
                  (_loc : FanLoc.t)  ->
                  (`PackageModule
-                    (_loc, (`Constraint_exp (_loc, e, (`Package (_loc, p))))) : 
+                    (_loc, (`Constraint (_loc, e, (`Package (_loc, p))))) : 
                  'module_expr ))))])]));
   (Gram.extend (module_binding_quot : 'module_binding_quot Gram.t )
      (None,
@@ -347,7 +347,7 @@ let apply () =
             (Gram.mk_action
                (fun (mt : 'module_type)  _  (m : 'a_uident) 
                   (_loc : FanLoc.t)  ->
-                  (`ModuleConstraint (_loc, m, mt) : 'module_binding_quot ))));
+                  (`Constraint (_loc, m, mt) : 'module_binding_quot ))));
           ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
            `Skeyword ":";
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
@@ -437,7 +437,7 @@ let apply () =
             (Gram.mk_action
                (fun (mt : 'module_type)  _  (m : 'a_uident) 
                   (_loc : FanLoc.t)  ->
-                  (`ModuleConstraint (_loc, m, mt) : 'module_rec_declaration ))))])]));
+                  (`Constraint (_loc, m, mt) : 'module_rec_declaration ))))])]));
   (Gram.extend (with_constr_quot : 'with_constr_quot Gram.t )
      (None,
        [(None, None,
@@ -545,7 +545,7 @@ let apply () =
             (Gram.mk_action
                (fun (wc : 'with_constr)  _  (mt : 'module_type) 
                   (_loc : FanLoc.t)  ->
-                  (`MtWit (_loc, mt, wc) : 'module_type ))))]);
+                  (`With (_loc, mt, wc) : 'module_type ))))]);
        ((Some "apply"), None,
          [([`Sself; `Sself],
             (Gram.mk_action
@@ -872,15 +872,15 @@ let apply () =
             (Gram.mk_action
                (fun (e : 'expr)  _  (t2 : 'ctyp)  _ 
                   (t1 : 'unquoted_typevars)  _  _  (_loc : FanLoc.t)  ->
-                  (let u = `TyPol (_loc, t1, t2) in
-                   `Constraint_exp (_loc, e, u) : 'cvalue_binding ))));
+                  (let u = `TyPol (_loc, t1, t2) in `Constraint (_loc, e, u) : 
+                  'cvalue_binding ))));
           ([`Skeyword ":";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
             (Gram.mk_action
                (fun (e : 'expr)  _  (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                  (`Constraint_exp (_loc, e, t) : 'cvalue_binding ))));
+                  (`Constraint (_loc, e, t) : 'cvalue_binding ))));
           ([`Skeyword ":";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword ":>";
@@ -893,14 +893,14 @@ let apply () =
                   (match t with
                    | `TyPol (_loc,_,_) ->
                        raise (XStream.Error "unexpected polytype here")
-                   | _ -> `ExCoe (_loc, e, t, t2) : 'cvalue_binding ))));
+                   | _ -> `Coercion (_loc, e, t, t2) : 'cvalue_binding ))));
           ([`Skeyword ":>";
            `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
            `Skeyword "=";
            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
             (Gram.mk_action
                (fun (e : 'expr)  _  (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                  (`ExCoe (_loc, e, (`Nil _loc), t) : 'cvalue_binding ))))])]);
+                  (`Coercion (_loc, e, (`Nil _loc), t) : 'cvalue_binding ))))])]);
    Gram.extend (fun_binding : 'fun_binding Gram.t )
      (None,
        [(None, (Some `RA),
@@ -1028,7 +1028,7 @@ let apply () =
            `Sself],
             (Gram.mk_action
                (fun (e : 'expr)  _  (i : 'module_longident)  _  _ 
-                  (_loc : FanLoc.t)  -> (`Let_open (_loc, i, e) : 'expr ))));
+                  (_loc : FanLoc.t)  -> (`LetOpen (_loc, i, e) : 'expr ))));
           ([`Skeyword "let";
            `Skeyword "try";
            `Snterm (Gram.obj (opt_rec : 'opt_rec Gram.t ));
@@ -1129,7 +1129,7 @@ let apply () =
          [([`Sself; `Skeyword ":="; `Sself],
             (Gram.mk_action
                (fun (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
-                  (`ExAss
+                  (`Assign
                      (_loc,
                        (`ExAcc
                           (_loc, e1, (`Id (_loc, (`Lid (_loc, "contents")))))),
@@ -1139,7 +1139,7 @@ let apply () =
               (fun (e2 : 'expr)  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
                  (match Expr.bigarray_set _loc e1 e2 with
                   | Some e -> e
-                  | None  -> `ExAss (_loc, e1, e2) : 'expr ))))]);
+                  | None  -> `Assign (_loc, e1, e2) : 'expr ))))]);
        ((Some "||"), (Some `RA),
          [([`Sself;
            `Snterm (Gram.obj (infixop0 : 'infixop0 Gram.t ));
@@ -1351,7 +1351,7 @@ let apply () =
          [([`Sself; `Skeyword "."; `Skeyword "("; `Sself; `Skeyword ")"],
             (Gram.mk_action
                (fun _  (e2 : 'expr)  _  _  (e1 : 'expr)  (_loc : FanLoc.t) 
-                  -> (`ExAre (_loc, e1, e2) : 'expr ))));
+                  -> (`ArrayDot (_loc, e1, e2) : 'expr ))));
          ([`Sself; `Skeyword "."; `Skeyword "["; `Sself; `Skeyword "]"],
            (Gram.mk_action
               (fun _  (e2 : 'expr)  _  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->
@@ -1481,7 +1481,7 @@ let apply () =
           `Skeyword ")"],
            (Gram.mk_action
               (fun _  (e : 'expr)  (i : 'module_longident_dot_lparen) 
-                 (_loc : FanLoc.t)  -> (`Let_open (_loc, i, e) : 'expr ))));
+                 (_loc : FanLoc.t)  -> (`LetOpen (_loc, i, e) : 'expr ))));
          ([`Snterm (Gram.obj (ident : 'ident Gram.t ))],
            (Gram.mk_action
               (fun (i : 'ident)  (_loc : FanLoc.t)  ->
@@ -1569,7 +1569,7 @@ let apply () =
           `Skeyword ")"],
            (Gram.mk_action
               (fun _  (t : 'ctyp)  _  (e : 'expr)  _  (_loc : FanLoc.t)  ->
-                 (`Constraint_exp (_loc, e, t) : 'expr ))));
+                 (`Constraint (_loc, e, t) : 'expr ))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ",";
@@ -1601,7 +1601,8 @@ let apply () =
           `Skeyword ")"],
            (Gram.mk_action
               (fun _  (t2 : 'ctyp)  _  (t : 'ctyp)  _  (e : 'expr)  _ 
-                 (_loc : FanLoc.t)  -> (`ExCoe (_loc, e, t, t2) : 'expr ))));
+                 (_loc : FanLoc.t)  -> (`Coercion (_loc, e, t, t2) : 
+                 'expr ))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ":>";
@@ -1609,7 +1610,7 @@ let apply () =
           `Skeyword ")"],
            (Gram.mk_action
               (fun _  (t : 'ctyp)  _  (e : 'expr)  _  (_loc : FanLoc.t)  ->
-                 (`ExCoe (_loc, e, (`Nil _loc), t) : 'expr ))));
+                 (`Coercion (_loc, e, (`Nil _loc), t) : 'expr ))));
          ([`Skeyword "("; `Sself; `Skeyword ")"],
            (Gram.mk_action
               (fun _  (e : 'expr)  _  (_loc : FanLoc.t)  -> (e : 'expr ))));
@@ -1639,8 +1640,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (pt : 'module_type)  _  (me : 'module_expr)  _  _ 
                  (_loc : FanLoc.t)  ->
-                 (`Package_expr
-                    (_loc, (`ModuleExprConstraint (_loc, me, pt))) : 
+                 (`Package_expr (_loc, (`Constraint (_loc, me, pt))) : 
                  'expr ))))])]);
    Gram.extend (sequence : 'sequence Gram.t )
      (None,
@@ -1723,7 +1723,7 @@ let apply () =
            `Sself],
             (Gram.mk_action
                (fun (e : 'sequence)  _  (i : 'module_longident)  _  _ 
-                  (_loc : FanLoc.t)  -> (`Let_open (_loc, i, e) : 'sequence ))));
+                  (_loc : FanLoc.t)  -> (`LetOpen (_loc, i, e) : 'sequence ))));
           ([`Stoken
               (((function | `Ant ("list",_) -> true | _ -> false)),
                 (`Normal, "`Ant (\"list\",_)"))],
@@ -4026,7 +4026,7 @@ let apply () =
             (Gram.mk_action
                (fun (e : 'expr)  _  (i : 'module_longident)  _  _ 
                   (_loc : FanLoc.t)  ->
-                  (`StExp (_loc, (`Let_open (_loc, i, e))) : 'str_item ))));
+                  (`StExp (_loc, (`LetOpen (_loc, i, e))) : 'str_item ))));
           ([`Skeyword "let";
            `Skeyword "try";
            `Snterm (Gram.obj (opt_rec : 'opt_rec Gram.t ));

@@ -89,8 +89,7 @@ let make_ctyp_patt styp tvar patt =
 let make_ctyp_expr styp tvar expr =
   match make_ctyp styp tvar with
   | None  -> expr
-  | Some t ->
-      let _loc = FanAst.loc_of expr in `Constraint_exp (_loc, expr, t)
+  | Some t -> let _loc = FanAst.loc_of expr in `Constraint (_loc, expr, t)
 let rec make_expr entry tvar =
   function
   | `TXmeta (_loc,n,tl,e,t) ->
@@ -149,7 +148,7 @@ let rec make_expr entry tvar =
                                  (_loc,
                                    (`IdAcc
                                       (_loc, (gm ()), (`Lid (_loc, "obj")))))),
-                              (`Constraint_exp
+                              (`Constraint
                                  (_loc, (n.expr),
                                    (`TyApp
                                       (_loc,
@@ -173,7 +172,7 @@ let rec make_expr entry tvar =
                       (`Id
                          (_loc,
                            (`IdAcc (_loc, (gm ()), (`Lid (_loc, "obj")))))),
-                      (`Constraint_exp
+                      (`Constraint
                          (_loc, (n.expr),
                            (`TyApp
                               (_loc,
@@ -238,7 +237,7 @@ let text_of_action _loc psl rtvar act tvar =
          | _ -> tok_match_pl) None psl in
   let e =
     let e1 =
-      `Constraint_exp
+      `Constraint
         (_loc, act,
           (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, rtvar)))))) in
     let e2 =
@@ -324,7 +323,7 @@ let text_of_entry _loc e =
   let ent =
     let x = e.name in
     let _loc = (e.name).loc in
-    `Constraint_exp
+    `Constraint
       (_loc, (x.expr),
         (`TyApp
            (_loc, (`Id (_loc, (`IdAcc (_loc, (gm ()), (`Lid (_loc, "t")))))),
@@ -372,7 +371,7 @@ let let_in_of_extend _loc gram gl default =
     | { expr = `Id (_,`Lid (_,i)); tvar = x; loc = _loc } ->
         `Bind
           (_loc, (`Id (_loc, (`Lid (_loc, i)))),
-            (`Constraint_exp
+            (`Constraint
                (_loc,
                  (`ExApp
                     (_loc,

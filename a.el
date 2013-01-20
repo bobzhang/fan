@@ -45,10 +45,15 @@
 
 (setq v
       (hash-table/from-list
-       "ExIfe" "IfThenElse"
-       "Sequence" "Seq"
-       "TyId" "Id"
-       "TyOr" "Or"
+       "MtWit" "With"
+       "Constraint_exp" "Constraint"
+       "ModuleConstraint" "Constraint"
+       "ModuleExprConstraint" "Constraint"
+       "ExAre" "ArrayDot"
+       "ExAss" "Assign"
+       "ExAsr" "Assert"
+       "ExCoe" "Coercion"
+       "Let_open" "LetOpen"
        )
       )
 

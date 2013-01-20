@@ -249,7 +249,7 @@ and package_type_constraints (wc:with_constr)
 and package_type : module_type -> package_type =
     with module_type fun
     [ (* {| $id:i with $wc |} *)
-      `MtWit(_loc,`Id(_,i),wc) ->
+      `With(_loc,`Id(_,i),wc) ->
       (long_uident i, package_type_constraints wc [])
     | (* {| $id:i |} *)
       `Id(_loc,i) -> (long_uident i, [])
@@ -622,13 +622,13 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
               | _ -> mkexp loc (Pexp_tuple al) ]
           in mkexp loc (Pexp_variant s (Some a))
       | _ -> mkexp loc (Pexp_apply (expr f) al) ]
-  | `ExAre (loc, e1, e2) ->
+  | `ArrayDot (loc, e1, e2) ->
       mkexp loc
         (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "get")))
            [("", expr e1); ("", expr e2)])
   | `Array (loc,e) -> mkexp loc (Pexp_array (List.map expr (list_of_sem' e []))) (* be more precise*)
   | `ExAsf loc -> mkexp loc Pexp_assertfalse
-  | `ExAss (loc,e,v) ->
+  | `Assign (loc,e,v) ->
       let e =
         match e with
         [ {@loc| $x.contents |} -> (* FIXME *)
@@ -638,7 +638,7 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
             match (expr e).pexp_desc with
             [ Pexp_field (e, lab) -> Pexp_setfield e lab (expr v)
             | _ -> error loc "bad record access" ]
-            | `ExAre (loc, e1, e2) ->
+            | `ArrayDot (loc, e1, e2) ->
                 Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))
                   [("", expr e1); ("", expr e2); ("", expr v)]
             | {@lloc| $lid:lab |}  ->
@@ -653,7 +653,7 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
   | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
   | `Chr (loc,s) ->
       mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
-  | `ExCoe (loc, e, t1, t2) ->
+  | `Coercion (loc, e, t1, t2) ->
       let t1 =
         match t1 with
         [ (* {:ctyp||} *)`Nil _ -> None
@@ -763,7 +763,7 @@ let rec expr : expr -> expression = with expr fun (* expr -> expression*)
    | {@loc| ($e1, $e2) |} ->
        mkexp loc (Pexp_tuple (List.map expr (list_of_com' e1 (list_of_com' e2 [])))) (* precise *)
    | {@loc| ($tup:_) |} -> error loc "singleton tuple"
-   | `Constraint_exp (loc,e,t) -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
+   | `Constraint (loc,e,t) -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
    | {@loc| () |} ->
        mkexp loc (Pexp_construct (lident_with_loc "()" loc) None true)
 
@@ -1016,7 +1016,7 @@ and module_sig_binding (x:module_binding)
     with module_binding match x with 
   [ {:module_binding| $x and $y |} ->
     module_sig_binding x (module_sig_binding y acc)
-  | (* {:module_binding@loc| $uid:s : $mt |} *) `ModuleConstraint(_loc,s,mt) ->
+  | (* {:module_binding@loc| $uid:s : $mt |} *) `Constraint(_loc,s,mt) ->
       match s with
       [`Uid(sloc,s) -> [(with_loc s sloc, module_type mt) :: acc]
       |`Ant(_loc,_) -> ANT_ERROR]
