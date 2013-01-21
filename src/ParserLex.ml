@@ -4,10 +4,10 @@ open Lib;
 open LibUtil;  
 open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 
-{:extend.create|Gram regexp chr ch_class regexps lex declare_regexp|};
+{:lang.create|Gram regexp chr ch_class regexps lex declare_regexp|};
 
 (* let apply () = *)
-  {:extend|Gram
+  {:lang.extend|Gram
     lex:
     [ "|"; L0[regexp{r};"->"; sequence{a} -> (r, Expr.mksequence  a)] SEP "|"{l} ->
       FanLexTools.gen_definition _loc l  ]

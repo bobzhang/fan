@@ -20,11 +20,11 @@ New syntax:\
 \n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\
 \n"; flush stderr; exit 1  end;
 
-{:extend.create|Gram pos_exprs|};
+{:lang.create|Gram pos_exprs|};
 let apply () = begin 
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
-    {:extend.clear|Gram
+    {:lang.clear|Gram
       amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
@@ -105,7 +105,7 @@ let apply () = begin
   end;
 
   with module_expr
-  {:extend|Gram
+  {:lang.extend|Gram
       module_expr_quot:
       [ module_expr{x} -> x
       | -> {||} ]
@@ -138,7 +138,7 @@ let apply () = begin
             {| (val $e : $p) |} ] } |};
 
   with module_binding
-      {:extend|Gram
+      {:lang.extend|Gram
         module_binding_quot:
         [ S{b1}; "and"; S{b2} ->  {| $b1 and $b2 |}
         | `Ant (("module_binding"|"anti"|"" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
@@ -166,7 +166,7 @@ let apply () = begin
             (* {| $uid:m : $mt |} *) ] |};
 
   with with_constr
-      {:extend|Gram
+      {:lang.extend|Gram
         with_constr_quot:
         [ with_constr{x} -> x  | -> {||} ]
         with_constr: 
@@ -179,7 +179,7 @@ let apply () = begin
         | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} -> {| module $i1 := $i2 |} ] |};
 
   with module_type
-    {:extend|Gram
+    {:lang.extend|Gram
       module_type:
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; S{t}; ")"; "->"; S{mt} ->
@@ -209,7 +209,7 @@ let apply () = begin
       [ module_type{x} -> x | -> {:module_type||} ]  |};
 
   with sig_item
-  {:extend|Gram
+  {:lang.extend|Gram
     sig_item_quot:
     [ "#"; a_lident{s}; opt_expr{dp} -> {| # $s $dp |}
     | sig_item{sg1}; semi; S{sg2} ->
@@ -247,7 +247,7 @@ let apply () = begin
  |};
 
     with expr
-    {:extend|Gram
+    {:lang.extend|Gram
       local:  fun_def_patt;
       expr_quot:
       [ expr{e1}; ","; comma_expr{e2} -> {| $e1, $e2 |}
@@ -467,7 +467,7 @@ let apply () = begin
        [ -> () ] |};
 
   with binding
-      {:extend|Gram
+      {:lang.extend|Gram
         binding_quot:
         [ binding{x} -> x | -> {||} ] 
         binding:
@@ -482,7 +482,7 @@ let apply () = begin
         [ patt{p}; fun_binding{e} -> {| $p = $e |} ] |};
 
   with match_case
-    {:extend|Gram
+    {:lang.extend|Gram
       match_case:
       [ "["; L0 match_case0 SEP "|"{l}; "]" -> {|  $list:l  |} (* FIXME *)
       | patt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
@@ -494,7 +494,7 @@ let apply () = begin
       [ L0 match_case0 SEP "|"{x} -> {| $list:x |}
       | -> {||} ]  |};
   with rec_binding
-      {:extend|Gram
+      {:lang.extend|Gram
         rec_binding_quot:
         [ label_expr_list{x} -> x | -> {||} ]
         label_expr:
@@ -514,7 +514,7 @@ let apply () = begin
         | field_expr{b1}; ";"            -> b1
         | field_expr{b1}                 -> b1  ] |};
   with patt
-    {:extend|Gram local: patt_constr;
+    {:lang.extend|Gram local: patt_constr;
 
        patt_quot:
        [ patt{x}; ","; comma_patt{y} -> {| $x, $y |}
@@ -670,7 +670,7 @@ let apply () = begin
        | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ] |};
     
     with ident
-    {:extend|Gram
+    {:lang.extend|Gram
 
       (* parse [a] [B], depreacated  *)
 
@@ -850,7 +850,7 @@ let apply () = begin
       patt_eoi:  [ patt{x}; `EOI -> x ] 
       expr_eoi:  [ expr{x}; `EOI -> x ]  |};
   with str_item
-    {:extend|Gram
+    {:lang.extend|Gram
     (* ml entrance *)    
       implem:
       [ "#"; a_lident{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ],  Some _loc)
@@ -918,7 +918,7 @@ let apply () = begin
         ] }   |};
 
   with class_sig_item
-    {:extend|Gram
+    {:lang.extend|Gram
       class_sig_item_quot:
       [ class_sig_item{x1}; semi; S{x2} ->
         match x2 with
@@ -946,7 +946,7 @@ let apply () = begin
       | (* type_constraint *)"constraint"; ctyp{t1}; "="; ctyp{t2} ->
           (* {| type $t1 = $t2 |} *) {|constraint $t1 = $t2|} ] |};  
   with class_str_item
-    {:extend|Gram
+    {:lang.extend|Gram
       class_structure:
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_str_item" n s) |}
         | `Ant ((""|"cst"|"anti"|"list" as n),s); semi; S{cst} ->
@@ -987,7 +987,7 @@ let apply () = begin
     |};
     
   with class_expr
-    {:extend|Gram
+    {:lang.extend|Gram
       class_expr_quot:
       [ S{ce1}; "and"; S{ce2} -> {| $ce1 and $ce2 |}
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
@@ -1031,7 +1031,7 @@ let apply () = begin
       [ class_longident{ci}; "["; comma_ctyp{t}; "]" -> {| $id:ci [ $t ] |}
       | class_longident{ci} -> {| $id:ci |}  ]  |};
   with class_type
-    {:extend|Gram
+    {:lang.extend|Gram
       class_description:
       [ S{cd1}; "and"; S{cd2} -> {| $cd1 and $cd2 |}
       | `Ant ((""|"typ"|"anti"|"list" as n),s) ->
@@ -1075,7 +1075,7 @@ end;
 
 let apply_ctyp () = begin
   with ctyp
-    {:extend|Gram
+    {:lang.extend|Gram
       ctyp_quot:
       [ more_ctyp{x}; ","; comma_ctyp{y} -> {| $x, $y |}
       | more_ctyp{x}; ";"; label_declaration_list{y} -> {| $x; $y |}

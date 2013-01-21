@@ -354,6 +354,7 @@ let mk_tok _loc ?restrict ~pattern styp = with expr
    let descr = string_of_patt no_variable in
    let text = `TXtok (_loc, match_fun, "Normal", descr) in
    {text; styp; pattern = Some pattern }
+     
  | Some restrict ->
      let p'= FanAst.wildcarder#patt pattern in
      let match_fun = 

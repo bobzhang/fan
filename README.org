@@ -67,49 +67,51 @@ it's 100% compatible with ocaml.
    
 ** Initial Install
 
-   just type =./dist=
+   just type
+   #+BEGIN_EXAMPLE
+   ocamlbuild cold/FanDriver.native
+   #+END_EXAMPLE
 
+** For developers (to continue)
+
+   #+BEGIN_EXAMPLE
+   ./re cold FanDriver.native
+   ./hb FanDriver.native 
+   #+END_EXAMPLE
+   
 *** What it mainly did
 
     - Start 
       
-      It will make =cold/Fan.byte= from original syntax This is mainly
-      for the cold start(compile from the original syntax
-      code). Actually all work is done.
+      =./re cold FanDriver.native= will make =cold/FanDriver.native=
+      the pre-processor engine.  for the cold start(compile from the
+      original syntax code).
 
     - Bootstrap
-      
+      =./hb FanDriver.native=
       Using the generated binary to preprocess the revised syntax to
       verify =Fan= reaches a fix point now.
 
-    If it reaches fix point, then it succeeds. You can also test =hb
-    Fan.native= for fun!
-   
-** Develop
+    If it reaches fix point, then it succeeds.
+*** snapshot
 
-   Everytime, you made some nontrival changes(change the grammar,
-   lexer), make sure to type =./hb Fan.byte= or =./hb Fan.native= to
-   verify it can be hot-bootstrapped.
+    #+BEGIN_EXAMPLE
+    ./snapshot
+    #+END_EXAMPLE
+    Pretty print the =revised syntax= to the =cold= Directory for distribution
 
-   Then type =./snapshot= to snapshot your changes to cold.(This is for
-   distribute purpose) 
-
-   If there's no bugs in =src/Pprintast.ml=, then it will work smoothly
-
+    Everytime, you made some nontrival changes(change the grammar,
+    lexer), make sure to type =./hb FanDriver.native= or to
+    verify it can be hot-bootstrapped.
+    Then type =./snapshot= to snapshot your changes to cold.(This is for
+    distribution purpose) 
 
 * Directory Structure
   
 ** src
    The main dev strcuture
 ** cold
-   The mirror of src, for distribute purpose 
-* For dev
-
-  the common practice is
-  #+BEGIN_SRC shell-script
-    ./hb Fan.byte # verify
-    ./snapshot # snapshot and verify again
-  #+END_SRC
+   The =mirror= of src, for distribute purpose 
 
 * Docs
   It will be coming soon ;-)

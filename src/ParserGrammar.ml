@@ -11,14 +11,17 @@ FanConfig.antiquotations := true;
 
 
 
-{:extend.create|Gram nonterminals nonterminalsclear
+{:lang.create|Gram nonterminals nonterminalsclear
   delete_rule_header extend_header  qualuid qualid t_qualid
   (entry_name : Gram.t ([=`name of string | `non] * FanGrammar.name))
-  locals entry position assoc name string pattern simple_expr delete_rules
-  simple_patt internal_patt|}  ;
+  locals entry position assoc name string
+  (pattern: Gram.t action_pattern)
+  simple_expr delete_rules
+  (simple_patt: Gram.t simple_patt)
+  internal_patt|}  ;
 
 
-{:extend|Gram
+{:lang.extend|Gram
   (*
 
     {[
@@ -74,7 +77,7 @@ FanConfig.antiquotations := true;
 |};
 
 
-{:extend|Gram
+{:lang.extend|Gram
 
   (* parse the header, return the current [grammar] and
      previous module name, it has side effect, and can not
@@ -189,26 +192,45 @@ FanConfig.antiquotations := true;
   (* stands for the non-terminal  *)
   name:[ qualid{il} -> mk_name _loc il ] 
 
+  (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
   [ qualid{il}; OPT[`STR(_,x)->x]{name} -> begin
     (match name with
-       [ Some x -> (let old = !AstQuotation.default in (AstQuotation.default:=x;`name old))
+     [ Some x -> (let old = !AstQuotation.default in (AstQuotation.default:=x;`name old))
      | None -> `non], mk_name _loc il)
-       (* (mk_name _loc il,`name) *)
    end]
+
+  (* return an entry [FanGrammar.entry]
+     {[
+     with str t entry {| entry:
+  [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
+     -> begin 
+       match n with
+       [`name old -> AstQuotation.default := old
+       | _ -> ()];  
+      mk_entry ~name:p ~pos ~levels
+     end] |}
+
+     
+     ]}
+   *)
   entry:
   [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
      -> begin 
        match n with
-         [`name old -> AstQuotation.default := old
+       [`name old -> AstQuotation.default := old
        | _ -> ()];  
-         mk_entry ~name:p ~pos ~levels
+      mk_entry ~name:p ~pos ~levels
      end]
+
+  (* parse [position] and translate into [expr] node, fixme,
+     delay the translation
+   *)
   position:
   [ `Uid ("First"|"Last" as x ) ->   {:expr| $vrn:x |}
-  | `Uid ("Before" | "After" | "Level" as x) ; string{n} ->
-    {:expr| $vrn:x  $n |}
+  | `Uid ("Before" | "After" | "Level" as x) ; string{n} -> {:expr| $vrn:x  $n |}
   | `Uid x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
+
   level_list:
   [ "{"; L1 level {ll}; "}" -> ll  | level {l} -> [l]] (* FIXME L1 does not work here *)
 
@@ -217,21 +239,63 @@ FanConfig.antiquotations := true;
      mk_level ~label ~assoc ~rules ]
    (* FIXME a conflict {:extend|Gram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
 
+
+  (* parse association, and translate into [expr] node. FIXME  *)
   assoc:
   [ `Uid ("LA"|"RA"|"NA" as x) ->     {:expr| $vrn:x |} 
   | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
+  (*
+    [retype_rule_list_with_patterns] do a simple transformation around rule list 
+   *)
   rule_list:
-  [ "["; "]" -> [] | "["; L1 rule SEP "|"{rules}; "]" ->  retype_rule_list_without_patterns _loc rules ]
+  [ "["; "]" -> [] | "["; L1 rule SEP "|"{rules}; "]" ->
+    retype_rule_list_without_patterns _loc rules ]
 
+
+  (* return a [rule]
+    {[
+     with str t rule {|  `Uid ("LA"|"RA"|"NA" as x)   |};
+- : FanGrammar.rule =
+{prod =
+  [{text =
+     `TXtok
+       (,
+        `Fun
+          (,
+           `Or
+             (,
+              `Case
+                (,
+                 `PaApp
+                   (, `PaVrn (, "Uid"),
+                    `Or
+                      (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA"))),
+                 `Nil , `Id (, `Lid (, "true"))),
+              `Case (, `Any , `Nil , `Id (, `Lid (, "false"))))),
+        "Normal", "`Uid (\"LA\"|\"RA\"|\"NA\")");
+    styp = `Tok ;
+    pattern =
+     Some
+      (`PaApp
+         (, `PaVrn (, "Uid"),
+          `Alias
+            (, `Or (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA")),
+             `Lid (, "x"))))}];
+ action = None}
+     ]}  
+   *)
   rule:
   [ L0 psymbol SEP ";"{psl}; OPT ["->"; expr{act}-> act]{action} ->
     mk_rule ~prod:psl ~action ]
 
+  (* return symbol with patterns (may override inferred patterns) *)
   psymbol:
   [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
-    match p with [Some _ -> {(s) with pattern = p } | None -> s]  ] 
+    match p with [Some _ ->
+      {(s) with pattern = (p: option action_pattern :> option patt) } | None -> s]  ] 
 
+  (* return symbol with pattern(inferred) or None  *)
   symbol:
   [ `Uid ("L0"| "L1" as x); S{s}; OPT [`Uid "SEP"; symbol{t} -> t ]{sep } ->
     let () = check_not_tok s in
@@ -264,7 +328,7 @@ FanConfig.antiquotations := true;
         ~styp:({:ctyp|'$lid:t |} )
         ~pattern:None
   | simple_patt{p} -> 
-    let (p,ls) = Expr.filter_patt_with_captured_variables p in
+    let (p,ls) = Expr.filter_patt_with_captured_variables (p : simple_patt :>patt) in
     match ls with
     [ [] -> mk_tok _loc ~pattern:p (`Tok _loc)
     | [(x,y)::ys] ->
@@ -282,17 +346,17 @@ FanConfig.antiquotations := true;
         (*    {text;} *)
         (*    mk_tok _loc ~pattern (`Tok _loc) *)
         
-    | `STR (_, s) ->
-        mk_symbol  ~text:(`TXkwd _loc s) ~styp:(`Tok _loc) ~pattern:None
-    | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
-        mk_symbol  ~text:(`TXnterm _loc n lev)
+  | `STR (_, s) ->
+      mk_symbol  ~text:(`TXkwd _loc s) ~styp:(`Tok _loc) ~pattern:None
+  | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
+      mk_symbol  ~text:(`TXnterm _loc n lev)
           ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
-    | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
-        let i = parse_ident _loc s in
-        let n = mk_name _loc i in
-        mk_symbol ~text:(`TXnterm _loc n lev)
+  | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
+      let i = parse_ident _loc s in
+      let n = mk_name _loc i in
+      mk_symbol ~text:(`TXnterm _loc n lev)
           ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
-    | "("; S{s}; ")" -> s ]
+  | "("; S{s}; ")" -> s ]
   
 
   simple_patt "patt":
@@ -307,7 +371,6 @@ FanConfig.antiquotations := true;
        [ [x] ->  {| $vrn:s $x |}
        | [x::xs] -> {|$vrn:s ($x,$list:xs)|}
        | _ -> assert false ]  ]
-
   internal_patt "patt":
   {
    "as"
@@ -323,7 +386,7 @@ FanConfig.antiquotations := true;
   pattern:
   [ `Lid i -> {:patt| $lid:i |}
   | "_" -> {:patt| _ |}
-  | "("; pattern{p}; ")" -> {:patt| $p |}
+  | "("; pattern{p}; ")" -> p
   | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
   string:
   [ `STR (_, s) -> {:expr| $str:s |}
@@ -333,18 +396,20 @@ FanConfig.antiquotations := true;
   symbol: 
   [`Uid ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; S{s} ->
      sfold _loc [x] f e s
-   |`Uid ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; S{s};`Uid ("SEP" as y); symbol{sep}  ->
+  |`Uid ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; S{s};`Uid ("SEP" as y);
+    symbol{sep}  ->
        sfold ~sep _loc [x;y] f e s  ]
 
   simple_expr:
    [ a_lident{i} -> {:expr| $(id:(i:>ident)) |}
    | "("; expr{e}; ")" -> e ]  |};
 
-AstQuotation.of_expr ~name:"extend" ~entry:extend_body;
-AstQuotation.of_expr ~name:"delete" ~entry:delete_rule_body;
-AstQuotation.of_expr ~name:"extend.clear" ~entry:nonterminalsclear;
 
-AstQuotation.of_str_item ~name:"extend.create" ~entry:nonterminals;
+AstQuotation.of_expr ~name:"lang.extend" ~entry:extend_body;
+AstQuotation.of_expr ~name:"lang.delete" ~entry:delete_rule_body;
+AstQuotation.of_expr ~name:"lang.clear" ~entry:nonterminalsclear;
+AstQuotation.of_str_item ~name:"lang.create" ~entry:nonterminals;
+
 
 Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented");
 

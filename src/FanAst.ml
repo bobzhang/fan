@@ -217,6 +217,12 @@ let rec com_of_list = fun
   | [t::ts] ->
       let _loc = loc_of t in `Com(_loc,t,com_of_list ts)  ];
 
+let rec com_of_list' = fun
+  [ [] -> failwith "com_of_list' empty list"
+  | [t] -> t
+  | [t::ts] ->
+      let _loc = loc_of t in `Com(_loc,t,com_of_list' ts)  ];
+
 (* RA *)  
 let rec sta_of_list = fun
   [ [] -> `Nil ghost

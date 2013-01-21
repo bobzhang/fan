@@ -34,7 +34,7 @@ open LibUtil;
 (* very ad-hoc trick*)  
 let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) =
   try begin
-       {:delete| Gram expr: ["["; x; "::"; expr; "]"] |};
+       {:lang.delete| Gram expr: ["["; x; "::"; expr; "]"] |};
       true
   end with [ Not_found -> false ];
     

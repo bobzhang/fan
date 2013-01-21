@@ -16,11 +16,11 @@ let register_inject_class_str_item (k,f) =
 
 
 
-{:extend.create|Gram
+{:lang.create|Gram
   inject_expr inject_str_item inject_class_str_item
 |};
   
-{:extend| Gram
+{:lang.extend| Gram
   inject_expr:
   [`Lid x ->
      try Hashtbl.find inject_expr_tbl x 

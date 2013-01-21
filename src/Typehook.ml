@@ -235,12 +235,12 @@ end;
 
 let g = Gram.create_gram ();
 
-{:extend.create|(g:Gram.t)
+{:lang.create|(g:Gram.t)
   fan_quot fan_quots
 |};
 
 with expr
-    {:extend|Gram
+    {:lang.extend|Gram
       fan_quot:
       ["derive";"("; L1 [`Lid x -> x | `Uid x  -> x]{plugins}; ")" ->
           begin List.iter plugin_add plugins; {| |}  end
