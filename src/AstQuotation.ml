@@ -69,11 +69,23 @@ let clear_default () = default:="";
 
 let default_at_pos pos str =  update (pos,str); 
 
+
+
 (*
   The key is [string*ExpKey.pack]
  *)
 type key = (string * ExpKey.pack);
-module QMap =MapMake (struct type t =key ; let compare = compare; end);  
+
+module QMap =MapMake (struct type t =key ; let compare = compare; end);
+
+(* domain is the namespace all begins with capital letters *)
+  
+type domains = list string  ;
+
+let tbl : Hashtbl.t domains (ref (QMap.t ExpFun.pack)) =
+  Hashtbl.create 30 ;
+  
+  
 let expanders_table =ref QMap.empty;  
 (* let expanders_table =  (ref [] : ref (list ((string * ExpKey.pack) * ExpFun.pack))); *)
 let set_default s =  default := s;
@@ -92,6 +104,8 @@ let expander_name ~pos:(pos:string) (name:string) =
 let add name (tag :DynAst.tag 'a) (f:expand_fun 'a) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   expanders_table := QMap.add k v !expanders_table ;
+
+
 
 (* called by [expand] *)    
 let expand_quotation loc ~expander pos_tag quot =
