@@ -3,17 +3,17 @@ open Basic
 open FSig
 open FanAst
 let _loc = FanLoc.ghost
-let app a b = `PaApp (_loc, a, b)
+let app a b = `App (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let list_of_app ty =
   let rec loop t acc =
     match t with
-    | `PaApp (_loc,t1,t2) -> loop t1 (t2 :: acc)
+    | `App (_loc,t1,t2) -> loop t1 (t2 :: acc)
     | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
 let rec view_app acc =
-  function | `PaApp (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
+  function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let app_of_list = function | [] -> `Nil _loc | l -> List.reduce_left app l
 let mklist loc =
   let rec loop top =
@@ -21,14 +21,14 @@ let mklist loc =
     | [] -> `Id (_loc, (`Uid (_loc, "[]")))
     | e1::el ->
         let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-        `PaApp
-          (_loc, (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
+        `App
+          (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
             (loop false el)) in
   loop true
 let rec apply accu =
   function
   | [] -> accu
-  | x::xs -> let _loc = loc_of x in apply (`PaApp (_loc, accu, x)) xs
+  | x::xs -> let _loc = loc_of x in apply (`App (_loc, accu, x)) xs
 let mkarray loc arr =
   let rec loop top =
     function
@@ -43,7 +43,7 @@ let of_str s =
   then invalid_arg "[expr|patt]_of_str len=0"
   else
     (match s.[0] with
-     | '`' -> `PaVrn (_loc, (String.sub s 1 (len - 1)))
+     | '`' -> `Vrn (_loc, (String.sub s 1 (len - 1)))
      | x when Char.is_uppercase x -> `Id (_loc, (`Uid (_loc, s)))
      | _ -> `Id (_loc, (`Lid (_loc, s))))
 let of_ident_number cons n =
@@ -77,10 +77,9 @@ let tuple_of_number ast n =
 let of_vstr_number name i =
   let items = List.init i (fun i  -> `Id (_loc, (xid i))) in
   if items = []
-  then `PaVrn (_loc, name)
+  then `Vrn (_loc, name)
   else
-    (let item = items |> tuple_com in
-     `PaApp (_loc, (`PaVrn (_loc, name)), item))
+    (let item = items |> tuple_com in `App (_loc, (`Vrn (_loc, name)), item))
 let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   let args =
     List.init arity

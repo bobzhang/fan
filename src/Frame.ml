@@ -90,7 +90,7 @@ let rec  normal_simple_expr_of_ctyp
       if Hashset.mem cxt id then {| $(lid:left_trans id) |}
       else right_trans {:ident| $lid:id |} 
     | `Id (_loc,id) ->   right_trans id (* recursive call here *)
-    | `TyApp(_loc,t1,t2) ->
+    | `App(_loc,t1,t2) ->
         {| $(aux t1) $(aux t2) |}
     | `Quote (_loc,_,`Some(`Lid(_,s))) ->   tyvar s
     | `Arrow(_loc,t1,t2) ->
@@ -130,7 +130,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
   let rec aux = fun
     [ `Id (_loc,id) -> trans id
     | `Quote(_loc,_,`Some(`Lid(_,s))) ->   tyvar s
-    | `TyApp _  as ty ->
+    | `App _  as ty ->
         match  Ctyp.list_of_app ty  with
         [ [ {| $id:tctor |} :: ls ] ->
 
@@ -270,7 +270,7 @@ let fun_of_tydcl
              by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
             (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
-      | `Id _ | `Tup _ | `Quote _ | `Arrow _ | `TyApp _ ->
+      | `Id _ | `Tup _ | `Quote _ | `Arrow _ | `App _ ->
           let expr = simple_expr_of_ctyp ctyp in
           let funct = eta_expand (expr+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct

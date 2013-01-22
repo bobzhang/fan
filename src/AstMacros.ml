@@ -15,7 +15,7 @@ open Ast;
   fib 32 -->
      fib 31 + fib 30
 
-     -- `ExApp
+     -- `App
      --
   {:str_item| g |};
 

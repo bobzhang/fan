@@ -128,7 +128,7 @@ let undef ~expr  ~patt  x =
 let parse_def ~expr  ~patt  s =
   match Gram.parse_string expr ~loc:(FanLoc.mk "<command line>") s with
   | `Id (_loc,`Uid (_,n)) -> define ~expr ~patt None n
-  | `ExApp (_loc,`ExApp (_,`Id (_,`Lid (_,"=")),`Id (_,`Uid (_,n))),e) ->
+  | `App (_loc,`App (_,`Id (_,`Lid (_,"=")),`Id (_,`Uid (_,n))),e) ->
       define ~expr ~patt (Some ([], e)) n
   | _ -> invalid_arg s
 let include_dirs = ref []

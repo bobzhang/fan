@@ -115,7 +115,7 @@ let _ =
                      | `static t ->
                          `Id (_loc, (`Dot (_loc, t, (`Lid (_loc, "mk")))))
                      | `dynamic (x,t) ->
-                         `ExApp
+                         `App
                            (_loc,
                              (`Id
                                 (_loc,
@@ -131,7 +131,7 @@ let _ =
                                 (_loc, (`ReNil _loc),
                                   (`Bind
                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                       (`ExApp (_loc, mk, (`Str (_loc, d)))))))
+                                       (`App (_loc, mk, (`Str (_loc, d)))))))
                           | (Some d,Some typ) ->
                               `Value
                                 (_loc, (`ReNil _loc),
@@ -139,7 +139,7 @@ let _ =
                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                                        (`Constraint
                                           (_loc,
-                                            (`ExApp
+                                            (`App
                                                (_loc, mk, (`Str (_loc, d)))),
                                             typ)))))
                           | (None ,None ) ->
@@ -147,7 +147,7 @@ let _ =
                                 (_loc, (`ReNil _loc),
                                   (`Bind
                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                       (`ExApp (_loc, mk, (`Str (_loc, x)))))))
+                                       (`App (_loc, mk, (`Str (_loc, x)))))))
                           | (None ,Some typ) ->
                               `Value
                                 (_loc, (`ReNil _loc),
@@ -155,7 +155,7 @@ let _ =
                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                                        (`Constraint
                                           (_loc,
-                                            (`ExApp
+                                            (`App
                                                (_loc, mk, (`Str (_loc, x)))),
                                             typ)))))) ls in
                    FanAst.sem_of_list rest : 'nonterminals ))))])]);
@@ -175,7 +175,7 @@ let _ =
                      List.map
                        (fun x  ->
                           let _loc = loc_of x in
-                          `ExApp
+                          `App
                             (_loc,
                               (`Id
                                  (_loc,
@@ -259,9 +259,9 @@ let _ =
                      List.map
                        (fun sl  ->
                           let (e,b) = expr_of_delete_rule _loc n sl in
-                          `ExApp
+                          `App
                             (_loc,
-                              (`ExApp
+                              (`App
                                  (_loc,
                                    (`Id
                                       (_loc,
@@ -412,7 +412,7 @@ let _ =
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Uid ("First"|"Last" as x) ->
-                      (`ExVrn (_loc, x) : 'position )
+                      (`Vrn (_loc, x) : 'position )
                   | _ -> assert false)));
          ([`Stoken
              (((function
@@ -425,7 +425,7 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `Uid ("Before"|"After"|"Level" as x) ->
-                     (`ExApp (_loc, (`ExVrn (_loc, x)), n) : 'position )
+                     (`App (_loc, (`Vrn (_loc, x)), n) : 'position )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `Uid _ -> true | _ -> false)),
@@ -478,8 +478,7 @@ let _ =
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `Uid ("LA"|"RA"|"NA" as x) ->
-                      (`ExVrn (_loc, x) : 'assoc )
+                  | `Uid ("LA"|"RA"|"NA" as x) -> (`Vrn (_loc, x) : 'assoc )
                   | _ -> assert false)));
          ([`Stoken
              (((function | `Uid _ -> true | _ -> false)),
@@ -568,7 +567,7 @@ let _ =
                   | `Uid ("L0"|"L1" as x) ->
                       (let () = check_not_tok s in
                        let styp =
-                         `TyApp
+                         `App
                            (_loc, (`Id (_loc, (`Lid (_loc, "list")))),
                              (s.styp)) in
                        let text =
@@ -591,7 +590,7 @@ let _ =
                  | `Uid "OPT" ->
                      (let () = check_not_tok s in
                       let styp =
-                        `TyApp
+                        `App
                           (_loc, (`Id (_loc, (`Lid (_loc, "option")))),
                             (s.styp)) in
                       let text = `TXopt (_loc, (s.text)) in
@@ -667,20 +666,20 @@ let _ =
                       let restrict =
                         List.fold_left
                           (fun acc  (x,y)  ->
-                             `ExApp
+                             `App
                                (_loc,
-                                 (`ExApp
+                                 (`App
                                     (_loc, (`Id (_loc, (`Lid (_loc, "&&")))),
                                       acc)),
-                                 (`ExApp
+                                 (`App
                                     (_loc,
-                                      (`ExApp
+                                      (`App
                                          (_loc,
                                            (`Id (_loc, (`Lid (_loc, "=")))),
                                            x)), y))))
-                          (`ExApp
+                          (`App
                              (_loc,
-                               (`ExApp
+                               (`App
                                   (_loc, (`Id (_loc, (`Lid (_loc, "=")))), x)),
                                y)) ys in
                       mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 
@@ -756,7 +755,7 @@ let _ =
          [([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
             (Gram.mk_action
                (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
-                  (`PaVrn (_loc, s) : 'simple_patt ))));
+                  (`Vrn (_loc, s) : 'simple_patt ))));
          ([`Skeyword "`";
           `Snterm (Gram.obj (luident : 'luident Gram.t ));
           `Stoken
@@ -767,8 +766,8 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `Ant ((""|"anti" as n),s) ->
-                     (`PaApp
-                        (_loc, (`PaVrn (_loc, v)),
+                     (`App
+                        (_loc, (`Vrn (_loc, v)),
                           (`Ant (_loc, (mk_anti ~c:"patt" n s)))) : 'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
@@ -781,7 +780,7 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `STR (_,v) ->
-                     (`PaApp (_loc, (`PaVrn (_loc, s)), (`Str (_loc, v))) : 
+                     (`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v))) : 
                      'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
@@ -793,8 +792,8 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_2 with
                  | `Lid x ->
-                     (`PaApp
-                        (_loc, (`PaVrn (_loc, s)),
+                     (`App
+                        (_loc, (`Vrn (_loc, s)),
                           (`Id (_loc, (`Lid (_loc, x))))) : 'simple_patt )
                  | _ -> assert false)));
          ([`Skeyword "`";
@@ -802,7 +801,7 @@ let _ =
           `Skeyword "_"],
            (Gram.mk_action
               (fun _  (s : 'luident)  _  (_loc : FanLoc.t)  ->
-                 (`PaApp (_loc, (`PaVrn (_loc, s)), (`Any _loc)) : 'simple_patt ))));
+                 (`App (_loc, (`Vrn (_loc, s)), (`Any _loc)) : 'simple_patt ))));
          ([`Skeyword "`";
           `Snterm (Gram.obj (luident : 'luident Gram.t ));
           `Skeyword "(";
@@ -814,10 +813,10 @@ let _ =
               (fun _  (v : 'internal_patt list)  _  (s : 'luident)  _ 
                  (_loc : FanLoc.t)  ->
                  (match v with
-                  | x::[] -> `PaApp (_loc, (`PaVrn (_loc, s)), x)
+                  | x::[] -> `App (_loc, (`Vrn (_loc, s)), x)
                   | x::xs ->
-                      `PaApp
-                        (_loc, (`PaApp (_loc, (`PaVrn (_loc, s)), x)),
+                      `App
+                        (_loc, (`App (_loc, (`Vrn (_loc, s)), x)),
                           (FanAst.com_of_list xs))
                   | _ -> assert false : 'simple_patt ))))])]);
   Gram.extend (internal_patt : 'internal_patt Gram.t )

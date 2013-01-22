@@ -42,8 +42,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       |("nativeint",_,_) -> {|`NativeInt ($(mloc _loc),$e)|}
       |("chr",_,_) -> {|`Chr($(mloc _loc),$e)|}
       |("str",_,_) -> {|`Str($(mloc _loc),$e)|}
-      |("vrn","expr",_) -> {|`ExVrn($(mloc _loc),$e)|}
-      |("vrn","patt",_) -> {|`PaVrn($(mloc _loc),$e)|}
+      |("vrn","expr",_) -> {|`Vrn($(mloc _loc),$e)|}
+      |("vrn","patt",_) -> {|`Vrn($(mloc _loc),$e)|}
       | _ -> super#patt e ]
     | e -> super#patt e];
     method! expr = with expr fun
@@ -54,8 +54,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           [ ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|}
           | ("tup",_,_) -> {|`Tup($(mloc _loc),$e)|}
           | ("seq",_,_) -> {|`Seq($(mloc _loc),$e)|}
-          | ("vrn","expr",_) -> {|`ExVrn($(mloc _loc),$e)|}
-          | ("vrn","patt",_) -> {|`PaVrn($(mloc _loc),$e)|}
+          | ("vrn","expr",_) -> {|`Vrn($(mloc _loc),$e)|}
+          | ("vrn","patt",_) -> {|`Vrn($(mloc _loc),$e)|}
           | ("lid",_,_) -> {|`Lid($(mloc _loc),$e)|}
           | ("uid",_,_) -> {|`Uid($(mloc _loc),$e)|}
           | ("str",_,_) ->  {|`Str($(mloc _loc),$e)|}

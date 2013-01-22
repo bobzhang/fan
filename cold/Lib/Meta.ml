@@ -11,7 +11,7 @@ module MetaLoc : FanAst.META_LOC =
       failwith "MetaLoc.meta_loc_patt not implemented yet"
     let meta_loc_expr _loc location =
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple location in
-      `ExApp
+      `App
         (_loc,
           (`Id
              (_loc,

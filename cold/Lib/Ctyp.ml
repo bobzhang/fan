@@ -5,14 +5,14 @@ open Basic
 open FSig
 let rec to_var_list =
   function
-  | `TyApp (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
+  | `App (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
   | `Quote (_loc,`Normal _,`Some `Lid (_,s))
     |`Quote (_loc,`Positive _,`Some `Lid (_,s))
     |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> [s]
   | _ -> assert false
 let rec name_tags =
   function
-  | `TyApp (_loc,t1,t2) -> (name_tags t1) @ (name_tags t2)
+  | `App (_loc,t1,t2) -> (name_tags t1) @ (name_tags t2)
   | `TyVrn (_,`C (_,s)) -> [s]
   | _ -> assert false
 let rec to_generalized =
@@ -23,17 +23,17 @@ let rec to_generalized =
 let to_string = to_string_of_printer FanAst.dump#ctyp
 let eprint: ctyp -> unit = fun c  -> eprintf "@[%a@]" FanAst.dump#ctyp c
 let _loc = FanLoc.ghost
-let app a b = `TyApp (_loc, a, b)
+let app a b = `App (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let list_of_app ty =
   let rec loop t acc =
     match t with
-    | `TyApp (_loc,t1,t2) -> loop t1 (t2 :: acc)
+    | `App (_loc,t1,t2) -> loop t1 (t2 :: acc)
     | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
 let rec view_app acc =
-  function | `TyApp (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
+  function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let app_of_list = function | [] -> `Nil _loc | l -> List.reduce_left app l
 let arrow a b = `Arrow (_loc, a, b)
 let (|->) = arrow
@@ -194,7 +194,7 @@ let is_recursive ty_dcl =
       invalid_arg ("is_recursive not type declartion" ^ (to_string ty_dcl))
 let qualified_app_list =
   function
-  | `TyApp (_loc,_,_) as x ->
+  | `App (_loc,_,_) as x ->
       (match list_of_app x with
        | (`Id (_loc,`Lid (_,_)))::_ -> None
        | (`Id (_loc,i))::ys -> Some (i, ys)

@@ -704,7 +704,7 @@ let apply () = begin
         | `Lid i -> {| $lid:i |}
         | `Uid i -> {| $uid:i |}
         | `Uid s ; "." ; S{j} -> {|$uid:s.$j|}
-        | "("; S{i};S{j}; ")" -> `IdApp _loc i j  ] }
+        | "("; S{i};S{j}; ")" -> `App _loc i j  ] }
 
       (* parse [a] [b], [a.b] [A.b]*)
       ident:

@@ -478,7 +478,7 @@ let transform_module_types  lst =
     A
     B
    Id  (Lid  "float");
-    TyApp  (Id  (Lid  "option")) (Id  (Lid  "int"));
+    App  (Id  (Lid  "option")) (Id  (Lid  "int"));
     Id  (Lid  "float")
     ]}
     @return result type to indicate error

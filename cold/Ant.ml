@@ -24,62 +24,50 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
           let e = parse_patt _loc code in
           (match (decorations, cxt, sep) with
            | ("anti",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Ant")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Ant")), (mloc _loc))), e)
            | ("uid",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Uid")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Uid")), (mloc _loc))), e)
            | ("lid",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Lid")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Lid")), (mloc _loc))), e)
            | ("tup",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Tup")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (mloc _loc))), e)
            | ("seq",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Seq")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Seq")), (mloc _loc))), e)
            | ("flo",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Flo")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Flo")), (mloc _loc))), e)
            | ("int",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Int")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Int")), (mloc _loc))), e)
            | ("int32",_,_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "Int32")), (mloc _loc))), e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Int32")), (mloc _loc))),
+                   e)
            | ("int64",_,_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "Int64")), (mloc _loc))), e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Int64")), (mloc _loc))),
+                   e)
            | ("nativeint",_,_) ->
-               `PaApp
+               `App
                  (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "NativeInt")), (mloc _loc))),
-                   e)
+                   (`App (_loc, (`Vrn (_loc, "NativeInt")), (mloc _loc))), e)
            | ("chr",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Chr")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Chr")), (mloc _loc))), e)
            | ("str",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Str")), (mloc _loc))),
-                   e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Str")), (mloc _loc))), e)
            | ("vrn","expr",_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "ExVrn")), (mloc _loc))), e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e)
            | ("vrn","patt",_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "PaVrn")), (mloc _loc))), e)
+               `App
+                 (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e)
            | _ -> super#patt e)
       | e -> super#patt e
     method! expr =
@@ -89,144 +77,143 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
           let e = parse_expr _loc code in
           (match (decorations, cxt, sep) with
            | ("anti",_,__) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Ant")),
+               `App
+                 (_loc, (`Vrn (_loc, "Ant")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("tup",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Tup")),
+               `App
+                 (_loc, (`Vrn (_loc, "Tup")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("seq",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Seq")),
+               `App
+                 (_loc, (`Vrn (_loc, "Seq")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("vrn","expr",_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "ExVrn")),
+               `App
+                 (_loc, (`Vrn (_loc, "Vrn")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("vrn","patt",_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "PaVrn")),
+               `App
+                 (_loc, (`Vrn (_loc, "Vrn")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("lid",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Lid")),
+               `App
+                 (_loc, (`Vrn (_loc, "Lid")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("uid",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Uid")),
+               `App
+                 (_loc, (`Vrn (_loc, "Uid")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("str",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Str")),
+               `App
+                 (_loc, (`Vrn (_loc, "Str")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("chr",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Chr")),
+               `App
+                 (_loc, (`Vrn (_loc, "Chr")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("int",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int")),
+               `App
+                 (_loc, (`Vrn (_loc, "Int")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("int32",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int32")),
+               `App
+                 (_loc, (`Vrn (_loc, "Int32")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("int64",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int64")),
+               `App
+                 (_loc, (`Vrn (_loc, "Int64")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("flo",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Flo")),
+               `App
+                 (_loc, (`Vrn (_loc, "Flo")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("nativeint",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "NativeInt")),
+               `App
+                 (_loc, (`Vrn (_loc, "NativeInt")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("`nativeint",_,_) ->
                let e =
-                 `ExApp
+                 `App
                    (_loc,
                      (`Id
                         (_loc,
                           (`Dot
                              (_loc, (`Uid (_loc, "Nativeint")),
                                (`Lid (_loc, "to_string")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "NativeInt")),
+               `App
+                 (_loc, (`Vrn (_loc, "NativeInt")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("`int",_,_) ->
                let e =
-                 `ExApp
-                   (_loc, (`Id (_loc, (`Lid (_loc, "string_of_int")))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int")),
+                 `App (_loc, (`Id (_loc, (`Lid (_loc, "string_of_int")))), e) in
+               `App
+                 (_loc, (`Vrn (_loc, "Int")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("`int32",_,_) ->
                let e =
-                 `ExApp
+                 `App
                    (_loc,
                      (`Id
                         (_loc,
                           (`Dot
                              (_loc, (`Uid (_loc, "Int32")),
                                (`Lid (_loc, "to_string")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int32")),
+               `App
+                 (_loc, (`Vrn (_loc, "Int32")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("`int64",_,_) ->
                let e =
-                 `ExApp
+                 `App
                    (_loc,
                      (`Id
                         (_loc,
                           (`Dot
                              (_loc, (`Uid (_loc, "Int64")),
                                (`Lid (_loc, "to_string")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int64")),
+               `App
+                 (_loc, (`Vrn (_loc, "Int64")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("`chr",_,_) ->
                let e =
-                 `ExApp
+                 `App
                    (_loc,
                      (`Id
                         (_loc,
                           (`Dot
                              (_loc, (`Uid (_loc, "Char")),
                                (`Lid (_loc, "escaped")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Chr")),
+               `App
+                 (_loc, (`Vrn (_loc, "Chr")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("`str",_,_) ->
                let e =
-                 `ExApp
+                 `App
                    (_loc,
                      (`Id
                         (_loc,
                           (`Dot
                              (_loc, (`Uid (_loc, (gm ()))),
                                (`Lid (_loc, "safe_string_escaped")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Str")),
+               `App
+                 (_loc, (`Vrn (_loc, "Str")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("`flo",_,_) ->
                let e =
-                 `ExApp
+                 `App
                    (_loc,
                      (`Id
                         (_loc,
                           (`Dot
                              (_loc, (`Uid (_loc, "FanUtil")),
                                (`Lid (_loc, "float_repres")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Flo")),
+               `App
+                 (_loc, (`Vrn (_loc, "Flo")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
            | ("`bool",_,_) ->
                let x =
-                 `ExApp
-                   (_loc, (`ExVrn (_loc, "Lid")),
+                 `App
+                   (_loc, (`Vrn (_loc, "Lid")),
                      (`Tup
                         (_loc,
                           (`Com
@@ -234,13 +221,13 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                (`IfThenElse
                                   (_loc, e, (`Str (_loc, "true")),
                                     (`Str (_loc, "false"))))))))) in
-               `ExApp
+               `App
                  (_loc,
-                   (`ExApp
-                      (_loc, (`ExVrn (_loc, "Id")),
+                   (`App
+                      (_loc, (`Vrn (_loc, "Id")),
                         (`Id (_loc, (`Lid (_loc, "_loc")))))), x)
            | ("list","module_expr",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -248,7 +235,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "app_of_list")))))), e)
            | ("list","module_type",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -256,7 +243,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "mtApp_of_list")))))), e)
            | ("list","ident",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -266,7 +253,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
            | ("list",("binding"|"module_binding"|"with_constr"|"class_type"
                       |"class_expr"|"ctypand"),_)
                ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -274,7 +261,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "and_of_list")))))), e)
            | ("list","ctyp*",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -282,7 +269,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "sta_of_list")))))), e)
            | ("list","ctyp|",_)|("list","match_case",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -290,7 +277,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "or_of_list")))))), e)
            | ("list","ctyp&",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -298,7 +285,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "amp_of_list")))))), e)
            | ("listlettry","match_case",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Send
                       (_loc,
@@ -308,7 +295,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
                         (`Lid (_loc, "match_case")))),
-                   (`ExApp
+                   (`App
                       (_loc,
                         (`Id
                            (_loc,
@@ -316,7 +303,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "or_of_list")))))), e)))
            | ("antilettry","match_case",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Send
                       (_loc,
@@ -326,11 +313,11 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
                         (`Lid (_loc, "match_case")))),
-                   (`ExApp
-                      (_loc, (`ExVrn (_loc, "Ant")),
+                   (`App
+                      (_loc, (`Vrn (_loc, "Ant")),
                         (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))))
            | ("lettry","match_case",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Send
                       (_loc,
@@ -341,7 +328,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                   (`Lid (_loc, "match_pre")))))),
                         (`Lid (_loc, "match_case")))), e)
            | ("list",("ctyp,"|"patt,"|"expr,"),_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -351,7 +338,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
            | ("list",("binding;"|"str_item"|"sig_item"|"class_sig_item"
                       |"class_str_item"|"rec_binding"|"ctyp;"|"patt;"|"expr;"),_)
                ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,
@@ -359,7 +346,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "sem_of_list")))))), e)
            | ("list","forall",_) ->
-               `ExApp
+               `App
                  (_loc,
                    (`Id
                       (_loc,

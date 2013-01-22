@@ -10,7 +10,7 @@ type name  = { expr : expr; tvar : string; loc : loc };
    we did not find a way to express `STself and `STtok yet  *)
 type styp =
  [= `Id of (loc * ident )
- | `TyApp of (loc * styp * styp)
+ | `App of (loc * styp * styp)
  | `Quote of (loc * position_flag * meta_option alident)
  | `Self of (loc * string)
  | `Tok of loc
@@ -92,8 +92,8 @@ type used = [ Unused | UsedScanned | UsedNotScanned ];
 
 type simple_patt =
   [=
-   `PaVrn of (loc * string)
-  |`PaApp of (loc * simple_patt * simple_patt )
+   `Vrn of (loc * string)
+  |`App of (loc * simple_patt * simple_patt )
   |`Id of (loc * ident)
   |`Com of (loc * simple_patt * simple_patt)
   |`Alias of (loc * simple_patt * alident)

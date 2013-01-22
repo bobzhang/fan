@@ -43,7 +43,7 @@ let add_debug_expr (e : expr) =
                                      (`Uid (_loc, "Failure")))))),
                            (`Id (_loc, (`Uid (_loc, "Exit")))))),
                       (`Lid (_loc, "exc")))), (`Nil _loc),
-                 (`ExApp
+                 (`App
                     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
                       (`Id (_loc, (`Lid (_loc, "exc")))))))),
             (`Case
@@ -54,7 +54,7 @@ let add_debug_expr (e : expr) =
                          (_loc,
                            (`IfThenElse
                               (_loc,
-                                (`ExApp
+                                (`App
                                    (_loc,
                                      (`Id
                                         (_loc,
@@ -62,9 +62,9 @@ let add_debug_expr (e : expr) =
                                              (_loc, (`Uid (_loc, "Debug")),
                                                (`Lid (_loc, "mode")))))),
                                      (`Str (_loc, "exc")))),
-                                (`ExApp
+                                (`App
                                    (_loc,
-                                     (`ExApp
+                                     (`App
                                         (_loc,
                                           (`Id
                                              (_loc,
@@ -76,7 +76,7 @@ let add_debug_expr (e : expr) =
                                              (_loc,
                                                (FanAst.safe_string_escaped
                                                   msg))))),
-                                     (`ExApp
+                                     (`App
                                         (_loc,
                                           (`Id
                                              (_loc,
@@ -86,7 +86,7 @@ let add_debug_expr (e : expr) =
                                                     (`Lid (_loc, "to_string")))))),
                                           (`Id (_loc, (`Lid (_loc, "exc")))))))),
                                 (`Id (_loc, (`Uid (_loc, "()")))))),
-                           (`ExApp
+                           (`App
                               (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
                                 (`Id (_loc, (`Lid (_loc, "exc"))))))))))))))) : 
   expr )
@@ -145,7 +145,7 @@ let decorate_this_expr e id =
     (_loc, (`ReNil _loc),
       (`Bind
          (_loc, (`Id (_loc, (`Uid (_loc, "()")))),
-           (`ExApp
+           (`App
               (_loc,
                 (`Id
                    (_loc,
@@ -168,7 +168,7 @@ let _ =
     ("profile", ((decorate decorate_fun)#str_item))
 let map_expr =
   function
-  | `ExApp (_loc,e,`Id (_,`Uid (_,"NOTHING")))
+  | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))
     |`Fun (_loc,`Case (_,`Id (_,`Uid (_,"NOTHING")),`Nil _,e)) -> e
   | `Id (_loc,`Lid (_,"__FILE__")) ->
       `Str (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
@@ -179,7 +179,7 @@ let map_expr =
              (Filename.dirname (FanLoc.file_name _loc))))
   | `Id (_loc,`Lid (_,"__LOCATION__")) ->
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
-      `ExApp
+      `App
         (_loc,
           (`Id
              (_loc,

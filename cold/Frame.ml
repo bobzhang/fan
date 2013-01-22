@@ -57,14 +57,13 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
           then `Id (_loc, (`Lid (_loc, (left_trans id))))
           else right_trans (`Lid (_loc, id))
       | `Id (_loc,id) -> right_trans id
-      | `TyApp (_loc,t1,t2) -> `ExApp (_loc, (aux t1), (aux t2))
+      | `App (_loc,t1,t2) -> `App (_loc, (aux t1), (aux t2))
       | `Quote (_loc,_,`Some `Lid (_,s)) -> tyvar s
       | `Arrow (_loc,t1,t2) ->
           aux
-            (`TyApp
+            (`App
                (_loc,
-                 (`TyApp (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)),
-                 t2))
+                 (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2))
       | `Tup _ as ty ->
           tuple_expr_of_ctyp ?arity ?names ~mk_tuple
             (normal_simple_expr_of_ctyp ?arity ?names ~mk_tuple
@@ -83,7 +82,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
       function
       | `Id (_loc,id) -> trans id
       | `Quote (_loc,_,`Some `Lid (_,s)) -> tyvar s
-      | `TyApp _ as ty ->
+      | `App _ as ty ->
           (match Ctyp.list_of_app ty with
            | (`Id (_loc,tctor))::ls ->
                (ls |>
@@ -103,10 +102,9 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                  "list_of_app in obj_simple_expr_of_ctyp: %s" (dump_ctyp ty))
       | `Arrow (_loc,t1,t2) ->
           aux
-            (`TyApp
+            (`App
                (_loc,
-                 (`TyApp (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)),
-                 t2))
+                 (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2))
       | `Tup _ as ty ->
           tuple_expr_of_ctyp ?arity ?names ~mk_tuple
             (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
@@ -206,7 +204,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             mk_prefix ~names ~left_type_variable tyvars
               (currying ~arity
                  [`Case (_loc, patt, (`Nil _loc), (mk_record info))])
-        | `Id _|`Tup _|`Quote _|`Arrow _|`TyApp _ ->
+        | `Id _|`Tup _|`Quote _|`Arrow _|`App _ ->
             let expr = simple_expr_of_ctyp ctyp in
             let funct = eta_expand (expr +> names) arity in
             mk_prefix ~names ~left_type_variable tyvars funct
@@ -246,7 +244,7 @@ let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1)
          (Ctyp.to_string tydcl);
        `Bind
          (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
-           (`ExApp
+           (`App
               (_loc, (`Id (_loc, (`Lid (_loc, "failwithf")))),
                 (`Str (_loc, "Abstract data type not implemented"))))))
 let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names 

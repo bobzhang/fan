@@ -60,7 +60,7 @@ let mkarray loc arr =
    It is applied to both expr and patt
    {[
    of_str "`A";
-   ExVrn  "A" || PaVrn "A"
+   Vrn  "A" || Vrn "A"
    
    of_str "A";
    ExId  (Uid  "A")
@@ -189,7 +189,7 @@ let of_vstr_number name i =
   else
     let item = items |> tuple_com(* tuple_of_list *) in
     (* {| `$name $item |} *)
-    (* `PaApp (_loc, (`PaVrn (_loc, name)), item) (\* FIXME*\) *)
+    (* `App (_loc, (`Vrn (_loc, name)), item) (\* FIXME*\) *)
     {| $vrn:name $item |}
       
     ;

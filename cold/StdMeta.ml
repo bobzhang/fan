@@ -25,8 +25,8 @@ module Expr =
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
             let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-            `ExApp
-              (_loc, (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
+            `App
+              (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
                 (loop false el)) in
       loop true
     let mkarray loc arr =
@@ -45,7 +45,7 @@ module Expr =
       function
       | None  -> `Id (_loc, (`Uid (_loc, "None")))
       | Some x ->
-          `ExApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
+          `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
     let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
       (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
       invalid_arg "meta_arrow not implemented"
@@ -74,8 +74,8 @@ module Patt =
         | [] -> `Id (loc, (`Uid (loc, "[]")))
         | e1::el ->
             let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-            `PaApp
-              (_loc, (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
+            `App
+              (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
                 (loop false el)) in
       loop true
     let mkarray loc arr =
@@ -94,7 +94,7 @@ module Patt =
       function
       | None  -> `Id (_loc, (`Uid (_loc, "None")))
       | Some x ->
-          `PaApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
+          `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
     let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
       (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
       invalid_arg "meta_arrow not implemented"

@@ -17,10 +17,10 @@ let junk_fun _loc =
 let empty _loc =
   `Id (_loc, (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "sempty")))))
 let is_raise =
-  function | `ExApp (_loc,`Id (_,`Lid (_,"raise")),_) -> true | _ -> false
+  function | `App (_loc,`Id (_,`Lid (_,"raise")),_) -> true | _ -> false
 let is_raise_failure =
   function
-  | `ExApp
+  | `App
       (_loc,`Id (_,`Lid (_,"raise")),`Id
                                        (_,`Dot
                                             (_,`Uid (_,m),`Uid (_,"Failure"))))
@@ -50,19 +50,19 @@ let rec handle_failure e =
       (binding_handle_failure bi) && (handle_failure e)
   | `Id (_loc,`Lid (_,_))|`Int (_loc,_)|`Str (_loc,_)|`Chr (_loc,_)
     |`Fun (_loc,_)|`Id (_loc,`Uid (_,_)) -> true
-  | `ExApp (_loc,`Id (_,`Lid (_,"raise")),e) ->
+  | `App (_loc,`Id (_,`Lid (_,"raise")),e) ->
       (match e with
        | `Id (_loc,`Dot (_,`Uid (_,m),`Uid (_,"Failure"))) when m = (gm ())
            -> false
        | _ -> true)
-  | `ExApp (_loc,f,x) ->
+  | `App (_loc,f,x) ->
       (is_constr_apply f) && ((handle_failure f) && (handle_failure x))
   | _ -> false
 and is_constr_apply =
   function
   | `Id (_loc,`Uid (_,_)) -> true
   | `Id (_loc,`Lid (_,_)) -> false
-  | `ExApp (_loc,x,_) -> is_constr_apply x
+  | `App (_loc,x,_) -> is_constr_apply x
   | _ -> false
 let rec subst v e =
   let _loc = FanAst.loc_of e in
@@ -73,7 +73,7 @@ let rec subst v e =
     |`Dot (_loc,_,_) -> e
   | `LetIn (_loc,rf,bi,e) ->
       `LetIn (_loc, rf, (subst_binding v bi), (subst v e))
-  | `ExApp (_loc,e1,e2) -> `ExApp (_loc, (subst v e1), (subst v e2))
+  | `App (_loc,e1,e2) -> `App (_loc, (subst v e1), (subst v e2))
   | `Tup (_loc,e) -> `Tup (_loc, (subst v e))
   | `Com (_loc,e1,e2) -> `Com (_loc, (subst v e1), (subst v e2))
   | _ -> raise Not_found
@@ -91,19 +91,18 @@ let stream_pattern_component skont ckont =
   | SpTrm (_loc,p,None ) ->
       `Match
         (_loc,
-          (`ExApp
-             (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
+          (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
           (`Or
              (_loc,
                (`Case
                   (_loc,
-                    (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)),
+                    (`App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)),
                     (`Nil _loc),
                     (`Seq
                        (_loc,
                          (`Sem
                             (_loc,
-                              (`ExApp
+                              (`App
                                  (_loc, (junk_fun _loc),
                                    (`Id (_loc, (`Lid (_loc, strm_n)))))),
                               skont)))))),
@@ -111,19 +110,17 @@ let stream_pattern_component skont ckont =
   | SpTrm (_loc,p,Some w) ->
       `Match
         (_loc,
-          (`ExApp
-             (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
+          (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
           (`Or
              (_loc,
                (`Case
                   (_loc,
-                    (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)),
-                    w,
+                    (`App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)), w,
                     (`Seq
                        (_loc,
                          (`Sem
                             (_loc,
-                              (`ExApp
+                              (`App
                                  (_loc, (junk_fun _loc),
                                    (`Id (_loc, (`Lid (_loc, strm_n)))))),
                               skont)))))),
@@ -134,14 +131,14 @@ let stream_pattern_component skont ckont =
         | `Fun
             (_loc,`Case
                     (_,`Constraint
-                         (_,`Id (_,`Lid (_,v)),`TyApp
+                         (_,`Id (_,`Lid (_,v)),`App
                                                  (_,`Id
                                                       (_,`Dot
                                                            (_,`Uid (_,m),
                                                             `Lid (_,"t"))),
                                                   `Any _)),`Nil _,e))
             when (v = strm_n) && (m = (gm ())) -> e
-        | _ -> `ExApp (_loc, e, (`Id (_loc, (`Lid (_loc, strm_n))))) in
+        | _ -> `App (_loc, e, (`Id (_loc, (`Lid (_loc, strm_n))))) in
       if Expr.pattern_eq_expression p skont
       then
         (if is_raise_failure ckont
@@ -166,10 +163,10 @@ let stream_pattern_component skont ckont =
         else
           if
             Expr.pattern_eq_expression
-              (`PaApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)) skont
+              (`App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)) skont
           then
             `Try
-              (_loc, (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), e)),
+              (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), e)),
                 (`Case
                    (_loc,
                      (`Id
@@ -201,7 +198,7 @@ let stream_pattern_component skont ckont =
                 (_loc,
                   (`Try
                      (_loc,
-                       (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), e)),
+                       (`App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), e)),
                        (`Case
                           (_loc,
                             (`Id
@@ -214,7 +211,7 @@ let stream_pattern_component skont ckont =
                      (_loc,
                        (`Case
                           (_loc,
-                            (`PaApp
+                            (`App
                                (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)),
                             (`Nil _loc), skont)),
                        (`Case (_loc, (`Any _loc), (`Nil _loc), ckont)))))
@@ -237,7 +234,7 @@ let rec stream_pattern _loc epo e ekont =
              (_loc, (`ReNil _loc),
                (`Bind
                   (_loc, ep,
-                    (`ExApp
+                    (`App
                        (_loc,
                          (`Id
                             (_loc,
@@ -250,9 +247,9 @@ let rec stream_pattern _loc epo e ekont =
       let skont =
         let ekont err =
           let str = match err with | Some estr -> estr | _ -> `Str (_loc, "") in
-          `ExApp
+          `App
             (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
-              (`ExApp
+              (`App
                  (_loc,
                    (`Id
                       (_loc,
@@ -265,14 +262,14 @@ let stream_patterns_term _loc ekont tspel =
   let pel =
     List.fold_right
       (fun (p,w,_loc,spcl,epo,e)  acc  ->
-         let p = `PaApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p) in
+         let p = `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p) in
          let e =
            let ekont err =
              let str =
                match err with | Some estr -> estr | _ -> `Str (_loc, "") in
-             `ExApp
+             `App
                (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
-                 (`ExApp
+                 (`App
                     (_loc,
                       (`Id
                          (_loc,
@@ -284,7 +281,7 @@ let stream_patterns_term _loc ekont tspel =
              (_loc,
                (`Sem
                   (_loc,
-                    (`ExApp
+                    (`App
                        (_loc, (junk_fun _loc),
                          (`Id (_loc, (`Lid (_loc, strm_n)))))), skont))) in
          match w with
@@ -293,7 +290,7 @@ let stream_patterns_term _loc ekont tspel =
       (`Nil _loc) in
   `Match
     (_loc,
-      (`ExApp (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
+      (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
       (`Or (_loc, pel, (`Case (_loc, (`Any _loc), (`Nil _loc), (ekont ()))))))
 let rec group_terms =
   function
@@ -304,7 +301,7 @@ let rec group_terms =
 let rec parser_cases _loc =
   function
   | [] ->
-      `ExApp
+      `App
         (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
           (`Id
              (_loc,
@@ -324,7 +321,7 @@ let cparser _loc bpo pc =
           (_loc, (`ReNil _loc),
             (`Bind
                (_loc, bp,
-                 (`ExApp
+                 (`App
                     (_loc,
                       (`Id
                          (_loc,
@@ -336,7 +333,7 @@ let cparser _loc bpo pc =
   let p =
     `Constraint
       (_loc, (`Id (_loc, (`Lid (_loc, strm_n)))),
-        (`TyApp
+        (`App
            (_loc,
              (`Id
                 (_loc,
@@ -352,7 +349,7 @@ let cparser_match _loc me bpo pc =
           (_loc, (`ReNil _loc),
             (`Bind
                (_loc, bp,
-                 (`ExApp
+                 (`App
                     (_loc,
                       (`Id
                          (_loc,
@@ -370,7 +367,7 @@ let cparser_match _loc me bpo pc =
              (_loc,
                (`Constraint
                   (_loc, (`Id (_loc, (`Lid (_loc, strm_n)))),
-                    (`TyApp
+                    (`App
                        (_loc,
                          (`Id
                             (_loc,
@@ -382,17 +379,17 @@ let rec not_computing =
   function
   | `Id (_loc,`Lid (_,_))|`Id (_loc,`Uid (_,_))|`Int (_loc,_)|`Flo (_loc,_)
     |`Chr (_loc,_)|`Str (_loc,_) -> true
-  | `ExApp (_loc,x,y) -> (is_cons_apply_not_computing x) && (not_computing y)
+  | `App (_loc,x,y) -> (is_cons_apply_not_computing x) && (not_computing y)
   | _ -> false
 and is_cons_apply_not_computing =
   function
   | `Id (_loc,`Uid (_,_)) -> true
   | `Id (_loc,`Lid (_,_)) -> false
-  | `ExApp (_loc,x,y) -> (is_cons_apply_not_computing x) && (not_computing y)
+  | `App (_loc,x,y) -> (is_cons_apply_not_computing x) && (not_computing y)
   | _ -> false
 let slazy _loc e =
   match e with
-  | `ExApp (_loc,f,`Id (_,`Uid (_,"()"))) ->
+  | `App (_loc,f,`Id (_,`Uid (_,"()"))) ->
       (match f with
        | `Id (_loc,`Lid (_,_)) -> f
        | _ -> `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), e))))
@@ -407,14 +404,14 @@ let rec cstream gloc =
   | (SeTrm (_loc,e))::[] ->
       if not_computing e
       then
-        `ExApp
+        `App
           (_loc,
             (`Id
                (_loc,
                  (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "ising")))))),
             e)
       else
-        `ExApp
+        `App
           (_loc,
             (`Id
                (_loc,
@@ -423,9 +420,9 @@ let rec cstream gloc =
   | (SeTrm (_loc,e))::secl ->
       if not_computing e
       then
-        `ExApp
+        `App
           (_loc,
-            (`ExApp
+            (`App
                (_loc,
                  (`Id
                     (_loc,
@@ -434,9 +431,9 @@ let rec cstream gloc =
                            (`Lid (_loc, "icons")))))), e)),
             (cstream gloc secl))
       else
-        `ExApp
+        `App
           (_loc,
-            (`ExApp
+            (`App
                (_loc,
                  (`Id
                     (_loc,
@@ -448,7 +445,7 @@ let rec cstream gloc =
       if not_computing e
       then e
       else
-        `ExApp
+        `App
           (_loc,
             (`Id
                (_loc,
@@ -457,9 +454,9 @@ let rec cstream gloc =
   | (SeNtr (_loc,e))::secl ->
       if not_computing e
       then
-        `ExApp
+        `App
           (_loc,
-            (`ExApp
+            (`App
                (_loc,
                  (`Id
                     (_loc,
@@ -468,9 +465,9 @@ let rec cstream gloc =
                            (`Lid (_loc, "iapp")))))), e)),
             (cstream gloc secl))
       else
-        `ExApp
+        `App
           (_loc,
-            (`ExApp
+            (`App
                (_loc,
                  (`Id
                     (_loc,

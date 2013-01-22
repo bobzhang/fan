@@ -45,8 +45,13 @@
 
 (setq v
       (hash-table/from-list
-       "IdAcc" "Dot"
-       "ExAcc" "Dot"
+       "IdApp" "App"
+       "TyApp" "App"
+       "PaApp" "App"
+       "ExApp" "App"
+       "MeApp" "App"
+       "ExVrn" "Vrn"
+       "PaVrn" "Vrn"
        )
       )
 

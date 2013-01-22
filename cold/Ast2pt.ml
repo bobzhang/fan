@@ -28,7 +28,7 @@ let ident_tag (i : ident) =
     | `Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) ->
         Some ((ldot (lident "*predef*") "option"), `lident)
     | `Dot (_loc,i1,i2) -> self i2 (self i1 acc)
-    | `IdApp (_loc,i1,i2) ->
+    | `App (_loc,i1,i2) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
          | _ -> errorf (loc_of i) "invalid long identifer %s" (dump_ident i))
@@ -73,7 +73,7 @@ let long_uident i = (long_uident_noloc i) +> (loc_of i)
 let rec ctyp_long_id_prefix (t : ctyp) =
   (match t with
    | `Id (_loc,i) -> ident_noloc i
-   | `TyApp (_loc,m1,m2) ->
+   | `App (_loc,m1,m2) ->
        let li1 = ctyp_long_id_prefix m1 in
        let li2 = ctyp_long_id_prefix m2 in Lapply (li1, li2)
    | t -> errorf (loc_of t) "invalid module expression %s" (dump_ctyp t) : 
@@ -94,7 +94,7 @@ let rec ctyp (x : ctyp) =
   | `Alias (_loc,t1,`Quote (_,_,`Some `Lid (_,s))) ->
       mktyp _loc (Ptyp_alias ((ctyp t1), s))
   | `Any _loc -> mktyp _loc Ptyp_any
-  | `TyApp (_loc,_,_) as f ->
+  | `App (_loc,_,_) as f ->
       let (f,al) = Ctyp.view_app [] f in
       let (is_cls,li) = ctyp_long_id f in
       if is_cls
@@ -103,7 +103,7 @@ let rec ctyp (x : ctyp) =
   | `Arrow (loc,`Label (_,`Lid (_,lab),t1),t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
   | `Arrow (loc,`TyOlb (loc1,`Lid (_,lab),t1),t2) ->
-      let t1 = `TyApp (loc1, (predef_option loc1), t1) in
+      let t1 = `App (loc1, (predef_option loc1), t1) in
       mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
   | `Arrow (loc,t1,t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
   | `TyObj (_loc,fl,`RvNil _) -> mktyp _loc (Ptyp_object (meth_list fl []))
@@ -273,12 +273,12 @@ let class_parameters (t : ctyp) =
 let type_parameters_and_type_name t =
   let rec aux t acc =
     match t with
-    | `TyApp (_loc,t1,t2) -> aux t1 ((optional_type_parameters t2) @ acc)
+    | `App (_loc,t1,t2) -> aux t1 ((optional_type_parameters t2) @ acc)
     | `Id (_loc,i) -> ((ident i), acc)
     | x -> errorf (loc_of x) "type_parameters_and_type_name %s" (dump_ctyp x) in
   aux t []
 let rec patt_fa al =
-  function | `PaApp (_,f,a) -> patt_fa (a :: al) f | f -> (f, al)
+  function | `App (_,f,a) -> patt_fa (a :: al) f | f -> (f, al)
 let rec deep_mkrangepat loc c1 c2 =
   if c1 = c2
   then mkghpat loc (Ppat_constant (Const_char c1))
@@ -314,11 +314,11 @@ let rec patt (x : patt) =
        | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | `Any _loc -> mkpat _loc Ppat_any
-  | `PaApp (_loc,`Id (_,`Uid (sloc,s)),`Tup (_,`Any loc_any)) ->
+  | `App (_loc,`Id (_,`Uid (sloc,s)),`Tup (_,`Any loc_any)) ->
       mkpat _loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
-  | `PaApp (loc,_,_) as f ->
+  | `App (loc,_,_) as f ->
       let (f,al) = patt_fa [] f in
       let al = List.map patt al in
       (match (patt f).ppat_desc with
@@ -394,7 +394,7 @@ let rec patt (x : patt) =
   | `Tup (loc,_) -> error loc "singleton tuple pattern"
   | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint ((patt p), (ctyp t)))
   | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
-  | `PaVrn (loc,s) -> mkpat loc (Ppat_variant (s, None))
+  | `Vrn (loc,s) -> mkpat loc (Ppat_variant (s, None))
   | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
   | `ModuleUnpack (loc,m,ty) ->
       (match m with
@@ -440,7 +440,7 @@ let rec expr (x : expr) =
              | _ -> error (loc_of e2) "lowercase identifier expected")
           (_loc, e) l in
       e
-  | `ExApp (loc,_,_) as f ->
+  | `App (loc,_,_) as f ->
       let (f,al) = Expr.view_app [] f in
       let al = List.map label_expr al in
       (match (expr f).pexp_desc with
@@ -609,7 +609,7 @@ let rec expr (x : expr) =
   | `Id (_,`Lid (_loc,s)) -> mkexp _loc (Pexp_ident (lident_with_loc s _loc))
   | `Id (_,`Uid (_loc,s)) ->
       mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
-  | `ExVrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
+  | `Vrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
   | `While (loc,e1,el) ->
       let e2 = `Seq (loc, el) in
       mkexp loc (Pexp_while ((expr e1), (expr e2)))
@@ -646,7 +646,7 @@ and binding (x : binding) acc =
       let rec id_to_string x =
         match x with
         | `Id (_loc,`Lid (_,x)) -> [x]
-        | `TyApp (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
+        | `App (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
         | x -> errorf (loc_of x) "id_to_string %s" (dump_ctyp x) in
       let vars = id_to_string vs in
       let ampersand_vars = List.map (fun x  -> "&" ^ x) vars in
@@ -818,7 +818,7 @@ and module_str_binding (x : Ast.module_binding) acc =
 and module_expr (x : Ast.module_expr) =
   match x with
   | `Id (loc,i) -> mkmod loc (Pmod_ident (long_uident i))
-  | `MeApp (loc,me1,me2) ->
+  | `App (loc,me1,me2) ->
       mkmod loc (Pmod_apply ((module_expr me1), (module_expr me2)))
   | `Functor (loc,`Uid (sloc,n),mt,me) ->
       mkmod loc
@@ -884,7 +884,7 @@ and class_type (x : Ast.class_type) =
   | `CtFun (loc,`Label (_,`Lid (_,lab),t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (class_type ct)))
   | `CtFun (loc,`TyOlb (loc1,`Lid (_,lab),t),ct) ->
-      let t = `TyApp (loc1, (predef_option loc1), t) in
+      let t = `App (loc1, (predef_option loc1), t) in
       mkcty loc (Pcty_fun (("?" ^ lab), (ctyp t), (class_type ct)))
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun ("", (ctyp t), (class_type ct)))
   | `CtSig (loc,t_o,ctfl) ->

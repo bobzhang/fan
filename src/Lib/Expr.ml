@@ -332,7 +332,7 @@ INCLUDE "src/Lib/ExprPatt.ml";
    - : expr = Int (, "-3")
    mkumin _loc "-." {| a |};
    - : expr =
-   ExApp (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
+   App (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
    ]}
  *)  
 let mkumin loc prefix arg =
@@ -405,9 +405,9 @@ let (<+<) patts acc =
 (*
   {[
   mep_app {| a |} {|g |};
-  - : expr = Ast.PaApp (_loc, a, g)
+  - : expr = Ast.App (_loc, a, g)
   mee_app {:expr|f a |} {:expr|g |};
-  - : expr = Ast.ExApp (_loc, (f a), g)
+  - : expr = Ast.App (_loc, (f a), g)
    ]}
  *)
   
@@ -421,12 +421,12 @@ let mee_comma x y = {| {| $($x), $($y) |} |};
 let mvee_comma x y = {| `Com (_loc,$x,$y) |};
 
 let mee_app x y = {| {| $($x) $($y) |}|};
-  (* {| `ExApp(_loc, $x, $y) |}; *)
-let vee_app x y = {| `ExApp (_loc,$x,$y) |};
+  (* {| `App(_loc, $x, $y) |}; *)
+let vee_app x y = {| `App (_loc,$x,$y) |};
   
 let mep_app x y = {| {:patt| $($x) $($y) |}|};
-  (* {| `PaApp (_loc, $x, $y) |};        *)
-let vep_app x y = {| `PaApp (_loc,$x,$y)|};
+  (* {| `App (_loc, $x, $y) |};        *)
+let vep_app x y = {| `App (_loc,$x,$y)|};
   
 
 (*
@@ -474,13 +474,13 @@ let mee_of_str s =
     {| {| $(id:$u) |} |};
     (* {| {| $(uid:$s)|}|} *)
       (* {| A |}
-           `ExApp
+           `App
     (_loc,
-      (`ExApp
-         (_loc, (`ExVrn (_loc, "ExId")),
+      (`App
+         (_loc, (`Vrn (_loc, "ExId")),
            (`ExId (_loc, (`Lid (_loc, "_loc")))))),
-      (`ExApp
-         (_loc, (`ExVrn (_loc, "Uid")),
+      (`App
+         (_loc, (`Vrn (_loc, "Uid")),
            (`Tup
               (_loc,
                 (`Com (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), s)))))))
@@ -504,13 +504,13 @@ let mee_of_str s =
   BOOTSTRAPPING
   *)
 (* let vee_of_str s = *)
-(*   {| ExVrn _loc $str:s|}; *)
+(*   {| Vrn _loc $str:s|}; *)
 
 let vee_of_str s =
-  {| `ExVrn (_loc,$str:s) |};
+  {| `Vrn (_loc,$str:s) |};
 
 let vep_of_str s =
-  {| `PaVrn (_loc,$str:s)|};
+  {| `Vrn (_loc,$str:s)|};
 (*
   Examples:
   {[
@@ -551,11 +551,11 @@ let meee_of_str s =
   
   First we need to construct this part
   {[
-  (ExApp 
-       (ExApp  (ExId  (IdAcc  (Uid  "Ast") (Uid  "RbEq")))
+  (App 
+       (App  (ExId  (IdAcc  (Uid  "Ast") (Uid  "RbEq")))
          (ExId  (Lid  "_loc")))
-       (ExApp 
-         (ExApp  (ExId  (IdAcc  (Uid  "Ast") (Uid  "Lid")))
+       (App 
+         (App  (ExId  (IdAcc  (Uid  "Ast") (Uid  "Lid")))
            (ExId  (Lid  "_loc")))
          (Str  "u")))
   ]}

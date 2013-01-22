@@ -5,7 +5,7 @@ type name =  {
   tvar: string;
   loc: loc} 
 type styp =
-  [ `Id of (loc* ident) | `TyApp of (loc* styp* styp)
+  [ `Id of (loc* ident) | `App of (loc* styp* styp)
   | `Quote of (loc* position_flag* alident meta_option)
   | `Self of (loc* string) | `Tok of loc | `Type of ctyp] 
 type attr = string 
@@ -56,36 +56,33 @@ module Expr =
       fun _loc  ->
         function
         | `Id (_a0,_a1) ->
-            `ExApp
-              (_loc,
-                (`ExApp (_loc, (`ExVrn (_loc, "Id")), (meta_loc _loc _a0))),
+            `App
+              (_loc, (`App (_loc, (`Vrn (_loc, "Id")), (meta_loc _loc _a0))),
                 (meta_ident _loc _a1))
-        | `TyApp (_a0,_a1,_a2) ->
-            `ExApp
+        | `App (_a0,_a1,_a2) ->
+            `App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc,
-                     (`ExApp
-                        (_loc, (`ExVrn (_loc, "TyApp")), (meta_loc _loc _a0))),
+                     (`App (_loc, (`Vrn (_loc, "App")), (meta_loc _loc _a0))),
                      (meta_styp _loc _a1))), (meta_styp _loc _a2))
         | `Quote (_a0,_a1,_a2) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc,
-                     (`ExApp
-                        (_loc, (`ExVrn (_loc, "Quote")), (meta_loc _loc _a0))),
+                     (`App
+                        (_loc, (`Vrn (_loc, "Quote")), (meta_loc _loc _a0))),
                      (meta_position_flag _loc _a1))),
                 (meta_meta_option meta_alident _loc _a2))
         | `Self (_a0,_a1) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp (_loc, (`ExVrn (_loc, "Self")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Self")), (meta_loc _loc _a0))),
                 (meta_string _loc _a1))
-        | `Tok _a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "Tok")), (meta_loc _loc _a0))
+        | `Tok _a0 -> `App (_loc, (`Vrn (_loc, "Tok")), (meta_loc _loc _a0))
         | `Type _a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "Type")), (meta_ctyp _loc _a0))
+            `App (_loc, (`Vrn (_loc, "Type")), (meta_ctyp _loc _a0))
     let meta_attr: 'loc -> attr -> 'result =
       fun _loc  _a0  -> meta_string _loc _a0
     let rec meta_entry: 'loc -> entry -> 'result =
@@ -154,62 +151,60 @@ module Expr =
       fun _loc  ->
         function
         | `TXmeta (_a0,_a1,_a2,_a3,_a4) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc,
-                     (`ExApp
+                     (`App
                         (_loc,
-                          (`ExApp
+                          (`App
                              (_loc,
-                               (`ExApp
-                                  (_loc, (`ExVrn (_loc, "TXmeta")),
+                               (`App
+                                  (_loc, (`Vrn (_loc, "TXmeta")),
                                     (meta_loc _loc _a0))),
                                (meta_list meta_string _loc _a1))),
                           (meta_list meta_text _loc _a2))),
                      (meta_expr _loc _a3))), (meta_styp _loc _a4))
         | `TXlist (_a0,_a1,_a2,_a3) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc,
-                     (`ExApp
+                     (`App
                         (_loc,
-                          (`ExApp
-                             (_loc, (`ExVrn (_loc, "TXlist")),
+                          (`App
+                             (_loc, (`Vrn (_loc, "TXlist")),
                                (meta_loc _loc _a0))), (meta_bool _loc _a1))),
                      (meta_symbol _loc _a2))),
                 (meta_option meta_symbol _loc _a3))
         | `TXnterm (_a0,_a1,_a2) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc,
-                     (`ExApp
-                        (_loc, (`ExVrn (_loc, "TXnterm")),
-                          (meta_loc _loc _a0))), (meta_name _loc _a1))),
+                     (`App
+                        (_loc, (`Vrn (_loc, "TXnterm")), (meta_loc _loc _a0))),
+                     (meta_name _loc _a1))),
                 (meta_option meta_string _loc _a2))
         | `TXopt (_a0,_a1) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp (_loc, (`ExVrn (_loc, "TXopt")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXopt")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
         | `TXtry (_a0,_a1) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp (_loc, (`ExVrn (_loc, "TXtry")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXtry")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
         | `TXpeek (_a0,_a1) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
-                   (_loc, (`ExVrn (_loc, "TXpeek")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXpeek")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
         | `TXrules (_a0,_a1) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
-                   (_loc, (`ExVrn (_loc, "TXrules")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXrules")), (meta_loc _loc _a0))),
                 (meta_list
                    (fun _loc  (_a0,_a1)  ->
                       `Tup
@@ -218,23 +213,23 @@ module Expr =
                              (_loc, (meta_list meta_text _loc _a0),
                                (meta_expr _loc _a1))))) _loc _a1))
         | `TXself _a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "TXself")), (meta_loc _loc _a0))
+            `App (_loc, (`Vrn (_loc, "TXself")), (meta_loc _loc _a0))
         | `TXnext _a0 ->
-            `ExApp (_loc, (`ExVrn (_loc, "TXnext")), (meta_loc _loc _a0))
+            `App (_loc, (`Vrn (_loc, "TXnext")), (meta_loc _loc _a0))
         | `TXkwd (_a0,_a1) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp (_loc, (`ExVrn (_loc, "TXkwd")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXkwd")), (meta_loc _loc _a0))),
                 (meta_string _loc _a1))
         | `TXtok (_a0,_a1,_a2,_a3) ->
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc,
-                     (`ExApp
+                     (`App
                         (_loc,
-                          (`ExApp
-                             (_loc, (`ExVrn (_loc, "TXtok")),
+                          (`App
+                             (_loc, (`Vrn (_loc, "TXtok")),
                                (meta_loc _loc _a0))), (meta_expr _loc _a1))),
                      (meta_attr _loc _a2))), (meta_string _loc _a3))
   end
@@ -260,36 +255,33 @@ module Patt =
       fun _loc  ->
         function
         | `Id (_a0,_a1) ->
-            `PaApp
-              (_loc,
-                (`PaApp (_loc, (`PaVrn (_loc, "Id")), (meta_loc _loc _a0))),
+            `App
+              (_loc, (`App (_loc, (`Vrn (_loc, "Id")), (meta_loc _loc _a0))),
                 (meta_ident _loc _a1))
-        | `TyApp (_a0,_a1,_a2) ->
-            `PaApp
+        | `App (_a0,_a1,_a2) ->
+            `App
               (_loc,
-                (`PaApp
+                (`App
                    (_loc,
-                     (`PaApp
-                        (_loc, (`PaVrn (_loc, "TyApp")), (meta_loc _loc _a0))),
+                     (`App (_loc, (`Vrn (_loc, "App")), (meta_loc _loc _a0))),
                      (meta_styp _loc _a1))), (meta_styp _loc _a2))
         | `Quote (_a0,_a1,_a2) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp
+                (`App
                    (_loc,
-                     (`PaApp
-                        (_loc, (`PaVrn (_loc, "Quote")), (meta_loc _loc _a0))),
+                     (`App
+                        (_loc, (`Vrn (_loc, "Quote")), (meta_loc _loc _a0))),
                      (meta_position_flag _loc _a1))),
                 (meta_meta_option meta_alident _loc _a2))
         | `Self (_a0,_a1) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp (_loc, (`PaVrn (_loc, "Self")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Self")), (meta_loc _loc _a0))),
                 (meta_string _loc _a1))
-        | `Tok _a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "Tok")), (meta_loc _loc _a0))
+        | `Tok _a0 -> `App (_loc, (`Vrn (_loc, "Tok")), (meta_loc _loc _a0))
         | `Type _a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "Type")), (meta_ctyp _loc _a0))
+            `App (_loc, (`Vrn (_loc, "Type")), (meta_ctyp _loc _a0))
     let meta_attr: 'loc -> attr -> 'result =
       fun _loc  _a0  -> meta_string _loc _a0
     let rec meta_entry: 'loc -> entry -> 'result =
@@ -354,62 +346,60 @@ module Patt =
       fun _loc  ->
         function
         | `TXmeta (_a0,_a1,_a2,_a3,_a4) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp
+                (`App
                    (_loc,
-                     (`PaApp
+                     (`App
                         (_loc,
-                          (`PaApp
+                          (`App
                              (_loc,
-                               (`PaApp
-                                  (_loc, (`PaVrn (_loc, "TXmeta")),
+                               (`App
+                                  (_loc, (`Vrn (_loc, "TXmeta")),
                                     (meta_loc _loc _a0))),
                                (meta_list meta_string _loc _a1))),
                           (meta_list meta_text _loc _a2))),
                      (meta_expr _loc _a3))), (meta_styp _loc _a4))
         | `TXlist (_a0,_a1,_a2,_a3) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp
+                (`App
                    (_loc,
-                     (`PaApp
+                     (`App
                         (_loc,
-                          (`PaApp
-                             (_loc, (`PaVrn (_loc, "TXlist")),
+                          (`App
+                             (_loc, (`Vrn (_loc, "TXlist")),
                                (meta_loc _loc _a0))), (meta_bool _loc _a1))),
                      (meta_symbol _loc _a2))),
                 (meta_option meta_symbol _loc _a3))
         | `TXnterm (_a0,_a1,_a2) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp
+                (`App
                    (_loc,
-                     (`PaApp
-                        (_loc, (`PaVrn (_loc, "TXnterm")),
-                          (meta_loc _loc _a0))), (meta_name _loc _a1))),
+                     (`App
+                        (_loc, (`Vrn (_loc, "TXnterm")), (meta_loc _loc _a0))),
+                     (meta_name _loc _a1))),
                 (meta_option meta_string _loc _a2))
         | `TXopt (_a0,_a1) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp (_loc, (`PaVrn (_loc, "TXopt")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXopt")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
         | `TXtry (_a0,_a1) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp (_loc, (`PaVrn (_loc, "TXtry")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXtry")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
         | `TXpeek (_a0,_a1) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp
-                   (_loc, (`PaVrn (_loc, "TXpeek")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXpeek")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
         | `TXrules (_a0,_a1) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp
-                   (_loc, (`PaVrn (_loc, "TXrules")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXrules")), (meta_loc _loc _a0))),
                 (meta_list
                    (fun _loc  (_a0,_a1)  ->
                       `Tup
@@ -418,23 +408,23 @@ module Patt =
                              (_loc, (meta_list meta_text _loc _a0),
                                (meta_expr _loc _a1))))) _loc _a1))
         | `TXself _a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "TXself")), (meta_loc _loc _a0))
+            `App (_loc, (`Vrn (_loc, "TXself")), (meta_loc _loc _a0))
         | `TXnext _a0 ->
-            `PaApp (_loc, (`PaVrn (_loc, "TXnext")), (meta_loc _loc _a0))
+            `App (_loc, (`Vrn (_loc, "TXnext")), (meta_loc _loc _a0))
         | `TXkwd (_a0,_a1) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp (_loc, (`PaVrn (_loc, "TXkwd")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "TXkwd")), (meta_loc _loc _a0))),
                 (meta_string _loc _a1))
         | `TXtok (_a0,_a1,_a2,_a3) ->
-            `PaApp
+            `App
               (_loc,
-                (`PaApp
+                (`App
                    (_loc,
-                     (`PaApp
+                     (`App
                         (_loc,
-                          (`PaApp
-                             (_loc, (`PaVrn (_loc, "TXtok")),
+                          (`App
+                             (_loc, (`Vrn (_loc, "TXtok")),
                                (meta_loc _loc _a0))), (meta_expr _loc _a1))),
                      (meta_attr _loc _a2))), (meta_string _loc _a3))
   end
@@ -443,7 +433,7 @@ type used =
   | UsedScanned
   | UsedNotScanned 
 type simple_patt =
-  [ `PaVrn of (loc* string) | `PaApp of (loc* simple_patt* simple_patt)
+  [ `Vrn of (loc* string) | `App of (loc* simple_patt* simple_patt)
   | `Id of (loc* ident) | `Com of (loc* simple_patt* simple_patt)
   | `Alias of (loc* simple_patt* alident)
   | `Or of (loc* simple_patt* simple_patt) | `Str of (loc* string)

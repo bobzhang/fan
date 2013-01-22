@@ -13,7 +13,7 @@ let fibm y =
   | `Int (_loc,x) -> `Int (_loc, (string_of_int (fib (int_of_string x))))
   | x ->
       let _loc = FanAst.loc_of x in
-      `ExApp (_loc, (`Id (_loc, (`Lid (_loc, "fib")))), x)
+      `App (_loc, (`Id (_loc, (`Lid (_loc, "fib")))), x)
 let _ = register_macro ("FIB", fibm)
 open LibUtil
 let generate_fibs =
@@ -25,9 +25,9 @@ let generate_fibs =
           (fun acc  i  ->
              `Sem
                (_loc, acc,
-                 (`ExApp
+                 (`App
                     (_loc, (`Id (_loc, (`Lid (_loc, "print_int")))),
-                      (`ExApp
+                      (`App
                          (_loc, (`Id (_loc, (`Uid (_loc, "FIB")))),
                            (`Int (_loc, (string_of_int i))))))))) in
       `Seq (_loc, res)
@@ -38,15 +38,14 @@ let macro_expander =
     inherit  FanAst.map as super
     method! expr =
       function
-      | `ExApp (_loc,`Id (_,`Uid (_,a)),y) ->
+      | `App (_loc,`Id (_,`Uid (_,a)),y) ->
           ((try
               let f = Hashtbl.find macro_expanders a in
               fun ()  -> self#expr (f y)
             with
             | Not_found  ->
                 (fun ()  ->
-                   `ExApp
-                     (_loc, (`Id (_loc, (`Uid (_loc, a)))), (self#expr y)))))
+                   `App (_loc, (`Id (_loc, (`Uid (_loc, a)))), (self#expr y)))))
             ()
       | e -> super#expr e
   end

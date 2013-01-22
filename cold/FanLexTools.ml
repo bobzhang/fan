@@ -184,9 +184,9 @@ let partition ~counter  ~tables  (i,p) =
     | Lte (i,yes,no) ->
         `IfThenElse
           (_loc,
-            (`ExApp
+            (`App
                (_loc,
-                 (`ExApp
+                 (`App
                     (_loc, (`Id (_loc, (`Lid (_loc, "<=")))),
                       (`Id (_loc, (`Lid (_loc, "c")))))),
                  (`Int (_loc, (string_of_int i))))), (gen_tree yes),
@@ -197,17 +197,17 @@ let partition ~counter  ~tables  (i,p) =
           if offset = 0
           then `Id (_loc, (`Lid (_loc, "c")))
           else
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
                      (`Id (_loc, (`Lid (_loc, "c")))))),
                 (`Int (_loc, (string_of_int offset)))) in
-        `ExApp
+        `App
           (_loc,
-            (`ExApp
+            (`App
                (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
-                 (`ExApp
+                 (`App
                     (_loc,
                       (`Id
                          (_loc,
@@ -238,9 +238,9 @@ let binding_partition ~counter  ~tables  (i,p) =
     | Lte (i,yes,no) ->
         `IfThenElse
           (_loc,
-            (`ExApp
+            (`App
                (_loc,
-                 (`ExApp
+                 (`App
                     (_loc, (`Id (_loc, (`Lid (_loc, "<=")))),
                       (`Id (_loc, (`Lid (_loc, "c")))))),
                  (`Int (_loc, (string_of_int i))))), (gen_tree yes),
@@ -251,17 +251,17 @@ let binding_partition ~counter  ~tables  (i,p) =
           if offset = 0
           then `Id (_loc, (`Lid (_loc, "c")))
           else
-            `ExApp
+            `App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
                      (`Id (_loc, (`Lid (_loc, "c")))))),
                 (`Int (_loc, (string_of_int offset)))) in
-        `ExApp
+        `App
           (_loc,
-            (`ExApp
+            (`App
                (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
-                 (`ExApp
+                 (`App
                     (_loc,
                       (`Id
                          (_loc,
@@ -298,7 +298,7 @@ let gen_definition _loc l =
       | None  -> assert false
     else
       (let f = mk_state_name state in
-       `ExApp
+       `App
          (_loc, (`Id (_loc, (`Lid (_loc, f)))),
            (`Id (_loc, (`Lid (_loc, "lexbuf")))))) in
   let gen_state auto _loc i (part,trans,final) =
@@ -314,9 +314,9 @@ let gen_definition _loc l =
     let body =
       `Match
         (_loc,
-          (`ExApp
+          (`App
              (_loc, (`Id (_loc, (`Lid (_loc, p)))),
-               (`ExApp
+               (`App
                   (_loc,
                     (`Id
                        (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "next")))))),
@@ -325,7 +325,7 @@ let gen_definition _loc l =
              (_loc, (FanAst.or_of_list cases),
                (`Case
                   (_loc, (`Any _loc), (`Nil _loc),
-                    (`ExApp
+                    (`App
                        (_loc,
                          (`Id
                             (_loc,
@@ -351,9 +351,9 @@ let gen_definition _loc l =
                (_loc,
                  (`Sem
                     (_loc,
-                      (`ExApp
+                      (`App
                          (_loc,
-                           (`ExApp
+                           (`App
                               (_loc,
                                 (`Id
                                    (_loc,
@@ -400,7 +400,7 @@ let gen_definition _loc l =
                              (_loc,
                                (`Sem
                                   (_loc,
-                                    (`ExApp
+                                    (`App
                                        (_loc,
                                          (`Id
                                             (_loc,
@@ -410,7 +410,7 @@ let gen_definition _loc l =
                                          (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
                                     (`Match
                                        (_loc,
-                                         (`ExApp
+                                         (`App
                                             (_loc,
                                               (`Id
                                                  (_loc,
@@ -427,7 +427,7 @@ let gen_definition _loc l =
                                               (`Case
                                                  (_loc, (`Any _loc),
                                                    (`Nil _loc),
-                                                   (`ExApp
+                                                   (`App
                                                       (_loc,
                                                         (`Id
                                                            (_loc,

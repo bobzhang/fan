@@ -3,8 +3,7 @@ open LibUtil
 let rec normalize_acc =
   function
   | `Dot (_loc,i1,i2) -> `Dot (_loc, (normalize_acc i1), (normalize_acc i2))
-  | `IdApp (_loc,i1,i2) ->
-      `ExApp (_loc, (normalize_acc i1), (normalize_acc i2))
+  | `App (_loc,i1,i2) -> `App (_loc, (normalize_acc i1), (normalize_acc i2))
   | `Ant (_loc,_)|`Uid (_loc,_)|`Lid (_loc,_) as i -> `Id (_loc, i)
 let rec to_lid =
   function
@@ -40,7 +39,7 @@ let map_to_string ident =
   let rec aux i acc =
     match i with
     | `Dot (_loc,a,b) -> aux a ("_" ^ (aux b acc))
-    | `IdApp (_loc,a,b) -> "app_" ^ ((aux a ("_to_" ^ (aux b acc))) ^ "_end")
+    | `App (_loc,a,b) -> "app_" ^ ((aux a ("_to_" ^ (aux b acc))) ^ "_end")
     | `Lid (_loc,x) -> x ^ acc
     | `Uid (_loc,x) -> (String.lowercase x) ^ acc
     | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (dump_ident t) in

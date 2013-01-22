@@ -46,7 +46,7 @@ let retype_rule_list_without_patterns _loc rl =
                [{ s with pattern = (Some (`Id (_loc, (`Lid (_loc, "x"))))) }];
              action =
                (Some
-                  (`ExApp
+                  (`App
                      (_loc,
                        (`Id
                           (_loc,
@@ -69,7 +69,7 @@ let make_ctyp (styp : styp) tvar =
   (let rec aux =
      function
      | `Id _|`Quote _ as x -> x
-     | `TyApp (_loc,t1,t2) -> `TyApp (_loc, (aux t1), (aux t2))
+     | `App (_loc,t1,t2) -> `App (_loc, (aux t1), (aux t2))
      | `Self (_loc,x) ->
          if tvar = ""
          then
@@ -99,15 +99,15 @@ let rec make_expr entry tvar =
       let el =
         Lib.Expr.mklist _loc (List.map (fun t  -> make_expr entry "" t) tl) in
       let ns = Lib.Expr.mklist _loc (List.map (fun n  -> `Str (_loc, n)) n) in
-      `ExApp
-        (_loc, (`ExVrn (_loc, "Smeta")),
+      `App
+        (_loc, (`Vrn (_loc, "Smeta")),
           (`Tup
              (_loc,
                (`Com
                   (_loc, ns,
                     (`Com
                        (_loc, el,
-                         (`ExApp
+                         (`App
                             (_loc,
                               (`Id
                                  (_loc,
@@ -120,32 +120,32 @@ let rec make_expr entry tvar =
   | `TXlist (_loc,min,t,ts) ->
       let txt = make_expr entry "" t.text in
       (match (min, ts) with
-       | (false ,None ) -> `ExApp (_loc, (`ExVrn (_loc, "Slist0")), txt)
-       | (true ,None ) -> `ExApp (_loc, (`ExVrn (_loc, "Slist1")), txt)
+       | (false ,None ) -> `App (_loc, (`Vrn (_loc, "Slist0")), txt)
+       | (true ,None ) -> `App (_loc, (`Vrn (_loc, "Slist1")), txt)
        | (false ,Some s) ->
            let x = make_expr entry tvar s.text in
-           `ExApp
-             (_loc, (`ExVrn (_loc, "Slist0sep")),
+           `App
+             (_loc, (`Vrn (_loc, "Slist0sep")),
                (`Tup (_loc, (`Com (_loc, txt, x)))))
        | (true ,Some s) ->
            let x = make_expr entry tvar s.text in
-           `ExApp
-             (_loc, (`ExVrn (_loc, "Slist1sep")),
+           `App
+             (_loc, (`Vrn (_loc, "Slist1sep")),
                (`Tup (_loc, (`Com (_loc, txt, x))))))
-  | `TXnext _loc -> `ExVrn (_loc, "Snext")
-  | `TXself _loc -> `ExVrn (_loc, "Sself")
+  | `TXnext _loc -> `Vrn (_loc, "Snext")
+  | `TXself _loc -> `Vrn (_loc, "Sself")
   | `TXkwd (_loc,kwd) ->
-      `ExApp (_loc, (`ExVrn (_loc, "Skeyword")), (`Str (_loc, kwd)))
+      `App (_loc, (`Vrn (_loc, "Skeyword")), (`Str (_loc, kwd)))
   | `TXnterm (_loc,n,lev) ->
       (match lev with
        | Some lab ->
-           `ExApp
-             (_loc, (`ExVrn (_loc, "Snterml")),
+           `App
+             (_loc, (`Vrn (_loc, "Snterml")),
                (`Tup
                   (_loc,
                     (`Com
                        (_loc,
-                         (`ExApp
+                         (`App
                             (_loc,
                               (`Id
                                  (_loc,
@@ -153,7 +153,7 @@ let rec make_expr entry tvar =
                                       (_loc, (gm ()), (`Lid (_loc, "obj")))))),
                               (`Constraint
                                  (_loc, (n.expr),
-                                   (`TyApp
+                                   (`App
                                       (_loc,
                                         (`Id
                                            (_loc,
@@ -166,17 +166,17 @@ let rec make_expr entry tvar =
                          (`Str (_loc, lab)))))))
        | None  ->
            if n.tvar = tvar
-           then `ExVrn (_loc, "Sself")
+           then `Vrn (_loc, "Sself")
            else
-             `ExApp
-               (_loc, (`ExVrn (_loc, "Snterm")),
-                 (`ExApp
+             `App
+               (_loc, (`Vrn (_loc, "Snterm")),
+                 (`App
                     (_loc,
                       (`Id
                          (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))))),
                       (`Constraint
                          (_loc, (n.expr),
-                           (`TyApp
+                           (`App
                               (_loc,
                                 (`Id
                                    (_loc,
@@ -186,21 +186,21 @@ let rec make_expr entry tvar =
                                    (_loc, (`Normal _loc),
                                      (`Some (`Lid (_loc, (n.tvar))))))))))))))
   | `TXopt (_loc,t) ->
-      `ExApp (_loc, (`ExVrn (_loc, "Sopt")), (make_expr entry "" t))
+      `App (_loc, (`Vrn (_loc, "Sopt")), (make_expr entry "" t))
   | `TXtry (_loc,t) ->
-      `ExApp (_loc, (`ExVrn (_loc, "Stry")), (make_expr entry "" t))
+      `App (_loc, (`Vrn (_loc, "Stry")), (make_expr entry "" t))
   | `TXpeek (_loc,t) ->
-      `ExApp (_loc, (`ExVrn (_loc, "Speek")), (make_expr entry "" t))
+      `App (_loc, (`Vrn (_loc, "Speek")), (make_expr entry "" t))
   | `TXrules (_loc,rl) ->
-      `ExApp
+      `App
         (_loc,
-          (`ExApp
+          (`App
              (_loc,
                (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))))),
                (entry.expr))), (make_expr_rules _loc entry rl ""))
   | `TXtok (_loc,match_fun,attr,descr) ->
-      `ExApp
-        (_loc, (`ExVrn (_loc, "Stoken")),
+      `App
+        (_loc, (`Vrn (_loc, "Stoken")),
           (`Tup
              (_loc,
                (`Com
@@ -208,7 +208,7 @@ let rec make_expr entry tvar =
                     (`Tup
                        (_loc,
                          (`Com
-                            (_loc, (`ExVrn (_loc, attr)),
+                            (_loc, (`Vrn (_loc, attr)),
                               (`Str
                                  (_loc, (FanAst.safe_string_escaped descr))))))))))))
 and make_expr_rules _loc n rl tvar =
@@ -277,7 +277,7 @@ let text_of_action _loc psl rtvar act tvar =
          match s.pattern with
          | None |Some (`Any _) ->
              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), txt)))
-         | Some (`Alias (_loc,`PaApp (_,_,`Tup (_,`Any _)),p)) ->
+         | Some (`Alias (_loc,`App (_,_,`Tup (_,`Any _)),p)) ->
              let p = make_ctyp_patt s.styp tvar (`Id (_loc, (p :>ident))) in
              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
          | Some p when FanAst.is_irrefut_patt p ->
@@ -291,14 +291,14 @@ let text_of_action _loc psl rtvar act tvar =
   let txt =
     if meta_action.contents
     then
-      `ExApp
+      `App
         (_loc,
           (`Id
              (_loc,
                (`Dot (_loc, (`Uid (_loc, "Obj")), (`Lid (_loc, "magic")))))),
           (MetaAst.Expr.meta_expr _loc txt))
     else txt in
-  `ExApp
+  `App
     (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
       txt)
 let mk_srules loc t rl tvar =
@@ -310,9 +310,9 @@ let expr_of_delete_rule _loc n sl =
   let sl =
     List.fold_right
       (fun s  e  ->
-         `ExApp
+         `App
            (_loc,
-             (`ExApp
+             (`App
                 (_loc, (`Id (_loc, (`Uid (_loc, "::")))),
                   (make_expr n "" s.text))), e)) sl
       (`Id (_loc, (`Uid (_loc, "[]")))) in
@@ -326,12 +326,12 @@ let text_of_entry _loc e =
     let _loc = (e.name).loc in
     `Constraint
       (_loc, (x.expr),
-        (`TyApp
+        (`App
            (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
              (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (x.tvar))))))))) in
   let pos =
     match e.pos with
-    | Some pos -> `ExApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), pos)
+    | Some pos -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), pos)
     | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
   let txt =
     List.fold_right
@@ -339,21 +339,21 @@ let text_of_entry _loc e =
          let lab =
            match level.label with
            | Some lab ->
-               `ExApp
+               `App
                  (_loc, (`Id (_loc, (`Uid (_loc, "Some")))),
                    (`Str (_loc, lab)))
            | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
          let ass =
            match level.assoc with
            | Some ass ->
-               `ExApp (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
+               `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
            | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
          let txt =
            let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
            let e = make_expr_rules _loc e.name rl (e.name).tvar in
-           `ExApp
+           `App
              (_loc,
-               (`ExApp
+               (`App
                   (_loc, (`Id (_loc, (`Uid (_loc, "::")))),
                     (`Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, e)))))))),
                txt) in
@@ -363,7 +363,7 @@ let let_in_of_extend _loc gram gl default =
   let entry_mk =
     match gram with
     | Some g ->
-        `ExApp
+        `App
           (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk")))))),
             (`Id (_loc, g)))
     | None  -> `Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
@@ -374,11 +374,11 @@ let let_in_of_extend _loc gram gl default =
           (_loc, (`Id (_loc, (`Lid (_loc, i)))),
             (`Constraint
                (_loc,
-                 (`ExApp
+                 (`App
                     (_loc,
                       (`Id (_loc, (`Lid (_loc, "grammar_entry_create")))),
                       (`Str (_loc, i)))),
-                 (`TyApp
+                 (`App
                     (_loc,
                       (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
                       (`Quote
@@ -407,9 +407,9 @@ let text_of_functorial_extend _loc gram locals el =
       List.map
         (fun e  ->
            let (ent,pos,txt) = text_of_entry (e.name).loc e in
-           `ExApp
+           `App
              (_loc,
-               (`ExApp
+               (`App
                   (_loc,
                     (`Id
                        (_loc,
@@ -473,19 +473,19 @@ let sfold ?sep  _loc (ns : string list) f e s =
   let styp =
     `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (new_type_var ()))))) in
   let e =
-    `ExApp
+    `App
       (_loc,
-        (`ExApp
+        (`App
            (_loc,
              (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, foldfun)))))), f)),
         e) in
   let (t :styp)=
-    `TyApp
+    `App
       (_loc,
-        (`TyApp
+        (`App
            (_loc,
              (`Type
-                (`TyApp
+                (`App
                    (_loc,
                      (`Id
                         (_loc,

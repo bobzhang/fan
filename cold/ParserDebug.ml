@@ -30,9 +30,9 @@ let mk_debug_mode _loc =
 let mk_debug _loc m fmt section args =
   let call =
     Expr.apply
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
+           (`App
               (_loc,
                 (`Id
                    (_loc,
@@ -41,7 +41,7 @@ let mk_debug _loc m fmt section args =
                           (`Lid (_loc, "printf")))))),
                 (`Str (_loc, section)))), (`Str (_loc, fmt)))) args in
   `IfThenElse
-    (_loc, (`ExApp (_loc, (mk_debug_mode _loc m), (`Str (_loc, section)))),
+    (_loc, (`App (_loc, (mk_debug_mode _loc m), (`Str (_loc, section)))),
       call, (`Id (_loc, (`Uid (_loc, "()")))))
 let apply () =
   let grammar_entry_create = Gram.mk in

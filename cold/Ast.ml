@@ -21,11 +21,11 @@ type auident = [ `Uid of (loc* string) | ant]
 type aident = [ alident | auident] 
 type astring = [ `C of (loc* string) | ant] 
 type ident =
-  [ `Dot of (loc* ident* ident) | `IdApp of (loc* ident* ident) | alident
+  [ `Dot of (loc* ident* ident) | `App of (loc* ident* ident) | alident
   | auident] 
 type ctyp =
   [ `Nil of loc | `Alias of (loc* ctyp* ctyp) | `Any of loc
-  | `TyApp of (loc* ctyp* ctyp) | `Arrow of (loc* ctyp* ctyp)
+  | `App of (loc* ctyp* ctyp) | `Arrow of (loc* ctyp* ctyp)
   | `ClassPath of (loc* ident) | `Label of (loc* alident* ctyp)
   | `Id of (loc* ident) | `TyMan of (loc* ctyp* ctyp)
   | `TyDcl of (loc* alident* ctyp list* ctyp* (ctyp* ctyp) list)
@@ -45,18 +45,18 @@ type ctyp =
 and patt =
   [ `Nil of loc | `Id of (loc* ident) | `Alias of (loc* patt* alident) | 
     ant
-  | `Any of loc | `PaApp of (loc* patt* patt) | `Array of (loc* patt)
+  | `Any of loc | `App of (loc* patt* patt) | `Array of (loc* patt)
   | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt) | literal
   | `Label of (loc* alident* patt)
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
   | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt) | `Tup of (loc* patt)
   | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
-  | `PaVrn of (loc* string) | `Lazy of (loc* patt)
+  | `Vrn of (loc* string) | `Lazy of (loc* patt)
   | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and expr =
   [ `Nil of loc | `Id of (loc* ident) | `Dot of (loc* expr* expr) | ant
-  | `ExApp of (loc* expr* expr) | `ArrayDot of (loc* expr* expr)
+  | `App of (loc* expr* expr) | `ArrayDot of (loc* expr* expr)
   | `Array of (loc* expr) | `Sem of (loc* expr* expr) | `ExAsf of loc
   | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
   | `For of (loc* alident* expr* expr* direction_flag* expr)
@@ -71,7 +71,7 @@ and expr =
   | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
   | `Tup of (loc* expr) | `Com of (loc* expr* expr)
   | `Constraint of (loc* expr* ctyp) | `Coercion of (loc* expr* ctyp* ctyp)
-  | `ExVrn of (loc* string) | `While of (loc* expr* expr)
+  | `Vrn of (loc* string) | `While of (loc* expr* expr)
   | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
 and module_type =
@@ -108,7 +108,7 @@ and match_case =
   | `Case of (loc* patt* expr* expr) | ant] 
 and module_expr =
   [ `Nil of loc | `Id of (loc* ident)
-  | `MeApp of (loc* module_expr* module_expr)
+  | `App of (loc* module_expr* module_expr)
   | `Functor of (loc* auident* module_type* module_expr)
   | `Struct of (loc* str_item)
   | `Constraint of (loc* module_expr* module_type)

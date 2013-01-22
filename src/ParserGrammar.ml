@@ -273,8 +273,8 @@ let rest =
      (,
      `Case
      (,
-     `PaApp
-     (, `PaVrn (, "Uid"),
+     `App
+     (, `Vrn (, "Uid"),
      `Or
      (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA"))),
      `Nil , `Id (, `Lid (, "true"))),
@@ -283,8 +283,8 @@ let rest =
      styp = `Tok ;
      pattern =
      Some
-     (`PaApp
-     (, `PaVrn (, "Uid"),
+     (`App
+     (, `Vrn (, "Uid"),
      `Alias
      (, `Or (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA")),
      `Lid (, "x"))))}];

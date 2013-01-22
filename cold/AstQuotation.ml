@@ -172,17 +172,16 @@ let add_quotation ~expr_filter  ~patt_filter  ~mexpr  ~mpatt  name entry =
          let exp_ast = patt_filter meta_ast in
          let rec subst_first_loc name =
            (function
-            | `PaApp (loc,`PaVrn (_,u),`Tup (_,`Com (_,_,rest))) ->
-                `PaApp
-                  (loc, (`PaVrn (loc, u)),
+            | `App (loc,`Vrn (_,u),`Tup (_,`Com (_,_,rest))) ->
+                `App
+                  (loc, (`Vrn (loc, u)),
                     (`Tup
                        (loc,
                          (`Com (loc, (`Id (_loc, (`Lid (_loc, name)))), rest)))))
-            | `PaApp (_loc,`PaVrn (_,u),`Any _) ->
-                `PaApp
-                  (_loc, (`PaVrn (_loc, u)),
-                    (`Id (_loc, (`Lid (_loc, name)))))
-            | `PaApp (_loc,a,b) -> `PaApp (_loc, (subst_first_loc name a), b)
+            | `App (_loc,`Vrn (_,u),`Any _) ->
+                `App
+                  (_loc, (`Vrn (_loc, u)), (`Id (_loc, (`Lid (_loc, name)))))
+            | `App (_loc,a,b) -> `App (_loc, (subst_first_loc name a), b)
             | p -> p : patt -> patt ) in
          match loc_name_opt with
          | None  -> subst_first_loc FanLoc.name.contents exp_ast

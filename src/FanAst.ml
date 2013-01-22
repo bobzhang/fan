@@ -107,7 +107,7 @@ let ident_of_expr =
 
   ident_of_ctyp {:ctyp| (A B).t |} ; ;
   - : ident =
-  `Dot (, `IdApp (, `Uid (, "A"), `Uid (, "B")), `Lid (, "t"))  ]}
+  `Dot (, `App (, `Uid (, "A"), `Uid (, "B")), `Lid (, "t"))  ]}
  *)
 let ident_of_ctyp =
   let error () =
@@ -156,7 +156,7 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | {| lazy $p |} -> is_irrefut_patt p
     | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
     | {| (module $_ : $opt:_ ) |} -> true
-    | (* {| `$_ |} *) `PaVrn (_loc,_)
+    | (* {| `$_ |} *) `Vrn (_loc,_)
       (* {| $vrn:_ |} *)
     | {| $str:_ |} | {| $_ .. $_ |} |
       {| $flo:_ |} | {| $nativeint:_ |} | {| $int64:_ |} |
@@ -176,7 +176,7 @@ let is_patt_constructor = fun
     [ {:patt| $id:i |} -> is_constructor i
     | (* {:patt| `$_ |} *)
       (* {:patt| $vrn:_ |} *)
-      `PaVrn (_loc,_)
+      `Vrn (_loc,_)
       -> true
     | _ -> false ];
 
@@ -184,7 +184,7 @@ let rec is_expr_constructor = fun
     [ {:expr| $id:i |} -> is_constructor i
     | {:expr| $e1.$e2 |} -> is_expr_constructor e1 && is_expr_constructor e2
     | (* {:expr| `$_ |} *)
-      `ExVrn(_loc,_)
+      `Vrn(_loc,_)
       (* {:expr| $vrn:_ |} *)
       -> true
     | _ -> false ];
@@ -254,7 +254,7 @@ let rec tyApp_of_list = fun
     | [t] -> t
     | [t::ts] ->
         let _loc = loc_of t in
-        `TyApp (_loc, t, (tyApp_of_list ts))];
+        `App (_loc, t, (tyApp_of_list ts))];
 
   
 (* LA *)
@@ -279,7 +279,7 @@ let rec idApp_of_list =  fun
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of i in
-        `IdApp (_loc, i, (idApp_of_list is))];
+        `App (_loc, i, (idApp_of_list is))];
 
 
 let rec meApp_of_list = fun
@@ -287,7 +287,7 @@ let rec meApp_of_list = fun
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of x in
-        `MeApp (_loc, x, (meApp_of_list xs))];
+        `App (_loc, x, (meApp_of_list xs))];
 
 
 (* LA   *)

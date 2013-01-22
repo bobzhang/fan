@@ -3,7 +3,7 @@ open FSig
 open Lib
 let _loc = FanLoc.ghost
 let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
-  `ExApp
+  `App
     (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
       (`Str (_loc, "arity >= 2 in other branches"))))
    ?cons_transform  ~id:(id : basic_id_transform)  ~names  ~mk_tuple 
@@ -36,7 +36,7 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
       (normal_simple_expr_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
          ~left_type_id ~right_type_variable)
 let gen_object ?module_name  ?(arity= 1)  ?(trail=
-  `ExApp
+  `App
     (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
       (`Str (_loc, "arity >= 2 in other branches"))))
    ?cons_transform  ~kind  ~base  ~class_name  =
@@ -47,7 +47,7 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
        `Exp
          (fun v  ->
             let v = basic_transform left_type_variable v in
-            `ExApp
+            `App
               (_loc, (`Id (_loc, (`Lid (_loc, v)))),
                 (`Id (_loc, (`Lid (_loc, "self")))))) in
      let left_type_id = `Pre "" in

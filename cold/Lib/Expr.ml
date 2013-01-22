@@ -35,9 +35,9 @@ let bigarray_get loc arr arg =
   match coords with
   | [] -> failwith "bigarray_get null list"
   | c1::[] ->
-      `ExApp
+      `App
         (loc,
-          (`ExApp
+          (`App
              (loc,
                (`Id
                   (loc,
@@ -47,11 +47,11 @@ let bigarray_get loc arr arg =
                             (loc, (`Uid (loc, "Array1")),
                               (`Lid (loc, "get")))))))), arr)), c1)
   | c1::c2::[] ->
-      `ExApp
+      `App
         (loc,
-          (`ExApp
+          (`App
              (loc,
-               (`ExApp
+               (`App
                   (loc,
                     (`Id
                        (loc,
@@ -62,13 +62,13 @@ let bigarray_get loc arr arg =
                                    (`Lid (loc, "get")))))))), arr)), c1)),
           c2)
   | c1::c2::c3::[] ->
-      `ExApp
+      `App
         (loc,
-          (`ExApp
+          (`App
              (loc,
-               (`ExApp
+               (`App
                   (loc,
-                    (`ExApp
+                    (`App
                        (loc,
                          (`Id
                             (loc,
@@ -79,9 +79,9 @@ let bigarray_get loc arr arg =
                                         (`Lid (loc, "get")))))))), arr)), c1)),
                c2)), c3)
   | c1::c2::c3::coords ->
-      `ExApp
+      `App
         (loc,
-          (`ExApp
+          (`App
              (loc,
                (`Id
                   (loc,
@@ -99,8 +99,8 @@ let bigarray_get loc arr arg =
                          (`Sem (loc, c3, (FanAst.sem_of_list coords))))))))))
 let bigarray_set loc var newval =
   match var with
-  | `ExApp
-      (_loc,`ExApp
+  | `App
+      (_loc,`App
               (_,`Id
                    (_,`Dot
                         (_,`Uid (_,"Bigarray"),`Dot
@@ -108,11 +108,11 @@ let bigarray_set loc var newval =
                                                   `Lid (_,"get")))),arr),c1)
       ->
       Some
-        (`ExApp
+        (`App
            (loc,
-             (`ExApp
+             (`App
                 (loc,
-                  (`ExApp
+                  (`App
                      (loc,
                        (`Id
                           (loc,
@@ -122,9 +122,9 @@ let bigarray_set loc var newval =
                                     (loc, (`Uid (loc, "Array1")),
                                       (`Lid (loc, "set")))))))), arr)), c1)),
              newval))
-  | `ExApp
-      (_loc,`ExApp
-              (_,`ExApp
+  | `App
+      (_loc,`App
+              (_,`App
                    (_,`Id
                         (_,`Dot
                              (_,`Uid (_,"Bigarray"),`Dot
@@ -132,13 +132,13 @@ let bigarray_set loc var newval =
                                                        `Lid (_,"get")))),arr),c1),c2)
       ->
       Some
-        (`ExApp
+        (`App
            (loc,
-             (`ExApp
+             (`App
                 (loc,
-                  (`ExApp
+                  (`App
                      (loc,
-                       (`ExApp
+                       (`App
                           (loc,
                             (`Id
                                (loc,
@@ -148,10 +148,10 @@ let bigarray_set loc var newval =
                                          (loc, (`Uid (loc, "Array2")),
                                            (`Lid (loc, "set")))))))), arr)),
                        c1)), c2)), newval))
-  | `ExApp
-      (_loc,`ExApp
-              (_,`ExApp
-                   (_,`ExApp
+  | `App
+      (_loc,`App
+              (_,`App
+                   (_,`App
                         (_,`Id
                              (_,`Dot
                                   (_,`Uid (_,"Bigarray"),`Dot
@@ -164,13 +164,13 @@ let bigarray_set loc var newval =
            (loc,
              (`Dot
                 (loc,
-                  (`ExApp
+                  (`App
                      (loc,
-                       (`ExApp
+                       (`App
                           (loc,
-                            (`ExApp
+                            (`App
                                (loc,
-                                 (`ExApp
+                                 (`App
                                     (loc,
                                       (`Id
                                          (loc,
@@ -182,8 +182,8 @@ let bigarray_set loc var newval =
                                                      (`Lid (loc, "get")))))))),
                                       arr)), c1)), c2)), c3)),
                   (`Id (loc, (`Lid (loc, "contents")))))), newval))
-  | `ExApp
-      (_loc,`ExApp
+  | `App
+      (_loc,`App
               (_,`Id
                    (_,`Dot
                         (_,`Uid (_,"Bigarray"),`Dot
@@ -192,11 +192,11 @@ let bigarray_set loc var newval =
        `Array (_,coords))
       ->
       Some
-        (`ExApp
+        (`App
            (loc,
-             (`ExApp
+             (`App
                 (loc,
-                  (`ExApp
+                  (`App
                      (loc,
                        (`Id
                           (loc,
@@ -211,7 +211,7 @@ let rec pattern_eq_expression p e =
   match (p, e) with
   | (`Id (_loc,`Lid (_,a)),`Id (_,`Lid (_,b)))
     |(`Id (_loc,`Uid (_,a)),`Id (_,`Uid (_,b))) -> a = b
-  | (`PaApp (_loc,p1,p2),`ExApp (_,e1,e2)) ->
+  | (`App (_loc,p1,p2),`App (_,e1,e2)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
   | _ -> false
 let map loc (p : patt) (e : expr) (l : expr) =
@@ -220,20 +220,20 @@ let map loc (p : patt) (e : expr) (l : expr) =
    | _ ->
        if FanAst.is_irrefut_patt p
        then
-         `ExApp
+         `App
            (loc,
-             (`ExApp
+             (`App
                 (loc,
                   (`Id
                      (loc,
                        (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
                   (`Fun (loc, (`Case (loc, p, (`Nil loc), e)))))), l)
        else
-         `ExApp
+         `App
            (loc,
-             (`ExApp
+             (`App
                 (loc,
-                  (`ExApp
+                  (`App
                      (loc,
                        (`Id
                           (loc,
@@ -247,7 +247,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                  (`Case
                                     (loc, p,
                                       (`Id (loc, (`Lid (loc, "true")))),
-                                      (`ExApp
+                                      (`App
                                          (loc,
                                            (`Fun
                                               (loc,
@@ -268,10 +268,10 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                                                     (loc,
                                                                     "xs")))),
                                                                (`Nil loc),
-                                                               (`ExApp
+                                                               (`App
                                                                   (loc,
                                                                     (
-                                                                    `ExApp
+                                                                    `App
                                                                     (loc,
                                                                     (`Id
                                                                     (loc,
@@ -303,18 +303,18 @@ let map loc (p : patt) (e : expr) (l : expr) =
 let filter loc p b l =
   if FanAst.is_irrefut_patt p
   then
-    `ExApp
+    `App
       (loc,
-        (`ExApp
+        (`App
            (loc,
              (`Id
                 (loc,
                   (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
              (`Fun (loc, (`Case (loc, p, (`Nil loc), b)))))), l)
   else
-    `ExApp
+    `App
       (loc,
-        (`ExApp
+        (`App
            (loc,
              (`Id
                 (loc,
@@ -328,7 +328,7 @@ let filter loc p b l =
                           (loc, (`Any loc), (`Nil loc),
                             (`Id (loc, (`Lid (loc, "false")))))))))))), l)
 let concat _loc l =
-  `ExApp
+  `App
     (_loc,
       (`Id
          (_loc,
@@ -348,7 +348,7 @@ let bad_patt _loc =
 let substp loc env =
   let rec loop =
     function
-    | `ExApp (_loc,e1,e2) -> `PaApp (loc, (loop e1), (loop e2))
+    | `App (_loc,e1,e2) -> `App (loc, (loop e1), (loop e2))
     | `Nil _loc -> `Nil loc
     | `Id (_loc,`Lid (_,x)) ->
         (try List.assoc x env with | Not_found  -> `Id (loc, (`Lid (loc, x))))
@@ -374,13 +374,13 @@ class subst loc env =
       function
       | `Id (_loc,`Lid (_,x))|`Id (_loc,`Uid (_,x)) as e ->
           (try List.assoc x env with | Not_found  -> super#expr e)
-      | `ExApp (_loc,`Id (_,`Uid (_,"LOCATION_OF")),`Id (_,`Lid (_,x)))
-        |`ExApp (_loc,`Id (_,`Uid (_,"LOCATION_OF")),`Id (_,`Uid (_,x))) as e
+      | `App (_loc,`Id (_,`Uid (_,"LOCATION_OF")),`Id (_,`Lid (_,x)))
+        |`App (_loc,`Id (_,`Uid (_,"LOCATION_OF")),`Id (_,`Uid (_,x))) as e
           ->
           (try
              let loc = FanAst.loc_of (List.assoc x env) in
              let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple loc in
-             `ExApp
+             `App
                (_loc,
                  (`Id
                     (_loc,
@@ -472,17 +472,17 @@ let fun_args _loc args body =
       (fun arg  body  -> `Fun (_loc, (`Case (_loc, arg, (`Nil _loc), body))))
       args body
 let _loc = FanLoc.ghost
-let app a b = `ExApp (_loc, a, b)
+let app a b = `App (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let list_of_app ty =
   let rec loop t acc =
     match t with
-    | `ExApp (_loc,t1,t2) -> loop t1 (t2 :: acc)
+    | `App (_loc,t1,t2) -> loop t1 (t2 :: acc)
     | `Nil _loc -> acc
     | i -> i :: acc in
   loop ty []
 let rec view_app acc =
-  function | `ExApp (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
+  function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let app_of_list = function | [] -> `Nil _loc | l -> List.reduce_left app l
 let mklist loc =
   let rec loop top =
@@ -490,14 +490,14 @@ let mklist loc =
     | [] -> `Id (_loc, (`Uid (_loc, "[]")))
     | e1::el ->
         let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-        `ExApp
-          (_loc, (`ExApp (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
+        `App
+          (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
             (loop false el)) in
   loop true
 let rec apply accu =
   function
   | [] -> accu
-  | x::xs -> let _loc = loc_of x in apply (`ExApp (_loc, accu, x)) xs
+  | x::xs -> let _loc = loc_of x in apply (`App (_loc, accu, x)) xs
 let mkarray loc arr =
   let rec loop top =
     function
@@ -512,7 +512,7 @@ let of_str s =
   then invalid_arg "[expr|patt]_of_str len=0"
   else
     (match s.[0] with
-     | '`' -> `ExVrn (_loc, (String.sub s 1 (len - 1)))
+     | '`' -> `Vrn (_loc, (String.sub s 1 (len - 1)))
      | x when Char.is_uppercase x -> `Id (_loc, (`Uid (_loc, s)))
      | _ -> `Id (_loc, (`Lid (_loc, s))))
 let of_ident_number cons n =
@@ -546,10 +546,9 @@ let tuple_of_number ast n =
 let of_vstr_number name i =
   let items = List.init i (fun i  -> `Id (_loc, (xid i))) in
   if items = []
-  then `ExVrn (_loc, name)
+  then `Vrn (_loc, name)
   else
-    (let item = items |> tuple_com in
-     `ExApp (_loc, (`ExVrn (_loc, name)), item))
+    (let item = items |> tuple_com in `App (_loc, (`Vrn (_loc, name)), item))
 let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   let args =
     List.init arity
@@ -568,7 +567,7 @@ let mkumin loc prefix arg =
   | `Int64 (_loc,n) -> `Int64 (loc, (String.neg n))
   | `NativeInt (_loc,n) -> `NativeInt (loc, (String.neg n))
   | `Flo (_loc,n) -> `Flo (loc, (String.neg n))
-  | _ -> `ExApp (loc, (`Id (loc, (`Lid (loc, ("~" ^ prefix))))), arg)
+  | _ -> `App (loc, (`Id (loc, (`Lid (loc, ("~" ^ prefix))))), arg)
 let mk_assert =
   function
   | `Id (_loc,`Lid (_,"false")) -> `ExAsf _loc
@@ -580,9 +579,9 @@ let mk_record label_exprs =
       label_exprs in
   `Record (_loc, (FanAst.sem_of_list rec_bindings), (`Nil _loc))
 let failure =
-  `ExApp
+  `App
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
-      (`ExApp
+      (`App
          (_loc, (`Id (_loc, (`Uid (_loc, "Failure")))),
            (`Str (_loc, "metafilter: Cannot handle that kind of types ")))))
 let (<+) names acc =
@@ -597,64 +596,64 @@ let (<+<) patts acc =
     (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, (`Nil _loc), acc)))) patts
     acc
 let mep_comma x y =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "Com")),
+           (`App
+              (_loc, (`Vrn (_loc, "Com")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let mvep_comma x y =
-  `ExApp
-    (_loc, (`ExVrn (_loc, "PaCom")),
+  `App
+    (_loc, (`Vrn (_loc, "PaCom")),
       (`Tup
          (_loc,
            (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                 (`Com (_loc, x, y)))))))
 let mee_comma x y =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "Com")),
+           (`App
+              (_loc, (`Vrn (_loc, "Com")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let mvee_comma x y =
-  `ExApp
-    (_loc, (`ExVrn (_loc, "Com")),
+  `App
+    (_loc, (`Vrn (_loc, "Com")),
       (`Tup
          (_loc,
            (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                 (`Com (_loc, x, y)))))))
 let mee_app x y =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "ExApp")),
+           (`App
+              (_loc, (`Vrn (_loc, "App")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let vee_app x y =
-  `ExApp
-    (_loc, (`ExVrn (_loc, "ExApp")),
+  `App
+    (_loc, (`Vrn (_loc, "App")),
       (`Tup
          (_loc,
            (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                 (`Com (_loc, x, y)))))))
 let mep_app x y =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "PaApp")),
+           (`App
+              (_loc, (`Vrn (_loc, "App")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
 let vep_app x y =
-  `ExApp
-    (_loc, (`ExVrn (_loc, "PaApp")),
+  `App
+    (_loc, (`Vrn (_loc, "App")),
       (`Tup
          (_loc,
            (`Com
@@ -665,139 +664,139 @@ let mep_of_str s =
   if (s.[0]) = '`'
   then
     let s = String.sub s 1 (len - 1) in
-    `ExApp
-      (_loc, (`ExVrn (_loc, "PaVrn")),
+    `App
+      (_loc, (`Vrn (_loc, "Vrn")),
         (`Tup
            (_loc,
              (`Com
                 (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
   else
     (let u =
-       `ExApp
-         (_loc, (`ExVrn (_loc, "Uid")),
+       `App
+         (_loc, (`Vrn (_loc, "Uid")),
            (`Tup
               (_loc,
                 (`Com
                    (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                      (`Str (_loc, s))))))) in
-     `ExApp
+     `App
        (_loc,
-         (`ExApp
-            (_loc, (`ExVrn (_loc, "Id")),
-              (`Id (_loc, (`Lid (_loc, "_loc")))))), u))
+         (`App
+            (_loc, (`Vrn (_loc, "Id")), (`Id (_loc, (`Lid (_loc, "_loc")))))),
+         u))
 let mee_of_str s =
   let len = String.length s in
   if (s.[0]) = '`'
   then
     let s = String.sub s 1 (len - 1) in
-    `ExApp
-      (_loc, (`ExVrn (_loc, "ExVrn")),
+    `App
+      (_loc, (`Vrn (_loc, "Vrn")),
         (`Tup
            (_loc,
              (`Com
                 (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
   else
     (let u =
-       `ExApp
-         (_loc, (`ExVrn (_loc, "Uid")),
+       `App
+         (_loc, (`Vrn (_loc, "Uid")),
            (`Tup
               (_loc,
                 (`Com
                    (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                      (`Str (_loc, s))))))) in
-     `ExApp
+     `App
        (_loc,
-         (`ExApp
-            (_loc, (`ExVrn (_loc, "Id")),
-              (`Id (_loc, (`Lid (_loc, "_loc")))))), u))
+         (`App
+            (_loc, (`Vrn (_loc, "Id")), (`Id (_loc, (`Lid (_loc, "_loc")))))),
+         u))
 let vee_of_str s =
-  `ExApp
-    (_loc, (`ExVrn (_loc, "ExVrn")),
+  `App
+    (_loc, (`Vrn (_loc, "Vrn")),
       (`Tup
          (_loc,
            (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
 let vep_of_str s =
-  `ExApp
-    (_loc, (`ExVrn (_loc, "PaVrn")),
+  `App
+    (_loc, (`Vrn (_loc, "Vrn")),
       (`Tup
          (_loc,
            (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
 let meee_of_str s =
   let u =
-    `ExApp
+    `App
       (_loc,
-        (`ExApp
+        (`App
            (_loc,
-             (`ExApp
-                (_loc, (`ExVrn (_loc, "ExApp")),
+             (`App
+                (_loc, (`Vrn (_loc, "App")),
                   (`Id (_loc, (`Lid (_loc, "_loc")))))),
-             (`ExApp
+             (`App
                 (_loc,
-                  (`ExApp
-                     (_loc, (`ExVrn (_loc, "ExVrn")),
+                  (`App
+                     (_loc, (`Vrn (_loc, "Vrn")),
                        (`Id (_loc, (`Lid (_loc, "_loc")))))),
                   (`Str (_loc, "Uid")))))),
-        (`ExApp
+        (`App
            (_loc,
-             (`ExApp
-                (_loc, (`ExVrn (_loc, "Tup")),
+             (`App
+                (_loc, (`Vrn (_loc, "Tup")),
                   (`Id (_loc, (`Lid (_loc, "_loc")))))),
-             (`ExApp
+             (`App
                 (_loc,
-                  (`ExApp
+                  (`App
                      (_loc,
-                       (`ExApp
-                          (_loc, (`ExVrn (_loc, "Com")),
+                       (`App
+                          (_loc, (`Vrn (_loc, "Com")),
                             (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                       (`ExApp
+                       (`App
                           (_loc,
-                            (`ExApp
-                               (_loc, (`ExVrn (_loc, "Id")),
+                            (`App
+                               (_loc, (`Vrn (_loc, "Id")),
                                  (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                            (`ExApp
+                            (`App
                                (_loc,
-                                 (`ExApp
-                                    (_loc, (`ExVrn (_loc, "Lid")),
+                                 (`App
+                                    (_loc, (`Vrn (_loc, "Lid")),
                                       (`Id (_loc, (`Lid (_loc, "_loc")))))),
                                  (`Str (_loc, "_loc")))))))),
-                  (`ExApp
-                     (_loc, (`ExVrn (_loc, "Str")),
+                  (`App
+                     (_loc, (`Vrn (_loc, "Str")),
                        (`Tup
                           (_loc,
                             (`Com
                                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                                  (`Str (_loc, s))))))))))))) in
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "ExApp")),
+           (`App
+              (_loc, (`Vrn (_loc, "App")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
-           (`ExApp
+           (`App
               (_loc,
-                (`ExApp
+                (`App
                    (_loc,
-                     (`ExApp
-                        (_loc, (`ExVrn (_loc, "ExApp")),
+                     (`App
+                        (_loc, (`Vrn (_loc, "App")),
                           (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                     (`ExApp
+                     (`App
                         (_loc,
-                          (`ExApp
-                             (_loc, (`ExVrn (_loc, "ExVrn")),
+                          (`App
+                             (_loc, (`Vrn (_loc, "Vrn")),
                                (`Id (_loc, (`Lid (_loc, "_loc")))))),
                           (`Str (_loc, "Id")))))),
-                (`ExApp
+                (`App
                    (_loc,
-                     (`ExApp
-                        (_loc, (`ExVrn (_loc, "Id")),
+                     (`App
+                        (_loc, (`Vrn (_loc, "Id")),
                           (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                     (`ExApp
+                     (`App
                         (_loc,
-                          (`ExApp
-                             (_loc, (`ExVrn (_loc, "Lid")),
+                          (`App
+                             (_loc, (`Vrn (_loc, "Lid")),
                                (`Id (_loc, (`Lid (_loc, "_loc")))))),
                           (`Str (_loc, "_loc")))))))))), u)
 let mk_tuple_ee =
@@ -805,8 +804,8 @@ let mk_tuple_ee =
   | [] -> invalid_arg "mktupee arity is zero "
   | x::[] -> x
   | xs ->
-      `ExApp
-        (_loc, (`ExVrn (_loc, "Tup")),
+      `App
+        (_loc, (`Vrn (_loc, "Tup")),
           (`Tup
              (_loc,
                (`Com
@@ -817,8 +816,8 @@ let mk_tuple_vee =
   | [] -> invalid_arg "mktupee arity is zero "
   | x::[] -> x
   | xs ->
-      `ExApp
-        (_loc, (`ExVrn (_loc, "Tup")),
+      `App
+        (_loc, (`Vrn (_loc, "Tup")),
           (`Tup
              (_loc,
                (`Com
@@ -829,8 +828,8 @@ let mk_tuple_ep =
   | [] -> assert false
   | x::[] -> x
   | xs ->
-      `ExApp
-        (_loc, (`ExVrn (_loc, "Tup")),
+      `App
+        (_loc, (`Vrn (_loc, "Tup")),
           (`Tup
              (_loc,
                (`Com
@@ -841,83 +840,83 @@ let mk_tuple_vep =
   | [] -> assert false
   | x::[] -> x
   | xs ->
-      `ExApp
-        (_loc, (`ExVrn (_loc, "PaTup")),
+      `App
+        (_loc, (`Vrn (_loc, "PaTup")),
           (`Tup
              (_loc,
                (`Com
                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                     (List.reduce_right mvep_comma xs))))))
 let mee_record_col label expr =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "RecBind")),
+           (`App
+              (_loc, (`Vrn (_loc, "RecBind")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "Lid")),
+           (`App
+              (_loc, (`Vrn (_loc, "Lid")),
                 (`Tup
                    (_loc,
                      (`Com
                         (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                           (`Str (_loc, label)))))))))), expr)
 let mep_record_col label expr =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "PaEq")),
+           (`App
+              (_loc, (`Vrn (_loc, "PaEq")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "Lid")),
+           (`App
+              (_loc, (`Vrn (_loc, "Lid")),
                 (`Tup
                    (_loc,
                      (`Com
                         (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                           (`Str (_loc, label)))))))))), expr)
 let mee_record_semi a b =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "Sem")),
+           (`App
+              (_loc, (`Vrn (_loc, "Sem")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
 let mep_record_semi a b =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "Sem")),
+           (`App
+              (_loc, (`Vrn (_loc, "Sem")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
 let mk_record_ee label_exprs =
   (label_exprs |> (List.map (fun (label,expr)  -> mee_record_col label expr)))
     |>
     (fun es  ->
-       `ExApp
+       `App
          (_loc,
-           (`ExApp
+           (`App
               (_loc,
-                (`ExApp
-                   (_loc, (`ExVrn (_loc, "Record")),
+                (`App
+                   (_loc, (`Vrn (_loc, "Record")),
                      (`Id (_loc, (`Lid (_loc, "_loc")))))),
                 (List.reduce_right mee_record_semi es))),
-           (`ExApp
-              (_loc, (`ExVrn (_loc, "Nil")),
+           (`App
+              (_loc, (`Vrn (_loc, "Nil")),
                 (`Id (_loc, (`Lid (_loc, "_loc"))))))))
 let mk_record_ep label_exprs =
   let open List in
     (label_exprs |> (map (fun (label,expr)  -> mep_record_col label expr)))
       |>
       (fun es  ->
-         `ExApp
+         `App
            (_loc,
-             (`ExApp
-                (_loc, (`ExVrn (_loc, "PaRec")),
+             (`App
+                (_loc, (`Vrn (_loc, "PaRec")),
                   (`Id (_loc, (`Lid (_loc, "_loc")))))),
              (List.reduce_right mep_record_semi es)))
 let eta_expand expr number =
@@ -945,6 +944,6 @@ let unknown len =
     `Send
       (_loc, (`Id (_loc, (`Lid (_loc, "self")))), (`Lid (_loc, "unknown")))
   else
-    `ExApp
+    `App
       (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
         (`Str (_loc, "not implemented!")))

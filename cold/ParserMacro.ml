@@ -401,11 +401,11 @@ let apply () =
                       (Gram.string_of_token x : 'e__6 ))))]],
              (Gram.mk_action
                 (fun (kwd : 'e__6)  _  (_loc : FanLoc.t)  ->
-                   (`ExVrn (_loc, kwd) : 'expr ))));
+                   (`Vrn (_loc, kwd) : 'expr ))));
           ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
             (Gram.mk_action
                (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
-                  (`ExVrn (_loc, s) : 'expr ))))])]);
+                  (`Vrn (_loc, s) : 'expr ))))])]);
    Gram.extend (patt : 'patt Gram.t )
      ((Some (`Before "simple")),
        [(None, None,
@@ -437,11 +437,11 @@ let apply () =
                       (Gram.string_of_token x : 'e__7 ))))]],
              (Gram.mk_action
                 (fun (kwd : 'e__7)  _  (_loc : FanLoc.t)  ->
-                   (`PaVrn (_loc, kwd) : 'patt ))));
+                   (`Vrn (_loc, kwd) : 'patt ))));
           ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
             (Gram.mk_action
                (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
-                  (`PaVrn (_loc, s) : 'patt ))))])]));
+                  (`Vrn (_loc, s) : 'patt ))))])]));
   Options.add
     ("-D", (FanArg.String (parse_def ~expr ~patt)),
       "<string> Define for IFDEF instruction.");

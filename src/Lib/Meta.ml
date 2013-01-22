@@ -20,7 +20,7 @@ module MetaLoc : FanAst.META_LOC= struct
     (*    $`int:e, $`int:f, $`int:g, *)
     (*    $(if h then {:patt| true |} else {:patt| false |} )) |}; *)
     (*
-  Ast.PaApp
+  Ast.App
     (_loc,
       (Ast.PaId
          (_loc,

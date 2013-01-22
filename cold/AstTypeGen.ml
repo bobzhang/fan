@@ -11,9 +11,9 @@ let mk_variant_eq _cons =
    | ls ->
        List.reduce_left_with
          ~compose:(fun x  y  ->
-                     `ExApp
+                     `App
                        (_loc,
-                         (`ExApp (_loc, (`Id (_loc, (`Lid (_loc, "&&")))), x)),
+                         (`App (_loc, (`Id (_loc, (`Lid (_loc, "&&")))), x)),
                          y)) ~f:(fun { expr;_}  -> expr) ls : FSig.ty_info
                                                                 list -> 
                                                                 expr )
@@ -48,7 +48,7 @@ let (gen_fold,gen_fold2) =
       ~class_name:"fold" ~mk_variant ~names:[] ()),
     (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
        ~class_name:"fold2" ~mk_variant ~names:[] ~arity:2
-       ~trail:(`ExApp
+       ~trail:(`App
                  (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
                    (`Str (_loc, "fold2 failure")))) ()))
 let _ =
@@ -83,7 +83,7 @@ let (gen_map,gen_map2) =
       ~class_name:"map" ~mk_variant ~names:[] ()),
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
        ~class_name:"map2" ~mk_variant ~names:[] ~arity:2
-       ~trail:(`ExApp
+       ~trail:(`App
                  (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
                    (`Str (_loc, "map2 failure")))) ()))
 let _ =
@@ -99,8 +99,8 @@ let gen_strip =
          | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
-           |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
-           |`TyApp
+           |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`App
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
            |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
@@ -113,8 +113,8 @@ let gen_strip =
          | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
-           |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
-           |`TyApp
+           |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`App
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
            |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
@@ -130,8 +130,8 @@ let gen_strip =
          | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
-           |`TyApp (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
-           |`TyApp
+           |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`App
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
            |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
@@ -181,9 +181,9 @@ let extract info =
   (info |> (List.map (fun { name_expr; id_expr;_}  -> [name_expr; id_expr])))
     |> List.concat
 let mkfmt pre sep post fields =
-  `ExApp
+  `App
     (_loc,
-      (`ExApp
+      (`App
          (_loc,
            (`Id
               (_loc,
@@ -223,7 +223,7 @@ let mk_variant_iter _cons params =
   (let lst =
      params |>
        (List.map
-          (fun { name_expr; id_expr;_}  -> `ExApp (_loc, name_expr, id_expr))) in
+          (fun { name_expr; id_expr;_}  -> `App (_loc, name_expr, id_expr))) in
    `Seq (_loc, (FanAst.sem_of_list lst)) : expr )
 let mk_tuple_iter params = (mk_variant_iter "" params : expr )
 let mk_record_iter cols =
@@ -231,7 +231,7 @@ let mk_record_iter cols =
     cols |>
       (List.map
          (fun { info = { name_expr; id_expr;_};_}  ->
-            `ExApp (_loc, name_expr, id_expr))) in
+            `App (_loc, name_expr, id_expr))) in
   `Seq (_loc, (FanAst.sem_of_list lst))
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
@@ -272,8 +272,8 @@ let generate (module_types : FSig.module_types) =
              (_loc,
                (`Case
                   (_loc,
-                    (`PaApp
-                       (_loc, (`PaVrn (_loc, key)),
+                    (`App
+                       (_loc, (`Vrn (_loc, key)),
                          (`Id (_loc, (`Lid (_loc, "_loc")))))), (`Nil _loc),
                     (`Id (_loc, (`Lid (_loc, "_loc")))))), acc)
          else
@@ -283,7 +283,7 @@ let generate (module_types : FSig.module_types) =
               (_loc,
                 (`Case
                    (_loc,
-                     (`PaApp (_loc, (`PaVrn (_loc, key)), (tuple_com pats))),
+                     (`App (_loc, (`Vrn (_loc, key)), (tuple_com pats))),
                      (`Nil _loc), (`Id (_loc, (`Lid (_loc, "_loc")))))), acc)))
       tbl (`Nil _loc) in
   `Value

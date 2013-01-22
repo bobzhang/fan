@@ -114,7 +114,7 @@
 
    type ident =
     [= `Dot of (loc * ident * ident) (* i . i *)
-    | `IdApp of (loc * ident * ident) (* i i *)
+    | `App of (loc * ident * ident) (* i i *)
     | alident
     | auident];
 
@@ -125,7 +125,7 @@
 
      | `Any of loc (* _ *)
 
-     | `TyApp of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
+     | `App of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
 
      | `Arrow of (loc * ctyp * ctyp)
           
@@ -180,7 +180,7 @@
      | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
      | ant (* $s$ *)
      | `Any of loc (* _ *)
-     | `PaApp of (loc * patt * patt) (* p p *) (* fun x y -> *)
+     | `App of (loc * patt * patt) (* p p *) (* fun x y -> *)
      | `Array of (loc * patt) (* [| p |] *)
      | `Com of (loc * patt * patt) (* p, p *)
      | `Sem of (loc * patt * patt) (* p; p *)
@@ -195,7 +195,7 @@
      | `Tup of (loc * patt )
      | `Constraint of (loc * patt * ctyp) (* (p : t) *)
      | `ClassPath of (loc * ident) (* #i *)
-     | `PaVrn of (loc * string) (* `s *)
+     | `Vrn of (loc * string) (* `s *)
      | `Lazy of (loc * patt) (* lazy p *)
        (* (module M : ty ) *)      
      | `ModuleUnpack of (loc * (* string *)auident * meta_option ctyp)]
@@ -204,7 +204,7 @@
      | `Id  of (loc * ident) (* i *)
      | `Dot of (loc * expr * expr) (* e.e *)
      | ant (* $s$ *)
-     | `ExApp of (loc * expr * expr) (* e e *)
+     | `App of (loc * expr * expr) (* e e *)
      | `ArrayDot of (loc * expr * expr) (* e.(e) *)
      | `Array of (loc * expr) (* [| e |] *)
      | `Sem of (loc * expr * expr) (* e; e *)
@@ -253,7 +253,7 @@
      | (* `Constraint *) `Constraint of (loc * expr * ctyp)
      | `Coercion of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)          
       (* `s *)
-     | `ExVrn of (loc * string)
+     | `Vrn of (loc * string)
       (* while e do { e } *)
      | `While of (loc * expr * expr)
       (* let open i in e *)
@@ -355,7 +355,7 @@
         (* i *)
      | `Id  of (loc * ident)
       (* me me *)
-     | `MeApp of (loc * module_expr * module_expr)
+     | `App of (loc * module_expr * module_expr)
       (* functor (s : mt) -> me *)
      | `Functor of (loc * (* string *)auident * module_type * module_expr)
       (* struct st end *)
