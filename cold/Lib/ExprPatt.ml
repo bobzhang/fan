@@ -14,6 +14,8 @@
   mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
   [b; c; d]
   ]}
+  (* {:expr| [1;2;3::[]]|} *)
+  DoubleColon
  *)
 let mklist loc =
   let rec loop top =  fun

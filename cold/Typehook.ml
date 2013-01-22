@@ -3,7 +3,7 @@ open Ast
 open FSig
 open Format
 open Lib
-let keep = ref false
+let keep = ref true
 type plugin = 
   {
   transform: module_types -> str_item;

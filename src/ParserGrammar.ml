@@ -451,12 +451,12 @@ Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented");
 
 
   
-let _loc = FanLoc.ghost;
-let u : FanGrammar.entry= {:entry|
-  simple_expr:
-  [ a_lident{i} -> {:expr| $(id:(i:>ident)) |}
-  | "("; expr{e}; ")" -> e ]
-|};  
+(* let _loc = FanLoc.ghost; *)
+(* let u : FanGrammar.entry= {:entry| *)
+(*   simple_expr: *)
+(*   [ a_lident{i} -> {:expr| $(id:(i:>ident)) |} *)
+(*   | "("; expr{e}; ")" -> e ] *)
+(* |};   *)
 (* let u : FanGrammar.rule = {:rule| *)
 (*   a_lident{i} -> print_string i *)
 (* |};   *)

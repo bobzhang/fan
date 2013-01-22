@@ -1,7 +1,7 @@
 open FanAst;
 
 
-{:fans| derive (MetaExpr MetaPatt);|};
+{:fans| keep on;  derive (MetaExpr MetaPatt);|};
 {:ocaml|
 (* every entry has a name *)  
 type name  = { expr : expr; tvar : string; loc : loc };

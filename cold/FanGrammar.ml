@@ -1,5 +1,5 @@
-open Ast
-type loc = FanLoc.t 
+open FanAst
+let _ = ()
 type name =  {
   expr: expr;
   tvar: string;
@@ -32,6 +32,412 @@ and text =
   | `TXrules of (loc* (text list* expr) list) | `TXself of loc
   | `TXnext of loc | `TXkwd of (loc* string)
   | `TXtok of (loc* expr* attr* string)] 
+module Expr =
+  struct
+    open FanAst.MExpr
+    open Filters.ME
+    let meta_name: 'loc -> name -> 'result =
+      fun _loc  { expr = _a0; tvar = _a1; loc = _a2 }  ->
+        `Record
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`RecBind
+                    (_loc, (`Lid (_loc, "expr")), (meta_expr _loc _a0))),
+                 (`Sem
+                    (_loc,
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "tvar")),
+                           (meta_string _loc _a1))),
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "loc")), (meta_loc _loc _a2))))))),
+            (`Nil _loc))
+    let rec meta_styp: 'loc -> styp -> 'result =
+      fun _loc  ->
+        function
+        | `Id (_a0,_a1) ->
+            `ExApp
+              (_loc,
+                (`ExApp (_loc, (`ExVrn (_loc, "Id")), (meta_loc _loc _a0))),
+                (meta_ident _loc _a1))
+        | `TyApp (_a0,_a1,_a2) ->
+            `ExApp
+              (_loc,
+                (`ExApp
+                   (_loc,
+                     (`ExApp
+                        (_loc, (`ExVrn (_loc, "TyApp")), (meta_loc _loc _a0))),
+                     (meta_styp _loc _a1))), (meta_styp _loc _a2))
+        | `Quote (_a0,_a1,_a2) ->
+            `ExApp
+              (_loc,
+                (`ExApp
+                   (_loc,
+                     (`ExApp
+                        (_loc, (`ExVrn (_loc, "Quote")), (meta_loc _loc _a0))),
+                     (meta_position_flag _loc _a1))),
+                (meta_meta_option meta_alident _loc _a2))
+        | `Self (_a0,_a1) ->
+            `ExApp
+              (_loc,
+                (`ExApp (_loc, (`ExVrn (_loc, "Self")), (meta_loc _loc _a0))),
+                (meta_string _loc _a1))
+        | `Tok _a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "Tok")), (meta_loc _loc _a0))
+        | `Type _a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "Type")), (meta_ctyp _loc _a0))
+    let meta_attr: 'loc -> attr -> 'result =
+      fun _loc  _a0  -> meta_string _loc _a0
+    let rec meta_entry: 'loc -> entry -> 'result =
+      fun _loc  { name = _a0; pos = _a1; levels = _a2 }  ->
+        `Record
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`RecBind
+                    (_loc, (`Lid (_loc, "name")), (meta_name _loc _a0))),
+                 (`Sem
+                    (_loc,
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "pos")),
+                           (meta_option meta_expr _loc _a1))),
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "levels")),
+                           (meta_list meta_level _loc _a2))))))),
+            (`Nil _loc))
+    and meta_level: 'loc -> level -> 'result =
+      fun _loc  { label = _a0; assoc = _a1; rules = _a2 }  ->
+        `Record
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`RecBind
+                    (_loc, (`Lid (_loc, "label")),
+                      (meta_option meta_string _loc _a0))),
+                 (`Sem
+                    (_loc,
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "assoc")),
+                           (meta_option meta_expr _loc _a1))),
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "rules")),
+                           (meta_list meta_rule _loc _a2))))))), (`Nil _loc))
+    and meta_rule: 'loc -> rule -> 'result =
+      fun _loc  { prod = _a0; action = _a1 }  ->
+        `Record
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`RecBind
+                    (_loc, (`Lid (_loc, "prod")),
+                      (meta_list meta_symbol _loc _a0))),
+                 (`RecBind
+                    (_loc, (`Lid (_loc, "action")),
+                      (meta_option meta_expr _loc _a1))))), (`Nil _loc))
+    and meta_symbol: 'loc -> symbol -> 'result =
+      fun _loc  { text = _a0; styp = _a1; pattern = _a2 }  ->
+        `Record
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`RecBind
+                    (_loc, (`Lid (_loc, "text")), (meta_text _loc _a0))),
+                 (`Sem
+                    (_loc,
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "styp")), (meta_styp _loc _a1))),
+                      (`RecBind
+                         (_loc, (`Lid (_loc, "pattern")),
+                           (meta_option meta_patt _loc _a2))))))),
+            (`Nil _loc))
+    and meta_text: 'loc -> text -> 'result =
+      fun _loc  ->
+        function
+        | `TXmeta (_a0,_a1,_a2,_a3,_a4) ->
+            `ExApp
+              (_loc,
+                (`ExApp
+                   (_loc,
+                     (`ExApp
+                        (_loc,
+                          (`ExApp
+                             (_loc,
+                               (`ExApp
+                                  (_loc, (`ExVrn (_loc, "TXmeta")),
+                                    (meta_loc _loc _a0))),
+                               (meta_list meta_string _loc _a1))),
+                          (meta_list meta_text _loc _a2))),
+                     (meta_expr _loc _a3))), (meta_styp _loc _a4))
+        | `TXlist (_a0,_a1,_a2,_a3) ->
+            `ExApp
+              (_loc,
+                (`ExApp
+                   (_loc,
+                     (`ExApp
+                        (_loc,
+                          (`ExApp
+                             (_loc, (`ExVrn (_loc, "TXlist")),
+                               (meta_loc _loc _a0))), (meta_bool _loc _a1))),
+                     (meta_symbol _loc _a2))),
+                (meta_option meta_symbol _loc _a3))
+        | `TXnterm (_a0,_a1,_a2) ->
+            `ExApp
+              (_loc,
+                (`ExApp
+                   (_loc,
+                     (`ExApp
+                        (_loc, (`ExVrn (_loc, "TXnterm")),
+                          (meta_loc _loc _a0))), (meta_name _loc _a1))),
+                (meta_option meta_string _loc _a2))
+        | `TXopt (_a0,_a1) ->
+            `ExApp
+              (_loc,
+                (`ExApp (_loc, (`ExVrn (_loc, "TXopt")), (meta_loc _loc _a0))),
+                (meta_text _loc _a1))
+        | `TXtry (_a0,_a1) ->
+            `ExApp
+              (_loc,
+                (`ExApp (_loc, (`ExVrn (_loc, "TXtry")), (meta_loc _loc _a0))),
+                (meta_text _loc _a1))
+        | `TXpeek (_a0,_a1) ->
+            `ExApp
+              (_loc,
+                (`ExApp
+                   (_loc, (`ExVrn (_loc, "TXpeek")), (meta_loc _loc _a0))),
+                (meta_text _loc _a1))
+        | `TXrules (_a0,_a1) ->
+            `ExApp
+              (_loc,
+                (`ExApp
+                   (_loc, (`ExVrn (_loc, "TXrules")), (meta_loc _loc _a0))),
+                (meta_list
+                   (fun _loc  (_a0,_a1)  ->
+                      `Tup
+                        (_loc,
+                          (`Com
+                             (_loc, (meta_list meta_text _loc _a0),
+                               (meta_expr _loc _a1))))) _loc _a1))
+        | `TXself _a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "TXself")), (meta_loc _loc _a0))
+        | `TXnext _a0 ->
+            `ExApp (_loc, (`ExVrn (_loc, "TXnext")), (meta_loc _loc _a0))
+        | `TXkwd (_a0,_a1) ->
+            `ExApp
+              (_loc,
+                (`ExApp (_loc, (`ExVrn (_loc, "TXkwd")), (meta_loc _loc _a0))),
+                (meta_string _loc _a1))
+        | `TXtok (_a0,_a1,_a2,_a3) ->
+            `ExApp
+              (_loc,
+                (`ExApp
+                   (_loc,
+                     (`ExApp
+                        (_loc,
+                          (`ExApp
+                             (_loc, (`ExVrn (_loc, "TXtok")),
+                               (meta_loc _loc _a0))), (meta_expr _loc _a1))),
+                     (meta_attr _loc _a2))), (meta_string _loc _a3))
+  end
+module Patt =
+  struct
+    open FanAst.MPatt
+    open Filters.MP
+    let meta_name: 'loc -> name -> 'result =
+      fun _loc  { expr = _a0; tvar = _a1; loc = _a2 }  ->
+        `PaRec
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`PaEq (_loc, (`Lid (_loc, "expr")), (meta_expr _loc _a0))),
+                 (`Sem
+                    (_loc,
+                      (`PaEq
+                         (_loc, (`Lid (_loc, "tvar")),
+                           (meta_string _loc _a1))),
+                      (`PaEq
+                         (_loc, (`Lid (_loc, "loc")), (meta_loc _loc _a2))))))))
+    let rec meta_styp: 'loc -> styp -> 'result =
+      fun _loc  ->
+        function
+        | `Id (_a0,_a1) ->
+            `PaApp
+              (_loc,
+                (`PaApp (_loc, (`PaVrn (_loc, "Id")), (meta_loc _loc _a0))),
+                (meta_ident _loc _a1))
+        | `TyApp (_a0,_a1,_a2) ->
+            `PaApp
+              (_loc,
+                (`PaApp
+                   (_loc,
+                     (`PaApp
+                        (_loc, (`PaVrn (_loc, "TyApp")), (meta_loc _loc _a0))),
+                     (meta_styp _loc _a1))), (meta_styp _loc _a2))
+        | `Quote (_a0,_a1,_a2) ->
+            `PaApp
+              (_loc,
+                (`PaApp
+                   (_loc,
+                     (`PaApp
+                        (_loc, (`PaVrn (_loc, "Quote")), (meta_loc _loc _a0))),
+                     (meta_position_flag _loc _a1))),
+                (meta_meta_option meta_alident _loc _a2))
+        | `Self (_a0,_a1) ->
+            `PaApp
+              (_loc,
+                (`PaApp (_loc, (`PaVrn (_loc, "Self")), (meta_loc _loc _a0))),
+                (meta_string _loc _a1))
+        | `Tok _a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "Tok")), (meta_loc _loc _a0))
+        | `Type _a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "Type")), (meta_ctyp _loc _a0))
+    let meta_attr: 'loc -> attr -> 'result =
+      fun _loc  _a0  -> meta_string _loc _a0
+    let rec meta_entry: 'loc -> entry -> 'result =
+      fun _loc  { name = _a0; pos = _a1; levels = _a2 }  ->
+        `PaRec
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`PaEq (_loc, (`Lid (_loc, "name")), (meta_name _loc _a0))),
+                 (`Sem
+                    (_loc,
+                      (`PaEq
+                         (_loc, (`Lid (_loc, "pos")),
+                           (meta_option meta_expr _loc _a1))),
+                      (`PaEq
+                         (_loc, (`Lid (_loc, "levels")),
+                           (meta_list meta_level _loc _a2))))))))
+    and meta_level: 'loc -> level -> 'result =
+      fun _loc  { label = _a0; assoc = _a1; rules = _a2 }  ->
+        `PaRec
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`PaEq
+                    (_loc, (`Lid (_loc, "label")),
+                      (meta_option meta_string _loc _a0))),
+                 (`Sem
+                    (_loc,
+                      (`PaEq
+                         (_loc, (`Lid (_loc, "assoc")),
+                           (meta_option meta_expr _loc _a1))),
+                      (`PaEq
+                         (_loc, (`Lid (_loc, "rules")),
+                           (meta_list meta_rule _loc _a2))))))))
+    and meta_rule: 'loc -> rule -> 'result =
+      fun _loc  { prod = _a0; action = _a1 }  ->
+        `PaRec
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`PaEq
+                    (_loc, (`Lid (_loc, "prod")),
+                      (meta_list meta_symbol _loc _a0))),
+                 (`PaEq
+                    (_loc, (`Lid (_loc, "action")),
+                      (meta_option meta_expr _loc _a1))))))
+    and meta_symbol: 'loc -> symbol -> 'result =
+      fun _loc  { text = _a0; styp = _a1; pattern = _a2 }  ->
+        `PaRec
+          (_loc,
+            (`Sem
+               (_loc,
+                 (`PaEq (_loc, (`Lid (_loc, "text")), (meta_text _loc _a0))),
+                 (`Sem
+                    (_loc,
+                      (`PaEq
+                         (_loc, (`Lid (_loc, "styp")), (meta_styp _loc _a1))),
+                      (`PaEq
+                         (_loc, (`Lid (_loc, "pattern")),
+                           (meta_option meta_patt _loc _a2))))))))
+    and meta_text: 'loc -> text -> 'result =
+      fun _loc  ->
+        function
+        | `TXmeta (_a0,_a1,_a2,_a3,_a4) ->
+            `PaApp
+              (_loc,
+                (`PaApp
+                   (_loc,
+                     (`PaApp
+                        (_loc,
+                          (`PaApp
+                             (_loc,
+                               (`PaApp
+                                  (_loc, (`PaVrn (_loc, "TXmeta")),
+                                    (meta_loc _loc _a0))),
+                               (meta_list meta_string _loc _a1))),
+                          (meta_list meta_text _loc _a2))),
+                     (meta_expr _loc _a3))), (meta_styp _loc _a4))
+        | `TXlist (_a0,_a1,_a2,_a3) ->
+            `PaApp
+              (_loc,
+                (`PaApp
+                   (_loc,
+                     (`PaApp
+                        (_loc,
+                          (`PaApp
+                             (_loc, (`PaVrn (_loc, "TXlist")),
+                               (meta_loc _loc _a0))), (meta_bool _loc _a1))),
+                     (meta_symbol _loc _a2))),
+                (meta_option meta_symbol _loc _a3))
+        | `TXnterm (_a0,_a1,_a2) ->
+            `PaApp
+              (_loc,
+                (`PaApp
+                   (_loc,
+                     (`PaApp
+                        (_loc, (`PaVrn (_loc, "TXnterm")),
+                          (meta_loc _loc _a0))), (meta_name _loc _a1))),
+                (meta_option meta_string _loc _a2))
+        | `TXopt (_a0,_a1) ->
+            `PaApp
+              (_loc,
+                (`PaApp (_loc, (`PaVrn (_loc, "TXopt")), (meta_loc _loc _a0))),
+                (meta_text _loc _a1))
+        | `TXtry (_a0,_a1) ->
+            `PaApp
+              (_loc,
+                (`PaApp (_loc, (`PaVrn (_loc, "TXtry")), (meta_loc _loc _a0))),
+                (meta_text _loc _a1))
+        | `TXpeek (_a0,_a1) ->
+            `PaApp
+              (_loc,
+                (`PaApp
+                   (_loc, (`PaVrn (_loc, "TXpeek")), (meta_loc _loc _a0))),
+                (meta_text _loc _a1))
+        | `TXrules (_a0,_a1) ->
+            `PaApp
+              (_loc,
+                (`PaApp
+                   (_loc, (`PaVrn (_loc, "TXrules")), (meta_loc _loc _a0))),
+                (meta_list
+                   (fun _loc  (_a0,_a1)  ->
+                      `Tup
+                        (_loc,
+                          (`Com
+                             (_loc, (meta_list meta_text _loc _a0),
+                               (meta_expr _loc _a1))))) _loc _a1))
+        | `TXself _a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "TXself")), (meta_loc _loc _a0))
+        | `TXnext _a0 ->
+            `PaApp (_loc, (`PaVrn (_loc, "TXnext")), (meta_loc _loc _a0))
+        | `TXkwd (_a0,_a1) ->
+            `PaApp
+              (_loc,
+                (`PaApp (_loc, (`PaVrn (_loc, "TXkwd")), (meta_loc _loc _a0))),
+                (meta_string _loc _a1))
+        | `TXtok (_a0,_a1,_a2,_a3) ->
+            `PaApp
+              (_loc,
+                (`PaApp
+                   (_loc,
+                     (`PaApp
+                        (_loc,
+                          (`PaApp
+                             (_loc, (`PaVrn (_loc, "TXtok")),
+                               (meta_loc _loc _a0))), (meta_expr _loc _a1))),
+                     (meta_attr _loc _a2))), (meta_string _loc _a3))
+  end
 type used =  
   | Unused
   | UsedScanned

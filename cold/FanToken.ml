@@ -202,5 +202,5 @@ let resolve_name (n : name) =
                    with | Not_found  -> (fun ()  -> false)) ())
                paths.contents in
            fun ()  -> ((concat_domain (r, x)), v)
-         with | Not_found  -> (fun ()  -> failwith "resolve_name "))) ()
+         with | Not_found  -> (fun ()  -> failwithf "resolve_name %s" v))) ()
    | x -> x : name )

@@ -97,8 +97,8 @@ let rec make_expr entry tvar =
   function
   | `TXmeta (_loc,n,tl,e,t) ->
       let el =
-        Expr.mklist _loc (List.map (fun t  -> make_expr entry "" t) tl) in
-      let ns = Expr.mklist _loc (List.map (fun n  -> `Str (_loc, n)) n) in
+        Lib.Expr.mklist _loc (List.map (fun t  -> make_expr entry "" t) tl) in
+      let ns = Lib.Expr.mklist _loc (List.map (fun n  -> `Str (_loc, n)) n) in
       `ExApp
         (_loc, (`ExVrn (_loc, "Smeta")),
           (`Tup
@@ -212,11 +212,11 @@ let rec make_expr entry tvar =
                               (`Str
                                  (_loc, (FanAst.safe_string_escaped descr))))))))))))
 and make_expr_rules _loc n rl tvar =
-  Expr.mklist _loc
+  Lib.Expr.mklist _loc
     (List.map
        (fun (sl,action)  ->
           let sl =
-            Expr.mklist _loc (List.map (fun t  -> make_expr n tvar t) sl) in
+            Lib.Expr.mklist _loc (List.map (fun t  -> make_expr n tvar t) sl) in
           `Tup (_loc, (`Com (_loc, sl, action)))) rl)
 let text_of_action _loc psl rtvar act tvar =
   let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
