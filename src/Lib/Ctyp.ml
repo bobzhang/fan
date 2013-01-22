@@ -108,7 +108,7 @@ let name_length_of_tydcl = fun
 let gen_quantifiers ~arity n  =
   List.init arity
     (fun i -> List.init n (fun j -> {|  '$(lid:allx ~off:i j) |} ))
-  |> List.concat |> app_of_list;
+  |> List.concat |> appl_of_list;
 
 
 (*
@@ -347,7 +347,7 @@ let is_recursive ty_dcl = match ty_dcl with
  *)  
 let qualified_app_list = fun 
   [ {| $_ $_ |} as x->
-    match list_of_app x with
+    match list_of_app' x []with
     [ [ {| $lid:_  |} :: _ ] -> None
     | [ {| $id:i   |} ::ys]  ->
         Some (i,ys)
@@ -433,7 +433,7 @@ let mk_transform_type_eq () = object(self:'self_type)
       let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
       let src = i and dest = Ident.map_to_string i in begin
         Hashtbl.replace transformers dest (src,List.length lst);
-        app_of_list [ {| $lid:dest |} :: lst ]
+        appl_of_list [ {| $lid:dest |} :: lst ]
       end 
     | None  -> match x with
         (* <:str_item< type a =b == [A of int] >> ; *)

@@ -49,14 +49,14 @@ let rec apply acc = fun
   f (g a) b
   ]}
  *)          
-
-let  list_of_app  ty  =
-  let rec  loop t acc =
-    match t with  
-    [ {| $t1 $t2 |} -> loop t1 [t2 ::acc]
-    | {| |} -> acc (* remove nil case *)
-    | i ->  [i::acc] ] in 
-  loop ty [];    
+(* replaced by [list_of_app'] *)
+(* let  list_of_app  ty  = *)
+(*   let rec  loop t acc = *)
+(*     match t with   *)
+(*     [ {| $t1 $t2 |} -> loop t1 [t2 ::acc] *)
+(*     | {| |} -> acc (\* remove nil case *\) *)
+(*     | i ->  [i::acc] ] in  *)
+(*   loop ty [];     *)
 
   
 (* right associative comma
@@ -114,9 +114,9 @@ let rec view_app acc = fun
   {[
   ]}
  *)
-let app_of_list = fun 
-  [ [] -> {| |}
-  | l -> List.reduce_left app l ] ;  
+(* let app_of_list = fun  *)
+(*   [ [] -> {| |} *)
+(*   | l -> List.reduce_left app l ] ;   *)
 
   
 (*

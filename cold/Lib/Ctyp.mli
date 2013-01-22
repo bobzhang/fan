@@ -23,11 +23,11 @@ val app : ctyp -> ctyp -> ctyp
 val apply : ctyp -> ctyp list -> ctyp
 
 (* val sem : ctyp -> ctyp -> ctyp *)
-val list_of_app : ctyp -> ctyp list
+(* val list_of_app : ctyp -> ctyp list *)
 (* val list_of_com : ctyp -> ctyp list *)
 (* val list_of_sem : ctyp -> ctyp list *)
 val view_app : ctyp list -> ctyp -> ctyp * ctyp list
-val app_of_list : ctyp list -> ctyp
+(* val app_of_list : ctyp list -> ctyp *)
 (* val com_of_list : ctyp list -> ctyp *)
 (* val sem_of_list : ctyp list -> ctyp *)
 (* val tuple_of_list : ctyp list -> ctyp *)

@@ -247,16 +247,6 @@ let tuple_com y=
       let b = loc_of (List.last y) in
       let _loc = FanLoc.merge a b in 
       `Tup _loc (com_of_list y) ];
-    
-  
-(* LA *)
-(* let tyVarApp_of_list (_loc,(ls: list ctyp)) (\* : ctyp *\)= *)
-(*   let  aux = fun  *)
-(*     [ [] -> `Nil ghost  *)
-(*     | [t] -> {:ctyp| '$t |} *)
-(*     | [t::ts] -> *)
-(*         List.fold_left (fun x y -> {:ctyp| $x '$y |}) {:ctyp| '$t |} ts ] in *)
-(*   aux ls; *)
 
 (* RA *)  
 let rec dot_of_list' = fun
@@ -266,21 +256,6 @@ let rec dot_of_list' = fun
       let _loc = loc_of i in
       `Dot(_loc,i,dot_of_list' is) ];
 
-(* let rec meApp_of_list = fun *)
-(*     [ [] -> assert false *)
-(*     | [x] -> x *)
-(*     | [x::xs] -> *)
-(*         let _loc = loc_of x in *)
-(*         `App (_loc, x, (meApp_of_list xs))]; *)
-
-
-(* (\* LA   *\) *)
-(* let  exApp_of_list = fun *)
-(*     [ [] -> `Nil ghost *)
-(*     | [t] -> t *)
-(*     | [t::ts] -> *)
-(*         List.fold_left *)
-(*           (fun x y -> let _loc = loc_of  x in {:expr| $x $y |}) t ts]; *)
 
 let ty_of_stl = fun
     [ (_loc, s, []) ->
@@ -409,30 +384,26 @@ let rec list_of_app' x acc =
   | `Nil _ -> acc 
   |x -> [x :: acc] ];
 
+(*
+  {[
+  with expr appl_of_list [{|f|}; {|a|}; {|b|}] |> Ast2pt.print_expr f;
+  f a b
+  ]}
+ *)
+let rec appl_of_list x  =
+  match x with
+  [[] -> `Nil ghost
+  |[x] -> x
+  | [x;y::xs] -> appl_of_list [(app x y)::xs]  ]  ;
+
     
-(* let rec list_of_ctyp_app (x:ctyp) (acc:list ctyp) : list ctyp = *)
-(*   with ctyp match x with *)
-(*   [ *)
-(*    {| $t1 $t2|} -> *)
-(*     list_of_ctyp_app t1 (list_of_ctyp_app t2 acc) *)
-(*   | {||} -> acc (\* remove the nil *\) *)
-(*   | x -> [x::acc] ]  ; *)
+let rec appl_of_list' x =
+  match x with
+  [ [] -> failwith "appl_of_list' empty list"
+  | [x] -> x
+  | [x;y::xs] -> appl_of_list' [(app x y)::xs] ]  ;
+
     
-
-
-
-(* let rec list_of_module_expr x acc = match x with *)
-(*   [ {:module_expr| $x $y |} -> *)
-(*     list_of_module_expr x (list_of_module_expr y acc) *)
-(*   | x -> [x :: acc] ]; *)
-
-
-(* let rec list_of_ident x acc = match x with *)
-(*     [ {:ident| $x . $y |} | {:ident| ($x $y) |} -> *)
-(*       list_of_ident x (list_of_ident y acc) *)
-(*     | x -> [x :: acc] ]; *)
-
-  
 let map_expr f = object
   inherit map as super;
   method! expr x = f (super#expr x);

@@ -52,11 +52,11 @@ val app : expr -> expr -> expr
 (* val comma : expr -> expr -> expr *)
 
 (* val sem : expr -> expr -> expr *)
-val list_of_app : expr -> expr list
+(* val list_of_app : expr -> expr list *)
 (* val list_of_com : expr -> expr list *)
 (* val list_of_sem : expr -> expr list *)
 val view_app : expr list -> expr -> expr * expr list
-val app_of_list : expr list -> expr
+(* val app_of_list : expr list -> expr *)
 (* val com_of_list : expr list -> expr *)
 (* val sem_of_list : expr list -> expr *)
 

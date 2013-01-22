@@ -10448,6 +10448,16 @@ let rec list_of_app' x acc =
   | `App (_,t1,t2) -> list_of_app' t1 (list_of_app' t2 acc)
   | `Nil _ -> acc
   | x -> x :: acc
+let rec appl_of_list x =
+  match x with
+  | [] -> `Nil ghost
+  | x::[] -> x
+  | x::y::xs -> appl_of_list ((app x y) :: xs)
+let rec appl_of_list' x =
+  match x with
+  | [] -> failwith "appl_of_list' empty list"
+  | x::[] -> x
+  | x::y::xs -> appl_of_list' ((app x y) :: xs)
 let map_expr f =
   object  inherit  map as super method! expr x = f (super#expr x) end
 let map_patt f =

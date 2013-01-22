@@ -131,7 +131,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
     [ `Id (_loc,id) -> trans id
     | `Quote(_loc,_,`Some(`Lid(_,s))) ->   tyvar s
     | `App _  as ty ->
-        match  Ctyp.list_of_app ty  with
+        match  list_of_app ty []  with
         [ [ {| $id:tctor |} :: ls ] ->
 
           ls |> List.map

@@ -7,11 +7,11 @@ val app : patt -> patt -> patt
 
 
 (* val sem : patt -> patt -> patt *)
-val list_of_app : patt -> patt list
+(* val list_of_app : patt -> patt list *)
 (* val list_of_com : patt -> patt list *)
 (* val list_of_sem : patt -> patt list *)
 val view_app : patt list -> patt -> patt * patt list
-val app_of_list : patt list -> patt
+(* val app_of_list : patt list -> patt *)
 (* val com_of_list : patt list -> patt *)
 (* val sem_of_list : patt list -> patt *)
 val mklist : loc -> patt list -> patt

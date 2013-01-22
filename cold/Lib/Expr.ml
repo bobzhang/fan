@@ -474,16 +474,8 @@ let fun_args _loc args body =
 let _loc = FanLoc.ghost
 let app a b = `App (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
-let list_of_app ty =
-  let rec loop t acc =
-    match t with
-    | `App (_loc,t1,t2) -> loop t1 (t2 :: acc)
-    | `Nil _loc -> acc
-    | i -> i :: acc in
-  loop ty []
 let rec view_app acc =
   function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
-let app_of_list = function | [] -> `Nil _loc | l -> List.reduce_left app l
 let mklist loc =
   let rec loop top =
     function

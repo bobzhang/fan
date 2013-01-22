@@ -25,16 +25,8 @@ let eprint: ctyp -> unit = fun c  -> eprintf "@[%a@]" FanAst.dump#ctyp c
 let _loc = FanLoc.ghost
 let app a b = `App (_loc, a, b)
 let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
-let list_of_app ty =
-  let rec loop t acc =
-    match t with
-    | `App (_loc,t1,t2) -> loop t1 (t2 :: acc)
-    | `Nil _loc -> acc
-    | i -> i :: acc in
-  loop ty []
 let rec view_app acc =
   function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
-let app_of_list = function | [] -> `Nil _loc | l -> List.reduce_left app l
 let arrow a b = `Arrow (_loc, a, b)
 let (|->) = arrow
 let sta a b = `Sta (_loc, a, b)
@@ -68,7 +60,7 @@ let gen_quantifiers ~arity  n =
                 (_loc, (`Normal _loc),
                   (`Some (`Lid (_loc, (allx ~off:i j))))))))
      |> List.concat)
-    |> app_of_list
+    |> appl_of_list
 let of_id_len ~off  (id,len) =
   apply (`Id (_loc, id))
     (List.init len
@@ -195,7 +187,7 @@ let is_recursive ty_dcl =
 let qualified_app_list =
   function
   | `App (_loc,_,_) as x ->
-      (match list_of_app x with
+      (match list_of_app' x [] with
        | (`Id (_loc,`Lid (_,_)))::_ -> None
        | (`Id (_loc,i))::ys -> Some (i, ys)
        | _ -> None)
@@ -240,7 +232,7 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = Ident.map_to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           app_of_list ((`Id (_loc, (`Lid (_loc, dest)))) :: lst))
+           appl_of_list ((`Id (_loc, (`Lid (_loc, dest)))) :: lst))
       | None  ->
           (match x with
            | `TyMan (_loc,x,ctyp) -> `TyMan (_loc, x, (super#ctyp ctyp))
