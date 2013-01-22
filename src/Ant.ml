@@ -124,8 +124,29 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             |"class_str_item"|"rec_binding"
             |"ctyp;"|"patt;"|"expr;"),_) ->
                 {| $(uid:gm()).sem_of_list $e |}
-          |("list","forall",_) ->
-              {| $(uid:gm()).tyVarApp_of_list $e |}
+          (* broken
+             ideas add type annotations for specific variants, some
+             variants can be annoated, some can not
+
+             {:ctyp| ! 'a 'b 'c. 'a -> 'b -> 'c|}
+             `TyPol
+             (_loc,
+             (`App
+             (_loc,
+             (`App
+              (_loc,
+                (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "a"))))),
+                (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "b"))))))),
+           (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "c"))))))),
+             (`Arrow
+             (_loc, (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "a"))))),
+             (`Arrow
+             (_loc,
+             (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "b"))))),
+             (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "c"))))))))))
+           *)        
+          (* |("list","forall",_) -> *)
+          (*     {| $(uid:gm()).tyVarApp_of_list $e |} *)
           | _ -> super#expr e]
         | e -> super#expr e];
   end;

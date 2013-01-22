@@ -310,7 +310,7 @@ let quote_map (x:ctyp) =
       errorf (loc_of x) "quote_map %s" (dump_ctyp t)]  ;
     
 let optional_type_parameters (t:ctyp) = 
-  List.map quote_map (FanAst.list_of_ctyp_app t []) ;
+  List.map quote_map (list_of_app' t [])(* (FanAst.list_of_ctyp_app t []) *) ;
 
 (* ['a,'b,'c']*)
 let  class_parameters (t:ctyp) =

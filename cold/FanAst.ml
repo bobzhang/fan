@@ -10360,44 +10360,11 @@ let tuple_com y =
       let a = loc_of x in
       let b = loc_of (List.last y) in
       let _loc = FanLoc.merge a b in `Tup (_loc, (com_of_list y))
-let rec tyApp_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `App (_loc, t, (tyApp_of_list ts))
-let tyVarApp_of_list (_loc,ls) =
-  let aux =
-    function
-    | [] -> `Nil ghost
-    | t::[] -> `Quote (_loc, (`Normal _loc), (`Some t))
-    | t::ts ->
-        List.fold_left
-          (fun x  y  ->
-             `App (_loc, x, (`Quote (_loc, (`Normal _loc), (`Some y)))))
-          (`Quote (_loc, (`Normal _loc), (`Some t))) ts in
-  aux ls
 let rec dot_of_list' =
   function
   | [] -> assert false
   | i::[] -> i
   | i::is -> let _loc = loc_of i in `Dot (_loc, i, (dot_of_list' is))
-let rec idApp_of_list =
-  function
-  | [] -> assert false
-  | i::[] -> i
-  | i::is -> let _loc = loc_of i in `App (_loc, i, (idApp_of_list is))
-let rec meApp_of_list =
-  function
-  | [] -> assert false
-  | x::[] -> x
-  | x::xs -> let _loc = loc_of x in `App (_loc, x, (meApp_of_list xs))
-let exApp_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts ->
-      List.fold_left (fun x  y  -> let _loc = loc_of x in `App (_loc, x, y))
-        t ts
 let ty_of_stl =
   function
   | (_loc,s,[]) -> `Id (_loc, (`Uid (_loc, s)))
@@ -10470,18 +10437,16 @@ let sem a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Sem (_loc, a, b)
 let com a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Com (_loc, a, b)
-let rec list_of_ctyp_app (x : ctyp) (acc : ctyp list) =
-  (match x with
-   | `App (_loc,t1,t2) -> list_of_ctyp_app t1 (list_of_ctyp_app t2 acc)
-   | `Nil _loc -> acc
-   | x -> x :: acc : ctyp list )
-let rec list_of_module_expr x acc =
+let app a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in `App (_loc, a, b)
+let rec list_of_app x acc =
   match x with
-  | `App (_loc,x,y) -> list_of_module_expr x (list_of_module_expr y acc)
+  | `App (_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
   | x -> x :: acc
-let rec list_of_ident x acc =
+let rec list_of_app' x acc =
   match x with
-  | `Dot (_loc,x,y)|`App (_loc,x,y) -> list_of_ident x (list_of_ident y acc)
+  | `App (_,t1,t2) -> list_of_app' t1 (list_of_app' t2 acc)
+  | `Nil _ -> acc
   | x -> x :: acc
 let map_expr f =
   object  inherit  map as super method! expr x = f (super#expr x) end

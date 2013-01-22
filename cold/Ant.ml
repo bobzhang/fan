@@ -345,14 +345,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                         (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "sem_of_list")))))), e)
-           | ("list","forall",_) ->
-               `App
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "tyVarApp_of_list")))))), e)
            | _ -> super#expr e)
       | e -> super#expr e
   end

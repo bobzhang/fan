@@ -34,7 +34,7 @@ let app  mt1 mt2 =
    but for module_expr
    {[
      |	Id of loc * ident
-     |	App of loc * module_expr * module_expr
+   |	App of loc * module_expr * module_expr
    ]}
    since we require that for module_type_app operation, only
    Id can be used as app operation.
