@@ -3,30 +3,6 @@ open Basic
 open FSig
 open FanAst
 let _loc = FanLoc.ghost
-let rec view_app acc =
-  function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
-let mklist loc =
-  let rec loop top =
-    function
-    | [] -> `Id (_loc, (`Uid (_loc, "[]")))
-    | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-        `App
-          (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
-            (loop false el)) in
-  loop true
-let rec apply accu =
-  function
-  | [] -> accu
-  | x::xs -> let _loc = loc_of x in apply (`App (_loc, accu, x)) xs
-let mkarray loc arr =
-  let rec loop top =
-    function
-    | [] -> `Id (_loc, (`Uid (_loc, "[]")))
-    | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-        `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
-  let items = arr |> Array.to_list in loop true items
 let of_str s =
   let len = String.length s in
   if len = 0
@@ -37,9 +13,11 @@ let of_str s =
      | x when Char.is_uppercase x -> `Id (_loc, (`Uid (_loc, s)))
      | _ -> `Id (_loc, (`Lid (_loc, s))))
 let of_ident_number cons n =
-  apply (`Id (_loc, cons)) (List.init n (fun i  -> `Id (_loc, (xid i))))
+  appl_of_list ((`Id (_loc, cons)) ::
+    (List.init n (fun i  -> `Id (_loc, (xid i)))))
 let (+>) f names =
-  apply f (List.map (fun lid  -> `Id (_loc, (`Lid (_loc, lid)))) names)
+  appl_of_list (f ::
+    (List.map (fun lid  -> `Id (_loc, (`Lid (_loc, lid)))) names))
 let gen_tuple_first ~number  ~off  =
   match number with
   | 1 -> `Id (_loc, (xid ~off 0))
@@ -75,12 +53,7 @@ let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
     List.init arity
       (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
   let pat = of_str (cons_transform cons) in
-  (List.map (fun lst  -> apply pat lst) args) |> tuple_com
-let tuple _loc =
-  function
-  | [] -> `Id (_loc, (`Uid (_loc, "()")))
-  | p::[] -> p
-  | e::es -> `Tup (_loc, (`Com (_loc, e, (FanAst.com_of_list es))))
+  (List.map (fun lst  -> appl_of_list (pat :: lst)) args) |> tuple_com
 let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi

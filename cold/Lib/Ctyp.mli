@@ -8,36 +8,11 @@ val name_tags : ctyp -> string list
 
 val to_generalized : ctyp -> ctyp list * ctyp
 
-val to_string : (ctyp -> string)
 
-val eprint : (ctyp -> unit) 
-
-(* val _loc : FanLoc.t *)
-
-(* val app : ctyp -> ctyp -> ctyp *)
-
-(* val comma : ctyp -> ctyp -> ctyp *)
-
-(* val ( <$ ) : ctyp -> ctyp -> ctyp *)
-
-(* val apply : ctyp -> ctyp list -> ctyp *)
-
-(* val sem : ctyp -> ctyp -> ctyp *)
-(* val list_of_app : ctyp -> ctyp list *)
-(* val list_of_com : ctyp -> ctyp list *)
-(* val list_of_sem : ctyp -> ctyp list *)
-val view_app : ctyp list -> ctyp -> ctyp * ctyp list
-(* val app_of_list : ctyp list -> ctyp *)
-(* val com_of_list : ctyp list -> ctyp *)
-(* val sem_of_list : ctyp list -> ctyp *)
-(* val tuple_of_list : ctyp list -> ctyp *)
 val arrow : ctyp -> ctyp -> ctyp
 val ( |-> ) : ctyp -> ctyp -> ctyp
-val sta : ctyp -> ctyp -> ctyp
-val sta_of_list : ctyp list -> ctyp
 val arrow_of_list : ctyp list -> ctyp
 val app_arrow : ctyp list -> ctyp -> ctyp
-val tuple_sta_of_list : ctyp list -> ctyp
 val ( <+ ) : string list -> ctyp -> ctyp
 val ( +> ) : ctyp list -> ctyp -> ctyp
 val name_length_of_tydcl : ctyp -> string * int

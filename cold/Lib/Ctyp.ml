@@ -1,6 +1,5 @@
 open FanAst
 open LibUtil
-open Format
 open Basic
 open FSig
 let rec to_var_list =
@@ -20,22 +19,11 @@ let rec to_generalized =
   | `Arrow (_loc,t1,t2) ->
       let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt)
   | t -> ([], t)
-let to_string = to_string_of_printer FanAst.dump#ctyp
-let eprint: ctyp -> unit = fun c  -> eprintf "@[%a@]" FanAst.dump#ctyp c
-let _loc = FanLoc.ghost
-let rec view_app acc =
-  function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
-let arrow a b = `Arrow (_loc, a, b)
+let arrow a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Arrow (_loc, a, b)
 let (|->) = arrow
-let sta a b = `Sta (_loc, a, b)
-let sta_of_list = List.reduce_right sta
 let arrow_of_list = List.reduce_right arrow
 let app_arrow lst acc = List.fold_right arrow lst acc
-let tuple_sta_of_list =
-  function
-  | [] -> invalid_arg "tuple_sta__of_list while list is empty"
-  | x::[] -> x
-  | xs -> `Tup (_loc, (sta_of_list xs))
 let (<+) names ty =
   List.fold_right
     (fun name  acc  ->
@@ -46,9 +34,7 @@ let (+>) params base = List.fold_right arrow params base
 let name_length_of_tydcl =
   function
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) -> (name, (List.length tyvars))
-  | tydcl ->
-      invalid_arg
-        ((sprintf "name_length_of_tydcl {|%s|}\n") & (to_string tydcl))
+  | tydcl -> failwithf "name_length_of_tydcl {|%s|}\n" (dump_ctyp tydcl)
 let gen_quantifiers ~arity  n =
   ((List.init arity
       (fun i  ->
@@ -70,8 +56,7 @@ let ty_name_of_tydcl =
   function
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
       appl_of_list ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
-  | tydcl ->
-      invalid_arg & ((sprintf "ctyp_of_tydcl{|%s|}\n") & (to_string tydcl))
+  | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (dump_ctyp tydcl)
 let gen_ty_of_tydcl ~off  tydcl =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record (ty : ctyp) =
@@ -83,7 +68,7 @@ let list_of_record (ty : ctyp) =
         | `TyCol (_,`Id (_,`Lid (_,label)),ctyp) ->
             { label; ctyp; is_mutable = false }
         | t0 -> FanLoc.errorf (loc_of t0) "list_of_record %s" (dump_ctyp t0)))
-let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta_of_list
+let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   let prefix =
@@ -182,8 +167,7 @@ let is_recursive ty_dcl =
         end in
       (obj#ctyp ctyp)#is_recursive
   | `And (_loc,_,_) -> true
-  | _ ->
-      invalid_arg ("is_recursive not type declartion" ^ (to_string ty_dcl))
+  | _ -> failwithf "is_recursive not type declartion: %s" (dump_ctyp ty_dcl)
 let qualified_app_list =
   function
   | `App (_loc,_,_) as x ->

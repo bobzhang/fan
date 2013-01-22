@@ -10360,6 +10360,32 @@ let tuple_com y =
       let a = loc_of x in
       let b = loc_of (List.last y) in
       let _loc = FanLoc.merge a b in `Tup (_loc, (com_of_list y))
+let tuple_sta y =
+  match y with
+  | [] -> failwith "tuple_sta empty"
+  | x::[] -> x
+  | x::_ ->
+      let a = loc_of x in
+      let b = loc_of (List.last y) in
+      let _loc = FanLoc.merge a b in `Tup (_loc, (sta_of_list y))
+let list_of_list loc =
+  let rec loop top =
+    function
+    | [] -> `Id (ghost, (`Uid (ghost, "[]")))
+    | e1::el ->
+        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
+        `App
+          (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
+            (loop false el)) in
+  loop true
+let array_of_array loc arr =
+  let rec loop top =
+    function
+    | [] -> `Id (ghost, (`Uid (ghost, "[]")))
+    | e1::el ->
+        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
+        `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
+  let items = arr |> Array.to_list in loop true items
 let rec dot_of_list' =
   function
   | [] -> assert false
@@ -10439,6 +10465,8 @@ let com a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Com (_loc, a, b)
 let app a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `App (_loc, a, b)
+let sta a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Sta (_loc, a, b)
 let rec list_of_app x acc =
   match x with
   | `App (_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
@@ -10458,6 +10486,8 @@ let rec appl_of_list' x =
   | [] -> failwith "appl_of_list' empty list"
   | x::[] -> x
   | x::y::xs -> appl_of_list' ((app x y) :: xs)
+let rec view_app acc =
+  function | `App (_,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let map_expr f =
   object  inherit  map as super method! expr x = f (super#expr x) end
 let map_patt f =

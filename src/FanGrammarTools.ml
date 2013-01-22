@@ -1,4 +1,4 @@
-open Ast;
+open FanAst;
 open Format;
 open Lib;
 open LibUtil;
@@ -129,8 +129,8 @@ let make_ctyp_expr styp tvar expr =
 let rec make_expr entry tvar = with expr
   fun
   [ `TXmeta (_loc, n, tl, e, t) ->
-    let el = Lib.Expr.mklist _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
-    let ns = Lib.Expr.mklist _loc (List.map (fun n -> {| $str:n |} ) n) in 
+    let el = list_of_list _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
+    let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in 
     {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) |}
   | `TXlist (_loc, min, t, ts) ->
       let txt = make_expr entry "" t.text in
@@ -166,9 +166,9 @@ let rec make_expr entry tvar = with expr
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ]
 (* the [rhs] was computed, compute the [lhs] *)    
 and make_expr_rules _loc n rl tvar = with expr
-  Lib.Expr.mklist _loc
+  list_of_list _loc
     (List.map (fun (sl,action) ->
-      let sl = Lib.Expr.mklist _loc (List.map (fun t -> make_expr n tvar t) sl) in
+      let sl = list_of_list _loc (List.map (fun t -> make_expr n tvar t) sl) in
       {| ($sl,$action) |} ) rl);
   
 (* generate action, collecting patterns into action

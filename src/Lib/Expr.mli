@@ -49,8 +49,8 @@ val fun_args : loc -> patt list -> expr -> expr
 
 
 
-val mklist : loc -> expr list -> expr
-val mkarray : loc -> expr array -> expr
+(* val mklist : loc -> expr list -> expr *)
+(* val mkarray : loc -> expr array -> expr *)
     
 
 
@@ -61,7 +61,7 @@ val gen_tuple_first : number:int -> off:int -> expr
 val gen_tuple_second : number:int -> off:int -> expr
 val tuple_of_number : expr -> int -> expr
 val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> expr
-val tuple : loc -> expr list -> expr
+(* val tuple : loc -> expr list -> expr *)
 val mkumin : loc -> string -> expr -> expr
 val mk_assert : expr -> expr
 val mk_record : (string * expr) list -> expr

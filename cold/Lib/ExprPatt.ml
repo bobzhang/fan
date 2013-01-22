@@ -4,52 +4,6 @@
    | [default_quotation] to compile                                  |
    +-----------------------------------------------------------------+ *)
 
-(*
-  Given an location, and a list of expression node,
-  return an expression node which represents the list
-  of the expresson nodes
-
-  Example:
-  {[
-  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
-  [b; c; d]
-  ]}
-  (* {:expr| [1;2;3::[]]|} *)
-  DoubleColon
- *)
-let mklist loc =
-  let rec loop top =  fun
-    [ [] -> {| [] |}
-    | [e1 :: el] ->
-        let _loc =
-          if top then loc else FanLoc.merge (loc_of e1) loc in
-        {| [$e1 :: $(loop false el)] |} ] in loop true ;
-
-(* It is the inverse operation by [view_app]
-   Example:
-   {[
-   apply {|a|} [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
-   a b c d
-   ]}
- *)
-let rec apply accu = fun
-  [ [] -> accu
-  | [x :: xs] -> let _loc = loc_of x in apply {| $accu $x |} xs ];
-  
-(*
-  mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
-  True
- *)
-let mkarray loc arr =
-  let rec loop top =  fun
-    [ [] -> {| [] |}
-    | [e1 :: el] ->
-        let _loc =
-          if top then loc else FanLoc.merge (loc_of e1) loc in
-        {| [| $e1 ; $(loop false el) |] |} ] in
-  let items = arr |> Array.to_list in 
-  loop true items;
-  
 (* let mk_array arr = *)
 (*   let items = arr |> Array.to_list |> sem_of_list in  *)
 (*   {| [| $items |] |};   *)
@@ -93,7 +47,7 @@ let of_str s =
     ]}
 *)
 let  of_ident_number  cons n = 
-  apply {| $id:cons |} (List.init n (fun  i -> {| $(id:xid i) |} ));
+  appl_of_list [{| $id:cons |}:: (List.init n (fun  i -> {| $(id:xid i) |} ))];
 
 
 
@@ -107,7 +61,7 @@ let  of_ident_number  cons n =
    ]}
  *)
 let (+>) f names  =
-  apply f (List.map (fun lid -> {| $lid:lid |} ) names);
+  appl_of_list [f:: (List.map (fun lid -> {| $lid:lid |} ) names)];
 
 
 (*
@@ -211,14 +165,14 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {| $(id:xid ~off:i j) |} )) in
   let pat = of_str (cons_transform cons) in 
-  List.map (fun lst -> apply pat lst) args |> tuple_com(* tuple_of_list *) ;
+  List.map (fun lst -> appl_of_list [pat:: lst]) args |> tuple_com ;
     
 
   
 (*
   This is used for Prolog, deprecated soon
  *)  
-let tuple _loc  =   fun
-  [[] -> {|()|}
-  |[p] -> p
-  | [e::es] -> {| ($e, $list:es) |} ];
+(* let tuple _loc  =   fun *)
+(*   [[] -> {|()|} *)
+(*   |[p] -> p *)
+(*   | [e::es] -> {| ($e, $list:es) |} ]; *)

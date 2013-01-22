@@ -256,8 +256,57 @@ let tuple_sta y =
        let a = loc_of x in
        let b = loc_of (List.last y) in
        let _loc = FanLoc.merge a b in 
-       `Tup _loc (sta_of_list y)
-   ]; 
+       `Tup _loc (sta_of_list y)];
+
+
+
+(*
+  Given an location, and a list of expression node,
+  return an expression node which represents the list
+  of the expresson nodes
+
+  Example:
+  {[
+  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+  [b; c; d]
+  ]}
+  (* {:expr| [1;2;3::[]]|} *)
+  DoubleColon
+ *)
+let list_of_list loc =
+  let rec loop top =  with expr fun
+    [ [] ->   {@ghost| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge (loc_of e1) loc in
+        {| [$e1 :: $(loop false el)] |} ] in loop true ;
+
+(* It is the inverse operation by [view_app]
+   Example:
+   {[
+   apply {|a|} [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+   a b c d
+   ]}
+ *)
+(* let rec apply accu = fun *)
+(*   [ [] -> accu *)
+(*   | [x :: xs] -> let _loc = loc_of x in apply {| $accu $x |} xs ]; *)
+  
+(*
+  mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
+  True
+ *)
+let array_of_array loc arr =
+  let rec loop top =  with expr fun
+    [ [] -> {@ghost| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge (loc_of e1) loc in
+        {| [| $e1 ; $(loop false el) |] |} ] in
+  let items = arr |> Array.to_list in 
+  loop true items;
+  
+    
 (* RA *)  
 let rec dot_of_list' = fun
   [[] -> assert false

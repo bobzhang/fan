@@ -2,8 +2,8 @@ open Ast
 
 
 
-val mklist : loc -> patt list -> patt
-val mkarray : loc -> patt array -> patt
+(* val mklist : loc -> patt list -> patt *)
+(* val mkarray : loc -> patt array -> patt *)
     
 val of_str : string -> patt
 
@@ -22,7 +22,7 @@ val of_vstr_number : string -> int -> patt
 val gen_tuple_n :
     ?cons_transform:(string->string) -> arity:int -> string -> int -> patt
 
-val tuple : loc -> patt list -> patt
+(* val tuple : loc -> patt list -> patt *)
 
 val mk_record : ?arity:int -> FSig.(* record_ *)col list -> patt
 
