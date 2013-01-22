@@ -1,8 +1,10 @@
 let _ = ()
 open StdLib
+type domains = [ `Absolute of string list | `Sub of string list] 
+type name = (domains* string) 
 type quotation = 
   {
-  q_name: string;
+  q_name: name;
   q_loc: string;
   q_shift: int;
   q_contents: string} 
@@ -20,12 +22,26 @@ type error =
   | Keyword_as_label of string
   | Illegal_token_pattern of (string* string)
   | Illegal_constructor of string 
+let pp_print_domains: 'fmt -> domains -> 'result =
+  fun fmt  ->
+    function
+    | `Absolute _a0 ->
+        Format.fprintf fmt "@[<1>(`Absolute@ %a)@]"
+          (pp_print_list pp_print_string) _a0
+    | `Sub _a0 ->
+        Format.fprintf fmt "@[<1>(`Sub@ %a)@]"
+          (pp_print_list pp_print_string) _a0
+let pp_print_name: 'fmt -> name -> 'result =
+  fun fmt  _a0  ->
+    (fun fmt  (_a0,_a1)  ->
+       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
+         pp_print_string _a1) fmt _a0
 let pp_print_quotation: 'fmt -> quotation -> 'result =
   fun fmt  { q_name = _a0; q_loc = _a1; q_shift = _a2; q_contents = _a3 }  ->
     Format.fprintf fmt
       "@[<hv 1>{q_name:%a;@,q_loc:%a;@,q_shift:%a;@,q_contents:%a}@]"
-      pp_print_string _a0 pp_print_string _a1 pp_print_int _a2
-      pp_print_string _a3
+      pp_print_name _a0 pp_print_string _a1 pp_print_int _a2 pp_print_string
+      _a3
 let pp_print_t: 'fmt -> t -> 'result =
   fun fmt  ->
     function
@@ -143,3 +159,48 @@ let check_keyword_as_label tok loc is_kwd =
   if (s <> "") && (is_kwd s) then err (Keyword_as_label s) loc else ()
 let check_unknown_keywords tok loc =
   match tok with | `SYMBOL s -> err (Illegal_token s) loc | _ -> ()
+let string_of_domains =
+  function
+  | `Absolute xs -> "." ^ (String.concat "." xs)
+  | `Sub ls -> String.concat "." ls
+let string_of_name (x,y) = (string_of_domains x) ^ ("." ^ y)
+let paths: domains list ref =
+  ref
+    [`Absolute ["Fan"; "Lang"];
+    `Absolute ["Fan"; "Lang"; "Meta"];
+    `Absolute ["Fan"; "Lang"; "Filter"]]
+let concat_domain =
+  function
+  | (`Absolute xs,`Sub ys) -> `Absolute (xs @ ys)
+  | _ -> invalid_arg "concat_domain"
+let empty_name: name = ((`Sub []), "")
+let name_of_string s =
+  (match s.[0] with
+   | '.' ->
+       (match List.rev (List.filter String.not_empty (String.nsplit s "."))
+        with
+        | x::xs -> ((`Absolute (List.rev xs)), x)
+        | _ -> assert false)
+   | 'A'..'Z' ->
+       (match List.rev (List.filter String.not_empty (String.nsplit s "."))
+        with
+        | x::xs -> ((`Sub (List.rev xs)), x)
+        | _ -> assert false)
+   | _ -> ((`Sub []), s) : name )
+let names_tbl: (domains,SSet.t) Hashtbl.t = Hashtbl.create 30
+let resolve_name (n : name) =
+  (match n with
+   | ((`Sub _ as x),v) ->
+       ((try
+           let r =
+             List.find
+               (fun path  ->
+                  (try
+                     let set =
+                       Hashtbl.find names_tbl (concat_domain (path, x)) in
+                     fun ()  -> SSet.mem v set
+                   with | Not_found  -> (fun ()  -> false)) ())
+               paths.contents in
+           fun ()  -> ((concat_domain (r, x)), v)
+         with | Not_found  -> (fun ()  -> failwith "resolve_name "))) ()
+   | x -> x : name )

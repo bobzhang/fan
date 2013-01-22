@@ -1,8 +1,9 @@
 open Format;
 open LibUtil;
-  
-{:inject.str_item| eq_base1  |};
-{:inject.str_item| print_base1  |};
+
+import Fan.Inject;  
+{:str_item| eq_base1  |};
+{:str_item| print_base1  |};
 
 let eq_option mf_a x y =
   match (x,y) with
@@ -54,7 +55,7 @@ let pp_print_arrow _mf_a _f_b fmt _v =
   fprintf fmt "<<<function>>>";
 
 class printbase = object(self:'self_type)
-  {:inject.class_str_item| print_class_str_item_base|};  
+  {:.Fan.Inject.class_str_item| print_class_str_item_base|};  
   method list: ! 'a.  ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> list 'a -> unit =
     fun mf_a fmt lst -> pp_print_list (fun a -> mf_a self a) fmt lst ;
   method array: ! 'a. ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> array 'a -> unit =
@@ -70,7 +71,7 @@ class printbase = object(self:'self_type)
 end;
 
 class mapbase = object (self:'self_type)
-  {:inject.class_str_item|map_class_str_item_base_1|};  
+  {:.Fan.Inject.class_str_item|map_class_str_item_base_1|};  
   method list: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> (list 'a0 -> list 'b0) =
     fun mf_a -> fun [ [] -> []
     | [y::ys] -> [ (mf_a self y) :: self#list mf_a ys]];
@@ -92,7 +93,7 @@ end ;
 
   
 class iterbase = object(self:'self)
-  {:inject.class_str_item| iter_class_str_item_base_1 |};
+  {:class_str_item| iter_class_str_item_base_1 |};
   method list: ! 'a0. ('self_type -> 'a0 -> 'unit) -> (list 'a0 -> unit) =
     fun mf_a ls -> List.iter (mf_a self) ls ;
   method array: ! 'a0 . ('self_type -> 'a0 -> unit) -> (array 'a0 -> unit) =
@@ -114,7 +115,7 @@ end;
 
 
 class eqbase = object(self:'self)
-  {:inject.class_str_item| eq_class_str_item_base_2 |};
+  {:class_str_item| eq_class_str_item_base_2 |};
   method list: ! 'a0. ('self_type -> 'a0 -> 'a0 -> bool) -> (list 'a0 -> list 'a0 -> bool) =
     fun mf_a xs ys -> List.for_all2  (mf_a self) xs ys ;
   method array: ! 'a0 . ('self_type -> 'a0 ->'a0 -> bool) -> (array 'a0 -> array 'a0-> bool) =
@@ -137,7 +138,7 @@ end;
 
 
 class mapbase2 = object (self:'self_type)
-  {:inject.class_str_item|map_class_str_item_base_2|};  
+  {:class_str_item|map_class_str_item_base_2|};  
   method list:! 'a0 'b0.
             ('self_type -> 'a0 -> 'a0 -> 'b0) ->
               list 'a0  -> list 'a0  -> list 'b0 =
@@ -182,7 +183,7 @@ class monadbase = mapbase;
 class monadbase2 = mapbase2;
   
 class foldbase = object (self:'self_type)
-  {:inject.class_str_item|fold_class_str_item_base_1|};
+  {:class_str_item|fold_class_str_item_base_1|};
   method list : ! 'a0. ('self_type -> 'a0 -> 'self_type) ->
     (list 'a0 -> 'self_type) = fun mf_a ->
       List.fold_left (fun self v -> (mf_a self v)) self ;
@@ -205,7 +206,7 @@ class foldbase = object (self:'self_type)
 end ;
   
 class foldbase2 = object (self:'self_type)
-  {:inject.class_str_item|fold_class_str_item_base_2|};  
+  {:class_str_item|fold_class_str_item_base_2|};  
   method list: ! 'a0.
       ('self_type -> 'a0 ->  'a0 -> 'self_type) ->
         list 'a0 -> list 'a0 -> 'self_type =  fun mf_a lx ly->

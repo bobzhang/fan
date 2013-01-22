@@ -15,6 +15,7 @@ open Lexing
 type lex_error  =
   | Illegal_character of char
   | Illegal_escape    of string
+  | Illegal_quotation of string
   | Unterminated_comment
   | Unterminated_string
   | Unterminated_quotation
@@ -31,6 +32,8 @@ exception Lexing_error  of lex_error
 let print_lex_error ppf =  function
   | Illegal_character c ->
       fprintf ppf "Illegal character (%s)" (Char.escaped c)
+  | Illegal_quotation s ->
+      fprintf ppf "Illegal quotation (%s)" (String.escaped s)
   | Illegal_escape s ->
       fprintf ppf "Illegal backslash escape in string or character (%s)" s
   | Unterminated_comment ->
@@ -205,7 +208,8 @@ let identchar =
   ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
 let ident = (lowercase|uppercase) identchar*
 
-let quotation_name= ident ('.'ident)*
+(* let quotation_name= ident ('.'ident)* *)
+let quotation_name = '.' ? (uppercase  identchar* '.') * (lowercase identchar*)
 let locname = ident
 let lident = lowercase identchar *
 let antifollowident =   identchar +   
@@ -243,8 +247,8 @@ let safe_delimchars = ['%' '&' '/' '@' '^']
 (* These symbols are unsafe since "[<", "[|", etc. exsist. *)
 let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
 
-let left_delims  = ['(' '[' '{']
-let right_delims = [')' ']' '}']
+let left_delims  = ['(' '[' (* '{' *)]
+let right_delims = [')' ']' (* '}' *)]
     
 let left_delimitor =
 (* At least a safe_delimchars *)
@@ -254,9 +258,9 @@ let left_delimitor =
   (* Old brackets, no new brackets starting with "[|" or "[:" *)
   | '[' ['|' ':']?
    (* Old "[<","{<" and new ones *)
-  | ['[' '{'] delimchars* '<'
+  | ['[' (* '{' *)] delimchars* '<'
    (* Old brace and new ones *)
-   | '{' (['|' ':'] delimchars*)?
+   (* | '{' (['|' ':'] delimchars*\)? *)
 
 let right_delimitor =
   (* At least a safe_delimchars *)
@@ -266,9 +270,9 @@ let right_delimitor =
     (* Old brackets, no new brackets ending with "|]" or ":]" *)
    | ['|' ':']? ']'
     (* Old ">]",">}" and new ones *)
-   | '>' delimchars* [']' '}']
+   | '>' delimchars* [']' (* '}' *)]
     (* Old brace and new ones *)
-   | (delimchars* ['|' ':'])? '}'
+   (* | (delimchars* ['|' ':'])? '}' *)
 
     
 rule token c = parse
@@ -300,6 +304,10 @@ rule token c = parse
        | "*)"
            { warn Comment_not_end (FanLoc.of_lexbuf lexbuf)                           ;
              move_curr_p (-1) c; `SYMBOL "*"                                       }
+       | "{<" as s
+           {`SYMBOL s}
+       | ">}" as s
+           {`SYMBOL s}
 
        | "{|" (extra_quot as p)? (quotchar* as beginning)
            { if quotations c  then
@@ -307,22 +315,18 @@ rule token c = parse
               move_curr_p (-String.length beginning) c; (* FIX partial application*)
               Stack.push p opt_char;
               let len = 2 + opt_char_len p in 
-              mk_quotation quotation c ~name:"" ~loc:"" ~shift:len ~retract:len)
+              mk_quotation
+                quotation c ~name:(FanToken.empty_name) ~loc:"" ~shift:len ~retract:len)
            else
              parse
                (symbolchar_star ("{|" ^(match p with Some x -> String.make 1 x | None -> "") ^ beginning))
                c                       }
        | "{||}"
-           { if quotations c
-           then `QUOTATION { FanToken.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
-           else parse
-               (symbolchar_star "{||}") c}
-       | "{@"
-           { if quotations c then with_curr_loc maybe_quotation_at c
-           else parse  (symbolchar_star "{@") c}
+           {`QUOTATION { FanToken.q_name =FanToken.empty_name ;
+                             q_loc = ""; q_shift = 2; q_contents = "" }}
+       | "{@" {  with_curr_loc maybe_quotation_at c}
        | "{:"
-           { if quotations c then with_curr_loc maybe_quotation_colon c
-           else parse (symbolchar_star "{:")  c}
+           {  with_curr_loc maybe_quotation_colon c}
        | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
            ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
            [^ '\010' '\013'] * newline
@@ -333,7 +337,7 @@ rule token c = parse
        | '(' blank+ (symbolchar+ as op) blank* ')'
            { `ESCAPED_IDENT op }
        | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
-           | ":=" | ":>" | ";"  | ";;" | "_"
+           | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
            | left_delimitor | right_delimitor ) as x  { `SYMBOL x }
        | '$'
            {
@@ -392,34 +396,40 @@ and maybe_quotation_at c = parse
     | (ident as loc)  '|' (extra_quot as p)?     {
       move_start_p (-2) c;
       Stack.push p opt_char;
-      mk_quotation quotation c ~name:"" ~loc
+      mk_quotation quotation c ~name:(FanToken.empty_name) ~loc
            ~shift:(2 + 1 + String.length loc + (opt_char_len p))
            ~retract:(2 + opt_char_len p)
        }
-    | symbolchar* as tok
-        { `SYMBOL("{@" ^ tok) }
+    | _ as c 
+        { err (Illegal_quotation (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)}
 
 (* <:name< *)        
 and maybe_quotation_colon c = parse
     | (quotation_name as name)  '|' (extra_quot as p)?  {
+      let len = String.length name in
+      let name = FanToken.resolve_name (FanToken.name_of_string name) in
       begin
         move_start_p (-2) c;
         Stack.push p opt_char;
         mk_quotation quotation c
-          ~name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
+          ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
       end
     }
 
-    | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)? { begin
+    | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)? {
+       let len = String.length name in 
+       let name = FanToken.resolve_name (FanToken.name_of_string name) in
+       begin
         move_start_p (-2) c ;
         Stack.push p opt_char;
         mk_quotation quotation c ~name ~loc
-          ~shift:(2 + 2 + String.length loc + String.length name + opt_char_len p)
+          ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
           ~retract:(2 + opt_char_len p)
       end}
    
-    | symbolchar* as tok                                   { `SYMBOL("{:" ^ tok) }
+    |  _ as c(* symbolchar* as tok *) 
+        { err (Illegal_quotation (String.make 1 c))  (FanLoc.of_lexbuf lexbuf) (* `SYMBOL("{:" ^ tok) *) }
 
 and quotation c = parse
     | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?

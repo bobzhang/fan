@@ -192,5 +192,6 @@ let _ =
                        done;
                        c.contents) : 'ch_class )
                  | _ -> assert false)))])])
-let _ = AstQuotation.of_expr ~name:"lex" ~entry:lex
-let _ = AstQuotation.of_str_item ~name:"lex.regexp" ~entry:declare_regexp
+let d = `Absolute ["Fan"; "Lang"; "Lex"]
+let _ = AstQuotation.of_expr ~name:(d, "lex") ~entry:lex
+let _ = AstQuotation.of_str_item ~name:(d, "reg") ~entry:declare_regexp

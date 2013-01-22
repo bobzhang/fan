@@ -729,6 +729,13 @@ let apply () =
                (fun (mt : 'module_type)  _  (i : 'a_uident)  _  _ 
                   (_loc : FanLoc.t)  ->
                   (`ModuleType (_loc, i, mt) : 'sig_item ))));
+          ([`Skeyword "import";
+           `Snterm (Gram.obj (dot_namespace : 'dot_namespace Gram.t ))],
+            (Gram.mk_action
+               (fun (x : 'dot_namespace)  _  (_loc : FanLoc.t)  ->
+                  (FanToken.paths := ((`Absolute x) ::
+                     (FanToken.paths.contents));
+                   `Nil _loc : 'sig_item ))));
           ([`Skeyword "module";
            `Skeyword "type";
            `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
@@ -927,30 +934,40 @@ let apply () =
           [([`Snterm (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
              (Gram.mk_action
                 (fun (ls : 'dot_lstrings)  (_loc : FanLoc.t)  ->
-                   (let s = String.concat "." ls in
-                    let old = AstQuotation.default.contents in
-                    AstQuotation.default := s; old : 'lang ))))])]);
+                   (let old = AstQuotation.default.contents in
+                    AstQuotation.default := (FanToken.resolve_name ls); old : 
+                   'lang ))))])]);
    Gram.extend (pos_exprs : 'pos_exprs Gram.t )
      (None,
        [(None, None,
           [([`Slist1sep
                ((Gram.srules pos_exprs
-                   [([`Snterm
-                        (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ));
+                   [([`Stoken
+                        (((function | `Lid _ -> true | _ -> false)),
+                          (`Normal, "`Lid _"));
                      `Skeyword ":";
                      `Snterm
                        (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
                       (Gram.mk_action
-                         (fun (rs : 'dot_lstrings)  _  (ls : 'dot_lstrings) 
-                            (_loc : FanLoc.t)  ->
-                            (((String.concat "." ls), (String.concat "." rs)) : 
-                            'e__2 ))));
-                   ([`Snterm
-                       (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
+                         (fun (y : 'dot_lstrings)  _ 
+                            (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                            match __fan_0 with
+                            | `Lid x ->
+                                (((x : string ), (FanToken.resolve_name y)) : 
+                                'e__2 )
+                            | _ -> assert false)));
+                   ([`Stoken
+                       (((function | `Lid _ -> true | _ -> false)),
+                         (`Normal, "`Lid _"))],
                      (Gram.mk_action
-                        (fun (ls : 'dot_lstrings)  (_loc : FanLoc.t)  ->
-                           (let x = String.concat "." ls in (x, x) : 
-                           'e__2 ))))]), (`Skeyword ";"))],
+                        (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
+                           ->
+                           match __fan_0 with
+                           | `Lid x ->
+                               (((x : string ),
+                                  (FanToken.resolve_name ((`Sub []), x))) : 
+                               'e__2 )
+                           | _ -> assert false)))]), (`Skeyword ";"))],
              (Gram.mk_action
                 (fun (xys : 'e__2 list)  (_loc : FanLoc.t)  ->
                    (let old = AstQuotation.map.contents in
@@ -3139,6 +3156,28 @@ let apply () =
                   match __fan_0 with
                   | `Uid s -> (`Dot (_loc, (`Uid (_loc, s)), j) : 'ident )
                   | _ -> assert false)))])]);
+   Gram.extend (dot_namespace : 'dot_namespace Gram.t )
+     (None,
+       [(None, None,
+          [([`Stoken
+               (((function | `Uid _ -> true | _ -> false)),
+                 (`Normal, "`Uid _"));
+            `Skeyword ".";
+            `Sself],
+             (Gram.mk_action
+                (fun (xs : 'dot_namespace)  _  (__fan_0 : [> FanToken.t]) 
+                   (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Uid i -> (i :: xs : 'dot_namespace )
+                   | _ -> assert false)));
+          ([`Stoken
+              (((function | `Uid _ -> true | _ -> false)),
+                (`Normal, "`Uid _"))],
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Uid i -> ([i] : 'dot_namespace )
+                  | _ -> assert false)))])]);
    Gram.extend (dot_lstrings : 'dot_lstrings Gram.t )
      (None,
        [(None, None,
@@ -3148,18 +3187,40 @@ let apply () =
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `Lid i -> ([i] : 'dot_lstrings )
+                   | `Lid i -> (((`Sub []), i) : 'dot_lstrings )
                    | _ -> assert false)));
           ([`Stoken
-              (((function | `Lid _ -> true | _ -> false)),
-                (`Normal, "`Lid _"));
+              (((function | `Uid _ -> true | _ -> false)),
+                (`Normal, "`Uid _"));
            `Skeyword ".";
            `Sself],
             (Gram.mk_action
                (fun (xs : 'dot_lstrings)  _  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `Lid i -> (i :: xs : 'dot_lstrings )
+                  | `Uid i ->
+                      ((match xs with
+                        | (`Sub xs,v) -> ((`Sub (i :: xs)), v)
+                        | _ ->
+                            raise (XStream.Error "impossible dot_lstrings")) : 
+                      'dot_lstrings )
+                  | _ -> assert false)));
+          ([`Skeyword ".";
+           `Stoken
+             (((function | `Uid _ -> true | _ -> false)),
+               (`Normal, "`Uid _"));
+           `Skeyword ".";
+           `Sself],
+            (Gram.mk_action
+               (fun (xs : 'dot_lstrings)  _  (__fan_1 : [> FanToken.t])  _ 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_1 with
+                  | `Uid i ->
+                      ((match xs with
+                        | (`Sub xs,v) -> ((`Absolute (i :: xs)), v)
+                        | _ ->
+                            raise (XStream.Error "impossible dot_lstrings")) : 
+                      'dot_lstrings )
                   | _ -> assert false)))])]);
    Gram.extend
      (module_longident_dot_lparen : 'module_longident_dot_lparen Gram.t )
@@ -3967,20 +4028,13 @@ let apply () =
                (fun (mt : 'module_type)  _  (i : 'a_uident)  _  _ 
                   (_loc : FanLoc.t)  ->
                   (`ModuleType (_loc, i, mt) : 'str_item ))));
-          ([`Skeyword "open";
-           `Stoken
-             (((function | `Lid "lang" -> true | _ -> false)),
-               (`Normal, "`Lid \"lang\""));
-           `Stoken
-             (((function | `STR (_,_) -> true | _ -> false)),
-               (`Normal, "`STR (_,_)"))],
+          ([`Skeyword "import";
+           `Snterm (Gram.obj (dot_namespace : 'dot_namespace Gram.t ))],
             (Gram.mk_action
-               (fun (__fan_2 : [> FanToken.t])  (__fan_1 : [> FanToken.t])  _
-                   (_loc : FanLoc.t)  ->
-                  match (__fan_2, __fan_1) with
-                  | (`STR (_,s),`Lid "lang") ->
-                      ((AstQuotation.default := s; `Nil _loc) : 'str_item )
-                  | _ -> assert false)));
+               (fun (x : 'dot_namespace)  _  (_loc : FanLoc.t)  ->
+                  (FanToken.paths := ((`Absolute x) ::
+                     (FanToken.paths.contents));
+                   `Nil _loc : 'str_item ))));
           ([`Skeyword "open";
            `Snterm (Gram.obj (module_longident : 'module_longident Gram.t ))],
             (Gram.mk_action

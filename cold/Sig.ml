@@ -183,7 +183,7 @@ module type Syntax =
     val method_opt_override : override_flag Gram.t
     val value_val_opt_override : override_flag Gram.t
     val unquoted_typevars : ctyp Gram.t
-    val lang : string Gram.t
+    val lang : FanToken.name Gram.t
     val symbol : FanGrammar.symbol Gram.t
     val rule : FanGrammar.rule Gram.t
     val rule_list : FanGrammar.rule list Gram.t
@@ -193,12 +193,13 @@ module type Syntax =
     val entry : FanGrammar.entry Gram.t
     val extend_body : expr Gram.t
     val delete_rule_body : expr Gram.t
-    val dot_lstrings : string list Gram.t
+    val dot_lstrings : FanToken.name Gram.t
     val parse_expr : FanLoc.t -> string -> expr
     val parse_patt : FanLoc.t -> string -> patt
     val parse_ident : FanLoc.t -> string -> ident
     val expr_filter : expr -> expr
     val patt_filter : patt -> patt
+    val dot_namespace : string list Gram.t
     module Options :
     sig
       type spec_list = (string* FanArg.spec* string) list 

@@ -1,7 +1,6 @@
 open Ast
 open LibUtil
-open FanUtil
-open Lib.Meta
+open FanToken
 open Format
 let _ = ()
 type quotation_error_message =  
@@ -9,7 +8,7 @@ type quotation_error_message =
   | Expanding
   | ParsingResult of FanLoc.t* string
   | NoName 
-type quotation_error = (string* string* quotation_error_message* exn) 
+type quotation_error = (name* string* quotation_error_message* exn) 
 exception QuotationError of quotation_error
 type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
 module ExpKey = DynAst.Pack(struct type 'a t = unit  end)
@@ -20,25 +19,28 @@ let current_quot () =
   try Stack.pop stack
   with | Stack.Empty  -> failwith "it's not in a quotation context"
 let dump_file = ref None
-let default = ref ""
-let map = ref SMap.empty
-let update (pos,str) = map := (SMap.add pos str map.contents)
-let translate = ref (fun x  -> x)
-let clear_map () = map := SMap.empty
-let clear_default () = default := ""
-let default_at_pos pos str = update (pos, str)
-type key = (string* ExpKey.pack) 
+type key = (name* ExpKey.pack) 
 module QMap = MapMake(struct type t = key 
                              let compare = compare end)
-let expanders_table = ref QMap.empty
+let map = ref SMap.empty
+let update (pos,(str : name)) = map := (SMap.add pos str map.contents)
+let fan_default = ((`Absolute ["Fan"]), "")
+let default: name ref = ref fan_default
 let set_default s = default := s
-let expander_name ~pos:(pos : string)  (name : string) =
-  let u = translate.contents name in
-  if u = ""
-  then SMap.find_default ~default:(default.contents) pos map.contents
-  else u
-let add name (tag : 'a DynAst.tag) (f : 'a expand_fun) =
+let clear_map () = map := SMap.empty
+let clear_default () = default := fan_default
+let expander_name ~pos:(pos : string)  (name : name) =
+  match name with
+  | (`Sub [],"") ->
+      SMap.find_default ~default:(default.contents) pos map.contents
+  | (`Sub _,_) -> resolve_name name
+  | _ -> name
+let default_at_pos pos str = update (pos, str)
+let expanders_table = ref QMap.empty
+let add ((domain,n) as name) (tag : 'a DynAst.tag) (f : 'a expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
+  let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
+  Hashtbl.replace names_tbl domain (SSet.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
 let expand_quotation loc ~expander  pos_tag quot =
   let open FanToken in
@@ -62,12 +64,11 @@ let find loc name tag =
    | Not_found  ->
        (fun ()  ->
           let pos_tag = DynAst.string_of_tag tag in
-          if name = ""
-          then
-            raise
-              (FanLoc.raise loc
-                 (QuotationError (name, pos_tag, NoName, Not_found)))
-          else raise Not_found)
+          match name with
+          | (`Sub [],"") ->
+              FanLoc.raise loc
+                (QuotationError (name, pos_tag, NoName, Not_found))
+          | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
 let expand loc (quotation : FanToken.quotation) tag =
   let open FanToken in
@@ -97,7 +98,8 @@ let quotation_error_to_string (name,position,ctx,exn) =
   let ppf = Buffer.create 30 in
   let name = expander_name ~pos:position name in
   let pp x =
-    bprintf ppf "@?@[<2>While %s %S in a position of %S:" x name position in
+    bprintf ppf "@?@[<2>While %s %S in a position of %S:" x
+      (string_of_name name) position in
   let () =
     match ctx with
     | Finding  ->
@@ -105,8 +107,9 @@ let quotation_error_to_string (name,position,ctx,exn) =
          bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
          QMap.iter
            (fun (s,t)  _  ->
-              bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ " s
-                ExpKey.print_tag t) expanders_table.contents;
+              bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
+                (string_of_name s) ExpKey.print_tag t)
+           expanders_table.contents;
          bprintf ppf "@]")
     | Expanding  -> pp "expanding quotation"
     | ParsingResult (loc,str) ->
@@ -226,372 +229,3 @@ let of_expr_with_filter ~name  ~entry  ~filter  =
   let mk_fun loc loc_name_opt s =
     `StExp (loc, (expand_fun loc loc_name_opt s)) in
   add name DynAst.expr_tag expand_fun; add name DynAst.str_item_tag mk_fun
-module MetaLocQuotation =
-  struct
-    let meta_loc_expr _loc loc =
-      match current_loc_name.contents with
-      | None  -> `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
-      | Some "here" -> MetaLoc.meta_loc_expr _loc loc
-      | Some x -> `Id (_loc, (`Lid (_loc, x)))
-    let meta_loc_patt _loc _ = `Any _loc
-  end
-let gm () =
-  match FanConfig.compilation_unit.contents with
-  | Some "FanAst" -> ""
-  | Some _ -> "FanAst"
-  | None  -> "FanAst"
-let antiquot_expander ~parse_patt  ~parse_expr  =
-  object 
-    inherit  FanAst.map as super
-    method! patt =
-      function
-      | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
-          let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
-          let e = parse_patt _loc code in
-          (match (decorations, cxt, sep) with
-           | ("anti",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Ant")), (mloc _loc))),
-                   e)
-           | ("uid",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Uid")), (mloc _loc))),
-                   e)
-           | ("lid",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Lid")), (mloc _loc))),
-                   e)
-           | ("tup",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Tup")), (mloc _loc))),
-                   e)
-           | ("seq",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Seq")), (mloc _loc))),
-                   e)
-           | ("flo",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Flo")), (mloc _loc))),
-                   e)
-           | ("int",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Int")), (mloc _loc))),
-                   e)
-           | ("int32",_,_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "Int32")), (mloc _loc))), e)
-           | ("int64",_,_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "Int64")), (mloc _loc))), e)
-           | ("nativeint",_,_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "NativeInt")), (mloc _loc))),
-                   e)
-           | ("chr",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Chr")), (mloc _loc))),
-                   e)
-           | ("str",_,_) ->
-               `PaApp
-                 (_loc, (`PaApp (_loc, (`PaVrn (_loc, "Str")), (mloc _loc))),
-                   e)
-           | ("vrn","expr",_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "ExVrn")), (mloc _loc))), e)
-           | ("vrn","patt",_) ->
-               `PaApp
-                 (_loc,
-                   (`PaApp (_loc, (`PaVrn (_loc, "PaVrn")), (mloc _loc))), e)
-           | _ -> super#patt e)
-      | e -> super#patt e
-    method! expr =
-      function
-      | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
-          let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
-          let e = parse_expr _loc code in
-          (match (decorations, cxt, sep) with
-           | ("anti",_,__) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Ant")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("tup",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Tup")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("seq",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Seq")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("vrn","expr",_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "ExVrn")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("vrn","patt",_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "PaVrn")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("lid",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Lid")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("uid",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Uid")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("str",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Str")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("chr",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Chr")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("int",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("int32",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int32")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("int64",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int64")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("flo",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Flo")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("nativeint",_,_) ->
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "NativeInt")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("`nativeint",_,_) ->
-               let e =
-                 `ExApp
-                   (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Nativeint")),
-                               (`Lid (_loc, "to_string")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "NativeInt")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("`int",_,_) ->
-               let e =
-                 `ExApp
-                   (_loc, (`Id (_loc, (`Lid (_loc, "string_of_int")))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("`int32",_,_) ->
-               let e =
-                 `ExApp
-                   (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Int32")),
-                               (`Lid (_loc, "to_string")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int32")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("`int64",_,_) ->
-               let e =
-                 `ExApp
-                   (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Int64")),
-                               (`Lid (_loc, "to_string")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Int64")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("`chr",_,_) ->
-               let e =
-                 `ExApp
-                   (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Char")),
-                               (`Lid (_loc, "escaped")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Chr")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("`str",_,_) ->
-               let e =
-                 `ExApp
-                   (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, (gm ()))),
-                               (`Lid (_loc, "safe_string_escaped")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Str")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("`flo",_,_) ->
-               let e =
-                 `ExApp
-                   (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "FanUtil")),
-                               (`Lid (_loc, "float_repres")))))), e) in
-               `ExApp
-                 (_loc, (`ExVrn (_loc, "Flo")),
-                   (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("`bool",_,_) ->
-               let x =
-                 `ExApp
-                   (_loc, (`ExVrn (_loc, "Lid")),
-                     (`Tup
-                        (_loc,
-                          (`Com
-                             (_loc, (mloc _loc),
-                               (`IfThenElse
-                                  (_loc, e, (`Str (_loc, "true")),
-                                    (`Str (_loc, "false"))))))))) in
-               `ExApp
-                 (_loc,
-                   (`ExApp
-                      (_loc, (`ExVrn (_loc, "Id")),
-                        (`Id (_loc, (`Lid (_loc, "_loc")))))), x)
-           | ("list","module_expr",_) ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "app_of_list")))))), e)
-           | ("list","module_type",_) ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "mtApp_of_list")))))), e)
-           | ("list","ident",_) ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "dot_of_list'")))))), e)
-           | ("list",("binding"|"module_binding"|"with_constr"|"class_type"
-                      |"class_expr"|"ctypand"),_)
-               ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "and_of_list")))))), e)
-           | ("list","ctyp*",_) ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "sta_of_list")))))), e)
-           | ("list","ctyp|",_)|("list","match_case",_) ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "or_of_list")))))), e)
-           | ("list","ctyp&",_) ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "amp_of_list")))))), e)
-           | ("listlettry","match_case",_) ->
-               `ExApp
-                 (_loc,
-                   (`Send
-                      (_loc,
-                        (`Id
-                           (_loc,
-                             (`Dot
-                                (_loc, (`Uid (_loc, (gm ()))),
-                                  (`Lid (_loc, "match_pre")))))),
-                        (`Lid (_loc, "match_case")))),
-                   (`ExApp
-                      (_loc,
-                        (`Id
-                           (_loc,
-                             (`Dot
-                                (_loc, (`Uid (_loc, (gm ()))),
-                                  (`Lid (_loc, "or_of_list")))))), e)))
-           | ("antilettry","match_case",_) ->
-               `ExApp
-                 (_loc,
-                   (`Send
-                      (_loc,
-                        (`Id
-                           (_loc,
-                             (`Dot
-                                (_loc, (`Uid (_loc, (gm ()))),
-                                  (`Lid (_loc, "match_pre")))))),
-                        (`Lid (_loc, "match_case")))),
-                   (`ExApp
-                      (_loc, (`ExVrn (_loc, "Ant")),
-                        (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))))
-           | ("lettry","match_case",_) ->
-               `ExApp
-                 (_loc,
-                   (`Send
-                      (_loc,
-                        (`Id
-                           (_loc,
-                             (`Dot
-                                (_loc, (`Uid (_loc, (gm ()))),
-                                  (`Lid (_loc, "match_pre")))))),
-                        (`Lid (_loc, "match_case")))), e)
-           | ("list",("ctyp,"|"patt,"|"expr,"),_) ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "com_of_list")))))), e)
-           | ("list",("binding;"|"str_item"|"sig_item"|"class_sig_item"
-                      |"class_str_item"|"rec_binding"|"ctyp;"|"patt;"|"expr;"),_)
-               ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "sem_of_list")))))), e)
-           | ("list","forall",_) ->
-               `ExApp
-                 (_loc,
-                   (`Id
-                      (_loc,
-                        (`Dot
-                           (_loc, (`Uid (_loc, (gm ()))),
-                             (`Lid (_loc, "tyVarApp_of_list")))))), e)
-           | _ -> super#expr e)
-      | e -> super#expr e
-  end

@@ -10508,6 +10508,11 @@ let rec com_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Com (_loc, t, (com_of_list ts))
+let rec com_of_list' =
+  function
+  | [] -> failwith "com_of_list' empty list"
+  | t::[] -> t
+  | t::ts -> let _loc = loc_of t in `Com (_loc, t, (com_of_list' ts))
 let rec sta_of_list =
   function
   | [] -> `Nil ghost

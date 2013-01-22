@@ -8,8 +8,8 @@ open Ast;
 *)
 
 open Lib;
-open lang "expr";
-
+(* open lang "expr"; *)
+#default_quotation "expr";;
 type spat_comp =
   [ SpTrm of FanLoc.t and patt and option expr
   | SpNtr of FanLoc.t and patt and expr

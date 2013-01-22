@@ -107,7 +107,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
             (parse_file ~directive_handler:sig_handler s
                PreCast.CurrentParser.parse_interf)
       | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
-          (AstQuotation.default := s; None)
+          (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
+           None)
       | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
           (AstFilters.use_interf_filter s; None)
       | `Directive (_loc,`Lid (_,x),_) ->
@@ -125,10 +126,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
             (parse_file ~directive_handler:str_handler s
                PreCast.CurrentParser.parse_implem)
       | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
-          (AstQuotation.default := s; None)
-      | `Directive
-          (_loc,`Lid (_,"lang_at"),`ExApp (_,`Str (_,tag),`Str (_,quot))) ->
-          (AstQuotation.default_at_pos tag quot; None)
+          (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
+           None)
       | `Directive (_loc,`Lid (_,"lang_clear"),`Nil _) ->
           (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
       | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->

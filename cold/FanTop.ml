@@ -50,7 +50,8 @@ let use_file token_stream =
       | (`Directive (_loc,`Lid (_,"directory"),`Str (_,s)))::[] ->
           (Topdirs.dir_directory s; loop ())
       | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)))::[] ->
-          (AstQuotation.set_default s; loop ())
+          (AstQuotation.set_default (FanToken.resolve_name ((`Sub []), s));
+           loop ())
       | _ -> (pl, false)
     else (pl, true) in
   let (pl0,eoi) = loop () in

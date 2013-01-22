@@ -3,7 +3,7 @@
 open PreCast.Syntax;
 open Lib;
 open GramLib;  
-{:extend.create|Gram comprehension_or_sem_expr_for_list |}  ;
+{:create|Gram comprehension_or_sem_expr_for_list |}  ;
   
 let apply () = begin 
   {:delete|Gram expr: [ "["; sem_expr_for_list; "]"] |};

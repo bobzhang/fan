@@ -235,7 +235,7 @@ end;
 
 let g = Gram.create_gram ();
 
-{:extend.create|(g:Gram.t)
+{:create|(g:Gram.t)
   fan_quot fan_quots
 |};
 

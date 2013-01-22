@@ -222,7 +222,7 @@ let make_filter (s,code) =
   let f =
     function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
   (("filter_" ^ s), ((FanAst.map_str_item f)#str_item))
-module MetaQAst = FanAst.Make(AstQuotation.MetaLocQuotation)
+module MetaQAst = FanAst.Make(Ant.MetaLocQuotation)
 module ME = MetaQAst.Expr
 module MP = MetaQAst.Patt
 let _ =

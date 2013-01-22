@@ -3,7 +3,7 @@ open PreCast.Syntax;
 open FanMacroTools;
 open Lib;
 
-{:extend.create|Gram
+{:create|Gram
   macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
   else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
   sglist_else endif opt_macro_value uident 

@@ -304,6 +304,10 @@ rule token c = parse
        | "*)"
            { warn Comment_not_end (FanLoc.of_lexbuf lexbuf)                           ;
              move_curr_p (-1) c; `SYMBOL "*"                                       }
+       | "{<" as s
+           {`SYMBOL s}
+       | ">}" as s
+           {`SYMBOL s}
 
        | "{|" (extra_quot as p)? (quotchar* as beginning)
            { if quotations c  then

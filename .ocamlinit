@@ -94,7 +94,9 @@ let _ = begin
     (Toploop.Directive_none (fun () -> normal ()))
 end
 ;;
-AstQuotation.default:="expr";;
+
+
+(* AstQuotation.default:="expr";; *)
 let env = !Toploop.toplevel_env;;
 #install_printer print_tree;;
 #install_printer Gram.dump;;

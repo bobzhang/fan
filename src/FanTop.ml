@@ -60,7 +60,7 @@ let use_file token_stream =
         | [ {| #directory $str:s |} ] ->
             begin  Topdirs.dir_directory s; loop ()  end
         | [ {| #default_quotation $str:s |} ] ->
-            begin AstQuotation.set_default s; loop () end 
+            begin AstQuotation.set_default (FanToken.resolve_name (`Sub [],s)); loop () end 
         | _ -> (pl, false) ]
       else (pl, true) in
   let (pl0, eoi) = loop () in

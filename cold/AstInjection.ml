@@ -63,7 +63,8 @@ let _ =
                   | _ -> assert false)))])])
 let _ =
   let open AstQuotation in
-    of_expr ~name:"inject.expr" ~entry:inject_expr;
-    of_str_item ~name:"inject.str_item" ~entry:inject_str_item;
-    of_class_str_item ~name:"inject.class_str_item"
+    of_expr ~name:((`Absolute ["Fan"; "Inject"]), "expr") ~entry:inject_expr;
+    of_str_item ~name:((`Absolute ["Fan"; "Inject"]), "str_item")
+      ~entry:inject_str_item;
+    of_class_str_item ~name:((`Absolute ["Fan"; "Inject"]), "class_str_item")
       ~entry:inject_class_str_item

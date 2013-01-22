@@ -196,6 +196,8 @@ module String =
     let init len f =
       let s = create len in
       for i = 0 to len - 1 do unsafe_set s i (f i) done; s
+    let is_empty s = s = ""
+    let not_empty s = s <> ""
     let starts_with str p =
       let len = length p in
       if (length str) < len
@@ -244,6 +246,85 @@ module String =
         (let r = create l in
          for i = 0 to l - 1 do unsafe_set r i (f (unsafe_get s i)) done; r)
     let lowercase s = map Char.lowercase s
+    let find_from str ofs sub =
+      let sublen = length sub in
+      if sublen = 0
+      then ofs
+      else
+        (let len = length str in
+         if len = 0
+         then raise Not_found
+         else
+           if (0 > ofs) || (ofs >= len)
+           then raise (Invalid_argument "index out of bounds")
+           else
+             Return.label
+               (fun label  ->
+                  for i = ofs to len - sublen do
+                    (let j = ref 0 in
+                     while
+                       (unsafe_get str (i + j.contents)) =
+                         (unsafe_get sub j.contents)
+                       do
+                       incr j;
+                       if j.contents = sublen then Return.return label i done)
+                  done;
+                  raise Not_found))
+    let find str sub = find_from str 0 sub
+    let split str sep =
+      let p = find str sep in
+      let len = length sep in
+      let slen = length str in
+      ((sub str 0 p), (sub str (p + len) ((slen - p) - len)))
+    let rfind_from str suf sub =
+      let sublen = length sub and len = length str in
+      if sublen = 0
+      then len
+      else
+        if len = 0
+        then raise Not_found
+        else
+          if (0 > suf) || (suf >= len)
+          then raise (Invalid_argument "index out of bounds")
+          else
+            Return.label
+              (fun label  ->
+                 for i = (suf - sublen) + 1 downto 0 do
+                   (let j = ref 0 in
+                    while
+                      (unsafe_get str (i + j.contents)) =
+                        (unsafe_get sub j.contents)
+                      do
+                      incr j;
+                      if j.contents = sublen then Return.return label i done)
+                 done;
+                 raise Not_found)
+    let rfind str sub = rfind_from str ((String.length str) - 1) sub
+    let nsplit str sep =
+      if str = ""
+      then []
+      else
+        if sep = ""
+        then invalid_arg "nsplit: empty sep not allowed"
+        else
+          (let seplen = String.length sep in
+           let rec aux acc ofs =
+             if ofs >= 0
+             then
+               match try Some (rfind_from str ofs sep)
+                     with | Not_found  -> None
+               with
+               | Some idx ->
+                   let end_of_sep = (idx + seplen) - 1 in
+                   (if end_of_sep = ofs
+                    then aux ("" :: acc) (idx - 1)
+                    else
+                      (let token =
+                         sub str (end_of_sep + 1) (ofs - end_of_sep) in
+                       aux (token :: acc) (idx - 1)))
+               | None  -> (sub str 0 (ofs + 1)) :: acc
+             else "" :: acc in
+           aux [] ((length str) - 1))
   end
 module Ref =
   struct

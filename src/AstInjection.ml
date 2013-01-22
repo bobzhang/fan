@@ -16,7 +16,7 @@ let register_inject_class_str_item (k,f) =
 
 
 
-{:extend.create|Gram
+{:create|Gram
   inject_expr inject_str_item inject_class_str_item
 |};
   

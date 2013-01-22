@@ -9,7 +9,7 @@ let current_warning = ref default_warning;
 let print_warning loc txt = !current_warning loc txt;
 
 
-{:extend.create|Gram
+{:create|Gram
   
   a_ident
   aident

@@ -195,8 +195,7 @@ let warn error loc =
 
 
 
-
-{:lex.regexp|
+{:.Fan.Lang.Lex.reg|
 
 newline:
   ('\010' | '\013' | "\013\010");
@@ -278,7 +277,9 @@ right_delimitor:
    | (delimchars* ['|' ':'])? '}'
 |};
 
-#default_quotation "lex";;
+(* #default_quotation "lex";;
+   FIXME the error message of [default_quotation]
+ *)
 
 (* let rec token c = {| *)
 (*  |newline -> update_loc c ; `NEWLINE *)

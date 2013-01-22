@@ -1,6 +1,8 @@
-(* open LibUtil *)
+type domains = [ `Absolute of string list | `Sub of string list]
+type name = domains * string
+
 type quotation ={
-    q_name : string;
+    q_name : name;
     q_loc : string;
     q_shift : int;
     q_contents : string
@@ -80,3 +82,13 @@ val check_keyword_as_label:
 val check_unknown_keywords: [> `SYMBOL of string ] -> FanLoc.t -> unit
 
 
+val string_of_domains : domains -> string
+val string_of_name : domains * string -> string
+val paths : domains list ref
+val concat_domain : domains * domains -> domains
+val empty_name: name
+
+val name_of_string: string -> name    
+val names_tbl: (domains, LibUtil.SSet.t) LibUtil.Hashtbl.t
+
+val resolve_name: name -> name    

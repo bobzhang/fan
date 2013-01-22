@@ -11,7 +11,7 @@ FanConfig.antiquotations := true;
 
 
 
-{:extend.create|Gram nonterminals nonterminalsclear
+{:create|Gram nonterminals nonterminalsclear
   delete_rule_header extend_header  qualuid qualid t_qualid
   (entry_name : Gram.t ([=`name of FanToken.name | `non] * FanGrammar.name))
   locals entry position assoc name string
@@ -32,7 +32,7 @@ FanConfig.antiquotations := true;
     let d = U.mk "d"
     ]}
     It is very simple, may be improved to a depend on a simple engine
-    It is used by language [extend.create]
+    It is used by language [create]
    *)
   nonterminals:
   [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
@@ -66,7 +66,7 @@ FanConfig.antiquotations := true;
      with str t nonterminalsclear {| U a b c d|} |> Ast2pt.print_expr f;
      U.clear a; U.clear b; U.clear c; U.clear d
      ]}
-     It's used by language [extend.clear]
+     It's used by language [clear]
    *)
   nonterminalsclear:
   [ qualuid{t}; L0 [a_lident{x}->x ]{ls} ->

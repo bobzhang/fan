@@ -13,7 +13,7 @@ let extend_header = Gram.mk "extend_header"
 let qualuid = Gram.mk "qualuid"
 let qualid = Gram.mk "qualid"
 let t_qualid = Gram.mk "t_qualid"
-let entry_name: ([ `name of string | `non]* FanGrammar.name) Gram.t =
+let entry_name: ([ `name of FanToken.name | `non]* FanGrammar.name) Gram.t =
   Gram.mk "entry_name"
 let locals = Gram.mk "locals"
 let entry = Gram.mk "entry"
@@ -21,10 +21,10 @@ let position = Gram.mk "position"
 let assoc = Gram.mk "assoc"
 let name = Gram.mk "name"
 let string = Gram.mk "string"
-let pattern = Gram.mk "pattern"
+let pattern: action_pattern Gram.t = Gram.mk "pattern"
 let simple_expr = Gram.mk "simple_expr"
 let delete_rules = Gram.mk "delete_rules"
-let simple_patt = Gram.mk "simple_patt"
+let simple_patt: simple_patt Gram.t = Gram.mk "simple_patt"
 let internal_patt = Gram.mk "internal_patt"
 let _ =
   Gram.extend (nonterminals : 'nonterminals Gram.t )
@@ -384,7 +384,9 @@ let _ =
                   (((match name with
                      | Some x ->
                          let old = AstQuotation.default.contents in
-                         (AstQuotation.default := x; `name old)
+                         (AstQuotation.default :=
+                            (FanToken.resolve_name ((`Sub []), x));
+                          `name old)
                      | None  -> `non), (mk_name _loc il)) : 'entry_name ))))])]);
   Gram.extend (entry : 'entry Gram.t )
     (None,
@@ -534,7 +536,11 @@ let _ =
             (Gram.mk_action
                (fun (p : 'e__9 option)  (s : 'symbol)  (_loc : FanLoc.t)  ->
                   (match p with
-                   | Some _ -> { s with pattern = p }
+                   | Some _ ->
+                       {
+                         s with
+                         pattern = (p : action_pattern option  :>patt option)
+                       }
                    | None  -> s : 'psymbol ))))])]);
   Gram.extend (symbol : 'symbol Gram.t )
     (None,
@@ -652,7 +658,9 @@ let _ =
          ([`Snterm (Gram.obj (simple_patt : 'simple_patt Gram.t ))],
            (Gram.mk_action
               (fun (p : 'simple_patt)  (_loc : FanLoc.t)  ->
-                 (let (p,ls) = Expr.filter_patt_with_captured_variables p in
+                 (let (p,ls) =
+                    Expr.filter_patt_with_captured_variables
+                      (p : simple_patt  :>patt) in
                   match ls with
                   | [] -> mk_tok _loc ~pattern:p (`Tok _loc)
                   | (x,y)::ys ->
@@ -944,9 +952,10 @@ let _ =
            (Gram.mk_action
               (fun _  (e : 'expr)  _  (_loc : FanLoc.t)  ->
                  (e : 'simple_expr ))))])])
-let _ = AstQuotation.of_expr ~name:"extend" ~entry:extend_body
-let _ = AstQuotation.of_expr ~name:"delete" ~entry:delete_rule_body
-let _ = AstQuotation.of_expr ~name:"extend.clear" ~entry:nonterminalsclear
-let _ = AstQuotation.of_str_item ~name:"extend.create" ~entry:nonterminals
+let d = `Absolute ["Fan"; "Lang"]
+let _ = AstQuotation.of_expr ~name:(d, "extend") ~entry:extend_body
+let _ = AstQuotation.of_expr ~name:(d, "delete") ~entry:delete_rule_body
+let _ = AstQuotation.of_expr ~name:(d, "clear") ~entry:nonterminalsclear
+let _ = AstQuotation.of_str_item ~name:(d, "create") ~entry:nonterminals
 let _ =
   Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented")

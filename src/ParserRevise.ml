@@ -20,11 +20,11 @@ New syntax:\
 \n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\
 \n"; flush stderr; exit 1  end;
 
-{:extend.create|Gram pos_exprs|};
+{:create|Gram pos_exprs|};
 let apply () = begin 
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
-    {:extend.clear|Gram
+    {:clear|Gram
       amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
@@ -423,8 +423,12 @@ let apply () = begin
         | "{"; label_expr_list{el}; "}" -> {| { $el } |}
         | "{"; "("; S{e}; ")"; "with"; label_expr_list{el}; "}" ->
             {| { ($e) with $el } |}
-        | "{<"; ">}" -> {| {<>} |}
-        | "{<"; field_expr_list{fel}; ">}" -> {| {< $fel >} |}
+        | "{<"; ">}" ->
+            {| {< >} |}
+              (* `OvrInst(_loc,`Nil _loc) *)
+        | "{<"; field_expr_list{fel}; ">}" ->
+            {| {< $fel >} |}
+            (* `OvrInst (_loc, fel) *)
         (* | "("; "->"; L0 ")" *)
         | "("; ")" -> {| () |}
         | "("; S{e}; ":"; ctyp{t}; ")" -> {| ($e : $t) |}

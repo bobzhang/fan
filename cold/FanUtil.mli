@@ -5,7 +5,7 @@ val float_repres : float -> string
 val cvt_int_literal: string ->
   [> `INT of (int*string) | `INT32 of (int32*string) | `INT64 of (int64*string) | `NATIVEINT of (nativeint*string) ]
 
-val mk_anti : ?c:string -> string -> string -> string
+(* val mk_anti : ?c:string -> string -> string -> string *)
     
 (* val append_eLem : 'a list -> 'a -> 'a list *)
 val is_antiquot : string -> bool

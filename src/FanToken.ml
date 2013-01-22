@@ -231,6 +231,7 @@ let resolve_name (n:name) : name =
       (fun path ->
         let try set = Hashtbl.find names_tbl (concat_domain (path, x)) in
         SSet.mem v set
-        with Not_found -> false) !paths in (r,v)
+        with Not_found -> false) !paths in
+    (concat_domain (r, x),v)
     with [Not_found -> failwith "resolve_name "]
   | x ->  x];
