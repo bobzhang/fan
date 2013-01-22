@@ -64,7 +64,6 @@ let retype_rule_list_without_patterns _loc rl =
        | { prod = []; action = Some _ } as r -> r
        | _ -> raise Exit) rl
   with | Exit  -> rl
-exception NotneededTyping
 let make_ctyp (styp : styp) tvar =
   (let rec aux =
      function
@@ -84,15 +83,7 @@ let make_ctyp (styp : styp) tvar =
                 (_loc,
                   (`Dot (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
      | `Type t -> t in
-   try Some (aux styp) with | NotneededTyping  -> None : ctyp option )
-let make_ctyp_patt styp tvar patt =
-  match make_ctyp styp tvar with
-  | None  -> patt
-  | Some t -> let _loc = FanAst.loc_of patt in `Constraint (_loc, patt, t)
-let make_ctyp_expr styp tvar expr =
-  match make_ctyp styp tvar with
-  | None  -> expr
-  | Some t -> let _loc = FanAst.loc_of expr in `Constraint (_loc, expr, t)
+   aux styp : ctyp )
 let rec make_expr entry tvar =
   function
   | `TXmeta (_loc,n,tl,e,t) ->
@@ -116,7 +107,7 @@ let rec make_expr entry tvar =
                                         (`Dot
                                            (_loc, (`Uid (_loc, "Action")),
                                              (`Lid (_loc, "mk")))))))),
-                              (make_ctyp_expr t tvar e))))))))))
+                              (typing e (make_ctyp t tvar)))))))))))
   | `TXlist (_loc,min,t,ts) ->
       let txt = make_expr entry "" t.text in
       (match (min, ts) with
@@ -278,15 +269,16 @@ let text_of_action _loc psl rtvar act tvar =
          | None |Some (`Any _) ->
              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), txt)))
          | Some (`Alias (_loc,`App (_,_,`Tup (_,`Any _)),p)) ->
-             let p = make_ctyp_patt s.styp tvar (`Id (_loc, (p :>ident))) in
+             let p = typing (`Id (_loc, (p :>ident))) (make_ctyp s.styp tvar) in
              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
          | Some p when FanAst.is_irrefut_patt p ->
-             let p = make_ctyp_patt s.styp tvar p in
+             let p = typing p (make_ctyp s.styp tvar) in
              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
          | Some _ ->
              let p =
-               make_ctyp_patt s.styp tvar
-                 (`Id (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))))) in
+               typing
+                 (`Id (_loc, (`Lid (_loc, (prefix ^ (string_of_int i))))))
+                 (make_ctyp s.styp tvar) in
              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))) e psl in
   let txt =
     if meta_action.contents

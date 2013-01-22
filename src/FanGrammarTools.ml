@@ -90,14 +90,14 @@ let retype_rule_list_without_patterns _loc rl =
   with
     [ Exit -> rl ];
 
-exception NotneededTyping ;
+
 
 (*
   translate [styp] into [ctyp],
   given the assumption that the entry output [tvar] type
  *)
     
-let  make_ctyp  (styp:styp) tvar : option ctyp = 
+let  make_ctyp (styp:styp) tvar : ctyp = 
   let rec aux  = with ctyp fun  
     [ `Id _ | `Quote _ as x -> x  
     | {| $t1 $t2|} -> {| $(aux t1) $(aux t2) |}
@@ -107,21 +107,9 @@ let  make_ctyp  (styp:styp) tvar : option ctyp =
             (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else {| '$lid:tvar |}
     | `Tok _loc ->  {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
-    | `Type t -> t ] in
-    try Some (aux styp) with [NotneededTyping -> None ];
-      
-(*
-  {[ [styp] generates type constraints which are used to constrain patt ]}
-*)    
-let make_ctyp_patt styp tvar patt = 
-  match make_ctyp styp tvar with
-  [ None -> patt (* FIXME *)
-  | Some t -> let _loc = FanAst.loc_of patt in {:patt| ($patt : $t) |} ];
+    | `Type t -> t ] in aux styp;
 
-let make_ctyp_expr styp tvar expr = 
-  match make_ctyp styp tvar with
-  [ None -> expr
-  | Some t -> let _loc = FanAst.loc_of expr in {:expr| ($expr : $t) |} ];
+      
 
 (* transform [text] to [expr] which represents [symbol]
    compute the [lhs]
@@ -131,7 +119,8 @@ let rec make_expr entry tvar = with expr
   [ `TXmeta (_loc, n, tl, e, t) ->
     let el = list_of_list _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
     let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in 
-    {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) |}
+    {| `Smeta ($ns, $el,
+               ($(id:gm()).Action.mk $(typing e (make_ctyp t tvar)))) |}
   | `TXlist (_loc, min, t, ts) ->
       let txt = make_expr entry "" t.text in
       match (min, ts) with
@@ -215,12 +204,15 @@ let text_of_action _loc  psl  rtvar act tvar = with expr
         match s.pattern with
         [ None | Some {:patt@_| _ |} -> {| fun _ -> $txt |}
         | Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
-            let p = make_ctyp_patt s.styp tvar {:patt| $(id:(p:>ident)) |} in  {| fun $p -> $txt |}
+            let p = (* make_ctyp_patt *)
+              typing {:patt| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in  {| fun $p -> $txt |}
         | Some p when FanAst.is_irrefut_patt p ->
-            let p = make_ctyp_patt s.styp tvar p in
+            let p = typing p (make_ctyp s.styp tvar) in
             {| fun $p -> $txt |}
         | Some _ ->
-            let p = make_ctyp_patt s.styp tvar {:patt| $(lid:prefix^string_of_int i) |} in
+            let p =
+              typing {:patt| $(lid:prefix^string_of_int i) |}
+                (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |} ])  e psl in
   let txt =
     if !meta_action then

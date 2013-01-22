@@ -27,12 +27,10 @@ val gensym: unit -> int ref
 val gen_lid: unit -> string
     
 val retype_rule_list_without_patterns:  loc -> rule list -> rule list
-exception NotneededTyping
-val make_ctyp : styp -> string -> ctyp option
-val make_ctyp_patt :
-  styp -> string -> patt -> patt
-val make_ctyp_expr :
-  styp -> string -> expr -> expr
+
+    
+val make_ctyp : styp -> string -> ctyp
+
 val text_of_action :
   loc ->
   symbol list -> string -> expr option -> string -> expr

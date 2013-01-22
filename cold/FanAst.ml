@@ -10467,6 +10467,8 @@ let app a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `App (_loc, a, b)
 let sta a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Sta (_loc, a, b)
+let typing a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Constraint (_loc, a, b)
 let rec list_of_app x acc =
   match x with
   | `App (_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
