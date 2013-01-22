@@ -695,7 +695,7 @@ let gen_curry_n acc ~arity cons n =
   let pat = Patt.of_str cons in
   List.fold_right
     (fun p acc -> {| fun [ $pat:p -> $acc ] |} )
-    (List.map (fun lst -> Patt.apply pat lst) args) acc;
+    (List.map (fun lst -> appl_of_list [pat:: lst]) args) acc;
 
 (*
   Example:

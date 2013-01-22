@@ -56,8 +56,8 @@ let _ =
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
-      (params |> (List.map (fun { exp0;_}  -> exp0))) |>
-        (apply (of_str cons)) in
+      appl_of_list ((of_str cons) ::
+        (params |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { expr; pat0;_}  res  ->
          `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
@@ -91,8 +91,8 @@ let _ =
 let gen_strip =
   let mk_variant cons params =
     let result =
-      ((List.tl params) |> (List.map (fun { exp0;_}  -> exp0))) |>
-        (apply (of_str cons)) in
+      appl_of_list ((of_str cons) ::
+        ((List.tl params) |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { expr; pat0; ty;_}  res  ->
          match ty with
@@ -199,16 +199,17 @@ let mk_variant_print cons params =
       mkfmt ("@[<1>(" ^ (cons ^ "@ ")) "@ " ")@]"
         (List.init len (fun _  -> "%a"))
     else mkfmt cons "" "" [] in
-  (params |> extract) |> (apply pre)
+  appl_of_list (pre :: (extract params))
 let mk_tuple_print params =
   let len = List.length params in
   let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _  -> "%a")) in
-  (params |> extract) |> (apply pre)
+  appl_of_list (pre :: (extract params))
 let mk_record_print cols =
   let pre =
     (cols |> (List.map (fun { label;_}  -> label ^ ":%a"))) |>
       (mkfmt "@[<hv 1>{" ";@," "}@]") in
-  ((cols |> (List.map (fun { info;_}  -> info))) |> extract) |> (apply pre)
+  appl_of_list (pre ::
+    ((cols |> (List.map (fun { info;_}  -> info))) |> extract))
 let gen_print =
   gen_str_item ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_tuple:mk_tuple_print
     ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()

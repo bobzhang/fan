@@ -28,7 +28,7 @@ let mapi_expr ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> expr)  (i : int)
    let pat0 = List.hd id_patts in
    let id_expr = tuple_com id_exprs in
    let id_patt = tuple_com id_patts in
-   let expr = apply base id_exprs in
+   let expr = appl_of_list (base :: id_exprs) in
    { name_expr; expr; id_expr; id_exprs; id_patt; id_patts; exp0; pat0; ty } : 
   FSig.ty_info )
 let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
@@ -85,18 +85,19 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
       | `App _ as ty ->
           (match list_of_app ty [] with
            | (`Id (_loc,tctor))::ls ->
-               (ls |>
-                  (List.map
-                     (function
-                      | `Quote (_loc,_,`Some `Lid (_,s)) ->
-                          `Id (_loc, (`Lid (_loc, (var s))))
-                      | t ->
-                          `Fun
-                            (_loc,
-                              (`Case
-                                 (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
-                                   (`Nil _loc), (aux t)))))))
-                 |> (apply (trans tctor))
+               appl_of_list ((trans tctor) ::
+                 (ls |>
+                    (List.map
+                       (function
+                        | `Quote (_loc,_,`Some `Lid (_,s)) ->
+                            `Id (_loc, (`Lid (_loc, (var s))))
+                        | t ->
+                            `Fun
+                              (_loc,
+                                (`Case
+                                   (_loc,
+                                     (`Id (_loc, (`Lid (_loc, "self")))),
+                                     (`Nil _loc), (aux t))))))))
            | _ ->
                FanLoc.errorf (loc_of ty)
                  "list_of_app in obj_simple_expr_of_ctyp: %s" (dump_ctyp ty))

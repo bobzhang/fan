@@ -472,8 +472,6 @@ let fun_args _loc args body =
       (fun arg  body  -> `Fun (_loc, (`Case (_loc, arg, (`Nil _loc), body))))
       args body
 let _loc = FanLoc.ghost
-let app a b = `App (_loc, a, b)
-let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let rec view_app acc =
   function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let mklist loc =
@@ -921,7 +919,7 @@ let gen_curry_n acc ~arity  cons n =
   let pat = Patt.of_str cons in
   List.fold_right
     (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, (`Nil _loc), acc))))
-    (List.map (fun lst  -> Patt.apply pat lst) args) acc
+    (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc
 let currying match_cases ~arity  =
   if arity >= 2
   then

@@ -45,7 +45,7 @@ let mapi_expr ?(arity=1) ?(names=[])
   let pat0 = List.hd id_patts in
   let id_expr = tuple_com  id_exprs  in
   let id_patt = tuple_com id_patts in 
-  let expr = apply base id_exprs  in
+  let expr = appl_of_list [base:: id_exprs]  in
   {name_expr; expr; id_expr; id_exprs; id_patt; id_patts;exp0;pat0;ty};       
 
 (* @raise Invalid_argument when type can not be handled *)  
@@ -133,12 +133,12 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
     | `App _  as ty ->
         match  list_of_app ty []  with
         [ [ {| $id:tctor |} :: ls ] ->
-
-          ls |> List.map
-            (fun
-              [ `Quote (_loc,_,`Some(`Lid(_,s))) -> {:expr| $(lid:var s) |} 
-              | t ->   {:expr| fun self -> $(aux t) |} ])
-           |> apply (trans tctor)
+          appl_of_list [trans tctor::
+                        (ls |> List.map
+                          (fun
+                            [ `Quote (_loc,_,`Some(`Lid(_,s))) -> {:expr| $(lid:var s) |} 
+                            | t ->   {:expr| fun self -> $(aux t) |} ])) ]
+           (* |> apply (trans tctor) *)
         | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_expr_of_ctyp: %s"

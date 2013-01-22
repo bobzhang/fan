@@ -118,9 +118,10 @@ let gen_quantifiers ~arity n  =
   ]}
  *)  
 let of_id_len ~off (id,len) =
-  apply {|$id:id |}
+  appl_of_list
+  (* apply *) [{|$id:id |} ::
     (List.init len
-       (fun i -> {|  '$(lid:allx ~off i) |}));
+       (fun i -> {|  '$(lid:allx ~off i) |}))];
   
 (*
    {[
@@ -153,7 +154,8 @@ let of_name_len ~off (name,len) =
    ]}
  *)  
 let ty_name_of_tydcl  = fun 
-    [ `TyDcl (_, `Lid(_,name), tyvars, _, _) -> apply {| $lid:name |} tyvars
+    [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
+      (* apply *) appl_of_list [ {| $lid:name |} :: tyvars]
     | tydcl ->
         invalid_arg & sprintf "ctyp_of_tydcl{|%s|}\n" & to_string tydcl];      
 
@@ -296,7 +298,7 @@ let mk_dest_type  ~destination (id,len) =
   let (_quant,dst) =
     match destination with
     [Obj Map ->
-      (2, apply {|$id:id |} (List.init len (fun _ -> {|  _ |})))
+      (2, (* apply *) appl_of_list [ {|$id:id |} :: (List.init len (fun _ -> {|  _ |}))])
       (* (2, (of_id_len ~off:1 (id,len))) *)
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)

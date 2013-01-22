@@ -47,7 +47,7 @@ val fun_args : loc -> patt list -> expr -> expr
 
 val _loc : FanLoc.t
 
-val app : expr -> expr -> expr
+(* val app : expr -> expr -> expr *)
 (* val ( <$ ) : expr -> expr -> expr *)
 (* val comma : expr -> expr -> expr *)
 
@@ -63,7 +63,7 @@ val view_app : expr list -> expr -> expr * expr list
 val mklist : loc -> expr list -> expr
 val mkarray : loc -> expr array -> expr
     
-val apply : expr -> expr list -> expr
+(* val apply : expr -> expr list -> expr *)
 
 val of_str : string -> expr
 val of_ident_number : ident -> int -> expr

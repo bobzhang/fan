@@ -3,7 +3,7 @@ open Ast
 
 (* val comma : patt -> patt -> patt *)
 
-val app : patt -> patt -> patt
+(* val app : patt -> patt -> patt *)
 
 
 (* val sem : patt -> patt -> patt *)
@@ -15,7 +15,7 @@ val view_app : patt list -> patt -> patt * patt list
 (* val com_of_list : patt list -> patt *)
 (* val sem_of_list : patt list -> patt *)
 val mklist : loc -> patt list -> patt
-val apply : patt -> patt list -> patt
+(* val apply : patt -> patt list -> patt *)
 val mkarray : loc -> patt array -> patt
 val of_str : string -> patt
 val of_ident_number : ident -> int -> patt

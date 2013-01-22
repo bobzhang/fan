@@ -77,7 +77,9 @@ end;
 let (gen_map,gen_map2) = with expr
   let mk_variant cons params =
     let result =
-      params |> List.map (fun [{exp0;_} -> exp0]) |> apply (of_str cons) in 
+      appl_of_list
+        [ (of_str cons) ::
+          params |> List.map (fun [{exp0;_} -> exp0]) ] in 
     List.fold_right
       (fun {expr;pat0;_} res ->
               {|let $pat:pat0 = $expr in $res |})  params result in
@@ -117,7 +119,9 @@ end;
 let gen_strip = with {patt:ctyp;expr}
   let mk_variant cons params =
     let result =
-      (List.tl params) |> List.map (fun [{exp0;_} -> exp0]) |> apply (of_str cons) in 
+      appl_of_list
+         [(of_str cons) ::
+            (List.tl params) |> List.map (fun [{exp0;_} -> exp0]) ]  in 
     List.fold_right
       (fun {expr;pat0;ty;_} res ->
         match ty with
@@ -234,19 +238,21 @@ let mk_variant_print cons params =
             "@ " ")@]" (List.init len (fun _ -> "%a"))
         else
           mkfmt cons "" "" [] in
-    params |> extract |> apply pre ;
+    appl_of_list [pre :: extract params ] ;
     
 let mk_tuple_print params =
     let len = List.length params in
-    let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _ -> "%a")) in 
-    params |> extract |> apply pre  ;
+    let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _ -> "%a")) in
+    appl_of_list [pre :: extract params];
+    (* params |> extract |> apply pre  ; *)
     
 let mk_record_print cols = 
     let pre = cols
        |> List.map (fun [ {label;_} -> label^":%a" ])
-       |>  mkfmt "@[<hv 1>{" ";@," "}@]" in 
-    cols |> List.map(fun [ {info;_} -> info ])
-         |> extract |> apply pre  ;
+       |>  mkfmt "@[<hv 1>{" ";@," "}@]" in
+    appl_of_list [pre :: 
+                  (cols |> List.map(fun [ {info;_} -> info ])
+                  |> extract )] (* apply pre *)  ;
   
 let gen_print =
   gen_str_item  ~id:(`Pre "pp_print_")  ~names:["fmt"] 

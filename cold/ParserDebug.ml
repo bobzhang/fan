@@ -1,5 +1,5 @@
+open FanAst
 open PreCast.Syntax
-open Lib
 open LibUtil
 let debug_mode =
   try
@@ -29,17 +29,17 @@ let mk_debug_mode _loc =
                (`Dot (_loc, (`Uid (_loc, "Debug")), (`Lid (_loc, "mode")))))))
 let mk_debug _loc m fmt section args =
   let call =
-    Expr.apply
-      (`App
-         (_loc,
-           (`App
-              (_loc,
-                (`Id
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "Debug")),
-                          (`Lid (_loc, "printf")))))),
-                (`Str (_loc, section)))), (`Str (_loc, fmt)))) args in
+    appl_of_list
+      ((`App
+          (_loc,
+            (`App
+               (_loc,
+                 (`Id
+                    (_loc,
+                      (`Dot
+                         (_loc, (`Uid (_loc, "Debug")),
+                           (`Lid (_loc, "printf")))))),
+                 (`Str (_loc, section)))), (`Str (_loc, fmt)))) :: args) in
   `IfThenElse
     (_loc, (`App (_loc, (mk_debug_mode _loc m), (`Str (_loc, section)))),
       call, (`Id (_loc, (`Uid (_loc, "()")))))

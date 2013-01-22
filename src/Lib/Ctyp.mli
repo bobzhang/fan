@@ -14,13 +14,13 @@ val eprint : (ctyp -> unit)
 
 (* val _loc : FanLoc.t *)
 
-val app : ctyp -> ctyp -> ctyp
+(* val app : ctyp -> ctyp -> ctyp *)
 
 (* val comma : ctyp -> ctyp -> ctyp *)
 
 (* val ( <$ ) : ctyp -> ctyp -> ctyp *)
 
-val apply : ctyp -> ctyp list -> ctyp
+(* val apply : ctyp -> ctyp list -> ctyp *)
 
 (* val sem : ctyp -> ctyp -> ctyp *)
 (* val list_of_app : ctyp -> ctyp list *)

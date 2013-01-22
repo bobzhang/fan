@@ -23,8 +23,6 @@ let rec to_generalized =
 let to_string = to_string_of_printer FanAst.dump#ctyp
 let eprint: ctyp -> unit = fun c  -> eprintf "@[%a@]" FanAst.dump#ctyp c
 let _loc = FanLoc.ghost
-let app a b = `App (_loc, a, b)
-let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let rec view_app acc =
   function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let arrow a b = `Arrow (_loc, a, b)
@@ -62,16 +60,16 @@ let gen_quantifiers ~arity  n =
      |> List.concat)
     |> appl_of_list
 let of_id_len ~off  (id,len) =
-  apply (`Id (_loc, id))
+  appl_of_list ((`Id (_loc, id)) ::
     (List.init len
        (fun i  ->
-          `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (allx ~off i)))))))
+          `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (allx ~off i))))))))
 let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
 let ty_name_of_tydcl =
   function
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
-      apply (`Id (_loc, (`Lid (_loc, name)))) tyvars
+      appl_of_list ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
   | tydcl ->
       invalid_arg & ((sprintf "ctyp_of_tydcl{|%s|}\n") & (to_string tydcl))
 let gen_ty_of_tydcl ~off  tydcl =
@@ -138,7 +136,9 @@ let mk_dest_type ~destination  (id,len) =
   let (_quant,dst) =
     match destination with
     | Obj (Map ) ->
-        (2, (apply (`Id (_loc, id)) (List.init len (fun _  -> `Any _loc))))
+        (2,
+          (appl_of_list ((`Id (_loc, id)) ::
+             (List.init len (fun _  -> `Any _loc)))))
     | Obj (Iter ) -> (1, result_type)
     | Obj (Fold ) -> (1, self_type)
     | Str_item  -> (1, result_type) in

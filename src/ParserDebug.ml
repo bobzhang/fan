@@ -1,6 +1,6 @@
-(* open Ast; *)
+open FanAst;
 open PreCast.Syntax;
-open Lib;
+
 open LibUtil;
 
 
@@ -25,7 +25,7 @@ let mk_debug_mode _loc =
     | Some m -> {:expr| $uid:m.Debug.mode |} ];
 
 let mk_debug _loc m fmt section args =
-  let call = Expr.apply {:expr| Debug.printf $str:section $str:fmt |} args in
+  let call = appl_of_list [{:expr| Debug.printf $str:section $str:fmt |} :: args] in
     {:expr| if $(mk_debug_mode _loc m) $str:section then $call else () |};
 
 let apply () =   

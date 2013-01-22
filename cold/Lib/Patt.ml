@@ -3,8 +3,6 @@ open Basic
 open FSig
 open FanAst
 let _loc = FanLoc.ghost
-let app a b = `App (_loc, a, b)
-let rec apply acc = function | [] -> acc | x::xs -> apply (app acc x) xs
 let rec view_app acc =
   function | `App (_loc,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let mklist loc =
