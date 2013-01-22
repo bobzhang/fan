@@ -11,9 +11,9 @@ FanConfig.antiquotations := true;
 
 
 
-{:lang.create|Gram nonterminals nonterminalsclear
+{:extend.create|Gram nonterminals nonterminalsclear
   delete_rule_header extend_header  qualuid qualid t_qualid
-  (entry_name : Gram.t ([=`name of string | `non] * FanGrammar.name))
+  (entry_name : Gram.t ([=`name of FanToken.name | `non] * FanGrammar.name))
   locals entry position assoc name string
   (pattern: Gram.t action_pattern)
   simple_expr delete_rules
@@ -21,7 +21,7 @@ FanConfig.antiquotations := true;
   internal_patt|}  ;
 
 
-{:lang.extend|Gram
+{:extend|Gram
   (*
 
     {[
@@ -77,7 +77,7 @@ FanConfig.antiquotations := true;
 |};
 
 
-{:lang.extend|Gram
+{:extend|Gram
 
   (* parse the header, return the current [grammar] and
      previous module name, it has side effect, and can not
@@ -196,7 +196,9 @@ FanConfig.antiquotations := true;
   entry_name:
   [ qualid{il}; OPT[`STR(_,x)->x]{name} -> begin
     (match name with
-     [ Some x -> (let old = !AstQuotation.default in (AstQuotation.default:=x;`name old))
+     [ Some x -> (let old = !AstQuotation.default in
+     (AstQuotation.default:= FanToken.resolve_name (`Sub [], x);
+      `name old))
      | None -> `non], mk_name _loc il)
    end]
 
@@ -405,10 +407,15 @@ FanConfig.antiquotations := true;
    | "("; expr{e}; ")" -> e ]  |};
 
 
-AstQuotation.of_expr ~name:"lang.extend" ~entry:extend_body;
-AstQuotation.of_expr ~name:"lang.delete" ~entry:delete_rule_body;
-AstQuotation.of_expr ~name:"lang.clear" ~entry:nonterminalsclear;
-AstQuotation.of_str_item ~name:"lang.create" ~entry:nonterminals;
+let d = `Absolute["Fan";"Lang"];
+AstQuotation.of_expr
+  ~name:((d,  "extend")) ~entry:extend_body;
+AstQuotation.of_expr
+    ~name:((d,"delete")) ~entry:delete_rule_body;
+AstQuotation.of_expr
+    ~name:((d,"clear")) ~entry:nonterminalsclear;
+AstQuotation.of_str_item
+    ~name:((d,"create")) ~entry:nonterminals;
 
 
 Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented");

@@ -22,7 +22,7 @@ let incorrect_number loc l1 l2 =
 let define ~expr ~patt eo x  = begin 
   match eo with
   [ Some ([], e) ->
-    {:lang.extend|Gram
+    {:extend|Gram
         expr: Level "simple"
           [ `Uid $x -> (new FanAst.reloc _loc)#expr e ]
         patt: Level "simple"
@@ -30,7 +30,7 @@ let define ~expr ~patt eo x  = begin
             let p = Expr.substp _loc [] e
             in (new FanAst.reloc _loc)#patt p ] |}
   | Some (sl, e) ->
-      {:lang.extend| Gram
+      {:extend| Gram
         expr: Level "apply"
         [ `Uid $x; S{param} ->
           let el =  match param with 
@@ -61,8 +61,8 @@ let undef ~expr ~patt x =
     begin
       let eo = List.assoc x !defined in
       match eo with
-        [ Some ([], _) -> {:lang.delete| Gram expr: [`Uid $x ]  patt: [`Uid $x ] |}
-        | Some (_, _) ->  {:lang.delete| Gram expr: [`Uid $x; S ] patt: [`Uid $x; S] |}
+        [ Some ([], _) -> {:delete| Gram expr: [`Uid $x ]  patt: [`Uid $x ] |}
+        | Some (_, _) ->  {:delete| Gram expr: [`Uid $x; S ] patt: [`Uid $x; S] |}
         | None -> () ];
         defined := List.remove x !defined;
     end

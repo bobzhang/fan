@@ -3,14 +3,14 @@ open PreCast.Syntax;
 open FanMacroTools;
 open Lib;
 
-{:lang.create|Gram
+{:extend.create|Gram
   macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
   else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
   sglist_else endif opt_macro_value uident 
 |};
 
 let apply () = begin 
-  {:lang.extend|Gram
+  {:extend|Gram
 
     str_item: First
     [ macro_def{x} -> execute_macro ~expr ~patt {:str_item||} (fun a b -> {:str_item| $a; $b |}) x ]

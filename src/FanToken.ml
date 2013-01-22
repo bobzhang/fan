@@ -37,13 +37,21 @@ keep on;
 derive(Print);
 |};
 open StdLib;
+
 {:ocaml|
 (** The generic quotation type.
     To see how fields are used here is an example:
     {:q_name@q_loc|q_contents|}
     The last one, q_shift is equal to the length of "<:q_name@q_loc<". *)
+
+(* domain is the namespace all begins with capital letters *)
+  
+type domains =
+    [= `Absolute of list string | `Sub of list string]  ;
+type name = (domains*string);
+
 type quotation ={
-    q_name : string;
+    q_name : name;
     q_loc : string;
     q_shift : int;
     q_contents : string
@@ -170,5 +178,59 @@ let check_unknown_keywords tok loc =
 
 
 
-
+    
+let string_of_domains  = fun
+  [`Absolute xs -> "." ^ String.concat "." xs
+  |`Sub ls -> String.concat "." ls ];
   
+
+
+let string_of_name (x,y) =
+  string_of_domains x ^ "." ^ y  ;
+  
+(* [only absolute] domains can be stored
+ *)  
+let paths :  ref (list domains) =
+  ref [ `Absolute ["Fan";"Lang"];
+        `Absolute ["Fan";"Lang";"Meta"];
+        `Absolute ["Fan";"Lang";"Filter"];
+      ];
+
+let concat_domain = fun
+  [(`Absolute xs,`Sub ys) -> `Absolute (xs@ys)
+  | _ -> invalid_arg "concat_domain"];
+
+let empty_name : name = (`Sub [],"");
+
+let name_of_string s : name =
+  match s.[0] with
+  ['.' ->
+    (match List.rev (List.filter String.not_empty (String.nsplit s "." ) )with
+    [ [x::xs] -> (`Absolute (List.rev xs),x)
+    | _ -> assert false ])
+      
+  |'A' .. 'Z' ->
+      (match List.rev (List.filter String.not_empty (String.nsplit s ".")) with
+       [ [x::xs] -> (`Sub (List.rev xs),x )
+       | _ -> assert false]) 
+  | _ -> (`Sub [],s)];  
+
+
+
+let names_tbl : Hashtbl.t domains SSet.t =
+  Hashtbl.create 30 ;
+    
+(*
+  when no qualified path is given , it uses [Sub []]
+ *)
+let resolve_name (n:name) : name =
+  match n with
+  [((`Sub _ as x) ,v) ->
+    let try r =
+      List.find
+      (fun path ->
+        let try set = Hashtbl.find names_tbl (concat_domain (path, x)) in
+        SSet.mem v set
+        with Not_found -> false) !paths in (r,v)
+    with [Not_found -> failwith "resolve_name "]
+  | x ->  x];

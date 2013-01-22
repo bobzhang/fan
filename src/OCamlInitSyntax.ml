@@ -9,7 +9,7 @@ let current_warning = ref default_warning;
 let print_warning loc txt = !current_warning loc txt;
 
 
-{:lang.create|Gram
+{:extend.create|Gram
   
   a_ident
   aident
@@ -70,6 +70,7 @@ let print_warning loc txt = !current_warning loc txt;
   a_uident
   luident
   astr
+  dot_namespace
 |};
   
 let antiquot_expr = Gram.eoi_entry expr ; 
@@ -78,7 +79,7 @@ let antiquot_ident = Gram.eoi_entry ident;
 let parse_expr loc str = Gram.parse_string antiquot_expr ~loc str;
 let parse_patt loc str = Gram.parse_string antiquot_patt ~loc str;
 let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str;
-let anti_filter = AstQuotation.antiquot_expander  ~parse_expr  ~parse_patt;
+let anti_filter = Ant.antiquot_expander  ~parse_expr  ~parse_patt;
 let expr_filter = anti_filter#expr;
 let patt_filter = anti_filter#patt;  
 

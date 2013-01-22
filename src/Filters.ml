@@ -111,7 +111,7 @@ let make_filter (s,code) =
   ("filter_"^s, (FanAst.map_str_item f )#str_item);
 
 
-module MetaQAst = FanAst.Make AstQuotation.MetaLocQuotation;
+module MetaQAst = FanAst.Make Ant.MetaLocQuotation;
 module ME = MetaQAst.Expr;
 module MP = MetaQAst.Patt;
 

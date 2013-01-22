@@ -231,16 +231,16 @@ end;
 
 
 #default_quotation "expr"  ;;
-#lang_at "patt" "module_expr";;
+(* #lang_at "patt" "module_expr";; *)
 
 let g = Gram.create_gram ();
 
-{:lang.create|(g:Gram.t)
+{:extend.create|(g:Gram.t)
   fan_quot fan_quots
 |};
 
 with expr
-    {:lang.extend|Gram
+    {:extend|Gram
       fan_quot:
       ["derive";"("; L1 [`Lid x -> x | `Uid x  -> x]{plugins}; ")" ->
           begin List.iter plugin_add plugins; {| |}  end

@@ -327,7 +327,8 @@ module String = struct
     done;
     s
   end;
-
+  let is_empty s = s = "";
+  let not_empty s = s <> "";  
     (*$T starts_with
   starts_with "foobarbaz" "foob"
   starts_with "foobarbaz" ""
@@ -409,6 +410,90 @@ module String = struct
     end;
   let lowercase s = map Char.lowercase s;
 
+
+  let find_from str ofs sub = 
+    let sublen = length sub in
+    if sublen = 0 then ofs
+    (*If [sub] is the empty string, by convention,
+      it may be found wherever we started searching.*)
+    else
+      let len = length str in
+	if len = 0 then raise Not_found else
+	if 0 > ofs || ofs >= len then raise (Invalid_argument "index out of bounds")
+	else
+          Return.label (fun label -> begin
+  	  for i = ofs to len - sublen do
+	    let j = ref 0 in
+	      while unsafe_get str (i + !j) = unsafe_get sub !j do
+		incr j;
+		if !j = sublen then Return.return label i
+	      done;
+	  done;
+	  raise Not_found
+          end);
+      
+  let find str sub = find_from str 0 sub;
+  let split str sep =
+    let p = find str sep in
+    let len = length sep in
+    let slen = length str in
+    (sub str 0 p, sub str (p + len) (slen - p - len));
+
+
+  let rfind_from str suf sub = 
+    let sublen = length sub 
+    and len    = length str in
+    if sublen = 0 then len
+    else
+      if len = 0 then raise Not_found else
+	if 0 > suf || suf >= len then raise (Invalid_argument "index out of bounds")
+	else
+	Return.label (fun label -> begin
+  	  for i = suf - sublen + 1 downto 0 do
+	    (*Printf.printf "i:%i/suf:%i/sublen:%i/len:%i\n" i suf sublen len;*)
+	    let j = ref 0 in
+	      while unsafe_get str ( i + !j ) = unsafe_get sub !j do
+		incr j;
+		if !j = sublen then Return.return label i
+	      done;
+	  done;
+	  raise Not_found
+        end);
+
+ let rfind str sub = rfind_from str (String.length str - 1) sub;
+
+ (*
+   LibUtil.String.nsplit ".a.b.c..d" ".";;
+   - : string list = [""; "a"; "b"; "c"; ""; "d"]
+  *)  
+ let nsplit str sep =
+   if str = "" then []
+   else if sep = "" then invalid_arg "nsplit: empty sep not allowed"
+   else
+    (* str is non empty *)
+     let seplen = String.length sep in
+     let rec aux acc ofs =
+      if ofs >= 0 then (
+        match
+          try Some (rfind_from str ofs sep)
+          with [Not_found -> None]
+        with
+          [ Some idx -> (* sep found *)
+            let end_of_sep = idx + seplen - 1 in
+              if end_of_sep = ofs (* sep at end of str *)
+              then aux [""::acc] (idx - 1)
+              else
+                let token = sub str (end_of_sep + 1) (ofs - end_of_sep) in
+                  aux [token::acc] (idx - 1)
+          | None     -> (* sep NOT found *)
+            [(sub str 0 (ofs + 1))::acc]]
+      )
+      else
+        (* Negative ofs: the last sep started at the beginning of str *)
+        [""::acc]
+    in
+      aux [] (length str - 1 );
+    
   (* let filter_map f a = *)
   (*   let u = Array.filter *)
 end;

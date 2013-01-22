@@ -16,11 +16,11 @@ let register_inject_class_str_item (k,f) =
 
 
 
-{:lang.create|Gram
+{:extend.create|Gram
   inject_expr inject_str_item inject_class_str_item
 |};
   
-{:lang.extend| Gram
+{:extend| Gram
   inject_expr:
   [`Lid x ->
      try Hashtbl.find inject_expr_tbl x 
@@ -38,7 +38,12 @@ let register_inject_class_str_item (k,f) =
 |};
 
 let open AstQuotation in begin
-  of_expr ~name:"inject.expr" ~entry:inject_expr;
-  of_str_item ~name:"inject.str_item" ~entry:inject_str_item;
-  of_class_str_item ~name:"inject.class_str_item" ~entry:inject_class_str_item; 
+  of_expr
+    ~name:((`Absolute ["Fan";"Inject"], "expr")) ~entry:inject_expr;
+  of_str_item
+    ~name:((`Absolute ["Fan";"Inject"],"str_item"))
+    ~entry:inject_str_item;
+  of_class_str_item
+    ~name:((`Absolute ["Fan";"Inject"], "class_str_item"))
+     ~entry:inject_class_str_item; 
 end;  

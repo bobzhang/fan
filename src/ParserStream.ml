@@ -5,7 +5,7 @@ open FanStreamTools;
 
 
 let apply () = 
-  {:lang.extend|Gram
+  {:extend|Gram
       local: parser_ipatt stream_expr_comp  stream_expr_comp_list
       stream_patt_comp stream_patt_comp_err 
       stream_patt_comp_err_list stream_begin stream_end stream_patt

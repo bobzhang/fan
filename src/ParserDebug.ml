@@ -29,7 +29,7 @@ let mk_debug _loc m fmt section args =
     {:expr| if $(mk_debug_mode _loc m) $str:section then $call else () |};
 
 let apply () =   
-{:lang.extend| Gram local: start_debug end_or_in ;  
+{:extend| Gram local: start_debug end_or_in ;  
   expr "expr":
    [ start_debug{m}; `Lid section; `STR (_, fmt);
      L0 expr Level "."{args}; end_or_in{x} ->

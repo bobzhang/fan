@@ -3,11 +3,11 @@
 open PreCast.Syntax;
 open Lib;
 open GramLib;  
-{:lang.create|Gram comprehension_or_sem_expr_for_list |}  ;
+{:extend.create|Gram comprehension_or_sem_expr_for_list |}  ;
   
 let apply () = begin 
-  {:lang.delete|Gram expr: [ "["; sem_expr_for_list; "]"] |};
-  {:lang.extend| Gram local: item;
+  {:delete|Gram expr: [ "["; sem_expr_for_list; "]"] |};
+  {:extend| Gram local: item;
      expr: Level "simple"
      [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ]
    
@@ -23,7 +23,7 @@ let apply () = begin
      [  TRY [ patt{p}; "<-" -> p]{p} ;  expr Level "top"{e} -> `gen (p, e)
      | expr Level "top"{e} -> `cond e ] |};
   if is_revised ~expr ~sem_expr_for_list then
-    {:lang.extend|Gram
+    {:extend|Gram
       comprehension_or_sem_expr_for_list:
       [  expr Level "top"{e}; ";"; sem_expr_for_list{mk}; "::"; expr{last} ->
         {:expr| [ $e :: $(mk last) ] |}

@@ -152,7 +152,8 @@ module Camlp4Bin
                 Some (parse_file
                         ~directive_handler:sig_handler s PreCast.CurrentParser.parse_interf )
             | {| #default_quotation $str:s |} ->
-                begin AstQuotation.default := s; None end
+                begin AstQuotation.default :=
+                  FanToken.resolve_name (`Sub [], s); None end
             | {| #$({:ident@_|filter|}) $str:s |} ->
                 begin AstFilters.use_interf_filter s; None ; end 
             | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)
@@ -169,10 +170,12 @@ module Camlp4Bin
                 Some (parse_file  ~directive_handler:str_handler s
                         PreCast.CurrentParser.parse_implem )
             | {| #default_quotation $str:s |} ->
-                begin AstQuotation.default := s; None end
-            | {| #lang_at $str:tag $str:quot |}
-              ->
-                begin AstQuotation.default_at_pos tag quot; None end
+                begin AstQuotation.default :=
+                  FanToken.resolve_name (`Sub [],s) ;
+                  None end
+            (* | {| #lang_at $str:tag $str:quot |} *)
+            (*   -> *)
+            (*     begin AstQuotation.default_at_pos tag quot; None end *)
             | {| #lang_clear |} -> begin 
                 AstQuotation.clear_map ();
                 AstQuotation.clear_default ();

@@ -4,10 +4,10 @@ open Lib;
 open LibUtil;  
 open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 
-{:lang.create|Gram regexp chr ch_class regexps lex declare_regexp|};
+{:extend.create|Gram regexp chr ch_class regexps lex declare_regexp|};
 
 (* let apply () = *)
-  {:lang.extend|Gram
+  {:extend|Gram
     lex:
     [ "|"; L0[regexp{r};"->"; sequence{a} -> (r, Expr.mksequence  a)] SEP "|"{l} ->
       FanLexTools.gen_definition _loc l  ]
@@ -55,8 +55,14 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
         done;
           !c
     end ] |};
-AstQuotation.of_expr ~name:"lex" ~entry:lex ;
-AstQuotation.of_str_item ~name:"lex.regexp" ~entry:declare_regexp;  
+
+
+let d = `Absolute ["Fan";"Lang";"Lex"];
+AstQuotation.of_expr
+  ~name:(d,"lex") ~entry:lex ;
+AstQuotation.of_str_item
+    ~name:(d,"reg")
+    ~entry:declare_regexp;  
   
 (*
 let change_ids suffix = object

@@ -1,7 +1,8 @@
 open Lexing
 type lex_error =
-    Illegal_character of char
+  | Illegal_character of char
   | Illegal_escape of string
+  | Illegal_quotation of string
   | Unterminated_comment
   | Unterminated_string
   | Unterminated_quotation
@@ -30,7 +31,7 @@ val show_stack: unit -> unit
 val mk_quotation:
   (context -> Lexing.lexbuf -> 'a) ->
   context ->
-  name:string ->
+  name:FanToken.name ->
   loc:string ->
   shift:int -> retract:int -> [> `QUOTATION of FanToken.quotation ]
 val update_loc:
