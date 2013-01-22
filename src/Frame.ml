@@ -138,7 +138,6 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
                           (fun
                             [ `Quote (_loc,_,`Some(`Lid(_,s))) -> {:expr| $(lid:var s) |} 
                             | t ->   {:expr| fun self -> $(aux t) |} ])) ]
-           (* |> apply (trans tctor) *)
         | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_expr_of_ctyp: %s"
@@ -321,7 +320,7 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     {:binding| $(lid:tctor_var name) : $ty = $fun_expr |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n"
-      (Ctyp.to_string tydcl);
+      (dump_ctyp tydcl);
     {:binding| $(lid:tctor_var  name) =
     failwithf $(str:"Abstract data type not implemented") |};
   end ;

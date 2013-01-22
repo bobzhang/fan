@@ -14,7 +14,7 @@ open FanAst;
 
 
 let _loc = FanLoc.ghost ;
-INCLUDE "src/Lib/CommonStructure.ml"  ;
+(* INCLUDE "src/Lib/CommonStructure.ml"  ; *)
 INCLUDE "src/Lib/ExprPatt.ml"  ;
 
 (*

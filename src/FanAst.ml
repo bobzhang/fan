@@ -247,7 +247,17 @@ let tuple_com y=
       let b = loc_of (List.last y) in
       let _loc = FanLoc.merge a b in 
       `Tup _loc (com_of_list y) ];
-
+    
+let tuple_sta y =
+  match y with
+   [ [] -> failwith "tuple_sta empty"
+   | [x] -> x
+   | [x::_] ->
+       let a = loc_of x in
+       let b = loc_of (List.last y) in
+       let _loc = FanLoc.merge a b in 
+       `Tup _loc (sta_of_list y)
+   ]; 
 (* RA *)  
 let rec dot_of_list' = fun
   [[] -> assert false
@@ -372,7 +382,11 @@ let app a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in
   `App(_loc,a,b);
 
+let sta a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in
+  `Sta(_loc,a,b);
 
+  
 let rec list_of_app  x acc =
   match x with
   [`App(_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
@@ -402,6 +416,10 @@ let rec appl_of_list' x =
   [ [] -> failwith "appl_of_list' empty list"
   | [x] -> x
   | [x;y::xs] -> appl_of_list' [(app x y)::xs] ]  ;
+    
+let rec view_app acc = fun
+  [`App (_,f,a) -> view_app [a::acc] f
+  | f -> (f,acc)];
 
     
 let map_expr f = object

@@ -132,7 +132,7 @@ let rec ctyp (x:ctyp) = match x with
       mktyp _loc (Ptyp_alias (ctyp t1) s)
   | `Any _loc -> mktyp _loc Ptyp_any
   | `App (_loc, _, _) as f ->
-      let (f, al) = Ctyp.view_app [] f in
+      let (f, al) =view_app [] f in
       let (is_cls, li) = ctyp_long_id f in
       if is_cls then mktyp _loc (Ptyp_class li (List.map ctyp al) [])
       else mktyp _loc (Ptyp_constr li (List.map ctyp al))
@@ -516,7 +516,7 @@ let rec expr (x : expr) = with expr match x with
           (_loc, e) l in
       e
   | `App (loc, _, _) as f ->
-      let (f, al) = Expr.view_app [] f in
+      let (f, al) = view_app [] f in
       let al = List.map label_expr al in
       match (expr f).pexp_desc with
       [ Pexp_construct (li, None, _) ->

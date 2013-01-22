@@ -3,24 +3,16 @@
 open FanAst;
 
 open LibUtil;
-open Format;
+
 open Basic;
 open FSig;
 
-(*  *)
-(* let rec fa al =fun *)
-(*   [ {| $f $a |}  -> fa [a :: al] f *)
-(*   | f -> (f, al) ]; *)
 
 let rec to_var_list =  fun
   [ {| $t1 $t2 |} ->
     to_var_list t1 @ to_var_list t2
   | {| '$lid:s |} | {| + '$lid:s |} | {| - '$lid:s |}  -> [s]
   | _ -> assert false ];
-
-(* let list_of_opt ot acc = match ot with *)
-(*   [ {||} -> acc *)
-(*   | t -> FanAst.list_of_ctyp t acc ]; *)
 
 
 let rec name_tags = fun
@@ -37,44 +29,28 @@ let rec to_generalized = fun
         ([t1 :: tl], rt)
     | t -> ([], t) ];
 
-
-(*
-   {[
-   to_string << A of (int*float) >> ;
-
-   "A of (int * float)"
-   ]}
- *)
-let to_string  =
-   (to_string_of_printer FanAst.dump#ctyp);
-  (* ref (fun _ -> failwith "Ctyp.to_string foward declaration, not implemented yet"); *)
-  (* to_string_of_printer FanBasic.p_ctyp ; *)
-let eprint :  (ctyp -> unit) =
-  (fun c -> eprintf "@[%a@]" FanAst.dump#ctyp c );
-
-
   
-let _loc = FanLoc.ghost ; (* FIXME *)
 
-(* DEFINE GETLOC(expr)= FanAst.loc_of expr;   *)
-INCLUDE "src/Lib/CommonStructure.ml";  
+
 (*
    compose type abstractions
  *)
-let arrow a b =  {| $a -> $b |};
+let arrow a b =
+  let _loc = FanLoc.merge (loc_of a) (loc_of b) in 
+  {| $a -> $b |};
 let (|->) = arrow;  
-let sta a b = {|$a * $b  |};
 
-let sta_of_list = List.reduce_right sta;  
+
+(* let sta_of_list = List.reduce_right sta;   *)
 
 let arrow_of_list = List.reduce_right arrow;
   
 let app_arrow lst acc = List.fold_right arrow lst acc;
   
-let tuple_sta_of_list = fun
-  [ [] -> invalid_arg "tuple_sta__of_list while list is empty"
-  | [x] -> x
-  | xs -> {| $(tup:sta_of_list xs) |} ];
+(* let tuple_sta_of_list = fun *)
+(*   [ [] -> invalid_arg "tuple_sta__of_list while list is empty" *)
+(*   | [x] -> x *)
+(*   | xs -> {| $(tup:sta_of_list' xs) |} ]; *)
   
 let (<+) names ty =
   List.fold_right
@@ -91,8 +67,8 @@ let (+>) params base = List.fold_right arrow params base;
  *)
 let name_length_of_tydcl = fun 
     [ `TyDcl (_, `Lid(_,name), tyvars, _, _) -> (name, List.length tyvars)
-    | tydcl -> invalid_arg (
-        sprintf "name_length_of_tydcl {|%s|}\n" & to_string tydcl)];      
+    | tydcl ->
+        failwithf "name_length_of_tydcl {|%s|}\n"  (dump_ctyp tydcl)];      
 
 
 
@@ -157,7 +133,7 @@ let ty_name_of_tydcl  = fun
     [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
       (* apply *) appl_of_list [ {| $lid:name |} :: tyvars]
     | tydcl ->
-        invalid_arg & sprintf "ctyp_of_tydcl{|%s|}\n" & to_string tydcl];      
+        failwithf "ctyp_of_tydcl{|%s|}\n" (dump_ctyp tydcl)];      
 
 (*
   {[
@@ -205,7 +181,7 @@ let list_of_record (ty:ctyp) =
    int
    ]}
  *)
-let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta_of_list;
+let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta;
 
 (*
   {[
@@ -333,7 +309,7 @@ let is_recursive ty_dcl = match ty_dcl with
     end in
     (obj#ctyp ctyp)#is_recursive
   | {| $_ and $_ |} -> true
-  | _ -> invalid_arg ("is_recursive not type declartion" ^ to_string ty_dcl)];
+  | _ -> failwithf "is_recursive not type declartion: %s" (dump_ctyp ty_dcl)];
 
 
 (*
