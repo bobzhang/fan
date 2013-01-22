@@ -62,8 +62,17 @@ let print_warning loc txt = !current_warning loc txt;
   module_binding_quot ident_quot string_list     
   method_opt_override  value_val_opt_override  unquoted_typevars  lang
   (* for the grammar module *)  
-  symbol  rule  rule_list  psymbol  level  level_list  entry  extend_body  delete_rule_body
-
+  symbol
+  rule
+  meta_rule
+  rule_list
+  psymbol
+  level
+  level_list
+  entry
+  extend_body
+  delete_rule_body
+  rules
   dot_lstrings
   a_string
   a_lident

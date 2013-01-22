@@ -36,32 +36,32 @@ FanConfig.antiquotations := true;
    *)
   nonterminals:
   [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
-       |  qualuid{t} -> `static(t)]{t};
+|  qualuid{t} -> `static(t)]{t};
     L0
-    [ `Lid x  -> (_loc,x,None,None)
-    | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
-    | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-    | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
+      [ `Lid x  -> (_loc,x,None,None)
+| "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
+| "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
+| "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
     ->
-   with str_item
-   let mk =
-     match t with
-       [`static t -> {:expr| $id:t.mk |}
-       |`dynamic(x,t) -> {:expr| $id:t.mk_dynamic $id:x |}] in   
-   let rest =
-     List.map
-       (fun
-         (_loc,x,descr,ty) ->
-           match (descr,ty) with
-           [(Some d,None) ->
-             {| let $lid:x = $mk $str:d |}
-           | (Some d,Some typ) ->
-               {| let $lid:x : $typ = $mk $str:d |}
-           |(None,None) ->
-               {| let $lid:x = $mk $str:x  |}
-           | (None,Some typ) ->
-               {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
-               {| $list:rest |} ]
+with str_item
+let mk =
+  match t with
+    [`static t -> {:expr| $id:t.mk |}
+  |`dynamic(x,t) -> {:expr| $id:t.mk_dynamic $id:x |}] in   
+let rest =
+  List.map
+    (fun
+      (_loc,x,descr,ty) ->
+        match (descr,ty) with
+          [(Some d,None) ->
+            {| let $lid:x = $mk $str:d |}
+        | (Some d,Some typ) ->
+            {| let $lid:x : $typ = $mk $str:d |}
+        |(None,None) ->
+            {| let $lid:x = $mk $str:x  |}
+        | (None,Some typ) ->
+            {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
+            {| $list:rest |} ]
   (* {[
      with str t nonterminalsclear {| U a b c d|} |> Ast2pt.print_expr f;
      U.clear a; U.clear b; U.clear c; U.clear d
@@ -88,41 +88,41 @@ FanConfig.antiquotations := true;
      with str t extend_header {| U |};
      - : Ast.ident option * Ast.ident =
      (None, `Dot (, `Uid (, "U"), `Uid (, "M")))
-      with str t extend_header {| (g:U.t) |};
+     with str t extend_header {| (g:U.t) |};
      - : Ast.ident option * Ast.ident = (Some (`Lid (, "g")), `Uid (, "U"))
      ]}
      It should be fixed by introducing more advanced grammar features
    *)
   extend_header:
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
-       let old=gm() in 
-       let () = grammar_module_name := t in
-       (Some i,old)
-  | qualuid{t}  ->
-      let old = gm() in
-      let () = grammar_module_name := t in 
-      (None,old)
-  | -> (None,gm())]
+    let old=gm() in 
+    let () = grammar_module_name := t in
+    (Some i,old)
+| qualuid{t}  ->
+    let old = gm() in
+    let () = grammar_module_name := t in 
+    (None,old)
+| -> (None,gm())]
 
   (* the main entrance
      return an already converted expression
      {[
      with str t extend_body  {|
-        nonterminalsclear:
-        [ qualuid{t}; L0 [a_lident{x}->x ]{ls} -> ()] |} |> Ast2pt.print_expr f;
+     nonterminalsclear:
+     [ qualuid{t}; L0 [a_lident{x}->x ]{ls} -> ()] |} |> Ast2pt.print_expr f;
 
      Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
      (None,
-    [(None, None,
-       [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
-         `Slist0
-           (Gram.srules nonterminalsclear
-              [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-                 (Gram.mk_action
-                    (fun (x : 'a_lident)  (_loc : FanLoc.t)  -> (x : 'e__7 ))))])],
-          (Gram.mk_action
-             (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
-                (() : 'nonterminalsclear ))))])])
+     [(None, None,
+     [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
+     `Slist0
+     (Gram.srules nonterminalsclear
+     [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+     (Gram.mk_action
+     (fun (x : 'a_lident)  (_loc : FanLoc.t)  -> (x : 'e__7 ))))])],
+     (Gram.mk_action
+     (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
+     (() : 'nonterminalsclear ))))])])
      ]}
 
      the function [text_of_functorial_extend] is the driving force
@@ -147,8 +147,8 @@ FanConfig.antiquotations := true;
 
   delete_rule_body:
   [ delete_rule_header{old};  L0 delete_rules {es} ->
-       let () = grammar_module_name := old  in 
-       {:expr| begin $list:es end|}   ] 
+    let () = grammar_module_name := old  in 
+    {:expr| begin $list:es end|}   ] 
   delete_rules:
   [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]" ->
     let rest = List.map
@@ -160,7 +160,7 @@ FanConfig.antiquotations := true;
   (* parse qualified [X.X] *)
   qualuid:
   [ `Uid x; ".";  S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
-  | `Uid x -> `Uid(_loc,x) ] 
+| `Uid x -> `Uid(_loc,x) ] 
 
 
   (* parse qualified  [X.Y.g]
@@ -171,7 +171,7 @@ FanConfig.antiquotations := true;
    *)
   qualid:
   [ `Uid x ; "."; S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
-  | `Lid i -> `Lid(_loc,i)]
+| `Lid i -> `Lid(_loc,i)]
 
   (* parse qualified path ending with [X.t]
      {[
@@ -181,7 +181,7 @@ FanConfig.antiquotations := true;
    *)
   t_qualid:
   [ `Uid x; ".";  S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
-  | `Uid x; "."; `Lid "t" -> `Uid(_loc,x) ] 
+| `Uid x; "."; `Lid "t" -> `Uid(_loc,x) ] 
 
 
   (* get local name entry list *)
@@ -196,21 +196,21 @@ FanConfig.antiquotations := true;
   entry_name:
   [ qualid{il}; OPT[`STR(_,x)->x]{name} -> begin
     (match name with
-     [ Some x -> (let old = !AstQuotation.default in
-     (AstQuotation.default:= FanToken.resolve_name (`Sub [], x);
-      `name old))
-     | None -> `non], mk_name _loc il)
-   end]
+      [ Some x -> (let old = !AstQuotation.default in
+      (AstQuotation.default:= FanToken.resolve_name (`Sub [], x);
+       `name old))
+    | None -> `non], mk_name _loc il)
+  end]
 
   (* return an entry [FanGrammar.entry]
      {[
      with str t entry {| entry:
-  [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
+     [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
      -> begin 
-       match n with
-       [`name old -> AstQuotation.default := old
-       | _ -> ()];  
-      mk_entry ~name:p ~pos ~levels
+     match n with
+     [`name old -> AstQuotation.default := old
+     | _ -> ()];  
+     mk_entry ~name:p ~pos ~levels
      end] |}
 
      
@@ -218,73 +218,77 @@ FanConfig.antiquotations := true;
    *)
   entry:
   [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
-     -> begin 
-       match n with
-       [`name old -> AstQuotation.default := old
-       | _ -> ()];  
-      mk_entry ~name:p ~pos ~levels
-     end]
+    -> begin 
+      match n with
+        [`name old -> AstQuotation.default := old
+      | _ -> ()];  
+        mk_entry ~name:p ~pos ~levels
+    end]
 
   (* parse [position] and translate into [expr] node, fixme,
      delay the translation
    *)
   position:
   [ `Uid ("First"|"Last" as x ) ->   {:expr| $vrn:x |}
-  | `Uid ("Before" | "After" | "Level" as x) ; string{n} -> {:expr| $vrn:x  $n |}
-  | `Uid x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
+| `Uid ("Before" | "After" | "Level" as x) ; string{n} -> {:expr| $vrn:x  $n |}
+| `Uid x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
 
   level_list:
   [ "{"; L1 level {ll}; "}" -> ll  | level {l} -> [l]] (* FIXME L1 does not work here *)
 
   level:
   [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->
-     mk_level ~label ~assoc ~rules ]
-   (* FIXME a conflict {:extend|Gram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
+    mk_level ~label ~assoc ~rules ]
+  (* FIXME a conflict {:extend|Gram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
 
 
   (* parse association, and translate into [expr] node. FIXME  *)
   assoc:
   [ `Uid ("LA"|"RA"|"NA" as x) ->     {:expr| $vrn:x |} 
-  | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
+| `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
   (*
     [retype_rule_list_with_patterns] do a simple transformation around rule list 
    *)
   rule_list:
-  [ "["; "]" -> [] | "["; L1 rule SEP "|"{rules}; "]" ->
+  [ "["; "]" -> []
+| "["; L1 rule SEP "|"{rules}; "]" ->
     retype_rule_list_without_patterns _loc rules ]
 
-
+  (* rules: *)
+  (* [ rule{x} -> [x] *)
+  (* | rule{x}; "|"; S{y} -> [x::y] *)
+  (* | `Ant(("rule"|"" as n),s) -> ] *)
   (* return a [rule]
-    {[
+     {[
      with str t rule {|  `Uid ("LA"|"RA"|"NA" as x)   |};
-- : FanGrammar.rule =
-{prod =
-  [{text =
+     - : FanGrammar.rule =
+     {prod =
+     [{text =
      `TXtok
-       (,
-        `Fun
-          (,
-           `Or
-             (,
-              `Case
-                (,
-                 `PaApp
-                   (, `PaVrn (, "Uid"),
-                    `Or
-                      (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA"))),
-                 `Nil , `Id (, `Lid (, "true"))),
-              `Case (, `Any , `Nil , `Id (, `Lid (, "false"))))),
-        "Normal", "`Uid (\"LA\"|\"RA\"|\"NA\")");
-    styp = `Tok ;
-    pattern =
+     (,
+     `Fun
+     (,
+     `Or
+     (,
+     `Case
+     (,
+     `PaApp
+     (, `PaVrn (, "Uid"),
+     `Or
+     (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA"))),
+     `Nil , `Id (, `Lid (, "true"))),
+     `Case (, `Any , `Nil , `Id (, `Lid (, "false"))))),
+     "Normal", "`Uid (\"LA\"|\"RA\"|\"NA\")");
+     styp = `Tok ;
+     pattern =
      Some
-      (`PaApp
-         (, `PaVrn (, "Uid"),
-          `Alias
-            (, `Or (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA")),
-             `Lid (, "x"))))}];
- action = None}
+     (`PaApp
+     (, `PaVrn (, "Uid"),
+     `Alias
+     (, `Or (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA")),
+     `Lid (, "x"))))}];
+     action = None}
      ]}  
    *)
   rule:
@@ -305,34 +309,34 @@ FanConfig.antiquotations := true;
     let styp = {:ctyp| list  $(s.styp) |} in 
     let text = mk_slist _loc
         (match x with
-         ["L0" -> false | "L1" -> true
-         | _ -> failwithf "only (L0|L1) allowed here"]) sep s in
-       mk_symbol ~text ~styp ~pattern:None
-  |`Uid "OPT"; S{s}  ->
-      let () = check_not_tok s in
-      let styp = {:ctyp| option $(s.styp) |} in 
-      let text = `TXopt _loc s.text in
-      mk_symbol  ~text ~styp ~pattern:None
-  |`Uid "TRY"; S{s} ->
-      let text = `TXtry _loc s.text in
-      mk_symbol  ~text ~styp:(s.styp) ~pattern:None
-  | `Uid "PEEK"; S{s} ->
-      let text = `TXpeek _loc s.text in
-      mk_symbol ~text ~styp:(s.styp) ~pattern:None
-  | `Uid "S" ->
-      mk_symbol  ~text:(`TXself _loc)  ~styp:(`Self _loc "S") ~pattern:None
-  |`Uid "N" ->
-      mk_symbol  ~text:(`TXnext _loc)   ~styp:(`Self _loc "N") ~pattern:None
-  | "["; L1 rule SEP "|"{rl}; "]" ->
-      let rl = retype_rule_list_without_patterns _loc rl in
-      let t = new_type_var () in
-      mk_symbol  ~text:(`TXrules _loc (mk_srules _loc t rl ""))
-        ~styp:({:ctyp|'$lid:t |} )
-        ~pattern:None
-  | simple_patt{p} -> 
+          ["L0" -> false | "L1" -> true
+        | _ -> failwithf "only (L0|L1) allowed here"]) sep s in
+    mk_symbol ~text ~styp ~pattern:None
+|`Uid "OPT"; S{s}  ->
+    let () = check_not_tok s in
+    let styp = {:ctyp| option $(s.styp) |} in 
+    let text = `TXopt _loc s.text in
+    mk_symbol  ~text ~styp ~pattern:None
+|`Uid "TRY"; S{s} ->
+    let text = `TXtry _loc s.text in
+    mk_symbol  ~text ~styp:(s.styp) ~pattern:None
+| `Uid "PEEK"; S{s} ->
+    let text = `TXpeek _loc s.text in
+    mk_symbol ~text ~styp:(s.styp) ~pattern:None
+| `Uid "S" ->
+    mk_symbol  ~text:(`TXself _loc)  ~styp:(`Self _loc "S") ~pattern:None
+|`Uid "N" ->
+    mk_symbol  ~text:(`TXnext _loc)   ~styp:(`Self _loc "N") ~pattern:None
+| "["; L1 rule SEP "|"{rl}; "]" ->
+    let rl = retype_rule_list_without_patterns _loc rl in
+    let t = new_type_var () in
+    mk_symbol  ~text:(`TXrules _loc (mk_srules _loc t rl ""))
+      ~styp:({:ctyp|'$lid:t |} )
+      ~pattern:None
+| simple_patt{p} -> 
     let (p,ls) = Expr.filter_patt_with_captured_variables (p : simple_patt :>patt) in
     match ls with
-    [ [] -> mk_tok _loc ~pattern:p (`Tok _loc)
+      [ [] -> mk_tok _loc ~pattern:p (`Tok _loc)
     | [(x,y)::ys] ->
         let restrict =
           List.fold_left (fun acc (x,y) -> {:expr| $acc && ( $x = $y ) |} )
@@ -348,63 +352,63 @@ FanConfig.antiquotations := true;
         (*    {text;} *)
         (*    mk_tok _loc ~pattern (`Tok _loc) *)
         
-  | `STR (_, s) ->
-      mk_symbol  ~text:(`TXkwd _loc s) ~styp:(`Tok _loc) ~pattern:None
-  | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
-      mk_symbol  ~text:(`TXnterm _loc n lev)
+    | `STR (_, s) ->
+        mk_symbol  ~text:(`TXkwd _loc s) ~styp:(`Tok _loc) ~pattern:None
+    | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
+        mk_symbol  ~text:(`TXnterm _loc n lev)
           ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
-  | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
-      let i = parse_ident _loc s in
-      let n = mk_name _loc i in
-      mk_symbol ~text:(`TXnterm _loc n lev)
+    | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
+        let i = parse_ident _loc s in
+        let n = mk_name _loc i in
+        mk_symbol ~text:(`TXnterm _loc n lev)
           ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
-  | "("; S{s}; ")" -> s ]
+    | "("; S{s}; ")" -> s ]
   
 
   simple_patt "patt":
-   ["`"; luident{s}  ->  {|$vrn:s|}
-   |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
-       {| $vrn:v $(anti:mk_anti ~c:"patt" n s)|}
-   |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|}
-   |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
-   |"`"; luident{s}; "_" -> {|$vrn:s _|}
-   |"`"; luident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
-       match v with
-       [ [x] ->  {| $vrn:s $x |}
-       | [x::xs] -> {|$vrn:s ($x,$list:xs)|}
-       | _ -> assert false ]  ]
+  ["`"; luident{s}  ->  {|$vrn:s|}
+|"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
+    {| $vrn:v $(anti:mk_anti ~c:"patt" n s)|}
+|"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|}
+|"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
+|"`"; luident{s}; "_" -> {|$vrn:s _|}
+|"`"; luident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
+    match v with
+      [ [x] ->  {| $vrn:s $x |}
+    | [x::xs] -> {|$vrn:s ($x,$list:xs)|}
+    | _ -> assert false ]  ]
   internal_patt "patt":
   {
    "as"
      [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ]
-   "|"
-   [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
-   "simple"
-   [ `STR(_,s) -> {| $str:s|}
-   | "_" -> {| _ |}
-   | `Lid x   ->  {| $lid:x|}
-   | "("; S{p}; ")" -> p] }
+     "|"
+     [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
+     "simple"
+     [ `STR(_,s) -> {| $str:s|}
+| "_" -> {| _ |}
+| `Lid x   ->  {| $lid:x|}
+| "("; S{p}; ")" -> p] }
 
   pattern:
   [ `Lid i -> {:patt| $lid:i |}
-  | "_" -> {:patt| _ |}
-  | "("; pattern{p}; ")" -> p
-  | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
+| "_" -> {:patt| _ |}
+| "("; pattern{p}; ")" -> p
+| "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
   string:
   [ `STR (_, s) -> {:expr| $str:s |}
-  | `Ant ("", s) -> parse_expr _loc s ] (*suport antiquot for string*)
+| `Ant ("", s) -> parse_expr _loc s ] (*suport antiquot for string*)
 
 
   symbol: 
   [`Uid ("FOLD0"|"FOLD1" as x); simple_expr{f}; simple_expr{e}; S{s} ->
-     sfold _loc [x] f e s
-  |`Uid ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; S{s};`Uid ("SEP" as y);
+    sfold _loc [x] f e s
+|`Uid ("FOLD0"|"FOLD1" as x ); simple_expr{f}; simple_expr{e}; S{s};`Uid ("SEP" as y);
     symbol{sep}  ->
-       sfold ~sep _loc [x;y] f e s  ]
+      sfold ~sep _loc [x;y] f e s  ]
 
   simple_expr:
-   [ a_lident{i} -> {:expr| $(id:(i:>ident)) |}
-   | "("; expr{e}; ")" -> e ]  |};
+  [ a_lident{i} -> {:expr| $(id:(i:>ident)) |}
+  | "("; expr{e}; ")" -> e ]  |};
 
 
 let d = `Absolute["Fan";"Lang"];
@@ -417,10 +421,45 @@ AstQuotation.of_expr
 AstQuotation.of_str_item
     ~name:((d,"create")) ~entry:nonterminals;
 
+AstQuotation.add_quotation
+    (d,"rule") rule
+    ~mexpr:FanGrammar.Expr.meta_rule
+    ~mpatt:FanGrammar.Patt.meta_rule
+    ~expr_filter:(fun x-> x)
+    ~patt_filter:(fun x->x);
 
+AstQuotation.add_quotation
+    (d,"entry") entry
+    ~mexpr:FanGrammar.Expr.meta_entry
+    ~mpatt:FanGrammar.Patt.meta_entry
+    ~expr_filter:(fun x-> x)
+    ~patt_filter:(fun x->x);
+
+AstQuotation.add_quotation
+    (d,"level") level
+    ~mexpr:FanGrammar.Expr.meta_level
+    ~mpatt:FanGrammar.Patt.meta_level
+    ~expr_filter:(fun x-> x)
+    ~patt_filter:(fun x->x);
+
+  
+
+  
 Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented");
 
 
+
+
+  
+let _loc = FanLoc.ghost;
+let u : FanGrammar.entry= {:entry|
+  simple_expr:
+  [ a_lident{i} -> {:expr| $(id:(i:>ident)) |}
+  | "("; expr{e}; ")" -> e ]
+|};  
+(* let u : FanGrammar.rule = {:rule| *)
+(*   a_lident{i} -> print_string i *)
+(* |};   *)
 
 
 

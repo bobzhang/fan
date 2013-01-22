@@ -233,5 +233,5 @@ let resolve_name (n:name) : name =
         SSet.mem v set
         with Not_found -> false) !paths in
     (concat_domain (r, x),v)
-    with [Not_found -> failwith "resolve_name "]
+    with [Not_found -> failwithf "resolve_name %s" v]
   | x ->  x];

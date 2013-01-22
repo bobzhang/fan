@@ -96,21 +96,6 @@ exception NotneededTyping ;
   translate [styp] into [ctyp],
   given the assumption that the entry output [tvar] type
  *)
-
-(*let  make_ctyp  styp tvar = 
-  let rec aux  = with ctyp fun  
-    [ `STlid (_loc, s) -> {| $lid:s |}
-    | `STapp (_loc, t1, t2) -> {| $(aux t1) $(aux t2 ) |}
-    | `STquo (_loc, s) -> {| '$s |}
-    | `STself (_loc, x) ->
-        if tvar = "" then
-          FanLoc.raise _loc
-            (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
-        else {| '$tvar |}
-    | `STtok _loc ->  {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
-    | `STtyp t -> t ] in
-    try Some (aux styp) with [NotneededTyping -> None ];
-*)
     
 let  make_ctyp  (styp:styp) tvar : option ctyp = 
   let rec aux  = with ctyp fun  
@@ -144,8 +129,8 @@ let make_ctyp_expr styp tvar expr =
 let rec make_expr entry tvar = with expr
   fun
   [ `TXmeta (_loc, n, tl, e, t) ->
-    let el = Expr.mklist _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
-    let ns = Expr.mklist _loc (List.map (fun n -> {| $str:n |} ) n) in 
+    let el = Lib.Expr.mklist _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
+    let ns = Lib.Expr.mklist _loc (List.map (fun n -> {| $str:n |} ) n) in 
     {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $(make_ctyp_expr t tvar e))) |}
   | `TXlist (_loc, min, t, ts) ->
       let txt = make_expr entry "" t.text in
@@ -181,9 +166,9 @@ let rec make_expr entry tvar = with expr
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ]
 (* the [rhs] was computed, compute the [lhs] *)    
 and make_expr_rules _loc n rl tvar = with expr
-  Expr.mklist _loc
+  Lib.Expr.mklist _loc
     (List.map (fun (sl,action) ->
-      let sl = Expr.mklist _loc (List.map (fun t -> make_expr n tvar t) sl) in
+      let sl = Lib.Expr.mklist _loc (List.map (fun t -> make_expr n tvar t) sl) in
       {| ($sl,$action) |} ) rl);
   
 (* generate action, collecting patterns into action

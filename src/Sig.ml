@@ -203,8 +203,13 @@ module type Syntax = sig
   val value_val_opt_override: Gram.t override_flag;
   val unquoted_typevars:Gram.t ctyp;
   val lang: Gram.t FanToken.name;
+
+
   val symbol:  Gram.t FanGrammar.symbol ;
   val rule:  Gram.t FanGrammar.rule;
+  (* val meta_rule: Gram.t expr; *)
+
+  (* val rules: Gram.t (list FanGrammar.rule); *)
   val rule_list: Gram.t (list FanGrammar.rule);
   val psymbol: Gram.t FanGrammar.symbol;
   val level:  Gram.t FanGrammar.level;

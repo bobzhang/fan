@@ -1,6 +1,8 @@
-open Ast;
-type loc = FanLoc.t;
+open FanAst;
 
+
+{:fans| derive (MetaExpr MetaPatt);|};
+{:ocaml|
 (* every entry has a name *)  
 type name  = { expr : expr; tvar : string; loc : loc };
 
@@ -13,13 +15,6 @@ type styp =
  | `Self of (loc * string)
  | `Tok of loc
  | `Type of ctyp ];
-
-(* and patt = *) (* FIXME subtyping soon*)
-(*  [= `PaApp of (loc * patt) *)
-(*  | `PaVrn of (loc * string) *)
-(*  | ] *)  
-
-
 
 (* Normal, Antiquot, etc. translated to
    `Normal `Antiquot
@@ -79,7 +74,20 @@ and text =
     Keep this string [normalized] and well comparable. *) 
 
 ];
-  
+  |};
+
+module Expr = struct
+  open FanAst.MExpr;
+  open Filters.ME;
+  __MetaExpr__;
+end;
+module Patt = struct
+  open FanAst.MPatt;
+  open Filters.MP;
+  __MetaPatt__;
+
+end;
+
 type used = [ Unused | UsedScanned | UsedNotScanned ];
 
 type simple_patt =

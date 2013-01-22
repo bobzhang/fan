@@ -6,7 +6,7 @@ open Lib;
 
   
 (** A Hook To Ast Filters *)
-let keep = ref false;
+let keep = ref true;
 type plugin = {
     transform:(module_types -> str_item);
     activate: mutable bool;
