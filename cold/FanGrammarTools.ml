@@ -313,9 +313,8 @@ let text_of_entry e =
            | None  -> `Str (_loc, "") in
          let ass =
            match level.assoc with
-           | Some ass ->
-               `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
-           | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
+           | Some ass -> ass
+           | None  -> `Vrn (_loc, "LA") in
          let txt =
            let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
            let prod = make_expr_rules _loc e.name rl (e.name).tvar in

@@ -20,23 +20,15 @@ and tree_derive_eps: tree -> bool =
       ((derive_eps s) && (tree_derive_eps son)) || (tree_derive_eps bro)
   | DeadEnd  -> false
 let empty_lev lname assoc =
-  let assoc = match assoc with | Some a -> a | None  -> `LA in
   { assoc; lname; lsuffix = DeadEnd; lprefix = DeadEnd }
 let change_lev lev name lname assoc =
-  let a =
-    match assoc with
-    | None  -> lev.assoc
-    | Some a ->
-        (if (a <> lev.assoc) && FanConfig.gram_warning_verbose.contents
-         then eprintf "<W> Changing associativity of level %S @." name
-         else ();
-         a) in
+  if (assoc <> lev.assoc) && FanConfig.gram_warning_verbose.contents
+  then eprintf "<W> Changing associativity of level %S aborted@." name;
   if
     (lname <> "") &&
       ((lname <> lev.lname) && FanConfig.gram_warning_verbose.contents)
-  then eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname
-  else ();
-  { lev with assoc = a }
+  then eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname;
+  lev
 let change_to_self entry =
   function | `Snterm e when e == entry -> `Sself | x -> x
 let levels_of_entry e =
@@ -178,7 +170,7 @@ let insert_production_in_level ename e1 (symbols,action) slev =
     }
 let insert_to_exist_level entry (la : level) (lb : olevel) =
   let (lname1,assoc1,rules1) = lb in
-  if not ((la.lname = lname1) && ((Some (la.assoc)) = assoc1))
+  if not ((la.lname = lname1) && (la.assoc = assoc1))
   then failwith "insert_to_exist_level does not agree (name)"
   else
     List.fold_right

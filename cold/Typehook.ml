@@ -177,7 +177,7 @@ let fan_quots = Gram.mk_dynamic g "fan_quots"
 let _ =
   Gram.extend (fan_quot : 'fan_quot Gram.t )
     (None,
-      [("", None,
+      [("", `LA,
          [([`Skeyword "derive";
            `Skeyword "(";
            `Slist1
@@ -247,7 +247,7 @@ let _ =
                  (show_code := false; `Nil _loc : 'fan_quot ))))])]);
   Gram.extend (fan_quots : 'fan_quots Gram.t )
     (None,
-      [("", None,
+      [("", `LA,
          [([`Slist0
               (Gram.srules (Gram.name_of_entry fan_quots)
                  [([`Snterm (Gram.obj (fan_quot : 'fan_quot Gram.t ));

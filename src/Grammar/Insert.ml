@@ -30,30 +30,44 @@ and tree_derive_eps : tree -> bool = fun
 
 (* create an empty level *)
 let empty_lev lname assoc =
-  let assoc = match assoc with
-    [ Some a -> a
-    | None -> `LA ] in
+  (* let assoc = match assoc with *)
+  (*   [ Some a -> a *)
+  (*   | None -> `LA ] in *)
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd};
 
 (* here [name] is only used to emit error message*)  
 let change_lev lev name lname assoc =
-  let a =
-    match assoc with
-    [ None -> lev.assoc
-    | Some a -> begin 
-        if a <> lev.assoc && !(FanConfig.gram_warning_verbose) then
-          eprintf "<W> Changing associativity of level %S @." name
-        else ();
-        a
-    end ] in begin 
-    (* match lname with *)
-    (* [ Some n -> *)
-      (* FIXME change the code generator to make it more precise *)
+(* <<<<<<< Updated upstream *)
+(*   let a = *)
+(*     match assoc with *)
+(*     [ None -> lev.assoc *)
+(*     | Some a -> begin  *)
+(*         if a <> lev.assoc && !(FanConfig.gram_warning_verbose) then *)
+(*           eprintf "<W> Changing associativity of level %S @." name *)
+(*         else (); *)
+(*         a *)
+(*     end ] in begin  *)
+(*       if  lname<> "" && lname <> lev.lname && !(FanConfig.gram_warning_verbose) then  *)
+(*         eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname *)
+(*       else (); *)
+(*     { (lev) with assoc=a} *)
+(* ======= *)
+  (* let a = *)
+    (* match assoc with *)
+    (* [ None -> lev.assoc *)
+    (* | Some a -> begin  *) begin 
+        if assoc <> lev.assoc && !(FanConfig.gram_warning_verbose) then
+          eprintf "<W> Changing associativity of level %S aborted@." name;
+        (* else (); *)
+        (* a end *)
+    (* (\* end ] *\) in begin  *)
       if  lname<> "" && lname <> lev.lname && !(FanConfig.gram_warning_verbose) then 
-        eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname
-      else ();
-    (* | None -> () ]; *)
-    { (lev) with assoc=a}
+        eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname;
+      (* else (); *)
+      
+      lev
+    (* { (lev) with assoc=assoc} *)
+(* >>>>>>> Stashed changes *)
     end ;
 
 (* *)  
@@ -194,7 +208,7 @@ let insert_production_in_level ename e1 (symbols, action) slev =
 
 let insert_to_exist_level entry (la:level) (lb:olevel) =
   let (lname1,assoc1,rules1) = lb in
-  if not (la.lname = lname1 && Some la.assoc = assoc1) then
+  if not (la.lname = lname1 && (* Some *) la.assoc = assoc1) then
     failwith "insert_to_exist_level does not agree (name)"
   else  begin 
     List.fold_right

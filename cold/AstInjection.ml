@@ -15,7 +15,7 @@ let inject_class_str_item = Gram.mk "inject_class_str_item"
 let _ =
   Gram.extend (inject_expr : 'inject_expr Gram.t )
     (None,
-      [("", None,
+      [("", `LA,
          [([`Stoken
               (((function | `Lid _ -> true | _ -> false)),
                 (`Normal, "`Lid _"))],
@@ -31,7 +31,7 @@ let _ =
                   | _ -> assert false)))])]);
   Gram.extend (inject_str_item : 'inject_str_item Gram.t )
     (None,
-      [("", None,
+      [("", `LA,
          [([`Stoken
               (((function | `Lid _ -> true | _ -> false)),
                 (`Normal, "`Lid _"))],
@@ -47,7 +47,7 @@ let _ =
                   | _ -> assert false)))])]);
   Gram.extend (inject_class_str_item : 'inject_class_str_item Gram.t )
     (None,
-      [("", None,
+      [("", `LA,
          [([`Stoken
               (((function | `Lid _ -> true | _ -> false)),
                 (`Normal, "`Lid _"))],

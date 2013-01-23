@@ -74,7 +74,7 @@ let eoi_entry entry =
   let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
   extend (entry_eoi : 'entry_eoi t )
     (None,
-      [("", None,
+      [("", `LA,
          [([`Snterm (obj (entry : 'entry t ));
            `Stoken
              (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
@@ -89,4 +89,4 @@ let find_level ?position  entry =
   match entry.edesc with
   | Dparser _ -> invalid_arg "Gram.find_level"
   | Dlevels levs ->
-      let (_,f,_) = Insert.find_level ?position entry levs in f "" None
+      let (_,f,_) = Insert.find_level ?position entry levs in f "" `LA

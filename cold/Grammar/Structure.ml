@@ -52,7 +52,7 @@ and node =  {
   son: tree;
   brother: tree} 
 type production = (symbol list* Action.t) 
-type olevel = (string* assoc option* production list) 
+type olevel = (string* assoc* production list) 
 type extend_statment = (position option* olevel list) 
 type delete_statment = symbol list 
 type ('a,'b,'c) fold =

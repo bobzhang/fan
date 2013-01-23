@@ -47,7 +47,7 @@ and node =  Grammar.Structure.node
 
 type production = symbol list * Action.t
 (* FIXME duplicate with Grammar/Structure *)      
-type olevel = string (* option *) * assoc option * production list
+type olevel = string (* option *) * assoc (* option *) * production list
 type extend_statment = position option * olevel list
 type delete_statment = symbol list
 

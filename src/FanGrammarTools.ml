@@ -337,8 +337,8 @@ let text_of_entry e =  with expr
     {| ($(x.expr) : $(id:gm()).t '$(lid:x.tvar)) |}   in
   let pos =
     match e.pos with
-    [ Some pos -> {| Some $pos |}
-    | None -> {| None |} ] in
+    [ Some pos -> {| Some $pos |} 
+    | None -> {| None |} (* {| `LA |} *) ] in
   let txt =
     List.fold_right
       (fun level txt ->
@@ -348,8 +348,8 @@ let text_of_entry e =  with expr
           | None -> (* {| None |} *) {| "" |}]  in
         let ass =
           match level.assoc with
-          [ Some ass -> {| Some $ass |}
-          | None -> {| None |} ]  in
+          [ Some ass -> (* {| Some $ass |} *) ass 
+          | None -> (* {| None |} *)  {| `LA |} ]  in
         let txt =
           let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
           let prod = make_expr_rules _loc e.name rl e.name.tvar in
