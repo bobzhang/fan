@@ -61,28 +61,6 @@ let pp_print_anti_cxt: 'fmt -> anti_cxt -> 'result =
 let mk_anti ?(c= "")  ?sep  n s =
   { cxt = c; decorations = n; content = s; sep }
 let add_context s c = { s with decorations = (s.decorations ^ c) }
-let is_antiquot s =
-  let len = String.length s in
-  (len > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
-let view_antiquot s =
-  let len = String.length s in
-  if (len > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
-  then
-    try
-      let pos = String.index s ':' in
-      let name = String.sub s 2 (pos - 2) in
-      let code = String.sub s (pos + 1) (((String.length s) - pos) - 1) in
-      Some (name, code)
-    with | Not_found  -> None
-  else None
-let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
-  if is_antiquot s
-  then
-    let pos = String.index s ':' in
-    let name = String.sub s 2 (pos - 2)
-    and code = String.sub s (pos + 1) (((String.length s) - pos) - 1) in
-    decorate name (parse loc code)
-  else default
 let symbolchars =
   ['$';
   '!';

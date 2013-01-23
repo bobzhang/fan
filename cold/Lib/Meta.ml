@@ -20,7 +20,7 @@ module MetaLoc : FanAst.META_LOC =
           (`Tup
              (_loc,
                (`Com
-                  (_loc, (`Str (_loc, (FanAst.safe_string_escaped a))),
+                  (_loc, (`Str (_loc, (String.escaped a))),
                     (`Com
                        (_loc,
                          (`Com

@@ -5,17 +5,6 @@ val float_repres : float -> string
 val cvt_int_literal: string ->
   [> `INT of (int*string) | `INT32 of (int32*string) | `INT64 of (int64*string) | `NATIVEINT of (nativeint*string) ]
 
-(* val mk_anti : ?c:string -> string -> string -> string *)
-    
-(* val append_eLem : 'a list -> 'a -> 'a list *)
-val is_antiquot : string -> bool
-val view_antiquot : string -> (string * string) option
-
-val handle_antiquot_in_string :
-  s:string ->
-  default:'a ->
-  parse:('b -> string -> 'c) -> loc:'b -> decorate:(string -> 'c -> 'a) -> 'a
-
 
 val symbolchar : string -> int -> bool
 
@@ -35,9 +24,9 @@ type anti_cxt = {
     content:string;
   }
       
-(* val mk_anti_cxt: ?c:string -> string -> string -> anti_cxt *)
+
 val mk_anti: ?c:string -> ?sep:string -> string -> string -> anti_cxt    
-(* val add_anti_context: anti_cxt -> string -> anti_cxt *)
+
 val add_context: anti_cxt -> string -> anti_cxt        
 val pp_print_anti_cxt : Format.formatter -> anti_cxt -> unit    
   

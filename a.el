@@ -42,18 +42,33 @@
 ;;;;##########################################################################
 
 
-
 (setq v
       (hash-table/from-list
-       "IdApp" "App"
-       "TyApp" "App"
-       "PaApp" "App"
-       "ExApp" "App"
-       "MeApp" "App"
-       "ExVrn" "Vrn"
-       "PaVrn" "Vrn"
+       "TXmeta" "Smeta"
+       "TXlist" "Slist"
+       "TXopt" "Sopt"
+       "TXtry" "Stry"
+       "TXpeek" "Speek"
+       "TXself" "Sself"
+       "TXkwd" "Skeyword"
+       "TXtok" "Stok"
+       "TXnext" "Snext"
+       "TXrules" "Srules"
+       "TXnterm" "Snterm"
        )
       )
+
+;; (setq v
+;;       (hash-table/from-list
+;;        "IdApp" "App"
+;;        "TyApp" "App"
+;;        "PaApp" "App"
+;;        "ExApp" "App"
+;;        "MeApp" "App"
+;;        "ExVrn" "Vrn"
+;;        "PaVrn" "Vrn"
+;;        )
+;;       )
 
 ;; \(`\(CgNil\|CgCtr\|CgSem\|CgInh\|CgMth\|CeNil\|CeStr\|CeAnd\|CeEq\|CrNil\|CeSem\|CrCtr\|CrInh\|CrIni\|TyNil\|TyAli\|TyOf\|TySum\|TyCom\|TyAnd\|TySta\|TyPrv\|TyMut\|TyTup\|TyPkg\|PaNil\|PaAli\|PaAny\|TyAny\|PaId\|ExNil\|ExId\|ExArr\|PaArr\|ExSem\|PaSem\|For_loop\|Let_in\|Let_module\|Optional_label\|Override_instance\|String_dot\|Local_type_fun\|MtNil\|MtId\|MtOf\|MtSig\)\)\b
 ;; (setq v

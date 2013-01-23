@@ -25,7 +25,7 @@ let string_of_patt patt =
   let str = Buffer.contents buf in if str = "" then assert false else str
 let check_not_tok s =
   match s with
-  | { text = `TXtok (_loc,_,_,_);_} ->
+  | { text = `Stok (_loc,_,_,_);_} ->
       FanLoc.raise _loc
         (XStream.Error
            ("Deprecated syntax, use a sub rule. " ^
@@ -87,7 +87,7 @@ let make_ctyp (styp : styp) tvar =
 let rec make_expr entry (tvar : string) x =
   let rec aux tvar x =
     match x with
-    | `TXmeta (_loc,n,tl,e,t) ->
+    | `Smeta (_loc,n,tl,e,t) ->
         let el = list_of_list _loc (List.map (fun t  -> aux "" t) tl) in
         let ns = list_of_list _loc (List.map (fun n  -> `Str (_loc, n)) n) in
         `App
@@ -108,7 +108,7 @@ let rec make_expr entry (tvar : string) x =
                                              (_loc, (`Uid (_loc, "Action")),
                                                (`Lid (_loc, "mk")))))))),
                                 (typing e (make_ctyp t tvar)))))))))))
-    | `TXlist (_loc,min,t,ts) ->
+    | `Slist (_loc,min,t,ts) ->
         let txt = aux "" t.text in
         (match ts with
          | None  ->
@@ -126,11 +126,11 @@ let rec make_expr entry (tvar : string) x =
                `App
                  (_loc, (`Vrn (_loc, "Slist0sep")),
                    (`Tup (_loc, (`Com (_loc, txt, x))))))
-    | `TXnext _loc -> `Vrn (_loc, "Snext")
-    | `TXself _loc -> `Vrn (_loc, "Sself")
-    | `TXkwd (_loc,kwd) ->
+    | `Snext _loc -> `Vrn (_loc, "Snext")
+    | `Sself _loc -> `Vrn (_loc, "Sself")
+    | `Skeyword (_loc,kwd) ->
         `App (_loc, (`Vrn (_loc, "Skeyword")), (`Str (_loc, kwd)))
-    | `TXnterm (_loc,n,lev) ->
+    | `Snterm (_loc,n,lev) ->
         let obj =
           `App
             (_loc,
@@ -153,17 +153,17 @@ let rec make_expr entry (tvar : string) x =
              if n.tvar = tvar
              then `Vrn (_loc, "Sself")
              else `App (_loc, (`Vrn (_loc, "Snterm")), obj))
-    | `TXopt (_loc,t) -> `App (_loc, (`Vrn (_loc, "Sopt")), (aux "" t))
-    | `TXtry (_loc,t) -> `App (_loc, (`Vrn (_loc, "Stry")), (aux "" t))
-    | `TXpeek (_loc,t) -> `App (_loc, (`Vrn (_loc, "Speek")), (aux "" t))
-    | `TXrules (_loc,rl) ->
+    | `Sopt (_loc,t) -> `App (_loc, (`Vrn (_loc, "Sopt")), (aux "" t))
+    | `Stry (_loc,t) -> `App (_loc, (`Vrn (_loc, "Stry")), (aux "" t))
+    | `Speek (_loc,t) -> `App (_loc, (`Vrn (_loc, "Speek")), (aux "" t))
+    | `Srules (_loc,rl) ->
         `App
           (_loc,
             (`App
                (_loc,
                  (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))))),
                  (entry.expr))), (make_expr_rules _loc entry rl ""))
-    | `TXtok (_loc,match_fun,attr,descr) ->
+    | `Stok (_loc,match_fun,attr,descr) ->
         `App
           (_loc, (`Vrn (_loc, "Stoken")),
             (`Tup
@@ -174,8 +174,7 @@ let rec make_expr entry (tvar : string) x =
                          (_loc,
                            (`Com
                               (_loc, (`Vrn (_loc, attr)),
-                                (`Str
-                                   (_loc, (FanAst.safe_string_escaped descr)))))))))))) in
+                                (`Str (_loc, (String.escaped descr)))))))))))) in
   aux tvar x
 and make_expr_rules _loc n rl tvar =
   list_of_list _loc
@@ -195,7 +194,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
     List.fold_lefti
       (fun i  ((oe,op) as ep)  x  ->
          match x with
-         | { pattern = Some p; text = `TXtok _;_} ->
+         | { pattern = Some p; text = `Stok _;_} ->
              let id = prefix ^ (string_of_int i) in
              (((`Id (_loc, (`Lid (_loc, id)))) :: oe), (p :: op))
          | _ -> ep) ([], []) psl in
@@ -296,7 +295,7 @@ let expr_delete_rule _loc n (symbolss : symbol list list) =
   seq (sem_of_list rest)
 let mk_name _loc i =
   { expr = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
-let mk_slist loc min sep symb = `TXlist (loc, min, symb, sep)
+let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 let text_of_entry _loc e =
   let ent =
     let x = e.name in
@@ -414,7 +413,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
                       (_loc, (`Any _loc), (`Nil _loc),
                         (`Id (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt no_variable in
-      let text = `TXtok (_loc, match_fun, "Normal", descr) in
+      let text = `Stok (_loc, match_fun, "Normal", descr) in
       { text; styp; pattern = (Some pattern) }
   | Some restrict ->
       let p' = FanAst.wildcarder#patt pattern in
@@ -430,7 +429,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
                     (_loc, (`Any _loc), (`Nil _loc),
                       (`Id (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt pattern in
-      let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
+      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
       { text; styp; pattern = (Some p') }
 let sfold ?sep  _loc (ns : string list) f e s =
   let fs = [("FOLD0", "sfold0"); ("FOLD1", "sfold1")] in
@@ -462,7 +461,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
                                (`Lid (_loc, ("fold" ^ suffix))))))),
                      (`Any _loc)))), (s.styp))), styp) in
   let text =
-    `TXmeta
+    `Smeta
       (_loc, ns,
         (match sep with | None  -> [s.text] | Some sep -> [s.text; sep.text]),
         e, t) in

@@ -7,10 +7,6 @@ module type META_LOC =
 open FanUtil
 open LibUtil
 open StdLib
-let safe_string_escaped s =
-  if ((String.length s) > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
-  then s
-  else String.escaped s
 let strip_loc_list f lst = List.map f lst
 let _ = ()
 class eq =
@@ -6730,7 +6726,7 @@ module MExpr =
     let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
     let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
     let meta_float _loc i = `Flo (_loc, (FanUtil.float_repres i))
-    let meta_string _loc i = `Str (_loc, (safe_string_escaped i))
+    let meta_string _loc i = `Str (_loc, (String.escaped i))
     let meta_char _loc i = `Chr (_loc, (Char.escaped i))
     let meta_unit _loc _ = `Id (_loc, (`Uid (_loc, "()")))
     let meta_bool _loc =
@@ -6780,7 +6776,7 @@ module MPatt =
     let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
     let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
     let meta_float _loc i = `Flo (_loc, (FanUtil.float_repres i))
-    let meta_string _loc i = `Str (_loc, (safe_string_escaped i))
+    let meta_string _loc i = `Str (_loc, (String.escaped i))
     let meta_char _loc i = `Chr (_loc, (Char.escaped i))
     let meta_unit _loc _ = `Id (_loc, (`Uid (_loc, "()")))
     let meta_bool _loc =

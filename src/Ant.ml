@@ -81,8 +81,9 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 let e = {|Char.escaped $e|} in
                 {| `Chr ($(mloc _loc), $e) |}
           | ("`str",_,_) ->
-                let e = {|$(uid:gm()).safe_string_escaped $e |} in
-                {| `Str ($(mloc _loc), $e) |}
+                (* let e = {|$(uid:gm()).safe_string_escaped $e |} in *)
+              let e = {|String.escaped $e |} in
+              {| `Str ($(mloc _loc), $e) |}
           | ("`flo",_,_) ->
               let e = {| FanUtil.float_repres $e |} in
               {| `Flo ($(mloc _loc), $e) |}

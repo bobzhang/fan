@@ -58,18 +58,18 @@ and symbol ={
   pattern : option patt
 }
 and text =
- [= `TXmeta of (loc * list string * list text * expr * styp)
- | `TXlist of (loc * bool * symbol * option symbol)
- | `TXnterm of (loc * name  * option string)
- | `TXopt of (loc * text )
- | `TXtry of (loc * text )
- | `TXpeek of (loc * text)
- | `TXrules of (loc * list (list text * expr))
- | `TXself of loc
- | `TXnext of loc       
- | `TXkwd of (loc * string)
+ [= `Smeta of (loc * list string * list text * expr * styp)
+ | `Slist of (loc * bool * symbol * option symbol)
+ | `Snterm of (loc * name  * option string)
+ | `Sopt of (loc * text )
+ | `Stry of (loc * text )
+ | `Speek of (loc * text)
+ | `Srules of (loc * list (list text * expr))
+ | `Sself of loc
+ | `Snext of loc       
+ | `Skeyword of (loc * string)
        
- | `TXtok of (loc * expr * attr * string)
+ | `Stok of (loc * expr * attr * string)
 (** The first is the match function expr(predicate),
 
     the second and the third  is the string description.

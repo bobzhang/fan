@@ -193,8 +193,8 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                      (`Id
                         (_loc,
                           (`Dot
-                             (_loc, (`Uid (_loc, (gm ()))),
-                               (`Lid (_loc, "safe_string_escaped")))))), e) in
+                             (_loc, (`Uid (_loc, "String")),
+                               (`Lid (_loc, "escaped")))))), e) in
                `App
                  (_loc, (`Vrn (_loc, "Str")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))

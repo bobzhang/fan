@@ -579,7 +579,7 @@ let _ =
                         `App
                           (_loc, (`Id (_loc, (`Lid (_loc, "option")))),
                             (s.styp)) in
-                      let text = `TXopt (_loc, (s.text)) in
+                      let text = `Sopt (_loc, (s.text)) in
                       mk_symbol ~text ~styp ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Stoken
@@ -591,7 +591,7 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `Uid "TRY" ->
-                     (let text = `TXtry (_loc, (s.text)) in
+                     (let text = `Stry (_loc, (s.text)) in
                       mk_symbol ~text ~styp:(s.styp) ~pattern:None : 
                      'symbol )
                  | _ -> assert false)));
@@ -604,7 +604,7 @@ let _ =
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `Uid "PEEK" ->
-                     (let text = `TXpeek (_loc, (s.text)) in
+                     (let text = `Speek (_loc, (s.text)) in
                       mk_symbol ~text ~styp:(s.styp) ~pattern:None : 
                      'symbol )
                  | _ -> assert false)));
@@ -615,8 +615,8 @@ let _ =
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `Uid "S" ->
-                     (mk_symbol ~text:(`TXself _loc)
-                        ~styp:(`Self (_loc, "S")) ~pattern:None : 'symbol )
+                     (mk_symbol ~text:(`Sself _loc) ~styp:(`Self (_loc, "S"))
+                        ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `Uid "N" -> true | _ -> false)),
@@ -625,8 +625,8 @@ let _ =
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `Uid "N" ->
-                     (mk_symbol ~text:(`TXnext _loc)
-                        ~styp:(`Self (_loc, "N")) ~pattern:None : 'symbol )
+                     (mk_symbol ~text:(`Snext _loc) ~styp:(`Self (_loc, "N"))
+                        ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Skeyword "[";
           `Slist1sep
@@ -636,7 +636,7 @@ let _ =
               (fun _  (rl : 'rule list)  _  (_loc : FanLoc.t)  ->
                  (let rl = retype_rule_list_without_patterns _loc rl in
                   let t = new_type_var () in
-                  mk_symbol ~text:(`TXrules (_loc, (mk_srules _loc t rl "")))
+                  mk_symbol ~text:(`Srules (_loc, (mk_srules _loc t rl "")))
                     ~styp:(`Quote
                              (_loc, (`Normal _loc), (`Some (`Lid (_loc, t)))))
                     ~pattern:None : 'symbol ))));
@@ -677,7 +677,7 @@ let _ =
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `STR (_,s) ->
-                     (mk_symbol ~text:(`TXkwd (_loc, s)) ~styp:(`Tok _loc)
+                     (mk_symbol ~text:(`Skeyword (_loc, s)) ~styp:(`Tok _loc)
                         ~pattern:None : 'symbol )
                  | _ -> assert false)));
          ([`Snterm (Gram.obj (name : 'name Gram.t ));
@@ -697,7 +697,7 @@ let _ =
                         | _ -> assert false)))])],
            (Gram.mk_action
               (fun (lev : 'e__11 option)  (n : 'name)  (_loc : FanLoc.t)  ->
-                 (mk_symbol ~text:(`TXnterm (_loc, n, lev))
+                 (mk_symbol ~text:(`Snterm (_loc, n, lev))
                     ~styp:(`Quote
                              (_loc, (`Normal _loc),
                                (`Some (`Lid (_loc, (n.tvar))))))
@@ -726,7 +726,7 @@ let _ =
                  | `Ant (("nt"|""),s) ->
                      (let i = parse_ident _loc s in
                       let n = mk_name _loc i in
-                      mk_symbol ~text:(`TXnterm (_loc, n, lev))
+                      mk_symbol ~text:(`Snterm (_loc, n, lev))
                         ~styp:(`Quote
                                  (_loc, (`Normal _loc),
                                    (`Some (`Lid (_loc, (n.tvar))))))
@@ -953,6 +953,10 @@ let _ =
 let _ =
   AstQuotation.add_quotation (d, "level") level
     ~mexpr:FanGrammar.Expr.meta_level ~mpatt:FanGrammar.Patt.meta_level
+    ~expr_filter:(fun x  -> x) ~patt_filter:(fun x  -> x)
+let _ =
+  AstQuotation.add_quotation (d, "symbol") psymbol
+    ~mexpr:FanGrammar.Expr.meta_symbol ~mpatt:FanGrammar.Patt.meta_symbol
     ~expr_filter:(fun x  -> x) ~patt_filter:(fun x  -> x)
 let _ =
   Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented")

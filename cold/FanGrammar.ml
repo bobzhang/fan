@@ -25,13 +25,12 @@ and symbol =  {
   styp: styp;
   pattern: patt option} 
 and text =
-  [ `TXmeta of (loc* string list* text list* expr* styp)
-  | `TXlist of (loc* bool* symbol* symbol option)
-  | `TXnterm of (loc* name* string option) | `TXopt of (loc* text)
-  | `TXtry of (loc* text) | `TXpeek of (loc* text)
-  | `TXrules of (loc* (text list* expr) list) | `TXself of loc
-  | `TXnext of loc | `TXkwd of (loc* string)
-  | `TXtok of (loc* expr* attr* string)] 
+  [ `Smeta of (loc* string list* text list* expr* styp)
+  | `Slist of (loc* bool* symbol* symbol option)
+  | `Snterm of (loc* name* string option) | `Sopt of (loc* text)
+  | `Stry of (loc* text) | `Speek of (loc* text)
+  | `Srules of (loc* (text list* expr) list) | `Sself of loc | `Snext of loc
+  | `Skeyword of (loc* string) | `Stok of (loc* expr* attr* string)] 
 module Expr =
   struct
     open FanAst.MExpr
@@ -150,7 +149,7 @@ module Expr =
     and meta_text: 'loc -> text -> 'result =
       fun _loc  ->
         function
-        | `TXmeta (_a0,_a1,_a2,_a3,_a4) ->
+        | `Smeta (_a0,_a1,_a2,_a3,_a4) ->
             `App
               (_loc,
                 (`App
@@ -160,12 +159,12 @@ module Expr =
                           (`App
                              (_loc,
                                (`App
-                                  (_loc, (`Vrn (_loc, "TXmeta")),
+                                  (_loc, (`Vrn (_loc, "Smeta")),
                                     (meta_loc _loc _a0))),
                                (meta_list meta_string _loc _a1))),
                           (meta_list meta_text _loc _a2))),
                      (meta_expr _loc _a3))), (meta_styp _loc _a4))
-        | `TXlist (_a0,_a1,_a2,_a3) ->
+        | `Slist (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
@@ -173,38 +172,38 @@ module Expr =
                      (`App
                         (_loc,
                           (`App
-                             (_loc, (`Vrn (_loc, "TXlist")),
+                             (_loc, (`Vrn (_loc, "Slist")),
                                (meta_loc _loc _a0))), (meta_bool _loc _a1))),
                      (meta_symbol _loc _a2))),
                 (meta_option meta_symbol _loc _a3))
-        | `TXnterm (_a0,_a1,_a2) ->
+        | `Snterm (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App
-                        (_loc, (`Vrn (_loc, "TXnterm")), (meta_loc _loc _a0))),
+                        (_loc, (`Vrn (_loc, "Snterm")), (meta_loc _loc _a0))),
                      (meta_name _loc _a1))),
                 (meta_option meta_string _loc _a2))
-        | `TXopt (_a0,_a1) ->
+        | `Sopt (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXopt")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Sopt")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
-        | `TXtry (_a0,_a1) ->
+        | `Stry (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXtry")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Stry")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
-        | `TXpeek (_a0,_a1) ->
+        | `Speek (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXpeek")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Speek")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
-        | `TXrules (_a0,_a1) ->
+        | `Srules (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXrules")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Srules")), (meta_loc _loc _a0))),
                 (meta_list
                    (fun _loc  (_a0,_a1)  ->
                       `Tup
@@ -212,16 +211,16 @@ module Expr =
                           (`Com
                              (_loc, (meta_list meta_text _loc _a0),
                                (meta_expr _loc _a1))))) _loc _a1))
-        | `TXself _a0 ->
-            `App (_loc, (`Vrn (_loc, "TXself")), (meta_loc _loc _a0))
-        | `TXnext _a0 ->
-            `App (_loc, (`Vrn (_loc, "TXnext")), (meta_loc _loc _a0))
-        | `TXkwd (_a0,_a1) ->
+        | `Sself _a0 ->
+            `App (_loc, (`Vrn (_loc, "Sself")), (meta_loc _loc _a0))
+        | `Snext _a0 ->
+            `App (_loc, (`Vrn (_loc, "Snext")), (meta_loc _loc _a0))
+        | `Skeyword (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXkwd")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Skeyword")), (meta_loc _loc _a0))),
                 (meta_string _loc _a1))
-        | `TXtok (_a0,_a1,_a2,_a3) ->
+        | `Stok (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
@@ -229,7 +228,7 @@ module Expr =
                      (`App
                         (_loc,
                           (`App
-                             (_loc, (`Vrn (_loc, "TXtok")),
+                             (_loc, (`Vrn (_loc, "Stok")),
                                (meta_loc _loc _a0))), (meta_expr _loc _a1))),
                      (meta_attr _loc _a2))), (meta_string _loc _a3))
   end
@@ -345,7 +344,7 @@ module Patt =
     and meta_text: 'loc -> text -> 'result =
       fun _loc  ->
         function
-        | `TXmeta (_a0,_a1,_a2,_a3,_a4) ->
+        | `Smeta (_a0,_a1,_a2,_a3,_a4) ->
             `App
               (_loc,
                 (`App
@@ -355,12 +354,12 @@ module Patt =
                           (`App
                              (_loc,
                                (`App
-                                  (_loc, (`Vrn (_loc, "TXmeta")),
+                                  (_loc, (`Vrn (_loc, "Smeta")),
                                     (meta_loc _loc _a0))),
                                (meta_list meta_string _loc _a1))),
                           (meta_list meta_text _loc _a2))),
                      (meta_expr _loc _a3))), (meta_styp _loc _a4))
-        | `TXlist (_a0,_a1,_a2,_a3) ->
+        | `Slist (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
@@ -368,38 +367,38 @@ module Patt =
                      (`App
                         (_loc,
                           (`App
-                             (_loc, (`Vrn (_loc, "TXlist")),
+                             (_loc, (`Vrn (_loc, "Slist")),
                                (meta_loc _loc _a0))), (meta_bool _loc _a1))),
                      (meta_symbol _loc _a2))),
                 (meta_option meta_symbol _loc _a3))
-        | `TXnterm (_a0,_a1,_a2) ->
+        | `Snterm (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App
-                        (_loc, (`Vrn (_loc, "TXnterm")), (meta_loc _loc _a0))),
+                        (_loc, (`Vrn (_loc, "Snterm")), (meta_loc _loc _a0))),
                      (meta_name _loc _a1))),
                 (meta_option meta_string _loc _a2))
-        | `TXopt (_a0,_a1) ->
+        | `Sopt (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXopt")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Sopt")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
-        | `TXtry (_a0,_a1) ->
+        | `Stry (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXtry")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Stry")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
-        | `TXpeek (_a0,_a1) ->
+        | `Speek (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXpeek")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Speek")), (meta_loc _loc _a0))),
                 (meta_text _loc _a1))
-        | `TXrules (_a0,_a1) ->
+        | `Srules (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXrules")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Srules")), (meta_loc _loc _a0))),
                 (meta_list
                    (fun _loc  (_a0,_a1)  ->
                       `Tup
@@ -407,16 +406,16 @@ module Patt =
                           (`Com
                              (_loc, (meta_list meta_text _loc _a0),
                                (meta_expr _loc _a1))))) _loc _a1))
-        | `TXself _a0 ->
-            `App (_loc, (`Vrn (_loc, "TXself")), (meta_loc _loc _a0))
-        | `TXnext _a0 ->
-            `App (_loc, (`Vrn (_loc, "TXnext")), (meta_loc _loc _a0))
-        | `TXkwd (_a0,_a1) ->
+        | `Sself _a0 ->
+            `App (_loc, (`Vrn (_loc, "Sself")), (meta_loc _loc _a0))
+        | `Snext _a0 ->
+            `App (_loc, (`Vrn (_loc, "Snext")), (meta_loc _loc _a0))
+        | `Skeyword (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "TXkwd")), (meta_loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Skeyword")), (meta_loc _loc _a0))),
                 (meta_string _loc _a1))
-        | `TXtok (_a0,_a1,_a2,_a3) ->
+        | `Stok (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
@@ -424,7 +423,7 @@ module Patt =
                      (`App
                         (_loc,
                           (`App
-                             (_loc, (`Vrn (_loc, "TXtok")),
+                             (_loc, (`Vrn (_loc, "Stok")),
                                (meta_loc _loc _a0))), (meta_expr _loc _a1))),
                      (meta_attr _loc _a2))), (meta_string _loc _a3))
   end

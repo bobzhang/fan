@@ -14,9 +14,6 @@ open LibUtil;
 open StdLib;
 
 
-let safe_string_escaped s =
-  if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
-  else String.escaped s;
 
 let strip_loc_list f lst =
   List.map f lst ;

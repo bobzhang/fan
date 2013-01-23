@@ -50,7 +50,7 @@ let string_of_patt patt =
  *)  
 let check_not_tok s = 
     match s with
-    [ {text = `TXtok (_loc, _, _, _) ;_} ->
+    [ {text = `Stok (_loc, _, _, _) ;_} ->
         FanLoc.raise _loc (XStream.Error
           ("Deprecated syntax, use a sub rule. "^
            "L0 STRING becomes L0 [ x = STRING -> x ]"))
@@ -199,34 +199,34 @@ let rec make_expr entry (tvar:string) x =
   with expr
   let rec aux tvar x =
     match x with
-    [ `TXmeta (_loc, n, tl, e, t) ->
+    [ `Smeta (_loc, n, tl, e, t) ->
       let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in 
       let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in 
       {| `Smeta ($ns, $el,
                ($(id:gm()).Action.mk $(typing e (make_ctyp t tvar)))) |}
-    | `TXlist (_loc, min, t, ts) ->
+    | `Slist (_loc, min, t, ts) ->
         let txt = aux "" t.text in
         match  ts with
         [  None -> if min then  {| `Slist1 $txt |} else {| `Slist0 $txt |} 
         | Some s ->
             let x = aux tvar s.text in
             if min then {| `Slist1sep ($txt,$x)|} else {| `Slist0sep ($txt,$x) |} ]
-    | `TXnext _loc ->  {| `Snext |}
-    | `TXself _loc ->  {| `Sself|}
-    | `TXkwd (_loc, kwd) ->  {| `Skeyword $str:kwd |}
-    | `TXnterm (_loc, n, lev) ->
+    | `Snext _loc ->  {| `Snext |}
+    | `Sself _loc ->  {| `Sself|}
+    | `Skeyword (_loc, kwd) ->  {| `Skeyword $str:kwd |}
+    | `Snterm (_loc, n, lev) ->
         let obj = {| ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(lid:n.tvar)))|} in 
         match lev with
        [ Some lab ->
          {| `Snterml ($obj,$str:lab)|}
        | None ->
            if n.tvar = tvar then {| `Sself|} else {| `Snterm $obj |} ]
-    | `TXopt (_loc, t) -> {| `Sopt $(aux "" t) |}
-    | `TXtry (_loc, t) -> {| `Stry $(aux "" t) |}
-    | `TXpeek (_loc, t) -> {| `Speek $(aux "" t) |}
-    | `TXrules (_loc, rl) ->
+    | `Sopt (_loc, t) -> {| `Sopt $(aux "" t) |}
+    | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
+    | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
+    | `Srules (_loc, rl) ->
         {| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
-    | `TXtok (_loc, match_fun, attr, descr) ->
+    | `Stok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ] in aux  tvar x
 
 
@@ -260,7 +260,7 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
   let (_,tok_match_pl) =
     List.fold_lefti
       (fun i ((oe,op) as ep)  x -> match x with 
-      [ {pattern=Some p ; text=`TXtok _;_ } ->
+      [ {pattern=Some p ; text=`Stok _;_ } ->
           let id = prefix ^ string_of_int i in
           ([ {|$lid:id|} :: oe], [p:: op])
       | _ ->  ep ]  ) ([],[])  psl in
@@ -317,7 +317,7 @@ let expr_delete_rule _loc n (symbolss:list (list symbol)) = with expr
 (* given the entry of the name, make a name *)
 let mk_name _loc i = {expr = {:expr| $id:i |}; tvar = Ident.tvar_of_ident i; loc = _loc};
   
-let mk_slist loc min sep symb = `TXlist loc min symb sep ;
+let mk_slist loc min sep symb = `Slist loc min symb sep ;
 
 
 (*
@@ -405,7 +405,7 @@ let text_of_functorial_extend _loc  gram locals el =
   let_in_of_extend _loc gram locals  args;
 
 
-(* generate TXtok *)  
+(* generate Stok *)  
 let mk_tok _loc ?restrict ~pattern styp = with expr
  match restrict with
  [ None ->
@@ -416,7 +416,7 @@ let mk_tok _loc ?restrict ~pattern styp = with expr
        {| fun [ $pat:no_variable -> true ] |}
      else {| fun [$pat:no_variable -> true | _ -> false ] |} in 
    let descr = string_of_patt no_variable in
-   let text = `TXtok (_loc, match_fun, "Normal", descr) in
+   let text = `Stok (_loc, match_fun, "Normal", descr) in
    {text; styp; pattern = Some pattern }
      
  | Some restrict ->
@@ -424,7 +424,7 @@ let mk_tok _loc ?restrict ~pattern styp = with expr
      let match_fun = 
        {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
      let descr = string_of_patt pattern in
-     let text = `TXtok (_loc, match_fun, "Antiquot", descr) in
+     let text = `Stok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} ] ;
    
 let sfold ?sep _loc  (ns:list string)  f e s = with ctyp
@@ -438,7 +438,7 @@ let sfold ?sep _loc  (ns:list string)  f e s = with ctyp
   let( t:styp) =
     {| $(`Type {| $(id:gm()).$(lid:"fold"^suffix) _ |})
       $(s.styp) $styp |} in 
-  let text = `TXmeta _loc ns (match sep with [None -> [s.text] | Some sep -> [s.text;sep.text] ])  e t   in 
+  let text = `Smeta _loc ns (match sep with [None -> [s.text] | Some sep -> [s.text;sep.text] ])  e t   in 
   {text ; styp ; pattern = None } ;
 
 
@@ -468,7 +468,7 @@ let sfold ?sep _loc  (ns:list string)  f e s = with ctyp
   (*       -> fun *)
   (*         [ { pattern = None; _ } -> accu *)
   (*         | { pattern = Some p ; _} when FanAst.is_irrefut_patt p -> accu *)
-  (*         | { pattern = Some p; text=`TXtok (_, _,  _, _) ; _ } -> *)
+  (*         | { pattern = Some p; text=`Stok (_, _,  _, _) ; _ } -> *)
   (*             let id = prefix ^ string_of_int i in *)
   (*             (Some *)
   (*                (match tok_match_pl with *)

@@ -72,10 +72,7 @@ let add_debug_expr (e : expr) =
                                                   (_loc,
                                                     (`Uid (_loc, "Format")),
                                                     (`Lid (_loc, "eprintf")))))),
-                                          (`Str
-                                             (_loc,
-                                               (FanAst.safe_string_escaped
-                                                  msg))))),
+                                          (`Str (_loc, (String.escaped msg))))),
                                      (`App
                                         (_loc,
                                           (`Id
@@ -152,7 +149,7 @@ let decorate_this_expr e id =
                      (`Dot
                         (_loc, (`Uid (_loc, "Camlp4prof")),
                           (`Lid (_loc, "count")))))),
-                (`Str (_loc, (FanAst.safe_string_escaped s))))))), e)
+                (`Str (_loc, (String.escaped s))))))), e)
 let rec decorate_fun id =
   let decorate = decorate decorate_fun in
   let decorate_expr = decorate#expr in
@@ -171,12 +168,10 @@ let map_expr =
   | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))
     |`Fun (_loc,`Case (_,`Id (_,`Uid (_,"NOTHING")),`Nil _,e)) -> e
   | `Id (_loc,`Lid (_,"__FILE__")) ->
-      `Str (_loc, (FanAst.safe_string_escaped (FanLoc.file_name _loc)))
+      `Str (_loc, (String.escaped (FanLoc.file_name _loc)))
   | `Id (_loc,`Lid (_,"__PWD__")) ->
       `Str
-        (_loc,
-          (FanAst.safe_string_escaped
-             (Filename.dirname (FanLoc.file_name _loc))))
+        (_loc, (String.escaped (Filename.dirname (FanLoc.file_name _loc))))
   | `Id (_loc,`Lid (_,"__LOCATION__")) ->
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
       `App
@@ -188,7 +183,7 @@ let map_expr =
           (`Tup
              (_loc,
                (`Com
-                  (_loc, (`Str (_loc, (FanAst.safe_string_escaped a))),
+                  (_loc, (`Str (_loc, (String.escaped a))),
                     (`Com
                        (_loc,
                          (`Com
