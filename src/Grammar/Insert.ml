@@ -30,45 +30,19 @@ and tree_derive_eps : tree -> bool = fun
 
 (* create an empty level *)
 let empty_lev lname assoc =
-  (* let assoc = match assoc with *)
-  (*   [ Some a -> a *)
-  (*   | None -> `LA ] in *)
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd};
 
-(* here [name] is only used to emit error message*)  
-let change_lev lev name lname assoc =
-(* <<<<<<< Updated upstream *)
-(*   let a = *)
-(*     match assoc with *)
-(*     [ None -> lev.assoc *)
-(*     | Some a -> begin  *)
-(*         if a <> lev.assoc && !(FanConfig.gram_warning_verbose) then *)
-(*           eprintf "<W> Changing associativity of level %S @." name *)
-(*         else (); *)
-(*         a *)
-(*     end ] in begin  *)
-(*       if  lname<> "" && lname <> lev.lname && !(FanConfig.gram_warning_verbose) then  *)
-(*         eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname *)
-(*       else (); *)
-(*     { (lev) with assoc=a} *)
-(* ======= *)
-  (* let a = *)
-    (* match assoc with *)
-    (* [ None -> lev.assoc *)
-    (* | Some a -> begin  *) begin 
-        if assoc <> lev.assoc && !(FanConfig.gram_warning_verbose) then
-          eprintf "<W> Changing associativity of level %S aborted@." name;
-        (* else (); *)
-        (* a end *)
-    (* (\* end ] *\) in begin  *)
-      if  lname<> "" && lname <> lev.lname && !(FanConfig.gram_warning_verbose) then 
-        eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname;
-      (* else (); *)
-      
-      lev
-    (* { (lev) with assoc=assoc} *)
-(* >>>>>>> Stashed changes *)
-    end ;
+(* here [name] is only used to emit error message
+   The idea case is that extend should [care] about assocativity, since
+   the extend rules should [always] follow the existing levels.
+ *)  
+let change_lev lev name lname assoc =  begin 
+  if assoc <> lev.assoc && !(FanConfig.gram_warning_verbose) then
+    eprintf "<W> Changing associativity of level %S aborted@." name;
+  if  lname<> "" && lname <> lev.lname && !(FanConfig.gram_warning_verbose) then 
+    eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname;
+  lev
+end ;
 
 (* *)  
 let change_to_self entry = fun
@@ -85,15 +59,13 @@ let levels_of_entry  e =
 let find_level ?position entry  levs =
   let find x n  ls = 
     let rec get = fun
-      [ [] -> begin
-        eprintf "No level labelled %S in entry %S @." n entry.ename;
-        failwith "find_level"
-      end
+      [ [] -> 
+        failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.ename;
     | [lev::levs] ->
       if Tools.is_level_labelled n lev then
         match x with
         [`Level _ ->
-            ([], change_lev (* entry *) lev n, levs)
+            ([], change_lev lev n, levs)
         |`Before _ ->
             ([], empty_lev, [lev::levs])
         |`After _ ->
