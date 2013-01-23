@@ -41,8 +41,11 @@ val mk_srules :
 val make_expr : name -> string -> text -> expr
 val make_expr_rules :
     loc -> name -> (text list * expr) list -> string -> expr
-val expr_of_delete_rule :
-  loc -> name -> symbol list -> expr * expr
+
+(* val expr_of_delete_rule : *)
+val expr_delete_rule:
+  loc -> name -> symbol list list  -> expr
+      
 val mk_name : loc -> ident -> name
 val mk_slist :
   loc ->

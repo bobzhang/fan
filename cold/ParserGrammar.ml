@@ -255,21 +255,7 @@ let _ =
             (Gram.mk_action
                (fun _  (sls : 'e__5 list)  _  _  (n : 'name) 
                   (_loc : FanLoc.t)  ->
-                  (let rest =
-                     List.map
-                       (fun sl  ->
-                          let (e,b) = expr_of_delete_rule _loc n sl in
-                          `App
-                            (_loc,
-                              (`App
-                                 (_loc,
-                                   (`Id
-                                      (_loc,
-                                        (`Dot
-                                           (_loc, (gm ()),
-                                             (`Lid (_loc, "delete_rule")))))),
-                                   e)), b)) sls in
-                   `Seq (_loc, (FanAst.sem_of_list rest)) : 'delete_rules ))))])]);
+                  (expr_delete_rule _loc n sls : 'delete_rules ))))])]);
   Gram.extend (qualuid : 'qualuid Gram.t )
     (None,
       [(None, None,

@@ -303,12 +303,17 @@ let mk_srules loc t rl tvar =
       (sl, ac)) rl ;
     
 
-let expr_of_delete_rule _loc n sl =  with expr
-   let sl =
-    List.fold_right
-      (fun s e -> {| [$(make_expr n "" s.text) :: $e ] |}) sl {| [] |}  in
-  ({:expr| $(n.expr) |}, sl)  ;
 
+let expr_delete_rule _loc n (symbolss:list (list symbol)) = with expr
+  let f _loc n sl =  
+   let sl = list_of_list _loc (List.map (fun  s -> make_expr n "" s.text) sl) in 
+   ({| $(n.expr) |}, sl)  in
+  let rest = List.map
+      (fun sl  ->
+          let (e,b) = f _loc n sl in
+          {:expr| $(id:gm()).delete_rule $e $b |}) symbolss in
+  seq (sem_of_list rest);
+  
 (* given the entry of the name, make a name *)
 let mk_name _loc i = {expr = {:expr| $id:i |}; tvar = Ident.tvar_of_ident i; loc = _loc};
   

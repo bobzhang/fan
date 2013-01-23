@@ -460,6 +460,8 @@ let typing a b =
 
 let seq a = let _loc = loc_of a in `Seq (_loc,a) ;
 
+
+  
 let rec list_of_app  x acc =
   match x with
   [`App(_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)

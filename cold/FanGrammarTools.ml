@@ -276,17 +276,24 @@ let mk_srules loc t rl tvar =
        let sl = List.map (fun s  -> s.text) r.prod in
        let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
        (sl, ac)) rl
-let expr_of_delete_rule _loc n sl =
-  let sl =
-    List.fold_right
-      (fun s  e  ->
+let expr_delete_rule _loc n (symbolss : symbol list list) =
+  let f _loc n sl =
+    let sl =
+      list_of_list _loc (List.map (fun s  -> make_expr n "" s.text) sl) in
+    ((n.expr), sl) in
+  let rest =
+    List.map
+      (fun sl  ->
+         let (e,b) = f _loc n sl in
          `App
            (_loc,
              (`App
-                (_loc, (`Id (_loc, (`Uid (_loc, "::")))),
-                  (make_expr n "" s.text))), e)) sl
-      (`Id (_loc, (`Uid (_loc, "[]")))) in
-  ((n.expr), sl)
+                (_loc,
+                  (`Id
+                     (_loc,
+                       (`Dot (_loc, (gm ()), (`Lid (_loc, "delete_rule")))))),
+                  e)), b)) symbolss in
+  seq (sem_of_list rest)
 let mk_name _loc i =
   { expr = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
 let mk_slist loc min sep symb = `TXlist (loc, min, symb, sep)
@@ -356,18 +363,14 @@ let let_in_of_extend _loc gram gl default =
                          (_loc, (`Normal _loc), (`Some (`Lid (_loc, x))))))))))
     | _ -> failwith "internal error in the Grammar extension" in
   match gl with
-  | None  -> default
+  | None |Some [] -> default
   | Some ll ->
-      (match ll with
-       | [] -> default
-       | _ ->
-           let locals = and_of_list' (List.map local_binding_of_name ll) in
-           `LetIn
-             (_loc, (`ReNil _loc),
-               (`Bind
-                  (_loc, (`Id (_loc, (`Lid (_loc, "grammar_entry_create")))),
-                    entry_mk)),
-               (`LetIn (_loc, (`ReNil _loc), locals, default))))
+      let locals = and_of_list' (List.map local_binding_of_name ll) in
+      `LetIn
+        (_loc, (`ReNil _loc),
+          (`Bind
+             (_loc, (`Id (_loc, (`Lid (_loc, "grammar_entry_create")))),
+               entry_mk)), (`LetIn (_loc, (`ReNil _loc), locals, default)))
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el =

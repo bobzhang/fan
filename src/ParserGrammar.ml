@@ -151,16 +151,11 @@ let rest =
     {:expr| begin $list:es end|}   ] 
   delete_rules:
   [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]" ->
-    let rest = List.map
-        (fun sl  ->
-          let (e,b) = expr_of_delete_rule _loc n sl in
-          {:expr| $(id:gm()).delete_rule $e $b |}) sls in
-    {:expr| begin $list:rest end |}]
+    expr_delete_rule _loc n sls ]
 
   (* parse qualified [X.X] *)
   qualuid:
-  [ `Uid x; ".";  S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
-| `Uid x -> `Uid(_loc,x) ] 
+  [ `Uid x; ".";  S{xs} -> `Dot(_loc,`Uid(_loc,x),xs) | `Uid x -> `Uid(_loc,x) ] 
 
 
   (* parse qualified  [X.Y.g]

@@ -1,5 +1,8 @@
 (* Note: when you modify these types you must increment
-   ast magic numbers defined in FanConfig.ml. *)
+   ast magic numbers defined in FanConfig.ml.
+   Todo:
+   add phantom type to track some type invariants?
+ *)
 (** Signature for OCaml syntax trees. *) (*
 
     It provides:
