@@ -140,10 +140,7 @@ let rest =
 
   (*for side effets, parser action *)
   delete_rule_header:
-  [ qualuid{g} ->
-    let old = gm () in
-    let () = grammar_module_name := g in
-    old  ]
+  [ qualuid{g} -> let old = gm () in let () = grammar_module_name := g in old  ]
 
   delete_rule_body:
   [ delete_rule_header{old};  L0 delete_rules {es} ->
@@ -166,7 +163,7 @@ let rest =
    *)
   qualid:
   [ `Uid x ; "."; S{xs} -> `Dot(_loc,`Uid(_loc,x),xs)
-| `Lid i -> `Lid(_loc,i)]
+  | `Lid i -> `Lid(_loc,i)]
 
   (* parse qualified path ending with [X.t]
      {[
@@ -239,7 +236,7 @@ let rest =
   (* parse association, and translate into [expr] node. FIXME  *)
   assoc:
   [ `Uid ("LA"|"RA"|"NA" as x) ->     {:expr| $vrn:x |} 
-| `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
+  | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
   (*
     [retype_rule_list_with_patterns] do a simple transformation around rule list 

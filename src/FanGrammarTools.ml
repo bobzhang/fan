@@ -328,10 +328,10 @@ let mk_slist loc min sep symb = `Slist loc min symb sep ;
   {[(Some `LA)]} it has type [position option]
   
  *)  
-let text_of_entry  _loc e =  with expr
+let text_of_entry e =  with expr
+  let _loc = e.name.loc in    
   let ent =
     let x = e.name in
-    let _loc = e.name.loc in
     {| ($(x.expr) : $(id:gm()).t '$(lid:x.tvar)) |}   in
   let pos =
     match e.pos with
@@ -342,8 +342,8 @@ let text_of_entry  _loc e =  with expr
       (fun level txt ->
         let lab =
           match level.label with
-          [ Some lab -> {| Some $str:lab |}
-          | None -> {| None |} ]  in
+          [ Some lab -> (* {| Some $str:lab |} *) {|$str:lab|}
+          | None -> (* {| None |} *) {| "" |}]  in
         let ass =
           match level.assoc with
           [ Some ass -> {| Some $ass |}
@@ -353,7 +353,8 @@ let text_of_entry  _loc e =  with expr
           let prod = make_expr_rules _loc e.name rl e.name.tvar in
           (* generated code of type [olevel] *)
           {| [($lab, $ass, $prod) :: $txt] |} in txt) e.levels {| [] |} in
-  (ent, pos, txt) ;
+  {| $(id:gm()).extend $ent ($pos,$txt) |}
+  (* (ent, pos, txt) *) ;
   
 
 (* [gl] is the name  list option
@@ -365,7 +366,7 @@ let text_of_entry  _loc e =  with expr
 
    This function generate some local entries
  *)   
-let let_in_of_extend _loc gram gl  default =
+let let_in_of_extend _loc gram locals  default =
   let entry_mk =
     match gram with
     [ Some g -> {:expr| $(id:gm()).mk $id:g |}
@@ -374,7 +375,7 @@ let let_in_of_extend _loc gram gl  default =
     [ {expr = {:expr@_| $lid:i |} ; tvar = x; loc = _loc} ->
       {:binding| $lid:i =  (grammar_entry_create $str:i : $(id:gm()).t '$lid:x) |}
     | _ -> failwith "internal error in the Grammar extension" ]  in
-  match gl with
+  match locals with
   [ None 
   | Some [] -> default
   | Some ll ->
@@ -386,16 +387,16 @@ let let_in_of_extend _loc gram gl  default =
    [gram] is the grammar
    [gmod] is the [Gram] module true
    generate the extend, the main entrance
+   the [entrance] point for generating code
+
+   It call [text_of_entry]
  *)
 let text_of_functorial_extend _loc  gram locals el = 
   let args =
     let el =
-      List.map  (fun e ->
-        let (ent, pos, txt) = text_of_entry e.name.loc e in
-        {:expr| $(id:gm()).extend $ent  ($pos, $txt) |} ) el  in
+      List.map  text_of_entry el  in
     match el with
     [ [] -> {:expr| () |}
-    | [e] -> e
     | _ -> seq (sem_of_list' el) ]  in
   let_in_of_extend _loc gram locals  args;
 
