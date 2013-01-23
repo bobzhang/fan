@@ -27,7 +27,8 @@ type internal_entry =
   ename: string;
   mutable estart: int -> Action.t parse;
   mutable econtinue: int -> Action.t cont_parse;
-  mutable edesc: desc} 
+  mutable edesc: desc;
+  mutable freezed: bool} 
 and desc =  
   | Dlevels of level list
   | Dparser of (stream -> Action.t) 

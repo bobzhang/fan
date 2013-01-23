@@ -7,10 +7,10 @@ open Format;
 
 (* {[[> `Skeyword of 'a | `Stoken of 'b ] ->
   [> `Skeyword of 'c | `Stoken of 'd ] -> bool ]}*)
-let is_before s1 s2 =
+let higher s1 s2 =
   match (s1, s2) with
-  [ (`Skeyword _ | `Stoken _, `Skeyword _ | `Stoken _) -> false
-  | (`Skeyword _ | `Stoken _, _) -> true
+  [ (#terminal,#terminal) -> false
+  | (#terminal, _) -> true
   | _ -> false ];
 
 (* {[ Structure.symbol -> bool ]}*)    
@@ -160,7 +160,7 @@ let insert_production_in_tree entry (gsymbols, action) tree =
         match try_insert s sl brother with
         [ Some y -> Some (Node {(x) with brother=y})
         | None ->
-            if is_before node s || (derive_eps s && not (derive_eps node)) then
+            if higher node s || (derive_eps s && not (derive_eps node)) then
               (* node has higher priority *)
               Some (Node {(x) with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
             else None ]

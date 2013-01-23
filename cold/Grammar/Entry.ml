@@ -15,7 +15,8 @@ let mk_dynamic g n =
     estart = (empty_entry n);
     econtinue =
       (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
-    edesc = (Dlevels [])
+    edesc = (Dlevels []);
+    freezed = false
   }
 let action_parse entry (ts : stream) =
   (try
@@ -50,7 +51,8 @@ let of_parser g n (p : stream -> 'a) =
     estart = (fun _  -> f);
     econtinue =
       (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
-    edesc = (Dparser f)
+    edesc = (Dparser f);
+    freezed = true
   }
 let setup_parser e (p : stream -> 'a) =
   let f ts = Action.mk (p ts) in

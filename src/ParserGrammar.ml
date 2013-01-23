@@ -214,7 +214,7 @@ let rest =
   [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
     -> begin 
       match n with
-        [`name old -> AstQuotation.default := old
+      [`name old -> AstQuotation.default := old
       | _ -> ()];  
         mk_entry ~name:p ~pos ~levels
     end]
@@ -443,7 +443,7 @@ AstQuotation.add_quotation
     ~patt_filter:(fun x-> x);
 
   
-Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented");
+
 
 
 

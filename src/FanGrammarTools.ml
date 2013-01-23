@@ -11,7 +11,6 @@ let print_warning = eprintf "%a:\n%s@." FanLoc.print;
   
 let prefix = "__fan_"  ;
   
-let meta_action = ref false;
   
 let ghost = FanLoc.ghost ;  
 let grammar_module_name =
@@ -288,10 +287,6 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
             let p =
               typing {:patt| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |} ])  e psl in
-  let txt =
-    if !meta_action then
-      {| Obj.magic $(MetaAst.Expr.meta_expr _loc txt) |}
-    else txt  in
   {| $(id:gm()).mk_action $txt |}  ;
 
 (* the [rhs] was already computed, the [lhs] was left *)

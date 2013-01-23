@@ -1,9 +1,9 @@
 open Structure
 open Format
-let is_before s1 s2 =
+let higher s1 s2 =
   match (s1, s2) with
-  | ((`Skeyword _|`Stoken _),(`Skeyword _|`Stoken _)) -> false
-  | ((`Skeyword _|`Stoken _),_) -> true
+  | (#terminal,#terminal) -> false
+  | (#terminal,_) -> true
   | _ -> false
 let rec derive_eps: symbol -> bool =
   function
@@ -127,7 +127,7 @@ let insert_production_in_tree entry (gsymbols,action) tree =
            | Some y -> Some (Node { x with brother = y })
            | None  ->
                if
-                 (is_before node s) ||
+                 (higher node s) ||
                    ((derive_eps s) && (not (derive_eps node)))
                then
                  Some
