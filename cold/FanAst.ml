@@ -10327,11 +10327,25 @@ let rec and_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `And (_loc, t, (and_of_list ts))
+let rec and_of_list' =
+  function
+  | [] -> failwithf "and_of_list' empty list"
+  | t::[] -> t
+  | t::ts ->
+      let r = and_of_list' ts in
+      let _loc = FanLoc.merge (loc_of t) (loc_of r) in `And (_loc, t, r)
 let rec sem_of_list =
   function
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Sem (_loc, t, (sem_of_list ts))
+let rec sem_of_list' =
+  function
+  | [] -> failwith "sem_of_list' empty list"
+  | t::[] -> t
+  | t::ts ->
+      let r = sem_of_list' ts in
+      let _loc = FanLoc.merge (loc_of t) (loc_of r) in `Sem (_loc, t, r)
 let rec com_of_list =
   function
   | [] -> `Nil ghost
@@ -10470,6 +10484,7 @@ let sta a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Sta (_loc, a, b)
 let typing a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Constraint (_loc, a, b)
+let seq a = let _loc = loc_of a in `Seq (_loc, a)
 let rec list_of_app x acc =
   match x with
   | `App (_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)

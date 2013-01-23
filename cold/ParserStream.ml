@@ -6,25 +6,25 @@ let apply () =
   let grammar_entry_create = Gram.mk in
   let parser_ipatt: 'parser_ipatt Gram.t =
     grammar_entry_create "parser_ipatt"
-  and stream_quot: 'stream_quot Gram.t = grammar_entry_create "stream_quot"
-  and stream_expr: 'stream_expr Gram.t = grammar_entry_create "stream_expr"
-  and parser_case_list: 'parser_case_list Gram.t =
-    grammar_entry_create "parser_case_list"
-  and parser_case: 'parser_case Gram.t = grammar_entry_create "parser_case"
-  and stream_patt: 'stream_patt Gram.t = grammar_entry_create "stream_patt"
-  and stream_end: 'stream_end Gram.t = grammar_entry_create "stream_end"
-  and stream_begin: 'stream_begin Gram.t =
-    grammar_entry_create "stream_begin"
-  and stream_patt_comp_err_list: 'stream_patt_comp_err_list Gram.t =
-    grammar_entry_create "stream_patt_comp_err_list"
-  and stream_patt_comp_err: 'stream_patt_comp_err Gram.t =
-    grammar_entry_create "stream_patt_comp_err"
-  and stream_patt_comp: 'stream_patt_comp Gram.t =
-    grammar_entry_create "stream_patt_comp"
+  and stream_expr_comp: 'stream_expr_comp Gram.t =
+    grammar_entry_create "stream_expr_comp"
   and stream_expr_comp_list: 'stream_expr_comp_list Gram.t =
     grammar_entry_create "stream_expr_comp_list"
-  and stream_expr_comp: 'stream_expr_comp Gram.t =
-    grammar_entry_create "stream_expr_comp" in
+  and stream_patt_comp: 'stream_patt_comp Gram.t =
+    grammar_entry_create "stream_patt_comp"
+  and stream_patt_comp_err: 'stream_patt_comp_err Gram.t =
+    grammar_entry_create "stream_patt_comp_err"
+  and stream_patt_comp_err_list: 'stream_patt_comp_err_list Gram.t =
+    grammar_entry_create "stream_patt_comp_err_list"
+  and stream_begin: 'stream_begin Gram.t =
+    grammar_entry_create "stream_begin"
+  and stream_end: 'stream_end Gram.t = grammar_entry_create "stream_end"
+  and stream_patt: 'stream_patt Gram.t = grammar_entry_create "stream_patt"
+  and parser_case: 'parser_case Gram.t = grammar_entry_create "parser_case"
+  and parser_case_list: 'parser_case_list Gram.t =
+    grammar_entry_create "parser_case_list"
+  and stream_expr: 'stream_expr Gram.t = grammar_entry_create "stream_expr"
+  and stream_quot: 'stream_quot Gram.t = grammar_entry_create "stream_quot" in
   Gram.extend (expr : 'expr Gram.t )
     ((Some (`Level "top")),
       [(None, None,

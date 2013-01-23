@@ -4,7 +4,11 @@ open FanAst;
 {:fans| keep on;  derive (MetaExpr MetaPatt);|};
 {:ocaml|
 (* every entry has a name *)  
-type name  = { expr : expr; tvar : string; loc : loc };
+type name  = {
+    expr : expr;
+    tvar : string;
+    loc : loc
+  };
 
 (* we need to define a new ADT only because
    we did not find a way to express `STself and `STtok yet  *)

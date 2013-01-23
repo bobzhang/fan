@@ -320,12 +320,13 @@ let text_of_entry _loc e =
            | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
          let txt =
            let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
-           let e = make_expr_rules _loc e.name rl (e.name).tvar in
+           let prod = make_expr_rules _loc e.name rl (e.name).tvar in
            `App
              (_loc,
                (`App
                   (_loc, (`Id (_loc, (`Uid (_loc, "::")))),
-                    (`Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, e)))))))),
+                    (`Tup
+                       (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod)))))))),
                txt) in
          txt) e.levels (`Id (_loc, (`Uid (_loc, "[]")))) in
   (ent, pos, txt)
@@ -359,12 +360,8 @@ let let_in_of_extend _loc gram gl default =
   | Some ll ->
       (match ll with
        | [] -> default
-       | x::xs ->
-           let locals =
-             List.fold_right
-               (fun name  acc  ->
-                  `And (_loc, acc, (local_binding_of_name name))) xs
-               (local_binding_of_name x) in
+       | _ ->
+           let locals = and_of_list' (List.map local_binding_of_name ll) in
            `LetIn
              (_loc, (`ReNil _loc),
                (`Bind
@@ -388,9 +385,7 @@ let text_of_functorial_extend _loc gram locals el =
     match el with
     | [] -> `Id (_loc, (`Uid (_loc, "()")))
     | e::[] -> e
-    | e::el ->
-        `Seq
-          (_loc, (List.fold_left (fun acc  x  -> `Sem (_loc, acc, x)) e el)) in
+    | _ -> seq (sem_of_list' el) in
   let_in_of_extend _loc gram locals args
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
