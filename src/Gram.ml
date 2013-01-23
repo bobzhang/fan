@@ -18,6 +18,7 @@ let create_gram () =
   glexer = FanLexUtil.mk ();
 };
 
+let name_of_entry {ename;_} = ename;  
 (* let copy {egram:}   *)
 
 (* FIXME duplicate some code from Entry *)
@@ -110,7 +111,7 @@ let find_level ?position entry =
   [Dparser _ -> invalid_arg "Gram.find_level"
   |Dlevels levs ->
       let (_,f,_) = Insert.find_level ?position entry levs in
-      f None None
+      f (* None *) "" None
   ];
 
 

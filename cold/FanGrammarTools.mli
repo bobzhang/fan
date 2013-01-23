@@ -3,7 +3,7 @@ open Ast
 val print_warning : FanLoc.t -> string -> unit
 
 val prefix : string
-val meta_action : bool ref
+
 val grammar_module_name : ident ref
 val gm : unit -> ident
 val mk_entry :
@@ -50,8 +50,7 @@ val mk_name : loc -> ident -> name
 val mk_slist :
   loc ->
   bool -> symbol option -> symbol -> text
-val text_of_entry :
-  loc -> entry -> expr * expr * expr
+val text_of_entry :   entry -> expr
 val let_in_of_extend :
   loc ->
   ident option -> name list option -> expr -> expr

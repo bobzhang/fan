@@ -19,8 +19,11 @@ let get_prev_loc strm =
   [Some (_,l) -> l
   |None -> begin
       FanLoc.ghost end];
-      
-let is_level_labelled n = fun [ {lname=Some n1; _  } ->  n = n1 | _ -> false ];
+
+(* FIXME *)    
+let is_level_labelled n =
+  fun [ {lname=(* Some *) n1; _  } ->
+    (n = n1) && (n1<>"")  ];
   
 
   

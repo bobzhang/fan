@@ -10,10 +10,10 @@ let declare_regexp = Gram.mk "declare_regexp"
 let _ =
   Gram.extend (lex : 'lex Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Skeyword "|";
            `Slist0sep
-             ((Gram.srules lex
+             ((Gram.srules (Gram.name_of_entry lex)
                  [([`Snterm (Gram.obj (regexp : 'regexp Gram.t ));
                    `Skeyword "->";
                    `Snterm (Gram.obj (sequence : 'sequence Gram.t ))],
@@ -27,10 +27,10 @@ let _ =
                   (FanLexTools.gen_definition _loc l : 'lex ))))])]);
   Gram.extend (declare_regexp : 'declare_regexp Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Smeta
               (["FOLD1"; "SEP"],
-                [Gram.srules declare_regexp
+                [Gram.srules (Gram.name_of_entry declare_regexp)
                    [([`Stoken
                         (((function | `Lid _ -> true | _ -> false)),
                           (`Normal, "`Lid _"));
@@ -58,7 +58,7 @@ let _ =
                (fun _  (_loc : FanLoc.t)  -> (`Nil _loc : 'declare_regexp ))))])]);
   Gram.extend (regexps : 'regexps Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Skeyword "{";
            `Slist1sep
              ((`Snterm (Gram.obj (regexp : 'regexp Gram.t ))),
@@ -69,17 +69,17 @@ let _ =
                   (Array.of_list xs : 'regexps ))))])]);
   Gram.extend (regexp : 'regexp Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Sself; `Skeyword "|"; `Sself],
             (Gram.mk_action
                (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
                   (FanLexTools.alt r1 r2 : 'regexp ))))]);
-      (None, None,
+      ("", None,
         [([`Sself; `Sself],
            (Gram.mk_action
               (fun (r2 : 'regexp)  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
                  (FanLexTools.seq r1 r2 : 'regexp ))))]);
-      (None, None,
+      ("", None,
         [([`Sself; `Skeyword "*"],
            (Gram.mk_action
               (fun _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
@@ -139,7 +139,7 @@ let _ =
                 | _ -> assert false)))])]);
   Gram.extend (chr : 'chr Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `CHAR (_,_) -> true | _ -> false)),
                 (`Normal, "`CHAR (_,_)"))],
@@ -162,7 +162,7 @@ let _ =
                  | _ -> assert false)))])]);
   Gram.extend (ch_class : 'ch_class Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (chr : 'chr Gram.t ));
            `Skeyword "-";
            `Snterm (Gram.obj (chr : 'chr Gram.t ))],

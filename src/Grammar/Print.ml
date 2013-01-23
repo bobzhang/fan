@@ -77,7 +77,7 @@ class text_grammar= object(self:'self)
   method level f  = fun [ {assoc;lname;lsuffix;lprefix} ->
     (* [lsuffix] [lprefix] *)
     let rules = [ [`Sself::t] | t <- flatten_tree lsuffix] @ flatten_tree lprefix in 
-    pp f "%a %a@;%a" (self#option (fun f s -> pp f "%S" s)) lname self#assoc assoc self#rules rules ];
+    pp f "%S %a@;%a" (* (self#option (fun f s -> pp f "%S" s)) *) lname self#assoc assoc self#rules rules ];
   method assoc f = fun
     [ `LA -> pp f "LA"
     | `RA -> pp f "RA"
@@ -115,8 +115,8 @@ class dump_grammar = object(self:'self)
     TreePrint.print_sons "|-" (fun [Bro (s, ls) -> (string_of_symbol s, ls)]) "" f
       (get_brothers tree);
   method! level f = fun [{assoc;lname;lsuffix;lprefix} ->
-    pp f "%a %a@;@[<hv2>suffix:@\n%a@]@;@[<hv2>prefix:@\n%a@]"
-      (self#option (fun f s -> pp f "%S" s)) lname
+    pp f "%S %a@;@[<hv2>suffix:@\n%a@]@;@[<hv2>prefix:@\n%a@]"
+      (* (self#option (fun f s -> pp f "%S" s)) *) lname
       self#assoc assoc
       self#tree lsuffix
       self#tree lprefix ];

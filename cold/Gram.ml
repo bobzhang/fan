@@ -17,6 +17,7 @@ let create_gram () =
     gfilter = (FanTokenFilter.mk ~is_kwd:(Hashtbl.mem gkeywords));
     glexer = (FanLexUtil.mk ())
   }
+let name_of_entry { ename;_} = ename
 let mk = mk_dynamic gram
 let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter
@@ -73,7 +74,7 @@ let eoi_entry entry =
   let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
   extend (entry_eoi : 'entry_eoi t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (obj (entry : 'entry t ));
            `Stoken
              (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
@@ -88,4 +89,4 @@ let find_level ?position  entry =
   match entry.edesc with
   | Dparser _ -> invalid_arg "Gram.find_level"
   | Dlevels levs ->
-      let (_,f,_) = Insert.find_level ?position entry levs in f None None
+      let (_,f,_) = Insert.find_level ?position entry levs in f "" None

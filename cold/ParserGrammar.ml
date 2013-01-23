@@ -29,8 +29,8 @@ let internal_patt = Gram.mk "internal_patt"
 let _ =
   Gram.extend (nonterminals : 'nonterminals Gram.t )
     (None,
-      [(None, None,
-         [([Gram.srules nonterminals
+      [("", None,
+         [([Gram.srules (Gram.name_of_entry nonterminals)
               [([`Skeyword "(";
                 `Snterm (Gram.obj (qualid : 'qualid Gram.t ));
                 `Skeyword ":";
@@ -44,7 +44,7 @@ let _ =
                    (fun (t : 'qualuid)  (_loc : FanLoc.t)  ->
                       (`static t : 'e__1 ))))];
            `Slist0
-             (Gram.srules nonterminals
+             (Gram.srules (Gram.name_of_entry nonterminals)
                 [([`Stoken
                      (((function | `Lid _ -> true | _ -> false)),
                        (`Normal, "`Lid _"))],
@@ -91,7 +91,7 @@ let _ =
                  `Skeyword ":";
                  `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
                  `Sopt
-                   (Gram.srules nonterminals
+                   (Gram.srules (Gram.name_of_entry nonterminals)
                       [([`Stoken
                            (((function | `STR (_,_) -> true | _ -> false)),
                              (`Normal, "`STR (_,_)"))],
@@ -161,10 +161,10 @@ let _ =
                    FanAst.sem_of_list rest : 'nonterminals ))))])]);
   Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
            `Slist0
-             (Gram.srules nonterminalsclear
+             (Gram.srules (Gram.name_of_entry nonterminalsclear)
                 [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
                    (Gram.mk_action
                       (fun (x : 'a_lident)  (_loc : FanLoc.t)  ->
@@ -185,7 +185,7 @@ let _ =
 let _ =
   Gram.extend (extend_header : 'extend_header Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Skeyword "(";
            `Snterm (Gram.obj (qualid : 'qualid Gram.t ));
            `Skeyword ":";
@@ -208,7 +208,7 @@ let _ =
               (fun (_loc : FanLoc.t)  -> ((None, (gm ())) : 'extend_header ))))])]);
   Gram.extend (extend_body : 'extend_body Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (extend_header : 'extend_header Gram.t ));
            `Sopt (`Snterm (Gram.obj (locals : 'locals Gram.t )));
            `Slist1 (`Snterm (Gram.obj (entry : 'entry Gram.t )))],
@@ -219,7 +219,7 @@ let _ =
                    let () = grammar_module_name := old in res : 'extend_body ))))])]);
   Gram.extend (delete_rule_header : 'delete_rule_header Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ))],
             (Gram.mk_action
                (fun (g : 'qualuid)  (_loc : FanLoc.t)  ->
@@ -227,7 +227,7 @@ let _ =
                    let () = grammar_module_name := g in old : 'delete_rule_header ))))])]);
   Gram.extend (delete_rule_body : 'delete_rule_body Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm
               (Gram.obj (delete_rule_header : 'delete_rule_header Gram.t ));
            `Slist0
@@ -239,12 +239,12 @@ let _ =
                    `Seq (_loc, (FanAst.sem_of_list es)) : 'delete_rule_body ))))])]);
   Gram.extend (delete_rules : 'delete_rules Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (name : 'name Gram.t ));
            `Skeyword ":";
            `Skeyword "[";
            `Slist1sep
-             ((Gram.srules delete_rules
+             ((Gram.srules (Gram.name_of_entry delete_rules)
                  [([`Slist0sep
                       ((`Snterm (Gram.obj (psymbol : 'psymbol Gram.t ))),
                         (`Skeyword ";"))],
@@ -258,7 +258,7 @@ let _ =
                   (expr_delete_rule _loc n sls : 'delete_rules ))))])]);
   Gram.extend (qualuid : 'qualuid Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"));
@@ -280,7 +280,7 @@ let _ =
                  | _ -> assert false)))])]);
   Gram.extend (qualid : 'qualid Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"));
@@ -302,7 +302,7 @@ let _ =
                  | _ -> assert false)))])]);
   Gram.extend (t_qualid : 't_qualid Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"));
@@ -330,7 +330,7 @@ let _ =
                  | _ -> assert false)))])]);
   Gram.extend (locals : 'locals Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Lid "local" -> true | _ -> false)),
                 (`Normal, "`Lid \"local\""));
@@ -345,17 +345,17 @@ let _ =
                   | _ -> assert false)))])]);
   Gram.extend (name : 'name Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (qualid : 'qualid Gram.t ))],
             (Gram.mk_action
                (fun (il : 'qualid)  (_loc : FanLoc.t)  ->
                   (mk_name _loc il : 'name ))))])]);
   Gram.extend (entry_name : 'entry_name Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (qualid : 'qualid Gram.t ));
            `Sopt
-             (Gram.srules entry_name
+             (Gram.srules (Gram.name_of_entry entry_name)
                 [([`Stoken
                      (((function | `STR (_,_) -> true | _ -> false)),
                        (`Normal, "`STR (_,_)"))],
@@ -376,7 +376,7 @@ let _ =
                      | None  -> `non), (mk_name _loc il)) : 'entry_name ))))])]);
   Gram.extend (entry : 'entry Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (entry_name : 'entry_name Gram.t ));
            `Skeyword ":";
            `Sopt (`Snterm (Gram.obj (position : 'position Gram.t )));
@@ -390,7 +390,7 @@ let _ =
                    mk_entry ~name:p ~pos ~levels : 'entry ))))])]);
   Gram.extend (position : 'position Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Uid ("First"|"Last") -> true | _ -> false)),
                 (`Normal, "`Uid (\"First\"|\"Last\")"))],
@@ -426,7 +426,7 @@ let _ =
                  | _ -> assert false)))])]);
   Gram.extend (level_list : 'level_list Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Skeyword "{";
            `Slist1 (`Snterm (Gram.obj (level : 'level Gram.t )));
            `Skeyword "}"],
@@ -438,9 +438,9 @@ let _ =
               (fun (l : 'level)  (_loc : FanLoc.t)  -> ([l] : 'level_list ))))])]);
   Gram.extend (level : 'level Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Sopt
-              (Gram.srules level
+              (Gram.srules (Gram.name_of_entry level)
                  [([`Stoken
                       (((function | `STR (_,_) -> true | _ -> false)),
                         (`Normal, "`STR (_,_)"))],
@@ -457,7 +457,7 @@ let _ =
                   (mk_level ~label ~assoc ~rules : 'level ))))])]);
   Gram.extend (assoc : 'assoc Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Uid ("LA"|"RA"|"NA") -> true | _ -> false)),
                 (`Normal, "`Uid (\"LA\"|\"RA\"|\"NA\")"))],
@@ -479,7 +479,7 @@ let _ =
                  | _ -> assert false)))])]);
   Gram.extend (rule_list : 'rule_list Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Skeyword "["; `Skeyword "]"],
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  -> ([] : 'rule_list ))));
@@ -492,12 +492,12 @@ let _ =
                  (retype_rule_list_without_patterns _loc rules : 'rule_list ))))])]);
   Gram.extend (rule : 'rule Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Slist0sep
               ((`Snterm (Gram.obj (psymbol : 'psymbol Gram.t ))),
                 (`Skeyword ";"));
            `Sopt
-             (Gram.srules rule
+             (Gram.srules (Gram.name_of_entry rule)
                 [([`Skeyword "->"; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
                    (Gram.mk_action
                       (fun (act : 'expr)  _  (_loc : FanLoc.t)  ->
@@ -508,10 +508,10 @@ let _ =
                   'rule ))))])]);
   Gram.extend (psymbol : 'psymbol Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (symbol : 'symbol Gram.t ));
            `Sopt
-             (Gram.srules psymbol
+             (Gram.srules (Gram.name_of_entry psymbol)
                 [([`Skeyword "{";
                   `Snterm (Gram.obj (pattern : 'pattern Gram.t ));
                   `Skeyword "}"],
@@ -529,13 +529,13 @@ let _ =
                    | None  -> s : 'psymbol ))))])]);
   Gram.extend (symbol : 'symbol Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Uid ("L0"|"L1") -> true | _ -> false)),
                 (`Normal, "`Uid (\"L0\"|\"L1\")"));
            `Sself;
            `Sopt
-             (Gram.srules symbol
+             (Gram.srules (Gram.name_of_entry symbol)
                 [([`Stoken
                      (((function | `Uid "SEP" -> true | _ -> false)),
                        (`Normal, "`Uid \"SEP\""));
@@ -682,7 +682,7 @@ let _ =
                  | _ -> assert false)));
          ([`Snterm (Gram.obj (name : 'name Gram.t ));
           `Sopt
-            (Gram.srules symbol
+            (Gram.srules (Gram.name_of_entry symbol)
                [([`Stoken
                     (((function | `Uid "Level" -> true | _ -> false)),
                       (`Normal, "`Uid \"Level\""));
@@ -706,7 +706,7 @@ let _ =
              (((function | `Ant (("nt"|""),_) -> true | _ -> false)),
                (`Normal, "`Ant ((\"nt\"|\"\"),_)"));
           `Sopt
-            (Gram.srules symbol
+            (Gram.srules (Gram.name_of_entry symbol)
                [([`Stoken
                     (((function | `Uid "Level" -> true | _ -> false)),
                       (`Normal, "`Uid \"Level\""));
@@ -737,7 +737,7 @@ let _ =
               (fun _  (s : 'symbol)  _  (_loc : FanLoc.t)  -> (s : 'symbol ))))])]);
   Gram.extend (simple_patt : 'simple_patt Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
             (Gram.mk_action
                (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
@@ -807,7 +807,7 @@ let _ =
                   | _ -> assert false : 'simple_patt ))))])]);
   Gram.extend (internal_patt : 'internal_patt Gram.t )
     (None,
-      [((Some "as"), None,
+      [("as", None,
          [([`Sself;
            `Skeyword "as";
            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
@@ -815,12 +815,12 @@ let _ =
                (fun (s : 'a_lident)  _  (p1 : 'internal_patt) 
                   (_loc : FanLoc.t)  ->
                   (`Alias (_loc, p1, s) : 'internal_patt ))))]);
-      ((Some "|"), None,
+      ("|", None,
         [([`Sself; `Skeyword "|"; `Sself],
            (Gram.mk_action
               (fun (p2 : 'internal_patt)  _  (p1 : 'internal_patt) 
                  (_loc : FanLoc.t)  -> (`Or (_loc, p1, p2) : 'internal_patt ))))]);
-      ((Some "simple"), None,
+      ("simple", None,
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"))],
@@ -845,7 +845,7 @@ let _ =
                 (p : 'internal_patt ))))])]);
   Gram.extend (pattern : 'pattern Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Lid _ -> true | _ -> false)),
                 (`Normal, "`Lid _"))],
@@ -873,7 +873,7 @@ let _ =
                  'pattern ))))])]);
   Gram.extend (string : 'string Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `STR (_,_) -> true | _ -> false)),
                 (`Normal, "`STR (_,_)"))],
@@ -892,7 +892,7 @@ let _ =
                  | _ -> assert false)))])]);
   Gram.extend (symbol : 'symbol Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Uid ("FOLD0"|"FOLD1") -> true | _ -> false)),
                 (`Normal, "`Uid (\"FOLD0\"|\"FOLD1\")"));
@@ -926,7 +926,7 @@ let _ =
                  | _ -> assert false)))])]);
   Gram.extend (simple_expr : 'simple_expr Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
                (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
@@ -958,5 +958,3 @@ let _ =
   AstQuotation.add_quotation (d, "symbol") psymbol
     ~mexpr:FanGrammar.Expr.meta_symbol ~mpatt:FanGrammar.Patt.meta_symbol
     ~expr_filter:(fun x  -> x) ~patt_filter:(fun x  -> x)
-let _ =
-  Options.add ("-meta_action", (FanArg.Set meta_action), "Undocumented")

@@ -52,7 +52,7 @@ and desc =
     | Dparser of stream -> Action.t ]
 and level = {
     assoc   : assoc         ;
-    lname   : option string ;
+    lname   : (* option *) string ;
     lsuffix : tree          ;
     lprefix : tree          }
 and symbol =
@@ -82,7 +82,7 @@ and node = {
   |};
 type production= (list symbol * Action.t);
 
-type olevel = (option string * option assoc * list production);
+type olevel = ((* option *) string * option assoc * list production);
   
 type extend_statment = (option position * list olevel);
   

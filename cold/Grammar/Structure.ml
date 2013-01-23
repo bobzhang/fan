@@ -34,7 +34,7 @@ and desc =
   | Dparser of (stream -> Action.t) 
 and level =  {
   assoc: assoc;
-  lname: string option;
+  lname: string;
   lsuffix: tree;
   lprefix: tree} 
 and symbol =
@@ -52,7 +52,7 @@ and node =  {
   son: tree;
   brother: tree} 
 type production = (symbol list* Action.t) 
-type olevel = (string option* assoc option* production list) 
+type olevel = (string* assoc option* production list) 
 type extend_statment = (position option* olevel list) 
 type delete_statment = symbol list 
 type ('a,'b,'c) fold =

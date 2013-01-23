@@ -224,7 +224,9 @@ let rec make_expr entry (tvar:string) x =
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
     | `Srules (_loc, rl) ->
-        {| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
+        {| $(id:gm()).srules
+          ($(id:gm()).name_of_entry
+             $(entry.expr)) $(make_expr_rules _loc entry rl "") |}
     | `Stok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ] in aux  tvar x
 

@@ -3,10 +3,8 @@
 
 open Structure;
 open Format;
+open LibUtil;
 
-
-(* {[[> `Skeyword of 'a | `Stoken of 'b ] ->
-  [> `Skeyword of 'c | `Stoken of 'd ] -> bool ]}*)
 let higher s1 s2 =
   match (s1, s2) with
   [ (#terminal,#terminal) -> false
@@ -38,7 +36,7 @@ let empty_lev lname assoc =
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd};
 
 (* here [name] is only used to emit error message*)  
-let change_lev (* entry *) lev name lname assoc =
+let change_lev lev name lname assoc =
   let a =
     match assoc with
     [ None -> lev.assoc
@@ -48,12 +46,13 @@ let change_lev (* entry *) lev name lname assoc =
         else ();
         a
     end ] in begin 
-    match lname with
-    [ Some n ->
-      if lname <> lev.lname && !(FanConfig.gram_warning_verbose) then 
-        eprintf "<W> Level label %S ignored@." n
-      else ()
-    | None -> () ];
+    (* match lname with *)
+    (* [ Some n -> *)
+      (* FIXME change the code generator to make it more precise *)
+      if  lname<> "" && lname <> lev.lname && !(FanConfig.gram_warning_verbose) then 
+        eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname
+      else ();
+    (* | None -> () ]; *)
     { (lev) with assoc=a}
     end ;
 
@@ -149,16 +148,18 @@ let insert_tokens gram symbols =
     | LocAct (_, _) | DeadEnd -> () ] in
   List.iter insert symbols ;
 
-(* given an [entry] [symbols] and [action] a tree, return a new [tree]*)
-let insert_production_in_tree entry (gsymbols, action) tree =
+(* given an [entry] [symbols] and [action] a tree, return a new [tree]
+   [ename] is only used for error message
+ *)
+let insert_production_in_tree (* entry *)ename (gsymbols, action) tree =
   let rec try_insert s sl tree =
     match tree with
     [ Node ( {node ; son ; brother} as x) ->
       if Tools.eq_symbol s node then
-        Some (Node { (x) with son = insert sl son})
+        Some (Node { x with son = insert sl son})
       else
         match try_insert s sl brother with
-        [ Some y -> Some (Node {(x) with brother=y})
+        [ Some y -> Some (Node {x with brother=y})
         | None ->
             if higher node s || (derive_eps s && not (derive_eps node)) then
               (* node has higher priority *)
@@ -177,27 +178,50 @@ let insert_production_in_tree entry (gsymbols, action) tree =
         | LocAct (old_action, action_list) ->
             let () =
               if !(FanConfig.gram_warning_verbose) then
-                eprintf "<W> Grammar extension: in [%s] some rule has been masked@." entry.ename
+                eprintf "<W> Grammar extension: in [%s] some rule has been masked@."
+                  ename
               else ()in
             LocAct action [old_action :: action_list]
         | DeadEnd -> LocAct action [] ] ] in 
   insert gsymbols tree ;
   
-let insert_production_in_level entry e1 (symbols, action) slev =
+let insert_production_in_level ename e1 (symbols, action) slev =
   if e1 then
-    {(slev) with lsuffix = insert_production_in_tree entry (symbols, action) slev.lsuffix}
+    {slev with lsuffix = insert_production_in_tree ename (symbols, action) slev.lsuffix}
   else
-    {(slev) with lprefix = insert_production_in_tree entry (symbols ,action) slev.lprefix};
+    {slev with lprefix = insert_production_in_tree ename (symbols ,action) slev.lprefix};
 
+
+let insert_to_exist_level entry (la:level) (lb:olevel) =
+  let (lname1,assoc1,rules1) = lb in
+  if not (la.lname = lname1 && Some la.assoc = assoc1) then
+    failwith "insert_to_exist_level does not agree (name)"
+  else  begin 
+    List.fold_right
+      (fun (symbols,action) lev ->
+        let symbols = List.map (change_to_self entry) symbols in
+        let () = List.iter (check_gram entry) symbols in
+        let (e1,symbols) = get_initial symbols in
+        let () = insert_tokens entry.egram symbols in 
+        insert_production_in_level entry.ename e1 (symbols,action) lev)  rules1 la;
+  end;
+let insert_level entry (lb:olevel) : level =
+  let (lname,assoc,rules) = lb in
+  let  la = empty_lev lname assoc in
+    List.fold_right
+      (fun (symbols,action) lev ->
+        let symbols = List.map (change_to_self entry) symbols in
+        let () = List.iter (check_gram entry) symbols in
+        let (e1,symbols) = get_initial symbols in
+        let () = insert_tokens entry.egram symbols in 
+        insert_production_in_level entry.ename e1 (symbols,action) lev) rules la;
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
-let insert_olevels_in_levels entry position rules =
+let insert_olevels_in_levels entry position olevels =
   let elev = match entry.edesc with
     [ Dlevels elev -> elev
-    | Dparser _ -> begin
-        eprintf "Error: entry not extensible: %S@." entry.ename;
-        failwith "Grammar.extend"
-    end ] in
-  if rules = [] then
+    | Dparser _ ->
+        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in
+  if olevels = [] then
     elev
   else
     let (levs1, make_lev, levs2) = find_level ?position entry  elev in
@@ -212,9 +236,9 @@ let insert_olevels_in_levels entry position rules =
                 let () = List.iter (check_gram entry) symbols in 
                 let (e1, symbols) = get_initial symbols in 
                 let () =   insert_tokens entry.egram symbols in 
-                insert_production_in_level entry e1 (symbols, action) lev)
+                insert_production_in_level entry.ename e1 (symbols, action) lev)
               rules lev in ([lev :: levs], empty_lev))
-        ([], make_lev) rules in
+        ([], make_lev)  olevels in
       levs1 @ List.rev levs @ levs2 ;
 
 (* mutate the [estart] and [econtinue]

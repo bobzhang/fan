@@ -46,7 +46,8 @@ and tree = Grammar.Structure.tree
 and node =  Grammar.Structure.node 
 
 type production = symbol list * Action.t
-type olevel = string option * assoc option * production list
+(* FIXME duplicate with Grammar/Structure *)      
+type olevel = string (* option *) * assoc option * production list
 type extend_statment = position option * olevel list
 type delete_statment = symbol list
 
@@ -124,7 +125,7 @@ val parse_file_with: rule:'a t -> string -> 'a
 
 val delete_rule:  'a t -> symbol list -> unit
 
-val srules:  'a t -> (symbol list * Action.t) list ->  [> `Stree of tree ]
+val srules:  (* 'a t *) string -> (symbol list * Action.t) list ->  [> `Stree of tree ]
 
 val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
 
@@ -151,3 +152,5 @@ val levels_of_entry: 'a t -> level list option
 val find_level: ?position:position ->  'a t -> level
     
 val token_stream_of_string: string -> stream
+
+val name_of_entry: 'a t -> string    

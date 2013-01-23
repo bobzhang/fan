@@ -19,7 +19,7 @@ let define ~expr  ~patt  eo x =
    | Some ([],e) ->
        (Gram.extend (expr : 'expr Gram.t )
           ((Some (`Level "simple")),
-            [(None, None,
+            [("", None,
                [([`Stoken
                     (((function
                        | `Uid __fan__x when x = __fan__x -> true
@@ -32,7 +32,7 @@ let define ~expr  ~patt  eo x =
                         | _ -> assert false)))])]);
         Gram.extend (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
-            [(None, None,
+            [("", None,
                [([`Stoken
                     (((function
                        | `Uid __fan__x when x = __fan__x -> true
@@ -47,7 +47,7 @@ let define ~expr  ~patt  eo x =
    | Some (sl,e) ->
        (Gram.extend (expr : 'expr Gram.t )
           ((Some (`Level "apply")),
-            [(None, None,
+            [("", None,
                [([`Stoken
                     (((function
                        | `Uid __fan__x when x = __fan__x -> true
@@ -70,7 +70,7 @@ let define ~expr  ~patt  eo x =
                         | _ -> assert false)))])]);
         Gram.extend (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
-            [(None, None,
+            [("", None,
                [([`Stoken
                     (((function
                        | `Uid __fan__x when x = __fan__x -> true

@@ -49,7 +49,7 @@ let apply () =
   and end_or_in: 'end_or_in Gram.t = grammar_entry_create "end_or_in" in
   Gram.extend (expr : 'expr Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Snterm (Gram.obj (start_debug : 'start_debug Gram.t ));
            `Stoken
              (((function | `Lid _ -> true | _ -> false)),
@@ -79,7 +79,7 @@ let apply () =
                   | _ -> assert false)))])]);
   Gram.extend (end_or_in : 'end_or_in Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Skeyword "end"],
             (Gram.mk_action
                (fun _  (_loc : FanLoc.t)  -> (None : 'end_or_in ))));
@@ -89,7 +89,7 @@ let apply () =
                  (Some e : 'end_or_in ))))])]);
   Gram.extend (start_debug : 'start_debug Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Stoken
               (((function | `Lid "debug" -> true | _ -> false)),
                 (`Normal, "`Lid \"debug\""))],

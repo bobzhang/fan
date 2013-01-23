@@ -6,7 +6,6 @@ module MetaAst = FanAst.Make(Lib.Meta.MetaGhostLoc)
 open FanGrammar
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 let prefix = "__fan_"
-let meta_action = ref false
 let ghost = FanLoc.ghost
 let grammar_module_name = ref (`Uid (ghost, "Gram"))
 let gm () =
@@ -162,7 +161,13 @@ let rec make_expr entry (tvar : string) x =
             (`App
                (_loc,
                  (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))))),
-                 (entry.expr))), (make_expr_rules _loc entry rl ""))
+                 (`App
+                    (_loc,
+                      (`Id
+                         (_loc,
+                           (`Dot
+                              (_loc, (gm ()), (`Lid (_loc, "name_of_entry")))))),
+                      (entry.expr))))), (make_expr_rules _loc entry rl ""))
     | `Stok (_loc,match_fun,attr,descr) ->
         `App
           (_loc, (`Vrn (_loc, "Stoken")),
@@ -256,16 +261,6 @@ let text_of_action (_loc : loc) (psl : symbol list)
                  (`Id (_loc, (`Lid (_loc, (prefix ^ (string_of_int i))))))
                  (make_ctyp s.styp tvar) in
              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))) e psl in
-  let txt =
-    if meta_action.contents
-    then
-      `App
-        (_loc,
-          (`Id
-             (_loc,
-               (`Dot (_loc, (`Uid (_loc, "Obj")), (`Lid (_loc, "magic")))))),
-          (MetaAst.Expr.meta_expr _loc txt))
-    else txt in
   `App
     (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
       txt)
@@ -296,10 +291,10 @@ let expr_delete_rule _loc n (symbolss : symbol list list) =
 let mk_name _loc i =
   { expr = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
-let text_of_entry _loc e =
+let text_of_entry e =
+  let _loc = (e.name).loc in
   let ent =
     let x = e.name in
-    let _loc = (e.name).loc in
     `Constraint
       (_loc, (x.expr),
         (`App
@@ -314,11 +309,8 @@ let text_of_entry _loc e =
       (fun level  txt  ->
          let lab =
            match level.label with
-           | Some lab ->
-               `App
-                 (_loc, (`Id (_loc, (`Uid (_loc, "Some")))),
-                   (`Str (_loc, lab)))
-           | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
+           | Some lab -> `Str (_loc, lab)
+           | None  -> `Str (_loc, "") in
          let ass =
            match level.assoc with
            | Some ass ->
@@ -335,8 +327,13 @@ let text_of_entry _loc e =
                        (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod)))))))),
                txt) in
          txt) e.levels (`Id (_loc, (`Uid (_loc, "[]")))) in
-  (ent, pos, txt)
-let let_in_of_extend _loc gram gl default =
+  `App
+    (_loc,
+      (`App
+         (_loc,
+           (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
+           ent)), (`Tup (_loc, (`Com (_loc, pos, txt)))))
+let let_in_of_extend _loc gram locals default =
   let entry_mk =
     match gram with
     | Some g ->
@@ -361,7 +358,7 @@ let let_in_of_extend _loc gram gl default =
                       (`Quote
                          (_loc, (`Normal _loc), (`Some (`Lid (_loc, x))))))))))
     | _ -> failwith "internal error in the Grammar extension" in
-  match gl with
+  match locals with
   | None |Some [] -> default
   | Some ll ->
       let locals = and_of_list' (List.map local_binding_of_name ll) in
@@ -372,21 +369,9 @@ let let_in_of_extend _loc gram gl default =
                entry_mk)), (`LetIn (_loc, (`ReNil _loc), locals, default)))
 let text_of_functorial_extend _loc gram locals el =
   let args =
-    let el =
-      List.map
-        (fun e  ->
-           let (ent,pos,txt) = text_of_entry (e.name).loc e in
-           `App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`Id
-                       (_loc,
-                         (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
-                    ent)), (`Tup (_loc, (`Com (_loc, pos, txt)))))) el in
+    let el = List.map text_of_entry el in
     match el with
     | [] -> `Id (_loc, (`Uid (_loc, "()")))
-    | e::[] -> e
     | _ -> seq (sem_of_list' el) in
   let_in_of_extend _loc gram locals args
 let mk_tok _loc ?restrict  ~pattern  styp =

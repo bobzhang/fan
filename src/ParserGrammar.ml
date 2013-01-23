@@ -36,12 +36,12 @@ FanConfig.antiquotations := true;
    *)
   nonterminals:
   [ [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
-|  qualuid{t} -> `static(t)]{t};
+  |  qualuid{t} -> `static(t)]{t};
     L0
       [ `Lid x  -> (_loc,x,None,None)
-| "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
-| "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-| "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
+  | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
+  | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
+  | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
     ->
 with str_item
 let mk =

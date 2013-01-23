@@ -177,11 +177,11 @@ let fan_quots = Gram.mk_dynamic g "fan_quots"
 let _ =
   Gram.extend (fan_quot : 'fan_quot Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Skeyword "derive";
            `Skeyword "(";
            `Slist1
-             (Gram.srules fan_quot
+             (Gram.srules (Gram.name_of_entry fan_quot)
                 [([`Stoken
                      (((function | `Lid _ -> true | _ -> false)),
                        (`Normal, "`Lid _"))],
@@ -204,7 +204,7 @@ let _ =
                   (List.iter plugin_add plugins; `Nil _loc : 'fan_quot ))));
          ([`Skeyword "unload";
           `Slist1sep
-            ((Gram.srules fan_quot
+            ((Gram.srules (Gram.name_of_entry fan_quot)
                 [([`Stoken
                      (((function | `Lid _ -> true | _ -> false)),
                        (`Normal, "`Lid _"))],
@@ -247,9 +247,9 @@ let _ =
                  (show_code := false; `Nil _loc : 'fan_quot ))))])]);
   Gram.extend (fan_quots : 'fan_quots Gram.t )
     (None,
-      [(None, None,
+      [("", None,
          [([`Slist0
-              (Gram.srules fan_quots
+              (Gram.srules (Gram.name_of_entry fan_quots)
                  [([`Snterm (Gram.obj (fan_quot : 'fan_quot Gram.t ));
                    `Skeyword ";"],
                     (Gram.mk_action
