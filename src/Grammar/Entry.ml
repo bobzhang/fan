@@ -20,7 +20,9 @@ let mk_dynamic g n ={
   ename = n;
   estart = empty_entry n;
   econtinue _ _ _ = parser [];
-  edesc = Dlevels [] };
+  edesc = Dlevels [] ;
+  freezed = false;     
+};
 
 (* [estart] *)  
 let action_parse entry (ts: stream) : Action.t =
@@ -69,13 +71,15 @@ let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs);
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string entry loc str);
 
+(* stream parser is not extensible *)  
 let of_parser g n (p : stream -> 'a)   =
   let f ts = Action.mk (p ts) in {
   egram = g;
   ename = n;
   estart _ = f;
   econtinue _ _ _ = parser [];
-  edesc = Dparser f
+  edesc = Dparser f;
+  freezed = true (* false *);    
 };
 
 let setup_parser e (p : stream -> 'a) =

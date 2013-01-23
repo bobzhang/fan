@@ -17,8 +17,9 @@ module Action  = struct
   let getf2: t -> 'a -> 'b -> 'c = Obj.obj ;
 end;
 
+(* {:fans|derive (OIter ); |}; *)
 
-
+{:ocaml|
 type cont_parse 'a = FanLoc.t -> Action.t -> parse 'a;
     
 type description =
@@ -38,12 +39,14 @@ type gram = {
     glexer          : FanLoc.t -> XStream.t char -> stream;
 };
 
-type internal_entry =
-    { egram     : gram;
-      ename     : string;
-      estart    : mutable int -> parse Action.t;
-      econtinue : mutable int -> cont_parse Action.t;
-      edesc     : mutable desc }
+type internal_entry = {
+    egram     : gram;
+    ename     : string;
+    estart    : mutable int -> parse Action.t;
+    econtinue : mutable int -> cont_parse Action.t;
+    edesc     : mutable desc;
+    freezed : mutable bool;  
+    }
 and desc =
     [ Dlevels of list level
     | Dparser of stream -> Action.t ]
@@ -76,7 +79,7 @@ and node = {
     node    : symbol ;
     son     : tree   ;
     brother : tree   };
-
+  |};
 type production= (list symbol * Action.t);
 
 type olevel = (option string * option assoc * list production);
