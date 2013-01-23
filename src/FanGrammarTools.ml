@@ -114,45 +114,44 @@ let  make_ctyp (styp:styp) tvar : ctyp =
 (* transform [text] to [expr] which represents [symbol]
    compute the [lhs]
  *)    
-let rec make_expr entry tvar = with expr
-  fun
-  [ `TXmeta (_loc, n, tl, e, t) ->
-    let el = list_of_list _loc (List.map (fun t -> make_expr entry "" t ) tl) in 
-    let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in 
-    {| `Smeta ($ns, $el,
+let rec make_expr entry (tvar:string) x =
+  with expr
+  let rec aux tvar x =
+    match x with
+    [ `TXmeta (_loc, n, tl, e, t) ->
+      let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in 
+      let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in 
+      {| `Smeta ($ns, $el,
                ($(id:gm()).Action.mk $(typing e (make_ctyp t tvar)))) |}
-  | `TXlist (_loc, min, t, ts) ->
-      let txt = make_expr entry "" t.text in
-      match (min, ts) with
-      [ (false, None) -> {| `Slist0 $txt |} 
-      | (true, None) ->  {| `Slist1 $txt |} 
-      | (false, Some s) ->
-          let x = make_expr entry tvar s.text in
-          {| `Slist0sep ($txt,$x) |}
-      | (true, Some s) ->
-            let x = make_expr entry tvar s.text in
-            {| `Slist1sep ($txt,$x) |} ]
-  | `TXnext _loc ->  {| `Snext |}
-  | `TXself _loc ->  {| `Sself|}
-  | `TXkwd (_loc, kwd) ->  {| `Skeyword $str:kwd |}
-
-  | `TXnterm (_loc, n, lev) ->
-      match lev with
-      [ Some lab ->
-        {| `Snterml
-          (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(lid:n.tvar) )), $str:lab) |} 
-      | None ->
-          if n.tvar = tvar then {| `Sself|}
-          else
-            {|
-            `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(lid:n.tvar)))  |}   ]
-  | `TXopt (_loc, t) -> {| `Sopt $(make_expr entry "" t) |}
-  | `TXtry (_loc, t) -> {| `Stry $(make_expr entry "" t) |}
-  | `TXpeek (_loc, t) -> {| `Speek $(make_expr entry "" t) |}
-  | `TXrules (_loc, rl) ->
-      {| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
-  | `TXtok (_loc, match_fun, attr, descr) ->
-      {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ]
+    | `TXlist (_loc, min, t, ts) ->
+        let txt = aux "" t.text in
+        match  ts with
+        [  None -> if min then  {| `Slist1 $txt |} else {| `Slist0 $txt |} 
+        | Some s ->
+            let x = aux tvar s.text in
+            if min then {| `Slist1sep ($txt,$x)|} else {| `Slist0sep ($txt,$x) |} ]
+    | `TXnext _loc ->  {| `Snext |}
+    | `TXself _loc ->  {| `Sself|}
+    | `TXkwd (_loc, kwd) ->  {| `Skeyword $str:kwd |}
+    | `TXnterm (_loc, n, lev) ->
+        let obj = {| ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(lid:n.tvar)))|} in 
+        match lev with
+       [ Some lab ->
+         {| `Snterml ($obj,$str:lab)|}
+         (* {| `Snterml *)
+         (*   (($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(lid:n.tvar) )), $str:lab) |}  *)
+       | None ->
+           if n.tvar = tvar then {| `Sself|}
+           else
+             {| `Snterm $obj |}
+             (* {| `Snterm ($(id:gm()).obj ($(n.expr) : $(id:gm()).t '$(lid:n.tvar)))  |} *)   ]
+    | `TXopt (_loc, t) -> {| `Sopt $(aux "" t) |}
+    | `TXtry (_loc, t) -> {| `Stry $(aux "" t) |}
+    | `TXpeek (_loc, t) -> {| `Speek $(aux "" t) |}
+    | `TXrules (_loc, rl) ->
+        {| $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") |}
+    | `TXtok (_loc, match_fun, attr, descr) ->
+      {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ] in aux  tvar x
 (* the [rhs] was computed, compute the [lhs] *)    
 and make_expr_rules _loc n rl tvar = with expr
   list_of_list _loc
@@ -163,56 +162,51 @@ and make_expr_rules _loc n rl tvar = with expr
 (* generate action, collecting patterns into action
    [rtvar] stands for the type of the return value
    [tvar] refers to the current entry's type
+
+   It is in charge of generating code like this 
+   {[
+   (Gram.mk_action
+               (fun (a : 'match_case)  _  (e : 'expr)  _  (_loc : FanLoc.t) 
+                  -> (`Try (_loc, e, a) : 'expr )))
+   ]}
  *)
-let text_of_action _loc  psl  rtvar act tvar = with expr
+let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
+    (rtvar:string)  (tvar:string) = with expr
   let locid = {:patt| $(lid:!FanLoc.name) |} in 
   let act =
     match act with
-    [ Some act -> act (* get the action *)
-    | None -> {| () |} ] in
-  let (_,tok_match_pl) = List.fold_lefti
-    (fun i tok_match_pl x ->
-      match x with
+    [ Some act -> act | None -> {| () |} ] in
+  (* collect the patterns *)
+  let (_,tok_match_pl) =
+    List.fold_lefti
+      (fun i ((oe,op) as ep)  x -> match x with 
       [ {pattern=Some p ; text=`TXtok _;_ } ->
           let id = prefix ^ string_of_int i in
-          (Some
-             (match tok_match_pl with
-             [None -> ( {|$lid:id|}, p)
-             |Some (oe,op) ->
-                 ({| $lid:id, $oe |}, {:patt|$p,$op |}) ]))
-      | _ -> tok_match_pl]  ) None psl in
+          ([ {|$lid:id|} :: oe], [p:: op])
+      | _ ->  ep ]  ) ([],[])  psl in
   let e =
     let e1 = {| ($act : '$lid:rtvar ) |} in
-    let e2 =
       match tok_match_pl with
-      [ None -> e1
-      | Some ({| $t1, $t2 |}, {:patt@_| $p1, $p2 |}) ->
-          {|
-            match ($t1, $t2) with (* two and more patterns here *)
-            [ ($p1, $p2) -> $e1
-            | _ -> assert false ] |}
-      | Some (tok, match_) ->
-            {|
-            match $tok with
-            [ $pat:match_ -> $e1
-            | _ -> assert false ] |} ] in
-    {| fun ($locid : FanLoc.t) -> $e2 |} in (*FIXME hard coded Loc*)
-  (* add prefix now *)
+      [ ([],_) ->  {| fun ($locid :FanLoc.t) -> $e1 |}
+      | (e,p) ->
+          let (expr,patt) =
+            match (e,p) with [([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p)] in 
+          {|fun ($locid :FanLoc.t) ->
+            match $expr with [ $(pat:patt) -> $e1 | _ -> assert false]|} ] in
   let (_,txt) =
     List.fold_lefti
       (fun i txt s ->
         match s.pattern with
-        [ None | Some {:patt@_| _ |} -> {| fun _ -> $txt |}
-        | Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
-            let p = (* make_ctyp_patt *)
+        [Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
+            let p = 
               typing {:patt| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in  {| fun $p -> $txt |}
         | Some p when FanAst.is_irrefut_patt p ->
             let p = typing p (make_ctyp s.styp tvar) in
             {| fun $p -> $txt |}
+        | None -> {| fun _ -> $txt |}
         | Some _ ->
             let p =
-              typing {:patt| $(lid:prefix^string_of_int i) |}
-                (make_ctyp s.styp tvar)  in
+              typing {:patt| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |} ])  e psl in
   let txt =
     if !meta_action then
@@ -225,7 +219,7 @@ let mk_srules loc t rl tvar =
   List.map
     (fun r ->
       let sl = [ s.text | s <- r.prod ] in
-      let ac = text_of_action loc r.prod t r.action tvar in
+      let ac = text_of_action loc r.prod t ?action:r.action tvar in
       (sl, ac)) rl ;
     
 

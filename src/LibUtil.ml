@@ -7,6 +7,8 @@ let failwithf fmt = ksprintf failwith fmt  ;
 let prerr_endlinef fmt = ksprintf prerr_endline fmt  ;
 let invalid_argf fmt = kprintf invalid_arg fmt;
 (* let undefined = failwith "undefined"; *)
+let some x = Some x;
+let none = None;  
 let memoize f =
   let cache = Hashtbl.create 101 in
   fun v -> try Hashtbl.find cache v with Not_found -> begin 
@@ -151,7 +153,9 @@ module List = struct
         [ Some y -> y
         | None -> find_map f xs] ];
 
-  (* include BatList; *)
+  (* include BatList;
+     return a pair [(int,acc)]
+   *)
   let fold_lefti f acc ls =
     fold_left (fun (i,acc) x -> (i+1,f i acc x) ) (0,acc) ls;
 

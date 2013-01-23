@@ -33,7 +33,7 @@ val make_ctyp : styp -> string -> ctyp
 
 val text_of_action :
   loc ->
-  symbol list -> string -> expr option -> string -> expr
+  symbol list -> ?action:expr -> string   -> string -> expr
 val mk_srules :
   loc ->
   string ->

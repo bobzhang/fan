@@ -10352,6 +10352,7 @@ let rec amp_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Amp (_loc, t, (amp_of_list ts))
+let tup x = let _loc = loc_of x in `Tup (_loc, x)
 let tuple_com y =
   match y with
   | [] -> failwith "tuple_com empty"
