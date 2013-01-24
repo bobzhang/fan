@@ -36,13 +36,6 @@ let level_number entry lab =
   | Dparser _ -> raise Not_found ] ;
     
 
-
-let entry_of_symb entry = fun
-  [ `Sself | `Snext -> entry
-  | `Snterm e -> e
-  | `Snterml (e, _) -> e
-  | _ -> raise XStream.Failure ] ;
-
 (* in case of syntax error, the system attempts to recover the error by applying
    the [continue] function of the previous symbol(if the symbol is a call to an entry),
    so there's no behavior difference between [LA] and [NA]
@@ -148,9 +141,7 @@ and parser_of_symbol entry s nlevn =
            's >] ->kont [a :: al] s
          | [< >] -> al ] in
      parser [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
-  | `Sopt s ->
-      let ps = aux s  in
-      Comb.opt ps ~f:Action.mk
+  | `Sopt s -> let ps = aux s  in Comb.opt ps ~f:Action.mk
   | `Stry s -> let ps = aux s in Comb.tryp ps
   | `Speek s -> let ps = aux s in Comb.peek ps
   | `Stree t ->
