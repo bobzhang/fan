@@ -30,7 +30,7 @@ let apply () =
       [("", `LA,
          [([`Skeyword "parser";
            `Sopt
-             (Gram.srules (Gram.name_of_entry expr)
+             (Gram.srules
                 [([`Stoken
                      (((function | `Uid _ -> true | _ -> false)),
                        (`Normal, "`Uid _"))],
@@ -54,7 +54,7 @@ let apply () =
           `Skeyword "with";
           `Skeyword "parser";
           `Sopt
-            (Gram.srules (Gram.name_of_entry expr)
+            (Gram.srules
                [([`Stoken
                     (((function | `Uid _ -> true | _ -> false)),
                       (`Normal, "`Uid _"))],
@@ -142,7 +142,7 @@ let apply () =
       [("", `LA,
          [([`Skeyword "[<";
            `Sopt
-             (Gram.srules (Gram.name_of_entry stream_begin)
+             (Gram.srules
                 [([`Skeyword "!";
                   `Stoken
                     (((function | `Uid _ -> true | _ -> false)),
@@ -197,7 +197,7 @@ let apply () =
       [("", `LA,
          [([`Snterm (Gram.obj (patt : 'patt Gram.t ));
            `Sopt
-             (Gram.srules (Gram.name_of_entry stream_patt_comp)
+             (Gram.srules
                 [([`Skeyword "when";
                   `Snterm (Gram.obj (stream_expr : 'stream_expr Gram.t ))],
                    (Gram.mk_action
@@ -222,7 +222,7 @@ let apply () =
       [("", `LA,
          [([`Snterm (Gram.obj (stream_patt_comp : 'stream_patt_comp Gram.t ));
            `Sopt
-             (Gram.srules (Gram.name_of_entry stream_patt_comp_err)
+             (Gram.srules
                 [([`Skeyword "??";
                   `Snterm (Gram.obj (stream_expr : 'stream_expr Gram.t ))],
                    (Gram.mk_action

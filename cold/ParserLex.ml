@@ -13,7 +13,7 @@ let _ =
       [("", `LA,
          [([`Skeyword "|";
            `Slist0sep
-             ((Gram.srules (Gram.name_of_entry lex)
+             ((Gram.srules
                  [([`Snterm (Gram.obj (regexp : 'regexp Gram.t ));
                    `Skeyword "->";
                    `Snterm (Gram.obj (sequence : 'sequence Gram.t ))],
@@ -30,7 +30,7 @@ let _ =
       [("", `LA,
          [([`Smeta
               (["FOLD1"; "SEP"],
-                [Gram.srules (Gram.name_of_entry declare_regexp)
+                [Gram.srules
                    [([`Stoken
                         (((function | `Lid _ -> true | _ -> false)),
                           (`Normal, "`Lid _"));

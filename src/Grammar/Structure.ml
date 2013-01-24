@@ -53,6 +53,10 @@ and desc =
 and level = {
     assoc   : assoc         ;
     lname   : (* option *) string ;
+    
+    productions : list production;
+    (* the raw productions stored in the level*)
+    
     lsuffix : tree          ;
     lprefix : tree          }
 and symbol =
@@ -78,9 +82,10 @@ and tree = (* internal struccture *)
 and node = {
     node    : symbol ;
     son     : tree   ;
-    brother : tree   };
+    brother : tree   }
+and production= (list symbol * Action.t);  
   |};
-type production= (list symbol * Action.t);
+
 
 (* FIXME duplciate with Gram.mli*)
 type olevel = (string * assoc * list production);

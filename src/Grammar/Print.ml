@@ -74,8 +74,8 @@ class text_grammar= object(self:'self)
   method rules f  rules= begin
     pp f "@[<hv0>[ %a]@]" (self#list self#rule ~sep:("@;| ")) rules
   end;
-  method level f  = fun [ {assoc;lname;lsuffix;lprefix} ->
-    (* [lsuffix] [lprefix] *)
+  method level f  = fun [ {assoc;lname;lsuffix;lprefix;_} ->
+    (* FIXME we have original [productions] not used *)
     let rules = [ [`Sself::t] | t <- flatten_tree lsuffix] @ flatten_tree lprefix in 
     pp f "%S %a@;%a" (* (self#option (fun f s -> pp f "%S" s)) *) lname self#assoc assoc self#rules rules ];
   method assoc f = fun
@@ -114,7 +114,8 @@ class dump_grammar = object(self:'self)
     (* end in *)
     TreePrint.print_sons "|-" (fun [Bro (s, ls) -> (string_of_symbol s, ls)]) "" f
       (get_brothers tree);
-  method! level f = fun [{assoc;lname;lsuffix;lprefix} ->
+  method! level f = fun [{assoc;lname;lsuffix;lprefix;_} ->
+    (* FIXME the original [productions] not used *)
     pp f "%S %a@;@[<hv2>suffix:@\n%a@]@;@[<hv2>prefix:@\n%a@]"
       (* (self#option (fun f s -> pp f "%S" s)) *) lname
       self#assoc assoc

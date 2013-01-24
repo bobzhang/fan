@@ -64,7 +64,7 @@ let apply () =
      (None,
        [("", `LA,
           [([`Stry
-               (Gram.srules (Gram.name_of_entry item)
+               (Gram.srules
                   [([`Snterm (Gram.obj (patt : 'patt Gram.t ));
                     `Skeyword "<-"],
                      (Gram.mk_action

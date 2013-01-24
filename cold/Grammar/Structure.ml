@@ -32,9 +32,11 @@ type internal_entry =
 and desc =  
   | Dlevels of level list
   | Dparser of (stream -> Action.t) 
-and level =  {
+and level = 
+  {
   assoc: assoc;
   lname: string;
+  productions: production list;
   lsuffix: tree;
   lprefix: tree} 
 and symbol =
@@ -51,7 +53,7 @@ and node =  {
   node: symbol;
   son: tree;
   brother: tree} 
-type production = (symbol list* Action.t) 
+and production = (symbol list* Action.t) 
 type olevel = (string* assoc* production list) 
 type extend_statment = (position option* olevel list) 
 type delete_statment = symbol list 

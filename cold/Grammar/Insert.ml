@@ -20,7 +20,7 @@ and tree_derive_eps: tree -> bool =
       ((derive_eps s) && (tree_derive_eps son)) || (tree_derive_eps bro)
   | DeadEnd  -> false
 let empty_lev lname assoc =
-  { assoc; lname; lsuffix = DeadEnd; lprefix = DeadEnd }
+  { assoc; lname; lsuffix = DeadEnd; lprefix = DeadEnd; productions = [] }
 let change_lev lev name lname assoc =
   if (assoc <> lev.assoc) && FanConfig.gram_warning_verbose.contents
   then eprintf "<W> Changing associativity of level %S aborted@." name;
@@ -88,23 +88,22 @@ and tree_check_gram entry =
   | LocAct _|DeadEnd  -> ()
 let get_initial =
   function | `Sself::symbols -> (true, symbols) | symbols -> (false, symbols)
-let insert_tokens gram symbols =
-  let rec insert =
-    function
-    | `Smeta (_,sl,_) -> List.iter insert sl
-    | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> insert s
-    | `Slist0sep (s,t) -> (insert s; insert t)
-    | `Slist1sep (s,t) -> (insert s; insert t)
-    | `Stree t -> tinsert t
-    | `Skeyword kwd -> using gram kwd
-    | `Snterm _|`Snterml (_,_)|`Snext|`Sself|`Stoken _ -> ()
-  and tinsert =
-    function
-    | Node { node = s; brother = bro; son } ->
-        (insert s; tinsert bro; tinsert son)
-    | LocAct (_,_)|DeadEnd  -> () in
-  List.iter insert symbols
-let insert_production_in_tree ename (gsymbols,action) tree =
+let rec using_symbols gram symbols = List.iter (using_symbol gram) symbols
+and using_symbol gram symbol =
+  match symbol with
+  | `Smeta (_,sl,_) -> List.iter (using_symbol gram) sl
+  | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> using_symbol gram s
+  | `Slist0sep (s,t) -> (using_symbol gram s; using_symbol gram t)
+  | `Slist1sep (s,t) -> (using_symbol gram s; using_symbol gram t)
+  | `Stree t -> using_node gram t
+  | `Skeyword kwd -> using gram kwd
+  | `Snterm _|`Snterml (_,_)|`Snext|`Sself|`Stoken _ -> ()
+and using_node gram node =
+  match node with
+  | Node { node = s; brother = bro; son } ->
+      (using_symbol gram s; using_node gram bro; using_node gram son)
+  | LocAct (_,_)|DeadEnd  -> ()
+let add_production (gsymbols,action) tree =
   let rec try_insert s sl tree =
     match tree with
     | Node ({ node; son; brother } as x) ->
@@ -144,46 +143,18 @@ let insert_production_in_tree ename (gsymbols,action) tree =
                if FanConfig.gram_warning_verbose.contents
                then
                  eprintf
-                   "<W> Grammar extension: in [%s] some rule has been masked@."
-                   ename
+                   "<W> Grammar extension: in @[%a@] some rule has been masked@."
+                   Print.dump#rule symbols
                else () in
              LocAct (action, (old_action :: action_list))
          | DeadEnd  -> LocAct (action, [])) in
   insert gsymbols tree
-let insert_production_in_level ename e1 (symbols,action) slev =
+let add_production_in_level e1 (symbols,action) slev =
   if e1
   then
-    {
-      slev with
-      lsuffix =
-        (insert_production_in_tree ename (symbols, action) slev.lsuffix)
-    }
+    { slev with lsuffix = (add_production (symbols, action) slev.lsuffix) }
   else
-    {
-      slev with
-      lprefix =
-        (insert_production_in_tree ename (symbols, action) slev.lprefix)
-    }
-let insert_to_exist_level entry (la : level) (lb : olevel) =
-  let (lname1,assoc1,rules1) = lb in
-  if not ((la.lname = lname1) && (la.assoc = assoc1))
-  then failwith "insert_to_exist_level does not agree (name)"
-  else
-    List.fold_right
-      (fun (symbols,action)  lev  ->
-         let symbols = List.map (change_to_self entry) symbols in
-         let (e1,symbols) = get_initial symbols in
-         insert_production_in_level entry.ename e1 (symbols, action) lev)
-      rules1 la
-let insert_level entry (lb : olevel) =
-  (let (lname,assoc,rules) = lb in
-   let la = empty_lev lname assoc in
-   List.fold_right
-     (fun (symbols,action)  lev  ->
-        let symbols = List.map (change_to_self entry) symbols in
-        let (e1,symbols) = get_initial symbols in
-        insert_production_in_level entry.ename e1 (symbols, action) lev)
-     rules la : level )
+    { slev with lprefix = (add_production (symbols, action) slev.lprefix) }
 let insert_olevels_in_levels entry position olevels =
   let elev =
     match entry.edesc with
@@ -202,20 +173,23 @@ let insert_olevels_in_levels entry position olevels =
             let lev =
               List.fold_right
                 (fun (symbols,action)  lev  ->
-                   let symbols = List.map (change_to_self entry) symbols in
-                   let (e1,symbols) = get_initial symbols in
-                   insert_production_in_level entry.ename e1
-                     (symbols, action) lev) rules lev in
+                   let (b,symbols) = get_initial symbols in
+                   add_production_in_level b (symbols, action) lev) rules lev in
             ((lev :: levs), empty_lev)) ([], make_lev) olevels in
      levs1 @ ((List.rev levs) @ levs2))
 let rec scan_olevels entry (levels : olevel list) =
-  List.iter (scan_olevel entry) levels
-and scan_olevel entry (_,_,prods) = List.iter (scan_product entry) prods
-and scan_product entry (symbols,_) =
-  insert_tokens entry.egram symbols; List.iter (check_gram entry) symbols
+  List.map (scan_olevel entry) levels
+and scan_olevel entry (x,y,prods) =
+  (x, y, (List.map (scan_product entry) prods))
+and scan_product entry (symbols,x) =
+  ((List.map
+      (fun symbol  ->
+         using_symbol entry.egram symbol;
+         check_gram entry symbol;
+         change_to_self entry symbol) symbols), x)
 let extend entry (position,levels) =
+  let levels = scan_olevels entry levels in
   let elev = insert_olevels_in_levels entry position levels in
-  scan_olevels entry levels;
   entry.edesc <- Dlevels elev;
   entry.estart <- Parser.start_parser_of_entry entry;
   entry.econtinue <- Parser.continue_parser_of_entry entry

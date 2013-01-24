@@ -125,7 +125,8 @@ val parse_file_with: rule:'a t -> string -> 'a
 
 val delete_rule:  'a t -> symbol list -> unit
 
-val srules:  (* 'a t *) string -> (symbol list * Action.t) list ->  [> `Stree of tree ]
+val srules:  (* (\* 'a t *\) string -> *) production list (* (symbol list * Action.t) list *)
+  ->  [> `Stree of tree ]
 
 val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
 

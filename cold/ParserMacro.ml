@@ -176,7 +176,7 @@ let apply () =
      (None,
        [("", `LA,
           [([`Slist1
-               (Gram.srules (Gram.name_of_entry smlist_then)
+               (Gram.srules
                   [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ));
                     `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                      (Gram.mk_action
@@ -196,7 +196,7 @@ let apply () =
      (None,
        [("", `LA,
           [([`Slist1
-               (Gram.srules (Gram.name_of_entry smlist_else)
+               (Gram.srules
                   [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ));
                     `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                      (Gram.mk_action
@@ -216,7 +216,7 @@ let apply () =
      (None,
        [("", `LA,
           [([`Slist1
-               (Gram.srules (Gram.name_of_entry sglist_then)
+               (Gram.srules
                   [([`Snterm
                        (Gram.obj (macro_def_sig : 'macro_def_sig Gram.t ));
                     `Snterm (Gram.obj (semi : 'semi Gram.t ))],
@@ -237,7 +237,7 @@ let apply () =
      (None,
        [("", `LA,
           [([`Slist1
-               (Gram.srules (Gram.name_of_entry sglist_else)
+               (Gram.srules
                   [([`Snterm
                        (Gram.obj (macro_def_sig : 'macro_def_sig Gram.t ));
                     `Snterm (Gram.obj (semi : 'semi Gram.t ))],
@@ -266,7 +266,7 @@ let apply () =
        [("", `LA,
           [([`Skeyword "(";
             `Slist1sep
-              ((Gram.srules (Gram.name_of_entry opt_macro_value)
+              ((Gram.srules
                   [([`Stoken
                        (((function | `Lid _ -> true | _ -> false)),
                          (`Normal, "`Lid _"))],
@@ -366,7 +366,7 @@ let apply () =
      ((Some (`Before "simple")),
        [("", `LA,
           [([`Skeyword "`";
-            Gram.srules (Gram.name_of_entry expr)
+            Gram.srules
               [([`Skeyword "IFDEF"],
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
@@ -410,7 +410,7 @@ let apply () =
      ((Some (`Before "simple")),
        [("", `LA,
           [([`Skeyword "`";
-            Gram.srules (Gram.name_of_entry patt)
+            Gram.srules
               [([`Skeyword "IFDEF"],
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->

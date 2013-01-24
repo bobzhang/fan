@@ -828,7 +828,7 @@ let apply () =
                            sg) : 'sig_items )
                   | _ -> assert false)));
           ([`Slist0
-              (Gram.srules (Gram.name_of_entry sig_items)
+              (Gram.srules
                  [([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
@@ -941,7 +941,7 @@ let apply () =
      (None,
        [("", `LA,
           [([`Slist1sep
-               ((Gram.srules (Gram.name_of_entry pos_exprs)
+               ((Gram.srules
                    [([`Stoken
                         (((function | `Lid _ -> true | _ -> false)),
                           (`Normal, "`Lid _"));
@@ -1770,7 +1770,7 @@ let apply () =
    Gram.extend (infixop1 : 'infixop1 Gram.t )
      (None,
        [("", `LA,
-          [([Gram.srules (Gram.name_of_entry infixop1)
+          [([Gram.srules
                [([`Skeyword "&"],
                   (Gram.mk_action
                      (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
@@ -1785,7 +1785,7 @@ let apply () =
    Gram.extend (infixop0 : 'infixop0 Gram.t )
      (None,
        [("", `LA,
-          [([Gram.srules (Gram.name_of_entry infixop0)
+          [([Gram.srules
                [([`Skeyword "or"],
                   (Gram.mk_action
                      (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
@@ -3922,7 +3922,7 @@ let apply () =
                            st) : 'str_items )
                   | _ -> assert false)));
           ([`Slist0
-              (Gram.srules (Gram.name_of_entry str_items)
+              (Gram.srules
                  [([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
@@ -4198,7 +4198,7 @@ let apply () =
                            csg) : 'class_signature )
                   | _ -> assert false)));
           ([`Slist0
-              (Gram.srules (Gram.name_of_entry class_signature)
+              (Gram.srules
                  [([`Snterm
                       (Gram.obj (class_sig_item : 'class_sig_item Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
@@ -4307,7 +4307,7 @@ let apply () =
                            cst) : 'class_structure )
                   | _ -> assert false)));
           ([`Slist0
-              (Gram.srules (Gram.name_of_entry class_structure)
+              (Gram.srules
                  [([`Snterm
                       (Gram.obj (class_str_item : 'class_str_item Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],

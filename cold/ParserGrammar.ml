@@ -30,7 +30,7 @@ let _ =
   Gram.extend (nonterminals : 'nonterminals Gram.t )
     (None,
       [("", `LA,
-         [([Gram.srules (Gram.name_of_entry nonterminals)
+         [([Gram.srules
               [([`Skeyword "(";
                 `Snterm (Gram.obj (qualid : 'qualid Gram.t ));
                 `Skeyword ":";
@@ -44,7 +44,7 @@ let _ =
                    (fun (t : 'qualuid)  (_loc : FanLoc.t)  ->
                       (`static t : 'e__1 ))))];
            `Slist0
-             (Gram.srules (Gram.name_of_entry nonterminals)
+             (Gram.srules
                 [([`Stoken
                      (((function | `Lid _ -> true | _ -> false)),
                        (`Normal, "`Lid _"))],
@@ -91,7 +91,7 @@ let _ =
                  `Skeyword ":";
                  `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
                  `Sopt
-                   (Gram.srules (Gram.name_of_entry nonterminals)
+                   (Gram.srules
                       [([`Stoken
                            (((function | `STR (_,_) -> true | _ -> false)),
                              (`Normal, "`STR (_,_)"))],
@@ -164,7 +164,7 @@ let _ =
       [("", `LA,
          [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
            `Slist0
-             (Gram.srules (Gram.name_of_entry nonterminalsclear)
+             (Gram.srules
                 [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
                    (Gram.mk_action
                       (fun (x : 'a_lident)  (_loc : FanLoc.t)  ->
@@ -244,7 +244,7 @@ let _ =
            `Skeyword ":";
            `Skeyword "[";
            `Slist1sep
-             ((Gram.srules (Gram.name_of_entry delete_rules)
+             ((Gram.srules
                  [([`Slist0sep
                       ((`Snterm (Gram.obj (psymbol : 'psymbol Gram.t ))),
                         (`Skeyword ";"))],
@@ -355,7 +355,7 @@ let _ =
       [("", `LA,
          [([`Snterm (Gram.obj (qualid : 'qualid Gram.t ));
            `Sopt
-             (Gram.srules (Gram.name_of_entry entry_name)
+             (Gram.srules
                 [([`Stoken
                      (((function | `STR (_,_) -> true | _ -> false)),
                        (`Normal, "`STR (_,_)"))],
@@ -440,7 +440,7 @@ let _ =
     (None,
       [("", `LA,
          [([`Sopt
-              (Gram.srules (Gram.name_of_entry level)
+              (Gram.srules
                  [([`Stoken
                       (((function | `STR (_,_) -> true | _ -> false)),
                         (`Normal, "`STR (_,_)"))],
@@ -497,7 +497,7 @@ let _ =
               ((`Snterm (Gram.obj (psymbol : 'psymbol Gram.t ))),
                 (`Skeyword ";"));
            `Sopt
-             (Gram.srules (Gram.name_of_entry rule)
+             (Gram.srules
                 [([`Skeyword "->"; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
                    (Gram.mk_action
                       (fun (act : 'expr)  _  (_loc : FanLoc.t)  ->
@@ -511,7 +511,7 @@ let _ =
       [("", `LA,
          [([`Snterm (Gram.obj (symbol : 'symbol Gram.t ));
            `Sopt
-             (Gram.srules (Gram.name_of_entry psymbol)
+             (Gram.srules
                 [([`Skeyword "{";
                   `Snterm (Gram.obj (pattern : 'pattern Gram.t ));
                   `Skeyword "}"],
@@ -535,7 +535,7 @@ let _ =
                 (`Normal, "`Uid (\"L0\"|\"L1\")"));
            `Sself;
            `Sopt
-             (Gram.srules (Gram.name_of_entry symbol)
+             (Gram.srules
                 [([`Stoken
                      (((function | `Uid "SEP" -> true | _ -> false)),
                        (`Normal, "`Uid \"SEP\""));
@@ -682,7 +682,7 @@ let _ =
                  | _ -> assert false)));
          ([`Snterm (Gram.obj (name : 'name Gram.t ));
           `Sopt
-            (Gram.srules (Gram.name_of_entry symbol)
+            (Gram.srules
                [([`Stoken
                     (((function | `Uid "Level" -> true | _ -> false)),
                       (`Normal, "`Uid \"Level\""));
@@ -706,7 +706,7 @@ let _ =
              (((function | `Ant (("nt"|""),_) -> true | _ -> false)),
                (`Normal, "`Ant ((\"nt\"|\"\"),_)"));
           `Sopt
-            (Gram.srules (Gram.name_of_entry symbol)
+            (Gram.srules
                [([`Stoken
                     (((function | `Uid "Level" -> true | _ -> false)),
                       (`Normal, "`Uid \"Level\""));

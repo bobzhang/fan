@@ -181,7 +181,7 @@ let _ =
          [([`Skeyword "derive";
            `Skeyword "(";
            `Slist1
-             (Gram.srules (Gram.name_of_entry fan_quot)
+             (Gram.srules
                 [([`Stoken
                      (((function | `Lid _ -> true | _ -> false)),
                        (`Normal, "`Lid _"))],
@@ -204,7 +204,7 @@ let _ =
                   (List.iter plugin_add plugins; `Nil _loc : 'fan_quot ))));
          ([`Skeyword "unload";
           `Slist1sep
-            ((Gram.srules (Gram.name_of_entry fan_quot)
+            ((Gram.srules
                 [([`Stoken
                      (((function | `Lid _ -> true | _ -> false)),
                        (`Normal, "`Lid _"))],
@@ -249,7 +249,7 @@ let _ =
     (None,
       [("", `LA,
          [([`Slist0
-              (Gram.srules (Gram.name_of_entry fan_quots)
+              (Gram.srules
                  [([`Snterm (Gram.obj (fan_quot : 'fan_quot Gram.t ));
                    `Skeyword ";"],
                     (Gram.mk_action

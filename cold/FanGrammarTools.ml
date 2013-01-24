@@ -158,16 +158,8 @@ let rec make_expr entry (tvar : string) x =
     | `Srules (_loc,rl) ->
         `App
           (_loc,
-            (`App
-               (_loc,
-                 (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))))),
-                 (`App
-                    (_loc,
-                      (`Id
-                         (_loc,
-                           (`Dot
-                              (_loc, (gm ()), (`Lid (_loc, "name_of_entry")))))),
-                      (entry.expr))))), (make_expr_rules _loc entry rl ""))
+            (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))))),
+            (make_expr_rules _loc entry rl ""))
     | `Stok (_loc,match_fun,attr,descr) ->
         `App
           (_loc, (`Vrn (_loc, "Stoken")),

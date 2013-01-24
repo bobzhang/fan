@@ -81,7 +81,7 @@ class text_grammar =
       pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@ ") symbols
     method rules f rules =
       pp f "@[<hv0>[ %a]@]" (self#list self#rule ~sep:"@;| ") rules
-    method level f { assoc; lname; lsuffix; lprefix } =
+    method level f { assoc; lname; lsuffix; lprefix;_} =
       let rules =
         (List.map (fun t  -> `Sself :: t) (flatten_tree lsuffix)) @
           (flatten_tree lprefix) in
@@ -110,7 +110,7 @@ class dump_grammar =
       TreePrint.print_sons "|-"
         (fun (Bro (s,ls))  -> ((string_of_symbol s), ls)) "" f
         (get_brothers tree)
-    method! level f { assoc; lname; lsuffix; lprefix } =
+    method! level f { assoc; lname; lsuffix; lprefix;_} =
       pp f "%S %a@;@[<hv2>suffix:@\n%a@]@;@[<hv2>prefix:@\n%a@]" lname
         self#assoc assoc self#tree lsuffix self#tree lprefix
   end

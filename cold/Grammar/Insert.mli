@@ -20,7 +20,7 @@ val find_level:
 
 val check_gram: internal_entry -> symbol -> unit
 
-val insert_tokens: gram -> symbol list -> unit
+val using_symbols: gram -> symbol list -> unit
     
 (* val tree_check_gram: internal_entry -> tree -> unit *)
 
@@ -28,11 +28,11 @@ val get_initial: ([> `Sself ] as 'a) list -> bool * 'a list
 
 
 
-val insert_production_in_tree:
-    string -> production -> tree -> tree
+val add_production:
+     production -> tree -> tree
 
-val insert_production_in_level:
-    string -> bool ->
+val add_production_in_level:
+     bool ->
       production -> level -> level
           
 val insert_olevels_in_levels :
