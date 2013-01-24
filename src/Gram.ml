@@ -88,7 +88,7 @@ let parse_file_with ~rule file  =
 let delete_rule = Delete.delete_rule;
 
 (* FIXME [srules] the productions are also scanned  *)  
-let srules (* _e *) rl =
+let srules rl =
     `Stree (List.fold_right Insert.add_production   rl DeadEnd);
     
 let sfold0 = Fold.sfold0;

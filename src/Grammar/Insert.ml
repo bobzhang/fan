@@ -180,43 +180,40 @@ let add_production_in_level  e1 (symbols, action) slev =
     {slev with lprefix = add_production  (symbols ,action) slev.lprefix};
 
 
-(* let insert_to_exist_level entry (la:level) (lb:olevel) = begin  *)
-(*   let (lname1,assoc1,rules1) = lb ; *)
-(*   if not (la.lname = lname1 &&  la.assoc = assoc1) then *)
-(*     eprintf "<W> Grammar level merging: insert_to_exist_level does not agree (name)"; *)
-(*   List.fold_right *)
-(*       (fun (symbols,action) lev -> *)
-(*         let (e1,symbols) = get_initial symbols in *)
-(*         insert_production_in_level entry.ename e1 (symbols,action) lev)  rules1 la; *)
-(*   end; *)
-(* let insert_level entry (lb:olevel) : level = *)
-(*   let (lname,assoc,rules) = lb in *)
-(*   let  la = empty_lev lname assoc in *)
-(*     List.fold_right *)
-(*       (fun (symbols,action) lev -> *)
-(*         let (e1,symbols) = get_initial symbols in *)
-(*         insert_production_in_level entry.ename e1 (symbols,action) lev) rules la; *)
+let merge_level (la:level) (lb:olevel) = begin
+  let (lname1,assoc1,rules1) = lb ;
+  (*FIXME remove the warning temporary*)  
+  (* if not (la.lname = lname1 &&  la.assoc = assoc1) then *)
+  (*   eprintf "<W> Grammar level merging: merge_level does not agree (name)"; *)
+  List.fold_right
+      (fun (symbols,action) lev ->
+        let (e1,symbols) = get_initial symbols in
+        add_production_in_level  e1 (symbols,action) lev)  rules1 la;
+  end;
   
+let level_of_olevel (lb:olevel) = begin
+  let (lname1,assoc1,_) = lb ;
+  let la = empty_lev lname1 assoc1 ;  
+  merge_level la lb  
+end;
+  
+
+
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
 let insert_olevels_in_levels entry position olevels =
   let elev = match entry.edesc with
     [ Dlevels elev -> elev
     | Dparser _ ->
         failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in
-  if olevels = [] then
-    elev
+  if olevels = [] then elev
   else
     let (levs1, make_lev, levs2) = find_level ?position entry  elev in
     let (levs, _) =
       List.fold_left
-        (fun (levs, make_lev) (lname, assoc, rules) ->
+        (fun (levs, make_lev) ((lname, assoc, _) as lev1) ->
           let lev = make_lev lname assoc in
-          let lev =
-            List.fold_right
-              (fun  (symbols, action) lev ->
-                let (b, symbols) = get_initial symbols in 
-                add_production_in_level  b (symbols, action) lev)
-              rules lev in ([lev :: levs], empty_lev))
+          let lev = merge_level lev lev1 
+          in ([lev :: levs], empty_lev))
         ([], make_lev)  olevels in
       levs1 @ List.rev levs @ levs2 ;
 

@@ -34,7 +34,10 @@ val add_production:
 val add_production_in_level:
      bool ->
       production -> level -> level
-          
+
+
+val merge_level: level -> olevel -> level
+val level_of_olevel: olevel -> level    
 val insert_olevels_in_levels :
     internal_entry ->
       position option ->

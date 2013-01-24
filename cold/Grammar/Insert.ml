@@ -155,6 +155,15 @@ let add_production_in_level e1 (symbols,action) slev =
     { slev with lsuffix = (add_production (symbols, action) slev.lsuffix) }
   else
     { slev with lprefix = (add_production (symbols, action) slev.lprefix) }
+let merge_level (la : level) (lb : olevel) =
+  let (lname1,assoc1,rules1) = lb in
+  List.fold_right
+    (fun (symbols,action)  lev  ->
+       let (e1,symbols) = get_initial symbols in
+       add_production_in_level e1 (symbols, action) lev) rules1 la
+let level_of_olevel (lb : olevel) =
+  let (lname1,assoc1,_) = lb in
+  let la = empty_lev lname1 assoc1 in merge_level la lb
 let insert_olevels_in_levels entry position olevels =
   let elev =
     match entry.edesc with
@@ -168,14 +177,10 @@ let insert_olevels_in_levels entry position olevels =
     (let (levs1,make_lev,levs2) = find_level ?position entry elev in
      let (levs,_) =
        List.fold_left
-         (fun (levs,make_lev)  (lname,assoc,rules)  ->
+         (fun (levs,make_lev)  ((lname,assoc,_) as lev1)  ->
             let lev = make_lev lname assoc in
-            let lev =
-              List.fold_right
-                (fun (symbols,action)  lev  ->
-                   let (b,symbols) = get_initial symbols in
-                   add_production_in_level b (symbols, action) lev) rules lev in
-            ((lev :: levs), empty_lev)) ([], make_lev) olevels in
+            let lev = merge_level lev lev1 in ((lev :: levs), empty_lev))
+         ([], make_lev) olevels in
      levs1 @ ((List.rev levs) @ levs2))
 let rec scan_olevels entry (levels : olevel list) =
   List.map (scan_olevel entry) levels
