@@ -43,6 +43,10 @@ val insert_olevels_in_levels :
       position option ->
         olevel list
         -> level list
+            
 val extend :
   internal_entry -> position  option *
       olevel list -> unit
+
+val extend_single :
+  internal_entry -> position  option * olevel  -> unit

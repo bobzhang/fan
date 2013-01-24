@@ -10379,7 +10379,7 @@ let tuple_sta y =
       let a = loc_of x in
       let b = loc_of (List.last y) in
       let _loc = FanLoc.merge a b in `Tup (_loc, (sta_of_list y))
-let list_of_list loc =
+let list_of_list (loc : loc) =
   let rec loop top =
     function
     | [] -> `Id (ghost, (`Uid (ghost, "[]")))

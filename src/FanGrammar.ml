@@ -32,8 +32,10 @@ type entry   = {
   (*position expression node *)    
   pos : option expr;
     
-  levels : list level;
+  levels : levels(* list level *);
 }
+and levels =
+ [= `Group of (list level) | `Single of level]   
 and level  ={
 
   (* mainly used for indexing *)  

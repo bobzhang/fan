@@ -289,7 +289,7 @@ let tuple_sta y =
   (* {:expr| [1;2;3::[]]|} *)
   DoubleColon
  *)
-let list_of_list loc =
+let list_of_list (loc:loc) =
   let rec loop top =  with expr fun
     [ [] ->   {@ghost| [] |}
     | [e1 :: el] ->

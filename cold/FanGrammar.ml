@@ -12,7 +12,8 @@ type attr = string
 type entry =  {
   name: name;
   pos: expr option;
-  levels: level list} 
+  levels: levels} 
+and levels = [ `Group of level list | `Single of level] 
 and level =  {
   label: string option;
   assoc: expr option;
@@ -99,8 +100,15 @@ module Expr =
                            (meta_option meta_expr _loc _a1))),
                       (`RecBind
                          (_loc, (`Lid (_loc, "levels")),
-                           (meta_list meta_level _loc _a2))))))),
-            (`Nil _loc))
+                           (meta_levels _loc _a2))))))), (`Nil _loc))
+    and meta_levels: 'loc -> levels -> 'result =
+      fun _loc  ->
+        function
+        | `Group _a0 ->
+            `App
+              (_loc, (`Vrn (_loc, "Group")), (meta_list meta_level _loc _a0))
+        | `Single _a0 ->
+            `App (_loc, (`Vrn (_loc, "Single")), (meta_level _loc _a0))
     and meta_level: 'loc -> level -> 'result =
       fun _loc  { label = _a0; assoc = _a1; rules = _a2 }  ->
         `Record
@@ -297,7 +305,15 @@ module Patt =
                            (meta_option meta_expr _loc _a1))),
                       (`PaEq
                          (_loc, (`Lid (_loc, "levels")),
-                           (meta_list meta_level _loc _a2))))))))
+                           (meta_levels _loc _a2))))))))
+    and meta_levels: 'loc -> levels -> 'result =
+      fun _loc  ->
+        function
+        | `Group _a0 ->
+            `App
+              (_loc, (`Vrn (_loc, "Group")), (meta_list meta_level _loc _a0))
+        | `Single _a0 ->
+            `App (_loc, (`Vrn (_loc, "Single")), (meta_level _loc _a0))
     and meta_level: 'loc -> level -> 'result =
       fun _loc  { label = _a0; assoc = _a1; rules = _a2 }  ->
         `PaRec

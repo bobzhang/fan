@@ -296,34 +296,34 @@ let text_of_entry e =
     match e.pos with
     | Some pos -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), pos)
     | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
-  let txt =
-    List.fold_right
-      (fun level  txt  ->
-         let lab =
-           match level.label with
-           | Some lab -> `Str (_loc, lab)
-           | None  -> `Str (_loc, "") in
-         let ass =
-           match level.assoc with
-           | Some ass -> ass
-           | None  -> `Vrn (_loc, "LA") in
-         let txt =
-           let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
-           let prod = make_expr_rules _loc e.name rl (e.name).tvar in
-           `App
+  let apply level =
+    let lab =
+      match level.label with
+      | Some lab -> `Str (_loc, lab)
+      | None  -> `Str (_loc, "") in
+    let ass =
+      match level.assoc with | Some ass -> ass | None  -> `Vrn (_loc, "LA") in
+    let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
+    let prod = make_expr_rules _loc e.name rl (e.name).tvar in
+    `Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) in
+  match e.levels with
+  | `Single l ->
+      `App
+        (_loc,
+          (`App
              (_loc,
-               (`App
-                  (_loc, (`Id (_loc, (`Uid (_loc, "::")))),
-                    (`Tup
-                       (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod)))))))),
-               txt) in
-         txt) e.levels (`Id (_loc, (`Uid (_loc, "[]")))) in
-  `App
-    (_loc,
-      (`App
-         (_loc,
-           (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
-           ent)), (`Tup (_loc, (`Com (_loc, pos, txt)))))
+               (`Id
+                  (_loc,
+                    (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single")))))),
+               ent)), (`Tup (_loc, (`Com (_loc, pos, (apply l))))))
+  | `Group ls ->
+      let txt = list_of_list _loc (List.map apply ls) in
+      `App
+        (_loc,
+          (`App
+             (_loc,
+               (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
+               ent)), (`Tup (_loc, (`Com (_loc, pos, txt)))))
 let let_in_of_extend _loc gram locals default =
   let entry_mk =
     match gram with

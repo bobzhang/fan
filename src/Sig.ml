@@ -213,7 +213,7 @@ module type Syntax = sig
   val rule_list: Gram.t (list FanGrammar.rule);
   val psymbol: Gram.t FanGrammar.symbol;
   val level:  Gram.t FanGrammar.level;
-  val level_list: Gram.t (list FanGrammar.level);
+  val level_list: Gram.t ([= `Group of (list FanGrammar.level) | `Single of FanGrammar.level ]);
   val entry: Gram.t FanGrammar.entry;
   val extend_body: Gram.t expr;
   val delete_rule_body: Gram.t expr;

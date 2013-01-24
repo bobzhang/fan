@@ -189,7 +189,8 @@ module type Syntax =
     val rule_list : FanGrammar.rule list Gram.t
     val psymbol : FanGrammar.symbol Gram.t
     val level : FanGrammar.level Gram.t
-    val level_list : FanGrammar.level list Gram.t
+    val level_list :
+      [ `Group of FanGrammar.level list | `Single of FanGrammar.level] Gram.t
     val entry : FanGrammar.entry Gram.t
     val extend_body : expr Gram.t
     val delete_rule_body : expr Gram.t

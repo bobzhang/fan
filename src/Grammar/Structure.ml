@@ -91,7 +91,7 @@ and production= (list symbol * Action.t);
 type olevel = (string * assoc * list production);
   
 type extend_statment = (option position * list olevel);
-  
+type single_extend_statement =  (option position * olevel);      
 type delete_statment = list symbol;
 
 type fold 'a 'b 'c =

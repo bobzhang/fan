@@ -67,22 +67,23 @@ let sfold1 = Fold.sfold1
 let sfold0sep = Fold.sfold0sep
 let sfold1sep = Fold.sfold1sep
 let extend = Insert.extend
+let extend_single = Insert.extend_single
 let levels_of_entry = Insert.levels_of_entry
 let eoi_entry entry =
   let g = gram_of_entry entry in
   let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
-  extend (entry_eoi : 'entry_eoi t )
+  extend_single (entry_eoi : 'entry_eoi t )
     (None,
-      [("", `LA,
-         [([`Snterm (obj (entry : 'entry t ));
-           `Stoken
-             (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
-            (mk_action
-               (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
-                  (_loc : FanLoc.t)  ->
-                  match __fan_1 with
-                  | `EOI -> (x : 'entry_eoi )
-                  | _ -> assert false)))])]);
+      ("", `LA,
+        [([`Snterm (obj (entry : 'entry t ));
+          `Stoken
+            (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
+           (mk_action
+              (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
+                 (_loc : FanLoc.t)  ->
+                 match __fan_1 with
+                 | `EOI -> (x : 'entry_eoi )
+                 | _ -> assert false)))]));
   entry_eoi
 let find_level ?position  entry =
   match entry.edesc with

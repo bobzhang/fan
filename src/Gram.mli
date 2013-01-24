@@ -49,6 +49,7 @@ type production = symbol list * Action.t
 (* FIXME duplicate with Grammar/Structure *)      
 type olevel = string (* option *) * assoc (* option *) * production list
 type extend_statment = position option * olevel list
+type single_extend_statement = position option * olevel      
 type delete_statment = symbol list
 
 type ('a,'b,'c)fold  =
@@ -143,6 +144,7 @@ val sfold1sep:
         stream -> 'b
             
 val extend:  'a t -> extend_statment -> unit
+val extend_single: 'a t -> single_extend_statement -> unit
 
 val eoi_entry: 'a t -> 'a t
 

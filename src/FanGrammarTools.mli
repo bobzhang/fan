@@ -8,7 +8,7 @@ val grammar_module_name : ident ref
 val gm : unit -> ident
 val mk_entry :
   name:name ->
-  pos:expr option -> levels:level list -> entry
+  pos:expr option -> levels:levels -> entry
 val mk_level :
   label:string option ->
   assoc:expr option -> rules:rule list -> level

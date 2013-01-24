@@ -212,9 +212,17 @@ let rest =
     -> begin 
       match n with
       [`name old -> AstQuotation.default := old
-      | _ -> ()];  
-        mk_entry ~name:p ~pos ~levels
-    end]
+      | _ -> ()];
+        match (pos,levels) with
+        [(Some {:expr| `Level $_ |},`Group _) ->
+          failwithf "For Group levels the position can not be applied to Level"
+        | _ -> mk_entry ~name:p ~pos ~levels]  
+    end
+   (* entry_name{(n,p)}; ":"; OPT position{pos}; level{l} -> begin *)
+   (*   match n with *)
+   (*   [`name old-> AstQuotation.default]   *)
+   (* end *)
+  ]
 
   (* parse [position] and translate into [expr] node, fixme,
      delay the translation
@@ -225,7 +233,8 @@ let rest =
   | `Uid x -> failwithf "%s is not the right position:(First|Last) or (Before|After|Level)" x]
 
   level_list:
-  [ "{"; L1 level {ll}; "}" -> ll  | level {l} -> [l]] (* FIXME L1 does not work here *)
+  [ "{"; L1 level {ll}; "}" -> `Group ll
+  | level {l} -> `Single l] (* FIXME L1 does not work here *)
 
   level:
   [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->

@@ -180,6 +180,19 @@ let insert_olevels_in_levels entry position olevels =
            let l1 = merge_level lev x in
            levs1 @ (l1 :: ((List.map level_of_olevel xs) @ levs2))
        | None  -> levs1 @ ((List.map level_of_olevel olevels) @ levs2))
+let insert_olevel entry position olevel =
+  let elev =
+    match entry.edesc with
+    | Dlevels elev -> elev
+    | Dparser _ ->
+        failwithf "Grammar.extend: Error: entry not extensible: %S@."
+          entry.ename in
+  let (levs1,v,levs2) = find_level ?position entry elev in
+  let l1 =
+    match v with
+    | Some (lev,_n) -> merge_level lev olevel
+    | None  -> level_of_olevel olevel in
+  levs1 @ (l1 :: levs2)
 let rec scan_olevels entry (levels : olevel list) =
   List.map (scan_olevel entry) levels
 and scan_olevel entry (x,y,prods) =
@@ -193,6 +206,12 @@ and scan_product entry (symbols,x) =
 let extend entry (position,levels) =
   let levels = scan_olevels entry levels in
   let elev = insert_olevels_in_levels entry position levels in
+  entry.edesc <- Dlevels elev;
+  entry.estart <- Parser.start_parser_of_entry entry;
+  entry.econtinue <- Parser.continue_parser_of_entry entry
+let extend_single entry (position,level) =
+  let level = scan_olevel entry level in
+  let elev = insert_olevel entry position level in
   entry.edesc <- Dlevels elev;
   entry.estart <- Parser.start_parser_of_entry entry;
   entry.econtinue <- Parser.continue_parser_of_entry entry

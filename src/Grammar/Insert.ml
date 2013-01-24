@@ -213,16 +213,9 @@ let insert_olevels_in_levels entry position olevels =
         let (levs1, make_lev, levs2) = find_level ?position entry  elev in
         match make_lev with
         [Some (lev,_n) ->
+          (* FIXME This case should never happen *)
           let l1 = merge_level lev x in
           levs1 @ [ l1 :: List.map level_of_olevel xs @ levs2 ]
-            (* let (levs, _) = *)
-            (*   List.fold_left *)
-            (*     (fun (levs, make_lev) ((lname, assoc, _) as lev1) -> *)
-            (*       let lev = make_lev lname assoc in *)
-            (*       let lev = merge_level lev lev1  *)
-            (*       in ([lev :: levs], empty_lev)) *)
-            (*     ([], make_lev)  olevels in *)
-            (* levs1 @ List.rev levs @ levs2 *)
         | None ->
         levs1 @ List.map level_of_olevel olevels @ levs2] ];
 
@@ -237,11 +230,19 @@ let insert_olevels_in_levels entry position olevels =
 (*     match find_level ?position entry elev with *)
 (*     [(levs1,)]   *)
 
-(* let insert_olevel entry position olevel = *)
-(*   let elev = match entry.edesc with *)
-(*     [ Dlevels elev -> elev *)
-(*     | Dparser _ -> *)
-(*         failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in *)
+let insert_olevel entry position olevel =
+  let elev = match entry.edesc with
+    [ Dlevels elev -> elev
+    | Dparser _ ->
+        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in
+  let (levs1,v,levs2) = find_level ?position entry elev in
+  let l1 =
+    match v with
+    [Some (lev,_n) ->
+      merge_level lev olevel
+    |None -> level_of_olevel olevel] in
+    levs1 @ [l1 :: levs2] ;
+
   
   
     
@@ -273,5 +274,11 @@ let extend entry (position, levels) =begin
   entry.estart <-Parser.start_parser_of_entry entry;
   entry.econtinue <- Parser.continue_parser_of_entry entry;
 end;
-
+let extend_single entry (position,level) = begin
+  let level = scan_olevel entry level;
+  let elev = insert_olevel entry position level    ;
+  entry.edesc <-Dlevels elev;
+  entry.estart <-Parser.start_parser_of_entry entry;
+  entry.econtinue <- Parser.continue_parser_of_entry entry;    
+end;
 

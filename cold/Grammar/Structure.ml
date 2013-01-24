@@ -56,6 +56,7 @@ and node =  {
 and production = (symbol list* Action.t) 
 type olevel = (string* assoc* production list) 
 type extend_statment = (position option* olevel list) 
+type single_extend_statement = (position option* olevel) 
 type delete_statment = symbol list 
 type ('a,'b,'c) fold =
   internal_entry -> symbol list -> ('a XStream.t -> 'b) -> 'a XStream.t -> 'c 
