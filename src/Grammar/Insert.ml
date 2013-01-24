@@ -32,23 +32,6 @@ and tree_derive_eps : tree -> bool = fun
 let empty_lev lname assoc =
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]};
 
-(* here [name] is only used to emit error message
-   The idea case is that extend should [care] about assocativity, since
-   the extend rules should [always] follow the existing levels.
- *)  
-let change_lev lev name lname assoc =  begin 
-  if assoc <> lev.assoc && !(FanConfig.gram_warning_verbose) then
-    eprintf "<W> Changing associativity of level %S aborted@." name;
-  if  lname<> "" && lname <> lev.lname && !(FanConfig.gram_warning_verbose) then 
-    eprintf "<W> Level label (%S: %S) ignored@." lname lev.lname;
-  lev
-end ;
-
-(* *)  
-let change_to_self entry = fun
-  [ `Snterm e when e == entry -> `Sself
-  | x -> x ];
-
 
 let levels_of_entry  e =
   match e.edesc with
@@ -65,25 +48,25 @@ let find_level ?position entry  levs =
       if Tools.is_level_labelled n lev then
         match x with
         [`Level _ ->
-            ([], (* change_lev lev n *) Some(lev,n), levs)
+            ([],  Some(lev,n), levs)
         |`Before _ ->
-            ([], (* empty_lev *) None , [lev::levs])
+            ([],  None , [lev::levs])
         |`After _ ->
-           ([lev], (* empty_lev *) None , levs)]  
+           ([lev],None , levs)]  
       else
         let (levs1,rlev,levs2) = get levs in
         ([lev::levs1], rlev, levs2) ] in
     get ls in 
   match position with
-  [ Some `First -> ([], (* empty_lev *)None , levs)
-  | Some `Last -> (levs, None (* empty_lev *), [])
+  [ Some `First -> ([], None , levs)
+  | Some `Last -> (levs, None , [])
   | Some ((`Level n | `Before n | `After n)  as x) ->
       find x n levs
      (* default behavior*)   
   | None ->
       match levs with
-      [ [lev :: levs] -> ([], Some (lev, "<top>")(* change_lev lev "<top>" *), levs)
-      | [] -> ([], (* empty_lev *)None, []) ] ];
+      [ [lev :: levs] -> ([], Some (lev, "<top>"), levs)
+      | [] -> ([], None, []) ] ];
 
 let rec check_gram entry = fun
   [ `Snterm e ->
@@ -243,8 +226,6 @@ let insert_olevel entry position olevel =
     |None -> level_of_olevel olevel] in
     levs1 @ [l1 :: levs2] ;
 
-  
-  
     
 (* for the side effects,
    check whether the [gram]  is identical
@@ -259,7 +240,7 @@ and scan_product entry (symbols,x) = begin
     (fun symbol ->
       begin using_symbol entry.egram symbol;
         check_gram entry symbol;
-        change_to_self entry symbol;
+         match symbol with [`Snterm e when e == entry -> `Sself | _ -> symbol]
       end) symbols,x)
 end;
 

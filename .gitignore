@@ -43,3 +43,6 @@ stat/
 log
 progress/
 *TAst.ml
+js/
+poly/
+op4/

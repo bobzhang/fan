@@ -338,33 +338,27 @@ let text_of_entry e =  with expr
   let pos =
     match e.pos with
     [ Some pos -> {| Some $pos |} 
-    | None -> {| None |} (* {| `LA |} *) ] in
-  (* let txt = *)
+    | None -> {| None |}  ] in
     let apply =
-      (fun level (* txt *) ->
+      (fun level  ->
         let lab =
           match level.label with
-          [ Some lab -> (* {| Some $str:lab |} *) {|$str:lab|}
-          | None -> (* {| None |} *) {| "" |}]  in
+          [ Some lab ->  {|$str:lab|}
+          | None ->  {| "" |}]  in
         let ass =
           match level.assoc with
-          [ Some ass -> (* {| Some $ass |} *) ass 
-          | None -> (* {| None |} *)  {| `LA |} ]  in
-        (* let txt = *)
+          [ Some ass ->  ass 
+          | None ->   {| `LA |} ]  in
           let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
           let prod = make_expr_rules _loc e.name rl e.name.tvar in
           (* generated code of type [olevel] *)
-          {| ($lab, $ass, $prod) |}
-          (* {| [($lab, $ass, $prod) :: $txt] |} *) (* in txt *)) in
+          {| ($lab, $ass, $prod) |}) in
     match e.levels with
     [`Single l ->
       {| $(id:gm()).extend_single $ent ($pos, $(apply l) ) |}
     |`Group ls ->
         let txt = list_of_list _loc (List.map apply ls) in
         {|$(id:gm()).extend $ent ($pos,$txt)|}   ];  
-  (*   List.fold_right       e.levels {| [] |} in *)
-  (* {| $(id:gm()).extend $ent ($pos,$txt) |} *)
-  (* (ent, pos, txt) *) (* ; *) (* FIXME double ;; error message improvement *)
   
 
 (* [gl] is the name  list option
