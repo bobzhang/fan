@@ -38,8 +38,8 @@ let find_level ?position  entry levs =
     let rec get =
       function
       | [] ->
-          (eprintf "No level labelled %S in entry %S @." n entry.ename;
-           failwith "find_level")
+          failwithf "Insert.find_level: No level labelled %S in entry %S @."
+            n entry.ename
       | lev::levs ->
           if Tools.is_level_labelled n lev
           then
@@ -64,19 +64,15 @@ let rec check_gram entry =
   | `Snterm e ->
       if e.egram != entry.egram
       then
-        (eprintf
-           "Error: entries %S and %S do not belong to the same grammar.@."
-           entry.ename e.ename;
-         failwith "Grammar.extend error")
-      else ()
+        failwithf
+          "Gram.extend: entries %S and %S do not belong to the same grammar.@."
+          entry.ename e.ename
   | `Snterml (e,_) ->
       if e.egram != entry.egram
       then
-        (eprintf
-           "Error: entries %S and %S do not belong to the same grammar.@."
-           entry.ename e.ename;
-         failwith "Grammar.extend error")
-      else ()
+        failwithf
+          "Gram.extend Error: entries %S and %S do not belong to the same grammar.@."
+          entry.ename e.ename
   | `Smeta (_,sl,_) -> List.iter (check_gram entry) sl
   | `Slist0sep (s,t) -> (check_gram entry t; check_gram entry s)
   | `Slist1sep (s,t) -> (check_gram entry t; check_gram entry s)
@@ -176,9 +172,7 @@ let insert_to_exist_level entry (la : level) (lb : olevel) =
     List.fold_right
       (fun (symbols,action)  lev  ->
          let symbols = List.map (change_to_self entry) symbols in
-         let () = List.iter (check_gram entry) symbols in
          let (e1,symbols) = get_initial symbols in
-         let () = insert_tokens entry.egram symbols in
          insert_production_in_level entry.ename e1 (symbols, action) lev)
       rules1 la
 let insert_level entry (lb : olevel) =
@@ -187,9 +181,7 @@ let insert_level entry (lb : olevel) =
    List.fold_right
      (fun (symbols,action)  lev  ->
         let symbols = List.map (change_to_self entry) symbols in
-        let () = List.iter (check_gram entry) symbols in
         let (e1,symbols) = get_initial symbols in
-        let () = insert_tokens entry.egram symbols in
         insert_production_in_level entry.ename e1 (symbols, action) lev)
      rules la : level )
 let insert_olevels_in_levels entry position olevels =
@@ -211,15 +203,19 @@ let insert_olevels_in_levels entry position olevels =
               List.fold_right
                 (fun (symbols,action)  lev  ->
                    let symbols = List.map (change_to_self entry) symbols in
-                   let () = List.iter (check_gram entry) symbols in
                    let (e1,symbols) = get_initial symbols in
-                   let () = insert_tokens entry.egram symbols in
                    insert_production_in_level entry.ename e1
                      (symbols, action) lev) rules lev in
             ((lev :: levs), empty_lev)) ([], make_lev) olevels in
      levs1 @ ((List.rev levs) @ levs2))
+let rec scan_olevels entry (levels : olevel list) =
+  List.iter (scan_olevel entry) levels
+and scan_olevel entry (_,_,prods) = List.iter (scan_product entry) prods
+and scan_product entry (symbols,_) =
+  insert_tokens entry.egram symbols; List.iter (check_gram entry) symbols
 let extend entry (position,levels) =
   let elev = insert_olevels_in_levels entry position levels in
+  scan_olevels entry levels;
   entry.edesc <- Dlevels elev;
   entry.estart <- Parser.start_parser_of_entry entry;
   entry.econtinue <- Parser.continue_parser_of_entry entry

@@ -83,7 +83,7 @@ and node = {
 type production= (list symbol * Action.t);
 
 (* FIXME duplciate with Gram.mli*)
-type olevel = ((* option *) string * (* option *) assoc * list production);
+type olevel = (string * assoc * list production);
   
 type extend_statment = (option position * list olevel);
   
