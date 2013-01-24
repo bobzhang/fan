@@ -2,15 +2,13 @@ open Structure;
 open LibUtil;
 open FanToken;
 
-let get_cur_loc = Tools.get_cur_loc;
-let get_prev_loc = Tools.get_prev_loc;
 (* [bp] means begining position, [ep] means ending position
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
 let add_loc bp parse_fun strm =
   let x = parse_fun strm in
-  let ep = get_prev_loc strm in
+  let ep = Tools.get_prev_loc strm in
   let loc =
     if FanLoc.start_off bp > FanLoc.stop_off ep then
       (* If nothing has been consumed, create a 0-length location. *)
@@ -20,10 +18,17 @@ let add_loc bp parse_fun strm =
   (x, loc);
 
 
-(* given a level string, return a number from 0 *)  
+(* given a level string, return a number from 0
+   {[
+   Parser.level_number (Obj.magic expr) "top";
+   - : int = 0
+   Parser.level_number (Obj.magic expr) "simple";
+   - : int = 16
+   ]}
+ *)  
 let level_number entry lab =
   let rec lookup levn = fun
-    [ [] -> failwith ("unknown level " ^ lab)
+    [ [] -> failwithf "unknown level %s"  lab
     | [lev :: levs] ->
         if Tools.is_level_labelled lab lev then levn else lookup (succ levn) levs ] in
   match entry.edesc with
@@ -31,18 +36,6 @@ let level_number entry lab =
   | Dparser _ -> raise Not_found ] ;
     
 
-(* pomote the level to top *)
-let rec top_symb entry =fun
-  [ `Sself | `Snext -> `Snterm entry
-  | `Snterml (e, _) -> `Snterm e
-  | `Slist1sep (s, sep) -> `Slist1sep ((top_symb entry s), sep)
-  | _ -> raise XStream.Failure ];
-
-(* given an entry and a tree return the top tree *)  
-let top_tree entry = fun
-  [ Node ({node = s; _} as x) ->
-    Node ({(x) with node = top_symb entry s})
-  | LocAct(_, _) | DeadEnd -> raise XStream.Failure ];
 
 let entry_of_symb entry = fun
   [ `Sself | `Snext -> entry
@@ -76,7 +69,7 @@ let rec parser_of_tree entry (lev,assoc) x =
   (* [son] will never be [DeadEnd] *)        
   | Node ({ node ; son; brother } as y) ->
       let skip_if_empty bp strm =
-        if get_cur_loc strm = bp then
+        if Tools.get_cur_loc strm = bp then
           Action.mk (fun _ -> raise XStream.Failure)
         else
           raise XStream.Failure  in
@@ -89,7 +82,7 @@ let rec parser_of_tree entry (lev,assoc) x =
       match Tools.get_terminals  y with
       [ None ->
         let ps = parser_of_symbol entry node  lev  in fun strm ->
-          let bp = get_cur_loc strm in
+          let bp = Tools.get_cur_loc strm in
           match strm with parser
           [ [< a = ps; act = parser_cont (node,son) bp a >] -> Action.getf act a
           | [< a = from_tree brother >] -> a ]
@@ -149,7 +142,7 @@ and parser_of_symbol entry s nlevn =
      let rec kont al = parser
        [ [< v = pt; a = parser
          [ [< a = ps >] -> a
-         | [< a = parse_top_symb entry symb >] -> a
+         | [< a = parser_of_symbol  entry symb 0 >] -> a
          | [< >] ->
              raise (XStream.Error (Failed.symb_failed entry v sep symb)) ];
            's >] ->kont [a :: al] s
@@ -163,7 +156,7 @@ and parser_of_symbol entry s nlevn =
   | `Stree t ->
       let pt = parser_of_tree entry (0, `RA)  t (* FIXME*) in
       fun strm ->
-        let bp = get_cur_loc strm in
+        let bp = Tools.get_cur_loc strm in
         match strm with parser
         [ [< (act, loc) = add_loc bp pt >] ->  Action.getf act loc]
   | `Snterm e -> parser [< a = e.estart 0 >] -> a (* No filter any more *)
@@ -175,9 +168,8 @@ and parser_of_symbol entry s nlevn =
           Action.mk tok ]
   | `Stoken (f, _) ->
      parser [ [< (tok,_) when f tok >] -> Action.mk tok ]] in
-  aux s
-and parse_top_symb entry symb  =
-  parser_of_symbol entry (top_symb entry symb) 0 ;
+  aux s;
+
 
 
 (* entrance for the start
@@ -204,7 +196,7 @@ let start_parser_of_levels entry =
             if levn > clevn && (not ([]=levs))then
               hstart levn strm (* only higher level allowed here *)
             else
-              let bp = get_cur_loc strm in
+              let bp = Tools.get_cur_loc strm in
               match strm with parser
               [ [< (act, loc) = add_loc bp cstart >] ->
                 let a = Action.getf act loc in

@@ -1,11 +1,9 @@
 open Structure
 open LibUtil
 open FanToken
-let get_cur_loc = Tools.get_cur_loc
-let get_prev_loc = Tools.get_prev_loc
 let add_loc bp parse_fun strm =
   let x = parse_fun strm in
-  let ep = get_prev_loc strm in
+  let ep = Tools.get_prev_loc strm in
   let loc =
     if (FanLoc.start_off bp) > (FanLoc.stop_off ep)
     then FanLoc.join bp
@@ -14,7 +12,7 @@ let add_loc bp parse_fun strm =
 let level_number entry lab =
   let rec lookup levn =
     function
-    | [] -> failwith ("unknown level " ^ lab)
+    | [] -> failwithf "unknown level %s" lab
     | lev::levs ->
         if Tools.is_level_labelled lab lev
         then levn
@@ -22,16 +20,6 @@ let level_number entry lab =
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found
-let rec top_symb entry =
-  function
-  | `Sself|`Snext -> `Snterm entry
-  | `Snterml (e,_) -> `Snterm e
-  | `Slist1sep (s,sep) -> `Slist1sep ((top_symb entry s), sep)
-  | _ -> raise XStream.Failure
-let top_tree entry =
-  function
-  | Node ({ node = s;_} as x) -> Node { x with node = (top_symb entry s) }
-  | LocAct (_,_)|DeadEnd  -> raise XStream.Failure
 let entry_of_symb entry =
   function
   | `Sself|`Snext -> entry
@@ -53,7 +41,7 @@ let rec parser_of_tree entry (lev,assoc) x =
            | _ -> from_tree bro __strm)
     | Node ({ node; son; brother } as y) ->
         let skip_if_empty bp strm =
-          if (get_cur_loc strm) = bp
+          if (Tools.get_cur_loc strm) = bp
           then Action.mk (fun _  -> raise XStream.Failure)
           else raise XStream.Failure in
         let parser_cont (node,son) loc a =
@@ -71,7 +59,7 @@ let rec parser_of_tree entry (lev,assoc) x =
          | None  ->
              let ps = parser_of_symbol entry node lev in
              (fun strm  ->
-                let bp = get_cur_loc strm in
+                let bp = Tools.get_cur_loc strm in
                 let (__strm :_ XStream.t)= strm in
                 match try Some (ps __strm) with | XStream.Failure  -> None
                 with
@@ -141,7 +129,7 @@ and parser_of_symbol entry s nlevn =
                 try ps __strm
                 with
                 | XStream.Failure  ->
-                    (try parse_top_symb entry symb __strm
+                    (try parser_of_symbol entry symb 0 __strm
                      with
                      | XStream.Failure  ->
                          raise
@@ -158,7 +146,7 @@ and parser_of_symbol entry s nlevn =
     | `Stree t ->
         let pt = parser_of_tree entry (0, `RA) t in
         (fun strm  ->
-           let bp = get_cur_loc strm in
+           let bp = Tools.get_cur_loc strm in
            let (__strm :_ XStream.t)= strm in
            let (act,loc) = add_loc bp pt __strm in Action.getf act loc)
     | `Snterm e -> (fun (__strm : _ XStream.t)  -> e.estart 0 __strm)
@@ -179,8 +167,6 @@ and parser_of_symbol entry s nlevn =
            | Some (tok,_) when f tok -> (XStream.junk __strm; Action.mk tok)
            | _ -> raise XStream.Failure) in
   aux s
-and parse_top_symb entry symb =
-  parser_of_symbol entry (top_symb entry symb) 0
 let start_parser_of_levels entry =
   let rec aux clevn =
     (function
@@ -195,7 +181,7 @@ let start_parser_of_levels entry =
                  if (levn > clevn) && (not ([] = levs))
                  then hstart levn strm
                  else
-                   (let bp = get_cur_loc strm in
+                   (let bp = Tools.get_cur_loc strm in
                     let (__strm :_ XStream.t)= strm in
                     match try Some (add_loc bp cstart __strm)
                           with | XStream.Failure  -> None

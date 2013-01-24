@@ -51,3 +51,18 @@
 (*    if !r = Unused then *)
 (*      print_warning e.name.loc ("Unused local entry \"" ^ s ^ "\"") *)
 (*    else ()) tbl; *)
+
+
+
+(* pomote the level to top *)
+(* let rec top_symb entry =fun *)
+(*   [ `Sself | `Snext -> `Snterm entry *)
+(*   | `Snterml (e, _) -> `Snterm e *)
+(*   | `Slist1sep (s, sep) -> `Slist1sep ((top_symb entry s), sep) *)
+(*   | _ -> raise XStream.Failure ]; *)
+
+(* (\* given an entry and a tree return the top tree *\)   *)
+(* let top_tree entry = fun *)
+(*   [ Node ({node = s; _} as x) -> *)
+(*     Node ({(x) with node = top_symb entry s}) *)
+(*   | LocAct(_, _) | DeadEnd -> raise XStream.Failure ]; *)
