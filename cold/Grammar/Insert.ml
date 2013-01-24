@@ -44,21 +44,21 @@ let find_level ?position  entry levs =
           if Tools.is_level_labelled n lev
           then
             (match x with
-             | `Level _ -> ([], (change_lev lev n), levs)
-             | `Before _ -> ([], empty_lev, (lev :: levs))
-             | `After _ -> ([lev], empty_lev, levs))
+             | `Level _ -> ([], (Some (lev, n)), levs)
+             | `Before _ -> ([], None, (lev :: levs))
+             | `After _ -> ([lev], None, levs))
           else
             (let (levs1,rlev,levs2) = get levs in
              ((lev :: levs1), rlev, levs2)) in
     get ls in
   match position with
-  | Some `First -> ([], empty_lev, levs)
-  | Some `Last -> (levs, empty_lev, [])
+  | Some `First -> ([], None, levs)
+  | Some `Last -> (levs, None, [])
   | Some (`Level n|`Before n|`After n as x) -> find x n levs
   | None  ->
       (match levs with
-       | lev::levs -> ([], (change_lev lev "<top>"), levs)
-       | [] -> ([], empty_lev, []))
+       | lev::levs -> ([], (Some (lev, "<top>")), levs)
+       | [] -> ([], None, []))
 let rec check_gram entry =
   function
   | `Snterm e ->
@@ -156,7 +156,7 @@ let add_production_in_level e1 (symbols,action) slev =
   else
     { slev with lprefix = (add_production (symbols, action) slev.lprefix) }
 let merge_level (la : level) (lb : olevel) =
-  let (lname1,assoc1,rules1) = lb in
+  let (_lname1,_assoc1,rules1) = lb in
   List.fold_right
     (fun (symbols,action)  lev  ->
        let (e1,symbols) = get_initial symbols in
@@ -171,17 +171,15 @@ let insert_olevels_in_levels entry position olevels =
     | Dparser _ ->
         failwithf "Grammar.extend: Error: entry not extensible: %S@."
           entry.ename in
-  if olevels = []
-  then elev
-  else
-    (let (levs1,make_lev,levs2) = find_level ?position entry elev in
-     let (levs,_) =
-       List.fold_left
-         (fun (levs,make_lev)  ((lname,assoc,_) as lev1)  ->
-            let lev = make_lev lname assoc in
-            let lev = merge_level lev lev1 in ((lev :: levs), empty_lev))
-         ([], make_lev) olevels in
-     levs1 @ ((List.rev levs) @ levs2))
+  match olevels with
+  | [] -> elev
+  | x::xs ->
+      let (levs1,make_lev,levs2) = find_level ?position entry elev in
+      (match make_lev with
+       | Some (lev,_n) ->
+           let l1 = merge_level lev x in
+           levs1 @ (l1 :: ((List.map level_of_olevel xs) @ levs2))
+       | None  -> levs1 @ ((List.map level_of_olevel olevels) @ levs2))
 let rec scan_olevels entry (levels : olevel list) =
   List.map (scan_olevel entry) levels
 and scan_olevel entry (x,y,prods) =

@@ -149,7 +149,7 @@ val eoi_entry: 'a t -> 'a t
     
 val levels_of_entry: 'a t -> level list option
 
-val find_level: ?position:position ->  'a t -> level
+(* val find_level: ?position:position ->  'a t -> level *)
     
 val token_stream_of_string: string -> stream
 

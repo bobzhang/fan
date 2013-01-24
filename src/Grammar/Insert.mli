@@ -16,7 +16,7 @@ val levels_of_entry: internal_entry -> level list option
 
 val find_level:
     ?position:position -> internal_entry -> level list
-      -> level list * (string (* option *) -> assoc (* option *) -> level) * level list
+      -> level list * (level * string) option * level list
 
 val check_gram: internal_entry -> symbol -> unit
 

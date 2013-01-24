@@ -65,24 +65,25 @@ let find_level ?position entry  levs =
       if Tools.is_level_labelled n lev then
         match x with
         [`Level _ ->
-            ([], change_lev lev n, levs)
+            ([], (* change_lev lev n *) Some(lev,n), levs)
         |`Before _ ->
-            ([], empty_lev, [lev::levs])
+            ([], (* empty_lev *) None , [lev::levs])
         |`After _ ->
-           ([lev], empty_lev, levs)]  
+           ([lev], (* empty_lev *) None , levs)]  
       else
         let (levs1,rlev,levs2) = get levs in
         ([lev::levs1], rlev, levs2) ] in
     get ls in 
   match position with
-  [ Some `First -> ([], empty_lev, levs)
-  | Some `Last -> (levs, empty_lev, [])
+  [ Some `First -> ([], (* empty_lev *)None , levs)
+  | Some `Last -> (levs, None (* empty_lev *), [])
   | Some ((`Level n | `Before n | `After n)  as x) ->
-      find x n levs 
+      find x n levs
+     (* default behavior*)   
   | None ->
       match levs with
-      [ [lev :: levs] -> ([], change_lev lev "<top>", levs)
-      | [] -> ([], empty_lev, []) ] ];
+      [ [lev :: levs] -> ([], Some (lev, "<top>")(* change_lev lev "<top>" *), levs)
+      | [] -> ([], (* empty_lev *)None, []) ] ];
 
 let rec check_gram entry = fun
   [ `Snterm e ->
@@ -94,7 +95,6 @@ let rec check_gram entry = fun
         failwithf
           "Gram.extend Error: entries %S and %S do not belong to the same grammar.@."
           entry.ename e.ename
-
   | `Smeta (_, sl, _) -> List.iter (check_gram entry) sl
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
@@ -181,7 +181,7 @@ let add_production_in_level  e1 (symbols, action) slev =
 
 
 let merge_level (la:level) (lb:olevel) = begin
-  let (lname1,assoc1,rules1) = lb ;
+  let (_lname1,_assoc1,rules1) = lb ;
   (*FIXME remove the warning temporary*)  
   (* if not (la.lname = lname1 &&  la.assoc = assoc1) then *)
   (*   eprintf "<W> Grammar level merging: merge_level does not agree (name)"; *)
@@ -205,19 +205,46 @@ let insert_olevels_in_levels entry position olevels =
     [ Dlevels elev -> elev
     | Dparser _ ->
         failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in
-  if olevels = [] then elev
-  else
-    let (levs1, make_lev, levs2) = find_level ?position entry  elev in
-    let (levs, _) =
-      List.fold_left
-        (fun (levs, make_lev) ((lname, assoc, _) as lev1) ->
-          let lev = make_lev lname assoc in
-          let lev = merge_level lev lev1 
-          in ([lev :: levs], empty_lev))
-        ([], make_lev)  olevels in
-      levs1 @ List.rev levs @ levs2 ;
+  (* if olevels = [] then elev *)
+  (* else *)
+    match olevels with
+    [ [] -> elev
+    | [x::xs] -> 
+        let (levs1, make_lev, levs2) = find_level ?position entry  elev in
+        match make_lev with
+        [Some (lev,_n) ->
+          let l1 = merge_level lev x in
+          levs1 @ [ l1 :: List.map level_of_olevel xs @ levs2 ]
+            (* let (levs, _) = *)
+            (*   List.fold_left *)
+            (*     (fun (levs, make_lev) ((lname, assoc, _) as lev1) -> *)
+            (*       let lev = make_lev lname assoc in *)
+            (*       let lev = merge_level lev lev1  *)
+            (*       in ([lev :: levs], empty_lev)) *)
+            (*     ([], make_lev)  olevels in *)
+            (* levs1 @ List.rev levs @ levs2 *)
+        | None ->
+        levs1 @ List.map level_of_olevel olevels @ levs2] ];
 
+(*it does not reuse previous level at all *)    
+(* let insert_olvels entry position olevels = *)
+(*   let elev = match entry.edesc with *)
+(*     [ Dlevels elev -> elev *)
+(*     | Dparser _ -> *)
+(*         failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in *)
+(*   if olevels = [] then elev *)
+(*   else *)
+(*     match find_level ?position entry elev with *)
+(*     [(levs1,)]   *)
 
+(* let insert_olevel entry position olevel = *)
+(*   let elev = match entry.edesc with *)
+(*     [ Dlevels elev -> elev *)
+(*     | Dparser _ -> *)
+(*         failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in *)
+  
+  
+    
 (* for the side effects,
    check whether the [gram]  is identical
    and insert the [keywords] here 
