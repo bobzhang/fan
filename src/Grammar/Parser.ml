@@ -6,7 +6,7 @@ open FanToken;
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
-let add_loc bp parse_fun strm =
+let add_loc bp (parse_fun: parse 'b) strm =
   let x = parse_fun strm in
   let ep = Tools.get_prev_loc strm in
   let loc =

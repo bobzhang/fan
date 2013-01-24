@@ -5,7 +5,7 @@ open Structure;
 open Tools;
 open FanToken;
 
-type t 'a =internal_entry;
+type t 'a =entry;
 
 let name e = e.ename;
 

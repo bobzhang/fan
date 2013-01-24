@@ -41,7 +41,7 @@ type gram = {
 
 type label = option string;
   
-type internal_entry = {
+type entry = {
     egram     : gram;
     ename     : string;
     estart    : mutable int -> parse Action.t;
@@ -64,8 +64,8 @@ and level = {
 and symbol =
     [=
      `Smeta of (list string * list symbol * Action.t)
-    | `Snterm of internal_entry
-    | `Snterml of (internal_entry * string) (* the second argument is the level name *)
+    | `Snterm of entry
+    | `Snterml of (entry * string) (* the second argument is the level name *)
     | `Slist0 of symbol
     | `Slist0sep of (symbol * symbol)
     | `Slist1 of symbol
@@ -97,11 +97,11 @@ type single_extend_statement =  (option position * olevel);
 type delete_statment = list symbol;
 
 type fold 'a 'b 'c =
-    internal_entry -> list symbol ->
+    entry -> list symbol ->
       (XStream.t 'a -> 'b) -> XStream.t 'a -> 'c;
 
 type foldsep 'a 'b 'c =
-    internal_entry -> list symbol ->
+    entry -> list symbol ->
       (XStream.t 'a -> 'b) -> (XStream.t 'a -> unit) -> XStream.t 'a -> 'c;
 
 let get_filter g = g.gfilter;

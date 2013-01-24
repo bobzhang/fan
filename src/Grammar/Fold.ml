@@ -26,7 +26,7 @@ let sfold1sep f e entry symbl psymb psep =  (* FIXME this function was never use
     [ [symb; sep] -> Failed.symb_failed_txt entry sep symb
     | _ -> assert false ] in
   let parse_top =  fun
-    [ [symb; _] -> Parser.parse_top_symb entry symb (* FIXME context *)
+    [ [symb; _] -> Parser.parser_of_symbol entry symb 0 (* FIXME context *)
     | _ -> raise XStream.Failure ] in
   let rec kont accu =
     parser
