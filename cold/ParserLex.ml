@@ -10,7 +10,7 @@ let declare_regexp = Gram.mk "declare_regexp"
 let _ =
   Gram.extend_single (lex : 'lex Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Skeyword "|";
           `Slist0sep
             ((Gram.srules
@@ -27,7 +27,7 @@ let _ =
                  (FanLexTools.gen_definition _loc l : 'lex ))))]));
   Gram.extend_single (declare_regexp : 'declare_regexp Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Smeta
              (["FOLD1"; "SEP"],
                [Gram.srules
@@ -58,7 +58,7 @@ let _ =
               (fun _  (_loc : FanLoc.t)  -> (`Nil _loc : 'declare_regexp ))))]));
   Gram.extend_single (regexps : 'regexps Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Skeyword "{";
           `Slist1sep
             ((`Snterm (Gram.obj (regexp : 'regexp Gram.t ))),
@@ -69,17 +69,17 @@ let _ =
                  (Array.of_list xs : 'regexps ))))]));
   Gram.extend (regexp : 'regexp Gram.t )
     (None,
-      [("", `LA,
+      [(None, None,
          [([`Sself; `Skeyword "|"; `Sself],
             (Gram.mk_action
                (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
                   (FanLexTools.alt r1 r2 : 'regexp ))))]);
-      ("", `LA,
+      (None, None,
         [([`Sself; `Sself],
            (Gram.mk_action
               (fun (r2 : 'regexp)  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
                  (FanLexTools.seq r1 r2 : 'regexp ))))]);
-      ("", `LA,
+      (None, None,
         [([`Sself; `Skeyword "*"],
            (Gram.mk_action
               (fun _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
@@ -139,7 +139,7 @@ let _ =
                 | _ -> assert false)))])]);
   Gram.extend_single (chr : 'chr Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Stoken
              (((function | `CHAR (_,_) -> true | _ -> false)),
                (`Normal, "`CHAR (_,_)"))],
@@ -162,7 +162,7 @@ let _ =
                 | _ -> assert false)))]));
   Gram.extend_single (ch_class : 'ch_class Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (chr : 'chr Gram.t ));
           `Skeyword "-";
           `Snterm (Gram.obj (chr : 'chr Gram.t ))],

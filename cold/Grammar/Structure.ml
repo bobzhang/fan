@@ -21,6 +21,7 @@ type gram =
   gfilter: FanTokenFilter.t;
   gkeywords: (string,int ref) Hashtbl.t;
   glexer: FanLoc.t -> char XStream.t -> stream} 
+type label = string option 
 type internal_entry = 
   {
   egram: gram;
@@ -35,7 +36,7 @@ and desc =
 and level = 
   {
   assoc: assoc;
-  lname: string;
+  lname: label;
   productions: production list;
   lsuffix: tree;
   lprefix: tree} 
@@ -54,7 +55,7 @@ and node =  {
   son: tree;
   brother: tree} 
 and production = (symbol list* Action.t) 
-type olevel = (string* assoc* production list) 
+type olevel = (label* assoc option* production list) 
 type extend_statment = (position option* olevel list) 
 type single_extend_statement = (position option* olevel) 
 type delete_statment = symbol list 

@@ -7,7 +7,7 @@ val derive_eps: symbol -> bool
 
 val tree_derive_eps: tree -> bool
 
-val empty_lev: string  -> assoc  -> level
+val empty_lev: label  -> assoc  -> level
 
 val levels_of_entry: internal_entry -> level list option
 

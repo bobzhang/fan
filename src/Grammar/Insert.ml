@@ -62,8 +62,7 @@ let find_level ?position entry  levs =
   | Some `Last -> (levs, None , [])
   | Some ((`Level n | `Before n | `After n)  as x) ->
       find x n levs
-     (* default behavior*)   
-  | None ->
+  | None ->      (* default behavior*)   
       match levs with
       [ [lev :: levs] -> ([], Some (lev, "<top>"), levs)
       | [] -> ([], None, []) ] ];
@@ -164,11 +163,25 @@ let add_production_in_level  e1 (symbols, action) slev =
 
 
 let merge_level (la:level) (lb:olevel) = begin
-  let (_lname1,_assoc1,rules1) = lb ;
-  (*FIXME remove the warning temporary*)  
-  (* if not (la.lname = lname1 &&  la.assoc = assoc1) then *)
-  (*   eprintf "<W> Grammar level merging: merge_level does not agree (name)"; *)
-  List.fold_right
+    let rules1 =
+      match lb with
+     [(y,Some assoc,x) ->begin
+       if not(la.lname= y  && la.assoc = assoc) then
+         eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
+           (StdLib.pp_print_option pp_print_string) la.lname
+           (StdLib.pp_print_option pp_print_string) y
+           Print.dump#assoc la.assoc Print.dump#assoc assoc;
+       x
+     end
+     |((Some _ as y),_,x)-> begin
+         if not (la.lname=y) then
+           eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a)@."
+             (StdLib.pp_print_option pp_print_string) la.lname
+             (StdLib.pp_print_option pp_print_string) y;
+         x
+     end
+     |(None,None,x) -> x];  
+   List.fold_right
       (fun (symbols,action) lev ->
         let (e1,symbols) = get_initial symbols in
         add_production_in_level  e1 (symbols,action) lev)  rules1 la;
@@ -176,7 +189,7 @@ let merge_level (la:level) (lb:olevel) = begin
   
 let level_of_olevel (lb:olevel) = begin
   let (lname1,assoc1,_) = lb ;
-  let la = empty_lev lname1 assoc1 ;  
+  let la = empty_lev lname1 (Option.default `LA assoc1 );
   merge_level la lb  
 end;
   
@@ -188,30 +201,15 @@ let insert_olevels_in_levels entry position olevels =
     [ Dlevels elev -> elev
     | Dparser _ ->
         failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in
-  (* if olevels = [] then elev *)
-  (* else *)
     match olevels with
     [ [] -> elev
-    | [x::xs] -> 
+    | [_::_] -> 
         let (levs1, make_lev, levs2) = find_level ?position entry  elev in
         match make_lev with
-        [Some (lev,_n) ->
-          (* FIXME This case should never happen *)
-          let l1 = merge_level lev x in
-          levs1 @ [ l1 :: List.map level_of_olevel xs @ levs2 ]
-        | None ->
-        levs1 @ List.map level_of_olevel olevels @ levs2] ];
+        [Some (_lev,_n) ->
+          failwithf "Insert group levels in to a specific lev:%s" entry.ename
+        | None -> levs1 @ List.map level_of_olevel olevels @ levs2] ];
 
-(*it does not reuse previous level at all *)    
-(* let insert_olvels entry position olevels = *)
-(*   let elev = match entry.edesc with *)
-(*     [ Dlevels elev -> elev *)
-(*     | Dparser _ -> *)
-(*         failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in *)
-(*   if olevels = [] then elev *)
-(*   else *)
-(*     match find_level ?position entry elev with *)
-(*     [(levs1,)]   *)
 
 let insert_olevel entry position olevel =
   let elev = match entry.edesc with

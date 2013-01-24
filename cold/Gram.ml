@@ -74,7 +74,7 @@ let eoi_entry entry =
   let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
   extend_single (entry_eoi : 'entry_eoi t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (obj (entry : 'entry t ));
           `Stoken
             (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],

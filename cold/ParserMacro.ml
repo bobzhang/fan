@@ -18,7 +18,7 @@ let uident = Gram.mk "uident"
 let apply () =
   (Gram.extend_single (str_item : 'str_item Gram.t )
      ((Some `First),
-       ("", `LA,
+       (None, None,
          [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ))],
             (Gram.mk_action
                (fun (x : 'macro_def)  (_loc : FanLoc.t)  ->
@@ -26,7 +26,7 @@ let apply () =
                      (fun a  b  -> `Sem (_loc, a, b)) x : 'str_item ))))]));
    Gram.extend_single (sig_item : 'sig_item Gram.t )
      ((Some `First),
-       ("", `LA,
+       (None, None,
          [([`Snterm (Gram.obj (macro_def_sig : 'macro_def_sig Gram.t ))],
             (Gram.mk_action
                (fun (x : 'macro_def_sig)  (_loc : FanLoc.t)  ->
@@ -34,7 +34,7 @@ let apply () =
                      (fun a  b  -> `Sem (_loc, a, b)) x : 'sig_item ))))]));
    Gram.extend_single (macro_def : 'macro_def Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Skeyword "DEFINE";
            `Snterm (Gram.obj (uident : 'uident Gram.t ));
            `Snterm (Gram.obj (opt_macro_value : 'opt_macro_value Gram.t ))],
@@ -77,7 +77,7 @@ let apply () =
                  | _ -> assert false)))]));
    Gram.extend_single (macro_def_sig : 'macro_def_sig Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Skeyword "DEFINE";
            `Snterm (Gram.obj (uident : 'uident Gram.t ))],
             (Gram.mk_action
@@ -121,21 +121,21 @@ let apply () =
                  | _ -> assert false)))]));
    Gram.extend_single (uident_eval_ifdef : 'uident_eval_ifdef Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Snterm (Gram.obj (uident : 'uident Gram.t ))],
             (Gram.mk_action
                (fun (i : 'uident)  (_loc : FanLoc.t)  ->
                   (Stack.push (is_defined i) stack : 'uident_eval_ifdef ))))]));
    Gram.extend_single (uident_eval_ifndef : 'uident_eval_ifndef Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Snterm (Gram.obj (uident : 'uident Gram.t ))],
             (Gram.mk_action
                (fun (i : 'uident)  (_loc : FanLoc.t)  ->
                   (Stack.push (not (is_defined i)) stack : 'uident_eval_ifndef ))))]));
    Gram.extend_single (else_macro_def : 'else_macro_def Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Skeyword "ELSE";
            `Snterm (Gram.obj (smlist_else : 'smlist_else Gram.t ));
            `Snterm (Gram.obj (endif : 'endif Gram.t ))],
@@ -147,7 +147,7 @@ let apply () =
               (fun _  (_loc : FanLoc.t)  -> ([] : 'else_macro_def ))))]));
    Gram.extend_single (else_macro_def_sig : 'else_macro_def_sig Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Skeyword "ELSE";
            `Snterm (Gram.obj (sglist_else : 'sglist_else Gram.t ));
            `Snterm (Gram.obj (endif : 'endif Gram.t ))],
@@ -159,7 +159,7 @@ let apply () =
               (fun _  (_loc : FanLoc.t)  -> ([] : 'else_macro_def_sig ))))]));
    Gram.extend_single (else_expr : 'else_expr Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Skeyword "ELSE";
            `Snterm (Gram.obj (expr : 'expr Gram.t ));
            `Snterm (Gram.obj (endif : 'endif Gram.t ))],
@@ -172,7 +172,7 @@ let apply () =
                  (`Id (_loc, (`Uid (_loc, "()"))) : 'else_expr ))))]));
    Gram.extend_single (smlist_then : 'smlist_then Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Slist1
               (Gram.srules
                  [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ));
@@ -192,7 +192,7 @@ let apply () =
                   (sml : 'smlist_then ))))]));
    Gram.extend_single (smlist_else : 'smlist_else Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Slist1
               (Gram.srules
                  [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ));
@@ -212,7 +212,7 @@ let apply () =
                   (sml : 'smlist_else ))))]));
    Gram.extend_single (sglist_then : 'sglist_then Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Slist1
               (Gram.srules
                  [([`Snterm
@@ -233,7 +233,7 @@ let apply () =
                   (sgl : 'sglist_then ))))]));
    Gram.extend_single (sglist_else : 'sglist_else Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Slist1
               (Gram.srules
                  [([`Snterm
@@ -254,14 +254,14 @@ let apply () =
                   (sgl : 'sglist_else ))))]));
    Gram.extend_single (endif : 'endif Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Skeyword "END"],
             (Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (() : 'endif ))));
          ([`Skeyword "ENDIF"],
            (Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (() : 'endif ))))]));
    Gram.extend_single (opt_macro_value : 'opt_macro_value Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Skeyword "(";
            `Slist1sep
              ((Gram.srules
@@ -288,7 +288,7 @@ let apply () =
               (fun (_loc : FanLoc.t)  -> (None : 'opt_macro_value ))))]));
    Gram.extend_single (expr : 'expr Gram.t )
      ((Some (`Level "top")),
-       ("", `LA,
+       (None, None,
          [([`Skeyword "IFDEF";
            `Snterm (Gram.obj (uident : 'uident Gram.t ));
            `Skeyword "THEN";
@@ -324,7 +324,7 @@ let apply () =
                  | _ -> assert false)))]));
    Gram.extend_single (patt : 'patt Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Skeyword "IFDEF";
            `Snterm (Gram.obj (uident : 'uident Gram.t ));
            `Skeyword "THEN";
@@ -349,7 +349,7 @@ let apply () =
                  (if is_defined i then p2 else p1 : 'patt ))))]));
    Gram.extend_single (uident : 'uident Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"))],
@@ -360,7 +360,7 @@ let apply () =
                   | _ -> assert false)))]));
    Gram.extend_single (expr : 'expr Gram.t )
      ((Some (`Before "simple")),
-       ("", `LA,
+       (None, None,
          [([`Skeyword "`";
            Gram.srules
              [([`Skeyword "IFDEF"],
@@ -404,7 +404,7 @@ let apply () =
                  (`Vrn (_loc, s) : 'expr ))))]));
    Gram.extend_single (patt : 'patt Gram.t )
      ((Some (`Before "simple")),
-       ("", `LA,
+       (None, None,
          [([`Skeyword "`";
            Gram.srules
              [([`Skeyword "IFDEF"],

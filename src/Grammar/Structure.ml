@@ -39,6 +39,8 @@ type gram = {
     glexer          : FanLoc.t -> XStream.t char -> stream;
 };
 
+type label = option string;
+  
 type internal_entry = {
     egram     : gram;
     ename     : string;
@@ -52,7 +54,7 @@ and desc =
     | Dparser of stream -> Action.t ]
 and level = {
     assoc   : assoc         ;
-    lname   : (* option *) string ;
+    lname   : label (* (\* option *\) string  *);
     
     productions : list production;
     (* the raw productions stored in the level*)
@@ -88,7 +90,7 @@ and production= (list symbol * Action.t);
 
 
 (* FIXME duplciate with Gram.mli*)
-type olevel = (string * assoc * list production);
+type olevel = ((* string *)label * option assoc * list production);
   
 type extend_statment = (option position * list olevel);
 type single_extend_statement =  (option position * olevel);      

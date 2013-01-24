@@ -1,3 +1,7 @@
+
+(* The dependency should only rely on the last version of
+  [Fan], keep its dependency only on [LibUtil]
+  *)
 open Format;
 open LibUtil;
 
@@ -55,7 +59,7 @@ let pp_print_arrow _mf_a _f_b fmt _v =
   fprintf fmt "<<<function>>>";
 
 class printbase = object(self:'self_type)
-  {:.Fan.Inject.class_str_item| print_class_str_item_base|};  
+  {:class_str_item| print_class_str_item_base|};  
   method list: ! 'a.  ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> list 'a -> unit =
     fun mf_a fmt lst -> pp_print_list (fun a -> mf_a self a) fmt lst ;
   method array: ! 'a. ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> array 'a -> unit =
@@ -71,7 +75,7 @@ class printbase = object(self:'self_type)
 end;
 
 class mapbase = object (self:'self_type)
-  {:.Fan.Inject.class_str_item|map_class_str_item_base_1|};  
+  {:class_str_item|map_class_str_item_base_1|};  
   method list: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> (list 'a0 -> list 'b0) =
     fun mf_a -> fun [ [] -> []
     | [y::ys] -> [ (mf_a self y) :: self#list mf_a ys]];

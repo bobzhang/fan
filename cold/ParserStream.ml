@@ -27,7 +27,7 @@ let apply () =
   and stream_quot: 'stream_quot Gram.t = grammar_entry_create "stream_quot" in
   Gram.extend_single (expr : 'expr Gram.t )
     ((Some (`Level "top")),
-      ("", `LA,
+      (None, None,
         [([`Skeyword "parser";
           `Sopt
             (Gram.srules
@@ -76,7 +76,7 @@ let apply () =
                  | None  -> cparser_match _loc e po pcl : 'expr ))))]));
   Gram.extend_single (expr : 'expr Gram.t )
     ((Some (`Level "simple")),
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (stream_begin : 'stream_begin Gram.t ));
           `Snterm (Gram.obj (stream_end : 'stream_end Gram.t ))],
            (Gram.mk_action
@@ -100,7 +100,7 @@ let apply () =
                  | None  -> cstream _loc sel : 'expr ))))]));
   Gram.extend_single (parser_ipatt : 'parser_ipatt Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            (Gram.mk_action
               (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
@@ -110,7 +110,7 @@ let apply () =
              (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'parser_ipatt ))))]));
   Gram.extend_single (parser_case_list : 'parser_case_list Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Skeyword "[";
           `Slist0sep
             ((`Snterm (Gram.obj (parser_case : 'parser_case Gram.t ))),
@@ -125,7 +125,7 @@ let apply () =
                 ([pc] : 'parser_case_list ))))]));
   Gram.extend_single (parser_case : 'parser_case Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Skeyword "[<";
           `Snterm (Gram.obj (stream_patt : 'stream_patt Gram.t ));
           `Snterm (Gram.obj (stream_end : 'stream_end Gram.t ));
@@ -138,7 +138,7 @@ let apply () =
                  ((sp, po, e) : 'parser_case ))))]));
   Gram.extend_single (stream_begin : 'stream_begin Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Skeyword "[<";
           `Sopt
             (Gram.srules
@@ -157,24 +157,24 @@ let apply () =
                  (name : 'stream_begin ))))]));
   Gram.extend_single (stream_end : 'stream_end Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Skeyword ">]"],
            (Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (() : 'stream_end ))))]));
   Gram.extend_single (stream_quot : 'stream_quot Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Skeyword "'"],
            (Gram.mk_action
               (fun _  (_loc : FanLoc.t)  -> (() : 'stream_quot ))))]));
   Gram.extend_single (stream_expr : 'stream_expr Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (expr : 'expr Gram.t ))],
            (Gram.mk_action
               (fun (e : 'expr)  (_loc : FanLoc.t)  -> (e : 'stream_expr ))))]));
   Gram.extend_single (stream_patt : 'stream_patt Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (stream_patt_comp : 'stream_patt_comp Gram.t ))],
            (Gram.mk_action
               (fun (spc : 'stream_patt_comp)  (_loc : FanLoc.t)  ->
@@ -192,7 +192,7 @@ let apply () =
           (Gram.mk_action (fun (_loc : FanLoc.t)  -> ([] : 'stream_patt ))))]));
   Gram.extend_single (stream_patt_comp : 'stream_patt_comp Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (patt : 'patt Gram.t ));
           `Sopt
             (Gram.srules
@@ -217,7 +217,7 @@ let apply () =
                 (SpStr (_loc, p) : 'stream_patt_comp ))))]));
   Gram.extend_single (stream_patt_comp_err : 'stream_patt_comp_err Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (stream_patt_comp : 'stream_patt_comp Gram.t ));
           `Sopt
             (Gram.srules
@@ -232,7 +232,7 @@ let apply () =
   Gram.extend_single
     (stream_patt_comp_err_list : 'stream_patt_comp_err_list Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm
              (Gram.obj (stream_patt_comp_err : 'stream_patt_comp_err Gram.t ))],
            (Gram.mk_action
@@ -254,7 +254,7 @@ let apply () =
                 sp : 'stream_patt_comp_err_list ))))]));
   Gram.extend_single (stream_expr_comp_list : 'stream_expr_comp_list Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (stream_expr_comp : 'stream_expr_comp Gram.t ));
           `Skeyword ";";
           `Sself],
@@ -273,7 +273,7 @@ let apply () =
                 ([se] : 'stream_expr_comp_list ))))]));
   Gram.extend_single (stream_expr_comp : 'stream_expr_comp Gram.t )
     (None,
-      ("", `LA,
+      (None, None,
         [([`Snterm (Gram.obj (stream_expr : 'stream_expr Gram.t ))],
            (Gram.mk_action
               (fun (e : 'stream_expr)  (_loc : FanLoc.t)  ->

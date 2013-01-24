@@ -343,12 +343,12 @@ let text_of_entry e =  with expr
       (fun level  ->
         let lab =
           match level.label with
-          [ Some lab ->  {|$str:lab|}
-          | None ->  {| "" |}]  in
+          [ Some lab ->  (* {|$str:lab|} *)  {| Some $str:lab |}
+          | None ->  (* {| "" |} *) {|None|} ]  in
         let ass =
           match level.assoc with
-          [ Some ass ->  ass 
-          | None ->   {| `LA |} ]  in
+          [ Some ass ->  (* ass  *) {| Some $ass |}
+          | None ->   (* {| `LA |} *) {|None|} ]  in
           let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
           let prod = make_expr_rules _loc e.name rl e.name.tvar in
           (* generated code of type [olevel] *)
@@ -443,36 +443,3 @@ let sfold ?sep _loc  (ns:list string)  f e s = with ctyp
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-  (* (\*                 ) *\) *)
-  (* let (tok_match_pl(\* , act *\), _) = *)
-  (*   List.fold_left *)
-  (*     (fun *)
-  (*       ((tok_match_pl, i) as accu) *)
-  (*       -> fun *)
-  (*         [ { pattern = None; _ } -> accu *)
-  (*         | { pattern = Some p ; _} when FanAst.is_irrefut_patt p -> accu *)
-  (*         | { pattern = Some p; text=`Stok (_, _,  _, _) ; _ } -> *)
-  (*             let id = prefix ^ string_of_int i in *)
-  (*             (Some *)
-  (*                (match tok_match_pl with *)
-  (*                [ None -> ({| $lid:id |}, p) *)
-  (*                | Some (tok_pl, match_pl) -> *)
-  (*                    ({| $lid:id, $tok_pl |}, {:patt| $p, $match_pl |})]),  i+1) *)
-  (*         | _ -> accu ])  (None, 0) psl  in *)

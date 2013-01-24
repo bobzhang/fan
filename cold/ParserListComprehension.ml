@@ -12,7 +12,7 @@ let apply () =
    let item: 'item Gram.t = grammar_entry_create "item" in
    Gram.extend_single (expr : 'expr Gram.t )
      ((Some (`Level "simple")),
-       ("", `LA,
+       (None, None,
          [([`Skeyword "[";
            `Snterm
              (Gram.obj
@@ -26,7 +26,7 @@ let apply () =
      (comprehension_or_sem_expr_for_list : 'comprehension_or_sem_expr_for_list
                                              Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
            `Skeyword ";";
            `Snterm
@@ -62,7 +62,7 @@ let apply () =
                       (`Id (_loc, (`Uid (_loc, "[]"))))) : 'comprehension_or_sem_expr_for_list ))))]));
    Gram.extend_single (item : 'item Gram.t )
      (None,
-       ("", `LA,
+       (None, None,
          [([`Stry
               (Gram.srules
                  [([`Snterm (Gram.obj (patt : 'patt Gram.t ));
@@ -83,7 +83,7 @@ let apply () =
       (comprehension_or_sem_expr_for_list : 'comprehension_or_sem_expr_for_list
                                               Gram.t )
       (None,
-        ("", `LA,
+        (None, None,
           [([`Snterml ((Gram.obj (expr : 'expr Gram.t )), "top");
             `Skeyword ";";
             `Snterm

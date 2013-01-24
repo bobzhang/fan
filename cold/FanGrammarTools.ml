@@ -299,10 +299,14 @@ let text_of_entry e =
   let apply level =
     let lab =
       match level.label with
-      | Some lab -> `Str (_loc, lab)
-      | None  -> `Str (_loc, "") in
+      | Some lab ->
+          `App
+            (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (`Str (_loc, lab)))
+      | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
     let ass =
-      match level.assoc with | Some ass -> ass | None  -> `Vrn (_loc, "LA") in
+      match level.assoc with
+      | Some ass -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
+      | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
     let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
     let prod = make_expr_rules _loc e.name rl (e.name).tvar in
     `Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) in
