@@ -109,8 +109,9 @@ class dump_grammar =
     inherit  text_grammar
     method! tree f tree =
       TreePrint.print_sons "|-"
-        (fun (Bro (s,ls))  -> ((string_of_symbol s), ls)) "" f
-        (get_brothers tree)
+        (function
+         | Bro (s,ls) -> ((string_of_symbol s), ls)
+         | End  -> (".", [])) "" f (get_brothers tree)
     method! level f { assoc; lname; lsuffix; lprefix;_} =
       pp f "%a %a@;@[<hv2>suffix:@\n%a@]@;@[<hv2>prefix:@\n%a@]"
         (self#option (fun f  s  -> pp f "%S" s)) lname self#assoc assoc

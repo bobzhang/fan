@@ -48,7 +48,7 @@ let level_number entry lab =
 let rec parser_of_tree entry (lev,assoc) x =
   let alevn = match assoc with
     [`LA|`NA -> lev + 1 | `RA -> lev ] in
-  let rec from_tree  = fun 
+  let rec from_tree tree =  match tree  with
   [ DeadEnd -> raise XStream.Failure
   | LocAct (act, _) -> fun _ -> act 
   (* rules ending with [SELF] , for this last symbol there's a call to the [start] function:
@@ -60,16 +60,24 @@ let rec parser_of_tree entry (lev,assoc) x =
   (* [son] will never be [DeadEnd] *)        
   | Node ({ node ; son; brother } as y) ->
       let skip_if_empty bp strm =
-        if Tools.get_cur_loc strm = bp then
+        if Tools.get_cur_loc strm = bp then begin 
+          (* Format.eprintf "@[%a@]@.@." Print.dump#tree tree; *)
+          (* FanLoc.raise bp (Invalid_argument "x"); *)
           Action.mk (fun _ -> raise XStream.Failure)
-        else
-          raise XStream.Failure  in
+        end
+        else begin
+          (* Format.eprintf "@[neq@]@."; *)
+          raise XStream.Failure
+        end in
       let  parser_cont  (node,son) loc a =
-        let pson = from_tree son in 
+        let pson = from_tree son in
+        (* fun strm -> *)
+        (*   try pson strm *)
+        (*   with XStream.Failure -> raise XS *)
         parser
           [ [< b = pson >] -> b
-          | [< b = skip_if_empty loc >] -> b 
-          | [< >] -> raise (XStream.Error (Failed.tree_failed entry a node son)) ] in
+          | [< b = skip_if_empty loc >] -> b
+          | [< >] -> raise (XStream.Error (Failed.tree_failed entry a node son))] in
       match Tools.get_terminals  y with
       [ None ->
         let ps = parser_of_symbol entry node  lev  in fun strm ->
@@ -77,12 +85,23 @@ let rec parser_of_tree entry (lev,assoc) x =
           match strm with parser
           [ [< a = ps; act = parser_cont (node,son) bp a >] -> Action.getf act a
           | [< a = from_tree brother >] -> a ]
-      | Some (tokl, node, son) ->
+      | Some (tokl, _node, son) ->
           parser
-            [ [< a = parser_of_terminals tokl (parser_cont ((node:>symbol),son)) >] -> a
+            [ [< a = parser_of_terminals tokl
+                   (fun  _loc _a -> let pson = from_tree son in fun strm -> pson strm)
+                   (* (parser_cont ((node:>symbol),son)) *) >] -> a
             | [< a = from_tree brother >] -> a ] ] ] in
   from_tree x 
 
+(*
+  {[
+  let a : FanToken.t = Obj.magic & Parser.parser_of_terminals
+  [`Skeyword "a";`Skeyword "b"; `Skeyword "c"]
+  (fun _ v _  -> Action.mk (fun  c b a ->  v))
+  [< (`KEYWORD "a",_loc) ; (`KEYWORD "b", _loc); (`KEYWORD "c",_loc) >];
+  val a : FanToken.t = `KEYWORD "c"
+  ]}
+ *)    
 and parser_of_terminals
     (terminals:list terminal ) (cont:cont_parse Action.t) strm =
   let bp = Tools.get_cur_loc strm in (* FIXME more precise Location *)

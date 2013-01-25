@@ -11,7 +11,8 @@ let rec print_node decomp pref f t =
      | t'::[] -> pp f "---%a" (print_node decomp (pref' ^ "  ")) t'
      | _ -> pp f "-%a" (print_sons "+-" decomp pref') sons)
   else ()
-and print_sons start decomp pref f =
+and print_sons (start : string) (decomp : 'a -> (string* 'a list))
+  (pref : string) f =
   function
   | [] -> ()
   | s::[] -> pp f "`-%a" (print_node decomp (pref ^ "  ")) s

@@ -385,9 +385,9 @@ let rest =
      [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
      "simple"
      [ `STR(_,s) -> {| $str:s|}
-| "_" -> {| _ |}
-| `Lid x   ->  {| $lid:x|}
-| "("; S{p}; ")" -> p] }
+     | "_" -> {| _ |}
+     | `Lid x   ->  {| $lid:x|}
+     | "("; S{p}; ")" -> p] }
 
   pattern:
   [ `Lid i -> {:patt| $lid:i |}

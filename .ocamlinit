@@ -124,3 +124,6 @@ let p_type_declaration  =  AstPrint.default#type_declaration;;
 (* test dump *)
 let t_dump s =  t str_item s |> Ast2pt.str_item;;
 open ParserGrammar;;
+
+#require "inspect";;
+open Inspect;

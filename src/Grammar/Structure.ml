@@ -20,6 +20,8 @@ end;
 (* {:fans|derive (OIter ); |}; *)
 
 {:ocaml|
+
+(* the [location] and the parsed value *)
 type cont_parse 'a = FanLoc.t -> Action.t -> parse 'a;
     
 type description =

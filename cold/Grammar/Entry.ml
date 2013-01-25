@@ -66,3 +66,4 @@ let clear e =
     (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
   e.edesc <- Dlevels []
 let obj x = x
+let repr x = x

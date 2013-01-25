@@ -88,12 +88,14 @@ let rec flatten_tree =
   | Node { node = n; brother = b; son = s } ->
       (List.map (fun l  -> n :: l) (flatten_tree s)) @ (flatten_tree b)
 type brothers =  
-  | Bro of symbol* brothers list 
+  | Bro of symbol* brothers list
+  | End 
 type space_formatter = (unit,Format.formatter,unit) format 
 let get_brothers x =
   let rec aux acc =
     function
-    | DeadEnd |LocAct _ -> List.rev acc
+    | DeadEnd  -> List.rev acc
+    | LocAct _ -> List.rev (End :: acc)
     | Node { node = n; brother = b; son = s } ->
         aux ((Bro (n, (aux [] s))) :: acc) b in
   aux [] x

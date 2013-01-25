@@ -26,14 +26,14 @@ let slist0sep ~err  ~f  s sep =
     | _ -> f []
 let slist1sep ~err  ~f  s sep =
   let rec kont al (__strm : _ XStream.t) =
-    match try Some (s __strm) with | XStream.Failure  -> None with
+    match try Some (sep __strm) with | XStream.Failure  -> None with
     | Some v ->
         let a =
-          try sep __strm
+          try s __strm
           with | XStream.Failure  -> raise (XStream.Error (err v)) in
         kont (a :: al) __strm
     | _ -> al in
-  fun (__strm : _ XStream.t)  -> let a = sep __strm in f (kont [a] __strm)
+  fun (__strm : _ XStream.t)  -> let a = s __strm in f (kont [a] __strm)
 let opt ps ~f  (__strm : _ XStream.t) =
   match try Some (ps __strm) with | XStream.Failure  -> None with
   | Some a -> f (Some a)

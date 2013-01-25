@@ -20,13 +20,18 @@ let get_prev_loc strm =
   |None -> begin
       FanLoc.ghost end];
 
-(* FIXME *)    
 let is_level_labelled n =
   fun [ {lname=Some n1 ; _  } -> n = n1 | _ -> false ];
-    (* (n = n1) && (n1<>"")  ]; *)
-  
 
-  
+(*
+  try to decouple the node [x] into
+  (terminals,node,son) triple, the length of
+  terminals should have at least length [2], otherwise,
+  it does not make sense
+  {[
+
+  ]}
+ *)  
 let get_terminals x =
   let rec aux tokl last_tok  = fun 
     [ Node {node = (#terminal as tok); son; brother = DeadEnd}

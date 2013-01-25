@@ -96,3 +96,4 @@ let clear e = begin
 end;
 
 let obj x = x;
+let repr x = x;  

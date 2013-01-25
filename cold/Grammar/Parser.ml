@@ -22,10 +22,10 @@ let level_number entry lab =
   | Dparser _ -> raise Not_found
 let rec parser_of_tree entry (lev,assoc) x =
   let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
-  let rec from_tree =
-    function
+  let rec from_tree tree =
+    match tree with
     | DeadEnd  -> raise XStream.Failure
-    | LocAct (act,_) -> (fun (__strm : _ XStream.t)  -> act)
+    | LocAct (act,_) -> (fun _  -> act)
     | Node { node = `Sself; son = LocAct (act,_); brother = bro } ->
         (fun (__strm : _ XStream.t)  ->
            match try Some (entry.estart alevn __strm)
@@ -63,11 +63,13 @@ let rec parser_of_tree entry (lev,assoc) x =
                       with | XStream.Failure  -> raise (XStream.Error "") in
                     Action.getf act a
                 | _ -> from_tree brother __strm)
-         | Some (tokl,node,son) ->
+         | Some (tokl,_node,son) ->
              (fun (__strm : _ XStream.t)  ->
                 try
                   parser_of_terminals tokl
-                    (parser_cont ((node :>symbol), son)) __strm
+                    (fun _loc  _a  ->
+                       let pson = from_tree son in fun strm  -> pson strm)
+                    __strm
                 with | XStream.Failure  -> from_tree brother __strm)) in
   from_tree x
 and parser_of_terminals (terminals : terminal list)
@@ -88,14 +90,13 @@ and parser_of_terminals (terminals : terminal list)
               (match terminal with
                | `Stoken (f,_) -> f t
                | `Skeyword kwd -> FanToken.match_keyword kwd t)
-          then invalid_arg "parser_of_terminals"
-          else ()) terminals
+          then invalid_arg "parser_of_terminals") terminals
    with | Invalid_argument _ -> raise XStream.Failure);
   XStream.njunk n strm;
   (match acc.contents with
    | [] -> invalid_arg "parser_of_terminals"
    | x::_ ->
-       let action = Obj.magic cont bp (Action.mk x) strm in
+       let action = cont bp (Action.mk x) strm in
        List.fold_left (fun a  arg  -> Action.getf a arg) action acc.contents)
 and parser_of_symbol entry s nlevn =
   let rec aux s =
@@ -116,20 +117,9 @@ and parser_of_symbol entry s nlevn =
         Comb.slist1 ps ~f:(fun l  -> Action.mk (List.rev l))
     | `Slist1sep (symb,sep) ->
         let ps = aux symb and pt = aux sep in
-        let rec kont al (__strm : _ XStream.t) =
-          match try Some (pt __strm) with | XStream.Failure  -> None with
-          | Some v ->
-              let a =
-                try ps __strm
-                with
-                | XStream.Failure  ->
-                    raise
-                      (XStream.Error (Failed.symb_failed entry v sep symb)) in
-              kont (a :: al) __strm
-          | _ -> al in
-        (fun (__strm : _ XStream.t)  ->
-           let a = ps __strm in
-           let s = __strm in Action.mk (List.rev (kont [a] s)))
+        Comb.slist1sep ps pt
+          ~err:(fun v  -> Failed.symb_failed entry v sep symb)
+          ~f:(fun l  -> Action.mk (List.rev l))
     | `Sopt s -> let ps = aux s in Comb.opt ps ~f:Action.mk
     | `Stry s -> let ps = aux s in Comb.tryp ps
     | `Speek s -> let ps = aux s in Comb.peek ps
