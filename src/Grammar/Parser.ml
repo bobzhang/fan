@@ -50,13 +50,11 @@ let rec parser_of_tree entry (lev,assoc) x =
     [`LA|`NA -> lev + 1 | `RA -> lev ] in
   let rec from_tree  = fun 
   [ DeadEnd -> raise XStream.Failure
-  | LocAct (act, _) -> parser [< >] -> act
-  (* rules ending with [SELF] or with the current entry name, for this last symbol
-     there's a call to the [start] function: of the current level if the level is
-     [`RA] or of the next level otherwise. (This can be verified by
-     [start_parser_of_levels]) *)      
-  | Node {node = `Sself; son = LocAct (act, _); brother = bro}
-    ->  parser
+  | LocAct (act, _) -> fun _ -> act 
+  (* rules ending with [SELF] , for this last symbol there's a call to the [start] function:
+     of the current level if the level is [`RA] or of the next level otherwise. (This can be
+     verified by [start_parser_of_levels]) *)      
+  | Node {node = `Sself; son = LocAct (act, _); brother = bro} ->  parser
         [ [< a = entry.estart alevn >] -> Action.getf act a
         | [< a = from_tree bro >] -> a ]
   (* [son] will never be [DeadEnd] *)        
@@ -96,22 +94,23 @@ and parser_of_terminals
             let t =
               match XStream.peek_nth strm i with
               [Some (tok,_) -> tok
-              |None -> invalid_arg "parser_of_terminals"] in begin
-                  acc:= [t::!acc];
-                  if not (match terminal with
+              |None -> invalid_arg "parser_of_terminals"] in
+            begin
+              acc:= [t::!acc];
+              if not
+                  (match terminal with
                     [`Stoken(f,_) -> f t
                     |`Skeyword kwd -> FanToken.match_keyword kwd t])
-                  then
-                    invalid_arg "parser_of_terminals"
-                  else ()
-              end) terminals (* tokens *)
+              then
+                invalid_arg "parser_of_terminals"
+            end) terminals (* tokens *)
     with [Invalid_argument _ -> raise XStream.Failure];
-
     XStream.njunk n strm;
     match !acc with
     [[] -> invalid_arg "parser_of_terminals"
     |[x::_] ->
-        let action = Obj.magic cont bp (Action.mk x) strm in
+        let action = (cont bp (Action.mk x) strm) in
+        (* apply the results in reverse order *)
         List.fold_left (fun a arg -> Action.getf a arg) action !acc]
   end          
 (* only for [Smeta] it might not be functional *)
@@ -132,17 +131,8 @@ and parser_of_symbol entry s nlevn =
      Comb.slist1 ps ~f:(fun l -> Action.mk (List.rev l))
    | `Slist1sep (symb, sep) ->
        let ps = aux symb and pt = aux sep  in
-       (* Comb.slist1sep ps pt ~err:(fun v -> Failed.symb_failed entry v sep symb) *)
-       (*   ~f:(fun l -> Action.mk (List.rev l)) *)
-
-     let rec kont al = parser
-       [ [< v = pt; a = parser
-         [ [< a = ps >] -> a
-         | [< >] ->
-             raise (XStream.Error (Failed.symb_failed entry v sep symb)) ];
-           's >] ->kont [a :: al] s
-         | [< >] -> al ] in
-     parser [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
+       Comb.slist1sep ps pt ~err:(fun v -> Failed.symb_failed entry v sep symb)
+         ~f:(fun l -> Action.mk (List.rev l))
   | `Sopt s -> let ps = aux s  in Comb.opt ps ~f:Action.mk
   | `Stry s -> let ps = aux s in Comb.tryp ps
   | `Speek s -> let ps = aux s in Comb.peek ps

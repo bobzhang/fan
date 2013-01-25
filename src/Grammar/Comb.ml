@@ -25,13 +25,13 @@ let slist0sep ~err ~f s sep  =
 
 let slist1sep ~err ~f s sep =
   let rec kont al = parser
-      [ [< v = s (* pt *); a = parser
-          [ [< a = sep (* ps *) >] -> a
+      [ [< v = sep (* pt *); a = parser
+          [ [< a = s (* ps *) >] -> a
           | [< >] ->
              raise (XStream.Error (err v (* Failed.symb_failed entry v sep symb *))) ];
            's >] ->kont [a :: al] s
       | [< >] -> al ] in
-  parser [< a = sep (* ps *); 's >] ->
+  parser [< a = s (* ps *); 's >] ->
     f (kont [a] s);
     (* Action.mk (List.rev (kont [a] s)) *)
 

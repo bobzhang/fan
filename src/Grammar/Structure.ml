@@ -133,13 +133,14 @@ let rec flatten_tree = fun
   | Node {node = n; brother = b; son = s} ->
       [ [n :: l] | l <- flatten_tree s ] @ flatten_tree b ];
 
-type brothers = [ Bro of symbol and list brothers ];
+type brothers = [ Bro of symbol and list brothers | End];
 
 type space_formatter =  format unit Format.formatter unit;
 
 let get_brothers x =
   let rec aux acc =  fun
-  [ DeadEnd | LocAct _ -> List.rev acc
+  [ DeadEnd -> List.rev acc 
+  | LocAct _ -> List.rev [End:: acc]
   | Node {node = n; brother = b; son = s} ->
           aux [ Bro n (aux [] s) :: acc] b ] in aux [] x ;
 let get_children x = 

@@ -119,7 +119,45 @@ and using_node gram  node = match node with
 
 (* given an [entry] , [production] and  a [tree], return a new [tree]
    [ename] is only used for error message
-   The [tree] is used to merge the [production] 
+   The [tree] is used to merge the [production]
+   {[
+   Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
+   - : Grammar.Structure.tree = `-S---"x"---"y"
+
+   Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
+   - : Grammar.Structure.tree =
+   Node
+   {node = `Sself;
+     son =
+     Node
+     {node = `Skeyword "x";
+       son =
+      Node
+       {node = `Skeyword "y"; son = LocAct (<abstr>, []); brother = DeadEnd};
+     brother = DeadEnd};
+   brother = DeadEnd}
+
+   Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y";`Skeyword "z"], Action.mk (fun _ -> ""))
+    (Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd);
+   - : Grammar.Structure.tree =
+   Node
+   {node = `Sself;
+   son =
+   Node
+    {node = `Skeyword "x";
+     son =
+      Node
+       {node = `Skeyword "y";
+        son =
+         Node
+          {node = `Skeyword "z"; son = LocAct (<abstr>, []);
+           brother = LocAct (<abstr>, [])};
+        brother = DeadEnd};
+     brother = DeadEnd};
+   brother = DeadEnd}
+   
+   `-S---"x"---"y"---"z"- : 
+   ]}
  *)
 let add_production  (gsymbols, action) tree =
   let rec try_insert s sl tree =
