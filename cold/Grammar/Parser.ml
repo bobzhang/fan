@@ -65,16 +65,11 @@ let rec parser_of_tree entry (lev,assoc) x =
                 | _ -> from_tree brother __strm)
          | Some (tokl,_node,son) ->
              (fun (__strm : _ XStream.t)  ->
-                try
-                  parser_of_terminals tokl
-                    (fun _loc  _a  ->
-                       let pson = from_tree son in fun strm  -> pson strm)
-                    __strm
+                try parser_of_terminals tokl (from_tree son) __strm
                 with | XStream.Failure  -> from_tree brother __strm)) in
   from_tree x
-and parser_of_terminals (terminals : terminal list)
-  (cont : Action.t cont_parse) strm =
-  let bp = Tools.get_cur_loc strm in
+and parser_of_terminals (terminals : terminal list) (cont : Action.t parse)
+  strm =
   let n = List.length terminals in
   let acc = ref [] in
   (try
@@ -93,11 +88,8 @@ and parser_of_terminals (terminals : terminal list)
           then invalid_arg "parser_of_terminals") terminals
    with | Invalid_argument _ -> raise XStream.Failure);
   XStream.njunk n strm;
-  (match acc.contents with
-   | [] -> invalid_arg "parser_of_terminals"
-   | x::_ ->
-       let action = cont bp (Action.mk x) strm in
-       List.fold_left (fun a  arg  -> Action.getf a arg) action acc.contents)
+  (let action = cont strm in
+   List.fold_left (fun a  arg  -> Action.getf a arg) action acc.contents)
 and parser_of_symbol entry s nlevn =
   let rec aux s =
     match s with

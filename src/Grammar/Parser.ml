@@ -59,21 +59,22 @@ let rec parser_of_tree entry (lev,assoc) x =
         | [< a = from_tree bro >] -> a ]
   (* [son] will never be [DeadEnd] *)        
   | Node ({ node ; son; brother } as y) ->
+      (*
+        Handle the problem
+        {[
+        `-OPT assoc---rule_list---.
+        `-OPT [ `STR (_,_)]---OPT assoc---rule_list---.
+        ]}
+       *)
       let skip_if_empty bp strm =
         if Tools.get_cur_loc strm = bp then begin 
-          (* Format.eprintf "@[%a@]@.@." Print.dump#tree tree; *)
-          (* FanLoc.raise bp (Invalid_argument "x"); *)
           Action.mk (fun _ -> raise XStream.Failure)
         end
         else begin
-          (* Format.eprintf "@[neq@]@."; *)
           raise XStream.Failure
         end in
       let  parser_cont  (node,son) loc a =
         let pson = from_tree son in
-        (* fun strm -> *)
-        (*   try pson strm *)
-        (*   with XStream.Failure -> raise XS *)
         parser
           [ [< b = pson >] -> b
           | [< b = skip_if_empty loc >] -> b
@@ -87,9 +88,7 @@ let rec parser_of_tree entry (lev,assoc) x =
           | [< a = from_tree brother >] -> a ]
       | Some (tokl, _node, son) ->
           parser
-            [ [< a = parser_of_terminals tokl
-                   (fun  _loc _a -> let pson = from_tree son in fun strm -> pson strm)
-                   (* (parser_cont ((node:>symbol),son)) *) >] -> a
+            [ [< a = parser_of_terminals tokl (from_tree son) >] -> a
             | [< a = from_tree brother >] -> a ] ] ] in
   from_tree x 
 
@@ -103,8 +102,7 @@ let rec parser_of_tree entry (lev,assoc) x =
   ]}
  *)    
 and parser_of_terminals
-    (terminals:list terminal ) (cont:cont_parse Action.t) strm =
-  let bp = Tools.get_cur_loc strm in (* FIXME more precise Location *)
+    (terminals:list terminal ) (cont:(* cont_ *)parse Action.t) strm =
   let n = List.length terminals in
   let acc = ref [] in begin
     try
@@ -125,12 +123,9 @@ and parser_of_terminals
             end) terminals (* tokens *)
     with [Invalid_argument _ -> raise XStream.Failure];
     XStream.njunk n strm;
-    match !acc with
-    [[] -> invalid_arg "parser_of_terminals"
-    |[x::_] ->
-        let action = (cont bp (Action.mk x) strm) in
-        (* apply the results in reverse order *)
-        List.fold_left (fun a arg -> Action.getf a arg) action !acc]
+    let action = (cont  strm);
+    (* apply the results in reverse order *)
+    List.fold_left (fun a arg -> Action.getf a arg) action !acc
   end          
 (* only for [Smeta] it might not be functional *)
 and parser_of_symbol entry s nlevn =
