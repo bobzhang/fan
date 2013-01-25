@@ -131,11 +131,13 @@ and parser_of_symbol entry s nlevn =
    | `Slist1 s -> let ps =  aux s  in
      Comb.slist1 ps ~f:(fun l -> Action.mk (List.rev l))
    | `Slist1sep (symb, sep) ->
-     let ps = aux symb and pt = aux sep  in
+       let ps = aux symb and pt = aux sep  in
+       (* Comb.slist1sep ps pt ~err:(fun v -> Failed.symb_failed entry v sep symb) *)
+       (*   ~f:(fun l -> Action.mk (List.rev l)) *)
+
      let rec kont al = parser
        [ [< v = pt; a = parser
          [ [< a = ps >] -> a
-         (* | [< a = parser_of_symbol  entry symb 0 >] -> a *)
          | [< >] ->
              raise (XStream.Error (Failed.symb_failed entry v sep symb)) ];
            's >] ->kont [a :: al] s
