@@ -1,7 +1,7 @@
 open Structure
 open LibUtil
 open FanToken
-let add_loc bp parse_fun strm =
+let add_loc bp (parse_fun : 'b parse) strm =
   let x = parse_fun strm in
   let ep = Tools.get_prev_loc strm in
   let loc =
@@ -20,12 +20,6 @@ let level_number entry lab =
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found
-let entry_of_symb entry =
-  function
-  | `Sself|`Snext -> entry
-  | `Snterm e -> e
-  | `Snterml (e,_) -> e
-  | _ -> raise XStream.Failure
 let rec parser_of_tree entry (lev,assoc) x =
   let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
   let rec from_tree =
@@ -129,12 +123,8 @@ and parser_of_symbol entry s nlevn =
                 try ps __strm
                 with
                 | XStream.Failure  ->
-                    (try parser_of_symbol entry symb 0 __strm
-                     with
-                     | XStream.Failure  ->
-                         raise
-                           (XStream.Error
-                              (Failed.symb_failed entry v sep symb))) in
+                    raise
+                      (XStream.Error (Failed.symb_failed entry v sep symb)) in
               kont (a :: al) __strm
           | _ -> al in
         (fun (__strm : _ XStream.t)  ->
@@ -147,14 +137,11 @@ and parser_of_symbol entry s nlevn =
         let pt = parser_of_tree entry (0, `RA) t in
         (fun strm  ->
            let bp = Tools.get_cur_loc strm in
-           let (__strm :_ XStream.t)= strm in
-           let (act,loc) = add_loc bp pt __strm in Action.getf act loc)
+           let (act,loc) = add_loc bp pt strm in Action.getf act loc)
     | `Snterm e -> (fun (__strm : _ XStream.t)  -> e.estart 0 __strm)
-    | `Snterml (e,l) ->
-        (fun (__strm : _ XStream.t)  -> e.estart (level_number e l) __strm)
-    | `Sself -> (fun (__strm : _ XStream.t)  -> entry.estart 0 __strm)
-    | `Snext ->
-        (fun (__strm : _ XStream.t)  -> entry.estart (nlevn + 1) __strm)
+    | `Snterml (e,l) -> (fun strm  -> e.estart (level_number e l) strm)
+    | `Sself -> (fun strm  -> entry.estart 0 strm)
+    | `Snext -> (fun strm  -> entry.estart (nlevn + 1) strm)
     | `Skeyword kwd ->
         (fun (__strm : _ XStream.t)  ->
            match XStream.peek __strm with
@@ -168,8 +155,8 @@ and parser_of_symbol entry s nlevn =
            | _ -> raise XStream.Failure) in
   aux s
 let start_parser_of_levels entry =
-  let rec aux clevn =
-    (function
+  let rec aux clevn (xs : level list) =
+    (match xs with
      | [] -> (fun _  (__strm : _ XStream.t)  -> raise XStream.Failure)
      | lev::levs ->
          let hstart = aux (clevn + 1) levs in
@@ -189,8 +176,7 @@ let start_parser_of_levels entry =
                     | Some (act,loc) ->
                         let a = Action.getf act loc in
                         entry.econtinue levn loc a strm
-                    | _ -> hstart levn __strm))) : level list ->
-                                                     int -> Action.t parse ) in
+                    | _ -> hstart levn __strm))) : int -> Action.t parse ) in
   aux 0
 let start_parser_of_entry entry =
   match entry.edesc with

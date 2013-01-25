@@ -16,6 +16,6 @@ val get_terminals: node ->  (terminal list * terminal * tree) option
       
 val eq_Stoken_ids: descr -> descr -> bool
         
-val logically_eq_symbols: internal_entry -> symbol -> symbol -> bool
+val logically_eq_symbols: entry -> symbol -> symbol -> bool
       
 val eq_symbol:  symbol ->symbol -> bool

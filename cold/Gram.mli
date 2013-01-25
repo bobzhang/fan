@@ -38,7 +38,7 @@ type descr = description * string
 
 type token_pattern = (FanToken.t -> bool) * descr
 
-type internal_entry = Grammar.Structure.internal_entry 
+type entry = Grammar.Structure.entry 
 and desc = Grammar.Structure.desc
 and level = Grammar.Structure.level 
 and symbol = Grammar.Structure.symbol
@@ -87,7 +87,7 @@ val mk_action: 'a -> Action.t
 
 val string_of_token:[> FanToken.t ] -> string
 
-val obj: 'a t -> internal_entry         
+val obj: 'a t -> entry         
 
 val removing: gram -> string -> unit
 

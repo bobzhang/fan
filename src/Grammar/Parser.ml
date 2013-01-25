@@ -135,7 +135,7 @@ and parser_of_symbol entry s nlevn =
      let rec kont al = parser
        [ [< v = pt; a = parser
          [ [< a = ps >] -> a
-         | [< a = parser_of_symbol  entry symb 0 >] -> a
+         (* | [< a = parser_of_symbol  entry symb 0 >] -> a *)
          | [< >] ->
              raise (XStream.Error (Failed.symb_failed entry v sep symb)) ];
            's >] ->kont [a :: al] s
@@ -148,12 +148,11 @@ and parser_of_symbol entry s nlevn =
       let pt = parser_of_tree entry (0, `RA)  t (* FIXME*) in
       fun strm ->
         let bp = Tools.get_cur_loc strm in
-        match strm with parser
-        [ [< (act, loc) = add_loc bp pt >] ->  Action.getf act loc]
+        let (act,loc) = add_loc bp pt strm in Action.getf act loc
   | `Snterm e -> parser [< a = e.estart 0 >] -> a (* No filter any more *)
-  | `Snterml (e, l) -> parser [< a = e.estart (level_number e l) >] -> a
-  | `Sself -> parser [< a = entry.estart 0 >] -> a
-  | `Snext -> parser [< a = entry.estart (nlevn+1) >] -> a
+  | `Snterml (e, l) -> fun strm -> e.estart (level_number e l) strm
+  | `Sself -> fun strm -> entry.estart 0 strm 
+  | `Snext -> fun strm -> entry.estart (nlevn + 1 ) strm 
   | `Skeyword kwd -> parser
         [ [< (tok, _) when FanToken.match_keyword kwd tok >] ->
           Action.mk tok ]
@@ -167,7 +166,8 @@ and parser_of_symbol entry s nlevn =
    [clevn] is the current level 
  *)  
 let start_parser_of_levels entry =
-  let rec aux clevn : list level -> int -> parse Action.t =  fun
+  let rec aux clevn  (xs: list level) : int -> parse Action.t =
+    match xs with 
     [ [] -> fun _ -> parser [] 
     | [lev :: levs] ->
         let hstart = aux  (clevn+1) levs in
@@ -196,7 +196,6 @@ let start_parser_of_levels entry =
   aux 0;
   
 let start_parser_of_entry entry =
-  (* debug gram "start_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in *)
   match entry.edesc with
   [ Dlevels [] -> Tools.empty_entry entry.ename
   | Dlevels elev -> start_parser_of_levels entry  elev

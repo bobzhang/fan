@@ -22,7 +22,7 @@ type gram =
   gkeywords: (string,int ref) Hashtbl.t;
   glexer: FanLoc.t -> char XStream.t -> stream} 
 type label = string option 
-type internal_entry = 
+type entry = 
   {
   egram: gram;
   ename: string;
@@ -41,9 +41,9 @@ and level =
   lsuffix: tree;
   lprefix: tree} 
 and symbol =
-  [ `Smeta of (string list* symbol list* Action.t)
-  | `Snterm of internal_entry | `Snterml of (internal_entry* string)
-  | `Slist0 of symbol | `Slist0sep of (symbol* symbol) | `Slist1 of symbol
+  [ `Smeta of (string list* symbol list* Action.t) | `Snterm of entry
+  | `Snterml of (entry* string) | `Slist0 of symbol
+  | `Slist0sep of (symbol* symbol) | `Slist1 of symbol
   | `Slist1sep of (symbol* symbol) | `Sopt of symbol | `Stry of symbol
   | `Speek of symbol | `Sself | `Snext | `Stree of tree | terminal] 
 and tree =  
@@ -60,9 +60,9 @@ type extend_statment = (position option* olevel list)
 type single_extend_statement = (position option* olevel) 
 type delete_statment = symbol list 
 type ('a,'b,'c) fold =
-  internal_entry -> symbol list -> ('a XStream.t -> 'b) -> 'a XStream.t -> 'c 
+  entry -> symbol list -> ('a XStream.t -> 'b) -> 'a XStream.t -> 'c 
 type ('a,'b,'c) foldsep =
-  internal_entry ->
+  entry ->
     symbol list ->
       ('a XStream.t -> 'b) -> ('a XStream.t -> unit) -> 'a XStream.t -> 'c
   
