@@ -72,27 +72,40 @@ let rec parser_of_tree entry (lev,assoc) x =
         `-OPT [ `STR (_,_)]---OPT assoc---rule_list---.
         ]}
        *)
-      let skip_if_empty bp strm =
-        if Tools.get_cur_loc strm = bp then begin 
-          Action.mk (fun _ -> raise XStream.Failure)
-        end
-        else begin
-          raise XStream.Failure
-        end in
-      let  parser_cont  (node,son) loc a =
-        let pson = from_tree son in
-        parser
-          [ [< b = pson >] -> b
-          | [< b = skip_if_empty loc >] -> b
-          | [< >] -> raise (XStream.Error (Failed.tree_failed entry a node son))] in
+      (* let  parser_cont  (node,son) loc a = *)
+      (*   let pson = from_tree son in fun strm -> *)
+      (*   try pson strm *)
+      (*   with *)
+      (*    [XStream.Failure -> *)
+      (*       if Tools.get_cur_loc strm = loc then *)
+      (*          Action.mk (fun _ -> raise XStream.Failure) *)
+      (*       else *)
+      (*          raise (XStream.Error (Failed.tree_failed entry a node son)) *)
+      (*    ]in *)
       match Tools.get_terminals  y with
       [ None ->
         (* [paser_of_symbol] given a stream should always return a value  *) 
         let ps = parser_of_symbol entry node  lev  in fun strm ->
           let bp = Tools.get_cur_loc strm in
-          match strm with parser
-          [ [< a = ps; act = parser_cont (node,son) bp a >] -> Action.getf act a
-          | [< a = from_tree brother >] -> a ]
+
+          let try a = ps strm in
+          let try act =
+            let pson = from_tree son in 
+              try pson strm with
+                [XStream.Failure ->
+                  if Tools.get_cur_loc strm = bp  then
+                    Action.mk (fun _ -> raise XStream.Failure)
+                  else
+                    raise (XStream.Error (Failed.tree_failed entry a node son))
+               ]
+          in
+           Action.getf act a
+          with [XStream.Failure -> raise (XStream.Error "")  ]
+          with
+            [XStream.Failure -> from_tree brother strm]
+          (* match strm with parser *)
+          (* [ [< a = ps; act = parser_cont (node,son) bp a >] -> Action.getf act a *)
+          (* | [< a = from_tree brother >] -> a ] *)
       | Some (tokl, _node, son) ->
           parser
             [ [< a = parser_of_terminals tokl (from_tree son) >] -> a
