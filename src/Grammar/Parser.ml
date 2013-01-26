@@ -90,17 +90,20 @@ let rec parser_of_tree entry (lev,assoc) (q: Queue.t Action.t) x =
           end
           with
             [XStream.Failure ->
-              if Tools.get_cur_loc strm = bp  then
-                raise XStream.Failure
-              else
-                raise (XStream.Error (Failed.tree_failed entry a node son))]
+              if Tools.get_cur_loc strm = bp  then raise XStream.Failure
+              else raise (XStream.Error (Failed.tree_failed entry a node son))]
           with
             [XStream.Failure -> from_tree brother strm]
       | Some (tokl, _node, son) -> fun strm ->
-          let try (args,action) =
-            parser_of_terminals tokl (from_tree son) strm in 
-            (List.iter (fun a -> Queue.push (Action.mk a) q) args; action)
-          (* try parser_of_terminals tokl (from_tree son) strm *)
+          let try args =
+            parser_of_terminals tokl strm in
+          let p = from_tree son in
+          try begin 
+            let act = p strm;
+            List.iter (fun a -> Queue.push (Action.mk a) q) args ;
+            act 
+          end
+          with [XStream.Failure -> raise (XStream.Error "")]
           with [XStream.Failure -> from_tree brother strm] ] ] in
   let parse = from_tree x in
   fun strm -> 
@@ -118,7 +121,7 @@ let rec parser_of_tree entry (lev,assoc) (q: Queue.t Action.t) x =
   ]}
  *)    
 and parser_of_terminals
-    (terminals:list terminal ) (cont:parse Action.t) strm =
+    (terminals:list terminal ) strm =
   let n = List.length terminals in
   let acc = ref [] in begin
     try
@@ -136,12 +139,10 @@ and parser_of_terminals
                     |`Skeyword kwd -> FanToken.match_keyword kwd t])
               then
                 invalid_arg "parser_of_terminals"
-            end) terminals (* tokens *)
+            end) terminals
     with [Invalid_argument _ -> raise XStream.Failure];
-
     XStream.njunk n strm;
-    let action = (cont  strm);
-    (!acc,action)    
+    !acc
   end          
 (* only for [Smeta] it might not be functional *)
 and parser_of_symbol entry s nlevn =

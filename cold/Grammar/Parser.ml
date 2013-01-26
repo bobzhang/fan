@@ -20,7 +20,7 @@ let level_number entry lab =
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found
-let rec parser_of_tree entry (lev,assoc) x =
+let rec parser_of_tree entry (lev,assoc) (q : Action.t Queue.t) x =
   let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
   let rec from_tree tree =
     match tree with
@@ -29,7 +29,8 @@ let rec parser_of_tree entry (lev,assoc) x =
     | Node { node = `Sself; son = LocAct (act,_); brother = bro } ->
         (fun strm  ->
            (try
-              let a = entry.estart alevn strm in fun ()  -> Action.getf act a
+              let a = entry.estart alevn strm in
+              fun ()  -> Queue.push a q; act
             with | XStream.Failure  -> (fun ()  -> from_tree bro strm)) ())
     | Node ({ node; son; brother } as y) ->
         (match Tools.get_terminals y with
@@ -41,7 +42,7 @@ let rec parser_of_tree entry (lev,assoc) x =
                    let a = ps strm in
                    fun ()  ->
                      let pson = from_tree son in
-                     (try let v = pson strm in fun ()  -> Action.getf v a
+                     (try let v = pson strm in fun ()  -> Queue.push a q; v
                       with
                       | XStream.Failure  ->
                           (fun ()  ->
@@ -57,11 +58,24 @@ let rec parser_of_tree entry (lev,assoc) x =
                   ())
          | Some (tokl,_node,son) ->
              (fun strm  ->
-                try parser_of_terminals tokl (from_tree son) strm
-                with | XStream.Failure  -> from_tree brother strm)) in
-  from_tree x
-and parser_of_terminals (terminals : terminal list) (cont : Action.t parse)
-  strm =
+                (try
+                   let args = parser_of_terminals tokl strm in
+                   fun ()  ->
+                     let p = from_tree son in
+                     try
+                       let act = p strm in
+                       List.iter (fun a  -> Queue.push (Action.mk a) q) args;
+                       act
+                     with | XStream.Failure  -> raise (XStream.Error "")
+                 with
+                 | XStream.Failure  -> (fun ()  -> from_tree brother strm))
+                  ())) in
+  let parse = from_tree x in
+  fun strm  ->
+    let parse = parse strm in
+    let ans = Queue.fold (fun q  arg  -> Action.getf q arg) parse q in
+    Queue.clear q; ans
+and parser_of_terminals (terminals : terminal list) strm =
   let n = List.length terminals in
   let acc = ref [] in
   (try
@@ -80,8 +94,7 @@ and parser_of_terminals (terminals : terminal list) (cont : Action.t parse)
           then invalid_arg "parser_of_terminals") terminals
    with | Invalid_argument _ -> raise XStream.Failure);
   XStream.njunk n strm;
-  (let action = cont strm in
-   List.fold_left (fun a  arg  -> Action.getf a arg) action acc.contents)
+  acc.contents
 and parser_of_symbol entry s nlevn =
   let rec aux s =
     match s with
@@ -108,7 +121,7 @@ and parser_of_symbol entry s nlevn =
     | `Stry s -> let ps = aux s in Comb.tryp ps
     | `Speek s -> let ps = aux s in Comb.peek ps
     | `Stree t ->
-        let pt = parser_of_tree entry (0, `RA) t in
+        let pt = parser_of_tree entry (0, `RA) (Queue.create ()) t in
         (fun strm  ->
            let bp = Tools.get_cur_loc strm in
            let (act,loc) = add_loc bp pt strm in Action.getf act loc)
@@ -137,7 +150,9 @@ let start_parser_of_levels entry =
          (match lev.lprefix with
           | DeadEnd  -> hstart
           | tree ->
-              let cstart = parser_of_tree entry (clevn, (lev.assoc)) tree in
+              let cstart =
+                parser_of_tree entry (clevn, (lev.assoc)) (Queue.create ())
+                  tree in
               (fun levn  strm  ->
                  if (levn > clevn) && (not ([] = levs))
                  then hstart levn strm
@@ -164,7 +179,8 @@ let rec continue_parser_of_levels entry clevn =
       (match lev.lsuffix with
        | DeadEnd  -> hcontinue
        | tree ->
-           let ccontinue = parser_of_tree entry (clevn, (lev.assoc)) tree in
+           let ccontinue =
+             parser_of_tree entry (clevn, (lev.assoc)) (Queue.create ()) tree in
            (fun levn  bp  a  strm  ->
               if levn > clevn
               then hcontinue levn bp a strm
