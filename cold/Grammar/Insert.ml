@@ -129,14 +129,12 @@ let add_production (gsymbols,action) tree =
          | Node ({ brother;_} as x) ->
              Node { x with brother = (insert [] brother) }
          | LocAct (old_action,action_list) ->
-             let () =
-               if FanConfig.gram_warning_verbose.contents
-               then
-                 eprintf
-                   "<W> Grammar extension: in @[%a@] some rule has been masked@."
-                   Print.dump#rule symbols
-               else () in
-             LocAct (action, (old_action :: action_list))
+             (if FanConfig.gram_warning_verbose.contents
+              then
+                eprintf
+                  "<W> Grammar extension: in @[%a@] some rule has been masked@."
+                  Print.dump#rule symbols;
+              LocAct (action, (old_action :: action_list)))
          | DeadEnd  -> LocAct (action, [])) in
   insert gsymbols tree
 let add_production_in_level e1 (symbols,action) slev =
