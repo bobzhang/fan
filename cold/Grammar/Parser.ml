@@ -34,39 +34,31 @@ let rec parser_of_tree entry (lev,assoc) x =
            | Some a -> Action.getf act a
            | _ -> from_tree bro __strm)
     | Node ({ node; son; brother } as y) ->
-        let skip_if_empty bp strm =
-          if (Tools.get_cur_loc strm) = bp
-          then Action.mk (fun _  -> raise XStream.Failure)
-          else raise XStream.Failure in
-        let parser_cont (node,son) loc a =
-          let pson = from_tree son in
-          fun (__strm : _ XStream.t)  ->
-            try pson __strm
-            with
-            | XStream.Failure  ->
-                (try skip_if_empty loc __strm
-                 with
-                 | XStream.Failure  ->
-                     raise
-                       (XStream.Error (Failed.tree_failed entry a node son))) in
         (match Tools.get_terminals y with
          | None  ->
              let ps = parser_of_symbol entry node lev in
              (fun strm  ->
                 let bp = Tools.get_cur_loc strm in
-                let (__strm :_ XStream.t)= strm in
-                match try Some (ps __strm) with | XStream.Failure  -> None
-                with
-                | Some a ->
-                    let act =
-                      try parser_cont (node, son) bp a __strm
-                      with | XStream.Failure  -> raise (XStream.Error "") in
-                    Action.getf act a
-                | _ -> from_tree brother __strm)
+                (try
+                   let a = ps strm in
+                   fun ()  ->
+                     let pson = from_tree son in
+                     try Action.getf (pson strm) a
+                     with
+                     | XStream.Failure  ->
+                         if (Tools.get_cur_loc strm) = bp
+                         then raise XStream.Failure
+                         else
+                           raise
+                             (XStream.Error
+                                (Failed.tree_failed entry a node son))
+                 with
+                 | XStream.Failure  -> (fun ()  -> from_tree brother strm))
+                  ())
          | Some (tokl,_node,son) ->
-             (fun (__strm : _ XStream.t)  ->
-                try parser_of_terminals tokl (from_tree son) __strm
-                with | XStream.Failure  -> from_tree brother __strm)) in
+             (fun strm  ->
+                try parser_of_terminals tokl (from_tree son) strm
+                with | XStream.Failure  -> from_tree brother strm)) in
   from_tree x
 and parser_of_terminals (terminals : terminal list) (cont : Action.t parse)
   strm =
