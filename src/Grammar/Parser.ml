@@ -48,6 +48,12 @@ let level_number entry lab =
 let rec parser_of_tree entry (lev,assoc) x =
   let alevn = match assoc with
     [`LA|`NA -> lev + 1 | `RA -> lev ] in
+  (*
+    Given a tree, return a parser which has the type
+    [parse Action.t]. Think about [node son], only son owns the action,
+    so the action returned by son is a function,
+    it is to be applied by the value returned by node.
+   *)
   let rec from_tree tree =  match tree  with
   [ DeadEnd -> raise XStream.Failure
   | LocAct (act, _) -> fun _ -> act 
@@ -81,6 +87,7 @@ let rec parser_of_tree entry (lev,assoc) x =
           | [< >] -> raise (XStream.Error (Failed.tree_failed entry a node son))] in
       match Tools.get_terminals  y with
       [ None ->
+        (* [paser_of_symbol] given a stream should always return a value  *) 
         let ps = parser_of_symbol entry node  lev  in fun strm ->
           let bp = Tools.get_cur_loc strm in
           match strm with parser
@@ -102,7 +109,7 @@ let rec parser_of_tree entry (lev,assoc) x =
   ]}
  *)    
 and parser_of_terminals
-    (terminals:list terminal ) (cont:(* cont_ *)parse Action.t) strm =
+    (terminals:list terminal ) (cont:parse Action.t) strm =
   let n = List.length terminals in
   let acc = ref [] in begin
     try

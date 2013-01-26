@@ -37,9 +37,6 @@ let filter ts =  FanTokenFilter.filter gram.gfilter ts;
 
 let token_stream_of_string s =  s |> lex_string FanLoc.string_loc |> filter;
   
-(* let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts); *)
-  
-
 let parse entry loc cs =
   let l = entry.egram.glexer in
   let filter = entry.egram.gfilter in

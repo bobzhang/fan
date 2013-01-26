@@ -24,17 +24,18 @@ let mk_dynamic g n ={
   freezed = false;     
 };
 
-(* [estart] *)  
+(* [estart] The main entrance to consume the parser  *)  
 let action_parse entry (ts: stream) : Action.t =
-  try 
+  try begin
     let p =
       if !trace_parser then
         Format.fprintf
-      else Format.ifprintf in 
-    let () = p Format.err_formatter "@[<4>%s@ " entry.ename in
-    let res = entry.estart 0 ts in
-    let () =  p Format.err_formatter "@]@." in 
-    res 
+      else Format.ifprintf ;
+    p Format.err_formatter "@[<4>%s@ " entry.ename ;
+    let res = entry.estart 0 ts ;
+    p Format.err_formatter "@]@." ;
+    res
+  end
   with
     [ XStream.Failure ->
         FanLoc.raise (get_prev_loc ts)

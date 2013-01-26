@@ -126,4 +126,5 @@ let t_dump s =  t str_item s |> Ast2pt.str_item;;
 open ParserGrammar;;
 
 #require "inspect";;
-open Inspect;
+open Inspect;;
+let view a= Dot.dump_to_file "test.dot"a;;
