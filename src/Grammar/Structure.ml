@@ -82,6 +82,8 @@ and symbol =
 and tree = (* internal struccture *)
     [ Node of node
     | LocAct of Action.t and list Action.t
+    (* | EarlyAction of Action.t and node (\* This action was only used to produce side effect *\) *)
+    (* | ReplaceAction of Action.t and node  *)
     | DeadEnd ]
 and node = {
     node    : symbol ;
