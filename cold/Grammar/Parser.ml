@@ -41,15 +41,17 @@ let rec parser_of_tree entry (lev,assoc) x =
                    let a = ps strm in
                    fun ()  ->
                      let pson = from_tree son in
-                     try Action.getf (pson strm) a
-                     with
-                     | XStream.Failure  ->
-                         if (Tools.get_cur_loc strm) = bp
-                         then raise XStream.Failure
-                         else
-                           raise
-                             (XStream.Error
-                                (Failed.tree_failed entry a node son))
+                     (try let v = pson strm in fun ()  -> Action.getf v a
+                      with
+                      | XStream.Failure  ->
+                          (fun ()  ->
+                             if (Tools.get_cur_loc strm) = bp
+                             then raise XStream.Failure
+                             else
+                               raise
+                                 (XStream.Error
+                                    (Failed.tree_failed entry a node son))))
+                       ()
                  with
                  | XStream.Failure  -> (fun ()  -> from_tree brother strm))
                   ())

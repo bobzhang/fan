@@ -79,8 +79,10 @@ let rec parser_of_tree entry (lev,assoc) x =
         let ps = parser_of_symbol entry node  lev  in fun strm ->
           let bp = Tools.get_cur_loc strm in
           let try a = ps strm in
-          let pson = from_tree son in 
-          try Action.getf (pson strm) a with
+          let pson = from_tree son in
+          let try v = pson strm in
+          Action.getf v a
+          with
             [XStream.Failure ->
               if Tools.get_cur_loc strm = bp  then
                 raise XStream.Failure
