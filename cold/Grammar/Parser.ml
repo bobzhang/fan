@@ -27,12 +27,10 @@ let rec parser_of_tree entry (lev,assoc) x =
     | DeadEnd  -> raise XStream.Failure
     | LocAct (act,_) -> (fun _  -> act)
     | Node { node = `Sself; son = LocAct (act,_); brother = bro } ->
-        (fun (__strm : _ XStream.t)  ->
-           match try Some (entry.estart alevn __strm)
-                 with | XStream.Failure  -> None
-           with
-           | Some a -> Action.getf act a
-           | _ -> from_tree bro __strm)
+        (fun strm  ->
+           (try
+              let a = entry.estart alevn strm in fun ()  -> Action.getf act a
+            with | XStream.Failure  -> (fun ()  -> from_tree bro strm)) ())
     | Node ({ node; son; brother } as y) ->
         (match Tools.get_terminals y with
          | None  ->
@@ -112,26 +110,26 @@ and parser_of_symbol entry s nlevn =
         (fun strm  ->
            let bp = Tools.get_cur_loc strm in
            let (act,loc) = add_loc bp pt strm in Action.getf act loc)
-    | `Snterm e -> (fun (__strm : _ XStream.t)  -> e.estart 0 __strm)
+    | `Snterm e -> (fun strm  -> e.estart 0 strm)
     | `Snterml (e,l) -> (fun strm  -> e.estart (level_number e l) strm)
     | `Sself -> (fun strm  -> entry.estart 0 strm)
     | `Snext -> (fun strm  -> entry.estart (nlevn + 1) strm)
     | `Skeyword kwd ->
-        (fun (__strm : _ XStream.t)  ->
-           match XStream.peek __strm with
+        (fun strm  ->
+           match XStream.peek strm with
            | Some (tok,_) when FanToken.match_keyword kwd tok ->
-               (XStream.junk __strm; Action.mk tok)
+               (XStream.junk strm; Action.mk tok)
            | _ -> raise XStream.Failure)
     | `Stoken (f,_) ->
-        (fun (__strm : _ XStream.t)  ->
-           match XStream.peek __strm with
-           | Some (tok,_) when f tok -> (XStream.junk __strm; Action.mk tok)
+        (fun strm  ->
+           match XStream.peek strm with
+           | Some (tok,_) when f tok -> (XStream.junk strm; Action.mk tok)
            | _ -> raise XStream.Failure) in
   aux s
 let start_parser_of_levels entry =
   let rec aux clevn (xs : level list) =
     (match xs with
-     | [] -> (fun _  (__strm : _ XStream.t)  -> raise XStream.Failure)
+     | [] -> (fun _  _  -> raise XStream.Failure)
      | lev::levs ->
          let hstart = aux (clevn + 1) levs in
          (match lev.lprefix with
@@ -143,14 +141,13 @@ let start_parser_of_levels entry =
                  then hstart levn strm
                  else
                    (let bp = Tools.get_cur_loc strm in
-                    let (__strm :_ XStream.t)= strm in
-                    match try Some (add_loc bp cstart __strm)
-                          with | XStream.Failure  -> None
-                    with
-                    | Some (act,loc) ->
-                        let a = Action.getf act loc in
-                        entry.econtinue levn loc a strm
-                    | _ -> hstart levn __strm))) : int -> Action.t parse ) in
+                    (try
+                       let (act,loc) = add_loc bp cstart strm in
+                       fun ()  ->
+                         let a = Action.getf act loc in
+                         entry.econtinue levn loc a strm
+                     with | XStream.Failure  -> (fun ()  -> hstart levn strm))
+                      ()))) : int -> Action.t parse ) in
   aux 0
 let start_parser_of_entry entry =
   match entry.edesc with
@@ -159,7 +156,7 @@ let start_parser_of_entry entry =
   | Dparser p -> (fun _  -> p)
 let rec continue_parser_of_levels entry clevn =
   function
-  | [] -> (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure)
+  | [] -> (fun _  _  _  _  -> raise XStream.Failure)
   | lev::levs ->
       let hcontinue = continue_parser_of_levels entry (clevn + 1) levs in
       (match lev.lsuffix with
@@ -170,18 +167,16 @@ let rec continue_parser_of_levels entry clevn =
               if levn > clevn
               then hcontinue levn bp a strm
               else
-                (let (__strm :_ XStream.t)= strm in
-                 try hcontinue levn bp a __strm
+                (try hcontinue levn bp a strm
                  with
                  | XStream.Failure  ->
-                     let (act,loc) = add_loc bp ccontinue __strm in
+                     let (act,loc) = add_loc bp ccontinue strm in
                      let a = Action.getf2 act a loc in
                      entry.econtinue levn loc a strm)))
 let continue_parser_of_entry entry =
   match entry.edesc with
   | Dlevels elev ->
       let p = continue_parser_of_levels entry 0 elev in
-      (fun levn  bp  a  (__strm : _ XStream.t)  ->
-         try p levn bp a __strm with | XStream.Failure  -> a)
-  | Dparser _ ->
-      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure)
+      (fun levn  bp  a  strm  ->
+         try p levn bp a strm with | XStream.Failure  -> a)
+  | Dparser _ -> (fun _  _  _  _  -> raise XStream.Failure)
