@@ -115,7 +115,7 @@ end;
 (* +-----------------------------------------------------------------+
    | Strip generator                                                 |
    +-----------------------------------------------------------------+ *)
-  
+(* FIXME to be more elegant *)  
 let gen_strip = with {patt:ctyp;expr}
   let mk_variant cons params =
     let result =
@@ -126,7 +126,7 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {expr;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|} |
-        {|list string|} | {|meta_list string|} | {|FanUtil.anti_cxt |}->
+        {|list string|} |  {|FanUtil.anti_cxt |}->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}] 
               )  (List.tl params) result in
@@ -137,7 +137,7 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {expr;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} |
-        {|loc|} | {|list string|} | {|meta_list string|} | {| FanUtil.anti_cxt |}->
+        {|loc|} | {|list string|} |  {| FanUtil.anti_cxt |}->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}]) params result in 
   let mk_record cols =
@@ -148,16 +148,17 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {info={expr;pat0;ty;_};_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|}
-        | {|list string|} | {| meta_list string|} | {|FanUtil.anti_cxt|}->
+        | {|list string|}  | {|FanUtil.anti_cxt|}->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}]
         (* {|let $pat:pat0 = $expr in $res |} *)) cols result in
-  (gen_str_item) ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
+  gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
 Typehook.register
     ~filter:(fun s -> (s<>"loc"))
     ("Strip",gen_strip);
 
 
+  
   
 (* +-----------------------------------------------------------------+
    | Meta generator                                                  |
@@ -303,7 +304,7 @@ let gen_iter =
    | Get Location generator                                          |
    +-----------------------------------------------------------------+ *)
 
-let generate (module_types:FSig.module_types) =
+let generate (module_types:FSig.module_types) = with str_item 
   let tbl = Hashtbl.create 30 in
   let aux (_,ty) =
     match ty with
@@ -339,26 +340,30 @@ let generate (module_types:FSig.module_types) =
           [ {:patt| _loc|} :: List.init (arity - 1) (fun _ -> {:patt| _ |}) ] in
         {:match_case| $vrn:key $(pat:(tuple_com pats)) -> _loc | $acc |} 
         
-    ) tbl {:match_case||} in
-  {:str_item| let loc_of  = fun [ $case ]|};
+    ) tbl {||} in
+  {| let loc_of  = fun [ $case ]|};
 Typehook.register ~filter:(fun s -> s<> "loc") ("GenLoc",generate);
 
 
 (* +-----------------------------------------------------------------+
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)
+(* remove the loc field *)
+let generate (module_types:FSig.module_types) : str_item = with str_item
+  let aux (_,ty) = with ctyp
+     let obj = object
+       inherit FanAst.map as super;
+       method! ctyp = 
+         (fun 
+          [ {:ctyp| $vrn of loc |} -> {:ctyp|$vrn |}
+          | {| $vrn of (loc * $x )|} ->
+              match x with
+              [ {| $x*$y|} ->   {| $vrn of ( $x * $y) |}
+              | _ -> {| $vrn of $x |}]
+          | x -> super#ctyp x ]);
+     end in
+     obj#ctyp ty in
+  (fun x -> let r = FSig.str_item_of_module_types ~f:aux x  in
+  {:str_item| module N = struct $r end |}) module_types;
 
-  
-
-(* let map = object *)
-(*   inherit map as super; *)
-(*   method! ctyp c = *)
-(*     match c with *)
-(*     [ {}]   *)
-(* end; *)
-  
-(* let gen_type (module_types : FSig.module_types) = *)
-(*   let aux (_ty) = *)
-(*     match ty with *)
-(*     [`TyDcl(_,_,_,`Ty)]   *)
-  
+Typehook.register ~filter:(fun s -> s<> "loc") ("LocType",generate);

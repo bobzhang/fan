@@ -1,7 +1,7 @@
 
 open Format;
 
-
+let id x = x;
 let cons x xs = [x::xs] ; 
 let failwithf fmt = ksprintf failwith fmt  ;
 let prerr_endlinef fmt = ksprintf prerr_endline fmt  ;

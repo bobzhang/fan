@@ -94,11 +94,11 @@
 
    type meta_option 'a =
     [= `None of loc 
-    |  `Some of 'a
+    |  `Some of (loc*'a)
     | ant];
    type meta_list 'a =
     [= `LNil of loc
-    | `LCons of ('a * meta_list 'a)
+    | `LCons of (loc*'a * meta_list 'a)
     | ant];
 
    type alident =

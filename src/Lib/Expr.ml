@@ -716,11 +716,10 @@ let gen_curry_n acc ~arity cons n =
   gen_tuple_n
  *)  
 let currying match_cases ~arity =
-  (* let branches = List.length match_cases in *)
   if  arity >= 2 then 
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exprs = List.map (fun s-> {| $lid:s |} ) names in
-    names <+ {| match $((* tuple_of_list *)tuple_com exprs) with [ $list:match_cases ] |}
+    names <+ {| match $(tuple_com exprs) with [ $list:match_cases ] |}
   else {| fun [ $list:match_cases ] |};
 
 

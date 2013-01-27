@@ -58,7 +58,7 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
           else right_trans (`Lid (_loc, id))
       | `Id (_loc,id) -> right_trans id
       | `App (_loc,t1,t2) -> `App (_loc, (aux t1), (aux t2))
-      | `Quote (_loc,_,`Some `Lid (_,s)) -> tyvar s
+      | `Quote (_loc,_,`Some (_,`Lid (_,s))) -> tyvar s
       | `Arrow (_loc,t1,t2) ->
           aux
             (`App
@@ -81,7 +81,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
     let rec aux =
       function
       | `Id (_loc,id) -> trans id
-      | `Quote (_loc,_,`Some `Lid (_,s)) -> tyvar s
+      | `Quote (_loc,_,`Some (_,`Lid (_,s))) -> tyvar s
       | `App _ as ty ->
           (match list_of_app ty [] with
            | (`Id (_loc,tctor))::ls ->
@@ -89,7 +89,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                  (ls |>
                     (List.map
                        (function
-                        | `Quote (_loc,_,`Some `Lid (_,s)) ->
+                        | `Quote (_loc,_,`Some (_,`Lid (_,s))) ->
                             `Id (_loc, (`Lid (_loc, (var s))))
                         | t ->
                             `Fun
@@ -167,7 +167,7 @@ let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
     let varf = basic_transform left_type_variable in
     let f (var : ctyp) acc =
       match var with
-      | `Quote (_,_,`Some `Lid (_loc,s)) ->
+      | `Quote (_,_,`Some (_,`Lid (_loc,s))) ->
           `Fun
             (_loc,
               (`Case

@@ -2339,7 +2339,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (pt : 'module_type)  _  (m : 'a_uident)  _  _ 
                  (_loc : FanLoc.t)  ->
-                 (`ModuleUnpack (_loc, m, (`Some (`Package (_loc, pt)))) : 
+                 (`ModuleUnpack (_loc, m, (`Some (_loc,(`Package (_loc, pt))))) : 
                  'patt ))));
          ([`Skeyword "(";
           `Skeyword "module";
@@ -2440,7 +2440,7 @@ let apply () =
                  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `OPTLABEL i ->
-                     (`PaOlbi (_loc, (`Lid (_loc, i)), p, (`Some e)) : 
+                     (`PaOlbi (_loc, (`Lid (_loc, i)), p, (`Some (_loc,e))) : 
                      'patt )
                  | _ -> assert false)));
          ([`Stoken
@@ -2468,7 +2468,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (e : 'expr)  _  (p : 'patt_tcon)  _  _  (i : 'a_lident)
                   _  (_loc : FanLoc.t)  ->
-                 (`PaOlbi (_loc, i, p, (`Some e)) : 'patt ))));
+                 (`PaOlbi (_loc, i, p, (`Some (_loc,e))) : 'patt ))));
          ([`Skeyword "?";
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
@@ -2518,7 +2518,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (e : 'expr)  _  (p : 'ipatt_tcon)  _  _ 
                  (_loc : FanLoc.t)  ->
-                 (`PaOlbi (_loc, (`Lid (_loc, "")), p, (`Some e)) : 'patt ))))])]);
+                 (`PaOlbi (_loc, (`Lid (_loc, "")), p, (`Some (_loc,e))) : 'patt ))))])]);
    Gram.extend_single (ipatt : 'ipatt Gram.t )
      (None,
        (None, None,
@@ -2559,7 +2559,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (pt : 'module_type)  _  (m : 'a_uident)  _  _ 
                  (_loc : FanLoc.t)  ->
-                 (`ModuleUnpack (_loc, m, (`Some (`Package (_loc, pt)))) : 
+                 (`ModuleUnpack (_loc, m, (`Some (_loc,(`Package (_loc, pt))))) : 
                  'ipatt ))));
          ([`Skeyword "(";
           `Skeyword "module";
@@ -2655,7 +2655,7 @@ let apply () =
                  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
                  | `OPTLABEL i ->
-                     (`PaOlbi (_loc, (`Lid (_loc, i)), p, (`Some e)) : 
+                     (`PaOlbi (_loc, (`Lid (_loc, i)), p, (`Some (_loc,e))) : 
                      'ipatt )
                  | _ -> assert false)));
          ([`Stoken
@@ -2683,7 +2683,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (e : 'expr)  _  (p : 'patt_tcon)  _  _  (i : 'a_lident)
                   _  (_loc : FanLoc.t)  ->
-                 (`PaOlbi (_loc, i, p, (`Some e)) : 'ipatt ))));
+                 (`PaOlbi (_loc, i, p, (`Some (_loc,e))) : 'ipatt ))));
          ([`Skeyword "?";
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
@@ -2733,7 +2733,7 @@ let apply () =
            (Gram.mk_action
               (fun _  (e : 'expr)  _  (p : 'ipatt_tcon)  _  _ 
                  (_loc : FanLoc.t)  ->
-                 (`PaOlbi (_loc, (`Lid (_loc, "")), p, (`Some e)) : 'ipatt ))))]));
+                 (`PaOlbi (_loc, (`Lid (_loc, "")), p, (`Some (_loc,e))) : 'ipatt ))))]));
    Gram.extend_single (sem_patt : 'sem_patt Gram.t )
      (None,
        (None, None,
@@ -3530,7 +3530,7 @@ let apply () =
            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
             (Gram.mk_action
                (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                  (`Some i : 'opt_as_lident ))));
+                  (`Some (_loc,i) : 'opt_as_lident ))));
          ([],
            (Gram.mk_action
               (fun (_loc : FanLoc.t)  -> (`None _loc : 'opt_as_lident ))));
@@ -3744,7 +3744,7 @@ let apply () =
               (fun (xs : 'string_list)  (__fan_0 : [> FanToken.t]) 
                  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `STR (_,x) -> (`LCons (x, xs) : 'string_list )
+                 | `STR (_,x) -> (`LCons (_loc,x, xs) : 'string_list )
                  | _ -> assert false)));
          ([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
@@ -3752,7 +3752,7 @@ let apply () =
            (Gram.mk_action
               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                  match __fan_0 with
-                 | `STR (_,x) -> (`LCons (x, (`LNil _loc)) : 'string_list )
+                 | `STR (_,x) -> (`LCons (_loc,x, (`LNil _loc)) : 'string_list )
                  | _ -> assert false)))]));
    Gram.extend_single (semi : 'semi Gram.t )
      (None,
@@ -5002,19 +5002,19 @@ let apply_ctyp () =
         ([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           (Gram.mk_action
              (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                (`Quote (_loc, (`Normal _loc), (`Some i)) : 'type_parameter ))));
+                (`Quote (_loc, (`Normal _loc), (`Some (_loc,i))) : 'type_parameter ))));
         ([`Skeyword "+";
          `Skeyword "'";
          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           (Gram.mk_action
              (fun (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->
-                (`Quote (_loc, (`Positive _loc), (`Some i)) : 'type_parameter ))));
+                (`Quote (_loc, (`Positive _loc), (`Some (_loc,i))) : 'type_parameter ))));
         ([`Skeyword "-";
          `Skeyword "'";
          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           (Gram.mk_action
              (fun (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->
-                (`Quote (_loc, (`Negative _loc), (`Some i)) : 'type_parameter ))));
+                (`Quote (_loc, (`Negative _loc), (`Some (_loc,i))) : 'type_parameter ))));
         ([`Skeyword "+"; `Skeyword "_"],
           (Gram.mk_action
              (fun _  _  (_loc : FanLoc.t)  ->
@@ -5347,7 +5347,7 @@ let apply_ctyp () =
         ([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           (Gram.mk_action
              (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                (`Quote (_loc, (`Normal _loc), (`Some i)) : 'typevars ))))]));
+                (`Quote (_loc, (`Normal _loc), (`Some (_loc,i))) : 'typevars ))))]));
   Gram.extend (ctyp : 'ctyp Gram.t )
     (None,
       [((Some "=="), (Some `NA),
@@ -5439,7 +5439,7 @@ let apply_ctyp () =
         [([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            (Gram.mk_action
               (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                 (`Quote (_loc, (`Normal _loc), (`Some i)) : 'ctyp ))));
+                 (`Quote (_loc, (`Normal _loc), (`Some (_loc,i))) : 'ctyp ))));
         ([`Skeyword "_"],
           (Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'ctyp ))));
         ([`Stoken

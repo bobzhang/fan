@@ -41,16 +41,11 @@ let arrow a b =
 let (|->) = arrow;  
 
 
-(* let sta_of_list = List.reduce_right sta;   *)
 
 let arrow_of_list = List.reduce_right arrow;
   
 let app_arrow lst acc = List.fold_right arrow lst acc;
   
-(* let tuple_sta_of_list = fun *)
-(*   [ [] -> invalid_arg "tuple_sta__of_list while list is empty" *)
-(*   | [x] -> x *)
-(*   | xs -> {| $(tup:sta_of_list' xs) |} ]; *)
   
 let (<+) names ty =
   List.fold_right
@@ -230,15 +225,18 @@ let repeat_arrow_n ty n =
   ('fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
     ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
       'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
- *)  
+ *)
+let result_id = ref 0;  
 let mk_method_type ~number ~prefix (id,len) (k:destination)  =
   (** FIXME A type variable name need to be valid *)
   let prefix = List.map
       (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
     app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
-  let result_type = {| 'result |}
-  and self_type = {| 'self_type |}  in 
+  let result_type = (* {| 'result |} *)
+    {|'$(lid:"result"^string_of_int !result_id)|} in
+  let _ = incr result_id in
+  let self_type = {| 'self_type |}  in 
   let (quant,dst) =
     match k with
     [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
@@ -263,22 +261,25 @@ let mk_method_type ~number ~prefix (id,len) (k:destination)  =
           |Str_item -> prefix <+ (app_src result_type)]) in 
   let base = prefix <+ (app_src dst) in
   if len = 0 then
-    (base)
+    (base,dst)
   else let quantifiers = gen_quantifiers ~arity:quant len in
-    ({| ! $quantifiers . $(params +> base) |});
+    ({| ! $quantifiers . $(params +> base) |},dst);
 
 (* FIXME : merge with [mk_type_of] *)  
-let mk_dest_type  ~destination (id,len) =
-  let result_type = {| 'result |}
-  and self_type = {| 'self_type |} in 
-  let (_quant,dst) =
-    match destination with
-    [Obj Map ->
-      (2, (* apply *) appl_of_list [ {|$id:id |} :: (List.init len (fun _ -> {|  _ |}))])
-      (* (2, (of_id_len ~off:1 (id,len))) *)
-    |Obj Iter -> (1, result_type)
-    |Obj Fold -> (1, self_type)
-    |Str_item -> (1,result_type)] in dst;
+(* let result_id = ref 0;   *)
+(* let mk_dest_type  ~destination (id,len) = *)
+(*   let result_type = *)
+(*     {|'$(lid:"result"^string_of_int !result_id)|} in *)
+(*   let _ = incr result_id in *)
+(*   let self_type = {| 'self_type |} in  *)
+(*   let (_quant,dst) = *)
+(*     match destination with *)
+(*     [Obj Map -> *)
+(*       (2, (\* apply *\) appl_of_list [ {|$id:id |} :: (List.init len (fun _ -> {|  _ |}))]) *)
+(*       (\* (2, (of_id_len ~off:1 (id,len))) *\) *)
+(*     |Obj Iter -> (1, result_type) *)
+(*     |Obj Fold -> (1, self_type) *)
+(*     |Str_item -> (1,result_type)] in dst; *)
 
 (* *)  
 let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =

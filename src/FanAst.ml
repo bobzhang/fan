@@ -22,9 +22,8 @@ let strip_loc_list f lst =
  derive
    (Map2
       Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq
-      GenLoc  Strip
+      GenLoc  Strip LocType
    ); |};
-
   
 {:ocaml|INCLUDE "src/Ast.ml"; |};
 
@@ -513,6 +512,10 @@ end;
 let map_sig_item f = object
   inherit map as super;
   method! sig_item x = f (super#sig_item x);
+end;
+let map_ctyp f = object
+  inherit map as super;
+  method! ctyp x = f (super#ctyp x);
 end;
 let map_loc f = object
   inherit map as super;
