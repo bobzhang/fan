@@ -14,7 +14,6 @@ open LibUtil;
 open StdLib;
 
 
-
 let strip_loc_list f lst =
   List.map f lst ;
   

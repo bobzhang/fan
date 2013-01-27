@@ -289,7 +289,9 @@ let fun_of_tydcl
       FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_ctyp t) ];
 
 
-(* destination is [Str_item] *)          
+(* destination is [Str_item] generate [str_item], type annotations may
+   not be needed here
+ *)          
 let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     tydcl ?(arity=1) ?(names=[]) ~trail ~mk_variant
     ~left_type_id ~left_type_variable
@@ -311,7 +313,8 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
            ~arity ~names ~trail ~mk_variant
            ~destination:Str_item
            simple_expr_of_ctyp) tydcl  in
-    {:binding| $(lid:tctor_var name) : $ty = $fun_expr |}
+    (* {:binding| $(lid:tctor_var name) : $ty = $fun_expr |} *)
+    {:binding| $(lid:tctor_var name) = $fun_expr |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n"
       (dump_ctyp tydcl);
