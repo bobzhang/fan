@@ -805,8 +805,8 @@ let apply () = begin
             `Ant (_loc,mk_anti ~c:"override_flag" n s)
       | "val" -> {:override_flag||}   ] 
       opt_as_lident:
-      [ "as"; a_lident{i} -> `Some (_loc,i)
-      | -> `None _loc
+      [ "as"; a_lident{i} -> `Some (i)
+      | -> `None
       | `Ant ((""|"as") as n,s) -> `Ant(_loc, mk_anti n s)] 
 
       direction_flag:
@@ -862,8 +862,8 @@ let apply () = begin
       | `Uid s  -> `Uid (_loc, s) ]
       string_list:
       [ `Ant ((""|"str_list"),s) -> `Ant (_loc,mk_anti "str_list" s)
-      | `STR (_, x); S{xs} -> `LCons (_loc,x, xs)
-      | `STR (_, x) -> `LCons (_loc,x, (`LNil _loc)) ] 
+      | `STR (_, x); S{xs} -> `LCons (x, xs)
+      | `STR (_, x) -> `LCons (x, (`LNil )) ] 
       semi: [ ";" -> () ]
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ direction_flag{x} -> x ] 

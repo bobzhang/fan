@@ -627,7 +627,7 @@ let _ =
                  let t = new_type_var () in
                  mk_symbol ~text:(`Srules (_loc, (mk_srules _loc t rl "")))
                    ~styp:(`Quote
-                            (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, t))))))
+                            (_loc, (`Normal _loc), (`Some (`Lid (_loc, t)))))
                    ~pattern:None : 'symbol ))));
         ([`Snterm (Gram.obj (simple_patt : 'simple_patt Gram.t ))],
           (Gram.mk_action
@@ -688,7 +688,7 @@ let _ =
                 (mk_symbol ~text:(`Snterm (_loc, n, lev))
                    ~styp:(`Quote
                             (_loc, (`Normal _loc),
-                              (`Some (_loc,(`Lid (_loc, (n.tvar))))))) ~pattern:None : 
+                              (`Some (`Lid (_loc, (n.tvar)))))) ~pattern:None : 
                 'symbol ))));
         ([`Stoken
             (((function | `Ant (("nt"|""),_) -> true | _ -> false)),
@@ -717,7 +717,7 @@ let _ =
                      mk_symbol ~text:(`Snterm (_loc, n, lev))
                        ~styp:(`Quote
                                 (_loc, (`Normal _loc),
-                                  (`Some (_loc,(`Lid (_loc, (n.tvar)))))))
+                                  (`Some (`Lid (_loc, (n.tvar))))))
                        ~pattern:None : 'symbol )
                 | _ -> assert false)));
         ([`Skeyword "("; `Sself; `Skeyword ")"],

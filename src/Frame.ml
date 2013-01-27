@@ -95,7 +95,7 @@ let rec  normal_simple_expr_of_ctyp
     | `Id (_loc,id) ->   right_trans id (* recursive call here *)
     | `App(_loc,t1,t2) ->
         {| $(aux t1) $(aux t2) |}
-    | `Quote (_loc,_,`Some(_,`Lid(_,s))) ->   tyvar s
+    | `Quote (_loc,_,`Some(`Lid(_,s))) ->   tyvar s
     | `Arrow(_loc,t1,t2) ->
         aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
     | `Tup _  as ty ->
@@ -132,14 +132,14 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
   let tyvar = right_transform right_type_variable  in 
   let rec aux = fun
     [ `Id (_loc,id) -> trans id
-    | `Quote(_loc,_,`Some(_,`Lid(_,s))) ->   tyvar s
+    | `Quote(_loc,_,`Some(`Lid(_,s))) ->   tyvar s
     | `App _  as ty ->
         match  list_of_app ty []  with
         [ [ {| $id:tctor |} :: ls ] ->
           appl_of_list [trans tctor::
                         (ls |> List.map
                           (fun
-                            [ `Quote (_loc,_,`Some(_,`Lid(_,s))) -> {:expr| $(lid:var s) |} 
+                            [ `Quote (_loc,_,`Some(`Lid(_,s))) -> {:expr| $(lid:var s) |} 
                             | t ->   {:expr| fun self -> $(aux t) |} ])) ]
         | _  ->
             FanLoc.errorf  (loc_of ty)
@@ -231,7 +231,7 @@ let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
   let varf = basic_transform left_type_variable in
   let  f (var:ctyp) acc =
     match var with
-    [ `Quote(_,_,`Some(_,`Lid(_loc,s))) ->
+    [ `Quote(_,_,`Some(`Lid(_loc,s))) ->
         {| fun $(lid: varf s) -> $acc |}
     | t  ->
         FanLoc.errorf (loc_of t) "mk_prefix: %s" (dump_ctyp t)] in

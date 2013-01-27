@@ -5,9 +5,9 @@ open FSig
 let rec to_var_list =
   function
   | `App (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
-  | `Quote (_loc,`Normal _,`Some (_,`Lid (_,s)))
-    |`Quote (_loc,`Positive _,`Some (_,`Lid (_,s)))
-    |`Quote (_loc,`Negative _,`Some (_,`Lid (_,s))) -> [s]
+  | `Quote (_loc,`Normal _,`Some `Lid (_,s))
+    |`Quote (_loc,`Positive _,`Some `Lid (_,s))
+    |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> [s]
   | _ -> assert false
 let rec name_tags =
   function
@@ -28,7 +28,7 @@ let (<+) names ty =
   List.fold_right
     (fun name  acc  ->
        `Arrow
-         (_loc, (`Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, name)))))),
+         (_loc, (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, name))))),
            acc)) names ty
 let (+>) params base = List.fold_right arrow params base
 let name_length_of_tydcl =
@@ -42,14 +42,14 @@ let gen_quantifiers ~arity  n =
            (fun j  ->
               `Quote
                 (_loc, (`Normal _loc),
-                  (`Some (_loc,(`Lid (_loc, (allx ~off:i j)))))))))
+                  (`Some (`Lid (_loc, (allx ~off:i j))))))))
      |> List.concat)
     |> appl_of_list
 let of_id_len ~off  (id,len) =
   appl_of_list ((`Id (_loc, id)) ::
     (List.init len
        (fun i  ->
-          `Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, (allx ~off i)))))))))
+          `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (allx ~off i))))))))
 let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
 let ty_name_of_tydcl =
@@ -70,15 +70,19 @@ let list_of_record (ty : ctyp) =
         | t0 -> FanLoc.errorf (loc_of t0) "list_of_record %s" (dump_ctyp t0)))
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
+let result_id = ref 0
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   let prefix =
     List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
   let app_src =
     app_arrow (List.init number (fun _  -> of_id_len ~off:0 (id, len))) in
   let result_type =
-    `Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, "result")))))
-  and self_type =
-    `Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, "self_type"))))) in
+    `Quote
+      (_loc, (`Normal _loc),
+        (`Some (`Lid (_loc, ("result" ^ (string_of_int result_id.contents)))))) in
+  let _ = incr result_id in
+  let self_type =
+    `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "self_type")))) in
   let (quant,dst) =
     match k with
     | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
@@ -94,7 +98,7 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
                 (fun _  ->
                    `Quote
                      (_loc, (`Normal _loc),
-                       (`Some (_loc,(`Lid (_loc, (allx ~off:0 i)))))))) in
+                       (`Some (`Lid (_loc, (allx ~off:0 i))))))) in
          match k with
          | Obj u ->
              let dst =
@@ -102,32 +106,17 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
                | Map  ->
                    `Quote
                      (_loc, (`Normal _loc),
-                       (`Some (_loc,(`Lid (_loc, (allx ~off:1 i))))))
+                       (`Some (`Lid (_loc, (allx ~off:1 i)))))
                | Iter  -> result_type
                | Fold  -> self_type in
              self_type |-> (prefix <+ (app_src dst))
          | Str_item  -> prefix <+ (app_src result_type)) in
   let base = prefix <+ (app_src dst) in
   if len = 0
-  then base
+  then (base, dst)
   else
     (let quantifiers = gen_quantifiers ~arity:quant len in
-     `TyPol (_loc, quantifiers, (params +> base)))
-let mk_dest_type ~destination  (id,len) =
-  let result_type =
-    `Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, "result")))))
-  and self_type =
-    `Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, "self_type"))))) in
-  let (_quant,dst) =
-    match destination with
-    | Obj (Map ) ->
-        (2,
-          (appl_of_list ((`Id (_loc, id)) ::
-             (List.init len (fun _  -> `Any _loc)))))
-    | Obj (Iter ) -> (1, result_type)
-    | Obj (Fold ) -> (1, self_type)
-    | Str_item  -> (1, result_type) in
-  dst
+     ((`TyPol (_loc, quantifiers, (params +> base))), dst))
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
 let mk_obj class_name base body =
@@ -143,14 +132,14 @@ let mk_obj class_name base body =
                    (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
                      (`Quote
                         (_loc, (`Normal _loc),
-                          (`Some (_loc,(`Lid (_loc, "self_type")))))))),
+                          (`Some (`Lid (_loc, "self_type"))))))),
                 (`Sem
                    (_loc,
                      (`Inherit
                         (_loc, (`OvNil _loc),
                           (`CeCon
                              (_loc, (`ViNil _loc), (`Lid (_loc, base)),
-                               (`Nil _loc))), (`None _loc))), body)))))))
+                               (`Nil _loc))), `None)), body)))))))
 let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (_,`Lid (_,name),_,ctyp,_) ->

@@ -52,12 +52,12 @@ type anti_cxt =
   sep: string option;
   mutable decorations: string;
   content: string} 
-let pp_print_anti_cxt: 'fmt -> anti_cxt -> 'result =
-  fun fmt  { cxt = _a0; sep = _a1; decorations = _a2; content = _a3 }  ->
-    Format.fprintf fmt
-      "@[<hv 1>{cxt:%a;@,sep:%a;@,decorations:%a;@,content:%a}@]"
-      pp_print_string _a0 (pp_print_option pp_print_string) _a1
-      pp_print_string _a2 pp_print_string _a3
+let pp_print_anti_cxt fmt
+  { cxt = _a0; sep = _a1; decorations = _a2; content = _a3 } =
+  Format.fprintf fmt
+    "@[<hv 1>{cxt:%a;@,sep:%a;@,decorations:%a;@,content:%a}@]"
+    pp_print_string _a0 (pp_print_option pp_print_string) _a1 pp_print_string
+    _a2 pp_print_string _a3
 let mk_anti ?(c= "")  ?sep  n s =
   { cxt = c; decorations = n; content = s; sep }
 let add_context s c = { s with decorations = (s.decorations ^ c) }

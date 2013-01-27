@@ -118,18 +118,20 @@ end;
 (* FIXME to be more elegant *)  
 let gen_strip = with {patt:ctyp;expr}
   let mk_variant cons params =
+    let params' = (List.filter
+               (fun [{ty={|loc|};_} -> false | _  -> true])
+               params) in
     let result =
       appl_of_list
-         [(of_str cons) ::
-            (List.tl params) |> List.map (fun [{exp0;_} -> exp0]) ]  in 
+         [(of_str cons) :: params' |> List.map (fun [{exp0;_} -> exp0]) ]  in 
     List.fold_right
       (fun {expr;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|} |
-        {|list string|} |  {|FanUtil.anti_cxt |}->
+        {|list string|} |  {|FanUtil.anti_cxt |} | {| meta_list string|} ->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}] 
-              )  (List.tl params) result in
+              )  params' result in
   let mk_tuple params =
     let result = 
       params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_com in
@@ -137,7 +139,7 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {expr;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} |
-        {|loc|} | {|list string|} |  {| FanUtil.anti_cxt |}->
+        {|loc|} | {|list string|} |  {| FanUtil.anti_cxt |} | {| meta_list string|}->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}]) params result in 
   let mk_record cols =
@@ -148,13 +150,12 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {info={expr;pat0;ty;_};_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|}
-        | {|list string|}  | {|FanUtil.anti_cxt|}->
+        | {|list string|}  | {|FanUtil.anti_cxt|} | {| meta_list string|} ->
           res
-        | _ -> {|let $pat:pat0 = $expr in $res |}]
-        (* {|let $pat:pat0 = $expr in $res |} *)) cols result in
+        | _ -> {|let $pat:pat0 = $expr in $res |}]) cols result in
   gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
 Typehook.register
-    ~filter:(fun s -> (s<>"loc"))
+    ~filter:(fun s -> not (List.mem s ["loc"(* ; "meta_option"; "meta_list" *)]))
     ("Strip",gen_strip);
 
 
@@ -333,16 +334,20 @@ let generate (module_types:FSig.module_types) = with str_item
          |`Single t -> aux t]) module_types in
   let case = Hashtbl.fold
     (fun key arity acc ->
+      
       if arity= 1 then 
         {:match_case| $vrn:key _loc  -> _loc | $acc |}
-      else
+      else if arity > 1 then 
         let pats =
           [ {:patt| _loc|} :: List.init (arity - 1) (fun _ -> {:patt| _ |}) ] in
-        {:match_case| $vrn:key $(pat:(tuple_com pats)) -> _loc | $acc |} 
+        {:match_case| $vrn:key $(pat:(tuple_com pats)) -> _loc | $acc |}
+      else failwithf "arity=0 key:%s" key
         
     ) tbl {||} in
   {| let loc_of  = fun [ $case ]|};
-Typehook.register ~filter:(fun s -> s<> "loc") ("GenLoc",generate);
+Typehook.register
+    ~filter:(fun s -> not (List.mem s ["loc"; "meta_option";"meta_list"]))
+    ("GenLoc",generate);
 
 
 (* +-----------------------------------------------------------------+
@@ -351,6 +356,7 @@ Typehook.register ~filter:(fun s -> s<> "loc") ("GenLoc",generate);
 (* remove the loc field *)
 let generate (module_types:FSig.module_types) : str_item = with str_item
   let aux (_,ty) = with ctyp
+  (* use [map_ctyp] instead  *)
      let obj = object
        inherit FanAst.map as super;
        method! ctyp = 

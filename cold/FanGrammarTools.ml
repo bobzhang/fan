@@ -74,7 +74,7 @@ let make_ctyp (styp : styp) tvar =
            FanLoc.raise _loc
              (XStream.Error
                 ("'" ^ (x ^ "' illegal in anonymous entry level")))
-         else `Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, tvar)))))
+         else `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, tvar))))
      | `Tok _loc ->
          `TyVrnSup
            (_loc,
@@ -142,7 +142,7 @@ let rec make_expr entry (tvar : string) x =
                            (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
                         (`Quote
                            (_loc, (`Normal _loc),
-                             (`Some (_loc,(`Lid (_loc, (n.tvar)))))))))))) in
+                             (`Some (`Lid (_loc, (n.tvar))))))))))) in
         (match lev with
          | Some lab ->
              `App
@@ -199,7 +199,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
     let e1 =
       `Constraint
         (_loc, act,
-          (`Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, rtvar))))))) in
+          (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, rtvar)))))) in
     match tok_match_pl with
     | ([],_) ->
         `Fun
@@ -291,7 +291,7 @@ let text_of_entry e =
       (_loc, (x.expr),
         (`App
            (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
-             (`Quote (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, (x.tvar)))))))))) in
+             (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (x.tvar))))))))) in
   let pos =
     match e.pos with
     | Some pos -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), pos)
@@ -351,7 +351,7 @@ let let_in_of_extend _loc gram locals default =
                     (_loc,
                       (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
                       (`Quote
-                         (_loc, (`Normal _loc), (`Some (_loc,(`Lid (_loc, x)))))))))))
+                         (_loc, (`Normal _loc), (`Some (`Lid (_loc, x))))))))))
     | _ -> failwith "internal error in the Grammar extension" in
   match locals with
   | None |Some [] -> default
@@ -418,7 +418,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
   let foldfun =
     try (List.assoc n fs) ^ suffix with | Not_found  -> invalid_arg "sfold" in
   let styp =
-    `Quote (_loc, (`Normal _loc), (`Some (_loc,`Lid (_loc, (new_type_var ()))))) in
+    `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (new_type_var ()))))) in
   let e =
     `App
       (_loc,

@@ -90,9 +90,13 @@ let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
 let gen_strip =
   let mk_variant cons params =
+    let params' =
+      List.filter
+        (function | { ty = `Id (_loc,`Lid (_,"loc"));_} -> false | _ -> true)
+        params in
     let result =
       appl_of_list ((of_str cons) ::
-        ((List.tl params) |> (List.map (fun { exp0;_}  -> exp0)))) in
+        (params' |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { expr; pat0; ty;_}  res  ->
          match ty with
@@ -100,11 +104,12 @@ let gen_strip =
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
            |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")))
            |`App
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
+             -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
-      (List.tl params) result in
+      params' result in
   let mk_tuple params =
     let result = (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_com in
     List.fold_right
@@ -114,9 +119,10 @@ let gen_strip =
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
            |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")))
            |`App
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
+             -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       params result in
   let mk_record cols =
@@ -131,14 +137,17 @@ let gen_strip =
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
            |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")))
            |`App
               (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
+             -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       cols result in
   gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
     ~names:[] ()
-let _ = Typehook.register ~filter:(fun s  -> s <> "loc") ("Strip", gen_strip)
+let _ =
+  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"]))
+    ("Strip", gen_strip)
 let mk_variant_meta_expr cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
@@ -278,17 +287,45 @@ let generate (module_types : FSig.module_types) =
                          (`Id (_loc, (`Lid (_loc, "_loc")))))), (`Nil _loc),
                     (`Id (_loc, (`Lid (_loc, "_loc")))))), acc)
          else
-           (let pats = (`Id (_loc, (`Lid (_loc, "_loc")))) ::
-              (List.init (arity - 1) (fun _  -> `Any _loc)) in
-            `Or
-              (_loc,
-                (`Case
-                   (_loc,
-                     (`App (_loc, (`Vrn (_loc, key)), (tuple_com pats))),
-                     (`Nil _loc), (`Id (_loc, (`Lid (_loc, "_loc")))))), acc)))
-      tbl (`Nil _loc) in
+           if arity > 1
+           then
+             (let pats = (`Id (_loc, (`Lid (_loc, "_loc")))) ::
+                (List.init (arity - 1) (fun _  -> `Any _loc)) in
+              `Or
+                (_loc,
+                  (`Case
+                     (_loc,
+                       (`App (_loc, (`Vrn (_loc, key)), (tuple_com pats))),
+                       (`Nil _loc), (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                  acc))
+           else failwithf "arity=0 key:%s" key) tbl (`Nil _loc) in
   `Value
     (_loc, (`ReNil _loc),
       (`Bind
          (_loc, (`Id (_loc, (`Lid (_loc, "loc_of")))), (`Fun (_loc, case)))))
-let _ = Typehook.register ~filter:(fun s  -> s <> "loc") ("GenLoc", generate)
+let _ =
+  Typehook.register
+    ~filter:(fun s  -> not (List.mem s ["loc"; "meta_option"; "meta_list"]))
+    ("GenLoc", generate)
+let generate (module_types : FSig.module_types) =
+  (let aux (_,ty) =
+     let obj =
+       object 
+         inherit  FanAst.map as super
+         method! ctyp =
+           function
+           | `Of (_loc,vrn,`Id (_,`Lid (_,"loc"))) -> vrn
+           | `Of (_loc,vrn,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),x))) ->
+               (match x with
+                | `Sta (_loc,x,y) ->
+                    `Of (_loc, vrn, (`Tup (_loc, (`Sta (_loc, x, y)))))
+                | _ -> `Of (_loc, vrn, x))
+           | x -> super#ctyp x
+       end in
+     obj#ctyp ty in
+   (fun x  ->
+      let r = FSig.str_item_of_module_types ~f:aux x in
+      `Module (_loc, (`Uid (_loc, "N")), (`Struct (_loc, r)))) module_types : 
+  str_item )
+let _ =
+  Typehook.register ~filter:(fun s  -> s <> "loc") ("LocType", generate)

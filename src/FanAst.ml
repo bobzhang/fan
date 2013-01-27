@@ -22,6 +22,7 @@ let strip_loc_list f lst =
    (Map2
       Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq
       GenLoc  Strip LocType
+      
    ); |};
   
 {:ocaml|INCLUDE "src/Ast.ml"; |};

@@ -128,7 +128,7 @@ let predef_option loc =
 let rec ctyp (x:ctyp) = match x with 
   [`Id(_loc,i)-> let li = long_type_ident i in
     mktyp _loc (Ptyp_constr li [])
-  | `Alias (_loc, t1, (* t2 *) `Quote(_,_,`Some(_,(`Lid(_,s))))) ->
+  | `Alias (_loc, t1, (* t2 *) `Quote(_,_,`Some((`Lid(_,s))))) ->
       mktyp _loc (Ptyp_alias (ctyp t1) s)
   | `Any _loc -> mktyp _loc Ptyp_any
   | `App (_loc, _, _) as f ->
@@ -151,7 +151,7 @@ let rec ctyp (x:ctyp) = match x with
       let (i, cs) = package_type pt in
       mktyp _loc (Ptyp_package i cs)
   | `TyPol (loc, t1, t2) -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
-  | `Quote (_loc, `Normal _, `Some (_,`Lid (_,s))) -> mktyp _loc (Ptyp_var s)
+  | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) -> mktyp _loc (Ptyp_var s)
   | `Tup(loc,`Sta(_,t1,t2)) ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_star' t1 (list_of_star' t2 []))))
   | `TyVrnEq(_loc,t) ->
@@ -271,8 +271,8 @@ let mkvalue_desc loc t p =
   {pval_type = ctyp t; pval_prim = p; pval_loc =  loc};
 
 let rec list_of_meta_list =fun
-  [ `LNil _ -> []
-  | `LCons (_,x, xs) -> [x :: list_of_meta_list xs]
+  [ `LNil  -> []
+  | `LCons (x, xs) -> [x :: list_of_meta_list xs]
   | `Ant (_loc,_) -> ANT_ERROR ];
 
 let mkmutable = fun
@@ -301,9 +301,9 @@ let quote_map (x:ctyp) =
     |`Ant (_loc,_) -> ANT_ERROR ] in
     let s =
     match s with
-    [`None _ -> None
-    |`Some (_,`Lid (sloc,s)) -> Some (s+>sloc)
-    |`Some (_,`Ant(_loc,_))
+    [`None  -> None
+    |`Some (`Lid (sloc,s)) -> Some (s+>sloc)
+    |`Some (`Ant(_loc,_))
     |`Ant (_loc,_) -> ANT_ERROR] in
     (s,tuple)
   | t ->
@@ -445,9 +445,9 @@ let rec patt (x:patt) =
              match m with
              [`Uid(sloc,m) ->
                match ty with
-               [`None _ ->
+               [`None  ->
                  mkpat loc (Ppat_unpack (with_loc m sloc))
-               |`Some (_,ty) ->
+               |`Some (ty) ->
                    mkpat loc
                      (Ppat_constraint
                         (mkpat sloc (Ppat_unpack (with_loc m sloc)))
@@ -582,11 +582,11 @@ let rec expr (x : expr) = with expr match x with
               [(patt_of_lab loc lab po, when_expr e w)])
   | {@loc| fun [ ?$lid:lab :($p  = $opt:e1) when $w -> $e2  ] |} -> 
       match e1 with
-      [`None _ ->
+      [`None  ->
         let lab = paolab lab p in
         mkexp loc
           (Pexp_function ("?" ^ lab) None [(patt_of_lab loc lab p, when_expr e2 w)])
-      |`Some (_,e1) ->
+      |`Some (e1) ->
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) (Some (expr e1)) [(patt p, when_expr e2 w)])
@@ -1015,9 +1015,9 @@ and class_expr  (x:Ast.class_expr) = match x with
   | `CeFun (loc, (`PaOlbi (_, `Lid(_loc,lab), p, e)), ce) ->
       let lab = paolab lab p in
       match e with
-      [`None _ ->
+      [`None  ->
         mkcl loc (Pcl_fun ("?" ^ lab) None (patt_of_lab loc lab p) (class_expr ce))
-      |`Some (_,e) ->
+      |`Some (e) ->
           mkcl loc (Pcl_fun ("?" ^ lab) (Some (expr e)) (patt p) (class_expr ce))
       |`Ant(_loc,_) -> ANT_ERROR]  
   | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (patt p) (class_expr ce))
@@ -1044,9 +1044,9 @@ and class_str_item (c:class_str_item) l =
   | `Sem(_,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
   | `Inherit (loc, ov, ce, pb) ->
       let opb = match pb with
-      [`None _ -> None
-      |`Some (_,`Lid (_,x) ) -> Some x
-      |`Some (_,`Ant (_loc,_))
+      [`None  -> None
+      |`Some (`Lid (_,x) ) -> Some x
+      |`Some (`Ant (_loc,_))
       |`Ant (_loc,_) -> error _loc "antiquotation not allowed here"] in  
       (* let opb = if pb = "" then None else Some pb in *)
       [mkcf loc (Pcf_inher (override_flag loc ov) (class_expr ce) opb) :: l]

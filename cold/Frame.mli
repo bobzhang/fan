@@ -55,7 +55,8 @@ val fun_of_tydcl :
     ?arity:int ->
     left_type_variable:FSig.basic_id_transform ->
     mk_record:(FSig.record_col list -> expr) ->
-    destination:FSig.destination -> 
+    destination:FSig.destination ->
+      result_type:ctyp -> 
       (ctyp -> expr ) ->
         (ctyp -> expr ) ->
           (ctyp -> ctyp -> expr) ->  (* labeld as variant *)

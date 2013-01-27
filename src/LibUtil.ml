@@ -102,7 +102,17 @@ type id 'a = 'a -> 'a;
 
 module List = struct
   include List;
+  
+  let hd = function
+    [ [] -> failwith "hd"
+    | [a::_] -> a];
 
+  let tl = function
+    [[] -> failwith "List.tl"
+    | [_::l] -> l];
+  let safe_tl = function
+    [ [] -> []
+    | [_::l] -> l];  
   let null xs = xs = [];
   (*
     {[
