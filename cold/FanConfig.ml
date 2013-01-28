@@ -30,3 +30,9 @@ let conversion_table : (string, string) Hashtbl.t = Hashtbl.create 50
 let gram_warning_verbose = ref true
 
 let compilation_unit = ref None
+
+(* This is a list of directories to search for INCLUDE statements. *)
+let include_dirs = ref [];;
+    
+(* when you do the iteration, you should do it in reverse order *)  
+(* let current_filters:  ref (list (plugin_name * plugin)) = ref [];; *)

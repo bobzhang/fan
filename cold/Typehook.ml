@@ -1,15 +1,8 @@
 open LibUtil
-open Ast
 open FSig
 open Format
 open Lib
-let keep = ref true
-type plugin = 
-  {
-  transform: module_types -> str_item;
-  mutable activate: bool;
-  position: string option;
-  filter: (string -> bool) option} 
+open FanAst
 let apply_filter f (m : module_types) =
   (let f =
      function
@@ -23,9 +16,7 @@ let apply_filter f (m : module_types) =
           | x::[] -> Some (`Single x)
           | y -> Some (`Mutual y)) in
    List.filter_map f m : module_types )
-type plugin_name = string 
 let filters: (plugin_name,plugin) Hashtbl.t = Hashtbl.create 30
-let current_filters: (plugin_name* plugin) list ref = ref []
 let show_code = ref false
 let print_collect_module_types = ref false
 let register ?filter  ?position  (name,f) =
@@ -44,8 +35,10 @@ let plugin_add plugin =
        v.activate <- true;
        if
          not
-           (List.exists (fun (n,_)  -> n = plugin) current_filters.contents)
-       then Ref.modify current_filters (fun x  -> cons (plugin, v) x)
+           (List.exists (fun (n,_)  -> n = plugin)
+              FanState.current_filters.contents)
+       then
+         Ref.modify FanState.current_filters (fun x  -> cons (plugin, v) x)
        else eprintf "<Warning> plugin %s has already been loaded" plugin
    with
    | Not_found  ->
@@ -56,7 +49,7 @@ let plugin_remove plugin =
      let v = Hashtbl.find filters plugin in
      fun ()  ->
        v.activate <- false;
-       Ref.modify current_filters (fun x  -> List.remove plugin x)
+       Ref.modify FanState.current_filters (fun x  -> List.remove plugin x)
    with
    | Not_found  ->
        (fun ()  ->
@@ -149,8 +142,8 @@ let traversal () =
                           AstFilters.use_implem_filter name;
                           acc)
                      | None  -> `Sem (_loc, acc, code))
-                  current_filters.contents
-                  (if keep.contents then res else `Nil _loc) in
+                  FanState.current_filters.contents
+                  (if FanState.keep.contents then res else `Nil _loc) in
               self#out_module; `Struct (_loc, result))))
        | x -> super#module_expr x
      method! str_item =
@@ -162,7 +155,7 @@ let traversal () =
                (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                   lst);
              self#out_and_types;
-             if keep.contents then x else `Nil _loc))
+             if FanState.keep.contents then x else `Nil _loc))
        | `Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) as x ->
            let item = `Single (name, t) in
            (if print_collect_module_types.contents
@@ -243,11 +236,11 @@ let _ =
         ([`Skeyword "keep"; `Skeyword "on"],
           (Gram.mk_action
              (fun _  _  (_loc : FanLoc.t)  ->
-                (keep := true; `Nil _loc : 'fan_quot ))));
+                (FanState.keep := true; `Nil _loc : 'fan_quot ))));
         ([`Skeyword "keep"; `Skeyword "off"],
           (Gram.mk_action
              (fun _  _  (_loc : FanLoc.t)  ->
-                (keep := false; `Nil _loc : 'fan_quot ))));
+                (FanState.keep := false; `Nil _loc : 'fan_quot ))));
         ([`Skeyword "show_code"; `Skeyword "on"],
           (Gram.mk_action
              (fun _  _  (_loc : FanLoc.t)  ->
@@ -269,8 +262,110 @@ let _ =
            (Gram.mk_action
               (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
                  (`Seq (_loc, (FanAst.sem_of_list xs)) : 'fan_quots ))))]))
+let g = Gram.create_gram ()
+let include_quot = Gram.mk_dynamic g "include_quot"
+let _ =
+  Gram.extend_single (include_quot : 'include_quot Gram.t )
+    (None,
+      (None, None,
+        [([`Stoken
+             (((function | `STR (_,_) -> true | _ -> false)),
+               (`Normal, "`STR (_,_)"))],
+           (Gram.mk_action
+              (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                 match __fan_0 with
+                 | `STR (_,s) ->
+                     (let keep = FanState.keep
+                      and cf = FanState.current_filters in
+                      let fan_keep__0 = keep.contents
+                      and fan_cf__1 = cf.contents in
+                      (try
+                         let fan_res__2 =
+                           FanState.reset ();
+                           FanBasic.parse_include_file
+                             PreCast.Syntax.str_items s in
+                         let _ = keep := fan_keep__0; cf := fan_cf__1 in
+                         fan_res__2
+                       with
+                       | fan_e__3 ->
+                           ((keep := fan_keep__0; cf := fan_cf__1);
+                            raise fan_e__3)) : 'include_quot )
+                 | _ -> assert false)))]))
+let g = Gram.create_gram ()
+let save_quot = Gram.mk "save_quot"
+let _ =
+  Gram.extend_single (save_quot : 'save_quot Gram.t )
+    (None,
+      (None, None,
+        [([`Slist1
+             (Gram.srules
+                [([`Stoken
+                     (((function | `Lid _ -> true | _ -> false)),
+                       (`Normal, "`Lid _"))],
+                   (Gram.mk_action
+                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                         match __fan_0 with
+                         | `Lid x -> (x : 'e__4 )
+                         | _ -> assert false)))]);
+          `Skeyword "->";
+          `Snterm (Gram.obj (Syntax.expr : 'Syntax__expr Gram.t ))],
+           (Gram.mk_action
+              (fun (b : 'Syntax__expr)  _  (ls : 'e__4 list) 
+                 (_loc : FanLoc.t)  ->
+                 (let symbs = List.map (fun x  -> FanState.gensym x) ls in
+                  let res = FanState.gensym "res" in
+                  let exc = FanState.gensym "e" in
+                  let binds =
+                    and_of_list
+                      (List.map2
+                         (fun x  y  ->
+                            `Bind
+                              (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                                (`Dot
+                                   (_loc, (`Id (_loc, (`Lid (_loc, y)))),
+                                     (`Id (_loc, (`Lid (_loc, "contents"))))))))
+                         symbs ls) in
+                  let restore =
+                    seq_sem
+                      (List.map2
+                         (fun x  y  ->
+                            `Assign
+                              (_loc,
+                                (`Dot
+                                   (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                                     (`Id (_loc, (`Lid (_loc, "contents")))))),
+                                (`Id (_loc, (`Lid (_loc, y)))))) ls symbs) in
+                  `LetIn
+                    (_loc, (`ReNil _loc), binds,
+                      (`Try
+                         (_loc,
+                           (`LetIn
+                              (_loc, (`ReNil _loc),
+                                (`Bind
+                                   (_loc, (`Id (_loc, (`Lid (_loc, res)))),
+                                     b)),
+                                (`LetIn
+                                   (_loc, (`ReNil _loc),
+                                     (`Bind (_loc, (`Any _loc), restore)),
+                                     (`Id (_loc, (`Lid (_loc, res)))))))),
+                           (`Case
+                              (_loc, (`Id (_loc, (`Lid (_loc, exc)))),
+                                (`Nil _loc),
+                                (`Seq
+                                   (_loc,
+                                     (`Sem
+                                        (_loc, restore,
+                                          (`App
+                                             (_loc,
+                                               (`Id
+                                                  (_loc,
+                                                    (`Lid (_loc, "raise")))),
+                                               (`Id
+                                                  (_loc, (`Lid (_loc, exc))))))))))))))) : 
+                 'save_quot ))))]))
 let _ =
   PreCast.Syntax.Options.add
-    ("-keep", (FanArg.Set keep), "Keep the included type definitions");
+    ("-keep", (FanArg.Set FanState.keep),
+      "Keep the included type definitions");
   PreCast.Syntax.Options.add
     ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins")

@@ -7,7 +7,9 @@ module type META_LOC =
 open FanUtil
 open LibUtil
 open StdLib
+let ghost = FanLoc.ghost
 let strip_loc_list f lst = List.map f lst
+let strip_loc_ant ant = ant
 let _ = ()
 class map2 =
   object (self : 'self_type)
@@ -6068,7 +6070,6 @@ let loc_of =
   | `ViNil _loc -> _loc
   | `Sum (_loc,_) -> _loc
   | `PaEq (_loc,_,_) -> _loc
-let strip_loc_ant (`Ant (_a0,_a1)) = `Ant _a1
 let strip_loc_literal =
   function
   | `Chr (_a0,_a1) -> `Chr _a1
@@ -6082,76 +6083,76 @@ let strip_loc_rec_flag =
   function
   | `Recursive _a0 -> `Recursive
   | `ReNil _a0 -> `ReNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result364)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result363)
 let strip_loc_direction_flag =
   function
   | `To _a0 -> `To
   | `Downto _a0 -> `Downto
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result365)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result364)
 let strip_loc_mutable_flag =
   function
   | `Mutable _a0 -> `Mutable
   | `MuNil _a0 -> `MuNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result366)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result365)
 let strip_loc_private_flag =
   function
   | `Private _a0 -> `Private
   | `PrNil _a0 -> `PrNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result367)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result366)
 let strip_loc_virtual_flag =
   function
   | `Virtual _a0 -> `Virtual
   | `ViNil _a0 -> `ViNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result368)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result367)
 let strip_loc_override_flag =
   function
   | `Override _a0 -> `Override
   | `OvNil _a0 -> `OvNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result369)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result368)
 let strip_loc_row_var_flag =
   function
   | `RowVar _a0 -> `RowVar
   | `RvNil _a0 -> `RvNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result370)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result369)
 let strip_loc_position_flag =
   function
   | `Positive _a0 -> `Positive
   | `Negative _a0 -> `Negative
   | `Normal _a0 -> `Normal
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result371)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result370)
 let strip_loc_meta_bool =
   function
   | `True _a0 -> `True
   | `False _a0 -> `False
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result372)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result371)
 let strip_loc_meta_option mf_a =
   function
   | `None -> `None
   | `Some _a0 -> let _a0 = mf_a _a0 in `Some _a0
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result373)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result372)
 let rec strip_loc_meta_list mf_a =
   function
   | `LNil -> `LNil
   | `LCons (_a0,_a1) ->
       let _a0 = mf_a _a0 in
       let _a1 = strip_loc_meta_list mf_a _a1 in `LCons (_a0, _a1)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result374)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result373)
 let strip_loc_alident =
   function
   | `Lid (_a0,_a1) -> `Lid _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result375)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result374)
 let strip_loc_auident =
   function
   | `Uid (_a0,_a1) -> `Uid _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result376)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result375)
 let strip_loc_aident =
   function
-  | #alident as _a0 -> (strip_loc_alident _a0 :>'result377)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>'result377)
+  | #alident as _a0 -> (strip_loc_alident _a0 :>'result376)
+  | #auident as _a0 -> (strip_loc_auident _a0 :>'result376)
 let strip_loc_astring =
   function
   | `C (_a0,_a1) -> `C _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result378)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result377)
 let rec strip_loc_ident =
   function
   | `Dot (_a0,_a1,_a2) ->
@@ -6160,8 +6161,8 @@ let rec strip_loc_ident =
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
       let _a2 = strip_loc_ident _a2 in `App (_a1, _a2)
-  | #alident as _a0 -> (strip_loc_alident _a0 :>'result379)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>'result379)
+  | #alident as _a0 -> (strip_loc_alident _a0 :>'result378)
+  | #auident as _a0 -> (strip_loc_auident _a0 :>'result378)
 let rec strip_loc_ctyp =
   function
   | `Nil _a0 -> `Nil
@@ -6249,7 +6250,7 @@ let rec strip_loc_ctyp =
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyOfAmp (_a1, _a2)
   | `Package (_a0,_a1) -> let _a1 = strip_loc_module_type _a1 in `Package _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result395)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result394)
 and strip_loc_patt =
   function
   | `Nil _a0 -> `Nil
@@ -6257,7 +6258,7 @@ and strip_loc_patt =
   | `Alias (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result394)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result393)
   | `Any _a0 -> `Any
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
@@ -6269,7 +6270,7 @@ and strip_loc_patt =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_patt _a2 in `Sem (_a1, _a2)
-  | #literal as _a0 -> (strip_loc_literal _a0 :>'result394)
+  | #literal as _a0 -> (strip_loc_literal _a0 :>'result393)
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_patt _a2 in `Label (_a1, _a2)
@@ -6306,7 +6307,7 @@ and strip_loc_expr =
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_expr _a2 in `Dot (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result393)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result392)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_expr _a2 in `App (_a1, _a2)
@@ -6336,7 +6337,7 @@ and strip_loc_expr =
   | `IfThen (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_expr _a2 in `IfThen (_a1, _a2)
-  | #literal as _a0 -> (strip_loc_literal _a0 :>'result393)
+  | #literal as _a0 -> (strip_loc_literal _a0 :>'result392)
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_expr _a2 in `Label (_a1, _a2)
@@ -6410,7 +6411,7 @@ and strip_loc_module_type =
       let _a2 = strip_loc_with_constr _a2 in `With (_a1, _a2)
   | `ModuleTypeOf (_a0,_a1) ->
       let _a1 = strip_loc_module_expr _a1 in `ModuleTypeOf _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result392)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result391)
 and strip_loc_sig_item =
   function
   | `Nil _a0 -> `Nil
@@ -6441,7 +6442,7 @@ and strip_loc_sig_item =
   | `Val (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Val (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result391)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result390)
 and strip_loc_with_constr =
   function
   | `Nil _a0 -> `Nil
@@ -6460,7 +6461,7 @@ and strip_loc_with_constr =
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_with_constr _a1 in
       let _a2 = strip_loc_with_constr _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result390)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result389)
 and strip_loc_binding =
   function
   | `Nil _a0 -> `Nil
@@ -6470,7 +6471,7 @@ and strip_loc_binding =
   | `Bind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_expr _a2 in `Bind (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result389)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result388)
 and strip_loc_rec_binding =
   function
   | `Nil _a0 -> `Nil
@@ -6480,7 +6481,7 @@ and strip_loc_rec_binding =
   | `RecBind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
       let _a2 = strip_loc_expr _a2 in `RecBind (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result388)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result387)
 and strip_loc_module_binding =
   function
   | `Nil _a0 -> `Nil
@@ -6494,7 +6495,7 @@ and strip_loc_module_binding =
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_type _a2 in `Constraint (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result387)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result386)
 and strip_loc_match_case =
   function
   | `Nil _a0 -> `Nil
@@ -6505,7 +6506,7 @@ and strip_loc_match_case =
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_expr _a2 in
       let _a3 = strip_loc_expr _a3 in `Case (_a1, _a2, _a3)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result386)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result385)
 and strip_loc_module_expr =
   function
   | `Nil _a0 -> `Nil
@@ -6523,7 +6524,7 @@ and strip_loc_module_expr =
       let _a2 = strip_loc_module_type _a2 in `Constraint (_a1, _a2)
   | `PackageModule (_a0,_a1) ->
       let _a1 = strip_loc_expr _a1 in `PackageModule _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result385)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result384)
 and strip_loc_str_item =
   function
   | `Nil _a0 -> `Nil
@@ -6555,7 +6556,7 @@ and strip_loc_str_item =
   | `Value (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in `Value (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result384)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result383)
 and strip_loc_class_type =
   function
   | `Nil _a0 -> `Nil
@@ -6578,7 +6579,7 @@ and strip_loc_class_type =
   | `CtEq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_type _a1 in
       let _a2 = strip_loc_class_type _a2 in `CtEq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result383)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result382)
 and strip_loc_class_sig_item =
   function
   | `Nil _a0 -> `Nil
@@ -6603,7 +6604,7 @@ and strip_loc_class_sig_item =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_private_flag _a2 in
       let _a3 = strip_loc_ctyp _a3 in `CgVir (_a1, _a2, _a3)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result382)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result381)
 and strip_loc_class_expr =
   function
   | `Nil _a0 -> `Nil
@@ -6633,7 +6634,7 @@ and strip_loc_class_expr =
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_expr _a1 in
       let _a2 = strip_loc_class_expr _a2 in `Eq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result381)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result380)
 and strip_loc_class_str_item =
   function
   | `Nil _a0 -> `Nil
@@ -6669,7 +6670,25 @@ and strip_loc_class_str_item =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_mutable_flag _a2 in
       let _a3 = strip_loc_ctyp _a3 in `CrVvr (_a1, _a2, _a3)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result380)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result379)
+let list_of_list (loc : loc) =
+  let rec loop top =
+    function
+    | [] -> `Id (ghost, (`Uid (ghost, "[]")))
+    | e1::el ->
+        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
+        `App
+          (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
+            (loop false el)) in
+  loop true
+let array_of_array loc arr =
+  let rec loop top =
+    function
+    | [] -> `Id (ghost, (`Uid (ghost, "[]")))
+    | e1::el ->
+        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
+        `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
+  let items = arr |> Array.to_list in loop true items
 module MExpr =
   struct
     let meta_int _loc i = `Int (_loc, (string_of_int i))
@@ -10063,7 +10082,6 @@ let rec is_expr_constructor =
   | `Dot (_loc,e1,e2) -> (is_expr_constructor e1) && (is_expr_constructor e2)
   | `Vrn (_loc,_) -> true
   | _ -> false
-let ghost = FanLoc.ghost
 let rec or_of_list =
   function
   | [] -> `Nil ghost
@@ -10130,24 +10148,6 @@ let tuple_sta y =
       let a = loc_of x in
       let b = loc_of (List.last y) in
       let _loc = FanLoc.merge a b in `Tup (_loc, (sta_of_list y))
-let list_of_list (loc : loc) =
-  let rec loop top =
-    function
-    | [] -> `Id (ghost, (`Uid (ghost, "[]")))
-    | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-        `App
-          (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
-            (loop false el)) in
-  loop true
-let array_of_array loc arr =
-  let rec loop top =
-    function
-    | [] -> `Id (ghost, (`Uid (ghost, "[]")))
-    | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-        `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
-  let items = arr |> Array.to_list in loop true items
 let rec dot_of_list' =
   function
   | [] -> assert false

@@ -19,10 +19,10 @@ let meta_unit _loc _ =  {|()|};
 let meta_bool _loc =
   fun [true -> {|true|} | false -> {|false|} ];
 
-(* FIXME [=$] was a token .. *)    
+
 let meta_ref mf_a _loc i =
   {| {contents= $(mf_a _loc !i) } |};
-  (* << {val = .$ mf_a _loc i.val $. } >> ;  *)
+
 
 (* [mklist] and [mkarray]
    duplicated with ExprPatt to remove cyclic dependency *)
@@ -61,10 +61,6 @@ let meta_arrow (type t)
 
 
 
-(*
-  {:expr| `a(3,4)|}
-  {:expr| (`a)  (3,4)   |}
- *)
 
 
 

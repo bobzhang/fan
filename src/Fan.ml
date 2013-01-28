@@ -18,12 +18,13 @@ open AstQuotation;
 
 let d = `Absolute ["Fan";"Lang"];
 
-  
+
 of_str_item_with_filter
   ~name:(d,"ocaml") ~entry:str_items
   ~filter:(fun s ->
     let _loc = loc_of s in 
     let v =  {:module_expr| struct $s end |} in
+    (* let _ = Format.eprintf "@[%a@]@." Ast2pt.print_str_item s in *)
     let module_expr =
       (Typehook.traversal ())#module_expr v in
     let code = match module_expr with
@@ -45,7 +46,9 @@ of_str_item_with_filter
     end);
 
 of_expr ~name:(d,"fans") ~entry:Typehook.fan_quots ;
-
+of_expr ~name:(d,"save") ~entry:Typehook.save_quot;
+  
+of_str_item ~name:(d,"include") ~entry:Typehook.include_quot;
 let d = `Absolute ["Fan";"Lang";"Macro"];
   
 of_expr_with_filter
@@ -209,7 +212,17 @@ Options.add
        AstQuotation.default := FanToken.resolve_name (`Sub [],s))
        ," Set the default language");
 
+let d = `Absolute ["Fan"; "Lang"; "Meta";"N"] ;
 
+add_quotation (d,"expr") expr_quot
+    ~mexpr:(fun loc pexpr -> FanAstN.Expr.meta_expr loc (strip_loc_expr pexpr))
+    ~mpatt:(fun loc ppatt -> FanAstN.Patt.meta_expr loc (strip_loc_expr ppatt))
+    ~expr_filter
+    ~patt_filter;
+
+(* let a = {:N.expr|a + b |}; *)
+(* let a = {:expr|a + b|}; *)
+  
 (* Try to force linking for convenience *)  
 open ParserListComprehension;
 open ParserRevise;

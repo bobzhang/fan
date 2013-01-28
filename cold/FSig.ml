@@ -79,11 +79,10 @@ let pp_print_warning_type fmt =
       Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string _a0
   | Qualified _a0 ->
       Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string _a0
-let str_item_of_module_types ~f:(aux : named_type -> ctyp) 
-  (x : module_types) =
-  (let _loc = FanLoc.ghost in
-   sem_of_list
-     (List.map
-        (function
-         | `Mutual tys -> `Type (_loc, (and_of_list (List.map aux tys)))
-         | `Single ty -> `Type (_loc, (aux ty))) x) : str_item )
+type plugin_name = string 
+type plugin = 
+  {
+  transform: module_types -> str_item;
+  mutable activate: bool;
+  position: string option;
+  filter: (string -> bool) option} 

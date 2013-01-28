@@ -17,3 +17,5 @@ val fan_debug : bool ref
 val conversion_table : (string, string) Hashtbl.t
 val gram_warning_verbose : bool ref
 val compilation_unit : string option ref
+val include_dirs: string list ref
+(* val current_filters:  (plugin_name * plugin) list ref *)

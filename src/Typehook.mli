@@ -1,16 +1,16 @@
 open Ast
-  
-val keep : bool ref
+open FSig  
+
 val print_collect_module_types: bool ref
 
-type plugin = {
-  transform : FSig.module_types -> str_item;
-  mutable activate : bool;
-  position: string option;
-  filter: (string -> bool) option;
-}
-type plugin_name = string
-val filters : (plugin_name, plugin) LibUtil.Hashtbl.t
+(* type plugin = { *)
+(*   transform : FSig.module_types -> str_item; *)
+(*   mutable activate : bool; *)
+(*   position: string option; *)
+(*   filter: (string -> bool) option; *)
+(* } *)
+(* type plugin_name = string *)
+(* val filters : (plugin_name, plugin) LibUtil.Hashtbl.t *)
 val show_code : bool ref
 
 val register :
@@ -41,3 +41,5 @@ val traversal: unit -> traversal
  *)
 val fan_quot : expr Gram.t
 val fan_quots : expr Gram.t
+val include_quot: str_item Gram.t
+val save_quot: expr Gram.t

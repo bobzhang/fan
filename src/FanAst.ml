@@ -13,10 +13,11 @@ open FanUtil;
 open LibUtil;  
 open StdLib;
 
-
+let ghost = FanLoc.ghost ; (* to refine *)
+  
 let strip_loc_list f lst =
   List.map f lst ;
-  
+let strip_loc_ant ant = ant ;  
 {:fans|keep off;
  derive
    (Map2
@@ -25,13 +26,64 @@ let strip_loc_list f lst =
   
 {:ocaml|INCLUDE "src/Ast.ml"; |};
 
+
+(*
+  Given an location, and a list of expression node,
+  return an expression node which represents the list
+  of the expresson nodes
+
+  Example:
+  {[
+  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+  [b; c; d]
+  ]}
+  (* {:expr| [1;2;3::[]]|} *)
+  DoubleColon
+ *)
+let list_of_list (loc:loc) =
+  let rec loop top =  with expr fun
+    [ [] ->   {@ghost| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge (loc_of e1) loc in
+        {| [$e1 :: $(loop false el)] |} ] in loop true ;
+
+(* It is the inverse operation by [view_app]
+   Example:
+   {[
+   apply {|a|} [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+   a b c d
+   ]}
+ *)
+(* let rec apply accu = fun *)
+(*   [ [] -> accu *)
+(*   | [x :: xs] -> let _loc = loc_of x in apply {| $accu $x |} xs ]; *)
+  
+(*
+  mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
+  True
+ *)
+let array_of_array loc arr =
+  let rec loop top =  with expr fun
+    [ [] -> {@ghost| [] |}
+    | [e1 :: el] ->
+        let _loc =
+          if top then loc else FanLoc.merge (loc_of e1) loc in
+        {| [| $e1 ; $(loop false el) |] |} ] in
+  let items = arr |> Array.to_list in 
+  loop true items;
+
+
+  
 #default_quotation "expr";;
 module MExpr = struct
+
   INCLUDE "src/MetaTemplate.ml"; (* FIXME INCLUDE as a langauge :default *)
 end;
 
 #default_quotation "patt"  ;;
 module MPatt = struct
+
   INCLUDE "src/MetaTemplate.ml";
 end;
 
@@ -183,7 +235,7 @@ let rec is_expr_constructor = fun
       -> true
     | _ -> false ];
 
-let ghost = FanLoc.ghost ; (* to refine *)
+
 
 (* RA *)  
 let rec or_of_list = fun
@@ -273,51 +325,6 @@ let tuple_sta y =
 
 
 
-(*
-  Given an location, and a list of expression node,
-  return an expression node which represents the list
-  of the expresson nodes
-
-  Example:
-  {[
-  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
-  [b; c; d]
-  ]}
-  (* {:expr| [1;2;3::[]]|} *)
-  DoubleColon
- *)
-let list_of_list (loc:loc) =
-  let rec loop top =  with expr fun
-    [ [] ->   {@ghost| [] |}
-    | [e1 :: el] ->
-        let _loc =
-          if top then loc else FanLoc.merge (loc_of e1) loc in
-        {| [$e1 :: $(loop false el)] |} ] in loop true ;
-
-(* It is the inverse operation by [view_app]
-   Example:
-   {[
-   apply {|a|} [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
-   a b c d
-   ]}
- *)
-(* let rec apply accu = fun *)
-(*   [ [] -> accu *)
-(*   | [x :: xs] -> let _loc = loc_of x in apply {| $accu $x |} xs ]; *)
-  
-(*
-  mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
-  True
- *)
-let array_of_array loc arr =
-  let rec loop top =  with expr fun
-    [ [] -> {@ghost| [] |}
-    | [e1 :: el] ->
-        let _loc =
-          if top then loc else FanLoc.merge (loc_of e1) loc in
-        {| [| $e1 ; $(loop false el) |] |} ] in
-  let items = arr |> Array.to_list in 
-  loop true items;
   
     
 (* RA *)  

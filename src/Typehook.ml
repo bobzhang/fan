@@ -1,18 +1,11 @@
 open LibUtil;
-open Ast;
 open FSig;
 open Format;
 open Lib;
-
+open FanAst;
   
 (** A Hook To Ast Filters *)
-let keep = ref true;
-type plugin = {
-    transform:(module_types -> str_item);
-    activate: mutable bool;
-    position: option string;
-    filter: option (string->bool);
-  };
+
 
 let apply_filter f (m:module_types) : module_types = begin 
   (* eprintf "applying filter@."; *)
@@ -30,12 +23,12 @@ end;
 
 
   
-type plugin_name = string ;
+(* type plugin_name = string ; *)
   
 let filters : Hashtbl.t plugin_name plugin = Hashtbl.create 30;
 
-(* when you do the iteration, you should do it in reverse order *)  
-let current_filters:  ref (list (plugin_name * plugin)) = ref [];
+(* (\* when you do the iteration, you should do it in reverse order *\)   *)
+(* let current_filters:  ref (list (plugin_name * plugin)) = ref []; *)
 
   
 let show_code =  ref false;
@@ -66,8 +59,8 @@ let show_modules () =
 let plugin_add plugin =
   let try v = Hashtbl.find filters plugin in begin
     v.activate <- true;
-    if not (List.exists (fun (n,_) -> n=plugin) !current_filters) then
-      Ref.modify current_filters (fun x -> cons (plugin,v) x) 
+    if not (List.exists (fun (n,_) -> n=plugin) !FanState.current_filters) then
+      Ref.modify FanState.current_filters (fun x -> cons (plugin,v) x) 
     else
       eprintf "<Warning> plugin %s has already been loaded" plugin;
   end
@@ -81,7 +74,7 @@ let plugin_add plugin =
 let plugin_remove plugin =
   let try v = Hashtbl.find filters plugin in begin 
     v.activate <- false;
-    Ref.modify current_filters (fun x -> List.remove plugin x)    
+    Ref.modify FanState.current_filters (fun x -> List.remove plugin x)    
   end
   with
     [Not_found -> begin 
@@ -205,8 +198,8 @@ let traversal () : traversal  = object (self:'self_type)
                     AstFilters.use_implem_filter name ;
                     acc
                   end
-                |None -> {| $acc; $code |} ])  !current_filters 
-          (if !keep then res else {| |} );
+                |None -> {| $acc; $code |} ])  !FanState.current_filters 
+          (if !FanState.keep then res else {| |} );
       self#out_module ;
       {:module_expr| struct $result end |}  
     end
@@ -219,7 +212,7 @@ let traversal () : traversal  = object (self:'self_type)
       self#update_cur_module_types
           (fun lst -> [`Mutual (List.rev self#get_cur_and_types) :: lst] );
       self#out_and_types;
-      (if !keep then x else {| |} )
+      (if !FanState.keep then x else {| |} )
     end
     | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> begin
         let item =  `Single (name,t) ;
@@ -245,7 +238,7 @@ end;
 
 
 
-#default_quotation "expr"  ;;
+(* #default_quotation "expr"  ;; *)
 (* #lang_at "patt" "module_expr";; *)
 
 let g = Gram.create_gram ();
@@ -263,15 +256,65 @@ with expr
           begin List.iter plugin_remove plugins ; {| |} end
       | "clear" ->
           begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end
-      | "keep" ; "on" -> begin keep := true; {| |} end
-      | "keep" ; "off" -> begin keep := false; {| |} end
+      | "keep" ; "on" -> begin FanState.keep := true; {| |} end
+      | "keep" ; "off" -> begin FanState.keep := false; {| |} end
       | "show_code"; "on" -> begin show_code := true; {| |} end
       | "show_code"; "off" -> begin show_code := false; {| |} end]
       fan_quots:
       [L0[fan_quot{x};";" -> x]{xs} -> {| begin $list:xs end|}]
 |};  
 
+let g = Gram.create_gram();
+
+{:create| (g:Gram.t) include_quot |};
+  {:extend|
+include_quot:
+  [`STR(_,s) ->
+    let keep = FanState.keep and cf = FanState.current_filters in
+    {:save| keep cf ->  begin
+      FanState.reset ();
+      FanBasic.parse_include_file PreCast.Syntax.str_items s;
+    end
+  |}
+ ]
+|};
+
+let g = Gram.create_gram();
+{:create|Gram  save_quot|};
+
+
+(* {:save| a b c -> begin *)
+(*   print_int a; *)
+(*   print_int b ; *)
+(*   print_int c; *)
+(* end *)
+(* |} *)
+
+    
+{:extend|
+save_quot:
+  [L1 [`Lid x -> x] {ls} ; "->"; Syntax.expr{b} ->
+    let symbs = List.map (fun x -> FanState.gensym x) ls in
+    let res = FanState.gensym "res" in
+    let exc = FanState.gensym "e" in
+    let binds = and_of_list
+        (List.map2 (fun x y -> {:binding| $lid:x = ! $lid:y |} ) symbs ls ) in
+    let restore =
+       seq_sem (List.map2 (fun x y -> {:expr| $lid:x := $lid:y |}) ls symbs) in
+    {:expr|
+    let $binds in
+    try begin 
+      let $lid:res = $b in
+      let _ = $restore in 
+      $lid:res    
+    end with
+      [ $lid:exc -> (begin $restore ; raise $lid:exc end)]
+  |}
+
+ ]
+|};
+  
 begin 
-  PreCast.Syntax.Options.add ("-keep", (FanArg.Set keep), "Keep the included type definitions") ;
+  PreCast.Syntax.Options.add ("-keep", (FanArg.Set FanState.keep), "Keep the included type definitions") ;
   PreCast.Syntax.Options.add ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins");
 end;

@@ -72,7 +72,8 @@ let apply () =
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
                  | `STR (_,fname) ->
-                     (Lazy (lazy (parse_include_file str_items fname)) : 
+                     (Lazy
+                        (lazy (FanBasic.parse_include_file str_items fname)) : 
                      'macro_def )
                  | _ -> assert false)))]));
    Gram.extend_single (macro_def_sig : 'macro_def_sig Gram.t )
@@ -116,7 +117,8 @@ let apply () =
               (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                  match __fan_1 with
                  | `STR (_,fname) ->
-                     (Lazy (lazy (parse_include_file sig_items fname)) : 
+                     (Lazy
+                        (lazy (FanBasic.parse_include_file sig_items fname)) : 
                      'macro_def_sig )
                  | _ -> assert false)))]));
    Gram.extend_single (uident_eval_ifdef : 'uident_eval_ifdef Gram.t )
@@ -445,6 +447,6 @@ let apply () =
     ("-U", (FanArg.String (undef ~expr ~patt)),
       "<string> Undefine for IFDEF instruction.");
   Options.add
-    ("-I", (FanArg.String add_include_dir),
+    ("-I", (FanArg.String FanBasic.add_include_dir),
       "<string> Add a directory to INCLUDE search path.")
 let _ = AstParsers.register_parser ("macro", apply)

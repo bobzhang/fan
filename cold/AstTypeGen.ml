@@ -146,7 +146,7 @@ let gen_strip =
   gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
     ~names:[] ()
 let _ =
-  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"]))
+  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("Strip", gen_strip)
 let mk_variant_meta_expr cons params =
   let len = List.length params in
@@ -308,24 +308,24 @@ let _ =
     ~filter:(fun s  -> not (List.mem s ["loc"; "meta_option"; "meta_list"]))
     ("GenLoc", generate)
 let generate (module_types : FSig.module_types) =
-  (let aux (_,ty) =
-     let obj =
-       object 
-         inherit  FanAst.map as super
-         method! ctyp =
-           function
-           | `Of (_loc,vrn,`Id (_,`Lid (_,"loc"))) -> vrn
-           | `Id (_loc,`Lid (_,"ant")) -> `Nil _loc
-           | `Of (_loc,vrn,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),x))) ->
-               (match x with
-                | `Sta (_loc,x,y) ->
-                    `Of (_loc, vrn, (`Tup (_loc, (`Sta (_loc, x, y)))))
-                | _ -> `Of (_loc, vrn, x))
-           | x -> super#ctyp x
-       end in
-     obj#ctyp ty in
-   (fun x  -> let r = FSig.str_item_of_module_types ~f:aux x in r)
+  (let aux (name,ty) =
+     if not (name = "ant")
+     then
+       let obj =
+         object 
+           inherit  FanAst.map as super
+           method! ctyp =
+             function
+             | `Of (_loc,vrn,`Id (_,`Lid (_,"loc"))) -> vrn
+             | `Of (_loc,vrn,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),x))) ->
+                 (match x with
+                  | `Sta (_loc,x,y) ->
+                      `Of (_loc, vrn, (`Tup (_loc, (`Sta (_loc, x, y)))))
+                  | _ -> `Of (_loc, vrn, x))
+             | x -> super#ctyp x
+         end in
+       obj#ctyp ty
+     else ty in
+   (fun x  -> let r = FSigUtil.str_item_from_module_types ~f:aux x in r)
      module_types : str_item )
-let _ =
-  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
-    ("LocType", generate)
+let _ = Typehook.register ~filter:(fun s  -> true) ("LocType", generate)

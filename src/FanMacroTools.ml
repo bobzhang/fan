@@ -76,29 +76,8 @@ let parse_def ~expr ~patt s =
   | _ -> invalid_arg s ];
     
 
-(* This is a list of directories to search for INCLUDE statements. *)
-let include_dirs = ref [];
 
-(* Add something to the above, make sure it ends with a slash. *)
-let add_include_dir str =
-  if str <> "" then
-    let str =
-      if String.get str ((String.length str)-1) = '/'
-      then str else str ^ "/"
-    in include_dirs := !include_dirs @ [str]
-  else ();
   
-let parse_include_file entry =
-  let dir_ok file dir = Sys.file_exists (dir ^ file) in
-  fun file ->
-    let file =
-      try (List.find (dir_ok file) (!include_dirs @ ["./"])) ^ file
-      with [ Not_found -> file ]
-    in
-    let ch = open_in file in
-    let st = XStream.of_channel ch in
-      Gram.parse entry (FanLoc.mk file) st;
-
 let rec execute_macro ~expr ~patt nil cons = fun
   [ Str i -> i
   | Def (x, eo) -> begin  define ~expr ~patt eo x; nil  end

@@ -1,5 +1,5 @@
-
-module Syntax = OCamlInitSyntax;
+module Syntax = Syntax;
+(* module Syntax = OCamlInitSyntax; *)
 let sig_item_parser =
   ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
 let str_item_parser =

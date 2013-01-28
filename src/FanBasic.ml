@@ -63,3 +63,54 @@ let p_ctyp f e =
   pp f "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e) ;
   
 
+(* Add something to the above, make sure it ends with a slash. *)
+let add_include_dir str =
+  if str <> "" then
+    let str =
+      if String.get str ((String.length str)-1) = '/'
+      then str else str ^ "/"
+    in Ref.modify FanConfig.include_dirs (fun x -> cons str x);
+ 
+let parse_include_file entry =
+  let dir_ok file dir = Sys.file_exists (dir ^ file) in
+  fun file ->
+    let file =
+      try (List.find (dir_ok file) ( ["./" :: !FanConfig.include_dirs] )) ^ file
+      with [ Not_found -> file ] in
+    let ch = open_in file in
+    let st = XStream.of_channel ch in
+      Gram.parse entry (FanLoc.mk file) st;
+
+(* let parse_include_file rule file  = *)
+(*   if Sys.file_exists file then *)
+(*     let ch = open_in file in *)
+(*     let st = XStream.of_channel ch in  *)
+(*     Gram.parse rule (FanLoc.mk file) st *)
+(*   else  failwithf "@[file: %s not found@]@." file; *)
+    
+(* (\* to be exported   *\) *)
+(* let parse_include_file_smart file = let open Filename in *)
+(*   if check_suffix file ".ml" then *)
+(*     `Str (GramLib.parse_include_file str_items file) *)
+(*   else if check_suffix file ".mli" then *)
+(*     `Sig (GramLib.parse_include_file sig_items file) *)
+(*   else begin *)
+(*   eprintf "file input should ends with either .ml or .mli"; *)
+(*   invalid_arg ("parse_include_file_smart: " ^ file ) *)
+(* end; *)
+
+(* let parse_module_type str = *)
+(*   try *)
+(*     match  Gram.parse_string module_type  str with *)
+(*     [ {:module_type| $id:i |}  -> i *)
+(*     | _ -> begin *)
+(*         eprintf "the module type %s is not a simple module type" str; *)
+(*         exit 2; *)
+(*     end ] *)
+(*   with *)
+(*     [ _ -> begin *)
+(*       eprintf "%s is not a valid module_type" str; *)
+(*       exit 2; *)
+(*     end]; *)
+
+    

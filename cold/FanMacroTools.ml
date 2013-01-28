@@ -131,22 +131,6 @@ let parse_def ~expr  ~patt  s =
   | `App (_loc,`App (_,`Id (_,`Lid (_,"=")),`Id (_,`Uid (_,n))),e) ->
       define ~expr ~patt (Some ([], e)) n
   | _ -> invalid_arg s
-let include_dirs = ref []
-let add_include_dir str =
-  if str <> ""
-  then
-    let str =
-      if (str.[(String.length str) - 1]) = '/' then str else str ^ "/" in
-    include_dirs := (include_dirs.contents @ [str])
-  else ()
-let parse_include_file entry =
-  let dir_ok file dir = Sys.file_exists (dir ^ file) in
-  fun file  ->
-    let file =
-      try (List.find (dir_ok file) (include_dirs.contents @ ["./"])) ^ file
-      with | Not_found  -> file in
-    let ch = open_in file in
-    let st = XStream.of_channel ch in Gram.parse entry (FanLoc.mk file) st
 let rec execute_macro ~expr  ~patt  nil cons =
   function
   | Str i -> i

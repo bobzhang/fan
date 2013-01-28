@@ -1,5 +1,6 @@
-open Ast
+open FanAst
 open LibUtil
+let meta_ant (_loc : loc) x = x
 module Expr =
   struct
     let meta_int _loc i = `Int (_loc, (string_of_int i))

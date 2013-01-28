@@ -47,3 +47,6 @@ let check_valid str =
 
 
 let conversion_table : Hashtbl.t string string = Hashtbl.create 50;
+
+
+  

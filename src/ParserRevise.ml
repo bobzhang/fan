@@ -459,6 +459,7 @@ let apply () = begin
            {| let module $m = $mb in $(Expr.mksequence ~loc:_loc el) |}
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
            {| let open $id:i in $e |}
+       (* FIXME Ant should be able to be followed *)      
        | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"expr;" n s) |}
        | expr{e}; sequence'{k} -> k e ]
        sequence':

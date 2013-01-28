@@ -27,3 +27,19 @@ let p_expr f e = pp f "@[%a@]@." AstPrint.expression (Ast2pt.expr e)
 let p_patt f e = pp f "@[%a@]@." AstPrint.pattern (Ast2pt.patt e)
 let p_str_item f e = pp f "@[%a@]@." AstPrint.structure (Ast2pt.str_item e)
 let p_ctyp f e = pp f "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e)
+let add_include_dir str =
+  if str <> ""
+  then
+    let str =
+      if (str.[(String.length str) - 1]) = '/' then str else str ^ "/" in
+    Ref.modify FanConfig.include_dirs (fun x  -> cons str x)
+let parse_include_file entry =
+  let dir_ok file dir = Sys.file_exists (dir ^ file) in
+  fun file  ->
+    let file =
+      try
+        (List.find (dir_ok file) ("./" :: (FanConfig.include_dirs.contents)))
+          ^ file
+      with | Not_found  -> file in
+    let ch = open_in file in
+    let st = XStream.of_channel ch in Gram.parse entry (FanLoc.mk file) st

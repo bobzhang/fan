@@ -548,6 +548,7 @@ module String = struct
 end;
   
 module Ref = struct
+  (* treat [r]'s state as [v] in [body] *)
   let protect r v body =
     let old = !r in
     try begin 
@@ -555,11 +556,11 @@ module Ref = struct
       let res = body();
       r := old;
       res
-    end
-  with x ->   begin 
-    r := old;
-    raise x;
-  end;
+    end with [x -> (r := old; raise x)];
+  let safe r body =
+    let old = !r in
+    finally (fun () -> r:=old) body ();
+    
   let protect2 (r1,v1) (r2,v2) body =
     let o1 = !r1 and o2 = !r2 in
     try begin
@@ -572,6 +573,9 @@ module Ref = struct
       r1:=o1; r2:=o2;
       raise e
     end;
+  let save2 r1 r2 body =
+      let o1 = !r1 and o2 = !r2 in
+      finally (fun () -> (r1:=o1; r2:=o2)) body ();
       
   let protects refs vs body =
     let olds = List.map (fun x-> !x ) refs in 
@@ -585,6 +589,15 @@ module Ref = struct
         List.iter2 (fun ref v -> ref:=v) refs olds;
         raise e;
       end;
+
+  (* The state [itself] should be [persistent],
+     otherwise it does not make sense to restore
+   *)      
+  let saves (refs: list (ref 'a)) body =
+    let olds = List.map (fun x -> !x) refs in
+    finally (fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) body ();
+
+
   let post r f =
     let old = !r in 
     (r := f old; old);

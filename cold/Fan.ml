@@ -27,6 +27,8 @@ let _ =
                            ^ FanConfig.bug_main_address));
                code)
 let _ = of_expr ~name:(d, "fans") ~entry:Typehook.fan_quots
+let _ = of_expr ~name:(d, "save") ~entry:Typehook.save_quot
+let _ = of_str_item ~name:(d, "include") ~entry:Typehook.include_quot
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 let _ =
   of_expr_with_filter ~name:(d, "expr") ~entry:expr
@@ -136,6 +138,14 @@ let _ =
          (fun s  ->
             AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
       " Set the default language")
+let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
+let _ =
+  add_quotation (d, "expr") expr_quot
+    ~mexpr:(fun loc  pexpr  ->
+              FanAstN.Expr.meta_expr loc (strip_loc_expr pexpr))
+    ~mpatt:(fun loc  ppatt  ->
+              FanAstN.Patt.meta_expr loc (strip_loc_expr ppatt)) ~expr_filter
+    ~patt_filter
 open ParserListComprehension
 open ParserRevise
 open ParserMacro

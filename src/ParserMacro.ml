@@ -23,7 +23,7 @@ let apply () = begin
         make_ITE_result st1 st2
     | "IFNDEF"; uident_eval_ifndef; "THEN"; smlist_then{st1}; else_macro_def{st2} ->
         make_ITE_result st1 st2
-    | "INCLUDE"; `STR (_, fname) -> Lazy (lazy (parse_include_file str_items fname)) ]
+    | "INCLUDE"; `STR (_, fname) -> Lazy (lazy (FanBasic.parse_include_file str_items fname)) ]
       
     macro_def_sig:
     [ "DEFINE"; uident{i} -> Def i None
@@ -33,7 +33,7 @@ let apply () = begin
     | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
         make_ITE_result sg1 sg2
     | "INCLUDE"; `STR (_, fname) ->
-        Lazy (lazy (parse_include_file sig_items fname)) ]
+        Lazy (lazy (FanBasic.parse_include_file sig_items fname)) ]
 
     uident_eval_ifdef:
     [ uident{i} -> Stack.push (is_defined i) stack ]
@@ -107,7 +107,7 @@ let apply () = begin
      "<string> Undefine for IFDEF instruction.");
   Options.add
     ("-I",
-     (FanArg.String add_include_dir),
+     (FanArg.String FanBasic.add_include_dir),
      "<string> Add a directory to INCLUDE search path.");
 end;
     

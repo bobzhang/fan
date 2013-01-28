@@ -155,7 +155,7 @@ let gen_strip = with {patt:ctyp;expr}
         | _ -> {|let $pat:pat0 = $expr in $res |}]) cols result in
   gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
 Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc"(* ; "meta_option"; "meta_list" *)]))
+    ~filter:(fun s -> not (List.mem s ["loc"; "ant"(* ; "meta_option"; "meta_list" *)]))
     ("Strip",gen_strip);
 
 
@@ -355,22 +355,25 @@ Typehook.register
    +-----------------------------------------------------------------+ *)
 (* remove the loc field *)
 let generate (module_types:FSig.module_types) : str_item = with str_item
-  let aux (_,ty) = with ctyp
+  let aux (name,ty) =
+    if not (name ="ant") then 
+     with ctyp
   (* use [map_ctyp] instead  *)
      let obj = object
        inherit FanAst.map as super;
        method! ctyp = 
          (fun 
           [ {:ctyp| $vrn of loc |} -> {:ctyp|$vrn |}
-          | {| ant |} -> {||}
+          (* | {| ant |} -> {||} *)
           | {| $vrn of (loc * $x )|} ->
               match x with
               [ {| $x*$y|} ->   {| $vrn of ( $x * $y) |}
               | _ -> {| $vrn of $x |}]
           | x -> super#ctyp x ]);
      end in
-     obj#ctyp ty in
-  (fun x -> let r = FSig.str_item_of_module_types ~f:aux x  in r
+     obj#ctyp ty
+  else ty  in
+  (fun x -> let r = FSigUtil.str_item_from_module_types ~f:aux x  in r
   (* {:str_item| module N = struct $r end |} *)) module_types;
 
-Typehook.register ~filter:(fun s -> not (List.mem s ["loc"; "ant"])) ("LocType",generate);
+Typehook.register ~filter:(fun s -> true (* not (List.mem s ["loc"; "ant"]) *)) ("LocType",generate);
