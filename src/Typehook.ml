@@ -197,7 +197,6 @@ let traversal () : traversal  = object (self:'self_type)
                 match filter with
                 [Some x -> apply_filter x module_types
                 |None -> module_types] in
-              (* if activate then *)
                 let code = transform module_types in 
                 match position with
                 [Some x ->
@@ -206,8 +205,7 @@ let traversal () : traversal  = object (self:'self_type)
                     AstFilters.use_implem_filter name ;
                     acc
                   end
-                |None -> {| $acc; $code |} ]
-            (* else  acc *)) (* filters *) !current_filters 
+                |None -> {| $acc; $code |} ])  !current_filters 
           (if !keep then res else {| |} );
       self#out_module ;
       {:module_expr| struct $result end |}  

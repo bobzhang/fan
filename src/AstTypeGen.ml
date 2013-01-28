@@ -362,6 +362,7 @@ let generate (module_types:FSig.module_types) : str_item = with str_item
        method! ctyp = 
          (fun 
           [ {:ctyp| $vrn of loc |} -> {:ctyp|$vrn |}
+          | {| ant |} -> {||}
           | {| $vrn of (loc * $x )|} ->
               match x with
               [ {| $x*$y|} ->   {| $vrn of ( $x * $y) |}
@@ -369,7 +370,7 @@ let generate (module_types:FSig.module_types) : str_item = with str_item
           | x -> super#ctyp x ]);
      end in
      obj#ctyp ty in
-  (fun x -> let r = FSig.str_item_of_module_types ~f:aux x  in
-  {:str_item| module N = struct $r end |}) module_types;
+  (fun x -> let r = FSig.str_item_of_module_types ~f:aux x  in r
+  (* {:str_item| module N = struct $r end |} *)) module_types;
 
-Typehook.register ~filter:(fun s -> s<> "loc") ("LocType",generate);
+Typehook.register ~filter:(fun s -> not (List.mem s ["loc"; "ant"])) ("LocType",generate);

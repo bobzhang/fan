@@ -21,7 +21,7 @@ let strip_loc_list f lst =
  derive
    (Map2
       Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq
-      GenLoc  Strip LocType   ); |};
+      GenLoc  Strip    ); |};
   
 {:ocaml|INCLUDE "src/Ast.ml"; |};
 
@@ -415,7 +415,7 @@ let rec list_of_or x acc =
 let rec list_of_or' x acc =
   match x with
   [`Or(_,x,y) ->
-    list_of_or x (list_of_or' y acc)
+    list_of_or' x (list_of_or' y acc)
   | `Nil _ -> acc 
   | _ -> [x::acc]]  ;
     

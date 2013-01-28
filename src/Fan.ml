@@ -18,7 +18,6 @@ open AstQuotation;
 
 let d = `Absolute ["Fan";"Lang"];
 
-(* import Fan.Lang.Meta; *)
   
 of_str_item_with_filter
   ~name:(d,"ocaml") ~entry:str_items
@@ -41,13 +40,9 @@ of_str_item_with_filter
              Our code generator may still work when \
              Printer is broken\
              Plz send bug report to " ^ FanConfig.bug_main_address;
-          end]
-      else ();
+          end];
       code
     end);
-
-(* {:ocaml| type u = int; |}; *)
-(* {:fan_quot| show_code on |}; *)
 
 of_expr ~name:(d,"fans") ~entry:Typehook.fan_quots ;
 

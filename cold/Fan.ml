@@ -24,8 +24,7 @@ let _ =
                   | _ ->
                       prerr_endline &
                         ("There is a printer bugOur code generator may still work when Printer is brokenPlz send bug report to "
-                           ^ FanConfig.bug_main_address))
-               else ();
+                           ^ FanConfig.bug_main_address));
                code)
 let _ = of_expr ~name:(d, "fans") ~entry:Typehook.fan_quots
 let d = `Absolute ["Fan"; "Lang"; "Macro"]

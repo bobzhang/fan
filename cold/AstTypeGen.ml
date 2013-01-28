@@ -315,6 +315,7 @@ let generate (module_types : FSig.module_types) =
          method! ctyp =
            function
            | `Of (_loc,vrn,`Id (_,`Lid (_,"loc"))) -> vrn
+           | `Id (_loc,`Lid (_,"ant")) -> `Nil _loc
            | `Of (_loc,vrn,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),x))) ->
                (match x with
                 | `Sta (_loc,x,y) ->
@@ -323,9 +324,8 @@ let generate (module_types : FSig.module_types) =
            | x -> super#ctyp x
        end in
      obj#ctyp ty in
-   (fun x  ->
-      let r = FSig.str_item_of_module_types ~f:aux x in
-      `Module (_loc, (`Uid (_loc, "N")), (`Struct (_loc, r)))) module_types : 
-  str_item )
+   (fun x  -> let r = FSig.str_item_of_module_types ~f:aux x in r)
+     module_types : str_item )
 let _ =
-  Typehook.register ~filter:(fun s  -> s <> "loc") ("LocType", generate)
+  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
+    ("LocType", generate)
