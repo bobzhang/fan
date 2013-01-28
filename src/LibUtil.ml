@@ -98,8 +98,43 @@ let callcc  (type u) (f: cont u-> u)  =
   with [M.Return u -> u];
   
 
-type id 'a = 'a -> 'a;
 
+type  return 'a = { return : ! 'b. 'a -> 'b };
+
+let with_return f =
+  let module M = struct
+    (* Raised to indicate ~return was called.  Local so that the exception is tied to a
+       particular call of [with_return]. *)
+    exception Return;
+  end in
+  let r = ref None in                   (* stores the return value *)
+  let return = {                        (* closure passed to f *)
+    return = (fun x ->
+      (r := Some x; raise M.Return));} in
+  try
+    let rval = f return in
+    begin match !r with
+    [ None -> rval
+    | Some _ -> failwith "with_return exited normally despite return being called"]
+    end
+  with M.Return ->                      (* allows other exceptions through *)
+    match !r with
+    [ None -> assert false
+    | Some x -> x];
+
+          
+type id 'a = 'a -> 'a;
+module Queue = struct
+  include Queue;
+  let find t ~f =
+    with_return (fun r -> (iter(fun x -> if f x then r.return (Some x)) t; None));
+  let find_map t ~f =
+    with_return (fun r ->
+      (iter (fun x -> match f x with [None -> () | Some _ as res -> r.return res]) t;
+      None));
+
+    
+end;
 module List = struct
   include List;
   
@@ -550,6 +585,19 @@ module Ref = struct
         List.iter2 (fun ref v -> ref:=v) refs olds;
         raise e;
       end;
+  let post r f =
+    let old = !r in 
+    (r := f old; old);
+
+   let pre r f =
+     (r := f !r; !r);
+
+  let swap a b =
+    let buf = !a in
+    (a := !b; b := buf);
+    
+  let modify x f =
+    x := f !x;
 end;
 module Option = struct
 

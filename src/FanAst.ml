@@ -21,9 +21,7 @@ let strip_loc_list f lst =
  derive
    (Map2
       Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq
-      GenLoc  Strip LocType
-      
-   ); |};
+      GenLoc  Strip LocType   ); |};
   
 {:ocaml|INCLUDE "src/Ast.ml"; |};
 
@@ -457,6 +455,7 @@ let typing a b =
 let seq a = let _loc = loc_of a in `Seq (_loc,a) ;
 
 
+let seq_sem ls = seq (sem_of_list ls);
   
 let rec list_of_app  x acc =
   match x with

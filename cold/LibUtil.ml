@@ -43,7 +43,37 @@ type 'a cont = 'a -> exn
 let callcc (type u) (f : u cont -> u) =
   let module M = struct exception Return of u end in
     try f (fun x  -> raise (M.Return x)) with | M.Return u -> u
+type 'a return =  {
+  return: 'b . 'a -> 'b} 
+let with_return f =
+  let module M = struct exception Return end in
+    let r = ref None in
+    let return = { return = (fun x  -> r := (Some x); raise M.Return) } in
+    try
+      let rval = f return in
+      match r.contents with
+      | None  -> rval
+      | Some _ ->
+          failwith "with_return exited normally despite return being called"
+    with
+    | M.Return  ->
+        (match r.contents with | None  -> assert false | Some x -> x)
 type 'a id = 'a -> 'a 
+module Queue =
+  struct
+    include Queue
+    let find t ~f  =
+      with_return
+        (fun r  -> iter (fun x  -> if f x then r.return (Some x)) t; None)
+    let find_map t ~f  =
+      with_return
+        (fun r  ->
+           iter
+             (fun x  ->
+                match f x with | None  -> () | Some _ as res -> r.return res)
+             t;
+           None)
+  end
 module List =
   struct
     include List
@@ -349,6 +379,10 @@ module Ref =
         (let res = body () in
          List.iter2 (fun ref  v  -> ref := v) refs olds; res)
       with | e -> (List.iter2 (fun ref  v  -> ref := v) refs olds; raise e)
+    let post r f = let old = r.contents in r := (f old); old
+    let pre r f = r := (f r.contents); r.contents
+    let swap a b = let buf = a.contents in a := b.contents; b := buf
+    let modify x f = x := (f x.contents)
   end
 module Option =
   struct

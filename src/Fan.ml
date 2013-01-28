@@ -1,6 +1,6 @@
 
 
-open Ast;
+open FanAst;
 open Filters;  
 include PreCast;
 
@@ -23,7 +23,7 @@ let d = `Absolute ["Fan";"Lang"];
 of_str_item_with_filter
   ~name:(d,"ocaml") ~entry:str_items
   ~filter:(fun s ->
-    let _loc = FanAst.loc_of s in 
+    let _loc = loc_of s in 
     let v =  {:module_expr| struct $s end |} in
     let module_expr =
       (Typehook.traversal ())#module_expr v in

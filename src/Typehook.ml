@@ -33,6 +33,10 @@ end;
 type plugin_name = string ;
   
 let filters : Hashtbl.t plugin_name plugin = Hashtbl.create 30;
+
+(* when you do the iteration, you should do it in reverse order *)  
+let current_filters:  ref (list (plugin_name * plugin)) = ref [];
+
   
 let show_code =  ref false;
 let print_collect_module_types = ref false;
@@ -60,16 +64,25 @@ let show_modules () =
 
 
 let plugin_add plugin =
-  let try v = Hashtbl.find filters plugin in
-  v.activate <- true
+  let try v = Hashtbl.find filters plugin in begin
+    v.activate <- true;
+    if not (List.exists (fun (n,_) -> n=plugin) !current_filters) then
+      Ref.modify current_filters (fun x -> cons (plugin,v) x) 
+    else
+      eprintf "<Warning> plugin %s has already been loaded" plugin;
+  end
   with
   [Not_found -> begin
     show_modules ();
     failwithf "plugins %s not found " plugin ;
   end];
+
+    
 let plugin_remove plugin =
-  let try v = Hashtbl.find filters plugin in
-  v.activate <- false
+  let try v = Hashtbl.find filters plugin in begin 
+    v.activate <- false;
+    Ref.modify current_filters (fun x -> List.remove plugin x)    
+  end
   with
     [Not_found -> begin 
       show_modules ();
@@ -146,6 +159,9 @@ end;
   let module_expr =
   (Typehook.traversal ())#module_expr v 
   ]}
+
+  This function will apply all the plugins to generate
+  the code
  *)  
 let traversal () : traversal  = object (self:'self_type)
   inherit FanAst.map as super;
@@ -174,14 +190,14 @@ let traversal () : traversal  = object (self:'self_type)
       if !print_collect_module_types then
         eprintf "@[%a@]@." FSig.pp_print_module_types module_types ;
       let result =
-        Hashtbl.fold
-          (fun _ {activate;position;transform;filter} acc
+        List.fold_right
+          (fun (_, {activate;position;transform;filter}) acc
             ->
               let module_types =
                 match filter with
                 [Some x -> apply_filter x module_types
                 |None -> module_types] in
-              if activate then
+              (* if activate then *)
                 let code = transform module_types in 
                 match position with
                 [Some x ->
@@ -190,9 +206,8 @@ let traversal () : traversal  = object (self:'self_type)
                     AstFilters.use_implem_filter name ;
                     acc
                   end
-                |None -> 
-                  {| $acc; $code |} ]
-            else  acc) filters
+                |None -> {| $acc; $code |} ]
+            (* else  acc *)) (* filters *) !current_filters 
           (if !keep then res else {| |} );
       self#out_module ;
       {:module_expr| struct $result end |}  
@@ -237,8 +252,8 @@ end;
 
 let g = Gram.create_gram ();
 
-{:create|(g:Gram.t)
-  fan_quot fan_quots
+
+{:create|(g:Gram.t)  fan_quot fan_quots
 |};
 
 with expr

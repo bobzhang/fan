@@ -25,6 +25,7 @@ let apply_filter f (m : module_types) =
    List.filter_map f m : module_types )
 type plugin_name = string 
 let filters: (plugin_name,plugin) Hashtbl.t = Hashtbl.create 30
+let current_filters: (plugin_name* plugin) list ref = ref []
 let show_code = ref false
 let print_collect_module_types = ref false
 let register ?filter  ?position  (name,f) =
@@ -37,13 +38,25 @@ let show_modules () =
   Hashtbl.iter (fun key  _  -> Format.printf "%s@ " key) filters;
   print_newline ()
 let plugin_add plugin =
-  (try let v = Hashtbl.find filters plugin in fun ()  -> v.activate <- true
+  (try
+     let v = Hashtbl.find filters plugin in
+     fun ()  ->
+       v.activate <- true;
+       if
+         not
+           (List.exists (fun (n,_)  -> n = plugin) current_filters.contents)
+       then Ref.modify current_filters (fun x  -> cons (plugin, v) x)
+       else eprintf "<Warning> plugin %s has already been loaded" plugin
    with
    | Not_found  ->
        (fun ()  -> show_modules (); failwithf "plugins %s not found " plugin))
     ()
 let plugin_remove plugin =
-  (try let v = Hashtbl.find filters plugin in fun ()  -> v.activate <- false
+  (try
+     let v = Hashtbl.find filters plugin in
+     fun ()  ->
+       v.activate <- false;
+       Ref.modify current_filters (fun x  -> List.remove plugin x)
    with
    | Not_found  ->
        (fun ()  ->
@@ -122,23 +135,21 @@ let traversal () =
              if print_collect_module_types.contents
              then eprintf "@[%a@]@." FSig.pp_print_module_types module_types;
              (let result =
-                Hashtbl.fold
-                  (fun _  { activate; position; transform; filter }  acc  ->
+                List.fold_right
+                  (fun (_,{ activate; position; transform; filter })  acc  ->
                      let module_types =
                        match filter with
                        | Some x -> apply_filter x module_types
                        | None  -> module_types in
-                     if activate
-                     then
-                       let code = transform module_types in
-                       match position with
-                       | Some x ->
-                           let (name,f) = Filters.make_filter (x, code) in
-                           (AstFilters.register_str_item_filter (name, f);
-                            AstFilters.use_implem_filter name;
-                            acc)
-                       | None  -> `Sem (_loc, acc, code)
-                     else acc) filters
+                     let code = transform module_types in
+                     match position with
+                     | Some x ->
+                         let (name,f) = Filters.make_filter (x, code) in
+                         (AstFilters.register_str_item_filter (name, f);
+                          AstFilters.use_implem_filter name;
+                          acc)
+                     | None  -> `Sem (_loc, acc, code))
+                  current_filters.contents
                   (if keep.contents then res else `Nil _loc) in
               self#out_module; `Struct (_loc, result))))
        | x -> super#module_expr x

@@ -1,4 +1,4 @@
-open Ast
+open FanAst
 open Filters
 include PreCast
 open AstQuotation
@@ -10,7 +10,7 @@ let d = `Absolute ["Fan"; "Lang"]
 let _ =
   of_str_item_with_filter ~name:(d, "ocaml") ~entry:str_items
     ~filter:(fun s  ->
-               let _loc = FanAst.loc_of s in
+               let _loc = loc_of s in
                let v = `Struct (_loc, s) in
                let module_expr = (Typehook.traversal ())#module_expr v in
                let code =
