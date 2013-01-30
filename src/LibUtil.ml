@@ -151,7 +151,13 @@ module Queue = struct
 end;
 module List = struct
   include List;
-  
+  let rev_len l =
+    let rec aux l ((n,acc) as r) =
+      match l with
+      [[] -> r 
+      |[x::xs] -> aux xs (n+1,[x::acc])] in
+    aux l (0,[]);
+    
   let hd = function
     [ [] -> failwith "hd"
     | [a::_] -> a];
@@ -217,7 +223,8 @@ module List = struct
    *)
   let fold_lefti f acc ls =
     fold_left (fun (i,acc) x -> (i+1,f i acc x) ) (0,acc) ls;
-
+  (* let fold_righti f ls acc = *)
+  (*   fold_right (fun x (acc ) *)
   let rec remove x = fun
     [ [(y, _) :: l] when y = x -> l
     | [d :: l] -> [d :: remove x l]
@@ -273,8 +280,17 @@ module List = struct
         |None -> filter_map f xs]
     ];  
 end;
-  
-module MapMake(S:Map.OrderedType) = struct
+
+module type MAP = sig
+  include Map.S;
+  val of_list: list(key * 'a) -> t 'a;
+  val of_hashtbl:Hashtbl.t key 'a -> t 'a;
+  val elements: t 'a -> list (key * 'a);
+  val add_list: list (key * 'a) -> t 'a -> t 'a;
+  val find_default: ~default :'a -> key -> t 'a -> 'a ;
+    (* FIXME  [~default:] [~default :] *)
+end;
+module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
   include Map.Make S;
   let of_list lst =
     List.fold_left (fun acc (k,v)  -> add k v acc) empty lst;
@@ -290,8 +306,14 @@ end ;
 
 
 
-
-module SetMake(S:Set.OrderedType) = struct
+module type SET = sig
+  include Set.S;
+  val of_list: list elt -> t ;
+  val add_list: t -> list elt -> t ;
+  val of_array: array elt -> t;
+  val add_array: t -> array elt -> t ;
+end;
+module SetMake(S:Set.OrderedType) : SET with type elt = S.t = struct
   include Set.Make S;
   let of_list = List.fold_left (flip add) empty;
   let add_list c = List.fold_left (flip add) c;
