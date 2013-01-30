@@ -132,7 +132,7 @@ let rec flatten_tree = fun
   [ DeadEnd -> []
   | LocAct (_, _) -> [[]]
   | Node {node = n; brother = b; son = s} ->
-      [ [n :: l] | l <- flatten_tree s ] @ flatten_tree b ];
+      List.map (fun l -> [n::l]) (flatten_tree s) @ flatten_tree b ];
 
 type brothers = [ Bro of symbol and list brothers | End];
 
