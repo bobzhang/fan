@@ -17,13 +17,13 @@ let _ =
                 [([`Snterm (Gram.obj (regexp : 'regexp Gram.t ));
                   `Skeyword "->";
                   `Snterm (Gram.obj (sequence : 'sequence Gram.t ))],
-                   (3,
+                   ("Gram.mk_action\n  (fun (a : 'sequence)  _  (r : 'regexp)  (_loc : FanLoc.t)  ->\n     ((r, (Expr.mksequence a)) : 'e__1 ))\n",
                      (Gram.mk_action
                         (fun (a : 'sequence)  _  (r : 'regexp) 
                            (_loc : FanLoc.t)  ->
                            ((r, (Expr.mksequence a)) : 'e__1 )))))]),
               (`Skeyword "|"))],
-           (2,
+           ("Gram.mk_action\n  (fun (l : 'e__1 list)  _  (_loc : FanLoc.t)  ->\n     (FanLexTools.gen_definition _loc l : 'lex ))\n",
              (Gram.mk_action
                 (fun (l : 'e__1 list)  _  (_loc : FanLoc.t)  ->
                    (FanLexTools.gen_definition _loc l : 'lex )))))]));
@@ -38,7 +38,7 @@ let _ =
                          (`Normal, "`Lid _"));
                     `Skeyword ":";
                     `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
-                     (3,
+                     ("Gram.mk_action\n  (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> ((x, r) : 'e__2 ) | _ -> assert false)\n",
                        (Gram.mk_action
                           (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t]) 
                              (_loc : FanLoc.t)  ->
@@ -57,7 +57,7 @@ let _ =
                         else ();
                         Hashtbl.add FanLexTools.named_regexps x r) () : 
                   (_,'e__2,'e__3) Gram.foldsep )))],
-           (1,
+           ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Nil _loc : 'declare_regexp ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  -> (`Nil _loc : 'declare_regexp )))))]));
   Gram.extend_single (regexps : 'regexps Gram.t )
@@ -68,7 +68,7 @@ let _ =
             ((`Snterm (Gram.obj (regexp : 'regexp Gram.t ))),
               (`Skeyword ";"));
           `Skeyword "}"],
-           (3,
+           ("Gram.mk_action\n  (fun _  (xs : 'regexp list)  _  (_loc : FanLoc.t)  ->\n     (Array.of_list xs : 'regexps ))\n",
              (Gram.mk_action
                 (fun _  (xs : 'regexp list)  _  (_loc : FanLoc.t)  ->
                    (Array.of_list xs : 'regexps )))))]));
@@ -76,51 +76,51 @@ let _ =
     (None,
       [(None, None,
          [([`Sself; `Skeyword "|"; `Sself],
-            (3,
+            ("Gram.mk_action\n  (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->\n     (FanLexTools.alt r1 r2 : 'regexp ))\n",
               (Gram.mk_action
                  (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : FanLoc.t) 
                     -> (FanLexTools.alt r1 r2 : 'regexp )))))]);
       (None, None,
         [([`Sself; `Sself],
-           (2,
+           ("Gram.mk_action\n  (fun (r2 : 'regexp)  (r1 : 'regexp)  (_loc : FanLoc.t)  ->\n     (FanLexTools.seq r1 r2 : 'regexp ))\n",
              (Gram.mk_action
                 (fun (r2 : 'regexp)  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
                    (FanLexTools.seq r1 r2 : 'regexp )))))]);
       (None, None,
         [([`Sself; `Skeyword "*"],
-           (2,
+           ("Gram.mk_action\n  (fun _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->\n     (FanLexTools.rep r1 : 'regexp ))\n",
              (Gram.mk_action
                 (fun _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
                    (FanLexTools.rep r1 : 'regexp )))));
         ([`Sself; `Skeyword "+"],
-          (2,
+          ("Gram.mk_action\n  (fun _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->\n     (FanLexTools.plus r1 : 'regexp ))\n",
             (Gram.mk_action
                (fun _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
                   (FanLexTools.plus r1 : 'regexp )))));
         ([`Sself; `Skeyword "?"],
-          (2,
+          ("Gram.mk_action\n  (fun _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->\n     (FanLexTools.alt FanLexTools.eps r1 : 'regexp ))\n",
             (Gram.mk_action
                (fun _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->
                   (FanLexTools.alt FanLexTools.eps r1 : 'regexp )))));
         ([`Skeyword "("; `Sself; `Skeyword ")"],
-          (3,
+          ("Gram.mk_action\n  (fun _  (r1 : 'regexp)  _  (_loc : FanLoc.t)  -> (r1 : 'regexp ))\n",
             (Gram.mk_action
                (fun _  (r1 : 'regexp)  _  (_loc : FanLoc.t)  ->
                   (r1 : 'regexp )))));
         ([`Skeyword "_"],
-          (1,
+          ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (FanLexTools.chars LexSet.any : 'regexp ))\n",
             (Gram.mk_action
                (fun _  (_loc : FanLoc.t)  ->
                   (FanLexTools.chars LexSet.any : 'regexp )))));
         ([`Snterm (Gram.obj (chr : 'chr Gram.t ))],
-          (1,
+          ("Gram.mk_action\n  (fun (c : 'chr)  (_loc : FanLoc.t)  ->\n     (FanLexTools.chars (LexSet.singleton c) : 'regexp ))\n",
             (Gram.mk_action
                (fun (c : 'chr)  (_loc : FanLoc.t)  ->
                   (FanLexTools.chars (LexSet.singleton c) : 'regexp )))));
         ([`Stoken
             (((function | `STR (_,_) -> true | _ -> false)),
               (`Normal, "`STR (_,_)"))],
-          (1,
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (s,_) -> (FanLexTools.of_string s : 'regexp )\n     | _ -> assert false)\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
@@ -129,21 +129,21 @@ let _ =
         ([`Skeyword "[";
          `Snterm (Gram.obj (ch_class : 'ch_class Gram.t ));
          `Skeyword "]"],
-          (3,
+          ("Gram.mk_action\n  (fun _  (cc : 'ch_class)  _  (_loc : FanLoc.t)  ->\n     (FanLexTools.chars cc : 'regexp ))\n",
             (Gram.mk_action
                (fun _  (cc : 'ch_class)  _  (_loc : FanLoc.t)  ->
                   (FanLexTools.chars cc : 'regexp )))));
         ([`Skeyword "[^";
          `Snterm (Gram.obj (ch_class : 'ch_class Gram.t ));
          `Skeyword "]"],
-          (3,
+          ("Gram.mk_action\n  (fun _  (cc : 'ch_class)  _  (_loc : FanLoc.t)  ->\n     (FanLexTools.chars (LexSet.difference LexSet.any cc) : 'regexp ))\n",
             (Gram.mk_action
                (fun _  (cc : 'ch_class)  _  (_loc : FanLoc.t)  ->
                   (FanLexTools.chars (LexSet.difference LexSet.any cc) : 
                   'regexp )))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)), (`Normal, "`Lid _"))],
-          (1,
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find FanLexTools.named_regexps x\n           with\n           | Not_found  ->\n               failwithf \"referenced to unbound named  regexp  `%s'\" x) : \n         'regexp )\n     | _ -> assert false)\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
@@ -161,7 +161,7 @@ let _ =
         [([`Stoken
              (((function | `CHAR (_,_) -> true | _ -> false)),
                (`Normal, "`CHAR (_,_)"))],
-           (1,
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `CHAR (c,_) -> (Char.code c : 'chr )\n     | _ -> assert false)\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
@@ -170,7 +170,7 @@ let _ =
         ([`Stoken
             (((function | `INT (_,_) -> true | _ -> false)),
               (`Normal, "`INT (_,_)"))],
-          (1,
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `INT (i,s) ->\n         (if (i >= 0) && (i <= LexSet.max_code)\n          then i\n          else failwithf \"Invalid Unicode code point:%s\" s : 'chr )\n     | _ -> assert false)\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
@@ -186,24 +186,24 @@ let _ =
         [([`Snterm (Gram.obj (chr : 'chr Gram.t ));
           `Skeyword "-";
           `Snterm (Gram.obj (chr : 'chr Gram.t ))],
-           (3,
+           ("Gram.mk_action\n  (fun (c2 : 'chr)  _  (c1 : 'chr)  (_loc : FanLoc.t)  ->\n     (LexSet.interval c1 c2 : 'ch_class ))\n",
              (Gram.mk_action
                 (fun (c2 : 'chr)  _  (c1 : 'chr)  (_loc : FanLoc.t)  ->
                    (LexSet.interval c1 c2 : 'ch_class )))));
         ([`Snterm (Gram.obj (chr : 'chr Gram.t ))],
-          (1,
+          ("Gram.mk_action\n  (fun (c : 'chr)  (_loc : FanLoc.t)  -> (LexSet.singleton c : 'ch_class ))\n",
             (Gram.mk_action
                (fun (c : 'chr)  (_loc : FanLoc.t)  ->
                   (LexSet.singleton c : 'ch_class )))));
         ([`Sself; `Sself],
-          (2,
+          ("Gram.mk_action\n  (fun (cc2 : 'ch_class)  (cc1 : 'ch_class)  (_loc : FanLoc.t)  ->\n     (LexSet.union cc1 cc2 : 'ch_class ))\n",
             (Gram.mk_action
                (fun (cc2 : 'ch_class)  (cc1 : 'ch_class)  (_loc : FanLoc.t) 
                   -> (LexSet.union cc1 cc2 : 'ch_class )))));
         ([`Stoken
             (((function | `STR (_,_) -> true | _ -> false)),
               (`Normal, "`STR (_,_)"))],
-          (1,
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (s,_) ->\n         (let c = ref LexSet.empty in\n          (for i = 0 to (String.length s) - 1 do\n             c :=\n               (LexSet.union c.contents\n                  (LexSet.singleton (Char.code (s.[i]))))\n           done;\n           c.contents) : 'ch_class )\n     | _ -> assert false)\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with

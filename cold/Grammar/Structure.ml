@@ -54,8 +54,8 @@ and node =  {
   node: symbol;
   son: tree;
   brother: tree} 
-and production = (symbol list* anno_action) 
-and anno_action = (int* Action.t) 
+and production = (symbol list* (string* Action.t)) 
+and anno_action = (int* symbol list* string* Action.t) 
 type olevel = (label* assoc option* production list) 
 type extend_statment = (position option* olevel list) 
 type single_extend_statement = (position option* olevel) 

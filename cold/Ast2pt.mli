@@ -174,7 +174,8 @@ val phrase : str_item -> Parsetree.toplevel_phrase
 val pp : formatter -> ('a, formatter, unit) format -> 'a
 
 val print_expr : formatter -> expr -> unit
-
+val to_string_expr: expr -> string
+    
 val print_patt : formatter -> patt -> unit
 
 val print_str_item : formatter -> str_item -> unit

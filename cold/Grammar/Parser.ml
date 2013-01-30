@@ -16,7 +16,7 @@ let level_number entry lab =
     | lev::levs ->
         if Tools.is_level_labelled lab lev
         then levn
-        else lookup (succ levn) levs in
+        else lookup (1 + levn) levs in
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found
@@ -72,9 +72,13 @@ let rec parser_of_tree entry (lev,assoc) (q : Action.t Queue.t) x =
                   ())) in
   let parse = from_tree x in
   fun strm  ->
-    let (_arity,parse) = parse strm in
-    let ans = Queue.fold (fun q  arg  -> Action.getf q arg) parse q in
-    Queue.clear q; ans
+    let (_arity,symbols,_,parse) = parse strm in
+    if _arity <> (Queue.length q)
+    then
+      Format.eprintf "@[%d:%d %a@]@." _arity (Queue.length q) Print.dump#rule
+        symbols;
+    (let ans = Queue.fold (fun q  arg  -> Action.getf q arg) parse q in
+     Queue.clear q; ans)
 and parser_of_terminals (terminals : terminal list) strm =
   let n = List.length terminals in
   let acc = ref [] in

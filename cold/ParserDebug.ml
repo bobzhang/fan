@@ -58,7 +58,7 @@ let apply () =
               (`Normal, "`STR (_,_)"));
           `Slist0 (`Snterml ((Gram.obj (expr : 'expr Gram.t )), "."));
           `Snterm (Gram.obj (end_or_in : 'end_or_in Gram.t ))],
-           (5,
+           ("Gram.mk_action\n  (fun (x : 'end_or_in)  (args : 'expr list)  (__fan_2 : [> FanToken.t]) \n     (__fan_1 : [> FanToken.t])  (m : 'start_debug)  (_loc : FanLoc.t)  ->\n     match (__fan_2, __fan_1) with\n     | (`STR (_,fmt),`Lid section) ->\n         ((match (x, (debug_mode section)) with\n           | (None ,false ) -> `Id (_loc, (`Uid (_loc, \"()\")))\n           | (Some e,false ) -> e\n           | (None ,_) -> mk_debug _loc m fmt section args\n           | (Some e,_) ->\n               `LetIn\n                 (_loc, (`ReNil _loc),\n                   (`Bind\n                      (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))),\n                        (mk_debug _loc m fmt section args))), e)) : 'expr )\n     | _ -> assert false)\n",
              (Gram.mk_action
                 (fun (x : 'end_or_in)  (args : 'expr list) 
                    (__fan_2 : [> FanToken.t])  (__fan_1 : [> FanToken.t]) 
@@ -81,11 +81,11 @@ let apply () =
     (None,
       (None, None,
         [([`Skeyword "end"],
-           (1,
+           ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (None : 'end_or_in ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  -> (None : 'end_or_in )))));
         ([`Skeyword "in"; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-          (2,
+          ("Gram.mk_action\n  (fun (e : 'expr)  _  (_loc : FanLoc.t)  -> (Some e : 'end_or_in ))\n",
             (Gram.mk_action
                (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->
                   (Some e : 'end_or_in )))))]));
@@ -95,7 +95,7 @@ let apply () =
         [([`Stoken
              (((function | `Lid "debug" -> true | _ -> false)),
                (`Normal, "`Lid \"debug\""))],
-           (1,
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid \"debug\" -> (None : 'start_debug )\n     | _ -> assert false)\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
@@ -104,7 +104,7 @@ let apply () =
         ([`Stoken
             (((function | `Lid "camlp4_debug" -> true | _ -> false)),
               (`Normal, "`Lid \"camlp4_debug\""))],
-          (1,
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid \"camlp4_debug\" -> (Some \"Camlp4\" : 'start_debug )\n     | _ -> assert false)\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with

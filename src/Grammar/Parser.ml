@@ -107,9 +107,11 @@ let rec parser_of_tree entry (lev,assoc) (q: Queue.t Action.t) x =
           with [XStream.Failure -> from_tree brother strm] ] ] in
   let parse = from_tree x in
   fun strm -> 
-    let (_arity,parse) =  parse strm in begin
-      (* if _arity <> Queue.length q then  *)
-      (*   Format.eprintf "@[%d:%d@]@." _arity (Queue.length q); *)
+    let (_arity,symbols,_,parse) =  parse strm in begin
+      if _arity <> Queue.length q then begin 
+        Format.eprintf "@[%d:%d %a@]@." _arity (Queue.length q)
+          Print.dump#rule symbols
+      end;
       (* assert (_arity = Queue.length q) ; *)
       let ans = Queue.fold (fun q arg -> Action.getf q arg) parse q ;
       Queue.clear q;

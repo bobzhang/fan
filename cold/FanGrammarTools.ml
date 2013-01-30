@@ -174,21 +174,20 @@ let rec make_expr entry (tvar : string) x =
                                 (`Str (_loc, (String.escaped descr)))))))))))) in
   aux tvar x
 and make_expr_rules _loc n rl tvar =
-  list_of_list _loc
-    (List.map
-       (fun (sl,action)  ->
-          let number = List.length sl in
-          let sl =
-            list_of_list _loc (List.map (fun t  -> make_expr n tvar t) sl) in
-          `Tup
-            (_loc,
-              (`Com
-                 (_loc, sl,
-                   (`Tup
-                      (_loc,
-                        (`Com
-                           (_loc, (`Int (_loc, (string_of_int number))),
-                             action)))))))) rl)
+  (list_of_list _loc
+     (List.map
+        (fun (sl,action)  ->
+           let action_string = Ast2pt.to_string_expr action in
+           let sl =
+             list_of_list _loc (List.map (fun t  -> make_expr n tvar t) sl) in
+           `Tup
+             (_loc,
+               (`Com
+                  (_loc, sl,
+                    (`Tup
+                       (_loc,
+                         (`Com (_loc, (`Str (_loc, action_string)), action))))))))
+        rl) : expr )
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : expr option)  (rtvar : string) (tvar : string) =
   let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in

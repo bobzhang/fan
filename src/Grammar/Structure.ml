@@ -86,8 +86,8 @@ and node = {
     node    : symbol ;
     son     : tree   ;
     brother : tree   }
-and production= (list symbol * (* Action.t *) anno_action)
-and anno_action = (int * Action.t)
+and production= (list symbol *  (* Action.t *) (string * Action.t))
+and anno_action = (int  * list symbol * string  * Action.t)
       ;
   
   |};

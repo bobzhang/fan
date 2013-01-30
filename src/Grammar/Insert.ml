@@ -159,7 +159,7 @@ and using_node gram  node = match node with
    `-S---"x"---"y"---"z"- : 
    ]}
  *)
-let add_production  (gsymbols, action) tree =
+let add_production  ((gsymbols, (annot,action)):production) tree =
   let rec try_insert s sl tree =
     match tree with
     [ Node ( {node ; son ; brother} as x) ->
@@ -187,9 +187,9 @@ let add_production  (gsymbols, action) tree =
             if !(FanConfig.gram_warning_verbose) then
                 eprintf "<W> Grammar extension: in @[%a@] some rule has been masked@."
                 Print.dump#rule symbols;
-            LocAct action [old_action :: action_list]
+            LocAct (List.length gsymbols, gsymbols, annot,action) [old_action :: action_list]
         end
-        | DeadEnd -> LocAct action [] ] ] in 
+        | DeadEnd -> LocAct (List.length gsymbols, gsymbols, annot,action) [] ] ] in 
   insert gsymbols tree ;
   
 let add_production_in_level  e1 (symbols, action) slev =

@@ -1087,7 +1087,9 @@ let pp = fprintf;
 
 let print_expr f  e =
   pp f "@[%a@]@." AstPrint.expression (expr e);
+let to_string_expr = to_string_of_printer print_expr;  
 (* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
+  
 let print_patt f e =
   pp f "@[%a@]@." AstPrint.pattern (patt e);
   

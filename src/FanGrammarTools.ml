@@ -235,10 +235,11 @@ let rec make_expr entry (tvar:string) x =
 and make_expr_rules _loc n rl tvar :expr= with expr
   list_of_list _loc
     (List.map (fun (sl,action) ->
-      let number = List.length sl in
+      (* let number = List.length sl in *)
+      let action_string = Ast2pt.to_string_expr action in
       (* let expr = (Filters.ME.meta_expr _loc action) in *)
       let sl = list_of_list _loc (List.map (fun t -> make_expr n tvar t) sl) in
-      {| ($sl,($`int:number,$action(* ,$expr *))) |} ) rl);
+      {| ($sl,($str:action_string,$action(* ,$expr *))) |} ) rl);
   
 (* generate action, collecting patterns into action
    [rtvar] stands for the type of the return value

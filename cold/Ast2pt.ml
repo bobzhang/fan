@@ -1035,6 +1035,7 @@ let phrase (x : str_item) =
 open Format
 let pp = fprintf
 let print_expr f e = pp f "@[%a@]@." AstPrint.expression (expr e)
+let to_string_expr = to_string_of_printer print_expr
 let print_patt f e = pp f "@[%a@]@." AstPrint.pattern (patt e)
 let print_str_item f e = pp f "@[%a@]@." AstPrint.structure (str_item e)
 let print_ctyp f e = pp f "@[%a@]@." AstPrint.core_type (ctyp e)

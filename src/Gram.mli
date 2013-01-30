@@ -45,8 +45,10 @@ and symbol = Grammar.Structure.symbol
 and tree = Grammar.Structure.tree 
 and node =  Grammar.Structure.node 
 
-type anno_action = int * Action.t       
-type production = symbol list * anno_action
+type anno_action = int * symbol list * string * Action.t       
+
+type production = symbol list * (string * Action.t)
+      
 type label = string option
 
 (* FIXME duplicate with Grammar/Structure *)      
