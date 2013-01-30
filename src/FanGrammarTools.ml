@@ -224,9 +224,7 @@ let rec make_expr entry (tvar:string) x =
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
     | `Srules (_loc, rl) ->
-        {| $(id:gm()).srules
-          (* ((\* $(id:gm()).name_of_entry *\) *)
-          (*    $(entry.expr)) *) $(make_expr_rules _loc entry rl "") |}
+        {| $(id:gm()).srules $(make_expr_rules _loc entry rl "") |}
     | `Stok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ] in aux  tvar x
 
@@ -234,11 +232,13 @@ let rec make_expr entry (tvar:string) x =
 (* the [rhs] was computed, compute the [lhs]
    the generated expression has type [production]
  *)    
-and make_expr_rules _loc n rl tvar = with expr
+and make_expr_rules _loc n rl tvar :expr= with expr
   list_of_list _loc
     (List.map (fun (sl,action) ->
+      let number = List.length sl in
+      (* let expr = (Filters.ME.meta_expr _loc action) in *)
       let sl = list_of_list _loc (List.map (fun t -> make_expr n tvar t) sl) in
-      {| ($sl,$action) |} ) rl);
+      {| ($sl,($`int:number,$action(* ,$expr *))) |} ) rl);
   
 (* generate action, collecting patterns into action
    [rtvar] stands for the type of the return value
@@ -343,12 +343,12 @@ let text_of_entry e =  with expr
       (fun level  ->
         let lab =
           match level.label with
-          [ Some lab ->  (* {|$str:lab|} *)  {| Some $str:lab |}
-          | None ->  (* {| "" |} *) {|None|} ]  in
+          [ Some lab ->   {| Some $str:lab |}
+          | None ->   {|None|} ]  in
         let ass =
           match level.assoc with
-          [ Some ass ->  (* ass  *) {| Some $ass |}
-          | None ->   (* {| `LA |} *) {|None|} ]  in
+          [ Some ass ->   {| Some $ass |}
+          | None ->    {|None|} ]  in
           let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
           let prod = make_expr_rules _loc e.name rl e.name.tvar in
           (* generated code of type [olevel] *)

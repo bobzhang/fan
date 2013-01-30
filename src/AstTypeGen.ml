@@ -376,4 +376,4 @@ let generate (module_types:FSig.module_types) : str_item = with str_item
   (fun x -> let r = FSigUtil.str_item_from_module_types ~f:aux x  in r
   (* {:str_item| module N = struct $r end |} *)) module_types;
 
-Typehook.register ~filter:(fun s -> true (* not (List.mem s ["loc"; "ant"]) *)) ("LocType",generate);
+Typehook.register ~filter:(fun _ -> true (* not (List.mem s ["loc"; "ant"]) *)) ("LocType",generate);

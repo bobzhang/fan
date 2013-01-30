@@ -83,6 +83,5 @@ type plugin_name = string
 type plugin = 
   {
   transform: module_types -> str_item;
-  mutable activate: bool;
   position: string option;
   filter: (string -> bool) option} 

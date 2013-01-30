@@ -72,7 +72,7 @@ let rec parser_of_tree entry (lev,assoc) (q : Action.t Queue.t) x =
                   ())) in
   let parse = from_tree x in
   fun strm  ->
-    let parse = parse strm in
+    let (_arity,parse) = parse strm in
     let ans = Queue.fold (fun q  arg  -> Action.getf q arg) parse q in
     Queue.clear q; ans
 and parser_of_terminals (terminals : terminal list) strm =

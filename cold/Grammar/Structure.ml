@@ -48,13 +48,14 @@ and symbol =
   | `Speek of symbol | `Sself | `Snext | `Stree of tree | terminal] 
 and tree =  
   | Node of node
-  | LocAct of Action.t* Action.t list
+  | LocAct of anno_action* anno_action list
   | DeadEnd 
 and node =  {
   node: symbol;
   son: tree;
   brother: tree} 
-and production = (symbol list* Action.t) 
+and production = (symbol list* anno_action) 
+and anno_action = (int* Action.t) 
 type olevel = (label* assoc option* production list) 
 type extend_statment = (position option* olevel list) 
 type single_extend_statement = (position option* olevel) 

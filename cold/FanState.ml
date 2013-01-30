@@ -1,5 +1,6 @@
 open FSig
 let current_filters: (plugin_name* plugin) list ref = ref []
+let reset_current_filters () = current_filters := []
 let keep = ref true
 let id = ref 0
 let reset () = keep := true; current_filters := []

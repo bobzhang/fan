@@ -78,7 +78,7 @@ and symbol =
     | terminal ]
 and tree = (* internal struccture *)
     [ Node of node
-    | LocAct of Action.t and list Action.t
+    | LocAct of (* (int*Action.t) *)anno_action and list anno_action (* (int * Action.t) *)
     (* | EarlyAction of Action.t and node (\* This action was only used to produce side effect *\) *)
     (* | ReplaceAction of Action.t and node  *)
     | DeadEnd ]
@@ -86,7 +86,10 @@ and node = {
     node    : symbol ;
     son     : tree   ;
     brother : tree   }
-and production= (list symbol * Action.t);  
+and production= (list symbol * (* Action.t *) anno_action)
+and anno_action = (int * Action.t)
+      ;
+  
   |};
 
 

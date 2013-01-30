@@ -30,7 +30,7 @@ let level_number entry lab =
   let rec lookup levn = fun
     [ [] -> failwithf "unknown level %s"  lab
     | [lev :: levs] ->
-        if Tools.is_level_labelled lab lev then levn else lookup (succ levn) levs ] in
+        if Tools.is_level_labelled lab lev then levn else lookup (1 + levn) levs ] in
   match entry.edesc with
   [ Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found ] ;
@@ -107,9 +107,14 @@ let rec parser_of_tree entry (lev,assoc) (q: Queue.t Action.t) x =
           with [XStream.Failure -> from_tree brother strm] ] ] in
   let parse = from_tree x in
   fun strm -> 
-    let parse =  parse strm in
-    let ans = Queue.fold (fun q arg -> Action.getf q arg) parse q in
-    (Queue.clear q; ans)
+    let (_arity,parse) =  parse strm in begin
+      (* if _arity <> Queue.length q then  *)
+      (*   Format.eprintf "@[%d:%d@]@." _arity (Queue.length q); *)
+      (* assert (_arity = Queue.length q) ; *)
+      let ans = Queue.fold (fun q arg -> Action.getf q arg) parse q ;
+      Queue.clear q;
+      ans
+    end
 
 (*
   {[

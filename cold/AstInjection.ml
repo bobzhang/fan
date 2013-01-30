@@ -19,45 +19,51 @@ let _ =
         [([`Stoken
              (((function | `Lid _ -> true | _ -> false)),
                (`Normal, "`Lid _"))],
-           (Gram.mk_action
-              (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                 match __fan_0 with
-                 | `Lid x ->
-                     ((try Hashtbl.find inject_expr_tbl x
-                       with
-                       | Not_found  -> failwithf "inject.expr %s not found" x) : 
-                     'inject_expr )
-                 | _ -> assert false)))]));
+           (1,
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Lid x ->
+                       ((try Hashtbl.find inject_expr_tbl x
+                         with
+                         | Not_found  ->
+                             failwithf "inject.expr %s not found" x) : 
+                       'inject_expr )
+                   | _ -> assert false))))]));
   Gram.extend_single (inject_str_item : 'inject_str_item Gram.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `Lid _ -> true | _ -> false)),
                (`Normal, "`Lid _"))],
-           (Gram.mk_action
-              (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                 match __fan_0 with
-                 | `Lid x ->
-                     ((try Hashtbl.find inject_str_item_tbl x
-                       with
-                       | Not_found  -> failwithf "inject.expr %s not found" x) : 
-                     'inject_str_item )
-                 | _ -> assert false)))]));
+           (1,
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Lid x ->
+                       ((try Hashtbl.find inject_str_item_tbl x
+                         with
+                         | Not_found  ->
+                             failwithf "inject.expr %s not found" x) : 
+                       'inject_str_item )
+                   | _ -> assert false))))]));
   Gram.extend_single (inject_class_str_item : 'inject_class_str_item Gram.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `Lid _ -> true | _ -> false)),
                (`Normal, "`Lid _"))],
-           (Gram.mk_action
-              (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                 match __fan_0 with
-                 | `Lid x ->
-                     ((try Hashtbl.find inject_class_str_item_tbl x
-                       with
-                       | Not_found  -> failwithf "inject.expr %s not found" x) : 
-                     'inject_class_str_item )
-                 | _ -> assert false)))]))
+           (1,
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Lid x ->
+                       ((try Hashtbl.find inject_class_str_item_tbl x
+                         with
+                         | Not_found  ->
+                             failwithf "inject.expr %s not found" x) : 
+                       'inject_class_str_item )
+                   | _ -> assert false))))]))
 let _ =
   let open AstQuotation in
     of_expr ~name:((`Absolute ["Fan"; "Inject"]), "expr") ~entry:inject_expr;

@@ -177,9 +177,18 @@ and make_expr_rules _loc n rl tvar =
   list_of_list _loc
     (List.map
        (fun (sl,action)  ->
+          let number = List.length sl in
           let sl =
             list_of_list _loc (List.map (fun t  -> make_expr n tvar t) sl) in
-          `Tup (_loc, (`Com (_loc, sl, action)))) rl)
+          `Tup
+            (_loc,
+              (`Com
+                 (_loc, sl,
+                   (`Tup
+                      (_loc,
+                        (`Com
+                           (_loc, (`Int (_loc, (string_of_int number))),
+                             action)))))))) rl)
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : expr option)  (rtvar : string) (tvar : string) =
   let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in

@@ -115,7 +115,7 @@ type plugin_name = string ;
 
 type plugin = {
     transform:(module_types -> str_item);
-    activate: mutable bool;
+    (* activate: mutable bool; *)
     position: option string;
     filter: option (string->bool);
   };

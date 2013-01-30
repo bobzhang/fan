@@ -39,7 +39,7 @@ let register  ?filter ?position (name,f) =
   then eprintf "Warning:%s filter already exists!@." name
   else begin
    (* eprintf "%s filter registered@." name ; *)
-   Hashtbl.add filters name {transform=f; activate=false;position;filter} ;
+   Hashtbl.add filters name {transform=f; (* activate=false; *)position;filter} ;
   end;
 
 let show_modules () =
@@ -58,7 +58,7 @@ let show_modules () =
 
 let plugin_add plugin =
   let try v = Hashtbl.find filters plugin in begin
-    v.activate <- true;
+    (* v.activate <- true; *)
     if not (List.exists (fun (n,_) -> n=plugin) !FanState.current_filters) then
       Ref.modify FanState.current_filters (fun x -> cons (plugin,v) x) 
     else
@@ -72,15 +72,15 @@ let plugin_add plugin =
 
     
 let plugin_remove plugin =
-  let try v = Hashtbl.find filters plugin in begin 
-    v.activate <- false;
-    Ref.modify FanState.current_filters (fun x -> List.remove plugin x)    
-  end
-  with
-    [Not_found -> begin 
-      show_modules ();
-      eprintf "plugin %s not found, removing operation ignored" plugin;
-      end ];
+  (* let try v = Hashtbl.find filters plugin in begin  *)
+    (* v.activate <- false; *)
+    Ref.modify FanState.current_filters (fun x -> List.remove plugin x) ;
+  (* end *)
+  (* with *)
+  (*   [Not_found -> begin  *)
+  (*     show_modules (); *)
+  (*     eprintf "plugin %s not found, removing operation ignored" plugin; *)
+  (*     end ]; *)
   
 
 
@@ -184,7 +184,7 @@ let traversal () : traversal  = object (self:'self_type)
         eprintf "@[%a@]@." FSig.pp_print_module_types module_types ;
       let result =
         List.fold_right
-          (fun (_, {activate;position;transform;filter}) acc
+          (fun (_, {(* activate; *)position;transform;filter}) acc
             ->
               let module_types =
                 match filter with
@@ -255,7 +255,8 @@ with expr
       | "unload"; L1 [`Lid x  -> x | `Uid x -> x ] SEP ","{plugins} ->
           begin List.iter plugin_remove plugins ; {| |} end
       | "clear" ->
-          begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end
+          begin FanState.reset_current_filters(); {||} end
+          (* begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end *)
       | "keep" ; "on" -> begin FanState.keep := true; {| |} end
       | "keep" ; "off" -> begin FanState.keep := false; {| |} end
       | "show_code"; "on" -> begin show_code := true; {| |} end

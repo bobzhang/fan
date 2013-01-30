@@ -24,12 +24,13 @@ let define ~expr  ~patt  eo x =
                    (((function
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
-                 (Gram.mk_action
-                    (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       match __fan_0 with
-                       | `Uid _ ->
-                           (((new FanAst.reloc) _loc)#expr e : 'expr )
-                       | _ -> assert false)))]));
+                 (1,
+                   (Gram.mk_action
+                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                         match __fan_0 with
+                         | `Uid _ ->
+                             (((new FanAst.reloc) _loc)#expr e : 'expr )
+                         | _ -> assert false))))]));
         Gram.extend_single (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
             (None, None,
@@ -37,13 +38,14 @@ let define ~expr  ~patt  eo x =
                    (((function
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
-                 (Gram.mk_action
-                    (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       match __fan_0 with
-                       | `Uid _ ->
-                           (let p = Expr.substp _loc [] e in
-                            ((new FanAst.reloc) _loc)#patt p : 'patt )
-                       | _ -> assert false)))])))
+                 (1,
+                   (Gram.mk_action
+                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                         match __fan_0 with
+                         | `Uid _ ->
+                             (let p = Expr.substp _loc [] e in
+                              ((new FanAst.reloc) _loc)#patt p : 'patt )
+                         | _ -> assert false))))])))
    | Some (sl,e) ->
        (Gram.extend_single (expr : 'expr Gram.t )
           ((Some (`Level "apply")),
@@ -53,21 +55,22 @@ let define ~expr  ~patt  eo x =
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"));
                 `Sself],
-                 (Gram.mk_action
-                    (fun (param : 'expr)  (__fan_0 : [> FanToken.t]) 
-                       (_loc : FanLoc.t)  ->
-                       match __fan_0 with
-                       | `Uid _ ->
-                           (let el =
-                              match param with
-                              | `Tup (_loc,e) -> FanAst.list_of_com' e []
-                              | e -> [e] in
-                            if (List.length el) = (List.length sl)
-                            then
-                              let env = List.combine sl el in
-                              ((new Expr.subst) _loc env)#expr e
-                            else incorrect_number _loc el sl : 'expr )
-                       | _ -> assert false)))]));
+                 (2,
+                   (Gram.mk_action
+                      (fun (param : 'expr)  (__fan_0 : [> FanToken.t]) 
+                         (_loc : FanLoc.t)  ->
+                         match __fan_0 with
+                         | `Uid _ ->
+                             (let el =
+                                match param with
+                                | `Tup (_loc,e) -> FanAst.list_of_com' e []
+                                | e -> [e] in
+                              if (List.length el) = (List.length sl)
+                              then
+                                let env = List.combine sl el in
+                                ((new Expr.subst) _loc env)#expr e
+                              else incorrect_number _loc el sl : 'expr )
+                         | _ -> assert false))))]));
         Gram.extend_single (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
             (None, None,
@@ -76,22 +79,23 @@ let define ~expr  ~patt  eo x =
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"));
                 `Sself],
-                 (Gram.mk_action
-                    (fun (param : 'patt)  (__fan_0 : [> FanToken.t]) 
-                       (_loc : FanLoc.t)  ->
-                       match __fan_0 with
-                       | `Uid _ ->
-                           (let pl =
-                              match param with
-                              | `Tup (_loc,p) -> FanAst.list_of_com' p []
-                              | p -> [p] in
-                            if (List.length pl) = (List.length sl)
-                            then
-                              let env = List.combine sl pl in
-                              let p = Expr.substp _loc env e in
-                              ((new FanAst.reloc) _loc)#patt p
-                            else incorrect_number _loc pl sl : 'patt )
-                       | _ -> assert false)))])))
+                 (2,
+                   (Gram.mk_action
+                      (fun (param : 'patt)  (__fan_0 : [> FanToken.t]) 
+                         (_loc : FanLoc.t)  ->
+                         match __fan_0 with
+                         | `Uid _ ->
+                             (let pl =
+                                match param with
+                                | `Tup (_loc,p) -> FanAst.list_of_com' p []
+                                | p -> [p] in
+                              if (List.length pl) = (List.length sl)
+                              then
+                                let env = List.combine sl pl in
+                                let p = Expr.substp _loc env e in
+                                ((new FanAst.reloc) _loc)#patt p
+                              else incorrect_number _loc pl sl : 'patt )
+                         | _ -> assert false))))])))
    | None  -> ());
   defined := ((x, eo) :: (defined.contents))
 let undef ~expr  ~patt  x =

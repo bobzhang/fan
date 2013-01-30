@@ -328,4 +328,4 @@ let generate (module_types : FSig.module_types) =
      else ty in
    (fun x  -> let r = FSigUtil.str_item_from_module_types ~f:aux x in r)
      module_types : str_item )
-let _ = Typehook.register ~filter:(fun s  -> true) ("LocType", generate)
+let _ = Typehook.register ~filter:(fun _  -> true) ("LocType", generate)
