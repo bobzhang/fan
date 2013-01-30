@@ -49,18 +49,15 @@ type entry = {
     estart    : mutable int -> parse Action.t;
     econtinue : mutable int -> cont_parse Action.t;
     edesc     : mutable desc;
-    freezed : mutable bool;  
-    }
+    freezed : mutable bool;}
 and desc =
     [ Dlevels of list level
     | Dparser of stream -> Action.t ]
 and level = {
     assoc   : assoc         ;
-    lname   : label (* (\* option *\) string  *);
-    
+    lname   : label;
     productions : list production;
     (* the raw productions stored in the level*)
-    
     lsuffix : tree          ;
     lprefix : tree          }
 and symbol =
@@ -94,8 +91,7 @@ and production= (list symbol * Action.t);
 
 
 (* FIXME duplciate with Gram.mli*)
-type olevel = ((* string *)label * option assoc * list production);
-  
+type olevel = (label * option assoc * list production);
 type extend_statment = (option position * list olevel);
 type single_extend_statement =  (option position * olevel);      
 type delete_statment = list symbol;
@@ -119,6 +115,7 @@ let using { gkeywords = table; gfilter = filter; _ } kwd =
         FanTokenFilter.keyword_added filter kwd (r.contents = 0);
         incr r
       end;
+  
 let mk_action=Action.mk;
 let string_of_token=FanToken.extract_string  ;
 let removing { gkeywords = table; gfilter = filter; _ } kwd =

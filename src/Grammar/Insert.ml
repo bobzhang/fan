@@ -256,8 +256,7 @@ let insert_olevel entry position olevel =
   let (levs1,v,levs2) = find_level ?position entry elev in
   let l1 =
     match v with
-    [Some (lev,_n) ->
-      merge_level lev olevel
+    [Some (lev,_n) -> merge_level lev olevel
     |None -> level_of_olevel olevel] in
     levs1 @ [l1 :: levs2] ;
 

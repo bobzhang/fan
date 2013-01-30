@@ -432,7 +432,7 @@ and maybe_quotation_colon c = parse
         { err (Illegal_quotation (String.make 1 c))  (FanLoc.of_lexbuf lexbuf) (* `SYMBOL("{:" ^ tok) *) }
 
 and quotation c = parse
-    | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)?
+    | '{' (':' quotation_name(* ident *))? ('@' locname)? '|' (extra_quot as p)?
         {
          begin
         store c ;

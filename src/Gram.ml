@@ -108,11 +108,7 @@ let eoi_entry entry =
 let find_level ?position entry =
   match entry.edesc with
   [Dparser _ -> invalid_arg "Gram.find_level"
-  |Dlevels levs ->
-      let (_,f,_) = Insert.find_level ?position entry levs in
-      (* f (\* None *\) "" (\* None *\) (\* `LA *\) *)
-      f
-  ];
+  |Dlevels levs -> let (_,f,_) = Insert.find_level ?position entry levs in f];
 
 
 
