@@ -3,26 +3,26 @@ true:use_unix
 # true:-traverse
 # <cold> and <src>:traverse
 # <{cold,src}/Pprintast.ml>: warn_a
-<{cold,src}/Camlp4Printers/**.ml>: use_unix
+<{cold,src,debug}/Camlp4Printers/**.ml>: use_unix
 
 
-<{cold,src}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.cmx>:for-pack(Grammar)
+<{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.cmx>:for-pack(Grammar)
 
-<{cold,src}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
+<{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
 
 
-<{cold,src}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase}.cmx>:for-pack(Lib)
-<{cold,src}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase}.p.cmx>:for-pack(Lib)
+<{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase}.cmx>:for-pack(Lib)
+<{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase}.p.cmx>:for-pack(Lib)
 
-<{cold,src}/*.{p.native,native}>: pkg_dynlink, pkg_compiler-libs.common
+<{cold,src,debug}/*.{p.native,native}>: pkg_dynlink, pkg_compiler-libs.common
 
-<{cold,src}/*.{byte,d.byte}>: pkg_dynlink, pkg_compiler-libs.toplevel
+<{cold,src,debug}/*.{byte,d.byte}>: pkg_dynlink, pkg_compiler-libs.toplevel
 
-<{cold,src}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,PAst2pt,Sig,ParsetreeHelper,Ast2Fan}{_ppo,}.{ml,mli}> : pkg_compiler-libs.common
+<{cold,src,debug}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,PAst2pt,Sig,ParsetreeHelper,Ast2Fan}{_ppo,}.{ml,mli}> : pkg_compiler-libs.common
 
-<{cold,src}/{FanTop,FanEval}.{ml,mli}>:pkg_compiler-libs.toplevel
+<{cold,src,debug}/{FanTop,FanEval}.{ml,mli}>:pkg_compiler-libs.toplevel
 
-<{cold,src}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
+<{cold,src,debug}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 # true:warn(+a)
-<{cold,src}/Fan.ml>: warn(-33)
+<{cold,src,debug}/Fan.ml>: warn(-33)
 true: warn(-41)

@@ -1,16 +1,16 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
 set -e
+dest=${1:-cold}
+echo "snapshoping to $dest"
+
 make cleantmp
 ocamlbuild $(find src | grep -v .# |  grep '\(ml\|mll\|mli\|mlpack\)$' | perl -pe 's|.*?/|tmp/|')
 # needs copy mll mlpack as well
-# ocamlbuild $(find src | grep | grep mll$ | perl -pe 's|.*?/|tmp/|')
-# ocamlbuild $(find src | grep mli$ | perl -pe 's|.*?/|tmp/|')
-# ocamlbuild $(find src | grep mlpack$ | perl -pe 's|.*?/|tmp/|')
 
-rm -rf cold # do the cleaning, in case some files are discarded 
+rm -rf $dest # do the cleaning, in case some files are discarded 
 # mkdir cold
 
-cp -rf _build/tmp/ cold
+cp -rf _build/tmp/ $dest
 
 echo "snapshop finished"

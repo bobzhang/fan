@@ -768,6 +768,7 @@ let apply  before_options_dispatch after_rules_dispatch = (
 
 let root1 = "src";;
 let root2 = "cold";;
+let root3 = "debug";;
 let tmp = "tmp"    
 
 let define_context_for_root r =
@@ -791,7 +792,7 @@ let define_context_for_root r =
   end ;;
 define_context_for_root root1;;
 define_context_for_root root2;;
-
+define_context_for_root root3;;
 let boot_flags =
   S[P ("boot"//"fan"); (* symlink fan to either fan.byte or fan.native *)
     A"-printer"; A"p"];;
@@ -820,11 +821,11 @@ let () =
     flag ["ocaml"; "pp"; "use_fan"] boot_flags;
     flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
     "src/AstN.ml" |-? ["src/Ast.ml"];
-    "src/Lib/Expr.ml" |-? [(* "src/Lib/CommonStructure.ml"; *) "src/Lib/ExprPatt.ml" ];
-    "src/Lib/Patt.ml" |-? [(* "src/Lib/CommonStructure.ml"; *) "src/Lib/ExprPatt.ml" ];
-    "src/StdMeta.ml"   |-? ["src/MetaTemplate.ml"];
+    "src/Lib/Expr.ml" |-? [ "src/Lib/ExprPatt.ml" ];
+    "src/Lib/Patt.ml" |-? ["src/Lib/ExprPatt.ml" ];
+    "src/StdMeta.ml"  |-? ["src/MetaTemplate.ml"];
     "src/FanAst.ml"   |-? ["src/MetaTemplate.ml"; "src/Ast.ml"];
-    "src/FanAstN.ml" |-? ["src/AstN.ml"; "src/Ast.ml"];
+    "src/FanAstN.ml"  |-? ["src/AstN.ml"; "src/Ast.ml"];
   end;;
 
 (* copy_rule "_build/src/FanAst.ml -> src/TAst.ml" *)
