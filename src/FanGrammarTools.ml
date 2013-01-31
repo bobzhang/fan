@@ -232,7 +232,8 @@ let rec make_expr entry (tvar:string) x =
 (* the [rhs] was computed, compute the [lhs]
    the generated expression has type [production]
  *)    
-and make_expr_rules _loc n rl tvar :expr= with expr
+and make_expr_rules (_loc:loc) (n:name) (rl: list (list text * expr) ) (tvar:string) :expr=
+  with expr
   list_of_list _loc
     (List.map (fun (sl,action) ->
       (* let number = List.length sl in *)
@@ -253,7 +254,7 @@ and make_expr_rules _loc n rl tvar :expr= with expr
    ]}
  *)
 let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
-    (rtvar:string)  (tvar:string) = with expr
+    (rtvar:string)  (tvar:string) : expr = with expr
   let locid = {:patt| $(lid:!FanLoc.name) |} in 
   let act =
     match act with
@@ -293,7 +294,7 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
   {| $(id:gm()).mk_action $txt |}  ;
 
 (* the [rhs] was already computed, the [lhs] was left *)
-let mk_srules loc t rl tvar =
+let mk_srules loc (t:string) (rl:list rule) (tvar:string) : list (list text * expr) =
   List.map
     (fun r ->
       let sl = List.map (fun s  -> s.text) r.prod in
@@ -331,7 +332,7 @@ let mk_slist loc min sep symb = `Slist loc min symb sep ;
   {[(Some `LA)]} it has type [position option]
   
  *)  
-let text_of_entry e =  with expr
+let text_of_entry (e:entry) :expr =  with expr
   let _loc = e.name.loc in    
   let ent =
     let x = e.name in
