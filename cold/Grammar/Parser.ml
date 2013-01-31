@@ -20,7 +20,8 @@ let level_number entry lab =
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found
-let rec parser_of_tree entry (lev,assoc) (q : Action.t Queue.t) x =
+module ArgContainer = Stack
+let rec parser_of_tree entry (lev,assoc) (q : Action.t ArgContainer.t) x =
   let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
   let rec from_tree tree =
     match tree with
@@ -30,7 +31,7 @@ let rec parser_of_tree entry (lev,assoc) (q : Action.t Queue.t) x =
         (fun strm  ->
            (try
               let a = entry.estart alevn strm in
-              fun ()  -> Queue.push a q; act
+              fun ()  -> ArgContainer.push a q; act
             with | XStream.Failure  -> (fun ()  -> from_tree bro strm)) ())
     | Node ({ node; son; brother } as y) ->
         (match Tools.get_terminals y with
@@ -41,44 +42,52 @@ let rec parser_of_tree entry (lev,assoc) (q : Action.t Queue.t) x =
                 (try
                    let a = ps strm in
                    fun ()  ->
-                     let pson = from_tree son in
-                     (try let v = pson strm in fun ()  -> Queue.push a q; v
+                     ArgContainer.push a q;
+                     (let pson = from_tree son in
+                      try pson strm
                       with
-                      | XStream.Failure  ->
-                          (fun ()  ->
-                             if (Tools.get_cur_loc strm) = bp
-                             then raise XStream.Failure
-                             else
-                               raise
-                                 (XStream.Error
-                                    (Failed.tree_failed entry a node son))))
-                       ()
+                      | e ->
+                          (ignore (ArgContainer.pop q);
+                           (match e with
+                            | XStream.Failure  ->
+                                if (Tools.get_cur_loc strm) = bp
+                                then raise XStream.Failure
+                                else
+                                  raise
+                                    (XStream.Error
+                                       (Failed.tree_failed entry a node son))
+                            | _ -> raise e)))
                  with
                  | XStream.Failure  -> (fun ()  -> from_tree brother strm))
                   ())
          | Some (tokl,_node,son) ->
              (fun strm  ->
                 (try
-                   let args = parser_of_terminals tokl strm in
+                   let args = List.rev (parser_of_terminals tokl strm) in
                    fun ()  ->
-                     let p = from_tree son in
-                     try
-                       let act = p strm in
-                       List.iter (fun a  -> Queue.push (Action.mk a) q) args;
-                       act
-                     with | XStream.Failure  -> raise (XStream.Error "")
+                     List.iter (fun a  -> ArgContainer.push (Action.mk a) q)
+                       args;
+                     (let len = List.length args in
+                      let p = from_tree son in
+                      try p strm
+                      with
+                      | e ->
+                          (for _i = 1 to len do ignore (ArgContainer.pop q)
+                           done;
+                           (match e with
+                            | XStream.Failure  -> raise (XStream.Error "")
+                            | _ -> raise e)))
                  with
                  | XStream.Failure  -> (fun ()  -> from_tree brother strm))
                   ())) in
   let parse = from_tree x in
   fun strm  ->
-    let (_arity,symbols,_,parse) = parse strm in
-    if _arity <> (Queue.length q)
-    then
-      Format.eprintf "@[%d:%d %a@]@." _arity (Queue.length q) Print.dump#rule
-        symbols;
-    (let ans = Queue.fold (fun q  arg  -> Action.getf q arg) parse q in
-     Queue.clear q; ans)
+    let (_arity,symbols,action,parse) = parse strm in
+    let ans = ref parse in
+    for _i = 1 to _arity do
+      (let v = ArgContainer.pop q in ans := (Action.getf ans.contents v))
+    done;
+    ans.contents
 and parser_of_terminals (terminals : terminal list) strm =
   let n = List.length terminals in
   let acc = ref [] in
@@ -125,7 +134,7 @@ and parser_of_symbol entry s nlevn =
     | `Stry s -> let ps = aux s in Comb.tryp ps
     | `Speek s -> let ps = aux s in Comb.peek ps
     | `Stree t ->
-        let pt = parser_of_tree entry (0, `RA) (Queue.create ()) t in
+        let pt = parser_of_tree entry (0, `RA) (ArgContainer.create ()) t in
         (fun strm  ->
            let bp = Tools.get_cur_loc strm in
            let (act,loc) = add_loc bp pt strm in Action.getf act loc)
@@ -155,8 +164,8 @@ let start_parser_of_levels entry =
           | DeadEnd  -> hstart
           | tree ->
               let cstart =
-                parser_of_tree entry (clevn, (lev.assoc)) (Queue.create ())
-                  tree in
+                parser_of_tree entry (clevn, (lev.assoc))
+                  (ArgContainer.create ()) tree in
               (fun levn  strm  ->
                  if (levn > clevn) && (not ([] = levs))
                  then hstart levn strm
@@ -184,7 +193,8 @@ let rec continue_parser_of_levels entry clevn =
        | DeadEnd  -> hcontinue
        | tree ->
            let ccontinue =
-             parser_of_tree entry (clevn, (lev.assoc)) (Queue.create ()) tree in
+             parser_of_tree entry (clevn, (lev.assoc))
+               (ArgContainer.create ()) tree in
            (fun levn  bp  a  strm  ->
               if levn > clevn
               then hcontinue levn bp a strm
