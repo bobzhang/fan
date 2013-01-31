@@ -73,10 +73,18 @@ module Queue =
                 match f x with | None  -> () | Some _ as res -> r.return res)
              t;
            None)
+    let to_list_rev q = fold (fun acc  v  -> v :: acc) [] q
+    let of_list l =
+      let q = create () in let _ = List.iter (fun x  -> push x q) l in q
+    let rev q = of_list (to_list_rev q)
   end
 module List =
   struct
     include List
+    let rev_len l =
+      let rec aux l ((n,acc) as r) =
+        match l with | [] -> r | x::xs -> aux xs ((n + 1), (x :: acc)) in
+      aux l (0, [])
     let hd = function | [] -> failwith "hd" | a::_ -> a
     let tl = function | [] -> failwith "List.tl" | _::l -> l
     let safe_tl = function | [] -> [] | _::l -> l
@@ -149,27 +157,44 @@ module List =
            | Some y -> y :: (filter_map f xs)
            | None  -> filter_map f xs)
   end
+module type MAP =
+  sig
+    include Map.S
+    val of_list : (key* 'a) list -> 'a t
+    val of_hashtbl : (key,'a) Hashtbl.t -> 'a t
+    val elements : 'a t -> (key* 'a) list
+    val add_list : (key* 'a) list -> 'a t -> 'a t
+    val find_default : default:'a -> key -> 'a t -> 'a
+  end
 module MapMake(S:Map.OrderedType) =
-  struct
-    include Map.Make(S)
-    let of_list lst =
-      List.fold_left (fun acc  (k,v)  -> add k v acc) empty lst
-    let add_list lst base =
-      List.fold_left (fun acc  (k,v)  -> add k v acc) base lst
-    let of_hashtbl tbl =
-      Hashtbl.fold (fun k  v  acc  -> add k v acc) tbl empty
-    let elements map = fold (fun k  v  acc  -> (k, v) :: acc) map []
-    let find_default ~default  k m =
-      try find k m with | Not_found  -> default
+  (struct
+     include Map.Make(S)
+     let of_list lst =
+       List.fold_left (fun acc  (k,v)  -> add k v acc) empty lst
+     let add_list lst base =
+       List.fold_left (fun acc  (k,v)  -> add k v acc) base lst
+     let of_hashtbl tbl =
+       Hashtbl.fold (fun k  v  acc  -> add k v acc) tbl empty
+     let elements map = fold (fun k  v  acc  -> (k, v) :: acc) map []
+     let find_default ~default  k m =
+       try find k m with | Not_found  -> default
+   end : (MAP with type  key = S.t ))
+module type SET =
+  sig
+    include Set.S
+    val of_list : elt list -> t
+    val add_list : t -> elt list -> t
+    val of_array : elt array -> t
+    val add_array : t -> elt array -> t
   end
 module SetMake(S:Set.OrderedType) =
-  struct
-    include Set.Make(S)
-    let of_list = List.fold_left (flip add) empty
-    let add_list c = List.fold_left (flip add) c
-    let of_array = Array.fold_left (flip add) empty
-    let add_array c = Array.fold_left (flip add) c
-  end
+  (struct
+     include Set.Make(S)
+     let of_list = List.fold_left (flip add) empty
+     let add_list c = List.fold_left (flip add) c
+     let of_array = Array.fold_left (flip add) empty
+     let add_array c = Array.fold_left (flip add) c
+   end : (SET with type  elt = S.t ))
 module SSet = SetMake(String)
 module SMap = MapMake(String)
 module IMap =

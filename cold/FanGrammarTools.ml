@@ -173,7 +173,8 @@ let rec make_expr entry (tvar : string) x =
                               (_loc, (`Vrn (_loc, attr)),
                                 (`Str (_loc, (String.escaped descr)))))))))))) in
   aux tvar x
-and make_expr_rules _loc n rl tvar =
+and make_expr_rules (_loc : loc) (n : name) (rl : (text list* expr) list)
+  (tvar : string) =
   (list_of_list _loc
      (List.map
         (fun (sl,action)  ->
@@ -190,86 +191,88 @@ and make_expr_rules _loc n rl tvar =
         rl) : expr )
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : expr option)  (rtvar : string) (tvar : string) =
-  let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
-  let act =
-    match act with
-    | Some act -> act
-    | None  -> `Id (_loc, (`Uid (_loc, "()"))) in
-  let (_,tok_match_pl) =
-    List.fold_lefti
-      (fun i  ((oe,op) as ep)  x  ->
-         match x with
-         | { pattern = Some p; text = `Stok _;_} ->
-             let id = prefix ^ (string_of_int i) in
-             (((`Id (_loc, (`Lid (_loc, id)))) :: oe), (p :: op))
-         | _ -> ep) ([], []) psl in
-  let e =
-    let e1 =
-      `Constraint
-        (_loc, act,
-          (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, rtvar)))))) in
-    match tok_match_pl with
-    | ([],_) ->
-        `Fun
-          (_loc,
-            (`Case
-               (_loc,
-                 (`Constraint
-                    (_loc, locid,
-                      (`Id
-                         (_loc,
-                           (`Dot
-                              (_loc, (`Uid (_loc, "FanLoc")),
-                                (`Lid (_loc, "t")))))))), (`Nil _loc), e1)))
-    | (e,p) ->
-        let (expr,patt) =
-          match (e, p) with
-          | (x::[],y::[]) -> (x, y)
-          | _ -> ((tuple_com e), (tuple_com p)) in
-        `Fun
-          (_loc,
-            (`Case
-               (_loc,
-                 (`Constraint
-                    (_loc, locid,
-                      (`Id
-                         (_loc,
-                           (`Dot
-                              (_loc, (`Uid (_loc, "FanLoc")),
-                                (`Lid (_loc, "t")))))))), (`Nil _loc),
-                 (`Match
-                    (_loc, expr,
-                      (`Or
-                         (_loc, (`Case (_loc, patt, (`Nil _loc), e1)),
-                           (`Case
-                              (_loc, (`Any _loc), (`Nil _loc), (`ExAsf _loc)))))))))) in
-  let (_,txt) =
-    List.fold_lefti
-      (fun i  txt  s  ->
-         match s.pattern with
-         | Some (`Alias (_loc,`App (_,_,`Tup (_,`Any _)),p)) ->
-             let p = typing (`Id (_loc, (p :>ident))) (make_ctyp s.styp tvar) in
-             `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
-         | Some p when FanAst.is_irrefut_patt p ->
-             let p = typing p (make_ctyp s.styp tvar) in
-             `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
-         | None  ->
-             `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), txt)))
-         | Some _ ->
-             let p =
-               typing
-                 (`Id (_loc, (`Lid (_loc, (prefix ^ (string_of_int i))))))
-                 (make_ctyp s.styp tvar) in
-             `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))) e psl in
-  `App
-    (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
-      txt)
-let mk_srules loc t rl tvar =
-  List.map
-    (fun r  ->
-       let sl = List.map (fun s  -> s.text) r.prod in
-       let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
-       (sl, ac)) rl
+  (let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
+   let act =
+     match act with
+     | Some act -> act
+     | None  -> `Id (_loc, (`Uid (_loc, "()"))) in
+   let (_,tok_match_pl) =
+     List.fold_lefti
+       (fun i  ((oe,op) as ep)  x  ->
+          match x with
+          | { pattern = Some p; text = `Stok _;_} ->
+              let id = prefix ^ (string_of_int i) in
+              (((`Id (_loc, (`Lid (_loc, id)))) :: oe), (p :: op))
+          | _ -> ep) ([], []) psl in
+   let e =
+     let e1 =
+       `Constraint
+         (_loc, act,
+           (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, rtvar)))))) in
+     match tok_match_pl with
+     | ([],_) ->
+         `Fun
+           (_loc,
+             (`Case
+                (_loc,
+                  (`Constraint
+                     (_loc, locid,
+                       (`Id
+                          (_loc,
+                            (`Dot
+                               (_loc, (`Uid (_loc, "FanLoc")),
+                                 (`Lid (_loc, "t")))))))), (`Nil _loc), e1)))
+     | (e,p) ->
+         let (expr,patt) =
+           match (e, p) with
+           | (x::[],y::[]) -> (x, y)
+           | _ -> ((tuple_com e), (tuple_com p)) in
+         `Fun
+           (_loc,
+             (`Case
+                (_loc,
+                  (`Constraint
+                     (_loc, locid,
+                       (`Id
+                          (_loc,
+                            (`Dot
+                               (_loc, (`Uid (_loc, "FanLoc")),
+                                 (`Lid (_loc, "t")))))))), (`Nil _loc),
+                  (`Match
+                     (_loc, expr,
+                       (`Or
+                          (_loc, (`Case (_loc, patt, (`Nil _loc), e1)),
+                            (`Case
+                               (_loc, (`Any _loc), (`Nil _loc),
+                                 (`ExAsf _loc)))))))))) in
+   let (_,txt) =
+     List.fold_lefti
+       (fun i  txt  s  ->
+          match s.pattern with
+          | Some (`Alias (_loc,`App (_,_,`Tup (_,`Any _)),p)) ->
+              let p =
+                typing (`Id (_loc, (p :>ident))) (make_ctyp s.styp tvar) in
+              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
+          | Some p when FanAst.is_irrefut_patt p ->
+              let p = typing p (make_ctyp s.styp tvar) in
+              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
+          | None  ->
+              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), txt)))
+          | Some _ ->
+              let p =
+                typing
+                  (`Id (_loc, (`Lid (_loc, (prefix ^ (string_of_int i))))))
+                  (make_ctyp s.styp tvar) in
+              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))) e psl in
+   `App
+     (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
+       txt) : expr )
+let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
+  (List.map
+     (fun r  ->
+        let sl = List.map (fun s  -> s.text) r.prod in
+        let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
+        (sl, ac)) rl : (text list* expr) list )
 let expr_delete_rule _loc n (symbolss : symbol list list) =
   let f _loc n sl =
     let sl =
@@ -291,51 +294,51 @@ let expr_delete_rule _loc n (symbolss : symbol list list) =
 let mk_name _loc i =
   { expr = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
-let text_of_entry e =
-  let _loc = (e.name).loc in
-  let ent =
-    let x = e.name in
-    `Constraint
-      (_loc, (x.expr),
-        (`App
-           (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
-             (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (x.tvar))))))))) in
-  let pos =
-    match e.pos with
-    | Some pos -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), pos)
-    | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
-  let apply level =
-    let lab =
-      match level.label with
-      | Some lab ->
-          `App
-            (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (`Str (_loc, lab)))
-      | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
-    let ass =
-      match level.assoc with
-      | Some ass -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
-      | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
-    let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
-    let prod = make_expr_rules _loc e.name rl (e.name).tvar in
-    `Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) in
-  match e.levels with
-  | `Single l ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`Id
-                  (_loc,
-                    (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single")))))),
-               ent)), (`Tup (_loc, (`Com (_loc, pos, (apply l))))))
-  | `Group ls ->
-      let txt = list_of_list _loc (List.map apply ls) in
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
-               ent)), (`Tup (_loc, (`Com (_loc, pos, txt)))))
+let text_of_entry (e : entry) =
+  (let _loc = (e.name).loc in
+   let ent =
+     let x = e.name in
+     `Constraint
+       (_loc, (x.expr),
+         (`App
+            (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
+              (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (x.tvar))))))))) in
+   let pos =
+     match e.pos with
+     | Some pos -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), pos)
+     | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
+   let apply level =
+     let lab =
+       match level.label with
+       | Some lab ->
+           `App
+             (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (`Str (_loc, lab)))
+       | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
+     let ass =
+       match level.assoc with
+       | Some ass -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
+       | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
+     let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
+     let prod = make_expr_rules _loc e.name rl (e.name).tvar in
+     `Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) in
+   match e.levels with
+   | `Single l ->
+       `App
+         (_loc,
+           (`App
+              (_loc,
+                (`Id
+                   (_loc,
+                     (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single")))))),
+                ent)), (`Tup (_loc, (`Com (_loc, pos, (apply l))))))
+   | `Group ls ->
+       let txt = list_of_list _loc (List.map apply ls) in
+       `App
+         (_loc,
+           (`App
+              (_loc,
+                (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
+                ent)), (`Tup (_loc, (`Com (_loc, pos, txt))))) : expr )
 let let_in_of_extend _loc gram locals default =
   let entry_mk =
     match gram with
