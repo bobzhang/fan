@@ -7,7 +7,7 @@ val add_loc: FanLoc.t -> 'b parse -> ('b*FanLoc.t) parse
 
 val level_number: entry -> string -> int
 
-val parser_of_tree: entry -> int * assoc -> Action.t Stack.t ->  tree -> Action.t parse
+val parser_of_tree: entry -> int * assoc -> Action.t LibUtil.LStack.t ->  tree -> Action.t parse
 val parser_of_terminals: terminal list -> FanToken.t list  parse
 val parser_of_symbol: entry ->  symbol -> int  -> Action.t parse
     

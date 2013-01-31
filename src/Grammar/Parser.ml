@@ -42,7 +42,7 @@ let level_number entry lab =
  *)
     
 
-module ArgContainer= Stack(* Queue *);    
+module ArgContainer= LStack(* Queue *);    
 (*
   It outputs a stateful parser, but it is functional itself
  *)    
@@ -85,7 +85,6 @@ let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t Action.t) x =
         let ps = parser_of_symbol entry node  lev  in fun strm ->
           let bp = Tools.get_cur_loc strm in
           let try a = ps strm in
-
           begin
             ArgContainer.push a q;
             let pson = from_tree son ;
@@ -100,26 +99,11 @@ let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t Action.t) x =
                 | _ -> raise e]
               end]  
           end
-          
-          (* let pson = from_tree son in *)
-
-          (* let try v = pson strm in begin *)
-          (*   ArgContainer.push a q; *)
-          (*   v *)
-          (* end *)
-          (* with *)
-          (*   [XStream.Failure -> *)
-          (*     if Tools.get_cur_loc strm = bp  then raise XStream.Failure *)
-          (*     else raise (XStream.Error (Failed.tree_failed entry a node son))] *)
-              
           with
             [XStream.Failure -> from_tree brother strm]
       | Some (tokl, _node, son) -> fun strm ->
-          let try args =
-            List.rev (parser_of_terminals tokl strm) in
-
+          let try args = List.rev (parser_of_terminals tokl strm) in
           begin
-
             List.iter (fun a -> ArgContainer.push (Action.mk a ) q) args;
             let len =List.length args ;              
             let p = from_tree son ;
@@ -134,42 +118,15 @@ let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t Action.t) x =
                 |_ -> raise e]  
               end]
           end
-          (*   [XStream.Failure -> *)
-          (*     begin *)
-          (*       raise (XStream.Error "") *)
-          (*     end *)
-          (*   | e -> *)
-          (*       begin *)
-          (*         for _i = 1 to len do *)
-          (*           ignore (ArgContainer.pop q); *)
-          (*         done; *)
-          (*         raise e  *)
-          (*       end]   *)
-          (* end *)
-          (* let p = from_tree son in *)
-          (* try begin  *)
-          (*   let act = p strm; *)
-          (*   List.iter (fun a -> ArgContainer.push (Action.mk a) q) args ; *)
-          (*   act  *)
-          (* end *)
-          (* with [XStream.Failure -> raise (XStream.Error "")] *)
           with [XStream.Failure -> from_tree brother strm] ] ] in
   let parse = from_tree x in
   fun strm -> 
-    let (_arity,symbols,action,parse) =  parse strm in begin
-      (* if _arity <> ArgContainer.length q then begin  *)
-      (*   Format.eprintf "@[%d:%d %a -> %s@]@." _arity (ArgContainer.length q) *)
-      (*     Print.dump#rule symbols action *)
-      (* end; *)
+    let (_arity,_symbols,_action,parse) =  parse strm in begin
       let ans = ref parse;
       for _i = 1 to _arity do
         let v = ArgContainer.pop q ;
         ans:=Action.getf !ans v;   
       done;
-      (* assert (_arity = ArgContainer.length q) ; *)
-      (* let q = ArgContainer.rev q ; *)
-      (* let ans = ArgContainer.fold (fun q arg -> Action.getf q arg) parse q ; *)
-      (* ArgContainer.clear q; *)
       !ans
     end
 
