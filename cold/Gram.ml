@@ -78,13 +78,13 @@ let eoi_entry entry =
         [([`Snterm (obj (entry : 'entry t ));
           `Stoken
             (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
-           ("mk_action\n  (fun (__fan_1 : [> FanToken.t])  (x : 'entry)  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> assert false)\n",
+           ("mk_action\n  (fun (__fan_1 : [> FanToken.t])  (x : 'entry)  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> failwith \"x\n\")\n",
              (mk_action
                 (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
                    (_loc : FanLoc.t)  ->
                    match __fan_1 with
                    | `EOI -> (x : 'entry_eoi )
-                   | _ -> assert false))))]));
+                   | _ -> failwith "x\n"))))]));
   entry_eoi
 let find_level ?position  entry =
   match entry.edesc with

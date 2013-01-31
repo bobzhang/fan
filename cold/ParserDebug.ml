@@ -58,7 +58,7 @@ let apply () =
               (`Normal, "`STR (_,_)"));
           `Slist0 (`Snterml ((Gram.obj (expr : 'expr Gram.t )), "."));
           `Snterm (Gram.obj (end_or_in : 'end_or_in Gram.t ))],
-           ("Gram.mk_action\n  (fun (x : 'end_or_in)  (args : 'expr list)  (__fan_2 : [> FanToken.t]) \n     (__fan_1 : [> FanToken.t])  (m : 'start_debug)  (_loc : FanLoc.t)  ->\n     match (__fan_2, __fan_1) with\n     | (`STR (_,fmt),`Lid section) ->\n         ((match (x, (debug_mode section)) with\n           | (None ,false ) -> `Id (_loc, (`Uid (_loc, \"()\")))\n           | (Some e,false ) -> e\n           | (None ,_) -> mk_debug _loc m fmt section args\n           | (Some e,_) ->\n               `LetIn\n                 (_loc, (`ReNil _loc),\n                   (`Bind\n                      (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))),\n                        (mk_debug _loc m fmt section args))), e)) : 'expr )\n     | _ -> assert false)\n",
+           ("Gram.mk_action\n  (fun (x : 'end_or_in)  (args : 'expr list)  (__fan_2 : [> FanToken.t]) \n     (__fan_1 : [> FanToken.t])  (m : 'start_debug)  (_loc : FanLoc.t)  ->\n     match (__fan_2, __fan_1) with\n     | (`STR (_,fmt),`Lid section) ->\n         ((match (x, (debug_mode section)) with\n           | (None ,false ) -> `Id (_loc, (`Uid (_loc, \"()\")))\n           | (Some e,false ) -> e\n           | (None ,_) -> mk_debug _loc m fmt section args\n           | (Some e,_) ->\n               `LetIn\n                 (_loc, (`ReNil _loc),\n                   (`Bind\n                      (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))),\n                        (mk_debug _loc m fmt section args))), e)) : 'expr )\n     | _ ->\n         failwith\n           \"match (x, (debug_mode section)) with\n| (None ,false ) -> `Id (_loc, (`Uid (_loc, \"()\")))\n| (Some e,false ) -> e\n| (None ,_) -> mk_debug _loc m fmt section args\n| (Some e,_) ->\n    `LetIn\n      (_loc, (`ReNil _loc),\n        (`Bind\n           (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))),\n             (mk_debug _loc m fmt section args))), e)\n\")\n",
              (Gram.mk_action
                 (fun (x : 'end_or_in)  (args : 'expr list) 
                    (__fan_2 : [> FanToken.t])  (__fan_1 : [> FanToken.t]) 
@@ -76,7 +76,9 @@ let apply () =
                                     (_loc, (`Id (_loc, (`Uid (_loc, "()")))),
                                       (mk_debug _loc m fmt section args))),
                                  e)) : 'expr )
-                   | _ -> assert false))))]));
+                   | _ ->
+                       failwith
+                         "match (x, (debug_mode section)) with\n| (None ,false ) -> `Id (_loc, (`Uid (_loc, \"()\")))\n| (Some e,false ) -> e\n| (None ,_) -> mk_debug _loc m fmt section args\n| (Some e,_) ->\n    `LetIn\n      (_loc, (`ReNil _loc),\n        (`Bind\n           (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))),\n             (mk_debug _loc m fmt section args))), e)\n"))))]));
   Gram.extend_single (end_or_in : 'end_or_in Gram.t )
     (None,
       (None, None,
@@ -95,19 +97,19 @@ let apply () =
         [([`Stoken
              (((function | `Lid "debug" -> true | _ -> false)),
                (`Normal, "`Lid \"debug\""))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid \"debug\" -> (None : 'start_debug )\n     | _ -> assert false)\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid \"debug\" -> (None : 'start_debug )\n     | _ -> failwith \"None\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Lid "debug" -> (None : 'start_debug )
-                   | _ -> assert false))));
+                   | _ -> failwith "None\n"))));
         ([`Stoken
             (((function | `Lid "camlp4_debug" -> true | _ -> false)),
               (`Normal, "`Lid \"camlp4_debug\""))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid \"camlp4_debug\" -> (Some \"Camlp4\" : 'start_debug )\n     | _ -> assert false)\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid \"camlp4_debug\" -> (Some \"Camlp4\" : 'start_debug )\n     | _ -> failwith \"Some \"Camlp4\"\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Lid "camlp4_debug" -> (Some "Camlp4" : 'start_debug )
-                  | _ -> assert false))))]))
+                  | _ -> failwith "Some \"Camlp4\"\n"))))]))
 let _ = AstParsers.register_parser ("debug", apply)

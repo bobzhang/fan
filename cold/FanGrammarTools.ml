@@ -227,6 +227,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
            match (e, p) with
            | (x::[],y::[]) -> (x, y)
            | _ -> ((tuple_com e), (tuple_com p)) in
+         let action_string = Ast2pt.to_string_expr act in
          `Fun
            (_loc,
              (`Case
@@ -244,7 +245,12 @@ let text_of_action (_loc : loc) (psl : symbol list)
                           (_loc, (`Case (_loc, patt, (`Nil _loc), e1)),
                             (`Case
                                (_loc, (`Any _loc), (`Nil _loc),
-                                 (`ExAsf _loc)))))))))) in
+                                 (`App
+                                    (_loc,
+                                      (`Id (_loc, (`Lid (_loc, "failwith")))),
+                                      (`Str
+                                         (_loc,
+                                           (String.escaped action_string)))))))))))))) in
    let (_,txt) =
      List.fold_lefti
        (fun i  txt  s  ->

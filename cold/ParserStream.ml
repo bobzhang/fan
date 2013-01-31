@@ -34,12 +34,12 @@ let apply () =
                [([`Stoken
                     (((function | `Uid _ -> true | _ -> false)),
                       (`Normal, "`Uid _"))],
-                  ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid n -> (n : 'e__1 ) | _ -> assert false)\n",
+                  ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid n -> (n : 'e__1 ) | _ -> failwith \"n\n\")\n",
                     (Gram.mk_action
                        (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                           match __fan_0 with
                           | `Uid n -> (n : 'e__1 )
-                          | _ -> assert false))))]);
+                          | _ -> failwith "n\n"))))]);
           `Sopt (`Snterm (Gram.obj (parser_ipatt : 'parser_ipatt Gram.t )));
           `Snterm (Gram.obj (parser_case_list : 'parser_case_list Gram.t ))],
            ("Gram.mk_action\n  (fun (pcl : 'parser_case_list)  (po : 'parser_ipatt option) \n     (name : 'e__1 option)  _  (_loc : FanLoc.t)  ->\n     (match name with\n      | Some o ->\n          Ref.protect FanStreamTools.grammar_module_name o\n            (fun _  -> cparser _loc po pcl)\n      | None  -> cparser _loc po pcl : 'expr ))\n",
@@ -60,12 +60,12 @@ let apply () =
               [([`Stoken
                    (((function | `Uid _ -> true | _ -> false)),
                      (`Normal, "`Uid _"))],
-                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid n -> (n : 'e__2 ) | _ -> assert false)\n",
+                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid n -> (n : 'e__2 ) | _ -> failwith \"n\n\")\n",
                    (Gram.mk_action
                       (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                          match __fan_0 with
                          | `Uid n -> (n : 'e__2 )
-                         | _ -> assert false))))]);
+                         | _ -> failwith "n\n"))))]);
          `Sopt (`Snterm (Gram.obj (parser_ipatt : 'parser_ipatt Gram.t )));
          `Snterm (Gram.obj (parser_case_list : 'parser_case_list Gram.t ))],
           ("Gram.mk_action\n  (fun (pcl : 'parser_case_list)  (po : 'parser_ipatt option) \n     (name : 'e__2 option)  _  _  (e : 'expr)  _  (_loc : FanLoc.t)  ->\n     (match name with\n      | Some o ->\n          Ref.protect FanStreamTools.grammar_module_name o\n            (fun _  -> cparser_match _loc e po pcl)\n      | None  -> cparser_match _loc e po pcl : 'expr ))\n",
@@ -157,13 +157,13 @@ let apply () =
                  `Stoken
                    (((function | `Uid _ -> true | _ -> false)),
                      (`Normal, "`Uid _"))],
-                  ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `Uid n -> (n : 'e__3 ) | _ -> assert false)\n",
+                  ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `Uid n -> (n : 'e__3 ) | _ -> failwith \"n\n\")\n",
                     (Gram.mk_action
                        (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t) 
                           ->
                           match __fan_1 with
                           | `Uid n -> (n : 'e__3 )
-                          | _ -> assert false))))])],
+                          | _ -> failwith "n\n"))))])],
            ("Gram.mk_action\n  (fun (name : 'e__3 option)  _  (_loc : FanLoc.t)  ->\n     (name : 'stream_begin ))\n",
              (Gram.mk_action
                 (fun (name : 'e__3 option)  _  (_loc : FanLoc.t)  ->

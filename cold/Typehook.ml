@@ -176,21 +176,21 @@ let _ =
                [([`Stoken
                     (((function | `Lid _ -> true | _ -> false)),
                       (`Normal, "`Lid _"))],
-                  ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__1 ) | _ -> assert false)\n",
+                  ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__1 ) | _ -> failwith \"x\n\")\n",
                     (Gram.mk_action
                        (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                           match __fan_0 with
                           | `Lid x -> (x : 'e__1 )
-                          | _ -> assert false))));
+                          | _ -> failwith "x\n"))));
                ([`Stoken
                    (((function | `Uid _ -> true | _ -> false)),
                      (`Normal, "`Uid _"))],
-                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid x -> (x : 'e__1 ) | _ -> assert false)\n",
+                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid x -> (x : 'e__1 ) | _ -> failwith \"x\n\")\n",
                    (Gram.mk_action
                       (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                          match __fan_0 with
                          | `Uid x -> (x : 'e__1 )
-                         | _ -> assert false))))]);
+                         | _ -> failwith "x\n"))))]);
           `Skeyword ")"],
            ("Gram.mk_action\n  (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_add plugins; `Nil _loc : 'fan_quot ))\n",
              (Gram.mk_action
@@ -202,21 +202,21 @@ let _ =
                [([`Stoken
                     (((function | `Lid _ -> true | _ -> false)),
                       (`Normal, "`Lid _"))],
-                  ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__2 ) | _ -> assert false)\n",
+                  ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__2 ) | _ -> failwith \"x\n\")\n",
                     (Gram.mk_action
                        (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                           match __fan_0 with
                           | `Lid x -> (x : 'e__2 )
-                          | _ -> assert false))));
+                          | _ -> failwith "x\n"))));
                ([`Stoken
                    (((function | `Uid _ -> true | _ -> false)),
                      (`Normal, "`Uid _"))],
-                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid x -> (x : 'e__2 ) | _ -> assert false)\n",
+                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid x -> (x : 'e__2 ) | _ -> failwith \"x\n\")\n",
                    (Gram.mk_action
                       (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                          match __fan_0 with
                          | `Uid x -> (x : 'e__2 )
-                         | _ -> assert false))))]), (`Skeyword ","))],
+                         | _ -> failwith "x\n"))))]), (`Skeyword ","))],
           ("Gram.mk_action\n  (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_remove plugins; `Nil _loc : 'fan_quot ))\n",
             (Gram.mk_action
                (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->
@@ -270,7 +270,7 @@ let _ =
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) ->\n         (let keep = FanState.keep and cf = FanState.current_filters in\n          let fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\n          (try\n             let fan_res__2 =\n               FanState.reset ();\n               FanBasic.parse_include_file PreCast.Syntax.str_items s in\n             let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\n           with\n           | fan_e__3 ->\n               ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)) : \n         'include_quot )\n     | _ -> assert false)\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) ->\n         (let keep = FanState.keep and cf = FanState.current_filters in\n          let fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\n          (try\n             let fan_res__2 =\n               FanState.reset ();\n               FanBasic.parse_include_file PreCast.Syntax.str_items s in\n             let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\n           with\n           | fan_e__3 ->\n               ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)) : \n         'include_quot )\n     | _ ->\n         failwith\n           \"let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.str_items s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
@@ -290,7 +290,9 @@ let _ =
                          | fan_e__3 ->
                              ((keep := fan_keep__0; cf := fan_cf__1);
                               raise fan_e__3)) : 'include_quot )
-                   | _ -> assert false))))]))
+                   | _ ->
+                       failwith
+                         "let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.str_items s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n"))))]))
 let g = Gram.create_gram ()
 let save_quot = Gram.mk "save_quot"
 let _ =
@@ -302,13 +304,13 @@ let _ =
                 [([`Stoken
                      (((function | `Lid _ -> true | _ -> false)),
                        (`Normal, "`Lid _"))],
-                   ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__4 ) | _ -> assert false)\n",
+                   ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__4 ) | _ -> failwith \"x\n\")\n",
                      (Gram.mk_action
                         (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
                            ->
                            match __fan_0 with
                            | `Lid x -> (x : 'e__4 )
-                           | _ -> assert false))))]);
+                           | _ -> failwith "x\n"))))]);
           `Skeyword "->";
           `Snterm (Gram.obj (Syntax.expr : 'Syntax__expr Gram.t ))],
            ("Gram.mk_action\n  (fun (b : 'Syntax__expr)  _  (ls : 'e__4 list)  (_loc : FanLoc.t)  ->\n     (let symbs = List.map (fun x  -> FanState.gensym x) ls in\n      let res = FanState.gensym \"res\" in\n      let exc = FanState.gensym \"e\" in\n      let binds =\n        and_of_list\n          (List.map2\n             (fun x  y  ->\n                `Bind\n                  (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                    (`Dot\n                       (_loc, (`Id (_loc, (`Lid (_loc, y)))),\n                         (`Id (_loc, (`Lid (_loc, \"contents\")))))))) symbs ls) in\n      let restore =\n        seq_sem\n          (List.map2\n             (fun x  y  ->\n                `Assign\n                  (_loc,\n                    (`Dot\n                       (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                         (`Id (_loc, (`Lid (_loc, \"contents\")))))),\n                    (`Id (_loc, (`Lid (_loc, y)))))) ls symbs) in\n      `LetIn\n        (_loc, (`ReNil _loc), binds,\n          (`Try\n             (_loc,\n               (`LetIn\n                  (_loc, (`ReNil _loc),\n                    (`Bind (_loc, (`Id (_loc, (`Lid (_loc, res)))), b)),\n                    (`LetIn\n                       (_loc, (`ReNil _loc),\n                         (`Bind (_loc, (`Any _loc), restore)),\n                         (`Id (_loc, (`Lid (_loc, res)))))))),\n               (`Case\n                  (_loc, (`Id (_loc, (`Lid (_loc, exc)))), (`Nil _loc),\n                    (`Seq\n                       (_loc,\n                         (`Sem\n                            (_loc, restore,\n                              (`App\n                                 (_loc, (`Id (_loc, (`Lid (_loc, \"raise\")))),\n                                   (`Id (_loc, (`Lid (_loc, exc))))))))))))))) : \n     'save_quot ))\n",

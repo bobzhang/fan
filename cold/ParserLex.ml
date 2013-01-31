@@ -38,13 +38,13 @@ let _ =
                          (`Normal, "`Lid _"));
                     `Skeyword ":";
                     `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
-                     ("Gram.mk_action\n  (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> ((x, r) : 'e__2 ) | _ -> assert false)\n",
+                     ("Gram.mk_action\n  (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid x -> ((x, r) : 'e__2 )\n     | _ -> failwith \"(x, r)\n\")\n",
                        (Gram.mk_action
                           (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t]) 
                              (_loc : FanLoc.t)  ->
                              match __fan_0 with
                              | `Lid x -> ((x, r) : 'e__2 )
-                             | _ -> assert false))))];
+                             | _ -> failwith "(x, r)\n"))))];
                `Skeyword ";"],
                (Gram.Action.mk
                   (Gram.sfold1sep
@@ -120,12 +120,12 @@ let _ =
         ([`Stoken
             (((function | `STR (_,_) -> true | _ -> false)),
               (`Normal, "`STR (_,_)"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (s,_) -> (FanLexTools.of_string s : 'regexp )\n     | _ -> assert false)\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (s,_) -> (FanLexTools.of_string s : 'regexp )\n     | _ -> failwith \"FanLexTools.of_string s\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `STR (s,_) -> (FanLexTools.of_string s : 'regexp )
-                  | _ -> assert false))));
+                  | _ -> failwith "FanLexTools.of_string s\n"))));
         ([`Skeyword "[";
          `Snterm (Gram.obj (ch_class : 'ch_class Gram.t ));
          `Skeyword "]"],
@@ -143,7 +143,7 @@ let _ =
                   'regexp )))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)), (`Normal, "`Lid _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find FanLexTools.named_regexps x\n           with\n           | Not_found  ->\n               failwithf \"referenced to unbound named  regexp  `%s'\" x) : \n         'regexp )\n     | _ -> assert false)\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find FanLexTools.named_regexps x\n           with\n           | Not_found  ->\n               failwithf \"referenced to unbound named  regexp  `%s'\" x) : \n         'regexp )\n     | _ ->\n         failwith\n           \"try Hashtbl.find FanLexTools.named_regexps x\nwith | Not_found  -> failwithf \"referenced to unbound named  regexp  `%s'\" x\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
@@ -154,23 +154,25 @@ let _ =
                             failwithf
                               "referenced to unbound named  regexp  `%s'" x) : 
                       'regexp )
-                  | _ -> assert false))))])]);
+                  | _ ->
+                      failwith
+                        "try Hashtbl.find FanLexTools.named_regexps x\nwith | Not_found  -> failwithf \"referenced to unbound named  regexp  `%s'\" x\n"))))])]);
   Gram.extend_single (chr : 'chr Gram.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `CHAR (_,_) -> true | _ -> false)),
                (`Normal, "`CHAR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `CHAR (c,_) -> (Char.code c : 'chr )\n     | _ -> assert false)\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `CHAR (c,_) -> (Char.code c : 'chr )\n     | _ -> failwith \"Char.code c\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `CHAR (c,_) -> (Char.code c : 'chr )
-                   | _ -> assert false))));
+                   | _ -> failwith "Char.code c\n"))));
         ([`Stoken
             (((function | `INT (_,_) -> true | _ -> false)),
               (`Normal, "`INT (_,_)"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `INT (i,s) ->\n         (if (i >= 0) && (i <= LexSet.max_code)\n          then i\n          else failwithf \"Invalid Unicode code point:%s\" s : 'chr )\n     | _ -> assert false)\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `INT (i,s) ->\n         (if (i >= 0) && (i <= LexSet.max_code)\n          then i\n          else failwithf \"Invalid Unicode code point:%s\" s : 'chr )\n     | _ ->\n         failwith\n           \"if (i >= 0) && (i <= LexSet.max_code)\nthen i\nelse failwithf \"Invalid Unicode code point:%s\" s\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
@@ -179,7 +181,9 @@ let _ =
                        then i
                        else failwithf "Invalid Unicode code point:%s" s : 
                       'chr )
-                  | _ -> assert false))))]));
+                  | _ ->
+                      failwith
+                        "if (i >= 0) && (i <= LexSet.max_code)\nthen i\nelse failwithf \"Invalid Unicode code point:%s\" s\n"))))]));
   Gram.extend_single (ch_class : 'ch_class Gram.t )
     (None,
       (None, None,
@@ -203,7 +207,7 @@ let _ =
         ([`Stoken
             (((function | `STR (_,_) -> true | _ -> false)),
               (`Normal, "`STR (_,_)"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (s,_) ->\n         (let c = ref LexSet.empty in\n          (for i = 0 to (String.length s) - 1 do\n             c :=\n               (LexSet.union c.contents\n                  (LexSet.singleton (Char.code (s.[i]))))\n           done;\n           c.contents) : 'ch_class )\n     | _ -> assert false)\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (s,_) ->\n         (let c = ref LexSet.empty in\n          (for i = 0 to (String.length s) - 1 do\n             c :=\n               (LexSet.union c.contents\n                  (LexSet.singleton (Char.code (s.[i]))))\n           done;\n           c.contents) : 'ch_class )\n     | _ ->\n         failwith\n           \"let c = ref LexSet.empty in\nfor i = 0 to (String.length s) - 1 do\n  c := (LexSet.union c.contents (LexSet.singleton (Char.code (s.[i]))))\ndone;\nc.contents\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
@@ -215,7 +219,9 @@ let _ =
                                (LexSet.singleton (Char.code (s.[i]))))
                         done;
                         c.contents) : 'ch_class )
-                  | _ -> assert false))))]))
+                  | _ ->
+                      failwith
+                        "let c = ref LexSet.empty in\nfor i = 0 to (String.length s) - 1 do\n  c := (LexSet.union c.contents (LexSet.singleton (Char.code (s.[i]))))\ndone;\nc.contents\n"))))]))
 let d = `Absolute ["Fan"; "Lang"; "Lex"]
 let _ = AstQuotation.of_expr ~name:(d, "lex") ~entry:lex
 let _ = AstQuotation.of_str_item ~name:(d, "reg") ~entry:declare_regexp

@@ -74,7 +74,7 @@ let apply () =
           `Stoken
             (((function | `STR (_,_) -> true | _ -> false)),
               (`Normal, "`STR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,fname) ->\n         (Lazy (lazy (FanBasic.parse_include_file str_items fname)) : \n         'macro_def )\n     | _ -> assert false)\n",
+           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,fname) ->\n         (Lazy (lazy (FanBasic.parse_include_file str_items fname)) : \n         'macro_def )\n     | _ ->\n         failwith\n           \"Lazy (lazy (FanBasic.parse_include_file str_items fname))\n\")\n",
              (Gram.mk_action
                 (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                    match __fan_1 with
@@ -82,7 +82,9 @@ let apply () =
                        (Lazy
                           (lazy (FanBasic.parse_include_file str_items fname)) : 
                        'macro_def )
-                   | _ -> assert false))))]));
+                   | _ ->
+                       failwith
+                         "Lazy (lazy (FanBasic.parse_include_file str_items fname))\n"))))]));
    Gram.extend_single (macro_def_sig : 'macro_def_sig Gram.t )
      (None,
        (None, None,
@@ -124,7 +126,7 @@ let apply () =
           `Stoken
             (((function | `STR (_,_) -> true | _ -> false)),
               (`Normal, "`STR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,fname) ->\n         (Lazy (lazy (FanBasic.parse_include_file sig_items fname)) : \n         'macro_def_sig )\n     | _ -> assert false)\n",
+           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,fname) ->\n         (Lazy (lazy (FanBasic.parse_include_file sig_items fname)) : \n         'macro_def_sig )\n     | _ ->\n         failwith\n           \"Lazy (lazy (FanBasic.parse_include_file sig_items fname))\n\")\n",
              (Gram.mk_action
                 (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                    match __fan_1 with
@@ -132,7 +134,9 @@ let apply () =
                        (Lazy
                           (lazy (FanBasic.parse_include_file sig_items fname)) : 
                        'macro_def_sig )
-                   | _ -> assert false))))]));
+                   | _ ->
+                       failwith
+                         "Lazy (lazy (FanBasic.parse_include_file sig_items fname))\n"))))]));
    Gram.extend_single (uident_eval_ifdef : 'uident_eval_ifdef Gram.t )
      (None,
        (None, None,
@@ -304,13 +308,13 @@ let apply () =
                  [([`Stoken
                       (((function | `Lid _ -> true | _ -> false)),
                         (`Normal, "`Lid _"))],
-                    ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__5 ) | _ -> assert false)\n",
+                    ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__5 ) | _ -> failwith \"x\n\")\n",
                       (Gram.mk_action
                          (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
                             ->
                             match __fan_0 with
                             | `Lid x -> (x : 'e__5 )
-                            | _ -> assert false))))]), (`Skeyword ","));
+                            | _ -> failwith "x\n"))))]), (`Skeyword ","));
            `Skeyword ")";
            `Skeyword "=";
            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
@@ -357,7 +361,7 @@ let apply () =
           `Sself;
           `Skeyword "IN";
           `Sself],
-           ("Gram.mk_action\n  (fun (body : 'expr)  _  (def : 'expr)  _  (__fan_1 : [> FanToken.t])  _ \n     (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid i -> (((new Expr.subst) _loc [(i, def)])#expr body : 'expr )\n     | _ -> assert false)\n",
+           ("Gram.mk_action\n  (fun (body : 'expr)  _  (def : 'expr)  _  (__fan_1 : [> FanToken.t])  _ \n     (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid i -> (((new Expr.subst) _loc [(i, def)])#expr body : 'expr )\n     | _ -> failwith \"((new Expr.subst) _loc [(i, def)])#expr body\n\")\n",
              (Gram.mk_action
                 (fun (body : 'expr)  _  (def : 'expr)  _ 
                    (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
@@ -365,7 +369,9 @@ let apply () =
                    | `Lid i ->
                        (((new Expr.subst) _loc [(i, def)])#expr body : 
                        'expr )
-                   | _ -> assert false))))]));
+                   | _ ->
+                       failwith
+                         "((new Expr.subst) _loc [(i, def)])#expr body\n"))))]));
    Gram.extend_single (patt : 'patt Gram.t )
      (None,
        (None, None,
@@ -399,12 +405,12 @@ let apply () =
          [([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"))],
-            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid i -> (i : 'uident ) | _ -> assert false)\n",
+            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Uid i -> (i : 'uident ) | _ -> failwith \"i\n\")\n",
               (Gram.mk_action
                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
                     | `Uid i -> (i : 'uident )
-                    | _ -> assert false))))]));
+                    | _ -> failwith "i\n"))))]));
    Gram.extend_single (expr : 'expr Gram.t )
      ((Some (`Before "simple")),
        (None, None,
