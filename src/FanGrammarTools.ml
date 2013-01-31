@@ -273,9 +273,10 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
       [ ([],_) ->  {| fun ($locid :FanLoc.t) -> $e1 |}
       | (e,p) ->
           let (expr,patt) =
-            match (e,p) with [([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p)] in 
+            match (e,p) with [([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p)] in
+          let action_string = Ast2pt.to_string_expr act in
           {|fun ($locid :FanLoc.t) ->
-            match $expr with [ $(pat:patt) -> $e1 | _ -> assert false]|} ] in
+            match $expr with [ $(pat:patt) -> $e1 | _ -> failwith $`str:action_string (* assert false *)]|} ] in
   let (_,txt) =
     List.fold_lefti
       (fun i txt s ->
