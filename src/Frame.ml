@@ -261,10 +261,10 @@ let fun_of_tydcl
           let info =
           List.mapi
             (fun i x ->  match x with
-              [ {label;is_mutable;ctyp} ->
-                     {info = (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) i ctyp  ;
-                      label = label;
-                      is_mutable = is_mutable}
+              [ {col_label;col_mutable;col_ctyp} ->
+                     {re_info = (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) i col_ctyp  ;
+                      re_label = col_label;
+                      re_mutable = col_mutable}
               ] ) cols in
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)

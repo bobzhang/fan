@@ -9,9 +9,9 @@ type vrn =
   | TyAbstr 
 type trail_info = (vrn* int) 
 type col =  {
-  label: string;
-  is_mutable: bool;
-  ctyp: ctyp} 
+  col_label: string;
+  col_mutable: bool;
+  col_ctyp: ctyp} 
 type ty_info = 
   {
   name_expr: expr;
@@ -26,9 +26,9 @@ type ty_info =
 type vbranch = [ `variant of (string* ctyp list) | `abbrev of ident] 
 type branch = [ `branch of (string* ctyp list)] 
 type record_col =  {
-  label: string;
-  is_mutable: bool;
-  info: ty_info} 
+  re_label: string;
+  re_mutable: bool;
+  re_info: ty_info} 
 type record_info = record_col list 
 type basic_id_transform =
   [ `Pre of string | `Post of string | `Fun of string id] 

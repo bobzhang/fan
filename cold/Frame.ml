@@ -192,13 +192,13 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
               List.mapi
                 (fun i  x  ->
                    match x with
-                   | { label; is_mutable; ctyp } ->
+                   | { col_label; col_mutable; col_ctyp } ->
                        {
-                         info =
+                         re_info =
                            (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp i
-                              ctyp);
-                         label;
-                         is_mutable
+                              col_ctyp);
+                         re_label = col_label;
+                         re_mutable = col_mutable
                        }) cols in
             mk_prefix ~names ~left_type_variable tyvars
               (currying ~arity

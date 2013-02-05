@@ -57,8 +57,9 @@ let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
 let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi
-      (fun i  ({ label;_} : col)  ->
-         `PaEq (_loc, (`Lid (_loc, label)), (`Id (_loc, (xid ~off i))))) cols in
+      (fun i  ({ col_label;_} : col)  ->
+         `PaEq (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i)))))
+      cols in
   let res =
     zfold_left ~start:1 ~until:(arity - 1)
       ~acc:(`PaRec (_loc, (FanAst.sem_of_list (mk_list 0))))

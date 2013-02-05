@@ -23,7 +23,7 @@ let mk_variant_eq _cons : list FSig.ty_info  -> expr  = with expr fun
   
 let mk_tuple_eq exprs = mk_variant_eq "" exprs ;
 let mk_record_eq : list FSig.record_col -> expr  = fun cols -> 
-    cols |> List.map (fun [ {(* FSig. *)info;_} -> info])
+    cols |> List.map (fun [ {re_info;_} -> re_info])
          |> mk_variant_eq "" ;
     
 let (gen_eq,gen_eqobj) = with expr
@@ -56,7 +56,7 @@ let (gen_fold,gen_fold2) = with expr
             List.reduce_right (fun v acc -> {| let self = $v in $acc |}) ls ]) in
   let mk_tuple  = mk_variant ""  in 
   let mk_record cols =
-    cols |> List.map (fun [ {info ; _ } -> info ] )
+    cols |> List.map (fun [ {re_info ; _ } -> re_info ] )
          |> mk_variant "" in 
   (gen_object ~kind:Fold ~mk_tuple ~mk_record
      ~base:"foldbase" ~class_name:"fold" ~mk_variant ~names:[] (),
@@ -93,11 +93,11 @@ let (gen_map,gen_map2) = with expr
     (* (->label,info.exp0) *)
     let result = 
     cols |> List.map
-      (fun [ {label; info=({(* id_expr; *)exp0;_ } as info) ; _ }  ->
+      (fun [ {re_label; re_info=({exp0;_ } as info) ; _ }  ->
         let _ = Obj.repr info in
-        (label,exp0) ] )  |> mk_record   in
+        (re_label,exp0) ] )  |> mk_record   in
     List.fold_right
-      (fun {info={expr;pat0;_};_} res ->
+      (fun {re_info={expr;pat0;_};_} res ->
         {|let $pat:pat0 = $expr in $res |}) cols result in
   (gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
@@ -144,10 +144,10 @@ let gen_strip = with {patt:ctyp;expr}
         | _ -> {|let $pat:pat0 = $expr in $res |}]) params result in 
   let mk_record cols =
     let result = 
-    cols |> List.map (fun [ {label; info={exp0;_ } ; _ }  ->
-          (label,exp0) ] )  |> mk_record   in
+    cols |> List.map (fun [ {re_label; re_info={exp0;_ } ; _ }  ->
+          (re_label,exp0) ] )  |> mk_record   in
     List.fold_right
-      (fun {info={expr;pat0;ty;_};_} res ->
+      (fun {re_info={expr;pat0;ty;_};_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|}
         | {|list string|}  | {|FanUtil.anti_cxt|} | {| meta_list string|} ->
@@ -175,7 +175,7 @@ let mk_variant_meta_expr cons params = with expr
       |> List.fold_left mee_app (mee_of_str cons)  ;
         
 let mk_record_meta_expr cols = cols |> List.map
-  (fun [ {label; info={expr;_};_} -> (label, expr)]) |> mk_record_ee ;
+  (fun [ {re_label; re_info={expr;_};_} -> (re_label, expr)]) |> mk_record_ee ;
 
 let mk_tuple_meta_expr params =
     params |> List.map (fun [{expr;_} -> expr]) |> mk_tuple_ee ;
@@ -196,8 +196,8 @@ let mk_variant_meta_patt cons params = with expr
       |> List.fold_left mep_app (mep_of_str cons);
         
 let mk_record_meta_patt cols = cols |> List.map
-      (fun [ {label; info={expr;_};_}
-             -> (label, expr)])
+      (fun [ {re_label; re_info={expr;_};_}
+             -> (re_label, expr)])
          |> mk_record_ep ;
 
 let mk_tuple_meta_patt params = params |> List.map
@@ -250,10 +250,10 @@ let mk_tuple_print params =
     
 let mk_record_print cols = 
     let pre = cols
-       |> List.map (fun [ {label;_} -> label^":%a" ])
+       |> List.map (fun [ {re_label;_} -> re_label^":%a" ])
        |>  mkfmt "@[<hv 1>{" ";@," "}@]" in
     appl_of_list [pre :: 
-                  (cols |> List.map(fun [ {info;_} -> info ])
+                  (cols |> List.map(fun [ {re_info;_} -> re_info ])
                   |> extract )] (* apply pre *)  ;
   
 let gen_print =
@@ -286,7 +286,7 @@ let mk_record_iter cols = with expr
   let lst =
     cols |>
     List.map
-    (fun [{info={name_expr; id_expr;_};_} -> {| $name_expr $id_expr |}]) in
+    (fun [{re_info={name_expr; id_expr;_};_} -> {| $name_expr $id_expr |}]) in
   {|begin $list:lst end |};
 
 let gen_iter =
