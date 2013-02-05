@@ -42,7 +42,7 @@ let level_number entry lab =
  *)
     
 
-module ArgContainer= LStack(* Queue *);    
+module ArgContainer= Stack(* Queue *);    
 (*
   It outputs a stateful parser, but it is functional itself
  *)    

@@ -156,6 +156,14 @@ module List =
           (match f x with
            | Some y -> y :: (filter_map f xs)
            | None  -> filter_map f xs)
+    let take_rev n lst =
+      let rec aux n l acc =
+        match l with
+        | [] -> acc
+        | x::xs -> if n = 1 then x :: acc else aux (n - 1) xs (x :: acc) in
+      if n < 0
+      then invalid_arg "List.take_rev n<0"
+      else if n = 0 then [] else aux n lst []
   end
 module type MAP =
   sig
@@ -250,6 +258,40 @@ module Return =
       (let module M = struct exception Return of u end in
          try f (fun x  -> M.Return x) with | M.Return u -> u : u )
     let with_label = label
+  end
+module LStack =
+  struct
+    type 'a t =  {
+      mutable elts: 'a list;
+      mutable length: int} 
+    exception Empty
+    let invariant t = assert (t.length = (List.length t.elts))
+    let create () = { elts = []; length = 0 }
+    let set t elts length = t.elts <- elts; t.length <- length
+    let push x t = set t (x :: (t.elts)) (t.length + 1)
+    let pop_exn t =
+      match t.elts with
+      | [] -> raise Empty
+      | x::l -> (set t l (t.length - 1); x)
+    let pop t = try Some (pop_exn t) with | Empty  -> None
+    let top_exn t = match t.elts with | [] -> raise Empty | x::_ -> x
+    let top t = try Some (top_exn t) with | Empty  -> None
+    let clear t = set t [] 0
+    let copy t = { elts = (t.elts); length = (t.length) }
+    let length t = t.length
+    let is_empty t = t.length = 0
+    let iter t ~f  = List.iter f t.elts
+    let fold t ~init  ~f  = List.fold_left f init t.elts
+    let topn_rev n t = List.take_rev n t.elts
+    let exists t ~f  = List.exists f t.elts
+    let for_all t ~f  = List.for_all f t.elts
+    let find_map t ~f  = List.find_map f t.elts
+    let to_list t = t.elts
+    let of_list l = { elts = l; length = (List.length l) }
+    let to_array t = Array.of_list t.elts
+    let until_empty t f =
+      let rec loop () = if t.length > 0 then (f (pop_exn t); loop ()) in
+      loop ()
   end
 module String =
   struct

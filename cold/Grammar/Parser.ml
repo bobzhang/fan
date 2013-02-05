@@ -82,7 +82,7 @@ let rec parser_of_tree entry (lev,assoc) (q : Action.t ArgContainer.t) x =
                   ())) in
   let parse = from_tree x in
   fun strm  ->
-    let (_arity,symbols,action,parse) = parse strm in
+    let (_arity,_symbols,_action,parse) = parse strm in
     let ans = ref parse in
     for _i = 1 to _arity do
       (let v = ArgContainer.pop q in ans := (Action.getf ans.contents v))
