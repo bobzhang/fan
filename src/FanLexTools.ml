@@ -131,7 +131,7 @@ let compile ~part_tbl (rs: array regexp) =
       end] in
   let init = ref [] in begin 
     Array.iter (fun (i,_) -> init := add_node !init i) rs;
-    ignore (aux !init);
+    ignore(aux !init);
     Array.init !counter (fun id -> List.assoc id !states_def)
   end;
 
