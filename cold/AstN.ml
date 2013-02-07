@@ -45,7 +45,7 @@ and patt =
     ant
   | literal | `Alias of (patt* alident) | `Array of patt
   | `Label of (alident* patt) | `PaOlbi of (alident* patt* expr meta_option)
-  | `Or of (patt* patt) | `PaRng of (patt* patt) | `PaRec of rec_patt
+  | `Or of (patt* patt) | `PaRng of (patt* patt) | `Record of rec_patt
   | `Constraint of (patt* ctyp) | `ClassPath of ident | `Lazy of patt
   | `ModuleUnpack of (auident* ctyp meta_option)] 
 and rec_patt =

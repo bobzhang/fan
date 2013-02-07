@@ -426,9 +426,9 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
             let _a2 = self#patt _a2 _b2 in `PaRng (_a0, _a1, _a2)
-        | (`PaRec (_a0,_a1),`PaRec (_b0,_b1)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#rec_patt _a1 _b1 in `PaRec (_a0, _a1)
+            let _a1 = self#rec_patt _a1 _b1 in `Record (_a0, _a1)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
@@ -1359,7 +1359,7 @@ class fold2 =
         | (`PaRng (_a0,_a1,_a2),`PaRng (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#patt _a2 _b2
-        | (`PaRec (_a0,_a1),`PaRec (_b0,_b1)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#rec_patt _a1 _b1
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -2016,7 +2016,7 @@ class iter =
            self#meta_option (fun self  -> self#expr) _a3)
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
       | `PaRng (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
-      | `PaRec (_a0,_a1) -> (self#loc _a0; self#rec_patt _a1)
+      | `Record (_a0,_a1) -> (self#loc _a0; self#rec_patt _a1)
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#ctyp _a2)
       | `ClassPath (_a0,_a1) -> (self#loc _a0; self#ident _a1)
@@ -2677,9 +2677,9 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
           let _a2 = self#patt _a2 in `PaRng (_a0, _a1, _a2)
-      | `PaRec (_a0,_a1) ->
+      | `Record (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#rec_patt _a1 in `PaRec (_a0, _a1)
+          let _a1 = self#rec_patt _a1 in `Record (_a0, _a1)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
@@ -3475,7 +3475,7 @@ class fold =
       | `PaRng (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#patt _a2
-      | `PaRec (_a0,_a1) -> let self = self#loc _a0 in self#rec_patt _a1
+      | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_patt _a1
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#ctyp _a2
@@ -4175,8 +4175,8 @@ and pp_print_patt fmt =
   | `PaRng (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_patt _a2
-  | `PaRec (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`PaRec@ %a@ %a)@]" pp_print_loc _a0
+  | `Record (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_patt _a1
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -4954,8 +4954,8 @@ class print =
         | `PaRng (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#patt _a2
-        | `PaRec (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`PaRec@ %a@ %a)@]" self#loc _a0
+        | `Record (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#loc _a0
               self#rec_patt _a1
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
@@ -5735,7 +5735,7 @@ class eq =
         | (`PaRng (_a0,_a1,_a2),`PaRng (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#patt _a2 _b2)
-        | (`PaRec (_a0,_a1),`PaRec (_b0,_b1)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#rec_patt _a1 _b1)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
@@ -6342,7 +6342,6 @@ let loc_of =
   | `Module (_loc,_,_) -> _loc
   | `ExAsf _loc -> _loc
   | `PackageModule (_loc,_) -> _loc
-  | `PaRec (_loc,_) -> _loc
   | `CeLet (_loc,_,_,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ViNil _loc -> _loc
@@ -6582,7 +6581,7 @@ and strip_loc_patt =
   | `PaRng (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_patt _a2 in `PaRng (_a1, _a2)
-  | `PaRec (_a0,_a1) -> let _a1 = strip_loc_rec_patt _a1 in `PaRec _a1
+  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_patt _a1 in `Record _a1
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Constraint (_a1, _a2)
@@ -7058,7 +7057,7 @@ module MPatt =
       | true  -> `Id (_loc, (`Lid (_loc, "true")))
       | false  -> `Id (_loc, (`Lid (_loc, "false")))
     let meta_ref mf_a _loc i =
-      `PaRec
+      `Record
         (_loc,
           (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
     let mklist loc =
@@ -7659,10 +7658,10 @@ module Make(MetaLoc:META_LOC) =
                        (`App
                           (_loc, (`Vrn (_loc, "PaRng")), (meta_loc _loc _a0))),
                        (meta_patt _loc _a1))), (meta_patt _loc _a2))
-          | `PaRec (_a0,_a1) ->
+          | `Record (_a0,_a1) ->
               `App
                 (_loc,
-                  (`App (_loc, (`Vrn (_loc, "PaRec")), (meta_loc _loc _a0))),
+                  (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
                   (meta_rec_patt _loc _a1))
           | `Constraint (_a0,_a1,_a2) ->
               `App
@@ -9335,10 +9334,10 @@ module Make(MetaLoc:META_LOC) =
                        (`App
                           (_loc, (`Vrn (_loc, "PaRng")), (meta_loc _loc _a0))),
                        (meta_patt _loc _a1))), (meta_patt _loc _a2))
-          | `PaRec (_a0,_a1) ->
+          | `Record (_a0,_a1) ->
               `App
                 (_loc,
-                  (`App (_loc, (`Vrn (_loc, "PaRec")), (meta_loc _loc _a0))),
+                  (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
                   (meta_rec_patt _loc _a1))
           | `Constraint (_a0,_a1,_a2) ->
               `App
@@ -10806,7 +10805,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `Any _loc -> true
   | `Nil _loc -> true
   | `Alias (_loc,x,_) -> is_irrefut_patt x
-  | `PaRec (_loc,p) ->
+  | `Record (_loc,p) ->
       List.for_all
         (function | `RecBind (_,_,p) -> is_irrefut_patt p | _ -> true)
         (list_of_sem' p [])

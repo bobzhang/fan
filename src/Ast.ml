@@ -213,7 +213,7 @@
      | `PaOlbi of (loc * alident * patt * meta_option expr)
      | `Or of (loc * patt * patt) (* p | p *)
      | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
-     | `PaRec of (loc * rec_patt) (* { p } *)
+     | (* `Record *) `Record of (loc * rec_patt) (* { p } *)
      | `Constraint of (loc * patt * ctyp) (* (p : t) *)
      | `ClassPath of (loc * ident) (* #i *)
      | `Lazy of (loc * patt) (* lazy p *)

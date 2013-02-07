@@ -2659,10 +2659,10 @@ let apply () =
          ([`Skeyword "{";
           `Snterm (Gram.obj (label_patt_list : 'label_patt_list Gram.t ));
           `Skeyword "}"],
-           ("Gram.mk_action\n  (fun _  (pl : 'label_patt_list)  _  (_loc : FanLoc.t)  ->\n     (`PaRec (_loc, pl) : 'patt ))\n",
+           ("Gram.mk_action\n  (fun _  (pl : 'label_patt_list)  _  (_loc : FanLoc.t)  ->\n     (`Record (_loc, pl) : 'patt ))\n",
              (Gram.mk_action
                 (fun _  (pl : 'label_patt_list)  _  (_loc : FanLoc.t)  ->
-                   (`PaRec (_loc, pl) : 'patt )))));
+                   (`Record (_loc, pl) : 'patt )))));
          ([`Skeyword "("; `Skeyword ")"],
            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Id (_loc, (`Uid (_loc, \"()\"))) : 'patt ))\n",
              (Gram.mk_action
@@ -2904,10 +2904,10 @@ let apply () =
          [([`Skeyword "{";
            `Snterm (Gram.obj (label_patt_list : 'label_patt_list Gram.t ));
            `Skeyword "}"],
-            ("Gram.mk_action\n  (fun _  (pl : 'label_patt_list)  _  (_loc : FanLoc.t)  ->\n     (`PaRec (_loc, pl) : 'ipatt ))\n",
+            ("Gram.mk_action\n  (fun _  (pl : 'label_patt_list)  _  (_loc : FanLoc.t)  ->\n     (`Record (_loc, pl) : 'ipatt ))\n",
               (Gram.mk_action
                  (fun _  (pl : 'label_patt_list)  _  (_loc : FanLoc.t)  ->
-                    (`PaRec (_loc, pl) : 'ipatt )))));
+                    (`Record (_loc, pl) : 'ipatt )))));
          ([`Stoken
              (((function
                 | `Ant ((""|"pat"|"anti"|"tup"),_) -> true

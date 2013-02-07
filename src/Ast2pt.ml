@@ -425,7 +425,7 @@ let rec patt (x:patt) =
             let c2 = char_of_char_token loc2 c2 in
            mkrangepat loc c1 c2
          | _ -> error loc "range pattern allowed only for characters" ]
-         | `PaRec (loc,p) ->
+         | `Record (loc,p) ->
              let ps = list_of_sem' p [] in (* precise*)
              let is_wildcard = fun [ {| _ |} -> true | _ -> false ] in
              let (wildcards,ps) = List.partition is_wildcard ps in

@@ -380,7 +380,7 @@ let rec patt (x : patt) =
            let c1 = char_of_char_token loc1 c1 in
            let c2 = char_of_char_token loc2 c2 in mkrangepat loc c1 c2
        | _ -> error loc "range pattern allowed only for characters")
-  | `PaRec (loc,p) ->
+  | `Record (loc,p) ->
       let ps = list_of_sem' p [] in
       let is_wildcard = function | `Any _loc -> true | _ -> false in
       let (wildcards,ps) = List.partition is_wildcard ps in

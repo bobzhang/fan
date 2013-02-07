@@ -65,7 +65,7 @@ module Patt =
       | true  -> `Id (_loc, (`Lid (_loc, "true")))
       | false  -> `Id (_loc, (`Lid (_loc, "false")))
     let meta_ref mf_a _loc i =
-      `PaRec
+      `Record
         (_loc,
           (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
     let mklist loc =

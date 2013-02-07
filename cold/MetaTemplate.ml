@@ -24,7 +24,7 @@ let meta_ref mf_a _loc i =
   {| {contents= $(mf_a _loc !i) } |};
 
   (*
-    `PaRec
+    `Record
     (_loc, (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
 
     `Record

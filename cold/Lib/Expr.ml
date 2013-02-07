@@ -364,7 +364,7 @@ let substp loc env =
           | `Sem (_loc,b1,b2) -> `Sem (_loc, (substbi b1), (substbi b2))
           | `RecBind (_loc,i,e) -> `RecBind (loc, i, (loop e))
           | _ -> bad_patt _loc in
-        `PaRec (loc, (substbi bi))
+        `Record (loc, (substbi bi))
     | _ -> bad_patt loc in
   loop
 class subst loc env =
@@ -873,7 +873,7 @@ let mk_record_ep label_exprs =
          `App
            (_loc,
              (`App
-                (_loc, (`Vrn (_loc, "PaRec")),
+                (_loc, (`Vrn (_loc, "Record")),
                   (`Id (_loc, (`Lid (_loc, "_loc")))))),
              (List.reduce_right mep_record_semi es)))
 let eta_expand expr number =
