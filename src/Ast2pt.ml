@@ -630,15 +630,19 @@ let rec expr (x : expr) = with expr match x with
        let cil = class_str_item cfl [] in
        mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
   | `OvrInst (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
-  | `Record (loc,lel,eo) ->
+  | `Record (loc,lel) ->
        match lel with
        [ `Nil _  -> error loc "empty record"
        | _ ->
-           let eo =
-             match eo with
-             [ {||} -> None
-             | e -> Some (expr e) ] in
-           mkexp loc (Pexp_record (mklabexp lel) eo) ]
+           (* let eo = *)
+           (*   match eo with *)
+           (*   [ {||} -> None *)
+           (*   | e -> Some (expr e) ] in *)
+           mkexp loc (Pexp_record (mklabexp lel) None) ]
+  | `RecordWith(loc,lel,eo) ->
+      match lel with
+      [`Nil _ -> error loc "empty record"
+      | _ -> mkexp loc (Pexp_record (mklabexp lel) (Some (expr eo)))]  
   | `Seq (_loc,e) ->
       let rec loop = fun
         [ [] -> expr {| () |}

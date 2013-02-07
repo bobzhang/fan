@@ -19,7 +19,6 @@ module Expr =
       `Record
         (_loc,
           (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
-      
     let mklist loc =
       let rec loop top =
         function

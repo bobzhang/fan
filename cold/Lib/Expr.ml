@@ -859,17 +859,12 @@ let mk_record_ee label_exprs =
   (label_exprs |> (List.map (fun (label,expr)  -> mee_record_col label expr)))
     |>
     (fun es  ->
-       (* `App *)
-       (*   (_loc, *)
+       `App
+         (_loc,
            (`App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "Record")),
-                     (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                (List.reduce_right mee_record_semi es))))
-           (* (`App *)
-           (*    (_loc, (`Vrn (_loc, "Nil")), *)
-           (* (\*      (`Id (_loc, (`Lid (_loc, "_loc")))))) *\))) *)
+              (_loc, (`Vrn (_loc, "Record")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))),
+           (List.reduce_right mee_record_semi es)))
 let mk_record_ep label_exprs =
   let open List in
     (label_exprs |> (map (fun (label,expr)  -> mep_record_col label expr)))

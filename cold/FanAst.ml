@@ -6930,8 +6930,7 @@ module MExpr =
     let meta_ref mf_a _loc i =
       `Record
         (_loc,
-          (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))),
-          (`Nil _loc))
+          (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
     let mklist loc =
       let rec loop top =
         function

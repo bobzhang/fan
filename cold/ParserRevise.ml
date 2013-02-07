@@ -1752,21 +1752,22 @@ let apply () =
           `Skeyword "with";
           `Snterm (Gram.obj (label_expr_list : 'label_expr_list Gram.t ));
           `Skeyword "}"],
-           ("Gram.mk_action\n  (fun _  (el : 'label_expr_list)  _  (__fan_1 : [> FanToken.t])  _ \n     (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid x ->\n         (`Record (_loc, el, (`Id (_loc, (`Lid (_loc, x))))) : 'expr )\n     | _ -> failwith \"`Record (_loc, el, (`Id (_loc, (`Lid (_loc, x)))))\n\")\n",
+           ("Gram.mk_action\n  (fun _  (el : 'label_expr_list)  _  (__fan_1 : [> FanToken.t])  _ \n     (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid x ->\n         (`RecordWith (_loc, el, (`Id (_loc, (`Lid (_loc, x))))) : 'expr )\n     | _ ->\n         failwith \"`RecordWith (_loc, el, (`Id (_loc, (`Lid (_loc, x)))))\n\")\n",
              (Gram.mk_action
                 (fun _  (el : 'label_expr_list)  _ 
                    (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                    match __fan_1 with
                    | `Lid x ->
-                       (`RecordWith (_loc, el, (`Id (_loc, (`Lid (_loc, x))))) : 
+                       (`RecordWith
+                          (_loc, el, (`Id (_loc, (`Lid (_loc, x))))) : 
                        'expr )
                    | _ ->
                        failwith
-                         "`Record (_loc, el, (`Id (_loc, (`Lid (_loc, x)))))\n"))));
+                         "`RecordWith (_loc, el, (`Id (_loc, (`Lid (_loc, x)))))\n"))));
          ([`Skeyword "{";
           `Snterm (Gram.obj (label_expr_list : 'label_expr_list Gram.t ));
           `Skeyword "}"],
-           ("Gram.mk_action\n  (fun _  (el : 'label_expr_list)  _  (_loc : FanLoc.t)  ->\n     (`Record (_loc, el, (`Nil _loc)) : 'expr ))\n",
+           ("Gram.mk_action\n  (fun _  (el : 'label_expr_list)  _  (_loc : FanLoc.t)  ->\n     (`Record (_loc, el) : 'expr ))\n",
              (Gram.mk_action
                 (fun _  (el : 'label_expr_list)  _  (_loc : FanLoc.t)  ->
                    (`Record (_loc, el) : 'expr )))));
@@ -1777,10 +1778,11 @@ let apply () =
           `Skeyword "with";
           `Snterm (Gram.obj (label_expr_list : 'label_expr_list Gram.t ));
           `Skeyword "}"],
-           ("Gram.mk_action\n  (fun _  (el : 'label_expr_list)  _  _  (e : 'expr)  _  _  (_loc : FanLoc.t)\n      -> (`Record (_loc, el, e) : 'expr ))\n",
+           ("Gram.mk_action\n  (fun _  (el : 'label_expr_list)  _  _  (e : 'expr)  _  _  (_loc : FanLoc.t)\n      -> (`RecordWith (_loc, el, e) : 'expr ))\n",
              (Gram.mk_action
                 (fun _  (el : 'label_expr_list)  _  _  (e : 'expr)  _  _ 
-                   (_loc : FanLoc.t)  -> (`RecordWith (_loc, el, e) : 'expr )))));
+                   (_loc : FanLoc.t)  -> (`RecordWith (_loc, el, e) : 
+                   'expr )))));
          ([`Skeyword "{<"; `Skeyword ">}"],
            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`OvrInst (_loc, (`Nil _loc)) : 'expr ))\n",
              (Gram.mk_action

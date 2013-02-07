@@ -327,7 +327,8 @@ class eq =
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
         | (`OvrInst _a0,`OvrInst _b0) -> self#rec_binding _a0 _b0
-        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
+        | (`Record _a0,`Record _b0) -> self#rec_binding _a0 _b0
+        | (`RecordWith (_a0,_a1),`RecordWith (_b0,_b1)) ->
             (self#rec_binding _a0 _b0) && (self#expr _a1 _b1)
         | (`Seq _a0,`Seq _b0) -> self#expr _a0 _b0
         | (`Send (_a0,_a1),`Send (_b0,_b1)) ->
@@ -947,9 +948,11 @@ class print =
               self#expr _a1
         | `OvrInst _a0 ->
             Format.fprintf fmt "@[<1>(`OvrInst@ %a)@]" self#rec_binding _a0
-        | `Record (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#rec_binding
-              _a0 self#expr _a1
+        | `Record _a0 ->
+            Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_binding _a0
+        | `RecordWith (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a)@]"
+              self#rec_binding _a0 self#expr _a1
         | `Seq _a0 -> Format.fprintf fmt "@[<1>(`Seq@ %a)@]" self#expr _a0
         | `Send (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Send@ %a@ %a)@]" self#expr _a0
@@ -1713,12 +1716,14 @@ module Expr =
               (meta_expr _loc _a1))
       | `OvrInst _a0 ->
           `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_binding _loc _a0))
-      | `Record (_a0,_a1) ->
+      | `Record _a0 ->
+          `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_binding _loc _a0))
+      | `RecordWith (_a0,_a1) ->
           `App
             (_loc,
               (`App
-                 (_loc, (`Vrn (_loc, "Record")), (meta_rec_binding _loc _a0))),
-              (meta_expr _loc _a1))
+                 (_loc, (`Vrn (_loc, "RecordWith")),
+                   (meta_rec_binding _loc _a0))), (meta_expr _loc _a1))
       | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (meta_expr _loc _a0))
       | `Send (_a0,_a1) ->
           `App
@@ -2692,12 +2697,14 @@ module Patt =
               (meta_expr _loc _a1))
       | `OvrInst _a0 ->
           `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_binding _loc _a0))
-      | `Record (_a0,_a1) ->
+      | `Record _a0 ->
+          `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_binding _loc _a0))
+      | `RecordWith (_a0,_a1) ->
           `App
             (_loc,
               (`App
-                 (_loc, (`Vrn (_loc, "Record")), (meta_rec_binding _loc _a0))),
-              (meta_expr _loc _a1))
+                 (_loc, (`Vrn (_loc, "RecordWith")),
+                   (meta_rec_binding _loc _a0))), (meta_expr _loc _a1))
       | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (meta_expr _loc _a0))
       | `Send (_a0,_a1) ->
           `App
