@@ -266,6 +266,8 @@
      | `OvrInst of (loc * rec_binding)
       (* { rb } or { (e) with rb } *)
      | `Record of (loc * rec_binding * expr)
+     (* | `Record of (loc * rec_binding) *)
+     (* | `RecordWith of (loc * rec_binding ) *)
       (* do { e } *)
      | `Seq of (loc * expr)
       (* e#s *)

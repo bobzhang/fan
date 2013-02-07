@@ -213,13 +213,14 @@ Options.add
        ," Set the default language");
 
 let d = `Absolute ["Fan"; "Lang"; "Meta";"N"] ;
-
+(*
+  (* temporarily turned off, since it's not the core of Fan *)
 add_quotation (d,"expr") expr_quot
     ~mexpr:(fun loc pexpr -> FanAstN.Expr.meta_expr loc (strip_loc_expr pexpr))
     ~mpatt:(fun loc ppatt -> FanAstN.Patt.meta_expr loc (strip_loc_expr ppatt))
     ~expr_filter
     ~patt_filter;
-
+*)
 (* let a = {:N.expr|a + b |}; *)
 (* let a = {:expr|a + b|}; *)
   
