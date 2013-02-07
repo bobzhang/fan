@@ -419,7 +419,7 @@ AstQuotation.of_expr
     ~name:((d,"clear")) ~entry:nonterminalsclear;
 AstQuotation.of_str_item
     ~name:((d,"create")) ~entry:nonterminals;
-
+(*
 AstQuotation.add_quotation
     (d,"rule") rule
     ~mexpr:FanGrammar.Expr.meta_rule
@@ -447,7 +447,7 @@ AstQuotation.add_quotation
     ~mpatt:FanGrammar.Patt.meta_symbol
     ~expr_filter:(fun x -> x)
     ~patt_filter:(fun x-> x);
-
+*)
   
 
 
