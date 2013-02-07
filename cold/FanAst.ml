@@ -449,10 +449,10 @@ class map2 =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Nil _a0,`Nil _b0) -> let _a0 = self#loc _a0 _b0 in `Nil _a0
-        | (`PaEq (_a0,_a1,_a2),`PaEq (_b0,_b1,_b2)) ->
+        | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `PaEq (_a0, _a1, _a2)
+            let _a2 = self#patt _a2 _b2 in `RecBind (_a0, _a1, _a2)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_patt _a1 _b1 in
@@ -1377,7 +1377,7 @@ class fold2 =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
-        | (`PaEq (_a0,_a1,_a2),`PaEq (_b0,_b1,_b2)) ->
+        | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ident _a1 _b1 in self#patt _a2 _b2
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
@@ -2028,7 +2028,8 @@ class iter =
     method rec_patt : rec_patt -> 'result100=
       function
       | `Nil _a0 -> self#loc _a0
-      | `PaEq (_a0,_a1,_a2) -> (self#loc _a0; self#ident _a1; self#patt _a2)
+      | `RecBind (_a0,_a1,_a2) ->
+          (self#loc _a0; self#ident _a1; self#patt _a2)
       | `Sem (_a0,_a1,_a2) ->
           (self#loc _a0; self#rec_patt _a1; self#rec_patt _a2)
       | `Any _a0 -> self#loc _a0
@@ -2697,10 +2698,10 @@ class map =
     method rec_patt : rec_patt -> rec_patt=
       function
       | `Nil _a0 -> let _a0 = self#loc _a0 in `Nil _a0
-      | `PaEq (_a0,_a1,_a2) ->
+      | `RecBind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in
-          let _a2 = self#patt _a2 in `PaEq (_a0, _a1, _a2)
+          let _a2 = self#patt _a2 in `RecBind (_a0, _a1, _a2)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_patt _a1 in
@@ -3487,7 +3488,7 @@ class fold =
     method rec_patt : rec_patt -> 'self_type=
       function
       | `Nil _a0 -> self#loc _a0
-      | `PaEq (_a0,_a1,_a2) ->
+      | `RecBind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ident _a1 in self#patt _a2
       | `Sem (_a0,_a1,_a2) ->
@@ -4192,8 +4193,8 @@ and pp_print_patt fmt =
 and pp_print_rec_patt fmt =
   function
   | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc _a0
-  | `PaEq (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `RecBind (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1 pp_print_patt _a2
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -4973,8 +4974,8 @@ class print =
       fun fmt  ->
         function
         | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" self#loc _a0
-        | `PaEq (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a@ %a)@]" self#loc _a0
+        | `RecBind (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" self#loc _a0
               self#ident _a1 self#patt _a2
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
@@ -5751,7 +5752,7 @@ class eq =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
-        | (`PaEq (_a0,_a1,_a2),`PaEq (_b0,_b1,_b2)) ->
+        | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ident _a1 _b1)) &&
               (self#patt _a2 _b2)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
@@ -6259,8 +6260,8 @@ let loc_of =
   | `Virtual _loc -> _loc
   | `RowVar _loc -> _loc
   | `IfThen (_loc,_,_) -> _loc
-  | `Sig (_loc,_) -> _loc
   | `RecBind (_loc,_,_) -> _loc
+  | `Sig (_loc,_) -> _loc
   | `Mutable _loc -> _loc
   | `ReNil _loc -> _loc
   | `Lazy (_loc,_) -> _loc
@@ -6346,7 +6347,6 @@ let loc_of =
   | `Open (_loc,_) -> _loc
   | `ViNil _loc -> _loc
   | `Sum (_loc,_) -> _loc
-  | `PaEq (_loc,_,_) -> _loc
 let strip_loc_literal =
   function
   | `Chr (_a0,_a1) -> `Chr _a1
@@ -6595,9 +6595,9 @@ and strip_loc_patt =
 and strip_loc_rec_patt =
   function
   | `Nil _a0 -> `Nil
-  | `PaEq (_a0,_a1,_a2) ->
+  | `RecBind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_patt _a2 in `PaEq (_a1, _a2)
+      let _a2 = strip_loc_patt _a2 in `RecBind (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_patt _a1 in
       let _a2 = strip_loc_rec_patt _a2 in `Sem (_a1, _a2)
@@ -7060,7 +7060,7 @@ module MPatt =
     let meta_ref mf_a _loc i =
       `PaRec
         (_loc,
-          (`PaEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
+          (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
     let mklist loc =
       let rec loop top =
         function
@@ -7697,14 +7697,15 @@ module Make(MetaLoc:META_LOC) =
           function
           | `Nil _a0 ->
               `App (_loc, (`Vrn (_loc, "Nil")), (meta_loc _loc _a0))
-          | `PaEq (_a0,_a1,_a2) ->
+          | `RecBind (_a0,_a1,_a2) ->
               `App
                 (_loc,
                   (`App
                      (_loc,
                        (`App
-                          (_loc, (`Vrn (_loc, "PaEq")), (meta_loc _loc _a0))),
-                       (meta_ident _loc _a1))), (meta_patt _loc _a2))
+                          (_loc, (`Vrn (_loc, "RecBind")),
+                            (meta_loc _loc _a0))), (meta_ident _loc _a1))),
+                  (meta_patt _loc _a2))
           | `Sem (_a0,_a1,_a2) ->
               `App
                 (_loc,
@@ -9373,14 +9374,15 @@ module Make(MetaLoc:META_LOC) =
           function
           | `Nil _a0 ->
               `App (_loc, (`Vrn (_loc, "Nil")), (meta_loc _loc _a0))
-          | `PaEq (_a0,_a1,_a2) ->
+          | `RecBind (_a0,_a1,_a2) ->
               `App
                 (_loc,
                   (`App
                      (_loc,
                        (`App
-                          (_loc, (`Vrn (_loc, "PaEq")), (meta_loc _loc _a0))),
-                       (meta_ident _loc _a1))), (meta_patt _loc _a2))
+                          (_loc, (`Vrn (_loc, "RecBind")),
+                            (meta_loc _loc _a0))), (meta_ident _loc _a1))),
+                  (meta_patt _loc _a2))
           | `Sem (_a0,_a1,_a2) ->
               `App
                 (_loc,
@@ -10808,7 +10810,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `Alias (_loc,x,_) -> is_irrefut_patt x
   | `PaRec (_loc,p) ->
       List.for_all
-        (function | `PaEq (_,_,p) -> is_irrefut_patt p | _ -> true)
+        (function | `RecBind (_,_,p) -> is_irrefut_patt p | _ -> true)
         (list_of_sem' p [])
   | `Sem (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `Com (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)

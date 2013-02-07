@@ -3364,15 +3364,16 @@ let apply () =
          ([`Snterm (Gram.obj (label_longident : 'label_longident Gram.t ));
           `Skeyword "=";
           `Snterm (Gram.obj (patt : 'patt Gram.t ))],
-           ("Gram.mk_action\n  (fun (p : 'patt)  _  (i : 'label_longident)  (_loc : FanLoc.t)  ->\n     (`PaEq (_loc, i, p) : 'label_patt ))\n",
+           ("Gram.mk_action\n  (fun (p : 'patt)  _  (i : 'label_longident)  (_loc : FanLoc.t)  ->\n     (`RecBind (_loc, i, p) : 'label_patt ))\n",
              (Gram.mk_action
                 (fun (p : 'patt)  _  (i : 'label_longident) 
-                   (_loc : FanLoc.t)  -> (`PaEq (_loc, i, p) : 'label_patt )))));
+                   (_loc : FanLoc.t)  ->
+                   (`RecBind (_loc, i, p) : 'label_patt )))));
          ([`Snterm (Gram.obj (label_longident : 'label_longident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'label_longident)  (_loc : FanLoc.t)  ->\n     (`PaEq (_loc, i, (`Id (_loc, (`Lid (_loc, (Ident.to_lid i)))))) : \n     'label_patt ))\n",
+           ("Gram.mk_action\n  (fun (i : 'label_longident)  (_loc : FanLoc.t)  ->\n     (`RecBind (_loc, i, (`Id (_loc, (`Lid (_loc, (Ident.to_lid i)))))) : \n     'label_patt ))\n",
              (Gram.mk_action
                 (fun (i : 'label_longident)  (_loc : FanLoc.t)  ->
-                   (`PaEq
+                   (`RecBind
                       (_loc, i,
                         (`Id (_loc, (`Lid (_loc, (Ident.to_lid i)))))) : 
                    'label_patt )))))])));

@@ -208,7 +208,7 @@ let substp loc env =
           [ {| $b1; $b2 |} ->
             `Sem(_loc,substbi b1, substbi b2)
             (* {@loc| $(substbi b1); $(substbi b2) |} *)
-          | {| $id:i = $e |} -> `PaEq (loc,i,loop e)(* {@loc| $i = $(loop e) |} *)
+          | {| $id:i = $e |} -> `RecBind (loc,i,loop e)(* {@loc| $i = $(loop e) |} *)
           | _ -> bad_patt _loc ] in
         {@loc| { $(substbi bi) } |}
     | _ -> bad_patt loc ] in loop;
@@ -576,7 +576,7 @@ let meee_of_str s =
 (*  *\)   *)
 (* let mep_record_left str = *)
 (*   let u = {| Ast.Lid _loc $str:str |} in *)
-(*   {| Ast.PaEq _loc $u |}; *)
+(*   {| Ast.RecBind _loc $u |}; *)
   
   
   
@@ -638,7 +638,7 @@ let mep_record_col label expr =
       (`App
          (_loc,
            (`App
-              (_loc, (`Vrn (_loc, "PaEq")),
+              (_loc, (`Vrn (_loc, "RecBind")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
            (`App
               (_loc, (`Vrn (_loc, "Lid")),

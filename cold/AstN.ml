@@ -49,7 +49,8 @@ and patt =
   | `Constraint of (patt* ctyp) | `ClassPath of ident | `Lazy of patt
   | `ModuleUnpack of (auident* ctyp meta_option)] 
 and rec_patt =
-  [ `Nil | `PaEq of (ident* patt) | `Sem of (rec_patt* rec_patt) | `Any
+  [ `Nil | `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | 
+    `Any
   | ant] 
 and expr =
   [ `Nil | `Id of ident | `App of (expr* expr) | `Vrn of string

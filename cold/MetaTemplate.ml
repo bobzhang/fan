@@ -25,7 +25,7 @@ let meta_ref mf_a _loc i =
 
   (*
     `PaRec
-    (_loc, (`PaEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
+    (_loc, (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
 
     `Record
     (_loc,

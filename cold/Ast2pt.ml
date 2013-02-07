@@ -412,7 +412,7 @@ let rec patt (x : patt) =
       error (loc_of p) "invalid pattern"
 and mklabpat: rec_patt -> (Longident.t Asttypes.loc* pattern) =
   function
-  | `PaEq (_loc,i,p) -> ((ident i), (patt p))
+  | `RecBind (_loc,i,p) -> ((ident i), (patt p))
   | p -> error (loc_of p) "invalid pattern"
 let override_flag loc =
   function

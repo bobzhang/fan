@@ -686,9 +686,9 @@ let apply () = begin
        (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
         *) (* FIXME restore it later *)
        | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
-       | label_longident{i}; "="; patt{p} -> (* {| $i = $p |} *) `PaEq(_loc,i,p)
+       | label_longident{i}; "="; patt{p} -> (* {| $i = $p |} *) `RecBind(_loc,i,p)
        | label_longident{i} ->
-           `PaEq(_loc,i,`Id(_loc,`Lid(_loc,Ident.to_lid i)))
+           `RecBind(_loc,i,`Id(_loc,`Lid(_loc,Ident.to_lid i)))
            (* {| $i = $(lid:Ident.to_lid i) |} *)
        ] |};
     

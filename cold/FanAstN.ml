@@ -275,7 +275,7 @@ class eq =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Nil,`Nil) -> true
-        | (`PaEq (_a0,_a1),`PaEq (_b0,_b1)) ->
+        | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
             (self#ident _a0 _b0) && (self#patt _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#rec_patt _a0 _b0) && (self#rec_patt _a1 _b1)
@@ -891,8 +891,8 @@ class print =
       fun fmt  ->
         function
         | `Nil -> Format.fprintf fmt "`Nil"
-        | `PaEq (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a)@]" self#ident _a0
+        | `RecBind (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
               self#patt _a1
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_patt _a0
@@ -1621,10 +1621,10 @@ module Expr =
     and meta_rec_patt _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
-      | `PaEq (_a0,_a1) ->
+      | `RecBind (_a0,_a1) ->
           `App
             (_loc,
-              (`App (_loc, (`Vrn (_loc, "PaEq")), (meta_ident _loc _a0))),
+              (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
               (meta_patt _loc _a1))
       | `Sem (_a0,_a1) ->
           `App
@@ -2612,10 +2612,10 @@ module Patt =
     and meta_rec_patt _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
-      | `PaEq (_a0,_a1) ->
+      | `RecBind (_a0,_a1) ->
           `App
             (_loc,
-              (`App (_loc, (`Vrn (_loc, "PaEq")), (meta_ident _loc _a0))),
+              (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
               (meta_patt _loc _a1))
       | `Sem (_a0,_a1) ->
           `App

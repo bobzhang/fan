@@ -204,30 +204,24 @@
      | `Sem of (loc * patt * patt) (* p; p *)
      | `Tup of (loc * patt )
      | `Any of loc (* _ *)
-           
      | ant (* $s$ *)
      | literal         
      | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
-
      | `Array of (loc * patt) (* [| p |] *)
-
      | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
      (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
      | `PaOlbi of (loc * alident * patt * meta_option expr)
      | `Or of (loc * patt * patt) (* p | p *)
      | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
      | `PaRec of (loc * rec_patt) (* { p } *)
-
-     (* | `PaEq  of (loc * ident * patt) (\* i = p *\) *)
      | `Constraint of (loc * patt * ctyp) (* (p : t) *)
      | `ClassPath of (loc * ident) (* #i *)
-
      | `Lazy of (loc * patt) (* lazy p *)
        (* (module M : ty ) *)      
      | `ModuleUnpack of (loc * (* string *)auident * meta_option ctyp)]
   and rec_patt =
      [= `Nil of loc
-     | `PaEq of (loc * ident * patt)
+     | `RecBind of (loc * ident * patt)
      | `Sem of (loc  * rec_patt * rec_patt)
      | `Any of loc
      | ant]  

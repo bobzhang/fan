@@ -454,11 +454,11 @@ let rec patt (x:patt) =
                         (ctyp ty))
                |`Ant(_loc,_) -> ANT_ERROR]  
              |`Ant(_loc,_) -> ANT_ERROR]  
-         (* | `PaEq (_, _, _)  *)| `Sem (_, _, _) | `Com (_, _, _) | `Nil _ as p ->
+         (* | `RecBind (_, _, _)  *)| `Sem (_, _, _) | `Com (_, _, _) | `Nil _ as p ->
              error (loc_of p) "invalid pattern" ]
 
 and mklabpat : rec_patt -> (Asttypes.loc Longident.t  * pattern) = with patt fun
-  [ `PaEq(_loc,i,p)(* {| $i = $p |} *) -> (ident  i, patt p)
+  [ `RecBind(_loc,i,p)(* {| $i = $p |} *) -> (ident  i, patt p)
   | p -> error (loc_of p) "invalid pattern" ];
   
 

@@ -362,7 +362,7 @@ let substp loc env =
         let rec substbi =
           function
           | `Sem (_loc,b1,b2) -> `Sem (_loc, (substbi b1), (substbi b2))
-          | `RecBind (_loc,i,e) -> `PaEq (loc, i, (loop e))
+          | `RecBind (_loc,i,e) -> `RecBind (loc, i, (loop e))
           | _ -> bad_patt _loc in
         `PaRec (loc, (substbi bi))
     | _ -> bad_patt loc in
@@ -830,7 +830,7 @@ let mep_record_col label expr =
       (`App
          (_loc,
            (`App
-              (_loc, (`Vrn (_loc, "PaEq")),
+              (_loc, (`Vrn (_loc, "RecBind")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
            (`App
               (_loc, (`Vrn (_loc, "Lid")),

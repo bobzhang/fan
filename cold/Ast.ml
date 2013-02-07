@@ -58,7 +58,7 @@ and patt =
   | `ClassPath of (loc* ident) | `Lazy of (loc* patt)
   | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and rec_patt =
-  [ `Nil of loc | `PaEq of (loc* ident* patt)
+  [ `Nil of loc | `RecBind of (loc* ident* patt)
   | `Sem of (loc* rec_patt* rec_patt) | `Any of loc | ant] 
 and expr =
   [ `Nil of loc | `Id of (loc* ident) | `App of (loc* expr* expr)
