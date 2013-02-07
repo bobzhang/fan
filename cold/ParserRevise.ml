@@ -2388,17 +2388,6 @@ let apply () =
              (Gram.mk_action
                 (fun (y : 'sem_patt)  _  (x : 'patt)  (_loc : FanLoc.t)  ->
                    (`Sem (_loc, x, y) : 'patt_quot )))));
-         ([`Snterm (Gram.obj (patt : 'patt Gram.t ));
-          `Skeyword "=";
-          `Snterm (Gram.obj (patt : 'patt Gram.t ))],
-           ("Gram.mk_action\n  (fun (y : 'patt)  _  (x : 'patt)  (_loc : FanLoc.t)  ->\n     (let i =\n        match x with\n        | `Ant (loc,s) -> `Ant (loc, s)\n        | p -> FanAst.ident_of_patt p in\n      `PaEq (_loc, i, y) : 'patt_quot ))\n",
-             (Gram.mk_action
-                (fun (y : 'patt)  _  (x : 'patt)  (_loc : FanLoc.t)  ->
-                   (let i =
-                      match x with
-                      | `Ant (loc,s) -> `Ant (loc, s)
-                      | p -> FanAst.ident_of_patt p in
-                    `PaEq (_loc, i, y) : 'patt_quot )))));
          ([`Snterm (Gram.obj (patt : 'patt Gram.t ))],
            ("Gram.mk_action (fun (x : 'patt)  (_loc : FanLoc.t)  -> (x : 'patt_quot ))\n",
              (Gram.mk_action

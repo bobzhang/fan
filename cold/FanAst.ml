@@ -429,10 +429,6 @@ class map2 =
         | (`PaRec (_a0,_a1),`PaRec (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_patt _a1 _b1 in `PaRec (_a0, _a1)
-        | (`PaEq (_a0,_a1,_a2),`PaEq (_b0,_b1,_b2)) ->
-            let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ident _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `PaEq (_a0, _a1, _a2)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
@@ -1365,9 +1361,6 @@ class fold2 =
             let self = self#patt _a1 _b1 in self#patt _a2 _b2
         | (`PaRec (_a0,_a1),`PaRec (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#rec_patt _a1 _b1
-        | (`PaEq (_a0,_a1,_a2),`PaEq (_b0,_b1,_b2)) ->
-            let self = self#loc _a0 _b0 in
-            let self = self#ident _a1 _b1 in self#patt _a2 _b2
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#ctyp _a2 _b2
@@ -2024,7 +2017,6 @@ class iter =
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
       | `PaRng (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
       | `PaRec (_a0,_a1) -> (self#loc _a0; self#rec_patt _a1)
-      | `PaEq (_a0,_a1,_a2) -> (self#loc _a0; self#ident _a1; self#patt _a2)
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#ctyp _a2)
       | `ClassPath (_a0,_a1) -> (self#loc _a0; self#ident _a1)
@@ -2687,10 +2679,6 @@ class map =
       | `PaRec (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_patt _a1 in `PaRec (_a0, _a1)
-      | `PaEq (_a0,_a1,_a2) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#ident _a1 in
-          let _a2 = self#patt _a2 in `PaEq (_a0, _a1, _a2)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
@@ -3487,9 +3475,6 @@ class fold =
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#patt _a2
       | `PaRec (_a0,_a1) -> let self = self#loc _a0 in self#rec_patt _a1
-      | `PaEq (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#ident _a1 in self#patt _a2
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#ctyp _a2
@@ -4192,9 +4177,6 @@ and pp_print_patt fmt =
   | `PaRec (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`PaRec@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_patt _a1
-  | `PaEq (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ident _a1 pp_print_patt _a2
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_ctyp _a2
@@ -4974,9 +4956,6 @@ class print =
         | `PaRec (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`PaRec@ %a@ %a)@]" self#loc _a0
               self#rec_patt _a1
-        | `PaEq (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a@ %a)@]" self#loc _a0
-              self#ident _a1 self#patt _a2
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#patt _a1 self#ctyp _a2
@@ -5757,9 +5736,6 @@ class eq =
               (self#patt _a2 _b2)
         | (`PaRec (_a0,_a1),`PaRec (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#rec_patt _a1 _b1)
-        | (`PaEq (_a0,_a1,_a2),`PaEq (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#ident _a1 _b1)) &&
-              (self#patt _a2 _b2)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -6607,9 +6583,6 @@ and strip_loc_patt =
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_patt _a2 in `PaRng (_a1, _a2)
   | `PaRec (_a0,_a1) -> let _a1 = strip_loc_rec_patt _a1 in `PaRec _a1
-  | `PaEq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_patt _a2 in `PaEq (_a1, _a2)
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Constraint (_a1, _a2)
@@ -7691,14 +7664,6 @@ module Make(MetaLoc:META_LOC) =
                 (_loc,
                   (`App (_loc, (`Vrn (_loc, "PaRec")), (meta_loc _loc _a0))),
                   (meta_rec_patt _loc _a1))
-          | `PaEq (_a0,_a1,_a2) ->
-              `App
-                (_loc,
-                  (`App
-                     (_loc,
-                       (`App
-                          (_loc, (`Vrn (_loc, "PaEq")), (meta_loc _loc _a0))),
-                       (meta_ident _loc _a1))), (meta_patt _loc _a2))
           | `Constraint (_a0,_a1,_a2) ->
               `App
                 (_loc,
@@ -9375,14 +9340,6 @@ module Make(MetaLoc:META_LOC) =
                 (_loc,
                   (`App (_loc, (`Vrn (_loc, "PaRec")), (meta_loc _loc _a0))),
                   (meta_rec_patt _loc _a1))
-          | `PaEq (_a0,_a1,_a2) ->
-              `App
-                (_loc,
-                  (`App
-                     (_loc,
-                       (`App
-                          (_loc, (`Vrn (_loc, "PaEq")), (meta_loc _loc _a0))),
-                       (meta_ident _loc _a1))), (meta_patt _loc _a2))
           | `Constraint (_a0,_a1,_a2) ->
               `App
                 (_loc,
@@ -10853,7 +10810,6 @@ let rec is_irrefut_patt: patt -> bool =
       List.for_all
         (function | `PaEq (_,_,p) -> is_irrefut_patt p | _ -> true)
         (list_of_sem' p [])
-  | `PaEq (_loc,_,p) -> is_irrefut_patt p
   | `Sem (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `Com (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `Or (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)

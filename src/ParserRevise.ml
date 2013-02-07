@@ -534,12 +534,13 @@ let apply () = begin
        patt_quot:
        [ patt{x}; ","; comma_patt{y} -> {| $x, $y |}
        | patt{x}; ";"; sem_patt{y} -> {| $x; $y |}
-       | patt{x}; "="; patt{y} -> 
-           let i =
-             match x with
-             [ {@loc| $anti:s |} -> {:ident@loc| $anti:s |}
-             | p -> FanAst.ident_of_patt p ] in
-           {| $i = $y |}   (* {:patt| x=  y|} *)
+       (* | patt{x}; "="; patt{y} ->  *)
+       (*     let i = *)
+       (*       match x with *)
+       (*       [ {@loc| $anti:s |} -> {:ident@loc| $anti:s |} *)
+       (*       | p -> FanAst.ident_of_patt p ] in *)
+       (*     {| $i = $y |}   (\* {:patt| x=  y|} *\) *)
+       (* FIXME intrdouce rec_patt_quot *)      
        | patt{x} -> x
        | -> {||} ]
        patt_as_patt_opt:
@@ -685,8 +686,11 @@ let apply () = begin
        (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
         *) (* FIXME restore it later *)
        | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
-       | label_longident{i}; "="; patt{p} -> {| $i = $p |}
-       | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ] |};
+       | label_longident{i}; "="; patt{p} -> (* {| $i = $p |} *) `PaEq(_loc,i,p)
+       | label_longident{i} ->
+           `PaEq(_loc,i,`Id(_loc,`Lid(_loc,Ident.to_lid i)))
+           (* {| $i = $(lid:Ident.to_lid i) |} *)
+       ] |};
     
     with ident
     {:extend|

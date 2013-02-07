@@ -46,8 +46,7 @@ and patt =
   | literal | `Alias of (patt* alident) | `Array of patt
   | `Label of (alident* patt) | `PaOlbi of (alident* patt* expr meta_option)
   | `Or of (patt* patt) | `PaRng of (patt* patt) | `PaRec of rec_patt
-  | `PaEq of (ident* patt) | `Constraint of (patt* ctyp)
-  | `ClassPath of ident | `Lazy of patt
+  | `Constraint of (patt* ctyp) | `ClassPath of ident | `Lazy of patt
   | `ModuleUnpack of (auident* ctyp meta_option)] 
 and rec_patt =
   [ `Nil | `PaEq of (ident* patt) | `Sem of (rec_patt* rec_patt) | `Any

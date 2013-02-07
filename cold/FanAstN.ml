@@ -263,8 +263,6 @@ class eq =
         | (`PaRng (_a0,_a1),`PaRng (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#patt _a1 _b1)
         | (`PaRec _a0,`PaRec _b0) -> self#rec_patt _a0 _b0
-        | (`PaEq (_a0,_a1),`PaEq (_b0,_b1)) ->
-            (self#ident _a0 _b0) && (self#patt _a1 _b1)
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#ctyp _a1 _b1)
         | (`ClassPath _a0,`ClassPath _b0) -> self#ident _a0 _b0
@@ -880,9 +878,6 @@ class print =
               self#patt _a1
         | `PaRec _a0 ->
             Format.fprintf fmt "@[<1>(`PaRec@ %a)@]" self#rec_patt _a0
-        | `PaEq (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`PaEq@ %a@ %a)@]" self#ident _a0
-              self#patt _a1
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#patt _a0
               self#ctyp _a1
@@ -1608,11 +1603,6 @@ module Expr =
               (meta_patt _loc _a1))
       | `PaRec _a0 ->
           `App (_loc, (`Vrn (_loc, "PaRec")), (meta_rec_patt _loc _a0))
-      | `PaEq (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App (_loc, (`Vrn (_loc, "PaEq")), (meta_ident _loc _a0))),
-              (meta_patt _loc _a1))
       | `Constraint (_a0,_a1) ->
           `App
             (_loc,
@@ -2604,11 +2594,6 @@ module Patt =
               (meta_patt _loc _a1))
       | `PaRec _a0 ->
           `App (_loc, (`Vrn (_loc, "PaRec")), (meta_rec_patt _loc _a0))
-      | `PaEq (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App (_loc, (`Vrn (_loc, "PaEq")), (meta_ident _loc _a0))),
-              (meta_patt _loc _a1))
       | `Constraint (_a0,_a1) ->
           `App
             (_loc,

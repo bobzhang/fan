@@ -54,9 +54,9 @@ and patt =
   | `Label of (loc* alident* patt)
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
-  | `PaRec of (loc* rec_patt) | `PaEq of (loc* ident* patt)
-  | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
-  | `Lazy of (loc* patt) | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
+  | `PaRec of (loc* rec_patt) | `Constraint of (loc* patt* ctyp)
+  | `ClassPath of (loc* ident) | `Lazy of (loc* patt)
+  | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and rec_patt =
   [ `Nil of loc | `PaEq of (loc* ident* patt)
   | `Sem of (loc* rec_patt* rec_patt) | `Any of loc | ant] 

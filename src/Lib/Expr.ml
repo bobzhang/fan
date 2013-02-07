@@ -205,8 +205,10 @@ let substp loc env =
     | {| $x1, $x2 |} -> {@loc| $(loop x1), $(loop x2) |}
     | {| { $bi } |} ->
         let rec substbi = with {patt:rec_binding;expr:patt} fun
-          [ {| $b1; $b2 |} -> {@loc| $(substbi b1); $(substbi b2) |}
-          | {| $id:i = $e |} -> {@loc| $i = $(loop e) |}
+          [ {| $b1; $b2 |} ->
+            `Sem(_loc,substbi b1, substbi b2)
+            (* {@loc| $(substbi b1); $(substbi b2) |} *)
+          | {| $id:i = $e |} -> `PaEq (loc,i,loop e)(* {@loc| $i = $(loop e) |} *)
           | _ -> bad_patt _loc ] in
         {@loc| { $(substbi bi) } |}
     | _ -> bad_patt loc ] in loop;
@@ -631,7 +633,21 @@ let mee_record_col label expr =
   ]}
   *)  
 let mep_record_col label expr =
-  {| {:patt| $(lid:$(str:label)) = $($expr) |} |};
+    `App
+    (_loc,
+      (`App
+         (_loc,
+           (`App
+              (_loc, (`Vrn (_loc, "PaEq")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))),
+           (`App
+              (_loc, (`Vrn (_loc, "Lid")),
+                (`Tup
+                   (_loc,
+                     (`Com
+                        (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
+                          (`Str (_loc, label)))))))))), expr)
+  (* {| {:patt| $(lid:$(str:label)) = $($expr) |} |} *);
 
 let mee_record_semi a b =
   {| {:rec_binding| $($a);$($b) |} |};

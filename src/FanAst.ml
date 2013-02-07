@@ -665,7 +665,7 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | {| { $p } |} ->
         List.for_all (fun [`PaEq (_,_,p) -> is_irrefut_patt p | _ -> true])
           (list_of_sem' (* is_irrefut_patt *) p [])
-    | {| $_ = $p |} -> is_irrefut_patt p
+    (* | {| $_ = $p |} -> is_irrefut_patt p *)
     | {| $p1; $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
     | {| $p1, $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
     | {| $p1 | $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)

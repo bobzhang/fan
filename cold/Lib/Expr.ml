@@ -361,7 +361,7 @@ let substp loc env =
     | `Record (_loc,bi) ->
         let rec substbi =
           function
-          | `Sem (_loc,b1,b2) -> `Sem (loc, (substbi b1), (substbi b2))
+          | `Sem (_loc,b1,b2) -> `Sem (_loc, (substbi b1), (substbi b2))
           | `RecBind (_loc,i,e) -> `PaEq (loc, i, (loop e))
           | _ -> bad_patt _loc in
         `PaRec (loc, (substbi bi))
