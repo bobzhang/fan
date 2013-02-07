@@ -590,7 +590,8 @@ let apply () = begin
         | "["; sem_patt_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> {| [| $({||}) |] |}
         | "[|"; sem_patt{pl}; "|]" -> {| [| $pl |] |}
-        | "{"; label_patt_list{pl}; "}" -> {| { $((pl : rec_patt :>patt)) } |}
+        | "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
+            (* {| { $((pl : rec_patt :>patt)) } |} *)
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
 
@@ -620,7 +621,9 @@ let apply () = begin
         | "?"; "("; ipatt_tcon{p}; ")" -> {| ? ($p) |}
         | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" -> {| ? ($p = $e) |} ] }
        ipatt:
-        [ "{"; label_patt_list{pl}; "}" -> {| { $((pl: rec_patt :>patt)) } |}
+        [ "{"; label_patt_list{pl}; "}" ->
+          {| { $pl }|}
+          (* {| { $((pl: rec_patt :>patt)) } |} *)
         | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}

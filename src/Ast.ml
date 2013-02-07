@@ -216,7 +216,7 @@
      | `PaOlbi of (loc * alident * patt * meta_option expr)
      | `Or of (loc * patt * patt) (* p | p *)
      | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
-     | `PaRec of (loc * patt) (* { p } *)
+     | `PaRec of (loc * rec_patt) (* { p } *)
      | `PaEq  of (loc * ident * patt) (* i = p *)
      | `Constraint of (loc * patt * ctyp) (* (p : t) *)
      | `ClassPath of (loc * ident) (* #i *)

@@ -103,8 +103,8 @@ module type Syntax =
     val label_expr : rec_binding Gram.t
     val label_expr_list : rec_binding Gram.t
     val label_longident : ident Gram.t
-    val label_patt : patt Gram.t
-    val label_patt_list : patt Gram.t
+    val label_patt : rec_patt Gram.t
+    val label_patt_list : rec_patt Gram.t
     val let_binding : binding Gram.t
     val meth_list : (ctyp* row_var_flag) Gram.t
     val meth_decl : ctyp Gram.t

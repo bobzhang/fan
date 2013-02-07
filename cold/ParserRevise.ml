@@ -3362,19 +3362,6 @@ let apply () =
                     | _ ->
                         failwith "`Ant (_loc, (mk_anti ~c:\"patt\" n s))\n"))));
          ([`Stoken
-             (((function | `QUOTATION _ -> true | _ -> false)),
-               (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.patt_tag : 'label_patt )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.patt_tag\n\")\n",
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.patt_tag : 
-                       'label_patt )
-                   | _ ->
-                       failwith
-                         "AstQuotation.expand _loc x DynAst.patt_tag\n"))));
-         ([`Stoken
              (((function | `Ant ("list",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"list\",_)"))],
            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"list\" as n),s) ->\n         (`Ant (_loc, (mk_anti ~c:\"patt;\" n s)) : 'label_patt )\n     | _ -> failwith \"`Ant (_loc, (mk_anti ~c:\"patt;\" n s))\n\")\n",

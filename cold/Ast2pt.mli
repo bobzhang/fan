@@ -97,7 +97,7 @@ val mkrangepat : FanLoc.t -> char -> char -> Parsetree.pattern
 
 val patt : patt -> Parsetree.pattern
 
-val mklabpat : patt -> Longident.t Asttypes.loc * Parsetree.pattern
+val mklabpat : rec_patt -> Longident.t Asttypes.loc * Parsetree.pattern
 
 val override_flag :
   FanLoc.t -> override_flag -> Asttypes.override_flag

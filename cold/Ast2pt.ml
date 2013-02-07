@@ -410,7 +410,7 @@ let rec patt (x : patt) =
        | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
   | `PaEq (_,_,_)|`Sem (_,_,_)|`Com (_,_,_)|`Nil _ as p ->
       error (loc_of p) "invalid pattern"
-and mklabpat: patt -> (Longident.t Asttypes.loc* pattern) =
+and mklabpat: rec_patt -> (Longident.t Asttypes.loc* pattern) =
   function
   | `PaEq (_loc,i,p) -> ((ident i), (patt p))
   | p -> error (loc_of p) "invalid pattern"

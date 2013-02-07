@@ -181,36 +181,6 @@ let ident_of_patt =
     | p -> self p ];
 
 
-let rec is_irrefut_patt : patt -> bool = with patt
-    fun
-    [ {| $lid:_ |} -> true
-    | {| () |} -> true
-    | {| _ |} -> true
-    | {||} -> true (* why not *)
-    | {| ($x as $_) |} -> is_irrefut_patt x (* && is_irrefut_patt y *)
-    | {| { $p } |} -> is_irrefut_patt p
-    | {| $_ = $p |} -> is_irrefut_patt p
-    | {| $p1; $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {| $p1, $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {| $p1 | $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
-    | {| $p1 $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {| ($p : $_) |} -> is_irrefut_patt p
-    | {| ($tup:pl) |} -> is_irrefut_patt pl
-    | {| ? $_ : ($p =  $opt:_ ) |} -> is_irrefut_patt p
-    | {| ~ $_ |} -> true
-    | {| ~ $_: $p |} -> is_irrefut_patt p
-    | {| lazy $p |} -> is_irrefut_patt p
-    | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
-    | {| (module $_ : $opt:_ ) |} -> true
-    | (* {| `$_ |} *) `Vrn (_loc,_)
-      (* {| $vrn:_ |} *)
-    | {| $str:_ |} | {| $_ .. $_ |} |
-      {| $flo:_ |} | {| $nativeint:_ |} | {| $int64:_ |} |
-      {| $int32:_ |} | {| $int:_ |} | {| $chr:_ |} |
-      {| #$_ |} | {| [| $_ |] |} | {| $anti:_ |} -> false
-          (* add here ModuleUnpack *)
-    ];      
-      
 
 let rec is_constructor =  with ident fun
     [ {| $_.$i |} -> is_constructor i
@@ -684,6 +654,40 @@ let match_pre = object (self)
        (* {| $(anti: add_context x "lettry" ) |} *) ];
 end;
 
+
+let rec is_irrefut_patt : patt -> bool = with patt
+    fun
+    [ {| $lid:_ |} -> true
+    | {| () |} -> true
+    | {| _ |} -> true
+    | {||} -> true (* why not *)
+    | {| ($x as $_) |} -> is_irrefut_patt x (* && is_irrefut_patt y *)
+    | {| { $p } |} ->
+        List.for_all (fun [`PaEq (_,_,p) -> is_irrefut_patt p | _ -> true])
+          (list_of_sem' (* is_irrefut_patt *) p [])
+    | {| $_ = $p |} -> is_irrefut_patt p
+    | {| $p1; $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | {| $p1, $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | {| $p1 | $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
+    | {| $p1 $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | {| ($p : $_) |} -> is_irrefut_patt p
+    | {| ($tup:pl) |} -> is_irrefut_patt pl
+    | {| ? $_ : ($p =  $opt:_ ) |} -> is_irrefut_patt p
+    | {| ~ $_ |} -> true
+    | {| ~ $_: $p |} -> is_irrefut_patt p
+    | {| lazy $p |} -> is_irrefut_patt p
+    | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
+    | {| (module $_ : $opt:_ ) |} -> true
+    | (* {| `$_ |} *) `Vrn (_loc,_)
+      (* {| $vrn:_ |} *)
+    | {| $str:_ |} | {| $_ .. $_ |} |
+      {| $flo:_ |} | {| $nativeint:_ |} | {| $int64:_ |} |
+      {| $int32:_ |} | {| $int:_ |} | {| $chr:_ |} |
+      {| #$_ |} | {| [| $_ |] |} | {| $anti:_ |} -> false
+          (* add here ModuleUnpack *)
+    ];      
+      
+  
 
 let dump = new print;
 
