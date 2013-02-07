@@ -6,8 +6,9 @@ module MetaLoc = struct
    (* this makes sense here, because, for list operation
       you don't care about the location representation here
     *)
-  let meta_loc_patt _loc _ = {:patt| loc |};
-  let meta_loc_expr _loc _ = {:expr| loc |};
+  let meta_loc_patt _loc _ = `Id(_loc,`Lid(_loc,"loc")) (* {:patt| loc |} *);
+  (* let meta_loc_expr _loc _ = `Id(_loc,`Lid(_loc,"loc")) (\* {:expr| loc |} *\); *)
+  let meta_loc_expr = meta_loc_patt;
 end;
 module MetaAst = FanAst.Make MetaLoc;
 AstFilters.register_str_item_filter ("lift",(fun ast ->

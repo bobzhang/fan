@@ -3,7 +3,7 @@ open Ast
 module MetaLoc =
   struct
     let meta_loc_patt _loc _ = `Id (_loc, (`Lid (_loc, "loc")))
-    let meta_loc_expr _loc _ = `Id (_loc, (`Lid (_loc, "loc")))
+    let meta_loc_expr = meta_loc_patt
   end
 module MetaAst = FanAst.Make(MetaLoc)
 let _ =

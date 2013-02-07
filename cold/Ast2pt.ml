@@ -556,6 +556,8 @@ let rec expr (x : expr) =
             error loc
               "Integer literal exceeds the range of representable integers of type nativeint" in
       mkexp loc (Pexp_constant (Const_nativeint nati))
+  | `Any _loc ->
+      errorf _loc "Any should not appear in the position of expression"
   | `Label (loc,_,_) -> error loc "labeled expression not allowed here"
   | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (expr e))
   | `LetIn (loc,rf,bi,e) ->

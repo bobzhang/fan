@@ -21,6 +21,9 @@ type aident = [ alident | auident]
 type astring = [ `C of string | ant] 
 type ident =
   [ `Dot of (ident* ident) | `App of (ident* ident) | alident | auident] 
+type ep =
+  [ `Nil | `Id of ident | `App of (ep* ep) | `Vrn of string
+  | `Com of (ep* ep) | `Sem of (ep* ep) | `Tup of ep | `Any | ant | literal] 
 type ctyp =
   [ `Nil | `Alias of (ctyp* ctyp) | `Any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
@@ -37,31 +40,33 @@ type ctyp =
   | `Amp of (ctyp* ctyp) | `TyOfAmp of (ctyp* ctyp) | `Package of module_type
   | ant] 
 and patt =
-  [ `Nil | `Id of ident | `Alias of (patt* alident) | ant | `Any
-  | `App of (patt* patt) | `Array of patt | `Com of (patt* patt)
-  | `Sem of (patt* patt) | literal | `Label of (alident* patt)
-  | `PaOlbi of (alident* patt* expr meta_option) | `Or of (patt* patt)
-  | `PaRng of (patt* patt) | `PaRec of patt | `PaEq of (ident* patt)
-  | `Tup of patt | `Constraint of (patt* ctyp) | `ClassPath of ident
-  | `Vrn of string | `Lazy of patt
+  [ `Nil | `Id of ident | `App of (patt* patt) | `Vrn of string
+  | `Com of (patt* patt) | `Sem of (patt* patt) | `Tup of patt | `Any | 
+    ant
+  | literal | `Alias of (patt* alident) | `Array of patt
+  | `Label of (alident* patt) | `PaOlbi of (alident* patt* expr meta_option)
+  | `Or of (patt* patt) | `PaRng of (patt* patt) | `PaRec of patt
+  | `PaEq of (ident* patt) | `Constraint of (patt* ctyp)
+  | `ClassPath of ident | `Lazy of patt
   | `ModuleUnpack of (auident* ctyp meta_option)] 
 and expr =
-  [ `Nil | `Id of ident | `Dot of (expr* expr) | ant | `App of (expr* expr)
-  | `ArrayDot of (expr* expr) | `Array of expr | `Sem of (expr* expr)
-  | `ExAsf | `ExAsr of expr | `Assign of (expr* expr)
+  [ `Nil | `Id of ident | `App of (expr* expr) | `Vrn of string
+  | `Com of (expr* expr) | `Sem of (expr* expr) | `Tup of expr | `Any | 
+    ant
+  | literal | `Dot of (expr* expr) | `ArrayDot of (expr* expr)
+  | `Array of expr | `ExAsf | `ExAsr of expr | `Assign of (expr* expr)
   | `For of (alident* expr* expr* direction_flag* expr) | `Fun of match_case
-  | `IfThenElse of (expr* expr* expr) | `IfThen of (expr* expr) | literal
+  | `IfThenElse of (expr* expr* expr) | `IfThen of (expr* expr)
   | `Label of (alident* expr) | `Lazy of expr
   | `LetIn of (rec_flag* binding* expr)
   | `LetModule of (auident* module_expr* expr) | `Match of (expr* match_case)
   | `New of ident | `Obj of (patt* class_str_item)
   | `OptLabl of (alident* expr) | `OvrInst of rec_binding
   | `Record of (rec_binding* expr) | `Seq of expr | `Send of (expr* alident)
-  | `StringDot of (expr* expr) | `Try of (expr* match_case) | `Tup of expr
-  | `Com of (expr* expr) | `Constraint of (expr* ctyp)
-  | `Coercion of (expr* ctyp* ctyp) | `Vrn of string | `While of (expr* expr)
-  | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
-  | `Package_expr of module_expr] 
+  | `StringDot of (expr* expr) | `Try of (expr* match_case)
+  | `Constraint of (expr* ctyp) | `Coercion of (expr* ctyp* ctyp)
+  | `While of (expr* expr) | `LetOpen of (ident* expr)
+  | `LocalTypeFun of (alident* expr) | `Package_expr of module_expr] 
 and module_type =
   [ `Nil | `Id of ident | `MtFun of (auident* module_type* module_type)
   | `Sig of sig_item | `With of (module_type* with_constr)

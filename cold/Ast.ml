@@ -23,6 +23,10 @@ type astring = [ `C of (loc* string) | ant]
 type ident =
   [ `Dot of (loc* ident* ident) | `App of (loc* ident* ident) | alident
   | auident] 
+type ep =
+  [ `Nil of loc | `Id of (loc* ident) | `App of (loc* ep* ep)
+  | `Vrn of (loc* string) | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep)
+  | `Tup of (loc* ep) | `Any of loc | ant | literal] 
 type ctyp =
   [ `Nil of loc | `Alias of (loc* ctyp* ctyp) | `Any of loc
   | `App of (loc* ctyp* ctyp) | `Arrow of (loc* ctyp* ctyp)
@@ -43,25 +47,26 @@ type ctyp =
   | `Amp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
   | `Package of (loc* module_type) | ant] 
 and patt =
-  [ `Nil of loc | `Id of (loc* ident) | `Alias of (loc* patt* alident) | 
-    ant
-  | `Any of loc | `App of (loc* patt* patt) | `Array of (loc* patt)
-  | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt) | literal
+  [ `Nil of loc | `Id of (loc* ident) | `App of (loc* patt* patt)
+  | `Vrn of (loc* string) | `Com of (loc* patt* patt)
+  | `Sem of (loc* patt* patt) | `Tup of (loc* patt) | `Any of loc | ant
+  | literal | `Alias of (loc* patt* alident) | `Array of (loc* patt)
   | `Label of (loc* alident* patt)
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
-  | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt) | `Tup of (loc* patt)
+  | `PaRec of (loc* patt) | `PaEq of (loc* ident* patt)
   | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
-  | `Vrn of (loc* string) | `Lazy of (loc* patt)
-  | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
+  | `Lazy of (loc* patt) | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and expr =
-  [ `Nil of loc | `Id of (loc* ident) | `Dot of (loc* expr* expr) | ant
-  | `App of (loc* expr* expr) | `ArrayDot of (loc* expr* expr)
-  | `Array of (loc* expr) | `Sem of (loc* expr* expr) | `ExAsf of loc
-  | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
+  [ `Nil of loc | `Id of (loc* ident) | `App of (loc* expr* expr)
+  | `Vrn of (loc* string) | `Com of (loc* expr* expr)
+  | `Sem of (loc* expr* expr) | `Tup of (loc* expr) | `Any of loc | ant
+  | literal | `Dot of (loc* expr* expr) | `ArrayDot of (loc* expr* expr)
+  | `Array of (loc* expr) | `ExAsf of loc | `ExAsr of (loc* expr)
+  | `Assign of (loc* expr* expr)
   | `For of (loc* alident* expr* expr* direction_flag* expr)
   | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
-  | `IfThen of (loc* expr* expr) | literal | `Label of (loc* alident* expr)
+  | `IfThen of (loc* expr* expr) | `Label of (loc* alident* expr)
   | `Lazy of (loc* expr) | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
@@ -69,10 +74,9 @@ and expr =
   | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding* expr)
   | `Seq of (loc* expr) | `Send of (loc* expr* alident)
   | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
-  | `Tup of (loc* expr) | `Com of (loc* expr* expr)
   | `Constraint of (loc* expr* ctyp) | `Coercion of (loc* expr* ctyp* ctyp)
-  | `Vrn of (loc* string) | `While of (loc* expr* expr)
-  | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
+  | `While of (loc* expr* expr) | `LetOpen of (loc* ident* expr)
+  | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)

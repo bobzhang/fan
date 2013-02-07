@@ -121,6 +121,24 @@
     | alident
     | auident];
 
+   type ep =
+    [= `Nil of loc
+    | `Id  of (loc * ident) (* i *)
+      (* `s *)
+    | `App of (loc * ep * ep) (* e e *)           
+    | `Vrn of (loc * string)
+    | `Com of (loc * ep * ep)
+    | `Sem of (loc * ep * ep) (* e; e *)
+    | `Tup of (loc * ep)
+    | `Any of loc
+    | ant (* $s$ *)
+    | literal ]   ;
+   (* type ep = *)
+   (*  [= `Nil of loc *)
+   (*  | `Id  of (loc * ident) (\* i *\) *)
+   (*  | literal *)
+   (*  | `App of ep  * ep  *)
+   (*  | `Vrn of ]   *)
    type ctyp =
     [= `Nil of loc
 
@@ -180,14 +198,19 @@
    and patt =
      [= `Nil of loc
      | `Id  of (loc * ident) (* i *)
-     | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
-     | ant (* $s$ *)
-     | `Any of loc (* _ *)
      | `App of (loc * patt * patt) (* p p *) (* fun x y -> *)
-     | `Array of (loc * patt) (* [| p |] *)
+     | `Vrn of (loc * string) (* `s *)
      | `Com of (loc * patt * patt) (* p, p *)
      | `Sem of (loc * patt * patt) (* p; p *)
-     | literal
+     | `Tup of (loc * patt )
+     | `Any of loc (* _ *)
+           
+     | ant (* $s$ *)
+     | literal         
+     | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
+
+     | `Array of (loc * patt) (* [| p |] *)
+
      | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
      (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
      | `PaOlbi of (loc * alident * patt * meta_option expr)
@@ -195,33 +218,36 @@
      | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
      | `PaRec of (loc * patt) (* { p } *)
      | `PaEq  of (loc * ident * patt) (* i = p *)
-     | `Tup of (loc * patt )
      | `Constraint of (loc * patt * ctyp) (* (p : t) *)
      | `ClassPath of (loc * ident) (* #i *)
-     | `Vrn of (loc * string) (* `s *)
+
      | `Lazy of (loc * patt) (* lazy p *)
        (* (module M : ty ) *)      
      | `ModuleUnpack of (loc * (* string *)auident * meta_option ctyp)]
   and expr =
      [= `Nil of loc
      | `Id  of (loc * ident) (* i *)
-     | `Dot of (loc * expr * expr) (* e.e *)
+      (* `s *)
+     | `App of (loc * expr * expr) (* e e *)           
+     | `Vrn of (loc * string)
+     | `Com of (loc * expr * expr)
+     | `Sem of (loc * expr * expr) (* e; e *)
+     | `Tup of (loc * expr)
+     | `Any of (loc) (* Faked here to make a common subtyp of expr patt to be expressive enough *)
      | ant (* $s$ *)
-     | `App of (loc * expr * expr) (* e e *)
+     | literal
+         
+     | `Dot of (loc * expr * expr) (* e.e *)
      | `ArrayDot of (loc * expr * expr) (* e.(e) *)
      | `Array of (loc * expr) (* [| e |] *)
-     | `Sem of (loc * expr * expr) (* e; e *)
      | `ExAsf of loc (* assert `False *)
      | `ExAsr of (loc * expr) (* assert e *)
      | `Assign of (loc * expr * expr) (* e := e *)
-
       (* for s = e to/downto e do { e } *)
      | `For of (loc * alident * expr * expr * direction_flag * expr)
      | `Fun of (loc * match_case) (* fun [ mc ] *)
-
      | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
      | `IfThen of (loc * expr * expr) (* if e then e *)
-     | literal
      | `Label of (loc * alident * expr) (* ~s or ~s:e *)
      | `Lazy of (loc * expr) (* lazy e *)
       (* let b in e or let rec b in e *)
@@ -248,20 +274,13 @@
      | `StringDot of (loc * expr * expr)
       (* try e with [ mc ] *)
      | `Try of (loc * expr * match_case)
-
-     | `Tup of (loc * expr)
-     | `Com of (loc * expr * expr)
-          
       (* (e : t) *)
      | (* `Constraint *) `Constraint of (loc * expr * ctyp)
      | `Coercion of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)          
-      (* `s *)
-     | `Vrn of (loc * string)
       (* while e do { e } *)
      | `While of (loc * expr * expr)
       (* let open i in e *)
      | `LetOpen of (loc * ident * expr)
-
       (* fun (type t) -> e *)
       (* let f x (type t) y z = e *)
      | `LocalTypeFun of (loc *  alident * expr)

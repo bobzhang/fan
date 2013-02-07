@@ -23,6 +23,16 @@ let meta_bool _loc =
 let meta_ref mf_a _loc i =
   {| {contents= $(mf_a _loc !i) } |};
 
+  (*
+    `PaRec
+    (_loc, (`PaEq (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
+
+    `Record
+    (_loc,
+      (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))),
+      (`Nil _loc))
+   *)
+
 
 (* [mklist] and [mkarray]
    duplicated with ExprPatt to remove cyclic dependency *)
