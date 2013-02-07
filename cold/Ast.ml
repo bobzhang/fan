@@ -23,10 +23,6 @@ type astring = [ `C of (loc* string) | ant]
 type ident =
   [ `Dot of (loc* ident* ident) | `App of (loc* ident* ident) | alident
   | auident] 
-type ep =
-  [ `Nil of loc | `Id of (loc* ident) | `App of (loc* ep* ep)
-  | `Vrn of (loc* string) | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep)
-  | `Tup of (loc* ep) | `Any of loc | ant | literal] 
 type ctyp =
   [ `Nil of loc | `Alias of (loc* ctyp* ctyp) | `Any of loc
   | `App of (loc* ctyp* ctyp) | `Arrow of (loc* ctyp* ctyp)
@@ -49,24 +45,24 @@ type ctyp =
 and patt =
   [ `Nil of loc | `Id of (loc* ident) | `App of (loc* patt* patt)
   | `Vrn of (loc* string) | `Com of (loc* patt* patt)
-  | `Sem of (loc* patt* patt) | `Tup of (loc* patt) | `Any of loc | ant
-  | literal | `Alias of (loc* patt* alident) | `Array of (loc* patt)
+  | `Sem of (loc* patt* patt) | `Tup of (loc* patt) | `Any of loc
+  | `Record of (loc* rec_patt) | ant | literal
+  | `Alias of (loc* patt* alident) | `Array of (loc* patt)
   | `Label of (loc* alident* patt)
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
-  | `Record of (loc* rec_patt) | `Constraint of (loc* patt* ctyp)
-  | `ClassPath of (loc* ident) | `Lazy of (loc* patt)
-  | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
+  | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
+  | `Lazy of (loc* patt) | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
 and rec_patt =
   [ `Nil of loc | `RecBind of (loc* ident* patt)
   | `Sem of (loc* rec_patt* rec_patt) | `Any of loc | ant] 
 and expr =
   [ `Nil of loc | `Id of (loc* ident) | `App of (loc* expr* expr)
   | `Vrn of (loc* string) | `Com of (loc* expr* expr)
-  | `Sem of (loc* expr* expr) | `Tup of (loc* expr) | `Any of loc | ant
-  | literal | `Dot of (loc* expr* expr) | `ArrayDot of (loc* expr* expr)
-  | `Array of (loc* expr) | `ExAsf of loc | `ExAsr of (loc* expr)
-  | `Assign of (loc* expr* expr)
+  | `Sem of (loc* expr* expr) | `Tup of (loc* expr) | `Any of loc
+  | `Record of (loc* rec_expr) | ant | literal | `Dot of (loc* expr* expr)
+  | `ArrayDot of (loc* expr* expr) | `Array of (loc* expr) | `ExAsf of loc
+  | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
   | `For of (loc* alident* expr* expr* direction_flag* expr)
   | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
   | `IfThen of (loc* expr* expr) | `Label of (loc* alident* expr)
@@ -74,16 +70,16 @@ and expr =
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
-  | `OvrInst of (loc* rec_expr) | `Record of (loc* rec_expr)
-  | `RecordWith of (loc* rec_expr* expr) | `Seq of (loc* expr)
-  | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
-  | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
-  | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)
-  | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
+  | `OvrInst of (loc* rec_expr) | `RecordWith of (loc* rec_expr* expr)
+  | `Seq of (loc* expr) | `Send of (loc* expr* alident)
+  | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
+  | `Constraint of (loc* expr* ctyp) | `Coercion of (loc* expr* ctyp* ctyp)
+  | `While of (loc* expr* expr) | `LetOpen of (loc* ident* expr)
+  | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
 and rec_expr =
   [ `Nil of loc | `Sem of (loc* rec_expr* rec_expr)
-  | `RecBind of (loc* ident* expr) | ant] 
+  | `RecBind of (loc* ident* expr) | `Any of loc | ant] 
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)
   | `MtFun of (loc* auident* module_type* module_type)
@@ -161,3 +157,11 @@ and class_str_item =
   | `CrVal of (loc* alident* override_flag* mutable_flag* expr)
   | `CrVir of (loc* alident* private_flag* ctyp)
   | `CrVvr of (loc* alident* mutable_flag* ctyp) | ant] 
+type ep =
+  [ `Nil of loc | `Id of (loc* ident) | `App of (loc* ep* ep)
+  | `Vrn of (loc* string) | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep)
+  | `Tup of (loc* ep) | `Any of loc | `Record of (loc* rec_bind) | ant
+  | literal] 
+and rec_bind =
+  [ `Nil of loc | `RecBind of (loc* ident* ep)
+  | `Sem of (loc* rec_bind* rec_bind) | `Any of loc | ant] 

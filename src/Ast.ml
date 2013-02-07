@@ -121,18 +121,6 @@
     | alident
     | auident];
 
-   type ep =
-    [= `Nil of loc
-    | `Id  of (loc * ident) (* i *)
-      (* `s *)
-    | `App of (loc * ep * ep) (* e e *)           
-    | `Vrn of (loc * string)
-    | `Com of (loc * ep * ep)
-    | `Sem of (loc * ep * ep) (* e; e *)
-    | `Tup of (loc * ep)
-    | `Any of loc
-    | ant (* $s$ *)
-    | literal ]   ;
    (* type ep = *)
    (*  [= `Nil of loc *)
    (*  | `Id  of (loc * ident) (\* i *\) *)
@@ -204,8 +192,11 @@
      | `Sem of (loc * patt * patt) (* p; p *)
      | `Tup of (loc * patt )
      | `Any of loc (* _ *)
+     | `Record of (loc * rec_patt) (* { p } *)           
      | ant (* $s$ *)
-     | literal         
+     | literal
+
+           
      | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
      | `Array of (loc * patt) (* [| p |] *)
      | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
@@ -213,7 +204,6 @@
      | `PaOlbi of (loc * alident * patt * meta_option expr)
      | `Or of (loc * patt * patt) (* p | p *)
      | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
-     | (* `Record *) `Record of (loc * rec_patt) (* { p } *)
      | `Constraint of (loc * patt * ctyp) (* (p : t) *)
      | `ClassPath of (loc * ident) (* #i *)
      | `Lazy of (loc * patt) (* lazy p *)
@@ -234,10 +224,14 @@
      | `Com of (loc * expr * expr)
      | `Sem of (loc * expr * expr) (* e; e *)
      | `Tup of (loc * expr)
-     | `Any of (loc) (* Faked here to make a common subtyp of expr patt to be expressive enough *)
+     | `Any of (loc)
+           (* Faked here to make a common subtyp of expr patt to be expressive enough *)
+     | `Record of (loc * rec_expr)
      | ant (* $s$ *)
      | literal
-         
+       (* { rb } *) 
+
+           
      | `Dot of (loc * expr * expr) (* e.e *)
      | `ArrayDot of (loc * expr * expr) (* e.(e) *)
      | `Array of (loc * expr) (* [| e |] *)
@@ -265,8 +259,7 @@
      | `OptLabl of (loc *alident * expr)
       (* {< rb >} *)
      | `OvrInst of (loc * rec_expr)
-       (* { rb } *) 
-     | `Record of (loc * rec_expr)
+
       (* { (e) with rb }  *)
      | `RecordWith of (loc * rec_expr  * expr)
       (* do { e } *)
@@ -295,6 +288,8 @@
      | `Sem of (loc * rec_expr * rec_expr)
       (* i = e *)
      | `RecBind  of (loc * ident * expr)
+
+     | `Any of loc  (* Faked here to be symmertric to rec_patt *)
      | ant (* $s$ *) ]
   and module_type =
     [= `Nil of loc
@@ -506,6 +501,30 @@
     (* val virtual (mutable)? s : t *)
     | `CrVvr of (loc * alident * mutable_flag * ctyp)
     | ant (* $s$ *) ]; 
+
+
+
+     type ep =
+     [= `Nil of loc
+     | `Id  of (loc * ident) (* i *)
+      (* `s *)
+     | `App of (loc * ep * ep) (* e e *)           
+     | `Vrn of (loc * string)
+     | `Com of (loc * ep * ep)
+     | `Sem of (loc * ep * ep) (* e; e *)
+     | `Tup of (loc * ep)
+     | `Any of (loc)
+           (* Faked here to make a common subtyp of expr patt to be expressive enough *)
+     | `Record of (loc * rec_bind)
+     | ant (* $s$ *)
+     | literal ]
+     and rec_bind =
+     [= `Nil of loc
+     | `RecBind of (loc * ident * ep)
+     | `Sem of (loc * rec_bind * rec_bind)
+     | `Any of loc
+     | ant];
+
 
 (* let _loc = FanLoc.ghost; *)
 (* #filter "serialize";; *)
