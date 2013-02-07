@@ -204,7 +204,7 @@ let substp loc env =
     | {| $tup:x |} -> {@loc| $(tup:loop x) |}
     | {| $x1, $x2 |} -> {@loc| $(loop x1), $(loop x2) |}
     | {| { $bi } |} ->
-        let rec substbi = with {patt:rec_binding;expr:patt} fun
+        let rec substbi = with {patt:rec_expr;expr:patt} fun
           [ {| $b1; $b2 |} ->
             `Sem(_loc,substbi b1, substbi b2)
             (* {@loc| $(substbi b1); $(substbi b2) |} *)
@@ -365,9 +365,9 @@ let mk_assert  =  fun
   the arity
  *)
 let mk_record label_exprs =
-  let rec_bindings = List.map (fun (label, expr) ->
-    {:rec_binding| $lid:label = $expr |} ) label_exprs in
-  {| { $list:rec_bindings } |};
+  let rec_exprs = List.map (fun (label, expr) ->
+    {:rec_expr| $lid:label = $expr |} ) label_exprs in
+  {| { $list:rec_exprs } |};
 
 
 (* TBD *)
@@ -620,11 +620,11 @@ let mk_tuple_vep = fun
 (*
   Example:
   {[
-  mee_record_col "a" {|3|} = {| {:rec_binding| a = $($({|3|})) |}|};
+  mee_record_col "a" {|3|} = {| {:rec_expr| a = $($({|3|})) |}|};
   ]}
  *)
 let mee_record_col label expr =
-  {| {:rec_binding| $(lid:($str:label)) = $($expr) |}|};
+  {| {:rec_expr| $(lid:($str:label)) = $($expr) |}|};
 
 (*
   Example:
@@ -650,7 +650,7 @@ let mep_record_col label expr =
   (* {| {:patt| $(lid:$(str:label)) = $($expr) |} |} *);
 
 let mee_record_semi a b =
-  {| {:rec_binding| $($a);$($b) |} |};
+  {| {:rec_expr| $($a);$($b) |} |};
 
 
 let mep_record_semi a b =

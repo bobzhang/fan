@@ -252,7 +252,7 @@ class printer = object(self:'self)
         | Pexp_record (lst,eo) ->
             let bindings =
               List.map
-                (fun (lid,e) -> {:rec_binding| $(id:self#longident_loc lid) = $(self#expr e) |}) lst in 
+                (fun (lid,e) -> {:rec_expr| $(id:self#longident_loc lid) = $(self#expr e) |}) lst in 
             match eo with
             [ Some e  -> {| { ($(self#expr e)) with $list:bindings } |}
             | None -> {| { $list:bindings } |}]
@@ -297,7 +297,7 @@ class printer = object(self:'self)
         | Pexp_setinstvar ({txt;_},e) ->
             {| $lid:txt <- $(self#expr e) |}
         | Pexp_override lst ->
-            let lst = List.map (fun ({txt;_},e) -> {:rec_binding| $lid:txt = $(self#expr e)|}) lst in
+            let lst = List.map (fun ({txt;_},e) -> {:rec_expr| $lid:txt = $(self#expr e)|}) lst in
             {| {< $list:lst >}|}
         | Pexp_letmodule ({txt;_},me,e) ->
             {| let module $txt = $(self#module_expr me) in $(self#expr e) |}

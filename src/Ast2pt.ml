@@ -747,18 +747,18 @@ and when_expr (e:expr) (w:expr) : expression  =
   [ `Nil _ -> expr e
   | w -> mkexp (loc_of w) (Pexp_when (expr w) (expr e)) ]
 
-and mklabexp (x:rec_binding)  =
+and mklabexp (x:rec_expr)  =
   let bindings = list_of_sem x [] in
-  with rec_binding 
+  with rec_expr 
   List.filter_map
     (fun
       [ `Nil _ -> None
       | `RecBind(_,i,e) ->  Some (ident i, expr e)
-      |  x ->errorf (loc_of x) "mklabexp : %s" (dump_rec_binding x) ]) bindings
-and mkideexp (x:rec_binding)
+      |  x ->errorf (loc_of x) "mklabexp : %s" (dump_rec_expr x) ]) bindings
+and mkideexp (x:rec_expr)
     (acc: list (Asttypes.loc string * expression)) :
     list (Asttypes.loc string * expression) = 
-  with rec_binding match x with 
+  with rec_expr match x with 
   [ `Nil _ -> acc
   | `Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
   | `RecBind(_,`Lid(sloc,s),e) ->

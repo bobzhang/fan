@@ -15,7 +15,7 @@ type 'a tag =
   | Match_case
   | Ident
   | Binding
-  | Rec_binding
+  | Rec_expr
   | Module_binding 
 let string_of_tag =
   function
@@ -34,7 +34,7 @@ let string_of_tag =
   | Match_case  -> "match_case"
   | Ident  -> "ident"
   | Binding  -> "binding"
-  | Rec_binding  -> "rec_binding"
+  | Rec_expr  -> "rec_expr"
   | Module_binding  -> "module_binding"
 let ctyp_tag: ctyp tag = Ctyp
 let patt_tag: patt tag = Patt
@@ -51,7 +51,7 @@ let class_str_item_tag: class_str_item tag = Class_str_item
 let match_case_tag: match_case tag = Match_case
 let ident_tag: ident tag = Ident
 let binding_tag: binding tag = Binding
-let rec_binding_tag: rec_binding tag = Rec_binding
+let rec_expr_tag: rec_expr tag = Rec_expr
 let module_binding_tag: module_binding tag = Module_binding
 type dyn  
 external dyn_tag : 'a tag -> dyn tag = "%identity"

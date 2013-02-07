@@ -45,7 +45,7 @@ let print_warning loc txt = !current_warning loc txt;
   type_declaration  type_ident_and_parameters  (* type_kind *)  type_longident  type_longident_and_parameters
   type_parameter  type_parameters  typevars  val_longident  with_constr  expr_quot  patt_quot
   ctyp_quot  str_item_quot  sig_item_quot  class_str_item_quot  class_sig_item_quot  module_expr_quot
-  module_type_quot  class_type_quot  class_expr_quot  with_constr_quot  binding_quot  rec_binding_quot
+  module_type_quot  class_type_quot  class_expr_quot  with_constr_quot  binding_quot  rec_expr_quot
   module_declaration
   (infixop0 "or ||")
   (infixop1  "& &&")

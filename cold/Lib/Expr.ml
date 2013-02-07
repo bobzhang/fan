@@ -535,11 +535,11 @@ let mk_assert =
   | `Id (_loc,`Lid (_,"false")) -> `ExAsf _loc
   | e -> `ExAsr (_loc, e)
 let mk_record label_exprs =
-  let rec_bindings =
+  let rec_exprs =
     List.map
       (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
       label_exprs in
-  `Record (_loc, (FanAst.sem_of_list rec_bindings))
+  `Record (_loc, (FanAst.sem_of_list rec_exprs))
 let failure =
   `App
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),

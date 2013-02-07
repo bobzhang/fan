@@ -122,7 +122,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           |("list",
             ("binding;"|"str_item"
             |"sig_item"|"class_sig_item"
-            |"class_str_item"|"rec_binding"
+            |"class_str_item"|"rec_expr"
             |"ctyp;"|"patt;"|"expr;"),_) ->
                 {| $(uid:gm()).sem_of_list $e |}
           (* broken

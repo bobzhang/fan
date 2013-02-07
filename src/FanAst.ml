@@ -511,7 +511,7 @@ class clean_ast = object
     with expr
     match super#expr e with
     [ {| let $rec:_ $({:binding@_l||}) in $e |} |
-      {| { ($e) with $({:rec_binding@_l||})  } |} |
+      {| { ($e) with $({:rec_expr@_l||})  } |} |
       {| $({@_l||} ), $e |} |
       {| $e, $({@_l||} ) |} |
       {| $({@_l||}); $e |} |
@@ -540,9 +540,9 @@ class clean_ast = object
     [ {| $({@_l||} ) and $bi |} |
       {| $bi and $({@_l||} ) |} -> bi
     | bi -> bi ];
-  method! rec_binding rb =
-    with rec_binding
-    match super#rec_binding rb with
+  method! rec_expr rb =
+    with rec_expr
+    match super#rec_expr rb with
     [ {| $({@_l||} ) ; $bi |} | {| $bi ; $({@_l||} ) |} -> bi
     | bi -> bi ];
 
@@ -702,7 +702,7 @@ let dump_class_type = to_string_of_printer dump#class_type;
 let dump_class_expr = to_string_of_printer dump#class_expr;
 let dump_ident = to_string_of_printer dump#ident;
 let dump_match_case = to_string_of_printer dump#match_case;
-let dump_rec_binding = to_string_of_printer dump#rec_binding;  
+let dump_rec_expr = to_string_of_printer dump#rec_expr;  
 let dump_str_item = to_string_of_printer dump#str_item;
 let dump_sig_item = to_string_of_printer dump#sig_item;
 let dump_module_binding  = to_string_of_printer dump#module_binding;

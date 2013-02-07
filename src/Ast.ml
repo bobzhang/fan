@@ -17,7 +17,7 @@
     match_case         :: The type of cases for match/function/try constructions
     ident              :: The type of identifiers (including path like Foo(X).Bar.y)
     binding            :: The type of let bindings
-    rec_binding        :: The type of record definitions
+    rec_expr        :: The type of record definitions
 
     == Modules ==
     module_type        :: The type of module types
@@ -264,11 +264,11 @@
       (* ?s or ?s:e *)
      | `OptLabl of (loc *alident * expr)
       (* {< rb >} *)
-     | `OvrInst of (loc * rec_binding)
+     | `OvrInst of (loc * rec_expr)
        (* { rb } *) 
-     | `Record of (loc * rec_binding)
+     | `Record of (loc * rec_expr)
       (* { (e) with rb }  *)
-     | `RecordWith of (loc * rec_binding  * expr)
+     | `RecordWith of (loc * rec_expr  * expr)
       (* do { e } *)
      | `Seq of (loc * expr)
       (* e#s *)
@@ -289,6 +289,13 @@
      | `LocalTypeFun of (loc *  alident * expr)
       (* (module ME : S) which is represented as (module (ME : S)) *)
      | `Package_expr of (loc * module_expr) ]
+  and rec_expr =
+    [= `Nil of loc
+      (* rb ; rb *)
+     | `Sem of (loc * rec_expr * rec_expr)
+      (* i = e *)
+     | `RecBind  of (loc * ident * expr)
+     | ant (* $s$ *) ]
   and module_type =
     [= `Nil of loc
         (* i *) (* A.B.C *)
@@ -350,13 +357,6 @@
      | `And of (loc * binding * binding)
       (* p = e *) (* let patt = expr *)
      | `Bind  of (loc * patt * expr)
-     | ant (* $s$ *) ]
-  and rec_binding =
-    [= `Nil of loc
-      (* rb ; rb *)
-     | `Sem of (loc * rec_binding * rec_binding)
-      (* i = e *)
-     | `RecBind  of (loc * ident * expr)
      | ant (* $s$ *) ]
   and module_binding =
     [= `Nil of loc

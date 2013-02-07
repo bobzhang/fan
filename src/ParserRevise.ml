@@ -25,7 +25,7 @@ let apply () = begin
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
     {:clear|Gram
-      amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_binding_quot
+      amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_expr_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
     class_name_and_param class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
@@ -508,16 +508,16 @@ let apply () = begin
       match_case_quot:
       [ L0 match_case0 SEP "|"{x} -> {| $list:x |}
       | -> {||} ]  |};
-  with rec_binding
+  with rec_expr
       {:extend|
-        rec_binding_quot:
+        rec_expr_quot:
         [ label_expr_list{x} -> x | -> {||} ]
         label_expr:
-        [ `Ant (("rec_binding" |""|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |}
+        [ `Ant (("rec_expr" |""|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_expr" n s) |}
         | label_longident{i}; fun_binding{e} -> {| $id:i = $e |}
         | label_longident{i} -> {| $id:i = $(lid:Ident.to_lid i) |} ]
         field_expr:
-        [ `Ant ((""|"bi"|"anti" |"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_binding" n s) |}
+        [ `Ant ((""|"bi"|"anti" |"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_expr" n s) |}
         | a_lident{l}; "=";  expr Level "top"{e} ->
             `RecBind (_loc, (l:>ident), e) (* {| $lid:l = $e |} *) ]
         label_expr_list:

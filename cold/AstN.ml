@@ -64,13 +64,14 @@ and expr =
   | `LetIn of (rec_flag* binding* expr)
   | `LetModule of (auident* module_expr* expr) | `Match of (expr* match_case)
   | `New of ident | `Obj of (patt* class_str_item)
-  | `OptLabl of (alident* expr) | `OvrInst of rec_binding
-  | `Record of rec_binding | `RecordWith of (rec_binding* expr)
-  | `Seq of expr | `Send of (expr* alident) | `StringDot of (expr* expr)
-  | `Try of (expr* match_case) | `Constraint of (expr* ctyp)
-  | `Coercion of (expr* ctyp* ctyp) | `While of (expr* expr)
-  | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
-  | `Package_expr of module_expr] 
+  | `OptLabl of (alident* expr) | `OvrInst of rec_expr | `Record of rec_expr
+  | `RecordWith of (rec_expr* expr) | `Seq of expr | `Send of (expr* alident)
+  | `StringDot of (expr* expr) | `Try of (expr* match_case)
+  | `Constraint of (expr* ctyp) | `Coercion of (expr* ctyp* ctyp)
+  | `While of (expr* expr) | `LetOpen of (ident* expr)
+  | `LocalTypeFun of (alident* expr) | `Package_expr of module_expr] 
+and rec_expr =
+  [ `Nil | `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | ant] 
 and module_type =
   [ `Nil | `Id of ident | `MtFun of (auident* module_type* module_type)
   | `Sig of sig_item | `With of (module_type* with_constr)
@@ -88,9 +89,6 @@ and with_constr =
   | `And of (with_constr* with_constr) | ant] 
 and binding =
   [ `Nil | `And of (binding* binding) | `Bind of (patt* expr) | ant] 
-and rec_binding =
-  [ `Nil | `Sem of (rec_binding* rec_binding) | `RecBind of (ident* expr)
-  | ant] 
 and module_binding =
   [ `Nil | `And of (module_binding* module_binding)
   | `ModuleBind of (auident* module_type* module_expr)

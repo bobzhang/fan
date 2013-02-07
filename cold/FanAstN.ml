@@ -335,10 +335,10 @@ class eq =
             (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
-        | (`OvrInst _a0,`OvrInst _b0) -> self#rec_binding _a0 _b0
-        | (`Record _a0,`Record _b0) -> self#rec_binding _a0 _b0
+        | (`OvrInst _a0,`OvrInst _b0) -> self#rec_expr _a0 _b0
+        | (`Record _a0,`Record _b0) -> self#rec_expr _a0 _b0
         | (`RecordWith (_a0,_a1),`RecordWith (_b0,_b1)) ->
-            (self#rec_binding _a0 _b0) && (self#expr _a1 _b1)
+            (self#rec_expr _a0 _b0) && (self#expr _a1 _b1)
         | (`Seq _a0,`Seq _b0) -> self#expr _a0 _b0
         | (`Send (_a0,_a1),`Send (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#alident _a1 _b1)
@@ -359,7 +359,17 @@ class eq =
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
         | (`Package_expr _a0,`Package_expr _b0) -> self#module_expr _a0 _b0
         | (_,_) -> false
-    method module_type : module_type -> module_type -> 'result24=
+    method rec_expr : rec_expr -> rec_expr -> 'result24=
+      fun _a0  _b0  ->
+        match (_a0, _b0) with
+        | (`Nil,`Nil) -> true
+        | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
+            (self#rec_expr _a0 _b0) && (self#rec_expr _a1 _b1)
+        | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
+            (self#ident _a0 _b0) && (self#expr _a1 _b1)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result24)
+        | (_,_) -> false
+    method module_type : module_type -> module_type -> 'result25=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Nil,`Nil) -> true
@@ -371,9 +381,9 @@ class eq =
         | (`With (_a0,_a1),`With (_b0,_b1)) ->
             (self#module_type _a0 _b0) && (self#with_constr _a1 _b1)
         | (`ModuleTypeOf _a0,`ModuleTypeOf _b0) -> self#module_expr _a0 _b0
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result24)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result25)
         | (_,_) -> false
-    method sig_item : sig_item -> sig_item -> 'result25=
+    method sig_item : sig_item -> sig_item -> 'result26=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Nil,`Nil) -> true
@@ -397,9 +407,9 @@ class eq =
         | (`Type _a0,`Type _b0) -> self#ctyp _a0 _b0
         | (`Val (_a0,_a1),`Val (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result25)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result26)
         | (_,_) -> false
-    method with_constr : with_constr -> with_constr -> 'result26=
+    method with_constr : with_constr -> with_constr -> 'result27=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Nil,`Nil) -> true
@@ -413,9 +423,9 @@ class eq =
             (self#ident _a0 _b0) && (self#ident _a1 _b1)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#with_constr _a0 _b0) && (self#with_constr _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result26)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result27)
         | (_,_) -> false
-    method binding : binding -> binding -> 'result27=
+    method binding : binding -> binding -> 'result28=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Nil,`Nil) -> true
@@ -423,16 +433,6 @@ class eq =
             (self#binding _a0 _b0) && (self#binding _a1 _b1)
         | (`Bind (_a0,_a1),`Bind (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#expr _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result27)
-        | (_,_) -> false
-    method rec_binding : rec_binding -> rec_binding -> 'result28=
-      fun _a0  _b0  ->
-        match (_a0, _b0) with
-        | (`Nil,`Nil) -> true
-        | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
-            (self#rec_binding _a0 _b0) && (self#rec_binding _a1 _b1)
-        | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
-            (self#ident _a0 _b0) && (self#expr _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result28)
         | (_,_) -> false
     method module_binding : module_binding -> module_binding -> 'result29=
@@ -965,12 +965,12 @@ class print =
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
               self#expr _a1
         | `OvrInst _a0 ->
-            Format.fprintf fmt "@[<1>(`OvrInst@ %a)@]" self#rec_binding _a0
+            Format.fprintf fmt "@[<1>(`OvrInst@ %a)@]" self#rec_expr _a0
         | `Record _a0 ->
-            Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_binding _a0
+            Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_expr _a0
         | `RecordWith (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a)@]"
-              self#rec_binding _a0 self#expr _a1
+            Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a)@]" self#rec_expr
+              _a0 self#expr _a1
         | `Seq _a0 -> Format.fprintf fmt "@[<1>(`Seq@ %a)@]" self#expr _a0
         | `Send (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Send@ %a@ %a)@]" self#expr _a0
@@ -999,7 +999,18 @@ class print =
         | `Package_expr _a0 ->
             Format.fprintf fmt "@[<1>(`Package_expr@ %a)@]" self#module_expr
               _a0
-    method module_type : 'fmt -> module_type -> 'result63=
+    method rec_expr : 'fmt -> rec_expr -> 'result63=
+      fun fmt  ->
+        function
+        | `Nil -> Format.fprintf fmt "`Nil"
+        | `Sem (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_expr _a0
+              self#rec_expr _a1
+        | `RecBind (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
+              self#expr _a1
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result63)
+    method module_type : 'fmt -> module_type -> 'result64=
       fun fmt  ->
         function
         | `Nil -> Format.fprintf fmt "`Nil"
@@ -1015,8 +1026,8 @@ class print =
         | `ModuleTypeOf _a0 ->
             Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a)@]" self#module_expr
               _a0
-        | #ant as _a0 -> (self#ant fmt _a0 :>'result63)
-    method sig_item : 'fmt -> sig_item -> 'result64=
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result64)
+    method sig_item : 'fmt -> sig_item -> 'result65=
       fun fmt  ->
         function
         | `Nil -> Format.fprintf fmt "`Nil"
@@ -1052,8 +1063,8 @@ class print =
         | `Val (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Val@ %a@ %a)@]" self#alident _a0
               self#ctyp _a1
-        | #ant as _a0 -> (self#ant fmt _a0 :>'result64)
-    method with_constr : 'fmt -> with_constr -> 'result65=
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result65)
+    method with_constr : 'fmt -> with_constr -> 'result66=
       fun fmt  ->
         function
         | `Nil -> Format.fprintf fmt "`Nil"
@@ -1072,8 +1083,8 @@ class print =
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#with_constr _a0
               self#with_constr _a1
-        | #ant as _a0 -> (self#ant fmt _a0 :>'result65)
-    method binding : 'fmt -> binding -> 'result66=
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result66)
+    method binding : 'fmt -> binding -> 'result67=
       fun fmt  ->
         function
         | `Nil -> Format.fprintf fmt "`Nil"
@@ -1082,17 +1093,6 @@ class print =
               self#binding _a1
         | `Bind (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a)@]" self#patt _a0
-              self#expr _a1
-        | #ant as _a0 -> (self#ant fmt _a0 :>'result66)
-    method rec_binding : 'fmt -> rec_binding -> 'result67=
-      fun fmt  ->
-        function
-        | `Nil -> Format.fprintf fmt "`Nil"
-        | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_binding _a0
-              self#rec_binding _a1
-        | `RecBind (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
               self#expr _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result67)
     method module_binding : 'fmt -> module_binding -> 'result68=
@@ -1743,15 +1743,15 @@ module Expr =
               (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
               (meta_expr _loc _a1))
       | `OvrInst _a0 ->
-          `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_binding _loc _a0))
+          `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_expr _loc _a0))
       | `Record _a0 ->
-          `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_binding _loc _a0))
+          `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_expr _loc _a0))
       | `RecordWith (_a0,_a1) ->
           `App
             (_loc,
               (`App
                  (_loc, (`Vrn (_loc, "RecordWith")),
-                   (meta_rec_binding _loc _a0))), (meta_expr _loc _a1))
+                   (meta_rec_expr _loc _a0))), (meta_expr _loc _a1))
       | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (meta_expr _loc _a0))
       | `Send (_a0,_a1) ->
           `App
@@ -1800,6 +1800,20 @@ module Expr =
           `App
             (_loc, (`Vrn (_loc, "Package_expr")),
               (meta_module_expr _loc _a0))
+    and meta_rec_expr _loc =
+      function
+      | `Nil -> `Vrn (_loc, "Nil")
+      | `Sem (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_expr _loc _a0))),
+              (meta_rec_expr _loc _a1))
+      | `RecBind (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
+              (meta_expr _loc _a1))
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result109)
     and meta_module_type _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
@@ -1825,7 +1839,7 @@ module Expr =
           `App
             (_loc, (`Vrn (_loc, "ModuleTypeOf")),
               (meta_module_expr _loc _a0))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result109)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result108)
     and meta_sig_item _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
@@ -1880,7 +1894,7 @@ module Expr =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Val")), (meta_alident _loc _a0))),
               (meta_ctyp _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result108)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result107)
     and meta_with_constr _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
@@ -1910,7 +1924,7 @@ module Expr =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "And")), (meta_with_constr _loc _a0))),
               (meta_with_constr _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result107)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result106)
     and meta_binding _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
@@ -1923,20 +1937,6 @@ module Expr =
           `App
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Bind")), (meta_patt _loc _a0))),
-              (meta_expr _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result106)
-    and meta_rec_binding _loc =
-      function
-      | `Nil -> `Vrn (_loc, "Nil")
-      | `Sem (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_binding _loc _a0))),
-              (meta_rec_binding _loc _a1))
-      | `RecBind (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
               (meta_expr _loc _a1))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result105)
     and meta_module_binding _loc =
@@ -2734,15 +2734,15 @@ module Patt =
               (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
               (meta_expr _loc _a1))
       | `OvrInst _a0 ->
-          `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_binding _loc _a0))
+          `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_expr _loc _a0))
       | `Record _a0 ->
-          `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_binding _loc _a0))
+          `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_expr _loc _a0))
       | `RecordWith (_a0,_a1) ->
           `App
             (_loc,
               (`App
                  (_loc, (`Vrn (_loc, "RecordWith")),
-                   (meta_rec_binding _loc _a0))), (meta_expr _loc _a1))
+                   (meta_rec_expr _loc _a0))), (meta_expr _loc _a1))
       | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (meta_expr _loc _a0))
       | `Send (_a0,_a1) ->
           `App
@@ -2791,6 +2791,20 @@ module Patt =
           `App
             (_loc, (`Vrn (_loc, "Package_expr")),
               (meta_module_expr _loc _a0))
+    and meta_rec_expr _loc =
+      function
+      | `Nil -> `Vrn (_loc, "Nil")
+      | `Sem (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_expr _loc _a0))),
+              (meta_rec_expr _loc _a1))
+      | `RecBind (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
+              (meta_expr _loc _a1))
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result145)
     and meta_module_type _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
@@ -2816,7 +2830,7 @@ module Patt =
           `App
             (_loc, (`Vrn (_loc, "ModuleTypeOf")),
               (meta_module_expr _loc _a0))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result145)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result144)
     and meta_sig_item _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
@@ -2871,7 +2885,7 @@ module Patt =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Val")), (meta_alident _loc _a0))),
               (meta_ctyp _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result144)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result143)
     and meta_with_constr _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
@@ -2901,7 +2915,7 @@ module Patt =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "And")), (meta_with_constr _loc _a0))),
               (meta_with_constr _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result143)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result142)
     and meta_binding _loc =
       function
       | `Nil -> `Vrn (_loc, "Nil")
@@ -2914,20 +2928,6 @@ module Patt =
           `App
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Bind")), (meta_patt _loc _a0))),
-              (meta_expr _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result142)
-    and meta_rec_binding _loc =
-      function
-      | `Nil -> `Vrn (_loc, "Nil")
-      | `Sem (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_binding _loc _a0))),
-              (meta_rec_binding _loc _a1))
-      | `RecBind (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
               (meta_expr _loc _a1))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result141)
     and meta_module_binding _loc =

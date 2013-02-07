@@ -687,15 +687,14 @@ and when_expr (e : expr) (w : expr) =
   (match w with
    | `Nil _ -> expr e
    | w -> mkexp (loc_of w) (Pexp_when ((expr w), (expr e))) : expression )
-and mklabexp (x : rec_binding) =
+and mklabexp (x : rec_expr) =
   let bindings = list_of_sem x [] in
   List.filter_map
     (function
      | `Nil _ -> None
      | `RecBind (_,i,e) -> Some ((ident i), (expr e))
-     | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_binding x)) bindings
-and mkideexp (x : rec_binding) (acc : (string Asttypes.loc* expression) list)
-  =
+     | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_expr x)) bindings
+and mkideexp (x : rec_expr) (acc : (string Asttypes.loc* expression) list) =
   (match x with
    | `Nil _ -> acc
    | `Sem (_,x,y) -> mkideexp x (mkideexp y acc)

@@ -85,9 +85,8 @@ let _ =
   add_quotation (d, "binding") binding_quot ~mexpr:ME.meta_binding
     ~mpatt:MP.meta_binding ~expr_filter ~patt_filter
 let _ =
-  add_quotation (d, "rec_binding") rec_binding_quot
-    ~mexpr:ME.meta_rec_binding ~mpatt:MP.meta_rec_binding ~expr_filter
-    ~patt_filter
+  add_quotation (d, "rec_expr") rec_expr_quot ~mexpr:ME.meta_rec_expr
+    ~mpatt:MP.meta_rec_expr ~expr_filter ~patt_filter
 let _ =
   add_quotation (d, "match_case") match_case_quot ~mexpr:ME.meta_match_case
     ~mpatt:MP.meta_match_case ~expr_filter ~patt_filter

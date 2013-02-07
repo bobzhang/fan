@@ -74,13 +74,16 @@ and expr =
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
-  | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding)
-  | `RecordWith of (loc* rec_binding* expr) | `Seq of (loc* expr)
+  | `OvrInst of (loc* rec_expr) | `Record of (loc* rec_expr)
+  | `RecordWith of (loc* rec_expr* expr) | `Seq of (loc* expr)
   | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
   | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
   | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)
   | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
+and rec_expr =
+  [ `Nil of loc | `Sem of (loc* rec_expr* rec_expr)
+  | `RecBind of (loc* ident* expr) | ant] 
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)
   | `MtFun of (loc* auident* module_type* module_type)
@@ -103,9 +106,6 @@ and with_constr =
 and binding =
   [ `Nil of loc | `And of (loc* binding* binding)
   | `Bind of (loc* patt* expr) | ant] 
-and rec_binding =
-  [ `Nil of loc | `Sem of (loc* rec_binding* rec_binding)
-  | `RecBind of (loc* ident* expr) | ant] 
 and module_binding =
   [ `Nil of loc | `And of (loc* module_binding* module_binding)
   | `ModuleBind of (loc* auident* module_type* module_expr)

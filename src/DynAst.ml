@@ -17,7 +17,7 @@ type tag 'a =
  | Match_case
  | Ident
  | Binding
- | Rec_binding
+ | Rec_expr
  | Module_binding ];
 (* |}; *)
 let string_of_tag = fun
@@ -36,7 +36,7 @@ let string_of_tag = fun
  | Match_case -> "match_case"
  | Ident -> "ident"
  | Binding -> "binding"
- | Rec_binding -> "rec_binding"
+ | Rec_expr -> "rec_expr"
  | Module_binding -> "module_binding" ];
   
 let ctyp_tag : tag ctyp = Ctyp;
@@ -54,7 +54,7 @@ let class_str_item_tag : tag class_str_item = Class_str_item;
 let match_case_tag : tag match_case = Match_case;
 let ident_tag : tag ident = Ident;
 let binding_tag : tag binding = Binding;
-let rec_binding_tag : tag rec_binding  = Rec_binding;
+let rec_expr_tag : tag rec_expr  = Rec_expr;
 let module_binding_tag : tag module_binding = Module_binding;
 
 type dyn;

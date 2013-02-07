@@ -122,11 +122,11 @@ val match_case :
 val when_expr : expr -> expr -> Parsetree.expression
 
 val mklabexp :
-  rec_binding ->
+  rec_expr ->
   (Longident.t Asttypes.loc * Parsetree.expression) list
       
 val mkideexp :
-  rec_binding ->
+  rec_expr ->
   (string Asttypes.loc * Parsetree.expression) list ->
   (string Asttypes.loc * Parsetree.expression) list
       

@@ -135,9 +135,9 @@ add_quotation (d,"binding") binding_quot
     ~expr_filter
     ~patt_filter ;
   
-add_quotation (d,"rec_binding") rec_binding_quot
-    ~mexpr:ME.meta_rec_binding
-    ~mpatt:MP.meta_rec_binding
+add_quotation (d,"rec_expr") rec_expr_quot
+    ~mexpr:ME.meta_rec_expr
+    ~mpatt:MP.meta_rec_expr
     ~expr_filter
     ~patt_filter ;
   

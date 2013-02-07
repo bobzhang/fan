@@ -46,7 +46,7 @@ module type Syntax =
     val match_case_quot : match_case Gram.t
     val binding : binding Gram.t
     val binding_quot : binding Gram.t
-    val rec_binding_quot : rec_binding Gram.t
+    val rec_expr_quot : rec_expr Gram.t
     val class_declaration : class_expr Gram.t
     val class_description : class_type Gram.t
     val class_expr : class_expr Gram.t
@@ -89,8 +89,8 @@ module type Syntax =
     val expr : expr Gram.t
     val expr_eoi : expr Gram.t
     val expr_quot : expr Gram.t
-    val field_expr : rec_binding Gram.t
-    val field_expr_list : rec_binding Gram.t
+    val field_expr : rec_expr Gram.t
+    val field_expr_list : rec_expr Gram.t
     val fun_binding : expr Gram.t
     val fun_def : expr Gram.t
     val ident : ident Gram.t
@@ -100,8 +100,8 @@ module type Syntax =
     val patt_tcon : patt Gram.t
     val label_declaration : ctyp Gram.t
     val label_declaration_list : ctyp Gram.t
-    val label_expr : rec_binding Gram.t
-    val label_expr_list : rec_binding Gram.t
+    val label_expr : rec_expr Gram.t
+    val label_expr_list : rec_expr Gram.t
     val label_longident : ident Gram.t
     val label_patt : rec_patt Gram.t
     val label_patt_list : rec_patt Gram.t

@@ -336,7 +336,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "com_of_list")))))), e)
            | ("list",("binding;"|"str_item"|"sig_item"|"class_sig_item"
-                      |"class_str_item"|"rec_binding"|"ctyp;"|"patt;"|"expr;"),_)
+                      |"class_str_item"|"rec_expr"|"ctyp;"|"patt;"|"expr;"),_)
                ->
                `App
                  (_loc,
