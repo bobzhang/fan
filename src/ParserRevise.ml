@@ -590,7 +590,7 @@ let apply () = begin
         | "["; sem_patt_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> {| [| $({||}) |] |}
         | "[|"; sem_patt{pl}; "|]" -> {| [| $pl |] |}
-        | "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
+        | "{"; label_patt_list{pl}; "}" -> {| { $((pl : rec_patt :>patt)) } |}
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
 
@@ -620,7 +620,7 @@ let apply () = begin
         | "?"; "("; ipatt_tcon{p}; ")" -> {| ? ($p) |}
         | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" -> {| ? ($p = $e) |} ] }
        ipatt:
-        [ "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
+        [ "{"; label_patt_list{pl}; "}" -> {| { $((pl: rec_patt :>patt)) } |}
         | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
@@ -679,7 +679,8 @@ let apply () = begin
        | label_patt{p1}                 -> p1   ] 
        label_patt:
        [ `Ant ((""|"pat"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
-       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
+       (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
+        *) (* FIXME restore it later *)
        | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
        | label_longident{i}; "="; patt{p} -> {| $i = $p |}
        | label_longident{i} -> {| $i = $(lid:Ident.to_lid i) |} ] |};
@@ -916,11 +917,6 @@ let apply () = begin
             {| module rec $mb |}
         | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
             {| module type $i = $mt |}
-        (* | "open"; `Lid "lang"; dot_lstrings{x} -> (\* FIXME put in the directive table*\) *)
-        (*     begin *)
-        (*       AstQuotation.default:= FanToken.resolve_name x; *)
-        (*       {||} *)
-        (*     end *)
         | "import"; dot_namespace{x} -> begin
             FanToken.paths := [ `Absolute  x :: !FanToken.paths];
             {||} 

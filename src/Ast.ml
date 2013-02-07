@@ -224,6 +224,12 @@
      | `Lazy of (loc * patt) (* lazy p *)
        (* (module M : ty ) *)      
      | `ModuleUnpack of (loc * (* string *)auident * meta_option ctyp)]
+  and rec_patt =
+     [= `Nil of loc
+     | `PaEq of (loc * ident * patt)
+     | `Sem of (loc  * rec_patt * rec_patt)
+     | `Any of loc
+     | ant]  
   and expr =
      [= `Nil of loc
      | `Id  of (loc * ident) (* i *)

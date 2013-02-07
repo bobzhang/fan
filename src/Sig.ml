@@ -115,8 +115,10 @@ module type Syntax = sig
   val label_expr : Gram.t rec_binding;
   val label_expr_list : Gram.t rec_binding;
   val label_longident : Gram.t ident;
-  val label_patt : Gram.t patt;
-  val label_patt_list : Gram.t patt;
+
+  val label_patt : Gram.t rec_patt;
+  val label_patt_list : Gram.t rec_patt;
+    
   val let_binding : Gram.t binding;
   val meth_list : Gram.t (ctyp * row_var_flag);
   val meth_decl : Gram.t ctyp;
