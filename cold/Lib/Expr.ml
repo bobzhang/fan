@@ -358,7 +358,7 @@ let substp loc env =
     | `Str (_loc,s) -> `Str (loc, s)
     | `Tup (_loc,x) -> `Tup (loc, (loop x))
     | `Com (_loc,x1,x2) -> `Com (loc, (loop x1), (loop x2))
-    | `Record (_loc,bi,`Nil _) ->
+    | `Record (_loc,bi) ->
         let rec substbi =
           function
           | `Sem (_loc,b1,b2) -> `Sem (loc, (substbi b1), (substbi b2))
@@ -539,7 +539,7 @@ let mk_record label_exprs =
     List.map
       (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
       label_exprs in
-  `Record (_loc, (FanAst.sem_of_list rec_bindings), (`Nil _loc))
+  `Record (_loc, (FanAst.sem_of_list rec_bindings))
 let failure =
   `App
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
@@ -859,17 +859,17 @@ let mk_record_ee label_exprs =
   (label_exprs |> (List.map (fun (label,expr)  -> mee_record_col label expr)))
     |>
     (fun es  ->
-       `App
-         (_loc,
+       (* `App *)
+       (*   (_loc, *)
            (`App
               (_loc,
                 (`App
                    (_loc, (`Vrn (_loc, "Record")),
                      (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                (List.reduce_right mee_record_semi es))),
-           (`App
-              (_loc, (`Vrn (_loc, "Nil")),
-                (`Id (_loc, (`Lid (_loc, "_loc"))))))))
+                (List.reduce_right mee_record_semi es))))
+           (* (`App *)
+           (*    (_loc, (`Vrn (_loc, "Nil")), *)
+           (* (\*      (`Id (_loc, (`Lid (_loc, "_loc")))))) *\))) *)
 let mk_record_ep label_exprs =
   let open List in
     (label_exprs |> (map (fun (label,expr)  -> mep_record_col label expr)))

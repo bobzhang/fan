@@ -71,12 +71,12 @@ and expr =
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
-  | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding* expr)
-  | `Seq of (loc* expr) | `Send of (loc* expr* alident)
-  | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
-  | `Constraint of (loc* expr* ctyp) | `Coercion of (loc* expr* ctyp* ctyp)
-  | `While of (loc* expr* expr) | `LetOpen of (loc* ident* expr)
-  | `LocalTypeFun of (loc* alident* expr)
+  | `OvrInst of (loc* rec_binding) | `Record of (loc* rec_binding)
+  | `RecordWith of (loc* rec_binding* expr) | `Seq of (loc* expr)
+  | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
+  | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
+  | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)
+  | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
 and module_type =
   [ `Nil of loc | `Id of (loc* ident)

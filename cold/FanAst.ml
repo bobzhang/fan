@@ -552,10 +552,13 @@ class map2 =
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_binding _a1 _b1 in `OvrInst (_a0, _a1)
-        | (`Record (_a0,_a1,_a2),`Record (_b0,_b1,_b2)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#rec_binding _a1 _b1 in `Record (_a0, _a1)
+        | (`RecordWith (_a0,_a1,_a2),`RecordWith (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_binding _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Record (_a0, _a1, _a2)
+            let _a2 = self#expr _a2 _b2 in `RecordWith (_a0, _a1, _a2)
         | (`Seq (_a0,_a1),`Seq (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in `Seq (_a0, _a1)
@@ -1439,7 +1442,9 @@ class fold2 =
             let self = self#alident _a1 _b1 in self#expr _a2 _b2
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#rec_binding _a1 _b1
-        | (`Record (_a0,_a1,_a2),`Record (_b0,_b1,_b2)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#rec_binding _a1 _b1
+        | (`RecordWith (_a0,_a1,_a2),`RecordWith (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#rec_binding _a1 _b1 in self#expr _a2 _b2
         | (`Seq (_a0,_a1),`Seq (_b0,_b1)) ->
@@ -2047,7 +2052,8 @@ class iter =
       | `OptLabl (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
       | `OvrInst (_a0,_a1) -> (self#loc _a0; self#rec_binding _a1)
-      | `Record (_a0,_a1,_a2) ->
+      | `Record (_a0,_a1) -> (self#loc _a0; self#rec_binding _a1)
+      | `RecordWith (_a0,_a1,_a2) ->
           (self#loc _a0; self#rec_binding _a1; self#expr _a2)
       | `Seq (_a0,_a1) -> (self#loc _a0; self#expr _a1)
       | `Send (_a0,_a1,_a2) ->
@@ -2763,10 +2769,13 @@ class map =
       | `OvrInst (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_binding _a1 in `OvrInst (_a0, _a1)
-      | `Record (_a0,_a1,_a2) ->
+      | `Record (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#rec_binding _a1 in `Record (_a0, _a1)
+      | `RecordWith (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_binding _a1 in
-          let _a2 = self#expr _a2 in `Record (_a0, _a1, _a2)
+          let _a2 = self#expr _a2 in `RecordWith (_a0, _a1, _a2)
       | `Seq (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in `Seq (_a0, _a1)
@@ -3507,7 +3516,8 @@ class fold =
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#expr _a2
       | `OvrInst (_a0,_a1) -> let self = self#loc _a0 in self#rec_binding _a1
-      | `Record (_a0,_a1,_a2) ->
+      | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_binding _a1
+      | `RecordWith (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#rec_binding _a1 in self#expr _a2
       | `Seq (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
@@ -4216,8 +4226,11 @@ and pp_print_expr fmt =
   | `OvrInst (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`OvrInst@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_binding _a1
-  | `Record (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Record@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Record (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_rec_binding _a1
+  | `RecordWith (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_binding _a1 pp_print_expr _a2
   | `Seq (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Seq@ %a@ %a)@]" pp_print_loc _a0
@@ -4987,9 +5000,12 @@ class print =
         | `OvrInst (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OvrInst@ %a@ %a)@]" self#loc _a0
               self#rec_binding _a1
-        | `Record (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Record@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_binding _a1 self#expr _a2
+        | `Record (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#loc _a0
+              self#rec_binding _a1
+        | `RecordWith (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a@ %a)@]" self#loc
+              _a0 self#rec_binding _a1 self#expr _a2
         | `Seq (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Seq@ %a@ %a)@]" self#loc _a0 self#expr
               _a1
@@ -5749,7 +5765,9 @@ class eq =
               (self#expr _a2 _b2)
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#rec_binding _a1 _b1)
-        | (`Record (_a0,_a1,_a2),`Record (_b0,_b1,_b2)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#rec_binding _a1 _b1)
+        | (`RecordWith (_a0,_a1,_a2),`RecordWith (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#rec_binding _a1 _b1)) &&
               (self#expr _a2 _b2)
         | (`Seq (_a0,_a1),`Seq (_b0,_b1)) ->
@@ -6188,7 +6206,7 @@ let loc_of =
   | `Amp (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
-  | `Record (_loc,_,_) -> _loc
+  | `Record (_loc,_) -> _loc
   | `Constraint (_loc,_,_) -> _loc
   | `Ant (_loc,_) -> _loc
   | `Package_expr (_loc,_) -> _loc
@@ -6218,6 +6236,7 @@ let loc_of =
   | `ExAsr (_loc,_) -> _loc
   | `Exception (_loc,_) -> _loc
   | `CtCol (_loc,_,_) -> _loc
+  | `RecordWith (_loc,_,_) -> _loc
   | `And (_loc,_,_) -> _loc
   | `TyDcl (_loc,_,_,_,_) -> _loc
   | `TyRec (_loc,_) -> _loc
@@ -6570,9 +6589,10 @@ and strip_loc_expr =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_expr _a2 in `OptLabl (_a1, _a2)
   | `OvrInst (_a0,_a1) -> let _a1 = strip_loc_rec_binding _a1 in `OvrInst _a1
-  | `Record (_a0,_a1,_a2) ->
+  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_binding _a1 in `Record _a1
+  | `RecordWith (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_binding _a1 in
-      let _a2 = strip_loc_expr _a2 in `Record (_a1, _a2)
+      let _a2 = strip_loc_expr _a2 in `RecordWith (_a1, _a2)
   | `Seq (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `Seq _a1
   | `Send (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
@@ -7803,13 +7823,18 @@ module Make(MetaLoc:META_LOC) =
                 (_loc,
                   (`App (_loc, (`Vrn (_loc, "OvrInst")), (meta_loc _loc _a0))),
                   (meta_rec_binding _loc _a1))
-          | `Record (_a0,_a1,_a2) ->
+          | `Record (_a0,_a1) ->
+              `App
+                (_loc,
+                  (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
+                  (meta_rec_binding _loc _a1))
+          | `RecordWith (_a0,_a1,_a2) ->
               `App
                 (_loc,
                   (`App
                      (_loc,
                        (`App
-                          (_loc, (`Vrn (_loc, "Record")),
+                          (_loc, (`Vrn (_loc, "RecordWith")),
                             (meta_loc _loc _a0))),
                        (meta_rec_binding _loc _a1))), (meta_expr _loc _a2))
           | `Seq (_a0,_a1) ->
@@ -9459,13 +9484,18 @@ module Make(MetaLoc:META_LOC) =
                 (_loc,
                   (`App (_loc, (`Vrn (_loc, "OvrInst")), (meta_loc _loc _a0))),
                   (meta_rec_binding _loc _a1))
-          | `Record (_a0,_a1,_a2) ->
+          | `Record (_a0,_a1) ->
+              `App
+                (_loc,
+                  (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
+                  (meta_rec_binding _loc _a1))
+          | `RecordWith (_a0,_a1,_a2) ->
               `App
                 (_loc,
                   (`App
                      (_loc,
                        (`App
-                          (_loc, (`Vrn (_loc, "Record")),
+                          (_loc, (`Vrn (_loc, "RecordWith")),
                             (meta_loc _loc _a0))),
                        (meta_rec_binding _loc _a1))), (meta_expr _loc _a2))
           | `Seq (_a0,_a1) ->
@@ -10579,7 +10609,7 @@ class clean_ast =
       | wc -> wc
     method! expr e =
       match super#expr e with
-      | `LetIn (_loc,_,`Nil _l,e)|`Record (_loc,`Nil _l,e)
+      | `LetIn (_loc,_,`Nil _l,e)|`RecordWith (_loc,`Nil _l,e)
         |`Com (_loc,`Nil _l,e)|`Com (_loc,e,`Nil _l)|`Sem (_loc,`Nil _l,e)
         |`Sem (_loc,e,`Nil _l) -> e
       | e -> e

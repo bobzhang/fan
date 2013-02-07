@@ -1758,7 +1758,7 @@ let apply () =
                    (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                    match __fan_1 with
                    | `Lid x ->
-                       (`Record (_loc, el, (`Id (_loc, (`Lid (_loc, x))))) : 
+                       (`RecordWith (_loc, el, (`Id (_loc, (`Lid (_loc, x))))) : 
                        'expr )
                    | _ ->
                        failwith
@@ -1769,7 +1769,7 @@ let apply () =
            ("Gram.mk_action\n  (fun _  (el : 'label_expr_list)  _  (_loc : FanLoc.t)  ->\n     (`Record (_loc, el, (`Nil _loc)) : 'expr ))\n",
              (Gram.mk_action
                 (fun _  (el : 'label_expr_list)  _  (_loc : FanLoc.t)  ->
-                   (`Record (_loc, el, (`Nil _loc)) : 'expr )))));
+                   (`Record (_loc, el) : 'expr )))));
          ([`Skeyword "{";
           `Skeyword "(";
           `Sself;
@@ -1780,7 +1780,7 @@ let apply () =
            ("Gram.mk_action\n  (fun _  (el : 'label_expr_list)  _  _  (e : 'expr)  _  _  (_loc : FanLoc.t)\n      -> (`Record (_loc, el, e) : 'expr ))\n",
              (Gram.mk_action
                 (fun _  (el : 'label_expr_list)  _  _  (e : 'expr)  _  _ 
-                   (_loc : FanLoc.t)  -> (`Record (_loc, el, e) : 'expr )))));
+                   (_loc : FanLoc.t)  -> (`RecordWith (_loc, el, e) : 'expr )))));
          ([`Skeyword "{<"; `Skeyword ">}"],
            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`OvrInst (_loc, (`Nil _loc)) : 'expr ))\n",
              (Gram.mk_action

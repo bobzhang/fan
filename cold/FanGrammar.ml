@@ -47,8 +47,7 @@ module Expr =
                     (`RecBind
                        (_loc, (`Lid (_loc, "tvar")), (meta_string _loc _a1))),
                     (`RecBind
-                       (_loc, (`Lid (_loc, "loc")), (meta_loc _loc _a2))))))),
-          (`Nil _loc))
+                       (_loc, (`Lid (_loc, "loc")), (meta_loc _loc _a2))))))))
     let rec meta_styp _loc =
       function
       | `Id (_a0,_a1) ->
@@ -90,7 +89,7 @@ module Expr =
                          (meta_option meta_expr _loc _a1))),
                     (`RecBind
                        (_loc, (`Lid (_loc, "levels")),
-                         (meta_levels _loc _a2))))))), (`Nil _loc))
+                         (meta_levels _loc _a2))))))))
     and meta_levels _loc =
       function
       | `Group _a0 ->
@@ -113,7 +112,7 @@ module Expr =
                          (meta_option meta_expr _loc _a1))),
                     (`RecBind
                        (_loc, (`Lid (_loc, "rules")),
-                         (meta_list meta_rule _loc _a2))))))), (`Nil _loc))
+                         (meta_list meta_rule _loc _a2))))))))
     and meta_rule _loc { prod = _a0; action = _a1 } =
       `Record
         (_loc,
@@ -124,7 +123,7 @@ module Expr =
                     (meta_list meta_symbol _loc _a0))),
                (`RecBind
                   (_loc, (`Lid (_loc, "action")),
-                    (meta_option meta_expr _loc _a1))))), (`Nil _loc))
+                    (meta_option meta_expr _loc _a1))))))
     and meta_symbol _loc { text = _a0; styp = _a1; pattern = _a2 } =
       `Record
         (_loc,
@@ -137,7 +136,7 @@ module Expr =
                        (_loc, (`Lid (_loc, "styp")), (meta_styp _loc _a1))),
                     (`RecBind
                        (_loc, (`Lid (_loc, "pattern")),
-                         (meta_option meta_patt _loc _a2))))))), (`Nil _loc))
+                         (meta_option meta_patt _loc _a2))))))))
     and meta_text _loc =
       function
       | `Smeta (_a0,_a1,_a2,_a3,_a4) ->
