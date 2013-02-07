@@ -1,15 +1,10 @@
 module MetaLocVar : FanAst.META_LOC =
   struct
-    let meta_loc_patt _loc _ =
-      `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
-    let meta_loc_expr _loc _ =
-      `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
+    let meta_loc _loc _ = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
   end 
 module MetaLoc : FanAst.META_LOC =
   struct
-    let meta_loc_patt _loc _location =
-      failwith "MetaLoc.meta_loc_patt not implemented yet"
-    let meta_loc_expr _loc location =
+    let meta_loc _loc location =
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple location in
       `App
         (_loc,
@@ -49,9 +44,7 @@ module MetaLoc : FanAst.META_LOC =
   end 
 module MetaGhostLoc : FanAst.META_LOC =
   struct
-    let meta_loc_patt _loc _ =
-      failwith "MetaGhostLoc.meta_loc_patt not implemented"
-    let meta_loc_expr _loc _ =
+    let meta_loc _loc _ =
       `Id
         (_loc,
           (`Dot (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "ghost")))))

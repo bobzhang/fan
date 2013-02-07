@@ -1,16 +1,14 @@
 open LibUtil
 open Ast
 module MetaLoc =
-  struct
-    let meta_loc_patt _loc _ = `Id (_loc, (`Lid (_loc, "loc")))
-    let meta_loc_expr = meta_loc_patt
-  end
+  struct let meta_loc _loc _ = `Id (_loc, (`Lid (_loc, "loc"))) end
 module MetaAst = FanAst.Make(MetaLoc)
 let _ =
   AstFilters.register_str_item_filter
     ("lift",
       (fun ast  ->
          let _loc = FanAst.loc_of ast in
+         let e = (MetaAst.meta_str_item _loc ast :>expr) in
          `StExp
            (_loc,
              (`LetIn
@@ -21,8 +19,7 @@ let _ =
                           (_loc,
                             (`Dot
                                (_loc, (`Uid (_loc, "FanLoc")),
-                                 (`Lid (_loc, "ghost")))))))),
-                  (MetaAst.Expr.meta_str_item _loc ast))))))
+                                 (`Lid (_loc, "ghost")))))))), e)))))
 let add_debug_expr (e : expr) =
   (let _loc = FanAst.loc_of e in
    let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
@@ -217,15 +214,14 @@ let make_filter (s,code) =
   let f =
     function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
   (("filter_" ^ s), ((FanAst.map_str_item f)#str_item))
-module MetaQAst = FanAst.Make(Ant.MetaLocQuotation)
-module ME = MetaQAst.Expr
-module MP = MetaQAst.Patt
+module ME = FanAst.Make(Ant.LocExpr)
+module MP = FanAst.Make(Ant.LocPatt)
 let _ =
   AstFilters.register_str_item_filter
     ("serialize",
       (fun x  ->
          let _loc = FanLoc.ghost in
-         let y = ME.meta_str_item _loc x in
+         let y = (ME.meta_str_item _loc x :>expr) in
          `Sem
            (_loc, x,
              (`Value

@@ -1,3 +1,4 @@
+open Ast
 open LibUtil
 type warning = FanLoc.t -> string -> unit 
 let default_warning loc txt =
@@ -183,8 +184,8 @@ let parse_expr loc str = Gram.parse_string antiquot_expr ~loc str
 let parse_patt loc str = Gram.parse_string antiquot_patt ~loc str
 let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str
 let anti_filter = Ant.antiquot_expander ~parse_expr ~parse_patt
-let expr_filter = anti_filter#expr
-let patt_filter = anti_filter#patt
+let expr_filter (x : ep) = anti_filter#expr (x :>expr)
+let patt_filter (x : ep) = anti_filter#patt (x :>patt)
 let wrap directive_handler pa init_loc cs =
   let rec loop loc =
     let (pl,stopped_at_directive) = pa loc cs in

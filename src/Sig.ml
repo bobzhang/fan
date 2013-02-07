@@ -226,8 +226,8 @@ module type Syntax = sig
 
   val parse_ident: FanLoc.t -> string -> ident;
 
-  val expr_filter: expr -> expr;
-  val patt_filter: patt -> patt;
+  val expr_filter: (* expr *)ep -> expr;
+  val patt_filter: (* patt *)ep -> patt;
 
   val dot_namespace: Gram.t (list string);  
   module Options:sig

@@ -198,8 +198,8 @@ module type Syntax =
     val parse_expr : FanLoc.t -> string -> expr
     val parse_patt : FanLoc.t -> string -> patt
     val parse_ident : FanLoc.t -> string -> ident
-    val expr_filter : expr -> expr
-    val patt_filter : patt -> patt
+    val expr_filter : ep -> expr
+    val patt_filter : ep -> patt
     val dot_namespace : string list Gram.t
     module Options :
     sig

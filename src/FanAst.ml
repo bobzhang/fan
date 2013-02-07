@@ -1,13 +1,14 @@
 include Ast;
 module type META_LOC = sig
-      (** The first location is where to put the returned pattern.
-          Generally it's _loc to match with {:patt| ... |} quotations.
-          The second location is the one to treat. *)
-    val meta_loc_patt : FanLoc.t -> FanLoc.t -> patt;
-      (** The first location is where to put the returned expression.
-          Generally it's _loc to match with {:expr| ... |} quotations.
-          The second location is the one to treat. *)
-    val meta_loc_expr : FanLoc.t -> FanLoc.t -> expr;
+    (*   (\** The first location is where to put the returned pattern. *)
+    (*       Generally it's _loc to match with {:patt| ... |} quotations. *)
+    (*       The second location is the one to treat. *\) *)
+    (* val meta_loc_patt : FanLoc.t -> FanLoc.t -> (\* patt *\)ep; *)
+    (*   (\** The first location is where to put the returned expression. *)
+    (*       Generally it's _loc to match with {:expr| ... |} quotations. *)
+    (*       The second location is the one to treat. *\) *)
+    (* val meta_loc_expr : FanLoc.t -> FanLoc.t -> (\* expr *\)ep; *)
+  val meta_loc: loc -> loc -> ep;
 end;
 open FanUtil;
 open LibUtil;  
@@ -81,24 +82,24 @@ module MExpr = struct
   INCLUDE "src/MetaTemplate.ml"; (* FIXME INCLUDE as a langauge :default *)
 end;
 
-#default_quotation "patt"  ;;
-module MPatt = struct
+(* #default_quotation "patt"  ;; *)
+(* module MPatt = struct *)
 
-  INCLUDE "src/MetaTemplate.ml";
-end;
+(*   INCLUDE "src/MetaTemplate.ml"; *)
+(* end; *)
 
-
+open MExpr;
 module Make(MetaLoc:META_LOC) = struct
-  module Expr = struct
-    open MExpr;
-    let meta_loc = MetaLoc.meta_loc_expr;
+  (* module Expr = struct *)
+
+    let meta_loc = MetaLoc.meta_loc;
     __MetaExpr__;
-  end;
-  module Patt =struct
-    open MPatt;
-    let meta_loc = MetaLoc.meta_loc_patt;
-    __MetaPatt__;
-  end;
+  (* end; *)
+  (* module Patt =struct *)
+  (*   (\* open MPatt; *\) *)
+  (*   let meta_loc = MetaLoc.meta_loc_patt; *)
+  (*   __MetaPatt__; *)
+  (* end; *)
 end;
     
 

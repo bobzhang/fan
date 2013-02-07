@@ -6,14 +6,16 @@ module MetaLoc = struct
    (* this makes sense here, because, for list operation
       you don't care about the location representation here
     *)
-  let meta_loc_patt _loc _ = `Id(_loc,`Lid(_loc,"loc")) (* {:patt| loc |} *);
+  let meta_loc(* _patt *) _loc _ = `Id(_loc,`Lid(_loc,"loc")) (* {:patt| loc |} *);
   (* let meta_loc_expr _loc _ = `Id(_loc,`Lid(_loc,"loc")) (\* {:expr| loc |} *\); *)
-  let meta_loc_expr = meta_loc_patt;
+  (* let meta_loc_expr = meta_loc_patt; *)
 end;
 module MetaAst = FanAst.Make MetaLoc;
 AstFilters.register_str_item_filter ("lift",(fun ast ->
   let _loc = FanAst.loc_of ast in
-  {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |})); (* FIXME Loc => FanLoc*)
+  let e = (MetaAst.meta_str_item _loc ast :> expr )in
+  {:str_item| let loc = FanLoc.ghost in $e |}
+  (* {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |} *))); (* FIXME Loc => FanLoc*)
 
 let add_debug_expr (e:expr) : expr =
   let _loc = FanAst.loc_of e in
@@ -112,14 +114,15 @@ let make_filter (s,code) =
   ("filter_"^s, (FanAst.map_str_item f )#str_item);
 
 
-module MetaQAst = FanAst.Make Ant.MetaLocQuotation;
-module ME = MetaQAst.Expr;
-module MP = MetaQAst.Patt;
+(* module MetaQAst = FanAst.Make Ant.MetaLocQuotation; *)
+  
+module ME = (* MetaQAst.Expr; *)FanAst.Make Ant.LocExpr;
+module MP = (* MetaQAst.Patt *) FanAst.Make Ant.LocPatt;
 
 AstFilters.register_str_item_filter
     ("serialize",
      (fun x ->
         let _loc = FanLoc.ghost in 
-        let y = ME.meta_str_item _loc x in 
+        let y = (ME.meta_str_item _loc x :> expr)in 
         {:str_item| $x; let __fan_repr_of_file = $y |}
         ) );  

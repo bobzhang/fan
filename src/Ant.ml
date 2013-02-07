@@ -1,14 +1,26 @@
-
+open Ast;
 open FanUtil;
 open Lib.Meta;
-module MetaLocQuotation = struct
-  let meta_loc_expr _loc loc =
+module LocExpr = struct
+  let meta_loc _loc loc =
     match !AstQuotation.current_loc_name with
     [ None -> {:expr| $(lid:!FanLoc.name) |}
-    | Some "here" -> MetaLoc.meta_loc_expr _loc loc
+    | Some "here" -> MetaLoc.meta_loc _loc loc
     | Some x -> {:expr| $lid:x |} ];
-  let meta_loc_patt _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
+  
 end;
+module LocPatt = struct
+  let meta_loc _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
+end;
+  
+(* module MetaLocQuotation = struct *)
+(*   let meta_loc_expr _loc loc = *)
+(*     match !AstQuotation.current_loc_name with *)
+(*     [ None -> {:expr| $(lid:!FanLoc.name) |} *)
+(*     | Some "here" -> MetaLoc.meta_loc _loc loc *)
+(*     | Some x -> {:expr| $lid:x |} ]; *)
+(*   let meta_loc_patt _loc _ =  {:patt| _ |}; (\* we use [subst_first_loc] *\) *)
+(* end; *)
 
   
 let gm () =
@@ -24,7 +36,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
     with patt
     fun
     [`Ant(_loc, {cxt;sep;decorations;content=code}) ->
-      let mloc _loc = MetaLocQuotation.meta_loc_patt _loc _loc in
+      let mloc _loc =LocPatt.meta_loc (* MetaLocQuotation.meta_loc_patt *) _loc _loc in
       let e = parse_patt _loc code in
       match (decorations,cxt,sep) with
       [("anti",_,_) -> {| `Ant ($(mloc _loc), $e) |}
@@ -48,7 +60,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
     | e -> super#patt e];
     method! expr = with expr fun
       [`Ant(_loc,{cxt;sep;decorations;content=code}) ->
-        let mloc _loc = MetaLocQuotation.meta_loc_expr _loc _loc in
+        let mloc _loc = ((* MetaLocQuotation.meta_loc_expr *)LocExpr.meta_loc _loc _loc :> expr) in
         let e = parse_expr _loc code in
         match (decorations,cxt,sep) with
           [ ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|}

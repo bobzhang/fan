@@ -419,35 +419,34 @@ AstQuotation.of_expr
     ~name:((d,"clear")) ~entry:nonterminalsclear;
 AstQuotation.of_str_item
     ~name:((d,"create")) ~entry:nonterminals;
-(*
+
 AstQuotation.add_quotation
     (d,"rule") rule
     ~mexpr:FanGrammar.Expr.meta_rule
     ~mpatt:FanGrammar.Patt.meta_rule
-    ~expr_filter:(fun x-> x)
-    ~patt_filter:(fun x->x);
+    ~expr_filter:(fun x-> (x :ep :>expr))
+    ~patt_filter:(fun x->(x : ep :> patt));
 
 AstQuotation.add_quotation
     (d,"entry") entry
     ~mexpr:FanGrammar.Expr.meta_entry
     ~mpatt:FanGrammar.Patt.meta_entry
-    ~expr_filter:(fun x-> x)
-    ~patt_filter:(fun x->x);
+    ~expr_filter:(fun x-> (x :ep :> expr))
+    ~patt_filter:(fun x-> (x :ep :> patt));
 
 AstQuotation.add_quotation
     (d,"level") level
     ~mexpr:FanGrammar.Expr.meta_level
     ~mpatt:FanGrammar.Patt.meta_level
-    ~expr_filter:(fun x-> x)
-    ~patt_filter:(fun x->x);
+    ~expr_filter:(fun x-> (x :ep :> expr))
+    ~patt_filter:(fun x-> (x :ep :> patt));
 
 AstQuotation.add_quotation
     (d,"symbol") psymbol
     ~mexpr:FanGrammar.Expr.meta_symbol
     ~mpatt:FanGrammar.Patt.meta_symbol
-    ~expr_filter:(fun x -> x)
-    ~patt_filter:(fun x-> x);
-*)
+    ~expr_filter:(fun x -> (x :ep :>expr))
+    ~patt_filter:(fun x->  (x :ep :>patt));
   
 
 

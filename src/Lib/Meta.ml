@@ -2,8 +2,9 @@
 
 (* never used before *)    
 module MetaLocVar : FanAst.META_LOC= struct
-  let meta_loc_patt _loc _ = {:patt| $(lid:!FanLoc.name) |};
-  let meta_loc_expr _loc _ = {:expr| $(lid:!FanLoc.name) |};
+  let meta_loc _loc _ = {:patt| $(lid:!FanLoc.name) |};
+  (* let meta_loc_patt _loc _ = {:patt| $(lid:!FanLoc.name) |}; *)
+  (* let meta_loc_expr _loc _ = {:expr| $(lid:!FanLoc.name) |}; *)
 end;
     
 (* module MetaLoc *)
@@ -12,8 +13,8 @@ end;
 
 module MetaLoc : FanAst.META_LOC= struct
   (* FIXME *)
-  let meta_loc_patt _loc _location =
-    failwith  "MetaLoc.meta_loc_patt not implemented yet"  ;
+  (* let meta_loc_patt _loc _location = *)
+  (*   failwith  "MetaLoc.meta_loc_patt not implemented yet"  ; *)
     (* let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in *)
     (* {:patt| FanLoc.of_tuple *)
     (*   ($`str:a, $`int:b, $`int:c, $`int:d, *)
@@ -55,7 +56,7 @@ module MetaLoc : FanAst.META_LOC= struct
                       then Ast.PaId (_loc, (Ast.Lid (_loc, "true")))
                       else Ast.PaId (_loc, (Ast.Lid (_loc, "false")))))))))))
      *)
-  let meta_loc_expr _loc location =
+  let meta_loc(* _expr *) _loc location =
     let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
     {:expr| FanLoc.of_tuple
       ($`str:a, $`int:b, $`int:c, $`int:d,
@@ -66,8 +67,8 @@ end;
 module MetaGhostLoc : FanAst.META_LOC= struct (* MetaAction *)
   (* let meta_loc_patt _loc _ = *)
   (*   {:patt| FanLoc.ghost |}; (\* FIXME *\) *)
-  let meta_loc_patt _loc _ = failwith "MetaGhostLoc.meta_loc_patt not implemented";
-  let meta_loc_expr _loc _ = {:expr| FanLoc.ghost |};
+  (* let meta_loc_patt _loc _ = failwith "MetaGhostLoc.meta_loc_patt not implemented"; *)
+  let meta_loc(* _expr *) _loc _ = {:expr| FanLoc.ghost |};
 end;
 
 
