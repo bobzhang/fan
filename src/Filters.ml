@@ -116,8 +116,8 @@ let make_filter (s,code) =
 
 (* module MetaQAst = FanAst.Make Ant.MetaLocQuotation; *)
   
-module ME = (* MetaQAst.Expr; *)FanAst.Make Ant.LocExpr;
-module MP = (* MetaQAst.Patt *) FanAst.Make Ant.LocPatt;
+module ME = FanAst.Make Ant.LocExpr;
+module MP = FanAst.Make Ant.LocPatt;
 
 AstFilters.register_str_item_filter
     ("serialize",
