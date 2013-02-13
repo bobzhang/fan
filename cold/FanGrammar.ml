@@ -34,7 +34,6 @@ and text =
   | `Skeyword of (loc* string) | `Stok of (loc* expr* attr* string)] 
 module Expr =
   struct
-    open FanAst.MExpr
     open Filters.ME
     let meta_name _loc { expr = _a0; tvar = _a1; loc = _a2 } =
       `Record
@@ -221,7 +220,6 @@ module Expr =
   end
 module Patt =
   struct
-    open FanAst.MExpr
     open Filters.MP
     let meta_name _loc { expr = _a0; tvar = _a1; loc = _a2 } =
       `Record

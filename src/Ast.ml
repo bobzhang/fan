@@ -479,6 +479,7 @@
      | `Sem of (loc * ep * ep)
      | `Tup of (loc * ep)
      | `Any of (loc)
+     | `Array of (loc * ep )
      | `Record of (loc * rec_bind)
      | ant 
      | literal ]

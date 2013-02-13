@@ -62,27 +62,14 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       let find_in_path = DynLoader.find_in_path dyn_loader in
       let real_load name =
         add_to_loaded_modules name; DynLoader.load dyn_loader name in
-      let load n =
-        if
-          (SSet.mem n loaded_modules.contents) ||
-            (List.mem n PreCast.loaded_modules.contents)
-        then ()
-        else
-          (add_to_loaded_modules n; DynLoader.load dyn_loader (n ^ objext)) in
       (match (n, (String.lowercase x)) with
-       | (("Printers"|""),("pr_o.cmo"|"o"|"ocaml"|"camlp4ocamlprinter.cmo"))
-           -> PreCast.enable_ocaml_printer ()
-       | (("Printers"|""),("pr_dump.cmo"|"p"|"dumpocaml"
-                           |"camlp4ocamlastdumper.cmo"))
-           -> PreCast.enable_dump_ocaml_ast_printer ()
-       | (("Printers"|""),("d"|"dumpcamlp4"|"camlp4astdumper.cmo")) ->
-           PreCast.enable_dump_camlp4_ast_printer ()
+       | (("Printers"|""),"o") -> PreCast.enable_ocaml_printer ()
+       | (("Printers"|""),("pr_dump.cmo"|"p")) ->
+           PreCast.enable_dump_ocaml_ast_printer ()
        | (("Printers"|""),("a"|"auto"|"camlp4autoprinter.cmo")) ->
-           (load "Camlp4Autoprinter";
-            (let (module P)  = Hashtbl.find printers "camlp4autoprinter" in
-             P.apply (module PreCast)))
+           PreCast.enable_auto (fun ()  -> Unix.isatty Unix.stdout)
        | _ ->
-           let y = "Camlp4" ^ (n ^ ("/" ^ (x ^ objext))) in
+           let y = x ^ objext in
            real_load (try find_in_path y with | Not_found  -> x));
       rcall_callback.contents ()
     let print_warning = eprintf "%a:\n%s@." FanLoc.print

@@ -282,6 +282,8 @@ class eq =
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result22)
         | ((#literal as _a0),(#literal as _b0)) ->
             (self#literal _a0 _b0 :>'result22)
+        | (`RecordWith (_a0,_a1),`RecordWith (_b0,_b1)) ->
+            (self#rec_expr _a0 _b0) && (self#expr _a1 _b1)
         | (`Dot (_a0,_a1),`Dot (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#expr _a1 _b1)
         | (`ArrayDot (_a0,_a1),`ArrayDot (_b0,_b1)) ->
@@ -319,8 +321,6 @@ class eq =
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
         | (`OvrInst _a0,`OvrInst _b0) -> self#rec_expr _a0 _b0
-        | (`RecordWith (_a0,_a1),`RecordWith (_b0,_b1)) ->
-            (self#rec_expr _a0 _b0) && (self#expr _a1 _b1)
         | (`Seq _a0,`Seq _b0) -> self#expr _a0 _b0
         | (`Send (_a0,_a1),`Send (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#alident _a1 _b1)
@@ -592,6 +592,7 @@ class eq =
             (self#ep _a0 _b0) && (self#ep _a1 _b1)
         | (`Tup _a0,`Tup _b0) -> self#ep _a0 _b0
         | (`Any,`Any) -> true
+        | (`Array _a0,`Array _b0) -> self#ep _a0 _b0
         | (`Record _a0,`Record _b0) -> self#rec_bind _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result36)
         | ((#literal as _a0),(#literal as _b0)) ->
@@ -914,6 +915,9 @@ class print =
             Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_expr _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>'result62)
         | #literal as _a0 -> (self#literal fmt _a0 :>'result62)
+        | `RecordWith (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a)@]" self#rec_expr
+              _a0 self#expr _a1
         | `Dot (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Dot@ %a@ %a)@]" self#expr _a0
               self#expr _a1
@@ -962,9 +966,6 @@ class print =
               self#expr _a1
         | `OvrInst _a0 ->
             Format.fprintf fmt "@[<1>(`OvrInst@ %a)@]" self#rec_expr _a0
-        | `RecordWith (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a)@]" self#rec_expr
-              _a0 self#expr _a1
         | `Seq _a0 -> Format.fprintf fmt "@[<1>(`Seq@ %a)@]" self#expr _a0
         | `Send (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Send@ %a@ %a)@]" self#expr _a0
@@ -1294,6 +1295,7 @@ class print =
               _a1
         | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#ep _a0
         | `Any -> Format.fprintf fmt "`Any"
+        | `Array _a0 -> Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#ep _a0
         | `Record _a0 ->
             Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_bind _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>'result76)
@@ -1663,6 +1665,12 @@ module Expr =
           `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_expr _loc _a0))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result111)
       | #literal as _a0 -> (meta_literal _loc _a0 :>'result111)
+      | `RecordWith (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc, (`Vrn (_loc, "RecordWith")),
+                   (meta_rec_expr _loc _a0))), (meta_expr _loc _a1))
       | `Dot (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_expr _loc _a0))),
@@ -1753,12 +1761,6 @@ module Expr =
               (meta_expr _loc _a1))
       | `OvrInst _a0 ->
           `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_expr _loc _a0))
-      | `RecordWith (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc, (`Vrn (_loc, "RecordWith")),
-                   (meta_rec_expr _loc _a0))), (meta_expr _loc _a1))
       | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (meta_expr _loc _a0))
       | `Send (_a0,_a1) ->
           `App
@@ -2303,6 +2305,7 @@ module Expr =
               (meta_ep _loc _a1))
       | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_ep _loc _a0))
       | `Any -> `Vrn (_loc, "Any")
+      | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_ep _loc _a0))
       | `Record _a0 ->
           `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_bind _loc _a0))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result116)
@@ -2672,6 +2675,12 @@ module Patt =
           `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_expr _loc _a0))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result148)
       | #literal as _a0 -> (meta_literal _loc _a0 :>'result148)
+      | `RecordWith (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc, (`Vrn (_loc, "RecordWith")),
+                   (meta_rec_expr _loc _a0))), (meta_expr _loc _a1))
       | `Dot (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_expr _loc _a0))),
@@ -2762,12 +2771,6 @@ module Patt =
               (meta_expr _loc _a1))
       | `OvrInst _a0 ->
           `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_expr _loc _a0))
-      | `RecordWith (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc, (`Vrn (_loc, "RecordWith")),
-                   (meta_rec_expr _loc _a0))), (meta_expr _loc _a1))
       | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (meta_expr _loc _a0))
       | `Send (_a0,_a1) ->
           `App
@@ -3312,6 +3315,7 @@ module Patt =
               (meta_ep _loc _a1))
       | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_ep _loc _a0))
       | `Any -> `Vrn (_loc, "Any")
+      | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_ep _loc _a0))
       | `Record _a0 ->
           `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_bind _loc _a0))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result153)

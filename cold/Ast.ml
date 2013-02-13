@@ -60,7 +60,8 @@ and expr =
   [ `Nil of loc | `Id of (loc* ident) | `App of (loc* expr* expr)
   | `Vrn of (loc* string) | `Com of (loc* expr* expr)
   | `Sem of (loc* expr* expr) | `Tup of (loc* expr) | `Any of loc
-  | `Record of (loc* rec_expr) | ant | literal | `Dot of (loc* expr* expr)
+  | `Record of (loc* rec_expr) | ant | literal
+  | `RecordWith of (loc* rec_expr* expr) | `Dot of (loc* expr* expr)
   | `ArrayDot of (loc* expr* expr) | `Array of (loc* expr) | `ExAsf of loc
   | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
   | `For of (loc* alident* expr* expr* direction_flag* expr)
@@ -70,12 +71,11 @@ and expr =
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
-  | `OvrInst of (loc* rec_expr) | `RecordWith of (loc* rec_expr* expr)
-  | `Seq of (loc* expr) | `Send of (loc* expr* alident)
-  | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
-  | `Constraint of (loc* expr* ctyp) | `Coercion of (loc* expr* ctyp* ctyp)
-  | `While of (loc* expr* expr) | `LetOpen of (loc* ident* expr)
-  | `LocalTypeFun of (loc* alident* expr)
+  | `OvrInst of (loc* rec_expr) | `Seq of (loc* expr)
+  | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
+  | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
+  | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)
+  | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
 and rec_expr =
   [ `Nil of loc | `Sem of (loc* rec_expr* rec_expr)
@@ -160,8 +160,8 @@ and class_str_item =
 type ep =
   [ `Nil of loc | `Id of (loc* ident) | `App of (loc* ep* ep)
   | `Vrn of (loc* string) | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep)
-  | `Tup of (loc* ep) | `Any of loc | `Record of (loc* rec_bind) | ant
-  | literal] 
+  | `Tup of (loc* ep) | `Any of loc | `Array of (loc* ep)
+  | `Record of (loc* rec_bind) | ant | literal] 
 and rec_bind =
   [ `Nil of loc | `RecBind of (loc* ident* ep)
   | `Sem of (loc* rec_bind* rec_bind) | `Any of loc | ant] 

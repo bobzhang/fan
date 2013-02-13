@@ -83,15 +83,12 @@ and text =
   |};
 
 module Expr = struct
-  open FanAst.MExpr;
   open Filters.ME;
   __MetaExpr__;
 end;
 module Patt = struct
-  open FanAst.MExpr;
   open Filters.MP;
   __MetaPatt__;
-
 end;
 type used = [ Unused | UsedScanned | UsedNotScanned ];
 
