@@ -22,7 +22,7 @@ let strip_loc_ant ant = ant ;
 {:fans|keep off;
  derive
    (Map2
-      Fold2 OIter MetaExpr MetaPatt Map Fold Print OPrint OEq
+      Fold2 OIter MetaExpr  Map Fold Print OPrint OEq
       GenLoc  Strip    ); |};
   
 {:ocaml|INCLUDE "src/Ast.ml"; |};
@@ -60,19 +60,16 @@ let list_of_list (loc:loc) =
 (*   [ [] -> accu *)
 (*   | [x :: xs] -> let _loc = loc_of x in apply {| $accu $x |} xs ]; *)
   
-(*
-  mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
-  True
- *)
-let array_of_array loc arr =
-  let rec loop top =  with expr fun
-    [ [] -> {@ghost| [] |}
-    | [e1 :: el] ->
-        let _loc =
-          if top then loc else FanLoc.merge (loc_of e1) loc in
-        {| [| $e1 ; $(loop false el) |] |} ] in
-  let items = arr |> Array.to_list in 
-  loop true items;
+  
+(* let array_of_array loc arr = *)
+(*   let rec loop top =  with expr fun *)
+(*     [ [] -> {@ghost| [] |} *)
+(*     | [e1 :: el] -> *)
+(*         let _loc = *)
+(*           if top then loc else FanLoc.merge (loc_of e1) loc in *)
+(*         {| [| $e1 ; $(loop false el) |] |} ] in *)
+(*   let items = arr |> Array.to_list in  *)
+(*   loop true items; *)
 
 
   
@@ -138,8 +135,6 @@ let mkarray loc arr =
 let meta_list mf_a _loc  ls =
   mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) ;
   
-let meta_array mf_a _loc ls =
-  mkarray _loc (Array.map (fun x -> mf_a _loc x) ls)  ;
   
 let meta_option mf_a _loc  = fun
   [ None -> {|None|}
@@ -763,3 +758,15 @@ let dump_module_binding  = to_string_of_printer dump#module_binding;
 let dump_module_expr = to_string_of_printer dump#module_expr;  
 let dump_class_sig_item = to_string_of_printer dump#class_sig_item;
 let dump_class_str_item = to_string_of_printer dump#class_str_item;  
+
+(*
+  mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
+  True
+ *)
+let array_of_array arr =
+  let items = arr |> Array.to_list |> sem_of_list' in
+  let _loc = loc_of items in
+  {| [| $items |] |};
+  
+let meta_array mf_a _loc ls =
+  mkarray _loc (Array.map (fun x -> mf_a _loc x) ls)  ;

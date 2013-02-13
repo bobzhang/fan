@@ -1,12 +1,4 @@
 
-(* +-----------------------------------------------------------------+
-   | it is a code template, it needs macro =GETLOC= and              |
-   | [default_quotation] to compile                                  |
-   +-----------------------------------------------------------------+ *)
-
-(* let mk_array arr = *)
-(*   let items = arr |> Array.to_list |> sem_of_list in  *)
-(*   {| [| $items |] |};   *)
 
 
 (*

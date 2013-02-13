@@ -1,7 +1,7 @@
 open FanAst;
 
 
-{:fans| keep on;  derive (MetaExpr MetaPatt);|};
+{:fans| keep on;  derive (MetaExpr (* MetaPatt *));|};
 {:ocaml|
 (* every entry has a name *)  
 type name  = {
@@ -88,7 +88,7 @@ module Expr = struct
 end;
 module Patt = struct
   open Filters.MP;
-  __MetaPatt__;
+  __MetaExpr__;
 end;
 type used = [ Unused | UsedScanned | UsedNotScanned ];
 

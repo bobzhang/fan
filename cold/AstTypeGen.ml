@@ -166,29 +166,9 @@ let gen_meta_expr =
   gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
     ~mk_tuple:mk_tuple_meta_expr ~mk_record:mk_record_meta_expr
     ~mk_variant:mk_variant_meta_expr ()
-let mk_variant_meta_patt cons params =
-  let len = List.length params in
-  if String.ends_with cons "Ant"
-  then of_vstr_number "Ant" len
-  else
-    (params |> (List.map (fun { expr;_}  -> expr))) |>
-      (List.fold_left mep_app (mep_of_str cons))
-let mk_record_meta_patt cols =
-  (cols |>
-     (List.map (fun { re_label; re_info = { expr;_};_}  -> (re_label, expr))))
-    |> mk_record_ep
-let mk_tuple_meta_patt params =
-  (params |> (List.map (fun { expr;_}  -> expr))) |> mk_tuple_ep
-let gen_meta_patt =
-  gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
-    ~mk_tuple:mk_tuple_meta_patt ~mk_record:mk_record_meta_patt
-    ~mk_variant:mk_variant_meta_patt ()
 let _ =
   Typehook.register ~position:"__MetaExpr__" ~filter:(fun s  -> s <> "loc")
     ("MetaExpr", gen_meta_expr)
-let _ =
-  Typehook.register ~position:"__MetaPatt__" ~filter:(fun s  -> s <> "loc")
-    ("MetaPatt", gen_meta_patt)
 let extract info =
   (info |> (List.map (fun { name_expr; id_expr;_}  -> [name_expr; id_expr])))
     |> List.concat

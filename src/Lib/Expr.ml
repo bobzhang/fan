@@ -401,34 +401,38 @@ let (<+<) patts acc =
    | Multiple staging code generation.                               |
    +-----------------------------------------------------------------+ *)
   
-
-
-
-(*
-  {[
-  mep_app {| a |} {|g |};
-  - : expr = Ast.App (_loc, a, g)
-  mee_app {:expr|f a |} {:expr|g |};
-  - : expr = Ast.App (_loc, (f a), g)
-   ]}
- *)
-  
-let mep_comma x y =  {| {:patt| $($x), $($y) |} |};
-  (* {| `PaCom (_loc, $x, $y) |}; *)
-let mvep_comma x y =
-  {|`PaCom(_loc,$x,$y)|};
   
 let mee_comma x y = {| {| $($x), $($y) |} |};
-  (* {| `Com (_loc, $x, $y) |}; *)
+  (* {| `Com _loc $x $y  |}; *)
 let mvee_comma x y = {| `Com (_loc,$x,$y) |};
 
 let mee_app x y = {| {| $($x) $($y) |}|};
+  (* {|`App _loc $x $y |} *)
+  (*
+      `App
+    (_loc,
+      (`App
+         (_loc,
+           (`App
+              (_loc, (`Vrn (_loc, "App")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
+   *)
   (* {| `App(_loc, $x, $y) |}; *)
-let vee_app x y = {| `App (_loc,$x,$y) |};
-  
-let mep_app x y = {| {:patt| $($x) $($y) |}|};
+
+(* let vee_app x y = {| `App (_loc,$x,$y) |}; *)
+
+  (*
+      `App
+    (_loc, (`Vrn (_loc, "App")),
+      (`Tup
+         (_loc,
+           (`Com
+              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
+                (`Com (_loc, x, y)))))))
+   *)
+(* let mep_app x y = {| {:patt| $($x) $($y) |}|}; *)
   (* {| `App (_loc, $x, $y) |};        *)
-let vep_app x y = {| `App (_loc,$x,$y)|};
+(* let vep_app x y = {| `App (_loc,$x,$y)|}; *)
   
 
 (*
@@ -443,17 +447,17 @@ let vep_app x y = {| `App (_loc,$x,$y)|};
   {|{:patt|B|}|}
  *)  
 
-let mep_of_str  s =
-  let len = String.length s in
-  if s.[0] = '`' then
-    let s = String.sub s 1 (len - 1 ) in
-    (* {| {:patt|`$($str:s)|}|} *)
-      {| {:patt|$(vrn:($str:s))|}|}
-  else
-   let u = {| {:ident| $(uid:$str:s) |} |} in 
-   {| {:patt| $(id:$u) |} |};
-    (* let u = {| Ast.Uid _loc $str:s |} in *)
-  (* {| Ast.PaId _loc $u |}; *)
+(* let mep_of_str  s = *)
+(*   let len = String.length s in *)
+(*   if s.[0] = '`' then *)
+(*     let s = String.sub s 1 (len - 1 ) in *)
+(*     (\* {| {:patt|`$($str:s)|}|} *\) *)
+(*       {| {:patt|$(vrn:($str:s))|}|} *)
+(*   else *)
+(*    let u = {| {:ident| $(uid:$str:s) |} |} in  *)
+(*    {| {:patt| $(id:$u) |} |}; *)
+(*     (\* let u = {| Ast.Uid _loc $str:s |} in *\) *)
+(*   (\* {| Ast.PaId _loc $u |}; *\) *)
 
 (*
   FIXME bootstrap
@@ -511,8 +515,8 @@ let mee_of_str s =
 let vee_of_str s =
   {| `Vrn (_loc,$str:s) |};
 
-let vep_of_str s =
-  {| `Vrn (_loc,$str:s)|};
+(* let vep_of_str s = *)
+(*   {| `Vrn (_loc,$str:s)|}; *)
 (*
   Examples:
   {[
@@ -569,52 +573,18 @@ let meee_of_str s =
   given string input "u" and [ {| meta_u |} ]
  *)
 
-(* (\* *)
-(*    {[ *)
-(*    {| <:patt< { u = $meta_u$ ; v = $meta_v$ } |} >> ; *)
-(*    ]} *)
-(*  *\)   *)
-(* let mep_record_left str = *)
-(*   let u = {| Ast.Lid _loc $str:str |} in *)
-(*   {| Ast.RecBind _loc $u |}; *)
-  
-  
-  
 let mk_tuple_ee = fun 
   [ [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
       {| `Tup (_loc, $(List.reduce_right mee_comma xs)) |}];
 
-let mk_tuple_vee = fun 
-  [ [] -> invalid_arg "mktupee arity is zero "
-  | [x] -> x
-  | xs  ->
-      {| `Tup (_loc, $(List.reduce_right mvee_comma xs)) |}];
+(* let mk_tuple_vee = fun  *)
+(*   [ [] -> invalid_arg "mktupee arity is zero " *)
+(*   | [x] -> x *)
+(*   | xs  -> *)
+(*       {| `Tup (_loc, $(List.reduce_right mvee_comma xs)) |}]; *)
 
-(*
-  We want to generate code 
-   {[
-   {:expr| {:patt| (A,B,C) |} |}
-   ]}
-  But [A],[B],[C] should be parameterized here 
-  Example:
-  {[
-  mk_tuple_ep [{|a|}; {|b|} ] = {| {:patt| ($($(lid:"a")),$($(lid:"b"))) |} |};
-  - : bool = true
-  ]}
- *)
-let mk_tuple_ep = fun 
-  [ [] -> assert false
-  | [x] -> x
-  | xs  ->
-    (* {| Ast.PaTup _loc $(List.reduce_right mep_comma xs) |} *)
-      {| {:patt|$(tup: $(List.reduce_right mep_comma xs))|} |} ];
-
-let mk_tuple_vep = fun
-  [[] -> assert false
-  |[x] -> x
-  |xs -> {| `PaTup (_loc,$(List.reduce_right mvep_comma xs))|} ];
   
   
 (*
@@ -624,37 +594,11 @@ let mk_tuple_vep = fun
   ]}
  *)
 let mee_record_col label expr =
-  {| {:rec_expr| $(lid:($str:label)) = $($expr) |}|};
+  {| {:rec_expr| $(lid:($str:label)) = $($expr) |}|} ;
 
-(*
-  Example:
-  {[
-  mep_record_col "a" {|3|} = {| {:patt| a = $($({|3|}))|}|};
-  ]}
-  *)  
-let mep_record_col label expr =
-    `App
-    (_loc,
-      (`App
-         (_loc,
-           (`App
-              (_loc, (`Vrn (_loc, "RecBind")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))),
-           (`App
-              (_loc, (`Vrn (_loc, "Lid")),
-                (`Tup
-                   (_loc,
-                     (`Com
-                        (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                          (`Str (_loc, label)))))))))), expr)
-  (* {| {:patt| $(lid:$(str:label)) = $($expr) |} |} *);
 
 let mee_record_semi a b =
   {| {:rec_expr| $($a);$($b) |} |};
-
-
-let mep_record_semi a b =
-  {| {:patt| $($a); $($b) |}|};
 
 
 (*
@@ -669,19 +613,6 @@ let mk_record_ee label_exprs =
   |> (fun es -> {| {| { $($(List.reduce_right mee_record_semi es)) } |}|} );
 
     
-
-(*
-  Example:
-  {[
-  mk_record_ep [("u",  {|3 |})] = {| {:patt| { u = $($({|3|}))} |} |};
-  ]}
- *)    
-let mk_record_ep label_exprs = let open List in
-  label_exprs
-  |> map (fun (label,expr) -> mep_record_col label expr)
-  |> (fun es -> {| {:patt| { $($(List.reduce_right mep_record_semi es)) } |} |});
-
-
 
 (* Mainly used to overcome the value restriction
    {[

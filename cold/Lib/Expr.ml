@@ -557,22 +557,6 @@ let (<+<) patts acc =
   List.fold_right
     (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, (`Nil _loc), acc)))) patts
     acc
-let mep_comma x y =
-  `App
-    (_loc,
-      (`App
-         (_loc,
-           (`App
-              (_loc, (`Vrn (_loc, "Com")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
-let mvep_comma x y =
-  `App
-    (_loc, (`Vrn (_loc, "PaCom")),
-      (`Tup
-         (_loc,
-           (`Com
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`Com (_loc, x, y)))))))
 let mee_comma x y =
   `App
     (_loc,
@@ -597,55 +581,6 @@ let mee_app x y =
            (`App
               (_loc, (`Vrn (_loc, "App")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
-let vee_app x y =
-  `App
-    (_loc, (`Vrn (_loc, "App")),
-      (`Tup
-         (_loc,
-           (`Com
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`Com (_loc, x, y)))))))
-let mep_app x y =
-  `App
-    (_loc,
-      (`App
-         (_loc,
-           (`App
-              (_loc, (`Vrn (_loc, "App")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
-let vep_app x y =
-  `App
-    (_loc, (`Vrn (_loc, "App")),
-      (`Tup
-         (_loc,
-           (`Com
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`Com (_loc, x, y)))))))
-let mep_of_str s =
-  let len = String.length s in
-  if (s.[0]) = '`'
-  then
-    let s = String.sub s 1 (len - 1) in
-    `App
-      (_loc, (`Vrn (_loc, "Vrn")),
-        (`Tup
-           (_loc,
-             (`Com
-                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
-  else
-    (let u =
-       `App
-         (_loc, (`Vrn (_loc, "Uid")),
-           (`Tup
-              (_loc,
-                (`Com
-                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                     (`Str (_loc, s))))))) in
-     `App
-       (_loc,
-         (`App
-            (_loc, (`Vrn (_loc, "Id")), (`Id (_loc, (`Lid (_loc, "_loc")))))),
-         u))
 let mee_of_str s =
   let len = String.length s in
   if (s.[0]) = '`'
@@ -672,13 +607,6 @@ let mee_of_str s =
             (_loc, (`Vrn (_loc, "Id")), (`Id (_loc, (`Lid (_loc, "_loc")))))),
          u))
 let vee_of_str s =
-  `App
-    (_loc, (`Vrn (_loc, "Vrn")),
-      (`Tup
-         (_loc,
-           (`Com
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
-let vep_of_str s =
   `App
     (_loc, (`Vrn (_loc, "Vrn")),
       (`Tup
@@ -773,58 +701,7 @@ let mk_tuple_ee =
                (`Com
                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                     (List.reduce_right mee_comma xs))))))
-let mk_tuple_vee =
-  function
-  | [] -> invalid_arg "mktupee arity is zero "
-  | x::[] -> x
-  | xs ->
-      `App
-        (_loc, (`Vrn (_loc, "Tup")),
-          (`Tup
-             (_loc,
-               (`Com
-                  (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                    (List.reduce_right mvee_comma xs))))))
-let mk_tuple_ep =
-  function
-  | [] -> assert false
-  | x::[] -> x
-  | xs ->
-      `App
-        (_loc, (`Vrn (_loc, "Tup")),
-          (`Tup
-             (_loc,
-               (`Com
-                  (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                    (List.reduce_right mep_comma xs))))))
-let mk_tuple_vep =
-  function
-  | [] -> assert false
-  | x::[] -> x
-  | xs ->
-      `App
-        (_loc, (`Vrn (_loc, "PaTup")),
-          (`Tup
-             (_loc,
-               (`Com
-                  (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                    (List.reduce_right mvep_comma xs))))))
 let mee_record_col label expr =
-  `App
-    (_loc,
-      (`App
-         (_loc,
-           (`App
-              (_loc, (`Vrn (_loc, "RecBind")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))),
-           (`App
-              (_loc, (`Vrn (_loc, "Lid")),
-                (`Tup
-                   (_loc,
-                     (`Com
-                        (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                          (`Str (_loc, label)))))))))), expr)
-let mep_record_col label expr =
   `App
     (_loc,
       (`App
@@ -847,14 +724,6 @@ let mee_record_semi a b =
            (`App
               (_loc, (`Vrn (_loc, "Sem")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
-let mep_record_semi a b =
-  `App
-    (_loc,
-      (`App
-         (_loc,
-           (`App
-              (_loc, (`Vrn (_loc, "Sem")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
 let mk_record_ee label_exprs =
   (label_exprs |> (List.map (fun (label,expr)  -> mee_record_col label expr)))
     |>
@@ -865,17 +734,6 @@ let mk_record_ee label_exprs =
               (_loc, (`Vrn (_loc, "Record")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
            (List.reduce_right mee_record_semi es)))
-let mk_record_ep label_exprs =
-  let open List in
-    (label_exprs |> (map (fun (label,expr)  -> mep_record_col label expr)))
-      |>
-      (fun es  ->
-         `App
-           (_loc,
-             (`App
-                (_loc, (`Vrn (_loc, "Record")),
-                  (`Id (_loc, (`Lid (_loc, "_loc")))))),
-             (List.reduce_right mep_record_semi es)))
 let eta_expand expr number =
   let names = List.init number (fun i  -> x ~off:0 i) in
   names <+ (expr +> names)

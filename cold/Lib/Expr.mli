@@ -45,15 +45,6 @@ val filter_patt_with_captured_variables:  patt -> patt * (expr * expr) list
 
 val fun_args : loc -> patt list -> expr -> expr
 
-
-
-
-
-(* val mklist : loc -> expr list -> expr *)
-(* val mkarray : loc -> expr array -> expr *)
-    
-
-
 val of_str : string -> expr
 val of_ident_number : ident -> int -> expr
 val ( +> ) : expr -> string list -> expr
@@ -61,41 +52,35 @@ val gen_tuple_first : number:int -> off:int -> expr
 val gen_tuple_second : number:int -> off:int -> expr
 val tuple_of_number : expr -> int -> expr
 val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> expr
-(* val tuple : loc -> expr list -> expr *)
+
 val mkumin : loc -> string -> expr -> expr
 val mk_assert : expr -> expr
 val mk_record : (string * expr) list -> expr
 val failure : expr
 val ( <+ ) : string list -> expr -> expr
 val ( <+< ) : patt list -> expr -> expr
-val mep_comma : expr -> expr -> expr
-val mep_app : expr -> expr -> expr
 val mee_comma : expr -> expr -> expr
 val mee_app : expr -> expr -> expr
-val vee_app : expr -> expr -> expr
-val vep_app : expr -> expr -> expr
 val vee_of_str : string -> expr
-val vep_of_str: string -> expr
-val mk_tuple_ep: expr list -> expr
-val mk_tuple_vep: expr list -> expr
-val mep_of_str : string -> expr
 
 val mee_of_str : string -> expr
 
 val meee_of_str : string -> expr
 
 val mk_tuple_ee : expr list -> expr
-val mk_tuple_vee: expr list -> expr
-    
+
 val mee_record_col : string -> expr -> expr
-val mep_record_col : string -> expr -> expr
+
 val mee_record_semi : expr -> expr -> expr
-val mep_record_semi : expr -> expr -> expr
+
 val mk_record_ee : (string * expr) list -> expr
-val mk_record_ep : (string * expr) list -> expr
+
 val eta_expand : expr -> int -> expr
+
 val gen_curry_n : expr -> arity:int -> string -> int -> expr
+
 val currying : match_case list -> arity:int -> expr
+
 val unknown : int -> expr
     
 val of_vstr_number : string -> int  -> expr
