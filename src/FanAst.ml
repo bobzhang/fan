@@ -122,15 +122,6 @@ let mklist loc =
         let _loc =
           if top then loc else FanLoc.merge (loc_of (e1)) loc in
         {| [$e1 :: $(loop false el)] |} ] in loop true ;
-let mkarray loc arr =
-  let rec loop top =  fun
-    [ [] -> {@loc| [] |}
-    | [e1 :: el] ->
-        let _loc =
-          if top then loc else FanLoc.merge (loc_of(e1)) loc in
-        {| [| $e1 ; $(loop false el) |] |} ] in
-  let items = arr |> Array.to_list in 
-  loop true items;
 
 let meta_list mf_a _loc  ls =
   mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) ;
@@ -769,4 +760,4 @@ let array_of_array arr =
   {| [| $items |] |};
   
 let meta_array mf_a _loc ls =
-  mkarray _loc (Array.map (fun x -> mf_a _loc x) ls)  ;
+  array_of_array (Array.map (fun x -> mf_a _loc x) ls)  ;

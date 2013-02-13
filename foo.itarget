@@ -11,5 +11,5 @@ src/FanDriver.byte
 src/Ulexing.cma
 # src/Utf8.cmo
 # src/Utf16.cmo
-src/StdMeta.cmo
+# src/StdMeta.cmo
 src/FanTop.cma

@@ -7160,14 +7160,6 @@ let mklist loc =
           (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
             (loop false el)) in
   loop true
-let mkarray loc arr =
-  let rec loop top =
-    function
-    | [] -> `Id (loc, (`Uid (loc, "[]")))
-    | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
-        `Array (_loc, (`Sem (_loc, e1, (loop false el)))) in
-  let items = arr |> Array.to_list in loop true items
 let meta_list mf_a _loc ls =
   mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
 let meta_option mf_a _loc =
@@ -9106,4 +9098,4 @@ let array_of_array arr =
   let items = (arr |> Array.to_list) |> sem_of_list' in
   let _loc = loc_of items in `Array (_loc, items)
 let meta_array mf_a _loc ls =
-  mkarray _loc (Array.map (fun x  -> mf_a _loc x) ls)
+  array_of_array (Array.map (fun x  -> mf_a _loc x) ls)

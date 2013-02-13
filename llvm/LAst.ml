@@ -1,4 +1,4 @@
-open StdMeta;
+open FanAst;
 {:fans|derive(MetaExpr);|};
 {:ocaml|
 type expr =
