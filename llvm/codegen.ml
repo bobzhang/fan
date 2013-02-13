@@ -7,18 +7,18 @@ let builder = builder context;
 let named_values: Hashtbl.t string llvalue = Hashtbl.create 10;
 let double_type = double_type context;
 
-let rec expr = fun
+let rec expr : LAst.expr -> llvalue = fun
   [ `Number n -> const_float double_type n
   | `Variable n ->
-      try Hashtbl.find n named_values with
+      try Hashtbl.find  named_values n with
       [Not_found ->raise (Error "unknown variable name")]
   |`Binary(op,l,r) ->
       let lhs = expr l in
       let rhs = expr r in
       match op with
-      ['+' -> build_add lhs rhs "addtmp" builder
-      |'-' -> build_sub lhs rhs "addtmp" builder
-      |'*' -> build_mul lhs rhs "multmp" builder
+      ['+' -> build_fadd lhs rhs "addtmp" builder
+      |'-' -> build_fsub lhs rhs "addtmp" builder
+      |'*' -> build_fmul lhs rhs "multmp" builder
       |'<' ->
           let i = build_fcmp Fcmp.Ult lhs rhs "cmptmp" builder in
           build_uitofp i double_type "booltmp" builder
@@ -30,6 +30,7 @@ let rec expr = fun
        let params= params callee in
        let () = if not (Array.length params = Array.length args ) then
          raise (Error "incorrect # arguments passed") in
+       let args = Array.map expr args in
        build_call callee args "calltmp" builder ];
 
 let proto = function
@@ -54,7 +55,7 @@ let proto = function
           end) (params f); f
       end
  ];  
-let func = fun
+let func : LAst.func -> llvalue= fun
   [`Function(f,body) -> begin 
     Hashtbl.clear named_values;
     let the_function = proto f;

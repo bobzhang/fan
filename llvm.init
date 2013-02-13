@@ -1,47 +1,11 @@
-(* -*- Mode:caml; -*- *)
-#use "topfind";;
-#require "unix";;
-(* #require "batteries";; *)
-open Format;;
-#directory "+compiler-libs";;
-#directory "_build";;
-#directory "_build/src";;
-#load_rec "FanLoc.cmo";;
-#load_rec "FanBasic.cmo";;
-#load_rec "FanLexUtil.cmo";;
-#load_rec "FanTop.cma";;
 
-(* consult Topdirs for more utlities *)
-let fmt = std_formatter;;
-(* let _ = Clflags.noprompt := true;; *)
-let _loc = FanLoc.ghost;;
+let print_llvalue (l:Llvm.llvalue) = Llvm.dump_value l;
 
-let (|-) f g x = g (f x );;
+let print_llmodule (l:Llvm.llmodule) = Llvm.dump_module l;
 
-let _ = begin
-  Hashtbl.replace Toploop.directive_table "useo"
-    (Toploop.Directive_string (fun file ->
-      LibUtil.Ref.protect Toploop.parse_use_file Parse.use_file
-        (fun _ -> ignore(Toploop.use_file Format.std_formatter file))))
-end;;
-
-
-let interface_of_string =
-  Lexing.from_string |- Parse.interface;;
-let implementation_of_string =
-  Lexing.from_string |- Parse.implementation;;
-
-let tg_dp () =
-  Clflags.dump_parsetree := not !Clflags.dump_parsetree ;;
-let pp =fprintf
-let f = std_formatter;;
-open Fan;;
-open FanTop;;
-open LibUtil;;
-
-
-let print_llvalue (l:Llvm.llvalue) = Llvm.dump_value l;;
+#install_printer print_llmodule;;
 #install_printer print_llvalue;;
-let print_llmodule (l:Llvm.llmodule) = Llvm.dump_module l;;
-#install_printer print_llmodule;;  
-let t e s = Gram.parse_string e  s;;
+#directory "_build/llvm";;
+#load_rec "LAst.cmo";;
+#use "codegen.ml";;
+import Fan.Llvm;

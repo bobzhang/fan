@@ -90,11 +90,12 @@ end
 let print_tree f x  = pp f "@[%a@]@." Grammar.Print.dump#tree x ;; 
 
 (* AstQuotation.default:="expr";; *)
-let env = !Toploop.toplevel_env;;
+
 #install_printer print_tree;;
 #install_printer Gram.dump;;
 #install_printer print_ocaml_loc;;
 
+let env = !Toploop.toplevel_env;;
 (* #install_printer FanBasic.p_expr;; *)
 (* #load_rec "Gen.cmo";; *)
 
@@ -120,3 +121,4 @@ open ParserGrammar;;
 #require "inspect";;
 open Inspect;;
 let view a= Dot.dump_to_file "test.dot"a;;
+#revise;;

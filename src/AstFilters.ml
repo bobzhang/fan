@@ -36,8 +36,9 @@ let use_topphrase_filter s =
 
 let register_sig_item_filter (k,f) =
   Hashtbl.replace interf_filters k f ;
-let register_str_item_filter (k,f) =
+let register_str_item_filter (k,f) = begin 
   Hashtbl.replace implem_filters k f ;
+end;
 let register_topphrase_filter (k,f) =
   Hashtbl.replace topphrase_filters k f;
 

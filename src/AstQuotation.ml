@@ -119,7 +119,7 @@ let expander_name ~pos:(pos:string) (name:name) =
     (* resolve default case *)
     SMap.find_default ~default:(!default) pos !map
   |(`Sub _ ,_) ->
-      resolve_name name
+      FanToken.resolve_name name
   | _ -> name  ];
   
 let default_at_pos pos str =  update (pos,str);

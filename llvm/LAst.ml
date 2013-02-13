@@ -7,8 +7,7 @@ type expr =
   | `Binary of (char * expr * expr)
   | `Call of (string * array expr) ]
 and proto = [= `Prototype of (string * array string) ]
-and func = [= `Function of (proto * expr) ];
-  |};
+and func = [= `Function of (proto * expr) ]; |};
 
 __MetaExpr__;
 let g = Gram.create_gram ();
@@ -28,6 +27,8 @@ expr:
    "*"  
    [S{a};"*";S{b} -> `Binary ('*',a,b)
    |S{a};"/";S{b} -> `Binary ('/',a,b)]
+   "<"
+   [S{a};"<";S{b} -> `Binary ('<',a,b)]  
    "call"
    [ `Lid x; "(";L0 expr SEP "," {ls};")" -> `Call(x,Array.of_list ls) ]  
    "simple"
@@ -45,10 +46,20 @@ func:
 
 let d = `Absolute ["Fan";"Llvm"];
 
-let () =
+begin
   AstQuotation.add_quotation (d,"func") func
     ~mexpr:meta_func
     ~mpatt:meta_func
     ~expr_filter:Syntax.expr_filter
-    ~patt_filter:Syntax.patt_filter
-    ;  
+    ~patt_filter:Syntax.patt_filter ;
+  AstQuotation.add_quotation (d,"expr") expr
+    ~mexpr:meta_expr
+    ~mpatt:meta_expr
+    ~expr_filter:Syntax.expr_filter
+    ~patt_filter:Syntax.patt_filter ;
+  AstQuotation.add_quotation (d,"proto") proto
+    ~mexpr:meta_proto
+    ~mpatt:meta_proto
+    ~expr_filter:Syntax.expr_filter
+    ~patt_filter:Syntax.patt_filter ;
+end;

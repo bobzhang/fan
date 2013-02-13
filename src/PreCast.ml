@@ -15,7 +15,8 @@ let loaded_modules = ref [];
 let iter_and_take_callbacks f =
   let rec loop () = loop (f (Queue.take callbacks)) in
   try loop () with [ Queue.Empty -> () ];
-    
+
+(* Register callbacks here *)    
 let declare_dyn_module m f = begin
     loaded_modules := [ m :: !loaded_modules ];
       Queue.add (m, f) callbacks;
