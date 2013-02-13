@@ -11,8 +11,8 @@ true:use_unix
 <{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
 
 
-<{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase}.cmx>:for-pack(Lib)
-<{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase}.p.cmx>:for-pack(Lib)
+<{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase,EP}.cmx>:for-pack(Lib)
+<{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase,EP}.p.cmx>:for-pack(Lib)
 
 <{cold,src,debug}/*.{p.native,native}>: pkg_dynlink, pkg_compiler-libs.common
 

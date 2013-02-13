@@ -10,7 +10,7 @@ open FanAst;
 open LibUtil;
 open Basic;
 open FanUtil;
-
+open EP;
 
 
 (*
@@ -323,7 +323,7 @@ let fun_args _loc args body =
 let _loc = FanLoc.ghost ;
 (* DEFINE GETLOC(expr)= FanAst.loc_of(\* _expr *\) expr;   *)
 (* INCLUDE "src/Lib/CommonStructure.ml"; *)
-INCLUDE "src/Lib/ExprPatt.ml";
+(* INCLUDE "src/Lib/ExprPatt.ml"; *)
 
 (* Given a [location] and [prefix](generally "-" or "-.")
    The location provided is more precise.
@@ -622,7 +622,7 @@ let mk_record_ee label_exprs =
  *)
 let eta_expand expr number =
   let names = List.init number (fun i -> x ~off:0 i ) in
-  names <+ (expr +> names);
+  names <+ (expr +> names );
 
 
 (*
@@ -639,7 +639,7 @@ let eta_expand expr number =
 let gen_curry_n acc ~arity cons n =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {:patt| $(id:xid ~off:i j) |})) in
-  let pat = Patt.of_str cons in
+  let pat = (* Patt. *)of_str cons in
   List.fold_right
     (fun p acc -> {| fun [ $pat:p -> $acc ] |} )
     (List.map (fun lst -> appl_of_list [pat:: lst]) args) acc;

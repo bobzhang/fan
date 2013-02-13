@@ -45,13 +45,6 @@ val filter_patt_with_captured_variables:  patt -> patt * (expr * expr) list
 
 val fun_args : loc -> patt list -> expr -> expr
 
-val of_str : string -> expr
-val of_ident_number : ident -> int -> expr
-val ( +> ) : expr -> string list -> expr
-val gen_tuple_first : number:int -> off:int -> expr
-val gen_tuple_second : number:int -> off:int -> expr
-val tuple_of_number : expr -> int -> expr
-val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> expr
 
 val mkumin : loc -> string -> expr -> expr
 val mk_assert : expr -> expr
@@ -82,7 +75,14 @@ val gen_curry_n : expr -> arity:int -> string -> int -> expr
 val currying : match_case list -> arity:int -> expr
 
 val unknown : int -> expr
-    
-val of_vstr_number : string -> int  -> expr
+
+(* val of_vstr_number : string -> int  -> expr *)
+(* val of_str : string -> expr *)
+(* val of_ident_number : ident -> int -> expr *)
+(* val ( +> ) : expr -> string list -> expr *)
+(* val gen_tuple_first : number:int -> off:int -> expr *)
+(* val gen_tuple_second : number:int -> off:int -> expr *)
+(* val tuple_of_number : expr -> int -> expr *)
+(* val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> expr *)
 
 

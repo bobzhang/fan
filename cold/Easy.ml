@@ -23,7 +23,7 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
   let trail (_,number) =
     if number > 1
     then
-      let patt = Patt.tuple_of_number (`Any _loc) arity in
+      let patt = EP.tuple_of_number (`Any _loc) arity in
       `Case (_loc, patt, (`Nil _loc), trail)
     else `Nil _loc in
   let names = names in
@@ -55,7 +55,7 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
      let trail (_,number) =
        if number > 1
        then
-         let patt = Patt.tuple_of_number (`Any _loc) arity in
+         let patt = EP.tuple_of_number (`Any _loc) arity in
          `Case (_loc, patt, (`Nil _loc), trail)
        else `Nil _loc in
      let open Frame in

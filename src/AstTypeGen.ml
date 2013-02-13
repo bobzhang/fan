@@ -78,7 +78,7 @@ let (gen_map,gen_map2) = with expr
   let mk_variant cons params =
     let result =
       appl_of_list
-        [ (of_str cons) ::
+        [ (EP.of_str cons) ::
           params |> List.map (fun [{exp0;_} -> exp0]) ] in 
     List.fold_right
       (fun {expr;pat0;_} res ->
@@ -123,7 +123,7 @@ let gen_strip = with {patt:ctyp;expr}
                params) in
     let result =
       appl_of_list
-         [(of_str cons) :: params' |> List.map (fun [{exp0;_} -> exp0]) ]  in 
+         [(EP.of_str cons) :: params' |> List.map (fun [{exp0;_} -> exp0]) ]  in 
     List.fold_right
       (fun {expr;pat0;ty;_} res ->
         match ty with
@@ -168,7 +168,7 @@ Typehook.register
 let mk_variant_meta_expr cons params = with expr
     let len = List.length params in 
     if String.ends_with cons "Ant" then
-      of_vstr_number "Ant" len
+      EP.of_vstr_number "Ant" len
     else
       params
       |> List.map (fun [ {expr;_} -> expr ])

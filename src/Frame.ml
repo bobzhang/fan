@@ -6,7 +6,8 @@ open Format;
 open LibUtil;
 open Lib;
 open Lib.Basic;
-open FSig;  
+open FSig;
+open Lib.EP;
 open Lib.Expr;
 open FanAst;
 (* preserved keywords for the generator *)
@@ -58,7 +59,7 @@ let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
   [ `Tup (_loc,t)  -> 
     let ls = list_of_star' t [] in
     let len = List.length ls in
-    let patt = Patt.mk_tuple ~arity ~number:len in
+    let patt = EP.mk_tuple ~arity ~number:len in
     let tys =
       List.mapi
         (mapi_expr ~arity ~names  ~f:simple_expr_of_ctyp) ls in
@@ -171,7 +172,7 @@ let expr_of_ctyp
     let args_length = List.length tyargs in  (* ` is not needed here *)
     let p =
       (* calling gen_tuple_n*)
-      Patt.gen_tuple_n ?cons_transform ~arity  cons args_length in
+      EP.gen_tuple_n ?cons_transform ~arity  cons args_length in
     let mk (cons,tyargs) =
       let exprs = List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
       mk_variant cons exprs in
@@ -196,7 +197,7 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~de
     simple_expr_of_ctyp result ty = with {patt:ctyp;expr:match_case}
   let f (cons,tyargs) :  match_case=
     let len = List.length tyargs in
-    let p = Patt.gen_tuple_n ?cons_transform ~arity cons len in
+    let p = EP.gen_tuple_n ?cons_transform ~arity cons len in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
       mk_variant cons exps in
@@ -257,7 +258,7 @@ let fun_of_tydcl
         match ctyp with
         [`TyRec(_loc,t) ->       
           let cols =  Ctyp.list_of_record t  in
-          let patt = Patt.mk_record ~arity  cols in
+          let patt = (EP.mk_record ~arity  cols :> patt)in
           let info =
           List.mapi
             (fun i x ->  match x with

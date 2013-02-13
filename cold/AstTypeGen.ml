@@ -56,7 +56,7 @@ let _ =
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
-      appl_of_list ((of_str cons) ::
+      appl_of_list ((EP.of_str cons) ::
         (params |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { expr; pat0;_}  res  ->
@@ -95,7 +95,7 @@ let gen_strip =
         (function | { ty = `Id (_loc,`Lid (_,"loc"));_} -> false | _ -> true)
         params in
     let result =
-      appl_of_list ((of_str cons) ::
+      appl_of_list ((EP.of_str cons) ::
         (params' |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { expr; pat0; ty;_}  res  ->
@@ -152,7 +152,7 @@ let _ =
 let mk_variant_meta_expr cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then of_vstr_number "Ant" len
+  then EP.of_vstr_number "Ant" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (List.fold_left mee_app (mee_of_str cons))

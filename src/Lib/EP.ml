@@ -1,5 +1,8 @@
-
-
+#default_quotation "expr";;
+let _loc = FanLoc.ghost;
+open LibUtil;
+open FanAst;
+open Basic;
 
 (*
    A very naive lifting. It does not do any parsing at all
@@ -24,7 +27,7 @@ let of_str s =
     invalid_arg "[expr|patt]_of_str len=0"
   else
     match s.[0] with
-    [ '`' ->   
+    [ '`'->   
         (* {| ` $(String.sub s 1 (len - 1)) |} *)
       {|  $(vrn: String.sub s 1 (len - 1)) |}
     | x when Char.is_uppercase x -> {| $uid:s |}
@@ -168,3 +171,49 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
 (*   [[] -> {|()|} *)
 (*   |[p] -> p *)
 (*   | [e::es] -> {| ($e, $list:es) |} ]; *)
+
+
+(*
+  Example:
+   {[
+  mk_record ~arity:3 (Lib.Ctyp.list_of_record {:ctyp| u:int; v:mutable float |} )
+  |> FanBasic.p_patt f;
+  ({ u = a0; v = a1 },{ u = b0; v = b1 },{ u = c0; v = c1 })
+
+   ]}
+ *)
+let mk_record ?(arity=1) cols  =
+  let mk_list off = 
+    List.mapi (fun i -> fun  [ ({FSig.col_label;_}:FSig.col) ->
+      (* `RecBind (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i)))) *)
+      {:rec_expr| $lid:col_label = $(id:xid ~off i )  |} ]) cols in
+  let res = zfold_left
+      ~start:1 ~until:(arity-1) ~acc:({| { $(list:mk_list 0) } |} )
+      (fun acc i -> com acc {| { $(list:mk_list i) } |}  ) in
+  if arity > 1 then
+    {| $tup:res |}
+  else res ;    
+
+
+(*
+   @raise Invalid_argument 
+   {[
+   
+   mk_tuple ~arity:2 ~number:5 |> eprint ;
+   ((a0, a1, a2, a3, a4), (b0, b1, b2, b3, b4))
+
+   mk_tuple ~arity:1 ~number:5 |> eprint ;
+   (a0, a1, a2, a3, a4)
+   ]}
+ *)      
+let mk_tuple ~arity ~number =
+  match arity with
+  [ 1 -> gen_tuple_first ~number ~off:0
+  | n when n > 1 -> 
+      let e = zfold_left
+        ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
+        (fun acc i -> com acc (gen_tuple_first ~number ~off:i)) in
+      {| $tup:e |}
+  | _ -> invalid_arg "mk_tuple arity < 1 " ];        
+
+  

@@ -30,7 +30,7 @@ let gen_str_item
           `Last (fun s -> {:ident| $uid:m.$(lid:basic_transform id s) |} ) ] ;
       let trail (_,number)=
       if number > 1 then
-        let patt = Patt.tuple_of_number {:patt| _ |} arity in 
+        let patt = EP.tuple_of_number {:patt| _ |} arity in 
         {:match_case| $pat:patt -> $trail |}
       else {:match_case| |} ;
       let names = names ;
@@ -74,7 +74,7 @@ let gen_object
        `Obj (basic_transform left_type_id) ;
      let trail (_,number)=
        if number > 1 then
-         let patt = Patt.tuple_of_number {:patt| _ |} arity in 
+         let patt = EP.tuple_of_number {:patt| _ |} arity in 
          {:match_case| $pat:patt -> $trail |}
        else {:match_case| |} ;
     Frame.(obj_of_module_types
