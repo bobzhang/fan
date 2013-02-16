@@ -101,20 +101,34 @@ let get_initial = fun
    it will create side effect which will
    update the keyword table in the gram
  *)
-let rec using_symbols gram symbols =
-    List.iter (using_symbol gram) symbols 
-and  using_symbol gram symbol = match symbol with 
-    [ `Smeta (_, sl, _) -> List.iter (using_symbol gram) sl
-    | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> using_symbol gram s
-    | `Slist0sep (s, t) -> begin  using_symbol gram s; using_symbol gram t  end
-    | `Slist1sep (s, t) -> begin  using_symbol gram s; using_symbol gram t  end
-    | `Stree t -> using_node gram  t
-    | `Skeyword kwd -> using gram kwd (* main meat *)
-    | `Snterm _ | `Snterml (_, _) | `Snext | `Sself | `Stoken _ -> () ]
-and using_node gram  node = match node with 
-    [ Node {node = s; brother = bro; son = son} ->
-      begin using_symbol gram s; using_node gram  bro; using_node gram son end
-    | LocAct (_, _) | DeadEnd -> () ];
+let rec using_symbols gram symbols acc  =
+  List.fold_left (fun acc symbol -> using_symbol gram symbol acc) acc symbols
+    (* List.iter (using_symbol gram) symbols  *)
+and  using_symbol gram symbol acc =
+  match symbol with 
+  [ `Smeta (_, sl, _) ->
+    using_symbols gram sl acc 
+    (* List.iter (using_symbol gram) sl *)
+  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s ->
+      using_symbol gram s acc
+  | `Slist0sep (s, t) ->
+      using_symbol gram t (using_symbol gram s acc)
+      (* begin  using_symbol gram s; using_symbol gram t  end *)
+  | `Slist1sep (s, t) ->
+      using_symbol gram t (using_symbol gram s acc)
+      (* begin  using_symbol gram s; using_symbol gram t  end *)
+  | `Stree t ->
+      using_node gram  t acc 
+  | `Skeyword kwd ->
+      [kwd :: acc]
+      (* using gram kwd (\* main meat *\) *)
+  | `Snterm _ | `Snterml _ | `Snext | `Sself | `Stoken _ -> acc ]
+and using_node gram  node acc =
+  match node with 
+  [ Node {node = s; brother = bro; son = son} ->
+    using_node gram son (using_node gram bro (using_symbol gram s acc))
+    (* begin using_symbol gram s; using_node gram  bro; using_node gram son end *)
+  | LocAct (_, _) | DeadEnd -> acc ];
 
 
 (* given an [entry] , [production] and  a [tree], return a new [tree]
@@ -271,10 +285,17 @@ and scan_olevel entry (x,y,prods) =
   (x,y,List.map (scan_product entry) prods)
 and scan_product entry (symbols,x) = begin
   (List.map
-    (fun symbol ->
-      begin using_symbol entry.egram symbol;
-        check_gram entry symbol;
-         match symbol with [`Snterm e when e == entry -> `Sself | _ -> symbol]
+    (fun symbol -> begin
+      let keywords =using_symbol entry.egram symbol [] ;
+      let diff = let open SSet in
+        elements & diff (of_list keywords) !(entry.egram.gkeywords) ;
+      if diff <> [] then begin
+        failwithf
+         "in grammar %s: keywords introduced: [ %s ] " entry.egram.annot
+          (List.reduce_left (^) diff);
+      end;
+      check_gram entry symbol;
+      match symbol with [`Snterm e when e == entry -> `Sself | _ -> symbol]
       end) symbols,x)
 end;
 

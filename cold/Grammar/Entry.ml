@@ -33,15 +33,6 @@ let action_parse entry (ts : stream) =
    | exc ->
        (eprintf "%s@." (Printexc.to_string exc);
         FanLoc.raise (get_prev_loc ts) exc) : Action.t )
-let lex entry loc cs = (entry.egram).glexer loc cs
-let lex_string entry loc str = lex entry loc (XStream.of_string str)
-let parse_origin_tokens entry ts = Action.get (action_parse entry ts)
-let filter entry ts = FanTokenFilter.filter (get_filter entry.egram) ts
-let filter_and_parse_tokens entry ts =
-  parse_origin_tokens entry (filter entry ts)
-let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs)
-let parse_string entry loc str =
-  filter_and_parse_tokens entry (lex_string entry loc str)
 let of_parser g n (p : stream -> 'a) =
   let f ts = Action.mk (p ts) in
   {

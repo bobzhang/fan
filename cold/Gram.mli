@@ -16,9 +16,10 @@ type position =
       
 type gram =
   Grammar.Structure.gram = {
+  annot:string;
   gfilter : FanTokenFilter.t;
-  gkeywords : (string, int ref) Hashtbl.t;
-  glexer : FanLoc.t -> char XStream.t -> FanToken.stream ;
+  gkeywords :  SSet.t ref (* int SMap.t *) (* (string, int ref) Hashtbl.t *);
+  (* glexer : FanLoc.t -> char XStream.t -> FanToken.stream ; *)
 }
 
 module Action :
@@ -77,7 +78,7 @@ val setup_parser:  'a t ->  (stream -> 'a) -> unit
     
 val clear: 'a t -> unit
 
-val using: gram -> string -> unit
+(* val using: gram -> string -> unit *)
 
 val mk_action: 'a -> Action.t
 
@@ -90,7 +91,7 @@ val removing: gram -> string -> unit
 
 val gram: gram
 (* create a standalone gram *)
-val create_gram: unit -> gram
+val create_gram: annot:string -> keywords: string list -> unit -> gram
 
 val mk_dynamic: gram -> string -> 'a t
 
@@ -106,7 +107,6 @@ val lex: FanLoc.t -> char XStream.t -> (FanToken.t * FanLoc.t) XStream.t
 
 val lex_string: FanLoc.t -> string -> (FanToken.t * FanLoc.t) XStream.t
 
-val filter:  stream -> stream
 
 val parse:  'a t -> FanLoc.t -> char XStream.t -> 'a
 
@@ -120,7 +120,7 @@ val parse_string_safe:  ?loc:FanLoc.t -> 'a t ->  string -> 'a
 
 val wrap_stream_parser: ('a -> 'b -> 'c) -> 'a -> 'b -> 'c
 
-val parse_file_with: rule:'a t -> string -> 'a
+(* val parse_file_with: rule:'a t -> string -> 'a *)
 
 val delete_rule:  'a t -> symbol list -> unit
 

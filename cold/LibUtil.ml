@@ -174,6 +174,11 @@ module type MAP =
     val add_list : (key* 'a) list -> 'a t -> 'a t
     val find_default : default:'a -> key -> 'a t -> 'a
     val find_opt : key -> 'a t -> 'a option
+    val add_with :
+      f:('a -> 'a -> 'a) ->
+        key -> 'a -> 'a t -> ('a t* [ `NotExist | `Exist])
+    val unsafe_height : 'a t -> int
+    val unsafe_node : 'a t -> (key* 'a) -> 'a t -> 'a t
   end
 module MapMake(S:Map.OrderedType) =
   (struct
@@ -187,6 +192,22 @@ module MapMake(S:Map.OrderedType) =
      let elements map = fold (fun k  v  acc  -> (k, v) :: acc) map []
      let find_default ~default  k m =
        try find k m with | Not_found  -> default
+     let add_with ~f  k v s =
+       try ((add k (f (find k s) v) s), `Exist)
+       with | Not_found  -> ((add k v s), `NotExist)
+     let unsafe_height (l : 'a t) =
+       (if l = empty
+        then 0
+        else (Obj.magic (Obj.field (Obj.repr l) 4) : int ) : int )
+     let unsafe_node (l : 'a t) ((k : key),(v : 'a)) (r : 'a t) =
+       let h = (max (unsafe_height l) (unsafe_height r)) + 1 in
+       let o = Obj.new_block 0 4 in
+       Obj.set_field o 0 (Obj.repr l);
+       Obj.set_field o 1 (Obj.repr k);
+       Obj.set_field o 2 (Obj.repr v);
+       Obj.set_field o 3 (Obj.repr r);
+       Obj.set_field o 4 (Obj.repr h);
+       (Obj.magic o : 'a t )
      let find_opt k m = try Some (find k m) with | Not_found  -> None
    end : (MAP with type  key = S.t ))
 module type SET =

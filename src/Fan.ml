@@ -47,7 +47,7 @@ of_str_item_with_filter
 
 of_expr ~name:(d,"fans") ~entry:Typehook.fan_quots ;
 of_expr ~name:(d,"save") ~entry:Typehook.save_quot;
-  
+
 of_str_item ~name:(d,"include") ~entry:Typehook.include_quot;
 let d = `Absolute ["Fan";"Lang";"Macro"];
   

@@ -624,7 +624,7 @@ module Default = struct
                                       ];
     Options.ocamldep   := ocamlfind & A"ocamldep";
     Options.ocamldoc   := ocamlfind & A"ocamldoc";
-    (* Options.make_links := false; *)
+    Options.make_links := false; (* no symlink *)
     (* Options.ocamldoc := S [A "ocamldoc"]; *)
     (** ocamlfind does not accept -search
         ocamldoc.opt does not work on mac

@@ -49,29 +49,6 @@ let action_parse entry (ts: stream) : Action.t =
         FanLoc.raise (get_prev_loc ts) exc
     end];
 
-(* UNfiltered token stream *)
-let lex entry loc cs = entry.egram.glexer loc cs;
-
-(* Unfiltered *)
-let lex_string entry loc str = lex entry loc (XStream.of_string str);
-
-(* unfilter *)
-let parse_origin_tokens entry ts = Action.get (action_parse entry ts);
-
-
-(* filter *)  
-let filter entry ts =
-  (FanTokenFilter.filter (get_filter entry.egram) ts);
-
-(* filtering using the [entrance entry]'s filter '*)  
-let filter_and_parse_tokens entry ts =
-  parse_origin_tokens entry (filter entry ts);
-
-let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs);
-
-let parse_string entry loc str =
-  filter_and_parse_tokens entry (lex_string entry loc str);
-
 (* stream parser is not extensible *)  
 let of_parser g n (p : stream -> 'a)   =
   let f ts = Action.mk (p ts) in {

@@ -12,13 +12,12 @@ module type META_LOC = sig
 end;
 open FanUtil;
 open LibUtil;  
-open StdLib;
+(* open StdLib; *)
 
 let ghost = FanLoc.ghost ; (* to refine *)
   
 
-{:fans|keep off;
- derive ( MetaExpr GenLoc); |};
+{:fans|keep off; derive ( MetaExpr GenLoc); |};
   
 {:ocaml|INCLUDE "src/Ast.ml"; |};
 
@@ -44,37 +43,8 @@ let list_of_list (loc:loc) =
           if top then loc else FanLoc.merge (loc_of e1) loc in
         {| [$e1 :: $(loop false el)] |} ] in loop true ;
 
-(* It is the inverse operation by [view_app]
-   Example:
-   {[
-   apply {|a|} [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
-   a b c d
-   ]}
- *)
-(* let rec apply accu = fun *)
-(*   [ [] -> accu *)
-(*   | [x :: xs] -> let _loc = loc_of x in apply {| $accu $x |} xs ]; *)
-  
-  
-(* let array_of_array loc arr = *)
-(*   let rec loop top =  with expr fun *)
-(*     [ [] -> {@ghost| [] |} *)
-(*     | [e1 :: el] -> *)
-(*         let _loc = *)
-(*           if top then loc else FanLoc.merge (loc_of e1) loc in *)
-(*         {| [| $e1 ; $(loop false el) |] |} ] in *)
-(*   let items = arr |> Array.to_list in  *)
-(*   loop true items; *)
-
-
   
 #default_quotation "expr";;
-
-(* module MExpr = struct *)
-
-(*   INCLUDE "src/MetaTemplate.ml"; (\* FIXME INCLUDE as a langauge :default *\) *)
-(* end; *)
-(* open MExpr; *)
 
 let meta_int _loc i =  {|$`int:i|};
 
@@ -90,23 +60,10 @@ let meta_string _loc i = {|$`str:i|};
   
 let meta_char _loc i = {|$`chr:i|};
 let meta_unit _loc _ =  {|()|};
-let meta_bool _loc =
-  fun [true -> {|true|} | false -> {|false|} ];
-
+let meta_bool _loc =  fun [true -> {|true|} | false -> {|false|} ];
 
 let meta_ref mf_a _loc i =
   {| {contents= $(mf_a _loc !i) } |};
-
-  (*
-    `Record
-    (_loc, (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
-
-    `Record
-    (_loc,
-      (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))),
-      (`Nil _loc))
-   *)
-
 
 (* [mklist] and [mkarray]
    duplicated with ExprPatt to remove cyclic dependency *)
@@ -132,8 +89,8 @@ let meta_arrow (type t)
     (_loc: FanLoc.t)  (_x:'a -> 'b) = invalid_arg "meta_arrow not implemented";
 
 module Make(MetaLoc:META_LOC) = struct
-    let meta_loc = MetaLoc.meta_loc;
-    __MetaExpr__;
+  include MetaLoc;
+  __MetaExpr__;
 end;
     
 

@@ -17,7 +17,7 @@ val find_level:
 
 val check_gram: entry -> symbol -> unit
 
-val using_symbols: gram -> symbol list -> unit
+(* val using_symbols: gram -> symbol list ->  *)
     
 val get_initial: ([> `Sself ] as 'a) list -> bool * 'a list
 

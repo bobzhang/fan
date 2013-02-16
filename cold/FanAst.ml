@@ -2,7 +2,6 @@ include Ast
 module type META_LOC = sig val meta_loc : loc -> loc -> ep end
 open FanUtil
 open LibUtil
-open StdLib
 let ghost = FanLoc.ghost
 let _ = ()
 let loc_of =
@@ -203,7 +202,7 @@ let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
   invalid_arg "meta_arrow not implemented"
 module Make(MetaLoc:META_LOC) =
   struct
-    let meta_loc = MetaLoc.meta_loc
+    include MetaLoc
     let meta_ant _loc (`Ant (_a0,_a1)) = `Ant (_a0, _a1)
     let meta_literal _loc =
       function

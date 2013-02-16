@@ -241,14 +241,30 @@ end;
 (* #default_quotation "expr"  ;; *)
 (* #lang_at "patt" "module_expr";; *)
 
-let g = Gram.create_gram ();
+let g = Gram.create_gram
+    ~keywords:
+    ["derive";
+     "unload";
+     "clear";
+     "keep" ;
+     "on";
+     "keep";
+     "off";
+     "show_code";
+     "(";
+     ")";
+     ",";
+     ";"
+   ]
+    ~annot:"derive"
+    ();
 
 
 {:create|(g:Gram.t)  fan_quot fan_quots
 |};
 
 with expr
-    {:extend|Gram
+    {:extend|
       fan_quot:
       ["derive";"("; L1 [`Lid x -> x | `Uid x  -> x]{plugins}; ")" ->
           begin List.iter plugin_add plugins; {| |}  end
@@ -265,7 +281,7 @@ with expr
       [L0[fan_quot{x};";" -> x]{xs} -> {| begin $list:xs end|}]
 |};  
 
-let g = Gram.create_gram();
+let g = Gram.create_gram ~annot:"include" ~keywords:[] ();
 
 {:create| (g:Gram.t) include_quot |};
   {:extend|
@@ -280,7 +296,7 @@ include_quot:
  ]
 |};
 
-let g = Gram.create_gram();
+(* let g = Gram.create_gram ~annot:"save" ~keywords:[] (); *)
 {:create|Gram  save_quot|};
 
 

@@ -78,21 +78,23 @@ and tree_check_gram entry =
   | LocAct _|DeadEnd  -> ()
 let get_initial =
   function | `Sself::symbols -> (true, symbols) | symbols -> (false, symbols)
-let rec using_symbols gram symbols = List.iter (using_symbol gram) symbols
-and using_symbol gram symbol =
+let rec using_symbols gram symbols acc =
+  List.fold_left (fun acc  symbol  -> using_symbol gram symbol acc) acc
+    symbols
+and using_symbol gram symbol acc =
   match symbol with
-  | `Smeta (_,sl,_) -> List.iter (using_symbol gram) sl
-  | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> using_symbol gram s
-  | `Slist0sep (s,t) -> (using_symbol gram s; using_symbol gram t)
-  | `Slist1sep (s,t) -> (using_symbol gram s; using_symbol gram t)
-  | `Stree t -> using_node gram t
-  | `Skeyword kwd -> using gram kwd
-  | `Snterm _|`Snterml (_,_)|`Snext|`Sself|`Stoken _ -> ()
-and using_node gram node =
+  | `Smeta (_,sl,_) -> using_symbols gram sl acc
+  | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> using_symbol gram s acc
+  | `Slist0sep (s,t) -> using_symbol gram t (using_symbol gram s acc)
+  | `Slist1sep (s,t) -> using_symbol gram t (using_symbol gram s acc)
+  | `Stree t -> using_node gram t acc
+  | `Skeyword kwd -> kwd :: acc
+  | `Snterm _|`Snterml _|`Snext|`Sself|`Stoken _ -> acc
+and using_node gram node acc =
   match node with
   | Node { node = s; brother = bro; son } ->
-      (using_symbol gram s; using_node gram bro; using_node gram son)
-  | LocAct (_,_)|DeadEnd  -> ()
+      using_node gram son (using_node gram bro (using_symbol gram s acc))
+  | LocAct (_,_)|DeadEnd  -> acc
 let add_production ((gsymbols,(annot,action)) : production) tree =
   let rec try_insert s sl tree =
     match tree with
@@ -210,7 +212,15 @@ and scan_olevel entry (x,y,prods) =
 and scan_product entry (symbols,x) =
   ((List.map
       (fun symbol  ->
-         using_symbol entry.egram symbol;
+         let keywords = using_symbol entry.egram symbol [] in
+         let diff =
+           let open SSet in
+             elements &
+               (diff (of_list keywords) ((entry.egram).gkeywords).contents) in
+         if diff <> []
+         then
+           failwithf "in grammar %s: keywords introduced: [ %s ] "
+             (entry.egram).annot (List.reduce_left ( ^ ) diff);
          check_gram entry symbol;
          (match symbol with
           | `Snterm e when e == entry -> `Sself

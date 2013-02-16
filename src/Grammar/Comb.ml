@@ -25,13 +25,13 @@ let slist0sep ~err ~f s sep  =
 
 let slist1sep ~err ~f s sep =
   let rec kont al = parser
-      [ [< v = sep (* pt *); a = parser
-          [ [< a = s (* ps *) >] -> a
+      [ [< v = sep; a = parser
+          [ [< a = s >] -> a
           | [< >] ->
              raise (XStream.Error (err v (* Failed.symb_failed entry v sep symb *))) ];
            's >] ->kont [a :: al] s
       | [< >] -> al ] in
-  parser [< a = s (* ps *); 's >] ->
+  parser [< a = s ; 's >] ->
     f (kont [a] s);
     (* Action.mk (List.rev (kont [a] s)) *)
 
@@ -62,10 +62,9 @@ let peek ps strm =
     with
     [ XStream.Error _ | FanLoc.Exc_located (_, (XStream.Error _)) ->
         raise XStream.Failure
-    | exc -> raise exc ] in begin 
-        (* XStream.njunk (XStream.count strm') strm ; *)
-        r;
-    end;
+    | exc -> raise exc ] in 
+  r;
+
 let orp ?(msg="") p1 p2 = parser
   [ [< a = p1>] -> a
   | [< a = p2 >] -> a

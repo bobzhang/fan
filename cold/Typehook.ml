@@ -162,7 +162,20 @@ let traversal () =
             t)
        | t -> super#ctyp t
    end : traversal )
-let g = Gram.create_gram ()
+let g =
+  Gram.create_gram
+    ~keywords:["derive";
+              "unload";
+              "clear";
+              "keep";
+              "on";
+              "keep";
+              "off";
+              "show_code";
+              "(";
+              ")";
+              ",";
+              ";"] ~annot:"derive" ()
 let fan_quot = Gram.mk_dynamic g "fan_quot"
 let fan_quots = Gram.mk_dynamic g "fan_quots"
 let _ =
@@ -261,7 +274,7 @@ let _ =
              (Gram.mk_action
                 (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
                    (`Seq (_loc, (FanAst.sem_of_list xs)) : 'fan_quots )))))]))
-let g = Gram.create_gram ()
+let g = Gram.create_gram ~annot:"include" ~keywords:[] ()
 let include_quot = Gram.mk_dynamic g "include_quot"
 let _ =
   Gram.extend_single (include_quot : 'include_quot Gram.t )
@@ -293,7 +306,6 @@ let _ =
                    | _ ->
                        failwith
                          "let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.str_items s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n"))))]))
-let g = Gram.create_gram ()
 let save_quot = Gram.mk "save_quot"
 let _ =
   Gram.extend_single (save_quot : 'save_quot Gram.t )

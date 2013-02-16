@@ -45,6 +45,7 @@ let setup_op_parser entry p =
           (* let _loc = Gram.token_location ti in *)
           {:expr| $lid:x |});
 
+(* [infix_kwds_filter]  *)  
 let rec infix_kwds_filter = parser
   [ [< ((`KEYWORD "(", _) as tok); 'xs >] ->
     match xs with parser

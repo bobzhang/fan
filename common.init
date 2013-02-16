@@ -1,0 +1,93 @@
+#load_rec "FanLoc.cmo";;
+#load_rec "FanBasic.cmo";;
+#load_rec "Query.cmo";;
+
+#load_rec "FanLexUtil.cmo";;
+#load_rec "FanTop.cma";;
+#load_rec "OAstPrint.cmo";;
+(* consult Topdirs for more utlities *)
+let fmt = std_formatter
+(* let _ = Clflags.noprompt := true;; *)
+let _loc = FanLoc.ghost;;
+
+let (|-) f g x = g (f x );;
+
+let _ = begin
+  Hashtbl.replace Toploop.directive_table "useo"
+    (Toploop.Directive_string (fun file ->
+      LibUtil.Ref.protect Toploop.parse_use_file Parse.use_file
+        (fun _ -> ignore(Toploop.use_file Format.std_formatter file))))
+end;;
+
+
+let interface_of_string =
+  Lexing.from_string |- Parse.interface;;
+let implementation_of_string =
+  Lexing.from_string |- Parse.implementation;;
+
+let tg_dp () =
+  Clflags.dump_parsetree := not !Clflags.dump_parsetree ;;
+let pp =fprintf
+let f = std_formatter;;
+open Fan;;
+open FanTop;;
+open LibUtil;;
+
+
+open FanUtil;;
+open Stream;;
+open Grammar;;
+open Structure;;
+open OAstPrint;;
+Toploop.print_out_value := loose#out_value;;
+Toploop.print_out_type := loose#out_type;;
+
+Toploop.print_out_class_type := loose#class_type;;
+Toploop.print_out_module_type := loose#module_type;;
+Toploop.print_out_sig_item := loose#sig_item;;
+Toploop.print_out_signature := loose#signature;;
+Toploop.print_out_phrase := loose#phrase;;
+let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
+
+
+
+
+(* #useo "./test/test_fan.ml";; *)
+(* #load_rec "FanTop.cma";; *)
+open Syntax;;
+let t e s = Gram.parse_string e  s;;
+module L = Lib;;
+open L.Meta;;
+let normal () = begin
+  Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
+end;;
+let print_tree f x  = pp f "@[%a@]@." Grammar.Print.dump#tree x ;; 
+
+
+(* AstQuotation.default:="expr";; *)
+
+#install_printer print_tree;;
+#install_printer Gram.dump;;
+#install_printer print_ocaml_loc;;
+
+let env = !Toploop.toplevel_env;;
+open ParserLex;;
+(* AstQuotation.set_default "str";; *)
+
+
+(* #load "Utf8.cmo";; *)
+(* #load "Utf16.cmo";; *)
+#load_rec "Ulexing.cma";;
+module O = Obj;;
+open Ast;;
+open L.Expr;;
+let p_type_declaration  =  AstPrint.default#type_declaration;;
+#install_printer p_type_declaration;;
+(* test dump *)
+let t_dump s =  t str_item s |> Ast2pt.str_item;;
+open ParserGrammar;;
+
+#require "inspect";;
+open Inspect;;
+let view a= Dot.dump_to_file "test.dot"a;;
+#revise;;

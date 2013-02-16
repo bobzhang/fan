@@ -16,11 +16,10 @@ type description = [ `Normal | `Antiquot]
 type descr = (description* string) 
 type token_pattern = ((FanToken.t -> bool)* descr) 
 type terminal = [ `Skeyword of string | `Stoken of token_pattern] 
-type gram = 
-  {
+type gram =  {
+  annot: string;
   gfilter: FanTokenFilter.t;
-  gkeywords: (string,int ref) Hashtbl.t;
-  glexer: FanLoc.t -> char XStream.t -> stream} 
+  gkeywords: SSet.t ref} 
 type label = string option 
 type entry = 
   {
@@ -67,21 +66,10 @@ type ('a,'b,'c) foldsep =
     symbol list ->
       ('a XStream.t -> 'b) -> ('a XStream.t -> unit) -> 'a XStream.t -> 'c
   
-let get_filter g = g.gfilter
 let gram_of_entry { egram;_} = egram
-let using { gkeywords = table; gfilter = filter;_} kwd =
-  let r =
-    try Hashtbl.find table kwd
-    with | Not_found  -> let r = ref 0 in (Hashtbl.add table kwd r; r) in
-  FanTokenFilter.keyword_added filter kwd (r.contents = 0); incr r
 let mk_action = Action.mk
 let string_of_token = FanToken.extract_string
-let removing { gkeywords = table; gfilter = filter;_} kwd =
-  let r = Hashtbl.find table kwd in
-  let () = decr r in
-  if r.contents = 0
-  then (FanTokenFilter.keyword_removed filter kwd; Hashtbl.remove table kwd)
-  else ()
+let removing gram kwd = ()
 let rec flatten_tree =
   function
   | DeadEnd  -> []
