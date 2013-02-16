@@ -22,7 +22,7 @@ val plugin_remove : plugin_name -> unit
 
 
 class type traversal = object
-  inherit FanAst.map
+  inherit Objs.map
   method get_cur_module_types: FSig.module_types
   method get_cur_and_types: FSig.and_types
   (* method in_and_types: *)

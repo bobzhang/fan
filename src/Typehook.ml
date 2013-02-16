@@ -91,7 +91,7 @@ let plugin_remove plugin =
    {:sig_item| type $x |}
  *)  
 let filter_type_defs ?qualified () = object (* (self:'self_type) *)
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   val mutable type_defs = let _loc = FanLoc.ghost in {:str_item||} ;
   method! sig_item = with sig_item fun
     [
@@ -131,7 +131,7 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
 end;
 
 class type traversal = object
-  inherit FanAst.map;
+  inherit Objs.map;
   method get_cur_module_types: FSig.module_types;
   method get_cur_and_types: FSig.and_types;
   (* method in_and_types: *)
@@ -157,7 +157,7 @@ end;
   the code
  *)  
 let traversal () : traversal  = object (self:'self_type)
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   val module_types_stack : Stack.t module_types = Stack.create ();
   val mutable cur_and_types : and_types= [];
   val mutable and_group = false;

@@ -376,7 +376,7 @@ let text_of_entry (e:entry) :expr =  with expr
 let let_in_of_extend _loc gram locals  default =
   let entry_mk =
     match gram with
-    [ Some g -> {:expr| $(id:gm()).mk $id:g |}
+    [ Some g -> {:expr| $(id:gm()).mk_dynamic $id:g |}
     | None   -> {:expr| $(id:gm()).mk |} ] in
   let local_binding_of_name = fun
     [ {expr = {:expr@_| $lid:i |} ; tvar = x; loc = _loc} ->

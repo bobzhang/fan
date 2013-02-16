@@ -74,7 +74,8 @@ module type MAP = sig
   val of_hashtbl: (key, 'a) Hashtbl.t -> 'a t 
   val elements: 'a t  -> (key * 'a) list 
   val add_list: (key * 'a) list  -> 'a t  ->  'a t
-  val find_default: default :'a -> key -> 'a t  -> 'a 
+  val find_default: default :'a -> key -> 'a t  -> 'a
+  val find_opt : key -> 'a t -> 'a option    
     (* FIXME  [~default:] [~default :] *)
 end
       
@@ -193,6 +194,7 @@ module Hashtbl :
     val keys : ('a, 'b) t -> 'a list
     val values : ('a, 'b) t -> 'b list
     val find_default : default:'a -> ('b, 'a) t -> 'b -> 'a
+    val find_opt : ('b,'a) t -> 'b -> 'a option        
   end
 module Array :
   sig

@@ -1,6 +1,7 @@
 #default_quotation "ident";;
 open FanAst;
 open LibUtil;
+open Objs;
 (*
   {[
   
@@ -52,7 +53,7 @@ let rec lid_of_ident =
     fun
     [ {| $_.$i |} -> lid_of_ident i
     | {| $lid:lid |} -> lid
-    | x  -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (FanAst.dump_ident x )  ]
+    | x  -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (Objs.dump_ident x )  ]
 ;
 
 (**
@@ -111,7 +112,7 @@ let map_to_string ident =
   | {| ($a $b) |} -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end")
   | {| $lid:x |} -> x ^ acc
   | {| $uid:x |} -> String.lowercase x ^ acc
-  | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (dump_ident t)] in 
+  | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t)] in 
   aux ident "";
 
 

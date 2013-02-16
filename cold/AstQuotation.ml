@@ -33,7 +33,7 @@ let expander_name ~pos:(pos : string)  (name : name) =
   match name with
   | (`Sub [],"") ->
       SMap.find_default ~default:(default.contents) pos map.contents
-  | (`Sub _,_) -> resolve_name name
+  | (`Sub _,_) -> FanToken.resolve_name name
   | _ -> name
 let default_at_pos pos str = update (pos, str)
 let expanders_table = ref QMap.empty

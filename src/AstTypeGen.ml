@@ -297,7 +297,7 @@ let generate (module_types:FSig.module_types) = with str_item
     | _ ->
         FanLoc.errorf
           (loc_of ty) "generate module_types %s"
-          (dump_ctyp ty) ] in   
+          (Objs.dump_ctyp ty) ] in   
   let _ = List.iter
       (fun
         [`Mutual tys ->
@@ -331,7 +331,7 @@ let generate (module_types:FSig.module_types) : str_item = with str_item
      with ctyp
   (* use [map_ctyp] instead  *)
      let obj = object
-       inherit FanAst.map as super;
+       inherit Objs.map as super;
        method! ctyp = 
          (fun 
           [ {:ctyp| $vrn of loc |} -> {:ctyp|$vrn |}

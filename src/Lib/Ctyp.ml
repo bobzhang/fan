@@ -1,7 +1,7 @@
 
 #default_quotation "ctyp";;
 open FanAst;
-
+open Objs;
 open LibUtil;
 
 open Basic;
@@ -297,7 +297,7 @@ let mk_obj class_name  base body =
 let is_recursive ty_dcl = match ty_dcl with
   [ `TyDcl (_, `Lid(_,name), _, ctyp, _)  ->
     let obj = object(self:'self_type)
-      inherit FanAst.fold as super;
+      inherit Objs.fold as super;
       val mutable is_recursive = false;
       method! ctyp = fun
         [ {| $lid:i |} when i = name -> begin 
@@ -387,7 +387,7 @@ let eq_list t1 t2 =
  *)
 let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50;
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   method! str_item = fun
     [ 
      {:str_item| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
@@ -526,7 +526,7 @@ let view_variant (t:ctyp) : list vbranch =
       |  `Id (_loc,i) -> `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
       | u -> FanLoc.errorf (FanAst.loc_of u)
-            "view_variant %s" (FanAst.dump_ctyp u) ] ) lst ;
+            "view_variant %s" (Objs.dump_ctyp u) ] ) lst ;
 
     
 let of_str_item = fun

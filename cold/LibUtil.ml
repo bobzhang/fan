@@ -173,6 +173,7 @@ module type MAP =
     val elements : 'a t -> (key* 'a) list
     val add_list : (key* 'a) list -> 'a t -> 'a t
     val find_default : default:'a -> key -> 'a t -> 'a
+    val find_opt : key -> 'a t -> 'a option
   end
 module MapMake(S:Map.OrderedType) =
   (struct
@@ -186,6 +187,7 @@ module MapMake(S:Map.OrderedType) =
      let elements map = fold (fun k  v  acc  -> (k, v) :: acc) map []
      let find_default ~default  k m =
        try find k m with | Not_found  -> default
+     let find_opt k m = try Some (find k m) with | Not_found  -> None
    end : (MAP with type  key = S.t ))
 module type SET =
   sig
@@ -496,6 +498,7 @@ module Hashtbl =
     let values tbl = fold (fun _  v  acc  -> v :: acc) tbl []
     let find_default ~default  tbl k =
       try find tbl k with | Not_found  -> default
+    let find_opt tbl k = try Some (find tbl k) with | Not_found  -> None
   end
 module Array =
   struct

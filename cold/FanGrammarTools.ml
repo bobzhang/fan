@@ -350,7 +350,8 @@ let let_in_of_extend _loc gram locals default =
     match gram with
     | Some g ->
         `App
-          (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk")))))),
+          (_loc,
+            (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_dynamic")))))),
             (`Id (_loc, g)))
     | None  -> `Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
   let local_binding_of_name =

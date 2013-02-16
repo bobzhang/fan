@@ -145,14 +145,18 @@
           
            (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
      | `TyObj of (loc * ctyp * row_var_flag)
+
      | `TyOlb of (loc * alident * ctyp) (* ?s:t *)
+
      | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
+
      | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
 
            (*  +'s -'s 's +_ -_ *)      
      | `Quote of (loc * position_flag * meta_option alident)
           
      | `TyRec of (loc * ctyp) (* { t } *) (* { foo : int ; bar : mutable string } *)
+
      | `TyCol of (loc * ctyp * ctyp) (* t : t *)
            (* | `TySem of (loc * ctyp * ctyp) (\* t; t *\) *)
      | `Sem of (loc * ctyp * ctyp) (* t; t *)

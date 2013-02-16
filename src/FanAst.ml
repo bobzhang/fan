@@ -16,14 +16,9 @@ open StdLib;
 
 let ghost = FanLoc.ghost ; (* to refine *)
   
-let strip_loc_list f lst =
-  List.map f lst ;
-let strip_loc_ant ant = ant ;  
+
 {:fans|keep off;
- derive
-   (Map2
-      Fold2 OIter MetaExpr  Map Fold Print OPrint OEq
-      GenLoc  Strip    ); |};
+ derive ( MetaExpr GenLoc); |};
   
 {:ocaml|INCLUDE "src/Ast.ml"; |};
 
@@ -510,37 +505,37 @@ let rec view_app acc = fun
 
     
 let map_expr f = object
-  inherit map as super;
+  inherit Objs.map as super;
   method! expr x = f (super#expr x);
 end;
 let map_patt f = object
-  inherit map as super;
+  inherit Objs.map as super;
   method! patt x = f (super#patt x);
 end;
 let map_ctyp f = object
-  inherit map as super;
+  inherit Objs.map as super;
   method! ctyp x = f (super#ctyp x);
 end;
 let map_str_item f = object
-  inherit map as super;
+  inherit Objs.map as super;
   method! str_item x = f (super#str_item x);
 end;
 let map_sig_item f = object
-  inherit map as super;
+  inherit Objs.map as super;
   method! sig_item x = f (super#sig_item x);
 end;
 let map_ctyp f = object
-  inherit map as super;
+  inherit Objs.map as super;
   method! ctyp x = f (super#ctyp x);
 end;
 let map_loc f = object
-  inherit map as super;
+  inherit Objs.map as super;
   method! loc x = f (super#loc x);
 end;
 
 
 class clean_ast = object
-  inherit map as super;
+  inherit Objs.map as super;
   method! with_constr wc =
     with with_constr
     match super#with_constr wc with
@@ -663,7 +658,7 @@ end;
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object
-  inherit map ;
+  inherit Objs.map ;
   method! loc _ = _loc;
 end;
 
@@ -671,7 +666,7 @@ end;
   {[]}
  *)  
 let wildcarder = object (self)
-  inherit map as super;
+  inherit Objs.map as super;
   method! patt = fun
   [ {:patt| $lid:_ |} -> {:patt| _ |}
   | {:patt| ($p as $_) |} -> self#patt p
@@ -683,7 +678,7 @@ end;
 (* end; *)
 
 let match_pre = object (self)
-  inherit map; (* as super; *)
+  inherit Objs.map; (* as super; *)
   method! match_case = with match_case fun
    [ {| $pat:p -> $e |} -> {| $pat:p -> fun () -> $e |}
    | {| $pat:p when $e -> $e1 |} -> {| $pat:p when $e -> fun () -> $e1 |}
@@ -729,33 +724,16 @@ let rec is_irrefut_patt : patt -> bool = with patt
       
   
 
-let dump = new print;
 
 
 
-let dump_ctyp = to_string_of_printer dump#ctyp;
-let dump_with_constr = to_string_of_printer dump#with_constr;
-let dump_module_type = to_string_of_printer dump#module_type;
-let dump_expr = to_string_of_printer dump#expr;
-let dump_patt = to_string_of_printer dump#patt;
-let dump_class_type = to_string_of_printer dump#class_type;
-let dump_class_expr = to_string_of_printer dump#class_expr;
-let dump_ident = to_string_of_printer dump#ident;
-let dump_match_case = to_string_of_printer dump#match_case;
-let dump_rec_expr = to_string_of_printer dump#rec_expr;  
-let dump_str_item = to_string_of_printer dump#str_item;
-let dump_sig_item = to_string_of_printer dump#sig_item;
-let dump_module_binding  = to_string_of_printer dump#module_binding;
-let dump_module_expr = to_string_of_printer dump#module_expr;  
-let dump_class_sig_item = to_string_of_printer dump#class_sig_item;
-let dump_class_str_item = to_string_of_printer dump#class_str_item;  
 
 (*
   mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
   True
  *)
 let array_of_array arr =
-  let items = arr |> Array.to_list |> sem_of_list' in
+  let items = arr |> Array.to_list |> sem_of_list in
   let _loc = loc_of items in
   {| [| $items |] |};
   

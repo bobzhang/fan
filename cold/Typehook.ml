@@ -45,7 +45,7 @@ let plugin_remove plugin =
   Ref.modify FanState.current_filters (fun x  -> List.remove plugin x)
 let filter_type_defs ?qualified  () =
   object 
-    inherit  FanAst.map as super
+    inherit  Objs.map as super
     val mutable type_defs = let _loc = FanLoc.ghost in `Nil _loc
     method! sig_item =
       function
@@ -83,7 +83,7 @@ let filter_type_defs ?qualified  () =
 class type traversal
   =
   object 
-    inherit FanAst.map
+    inherit Objs.map
     method get_cur_module_types : FSig.module_types
     method get_cur_and_types : FSig.and_types
     method update_cur_and_types : (FSig.and_types -> FSig.and_types) -> unit
@@ -92,7 +92,7 @@ class type traversal
   end
 let traversal () =
   (object (self : 'self_type)
-     inherit  FanAst.map as super
+     inherit  Objs.map as super
      val module_types_stack = (Stack.create () : module_types Stack.t )
      val mutable cur_and_types = ([] : and_types )
      val mutable and_group = false

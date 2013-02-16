@@ -248,14 +248,14 @@ end;
 
 
 class type antiquot_filter =object
-  inherit FanAst.map;
+  inherit Objs.map;
   method get_captured_variables: list (expr * expr);
   method clear_captured_variables: unit;
 end;
   
 (* We don't do any parsing for antiquots here, so it's parser-independent *)  
 let capture_antiquot : antiquot_filter = object
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   val mutable constraints =[];
   method! patt = fun
   [ `Ant(_loc,s)

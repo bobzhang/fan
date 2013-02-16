@@ -93,7 +93,7 @@ let _ =
   AstFilters.register_str_item_filter
     ("exception",
       ((object 
-          inherit  FanAst.map as super
+          inherit  Objs.map as super
           method! expr =
             function
             | `Fun (_loc,m) -> `Fun (_loc, (map_match_case m))
@@ -108,7 +108,7 @@ let _ =
     ("strip", (((new FanAst.reloc) FanLoc.ghost)#str_item))
 let decorate_binding decorate_fun =
   (object 
-     inherit  FanAst.map as super
+     inherit  Objs.map as super
      method! binding =
        function
        | `Bind (_loc,`Id (_,`Lid (_,id)),(`Fun (_,_) as e)) ->
@@ -117,7 +117,7 @@ let decorate_binding decorate_fun =
    end)#binding
 let decorate decorate_fun =
   object (o)
-    inherit  FanAst.map as super
+    inherit  Objs.map as super
     method! str_item =
       function
       | `Value (_loc,r,b) ->

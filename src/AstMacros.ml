@@ -106,7 +106,7 @@ GFIB 10;
     
 
 let macro_expander = object(self)
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   method! expr = with expr fun
   [{| $uid:a $y |} ->
     let try f = Hashtbl.find macro_expanders a in

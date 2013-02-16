@@ -1,4 +1,5 @@
 open FanAst
+open Objs
 open LibUtil
 open Basic
 open FSig
@@ -146,7 +147,7 @@ let is_recursive ty_dcl =
   | `TyDcl (_,`Lid (_,name),_,ctyp,_) ->
       let obj =
         object (self : 'self_type)
-          inherit  FanAst.fold as super
+          inherit  Objs.fold as super
           val mutable is_recursive = false
           method! ctyp =
             function
@@ -186,7 +187,7 @@ let eq_list t1 t2 =
 let mk_transform_type_eq () =
   object (self : 'self_type)
     val transformers = Hashtbl.create 50
-    inherit  FanAst.map as super
+    inherit  Objs.map as super
     method! str_item =
       function
       | `Type (_loc,`TyDcl (_,_name,vars,ctyp,_)) as x ->
@@ -254,7 +255,7 @@ let view_variant (t : ctyp) =
       | `Id (_loc,i) -> `abbrev i
       | u ->
           FanLoc.errorf (FanAst.loc_of u) "view_variant %s"
-            (FanAst.dump_ctyp u)) lst : vbranch list )
+            (Objs.dump_ctyp u)) lst : vbranch list )
 let of_str_item =
   function
   | `Type (_,x) -> x

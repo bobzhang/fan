@@ -2,6 +2,7 @@ open Parsetree;
 open Longident;
 open Asttypes;
 open Lib;
+open Objs;
 open LibUtil;
 open FanUtil;
 open FanAst;
@@ -61,8 +62,7 @@ let ident_tag (i:ident) =
         (* FIXME uid required here, more precise *)
         [ (Some (l,_),Some (r,_),None) ->
           Some(Lapply l r,`app)
-        | _ -> errorf (loc_of i)
-              (* (FanAst.loc_of i) *) "invalid long identifer %s" (dump_ident i) ]
+        | _ -> errorf (loc_of i) "invalid long identifer %s" (dump_ident i) ]
     | {| $uid:s |} ->
         match (acc,s) with
         [ (None,"") -> None 

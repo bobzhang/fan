@@ -251,7 +251,8 @@ let generate (module_types : FSig.module_types) =
                  ()
            | _ -> ()) branches
     | _ ->
-        FanLoc.errorf (loc_of ty) "generate module_types %s" (dump_ctyp ty) in
+        FanLoc.errorf (loc_of ty) "generate module_types %s"
+          (Objs.dump_ctyp ty) in
   let _ =
     List.iter
       (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)
@@ -296,7 +297,7 @@ let generate (module_types : FSig.module_types) =
      then
        let obj =
          object 
-           inherit  FanAst.map as super
+           inherit  Objs.map as super
            method! ctyp =
              function
              | `Of (_loc,vrn,`Id (_,`Lid (_,"loc"))) -> vrn

@@ -83,6 +83,25 @@ let revise ()  = begin
   Toploop.parse_use_file := wrap use_file;
 end;
 
+begin 
+  Hashtbl.replace Toploop.directive_table "revise"
+    (Toploop.Directive_none (fun () -> revise ()));
+
+  Hashtbl.replace Toploop.directive_table "pwd"
+    (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())));
+  Hashtbl.replace Toploop.directive_table "normal"
+    (Toploop.Directive_none (fun () -> normal ()))
+end;
+
+
+
+
+
+
+
+
+
+
 (* let token() = begin *)
 (*   Toploop.parse_toplevel_phrase := wrap fake ; *)
 (* end; *)
@@ -98,19 +117,4 @@ end;
 (*   prerr_endline "got it"; *)
 (*   Parsetree.Ptop_dir "pwd" Parsetree.Pdir_none; *)
 (* end; *)
-
-
-Hashtbl.replace Toploop.directive_table "revise"
-    (Toploop.Directive_none (fun () -> revise ()));
-
-
-
-
-
-
-
-
-
-
-
 

@@ -84,7 +84,7 @@ type full_id_transform =
     | `Obj of id string ];
 
 open StdLib;
-
+open Objs;
 {:fans|keep on; derive (Print); |};
 
 {:ocaml|

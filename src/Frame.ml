@@ -7,6 +7,7 @@ open LibUtil;
 open Lib;
 open Lib.Basic;
 open FSig;
+open Objs;
 open Lib.EP;
 open Lib.Expr;
 open FanAst;

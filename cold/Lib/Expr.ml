@@ -434,13 +434,13 @@ class subst loc env =
 class type antiquot_filter
   =
   object 
-    inherit FanAst.map
+    inherit Objs.map
     method get_captured_variables : (expr* expr) list
     method clear_captured_variables : unit
   end
 let capture_antiquot: antiquot_filter =
   object 
-    inherit  FanAst.map as super
+    inherit  Objs.map as super
     val mutable constraints = []
     method! patt =
       function

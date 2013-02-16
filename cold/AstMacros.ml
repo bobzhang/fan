@@ -35,7 +35,7 @@ let generate_fibs =
 let _ = register_macro ("GFIB", generate_fibs)
 let macro_expander =
   object (self)
-    inherit  FanAst.map as super
+    inherit  Objs.map as super
     method! expr =
       function
       | `App (_loc,`Id (_,`Uid (_,a)),y) ->

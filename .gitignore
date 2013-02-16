@@ -50,3 +50,5 @@ op4/
 debug/
 temp*
 olvm
+*.s
+*.ll

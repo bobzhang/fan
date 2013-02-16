@@ -31,7 +31,7 @@ let gm () =
   (* !module_name; *)
 
 let antiquot_expander ~parse_patt ~parse_expr = object
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   method! patt =
     with patt
     fun

@@ -2,6 +2,7 @@ open Parsetree
 open Longident
 open Asttypes
 open Lib
+open Objs
 open LibUtil
 open FanUtil
 open FanAst

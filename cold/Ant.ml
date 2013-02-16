@@ -17,7 +17,7 @@ let gm () =
   | None  -> "FanAst"
 let antiquot_expander ~parse_patt  ~parse_expr  =
   object 
-    inherit  FanAst.map as super
+    inherit  Objs.map as super
     method! patt =
       function
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->

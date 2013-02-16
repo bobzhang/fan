@@ -1,5 +1,6 @@
 open FanAst
 open LibUtil
+open Objs
 let rec normalize_acc =
   function
   | `Dot (_loc,i1,i2) -> `Dot (_loc, (normalize_acc i1), (normalize_acc i2))
@@ -19,7 +20,7 @@ let rec lid_of_ident =
   function
   | `Dot (_loc,_,i) -> lid_of_ident i
   | `Lid (_loc,lid) -> lid
-  | x -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (FanAst.dump_ident x)
+  | x -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (Objs.dump_ident x)
 let uid_of_ident =
   let rec aux =
     function
@@ -42,7 +43,7 @@ let map_to_string ident =
     | `App (_loc,a,b) -> "app_" ^ ((aux a ("_to_" ^ (aux b acc))) ^ "_end")
     | `Lid (_loc,x) -> x ^ acc
     | `Uid (_loc,x) -> (String.lowercase x) ^ acc
-    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (dump_ident t) in
+    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in
   aux ident ""
 let ident_map f x =
   let lst = list_of_acc_ident x [] in

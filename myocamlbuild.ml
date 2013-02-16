@@ -821,9 +821,7 @@ let () =
     flag ["ocaml"; "pp"; "use_fan"] boot_flags;
     flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
     "src/AstN.ml" |-? ["src/Ast.ml"];
-    (* "src/Lib/Expr.ml" |-? [ "src/Lib/ExprPatt.ml" ]; *)
-    (* "src/Lib/Patt.ml" |-? ["src/Lib/ExprPatt.ml" ]; *)
-    (* "src/StdMeta.ml"  |-? ["src/MetaTemplate.ml"]; *)
+    "src/Objs.ml" |-? ["src/Ast.ml"];
     "src/FanAst.ml"   |-? [(* "src/MetaTemplate.ml"; *) "src/Ast.ml"];
     "src/FanAstN.ml"  |-? ["src/AstN.ml"; "src/Ast.ml"];
   end;;

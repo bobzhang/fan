@@ -39,7 +39,7 @@ let rec map_match_case : match_case -> match_case  = with match_case
 
 
 AstFilters.register_str_item_filter ("exception",object
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   method! expr = fun
   [ {:expr@_loc| fun [ $m ] |}  -> {:expr| fun [ $(map_match_case m) ] |}
   | x -> super#expr x ];
@@ -51,7 +51,7 @@ end#str_item);
 AstFilters.register_str_item_filter ("strip",(new FanAst.reloc  FanLoc.ghost)#str_item);
 
 let decorate_binding decorate_fun = object
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   method! binding = fun
     [ {:binding| $lid:id = $( ({:expr@_| fun [ $_ ] |} as e)) |} ->
       {:binding| $lid:id = $(decorate_fun id e) |}
@@ -59,7 +59,7 @@ let decorate_binding decorate_fun = object
   end#binding;
 
 let decorate decorate_fun = object (o)
-  inherit FanAst.map as super;
+  inherit Objs.map as super;
   method! str_item = fun
     [ {:str_item@_loc| let $rec:r $b |} ->
       {:str_item| let $rec:r $(decorate_binding decorate_fun b) |}

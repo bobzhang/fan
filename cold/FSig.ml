@@ -37,6 +37,7 @@ type full_id_transform =
   [ basic_id_transform | `Idents of ident list -> ident
   | `Ident of ident -> ident | `Last of string -> ident | `Obj of string id] 
 open StdLib
+open Objs
 let _ = ()
 type named_type = (string* ctyp) 
 and and_types = named_type list 

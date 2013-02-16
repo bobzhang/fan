@@ -31,10 +31,10 @@ val bad_patt : FanLoc.t -> 'a
 
 val substp : loc -> (string * patt) list -> expr -> patt
 
-class subst: loc -> (string * expr) list -> FanAst.map
+class subst: loc -> (string * expr) list -> Objs.map
 
 class type antiquot_filter =object
-  inherit FanAst.map
+  inherit Objs.map
   method get_captured_variables: (expr * expr)list
   method clear_captured_variables: unit
 end

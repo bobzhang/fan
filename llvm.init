@@ -1,11 +1,17 @@
 
+(* -*- Mode:caml; -*- *)
+open Llvm;  
 let print_llvalue (l:Llvm.llvalue) = Llvm.dump_value l;
 
 let print_llmodule (l:Llvm.llmodule) = Llvm.dump_module l;
+let print_lltype (l:Llvm.lltype) =
+  prerr_endline (string_of_lltype l);
 
+  
 #install_printer print_llmodule;;
 #install_printer print_llvalue;;
+#install_printer print_lltype;;
 #directory "_build/llvm";;
 #load_rec "LAst.cmo";;
-#use "codegen.ml";;
+
 import Fan.Llvm;
