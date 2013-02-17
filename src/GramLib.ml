@@ -1,34 +1,38 @@
 open LibUtil;
 
 
-(* very ad-hoc trick*)  
-let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) =
-  try begin
-       {:delete| Gram expr: ["["; x; "::"; expr; "]"] |};
-      true
-  end with [ Not_found -> false ];
     
 let setup_op_parser entry p =
   Gram.setup_parser entry
     (parser
-        [< (`KEYWORD x | `SYMBOL x,_loc) when p x >] ->
-          (* let _loc = Gram.token_location ti in *)
-          {:expr| $lid:x |});
+    [< (`KEYWORD x | `SYMBOL x,_loc) when p x >] -> {:expr| $lid:x |});
 
 (* [infix_kwds_filter]  *)  
 let rec infix_kwds_filter = parser
   [ [< ((`KEYWORD "(", _) as tok); 'xs >] ->
     match xs with parser
-      [ [< (`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
-             (`KEYWORD ")", _); 'xs >] ->
-                [< (`Lid i, _loc); '(infix_kwds_filter xs) >]
-        | [< 'xs >] ->
-                [< tok; '(infix_kwds_filter xs) >] ]
+    [ [< (`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
+         (`KEYWORD ")", _); 'xs >] ->
+           [< (`Lid i, _loc); '(infix_kwds_filter xs) >]
+    | [< 'xs >] ->
+        [< tok; '(infix_kwds_filter xs) >] ]
   | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >]
   | [< >] -> [< >] ];
   
 
-  
+
+
+
+
+
+
+
+(* very ad-hoc trick*)  
+(* let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) = *)
+(*   try begin *)
+(*        {:delete| Gram expr: ["["; x; "::"; expr; "]"] |}; *)
+(*       true *)
+(*   end with [ Not_found -> false ]; *)
 (* let mk_lang_meta fan_quots fan_quot fan_str_item fan_expr fan_class_str_item fan_ctyp =  *)
 (*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_str_item fan_expr  fan_class_str_item fan_ctyp  ; *)
 (*   fan_quots: *)
