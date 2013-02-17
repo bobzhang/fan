@@ -42,9 +42,8 @@ let levels_of_entry  e =
 let find_level ?position entry  levs =
   let find x n  ls = 
     let rec get = fun
-      [ [] -> 
-        failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.ename
-    | [lev::levs] ->
+      [ [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.ename
+      | [lev::levs] ->
       if Tools.is_level_labelled n lev then
         match x with
         [`Level _ ->
@@ -118,9 +117,7 @@ and  using_symbol gram symbol acc =
   | `Snterm _ | `Snterml _ | `Snext | `Sself | `Stoken _ -> acc ]
 and using_node gram  node acc =
   match node with 
-  [ Node {node = s; brother = bro; son = son} ->
-    using_node gram son (using_node gram bro (using_symbol gram s acc))
-    (* begin using_symbol gram s; using_node gram  bro; using_node gram son end *)
+  [ Node {node = s; brother = bro; son = son} -> using_node gram son (using_node gram bro (using_symbol gram s acc))
   | LocAct (_, _) | DeadEnd -> acc ];
 
 
@@ -128,7 +125,8 @@ and using_node gram  node acc =
    [ename] is only used for error message
    The [tree] is used to merge the [production]
    {[
-   Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
+   Insert.add_production
+   ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
    - : Grammar.Structure.tree = `-S---"x"---"y"
 
    Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
@@ -167,6 +165,7 @@ and using_node gram  node acc =
    ]}
  *)
 let add_production  ((gsymbols, (annot,action)):production) tree =
+  let anno_action =  (List.length gsymbols, gsymbols,annot,action) in
   let rec try_insert s sl tree =
     match tree with
     [ Node ( {node ; son ; brother} as x) ->
@@ -194,9 +193,12 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
             if !(FanConfig.gram_warning_verbose) then
                 eprintf "<W> Grammar extension: in @[%a@] some rule has been masked@."
                 Print.dump#rule symbols;
-            LocAct (List.length gsymbols, gsymbols, annot,action) [old_action :: action_list]
+            LocAct anno_action [old_action::action_list]
+            (* LocAct (List.length gsymbols, gsymbols, annot,action) [old_action :: action_list] *)
         end
-        | DeadEnd -> LocAct (List.length gsymbols, gsymbols, annot,action) [] ] ] in 
+        | DeadEnd ->
+            LocAct anno_action []
+            (* LocAct (List.length gsymbols, gsymbols, annot,action) [] *)]  ] in 
   insert gsymbols tree ;
   
 let add_production_in_level  e1 (symbols, action) slev =

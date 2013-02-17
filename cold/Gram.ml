@@ -121,6 +121,7 @@ let gram =
     gfilter =
       (FanTokenFilter.mk ~is_kwd:(fun x  -> SSet.mem x gkeywords.contents))
   }
+let filter = FanTokenFilter.filter gram.gfilter
 let create_gram ~annot  ~keywords  () =
   let v = ref (SSet.of_list keywords) in
   {

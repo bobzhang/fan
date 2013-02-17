@@ -59,7 +59,9 @@ let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t Action.t) x =
   [ DeadEnd ->
     raise XStream.Failure (* FIXME be more preicse *)
   | LocAct (act, _) ->
-      fun _ -> act 
+      fun _ -> act
+  (* | LocActAppend(act,_,n) -> *)
+      
   (* rules ending with [SELF] , for this last symbol there's a call to the [start] function:
      of the current level if the level is [`RA] or of the next level otherwise. (This can be
      verified by [start_parser_of_levels]) *)      

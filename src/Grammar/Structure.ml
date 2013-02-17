@@ -39,8 +39,6 @@ type gram = {
     annot : string;
     gfilter         : FanTokenFilter.t;
     gkeywords :  ref SSet.t;
-      (* Hashtbl.t string (ref int); *)
-    (* glexer          : FanLoc.t -> XStream.t char -> stream; *)
 };
 
 type label = option string;
@@ -54,6 +52,7 @@ type entry = {
     freezed : mutable bool;}
 and desc =
     [ Dlevels of list level
+    (* | Dlevel of level  *)
     | Dparser of stream -> Action.t ]
 and level = {
     assoc   : assoc         ;
@@ -83,16 +82,15 @@ and tree = (* internal struccture *)
     | LocAct of (* (int*Action.t) *)anno_action and list anno_action (* (int * Action.t) *)
     (* | EarlyAction of Action.t and node (\* This action was only used to produce side effect *\) *)
     (* | ReplaceAction of Action.t and node  *)
+    (* | LocActAppend of anno_action and list anno_action and tree  *)
     | DeadEnd ]
 and node = {
     node    : symbol ;
     son     : tree   ;
     brother : tree   }
 and production= (list symbol *  (* Action.t *) (string * Action.t))
-and anno_action = (int  * list symbol * string  * Action.t)
-      ;
-  
-  |};
+and anno_action = (int  * list symbol * string  * Action.t) ;
+|};
 
 
 (* FIXME duplciate with Gram.mli*)
@@ -109,46 +107,9 @@ type foldsep 'a 'b 'c =
     entry -> list symbol ->
       (XStream.t 'a -> 'b) -> (XStream.t 'a -> unit) -> XStream.t 'a -> 'c;
 
-(* let get_filter g = g.gfilter; *)
-
 let gram_of_entry {egram;_} = egram;
-  
-(* let using ({ annot ; gkeywords = table(\* ; gfilter = filter; _ *\) } as gram) kwd = *)
-(*   let new_keywords = ref [] in *)
-(*   if not (SSet.mem kwd !table) then *)
-(*     Ref.modify new_keywords (cons kwd); *)
-  
-    (* failwithf "%s is not in the keywords table %s" kwd  annot; *)
-  (* let (tbl,flag) =  SMap.add_with ~f:(+) kwd 1 table in begin *)
-  (*   match flag with *)
-  (*   [`NotExist -> *)
-  (*     FanTokenFilter.keyword_added filter kwd true *)
-  (*   | `Exist ->  () ]; *)
-  (*   gram.gkeywords <- tbl  *)
-  (* end; *)
-
-  
 let mk_action=Action.mk;
 let string_of_token=FanToken.extract_string  ;
-
-    (* try *)
-    (*   let v = SMap.find kwd table in *)
-    (*   if v = 1 then begin  *)
-    (*     FanTokenFilter.keyword_removed filter kwd ; *)
-    (*     gram.gkeywords <- SMap.remove kwd table *)
-    (*   end *)
-    (*   else *)
-    (*     gram.gkeywords <- (fst (SMap.add_with ~f:(-) kwd 1 table )) *)
-    (* with *)
-    (*   [Not_found -> ()]; *)
-  (* in *)
-
-  (* let () = decr r in *)
-  (*   if !r = 0 then begin *)
-  (*     FanTokenFilter.keyword_removed filter kwd; *)
-  (*     Hashtbl.remove table kwd *)
-  (*   end else (); *)
-
 
 (* tree processing *)  
 let rec flatten_tree = fun
@@ -159,6 +120,8 @@ let rec flatten_tree = fun
 
 type brothers = [ Bro of symbol and list brothers | End];
 
+
+  
 type space_formatter =  format unit Format.formatter unit;
 
 let get_brothers x =

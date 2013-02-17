@@ -95,4 +95,41 @@ let rec eq_symbol s1 s2 =
 (* let rec get_first = fun *)
 (*   [ Node {node;brother} -> [node::get_first brother] *)
 (*   | _ -> [] ]; *)
-    
+(*    
+let rec append_tree (a:tree) (b:tree)  =
+  match a with
+  [Node {node;son;brother=DeadEnd} ->
+    (* merge_tree *)
+      Node {node; son = append_tree son b; brother = DeadEnd }
+      (* (append_tree brother b) *)
+  |Node {node;son;brother} ->
+      merge_tree 
+        (Node {node;son=append_tree son b; brother=DeadEnd})
+        (append_tree brother b)
+  | LocAct (anno_action,ls) ->
+      LocActAppend(anno_action,ls,b)
+
+  | DeadEnd -> assert false 
+
+  | LocActAppend (anno_action,ls,la) ->
+      LocActAppend (anno_action,ls, append_tree la b)
+  ]
+and merge_tree (a:tree) (b:tree) : tree =
+  match (a,b) with
+  [ (DeadEnd,_) -> b
+  | (_,DeadEnd) -> a 
+  | (Node {node=n1;son=s1;brother=b1}, Node{node=n2;son=s2;brother=b2}) ->
+      if eq_symbol n1 n2 then
+        merge_tree
+          (Node {node=n1; son = merge_tree s1 s2;brother=DeadEnd })
+          (merge_tree b1 b2)
+      else
+        Node {node=n1;son=s1;brother = merge_tree b1 b}
+  | (Node {node;son;brother=b1},(LocAct _ as b2) ) ->
+      Node {node;son;brother = merge_tree b1 b2}
+  | (Node {node;son;brother=b1}, (LocActAppend (act,ls,n2))) ->
+  | (LocAct (act,ls), LocActAppend (act2,ls2,n2)) ->
+      LocActAppend (act2,ls2,)
+  ]
+;
+*)

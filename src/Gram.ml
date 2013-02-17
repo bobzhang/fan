@@ -28,12 +28,15 @@ let gkeywords = ref (SSet.of_list default_keywords);
 
 (* let gfilter  *)
 
-  
-let gram =
-  {
+
+
+let gram =  {
   annot="Fan";
   gkeywords;
-  gfilter = FanTokenFilter.mk ~is_kwd:(fun x -> SSet.mem x !gkeywords);};
+  gfilter =  FanTokenFilter.mk ~is_kwd:(fun x -> SSet.mem x !gkeywords);
+};
+
+let filter = FanTokenFilter.filter gram.gfilter;
   
 let create_gram ~annot ~keywords () =
   let v = ref (SSet.of_list keywords) in
