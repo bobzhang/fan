@@ -17,8 +17,7 @@ let get_cur_loc strm =
 let get_prev_loc strm =
   match XStream.get_last strm with
   [Some (_,l) -> l
-  |None -> begin
-      FanLoc.ghost end];
+  |None -> FanLoc.ghost];
 
 let is_level_labelled n =
   fun [ {lname=Some n1 ; _  } -> n = n1 | _ -> false ];

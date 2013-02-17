@@ -177,7 +177,7 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
         | None ->
             if higher node s || (derive_eps s && not (derive_eps node)) then
               (* node has higher priority *)
-              Some (Node {(x) with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
+              Some (Node {x with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
             else None ]
     | LocAct (_, _) | DeadEnd -> None ] 
   and  insert_in_tree s sl tree =
@@ -194,11 +194,8 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
                 eprintf "<W> Grammar extension: in @[%a@] some rule has been masked@."
                 Print.dump#rule symbols;
             LocAct anno_action [old_action::action_list]
-            (* LocAct (List.length gsymbols, gsymbols, annot,action) [old_action :: action_list] *)
         end
-        | DeadEnd ->
-            LocAct anno_action []
-            (* LocAct (List.length gsymbols, gsymbols, annot,action) [] *)]  ] in 
+        | DeadEnd -> LocAct anno_action []]  ] in 
   insert gsymbols tree ;
   
 let add_production_in_level  e1 (symbols, action) slev =

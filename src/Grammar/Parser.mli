@@ -2,7 +2,7 @@ open Structure
 
 open FanToken
     
-val add_loc: FanLoc.t -> 'b parse -> ('b*FanLoc.t) parse
+val add_loc: (* FanLoc.t -> *) 'b parse -> ('b*FanLoc.t) parse
 
 
 val level_number: entry -> string -> int

@@ -17,16 +17,16 @@ let dump_sel f x =
     | `both -> "`both"
     | _ -> "<not-printable>" in
   pp_print_string f s
-let dump_pos f x =
+let pp_print_position f x =
   fprintf f "@[<hov 2>{ line = %d ;@ bol = %d ;@ off = %d } : pos@]"
     x.pos_lnum x.pos_bol x.pos_cnum
 let dump_long f x =
   fprintf f
     "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : FanLoc.t@]"
-    (x.loc_start).pos_fname dump_pos x.loc_start
+    (x.loc_start).pos_fname pp_print_position x.loc_start
     ((x.loc_start).pos_cnum - (x.loc_start).pos_bol)
-    ((x.loc_end).pos_cnum - (x.loc_start).pos_bol) dump_pos x.loc_end
-    ((x.loc_end).pos_cnum - (x.loc_end).pos_bol) x.loc_ghost
+    ((x.loc_end).pos_cnum - (x.loc_start).pos_bol) pp_print_position
+    x.loc_end ((x.loc_end).pos_cnum - (x.loc_end).pos_bol) x.loc_ghost
 let dump f x =
   fprintf f "[%S: %d:%d-%d %d:%d%t]" (x.loc_start).pos_fname
     (x.loc_start).pos_lnum ((x.loc_start).pos_cnum - (x.loc_start).pos_bol)
