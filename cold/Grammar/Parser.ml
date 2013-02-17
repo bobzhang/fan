@@ -1,8 +1,7 @@
 open Structure
 open LibUtil
 open FanToken
-open Format
-let add_loc (parse_fun : 'b parse) strm =
+let with_loc (parse_fun : 'b parse) strm =
   let bp = Tools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Tools.get_prev_loc strm in
@@ -137,7 +136,7 @@ and parser_of_symbol entry s nlevn =
     | `Speek s -> let ps = aux s in Comb.peek ps
     | `Stree t ->
         let pt = parser_of_tree entry (0, `RA) (ArgContainer.create ()) t in
-        (fun strm  -> let (act,loc) = add_loc pt strm in Action.getf act loc)
+        (fun strm  -> let (act,loc) = with_loc pt strm in Action.getf act loc)
     | `Snterm e -> (fun strm  -> e.estart 0 strm)
     | `Snterml (e,l) -> (fun strm  -> e.estart (level_number e l) strm)
     | `Sself -> (fun strm  -> entry.estart 0 strm)
@@ -171,7 +170,7 @@ let start_parser_of_levels entry =
                  then hstart levn strm
                  else
                    ((try
-                       let (act,loc) = add_loc cstart strm in
+                       let (act,loc) = with_loc cstart strm in
                        fun ()  ->
                          let a = Action.getf act loc in
                          entry.econtinue levn loc a strm
@@ -201,7 +200,8 @@ let rec continue_parser_of_levels entry clevn =
                 (try hcontinue levn bp a strm
                  with
                  | XStream.Failure  ->
-                     let (act,loc) = add_loc ccontinue strm in
+                     let (act,loc) = with_loc ccontinue strm in
+                     let loc = FanLoc.merge bp loc in
                      let a = Action.getf2 act a loc in
                      entry.econtinue levn loc a strm)))
 let continue_parser_of_entry entry =

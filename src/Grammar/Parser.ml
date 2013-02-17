@@ -1,33 +1,21 @@
 open Structure;
 open LibUtil;
 open FanToken;
-open Format;
+(* open Format; *)
 (* [bp] means begining position, [ep] means ending position
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
-let add_loc (* bp *) (parse_fun: parse 'b) strm =
+let with_loc (parse_fun: parse 'b) strm =
   let bp = Tools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Tools.get_prev_loc strm in
   let loc =
     let start_off_bp = FanLoc.start_off bp in
     let stop_off_ep = FanLoc.stop_off ep in 
-    if start_off_bp > stop_off_ep then begin
-      (* If nothing has been consumed, create a 0-length location. *)
-      (* eprintf "@[>bp:%a:ep:%a@]@." *)
-      (*   FanLoc.pp_print_position  bp.loc_start(\* start_off_bp *\) *)
-      (*   FanLoc.pp_print_position ep.loc_end(\* stop_off_ep *\); *)
+    if start_off_bp > stop_off_ep then 
       FanLoc.join bp
-    end
-    else begin
-      (* eprintf "@[ <=bp:%a:ep:%a@]@." *)
-      (*   FanLoc.pp_print_position  (\* start_off_bp *\) bp.loc_start *)
-      (*   FanLoc.pp_print_position (\* stop_off_ep *\)ep.loc_end; *)
-      (* (\* eprintf "@[ <=bp:%a:ep:%a@]@." FanLoc.print bp FanLoc.print ep; *\) *)
-      FanLoc.merge bp ep
-    end
-  in
+    else FanLoc.merge bp ep in
   (x, loc);
 
 
@@ -198,8 +186,7 @@ and parser_of_symbol entry s nlevn =
   | `Stree t ->
       let pt = parser_of_tree entry (0, `RA)  (ArgContainer.create ())t (* FIXME*) in
       fun strm ->
-        (* let bp = Tools.get_cur_loc strm in *)
-        let (act,loc) = add_loc (* bp *) pt strm in Action.getf act loc
+        let (act,loc) = with_loc pt strm in Action.getf act loc
   | `Snterm e -> fun strm -> e.estart 0 strm  (* No filter any more *)
   | `Snterml (e, l) -> fun strm -> e.estart (level_number e l) strm
   | `Sself -> fun strm -> entry.estart 0 strm 
@@ -241,7 +228,7 @@ let start_parser_of_levels entry =
               hstart levn strm (* only higher level allowed here *)
             else
               (* let bp = Tools.get_cur_loc strm in *)
-              let try (act,loc) = add_loc (* bp *) cstart strm in
+              let try (act,loc) = with_loc (* bp *) cstart strm in
               let a = Action.getf act loc in
               entry.econtinue levn loc a strm
               with [XStream.Failure -> hstart levn strm]] ] in
@@ -275,7 +262,8 @@ let rec continue_parser_of_levels entry clevn = fun
             try hcontinue levn bp a strm
             with
             [XStream.Failure ->
-              let (act,loc) = add_loc (* bp *) ccontinue strm in
+              let (act,loc) = with_loc ccontinue strm in
+              let loc = FanLoc.merge bp loc in
               let a = Action.getf2 act a loc in entry.econtinue levn loc a strm]] ];
 
   
