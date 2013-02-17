@@ -24,6 +24,7 @@ let delete_rule_in_tree entry =
     | ([],LocAct (_,[])) -> Some ((Some []), DeadEnd)
     | ([],LocAct (_,action::list)) -> Some (None, (LocAct (action, list))) in
   delete_in_tree
+let removing _gram _kwd = ()
 let rec decr_keyw_use gram =
   function
   | `Skeyword kwd -> removing gram kwd

@@ -69,7 +69,6 @@ type ('a,'b,'c) foldsep =
 let gram_of_entry { egram;_} = egram
 let mk_action = Action.mk
 let string_of_token = FanToken.extract_string
-let removing gram kwd = ()
 let rec flatten_tree =
   function
   | DeadEnd  -> []

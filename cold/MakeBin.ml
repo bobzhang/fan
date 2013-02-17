@@ -27,8 +27,7 @@ let just_print_applied_parsers () =
   pp "@[Applied Parsers:@;@[<hv2>%a@]@]@."
     (fun f  q  -> Queue.iter (fun (k,_)  -> fprintf f "%s@;" k) q)
     AstParsers.applied_parsers
-let _ =
-  AstParsers.use_parsers ["revise"; "stream"; "macro"; "ListComprehension"]
+let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
 type file_kind =  
   | Intf of string
   | Impl of string

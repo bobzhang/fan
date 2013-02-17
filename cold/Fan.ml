@@ -138,7 +138,6 @@ let _ =
             AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
       " Set the default language")
 let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
-open ParserListComprehension
 open ParserRevise
 open ParserMacro
 open ParserGrammar

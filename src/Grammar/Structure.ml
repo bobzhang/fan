@@ -131,10 +131,6 @@ let gram_of_entry {egram;_} = egram;
 let mk_action=Action.mk;
 let string_of_token=FanToken.extract_string  ;
 
-(* deprecated *)  
-let removing (* ({ gkeywords = table; (\* gfilter = filter; _ *\) } as gram) *)
-    gram kwd =
-  ();
     (* try *)
     (*   let v = SMap.find kwd table in *)
     (*   if v = 1 then begin  *)

@@ -225,7 +225,7 @@ add_quotation (d,"expr") expr_quot
 (* let a = {:expr|a + b|}; *)
   
 (* Try to force linking for convenience *)  
-open ParserListComprehension;
+(* open ParserListComprehension; *)
 open ParserRevise;
 open ParserMacro;
 open ParserGrammar;

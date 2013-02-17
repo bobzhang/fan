@@ -87,7 +87,7 @@ val string_of_token:[> FanToken.t ] -> string
 val obj: 'a t -> entry         
 val repr: entry -> 'a t
     
-val removing: gram -> string -> unit
+(* val removing: gram -> string -> unit *)
 
 val gram: gram
 (* create a standalone gram *)

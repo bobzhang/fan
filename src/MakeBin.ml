@@ -52,7 +52,7 @@ AstParsers.use_parsers
     [ "revise";
       "stream";
       "macro";
-      "ListComprehension"
+      (* "ListComprehension" *)
     ];
   
 type file_kind =

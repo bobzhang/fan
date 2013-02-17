@@ -296,10 +296,8 @@ include_quot:
  ]
 |};
 
-(* let g = Gram.create_gram ~annot:"save" ~keywords:[] (); *)
+
 {:create|Gram  save_quot|};
-
-
 (* {:save| a b c -> begin *)
 (*   print_int a; *)
 (*   print_int b ; *)
@@ -308,8 +306,7 @@ include_quot:
 (* |} *)
 
     
-{:extend|
-save_quot:
+{:extend|save_quot:
   [L1 [`Lid x -> x] {ls} ; "->"; Syntax.expr{b} ->
     let symbs = List.map (fun x -> FanState.gensym x) ls in
     let res = FanState.gensym "res" in

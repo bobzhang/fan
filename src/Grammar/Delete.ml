@@ -34,6 +34,10 @@ let delete_rule_in_tree entry =
     | ([], LocAct (_, [])) -> Some (Some [], DeadEnd)
     | ([], LocAct (_, [action :: list])) -> Some (None, LocAct action list) ] in delete_in_tree;
 
+
+(* deprecated *)  
+let removing _gram _kwd =  ();
+  
 (* FIXME
    there's a bug
    the revised syntax could parse

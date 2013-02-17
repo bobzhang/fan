@@ -103,25 +103,18 @@ let get_initial = fun
  *)
 let rec using_symbols gram symbols acc  =
   List.fold_left (fun acc symbol -> using_symbol gram symbol acc) acc symbols
-    (* List.iter (using_symbol gram) symbols  *)
 and  using_symbol gram symbol acc =
   match symbol with 
   [ `Smeta (_, sl, _) ->
     using_symbols gram sl acc 
-    (* List.iter (using_symbol gram) sl *)
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s ->
       using_symbol gram s acc
   | `Slist0sep (s, t) ->
       using_symbol gram t (using_symbol gram s acc)
-      (* begin  using_symbol gram s; using_symbol gram t  end *)
   | `Slist1sep (s, t) ->
       using_symbol gram t (using_symbol gram s acc)
-      (* begin  using_symbol gram s; using_symbol gram t  end *)
-  | `Stree t ->
-      using_node gram  t acc 
-  | `Skeyword kwd ->
-      [kwd :: acc]
-      (* using gram kwd (\* main meat *\) *)
+  | `Stree t -> using_node gram  t acc 
+  | `Skeyword kwd -> [kwd :: acc]
   | `Snterm _ | `Snterml _ | `Snext | `Sself | `Stoken _ -> acc ]
 and using_node gram  node acc =
   match node with 
