@@ -432,7 +432,7 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "TyObj")), (meta_loc _loc _a0))),
-                   (meta_ctyp _loc _a1))), (meta_row_var_flag _loc _a2))
+                   (meta_name_ctyp _loc _a1))), (meta_row_var_flag _loc _a2))
       | `TyOlb (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -582,6 +582,24 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Package")), (meta_loc _loc _a0))),
               (meta_module_type _loc _a1))
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result35)
+    and meta_name_ctyp _loc =
+      function
+      | `Sem (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "Sem")), (meta_loc _loc _a0))),
+                   (meta_name_ctyp _loc _a1))), (meta_name_ctyp _loc _a2))
+      | `TyCol (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_loc _loc _a0))),
+                   (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
+      | `Nil _a0 -> `App (_loc, (`Vrn (_loc, "Nil")), (meta_loc _loc _a0))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result34)
     and meta_patt _loc =
       function
@@ -1707,8 +1725,8 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
               (meta_rec_bind _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result36)
-      | #literal as _a0 -> (meta_literal _loc _a0 :>'result36)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result37)
+      | #literal as _a0 -> (meta_literal _loc _a0 :>'result37)
     and meta_rec_bind _loc =
       function
       | `Nil _a0 -> `App (_loc, (`Vrn (_loc, "Nil")), (meta_loc _loc _a0))
@@ -1728,7 +1746,7 @@ module Make(MetaLoc:META_LOC) =
                    (`App (_loc, (`Vrn (_loc, "Sem")), (meta_loc _loc _a0))),
                    (meta_rec_bind _loc _a1))), (meta_rec_bind _loc _a2))
       | `Any _a0 -> `App (_loc, (`Vrn (_loc, "Any")), (meta_loc _loc _a0))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result35)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result36)
   end
 let rec is_module_longident =
   function

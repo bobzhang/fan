@@ -107,9 +107,13 @@ let rec ctyp (x : ctyp) =
       let t1 = `App (loc1, (predef_option loc1), t1) in
       mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
   | `Arrow (loc,t1,t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
-  | `TyObj (_loc,fl,`RvNil _) -> mktyp _loc (Ptyp_object (meth_list fl []))
-  | `TyObj (_loc,fl,`RowVar _) ->
-      mktyp _loc (Ptyp_object (meth_list fl [mkfield _loc Pfield_var]))
+  | `TyObj (_loc,fl,row) ->
+      let xs =
+        match row with
+        | `RvNil _ -> []
+        | `RowVar _ -> [mkfield _loc Pfield_var]
+        | `Ant _ -> error _loc "antiquotation not expected here" in
+      mktyp _loc (Ptyp_object (meth_list fl xs))
   | `ClassPath (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
   | `Package (_loc,pt) ->
       let (i,cs) = package_type pt in mktyp _loc (Ptyp_package (i, cs))
@@ -139,14 +143,14 @@ and row_field (x : ctyp) acc =
       (Rtag (i, false, (List.map ctyp (list_of_amp' t [])))) :: acc
   | `Or (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
   | t -> (Rinherit (ctyp t)) :: acc
-and meth_list (fl : ctyp) (acc : core_field_type list) =
+and meth_list (fl : name_ctyp) (acc : core_field_type list) =
   (match fl with
    | `Nil _ -> acc
    | `Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
    | `TyCol (_loc,`Id (_,`Lid (_,lab)),t) ->
        (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
-   | x -> errorf (loc_of x) "meth_list: %s" (dump_ctyp x) : core_field_type
-                                                              list )
+   | x -> errorf (loc_of x) "meth_list: %s" (dump_name_ctyp x) : core_field_type
+                                                                   list )
 and package_type_constraints (wc : with_constr)
   (acc : (Longident.t Asttypes.loc* core_type) list) =
   (match wc with

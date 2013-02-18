@@ -26,7 +26,7 @@ type ctyp =
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
   | `Id of ident | `TyMan of (ctyp* ctyp)
   | `TyDcl of (alident* ctyp list* ctyp* (ctyp* ctyp) list)
-  | `TyObj of (ctyp* row_var_flag) | `TyOlb of (alident* ctyp)
+  | `TyObj of (name_ctyp* row_var_flag) | `TyOlb of (alident* ctyp)
   | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
   | `Quote of (position_flag* alident meta_option) | `TyRec of ctyp
   | `TyCol of (ctyp* ctyp) | `Sem of (ctyp* ctyp) | `Com of (ctyp* ctyp)
@@ -36,6 +36,8 @@ type ctyp =
   | `TyVrnSup of ctyp | `TyVrnInf of ctyp | `TyVrnInfSup of (ctyp* ctyp)
   | `Amp of (ctyp* ctyp) | `TyOfAmp of (ctyp* ctyp) | `Package of module_type
   | ant] 
+and name_ctyp =
+  [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (ctyp* ctyp) | `Nil | ant] 
 and patt =
   [ `Nil | `Id of ident | `App of (patt* patt) | `Vrn of string
   | `Com of (patt* patt) | `Sem of (patt* patt) | `Tup of patt | `Any

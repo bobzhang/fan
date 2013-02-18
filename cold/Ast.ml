@@ -29,7 +29,7 @@ type ctyp =
   | `ClassPath of (loc* ident) | `Label of (loc* alident* ctyp)
   | `Id of (loc* ident) | `TyMan of (loc* ctyp* ctyp)
   | `TyDcl of (loc* alident* ctyp list* ctyp* (ctyp* ctyp) list)
-  | `TyObj of (loc* ctyp* row_var_flag) | `TyOlb of (loc* alident* ctyp)
+  | `TyObj of (loc* name_ctyp* row_var_flag) | `TyOlb of (loc* alident* ctyp)
   | `TyPol of (loc* ctyp* ctyp) | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
   | `TyRec of (loc* ctyp) | `TyCol of (loc* ctyp* ctyp)
@@ -42,6 +42,9 @@ type ctyp =
   | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
   | `Amp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
   | `Package of (loc* module_type) | ant] 
+and name_ctyp =
+  [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* ctyp* ctyp)
+  | `Nil of loc | ant] 
 and patt =
   [ `Nil of loc | `Id of (loc* ident) | `App of (loc* patt* patt)
   | `Vrn of (loc* string) | `Com of (loc* patt* patt)

@@ -5959,17 +5959,6 @@ let apply_ctyp () =
                   | `Ant (("list" as n),s) ->
                       (`Ant (_loc, (mk_anti ~c:"ctyp;" n s)) : 'meth_decl )
                   | _ -> failwith "`Ant (_loc, (mk_anti ~c:\"ctyp;\" n s))\n"))));
-        ([`Stoken
-            (((function | `QUOTATION _ -> true | _ -> false)),
-              (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.ctyp_tag : 'meth_decl )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'meth_decl )
-                  | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],

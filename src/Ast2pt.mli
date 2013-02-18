@@ -32,7 +32,7 @@ val ctyp : ctyp -> Parsetree.core_type
 val row_field : ctyp -> Parsetree.row_field list -> Parsetree.row_field list
 
 val meth_list :
-    ctyp ->
+    name_ctyp ->
       Parsetree.core_field_type list -> Parsetree.core_field_type list
 
 val package_type_constraints :

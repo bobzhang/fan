@@ -144,8 +144,11 @@
            (* FIXME, the location *)
           
            (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
-     | `TyObj of (loc * ctyp * row_var_flag)
+     (* | `TyObj of (loc * ctyp * row_var_flag) *)
 
+     | `TyObj of (loc * name_ctyp * row_var_flag )
+     (* | `TyObjClose of (loc * name_ctyp ) *)
+     (*    *)      
      | `TyOlb of (loc * alident * ctyp) (* ?s:t *)
 
      | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
@@ -180,6 +183,13 @@
      | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
      | `Package of (loc * module_type) (* (module S) *)
      | ant ]
+
+   and name_ctyp =
+     [= `Sem of (loc * name_ctyp * name_ctyp)
+     | `TyCol of (loc * ctyp * ctyp )
+     | `Nil of loc 
+     | ant ]
+         
    and patt =
      [= `Nil of loc
      | `Id  of (loc * ident)

@@ -1,7 +1,7 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
 set -e
-FILES=('Ast' 'FanAst' )
+FILES=('Ast' 'FanAst' 'Objs' 'Ast2pt')
 OB= ocamlbuild
 TMP=tmp
 for i in ${FILES[@]}

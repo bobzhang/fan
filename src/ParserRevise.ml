@@ -1169,7 +1169,7 @@ let apply_ctyp () = begin
       meth_decl:
       [ `Ant ((""|"typ" as n),s)        -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s)          -> {| $(anti:mk_anti ~c:"ctyp;" n s) |}
-      | `QUOTATION x                       -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      (* | `QUOTATION x                       -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
       | a_lident{lab}; ":"; ctyp{t} ->
             {| $(id:(lab:>ident)) : $t |}
       ]

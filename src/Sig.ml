@@ -120,8 +120,8 @@ module type Syntax = sig
   val label_patt_list : Gram.t rec_patt;
     
   val let_binding : Gram.t binding;
-  val meth_list : Gram.t (ctyp * row_var_flag);
-  val meth_decl : Gram.t ctyp;
+  val meth_list : Gram.t (name_ctyp * row_var_flag);
+  val meth_decl : (* Gram.t ctyp *) Gram.t name_ctyp;
   val module_binding : Gram.t module_binding;
   val module_binding0 : Gram.t module_expr;
   val module_binding_quot : Gram.t module_binding;
