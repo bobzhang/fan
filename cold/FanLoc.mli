@@ -1,4 +1,4 @@
-
+open Format
 
 
 
@@ -15,8 +15,8 @@ type t = Location.t = {
   loc_ghost: bool;
 }
   
-      
-val dump : Format.formatter -> t -> unit
+val pp_print_position: formatter -> position -> unit      
+val dump : formatter -> t -> unit
 val ghost_name : string
 val ghost : t
 val mk : string -> t

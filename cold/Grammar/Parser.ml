@@ -1,13 +1,14 @@
 open Structure
 open LibUtil
 open FanToken
-let add_loc bp (parse_fun : 'b parse) strm =
+let with_loc (parse_fun : 'b parse) strm =
+  let bp = Tools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Tools.get_prev_loc strm in
   let loc =
-    if (FanLoc.start_off bp) > (FanLoc.stop_off ep)
-    then FanLoc.join bp
-    else FanLoc.merge bp ep in
+    let start_off_bp = FanLoc.start_off bp in
+    let stop_off_ep = FanLoc.stop_off ep in
+    if start_off_bp > stop_off_ep then FanLoc.join bp else FanLoc.merge bp ep in
   (x, loc)
 let level_number entry lab =
   let rec lookup levn =
@@ -21,7 +22,8 @@ let level_number entry lab =
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found
 module ArgContainer = Stack
-let rec parser_of_tree entry (lev,assoc) (q : Action.t ArgContainer.t) x =
+let rec parser_of_tree entry (lev,assoc)
+  (q : (Action.t* FanLoc.t) ArgContainer.t) x =
   let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
   let rec from_tree tree =
     match tree with
@@ -30,7 +32,7 @@ let rec parser_of_tree entry (lev,assoc) (q : Action.t ArgContainer.t) x =
     | Node { node = `Sself; son = LocAct (act,_); brother = bro } ->
         (fun strm  ->
            (try
-              let a = entry.estart alevn strm in
+              let a = with_loc (entry.estart alevn) strm in
               fun ()  -> ArgContainer.push a q; act
             with | XStream.Failure  -> (fun ()  -> from_tree bro strm)) ())
     | Node ({ node; son; brother } as y) ->
@@ -65,8 +67,7 @@ let rec parser_of_tree entry (lev,assoc) (q : Action.t ArgContainer.t) x =
                 (try
                    let args = List.rev (parser_of_terminals tokl strm) in
                    fun ()  ->
-                     List.iter (fun a  -> ArgContainer.push (Action.mk a) q)
-                       args;
+                     List.iter (fun a  -> ArgContainer.push a q) args;
                      (let len = List.length args in
                       let p = from_tree son in
                       try p strm
@@ -82,23 +83,23 @@ let rec parser_of_tree entry (lev,assoc) (q : Action.t ArgContainer.t) x =
                   ())) in
   let parse = from_tree x in
   fun strm  ->
-    let (_arity,_symbols,_action,parse) = parse strm in
+    let ((arity,_symbols,_,parse),loc) = with_loc parse strm in
     let ans = ref parse in
-    for _i = 1 to _arity do
-      (let v = ArgContainer.pop q in ans := (Action.getf ans.contents v))
+    for _i = 1 to arity do
+      (let (v,_) = ArgContainer.pop q in ans := (Action.getf ans.contents v))
     done;
-    ans.contents
+    ((ans.contents), loc)
 and parser_of_terminals (terminals : terminal list) strm =
   let n = List.length terminals in
   let acc = ref [] in
   (try
      List.iteri
        (fun i  terminal  ->
-          let t =
+          let (t,loc) =
             match XStream.peek_nth strm i with
-            | Some (tok,_) -> tok
+            | Some (t,loc) -> (t, loc)
             | None  -> invalid_arg "parser_of_terminals" in
-          acc := (t :: (acc.contents));
+          acc := (((Action.mk t), loc) :: (acc.contents));
           if
             not
               (match terminal with
@@ -135,9 +136,7 @@ and parser_of_symbol entry s nlevn =
     | `Speek s -> let ps = aux s in Comb.peek ps
     | `Stree t ->
         let pt = parser_of_tree entry (0, `RA) (ArgContainer.create ()) t in
-        (fun strm  ->
-           let bp = Tools.get_cur_loc strm in
-           let (act,loc) = add_loc bp pt strm in Action.getf act loc)
+        (fun strm  -> let (act,loc) = pt strm in Action.getf act loc)
     | `Snterm e -> (fun strm  -> e.estart 0 strm)
     | `Snterml (e,l) -> (fun strm  -> e.estart (level_number e l) strm)
     | `Sself -> (fun strm  -> entry.estart 0 strm)
@@ -153,7 +152,7 @@ and parser_of_symbol entry s nlevn =
            match XStream.peek strm with
            | Some (tok,_) when f tok -> (XStream.junk strm; Action.mk tok)
            | _ -> raise XStream.Failure) in
-  aux s
+  with_loc (aux s)
 let start_parser_of_levels entry =
   let rec aux clevn (xs : level list) =
     (match xs with
@@ -170,14 +169,13 @@ let start_parser_of_levels entry =
                  if (levn > clevn) && (not ([] = levs))
                  then hstart levn strm
                  else
-                   (let bp = Tools.get_cur_loc strm in
-                    (try
-                       let (act,loc) = add_loc bp cstart strm in
+                   ((try
+                       let (act,loc) = cstart strm in
                        fun ()  ->
                          let a = Action.getf act loc in
                          entry.econtinue levn loc a strm
-                     with | XStream.Failure  -> (fun ()  -> hstart levn strm))
-                      ()))) : int -> Action.t parse ) in
+                     with | XStream.Failure  -> (fun ()  -> hstart levn strm)))
+                     ())) : int -> Action.t parse ) in
   aux 0
 let start_parser_of_entry entry =
   match entry.edesc with
@@ -202,7 +200,8 @@ let rec continue_parser_of_levels entry clevn =
                 (try hcontinue levn bp a strm
                  with
                  | XStream.Failure  ->
-                     let (act,loc) = add_loc bp ccontinue strm in
+                     let (act,loc) = ccontinue strm in
+                     let loc = FanLoc.merge bp loc in
                      let a = Action.getf2 act a loc in
                      entry.econtinue levn loc a strm)))
 let continue_parser_of_entry entry =

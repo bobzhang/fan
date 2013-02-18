@@ -1,20 +1,21 @@
 open Structure;
 open LibUtil;
 open FanToken;
-
+(* open Format; *)
 (* [bp] means begining position, [ep] means ending position
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
-let add_loc bp (parse_fun: parse 'b) strm =
+let with_loc (parse_fun: parse 'b) strm =
+  let bp = Tools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Tools.get_prev_loc strm in
   let loc =
-    if FanLoc.start_off bp > FanLoc.stop_off ep then
-      (* If nothing has been consumed, create a 0-length location. *)
+    let start_off_bp = FanLoc.start_off bp in
+    let stop_off_ep = FanLoc.stop_off ep in 
+    if start_off_bp > stop_off_ep then 
       FanLoc.join bp
-    else
-      FanLoc.merge bp ep in
+    else FanLoc.merge bp ep in
   (x, loc);
 
 
@@ -41,14 +42,13 @@ let level_number entry lab =
    so there's no behavior difference between [LA] and [NA]
  *)
     
-
-module ArgContainer= Stack(* Queue *);    
+module ArgContainer= Stack;
+  
 (*
   It outputs a stateful parser, but it is functional itself
  *)    
-let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t Action.t) x =
-  let alevn = match assoc with
-    [`LA|`NA -> lev + 1 | `RA -> lev ] in
+let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t (Action.t * FanLoc.t)) x =
+  let alevn = match assoc with [`LA|`NA -> lev + 1 | `RA -> lev ] in
   (*
     Given a tree, return a parser which has the type
     [parse Action.t]. Think about [node son], only son owns the action,
@@ -56,16 +56,14 @@ let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t Action.t) x =
     it is to be applied by the value returned by node.
    *)
   let rec from_tree tree =  match tree  with
-  [ DeadEnd ->
-    raise XStream.Failure (* FIXME be more preicse *)
-  | LocAct (act, _) ->
-      fun _ -> act 
+  [ DeadEnd -> raise XStream.Failure (* FIXME be more preicse *)
+  | LocAct (act, _) -> fun _ -> act
+  (* | LocActAppend(act,_,n) -> *)
   (* rules ending with [SELF] , for this last symbol there's a call to the [start] function:
      of the current level if the level is [`RA] or of the next level otherwise. (This can be
      verified by [start_parser_of_levels]) *)      
   | Node {node = `Sself; son = LocAct (act, _); brother = bro} ->  fun strm ->
-      let try a =entry.estart alevn strm in
-      begin
+      let try a = with_loc (entry.estart alevn) strm in begin
         ArgContainer.push a q ;
         act
       end
@@ -104,7 +102,7 @@ let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t Action.t) x =
       | Some (tokl, _node, son) -> fun strm ->
           let try args = List.rev (parser_of_terminals tokl strm) in
           begin
-            List.iter (fun a -> ArgContainer.push (Action.mk a ) q) args;
+            List.iter (fun a -> ArgContainer.push  a (* (Action.mk a ) *) q) args;
             let len =List.length args ;              
             let p = from_tree son ;
             try p strm with
@@ -121,13 +119,13 @@ let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t Action.t) x =
           with [XStream.Failure -> from_tree brother strm] ] ] in
   let parse = from_tree x in
   fun strm -> 
-    let (_arity,_symbols,_action,parse) =  parse strm in begin
+    let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in begin
       let ans = ref parse;
-      for _i = 1 to _arity do
-        let v = ArgContainer.pop q ;
+      for _i = 1 to arity do
+        let (v,_) = ArgContainer.pop q ;
         ans:=Action.getf !ans v;   
       done;
-      !ans
+      (!ans,loc)
     end
 
 (*
@@ -145,12 +143,12 @@ and parser_of_terminals (terminals:list terminal ) strm =
     try
       List.iteri
           (fun i terminal  -> 
-            let t =
+            let (t,loc) =
               match XStream.peek_nth strm i with
-              [Some (tok,_) -> tok
+              [Some (t,loc) (* (tok,_) *) -> (t,loc)
               |None -> invalid_arg "parser_of_terminals"] in
             begin
-              acc:= [t::!acc];
+              acc:= [(Action.mk t,loc)::!acc];
               if not
                   (match terminal with
                     [`Stoken(f,_) -> f t
@@ -188,20 +186,20 @@ and parser_of_symbol entry s nlevn =
   | `Stree t ->
       let pt = parser_of_tree entry (0, `RA)  (ArgContainer.create ())t (* FIXME*) in
       fun strm ->
-        let bp = Tools.get_cur_loc strm in
-        let (act,loc) = add_loc bp pt strm in Action.getf act loc
+        let (act,loc) = pt strm in Action.getf act loc 
   | `Snterm e -> fun strm -> e.estart 0 strm  (* No filter any more *)
   | `Snterml (e, l) -> fun strm -> e.estart (level_number e l) strm
   | `Sself -> fun strm -> entry.estart 0 strm 
   | `Snext -> fun strm -> entry.estart (nlevn + 1 ) strm 
   | `Skeyword kwd -> fun strm ->
         match XStream.peek strm with
-        [Some (tok,_) when FanToken.match_keyword kwd tok -> begin XStream.junk strm ; Action.mk tok end
+        [Some (tok,_) when FanToken.match_keyword kwd tok ->
+          (XStream.junk strm ; Action.mk tok )
         |_ -> raise XStream.Failure ]
   | `Stoken (f, _) -> fun strm ->
       match XStream.peek strm with
       [Some (tok,_) when f tok -> (XStream.junk strm; Action.mk tok)
-      |_ -> raise XStream.Failure]] in aux s;
+      |_ -> raise XStream.Failure]] in with_loc (aux s);
 
 
 
@@ -230,8 +228,7 @@ let start_parser_of_levels entry =
             if levn > clevn && (not ([]=levs))then
               hstart levn strm (* only higher level allowed here *)
             else
-              let bp = Tools.get_cur_loc strm in
-              let try (act,loc) = add_loc bp cstart strm in
+              let try (act,loc) =  cstart strm in
               let a = Action.getf act loc in
               entry.econtinue levn loc a strm
               with [XStream.Failure -> hstart levn strm]] ] in
@@ -265,7 +262,8 @@ let rec continue_parser_of_levels entry clevn = fun
             try hcontinue levn bp a strm
             with
             [XStream.Failure ->
-              let (act,loc) = add_loc bp ccontinue strm in
+              let (act,loc) = ccontinue strm in
+              let loc = FanLoc.merge bp loc in
               let a = Action.getf2 act a loc in entry.econtinue levn loc a strm]] ];
 
   

@@ -96,6 +96,7 @@ and using_node gram node acc =
       using_node gram son (using_node gram bro (using_symbol gram s acc))
   | LocAct (_,_)|DeadEnd  -> acc
 let add_production ((gsymbols,(annot,action)) : production) tree =
+  let anno_action = ((List.length gsymbols), gsymbols, annot, action) in
   let rec try_insert s sl tree =
     match tree with
     | Node ({ node; son; brother } as x) ->
@@ -136,11 +137,8 @@ let add_production ((gsymbols,(annot,action)) : production) tree =
                 eprintf
                   "<W> Grammar extension: in @[%a@] some rule has been masked@."
                   Print.dump#rule symbols;
-              LocAct
-                (((List.length gsymbols), gsymbols, annot, action),
-                  (old_action :: action_list)))
-         | DeadEnd  ->
-             LocAct (((List.length gsymbols), gsymbols, annot, action), [])) in
+              LocAct (anno_action, (old_action :: action_list)))
+         | DeadEnd  -> LocAct (anno_action, [])) in
   insert gsymbols tree
 let add_production_in_level e1 (symbols,action) slev =
   if e1

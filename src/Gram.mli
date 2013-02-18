@@ -13,7 +13,7 @@ type position =
     | `Level of string ]
       
 (* type token_stream = (FanToken.token * FanLoc.t) XStream.t *)
-      
+val filter: stream -> stream      
 type gram =
   Grammar.Structure.gram = {
   annot:string;

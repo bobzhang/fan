@@ -35,16 +35,16 @@ let dump_sel f x =
     | `both  -> "`both"
     | _      -> "<not-printable>" ] in pp_print_string f s;
   
-let dump_pos f x =
+let pp_print_position f x =
   fprintf f "@[<hov 2>{ line = %d ;@ bol = %d ;@ off = %d } : pos@]"
           x.pos_lnum x.pos_bol x.pos_cnum;
   
 let dump_long f x =
   fprintf f
     "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : FanLoc.t@]"
-    x.loc_start.pos_fname dump_pos x.loc_start (x.loc_start.pos_cnum - x.loc_start.pos_bol)
+    x.loc_start.pos_fname pp_print_position x.loc_start (x.loc_start.pos_cnum - x.loc_start.pos_bol)
     (x.loc_end.pos_cnum - x.loc_start.pos_bol)  (* FIXME here*)
-    dump_pos
+    pp_print_position
     x.loc_end
     (x.loc_end.pos_cnum - x.loc_end.pos_bol) x.loc_ghost;
 
@@ -180,13 +180,13 @@ let merge a b =
     r;
 
 (** The stop pos becomes equal to the start pos. *)
-let join x = { (x) with loc_end = x.loc_start };
-let join_end x = {(x) with loc_start = x.loc_end};
+let join x = { x with loc_end = x.loc_start };
+let join_end x = {x with loc_start = x.loc_end};
 let map f start_stop_both x =
   match start_stop_both with
-  [ `start -> { (x) with loc_start = f x.loc_start }
-  | `stop  -> { (x) with loc_end  = f x.loc_end }
-  | `both  -> { (x) with loc_start = f x.loc_start; loc_end  = f x.loc_end } ];
+  [ `start -> { x with loc_start = f x.loc_start }
+  | `stop  -> { x with loc_end  = f x.loc_end }
+  | `both  -> { x with loc_start = f x.loc_start; loc_end  = f x.loc_end } ];
 
 let move_pos chars x = { (x) with pos_cnum = x.pos_cnum + chars };
   
@@ -203,7 +203,7 @@ let move s chars x =
 let move_line lines x =
   (* debug loc "move_line %d %a@\n" lines dump x in *)
   let move_line_pos x =
-    { (x) with pos_lnum = x.pos_lnum + lines ; pos_bol = x.pos_cnum }
+    { x with pos_lnum = x.pos_lnum + lines ; pos_bol = x.pos_cnum }
   in map move_line_pos `both x;
   
 
@@ -211,7 +211,7 @@ let move_line lines x =
             stop position, and where the new stop position character offset is the
             old one plus [n]. *)  
 let shift width x =
-  { (x) with loc_start = x.loc_end ; loc_end = move_pos width x.loc_end };
+  { x with loc_start = x.loc_end ; loc_end = move_pos width x.loc_end };
 
 (** Return the file name *)
 let file_name  x = x.loc_start.pos_fname;
