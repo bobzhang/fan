@@ -145,6 +145,7 @@ let apply () = begin
         | a_uident{m}; ":"; module_type{mt} ->
             (* {| $uid:m : $mt |} *) `Constraint(_loc,m,mt)
             (* {| $m : $mt |} *)
+            (* {:str_item| module X = ($x :S)|} *)
         | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
             (* {| $uid:m : $mt = $me |} *)
             `ModuleBind(_loc,m,mt,me)
@@ -155,8 +156,7 @@ let apply () = begin
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_binding_tag
         | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
             (* {| $uid:m : $mt = $me |} *)
-               `ModuleBind (_loc, m, mt, me)
-     ]
+               `ModuleBind (_loc, m, mt, me)]
         module_rec_declaration:
         [ S{m1}; "and"; S{m2} -> {| $m1 and $m2 |}
         | `Ant ((""|"module_binding"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
@@ -1126,7 +1126,7 @@ let apply_ctyp () = begin
       | "type"; type_declaration{t} -> t   
       | -> {||}  ]
       more_ctyp:
-      [ "mutable"; S{x} -> (* {| mutable $x |} *)  `Mut (_loc, x)
+      [ "mutable"; S{x} -> {| mutable $x |} 
       | "`"; astr{x} -> {| `$x |}
       | ctyp{x} -> x
       | type_parameter{x} -> x   ]
@@ -1176,15 +1176,21 @@ let apply_ctyp () = begin
       | "`"; astr{i} -> {| `$i |}
       | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
       | "`"; astr{i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
-      | ctyp{t} -> t ] 
+      | ctyp{t} -> t ]
+
+      (* only used in row_field *)
       amp_ctyp:
       [ S{t1}; "&"; S{t2} -> {| $t1 & $t2 |}
       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp&" n s) |}
       | ctyp{t} -> t ]
+
+      (* only used in ctyps *)
       name_tags:
       [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | S{t1}; S{t2} -> {| $t1 $t2 |}
       | "`"; astr{i} -> {| `$i |}  ]
+
+      (* only used in class_str_item *)
       opt_polyt:
       [ ":"; ctyp{t} -> t  | -> {||} ]
       
@@ -1201,6 +1207,7 @@ let apply_ctyp () = begin
   
       type_ident_and_parameters:
       [ a_lident{i}; L0 type_parameter{tpl} -> (i, tpl)]
+      
 
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
