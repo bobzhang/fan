@@ -110,8 +110,8 @@ module type Syntax = sig
   val ipatt_tcon : Gram.t patt;
   val patt_tcon : Gram.t patt;    
   (* val label : Gram.t string; *)
-  val label_declaration : Gram.t ctyp;
-  val label_declaration_list : Gram.t ctyp;
+  val label_declaration : Gram.t name_ctyp;
+  val label_declaration_list : Gram.t name_ctyp;
   val label_expr : Gram.t rec_expr;
   val label_expr_list : Gram.t rec_expr;
   val label_longident : Gram.t ident;

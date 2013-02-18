@@ -180,7 +180,7 @@ let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~destination  ~result_type  simple_expr_of_ctyp expr_of_ctyp
   expr_of_variant tydcl =
-  (match tydcl with
+  (match (tydcl : ctyp ) with
    | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
        let ctyp =
          match ctyp with
@@ -188,7 +188,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
          | _ -> ctyp in
        (match ctyp with
         | `TyRec (_loc,t) ->
-            let cols = Ctyp.list_of_record t in
+            let cols = Ctyp.list_of_record (t :>ctyp) in
             let patt = (EP.mk_record ~arity cols :>patt) in
             let info =
               List.mapi
@@ -205,8 +205,8 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             mk_prefix ~names ~left_type_variable tyvars
               (currying ~arity
                  [`Case (_loc, patt, (`Nil _loc), (mk_record info))])
-        | `Id _|`Tup _|`Quote _|`Arrow _|`App _ ->
-            let expr = simple_expr_of_ctyp ctyp in
+        | `Id _|`Tup _|`Quote _|`Arrow _|`App _ as x ->
+            let expr = simple_expr_of_ctyp x in
             let funct = eta_expand (expr +> names) arity in
             mk_prefix ~names ~left_type_variable tyvars funct
         | `TyVrnEq (_,t)|`TyVrnSup (_,t)|`TyVrnInf (_,t)|`TyVrnInfSup (_,t,_)
@@ -216,7 +216,9 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
         | `Sum (_,ctyp) ->
             let funct = expr_of_ctyp ctyp in
             mk_prefix ~names ~left_type_variable tyvars funct
-        | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl inner %s" (dump_ctyp t))
+        | t ->
+            FanLoc.errorf (loc_of t) "fun_of_tydcl inner %s"
+              (dump_ctyp (t :>ctyp)))
    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_ctyp t) : 
   expr )
 let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 

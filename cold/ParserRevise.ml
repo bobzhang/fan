@@ -5621,10 +5621,11 @@ let apply_ctyp () =
          `Snterm
            (Gram.obj
               (label_declaration_list : 'label_declaration_list Gram.t ))],
-          ("Gram.mk_action\n  (fun (y : 'label_declaration_list)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) \n     -> (`Sem (_loc, x, y) : 'ctyp_quot ))\n",
+          ("Gram.mk_action\n  (fun (y : 'label_declaration_list)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) \n     -> (`Sem (_loc, x, (y : name_ctyp  :>ctyp)) : 'ctyp_quot ))\n",
             (Gram.mk_action
                (fun (y : 'label_declaration_list)  _  (x : 'more_ctyp) 
-                  (_loc : FanLoc.t)  -> (`Sem (_loc, x, y) : 'ctyp_quot )))));
+                  (_loc : FanLoc.t)  ->
+                  (`Sem (_loc, x, (y : name_ctyp  :>ctyp)) : 'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword "|";
          `Snterm
@@ -5689,11 +5690,13 @@ let apply_ctyp () =
          `Snterm
            (Gram.obj
               (label_declaration_list : 'label_declaration_list Gram.t ))],
-          ("Gram.mk_action\n  (fun (z : 'label_declaration_list)  _  (y : 'more_ctyp)  _ \n     (x : 'more_ctyp)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, (`TyCol (_loc, x, y)), z) : 'ctyp_quot ))\n",
+          ("Gram.mk_action\n  (fun (z : 'label_declaration_list)  _  (y : 'more_ctyp)  _ \n     (x : 'more_ctyp)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, (`TyCol (_loc, x, y)), (z : name_ctyp  :>ctyp)) : 'ctyp_quot ))\n",
             (Gram.mk_action
                (fun (z : 'label_declaration_list)  _  (y : 'more_ctyp)  _ 
                   (x : 'more_ctyp)  (_loc : FanLoc.t)  ->
-                  (`Sem (_loc, (`TyCol (_loc, x, y)), z) : 'ctyp_quot )))));
+                  (`Sem
+                     (_loc, (`TyCol (_loc, x, y)), (z : name_ctyp  :>ctyp)) : 
+                  'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword "*";
          `Snterm (Gram.obj (star_ctyp : 'star_ctyp Gram.t ))],
@@ -6711,17 +6714,6 @@ let apply_ctyp () =
                   | `Ant (("list" as n),s) ->
                       (`Ant (_loc, (mk_anti ~c:"ctyp;" n s)) : 'label_declaration )
                   | _ -> failwith "`Ant (_loc, (mk_anti ~c:\"ctyp;\" n s))\n"))));
-        ([`Stoken
-            (((function | `QUOTATION _ -> true | _ -> false)),
-              (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.ctyp_tag : 'label_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'label_declaration )
-                  | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],

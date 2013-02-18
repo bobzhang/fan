@@ -134,6 +134,9 @@
      | `ClassPath of (loc * ident) (* #i *) (* #point *)
 
      | `Label of (loc * alident * ctyp) (* ~s:t *)
+
+           (* moved into OptLabl *)  
+     | `TyOlb of (loc * alident * ctyp) (* ?s:t *)
           
      | `Id  of (loc * ident) (* i *) (* `Lazy.t *)
 
@@ -144,12 +147,7 @@
            (* FIXME, the location *)
           
            (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
-     (* | `TyObj of (loc * ctyp * row_var_flag) *)
-
      | `TyObj of (loc * name_ctyp * row_var_flag )
-     (* | `TyObjClose of (loc * name_ctyp ) *)
-     (*    *)      
-     | `TyOlb of (loc * alident * ctyp) (* ?s:t *)
 
      | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
 
@@ -158,7 +156,7 @@
            (*  +'s -'s 's +_ -_ *)      
      | `Quote of (loc * position_flag * meta_option alident)
           
-     | `TyRec of (loc * ctyp) (* { t } *) (* { foo : int ; bar : mutable string } *)
+     | `TyRec of (loc * name_ctyp) (* { t } *) (* { foo : int ; bar : mutable string } *)
 
      | `TyCol of (loc * ctyp * ctyp) (* t : t *)
            (* | `TySem of (loc * ctyp * ctyp) (\* t; t *\) *)

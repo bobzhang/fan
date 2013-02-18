@@ -24,11 +24,11 @@ type ident =
 type ctyp =
   [ `Nil | `Alias of (ctyp* ctyp) | `Any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
-  | `Id of ident | `TyMan of (ctyp* ctyp)
+  | `TyOlb of (alident* ctyp) | `Id of ident | `TyMan of (ctyp* ctyp)
   | `TyDcl of (alident* ctyp list* ctyp* (ctyp* ctyp) list)
-  | `TyObj of (name_ctyp* row_var_flag) | `TyOlb of (alident* ctyp)
-  | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
-  | `Quote of (position_flag* alident meta_option) | `TyRec of ctyp
+  | `TyObj of (name_ctyp* row_var_flag) | `TyPol of (ctyp* ctyp)
+  | `TyTypePol of (ctyp* ctyp)
+  | `Quote of (position_flag* alident meta_option) | `TyRec of name_ctyp
   | `TyCol of (ctyp* ctyp) | `Sem of (ctyp* ctyp) | `Com of (ctyp* ctyp)
   | `Sum of ctyp | `Of of (ctyp* ctyp) | `And of (ctyp* ctyp)
   | `Or of (ctyp* ctyp) | `Priv of ctyp | `Mut of ctyp | `Tup of ctyp

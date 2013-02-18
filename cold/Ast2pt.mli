@@ -53,7 +53,7 @@ val mkprivate' : bool -> Asttypes.private_flag
 val mkprivate : private_flag -> Asttypes.private_flag
 
 val mktrecord :
-  ctyp ->
+  name_ctyp ->
   string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc
 
 val mkvariant :

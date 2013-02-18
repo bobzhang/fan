@@ -105,8 +105,8 @@ let loc_of =
   | `Vrn (_loc,_) -> _loc
   | `StExp (_loc,_) -> _loc
   | `Uid (_loc,_) -> _loc
-  | `TyObj (_loc,_,_) -> _loc
   | `TyOlb (_loc,_,_) -> _loc
+  | `TyObj (_loc,_,_) -> _loc
   | `Of (_loc,_,_) -> _loc
   | `OvrInst (_loc,_) -> _loc
   | `OvNil _loc -> _loc
@@ -393,6 +393,13 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Label")), (meta_loc _loc _a0))),
                    (meta_alident _loc _a1))), (meta_ctyp _loc _a2))
+      | `TyOlb (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "TyOlb")), (meta_loc _loc _a0))),
+                   (meta_alident _loc _a1))), (meta_ctyp _loc _a2))
       | `Id (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Id")), (meta_loc _loc _a0))),
@@ -433,13 +440,6 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "TyObj")), (meta_loc _loc _a0))),
                    (meta_name_ctyp _loc _a1))), (meta_row_var_flag _loc _a2))
-      | `TyOlb (_a0,_a1,_a2) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`App (_loc, (`Vrn (_loc, "TyOlb")), (meta_loc _loc _a0))),
-                   (meta_alident _loc _a1))), (meta_ctyp _loc _a2))
       | `TyPol (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -467,7 +467,7 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc,
               (`App (_loc, (`Vrn (_loc, "TyRec")), (meta_loc _loc _a0))),
-              (meta_ctyp _loc _a1))
+              (meta_name_ctyp _loc _a1))
       | `TyCol (_a0,_a1,_a2) ->
           `App
             (_loc,

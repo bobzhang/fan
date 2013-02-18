@@ -251,14 +251,14 @@ let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
 let fun_of_tydcl
     ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record ~destination ~result_type
     simple_expr_of_ctyp expr_of_ctyp expr_of_variant  tydcl :expr = 
-    match tydcl with 
+    match (tydcl:ctyp) with 
     [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
       let ctyp =
         match ctyp with
         [  `TyMan(_,_,ctyp) |  `Priv(_,ctyp)  -> ctyp | _ -> ctyp ] in
         match ctyp with
         [`TyRec(_loc,t) ->       
-          let cols =  Ctyp.list_of_record t  in
+          let cols =  Ctyp.list_of_record (t:>ctyp)  in
           let patt = (EP.mk_record ~arity  cols :> patt)in
           let info =
           List.mapi
@@ -273,8 +273,8 @@ let fun_of_tydcl
         mk_prefix ~names ~left_type_variable tyvars
             (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
       (* simple types *)      
-      | `Id _ | `Tup _ | `Quote _ | `Arrow _ | `App _ ->
-          let expr = simple_expr_of_ctyp ctyp in
+      | (`Id _ | `Tup _ | `Quote _ | `Arrow _ | `App _ as x) ->
+          let expr = simple_expr_of_ctyp x in
           let funct = eta_expand (expr+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct
       | `TyVrnEq(_,t) | `TyVrnSup(_,t) | `TyVrnInf(_,t)|`TyVrnInfSup(_,t,_) -> 
@@ -285,7 +285,7 @@ let fun_of_tydcl
           (* for [expr_of_ctyp] appending names was delayed to be handled in mkcon *)
           mk_prefix ~names ~left_type_variable tyvars funct
        | t ->
-           FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (dump_ctyp t)
+           FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (dump_ctyp (t:>ctyp))
         ]
   | t ->
       FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_ctyp t) ];

@@ -98,8 +98,8 @@ module type Syntax =
     val ipatt : patt Gram.t
     val ipatt_tcon : patt Gram.t
     val patt_tcon : patt Gram.t
-    val label_declaration : ctyp Gram.t
-    val label_declaration_list : ctyp Gram.t
+    val label_declaration : name_ctyp Gram.t
+    val label_declaration_list : name_ctyp Gram.t
     val label_expr : rec_expr Gram.t
     val label_expr_list : rec_expr Gram.t
     val label_longident : ident Gram.t

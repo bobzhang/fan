@@ -222,6 +222,10 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `Label (_a0, _a1, _a2)
+        | (`TyOlb (_a0,_a1,_a2),`TyOlb (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in
+            let _a2 = self#ctyp _a2 _b2 in `TyOlb (_a0, _a1, _a2)
         | (`Id (_a0,_a1),`Id (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in `Id (_a0, _a1)
@@ -246,10 +250,6 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#name_ctyp _a1 _b1 in
             let _a2 = self#row_var_flag _a2 _b2 in `TyObj (_a0, _a1, _a2)
-        | (`TyOlb (_a0,_a1,_a2),`TyOlb (_b0,_b1,_b2)) ->
-            let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#ctyp _a2 _b2 in `TyOlb (_a0, _a1, _a2)
         | (`TyPol (_a0,_a1,_a2),`TyPol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -265,7 +265,7 @@ class map2 =
             `Quote (_a0, _a1, _a2)
         | (`TyRec (_a0,_a1),`TyRec (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ctyp _a1 _b1 in `TyRec (_a0, _a1)
+            let _a1 = self#name_ctyp _a1 _b1 in `TyRec (_a0, _a1)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -1240,6 +1240,9 @@ class fold2 =
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#ctyp _a2 _b2
+        | (`TyOlb (_a0,_a1,_a2),`TyOlb (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#alident _a1 _b1 in self#ctyp _a2 _b2
         | (`Id (_a0,_a1),`Id (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
         | (`TyMan (_a0,_a1,_a2),`TyMan (_b0,_b1,_b2)) ->
@@ -1259,9 +1262,6 @@ class fold2 =
         | (`TyObj (_a0,_a1,_a2),`TyObj (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#name_ctyp _a1 _b1 in self#row_var_flag _a2 _b2
-        | (`TyOlb (_a0,_a1,_a2),`TyOlb (_b0,_b1,_b2)) ->
-            let self = self#loc _a0 _b0 in
-            let self = self#alident _a1 _b1 in self#ctyp _a2 _b2
         | (`TyPol (_a0,_a1,_a2),`TyPol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -1273,7 +1273,7 @@ class fold2 =
             let self = self#position_flag _a1 _b1 in
             self#meta_option (fun self  -> self#alident) _a2 _b2
         | (`TyRec (_a0,_a1),`TyRec (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
+            let self = self#loc _a0 _b0 in self#name_ctyp _a1 _b1
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -1998,6 +1998,8 @@ class iter =
       | `ClassPath (_a0,_a1) -> (self#loc _a0; self#ident _a1)
       | `Label (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#ctyp _a2)
+      | `TyOlb (_a0,_a1,_a2) ->
+          (self#loc _a0; self#alident _a1; self#ctyp _a2)
       | `Id (_a0,_a1) -> (self#loc _a0; self#ident _a1)
       | `TyMan (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `TyDcl (_a0,_a1,_a2,_a3,_a4) ->
@@ -2009,8 +2011,6 @@ class iter =
              _a4)
       | `TyObj (_a0,_a1,_a2) ->
           (self#loc _a0; self#name_ctyp _a1; self#row_var_flag _a2)
-      | `TyOlb (_a0,_a1,_a2) ->
-          (self#loc _a0; self#alident _a1; self#ctyp _a2)
       | `TyPol (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `TyTypePol (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
@@ -2018,7 +2018,7 @@ class iter =
           (self#loc _a0;
            self#position_flag _a1;
            self#meta_option (fun self  -> self#alident) _a2)
-      | `TyRec (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
+      | `TyRec (_a0,_a1) -> (self#loc _a0; self#name_ctyp _a1)
       | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Com (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
@@ -2568,6 +2568,10 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#ctyp _a2 in `Label (_a0, _a1, _a2)
+      | `TyOlb (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in
+          let _a2 = self#ctyp _a2 in `TyOlb (_a0, _a1, _a2)
       | `Id (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in `Id (_a0, _a1)
@@ -2590,10 +2594,6 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#name_ctyp _a1 in
           let _a2 = self#row_var_flag _a2 in `TyObj (_a0, _a1, _a2)
-      | `TyOlb (_a0,_a1,_a2) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#alident _a1 in
-          let _a2 = self#ctyp _a2 in `TyOlb (_a0, _a1, _a2)
       | `TyPol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -2609,7 +2609,7 @@ class map =
           `Quote (_a0, _a1, _a2)
       | `TyRec (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in `TyRec (_a0, _a1)
+          let _a1 = self#name_ctyp _a1 in `TyRec (_a0, _a1)
       | `TyCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -3466,6 +3466,9 @@ class fold =
       | `Label (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#ctyp _a2
+      | `TyOlb (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in self#ctyp _a2
       | `Id (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
       | `TyMan (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -3481,9 +3484,6 @@ class fold =
       | `TyObj (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#name_ctyp _a1 in self#row_var_flag _a2
-      | `TyOlb (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#alident _a1 in self#ctyp _a2
       | `TyPol (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -3494,7 +3494,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#position_flag _a1 in
           self#meta_option (fun self  -> self#alident) _a2
-      | `TyRec (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
+      | `TyRec (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
       | `TyCol (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -4184,6 +4184,9 @@ class print =
         | `Label (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#ctyp _a2
+        | `TyOlb (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`TyOlb@ %a@ %a@ %a)@]" self#loc _a0
+              self#alident _a1 self#ctyp _a2
         | `Id (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" self#loc _a0 self#ident
               _a1
@@ -4201,9 +4204,6 @@ class print =
         | `TyObj (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyObj@ %a@ %a@ %a)@]" self#loc _a0
               self#name_ctyp _a1 self#row_var_flag _a2
-        | `TyOlb (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`TyOlb@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#ctyp _a2
         | `TyPol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyPol@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -4216,7 +4216,7 @@ class print =
               (self#meta_option (fun self  -> self#alident)) _a2
         | `TyRec (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TyRec@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1
+              self#name_ctyp _a1
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -5011,6 +5011,9 @@ class eq =
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#ctyp _a2 _b2)
+        | (`TyOlb (_a0,_a1,_a2),`TyOlb (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
+              (self#ctyp _a2 _b2)
         | (`Id (_a0,_a1),`Id (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
         | (`TyMan (_a0,_a1,_a2),`TyMan (_b0,_b1,_b2)) ->
@@ -5029,9 +5032,6 @@ class eq =
         | (`TyObj (_a0,_a1,_a2),`TyObj (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)) &&
               (self#row_var_flag _a2 _b2)
-        | (`TyOlb (_a0,_a1,_a2),`TyOlb (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
         | (`TyPol (_a0,_a1,_a2),`TyPol (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -5042,7 +5042,7 @@ class eq =
             ((self#loc _a0 _b0) && (self#position_flag _a1 _b1)) &&
               (self#meta_option (fun self  -> self#alident) _a2 _b2)
         | (`TyRec (_a0,_a1),`TyRec (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -5754,6 +5754,9 @@ let rec strip_loc_ctyp =
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Label (_a1, _a2)
+  | `TyOlb (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_alident _a1 in
+      let _a2 = strip_loc_ctyp _a2 in `TyOlb (_a1, _a2)
   | `Id (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Id _a1
   | `TyMan (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
@@ -5771,9 +5774,6 @@ let rec strip_loc_ctyp =
   | `TyObj (_a0,_a1,_a2) ->
       let _a1 = strip_loc_name_ctyp _a1 in
       let _a2 = strip_loc_row_var_flag _a2 in `TyObj (_a1, _a2)
-  | `TyOlb (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TyOlb (_a1, _a2)
   | `TyPol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyPol (_a1, _a2)
@@ -5784,7 +5784,7 @@ let rec strip_loc_ctyp =
       let _a1 = strip_loc_position_flag _a1 in
       let _a2 = strip_loc_meta_option strip_loc_alident _a2 in
       `Quote (_a1, _a2)
-  | `TyRec (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `TyRec _a1
+  | `TyRec (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `TyRec _a1
   | `TyCol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
@@ -6440,6 +6440,9 @@ let rec pp_print_ctyp fmt =
   | `Label (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_ctyp _a2
+  | `TyOlb (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`TyOlb@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1 pp_print_ctyp _a2
   | `Id (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1
@@ -6457,9 +6460,6 @@ let rec pp_print_ctyp fmt =
   | `TyObj (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyObj@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_name_ctyp _a1 pp_print_row_var_flag _a2
-  | `TyOlb (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`TyOlb@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_ctyp _a2
   | `TyPol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyPol@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
@@ -6472,7 +6472,7 @@ let rec pp_print_ctyp fmt =
         _a2
   | `TyRec (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`TyRec@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1
+        pp_print_name_ctyp _a1
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
