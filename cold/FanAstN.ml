@@ -183,7 +183,7 @@ class eq =
         | (`Quote (_a0,_a1),`Quote (_b0,_b1)) ->
             (self#position_flag _a0 _b0) &&
               (self#meta_option (fun self  -> self#alident) _a1 _b1)
-        | (`TyRec _a0,`TyRec _b0) -> self#name_ctyp _a0 _b0
+        | (`Record _a0,`Record _b0) -> self#name_ctyp _a0 _b0
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -797,8 +797,8 @@ class print =
         | `Quote (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Quote@ %a@ %a)@]" self#position_flag
               _a0 (self#meta_option (fun self  -> self#alident)) _a1
-        | `TyRec _a0 ->
-            Format.fprintf fmt "@[<1>(`TyRec@ %a)@]" self#name_ctyp _a0
+        | `Record _a0 ->
+            Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#name_ctyp _a0
         | `TyCol (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#ctyp _a0
               self#ctyp _a1
@@ -1504,8 +1504,8 @@ let rec meta_ctyp _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Quote")), (meta_position_flag _loc _a0))),
           (meta_meta_option meta_alident _loc _a1))
-  | `TyRec _a0 ->
-      `App (_loc, (`Vrn (_loc, "TyRec")), (meta_name_ctyp _loc _a0))
+  | `Record _a0 ->
+      `App (_loc, (`Vrn (_loc, "Record")), (meta_name_ctyp _loc _a0))
   | `TyCol (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_ctyp _loc _a0))),

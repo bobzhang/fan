@@ -28,7 +28,7 @@ type ctyp =
   | `TyDcl of (alident* ctyp list* ctyp* (ctyp* ctyp) list)
   | `TyObj of (name_ctyp* row_var_flag) | `TyPol of (ctyp* ctyp)
   | `TyTypePol of (ctyp* ctyp)
-  | `Quote of (position_flag* alident meta_option) | `TyRec of name_ctyp
+  | `Quote of (position_flag* alident meta_option) | `Record of name_ctyp
   | `TyCol of (ctyp* ctyp) | `Sem of (ctyp* ctyp) | `Com of (ctyp* ctyp)
   | `Sum of ctyp | `Of of (ctyp* ctyp) | `And of (ctyp* ctyp)
   | `Or of (ctyp* ctyp) | `Priv of ctyp | `Mut of ctyp | `Tup of ctyp

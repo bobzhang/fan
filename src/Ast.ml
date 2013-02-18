@@ -156,8 +156,10 @@
            (*  +'s -'s 's +_ -_ *)      
      | `Quote of (loc * position_flag * meta_option alident)
           
-     | `TyRec of (loc * name_ctyp) (* { t } *) (* { foo : int ; bar : mutable string } *)
+     (* | `Record of (loc * name_ctyp) (\* { t } *\) (\* { foo : int ; bar : mutable string } *\) *)
 
+     | `Record of (loc * name_ctyp)
+           
      | `TyCol of (loc * ctyp * ctyp) (* t : t *)
            (* | `TySem of (loc * ctyp * ctyp) (\* t; t *\) *)
      | `Sem of (loc * ctyp * ctyp) (* t; t *)

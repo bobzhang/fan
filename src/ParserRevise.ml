@@ -1287,7 +1287,7 @@ let apply_ctyp () = begin
         | "[<"; row_field{rfl}; "]" ->    {| [ < $rfl ] |}
         | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" -> {| [ < $rfl > $ntl ] |}
         | "{"; label_declaration_list{t}; "}" ->
-             `TyRec (_loc, t)
+             `Record (_loc, t)
             (* {| { $t } |} *)
         | "#"; class_longident{i} -> {| # $i |}
         | "<"; opt_meth_list{t}; ">" -> t

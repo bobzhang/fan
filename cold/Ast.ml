@@ -33,7 +33,7 @@ type ctyp =
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
   | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
-  | `TyRec of (loc* name_ctyp) | `TyCol of (loc* ctyp* ctyp)
+  | `Record of (loc* name_ctyp) | `TyCol of (loc* ctyp* ctyp)
   | `Sem of (loc* ctyp* ctyp) | `Com of (loc* ctyp* ctyp)
   | `Sum of (loc* ctyp) | `Of of (loc* ctyp* ctyp)
   | `And of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp)

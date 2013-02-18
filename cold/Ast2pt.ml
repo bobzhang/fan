@@ -211,7 +211,7 @@ let rec type_decl (tl : (string Asttypes.loc option* (bool* bool)) list)
       if pflag
       then error _loc "multiple private keyword used, use only one instead"
       else type_decl tl cl loc m true t
-  | `TyRec (_loc,t) ->
+  | `Record (_loc,t) ->
       mktype loc tl cl
         (Ptype_record (List.map mktrecord (list_of_sem' t [])))
         (mkprivate' pflag) m

@@ -122,7 +122,6 @@ let loc_of =
   | `RecordWith (_loc,_,_) -> _loc
   | `And (_loc,_,_) -> _loc
   | `TyDcl (_loc,_,_,_,_) -> _loc
-  | `TyRec (_loc,_) -> _loc
   | `Int32 (_loc,_) -> _loc
   | `PaRng (_loc,_,_) -> _loc
   | `RecModule (_loc,_) -> _loc
@@ -463,10 +462,10 @@ module Make(MetaLoc:META_LOC) =
                    (`App (_loc, (`Vrn (_loc, "Quote")), (meta_loc _loc _a0))),
                    (meta_position_flag _loc _a1))),
               (meta_meta_option meta_alident _loc _a2))
-      | `TyRec (_a0,_a1) ->
+      | `Record (_a0,_a1) ->
           `App
             (_loc,
-              (`App (_loc, (`Vrn (_loc, "TyRec")), (meta_loc _loc _a0))),
+              (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
               (meta_name_ctyp _loc _a1))
       | `TyCol (_a0,_a1,_a2) ->
           `App

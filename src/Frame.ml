@@ -257,7 +257,7 @@ let fun_of_tydcl
         match ctyp with
         [  `TyMan(_,_,ctyp) |  `Priv(_,ctyp)  -> ctyp | _ -> ctyp ] in
         match ctyp with
-        [`TyRec(_loc,t) ->       
+        [`Record(_loc,t) ->       
           let cols =  Ctyp.list_of_record (t:>ctyp)  in
           let patt = (EP.mk_record ~arity  cols :> patt)in
           let info =

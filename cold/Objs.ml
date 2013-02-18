@@ -263,9 +263,9 @@ class map2 =
             let _a1 = self#position_flag _a1 _b1 in
             let _a2 = self#meta_option (fun self  -> self#alident) _a2 _b2 in
             `Quote (_a0, _a1, _a2)
-        | (`TyRec (_a0,_a1),`TyRec (_b0,_b1)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#name_ctyp _a1 _b1 in `TyRec (_a0, _a1)
+            let _a1 = self#name_ctyp _a1 _b1 in `Record (_a0, _a1)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -1272,7 +1272,7 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#position_flag _a1 _b1 in
             self#meta_option (fun self  -> self#alident) _a2 _b2
-        | (`TyRec (_a0,_a1),`TyRec (_b0,_b1)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#name_ctyp _a1 _b1
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -2018,7 +2018,7 @@ class iter =
           (self#loc _a0;
            self#position_flag _a1;
            self#meta_option (fun self  -> self#alident) _a2)
-      | `TyRec (_a0,_a1) -> (self#loc _a0; self#name_ctyp _a1)
+      | `Record (_a0,_a1) -> (self#loc _a0; self#name_ctyp _a1)
       | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Com (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
@@ -2607,9 +2607,9 @@ class map =
           let _a1 = self#position_flag _a1 in
           let _a2 = self#meta_option (fun self  -> self#alident) _a2 in
           `Quote (_a0, _a1, _a2)
-      | `TyRec (_a0,_a1) ->
+      | `Record (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#name_ctyp _a1 in `TyRec (_a0, _a1)
+          let _a1 = self#name_ctyp _a1 in `Record (_a0, _a1)
       | `TyCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -3494,7 +3494,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#position_flag _a1 in
           self#meta_option (fun self  -> self#alident) _a2
-      | `TyRec (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
+      | `Record (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
       | `TyCol (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -4214,8 +4214,8 @@ class print =
             Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" self#loc _a0
               self#position_flag _a1
               (self#meta_option (fun self  -> self#alident)) _a2
-        | `TyRec (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyRec@ %a@ %a)@]" self#loc _a0
+        | `Record (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#loc _a0
               self#name_ctyp _a1
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
@@ -5041,7 +5041,7 @@ class eq =
         | (`Quote (_a0,_a1,_a2),`Quote (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#position_flag _a1 _b1)) &&
               (self#meta_option (fun self  -> self#alident) _a2 _b2)
-        | (`TyRec (_a0,_a1),`TyRec (_b0,_b1)) ->
+        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
@@ -5784,7 +5784,7 @@ let rec strip_loc_ctyp =
       let _a1 = strip_loc_position_flag _a1 in
       let _a2 = strip_loc_meta_option strip_loc_alident _a2 in
       `Quote (_a1, _a2)
-  | `TyRec (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `TyRec _a1
+  | `Record (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `Record _a1
   | `TyCol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
@@ -6470,8 +6470,8 @@ let rec pp_print_ctyp fmt =
       Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_position_flag _a1 (pp_print_meta_option pp_print_alident)
         _a2
-  | `TyRec (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`TyRec@ %a@ %a)@]" pp_print_loc _a0
+  | `Record (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
         pp_print_name_ctyp _a1
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0

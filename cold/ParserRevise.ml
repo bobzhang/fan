@@ -6480,10 +6480,10 @@ let apply_ctyp () =
            (Gram.obj
               (label_declaration_list : 'label_declaration_list Gram.t ));
          `Skeyword "}"],
-          ("Gram.mk_action\n  (fun _  (t : 'label_declaration_list)  _  (_loc : FanLoc.t)  ->\n     (`TyRec (_loc, t) : 'ctyp ))\n",
+          ("Gram.mk_action\n  (fun _  (t : 'label_declaration_list)  _  (_loc : FanLoc.t)  ->\n     (`Record (_loc, t) : 'ctyp ))\n",
             (Gram.mk_action
                (fun _  (t : 'label_declaration_list)  _  (_loc : FanLoc.t) 
-                  -> (`TyRec (_loc, t) : 'ctyp )))));
+                  -> (`Record (_loc, t) : 'ctyp )))));
         ([`Skeyword "#";
          `Snterm (Gram.obj (class_longident : 'class_longident Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'class_longident)  _  (_loc : FanLoc.t)  ->\n     (`ClassPath (_loc, i) : 'ctyp ))\n",
