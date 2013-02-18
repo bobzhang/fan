@@ -5848,13 +5848,27 @@ let apply_ctyp () =
     (type_longident_and_parameters : 'type_longident_and_parameters Gram.t )
     (None,
       (None, None,
-        [([`Snterm (Gram.obj (type_longident : 'type_longident Gram.t ));
-          `Snterm (Gram.obj (type_parameters : 'type_parameters Gram.t ))],
-           ("Gram.mk_action\n  (fun (tpl : 'type_parameters)  (i : 'type_longident)  (_loc : FanLoc.t)  ->\n     (tpl (`Id (_loc, i)) : 'type_longident_and_parameters ))\n",
+        [([`Skeyword "(";
+          `Snterm (Gram.obj (type_parameters : 'type_parameters Gram.t ));
+          `Skeyword ")";
+          `Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
+           ("Gram.mk_action\n  (fun (i : 'type_longident)  _  (tpl : 'type_parameters)  _ \n     (_loc : FanLoc.t)  ->\n     (tpl (`Id (_loc, i)) : 'type_longident_and_parameters ))\n",
              (Gram.mk_action
-                (fun (tpl : 'type_parameters)  (i : 'type_longident) 
+                (fun (i : 'type_longident)  _  (tpl : 'type_parameters)  _ 
                    (_loc : FanLoc.t)  ->
                    (tpl (`Id (_loc, i)) : 'type_longident_and_parameters )))));
+        ([`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ));
+         `Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
+          ("Gram.mk_action\n  (fun (i : 'type_longident)  (tpl : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`Id (_loc, i)), tpl) : 'type_longident_and_parameters ))\n",
+            (Gram.mk_action
+               (fun (i : 'type_longident)  (tpl : 'type_parameter) 
+                  (_loc : FanLoc.t)  ->
+                  (`App (_loc, (`Id (_loc, i)), tpl) : 'type_longident_and_parameters )))));
+        ([`Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
+          ("Gram.mk_action\n  (fun (i : 'type_longident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, i) : 'type_longident_and_parameters ))\n",
+            (Gram.mk_action
+               (fun (i : 'type_longident)  (_loc : FanLoc.t)  ->
+                  (`Id (_loc, i) : 'type_longident_and_parameters )))));
         ([`Stoken
             (((function | `Ant ((""|"anti"),_) -> true | _ -> false)),
               (`Normal, "`Ant ((\"\"|\"anti\"),_)"))],

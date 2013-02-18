@@ -1144,9 +1144,17 @@ let apply_ctyp () = begin
       | "+"; "_" ->  {| + _|}
       | "-"; "_" ->  {| - _ |}
       | "_" -> {| _ |}]
+
+      (* type_longident_and_parameters: *)
+      (* [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |} *)
+      (* | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] *)
+
       type_longident_and_parameters:
-      [ type_longident{i}; type_parameters{tpl} -> tpl {| $id:i |}
-      | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|}] 
+      [ "("; type_parameters{tpl}; ")";type_longident{i} -> tpl {| $id:i|}
+      | type_parameter{tpl} ; type_longident{i} -> `App(_loc,{|$id:i|},tpl)
+      | type_longident{i} -> {|$id:i|} 
+      | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|} ]
+      
       type_parameters:
       [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
       | type_parameter{t} -> fun acc -> {| $acc $t |}
