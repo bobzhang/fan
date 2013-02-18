@@ -90,7 +90,7 @@ let zfold_left ?(start = 0) ~until ~acc f =
 
 
 (* we put the return value exn, so we don't need to work around type system later *)    
-type cont 'a = 'a -> exn;
+type 'a cont  = 'a -> exn;
 
 let callcc  (type u) (f: cont u-> u)  =
   let module M = struct exception Return of u ; end in
@@ -99,7 +99,7 @@ let callcc  (type u) (f: cont u-> u)  =
   
 
 
-type  return 'a = { return : ! 'b. 'a -> 'b };
+type  'a return  = { return : ! 'b. 'a -> 'b };
 
 let with_return f =
   let module M = struct
@@ -123,7 +123,7 @@ let with_return f =
     | Some x -> x];
 
           
-type id 'a = 'a -> 'a;
+type 'a id  = 'a -> 'a;
 module Queue = struct
   include Queue;
   let find t ~f =
@@ -379,7 +379,7 @@ end);
 
 
 module Hashset = struct
-  type t 'a =  Hashtbl.t 'a unit;
+  type 'a t  =  Hashtbl.t 'a unit;
   let create = Hashtbl.create;
   let add set x = Hashtbl.replace set x ();
   let remove = Hashtbl.remove;
@@ -432,7 +432,7 @@ module Char = struct
 end;
 
 module Return = struct
-  type t 'a = 'a -> exn;
+  type 'a t  = 'a -> exn;
 
   let return label v =
     raise (label v);
@@ -446,7 +446,7 @@ module Return = struct
 end;
 
 module LStack = struct
-  type t 'a = {
+  type 'a t  = {
       elts : mutable list 'a;
       length : mutable int;
     };
@@ -962,7 +962,7 @@ end;
 
 
 module type STREAM = sig
-  type  t 'a;
+  type  'a t ;
   exception Failure;
   exception Error of string;
   val from: (int -> option 'a) -> t 'a;
@@ -1067,7 +1067,7 @@ end;
 module ErrorMonad = struct     
   type log = string;
 
-  type result 'a= [ Left of 'a | Right of log];
+  type 'a result = [ Left of 'a | Right of log];
 
   let return x = Left x;
       

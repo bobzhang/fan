@@ -13,7 +13,7 @@ module type Warning = sig
 end;
 
 (** A type for stream filters. *)
-type stream_filter 'a 'loc =
+type ('a, 'loc) stream_filter  =
     XStream.t ('a * 'loc) -> XStream.t ('a * 'loc);
 
 module type ParserImpl = sig
@@ -254,9 +254,9 @@ module type ParserPlugin = functor (Syn:Syntax) -> ParserImpl;
 (* module type ASTFILTER_PLUGIN  = functor (F:AstFilters.S) -> sig end ; *)
 
 
-type parser_fun 'a =
+type 'a parser_fun  =
     ?directive_handler:('a -> option 'a) -> FanLoc.t -> XStream.t char -> 'a;
-type printer_fun 'a =
+type 'a printer_fun  =
       ?input_file:string -> ?output_file:string -> 'a -> unit;
 
 module type PRECAST = sig

@@ -2,7 +2,7 @@ open Ast;
 
 open Lib;
 open LibUtil;
-type item_or_def 'a =
+type 'a item_or_def  =
     [ Str of 'a
     | Def of string and option (list string * expr)
     | Und of string

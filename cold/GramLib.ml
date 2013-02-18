@@ -1,14 +1,4 @@
 open LibUtil
-let is_revised ~expr  ~sem_expr_for_list:(x : _ Gram.t)  =
-  try
-    Gram.delete_rule expr
-      [`Skeyword "[";
-      `Snterm (Gram.obj (x : 'x Gram.t ));
-      `Skeyword "::";
-      `Snterm (Gram.obj (expr : 'expr Gram.t ));
-      `Skeyword "]"];
-    true
-  with | Not_found  -> false
 let setup_op_parser entry p =
   Gram.setup_parser entry
     (fun (__strm : _ XStream.t)  ->

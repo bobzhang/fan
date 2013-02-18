@@ -1,7 +1,7 @@
 (* {:fans|keep on ; derive (Print); |}; *)
 open Ast;
 (* {:ocaml| *)
-type tag 'a =
+type 'a tag  =
  [ Ctyp
  | Patt
  | Expr
@@ -61,7 +61,7 @@ type dyn;
   
 external dyn_tag : tag 'a -> tag dyn = "%identity";
 
-module Pack(X : sig type t 'a; end) = struct
+module Pack(X : sig type 'a t ; end) = struct
   type pack = (tag dyn * Obj.t);
   exception Pack_error;
   let pack tag (v:X.t 'a) = (dyn_tag tag, Obj.repr v);

@@ -91,11 +91,11 @@
     |`False of loc
     | ant];
 
-   type meta_option 'a =
+   type 'a meta_option  =
     [= `None 
     |  `Some of 'a
     | ant];
-   type meta_list 'a =
+   type 'a meta_list  =
     [= `LNil 
     | `LCons of ('a * meta_list 'a)
     | ant];

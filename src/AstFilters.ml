@@ -3,7 +3,7 @@ open LibUtil;
 open Ast ;
 
 type key = string;
-type filter 'a = 'a -> 'a;
+type 'a filter  = 'a -> 'a;
   
 let interf_filters: Hashtbl.t key (filter sig_item) = Hashtbl.create 40;
 let implem_filters: Hashtbl.t key (filter str_item) = Hashtbl.create 40;

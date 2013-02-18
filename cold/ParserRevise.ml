@@ -6152,14 +6152,28 @@ let apply_ctyp () =
     (type_ident_and_parameters : 'type_ident_and_parameters Gram.t )
     (None,
       (None, None,
-        [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
-          `Slist0
-            (`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t )))],
-           ("Gram.mk_action\n  (fun (tpl : 'type_parameter list)  (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     ((i, tpl) : 'type_ident_and_parameters ))\n",
+        [([`Skeyword "(";
+          `Slist1sep
+            ((`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ))),
+              (`Skeyword ","));
+          `Skeyword ")";
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (tpl : 'type_parameter list)  _  (_loc : FanLoc.t)\n      -> ((i, tpl) : 'type_ident_and_parameters ))\n",
              (Gram.mk_action
-                (fun (tpl : 'type_parameter list)  (i : 'a_lident) 
+                (fun (i : 'a_lident)  _  (tpl : 'type_parameter list)  _ 
                    (_loc : FanLoc.t)  ->
-                   ((i, tpl) : 'type_ident_and_parameters )))))]));
+                   ((i, tpl) : 'type_ident_and_parameters )))));
+        ([`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ));
+         `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+          ("Gram.mk_action\n  (fun (i : 'a_lident)  (t : 'type_parameter)  (_loc : FanLoc.t)  ->\n     ((i, [t]) : 'type_ident_and_parameters ))\n",
+            (Gram.mk_action
+               (fun (i : 'a_lident)  (t : 'type_parameter)  (_loc : FanLoc.t)
+                   -> ((i, [t]) : 'type_ident_and_parameters )))));
+        ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+          ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     ((i, []) : 'type_ident_and_parameters ))\n",
+            (Gram.mk_action
+               (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
+                  ((i, []) : 'type_ident_and_parameters )))))]));
   Gram.extend_single (constrain : 'constrain Gram.t )
     (None,
       (None, None,

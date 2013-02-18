@@ -1204,9 +1204,14 @@ let apply_ctyp () = begin
       | type_ident_and_parameters{(n,tpl)}; L0 constrain{cl} ->
         `TyDcl(_loc,n,tpl,`Nil _loc,cl)
       ]
-  
+
       type_ident_and_parameters:
-      [ a_lident{i}; L0 type_parameter{tpl} -> (i, tpl)]
+      [ "(";  L1 type_parameter SEP ","{tpl}; ")"; a_lident{i} -> (i, tpl)
+      |  type_parameter{t};  a_lident{i} -> (i, [t])
+      |  a_lident{i} -> (i, [])]
+      
+      (* type_ident_and_parameters: *)
+      (* [ a_lident{i}; L0 type_parameter{tpl} -> (i, tpl)] *)
       
 
       constrain:

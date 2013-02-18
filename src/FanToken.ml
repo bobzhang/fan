@@ -86,14 +86,14 @@ type error =
   | Illegal_constructor of string];
 |};
 
-type token 'a = [> t] as 'a;
+type 'a token  = [> t] as 'a;
 
 
 type stream = XStream.t (t * FanLoc.t);
 
-type estream 'a = XStream.t (token 'a * FanLoc.t);
+type 'a estream  = XStream.t (token 'a * FanLoc.t);
 
-type parse 'a = stream -> 'a;
+type 'a parse  = stream -> 'a;
 
 type filter = stream -> stream;
 

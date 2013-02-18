@@ -22,7 +22,7 @@ end;
 {:ocaml|
 
 (* the [location] and the parsed value *)
-type cont_parse 'a = FanLoc.t -> Action.t -> parse 'a;
+type 'a cont_parse  = FanLoc.t -> Action.t -> parse 'a;
     
 type description =
     [= `Normal
@@ -101,11 +101,11 @@ type extend_statment = (option position * list olevel);
 type single_extend_statement =  (option position * olevel);      
 type delete_statment = list symbol;
 
-type fold 'a 'b 'c =
+type ('a,'b,'c) fold  =
     entry -> list symbol ->
       (XStream.t 'a -> 'b) -> XStream.t 'a -> 'c;
 
-type foldsep 'a 'b 'c =
+type  ('a, 'b, 'c) foldsep =
     entry -> list symbol ->
       (XStream.t 'a -> 'b) -> (XStream.t 'a -> unit) -> XStream.t 'a -> 'c;
 

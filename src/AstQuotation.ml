@@ -31,11 +31,11 @@ exception QuotationError of quotation_error;
    | to generate an arbitrary value of type ['a]                     |
    +-----------------------------------------------------------------+ *)
 
-type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
+type 'a expand_fun  = FanLoc.t -> option string -> string -> 'a;
   
-module ExpKey = DynAst.Pack(struct  type t 'a = unit; end);
+module ExpKey = DynAst.Pack(struct  type 'a t  = unit; end);
 
-module ExpFun = DynAst.Pack(struct  type t 'a = expand_fun 'a; end);
+module ExpFun = DynAst.Pack(struct  type 'a t  = expand_fun 'a; end);
 
 
 
