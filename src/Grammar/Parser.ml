@@ -187,7 +187,6 @@ and parser_of_symbol entry s nlevn =
       let pt = parser_of_tree entry (0, `RA)  (ArgContainer.create ())t (* FIXME*) in
       fun strm ->
         let (act,loc) = pt strm in Action.getf act loc 
-        (* let (act,loc) = with_loc pt strm in Action.getf act loc *)
   | `Snterm e -> fun strm -> e.estart 0 strm  (* No filter any more *)
   | `Snterml (e, l) -> fun strm -> e.estart (level_number e l) strm
   | `Sself -> fun strm -> entry.estart 0 strm 
@@ -263,7 +262,7 @@ let rec continue_parser_of_levels entry clevn = fun
             try hcontinue levn bp a strm
             with
             [XStream.Failure ->
-              let (act,loc) = (* with_loc *) ccontinue strm in
+              let (act,loc) = ccontinue strm in
               let loc = FanLoc.merge bp loc in
               let a = Action.getf2 act a loc in entry.econtinue levn loc a strm]] ];
 
