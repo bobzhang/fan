@@ -5617,16 +5617,6 @@ let apply_ctyp () =
                 (fun (y : 'comma_ctyp)  _  (x : 'more_ctyp) 
                    (_loc : FanLoc.t)  -> (`Com (_loc, x, y) : 'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword ";";
-         `Snterm
-           (Gram.obj
-              (label_declaration_list : 'label_declaration_list Gram.t ))],
-          ("Gram.mk_action\n  (fun (y : 'label_declaration_list)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) \n     -> (`Sem (_loc, x, (y : name_ctyp  :>ctyp)) : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (y : 'label_declaration_list)  _  (x : 'more_ctyp) 
-                  (_loc : FanLoc.t)  ->
-                  (`Sem (_loc, x, (y : name_ctyp  :>ctyp)) : 'ctyp_quot )))));
-        ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword "|";
          `Snterm
            (Gram.obj
@@ -5683,20 +5673,6 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun (y : 'more_ctyp)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) 
                   -> (`TyCol (_loc, x, y) : 'ctyp_quot )))));
-        ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword ":";
-         `Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword ";";
-         `Snterm
-           (Gram.obj
-              (label_declaration_list : 'label_declaration_list Gram.t ))],
-          ("Gram.mk_action\n  (fun (z : 'label_declaration_list)  _  (y : 'more_ctyp)  _ \n     (x : 'more_ctyp)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, (`TyCol (_loc, x, y)), (z : name_ctyp  :>ctyp)) : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (z : 'label_declaration_list)  _  (y : 'more_ctyp)  _ 
-                  (x : 'more_ctyp)  (_loc : FanLoc.t)  ->
-                  (`Sem
-                     (_loc, (`TyCol (_loc, x, y)), (z : name_ctyp  :>ctyp)) : 
-                  'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword "*";
          `Snterm (Gram.obj (star_ctyp : 'star_ctyp Gram.t ))],
@@ -6297,22 +6273,22 @@ let apply_ctyp () =
             (((function | `OPTLABEL _ -> true | _ -> false)),
               (`Normal, "`OPTLABEL _"));
          `Sself],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `OPTLABEL s -> (`TyOlb (_loc, (`Lid (_loc, s)), t) : 'ctyp )\n     | _ -> failwith \"`TyOlb (_loc, (`Lid (_loc, s)), t)\n\")\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `OPTLABEL s -> (`OptLabl (_loc, (`Lid (_loc, s)), t) : 'ctyp )\n     | _ -> failwith \"`OptLabl (_loc, (`Lid (_loc, s)), t)\n\")\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `OPTLABEL s ->
-                      (`TyOlb (_loc, (`Lid (_loc, s)), t) : 'ctyp )
-                  | _ -> failwith "`TyOlb (_loc, (`Lid (_loc, s)), t)\n"))));
+                      (`OptLabl (_loc, (`Lid (_loc, s)), t) : 'ctyp )
+                  | _ -> failwith "`OptLabl (_loc, (`Lid (_loc, s)), t)\n"))));
         ([`Skeyword "?";
          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
          `Skeyword ":";
          `Sself],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`TyOlb (_loc, i, t) : 'ctyp ))\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`OptLabl (_loc, i, t) : 'ctyp ))\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                  (`TyOlb (_loc, i, t) : 'ctyp )))))]);
+                  (`OptLabl (_loc, i, t) : 'ctyp )))))]);
       ((Some "apply"), (Some `LA),
         [([`Sself; `Sself],
            ("Gram.mk_action\n  (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (let t = `App (_loc, t1, t2) in\n      try `Id (_loc, (FanAst.ident_of_ctyp t)) with | Invalid_argument _ -> t : \n     'ctyp ))\n",

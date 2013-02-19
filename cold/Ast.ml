@@ -27,22 +27,23 @@ type ctyp =
   [ `Nil of loc | `Alias of (loc* ctyp* ctyp) | `Any of loc
   | `App of (loc* ctyp* ctyp) | `Arrow of (loc* ctyp* ctyp)
   | `ClassPath of (loc* ident) | `Label of (loc* alident* ctyp)
-  | `TyOlb of (loc* alident* ctyp) | `Id of (loc* ident)
+  | `OptLabl of (loc* alident* ctyp) | `Id of (loc* ident)
   | `TyMan of (loc* ctyp* ctyp)
   | `TyDcl of (loc* alident* ctyp list* ctyp* (ctyp* ctyp) list)
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
   | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
   | `Record of (loc* name_ctyp) | `TyCol of (loc* ctyp* ctyp)
-  | `Sem of (loc* ctyp* ctyp) | `Com of (loc* ctyp* ctyp)
-  | `Sum of (loc* ctyp) | `Of of (loc* ctyp* ctyp)
-  | `And of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp)
-  | `Priv of (loc* ctyp) | `Mut of (loc* ctyp) | `Tup of (loc* ctyp)
-  | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* astring)
-  | `TyVrnEq of (loc* ctyp) | `TyVrnSup of (loc* ctyp)
-  | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
-  | `Amp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
-  | `Package of (loc* module_type) | ant] 
+  | `Com of (loc* ctyp* ctyp) | `Sum of (loc* ctyp)
+  | `Of of (loc* ctyp* ctyp) | `And of (loc* ctyp* ctyp)
+  | `Or of (loc* ctyp* ctyp) | `Priv of (loc* ctyp) | `Mut of (loc* ctyp)
+  | `Tup of (loc* ctyp) | `Sta of (loc* ctyp* ctyp)
+  | `TyVrn of (loc* astring) | `TyVrnEq of (loc* ctyp)
+  | `TyVrnSup of (loc* ctyp) | `TyVrnInf of (loc* ctyp)
+  | `TyVrnInfSup of (loc* ctyp* ctyp) | `Amp of (loc* ctyp* ctyp)
+  | `TyOfAmp of (loc* ctyp* ctyp) | `Package of (loc* module_type) | 
+    ant]
+  
 and name_ctyp =
   [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* ctyp* ctyp)
   | `Nil of loc | ant] 

@@ -152,8 +152,9 @@ let gen_ty_of_tydcl ~off tydcl =
    ]}
    
  *)
-let list_of_record (ty:ctyp) : list FSig.col  =
-    list_of_sem' ty [] |> List.map (
+let list_of_record (ty:name_ctyp) : list FSig.col  =
+  let (tys : list name_ctyp)  = list_of_sem' ty [] in
+    (* list_of_sem' ty [] *) tys|> List.map (
        fun
          [ 
            (* {| $lid:label : mutable $ctyp  |} *)
@@ -164,7 +165,7 @@ let list_of_record (ty:ctyp) : list FSig.col  =
                {col_label; col_ctyp; col_mutable=false}
          | t0 ->
              FanLoc.errorf (loc_of t0)
-               "list_of_record %s" (dump_ctyp t0) ]);
+               "list_of_record %s" (dump_name_ctyp t0) ]);
 
   
 (*

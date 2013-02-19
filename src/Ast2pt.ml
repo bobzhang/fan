@@ -138,9 +138,16 @@ let rec ctyp (x:ctyp) = match x with
       else mktyp _loc (Ptyp_constr li (List.map ctyp al))
   | `Arrow (loc, (`Label (_,  `Lid(_,lab), t1)), t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
-  | `Arrow (loc, (`TyOlb (loc1, `Lid(_,lab), t1)), t2) ->
+
+  (* comment later*)      
+  (* | `Arrow (loc, (`TyOlb (loc1, `Lid(_,lab), t1)), t2) -> *)
+  (*     let t1 = `App loc1 (predef_option loc1) t1 in *)
+  (*     mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2)) *)
+        
+  | `Arrow (loc, (`OptLabl (loc1, `Lid(_,lab), t1)), t2) ->
       let t1 = `App loc1 (predef_option loc1) t1 in
       mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
+
   | `Arrow (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
   | `TyObj(_loc,fl,row) ->
       let xs  = match row with
@@ -948,9 +955,15 @@ and class_type (x:Ast.class_type) = match x with
      (Pcty_constr (long_class_ident id) (List.map ctyp (list_of_com' tl [])))
   | `CtFun (loc, (`Label (_, `Lid(_,lab), t)), ct) ->
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))
-  | `CtFun (loc, (`TyOlb (loc1, `Lid(_,lab), t)), ct) ->
+
+  (* | `CtFun (loc, (`TyOlb (loc1, `Lid(_,lab), t)), ct) -> *)
+  (*     let t = `App loc1 (predef_option loc1) t in *)
+  (*     mkcty loc (Pcty_fun ("?" ^ lab) (ctyp t) (class_type ct)) *)
+        
+  | `CtFun (loc, (`OptLabl (loc1, `Lid(_,lab), t)), ct) ->
       let t = `App loc1 (predef_option loc1) t in
       mkcty loc (Pcty_fun ("?" ^ lab) (ctyp t) (class_type ct))
+        
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun "" (ctyp t) (class_type ct))
   | `CtSig (loc,t_o,ctfl) ->
       let t = match t_o with

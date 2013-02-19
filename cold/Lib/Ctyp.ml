@@ -60,16 +60,18 @@ let ty_name_of_tydcl =
   | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (dump_ctyp tydcl)
 let gen_ty_of_tydcl ~off  tydcl =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
-let list_of_record (ty : ctyp) =
-  ((list_of_sem' ty []) |>
+let list_of_record (ty : name_ctyp) =
+  (let (tys :name_ctyp list)= list_of_sem' ty [] in
+   tys |>
      (List.map
         (function
          | `TyCol (_,`Id (_,`Lid (_,col_label)),`Mut (_,col_ctyp)) ->
              { col_label; col_ctyp; col_mutable = true }
          | `TyCol (_,`Id (_,`Lid (_,col_label)),col_ctyp) ->
              { col_label; col_ctyp; col_mutable = false }
-         | t0 -> FanLoc.errorf (loc_of t0) "list_of_record %s" (dump_ctyp t0))) : 
-  FSig.col list )
+         | t0 ->
+             FanLoc.errorf (loc_of t0) "list_of_record %s"
+               (dump_name_ctyp t0))) : FSig.col list )
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let result_id = ref 0

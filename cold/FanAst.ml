@@ -105,7 +105,6 @@ let loc_of =
   | `Vrn (_loc,_) -> _loc
   | `StExp (_loc,_) -> _loc
   | `Uid (_loc,_) -> _loc
-  | `TyOlb (_loc,_,_) -> _loc
   | `TyObj (_loc,_,_) -> _loc
   | `Of (_loc,_,_) -> _loc
   | `OvrInst (_loc,_) -> _loc
@@ -392,12 +391,13 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Label")), (meta_loc _loc _a0))),
                    (meta_alident _loc _a1))), (meta_ctyp _loc _a2))
-      | `TyOlb (_a0,_a1,_a2) ->
+      | `OptLabl (_a0,_a1,_a2) ->
           `App
             (_loc,
               (`App
                  (_loc,
-                   (`App (_loc, (`Vrn (_loc, "TyOlb")), (meta_loc _loc _a0))),
+                   (`App
+                      (_loc, (`Vrn (_loc, "OptLabl")), (meta_loc _loc _a0))),
                    (meta_alident _loc _a1))), (meta_ctyp _loc _a2))
       | `Id (_a0,_a1) ->
           `App
@@ -473,13 +473,6 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_loc _loc _a0))),
-                   (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
-      | `Sem (_a0,_a1,_a2) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`App (_loc, (`Vrn (_loc, "Sem")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
       | `Com (_a0,_a1,_a2) ->
           `App
@@ -1934,11 +1927,11 @@ let rec list_of_sem x acc =
   match x with
   | `Sem (_,x,y) -> list_of_sem x (list_of_sem y acc)
   | _ -> x :: acc
-let rec list_of_sem' x acc =
+let rec list_of_sem' (x : 'a) acc =
   match x with
   | `Sem (_,x,y) -> list_of_sem' x (list_of_sem' y acc)
   | `Nil _ -> acc
-  | _ -> x :: acc
+  | y -> y :: acc
 let sem a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Sem (_loc, a, b)
 let com a b =
@@ -2033,9 +2026,9 @@ class clean_ast =
         |`Alias (_loc,t,`Nil _l)|`Arrow (_loc,t,`Nil _l)
         |`Arrow (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
         |`Of (_loc,t,`Nil _l)|`And (_loc,`Nil _l,t)|`And (_loc,t,`Nil _l)
-        |`Sem (_loc,t,`Nil _l)|`Sem (_loc,`Nil _l,t)|`Com (_loc,`Nil _l,t)
-        |`Com (_loc,t,`Nil _l)|`Amp (_loc,t,`Nil _l)|`Amp (_loc,`Nil _l,t)
-        |`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) -> t
+        |`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)|`Amp (_loc,t,`Nil _l)
+        |`Amp (_loc,`Nil _l,t)|`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) ->
+          t
       | t -> t
     method! sig_item sg =
       match super#sig_item sg with

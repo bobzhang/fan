@@ -394,12 +394,12 @@ let rec list_of_sem x acc =
     list_of_sem x (list_of_sem y acc)
   | _ -> [x::acc]]  ;
 
-let rec list_of_sem' x acc =
+let rec list_of_sem' (x:'a) acc =
   match x with
   [`Sem(_,x,y) ->
     list_of_sem' x (list_of_sem' y acc)
   |`Nil _ -> acc
-  | _ -> [x::acc] ] ;
+  | y -> [y::acc] ] ;
     
 let sem a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in
@@ -558,8 +558,8 @@ class clean_ast = object
       {| $t of $({@_l||} ) |} |
       {| $({@_l||} ) and $t |} |
       {| $t and $({@_l||} ) |} |
-      {| $t; $({@_l||} ) |} |
-      {| $({@_l||} ); $t |} |
+      (* {| $t; $({@_l||} ) |} | *)
+      (* {| $({@_l||} ); $t |} | *)
       {| $({@_l||}), $t |} |
       {| $t, $({@_l||} ) |} |
       {| $t & $({@_l||} ) |} |

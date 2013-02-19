@@ -1111,8 +1111,8 @@ let apply_ctyp () = begin
     {:extend|
       ctyp_quot:
       [ more_ctyp{x}; ","; comma_ctyp{y} -> {| $x, $y |}
-      | more_ctyp{x}; ";"; label_declaration_list{y} ->
-          `Sem(_loc,x,(y:name_ctyp :>ctyp))
+      (* | more_ctyp{x}; ";"; label_declaration_list{y} -> *)
+      (*     `Sem(_loc,x,(y:name_ctyp :>ctyp)) *)
           (* {| $x; $y |} *)
       | more_ctyp{x}; "|"; constructor_declarations{y} -> {| $x | $y |}
       | more_ctyp{x}; "of"; constructor_arg_list{y} -> {| $x of $y |}
@@ -1122,9 +1122,9 @@ let apply_ctyp () = begin
       | more_ctyp{x}; ":"; more_ctyp{y} ->
           (* {| $x : $y |} *)
           `TyCol(_loc,x,y)
-      | more_ctyp{x}; ":"; more_ctyp{y}; ";"; label_declaration_list{z} ->
-          (* {| $x : $y ; $z |} *)
-          `Sem(_loc,`TyCol(_loc,x,y),(z:name_ctyp :> ctyp))
+      (* | more_ctyp{x}; ":"; more_ctyp{y}; ";"; label_declaration_list{z} -> *)
+      (*     (\* {| $x : $y ; $z |} *\) *)
+      (*     `Sem(_loc,`TyCol(_loc,x,y),(z:name_ctyp :> ctyp)) *)
       | more_ctyp{x}; "*"; star_ctyp{y} -> {| $x * $y |}
       | more_ctyp{x}; "&"; amp_ctyp{y} -> {| $x & $y |}
       | more_ctyp{x}; "and"; constructor_arg_list{y} -> {| $x and $y |}
@@ -1169,7 +1169,7 @@ let apply_ctyp () = begin
       opt_class_self_type:
       [ "("; ctyp{t}; ")" -> t | -> {||} ]
       meth_list:
-      [ meth_decl{m}; ";"; S{(ml, v) }  -> ({| $m; $ml |}, v)
+      [ meth_decl{m}; ";"; S{(ml, v) }  -> (`Sem(_loc,m,ml)(* {| $m; $ml |} *), v)
       | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
       | meth_decl{m}; opt_dot_dot{v}      -> (m, v)  ]
       meth_decl:
@@ -1254,8 +1254,12 @@ let apply_ctyp () = begin
        "label" NA
         [ "~"; a_lident{i}; ":"; S{t} -> {| ~ $i : $t |}
         | `LABEL s ; ":"; S{t} -> {| ~$lid:s : $t |}
-        | `OPTLABEL s ; S{t} -> {| ?$lid:s : $t |}
-        | "?"; a_lident{i}; ":"; S{t} -> {| ? $i : $t |}]
+        | `OPTLABEL s ; S{t} -> `OptLabl(_loc,`Lid(_loc,s),t)
+          (* -> {| ?$lid:s : $t |} *)
+        | "?"; a_lident{i}; ":"; S{t} ->
+            `OptLabl(_loc,i,t)
+            (* {| ? $i : $t |} *)
+   ]
        "apply" LA
         [ S{t1}; S{t2} ->
           let t = {| $t1 $t2 |} in
@@ -1323,7 +1327,8 @@ let apply_ctyp () = begin
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
       | ctyp{t} -> t  ]
       label_declaration_list:
-      [ label_declaration{t1}; ";"; S{t2} -> {| $t1; $t2 |}
+      [ label_declaration{t1}; ";"; S{t2} -> `Sem(_loc,t1,t2)
+        (* {| $t1; $t2 |} *)
       | label_declaration{t1}; ";"            -> t1
       | label_declaration{t1}                 -> t1  ]
       label_declaration:

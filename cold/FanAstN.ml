@@ -159,7 +159,7 @@ class eq =
         | (`ClassPath _a0,`ClassPath _b0) -> self#ident _a0 _b0
         | (`Label (_a0,_a1),`Label (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
-        | (`TyOlb (_a0,_a1),`TyOlb (_b0,_b1)) ->
+        | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Id _a0,`Id _b0) -> self#ident _a0 _b0
         | (`TyMan (_a0,_a1),`TyMan (_b0,_b1)) ->
@@ -185,8 +185,6 @@ class eq =
               (self#meta_option (fun self  -> self#alident) _a1 _b1)
         | (`Record _a0,`Record _b0) -> self#name_ctyp _a0 _b0
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
-        | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Com (_a0,_a1),`Com (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
@@ -771,8 +769,8 @@ class print =
         | `Label (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a)@]" self#alident _a0
               self#ctyp _a1
-        | `TyOlb (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyOlb@ %a@ %a)@]" self#alident _a0
+        | `OptLabl (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
               self#ctyp _a1
         | `Id _a0 -> Format.fprintf fmt "@[<1>(`Id@ %a)@]" self#ident _a0
         | `TyMan (_a0,_a1) ->
@@ -801,9 +799,6 @@ class print =
             Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#name_ctyp _a0
         | `TyCol (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#ctyp _a0
-              self#ctyp _a1
-        | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#ctyp _a0
               self#ctyp _a1
         | `Com (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a)@]" self#ctyp _a0
@@ -1458,10 +1453,10 @@ let rec meta_ctyp _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Label")), (meta_alident _loc _a0))),
           (meta_ctyp _loc _a1))
-  | `TyOlb (_a0,_a1) ->
+  | `OptLabl (_a0,_a1) ->
       `App
         (_loc,
-          (`App (_loc, (`Vrn (_loc, "TyOlb")), (meta_alident _loc _a0))),
+          (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
           (meta_ctyp _loc _a1))
   | `Id _a0 -> `App (_loc, (`Vrn (_loc, "Id")), (meta_ident _loc _a0))
   | `TyMan (_a0,_a1) ->
@@ -1509,10 +1504,6 @@ let rec meta_ctyp _loc =
   | `TyCol (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_ctyp _loc _a0))),
           (meta_ctyp _loc _a1))
   | `Com (_a0,_a1) ->
       `App

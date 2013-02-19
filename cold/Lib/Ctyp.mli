@@ -21,7 +21,7 @@ val of_id_len : off:int -> ident * int -> ctyp
 val of_name_len : off:int -> string * int -> ctyp
 val ty_name_of_tydcl : ctyp -> ctyp
 val gen_ty_of_tydcl : off:int -> ctyp -> ctyp
-val list_of_record : ctyp -> FSig.col list
+val list_of_record : name_ctyp -> FSig.col list
 val gen_tuple_n : ctyp -> int -> ctyp
 val repeat_arrow_n : ctyp -> int -> ctyp
 val mk_method_type :
