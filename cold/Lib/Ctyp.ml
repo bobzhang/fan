@@ -76,51 +76,52 @@ let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let result_id = ref 0
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
-  let prefix =
-    List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
-  let app_src =
-    app_arrow (List.init number (fun _  -> of_id_len ~off:0 (id, len))) in
-  let result_type =
-    `Quote
-      (_loc, (`Normal _loc),
-        (`Some (`Lid (_loc, ("result" ^ (string_of_int result_id.contents)))))) in
-  let _ = incr result_id in
-  let self_type =
-    `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "self_type")))) in
-  let (quant,dst) =
-    match k with
-    | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
-    | Obj (Iter ) -> (1, result_type)
-    | Obj (Fold ) -> (1, self_type)
-    | Str_item  -> (1, result_type) in
-  let params =
-    List.init len
-      (fun i  ->
-         let app_src =
-           app_arrow
-             (List.init number
-                (fun _  ->
-                   `Quote
-                     (_loc, (`Normal _loc),
-                       (`Some (`Lid (_loc, (allx ~off:0 i))))))) in
-         match k with
-         | Obj u ->
-             let dst =
-               match u with
-               | Map  ->
-                   `Quote
-                     (_loc, (`Normal _loc),
-                       (`Some (`Lid (_loc, (allx ~off:1 i)))))
-               | Iter  -> result_type
-               | Fold  -> self_type in
-             self_type |-> (prefix <+ (app_src dst))
-         | Str_item  -> prefix <+ (app_src result_type)) in
-  let base = prefix <+ (app_src dst) in
-  if len = 0
-  then (base, dst)
-  else
-    (let quantifiers = gen_quantifiers ~arity:quant len in
-     ((`TyPol (_loc, quantifiers, (params +> base))), dst))
+  (let prefix =
+     List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
+   let app_src =
+     app_arrow (List.init number (fun _  -> of_id_len ~off:0 (id, len))) in
+   let result_type =
+     `Quote
+       (_loc, (`Normal _loc),
+         (`Some
+            (`Lid (_loc, ("result" ^ (string_of_int result_id.contents)))))) in
+   let _ = incr result_id in
+   let self_type =
+     `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "self_type")))) in
+   let (quant,dst) =
+     match k with
+     | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
+     | Obj (Iter ) -> (1, result_type)
+     | Obj (Fold ) -> (1, self_type)
+     | Str_item  -> (1, result_type) in
+   let params =
+     List.init len
+       (fun i  ->
+          let app_src =
+            app_arrow
+              (List.init number
+                 (fun _  ->
+                    `Quote
+                      (_loc, (`Normal _loc),
+                        (`Some (`Lid (_loc, (allx ~off:0 i))))))) in
+          match k with
+          | Obj u ->
+              let dst =
+                match u with
+                | Map  ->
+                    `Quote
+                      (_loc, (`Normal _loc),
+                        (`Some (`Lid (_loc, (allx ~off:1 i)))))
+                | Iter  -> result_type
+                | Fold  -> self_type in
+              self_type |-> (prefix <+ (app_src dst))
+          | Str_item  -> prefix <+ (app_src result_type)) in
+   let base = prefix <+ (app_src dst) in
+   if len = 0
+   then ((`TyPol (_loc, (`Nil _loc), base)), dst)
+   else
+     (let quantifiers = gen_quantifiers ~arity:quant len in
+      ((`TyPol (_loc, quantifiers, (params +> base))), dst)) : (ctyp* ctyp) )
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
 let mk_obj class_name base body =

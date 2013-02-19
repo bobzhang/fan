@@ -1,5 +1,7 @@
 type loc = FanLoc.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
+type nil = [ `Nil of loc] 
+type ant_nil = [ ant | nil] 
 type literal =
   [ `Chr of (loc* string) | `Int of (loc* string) | `Int32 of (loc* string)
   | `Int64 of (loc* string) | `Flo of (loc* string)
@@ -23,6 +25,7 @@ type astring = [ `C of (loc* string) | ant]
 type ident =
   [ `Dot of (loc* ident* ident) | `App of (loc* ident* ident) | alident
   | auident] 
+type sid = [ `Id of (loc* ident)] 
 type ctyp =
   [ `Nil of loc | `Alias of (loc* ctyp* ctyp) | `Any of loc
   | `App of (loc* ctyp* ctyp) | `Arrow of (loc* ctyp* ctyp)
@@ -46,13 +49,17 @@ type ctyp =
   
 and name_ctyp =
   [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* ctyp* ctyp)
-  | `Nil of loc | ant] 
+  | ant_nil] 
+and or_ctyp =
+  [ `Or of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* ctyp* ctyp)
+  | `Of of (loc* ctyp* ctyp) | sid | ant_nil] 
+and of_ctyp = [ `Of of (loc* sid* ctyp) | sid | ant_nil] 
 and patt =
-  [ `Nil of loc | `Id of (loc* ident) | `App of (loc* patt* patt)
-  | `Vrn of (loc* string) | `Com of (loc* patt* patt)
-  | `Sem of (loc* patt* patt) | `Tup of (loc* patt) | `Any of loc
-  | `Record of (loc* rec_patt) | ant | literal
-  | `Alias of (loc* patt* alident) | `Array of (loc* patt)
+  [ nil | sid | `App of (loc* patt* patt) | `Vrn of (loc* string)
+  | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt)
+  | `Tup of (loc* patt) | `Any of loc | `Record of (loc* rec_patt) | 
+    ant
+  | literal | `Alias of (loc* patt* alident) | `Array of (loc* patt)
   | `Label of (loc* alident* patt)
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
@@ -62,13 +69,14 @@ and rec_patt =
   [ `Nil of loc | `RecBind of (loc* ident* patt)
   | `Sem of (loc* rec_patt* rec_patt) | `Any of loc | ant] 
 and expr =
-  [ `Nil of loc | `Id of (loc* ident) | `App of (loc* expr* expr)
-  | `Vrn of (loc* string) | `Com of (loc* expr* expr)
-  | `Sem of (loc* expr* expr) | `Tup of (loc* expr) | `Any of loc
-  | `Record of (loc* rec_expr) | ant | literal
-  | `RecordWith of (loc* rec_expr* expr) | `Dot of (loc* expr* expr)
-  | `ArrayDot of (loc* expr* expr) | `Array of (loc* expr) | `ExAsf of loc
-  | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
+  [ nil | sid | `App of (loc* expr* expr) | `Vrn of (loc* string)
+  | `Com of (loc* expr* expr) | `Sem of (loc* expr* expr)
+  | `Tup of (loc* expr) | `Any of loc | `Record of (loc* rec_expr) | 
+    ant
+  | literal | `RecordWith of (loc* rec_expr* expr)
+  | `Dot of (loc* expr* expr) | `ArrayDot of (loc* expr* expr)
+  | `Array of (loc* expr) | `ExAsf of loc | `ExAsr of (loc* expr)
+  | `Assign of (loc* expr* expr)
   | `For of (loc* alident* expr* expr* direction_flag* expr)
   | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
   | `IfThen of (loc* expr* expr) | `Label of (loc* alident* expr)
@@ -86,14 +94,13 @@ and rec_expr =
   [ `Nil of loc | `Sem of (loc* rec_expr* rec_expr)
   | `RecBind of (loc* ident* expr) | `Any of loc | ant] 
 and module_type =
-  [ `Nil of loc | `Id of (loc* ident)
-  | `MtFun of (loc* auident* module_type* module_type)
+  [ nil | sid | `MtFun of (loc* auident* module_type* module_type)
   | `Sig of (loc* sig_item) | `With of (loc* module_type* with_constr)
   | `ModuleTypeOf of (loc* module_expr) | ant] 
 and sig_item =
   [ `Nil of loc | `Class of (loc* class_type)
   | `ClassType of (loc* class_type) | `Sem of (loc* sig_item* sig_item)
-  | `Directive of (loc* alident* expr) | `Exception of (loc* ctyp)
+  | `Directive of (loc* alident* expr) | `Exception of (loc* of_ctyp)
   | `External of (loc* alident* ctyp* string meta_list)
   | `Include of (loc* module_type) | `Module of (loc* auident* module_type)
   | `RecModule of (loc* module_binding)
@@ -115,8 +122,7 @@ and match_case =
   [ `Nil of loc | `Or of (loc* match_case* match_case)
   | `Case of (loc* patt* expr* expr) | ant] 
 and module_expr =
-  [ `Nil of loc | `Id of (loc* ident)
-  | `App of (loc* module_expr* module_expr)
+  [ nil | sid | `App of (loc* module_expr* module_expr)
   | `Functor of (loc* auident* module_type* module_expr)
   | `Struct of (loc* str_item)
   | `Constraint of (loc* module_expr* module_type)
@@ -124,7 +130,7 @@ and module_expr =
 and str_item =
   [ `Nil of loc | `Class of (loc* class_expr)
   | `ClassType of (loc* class_type) | `Sem of (loc* str_item* str_item)
-  | `Directive of (loc* alident* expr) | `Exception of (loc* ctyp)
+  | `Directive of (loc* alident* expr) | `Exception of (loc* of_ctyp)
   | `StExp of (loc* expr)
   | `External of (loc* alident* ctyp* string meta_list)
   | `Include of (loc* module_expr) | `Module of (loc* auident* module_expr)
@@ -163,10 +169,11 @@ and class_str_item =
   | `CrVir of (loc* alident* private_flag* ctyp)
   | `CrVvr of (loc* alident* mutable_flag* ctyp) | ant] 
 type ep =
-  [ `Nil of loc | `Id of (loc* ident) | `App of (loc* ep* ep)
-  | `Vrn of (loc* string) | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep)
-  | `Tup of (loc* ep) | `Any of loc | `Array of (loc* ep)
-  | `Record of (loc* rec_bind) | ant | literal] 
+  [ nil | sid | `App of (loc* ep* ep) | `Vrn of (loc* string)
+  | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep) | `Tup of (loc* ep)
+  | `Any of loc | `Array of (loc* ep) | `Record of (loc* rec_bind) | 
+    ant
+  | literal] 
 and rec_bind =
   [ `Nil of loc | `RecBind of (loc* ident* ep)
   | `Sem of (loc* rec_bind* rec_bind) | `Any of loc | ant] 

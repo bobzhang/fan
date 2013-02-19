@@ -5617,15 +5617,6 @@ let apply_ctyp () =
                 (fun (y : 'comma_ctyp)  _  (x : 'more_ctyp) 
                    (_loc : FanLoc.t)  -> (`Com (_loc, x, y) : 'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword "|";
-         `Snterm
-           (Gram.obj
-              (constructor_declarations : 'constructor_declarations Gram.t ))],
-          ("Gram.mk_action\n  (fun (y : 'constructor_declarations)  _  (x : 'more_ctyp) \n     (_loc : FanLoc.t)  -> (`Or (_loc, x, y) : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (y : 'constructor_declarations)  _  (x : 'more_ctyp) 
-                  (_loc : FanLoc.t)  -> (`Or (_loc, x, y) : 'ctyp_quot )))));
-        ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword "of";
          `Snterm
            (Gram.obj (constructor_arg_list : 'constructor_arg_list Gram.t ))],
@@ -5635,37 +5626,12 @@ let apply_ctyp () =
                   (_loc : FanLoc.t)  -> (`Of (_loc, x, y) : 'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword "of";
-         `Snterm
-           (Gram.obj (constructor_arg_list : 'constructor_arg_list Gram.t ));
-         `Skeyword "|";
-         `Snterm
-           (Gram.obj
-              (constructor_declarations : 'constructor_declarations Gram.t ))],
-          ("Gram.mk_action\n  (fun (z : 'constructor_declarations)  _  (y : 'constructor_arg_list)  _ \n     (x : 'more_ctyp)  (_loc : FanLoc.t)  ->\n     (`Or (_loc, (`Of (_loc, x, y)), z) : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (z : 'constructor_declarations)  _ 
-                  (y : 'constructor_arg_list)  _  (x : 'more_ctyp) 
-                  (_loc : FanLoc.t)  ->
-                  (`Or (_loc, (`Of (_loc, x, y)), z) : 'ctyp_quot )))));
-        ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword "of";
          `Skeyword "&";
          `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ))],
           ("Gram.mk_action\n  (fun (y : 'amp_ctyp)  _  _  (x : 'more_ctyp)  (_loc : FanLoc.t)  ->\n     (`TyOfAmp (_loc, x, y) : 'ctyp_quot ))\n",
             (Gram.mk_action
                (fun (y : 'amp_ctyp)  _  _  (x : 'more_ctyp) 
                   (_loc : FanLoc.t)  -> (`TyOfAmp (_loc, x, y) : 'ctyp_quot )))));
-        ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword "of";
-         `Skeyword "&";
-         `Snterm (Gram.obj (amp_ctyp : 'amp_ctyp Gram.t ));
-         `Skeyword "|";
-         `Snterm (Gram.obj (row_field : 'row_field Gram.t ))],
-          ("Gram.mk_action\n  (fun (z : 'row_field)  _  (y : 'amp_ctyp)  _  _  (x : 'more_ctyp) \n     (_loc : FanLoc.t)  ->\n     (`Or (_loc, (`TyOfAmp (_loc, x, y)), z) : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (z : 'row_field)  _  (y : 'amp_ctyp)  _  _ 
-                  (x : 'more_ctyp)  (_loc : FanLoc.t)  ->
-                  (`Or (_loc, (`TyOfAmp (_loc, x, y)), z) : 'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ))],
@@ -6390,10 +6356,10 @@ let apply_ctyp () =
            (Gram.obj
               (constructor_declarations : 'constructor_declarations Gram.t ));
          `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)  ->\n     (`Sum (_loc, t) : 'ctyp ))\n",
+          ("Gram.mk_action\n  (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)  ->\n     (`Sum (_loc, (t : or_ctyp  :>ctyp)) : 'ctyp ))\n",
             (Gram.mk_action
                (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t) 
-                  -> (`Sum (_loc, t) : 'ctyp )))));
+                  -> (`Sum (_loc, (t : or_ctyp  :>ctyp)) : 'ctyp )))));
         ([`Skeyword "[";
          `Skeyword "=";
          `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
@@ -6537,17 +6503,6 @@ let apply_ctyp () =
                   | `Ant (("list" as n),s) ->
                       (`Ant (_loc, (mk_anti ~c:"ctyp|" n s)) : 'constructor_declarations )
                   | _ -> failwith "`Ant (_loc, (mk_anti ~c:\"ctyp|\" n s))\n"))));
-        ([`Stoken
-            (((function | `QUOTATION _ -> true | _ -> false)),
-              (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.ctyp_tag : 'constructor_declarations )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'constructor_declarations )
-                  | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
         ([`Sself; `Skeyword "|"; `Sself],
           ("Gram.mk_action\n  (fun (t2 : 'constructor_declarations)  _  (t1 : 'constructor_declarations) \n     (_loc : FanLoc.t)  -> (`Or (_loc, t1, t2) : 'constructor_declarations ))\n",
             (Gram.mk_action
@@ -6593,17 +6548,6 @@ let apply_ctyp () =
                    | `Ant ((""|"typ" as n),s) ->
                        (`Ant (_loc, (mk_anti ~c:"ctyp" n s)) : 'constructor_declaration )
                    | _ -> failwith "`Ant (_loc, (mk_anti ~c:\"ctyp\" n s))\n"))));
-        ([`Stoken
-            (((function | `QUOTATION _ -> true | _ -> false)),
-              (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.ctyp_tag : 'constructor_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'constructor_declaration )
-                  | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
          `Skeyword "of";
          `Snterm

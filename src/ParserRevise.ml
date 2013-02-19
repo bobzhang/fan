@@ -261,6 +261,14 @@ let apply () = begin
       | expr{e1}; ";"; sem_expr{e2} -> {| $e1; $e2 |}
       | expr{e} -> e
       | -> {||} ]
+       (*
+       {:str_item|
+       let f (type t) () =
+          let module M = struct exception E of t ; end in
+          ((fun x -> M.E x), (function [M.E x -> Some x | _ -> None]))|}
+
+       {:str_item| let f : ! 'a . 'a -> 'a = fun x -> x |}  
+        *)
       cvalue_binding:
       [ "="; expr{e} -> e
       | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; expr{e} -> 
@@ -1114,11 +1122,12 @@ let apply_ctyp () = begin
       (* | more_ctyp{x}; ";"; label_declaration_list{y} -> *)
       (*     `Sem(_loc,x,(y:name_ctyp :>ctyp)) *)
           (* {| $x; $y |} *)
-      | more_ctyp{x}; "|"; constructor_declarations{y} -> {| $x | $y |}
+      (* | more_ctyp{x}; "|"; constructor_declarations{y} -> {| $x | $y |} *)
       | more_ctyp{x}; "of"; constructor_arg_list{y} -> {| $x of $y |}
-      | more_ctyp{x}; "of"; constructor_arg_list{y}; "|"; constructor_declarations{z} -> {| $x of $y | $z |}
+      (* | more_ctyp{x}; "of"; constructor_arg_list{y}; "|"; constructor_declarations{z} -> *)
+      (*     {| $x of $y | $z |} *)
       | more_ctyp{x}; "of"; "&"; amp_ctyp{y} -> {| $x of & $y |}
-      | more_ctyp{x}; "of"; "&"; amp_ctyp{y}; "|"; row_field{z} -> {| $x of & $y | $z |}
+      (* | more_ctyp{x}; "of"; "&"; amp_ctyp{y}; "|"; row_field{z} -> {| $x of & $y | $z |} *)
       | more_ctyp{x}; ":"; more_ctyp{y} ->
           (* {| $x : $y |} *)
           `TyCol(_loc,x,y)
@@ -1187,7 +1196,7 @@ let apply_ctyp () = begin
       row_field:
       [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
-      | S{t1}; "|"; S{t2} -> {| $t1 | $t2 |}
+      | S{t1}; "|"; S{t2} -> (* {| $t1 | $t2 |} *) `Or(_loc,t1,t2)
       | "`"; astr{i} -> {| `$i |}
       | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> {| `$i of & $t |}
       | "`"; astr{i}; "of"; amp_ctyp{t} -> {| `$i of $t |}
@@ -1282,7 +1291,8 @@ let apply_ctyp () = begin
         | "("; S{t}; "*"; star_ctyp{tl}; ")" ->  {| ( $t * $tl ) |}
         | "("; S{t}; ")" -> t
         | "["; "]" -> {| [ ] |}
-        | "["; constructor_declarations{t}; "]" -> {| [ $t ] |}
+        | "["; constructor_declarations{t}; "]" ->
+            (* {| [ $t ] |} *) `Sum(_loc,(t:or_ctyp :>ctyp))
         | "["; "="; row_field{rfl}; "]" ->   {| [ = $rfl ] |} (* polymorphic variant *)
         | "["; ">"; "]" ->   {| [> ]|}
         | "["; ">"; row_field{rfl}; "]" ->    {| [ > $rfl ] |}
@@ -1304,8 +1314,8 @@ let apply_ctyp () = begin
       constructor_declarations:
       [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s) ->   {| $(anti:mk_anti ~c:"ctyp|" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | S{t1}; "|"; S{t2} ->        {| $t1 | $t2 |}
+      (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
+      | S{t1}; "|"; S{t2} ->    `Or(_loc,t1,t2)    (* {| $t1 | $t2 |} *)
       | a_uident{s}; "of"; constructor_arg_list{t} -> {| $(id:(s:>ident)) of $t |}
 
       (* GADT to be improved *)      
@@ -1319,9 +1329,13 @@ let apply_ctyp () = begin
       | a_uident{s} -> {| $(id:(s:>ident)) |} ]
       constructor_declaration:
       [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | a_uident{s}; "of"; constructor_arg_list{t} -> {|$(id:(s:>ident)) of $t |}
-      | a_uident{s} ->   {|$(id:(s:>ident))|}  ]
+      (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
+      | a_uident{s}; "of"; constructor_arg_list{t} ->
+          `Of(_loc,`Id(_loc,(s:>ident)),t)
+          (* {|$(id:(s:>ident)) of $t |} *)
+      | a_uident{s} ->
+          `Id(_loc,(s:>ident))
+          (* {|$(id:(s:>ident))|} *)  ]
       constructor_arg_list:
       [ `Ant (("list" as n),s) ->  {| $(anti:mk_anti ~c:"ctypand" n s) |}
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}

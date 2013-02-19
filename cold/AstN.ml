@@ -1,6 +1,8 @@
 let _ = ()
 type loc = FanLoc.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
+type nil = [ `Nil] 
+type ant_nil = [ ant | nil] 
 type literal =
   [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
   | `Flo of string | `NativeInt of string | `Str of string] 
@@ -21,6 +23,7 @@ type aident = [ alident | auident]
 type astring = [ `C of string | ant] 
 type ident =
   [ `Dot of (ident* ident) | `App of (ident* ident) | alident | auident] 
+type sid = [ `Id of ident] 
 type ctyp =
   [ `Nil | `Alias of (ctyp* ctyp) | `Any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
@@ -36,26 +39,31 @@ type ctyp =
   | `TyVrnInf of ctyp | `TyVrnInfSup of (ctyp* ctyp) | `Amp of (ctyp* ctyp)
   | `TyOfAmp of (ctyp* ctyp) | `Package of module_type | ant] 
 and name_ctyp =
-  [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (ctyp* ctyp) | `Nil | ant] 
+  [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (ctyp* ctyp) | ant_nil] 
+and or_ctyp =
+  [ `Or of (or_ctyp* or_ctyp) | `TyCol of (ctyp* ctyp) | `Of of (ctyp* ctyp)
+  | sid | ant_nil] 
+and of_ctyp = [ `Of of (sid* ctyp) | sid | ant_nil] 
 and patt =
-  [ `Nil | `Id of ident | `App of (patt* patt) | `Vrn of string
-  | `Com of (patt* patt) | `Sem of (patt* patt) | `Tup of patt | `Any
-  | `Record of rec_patt | ant | literal | `Alias of (patt* alident)
-  | `Array of patt | `Label of (alident* patt)
-  | `PaOlbi of (alident* patt* expr meta_option) | `Or of (patt* patt)
-  | `PaRng of (patt* patt) | `Constraint of (patt* ctyp)
-  | `ClassPath of ident | `Lazy of patt
+  [ nil | sid | `App of (patt* patt) | `Vrn of string | `Com of (patt* patt)
+  | `Sem of (patt* patt) | `Tup of patt | `Any | `Record of rec_patt | 
+    ant
+  | literal | `Alias of (patt* alident) | `Array of patt
+  | `Label of (alident* patt) | `PaOlbi of (alident* patt* expr meta_option)
+  | `Or of (patt* patt) | `PaRng of (patt* patt)
+  | `Constraint of (patt* ctyp) | `ClassPath of ident | `Lazy of patt
   | `ModuleUnpack of (auident* ctyp meta_option)] 
 and rec_patt =
   [ `Nil | `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | 
     `Any
   | ant] 
 and expr =
-  [ `Nil | `Id of ident | `App of (expr* expr) | `Vrn of string
-  | `Com of (expr* expr) | `Sem of (expr* expr) | `Tup of expr | `Any
-  | `Record of rec_expr | ant | literal | `RecordWith of (rec_expr* expr)
-  | `Dot of (expr* expr) | `ArrayDot of (expr* expr) | `Array of expr
-  | `ExAsf | `ExAsr of expr | `Assign of (expr* expr)
+  [ nil | sid | `App of (expr* expr) | `Vrn of string | `Com of (expr* expr)
+  | `Sem of (expr* expr) | `Tup of expr | `Any | `Record of rec_expr | 
+    ant
+  | literal | `RecordWith of (rec_expr* expr) | `Dot of (expr* expr)
+  | `ArrayDot of (expr* expr) | `Array of expr | `ExAsf | `ExAsr of expr
+  | `Assign of (expr* expr)
   | `For of (alident* expr* expr* direction_flag* expr) | `Fun of match_case
   | `IfThenElse of (expr* expr* expr) | `IfThen of (expr* expr)
   | `Label of (alident* expr) | `Lazy of expr
@@ -73,13 +81,13 @@ and rec_expr =
     `Any
   | ant] 
 and module_type =
-  [ `Nil | `Id of ident | `MtFun of (auident* module_type* module_type)
+  [ nil | sid | `MtFun of (auident* module_type* module_type)
   | `Sig of sig_item | `With of (module_type* with_constr)
   | `ModuleTypeOf of module_expr | ant] 
 and sig_item =
   [ `Nil | `Class of class_type | `ClassType of class_type
   | `Sem of (sig_item* sig_item) | `Directive of (alident* expr)
-  | `Exception of ctyp | `External of (alident* ctyp* string meta_list)
+  | `Exception of of_ctyp | `External of (alident* ctyp* string meta_list)
   | `Include of module_type | `Module of (auident* module_type)
   | `RecModule of module_binding | `ModuleType of (auident* module_type)
   | `Open of ident | `Type of ctyp | `Val of (alident* ctyp) | ant] 
@@ -97,7 +105,7 @@ and match_case =
   [ `Nil | `Or of (match_case* match_case) | `Case of (patt* expr* expr)
   | ant] 
 and module_expr =
-  [ `Nil | `Id of ident | `App of (module_expr* module_expr)
+  [ nil | sid | `App of (module_expr* module_expr)
   | `Functor of (auident* module_type* module_expr) | `Struct of str_item
   | `Constraint of (module_expr* module_type) | `PackageModule of expr | 
     ant]
@@ -105,7 +113,7 @@ and module_expr =
 and str_item =
   [ `Nil | `Class of class_expr | `ClassType of class_type
   | `Sem of (str_item* str_item) | `Directive of (alident* expr)
-  | `Exception of ctyp | `StExp of expr
+  | `Exception of of_ctyp | `StExp of expr
   | `External of (alident* ctyp* string meta_list) | `Include of module_expr
   | `Module of (auident* module_expr) | `RecModule of module_binding
   | `ModuleType of (auident* module_type) | `Open of ident | `Type of ctyp
@@ -137,9 +145,9 @@ and class_str_item =
   | `CrVir of (alident* private_flag* ctyp)
   | `CrVvr of (alident* mutable_flag* ctyp) | ant] 
 type ep =
-  [ `Nil | `Id of ident | `App of (ep* ep) | `Vrn of string
-  | `Com of (ep* ep) | `Sem of (ep* ep) | `Tup of ep | `Any | `Array of ep
-  | `Record of rec_bind | ant | literal] 
+  [ nil | sid | `App of (ep* ep) | `Vrn of string | `Com of (ep* ep)
+  | `Sem of (ep* ep) | `Tup of ep | `Any | `Array of ep | `Record of rec_bind
+  | ant | literal] 
 and rec_bind =
   [ `Nil | `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | `Any
   | ant] 

@@ -1,3 +1,6 @@
+open FanUtil;
+open LibUtil;  
+
 include Ast;
 module type META_LOC = sig
     (*   (\** The first location is where to put the returned pattern. *)
@@ -10,8 +13,6 @@ module type META_LOC = sig
     (* val meta_loc_expr : FanLoc.t -> FanLoc.t -> (\* expr *\)ep; *)
   val meta_loc: loc -> loc -> ep;
 end;
-open FanUtil;
-open LibUtil;  
 (* open StdLib; *)
 
 let ghost = FanLoc.ghost ; (* to refine *)
@@ -548,18 +549,19 @@ class clean_ast = object
   method! ctyp t =
     with ctyp
     match super#ctyp t with
-    [ {| ! $({@_l||} ) . $t |} |
+    [
+     {| ! $({@_l||} ) . $t |} |
       {| $({@_l||} ) as $t |} |
       {| $t as $({@_l||} ) |} |
       {| $t -> $({@_l||} ) |} |
       {| $({@_l||} ) -> $t |} |
-      {| $({@_l||} ) | $t |} |
-      {| $t | $({@_l||} ) |} |
+      (* {| $({@_l||} ) | $t |} | *)
+      `Or(_loc,`Nil _l ,t) |
+      `Or(_loc,t,`Nil _l) |
+      (* {| $t | $({@_l||} ) |} | *)
       {| $t of $({@_l||} ) |} |
       {| $({@_l||} ) and $t |} |
       {| $t and $({@_l||} ) |} |
-      (* {| $t; $({@_l||} ) |} | *)
-      (* {| $({@_l||} ); $t |} | *)
       {| $({@_l||}), $t |} |
       {| $t, $({@_l||} ) |} |
       {| $t & $({@_l||} ) |} |
@@ -567,7 +569,13 @@ class clean_ast = object
       {| $({@_l||} ) * $t |} |
       {| $t * $({@_l||} ) |} -> t
     | t -> t ];
-
+  (* method! poly_ctyp t = *)
+  (*   match super#poly_ctyp t with *)
+  (*   [`TyPol(_,`Nil _,t) -> t | t ->t ]; *)
+  method! name_ctyp t =
+    match super#name_ctyp t with
+    [`Sem(_,t,`Nil _)
+    |`Sem(_,`Nil _,t) -> t | t -> t ]  ;
   method! sig_item sg =
     with sig_item
     match super#sig_item sg with

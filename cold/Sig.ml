@@ -77,8 +77,8 @@ module type Syntax =
     val comma_type_parameter : ctyp Gram.t
     val constrain : (ctyp* ctyp) Gram.t
     val constructor_arg_list : ctyp Gram.t
-    val constructor_declaration : ctyp Gram.t
-    val constructor_declarations : ctyp Gram.t
+    val constructor_declaration : of_ctyp Gram.t
+    val constructor_declarations : or_ctyp Gram.t
     val ctyp : ctyp Gram.t
     val ctyp_quot : ctyp Gram.t
     val cvalue_binding : expr Gram.t

@@ -228,7 +228,7 @@ let repeat_arrow_n ty n =
       'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
  *)
 let result_id = ref 0;  
-let mk_method_type ~number ~prefix (id,len) (k:destination)  =
+let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
   let prefix = List.map
       (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
@@ -262,7 +262,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination)  =
           |Str_item -> prefix <+ (app_src result_type)]) in 
   let base = prefix <+ (app_src dst) in
   if len = 0 then
-    (base,dst)
+    ( `TyPol (_loc, (`Nil _loc ),base),dst)
   else let quantifiers = gen_quantifiers ~arity:quant len in
     ({| ! $quantifiers . $(params +> base) |},dst);
 

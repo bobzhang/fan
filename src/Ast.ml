@@ -39,6 +39,9 @@
     type ant =
         [ = `Ant of (loc * FanUtil.anti_cxt)];
 
+    type nil = [= `Nil of loc];
+    type ant_nil = [= ant|nil];
+
     type literal =
     [= `Chr of (loc * string)
     | `Int of (loc * string)
@@ -120,6 +123,8 @@
     | alident
     | auident];
 
+   type sid = [= `Id of (loc * ident)];
+
    type ctyp =
     [= `Nil of loc
 
@@ -135,8 +140,7 @@
 
      | `Label of (loc * alident * ctyp) (* ~s:t *)
 
-           (* moved into OptLabl *)  
-     (* | `TyOlb of (loc * alident * ctyp) (\* ?s:t *\) *)
+      (* ?s:t *)
      | `OptLabl of (loc * alident * ctyp )
            
      | `Id  of (loc * ident) (* i *) (* `Lazy.t *)
@@ -147,7 +151,7 @@
      | `TyDcl of (loc * alident * list ctyp * ctyp * list (ctyp * ctyp))
            (* FIXME, the location *)
           
-           (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
+     (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
      | `TyObj of (loc * name_ctyp * row_var_flag )
 
      | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
@@ -162,8 +166,11 @@
      | `TyCol of (loc * ctyp * ctyp) (* t : t *)
 
      (* | `Sem of (loc * ctyp * ctyp) (\* t; t *\) *)
+           
      | `Com of (loc * ctyp * ctyp) (* t, t *)
+
      | `Sum of (loc * ctyp) (* [ t ] *) (* [ A of int * string | B ] *)
+     
      | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)
      | `And of (loc * ctyp * ctyp) (* t * t *)
      | `Or  of (loc * ctyp * ctyp) (* t | t *)
@@ -183,16 +190,27 @@
      | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
      | `Package of (loc * module_type) (* (module S) *)
      | ant ]
-
+   (* and poly_ctyp = *)
+   (*   [= `TyPol of (loc * ctyp * ctyp) ]   *)
    and name_ctyp =
      [= `Sem of (loc * name_ctyp * name_ctyp)
      | `TyCol of (loc * ctyp * ctyp )
-     | `Nil of loc 
-     | ant ]
+     | ant_nil ]
+
+   and or_ctyp =
+     [= `Or of (loc * or_ctyp * or_ctyp )
+     | `TyCol of (loc * ctyp * ctyp)
+     | `Of of (loc * ctyp * ctyp)
+     | sid
+     | ant_nil]
          
+   and of_ctyp =
+     [= `Of of (loc * sid * ctyp)
+     | sid
+     | ant_nil ]  
    and patt =
-     [= `Nil of loc
-     | `Id  of (loc * ident)
+     [= nil
+     | sid
      | `App of (loc * patt * patt)
      | `Vrn of (loc * string)
      | `Com of (loc * patt * patt)
@@ -222,8 +240,8 @@
      | `Any of loc
      | ant]  
   and expr =
-     [= `Nil of loc
-     | `Id  of (loc * ident)
+     [= nil
+     | sid
      | `App of (loc * expr * expr)
      | `Vrn of (loc * string)
      | `Com of (loc * expr * expr)
@@ -291,9 +309,9 @@
      | `Any of loc  (* Faked here to be symmertric to rec_patt *)
      | ant (* $s$ *) ]
   and module_type =
-    [= `Nil of loc
+    [= nil
          (* A.B.C *)
-     | `Id  of (loc * ident)
+     | sid
        (* functor (s : mt) -> mt *)
      | `MtFun of (loc * auident * module_type * module_type)
       (* sig sg end *)
@@ -314,7 +332,7 @@
       (* # s or # s e *)
      | `Directive of (loc * alident * expr) (* semantics *)
       (* exception t *)
-     | `Exception of (loc * ctyp)
+     | `Exception of (loc * of_ctyp)
      (* external s : t = s ... s *)
      | `External of (loc * alident  * ctyp * meta_list string)
      | `Include of (loc * module_type)
@@ -341,6 +359,13 @@
      | `ModuleSubst of (loc * ident * ident)
      | `And of (loc * with_constr * with_constr)
      | ant  ]
+
+  (*
+    let-binding	::=	pattern =  expr  
+     value-name  { parameter }  [: typexpr] =  expr  
+    value-name : type  { typeconstr } .  typexpr =  expr
+    
+   *)           
   and binding =
     [= `Nil of loc
       | `And of (loc * binding * binding)
@@ -364,8 +389,8 @@
      (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
      | ant (* $s$ *) ]
   and module_expr =
-    [= `Nil of loc
-     | `Id  of (loc * ident)
+    [= nil
+     | sid
       (* me me *)
      | `App of (loc * module_expr * module_expr)
       (* functor (s : mt) -> me *)
@@ -388,7 +413,7 @@
      | `Directive of (loc * alident * expr)
       (* exception t or exception t = i *)
     (* | `Exception of ( loc * ctyp * meta_option(\*FIXME*\) ident) *)
-     | `Exception of ( loc * ctyp)
+     | `Exception of ( loc * of_ctyp)
      (* TODO ExceptionRebind
         http://caml.inria.fr/pub/docs/manual-ocaml/manual016.html
       *)     
@@ -485,8 +510,8 @@
     (* Any is necessary, since sometimes you want to [meta_loc_patt] to [_]
        Faked here to make a common subtyp of expr patt to be expressive enough *)
      type ep =
-     [= `Nil of loc
-     | `Id  of (loc * ident)
+     [= nil
+     | sid
      | `App of (loc * ep * ep)
      | `Vrn of (loc * string)
      | `Com of (loc * ep * ep)
