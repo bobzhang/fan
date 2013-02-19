@@ -270,7 +270,7 @@ end;;
 
 
     
-
+ocaml_lib ~extern:true "ocamlcommon" ~dir:"+compiler-libs";
 (*stolen from Ocaml_specific.ml*)
 module Driver = struct
   (* FIXME what will happen when
@@ -598,32 +598,32 @@ let syntax_path syntax_lib_file = (
 (* should be depracated, we use syntax_cache *)
 let find_syntaxes () = ["camlp4o"; "camlp4r"]
 let ocamlfind x = S[A"ocamlfind"; x]
+
 module Default = struct
   let before_options () = (
-    Options.ocamlc     := ocamlfind & S[A"ocamlc";
-                                        A"-annot";
-                                        A "-w";
-                                        A "+a-4-32-30";
-                                        (* A "-4"; (\* otherwise, a lot of fragile pattern will be detected*\)  *)
-                                        (* A "-bin-annot"; *)
-                                        (* A"-warn-error"; *)
-                                        (* A"A" *)
-                                        (* A" 4-6-7-9-27..29"; *)
-                                      ];
-    Options.ocamlopt   := ocamlfind & S[A"ocamlopt";
-                                        (* A"-annot"; *)
-                                        A"-w";
-                                        A"+a-4-32-30";
-                                        (* A"-unsafe"; *)
-                                        A"-inline";
-                                        A"100";
-                                        (* A"-4"; *)
-                                        (* A "-warn-error"; *)
-                                        (* A "A" *)
-                                        (* A"-bin-annot" *)
-                                      ];
-    Options.ocamldep   := ocamlfind & A"ocamldep";
-    Options.ocamldoc   := ocamlfind & A"ocamldoc";
+    Options.ocamlc := (* ocamlfind & *)
+      S[A"ocamlc.opt";
+        A"-annot";
+        A "-w";
+        A "+a-4-32-30";
+        (* A "-4"; (\* otherwise, a lot of fragile pattern will be detected*\)  *)
+        (* A "-bin-annot"; *)
+        (* A"-warn-error"; *)
+        (* A"A" *)
+        (* A" 4-6-7-9-27..29"; *)];
+    Options.ocamlopt   :=
+      (* ocamlfind & *)
+      S[A"ocamlopt.opt"; (* A"-annot"; *) A"-w"; A"+a-4-32-30";
+        (* A"-unsafe"; *) A"-inline"; A"100"; (* A"-4"; *)
+        (* A "-warn-error"; *)
+        (* A "A" *)
+        (* A"-bin-annot" *)];
+    Options.ocamldep   :=
+      (* ocamlfind & *)
+      A"ocamldep.opt";
+    Options.ocamldoc   :=
+      (* ocamlfind & *)
+      A"ocamldoc.opt";
     Options.make_links := false; (* no symlink *)
     (* Options.ocamldoc := S [A "ocamldoc"]; *)
     (** ocamlfind does not accept -search
@@ -632,8 +632,8 @@ module Default = struct
     Options.ocamlmktop := ocamlfind & A"ocamlmktop")
   let after_rules () = (
     (*when one link an ocaml library/binary/package, should use -linkpkg*)
-    flag ["ocaml"; "byte"; "link";"program"] & A"-linkpkg";
-    flag ["ocaml"; "native"; "link";"program"] & A"-linkpkg";
+    (* flag ["ocaml"; "byte"; "link";"program"] & A"-linkpkg"; *)
+    (* flag ["ocaml"; "native"; "link";"program"] & A"-linkpkg"; *)
     List.iter ( fun pkg ->
       flag ["ocaml"; "compile";  "pkg_"^pkg] & S[A"-package"; A pkg];
       flag ["ocaml"; "ocamldep"; "pkg_"^pkg] & S[A"-package"; A pkg];
@@ -641,7 +641,7 @@ module Default = struct
       flag ["ocaml"; "link";     "pkg_"^pkg] & S[A"-package"; A pkg];
       flag ["ocaml"; "infer_interface"; "pkg_"^pkg] & S[A"-package"; A pkg];
       flag ["menhir"] menhir_opts; (* add support for menhir*)
-    ) (find_packages ());
+               ) (find_packages ());
     (* Like -package but for extensions syntax. Morover -syntax is
      * useless when linking. *)
     List.iter ( fun syntax ->
@@ -649,7 +649,7 @@ module Default = struct
       flag ["ocaml"; "ocamldep"; "syntax_"^syntax] & S[A"-syntax"; A syntax];
       flag ["ocaml"; "doc";      "syntax_"^syntax] & S[A"-syntax"; A syntax];
       flag ["ocaml"; "infer_interface";  "syntax_"^syntax] & S[A"-syntax"; A syntax];
-    ) (find_syntaxes ());
+               ) (find_syntaxes ());
     (* The default "thread" tag is not compatible with ocamlfind.
        Indeed, the default rules add the "threads.cma" or
        "threads.cmxa" options when using this tag. When using the

@@ -156,12 +156,10 @@
            (*  +'s -'s 's +_ -_ *)      
      | `Quote of (loc * position_flag * meta_option alident)
           
-     (* | `Record of (loc * name_ctyp) (\* { t } *\) (\* { foo : int ; bar : mutable string } *\) *)
-
      | `Record of (loc * name_ctyp)
            
      | `TyCol of (loc * ctyp * ctyp) (* t : t *)
-           (* | `TySem of (loc * ctyp * ctyp) (\* t; t *\) *)
+
      | `Sem of (loc * ctyp * ctyp) (* t; t *)
      | `Com of (loc * ctyp * ctyp) (* t, t *)
      | `Sum of (loc * ctyp) (* [ t ] *) (* [ A of int * string | B ] *)
@@ -173,7 +171,8 @@
      | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
      | `Sta of (loc * ctyp * ctyp) (* t * t *)
 
-     | `TyVrn of (loc * astring(* string *)) (* `s *)          
+     | `TyVrn of (loc * astring) (* `s *)
+           
      | `TyVrnEq of (loc * ctyp) (* [ = t ] *)
      | `TyVrnSup of (loc * ctyp) (* [ > t ] *)
      | `TyVrnInf of (loc * ctyp) (* [ < t ] *)
