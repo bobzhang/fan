@@ -6090,7 +6090,7 @@ let apply_ctyp () =
                 (fun (t2 : 'type_repr)  (_loc : FanLoc.t)  ->
                    (`TyRepr (_loc, (`PrNil _loc), t2) : 'type_info )))));
         ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-         `Skeyword "==";
+         `Skeyword "=";
          `Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
           ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, (`PrNil _loc), t2) : 'type_info ))\n",
             (Gram.mk_action
@@ -6107,7 +6107,7 @@ let apply_ctyp () =
                (fun (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
                   (`TyEq (_loc, (`Private _loc), t1) : 'type_info )))));
         ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-         `Skeyword "==";
+         `Skeyword "=";
          `Skeyword "private";
          `Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
           ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, (`Private _loc), t2) : 'type_info ))\n",

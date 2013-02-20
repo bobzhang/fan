@@ -200,7 +200,6 @@
     | ant_nil ]
     (* original syntax
        {[ type v = u = A of int ]}
-       
        revise syntax
        {[ type v = u == [A of int];]} 
      *)
@@ -209,9 +208,6 @@
      [= `TyMan of (loc (* * private_flag *) * ctyp * private_flag  * type_repr)
      | `TyRepr of (loc * private_flag * type_repr)
      | `TyEq of (loc * private_flag * ctyp)
-     (* | `Priv of (loc * type_repr) *)
-     (* | `Record of (loc * name_ctyp) *)
-     (* | `Sum of (loc * ctyp) *)
      | ant_nil ]  
    and type_repr =
      [= (* `TyMan of (loc * ctyp * type_info) *)

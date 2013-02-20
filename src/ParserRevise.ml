@@ -1264,10 +1264,10 @@ let apply_ctyp () = begin
       type_info:
       [
         type_repr{t2} -> `TyRepr(_loc,`PrNil _loc,t2)
-      | ctyp{t1}; "=="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)
+      | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)
       |  ctyp{t1} -> `TyEq(_loc,`PrNil _loc, t1)
       | "private"; ctyp{t1} -> `TyEq(_loc,`Private _loc,t1)
-      |  ctyp{t1}; "==";"private"; type_repr{t2} ->
+      |  ctyp{t1}; "=";"private"; type_repr{t2} ->
           `TyMan(_loc, t1, `Private _loc,t2)
       | "private"; type_repr{t2} ->
           `TyRepr(_loc,`Private _loc, t2)
