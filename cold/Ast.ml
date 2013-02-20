@@ -36,7 +36,7 @@ type ctyp =
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
   | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
-  | `Record of (loc* name_ctyp) | `TyCol of (loc* ctyp* ctyp)
+  | `Record of (loc* name_ctyp) | `TyCol of (loc* sid* ctyp)
   | `Com of (loc* ctyp* ctyp) | `Sum of (loc* ctyp)
   | `Of of (loc* ctyp* ctyp) | `And of (loc* ctyp* ctyp)
   | `Or of (loc* ctyp* ctyp) | `Priv of (loc* ctyp) | `Mut of (loc* ctyp)
@@ -48,10 +48,10 @@ type ctyp =
     ant]
   
 and name_ctyp =
-  [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* ctyp* ctyp)
+  [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* sid* ctyp)
   | ant_nil] 
 and or_ctyp =
-  [ `Or of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* ctyp* ctyp)
+  [ `Or of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* sid* ctyp)
   | `Of of (loc* ctyp* ctyp) | sid | ant_nil] 
 and of_ctyp = [ `Of of (loc* sid* ctyp) | sid | ant_nil] 
 and patt =

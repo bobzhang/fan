@@ -163,7 +163,7 @@
           
      | `Record of (loc * name_ctyp)
            
-     | `TyCol of (loc * ctyp * ctyp) (* t : t *)
+     | `TyCol of (loc * sid * ctyp) (* t : t *)
 
      (* | `Sem of (loc * ctyp * ctyp) (\* t; t *\) *)
            
@@ -194,12 +194,12 @@
    (*   [= `TyPol of (loc * ctyp * ctyp) ]   *)
    and name_ctyp =
      [= `Sem of (loc * name_ctyp * name_ctyp)
-     | `TyCol of (loc * ctyp * ctyp )
+     | `TyCol of (loc * sid * ctyp )
      | ant_nil ]
 
    and or_ctyp =
      [= `Or of (loc * or_ctyp * or_ctyp )
-     | `TyCol of (loc * ctyp * ctyp)
+     | `TyCol of (loc * sid * ctyp)
      | `Of of (loc * ctyp * ctyp)
      | sid
      | ant_nil]

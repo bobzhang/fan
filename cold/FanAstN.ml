@@ -196,7 +196,7 @@ class eq =
               (self#meta_option (fun self  -> self#alident) _a1 _b1)
         | (`Record _a0,`Record _b0) -> self#name_ctyp _a0 _b0
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Com (_a0,_a1),`Com (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Sum _a0,`Sum _b0) -> self#ctyp _a0 _b0
@@ -230,7 +230,7 @@ class eq =
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#name_ctyp _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
             (self#ant_nil _a0 _b0 :>'result23)
         | (_,_) -> false
@@ -240,7 +240,7 @@ class eq =
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#or_ctyp _a0 _b0) && (self#or_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Of (_a0,_a1),`Of (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result24)
@@ -841,7 +841,7 @@ class print =
         | `Record _a0 ->
             Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#name_ctyp _a0
         | `TyCol (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#ctyp _a0
+            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#sid _a0
               self#ctyp _a1
         | `Com (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a)@]" self#ctyp _a0
@@ -889,7 +889,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#name_ctyp _a0
               self#name_ctyp _a1
         | `TyCol (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#ctyp _a0
+            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#sid _a0
               self#ctyp _a1
         | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result69)
     method or_ctyp : 'fmt -> or_ctyp -> 'result70=
@@ -899,7 +899,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#or_ctyp _a0
               self#or_ctyp _a1
         | `TyCol (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#ctyp _a0
+            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#sid _a0
               self#ctyp _a1
         | `Of (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a)@]" self#ctyp _a0 self#ctyp
@@ -1574,7 +1574,7 @@ let rec meta_ctyp _loc =
       `App (_loc, (`Vrn (_loc, "Record")), (meta_name_ctyp _loc _a0))
   | `TyCol (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_ctyp _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
           (meta_ctyp _loc _a1))
   | `Com (_a0,_a1) ->
       `App
@@ -1633,7 +1633,7 @@ and meta_name_ctyp _loc =
           (meta_name_ctyp _loc _a1))
   | `TyCol (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_ctyp _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
           (meta_ctyp _loc _a1))
   | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result131)
 and meta_or_ctyp _loc =
@@ -1644,7 +1644,7 @@ and meta_or_ctyp _loc =
           (meta_or_ctyp _loc _a1))
   | `TyCol (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_ctyp _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
           (meta_ctyp _loc _a1))
   | `Of (_a0,_a1) ->
       `App

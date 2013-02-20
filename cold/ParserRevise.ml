@@ -5633,13 +5633,6 @@ let apply_ctyp () =
                (fun (y : 'amp_ctyp)  _  _  (x : 'more_ctyp) 
                   (_loc : FanLoc.t)  -> (`TyOfAmp (_loc, x, y) : 'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword ":";
-         `Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (y : 'more_ctyp)  _  (x : 'more_ctyp)  (_loc : FanLoc.t)  ->\n     (`TyCol (_loc, x, y) : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (y : 'more_ctyp)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) 
-                  -> (`TyCol (_loc, x, y) : 'ctyp_quot )))));
-        ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword "*";
          `Snterm (Gram.obj (star_ctyp : 'star_ctyp Gram.t ))],
           ("Gram.mk_action\n  (fun (y : 'star_ctyp)  _  (x : 'more_ctyp)  (_loc : FanLoc.t)  ->\n     (`Sta (_loc, x, y) : 'ctyp_quot ))\n",

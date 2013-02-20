@@ -1128,9 +1128,9 @@ let apply_ctyp () = begin
       (*     {| $x of $y | $z |} *)
       | more_ctyp{x}; "of"; "&"; amp_ctyp{y} -> {| $x of & $y |}
       (* | more_ctyp{x}; "of"; "&"; amp_ctyp{y}; "|"; row_field{z} -> {| $x of & $y | $z |} *)
-      | more_ctyp{x}; ":"; more_ctyp{y} ->
-          (* {| $x : $y |} *)
-          `TyCol(_loc,x,y)
+      (* | more_ctyp{x}; ":"; more_ctyp{y} -> *)
+      (*     (\* {| $x : $y |} *\) *)
+      (*     `TyCol(_loc,x,y) *)
       (* | more_ctyp{x}; ":"; more_ctyp{y}; ";"; label_declaration_list{z} -> *)
       (*     (\* {| $x : $y ; $z |} *\) *)
       (*     `Sem(_loc,`TyCol(_loc,x,y),(z:name_ctyp :> ctyp)) *)

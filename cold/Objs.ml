@@ -286,7 +286,7 @@ class map2 =
             let _a1 = self#name_ctyp _a1 _b1 in `Record (_a0, _a1)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ctyp _a1 _b1 in
+            let _a1 = self#sid _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `TyCol (_a0, _a1, _a2)
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -358,7 +358,7 @@ class map2 =
             let _a2 = self#name_ctyp _a2 _b2 in `Sem (_a0, _a1, _a2)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ctyp _a1 _b1 in
+            let _a1 = self#sid _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `TyCol (_a0, _a1, _a2)
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
             (self#ant_nil _a0 _b0 : ant_nil  :>name_ctyp)
@@ -372,7 +372,7 @@ class map2 =
             let _a2 = self#or_ctyp _a2 _b2 in `Or (_a0, _a1, _a2)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ctyp _a1 _b1 in
+            let _a1 = self#sid _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `TyCol (_a0, _a1, _a2)
         | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -1329,7 +1329,7 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#name_ctyp _a1 _b1
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
+            let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -1382,7 +1382,7 @@ class fold2 =
             let self = self#name_ctyp _a1 _b1 in self#name_ctyp _a2 _b2
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
+            let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
             (self#ant_nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
@@ -1394,7 +1394,7 @@ class fold2 =
             let self = self#or_ctyp _a1 _b1 in self#or_ctyp _a2 _b2
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
+            let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -2097,7 +2097,7 @@ class iter =
            self#position_flag _a1;
            self#meta_option (fun self  -> self#alident) _a2)
       | `Record (_a0,_a1) -> (self#loc _a0; self#name_ctyp _a1)
-      | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
+      | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | `Com (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Sum (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `Of (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
@@ -2122,13 +2122,13 @@ class iter =
       function
       | `Sem (_a0,_a1,_a2) ->
           (self#loc _a0; self#name_ctyp _a1; self#name_ctyp _a2)
-      | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
+      | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result115)
     method or_ctyp : or_ctyp -> 'result116=
       function
       | `Or (_a0,_a1,_a2) ->
           (self#loc _a0; self#or_ctyp _a1; self#or_ctyp _a2)
-      | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
+      | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | `Of (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | #sid as _a0 -> (self#sid _a0 :>'result116)
       | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result116)
@@ -2710,7 +2710,7 @@ class map =
           let _a1 = self#name_ctyp _a1 in `Record (_a0, _a1)
       | `TyCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in
+          let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `TyCol (_a0, _a1, _a2)
       | `Com (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -2780,7 +2780,7 @@ class map =
           let _a2 = self#name_ctyp _a2 in `Sem (_a0, _a1, _a2)
       | `TyCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in
+          let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `TyCol (_a0, _a1, _a2)
       | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>name_ctyp)
     method or_ctyp : or_ctyp -> or_ctyp=
@@ -2791,7 +2791,7 @@ class map =
           let _a2 = self#or_ctyp _a2 in `Or (_a0, _a1, _a2)
       | `TyCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in
+          let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `TyCol (_a0, _a1, _a2)
       | `Of (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -3610,8 +3610,7 @@ class fold =
           self#meta_option (fun self  -> self#alident) _a2
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
       | `TyCol (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#ctyp _a1 in self#ctyp _a2
+          let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | `Com (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -3652,8 +3651,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#name_ctyp _a1 in self#name_ctyp _a2
       | `TyCol (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#ctyp _a1 in self#ctyp _a2
+          let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
     method or_ctyp : or_ctyp -> 'self_type=
       function
@@ -3661,8 +3659,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#or_ctyp _a1 in self#or_ctyp _a2
       | `TyCol (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#ctyp _a1 in self#ctyp _a2
+          let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | `Of (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -4359,7 +4356,7 @@ class print =
               self#name_ctyp _a1
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1 self#ctyp _a2
+              self#sid _a1 self#ctyp _a2
         | `Com (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -4420,7 +4417,7 @@ class print =
               self#name_ctyp _a1 self#name_ctyp _a2
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1 self#ctyp _a2
+              self#sid _a1 self#ctyp _a2
         | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result253)
     method or_ctyp : 'fmt -> or_ctyp -> 'result254=
       fun fmt  ->
@@ -4430,7 +4427,7 @@ class print =
               self#or_ctyp _a1 self#or_ctyp _a2
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1 self#ctyp _a2
+              self#sid _a1 self#ctyp _a2
         | `Of (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -5206,8 +5203,7 @@ class eq =
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
+            ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -5259,8 +5255,7 @@ class eq =
             ((self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)) &&
               (self#name_ctyp _a2 _b2)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
+            ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
             (self#ant_nil _a0 _b0 :>'result299)
         | (_,_) -> false
@@ -5271,8 +5266,7 @@ class eq =
             ((self#loc _a0 _b0) && (self#or_ctyp _a1 _b1)) &&
               (self#or_ctyp _a2 _b2)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
+            ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -5971,7 +5965,7 @@ let rec strip_loc_ctyp =
       `Quote (_a1, _a2)
   | `Record (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `Record _a1
   | `TyCol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
+      let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
   | `Com (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
@@ -6013,7 +6007,7 @@ and strip_loc_name_ctyp =
       let _a1 = strip_loc_name_ctyp _a1 in
       let _a2 = strip_loc_name_ctyp _a2 in `Sem (_a1, _a2)
   | `TyCol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
+      let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
   | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result360)
 and strip_loc_or_ctyp =
@@ -6022,7 +6016,7 @@ and strip_loc_or_ctyp =
       let _a1 = strip_loc_or_ctyp _a1 in
       let _a2 = strip_loc_or_ctyp _a2 in `Or (_a1, _a2)
   | `TyCol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
+      let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
   | `Of (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
@@ -6685,7 +6679,7 @@ let rec pp_print_ctyp fmt =
         pp_print_name_ctyp _a1
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1 pp_print_ctyp _a2
+        pp_print_sid _a1 pp_print_ctyp _a2
   | `Com (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
@@ -6745,7 +6739,7 @@ and pp_print_name_ctyp fmt =
         pp_print_name_ctyp _a1 pp_print_name_ctyp _a2
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1 pp_print_ctyp _a2
+        pp_print_sid _a1 pp_print_ctyp _a2
   | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result404)
 and pp_print_or_ctyp fmt =
   function
@@ -6754,7 +6748,7 @@ and pp_print_or_ctyp fmt =
         pp_print_or_ctyp _a1 pp_print_or_ctyp _a2
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1 pp_print_ctyp _a2
+        pp_print_sid _a1 pp_print_ctyp _a2
   | `Of (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
