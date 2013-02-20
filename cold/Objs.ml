@@ -310,9 +310,6 @@ class map2 =
         | (`Priv (_a0,_a1),`Priv (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in `Priv (_a0, _a1)
-        | (`Mut (_a0,_a1),`Mut (_b0,_b1)) ->
-            let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ctyp _a1 _b1 in `Mut (_a0, _a1)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in `Tup (_a0, _a1)
@@ -360,6 +357,10 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#sid _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `TyCol (_a0, _a1, _a2)
+        | (`TyColMut (_a0,_a1,_a2),`TyColMut (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#sid _a1 _b1 in
+            let _a2 = self#ctyp _a2 _b2 in `TyColMut (_a0, _a1, _a2)
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
             (self#ant_nil _a0 _b0 : ant_nil  :>name_ctyp)
         | (_,_) -> invalid_arg "map2 failure"
@@ -1346,8 +1347,6 @@ class fold2 =
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
         | (`Priv (_a0,_a1),`Priv (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
-        | (`Mut (_a0,_a1),`Mut (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`Sta (_a0,_a1,_a2),`Sta (_b0,_b1,_b2)) ->
@@ -1381,6 +1380,9 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#name_ctyp _a1 _b1 in self#name_ctyp _a2 _b2
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
+        | (`TyColMut (_a0,_a1,_a2),`TyColMut (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
@@ -2104,7 +2106,6 @@ class iter =
       | `And (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Priv (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
-      | `Mut (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `Tup (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `Sta (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `TyVrn (_a0,_a1) -> (self#loc _a0; self#astring _a1)
@@ -2123,6 +2124,8 @@ class iter =
       | `Sem (_a0,_a1,_a2) ->
           (self#loc _a0; self#name_ctyp _a1; self#name_ctyp _a2)
       | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
+      | `TyColMut (_a0,_a1,_a2) ->
+          (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result115)
     method or_ctyp : or_ctyp -> 'result116=
       function
@@ -2734,9 +2737,6 @@ class map =
       | `Priv (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in `Priv (_a0, _a1)
-      | `Mut (_a0,_a1) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in `Mut (_a0, _a1)
       | `Tup (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in `Tup (_a0, _a1)
@@ -2782,6 +2782,10 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `TyCol (_a0, _a1, _a2)
+      | `TyColMut (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#sid _a1 in
+          let _a2 = self#ctyp _a2 in `TyColMut (_a0, _a1, _a2)
       | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>name_ctyp)
     method or_ctyp : or_ctyp -> or_ctyp=
       function
@@ -3625,7 +3629,6 @@ class fold =
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
       | `Priv (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
-      | `Mut (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `Sta (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -3651,6 +3654,8 @@ class fold =
           let self = self#loc _a0 in
           let self = self#name_ctyp _a1 in self#name_ctyp _a2
       | `TyCol (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
+      | `TyColMut (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
     method or_ctyp : or_ctyp -> 'self_type=
@@ -4375,9 +4380,6 @@ class print =
         | `Priv (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Priv@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1
-        | `Mut (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Mut@ %a@ %a)@]" self#loc _a0 self#ctyp
-              _a1
         | `Tup (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#ctyp
               _a1
@@ -4417,6 +4419,9 @@ class print =
               self#name_ctyp _a1 self#name_ctyp _a2
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
+              self#sid _a1 self#ctyp _a2
+        | `TyColMut (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" self#loc _a0
               self#sid _a1 self#ctyp _a2
         | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result253)
     method or_ctyp : 'fmt -> or_ctyp -> 'result254=
@@ -5220,8 +5225,6 @@ class eq =
               (self#ctyp _a2 _b2)
         | (`Priv (_a0,_a1),`Priv (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
-        | (`Mut (_a0,_a1),`Mut (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Sta (_a0,_a1,_a2),`Sta (_b0,_b1,_b2)) ->
@@ -5255,6 +5258,8 @@ class eq =
             ((self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)) &&
               (self#name_ctyp _a2 _b2)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
+        | (`TyColMut (_a0,_a1,_a2),`TyColMut (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
             (self#ant_nil _a0 _b0 :>'result299)
@@ -5981,7 +5986,6 @@ let rec strip_loc_ctyp =
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Or (_a1, _a2)
   | `Priv (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Priv _a1
-  | `Mut (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Mut _a1
   | `Tup (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Tup _a1
   | `Sta (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
@@ -6009,6 +6013,9 @@ and strip_loc_name_ctyp =
   | `TyCol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
+  | `TyColMut (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_sid _a1 in
+      let _a2 = strip_loc_ctyp _a2 in `TyColMut (_a1, _a2)
   | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result360)
 and strip_loc_or_ctyp =
   function
@@ -6698,9 +6705,6 @@ let rec pp_print_ctyp fmt =
   | `Priv (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Priv@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1
-  | `Mut (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Mut@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1
   | `Tup (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1
@@ -6739,6 +6743,9 @@ and pp_print_name_ctyp fmt =
         pp_print_name_ctyp _a1 pp_print_name_ctyp _a2
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_sid _a1 pp_print_ctyp _a2
+  | `TyColMut (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sid _a1 pp_print_ctyp _a2
   | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result404)
 and pp_print_or_ctyp fmt =

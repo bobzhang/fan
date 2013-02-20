@@ -308,11 +308,15 @@ let ty_of_stl = fun
         (* {:ctyp| $uid:s of $(and_of_list tl) |} *) 
 
 let ty_of_sbt = fun
-    [ (_loc, s, true, t) ->
-      `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t)))
-      (* {:ctyp| $lid:s : mutable $t |} *)
-    | (_loc, s, false, t) ->
-        `TyCol (_loc, `Id (_loc, `Lid (_loc, s)), t)];
+    [ (_loc, s, v, t) ->
+      if v then
+        `TyColMut (_loc, `Id (_loc, `Lid (_loc, s)), t)
+      else
+        `TyCol (_loc, `Id (_loc, `Lid (_loc, s)), t)
+    (*   `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t))) *)
+    (*   (\* {:ctyp| $lid:s : mutable $t |} *\) *)
+    (* | (_loc, s, false, t) -> *)
+    ];
         (* {:ctyp| $lid:s : $t |}  *)
 
 let bi_of_pe (p, e) = let _loc = loc_of p in {:binding| $p = $e |};

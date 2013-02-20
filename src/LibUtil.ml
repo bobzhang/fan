@@ -447,8 +447,8 @@ end;
 
 module LStack = struct
   type 'a t  = {
-      elts : mutable list 'a;
-      length : mutable int;
+      mutable elts : list 'a;
+      mutable length :  int;
     };
   exception Empty;
   let invariant t =

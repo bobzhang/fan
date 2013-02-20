@@ -1141,10 +1141,11 @@ let apply_ctyp () = begin
       | "type"; type_declaration{t} -> t   
       | -> {||}  ]
       more_ctyp:
-      [ "mutable"; S{x} -> {| mutable $x |} 
-      | "`"; astr{x} -> {| `$x |}
-      | ctyp{x} -> x
-      | type_parameter{x} -> x   ]
+      [
+       (* "mutable"; S{x} -> {| mutable $x |} | *)
+      "`"; astr{x} -> {| `$x |} |
+      ctyp{x} -> x |
+      type_parameter{x} -> x   ]
       unquoted_typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1352,8 +1353,10 @@ let apply_ctyp () = begin
       | a_lident{s}; ":"; ctyp{t} ->
           (* {| $(id:(s:>ident)) :$t|} *)
           `TyCol (_loc, (`Id (_loc, (s :>ident))), t)
-      | a_lident{s}; ":"; "mutable"; ctyp{t} ->
-          `TyCol (_loc, (`Id (_loc, (s :>ident))), (`Mut (_loc, t)))
+
+      | "mutable"; a_lident{s}; ":";  ctyp{t} ->
+          `TyColMut(_loc,`Id(_loc,(s:>ident)),t)
+          (* `TyCol (_loc, (`Id (_loc, (s :>ident))), (`Mut (_loc, t))) *)
           (* {|$(id:(s:>ident)) : mutable $t |} *)
       ]
       class_name_and_param:

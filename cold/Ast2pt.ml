@@ -187,7 +187,7 @@ let mkprivate =
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
 let mktrecord (x : name_ctyp) =
   match x with
-  | `TyCol (_loc,`Id (_,`Lid (sloc,s)),`Mut (_,t)) ->
+  | `TyColMut (_loc,`Id (_,`Lid (sloc,s)),t) ->
       ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), _loc)
   | `TyCol (_loc,`Id (_,`Lid (sloc,s)),t) ->
       ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), _loc)

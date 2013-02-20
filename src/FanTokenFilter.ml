@@ -3,7 +3,7 @@ open FanToken;
 
 type t = {
     is_kwd : string -> bool;
-    filter : mutable filter;
+     mutable filter : filter;
   };
 
 open LibUtil;

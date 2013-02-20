@@ -207,7 +207,6 @@ class eq =
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Priv _a0,`Priv _b0) -> self#ctyp _a0 _b0
-        | (`Mut _a0,`Mut _b0) -> self#ctyp _a0 _b0
         | (`Tup _a0,`Tup _b0) -> self#ctyp _a0 _b0
         | (`Sta (_a0,_a1),`Sta (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
@@ -230,6 +229,8 @@ class eq =
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#name_ctyp _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
+            (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
+        | (`TyColMut (_a0,_a1),`TyColMut (_b0,_b1)) ->
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
             (self#ant_nil _a0 _b0 :>'result23)
@@ -857,7 +858,6 @@ class print =
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
         | `Priv _a0 -> Format.fprintf fmt "@[<1>(`Priv@ %a)@]" self#ctyp _a0
-        | `Mut _a0 -> Format.fprintf fmt "@[<1>(`Mut@ %a)@]" self#ctyp _a0
         | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#ctyp _a0
         | `Sta (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sta@ %a@ %a)@]" self#ctyp _a0
@@ -890,6 +890,9 @@ class print =
               self#name_ctyp _a1
         | `TyCol (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#sid _a0
+              self#ctyp _a1
+        | `TyColMut (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a)@]" self#sid _a0
               self#ctyp _a1
         | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result69)
     method or_ctyp : 'fmt -> or_ctyp -> 'result70=
@@ -1594,7 +1597,6 @@ let rec meta_ctyp _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_ctyp _loc _a0))),
           (meta_ctyp _loc _a1))
   | `Priv _a0 -> `App (_loc, (`Vrn (_loc, "Priv")), (meta_ctyp _loc _a0))
-  | `Mut _a0 -> `App (_loc, (`Vrn (_loc, "Mut")), (meta_ctyp _loc _a0))
   | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_ctyp _loc _a0))
   | `Sta (_a0,_a1) ->
       `App
@@ -1634,6 +1636,10 @@ and meta_name_ctyp _loc =
   | `TyCol (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
+          (meta_ctyp _loc _a1))
+  | `TyColMut (_a0,_a1) ->
+      `App
+        (_loc, (`App (_loc, (`Vrn (_loc, "TyColMut")), (meta_sid _loc _a0))),
           (meta_ctyp _loc _a1))
   | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result131)
 and meta_or_ctyp _loc =

@@ -65,7 +65,7 @@ let list_of_record (ty : name_ctyp) =
    tys |>
      (List.map
         (function
-         | `TyCol (_,`Id (_,`Lid (_,col_label)),`Mut (_,col_ctyp)) ->
+         | `TyColMut (_,`Id (_,`Lid (_,col_label)),col_ctyp) ->
              { col_label; col_ctyp; col_mutable = true }
          | `TyCol (_,`Id (_,`Lid (_,col_label)),col_ctyp) ->
              { col_label; col_ctyp; col_mutable = false }

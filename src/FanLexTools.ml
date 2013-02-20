@@ -2,9 +2,9 @@
 
 open LibUtil;
 type node = { 
-  id : int; 
-  eps :  mutable list node; (* FIXME inconsistent with original syntax *)
-  trans : mutable list (LexSet.t * node);
+    id : int; 
+    mutable eps :  list node; (* FIXME inconsistent with original syntax *)
+    mutable trans : list (LexSet.t * node);
 };
 
 (* Compilation regexp -> NFA *)

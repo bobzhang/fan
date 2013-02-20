@@ -39,17 +39,15 @@ type ctyp =
   | `Record of (loc* name_ctyp) | `TyCol of (loc* sid* ctyp)
   | `Com of (loc* ctyp* ctyp) | `Sum of (loc* ctyp)
   | `Of of (loc* ctyp* ctyp) | `And of (loc* ctyp* ctyp)
-  | `Or of (loc* ctyp* ctyp) | `Priv of (loc* ctyp) | `Mut of (loc* ctyp)
-  | `Tup of (loc* ctyp) | `Sta of (loc* ctyp* ctyp)
-  | `TyVrn of (loc* astring) | `TyVrnEq of (loc* ctyp)
-  | `TyVrnSup of (loc* ctyp) | `TyVrnInf of (loc* ctyp)
-  | `TyVrnInfSup of (loc* ctyp* ctyp) | `Amp of (loc* ctyp* ctyp)
-  | `TyOfAmp of (loc* ctyp* ctyp) | `Package of (loc* module_type) | 
-    ant]
-  
+  | `Or of (loc* ctyp* ctyp) | `Priv of (loc* ctyp) | `Tup of (loc* ctyp)
+  | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* astring)
+  | `TyVrnEq of (loc* ctyp) | `TyVrnSup of (loc* ctyp)
+  | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
+  | `Amp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
+  | `Package of (loc* module_type) | ant] 
 and name_ctyp =
   [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* sid* ctyp)
-  | ant_nil] 
+  | `TyColMut of (loc* sid* ctyp) | ant_nil] 
 and or_ctyp =
   [ `Or of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* sid* ctyp)
   | `Of of (loc* ctyp* ctyp) | sid | ant_nil] 

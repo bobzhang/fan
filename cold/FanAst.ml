@@ -86,6 +86,7 @@ let loc_of =
   | `TyCol (_loc,_,_) -> _loc
   | `CgVir (_loc,_,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
+  | `TyColMut (_loc,_,_) -> _loc
   | `Amp (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
@@ -110,7 +111,6 @@ let loc_of =
   | `OvrInst (_loc,_) -> _loc
   | `OvNil _loc -> _loc
   | `ModuleSubst (_loc,_,_) -> _loc
-  | `Mut (_loc,_) -> _loc
   | `Positive _loc -> _loc
   | `CrVal (_loc,_,_,_,_) -> _loc
   | `TyVrn (_loc,_) -> _loc
@@ -520,10 +520,6 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Priv")), (meta_loc _loc _a0))),
               (meta_ctyp _loc _a1))
-      | `Mut (_a0,_a1) ->
-          `App
-            (_loc, (`App (_loc, (`Vrn (_loc, "Mut")), (meta_loc _loc _a0))),
-              (meta_ctyp _loc _a1))
       | `Tup (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
@@ -600,6 +596,14 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_loc _loc _a0))),
+                   (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
+      | `TyColMut (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App
+                      (_loc, (`Vrn (_loc, "TyColMut")), (meta_loc _loc _a0))),
                    (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
       | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result39)
     and meta_or_ctyp _loc =
@@ -1899,11 +1903,10 @@ let ty_of_stl =
   | (_loc,s,[]) -> `Id (_loc, (`Uid (_loc, s)))
   | (_loc,s,tl) ->
       `Of (_loc, (`Id (_loc, (`Uid (_loc, s)))), (and_of_list tl))
-let ty_of_sbt =
-  function
-  | (_loc,s,true ,t) ->
-      `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t)))
-  | (_loc,s,false ,t) -> `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
+let ty_of_sbt (_loc,s,v,t) =
+  if v
+  then `TyColMut (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
+  else `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
 let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
 let sum_type_of_list l = or_of_list (List.map ty_of_stl l)
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)

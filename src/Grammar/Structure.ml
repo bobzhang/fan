@@ -46,10 +46,10 @@ type label = option string;
 type entry = {
     egram     : gram;
     ename     : string;
-    estart    : mutable int -> parse Action.t;
-    econtinue : mutable int -> cont_parse Action.t;
-    edesc     : mutable desc;
-    freezed : mutable bool;}
+    mutable estart    :  int -> parse Action.t;
+    mutable econtinue : int -> cont_parse Action.t;
+    mutable edesc     :  desc;
+    mutable freezed :  bool;}
 and desc =
     [ Dlevels of list level
     (* | Dlevel of level  *)

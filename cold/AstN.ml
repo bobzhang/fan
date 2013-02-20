@@ -34,12 +34,13 @@ type ctyp =
   | `Quote of (position_flag* alident meta_option) | `Record of name_ctyp
   | `TyCol of (sid* ctyp) | `Com of (ctyp* ctyp) | `Sum of ctyp
   | `Of of (ctyp* ctyp) | `And of (ctyp* ctyp) | `Or of (ctyp* ctyp)
-  | `Priv of ctyp | `Mut of ctyp | `Tup of ctyp | `Sta of (ctyp* ctyp)
-  | `TyVrn of astring | `TyVrnEq of ctyp | `TyVrnSup of ctyp
-  | `TyVrnInf of ctyp | `TyVrnInfSup of (ctyp* ctyp) | `Amp of (ctyp* ctyp)
+  | `Priv of ctyp | `Tup of ctyp | `Sta of (ctyp* ctyp) | `TyVrn of astring
+  | `TyVrnEq of ctyp | `TyVrnSup of ctyp | `TyVrnInf of ctyp
+  | `TyVrnInfSup of (ctyp* ctyp) | `Amp of (ctyp* ctyp)
   | `TyOfAmp of (ctyp* ctyp) | `Package of module_type | ant] 
 and name_ctyp =
-  [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp) | ant_nil] 
+  [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp)
+  | `TyColMut of (sid* ctyp) | ant_nil] 
 and or_ctyp =
   [ `Or of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (ctyp* ctyp)
   | sid | ant_nil] 

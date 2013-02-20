@@ -175,7 +175,9 @@
      | `And of (loc * ctyp * ctyp) (* t * t *)
      | `Or  of (loc * ctyp * ctyp) (* t | t *)
      | `Priv of (loc * ctyp) (* private t *)
-     | `Mut of (loc * ctyp) (* mutable t *)
+
+     (* | `Mut of (loc * ctyp) (\* mutable t *\) *)
+           
      | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
      | `Sta of (loc * ctyp * ctyp) (* t * t *)
 
@@ -195,6 +197,9 @@
    and name_ctyp =
      [= `Sem of (loc * name_ctyp * name_ctyp)
      | `TyCol of (loc * sid * ctyp )
+
+     | `TyColMut of (loc * sid * ctyp)
+           
      | ant_nil ]
 
    and or_ctyp =
@@ -207,7 +212,8 @@
    and of_ctyp =
      [= `Of of (loc * sid * ctyp)
      | sid
-     | ant_nil ]  
+     | ant_nil ]
+         
    and patt =
      [= nil
      | sid

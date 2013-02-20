@@ -158,7 +158,8 @@ let list_of_record (ty:name_ctyp) : list FSig.col  =
        fun
          [ 
            (* {| $lid:label : mutable $ctyp  |} *)
-           `TyCol (_, (`Id (_, (`Lid (_, col_label)))), (`Mut (_, col_ctyp))) ->
+           (* `TyCol (_, (`Id (_, (`Lid (_, col_label)))), (`Mut (_, col_ctyp))) -> *)
+           `TyColMut(_,`Id(_,`Lid(_,col_label)),col_ctyp) ->
              {col_label; col_ctyp; col_mutable=true}
          | `TyCol (_, (`Id (_, (`Lid (_, col_label)))), col_ctyp)
              (* {| $lid:label :  $ctyp  |} *) -> 
