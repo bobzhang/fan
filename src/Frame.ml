@@ -253,43 +253,44 @@ let fun_of_tydcl
     simple_expr_of_ctyp expr_of_ctyp expr_of_variant  tydcl :expr = 
     match (tydcl:typedecl) with 
     [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
-      let ctyp =
-        match ctyp with
-        [  `TyMan(_,_,ctyp) |  `Priv(_,ctyp)  -> ctyp | _ -> ctyp ] in
-        match ctyp with
-        [`Record(_loc,t) ->       
-          let cols =  Ctyp.list_of_record t  in
-          let patt = (EP.mk_record ~arity  cols :> patt)in
-          let info =
-          List.mapi
-            (fun i x ->  match x with
-              [ {col_label;col_mutable;col_ctyp} ->
+      (* let ctyp = *)
+       match ctyp with
+       [  `TyMan(_,_,_,repr) | `TyRepr(_,_,repr) ->
+         match repr with
+         [`Record(_loc,t) ->       
+           let cols =  Ctyp.list_of_record t  in
+           let patt = (EP.mk_record ~arity  cols :> patt)in
+           let info =
+             List.mapi
+               (fun i x ->  match x with
+                 [ {col_label;col_mutable;col_ctyp} ->
                      {re_info = (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) i col_ctyp  ;
                       re_label = col_label;
                       re_mutable = col_mutable}
-              ] ) cols in
+                 ] ) cols in
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
             (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
-      (* simple types *)      
-      | (`Id _ | `Tup _ | `Quote _ | `Arrow _ | `App _ as x) ->
-          let expr = simple_expr_of_ctyp x in
-          let funct = eta_expand (expr+>names) arity  in
-          mk_prefix ~names ~left_type_variable tyvars funct
-      | `TyVrnEq(_,t) | `TyVrnSup(_,t) | `TyVrnInf(_,t)|`TyVrnInfSup(_,t,_) -> 
-          let case =  expr_of_variant result_type t  in
-          mk_prefix ~names ~left_type_variable tyvars case
-      |  `Sum (_,ctyp) -> 
+
+       |  `Sum (_,ctyp) -> 
           let funct = expr_of_ctyp ctyp in  
           (* for [expr_of_ctyp] appending names was delayed to be handled in mkcon *)
           mk_prefix ~names ~left_type_variable tyvars funct
        | t ->
-           FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (dump_ctyp (t:>ctyp))
-        ]
-  | t ->
-      FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_typedecl t) ];
-
+          FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_type_repr t) ]
+    | `TyEq(_,_,ctyp) ->
+        match ctyp with 
+        [ (`Id _ | `Tup _ | `Quote _ | `Arrow _ | `App _ as x) ->
+          let expr = simple_expr_of_ctyp x in
+          let funct = eta_expand (expr+>names) arity  in
+          mk_prefix ~names ~left_type_variable tyvars funct
+        | `TyVrnEq(_,t) | `TyVrnSup(_,t) | `TyVrnInf(_,t)|`TyVrnInfSup(_,t,_) -> 
+            let case =  expr_of_variant result_type t  in
+            mk_prefix ~names ~left_type_variable tyvars case
+        | t -> FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (dump_ctyp t)]
+    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (dump_type_info t)]
+   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_typedecl t)] ;             
 
 (* destination is [Str_item] generate [str_item], type annotations may
    not be needed here

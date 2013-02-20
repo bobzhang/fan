@@ -564,8 +564,10 @@ class clean_ast = object
       `Or(_loc,t,`Nil _l) |
       (* {| $t | $({@_l||} ) |} | *)
       {| $t of $({@_l||} ) |} |
+
       {| $({@_l||} ) and $t |} |
       {| $t and $({@_l||} ) |} |
+      
       {| $({@_l||}), $t |} |
       {| $t, $({@_l||} ) |} |
       {| $t & $({@_l||} ) |} |
@@ -573,6 +575,8 @@ class clean_ast = object
       {| $({@_l||} ) * $t |} |
       {| $t * $({@_l||} ) |} -> t
     | t -> t ];
+  method! typedecl t =
+    match t with [`And(_,t,`Nil _) | `And(_,`Nil _,t) -> t | t -> t];
   (* method! poly_ctyp t = *)
   (*   match super#poly_ctyp t with *)
   (*   [`TyPol(_,`Nil _,t) -> t | t ->t ]; *)

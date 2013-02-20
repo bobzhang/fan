@@ -259,6 +259,8 @@ let left_delimitor =
   | '[' ['|' ':']?
    (* Old "[<","{<" and new ones *)
   | ['[' (* '{' *)] delimchars* '<'
+  | '[' '='
+  | '[' '>' (* make polymorphic variants different from  variants *)
    (* Old brace and new ones *)
    (* | '{' (['|' ':'] delimchars*\)? *)
 

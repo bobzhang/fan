@@ -53,9 +53,9 @@ let ident_tag: ident tag = Ident
 let binding_tag: binding tag = Binding
 let rec_expr_tag: rec_expr tag = Rec_expr
 let module_binding_tag: module_binding tag = Module_binding
-type dyn  
+type dynprivate  
 external dyn_tag : 'a tag -> dyn tag = "%identity"
-module Pack(X:sig type 'a t   end) =
+module Pack(X:sig type 'a tprivate   end) =
   struct
     type pack = (dyn tag* Obj.t) 
     exception Pack_error

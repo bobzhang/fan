@@ -312,7 +312,7 @@ let is_recursive ty_dcl =
             else super#ctyp x  ];
       method is_recursive = is_recursive;
     end in
-    (obj#ctyp ctyp)#is_recursive
+    (obj#type_info(* ctyp *) ctyp)#is_recursive
 
   | {| $_ and $_ |} -> true (* FIXME imprecise *)
   | _ -> failwithf "is_recursive not type declartion: %s" (dump_typedecl ty_dcl)];
@@ -327,7 +327,7 @@ let is_recursive ty_dcl =
   detect patterns like [List.t int ] or [List.t]
   Here the order matters
   {[
-  ( <:sig_item< type tbl 'a = Ident.tbl 'a >> |> fun
+  ( {:sig_item| type 'a tbl  = Ident.tbl 'a |} |> fun
     [ <:sig_item< type .$FanAst.TyDcl _loc _ _ x _ $. >>
      -> qualified_app_list x ]);
   Some (IdAcc  (Uid  "Ident") (Lid  "tbl"), [TyQuo  "a"])
@@ -402,7 +402,8 @@ let mk_transform_type_eq () = object(self:'self_type)
   method! str_item = fun
     [ 
      {:str_item| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
-       match qualified_app_list ctyp with
+       let r = match ctyp with [`TyEq (_,_,t) -> qualified_app_list t | _ -> None ] in
+       match (* qualified_app_list ctyp *) r with
        [ Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
          if  not (eq_list vars lst) then 
            super#str_item x
@@ -417,19 +418,35 @@ let mk_transform_type_eq () = object(self:'self_type)
              {:str_item| |} 
            end 
        | None ->  super#str_item x ]
-     | x -> super#str_item x ];  
-  method! ctyp x =   match qualified_app_list x with
-    [ Some (i, lst) ->
-      let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
-      let src = i and dest = Ident.map_to_string i in begin
-        Hashtbl.replace transformers dest (src,List.length lst);
-        appl_of_list [ {| $lid:dest |} :: lst ]
-      end 
-    | None  -> match x with
-        (* <:str_item< type a =b == [A of int] >> ; *)
-      [ {| $x == $ctyp |} -> (* ignore x on purpose *)
-        {| $x == $(super#ctyp ctyp) |}
-      | _ ->   super#ctyp x  ]];
+     | x -> super#str_item x ];
+  method! ctyp x =
+    match qualified_app_list x with
+      [ Some (i, lst) ->
+          let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
+          let src = i and dest = Ident.map_to_string i in begin
+            Hashtbl.replace transformers dest (src,List.length lst);
+            appl_of_list [ {| $lid:dest |} :: lst ]
+          end
+      | None -> super#ctyp x];
+
+  (* method! (\* ctyp *\)type_info  x = *)
+
+  (*   match x with *)
+  (*   [ `TyMan (loc , p1 , x ,p2, repr) ->  *)
+  (*       match qualified_app_list x with *)
+  (*       [ Some (i, lst) -> *)
+  (*         let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in  *)
+  (*         let src = i and dest = Ident.map_to_string i in begin *)
+  (*           Hashtbl.replace transformers dest (src,List.length lst); *)
+  (*           let v = appl_of_list [ {| $lid:dest |} :: lst ] ; *)
+  (*           `TyMan(loc,p1,v,p2,repr)   *)
+  (*         end *)
+  (*       | None  -> (\* match x with *\) *)
+  (*       (\* <:str_item< type a =b == [A of int] >> ; *\) *)
+  (*     (\* [ `TyMan(_loc,p1,x,p2,ctyp)(\\* {| $x == $ctyp |} *\\) -> (\\* ignore x on purpose *\\) *\) *)
+  (*       `TyMan(_loc,p1,x,p2,super#type_repr repr) ] *)
+  (*       (\* {| $x == $(super#ctyp ctyp) |} *\) *)
+  (*   | _ ->   super#type_info  x  ]; *)
 
   (* dump the type declarations *)  
   method type_transformers = 

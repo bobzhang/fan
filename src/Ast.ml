@@ -37,7 +37,7 @@
 
     type loc = FanLoc.t;
     type ant =
-        [ = `Ant of (loc * FanUtil.anti_cxt)];
+        [= `Ant of (loc * FanUtil.anti_cxt)];
 
     type nil = [= `Nil of loc];
     type ant_nil = [= ant|nil];
@@ -124,13 +124,13 @@
     | auident];
 
    type sid = [= `Id of (loc * ident)];
-
+   type any = [= `Any of loc];
    type ctyp =
     [= `Nil of loc
 
      | `Alias of (loc * ctyp * ctyp)  (* list 'a as 'a *)
 
-     | `Any of loc (* _ *)
+     | any
 
      | `App of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
 
@@ -142,10 +142,10 @@
 
       (* ?s:t *)
      | `OptLabl of (loc * alident * ctyp )
-           
-     | `Id  of (loc * ident) (* i *) (* `Lazy.t *)
 
-     | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)
+     | sid
+
+     (* | `TyMan of (loc * ctyp * ctyp) (\* t == t *\) (\* type t = [ A | B ] == `Foo.t *\) *)
 
           
      (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
@@ -169,11 +169,15 @@
      | `Sum of (loc * ctyp) (* [ t ] *) (* [ A of int * string | B ] *)
      
      | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)
+
      | `And of (loc * ctyp * ctyp) (* t * t *)
+           
      | `Or  of (loc * ctyp * ctyp) (* t | t *)
+
      | `Priv of (loc * ctyp) (* private t *)
 
      | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
+
      | `Sta of (loc * ctyp * ctyp) (* t * t *)
 
      | `TyVrn of (loc * astring) (* `s *)
@@ -190,9 +194,31 @@
          
    and typedecl =
        (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
-    [= `TyDcl of (loc * alident * list ctyp * ctyp * list (ctyp * ctyp))
+    [= `TyDcl of (loc * alident * list ctyp * type_info(* ctyp *) * list (ctyp * ctyp))
     | `And of (loc * typedecl * typedecl)
     | ant_nil ]
+    (* original syntax
+       {[ type v = u = A of int ]}
+       
+       revise syntax
+       {[ type v = u == [A of int];]} 
+     *)
+   and type_info =
+       (* FIXME be more preicse *)
+     [= `TyMan of (loc (* * private_flag *) * ctyp * private_flag  * type_repr)
+     | `TyRepr of (loc * private_flag * type_repr)
+     | `TyEq of (loc * private_flag * ctyp)
+     (* | `Priv of (loc * type_repr) *)
+     (* | `Record of (loc * name_ctyp) *)
+     (* | `Sum of (loc * ctyp) *)
+     | ant_nil ]  
+   and type_repr =
+     [= (* `TyMan of (loc * ctyp * type_info) *)
+     (* | *)
+       (* `Priv of (loc * type_repr) | *)
+       `Record of (loc * name_ctyp) |
+       `Sum of (loc * ctyp) |
+       ant_nil ]   
            (* FIXME, the location *)
 
    (* and poly_ctyp = *)
@@ -225,7 +251,7 @@
      | `Com of (loc * patt * patt)
      | `Sem of (loc * patt * patt)
      | `Tup of (loc * patt )
-     | `Any of loc
+     | any
      | `Record of (loc * rec_patt)
      | ant
      | literal
@@ -243,10 +269,10 @@
        (* (module M : ty ) *)      
      | `ModuleUnpack of (loc * auident * meta_option ctyp)]
   and rec_patt =
-     [= `Nil of loc
+     [= nil
      | `RecBind of (loc * ident * patt)
      | `Sem of (loc  * rec_patt * rec_patt)
-     | `Any of loc
+     | any
      | ant]  
   and expr =
      [= nil
@@ -256,7 +282,7 @@
      | `Com of (loc * expr * expr)
      | `Sem of (loc * expr * expr)
      | `Tup of (loc * expr)
-     | `Any of (loc)
+     | any
      | `Record of (loc * rec_expr)
      | ant 
      | literal
@@ -315,7 +341,7 @@
      | `Sem of (loc * rec_expr * rec_expr)
       (* i = e *)
      | `RecBind  of (loc * ident * expr)
-     | `Any of loc  (* Faked here to be symmertric to rec_patt *)
+     | any (* Faked here to be symmertric to rec_patt *)
      | ant (* $s$ *) ]
   and module_type =
     [= nil
@@ -526,7 +552,7 @@
      | `Com of (loc * ep * ep)
      | `Sem of (loc * ep * ep)
      | `Tup of (loc * ep)
-     | `Any of (loc)
+     | any
      | `Array of (loc * ep )
      | `Record of (loc * rec_bind)
      | ant 

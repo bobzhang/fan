@@ -179,6 +179,9 @@ module type Syntax = sig
   val type_declaration : Gram.t typedecl;
   val type_ident_and_parameters : Gram.t (alident(* string *) * list ctyp);
   (* val type_kind : Gram.t ctyp; *)
+  val type_info: Gram.t type_info;
+  val type_repr: Gram.t type_repr;
+    
   val type_longident : Gram.t ident;
   val type_longident_and_parameters : Gram.t ctyp;
   val type_parameter : Gram.t ctyp;

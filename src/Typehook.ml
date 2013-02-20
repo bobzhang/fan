@@ -100,9 +100,12 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
      | {| # $_ |}  | {| module $_:$_ |}    | {| module type $_ = $_ |}
      | {| module rec $_ |}  | {| open $_ |} ) -> {| |} (* For sig_item, keep does not make sense. *)
      | {@_| type $((`TyDcl (_loc,name,vars, ctyp, constraints) as x)) |} -> begin
-             let x = 
-               match (Ctyp.qualified_app_list ctyp, qualified)with
-              [(Some ({:ident|$i.$_ |},ls),Some q) when
+         let res =
+           match ctyp with
+           [`TyEq(_,_,ctyp) -> Ctyp.qualified_app_list ctyp | _ -> None] in
+         let x = 
+           match (res (* Ctyp.qualified_app_list ctyp *), qualified)with
+           [(Some ({:ident|$i.$_ |},ls),Some q) when
                 (Ident.eq i q && Ctyp.eq_list ls vars )->
                    (* type u 'a = Loc.u 'a *)       
                   `TyDcl _loc name vars {:ctyp||} constraints
@@ -123,10 +126,10 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
       [Some q when Ident.eq q  x -> super#ident y
       |_ -> super#ident i]
     | i -> super#ident i];
-  method! ctyp = fun
-    [ {:ctyp| $_ == $ctyp |} ->
-      super#ctyp ctyp
-    | ty -> super#ctyp ty];
+  method! type_info = fun
+    [ `TyMan(_loc,_,p1,ctyp)(* {:ctyp| $_ == $ctyp |} *) ->
+      `TyRepr (_loc,p1,super#type_repr ctyp)
+    | ty -> super#type_info ty];
   method get_type_defs = type_defs;
 end;
 

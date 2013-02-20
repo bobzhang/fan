@@ -54,8 +54,12 @@ let filter_type_defs ?qualified  () =
         |`Directive (_loc,_,`Nil _)|`Module (_loc,_,_)|`ModuleType (_loc,_,_)
         |`RecModule (_loc,_)|`Open (_loc,_) -> `Nil _loc
       | `Type (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
+          let res =
+            match ctyp with
+            | `TyEq (_,_,ctyp) -> Ctyp.qualified_app_list ctyp
+            | _ -> None in
           let x =
-            match ((Ctyp.qualified_app_list ctyp), qualified) with
+            match (res, qualified) with
             | (Some (`Dot (_loc,i,_),ls),Some q) when
                 (Ident.eq i q) && (Ctyp.eq_list ls vars) ->
                 `TyDcl (_loc, name, vars, (`Nil _loc), constraints)
@@ -74,10 +78,10 @@ let filter_type_defs ?qualified  () =
            | Some q when Ident.eq q x -> super#ident y
            | _ -> super#ident i)
       | i -> super#ident i
-    method! ctyp =
+    method! type_info =
       function
-      | `TyMan (_loc,_,ctyp) -> super#ctyp ctyp
-      | ty -> super#ctyp ty
+      | `TyMan (_loc,_,p1,ctyp) -> `TyRepr (_loc, p1, (super#type_repr ctyp))
+      | ty -> super#type_info ty
     method get_type_defs = type_defs
   end
 class type traversal

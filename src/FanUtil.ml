@@ -63,7 +63,7 @@ open StdLib;
 type anti_cxt = {
     cxt:string;
     sep: option string;
-    mutable decorations:  string; (* keep it simple first*)
+    mutable decorations:   string; (* keep it simple first*)
     content:string;
   };
   |};

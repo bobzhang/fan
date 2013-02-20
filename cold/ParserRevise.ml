@@ -6050,11 +6050,11 @@ let apply_ctyp () =
             (Gram.obj
                (type_ident_and_parameters : 'type_ident_and_parameters Gram.t ));
          `Skeyword "=";
-         `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+         `Snterm (Gram.obj (type_info : 'type_info Gram.t ));
          `Slist0 (`Snterm (Gram.obj (constrain : 'constrain Gram.t )))],
-          ("Gram.mk_action\n  (fun (cl : 'constrain list)  (tk : 'ctyp)  _ \n     ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t)  ->\n     (`TyDcl (_loc, n, tpl, tk, cl) : 'type_declaration ))\n",
+          ("Gram.mk_action\n  (fun (cl : 'constrain list)  (tk : 'type_info)  _ \n     ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t)  ->\n     (`TyDcl (_loc, n, tpl, tk, cl) : 'type_declaration ))\n",
             (Gram.mk_action
-               (fun (cl : 'constrain list)  (tk : 'ctyp)  _ 
+               (fun (cl : 'constrain list)  (tk : 'type_info)  _ 
                   ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t) 
                   -> (`TyDcl (_loc, n, tpl, tk, cl) : 'type_declaration )))));
         ([`Snterm
@@ -6067,6 +6067,71 @@ let apply_ctyp () =
                   ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t) 
                   ->
                   (`TyDcl (_loc, n, tpl, (`Nil _loc), cl) : 'type_declaration )))))]));
+  Gram.extend_single (type_info : 'type_info Gram.t )
+    (None,
+      (None, None,
+        [([`Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
+           ("Gram.mk_action\n  (fun (t2 : 'type_repr)  (_loc : FanLoc.t)  ->\n     (`TyRepr (_loc, (`PrNil _loc), t2) : 'type_info ))\n",
+             (Gram.mk_action
+                (fun (t2 : 'type_repr)  (_loc : FanLoc.t)  ->
+                   (`TyRepr (_loc, (`PrNil _loc), t2) : 'type_info )))));
+        ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+         `Skeyword "==";
+         `Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
+          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, (`PrNil _loc), t2) : 'type_info ))\n",
+            (Gram.mk_action
+               (fun (t2 : 'type_repr)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
+                  (`TyMan (_loc, t1, (`PrNil _loc), t2) : 'type_info )))));
+        ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+          ("Gram.mk_action\n  (fun (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyEq (_loc, (`PrNil _loc), t1) : 'type_info ))\n",
+            (Gram.mk_action
+               (fun (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
+                  (`TyEq (_loc, (`PrNil _loc), t1) : 'type_info )))));
+        ([`Skeyword "private"; `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+          ("Gram.mk_action\n  (fun (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->\n     (`TyEq (_loc, (`Private _loc), t1) : 'type_info ))\n",
+            (Gram.mk_action
+               (fun (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
+                  (`TyEq (_loc, (`Private _loc), t1) : 'type_info )))));
+        ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+         `Skeyword "==";
+         `Skeyword "private";
+         `Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
+          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, (`Private _loc), t2) : 'type_info ))\n",
+            (Gram.mk_action
+               (fun (t2 : 'type_repr)  _  _  (t1 : 'ctyp)  (_loc : FanLoc.t) 
+                  -> (`TyMan (_loc, t1, (`Private _loc), t2) : 'type_info )))));
+        ([`Skeyword "private";
+         `Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
+          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  (_loc : FanLoc.t)  ->\n     (`TyRepr (_loc, (`Private _loc), t2) : 'type_info ))\n",
+            (Gram.mk_action
+               (fun (t2 : 'type_repr)  _  (_loc : FanLoc.t)  ->
+                  (`TyRepr (_loc, (`Private _loc), t2) : 'type_info )))))]));
+  Gram.extend_single (type_repr : 'type_repr Gram.t )
+    (None,
+      (None, None,
+        [([`Skeyword "[";
+          `Snterm
+            (Gram.obj
+               (constructor_declarations : 'constructor_declarations Gram.t ));
+          `Skeyword "]"],
+           ("Gram.mk_action\n  (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)  ->\n     (`Sum (_loc, (t : or_ctyp  :>ctyp)) : 'type_repr ))\n",
+             (Gram.mk_action
+                (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)
+                    -> (`Sum (_loc, (t : or_ctyp  :>ctyp)) : 'type_repr )))));
+        ([`Skeyword "["; `Skeyword "]"],
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Sum (_loc, (`Nil _loc)) : 'type_repr ))\n",
+            (Gram.mk_action
+               (fun _  _  (_loc : FanLoc.t)  ->
+                  (`Sum (_loc, (`Nil _loc)) : 'type_repr )))));
+        ([`Skeyword "{";
+         `Snterm
+           (Gram.obj
+              (label_declaration_list : 'label_declaration_list Gram.t ));
+         `Skeyword "}"],
+          ("Gram.mk_action\n  (fun _  (t : 'label_declaration_list)  _  (_loc : FanLoc.t)  ->\n     (`Record (_loc, t) : 'type_repr ))\n",
+            (Gram.mk_action
+               (fun _  (t : 'label_declaration_list)  _  (_loc : FanLoc.t) 
+                  -> (`Record (_loc, t) : 'type_repr )))))]));
   Gram.extend_single
     (type_ident_and_parameters : 'type_ident_and_parameters Gram.t )
     (None,
@@ -6151,25 +6216,12 @@ let apply_ctyp () =
                   (`Quote (_loc, (`Normal _loc), (`Some i)) : 'typevars )))))]));
   Gram.extend (ctyp : 'ctyp Gram.t )
     (None,
-      [((Some "=="), (Some `NA),
-         [([`Sself; `Skeyword "=="; `Sself],
-            ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, t2) : 'ctyp ))\n",
+      [((Some "alias"), (Some `LA),
+         [([`Sself; `Skeyword "as"; `Sself],
+            ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`Alias (_loc, t1, t2) : 'ctyp ))\n",
               (Gram.mk_action
                  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                    (`TyMan (_loc, t1, t2) : 'ctyp )))))]);
-      ((Some "private"), (Some `NA),
-        [([`Skeyword "private";
-          `Snterml ((Gram.obj (ctyp : 'ctyp Gram.t )), "alias")],
-           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (_loc : FanLoc.t)  -> (`Priv (_loc, t) : 'ctyp ))\n",
-             (Gram.mk_action
-                (fun (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                   (`Priv (_loc, t) : 'ctyp )))))]);
-      ((Some "alias"), (Some `LA),
-        [([`Sself; `Skeyword "as"; `Sself],
-           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`Alias (_loc, t1, t2) : 'ctyp ))\n",
-             (Gram.mk_action
-                (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                   (`Alias (_loc, t1, t2) : 'ctyp )))))]);
+                    (`Alias (_loc, t1, t2) : 'ctyp )))))]);
       ((Some "forall"), (Some `LA),
         [([`Skeyword "!";
           `Snterm (Gram.obj (typevars : 'typevars Gram.t ));
@@ -6317,60 +6369,25 @@ let apply_ctyp () =
           ("Gram.mk_action (fun _  (t : 'ctyp)  _  (_loc : FanLoc.t)  -> (t : 'ctyp ))\n",
             (Gram.mk_action
                (fun _  (t : 'ctyp)  _  (_loc : FanLoc.t)  -> (t : 'ctyp )))));
-        ([`Skeyword "["; `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Sum (_loc, (`Nil _loc)) : 'ctyp ))\n",
+        ([`Skeyword "[=";
+         `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
+         `Skeyword "]"],
+          ("Gram.mk_action\n  (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->\n     (`TyVrnEq (_loc, rfl) : 'ctyp ))\n",
+            (Gram.mk_action
+               (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->
+                  (`TyVrnEq (_loc, rfl) : 'ctyp )))));
+        ([`Skeyword "[>"; `Skeyword "]"],
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`TyVrnSup (_loc, (`Nil _loc)) : 'ctyp ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (`Sum (_loc, (`Nil _loc)) : 'ctyp )))));
-        ([`Skeyword "[";
-         `Snterm
-           (Gram.obj
-              (constructor_declarations : 'constructor_declarations Gram.t ));
-         `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)  ->\n     (`Sum (_loc, (t : or_ctyp  :>ctyp)) : 'ctyp ))\n",
-            (Gram.mk_action
-               (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t) 
-                  -> (`Sum (_loc, (t : or_ctyp  :>ctyp)) : 'ctyp )))));
-        ([`Skeyword "[";
-         `Skeyword "=";
-         `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
-         `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  (rfl : 'row_field)  _  _  (_loc : FanLoc.t)  ->\n     (`TyVrnEq (_loc, rfl) : 'ctyp ))\n",
-            (Gram.mk_action
-               (fun _  (rfl : 'row_field)  _  _  (_loc : FanLoc.t)  ->
-                  (`TyVrnEq (_loc, rfl) : 'ctyp )))));
-        ([`Skeyword "["; `Skeyword ">"; `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  _  _  (_loc : FanLoc.t)  ->\n     (`TyVrnSup (_loc, (`Nil _loc)) : 'ctyp ))\n",
-            (Gram.mk_action
-               (fun _  _  _  (_loc : FanLoc.t)  ->
                   (`TyVrnSup (_loc, (`Nil _loc)) : 'ctyp )))));
-        ([`Skeyword "[";
-         `Skeyword ">";
+        ([`Skeyword "[>";
          `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
          `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  (rfl : 'row_field)  _  _  (_loc : FanLoc.t)  ->\n     (`TyVrnSup (_loc, rfl) : 'ctyp ))\n",
+          ("Gram.mk_action\n  (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->\n     (`TyVrnSup (_loc, rfl) : 'ctyp ))\n",
             (Gram.mk_action
-               (fun _  (rfl : 'row_field)  _  _  (_loc : FanLoc.t)  ->
+               (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->
                   (`TyVrnSup (_loc, rfl) : 'ctyp )))));
-        ([`Skeyword "[";
-         `Skeyword "<";
-         `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
-         `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  (rfl : 'row_field)  _  _  (_loc : FanLoc.t)  ->\n     (`TyVrnInf (_loc, rfl) : 'ctyp ))\n",
-            (Gram.mk_action
-               (fun _  (rfl : 'row_field)  _  _  (_loc : FanLoc.t)  ->
-                  (`TyVrnInf (_loc, rfl) : 'ctyp )))));
-        ([`Skeyword "[";
-         `Skeyword "<";
-         `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
-         `Skeyword ">";
-         `Snterm (Gram.obj (name_tags : 'name_tags Gram.t ));
-         `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  (ntl : 'name_tags)  _  (rfl : 'row_field)  _  _  (_loc : FanLoc.t) \n     -> (`TyVrnInfSup (_loc, rfl, ntl) : 'ctyp ))\n",
-            (Gram.mk_action
-               (fun _  (ntl : 'name_tags)  _  (rfl : 'row_field)  _  _ 
-                  (_loc : FanLoc.t)  ->
-                  (`TyVrnInfSup (_loc, rfl, ntl) : 'ctyp )))));
         ([`Skeyword "[<";
          `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
          `Skeyword "]"],
@@ -6388,15 +6405,6 @@ let apply_ctyp () =
                (fun _  (ntl : 'name_tags)  _  (rfl : 'row_field)  _ 
                   (_loc : FanLoc.t)  ->
                   (`TyVrnInfSup (_loc, rfl, ntl) : 'ctyp )))));
-        ([`Skeyword "{";
-         `Snterm
-           (Gram.obj
-              (label_declaration_list : 'label_declaration_list Gram.t ));
-         `Skeyword "}"],
-          ("Gram.mk_action\n  (fun _  (t : 'label_declaration_list)  _  (_loc : FanLoc.t)  ->\n     (`Record (_loc, t) : 'ctyp ))\n",
-            (Gram.mk_action
-               (fun _  (t : 'label_declaration_list)  _  (_loc : FanLoc.t) 
-                  -> (`Record (_loc, t) : 'ctyp )))));
         ([`Skeyword "#";
          `Snterm (Gram.obj (class_longident : 'class_longident Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'class_longident)  _  (_loc : FanLoc.t)  ->\n     (`ClassPath (_loc, i) : 'ctyp ))\n",

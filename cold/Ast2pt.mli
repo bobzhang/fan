@@ -41,13 +41,14 @@ val package_type_constraints :
   (Longident.t Asttypes.loc * Parsetree.core_type) list
 val package_type : module_type -> Parsetree.package_type
 
-val mktype :
-  Location.t ->
-  (string Asttypes.loc option * (bool * bool)) list ->
-  (Parsetree.core_type * Parsetree.core_type * Location.t) list ->
-  Parsetree.type_kind ->
-  Asttypes.private_flag ->
-  Parsetree.core_type option -> Parsetree.type_declaration
+(* val mktype : *)
+(*   Location.t -> *)
+(*   (string Asttypes.loc option * (bool * bool)) list -> *)
+(*   (Parsetree.core_type * Parsetree.core_type * Location.t) list -> *)
+(*   Parsetree.type_kind -> *)
+(*   Asttypes.private_flag -> *)
+(*   Parsetree.core_type option -> Parsetree.type_declaration *)
+      
 val mkprivate' : bool -> Asttypes.private_flag
 
 val mkprivate : private_flag -> Asttypes.private_flag
@@ -64,7 +65,7 @@ val mkvariant :
 val type_decl :
   (string Asttypes.loc option * (bool * bool)) list ->
   (Parsetree.core_type * Parsetree.core_type * Location.t) list ->
-  ctyp -> FanLoc.t -> Parsetree.type_declaration
+  FanLoc.t -> type_info   -> Parsetree.type_declaration
 
 val mkvalue_desc :
   Location.t -> ctyp -> string list -> Parsetree.value_description

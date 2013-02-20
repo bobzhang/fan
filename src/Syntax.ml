@@ -47,6 +47,8 @@ let print_warning loc txt = !current_warning loc txt;
   ctyp_quot  str_item_quot  sig_item_quot  class_str_item_quot  class_sig_item_quot  module_expr_quot
   module_type_quot  class_type_quot  class_expr_quot  with_constr_quot  binding_quot  rec_expr_quot
   module_declaration
+  type_info
+  type_repr
   (infixop0 "or ||")
   (infixop1  "& &&")
   (infixop2 "infix operator (level 2) (comparison operators, and some others)")

@@ -234,8 +234,8 @@ let _ = ("OIter", gen_iter) |> Typehook.register
 let generate (module_types : FSig.module_types) =
   let tbl = Hashtbl.create 30 in
   let aux (_,ty) =
-    match ty with
-    | `TyDcl (_,_,_,`TyVrnEq (_,t),_) ->
+    match (ty : typedecl ) with
+    | `TyDcl (_,_,_,`TyEq (_,_,`TyVrnEq (_,t)),_) ->
         let branches = Ctyp.view_variant t in
         List.iter
           (function

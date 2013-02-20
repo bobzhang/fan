@@ -18,10 +18,10 @@ let default_keywords =
      ; "IFNDEF"; "constraint"; "type"; "new"; "of";
    "<-"; "done"; "for"; "&"; ";;"; "{"; "fun"; "method"
      ; "'"; ";"; "mutable"; "UNDEF"; "lazy"; "["; "}";
-   "[|"; "with"; "[^"; "`"; "::"; "]"; "asr";
+   "[|"; "with"; "[^"; "`"; "::"; "]"; "asr"; "[>";
    ":="; "DEFINE"; "if"; "while"; "IN"; "IFDEF"; "END"
      ; "rec"; "parser"; "object"; "or"; "-"; "("; "match"
-     ; "open"; "module"; "INCLUDE"; "?"; ">"; "let"; "lor"];
+     ; "open"; "module"; "INCLUDE"; "?"; ">"; "let"; "lor"; "[="];
 
 let gkeywords = ref (SSet.of_list default_keywords);
   

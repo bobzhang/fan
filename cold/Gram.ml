@@ -92,6 +92,7 @@ let default_keywords =
   "::";
   "]";
   "asr";
+  "[>";
   ":=";
   "DEFINE";
   "if";
@@ -112,7 +113,8 @@ let default_keywords =
   "?";
   ">";
   "let";
-  "lor"]
+  "lor";
+  "[="]
 let gkeywords = ref (SSet.of_list default_keywords)
 let gram =
   {

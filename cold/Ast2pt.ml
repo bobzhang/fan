@@ -168,14 +168,14 @@ and package_type (x : module_type) =
   | `Id (_loc,i) -> ((long_uident i), [])
   | mt ->
       errorf (loc_of mt) "unexpected package type: %s" (dump_module_type mt)
-let mktype loc tl cl tk tp tm =
+let mktype loc tl cl ~type_kind  ~priv  ~manifest  =
   let (params,variance) = List.split tl in
   {
     ptype_params = params;
     ptype_cstrs = cl;
-    ptype_kind = tk;
-    ptype_private = tp;
-    ptype_manifest = tm;
+    ptype_kind = type_kind;
+    ptype_private = priv;
+    ptype_manifest = manifest;
     ptype_loc = loc;
     ptype_variance = variance
   }
@@ -203,31 +203,26 @@ let mkvariant (x : ctyp) =
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
   | t -> errorf (loc_of t) "mkvariant %s " (dump_ctyp t)
-let rec type_decl (tl : (string Asttypes.loc option* (bool* bool)) list)
-  (cl : (core_type* core_type* Location.t) list) loc m pflag (x : ctyp) =
+let type_kind (x : type_repr) =
   match x with
-  | `TyMan (_loc,t1,t2) -> type_decl tl cl loc (Some (ctyp t1)) pflag t2
-  | `Priv (_loc,t) ->
-      if pflag
-      then error _loc "multiple private keyword used, use only one instead"
-      else type_decl tl cl loc m true t
-  | `Record (_loc,t) ->
-      mktype loc tl cl
-        (Ptype_record (List.map mktrecord (list_of_sem' t [])))
-        (mkprivate' pflag) m
-  | `Sum (_loc,t) ->
-      mktype loc tl cl
-        (Ptype_variant (List.map mkvariant (list_of_or' t [])))
-        (mkprivate' pflag) m
-  | t ->
-      if m <> None
-      then
-        errorf loc "only one manifest type allowed by definition %s"
-          (dump_ctyp t)
-      else
-        (let m = match t with | `Nil _loc -> None | _ -> Some (ctyp t) in
-         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m)
-let type_decl tl cl t loc = type_decl tl cl loc None false t
+  | `Record (_loc,t) -> Ptype_record (List.map mktrecord (list_of_sem' t []))
+  | `Sum (_loc,t) -> Ptype_variant (List.map mkvariant (list_of_or' t []))
+  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Nil _loc -> failwithf "type_kind nil"
+let type_decl tl cl loc (x : type_info) =
+  match x with
+  | `TyMan (_,t1,p,t2) ->
+      mktype loc tl cl ~type_kind:(type_kind t2) ~priv:(mkprivate p)
+        ~manifest:(Some (ctyp t1))
+  | `TyRepr (_,p1,repr) ->
+      mktype loc tl cl ~type_kind:(type_kind repr) ~priv:(mkprivate p1)
+        ~manifest:None
+  | `TyEq (_loc,p1,t1) ->
+      mktype loc tl cl ~type_kind:Ptype_abstract ~priv:(mkprivate p1)
+        ~manifest:(Some (ctyp t1))
+  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Nil _ ->
+      mktype loc tl cl ~type_kind:Ptype_abstract ~priv:Private ~manifest:None
 let mkvalue_desc loc t p =
   { pval_type = (ctyp t); pval_prim = p; pval_loc = loc }
 let rec list_of_meta_list =
@@ -719,8 +714,9 @@ and mktype_decl (x : typedecl) =
            (type_decl
               (List.fold_right
                  (fun x  acc  -> (optional_type_parameters x) @ acc) tl [])
-              cl td cloc))
-     | t -> errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)) tys
+              cl cloc td))
+     | (t : typedecl) -> errorf (loc_of t) "mktype_decl %s" (dump_typedecl t))
+    tys
 and module_type: Ast.module_type -> Parsetree.module_type =
   let mkwithc (wc : with_constr) =
     let opt_private_ctyp (x : ctyp) =

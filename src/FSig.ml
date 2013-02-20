@@ -65,16 +65,16 @@ type record_info = list record_col ;
    function of type [ident -> ident]
  *)
 type basic_id_transform =
-    [ = `Pre of string
+    [= `Pre of string
     | `Post of string
     | `Fun of id string ];
 
 type rhs_basic_id_transform =
-    [ = basic_id_transform
+    [= basic_id_transform
     | `Exp of string -> expr ];
 
 type full_id_transform =
-    [ =  basic_id_transform
+    [=  basic_id_transform
     | `Idents of list ident  -> ident
     (* decompose to a list of ident and compose as an ident *)          
     | `Ident of ident -> ident

@@ -159,7 +159,7 @@ let is_recursive ty_dcl =
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
         end in
-      (obj#ctyp ctyp)#is_recursive
+      (obj#type_info ctyp)#is_recursive
   | `And (_loc,_,_) -> true
   | _ ->
       failwithf "is_recursive not type declartion: %s" (dump_typedecl ty_dcl)
@@ -195,7 +195,11 @@ let mk_transform_type_eq () =
     method! str_item =
       function
       | `Type (_loc,`TyDcl (_,_name,vars,ctyp,_)) as x ->
-          (match qualified_app_list ctyp with
+          let r =
+            match ctyp with
+            | `TyEq (_,_,t) -> qualified_app_list t
+            | _ -> None in
+          (match r with
            | Some (i,lst) ->
                if not (eq_list vars lst)
                then super#str_item x
@@ -212,10 +216,7 @@ let mk_transform_type_eq () =
           let src = i and dest = Ident.map_to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
            appl_of_list ((`Id (_loc, (`Lid (_loc, dest)))) :: lst))
-      | None  ->
-          (match x with
-           | `TyMan (_loc,x,ctyp) -> `TyMan (_loc, x, (super#ctyp ctyp))
-           | _ -> super#ctyp x)
+      | None  -> super#ctyp x
     method type_transformers =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)
         transformers []
