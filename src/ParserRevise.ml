@@ -238,7 +238,7 @@ let apply () = begin
     | "module"; "type"; a_uident{i} -> {| module type $i |}
     | "open"; module_longident{i} -> {| open $i |}
 
-    | "type"; type_declaration{t} -> {| type $t |}
+    | "type"; type_declaration{t} -> `Type(_loc,t) (* {| type $t |} *)
     | "val"; a_lident{i}; ":"; ctyp{t} -> {| val $i : $t |} 
     | "class"; class_description{cd} ->    {| class $cd |}
     | "class"; "type"; class_type_declaration{ctd} ->  {| class type $ctd |} ]
@@ -1138,7 +1138,7 @@ let apply_ctyp () = begin
       | more_ctyp{x}; "&"; amp_ctyp{y} -> {| $x & $y |}
       | more_ctyp{x}; "and"; constructor_arg_list{y} -> {| $x and $y |}
       | more_ctyp{x} -> x
-      | "type"; type_declaration{t} -> t   
+      (* | "type"; type_declaration{t} -> t    *)
       | -> {||}  ]
       more_ctyp:
       [
@@ -1222,7 +1222,7 @@ let apply_ctyp () = begin
       type_declaration:
       [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s) ->          {| $(anti:mk_anti ~c:"ctypand" n s) |}
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
       | S{t1}; "and"; S{t2} -> {| $t1 and $t2 |}
       |  type_ident_and_parameters{(n, tpl)}; "="; ctyp{tk}; L0 constrain{cl}
         -> `TyDcl (_loc, n, tpl, tk, cl)

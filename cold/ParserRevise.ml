@@ -5658,12 +5658,6 @@ let apply_ctyp () =
           ("Gram.mk_action\n  (fun (x : 'more_ctyp)  (_loc : FanLoc.t)  -> (x : 'ctyp_quot ))\n",
             (Gram.mk_action
                (fun (x : 'more_ctyp)  (_loc : FanLoc.t)  -> (x : 'ctyp_quot )))));
-        ([`Skeyword "type";
-         `Snterm (Gram.obj (type_declaration : 'type_declaration Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'type_declaration)  _  (_loc : FanLoc.t)  -> (t : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (t : 'type_declaration)  _  (_loc : FanLoc.t)  ->
-                  (t : 'ctyp_quot )))));
         ([],
           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'ctyp_quot ))\n",
             (Gram.mk_action
@@ -6046,17 +6040,6 @@ let apply_ctyp () =
                       (`Ant (_loc, (mk_anti ~c:"ctypand" n s)) : 'type_declaration )
                   | _ ->
                       failwith "`Ant (_loc, (mk_anti ~c:\"ctypand\" n s))\n"))));
-        ([`Stoken
-            (((function | `QUOTATION _ -> true | _ -> false)),
-              (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.ctyp_tag : 'type_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'type_declaration )
-                  | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
         ([`Sself; `Skeyword "and"; `Sself],
           ("Gram.mk_action\n  (fun (t2 : 'type_declaration)  _  (t1 : 'type_declaration) \n     (_loc : FanLoc.t)  -> (`And (_loc, t1, t2) : 'type_declaration ))\n",
             (Gram.mk_action

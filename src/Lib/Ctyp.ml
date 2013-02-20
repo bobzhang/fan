@@ -1,4 +1,3 @@
-
 #default_quotation "ctyp";;
 open FanAst;
 open Objs;
@@ -60,10 +59,11 @@ let (+>) params base = List.fold_right arrow params base;
    ("list",1)
    ]}
  *)
-let name_length_of_tydcl = fun 
-    [ `TyDcl (_, `Lid(_,name), tyvars, _, _) -> (name, List.length tyvars)
-    | tydcl ->
-        failwithf "name_length_of_tydcl {|%s|}\n"  (dump_ctyp tydcl)];      
+let name_length_of_tydcl (x:typedecl)=
+  match x with 
+  [ `TyDcl (_, `Lid(_,name), tyvars, _, _) -> (name, List.length tyvars)
+  | tydcl ->
+      failwithf "name_length_of_tydcl {|%s|}\n"  (dump_typedecl tydcl)];      
 
 
 
@@ -124,11 +124,12 @@ let of_name_len ~off (name,len) =
   list 'a
    ]}
  *)  
-let ty_name_of_tydcl  = fun 
-    [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-      (* apply *) appl_of_list [ {| $lid:name |} :: tyvars]
-    | tydcl ->
-        failwithf "ctyp_of_tydcl{|%s|}\n" (dump_ctyp tydcl)];      
+let ty_name_of_tydcl  (x:typedecl) =
+  match x with 
+  [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
+       appl_of_list [ {| $lid:name |} :: tyvars]
+  | tydcl ->
+      failwithf "ctyp_of_tydcl{|%s|}\n" (dump_typedecl tydcl)];      
 
 (*
   {[
@@ -138,7 +139,7 @@ let ty_name_of_tydcl  = fun
   list 'all_c0 'all_c1
   ]}
  *)  
-let gen_ty_of_tydcl ~off tydcl =
+let gen_ty_of_tydcl ~off (tydcl:typedecl) =
   tydcl |> name_length_of_tydcl |>of_name_len ~off ;
   
 (*
@@ -296,7 +297,8 @@ let mk_obj class_name  base body =
   end |};
 
   
-let is_recursive ty_dcl = match ty_dcl with
+let is_recursive ty_dcl =
+  match ty_dcl with
   [ `TyDcl (_, `Lid(_,name), _, ctyp, _)  ->
     let obj = object(self:'self_type)
       inherit Objs.fold as super;
@@ -311,10 +313,16 @@ let is_recursive ty_dcl = match ty_dcl with
       method is_recursive = is_recursive;
     end in
     (obj#ctyp ctyp)#is_recursive
-  | {| $_ and $_ |} -> true
-  | _ -> failwithf "is_recursive not type declartion: %s" (dump_ctyp ty_dcl)];
 
+  | {| $_ and $_ |} -> true (* FIXME imprecise *)
+  | _ -> failwithf "is_recursive not type declartion: %s" (dump_typedecl ty_dcl)];
 
+(*
+  {:str_item|
+  type u = int
+  and v = bool
+  |}
+ *)
 (*
   detect patterns like [List.t int ] or [List.t]
   Here the order matters
@@ -342,6 +350,7 @@ let is_abstract = fun
 
 let abstract_list = fun
   [ `TyDcl (_, _, lst, {| |}, _) -> Some (List.length lst) | _ -> None];
+  
 let eq t1 t2 =
   let strip_locs t = (FanAst.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
   strip_locs t1 = strip_locs t2;
@@ -437,16 +446,16 @@ end;
   Preprocess module_types, generate type equalities
 
  *)
-let transform_module_types  lst =
+let transform_module_types  (lst:FSig.module_types) =
   let obj = mk_transform_type_eq () in 
   let item1 =
     List.map (fun
            [`Mutual ls ->
              `Mutual (List.map
                       (fun (s,ty) ->
-                        (s, obj#ctyp ty)) ls)
+                        (s, obj#typedecl ty)) ls)
            |`Single (s,ty) ->
-               `Single (s, obj#ctyp ty)]) lst in
+               `Single (s, obj#typedecl ty)]) lst in
   let new_types = obj#type_transformers in
   (new_types,item1);
       

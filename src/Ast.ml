@@ -147,9 +147,6 @@
 
      | `TyMan of (loc * ctyp * ctyp) (* t == t *) (* type t = [ A | B ] == `Foo.t *)
 
-     (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
-     | `TyDcl of (loc * alident * list ctyp * ctyp * list (ctyp * ctyp))
-           (* FIXME, the location *)
           
      (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
      | `TyObj of (loc * name_ctyp * row_var_flag )
@@ -176,8 +173,6 @@
      | `Or  of (loc * ctyp * ctyp) (* t | t *)
      | `Priv of (loc * ctyp) (* private t *)
 
-     (* | `Mut of (loc * ctyp) (\* mutable t *\) *)
-           
      | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
      | `Sta of (loc * ctyp * ctyp) (* t * t *)
 
@@ -192,6 +187,14 @@
      | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
      | `Package of (loc * module_type) (* (module S) *)
      | ant ]
+         
+   and typedecl =
+       (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
+    [= `TyDcl of (loc * alident * list ctyp * ctyp * list (ctyp * ctyp))
+    | `And of (loc * typedecl * typedecl)
+    | ant_nil ]
+           (* FIXME, the location *)
+
    (* and poly_ctyp = *)
    (*   [= `TyPol of (loc * ctyp * ctyp) ]   *)
    and name_ctyp =
@@ -349,7 +352,7 @@
       (* module type s = mt *)
      | `ModuleType of (loc * auident * module_type)
      | `Open of (loc * ident)
-     | `Type of (loc * ctyp)
+     | `Type of (loc * (* ctyp *)typedecl)
       (* va s : t *)
      |  `Val of (loc * alident * ctyp)
      | ant  ]
@@ -438,7 +441,7 @@
       (* open i *)
      | `Open of (loc * ident)
       (* type t *)
-     | `Type of (loc * ctyp)
+     | `Type of (loc * (* ctyp *)typedecl)
       (* value (rec)? bi *)
      | `Value of (loc * rec_flag * binding)
      | ant (* $s$ *) ]

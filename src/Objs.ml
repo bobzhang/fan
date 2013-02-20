@@ -16,6 +16,7 @@ derive(Map2 Fold2 OIter Map Fold  OPrint OEq Strip Print);
 
 let dump = new print;
 
+let dump_typedecl = to_string_of_printer dump#typedecl;
 let dump_ctyp = to_string_of_printer dump#ctyp;
 let dump_name_ctyp = to_string_of_printer dump#name_ctyp;  
 let dump_with_constr = to_string_of_printer dump#with_constr;

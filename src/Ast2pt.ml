@@ -786,7 +786,7 @@ and mkideexp (x:rec_expr)
    ]}
    
  *)    
-and mktype_decl (x:ctyp)  =
+and mktype_decl (x:typedecl)  =
   let tys = list_of_and x [] in
   List.map
     (fun 
@@ -800,7 +800,7 @@ and mktype_decl (x:ctyp)  =
            (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl [])
            cl td cloc)
       | t ->
-          errorf (loc_of t) "mktype_decl %s" (dump_ctyp t)]) tys
+          errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)]) tys
 and module_type : Ast.module_type -> Parsetree.module_type =
   let  mkwithc (wc:with_constr)  =
     let opt_private_ctyp (x:ctyp) = 

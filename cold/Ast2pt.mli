@@ -131,7 +131,7 @@ val mkideexp :
   (string Asttypes.loc * Parsetree.expression) list
       
 val mktype_decl :
-  ctyp ->
+  typedecl ->
   (string Asttypes.loc * Parsetree.type_declaration) list
 
 val module_type : module_type -> Parsetree.module_type

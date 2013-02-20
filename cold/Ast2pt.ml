@@ -705,7 +705,7 @@ and mkideexp (x : rec_expr) (acc : (string Asttypes.loc* expression) list) =
    | `Sem (_,x,y) -> mkideexp x (mkideexp y acc)
    | `RecBind (_,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
    | _ -> assert false : (string Asttypes.loc* expression) list )
-and mktype_decl (x : ctyp) =
+and mktype_decl (x : typedecl) =
   let tys = list_of_and x [] in
   List.map
     (function
@@ -720,7 +720,7 @@ and mktype_decl (x : ctyp) =
               (List.fold_right
                  (fun x  acc  -> (optional_type_parameters x) @ acc) tl [])
               cl td cloc))
-     | t -> errorf (loc_of t) "mktype_decl %s" (dump_ctyp t)) tys
+     | t -> errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)) tys
 and module_type: Ast.module_type -> Parsetree.module_type =
   let mkwithc (wc : with_constr) =
     let opt_private_ctyp (x : ctyp) =

@@ -59,11 +59,11 @@ let filter_type_defs ?qualified  () =
             | (Some (`Dot (_loc,i,_),ls),Some q) when
                 (Ident.eq i q) && (Ctyp.eq_list ls vars) ->
                 `TyDcl (_loc, name, vars, (`Nil _loc), constraints)
-            | (_,_) -> super#ctyp x in
+            | (_,_) -> super#typedecl x in
           let y = `Type (_loc, x) in
           let () = type_defs <- `Sem (_loc, type_defs, y) in `Type (_loc, x)
       | `Type (_loc,ty) ->
-          let x = super#ctyp ty in
+          let x = super#typedecl ty in
           let () = type_defs <- `Sem (_loc, type_defs, (`Type (_loc, x))) in
           `Type (_loc, x)
       | x -> super#sig_item x
@@ -153,14 +153,14 @@ let traversal () =
          |`External (_loc,_,_,_)|`StExp (_loc,_)|`Exception (_loc,_)
          |`Directive (_loc,_,_) as x -> x
        | x -> super#str_item x
-     method! ctyp =
+     method! typedecl =
        function
        | `TyDcl (_,`Lid (_,name),_,_,_) as t ->
            (if self#is_in_and_types
             then self#update_cur_and_types (fun lst  -> (name, t) :: lst)
             else ();
             t)
-       | t -> super#ctyp t
+       | t -> super#typedecl t
    end : traversal )
 let g =
   Gram.create_gram

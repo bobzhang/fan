@@ -106,13 +106,13 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
                 (Ident.eq i q && Ctyp.eq_list ls vars )->
                    (* type u 'a = Loc.u 'a *)       
                   `TyDcl _loc name vars {:ctyp||} constraints
-               |(_,_) -> super#ctyp x ] in 
+               |(_,_) -> super#typedecl x ] in 
              let y = {:str_item| type $x  |} in
              let () =  type_defs <- {:str_item| $type_defs ; $y |} in      
              {| type $x |}  
      end
      | {| type $ty |} -> (* `And case *) begin
-         let x = super#ctyp ty in
+         let x = super#typedecl ty in
          let () = type_defs <- {:str_item| $type_defs ; $({:str_item|type $x |}) |} in
          {|type $x |} 
          end
@@ -226,14 +226,14 @@ let traversal () : traversal  = object (self:'self_type)
 (* {| exception $_ |} *) 
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
     |  x ->  super#str_item x  ];
-  method! ctyp = fun
+  method! typedecl = fun
     [ `TyDcl (_, `Lid(_,name), _, _, _) as t -> begin
       if self#is_in_and_types then
         self#update_cur_and_types (fun lst -> [ (name,t) :: lst] )
       else ();
       t
     end
-    | t -> super#ctyp t ];
+    | t -> super#typedecl t ];
 end;
 
 

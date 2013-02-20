@@ -31,10 +31,8 @@ type ctyp =
   | `App of (loc* ctyp* ctyp) | `Arrow of (loc* ctyp* ctyp)
   | `ClassPath of (loc* ident) | `Label of (loc* alident* ctyp)
   | `OptLabl of (loc* alident* ctyp) | `Id of (loc* ident)
-  | `TyMan of (loc* ctyp* ctyp)
-  | `TyDcl of (loc* alident* ctyp list* ctyp* (ctyp* ctyp) list)
-  | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
-  | `TyTypePol of (loc* ctyp* ctyp)
+  | `TyMan of (loc* ctyp* ctyp) | `TyObj of (loc* name_ctyp* row_var_flag)
+  | `TyPol of (loc* ctyp* ctyp) | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
   | `Record of (loc* name_ctyp) | `TyCol of (loc* sid* ctyp)
   | `Com of (loc* ctyp* ctyp) | `Sum of (loc* ctyp)
@@ -45,6 +43,9 @@ type ctyp =
   | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
   | `Amp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
   | `Package of (loc* module_type) | ant] 
+and typedecl =
+  [ `TyDcl of (loc* alident* ctyp list* ctyp* (ctyp* ctyp) list)
+  | `And of (loc* typedecl* typedecl) | ant_nil] 
 and name_ctyp =
   [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* sid* ctyp)
   | `TyColMut of (loc* sid* ctyp) | ant_nil] 
@@ -103,7 +104,7 @@ and sig_item =
   | `Include of (loc* module_type) | `Module of (loc* auident* module_type)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
-  | `Type of (loc* ctyp) | `Val of (loc* alident* ctyp) | ant] 
+  | `Type of (loc* typedecl) | `Val of (loc* alident* ctyp) | ant] 
 and with_constr =
   [ `Nil of loc | `TypeEq of (loc* ctyp* ctyp)
   | `ModuleEq of (loc* ident* ident) | `TypeSubst of (loc* ctyp* ctyp)
@@ -134,7 +135,7 @@ and str_item =
   | `Include of (loc* module_expr) | `Module of (loc* auident* module_expr)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
-  | `Type of (loc* ctyp) | `Value of (loc* rec_flag* binding) | ant] 
+  | `Type of (loc* typedecl) | `Value of (loc* rec_flag* binding) | ant] 
 and class_type =
   [ `Nil of loc | `CtCon of (loc* virtual_flag* ident* ctyp)
   | `CtFun of (loc* ctyp* class_type) | `CtSig of (loc* ctyp* class_sig_item)

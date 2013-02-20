@@ -252,7 +252,7 @@ let generate (module_types : FSig.module_types) =
            | _ -> ()) branches
     | _ ->
         FanLoc.errorf (loc_of ty) "generate module_types %s"
-          (Objs.dump_ctyp ty) in
+          (Objs.dump_typedecl ty) in
   let _ =
     List.iter
       (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)
@@ -308,7 +308,7 @@ let generate (module_types : FSig.module_types) =
                   | _ -> `Of (_loc, vrn, x))
              | x -> super#ctyp x
          end in
-       obj#ctyp ty
+       obj#typedecl ty
      else ty in
    (fun x  -> let r = FSigUtil.str_item_from_module_types ~f:aux x in r)
      module_types : str_item )

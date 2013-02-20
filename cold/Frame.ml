@@ -180,7 +180,7 @@ let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~destination  ~result_type  simple_expr_of_ctyp expr_of_ctyp
   expr_of_variant tydcl =
-  (match (tydcl : ctyp ) with
+  (match (tydcl : typedecl ) with
    | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
        let ctyp =
          match ctyp with
@@ -219,7 +219,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
         | t ->
             FanLoc.errorf (loc_of t) "fun_of_tydcl inner %s"
               (dump_ctyp (t :>ctyp)))
-   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_ctyp t) : 
+   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_typedecl t) : 
   expr )
 let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 
@@ -242,7 +242,7 @@ let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1)
       `Bind (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))), fun_expr)
     else
       (eprintf "Warning: %s as a abstract type no structure generated\n"
-         (dump_ctyp tydcl);
+         (dump_typedecl tydcl);
        `Bind
          (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
            (`App

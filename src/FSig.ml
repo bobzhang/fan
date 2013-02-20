@@ -88,7 +88,7 @@ open Objs;
 {:fans|keep on; derive (Print); |};
 
 {:ocaml|
-type named_type = (string*ctyp)
+type named_type = (string* (* ctyp *)typedecl)
 and and_types =
     list named_type
 and types =

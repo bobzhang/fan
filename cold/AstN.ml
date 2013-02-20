@@ -28,7 +28,6 @@ type ctyp =
   [ `Nil | `Alias of (ctyp* ctyp) | `Any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
   | `OptLabl of (alident* ctyp) | `Id of ident | `TyMan of (ctyp* ctyp)
-  | `TyDcl of (alident* ctyp list* ctyp* (ctyp* ctyp) list)
   | `TyObj of (name_ctyp* row_var_flag) | `TyPol of (ctyp* ctyp)
   | `TyTypePol of (ctyp* ctyp)
   | `Quote of (position_flag* alident meta_option) | `Record of name_ctyp
@@ -38,6 +37,9 @@ type ctyp =
   | `TyVrnEq of ctyp | `TyVrnSup of ctyp | `TyVrnInf of ctyp
   | `TyVrnInfSup of (ctyp* ctyp) | `Amp of (ctyp* ctyp)
   | `TyOfAmp of (ctyp* ctyp) | `Package of module_type | ant] 
+and typedecl =
+  [ `TyDcl of (alident* ctyp list* ctyp* (ctyp* ctyp) list)
+  | `And of (typedecl* typedecl) | ant_nil] 
 and name_ctyp =
   [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp)
   | `TyColMut of (sid* ctyp) | ant_nil] 
@@ -91,7 +93,7 @@ and sig_item =
   | `Exception of of_ctyp | `External of (alident* ctyp* string meta_list)
   | `Include of module_type | `Module of (auident* module_type)
   | `RecModule of module_binding | `ModuleType of (auident* module_type)
-  | `Open of ident | `Type of ctyp | `Val of (alident* ctyp) | ant] 
+  | `Open of ident | `Type of typedecl | `Val of (alident* ctyp) | ant] 
 and with_constr =
   [ `Nil | `TypeEq of (ctyp* ctyp) | `ModuleEq of (ident* ident)
   | `TypeSubst of (ctyp* ctyp) | `ModuleSubst of (ident* ident)
@@ -117,8 +119,8 @@ and str_item =
   | `Exception of of_ctyp | `StExp of expr
   | `External of (alident* ctyp* string meta_list) | `Include of module_expr
   | `Module of (auident* module_expr) | `RecModule of module_binding
-  | `ModuleType of (auident* module_type) | `Open of ident | `Type of ctyp
-  | `Value of (rec_flag* binding) | ant] 
+  | `ModuleType of (auident* module_type) | `Open of ident
+  | `Type of typedecl | `Value of (rec_flag* binding) | ant] 
 and class_type =
   [ `Nil | `CtCon of (virtual_flag* ident* ctyp)
   | `CtFun of (ctyp* class_type) | `CtSig of (ctyp* class_sig_item)

@@ -251,7 +251,7 @@ let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
 let fun_of_tydcl
     ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record ~destination ~result_type
     simple_expr_of_ctyp expr_of_ctyp expr_of_variant  tydcl :expr = 
-    match (tydcl:ctyp) with 
+    match (tydcl:typedecl) with 
     [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
       let ctyp =
         match ctyp with
@@ -288,7 +288,7 @@ let fun_of_tydcl
            FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (dump_ctyp (t:>ctyp))
         ]
   | t ->
-      FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_ctyp t) ];
+      FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_typedecl t) ];
 
 
 (* destination is [Str_item] generate [str_item], type annotations may
@@ -319,7 +319,7 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     {:binding| $(lid:tctor_var name) = $fun_expr |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n"
-      (dump_ctyp tydcl);
+      (dump_typedecl tydcl);
     {:binding| $(lid:tctor_var  name) =
     failwithf $(str:"Abstract data type not implemented") |};
   end ;

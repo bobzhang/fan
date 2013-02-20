@@ -60,11 +60,11 @@ val fun_of_tydcl :
       (ctyp -> expr ) ->
         (ctyp -> expr ) ->
           (ctyp -> ctyp -> expr) ->  (* labeld as variant *)
-            ctyp -> expr
+            typedecl -> expr
 val binding_of_tydcl :
   ?cons_transform:(string -> string) ->
   (ctyp -> expr ) ->
-  ctyp ->
+  typedecl ->
   ?arity:int ->
   ?names:string list ->
   trail:(FSig.vrn * int -> match_case) ->

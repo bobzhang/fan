@@ -32,10 +32,10 @@ let (<+) names ty =
          (_loc, (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, name))))),
            acc)) names ty
 let (+>) params base = List.fold_right arrow params base
-let name_length_of_tydcl =
-  function
+let name_length_of_tydcl (x : typedecl) =
+  match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) -> (name, (List.length tyvars))
-  | tydcl -> failwithf "name_length_of_tydcl {|%s|}\n" (dump_ctyp tydcl)
+  | tydcl -> failwithf "name_length_of_tydcl {|%s|}\n" (dump_typedecl tydcl)
 let gen_quantifiers ~arity  n =
   ((List.init arity
       (fun i  ->
@@ -53,12 +53,12 @@ let of_id_len ~off  (id,len) =
           `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (allx ~off i))))))))
 let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
-let ty_name_of_tydcl =
-  function
+let ty_name_of_tydcl (x : typedecl) =
+  match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
       appl_of_list ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
-  | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (dump_ctyp tydcl)
-let gen_ty_of_tydcl ~off  tydcl =
+  | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (dump_typedecl tydcl)
+let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record (ty : name_ctyp) =
   (let (tys :name_ctyp list)= list_of_sem' ty [] in
@@ -161,7 +161,8 @@ let is_recursive ty_dcl =
         end in
       (obj#ctyp ctyp)#is_recursive
   | `And (_loc,_,_) -> true
-  | _ -> failwithf "is_recursive not type declartion: %s" (dump_ctyp ty_dcl)
+  | _ ->
+      failwithf "is_recursive not type declartion: %s" (dump_typedecl ty_dcl)
 let qualified_app_list =
   function
   | `App (_loc,_,_) as x ->
@@ -219,14 +220,14 @@ let mk_transform_type_eq () =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)
         transformers []
   end
-let transform_module_types lst =
+let transform_module_types (lst : FSig.module_types) =
   let obj = mk_transform_type_eq () in
   let item1 =
     List.map
       (function
        | `Mutual ls ->
-           `Mutual (List.map (fun (s,ty)  -> (s, (obj#ctyp ty))) ls)
-       | `Single (s,ty) -> `Single (s, (obj#ctyp ty))) lst in
+           `Mutual (List.map (fun (s,ty)  -> (s, (obj#typedecl ty))) ls)
+       | `Single (s,ty) -> `Single (s, (obj#typedecl ty))) lst in
   let new_types = obj#type_transformers in (new_types, item1)
 let reduce_data_ctors (ty : ctyp) (init : 'a) ~compose 
   (f : string -> ctyp list -> 'e) =
