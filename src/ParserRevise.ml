@@ -173,10 +173,20 @@ let apply () = begin
         [ S{wc1}; "and"; S{wc2} -> {| $wc1 and $wc2 |}
         | `Ant ((""|"with_constr"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"with_constr" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.with_constr_tag
-        | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->           {| type $t1 = $t2 |}
-        | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->         {| type $t1 := $t2 |}
-        | "module"; module_longident{i1}; "="; module_longident_with_app{i2} -> {| module $i1 = $i2 |}
-        | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} -> {| module $i1 := $i2 |} ] |};
+        | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->
+            `TypeEq (_loc, t1, t2)
+        | "type"; type_longident_and_parameters{t1}; "="; "private"; ctyp{t2} ->
+            `TypeEqPriv(_loc,t1,t2)
+            (* {| type $t1 = $t2 |} *)
+        | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->
+            `TypeSubst (_loc, t1, t2)
+            (* {| type $t1 := $t2 |} *)
+        | "module"; module_longident{i1}; "="; module_longident_with_app{i2} ->
+            `ModuleEq (_loc, i1, i2)
+            (* {| module $i1 = $i2 |} *)
+        | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} ->
+            `ModuleSubst (_loc, i1, i2)
+            (* {| module $i1 := $i2 |} *) ] |};
 
   with module_type
     {:extend|

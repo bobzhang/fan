@@ -548,6 +548,20 @@ let apply () =
             (Gram.obj
                (type_longident_and_parameters : 'type_longident_and_parameters
                                                   Gram.t ));
+          `Skeyword "=";
+          `Skeyword "private";
+          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  _  (t1 : 'type_longident_and_parameters)  _ \n     (_loc : FanLoc.t)  -> (`TypeEqPriv (_loc, t1, t2) : 'with_constr ))\n",
+             (Gram.mk_action
+                (fun (t2 : 'ctyp)  _  _ 
+                   (t1 : 'type_longident_and_parameters)  _ 
+                   (_loc : FanLoc.t)  ->
+                   (`TypeEqPriv (_loc, t1, t2) : 'with_constr )))));
+         ([`Skeyword "type";
+          `Snterm
+            (Gram.obj
+               (type_longident_and_parameters : 'type_longident_and_parameters
+                                                  Gram.t ));
           `Skeyword ":=";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
            ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'type_longident_and_parameters)  _ \n     (_loc : FanLoc.t)  -> (`TypeSubst (_loc, t1, t2) : 'with_constr ))\n",

@@ -184,19 +184,16 @@ class eq =
         | (`Quote (_a0,_a1),`Quote (_b0,_b1)) ->
             (self#position_flag _a0 _b0) &&
               (self#meta_option (fun self  -> self#alident) _a1 _b1)
-        | (`Record _a0,`Record _b0) -> self#name_ctyp _a0 _b0
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Com (_a0,_a1),`Com (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
-        | (`Sum _a0,`Sum _b0) -> self#ctyp _a0 _b0
         | (`Of (_a0,_a1),`Of (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
-        | (`Priv _a0,`Priv _b0) -> self#ctyp _a0 _b0
         | (`Tup _a0,`Tup _b0) -> self#ctyp _a0 _b0
         | (`Sta (_a0,_a1),`Sta (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
@@ -468,6 +465,8 @@ class eq =
         match (_a0, _b0) with
         | (`Nil,`Nil) -> true
         | (`TypeEq (_a0,_a1),`TypeEq (_b0,_b1)) ->
+            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
+        | (`TypeEqPriv (_a0,_a1),`TypeEqPriv (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`ModuleEq (_a0,_a1),`ModuleEq (_b0,_b1)) ->
             (self#ident _a0 _b0) && (self#ident _a1 _b1)
@@ -860,15 +859,12 @@ class print =
         | `Quote (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Quote@ %a@ %a)@]" self#position_flag
               _a0 (self#meta_option (fun self  -> self#alident)) _a1
-        | `Record _a0 ->
-            Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#name_ctyp _a0
         | `TyCol (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#sid _a0
               self#ctyp _a1
         | `Com (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a)@]" self#ctyp _a0
               self#ctyp _a1
-        | `Sum _a0 -> Format.fprintf fmt "@[<1>(`Sum@ %a)@]" self#ctyp _a0
         | `Of (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
@@ -878,7 +874,6 @@ class print =
         | `Or (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
-        | `Priv _a0 -> Format.fprintf fmt "@[<1>(`Priv@ %a)@]" self#ctyp _a0
         | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#ctyp _a0
         | `Sta (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sta@ %a@ %a)@]" self#ctyp _a0
@@ -1205,6 +1200,9 @@ class print =
         | `Nil -> Format.fprintf fmt "`Nil"
         | `TypeEq (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TypeEq@ %a@ %a)@]" self#ctyp _a0
+              self#ctyp _a1
+        | `TypeEqPriv (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`TypeEqPriv@ %a@ %a)@]" self#ctyp _a0
               self#ctyp _a1
         | `ModuleEq (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleEq@ %a@ %a)@]" self#ident _a0
@@ -1610,8 +1608,6 @@ let rec meta_ctyp _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Quote")), (meta_position_flag _loc _a0))),
           (meta_meta_option meta_alident _loc _a1))
-  | `Record _a0 ->
-      `App (_loc, (`Vrn (_loc, "Record")), (meta_name_ctyp _loc _a0))
   | `TyCol (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
@@ -1620,7 +1616,6 @@ let rec meta_ctyp _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (meta_ctyp _loc _a0))),
           (meta_ctyp _loc _a1))
-  | `Sum _a0 -> `App (_loc, (`Vrn (_loc, "Sum")), (meta_ctyp _loc _a0))
   | `Of (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Of")), (meta_ctyp _loc _a0))),
@@ -1633,7 +1628,6 @@ let rec meta_ctyp _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_ctyp _loc _a0))),
           (meta_ctyp _loc _a1))
-  | `Priv _a0 -> `App (_loc, (`Vrn (_loc, "Priv")), (meta_ctyp _loc _a0))
   | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_ctyp _loc _a0))
   | `Sta (_a0,_a1) ->
       `App
@@ -2068,6 +2062,11 @@ and meta_with_constr _loc =
   | `TypeEq (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "TypeEq")), (meta_ctyp _loc _a0))),
+          (meta_ctyp _loc _a1))
+  | `TypeEqPriv (_a0,_a1) ->
+      `App
+        (_loc,
+          (`App (_loc, (`Vrn (_loc, "TypeEqPriv")), (meta_ctyp _loc _a0))),
           (meta_ctyp _loc _a1))
   | `ModuleEq (_a0,_a1) ->
       `App

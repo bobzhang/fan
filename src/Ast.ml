@@ -158,7 +158,7 @@
            (*  +'s -'s 's +_ -_ *)      
      | `Quote of (loc * position_flag * meta_option alident)
           
-     | `Record of (loc * name_ctyp)
+
            
      | `TyCol of (loc * sid * ctyp) (* t : t *)
 
@@ -166,15 +166,16 @@
            
      | `Com of (loc * ctyp * ctyp) (* t, t *)
 
-     | `Sum of (loc * ctyp) (* [ t ] *) (* [ A of int * string | B ] *)
-     
+     (* | `Sum of (loc * ctyp) (\* [ t ] *\) (\* [ A of int * string | B ] *\) *)
+     (* | `Record of (loc * name_ctyp) *)
+           
      | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)
 
      | `And of (loc * ctyp * ctyp) (* t * t *)
            
      | `Or  of (loc * ctyp * ctyp) (* t | t *)
 
-     | `Priv of (loc * ctyp) (* private t *)
+     (* | `Priv of (loc * ctyp) (\* private t *\) *)
 
      | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
 
@@ -386,6 +387,7 @@
     [= `Nil of loc
      (* type t = t *)
      | `TypeEq of (loc * ctyp * ctyp)
+     | `TypeEqPriv of (loc * ctyp * ctyp)
      (* module i = i *)
      | `ModuleEq of (loc * ident * ident)
      (* type t := t *)

@@ -266,9 +266,6 @@ class map2 =
             let _a1 = self#position_flag _a1 _b1 in
             let _a2 = self#meta_option (fun self  -> self#alident) _a2 _b2 in
             `Quote (_a0, _a1, _a2)
-        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
-            let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#name_ctyp _a1 _b1 in `Record (_a0, _a1)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#sid _a1 _b1 in
@@ -277,9 +274,6 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `Com (_a0, _a1, _a2)
-        | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
-            let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ctyp _a1 _b1 in `Sum (_a0, _a1)
         | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -292,9 +286,6 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `Or (_a0, _a1, _a2)
-        | (`Priv (_a0,_a1),`Priv (_b0,_b1)) ->
-            let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ctyp _a1 _b1 in `Priv (_a0, _a1)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in `Tup (_a0, _a1)
@@ -776,6 +767,10 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `TypeEq (_a0, _a1, _a2)
+        | (`TypeEqPriv (_a0,_a1,_a2),`TypeEqPriv (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#ctyp _a1 _b1 in
+            let _a2 = self#ctyp _a2 _b2 in `TypeEqPriv (_a0, _a1, _a2)
         | (`ModuleEq (_a0,_a1,_a2),`ModuleEq (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in
@@ -1356,16 +1351,12 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#position_flag _a1 _b1 in
             self#meta_option (fun self  -> self#alident) _a2 _b2
-        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#name_ctyp _a1 _b1
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
-        | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -1375,8 +1366,6 @@ class fold2 =
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
-        | (`Priv (_a0,_a1),`Priv (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`Sta (_a0,_a1,_a2),`Sta (_b0,_b1,_b2)) ->
@@ -1746,6 +1735,9 @@ class fold2 =
         match (_a0, _b0) with
         | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
         | (`TypeEq (_a0,_a1,_a2),`TypeEq (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
+        | (`TypeEqPriv (_a0,_a1,_a2),`TypeEqPriv (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
         | (`ModuleEq (_a0,_a1,_a2),`ModuleEq (_b0,_b1,_b2)) ->
@@ -2167,14 +2159,11 @@ class iter =
           (self#loc _a0;
            self#position_flag _a1;
            self#meta_option (fun self  -> self#alident) _a2)
-      | `Record (_a0,_a1) -> (self#loc _a0; self#name_ctyp _a1)
       | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | `Com (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
-      | `Sum (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `Of (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `And (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
-      | `Priv (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `Tup (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `Sta (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `TyVrn (_a0,_a1) -> (self#loc _a0; self#astring _a1)
@@ -2400,6 +2389,8 @@ class iter =
       function
       | `Nil _a0 -> self#loc _a0
       | `TypeEq (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
+      | `TypeEqPriv (_a0,_a1,_a2) ->
+          (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `ModuleEq (_a0,_a1,_a2) ->
           (self#loc _a0; self#ident _a1; self#ident _a2)
       | `TypeSubst (_a0,_a1,_a2) ->
@@ -2791,9 +2782,6 @@ class map =
           let _a1 = self#position_flag _a1 in
           let _a2 = self#meta_option (fun self  -> self#alident) _a2 in
           `Quote (_a0, _a1, _a2)
-      | `Record (_a0,_a1) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#name_ctyp _a1 in `Record (_a0, _a1)
       | `TyCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#sid _a1 in
@@ -2802,9 +2790,6 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
           let _a2 = self#ctyp _a2 in `Com (_a0, _a1, _a2)
-      | `Sum (_a0,_a1) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in `Sum (_a0, _a1)
       | `Of (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -2817,9 +2802,6 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
           let _a2 = self#ctyp _a2 in `Or (_a0, _a1, _a2)
-      | `Priv (_a0,_a1) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in `Priv (_a0, _a1)
       | `Tup (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in `Tup (_a0, _a1)
@@ -3253,6 +3235,10 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
           let _a2 = self#ctyp _a2 in `TypeEq (_a0, _a1, _a2)
+      | `TypeEqPriv (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#ctyp _a1 in
+          let _a2 = self#ctyp _a2 in `TypeEqPriv (_a0, _a1, _a2)
       | `ModuleEq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in
@@ -3728,13 +3714,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#position_flag _a1 in
           self#meta_option (fun self  -> self#alident) _a2
-      | `Record (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
       | `TyCol (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | `Com (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
-      | `Sum (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `Of (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -3744,7 +3728,6 @@ class fold =
       | `Or (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
-      | `Priv (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `Sta (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -4043,6 +4026,9 @@ class fold =
       function
       | `Nil _a0 -> self#loc _a0
       | `TypeEq (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#ctyp _a1 in self#ctyp _a2
+      | `TypeEqPriv (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
       | `ModuleEq (_a0,_a1,_a2) ->
@@ -4494,18 +4480,12 @@ class print =
             Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" self#loc _a0
               self#position_flag _a1
               (self#meta_option (fun self  -> self#alident)) _a2
-        | `Record (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#loc _a0
-              self#name_ctyp _a1
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
               self#sid _a1 self#ctyp _a2
         | `Com (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
-        | `Sum (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" self#loc _a0 self#ctyp
-              _a1
         | `Of (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -4515,9 +4495,6 @@ class print =
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
-        | `Priv (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Priv@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1
         | `Tup (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#ctyp
               _a1
@@ -4890,6 +4867,9 @@ class print =
         | `TypeEq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TypeEq@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
+        | `TypeEqPriv (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`TypeEqPriv@ %a@ %a@ %a)@]" self#loc
+              _a0 self#ctyp _a1 self#ctyp _a2
         | `ModuleEq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleEq@ %a@ %a@ %a)@]" self#loc _a0
               self#ident _a1 self#ident _a2
@@ -5370,15 +5350,11 @@ class eq =
         | (`Quote (_a0,_a1,_a2),`Quote (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#position_flag _a1 _b1)) &&
               (self#meta_option (fun self  -> self#alident) _a2 _b2)
-        | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
-        | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -5388,8 +5364,6 @@ class eq =
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
-        | (`Priv (_a0,_a1),`Priv (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Sta (_a0,_a1,_a2),`Sta (_b0,_b1,_b2)) ->
@@ -5751,6 +5725,9 @@ class eq =
         match (_a0, _b0) with
         | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
         | (`TypeEq (_a0,_a1,_a2),`TypeEq (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
+              (self#ctyp _a2 _b2)
+        | (`TypeEqPriv (_a0,_a1,_a2),`TypeEqPriv (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
         | (`ModuleEq (_a0,_a1,_a2),`ModuleEq (_b0,_b1,_b2)) ->
@@ -6166,14 +6143,12 @@ let rec strip_loc_ctyp =
       let _a1 = strip_loc_position_flag _a1 in
       let _a2 = strip_loc_meta_option strip_loc_alident _a2 in
       `Quote (_a1, _a2)
-  | `Record (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `Record _a1
   | `TyCol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
   | `Com (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Com (_a1, _a2)
-  | `Sum (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Sum _a1
   | `Of (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
@@ -6183,7 +6158,6 @@ let rec strip_loc_ctyp =
   | `Or (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Or (_a1, _a2)
-  | `Priv (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Priv _a1
   | `Tup (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Tup _a1
   | `Sta (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
@@ -6488,6 +6462,9 @@ and strip_loc_with_constr =
   | `TypeEq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TypeEq (_a1, _a2)
+  | `TypeEqPriv (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_ctyp _a1 in
+      let _a2 = strip_loc_ctyp _a2 in `TypeEqPriv (_a1, _a2)
   | `ModuleEq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
       let _a2 = strip_loc_ident _a2 in `ModuleEq (_a1, _a2)
@@ -6902,18 +6879,12 @@ let rec pp_print_ctyp fmt =
       Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_position_flag _a1 (pp_print_meta_option pp_print_alident)
         _a2
-  | `Record (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_name_ctyp _a1
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sid _a1 pp_print_ctyp _a2
   | `Com (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
-  | `Sum (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1
   | `Of (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
@@ -6923,9 +6894,6 @@ let rec pp_print_ctyp fmt =
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
-  | `Priv (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Priv@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1
   | `Tup (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1
@@ -7283,6 +7251,9 @@ and pp_print_with_constr fmt =
   | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc _a0
   | `TypeEq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TypeEq@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_ctyp _a1 pp_print_ctyp _a2
+  | `TypeEqPriv (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`TypeEqPriv@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
   | `ModuleEq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ModuleEq@ %a@ %a@ %a)@]" pp_print_loc _a0

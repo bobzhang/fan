@@ -719,22 +719,17 @@ and mktype_decl (x : typedecl) =
     tys
 and module_type: Ast.module_type -> Parsetree.module_type =
   let mkwithc (wc : with_constr) =
-    let opt_private_ctyp (x : ctyp) =
-      match x with
-      | `Priv (_,t) -> (Ptype_abstract, Private, (ctyp t))
-      | t -> (Ptype_abstract, Public, (ctyp t)) in
-    let mkwithtyp pwith_type loc id_tpl ct =
+    let mkwithtyp pwith_type loc priv id_tpl ct =
       let (id,tpl) = type_parameters_and_type_name id_tpl in
       let (params,variance) = List.split tpl in
-      let (kind,priv,ct) = opt_private_ctyp ct in
       (id,
         (pwith_type
            {
              ptype_params = params;
              ptype_cstrs = [];
-             ptype_kind = kind;
+             ptype_kind = Ptype_abstract;
              ptype_private = priv;
-             ptype_manifest = (Some ct);
+             ptype_manifest = (Some (ctyp ct));
              ptype_loc = loc;
              ptype_variance = variance
            })) in
@@ -742,11 +737,14 @@ and module_type: Ast.module_type -> Parsetree.module_type =
     List.filter_map
       (function
        | `TypeEq (_loc,id_tpl,ct) ->
-           Some (mkwithtyp (fun x  -> Pwith_type x) _loc id_tpl ct)
+           Some (mkwithtyp (fun x  -> Pwith_type x) _loc Public id_tpl ct)
+       | `TypeEqPriv (_loc,id_tpl,ct) ->
+           Some (mkwithtyp (fun x  -> Pwith_type x) _loc Private id_tpl ct)
        | `ModuleEq (_loc,i1,i2) ->
            Some ((long_uident i1), (Pwith_module (long_uident i2)))
        | `TypeSubst (_loc,id_tpl,ct) ->
-           Some (mkwithtyp (fun x  -> Pwith_typesubst x) _loc id_tpl ct)
+           Some
+             (mkwithtyp (fun x  -> Pwith_typesubst x) _loc Public id_tpl ct)
        | `ModuleSubst (_loc,i1,i2) ->
            Some ((long_uident i1), (Pwith_modsubst (long_uident i2)))
        | t ->

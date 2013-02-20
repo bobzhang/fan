@@ -35,10 +35,9 @@ type ctyp =
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
   | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
-  | `Record of (loc* name_ctyp) | `TyCol of (loc* sid* ctyp)
-  | `Com of (loc* ctyp* ctyp) | `Sum of (loc* ctyp)
+  | `TyCol of (loc* sid* ctyp) | `Com of (loc* ctyp* ctyp)
   | `Of of (loc* ctyp* ctyp) | `And of (loc* ctyp* ctyp)
-  | `Or of (loc* ctyp* ctyp) | `Priv of (loc* ctyp) | `Tup of (loc* ctyp)
+  | `Or of (loc* ctyp* ctyp) | `Tup of (loc* ctyp)
   | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* astring)
   | `TyVrnEq of (loc* ctyp) | `TyVrnSup of (loc* ctyp)
   | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
@@ -111,8 +110,8 @@ and sig_item =
   | `Type of (loc* typedecl) | `Val of (loc* alident* ctyp) | ant] 
 and with_constr =
   [ `Nil of loc | `TypeEq of (loc* ctyp* ctyp)
-  | `ModuleEq of (loc* ident* ident) | `TypeSubst of (loc* ctyp* ctyp)
-  | `ModuleSubst of (loc* ident* ident)
+  | `TypeEqPriv of (loc* ctyp* ctyp) | `ModuleEq of (loc* ident* ident)
+  | `TypeSubst of (loc* ctyp* ctyp) | `ModuleSubst of (loc* ident* ident)
   | `And of (loc* with_constr* with_constr) | ant] 
 and binding =
   [ `Nil of loc | `And of (loc* binding* binding)

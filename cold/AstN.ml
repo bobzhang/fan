@@ -30,12 +30,11 @@ type ctyp =
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
   | `OptLabl of (alident* ctyp) | sid | `TyObj of (name_ctyp* row_var_flag)
   | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
-  | `Quote of (position_flag* alident meta_option) | `Record of name_ctyp
-  | `TyCol of (sid* ctyp) | `Com of (ctyp* ctyp) | `Sum of ctyp
-  | `Of of (ctyp* ctyp) | `And of (ctyp* ctyp) | `Or of (ctyp* ctyp)
-  | `Priv of ctyp | `Tup of ctyp | `Sta of (ctyp* ctyp) | `TyVrn of astring
-  | `TyVrnEq of ctyp | `TyVrnSup of ctyp | `TyVrnInf of ctyp
-  | `TyVrnInfSup of (ctyp* ctyp) | `Amp of (ctyp* ctyp)
+  | `Quote of (position_flag* alident meta_option) | `TyCol of (sid* ctyp)
+  | `Com of (ctyp* ctyp) | `Of of (ctyp* ctyp) | `And of (ctyp* ctyp)
+  | `Or of (ctyp* ctyp) | `Tup of ctyp | `Sta of (ctyp* ctyp)
+  | `TyVrn of astring | `TyVrnEq of ctyp | `TyVrnSup of ctyp
+  | `TyVrnInf of ctyp | `TyVrnInfSup of (ctyp* ctyp) | `Amp of (ctyp* ctyp)
   | `TyOfAmp of (ctyp* ctyp) | `Package of module_type | ant] 
 and typedecl =
   [ `TyDcl of (alident* ctyp list* type_info* (ctyp* ctyp) list)
@@ -100,9 +99,10 @@ and sig_item =
   | `RecModule of module_binding | `ModuleType of (auident* module_type)
   | `Open of ident | `Type of typedecl | `Val of (alident* ctyp) | ant] 
 and with_constr =
-  [ `Nil | `TypeEq of (ctyp* ctyp) | `ModuleEq of (ident* ident)
-  | `TypeSubst of (ctyp* ctyp) | `ModuleSubst of (ident* ident)
-  | `And of (with_constr* with_constr) | ant] 
+  [ `Nil | `TypeEq of (ctyp* ctyp) | `TypeEqPriv of (ctyp* ctyp)
+  | `ModuleEq of (ident* ident) | `TypeSubst of (ctyp* ctyp)
+  | `ModuleSubst of (ident* ident) | `And of (with_constr* with_constr)
+  | ant] 
 and binding =
   [ `Nil | `And of (binding* binding) | `Bind of (patt* expr) | ant] 
 and module_binding =

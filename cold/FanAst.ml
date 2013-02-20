@@ -97,9 +97,9 @@ let loc_of =
   | `Ant (_loc,_) -> _loc
   | `Package_expr (_loc,_) -> _loc
   | `TyVrnEq (_loc,_) -> _loc
+  | `TypeEqPriv (_loc,_,_) -> _loc
   | `Label (_loc,_,_) -> _loc
   | `TyTypePol (_loc,_,_) -> _loc
-  | `Priv (_loc,_) -> _loc
   | `RvNil _loc -> _loc
   | `Override _loc -> _loc
   | `Include (_loc,_) -> _loc
@@ -444,11 +444,6 @@ module Make(MetaLoc:META_LOC) =
                    (`App (_loc, (`Vrn (_loc, "Quote")), (meta_loc _loc _a0))),
                    (meta_position_flag _loc _a1))),
               (meta_meta_option meta_alident _loc _a2))
-      | `Record (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
-              (meta_name_ctyp _loc _a1))
       | `TyCol (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -463,10 +458,6 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Com")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
-      | `Sum (_a0,_a1) ->
-          `App
-            (_loc, (`App (_loc, (`Vrn (_loc, "Sum")), (meta_loc _loc _a0))),
-              (meta_ctyp _loc _a1))
       | `Of (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -488,10 +479,6 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Or")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
-      | `Priv (_a0,_a1) ->
-          `App
-            (_loc, (`App (_loc, (`Vrn (_loc, "Priv")), (meta_loc _loc _a0))),
-              (meta_ctyp _loc _a1))
       | `Tup (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
@@ -1234,6 +1221,15 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "TypeEq")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
+      | `TypeEqPriv (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App
+                      (_loc, (`Vrn (_loc, "TypeEqPriv")),
+                        (meta_loc _loc _a0))), (meta_ctyp _loc _a1))),
+              (meta_ctyp _loc _a2))
       | `ModuleEq (_a0,_a1,_a2) ->
           `App
             (_loc,
