@@ -168,7 +168,7 @@ let expr_of_ctyp
     ?(arity=1)
     ?(names=[])
     ~trail ~mk_variant
-    simple_expr_of_ctyp (ty:ctyp)  =
+    simple_expr_of_ctyp (ty : or_ctyp)  =
   let f  (cons:string) (tyargs:list ctyp)  : match_case = 
     let args_length = List.length tyargs in  (* ` is not needed here *)
     let p =

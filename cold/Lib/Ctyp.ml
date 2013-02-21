@@ -230,16 +230,17 @@ let transform_module_types (lst : FSig.module_types) =
            `Mutual (List.map (fun (s,ty)  -> (s, (obj#typedecl ty))) ls)
        | `Single (s,ty) -> `Single (s, (obj#typedecl ty))) lst in
   let new_types = obj#type_transformers in (new_types, item1)
-let reduce_data_ctors (ty : ctyp) (init : 'a) ~compose 
+let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose 
   (f : string -> ctyp list -> 'e) =
   let branches = list_of_or' ty [] in
   List.fold_left
     (fun acc  x  ->
-       match x with
+       match (x : or_ctyp ) with
        | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
            compose (f cons (list_of_star' tys [])) acc
        | `Id (_loc,`Uid (_,cons)) -> compose (f cons []) acc
-       | t -> FanLoc.errorf (loc_of t) "reduce_data_ctors: %s" (dump_ctyp t))
+       | t ->
+           FanLoc.errorf (loc_of t) "reduce_data_ctors: %s" (dump_or_ctyp t))
     init branches
 let view_sum (t : ctyp) =
   let bs = FanAst.list_of_or' t [] in

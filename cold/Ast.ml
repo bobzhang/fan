@@ -35,8 +35,8 @@ type ctyp =
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
   | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
-  | `TyCol of (loc* sid* ctyp) | `Com of (loc* ctyp* ctyp)
-  | `Of of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp) | `Tup of (loc* ctyp)
+  | `Com of (loc* ctyp* ctyp) | `Of of (loc* ctyp* ctyp)
+  | `Or of (loc* ctyp* ctyp) | `Tup of (loc* ctyp)
   | `Sta of (loc* ctyp* ctyp) | `PolyEq of (loc* row_field)
   | `PolySup of (loc* row_field) | `PolyInf of (loc* row_field)
   | `PolyInfSup of (loc* row_field* tag_names)
@@ -54,7 +54,7 @@ and type_info =
   | `TyRepr of (loc* private_flag* type_repr)
   | `TyEq of (loc* private_flag* ctyp) | ant_nil] 
 and type_repr =
-  [ `Record of (loc* name_ctyp) | `Sum of (loc* ctyp) | ant_nil] 
+  [ `Record of (loc* name_ctyp) | `Sum of (loc* or_ctyp) | ant_nil] 
 and name_ctyp =
   [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* sid* ctyp)
   | `TyColMut of (loc* sid* ctyp) | ant_nil] 

@@ -232,7 +232,7 @@ let mktrecord (x: name_ctyp)= match x with
   | t -> errorf (loc_of t) "mktrecord %s "
         (dump_name_ctyp t)];
   
-let mkvariant (x:ctyp) = 
+let mkvariant (x:or_ctyp) = 
   match x with
   [`Id(_loc,`Uid(sloc,s)) ->
     (with_loc  s sloc, [], None,  _loc)
@@ -242,7 +242,7 @@ let mkvariant (x:ctyp) =
       (with_loc s sloc, List.map ctyp (list_of_star' t []), Some (ctyp u),  _loc)
   | `TyCol(_loc,`Id(_,`Uid(sloc,s)),t) ->
       (with_loc  s sloc, [], Some (ctyp t),  _loc)
-  | t -> errorf (loc_of t) "mkvariant %s " (dump_ctyp t) ];
+  | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t) ];
 
   
 (* let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool))) *)

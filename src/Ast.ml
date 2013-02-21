@@ -143,7 +143,8 @@
      | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
            (*  +'s -'s 's +_ -_ *)      
      | `Quote of (loc * position_flag * meta_option alident)
-     | `TyCol of (loc * sid * ctyp) (* t : t *)
+
+     (* | `TyCol of (loc * sid * ctyp) (\* t : t *\) *)
      | `Com of (loc * ctyp * ctyp) (* t, t *)
      | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)
      | `Or  of (loc * ctyp * ctyp) (* t | t *)
@@ -186,7 +187,7 @@
      | `TyEq of (loc * private_flag * ctyp)
      | ant_nil ]  
    and type_repr =
-     [= `Record of (loc * name_ctyp) | `Sum of (loc * ctyp) | ant_nil ]   
+     [= `Record of (loc * name_ctyp) | `Sum of (loc * or_ctyp) | ant_nil ]   
    (* and poly_ctyp = *)
    (*   [= `TyPol of (loc * ctyp * ctyp) ]   *)
    and name_ctyp =

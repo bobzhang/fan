@@ -190,7 +190,7 @@ let mktrecord (x : name_ctyp) =
   | `TyCol (_loc,`Id (_,`Lid (sloc,s)),t) ->
       ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), _loc)
   | t -> errorf (loc_of t) "mktrecord %s " (dump_name_ctyp t)
-let mkvariant (x : ctyp) =
+let mkvariant (x : or_ctyp) =
   match x with
   | `Id (_loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, _loc)
   | `Of (_loc,`Id (_,`Uid (sloc,s)),t) ->
@@ -200,7 +200,7 @@ let mkvariant (x : ctyp) =
         (Some (ctyp u)), _loc)
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
-  | t -> errorf (loc_of t) "mkvariant %s " (dump_ctyp t)
+  | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t)
 let type_kind (x : type_repr) =
   match x with
   | `Record (_loc,t) -> Ptype_record (List.map mktrecord (list_of_sem' t []))

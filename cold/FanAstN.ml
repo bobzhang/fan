@@ -209,8 +209,6 @@ class eq =
         | (`Quote (_a0,_a1,_a2),`Quote (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#position_flag _a1 _b1)) &&
               (self#meta_option (fun self  -> self#alident) _a2 _b2)
-        | (`TyCol (_a0,_a1,_a2),`TyCol (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -306,7 +304,7 @@ class eq =
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#loc _a0 _b0) && (self#or_ctyp _a1 _b1)
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
             (self#ant_nil _a0 _b0 :>'result28)
         | (_,_) -> false
@@ -1091,9 +1089,6 @@ class print =
             Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" self#loc _a0
               self#position_flag _a1
               (self#meta_option (fun self  -> self#alident)) _a2
-        | `TyCol (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
-              self#sid _a1 self#ctyp _a2
         | `Com (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -1186,8 +1181,8 @@ class print =
             Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#loc _a0
               self#name_ctyp _a1
         | `Sum (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" self#loc _a0 self#ctyp
-              _a1
+            Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" self#loc _a0
+              self#or_ctyp _a1
         | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result80)
     method name_ctyp : 'fmt -> name_ctyp -> 'result81=
       fun fmt  ->
@@ -1991,13 +1986,6 @@ let rec meta_ctyp _loc =
                (`App (_loc, (`Vrn (_loc, "Quote")), (meta_loc _loc _a0))),
                (meta_position_flag _loc _a1))),
           (meta_meta_option meta_alident _loc _a2))
-  | `TyCol (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_loc _loc _a0))),
-               (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
   | `Com (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2152,7 +2140,7 @@ and meta_type_repr _loc =
   | `Sum (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sum")), (meta_loc _loc _a0))),
-          (meta_ctyp _loc _a1))
+          (meta_or_ctyp _loc _a1))
   | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result145)
 and meta_name_ctyp _loc =
   function

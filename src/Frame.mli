@@ -43,7 +43,7 @@ val expr_of_ctyp :
   ?names:string list ->
   trail:(FSig.vrn * int -> match_case) ->
   mk_variant:(string -> FSig.ty_info list -> expr) ->
-  (ctyp -> expr) -> ctyp -> expr 
+  (ctyp -> expr) -> or_ctyp -> expr 
 val mk_prefix :
   ctyp list ->
   expr ->
@@ -58,7 +58,7 @@ val fun_of_tydcl :
     destination:FSig.destination ->
       result_type:ctyp -> 
       (ctyp -> expr ) ->
-        (ctyp -> expr ) ->
+        (or_ctyp -> expr ) ->
           (ctyp -> (* ctyp *)row_field -> expr) ->  (* labeld as variant *)
             typedecl -> expr
 val binding_of_tydcl :

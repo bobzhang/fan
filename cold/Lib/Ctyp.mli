@@ -54,7 +54,7 @@ val transform_module_types : FSig.module_types ->
   (string * ident * int) list * FSig.module_types
 
 val reduce_data_ctors:
-    ctyp ->
+    or_ctyp ->
       'a -> compose:('e -> 'a  -> 'a) -> (string -> FanAst.ctyp list -> 'e) -> 'a    
 (* @raise Invalid_argument *)        
 val of_str_item: str_item -> typedecl

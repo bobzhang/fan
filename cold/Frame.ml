@@ -116,7 +116,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
             (dump_ctyp ty) in
     aux ty
 let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
-  ~mk_variant  simple_expr_of_ctyp (ty : ctyp) =
+  ~mk_variant  simple_expr_of_ctyp (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
      let p = EP.gen_tuple_n ?cons_transform ~arity cons args_length in

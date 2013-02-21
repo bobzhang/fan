@@ -444,13 +444,6 @@ module Make(MetaLoc:META_LOC) =
                    (`App (_loc, (`Vrn (_loc, "Quote")), (meta_loc _loc _a0))),
                    (meta_position_flag _loc _a1))),
               (meta_meta_option meta_alident _loc _a2))
-      | `TyCol (_a0,_a1,_a2) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_loc _loc _a0))),
-                   (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
       | `Com (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -625,7 +618,7 @@ module Make(MetaLoc:META_LOC) =
       | `Sum (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Sum")), (meta_loc _loc _a0))),
-              (meta_ctyp _loc _a1))
+              (meta_or_ctyp _loc _a1))
       | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result41)
     and meta_name_ctyp _loc =
       function

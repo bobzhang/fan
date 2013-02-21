@@ -58,7 +58,7 @@ val mktrecord :
   string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc
 
 val mkvariant :
-  ctyp ->
+  or_ctyp ->
   string Location.loc * Parsetree.core_type list *
   Parsetree.core_type option * loc
 

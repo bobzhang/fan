@@ -1275,7 +1275,7 @@ let apply_ctyp () = begin
 
       type_repr:
       ["["; constructor_declarations{t}; "]" ->
-        (* {| [ $t ] |} *) `Sum(_loc,(t:or_ctyp :>ctyp))
+        (* {| [ $t ] |} *) `Sum(_loc,(t:or_ctyp (* :>ctyp *)))
       | "["; "]" -> (* {| [ ] |} *) `Sum(_loc,`Nil _loc)
       | "{"; label_declaration_list{t}; "}" -> `Record (_loc, t)]
       type_ident_and_parameters:
