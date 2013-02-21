@@ -451,13 +451,6 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Com")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
-      | `Or (_a0,_a1,_a2) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`App (_loc, (`Vrn (_loc, "Or")), (meta_loc _loc _a0))),
-                   (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
       | `Tup (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
@@ -2083,10 +2076,11 @@ class clean_ast =
     method! ctyp t =
       match super#ctyp t with
       | `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)
-        |`Arrow (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
-        |`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)|`Sta (_loc,`Nil _l,t)
-        |`Sta (_loc,t,`Nil _l) -> t
+        |`Arrow (_loc,`Nil _l,t)|`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)
+        |`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) -> t
       | t -> t
+    method! or_ctyp t =
+      match t with | `Or (_,t,`Nil _) -> t | `Or (_,`Nil _,t) -> t | t -> t
     method! typedecl t =
       match t with | `And (_,t,`Nil _)|`And (_,`Nil _,t) -> t | t -> t
     method! name_ctyp t =

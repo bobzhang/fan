@@ -554,8 +554,8 @@ class clean_ast = object
       {| $t -> $({@_l||} ) |} |
       {| $({@_l||} ) -> $t |} |
       (* {| $({@_l||} ) | $t |} | *)
-      `Or(_loc,`Nil _l ,t) |
-      `Or(_loc,t,`Nil _l) |
+      (* `Or(_loc,`Nil _l ,t) | *)
+      (* `Or(_loc,t,`Nil _l) | *)
       (* {| $t | $({@_l||} ) |} | *)
       (* {| $t of $({@_l||} ) |} | *)
 
@@ -569,8 +569,10 @@ class clean_ast = object
       {| $({@_l||} ) * $t |} |
       {| $t * $({@_l||} ) |} -> t
     | t -> t ];
+  method! or_ctyp t =
+    match t with [ `Or(_,t,`Nil _) -> t | `Or(_,`Nil _,t) -> t| t -> t];
   method! typedecl t =
-    match t with [`And(_,t,`Nil _) | `And(_,`Nil _,t) -> t | t -> t];
+     match t with [`And(_,t,`Nil _) | `And(_,`Nil _,t) -> t | t -> t];
   (* method! poly_ctyp t = *)
   (*   match super#poly_ctyp t with *)
   (*   [`TyPol(_,`Nil _,t) -> t | t ->t ]; *)

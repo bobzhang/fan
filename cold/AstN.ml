@@ -31,8 +31,8 @@ type ctyp =
   | `OptLabl of (alident* ctyp) | sid | `TyObj of (name_ctyp* row_var_flag)
   | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
   | `Quote of (position_flag* alident meta_option) | `Com of (ctyp* ctyp)
-  | `Or of (ctyp* ctyp) | `Tup of ctyp | `Sta of (ctyp* ctyp)
-  | `PolyEq of row_field | `PolySup of row_field | `PolyInf of row_field
+  | `Tup of ctyp | `Sta of (ctyp* ctyp) | `PolyEq of row_field
+  | `PolySup of row_field | `PolyInf of row_field
   | `PolyInfSup of (row_field* tag_names) | `Package of module_type | 
     ant]
   

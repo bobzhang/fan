@@ -144,10 +144,7 @@
            (*  +'s -'s 's +_ -_ *)      
      | `Quote of (loc * position_flag * meta_option alident)
 
-
      | `Com of (loc * ctyp * ctyp) (* t, t *)
-     (* | `Of  of (loc * ctyp * ctyp) (\* t of t *\) (\* A of int *\) *)
-     | `Or  of (loc * ctyp * ctyp) (* t | t *)
      | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
      | `Sta of (loc * ctyp * ctyp) (* t * t *)
 
@@ -164,8 +161,7 @@
     | `Or of (loc * row_field * row_field )
     | `TyVrn of (loc * astring)
     | `TyVrnOf of (loc * astring * ctyp)
-    |  `Ctyp of (loc * ctyp)
-     ]
+    |  `Ctyp of (loc * ctyp)]
    and tag_names =
     [= ant_nil
     | `App of (loc * tag_names * tag_names)
@@ -178,7 +174,7 @@
     (* original syntax
        {[ type v = u = A of int ]}
        revise syntax
-       {[ type v = u == [A of int];]} 
+       {[ type v = u = [A of int];]} 
      *)
    and type_info =
        (* FIXME be more preicse *)
@@ -188,8 +184,6 @@
      | ant_nil ]  
    and type_repr =
      [= `Record of (loc * name_ctyp) | `Sum of (loc * or_ctyp) | ant_nil ]   
-   (* and poly_ctyp = *)
-   (*   [= `TyPol of (loc * ctyp * ctyp) ]   *)
    and name_ctyp =
      [= `Sem of (loc * name_ctyp * name_ctyp)
      | `TyCol of (loc * sid * ctyp )

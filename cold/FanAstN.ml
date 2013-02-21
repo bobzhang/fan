@@ -186,8 +186,6 @@ class eq =
               (self#meta_option (fun self  -> self#alident) _a1 _b1)
         | (`Com (_a0,_a1),`Com (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
-        | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Tup _a0,`Tup _b0) -> self#ctyp _a0 _b0
         | (`Sta (_a0,_a1),`Sta (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
@@ -872,9 +870,6 @@ class print =
         | `Com (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a)@]" self#ctyp _a0
               self#ctyp _a1
-        | `Or (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#ctyp _a0 self#ctyp
-              _a1
         | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#ctyp _a0
         | `Sta (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sta@ %a@ %a)@]" self#ctyp _a0
@@ -1626,10 +1621,6 @@ let rec meta_ctyp _loc =
   | `Com (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Or (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_ctyp _loc _a0))),
           (meta_ctyp _loc _a1))
   | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_ctyp _loc _a0))
   | `Sta (_a0,_a1) ->
