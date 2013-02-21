@@ -35,11 +35,10 @@ type ctyp =
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
   | `TyTypePol of (loc* ctyp* ctyp)
   | `Quote of (loc* position_flag* alident meta_option)
-  | `Com of (loc* ctyp* ctyp) | `Of of (loc* ctyp* ctyp)
-  | `Or of (loc* ctyp* ctyp) | `Tup of (loc* ctyp)
-  | `Sta of (loc* ctyp* ctyp) | `PolyEq of (loc* row_field)
-  | `PolySup of (loc* row_field) | `PolyInf of (loc* row_field)
-  | `PolyInfSup of (loc* row_field* tag_names)
+  | `Com of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp)
+  | `Tup of (loc* ctyp) | `Sta of (loc* ctyp* ctyp)
+  | `PolyEq of (loc* row_field) | `PolySup of (loc* row_field)
+  | `PolyInf of (loc* row_field) | `PolyInfSup of (loc* row_field* tag_names)
   | `Package of (loc* module_type) | ant] 
 and row_field =
   [ ant_nil | `Or of (loc* row_field* row_field) | `TyVrn of (loc* astring)

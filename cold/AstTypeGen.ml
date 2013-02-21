@@ -298,15 +298,16 @@ let generate (module_types : FSig.module_types) =
        let obj =
          object 
            inherit  Objs.map as super
-           method! ctyp =
+           method! row_field =
              function
-             | `Of (_loc,vrn,`Id (_,`Lid (_,"loc"))) -> vrn
-             | `Of (_loc,vrn,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),x))) ->
+             | `TyVrnOf (_loc,vrn,`Id (_,`Lid (_,"loc"))) ->
+                 `TyVrn (_loc, vrn)
+             | `TyVrnOf (_loc,vrn,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),x)))
+                 ->
                  (match x with
-                  | `Sta (_loc,x,y) ->
-                      `Of (_loc, vrn, (`Tup (_loc, (`Sta (_loc, x, y)))))
-                  | _ -> `Of (_loc, vrn, x))
-             | x -> super#ctyp x
+                  | `Sta (_loc,_,_) -> `TyVrnOf (_loc, vrn, (`Tup (_loc, x)))
+                  | _ -> `TyVrnOf (_loc, vrn, x))
+             | x -> super#row_field x
          end in
        obj#typedecl ty
      else ty in

@@ -557,7 +557,7 @@ class clean_ast = object
       `Or(_loc,`Nil _l ,t) |
       `Or(_loc,t,`Nil _l) |
       (* {| $t | $({@_l||} ) |} | *)
-      {| $t of $({@_l||} ) |} |
+      (* {| $t of $({@_l||} ) |} | *)
 
       (* {| $({@_l||} ) and $t |} | *)
       (* {| $t and $({@_l||} ) |} | *)

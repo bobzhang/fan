@@ -509,13 +509,13 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
         FanLoc.errorf (loc_of t)
           "reduce_data_ctors: %s" (dump_or_ctyp t)]) init  branches;
     
-let view_sum (t:ctyp) =
+let view_sum (t:or_ctyp) =
   let bs = FanAst.list_of_or' t [] in
   List.map
     (fun
-      [ {|$uid:cons|} ->
+      [ (* {|$uid:cons|} *) `Id(_,`Uid(_,cons)) ->
         `branch (cons,[])
-       | {|$uid:cons of $t|} ->
+       | `Of(_loc,`Id(_,`Uid(_,cons)),t) (* {|$uid:cons of $t|} *) ->
            `branch (cons, (* FanAst.list_of_and' *) list_of_star'  t [])
        | _ -> assert false ]) bs ;
 

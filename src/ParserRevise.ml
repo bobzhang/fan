@@ -1134,8 +1134,8 @@ let apply_ctyp () = begin
       (*     `Sem(_loc,x,(y:name_ctyp :>ctyp)) *)
           (* {| $x; $y |} *)
       (* | more_ctyp{x}; "|"; constructor_declarations{y} -> {| $x | $y |} *)
-      | more_ctyp{x}; "of"; constructor_arg_list{y} ->
-          `Of (_loc, x, y)
+      (* | more_ctyp{x}; "of"; constructor_arg_list{y} -> *)
+      (*     `Of (_loc, x, y) *)
           (* {| $x of $y |} *)
       (* | more_ctyp{x}; "of"; constructor_arg_list{y}; "|"; constructor_declarations{z} -> *)
       (*     {| $x of $y | $z |} *)

@@ -5631,14 +5631,6 @@ let apply_ctyp () =
                 (fun (y : 'comma_ctyp)  _  (x : 'more_ctyp) 
                    (_loc : FanLoc.t)  -> (`Com (_loc, x, y) : 'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword "of";
-         `Snterm
-           (Gram.obj (constructor_arg_list : 'constructor_arg_list Gram.t ))],
-          ("Gram.mk_action\n  (fun (y : 'constructor_arg_list)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) \n     -> (`Of (_loc, x, y) : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (y : 'constructor_arg_list)  _  (x : 'more_ctyp) 
-                  (_loc : FanLoc.t)  -> (`Of (_loc, x, y) : 'ctyp_quot )))));
-        ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
          `Skeyword "*";
          `Snterm (Gram.obj (star_ctyp : 'star_ctyp Gram.t ))],
           ("Gram.mk_action\n  (fun (y : 'star_ctyp)  _  (x : 'more_ctyp)  (_loc : FanLoc.t)  ->\n     (`Sta (_loc, x, y) : 'ctyp_quot ))\n",

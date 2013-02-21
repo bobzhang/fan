@@ -331,15 +331,19 @@ let generate (module_types:FSig.module_types) : str_item = with str_item
   (* use [map_ctyp] instead  *)
      let obj = object
        inherit Objs.map as super;
-       method! ctyp = 
+       method! row_field = 
          (fun 
-          [ {:ctyp| $vrn of loc |} -> {:ctyp|$vrn |}
+          [ `TyVrnOf(_loc,vrn,`Id(_,`Lid(_,"loc")))
+                (* {:ctyp| $vrn of loc |} *) -> `TyVrn(_loc,vrn)
+                    (* {:ctyp|$vrn |} *)
           (* | {| ant |} -> {||} *)
-          | {| $vrn of (loc * $x )|} ->
+          | `TyVrnOf(_loc,vrn,`Tup(_,`Sta(_,`Id(_,`Lid(_,"loc")),x)))
+              (* {| $vrn of (loc * $x )|} *) ->
               match x with
-              [ {| $x*$y|} ->   {| $vrn of ( $x * $y) |}
-              | _ -> {| $vrn of $x |}]
-          | x -> super#ctyp x ]);
+              [ {| $_ * $_ |} ->   `TyVrnOf(_loc,vrn,`Tup(_loc,x))
+                    (* {| $vrn of ( $x * $y) |} *)
+              | _ -> `TyVrnOf(_loc,vrn,x) (* {| $vrn of $x |} *)]
+          | x -> super#row_field x ]);
      end in
      (* obj#ctyp ty *)
      obj#typedecl ty

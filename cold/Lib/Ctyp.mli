@@ -59,5 +59,5 @@ val reduce_data_ctors:
 (* @raise Invalid_argument *)        
 val of_str_item: str_item -> typedecl
 
-val view_sum : ctyp -> FSig.branch list
+val view_sum: or_ctyp -> FSig.branch list
 val view_variant: row_field -> FSig.vbranch list    
