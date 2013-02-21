@@ -312,12 +312,7 @@ let ty_of_sbt = fun
       if v then
         `TyColMut (_loc, `Id (_loc, `Lid (_loc, s)), t)
       else
-        `TyCol (_loc, `Id (_loc, `Lid (_loc, s)), t)
-    (*   `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), (`Mut (_loc, t))) *)
-    (*   (\* {:ctyp| $lid:s : mutable $t |} *\) *)
-    (* | (_loc, s, false, t) -> *)
-    ];
-        (* {:ctyp| $lid:s : $t |}  *)
+        `TyCol (_loc, `Id (_loc, `Lid (_loc, s)), t)];
 
 let bi_of_pe (p, e) = let _loc = loc_of p in {:binding| $p = $e |};
 
@@ -327,17 +322,15 @@ let record_type_of_list l = sem_of_list (List.map ty_of_sbt l);
 
 let binding_of_pel l = and_of_list (List.map bi_of_pe l);
 
-  
+(* FIXME should be amp *)  
 let rec list_of_amp x acc =
   match x with
-  [`And(_,x,y) ->
-    list_of_amp x (list_of_amp y acc)
+  [`Amp(_,x,y) -> list_of_amp x (list_of_amp y acc)
   | _ -> [x::acc] ];
 
 let rec list_of_amp' x acc =
   match x with
-  [`And(_,x,y) ->
-    list_of_amp' x (list_of_amp' y acc)
+  [`Amp(_,x,y) -> list_of_amp' x (list_of_amp' y acc)
   | `Nil _ -> acc
   | _ -> [x::acc] ];    
 
@@ -566,8 +559,8 @@ class clean_ast = object
       (* {| $t | $({@_l||} ) |} | *)
       {| $t of $({@_l||} ) |} |
 
-      {| $({@_l||} ) and $t |} |
-      {| $t and $({@_l||} ) |} |
+      (* {| $({@_l||} ) and $t |} | *)
+      (* {| $t and $({@_l||} ) |} | *)
       
       {| $({@_l||}), $t |} |
       {| $t, $({@_l||} ) |} |

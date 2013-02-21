@@ -38,7 +38,7 @@ type spec =
   Tuple of list spec
   | (* Take several arguments according to the
                                   spec list *)
-  Symbol of list string and string -> unit
+  Symbol of list string * string -> unit
   | (* Take one of the symbols as argument and
                                   call the function with the symbol. *)
   Rest of string -> unit ];
@@ -48,7 +48,7 @@ exception Bad of string;
 exception Help of string;
 type error =
   [ Unknown of string
-  | Wrong of string and string and string
+  | Wrong of string * string * string
   | (* option, actual, expected *)
   Missing of string
   | Message of string ];

@@ -1,6 +1,6 @@
 module type S = sig
   type t;
-  exception Error of string and string;
+  exception Error of string * string;
   (** [mk ?ocaml_stdlib ?camlp4_stdlib]
       The stdlib flag is true by default.
       To disable it use: [mk ~ocaml_stdlib:false] *)
@@ -25,7 +25,7 @@ module Make (U:sig end) : S= struct
   type t = Queue.t string;
 
   let instance =  ref (fun () -> failwith "empty in dynloader");
-  exception Error of string and string;
+  exception Error of string * string;
 
   let include_dir x y = Queue.add y x;
 

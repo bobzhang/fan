@@ -5660,14 +5660,6 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun (y : 'amp_ctyp)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) 
                   -> (`Amp (_loc, x, y) : 'ctyp_quot )))));
-        ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ));
-         `Skeyword "and";
-         `Snterm
-           (Gram.obj (constructor_arg_list : 'constructor_arg_list Gram.t ))],
-          ("Gram.mk_action\n  (fun (y : 'constructor_arg_list)  _  (x : 'more_ctyp)  (_loc : FanLoc.t) \n     -> (`And (_loc, x, y) : 'ctyp_quot ))\n",
-            (Gram.mk_action
-               (fun (y : 'constructor_arg_list)  _  (x : 'more_ctyp) 
-                  (_loc : FanLoc.t)  -> (`And (_loc, x, y) : 'ctyp_quot )))));
         ([`Snterm (Gram.obj (more_ctyp : 'more_ctyp Gram.t ))],
           ("Gram.mk_action\n  (fun (x : 'more_ctyp)  (_loc : FanLoc.t)  -> (x : 'ctyp_quot ))\n",
             (Gram.mk_action
@@ -6517,13 +6509,13 @@ let apply_ctyp () =
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (let (tl,rt) = Ctyp.to_generalized t in\n      `TyCol\n        (_loc, (`Id (_loc, (s :>ident))),\n          (`Arrow (_loc, (FanAst.and_of_list tl), rt))) : 'constructor_declarations ))\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (let (tl,rt) = Ctyp.to_generalized t in\n      `TyCol\n        (_loc, (`Id (_loc, (s :>ident))),\n          (`Arrow (_loc, (FanAst.sta_of_list tl), rt))) : 'constructor_declarations ))\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->
                   (let (tl,rt) = Ctyp.to_generalized t in
                    `TyCol
                      (_loc, (`Id (_loc, (s :>ident))),
-                       (`Arrow (_loc, (FanAst.and_of_list tl), rt))) : 
+                       (`Arrow (_loc, (FanAst.sta_of_list tl), rt))) : 
                   'constructor_declarations )))));
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
           ("Gram.mk_action\n  (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (s :>ident)) : 'constructor_declarations ))\n",
@@ -6564,20 +6556,20 @@ let apply_ctyp () =
         [([`Stoken
              (((function | `Ant ("list",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"list\",_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"list\" as n),s) ->\n         (`Ant (_loc, (mk_anti ~c:\"ctypand\" n s)) : 'constructor_arg_list )\n     | _ -> failwith \"`Ant (_loc, (mk_anti ~c:\"ctypand\" n s))\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"list\" as n),s) ->\n         (`Ant (_loc, (mk_anti ~c:\"ctyp*\" n s)) : 'constructor_arg_list )\n     | _ -> failwith \"`Ant (_loc, (mk_anti ~c:\"ctyp*\" n s))\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant (("list" as n),s) ->
-                       (`Ant (_loc, (mk_anti ~c:"ctypand" n s)) : 'constructor_arg_list )
+                       (`Ant (_loc, (mk_anti ~c:"ctyp*" n s)) : 'constructor_arg_list )
                    | _ ->
-                       failwith "`Ant (_loc, (mk_anti ~c:\"ctypand\" n s))\n"))));
-        ([`Sself; `Skeyword "and"; `Sself],
-          ("Gram.mk_action\n  (fun (t2 : 'constructor_arg_list)  _  (t1 : 'constructor_arg_list) \n     (_loc : FanLoc.t)  -> (`And (_loc, t1, t2) : 'constructor_arg_list ))\n",
+                       failwith "`Ant (_loc, (mk_anti ~c:\"ctyp*\" n s))\n"))));
+        ([`Sself; `Skeyword "*"; `Sself],
+          ("Gram.mk_action\n  (fun (t2 : 'constructor_arg_list)  _  (t1 : 'constructor_arg_list) \n     (_loc : FanLoc.t)  -> (`Sta (_loc, t1, t2) : 'constructor_arg_list ))\n",
             (Gram.mk_action
                (fun (t2 : 'constructor_arg_list)  _ 
                   (t1 : 'constructor_arg_list)  (_loc : FanLoc.t)  ->
-                  (`And (_loc, t1, t2) : 'constructor_arg_list )))));
+                  (`Sta (_loc, t1, t2) : 'constructor_arg_list )))));
         ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
           ("Gram.mk_action\n  (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'constructor_arg_list ))\n",
             (Gram.mk_action

@@ -160,7 +160,7 @@ let is_recursive ty_dcl =
           method is_recursive = is_recursive
         end in
       (obj#type_info ctyp)#is_recursive
-  | `And (_loc,_,_) -> true
+  | `And (_,_,_) -> true
   | _ ->
       failwithf "is_recursive not type declartion: %s" (dump_typedecl ty_dcl)
 let qualified_app_list =
@@ -237,7 +237,7 @@ let reduce_data_ctors (ty : ctyp) (init : 'a) ~compose
     (fun acc  x  ->
        match x with
        | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
-           compose (f cons (list_of_and' tys [])) acc
+           compose (f cons (list_of_star' tys [])) acc
        | `Id (_loc,`Uid (_,cons)) -> compose (f cons []) acc
        | t -> FanLoc.errorf (loc_of t) "reduce_data_ctors: %s" (dump_ctyp t))
     init branches
@@ -247,7 +247,7 @@ let view_sum (t : ctyp) =
     (function
      | `Id (_loc,`Uid (_,cons)) -> `branch (cons, [])
      | `Of (_loc,`Id (_,`Uid (_,cons)),t) ->
-         `branch (cons, (FanAst.list_of_and' t []))
+         `branch (cons, (list_of_star' t []))
      | _ -> assert false) bs
 let view_variant (t : ctyp) =
   (let lst = list_of_or' t [] in

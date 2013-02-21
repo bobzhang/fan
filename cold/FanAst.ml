@@ -465,13 +465,6 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Of")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
-      | `And (_a0,_a1,_a2) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`App (_loc, (`Vrn (_loc, "And")), (meta_loc _loc _a0))),
-                   (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
       | `Or (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1953,11 +1946,11 @@ let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
 let rec list_of_amp x acc =
   match x with
-  | `And (_,x,y) -> list_of_amp x (list_of_amp y acc)
+  | `Amp (_,x,y) -> list_of_amp x (list_of_amp y acc)
   | _ -> x :: acc
 let rec list_of_amp' x acc =
   match x with
-  | `And (_,x,y) -> list_of_amp' x (list_of_amp' y acc)
+  | `Amp (_,x,y) -> list_of_amp' x (list_of_amp' y acc)
   | `Nil _ -> acc
   | _ -> x :: acc
 let rec list_of_and x acc =
@@ -2097,10 +2090,9 @@ class clean_ast =
       match super#ctyp t with
       | `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)
         |`Arrow (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
-        |`Of (_loc,t,`Nil _l)|`And (_loc,`Nil _l,t)|`And (_loc,t,`Nil _l)
-        |`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)|`Amp (_loc,t,`Nil _l)
-        |`Amp (_loc,`Nil _l,t)|`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) ->
-          t
+        |`Of (_loc,t,`Nil _l)|`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)
+        |`Amp (_loc,t,`Nil _l)|`Amp (_loc,`Nil _l,t)|`Sta (_loc,`Nil _l,t)
+        |`Sta (_loc,t,`Nil _l) -> t
       | t -> t
     method! typedecl t =
       match t with | `And (_,t,`Nil _)|`And (_,`Nil _,t) -> t | t -> t

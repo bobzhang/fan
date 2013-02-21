@@ -314,7 +314,7 @@ let is_recursive ty_dcl =
     end in
     (obj#type_info(* ctyp *) ctyp)#is_recursive
 
-  | {| $_ and $_ |} -> true (* FIXME imprecise *)
+  | `And(_,_,_)  -> true (* FIXME imprecise *)
   | _ -> failwithf "is_recursive not type declartion: %s" (dump_typedecl ty_dcl)];
 
 (*
@@ -499,7 +499,7 @@ let reduce_data_ctors (ty:ctyp)  (init:'a) ~compose
   List.fold_left (fun acc x -> match x with
     [  `Of (_loc, (`Id (_, (`Uid (_, cons)))), tys)
       ->
-        compose (f cons (list_of_and' tys [])) acc  
+        compose (f cons ((* list_of_and' *)list_of_star' tys [])) acc  
     | (* {| $uid:cons |} *)
       `Id (_loc, (`Uid (_, cons)))
       -> compose  (f cons [] ) acc
@@ -514,7 +514,7 @@ let view_sum (t:ctyp) =
       [ {|$uid:cons|} ->
         `branch (cons,[])
        | {|$uid:cons of $t|} ->
-           `branch (cons, FanAst.list_of_and' t [])
+           `branch (cons, (* FanAst.list_of_and' *) list_of_star'  t [])
        | _ -> assert false ]) bs ;
 
 (*

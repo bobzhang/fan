@@ -31,10 +31,10 @@ type ctyp =
   | `OptLabl of (alident* ctyp) | sid | `TyObj of (name_ctyp* row_var_flag)
   | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
   | `Quote of (position_flag* alident meta_option) | `TyCol of (sid* ctyp)
-  | `Com of (ctyp* ctyp) | `Of of (ctyp* ctyp) | `And of (ctyp* ctyp)
-  | `Or of (ctyp* ctyp) | `Tup of ctyp | `Sta of (ctyp* ctyp)
-  | `TyVrn of astring | `TyVrnEq of ctyp | `TyVrnSup of ctyp
-  | `TyVrnInf of ctyp | `TyVrnInfSup of (ctyp* ctyp) | `Amp of (ctyp* ctyp)
+  | `Com of (ctyp* ctyp) | `Of of (ctyp* ctyp) | `Or of (ctyp* ctyp)
+  | `Tup of ctyp | `Sta of (ctyp* ctyp) | `TyVrn of astring
+  | `TyVrnEq of ctyp | `TyVrnSup of ctyp | `TyVrnInf of ctyp
+  | `TyVrnInfSup of (ctyp* ctyp) | `Amp of (ctyp* ctyp)
   | `TyOfAmp of (ctyp* ctyp) | `Package of module_type | ant] 
 and typedecl =
   [ `TyDcl of (alident* ctyp list* type_info* (ctyp* ctyp) list)

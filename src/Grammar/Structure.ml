@@ -79,7 +79,7 @@ and symbol =
     | terminal ]
 and tree = (* internal struccture *)
     [ Node of node
-    | LocAct of (* (int*Action.t) *)anno_action and list anno_action (* (int * Action.t) *)
+    | LocAct of (* (int*Action.t) *)anno_action * list anno_action (* (int * Action.t) *)
     (* | EarlyAction of Action.t and node (\* This action was only used to produce side effect *\) *)
     (* | ReplaceAction of Action.t and node  *)
     (* | LocActAppend of anno_action and list anno_action and tree  *)
@@ -118,7 +118,7 @@ let rec flatten_tree = fun
   | Node {node = n; brother = b; son = s} ->
       List.map (fun l -> [n::l]) (flatten_tree s) @ flatten_tree b ];
 
-type brothers = [ Bro of symbol and list brothers | End];
+type brothers = [ Bro of symbol * list brothers | End];
 
 
   

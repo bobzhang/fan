@@ -232,9 +232,9 @@ let mkvariant (x:ctyp) =
   [`Id(_loc,`Uid(sloc,s)) ->
     (with_loc  s sloc, [], None,  _loc)
   | `Of(_loc,`Id(_,`Uid(sloc,s)),t) ->
-      (with_loc  s sloc, List.map ctyp (list_of_and' t []), None,  _loc)
+      (with_loc  s sloc, List.map ctyp (list_of_star' t []), None,  _loc)
   | `TyCol(_loc,`Id(_,`Uid(sloc,s)),`Arrow(_,t,u)) -> (*GADT*)
-      (with_loc s sloc, List.map ctyp (list_of_and' t []), Some (ctyp u),  _loc)
+      (with_loc s sloc, List.map ctyp (list_of_star' t []), Some (ctyp u),  _loc)
   | `TyCol(_loc,`Id(_,`Uid(sloc,s)),t) ->
       (with_loc  s sloc, [], Some (ctyp t),  _loc)
   | t -> errorf (loc_of t) "mkvariant %s " (dump_ctyp t) ];
@@ -868,7 +868,7 @@ and sig_item (s:sig_item) (l:signature) :signature =
       [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
   | `Exception(_loc,`Of(_,`Id(_,`Uid(sloc,s)),t)) ->
       [mksig _loc (Psig_exception (with_loc s sloc)
-                    (List.map ctyp (list_of_and' t []))) :: l]
+                    (List.map ctyp (list_of_star' t []))) :: l]
   | `Exception (_,_) -> assert false (*FIXME*)
   | `External (loc, `Lid(sloc,n), t, sl) ->
       [mksig loc (Psig_value (with_loc n sloc)
@@ -939,7 +939,7 @@ and str_item (s:str_item) (l:structure) : structure =
   | `Exception (loc, `Of (_, `Id (_, `Uid (_, s)), t))
     ->
       [mkstr loc (Pstr_exception (with_loc s loc)
-                    (List.map ctyp (list_of_and' t []))) :: l ]
+                    (List.map ctyp (list_of_star' t []))) :: l ]
    (* TODO *)     
   (* | {@loc| exception $uid:s = $i |} -> *)
   (*     [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ] *)

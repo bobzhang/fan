@@ -4,9 +4,9 @@ open Lib;
 open LibUtil;
 type 'a item_or_def  =
     [ Str of 'a
-    | Def of string and option (list string * expr)
+    | Def of string * option (list string * expr)
     | Und of string
-    | ITE of bool and list (item_or_def 'a) and list (item_or_def 'a)
+    | ITE of bool * list (item_or_def 'a) * list (item_or_def 'a)
     | Lazy of Lazy.t 'a ];
 
 let defined = ref [];

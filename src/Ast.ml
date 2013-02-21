@@ -127,68 +127,34 @@
    type any = [= `Any of loc];
    type ctyp =
     [= `Nil of loc
-
-     (* | `Alias of (loc * ctyp * ctyp)  (\* list 'a as 'a *\) *)
      | `Alias of (loc * ctyp * alident)
-
      | any
-
      | `App of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
-
      | `Arrow of (loc * ctyp * ctyp)
-          
      | `ClassPath of (loc * ident) (* #i *) (* #point *)
-
      | `Label of (loc * alident * ctyp) (* ~s:t *)
-
       (* ?s:t *)
      | `OptLabl of (loc * alident * ctyp )
-
      | sid
-
-     (* | `TyMan of (loc * ctyp * ctyp) (\* t == t *\) (\* type t = [ A | B ] == `Foo.t *\) *)
-
-          
      (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
      | `TyObj of (loc * name_ctyp * row_var_flag )
-
      | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
 
      | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
-
            (*  +'s -'s 's +_ -_ *)      
      | `Quote of (loc * position_flag * meta_option alident)
-          
-
-           
      | `TyCol of (loc * sid * ctyp) (* t : t *)
-
-     (* | `Sem of (loc * ctyp * ctyp) (\* t; t *\) *)
-           
      | `Com of (loc * ctyp * ctyp) (* t, t *)
-
-     (* | `Sum of (loc * ctyp) (\* [ t ] *\) (\* [ A of int * string | B ] *\) *)
-     (* | `Record of (loc * name_ctyp) *)
-           
      | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)
-
-     | `And of (loc * ctyp * ctyp) (* t * t *)
-           
+     (* | `And of (loc * ctyp * ctyp) (\* t * t *\) *)
      | `Or  of (loc * ctyp * ctyp) (* t | t *)
-
-     (* | `Priv of (loc * ctyp) (\* private t *\) *)
-
      | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
-
      | `Sta of (loc * ctyp * ctyp) (* t * t *)
-
      | `TyVrn of (loc * astring) (* `s *)
-           
      | `TyVrnEq of (loc * ctyp) (* [ = t ] *)
      | `TyVrnSup of (loc * ctyp) (* [ > t ] *)
      | `TyVrnInf of (loc * ctyp) (* [ < t ] *)
      | `TyVrnInfSup of (loc * ctyp * ctyp) (* [ < t > t ] *)
-          
      | `Amp of (loc * ctyp * ctyp) (* t & t *)
      | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
      | `Package of (loc * module_type) (* (module S) *)

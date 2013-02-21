@@ -190,8 +190,6 @@ class eq =
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Of (_a0,_a1),`Of (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
-        | (`And (_a0,_a1),`And (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Tup _a0,`Tup _b0) -> self#ctyp _a0 _b0
@@ -868,9 +866,6 @@ class print =
         | `Of (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
-        | `And (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#ctyp _a0
-              self#ctyp _a1
         | `Or (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
@@ -1619,10 +1614,6 @@ let rec meta_ctyp _loc =
   | `Of (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Of")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `And (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_ctyp _loc _a0))),
           (meta_ctyp _loc _a1))
   | `Or (_a0,_a1) ->
       `App

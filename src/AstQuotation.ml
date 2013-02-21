@@ -13,7 +13,7 @@ open Format;
 type quotation_error_message =
     [ Finding
     | Expanding
-    | ParsingResult of FanLoc.t and string
+    | ParsingResult of FanLoc.t * string
     | NoName];
 
 (* the first argument is quotation name

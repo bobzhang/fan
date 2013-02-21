@@ -193,8 +193,8 @@ let mk_partition_name i =
 (* Decision tree for partitions *)
 
 type decision_tree =
-  [ Lte of int and  decision_tree and decision_tree
-  | Table of int and  array int
+  [ Lte of int *  decision_tree * decision_tree
+  | Table of int *  array int
   | Return of int];
 
 let decision l =

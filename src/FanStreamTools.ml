@@ -11,12 +11,12 @@ open Lib;
 (* open lang "expr"; *)
 #default_quotation "expr";;
 type spat_comp =
-  [ SpTrm of FanLoc.t and patt and option expr
-  | SpNtr of FanLoc.t and patt and expr
-  | SpStr of FanLoc.t and patt ];
+  [ SpTrm of FanLoc.t * patt * option expr
+  | SpNtr of FanLoc.t * patt * expr
+  | SpStr of FanLoc.t * patt ];
 
 type sexp_comp =
-  [ SeTrm of FanLoc.t and expr | SeNtr of FanLoc.t and expr ];
+  [ SeTrm of FanLoc.t * expr | SeNtr of FanLoc.t * expr ];
 
 (* default module name ["Stream"] for compatibility *)
 let grammar_module_name = ref "XStream"; (* BOOTSTRAPPING *)

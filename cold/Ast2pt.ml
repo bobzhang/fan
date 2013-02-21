@@ -195,9 +195,9 @@ let mkvariant (x : ctyp) =
   match x with
   | `Id (_loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, _loc)
   | `Of (_loc,`Id (_,`Uid (sloc,s)),t) ->
-      ((with_loc s sloc), (List.map ctyp (list_of_and' t [])), None, _loc)
+      ((with_loc s sloc), (List.map ctyp (list_of_star' t [])), None, _loc)
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),`Arrow (_,t,u)) ->
-      ((with_loc s sloc), (List.map ctyp (list_of_and' t [])),
+      ((with_loc s sloc), (List.map ctyp (list_of_star' t [])),
         (Some (ctyp u)), _loc)
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
@@ -778,7 +778,7 @@ and sig_item (s : sig_item) (l : signature) =
    | `Exception (_loc,`Of (_,`Id (_,`Uid (sloc,s)),t)) ->
        (mksig _loc
           (Psig_exception
-             ((with_loc s sloc), (List.map ctyp (list_of_and' t [])))))
+             ((with_loc s sloc), (List.map ctyp (list_of_star' t [])))))
        :: l
    | `Exception (_,_) -> assert false
    | `External (loc,`Lid (sloc,n),t,sl) ->
@@ -855,7 +855,7 @@ and str_item (s : str_item) (l : structure) =
    | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
        (mkstr loc
           (Pstr_exception
-             ((with_loc s loc), (List.map ctyp (list_of_and' t [])))))
+             ((with_loc s loc), (List.map ctyp (list_of_star' t [])))))
        :: l
    | `Exception (_,_) -> assert false
    | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
