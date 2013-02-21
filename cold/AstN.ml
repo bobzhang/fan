@@ -26,7 +26,7 @@ type ident =
 type sid = [ `Id of ident] 
 type any = [ `Any] 
 type ctyp =
-  [ `Nil | `Alias of (ctyp* alident) | any | `App of (ctyp* ctyp)
+  [ nil | `Alias of (ctyp* alident) | any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
   | `OptLabl of (alident* ctyp) | sid | `TyObj of (name_ctyp* row_var_flag)
   | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
@@ -53,7 +53,7 @@ and name_ctyp =
   [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp)
   | `TyColMut of (sid* ctyp) | ant_nil] 
 and or_ctyp =
-  [ `Or of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (ctyp* ctyp)
+  [ `Or of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (sid* ctyp)
   | sid | ant_nil] 
 and of_ctyp = [ `Of of (sid* ctyp) | sid | ant_nil] 
 and patt =
@@ -89,7 +89,7 @@ and expr =
   | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
   | `Package_expr of module_expr] 
 and rec_expr =
-  [ `Nil | `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | 
+  [ nil | `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | 
     any
   | ant] 
 and module_type =
@@ -104,14 +104,14 @@ and sig_item =
   | `RecModule of module_binding | `ModuleType of (auident* module_type)
   | `Open of ident | `Type of typedecl | `Val of (alident* ctyp) | ant] 
 and with_constr =
-  [ `Nil | `TypeEq of (ctyp* ctyp) | `TypeEqPriv of (ctyp* ctyp)
+  [ nil | `TypeEq of (ctyp* ctyp) | `TypeEqPriv of (ctyp* ctyp)
   | `ModuleEq of (ident* ident) | `TypeSubst of (ctyp* ctyp)
   | `ModuleSubst of (ident* ident) | `And of (with_constr* with_constr)
   | ant] 
 and binding =
-  [ `Nil | `And of (binding* binding) | `Bind of (patt* expr) | ant] 
+  [ nil | `And of (binding* binding) | `Bind of (patt* expr) | ant] 
 and module_binding =
-  [ `Nil | `And of (module_binding* module_binding)
+  [ nil | `And of (module_binding* module_binding)
   | `ModuleBind of (auident* module_type* module_expr)
   | `Constraint of (auident* module_type) | ant] 
 and match_case =
@@ -124,7 +124,7 @@ and module_expr =
     ant]
   
 and str_item =
-  [ `Nil | `Class of class_expr | `ClassType of class_type
+  [ nil | `Class of class_expr | `ClassType of class_type
   | `Sem of (str_item* str_item) | `Directive of (alident* expr)
   | `Exception of of_ctyp | `StExp of expr
   | `External of (alident* ctyp* string meta_list) | `Include of module_expr
@@ -132,17 +132,17 @@ and str_item =
   | `ModuleType of (auident* module_type) | `Open of ident
   | `Type of typedecl | `Value of (rec_flag* binding) | ant] 
 and class_type =
-  [ `Nil | `CtCon of (virtual_flag* ident* ctyp)
+  [ nil | `CtCon of (virtual_flag* ident* ctyp)
   | `CtFun of (ctyp* class_type) | `CtSig of (ctyp* class_sig_item)
   | `And of (class_type* class_type) | `CtCol of (class_type* class_type)
   | `CtEq of (class_type* class_type) | ant] 
 and class_sig_item =
-  [ `Nil | `Eq of (ctyp* ctyp) | `Sem of (class_sig_item* class_sig_item)
+  [ nil | `Eq of (ctyp* ctyp) | `Sem of (class_sig_item* class_sig_item)
   | `SigInherit of class_type | `Method of (alident* private_flag* ctyp)
   | `CgVal of (alident* mutable_flag* virtual_flag* ctyp)
   | `CgVir of (alident* private_flag* ctyp) | ant] 
 and class_expr =
-  [ `Nil | `CeApp of (class_expr* expr)
+  [ nil | `CeApp of (class_expr* expr)
   | `CeCon of (virtual_flag* ident* ctyp) | `CeFun of (patt* class_expr)
   | `CeLet of (rec_flag* binding* class_expr)
   | `Obj of (patt* class_str_item) | `CeTyc of (class_expr* class_type)
@@ -150,7 +150,7 @@ and class_expr =
     ant]
   
 and class_str_item =
-  [ `Nil | `Sem of (class_str_item* class_str_item) | `Eq of (ctyp* ctyp)
+  [ nil | `Sem of (class_str_item* class_str_item) | `Eq of (ctyp* ctyp)
   | `Inherit of (override_flag* class_expr* alident meta_option)
   | `Initializer of expr
   | `CrMth of (alident* override_flag* private_flag* expr* ctyp)
@@ -162,5 +162,4 @@ type ep =
   | `Sem of (ep* ep) | `Tup of ep | any | `Array of ep | `Record of rec_bind
   | ant | literal] 
 and rec_bind =
-  [ `Nil | `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | `Any
-  | ant] 
+  [ nil | `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 

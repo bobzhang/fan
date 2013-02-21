@@ -126,7 +126,7 @@
    type sid = [= `Id of (loc * ident)];
    type any = [= `Any of loc];
    type ctyp =
-    [= `Nil of loc
+    [= nil
      | `Alias of (loc * ctyp * alident)
      | any
      | `App of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
@@ -192,7 +192,7 @@
    and or_ctyp =
      [= `Or of (loc * or_ctyp * or_ctyp )
      | `TyCol of (loc * sid * ctyp)
-     | `Of of (loc * ctyp * ctyp)
+     | `Of of (loc * (* ctyp *)sid * ctyp)
      | sid
      | ant_nil]
          
@@ -294,7 +294,7 @@
       (* (module ME : S) which is represented as (module (ME : S)) *)
      | `Package_expr of (loc * module_expr) ]
   and rec_expr =
-    [= `Nil of loc
+    [= nil
       (* rb ; rb *)
      | `Sem of (loc * rec_expr * rec_expr)
       (* i = e *)
@@ -340,7 +340,7 @@
      |  `Val of (loc * alident * ctyp)
      | ant  ]
   and with_constr =
-    [= `Nil of loc
+    [= nil
      (* type t = t *)
      | `TypeEq of (loc * ctyp * ctyp)
      | `TypeEqPriv of (loc * ctyp * ctyp)
@@ -360,13 +360,13 @@
     
    *)           
   and binding =
-    [= `Nil of loc
+    [= nil
       | `And of (loc * binding * binding)
       (* p = e *) (* let patt = expr *)
      | `Bind  of (loc * patt * expr)
      | ant  ]
   and module_binding =
-     [= `Nil of loc
+     [= nil
       (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
      | `And of (loc * module_binding * module_binding)
       (* s : mt = me *)
@@ -396,7 +396,7 @@
      | `PackageModule of (loc * expr)
      | ant  ]
   and str_item =
-    [= `Nil of loc
+    [= nil
       (* class cice *)
      | `Class of (loc * class_expr)
      (* class type cict *)
@@ -430,7 +430,7 @@
      | `Value of (loc * rec_flag * binding)
      | ant (* $s$ *) ]
   and class_type =
-    [= `Nil of loc
+    [= nil
       (* (virtual)? i ([ t ])? *)
      | `CtCon of (loc * virtual_flag * ident * ctyp)
            (* [t] -> ct *)
@@ -445,7 +445,7 @@
      | `CtEq  of (loc * class_type * class_type)
      | ant ]
   and class_sig_item =
-    [= `Nil of loc
+    [= nil
       (* type t = t *)
      | `Eq of (loc * ctyp * ctyp)
       (* csg ; csg *)
@@ -460,7 +460,7 @@
      | `CgVir of (loc *  alident * private_flag * ctyp)
      | ant ]
   and class_expr =
-    [= `Nil of loc
+    [= nil
       (* ce e *)
     | `CeApp of (loc * class_expr * expr)
       (* (virtual)? i ([ t ])? *)
@@ -479,7 +479,7 @@
     | `Eq  of (loc * class_expr * class_expr)
     | ant ]
   and class_str_item =
-    [= `Nil of loc
+    [= nil
     | `Sem of (loc * class_str_item * class_str_item)
       (* type t = t *)
     | `Eq of (loc * ctyp * ctyp)
@@ -516,10 +516,10 @@
      | ant 
      | literal ]
      and rec_bind =
-     [= `Nil of loc
+     [= nil
      | `RecBind of (loc * ident * ep)
      | `Sem of (loc * rec_bind * rec_bind)
-     | `Any of loc
+     | any
      | ant];
 
 
