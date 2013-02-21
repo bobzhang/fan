@@ -76,11 +76,15 @@ let make_ctyp (styp : styp) tvar =
                 ("'" ^ (x ^ "' illegal in anonymous entry level")))
          else `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, tvar))))
      | `Tok _loc ->
-         `TyVrnSup
+         `PolySup
            (_loc,
-             (`Id
+             (`Ctyp
                 (_loc,
-                  (`Dot (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
+                  (`Id
+                     (_loc,
+                       (`Dot
+                          (_loc, (`Uid (_loc, "FanToken")),
+                            (`Lid (_loc, "t")))))))))
      | `Type t -> t in
    aux styp : ctyp )
 let rec make_expr entry (tvar : string) x =

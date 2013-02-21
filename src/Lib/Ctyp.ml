@@ -14,11 +14,13 @@ let rec to_var_list =  fun
   | _ -> assert false ];
 
 
-let rec name_tags = fun
-  [ {| $t1 $t2 |} -> name_tags t1 @ name_tags t2
+let rec name_tags (x:tag_names) =
+  match x with 
+  [ `App(_,t1,t2) (* {| $t1 $t2 |} *) -> name_tags t1 @ name_tags t2
   | (* {| `$s |} *)
     `TyVrn (_, `C (_,s))
     -> [s]
+
   | _ -> assert false ];
 
 (* here -> can not be used as a delimiter, if we remove quotations.*)  
@@ -536,25 +538,28 @@ let view_sum (t:ctyp) =
   ]
   ]}
  *)    
-let view_variant (t:ctyp) : list vbranch =
+let view_variant (t:row_field) : list vbranch =
 
   let lst = list_of_or' t [] in 
   List.map (
   fun [ (* {| `$cons of $tup:t |} *)
-        `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Tup (_, t)))
+        (* `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Tup (_, t))) *)
+       `TyVrnOf(_loc, `C(_,cons), `Tup(_,t))
         ->
         `variant (cons, list_of_star' t [])
       | (* {| `$cons of $t |} *)
-        `Of (_loc, (`TyVrn (_, `C(_,cons))), t)
+        (* `Of (_loc, (`TyVrn (_, `C(_,cons))), t) *)
+        `TyVrnOf(_loc,`C(_,cons),t)
         -> `variant (cons, [t])
       | (* {| `$cons |} *)
         `TyVrn (_loc, `C (_,cons))
         ->
           `variant (cons, [])
-      |  `Id (_loc,i) -> `abbrev i  
+      | `Ctyp (_ , `Id(_loc,i)) -> 
+      (* |  `Id (_loc,i) -> *) `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
       | u -> FanLoc.errorf (FanAst.loc_of u)
-            "view_variant %s" (Objs.dump_ctyp u) ] ) lst ;
+            "view_variant %s" (Objs.dump_row_field u) ] ) lst ;
 
     
 let of_str_item = fun

@@ -8,7 +8,6 @@ let loc_of =
   function
   | `PaOlbi (_loc,_,_,_) -> _loc
   | `Any _loc -> _loc
-  | `TyVrnInf (_loc,_) -> _loc
   | `Tup (_loc,_) -> _loc
   | `Array (_loc,_) -> _loc
   | `MtFun (_loc,_,_,_) -> _loc
@@ -28,6 +27,7 @@ let loc_of =
   | `Or (_loc,_,_) -> _loc
   | `New (_loc,_) -> _loc
   | `Value (_loc,_,_) -> _loc
+  | `PolyInfSup (_loc,_,_) -> _loc
   | `Try (_loc,_,_) -> _loc
   | `Downto _loc -> _loc
   | `App (_loc,_,_) -> _loc
@@ -66,6 +66,7 @@ let loc_of =
   | `Functor (_loc,_,_,_) -> _loc
   | `With (_loc,_,_) -> _loc
   | `NativeInt (_loc,_) -> _loc
+  | `TyVrnOf (_loc,_,_) -> _loc
   | `Private _loc -> _loc
   | `Virtual _loc -> _loc
   | `RowVar _loc -> _loc
@@ -73,6 +74,8 @@ let loc_of =
   | `RecBind (_loc,_,_) -> _loc
   | `Sig (_loc,_) -> _loc
   | `Mutable _loc -> _loc
+  | `PolySup (_loc,_) -> _loc
+  | `Ctyp (_loc,_) -> _loc
   | `ReNil _loc -> _loc
   | `Lazy (_loc,_) -> _loc
   | `CeFun (_loc,_,_) -> _loc
@@ -82,21 +85,18 @@ let loc_of =
   | `Com (_loc,_,_) -> _loc
   | `TyRepr (_loc,_,_) -> _loc
   | `Int64 (_loc,_) -> _loc
-  | `TyVrnSup (_loc,_) -> _loc
   | `ModuleTypeOf (_loc,_) -> _loc
   | `To _loc -> _loc
   | `TyCol (_loc,_,_) -> _loc
   | `CgVir (_loc,_,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
   | `TyColMut (_loc,_,_) -> _loc
-  | `Amp (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
   | `Record (_loc,_) -> _loc
   | `Constraint (_loc,_,_) -> _loc
   | `Ant (_loc,_) -> _loc
   | `Package_expr (_loc,_) -> _loc
-  | `TyVrnEq (_loc,_) -> _loc
   | `TypeEqPriv (_loc,_,_) -> _loc
   | `Label (_loc,_,_) -> _loc
   | `TyTypePol (_loc,_,_) -> _loc
@@ -135,13 +135,12 @@ let loc_of =
   | `Eq (_loc,_,_) -> _loc
   | `LetModule (_loc,_,_,_) -> _loc
   | `LetOpen (_loc,_,_) -> _loc
-  | `TyOfAmp (_loc,_,_) -> _loc
+  | `PolyInf (_loc,_) -> _loc
   | `StringDot (_loc,_,_) -> _loc
   | `For (_loc,_,_,_,_,_) -> _loc
   | `CrVvr (_loc,_,_,_) -> _loc
   | `CtCon (_loc,_,_,_) -> _loc
   | `Recursive _loc -> _loc
-  | `TyVrnInfSup (_loc,_,_) -> _loc
   | `CtSig (_loc,_,_) -> _loc
   | `SigInherit (_loc,_) -> _loc
   | `ModuleType (_loc,_,_) -> _loc
@@ -151,6 +150,7 @@ let loc_of =
   | `Module (_loc,_,_) -> _loc
   | `ExAsf _loc -> _loc
   | `PackageModule (_loc,_) -> _loc
+  | `PolyEq (_loc,_) -> _loc
   | `CeLet (_loc,_,_,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ViNil _loc -> _loc
@@ -378,7 +378,7 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Alias")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_alident _loc _a2))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result44)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result46)
       | `App (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -413,7 +413,7 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc, (`Vrn (_loc, "OptLabl")), (meta_loc _loc _a0))),
                    (meta_alident _loc _a1))), (meta_ctyp _loc _a2))
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result44)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result46)
       | `TyObj (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -483,56 +483,78 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Sta")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
-      | `TyVrn (_a0,_a1) ->
+      | `PolyEq (_a0,_a1) ->
           `App
             (_loc,
-              (`App (_loc, (`Vrn (_loc, "TyVrn")), (meta_loc _loc _a0))),
-              (meta_astring _loc _a1))
-      | `TyVrnEq (_a0,_a1) ->
+              (`App (_loc, (`Vrn (_loc, "PolyEq")), (meta_loc _loc _a0))),
+              (meta_row_field _loc _a1))
+      | `PolySup (_a0,_a1) ->
           `App
             (_loc,
-              (`App (_loc, (`Vrn (_loc, "TyVrnEq")), (meta_loc _loc _a0))),
-              (meta_ctyp _loc _a1))
-      | `TyVrnSup (_a0,_a1) ->
+              (`App (_loc, (`Vrn (_loc, "PolySup")), (meta_loc _loc _a0))),
+              (meta_row_field _loc _a1))
+      | `PolyInf (_a0,_a1) ->
           `App
             (_loc,
-              (`App (_loc, (`Vrn (_loc, "TyVrnSup")), (meta_loc _loc _a0))),
-              (meta_ctyp _loc _a1))
-      | `TyVrnInf (_a0,_a1) ->
-          `App
-            (_loc,
-              (`App (_loc, (`Vrn (_loc, "TyVrnInf")), (meta_loc _loc _a0))),
-              (meta_ctyp _loc _a1))
-      | `TyVrnInfSup (_a0,_a1,_a2) ->
+              (`App (_loc, (`Vrn (_loc, "PolyInf")), (meta_loc _loc _a0))),
+              (meta_row_field _loc _a1))
+      | `PolyInfSup (_a0,_a1,_a2) ->
           `App
             (_loc,
               (`App
                  (_loc,
                    (`App
-                      (_loc, (`Vrn (_loc, "TyVrnInfSup")),
-                        (meta_loc _loc _a0))), (meta_ctyp _loc _a1))),
-              (meta_ctyp _loc _a2))
-      | `Amp (_a0,_a1,_a2) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`App (_loc, (`Vrn (_loc, "Amp")), (meta_loc _loc _a0))),
-                   (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
-      | `TyOfAmp (_a0,_a1,_a2) ->
-          `App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`App
-                      (_loc, (`Vrn (_loc, "TyOfAmp")), (meta_loc _loc _a0))),
-                   (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
+                      (_loc, (`Vrn (_loc, "PolyInfSup")),
+                        (meta_loc _loc _a0))), (meta_row_field _loc _a1))),
+              (meta_tag_names _loc _a2))
       | `Package (_a0,_a1) ->
           `App
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Package")), (meta_loc _loc _a0))),
               (meta_module_type _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result44)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result46)
+    and meta_row_field _loc =
+      function
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result45)
+      | `Or (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "Or")), (meta_loc _loc _a0))),
+                   (meta_row_field _loc _a1))), (meta_row_field _loc _a2))
+      | `TyVrn (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "TyVrn")), (meta_loc _loc _a0))),
+              (meta_astring _loc _a1))
+      | `TyVrnOf (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App
+                      (_loc, (`Vrn (_loc, "TyVrnOf")), (meta_loc _loc _a0))),
+                   (meta_astring _loc _a1))), (meta_ctyp _loc _a2))
+      | `Ctyp (_a0,_a1) ->
+          `App
+            (_loc, (`App (_loc, (`Vrn (_loc, "Ctyp")), (meta_loc _loc _a0))),
+              (meta_ctyp _loc _a1))
+    and meta_tag_names _loc =
+      function
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result44)
+      | `App (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "App")), (meta_loc _loc _a0))),
+                   (meta_tag_names _loc _a1))), (meta_tag_names _loc _a2))
+      | `TyVrn (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "TyVrn")), (meta_loc _loc _a0))),
+              (meta_astring _loc _a1))
     and meta_typedecl _loc =
       function
       | `TyDcl (_a0,_a1,_a2,_a3,_a4) ->
@@ -1742,8 +1764,8 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result22)
     let rec meta_ep _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result46)
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result46)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result48)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result48)
       | `App (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1773,7 +1795,7 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
               (meta_ep _loc _a1))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result46)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result48)
       | `Array (_a0,_a1) ->
           `App
             (_loc,
@@ -1784,8 +1806,8 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
               (meta_rec_bind _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result46)
-      | #literal as _a0 -> (meta_literal _loc _a0 :>'result46)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result48)
+      | #literal as _a0 -> (meta_literal _loc _a0 :>'result48)
     and meta_rec_bind _loc =
       function
       | `Nil _a0 -> `App (_loc, (`Vrn (_loc, "Nil")), (meta_loc _loc _a0))
@@ -1805,7 +1827,7 @@ module Make(MetaLoc:META_LOC) =
                    (`App (_loc, (`Vrn (_loc, "Sem")), (meta_loc _loc _a0))),
                    (meta_rec_bind _loc _a1))), (meta_rec_bind _loc _a2))
       | `Any _a0 -> `App (_loc, (`Vrn (_loc, "Any")), (meta_loc _loc _a0))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result45)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result47)
   end
 let rec is_module_longident =
   function
@@ -1904,11 +1926,6 @@ let rec sta_of_list =
   | [] -> `Nil ghost
   | t::[] -> t
   | t::ts -> let _loc = loc_of t in `Sta (_loc, t, (sta_of_list ts))
-let rec amp_of_list =
-  function
-  | [] -> `Nil ghost
-  | t::[] -> t
-  | t::ts -> let _loc = loc_of t in `Amp (_loc, t, (amp_of_list ts))
 let tup x = let _loc = loc_of x in `Tup (_loc, x)
 let tuple_com y =
   match y with
@@ -1944,15 +1961,6 @@ let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
 let sum_type_of_list l = or_of_list (List.map ty_of_stl l)
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
-let rec list_of_amp x acc =
-  match x with
-  | `Amp (_,x,y) -> list_of_amp x (list_of_amp y acc)
-  | _ -> x :: acc
-let rec list_of_amp' x acc =
-  match x with
-  | `Amp (_,x,y) -> list_of_amp' x (list_of_amp' y acc)
-  | `Nil _ -> acc
-  | _ -> x :: acc
 let rec list_of_and x acc =
   match x with
   | `And (_,x,y) -> list_of_and x (list_of_and y acc)
@@ -2091,8 +2099,7 @@ class clean_ast =
       | `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)
         |`Arrow (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
         |`Of (_loc,t,`Nil _l)|`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)
-        |`Amp (_loc,t,`Nil _l)|`Amp (_loc,`Nil _l,t)|`Sta (_loc,`Nil _l,t)
-        |`Sta (_loc,t,`Nil _l) -> t
+        |`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) -> t
       | t -> t
     method! typedecl t =
       match t with | `And (_,t,`Nil _)|`And (_,`Nil _,t) -> t | t -> t

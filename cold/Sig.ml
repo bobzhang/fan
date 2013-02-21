@@ -120,7 +120,7 @@ module type Syntax =
     val module_type : module_type Gram.t
     val module_type_quot : module_type Gram.t
     val more_ctyp : ctyp Gram.t
-    val name_tags : ctyp Gram.t
+    val name_tags : tag_names Gram.t
     val opt_as_lident : alident meta_option Gram.t
     val opt_class_self_patt : patt Gram.t
     val opt_class_self_type : ctyp Gram.t
@@ -144,7 +144,7 @@ module type Syntax =
     val patt_as_patt_opt : patt Gram.t
     val patt_eoi : patt Gram.t
     val patt_quot : patt Gram.t
-    val row_field : ctyp Gram.t
+    val row_field : row_field Gram.t
     val sem_expr : expr Gram.t
     val sem_expr_for_list : (expr -> expr) Gram.t
     val sem_patt : patt Gram.t

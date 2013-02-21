@@ -146,20 +146,29 @@
      | `TyCol of (loc * sid * ctyp) (* t : t *)
      | `Com of (loc * ctyp * ctyp) (* t, t *)
      | `Of  of (loc * ctyp * ctyp) (* t of t *) (* A of int *)
-     (* | `And of (loc * ctyp * ctyp) (\* t * t *\) *)
      | `Or  of (loc * ctyp * ctyp) (* t | t *)
      | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
      | `Sta of (loc * ctyp * ctyp) (* t * t *)
-     | `TyVrn of (loc * astring) (* `s *)
-     | `TyVrnEq of (loc * ctyp) (* [ = t ] *)
-     | `TyVrnSup of (loc * ctyp) (* [ > t ] *)
-     | `TyVrnInf of (loc * ctyp) (* [ < t ] *)
-     | `TyVrnInfSup of (loc * ctyp * ctyp) (* [ < t > t ] *)
-     | `Amp of (loc * ctyp * ctyp) (* t & t *)
-     | `TyOfAmp of (loc * ctyp * ctyp) (* t of & t *)
+
+
+     | `PolyEq of (loc * row_field)
+     | `PolySup of (loc * row_field )
+     | `PolyInf of (loc * row_field)
+     | `PolyInfSup of (loc * row_field * tag_names)
+           
      | `Package of (loc * module_type) (* (module S) *)
      | ant ]
-         
+   and row_field =
+    [= ant_nil
+    | `Or of (loc * row_field * row_field )
+    | `TyVrn of (loc * astring)
+    | `TyVrnOf of (loc * astring * ctyp)
+    |  `Ctyp of (loc * ctyp)
+     ]
+   and tag_names =
+    [= ant_nil
+    | `App of (loc * tag_names * tag_names)
+    | `TyVrn of (loc * astring )]   
    and typedecl =
        (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
     [= `TyDcl of (loc * alident * list ctyp * type_info(* ctyp *) * list (ctyp * ctyp))

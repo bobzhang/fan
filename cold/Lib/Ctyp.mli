@@ -4,7 +4,7 @@ val to_var_list : ctyp -> string list
 
 
 
-val name_tags : ctyp -> string list
+val name_tags : (* ctyp *)tag_names -> string list
 
 val to_generalized : ctyp -> ctyp list * ctyp
 
@@ -60,4 +60,4 @@ val reduce_data_ctors:
 val of_str_item: str_item -> typedecl
 
 val view_sum : ctyp -> FSig.branch list
-val view_variant: ctyp -> FSig.vbranch list    
+val view_variant: row_field -> FSig.vbranch list    

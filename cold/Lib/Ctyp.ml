@@ -10,9 +10,9 @@ let rec to_var_list =
     |`Quote (_loc,`Positive _,`Some `Lid (_,s))
     |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> [s]
   | _ -> assert false
-let rec name_tags =
-  function
-  | `App (_loc,t1,t2) -> (name_tags t1) @ (name_tags t2)
+let rec name_tags (x : tag_names) =
+  match x with
+  | `App (_,t1,t2) -> (name_tags t1) @ (name_tags t2)
   | `TyVrn (_,`C (_,s)) -> [s]
   | _ -> assert false
 let rec to_generalized =
@@ -249,18 +249,18 @@ let view_sum (t : ctyp) =
      | `Of (_loc,`Id (_,`Uid (_,cons)),t) ->
          `branch (cons, (list_of_star' t []))
      | _ -> assert false) bs
-let view_variant (t : ctyp) =
+let view_variant (t : row_field) =
   (let lst = list_of_or' t [] in
    List.map
      (function
-      | `Of (_loc,`TyVrn (_,`C (_,cons)),`Tup (_,t)) ->
+      | `TyVrnOf (_loc,`C (_,cons),`Tup (_,t)) ->
           `variant (cons, (list_of_star' t []))
-      | `Of (_loc,`TyVrn (_,`C (_,cons)),t) -> `variant (cons, [t])
+      | `TyVrnOf (_loc,`C (_,cons),t) -> `variant (cons, [t])
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
-      | `Id (_loc,i) -> `abbrev i
+      | `Ctyp (_,`Id (_loc,i)) -> `abbrev i
       | u ->
           FanLoc.errorf (FanAst.loc_of u) "view_variant %s"
-            (Objs.dump_ctyp u)) lst : vbranch list )
+            (Objs.dump_row_field u)) lst : vbranch list )
 let of_str_item =
   function
   | `Type (_,x) -> x

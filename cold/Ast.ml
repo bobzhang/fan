@@ -37,11 +37,15 @@ type ctyp =
   | `Quote of (loc* position_flag* alident meta_option)
   | `TyCol of (loc* sid* ctyp) | `Com of (loc* ctyp* ctyp)
   | `Of of (loc* ctyp* ctyp) | `Or of (loc* ctyp* ctyp) | `Tup of (loc* ctyp)
-  | `Sta of (loc* ctyp* ctyp) | `TyVrn of (loc* astring)
-  | `TyVrnEq of (loc* ctyp) | `TyVrnSup of (loc* ctyp)
-  | `TyVrnInf of (loc* ctyp) | `TyVrnInfSup of (loc* ctyp* ctyp)
-  | `Amp of (loc* ctyp* ctyp) | `TyOfAmp of (loc* ctyp* ctyp)
+  | `Sta of (loc* ctyp* ctyp) | `PolyEq of (loc* row_field)
+  | `PolySup of (loc* row_field) | `PolyInf of (loc* row_field)
+  | `PolyInfSup of (loc* row_field* tag_names)
   | `Package of (loc* module_type) | ant] 
+and row_field =
+  [ ant_nil | `Or of (loc* row_field* row_field) | `TyVrn of (loc* astring)
+  | `TyVrnOf of (loc* astring* ctyp) | `Ctyp of (loc* ctyp)] 
+and tag_names =
+  [ ant_nil | `App of (loc* tag_names* tag_names) | `TyVrn of (loc* astring)] 
 and typedecl =
   [ `TyDcl of (loc* alident* ctyp list* type_info* (ctyp* ctyp) list)
   | `And of (loc* typedecl* typedecl) | ant_nil] 

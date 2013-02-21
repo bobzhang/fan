@@ -256,12 +256,12 @@ let rec sta_of_list = fun
   | [t::ts] -> let _loc = loc_of t in `Sta(_loc,t,sta_of_list ts)];
 
 (* RA *)  
-let rec amp_of_list = fun
-  [ [] -> `Nil ghost
-  | [t] -> t
-  | [t::ts] ->
-      let _loc = loc_of t in
-      `Amp(_loc,t,amp_of_list ts)];
+(* let rec amp_of_list = fun *)
+(*   [ [] -> `Nil ghost *)
+(*   | [t] -> t *)
+(*   | [t::ts] -> *)
+(*       let _loc = loc_of t in *)
+(*       `Amp(_loc,t,amp_of_list ts)]; *)
   
 let tup x =
   let _loc = loc_of x in `Tup (_loc,x);
@@ -323,16 +323,16 @@ let record_type_of_list l = sem_of_list (List.map ty_of_sbt l);
 let binding_of_pel l = and_of_list (List.map bi_of_pe l);
 
 (* FIXME should be amp *)  
-let rec list_of_amp x acc =
-  match x with
-  [`Amp(_,x,y) -> list_of_amp x (list_of_amp y acc)
-  | _ -> [x::acc] ];
+(* let rec list_of_amp x acc = *)
+(*   match x with *)
+(*   [`Amp(_,x,y) -> list_of_amp x (list_of_amp y acc) *)
+(*   | _ -> [x::acc] ]; *)
 
-let rec list_of_amp' x acc =
-  match x with
-  [`Amp(_,x,y) -> list_of_amp' x (list_of_amp' y acc)
-  | `Nil _ -> acc
-  | _ -> [x::acc] ];    
+(* let rec list_of_amp' x acc = *)
+(*   match x with *)
+(*   [`Amp(_,x,y) -> list_of_amp' x (list_of_amp' y acc) *)
+(*   | `Nil _ -> acc *)
+(*   | _ -> [x::acc] ];     *)
 
 
 let rec list_of_and x acc =
@@ -564,8 +564,8 @@ class clean_ast = object
       
       {| $({@_l||}), $t |} |
       {| $t, $({@_l||} ) |} |
-      {| $t & $({@_l||} ) |} |
-      {| $({@_l||} ) & $t |} |
+      (* {| $t & $({@_l||} ) |} | *)
+      (* {| $({@_l||} ) & $t |} | *)
       {| $({@_l||} ) * $t |} |
       {| $t * $({@_l||} ) |} -> t
     | t -> t ];

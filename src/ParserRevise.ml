@@ -1139,8 +1139,8 @@ let apply_ctyp () = begin
           (* {| $x of $y |} *)
       (* | more_ctyp{x}; "of"; constructor_arg_list{y}; "|"; constructor_declarations{z} -> *)
       (*     {| $x of $y | $z |} *)
-      | more_ctyp{x}; "of"; "&"; amp_ctyp{y} ->
-          `TyOfAmp (_loc, x, y)
+      (* | more_ctyp{x}; "of"; "&"; amp_ctyp{y} -> *)
+      (*     `TyOfAmp (_loc, x, y) *)
           (* {| $x of & $y |} *)
       (* | more_ctyp{x}; "of"; "&"; amp_ctyp{y}; "|"; row_field{z} -> {| $x of & $y | $z |} *)
       (* | more_ctyp{x}; ":"; more_ctyp{y} -> *)
@@ -1152,8 +1152,8 @@ let apply_ctyp () = begin
       | more_ctyp{x}; "*"; star_ctyp{y} ->
            `Sta (_loc, x, y)
           (* {| $x * $y |} *)
-      | more_ctyp{x}; "&"; amp_ctyp{y} ->
-           `Amp (_loc, x, y)
+      (* | more_ctyp{x}; "&"; amp_ctyp{y} -> *)
+      (*      `Amp (_loc, x, y) *)
           (* {| $x & $y |} *)
       (* | more_ctyp{x}; "and"; constructor_arg_list{y} -> *)
       (*      `And (_loc, x, y) *)
@@ -1164,7 +1164,7 @@ let apply_ctyp () = begin
       more_ctyp:
       [
        (* "mutable"; S{x} -> {| mutable $x |} | *)
-      "`"; astr{x} -> (* {| `$x |} *) `TyVrn(_loc,x) |
+      (* "`"; astr{x} -> (\* {| `$x |} *\) `TyVrn(_loc,x) | *)
       ctyp{x} -> x |
       type_parameter{x} -> x   ]
       unquoted_typevars:
@@ -1223,20 +1223,21 @@ let apply_ctyp () = begin
       | `Ant (("list" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp|" n s))
           (* {| $(anti:mk_anti ~c:"ctyp|" n s) |} *)
       | S{t1}; "|"; S{t2} -> (* {| $t1 | $t2 |} *) `Or(_loc,t1,t2)
-      | "`"; astr{i} -> {| `$i |}
-      | "`"; astr{i}; "of"; "&"; amp_ctyp{t} ->
-          `TyOfAmp (_loc, (`TyVrn (_loc, i)), t)
+      | "`"; astr{i} -> (* {| `$i |} *) `TyVrn(_loc,i)
+      (* | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> *)
+      (*     `TyOfAmp (_loc, (`TyVrn (_loc, i)), t) *)
           (* {| `$i of & $t |} *)
-      | "`"; astr{i}; "of"; amp_ctyp{t} ->
-           `Of (_loc, (`TyVrn (_loc, i)), t)
+      | "`"; astr{i}; "of"; (* amp_ctyp *)ctyp{t} ->
+          `TyVrnOf(_loc,i,t)
+           (* `Of (_loc, (`TyVrn (_loc, i)), t) *)
           (* {| `$i of $t |} *)
-      | ctyp{t} -> t ]
+      | ctyp{t} -> `Ctyp(_loc,t) ]
 
       (* only used in row_field *)
-      amp_ctyp:
-      [ S{t1}; "&"; S{t2} -> `Amp(_loc,t1,t2)
-      | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp&" n s) |}
-      | ctyp{t} -> t ]
+      (* amp_ctyp: *)
+      (* [ S{t1}; "&"; S{t2} -> `Amp(_loc,t1,t2) *)
+      (* | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp&" n s) |} *)
+      (* | ctyp{t} -> t ] *)
 
       (* only used in ctyps *)
       name_tags:
@@ -1331,11 +1332,14 @@ let apply_ctyp () = begin
         | a_uident{i} -> `Id(_loc,(i:>ident))
         | "("; S{t}; "*"; star_ctyp{tl}; ")" ->  {| ( $t * $tl ) |}
         | "("; S{t}; ")" -> t
-        | "[="; row_field{rfl}; "]" -> `TyVrnEq(_loc,rfl)
-        | "[>"; "]" -> `TyVrnSup (_loc, (`Nil _loc))
-        | "[>"; row_field{rfl}; "]" ->   `TyVrnSup (_loc, rfl)
-        | "[<"; row_field{rfl}; "]" ->    {| [< $rfl ] |}
-        | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" -> {|  [< $rfl > $ntl ] |}
+        | "[="; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
+        | "[>"; "]" -> `PolySup (_loc, (`Nil _loc))
+        | "[>"; row_field{rfl}; "]" ->   `PolySup (_loc, rfl)
+        | "[<"; row_field{rfl}; "]" -> `PolyInf(_loc,rfl)
+            (* {| [< $rfl ] |} *)
+        | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->
+            `PolyInfSup(_loc,rfl,ntl)
+            (* {|  [< $rfl > $ntl ] |} *)
         | "#"; class_longident{i} -> {| #$i |}
         | "<"; opt_meth_list{t}; ">" -> t
         | "("; "module"; module_type{p}; ")" -> `Package(_loc,p) (* {| (module $p) |} *)  ] }

@@ -122,26 +122,25 @@ let rec ctyp (x : ctyp) =
   | `Tup (loc,`Sta (_,t1,t2)) ->
       mktyp loc
         (Ptyp_tuple (List.map ctyp (list_of_star' t1 (list_of_star' t2 []))))
-  | `TyVrnEq (_loc,t) ->
+  | `PolyEq (_loc,t) ->
       mktyp _loc (Ptyp_variant ((row_field t []), true, None))
-  | `TyVrnSup (_loc,t) ->
+  | `PolySup (_loc,t) ->
       mktyp _loc (Ptyp_variant ((row_field t []), false, None))
-  | `TyVrnInf (_loc,t) ->
+  | `PolyInf (_loc,t) ->
       mktyp _loc (Ptyp_variant ((row_field t []), true, (Some [])))
-  | `TyVrnInfSup (_loc,t,t') ->
+  | `PolyInfSup (_loc,t,t') ->
       mktyp _loc
         (Ptyp_variant ((row_field t []), true, (Some (Ctyp.name_tags t'))))
   | x -> errorf (loc_of x) "ctyp: %s" (dump_ctyp x)
-and row_field (x : ctyp) acc =
+and row_field (x : row_field) acc =
   match x with
   | `Nil _loc -> []
   | `TyVrn (_loc,`C (_,i)) -> (Rtag (i, true, [])) :: acc
-  | `TyOfAmp (_loc,`TyVrn (_,`C (_,i)),t) ->
-      (Rtag (i, true, (List.map ctyp (list_of_amp' t [])))) :: acc
-  | `Of (_loc,`TyVrn (_,`C (_,i)),t) ->
-      (Rtag (i, false, (List.map ctyp (list_of_amp' t [])))) :: acc
+  | `TyVrnOf (_loc,`C (_,i),t) -> (Rtag (i, false, [ctyp t])) :: acc
   | `Or (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
-  | t -> (Rinherit (ctyp t)) :: acc
+  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Ctyp (_,t) -> (Rinherit (ctyp t)) :: acc
+  | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)
 and meth_list (fl : name_ctyp) (acc : core_field_type list) =
   (match fl with
    | `Nil _ -> acc

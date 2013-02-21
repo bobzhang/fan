@@ -19,7 +19,7 @@ val expr_of_variant:
   trail:(FSig.vrn * int -> match_case) ->
   mk_variant:(string -> FSig.ty_info list -> expr) ->
   destination:FSig.destination -> 
-  (ctyp -> expr) -> ctyp -> ctyp->  expr
+  (ctyp -> expr) -> ctyp -> row_field(* ctyp  *)->  expr
       
 val normal_simple_expr_of_ctyp :
   ?arity:int ->
@@ -59,7 +59,7 @@ val fun_of_tydcl :
       result_type:ctyp -> 
       (ctyp -> expr ) ->
         (ctyp -> expr ) ->
-          (ctyp -> ctyp -> expr) ->  (* labeld as variant *)
+          (ctyp -> (* ctyp *)row_field -> expr) ->  (* labeld as variant *)
             typedecl -> expr
 val binding_of_tydcl :
   ?cons_transform:(string -> string) ->

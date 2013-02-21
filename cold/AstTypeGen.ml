@@ -235,7 +235,7 @@ let generate (module_types : FSig.module_types) =
   let tbl = Hashtbl.create 30 in
   let aux (_,ty) =
     match (ty : typedecl ) with
-    | `TyDcl (_,_,_,`TyEq (_,_,`TyVrnEq (_,t)),_) ->
+    | `TyDcl (_,_,_,`TyEq (_,_,`PolyEq (_,t)),_) ->
         let branches = Ctyp.view_variant t in
         List.iter
           (function

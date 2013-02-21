@@ -215,8 +215,8 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  let expr = simple_expr_of_ctyp x in
                  let funct = eta_expand (expr +> names) arity in
                  mk_prefix ~names ~left_type_variable tyvars funct
-             | `TyVrnEq (_,t)|`TyVrnSup (_,t)|`TyVrnInf (_,t)
-               |`TyVrnInfSup (_,t,_) ->
+             | `PolyEq (_,t)|`PolySup (_,t)|`PolyInf (_,t)
+               |`PolyInfSup (_,t,_) ->
                  let case = expr_of_variant result_type t in
                  mk_prefix ~names ~left_type_variable tyvars case
              | t ->
