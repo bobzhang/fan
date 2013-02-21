@@ -163,7 +163,7 @@ class eq =
         match (_a0, _b0) with
         | (`Nil,`Nil) -> true
         | (`Alias (_a0,_a1),`Alias (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#ctyp _a0 _b0) && (self#alident _a1 _b1)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result23)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
@@ -437,7 +437,7 @@ class eq =
     method sig_item : sig_item -> sig_item -> 'result35=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Nil,`Nil) -> true
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result35)
         | (`Class _a0,`Class _b0) -> self#class_type _a0 _b0
         | (`ClassType _a0,`ClassType _b0) -> self#class_type _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -504,7 +504,7 @@ class eq =
     method match_case : match_case -> match_case -> 'result39=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Nil,`Nil) -> true
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result39)
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#match_case _a0 _b0) && (self#match_case _a1 _b1)
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
@@ -830,7 +830,7 @@ class print =
         | `Nil -> Format.fprintf fmt "`Nil"
         | `Alias (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Alias@ %a@ %a)@]" self#ctyp _a0
-              self#ctyp _a1
+              self#alident _a1
         | #any as _a0 -> (self#any fmt _a0 :>'result73)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#ctyp _a0
@@ -1159,7 +1159,7 @@ class print =
     method sig_item : 'fmt -> sig_item -> 'result85=
       fun fmt  ->
         function
-        | `Nil -> Format.fprintf fmt "`Nil"
+        | #nil as _a0 -> (self#nil fmt _a0 :>'result85)
         | `Class _a0 ->
             Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#class_type _a0
         | `ClassType _a0 ->
@@ -1245,7 +1245,7 @@ class print =
     method match_case : 'fmt -> match_case -> 'result89=
       fun fmt  ->
         function
-        | `Nil -> Format.fprintf fmt "`Nil"
+        | #nil as _a0 -> (self#nil fmt _a0 :>'result89)
         | `Or (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#match_case _a0
               self#match_case _a1
@@ -1566,7 +1566,7 @@ let rec meta_ctyp _loc =
   | `Alias (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Alias")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
+          (meta_alident _loc _a1))
   | #any as _a0 -> (meta_any _loc _a0 :>'result144)
   | `App (_a0,_a1) ->
       `App
@@ -2011,7 +2011,7 @@ and meta_module_type _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result133)
 and meta_sig_item _loc =
   function
-  | `Nil -> `Vrn (_loc, "Nil")
+  | #nil as _a0 -> (meta_nil _loc _a0 :>'result132)
   | `Class _a0 ->
       `App (_loc, (`Vrn (_loc, "Class")), (meta_class_type _loc _a0))
   | `ClassType _a0 ->
@@ -2126,7 +2126,7 @@ and meta_module_binding _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result129)
 and meta_match_case _loc =
   function
-  | `Nil -> `Vrn (_loc, "Nil")
+  | #nil as _a0 -> (meta_nil _loc _a0 :>'result128)
   | `Or (_a0,_a1) ->
       `App
         (_loc,

@@ -92,8 +92,7 @@ let rec ctyp (x : ctyp) =
   match x with
   | `Id (_loc,i) ->
       let li = long_type_ident i in mktyp _loc (Ptyp_constr (li, []))
-  | `Alias (_loc,t1,`Quote (_,_,`Some `Lid (_,s))) ->
-      mktyp _loc (Ptyp_alias ((ctyp t1), s))
+  | `Alias (_loc,t1,`Lid (_,s)) -> mktyp _loc (Ptyp_alias ((ctyp t1), s))
   | `Any _loc -> mktyp _loc Ptyp_any
   | `App (_loc,_,_) as f ->
       let (f,al) = view_app [] f in

@@ -26,7 +26,7 @@ type ident =
 type sid = [ `Id of ident] 
 type any = [ `Any] 
 type ctyp =
-  [ `Nil | `Alias of (ctyp* ctyp) | any | `App of (ctyp* ctyp)
+  [ `Nil | `Alias of (ctyp* alident) | any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
   | `OptLabl of (alident* ctyp) | sid | `TyObj of (name_ctyp* row_var_flag)
   | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
@@ -92,7 +92,7 @@ and module_type =
   | `Sig of sig_item | `With of (module_type* with_constr)
   | `ModuleTypeOf of module_expr | ant] 
 and sig_item =
-  [ `Nil | `Class of class_type | `ClassType of class_type
+  [ nil | `Class of class_type | `ClassType of class_type
   | `Sem of (sig_item* sig_item) | `Directive of (alident* expr)
   | `Exception of of_ctyp | `External of (alident* ctyp* string meta_list)
   | `Include of module_type | `Module of (auident* module_type)
@@ -110,7 +110,7 @@ and module_binding =
   | `ModuleBind of (auident* module_type* module_expr)
   | `Constraint of (auident* module_type) | ant] 
 and match_case =
-  [ `Nil | `Or of (match_case* match_case) | `Case of (patt* expr* expr)
+  [ nil | `Or of (match_case* match_case) | `Case of (patt* expr* expr)
   | ant] 
 and module_expr =
   [ nil | sid | `App of (module_expr* module_expr)

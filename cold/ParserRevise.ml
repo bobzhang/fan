@@ -6231,11 +6231,14 @@ let apply_ctyp () =
   Gram.extend (ctyp : 'ctyp Gram.t )
     (None,
       [((Some "alias"), (Some `LA),
-         [([`Sself; `Skeyword "as"; `Sself],
-            ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`Alias (_loc, t1, t2) : 'ctyp ))\n",
+         [([`Sself;
+           `Skeyword "as";
+           `Skeyword "'";
+           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+            ("Gram.mk_action\n  (fun (i : 'a_lident)  _  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`Alias (_loc, t1, i) : 'ctyp ))\n",
               (Gram.mk_action
-                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                    (`Alias (_loc, t1, t2) : 'ctyp )))))]);
+                 (fun (i : 'a_lident)  _  _  (t1 : 'ctyp)  (_loc : FanLoc.t) 
+                    -> (`Alias (_loc, t1, i) : 'ctyp )))))]);
       ((Some "forall"), (Some `LA),
         [([`Skeyword "!";
           `Snterm (Gram.obj (typevars : 'typevars Gram.t ));

@@ -227,7 +227,7 @@ class map2 =
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
-            let _a2 = self#ctyp _a2 _b2 in `Alias (_a0, _a1, _a2)
+            let _a2 = self#alident _a2 _b2 in `Alias (_a0, _a1, _a2)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 : any  :>ctyp)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -708,7 +708,8 @@ class map2 =
     method sig_item : sig_item -> sig_item -> sig_item=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Nil _a0,`Nil _b0) -> let _a0 = self#loc _a0 _b0 in `Nil _a0
+        | ((#nil as _a0),(#nil as _b0)) ->
+            (self#nil _a0 _b0 : nil  :>sig_item)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_type _a1 _b1 in `Class (_a0, _a1)
@@ -830,7 +831,8 @@ class map2 =
     method match_case : match_case -> match_case -> match_case=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Nil _a0,`Nil _b0) -> let _a0 = self#loc _a0 _b0 in `Nil _a0
+        | ((#nil as _a0),(#nil as _b0)) ->
+            (self#nil _a0 _b0 : nil  :>match_case)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#match_case _a1 _b1 in
@@ -1321,7 +1323,7 @@ class fold2 =
         | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
+            let self = self#ctyp _a1 _b1 in self#alident _a2 _b2
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -1693,7 +1695,7 @@ class fold2 =
     method sig_item : sig_item -> sig_item -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#class_type _a1 _b1
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
@@ -1786,7 +1788,7 @@ class fold2 =
     method match_case : match_case -> match_case -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#match_case _a1 _b1 in self#match_case _a2 _b2
@@ -2140,7 +2142,8 @@ class iter =
     method ctyp : ctyp -> 'result123=
       function
       | `Nil _a0 -> self#loc _a0
-      | `Alias (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
+      | `Alias (_a0,_a1,_a2) ->
+          (self#loc _a0; self#ctyp _a1; self#alident _a2)
       | #any as _a0 -> (self#any _a0 :>'result123)
       | `App (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Arrow (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
@@ -2362,7 +2365,7 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result134)
     method sig_item : sig_item -> 'result135=
       function
-      | `Nil _a0 -> self#loc _a0
+      | #nil as _a0 -> (self#nil _a0 :>'result135)
       | `Class (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
       | `ClassType (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
       | `Sem (_a0,_a1,_a2) ->
@@ -2422,7 +2425,7 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result138)
     method match_case : match_case -> 'result139=
       function
-      | `Nil _a0 -> self#loc _a0
+      | #nil as _a0 -> (self#nil _a0 :>'result139)
       | `Or (_a0,_a1,_a2) ->
           (self#loc _a0; self#match_case _a1; self#match_case _a2)
       | `Case (_a0,_a1,_a2,_a3) ->
@@ -2743,7 +2746,7 @@ class map =
       | `Alias (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
-          let _a2 = self#ctyp _a2 in `Alias (_a0, _a1, _a2)
+          let _a2 = self#alident _a2 in `Alias (_a0, _a1, _a2)
       | #any as _a0 -> (self#any _a0 : any  :>ctyp)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -3179,7 +3182,7 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_type)
     method sig_item : sig_item -> sig_item=
       function
-      | `Nil _a0 -> let _a0 = self#loc _a0 in `Nil _a0
+      | #nil as _a0 -> (self#nil _a0 : nil  :>sig_item)
       | `Class (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_type _a1 in `Class (_a0, _a1)
@@ -3287,7 +3290,7 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_binding)
     method match_case : match_case -> match_case=
       function
-      | `Nil _a0 -> let _a0 = self#loc _a0 in `Nil _a0
+      | #nil as _a0 -> (self#nil _a0 : nil  :>match_case)
       | `Or (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#match_case _a1 in
@@ -3685,7 +3688,7 @@ class fold =
       | `Nil _a0 -> self#loc _a0
       | `Alias (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#ctyp _a1 in self#ctyp _a2
+          let self = self#ctyp _a1 in self#alident _a2
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -3991,7 +3994,7 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method sig_item : sig_item -> 'self_type=
       function
-      | `Nil _a0 -> self#loc _a0
+      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `Class (_a0,_a1) -> let self = self#loc _a0 in self#class_type _a1
       | `ClassType (_a0,_a1) ->
           let self = self#loc _a0 in self#class_type _a1
@@ -4070,7 +4073,7 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method match_case : match_case -> 'self_type=
       function
-      | `Nil _a0 -> self#loc _a0
+      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `Or (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#match_case _a1 in self#match_case _a2
@@ -4449,7 +4452,7 @@ class print =
         | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" self#loc _a0
         | `Alias (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1 self#ctyp _a2
+              self#ctyp _a1 self#alident _a2
         | #any as _a0 -> (self#any fmt _a0 :>'result273)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
@@ -4818,7 +4821,7 @@ class print =
     method sig_item : 'fmt -> sig_item -> 'result285=
       fun fmt  ->
         function
-        | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" self#loc _a0
+        | #nil as _a0 -> (self#nil fmt _a0 :>'result285)
         | `Class (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" self#loc _a0
               self#class_type _a1
@@ -4912,7 +4915,7 @@ class print =
     method match_case : 'fmt -> match_case -> 'result289=
       fun fmt  ->
         function
-        | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" self#loc _a0
+        | #nil as _a0 -> (self#nil fmt _a0 :>'result289)
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
               self#match_case _a1 self#match_case _a2
@@ -5321,7 +5324,7 @@ class eq =
         | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
+              (self#alident _a2 _b2)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result323)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
@@ -5684,7 +5687,7 @@ class eq =
     method sig_item : sig_item -> sig_item -> 'result335=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result335)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#class_type _a1 _b1)
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
@@ -5775,7 +5778,7 @@ class eq =
     method match_case : match_case -> match_case -> 'result339=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result339)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#match_case _a1 _b1)) &&
               (self#match_case _a2 _b2)
@@ -6114,7 +6117,7 @@ let rec strip_loc_ctyp =
   | `Nil _a0 -> `Nil
   | `Alias (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Alias (_a1, _a2)
+      let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
   | #any as _a0 -> (strip_loc_any _a0 :>'result393)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
@@ -6427,7 +6430,7 @@ and strip_loc_module_type =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result382)
 and strip_loc_sig_item =
   function
-  | `Nil _a0 -> `Nil
+  | #nil as _a0 -> (strip_loc_nil _a0 :>'result381)
   | `Class (_a0,_a1) -> let _a1 = strip_loc_class_type _a1 in `Class _a1
   | `ClassType (_a0,_a1) ->
       let _a1 = strip_loc_class_type _a1 in `ClassType _a1
@@ -6504,7 +6507,7 @@ and strip_loc_module_binding =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result378)
 and strip_loc_match_case =
   function
-  | `Nil _a0 -> `Nil
+  | #nil as _a0 -> (strip_loc_nil _a0 :>'result377)
   | `Or (_a0,_a1,_a2) ->
       let _a1 = strip_loc_match_case _a1 in
       let _a2 = strip_loc_match_case _a2 in `Or (_a1, _a2)
@@ -6848,7 +6851,7 @@ let rec pp_print_ctyp fmt =
   | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc _a0
   | `Alias (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1 pp_print_ctyp _a2
+        pp_print_ctyp _a1 pp_print_alident _a2
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result441)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -7204,7 +7207,7 @@ and pp_print_module_type fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result430)
 and pp_print_sig_item fmt =
   function
-  | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc _a0
+  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result429)
   | `Class (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_type _a1
@@ -7294,7 +7297,7 @@ and pp_print_module_binding fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result426)
 and pp_print_match_case fmt =
   function
-  | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc _a0
+  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result425)
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_match_case _a1 pp_print_match_case _a2

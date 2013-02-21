@@ -28,7 +28,7 @@ type ident =
 type sid = [ `Id of (loc* ident)] 
 type any = [ `Any of loc] 
 type ctyp =
-  [ `Nil of loc | `Alias of (loc* ctyp* ctyp) | any
+  [ `Nil of loc | `Alias of (loc* ctyp* alident) | any
   | `App of (loc* ctyp* ctyp) | `Arrow of (loc* ctyp* ctyp)
   | `ClassPath of (loc* ident) | `Label of (loc* alident* ctyp)
   | `OptLabl of (loc* alident* ctyp) | sid
@@ -100,9 +100,9 @@ and module_type =
   | `Sig of (loc* sig_item) | `With of (loc* module_type* with_constr)
   | `ModuleTypeOf of (loc* module_expr) | ant] 
 and sig_item =
-  [ `Nil of loc | `Class of (loc* class_type)
-  | `ClassType of (loc* class_type) | `Sem of (loc* sig_item* sig_item)
-  | `Directive of (loc* alident* expr) | `Exception of (loc* of_ctyp)
+  [ nil | `Class of (loc* class_type) | `ClassType of (loc* class_type)
+  | `Sem of (loc* sig_item* sig_item) | `Directive of (loc* alident* expr)
+  | `Exception of (loc* of_ctyp)
   | `External of (loc* alident* ctyp* string meta_list)
   | `Include of (loc* module_type) | `Module of (loc* auident* module_type)
   | `RecModule of (loc* module_binding)
@@ -121,7 +121,7 @@ and module_binding =
   | `ModuleBind of (loc* auident* module_type* module_expr)
   | `Constraint of (loc* auident* module_type) | ant] 
 and match_case =
-  [ `Nil of loc | `Or of (loc* match_case* match_case)
+  [ nil | `Or of (loc* match_case* match_case)
   | `Case of (loc* patt* expr* expr) | ant] 
 and module_expr =
   [ nil | sid | `App of (loc* module_expr* module_expr)

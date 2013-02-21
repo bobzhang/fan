@@ -377,7 +377,7 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Alias")), (meta_loc _loc _a0))),
-                   (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
+                   (meta_ctyp _loc _a1))), (meta_alident _loc _a2))
       | #any as _a0 -> (meta_any _loc _a0 :>'result44)
       | `App (_a0,_a1,_a2) ->
           `App
@@ -1126,7 +1126,7 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result33)
     and meta_sig_item _loc =
       function
-      | `Nil _a0 -> `App (_loc, (`Vrn (_loc, "Nil")), (meta_loc _loc _a0))
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result32)
       | `Class (_a0,_a1) ->
           `App
             (_loc,
@@ -1317,7 +1317,7 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result29)
     and meta_match_case _loc =
       function
-      | `Nil _a0 -> `App (_loc, (`Vrn (_loc, "Nil")), (meta_loc _loc _a0))
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result28)
       | `Or (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -2095,8 +2095,7 @@ class clean_ast =
       | mb -> mb
     method! ctyp t =
       match super#ctyp t with
-      | `TyPol (_loc,`Nil _l,t)|`Alias (_loc,`Nil _l,t)
-        |`Alias (_loc,t,`Nil _l)|`Arrow (_loc,t,`Nil _l)
+      | `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)
         |`Arrow (_loc,`Nil _l,t)|`Or (_loc,`Nil _l,t)|`Or (_loc,t,`Nil _l)
         |`Of (_loc,t,`Nil _l)|`And (_loc,`Nil _l,t)|`And (_loc,t,`Nil _l)
         |`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)|`Amp (_loc,t,`Nil _l)

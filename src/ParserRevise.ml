@@ -1270,17 +1270,13 @@ let apply_ctyp () = begin
       |  ctyp{t1}; "=";"private"; type_repr{t2} ->
           `TyMan(_loc, t1, `Private _loc,t2)
       | "private"; type_repr{t2} ->
-          `TyRepr(_loc,`Private _loc, t2)
-      ]
+          `TyRepr(_loc,`Private _loc, t2)]
 
       type_repr:
       ["["; constructor_declarations{t}; "]" ->
         (* {| [ $t ] |} *) `Sum(_loc,(t:or_ctyp :>ctyp))
       | "["; "]" -> (* {| [ ] |} *) `Sum(_loc,`Nil _loc)
-
-      | "{"; label_declaration_list{t}; "}" -> `Record (_loc, t)
-
-      ]
+      | "{"; label_declaration_list{t}; "}" -> `Record (_loc, t)]
       type_ident_and_parameters:
       [ "(";  L1 type_parameter SEP ","{tpl}; ")"; a_lident{i} -> (i, tpl)
       |  type_parameter{t};  a_lident{i} -> (i, [t])
@@ -1301,16 +1297,11 @@ let apply_ctyp () = begin
       | "'"; a_lident{i} -> {| '$i |}]
       ctyp:
       {
-
-       (* "==" NA (\* FIXME should be more restrict *\) *)
-       (*  [ S{t1}; "=="; S{t2} -> {| $t1 == $t2 |} ] *)
-       (* "private" NA *)
-       (*  [ "private"; ctyp Level "alias"{t} -> *)
-       (*    `Priv(_loc,t) *)
-       (*    (\* {| private $t |} *\) ] *)
-       
        "alias" LA
-        [ S{t1}; "as"; S{t2} ->   {| $t1 as $t2 |} ]
+        [ S{t1}; "as"; (* S{t2} *)"'"; a_lident{i} ->
+          `Alias(_loc,t1,i)
+          (* {| $t1 as $t2 |} *)
+        ]
        "forall" LA
         [ "!"; typevars{t1}; "."; ctyp{t2} -> {| ! $t1 . $t2 |} ]
        "arrow" RA
@@ -1343,30 +1334,14 @@ let apply_ctyp () = begin
         | a_uident{i} -> {|$(id:(i:>ident))|}
         | "("; S{t}; "*"; star_ctyp{tl}; ")" ->  {| ( $t * $tl ) |}
         | "("; S{t}; ")" -> t
-
-        (* | "["; "]" -> {| [ ] |} *)
-              
-        (* | "["; constructor_declarations{t}; "]" -> *)
-        (*     (\* {| [ $t ] |} *\) `Sum(_loc,(t:or_ctyp :>ctyp)) *)
-        (* | "{"; label_declaration_list{t}; "}" -> `Record (_loc, t) *)
-              
-        (* | "["; "="; row_field{rfl}; "]" ->   {| [ = $rfl ] |} (\* polymorphic variant *\) *)
-
         | "[="; row_field{rfl}; "]" -> `TyVrnEq(_loc,rfl)
         | "[>"; "]" -> `TyVrnSup (_loc, (`Nil _loc))
-        (* | "["; ">"; "]" ->   {| [> ]|} *)
         | "[>"; row_field{rfl}; "]" ->   `TyVrnSup (_loc, rfl)
-        (* | "["; ">"; row_field{rfl}; "]" ->    {| [ > $rfl ] |} *)
-
-        (* | "["; "<"; row_field{rfl}; "]" ->     {| [ < $rfl ] |} *)
-        (* | "["; "<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->   {| [ < $rfl > $ntl ] |} *)
         | "[<"; row_field{rfl}; "]" ->    {| [< $rfl ] |}
         | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" -> {|  [< $rfl > $ntl ] |}
-
-            (* {| { $t } |} *)
-        | "#"; class_longident{i} -> {| # $i |}
+        | "#"; class_longident{i} -> {| #$i |}
         | "<"; opt_meth_list{t}; ">" -> t
-        | "("; "module"; module_type{p}; ")" -> {| (module $p) |}  ] }
+        | "("; "module"; module_type{p}; ")" -> `Package(_loc,p) (* {| (module $p) |} *)  ] }
       star_ctyp:
       [ `Ant ((""|"typ" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"ctyp*" n s) |}

@@ -128,7 +128,7 @@ let predef_option loc =
 let rec ctyp (x:ctyp) = match x with 
   [`Id(_loc,i)-> let li = long_type_ident i in
     mktyp _loc (Ptyp_constr li [])
-  | `Alias (_loc, t1, (* t2 *) `Quote(_,_,`Some((`Lid(_,s))))) ->
+  | `Alias(_loc,t1,`Lid(_,s)) -> 
       mktyp _loc (Ptyp_alias (ctyp t1) s)
   | `Any _loc -> mktyp _loc Ptyp_any
   | `App (_loc, _, _) as f ->
@@ -138,16 +138,9 @@ let rec ctyp (x:ctyp) = match x with
       else mktyp _loc (Ptyp_constr li (List.map ctyp al))
   | `Arrow (loc, (`Label (_,  `Lid(_,lab), t1)), t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
-
-  (* comment later*)      
-  (* | `Arrow (loc, (`TyOlb (loc1, `Lid(_,lab), t1)), t2) -> *)
-  (*     let t1 = `App loc1 (predef_option loc1) t1 in *)
-  (*     mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2)) *)
-        
   | `Arrow (loc, (`OptLabl (loc1, `Lid(_,lab), t1)), t2) ->
       let t1 = `App loc1 (predef_option loc1) t1 in
       mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
-
   | `Arrow (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
   | `TyObj(_loc,fl,row) ->
       let xs  = match row with
@@ -673,12 +666,7 @@ let rec expr (x : expr) = with expr match x with
   | `Record (loc,lel) ->
        match lel with
        [ `Nil _  -> error loc "empty record"
-       | _ ->
-           (* let eo = *)
-           (*   match eo with *)
-           (*   [ {||} -> None *)
-           (*   | e -> Some (expr e) ] in *)
-           mkexp loc (Pexp_record (mklabexp lel) None) ]
+       | _ -> mkexp loc (Pexp_record (mklabexp lel) None) ]
   | `RecordWith(loc,lel,eo) ->
       match lel with
       [`Nil _ -> error loc "empty record"
@@ -709,7 +697,7 @@ let rec expr (x : expr) = with expr match x with
    | `Constraint (loc,e,t) -> mkexp loc (Pexp_constraint (expr e) (Some (ctyp t)) None)
    | {| () |} ->
        mkexp _loc (Pexp_construct (lident_with_loc "()" _loc) None true)
-   | {|$(lid: ("true"| "false" as s))|} ->
+   | `Id(_loc,`Lid(_,("true"|"false" as s))) -> 
        mkexp _loc (Pexp_construct (lident_with_loc s _loc) None true)
    | `Id(_,`Lid(_loc,s)) ->
        mkexp _loc (Pexp_ident (lident_with_loc s _loc))
@@ -721,12 +709,12 @@ let rec expr (x : expr) = with expr match x with
        mkexp loc (Pexp_while (expr e1) (expr e2))
    | `LetOpen(_loc,i,e) ->
        mkexp _loc (Pexp_open (long_uident i) (expr e))
-   | {| (module $me : $pt) |} ->
+   | `Package_expr (_loc,`Constraint(_,me,pt)) -> 
        mkexp _loc
          (Pexp_constraint
             (mkexp _loc (Pexp_pack (module_expr me)),
              Some (mktyp _loc (Ptyp_package (package_type pt))), None))
-   | {@loc| (module $me) |} ->
+   | `Package_expr(loc,me) -> 
        mkexp loc (Pexp_pack (module_expr me))
    | `LocalTypeFun (loc,`Lid(_,i),e) -> mkexp loc (Pexp_newtype i (expr e))
    | x -> errorf (loc_of x ) "expr:%s" (dump_expr x) ]
@@ -832,18 +820,12 @@ and mktype_decl (x:typedecl)  =
           errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)]) tys
 and module_type : Ast.module_type -> Parsetree.module_type =
   let  mkwithc (wc:with_constr)  =
-    (* let opt_private_ctyp (x:ctyp) =  *)
-    (*   match x with *)
-    (*   [ `Priv (_,t)-> (Ptype_abstract, Private, ctyp t) *)
-    (*   | t -> (Ptype_abstract, Public, ctyp t) ] in *)
-    
     let mkwithtyp pwith_type loc priv id_tpl ct =
       let (id, tpl) = type_parameters_and_type_name id_tpl in
       let (params, variance) = List.split tpl in
-      (* let (kind, priv, ct) = opt_private_ctyp ct in *)
       (id, pwith_type
          {ptype_params = params; ptype_cstrs = [];
-          ptype_kind = (* kind *) Ptype_abstract;
+          ptype_kind =  Ptype_abstract;
           ptype_private = priv;
           ptype_manifest = Some (ctyp ct);
           ptype_loc =  loc; ptype_variance = variance}) in

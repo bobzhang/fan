@@ -128,7 +128,8 @@
    type ctyp =
     [= `Nil of loc
 
-     | `Alias of (loc * ctyp * ctyp)  (* list 'a as 'a *)
+     (* | `Alias of (loc * ctyp * ctyp)  (\* list 'a as 'a *\) *)
+     | `Alias of (loc * ctyp * alident)
 
      | any
 
@@ -210,24 +211,14 @@
      | `TyEq of (loc * private_flag * ctyp)
      | ant_nil ]  
    and type_repr =
-     [= (* `TyMan of (loc * ctyp * type_info) *)
-     (* | *)
-       (* `Priv of (loc * type_repr) | *)
-       `Record of (loc * name_ctyp) |
-       `Sum of (loc * ctyp) |
-       ant_nil ]   
-           (* FIXME, the location *)
-
+     [= `Record of (loc * name_ctyp) | `Sum of (loc * ctyp) | ant_nil ]   
    (* and poly_ctyp = *)
    (*   [= `TyPol of (loc * ctyp * ctyp) ]   *)
    and name_ctyp =
      [= `Sem of (loc * name_ctyp * name_ctyp)
      | `TyCol of (loc * sid * ctyp )
-
      | `TyColMut of (loc * sid * ctyp)
-           
      | ant_nil ]
-
    and or_ctyp =
      [= `Or of (loc * or_ctyp * or_ctyp )
      | `TyCol of (loc * sid * ctyp)
@@ -342,7 +333,6 @@
      | ant (* $s$ *) ]
   and module_type =
     [= nil
-         (* A.B.C *)
      | sid
        (* functor (s : mt) -> mt *)
      | `MtFun of (loc * auident * module_type * module_type)
@@ -354,7 +344,7 @@
      | `ModuleTypeOf of (loc * module_expr)
      | ant  ]
   and sig_item =
-    [= `Nil of loc
+    [= nil
       (* class cict *)
      | `Class of (loc * class_type)
       (* class type cict *)
@@ -375,7 +365,7 @@
       (* module type s = mt *)
      | `ModuleType of (loc * auident * module_type)
      | `Open of (loc * ident)
-     | `Type of (loc * (* ctyp *)typedecl)
+     | `Type of (loc * typedecl)
       (* va s : t *)
      |  `Val of (loc * alident * ctyp)
      | ant  ]
@@ -415,12 +405,12 @@
      | (* `Constraint *)`Constraint  of (loc * auident * module_type)
      | ant ]
   and match_case =
-     [= `Nil of loc
+     [= nil
      | `Or of (loc * match_case * match_case)
       (* p (when e)? -> e *)
      | `Case of (loc * patt * expr * expr)
      (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
-     | ant (* $s$ *) ]
+     | ant  ]
   and module_expr =
     [= nil
      | sid
