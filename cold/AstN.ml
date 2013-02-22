@@ -23,6 +23,8 @@ type aident = [ alident | auident]
 type astring = [ `C of string | ant] 
 type ident =
   [ `Dot of (ident* ident) | `App of (ident* ident) | alident | auident] 
+type dupath = [ `Dot of (dupath* dupath) | auident] 
+type dlpath = [ `Dot of (dupath* alident) | alident] 
 type sid = [ `Id of ident] 
 type any = [ `Any] 
 type ctyp =

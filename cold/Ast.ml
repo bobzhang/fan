@@ -25,6 +25,8 @@ type astring = [ `C of (loc* string) | ant]
 type ident =
   [ `Dot of (loc* ident* ident) | `App of (loc* ident* ident) | alident
   | auident] 
+type dupath = [ `Dot of (loc* dupath* dupath) | auident] 
+type dlpath = [ `Dot of (loc* dupath* alident) | alident] 
 type sid = [ `Id of (loc* ident)] 
 type any = [ `Any of loc] 
 type ctyp =

@@ -362,6 +362,26 @@ module Make(MetaLoc:META_LOC) =
                    (meta_ident _loc _a1))), (meta_ident _loc _a2))
       | #alident as _a0 -> (meta_alident _loc _a0 :>'result19)
       | #auident as _a0 -> (meta_auident _loc _a0 :>'result19)
+    let rec meta_dupath _loc =
+      function
+      | `Dot (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "Dot")), (meta_loc _loc _a0))),
+                   (meta_dupath _loc _a1))), (meta_dupath _loc _a2))
+      | #auident as _a0 -> (meta_auident _loc _a0 :>'result20)
+    let meta_dlpath _loc =
+      function
+      | `Dot (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "Dot")), (meta_loc _loc _a0))),
+                   (meta_dupath _loc _a1))), (meta_alident _loc _a2))
+      | #alident as _a0 -> (meta_alident _loc _a0 :>'result21)
     let meta_sid _loc (`Id (_a0,_a1)) =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Id")), (meta_loc _loc _a0))),
@@ -370,7 +390,7 @@ module Make(MetaLoc:META_LOC) =
       `App (_loc, (`Vrn (_loc, "Any")), (meta_loc _loc _a0))
     let rec meta_ctyp _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result46)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result48)
       | `Alias (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -378,7 +398,7 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Alias")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_alident _loc _a2))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result46)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result48)
       | `App (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -413,7 +433,7 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc, (`Vrn (_loc, "OptLabl")), (meta_loc _loc _a0))),
                    (meta_alident _loc _a1))), (meta_ctyp _loc _a2))
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result46)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result48)
       | `TyObj (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -491,10 +511,10 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Package")), (meta_loc _loc _a0))),
               (meta_module_type _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result46)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result48)
     and meta_row_field _loc =
       function
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result45)
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result47)
       | `Or (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -521,7 +541,7 @@ module Make(MetaLoc:META_LOC) =
               (meta_ctyp _loc _a1))
     and meta_tag_names _loc =
       function
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result44)
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result46)
       | `App (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -565,7 +585,7 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "And")), (meta_loc _loc _a0))),
                    (meta_typedecl _loc _a1))), (meta_typedecl _loc _a2))
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result43)
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result45)
     and meta_type_info _loc =
       function
       | `TyMan (_a0,_a1,_a2,_a3) ->
@@ -593,7 +613,7 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "TyEq")), (meta_loc _loc _a0))),
                    (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result42)
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result44)
     and meta_type_repr _loc =
       function
       | `Record (_a0,_a1) ->
@@ -605,7 +625,7 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Sum")), (meta_loc _loc _a0))),
               (meta_or_ctyp _loc _a1))
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result41)
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result43)
     and meta_name_ctyp _loc =
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -630,7 +650,7 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc, (`Vrn (_loc, "TyColMut")), (meta_loc _loc _a0))),
                    (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result40)
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result42)
     and meta_or_ctyp _loc =
       function
       | `Or (_a0,_a1,_a2) ->
@@ -654,8 +674,8 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Of")), (meta_loc _loc _a0))),
                    (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result39)
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result39)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result41)
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result41)
     and meta_of_ctyp _loc =
       function
       | `Of (_a0,_a1,_a2) ->
@@ -665,12 +685,12 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Of")), (meta_loc _loc _a0))),
                    (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result38)
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result38)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result40)
+      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result40)
     and meta_patt _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result37)
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result37)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result39)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result39)
       | `App (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -700,14 +720,14 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
               (meta_patt _loc _a1))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result37)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result39)
       | `Record (_a0,_a1) ->
           `App
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
               (meta_rec_patt _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result37)
-      | #literal as _a0 -> (meta_literal _loc _a0 :>'result37)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result39)
+      | #literal as _a0 -> (meta_literal _loc _a0 :>'result39)
       | `Alias (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -782,7 +802,7 @@ module Make(MetaLoc:META_LOC) =
               (meta_meta_option meta_ctyp _loc _a2))
     and meta_rec_patt _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result36)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result38)
       | `RecBind (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -798,12 +818,12 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Sem")), (meta_loc _loc _a0))),
                    (meta_rec_patt _loc _a1))), (meta_rec_patt _loc _a2))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result36)
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result36)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result38)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result38)
     and meta_expr _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result35)
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result35)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result37)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result37)
       | `App (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -833,14 +853,14 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
               (meta_expr _loc _a1))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result35)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result37)
       | `Record (_a0,_a1) ->
           `App
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
               (meta_rec_expr _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result35)
-      | #literal as _a0 -> (meta_literal _loc _a0 :>'result35)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result37)
+      | #literal as _a0 -> (meta_literal _loc _a0 :>'result37)
       | `RecordWith (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1065,7 +1085,7 @@ module Make(MetaLoc:META_LOC) =
               (meta_module_expr _loc _a1))
     and meta_rec_expr _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result34)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result36)
       | `Sem (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1081,12 +1101,12 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc, (`Vrn (_loc, "RecBind")), (meta_loc _loc _a0))),
                    (meta_ident _loc _a1))), (meta_expr _loc _a2))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result34)
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result34)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result36)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result36)
     and meta_module_type _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result33)
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result33)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result35)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result35)
       | `MtFun (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
@@ -1117,10 +1137,10 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc, (`Vrn (_loc, "ModuleTypeOf")), (meta_loc _loc _a0))),
               (meta_module_expr _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result33)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result35)
     and meta_sig_item _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result32)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result34)
       | `Class (_a0,_a1) ->
           `App
             (_loc,
@@ -1204,10 +1224,10 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Val")), (meta_loc _loc _a0))),
                    (meta_alident _loc _a1))), (meta_ctyp _loc _a2))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result32)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result34)
     and meta_with_constr _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result31)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result33)
       | `TypeEq (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1257,10 +1277,10 @@ module Make(MetaLoc:META_LOC) =
                    (`App (_loc, (`Vrn (_loc, "And")), (meta_loc _loc _a0))),
                    (meta_with_constr _loc _a1))),
               (meta_with_constr _loc _a2))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result31)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result33)
     and meta_binding _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result30)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result32)
       | `And (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1275,10 +1295,10 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Bind")), (meta_loc _loc _a0))),
                    (meta_patt _loc _a1))), (meta_expr _loc _a2))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result30)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result32)
     and meta_module_binding _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result29)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result31)
       | `And (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1308,10 +1328,10 @@ module Make(MetaLoc:META_LOC) =
                       (_loc, (`Vrn (_loc, "Constraint")),
                         (meta_loc _loc _a0))), (meta_auident _loc _a1))),
               (meta_module_type _loc _a2))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result29)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result31)
     and meta_match_case _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result28)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result30)
       | `Or (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1330,11 +1350,11 @@ module Make(MetaLoc:META_LOC) =
                            (_loc, (`Vrn (_loc, "Case")), (meta_loc _loc _a0))),
                         (meta_patt _loc _a1))), (meta_expr _loc _a2))),
               (meta_expr _loc _a3))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result28)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result30)
     and meta_module_expr _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result27)
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result27)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result29)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result29)
       | `App (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1375,10 +1395,10 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc, (`Vrn (_loc, "PackageModule")), (meta_loc _loc _a0))),
               (meta_expr _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result27)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result29)
     and meta_str_item _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result26)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result28)
       | `Class (_a0,_a1) ->
           `App
             (_loc,
@@ -1467,10 +1487,10 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Value")), (meta_loc _loc _a0))),
                    (meta_rec_flag _loc _a1))), (meta_binding _loc _a2))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result26)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result28)
     and meta_class_type _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result25)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result27)
       | `CtCon (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
@@ -1518,10 +1538,10 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "CtEq")), (meta_loc _loc _a0))),
                    (meta_class_type _loc _a1))), (meta_class_type _loc _a2))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result25)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result27)
     and meta_class_sig_item _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result24)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result26)
       | `Eq (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1579,10 +1599,10 @@ module Make(MetaLoc:META_LOC) =
                            (_loc, (`Vrn (_loc, "CgVir")),
                              (meta_loc _loc _a0))), (meta_alident _loc _a1))),
                    (meta_private_flag _loc _a2))), (meta_ctyp _loc _a3))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result24)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result26)
     and meta_class_expr _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result23)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result25)
       | `CeApp (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1648,10 +1668,10 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Eq")), (meta_loc _loc _a0))),
                    (meta_class_expr _loc _a1))), (meta_class_expr _loc _a2))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result23)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result25)
     and meta_class_str_item _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result22)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result24)
       | `Sem (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1740,11 +1760,11 @@ module Make(MetaLoc:META_LOC) =
                            (_loc, (`Vrn (_loc, "CrVvr")),
                              (meta_loc _loc _a0))), (meta_alident _loc _a1))),
                    (meta_mutable_flag _loc _a2))), (meta_ctyp _loc _a3))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result22)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result24)
     let rec meta_ep _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result48)
-      | #sid as _a0 -> (meta_sid _loc _a0 :>'result48)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result50)
+      | #sid as _a0 -> (meta_sid _loc _a0 :>'result50)
       | `App (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1774,7 +1794,7 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
               (meta_ep _loc _a1))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result48)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result50)
       | `Array (_a0,_a1) ->
           `App
             (_loc,
@@ -1785,11 +1805,11 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Record")), (meta_loc _loc _a0))),
               (meta_rec_bind _loc _a1))
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result48)
-      | #literal as _a0 -> (meta_literal _loc _a0 :>'result48)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result50)
+      | #literal as _a0 -> (meta_literal _loc _a0 :>'result50)
     and meta_rec_bind _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result47)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result49)
       | `RecBind (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1805,32 +1825,32 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Sem")), (meta_loc _loc _a0))),
                    (meta_rec_bind _loc _a1))), (meta_rec_bind _loc _a2))
-      | #any as _a0 -> (meta_any _loc _a0 :>'result47)
-      | #ant as _a0 -> (meta_ant _loc _a0 :>'result47)
+      | #any as _a0 -> (meta_any _loc _a0 :>'result49)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result49)
   end
-let rec is_module_longident =
-  function
-  | `Dot (_loc,_,i) -> is_module_longident i
-  | `App (_loc,i1,i2) -> (is_module_longident i1) && (is_module_longident i2)
-  | `Uid (_loc,_) -> true
+let rec is_module_longident (x : ident) =
+  match x with
+  | `Dot (_,_,i) -> is_module_longident i
+  | `App (_,i1,i2) -> (is_module_longident i1) && (is_module_longident i2)
+  | `Uid _ -> true
   | _ -> false
 let ident_of_expr =
   let error () =
     invalid_arg "ident_of_expr: this expression is not an identifier" in
-  let rec self =
-    function
+  let rec self (x : expr) =
+    match x with
     | `App (_loc,e1,e2) -> `App (_loc, (self e1), (self e2))
     | `Dot (_loc,e1,e2) -> `Dot (_loc, (self e1), (self e2))
-    | `Id (_loc,`Lid (_,_)) -> error ()
+    | `Id (_loc,`Lid _) -> error ()
     | `Id (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
-  function | `Id (_loc,i) -> i | `App (_loc,_,_) -> error () | t -> self t
+  function | `Id (_loc,i) -> i | `App _ -> error () | t -> self t
 let ident_of_ctyp =
   let error () = invalid_arg "ident_of_ctyp: this type is not an identifier" in
-  let rec self =
-    function
+  let rec self (x : ctyp) =
+    match x with
     | `App (_loc,t1,t2) -> `App (_loc, (self t1), (self t2))
-    | `Id (_loc,`Lid (_,_)) -> error ()
+    | `Id (_loc,`Lid _) -> error ()
     | `Id (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
   function | `Id (_loc,i) -> i | t -> self t

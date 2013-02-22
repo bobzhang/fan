@@ -270,7 +270,23 @@ end;;
 
 
     
-ocaml_lib ~extern:true "ocamlcommon" ~dir:"+compiler-libs";
+ocaml_lib ~extern:true
+"ocamlcommon" ~dir:"+compiler-libs";
+
+(* ocaml_lib "FanTop" ; *)
+(* use_lib "o" "FanTop"; *)
+
+ocaml_lib ~extern:true "ocamlcommon"
+  ~tag_name:"use_ocamltoplevel"
+  ~dir:"+compiler-libs";
+ocaml_lib ~extern:true "ocamlbytecomp"
+  ~tag_name:"use_ocamltoplevel"
+  ~dir:"+compiler-libs";
+ocaml_lib ~extern:true "ocamltoplevel"
+  ~tag_name:"use_ocamltoplevel"
+  ~dir:"+compiler-libs";
+
+
 (*stolen from Ocaml_specific.ml*)
 module Driver = struct
   (* FIXME what will happen when

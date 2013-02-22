@@ -1117,6 +1117,7 @@ class printer  ()= object(self:'self)
     pp f "%a%a@ %a"
       (fun f x -> match (x.ptype_manifest,x.ptype_kind,x.ptype_private) with
       | (None,_,Public) ->  pp f "@;"
+      | (None,Ptype_abstract,Private) -> pp f "@;" (* private type without print*)
       | (None,_,Private) -> pp f "private@;"
       | (Some y, Ptype_abstract,Private) -> 
           pp f "private@;%a" self#core_type y;

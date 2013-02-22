@@ -18,7 +18,12 @@ true:use_unix
 <{cold,src,debug}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,PAst2pt,Sig,ParsetreeHelper,Ast2Fan}{_ppo,}.{ml,mli}> : use_ocamlcommon
 # pkg_compiler-libs.common
 <{cold,src,debug}/{FanTop,FanEval}.{ml,mli}>: use_ocamlcommon
+# <{cold,src,debug}/{FanTop}.{cma}>: use_ocamltoplevel
 # pkg_compiler-libs.toplevel
+
+# <src/o.top>:use_srcFanTop
+
+# <{cold,src}/o.top>: use_FanTop
 
 <{cold,src,debug}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 # true:warn(+a)

@@ -391,7 +391,7 @@ let apply () = begin
        "apply" LA
         [ S{e1}; S{e2} -> {| $e1 $e2 |}
         | "assert"; S{e} -> Expr.mkassert _loc e
-        | "new"; class_longident{i} -> {| new $i |}
+        | "new"; class_longident{i} -> `New (_loc,i) (* {| new $i |} *)
         | "lazy"; S{e} -> {| lazy $e |} ]
        "label" NA
         [ "~"; a_lident{i}; ":"; S{e} ->
@@ -725,9 +725,11 @@ let apply () = begin
       { "."
         [ S{i}; "."; S{j} -> {| $i.$j  |} ]
         "simple"
-        [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-        | `Ant (("lid" as n), s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-        | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} -> {| $(anti:mk_anti ~c:"ident" n s).$i |}
+        [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) ->
+          `Ant (_loc, (mk_anti ~c:"ident" n s))
+        | `Ant (("lid" as n), s) -> `Ant (_loc, (mk_anti ~c:"ident" n s))
+        | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} ->
+            `Dot (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), i)
         | `Lid i -> {| $lid:i |}
         | `Uid i -> {| $uid:i |}
         | `Uid s ; "." ; S{j} -> {|$uid:s.$j|}
@@ -735,14 +737,13 @@ let apply () = begin
 
       (* parse [a] [b], [a.b] [A.b]*)
       ident:
-      [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) ->
-        {| $(anti:mk_anti ~c:"ident" n s) |}
-      | `Ant (("lid" as n), s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
+      [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) -> `Ant (_loc, (mk_anti ~c:"ident" n s))
+      | `Ant (("lid" as n), s) -> `Ant (_loc, (mk_anti ~c:"ident" n s))
       | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} ->
-          {| $(anti:mk_anti ~c:"ident" n s).$i |}
-      | `Lid i -> {| $lid:i |}
-      | `Uid i -> {| $uid:i |}
-      | `Uid s ; "." ; S{j} -> {|$uid:s.$j|}  ]
+           `Dot (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), i)
+      | `Lid i -> `Lid(_loc,i)
+      | `Uid i -> `Uid(_loc,i)
+      | `Uid s ; "." ; S{j} ->  `Dot (_loc, `Uid (_loc, s), j)]
 
       dot_namespace:
       [ `Uid i; "."; S{xs} -> [i::xs]
@@ -783,8 +784,10 @@ let apply () = begin
        "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
        "simple"
-        [ `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) -> {| $(anti:mk_anti ~c:"ident" n s) |}
-        | `Uid i -> {|$uid:i|}
+        [ `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) ->
+          `Ant (_loc, (mk_anti ~c:"ident" n s))
+          (* {| $(anti:mk_anti ~c:"ident" n s) |} *)
+        | `Uid i -> `Uid(_loc,i)
         | "("; S{i}; ")" -> i ] }
 
       (* parse [(A B).c ]*)
@@ -1238,7 +1241,7 @@ let apply_ctyp () = begin
       ctyp:
       {
        "alias" LA
-        [ S{t1}; "as"; (* S{t2} *)"'"; a_lident{i} -> `Alias(_loc,t1,i)]
+        [ S{t1}; "as"; "'"; a_lident{i} -> `Alias(_loc,t1,i)]
        "forall" LA
         [ "!"; typevars{t1}; "."; ctyp{t2} -> {| ! $t1 . $t2 |} ]
        "arrow" RA
@@ -1247,17 +1250,16 @@ let apply_ctyp () = begin
         [ "~"; a_lident{i}; ":"; S{t} -> {| ~ $i : $t |}
         | `LABEL s ; ":"; S{t} -> {| ~$lid:s : $t |}
         | `OPTLABEL s ; S{t} -> `OptLabl(_loc,`Lid(_loc,s),t)
-          (* -> {| ?$lid:s : $t |} *)
-        | "?"; a_lident{i}; ":"; S{t} -> `OptLabl(_loc,i,t)
-              (* {| ? $i : $t |} *)   ]
+        | "?"; a_lident{i}; ":"; S{t} -> `OptLabl(_loc,i,t)]
        "apply" LA
         [ S{t1}; S{t2} ->
-          let t = {| $t1 $t2 |} in
-          try {| $(id:FanAst.ident_of_ctyp t) |}
+          let t = `App(_loc,t1,t2) in
+          try `Id(_loc,FanAst.ident_of_ctyp t)
           with [ Invalid_argument _ -> t ]]
        "." LA
         [ S{t1}; "."; S{t2} ->
-            try {| $(id:FanAst.ident_of_ctyp t1).$(id:FanAst.ident_of_ctyp t2) |}
+            try
+              `Id (_loc, (`Dot (_loc, (FanAst.ident_of_ctyp t1), (FanAst.ident_of_ctyp t2))))
             with [ Invalid_argument s -> raise (XStream.Error s) ] ]
        "simple"
         [ "'"; a_lident{i} ->  `Quote (_loc, (`Normal _loc), (`Some i))

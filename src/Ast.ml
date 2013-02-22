@@ -109,6 +109,7 @@
    type auident =
     [= `Uid of (loc * string)
     | ant];
+
    type aident =
     [= alident
     | auident ];
@@ -117,14 +118,40 @@
     [= `C of (loc * string)
     | ant ];
 
+   (* type uident = *)
+   (*  [= `Dot of (loc * uident * uident) *)
+   (*  | `App of (loc * uident * uident) *)
+   (*  ];    *)
+   (* {:ident|A.B.C.d|}
+      `Dot
+      (`Uid "A"
+        `Dot (`Uid "B")
+           `Dot("C",`Lid "d"))
+    *)
    type ident =
     [= `Dot of (loc * ident * ident) (* i . i *)
     | `App of (loc * ident * ident) (* i i *)
     | alident
     | auident];
 
+   (* type dopath = *)
+   (*  [= `Dot of (loc * dopath * dopath) *)
+   (*  | auident ] ; *)
+
+   (* A.B.C *)
+   type dupath =
+    [= `Dot of (loc * dupath * dupath)
+    | auident];
+
+   type dlpath=
+    [= `Dot of (loc * dupath * alident)
+    | alident];
+
+
+
    type sid = [= `Id of (loc * ident)];
    type any = [= `Any of loc];
+
    type ctyp =
     [= nil
      | `Alias of (loc * ctyp * alident)

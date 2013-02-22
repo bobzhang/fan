@@ -108,28 +108,26 @@ end;
   - : bool = true
   ]}
  *)
-let rec is_module_longident = fun
-  [ {:ident| $_.$i |} -> is_module_longident i
-  | {:ident| ($i1 $i2) |} ->
-      is_module_longident i1 && is_module_longident i2
-
-  | {:ident| $uid:_ |} -> true
-  | _ -> false ];
+let rec is_module_longident (x:ident) =
+  match x with
+  [`Dot(_,_,i) -> is_module_longident i
+  |`App(_,i1,i2) -> is_module_longident i1 && is_module_longident i2
+  | `Uid _ -> true
+  | _ -> false ];  
 
 let ident_of_expr =
-  let error () =
-    invalid_arg "ident_of_expr: this expression is not an identifier" in
-  let rec self =  fun
-    [ {:expr@_loc| $e1 $e2 |} -> {:ident| ( $(self e1) $(self e2)) |}
-    | {:expr@_loc| $e1.$e2 |} -> {:ident| $(self e1).$(self e2) |}
-    | {:expr| $lid:_ |} -> error ()
-    | {:expr| $id:i |} -> if is_module_longident i then i else error ()
-    | _ -> error () ] in
+  let error () = invalid_arg "ident_of_expr: this expression is not an identifier" in
+  let rec self (x:expr)=
+    match x with 
+    [ `App(_loc,e1,e2) -> `App(_loc,self e1, self e2)
+    | `Dot(_loc,e1,e2) -> `Dot(_loc,self e1,self e2)
+    | `Id(_loc,`Lid _ ) -> error ()
+    | `Id (_loc,i) -> if is_module_longident i then i else error ()
+    | _ -> error () ] in 
   fun
-    [ {:expr| $id:i |} -> i
-    | {:expr| $_ $_ |} -> error ()
+    [ `Id(_loc,i) -> i
+    | `App _ -> error ()
     | t -> self t ];
-
 (*
   {[
   ident_of_ctyp {:ctyp| list int |} ; ;
@@ -151,13 +149,14 @@ let ident_of_expr =
 let ident_of_ctyp =
   let error () =
     invalid_arg "ident_of_ctyp: this type is not an identifier" in
-  let rec self =   fun
-    [ {:ctyp@_loc| $t1 $t2 |} -> {:ident| ( $(self t1) $(self t2) ) |}
-    | {:ctyp| $lid:_ |} -> error ()
-    | {:ctyp| $id:i |} -> if is_module_longident i then i else error ()
+  let rec self  (x:ctyp) =
+    match x with 
+    [ `App(_loc,t1,t2) -> `App(_loc,self t1, self t2)
+    | `Id(_loc,`Lid _ ) -> error ()
+    | `Id(_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () ] in
     fun
-    [ {:ctyp| $id:i |} -> i
+    [ `Id(_loc,i) -> i
     | t -> self t ];
 
 let ident_of_patt =

@@ -6062,10 +6062,10 @@ let apply_ctyp () =
             (Gram.obj
                (constructor_declarations : 'constructor_declarations Gram.t ));
           `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)  ->\n     (`Sum (_loc, (t : or_ctyp )) : 'type_repr ))\n",
+           ("Gram.mk_action\n  (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)  ->\n     (`Sum (_loc, t) : 'type_repr ))\n",
              (Gram.mk_action
                 (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)
-                    -> (`Sum (_loc, (t : or_ctyp )) : 'type_repr )))));
+                    -> (`Sum (_loc, t) : 'type_repr )))));
         ([`Skeyword "["; `Skeyword "]"],
           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Sum (_loc, (`Nil _loc)) : 'type_repr ))\n",
             (Gram.mk_action
