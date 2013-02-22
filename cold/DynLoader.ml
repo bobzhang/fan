@@ -1,6 +1,6 @@
 module type S =
   sig
-    type tprivate  
+    type t (* private   *)
     exception Error of string*string
     val mk : ?ocaml_stdlib:bool -> ?camlp4_stdlib:bool -> unit -> t
     val fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a

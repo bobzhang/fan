@@ -572,7 +572,7 @@ module Array =
   end
 module type STREAM =
   sig
-    type 'a tprivate  
+    type 'a t(* private   *)
     exception Failure
     exception Error of string
     val from : (int -> 'a option) -> 'a t
