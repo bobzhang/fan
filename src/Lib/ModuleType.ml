@@ -2,17 +2,19 @@
 (* open FanAst; *)
 #default_quotation "module_type";;
 
-let app0 mt1 mt2 =
-  match (mt1, mt2) with
-  [ ({| $id:i1 |}, {@_| $id:i2 |}) ->
-    {| $(id:{:ident| ($i1 $i2) |}) |}
-  | _ -> raise Stream.Failure ]; (* FIXME raise Stream.Failure *)
+    
+  (* [ ({| $id:i1 |}, {@_| $id:i2 |}) -> *)
+  (*   {| $(id:{:ident| ($i1 $i2) |}) |} *)
+  (* | _ -> raise Stream.Failure ]; (\* FIXME raise Stream.Failure *\) *)
 
 
-let acc0 mt1 mt2 =
-  match (mt1, mt2) with
-  [ ({| $id:i1 |}, {@_| $id:i2 |}) ->  {| $(id:{:ident| $i1.$i2 |}) |}
-  | _ -> raise Stream.Failure ];
+(* let acc0 mt1 mt2 = *)
+(*   match (mt1, mt2) with *)
+(*   [ (`Id(loc1,i1),`Id(loc2,i2)) -> *)
+(*     let _loc = FanLoc.merge loc1 loc2 in *)
+(*     `Id(_loc,`Dot(_loc,i1,i2)) *)
+(*     (\* ({| $id:i1 |}, {@_| $id:i2 |}) ->  {| $(id:{:ident| $i1.$i2 |}) |} *\) *)
+(*   | _ -> raise XStream.Failure ]; *)
 
 
 let app  mt1 mt2 =

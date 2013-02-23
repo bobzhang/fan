@@ -244,9 +244,8 @@ let generate (module_types : FSig.module_types) =
                ((try
                    let v = Hashtbl.find tbl s in
                    fun ()  ->
-                     if v = arity
-                     then ()
-                     else failwithf "%s has diffireent arities" s
+                     if v <> arity
+                     then failwithf "%s has diffireent arities" s
                  with | Not_found  -> (fun ()  -> Hashtbl.add tbl s arity)))
                  ()
            | _ -> ()) branches

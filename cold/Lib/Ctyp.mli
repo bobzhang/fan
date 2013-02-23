@@ -6,7 +6,7 @@ val to_var_list : ctyp -> string list
 
 val name_tags : (* ctyp *)tag_names -> string list
 
-val to_generalized : ctyp -> ctyp list * ctyp
+(* val to_generalized : ctyp -> ctyp list * ctyp *)
 
 
 val arrow : ctyp -> ctyp -> ctyp

@@ -15,11 +15,6 @@ let rec name_tags (x : tag_names) =
   | `App (_,t1,t2) -> (name_tags t1) @ (name_tags t2)
   | `TyVrn (_,`C (_,s)) -> [s]
   | _ -> assert false
-let rec to_generalized =
-  function
-  | `Arrow (_loc,t1,t2) ->
-      let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt)
-  | t -> ([], t)
 let arrow a b =
   let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Arrow (_loc, a, b)
 let (|->) = arrow

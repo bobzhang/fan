@@ -53,80 +53,33 @@ let rec sep_dot_expr acc = fun
 
 
 
-(* Add a sequence delimiter to the semi delimiter
-   antiquot is also decorated
- *)  
-let mksequence ?loc = fun
-  [ {| $_; $_ |}
-  | {| $anti:_ |} as e ->
-      let _loc =
-        match loc with [Some x -> x | None -> _loc] in
-      {| begin  $e end |}
-  | e -> e ];
+(* (\* Add a sequence delimiter to the semi delimiter *)
+(*    antiquot is also decorated *)
+(*  *\)   *)
+(* let mksequence ?loc = fun *)
+(*   [ {| $_; $_ |} *)
+(*   | {| $anti:_ |} as e -> *)
+(*       let _loc = *)
+(*         match loc with [Some x -> x | None -> _loc] in *)
+(*       {| begin  $e end |} *)
+(*   | e -> e ]; *)
 
-(* see [mksequence], antiquot is not decoreated *)  
-let mksequence' ?loc = fun
-  [ {| $_; $_ |} as e ->
-    let _loc = match loc with
-      [Some x -> x | None -> _loc] in
-    {| begin  $e  end |}
-  | e -> e ];
+
+(* (\* see [mksequence], antiquot is not decoreated *\)   *)
+(* let mksequence' ?loc = fun *)
+(*   [ {| $_; $_ |} as e -> *)
+(*     let _loc = match loc with *)
+(*       [Some x -> x | None -> _loc] in *)
+(*     {| begin  $e  end |} *)
+(*   | e -> e ]; *)
 
   
 
 
-let mkassert loc = fun
-  [ {| false |} -> {@loc| assert false |} 
-  | e -> {@loc| assert $e |} ] ;
+(* let mkassert loc = fun *)
+(*   [ {| false |} -> {@loc| assert false |}  *)
+(*   | e -> {@loc| assert $e |} ] ; *)
 
-(*
-  Examples:
-  {[
-  bigarray_get _loc {|a|} {|(b,c,d)|} |> FanBasic.p_expr f;
-  ]}
- *)  
-let bigarray_get loc arr arg =
-  let coords =
-    match arg with
-    [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
-      FanAst.list_of_com' e1 (FanAst.list_of_com' e2 [])
-    | _ -> [arg] ] in
-  match coords with
-  [ [] -> failwith "bigarray_get null list"
-  | [c1] -> {@loc| $arr.{$c1} |}  
-  | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
-  | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
-  | [c1;c2;c3::coords] ->
-      {@loc| $arr.{$c1,$c2,$c3,$(FanAst.sem_of_list coords) } |} ];
-
-
-(*
-  Example:
-  {[
-  bigarray_set _loc {|a.{b,c,d}|} {|3+2|} |> Option.get |> FanBasic.p_expr f;
-  a.{b,c,d} <- (3 + 2)
-  ]}
-  FIXME
-    1.ExArr, 2. can we just write $list:coords?
-    Technically, we cannot, it uses [Pexp_array], pattern match doesnot work here
-     {:expr|a.{1,2,3,4,$rest:x}|}
- *)
-let bigarray_set loc var newval =
-  match var with
-  [ {|  $arr.{$c1} |} ->
-    (* Some {@loc|Bigarray.Array1.set $arr $c1 $newval |} *)
-      Some {@loc| $arr.{$c1} <- $newval |}
-  | {|  $arr.{$c1, $c2} |} ->
-      (* Some {@loc|Bigarray.Array2.set $arr $c1 $c2 $newval|} *)
-      Some {@loc|  $arr.{$c1, $c2} <-  $newval |}
-  | {|  $arr.{$c1, $c2, $c3} |} ->
-      (* Some {@loc|Bigarray.Array3.set $arr $c1 $c2 $c3 $newval |} *)
-      Some {@loc| $arr.{$c1,$c2,$c3} := $newval |}
-        (* $arr.{$c1,$c2,$c3,$c4,$list:y}*)
-  |  {| Bigarray.Genarray.get $arr [| $coords |] |} -> (* FIXME how to remove Bigarray here?*)
-      Some {@loc| Bigarray.Genarray.set $arr [| $coords |] $newval |}
-  | _ -> None ];
-  
 
 (* Utilities for [Stream] optimizations  *)
 let rec pattern_eq_expression p e =
@@ -321,36 +274,33 @@ let fun_args _loc args body =
 
 
 let _loc = FanLoc.ghost ;
-(* DEFINE GETLOC(expr)= FanAst.loc_of(\* _expr *\) expr;   *)
-(* INCLUDE "src/Lib/CommonStructure.ml"; *)
-(* INCLUDE "src/Lib/ExprPatt.ml"; *)
 
-(* Given a [location] and [prefix](generally "-" or "-.")
-   The location provided is more precise.
-   since ocaml respect [(~-)] as a prefix [(-)]
-   and [(~-.)] as a prefix [(-.)]
-   {[
-   mkumin _loc "-." {| 3 |};
-   - : expr = Int (, "-3")
-   mkumin _loc "-." {| a |};
-   - : expr =
-   App (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
-   ]}
- *)  
-let mkumin loc prefix arg =
-  match arg with
-  [ {| $int:n |} -> {@loc| $(int:String.neg n) |}
-  | {| $int32:n |} -> {@loc| $(int32:String.neg n) |}
-  | {| $int64:n |} -> {@loc| $(int64:String.neg n) |}
-  | {| $nativeint:n |} -> {@loc| $(nativeint:String.neg n) |}
-  | {| $flo:n |} -> {@loc| $(flo:String.neg n) |}
-  | _ -> {@loc| $(lid:"~" ^ prefix) $arg |} ];
+(* (\* Given a [location] and [prefix](generally "-" or "-.") *)
+(*    The location provided is more precise. *)
+(*    since ocaml respect [(~-)] as a prefix [(-)] *)
+(*    and [(~-.)] as a prefix [(-.)] *)
+(*    {[ *)
+(*    mkumin _loc "-." {| 3 |}; *)
+(*    - : expr = Int (, "-3") *)
+(*    mkumin _loc "-." {| a |}; *)
+(*    - : expr = *)
+(*    App (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a"))) *)
+(*    ]} *)
+(*  *\)   *)
+(* let mkumin loc prefix arg = *)
+(*   match arg with *)
+(*   [ {| $int:n |} -> {@loc| $(int:String.neg n) |} *)
+(*   | {| $int32:n |} -> {@loc| $(int32:String.neg n) |} *)
+(*   | {| $int64:n |} -> {@loc| $(int64:String.neg n) |} *)
+(*   | {| $nativeint:n |} -> {@loc| $(nativeint:String.neg n) |} *)
+(*   | {| $flo:n |} -> {@loc| $(flo:String.neg n) |} *)
+(*   | _ -> {@loc| $(lid:"~" ^ prefix) $arg |} ]; *)
 
     
 
-let mk_assert  =  fun
-  [ {| false |} ->    {| assert false |} 
-  | e -> {| assert $e |} ];
+(* let mk_assert  =  fun *)
+(*   [ {| false |} ->    {| assert false |}  *)
+(*   | e -> {| assert $e |} ]; *)
 
 
 (*

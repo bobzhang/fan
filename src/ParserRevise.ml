@@ -1,6 +1,5 @@
 open Ast;
-open PreCast.Syntax;
-open Lib;
+open Syntax;
 open LibUtil;
 open FanUtil;
 open GramLib;
@@ -197,9 +196,26 @@ let apply () = begin
         "with"
         [ S{mt}; "with"; with_constr{wc} ->  {| $mt with $wc |} ]
         "apply"
-        [ S{mt1}; S{mt2} ->  ModuleType.app0 mt1 mt2 ] (* FIXME *)
+        [ S{mt1}; S{mt2} ->
+          let app0 mt1 mt2 =
+            match (mt1, mt2) with
+            [ (`Id(loc1,i1),`Id(loc2,i2)) ->
+              let _loc = FanLoc.merge loc1 loc2 in
+              `Id(_loc,`App(_loc,i1,i2))
+            | _ -> raise XStream.Failure ] in app0 mt1 mt2
+
+          (* ModuleType.app0 mt1 mt2 *) ] (* FIXME *)
         "."
-        [ S{mt1}; "."; S{mt2} -> ModuleType.acc0 mt1 mt2 ] (*FIXME*)
+        [ S{mt1}; "."; S{mt2} ->
+          let acc0 mt1 mt2 =
+            match (mt1, mt2) with
+            [ (`Id(loc1,i1),`Id(loc2,i2)) ->
+              let _loc = FanLoc.merge loc1 loc2 in
+              `Id(_loc,`Dot(_loc,i1,i2))
+                (* ({| $id:i1 |}, {@_| $id:i2 |}) ->  {| $(id:{:ident| $i1.$i2 |}) |} *)
+            | _ -> raise XStream.Failure ] in
+          acc0 mt1 mt2
+          (* ModuleType.acc0 mt1 mt2 *) ] (*FIXME*)
         "sig"
         [ "sig"; sig_items{sg}; "end" -> {| sig $sg end |} ]
        "simple"
@@ -341,7 +357,7 @@ let apply () = begin
         | "try"; S{e}; "with"; match_case{a} -> {|try $e with [$a]|}
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} -> {| if $e1 then $e2 else $e3 |}
         | "if"; S{e1}; "then"; S{e2} -> {| if $e1 then $e2 |}
-        | "do"; sequence{seq}; "done" -> Expr.mksequence ~loc:_loc seq
+        | "do"; sequence{seq}; "done" -> FanOps.mksequence ~loc:_loc seq
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "with";"{"; pos_exprs{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
         | "for"; a_lident{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
@@ -352,7 +368,7 @@ let apply () = begin
        ":=" NA
         [ S{e1}; ":="; S{e2} -> {| $e1 := $e2 |} 
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
-            match Expr.bigarray_set _loc e1 e2 with
+            match FanOps.bigarray_set _loc e1 e2 with
             [ Some e -> e
             | None -> {| $e1 <- $e2 |} ] ]
        "||" RA
@@ -386,11 +402,11 @@ let apply () = begin
         | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
             {| object ($csp) $cst end |} ]
        "unary minus" NA
-        [ "-"; S{e} -> Expr.mkumin _loc "-" e
-        | "-."; S{e} -> Expr.mkumin _loc "-." e ]
+        [ "-"; S{e} -> FanOps.mkumin _loc "-" e
+        | "-."; S{e} -> FanOps.mkumin _loc "-." e ]
        "apply" LA
         [ S{e1}; S{e2} -> {| $e1 $e2 |}
-        | "assert"; S{e} -> Expr.mkassert _loc e
+        | "assert"; S{e} -> FanOps.mkassert _loc e
         | "new"; class_longident{i} -> `New (_loc,i) (* {| new $i |} *)
         | "lazy"; S{e} -> {| lazy $e |} ]
        "label" NA
@@ -406,7 +422,7 @@ let apply () = begin
        "." LA
         [ S{e1}; "."; "("; S{e2}; ")" -> {| $e1 .( $e2 ) |}
         | S{e1}; "."; "["; S{e2}; "]" -> {| $e1 .[ $e2 ] |}
-        | S{e1}; "."; "{"; comma_expr{e2}; "}" -> Expr.bigarray_get _loc e1 e2
+        | S{e1}; "."; "{"; comma_expr{e2}; "}" -> FanOps.bigarray_get _loc e1 e2
         | S{e1}; "."; S{e2} -> {| $e1 . $e2 |}
         | S{e}; "#"; a_lident{lab} -> {| $e # $lab |} ]
        "~-" NA
@@ -451,13 +467,13 @@ let apply () = begin
         | "("; ")" -> {| () |}
         | "("; S{e}; ":"; ctyp{t}; ")" -> {| ($e : $t) |}
         | "("; S{e}; ","; comma_expr{el}; ")" -> {| ( $e, $el ) |}
-        | "("; S{e}; ";"; sequence{seq}; ")" -> Expr.mksequence ~loc:_loc {| $e; $seq |}
-        | "("; S{e}; ";"; ")" -> Expr.mksequence ~loc:_loc e
+        | "("; S{e}; ";"; sequence{seq}; ")" -> FanOps.mksequence ~loc:_loc {| $e; $seq |}
+        | "("; S{e}; ";"; ")" -> FanOps.mksequence ~loc:_loc e
         | "("; S{e}; ":"; ctyp{t}; ":>"; ctyp{t2}; ")" ->
             {| ($e : $t :> $t2 ) |}
         | "("; S{e}; ":>"; ctyp{t}; ")" -> {| ($e :> $t) |}
         | "("; S{e}; ")" -> e
-        | "begin"; sequence{seq}; "end" -> Expr.mksequence ~loc:_loc seq
+        | "begin"; sequence{seq}; "end" -> FanOps.mksequence ~loc:_loc seq
         | "begin"; "end" -> {| () |}
         | "("; "module"; module_expr{me}; ")" ->
             {| (module $me) |}
@@ -470,11 +486,11 @@ let apply () = begin
          ->
           k {| let try $rec:r $bi in $x with [ $a ] |}
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
-           {| let $rec:rf $bi in $(Expr.mksequence ~loc:_loc el) |}
+           {| let $rec:rf $bi in $(FanOps.mksequence ~loc:_loc el) |}
        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in";
            expr{e}; sequence'{k} -> k {| let module $m = $mb in $e |}
        | "let"; "module"; a_uident{m}; module_binding0{mb}; ";"; S{el} ->
-           {| let module $m = $mb in $(Expr.mksequence ~loc:_loc el) |}
+           {| let module $m = $mb in $(FanOps.mksequence ~loc:_loc el) |}
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
            {| let open $id:i in $e |}
        (* FIXME Ant should be able to be followed *)      
@@ -533,7 +549,9 @@ let apply () = begin
         label_expr:
         [ `Ant (("rec_expr" |""|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_expr" n s) |}
         | label_longident{i}; fun_binding{e} -> {| $id:i = $e |}
-        | label_longident{i} -> {| $id:i = $(lid:Ident.to_lid i) |} ]
+        | label_longident{i} ->
+            `RecBind (_loc, i, (`Id (_loc, (`Lid (_loc, (FanOps.to_lid i))))))
+            (* {| $id:i = $(lid:Ident.to_lid i) |} *) ]
         field_expr:
         [ `Ant ((""|"bi"|"anti" |"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_expr" n s) |}
         | a_lident{l}; "=";  expr Level "top"{e} ->
@@ -706,7 +724,7 @@ let apply () = begin
        | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
        | label_longident{i}; "="; patt{p} -> (* {| $i = $p |} *) `RecBind(_loc,i,p)
        | label_longident{i} ->
-           `RecBind(_loc,i,`Id(_loc,`Lid(_loc,Ident.to_lid i)))
+           `RecBind(_loc,i,`Id(_loc,`Lid(_loc,FanOps.to_lid i)))
            (* {| $i = $(lid:Ident.to_lid i) |} *)
        ] |};
     
@@ -1292,7 +1310,7 @@ let apply_ctyp () = begin
       | a_uident{s}; "of"; constructor_arg_list{t} -> `Of(_loc,`Id(_loc,(s:>ident)),t)
       (* GADT to be improved *)      
       | a_uident{s}; ":"; ctyp{t} ->
-          let (tl, rt) = Ctyp.to_generalized t in
+          let (tl, rt) = FanOps.to_generalized t in
             (* {| $(id:(s:>ident)) : ($(FanAst.and_of_list tl) -> $rt) |} *)
             `TyCol
             (_loc, (`Id (_loc, (s :>ident))),

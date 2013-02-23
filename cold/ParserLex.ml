@@ -1,4 +1,3 @@
-open Lib
 open LibUtil
 open PreCast.Syntax
 let regexp = Gram.mk "regexp"
@@ -17,11 +16,11 @@ let _ =
                 [([`Snterm (Gram.obj (regexp : 'regexp Gram.t ));
                   `Skeyword "->";
                   `Snterm (Gram.obj (sequence : 'sequence Gram.t ))],
-                   ("Gram.mk_action\n  (fun (a : 'sequence)  _  (r : 'regexp)  (_loc : FanLoc.t)  ->\n     ((r, (Expr.mksequence a)) : 'e__1 ))\n",
+                   ("Gram.mk_action\n  (fun (a : 'sequence)  _  (r : 'regexp)  (_loc : FanLoc.t)  ->\n     ((r, (FanOps.mksequence a)) : 'e__1 ))\n",
                      (Gram.mk_action
                         (fun (a : 'sequence)  _  (r : 'regexp) 
                            (_loc : FanLoc.t)  ->
-                           ((r, (Expr.mksequence a)) : 'e__1 )))))]),
+                           ((r, (FanOps.mksequence a)) : 'e__1 )))))]),
               (`Skeyword "|"))],
            ("Gram.mk_action\n  (fun (l : 'e__1 list)  _  (_loc : FanLoc.t)  ->\n     (FanLexTools.gen_definition _loc l : 'lex ))\n",
              (Gram.mk_action

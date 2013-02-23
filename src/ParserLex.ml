@@ -1,6 +1,6 @@
 
 
-open Lib;
+(* open Lib; *)
 open LibUtil;  
 open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 
@@ -9,7 +9,7 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 
 {:extend|Gram
     lex:
-    [ "|"; L0[regexp{r};"->"; sequence{a} -> (r, Expr.mksequence  a)] SEP "|"{l} ->
+    [ "|"; L0[regexp{r};"->"; sequence{a} -> (r, FanOps.mksequence  a)] SEP "|"{l} ->
       FanLexTools.gen_definition _loc l  ]
     declare_regexp:
     [ FOLD1 (fun (x,r) () -> begin 

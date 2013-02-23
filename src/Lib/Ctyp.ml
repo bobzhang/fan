@@ -23,12 +23,6 @@ let rec name_tags (x:tag_names) =
 
   | _ -> assert false ];
 
-(* here -> can not be used as a delimiter, if we remove quotations.*)  
-let rec to_generalized = fun
-    [ {| $t1 -> $t2 |} ->
-        let (tl, rt) = to_generalized t2 in
-        ([t1 :: tl], rt)
-    | t -> ([], t) ];
 
   
 

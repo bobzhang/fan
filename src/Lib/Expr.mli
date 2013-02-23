@@ -4,15 +4,15 @@ val sep_dot_expr :
   (loc * string list * expr) list ->
   expr -> (loc * string list * expr) list
 
-val mksequence : ?loc:loc -> expr -> expr
+(* val mksequence : ?loc:loc -> expr -> expr *)
 
-val mksequence' : ?loc:loc -> expr -> expr
+(* val mksequence' : ?loc:loc -> expr -> expr *)
 
-val mkassert : loc -> expr -> expr
+(* val mkassert : loc -> expr -> expr *)
 
-val bigarray_get : loc -> expr -> expr -> expr
+(* val bigarray_get : loc -> expr -> expr -> expr *)
 
-val bigarray_set : loc -> expr -> expr -> expr option
+(* val bigarray_set : loc -> expr -> expr -> expr option *)
 
 val pattern_eq_expression : patt -> expr -> bool
 
@@ -46,8 +46,8 @@ val filter_patt_with_captured_variables:  patt -> patt * (expr * expr) list
 val fun_args : loc -> patt list -> expr -> expr
 
 
-val mkumin : loc -> string -> expr -> expr
-val mk_assert : expr -> expr
+(* val mkumin : loc -> string -> expr -> expr *)
+(* val mk_assert : expr -> expr *)
 val mk_record : (string * expr) list -> expr
 val failure : expr
 val ( <+ ) : string list -> expr -> expr

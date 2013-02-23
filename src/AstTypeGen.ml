@@ -287,9 +287,7 @@ let generate (module_types:FSig.module_types) = with str_item
           [`variant (s,ls) ->
             let arity = List.length ls in
             let try v = Hashtbl.find tbl s in
-            if v = arity then
-              ()
-            else
+            if v <> arity then
               failwithf "%s has diffireent arities" s
             with 
               [Not_found -> Hashtbl.add tbl s arity]
