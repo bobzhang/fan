@@ -1,5 +1,5 @@
 open LibUtil
-open Ast
+open AstLoc
 module MetaLoc =
   struct let meta_loc _loc _ = `Id (_loc, (`Lid (_loc, "loc"))) end
 module MetaAst = FanAst.Make(MetaLoc)
@@ -7,7 +7,7 @@ let _ =
   AstFilters.register_str_item_filter
     ("lift",
       (fun ast  ->
-         let _loc = FanAst.loc_of ast in
+         let _loc = loc_of ast in
          let e = (MetaAst.meta_str_item _loc ast :>expr) in
          `StExp
            (_loc,
@@ -21,7 +21,7 @@ let _ =
                                (_loc, (`Uid (_loc, "FanLoc")),
                                  (`Lid (_loc, "ghost")))))))), e)))))
 let add_debug_expr (e : expr) =
-  (let _loc = FanAst.loc_of e in
+  (let _loc = loc_of e in
    let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
    `Try
      (_loc, e,
@@ -105,7 +105,7 @@ let _ =
         end)#str_item))
 let _ =
   AstFilters.register_str_item_filter
-    ("strip", (((new FanAst.reloc) FanLoc.ghost)#str_item))
+    ("strip", (((new FanObjs.reloc) FanLoc.ghost)#str_item))
 let decorate_binding decorate_fun =
   (object 
      inherit  Objs.map as super
@@ -132,7 +132,7 @@ let decorate decorate_fun =
   end
 let decorate_this_expr e id =
   let buf = Buffer.create 42 in
-  let _loc = FanAst.loc_of e in
+  let _loc = loc_of e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
   `LetIn
@@ -209,11 +209,11 @@ let map_expr =
   | e -> e
 let _ =
   AstFilters.register_str_item_filter
-    ("trash_nothing", ((FanAst.map_expr map_expr)#str_item))
+    ("trash_nothing", ((FanObjs.map_expr map_expr)#str_item))
 let make_filter (s,code) =
   let f =
     function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
-  (("filter_" ^ s), ((FanAst.map_str_item f)#str_item))
+  (("filter_" ^ s), ((FanObjs.map_str_item f)#str_item))
 module ME = FanAst.Make(Ant.LocExpr)
 module MP = FanAst.Make(Ant.LocPatt)
 let _ =

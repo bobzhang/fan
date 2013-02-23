@@ -1,4 +1,4 @@
-(* open Ast; *)
+
 open PreCast.Syntax;
 open FanMacroTools;
 open Lib;

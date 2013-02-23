@@ -1,5 +1,3 @@
-(* open Ast; *)
-
 open Transform;
 open FSig;
 open Lib;

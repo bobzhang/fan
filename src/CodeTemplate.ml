@@ -1,6 +1,5 @@
-open Ast;
 
-
+open AstLoc;
 open LibUtil;
 
 let _loc =FanLoc.ghost ;
@@ -42,7 +41,8 @@ let print_base1 = with str_item
     |`Fmt c ->
       {|let $lid:name : $ty =
         fun fmt a -> Format.fprintf fmt $str:c a  |} ]]) in
-  {| $list:items |} ;
+      sem_of_list items;
+
   
   
 let (map_class_str_item_base_1,
@@ -84,8 +84,11 @@ let (map_class_str_item_base_1,
       let exp = {:expr|fun x y -> x = y|} in
       let ty = {:ctyp| $lid:x -> $lid:x -> bool |} in
       {| method $lid:x : $ty = $exp  |}) in
-  ({|$list:v1|},{|$list:v2|},{|$list:v3|},
-   {|$list:v4|},{|$list:v5|},{|$list:v6|},{|$list:v7|});
+  (sem_of_list v1, sem_of_list v2, sem_of_list v3,sem_of_list v4,sem_of_list v5,
+   sem_of_list v6, sem_of_list v7)
+
+  (* ({|$list:v1|},{|$list:v2|},{|$list:v3|}, *)
+  (*  {|$list:v4|},{|$list:v5|},{|$list:v6|},{|$list:v7|}) *);
 
 let eq_base1 = with str_item
   let items = ty_metas |> List.map (fun [
@@ -94,8 +97,9 @@ let eq_base1 = with str_item
     let name = "eq_" ^ str in
     match eq with
     [`Def -> {| let $lid:name : $ty = (=) |}
-    |`Custom s -> s ]]) in 
-    {| $list:items |} ;
+    |`Custom s -> s ]]) in
+    sem_of_list items
+    (* {| $list:items |} *) ;
 
 let open AstInjection in begin 
   register_inject_class_str_item

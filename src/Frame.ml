@@ -1,16 +1,17 @@
-(* open Ast; *)
-(* This module builds a generic framework *)
+
 #default_quotation "expr";;
+open AstLoc;
+
 
 open Format;
 open LibUtil;
 open Lib;
 open Lib.Basic;
 open FSig;
-open Objs;
+
 open Lib.EP;
 open Lib.Expr;
-open FanAst;
+
 (* preserved keywords for the generator *)
 let preserve =  ["self"; "self_type"; "unit"; "result"];
 
@@ -68,7 +69,7 @@ let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
                   [ {:match_case| $pat:patt -> $(mk_tuple tys ) |} ] ~arity)
   | _  ->
       FanLoc.errorf _loc
-        "tuple_expr_of_ctyp %s" (dump_ctyp ty)];
+        "tuple_expr_of_ctyp %s" (FanObjs.dump_ctyp ty)];
   
 (*
  @supported types type application: list int
@@ -107,7 +108,8 @@ let rec  normal_simple_expr_of_ctyp
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
     | ty ->
-        FanLoc.errorf (loc_of ty) "normal_simple_expr_of_ctyp : %s" (dump_ctyp ty)] in
+        FanLoc.errorf (loc_of ty) "normal_simple_expr_of_ctyp : %s"
+          (FanObjs.dump_ctyp ty)] in
   aux ty;
 
 
@@ -146,7 +148,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
         | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_expr_of_ctyp: %s"
-              (dump_ctyp ty)]
+              (FanObjs.dump_ctyp ty)]
     | `Arrow(_loc,t1,t2) -> 
         aux {:ctyp| arrow $t1 $t2 |} 
     | `Tup _  as ty ->
@@ -154,7 +156,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
           (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
              ~right_type_variable ?names ?arity ~mk_tuple) ty 
     | ty ->
-        FanLoc.errorf (loc_of ty) "obj_simple_expr_of_ctyp: %s" (dump_ctyp ty) ] in
+        FanLoc.errorf (loc_of ty) "obj_simple_expr_of_ctyp: %s" (FanObjs.dump_ctyp ty) ] in
   aux ty ;
 
 (*
@@ -211,7 +213,7 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~de
     let annot = appl_of_list [f :: List.map (fun _ -> {:ctyp|_|}) a] in
     MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e in
   (* FIXME, be more precise  *)
-  let info = (TyVrnEq, List.length (FanAst.list_of_or' ty [])) in
+  let info = (TyVrnEq, List.length (list_of_or' ty [])) in
   let ls = Ctyp.view_variant ty in
   let res =
     let res = List.fold_left
@@ -236,7 +238,7 @@ let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
     [ `Quote(_,_,`Some(`Lid(_loc,s))) ->
         {| fun $(lid: varf s) -> $acc |}
     | t  ->
-        FanLoc.errorf (loc_of t) "mk_prefix: %s" (dump_ctyp t)] in
+        FanLoc.errorf (loc_of t) "mk_prefix: %s" (FanObjs.dump_ctyp t)] in
   List.fold_right f vars ( names <+ acc);
 
 
@@ -278,7 +280,7 @@ let fun_of_tydcl
           (* for [expr_of_ctyp] appending names was delayed to be handled in mkcon *)
           mk_prefix ~names ~left_type_variable tyvars funct
        | t ->
-          FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_type_repr t) ]
+          FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (FanObjs.dump_type_repr t) ]
     | `TyEq(_,_,ctyp) ->
         match ctyp with 
         [ (`Id _ | `Tup _ | `Quote _ | `Arrow _ | `App _ as x) ->
@@ -288,9 +290,9 @@ let fun_of_tydcl
         | `PolyEq(_,t) | `PolySup(_,t) | `PolyInf(_,t)|`PolyInfSup(_,t,_) -> 
             let case =  expr_of_variant result_type t  in
             mk_prefix ~names ~left_type_variable tyvars case
-        | t -> FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (dump_ctyp t)]
-    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (dump_type_info t)]
-   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_typedecl t)] ;             
+        | t -> FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (FanObjs.dump_ctyp t)]
+    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (FanObjs.dump_type_info t)]
+   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (FanObjs.dump_typedecl t)] ;             
 
 (* destination is [Str_item] generate [str_item], type annotations may
    not be needed here
@@ -320,7 +322,7 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     {:binding| $(lid:tctor_var name) = $fun_expr |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n"
-      (dump_typedecl tydcl);
+      (FanObjs.dump_typedecl tydcl);
     {:binding| $(lid:tctor_var  name) =
     failwithf $(str:"Abstract data type not implemented") |};
   end ;
@@ -359,7 +361,7 @@ let str_item_of_module_types ?module_name ?cons_transform
         and binding = mk_binding  tydcl in 
         {:str_item| let $rec:rec_flag  $binding |}
     end ] in
-  let item =  {:str_item| $(list:List.map fs lst) |}  in
+  let item =  sem_of_list (List.map fs lst )  in
   match module_name with
   [ None -> item
   | Some m -> {:str_item| module $uid:m = struct $item end |} ];
@@ -407,7 +409,8 @@ let obj_of_module_types
     let fs (ty:types) =
       match ty with
       [ `Mutual named_types ->
-        {:class_str_item| $(list: List.map mk_class_str_item named_types ) |}
+        sem_of_list (List.map mk_class_str_item named_types)
+        (* {:class_str_item| $(list: List.map mk_class_str_item named_types ) |} *)
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          [ Some n  -> begin
@@ -430,7 +433,8 @@ let obj_of_module_types
         let () = Hashtbl.add tbl dest (Qualified dest) in
         {:class_str_item| method
             $lid:dest : $ty = $(unknown len) |} ) extras in
-      {:class_str_item| $body ; $list:items |} in  begin 
+      sem_of_list [body :: items]
+      (* {:class_str_item| $body ; $list:items |} *) in  begin 
       let v = Ctyp.mk_obj class_name  base body;
       Hashtbl.iter (fun _ v ->
         eprintf "@[%a@]@." FSig.pp_print_warning_type  v)

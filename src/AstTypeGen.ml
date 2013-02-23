@@ -1,5 +1,5 @@
 
-open FanAst;
+open AstLoc;
 open LibUtil;
 open Easy;
 
@@ -248,7 +248,8 @@ let gen_print_obj =
 let mk_variant_iter _cons params :expr = with expr
   let lst = params
    |> List.map (fun [{name_expr; id_expr;_} -> {| $name_expr $id_expr |}]) in
-  {| begin $list:lst end |};
+  seq_sem lst ;
+  (* {| begin $list:lst end |} *)
 
 let mk_tuple_iter params : expr =
   mk_variant_iter "" params;
@@ -258,7 +259,8 @@ let mk_record_iter cols = with expr
     cols |>
     List.map
     (fun [{re_info={name_expr; id_expr;_};_} -> {| $name_expr $id_expr |}]) in
-  {|begin $list:lst end |};
+  seq_sem lst;
+
 
 let gen_iter =
   gen_object ~kind:Iter
@@ -295,7 +297,7 @@ let generate (module_types:FSig.module_types) = with str_item
     | _ ->
         FanLoc.errorf
           (loc_of ty) "generate module_types %s"
-          (Objs.dump_typedecl ty) ] in   
+          (FanObjs.dump_typedecl ty) ] in   
   let _ =
     List.iter (fun [`Mutual tys ->
       List.iter aux tys

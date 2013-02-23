@@ -1,5 +1,5 @@
 open FSig
-open FanAst
+open AstLoc
 let str_item_from_module_types ~f:(aux : named_type -> typedecl) 
   (x : module_types) =
   (let _loc = FanLoc.ghost in

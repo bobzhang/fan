@@ -1,11 +1,13 @@
 
+
+open AstLoc;
 open FanGrammar;
 open FanGrammarTools;
 open PreCast.Syntax;
 open LibUtil;
 open Lib;
 open FanUtil;
-open FanAst;
+(* open FanAst; *)
 
 FanConfig.antiquotations := true;
 
@@ -61,7 +63,8 @@ let rest =
             {| let $lid:x = $mk $str:x  |}
         | (None,Some typ) ->
             {| let $lid:x : $typ = $mk $str:x  |} ] ) ls in
-            {| $list:rest |} ]
+            sem_of_list rest
+            (* {| $list:rest |} *) ]
   (* {[
      with str t nonterminalsclear {| U a b c d|} |> Ast2pt.print_expr f;
      U.clear a; U.clear b; U.clear c; U.clear d
@@ -73,7 +76,8 @@ let rest =
     let rest = List.map (fun x ->
       let _loc = loc_of x in
       {:expr| $id:t.clear $(id:(x:>ident)) |}) ls in
-    {:expr| begin $list:rest end |} ]
+    seq_sem rest
+    (* {:expr| begin $list:rest end |} *) ]
 |};
 
 
@@ -144,8 +148,9 @@ let rest =
 
   delete_rule_body:
   [ delete_rule_header{old};  L0 delete_rules {es} ->
-    let () = grammar_module_name := old  in 
-    {:expr| begin $list:es end|}   ] 
+    let () = grammar_module_name := old  in
+    seq_sem es
+    (* {:expr| begin $list:es end|} *)   ] 
   delete_rules:
   [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]" ->
     expr_delete_rule _loc n sls ]
@@ -374,8 +379,13 @@ let rest =
   |"`"; luident{s}; "_" -> {|$vrn:s _|}
   |"`"; luident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
     match v with
-      [ [x] ->  {| $vrn:s $x |}
-    | [x::xs] -> {|$vrn:s ($x,$list:xs)|}
+      [ [x] ->  (* {| $vrn:s $x |} *) `App(_loc,`Vrn(_loc,s),x)
+    | [x::xs] ->
+        `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))
+        (* appl_of_list [ `Vrn(_loc,s) :: com_of_list v] *)
+        (* `App(_loc,`Vrn(_loc,s), tuple_com v) *)
+        (* `App(_loc,`Vrn(_loc,s),`Tup(_loc,`Com(_loc,x,com_of_list xs))) *)
+        (* {|$vrn:s ($x,$list:xs)|} *)
     | _ -> assert false ]  ]
   internal_patt "patt":
   {
@@ -393,7 +403,8 @@ let rest =
   [ `Lid i -> {:patt| $lid:i |}
   | "_" -> {:patt| _ |}
   | "("; pattern{p}; ")" -> p
-  | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> {:patt| ($p1, $list:ps)|}]
+  | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com [p1::ps] ]
+      (* {:patt| ($p1, $list:ps)|}] *)
   string:
   [ `STR (_, s) -> {:expr| $str:s |}| `Ant ("", s) -> parse_expr _loc s ] (*suport antiquot for string*)
 

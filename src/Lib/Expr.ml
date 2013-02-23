@@ -1,12 +1,13 @@
+open FanOps;
 
-open FanAst;
+(* open FanAst; *)
 #default_quotation     "expr";;
 
 
 (* +-----------------------------------------------------------------+
    | the modules documented with [open Lib.Expr]                     |
    +-----------------------------------------------------------------+ *)
-
+open AstLoc;
 open LibUtil;
 open Basic;
 open FanUtil;
@@ -48,7 +49,7 @@ let rec sep_dot_expr acc = fun
       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
   | {| $(id:({:ident@_l| $_.$_ |} as i)) |} ->
       sep_dot_expr acc (Ident.normalize_acc i)
-  | e -> [(FanAst.loc_of e, [], e) :: acc] ];
+  | e -> [(loc_of e, [], e) :: acc] ];
 
 
 
@@ -99,7 +100,7 @@ let map loc (p:patt) (e:expr) (l:expr) :expr =
   match (p, e) with
   [ ({:patt| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
-      if FanAst.is_irrefut_patt p then
+      if is_irrefut_patt p then
         {@loc| List.map (fun $p -> $e) $l |}
       else
         {@loc| List.fold_right
@@ -109,7 +110,7 @@ let map loc (p:patt) (e:expr) (l:expr) :expr =
 
 
 let filter loc p b l =
-    if FanAst.is_irrefut_patt p then
+    if is_irrefut_patt p then
       {@loc| List.filter (fun $p -> $b) $l |}
     else
       {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
@@ -175,7 +176,7 @@ let substp loc env =
   try to convert the expr meaning into patt and use that instead
  *)  
 class subst loc env = object
-  inherit FanAst.reloc loc as super;
+  inherit FanObjs.reloc loc as super;
   method! expr =
     fun
     [ {| $lid:x |} | {| $uid:x |} as e ->
@@ -183,7 +184,7 @@ class subst loc env = object
         [ Not_found -> super#expr e ]
     | {| LOCATION_OF $lid:x |} | {| LOCATION_OF $uid:x |} as e ->
         try
-          let loc = FanAst.loc_of (List.assoc x env) in
+          let loc = loc_of (List.assoc x env) in
           let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
           {| FanLoc.of_tuple
             ($`str:a, $`int:b, $`int:c, $`int:d,
@@ -317,7 +318,8 @@ let _loc = FanLoc.ghost ;
 let mk_record label_exprs =
   let rec_exprs = List.map (fun (label, expr) ->
     {:rec_expr| $lid:label = $expr |} ) label_exprs in
-  {| { $list:rec_exprs } |};
+  `Record (_loc, (sem_of_list rec_exprs));
+  (* {| { $list:rec_exprs } |} *)
 
 
 (* TBD *)
@@ -597,7 +599,7 @@ let gen_curry_n acc ~arity cons n =
 (*
   Example:
   {[
-   let u  =  FanAst.list_of_or' {:match_case|
+   let u  =  list_of_or' {:match_case|
   (A0 (a0, a1),A0 (b0, b1)) -> 1
   |   (A1 (a0, a1), A1 (b0, b1)) -> 2
   |   (A2 (a0, a1), A2 (b0, b1)) -> 3 |} [] in currying ~arity:2 u ;
@@ -611,13 +613,18 @@ let gen_curry_n acc ~arity cons n =
 
   Make Sure the names generated are shadowed by
   gen_tuple_n
- *)  
+ *)
+  
 let currying match_cases ~arity =
+  let cases = or_of_list match_cases in
   if  arity >= 2 then 
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exprs = List.map (fun s-> {| $lid:s |} ) names in
-    names <+ {| match $(tuple_com exprs) with [ $list:match_cases ] |}
-  else {| fun [ $list:match_cases ] |};
+    let x = tuple_com exprs in
+    names <+ {| match $x with [ $cases ]|} 
+    (* names <+ {| match $(tuple_com exprs) with [ $list:match_cases ] |} *)
+  else {| fun [ $cases ]|};
+      (* {| fun [ $list:match_cases ] |} *)
 
 
 let unknown len =

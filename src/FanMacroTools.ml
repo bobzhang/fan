@@ -1,5 +1,5 @@
-open Ast;
 
+open AstLoc;
 open Lib;
 open LibUtil;
 type 'a item_or_def  =
@@ -24,17 +24,17 @@ let define ~expr ~patt eo x  = begin
   [ Some ([], e) ->
     {:extend|Gram
         expr: Level "simple"
-          [ `Uid $x -> (new FanAst.reloc _loc)#expr e ]
+          [ `Uid $x -> (new FanObjs.reloc _loc)#expr e ]
         patt: Level "simple"
           [ `Uid $x ->
             let p = Expr.substp _loc [] e
-            in (new FanAst.reloc _loc)#patt p ] |}
+            in (new FanObjs.reloc _loc)#patt p ] |}
   | Some (sl, e) ->
       {:extend| Gram
         expr: Level "apply"
         [ `Uid $x; S{param} ->
           let el =  match param with 
-            [ {:expr| ($tup:e) |} -> FanAst.list_of_com' e []
+            [ {:expr| ($tup:e) |} -> list_of_com' e []
             | e -> [e] ]  in
           if List.length el = List.length sl then
             let env = List.combine sl el in
@@ -44,12 +44,12 @@ let define ~expr ~patt eo x  = begin
         patt: Level "simple"
         [ `Uid $x; S{param} ->
           let pl = match param with
-            [ {:patt| ($tup:p) |} -> FanAst.list_of_com' p [] (* precise *)
+            [ {:patt| ($tup:p) |} -> list_of_com' p [] (* precise *)
             | p -> [p] ] in
           if List.length pl = List.length sl then
             let env = List.combine sl pl in
             let p = Expr.substp _loc env e in
-            (new FanAst.reloc _loc)#patt p
+            (new FanObjs.reloc _loc)#patt p
           else
             incorrect_number _loc pl sl ] |}
   | None -> () ];

@@ -1,6 +1,8 @@
-open FanAst;
+
+open FanOps;
 open Format;
 open Lib;
+open AstLoc;
 open LibUtil;
 module MetaAst = FanAst.Make Lib.Meta.MetaGhostLoc;  
 
@@ -285,7 +287,7 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
         [Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
             let p = 
               typing {:patt| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in  {| fun $p -> $txt |}
-        | Some p when FanAst.is_irrefut_patt p ->
+        | Some p when is_irrefut_patt p ->
             let p = typing p (make_ctyp s.styp tvar) in
             {| fun $p -> $txt |}
         | None -> {| fun _ -> $txt |}
@@ -387,7 +389,7 @@ let let_in_of_extend _loc gram locals  default =
   [ None 
   | Some [] -> default
   | Some ll ->
-      let locals = and_of_list' (List.map local_binding_of_name ll)  in
+      let locals = and_of_list1 (List.map local_binding_of_name ll)  in
       {:expr| let grammar_entry_create = $entry_mk in let $locals in $default |}  ]  ;
 
 (* the [locals] is local entry name list,
@@ -405,7 +407,7 @@ let text_of_functorial_extend _loc  gram locals el =
       List.map  text_of_entry el  in
     match el with
     [ [] -> {:expr| () |}
-    | _ -> seq (sem_of_list' el) ]  in
+    | _ -> seq_sem el  ]  in
   let_in_of_extend _loc gram locals  args;
 
 
@@ -413,9 +415,9 @@ let text_of_functorial_extend _loc  gram locals el =
 let mk_tok _loc ?restrict ~pattern styp = with expr
  match restrict with
  [ None ->
-   let no_variable = FanAst.wildcarder#patt pattern in
+   let no_variable = FanObjs.wildcarder#patt pattern in
    let match_fun =
-     if FanAst.is_irrefut_patt no_variable
+     if is_irrefut_patt no_variable
      then 
        {| fun [ $pat:no_variable -> true ] |}
      else {| fun [$pat:no_variable -> true | _ -> false ] |} in 
@@ -424,7 +426,7 @@ let mk_tok _loc ?restrict ~pattern styp = with expr
    {text; styp; pattern = Some pattern }
      
  | Some restrict ->
-     let p'= FanAst.wildcarder#patt pattern in
+     let p'= FanObjs.wildcarder#patt pattern in
      let match_fun = 
        {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
      let descr = string_of_patt pattern in

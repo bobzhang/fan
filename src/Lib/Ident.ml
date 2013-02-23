@@ -1,7 +1,8 @@
 #default_quotation "ident";;
-open FanAst;
+
+open AstLoc;
 open LibUtil;
-open Objs;
+
 (*
   {[
   
@@ -53,7 +54,7 @@ let rec lid_of_ident =
     fun
     [ {| $_.$i |} -> lid_of_ident i
     | {| $lid:lid |} -> lid
-    | x  -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (Objs.dump_ident x )  ]
+    | x  -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (FanObjs.dump_ident x )  ]
 ;
 
 (**
@@ -112,7 +113,7 @@ let map_to_string ident =
   | {| ($a $b) |} -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end")
   | {| $lid:x |} -> x ^ acc
   | {| $uid:x |} -> String.lowercase x ^ acc
-  | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t)] in 
+  | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (FanObjs.dump_ident t)] in 
   aux ident "";
 
 
@@ -141,7 +142,7 @@ let ident_map f x =
       [ [ q; {| $lid:y |} ] ->
         {| $q.$(lid: f y) |}
       | _ ->
-          FanLoc.errorf (loc_of x) "ident_map: %s" (dump_ident x) ]];          
+          FanLoc.errorf (loc_of x) "ident_map: %s" (FanObjs.dump_ident x) ]];          
 
 (* the same as [ident_map] except f is of type
    [string -> ident ]
@@ -156,7 +157,7 @@ let ident_map_of_ident f x =
       match List.drop (l-2) ls with
       [ [ q; {|$lid:y|} ] ->
         {|$q.$(f y) |}
-      | _ -> FanLoc.errorf (loc_of x) "ident_map_of_ident: %s" (dump_ident x)]];          
+      | _ -> FanLoc.errorf (loc_of x) "ident_map_of_ident: %s" (FanObjs.dump_ident x)]];          
     
 (**
    {[
@@ -167,7 +168,7 @@ let ident_map_of_ident f x =
    [A.B.meta_s]
  *)  
 let ident_map_full f x =
-  let _loc = FanAst.loc_of x in 
+  let _loc = loc_of x in 
   match (uid_of_ident x ,lid_of_ident x ) with
   [(Some pre, s) ->
     {| $pre.$(lid:f s) |} 
@@ -175,6 +176,6 @@ let ident_map_full f x =
     {| $(lid:f s ) |}];
 
 let eq t1 t2 =
-  let strip_locs t = (FanAst.map_loc (fun _ -> FanLoc.ghost))#ident t in
+  let strip_locs t = (FanObjs.map_loc (fun _ -> FanLoc.ghost))#ident t in
   strip_locs t1 = strip_locs t2;
 

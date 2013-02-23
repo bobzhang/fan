@@ -1,4 +1,4 @@
-open Ast
+open AstLoc
 type key = string 
 type expander = expr -> expr 
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40
@@ -12,7 +12,7 @@ let fibm y =
   match y with
   | `Int (_loc,x) -> `Int (_loc, (string_of_int (fib (int_of_string x))))
   | x ->
-      let _loc = FanAst.loc_of x in
+      let _loc = loc_of x in
       `App (_loc, (`Id (_loc, (`Lid (_loc, "fib")))), x)
 let _ = register_macro ("FIB", fibm)
 open LibUtil

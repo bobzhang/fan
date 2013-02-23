@@ -1,5 +1,5 @@
 open LibUtil
-open FanAst
+open AstLoc
 open Basic
 let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   let args: patt list =

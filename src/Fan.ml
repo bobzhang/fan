@@ -1,5 +1,5 @@
 
-
+open FanOps;
 open FanAst;
 open Filters;  
 include PreCast;
@@ -229,7 +229,7 @@ add_quotation (d,"expr") expr_quot
 open ParserRevise;
 open ParserMacro;
 open ParserGrammar;
-open ParserDebug;
+(* open ParserDebug; *)
 open ParserStream;
 open ParserLex;  
 open AstInjection;

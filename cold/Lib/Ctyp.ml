@@ -1,5 +1,4 @@
-open FanAst
-open Objs
+open AstLoc
 open LibUtil
 open Basic
 open FSig
@@ -15,8 +14,7 @@ let rec name_tags (x : tag_names) =
   | `App (_,t1,t2) -> (name_tags t1) @ (name_tags t2)
   | `TyVrn (_,`C (_,s)) -> [s]
   | _ -> assert false
-let arrow a b =
-  let _loc = FanLoc.merge (loc_of a) (loc_of b) in `Arrow (_loc, a, b)
+let arrow a b = let _loc = a <+> b in `Arrow (_loc, a, b)
 let (|->) = arrow
 let arrow_of_list = List.reduce_right arrow
 let app_arrow lst acc = List.fold_right arrow lst acc
@@ -30,7 +28,8 @@ let (+>) params base = List.fold_right arrow params base
 let name_length_of_tydcl (x : typedecl) =
   match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) -> (name, (List.length tyvars))
-  | tydcl -> failwithf "name_length_of_tydcl {|%s|}\n" (dump_typedecl tydcl)
+  | tydcl ->
+      failwithf "name_length_of_tydcl {|%s|}\n" (FanObjs.dump_typedecl tydcl)
 let gen_quantifiers ~arity  n =
   ((List.init arity
       (fun i  ->
@@ -52,7 +51,7 @@ let ty_name_of_tydcl (x : typedecl) =
   match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
       appl_of_list ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
-  | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (dump_typedecl tydcl)
+  | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record (ty : name_ctyp) =
@@ -66,7 +65,7 @@ let list_of_record (ty : name_ctyp) =
              { col_label; col_ctyp; col_mutable = false }
          | t0 ->
              FanLoc.errorf (loc_of t0) "list_of_record %s"
-               (dump_name_ctyp t0))) : FSig.col list )
+               (FanObjs.dump_name_ctyp t0))) : FSig.col list )
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let result_id = ref 0
@@ -157,7 +156,8 @@ let is_recursive ty_dcl =
       (obj#type_info ctyp)#is_recursive
   | `And (_,_,_) -> true
   | _ ->
-      failwithf "is_recursive not type declartion: %s" (dump_typedecl ty_dcl)
+      failwithf "is_recursive not type declartion: %s"
+        (FanObjs.dump_typedecl ty_dcl)
 let qualified_app_list =
   function
   | `App (_loc,_,_) as x ->
@@ -174,7 +174,7 @@ let abstract_list =
   | `TyDcl (_,_,lst,`Nil _loc,_) -> Some (List.length lst)
   | _ -> None
 let eq t1 t2 =
-  let strip_locs t = (FanAst.map_loc (fun _  -> FanLoc.ghost))#ctyp t in
+  let strip_locs t = (FanObjs.map_loc (fun _  -> FanLoc.ghost))#ctyp t in
   (strip_locs t1) = (strip_locs t2)
 let eq_list t1 t2 =
   let rec loop =
@@ -235,10 +235,10 @@ let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose
            compose (f cons (list_of_star' tys [])) acc
        | `Id (_loc,`Uid (_,cons)) -> compose (f cons []) acc
        | t ->
-           FanLoc.errorf (loc_of t) "reduce_data_ctors: %s" (dump_or_ctyp t))
-    init branches
+           FanLoc.errorf (loc_of t) "reduce_data_ctors: %s"
+             (FanObjs.dump_or_ctyp t)) init branches
 let view_sum (t : or_ctyp) =
-  let bs = FanAst.list_of_or' t [] in
+  let bs = list_of_or' t [] in
   List.map
     (function
      | `Id (_,`Uid (_,cons)) -> `branch (cons, [])
@@ -255,10 +255,11 @@ let view_variant (t : row_field) =
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
       | `Ctyp (_,`Id (_loc,i)) -> `abbrev i
       | u ->
-          FanLoc.errorf (FanAst.loc_of u) "view_variant %s"
-            (Objs.dump_row_field u)) lst : vbranch list )
+          FanLoc.errorf (loc_of u) "view_variant %s"
+            (FanObjs.dump_row_field u)) lst : vbranch list )
 let of_str_item =
   function
   | `Type (_,x) -> x
   | t ->
-      FanLoc.errorf (FanAst.loc_of t) "Ctyp.of_str_item %s" (dump_str_item t)
+      FanLoc.errorf (loc_of t) "Ctyp.of_str_item %s"
+        (FanObjs.dump_str_item t)

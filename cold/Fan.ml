@@ -1,3 +1,4 @@
+open FanOps
 open FanAst
 open Filters
 include PreCast
@@ -141,7 +142,6 @@ let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
 open ParserRevise
 open ParserMacro
 open ParserGrammar
-open ParserDebug
 open ParserStream
 open ParserLex
 open AstInjection

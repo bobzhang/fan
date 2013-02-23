@@ -1,8 +1,9 @@
 open LibUtil;
+open AstLoc;
 open FSig;
 open Format;
 open Lib;
-open FanAst;
+
   
 (** A Hook To Ast Filters *)
 
@@ -281,7 +282,7 @@ with expr
       | "show_code"; "on" -> begin show_code := true; {| |} end
       | "show_code"; "off" -> begin show_code := false; {| |} end]
       fan_quots:
-      [L0[fan_quot{x};";" -> x]{xs} -> {| begin $list:xs end|}]
+      [L0[fan_quot{x};";" -> x]{xs} -> seq_sem xs ]
 |};  
 
 let g = Gram.create_gram ~annot:"include" ~keywords:[] ();

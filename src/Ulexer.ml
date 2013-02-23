@@ -127,7 +127,7 @@ let buff_contents c =
     
 let loc_merge c =
   FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf);
-  (* FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf) *)
+
 let quotations c = c.quotations;
 let antiquots c = c.antiquots;
 let is_in_comment c = c.in_comment;
@@ -146,7 +146,7 @@ let move_start_p shift c =
 (* create a new context with  the location of the context for the lexer
    the old context was kept *)      
 let with_curr_loc lexer c =
-  lexer ({(c) with loc = Lexing.lexeme_start_p c.lexbuf }) c.lexbuf;
+  lexer ({c with loc = Lexing.lexeme_start_p c.lexbuf }) c.lexbuf;
     
 let parse_nested ~lexer c = begin 
   with_curr_loc lexer c;

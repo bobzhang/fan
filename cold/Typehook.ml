@@ -1,8 +1,8 @@
 open LibUtil
+open AstLoc
 open FSig
 open Format
 open Lib
-open FanAst
 let apply_filter f (m : module_types) =
   (let f =
      function
@@ -274,10 +274,10 @@ let _ =
                      (Gram.mk_action
                         (fun _  (x : 'fan_quot)  (_loc : FanLoc.t)  ->
                            (x : 'e__3 )))))])],
-           ("Gram.mk_action\n  (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->\n     (`Seq (_loc, (FanAst.sem_of_list xs)) : 'fan_quots ))\n",
+           ("Gram.mk_action\n  (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  -> (seq_sem xs : 'fan_quots ))\n",
              (Gram.mk_action
                 (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
-                   (`Seq (_loc, (FanAst.sem_of_list xs)) : 'fan_quots )))))]))
+                   (seq_sem xs : 'fan_quots )))))]))
 let g = Gram.create_gram ~annot:"include" ~keywords:[] ()
 let include_quot = Gram.mk_dynamic g "include_quot"
 let _ =

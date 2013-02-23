@@ -1,6 +1,6 @@
-open FanAst;
-open PreCast.Syntax;
-
+(* open FanAst; *)
+open Syntax;
+open FanOps;
 open LibUtil;
 
 

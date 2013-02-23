@@ -30,7 +30,7 @@ val of_lexbuf : Lexing.lexbuf -> t
 val start_pos: t -> position
 val stop_pos: t -> position
 val merge: t -> t -> t
-val (<+>): t -> t -> t     
+
 val join: t -> t
 val join_end: t -> t    
 val map:
@@ -66,3 +66,6 @@ val string_loc: t
 val of_positions: position -> position -> t
 val dummy_pos: position
 val errorf: t -> ('a, unit, string, 'b) format4 -> 'a
+module Ops : sig
+  val (<+>): t -> t -> t     
+end

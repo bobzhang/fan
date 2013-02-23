@@ -1,5 +1,6 @@
 (* NFA *)
 
+open AstLoc;
 open LibUtil;
 type node = { 
     id : int; 
@@ -350,10 +351,12 @@ let gen_definition _loc l =
       Array.mapi 
         (fun i j -> {:match_case| $`int:i -> $(call_state auto j) |})
         trans in
-    let cases = Array.to_list cases in
-    let body = {:expr|
+    let cases = or_of_list (Array.to_list cases) in
+    
+    let body =
+      {:expr|
       match ($lid:p ($(id:gm()).next lexbuf)) with
-      [ $list:cases | _ -> $(id:gm()).backtrack lexbuf ]
+      [ $cases | _ -> $(id:gm()).backtrack lexbuf ]
       |} in
     let ret body =
       {:binding| $lid:f = fun lexbuf -> $body |} in
@@ -392,15 +395,19 @@ let gen_definition _loc l =
       `Recursive _loc
     end else
     `ReNil _loc  in (* FIXME *)
+  let tables = and_of_list tables in
+  let parts = and_of_list parts in
+  let states = and_of_list (Array.to_list states) in
+  let cases =  or_of_list (Array.to_list cases) in 
   {:expr|
   fun lexbuf ->
-    let $list:tables in
-    let $list:parts in 
-    let $rec:b $(list:Array.to_list states) in
+    let $tables in
+    let $parts in 
+    let $rec:b $states in
     begin
       $(id:gm()).start lexbuf;
       match $(lid:mk_state_name 0) lexbuf with
-        [ $(list:Array.to_list cases) | _ -> raise $(id:gm()).Error ]
+        [ $cases | _ -> raise $(id:gm()).Error ]
     end
   |};
 

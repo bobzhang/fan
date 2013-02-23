@@ -1,12 +1,11 @@
+open AstLoc
 open Format
 open LibUtil
 open Lib
 open Lib.Basic
 open FSig
-open Objs
 open Lib.EP
 open Lib.Expr
-open FanAst
 let preserve = ["self"; "self_type"; "unit"; "result"]
 let check names =
   List.iter
@@ -43,7 +42,7 @@ let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) ls in
        names <+
          (currying [`Case (_loc, patt, (`Nil _loc), (mk_tuple tys))] ~arity)
-   | _ -> FanLoc.errorf _loc "tuple_expr_of_ctyp %s" (dump_ctyp ty) : 
+   | _ -> FanLoc.errorf _loc "tuple_expr_of_ctyp %s" (FanObjs.dump_ctyp ty) : 
   expr )
 let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
   ~left_type_id  ~right_type_variable  cxt ty =
@@ -71,7 +70,7 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
                ~right_type_id ~left_type_id ~right_type_variable cxt) ty
       | ty ->
           FanLoc.errorf (loc_of ty) "normal_simple_expr_of_ctyp : %s"
-            (dump_ctyp ty) in
+            (FanObjs.dump_ctyp ty) in
     aux ty
 let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable 
   ~right_type_variable  ?names  ?arity  ~mk_tuple  ty =
@@ -101,7 +100,8 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                                      (`Nil _loc), (aux t))))))))
            | _ ->
                FanLoc.errorf (loc_of ty)
-                 "list_of_app in obj_simple_expr_of_ctyp: %s" (dump_ctyp ty))
+                 "list_of_app in obj_simple_expr_of_ctyp: %s"
+                 (FanObjs.dump_ctyp ty))
       | `Arrow (_loc,t1,t2) ->
           aux
             (`App
@@ -113,7 +113,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                ~right_type_variable ?names ?arity ~mk_tuple) ty
       | ty ->
           FanLoc.errorf (loc_of ty) "obj_simple_expr_of_ctyp: %s"
-            (dump_ctyp ty) in
+            (FanObjs.dump_ctyp ty) in
     aux ty
 let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
   ~mk_variant  simple_expr_of_ctyp (ty : or_ctyp) =
@@ -149,7 +149,7 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
      let (f,a) = view_app [] result in
      let annot = appl_of_list (f :: (List.map (fun _  -> `Any _loc) a)) in
      MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e : match_case ) in
-  let info = (TyVrnEq, (List.length (FanAst.list_of_or' ty []))) in
+  let info = (TyVrnEq, (List.length (list_of_or' ty []))) in
   let ls = Ctyp.view_variant ty in
   let res =
     let res =
@@ -175,7 +175,7 @@ let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
               (`Case
                  (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), (`Nil _loc),
                    acc)))
-      | t -> FanLoc.errorf (loc_of t) "mk_prefix: %s" (dump_ctyp t) in
+      | t -> FanLoc.errorf (loc_of t) "mk_prefix: %s" (FanObjs.dump_ctyp t) in
     List.fold_right f vars (names <+ acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~destination  ~result_type  simple_expr_of_ctyp expr_of_ctyp
@@ -208,7 +208,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  mk_prefix ~names ~left_type_variable tyvars funct
              | t ->
                  FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
-                   (dump_type_repr t))
+                   (FanObjs.dump_type_repr t))
         | `TyEq (_,_,ctyp) ->
             (match ctyp with
              | `Id _|`Tup _|`Quote _|`Arrow _|`App _ as x ->
@@ -221,12 +221,13 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  mk_prefix ~names ~left_type_variable tyvars case
              | t ->
                  FanLoc.errorf (loc_of t) "fun_of_tydcl inner %s"
-                   (dump_ctyp t))
+                   (FanObjs.dump_ctyp t))
         | t ->
             FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s"
-              (dump_type_info t))
-   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (dump_typedecl t) : 
-  expr )
+              (FanObjs.dump_type_info t))
+   | t ->
+       FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
+         (FanObjs.dump_typedecl t) : expr )
 let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 
   ~mk_record  =
@@ -248,7 +249,7 @@ let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1)
       `Bind (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))), fun_expr)
     else
       (eprintf "Warning: %s as a abstract type no structure generated\n"
-         (dump_typedecl tydcl);
+         (FanObjs.dump_typedecl tydcl);
        `Bind
          (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
            (`App
@@ -280,7 +281,7 @@ let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names
              if Ctyp.is_recursive tydcl then `Recursive _loc else `ReNil _loc
            and binding = mk_binding tydcl in `Value (_loc, rec_flag, binding))) : 
     str_item ) in
-  let item = FanAst.sem_of_list (List.map fs lst) in
+  let item = sem_of_list (List.map fs lst) in
   match module_name with
   | None  -> item
   | Some m -> `Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item)))
@@ -311,7 +312,7 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
   let fs (ty : types) =
     match ty with
     | `Mutual named_types ->
-        FanAst.sem_of_list (List.map mk_class_str_item named_types)
+        sem_of_list (List.map mk_class_str_item named_types)
     | `Single ((name,tydcl) as named_type) ->
         (match Ctyp.abstract_list tydcl with
          | Some n ->
@@ -337,7 +338,7 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
            `CrMth
              (_loc, (`Lid (_loc, dest)), (`OvNil _loc), (`PrNil _loc),
                (unknown len), ty)) extras in
-    `Sem (_loc, body, (FanAst.sem_of_list items)) in
+    sem_of_list (body :: items) in
   let v = Ctyp.mk_obj class_name base body in
   Hashtbl.iter (fun _  v  -> eprintf "@[%a@]@." FSig.pp_print_warning_type v)
     tbl;

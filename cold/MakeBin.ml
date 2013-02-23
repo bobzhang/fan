@@ -128,12 +128,12 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     let process_intf name =
       process ~directive_handler:sig_handler name
         PreCast.CurrentParser.parse_interf
-        PreCast.CurrentPrinter.print_interf (new FanAst.clean_ast)#sig_item
+        PreCast.CurrentPrinter.print_interf (new FanObjs.clean_ast)#sig_item
         AstFilters.apply_interf_filters
     let process_impl name =
       process ~directive_handler:str_handler name
         PreCast.CurrentParser.parse_implem
-        PreCast.CurrentPrinter.print_implem (new FanAst.clean_ast)#str_item
+        PreCast.CurrentPrinter.print_implem (new FanObjs.clean_ast)#str_item
         AstFilters.apply_implem_filters
     let input_file x =
       let dyn_loader = DynLoader.instance.contents () in

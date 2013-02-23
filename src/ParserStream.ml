@@ -1,5 +1,5 @@
 open Ast;
-open PreCast.Syntax;
+open Syntax;
 open LibUtil;
 open FanStreamTools;
 

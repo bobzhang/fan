@@ -1,8 +1,9 @@
-open Ast;
-open LibUtil;
-(* open Format; *)
 
-(* module Ast     = FanAst; *)
+open AstLoc;
+open LibUtil;
+
+
+
 type warning = FanLoc.t -> string -> unit;
 let default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt;
 let current_warning = ref default_warning;
@@ -112,10 +113,11 @@ let wrap directive_handler pa init_loc cs =
   in loop init_loc;
 let parse_implem ?(directive_handler = fun _ -> None) _loc cs =
   let l = wrap directive_handler (Gram.parse implem) _loc cs in
-  {:str_item| $list:l |};
+  sem_of_list l ;
+
 let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
   let l = wrap directive_handler (Gram.parse interf) _loc cs in
-  {:sig_item| $list:l |};
+  sem_of_list l ;
 let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";
 let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";
 

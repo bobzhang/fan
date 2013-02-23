@@ -1,5 +1,5 @@
 open LibUtil
-open FanAst
+open Ast
 type vrn =  
   | Sum
   | TyVrnEq

@@ -1,10 +1,10 @@
+open AstLoc
 open FanGrammar
 open FanGrammarTools
 open PreCast.Syntax
 open LibUtil
 open Lib
 open FanUtil
-open FanAst
 let _ = FanConfig.antiquotations := true
 let nonterminals = Gram.mk "nonterminals"
 let nonterminalsclear = Gram.mk "nonterminalsclear"
@@ -115,7 +115,7 @@ let _ =
                          match __fan_1 with
                          | `Lid x -> ((_loc, x, y, (Some t)) : 'e__3 )
                          | _ -> failwith "(_loc, x, y, (Some t))\n"))))])],
-           ("Gram.mk_action\n  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->\n     (let mk =\n        match t with\n        | `static t -> `Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk\")))))\n        | `dynamic (x,t) ->\n            `App\n              (_loc,\n                (`Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))))),\n                (`Id (_loc, x))) in\n      let rest =\n        List.map\n          (fun (_loc,x,descr,ty)  ->\n             match (descr, ty) with\n             | (Some d,None ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`App (_loc, mk, (`Str (_loc, d)))))))\n             | (Some d,Some typ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`Constraint\n                             (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ)))))\n             | (None ,None ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`App (_loc, mk, (`Str (_loc, x)))))))\n             | (None ,Some typ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`Constraint\n                             (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))))\n          ls in\n      FanAst.sem_of_list rest : 'nonterminals ))\n",
+           ("Gram.mk_action\n  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->\n     (let mk =\n        match t with\n        | `static t -> `Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk\")))))\n        | `dynamic (x,t) ->\n            `App\n              (_loc,\n                (`Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))))),\n                (`Id (_loc, x))) in\n      let rest =\n        List.map\n          (fun (_loc,x,descr,ty)  ->\n             match (descr, ty) with\n             | (Some d,None ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`App (_loc, mk, (`Str (_loc, d)))))))\n             | (Some d,Some typ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`Constraint\n                             (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ)))))\n             | (None ,None ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`App (_loc, mk, (`Str (_loc, x)))))))\n             | (None ,Some typ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`Constraint\n                             (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))))\n          ls in\n      sem_of_list rest : 'nonterminals ))\n",
              (Gram.mk_action
                 (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->
                    (let mk =
@@ -166,7 +166,7 @@ let _ =
                                              (`App
                                                 (_loc, mk, (`Str (_loc, x)))),
                                              typ)))))) ls in
-                    FanAst.sem_of_list rest : 'nonterminals )))))]));
+                    sem_of_list rest : 'nonterminals )))))]));
   Gram.extend_single (nonterminalsclear : 'nonterminalsclear Gram.t )
     (None,
       (None, None,
@@ -178,7 +178,7 @@ let _ =
                     (Gram.mk_action
                        (fun (x : 'a_lident)  (_loc : FanLoc.t)  ->
                           (x : 'e__4 )))))])],
-           ("Gram.mk_action\n  (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let rest =\n        List.map\n          (fun x  ->\n             let _loc = loc_of x in\n             `App\n               (_loc, (`Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))))),\n                 (`Id (_loc, (x :>ident))))) ls in\n      `Seq (_loc, (FanAst.sem_of_list rest)) : 'nonterminalsclear ))\n",
+           ("Gram.mk_action\n  (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let rest =\n        List.map\n          (fun x  ->\n             let _loc = loc_of x in\n             `App\n               (_loc, (`Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))))),\n                 (`Id (_loc, (x :>ident))))) ls in\n      seq_sem rest : 'nonterminalsclear ))\n",
              (Gram.mk_action
                 (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
                    (let rest =
@@ -191,7 +191,7 @@ let _ =
                                   (_loc,
                                     (`Dot (_loc, t, (`Lid (_loc, "clear")))))),
                                (`Id (_loc, (x :>ident))))) ls in
-                    `Seq (_loc, (FanAst.sem_of_list rest)) : 'nonterminalsclear )))))]))
+                    seq_sem rest : 'nonterminalsclear )))))]))
 let _ =
   Gram.extend_single (extend_header : 'extend_header Gram.t )
     (None,
@@ -246,12 +246,12 @@ let _ =
         [([`Snterm
              (Gram.obj (delete_rule_header : 'delete_rule_header Gram.t ));
           `Slist0 (`Snterm (Gram.obj (delete_rules : 'delete_rules Gram.t )))],
-           ("Gram.mk_action\n  (fun (es : 'delete_rules list)  (old : 'delete_rule_header) \n     (_loc : FanLoc.t)  ->\n     (let () = grammar_module_name := old in\n      `Seq (_loc, (FanAst.sem_of_list es)) : 'delete_rule_body ))\n",
+           ("Gram.mk_action\n  (fun (es : 'delete_rules list)  (old : 'delete_rule_header) \n     (_loc : FanLoc.t)  ->\n     (let () = grammar_module_name := old in seq_sem es : 'delete_rule_body ))\n",
              (Gram.mk_action
                 (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
                    (_loc : FanLoc.t)  ->
-                   (let () = grammar_module_name := old in
-                    `Seq (_loc, (FanAst.sem_of_list es)) : 'delete_rule_body )))))]));
+                   (let () = grammar_module_name := old in seq_sem es : 
+                   'delete_rule_body )))))]));
   Gram.extend_single (delete_rules : 'delete_rules Gram.t )
     (None,
       (None, None,
@@ -890,7 +890,7 @@ let _ =
            ((`Snterm (Gram.obj (internal_patt : 'internal_patt Gram.t ))),
              (`Skeyword ","));
          `Skeyword ")"],
-          ("Gram.mk_action\n  (fun _  (v : 'internal_patt list)  _  (s : 'luident)  _  (_loc : FanLoc.t) \n     ->\n     (match v with\n      | x::[] -> `App (_loc, (`Vrn (_loc, s)), x)\n      | x::xs ->\n          `App\n            (_loc, (`App (_loc, (`Vrn (_loc, s)), x)),\n              (FanAst.com_of_list xs))\n      | _ -> assert false : 'simple_patt ))\n",
+          ("Gram.mk_action\n  (fun _  (v : 'internal_patt list)  _  (s : 'luident)  _  (_loc : FanLoc.t) \n     ->\n     (match v with\n      | x::[] -> `App (_loc, (`Vrn (_loc, s)), x)\n      | x::xs ->\n          `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))\n      | _ -> assert false : 'simple_patt ))\n",
             (Gram.mk_action
                (fun _  (v : 'internal_patt list)  _  (s : 'luident)  _ 
                   (_loc : FanLoc.t)  ->
@@ -899,7 +899,7 @@ let _ =
                    | x::xs ->
                        `App
                          (_loc, (`App (_loc, (`Vrn (_loc, s)), x)),
-                           (FanAst.com_of_list xs))
+                           (com_of_list xs))
                    | _ -> assert false : 'simple_patt )))))]));
   Gram.extend (internal_patt : 'internal_patt Gram.t )
     (None,
@@ -973,12 +973,10 @@ let _ =
          `Skeyword ",";
          `Slist1sep (`Sself, (`Skeyword ","));
          `Skeyword ")"],
-          ("Gram.mk_action\n  (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _  (_loc : FanLoc.t)  ->\n     (`Tup (_loc, (`Com (_loc, p1, (FanAst.com_of_list ps)))) : 'pattern ))\n",
+          ("Gram.mk_action\n  (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _  (_loc : FanLoc.t)  ->\n     (tuple_com (p1 :: ps) : 'pattern ))\n",
             (Gram.mk_action
                (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
-                  (_loc : FanLoc.t)  ->
-                  (`Tup (_loc, (`Com (_loc, p1, (FanAst.com_of_list ps)))) : 
-                  'pattern )))))]));
+                  (_loc : FanLoc.t)  -> (tuple_com (p1 :: ps) : 'pattern )))))]));
   Gram.extend_single (string : 'string Gram.t )
     (None,
       (None, None,

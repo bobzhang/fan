@@ -1,6 +1,7 @@
 
 open LibUtil;
-open Ast;
+
+open AstLoc;
 
 module MetaLoc = struct
    (* this makes sense here, because, for list operation
@@ -12,13 +13,13 @@ module MetaLoc = struct
 end;
 module MetaAst = FanAst.Make MetaLoc;
 AstFilters.register_str_item_filter ("lift",(fun ast ->
-  let _loc = FanAst.loc_of ast in
+  let _loc = loc_of ast in
   let e = (MetaAst.meta_str_item _loc ast :> expr )in
   {:str_item| let loc = FanLoc.ghost in $e |}
   (* {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |} *))); (* FIXME Loc => FanLoc*)
 
 let add_debug_expr (e:expr) : expr =
-  let _loc = FanAst.loc_of e in
+  let _loc = loc_of e in
   let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
   {:expr|
       try $e  with
@@ -48,7 +49,7 @@ AstFilters.register_str_item_filter ("exception",object
   | st -> super#str_item st ];
 end#str_item);
 
-AstFilters.register_str_item_filter ("strip",(new FanAst.reloc  FanLoc.ghost)#str_item);
+AstFilters.register_str_item_filter ("strip",(new FanObjs.reloc  FanLoc.ghost)#str_item);
 
 let decorate_binding decorate_fun = object
   inherit Objs.map as super;
@@ -73,7 +74,7 @@ end;
 
 let decorate_this_expr e id =
   let buf = Buffer.create 42 in
-  let _loc = FanAst.loc_of e in
+  let _loc = loc_of e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
   let s = Buffer.contents buf in
   {:expr| let () = Camlp4prof.count $`str:s in $e |};
@@ -104,18 +105,15 @@ let map_expr = with expr fun
          $(if h then {| true |} else {| false |} )) |}
   | e -> e];
 
-AstFilters.register_str_item_filter ("trash_nothing",(FanAst.map_expr map_expr)#str_item);
+AstFilters.register_str_item_filter ("trash_nothing",(FanObjs.map_expr map_expr)#str_item);
   
 (* [s] should starts with __ *)
 let make_filter (s,code) =
   let f = with str_item fun
   [ {| $lid:s'|} when s =s' -> code
   | e -> e  ] in
-  ("filter_"^s, (FanAst.map_str_item f )#str_item);
+  ("filter_"^s, (FanObjs.map_str_item f )#str_item);
 
-
-(* module MetaQAst = FanAst.Make Ant.MetaLocQuotation; *)
-  
 module ME = FanAst.Make Ant.LocExpr;
 module MP = FanAst.Make Ant.LocPatt;
 

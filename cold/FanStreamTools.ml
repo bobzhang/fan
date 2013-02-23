@@ -1,4 +1,4 @@
-open Ast
+open AstLoc
 open Lib
 type spat_comp =  
   | SpTrm of FanLoc.t* patt* expr option
@@ -65,7 +65,7 @@ and is_constr_apply =
   | `App (_loc,x,_) -> is_constr_apply x
   | _ -> false
 let rec subst v e =
-  let _loc = FanAst.loc_of e in
+  let _loc = loc_of e in
   match e with
   | `Id (_loc,`Lid (_,x)) ->
       let x = if x = v then strm_n else x in `Id (_loc, (`Lid (_loc, x)))

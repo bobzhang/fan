@@ -13,22 +13,13 @@ module LocPatt = struct
   let meta_loc _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
 end;
   
-(* module MetaLocQuotation = struct *)
-(*   let meta_loc_expr _loc loc = *)
-(*     match !AstQuotation.current_loc_name with *)
-(*     [ None -> {:expr| $(lid:!FanLoc.name) |} *)
-(*     | Some "here" -> MetaLoc.meta_loc _loc loc *)
-(*     | Some x -> {:expr| $lid:x |} ]; *)
-(*   let meta_loc_patt _loc _ =  {:patt| _ |}; (\* we use [subst_first_loc] *\) *)
-(* end; *)
-
   
 let gm () =
   match !FanConfig.compilation_unit with
-  [Some "FanAst" -> begin (* eprintf "Compilation unit: FanAst";  *)"" end
-  | Some _ -> begin (* eprintf "Compilation unit: %s@." x;  *)"FanAst" end
-  | None -> begin (* eprintf "Compilation unit None@." ;  *)"FanAst" end];
-  (* !module_name; *)
+  [Some "FanAst" -> ( (* eprintf "Compilation unit: FanAst";  *)"" )
+  | Some _ -> ( (* eprintf "Compilation unit: %s@." x;  *)"FanAst" )
+  | None ->  ((* eprintf "Compilation unit None@." ;  *)"FanAst")];
+
 
 let antiquot_expander ~parse_patt ~parse_expr = object
   inherit Objs.map as super;
@@ -42,9 +33,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       [("anti",_,_) -> {| `Ant ($(mloc _loc), $e) |}
       |("uid",_,_) -> {|`Uid($(mloc _loc), $e)|}
       |("lid",_,_) -> {|`Lid($(mloc _loc), $e)|}
-
       (* |("id","ctyp",_) -> {|`Id($(mloc _loc),$e)|} *)
-            
       |("tup",_,_) ->  {| `Tup ($(mloc _loc), $e)|}
       |("seq",_,_) -> {| `Seq ($(mloc _loc), $e) |}
       |("flo",_,_) -> {| `Flo($(mloc _loc), $e)|}
@@ -60,7 +49,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
     | e -> super#patt e];
     method! expr = with expr fun
       [`Ant(_loc,{cxt;sep;decorations;content=code}) ->
-        let mloc _loc = ((* MetaLocQuotation.meta_loc_expr *)LocExpr.meta_loc _loc _loc :> expr) in
+        let mloc _loc = (LocExpr.meta_loc _loc _loc :> expr) in
         let e = parse_expr _loc code in
         match (decorations,cxt,sep) with
           [ ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|}
@@ -93,7 +82,6 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 let e = {|Char.escaped $e|} in
                 {| `Chr ($(mloc _loc), $e) |}
           | ("`str",_,_) ->
-                (* let e = {|$(uid:gm()).safe_string_escaped $e |} in *)
               let e = {|String.escaped $e |} in
               {| `Str ($(mloc _loc), $e) |}
           | ("`flo",_,_) ->
@@ -102,13 +90,12 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           | ("`bool",_,_) ->
               let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
               {| {| $(id:$x)  |} |}
-
           | ("list","module_expr",_) ->
               {| $(uid:gm()).app_of_list $e |}
           | ("list","module_type",_) ->
               {| $(uid:gm()).mtApp_of_list $e |}
           | ("list","ident",_) ->
-              {| $(uid:gm()).dot_of_list' $e |}
+              {| $(uid:gm()).dot_of_list1 $e |}
           | ("list",
              ("binding"|"module_binding"|
               "with_constr"|"class_type"|
@@ -116,7 +103,6 @@ let antiquot_expander ~parse_patt ~parse_expr = object
                 {| $(uid:gm()).and_of_list $e |}
           |("list","ctyp*",_) ->
               {| $(uid:gm()).sta_of_list $e |}
-
           |("list","ctyp|",_)
           |("list","match_case",_) ->
               {| $(uid:gm()).or_of_list $e |}

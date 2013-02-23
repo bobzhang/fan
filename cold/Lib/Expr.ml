@@ -1,4 +1,5 @@
-open FanAst
+open FanOps
+open AstLoc
 open LibUtil
 open Basic
 open FanUtil
@@ -12,7 +13,7 @@ let rec sep_dot_expr acc =
        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
   | `Id (_loc,(`Dot (_l,_,_) as i)) ->
       sep_dot_expr acc (Ident.normalize_acc i)
-  | e -> ((FanAst.loc_of e), [], e) :: acc
+  | e -> ((loc_of e), [], e) :: acc
 let rec pattern_eq_expression p e =
   match (p, e) with
   | (`Id (_loc,`Lid (_,a)),`Id (_,`Lid (_,b)))
@@ -24,7 +25,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
   (match (p, e) with
    | (`Id (_loc,`Lid (_,x)),`Id (_,`Lid (_,y))) when x = y -> l
    | _ ->
-       if FanAst.is_irrefut_patt p
+       if is_irrefut_patt p
        then
          `App
            (loc,
@@ -107,7 +108,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                                 (`Id (loc, (`Lid (loc, "l")))))))))))))))),
                   l)), (`Id (loc, (`Uid (loc, "[]"))))) : expr )
 let filter loc p b l =
-  if FanAst.is_irrefut_patt p
+  if is_irrefut_patt p
   then
     `App
       (loc,
@@ -175,7 +176,7 @@ let substp loc env =
   loop
 class subst loc env =
   object 
-    inherit  (FanAst.reloc loc) as super
+    inherit  (FanObjs.reloc loc) as super
     method! expr =
       function
       | `Id (_loc,`Lid (_,x))|`Id (_loc,`Uid (_,x)) as e ->
@@ -184,7 +185,7 @@ class subst loc env =
         |`App (_loc,`Id (_,`Uid (_,"LOCATION_OF")),`Id (_,`Uid (_,x))) as e
           ->
           (try
-             let loc = FanAst.loc_of (List.assoc x env) in
+             let loc = loc_of (List.assoc x env) in
              let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple loc in
              `App
                (_loc,
@@ -282,7 +283,7 @@ let mk_record label_exprs =
     List.map
       (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
       label_exprs in
-  `Record (_loc, (FanAst.sem_of_list rec_exprs))
+  `Record (_loc, (sem_of_list rec_exprs))
 let failure =
   `App
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
@@ -489,13 +490,13 @@ let gen_curry_n acc ~arity  cons n =
     (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, (`Nil _loc), acc))))
     (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc
 let currying match_cases ~arity  =
+  let cases = or_of_list match_cases in
   if arity >= 2
   then
     let names = List.init arity (fun i  -> x ~off:i 0) in
     let exprs = List.map (fun s  -> `Id (_loc, (`Lid (_loc, s)))) names in
-    names <+
-      (`Match (_loc, (tuple_com exprs), (FanAst.or_of_list match_cases)))
-  else `Fun (_loc, (FanAst.or_of_list match_cases))
+    let x = tuple_com exprs in names <+ (`Match (_loc, x, cases))
+  else `Fun (_loc, cases)
 let unknown len =
   if len = 0
   then

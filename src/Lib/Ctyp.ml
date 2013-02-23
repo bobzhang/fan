@@ -1,6 +1,6 @@
 #default_quotation "ctyp";;
-open FanAst;
-open Objs;
+
+open AstLoc;
 open LibUtil;
 
 open Basic;
@@ -30,9 +30,7 @@ let rec name_tags (x:tag_names) =
 (*
    compose type abstractions
  *)
-let arrow a b =
-  let _loc = FanLoc.merge (loc_of a) (loc_of b) in 
-  {| $a -> $b |};
+let arrow a b =  let _loc =  a <+> b in  {| $a -> $b |};
 let (|->) = arrow;  
 
 
@@ -59,7 +57,7 @@ let name_length_of_tydcl (x:typedecl)=
   match x with 
   [ `TyDcl (_, `Lid(_,name), tyvars, _, _) -> (name, List.length tyvars)
   | tydcl ->
-      failwithf "name_length_of_tydcl {|%s|}\n"  (dump_typedecl tydcl)];      
+      failwithf "name_length_of_tydcl {|%s|}\n"  (FanObjs.dump_typedecl tydcl)];      
 
 
 
@@ -125,7 +123,7 @@ let ty_name_of_tydcl  (x:typedecl) =
   [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
        appl_of_list [ {| $lid:name |} :: tyvars]
   | tydcl ->
-      failwithf "ctyp_of_tydcl{|%s|}\n" (dump_typedecl tydcl)];      
+      failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)];      
 
 (*
   {[
@@ -163,7 +161,7 @@ let list_of_record (ty:name_ctyp) : list FSig.col  =
                {col_label; col_ctyp; col_mutable=false}
          | t0 ->
              FanLoc.errorf (loc_of t0)
-               "list_of_record %s" (dump_name_ctyp t0) ]);
+               "list_of_record %s" (FanObjs.dump_name_ctyp t0) ]);
 
   
 (*
@@ -311,7 +309,7 @@ let is_recursive ty_dcl =
     (obj#type_info(* ctyp *) ctyp)#is_recursive
 
   | `And(_,_,_)  -> true (* FIXME imprecise *)
-  | _ -> failwithf "is_recursive not type declartion: %s" (dump_typedecl ty_dcl)];
+  | _ -> failwithf "is_recursive not type declartion: %s" (FanObjs.dump_typedecl ty_dcl)];
 
 (*
   {:str_item|
@@ -348,7 +346,7 @@ let abstract_list = fun
   [ `TyDcl (_, _, lst, {| |}, _) -> Some (List.length lst) | _ -> None];
   
 let eq t1 t2 =
-  let strip_locs t = (FanAst.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
+  let strip_locs t = (FanObjs.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
   strip_locs t1 = strip_locs t2;
   
 let eq_list t1 t2 =
@@ -501,10 +499,10 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
       -> compose  (f cons [] ) acc
     | t->
         FanLoc.errorf (loc_of t)
-          "reduce_data_ctors: %s" (dump_or_ctyp t)]) init  branches;
+          "reduce_data_ctors: %s" (FanObjs.dump_or_ctyp t)]) init  branches;
     
 let view_sum (t:or_ctyp) =
-  let bs = FanAst.list_of_or' t [] in
+  let bs = list_of_or' t [] in
   List.map
     (fun
       [ (* {|$uid:cons|} *) `Id(_,`Uid(_,cons)) ->
@@ -552,12 +550,12 @@ let view_variant (t:row_field) : list vbranch =
       | `Ctyp (_ , `Id(_loc,i)) -> 
       (* |  `Id (_loc,i) -> *) `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
-      | u -> FanLoc.errorf (FanAst.loc_of u)
-            "view_variant %s" (Objs.dump_row_field u) ] ) lst ;
+      | u -> FanLoc.errorf (loc_of u)
+            "view_variant %s" (FanObjs.dump_row_field u) ] ) lst ;
 
     
 let of_str_item = fun
   [ `Type(_,x) -> x
   | t ->
-      FanLoc.errorf (FanAst.loc_of t)
-        "Ctyp.of_str_item %s" (dump_str_item t) ];
+      FanLoc.errorf (loc_of t)
+        "Ctyp.of_str_item %s" (FanObjs.dump_str_item t) ];

@@ -1,7 +1,7 @@
 (** Main signatures for Fan *)
 
 open LibUtil;
-open FanAst;
+open Ast;
 
 type vrn =
     [ Sum 

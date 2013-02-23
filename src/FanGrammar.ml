@@ -1,4 +1,6 @@
-open FanAst;
+open Ast;
+open FanOps;
+(* open FanAst; *)
 
 
 {:fans| keep on;  derive (MetaExpr (* MetaPatt *));|};

@@ -1,4 +1,6 @@
-open Ast;
+
+open AstLoc;
+
 (*
   identifiers referenced:
   {[
@@ -73,7 +75,7 @@ and is_constr_apply = fun
   | _ -> false ];
 
 let rec subst v e =
-  let _loc = FanAst.loc_of e in
+  let _loc = loc_of e in
   match e with
   [ {| $lid:x |} ->
       let x = if x = v then strm_n else x in

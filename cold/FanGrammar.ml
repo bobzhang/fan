@@ -1,4 +1,5 @@
-open FanAst
+open Ast
+open FanOps
 let _ = ()
 type name =  {
   expr: expr;

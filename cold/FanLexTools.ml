@@ -1,3 +1,4 @@
+open AstLoc
 open LibUtil
 type node = 
   {
@@ -310,7 +311,7 @@ let gen_definition _loc l =
            `Case
              (_loc, (`Int (_loc, (string_of_int i))), (`Nil _loc),
                (call_state auto j))) trans in
-    let cases = Array.to_list cases in
+    let cases = or_of_list (Array.to_list cases) in
     let body =
       `Match
         (_loc,
@@ -322,7 +323,7 @@ let gen_definition _loc l =
                        (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "next")))))),
                     (`Id (_loc, (`Lid (_loc, "lexbuf")))))))),
           (`Or
-             (_loc, (FanAst.or_of_list cases),
+             (_loc, cases,
                (`Case
                   (_loc, (`Any _loc), (`Nil _loc),
                     (`App
@@ -385,17 +386,20 @@ let gen_definition _loc l =
   let b =
     let len = Array.length states in
     if len > 1 then `Recursive _loc else `ReNil _loc in
+  let tables = and_of_list tables in
+  let parts = and_of_list parts in
+  let states = and_of_list (Array.to_list states) in
+  let cases = or_of_list (Array.to_list cases) in
   `Fun
     (_loc,
       (`Case
          (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), (`Nil _loc),
            (`LetIn
-              (_loc, (`ReNil _loc), (FanAst.and_of_list tables),
+              (_loc, (`ReNil _loc), tables,
                 (`LetIn
-                   (_loc, (`ReNil _loc), (FanAst.and_of_list parts),
+                   (_loc, (`ReNil _loc), parts,
                      (`LetIn
-                        (_loc, b,
-                          (FanAst.and_of_list (Array.to_list states)),
+                        (_loc, b, states,
                           (`Seq
                              (_loc,
                                (`Sem
@@ -421,9 +425,7 @@ let gen_definition _loc l =
                                                  (_loc,
                                                    (`Lid (_loc, "lexbuf")))))),
                                          (`Or
-                                            (_loc,
-                                              (FanAst.or_of_list
-                                                 (Array.to_list cases)),
+                                            (_loc, cases,
                                               (`Case
                                                  (_loc, (`Any _loc),
                                                    (`Nil _loc),

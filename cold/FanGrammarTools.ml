@@ -1,6 +1,7 @@
-open FanAst
+open FanOps
 open Format
 open Lib
+open AstLoc
 open LibUtil
 module MetaAst = FanAst.Make(Lib.Meta.MetaGhostLoc)
 open FanGrammar
@@ -263,7 +264,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
               let p =
                 typing (`Id (_loc, (p :>ident))) (make_ctyp s.styp tvar) in
               `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
-          | Some p when FanAst.is_irrefut_patt p ->
+          | Some p when is_irrefut_patt p ->
               let p = typing p (make_ctyp s.styp tvar) in
               `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
           | None  ->
@@ -378,7 +379,7 @@ let let_in_of_extend _loc gram locals default =
   match locals with
   | None |Some [] -> default
   | Some ll ->
-      let locals = and_of_list' (List.map local_binding_of_name ll) in
+      let locals = and_of_list1 (List.map local_binding_of_name ll) in
       `LetIn
         (_loc, (`ReNil _loc),
           (`Bind
@@ -387,16 +388,14 @@ let let_in_of_extend _loc gram locals default =
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el = List.map text_of_entry el in
-    match el with
-    | [] -> `Id (_loc, (`Uid (_loc, "()")))
-    | _ -> seq (sem_of_list' el) in
+    match el with | [] -> `Id (_loc, (`Uid (_loc, "()"))) | _ -> seq_sem el in
   let_in_of_extend _loc gram locals args
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
   | None  ->
-      let no_variable = FanAst.wildcarder#patt pattern in
+      let no_variable = FanObjs.wildcarder#patt pattern in
       let match_fun =
-        if FanAst.is_irrefut_patt no_variable
+        if is_irrefut_patt no_variable
         then
           `Fun
             (_loc,
@@ -418,7 +417,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
       let text = `Stok (_loc, match_fun, "Normal", descr) in
       { text; styp; pattern = (Some pattern) }
   | Some restrict ->
-      let p' = FanAst.wildcarder#patt pattern in
+      let p' = FanObjs.wildcarder#patt pattern in
       let match_fun =
         `Fun
           (_loc,

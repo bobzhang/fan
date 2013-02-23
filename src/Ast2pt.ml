@@ -1,13 +1,15 @@
+
 open Parsetree;
 open Longident;
 open Asttypes;
 open Lib;
-open Objs;
 open LibUtil;
 open FanUtil;
-open FanAst;
 open ParsetreeHelper;
 open FanLoc;
+open FanOps;
+open AstLoc;
+open FanObjs;
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
 
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
@@ -70,7 +72,7 @@ let ident_tag (i:ident) =
         | (Some (_, `uident | `app) ,"") -> acc
         | (Some (x, `uident | `app), s) -> Some (ldot x s, `uident)
         | _ ->
-            errorf (FanAst.loc_of i) "invalid long identifier %s"
+            errorf (loc_of i) "invalid long identifier %s"
               (dump_ident i)]
     | {| $lid:s |} ->
           let x = match acc with
@@ -815,7 +817,7 @@ and mktype_decl (x:typedecl)  =
       [`TyDcl (cloc,`Lid(sloc,c),tl,td,cl) ->
         let cl = List.map
             (fun (t1,t2) ->
-              let loc = FanLoc.merge (loc_of t1) (loc_of t2) in
+              let loc = t1 <+> t2 in 
               (ctyp t1, ctyp t2, loc)) cl in
         (c+>sloc,
          type_decl
