@@ -1,10 +1,12 @@
 # -*- Mode:Shell-script -*-
 true:use_unix
+<top>:precious
 
 # true:-traverse
 # <cold> and <src>:traverse
 # <{cold,src}/Pprintast.ml>: warn_a
-<{cold,src,debug}/Camlp4Printers/**.ml>: use_unix
+
+# <{cold,src,debug}/Camlp4Printers/**.ml>: use_unix
 <{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.cmx>:for-pack(Grammar)
 <{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
 <{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Expr,Ident,Meta,ModuleType,Patt,MatchCase,EP}.cmx>:for-pack(Lib)
@@ -25,7 +27,8 @@ true:use_unix
 
 # <{cold,src}/o.top>: use_FanTop
 
-<{cold,src,debug}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
+
+# <{cold,src,debug}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 # true:warn(+a)
 <{cold,src,debug}/Fan.ml>: warn(-33)
 true: warn(-41)

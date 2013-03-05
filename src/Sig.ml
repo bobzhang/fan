@@ -49,7 +49,9 @@ module type Syntax = sig
   val aident: Gram.t ident;
   val astr: Gram.t astring;
   val luident: Gram.t string;
-
+  val uident: Gram.t uident;  
+    
+    
   val amp_ctyp : Gram.t ctyp;
   val and_ctyp : Gram.t ctyp;
   val match_case : Gram.t match_case;

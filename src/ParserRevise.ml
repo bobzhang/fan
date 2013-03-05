@@ -759,13 +759,22 @@ let apply () = begin
 
       (* parse [a] [b], [a.b] [A.b]*)
       ident:
-      [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) -> `Ant (_loc, (mk_anti ~c:"ident" n s))
-      | `Ant (("lid" as n), s) -> `Ant (_loc, (mk_anti ~c:"ident" n s))
+      [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) -> `Ant (_loc, mk_anti ~c:"ident" n s)
+      | `Ant (("lid" as n), s) -> `Ant (_loc, mk_anti ~c:"ident" n s)
       | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} ->
            `Dot (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))), i)
       | `Lid i -> `Lid(_loc,i)
       | `Uid i -> `Uid(_loc,i)
       | `Uid s ; "." ; S{j} ->  `Dot (_loc, `Uid (_loc, s), j)]
+
+      uident:
+      [`Uid s -> `Uid(_loc,s)
+      | `Ant((""|"id"|"anti"|"list"|"uid" as n),s) ->
+          `Ant(_loc,mk_anti ~c:"uident" n s)
+      |`Uid s; "."; S{l} -> dot (`Uid (_loc,s)) l
+      |`Ant((""|"id"|"anti"|"list"|"uid" as n),s) ;"." ; S{i} ->
+          dot (`Ant(_loc,mk_anti ~c:"uident" n s)) i]
+
 
       dot_namespace:
       [ `Uid i; "."; S{xs} -> [i::xs]
@@ -808,7 +817,6 @@ let apply () = begin
        "simple"
         [ `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) ->
           `Ant (_loc, (mk_anti ~c:"ident" n s))
-          (* {| $(anti:mk_anti ~c:"ident" n s) |} *)
         | `Uid i -> `Uid(_loc,i)
         | "("; S{i}; ")" -> i ] }
 

@@ -1,0 +1,5 @@
+
+
+
+^\(type\|and\)
+53 syntatic categories...

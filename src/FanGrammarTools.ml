@@ -12,11 +12,8 @@ let print_warning = eprintf "%a:\n%s@." FanLoc.print;
 
   
 let prefix = "__fan_"  ;
-  
-  
 let ghost = FanLoc.ghost ;  
-let grammar_module_name =
-  ref (`Uid (ghost,"Gram")) ;
+let grammar_module_name = ref (`Uid (ghost,"Gram")) ;
   
 let gm () =
   match !FanConfig.compilation_unit with
@@ -62,14 +59,9 @@ let new_type_var =
     incr i; "e__" ^ string_of_int !i
   end ;
     
-let gensym  =
-  let i = ref 0 in fun () -> begin
-    incr i;
-    i;
-  end;
+let gensym  = let i = ref 0 in fun () -> (incr i; i);
 
-let gen_lid ()=
-  prefix^string_of_int (!(gensym ()));
+let gen_lid ()=  prefix^string_of_int (!(gensym ()));
   
 (* transform rule list *)  
 let retype_rule_list_without_patterns _loc rl =
@@ -98,17 +90,16 @@ let retype_rule_list_without_patterns _loc rl =
   given the assumption that the entry output [tvar] type
  *)
     
-let  make_ctyp (styp:styp) tvar : ctyp = 
+let make_ctyp (styp:styp) tvar : ctyp = 
   let rec aux  = with ctyp fun  
     [ `Id _ | `Quote _ as x -> x  
-    | {| $t1 $t2|} -> {| $(aux t1) $(aux t2) |}
+    | `App(_loc,t1,t2) -> `App(_loc,aux t1,aux t2)
     | `Self (_loc, x) ->
         if tvar = "" then
           FanLoc.raise _loc
             (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else {| '$lid:tvar |}
-    | `Tok _loc ->
-        {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
+    | `Tok _loc -> {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
     | `Type t -> t ] in aux styp;
 
       
@@ -116,6 +107,8 @@ let  make_ctyp (styp:styp) tvar : ctyp =
 (* transform [text] to [expr] which represents [symbol]
    compute the [lhs]
    it generates code which has type [Gram.symbol]
+
+   tvar provides type informatoin
    {[
    `Skeyword "let"
 
@@ -197,15 +190,15 @@ let  make_ctyp (styp:styp) tvar : ctyp =
        (`Normal, "`Ant ((\"\"|\"mexp\"|\"anti\"|\"list\"),_)"))
    ]}
  *)    
-let rec make_expr entry (tvar:string) x =
+let rec make_expr (tvar : string) (x:text) =
   with expr
   let rec aux tvar x =
     match x with
     [ `Smeta (_loc, n, tl, e, t) ->
       let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in 
-      let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in 
-      {| `Smeta ($ns, $el,
-               ($(id:gm()).Action.mk $(typing e (make_ctyp t tvar)))) |}
+      let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in
+      let act = typing e (make_ctyp t tvar) in 
+      {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $act )) |}
     | `Slist (_loc, min, t, ts) ->
         let txt = aux "" t.text in
         match  ts with
@@ -227,7 +220,7 @@ let rec make_expr entry (tvar:string) x =
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
     | `Srules (_loc, rl) ->
-        {| $(id:gm()).srules $(make_expr_rules _loc entry rl "") |}
+        {| $(id:gm()).srules $(make_expr_rules _loc rl "") |}
     | `Stok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ] in aux  tvar x
 
@@ -235,14 +228,14 @@ let rec make_expr entry (tvar:string) x =
 (* the [rhs] was computed, compute the [lhs]
    the generated expression has type [production]
  *)    
-and make_expr_rules (_loc:loc) (n:name) (rl: list (list text * expr) ) (tvar:string) :expr=
+and make_expr_rules (_loc:loc)  (rl : list (list text * expr) ) (tvar:string) :expr=
   with expr
   list_of_list _loc
     (List.map (fun (sl,action) ->
       (* let number = List.length sl in *)
       let action_string = Ast2pt.to_string_expr action in
       (* let expr = (Filters.ME.meta_expr _loc action) in *)
-      let sl = list_of_list _loc (List.map (fun t -> make_expr n tvar t) sl) in
+      let sl = list_of_list _loc (List.map (fun t -> make_expr tvar t) sl) in
       {| ($sl,($str:action_string,$action(* ,$expr *))) |} ) rl);
   
 (* generate action, collecting patterns into action
@@ -279,14 +272,15 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
             match (e,p) with [([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p)] in
           let action_string = Ast2pt.to_string_expr act in
           {|fun ($locid :FanLoc.t) ->
-            match $expr with [ $(pat:patt) -> $e1 | _ -> failwith $`str:action_string (* assert false *)]|} ] in
+            match $expr with [ $(pat:patt) -> $e1 | _ -> failwith $`str:action_string
+           (* assert false *)]|} ] in
   let (_,txt) =
     List.fold_lefti
       (fun i txt s ->
         match s.pattern with
         [Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
-            let p = 
-              typing {:patt| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in  {| fun $p -> $txt |}
+            let p = typing {:patt| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in
+            {| fun $p -> $txt |}
         | Some p when is_irrefut_patt p ->
             let p = typing p (make_ctyp s.styp tvar) in
             {| fun $p -> $txt |}
@@ -297,19 +291,24 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option expr)
             {| fun $p -> $txt |} ])  e psl in
   {| $(id:gm()).mk_action $txt |}  ;
 
+let mk_srule loc (t : string)  (tvar : string) (r : rule) : (list text *  expr) =
+  let sl = List.map (fun s  -> s.text) r.prod in
+  let ac = text_of_action loc r.prod t ?action:r.action tvar in
+  (sl, ac);
+  
 (* the [rhs] was already computed, the [lhs] was left *)
-let mk_srules loc (t:string) (rl:list rule) (tvar:string) : list (list text * expr) =
-  List.map
-    (fun r ->
-      let sl = List.map (fun s  -> s.text) r.prod in
-      let ac = text_of_action loc r.prod t ?action:r.action tvar in
-      (sl, ac)) rl ;
+let mk_srules loc ( t : string) (rl:list rule) (tvar:string) : list (list text * expr) =
+  List.map (mk_srule loc t tvar) rl;
+    (* (fun r -> *)
+    (*   let sl = List.map (fun s  -> s.text) r.prod in *)
+    (*   let ac = text_of_action loc r.prod t ?action:r.action tvar in *)
+    (*   (sl, ac)) rl ; *)
     
 
 
 let expr_delete_rule _loc n (symbolss:list (list symbol)) = with expr
   let f _loc n sl =  
-   let sl = list_of_list _loc (List.map (fun  s -> make_expr n "" s.text) sl) in 
+   let sl = list_of_list _loc (List.map (fun  s -> make_expr (* n *) "" s.text) sl) in 
    ({| $(n.expr) |}, sl)  in
   let rest = List.map
       (fun sl  ->
@@ -356,7 +355,7 @@ let text_of_entry (e:entry) :expr =  with expr
           [ Some ass ->   {| Some $ass |}
           | None ->    {|None|} ]  in
           let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
-          let prod = make_expr_rules _loc e.name rl e.name.tvar in
+          let prod = make_expr_rules _loc rl e.name.tvar in
           (* generated code of type [olevel] *)
           {| ($lab, $ass, $prod) |}) in
     match e.levels with

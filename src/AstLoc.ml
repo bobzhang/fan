@@ -127,7 +127,7 @@ let rec list_of_and' x acc =
   [`And(_,x,y) -> list_of_and' x (list_of_and' y acc)
   |`Nil _ -> acc
   | _ -> [x::acc] ]  ;
-    
+
 let rec list_of_com x acc =
   match x with
   [`Com(_,x,y) -> list_of_com x (list_of_com y acc)
