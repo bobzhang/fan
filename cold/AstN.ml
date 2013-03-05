@@ -21,6 +21,8 @@ type alident = [ `Lid of string | ant]
 type auident = [ `Uid of string | ant] 
 type aident = [ alident | auident] 
 type astring = [ `C of string | ant] 
+type uident =
+  [ `Dot of (uident* uident) | `App of (uident* uident) | auident] 
 type ident =
   [ `Dot of (ident* ident) | `App of (ident* ident) | alident | auident] 
 type dupath = [ `Dot of (dupath* dupath) | auident] 
@@ -162,6 +164,6 @@ and class_str_item =
 type ep =
   [ nil | sid | `App of (ep* ep) | `Vrn of string | `Com of (ep* ep)
   | `Sem of (ep* ep) | `Tup of ep | any | `Array of ep | `Record of rec_bind
-  | ant | literal] 
+  | literal | ant] 
 and rec_bind =
   [ nil | `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 

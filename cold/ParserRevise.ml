@@ -3630,6 +3630,61 @@ let apply () =
                    match __fan_0 with
                    | `Uid s -> (`Dot (_loc, (`Uid (_loc, s)), j) : 'ident )
                    | _ -> failwith "`Dot (_loc, (`Uid (_loc, s)), j)\n"))))]));
+   Gram.extend_single (uident : 'uident Gram.t )
+     (None,
+       (None, None,
+         [([`Stoken
+              (((function | `Uid _ -> true | _ -> false)),
+                (`Normal, "`Uid _"))],
+            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid s -> (`Uid (_loc, s) : 'uident )\n     | _ -> failwith \"`Uid (_loc, s)\n\")\n",
+              (Gram.mk_action
+                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                    match __fan_0 with
+                    | `Uid s -> (`Uid (_loc, s) : 'uident )
+                    | _ -> failwith "`Uid (_loc, s)\n"))));
+         ([`Stoken
+             (((function
+                | `Ant ((""|"id"|"anti"|"list"|"uid"),_) -> true
+                | _ -> false)),
+               (`Normal, "`Ant ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"),_)"))],
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\" as n),s) ->\n         (`Ant (_loc, (mk_anti ~c:\"uident\" n s)) : 'uident )\n     | _ -> failwith \"`Ant (_loc, (mk_anti ~c:\"uident\" n s))\n\")\n",
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) ->
+                       (`Ant (_loc, (mk_anti ~c:"uident" n s)) : 'uident )
+                   | _ ->
+                       failwith "`Ant (_loc, (mk_anti ~c:\"uident\" n s))\n"))));
+         ([`Stoken
+             (((function | `Uid _ -> true | _ -> false)),
+               (`Normal, "`Uid _"));
+          `Skeyword ".";
+          `Sself],
+           ("Gram.mk_action\n  (fun (l : 'uident)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid s -> (dot (`Uid (_loc, s)) l : 'uident )\n     | _ -> failwith \"dot (`Uid (_loc, s)) l\n\")\n",
+             (Gram.mk_action
+                (fun (l : 'uident)  _  (__fan_0 : [> FanToken.t]) 
+                   (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Uid s -> (dot (`Uid (_loc, s)) l : 'uident )
+                   | _ -> failwith "dot (`Uid (_loc, s)) l\n"))));
+         ([`Stoken
+             (((function
+                | `Ant ((""|"id"|"anti"|"list"|"uid"),_) -> true
+                | _ -> false)),
+               (`Normal, "`Ant ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\"),_)"));
+          `Skeyword ".";
+          `Sself],
+           ("Gram.mk_action\n  (fun (i : 'uident)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"id\"|\"anti\"|\"list\"|\"uid\" as n),s) ->\n         (dot (`Ant (_loc, (mk_anti ~c:\"uident\" n s))) i : 'uident )\n     | _ -> failwith \"dot (`Ant (_loc, (mk_anti ~c:\"uident\" n s))) i\n\")\n",
+             (Gram.mk_action
+                (fun (i : 'uident)  _  (__fan_0 : [> FanToken.t]) 
+                   (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) ->
+                       (dot (`Ant (_loc, (mk_anti ~c:"uident" n s))) i : 
+                       'uident )
+                   | _ ->
+                       failwith
+                         "dot (`Ant (_loc, (mk_anti ~c:\"uident\" n s))) i\n"))))]));
    Gram.extend_single (dot_namespace : 'dot_namespace Gram.t )
      (None,
        (None, None,

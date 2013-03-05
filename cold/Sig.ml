@@ -39,6 +39,7 @@ module type Syntax =
     val aident : ident Gram.t
     val astr : astring Gram.t
     val luident : string Gram.t
+    val uident : uident Gram.t
     val amp_ctyp : ctyp Gram.t
     val and_ctyp : ctyp Gram.t
     val match_case : match_case Gram.t

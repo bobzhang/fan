@@ -88,12 +88,13 @@ let make_ctyp (styp : styp) tvar =
                             (`Lid (_loc, "t")))))))))
      | `Type t -> t in
    aux styp : ctyp )
-let rec make_expr entry (tvar : string) x =
+let rec make_expr (tvar : string) (x : text) =
   let rec aux tvar x =
     match x with
     | `Smeta (_loc,n,tl,e,t) ->
         let el = list_of_list _loc (List.map (fun t  -> aux "" t) tl) in
         let ns = list_of_list _loc (List.map (fun n  -> `Str (_loc, n)) n) in
+        let act = typing e (make_ctyp t tvar) in
         `App
           (_loc, (`Vrn (_loc, "Smeta")),
             (`Tup
@@ -111,7 +112,7 @@ let rec make_expr entry (tvar : string) x =
                                           (`Dot
                                              (_loc, (`Uid (_loc, "Action")),
                                                (`Lid (_loc, "mk")))))))),
-                                (typing e (make_ctyp t tvar)))))))))))
+                                act)))))))))
     | `Slist (_loc,min,t,ts) ->
         let txt = aux "" t.text in
         (match ts with
@@ -164,7 +165,7 @@ let rec make_expr entry (tvar : string) x =
         `App
           (_loc,
             (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))))),
-            (make_expr_rules _loc entry rl ""))
+            (make_expr_rules _loc rl ""))
     | `Stok (_loc,match_fun,attr,descr) ->
         `App
           (_loc, (`Vrn (_loc, "Stoken")),
@@ -178,14 +179,14 @@ let rec make_expr entry (tvar : string) x =
                               (_loc, (`Vrn (_loc, attr)),
                                 (`Str (_loc, (String.escaped descr)))))))))))) in
   aux tvar x
-and make_expr_rules (_loc : loc) (n : name) (rl : (text list* expr) list)
+and make_expr_rules (_loc : loc) (rl : (text list* expr) list)
   (tvar : string) =
   (list_of_list _loc
      (List.map
         (fun (sl,action)  ->
            let action_string = Ast2pt.to_string_expr action in
            let sl =
-             list_of_list _loc (List.map (fun t  -> make_expr n tvar t) sl) in
+             list_of_list _loc (List.map (fun t  -> make_expr tvar t) sl) in
            `Tup
              (_loc,
                (`Com
@@ -278,16 +279,15 @@ let text_of_action (_loc : loc) (psl : symbol list)
    `App
      (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
        txt) : expr )
+let mk_srule loc (t : string) (tvar : string) (r : rule) =
+  (let sl = List.map (fun s  -> s.text) r.prod in
+   let ac = text_of_action loc r.prod t ?action:(r.action) tvar in (sl, ac) : 
+  (text list* expr) )
 let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
-  (List.map
-     (fun r  ->
-        let sl = List.map (fun s  -> s.text) r.prod in
-        let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
-        (sl, ac)) rl : (text list* expr) list )
+  (List.map (mk_srule loc t tvar) rl : (text list* expr) list )
 let expr_delete_rule _loc n (symbolss : symbol list list) =
   let f _loc n sl =
-    let sl =
-      list_of_list _loc (List.map (fun s  -> make_expr n "" s.text) sl) in
+    let sl = list_of_list _loc (List.map (fun s  -> make_expr "" s.text) sl) in
     ((n.expr), sl) in
   let rest =
     List.map
@@ -330,7 +330,7 @@ let text_of_entry (e : entry) =
        | Some ass -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
        | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
      let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
-     let prod = make_expr_rules _loc e.name rl (e.name).tvar in
+     let prod = make_expr_rules _loc rl (e.name).tvar in
      `Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) in
    match e.levels with
    | `Single l ->

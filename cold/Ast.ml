@@ -22,6 +22,8 @@ type alident = [ `Lid of (loc* string) | ant]
 type auident = [ `Uid of (loc* string) | ant] 
 type aident = [ alident | auident] 
 type astring = [ `C of (loc* string) | ant] 
+type uident =
+  [ `Dot of (loc* uident* uident) | `App of (loc* uident* uident) | auident] 
 type ident =
   [ `Dot of (loc* ident* ident) | `App of (loc* ident* ident) | alident
   | auident] 
@@ -176,7 +178,7 @@ type ep =
   [ nil | sid | `App of (loc* ep* ep) | `Vrn of (loc* string)
   | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep) | `Tup of (loc* ep) | 
     any
-  | `Array of (loc* ep) | `Record of (loc* rec_bind) | ant | literal] 
+  | `Array of (loc* ep) | `Record of (loc* rec_bind) | literal | ant] 
 and rec_bind =
   [ nil | `RecBind of (loc* ident* ep) | `Sem of (loc* rec_bind* rec_bind)
   | any | ant] 

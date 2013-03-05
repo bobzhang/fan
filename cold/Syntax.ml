@@ -177,6 +177,7 @@ let a_string = Gram.mk "a_string"
 let a_lident = Gram.mk "a_lident"
 let a_uident = Gram.mk "a_uident"
 let luident = Gram.mk "luident"
+let uident = Gram.mk "uident"
 let astr = Gram.mk "astr"
 let dot_namespace = Gram.mk "dot_namespace"
 let antiquot_expr = Gram.eoi_entry expr
