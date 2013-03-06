@@ -1,6 +1,7 @@
 open Objs
 open LibUtil
 let dump = new print
+let dump_type_parameters = to_string_of_printer dump#type_parameters
 let dump_row_field = to_string_of_printer dump#row_field
 let dump_or_ctyp = to_string_of_printer dump#or_ctyp
 let dump_type_repr = to_string_of_printer dump#type_repr
@@ -81,13 +82,23 @@ class clean_ast =
     method! ctyp t =
       match super#ctyp t with
       | `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)
-        |`Arrow (_loc,`Nil _l,t)|`Com (_loc,`Nil _l,t)|`Com (_loc,t,`Nil _l)
-        |`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) -> t
+        |`Arrow (_loc,`Nil _l,t)|`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l)
+          -> t
+      | t -> t
+    method! type_parameters t =
+      match super#type_parameters t with
+      | `Com (_,t,`Nil _) -> t
+      | `Com (_,`Nil _,t) -> t
       | t -> t
     method! or_ctyp t =
-      match t with | `Or (_,t,`Nil _) -> t | `Or (_,`Nil _,t) -> t | t -> t
+      match super#or_ctyp t with
+      | `Or (_,t,`Nil _) -> t
+      | `Or (_,`Nil _,t) -> t
+      | t -> t
     method! typedecl t =
-      match t with | `And (_,t,`Nil _)|`And (_,`Nil _,t) -> t | t -> t
+      match super#typedecl t with
+      | `And (_,t,`Nil _)|`And (_,`Nil _,t) -> t
+      | t -> t
     method! name_ctyp t =
       match super#name_ctyp t with
       | `Sem (_,t,`Nil _)|`Sem (_,`Nil _,t) -> t

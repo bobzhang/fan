@@ -70,7 +70,7 @@ module type Syntax = sig
   val class_info_for_class_type : Gram.t class_type;
   val class_longident : Gram.t ident;
   val class_longident_and_param : Gram.t class_expr;
-  val class_name_and_param : Gram.t (alident(* string *) * ctyp);
+  val class_name_and_param : Gram.t (alident(* string *) * (* ctyp *) type_parameters);
   val class_sig_item : Gram.t class_sig_item;
   val class_sig_item_quot : Gram.t class_sig_item;
   val class_signature : Gram.t class_sig_item;
@@ -83,11 +83,13 @@ module type Syntax = sig
   val class_type_longident_and_param : Gram.t class_type;
   val class_type_plus : Gram.t class_type;
   val class_type_quot : Gram.t class_type;
-  val comma_ctyp : Gram.t ctyp;
+  val comma_ctyp : Gram.t (* ctyp *) type_parameters;
+  val opt_comma_ctyp : Gram.t (* ctyp *) type_parameters;
+    
   val comma_expr : Gram.t expr;
   val comma_ipatt : Gram.t patt;
   val comma_patt : Gram.t patt;
-  val comma_type_parameter : Gram.t ctyp;
+  val comma_type_parameter : Gram.t (* ctyp *) type_parameters;
   val constrain : Gram.t (ctyp * ctyp);
   val constructor_arg_list : Gram.t ctyp;
   val constructor_declaration : Gram.t of_ctyp;
@@ -141,7 +143,7 @@ module type Syntax = sig
   val opt_as_lident : Gram.t (* string *)(meta_option alident);
   val opt_class_self_patt : Gram.t patt;
   val opt_class_self_type : Gram.t ctyp;
-  val opt_comma_ctyp : Gram.t ctyp;
+
   val opt_dot_dot : Gram.t row_var_flag;
   val row_var_flag_quot : Gram.t row_var_flag;
   (* val opt_eq_ctyp : Gram.t ctyp; *)

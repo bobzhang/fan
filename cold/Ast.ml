@@ -38,12 +38,14 @@ type ctyp =
     sid
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
   | `TyTypePol of (loc* ctyp* ctyp)
-  | `Quote of (loc* position_flag* alident meta_option)
-  | `Com of (loc* ctyp* ctyp) | `Tup of (loc* ctyp)
+  | `Quote of (loc* position_flag* alident meta_option) | `Tup of (loc* ctyp)
   | `Sta of (loc* ctyp* ctyp) | `PolyEq of (loc* row_field)
   | `PolySup of (loc* row_field) | `PolyInf of (loc* row_field)
   | `PolyInfSup of (loc* row_field* tag_names)
   | `Package of (loc* module_type) | ant] 
+and type_parameters =
+  [ `Com of (loc* type_parameters* type_parameters) | `Ctyp of (loc* ctyp)
+  | ant | nil] 
 and row_field =
   [ ant_nil | `Or of (loc* row_field* row_field) | `TyVrn of (loc* astring)
   | `TyVrnOf of (loc* astring* ctyp) | `Ctyp of (loc* ctyp)] 
@@ -144,7 +146,7 @@ and str_item =
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
   | `Type of (loc* typedecl) | `Value of (loc* rec_flag* binding) | ant] 
 and class_type =
-  [ nil | `CtCon of (loc* virtual_flag* ident* ctyp)
+  [ nil | `CtCon of (loc* virtual_flag* ident* type_parameters)
   | `CtFun of (loc* ctyp* class_type) | `CtSig of (loc* ctyp* class_sig_item)
   | `And of (loc* class_type* class_type)
   | `CtCol of (loc* class_type* class_type)
@@ -158,7 +160,7 @@ and class_sig_item =
   | `CgVir of (loc* alident* private_flag* ctyp) | ant] 
 and class_expr =
   [ nil | `CeApp of (loc* class_expr* expr)
-  | `CeCon of (loc* virtual_flag* ident* ctyp)
+  | `CeCon of (loc* virtual_flag* ident* type_parameters)
   | `CeFun of (loc* patt* class_expr)
   | `CeLet of (loc* rec_flag* binding* class_expr)
   | `Obj of (loc* patt* class_str_item)

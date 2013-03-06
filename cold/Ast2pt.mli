@@ -82,7 +82,7 @@ val optional_type_parameters :
   (string Asttypes.loc option * (bool * bool)) list
       
 val class_parameters :
-  ctyp -> (string Asttypes.loc * (bool * bool)) list
+  type_parameters -> (string Asttypes.loc * (bool * bool)) list
       
 val type_parameters_and_type_name :
   ctyp ->

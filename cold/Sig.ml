@@ -58,7 +58,7 @@ module type Syntax =
     val class_info_for_class_type : class_type Gram.t
     val class_longident : ident Gram.t
     val class_longident_and_param : class_expr Gram.t
-    val class_name_and_param : (alident* ctyp) Gram.t
+    val class_name_and_param : (alident* type_parameters) Gram.t
     val class_sig_item : class_sig_item Gram.t
     val class_sig_item_quot : class_sig_item Gram.t
     val class_signature : class_sig_item Gram.t
@@ -71,11 +71,12 @@ module type Syntax =
     val class_type_longident_and_param : class_type Gram.t
     val class_type_plus : class_type Gram.t
     val class_type_quot : class_type Gram.t
-    val comma_ctyp : ctyp Gram.t
+    val comma_ctyp : type_parameters Gram.t
+    val opt_comma_ctyp : type_parameters Gram.t
     val comma_expr : expr Gram.t
     val comma_ipatt : patt Gram.t
     val comma_patt : patt Gram.t
-    val comma_type_parameter : ctyp Gram.t
+    val comma_type_parameter : type_parameters Gram.t
     val constrain : (ctyp* ctyp) Gram.t
     val constructor_arg_list : ctyp Gram.t
     val constructor_declaration : of_ctyp Gram.t
@@ -125,7 +126,6 @@ module type Syntax =
     val opt_as_lident : alident meta_option Gram.t
     val opt_class_self_patt : patt Gram.t
     val opt_class_self_type : ctyp Gram.t
-    val opt_comma_ctyp : ctyp Gram.t
     val opt_dot_dot : row_var_flag Gram.t
     val row_var_flag_quot : row_var_flag Gram.t
     val opt_expr : expr Gram.t

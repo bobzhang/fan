@@ -180,7 +180,7 @@ type ctyp =
         (*  +'s -'s 's +_ -_ *)      
   | `Quote of (loc * position_flag * meta_option alident)
         
-  | `Com of (loc * ctyp * ctyp) (* t, t *)
+  (* | `Com of (loc * ctyp * ctyp) (\* t, t *\) *)
   | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
   | `Sta of (loc * ctyp * ctyp) (* t * t *)
 
@@ -192,6 +192,11 @@ type ctyp =
         
   | `Package of (loc * module_type) (* (module S) *)
   | ant ]
+and type_parameters =
+  [= `Com of (loc * type_parameters * type_parameters)
+  | `Ctyp of (loc * ctyp)
+  | ant
+  | nil]  
 and row_field =
   [= ant_nil
   | `Or of (loc * row_field * row_field )
@@ -203,8 +208,8 @@ and tag_names =
   | `App of (loc * tag_names * tag_names)
   | `TyVrn of (loc * astring )]   
 and typedecl =
-    (* type t 'a 'b 'c = t constraint t = t constraint t = t *)
-  [= `TyDcl of (loc * alident * list ctyp * type_info(* ctyp *) * list (ctyp * ctyp))
+    (* {:str_item| type  ('a, 'b, 'c) t = t |} *)
+  [= `TyDcl of (loc * alident * list ctyp * type_info * list (ctyp * ctyp))
   | `And of (loc * typedecl * typedecl)
   | ant_nil ]
       (* original syntax
@@ -213,8 +218,13 @@ and typedecl =
        {[ type v = u = [A of int];]} 
      *)
 and type_info =        (* FIXME be more preicse *)
-  [= `TyMan of (loc  * ctyp * private_flag  * type_repr)
+  [=
+   (* type u = v = [A of int ] *)
+   `TyMan of (loc  * ctyp * private_flag  * type_repr)
+   (* type u = A.t = {x:int} *)
   | `TyRepr of (loc * private_flag * type_repr)
+
+   (* type u = int *)
   | `TyEq of (loc * private_flag * ctyp)
   | ant_nil ]  
 and type_repr =
@@ -467,7 +477,7 @@ and str_item =
 and class_type =
   [= nil
      (* (virtual)? i ([ t ])? *)
-  | `CtCon of (loc * virtual_flag * ident * ctyp)
+  | `CtCon of (loc * virtual_flag * ident * (* ctyp *) type_parameters)
         (* [t] -> ct *)
   | `CtFun of (loc * ctyp * class_type)
       (* object ((t))? (csg)? end *)
@@ -499,7 +509,7 @@ and class_expr =
       (* ce e *)
   | `CeApp of (loc * class_expr * expr)
       (* (virtual)? i ([ t ])? *)
-  | `CeCon of (loc * virtual_flag * ident * ctyp)
+  | `CeCon of (loc * virtual_flag * ident * (* ctyp *) type_parameters)
       (* fun p -> ce *)
   | `CeFun of (loc * patt * class_expr)
         (* let (rec)? bi in ce *)

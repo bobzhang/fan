@@ -353,15 +353,16 @@ let optional_type_parameters (t:ctyp) =
   List.map quote_map (list_of_app' t [])(* (FanAst.list_of_ctyp_app t []) *) ;
 
 (* ['a,'b,'c']*)
-let  class_parameters (t:ctyp) =
+let  class_parameters (t:type_parameters) =
   List.filter_map
     (fun
       [`Nil _ -> None
-      | x ->
+      | `Ctyp(_, x) ->
           match quote_map x with
           [(Some x,v) -> Some (x,v)
           | (None,_) ->
-              errorf (loc_of t) "class_parameters %s" (dump_ctyp t)] ])
+              errorf (loc_of t) "class_parameters %s" (dump_type_parameters t)]
+      | _ ->  errorf (loc_of t) "class_parameters %s" (dump_type_parameters t) ])
     (list_of_com t []);
 
 
@@ -973,7 +974,8 @@ and str_item (s:str_item) (l:structure) : structure =
 and class_type (x:Ast.class_type) = match x with
  [ `CtCon (loc, `ViNil _, id,tl) ->
    mkcty loc
-     (Pcty_constr (long_class_ident id) (List.map ctyp (list_of_com' tl [])))
+     (Pcty_constr (long_class_ident id)
+        (List.map (fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false]) (list_of_com' tl [])))
   | `CtFun (loc, (`Label (_, `Lid(_,lab), t)), ct) ->
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))
 
@@ -1051,7 +1053,10 @@ and class_expr  (x:Ast.class_expr) = match x with
     mkcl loc (Pcl_apply (class_expr ce) el)
   | `CeCon (loc, `ViNil _, id,tl) ->
       mkcl loc
-        (Pcl_constr (long_class_ident id) (List.map ctyp (list_of_com' tl [])))
+        (Pcl_constr (long_class_ident id)
+           (List.map (
+            fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false])
+              (list_of_com' tl [])))
   | `CeFun (loc, (`Label (_,`Lid(_loc,lab), po)), ce) ->
       mkcl loc
         (Pcl_fun lab None (patt_of_lab loc lab po) (class_expr ce))

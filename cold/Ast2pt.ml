@@ -257,15 +257,17 @@ let quote_map (x : ctyp) =
   | t -> errorf (loc_of x) "quote_map %s" (dump_ctyp t)
 let optional_type_parameters (t : ctyp) =
   List.map quote_map (list_of_app' t [])
-let class_parameters (t : ctyp) =
+let class_parameters (t : type_parameters) =
   List.filter_map
     (function
      | `Nil _ -> None
-     | x ->
+     | `Ctyp (_,x) ->
          (match quote_map x with
           | (Some x,v) -> Some (x, v)
           | (None ,_) ->
-              errorf (loc_of t) "class_parameters %s" (dump_ctyp t)))
+              errorf (loc_of t) "class_parameters %s"
+                (dump_type_parameters t))
+     | _ -> errorf (loc_of t) "class_parameters %s" (dump_type_parameters t))
     (list_of_com t [])
 let type_parameters_and_type_name t =
   let rec aux t acc =
@@ -878,7 +880,10 @@ and class_type (x : Ast.class_type) =
   | `CtCon (loc,`ViNil _,id,tl) ->
       mkcty loc
         (Pcty_constr
-           ((long_class_ident id), (List.map ctyp (list_of_com' tl []))))
+           ((long_class_ident id),
+             (List.map
+                (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
+                (list_of_com' tl []))))
   | `CtFun (loc,`Label (_,`Lid (_,lab),t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (class_type ct)))
   | `CtFun (loc,`OptLabl (loc1,`Lid (_,lab),t),ct) ->
@@ -952,7 +957,10 @@ and class_expr (x : Ast.class_expr) =
   | `CeCon (loc,`ViNil _,id,tl) ->
       mkcl loc
         (Pcl_constr
-           ((long_class_ident id), (List.map ctyp (list_of_com' tl []))))
+           ((long_class_ident id),
+             (List.map
+                (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
+                (list_of_com' tl []))))
   | `CeFun (loc,`Label (_,`Lid (_loc,lab),po),ce) ->
       mkcl loc
         (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))

@@ -70,7 +70,7 @@ begin
 end;
 
 AstParsers.use_parsers
-    ["revise";"stream";(* "debug"; *)"macro"(* ;"ListComprehension" *)];
+    ["revise";"stream";"macro"];
   
 
 let normal () = begin
