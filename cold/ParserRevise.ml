@@ -4371,35 +4371,51 @@ let apply () =
      (None,
        (None, None,
          [([`Stoken
-              (((function | `Ant ((""|"str_list"),_) -> true | _ -> false)),
-                (`Normal, "`Ant ((\"\"|\"str_list\"),_)"))],
-            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"str_list\"),s) ->\n         (`Ant (_loc, (mk_anti \"str_list\" s)) : 'string_list )\n     | _ -> failwith \"`Ant (_loc, (mk_anti \"str_list\" s))\n\")\n",
+              (((function | `Ant ("",_) -> true | _ -> false)),
+                (`Normal, "`Ant (\"\",_)"))],
+            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant (\"\",s) -> (`Ant (_loc, (mk_anti \"str_list\" s)) : 'string_list )\n     | _ -> failwith \"`Ant (_loc, (mk_anti \"str_list\" s))\n\")\n",
               (Gram.mk_action
                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
-                    | `Ant ((""|"str_list"),s) ->
+                    | `Ant ("",s) ->
                         (`Ant (_loc, (mk_anti "str_list" s)) : 'string_list )
                     | _ -> failwith "`Ant (_loc, (mk_anti \"str_list\" s))\n"))));
          ([`Stoken
-             (((function | `STR (_,_) -> true | _ -> false)),
-               (`Normal, "`STR (_,_)"));
+             (((function | `Ant ("",_) -> true | _ -> false)),
+               (`Normal, "`Ant (\"\",_)"));
           `Sself],
-           ("Gram.mk_action\n  (fun (xs : 'string_list)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,x) -> (`LCons (x, xs) : 'string_list )\n     | _ -> failwith \"`LCons (x, xs)\n\")\n",
+           ("Gram.mk_action\n  (fun (xs : 'string_list)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant (\"\",s) ->\n         (`App (_loc, (`Ant (_loc, (mk_anti \"\" s))), xs) : 'string_list )\n     | _ -> failwith \"`App (_loc, (`Ant (_loc, (mk_anti \"\" s))), xs)\n\")\n",
              (Gram.mk_action
                 (fun (xs : 'string_list)  (__fan_0 : [> FanToken.t]) 
                    (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `STR (_,x) -> (`LCons (x, xs) : 'string_list )
-                   | _ -> failwith "`LCons (x, xs)\n"))));
+                   | `Ant ("",s) ->
+                       (`App (_loc, (`Ant (_loc, (mk_anti "" s))), xs) : 
+                       'string_list )
+                   | _ ->
+                       failwith
+                         "`App (_loc, (`Ant (_loc, (mk_anti \"\" s))), xs)\n"))));
          ([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,x) -> (`LCons (x, `LNil) : 'string_list )\n     | _ -> failwith \"`LCons (x, `LNil)\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,x) -> (`Str (_loc, x) : 'string_list )\n     | _ -> failwith \"`Str (_loc, x)\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `STR (_,x) -> (`LCons (x, `LNil) : 'string_list )
-                   | _ -> failwith "`LCons (x, `LNil)\n"))))]));
+                   | `STR (_,x) -> (`Str (_loc, x) : 'string_list )
+                   | _ -> failwith "`Str (_loc, x)\n"))));
+         ([`Stoken
+             (((function | `STR (_,_) -> true | _ -> false)),
+               (`Normal, "`STR (_,_)"));
+          `Sself],
+           ("Gram.mk_action\n  (fun (xs : 'string_list)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,x) -> (`App (_loc, (`Str (_loc, x)), xs) : 'string_list )\n     | _ -> failwith \"`App (_loc, (`Str (_loc, x)), xs)\n\")\n",
+             (Gram.mk_action
+                (fun (xs : 'string_list)  (__fan_0 : [> FanToken.t]) 
+                   (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `STR (_,x) ->
+                       (`App (_loc, (`Str (_loc, x)), xs) : 'string_list )
+                   | _ -> failwith "`App (_loc, (`Str (_loc, x)), xs)\n"))))]));
    Gram.extend_single (semi : 'semi Gram.t )
      (None,
        (None, None,

@@ -176,7 +176,7 @@ module type Syntax =
     val infixop2 : expr Gram.t
     val infixop3 : expr Gram.t
     val infixop4 : expr Gram.t
-    val string_list : string meta_list Gram.t
+    val string_list : strings Gram.t
     val infixop5 : expr Gram.t
     val infixop6 : expr Gram.t
     val module_longident_dot_lparen : ident Gram.t

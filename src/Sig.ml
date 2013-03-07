@@ -201,7 +201,7 @@ module type Syntax = sig
   val infixop3 : Gram.t expr;
   val infixop4 : Gram.t expr;
 
-  val string_list: Gram.t (meta_list string);
+  val string_list: Gram.t ((* meta_list *) strings);
   val infixop5: Gram.t expr;
   val infixop6: Gram.t expr;
   val module_longident_dot_lparen: Gram.t ident;

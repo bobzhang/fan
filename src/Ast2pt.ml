@@ -377,13 +377,17 @@ let type_decl tl cl loc (x:type_info) =
 (* let type_decl tl cl t loc : Parsetree.type_declaration = *)
 (*   type_decl tl cl loc false t; *)
 
-let mkvalue_desc loc t p =
-  {pval_type = ctyp t; pval_prim = p; pval_loc =  loc};
+let mkvalue_desc loc t (p: list strings) =
+  let ps = List.map (fun p ->
+    match p with
+    [`Str (_,p) -> p
+    | _ -> failwithf  "mkvalue_desc"]) p in
+  {pval_type = ctyp t; pval_prim = ps; pval_loc =  loc};
 
-let rec list_of_meta_list =fun
-  [ `LNil  -> []
-  | `LCons (x, xs) -> [x :: list_of_meta_list xs]
-  | `Ant (_loc,_) -> ANT_ERROR ];
+(* let rec list_of_meta_list =fun *)
+(*   [ `LNil  -> [] *)
+(*   | `LCons (x, xs) -> [x :: list_of_meta_list xs] *)
+(*   | `Ant (_loc,_) -> ANT_ERROR ]; *)
 
 let mkmutable = fun
   [`Mutable _ -> Mutable
@@ -969,7 +973,7 @@ and sig_item (s:sig_item) (l:signature) :signature =
   | `Exception (_,_) -> assert false (*FIXME*)
   | `External (loc, `Lid(sloc,n), t, sl) ->
       [mksig loc (Psig_value (with_loc n sloc)
-                    (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
+                    (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl []))) :: l]
   | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
   | `Module (loc,`Uid(sloc,n),mt) ->
         [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
@@ -1046,7 +1050,7 @@ and str_item (s:str_item) (l:structure) : structure =
   | `StExp (loc,e) -> [mkstr loc (Pstr_eval (expr e)) :: l]
   | `External(loc,`Lid(sloc,n),t,sl) ->
       [mkstr loc
-         (Pstr_primitive (with_loc n sloc) (mkvalue_desc loc t (list_of_meta_list sl))) :: l]
+         (Pstr_primitive (with_loc n sloc) (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl [] ))) :: l]
   | `Include (loc,me) -> [mkstr loc (Pstr_include (module_expr me)) :: l]
   | `Module (loc,`Uid(sloc,n),me) ->
       [mkstr loc (Pstr_module (with_loc n sloc) (module_expr me)) :: l]

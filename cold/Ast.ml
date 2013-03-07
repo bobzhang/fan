@@ -16,8 +16,8 @@ type row_var_flag = [ `RowVar of loc | `RvNil of loc | ant]
 type position_flag =
   [ `Positive of loc | `Negative of loc | `Normal of loc | ant] 
 type meta_bool = [ `True of loc | `False of loc | ant] 
-type 'a meta_option = [ `None | `Some of 'a | ant] 
-type 'a meta_list = [ `LNil | `LCons of ('a* 'a meta_list) | ant] 
+type strings =
+  [ `App of (loc* strings* strings) | `Str of (loc* string) | ant] 
 type alident = [ `Lid of (loc* string) | ant] 
 type auident = [ `Uid of (loc* string) | ant] 
 type aident = [ alident | auident] 
@@ -111,8 +111,7 @@ and module_type =
 and sig_item =
   [ nil | `Class of (loc* class_type) | `ClassType of (loc* class_type)
   | `Sem of (loc* sig_item* sig_item) | `Directive of (loc* alident* expr)
-  | `Exception of (loc* of_ctyp)
-  | `External of (loc* alident* ctyp* string meta_list)
+  | `Exception of (loc* of_ctyp) | `External of (loc* alident* ctyp* strings)
   | `Include of (loc* module_type) | `Module of (loc* auident* module_type)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
@@ -141,7 +140,7 @@ and str_item =
   [ nil | `Class of (loc* class_expr) | `ClassType of (loc* class_type)
   | `Sem of (loc* str_item* str_item) | `Directive of (loc* alident* expr)
   | `Exception of (loc* of_ctyp) | `StExp of (loc* expr)
-  | `External of (loc* alident* ctyp* string meta_list)
+  | `External of (loc* alident* ctyp* strings)
   | `Include of (loc* module_expr) | `Module of (loc* auident* module_expr)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)

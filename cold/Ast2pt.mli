@@ -68,8 +68,8 @@ val type_decl :
   FanLoc.t -> type_info   -> Parsetree.type_declaration
 
 val mkvalue_desc :
-  Location.t -> ctyp -> string list -> Parsetree.value_description
-val list_of_meta_list : 'a Ast.meta_list -> 'a list
+  Location.t -> ctyp -> strings list -> Parsetree.value_description
+
 
 val mkmutable : mutable_flag -> Asttypes.mutable_flag
 

@@ -15,8 +15,7 @@ type override_flag = [ `Override | `OvNil | ant]
 type row_var_flag = [ `RowVar | `RvNil | ant] 
 type position_flag = [ `Positive | `Negative | `Normal | ant] 
 type meta_bool = [ `True | `False | ant] 
-type 'a meta_option = [ `None | `Some of 'a | ant] 
-type 'a meta_list = [ `LNil | `LCons of ('a* 'a meta_list) | ant] 
+type strings = [ `App of (strings* strings) | `Str of string | ant] 
 type alident = [ `Lid of string | ant] 
 type auident = [ `Uid of string | ant] 
 type aident = [ alident | auident] 
@@ -106,7 +105,7 @@ and module_type =
 and sig_item =
   [ nil | `Class of class_type | `ClassType of class_type
   | `Sem of (sig_item* sig_item) | `Directive of (alident* expr)
-  | `Exception of of_ctyp | `External of (alident* ctyp* string meta_list)
+  | `Exception of of_ctyp | `External of (alident* ctyp* strings)
   | `Include of module_type | `Module of (auident* module_type)
   | `RecModule of module_binding | `ModuleType of (auident* module_type)
   | `Open of ident | `Type of typedecl | `Val of (alident* ctyp) | ant] 
@@ -134,7 +133,7 @@ and str_item =
   [ nil | `Class of class_expr | `ClassType of class_type
   | `Sem of (str_item* str_item) | `Directive of (alident* expr)
   | `Exception of of_ctyp | `StExp of expr
-  | `External of (alident* ctyp* string meta_list) | `Include of module_expr
+  | `External of (alident* ctyp* strings) | `Include of module_expr
   | `Module of (auident* module_expr) | `RecModule of module_binding
   | `ModuleType of (auident* module_type) | `Open of ident
   | `Type of typedecl | `Value of (rec_flag* binding) | ant] 

@@ -245,13 +245,12 @@ let type_decl tl cl loc (x : type_info) =
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
   | `Nil _ ->
       mktype loc tl cl ~type_kind:Ptype_abstract ~priv:Private ~manifest:None
-let mkvalue_desc loc t p =
-  { pval_type = (ctyp t); pval_prim = p; pval_loc = loc }
-let rec list_of_meta_list =
-  function
-  | `LNil -> []
-  | `LCons (x,xs) -> x :: (list_of_meta_list xs)
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+let mkvalue_desc loc t (p : strings list) =
+  let ps =
+    List.map
+      (fun p  ->
+         match p with | `Str (_,p) -> p | _ -> failwithf "mkvalue_desc") p in
+  { pval_type = (ctyp t); pval_prim = ps; pval_loc = loc }
 let mkmutable =
   function
   | `Mutable _ -> Mutable
@@ -799,7 +798,7 @@ and sig_item (s : sig_item) (l : signature) =
    | `External (loc,`Lid (sloc,n),t,sl) ->
        (mksig loc
           (Psig_value
-             ((with_loc n sloc), (mkvalue_desc loc t (list_of_meta_list sl)))))
+             ((with_loc n sloc), (mkvalue_desc loc t (list_of_app sl [])))))
        :: l
    | `Include (loc,mt) -> (mksig loc (Psig_include (module_type mt))) :: l
    | `Module (loc,`Uid (sloc,n),mt) ->
@@ -877,7 +876,7 @@ and str_item (s : str_item) (l : structure) =
    | `External (loc,`Lid (sloc,n),t,sl) ->
        (mkstr loc
           (Pstr_primitive
-             ((with_loc n sloc), (mkvalue_desc loc t (list_of_meta_list sl)))))
+             ((with_loc n sloc), (mkvalue_desc loc t (list_of_app sl [])))))
        :: l
    | `Include (loc,me) -> (mkstr loc (Pstr_include (module_expr me))) :: l
    | `Module (loc,`Uid (sloc,n),me) ->

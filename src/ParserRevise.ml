@@ -249,7 +249,8 @@ let apply () = begin
     | `QUOTATION x -> AstQuotation.expand _loc x DynAst.sig_item_tag
     | "exception"; constructor_declaration{t} ->  {| exception $t |}
     | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
-        {| external $i : $t = $sl |} 
+        `External (_loc, i, t, sl)
+        (* {| external $i : $t = $sl |}  *)
     | "include"; module_type{mt} -> {| include $mt |}
     | "module"; a_uident{i}; module_declaration{mt} ->  {| module $i : $mt |}
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
@@ -959,9 +960,11 @@ let apply () = begin
       [ `Ant((""|"uid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_uident" n s)
       | `Uid s  -> `Uid (_loc, s) ]
       string_list:
-      [ `Ant ((""|"str_list"),s) -> `Ant (_loc,mk_anti "str_list" s)
-      | `STR (_, x); S{xs} -> `LCons (x, xs)
-      | `STR (_, x) -> `LCons (x, (`LNil )) ] 
+      [ `Ant ((""(* |"str_list" *)),s) -> `Ant (_loc,mk_anti "str_list" s)
+      | `Ant("",s) ; S{xs} -> `App(_loc,`Ant(_loc,mk_anti "" s), xs)
+      | `STR (_, x) -> `Str(_loc,x) (* `LCons (x, (`LNil )) *) 
+      | `STR (_, x); S{xs} -> `App(_loc,`Str(_loc,x),xs)
+          (* `LCons (x, xs) *)] 
       semi: [ ";" -> () ]
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ direction_flag{x} -> x ] 
@@ -1004,7 +1007,8 @@ let apply () = begin
         (* | "exception"; constructor_declaration{t}; "="; type_longident{i} -> *)
         (*     {| exception $t = $i |} *)
         | "external"; a_lident{i};":"; ctyp{t};"="; string_list{sl} ->
-            {| external $i: $t = $sl |}
+            `External (_loc, i, t, sl)
+            (* {| external $i: $t = $sl |} *)
               
         | "include"; module_expr{me} -> {| include $me |}
         | "module"; a_uident{i}; module_binding0{mb} ->

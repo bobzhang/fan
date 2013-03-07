@@ -95,15 +95,11 @@ type meta_bool =
   |`False of loc
   | ant];
 
-type 'a meta_option  =
-  [= `None 
-  |  `Some of 'a
-  | ant];
 
-type 'a meta_list  =
-  [= `LNil 
-  | `LCons of ('a * meta_list 'a)
-  | ant];
+type strings =
+  [= `App of (loc * strings * strings)
+  | `Str of (loc * string)
+  | ant  ]  ;
 
 (* type 'a mlist= *)
 (*   [= `Concat of (loc * 'a mlist * 'a mlist) *)
@@ -272,10 +268,10 @@ and patt =
   | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
   | `Array of (loc * patt) (* [| p |] *)
   | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
-        (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
-  (* | `PaOlbi of (loc * alident * patt * meta_option expr) *)
 
+    (* ?s or ?s:(p)   *)
   | `OptLabl of (loc * alident * patt)
+    (* ?s:(p = e) or ?(p = e) *)
   | `OptLablExpr of (loc * alident * patt * expr)
         
   | `Or of (loc * patt * patt) (* p | p *)
@@ -283,9 +279,9 @@ and patt =
   | `Constraint of (loc * patt * ctyp) (* (p : t) *)
   | `ClassPath of (loc * ident) (* #i *)
   | `Lazy of (loc * patt) (* lazy p *)
-
-  (* (module M : ty ) *)      
+    (* (module M ) *)   
   | `ModuleUnpack of (loc * auident)
+    (* (module M : ty ) *)      
   | `ModuleConstraint of (loc * auident * ctyp) ]
 and rec_patt =
   [= nil
@@ -387,7 +383,7 @@ and sig_item =
         (* exception t *)
   | `Exception of (loc * of_ctyp)
         (* external s : t = s ... s *)
-  | `External of (loc * alident  * ctyp * meta_list string)
+  | `External of (loc * alident  * ctyp * (* meta_list  *)strings)
   | `Include of (loc * module_type)
         (* module s : mt *)
   | `Module of (loc * auident * module_type)
@@ -475,7 +471,7 @@ and str_item =
         (* e *)
   | `StExp of (loc * expr)
         (* external s : t = s ... s *)
-  | `External of (loc * alident  * ctyp * meta_list string)
+  | `External of (loc * alident  * ctyp *  strings)
         (* include me *)
   | `Include of (loc * module_expr)
         (* module s = me *)
@@ -483,7 +479,7 @@ and str_item =
         (* module rec mb *)
   | `RecModule of (loc * module_binding)
         (* module type s = mt *)
-  | `ModuleType of (loc * (* string *)auident * module_type)
+  | `ModuleType of (loc * auident * module_type)
         (* open i *)
   | `Open of (loc * ident)
         (* type t *)
