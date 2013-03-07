@@ -4,7 +4,6 @@ include Ast
 let _ = ()
 let loc_of =
   function
-  | `PaOlbi (_loc,_,_,_) -> _loc
   | `Any _loc -> _loc
   | `Tup (_loc,_) -> _loc
   | `Array (_loc,_) -> _loc
@@ -142,6 +141,7 @@ let loc_of =
   | `CrVvr (_loc,_,_,_) -> _loc
   | `CtCon (_loc,_,_,_) -> _loc
   | `Recursive _loc -> _loc
+  | `OptLablExpr (_loc,_,_,_) -> _loc
   | `CtSig (_loc,_,_) -> _loc
   | `SigInherit (_loc,_) -> _loc
   | `ModuleType (_loc,_,_) -> _loc

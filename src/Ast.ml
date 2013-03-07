@@ -185,7 +185,7 @@ type ctyp =
 
   (*  +'s -'s 's +_ -_ *)      
 
-  (* | `Quote of (loc * position_flag * meta_option alident) *)
+
   | `Quote of (loc * position_flag * alident) 
   | `QuoteAny of (loc * position_flag )
   | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
@@ -273,7 +273,11 @@ and patt =
   | `Array of (loc * patt) (* [| p |] *)
   | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
         (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
-  | `PaOlbi of (loc * alident * patt * meta_option expr)
+  (* | `PaOlbi of (loc * alident * patt * meta_option expr) *)
+
+  | `OptLabl of (loc * alident * patt)
+  | `OptLablExpr of (loc * alident * patt * expr)
+        
   | `Or of (loc * patt * patt) (* p | p *)
   | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
   | `Constraint of (loc * patt * ctyp) (* (p : t) *)
@@ -542,7 +546,7 @@ and class_str_item =
         (* type t = t *)
   | `Eq of (loc * ctyp * ctyp)
         (* inherit(!)? ce (as s)? *)
-  | `Inherit of (loc * override_flag * class_expr (* * meta_option alident *))
+  | `Inherit of (loc * override_flag * class_expr)
   | `InheritAs of (loc * override_flag * class_expr * alident)
       (* initializer e *)
   | `Initializer of (loc * expr)

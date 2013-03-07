@@ -398,7 +398,8 @@ let rec patt (x : patt) =
   | `Flo (loc,s) ->
       mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
   | `Label (loc,_,_) -> error loc "labeled pattern not allowed here"
-  | `PaOlbi (loc,_,_,_) -> error loc "labeled pattern not allowed here"
+  | `OptLablExpr (loc,_,_,_)|`OptLabl (loc,_,_) ->
+      error loc "labeled pattern not allowed here"
   | `Or (loc,p1,p2) -> mkpat loc (Ppat_or ((patt p1), (patt p2)))
   | `PaRng (loc,p1,p2) ->
       (match (p1, p2) with
@@ -523,21 +524,16 @@ let rec expr (x : expr) =
       mkexp loc
         (Pexp_function
            (lab, None, [((patt_of_lab loc lab po), (when_expr e w))]))
-  | `Fun (loc,`Case (_,`PaOlbi (_,`Lid (_,lab),p,e1),w,e2)) ->
-      (match e1 with
-       | `None ->
-           let lab = paolab lab p in
-           mkexp loc
-             (Pexp_function
-                (("?" ^ lab), None,
-                  [((patt_of_lab loc lab p), (when_expr e2 w))]))
-       | `Some e1 ->
-           let lab = paolab lab p in
-           mkexp loc
-             (Pexp_function
-                (("?" ^ lab), (Some (expr e1)),
-                  [((patt p), (when_expr e2 w))]))
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+  | `Fun (loc,`Case (_,`OptLabl (_,`Lid (_,lab),p),w,e2)) ->
+      let lab = paolab lab p in
+      mkexp loc
+        (Pexp_function
+           (("?" ^ lab), None, [((patt_of_lab loc lab p), (when_expr e2 w))]))
+  | `Fun (loc,`Case (_,`OptLablExpr (_,`Lid (_,lab),p,e1),w,e2)) ->
+      let lab = paolab lab p in
+      mkexp loc
+        (Pexp_function
+           (("?" ^ lab), (Some (expr e1)), [((patt p), (when_expr e2 w))]))
   | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (match_case a)))
   | `IfThenElse (loc,e1,e2,e3) ->
       mkexp loc (Pexp_ifthenelse ((expr e1), (expr e2), (Some (expr e3))))
@@ -988,18 +984,15 @@ and class_expr (x : Ast.class_expr) =
   | `CeFun (loc,`Label (_,`Lid (_loc,lab),po),ce) ->
       mkcl loc
         (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
-  | `CeFun (loc,`PaOlbi (_,`Lid (_loc,lab),p,e),ce) ->
+  | `CeFun (loc,`OptLablExpr (_,`Lid (_loc,lab),p,e),ce) ->
       let lab = paolab lab p in
-      (match e with
-       | `None ->
-           mkcl loc
-             (Pcl_fun
-                (("?" ^ lab), None, (patt_of_lab loc lab p), (class_expr ce)))
-       | `Some e ->
-           mkcl loc
-             (Pcl_fun
-                (("?" ^ lab), (Some (expr e)), (patt p), (class_expr ce)))
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
+      mkcl loc
+        (Pcl_fun (("?" ^ lab), (Some (expr e)), (patt p), (class_expr ce)))
+  | `CeFun (loc,`OptLabl (_,`Lid (_loc,lab),p),ce) ->
+      let lab = paolab lab p in
+      mkcl loc
+        (Pcl_fun
+           (("?" ^ lab), None, (patt_of_lab loc lab p), (class_expr ce)))
   | `CeFun (loc,p,ce) ->
       mkcl loc (Pcl_fun ("", None, (patt p), (class_expr ce)))
   | `CeLet (loc,rf,bi,ce) ->

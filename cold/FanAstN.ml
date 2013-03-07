@@ -347,9 +347,11 @@ class eq =
         | (`Array _a0,`Array _b0) -> self#patt _a0 _b0
         | (`Label (_a0,_a1),`Label (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#patt _a1 _b1)
-        | (`PaOlbi (_a0,_a1,_a2),`PaOlbi (_b0,_b1,_b2)) ->
+        | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
+            (self#alident _a0 _b0) && (self#patt _a1 _b1)
+        | (`OptLablExpr (_a0,_a1,_a2),`OptLablExpr (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#meta_option (fun self  -> self#expr) _a2 _b2)
+              (self#expr _a2 _b2)
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#patt _a1 _b1)
         | (`PaRng (_a0,_a1),`PaRng (_b0,_b1)) ->
@@ -1078,10 +1080,12 @@ class print =
         | `Label (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a)@]" self#alident _a0
               self#patt _a1
-        | `PaOlbi (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a)@]" self#alident
-              _a0 self#patt _a1 (self#meta_option (fun self  -> self#expr))
-              _a2
+        | `OptLabl (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
+              self#patt _a1
+        | `OptLablExpr (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a)@]"
+              self#alident _a0 self#patt _a1 self#expr _a2
         | `Or (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#patt _a0 self#patt
               _a1
@@ -1904,13 +1908,20 @@ and meta_patt _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Label")), (meta_alident _loc _a0))),
           (meta_patt _loc _a1))
-  | `PaOlbi (_a0,_a1,_a2) ->
+  | `OptLabl (_a0,_a1) ->
+      `App
+        (_loc,
+          (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
+          (meta_patt _loc _a1))
+  | `OptLablExpr (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
-               (`App (_loc, (`Vrn (_loc, "PaOlbi")), (meta_alident _loc _a0))),
-               (meta_patt _loc _a1))), (meta_meta_option meta_expr _loc _a2))
+               (`App
+                  (_loc, (`Vrn (_loc, "OptLablExpr")),
+                    (meta_alident _loc _a0))), (meta_patt _loc _a1))),
+          (meta_expr _loc _a2))
   | `Or (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_patt _loc _a0))),

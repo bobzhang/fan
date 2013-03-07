@@ -228,13 +228,15 @@ let rec is_irrefut_patt : patt -> bool = with patt
         List.for_all (fun [`RecBind (_,_,p) -> is_irrefut_patt p | _ -> true])
           (list_of_sem' (* is_irrefut_patt *) p [])
     (* | {| $_ = $p |} -> is_irrefut_patt p *)
-    | {| $p1; $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {| $p1, $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {| $p1 | $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
-    | {| $p1 $p2 |} -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | {| ($p : $_) |} -> is_irrefut_patt p
-    | {| ($tup:pl) |} -> is_irrefut_patt pl
-    | {| ? $_ : ($p =  $opt:_ ) |} -> is_irrefut_patt p
+    | `Sem(_,p1,p2)(* {| $p1; $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | `Com(_,p1,p2) (* {| $p1, $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | `Or(_,p1,p2) (* {| $p1 | $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
+    | `App(_,p1,p2)(* {| $p1 $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2
+          
+    | `Constraint(_,p,_)(* {| ($p : $_) |} *) -> is_irrefut_patt p
+    | `Tup(_,p)(* {| ($tup:pl) |} *) -> is_irrefut_patt p
+    | `OptLabl(_,_,p) | `OptLablExpr(_,_,p,_) (* {| ? $_ : ($p =  $opt:_ ) |} *)
+      -> is_irrefut_patt p
     | {| ~ $_ |} -> true
     | {| ~ $_: $p |} -> is_irrefut_patt p
     | {| lazy $p |} -> is_irrefut_patt p

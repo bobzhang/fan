@@ -529,12 +529,15 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#patt _a2 _b2 in `Label (_a0, _a1, _a2)
-        | (`PaOlbi (_a0,_a1,_a2,_a3),`PaOlbi (_b0,_b1,_b2,_b3)) ->
+        | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in
+            let _a2 = self#patt _a2 _b2 in `OptLabl (_a0, _a1, _a2)
+        | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#patt _a2 _b2 in
-            let _a3 = self#meta_option (fun self  -> self#expr) _a3 _b3 in
-            `PaOlbi (_a0, _a1, _a2, _a3)
+            let _a3 = self#expr _a3 _b3 in `OptLablExpr (_a0, _a1, _a2, _a3)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
@@ -1642,11 +1645,13 @@ class fold2 =
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#patt _a2 _b2
-        | (`PaOlbi (_a0,_a1,_a2,_a3),`PaOlbi (_b0,_b1,_b2,_b3)) ->
+        | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#alident _a1 _b1 in self#patt _a2 _b2
+        | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
-            let self = self#patt _a2 _b2 in
-            self#meta_option (fun self  -> self#expr) _a3 _b3
+            let self = self#patt _a2 _b2 in self#expr _a3 _b3
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#patt _a2 _b2
@@ -2414,11 +2419,10 @@ class iter =
       | `Array (_a0,_a1) -> (self#loc _a0; self#patt _a1)
       | `Label (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#patt _a2)
-      | `PaOlbi (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0;
-           self#alident _a1;
-           self#patt _a2;
-           self#meta_option (fun self  -> self#expr) _a3)
+      | `OptLabl (_a0,_a1,_a2) ->
+          (self#loc _a0; self#alident _a1; self#patt _a2)
+      | `OptLablExpr (_a0,_a1,_a2,_a3) ->
+          (self#loc _a0; self#alident _a1; self#patt _a2; self#expr _a3)
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
       | `PaRng (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
       | `Constraint (_a0,_a1,_a2) ->
@@ -3172,12 +3176,15 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#patt _a2 in `Label (_a0, _a1, _a2)
-      | `PaOlbi (_a0,_a1,_a2,_a3) ->
+      | `OptLabl (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in
+          let _a2 = self#patt _a2 in `OptLabl (_a0, _a1, _a2)
+      | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#patt _a2 in
-          let _a3 = self#meta_option (fun self  -> self#expr) _a3 in
-          `PaOlbi (_a0, _a1, _a2, _a3)
+          let _a3 = self#expr _a3 in `OptLablExpr (_a0, _a1, _a2, _a3)
       | `Or (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
@@ -4082,11 +4089,13 @@ class fold =
       | `Label (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#patt _a2
-      | `PaOlbi (_a0,_a1,_a2,_a3) ->
+      | `OptLabl (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in self#patt _a2
+      | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
-          let self = self#patt _a2 in
-          self#meta_option (fun self  -> self#expr) _a3
+          let self = self#patt _a2 in self#expr _a3
       | `Or (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#patt _a2
@@ -4929,10 +4938,12 @@ class print =
         | `Label (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#patt _a2
-        | `PaOlbi (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#alident _a1 self#patt _a2
-              (self#meta_option (fun self  -> self#expr)) _a3
+        | `OptLabl (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc _a0
+              self#alident _a1 self#patt _a2
+        | `OptLablExpr (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]"
+              self#loc _a0 self#alident _a1 self#patt _a2 self#expr _a3
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#patt _a2
@@ -5852,10 +5863,13 @@ class eq =
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#patt _a2 _b2)
-        | (`PaOlbi (_a0,_a1,_a2,_a3),`PaOlbi (_b0,_b1,_b2,_b3)) ->
+        | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
+              (self#patt _a2 _b2)
+        | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                (self#patt _a2 _b2))
-              && (self#meta_option (fun self  -> self#expr) _a3 _b3)
+              && (self#expr _a3 _b3)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#patt _a2 _b2)
@@ -6653,11 +6667,13 @@ and strip_loc_patt =
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_patt _a2 in `Label (_a1, _a2)
-  | `PaOlbi (_a0,_a1,_a2,_a3) ->
+  | `OptLabl (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_alident _a1 in
+      let _a2 = strip_loc_patt _a2 in `OptLabl (_a1, _a2)
+  | `OptLablExpr (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_patt _a2 in
-      let _a3 = strip_loc_meta_option strip_loc_expr _a3 in
-      `PaOlbi (_a1, _a2, _a3)
+      let _a3 = strip_loc_expr _a3 in `OptLablExpr (_a1, _a2, _a3)
   | `Or (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_patt _a2 in `Or (_a1, _a2)
@@ -7450,10 +7466,12 @@ and pp_print_patt fmt =
   | `Label (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_patt _a2
-  | `PaOlbi (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`PaOlbi@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `OptLabl (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_patt _a2
-        (pp_print_meta_option pp_print_expr) _a3
+  | `OptLablExpr (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]" pp_print_loc
+        _a0 pp_print_alident _a1 pp_print_patt _a2 pp_print_expr _a3
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_patt _a2

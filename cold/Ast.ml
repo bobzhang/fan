@@ -72,11 +72,11 @@ and patt =
   | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt)
   | `Tup of (loc* patt) | any | `Record of (loc* rec_patt) | ant | literal
   | `Alias of (loc* patt* alident) | `Array of (loc* patt)
-  | `Label of (loc* alident* patt)
-  | `PaOlbi of (loc* alident* patt* expr meta_option)
-  | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
-  | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
-  | `Lazy of (loc* patt) | `ModuleUnpack of (loc* auident)
+  | `Label of (loc* alident* patt) | `OptLabl of (loc* alident* patt)
+  | `OptLablExpr of (loc* alident* patt* expr) | `Or of (loc* patt* patt)
+  | `PaRng of (loc* patt* patt) | `Constraint of (loc* patt* ctyp)
+  | `ClassPath of (loc* ident) | `Lazy of (loc* patt)
+  | `ModuleUnpack of (loc* auident)
   | `ModuleConstraint of (loc* auident* ctyp)] 
 and rec_patt =
   [ nil | `RecBind of (loc* ident* patt) | `Sem of (loc* rec_patt* rec_patt)

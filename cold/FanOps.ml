@@ -105,13 +105,13 @@ let rec is_irrefut_patt: patt -> bool =
       List.for_all
         (function | `RecBind (_,_,p) -> is_irrefut_patt p | _ -> true)
         (list_of_sem' p [])
-  | `Sem (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `Com (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `Or (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `App (_loc,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `Constraint (_loc,p,_) -> is_irrefut_patt p
-  | `Tup (_loc,pl) -> is_irrefut_patt pl
-  | `PaOlbi (_loc,_,p,_) -> is_irrefut_patt p
+  | `Sem (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | `Com (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | `Or (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | `App (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
+  | `Constraint (_,p,_) -> is_irrefut_patt p
+  | `Tup (_,p) -> is_irrefut_patt p
+  | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_patt p
   | `Label (_loc,_,`Nil _) -> true
   | `Label (_loc,_,p) -> is_irrefut_patt p
   | `Lazy (_loc,p) -> is_irrefut_patt p

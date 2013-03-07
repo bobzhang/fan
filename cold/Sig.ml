@@ -123,7 +123,6 @@ module type Syntax =
     val module_type_quot : module_type Gram.t
     val more_ctyp : ctyp Gram.t
     val name_tags : tag_names Gram.t
-    val opt_as_lident : alident meta_option Gram.t
     val opt_class_self_patt : patt Gram.t
     val opt_class_self_type : ctyp Gram.t
     val opt_dot_dot : row_var_flag Gram.t

@@ -39,7 +39,7 @@ let apply () = begin
     label_expr_list label_expr label_longident label_patt label_patt_list  let_binding meth_list
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
-    more_ctyp name_tags opt_as_lident opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot
+    more_ctyp name_tags (* opt_as_lident *) opt_class_self_patt opt_class_self_type opt_comma_ctyp opt_dot_dot
     opt_expr opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
@@ -655,15 +655,31 @@ let apply () = begin
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i}; ":"; S{p} -> (* CHANGE *) {| ~$i : $p|}
         | "~"; a_lident{i} -> {| ~$i |}
-        | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$lid:i : ($p=$e)|}
-        | `OPTLABEL i; "("; patt_tcon{p}; ")"  -> {| ? $lid:i : ($p)|}
-        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$i:($p=$e)|}
+        | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" ->
+            `OptLablExpr(_loc,`Lid(_loc,i),p,e)
+            (* {| ?$lid:i : ($p=$e)|} *)
+        | `OPTLABEL i; "("; patt_tcon{p}; ")"  ->
+            `OptLabl(_loc,`Lid(_loc,i),p)
+            (* {| ? $lid:i : ($p)|} *)
+        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" ->
+            `OptLablExpr(_loc,i,p,e)
+            (* {| ?$i:($p=$e)|} *)
         | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
-            {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|}
-        | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  -> {| ? $i:($p)|}
-        | "?"; a_lident{i} -> {| ? $i |}
-        | "?"; "("; ipatt_tcon{p}; ")" -> {| ? ($p) |}
-        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" -> {| ? ($p = $e) |} ] }
+            `OptLablExpr (_loc, i, p, (`Ant (_loc, (mk_anti n s))))
+            (* {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|} *)
+        | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  ->
+            `OptLabl(_loc,i,p)
+            (* {| ? $i:($p)|} *)
+        | "?"; a_lident{i} ->
+            `OptLabl(_loc,i,`Nil _loc )
+            (* {| ? $i |} *)
+        | "?"; "("; ipatt_tcon{p}; ")" ->
+            `OptLabl(_loc,`Lid(_loc,""),p)
+            (* {| ? ($p) |}; *)
+        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
+            `OptLablExpr(_loc,`Lid(_loc,""),p,e)
+            (* {| ? ($p = $e) |}; *)
+        ] }
        ipatt:
         [ "{"; label_patt_list{pl}; "}" ->
           {| { $pl }|}
@@ -688,15 +704,31 @@ let apply () = begin
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i};":";S{p} -> {| ~$i : $p|}
         | "~"; a_lident{i} ->  {| ~$i|}
-        | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$lid:i : ($p=$e)|}
-        | `OPTLABEL i; "("; patt_tcon{p}; ")"  -> {| ? $lid:i : ($p)|}
-        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" -> {| ?$i:($p=$e)|}
+        | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" ->
+            `OptLablExpr(_loc,`Lid(_loc,i),p,e)
+            (* {| ?$lid:i : ($p=$e)|} *)
+        | `OPTLABEL i; "("; patt_tcon{p}; ")"  ->
+            `OptLabl(_loc,`Lid(_loc,i),p)
+            (* {| ? $lid:i : ($p)|} *)
+        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; expr{e}; ")" ->
+            `OptLablExpr(_loc,i,p,e)
+            (* {| ?$i:($p=$e)|} *)
         | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
-            {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|}
-        | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  -> {| ? $i:($p)|}
-        | "?"; a_lident{i} -> {| ? $i |}
-        | "?"; "("; ipatt_tcon{p}; ")" -> {| ? ($p) |}
-        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" -> {| ? ($p = $e) |}]
+            `OptLablExpr (_loc, i, p, (`Ant (_loc, (mk_anti n s))))
+            (* {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|} *)
+        | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  ->
+            `OptLabl(_loc,i,p)
+            (* {| ? $i:($p)|} *)
+        | "?"; a_lident{i} ->
+            `OptLabl(_loc,i,`Nil _loc )
+            (* {| ? $i |} *)
+        | "?"; "("; ipatt_tcon{p}; ")" ->
+            `OptLabl(_loc,`Lid(_loc,""),p)
+            (* {| ? ($p) |} *)
+        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
+            `OptLablExpr(_loc,`Lid(_loc,""),p,e)
+            (* {| ? ($p = $e) |} *)
+   ]
        sem_patt:
        [`Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
        | patt{p1}; ";"; S{p2} -> {| $p1; $p2 |} 
@@ -870,10 +902,10 @@ let apply () = begin
           (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |} *)
             `Ant (_loc,mk_anti ~c:"override_flag" n s)
       | "val" -> {:override_flag||}   ] 
-      opt_as_lident:
-      [ "as"; a_lident{i} -> `Some (i)
-      | -> `None
-      | `Ant ((""|"as") as n,s) -> `Ant(_loc, mk_anti n s)] 
+      (* opt_as_lident: *)
+      (* [ "as"; a_lident{i} -> `Some (i) *)
+      (* | -> `None *)
+      (* | `Ant ((""|"as") as n,s) -> `Ant(_loc, mk_anti n s)]  *)
 
       direction_flag:
       [ "to" -> {:direction_flag| to |}
