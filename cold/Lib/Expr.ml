@@ -4,16 +4,6 @@ open LibUtil
 open Basic
 open FanUtil
 open EP
-let rec sep_dot_expr acc =
-  function
-  | `Dot (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1
-  | `Id (loc,`Uid (_,s)) as e ->
-      (match acc with
-       | [] -> [(loc, [], e)]
-       | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
-  | `Id (_loc,(`Dot (_l,_,_) as i)) ->
-      sep_dot_expr acc (Ident.normalize_acc i)
-  | e -> ((loc_of e), [], e) :: acc
 let rec pattern_eq_expression p e =
   match (p, e) with
   | (`Id (_loc,`Lid (_,a)),`Id (_,`Lid (_,b)))

@@ -1189,16 +1189,19 @@ let apply_ctyp () = begin
         (* {| $(anti:mk_anti n s) |} *)
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
       | "'"; a_lident{i} ->
-          `Quote(_loc,`Normal _loc, `Some i)
+          (* `Quote(_loc,`Normal _loc, `Some i) *)
+          `Quote(_loc,`Normal _loc, i)
           (* {| '$i |} *)
-      | "+"; "'"; a_lident{i} -> `Quote (_loc, `Positive _loc, (`Some i))
+      | "+"; "'"; a_lident{i} ->
+          `Quote (_loc, `Positive _loc,  i)
+          (* `Quote (_loc, `Positive _loc, (`Some i)) *)
           (* {| +'$i |} *)
       | "-"; "'"; a_lident{i} ->
-          `Quote (_loc, (`Negative _loc), (`Some i))
+          `Quote (_loc, (`Negative _loc),  i)
           (* {| -'$i |} *)
-      | "+"; "_" -> `Quote (_loc, (`Positive _loc), `None)
+      | "+"; "_" -> `QuoteAny (_loc, `Positive _loc)
           (* {| + _|} *)
-      | "-"; "_" -> `Quote (_loc, (`Negative _loc), `None)
+      | "-"; "_" -> `QuoteAny (_loc, `Negative _loc)
           (* {| - _ |} *)
       | "_" ->  `Any _loc (* {| _ |} *)]
       type_longident_and_parameters:
@@ -1284,7 +1287,8 @@ let apply_ctyp () = begin
       | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
       | `Ant(("list" as n),s) ->     {| $(anti:mk_anti ~c:"forall" n s)|}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_lident{i} -> {| '$i |}]
+      | "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc, i)
+            (* {| '$i |} *)]
       ctyp:
       {
        "alias" LA
@@ -1309,7 +1313,7 @@ let apply_ctyp () = begin
               `Id (_loc, (`Dot (_loc, (ident_of_ctyp t1), (ident_of_ctyp t2))))
             with [ Invalid_argument s -> raise (XStream.Error s) ] ]
        "simple"
-        [ "'"; a_lident{i} ->  `Quote (_loc, (`Normal _loc), (`Some i))
+        [ "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc,  i)
         | "_" -> `Any _loc
         | `Ant ((""|"typ"|"anti"|"tup" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp" n s))
         | `Ant (("id" as n),s) -> `Id (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))))

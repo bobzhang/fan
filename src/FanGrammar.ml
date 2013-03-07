@@ -3,7 +3,7 @@ open FanOps;
 (* open FanAst; *)
 
 
-{:fans| keep on;  derive (MetaExpr (* MetaPatt *));|};
+(* {:fans| keep on;  derive (MetaExpr);|}; *)
 {:ocaml|
 (* every entry has a name *)  
 type name  = {
@@ -17,7 +17,7 @@ type name  = {
 type styp =
  [= `Id of (loc * ident )
  | `App of (loc * styp * styp)
- | `Quote of (loc * position_flag * meta_option alident)
+ | `Quote of (loc * position_flag * (* meta_option *) alident)
  | `Self of (loc * string)
  | `Tok of loc
  | `Type of ctyp ];
@@ -84,14 +84,14 @@ and text =
 ];
   |};
 
-module Expr = struct
-  open Filters.ME;
-  __MetaExpr__;
-end;
-module Patt = struct
-  open Filters.MP;
-  __MetaExpr__;
-end;
+(* module Expr = struct *)
+(*   open Filters.ME; *)
+(*   __MetaExpr__; *)
+(* end; *)
+(* module Patt = struct *)
+(*   open Filters.MP; *)
+(*   __MetaExpr__; *)
+(* end; *)
 type used = [ Unused | UsedScanned | UsedNotScanned ];
 
 type simple_patt =

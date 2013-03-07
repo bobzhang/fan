@@ -13,6 +13,7 @@ let loc_of =
   | `ArrayDot (_loc,_,_) -> _loc
   | `Directive (_loc,_,_) -> _loc
   | `TypeSubst (_loc,_,_) -> _loc
+  | `QuoteAny (_loc,_) -> _loc
   | `TyEq (_loc,_,_) -> _loc
   | `ModuleBind (_loc,_,_,_) -> _loc
   | `Sta (_loc,_,_) -> _loc

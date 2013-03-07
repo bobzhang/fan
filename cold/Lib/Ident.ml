@@ -1,10 +1,5 @@
 open AstLoc
 open LibUtil
-let rec normalize_acc =
-  function
-  | `Dot (_loc,i1,i2) -> `Dot (_loc, (normalize_acc i1), (normalize_acc i2))
-  | `App (_loc,i1,i2) -> `App (_loc, (normalize_acc i1), (normalize_acc i2))
-  | `Ant (_loc,_)|`Uid (_loc,_)|`Lid (_loc,_) as i -> `Id (_loc, i)
 let rec to_lid =
   function
   | `Dot (_loc,_,i) -> to_lid i

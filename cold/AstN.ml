@@ -34,10 +34,12 @@ type ctyp =
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
   | `OptLabl of (alident* ctyp) | sid | `TyObj of (name_ctyp* row_var_flag)
   | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
-  | `Quote of (position_flag* alident meta_option) | `Tup of ctyp
-  | `Sta of (ctyp* ctyp) | `PolyEq of row_field | `PolySup of row_field
-  | `PolyInf of row_field | `PolyInfSup of (row_field* tag_names)
-  | `Package of module_type | ant] 
+  | `Quote of (position_flag* alident) | `QuoteAny of position_flag
+  | `Tup of ctyp | `Sta of (ctyp* ctyp) | `PolyEq of row_field
+  | `PolySup of row_field | `PolyInf of row_field
+  | `PolyInfSup of (row_field* tag_names) | `Package of module_type | 
+    ant]
+  
 and type_parameters =
   [ `Com of (type_parameters* type_parameters) | `Ctyp of ctyp | ant | nil] 
 and row_field =
@@ -51,15 +53,15 @@ and typedecl =
 and type_info =
   [ `TyMan of (ctyp* private_flag* type_repr)
   | `TyRepr of (private_flag* type_repr) | `TyEq of (private_flag* ctyp)
-  | ant_nil] 
-and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | ant_nil] 
+  | ant | nil] 
+and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | ant | nil] 
 and name_ctyp =
   [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp)
-  | `TyColMut of (sid* ctyp) | ant_nil] 
+  | `TyColMut of (sid* ctyp) | ant | nil] 
 and or_ctyp =
   [ `Or of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (sid* ctyp)
   | sid | ant_nil] 
-and of_ctyp = [ `Of of (sid* ctyp) | sid | ant_nil] 
+and of_ctyp = [ `Of of (sid* ctyp) | sid | ant | nil] 
 and patt =
   [ nil | sid | `App of (patt* patt) | `Vrn of string | `Com of (patt* patt)
   | `Sem of (patt* patt) | `Tup of patt | any | `Record of rec_patt | 

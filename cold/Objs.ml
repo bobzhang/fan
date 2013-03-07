@@ -298,8 +298,10 @@ class map2 =
         | (`Quote (_a0,_a1,_a2),`Quote (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#position_flag _a1 _b1 in
-            let _a2 = self#meta_option (fun self  -> self#alident) _a2 _b2 in
-            `Quote (_a0, _a1, _a2)
+            let _a2 = self#alident _a2 _b2 in `Quote (_a0, _a1, _a2)
+        | (`QuoteAny (_a0,_a1),`QuoteAny (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#position_flag _a1 _b1 in `QuoteAny (_a0, _a1)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in `Tup (_a0, _a1)
@@ -413,8 +415,10 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#private_flag _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `TyEq (_a0, _a1, _a2)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 : ant_nil  :>type_info)
+        | ((#ant as _a0),(#ant as _b0)) ->
+            (self#ant _a0 _b0 : ant  :>type_info)
+        | ((#nil as _a0),(#nil as _b0)) ->
+            (self#nil _a0 _b0 : nil  :>type_info)
         | (_,_) -> invalid_arg "map2 failure"
     method type_repr : type_repr -> type_repr -> type_repr=
       fun _a0  _b0  ->
@@ -425,8 +429,10 @@ class map2 =
         | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#or_ctyp _a1 _b1 in `Sum (_a0, _a1)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 : ant_nil  :>type_repr)
+        | ((#ant as _a0),(#ant as _b0)) ->
+            (self#ant _a0 _b0 : ant  :>type_repr)
+        | ((#nil as _a0),(#nil as _b0)) ->
+            (self#nil _a0 _b0 : nil  :>type_repr)
         | (_,_) -> invalid_arg "map2 failure"
     method name_ctyp : name_ctyp -> name_ctyp -> name_ctyp=
       fun _a0  _b0  ->
@@ -443,8 +449,10 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#sid _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `TyColMut (_a0, _a1, _a2)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 : ant_nil  :>name_ctyp)
+        | ((#ant as _a0),(#ant as _b0)) ->
+            (self#ant _a0 _b0 : ant  :>name_ctyp)
+        | ((#nil as _a0),(#nil as _b0)) ->
+            (self#nil _a0 _b0 : nil  :>name_ctyp)
         | (_,_) -> invalid_arg "map2 failure"
     method or_ctyp : or_ctyp -> or_ctyp -> or_ctyp=
       fun _a0  _b0  ->
@@ -475,8 +483,10 @@ class map2 =
             let _a2 = self#ctyp _a2 _b2 in `Of (_a0, _a1, _a2)
         | ((#sid as _a0),(#sid as _b0)) ->
             (self#sid _a0 _b0 : sid  :>of_ctyp)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 : ant_nil  :>of_ctyp)
+        | ((#ant as _a0),(#ant as _b0)) ->
+            (self#ant _a0 _b0 : ant  :>of_ctyp)
+        | ((#nil as _a0),(#nil as _b0)) ->
+            (self#nil _a0 _b0 : nil  :>of_ctyp)
         | (_,_) -> invalid_arg "map2 failure"
     method patt : patt -> patt -> patt=
       fun _a0  _b0  ->
@@ -1446,8 +1456,9 @@ class fold2 =
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
         | (`Quote (_a0,_a1,_a2),`Quote (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#position_flag _a1 _b1 in
-            self#meta_option (fun self  -> self#alident) _a2 _b2
+            let self = self#position_flag _a1 _b1 in self#alident _a2 _b2
+        | (`QuoteAny (_a0,_a1),`QuoteAny (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#position_flag _a1 _b1
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`Sta (_a0,_a1,_a2),`Sta (_b0,_b1,_b2)) ->
@@ -1539,8 +1550,8 @@ class fold2 =
         | (`TyEq (_a0,_a1,_a2),`TyEq (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#private_flag _a1 _b1 in self#ctyp _a2 _b2
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'self_type)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method type_repr : type_repr -> type_repr -> 'self_type=
       fun _a0  _b0  ->
@@ -1549,8 +1560,8 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#name_ctyp _a1 _b1
         | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#or_ctyp _a1 _b1
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'self_type)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method name_ctyp : name_ctyp -> name_ctyp -> 'self_type=
       fun _a0  _b0  ->
@@ -1564,8 +1575,8 @@ class fold2 =
         | (`TyColMut (_a0,_a1,_a2),`TyColMut (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'self_type)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method or_ctyp : or_ctyp -> or_ctyp -> 'self_type=
       fun _a0  _b0  ->
@@ -1590,8 +1601,8 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'self_type)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method patt : patt -> patt -> 'self_type=
       fun _a0  _b0  ->
@@ -2288,9 +2299,8 @@ class iter =
       | `TyTypePol (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Quote (_a0,_a1,_a2) ->
-          (self#loc _a0;
-           self#position_flag _a1;
-           self#meta_option (fun self  -> self#alident) _a2)
+          (self#loc _a0; self#position_flag _a1; self#alident _a2)
+      | `QuoteAny (_a0,_a1) -> (self#loc _a0; self#position_flag _a1)
       | `Tup (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `Sta (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `PolyEq (_a0,_a1) -> (self#loc _a0; self#row_field _a1)
@@ -2345,12 +2355,14 @@ class iter =
           (self#loc _a0; self#private_flag _a1; self#type_repr _a2)
       | `TyEq (_a0,_a1,_a2) ->
           (self#loc _a0; self#private_flag _a1; self#ctyp _a2)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result143)
+      | #ant as _a0 -> (self#ant _a0 :>'result143)
+      | #nil as _a0 -> (self#nil _a0 :>'result143)
     method type_repr : type_repr -> 'result144=
       function
       | `Record (_a0,_a1) -> (self#loc _a0; self#name_ctyp _a1)
       | `Sum (_a0,_a1) -> (self#loc _a0; self#or_ctyp _a1)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result144)
+      | #ant as _a0 -> (self#ant _a0 :>'result144)
+      | #nil as _a0 -> (self#nil _a0 :>'result144)
     method name_ctyp : name_ctyp -> 'result145=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -2358,7 +2370,8 @@ class iter =
       | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | `TyColMut (_a0,_a1,_a2) ->
           (self#loc _a0; self#sid _a1; self#ctyp _a2)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result145)
+      | #ant as _a0 -> (self#ant _a0 :>'result145)
+      | #nil as _a0 -> (self#nil _a0 :>'result145)
     method or_ctyp : or_ctyp -> 'result146=
       function
       | `Or (_a0,_a1,_a2) ->
@@ -2371,7 +2384,8 @@ class iter =
       function
       | `Of (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | #sid as _a0 -> (self#sid _a0 :>'result147)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result147)
+      | #ant as _a0 -> (self#ant _a0 :>'result147)
+      | #nil as _a0 -> (self#nil _a0 :>'result147)
     method patt : patt -> 'result148=
       function
       | #nil as _a0 -> (self#nil _a0 :>'result148)
@@ -2956,8 +2970,10 @@ class map =
       | `Quote (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#position_flag _a1 in
-          let _a2 = self#meta_option (fun self  -> self#alident) _a2 in
-          `Quote (_a0, _a1, _a2)
+          let _a2 = self#alident _a2 in `Quote (_a0, _a1, _a2)
+      | `QuoteAny (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#position_flag _a1 in `QuoteAny (_a0, _a1)
       | `Tup (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in `Tup (_a0, _a1)
@@ -3053,7 +3069,8 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#private_flag _a1 in
           let _a2 = self#ctyp _a2 in `TyEq (_a0, _a1, _a2)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>type_info)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>type_info)
+      | #nil as _a0 -> (self#nil _a0 : nil  :>type_info)
     method type_repr : type_repr -> type_repr=
       function
       | `Record (_a0,_a1) ->
@@ -3062,7 +3079,8 @@ class map =
       | `Sum (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#or_ctyp _a1 in `Sum (_a0, _a1)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>type_repr)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>type_repr)
+      | #nil as _a0 -> (self#nil _a0 : nil  :>type_repr)
     method name_ctyp : name_ctyp -> name_ctyp=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -3077,7 +3095,8 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `TyColMut (_a0, _a1, _a2)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>name_ctyp)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>name_ctyp)
+      | #nil as _a0 -> (self#nil _a0 : nil  :>name_ctyp)
     method or_ctyp : or_ctyp -> or_ctyp=
       function
       | `Or (_a0,_a1,_a2) ->
@@ -3101,7 +3120,8 @@ class map =
           let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `Of (_a0, _a1, _a2)
       | #sid as _a0 -> (self#sid _a0 : sid  :>of_ctyp)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>of_ctyp)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>of_ctyp)
+      | #nil as _a0 -> (self#nil _a0 : nil  :>of_ctyp)
     method patt : patt -> patt=
       function
       | #nil as _a0 -> (self#nil _a0 : nil  :>patt)
@@ -3916,8 +3936,9 @@ class fold =
           let self = self#ctyp _a1 in self#ctyp _a2
       | `Quote (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#position_flag _a1 in
-          self#meta_option (fun self  -> self#alident) _a2
+          let self = self#position_flag _a1 in self#alident _a2
+      | `QuoteAny (_a0,_a1) ->
+          let self = self#loc _a0 in self#position_flag _a1
       | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `Sta (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -3982,12 +4003,14 @@ class fold =
       | `TyEq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#private_flag _a1 in self#ctyp _a2
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'self_type)
+      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method type_repr : type_repr -> 'self_type=
       function
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
       | `Sum (_a0,_a1) -> let self = self#loc _a0 in self#or_ctyp _a1
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'self_type)
+      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method name_ctyp : name_ctyp -> 'self_type=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -3997,7 +4020,8 @@ class fold =
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | `TyColMut (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'self_type)
+      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method or_ctyp : or_ctyp -> 'self_type=
       function
       | `Or (_a0,_a1,_a2) ->
@@ -4014,7 +4038,8 @@ class fold =
       | `Of (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'self_type)
+      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method patt : patt -> 'self_type=
       function
       | #nil as _a0 -> (self#nil _a0 :>'self_type)
@@ -4710,8 +4735,10 @@ class print =
               self#ctyp _a1 self#ctyp _a2
         | `Quote (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" self#loc _a0
+              self#position_flag _a1 self#alident _a2
+        | `QuoteAny (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`QuoteAny@ %a@ %a)@]" self#loc _a0
               self#position_flag _a1
-              (self#meta_option (fun self  -> self#alident)) _a2
         | `Tup (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#ctyp
               _a1
@@ -4798,7 +4825,8 @@ class print =
         | `TyEq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyEq@ %a@ %a@ %a)@]" self#loc _a0
               self#private_flag _a1 self#ctyp _a2
-        | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result311)
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result311)
+        | #nil as _a0 -> (self#nil fmt _a0 :>'result311)
     method type_repr : 'fmt -> type_repr -> 'result312=
       fun fmt  ->
         function
@@ -4808,7 +4836,8 @@ class print =
         | `Sum (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" self#loc _a0
               self#or_ctyp _a1
-        | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result312)
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result312)
+        | #nil as _a0 -> (self#nil fmt _a0 :>'result312)
     method name_ctyp : 'fmt -> name_ctyp -> 'result313=
       fun fmt  ->
         function
@@ -4821,7 +4850,8 @@ class print =
         | `TyColMut (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" self#loc _a0
               self#sid _a1 self#ctyp _a2
-        | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result313)
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result313)
+        | #nil as _a0 -> (self#nil fmt _a0 :>'result313)
     method or_ctyp : 'fmt -> or_ctyp -> 'result314=
       fun fmt  ->
         function
@@ -4843,7 +4873,8 @@ class print =
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" self#loc _a0
               self#sid _a1 self#ctyp _a2
         | #sid as _a0 -> (self#sid fmt _a0 :>'result315)
-        | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result315)
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result315)
+        | #nil as _a0 -> (self#nil fmt _a0 :>'result315)
     method patt : 'fmt -> patt -> 'result316=
       fun fmt  ->
         function
@@ -5624,7 +5655,9 @@ class eq =
               (self#ctyp _a2 _b2)
         | (`Quote (_a0,_a1,_a2),`Quote (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#position_flag _a1 _b1)) &&
-              (self#meta_option (fun self  -> self#alident) _a2 _b2)
+              (self#alident _a2 _b2)
+        | (`QuoteAny (_a0,_a1),`QuoteAny (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#position_flag _a1 _b1)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Sta (_a0,_a1,_a2),`Sta (_b0,_b1,_b2)) ->
@@ -5714,8 +5747,8 @@ class eq =
         | (`TyEq (_a0,_a1,_a2),`TyEq (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#private_flag _a1 _b1)) &&
               (self#ctyp _a2 _b2)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'result367)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result367)
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result367)
         | (_,_) -> false
     method type_repr : type_repr -> type_repr -> 'result368=
       fun _a0  _b0  ->
@@ -5724,8 +5757,8 @@ class eq =
             (self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#or_ctyp _a1 _b1)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'result368)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result368)
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result368)
         | (_,_) -> false
     method name_ctyp : name_ctyp -> name_ctyp -> 'result369=
       fun _a0  _b0  ->
@@ -5737,8 +5770,8 @@ class eq =
             ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | (`TyColMut (_a0,_a1,_a2),`TyColMut (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'result369)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result369)
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result369)
         | (_,_) -> false
     method or_ctyp : or_ctyp -> or_ctyp -> 'result370=
       fun _a0  _b0  ->
@@ -5760,8 +5793,8 @@ class eq =
         | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result371)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'result371)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result371)
+        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result371)
         | (_,_) -> false
     method patt : patt -> patt -> 'result372=
       fun _a0  _b0  ->
@@ -6453,8 +6486,9 @@ let rec strip_loc_ctyp =
       let _a2 = strip_loc_ctyp _a2 in `TyTypePol (_a1, _a2)
   | `Quote (_a0,_a1,_a2) ->
       let _a1 = strip_loc_position_flag _a1 in
-      let _a2 = strip_loc_meta_option strip_loc_alident _a2 in
-      `Quote (_a1, _a2)
+      let _a2 = strip_loc_alident _a2 in `Quote (_a1, _a2)
+  | `QuoteAny (_a0,_a1) ->
+      let _a1 = strip_loc_position_flag _a1 in `QuoteAny _a1
   | `Tup (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Tup _a1
   | `Sta (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
@@ -6521,12 +6555,14 @@ and strip_loc_type_info =
   | `TyEq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_private_flag _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyEq (_a1, _a2)
-  | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result436)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result436)
+  | #nil as _a0 -> (strip_loc_nil _a0 :>'result436)
 and strip_loc_type_repr =
   function
   | `Record (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `Record _a1
   | `Sum (_a0,_a1) -> let _a1 = strip_loc_or_ctyp _a1 in `Sum _a1
-  | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result435)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result435)
+  | #nil as _a0 -> (strip_loc_nil _a0 :>'result435)
 and strip_loc_name_ctyp =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -6538,7 +6574,8 @@ and strip_loc_name_ctyp =
   | `TyColMut (_a0,_a1,_a2) ->
       let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyColMut (_a1, _a2)
-  | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result434)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result434)
+  | #nil as _a0 -> (strip_loc_nil _a0 :>'result434)
 and strip_loc_or_ctyp =
   function
   | `Or (_a0,_a1,_a2) ->
@@ -6558,7 +6595,8 @@ and strip_loc_of_ctyp =
       let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result432)
-  | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result432)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result432)
+  | #nil as _a0 -> (strip_loc_nil _a0 :>'result432)
 and strip_loc_patt =
   function
   | #nil as _a0 -> (strip_loc_nil _a0 :>'result431)
@@ -7214,8 +7252,10 @@ let rec pp_print_ctyp fmt =
         pp_print_ctyp _a1 pp_print_ctyp _a2
   | `Quote (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Quote@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_position_flag _a1 (pp_print_meta_option pp_print_alident)
-        _a2
+        pp_print_position_flag _a1 pp_print_alident _a2
+  | `QuoteAny (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`QuoteAny@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_position_flag _a1
   | `Tup (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1
@@ -7297,7 +7337,8 @@ and pp_print_type_info fmt =
   | `TyEq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyEq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_private_flag _a1 pp_print_ctyp _a2
-  | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result490)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result490)
+  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result490)
 and pp_print_type_repr fmt =
   function
   | `Record (_a0,_a1) ->
@@ -7306,7 +7347,8 @@ and pp_print_type_repr fmt =
   | `Sum (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" pp_print_loc _a0
         pp_print_or_ctyp _a1
-  | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result489)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result489)
+  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result489)
 and pp_print_name_ctyp fmt =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -7318,7 +7360,8 @@ and pp_print_name_ctyp fmt =
   | `TyColMut (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sid _a1 pp_print_ctyp _a2
-  | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result488)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result488)
+  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result488)
 and pp_print_or_ctyp fmt =
   function
   | `Or (_a0,_a1,_a2) ->
@@ -7338,7 +7381,8 @@ and pp_print_of_ctyp fmt =
       Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sid _a1 pp_print_ctyp _a2
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result486)
-  | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result486)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result486)
+  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result486)
 and pp_print_patt fmt =
   function
   | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result485)

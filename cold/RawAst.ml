@@ -1,21 +1,16 @@
-type loc = FanLoc.t 
-type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
-type nil = [ `Nil of loc] 
-type ant_nil = [ ant | nil] 
+type nil = [ `Nil] 
 type literal =
-  [ `Chr of (loc* string) | `Int of (loc* string) | `Int32 of (loc* string)
-  | `Int64 of (loc* string) | `Flo of (loc* string)
-  | `NativeInt of (loc* string) | `Str of (loc* string)] 
-type rec_flag = [ `Recursive of loc | `ReNil of loc | ant] 
-type direction_flag = [ `To of loc | `Downto of loc | ant] 
-type mutable_flag = [ `Mutable of loc | `MuNil of loc | ant] 
-type private_flag = [ `Private of loc | `PrNil of loc | ant] 
-type virtual_flag = [ `Virtual of loc | `ViNil of loc | ant] 
-type override_flag = [ `Override of loc | `OvNil of loc | ant] 
-type row_var_flag = [ `RowVar of loc | `RvNil of loc | ant] 
-type position_flag =
-  [ `Positive of loc | `Negative of loc | `Normal of loc | ant] 
-type meta_bool = [ `True of loc | `False of loc | ant] 
+  [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
+  | `Flo of string | `NativeInt of string | `Str of string] 
+type rec_flag = [ `Recursive | `ReNil] 
+type direction_flag = [ `To | `Downto] 
+type mutable_flag = [ `Mutable | `MuNil] 
+type private_flag = [ `Private | `PrNil] 
+type virtual_flag = [ `Virtual | `ViNil] 
+type override_flag = [ `Override | `OvNil] 
+type row_var_flag = [ `RowVar | `RvNil] 
+type position_flag = [ `Positive | `Negative | `Normal] 
+type meta_bool = [ `True | `False] 
 type 'a meta_option = [ `None | `Some of 'a | ant] 
 type 'a meta_list = [ `LNil | `LCons of ('a* 'a meta_list) | ant] 
 type alident = [ `Lid of (loc* string) | ant] 
@@ -37,8 +32,8 @@ type ctyp =
   | `Label of (loc* alident* ctyp) | `OptLabl of (loc* alident* ctyp) | 
     sid
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
-  | `TyTypePol of (loc* ctyp* ctyp) | `Quote of (loc* position_flag* alident)
-  | `QuoteAny of (loc* position_flag) | `Tup of (loc* ctyp)
+  | `TyTypePol of (loc* ctyp* ctyp)
+  | `Quote of (loc* position_flag* alident meta_option) | `Tup of (loc* ctyp)
   | `Sta of (loc* ctyp* ctyp) | `PolyEq of (loc* row_field)
   | `PolySup of (loc* row_field) | `PolyInf of (loc* row_field)
   | `PolyInfSup of (loc* row_field* tag_names)

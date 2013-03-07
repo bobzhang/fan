@@ -281,8 +281,12 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Quote")), (meta_loc _loc _a0))),
-                   (meta_position_flag _loc _a1))),
-              (meta_meta_option meta_alident _loc _a2))
+                   (meta_position_flag _loc _a1))), (meta_alident _loc _a2))
+      | `QuoteAny (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "QuoteAny")), (meta_loc _loc _a0))),
+              (meta_position_flag _loc _a1))
       | `Tup (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
@@ -441,7 +445,8 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "TyEq")), (meta_loc _loc _a0))),
                    (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result45)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result45)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result45)
     and meta_type_repr _loc =
       function
       | `Record (_a0,_a1) ->
@@ -453,7 +458,8 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Sum")), (meta_loc _loc _a0))),
               (meta_or_ctyp _loc _a1))
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result44)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result44)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result44)
     and meta_name_ctyp _loc =
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -478,7 +484,8 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc, (`Vrn (_loc, "TyColMut")), (meta_loc _loc _a0))),
                    (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result43)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result43)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result43)
     and meta_or_ctyp _loc =
       function
       | `Or (_a0,_a1,_a2) ->
@@ -514,7 +521,8 @@ module Make(MetaLoc:META_LOC) =
                    (`App (_loc, (`Vrn (_loc, "Of")), (meta_loc _loc _a0))),
                    (meta_sid _loc _a1))), (meta_ctyp _loc _a2))
       | #sid as _a0 -> (meta_sid _loc _a0 :>'result41)
-      | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result41)
+      | #ant as _a0 -> (meta_ant _loc _a0 :>'result41)
+      | #nil as _a0 -> (meta_nil _loc _a0 :>'result41)
     and meta_patt _loc =
       function
       | #nil as _a0 -> (meta_nil _loc _a0 :>'result40)

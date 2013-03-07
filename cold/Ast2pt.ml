@@ -1,7 +1,6 @@
 open Parsetree
 open Longident
 open Asttypes
-open Lib
 open LibUtil
 open FanUtil
 open ParsetreeHelper
@@ -9,6 +8,20 @@ open FanLoc
 open FanOps
 open AstLoc
 open FanObjs
+let rec normalize_acc =
+  function
+  | `Dot (_loc,i1,i2) -> `Dot (_loc, (normalize_acc i1), (normalize_acc i2))
+  | `App (_loc,i1,i2) -> `App (_loc, (normalize_acc i1), (normalize_acc i2))
+  | `Ant (_loc,_)|`Uid (_loc,_)|`Lid (_loc,_) as i -> `Id (_loc, i)
+let rec sep_dot_expr acc =
+  function
+  | `Dot (_loc,e1,e2) -> sep_dot_expr (sep_dot_expr acc e2) e1
+  | `Id (loc,`Uid (_,s)) as e ->
+      (match acc with
+       | [] -> [(loc, [], e)]
+       | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
+  | `Id (_loc,(`Dot (_l,_,_) as i)) -> sep_dot_expr acc (normalize_acc i)
+  | e -> ((loc_of e), [], e) :: acc
 let mkvirtual: virtual_flag -> Asttypes.virtual_flag =
   function
   | `Virtual _ -> Virtual
@@ -116,8 +129,15 @@ let rec ctyp (x : ctyp) =
   | `Package (_loc,pt) ->
       let (i,cs) = package_type pt in mktyp _loc (Ptyp_package (i, cs))
   | `TyPol (loc,t1,t2) ->
-      mktyp loc (Ptyp_poly ((Ctyp.to_var_list t1), (ctyp t2)))
-  | `Quote (_loc,`Normal _,`Some `Lid (_,s)) -> mktyp _loc (Ptyp_var s)
+      let rec to_var_list =
+        function
+        | `App (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
+        | `Quote (_loc,`Normal _,`Lid (_,s))
+          |`Quote (_loc,`Positive _,`Lid (_,s))
+          |`Quote (_loc,`Negative _,`Lid (_,s)) -> [s]
+        | _ -> assert false in
+      mktyp loc (Ptyp_poly ((to_var_list t1), (ctyp t2)))
+  | `Quote (_loc,`Normal _,`Lid (_,s)) -> mktyp _loc (Ptyp_var s)
   | `Tup (loc,`Sta (_,t1,t2)) ->
       mktyp loc
         (Ptyp_tuple (List.map ctyp (list_of_star' t1 (list_of_star' t2 []))))
@@ -128,8 +148,13 @@ let rec ctyp (x : ctyp) =
   | `PolyInf (_loc,t) ->
       mktyp _loc (Ptyp_variant ((row_field t []), true, (Some [])))
   | `PolyInfSup (_loc,t,t') ->
+      let rec name_tags (x : tag_names) =
+        match x with
+        | `App (_,t1,t2) -> (name_tags t1) @ (name_tags t2)
+        | `TyVrn (_,`C (_,s)) -> [s]
+        | _ -> assert false in
       mktyp _loc
-        (Ptyp_variant ((row_field t []), true, (Some (Ctyp.name_tags t'))))
+        (Ptyp_variant ((row_field t []), true, (Some (name_tags t'))))
   | x -> errorf (loc_of x) "ctyp: %s" (dump_ctyp x)
 and row_field (x : row_field) acc =
   match x with
@@ -240,20 +265,22 @@ let paolab (lab : string) (p : patt) =
    | _ -> lab : string )
 let quote_map (x : ctyp) =
   match x with
-  | `Quote (_loc,p,s) ->
+  | `Quote (_loc,p,`Lid (sloc,s)) ->
       let tuple =
         match p with
         | `Positive _ -> (true, false)
         | `Negative _ -> (false, true)
         | `Normal _ -> (false, false)
         | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
-      let s =
-        match s with
-        | `None -> None
-        | `Some `Lid (sloc,s) -> Some (s +> sloc)
-        | `Some `Ant (_loc,_)|`Ant (_loc,_) ->
-            error _loc "antiquotation not expected here" in
-      (s, tuple)
+      ((Some (s +> sloc)), tuple)
+  | `QuoteAny (_loc,p) ->
+      let tuple =
+        match p with
+        | `Positive _ -> (true, false)
+        | `Negative _ -> (false, true)
+        | `Normal _ -> (false, false)
+        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+      (None, tuple)
   | t -> errorf (loc_of x) "quote_map %s" (dump_ctyp t)
 let optional_type_parameters (t : ctyp) =
   List.map quote_map (list_of_app' t [])
@@ -422,7 +449,7 @@ let rec expr (x : expr) =
   match x with
   | `Dot (_loc,_,_)|`Id (_loc,`Dot _) ->
       let (e,l) =
-        match Expr.sep_dot_expr [] x with
+        match sep_dot_expr [] x with
         | (loc,ml,`Id (sloc,`Uid (_,s)))::l ->
             ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)
         | (loc,ml,`Id (sloc,`Lid (_,s)))::l ->
@@ -951,7 +978,11 @@ and class_sig_item (c : class_sig_item) (l : class_type_field list) =
 and class_expr (x : Ast.class_expr) =
   match x with
   | `CeApp (loc,_,_) as c ->
-      let (ce,el) = ClassExpr.view_app [] c in
+      let rec view_app al =
+        function
+        | `CeApp (_loc,ce,a) -> view_app (a :: al) ce
+        | ce -> (ce, al) in
+      let (ce,el) = view_app [] c in
       let el = List.map label_expr el in
       mkcl loc (Pcl_apply ((class_expr ce), el))
   | `CeCon (loc,`ViNil _,id,tl) ->

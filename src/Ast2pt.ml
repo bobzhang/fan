@@ -1,8 +1,12 @@
 
+
+(*
+  Dump the FanAst to Parsetree, this file should
+  introduce minimal dependency or only dependent on those generated files
+ *)  
 open Parsetree;
 open Longident;
 open Asttypes;
-open Lib;
 open LibUtil;
 open FanUtil;
 open ParsetreeHelper;
@@ -11,6 +15,57 @@ open FanOps;
 open AstLoc;
 open FanObjs;
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
+
+
+(*
+  {[
+  
+  ]}
+ *)
+let rec normalize_acc = with ident fun
+  [ {| $i1.$i2 |} ->
+    {:expr| $(normalize_acc i1).$(normalize_acc i2) |}
+  | {| ($i1 $i2) |} ->
+      {:expr| $(normalize_acc i1) $(normalize_acc i2) |}
+  | {| $anti:_ |} | {@_loc| $uid:_ |} |
+    {@_loc| $lid:_ |} as i -> {:expr| $id:i |} ];
+
+(*
+  The input is either {|$_.$_|} or {|$(id:{:ident| $_.$_|})|}
+  the type of return value and [acc] is
+  [(loc* string list * expr) list]
+
+  The [string list] is generally a module path, the [expr] is the last field
+
+  Examples:
+
+  {[
+  sep_dot_expr [] {|A.B.g.U.E.h.i|};
+  - : (loc * string list * expr) list =
+  [(, ["A"; "B"], ExId (, Lid (, "g")));
+  (, ["U"; "E"], ExId (, Lid (, "h"))); (, [], ExId (, Lid (, "i")))]
+
+  sep_dot_expr [] {|A.B.g.i|};
+  - : (loc * string list * expr) list =
+  [(, ["A"; "B"], ExId (, Lid (, "g"))); (, [], ExId (, Lid (, "i")))]
+
+  sep_dot_expr [] {|$(uid:"").i|};
+  - : (loc * string list * expr) list =
+  [(, [""], ExId (, Lid (, "i")))]
+
+  ]}
+ *)
+
+let rec sep_dot_expr acc = with expr fun
+  [ {| $e1.$e2|} ->
+    sep_dot_expr (sep_dot_expr acc e2) e1
+  | {@loc| $uid:s |} as e ->
+      match acc with
+      [ [] -> [(loc, [], e)]
+      | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
+  | {| $(id:({:ident@_l| $_.$_ |} as i)) |} ->
+      sep_dot_expr acc (normalize_acc i)
+  | e -> [(loc_of e, [], e) :: acc] ];
 
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
   [ `Virtual _ -> Virtual
@@ -155,8 +210,18 @@ let rec ctyp (x:ctyp) = match x with
   | `Package(_loc,pt) ->
       let (i, cs) = package_type pt in
       mktyp _loc (Ptyp_package i cs)
-  | `TyPol (loc, t1, t2) -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
-  | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) -> mktyp _loc (Ptyp_var s)
+  | `TyPol (loc, t1, t2) ->
+      let rec to_var_list  =
+        function
+          [ `App (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
+          | `Quote (_loc,`Normal _, `Lid (_,s))
+          |`Quote (_loc,`Positive _, `Lid (_,s))
+          |`Quote (_loc,`Negative _, `Lid (_,s)) -> [s]
+          | _ -> assert false] in 
+      mktyp loc (Ptyp_poly (to_var_list t1) (ctyp t2))
+  (* QuoteAny should not appear here? *)      
+  | `Quote (_loc,`Normal _, `Lid(_,s)) -> mktyp _loc (Ptyp_var s)
+  (* | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) -> mktyp _loc (Ptyp_var s) *)
   | `Tup(loc,`Sta(_,t1,t2)) ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_star' t1 (list_of_star' t2 []))))
   | `PolyEq(_loc,t) ->
@@ -166,7 +231,12 @@ let rec ctyp (x:ctyp) = match x with
   | `PolyInf(_loc,t) ->
       mktyp _loc (Ptyp_variant (row_field t []) true (Some []))
   | `PolyInfSup(_loc,t,t') ->
-      mktyp _loc (Ptyp_variant (row_field t []) true (Some (Ctyp.name_tags t')))
+      let rec name_tags (x:tag_names) =
+        match x with 
+        [ `App(_,t1,t2) -> name_tags t1 @ name_tags t2
+        | `TyVrn (_, `C (_,s))    -> [s]
+        | _ -> assert false ] in 
+      mktyp _loc (Ptyp_variant (row_field t []) true (Some (name_tags t')))
   |  x -> errorf (loc_of x) "ctyp: %s" (dump_ctyp x) ]
 and row_field (x:row_field) acc =
   match x with 
@@ -333,19 +403,27 @@ let paolab (lab:string) (p:patt) : string =
 
 let quote_map (x:ctyp) =
   match x with
-  [`Quote (_loc,p,s) ->
+  [`Quote (_loc,p,`Lid(sloc,s)) ->
     let tuple = match p with
     [`Positive _ -> (true,false)
     |`Negative _ -> (false,true)
     |`Normal _ -> (false,false)
     |`Ant (_loc,_) -> ANT_ERROR ] in
-    let s =
-    match s with
-    [`None  -> None
-    |`Some (`Lid (sloc,s)) -> Some (s+>sloc)
-    |`Some (`Ant(_loc,_))
-    |`Ant (_loc,_) -> ANT_ERROR] in
-    (s,tuple)
+    (Some (s+>sloc),tuple)
+    (* let s = *)
+    (* match s with *)
+    (* [`None  -> None *)
+    (* |`Some (`Lid (sloc,s)) -> Some (s+>sloc) *)
+    (* |`Some (`Ant(_loc,_)) *)
+    (* |`Ant (_loc,_) -> ANT_ERROR] in *)
+    (* (s,tuple) *)
+  |`QuoteAny(_loc,p) ->
+    let tuple = match p with
+      [`Positive _ -> (true,false)
+      |`Negative _ -> (false,true)
+      |`Normal _ -> (false,false)
+      |`Ant (_loc,_) -> ANT_ERROR ] in
+      (None,tuple)
   | t ->
       errorf (loc_of x) "quote_map %s" (dump_ctyp t)]  ;
     
@@ -539,7 +617,7 @@ let rec expr (x : expr) = with expr match x with
   [ `Dot(_loc,_,_)|
     `Id(_loc,`Dot _ ) ->
       let (e, l) =
-        match Expr.sep_dot_expr [] x with
+        match sep_dot_expr [] x with
         [ [(loc, ml, `Id(sloc,`Uid(_,s))) :: l] ->
           (mkexp loc (Pexp_construct (mkli sloc  s ml) None false(* ca *)), l)
         | [(loc, ml, `Id(sloc,`Lid(_,s))) :: l] ->
@@ -1048,7 +1126,9 @@ and class_sig_item (c:class_sig_item) (l: list class_type_field) : list class_ty
     | t -> errorf (loc_of t) "class_sig_item :%s" (dump_class_sig_item t) ]
 and class_expr  (x:Ast.class_expr) = match x with 
   [ `CeApp (loc, _, _) as c ->
-    let (ce, el) = ClassExpr.view_app [] c in
+    let rec view_app al =
+      function [ `CeApp (_loc,ce,a) -> view_app [a :: al] ce | ce -> (ce, al) ]in
+    let (ce, el) = view_app [] c in
     let el = List.map label_expr el in
     mkcl loc (Pcl_apply (class_expr ce) el)
   | `CeCon (loc, `ViNil _, id,tl) ->

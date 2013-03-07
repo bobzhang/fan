@@ -27,7 +27,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
     with patt
     fun
     [`Ant(_loc, {cxt;sep;decorations;content=code}) ->
-      let mloc _loc =LocPatt.meta_loc (* MetaLocQuotation.meta_loc_patt *) _loc _loc in
+      let mloc _loc =LocPatt.meta_loc  _loc _loc in
       let e = parse_patt _loc code in
       match (decorations,cxt,sep) with
       [("anti",_,_) -> {| `Ant ($(mloc _loc), $e) |}

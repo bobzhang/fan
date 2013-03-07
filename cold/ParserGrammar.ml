@@ -701,16 +701,14 @@ let _ =
          `Slist1sep
            ((`Snterm (Gram.obj (rule : 'rule Gram.t ))), (`Skeyword "|"));
          `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  (rl : 'rule list)  _  (_loc : FanLoc.t)  ->\n     (let rl = retype_rule_list_without_patterns _loc rl in\n      let t = new_type_var () in\n      mk_symbol ~text:(`Srules (_loc, (mk_srules _loc t rl \"\")))\n        ~styp:(`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, t)))))\n        ~pattern:None : 'symbol ))\n",
+          ("Gram.mk_action\n  (fun _  (rl : 'rule list)  _  (_loc : FanLoc.t)  ->\n     (let rl = retype_rule_list_without_patterns _loc rl in\n      let t = new_type_var () in\n      mk_symbol ~text:(`Srules (_loc, (mk_srules _loc t rl \"\")))\n        ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, t)))) ~pattern:None : \n     'symbol ))\n",
             (Gram.mk_action
                (fun _  (rl : 'rule list)  _  (_loc : FanLoc.t)  ->
                   (let rl = retype_rule_list_without_patterns _loc rl in
                    let t = new_type_var () in
                    mk_symbol ~text:(`Srules (_loc, (mk_srules _loc t rl "")))
-                     ~styp:(`Quote
-                              (_loc, (`Normal _loc),
-                                (`Some (`Lid (_loc, t))))) ~pattern:None : 
-                  'symbol )))));
+                     ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, t))))
+                     ~pattern:None : 'symbol )))));
         ([`Snterm (Gram.obj (simple_patt : 'simple_patt Gram.t ))],
           ("Gram.mk_action\n  (fun (p : 'simple_patt)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Expr.filter_patt_with_captured_variables (p : simple_patt  :>patt) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 `App\n                   (_loc,\n                     (`App (_loc, (`Id (_loc, (`Lid (_loc, \"&&\")))), acc)),\n                     (`App\n                        (_loc,\n                          (`App (_loc, (`Id (_loc, (`Lid (_loc, \"=\")))), x)),\n                          y))))\n              (`App\n                 (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"=\")))), x)),\n                   y)) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
             (Gram.mk_action
@@ -772,13 +770,12 @@ let _ =
                          match (__fan_1, __fan_0) with
                          | (`STR (_,s),`Uid "Level") -> (s : 'e__11 )
                          | _ -> failwith "s\n"))))])],
-          ("Gram.mk_action\n  (fun (lev : 'e__11 option)  (n : 'name)  (_loc : FanLoc.t)  ->\n     (mk_symbol ~text:(`Snterm (_loc, n, lev))\n        ~styp:(`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (n.tvar))))))\n        ~pattern:None : 'symbol ))\n",
+          ("Gram.mk_action\n  (fun (lev : 'e__11 option)  (n : 'name)  (_loc : FanLoc.t)  ->\n     (mk_symbol ~text:(`Snterm (_loc, n, lev))\n        ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n        ~pattern:None : 'symbol ))\n",
             (Gram.mk_action
                (fun (lev : 'e__11 option)  (n : 'name)  (_loc : FanLoc.t)  ->
                   (mk_symbol ~text:(`Snterm (_loc, n, lev))
                      ~styp:(`Quote
-                              (_loc, (`Normal _loc),
-                                (`Some (`Lid (_loc, (n.tvar))))))
+                              (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))
                      ~pattern:None : 'symbol )))));
         ([`Stoken
             (((function | `Ant (("nt"|""),_) -> true | _ -> false)),
@@ -798,7 +795,7 @@ let _ =
                          match (__fan_1, __fan_0) with
                          | (`STR (_,s),`Uid "Level") -> (s : 'e__12 )
                          | _ -> failwith "s\n"))))])],
-          ("Gram.mk_action\n  (fun (lev : 'e__12 option)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) \n     ->\n     match __fan_0 with\n     | `Ant ((\"nt\"|\"\"),s) ->\n         (let i = parse_ident _loc s in\n          let n = mk_name _loc i in\n          mk_symbol ~text:(`Snterm (_loc, n, lev))\n            ~styp:(`Quote\n                     (_loc, (`Normal _loc), (`Some (`Lid (_loc, (n.tvar))))))\n            ~pattern:None : 'symbol )\n     | _ ->\n         failwith\n           \"let i = parse_ident _loc s in\nlet n = mk_name _loc i in\nmk_symbol ~text:(`Snterm (_loc, n, lev))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (n.tvar))))))\n  ~pattern:None\n\")\n",
+          ("Gram.mk_action\n  (fun (lev : 'e__12 option)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) \n     ->\n     match __fan_0 with\n     | `Ant ((\"nt\"|\"\"),s) ->\n         (let i = parse_ident _loc s in\n          let n = mk_name _loc i in\n          mk_symbol ~text:(`Snterm (_loc, n, lev))\n            ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n            ~pattern:None : 'symbol )\n     | _ ->\n         failwith\n           \"let i = parse_ident _loc s in\nlet n = mk_name _loc i in\nmk_symbol ~text:(`Snterm (_loc, n, lev))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n  ~pattern:None\n\")\n",
             (Gram.mk_action
                (fun (lev : 'e__12 option)  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
@@ -809,11 +806,11 @@ let _ =
                        mk_symbol ~text:(`Snterm (_loc, n, lev))
                          ~styp:(`Quote
                                   (_loc, (`Normal _loc),
-                                    (`Some (`Lid (_loc, (n.tvar))))))
-                         ~pattern:None : 'symbol )
+                                    (`Lid (_loc, (n.tvar))))) ~pattern:None : 
+                      'symbol )
                   | _ ->
                       failwith
-                        "let i = parse_ident _loc s in\nlet n = mk_name _loc i in\nmk_symbol ~text:(`Snterm (_loc, n, lev))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (n.tvar))))))\n  ~pattern:None\n"))));
+                        "let i = parse_ident _loc s in\nlet n = mk_name _loc i in\nmk_symbol ~text:(`Snterm (_loc, n, lev))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n  ~pattern:None\n"))));
         ([`Skeyword "("; `Sself; `Skeyword ")"],
           ("Gram.mk_action\n  (fun _  (s : 'symbol)  _  (_loc : FanLoc.t)  -> (s : 'symbol ))\n",
             (Gram.mk_action
@@ -1054,23 +1051,3 @@ let _ = AstQuotation.of_expr ~name:(d, "extend") ~entry:extend_body
 let _ = AstQuotation.of_expr ~name:(d, "delete") ~entry:delete_rule_body
 let _ = AstQuotation.of_expr ~name:(d, "clear") ~entry:nonterminalsclear
 let _ = AstQuotation.of_str_item ~name:(d, "create") ~entry:nonterminals
-let _ =
-  AstQuotation.add_quotation (d, "rule") rule
-    ~mexpr:FanGrammar.Expr.meta_rule ~mpatt:FanGrammar.Patt.meta_rule
-    ~expr_filter:(fun x  -> (x : ep  :>expr))
-    ~patt_filter:(fun x  -> (x : ep  :>patt))
-let _ =
-  AstQuotation.add_quotation (d, "entry") entry
-    ~mexpr:FanGrammar.Expr.meta_entry ~mpatt:FanGrammar.Patt.meta_entry
-    ~expr_filter:(fun x  -> (x : ep  :>expr))
-    ~patt_filter:(fun x  -> (x : ep  :>patt))
-let _ =
-  AstQuotation.add_quotation (d, "level") level
-    ~mexpr:FanGrammar.Expr.meta_level ~mpatt:FanGrammar.Patt.meta_level
-    ~expr_filter:(fun x  -> (x : ep  :>expr))
-    ~patt_filter:(fun x  -> (x : ep  :>patt))
-let _ =
-  AstQuotation.add_quotation (d, "symbol") psymbol
-    ~mexpr:FanGrammar.Expr.meta_symbol ~mpatt:FanGrammar.Patt.meta_symbol
-    ~expr_filter:(fun x  -> (x : ep  :>expr))
-    ~patt_filter:(fun x  -> (x : ep  :>patt))

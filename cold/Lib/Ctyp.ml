@@ -2,18 +2,6 @@ open AstLoc
 open LibUtil
 open Basic
 open FSig
-let rec to_var_list =
-  function
-  | `App (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
-  | `Quote (_loc,`Normal _,`Some `Lid (_,s))
-    |`Quote (_loc,`Positive _,`Some `Lid (_,s))
-    |`Quote (_loc,`Negative _,`Some `Lid (_,s)) -> [s]
-  | _ -> assert false
-let rec name_tags (x : tag_names) =
-  match x with
-  | `App (_,t1,t2) -> (name_tags t1) @ (name_tags t2)
-  | `TyVrn (_,`C (_,s)) -> [s]
-  | _ -> assert false
 let arrow a b = let _loc = a <+> b in `Arrow (_loc, a, b)
 let (|->) = arrow
 let arrow_of_list = List.reduce_right arrow
@@ -22,8 +10,8 @@ let (<+) names ty =
   List.fold_right
     (fun name  acc  ->
        `Arrow
-         (_loc, (`Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, name))))),
-           acc)) names ty
+         (_loc, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, name)))), acc))
+    names ty
 let (+>) params base = List.fold_right arrow params base
 let name_length_of_tydcl (x : typedecl) =
   match x with
@@ -35,16 +23,13 @@ let gen_quantifiers ~arity  n =
       (fun i  ->
          List.init n
            (fun j  ->
-              `Quote
-                (_loc, (`Normal _loc),
-                  (`Some (`Lid (_loc, (allx ~off:i j))))))))
+              `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:i j)))))))
      |> List.concat)
     |> appl_of_list
 let of_id_len ~off  (id,len) =
   appl_of_list ((`Id (_loc, id)) ::
     (List.init len
-       (fun i  ->
-          `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, (allx ~off i))))))))
+       (fun i  -> `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off i)))))))
 let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
 let ty_name_of_tydcl (x : typedecl) =
@@ -77,11 +62,9 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    let result_type =
      `Quote
        (_loc, (`Normal _loc),
-         (`Some
-            (`Lid (_loc, ("result" ^ (string_of_int result_id.contents)))))) in
+         (`Lid (_loc, ("result" ^ (string_of_int result_id.contents))))) in
    let _ = incr result_id in
-   let self_type =
-     `Quote (_loc, (`Normal _loc), (`Some (`Lid (_loc, "self_type")))) in
+   let self_type = `Quote (_loc, (`Normal _loc), (`Lid (_loc, "self_type"))) in
    let (quant,dst) =
      match k with
      | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
@@ -96,16 +79,14 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
               (List.init number
                  (fun _  ->
                     `Quote
-                      (_loc, (`Normal _loc),
-                        (`Some (`Lid (_loc, (allx ~off:0 i))))))) in
+                      (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:0 i)))))) in
           match k with
           | Obj u ->
               let dst =
                 match u with
                 | Map  ->
                     `Quote
-                      (_loc, (`Normal _loc),
-                        (`Some (`Lid (_loc, (allx ~off:1 i)))))
+                      (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:1 i))))
                 | Iter  -> result_type
                 | Fold  -> self_type in
               self_type |-> (prefix <+ (app_src dst))
@@ -130,8 +111,7 @@ let mk_obj class_name base body =
                 (`Constraint
                    (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
                      (`Quote
-                        (_loc, (`Normal _loc),
-                          (`Some (`Lid (_loc, "self_type"))))))),
+                        (_loc, (`Normal _loc), (`Lid (_loc, "self_type")))))),
                 (`Sem
                    (_loc,
                      (`Inherit

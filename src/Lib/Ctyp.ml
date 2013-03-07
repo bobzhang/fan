@@ -7,21 +7,13 @@ open Basic;
 open FSig;
 
 
-let rec to_var_list =  fun
-  [ {| $t1 $t2 |} ->
-    to_var_list t1 @ to_var_list t2
-  | {| '$lid:s |} | {| + '$lid:s |} | {| - '$lid:s |}  -> [s]
-  | _ -> assert false ];
+(* let rec to_var_list =  fun *)
+(*   [ {| $t1 $t2 |} -> *)
+(*     to_var_list t1 @ to_var_list t2 *)
+(*   | {| '$lid:s |} | {| + '$lid:s |} | {| - '$lid:s |}  -> [s] *)
+(*   | _ -> assert false ]; *)
 
 
-let rec name_tags (x:tag_names) =
-  match x with 
-  [ `App(_,t1,t2) (* {| $t1 $t2 |} *) -> name_tags t1 @ name_tags t2
-  | (* {| `$s |} *)
-    `TyVrn (_, `C (_,s))
-    -> [s]
-
-  | _ -> assert false ];
 
 
   

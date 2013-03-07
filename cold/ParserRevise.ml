@@ -5779,34 +5779,34 @@ let apply_ctyp () =
                   | _ ->
                       failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
         ([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), (`Some i)) : 'type_parameter ))\n",
+          ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), i) : 'type_parameter ))\n",
             (Gram.mk_action
                (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                  (`Quote (_loc, (`Normal _loc), (`Some i)) : 'type_parameter )))));
+                  (`Quote (_loc, (`Normal _loc), i) : 'type_parameter )))));
         ([`Skeyword "+";
          `Skeyword "'";
          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Positive _loc), (`Some i)) : 'type_parameter ))\n",
+          ("Gram.mk_action\n  (fun (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Positive _loc), i) : 'type_parameter ))\n",
             (Gram.mk_action
                (fun (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->
-                  (`Quote (_loc, (`Positive _loc), (`Some i)) : 'type_parameter )))));
+                  (`Quote (_loc, (`Positive _loc), i) : 'type_parameter )))));
         ([`Skeyword "-";
          `Skeyword "'";
          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Negative _loc), (`Some i)) : 'type_parameter ))\n",
+          ("Gram.mk_action\n  (fun (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Negative _loc), i) : 'type_parameter ))\n",
             (Gram.mk_action
                (fun (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->
-                  (`Quote (_loc, (`Negative _loc), (`Some i)) : 'type_parameter )))));
+                  (`Quote (_loc, (`Negative _loc), i) : 'type_parameter )))));
         ([`Skeyword "+"; `Skeyword "_"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Positive _loc), `None) : 'type_parameter ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (`QuoteAny (_loc, (`Positive _loc)) : 'type_parameter ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (`Quote (_loc, (`Positive _loc), `None) : 'type_parameter )))));
+                  (`QuoteAny (_loc, (`Positive _loc)) : 'type_parameter )))));
         ([`Skeyword "-"; `Skeyword "_"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Negative _loc), `None) : 'type_parameter ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (`QuoteAny (_loc, (`Negative _loc)) : 'type_parameter ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (`Quote (_loc, (`Negative _loc), `None) : 'type_parameter )))));
+                  (`QuoteAny (_loc, (`Negative _loc)) : 'type_parameter )))));
         ([`Skeyword "_"],
           ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'type_parameter ))\n",
             (Gram.mk_action
@@ -6220,10 +6220,10 @@ let apply_ctyp () =
                   | _ ->
                       failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
         ([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), (`Some i)) : 'typevars ))\n",
+          ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), i) : 'typevars ))\n",
             (Gram.mk_action
                (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                  (`Quote (_loc, (`Normal _loc), (`Some i)) : 'typevars )))))]));
+                  (`Quote (_loc, (`Normal _loc), i) : 'typevars )))))]));
   Gram.extend (ctyp : 'ctyp Gram.t )
     (None,
       [((Some "alias"), (Some `LA),
@@ -6313,10 +6313,10 @@ let apply_ctyp () =
                    'ctyp )))))]);
       ((Some "simple"), None,
         [([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), (`Some i)) : 'ctyp ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), i) : 'ctyp ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                   (`Quote (_loc, (`Normal _loc), (`Some i)) : 'ctyp )))));
+                   (`Quote (_loc, (`Normal _loc), i) : 'ctyp )))));
         ([`Skeyword "_"],
           ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'ctyp ))\n",
             (Gram.mk_action

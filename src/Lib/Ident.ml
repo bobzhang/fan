@@ -3,18 +3,6 @@
 open AstLoc;
 open LibUtil;
 
-(*
-  {[
-  
-  ]}
- *)
-let rec normalize_acc =fun
-  [ {| $i1.$i2 |} ->
-    {:expr| $(normalize_acc i1).$(normalize_acc i2) |}
-  | {| ($i1 $i2) |} ->
-      {:expr| $(normalize_acc i1) $(normalize_acc i2) |}
-  | {| $anti:_ |} | {@_loc| $uid:_ |} |
-    {@_loc| $lid:_ |} as i -> {:expr| $id:i |} ];
 
 
 let rec to_lid = fun

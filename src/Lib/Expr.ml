@@ -14,42 +14,6 @@ open FanUtil;
 open EP;
 
 
-(*
-  The input is either {|$_.$_|} or {|$(id:{:ident| $_.$_|})|}
-  the type of return value and [acc] is
-  [(loc* string list * expr) list]
-
-  The [string list] is generally a module path, the [expr] is the last field
-
-  Examples:
-
-  {[
-  sep_dot_expr [] {|A.B.g.U.E.h.i|};
-  - : (loc * string list * expr) list =
-  [(, ["A"; "B"], ExId (, Lid (, "g")));
-  (, ["U"; "E"], ExId (, Lid (, "h"))); (, [], ExId (, Lid (, "i")))]
-
-  sep_dot_expr [] {|A.B.g.i|};
-  - : (loc * string list * expr) list =
-  [(, ["A"; "B"], ExId (, Lid (, "g"))); (, [], ExId (, Lid (, "i")))]
-
-  sep_dot_expr [] {|$(uid:"").i|};
-  - : (loc * string list * expr) list =
-  [(, [""], ExId (, Lid (, "i")))]
-
-  ]}
- *)
-
-let rec sep_dot_expr acc = fun
-  [ {| $e1.$e2|} ->
-    sep_dot_expr (sep_dot_expr acc e2) e1
-  | {@loc| $uid:s |} as e ->
-      match acc with
-      [ [] -> [(loc, [], e)]
-      | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
-  | {| $(id:({:ident@_l| $_.$_ |} as i)) |} ->
-      sep_dot_expr acc (Ident.normalize_acc i)
-  | e -> [(loc_of e, [], e) :: acc] ];
 
 
 

@@ -1,8 +1,8 @@
 open Ast
   
-val sep_dot_expr :
-  (loc * string list * expr) list ->
-  expr -> (loc * string list * expr) list
+(* val sep_dot_expr : *)
+(*   (loc * string list * expr) list -> *)
+(*   expr -> (loc * string list * expr) list *)
 
 (* val mksequence : ?loc:loc -> expr -> expr *)
 
