@@ -1016,15 +1016,13 @@ and class_str_item (c : class_str_item) l =
   | `Nil _ -> l
   | `Eq (loc,t1,t2) -> (mkcf loc (Pcf_constr ((ctyp t1), (ctyp t2)))) :: l
   | `Sem (_,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
-  | `Inherit (loc,ov,ce,pb) ->
-      let opb =
-        match pb with
-        | `None -> None
-        | `Some `Lid (_,x) -> Some x
-        | `Some `Ant (_loc,_)|`Ant (_loc,_) ->
-            error _loc "antiquotation not allowed here" in
-      (mkcf loc (Pcf_inher ((override_flag loc ov), (class_expr ce), opb)))
-        :: l
+  | `Inherit (loc,ov,ce) ->
+      (mkcf loc (Pcf_inher ((override_flag loc ov), (class_expr ce), None)))
+      :: l
+  | `InheritAs (loc,ov,ce,`Lid (_,x)) ->
+      (mkcf loc
+         (Pcf_inher ((override_flag loc ov), (class_expr ce), (Some x))))
+      :: l
   | `Initializer (loc,e) -> (mkcf loc (Pcf_init (expr e))) :: l
   | `CrMth (loc,`Lid (sloc,s),ov,pf,e,t) ->
       let t = match t with | `Nil _ -> None | t -> Some (mkpolytype (ctyp t)) in

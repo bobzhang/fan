@@ -157,8 +157,8 @@ and class_expr =
   
 and class_str_item =
   [ nil | `Sem of (class_str_item* class_str_item) | `Eq of (ctyp* ctyp)
-  | `Inherit of (override_flag* class_expr* alident meta_option)
-  | `Initializer of expr
+  | `Inherit of (override_flag* class_expr)
+  | `InheritAs of (override_flag* class_expr* alident) | `Initializer of expr
   | `CrMth of (alident* override_flag* private_flag* expr* ctyp)
   | `CrVal of (alident* override_flag* mutable_flag* expr)
   | `CrVir of (alident* private_flag* ctyp)

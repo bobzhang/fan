@@ -281,9 +281,8 @@ and patt =
   | `Lazy of (loc * patt) (* lazy p *)
 
   (* (module M : ty ) *)      
-  | `ModuleUnpack of (loc * auident (* * meta_option ctyp *))
-  | `ModuleConstraint of (loc * auident * ctyp)
- ]
+  | `ModuleUnpack of (loc * auident)
+  | `ModuleConstraint of (loc * auident * ctyp) ]
 and rec_patt =
   [= nil
   | `RecBind of (loc * ident * patt)
@@ -543,7 +542,8 @@ and class_str_item =
         (* type t = t *)
   | `Eq of (loc * ctyp * ctyp)
         (* inherit(!)? ce (as s)? *)
-  | `Inherit of (loc * override_flag * class_expr * meta_option alident)
+  | `Inherit of (loc * override_flag * class_expr (* * meta_option alident *))
+  | `InheritAs of (loc * override_flag * class_expr * alident)
       (* initializer e *)
   | `Initializer of (loc * expr)
         (* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)

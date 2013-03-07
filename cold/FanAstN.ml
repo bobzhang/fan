@@ -668,9 +668,11 @@ class eq =
             (self#class_str_item _a0 _b0) && (self#class_str_item _a1 _b1)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
-        | (`Inherit (_a0,_a1,_a2),`Inherit (_b0,_b1,_b2)) ->
+        | (`Inherit (_a0,_a1),`Inherit (_b0,_b1)) ->
+            (self#override_flag _a0 _b0) && (self#class_expr _a1 _b1)
+        | (`InheritAs (_a0,_a1,_a2),`InheritAs (_b0,_b1,_b2)) ->
             ((self#override_flag _a0 _b0) && (self#class_expr _a1 _b1)) &&
-              (self#meta_option (fun self  -> self#alident) _a2 _b2)
+              (self#alident _a2 _b2)
         | (`Initializer _a0,`Initializer _b0) -> self#expr _a0 _b0
         | (`CrMth (_a0,_a1,_a2,_a3,_a4),`CrMth (_b0,_b1,_b2,_b3,_b4)) ->
             ((((self#alident _a0 _b0) && (self#override_flag _a1 _b1)) &&
@@ -1478,10 +1480,12 @@ class print =
         | `Eq (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
-        | `Inherit (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]"
-              self#override_flag _a0 self#class_expr _a1
-              (self#meta_option (fun self  -> self#alident)) _a2
+        | `Inherit (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a)@]" self#override_flag
+              _a0 self#class_expr _a1
+        | `InheritAs (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a)@]"
+              self#override_flag _a0 self#class_expr _a1 self#alident _a2
         | `Initializer _a0 ->
             Format.fprintf fmt "@[<1>(`Initializer@ %a)@]" self#expr _a0
         | `CrMth (_a0,_a1,_a2,_a3,_a4) ->
@@ -2475,16 +2479,21 @@ and meta_class_str_item _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_ctyp _loc _a0))),
           (meta_ctyp _loc _a1))
-  | `Inherit (_a0,_a1,_a2) ->
+  | `Inherit (_a0,_a1) ->
+      `App
+        (_loc,
+          (`App
+             (_loc, (`Vrn (_loc, "Inherit")), (meta_override_flag _loc _a0))),
+          (meta_class_expr _loc _a1))
+  | `InheritAs (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
                (`App
-                  (_loc, (`Vrn (_loc, "Inherit")),
+                  (_loc, (`Vrn (_loc, "InheritAs")),
                     (meta_override_flag _loc _a0))),
-               (meta_class_expr _loc _a1))),
-          (meta_meta_option meta_alident _loc _a2))
+               (meta_class_expr _loc _a1))), (meta_alident _loc _a2))
   | `Initializer _a0 ->
       `App (_loc, (`Vrn (_loc, "Initializer")), (meta_expr _loc _a0))
   | `CrMth (_a0,_a1,_a2,_a3,_a4) ->

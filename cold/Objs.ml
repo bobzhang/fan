@@ -1129,12 +1129,15 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `Eq (_a0, _a1, _a2)
-        | (`Inherit (_a0,_a1,_a2,_a3),`Inherit (_b0,_b1,_b2,_b3)) ->
+        | (`Inherit (_a0,_a1,_a2),`Inherit (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#override_flag _a1 _b1 in
+            let _a2 = self#class_expr _a2 _b2 in `Inherit (_a0, _a1, _a2)
+        | (`InheritAs (_a0,_a1,_a2,_a3),`InheritAs (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#override_flag _a1 _b1 in
             let _a2 = self#class_expr _a2 _b2 in
-            let _a3 = self#meta_option (fun self  -> self#alident) _a3 _b3 in
-            `Inherit (_a0, _a1, _a2, _a3)
+            let _a3 = self#alident _a3 _b3 in `InheritAs (_a0, _a1, _a2, _a3)
         | (`Initializer (_a0,_a1),`Initializer (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in `Initializer (_a0, _a1)
@@ -2085,11 +2088,13 @@ class fold2 =
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
-        | (`Inherit (_a0,_a1,_a2,_a3),`Inherit (_b0,_b1,_b2,_b3)) ->
+        | (`Inherit (_a0,_a1,_a2),`Inherit (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#override_flag _a1 _b1 in self#class_expr _a2 _b2
+        | (`InheritAs (_a0,_a1,_a2,_a3),`InheritAs (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#override_flag _a1 _b1 in
-            let self = self#class_expr _a2 _b2 in
-            self#meta_option (fun self  -> self#alident) _a3 _b3
+            let self = self#class_expr _a2 _b2 in self#alident _a3 _b3
         | (`Initializer (_a0,_a1),`Initializer (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#expr _a1 _b1
         | (`CrMth (_a0,_a1,_a2,_a3,_a4,_a5),`CrMth (_b0,_b1,_b2,_b3,_b4,_b5))
@@ -2709,11 +2714,13 @@ class iter =
       | `Sem (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_str_item _a1; self#class_str_item _a2)
       | `Eq (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
-      | `Inherit (_a0,_a1,_a2,_a3) ->
+      | `Inherit (_a0,_a1,_a2) ->
+          (self#loc _a0; self#override_flag _a1; self#class_expr _a2)
+      | `InheritAs (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#override_flag _a1;
            self#class_expr _a2;
-           self#meta_option (fun self  -> self#alident) _a3)
+           self#alident _a3)
       | `Initializer (_a0,_a1) -> (self#loc _a0; self#expr _a1)
       | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
           (self#loc _a0;
@@ -3694,12 +3701,15 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
           let _a2 = self#ctyp _a2 in `Eq (_a0, _a1, _a2)
-      | `Inherit (_a0,_a1,_a2,_a3) ->
+      | `Inherit (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#override_flag _a1 in
+          let _a2 = self#class_expr _a2 in `Inherit (_a0, _a1, _a2)
+      | `InheritAs (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#override_flag _a1 in
           let _a2 = self#class_expr _a2 in
-          let _a3 = self#meta_option (fun self  -> self#alident) _a3 in
-          `Inherit (_a0, _a1, _a2, _a3)
+          let _a3 = self#alident _a3 in `InheritAs (_a0, _a1, _a2, _a3)
       | `Initializer (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in `Initializer (_a0, _a1)
@@ -4457,11 +4467,13 @@ class fold =
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
-      | `Inherit (_a0,_a1,_a2,_a3) ->
+      | `Inherit (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#override_flag _a1 in self#class_expr _a2
+      | `InheritAs (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#override_flag _a1 in
-          let self = self#class_expr _a2 in
-          self#meta_option (fun self  -> self#alident) _a3
+          let self = self#class_expr _a2 in self#alident _a3
       | `Initializer (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
       | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
           let self = self#loc _a0 in
@@ -5360,10 +5372,13 @@ class print =
         | `Eq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
-        | `Inherit (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#override_flag _a1 self#class_expr _a2
-              (self#meta_option (fun self  -> self#alident)) _a3
+        | `Inherit (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]" self#loc _a0
+              self#override_flag _a1 self#class_expr _a2
+        | `InheritAs (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a@ %a)@]" 
+              self#loc _a0 self#override_flag _a1 self#class_expr _a2
+              self#alident _a3
         | `Initializer (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" self#loc _a0
               self#expr _a1
@@ -6277,10 +6292,13 @@ class eq =
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
-        | (`Inherit (_a0,_a1,_a2,_a3),`Inherit (_b0,_b1,_b2,_b3)) ->
+        | (`Inherit (_a0,_a1,_a2),`Inherit (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#override_flag _a1 _b1)) &&
+              (self#class_expr _a2 _b2)
+        | (`InheritAs (_a0,_a1,_a2,_a3),`InheritAs (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#override_flag _a1 _b1)) &&
                (self#class_expr _a2 _b2))
-              && (self#meta_option (fun self  -> self#alident) _a3 _b3)
+              && (self#alident _a3 _b3)
         | (`Initializer (_a0,_a1),`Initializer (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#expr _a1 _b1)
         | (`CrMth (_a0,_a1,_a2,_a3,_a4,_a5),`CrMth (_b0,_b1,_b2,_b3,_b4,_b5))
@@ -7017,11 +7035,13 @@ and strip_loc_class_str_item =
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
-  | `Inherit (_a0,_a1,_a2,_a3) ->
+  | `Inherit (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_override_flag _a1 in
+      let _a2 = strip_loc_class_expr _a2 in `Inherit (_a1, _a2)
+  | `InheritAs (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_override_flag _a1 in
       let _a2 = strip_loc_class_expr _a2 in
-      let _a3 = strip_loc_meta_option strip_loc_alident _a3 in
-      `Inherit (_a1, _a2, _a3)
+      let _a3 = strip_loc_alident _a3 in `InheritAs (_a1, _a2, _a3)
   | `Initializer (_a0,_a1) ->
       let _a1 = strip_loc_expr _a1 in `Initializer _a1
   | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
@@ -7861,10 +7881,13 @@ and pp_print_class_str_item fmt =
   | `Eq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
-  | `Inherit (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Inherit (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_override_flag _a1 pp_print_class_expr _a2
-        (pp_print_meta_option pp_print_alident) _a3
+  | `InheritAs (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a@ %a)@]" pp_print_loc
+        _a0 pp_print_override_flag _a1 pp_print_class_expr _a2
+        pp_print_alident _a3
   | `Initializer (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" pp_print_loc _a0
         pp_print_expr _a1

@@ -93,6 +93,7 @@ let loc_of =
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
   | `Record (_loc,_) -> _loc
+  | `InheritAs (_loc,_,_,_) -> _loc
   | `Constraint (_loc,_,_) -> _loc
   | `Ant (_loc,_) -> _loc
   | `Package_expr (_loc,_) -> _loc
@@ -144,7 +145,7 @@ let loc_of =
   | `CtSig (_loc,_,_) -> _loc
   | `SigInherit (_loc,_) -> _loc
   | `ModuleType (_loc,_,_) -> _loc
-  | `Inherit (_loc,_,_,_) -> _loc
+  | `Inherit (_loc,_,_) -> _loc
   | `MuNil _loc -> _loc
   | `Method (_loc,_,_,_) -> _loc
   | `Module (_loc,_,_) -> _loc

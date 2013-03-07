@@ -170,8 +170,8 @@ and class_expr =
   | `Eq of (loc* class_expr* class_expr) | ant] 
 and class_str_item =
   [ nil | `Sem of (loc* class_str_item* class_str_item)
-  | `Eq of (loc* ctyp* ctyp)
-  | `Inherit of (loc* override_flag* class_expr* alident meta_option)
+  | `Eq of (loc* ctyp* ctyp) | `Inherit of (loc* override_flag* class_expr)
+  | `InheritAs of (loc* override_flag* class_expr* alident)
   | `Initializer of (loc* expr)
   | `CrMth of (loc* alident* override_flag* private_flag* expr* ctyp)
   | `CrVal of (loc* alident* override_flag* mutable_flag* expr)

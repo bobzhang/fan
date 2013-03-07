@@ -1046,8 +1046,12 @@ let apply () = begin
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"class_str_item" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_str_item_tag
-        | "inherit"; opt_override{o}; class_expr{ce}; opt_as_lident{pb} ->
-            {| inherit $!:o $ce $as:pb |}
+        | "inherit"; opt_override{o}; class_expr{ce}(* ; opt_as_lident{pb} *) ->
+            `Inherit(_loc,o,ce)
+            (* `InheritAs(_loc,o,ce,pb) *)
+            (* {| inherit $!:o $ce $as:pb |} *)
+        | "inherit"; opt_override{o}; class_expr{ce}; "as"; a_lident{i} ->
+            `InheritAs(_loc,o,ce,i)
         | value_val_opt_override{o}; opt_mutable{mf}; a_lident{lab}; cvalue_binding{e}
           ->
             {| val $override:o $mutable:mf $lab = $e |}

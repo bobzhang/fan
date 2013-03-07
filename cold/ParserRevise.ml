@@ -5079,13 +5079,22 @@ let apply () =
                          "AstQuotation.expand _loc x DynAst.class_str_item_tag\n"))));
          ([`Skeyword "inherit";
           `Snterm (Gram.obj (opt_override : 'opt_override Gram.t ));
-          `Snterm (Gram.obj (class_expr : 'class_expr Gram.t ));
-          `Snterm (Gram.obj (opt_as_lident : 'opt_as_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (pb : 'opt_as_lident)  (ce : 'class_expr)  (o : 'opt_override)  _ \n     (_loc : FanLoc.t)  -> (`Inherit (_loc, o, ce, pb) : 'class_str_item ))\n",
+          `Snterm (Gram.obj (class_expr : 'class_expr Gram.t ))],
+           ("Gram.mk_action\n  (fun (ce : 'class_expr)  (o : 'opt_override)  _  (_loc : FanLoc.t)  ->\n     (`Inherit (_loc, o, ce) : 'class_str_item ))\n",
              (Gram.mk_action
-                (fun (pb : 'opt_as_lident)  (ce : 'class_expr) 
+                (fun (ce : 'class_expr)  (o : 'opt_override)  _ 
+                   (_loc : FanLoc.t)  ->
+                   (`Inherit (_loc, o, ce) : 'class_str_item )))));
+         ([`Skeyword "inherit";
+          `Snterm (Gram.obj (opt_override : 'opt_override Gram.t ));
+          `Snterm (Gram.obj (class_expr : 'class_expr Gram.t ));
+          `Skeyword "as";
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (ce : 'class_expr)  (o : 'opt_override)  _ \n     (_loc : FanLoc.t)  -> (`InheritAs (_loc, o, ce, i) : 'class_str_item ))\n",
+             (Gram.mk_action
+                (fun (i : 'a_lident)  _  (ce : 'class_expr) 
                    (o : 'opt_override)  _  (_loc : FanLoc.t)  ->
-                   (`Inherit (_loc, o, ce, pb) : 'class_str_item )))));
+                   (`InheritAs (_loc, o, ce, i) : 'class_str_item )))));
          ([`Snterm
              (Gram.obj
                 (value_val_opt_override : 'value_val_opt_override Gram.t ));
