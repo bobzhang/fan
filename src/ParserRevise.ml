@@ -634,12 +634,15 @@ let apply () = begin
         | "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
             (* {| { $((pl : rec_patt :>patt)) } |} *)
         | "("; ")" -> {| () |}
-        | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
+        | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
+            (* {| (module $m) |} *)
 
         | "("; "module"; a_uident{m}; ":"; (* package_type *)module_type{pt}; ")" ->
-              {| ( module $m :  $pt )|}
+            `ModuleConstraint(_loc,m, `Package(_loc,pt))
+              (* {| ( module $m :  $pt )|} *)
         | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
-            {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|}
+            `ModuleConstraint (_loc, m, `Ant (_loc, (mk_anti n s)))
+            (* {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|} *)
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as";  a_lident{s}; ")" -> {| ($p as $s )|}
@@ -667,11 +670,14 @@ let apply () = begin
           (* {| { $((pl: rec_patt :>patt)) } |} *)
         | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
         | "("; ")" -> {| () |}
-        | "("; "module"; a_uident{m}; ")" -> {| (module $m) |}
+        | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
+            (* {| (module $m) |} *)
         | "("; "module"; a_uident{m}; ":"; (* package_type *)module_type{pt}; ")" ->
-              {| (module $m : $pt )|}
+             `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))
+              (* {| (module $m : $pt )|} *)
         | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
-            {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|}
+             `ModuleConstraint (_loc, m, (`Ant (_loc, (mk_anti n s))))
+            (* {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|} *)
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as"; a_lident{s}; ")" -> {| ($p as $s) |}

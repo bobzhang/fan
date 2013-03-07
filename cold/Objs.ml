@@ -553,11 +553,14 @@ class map2 =
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in `Lazy (_a0, _a1)
-        | (`ModuleUnpack (_a0,_a1,_a2),`ModuleUnpack (_b0,_b1,_b2)) ->
+        | (`ModuleUnpack (_a0,_a1),`ModuleUnpack (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#auident _a1 _b1 in `ModuleUnpack (_a0, _a1)
+        | (`ModuleConstraint (_a0,_a1,_a2),`ModuleConstraint (_b0,_b1,_b2))
+            ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#auident _a1 _b1 in
-            let _a2 = self#meta_option (fun self  -> self#ctyp) _a2 _b2 in
-            `ModuleUnpack (_a0, _a1, _a2)
+            let _a2 = self#ctyp _a2 _b2 in `ModuleConstraint (_a0, _a1, _a2)
         | (_,_) -> invalid_arg "map2 failure"
     method rec_patt : rec_patt -> rec_patt -> rec_patt=
       fun _a0  _b0  ->
@@ -1654,10 +1657,12 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#patt _a1 _b1
-        | (`ModuleUnpack (_a0,_a1,_a2),`ModuleUnpack (_b0,_b1,_b2)) ->
+        | (`ModuleUnpack (_a0,_a1),`ModuleUnpack (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#auident _a1 _b1
+        | (`ModuleConstraint (_a0,_a1,_a2),`ModuleConstraint (_b0,_b1,_b2))
+            ->
             let self = self#loc _a0 _b0 in
-            let self = self#auident _a1 _b1 in
-            self#meta_option (fun self  -> self#ctyp) _a2 _b2
+            let self = self#auident _a1 _b1 in self#ctyp _a2 _b2
         | (_,_) -> invalid_arg "fold2 failure"
     method rec_patt : rec_patt -> rec_patt -> 'self_type=
       fun _a0  _b0  ->
@@ -2415,10 +2420,9 @@ class iter =
           (self#loc _a0; self#patt _a1; self#ctyp _a2)
       | `ClassPath (_a0,_a1) -> (self#loc _a0; self#ident _a1)
       | `Lazy (_a0,_a1) -> (self#loc _a0; self#patt _a1)
-      | `ModuleUnpack (_a0,_a1,_a2) ->
-          (self#loc _a0;
-           self#auident _a1;
-           self#meta_option (fun self  -> self#ctyp) _a2)
+      | `ModuleUnpack (_a0,_a1) -> (self#loc _a0; self#auident _a1)
+      | `ModuleConstraint (_a0,_a1,_a2) ->
+          (self#loc _a0; self#auident _a1; self#ctyp _a2)
     method rec_patt : rec_patt -> 'result149=
       function
       | #nil as _a0 -> (self#nil _a0 :>'result149)
@@ -3185,11 +3189,13 @@ class map =
       | `Lazy (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in `Lazy (_a0, _a1)
-      | `ModuleUnpack (_a0,_a1,_a2) ->
+      | `ModuleUnpack (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#auident _a1 in `ModuleUnpack (_a0, _a1)
+      | `ModuleConstraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#meta_option (fun self  -> self#ctyp) _a2 in
-          `ModuleUnpack (_a0, _a1, _a2)
+          let _a2 = self#ctyp _a2 in `ModuleConstraint (_a0, _a1, _a2)
     method rec_patt : rec_patt -> rec_patt=
       function
       | #nil as _a0 -> (self#nil _a0 : nil  :>rec_patt)
@@ -4082,10 +4088,11 @@ class fold =
           let self = self#patt _a1 in self#ctyp _a2
       | `ClassPath (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
       | `Lazy (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
-      | `ModuleUnpack (_a0,_a1,_a2) ->
+      | `ModuleUnpack (_a0,_a1) ->
+          let self = self#loc _a0 in self#auident _a1
+      | `ModuleConstraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#auident _a1 in
-          self#meta_option (fun self  -> self#ctyp) _a2
+          let self = self#auident _a1 in self#ctyp _a2
     method rec_patt : rec_patt -> 'self_type=
       function
       | #nil as _a0 -> (self#nil _a0 :>'self_type)
@@ -4929,10 +4936,12 @@ class print =
         | `Lazy (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" self#loc _a0
               self#patt _a1
-        | `ModuleUnpack (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1
-              (self#meta_option (fun self  -> self#ctyp)) _a2
+        | `ModuleUnpack (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a)@]" self#loc _a0
+              self#auident _a1
+        | `ModuleConstraint (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
+              self#loc _a0 self#auident _a1 self#ctyp _a2
     method rec_patt : 'fmt -> rec_patt -> 'result317=
       fun fmt  ->
         function
@@ -5845,9 +5854,12 @@ class eq =
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#patt _a1 _b1)
-        | (`ModuleUnpack (_a0,_a1,_a2),`ModuleUnpack (_b0,_b1,_b2)) ->
+        | (`ModuleUnpack (_a0,_a1),`ModuleUnpack (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#auident _a1 _b1)
+        | (`ModuleConstraint (_a0,_a1,_a2),`ModuleConstraint (_b0,_b1,_b2))
+            ->
             ((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
-              (self#meta_option (fun self  -> self#ctyp) _a2 _b2)
+              (self#ctyp _a2 _b2)
         | (_,_) -> false
     method rec_patt : rec_patt -> rec_patt -> 'result373=
       fun _a0  _b0  ->
@@ -6639,10 +6651,11 @@ and strip_loc_patt =
       let _a2 = strip_loc_ctyp _a2 in `Constraint (_a1, _a2)
   | `ClassPath (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `ClassPath _a1
   | `Lazy (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `Lazy _a1
-  | `ModuleUnpack (_a0,_a1,_a2) ->
+  | `ModuleUnpack (_a0,_a1) ->
+      let _a1 = strip_loc_auident _a1 in `ModuleUnpack _a1
+  | `ModuleConstraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_meta_option strip_loc_ctyp _a2 in
-      `ModuleUnpack (_a1, _a2)
+      let _a2 = strip_loc_ctyp _a2 in `ModuleConstraint (_a1, _a2)
 and strip_loc_rec_patt =
   function
   | #nil as _a0 -> (strip_loc_nil _a0 :>'result430)
@@ -7436,9 +7449,12 @@ and pp_print_patt fmt =
   | `Lazy (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1
-  | `ModuleUnpack (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_auident _a1 (pp_print_meta_option pp_print_ctyp) _a2
+  | `ModuleUnpack (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_auident _a1
+  | `ModuleConstraint (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
+        pp_print_loc _a0 pp_print_auident _a1 pp_print_ctyp _a2
 and pp_print_rec_patt fmt =
   function
   | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result484)

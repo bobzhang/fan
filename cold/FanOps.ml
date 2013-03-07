@@ -116,7 +116,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `Label (_loc,_,p) -> is_irrefut_patt p
   | `Lazy (_loc,p) -> is_irrefut_patt p
   | `Id (_loc,_) -> false
-  | `ModuleUnpack (_loc,_,_) -> true
+  | `ModuleUnpack _|`ModuleConstraint _ -> true
   | `Vrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)
     |`NativeInt (_loc,_)|`Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)
     |`Chr (_loc,_)|`ClassPath (_loc,_)|`Array (_loc,_)|`Ant (_loc,_) -> false

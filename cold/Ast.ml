@@ -76,7 +76,8 @@ and patt =
   | `PaOlbi of (loc* alident* patt* expr meta_option)
   | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
   | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
-  | `Lazy of (loc* patt) | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
+  | `Lazy of (loc* patt) | `ModuleUnpack of (loc* auident)
+  | `ModuleConstraint of (loc* auident* ctyp)] 
 and rec_patt =
   [ nil | `RecBind of (loc* ident* patt) | `Sem of (loc* rec_patt* rec_patt)
   | any | ant] 

@@ -39,7 +39,7 @@ let loc_of =
   | `Chr (_loc,_) -> _loc
   | `IfThenElse (_loc,_,_,_) -> _loc
   | `ClassType (_loc,_) -> _loc
-  | `ModuleUnpack (_loc,_,_) -> _loc
+  | `ModuleUnpack (_loc,_) -> _loc
   | `CeTyc (_loc,_,_) -> _loc
   | `CrVir (_loc,_,_,_) -> _loc
   | `Package (_loc,_) -> _loc
@@ -114,6 +114,7 @@ let loc_of =
   | `ModuleSubst (_loc,_,_) -> _loc
   | `Positive _loc -> _loc
   | `CrVal (_loc,_,_,_,_) -> _loc
+  | `ModuleConstraint (_loc,_,_) -> _loc
   | `TyVrn (_loc,_) -> _loc
   | `Case (_loc,_,_,_) -> _loc
   | `ExAsr (_loc,_) -> _loc

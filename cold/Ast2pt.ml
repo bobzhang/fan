@@ -422,20 +422,13 @@ let rec patt (x : patt) =
   | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
   | `Vrn (loc,s) -> mkpat loc (Ppat_variant (s, None))
   | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
-  | `ModuleUnpack (loc,m,ty) ->
-      (match m with
-       | `Uid (sloc,m) ->
-           (match ty with
-            | `None -> mkpat loc (Ppat_unpack (with_loc m sloc))
-            | `Some ty ->
-                mkpat loc
-                  (Ppat_constraint
-                     ((mkpat sloc (Ppat_unpack (with_loc m sloc))),
-                       (ctyp ty)))
-            | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-       | `Ant (_loc,_) -> error _loc "antiquotation not expected here")
-  | `Sem (_,_,_)|`Com (_,_,_)|`Nil _ as p ->
-      error (loc_of p) "invalid pattern"
+  | `ModuleUnpack (loc,`Uid (sloc,m)) ->
+      mkpat loc (Ppat_unpack (with_loc m sloc))
+  | `ModuleConstraint (loc,`Uid (sloc,m),ty) ->
+      mkpat loc
+        (Ppat_constraint
+           ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
+  | p -> error (loc_of p) "invalid pattern"
 and mklabpat: rec_patt -> (Longident.t Asttypes.loc* pattern) =
   function
   | `RecBind (_loc,i,p) -> ((ident i), (patt p))

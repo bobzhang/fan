@@ -239,7 +239,10 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | {| ~ $_: $p |} -> is_irrefut_patt p
     | {| lazy $p |} -> is_irrefut_patt p
     | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
-    | {| (module $_ : $opt:_ ) |} -> true
+
+    | `ModuleUnpack _ 
+    | `ModuleConstraint _  -> true
+    (* | {| (module $_ : $opt:_ ) |} -> true *)
     | (* {| `$_ |} *) `Vrn (_loc,_)
       (* {| $vrn:_ |} *)
     | {| $str:_ |} | {| $_ .. $_ |} |

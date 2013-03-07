@@ -627,15 +627,21 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Lazy")), (meta_loc _loc _a0))),
               (meta_patt _loc _a1))
-      | `ModuleUnpack (_a0,_a1,_a2) ->
+      | `ModuleUnpack (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc, (`Vrn (_loc, "ModuleUnpack")), (meta_loc _loc _a0))),
+              (meta_auident _loc _a1))
+      | `ModuleConstraint (_a0,_a1,_a2) ->
           `App
             (_loc,
               (`App
                  (_loc,
                    (`App
-                      (_loc, (`Vrn (_loc, "ModuleUnpack")),
+                      (_loc, (`Vrn (_loc, "ModuleConstraint")),
                         (meta_loc _loc _a0))), (meta_auident _loc _a1))),
-              (meta_meta_option meta_ctyp _loc _a2))
+              (meta_ctyp _loc _a2))
     and meta_rec_patt _loc =
       function
       | #nil as _a0 -> (meta_nil _loc _a0 :>'result39)

@@ -358,9 +358,9 @@ class eq =
             (self#patt _a0 _b0) && (self#ctyp _a1 _b1)
         | (`ClassPath _a0,`ClassPath _b0) -> self#ident _a0 _b0
         | (`Lazy _a0,`Lazy _b0) -> self#patt _a0 _b0
-        | (`ModuleUnpack (_a0,_a1),`ModuleUnpack (_b0,_b1)) ->
-            (self#auident _a0 _b0) &&
-              (self#meta_option (fun self  -> self#ctyp) _a1 _b1)
+        | (`ModuleUnpack _a0,`ModuleUnpack _b0) -> self#auident _a0 _b0
+        | (`ModuleConstraint (_a0,_a1),`ModuleConstraint (_b0,_b1)) ->
+            (self#auident _a0 _b0) && (self#ctyp _a1 _b1)
         | (_,_) -> false
     method rec_patt : rec_patt -> rec_patt -> 'result37=
       fun _a0  _b0  ->
@@ -1092,9 +1092,11 @@ class print =
         | `ClassPath _a0 ->
             Format.fprintf fmt "@[<1>(`ClassPath@ %a)@]" self#ident _a0
         | `Lazy _a0 -> Format.fprintf fmt "@[<1>(`Lazy@ %a)@]" self#patt _a0
-        | `ModuleUnpack (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a)@]" self#auident
-              _a0 (self#meta_option (fun self  -> self#ctyp)) _a1
+        | `ModuleUnpack _a0 ->
+            Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a)@]" self#auident _a0
+        | `ModuleConstraint (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a)@]"
+              self#auident _a0 self#ctyp _a1
     method rec_patt : 'fmt -> rec_patt -> 'result93=
       fun fmt  ->
         function
@@ -1921,12 +1923,14 @@ and meta_patt _loc =
   | `ClassPath _a0 ->
       `App (_loc, (`Vrn (_loc, "ClassPath")), (meta_ident _loc _a0))
   | `Lazy _a0 -> `App (_loc, (`Vrn (_loc, "Lazy")), (meta_patt _loc _a0))
-  | `ModuleUnpack (_a0,_a1) ->
+  | `ModuleUnpack _a0 ->
+      `App (_loc, (`Vrn (_loc, "ModuleUnpack")), (meta_auident _loc _a0))
+  | `ModuleConstraint (_a0,_a1) ->
       `App
         (_loc,
           (`App
-             (_loc, (`Vrn (_loc, "ModuleUnpack")), (meta_auident _loc _a0))),
-          (meta_meta_option meta_ctyp _loc _a1))
+             (_loc, (`Vrn (_loc, "ModuleConstraint")),
+               (meta_auident _loc _a0))), (meta_ctyp _loc _a1))
 and meta_rec_patt _loc =
   function
   | #nil as _a0 -> (meta_nil _loc _a0 :>'result151)

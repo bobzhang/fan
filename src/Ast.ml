@@ -279,8 +279,11 @@ and patt =
   | `Constraint of (loc * patt * ctyp) (* (p : t) *)
   | `ClassPath of (loc * ident) (* #i *)
   | `Lazy of (loc * patt) (* lazy p *)
-        (* (module M : ty ) *)      
-  | `ModuleUnpack of (loc * auident * meta_option ctyp)]
+
+  (* (module M : ty ) *)      
+  | `ModuleUnpack of (loc * auident (* * meta_option ctyp *))
+  | `ModuleConstraint of (loc * auident * ctyp)
+ ]
 and rec_patt =
   [= nil
   | `RecBind of (loc * ident * patt)

@@ -70,7 +70,7 @@ and patt =
   | `Label of (alident* patt) | `PaOlbi of (alident* patt* expr meta_option)
   | `Or of (patt* patt) | `PaRng of (patt* patt)
   | `Constraint of (patt* ctyp) | `ClassPath of ident | `Lazy of patt
-  | `ModuleUnpack of (auident* ctyp meta_option)] 
+  | `ModuleUnpack of auident | `ModuleConstraint of (auident* ctyp)] 
 and rec_patt =
   [ nil | `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | 
     any

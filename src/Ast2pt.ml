@@ -560,20 +560,24 @@ let rec patt (x:patt) =
          | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
          | `Vrn (loc,s) -> mkpat loc (Ppat_variant s None)
          | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
-         | `ModuleUnpack (loc,m,ty) ->
-             match m with
-             [`Uid(sloc,m) ->
-               match ty with
-               [`None  ->
-                 mkpat loc (Ppat_unpack (with_loc m sloc))
-               |`Some (ty) ->
+
+         | `ModuleUnpack(loc,`Uid(sloc,m)) ->
+             mkpat loc (Ppat_unpack (with_loc m sloc))
+         | `ModuleConstraint (loc,`Uid(sloc,m),ty) ->
+             (* match m with *)
+             (* [`Uid(sloc,m) -> *)
+               (* match ty with *)
+               (* [`None  -> *)
+               (*   mkpat loc (Ppat_unpack (with_loc m sloc)) *)
+               (* |`Some (ty) -> *)
                    mkpat loc
                      (Ppat_constraint
                         (mkpat sloc (Ppat_unpack (with_loc m sloc)))
                         (ctyp ty))
-               |`Ant(_loc,_) -> ANT_ERROR]  
-             |`Ant(_loc,_) -> ANT_ERROR]  
-         (* | `RecBind (_, _, _)  *)| `Sem (_, _, _) | `Com (_, _, _) | `Nil _ as p ->
+               (* |`Ant(_loc,_) -> ANT_ERROR]   *)
+             (* |`Ant(_loc,_) -> ANT_ERROR]   *)
+         (* | `RecBind (_, _, _)  *)
+        | (* `Sem (_, _, _) | `Com (_, _, _) | `Nil _ as *) p ->
              error (loc_of p) "invalid pattern" ]
 
 and mklabpat : rec_patt -> (Asttypes.loc Longident.t  * pattern) = with patt fun

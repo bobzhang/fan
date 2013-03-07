@@ -1,5 +1,4 @@
 open Ast
-open FanOps
 type name =  {
   expr: expr;
   tvar: string;
