@@ -17,7 +17,7 @@ let loc_of =
   | `ModuleBind (_loc,_,_,_) -> _loc
   | `Sta (_loc,_,_) -> _loc
   | `Match (_loc,_,_) -> _loc
-  | `Obj (_loc,_,_) -> _loc
+  | `Obj (_loc,_) -> _loc
   | `TyPol (_loc,_,_) -> _loc
   | `Val (_loc,_,_) -> _loc
   | `C (_loc,_) -> _loc
@@ -87,6 +87,7 @@ let loc_of =
   | `ModuleTypeOf (_loc,_) -> _loc
   | `To _loc -> _loc
   | `TyCol (_loc,_,_) -> _loc
+  | `ObjPat (_loc,_,_) -> _loc
   | `CgVir (_loc,_,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
   | `TyColMut (_loc,_,_) -> _loc

@@ -114,7 +114,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
           (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
            None)
-      | `Directive (_loc,`Lid (_,"lang_clear"),`Nil _) ->
+      | `DirectiveSimple (_loc,`Lid (_,"lang_clear")) ->
           (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
       | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
           (AstFilters.use_implem_filter s; None)

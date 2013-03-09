@@ -106,7 +106,7 @@ let mk_obj class_name base body =
          (_loc,
            (`CeCon
               (_loc, (`ViNil _loc), (`Lid (_loc, class_name)), (`Nil _loc))),
-           (`Obj
+           (`ObjPat
               (_loc,
                 (`Constraint
                    (_loc, (`Id (_loc, (`Lid (_loc, "self")))),

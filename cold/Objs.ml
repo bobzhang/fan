@@ -669,10 +669,13 @@ class map2 =
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in `New (_a0, _a1)
-        | (`Obj (_a0,_a1,_a2),`Obj (_b0,_b1,_b2)) ->
+        | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#class_str_item _a1 _b1 in `Obj (_a0, _a1)
+        | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#class_str_item _a2 _b2 in `Obj (_a0, _a1, _a2)
+            let _a2 = self#class_str_item _a2 _b2 in `ObjPat (_a0, _a1, _a2)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -1096,10 +1099,13 @@ class map2 =
             let _a1 = self#rec_flag _a1 _b1 in
             let _a2 = self#binding _a2 _b2 in
             let _a3 = self#class_expr _a3 _b3 in `CeLet (_a0, _a1, _a2, _a3)
-        | (`Obj (_a0,_a1,_a2),`Obj (_b0,_b1,_b2)) ->
+        | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#class_str_item _a1 _b1 in `Obj (_a0, _a1)
+        | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#class_str_item _a2 _b2 in `Obj (_a0, _a1, _a2)
+            let _a2 = self#class_str_item _a2 _b2 in `ObjPat (_a0, _a1, _a2)
         | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_expr _a1 _b1 in
@@ -1745,7 +1751,9 @@ class fold2 =
             let self = self#expr _a1 _b1 in self#match_case _a2 _b2
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
-        | (`Obj (_a0,_a1,_a2),`Obj (_b0,_b1,_b2)) ->
+        | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#class_str_item _a1 _b1
+        | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#class_str_item _a2 _b2
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
@@ -2059,7 +2067,9 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#rec_flag _a1 _b1 in
             let self = self#binding _a2 _b2 in self#class_expr _a3 _b3
-        | (`Obj (_a0,_a1,_a2),`Obj (_b0,_b1,_b2)) ->
+        | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#class_str_item _a1 _b1
+        | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#class_str_item _a2 _b2
         | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
@@ -2466,7 +2476,8 @@ class iter =
       | `Match (_a0,_a1,_a2) ->
           (self#loc _a0; self#expr _a1; self#match_case _a2)
       | `New (_a0,_a1) -> (self#loc _a0; self#ident _a1)
-      | `Obj (_a0,_a1,_a2) ->
+      | `Obj (_a0,_a1) -> (self#loc _a0; self#class_str_item _a1)
+      | `ObjPat (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#class_str_item _a2)
       | `OptLabl (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
@@ -2679,7 +2690,8 @@ class iter =
            self#rec_flag _a1;
            self#binding _a2;
            self#class_expr _a3)
-      | `Obj (_a0,_a1,_a2) ->
+      | `Obj (_a0,_a1) -> (self#loc _a0; self#class_str_item _a1)
+      | `ObjPat (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#class_str_item _a2)
       | `CeTyc (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_expr _a1; self#class_type _a2)
@@ -3283,10 +3295,13 @@ class map =
       | `New (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in `New (_a0, _a1)
-      | `Obj (_a0,_a1,_a2) ->
+      | `Obj (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#class_str_item _a1 in `Obj (_a0, _a1)
+      | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
-          let _a2 = self#class_str_item _a2 in `Obj (_a0, _a1, _a2)
+          let _a2 = self#class_str_item _a2 in `ObjPat (_a0, _a1, _a2)
       | `OptLabl (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3654,10 +3669,13 @@ class map =
           let _a1 = self#rec_flag _a1 in
           let _a2 = self#binding _a2 in
           let _a3 = self#class_expr _a3 in `CeLet (_a0, _a1, _a2, _a3)
-      | `Obj (_a0,_a1,_a2) ->
+      | `Obj (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#class_str_item _a1 in `Obj (_a0, _a1)
+      | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
-          let _a2 = self#class_str_item _a2 in `Obj (_a0, _a1, _a2)
+          let _a2 = self#class_str_item _a2 in `ObjPat (_a0, _a1, _a2)
       | `CeTyc (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_expr _a1 in
@@ -4149,7 +4167,8 @@ class fold =
           let self = self#loc _a0 in
           let self = self#expr _a1 in self#match_case _a2
       | `New (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
-      | `Obj (_a0,_a1,_a2) ->
+      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_str_item _a1
+      | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#class_str_item _a2
       | `OptLabl (_a0,_a1,_a2) ->
@@ -4421,7 +4440,8 @@ class fold =
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
           let self = self#binding _a2 in self#class_expr _a3
-      | `Obj (_a0,_a1,_a2) ->
+      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_str_item _a1
+      | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#class_str_item _a2
       | `CeTyc (_a0,_a1,_a2) ->
@@ -5010,8 +5030,11 @@ class print =
         | `New (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`New@ %a@ %a)@]" self#loc _a0
               self#ident _a1
-        | `Obj (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Obj@ %a@ %a@ %a)@]" self#loc _a0
+        | `Obj (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
+              self#class_str_item _a1
+        | `ObjPat (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#class_str_item _a2
         | `OptLabl (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc _a0
@@ -5323,8 +5346,11 @@ class print =
         | `CeLet (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`CeLet@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#rec_flag _a1 self#binding _a2 self#class_expr _a3
-        | `Obj (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Obj@ %a@ %a@ %a)@]" self#loc _a0
+        | `Obj (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
+              self#class_str_item _a1
+        | `ObjPat (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#class_str_item _a2
         | `CeTyc (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a@ %a)@]" self#loc _a0
@@ -5929,7 +5955,9 @@ class eq =
               (self#match_case _a2 _b2)
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
-        | (`Obj (_a0,_a1,_a2),`Obj (_b0,_b1,_b2)) ->
+        | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#class_str_item _a1 _b1)
+        | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#class_str_item _a2 _b2)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
@@ -6241,7 +6269,9 @@ class eq =
             (((self#loc _a0 _b0) && (self#rec_flag _a1 _b1)) &&
                (self#binding _a2 _b2))
               && (self#class_expr _a3 _b3)
-        | (`Obj (_a0,_a1,_a2),`Obj (_b0,_b1,_b2)) ->
+        | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#class_str_item _a1 _b1)
+        | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#class_str_item _a2 _b2)
         | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
@@ -6719,9 +6749,10 @@ and strip_loc_expr =
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_match_case _a2 in `Match (_a1, _a2)
   | `New (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `New _a1
-  | `Obj (_a0,_a1,_a2) ->
+  | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_str_item _a1 in `Obj _a1
+  | `ObjPat (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_class_str_item _a2 in `Obj (_a1, _a2)
+      let _a2 = strip_loc_class_str_item _a2 in `ObjPat (_a1, _a2)
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_expr _a2 in `OptLabl (_a1, _a2)
@@ -6992,9 +7023,10 @@ and strip_loc_class_expr =
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in
       let _a3 = strip_loc_class_expr _a3 in `CeLet (_a1, _a2, _a3)
-  | `Obj (_a0,_a1,_a2) ->
+  | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_str_item _a1 in `Obj _a1
+  | `ObjPat (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_class_str_item _a2 in `Obj (_a1, _a2)
+      let _a2 = strip_loc_class_str_item _a2 in `ObjPat (_a1, _a2)
   | `CeTyc (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_expr _a1 in
       let _a2 = strip_loc_class_type _a2 in `CeTyc (_a1, _a2)
@@ -7539,8 +7571,11 @@ and pp_print_expr fmt =
   | `New (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`New@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1
-  | `Obj (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Obj@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Obj (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_class_str_item _a1
+  | `ObjPat (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_class_str_item _a2
   | `OptLabl (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -7844,8 +7879,11 @@ and pp_print_class_expr fmt =
   | `CeLet (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`CeLet@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_class_expr _a3
-  | `Obj (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Obj@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Obj (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_class_str_item _a1
+  | `ObjPat (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_class_str_item _a2
   | `CeTyc (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a@ %a)@]" pp_print_loc _a0

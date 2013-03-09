@@ -94,12 +94,13 @@ and expr =
   | `Lazy of (loc* expr) | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
-  | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
-  | `OvrInst of (loc* rec_expr) | `Seq of (loc* expr)
-  | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
-  | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
-  | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)
-  | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
+  | `Obj of (loc* class_str_item) | `ObjPat of (loc* patt* class_str_item)
+  | `OptLabl of (loc* alident* expr) | `OvrInst of (loc* rec_expr)
+  | `Seq of (loc* expr) | `Send of (loc* expr* alident)
+  | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
+  | `Constraint of (loc* expr* ctyp) | `Coercion of (loc* expr* ctyp* ctyp)
+  | `While of (loc* expr* expr) | `LetOpen of (loc* ident* expr)
+  | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
 and rec_expr =
   [ nil | `Sem of (loc* rec_expr* rec_expr) | `RecBind of (loc* ident* expr)
@@ -164,7 +165,7 @@ and class_expr =
   | `CeCon of (loc* virtual_flag* ident* type_parameters)
   | `CeFun of (loc* patt* class_expr)
   | `CeLet of (loc* rec_flag* binding* class_expr)
-  | `Obj of (loc* patt* class_str_item)
+  | `Obj of (loc* class_str_item) | `ObjPat of (loc* patt* class_str_item)
   | `CeTyc of (loc* class_expr* class_type)
   | `And of (loc* class_expr* class_expr)
   | `Eq of (loc* class_expr* class_expr) | ant] 

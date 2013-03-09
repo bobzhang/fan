@@ -414,7 +414,8 @@ class eq =
         | (`Match (_a0,_a1),`Match (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#match_case _a1 _b1)
         | (`New _a0,`New _b0) -> self#ident _a0 _b0
-        | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
+        | (`Obj _a0,`Obj _b0) -> self#class_str_item _a0 _b0
+        | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
@@ -643,7 +644,8 @@ class eq =
         | (`CeLet (_a0,_a1,_a2),`CeLet (_b0,_b1,_b2)) ->
             ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#class_expr _a2 _b2)
-        | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
+        | (`Obj _a0,`Obj _b0) -> self#class_str_item _a0 _b0
+        | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
         | (`CeTyc (_a0,_a1),`CeTyc (_b0,_b1)) ->
             (self#class_expr _a0 _b0) && (self#class_type _a1 _b1)
@@ -1157,8 +1159,10 @@ class print =
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a)@]" self#expr _a0
               self#match_case _a1
         | `New _a0 -> Format.fprintf fmt "@[<1>(`New@ %a)@]" self#ident _a0
-        | `Obj (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#patt _a0
+        | `Obj _a0 ->
+            Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_str_item _a0
+        | `ObjPat (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#patt _a0
               self#class_str_item _a1
         | `OptLabl (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
@@ -1446,8 +1450,10 @@ class print =
         | `CeLet (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeLet@ %a@ %a@ %a)@]" self#rec_flag
               _a0 self#binding _a1 self#class_expr _a2
-        | `Obj (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#patt _a0
+        | `Obj _a0 ->
+            Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_str_item _a0
+        | `ObjPat (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#patt _a0
               self#class_str_item _a1
         | `CeTyc (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a)@]" self#class_expr _a0
@@ -2037,9 +2043,11 @@ and meta_expr _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "Match")), (meta_expr _loc _a0))),
           (meta_match_case _loc _a1))
   | `New _a0 -> `App (_loc, (`Vrn (_loc, "New")), (meta_ident _loc _a0))
-  | `Obj (_a0,_a1) ->
+  | `Obj _a0 ->
+      `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_str_item _loc _a0))
+  | `ObjPat (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Obj")), (meta_patt _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_patt _loc _a0))),
           (meta_class_str_item _loc _a1))
   | `OptLabl (_a0,_a1) ->
       `App
@@ -2446,9 +2454,11 @@ and meta_class_expr _loc =
              (_loc,
                (`App (_loc, (`Vrn (_loc, "CeLet")), (meta_rec_flag _loc _a0))),
                (meta_binding _loc _a1))), (meta_class_expr _loc _a2))
-  | `Obj (_a0,_a1) ->
+  | `Obj _a0 ->
+      `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_str_item _loc _a0))
+  | `ObjPat (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Obj")), (meta_patt _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_patt _loc _a0))),
           (meta_class_str_item _loc _a1))
   | `CeTyc (_a0,_a1) ->
       `App

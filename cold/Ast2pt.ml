@@ -600,8 +600,11 @@ let rec expr (x : expr) =
         (Pexp_letmodule ((with_loc i sloc), (module_expr me), (expr e)))
   | `Match (loc,e,a) -> mkexp loc (Pexp_match ((expr e), (match_case a)))
   | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
-  | `Obj (loc,po,cfl) ->
-      let p = match po with | `Nil _loc -> `Any _loc | p -> p in
+  | `Obj (loc,cfl) ->
+      let p = `Any loc in
+      let cil = class_str_item cfl [] in
+      mkexp loc (Pexp_object { pcstr_pat = (patt p); pcstr_fields = cil })
+  | `ObjPat (loc,p,cfl) ->
       let cil = class_str_item cfl [] in
       mkexp loc (Pexp_object { pcstr_pat = (patt p); pcstr_fields = cil })
   | `OvrInst (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
@@ -1013,8 +1016,11 @@ and class_expr (x : Ast.class_expr) =
       mkcl loc (Pcl_fun ("", None, (patt p), (class_expr ce)))
   | `CeLet (loc,rf,bi,ce) ->
       mkcl loc (Pcl_let ((mkrf rf), (binding bi []), (class_expr ce)))
-  | `Obj (loc,po,cfl) ->
-      let p = match po with | `Nil _loc -> `Any _loc | p -> p in
+  | `Obj (loc,cfl) ->
+      let p = `Any loc in
+      let cil = class_str_item cfl [] in
+      mkcl loc (Pcl_structure { pcstr_pat = (patt p); pcstr_fields = cil })
+  | `ObjPat (loc,p,cfl) ->
       let cil = class_str_item cfl [] in
       mkcl loc (Pcl_structure { pcstr_pat = (patt p); pcstr_fields = cil })
   | `CeTyc (loc,ce,ct) ->
