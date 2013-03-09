@@ -1550,10 +1550,10 @@ let apply () =
                  (fun (e : 'expr)  _  (i : 'a_lident)  _  (_loc : FanLoc.t) 
                     -> (`Label (_loc, i, e) : 'expr )))));
          ([`Skeyword "~"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Label (_loc, i, (`Nil _loc)) : 'expr ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  -> (`LabelS (_loc, i) : 'expr ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                   (`Label (_loc, i, (`Nil _loc)) : 'expr )))));
+                   (`LabelS (_loc, i) : 'expr )))));
          ([`Stoken
              (((function | `LABEL _ -> true | _ -> false)),
                (`Normal, "`LABEL _"));
@@ -2801,10 +2801,10 @@ let apply () =
                 (fun (p : 'patt)  _  (i : 'a_lident)  _  (_loc : FanLoc.t) 
                    -> (`Label (_loc, i, p) : 'patt )))));
          ([`Skeyword "~"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Label (_loc, i, (`Nil _loc)) : 'patt ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  -> (`LabelS (_loc, i) : 'patt ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                   (`Label (_loc, i, (`Nil _loc)) : 'patt )))));
+                   (`LabelS (_loc, i) : 'patt )))));
          ([`Stoken
              (((function | `OPTLABEL _ -> true | _ -> false)),
                (`Normal, "`OPTLABEL _"));
@@ -3048,10 +3048,10 @@ let apply () =
                 (fun (p : 'ipatt)  _  (i : 'a_lident)  _  (_loc : FanLoc.t) 
                    -> (`Label (_loc, i, p) : 'ipatt )))));
          ([`Skeyword "~"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Label (_loc, i, (`Nil _loc)) : 'ipatt ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`LabelS (_loc, i) : 'ipatt ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                   (`Label (_loc, i, (`Nil _loc)) : 'ipatt )))));
+                   (`LabelS (_loc, i) : 'ipatt )))));
          ([`Stoken
              (((function | `OPTLABEL _ -> true | _ -> false)),
                (`Normal, "`OPTLABEL _"));

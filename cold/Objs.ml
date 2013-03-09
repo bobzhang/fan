@@ -516,6 +516,9 @@ class map2 =
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in `Array (_a0, _a1)
+        | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in `LabelS (_a0, _a1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -650,6 +653,9 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in
             let _a2 = self#expr _a2 _b2 in `IfThen (_a0, _a1, _a2)
+        | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in `LabelS (_a0, _a1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -1643,6 +1649,8 @@ class fold2 =
         | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#patt _a1 _b1
+        | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#patt _a2 _b2
@@ -1744,6 +1752,8 @@ class fold2 =
         | (`IfThen (_a0,_a1,_a2),`IfThen (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#expr _a1 _b1 in self#expr _a2 _b2
+        | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#expr _a2 _b2
@@ -2420,6 +2430,7 @@ class iter =
           (self#loc _a0; self#patt _a1; self#alident _a2)
       | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> (self#loc _a0; self#patt _a1)
+      | `LabelS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Label (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#patt _a2)
       | `OptLabl (_a0,_a1,_a2) ->
@@ -2478,6 +2489,7 @@ class iter =
       | `IfThenElse (_a0,_a1,_a2,_a3) ->
           (self#loc _a0; self#expr _a1; self#expr _a2; self#expr _a3)
       | `IfThen (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
+      | `LabelS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Label (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
       | `Lazy (_a0,_a1) -> (self#loc _a0; self#expr _a1)
@@ -3167,6 +3179,9 @@ class map =
       | `Array (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in `Array (_a0, _a1)
+      | `LabelS (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in `LabelS (_a0, _a1)
       | `Label (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3291,6 +3306,9 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in
           let _a2 = self#expr _a2 in `IfThen (_a0, _a1, _a2)
+      | `LabelS (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in `LabelS (_a0, _a1)
       | `Label (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -4090,6 +4108,7 @@ class fold =
           let self = self#patt _a1 in self#alident _a2
       | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
+      | `LabelS (_a0,_a1) -> let self = self#loc _a0 in self#alident _a1
       | `Label (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#patt _a2
@@ -4176,6 +4195,7 @@ class fold =
       | `IfThen (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#expr _a1 in self#expr _a2
+      | `LabelS (_a0,_a1) -> let self = self#loc _a0 in self#alident _a1
       | `Label (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#expr _a2
@@ -4939,6 +4959,9 @@ class print =
         | `Array (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc _a0
               self#patt _a1
+        | `LabelS (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`LabelS@ %a@ %a)@]" self#loc _a0
+              self#alident _a1
         | `Label (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#patt _a2
@@ -5043,6 +5066,9 @@ class print =
         | `IfThen (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`IfThen@ %a@ %a@ %a)@]" self#loc _a0
               self#expr _a1 self#expr _a2
+        | `LabelS (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`LabelS@ %a@ %a)@]" self#loc _a0
+              self#alident _a1
         | `Label (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#expr _a2
@@ -5876,6 +5902,8 @@ class eq =
         | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#patt _a1 _b1)
+        | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#patt _a2 _b2)
@@ -5977,6 +6005,8 @@ class eq =
         | (`IfThen (_a0,_a1,_a2),`IfThen (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
               (self#expr _a2 _b2)
+        | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -6691,6 +6721,7 @@ and strip_loc_patt =
       let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
   | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `Array _a1
+  | `LabelS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `LabelS _a1
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_patt _a2 in `Label (_a1, _a2)
@@ -6777,6 +6808,7 @@ and strip_loc_expr =
   | `IfThen (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_expr _a2 in `IfThen (_a1, _a2)
+  | `LabelS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `LabelS _a1
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_expr _a2 in `Label (_a1, _a2)
@@ -7502,6 +7534,9 @@ and pp_print_patt fmt =
   | `Array (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1
+  | `LabelS (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`LabelS@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1
   | `Label (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_patt _a2
@@ -7604,6 +7639,9 @@ and pp_print_expr fmt =
   | `IfThen (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`IfThen@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_expr _a1 pp_print_expr _a2
+  | `LabelS (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`LabelS@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1
   | `Label (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_expr _a2

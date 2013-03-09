@@ -66,11 +66,12 @@ and patt =
   | `Sem of (patt* patt) | `Tup of patt | any | `Record of rec_patt | 
     ant
   | literal | `Alias of (patt* alident) | `ArrayEmpty | `Array of patt
-  | `Label of (alident* patt) | `OptLabl of (alident* patt)
-  | `OptLablS of alident | `OptLablExpr of (alident* patt* expr)
-  | `Or of (patt* patt) | `PaRng of (patt* patt)
-  | `Constraint of (patt* ctyp) | `ClassPath of ident | `Lazy of patt
-  | `ModuleUnpack of auident | `ModuleConstraint of (auident* ctyp)] 
+  | `LabelS of alident | `Label of (alident* patt)
+  | `OptLabl of (alident* patt) | `OptLablS of alident
+  | `OptLablExpr of (alident* patt* expr) | `Or of (patt* patt)
+  | `PaRng of (patt* patt) | `Constraint of (patt* ctyp)
+  | `ClassPath of ident | `Lazy of patt | `ModuleUnpack of auident
+  | `ModuleConstraint of (auident* ctyp)] 
 and rec_patt =
   [ `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | any | ant] 
 and expr =
@@ -82,7 +83,7 @@ and expr =
   | `ExAsr of expr | `Assign of (expr* expr)
   | `For of (alident* expr* expr* direction_flag* expr) | `Fun of match_case
   | `IfThenElse of (expr* expr* expr) | `IfThen of (expr* expr)
-  | `Label of (alident* expr) | `Lazy of expr
+  | `LabelS of alident | `Label of (alident* expr) | `Lazy of expr
   | `LetIn of (rec_flag* binding* expr)
   | `LetModule of (auident* module_expr* expr) | `Match of (expr* match_case)
   | `New of ident | `Obj of class_str_item

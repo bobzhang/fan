@@ -534,7 +534,7 @@ let rec patt (x:patt) =
            Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
          ] in mkpat loc (Ppat_constant (Const_nativeint nati))
      | `Flo (loc,s) -> mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
-     | `Label (loc,_,_) -> error loc "labeled pattern not allowed here"
+     | `Label (loc,_,_) | `LabelS(loc,_) -> error loc "labeled pattern not allowed here"
      | `OptLablExpr (loc,_,_,_)
      | `OptLabl(loc,_,_)
      | `OptLablS(loc,_)  -> error loc "labeled pattern not allowed here"
@@ -692,19 +692,30 @@ let rec expr (x : expr) = with expr match x with
         let e3 = `Seq loc el in
         mkexp loc (Pexp_for (with_loc i sloc)
                      (expr e1) (expr e2) (mkdirection df) (expr e3))
-  | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) ->
+  | `Fun(loc,`Case(_,`LabelS(_,`Lid(sloc,lab)),e)) ->
       mkexp loc
         (Pexp_function lab None
-           [(patt_of_lab loc lab po, expr e)])
-  | `Fun(loc,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  
+           [(patt (`Id(sloc,`Lid(sloc,lab))),expr e)])
+        
+  | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) -> (*M*)
+      mkexp loc
+        (Pexp_function lab None
+           [(patt po(* patt_of_lab loc lab po *), expr e)])
+  | `Fun(loc,`CaseWhen(_,`LabelS(_,`Lid(sloc,lab)),w,e)) ->
+      mkexp loc
+        (Pexp_function lab None
+           [(patt (`Id(sloc,`Lid(sloc,lab))),
+             mkexp (loc_of w) (Pexp_when (expr w) (expr e)))])
+        
+  | `Fun(loc,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  (*M*)
          mkexp loc
            (Pexp_function lab None
-              [(patt_of_lab loc lab po,
+              [((* patt_of_lab loc lab po *)patt po,
                 mkexp (loc_of w) (Pexp_when (expr w) (expr e)))])
   | `Fun (loc,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
       mkexp loc (Pexp_function ("?"^lab) None
                    [(patt (`Id(sloc,`Lid(sloc,lab))), expr e2)])
-  | `Fun (loc,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> (*M*)
+  | `Fun (loc,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> 
       let lab = paolab lab p in
       mkexp loc
           (Pexp_function ("?" ^ lab) None
@@ -716,7 +727,7 @@ let rec expr (x : expr) = with expr match x with
              [(patt (`Id(sloc,`Lid(sloc,lab))),
                mkexp (loc_of w) (Pexp_when (expr w) (expr e2)))])
 
-  | `Fun (loc,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> (*M*)
+  | `Fun (loc,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> 
       let lab = paolab lab p in
       mkexp loc
           (Pexp_function ("?" ^ lab) None
@@ -756,7 +767,7 @@ let rec expr (x : expr) = with expr match x with
         Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
       ] in mkexp loc (Pexp_constant (Const_nativeint nati))
   | `Any (_loc) -> errorf _loc "Any should not appear in the position of expression"
-  | `Label (loc,_,_) -> error loc "labeled expression not allowed here"
+  | `Label (loc,_,_) | `LabelS(loc,_) -> error loc "labeled expression not allowed here"
   | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (expr e))
   | `LetIn (loc,rf,bi,e) ->
       mkexp loc (Pexp_let (mkrf rf) (binding bi []) (expr e))
@@ -842,8 +853,9 @@ and expr_of_lab _loc lab (x:expr) = match x with
   [ `Nil _  -> expr (`Id(_loc,`Lid(_loc,lab)))
   | e -> expr e ]
 and label_expr (x : expr) = match x with 
-  [ `Label (loc,`Lid(_,lab),eo) ->
-      (lab, expr_of_lab loc lab eo)
+  [ `Label (_loc,`Lid(_,lab),eo) ->
+      (lab, (* expr_of_lab loc lab *) expr eo)
+  | `LabelS(_loc,`Lid(sloc,lab)) -> (lab,expr(`Id(sloc,`Lid(sloc,lab))))
   | `OptLabl (_loc,`Lid(_,lab),eo) -> ("?" ^ lab, expr eo)
   | `OptLablS(loc,`Lid(_,lab)) -> ("?"^lab, expr (`Id(loc,`Lid(loc,lab))))
   | e -> ("", expr e) ]

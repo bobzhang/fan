@@ -421,7 +421,7 @@ let apply () = begin
        "label" NA
         [ "~"; a_lident{i}; ":"; S{e} ->
           {| ~ $i : $e |}
-        | "~"; a_lident{i} -> {| ~ $i |} 
+        | "~"; a_lident{i} -> `LabelS(_loc,i)
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
         | `LABEL i; S{e} -> {| ~ $lid:i : $e |}
         (* Same remark for ?a:b *)
@@ -649,7 +649,7 @@ let apply () = begin
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i}; ":"; S{p} -> (* CHANGE *) {| ~$i : $p|}
-        | "~"; a_lident{i} -> {| ~$i |}
+        | "~"; a_lident{i} -> `LabelS(_loc,i)
         | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,i),p,e)
             (* {| ?$lid:i : ($p=$e)|} *)
@@ -695,7 +695,7 @@ let apply () = begin
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i};":";S{p} -> {| ~$i : $p|}
-        | "~"; a_lident{i} ->  {| ~$i|}
+        | "~"; a_lident{i} ->  `LabelS(_loc,i)
         | `OPTLABEL i; "("; patt_tcon{p}; "="; expr{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,i),p,e)
             (* {| ?$lid:i : ($p=$e)|} *)

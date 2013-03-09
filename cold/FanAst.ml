@@ -579,6 +579,11 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Array")), (meta_loc _loc _a0))),
               (meta_patt _loc _a1))
+      | `LabelS (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "LabelS")), (meta_loc _loc _a0))),
+              (meta_alident _loc _a1))
       | `Label (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -801,6 +806,11 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "IfThen")), (meta_loc _loc _a0))),
                    (meta_expr _loc _a1))), (meta_expr _loc _a2))
+      | `LabelS (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "LabelS")), (meta_loc _loc _a0))),
+              (meta_alident _loc _a1))
       | `Label (_a0,_a1,_a2) ->
           `App
             (_loc,

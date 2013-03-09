@@ -221,6 +221,7 @@ let rec is_irrefut_patt : patt -> bool = with patt
     fun
     [
       `ArrayEmpty (_loc)
+    | `LabelS (_loc,_)
     | {| $lid:_ |} -> true
     | {| () |} -> true
     | {| _ |} -> true

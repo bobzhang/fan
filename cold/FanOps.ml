@@ -96,7 +96,7 @@ let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
 let rec is_irrefut_patt: patt -> bool =
   function
-  | `ArrayEmpty _loc|`Id (_loc,`Lid (_,_)) -> true
+  | `ArrayEmpty _loc|`LabelS (_loc,_)|`Id (_loc,`Lid (_,_)) -> true
   | `Id (_loc,`Uid (_,"()")) -> true
   | `Any _loc -> true
   | `Nil _loc -> true
@@ -113,7 +113,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `Tup (_,p) -> is_irrefut_patt p
   | `OptLablS _ -> true
   | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_patt p
-  | `Label (_loc,_,`Nil _) -> true
+  | `LabelS (_loc,_) -> true
   | `Label (_loc,_,p) -> is_irrefut_patt p
   | `Lazy (_loc,p) -> is_irrefut_patt p
   | `Id (_loc,_) -> false

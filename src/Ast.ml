@@ -271,6 +271,7 @@ and patt =
 
   | `ArrayEmpty of loc 
   | `Array of (loc * patt) (* [| p |] *)
+  | `LabelS of (loc * alident) (* ~s *)
   | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
 
     (* ?s or ?s:(p)   *)
@@ -322,6 +323,7 @@ and expr =
   | `Fun of (loc * match_case) (* fun [ mc ] *)
   | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
   | `IfThen of (loc * expr * expr) (* if e then e *)
+  | `LabelS of (loc * alident) (* ~s *)
   | `Label of (loc * alident * expr) (* ~s or ~s:e *)
   | `Lazy of (loc * expr) (* lazy e *)
         (* let b in e or let rec b in e *)

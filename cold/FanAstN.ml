@@ -333,6 +333,7 @@ class eq =
             (self#patt _a0 _b0) && (self#alident _a1 _b1)
         | (`ArrayEmpty,`ArrayEmpty) -> true
         | (`Array _a0,`Array _b0) -> self#patt _a0 _b0
+        | (`LabelS _a0,`LabelS _b0) -> self#alident _a0 _b0
         | (`Label (_a0,_a1),`Label (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#patt _a1 _b1)
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
@@ -404,6 +405,7 @@ class eq =
               (self#expr _a2 _b2)
         | (`IfThen (_a0,_a1),`IfThen (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#expr _a1 _b1)
+        | (`LabelS _a0,`LabelS _b0) -> self#alident _a0 _b0
         | (`Label (_a0,_a1),`Label (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
         | (`Lazy _a0,`Lazy _b0) -> self#expr _a0 _b0
@@ -1061,6 +1063,8 @@ class print =
         | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
         | `Array _a0 ->
             Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#patt _a0
+        | `LabelS _a0 ->
+            Format.fprintf fmt "@[<1>(`LabelS@ %a)@]" self#alident _a0
         | `Label (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a)@]" self#alident _a0
               self#patt _a1
@@ -1151,6 +1155,8 @@ class print =
         | `IfThen (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`IfThen@ %a@ %a)@]" self#expr _a0
               self#expr _a1
+        | `LabelS _a0 ->
+            Format.fprintf fmt "@[<1>(`LabelS@ %a)@]" self#alident _a0
         | `Label (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a)@]" self#alident _a0
               self#expr _a1
@@ -1898,6 +1904,8 @@ and meta_patt _loc =
           (meta_alident _loc _a1))
   | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
   | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_patt _loc _a0))
+  | `LabelS _a0 ->
+      `App (_loc, (`Vrn (_loc, "LabelS")), (meta_alident _loc _a0))
   | `Label (_a0,_a1) ->
       `App
         (_loc,
@@ -2028,6 +2036,8 @@ and meta_expr _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "IfThen")), (meta_expr _loc _a0))),
           (meta_expr _loc _a1))
+  | `LabelS _a0 ->
+      `App (_loc, (`Vrn (_loc, "LabelS")), (meta_alident _loc _a0))
   | `Label (_a0,_a1) ->
       `App
         (_loc,

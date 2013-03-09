@@ -21,6 +21,7 @@ let loc_of =
   | `TyPol (_loc,_,_) -> _loc
   | `Val (_loc,_,_) -> _loc
   | `C (_loc,_) -> _loc
+  | `LabelS (_loc,_) -> _loc
   | `Str (_loc,_) -> _loc
   | `Or (_loc,_,_) -> _loc
   | `New (_loc,_) -> _loc
