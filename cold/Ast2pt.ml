@@ -398,7 +398,7 @@ let rec patt (x : patt) =
   | `Flo (loc,s) ->
       mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
   | `Label (loc,_,_) -> error loc "labeled pattern not allowed here"
-  | `OptLablExpr (loc,_,_,_)|`OptLabl (loc,_,_) ->
+  | `OptLablExpr (loc,_,_,_)|`OptLabl (loc,_,_)|`OptLablS (loc,_) ->
       error loc "labeled pattern not allowed here"
   | `Or (loc,p1,p2) -> mkpat loc (Ppat_or ((patt p1), (patt p2)))
   | `PaRng (loc,p1,p2) ->
@@ -530,17 +530,26 @@ let rec expr (x : expr) =
            (lab, None,
              [((patt_of_lab loc lab po),
                 (mkexp (loc_of w) (Pexp_when ((expr w), (expr e)))))]))
-  | `Fun (loc,`Case (_,`OptLabl (_,`Lid (_,lab),p),e2)) ->
-      let lab = paolab lab p in
+  | `Fun (loc,`Case (_,`OptLablS (_,`Lid (sloc,lab)),e2)) ->
       mkexp loc
         (Pexp_function
-           (("?" ^ lab), None, [((patt_of_lab loc lab p), (expr e2))]))
+           (("?" ^ lab), None,
+             [((patt (`Id (sloc, (`Lid (sloc, lab))))), (expr e2))]))
+  | `Fun (loc,`Case (_,`OptLabl (_,`Lid (_,lab),p),e2)) ->
+      let lab = paolab lab p in
+      mkexp loc (Pexp_function (("?" ^ lab), None, [((patt p), (expr e2))]))
+  | `Fun (loc,`CaseWhen (_,`OptLablS (_,`Lid (sloc,lab)),w,e2)) ->
+      mkexp loc
+        (Pexp_function
+           (("?" ^ lab), None,
+             [((patt (`Id (sloc, (`Lid (sloc, lab))))),
+                (mkexp (loc_of w) (Pexp_when ((expr w), (expr e2)))))]))
   | `Fun (loc,`CaseWhen (_,`OptLabl (_,`Lid (_,lab),p),w,e2)) ->
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
            (("?" ^ lab), None,
-             [((patt_of_lab loc lab p),
+             [((patt p),
                 (mkexp (loc_of w) (Pexp_when ((expr w), (expr e2)))))]))
   | `Fun (loc,`Case (_,`OptLablExpr (_,`Lid (_,lab),p,e1),e2)) ->
       let lab = paolab lab p in
@@ -679,7 +688,9 @@ and expr_of_lab _loc lab (x : expr) =
 and label_expr (x : expr) =
   match x with
   | `Label (loc,`Lid (_,lab),eo) -> (lab, (expr_of_lab loc lab eo))
-  | `OptLabl (loc,`Lid (_,lab),eo) -> (("?" ^ lab), (expr_of_lab loc lab eo))
+  | `OptLabl (_loc,`Lid (_,lab),eo) -> (("?" ^ lab), (expr eo))
+  | `OptLablS (loc,`Lid (_,lab)) ->
+      (("?" ^ lab), (expr (`Id (loc, (`Lid (loc, lab))))))
   | e -> ("", (expr e))
 and binding (x : binding) acc =
   match x with

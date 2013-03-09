@@ -425,9 +425,9 @@ let apply () = begin
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
         | `LABEL i; S{e} -> {| ~ $lid:i : $e |}
         (* Same remark for ?a:b *)
-        | `OPTLABEL i; S{e} -> {| ? $lid:i : $e |}
-        | "?"; a_lident{i}; ":"; S{e} -> {| ? $i : $e |}
-        | "?"; a_lident{i} -> {| ? $i |} ] 
+        | `OPTLABEL i; S{e} ->  `OptLabl(_loc,`Lid(_loc,i),e)
+        | "?"; a_lident{i}; ":"; S{e} -> `OptLabl(_loc,i,e)
+        | "?"; a_lident{i} -> `OptLablS(_loc,i) ] 
        "." LA
         [ S{e1}; "."; "("; S{e2}; ")" -> {| $e1 .( $e2 ) |}
         | S{e1}; "."; "["; S{e2}; "]" -> {| $e1 .[ $e2 ] |}
@@ -556,7 +556,7 @@ let apply () = begin
   with rec_expr
       {:extend|
         rec_expr_quot:
-        [ label_expr_list{x} -> x (* | -> `Nil _loc *)  ](*M*)
+        [ label_expr_list{x} -> x  ](*M*)
         label_expr:
         [ `Ant (("rec_expr" |""|"anti"|"list" as n),s) -> 
           `Ant (_loc, (mk_anti ~c:"rec_expr" n s))
@@ -581,13 +581,6 @@ let apply () = begin
        patt_quot:
        [ patt{x}; ","; comma_patt{y} -> `Com(_loc,x,y)
        | patt{x}; ";"; sem_patt{y} -> `Sem(_loc,x,y)
-       (* | patt{x}; "="; patt{y} ->  *)
-       (*     let i = *)
-       (*       match x with *)
-       (*       [ {@loc| $anti:s |} -> {:ident@loc| $anti:s |} *)
-       (*       | p -> FanAst.ident_of_patt p ] in *)
-       (*     {| $i = $y |}   (\* {:patt| x=  y|} *\) *)
-       (* FIXME intrdouce rec_patt_quot *)      
        | patt{x} -> x
        | -> `Nil _loc  ] (*Q*)
        patt_as_patt_opt:
@@ -672,12 +665,9 @@ let apply () = begin
         | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  ->
             `OptLabl(_loc,i,p)
             (* {| ? $i:($p)|} *)
-        | "?"; a_lident{i} ->
-            `OptLabl(_loc,i,`Nil _loc ) (*Q*)
-            (* {| ? $i |} *)
-        | "?"; "("; ipatt_tcon{p}; ")" ->
-            `OptLabl(_loc,`Lid(_loc,""),p)
-            (* {| ? ($p) |}; *)
+        | "?"; a_lident{i} -> `OptLablS(_loc,i )
+        | "?"; "("; ipatt_tcon{p}; ")" -> `OptLabl(_loc,`Lid(_loc,""),p) (* FIXME*)
+
         | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,""),p,e)
             (* {| ? ($p = $e) |}; *)
@@ -721,9 +711,7 @@ let apply () = begin
         | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  ->
             `OptLabl(_loc,i,p)
             (* {| ? $i:($p)|} *)
-        | "?"; a_lident{i} ->
-            `OptLabl(_loc,i,`Nil _loc ) (*Q*)
-            (* {| ? $i |} *)
+        | "?"; a_lident{i} -> `OptLablS(_loc,i ) 
         | "?"; "("; ipatt_tcon{p}; ")" ->
             `OptLabl(_loc,`Lid(_loc,""),p)
             (* {| ? ($p) |} *)

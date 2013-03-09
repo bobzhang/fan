@@ -384,10 +384,6 @@ let mkvalue_desc loc t (p: list strings) =
     | _ -> failwithf  "mkvalue_desc"]) p in
   {pval_type = ctyp t; pval_prim = ps; pval_loc =  loc};
 
-(* let rec list_of_meta_list =fun *)
-(*   [ `LNil  -> [] *)
-(*   | `LCons (x, xs) -> [x :: list_of_meta_list xs] *)
-(*   | `Ant (_loc,_) -> ANT_ERROR ]; *)
 
 let mkmutable = fun
   [`Mutable _ -> Mutable
@@ -396,12 +392,10 @@ let mkmutable = fun
 
 let paolab (lab:string) (p:patt) : string =
   match (lab, p) with
-  [ ("", (* {| $lid:i |} *)
-     (`Id(_loc,`Lid(_,i)) | `Constraint(_loc,`Id(_,`Lid(_,i)),_)))
-        (* | {| ($lid:i : $_) |} *) -> i
+  [ ("", (`Id(_loc,`Lid(_,i)) | `Constraint(_loc,`Id(_,`Lid(_,i)),_)))
+    -> i
   | ("", p) ->
       errorf (loc_of p) "paolab %s" (dump_patt p)
-
   | _ -> lab ] ;
 
 
@@ -541,7 +535,9 @@ let rec patt (x:patt) =
          ] in mkpat loc (Ppat_constant (Const_nativeint nati))
      | `Flo (loc,s) -> mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
      | `Label (loc,_,_) -> error loc "labeled pattern not allowed here"
-     | `OptLablExpr (loc,_,_,_) | `OptLabl(loc,_,_)  -> error loc "labeled pattern not allowed here"
+     | `OptLablExpr (loc,_,_,_)
+     | `OptLabl(loc,_,_)
+     | `OptLablS(loc,_)  -> error loc "labeled pattern not allowed here"
      | `Or (loc, p1, p2) -> mkpat loc (Ppat_or (patt p1) (patt p2))
      | `PaRng (loc, p1, p2) ->
          match (p1, p2) with
@@ -705,17 +701,26 @@ let rec expr (x : expr) = with expr match x with
            (Pexp_function lab None
               [(patt_of_lab loc lab po,
                 mkexp (loc_of w) (Pexp_when (expr w) (expr e)))])
-  | `Fun (loc,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) ->
+  | `Fun (loc,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
+      mkexp loc (Pexp_function ("?"^lab) None
+                   [(patt (`Id(sloc,`Lid(sloc,lab))), expr e2)])
+  | `Fun (loc,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> (*M*)
       let lab = paolab lab p in
       mkexp loc
           (Pexp_function ("?" ^ lab) None
-             [(patt_of_lab loc lab p,
-               expr e2)])        
-  | `Fun (loc,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) ->
+             [(patt p,
+               expr e2)])
+  | `Fun (loc,`CaseWhen(_,`OptLablS(_,`Lid(sloc,lab)),w,e2)) ->
+      mkexp loc
+          (Pexp_function ("?" ^ lab) None
+             [(patt (`Id(sloc,`Lid(sloc,lab))),
+               mkexp (loc_of w) (Pexp_when (expr w) (expr e2)))])
+
+  | `Fun (loc,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> (*M*)
       let lab = paolab lab p in
       mkexp loc
           (Pexp_function ("?" ^ lab) None
-             [(patt_of_lab loc lab p,
+             [( patt p,
                mkexp (loc_of w) (Pexp_when (expr w) (expr e2)))])
   | `Fun (loc,`Case(_,`OptLablExpr(_,`Lid(_,lab),p,e1),e2)) -> 
       let lab = paolab lab p in
@@ -839,7 +844,8 @@ and expr_of_lab _loc lab (x:expr) = match x with
 and label_expr (x : expr) = match x with 
   [ `Label (loc,`Lid(_,lab),eo) ->
       (lab, expr_of_lab loc lab eo)
-  | `OptLabl (loc,`Lid(_,lab),eo) -> ("?" ^ lab, expr_of_lab loc lab eo)
+  | `OptLabl (_loc,`Lid(_,lab),eo) -> ("?" ^ lab, expr eo)
+  | `OptLablS(loc,`Lid(_,lab)) -> ("?"^lab, expr (`Id(loc,`Lid(loc,lab))))
   | e -> ("", expr e) ]
 and binding (x:binding) acc =  match x with
   [ `And(_,x,y) ->
@@ -1070,10 +1076,6 @@ and class_type (x:Ast.class_type) = match x with
         (List.map (fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false]) (list_of_com' tl [])))
   | `CtFun (loc, (`Label (_, `Lid(_,lab), t)), ct) ->
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))
-
-  (* | `CtFun (loc, (`TyOlb (loc1, `Lid(_,lab), t)), ct) -> *)
-  (*     let t = `App loc1 (predef_option loc1) t in *)
-  (*     mkcty loc (Pcty_fun ("?" ^ lab) (ctyp t) (class_type ct)) *)
         
   | `CtFun (loc, (`OptLabl (loc1, `Lid(_,lab), t)), ct) ->
       let t = `App loc1 (predef_option loc1) t in

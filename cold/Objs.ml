@@ -524,6 +524,9 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#patt _a2 _b2 in `OptLabl (_a0, _a1, _a2)
+        | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in `OptLablS (_a0, _a1)
         | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -682,6 +685,9 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#expr _a2 _b2 in `OptLabl (_a0, _a1, _a2)
+        | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in `OptLablS (_a0, _a1)
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_expr _a1 _b1 in `OvrInst (_a0, _a1)
@@ -1643,6 +1649,8 @@ class fold2 =
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#patt _a2 _b2
+        | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
@@ -1762,6 +1770,8 @@ class fold2 =
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#expr _a2 _b2
+        | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#rec_expr _a1 _b1
         | (`OvrInstEmpty _a0,`OvrInstEmpty _b0) -> self#loc _a0 _b0
@@ -2414,6 +2424,7 @@ class iter =
           (self#loc _a0; self#alident _a1; self#patt _a2)
       | `OptLabl (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#patt _a2)
+      | `OptLablS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           (self#loc _a0; self#alident _a1; self#patt _a2; self#expr _a3)
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
@@ -2485,6 +2496,7 @@ class iter =
           (self#loc _a0; self#patt _a1; self#class_str_item _a2)
       | `OptLabl (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
+      | `OptLablS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `OvrInst (_a0,_a1) -> (self#loc _a0; self#rec_expr _a1)
       | `OvrInstEmpty _a0 -> self#loc _a0
       | `Seq (_a0,_a1) -> (self#loc _a0; self#expr _a1)
@@ -3163,6 +3175,9 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#patt _a2 in `OptLabl (_a0, _a1, _a2)
+      | `OptLablS (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in `OptLablS (_a0, _a1)
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3311,6 +3326,9 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#expr _a2 in `OptLabl (_a0, _a1, _a2)
+      | `OptLablS (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in `OptLablS (_a0, _a1)
       | `OvrInst (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_expr _a1 in `OvrInst (_a0, _a1)
@@ -4078,6 +4096,7 @@ class fold =
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#patt _a2
+      | `OptLablS (_a0,_a1) -> let self = self#loc _a0 in self#alident _a1
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
@@ -4180,6 +4199,7 @@ class fold =
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#expr _a2
+      | `OptLablS (_a0,_a1) -> let self = self#loc _a0 in self#alident _a1
       | `OvrInst (_a0,_a1) -> let self = self#loc _a0 in self#rec_expr _a1
       | `OvrInstEmpty _a0 -> self#loc _a0
       | `Seq (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
@@ -4925,6 +4945,9 @@ class print =
         | `OptLabl (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#patt _a2
+        | `OptLablS (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`OptLablS@ %a@ %a)@]" self#loc _a0
+              self#alident _a1
         | `OptLablExpr (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#alident _a1 self#patt _a2 self#expr _a3
@@ -5048,6 +5071,9 @@ class print =
         | `OptLabl (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#expr _a2
+        | `OptLablS (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`OptLablS@ %a@ %a)@]" self#loc _a0
+              self#alident _a1
         | `OvrInst (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OvrInst@ %a@ %a)@]" self#loc _a0
               self#rec_expr _a1
@@ -5856,6 +5882,8 @@ class eq =
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#patt _a2 _b2)
+        | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                (self#patt _a2 _b2))
@@ -5975,6 +6003,8 @@ class eq =
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#expr _a2 _b2)
+        | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#rec_expr _a1 _b1)
         | (`OvrInstEmpty _a0,`OvrInstEmpty _b0) -> self#loc _a0 _b0
@@ -6667,6 +6697,7 @@ and strip_loc_patt =
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_patt _a2 in `OptLabl (_a1, _a2)
+  | `OptLablS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `OptLablS _a1
   | `OptLablExpr (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_patt _a2 in
@@ -6769,6 +6800,7 @@ and strip_loc_expr =
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_expr _a2 in `OptLabl (_a1, _a2)
+  | `OptLablS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `OptLablS _a1
   | `OvrInst (_a0,_a1) -> let _a1 = strip_loc_rec_expr _a1 in `OvrInst _a1
   | `OvrInstEmpty _a0 -> `OvrInstEmpty
   | `Seq (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `Seq _a1
@@ -7476,6 +7508,9 @@ and pp_print_patt fmt =
   | `OptLabl (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_patt _a2
+  | `OptLablS (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`OptLablS@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1
   | `OptLablExpr (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_patt _a2 pp_print_expr _a3
@@ -7596,6 +7631,9 @@ and pp_print_expr fmt =
   | `OptLabl (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_expr _a2
+  | `OptLablS (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`OptLablS@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1
   | `OvrInst (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`OvrInst@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_expr _a1

@@ -94,6 +94,7 @@ let loc_of =
   | `TyColMut (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
+  | `OptLablS (_loc,_) -> _loc
   | `Record (_loc,_) -> _loc
   | `InheritAs (_loc,_,_,_) -> _loc
   | `Constraint (_loc,_,_) -> _loc

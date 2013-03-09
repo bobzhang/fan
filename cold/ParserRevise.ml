@@ -1587,10 +1587,10 @@ let apply () =
                 (fun (e : 'expr)  _  (i : 'a_lident)  _  (_loc : FanLoc.t) 
                    -> (`OptLabl (_loc, i, e) : 'expr )))));
          ([`Skeyword "?"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`OptLabl (_loc, i, (`Nil _loc)) : 'expr ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`OptLablS (_loc, i) : 'expr ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                   (`OptLabl (_loc, i, (`Nil _loc)) : 'expr )))))]);
+                   (`OptLablS (_loc, i) : 'expr )))))]);
        ((Some "."), (Some `LA),
          [([`Sself; `Skeyword "."; `Skeyword "("; `Sself; `Skeyword ")"],
             ("Gram.mk_action\n  (fun _  (e2 : 'expr)  _  _  (e1 : 'expr)  (_loc : FanLoc.t)  ->\n     (`ArrayDot (_loc, e1, e2) : 'expr ))\n",
@@ -2884,10 +2884,10 @@ let apply () =
                 (fun _  (p : 'patt_tcon)  _  _  (i : 'a_lident)  _ 
                    (_loc : FanLoc.t)  -> (`OptLabl (_loc, i, p) : 'patt )))));
          ([`Skeyword "?"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`OptLabl (_loc, i, (`Nil _loc)) : 'patt ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`OptLablS (_loc, i) : 'patt ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                   (`OptLabl (_loc, i, (`Nil _loc)) : 'patt )))));
+                   (`OptLablS (_loc, i) : 'patt )))));
          ([`Skeyword "?";
           `Skeyword "(";
           `Snterm (Gram.obj (ipatt_tcon : 'ipatt_tcon Gram.t ));
@@ -3131,10 +3131,10 @@ let apply () =
                 (fun _  (p : 'patt_tcon)  _  _  (i : 'a_lident)  _ 
                    (_loc : FanLoc.t)  -> (`OptLabl (_loc, i, p) : 'ipatt )))));
          ([`Skeyword "?"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`OptLabl (_loc, i, (`Nil _loc)) : 'ipatt ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`OptLablS (_loc, i) : 'ipatt ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                   (`OptLabl (_loc, i, (`Nil _loc)) : 'ipatt )))));
+                   (`OptLablS (_loc, i) : 'ipatt )))));
          ([`Skeyword "?";
           `Skeyword "(";
           `Snterm (Gram.obj (ipatt_tcon : 'ipatt_tcon Gram.t ));

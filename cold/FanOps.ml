@@ -111,6 +111,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `App (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `Constraint (_,p,_) -> is_irrefut_patt p
   | `Tup (_,p) -> is_irrefut_patt p
+  | `OptLablS _ -> true
   | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_patt p
   | `Label (_loc,_,`Nil _) -> true
   | `Label (_loc,_,p) -> is_irrefut_patt p

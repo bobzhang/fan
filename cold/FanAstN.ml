@@ -337,6 +337,7 @@ class eq =
             (self#alident _a0 _b0) && (self#patt _a1 _b1)
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#patt _a1 _b1)
+        | (`OptLablS _a0,`OptLablS _b0) -> self#alident _a0 _b0
         | (`OptLablExpr (_a0,_a1,_a2),`OptLablExpr (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -420,6 +421,7 @@ class eq =
             (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
+        | (`OptLablS _a0,`OptLablS _b0) -> self#alident _a0 _b0
         | (`OvrInst _a0,`OvrInst _b0) -> self#rec_expr _a0 _b0
         | (`OvrInstEmpty,`OvrInstEmpty) -> true
         | (`Seq _a0,`Seq _b0) -> self#expr _a0 _b0
@@ -1065,6 +1067,8 @@ class print =
         | `OptLabl (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
               self#patt _a1
+        | `OptLablS _a0 ->
+            Format.fprintf fmt "@[<1>(`OptLablS@ %a)@]" self#alident _a0
         | `OptLablExpr (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a)@]"
               self#alident _a0 self#patt _a1 self#expr _a2
@@ -1169,6 +1173,8 @@ class print =
         | `OptLabl (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
               self#expr _a1
+        | `OptLablS _a0 ->
+            Format.fprintf fmt "@[<1>(`OptLablS@ %a)@]" self#alident _a0
         | `OvrInst _a0 ->
             Format.fprintf fmt "@[<1>(`OvrInst@ %a)@]" self#rec_expr _a0
         | `OvrInstEmpty -> Format.fprintf fmt "`OvrInstEmpty"
@@ -1902,6 +1908,8 @@ and meta_patt _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
           (meta_patt _loc _a1))
+  | `OptLablS _a0 ->
+      `App (_loc, (`Vrn (_loc, "OptLablS")), (meta_alident _loc _a0))
   | `OptLablExpr (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2057,6 +2065,8 @@ and meta_expr _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
           (meta_expr _loc _a1))
+  | `OptLablS _a0 ->
+      `App (_loc, (`Vrn (_loc, "OptLablS")), (meta_alident _loc _a0))
   | `OvrInst _a0 ->
       `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_expr _loc _a0))
   | `OvrInstEmpty -> `Vrn (_loc, "OvrInstEmpty")

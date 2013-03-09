@@ -1,9 +1,4 @@
 
-type u = {v:int;u:int};
-let f =   fun
-  [{v;_} -> v];
-let g = fun
-  [{v;u} -> u];
-
-let f1 = fun
-  [{v;} -> v];
+let f = fun ?s () -> s;
+let g ?s  =  f ?s ();
+(* let g  ?(s=3) = 3 ;   *)

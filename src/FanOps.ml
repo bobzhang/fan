@@ -234,10 +234,10 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | `Or(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
     | `App(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2
           
-    | `Constraint(_,p,_)(* {| ($p : $_) |} *) -> is_irrefut_patt p
-    | `Tup(_,p)(* {| ($tup:pl) |} *) -> is_irrefut_patt p
-    | `OptLabl(_,_,p) | `OptLablExpr(_,_,p,_) (* {| ? $_ : ($p =  $opt:_ ) |} *)
-      -> is_irrefut_patt p
+    | `Constraint(_,p,_) -> is_irrefut_patt p
+    | `Tup(_,p) -> is_irrefut_patt p
+    | `OptLablS _ -> true
+    | `OptLabl(_,_,p) | `OptLablExpr(_,_,p,_) -> is_irrefut_patt p
     | {| ~ $_ |} -> true
     | {| ~ $_: $p |} -> is_irrefut_patt p
     | {| lazy $p |} -> is_irrefut_patt p

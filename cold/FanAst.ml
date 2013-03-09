@@ -594,6 +594,11 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc, (`Vrn (_loc, "OptLabl")), (meta_loc _loc _a0))),
                    (meta_alident _loc _a1))), (meta_patt _loc _a2))
+      | `OptLablS (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "OptLablS")), (meta_loc _loc _a0))),
+              (meta_alident _loc _a1))
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
@@ -859,6 +864,11 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc, (`Vrn (_loc, "OptLabl")), (meta_loc _loc _a0))),
                    (meta_alident _loc _a1))), (meta_expr _loc _a2))
+      | `OptLablS (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "OptLablS")), (meta_loc _loc _a0))),
+              (meta_alident _loc _a1))
       | `OvrInst (_a0,_a1) ->
           `App
             (_loc,

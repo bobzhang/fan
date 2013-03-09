@@ -73,7 +73,7 @@ and patt =
   | `Tup of (loc* patt) | any | `Record of (loc* rec_patt) | ant | literal
   | `Alias of (loc* patt* alident) | `ArrayEmpty of loc
   | `Array of (loc* patt) | `Label of (loc* alident* patt)
-  | `OptLabl of (loc* alident* patt)
+  | `OptLabl of (loc* alident* patt) | `OptLablS of (loc* alident)
   | `OptLablExpr of (loc* alident* patt* expr) | `Or of (loc* patt* patt)
   | `PaRng of (loc* patt* patt) | `Constraint of (loc* patt* ctyp)
   | `ClassPath of (loc* ident) | `Lazy of (loc* patt)
@@ -98,8 +98,8 @@ and expr =
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* class_str_item) | `ObjPat of (loc* patt* class_str_item)
-  | `OptLabl of (loc* alident* expr) | `OvrInst of (loc* rec_expr)
-  | `OvrInstEmpty of loc | `Seq of (loc* expr)
+  | `OptLabl of (loc* alident* expr) | `OptLablS of (loc* alident)
+  | `OvrInst of (loc* rec_expr) | `OvrInstEmpty of loc | `Seq of (loc* expr)
   | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
   | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
   | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)

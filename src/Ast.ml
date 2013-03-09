@@ -173,6 +173,7 @@ type ctyp =
   | `Label of (loc * alident * ctyp) (* ~s:t *)
         (* ?s:t *)
   | `OptLabl of (loc * alident * ctyp )
+
   | sid
       (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
   | `TyObj of (loc * name_ctyp * row_var_flag )
@@ -274,6 +275,8 @@ and patt =
 
     (* ?s or ?s:(p)   *)
   | `OptLabl of (loc * alident * patt)
+  | `OptLablS of (loc * alident)
+        
     (* ?s:(p = e) or ?(p = e) *)
   | `OptLablExpr of (loc * alident * patt * expr)
         
@@ -335,6 +338,7 @@ and expr =
   | `ObjPat of (loc * patt * class_str_item)
         (* ?s or ?s:e *)
   | `OptLabl of (loc *alident * expr)
+  | `OptLablS of (loc * alident)
         (* {< rb >} *)
   | `OvrInst of (loc * rec_expr)
   | `OvrInstEmpty of loc

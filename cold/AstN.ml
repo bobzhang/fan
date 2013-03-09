@@ -67,10 +67,10 @@ and patt =
     ant
   | literal | `Alias of (patt* alident) | `ArrayEmpty | `Array of patt
   | `Label of (alident* patt) | `OptLabl of (alident* patt)
-  | `OptLablExpr of (alident* patt* expr) | `Or of (patt* patt)
-  | `PaRng of (patt* patt) | `Constraint of (patt* ctyp)
-  | `ClassPath of ident | `Lazy of patt | `ModuleUnpack of auident
-  | `ModuleConstraint of (auident* ctyp)] 
+  | `OptLablS of alident | `OptLablExpr of (alident* patt* expr)
+  | `Or of (patt* patt) | `PaRng of (patt* patt)
+  | `Constraint of (patt* ctyp) | `ClassPath of ident | `Lazy of patt
+  | `ModuleUnpack of auident | `ModuleConstraint of (auident* ctyp)] 
 and rec_patt =
   [ `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | any | ant] 
 and expr =
@@ -87,8 +87,8 @@ and expr =
   | `LetModule of (auident* module_expr* expr) | `Match of (expr* match_case)
   | `New of ident | `Obj of class_str_item
   | `ObjPat of (patt* class_str_item) | `OptLabl of (alident* expr)
-  | `OvrInst of rec_expr | `OvrInstEmpty | `Seq of expr
-  | `Send of (expr* alident) | `StringDot of (expr* expr)
+  | `OptLablS of alident | `OvrInst of rec_expr | `OvrInstEmpty
+  | `Seq of expr | `Send of (expr* alident) | `StringDot of (expr* expr)
   | `Try of (expr* match_case) | `Constraint of (expr* ctyp)
   | `Coercion of (expr* ctyp* ctyp) | `While of (expr* expr)
   | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
