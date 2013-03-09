@@ -2,8 +2,9 @@ open LibUtil;
 open FanLoc.Ops;
 include Ast;
 {:fans|keep off; derive (GenLoc);|};
-{:ocaml|INCLUDE "src/Ast.ml"; |};
 
+(* {:ocaml|INCLUDE "src/Ast.ml"; |}; *)
+{:ocaml| {:include| "src/Ast.ml"|}; |};
 
 
 let ghost = FanLoc.ghost ; (* to refine *)

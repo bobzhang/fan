@@ -1,3 +1,5 @@
-true:pkg_compiler-libs.toplevel, pkg_batteries
+# -*- Mode:Shell-script -*-
+# true:pkg_compiler-libs.toplevel, pkg_batteries
+true:use_ocamlcommon
 <**/*.{ml,mli,mlx}>: use_fan
 <**/*_ppo.{ml,mli,mlx}>:-use_fan
