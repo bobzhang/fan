@@ -184,7 +184,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             (match repr with
              | `Record (_loc,t) ->
                  let cols = Ctyp.list_of_record t in
-                 let patt = (EP.mk_record ~arity cols :>patt) in
+                 let patt: patt = EP.mk_record ~arity cols in
                  let info =
                    List.mapi
                      (fun i  x  ->

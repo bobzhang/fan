@@ -1827,10 +1827,10 @@ let apply () =
                    (_loc : FanLoc.t)  -> (`RecordWith (_loc, el, e) : 
                    'expr )))));
          ([`Skeyword "{<"; `Skeyword ">}"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`OvrInst (_loc, (`Nil _loc)) : 'expr ))\n",
+           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`OvrInstEmpty _loc : 'expr ))\n",
              (Gram.mk_action
                 (fun _  _  (_loc : FanLoc.t)  ->
-                   (`OvrInst (_loc, (`Nil _loc)) : 'expr )))));
+                   (`OvrInstEmpty _loc : 'expr )))));
          ([`Skeyword "{<";
           `Snterm (Gram.obj (field_expr_list : 'field_expr_list Gram.t ));
           `Skeyword ">}"],
@@ -2304,11 +2304,7 @@ let apply () =
             ("Gram.mk_action\n  (fun (x : 'label_expr_list)  (_loc : FanLoc.t)  -> (x : 'rec_expr_quot ))\n",
               (Gram.mk_action
                  (fun (x : 'label_expr_list)  (_loc : FanLoc.t)  ->
-                    (x : 'rec_expr_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'rec_expr_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'rec_expr_quot )))))]));
+                    (x : 'rec_expr_quot )))))]));
    Gram.extend_single (label_expr : 'label_expr Gram.t )
      (None,
        (None, None,

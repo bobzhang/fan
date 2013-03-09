@@ -53,9 +53,8 @@ class clean_ast =
       | wc -> wc
     method! expr e =
       match super#expr e with
-      | `LetIn (_loc,_,`Nil _l,e)|`RecordWith (_loc,`Nil _l,e)
-        |`Com (_loc,`Nil _l,e)|`Com (_loc,e,`Nil _l)|`Sem (_loc,`Nil _l,e)
-        |`Sem (_loc,e,`Nil _l) -> e
+      | `LetIn (_loc,_,`Nil _l,e)|`Com (_loc,`Nil _l,e)|`Com (_loc,e,`Nil _l)
+        |`Sem (_loc,`Nil _l,e)|`Sem (_loc,e,`Nil _l) -> e
       | e -> e
     method! patt p =
       match super#patt p with
@@ -70,10 +69,6 @@ class clean_ast =
     method! binding bi =
       match super#binding bi with
       | `And (_loc,`Nil _l,bi)|`And (_loc,bi,`Nil _l) -> bi
-      | bi -> bi
-    method! rec_expr rb =
-      match super#rec_expr rb with
-      | `Sem (_loc,`Nil _l,bi)|`Sem (_loc,bi,`Nil _l) -> bi
       | bi -> bi
     method! module_binding mb =
       match super#module_binding mb with

@@ -79,8 +79,9 @@ and patt =
   | `ModuleUnpack of (loc* auident)
   | `ModuleConstraint of (loc* auident* ctyp)] 
 and rec_patt =
-  [ nil | `RecBind of (loc* ident* patt) | `Sem of (loc* rec_patt* rec_patt)
-  | any | ant] 
+  [ `RecBind of (loc* ident* patt) | `Sem of (loc* rec_patt* rec_patt) | 
+    any
+  | ant] 
 and expr =
   [ nil | sid | `App of (loc* expr* expr) | `Vrn of (loc* string)
   | `Com of (loc* expr* expr) | `Sem of (loc* expr* expr)
@@ -96,15 +97,16 @@ and expr =
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
   | `Obj of (loc* class_str_item) | `ObjPat of (loc* patt* class_str_item)
   | `OptLabl of (loc* alident* expr) | `OvrInst of (loc* rec_expr)
-  | `Seq of (loc* expr) | `Send of (loc* expr* alident)
-  | `StringDot of (loc* expr* expr) | `Try of (loc* expr* match_case)
-  | `Constraint of (loc* expr* ctyp) | `Coercion of (loc* expr* ctyp* ctyp)
-  | `While of (loc* expr* expr) | `LetOpen of (loc* ident* expr)
-  | `LocalTypeFun of (loc* alident* expr)
+  | `OvrInstEmpty of loc | `Seq of (loc* expr)
+  | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
+  | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
+  | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)
+  | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
 and rec_expr =
-  [ nil | `Sem of (loc* rec_expr* rec_expr) | `RecBind of (loc* ident* expr)
-  | any | ant] 
+  [ `Sem of (loc* rec_expr* rec_expr) | `RecBind of (loc* ident* expr) | 
+    any
+  | ant] 
 and module_type =
   [ nil | sid | `MtFun of (loc* auident* module_type* module_type)
   | `Sig of (loc* sig_item) | `With of (loc* module_type* with_constr)
@@ -184,5 +186,6 @@ type ep =
     any
   | `Array of (loc* ep) | `Record of (loc* rec_bind) | literal | ant] 
 and rec_bind =
-  [ nil | `RecBind of (loc* ident* ep) | `Sem of (loc* rec_bind* rec_bind)
-  | any | ant] 
+  [ `RecBind of (loc* ident* ep) | `Sem of (loc* rec_bind* rec_bind) | 
+    any
+  | ant] 

@@ -407,10 +407,14 @@ let rec patt (x : patt) =
            let c2 = char_of_char_token loc2 c2 in mkrangepat loc c1 c2
        | _ -> error loc "range pattern allowed only for characters")
   | `Record (loc,p) ->
-      let ps = list_of_sem' p [] in
-      let is_wildcard = function | `Any _loc -> true | _ -> false in
-      let (wildcards,ps) = List.partition is_wildcard ps in
+      let ps = list_of_sem p [] in
+      let (wildcards,ps) =
+        List.partition (function | `Any _ -> true | _ -> false) ps in
       let is_closed = if wildcards = [] then Closed else Open in
+      let mklabpat (p : rec_patt) =
+        match p with
+        | `RecBind (_loc,i,p) -> ((ident i), (patt p))
+        | p -> error (loc_of p) "invalid pattern" in
       mkpat loc (Ppat_record ((List.map mklabpat ps), is_closed))
   | `Str (loc,s) ->
       mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
@@ -429,14 +433,10 @@ let rec patt (x : patt) =
         (Ppat_constraint
            ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
   | p -> error (loc_of p) "invalid pattern"
-and mklabpat: rec_patt -> (Longident.t Asttypes.loc* pattern) =
-  function
-  | `RecBind (_loc,i,p) -> ((ident i), (patt p))
-  | p -> error (loc_of p) "invalid pattern"
 let override_flag loc =
   function
-  | `Override _loc -> Override
-  | `OvNil _loc -> Fresh
+  | `Override _ -> Override
+  | `OvNil _ -> Fresh
   | _ -> error loc "antiquotation not allowed here"
 let rec expr (x : expr) =
   match x with
@@ -607,15 +607,18 @@ let rec expr (x : expr) =
   | `ObjPat (loc,p,cfl) ->
       let cil = class_str_item cfl [] in
       mkexp loc (Pexp_object { pcstr_pat = (patt p); pcstr_fields = cil })
-  | `OvrInst (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
-  | `Record (loc,lel) ->
-      (match lel with
-       | `Nil _ -> error loc "empty record"
-       | _ -> mkexp loc (Pexp_record ((mklabexp lel), None)))
+  | `OvrInstEmpty loc -> mkexp loc (Pexp_override [])
+  | `OvrInst (loc,iel) ->
+      let rec mkideexp (x : rec_expr) acc =
+        match x with
+        | `Sem (_,x,y) -> mkideexp x (mkideexp y acc)
+        | `RecBind (_,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) ::
+            acc
+        | _ -> assert false in
+      mkexp loc (Pexp_override (mkideexp iel []))
+  | `Record (loc,lel) -> mkexp loc (Pexp_record ((mklabexp lel), None))
   | `RecordWith (loc,lel,eo) ->
-      (match lel with
-       | `Nil _ -> error loc "empty record"
-       | _ -> mkexp loc (Pexp_record ((mklabexp lel), (Some (expr eo)))))
+      mkexp loc (Pexp_record ((mklabexp lel), (Some (expr eo))))
   | `Seq (_loc,e) ->
       let rec loop =
         function
@@ -725,15 +728,8 @@ and mklabexp (x : rec_expr) =
   let bindings = list_of_sem x [] in
   List.filter_map
     (function
-     | `Nil _ -> None
      | `RecBind (_,i,e) -> Some ((ident i), (expr e))
      | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_expr x)) bindings
-and mkideexp (x : rec_expr) (acc : (string Asttypes.loc* expression) list) =
-  (match x with
-   | `Nil _ -> acc
-   | `Sem (_,x,y) -> mkideexp x (mkideexp y acc)
-   | `RecBind (_,`Lid (sloc,s),e) -> ((with_loc s sloc), (expr e)) :: acc
-   | _ -> assert false : (string Asttypes.loc* expression) list )
 and mktype_decl (x : typedecl) =
   let tys = list_of_and x [] in
   List.map

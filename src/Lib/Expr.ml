@@ -279,10 +279,10 @@ let _loc = FanLoc.ghost ;
   [mk_record] becomes a bit complex when you have to consider
   the arity
  *)
-let mk_record label_exprs =
+let mk_record label_exprs : expr=
   let rec_exprs = List.map (fun (label, expr) ->
     {:rec_expr| $lid:label = $expr |} ) label_exprs in
-  `Record (_loc, (sem_of_list rec_exprs));
+  `Record (_loc, (sem_of_list1 rec_exprs));
   (* {| { $list:rec_exprs } |} *)
 
 

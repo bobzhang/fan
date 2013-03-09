@@ -354,7 +354,6 @@ class eq =
     method rec_patt : rec_patt -> rec_patt -> 'result36=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result36)
         | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
             (self#ident _a0 _b0) && (self#patt _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -420,6 +419,7 @@ class eq =
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
         | (`OvrInst _a0,`OvrInst _b0) -> self#rec_expr _a0 _b0
+        | (`OvrInstEmpty,`OvrInstEmpty) -> true
         | (`Seq _a0,`Seq _b0) -> self#expr _a0 _b0
         | (`Send (_a0,_a1),`Send (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#alident _a1 _b1)
@@ -443,7 +443,6 @@ class eq =
     method rec_expr : rec_expr -> rec_expr -> 'result38=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result38)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#rec_expr _a0 _b0) && (self#rec_expr _a1 _b1)
         | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
@@ -709,7 +708,6 @@ class eq =
     method rec_bind : rec_bind -> rec_bind -> 'result52=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result52)
         | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
             (self#ident _a0 _b0) && (self#ep _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -1086,7 +1084,6 @@ class print =
     method rec_patt : 'fmt -> rec_patt -> 'result91=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result91)
         | `RecBind (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
               self#patt _a1
@@ -1169,6 +1166,7 @@ class print =
               self#expr _a1
         | `OvrInst _a0 ->
             Format.fprintf fmt "@[<1>(`OvrInst@ %a)@]" self#rec_expr _a0
+        | `OvrInstEmpty -> Format.fprintf fmt "`OvrInstEmpty"
         | `Seq _a0 -> Format.fprintf fmt "@[<1>(`Seq@ %a)@]" self#expr _a0
         | `Send (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Send@ %a@ %a)@]" self#expr _a0
@@ -1200,7 +1198,6 @@ class print =
     method rec_expr : 'fmt -> rec_expr -> 'result93=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result93)
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_expr _a0
               self#rec_expr _a1
@@ -1522,7 +1519,6 @@ class print =
     method rec_bind : 'fmt -> rec_bind -> 'result107=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result107)
         | `RecBind (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
               self#ep _a1
@@ -1934,7 +1930,6 @@ and meta_patt _loc =
                (meta_auident _loc _a0))), (meta_ctyp _loc _a1))
 and meta_rec_patt _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result148)
   | `RecBind (_a0,_a1) ->
       `App
         (_loc,
@@ -2056,6 +2051,7 @@ and meta_expr _loc =
           (meta_expr _loc _a1))
   | `OvrInst _a0 ->
       `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_expr _loc _a0))
+  | `OvrInstEmpty -> `Vrn (_loc, "OvrInstEmpty")
   | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (meta_expr _loc _a0))
   | `Send (_a0,_a1) ->
       `App
@@ -2101,7 +2097,6 @@ and meta_expr _loc =
       `App (_loc, (`Vrn (_loc, "Package_expr")), (meta_module_expr _loc _a0))
 and meta_rec_expr _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result146)
   | `Sem (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_expr _loc _a0))),
@@ -2573,7 +2568,6 @@ let rec meta_ep _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result161)
 and meta_rec_bind _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result160)
   | `RecBind (_a0,_a1) ->
       `App
         (_loc,

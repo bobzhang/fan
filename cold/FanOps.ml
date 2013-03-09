@@ -104,7 +104,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `Record (_loc,p) ->
       List.for_all
         (function | `RecBind (_,_,p) -> is_irrefut_patt p | _ -> true)
-        (list_of_sem' p [])
+        (list_of_sem p [])
   | `Sem (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `Com (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
   | `Or (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)

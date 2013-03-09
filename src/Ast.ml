@@ -284,8 +284,9 @@ and patt =
     (* (module M : ty ) *)      
   | `ModuleConstraint of (loc * auident * ctyp) ]
 and rec_patt =
-  [= nil
-  | `RecBind of (loc * ident * patt)
+  [=
+   (* nil *)
+  (* | *) `RecBind of (loc * ident * patt)
   | `Sem of (loc  * rec_patt * rec_patt)
   | any
   | ant]  
@@ -325,13 +326,14 @@ and expr =
         (* new i *)
   | `New of (loc * ident)
         (* object ((p))? (cst)? end *)
-  (* | `Obj of (loc * patt * class_str_item) *)
+
   | `Obj of (loc * class_str_item)
   | `ObjPat of (loc * patt * class_str_item)
         (* ?s or ?s:e *)
   | `OptLabl of (loc *alident * expr)
         (* {< rb >} *)
   | `OvrInst of (loc * rec_expr)
+  | `OvrInstEmpty of loc
         (* do { e } *)
   | `Seq of (loc * expr)
         (* e#s *)
@@ -353,9 +355,9 @@ and expr =
         (* (module ME : S) which is represented as (module (ME : S)) *)
   | `Package_expr of (loc * module_expr) ]
 and rec_expr =
-  [= nil
-       (* rb ; rb *)
-  | `Sem of (loc * rec_expr * rec_expr)
+  [=(*  nil *)
+  (*      (\* rb ; rb *\) *)
+  (* | *) `Sem of (loc * rec_expr * rec_expr)
         (* i = e *)
   | `RecBind  of (loc * ident * expr)
   | any (* Faked here to be symmertric to rec_patt *)
@@ -584,8 +586,8 @@ type ep =
   | literal
   | ant ]
 and rec_bind =
-  [= nil
-  | `RecBind of (loc * ident * ep)
+  [= (* nil *)
+  (* | *) `RecBind of (loc * ident * ep)
   | `Sem of (loc * rec_bind * rec_bind)
   | any
   | ant];

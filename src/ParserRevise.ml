@@ -409,10 +409,7 @@ let apply () = begin
         | "object"; "(";patt{p};":";ctyp{t};")";class_structure{cst};"end" ->
             `ObjPat(_loc,`Constraint(_loc,p,t),cst)
         | "object"; class_structure{cst};"end"->
-            `Obj(_loc,cst)
-        (* | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" -> *)
-        (*     `ObjPat(_loc,csp,cst) *)
-            (* {| object ($csp) $cst end |} *) ]
+            `Obj(_loc,cst)]
        "unary minus" NA
         [ "-"; S{e} -> FanOps.mkumin _loc "-" e
         | "-."; S{e} -> FanOps.mkumin _loc "-." e ]
@@ -470,7 +467,8 @@ let apply () = begin
         | "{"; "("; S{e}; ")"; "with"; label_expr_list{el}; "}" ->
             {| { ($e) with $el } |}
         | "{<"; ">}" ->
-            `OvrInst(_loc,`Nil _loc) (*M*)
+            `OvrInstEmpty(_loc)
+            (* `OvrInst(_loc,`Nil _loc) (\*M*\) *)
 
         | "{<"; field_expr_list{fel}; ">}" ->
             `OvrInst(_loc,fel) (*M*)
@@ -558,7 +556,7 @@ let apply () = begin
   with rec_expr
       {:extend|
         rec_expr_quot:
-        [ label_expr_list{x} -> x | -> `Nil _loc  ](*M*)
+        [ label_expr_list{x} -> x (* | -> `Nil _loc *)  ](*M*)
         label_expr:
         [ `Ant (("rec_expr" |""|"anti"|"list" as n),s) -> 
           `Ant (_loc, (mk_anti ~c:"rec_expr" n s))
@@ -595,10 +593,6 @@ let apply () = begin
        patt_as_patt_opt:
        [ patt{p1}; "as"; a_lident{s} -> {| ($p1 as $s) |}
        | patt{p} -> p ]
-       (* opt_class_self_patt: *)
-       (* [ "("; patt{p}; ")" -> p *)
-       (* | "("; patt{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |} *)
-       (* | -> `Nil _loc ] (\*Q*\) *)
        patt_constr:
        [module_longident{i} -> {| $id:i |}
 
@@ -1154,9 +1148,7 @@ let apply () = begin
       | ipatt{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
       class_info_for_class_expr:
       [ opt_virtual{mv};  class_name_and_param{(i, ot)} ->
-        `CeCon(_loc,mv,(i:>ident),ot)
-        (* `CeCon(_loc,mv,(i:>ident),`Ctyp(_loc,ot)) *)
-        (* {| $virtual:mv $(id:(i:>ident)) [ $ot ] |} *)  ]
+        `CeCon(_loc,mv,(i:>ident),ot)  ]
       class_fun_def:
       [ ipatt{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; class_expr{ce} -> ce ]
       class_expr:
@@ -1177,8 +1169,6 @@ let apply () = begin
               `ObjPat(_loc,`Constraint(_loc,p,t),cst)
           | "object"; class_structure{cst};"end" ->
               `Obj(_loc,cst)
-          (* | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" -> *)
-          (*     {| object ($csp) $cst end |} *)
           | "("; S{ce}; ":"; class_type{ct}; ")" -> {| ($ce : $ct) |}
           | "("; S{ce}; ")" -> ce ] }
       class_longident_and_param:

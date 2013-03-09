@@ -70,7 +70,7 @@ class clean_ast = object
     with expr
     match super#expr e with
     [ {| let $rec:_ $({:binding@_l||}) in $e |} |
-      {| { ($e) with $({:rec_expr@_l||})  } |} |
+      (* {| { ($e) with $({:rec_expr@_l||})  } |} | *)
       {| $({@_l||} ), $e |} |
       {| $e, $({@_l||} ) |} |
       {| $({@_l||}); $e |} |
@@ -99,11 +99,11 @@ class clean_ast = object
     [ {| $({@_l||} ) and $bi |} |
       {| $bi and $({@_l||} ) |} -> bi
     | bi -> bi ];
-  method! rec_expr rb =
-    with rec_expr
-    match super#rec_expr rb with
-    [ {| $({@_l||} ) ; $bi |} | {| $bi ; $({@_l||} ) |} -> bi
-    | bi -> bi ];
+  (* method! rec_expr rb = *)
+  (*   with rec_expr *)
+  (*   match super#rec_expr rb with *)
+  (*   [ {| $({@_l||} ) ; $bi |} | {| $bi ; $({@_l||} ) |} -> bi *)
+  (*   | bi -> bi ]; *)
 
   method! module_binding mb =
     with module_binding

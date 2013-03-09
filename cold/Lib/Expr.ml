@@ -263,11 +263,11 @@ let fun_args _loc args body =
       (fun arg  body  -> `Fun (_loc, (`Case (_loc, arg, body)))) args body
 let _loc = FanLoc.ghost
 let mk_record label_exprs =
-  let rec_exprs =
-    List.map
-      (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
-      label_exprs in
-  `Record (_loc, (sem_of_list rec_exprs))
+  (let rec_exprs =
+     List.map
+       (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
+       label_exprs in
+   `Record (_loc, (sem_of_list1 rec_exprs)) : expr )
 let failure =
   `App
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),

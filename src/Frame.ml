@@ -261,7 +261,7 @@ let fun_of_tydcl
          match repr with
          [`Record(_loc,t) ->       
            let cols =  Ctyp.list_of_record t  in
-           let patt = (EP.mk_record ~arity  cols :> patt)in
+           let patt = (EP.mk_record ~arity  cols  : patt)in
            let info =
              List.mapi
                (fun i x ->  match x with

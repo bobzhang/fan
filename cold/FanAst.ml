@@ -652,7 +652,6 @@ module Make(MetaLoc:META_LOC) =
               (meta_ctyp _loc _a2))
     and meta_rec_patt _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result38)
       | `RecBind (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -861,6 +860,8 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "OvrInst")), (meta_loc _loc _a0))),
               (meta_rec_expr _loc _a1))
+      | `OvrInstEmpty _a0 ->
+          `App (_loc, (`Vrn (_loc, "OvrInstEmpty")), (meta_loc _loc _a0))
       | `Seq (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Seq")), (meta_loc _loc _a0))),
@@ -939,7 +940,6 @@ module Make(MetaLoc:META_LOC) =
               (meta_module_expr _loc _a1))
     and meta_rec_expr _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result36)
       | `Sem (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1692,7 +1692,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result51)
     and meta_rec_bind _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result50)
       | `RecBind (_a0,_a1,_a2) ->
           `App
             (_loc,

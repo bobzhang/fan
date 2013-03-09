@@ -72,9 +72,7 @@ and patt =
   | `ClassPath of ident | `Lazy of patt | `ModuleUnpack of auident
   | `ModuleConstraint of (auident* ctyp)] 
 and rec_patt =
-  [ nil | `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | 
-    any
-  | ant] 
+  [ `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | any | ant] 
 and expr =
   [ nil | sid | `App of (expr* expr) | `Vrn of string | `Com of (expr* expr)
   | `Sem of (expr* expr) | `Tup of expr | any | `Record of rec_expr | 
@@ -89,15 +87,14 @@ and expr =
   | `LetModule of (auident* module_expr* expr) | `Match of (expr* match_case)
   | `New of ident | `Obj of class_str_item
   | `ObjPat of (patt* class_str_item) | `OptLabl of (alident* expr)
-  | `OvrInst of rec_expr | `Seq of expr | `Send of (expr* alident)
-  | `StringDot of (expr* expr) | `Try of (expr* match_case)
-  | `Constraint of (expr* ctyp) | `Coercion of (expr* ctyp* ctyp)
-  | `While of (expr* expr) | `LetOpen of (ident* expr)
-  | `LocalTypeFun of (alident* expr) | `Package_expr of module_expr] 
+  | `OvrInst of rec_expr | `OvrInstEmpty | `Seq of expr
+  | `Send of (expr* alident) | `StringDot of (expr* expr)
+  | `Try of (expr* match_case) | `Constraint of (expr* ctyp)
+  | `Coercion of (expr* ctyp* ctyp) | `While of (expr* expr)
+  | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
+  | `Package_expr of module_expr] 
 and rec_expr =
-  [ nil | `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | 
-    any
-  | ant] 
+  [ `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | any | ant] 
 and module_type =
   [ nil | sid | `MtFun of (auident* module_type* module_type)
   | `Sig of sig_item | `With of (module_type* with_constr)
@@ -168,4 +165,4 @@ type ep =
   | `Sem of (ep* ep) | `Tup of ep | any | `Array of ep | `Record of rec_bind
   | literal | ant] 
 and rec_bind =
-  [ nil | `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 
+  [ `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 

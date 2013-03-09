@@ -226,7 +226,7 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | {| ($x as $_) |} -> is_irrefut_patt x (* && is_irrefut_patt y *)
     | {| { $p } |} ->
         List.for_all (fun [`RecBind (_,_,p) -> is_irrefut_patt p | _ -> true])
-          (list_of_sem' (* is_irrefut_patt *) p [])
+          (list_of_sem (* is_irrefut_patt *) p [])
     (* | {| $_ = $p |} -> is_irrefut_patt p *)
     | `Sem(_,p1,p2)(* {| $p1; $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2
     | `Com(_,p1,p2) (* {| $p1, $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2

@@ -188,8 +188,11 @@ let mk_record ?(arity=1) cols  =
       (* `RecBind (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i)))) *)
       {:rec_expr| $lid:col_label = $(id:xid ~off i )  |} ]) cols in
   let res = zfold_left
-      ~start:1 ~until:(arity-1) ~acc:(`Record(_loc,sem_of_list (mk_list  0))(* {| { $(list:mk_list 0) } |} *) )
-      (fun acc i -> com acc (`Record (_loc, (sem_of_list (mk_list i))))(* {| { $(list:mk_list i) } |} *)  ) in
+      ~start:1 ~until:(arity-1) ~acc:(`Record(_loc,sem_of_list1 (mk_list  0))
+        (* {| { $(list:mk_list 0) } |} *) )
+      (fun acc i ->
+        com acc (`Record (_loc, (sem_of_list1 (mk_list i))))
+       (* {| { $(list:mk_list i) } |} *)  ) in
   if arity > 1 then
     {| $tup:res |}
   else res ;    

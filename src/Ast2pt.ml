@@ -548,51 +548,41 @@ let rec patt (x:patt) =
             let c2 = char_of_char_token loc2 c2 in
            mkrangepat loc c1 c2
          | _ -> error loc "range pattern allowed only for characters" ]
-         | `Record (loc,p) ->
-             let ps = list_of_sem' p [] in (* precise*)
-             let is_wildcard = fun [ {| _ |} -> true | _ -> false ] in
-             let (wildcards,ps) = List.partition is_wildcard ps in
-             let is_closed = if wildcards = [] then Closed else Open in
-             mkpat loc (Ppat_record (List.map mklabpat ps, is_closed))
-         | `Str (loc,s) ->
-             mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
-         | {@loc| ($p1, $p2) |} ->
-             mkpat loc (Ppat_tuple
-                          (List.map patt (list_of_com' p1 (list_of_com' p2 []))))
-         | {@loc| ($tup:_) |} -> error loc "singleton tuple pattern"
-         | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
-         | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
-         | `Vrn (loc,s) -> mkpat loc (Ppat_variant s None)
-         | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
+      | `Record (loc,p) ->
+          let ps = list_of_sem p [] in (* precise*)
+          let (wildcards,ps) =
+            List.partition (fun [`Any _ -> true | _ -> false ]) ps in
+          let is_closed = if wildcards = [] then Closed else Open in
+          let  mklabpat (p : rec_patt) =
+            match p with 
+            [ `RecBind(_loc,i,p) -> (ident  i, patt p)
+            | p -> error (loc_of p) "invalid pattern" ] in
+          mkpat loc (Ppat_record (List.map mklabpat ps, is_closed))
+      | `Str (loc,s) ->
+          mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
+      | `Tup(loc,`Com(_,p1,p2)) ->
+          mkpat loc (Ppat_tuple
+                       (List.map patt (list_of_com' p1 (list_of_com' p2 []))))
+      | `Tup (loc,_) -> error loc "singleton tuple pattern"
+      | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
+      | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
+      | `Vrn (loc,s) -> mkpat loc (Ppat_variant s None)
+      | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
+      | `ModuleUnpack(loc,`Uid(sloc,m)) ->
+          mkpat loc (Ppat_unpack (with_loc m sloc))
+      | `ModuleConstraint (loc,`Uid(sloc,m),ty) ->
+          mkpat loc
+            (Ppat_constraint
+               (mkpat sloc (Ppat_unpack (with_loc m sloc)))
+               (ctyp ty))
+      |  p -> error (loc_of p) "invalid pattern" ];
 
-         | `ModuleUnpack(loc,`Uid(sloc,m)) ->
-             mkpat loc (Ppat_unpack (with_loc m sloc))
-         | `ModuleConstraint (loc,`Uid(sloc,m),ty) ->
-             (* match m with *)
-             (* [`Uid(sloc,m) -> *)
-               (* match ty with *)
-               (* [`None  -> *)
-               (*   mkpat loc (Ppat_unpack (with_loc m sloc)) *)
-               (* |`Some (ty) -> *)
-                   mkpat loc
-                     (Ppat_constraint
-                        (mkpat sloc (Ppat_unpack (with_loc m sloc)))
-                        (ctyp ty))
-               (* |`Ant(_loc,_) -> ANT_ERROR]   *)
-             (* |`Ant(_loc,_) -> ANT_ERROR]   *)
-         (* | `RecBind (_, _, _)  *)
-        | (* `Sem (_, _, _) | `Com (_, _, _) | `Nil _ as *) p ->
-             error (loc_of p) "invalid pattern" ]
-
-and mklabpat : rec_patt -> (Asttypes.loc Longident.t  * pattern) = with patt fun
-  [ `RecBind(_loc,i,p)(* {| $i = $p |} *) -> (ident  i, patt p)
-  | p -> error (loc_of p) "invalid pattern" ];
   
 
 
-let override_flag loc = with override_flag fun
-  [ {| ! |} -> Override
-  | {||} -> Fresh
+let override_flag loc =  fun
+  [ `Override _ -> Override
+  | `OvNil _  -> Fresh
   |  _ -> error loc "antiquotation not allowed here" ];
 
   
@@ -777,15 +767,19 @@ let rec expr (x : expr) = with expr match x with
       (*    | p -> p ] in *)
        let cil = class_str_item cfl [] in
        mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
-  | `OvrInst (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
+  | `OvrInstEmpty(loc) -> mkexp loc (Pexp_override [])
+  | `OvrInst (loc,iel) ->
+      let rec mkideexp (x:rec_expr) acc  = 
+        match x with 
+        [ (* `Nil _ -> acc *)
+         `Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
+        | `RecBind(_,`Lid(sloc,s),e) -> [(with_loc s sloc, expr e) :: acc]
+        | _ -> assert false ] in
+      mkexp loc (Pexp_override (mkideexp iel []))
   | `Record (loc,lel) ->
-       match lel with
-       [ `Nil _  -> error loc "empty record"
-       | _ -> mkexp loc (Pexp_record (mklabexp lel) None) ]
+      mkexp loc (Pexp_record (mklabexp lel) None)
   | `RecordWith(loc,lel,eo) ->
-      match lel with
-      [`Nil _ -> error loc "empty record"
-      | _ -> mkexp loc (Pexp_record (mklabexp lel) (Some (expr eo)))]  
+      mkexp loc (Pexp_record (mklabexp lel) (Some (expr eo)))
   | `Seq (_loc,e) ->
       let rec loop = fun
         [ [] -> expr {| () |}
@@ -887,23 +881,13 @@ and match_case (x:match_case) =
           Some (patt p,
                 mkexp (loc_of w) (Pexp_when (expr w) (expr e)))
       | x -> errorf (loc_of x ) "match_case %s" (dump_match_case x ) ]) cases
+
 and mklabexp (x:rec_expr)  =
   let bindings = list_of_sem x [] in
-  with rec_expr 
   List.filter_map
     (fun
-      [ `Nil _ -> None
-      | `RecBind(_,i,e) ->  Some (ident i, expr e)
+      [ `RecBind(_,i,e) ->  Some (ident i, expr e)
       |  x ->errorf (loc_of x) "mklabexp : %s" (dump_rec_expr x) ]) bindings
-and mkideexp (x:rec_expr)
-    (acc: list (Asttypes.loc string * expression)) :
-    list (Asttypes.loc string * expression) = 
-  match x with 
-  [ `Nil _ -> acc
-  | `Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
-  | `RecBind(_,`Lid(sloc,s),e) ->
-      [(with_loc s sloc, expr e) :: acc]
-  | _ -> assert false ]
 
 (* Example:
    {[

@@ -120,6 +120,7 @@ let loc_of =
   | `TyVrn (_loc,_) -> _loc
   | `Case (_loc,_,_) -> _loc
   | `ExAsr (_loc,_) -> _loc
+  | `OvrInstEmpty _loc -> _loc
   | `Exception (_loc,_) -> _loc
   | `CtCol (_loc,_,_) -> _loc
   | `RecordWith (_loc,_,_) -> _loc
