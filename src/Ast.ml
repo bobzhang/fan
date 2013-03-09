@@ -436,7 +436,8 @@ and match_case =
   [= nil
   | `Or of (loc * match_case * match_case)
         (* p (when e)? -> e *)
-  | `Case of (loc * patt * expr * expr)
+  | `Case of (loc * patt * expr (* * expr *))
+  | `CaseWhen of (loc * patt * expr * expr)
      (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
   | ant  ]
 and module_expr =

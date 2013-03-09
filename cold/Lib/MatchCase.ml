@@ -1,7 +1,7 @@
 open LibUtil
 open AstLoc
 open Basic
-let gen_tuple_abbrev ~arity  ~annot  ~destination  name e : match_case=
+let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   let args: patt list =
     List.init arity
       (fun i  ->
@@ -13,8 +13,5 @@ let gen_tuple_abbrev ~arity  ~annot  ~destination  name e : match_case=
   let open FSig in
     match destination with
     | Obj (Map ) ->
-        `Case
-          (_loc, pat, 
-            (`Coercion (_loc, e, (`Id (_loc, name)), annot)))
-    | _ ->
-        `Case (_loc, pat,  (`Coercion (_loc, e, `Nil _loc,  annot)))
+        `Case (_loc, pat, (`Coercion (_loc, e, (`Id (_loc, name)), annot)))
+    | _ -> `Case (_loc, pat, (`Coercion (_loc, e, (`Nil _loc), annot)))

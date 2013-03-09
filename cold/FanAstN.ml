@@ -537,7 +537,9 @@ class eq =
         | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result44)
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#match_case _a0 _b0) && (self#match_case _a1 _b1)
-        | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
+        | (`Case (_a0,_a1),`Case (_b0,_b1)) ->
+            (self#patt _a0 _b0) && (self#expr _a1 _b1)
+        | (`CaseWhen (_a0,_a1,_a2),`CaseWhen (_b0,_b1,_b2)) ->
             ((self#patt _a0 _b0) && (self#expr _a1 _b1)) &&
               (self#expr _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result44)
@@ -1310,8 +1312,11 @@ class print =
         | `Or (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#match_case _a0
               self#match_case _a1
-        | `Case (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" self#patt _a0
+        | `Case (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Case@ %a@ %a)@]" self#patt _a0
+              self#expr _a1
+        | `CaseWhen (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a)@]" self#patt _a0
               self#expr _a1 self#expr _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result99)
     method module_expr : 'fmt -> module_expr -> 'result100=
@@ -2235,12 +2240,16 @@ and meta_match_case _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Or")), (meta_match_case _loc _a0))),
           (meta_match_case _loc _a1))
-  | `Case (_a0,_a1,_a2) ->
+  | `Case (_a0,_a1) ->
+      `App
+        (_loc, (`App (_loc, (`Vrn (_loc, "Case")), (meta_patt _loc _a0))),
+          (meta_expr _loc _a1))
+  | `CaseWhen (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
-               (`App (_loc, (`Vrn (_loc, "Case")), (meta_patt _loc _a0))),
+               (`App (_loc, (`Vrn (_loc, "CaseWhen")), (meta_patt _loc _a0))),
                (meta_expr _loc _a1))), (meta_expr _loc _a2))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result140)
 and meta_module_expr _loc =

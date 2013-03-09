@@ -121,8 +121,8 @@ and module_binding =
   | `ModuleBind of (auident* module_type* module_expr)
   | `Constraint of (auident* module_type) | ant] 
 and match_case =
-  [ nil | `Or of (match_case* match_case) | `Case of (patt* expr* expr)
-  | ant] 
+  [ nil | `Or of (match_case* match_case) | `Case of (patt* expr)
+  | `CaseWhen of (patt* expr* expr) | ant] 
 and module_expr =
   [ nil | sid | `App of (module_expr* module_expr)
   | `Functor of (auident* module_type* module_expr) | `Struct of str_item

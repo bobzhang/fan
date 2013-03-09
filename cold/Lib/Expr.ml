@@ -24,7 +24,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                   (`Id
                      (loc,
                        (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
-                  (`Fun (loc, (`Case (loc, p,  e)))))), l)
+                  (`Fun (loc, (`Case (loc, p, e)))))), l)
        else
          `App
            (loc,
@@ -63,7 +63,6 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                                                     `Lid
                                                                     (loc,
                                                                     "xs")))),
-
                                                                (`App
                                                                   (loc,
                                                                     (
@@ -87,13 +86,12 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                                                     "xs")))))))))))))),
                                            e)))),
                                  (`Case
-                                    (loc, (`Any loc), 
+                                    (loc, (`Any loc),
                                       (`Fun
                                          (loc,
                                            (`Case
                                               (loc,
                                                 (`Id (loc, (`Lid (loc, "l")))),
-
                                                 (`Id (loc, (`Lid (loc, "l")))))))))))))))),
                   l)), (`Id (loc, (`Uid (loc, "[]"))))) : expr )
 let filter loc p b l =
@@ -106,7 +104,7 @@ let filter loc p b l =
              (`Id
                 (loc,
                   (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
-             (`Fun (loc, (`Case (loc, p,  b)))))), l)
+             (`Fun (loc, (`Case (loc, p, b)))))), l)
   else
     `App
       (loc,
@@ -119,9 +117,10 @@ let filter loc p b l =
                 (loc,
                   (`Or
                      (loc,
-                       (`CaseWhen (loc, p, (`Id (loc, (`Lid (loc, "true")))), b)),
+                       (`CaseWhen
+                          (loc, p, (`Id (loc, (`Lid (loc, "true")))), b)),
                        (`Case
-                          (loc, (`Any loc), 
+                          (loc, (`Any loc),
                             (`Id (loc, (`Lid (loc, "false")))))))))))), l)
 let concat _loc l =
   `App
@@ -258,14 +257,10 @@ let filter_patt_with_captured_variables patt =
    (patt, constraints))
 let fun_args _loc args body =
   if args = []
-  then
-    `Fun
-      (_loc,
-        (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))),  body)))
+  then `Fun (_loc, (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), body)))
   else
     List.fold_right
-      (fun arg  body  -> `Fun (_loc, (`Case (_loc, arg,  body))))
-      args body
+      (fun arg  body  -> `Fun (_loc, (`Case (_loc, arg, body)))) args body
 let _loc = FanLoc.ghost
 let mk_record label_exprs =
   let rec_exprs =
@@ -282,13 +277,10 @@ let failure =
 let (<+) names acc =
   List.fold_right
     (fun name  acc  ->
-       `Fun
-         (_loc,
-           (`Case (_loc, (`Id (_loc, (`Lid (_loc, name)))),  acc))))
+       `Fun (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, name)))), acc))))
     names acc
 let (<+<) patts acc =
-  List.fold_right
-    (fun p  acc  -> `Fun (_loc, (`Case (_loc, p,  acc)))) patts
+  List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc)))) patts
     acc
 let mee_comma x y =
   `App
@@ -475,8 +467,7 @@ let gen_curry_n acc ~arity  cons n =
     List.init arity
       (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
   let pat = of_str cons in
-  List.fold_right
-    (fun p  acc  -> `Fun (_loc, (`Case (_loc, p,  acc))))
+  List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc))))
     (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc
 let currying match_cases ~arity  =
   let cases = or_of_list match_cases in

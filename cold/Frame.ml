@@ -40,8 +40,7 @@ let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
        let patt = EP.mk_tuple ~arity ~number:len in
        let tys =
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) ls in
-       names <+
-         (currying [`Case (_loc, patt,  (mk_tuple tys))] ~arity)
+       names <+ (currying [`Case (_loc, patt, (mk_tuple tys))] ~arity)
    | _ -> FanLoc.errorf _loc "tuple_expr_of_ctyp %s" (FanObjs.dump_ctyp ty) : 
   expr )
 let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
@@ -97,7 +96,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                                 (`Case
                                    (_loc,
                                      (`Id (_loc, (`Lid (_loc, "self")))),
-                                 (aux t))))))))
+                                     (aux t))))))))
            | _ ->
                FanLoc.errorf (loc_of ty)
                  "list_of_app in obj_simple_expr_of_ctyp: %s"
@@ -124,7 +123,7 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
        let exprs =
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
        mk_variant cons exprs in
-     let e = mk (cons, tyargs) in `Case (_loc, p,  e) : match_case ) in
+     let e = mk (cons, tyargs) in `Case (_loc, p, e) : match_case ) in
   let info = (Sum, (List.length (list_of_or' ty []))) in
   let res: match_case list = Ctyp.reduce_data_ctors ty [] f ~compose:cons in
   let res =
@@ -143,7 +142,7 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
        let exps =
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
        mk_variant cons exps in
-     let e = mk (cons, tyargs) in `Case (_loc, p,  e) : match_case ) in
+     let e = mk (cons, tyargs) in `Case (_loc, p, e) : match_case ) in
   let simple lid =
     (let e = (simple_expr_of_ctyp (`Id (_loc, lid))) +> names in
      let (f,a) = view_app [] result in
@@ -172,9 +171,7 @@ let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
       | `Quote (_,_,`Lid (_loc,s)) ->
           `Fun
             (_loc,
-              (`Case
-                 (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), 
-                   acc)))
+              (`Case (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), acc)))
       | t -> FanLoc.errorf (loc_of t) "mk_prefix: %s" (FanObjs.dump_ctyp t) in
     List.fold_right f vars (names <+ acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
@@ -201,8 +198,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                               re_mutable = col_mutable
                             }) cols in
                  mk_prefix ~names ~left_type_variable tyvars
-                   (currying ~arity
-                      [`Case (_loc, patt,  (mk_record info))])
+                   (currying ~arity [`Case (_loc, patt, (mk_record info))])
              | `Sum (_,ctyp) ->
                  let funct = expr_of_ctyp ctyp in
                  mk_prefix ~names ~left_type_variable tyvars funct

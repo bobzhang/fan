@@ -39,12 +39,12 @@ let add_debug_expr (e : expr) =
                                    (_loc, (`Uid (_loc, "XStream")),
                                      (`Uid (_loc, "Failure")))))),
                            (`Id (_loc, (`Uid (_loc, "Exit")))))),
-                      (`Lid (_loc, "exc")))), 
+                      (`Lid (_loc, "exc")))),
                  (`App
                     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
                       (`Id (_loc, (`Lid (_loc, "exc")))))))),
             (`Case
-               (_loc, (`Id (_loc, (`Lid (_loc, "exc")))), 
+               (_loc, (`Id (_loc, (`Lid (_loc, "exc")))),
                  (`Seq
                     (_loc,
                       (`Sem
@@ -87,8 +87,8 @@ let add_debug_expr (e : expr) =
 let rec map_match_case: match_case -> match_case =
   function
   | `Or (_loc,m1,m2) -> `Or (_loc, (map_match_case m1), (map_match_case m2))
+  | `Case (_loc,p,e) -> `Case (_loc, p, (add_debug_expr e))
   | `CaseWhen (_loc,p,w,e) -> `CaseWhen (_loc, p, w, (add_debug_expr e))
-  | `Case (_loc,p,e) -> `Case(_loc,p,(add_debug_expr e)) (* FIXME *)
   | m -> m
 let _ =
   AstFilters.register_str_item_filter
@@ -112,8 +112,8 @@ let decorate_binding decorate_fun =
      inherit  Objs.map as super
      method! binding =
        function
-       | `Bind (_loc,`Id (_,`Lid (_,id)),(`Fun (_,_) as e)) ->
-           `Bind (_loc, (`Id (_loc, (`Lid (_loc, id)))), (decorate_fun id e))
+       | `Bind (_loc,(`Id (_,`Lid (_,id)) as x),(`Fun (_,_) as e)) ->
+           `Bind (_loc, x, (decorate_fun id e))
        | b -> super#binding b
    end)#binding
 let decorate decorate_fun =
@@ -154,7 +154,7 @@ let rec decorate_fun id =
   let decorate_match_case = decorate#match_case in
   function
   | `Fun (_loc,`Case (_,p,e)) ->
-      `Fun (_loc, (`Case (_loc, p,  (decorate_fun id e))))
+      `Fun (_loc, (`Case (_loc, p, (decorate_fun id e))))
   | `Fun (_loc,m) ->
       decorate_this_expr (`Fun (_loc, (decorate_match_case m))) id
   | e -> decorate_this_expr (decorate_expr e) id

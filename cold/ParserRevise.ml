@@ -1939,12 +1939,12 @@ let apply () =
           `Skeyword "with";
           `Snterm (Gram.obj (match_case : 'match_case Gram.t ));
           `Snterm (Gram.obj (sequence' : 'sequence' Gram.t ))],
-           ("Gram.mk_action\n  (fun (k : 'sequence')  (a : 'match_case)  _  (x : 'sequence)  _ \n     (bi : 'binding)  (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->\n     (k &\n        (`App\n           (_loc,\n             (`Try\n                (_loc,\n                  (`LetIn\n                     (_loc, r, bi,\n                       (`Fun\n                          (_loc,\n                            (`Case\n                               (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))), x)))))),\n                  (FanAst.match_pre#match_case a))),\n             (`Id (_loc, (`Uid (_loc, \"()\")))))) : 'sequence ))\n",
+           ("Gram.mk_action\n  (fun (k : 'sequence')  (a : 'match_case)  _  (x : 'sequence)  _ \n     (bi : 'binding)  (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->\n     (k\n        (`App\n           (_loc,\n             (`Try\n                (_loc,\n                  (`LetIn\n                     (_loc, r, bi,\n                       (`Fun\n                          (_loc,\n                            (`Case\n                               (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))), x)))))),\n                  (FanAst.match_pre#match_case a))),\n             (`Id (_loc, (`Uid (_loc, \"()\")))))) : 'sequence ))\n",
              (Gram.mk_action
                 (fun (k : 'sequence')  (a : 'match_case)  _  (x : 'sequence) 
                    _  (bi : 'binding)  (r : 'opt_rec)  _  _ 
                    (_loc : FanLoc.t)  ->
-                   (k &
+                   (k
                       (`App
                          (_loc,
                            (`Try

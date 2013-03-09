@@ -27,11 +27,10 @@ let base1_types =
                          (_loc,
                            (`Case
                               (_loc, (`Id (_loc, (`Lid (_loc, "fmt")))),
-                           
                                 (`Fun
                                    (_loc,
                                      (`Case
-                                        (_loc, (`Any _loc), 
+                                        (_loc, (`Any _loc),
                                           (`App
                                              (_loc,
                                                (`App
@@ -187,11 +186,11 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               `Fun
                 (_loc,
                   (`Case
-                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))), 
+                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))),
                        (`Fun
                           (_loc,
                             (`Case
-                               (_loc, (`Any _loc), 
+                               (_loc, (`Any _loc),
                                  (`Id (_loc, (`Lid (_loc, "x"))))))))))) in
             `CrMth
               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
@@ -207,8 +206,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               `Fun
                 (_loc,
                   (`Case
-                     (_loc, (`Any _loc),
-                       (`Id (_loc, (`Lid (_loc, "self"))))))) in
+                     (_loc, (`Any _loc), (`Id (_loc, (`Lid (_loc, "self"))))))) in
             `CrMth
               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   let v4 =
@@ -226,11 +224,11 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               `Fun
                 (_loc,
                   (`Case
-                     (_loc, (`Any _loc), 
+                     (_loc, (`Any _loc),
                        (`Fun
                           (_loc,
                             (`Case
-                               (_loc, (`Any _loc), 
+                               (_loc, (`Any _loc),
                                  (`Id (_loc, (`Lid (_loc, "self"))))))))))) in
             `CrMth
               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
@@ -254,8 +252,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               `Fun
                 (_loc,
                   (`Case
-                     (_loc, (`Any _loc), 
-                       (`Id (_loc, (`Uid (_loc, "()"))))))) in
+                     (_loc, (`Any _loc), (`Id (_loc, (`Uid (_loc, "()"))))))) in
             `CrMth
               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
   let v7 =
@@ -266,7 +263,7 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
               `Fun
                 (_loc,
                   (`Case
-                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))), 
+                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))),
                        (`Fun
                           (_loc,
                             (`Case

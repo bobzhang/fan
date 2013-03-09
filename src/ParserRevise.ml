@@ -310,7 +310,8 @@ let apply () = begin
       { RA
           [ "("; "type"; a_lident{i}; ")"; S{e} ->
             {| fun (type $i) -> $e |} 
-          | ipatt{p}; S{e} -> {| fun $p -> $e |}
+          | ipatt{p}; S{e} -> `Fun(_loc,`Case(_loc,p,e))
+              (* {| fun $p -> $e |} *)
           | cvalue_binding{bi} -> bi  ] }
        lang:
        [ dot_lstrings{ls} -> begin
@@ -335,8 +336,10 @@ let apply () = begin
        fun_def_patt:
        ["(";"type";a_lident{i};")" ->
          fun e -> {|fun (type $i) -> $e |} 
-       | ipatt{p} -> fun e -> {| fun $p -> $e |}
-       | ipatt{p}; "when"; expr{w} -> fun e -> {|fun $p when $w -> $e |} ]
+       | ipatt{p} -> fun e -> `Fun(_loc,`Case(_loc,p,e))(* {| fun $p -> $e |} *)
+       | ipatt{p}; "when"; expr{w} -> fun e ->
+           `Fun(_loc,`CaseWhen(_loc,p,w,e))
+           (* {|fun $p when $w -> $e |} *) ]
        fun_def:
        {RA
           [ fun_def_patt{f}; "->"; expr{e} ->  f e
@@ -371,7 +374,7 @@ let apply () = begin
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
             match FanOps.bigarray_set _loc e1 e2 with
             [ Some e -> e
-            | None -> {| $e1 <- $e2 |} ] ]
+            | None -> `Assign(_loc,e1,e2) ] ]
        "||" RA
         [ S{e1}; infixop0{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "&&" RA
@@ -488,8 +491,7 @@ let apply () = begin
        [ "let"; opt_rec{rf}; binding{bi}; "in"; expr{e}; sequence'{k} ->
          k {| let $rec:rf $bi in $e |}
        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a}; sequence'{k}
-         ->
-          k {| let try $rec:r $bi in $x with [ $a ] |}
+         -> k {| let try $rec:r $bi in $x with [ $a ] |}
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
            {| let $rec:rf $bi in $(FanOps.mksequence ~loc:_loc el) |}
        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in";
@@ -539,11 +541,16 @@ let apply () = begin
     {:extend|
       match_case:
       [ "["; L0 match_case0 SEP "|"{l}; "]" -> or_of_list l (* {|  $list:l  |} *) (* FIXME *)
-      | patt{p}; "->"; expr{e} -> {| $pat:p -> $e |} ]
+      | patt{p}; "->"; expr{e} -> `Case(_loc,p,e)(* {| $pat:p -> $e |} *) ]
       match_case0:
       [ `Ant (("match_case"|"list"| "anti"|"" as n),s) -> {| $(anti:mk_anti ~c:"match_case" n s) |}
-      | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->  {| $pat:p when $w -> $e |}
-      | patt_as_patt_opt{p}; "->";expr{e} -> {| $pat:p -> $e |} ]
+      | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->
+           `CaseWhen (_loc, p, w, e)
+          (* {| $pat:p when $w -> $e |} *)
+      | patt_as_patt_opt{p}; "->";expr{e} ->
+          `Case(_loc,p,e)
+          (* {| $pat:p -> $e |} *)
+      ]
       match_case_quot:
       [ L0 match_case0 SEP "|"{x} -> or_of_list x 
       | -> {||} ]  |};
@@ -1034,12 +1041,14 @@ let apply () = begin
         | "let"; "open"; module_longident{i}; "in"; expr{e} -> {| let open $id:i in $e |}
               
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; expr{x}; "with"; match_case{a} ->
-             {| let try $rec:r $bi in $x with [ $a ]|} 
-        | "class"; class_declaration{cd} ->  {| class $cd |}
-        | "class"; "type"; class_type_declaration{ctd} -> {| class type $ctd |}
-        | `Ant ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"str_item" n s) |}
+            {| let try $rec:r $bi in $x with [ $a ]|}
+        | "class"; class_declaration{cd} ->  `Class(_loc,cd)
+        | "class"; "type"; class_type_declaration{ctd} ->
+            `ClassType (_loc, ctd)
+        | `Ant ((""|"stri"|"anti"|"list" as n),s) ->
+            {| $(anti:mk_anti ~c:"str_item" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.str_item_tag
-        | expr{e} -> {| $exp:e |}
+        | expr{e} -> `StExp(_loc,e)
               (* this entry makes {| let $rec:r $bi in $x |} parsable *)
         ] }   |};
 

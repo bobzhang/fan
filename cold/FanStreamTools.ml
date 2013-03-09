@@ -28,9 +28,7 @@ let is_raise_failure =
   | _ -> false
 let rec handle_failure e =
   match e with
-  | `Try
-      (_loc,_,`Case
-                (_,`Id (_,`Dot (_,`Uid (_,m),`Uid (_,"Failure"))),e))
+  | `Try (_loc,_,`Case (_,`Id (_,`Dot (_,`Uid (_,m),`Uid (_,"Failure"))),e))
       when m = (gm ()) -> handle_failure e
   | `Match (_loc,me,a) ->
       let rec match_case_handle_failure =
@@ -97,7 +95,7 @@ let stream_pattern_component skont ckont =
                (`Case
                   (_loc,
                     (`App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)),
-                   (`Seq
+                    (`Seq
                        (_loc,
                          (`Sem
                             (_loc,
@@ -105,7 +103,7 @@ let stream_pattern_component skont ckont =
                                  (_loc, (junk_fun _loc),
                                    (`Id (_loc, (`Lid (_loc, strm_n)))))),
                               skont)))))),
-               (`Case (_loc, (`Any _loc),  ckont)))))
+               (`Case (_loc, (`Any _loc), ckont)))))
   | SpTrm (_loc,p,Some w) ->
       `Match
         (_loc,
@@ -123,7 +121,7 @@ let stream_pattern_component skont ckont =
                                  (_loc, (junk_fun _loc),
                                    (`Id (_loc, (`Lid (_loc, strm_n)))))),
                               skont)))))),
-               (`Case (_loc, (`Any _loc),  ckont)))))
+               (`Case (_loc, (`Any _loc), ckont)))))
   | SpNtr (_loc,p,e) ->
       let e =
         match e with
@@ -154,8 +152,7 @@ let stream_pattern_component skont ckont =
                          (_loc,
                            (`Dot
                               (_loc, (`Uid (_loc, (gm ()))),
-                                (`Uid (_loc, "Failure")))))),
-                      ckont))))
+                                (`Uid (_loc, "Failure")))))), ckont))))
       else
         if is_raise_failure ckont
         then `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, p, e)), skont)
@@ -172,8 +169,7 @@ let stream_pattern_component skont ckont =
                         (_loc,
                           (`Dot
                              (_loc, (`Uid (_loc, (gm ()))),
-                               (`Uid (_loc, "Failure")))))), 
-                     ckont)))
+                               (`Uid (_loc, "Failure")))))), ckont)))
           else
             if is_raise ckont
             then
@@ -189,8 +185,7 @@ let stream_pattern_component skont ckont =
                                (_loc,
                                  (`Dot
                                     (_loc, (`Uid (_loc, (gm ()))),
-                                      (`Uid (_loc, "Failure")))))),
-                             ckont))) in
+                                      (`Uid (_loc, "Failure")))))), ckont))) in
                `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, p, tst)), skont))
             else
               `Match
@@ -205,15 +200,14 @@ let stream_pattern_component skont ckont =
                                  (`Dot
                                     (_loc, (`Uid (_loc, (gm ()))),
                                       (`Uid (_loc, "Failure")))))),
-                        (`Id (_loc, (`Uid (_loc, "None")))))))),
+                            (`Id (_loc, (`Uid (_loc, "None")))))))),
                   (`Or
                      (_loc,
                        (`Case
                           (_loc,
                             (`App
                                (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p)),
-                        skont)),
-                       (`Case (_loc, (`Any _loc),  ckont)))))
+                            skont)), (`Case (_loc, (`Any _loc), ckont)))))
   | SpStr (_loc,p) ->
       (try
          match p with
@@ -285,12 +279,11 @@ let stream_patterns_term _loc ekont tspel =
                          (`Id (_loc, (`Lid (_loc, strm_n)))))), skont))) in
          match w with
          | Some w -> `Or (_loc, (`CaseWhen (_loc, p, w, e)), acc)
-         | None  -> `Or (_loc, (`Case (_loc, p,  e)), acc)) tspel
-      (`Nil _loc) in
+         | None  -> `Or (_loc, (`Case (_loc, p, e)), acc)) tspel (`Nil _loc) in
   `Match
     (_loc,
       (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
-      (`Or (_loc, pel, (`Case (_loc, (`Any _loc),  (ekont ()))))))
+      (`Or (_loc, pel, (`Case (_loc, (`Any _loc), (ekont ()))))))
 let rec group_terms =
   function
   | ((SpTrm (_loc,p,w),None )::spcl,epo,e)::spel ->
@@ -338,7 +331,7 @@ let cparser _loc bpo pc =
                 (_loc,
                   (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "t")))))),
              (`Any _loc)))) in
-  `Fun (_loc, (`Case (_loc, p,  e)))
+  `Fun (_loc, (`Case (_loc, p, e)))
 let cparser_match _loc me bpo pc =
   let pc = parser_cases _loc pc in
   let e =
@@ -391,8 +384,8 @@ let slazy _loc e =
   | `App (_loc,f,`Id (_,`Uid (_,"()"))) ->
       (match f with
        | `Id (_loc,`Lid (_,_)) -> f
-       | _ -> `Fun (_loc, (`Case (_loc, (`Any _loc),  e))))
-  | _ -> `Fun (_loc, (`Case (_loc, (`Any _loc),  e)))
+       | _ -> `Fun (_loc, (`Case (_loc, (`Any _loc), e))))
+  | _ -> `Fun (_loc, (`Case (_loc, (`Any _loc), e)))
 let rec cstream gloc =
   function
   | [] ->

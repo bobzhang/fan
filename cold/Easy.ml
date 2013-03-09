@@ -24,7 +24,7 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
     if number > 1
     then
       let patt = EP.tuple_of_number (`Any _loc) arity in
-      `Case (_loc, patt,  trail)
+      `Case (_loc, patt, trail)
     else `Nil _loc in
   let names = names in
   let mk_record = mk_record in
@@ -56,7 +56,7 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
        if number > 1
        then
          let patt = EP.tuple_of_number (`Any _loc) arity in
-         `Case (_loc, patt,  trail)
+         `Case (_loc, patt, trail)
        else `Nil _loc in
      let open Frame in
        obj_of_module_types ?cons_transform ?module_name ~arity ~names ~trail

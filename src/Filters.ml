@@ -5,11 +5,8 @@ open AstLoc;
 
 module MetaLoc = struct
    (* this makes sense here, because, for list operation
-      you don't care about the location representation here
-    *)
-  let meta_loc(* _patt *) _loc _ = `Id(_loc,`Lid(_loc,"loc")) (* {:patt| loc |} *);
-  (* let meta_loc_expr _loc _ = `Id(_loc,`Lid(_loc,"loc")) (\* {:expr| loc |} *\); *)
-  (* let meta_loc_expr = meta_loc_patt; *)
+      you don't care about the location representation here *)
+  let meta_loc  _loc _ = `Id(_loc,`Lid(_loc,"loc")) (* {:patt| loc |} *);
 end;
 module MetaAst = FanAst.Make MetaLoc;
 AstFilters.register_str_item_filter ("lift",(fun ast ->
@@ -34,6 +31,7 @@ let rec map_match_case : match_case -> match_case  = with match_case
   fun
   [ {| $m1 | $m2 |} ->
       {| $(map_match_case m1) | $(map_match_case m2) |}
+  | {| $pat:p -> $e |} -> {|$pat:p -> $(add_debug_expr e)|}
   | {| $pat:p when $w -> $e |} ->
       {| $pat:p when $w -> $(add_debug_expr e) |}
   | m -> m ];
@@ -54,9 +52,9 @@ AstFilters.register_str_item_filter ("strip",(new FanObjs.reloc  FanLoc.ghost)#s
 let decorate_binding decorate_fun = object
   inherit Objs.map as super;
   method! binding = fun
-    [ {:binding| $lid:id = $( ({:expr@_| fun [ $_ ] |} as e)) |} ->
-      {:binding| $lid:id = $(decorate_fun id e) |}
-    | b -> super#binding b ];
+    [ `Bind (_loc,(`Id (_,`Lid (_,id)) as x),(`Fun (_,_) as e)) ->
+      `Bind (_loc, x, (decorate_fun id e))
+    | b -> super#binding b];
   end#binding;
 
 let decorate decorate_fun = object (o)
