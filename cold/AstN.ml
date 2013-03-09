@@ -1,10 +1,11 @@
 let _ = ()
 type loc = FanLoc.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
-type nil = [ `Nil | ant] 
+type nil = [ `Nil] 
+type ant_nil = [ ant | nil] 
 type literal =
   [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
-  | `Flo of string | `NativeInt of string | `Str of string | ant] 
+  | `Flo of string | `NativeInt of string | `Str of string] 
 type rec_flag = [ `Recursive | `ReNil | ant] 
 type direction_flag = [ `To | `Downto | ant] 
 type mutable_flag = [ `Mutable | `MuNil | ant] 
@@ -17,17 +18,16 @@ type meta_bool = [ `True | `False | ant]
 type strings = [ `App of (strings* strings) | `Str of string | ant] 
 type alident = [ `Lid of string | ant] 
 type auident = [ `Uid of string | ant] 
-type aident = [ alident | auident | ant] 
+type aident = [ alident | auident] 
 type astring = [ `C of string | ant] 
 type uident =
-  [ `Dot of (uident* uident) | `App of (uident* uident) | auident | ant] 
+  [ `Dot of (uident* uident) | `App of (uident* uident) | auident] 
 type ident =
-  [ `Dot of (ident* ident) | `App of (ident* ident) | alident | auident
-  | ant] 
-type dupath = [ `Dot of (dupath* dupath) | auident | ant] 
-type dlpath = [ `Dot of (dupath* alident) | alident | ant] 
-type sid = [ `Id of ident | ant] 
-type any = [ `Any | ant] 
+  [ `Dot of (ident* ident) | `App of (ident* ident) | alident | auident] 
+type dupath = [ `Dot of (dupath* dupath) | auident] 
+type dlpath = [ `Dot of (dupath* alident) | alident] 
+type sid = [ `Id of ident] 
+type any = [ `Any] 
 type ctyp =
   [ nil | `Alias of (ctyp* alident) | any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
@@ -40,38 +40,37 @@ type ctyp =
     ant]
   
 and type_parameters =
-  [ `Com of (type_parameters* type_parameters) | `Ctyp of ctyp | nil | ant] 
+  [ `Com of (type_parameters* type_parameters) | `Ctyp of ctyp | ant | nil] 
 and row_field =
-  [ nil | `Or of (row_field* row_field) | `TyVrn of astring
-  | `TyVrnOf of (astring* ctyp) | `Ctyp of ctyp | ant] 
+  [ ant_nil | `Or of (row_field* row_field) | `TyVrn of astring
+  | `TyVrnOf of (astring* ctyp) | `Ctyp of ctyp] 
 and tag_names =
-  [ nil | `App of (tag_names* tag_names) | `TyVrn of astring | ant] 
+  [ ant_nil | `App of (tag_names* tag_names) | `TyVrn of astring] 
 and typedecl =
   [ `TyDcl of (alident* ctyp list* type_info* (ctyp* ctyp) list)
-  | `And of (typedecl* typedecl) | nil | ant] 
+  | `And of (typedecl* typedecl) | ant_nil] 
 and type_info =
   [ `TyMan of (ctyp* private_flag* type_repr)
   | `TyRepr of (private_flag* type_repr) | `TyEq of (private_flag* ctyp)
-  | nil | ant] 
-and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | nil | ant] 
+  | ant | nil] 
+and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | ant | nil] 
 and name_ctyp =
   [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp)
-  | `TyColMut of (sid* ctyp) | nil | ant] 
+  | `TyColMut of (sid* ctyp) | ant | nil] 
 and or_ctyp =
   [ `Or of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (sid* ctyp)
-  | sid | nil | ant] 
-and of_ctyp = [ `Of of (sid* ctyp) | sid | nil | ant] 
+  | sid | ant_nil] 
+and of_ctyp = [ `Of of (sid* ctyp) | sid | ant | nil] 
 and patt =
   [ nil | sid | `App of (patt* patt) | `Vrn of string | `Com of (patt* patt)
   | `Sem of (patt* patt) | `Tup of patt | any | `Record of rec_patt | 
-    literal
-  | `Alias of (patt* alident) | `Array of patt | `Label of (alident* patt)
-  | `OptLabl of (alident* patt) | `OptLablExpr of (alident* patt* expr)
-  | `Or of (patt* patt) | `PaRng of (patt* patt)
-  | `Constraint of (patt* ctyp) | `ClassPath of ident | `Lazy of patt
-  | `ModuleUnpack of auident | `ModuleConstraint of (auident* ctyp) | 
-    ant]
-  
+    ant
+  | literal | `Alias of (patt* alident) | `Array of patt
+  | `Label of (alident* patt) | `OptLabl of (alident* patt)
+  | `OptLablExpr of (alident* patt* expr) | `Or of (patt* patt)
+  | `PaRng of (patt* patt) | `Constraint of (patt* ctyp)
+  | `ClassPath of ident | `Lazy of patt | `ModuleUnpack of auident
+  | `ModuleConstraint of (auident* ctyp)] 
 and rec_patt =
   [ nil | `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | 
     any
@@ -79,8 +78,8 @@ and rec_patt =
 and expr =
   [ nil | sid | `App of (expr* expr) | `Vrn of string | `Com of (expr* expr)
   | `Sem of (expr* expr) | `Tup of expr | any | `Record of rec_expr | 
-    literal
-  | `RecordWith of (rec_expr* expr) | `Dot of (expr* expr)
+    ant
+  | literal | `RecordWith of (rec_expr* expr) | `Dot of (expr* expr)
   | `ArrayDot of (expr* expr) | `Array of expr | `ExAsf | `ExAsr of expr
   | `Assign of (expr* expr)
   | `For of (alident* expr* expr* direction_flag* expr) | `Fun of match_case
@@ -94,7 +93,7 @@ and expr =
   | `Try of (expr* match_case) | `Constraint of (expr* ctyp)
   | `Coercion of (expr* ctyp* ctyp) | `While of (expr* expr)
   | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
-  | `Package_expr of module_expr | ant] 
+  | `Package_expr of module_expr] 
 and rec_expr =
   [ nil | `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | 
     any

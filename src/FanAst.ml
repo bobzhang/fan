@@ -24,7 +24,7 @@ end;
 
 {:fans|keep off; derive ( MetaExpr (* GenLoc *)); |};
   
-{:ocaml|{:include| "src/Ast.ml"|}; |};
+{:ocaml|INCLUDE "src/Ast.ml"; |};
 
 
 

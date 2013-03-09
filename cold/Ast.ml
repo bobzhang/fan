@@ -1,11 +1,11 @@
-let _ = ()
 type loc = FanLoc.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
-type nil = [ `Nil of loc | ant] 
+type nil = [ `Nil of loc] 
+type ant_nil = [ ant | nil] 
 type literal =
   [ `Chr of (loc* string) | `Int of (loc* string) | `Int32 of (loc* string)
   | `Int64 of (loc* string) | `Flo of (loc* string)
-  | `NativeInt of (loc* string) | `Str of (loc* string) | ant] 
+  | `NativeInt of (loc* string) | `Str of (loc* string)] 
 type rec_flag = [ `Recursive of loc | `ReNil of loc | ant] 
 type direction_flag = [ `To of loc | `Downto of loc | ant] 
 type mutable_flag = [ `Mutable of loc | `MuNil of loc | ant] 
@@ -20,18 +20,17 @@ type strings =
   [ `App of (loc* strings* strings) | `Str of (loc* string) | ant] 
 type alident = [ `Lid of (loc* string) | ant] 
 type auident = [ `Uid of (loc* string) | ant] 
-type aident = [ alident | auident | ant] 
+type aident = [ alident | auident] 
 type astring = [ `C of (loc* string) | ant] 
 type uident =
-  [ `Dot of (loc* uident* uident) | `App of (loc* uident* uident) | auident
-  | ant] 
+  [ `Dot of (loc* uident* uident) | `App of (loc* uident* uident) | auident] 
 type ident =
   [ `Dot of (loc* ident* ident) | `App of (loc* ident* ident) | alident
-  | auident | ant] 
-type dupath = [ `Dot of (loc* dupath* dupath) | auident | ant] 
-type dlpath = [ `Dot of (loc* dupath* alident) | alident | ant] 
-type sid = [ `Id of (loc* ident) | ant] 
-type any = [ `Any of loc | ant] 
+  | auident] 
+type dupath = [ `Dot of (loc* dupath* dupath) | auident] 
+type dlpath = [ `Dot of (loc* dupath* alident) | alident] 
+type sid = [ `Id of (loc* ident)] 
+type any = [ `Any of loc] 
 type ctyp =
   [ nil | `Alias of (loc* ctyp* alident) | any | `App of (loc* ctyp* ctyp)
   | `Arrow of (loc* ctyp* ctyp) | `ClassPath of (loc* ident)
@@ -46,47 +45,46 @@ type ctyp =
   | `Package of (loc* module_type) | ant] 
 and type_parameters =
   [ `Com of (loc* type_parameters* type_parameters) | `Ctyp of (loc* ctyp)
-  | nil | ant] 
+  | ant | nil] 
 and row_field =
-  [ nil | `Or of (loc* row_field* row_field) | `TyVrn of (loc* astring)
-  | `TyVrnOf of (loc* astring* ctyp) | `Ctyp of (loc* ctyp) | ant] 
+  [ ant_nil | `Or of (loc* row_field* row_field) | `TyVrn of (loc* astring)
+  | `TyVrnOf of (loc* astring* ctyp) | `Ctyp of (loc* ctyp)] 
 and tag_names =
-  [ nil | `App of (loc* tag_names* tag_names) | `TyVrn of (loc* astring)
-  | ant] 
+  [ ant_nil | `App of (loc* tag_names* tag_names) | `TyVrn of (loc* astring)] 
 and typedecl =
   [ `TyDcl of (loc* alident* ctyp list* type_info* (ctyp* ctyp) list)
-  | `And of (loc* typedecl* typedecl) | nil | ant] 
+  | `And of (loc* typedecl* typedecl) | ant_nil] 
 and type_info =
   [ `TyMan of (loc* ctyp* private_flag* type_repr)
   | `TyRepr of (loc* private_flag* type_repr)
-  | `TyEq of (loc* private_flag* ctyp) | nil | ant] 
+  | `TyEq of (loc* private_flag* ctyp) | ant | nil] 
 and type_repr =
-  [ `Record of (loc* name_ctyp) | `Sum of (loc* or_ctyp) | nil | ant] 
+  [ `Record of (loc* name_ctyp) | `Sum of (loc* or_ctyp) | ant | nil] 
 and name_ctyp =
   [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* sid* ctyp)
-  | `TyColMut of (loc* sid* ctyp) | nil | ant] 
+  | `TyColMut of (loc* sid* ctyp) | ant | nil] 
 and or_ctyp =
   [ `Or of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* sid* ctyp)
-  | `Of of (loc* sid* ctyp) | sid | nil | ant] 
-and of_ctyp = [ `Of of (loc* sid* ctyp) | sid | nil | ant] 
+  | `Of of (loc* sid* ctyp) | sid | ant_nil] 
+and of_ctyp = [ `Of of (loc* sid* ctyp) | sid | ant | nil] 
 and patt =
   [ nil | sid | `App of (loc* patt* patt) | `Vrn of (loc* string)
   | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt)
-  | `Tup of (loc* patt) | any | `Record of (loc* rec_patt) | literal
+  | `Tup of (loc* patt) | any | `Record of (loc* rec_patt) | ant | literal
   | `Alias of (loc* patt* alident) | `Array of (loc* patt)
   | `Label of (loc* alident* patt) | `OptLabl of (loc* alident* patt)
   | `OptLablExpr of (loc* alident* patt* expr) | `Or of (loc* patt* patt)
   | `PaRng of (loc* patt* patt) | `Constraint of (loc* patt* ctyp)
   | `ClassPath of (loc* ident) | `Lazy of (loc* patt)
   | `ModuleUnpack of (loc* auident)
-  | `ModuleConstraint of (loc* auident* ctyp) | ant] 
+  | `ModuleConstraint of (loc* auident* ctyp)] 
 and rec_patt =
   [ nil | `RecBind of (loc* ident* patt) | `Sem of (loc* rec_patt* rec_patt)
   | any | ant] 
 and expr =
   [ nil | sid | `App of (loc* expr* expr) | `Vrn of (loc* string)
   | `Com of (loc* expr* expr) | `Sem of (loc* expr* expr)
-  | `Tup of (loc* expr) | any | `Record of (loc* rec_expr) | literal
+  | `Tup of (loc* expr) | any | `Record of (loc* rec_expr) | ant | literal
   | `RecordWith of (loc* rec_expr* expr) | `Dot of (loc* expr* expr)
   | `ArrayDot of (loc* expr* expr) | `Array of (loc* expr) | `ExAsf of loc
   | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
@@ -102,7 +100,7 @@ and expr =
   | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
   | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)
   | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
-  | `Package_expr of (loc* module_expr) | ant] 
+  | `Package_expr of (loc* module_expr)] 
 and rec_expr =
   [ nil | `Sem of (loc* rec_expr* rec_expr) | `RecBind of (loc* ident* expr)
   | any | ant] 

@@ -27,6 +27,6 @@ true:use_unix
 # <{cold,src}/o.top>: use_FanTop
 # <{cold,src,debug}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 # true:warn(+a)
-<{cold,src,debug}/{Objs,FanAst}.ml>: warn(-11)
-<{cold,src,debug}/{Fan}.ml>: warn(-33)
+
+<{cold,src,debug}/Fan.ml>: warn(-33)
 true: warn(-41)

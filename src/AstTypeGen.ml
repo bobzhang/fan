@@ -316,90 +316,39 @@ let generate (module_types:FSig.module_types) = with str_item
     ) tbl {||} in
   {| let loc_of  = fun [ $case ]|};
 Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc" ]))
+    ~filter:(fun s -> not (List.mem s ["loc"; "meta_option";"meta_list"]))
     ("GenLoc",generate);
 
 
 (* +-----------------------------------------------------------------+
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)
-
-
 (* remove the loc field *)
-let generate (module_types:FSig.module_types) : str_item =
+let generate (module_types:FSig.module_types) : str_item = with str_item
   let aux (name,ty) =
-    if  name<>"ant" then 
+    if not (name ="ant") then 
+     with ctyp
+  (* use [map_ctyp] instead  *)
      let obj = object
        inherit Objs.map as super;
        method! row_field = 
          (fun 
-          [ `TyVrnOf(_loc,vrn,`Id(_,`Lid(_,"loc"))) -> `TyVrn(_loc,vrn)
-          | `TyVrnOf(_loc,vrn,`Tup(_,`Sta(_,`Id(_,`Lid(_,"loc")),x))) ->
+          [ `TyVrnOf(_loc,vrn,`Id(_,`Lid(_,"loc")))
+                (* {:ctyp| $vrn of loc |} *) -> `TyVrn(_loc,vrn)
+                    (* {:ctyp|$vrn |} *)
+          (* | {| ant |} -> {||} *)
+          | `TyVrnOf(_loc,vrn,`Tup(_,`Sta(_,`Id(_,`Lid(_,"loc")),x)))
+              (* {| $vrn of (loc * $x )|} *) ->
               match x with
-              [ `Sta(_loc,_,_) ->   `TyVrnOf(_loc,vrn,`Tup(_loc,x))
-              | _ -> `TyVrnOf(_loc,vrn,x)]
+              [ {| $_ * $_ |} ->   `TyVrnOf(_loc,vrn,`Tup(_loc,x))
+                    (* {| $vrn of ( $x * $y) |} *)
+              | _ -> `TyVrnOf(_loc,vrn,x) (* {| $vrn of $x |} *)]
           | x -> super#row_field x ]);
      end in
+     (* obj#ctyp ty *)
      obj#typedecl ty
   else ty  in
-  (fun x -> let r = FSigUtil.str_item_from_module_types ~f:aux x  in r) module_types;
+  (fun x -> let r = FSigUtil.str_item_from_module_types ~f:aux x  in r
+  (* {:str_item| module N = struct $r end |} *)) module_types;
 
-Typehook.register
-    ~filter:(fun _ -> true ) ("LocType",generate);
-
-(*
-  {:str_item| type u = a |}
-  {:str_item|
-  type u = [=
-   a | ant
-  ]
-  |}
- *)  
-let with_ant (module_types:FSig.module_types) : str_item =
-  let aux (_name,ty) =
-    let obj = object(self)
-      inherit Objs.map as super;
-      method! ctyp x =
-        match x with
-        [`PolyEq (_loc,row) ->
-          `PolyEq(_loc,`Or(_loc,self#row_field row,
-                           `Ctyp(_loc,`Id(_loc,`Lid(_loc,"ant")))))
-        | _ -> super#ctyp x];
-    end in
-    obj#typedecl ty in
-  FSigUtil.str_item_from_module_types ~f:aux module_types;
-Typehook.register
-    ~filter:(fun _ -> true) ("WithAnt",with_ant);
-
-(*
-
-  {:str_item|
-    type auident = [= `Uid of string | ant]
-  |}
- *)
-
-let with_ant_loc (module_types:FSig.module_types) : str_item =
-  let aux (_name,ty) =
-    let obj = object(self)
-      inherit Objs.map as super;
-      method! ctyp x =
-        match x with
-        [`PolyEq (_loc,row) ->
-          `PolyEq(_loc,`Or(_loc,self#row_field row, `Ctyp(_loc,`Id(_loc,`Lid(_loc,"ant")))))
-        | _ -> super#ctyp x];
-      method! row_field = fun
-        [`TyVrn (_loc,x) -> `TyVrnOf(_loc,x, `Id(_loc,`Lid(_loc,"loc")))
-        |`TyVrnOf(_loc,x,y) ->
-            let v = match y with
-              [`Tup (_loc,b) ->
-                `Tup(_loc, `Sta(_loc,`Id(_loc,`Lid(_loc,"loc")),b))
-              | _ -> `Tup(_loc,`Sta(_loc,`Id(_loc,`Lid(_loc,"loc")),y))] in
-            `TyVrnOf(_loc,x,v)
-        | x -> super#row_field x ];
-    end in
-    obj#typedecl ty in
-  FSigUtil.str_item_from_module_types ~f:aux module_types;
-Typehook.register
-    ~filter:(fun _ -> true) ("WithAntLoc",with_ant_loc);
-  
-  
+Typehook.register ~filter:(fun _ -> true (* not (List.mem s ["loc"; "ant"]) *)) ("LocType",generate);
