@@ -998,11 +998,7 @@ let apply () =
          ([`Snterm (Gram.obj (expr : 'expr Gram.t ))],
            ("Gram.mk_action (fun (e : 'expr)  (_loc : FanLoc.t)  -> (e : 'expr_quot ))\n",
              (Gram.mk_action
-                (fun (e : 'expr)  (_loc : FanLoc.t)  -> (e : 'expr_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'expr_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'expr_quot )))))]));
+                (fun (e : 'expr)  (_loc : FanLoc.t)  -> (e : 'expr_quot )))))]));
    Gram.extend_single (cvalue_binding : 'cvalue_binding Gram.t )
      (None,
        (None, None,

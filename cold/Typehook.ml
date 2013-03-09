@@ -209,10 +209,11 @@ let _ =
                          | `Uid x -> (x : 'e__1 )
                          | _ -> failwith "x\n"))))]);
           `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_add plugins; `Nil _loc : 'fan_quot ))\n",
+           ("Gram.mk_action\n  (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_add plugins; `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
              (Gram.mk_action
                 (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->
-                   (List.iter plugin_add plugins; `Nil _loc : 'fan_quot )))));
+                   (List.iter plugin_add plugins;
+                    `Id (_loc, (`Uid (_loc, "()"))) : 'fan_quot )))));
         ([`Skeyword "unload";
          `Slist1sep
            ((Gram.srules
@@ -234,39 +235,45 @@ let _ =
                          match __fan_0 with
                          | `Uid x -> (x : 'e__2 )
                          | _ -> failwith "x\n"))))]), (`Skeyword ","))],
-          ("Gram.mk_action\n  (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_remove plugins; `Nil _loc : 'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_remove plugins; `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
             (Gram.mk_action
                (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->
-                  (List.iter plugin_remove plugins; `Nil _loc : 'fan_quot )))));
+                  (List.iter plugin_remove plugins;
+                   `Id (_loc, (`Uid (_loc, "()"))) : 'fan_quot )))));
         ([`Skeyword "clear"],
-          ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (FanState.reset_current_filters (); `Nil _loc : 'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (FanState.reset_current_filters (); `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
             (Gram.mk_action
                (fun _  (_loc : FanLoc.t)  ->
-                  (FanState.reset_current_filters (); `Nil _loc : 'fan_quot )))));
+                  (FanState.reset_current_filters ();
+                   `Id (_loc, (`Uid (_loc, "()"))) : 'fan_quot )))));
         ([`Skeyword "keep"; `Skeyword "on"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (FanState.keep := true; `Nil _loc : 'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (FanState.keep := true; `Id (_loc, (`Uid (_loc, \"()\"))) : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (FanState.keep := true; `Nil _loc : 'fan_quot )))));
+                  (FanState.keep := true; `Id (_loc, (`Uid (_loc, "()"))) : 
+                  'fan_quot )))));
         ([`Skeyword "keep"; `Skeyword "off"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (FanState.keep := false; `Nil _loc : 'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (FanState.keep := false; `Id (_loc, (`Uid (_loc, \"()\"))) : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (FanState.keep := false; `Nil _loc : 'fan_quot )))));
+                  (FanState.keep := false; `Id (_loc, (`Uid (_loc, "()"))) : 
+                  'fan_quot )))));
         ([`Skeyword "show_code"; `Skeyword "on"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (show_code := true; `Nil _loc : 'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (show_code := true; `Id (_loc, (`Uid (_loc, \"()\"))) : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (show_code := true; `Nil _loc : 'fan_quot )))));
+                  (show_code := true; `Id (_loc, (`Uid (_loc, "()"))) : 
+                  'fan_quot )))));
         ([`Skeyword "show_code"; `Skeyword "off"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (show_code := false; `Nil _loc : 'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (show_code := false; `Id (_loc, (`Uid (_loc, \"()\"))) : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (show_code := false; `Nil _loc : 'fan_quot )))))]));
+                  (show_code := false; `Id (_loc, (`Uid (_loc, "()"))) : 
+                  'fan_quot )))))]));
   Gram.extend_single (fan_quots : 'fan_quots Gram.t )
     (None,
       (None, None,
-        [([`Slist0
+        [([`Slist1
              (Gram.srules
                 [([`Snterm (Gram.obj (fan_quot : 'fan_quot Gram.t ));
                   `Skeyword ";"],
@@ -274,10 +281,10 @@ let _ =
                      (Gram.mk_action
                         (fun _  (x : 'fan_quot)  (_loc : FanLoc.t)  ->
                            (x : 'e__3 )))))])],
-           ("Gram.mk_action\n  (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  -> (seq_sem xs : 'fan_quots ))\n",
+           ("Gram.mk_action\n  (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  -> (seq_sem1 xs : 'fan_quots ))\n",
              (Gram.mk_action
                 (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
-                   (seq_sem xs : 'fan_quots )))))]))
+                   (seq_sem1 xs : 'fan_quots )))))]))
 let g = Gram.create_gram ~annot:"include" ~keywords:[] ()
 let include_quot = Gram.mk_dynamic g "include_quot"
 let _ =
@@ -329,7 +336,7 @@ let _ =
                            | _ -> failwith "x\n"))))]);
           `Skeyword "->";
           `Snterm (Gram.obj (Syntax.expr : 'Syntax__expr Gram.t ))],
-           ("Gram.mk_action\n  (fun (b : 'Syntax__expr)  _  (ls : 'e__4 list)  (_loc : FanLoc.t)  ->\n     (let symbs = List.map (fun x  -> FanState.gensym x) ls in\n      let res = FanState.gensym \"res\" in\n      let exc = FanState.gensym \"e\" in\n      let binds =\n        and_of_list\n          (List.map2\n             (fun x  y  ->\n                `Bind\n                  (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                    (`Dot\n                       (_loc, (`Id (_loc, (`Lid (_loc, y)))),\n                         (`Id (_loc, (`Lid (_loc, \"contents\")))))))) symbs ls) in\n      let restore =\n        seq_sem\n          (List.map2\n             (fun x  y  ->\n                `Assign\n                  (_loc,\n                    (`Dot\n                       (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                         (`Id (_loc, (`Lid (_loc, \"contents\")))))),\n                    (`Id (_loc, (`Lid (_loc, y)))))) ls symbs) in\n      `LetIn\n        (_loc, (`ReNil _loc), binds,\n          (`Try\n             (_loc,\n               (`LetIn\n                  (_loc, (`ReNil _loc),\n                    (`Bind (_loc, (`Id (_loc, (`Lid (_loc, res)))), b)),\n                    (`LetIn\n                       (_loc, (`ReNil _loc),\n                         (`Bind (_loc, (`Any _loc), restore)),\n                         (`Id (_loc, (`Lid (_loc, res)))))))),\n               (`Case\n                  (_loc, (`Id (_loc, (`Lid (_loc, exc)))),\n                    (`Seq\n                       (_loc,\n                         (`Sem\n                            (_loc, restore,\n                              (`App\n                                 (_loc, (`Id (_loc, (`Lid (_loc, \"raise\")))),\n                                   (`Id (_loc, (`Lid (_loc, exc))))))))))))))) : \n     'save_quot ))\n",
+           ("Gram.mk_action\n  (fun (b : 'Syntax__expr)  _  (ls : 'e__4 list)  (_loc : FanLoc.t)  ->\n     (let symbs = List.map (fun x  -> FanState.gensym x) ls in\n      let res = FanState.gensym \"res\" in\n      let exc = FanState.gensym \"e\" in\n      let binds =\n        and_of_list\n          (List.map2\n             (fun x  y  ->\n                `Bind\n                  (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                    (`Dot\n                       (_loc, (`Id (_loc, (`Lid (_loc, y)))),\n                         (`Id (_loc, (`Lid (_loc, \"contents\")))))))) symbs ls) in\n      let restore =\n        seq_sem1\n          (List.map2\n             (fun x  y  ->\n                `Assign\n                  (_loc,\n                    (`Dot\n                       (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                         (`Id (_loc, (`Lid (_loc, \"contents\")))))),\n                    (`Id (_loc, (`Lid (_loc, y)))))) ls symbs) in\n      `LetIn\n        (_loc, (`ReNil _loc), binds,\n          (`Try\n             (_loc,\n               (`LetIn\n                  (_loc, (`ReNil _loc),\n                    (`Bind (_loc, (`Id (_loc, (`Lid (_loc, res)))), b)),\n                    (`LetIn\n                       (_loc, (`ReNil _loc),\n                         (`Bind (_loc, (`Any _loc), restore)),\n                         (`Id (_loc, (`Lid (_loc, res)))))))),\n               (`Case\n                  (_loc, (`Id (_loc, (`Lid (_loc, exc)))),\n                    (`Seq\n                       (_loc,\n                         (`Sem\n                            (_loc, restore,\n                              (`App\n                                 (_loc, (`Id (_loc, (`Lid (_loc, \"raise\")))),\n                                   (`Id (_loc, (`Lid (_loc, exc))))))))))))))) : \n     'save_quot ))\n",
              (Gram.mk_action
                 (fun (b : 'Syntax__expr)  _  (ls : 'e__4 list) 
                    (_loc : FanLoc.t)  ->
@@ -347,7 +354,7 @@ let _ =
                                        (`Id (_loc, (`Lid (_loc, "contents"))))))))
                            symbs ls) in
                     let restore =
-                      seq_sem
+                      seq_sem1
                         (List.map2
                            (fun x  y  ->
                               `Assign

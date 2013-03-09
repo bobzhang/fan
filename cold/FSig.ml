@@ -38,7 +38,7 @@ type full_id_transform =
   | `Ident of ident -> ident | `Last of string -> ident | `Obj of string id] 
 open StdLib
 open Objs
-let _ = ()
+let _ = (); ()
 type named_type = (string* typedecl) 
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 

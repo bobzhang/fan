@@ -171,14 +171,14 @@ let _ =
     (None,
       (None, None,
         [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
-          `Slist0
+          `Slist1
             (Gram.srules
                [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
                   ("Gram.mk_action (fun (x : 'a_lident)  (_loc : FanLoc.t)  -> (x : 'e__4 ))\n",
                     (Gram.mk_action
                        (fun (x : 'a_lident)  (_loc : FanLoc.t)  ->
                           (x : 'e__4 )))))])],
-           ("Gram.mk_action\n  (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let rest =\n        List.map\n          (fun x  ->\n             let _loc = loc_of x in\n             `App\n               (_loc, (`Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))))),\n                 (`Id (_loc, (x :>ident))))) ls in\n      seq_sem rest : 'nonterminalsclear ))\n",
+           ("Gram.mk_action\n  (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let rest =\n        List.map\n          (fun x  ->\n             let _loc = loc_of x in\n             `App\n               (_loc, (`Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))))),\n                 (`Id (_loc, (x :>ident))))) ls in\n      seq_sem1 rest : 'nonterminalsclear ))\n",
              (Gram.mk_action
                 (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
                    (let rest =
@@ -191,7 +191,7 @@ let _ =
                                   (_loc,
                                     (`Dot (_loc, t, (`Lid (_loc, "clear")))))),
                                (`Id (_loc, (x :>ident))))) ls in
-                    seq_sem rest : 'nonterminalsclear )))))]))
+                    seq_sem1 rest : 'nonterminalsclear )))))]))
 let _ =
   Gram.extend_single (extend_header : 'extend_header Gram.t )
     (None,
@@ -245,12 +245,12 @@ let _ =
       (None, None,
         [([`Snterm
              (Gram.obj (delete_rule_header : 'delete_rule_header Gram.t ));
-          `Slist0 (`Snterm (Gram.obj (delete_rules : 'delete_rules Gram.t )))],
-           ("Gram.mk_action\n  (fun (es : 'delete_rules list)  (old : 'delete_rule_header) \n     (_loc : FanLoc.t)  ->\n     (let () = grammar_module_name := old in seq_sem es : 'delete_rule_body ))\n",
+          `Slist1 (`Snterm (Gram.obj (delete_rules : 'delete_rules Gram.t )))],
+           ("Gram.mk_action\n  (fun (es : 'delete_rules list)  (old : 'delete_rule_header) \n     (_loc : FanLoc.t)  ->\n     (let () = grammar_module_name := old in seq_sem1 es : 'delete_rule_body ))\n",
              (Gram.mk_action
                 (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
                    (_loc : FanLoc.t)  ->
-                   (let () = grammar_module_name := old in seq_sem es : 
+                   (let () = grammar_module_name := old in seq_sem1 es : 
                    'delete_rule_body )))))]));
   Gram.extend_single (delete_rules : 'delete_rules Gram.t )
     (None,

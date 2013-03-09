@@ -12,10 +12,10 @@ let of_str s =
      | x when Char.is_uppercase x -> `Id (_loc, (`Uid (_loc, s)))
      | _ -> `Id (_loc, (`Lid (_loc, s))))
 let of_ident_number cons n =
-  appl_of_list ((`Id (_loc, cons)) ::
+  appl_of_list1 ((`Id (_loc, cons)) ::
     (List.init n (fun i  -> `Id (_loc, (xid i)))))
 let (+>) f names =
-  appl_of_list (f ::
+  appl_of_list1 (f ::
     (List.map (fun lid  -> `Id (_loc, (`Lid (_loc, lid)))) names))
 let gen_tuple_first ~number  ~off  =
   match number with

@@ -298,7 +298,9 @@ let expr_delete_rule _loc n (symbolss : symbol list list) =
                      (_loc,
                        (`Dot (_loc, (gm ()), (`Lid (_loc, "delete_rule")))))),
                   e)), b)) symbolss in
-  seq (sem_of_list rest)
+  match symbolss with
+  | [] -> `Id (_loc, (`Uid (_loc, "()")))
+  | _ -> seq_sem1 rest
 let mk_name _loc i =
   { expr = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
@@ -384,7 +386,7 @@ let let_in_of_extend _loc gram locals default =
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el = List.map text_of_entry el in
-    match el with | [] -> `Id (_loc, (`Uid (_loc, "()"))) | _ -> seq_sem el in
+    match el with | [] -> `Id (_loc, (`Uid (_loc, "()"))) | _ -> seq_sem1 el in
   let_in_of_extend _loc gram locals args
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with

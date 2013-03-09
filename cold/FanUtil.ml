@@ -45,7 +45,7 @@ let cvt_int_literal s =
   | 'n' -> `NATIVEINT ((let open Nativeint in neg (of_string ("-" ^ s))), s)
   | _ -> `INT ((- (int_of_string ("-" ^ s))), s)
 open StdLib
-let _ = ()
+let _ = (); ()
 type anti_cxt = 
   {
   cxt: string;

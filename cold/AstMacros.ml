@@ -16,23 +16,6 @@ let fibm y =
       `App (_loc, (`Id (_loc, (`Lid (_loc, "fib")))), x)
 let _ = register_macro ("FIB", fibm)
 open LibUtil
-let generate_fibs =
-  function
-  | `Int (_loc,x) ->
-      let j = int_of_string x in
-      let res =
-        zfold_left ~until:j ~acc:(`Nil _loc)
-          (fun acc  i  ->
-             `Sem
-               (_loc, acc,
-                 (`App
-                    (_loc, (`Id (_loc, (`Lid (_loc, "print_int")))),
-                      (`App
-                         (_loc, (`Id (_loc, (`Uid (_loc, "FIB")))),
-                           (`Int (_loc, (string_of_int i))))))))) in
-      `Seq (_loc, res)
-  | e -> e
-let _ = register_macro ("GFIB", generate_fibs)
 let macro_expander =
   object (self)
     inherit  Objs.map as super

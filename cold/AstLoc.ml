@@ -1,7 +1,7 @@
 open LibUtil
 open FanLoc.Ops
 include Ast
-let _ = ()
+let _ = (); ()
 let loc_of =
   function
   | `Any _loc -> _loc
@@ -289,3 +289,4 @@ let rec list_of_app' x acc =
 let rec view_app acc =
   function | `App (_,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let seq_sem ls = seq (sem_of_list ls)
+let seq_sem1 ls = seq (sem_of_list1 ls)

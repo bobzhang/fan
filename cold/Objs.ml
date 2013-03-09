@@ -3,7 +3,7 @@ open StdLib
 open Ast
 let strip_loc_list f lst = List.map f lst
 let strip_loc_ant ant = ant
-let _ = ()
+let _ = (); ()
 class map2 =
   object (self : 'self_type)
     inherit  mapbase2
@@ -580,7 +580,6 @@ class map2 =
     method expr : expr -> expr -> expr=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 : nil  :>expr)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 : sid  :>expr)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -1695,7 +1694,6 @@ class fold2 =
     method expr : expr -> expr -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -2452,7 +2450,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result146)
     method expr : expr -> 'result147=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result147)
       | #sid as _a0 -> (self#sid _a0 :>'result147)
       | `App (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
       | `Vrn (_a0,_a1) -> (self#loc _a0; self#string _a1)
@@ -3230,7 +3227,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>rec_patt)
     method expr : expr -> expr=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>expr)
       | #sid as _a0 -> (self#sid _a0 : sid  :>expr)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -4139,7 +4135,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method expr : expr -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -4998,7 +4993,6 @@ class print =
     method expr : 'fmt -> expr -> 'result312=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result312)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result312)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
@@ -5938,7 +5932,6 @@ class eq =
     method expr : expr -> expr -> 'result367=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result367)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result367)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
@@ -6746,7 +6739,6 @@ and strip_loc_rec_patt =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result422)
 and strip_loc_expr =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result421)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result421)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
@@ -7565,7 +7557,6 @@ and pp_print_rec_patt fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result475)
 and pp_print_expr fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result474)
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result474)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0

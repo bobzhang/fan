@@ -51,11 +51,6 @@ class clean_ast =
       match super#with_constr wc with
       | `And (_loc,`Nil _l,wc)|`And (_loc,wc,`Nil _l) -> wc
       | wc -> wc
-    method! expr e =
-      match super#expr e with
-      | `LetIn (_loc,_,`Nil _l,e)|`Com (_loc,`Nil _l,e)|`Com (_loc,e,`Nil _l)
-        |`Sem (_loc,`Nil _l,e)|`Sem (_loc,e,`Nil _l) -> e
-      | e -> e
     method! match_case mc =
       match super#match_case mc with
       | `Or (_loc,`Nil _l,mc)|`Or (_loc,mc,`Nil _l) -> mc

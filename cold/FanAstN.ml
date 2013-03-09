@@ -1,6 +1,6 @@
 open StdLib
 include AstN
-let _ = ()
+let _ = (); ()
 class eq =
   object (self : 'self_type)
     inherit  eqbase
@@ -366,7 +366,6 @@ class eq =
     method expr : expr -> expr -> 'result37=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result37)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result37)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#expr _a1 _b1)
@@ -1104,7 +1103,6 @@ class print =
     method expr : 'fmt -> expr -> 'result92=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result92)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result92)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#expr _a0
@@ -1961,7 +1959,6 @@ and meta_rec_patt _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result148)
 and meta_expr _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result147)
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result147)
   | `App (_a0,_a1) ->
       `App

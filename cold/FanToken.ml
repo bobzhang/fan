@@ -1,4 +1,4 @@
-let _ = ()
+let _ = (); ()
 open StdLib
 type domains = [ `Absolute of string list | `Sub of string list] 
 type name = (domains* string) 

@@ -58,7 +58,7 @@ let define ~expr  ~patt  eo x =
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"));
                 `Sself],
-                 ("Gram.mk_action\n  (fun (param : 'expr)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let el =\n            match param with | `Tup (_loc,e) -> list_of_com' e [] | e -> [e] in\n          if (List.length el) = (List.length sl)\n          then\n            let env = List.combine sl el in\n            ((new Expr.subst) _loc env)#expr e\n          else incorrect_number _loc el sl : 'expr )\n     | _ ->\n         failwith\n           \"let el = match param with | `Tup (_loc,e) -> list_of_com' e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#expr e\nelse incorrect_number _loc el sl\n\")\n",
+                 ("Gram.mk_action\n  (fun (param : 'expr)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let el =\n            match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\n          if (List.length el) = (List.length sl)\n          then\n            let env = List.combine sl el in\n            ((new Expr.subst) _loc env)#expr e\n          else incorrect_number _loc el sl : 'expr )\n     | _ ->\n         failwith\n           \"let el = match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#expr e\nelse incorrect_number _loc el sl\n\")\n",
                    (Gram.mk_action
                       (fun (param : 'expr)  (__fan_0 : [> FanToken.t]) 
                          (_loc : FanLoc.t)  ->
@@ -66,7 +66,7 @@ let define ~expr  ~patt  eo x =
                          | `Uid _ ->
                              (let el =
                                 match param with
-                                | `Tup (_loc,e) -> list_of_com' e []
+                                | `Tup (_loc,e) -> list_of_com e []
                                 | e -> [e] in
                               if (List.length el) = (List.length sl)
                               then
@@ -75,7 +75,7 @@ let define ~expr  ~patt  eo x =
                               else incorrect_number _loc el sl : 'expr )
                          | _ ->
                              failwith
-                               "let el = match param with | `Tup (_loc,e) -> list_of_com' e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#expr e\nelse incorrect_number _loc el sl\n"))))]));
+                               "let el = match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#expr e\nelse incorrect_number _loc el sl\n"))))]));
         Gram.extend_single (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
             (None, None,

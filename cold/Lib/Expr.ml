@@ -458,9 +458,9 @@ let mk_record_ee label_exprs =
               (_loc, (`Vrn (_loc, "Record")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
            (List.reduce_right mee_record_semi es)))
-let eta_expand expr number =
-  let names = List.init number (fun i  -> x ~off:0 i) in
-  names <+ (expr +> names)
+let eta_expand (expr : expr) number =
+  (let names = List.init number (fun i  -> x ~off:0 i) in
+   names <+ (expr +> names) : expr )
 let gen_curry_n (acc : expr) ~arity  cons n =
   (let args =
      List.init arity

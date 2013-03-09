@@ -482,7 +482,7 @@ let rec expr (x : expr) =
            ((mkexp loc (Pexp_ident (array_function loc "Array" "get"))),
              [("", (expr e1)); ("", (expr e2))]))
   | `Array (loc,e) ->
-      mkexp loc (Pexp_array (List.map expr (list_of_sem' e [])))
+      mkexp loc (Pexp_array (List.map expr (list_of_sem e [])))
   | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
   | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
   | `ExAsf loc -> mkexp loc Pexp_assertfalse
@@ -649,7 +649,7 @@ let rec expr (x : expr) =
         | e::el ->
             let _loc = FanLoc.merge (loc_of e) _loc in
             mkexp _loc (Pexp_sequence ((expr e), (loop el))) in
-      loop (list_of_sem' e [])
+      loop (list_of_sem e [])
   | `Send (loc,e,`Lid (_,s)) -> mkexp loc (Pexp_send ((expr e), s))
   | `StringDot (loc,e1,e2) ->
       mkexp loc
@@ -660,7 +660,7 @@ let rec expr (x : expr) =
       mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
   | `Try (loc,e,a) -> mkexp loc (Pexp_try ((expr e), (match_case a)))
   | `Tup (loc,e) ->
-      let l = list_of_com' e [] in
+      let l = list_of_com e [] in
       (match l with
        | []|_::[] ->
            errorf loc "tuple should have at least two items" (dump_expr x)
@@ -688,10 +688,6 @@ let rec expr (x : expr) =
   | `LocalTypeFun (loc,`Lid (_,i),e) ->
       mkexp loc (Pexp_newtype (i, (expr e)))
   | x -> errorf (loc_of x) "expr:%s" (dump_expr x)
-and expr_of_lab _loc lab (x : expr) =
-  match x with
-  | `Nil _ -> expr (`Id (_loc, (`Lid (_loc, lab))))
-  | e -> expr e
 and label_expr (x : expr) =
   match x with
   | `Label (_loc,`Lid (_,lab),eo) -> (lab, (expr eo))

@@ -1,4 +1,4 @@
-let _ = ()
+let _ = (); ()
 type loc = FanLoc.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
 type nil = [ `Nil] 
@@ -75,7 +75,7 @@ and patt =
 and rec_patt =
   [ `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | any | ant] 
 and expr =
-  [ nil | sid | `App of (expr* expr) | `Vrn of string | `Com of (expr* expr)
+  [ sid | `App of (expr* expr) | `Vrn of string | `Com of (expr* expr)
   | `Sem of (expr* expr) | `Tup of expr | any | `Record of rec_expr | 
     ant
   | literal | `RecordWith of (rec_expr* expr) | `Dot of (expr* expr)

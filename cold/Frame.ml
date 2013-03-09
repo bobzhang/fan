@@ -28,7 +28,7 @@ let mapi_expr ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> expr)  (i : int)
    let pat0 = exp0 in
    let id_expr = tuple_com id_exprs in
    let id_patt = id_expr in
-   let expr = appl_of_list (base :: id_exprs) in
+   let expr = appl_of_list1 (base :: id_exprs) in
    { name_expr; expr; id_expr; id_exprs; id_patt; id_patts; exp0; pat0; ty } : 
   FSig.ty_info )
 let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
@@ -84,7 +84,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
       | `App _ as ty ->
           (match list_of_app ty [] with
            | (`Id (_loc,tctor))::ls ->
-               appl_of_list ((trans tctor) ::
+               appl_of_list1 ((trans tctor) ::
                  (ls |>
                     (List.map
                        (function
@@ -146,7 +146,7 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
   let simple lid =
     (let e = (simple_expr_of_ctyp (`Id (_loc, lid))) +> names in
      let (f,a) = view_app [] result in
-     let annot = appl_of_list (f :: (List.map (fun _  -> `Any _loc) a)) in
+     let annot = appl_of_list1 (f :: (List.map (fun _  -> `Any _loc) a)) in
      MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e : match_case ) in
   let info = (TyVrnEq, (List.length (list_of_or' ty []))) in
   let ls = Ctyp.view_variant ty in

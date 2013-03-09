@@ -130,7 +130,7 @@ let bigarray_get loc arr arg =
   let coords =
     match arg with
     | `Tup (_loc,`Com (_,e1,e2))|`Com (_loc,e1,e2) ->
-        list_of_com' e1 (list_of_com' e2 [])
+        list_of_com e1 (list_of_com e2 [])
     | _ -> [arg] in
   match coords with
   | [] -> failwith "bigarray_get null list"
@@ -194,7 +194,7 @@ let bigarray_get loc arr arg =
              (loc,
                (`Sem
                   (loc, c1,
-                    (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list coords))))))))))
+                    (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list1 coords))))))))))
 let bigarray_set loc var newval =
   match var with
   | `App

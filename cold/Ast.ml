@@ -84,7 +84,7 @@ and rec_patt =
     any
   | ant] 
 and expr =
-  [ nil | sid | `App of (loc* expr* expr) | `Vrn of (loc* string)
+  [ sid | `App of (loc* expr* expr) | `Vrn of (loc* string)
   | `Com of (loc* expr* expr) | `Sem of (loc* expr* expr)
   | `Tup of (loc* expr) | any | `Record of (loc* rec_expr) | ant | literal
   | `RecordWith of (loc* rec_expr* expr) | `Dot of (loc* expr* expr)

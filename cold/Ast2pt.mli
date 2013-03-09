@@ -106,7 +106,7 @@ val expr : expr -> Parsetree.expression
 
 (* val patt_of_lab : loc -> string -> patt -> Parsetree.pattern *)
 
-val expr_of_lab : loc -> string -> expr -> Parsetree.expression
+(* val expr_of_lab : loc -> string -> expr -> Parsetree.expression *)
 
 val label_expr : expr -> Asttypes.label * Parsetree.expression
 
