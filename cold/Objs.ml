@@ -511,6 +511,8 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
             let _a2 = self#alident _a2 _b2 in `Alias (_a0, _a1, _a2)
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) ->
+            let _a0 = self#loc _a0 _b0 in `ArrayEmpty _a0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in `Array (_a0, _a1)
@@ -612,6 +614,8 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in
             let _a2 = self#expr _a2 _b2 in `ArrayDot (_a0, _a1, _a2)
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) ->
+            let _a0 = self#loc _a0 _b0 in `ArrayEmpty _a0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in `Array (_a0, _a1)
@@ -1197,6 +1201,8 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ep _a1 _b1 in `Tup (_a0, _a1)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 : any  :>ep)
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) ->
+            let _a0 = self#loc _a0 _b0 in `ArrayEmpty _a0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ep _a1 _b1 in `Array (_a0, _a1)
@@ -1628,6 +1634,7 @@ class fold2 =
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#alident _a2 _b2
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#patt _a1 _b1
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
@@ -1705,6 +1712,7 @@ class fold2 =
         | (`ArrayDot (_a0,_a1,_a2),`ArrayDot (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#expr _a1 _b1 in self#expr _a2 _b2
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#expr _a1 _b1
         | (`ExAsf _a0,`ExAsf _b0) -> self#loc _a0 _b0
@@ -2139,6 +2147,7 @@ class fold2 =
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ep _a1 _b1
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'self_type)
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ep _a1 _b1
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
@@ -2399,6 +2408,7 @@ class iter =
       | #literal as _a0 -> (self#literal _a0 :>'result145)
       | `Alias (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#alident _a2)
+      | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> (self#loc _a0; self#patt _a1)
       | `Label (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#patt _a2)
@@ -2441,6 +2451,7 @@ class iter =
       | `Dot (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
       | `ArrayDot (_a0,_a1,_a2) ->
           (self#loc _a0; self#expr _a1; self#expr _a2)
+      | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> (self#loc _a0; self#expr _a1)
       | `ExAsf _a0 -> self#loc _a0
       | `ExAsr (_a0,_a1) -> (self#loc _a0; self#expr _a1)
@@ -2741,6 +2752,7 @@ class iter =
       | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#ep _a1; self#ep _a2)
       | `Tup (_a0,_a1) -> (self#loc _a0; self#ep _a1)
       | #any as _a0 -> (self#any _a0 :>'result161)
+      | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> (self#loc _a0; self#ep _a1)
       | `Record (_a0,_a1) -> (self#loc _a0; self#rec_bind _a1)
       | #literal as _a0 -> (self#literal _a0 :>'result161)
@@ -3139,6 +3151,7 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
           let _a2 = self#alident _a2 in `Alias (_a0, _a1, _a2)
+      | `ArrayEmpty _a0 -> let _a0 = self#loc _a0 in `ArrayEmpty _a0
       | `Array (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in `Array (_a0, _a1)
@@ -3232,6 +3245,7 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in
           let _a2 = self#expr _a2 in `ArrayDot (_a0, _a1, _a2)
+      | `ArrayEmpty _a0 -> let _a0 = self#loc _a0 in `ArrayEmpty _a0
       | `Array (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in `Array (_a0, _a1)
@@ -3749,6 +3763,7 @@ class map =
       | `Tup (_a0,_a1) ->
           let _a0 = self#loc _a0 in let _a1 = self#ep _a1 in `Tup (_a0, _a1)
       | #any as _a0 -> (self#any _a0 : any  :>ep)
+      | `ArrayEmpty _a0 -> let _a0 = self#loc _a0 in `ArrayEmpty _a0
       | `Array (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ep _a1 in `Array (_a0, _a1)
@@ -4055,6 +4070,7 @@ class fold =
       | `Alias (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#alident _a2
+      | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
       | `Label (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -4120,6 +4136,7 @@ class fold =
       | `ArrayDot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#expr _a1 in self#expr _a2
+      | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
       | `ExAsf _a0 -> self#loc _a0
       | `ExAsr (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
@@ -4493,6 +4510,7 @@ class fold =
           let self = self#loc _a0 in let self = self#ep _a1 in self#ep _a2
       | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
+      | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_bind _a1
       | #literal as _a0 -> (self#literal _a0 :>'self_type)
@@ -4896,6 +4914,8 @@ class print =
         | `Alias (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#alident _a2
+        | `ArrayEmpty _a0 ->
+            Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" self#loc _a0
         | `Array (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc _a0
               self#patt _a1
@@ -4975,6 +4995,8 @@ class print =
         | `ArrayDot (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" self#loc _a0
               self#expr _a1 self#expr _a2
+        | `ArrayEmpty _a0 ->
+            Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" self#loc _a0
         | `Array (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc _a0
               self#expr _a1
@@ -5406,6 +5428,8 @@ class print =
             Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#ep
               _a1
         | #any as _a0 -> (self#any fmt _a0 :>'result326)
+        | `ArrayEmpty _a0 ->
+            Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" self#loc _a0
         | `Array (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc _a0 
               self#ep _a1
@@ -5823,6 +5847,7 @@ class eq =
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#alident _a2 _b2)
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#patt _a1 _b1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
@@ -5900,6 +5925,7 @@ class eq =
         | (`ArrayDot (_a0,_a1,_a2),`ArrayDot (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
               (self#expr _a2 _b2)
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#expr _a1 _b1)
         | (`ExAsf _a0,`ExAsf _b0) -> self#loc _a0 _b0
@@ -6328,6 +6354,7 @@ class eq =
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ep _a1 _b1)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result381)
+        | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ep _a1 _b1)
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
@@ -6632,6 +6659,7 @@ and strip_loc_patt =
   | `Alias (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
+  | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `Array _a1
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
@@ -6697,6 +6725,7 @@ and strip_loc_expr =
   | `ArrayDot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_expr _a2 in `ArrayDot (_a1, _a2)
+  | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `Array _a1
   | `ExAsf _a0 -> `ExAsf
   | `ExAsr (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `ExAsr _a1
@@ -7075,6 +7104,7 @@ let rec strip_loc_ep =
       let _a2 = strip_loc_ep _a2 in `Sem (_a1, _a2)
   | `Tup (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Tup _a1
   | #any as _a0 -> (strip_loc_any _a0 :>'result435)
+  | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Array _a1
   | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_bind _a1 in `Record _a1
   | #literal as _a0 -> (strip_loc_literal _a0 :>'result435)
@@ -7435,6 +7465,8 @@ and pp_print_patt fmt =
   | `Alias (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_alident _a2
+  | `ArrayEmpty _a0 ->
+      Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" pp_print_loc _a0
   | `Array (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1
@@ -7512,6 +7544,8 @@ and pp_print_expr fmt =
   | `ArrayDot (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_expr _a1 pp_print_expr _a2
+  | `ArrayEmpty _a0 ->
+      Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" pp_print_loc _a0
   | `Array (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc _a0
         pp_print_expr _a1
@@ -7932,6 +7966,8 @@ let rec pp_print_ep fmt =
       Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0 pp_print_ep
         _a1
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result488)
+  | `ArrayEmpty _a0 ->
+      Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" pp_print_loc _a0
   | `Array (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ep _a1

@@ -518,7 +518,9 @@ let rec patt (x:patt) =
      | _ ->
          error (loc_of f)
            "this is not a constructor, it cannot be applied in a pattern" ]
-     | `Array (loc,p) -> mkpat loc (Ppat_array (List.map patt (list_of_sem' p []))) (* precise*)
+     | `Array (loc,p) -> mkpat loc (Ppat_array (List.map patt (list_of_sem' p [])))
+     | `ArrayEmpty(loc) -> mkpat loc (Ppat_array [])
+         
      | `Chr (loc,s) ->
          mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
      | `Int (loc,s) ->
@@ -657,6 +659,7 @@ let rec expr (x : expr) = with expr match x with
   | `Array (loc,e) -> mkexp loc
         (Pexp_array
            (List.map expr (list_of_sem' e []))) (* be more precise*)
+  | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
   | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
   | `ExAsf loc -> mkexp loc Pexp_assertfalse
   | `Assign (loc,e,v) ->

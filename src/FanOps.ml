@@ -219,19 +219,20 @@ let binding_of_pel l = and_of_list (List.map bi_of_pe l);
 
 let rec is_irrefut_patt : patt -> bool = with patt
     fun
-    [ {| $lid:_ |} -> true
+    [
+      `ArrayEmpty (_loc)
+    | {| $lid:_ |} -> true
     | {| () |} -> true
     | {| _ |} -> true
     | {||} -> true (* why not *)
     | {| ($x as $_) |} -> is_irrefut_patt x (* && is_irrefut_patt y *)
     | {| { $p } |} ->
         List.for_all (fun [`RecBind (_,_,p) -> is_irrefut_patt p | _ -> true])
-          (list_of_sem (* is_irrefut_patt *) p [])
-    (* | {| $_ = $p |} -> is_irrefut_patt p *)
-    | `Sem(_,p1,p2)(* {| $p1; $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | `Com(_,p1,p2) (* {| $p1, $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | `Or(_,p1,p2) (* {| $p1 | $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
-    | `App(_,p1,p2)(* {| $p1 $p2 |} *) -> is_irrefut_patt p1 && is_irrefut_patt p2
+          (list_of_sem  p [])
+    | `Sem(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | `Com(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | `Or(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
+    | `App(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2
           
     | `Constraint(_,p,_)(* {| ($p : $_) |} *) -> is_irrefut_patt p
     | `Tup(_,p)(* {| ($tup:pl) |} *) -> is_irrefut_patt p
@@ -264,10 +265,13 @@ let rec is_irrefut_patt : patt -> bool = with patt
   mk_array [| {| 1 |} ; {| 2 |} ; {| 3 |} |] |> e2s = ({| [|1;2;3|] |} |> e2s);
   True
  *)
-let array_of_array arr = with expr 
-  let items = arr |> Array.to_list |> sem_of_list in
-  let _loc = loc_of items in
-  {| [| $items |] |};
+let array_of_array arr =
+  match arr  with
+  [[||] -> `ArrayEmpty (FanLoc.ghost)
+  | _ ->   
+      let items = arr |> Array.to_list |> sem_of_list in
+      let _loc = loc_of items in
+      `Array(_loc,items)];
   
 let meta_array mf_a _loc ls =
   array_of_array (Array.map (fun x -> mf_a _loc x) ls)  ;

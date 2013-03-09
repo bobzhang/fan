@@ -96,7 +96,7 @@ let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
 let rec is_irrefut_patt: patt -> bool =
   function
-  | `Id (_loc,`Lid (_,_)) -> true
+  | `ArrayEmpty _loc|`Id (_loc,`Lid (_,_)) -> true
   | `Id (_loc,`Uid (_,"()")) -> true
   | `Any _loc -> true
   | `Nil _loc -> true
@@ -121,8 +121,11 @@ let rec is_irrefut_patt: patt -> bool =
     |`NativeInt (_loc,_)|`Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)
     |`Chr (_loc,_)|`ClassPath (_loc,_)|`Array (_loc,_)|`Ant (_loc,_) -> false
 let array_of_array arr =
-  let items = (arr |> Array.to_list) |> sem_of_list in
-  let _loc = loc_of items in `Array (_loc, items)
+  match arr with
+  | [||] -> `ArrayEmpty FanLoc.ghost
+  | _ ->
+      let items = (arr |> Array.to_list) |> sem_of_list in
+      let _loc = loc_of items in `Array (_loc, items)
 let meta_array mf_a _loc ls =
   array_of_array (Array.map (fun x  -> mf_a _loc x) ls)
 let bigarray_get loc arr arg =

@@ -331,6 +331,7 @@ class eq =
             (self#literal _a0 _b0 :>'result35)
         | (`Alias (_a0,_a1),`Alias (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#alident _a1 _b1)
+        | (`ArrayEmpty,`ArrayEmpty) -> true
         | (`Array _a0,`Array _b0) -> self#patt _a0 _b0
         | (`Label (_a0,_a1),`Label (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#patt _a1 _b1)
@@ -385,6 +386,7 @@ class eq =
             (self#expr _a0 _b0) && (self#expr _a1 _b1)
         | (`ArrayDot (_a0,_a1),`ArrayDot (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#expr _a1 _b1)
+        | (`ArrayEmpty,`ArrayEmpty) -> true
         | (`Array _a0,`Array _b0) -> self#expr _a0 _b0
         | (`ExAsf,`ExAsf) -> true
         | (`ExAsr _a0,`ExAsr _b0) -> self#expr _a0 _b0
@@ -699,6 +701,7 @@ class eq =
             (self#ep _a0 _b0) && (self#ep _a1 _b1)
         | (`Tup _a0,`Tup _b0) -> self#ep _a0 _b0
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result51)
+        | (`ArrayEmpty,`ArrayEmpty) -> true
         | (`Array _a0,`Array _b0) -> self#ep _a0 _b0
         | (`Record _a0,`Record _b0) -> self#rec_bind _a0 _b0
         | ((#literal as _a0),(#literal as _b0)) ->
@@ -1053,6 +1056,7 @@ class print =
         | `Alias (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Alias@ %a@ %a)@]" self#patt _a0
               self#alident _a1
+        | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
         | `Array _a0 ->
             Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#patt _a0
         | `Label (_a0,_a1) ->
@@ -1122,6 +1126,7 @@ class print =
         | `ArrayDot (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a)@]" self#expr _a0
               self#expr _a1
+        | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
         | `Array _a0 ->
             Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#expr _a0
         | `ExAsf -> Format.fprintf fmt "`ExAsf"
@@ -1511,6 +1516,7 @@ class print =
               _a1
         | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#ep _a0
         | #any as _a0 -> (self#any fmt _a0 :>'result106)
+        | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
         | `Array _a0 -> Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#ep _a0
         | `Record _a0 ->
             Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_bind _a0
@@ -1884,6 +1890,7 @@ and meta_patt _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Alias")), (meta_patt _loc _a0))),
           (meta_alident _loc _a1))
+  | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
   | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_patt _loc _a0))
   | `Label (_a0,_a1) ->
       `App
@@ -1978,6 +1985,7 @@ and meta_expr _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "ArrayDot")), (meta_expr _loc _a0))),
           (meta_expr _loc _a1))
+  | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
   | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_expr _loc _a0))
   | `ExAsf -> `Vrn (_loc, "ExAsf")
   | `ExAsr _a0 -> `App (_loc, (`Vrn (_loc, "ExAsr")), (meta_expr _loc _a0))
@@ -2561,6 +2569,7 @@ let rec meta_ep _loc =
           (meta_ep _loc _a1))
   | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_ep _loc _a0))
   | #any as _a0 -> (meta_any _loc _a0 :>'result161)
+  | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
   | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_ep _loc _a0))
   | `Record _a0 ->
       `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_bind _loc _a0))

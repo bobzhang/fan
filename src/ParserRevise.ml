@@ -458,7 +458,7 @@ let apply () = begin
         | "["; "]" -> {| [] |}
         | "[";sem_expr_for_list{mk_list}; "::"; expr{last}; "]" -> mk_list last
         | "["; sem_expr_for_list{mk_list}; "]" -> mk_list {| [] |}
-        | "[|"; "|]" -> `Array(_loc,`Nil _loc) (*M*)
+        | "[|"; "|]" -> `ArrayEmpty(_loc)
         | "[|"; sem_expr{el}; "|]" -> {| [| $el |] |}
 
         | "{"; `Lid x ; "with"; label_expr_list{el}; "}" ->
@@ -579,8 +579,8 @@ let apply () = begin
     {:extend| local: patt_constr;
 
        patt_quot:
-       [ patt{x}; ","; comma_patt{y} -> {| $x, $y |}
-       | patt{x}; ";"; sem_patt{y} -> {| $x; $y |}
+       [ patt{x}; ","; comma_patt{y} -> `Com(_loc,x,y)
+       | patt{x}; ";"; sem_patt{y} -> `Sem(_loc,x,y)
        (* | patt{x}; "="; patt{y} ->  *)
        (*     let i = *)
        (*       match x with *)
@@ -632,7 +632,7 @@ let apply () = begin
         | "["; "]" -> {| [] |}
         | "["; sem_patt_for_list{mk_list}; "::"; patt{last}; "]" -> mk_list last
         | "["; sem_patt_for_list{mk_list}; "]" -> mk_list {| [] |}
-        | "[|"; "|]" -> `Array(_loc,`Nil _loc) (*Q*)
+        | "[|"; "|]" -> `ArrayEmpty(_loc)
         | "[|"; sem_patt{pl}; "|]" -> `Array(_loc,pl)
         | "{"; label_patt_list{pl}; "}" -> `Record(_loc,pl)
             (* {| { $((pl : rec_patt :>patt)) } |} *)
@@ -733,7 +733,7 @@ let apply () = begin
    ]
        sem_patt:
        [`Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
-       | patt{p1}; ";"; S{p2} -> {| $p1; $p2 |} 
+       | patt{p1}; ";"; S{p2} -> `Sem(_loc,p1,p2)
        | patt{p}; ";" -> p
        | patt{p} -> p ] 
        sem_patt_for_list:

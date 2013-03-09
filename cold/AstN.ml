@@ -65,7 +65,7 @@ and patt =
   [ nil | sid | `App of (patt* patt) | `Vrn of string | `Com of (patt* patt)
   | `Sem of (patt* patt) | `Tup of patt | any | `Record of rec_patt | 
     ant
-  | literal | `Alias of (patt* alident) | `Array of patt
+  | literal | `Alias of (patt* alident) | `ArrayEmpty | `Array of patt
   | `Label of (alident* patt) | `OptLabl of (alident* patt)
   | `OptLablExpr of (alident* patt* expr) | `Or of (patt* patt)
   | `PaRng of (patt* patt) | `Constraint of (patt* ctyp)
@@ -78,8 +78,8 @@ and expr =
   | `Sem of (expr* expr) | `Tup of expr | any | `Record of rec_expr | 
     ant
   | literal | `RecordWith of (rec_expr* expr) | `Dot of (expr* expr)
-  | `ArrayDot of (expr* expr) | `Array of expr | `ExAsf | `ExAsr of expr
-  | `Assign of (expr* expr)
+  | `ArrayDot of (expr* expr) | `ArrayEmpty | `Array of expr | `ExAsf
+  | `ExAsr of expr | `Assign of (expr* expr)
   | `For of (alident* expr* expr* direction_flag* expr) | `Fun of match_case
   | `IfThenElse of (expr* expr* expr) | `IfThen of (expr* expr)
   | `Label of (alident* expr) | `Lazy of expr
@@ -162,7 +162,7 @@ and class_str_item =
   | `CrVvr of (alident* mutable_flag* ctyp) | ant] 
 type ep =
   [ nil | sid | `App of (ep* ep) | `Vrn of string | `Com of (ep* ep)
-  | `Sem of (ep* ep) | `Tup of ep | any | `Array of ep | `Record of rec_bind
-  | literal | ant] 
+  | `Sem of (ep* ep) | `Tup of ep | any | `ArrayEmpty | `Array of ep
+  | `Record of rec_bind | literal | ant] 
 and rec_bind =
   [ `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 

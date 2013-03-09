@@ -83,6 +83,7 @@ let loc_of =
   | `False _loc -> _loc
   | `Com (_loc,_,_) -> _loc
   | `TyRepr (_loc,_,_) -> _loc
+  | `ArrayEmpty _loc -> _loc
   | `Int64 (_loc,_) -> _loc
   | `ModuleTypeOf (_loc,_) -> _loc
   | `To _loc -> _loc

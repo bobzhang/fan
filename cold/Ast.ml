@@ -71,8 +71,9 @@ and patt =
   [ nil | sid | `App of (loc* patt* patt) | `Vrn of (loc* string)
   | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt)
   | `Tup of (loc* patt) | any | `Record of (loc* rec_patt) | ant | literal
-  | `Alias of (loc* patt* alident) | `Array of (loc* patt)
-  | `Label of (loc* alident* patt) | `OptLabl of (loc* alident* patt)
+  | `Alias of (loc* patt* alident) | `ArrayEmpty of loc
+  | `Array of (loc* patt) | `Label of (loc* alident* patt)
+  | `OptLabl of (loc* alident* patt)
   | `OptLablExpr of (loc* alident* patt* expr) | `Or of (loc* patt* patt)
   | `PaRng of (loc* patt* patt) | `Constraint of (loc* patt* ctyp)
   | `ClassPath of (loc* ident) | `Lazy of (loc* patt)
@@ -87,8 +88,9 @@ and expr =
   | `Com of (loc* expr* expr) | `Sem of (loc* expr* expr)
   | `Tup of (loc* expr) | any | `Record of (loc* rec_expr) | ant | literal
   | `RecordWith of (loc* rec_expr* expr) | `Dot of (loc* expr* expr)
-  | `ArrayDot of (loc* expr* expr) | `Array of (loc* expr) | `ExAsf of loc
-  | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
+  | `ArrayDot of (loc* expr* expr) | `ArrayEmpty of loc
+  | `Array of (loc* expr) | `ExAsf of loc | `ExAsr of (loc* expr)
+  | `Assign of (loc* expr* expr)
   | `For of (loc* alident* expr* expr* direction_flag* expr)
   | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
   | `IfThen of (loc* expr* expr) | `Label of (loc* alident* expr)
@@ -184,7 +186,8 @@ type ep =
   [ nil | sid | `App of (loc* ep* ep) | `Vrn of (loc* string)
   | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep) | `Tup of (loc* ep) | 
     any
-  | `Array of (loc* ep) | `Record of (loc* rec_bind) | literal | ant] 
+  | `ArrayEmpty of loc | `Array of (loc* ep) | `Record of (loc* rec_bind)
+  | literal | ant] 
 and rec_bind =
   [ `RecBind of (loc* ident* ep) | `Sem of (loc* rec_bind* rec_bind) | 
     any

@@ -572,6 +572,8 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Alias")), (meta_loc _loc _a0))),
                    (meta_patt _loc _a1))), (meta_alident _loc _a2))
+      | `ArrayEmpty _a0 ->
+          `App (_loc, (`Vrn (_loc, "ArrayEmpty")), (meta_loc _loc _a0))
       | `Array (_a0,_a1) ->
           `App
             (_loc,
@@ -734,6 +736,8 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc, (`Vrn (_loc, "ArrayDot")), (meta_loc _loc _a0))),
                    (meta_expr _loc _a1))), (meta_expr _loc _a2))
+      | `ArrayEmpty _a0 ->
+          `App (_loc, (`Vrn (_loc, "ArrayEmpty")), (meta_loc _loc _a0))
       | `Array (_a0,_a1) ->
           `App
             (_loc,
@@ -1678,6 +1682,8 @@ module Make(MetaLoc:META_LOC) =
             (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (meta_loc _loc _a0))),
               (meta_ep _loc _a1))
       | #any as _a0 -> (meta_any _loc _a0 :>'result51)
+      | `ArrayEmpty _a0 ->
+          `App (_loc, (`Vrn (_loc, "ArrayEmpty")), (meta_loc _loc _a0))
       | `Array (_a0,_a1) ->
           `App
             (_loc,

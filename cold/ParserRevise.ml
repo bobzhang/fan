@@ -1778,10 +1778,9 @@ let apply () =
                 (fun _  (mk_list : 'sem_expr_for_list)  _  (_loc : FanLoc.t) 
                    -> (mk_list (`Id (_loc, (`Uid (_loc, "[]")))) : 'expr )))));
          ([`Skeyword "[|"; `Skeyword "|]"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Array (_loc, (`Nil _loc)) : 'expr ))\n",
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`ArrayEmpty _loc : 'expr ))\n",
              (Gram.mk_action
-                (fun _  _  (_loc : FanLoc.t)  ->
-                   (`Array (_loc, (`Nil _loc)) : 'expr )))));
+                (fun _  _  (_loc : FanLoc.t)  -> (`ArrayEmpty _loc : 'expr )))));
          ([`Skeyword "[|";
           `Snterm (Gram.obj (sem_expr : 'sem_expr Gram.t ));
           `Skeyword "|]"],
@@ -2660,10 +2659,9 @@ let apply () =
                 (fun _  (mk_list : 'sem_patt_for_list)  _  (_loc : FanLoc.t) 
                    -> (mk_list (`Id (_loc, (`Uid (_loc, "[]")))) : 'patt )))));
          ([`Skeyword "[|"; `Skeyword "|]"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Array (_loc, (`Nil _loc)) : 'patt ))\n",
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`ArrayEmpty _loc : 'patt ))\n",
              (Gram.mk_action
-                (fun _  _  (_loc : FanLoc.t)  ->
-                   (`Array (_loc, (`Nil _loc)) : 'patt )))));
+                (fun _  _  (_loc : FanLoc.t)  -> (`ArrayEmpty _loc : 'patt )))));
          ([`Skeyword "[|";
           `Snterm (Gram.obj (sem_patt : 'sem_patt Gram.t ));
           `Skeyword "|]"],

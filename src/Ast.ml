@@ -74,6 +74,7 @@ type virtual_flag =
   | `ViNil of loc 
   | ant ];
 
+
 type override_flag =
   [= `Override of loc 
   | `OvNil of loc 
@@ -266,6 +267,8 @@ and patt =
   | literal
       
   | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
+
+  | `ArrayEmpty of loc 
   | `Array of (loc * patt) (* [| p |] *)
   | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
 
@@ -306,6 +309,7 @@ and expr =
   | `RecordWith of (loc * rec_expr  * expr)         
   | `Dot of (loc * expr * expr) (* e.e *)
   | `ArrayDot of (loc * expr * expr) (* e.(e) *)
+  | `ArrayEmpty of loc 
   | `Array of (loc * expr) (* [| e |] *)
   | `ExAsf of loc (* assert `False *)
   | `ExAsr of (loc * expr) (* assert e *)
@@ -581,7 +585,9 @@ type ep =
   | `Sem of (loc * ep * ep)
   | `Tup of (loc * ep)
   | any
+  | `ArrayEmpty of loc 
   | `Array of (loc * ep )
+        
   | `Record of (loc * rec_bind)
   | literal
   | ant ]
