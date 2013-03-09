@@ -466,14 +466,8 @@ let apply () = begin
         | "{"; label_expr_list{el}; "}" -> {| { $el } |}
         | "{"; "("; S{e}; ")"; "with"; label_expr_list{el}; "}" ->
             {| { ($e) with $el } |}
-        | "{<"; ">}" ->
-            `OvrInstEmpty(_loc)
-            (* `OvrInst(_loc,`Nil _loc) (\*M*\) *)
-
-        | "{<"; field_expr_list{fel}; ">}" ->
-            `OvrInst(_loc,fel) (*M*)
-
-        (* | "("; "->"; L0 ")" *)
+        | "{<"; ">}" -> `OvrInstEmpty(_loc)
+        | "{<"; field_expr_list{fel}; ">}" -> `OvrInst(_loc,fel) 
         | "("; ")" -> {| () |}
         | "("; S{e}; ":"; ctyp{t}; ")" -> {| ($e : $t) |}
         | "("; S{e}; ","; comma_expr{el}; ")" -> {| ( $e, $el ) |}
@@ -556,7 +550,7 @@ let apply () = begin
   with rec_expr
       {:extend|
         rec_expr_quot:
-        [ label_expr_list{x} -> x  ](*M*)
+        [ label_expr_list{x} -> x  ]
         label_expr:
         [ `Ant (("rec_expr" |""|"anti"|"list" as n),s) -> 
           `Ant (_loc, (mk_anti ~c:"rec_expr" n s))
@@ -577,12 +571,10 @@ let apply () = begin
         | field_expr{b1}                 -> b1  ] |};
   with patt
     {:extend| local: patt_constr;
-
        patt_quot:
        [ patt{x}; ","; comma_patt{y} -> `Com(_loc,x,y)
        | patt{x}; ";"; sem_patt{y} -> `Sem(_loc,x,y)
-       | patt{x} -> x
-       (* | -> `Nil _loc *)  ] (*Q*)
+       | patt{x} -> x]
        patt_as_patt_opt:
        [ patt{p1}; "as"; a_lident{s} -> {| ($p1 as $s) |}
        | patt{p} -> p ]

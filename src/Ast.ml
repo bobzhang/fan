@@ -578,8 +578,7 @@ and class_str_item =
 (* Any is necessary, since sometimes you want to [meta_loc_patt] to [_]
    Faked here to make a common subtyp of expr patt to be expressive enough *)
 type ep =
-  [= (* nil *)
-  (* |  *)sid
+  [= sid
   | `App of (loc * ep * ep)
   | `Vrn of (loc * string)
   | `Com of (loc * ep * ep)
