@@ -1188,7 +1188,14 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Or")), (meta_loc _loc _a0))),
                    (meta_match_case _loc _a1))), (meta_match_case _loc _a2))
-      | `Case (_a0,_a1,_a2,_a3) ->
+      | `Case (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "Case")), (meta_loc _loc _a0))),
+                   (meta_patt _loc _a1))), (meta_expr _loc _a2))
+      | `CaseWhen (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
               (`App
@@ -1196,9 +1203,9 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc,
                         (`App
-                           (_loc, (`Vrn (_loc, "Case")), (meta_loc _loc _a0))),
-                        (meta_patt _loc _a1))), (meta_expr _loc _a2))),
-              (meta_expr _loc _a3))
+                           (_loc, (`Vrn (_loc, "CaseWhen")),
+                             (meta_loc _loc _a0))), (meta_patt _loc _a1))),
+                   (meta_expr _loc _a2))), (meta_expr _loc _a3))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result30)
     and meta_module_expr _loc =
       function
@@ -1690,22 +1697,17 @@ let match_pre =
     inherit  Objs.map
     method! match_case =
       function
-      | `Case (_loc,p,`Nil _,e) ->
+      | `Case (_loc,p,e) ->
           `Case
-            (_loc, p, (`Nil _loc),
+            (_loc, p,
               (`Fun
-                 (_loc,
-                   (`Case
-                      (_loc, (`Id (_loc, (`Uid (_loc, "()")))), (`Nil _loc),
-                        e)))))
-      | `Case (_loc,p,e,e1) ->
-          `Case
+                 (_loc, (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e)))))
+      | `CaseWhen (_loc,p,e,e1) ->
+          `CaseWhen
             (_loc, p, e,
               (`Fun
                  (_loc,
-                   (`Case
-                      (_loc, (`Id (_loc, (`Uid (_loc, "()")))), (`Nil _loc),
-                        e1)))))
+                   (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e1)))))
       | `Or (_loc,a1,a2) ->
           `Or (_loc, (self#match_case a1), (self#match_case a2))
       | `Nil _loc -> `Nil _loc

@@ -120,7 +120,7 @@ val match_case :
   match_case ->
   (Parsetree.pattern * Parsetree.expression) list
 
-val when_expr : expr -> expr -> Parsetree.expression
+(* val when_expr : expr -> expr -> Parsetree.expression *)
 
 val mklabexp :
   rec_expr ->

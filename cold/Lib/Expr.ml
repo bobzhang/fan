@@ -24,7 +24,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                   (`Id
                      (loc,
                        (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))))),
-                  (`Fun (loc, (`Case (loc, p, (`Nil loc), e)))))), l)
+                  (`Fun (loc, (`Case (loc, p,  e)))))), l)
        else
          `App
            (loc,
@@ -41,7 +41,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                           (loc,
                             (`Or
                                (loc,
-                                 (`Case
+                                 (`CaseWhen
                                     (loc, p,
                                       (`Id (loc, (`Lid (loc, "true")))),
                                       (`App
@@ -53,7 +53,6 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                                      (`Id
                                                         (loc,
                                                           (`Lid (loc, "x")))),
-                                                     (`Nil loc),
                                                      (`Fun
                                                         (loc,
                                                           (`Case
@@ -64,7 +63,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                                                     `Lid
                                                                     (loc,
                                                                     "xs")))),
-                                                               (`Nil loc),
+
                                                                (`App
                                                                   (loc,
                                                                     (
@@ -88,13 +87,13 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                                                     "xs")))))))))))))),
                                            e)))),
                                  (`Case
-                                    (loc, (`Any loc), (`Nil loc),
+                                    (loc, (`Any loc), 
                                       (`Fun
                                          (loc,
                                            (`Case
                                               (loc,
                                                 (`Id (loc, (`Lid (loc, "l")))),
-                                                (`Nil loc),
+
                                                 (`Id (loc, (`Lid (loc, "l")))))))))))))))),
                   l)), (`Id (loc, (`Uid (loc, "[]"))))) : expr )
 let filter loc p b l =
@@ -107,7 +106,7 @@ let filter loc p b l =
              (`Id
                 (loc,
                   (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
-             (`Fun (loc, (`Case (loc, p, (`Nil loc), b)))))), l)
+             (`Fun (loc, (`Case (loc, p,  b)))))), l)
   else
     `App
       (loc,
@@ -120,9 +119,9 @@ let filter loc p b l =
                 (loc,
                   (`Or
                      (loc,
-                       (`Case (loc, p, (`Id (loc, (`Lid (loc, "true")))), b)),
+                       (`CaseWhen (loc, p, (`Id (loc, (`Lid (loc, "true")))), b)),
                        (`Case
-                          (loc, (`Any loc), (`Nil loc),
+                          (loc, (`Any loc), 
                             (`Id (loc, (`Lid (loc, "false")))))))))))), l)
 let concat _loc l =
   `App
@@ -262,10 +261,10 @@ let fun_args _loc args body =
   then
     `Fun
       (_loc,
-        (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), (`Nil _loc), body)))
+        (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))),  body)))
   else
     List.fold_right
-      (fun arg  body  -> `Fun (_loc, (`Case (_loc, arg, (`Nil _loc), body))))
+      (fun arg  body  -> `Fun (_loc, (`Case (_loc, arg,  body))))
       args body
 let _loc = FanLoc.ghost
 let mk_record label_exprs =
@@ -285,11 +284,11 @@ let (<+) names acc =
     (fun name  acc  ->
        `Fun
          (_loc,
-           (`Case (_loc, (`Id (_loc, (`Lid (_loc, name)))), (`Nil _loc), acc))))
+           (`Case (_loc, (`Id (_loc, (`Lid (_loc, name)))),  acc))))
     names acc
 let (<+<) patts acc =
   List.fold_right
-    (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, (`Nil _loc), acc)))) patts
+    (fun p  acc  -> `Fun (_loc, (`Case (_loc, p,  acc)))) patts
     acc
 let mee_comma x y =
   `App
@@ -477,7 +476,7 @@ let gen_curry_n acc ~arity  cons n =
       (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
   let pat = of_str cons in
   List.fold_right
-    (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, (`Nil _loc), acc))))
+    (fun p  acc  -> `Fun (_loc, (`Case (_loc, p,  acc))))
     (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc
 let currying match_cases ~arity  =
   let cases = or_of_list match_cases in

@@ -371,7 +371,6 @@ let _ =
                                        (`Id (_loc, (`Lid (_loc, res)))))))),
                              (`Case
                                 (_loc, (`Id (_loc, (`Lid (_loc, exc)))),
-                                  (`Nil _loc),
                                   (`Seq
                                      (_loc,
                                        (`Sem

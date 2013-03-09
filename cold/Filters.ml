@@ -39,12 +39,12 @@ let add_debug_expr (e : expr) =
                                    (_loc, (`Uid (_loc, "XStream")),
                                      (`Uid (_loc, "Failure")))))),
                            (`Id (_loc, (`Uid (_loc, "Exit")))))),
-                      (`Lid (_loc, "exc")))), (`Nil _loc),
+                      (`Lid (_loc, "exc")))), 
                  (`App
                     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
                       (`Id (_loc, (`Lid (_loc, "exc")))))))),
             (`Case
-               (_loc, (`Id (_loc, (`Lid (_loc, "exc")))), (`Nil _loc),
+               (_loc, (`Id (_loc, (`Lid (_loc, "exc")))), 
                  (`Seq
                     (_loc,
                       (`Sem
@@ -87,7 +87,8 @@ let add_debug_expr (e : expr) =
 let rec map_match_case: match_case -> match_case =
   function
   | `Or (_loc,m1,m2) -> `Or (_loc, (map_match_case m1), (map_match_case m2))
-  | `Case (_loc,p,w,e) -> `Case (_loc, p, w, (add_debug_expr e))
+  | `CaseWhen (_loc,p,w,e) -> `CaseWhen (_loc, p, w, (add_debug_expr e))
+  | `Case (_loc,p,e) -> `Case(_loc,p,(add_debug_expr e)) (* FIXME *)
   | m -> m
 let _ =
   AstFilters.register_str_item_filter
@@ -152,8 +153,8 @@ let rec decorate_fun id =
   let decorate_expr = decorate#expr in
   let decorate_match_case = decorate#match_case in
   function
-  | `Fun (_loc,`Case (_,p,`Nil _,e)) ->
-      `Fun (_loc, (`Case (_loc, p, (`Nil _loc), (decorate_fun id e))))
+  | `Fun (_loc,`Case (_,p,e)) ->
+      `Fun (_loc, (`Case (_loc, p,  (decorate_fun id e))))
   | `Fun (_loc,m) ->
       decorate_this_expr (`Fun (_loc, (decorate_match_case m))) id
   | e -> decorate_this_expr (decorate_expr e) id
@@ -163,7 +164,7 @@ let _ =
 let map_expr =
   function
   | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))
-    |`Fun (_loc,`Case (_,`Id (_,`Uid (_,"NOTHING")),`Nil _,e)) -> e
+    |`Fun (_loc,`Case (_,`Id (_,`Uid (_,"NOTHING")),e)) -> e
   | `Id (_loc,`Lid (_,"__FILE__")) ->
       `Str (_loc, (String.escaped (FanLoc.file_name _loc)))
   | `Id (_loc,`Lid (_,"__PWD__")) ->

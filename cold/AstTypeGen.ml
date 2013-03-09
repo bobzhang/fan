@@ -267,7 +267,7 @@ let generate (module_types : FSig.module_types) =
                   (_loc,
                     (`App
                        (_loc, (`Vrn (_loc, key)),
-                         (`Id (_loc, (`Lid (_loc, "_loc")))))), (`Nil _loc),
+                         (`Id (_loc, (`Lid (_loc, "_loc")))))),
                     (`Id (_loc, (`Lid (_loc, "_loc")))))), acc)
          else
            if arity > 1
@@ -279,7 +279,7 @@ let generate (module_types : FSig.module_types) =
                   (`Case
                      (_loc,
                        (`App (_loc, (`Vrn (_loc, key)), (tuple_com pats))),
-                       (`Nil _loc), (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                        (`Id (_loc, (`Lid (_loc, "_loc")))))),
                   acc))
            else failwithf "arity=0 key:%s" key) tbl (`Nil _loc) in
   `Value

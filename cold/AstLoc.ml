@@ -116,7 +116,7 @@ let loc_of =
   | `CrVal (_loc,_,_,_,_) -> _loc
   | `ModuleConstraint (_loc,_,_) -> _loc
   | `TyVrn (_loc,_) -> _loc
-  | `Case (_loc,_,_,_) -> _loc
+  | `Case (_loc,_,_) -> _loc
   | `ExAsr (_loc,_) -> _loc
   | `Exception (_loc,_) -> _loc
   | `CtCol (_loc,_,_) -> _loc
@@ -127,6 +127,7 @@ let loc_of =
   | `PaRng (_loc,_,_) -> _loc
   | `RecModule (_loc,_) -> _loc
   | `LocalTypeFun (_loc,_,_) -> _loc
+  | `CaseWhen (_loc,_,_,_) -> _loc
   | `PrNil _loc -> _loc
   | `Int (_loc,_) -> _loc
   | `Negative _loc -> _loc

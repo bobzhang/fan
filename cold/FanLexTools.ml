@@ -231,7 +231,7 @@ let partition ~counter  ~tables  (i,p) =
            (`Fun
               (_loc,
                 (`Case
-                   (_loc, (`Id (_loc, (`Lid (_loc, "c")))), (`Nil _loc),
+                   (_loc, (`Id (_loc, (`Lid (_loc, "c")))), 
                      body)))))))
 let binding_partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
@@ -282,7 +282,7 @@ let binding_partition ~counter  ~tables  (i,p) =
     (_loc, (`Id (_loc, (`Lid (_loc, f)))),
       (`Fun
          (_loc,
-           (`Case (_loc, (`Id (_loc, (`Lid (_loc, "c")))), (`Nil _loc), body)))))
+           (`Case (_loc, (`Id (_loc, (`Lid (_loc, "c")))),  body)))))
 let best_final final =
   let fin = ref None in
   Array.iteri
@@ -309,7 +309,7 @@ let gen_definition _loc l =
       Array.mapi
         (fun i  j  ->
            `Case
-             (_loc, (`Int (_loc, (string_of_int i))), (`Nil _loc),
+             (_loc, (`Int (_loc, (string_of_int i))), 
                (call_state auto j))) trans in
     let cases = or_of_list (Array.to_list cases) in
     let body =
@@ -325,7 +325,7 @@ let gen_definition _loc l =
           (`Or
              (_loc, cases,
                (`Case
-                  (_loc, (`Any _loc), (`Nil _loc),
+                  (_loc, (`Any _loc), 
                     (`App
                        (_loc,
                          (`Id
@@ -339,7 +339,7 @@ let gen_definition _loc l =
           (`Fun
              (_loc,
                (`Case
-                  (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), (`Nil _loc),
+                  (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), 
                     body))))) in
     match best_final final with
     | None  -> ret body
@@ -370,7 +370,7 @@ let gen_definition _loc l =
   let cases =
     Array.mapi
       (fun i  (_,e)  ->
-         `Case (_loc, (`Int (_loc, (string_of_int i))), (`Nil _loc), e)) brs in
+         `Case (_loc, (`Int (_loc, (string_of_int i))),  e)) brs in
   let table_counter = ref 0 in
   let tables = Hashtbl.create 31 in
   let states = Array.mapi (gen_state auto _loc) auto in
@@ -393,7 +393,7 @@ let gen_definition _loc l =
   `Fun
     (_loc,
       (`Case
-         (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), (`Nil _loc),
+         (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), 
            (`LetIn
               (_loc, (`ReNil _loc), tables,
                 (`LetIn
@@ -428,7 +428,7 @@ let gen_definition _loc l =
                                             (_loc, cases,
                                               (`Case
                                                  (_loc, (`Any _loc),
-                                                   (`Nil _loc),
+                                              
                                                    (`App
                                                       (_loc,
                                                         (`Id

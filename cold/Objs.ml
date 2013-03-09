@@ -897,11 +897,15 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#match_case _a1 _b1 in
             let _a2 = self#match_case _a2 _b2 in `Or (_a0, _a1, _a2)
-        | (`Case (_a0,_a1,_a2,_a3),`Case (_b0,_b1,_b2,_b3)) ->
+        | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#patt _a1 _b1 in
+            let _a2 = self#expr _a2 _b2 in `Case (_a0, _a1, _a2)
+        | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
             let _a2 = self#expr _a2 _b2 in
-            let _a3 = self#expr _a3 _b3 in `Case (_a0, _a1, _a2, _a3)
+            let _a3 = self#expr _a3 _b3 in `CaseWhen (_a0, _a1, _a2, _a3)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>match_case)
         | (_,_) -> invalid_arg "map2 failure"
@@ -1903,7 +1907,10 @@ class fold2 =
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#match_case _a1 _b1 in self#match_case _a2 _b2
-        | (`Case (_a0,_a1,_a2,_a3),`Case (_b0,_b1,_b2,_b3)) ->
+        | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#patt _a1 _b1 in self#expr _a2 _b2
+        | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in
             let self = self#expr _a2 _b2 in self#expr _a3 _b3
@@ -2556,7 +2563,8 @@ class iter =
       | #nil as _a0 -> (self#nil _a0 :>'result154)
       | `Or (_a0,_a1,_a2) ->
           (self#loc _a0; self#match_case _a1; self#match_case _a2)
-      | `Case (_a0,_a1,_a2,_a3) ->
+      | `Case (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#expr _a2)
+      | `CaseWhen (_a0,_a1,_a2,_a3) ->
           (self#loc _a0; self#patt _a1; self#expr _a2; self#expr _a3)
       | #ant as _a0 -> (self#ant _a0 :>'result154)
     method module_expr : module_expr -> 'result155=
@@ -3460,11 +3468,15 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#match_case _a1 in
           let _a2 = self#match_case _a2 in `Or (_a0, _a1, _a2)
-      | `Case (_a0,_a1,_a2,_a3) ->
+      | `Case (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#patt _a1 in
+          let _a2 = self#expr _a2 in `Case (_a0, _a1, _a2)
+      | `CaseWhen (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
           let _a2 = self#expr _a2 in
-          let _a3 = self#expr _a3 in `Case (_a0, _a1, _a2, _a3)
+          let _a3 = self#expr _a3 in `CaseWhen (_a0, _a1, _a2, _a3)
       | #ant as _a0 -> (self#ant _a0 : ant  :>match_case)
     method module_expr : module_expr -> module_expr=
       function
@@ -4264,7 +4276,10 @@ class fold =
       | `Or (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#match_case _a1 in self#match_case _a2
-      | `Case (_a0,_a1,_a2,_a3) ->
+      | `Case (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#patt _a1 in self#expr _a2
+      | `CaseWhen (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in
           let self = self#expr _a2 in self#expr _a3
@@ -5142,9 +5157,12 @@ class print =
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
               self#match_case _a1 self#match_case _a2
-        | `Case (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#expr _a2 self#expr _a3
+        | `Case (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" self#loc _a0
+              self#patt _a1 self#expr _a2
+        | `CaseWhen (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#patt _a1 self#expr _a2 self#expr _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>'result319)
     method module_expr : 'fmt -> module_expr -> 'result320=
       fun fmt  ->
@@ -6050,7 +6068,10 @@ class eq =
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#match_case _a1 _b1)) &&
               (self#match_case _a2 _b2)
-        | (`Case (_a0,_a1,_a2,_a3),`Case (_b0,_b1,_b2,_b3)) ->
+        | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
+              (self#expr _a2 _b2)
+        | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
                (self#expr _a2 _b2))
               && (self#expr _a3 _b3)
@@ -6811,10 +6832,13 @@ and strip_loc_match_case =
   | `Or (_a0,_a1,_a2) ->
       let _a1 = strip_loc_match_case _a1 in
       let _a2 = strip_loc_match_case _a2 in `Or (_a1, _a2)
-  | `Case (_a0,_a1,_a2,_a3) ->
+  | `Case (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_patt _a1 in
+      let _a2 = strip_loc_expr _a2 in `Case (_a1, _a2)
+  | `CaseWhen (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_expr _a2 in
-      let _a3 = strip_loc_expr _a3 in `Case (_a1, _a2, _a3)
+      let _a3 = strip_loc_expr _a3 in `CaseWhen (_a1, _a2, _a3)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result414)
 and strip_loc_module_expr =
   function
@@ -7642,9 +7666,12 @@ and pp_print_match_case fmt =
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_match_case _a1 pp_print_match_case _a2
-  | `Case (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_expr _a2 pp_print_expr _a3
+  | `Case (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_patt _a1 pp_print_expr _a2
+  | `CaseWhen (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" pp_print_loc
+        _a0 pp_print_patt _a1 pp_print_expr _a2 pp_print_expr _a3
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result467)
 and pp_print_module_expr fmt =
   function

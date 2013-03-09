@@ -1059,11 +1059,10 @@ let apply () =
                      (_loc : FanLoc.t)  ->
                      (`LocalTypeFun (_loc, i, e) : 'fun_binding )))));
           ([`Snterm (Gram.obj (ipatt : 'ipatt Gram.t )); `Sself],
-            ("Gram.mk_action\n  (fun (e : 'fun_binding)  (p : 'ipatt)  (_loc : FanLoc.t)  ->\n     (`Fun (_loc, (`Case (_loc, p, (`Nil _loc), e))) : 'fun_binding ))\n",
+            ("Gram.mk_action\n  (fun (e : 'fun_binding)  (p : 'ipatt)  (_loc : FanLoc.t)  ->\n     (`Fun (_loc, (`Case (_loc, p, e))) : 'fun_binding ))\n",
               (Gram.mk_action
                  (fun (e : 'fun_binding)  (p : 'ipatt)  (_loc : FanLoc.t)  ->
-                    (`Fun (_loc, (`Case (_loc, p, (`Nil _loc), e))) : 
-                    'fun_binding )))));
+                    (`Fun (_loc, (`Case (_loc, p, e))) : 'fun_binding )))));
           ([`Snterm (Gram.obj (cvalue_binding : 'cvalue_binding Gram.t ))],
             ("Gram.mk_action\n  (fun (bi : 'cvalue_binding)  (_loc : FanLoc.t)  -> (bi : 'fun_binding ))\n",
               (Gram.mk_action
@@ -1135,18 +1134,17 @@ let apply () =
                  (fun _  (i : 'a_lident)  _  _  (_loc : FanLoc.t)  ->
                     (fun e  -> `LocalTypeFun (_loc, i, e) : 'fun_def_patt )))));
          ([`Snterm (Gram.obj (ipatt : 'ipatt Gram.t ))],
-           ("Gram.mk_action\n  (fun (p : 'ipatt)  (_loc : FanLoc.t)  ->\n     (fun e  -> `Fun (_loc, (`Case (_loc, p, (`Nil _loc), e))) : 'fun_def_patt ))\n",
+           ("Gram.mk_action\n  (fun (p : 'ipatt)  (_loc : FanLoc.t)  ->\n     (fun e  -> `Fun (_loc, (`Case (_loc, p, e))) : 'fun_def_patt ))\n",
              (Gram.mk_action
                 (fun (p : 'ipatt)  (_loc : FanLoc.t)  ->
-                   (fun e  -> `Fun (_loc, (`Case (_loc, p, (`Nil _loc), e))) : 
-                   'fun_def_patt )))));
+                   (fun e  -> `Fun (_loc, (`Case (_loc, p, e))) : 'fun_def_patt )))));
          ([`Snterm (Gram.obj (ipatt : 'ipatt Gram.t ));
           `Skeyword "when";
           `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-           ("Gram.mk_action\n  (fun (w : 'expr)  _  (p : 'ipatt)  (_loc : FanLoc.t)  ->\n     (fun e  -> `Fun (_loc, (`Case (_loc, p, w, e))) : 'fun_def_patt ))\n",
+           ("Gram.mk_action\n  (fun (w : 'expr)  _  (p : 'ipatt)  (_loc : FanLoc.t)  ->\n     (fun e  -> `Fun (_loc, (`CaseWhen (_loc, p, w, e))) : 'fun_def_patt ))\n",
              (Gram.mk_action
                 (fun (w : 'expr)  _  (p : 'ipatt)  (_loc : FanLoc.t)  ->
-                   (fun e  -> `Fun (_loc, (`Case (_loc, p, w, e))) : 
+                   (fun e  -> `Fun (_loc, (`CaseWhen (_loc, p, w, e))) : 
                    'fun_def_patt )))))]));
    Gram.extend (fun_def : 'fun_def Gram.t )
      (None,
@@ -1216,7 +1214,7 @@ let apply () =
            `Sself;
            `Skeyword "with";
            `Snterm (Gram.obj (match_case : 'match_case Gram.t ))],
-            ("Gram.mk_action\n  (fun (a : 'match_case)  _  (x : 'expr)  _  (bi : 'binding)  (r : 'opt_rec) \n     _  _  (_loc : FanLoc.t)  ->\n     (`App\n        (_loc,\n          (`Try\n             (_loc,\n               (`LetIn\n                  (_loc, r, bi,\n                    (`Fun\n                       (_loc,\n                         (`Case\n                            (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))),\n                              (`Nil _loc), x)))))),\n               (FanAst.match_pre#match_case a))),\n          (`Id (_loc, (`Uid (_loc, \"()\"))))) : 'expr ))\n",
+            ("Gram.mk_action\n  (fun (a : 'match_case)  _  (x : 'expr)  _  (bi : 'binding)  (r : 'opt_rec) \n     _  _  (_loc : FanLoc.t)  ->\n     (`App\n        (_loc,\n          (`Try\n             (_loc,\n               (`LetIn\n                  (_loc, r, bi,\n                    (`Fun\n                       (_loc,\n                         (`Case (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))), x)))))),\n               (FanAst.match_pre#match_case a))),\n          (`Id (_loc, (`Uid (_loc, \"()\"))))) : 'expr ))\n",
               (Gram.mk_action
                  (fun (a : 'match_case)  _  (x : 'expr)  _  (bi : 'binding) 
                     (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->
@@ -1231,7 +1229,7 @@ let apply () =
                                         (`Case
                                            (_loc,
                                              (`Id (_loc, (`Uid (_loc, "()")))),
-                                             (`Nil _loc), x)))))),
+                                             x)))))),
                               (FanAst.match_pre#match_case a))),
                          (`Id (_loc, (`Uid (_loc, "()"))))) : 'expr )))));
           ([`Skeyword "match";
@@ -1941,12 +1939,12 @@ let apply () =
           `Skeyword "with";
           `Snterm (Gram.obj (match_case : 'match_case Gram.t ));
           `Snterm (Gram.obj (sequence' : 'sequence' Gram.t ))],
-           ("Gram.mk_action\n  (fun (k : 'sequence')  (a : 'match_case)  _  (x : 'sequence)  _ \n     (bi : 'binding)  (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->\n     (k\n        (`App\n           (_loc,\n             (`Try\n                (_loc,\n                  (`LetIn\n                     (_loc, r, bi,\n                       (`Fun\n                          (_loc,\n                            (`Case\n                               (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))),\n                                 (`Nil _loc), x)))))),\n                  (FanAst.match_pre#match_case a))),\n             (`Id (_loc, (`Uid (_loc, \"()\")))))) : 'sequence ))\n",
+           ("Gram.mk_action\n  (fun (k : 'sequence')  (a : 'match_case)  _  (x : 'sequence)  _ \n     (bi : 'binding)  (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->\n     (k &\n        (`App\n           (_loc,\n             (`Try\n                (_loc,\n                  (`LetIn\n                     (_loc, r, bi,\n                       (`Fun\n                          (_loc,\n                            (`Case\n                               (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))), x)))))),\n                  (FanAst.match_pre#match_case a))),\n             (`Id (_loc, (`Uid (_loc, \"()\")))))) : 'sequence ))\n",
              (Gram.mk_action
                 (fun (k : 'sequence')  (a : 'match_case)  _  (x : 'sequence) 
                    _  (bi : 'binding)  (r : 'opt_rec)  _  _ 
                    (_loc : FanLoc.t)  ->
-                   (k
+                   (k &
                       (`App
                          (_loc,
                            (`Try
@@ -1959,7 +1957,7 @@ let apply () =
                                              (_loc,
                                                (`Id
                                                   (_loc, (`Uid (_loc, "()")))),
-                                               (`Nil _loc), x)))))),
+                                               x)))))),
                                 (FanAst.match_pre#match_case a))),
                            (`Id (_loc, (`Uid (_loc, "()")))))) : 'sequence )))));
          ([`Skeyword "let";
@@ -2227,10 +2225,10 @@ let apply () =
          ([`Snterm (Gram.obj (patt : 'patt Gram.t ));
           `Skeyword "->";
           `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'expr)  _  (p : 'patt)  (_loc : FanLoc.t)  ->\n     (`Case (_loc, p, (`Nil _loc), e) : 'match_case ))\n",
+           ("Gram.mk_action\n  (fun (e : 'expr)  _  (p : 'patt)  (_loc : FanLoc.t)  ->\n     (`Case (_loc, p, e) : 'match_case ))\n",
              (Gram.mk_action
                 (fun (e : 'expr)  _  (p : 'patt)  (_loc : FanLoc.t)  ->
-                   (`Case (_loc, p, (`Nil _loc), e) : 'match_case )))))]));
+                   (`Case (_loc, p, e) : 'match_case )))))]));
    Gram.extend_single (match_case0 : 'match_case0 Gram.t )
      (None,
        (None, None,
@@ -2254,19 +2252,18 @@ let apply () =
           `Snterm (Gram.obj (expr : 'expr Gram.t ));
           `Skeyword "->";
           `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'expr)  _  (w : 'expr)  _  (p : 'patt_as_patt_opt) \n     (_loc : FanLoc.t)  -> (`Case (_loc, p, w, e) : 'match_case0 ))\n",
+           ("Gram.mk_action\n  (fun (e : 'expr)  _  (w : 'expr)  _  (p : 'patt_as_patt_opt) \n     (_loc : FanLoc.t)  -> (`CaseWhen (_loc, p, w, e) : 'match_case0 ))\n",
              (Gram.mk_action
                 (fun (e : 'expr)  _  (w : 'expr)  _  (p : 'patt_as_patt_opt) 
                    (_loc : FanLoc.t)  ->
-                   (`Case (_loc, p, w, e) : 'match_case0 )))));
+                   (`CaseWhen (_loc, p, w, e) : 'match_case0 )))));
          ([`Snterm (Gram.obj (patt_as_patt_opt : 'patt_as_patt_opt Gram.t ));
           `Skeyword "->";
           `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'expr)  _  (p : 'patt_as_patt_opt)  (_loc : FanLoc.t)  ->\n     (`Case (_loc, p, (`Nil _loc), e) : 'match_case0 ))\n",
+           ("Gram.mk_action\n  (fun (e : 'expr)  _  (p : 'patt_as_patt_opt)  (_loc : FanLoc.t)  ->\n     (`Case (_loc, p, e) : 'match_case0 ))\n",
              (Gram.mk_action
                 (fun (e : 'expr)  _  (p : 'patt_as_patt_opt) 
-                   (_loc : FanLoc.t)  ->
-                   (`Case (_loc, p, (`Nil _loc), e) : 'match_case0 )))))]));
+                   (_loc : FanLoc.t)  -> (`Case (_loc, p, e) : 'match_case0 )))))]));
    Gram.extend_single (match_case_quot : 'match_case_quot Gram.t )
      (None,
        (None, None,
@@ -4756,7 +4753,7 @@ let apply () =
            `Snterm (Gram.obj (expr : 'expr Gram.t ));
            `Skeyword "with";
            `Snterm (Gram.obj (match_case : 'match_case Gram.t ))],
-            ("Gram.mk_action\n  (fun (a : 'match_case)  _  (x : 'expr)  _  (bi : 'binding)  (r : 'opt_rec) \n     _  _  (_loc : FanLoc.t)  ->\n     (`StExp\n        (_loc,\n          (`App\n             (_loc,\n               (`Try\n                  (_loc,\n                    (`LetIn\n                       (_loc, r, bi,\n                         (`Fun\n                            (_loc,\n                              (`Case\n                                 (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))),\n                                   (`Nil _loc), x)))))),\n                    (FanAst.match_pre#match_case a))),\n               (`Id (_loc, (`Uid (_loc, \"()\"))))))) : 'str_item ))\n",
+            ("Gram.mk_action\n  (fun (a : 'match_case)  _  (x : 'expr)  _  (bi : 'binding)  (r : 'opt_rec) \n     _  _  (_loc : FanLoc.t)  ->\n     (`StExp\n        (_loc,\n          (`App\n             (_loc,\n               (`Try\n                  (_loc,\n                    (`LetIn\n                       (_loc, r, bi,\n                         (`Fun\n                            (_loc,\n                              (`Case\n                                 (_loc, (`Id (_loc, (`Uid (_loc, \"()\")))), x)))))),\n                    (FanAst.match_pre#match_case a))),\n               (`Id (_loc, (`Uid (_loc, \"()\"))))))) : 'str_item ))\n",
               (Gram.mk_action
                  (fun (a : 'match_case)  _  (x : 'expr)  _  (bi : 'binding) 
                     (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->
@@ -4775,7 +4772,7 @@ let apply () =
                                                   (`Id
                                                      (_loc,
                                                        (`Uid (_loc, "()")))),
-                                                  (`Nil _loc), x)))))),
+                                                  x)))))),
                                    (FanAst.match_pre#match_case a))),
                               (`Id (_loc, (`Uid (_loc, "()"))))))) : 
                     'str_item )))));

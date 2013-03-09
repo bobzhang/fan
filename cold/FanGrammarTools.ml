@@ -225,7 +225,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
                           (_loc,
                             (`Dot
                                (_loc, (`Uid (_loc, "FanLoc")),
-                                 (`Lid (_loc, "t")))))))), (`Nil _loc), e1)))
+                                 (`Lid (_loc, "t")))))))), e1)))
      | (e,p) ->
          let (expr,patt) =
            match (e, p) with
@@ -242,13 +242,13 @@ let text_of_action (_loc : loc) (psl : symbol list)
                           (_loc,
                             (`Dot
                                (_loc, (`Uid (_loc, "FanLoc")),
-                                 (`Lid (_loc, "t")))))))), (`Nil _loc),
+                                 (`Lid (_loc, "t")))))))),
                   (`Match
                      (_loc, expr,
                        (`Or
-                          (_loc, (`Case (_loc, patt, (`Nil _loc), e1)),
+                          (_loc, (`Case (_loc, patt,  e1)),
                             (`Case
-                               (_loc, (`Any _loc), (`Nil _loc),
+                               (_loc, (`Any _loc), 
                                  (`App
                                     (_loc,
                                       (`Id (_loc, (`Lid (_loc, "failwith")))),
@@ -262,18 +262,18 @@ let text_of_action (_loc : loc) (psl : symbol list)
           | Some (`Alias (_loc,`App (_,_,`Tup (_,`Any _)),p)) ->
               let p =
                 typing (`Id (_loc, (p :>ident))) (make_ctyp s.styp tvar) in
-              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
+              `Fun (_loc, (`Case (_loc, p,  txt)))
           | Some p when is_irrefut_patt p ->
               let p = typing p (make_ctyp s.styp tvar) in
-              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))
+              `Fun (_loc, (`Case (_loc, p,  txt)))
           | None  ->
-              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Nil _loc), txt)))
+              `Fun (_loc, (`Case (_loc, (`Any _loc),  txt)))
           | Some _ ->
               let p =
                 typing
                   (`Id (_loc, (`Lid (_loc, (prefix ^ (string_of_int i))))))
                   (make_ctyp s.styp tvar) in
-              `Fun (_loc, (`Case (_loc, p, (`Nil _loc), txt)))) e psl in
+              `Fun (_loc, (`Case (_loc, p,  txt)))) e psl in
    `App
      (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
        txt) : expr )
@@ -397,7 +397,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
           `Fun
             (_loc,
               (`Case
-                 (_loc, no_variable, (`Nil _loc),
+                 (_loc, no_variable, 
                    (`Id (_loc, (`Lid (_loc, "true")))))))
         else
           `Fun
@@ -405,10 +405,10 @@ let mk_tok _loc ?restrict  ~pattern  styp =
               (`Or
                  (_loc,
                    (`Case
-                      (_loc, no_variable, (`Nil _loc),
+                      (_loc, no_variable, 
                         (`Id (_loc, (`Lid (_loc, "true")))))),
                    (`Case
-                      (_loc, (`Any _loc), (`Nil _loc),
+                      (_loc, (`Any _loc), 
                         (`Id (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt no_variable in
       let text = `Stok (_loc, match_fun, "Normal", descr) in
@@ -420,11 +420,11 @@ let mk_tok _loc ?restrict  ~pattern  styp =
           (_loc,
             (`Or
                (_loc,
-                 (`Case
+                 (`CaseWhen
                     (_loc, pattern, restrict,
                       (`Id (_loc, (`Lid (_loc, "true")))))),
                  (`Case
-                    (_loc, (`Any _loc), (`Nil _loc),
+                    (_loc, (`Any _loc), 
                       (`Id (_loc, (`Lid (_loc, "false"))))))))) in
       let descr = string_of_patt pattern in
       let text = `Stok (_loc, match_fun, "Antiquot", descr) in

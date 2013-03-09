@@ -519,20 +519,39 @@ let rec expr (x : expr) =
         (Pexp_for
            ((with_loc i sloc), (expr e1), (expr e2), (mkdirection df),
              (expr e3)))
-  | `Fun (loc,`Case (_,`Label (_,`Lid (_,lab),po),w,e)) ->
+  | `Fun (loc,`Case (_,`Label (_,`Lid (_,lab),po),e)) ->
+      mkexp loc
+        (Pexp_function (lab, None, [((patt_of_lab loc lab po), (expr e))]))
+  | `Fun (loc,`CaseWhen (_,`Label (_,`Lid (_,lab),po),w,e)) ->
       mkexp loc
         (Pexp_function
-           (lab, None, [((patt_of_lab loc lab po), (when_expr e w))]))
-  | `Fun (loc,`Case (_,`OptLabl (_,`Lid (_,lab),p),w,e2)) ->
+           (lab, None,
+             [((patt_of_lab loc lab po),
+                (mkexp (loc_of w) (Pexp_when ((expr w), (expr e)))))]))
+  | `Fun (loc,`Case (_,`OptLabl (_,`Lid (_,lab),p),e2)) ->
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
-           (("?" ^ lab), None, [((patt_of_lab loc lab p), (when_expr e2 w))]))
-  | `Fun (loc,`Case (_,`OptLablExpr (_,`Lid (_,lab),p,e1),w,e2)) ->
+           (("?" ^ lab), None, [((patt_of_lab loc lab p), (expr e2))]))
+  | `Fun (loc,`CaseWhen (_,`OptLabl (_,`Lid (_,lab),p),w,e2)) ->
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
-           (("?" ^ lab), (Some (expr e1)), [((patt p), (when_expr e2 w))]))
+           (("?" ^ lab), None,
+             [((patt_of_lab loc lab p),
+                (mkexp (loc_of w) (Pexp_when ((expr w), (expr e2)))))]))
+  | `Fun (loc,`Case (_,`OptLablExpr (_,`Lid (_,lab),p,e1),e2)) ->
+      let lab = paolab lab p in
+      mkexp loc
+        (Pexp_function
+           (("?" ^ lab), (Some (expr e1)), [((patt p), (expr e2))]))
+  | `Fun (loc,`CaseWhen (_,`OptLablExpr (_,`Lid (_,lab),p,e1),w,e2)) ->
+      let lab = paolab lab p in
+      mkexp loc
+        (Pexp_function
+           (("?" ^ lab), (Some (expr e1)),
+             [((patt p),
+                (mkexp (loc_of w) (Pexp_when ((expr w), (expr e2)))))]))
   | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (match_case a)))
   | `IfThenElse (loc,e1,e2,e3) ->
       mkexp loc (Pexp_ifthenelse ((expr e1), (expr e2), (Some (expr e3))))
@@ -695,12 +714,10 @@ and match_case (x : match_case) =
   List.filter_map
     (function
      | `Nil _ -> None
-     | `Case (_,p,w,e) -> Some ((patt p), (when_expr e w))
+     | `Case (_,p,e) -> Some ((patt p), (expr e))
+     | `CaseWhen (_,p,w,e) ->
+         Some ((patt p), (mkexp (loc_of w) (Pexp_when ((expr w), (expr e)))))
      | x -> errorf (loc_of x) "match_case %s" (dump_match_case x)) cases
-and when_expr (e : expr) (w : expr) =
-  (match w with
-   | `Nil _ -> expr e
-   | w -> mkexp (loc_of w) (Pexp_when ((expr w), (expr e))) : expression )
 and mklabexp (x : rec_expr) =
   let bindings = list_of_sem x [] in
   List.filter_map
