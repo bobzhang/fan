@@ -195,4 +195,5 @@ let rec view_app acc = fun
   [`App (_,f,a) -> view_app [a::acc] f
   | f -> (f,acc)];
     
-let seq_sem ls = seq (sem_of_list ls);    
+let seq_sem ls = seq (sem_of_list ls);
+let seq_sem1 ls = seq (sem_of_list1 ls);  

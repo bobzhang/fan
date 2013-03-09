@@ -296,8 +296,8 @@ and rec_patt =
   | any
   | ant]  
 and expr =
-  [= nil
-  | sid
+  [= (* nil *)
+  (* | *) sid
   | `App of (loc * expr * expr)
   | `Vrn of (loc * string)
   | `Com of (loc * expr * expr)

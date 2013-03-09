@@ -34,7 +34,7 @@ let define ~expr ~patt eo x  = begin
         expr: Level "apply"
         [ `Uid $x; S{param} ->
           let el =  match param with 
-            [ {:expr| ($tup:e) |} -> list_of_com' e []
+            [ {:expr| ($tup:e) |} -> list_of_com e []
             | e -> [e] ]  in
           if List.length el = List.length sl then
             let env = List.combine sl el in

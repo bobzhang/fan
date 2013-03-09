@@ -75,7 +75,7 @@ let gen_quantifiers ~arity n  =
   ]}
  *)  
 let of_id_len ~off (id,len) =
-  appl_of_list
+  appl_of_list1
   (* apply *) [{|$id:id |} ::
     (List.init len
        (fun i -> {|  '$(lid:allx ~off i) |}))];
@@ -113,7 +113,7 @@ let of_name_len ~off (name,len) =
 let ty_name_of_tydcl  (x:typedecl) =
   match x with 
   [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-       appl_of_list [ {| $lid:name |} :: tyvars]
+       appl_of_list1 [ {| $lid:name |} :: tyvars]
   | tydcl ->
       failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)];      
 
@@ -411,7 +411,7 @@ let mk_transform_type_eq () = object(self:'self_type)
           let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
           let src = i and dest = Ident.map_to_string i in begin
             Hashtbl.replace transformers dest (src,List.length lst);
-            appl_of_list [ {| $lid:dest |} :: lst ]
+            appl_of_list1 [ {| $lid:dest |} :: lst ]
           end
       | None -> super#ctyp x];
 

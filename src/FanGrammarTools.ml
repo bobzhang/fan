@@ -314,7 +314,10 @@ let expr_delete_rule _loc n (symbolss:list (list symbol)) = with expr
       (fun sl  ->
           let (e,b) = f _loc n sl in
           {:expr| $(id:gm()).delete_rule $e $b |}) symbolss in
-  seq (sem_of_list rest);
+  match symbolss with
+  [[] -> {| () |}
+  |_ -> seq_sem1 rest ];  
+  (* seq (sem_of_list rest); *)
   
 (* given the entry of the name, make a name *)
 let mk_name _loc i = {expr = {:expr| $id:i |}; tvar = Ident.tvar_of_ident i; loc = _loc};
@@ -406,7 +409,7 @@ let text_of_functorial_extend _loc  gram locals el =
       List.map  text_of_entry el  in
     match el with
     [ [] -> {:expr| () |}
-    | _ -> seq_sem el  ]  in
+    | _ -> seq_sem1 el  ]  in
   let_in_of_extend _loc gram locals  args;
 
 

@@ -537,7 +537,7 @@ let mk_record_ee label_exprs =
     fun a0  a1  a2  -> f a0 a1 a2
    ]}
  *)
-let eta_expand expr number =
+let eta_expand (expr:expr) number : expr =
   let names = List.init number (fun i -> x ~off:0 i ) in
   names <+ (expr +> names );
 

@@ -72,11 +72,11 @@ let rest =
      It's used by language [clear]
    *)
   nonterminalsclear:
-  [ qualuid{t}; L0 [a_lident{x}->x ]{ls} ->
+  [ qualuid{t}; L1 [a_lident{x}->x ]{ls} ->
     let rest = List.map (fun x ->
       let _loc = loc_of x in
       {:expr| $id:t.clear $(id:(x:>ident)) |}) ls in
-    seq_sem rest
+    seq_sem1 rest
     (* {:expr| begin $list:rest end |} *) ]
 |};
 
@@ -147,9 +147,9 @@ let rest =
   [ qualuid{g} -> let old = gm () in let () = grammar_module_name := g in old  ]
 
   delete_rule_body:
-  [ delete_rule_header{old};  L0 delete_rules {es} ->
+  [ delete_rule_header{old};  L1 delete_rules {es} ->
     let () = grammar_module_name := old  in
-    seq_sem es
+    seq_sem1 es
     (* {:expr| begin $list:es end|} *)   ] 
   delete_rules:
   [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]" ->

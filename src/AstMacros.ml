@@ -79,16 +79,16 @@ register_macro ("FIB",fibm);
 
 open LibUtil;
     
-let generate_fibs = with expr fun
-  [ {:expr|$int:x|} ->
-    let j = int_of_string x in
-    let res = zfold_left ~until:j ~acc:{||} (fun acc i -> {| $acc; print_int (FIB $`int:i) |}) in
-    {:expr| $seq:res |}
-    (* Array.map (fun i -> {|print_int (FIB $`int:i) |} ) *)
-    (* {:expr| for _j = 0 to $int:x do print_int (FIB _j) done |} *)
-  | e -> e ];
+(* let generate_fibs = with expr fun *)
+(*   [ {:expr|$int:x|} -> *)
+(*     let j = int_of_string x in *)
+(*     let res = zfold_left ~until:j ~acc:{||} (fun acc i -> {| $acc; print_int (FIB $`int:i) |}) in *)
+(*     {:expr| $seq:res |} *)
+(*     (\* Array.map (fun i -> {|print_int (FIB $`int:i) |} ) *\) *)
+(*     (\* {:expr| for _j = 0 to $int:x do print_int (FIB _j) done |} *\) *)
+(*   | e -> e ]; *)
 
-register_macro ("GFIB", generate_fibs);    
+(* register_macro ("GFIB", generate_fibs);     *)
 
 (*
 #filter "macro";;

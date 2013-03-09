@@ -287,8 +287,8 @@ let apply () = begin
       expr_quot:
       [ expr{e1}; ","; comma_expr{e2} -> `Com(_loc,e1,e2)
       | expr{e1}; ";"; sem_expr{e2} -> `Sem(_loc,e1,e2)
-      | expr{e} -> e
-      | -> `Nil _loc ] (*M*)
+      | expr{e} -> e]
+      (* | -> `Nil _loc ] (\*M*\) *)
        (*
        {:str_item|
        let f (type t) () =

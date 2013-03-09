@@ -282,11 +282,11 @@ let meta_array mf_a _loc ls =
   bigarray_get _loc {|a|} {|(b,c,d)|} |> FanBasic.p_expr f;
   ]}
  *)  
-let bigarray_get loc arr arg = with expr
+let bigarray_get loc arr (arg (* :expr  *))  (* : expr  *)= with expr
   let coords =
     match arg with
     [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
-      list_of_com' e1 (list_of_com' e2 [])
+      list_of_com e1 (list_of_com e2 [])
     | _ -> [arg] ] in
   match coords with
   [ [] -> failwith "bigarray_get null list"
@@ -294,7 +294,7 @@ let bigarray_get loc arr arg = with expr
   | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
   | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {@loc| $arr.{$c1,$c2,$c3,$(sem_of_list coords) } |} ];
+      {@loc| $arr.{$c1,$c2,$c3,$(sem_of_list1 coords) } |} ];
 
 
 (*
@@ -308,7 +308,7 @@ let bigarray_get loc arr arg = with expr
     Technically, we cannot, it uses [Pexp_array], pattern match doesnot work here
      {:expr|a.{1,2,3,4,$rest:x}|}
  *)
-let bigarray_set loc var newval = with expr
+let bigarray_set loc (var) newval (* : option expr *) = with expr
   match var with
   [ {|  $arr.{$c1} |} ->
     (* Some {@loc|Bigarray.Array1.set $arr $c1 $newval |} *)

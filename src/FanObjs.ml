@@ -66,16 +66,16 @@ class clean_ast = object
     [ {| $({@_l||})  and $wc |} |
       {| $wc and $({@_l||} ) |} -> wc
     | wc -> wc ];
-  method! expr e =
-    with expr
-    match super#expr e with
-    [ {| let $rec:_ $({:binding@_l||}) in $e |} |
-      (* {| { ($e) with $({:rec_expr@_l||})  } |} | *)
-      {| $({@_l||} ), $e |} |
-      {| $e, $({@_l||} ) |} |
-      {| $({@_l||}); $e |} |
-      {| $e; $({@_l||} ) |} -> e
-    | e -> e ];
+  (* method! expr e = *)
+  (*   with expr *)
+  (*   match super#expr e with *)
+  (*   [ {| let $rec:_ $({:binding@_l||}) in $e |} | *)
+  (*     (\* {| { ($e) with $({:rec_expr@_l||})  } |} | *\) *)
+  (*     {| $({@_l||} ), $e |} | *)
+  (*     {| $e, $({@_l||} ) |} | *)
+  (*     {| $({@_l||}); $e |} | *)
+  (*     {| $e; $({@_l||} ) |} -> e *)
+  (*   | e -> e ]; *)
   (* method! patt p = *)
 
   (*   match super#patt p with *)

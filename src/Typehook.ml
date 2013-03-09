@@ -271,18 +271,18 @@ with expr
     {:extend|
       fan_quot:
       ["derive";"("; L1 [`Lid x -> x | `Uid x  -> x]{plugins}; ")" ->
-          begin List.iter plugin_add plugins; {| |}  end
+          begin List.iter plugin_add plugins; {| () |}  end
       | "unload"; L1 [`Lid x  -> x | `Uid x -> x ] SEP ","{plugins} ->
-          begin List.iter plugin_remove plugins ; {| |} end
+          begin List.iter plugin_remove plugins ; {|() |} end
       | "clear" ->
-          begin FanState.reset_current_filters(); {||} end
+          begin FanState.reset_current_filters(); {|()|} end
           (* begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end *)
-      | "keep" ; "on" -> begin FanState.keep := true; {| |} end
-      | "keep" ; "off" -> begin FanState.keep := false; {| |} end
-      | "show_code"; "on" -> begin show_code := true; {| |} end
-      | "show_code"; "off" -> begin show_code := false; {| |} end]
+      | "keep" ; "on" -> begin FanState.keep := true; {|() |} end
+      | "keep" ; "off" -> begin FanState.keep := false; {| ()|} end
+      | "show_code"; "on" -> begin show_code := true; {| () |} end
+      | "show_code"; "off" -> begin show_code := false; {| ()|} end]
       fan_quots:
-      [L0[fan_quot{x};";" -> x]{xs} -> seq_sem xs ]
+      [L1[fan_quot{x};";" -> x]{xs} -> seq_sem1 xs ]
 |};  
 
 let g = Gram.create_gram ~annot:"include" ~keywords:[] ();
@@ -318,7 +318,7 @@ include_quot:
     let binds = and_of_list
         (List.map2 (fun x y -> {:binding| $lid:x = ! $lid:y |} ) symbs ls ) in
     let restore =
-       seq_sem (List.map2 (fun x y -> {:expr| $lid:x := $lid:y |}) ls symbs) in
+       seq_sem1 (List.map2 (fun x y -> {:expr| $lid:x := $lid:y |}) ls symbs) in
     {:expr|
     let $binds in
     try begin 
