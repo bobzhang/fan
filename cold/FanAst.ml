@@ -1008,6 +1008,12 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Sem")), (meta_loc _loc _a0))),
                    (meta_sig_item _loc _a1))), (meta_sig_item _loc _a2))
+      | `DirectiveSimple (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc, (`Vrn (_loc, "DirectiveSimple")),
+                   (meta_loc _loc _a0))), (meta_alident _loc _a1))
       | `Directive (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1272,6 +1278,12 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Sem")), (meta_loc _loc _a0))),
                    (meta_str_item _loc _a1))), (meta_str_item _loc _a2))
+      | `DirectiveSimple (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc, (`Vrn (_loc, "DirectiveSimple")),
+                   (meta_loc _loc _a0))), (meta_alident _loc _a1))
       | `Directive (_a0,_a1,_a2) ->
           `App
             (_loc,

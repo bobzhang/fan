@@ -840,6 +840,7 @@ let () =
     "src/Objs.ml" |-? ["src/Ast.ml"];
     "src/FanAst.ml"   |-? [(* "src/MetaTemplate.ml"; *) "src/Ast.ml"];
     "src/FanAstN.ml"  |-? ["src/AstN.ml"; "src/Ast.ml"];
+    "src/AstLoc.ml" |-? ["src/Ast.ml"];
   end;;
 
 (* copy_rule "_build/src/FanAst.ml -> src/TAst.ml" *)

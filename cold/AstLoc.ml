@@ -55,6 +55,7 @@ let loc_of =
   | `Seq (_loc,_) -> _loc
   | `Quote (_loc,_,_) -> _loc
   | `TypeEq (_loc,_,_) -> _loc
+  | `DirectiveSimple (_loc,_) -> _loc
   | `OptLabl (_loc,_,_) -> _loc
   | `Coercion (_loc,_,_,_) -> _loc
   | `CtFun (_loc,_,_) -> _loc

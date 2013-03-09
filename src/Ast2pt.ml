@@ -971,7 +971,8 @@ and sig_item (s:sig_item) (l:signature) :signature =
       [mksig loc (Psig_class_type
                     (List.map class_info_class_type (list_of_and' ctd []))) :: l]
   | `Sem(_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
-  | `Directive (_,_,_) -> l
+  | `Directive _ | `DirectiveSimple _  -> l
+
   | `Exception(_loc,`Id(_,`Uid(_,s))) ->
       [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
   | `Exception(_loc,`Of(_,`Id(_,`Uid(sloc,s)),t)) ->
@@ -1041,7 +1042,7 @@ and str_item (s:str_item) (l:structure) : structure =
       [mkstr loc (Pstr_class_type
                     (List.map class_info_class_type (list_of_and' ctd []))) :: l]
   | `Sem(_,st1,st2) -> str_item st1 (str_item st2 l)
-  | `Directive (_,_,_) -> l
+  | `Directive _ | `DirectiveSimple _  -> l
   | `Exception(loc,`Id(_,`Uid(_,s))) ->
       [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
   | `Exception (loc, `Of (_, `Id (_, `Uid (_, s)), t))
@@ -1213,8 +1214,7 @@ let sig_item (ast:sig_item) : signature = sig_item ast [];
 let str_item ast = str_item ast [];
 
 let directive (x:expr) = with expr  match x with 
-  [ `Nil _ -> Pdir_none
-  | `Str(_,s) -> Pdir_string s
+  [`Str(_,s) -> Pdir_string s
   | `Int(_,i) -> Pdir_int (int_of_string i)
   | {| true |} -> Pdir_bool true
   | {| false |} -> Pdir_bool false
@@ -1223,6 +1223,7 @@ let directive (x:expr) = with expr  match x with
 let phrase (x: str_item) =
   match x with 
   [ `Directive (_, `Lid(_,d),dp) -> Ptop_dir d (directive dp)
+  | `DirectiveSimple(_,`Lid(_,d)) -> Ptop_dir d Pdir_none
   | `Directive (_, `Ant(_loc,_),_) -> error _loc "antiquotation not allowed"
   | si -> Ptop_def (str_item si) ];
 

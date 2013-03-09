@@ -104,11 +104,12 @@ and module_type =
   | `ModuleTypeOf of module_expr | ant] 
 and sig_item =
   [ nil | `Class of class_type | `ClassType of class_type
-  | `Sem of (sig_item* sig_item) | `Directive of (alident* expr)
-  | `Exception of of_ctyp | `External of (alident* ctyp* strings)
-  | `Include of module_type | `Module of (auident* module_type)
-  | `RecModule of module_binding | `ModuleType of (auident* module_type)
-  | `Open of ident | `Type of typedecl | `Val of (alident* ctyp) | ant] 
+  | `Sem of (sig_item* sig_item) | `DirectiveSimple of alident
+  | `Directive of (alident* expr) | `Exception of of_ctyp
+  | `External of (alident* ctyp* strings) | `Include of module_type
+  | `Module of (auident* module_type) | `RecModule of module_binding
+  | `ModuleType of (auident* module_type) | `Open of ident
+  | `Type of typedecl | `Val of (alident* ctyp) | ant] 
 and with_constr =
   [ nil | `TypeEq of (ctyp* ctyp) | `TypeEqPriv of (ctyp* ctyp)
   | `ModuleEq of (ident* ident) | `TypeSubst of (ctyp* ctyp)
@@ -131,8 +132,8 @@ and module_expr =
   
 and str_item =
   [ nil | `Class of class_expr | `ClassType of class_type
-  | `Sem of (str_item* str_item) | `Directive of (alident* expr)
-  | `Exception of of_ctyp | `StExp of expr
+  | `Sem of (str_item* str_item) | `DirectiveSimple of alident
+  | `Directive of (alident* expr) | `Exception of of_ctyp | `StExp of expr
   | `External of (alident* ctyp* strings) | `Include of module_expr
   | `Module of (auident* module_expr) | `RecModule of module_binding
   | `ModuleType of (auident* module_type) | `Open of ident

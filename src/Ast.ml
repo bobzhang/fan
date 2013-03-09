@@ -378,7 +378,9 @@ and sig_item =
   | `ClassType of (loc * class_type)
         (* sg ; sg *)
   | `Sem of (loc * sig_item * sig_item)
+        
         (* # s or # s e *)
+  | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * expr) (* semantics *)
         (* exception t *)
   | `Exception of (loc * of_ctyp)
@@ -461,8 +463,10 @@ and str_item =
         (* class type cict *)
   | `ClassType of (loc * class_type)
   | `Sem of (loc * str_item * str_item)
-        (* # s or # s e *)
+                
+  | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * expr)
+
         (* exception t or exception t = i *)
         (* | `Exception of ( loc * ctyp * meta_option(\*FIXME*\) ident) *)
   | `Exception of ( loc * of_ctyp)

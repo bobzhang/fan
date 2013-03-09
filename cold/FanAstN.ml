@@ -472,6 +472,7 @@ class eq =
         | (`ClassType _a0,`ClassType _b0) -> self#class_type _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#sig_item _a0 _b0) && (self#sig_item _a1 _b1)
+        | (`DirectiveSimple _a0,`DirectiveSimple _b0) -> self#alident _a0 _b0
         | (`Directive (_a0,_a1),`Directive (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
         | (`Exception _a0,`Exception _b0) -> self#of_ctyp _a0 _b0
@@ -568,6 +569,7 @@ class eq =
         | (`ClassType _a0,`ClassType _b0) -> self#class_type _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#str_item _a0 _b0) && (self#str_item _a1 _b1)
+        | (`DirectiveSimple _a0,`DirectiveSimple _b0) -> self#alident _a0 _b0
         | (`Directive (_a0,_a1),`Directive (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
         | (`Exception _a0,`Exception _b0) -> self#of_ctyp _a0 _b0
@@ -1231,6 +1233,9 @@ class print =
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#sig_item _a0
               self#sig_item _a1
+        | `DirectiveSimple _a0 ->
+            Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a)@]" self#alident
+              _a0
         | `Directive (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a)@]" self#alident _a0
               self#expr _a1
@@ -1349,6 +1354,9 @@ class print =
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#str_item _a0
               self#str_item _a1
+        | `DirectiveSimple _a0 ->
+            Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a)@]" self#alident
+              _a0
         | `Directive (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a)@]" self#alident _a0
               self#expr _a1
@@ -2128,6 +2136,8 @@ and meta_sig_item _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_sig_item _loc _a0))),
           (meta_sig_item _loc _a1))
+  | `DirectiveSimple _a0 ->
+      `App (_loc, (`Vrn (_loc, "DirectiveSimple")), (meta_alident _loc _a0))
   | `Directive (_a0,_a1) ->
       `App
         (_loc,
@@ -2291,6 +2301,8 @@ and meta_str_item _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_str_item _loc _a0))),
           (meta_str_item _loc _a1))
+  | `DirectiveSimple _a0 ->
+      `App (_loc, (`Vrn (_loc, "DirectiveSimple")), (meta_alident _loc _a0))
   | `Directive (_a0,_a1) ->
       `App
         (_loc,

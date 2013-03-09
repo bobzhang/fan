@@ -778,6 +778,9 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#sig_item _a1 _b1 in
             let _a2 = self#sig_item _a2 _b2 in `Sem (_a0, _a1, _a2)
+        | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in `DirectiveSimple (_a0, _a1)
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -954,6 +957,9 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#str_item _a1 _b1 in
             let _a2 = self#str_item _a2 _b2 in `Sem (_a0, _a1, _a2)
+        | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in `DirectiveSimple (_a0, _a1)
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -1819,6 +1825,8 @@ class fold2 =
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#sig_item _a1 _b1 in self#sig_item _a2 _b2
+        | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#expr _a2 _b2
@@ -1948,6 +1956,8 @@ class fold2 =
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#str_item _a1 _b1 in self#str_item _a2 _b2
+        | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#expr _a2 _b2
@@ -2508,6 +2518,7 @@ class iter =
       | `ClassType (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
       | `Sem (_a0,_a1,_a2) ->
           (self#loc _a0; self#sig_item _a1; self#sig_item _a2)
+      | `DirectiveSimple (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Directive (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
       | `Exception (_a0,_a1) -> (self#loc _a0; self#of_ctyp _a1)
@@ -2590,6 +2601,7 @@ class iter =
       | `ClassType (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
       | `Sem (_a0,_a1,_a2) ->
           (self#loc _a0; self#str_item _a1; self#str_item _a2)
+      | `DirectiveSimple (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Directive (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
       | `Exception (_a0,_a1) -> (self#loc _a0; self#of_ctyp _a1)
@@ -3367,6 +3379,9 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#sig_item _a1 in
           let _a2 = self#sig_item _a2 in `Sem (_a0, _a1, _a2)
+      | `DirectiveSimple (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in `DirectiveSimple (_a0, _a1)
       | `Directive (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3515,6 +3530,9 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#str_item _a1 in
           let _a2 = self#str_item _a2 in `Sem (_a0, _a1, _a2)
+      | `DirectiveSimple (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in `DirectiveSimple (_a0, _a1)
       | `Directive (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -4201,6 +4219,8 @@ class fold =
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#sig_item _a1 in self#sig_item _a2
+      | `DirectiveSimple (_a0,_a1) ->
+          let self = self#loc _a0 in self#alident _a1
       | `Directive (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#expr _a2
@@ -4310,6 +4330,8 @@ class fold =
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#str_item _a1 in self#str_item _a2
+      | `DirectiveSimple (_a0,_a1) ->
+          let self = self#loc _a0 in self#alident _a1
       | `Directive (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#expr _a2
@@ -5070,6 +5092,9 @@ class print =
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#sig_item _a1 self#sig_item _a2
+        | `DirectiveSimple (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a@ %a)@]" self#loc
+              _a0 self#alident _a1
         | `Directive (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#expr _a2
@@ -5198,6 +5223,9 @@ class print =
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#str_item _a1 self#str_item _a2
+        | `DirectiveSimple (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a@ %a)@]" self#loc
+              _a0 self#alident _a1
         | `Directive (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#expr _a2
@@ -5981,6 +6009,8 @@ class eq =
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#sig_item _a1 _b1)) &&
               (self#sig_item _a2 _b2)
+        | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -6109,6 +6139,8 @@ class eq =
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#str_item _a1 _b1)) &&
               (self#str_item _a2 _b2)
+        | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -6757,6 +6789,8 @@ and strip_loc_sig_item =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_sig_item _a1 in
       let _a2 = strip_loc_sig_item _a2 in `Sem (_a1, _a2)
+  | `DirectiveSimple (_a0,_a1) ->
+      let _a1 = strip_loc_alident _a1 in `DirectiveSimple _a1
   | `Directive (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_expr _a2 in `Directive (_a1, _a2)
@@ -6867,6 +6901,8 @@ and strip_loc_str_item =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_str_item _a1 in
       let _a2 = strip_loc_str_item _a2 in `Sem (_a1, _a2)
+  | `DirectiveSimple (_a0,_a1) ->
+      let _a1 = strip_loc_alident _a1 in `DirectiveSimple _a1
   | `Directive (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_expr _a2 in `Directive (_a1, _a2)
@@ -7583,6 +7619,9 @@ and pp_print_sig_item fmt =
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sig_item _a1 pp_print_sig_item _a2
+  | `DirectiveSimple (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1
   | `Directive (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_expr _a2
@@ -7706,6 +7745,9 @@ and pp_print_str_item fmt =
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_str_item _a1 pp_print_str_item _a2
+  | `DirectiveSimple (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1
   | `Directive (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_expr _a2

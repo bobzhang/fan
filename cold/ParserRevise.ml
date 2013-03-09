@@ -733,22 +733,27 @@ let apply () =
   (Gram.extend_single (sig_item_quot : 'sig_item_quot Gram.t )
      (None,
        (None, None,
-         [([`Skeyword "#";
-           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
-           `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ))],
-            ("Gram.mk_action\n  (fun (dp : 'opt_expr)  (s : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Directive (_loc, s, dp) : 'sig_item_quot ))\n",
+         [([`Skeyword "#"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+            ("Gram.mk_action\n  (fun (s : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`DirectiveSimple (_loc, s) : 'sig_item_quot ))\n",
               (Gram.mk_action
-                 (fun (dp : 'opt_expr)  (s : 'a_lident)  _  (_loc : FanLoc.t)
-                     -> (`Directive (_loc, s, dp) : 'sig_item_quot )))));
+                 (fun (s : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                    (`DirectiveSimple (_loc, s) : 'sig_item_quot )))));
+         ([`Skeyword "#";
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+          `Snterm (Gram.obj (expr : 'expr Gram.t ))],
+           ("Gram.mk_action\n  (fun (dp : 'expr)  (s : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Directive (_loc, s, dp) : 'sig_item_quot ))\n",
+             (Gram.mk_action
+                (fun (dp : 'expr)  (s : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                   (`Directive (_loc, s, dp) : 'sig_item_quot )))));
          ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
           `Snterm (Gram.obj (semi : 'semi Gram.t ));
           `Sself],
-           ("Gram.mk_action\n  (fun (sg2 : 'sig_item_quot)  _  (sg1 : 'sig_item)  (_loc : FanLoc.t)  ->\n     (match sg2 with | `Nil _loc -> sg1 | _ -> `Sem (_loc, sg1, sg2) : \n     'sig_item_quot ))\n",
+           ("Gram.mk_action\n  (fun (sg2 : 'sig_item_quot)  _  (sg1 : 'sig_item)  (_loc : FanLoc.t)  ->\n     (match sg2 with | `Nil _ -> sg1 | _ -> `Sem (_loc, sg1, sg2) : 'sig_item_quot ))\n",
              (Gram.mk_action
                 (fun (sg2 : 'sig_item_quot)  _  (sg1 : 'sig_item) 
                    (_loc : FanLoc.t)  ->
                    (match sg2 with
-                    | `Nil _loc -> sg1
+                    | `Nil _ -> sg1
                     | _ -> `Sem (_loc, sg1, sg2) : 'sig_item_quot )))));
          ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ))],
            ("Gram.mk_action\n  (fun (sg : 'sig_item)  (_loc : FanLoc.t)  -> (sg : 'sig_item_quot ))\n",
@@ -896,13 +901,19 @@ let apply () =
        (None, None,
          [([`Skeyword "#";
            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
-           `Snterm (Gram.obj (opt_expr : 'opt_expr Gram.t ));
            `Skeyword ";;"],
-            ("Gram.mk_action\n  (fun _  (dp : 'opt_expr)  (n : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (([`Directive (_loc, n, dp)], (Some _loc)) : 'interf ))\n",
+            ("Gram.mk_action\n  (fun _  (n : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (([`DirectiveSimple (_loc, n)], (Some _loc)) : 'interf ))\n",
               (Gram.mk_action
-                 (fun _  (dp : 'opt_expr)  (n : 'a_lident)  _ 
-                    (_loc : FanLoc.t)  ->
-                    (([`Directive (_loc, n, dp)], (Some _loc)) : 'interf )))));
+                 (fun _  (n : 'a_lident)  _  (_loc : FanLoc.t)  ->
+                    (([`DirectiveSimple (_loc, n)], (Some _loc)) : 'interf )))));
+         ([`Skeyword "#";
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+          `Snterm (Gram.obj (expr : 'expr Gram.t ));
+          `Skeyword ";;"],
+           ("Gram.mk_action\n  (fun _  (dp : 'expr)  (n : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (([`Directive (_loc, n, dp)], (Some _loc)) : 'interf ))\n",
+             (Gram.mk_action
+                (fun _  (dp : 'expr)  (n : 'a_lident)  _  (_loc : FanLoc.t) 
+                   -> (([`Directive (_loc, n, dp)], (Some _loc)) : 'interf )))));
          ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
           `Snterm (Gram.obj (semi : 'semi Gram.t ));
           `Sself],
@@ -4615,12 +4626,12 @@ let apply () =
          ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
           `Snterm (Gram.obj (semi : 'semi Gram.t ));
           `Sself],
-           ("Gram.mk_action\n  (fun (st2 : 'str_item_quot)  _  (st1 : 'str_item)  (_loc : FanLoc.t)  ->\n     (match st2 with | `Nil _loc -> st1 | _ -> `Sem (_loc, st1, st2) : \n     'str_item_quot ))\n",
+           ("Gram.mk_action\n  (fun (st2 : 'str_item_quot)  _  (st1 : 'str_item)  (_loc : FanLoc.t)  ->\n     (match st2 with | `Nil _ -> st1 | _ -> `Sem (_loc, st1, st2) : 'str_item_quot ))\n",
              (Gram.mk_action
                 (fun (st2 : 'str_item_quot)  _  (st1 : 'str_item) 
                    (_loc : FanLoc.t)  ->
                    (match st2 with
-                    | `Nil _loc -> st1
+                    | `Nil _ -> st1
                     | _ -> `Sem (_loc, st1, st2) : 'str_item_quot )))));
          ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ))],
            ("Gram.mk_action\n  (fun (st : 'str_item)  (_loc : FanLoc.t)  -> (st : 'str_item_quot ))\n",
@@ -4831,13 +4842,12 @@ let apply () =
          [([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ));
            `Snterm (Gram.obj (semi : 'semi Gram.t ));
            `Sself],
-            ("Gram.mk_action\n  (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) \n     (_loc : FanLoc.t)  ->\n     (match x2 with | `Nil _loc -> x1 | _ -> `Sem (_loc, x1, x2) : 'class_sig_item_quot ))\n",
+            ("Gram.mk_action\n  (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) \n     (_loc : FanLoc.t)  ->\n     (match x2 with | `Nil _ -> x1 | _ -> `Sem (_loc, x1, x2) : 'class_sig_item_quot ))\n",
               (Gram.mk_action
                  (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) 
                     (_loc : FanLoc.t)  ->
-                    (match x2 with
-                     | `Nil _loc -> x1
-                     | _ -> `Sem (_loc, x1, x2) : 'class_sig_item_quot )))));
+                    (match x2 with | `Nil _ -> x1 | _ -> `Sem (_loc, x1, x2) : 
+                    'class_sig_item_quot )))));
          ([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ))],
            ("Gram.mk_action\n  (fun (x : 'class_sig_item)  (_loc : FanLoc.t)  ->\n     (x : 'class_sig_item_quot ))\n",
              (Gram.mk_action
@@ -5157,13 +5167,12 @@ let apply () =
          [([`Snterm (Gram.obj (class_str_item : 'class_str_item Gram.t ));
            `Snterm (Gram.obj (semi : 'semi Gram.t ));
            `Sself],
-            ("Gram.mk_action\n  (fun (x2 : 'class_str_item_quot)  _  (x1 : 'class_str_item) \n     (_loc : FanLoc.t)  ->\n     (match x2 with | `Nil _loc -> x1 | _ -> `Sem (_loc, x1, x2) : 'class_str_item_quot ))\n",
+            ("Gram.mk_action\n  (fun (x2 : 'class_str_item_quot)  _  (x1 : 'class_str_item) \n     (_loc : FanLoc.t)  ->\n     (match x2 with | `Nil _ -> x1 | _ -> `Sem (_loc, x1, x2) : 'class_str_item_quot ))\n",
               (Gram.mk_action
                  (fun (x2 : 'class_str_item_quot)  _  (x1 : 'class_str_item) 
                     (_loc : FanLoc.t)  ->
-                    (match x2 with
-                     | `Nil _loc -> x1
-                     | _ -> `Sem (_loc, x1, x2) : 'class_str_item_quot )))));
+                    (match x2 with | `Nil _ -> x1 | _ -> `Sem (_loc, x1, x2) : 
+                    'class_str_item_quot )))));
          ([`Snterm (Gram.obj (class_str_item : 'class_str_item Gram.t ))],
            ("Gram.mk_action\n  (fun (x : 'class_str_item)  (_loc : FanLoc.t)  ->\n     (x : 'class_str_item_quot ))\n",
              (Gram.mk_action

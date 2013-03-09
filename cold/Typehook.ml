@@ -51,7 +51,7 @@ let filter_type_defs ?qualified  () =
       function
       | `Val (_loc,_,_)|`Include (_loc,_)|`External (_loc,_,_,_)
         |`Exception (_loc,_)|`Class (_loc,_)|`ClassType (_loc,_)
-        |`Directive (_loc,_,`Nil _)|`Module (_loc,_,_)|`ModuleType (_loc,_,_)
+        |`DirectiveSimple (_loc,_)|`Module (_loc,_,_)|`ModuleType (_loc,_,_)
         |`RecModule (_loc,_)|`Open (_loc,_) -> `Nil _loc
       | `Type (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
           let res =

@@ -107,7 +107,7 @@ let apply () = begin
   {:extend|
       module_expr_quot:
       [ module_expr{x} -> x
-      | -> {||} ]
+      | -> `Nil _loc ]
       module_binding0:
       { RA
         [ "("; a_uident{m}; ":"; module_type{mt}; ")"; S{mb} ->
@@ -148,7 +148,7 @@ let apply () = begin
         | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
             (* {| $uid:m : $mt = $me |} *)
             `ModuleBind(_loc,m,mt,me)
-        | -> {||} ]
+        | -> `Nil _loc ]
         module_binding:
         [ S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
         | `Ant (("module_binding"|"anti"|"list" |"" as n),s) -> {| $(anti:mk_anti ~c:"module_binding" n s) |}
@@ -167,7 +167,7 @@ let apply () = begin
   with with_constr
       {:extend|
         with_constr_quot:
-        [ with_constr{x} -> x  | -> {||} ]
+        [ with_constr{x} -> x  | -> `Nil _loc ]
         with_constr: 
         [ S{wc1}; "and"; S{wc2} -> {| $wc1 and $wc2 |}
         | `Ant ((""|"with_constr"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"with_constr" n s) |}
@@ -237,13 +237,14 @@ let apply () = begin
   with sig_item
   {:extend|
     sig_item_quot:
-    [ "#"; a_lident{s}; opt_expr{dp} -> {| # $s $dp |}
+    [ "#"; a_lident{s} -> `DirectiveSimple(_loc,s)
+    | "#"; a_lident{s}; expr{dp} -> `Directive(_loc,s,dp)
     | sig_item{sg1}; semi; S{sg2} ->
         match sg2 with
-        [ {||} -> sg1
-        | _ -> {| $sg1; $sg2 |} ]
+        [ `Nil _ -> sg1
+        | _ -> `Sem(_loc,sg1,sg2) ]
     | sig_item{sg} -> sg
-    | -> {||} ]
+    | -> `Nil _loc ]
     sig_item:
     [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
     | `QUOTATION x -> AstQuotation.expand _loc x DynAst.sig_item_tag
@@ -255,12 +256,10 @@ let apply () = begin
     | "module"; a_uident{i}; module_declaration{mt} ->  {| module $i : $mt |}
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
     | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
-        {| module type $i = $mt |}
-
-          
+        `ModuleType(_loc,i,mt)
     | "import"; dot_namespace{x} -> begin 
         FanToken.paths := [ `Absolute  x :: !FanToken.paths];
-        {||} (*FIXME may be as an diretive ? *)
+        `Nil _loc (*FIXME may be as an diretive ? *)
     end
     | "module"; "type"; a_uident{i} -> {| module type $i |}
     | "open"; module_longident{i} -> {| open $i |}
@@ -271,7 +270,9 @@ let apply () = begin
     | "class"; "type"; class_type_declaration{ctd} ->  {| class type $ctd |} ]
     (* mli entrance *)    
     interf:
-    [ "#"; a_lident{n}; opt_expr{dp};  ";;" -> ([ {| # $n $dp |} ],  Some _loc)
+    [ "#"; a_lident{n};  ";;" ->
+      ([ `DirectiveSimple(_loc,n) ],  Some _loc)
+    | "#"; a_lident{n}; expr{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc) 
     | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
     | `EOI -> ([], None) ]
     sig_items:
@@ -284,10 +285,10 @@ let apply () = begin
     {:extend|
       local:  fun_def_patt;
       expr_quot:
-      [ expr{e1}; ","; comma_expr{e2} -> {| $e1, $e2 |}
-      | expr{e1}; ";"; sem_expr{e2} -> {| $e1; $e2 |}
+      [ expr{e1}; ","; comma_expr{e2} -> `Com(_loc,e1,e2)
+      | expr{e1}; ";"; sem_expr{e2} -> `Sem(_loc,e1,e2)
       | expr{e} -> e
-      | -> {||} ]
+      | -> `Nil _loc ] (*M*)
        (*
        {:str_item|
        let f (type t) () =
@@ -345,7 +346,7 @@ let apply () = begin
           [ fun_def_patt{f}; "->"; expr{e} ->  f e
           | fun_def_patt{f}; S{e} -> f e] }    
        opt_expr:
-       [ expr{e} -> e | -> {||} ]
+       [ expr{e} -> e | -> `Nil _loc ] (*M*)
        expr:
        {
         "top" RA
@@ -400,11 +401,9 @@ let apply () = begin
         [
         (* FIXME fun and function duplicated *)      
          "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" ->
-           let cases = or_of_list a in {| fun [$cases]|}
-           (* {| fun [ $list:a ] |} *)
+           let cases = or_of_list a in `Fun (_loc,cases)
         | "function"; "[";  L0 match_case0 SEP "|"{a}; "]" ->
-            let cases = or_of_list a in {| fun [$cases]|}
-            (* {| function [ $list:a ] |} *)
+            let cases = or_of_list a in `Fun(_loc,cases)
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
         | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
@@ -457,7 +456,7 @@ let apply () = begin
         | "["; "]" -> {| [] |}
         | "[";sem_expr_for_list{mk_list}; "::"; expr{last}; "]" -> mk_list last
         | "["; sem_expr_for_list{mk_list}; "]" -> mk_list {| [] |}
-        | "[|"; "|]" -> {| [| $({||}) |] |}
+        | "[|"; "|]" -> `Array(_loc,`Nil _loc) (*M*)
         | "[|"; sem_expr{el}; "|]" -> {| [| $el |] |}
 
         | "{"; `Lid x ; "with"; label_expr_list{el}; "}" ->
@@ -466,11 +465,11 @@ let apply () = begin
         | "{"; "("; S{e}; ")"; "with"; label_expr_list{el}; "}" ->
             {| { ($e) with $el } |}
         | "{<"; ">}" ->
-            {| {< >} |}
-              (* `OvrInst(_loc,`Nil _loc) *)
+            `OvrInst(_loc,`Nil _loc) (*M*)
+
         | "{<"; field_expr_list{fel}; ">}" ->
-            {| {< $fel >} |}
-            (* `OvrInst (_loc, fel) *)
+            `OvrInst(_loc,fel) (*M*)
+
         (* | "("; "->"; L0 ")" *)
         | "("; ")" -> {| () |}
         | "("; S{e}; ":"; ctyp{t}; ")" -> {| ($e : $t) |}
@@ -525,7 +524,7 @@ let apply () = begin
   with binding
       {:extend|
         binding_quot:
-        [ binding{x} -> x | -> {||} ] 
+        [ binding{x} -> x | -> `Nil _loc ] 
         binding:
         [ `Ant (("binding"|"list" as n),s) ->
           {| $(anti:mk_anti ~c:"binding" n s) |}
@@ -553,11 +552,11 @@ let apply () = begin
       ]
       match_case_quot:
       [ L0 match_case0 SEP "|"{x} -> or_of_list x 
-      | -> {||} ]  |};
+      | -> `Nil _loc ]  |};
   with rec_expr
       {:extend|
         rec_expr_quot:
-        [ label_expr_list{x} -> x | -> {||} ]
+        [ label_expr_list{x} -> x | -> `Nil _loc  ](*M*)
         label_expr:
         [ `Ant (("rec_expr" |""|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"rec_expr" n s) |}
         | label_longident{i}; fun_binding{e} -> {| $id:i = $e |}
@@ -590,14 +589,14 @@ let apply () = begin
        (*     {| $i = $y |}   (\* {:patt| x=  y|} *\) *)
        (* FIXME intrdouce rec_patt_quot *)      
        | patt{x} -> x
-       | -> {||} ]
+       | -> `Nil _loc  ]
        patt_as_patt_opt:
        [ patt{p1}; "as"; a_lident{s} -> {| ($p1 as $s) |}
        | patt{p} -> p ]
        opt_class_self_patt:
        [ "("; patt{p}; ")" -> p
        | "("; patt{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
-       | -> {||} ]
+       | -> `Nil _loc ]
        patt_constr:
        [module_longident{i} -> {| $id:i |}
 
@@ -637,14 +636,13 @@ let apply () = begin
         | "["; "]" -> {| [] |}
         | "["; sem_patt_for_list{mk_list}; "::"; patt{last}; "]" -> mk_list last
         | "["; sem_patt_for_list{mk_list}; "]" -> mk_list {| [] |}
-        | "[|"; "|]" -> {| [| $({||}) |] |}
-        | "[|"; sem_patt{pl}; "|]" -> {| [| $pl |] |}
-        | "{"; label_patt_list{pl}; "}" -> {| { $pl } |}
+        | "[|"; "|]" -> `Array(_loc,`Nil _loc)
+        | "[|"; sem_patt{pl}; "|]" -> `Array(_loc,pl)
+        | "{"; label_patt_list{pl}; "}" -> `Record(_loc,pl)
             (* {| { $((pl : rec_patt :>patt)) } |} *)
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
             (* {| (module $m) |} *)
-
         | "("; "module"; a_uident{m}; ":"; (* package_type *)module_type{pt}; ")" ->
             `ModuleConstraint(_loc,m, `Package(_loc,pt))
               (* {| ( module $m :  $pt )|} *)
@@ -969,7 +967,7 @@ let apply () = begin
       string_list:
       [ `Ant ((""(* |"str_list" *)),s) -> `Ant (_loc,mk_anti "str_list" s)
       | `Ant("",s) ; S{xs} -> `App(_loc,`Ant(_loc,mk_anti "" s), xs)
-      | `STR (_, x) -> `Str(_loc,x) (* `LCons (x, (`LNil )) *) 
+      | `STR (_, x) -> `Str(_loc,x)
       | `STR (_, x); S{xs} -> `App(_loc,`Str(_loc,x),xs)
           (* `LCons (x, xs) *)] 
       semi: [ ";" -> () ]
@@ -986,7 +984,8 @@ let apply () = begin
     {:extend|
     (* ml entrance *)    
       implem:
-      [ "#"; a_lident{n}; opt_expr{dp}; ";;" -> ([ {| # $n $dp |} ],  Some _loc)
+      [ "#"; a_lident{n}; opt_expr{dp}; ";;" ->
+        ([ `Directive(_loc,n,dp) ],  Some _loc)
       | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
       | `EOI -> ([], None) ]
       str_items: (* FIXME dump seems to be incorrect *)
@@ -994,18 +993,17 @@ let apply () = begin
       | `Ant ((""|"stri"|"anti"|"list" as n),s); semi; S{st} -> {| $(anti:mk_anti n ~c:"str_item" s); $st |}
       | L0 [ str_item{st}; semi -> st ]{l} -> sem_of_list l (* {| $list:l |} *) ]
       top_phrase:
-      [ "#"; a_lident{n}; opt_expr{dp}; ";;" ->
-        Some {| # $n $dp |}
+      [ "#"; a_lident{n}; opt_expr{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | str_item{st}; semi -> Some st
       | `EOI -> None ]
       str_item_quot:
-      [ "#"; a_lident{n}; opt_expr{dp} -> {| # $n $dp |}
+      [ "#"; a_lident{n}; opt_expr{dp} -> `Directive(_loc,n,dp)
       | str_item{st1}; semi; S{st2} ->
           match st2 with
-          [ {||} -> st1
-          | _ -> {| $st1; $st2 |} ]
+          [ `Nil _ -> st1
+          | _ -> `Sem(_loc,st1,st2) ]
       | str_item{st} -> st
-      | -> {||} ]
+      | -> `Nil _loc ]
       str_item:
       { "top"
         [ "exception"; constructor_declaration{t} ->
@@ -1026,7 +1024,7 @@ let apply () = begin
             {| module type $i = $mt |}
         | "import"; dot_namespace{x} -> begin
             FanToken.paths := [ `Absolute  x :: !FanToken.paths];
-            {||} 
+            `Nil _loc 
         end
         | "open"; module_longident{i} -> {| open $i |}
         | "type"; type_declaration{td} ->
@@ -1057,10 +1055,10 @@ let apply () = begin
       class_sig_item_quot:
       [ class_sig_item{x1}; semi; S{x2} ->
         match x2 with
-        [ {||} -> x1
-        | _ -> {| $x1; $x2 |} ]
+        [ `Nil _ -> x1
+        | _ -> `Sem(_loc,x1,x2) ]
       | class_sig_item{x} -> x
-      | -> {||} ]
+      | -> `Nil _loc ]
       class_signature:
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `Ant ((""|"csg"|"anti"|"list" as n),s); semi; S{csg} ->
@@ -1119,10 +1117,10 @@ let apply () = begin
       class_str_item_quot:
         [ class_str_item{x1}; semi; S{x2} ->
           match x2 with
-          [ {||} -> x1
-          | _ -> {| $x1; $x2 |} ]
+          [ `Nil _ -> x1
+          | _ -> `Sem(_loc,x1,x2) ]
         | class_str_item{x} -> x
-        | -> {||} ]
+        | -> `Nil _loc ]
     |};
     
   with class_expr
@@ -1204,7 +1202,7 @@ let apply () = begin
           `CtCon (_loc, anti, i, ot)
           (* {| $virtual:anti $id:i [ $ot ] |} *)
       | class_type_plus{x} -> x
-      | -> {||}   ]
+      | -> `Nil _loc   ]
       class_type_plus:
       [ "["; ctyp{t}; "]"; "->"; S{ct} -> {| [ $t ] -> $ct |}
       | class_type{ct} -> ct ]
@@ -1269,7 +1267,7 @@ let apply_ctyp () = begin
       | type_parameter{t} -> fun acc -> {| $acc $t |}
       | -> fun t -> t  ]
       opt_class_self_type:
-      [ "("; ctyp{t}; ")" -> t | -> {||} ]
+      [ "("; ctyp{t}; ")" -> t | -> `Nil _loc ]
       meth_list:
       [ meth_decl{m}; ";"; S{(ml, v) }  -> (`Sem(_loc,m,ml)(* {| $m; $ml |} *), v)
       | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)

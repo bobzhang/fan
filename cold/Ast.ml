@@ -110,8 +110,9 @@ and module_type =
   | `ModuleTypeOf of (loc* module_expr) | ant] 
 and sig_item =
   [ nil | `Class of (loc* class_type) | `ClassType of (loc* class_type)
-  | `Sem of (loc* sig_item* sig_item) | `Directive of (loc* alident* expr)
-  | `Exception of (loc* of_ctyp) | `External of (loc* alident* ctyp* strings)
+  | `Sem of (loc* sig_item* sig_item) | `DirectiveSimple of (loc* alident)
+  | `Directive of (loc* alident* expr) | `Exception of (loc* of_ctyp)
+  | `External of (loc* alident* ctyp* strings)
   | `Include of (loc* module_type) | `Module of (loc* auident* module_type)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
@@ -138,9 +139,9 @@ and module_expr =
   | `PackageModule of (loc* expr) | ant] 
 and str_item =
   [ nil | `Class of (loc* class_expr) | `ClassType of (loc* class_type)
-  | `Sem of (loc* str_item* str_item) | `Directive of (loc* alident* expr)
-  | `Exception of (loc* of_ctyp) | `StExp of (loc* expr)
-  | `External of (loc* alident* ctyp* strings)
+  | `Sem of (loc* str_item* str_item) | `DirectiveSimple of (loc* alident)
+  | `Directive of (loc* alident* expr) | `Exception of (loc* of_ctyp)
+  | `StExp of (loc* expr) | `External of (loc* alident* ctyp* strings)
   | `Include of (loc* module_expr) | `Module of (loc* auident* module_expr)
   | `RecModule of (loc* module_binding)
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
