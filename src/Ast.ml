@@ -296,8 +296,7 @@ and rec_patt =
   | any
   | ant]  
 and expr =
-  [= (* nil *)
-  (* | *) sid
+  [=  sid
   | `App of (loc * expr * expr)
   | `Vrn of (loc * string)
   | `Com of (loc * expr * expr)
@@ -459,6 +458,8 @@ and module_expr =
         (* functor (s : mt) -> me *)
   | `Functor of (loc * auident * module_type * module_expr)
   | `Struct of (loc * str_item)
+   (* empty module *)     
+  | `StructEnd of loc 
         (* (me : mt) *)
   | `Constraint of (loc * module_expr * module_type)
         (* (value e) *)

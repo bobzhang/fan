@@ -119,8 +119,8 @@ let apply () = begin
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; module_type{t}; ")"; "->"; S{me} ->
             {| functor ( $i : $t ) -> $me |}
-        | "struct"; str_items{st}; "end" ->
-            {| struct $st end |} ]
+        | "struct"; str_items{st}; "end" -> `Struct(_loc,st)
+        | "struct"; "end" -> `StructEnd(_loc)]
        "apply"
         [ S{me1}; S{me2} -> {| $me1 $me2 |} ]
        "simple"
@@ -259,7 +259,7 @@ let apply () = begin
         `ModuleType(_loc,i,mt)
     | "import"; dot_namespace{x} -> begin 
         FanToken.paths := [ `Absolute  x :: !FanToken.paths];
-        `Nil _loc (*FIXME may be as an diretive ? *)
+        `Nil _loc (*FIXME may be as an diretive ? *) (*M*)
     end
     | "module"; "type"; a_uident{i} -> {| module type $i |}
     | "open"; module_longident{i} -> {| open $i |}
@@ -288,7 +288,6 @@ let apply () = begin
       [ expr{e1}; ","; comma_expr{e2} -> `Com(_loc,e1,e2)
       | expr{e1}; ";"; sem_expr{e2} -> `Sem(_loc,e1,e2)
       | expr{e} -> e]
-      (* | -> `Nil _loc ] (\*M*\) *)
        (*
        {:str_item|
        let f (type t) () =
@@ -969,7 +968,7 @@ let apply () = begin
       str_items: (* FIXME dump seems to be incorrect *)
       [ `Ant ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti n ~c:"str_item" s) |}
       | `Ant ((""|"stri"|"anti"|"list" as n),s); semi; S{st} -> {| $(anti:mk_anti n ~c:"str_item" s); $st |}
-      | L0 [ str_item{st}; semi -> st ]{l} -> sem_of_list l (* {| $list:l |} *) ]
+      | L1 [ str_item{st}; semi -> st ]{l} -> sem_of_list1 l (* {| $list:l |} *) ]
       top_phrase:
       [ "#"; a_lident{n}; expr{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
@@ -980,10 +979,10 @@ let apply () = begin
       | "#"; a_lident{n} -> `DirectiveSimple(_loc,n)
       | str_item{st1}; semi; S{st2} ->
           match st2 with
-          [ `Nil _ -> st1
+          [ `Nil _ -> st1 (*M*)
           | _ -> `Sem(_loc,st1,st2) ]
       | str_item{st} -> st
-      | -> `Nil _loc ]
+      | -> `Nil _loc ] (*M*)
       str_item:
       { "top"
         [ "exception"; constructor_declaration{t} ->
@@ -1004,7 +1003,7 @@ let apply () = begin
             {| module type $i = $mt |}
         | "import"; dot_namespace{x} -> begin
             FanToken.paths := [ `Absolute  x :: !FanToken.paths];
-            `Nil _loc 
+            `Nil _loc  (*M*)
         end
         | "open"; module_longident{i} -> {| open $i |}
         | "type"; type_declaration{td} ->

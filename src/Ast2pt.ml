@@ -1029,6 +1029,7 @@ and module_expr (x:Ast.module_expr)=
   | `Functor(loc,`Uid(sloc,n),mt,me) ->
       mkmod loc (Pmod_functor (with_loc n sloc) (module_type mt) (module_expr me))
   | `Struct(loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
+  | `StructEnd(loc) -> mkmod loc (Pmod_structure [])
   | `Constraint(loc,me,mt) ->
         mkmod loc (Pmod_constraint (module_expr me) (module_type mt))
   | `PackageModule(loc,`Constraint(_,e,`Package(_,pt))) ->

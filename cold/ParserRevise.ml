@@ -258,7 +258,12 @@ let apply () =
             ("Gram.mk_action\n  (fun _  (st : 'str_items)  _  (_loc : FanLoc.t)  ->\n     (`Struct (_loc, st) : 'module_expr ))\n",
               (Gram.mk_action
                  (fun _  (st : 'str_items)  _  (_loc : FanLoc.t)  ->
-                    (`Struct (_loc, st) : 'module_expr )))))]);
+                    (`Struct (_loc, st) : 'module_expr )))));
+          ([`Skeyword "struct"; `Skeyword "end"],
+            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`StructEnd _loc : 'module_expr ))\n",
+              (Gram.mk_action
+                 (fun _  _  (_loc : FanLoc.t)  ->
+                    (`StructEnd _loc : 'module_expr )))))]);
        ((Some "apply"), None,
          [([`Sself; `Sself],
             ("Gram.mk_action\n  (fun (me2 : 'module_expr)  (me1 : 'module_expr)  (_loc : FanLoc.t)  ->\n     (`App (_loc, me1, me2) : 'module_expr ))\n",
@@ -4551,7 +4556,7 @@ let apply () =
                    | _ ->
                        failwith
                          "`Sem (_loc, (`Ant (_loc, (mk_anti n ~c:\"str_item\" s))), st)\n"))));
-         ([`Slist0
+         ([`Slist1
              (Gram.srules
                 [([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
@@ -4559,10 +4564,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (st : 'str_item)  (_loc : FanLoc.t)  ->
                            (st : 'e__5 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__5 list)  (_loc : FanLoc.t)  -> (sem_of_list l : 'str_items ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__5 list)  (_loc : FanLoc.t)  -> (sem_of_list1 l : 'str_items ))\n",
              (Gram.mk_action
                 (fun (l : 'e__5 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list l : 'str_items )))))]));
+                   (sem_of_list1 l : 'str_items )))))]));
    Gram.extend_single (top_phrase : 'top_phrase Gram.t )
      (None,
        (None, None,

@@ -1268,6 +1268,8 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "Struct")), (meta_loc _loc _a0))),
               (meta_str_item _loc _a1))
+      | `StructEnd _a0 ->
+          `App (_loc, (`Vrn (_loc, "StructEnd")), (meta_loc _loc _a0))
       | `Constraint (_a0,_a1,_a2) ->
           `App
             (_loc,

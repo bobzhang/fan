@@ -129,6 +129,7 @@ let loc_of =
   | `RecordWith (_loc,_,_) -> _loc
   | `And (_loc,_,_) -> _loc
   | `TyDcl (_loc,_,_,_,_) -> _loc
+  | `StructEnd _loc -> _loc
   | `Int32 (_loc,_) -> _loc
   | `PaRng (_loc,_,_) -> _loc
   | `RecModule (_loc,_) -> _loc

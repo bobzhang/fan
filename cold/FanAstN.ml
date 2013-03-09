@@ -560,6 +560,7 @@ class eq =
             ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
               (self#module_expr _a2 _b2)
         | (`Struct _a0,`Struct _b0) -> self#str_item _a0 _b0
+        | (`StructEnd,`StructEnd) -> true
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#module_expr _a0 _b0) && (self#module_type _a1 _b1)
         | (`PackageModule _a0,`PackageModule _b0) -> self#expr _a0 _b0
@@ -1350,6 +1351,7 @@ class print =
               _a0 self#module_type _a1 self#module_expr _a2
         | `Struct _a0 ->
             Format.fprintf fmt "@[<1>(`Struct@ %a)@]" self#str_item _a0
+        | `StructEnd -> Format.fprintf fmt "`StructEnd"
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]"
               self#module_expr _a0 self#module_type _a1
@@ -2304,6 +2306,7 @@ and meta_module_expr _loc =
                (meta_module_type _loc _a1))), (meta_module_expr _loc _a2))
   | `Struct _a0 ->
       `App (_loc, (`Vrn (_loc, "Struct")), (meta_str_item _loc _a0))
+  | `StructEnd -> `Vrn (_loc, "StructEnd")
   | `Constraint (_a0,_a1) ->
       `App
         (_loc,

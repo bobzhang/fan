@@ -947,6 +947,8 @@ class map2 =
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#str_item _a1 _b1 in `Struct (_a0, _a1)
+        | (`StructEnd _a0,`StructEnd _b0) ->
+            let _a0 = self#loc _a0 _b0 in `StructEnd _a0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#module_expr _a1 _b1 in
@@ -1964,6 +1966,7 @@ class fold2 =
             let self = self#module_type _a2 _b2 in self#module_expr _a3 _b3
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#str_item _a1 _b1
+        | (`StructEnd _a0,`StructEnd _b0) -> self#loc _a0 _b0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#module_expr _a1 _b1 in self#module_type _a2 _b2
@@ -2621,6 +2624,7 @@ class iter =
            self#module_type _a2;
            self#module_expr _a3)
       | `Struct (_a0,_a1) -> (self#loc _a0; self#str_item _a1)
+      | `StructEnd _a0 -> self#loc _a0
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#module_expr _a1; self#module_type _a2)
       | `PackageModule (_a0,_a1) -> (self#loc _a0; self#expr _a1)
@@ -3554,6 +3558,7 @@ class map =
       | `Struct (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#str_item _a1 in `Struct (_a0, _a1)
+      | `StructEnd _a0 -> let _a0 = self#loc _a0 in `StructEnd _a0
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#module_expr _a1 in
@@ -4367,6 +4372,7 @@ class fold =
           let self = self#auident _a1 in
           let self = self#module_type _a2 in self#module_expr _a3
       | `Struct (_a0,_a1) -> let self = self#loc _a0 in self#str_item _a1
+      | `StructEnd _a0 -> self#loc _a0
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#module_expr _a1 in self#module_type _a2
@@ -5271,6 +5277,8 @@ class print =
         | `Struct (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" self#loc _a0
               self#str_item _a1
+        | `StructEnd _a0 ->
+            Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" self#loc _a0
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#module_expr _a1 self#module_type _a2
@@ -6201,6 +6209,7 @@ class eq =
               && (self#module_expr _a3 _b3)
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#str_item _a1 _b1)
+        | (`StructEnd _a0,`StructEnd _b0) -> self#loc _a0 _b0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#module_expr _a1 _b1)) &&
               (self#module_type _a2 _b2)
@@ -6971,6 +6980,7 @@ and strip_loc_module_expr =
       let _a2 = strip_loc_module_type _a2 in
       let _a3 = strip_loc_module_expr _a3 in `Functor (_a1, _a2, _a3)
   | `Struct (_a0,_a1) -> let _a1 = strip_loc_str_item _a1 in `Struct _a1
+  | `StructEnd _a0 -> `StructEnd
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_module_expr _a1 in
       let _a2 = strip_loc_module_type _a2 in `Constraint (_a1, _a2)
@@ -7828,6 +7838,8 @@ and pp_print_module_expr fmt =
   | `Struct (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" pp_print_loc _a0
         pp_print_str_item _a1
+  | `StructEnd _a0 ->
+      Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" pp_print_loc _a0
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_module_expr _a1 pp_print_module_type _a2

@@ -125,9 +125,8 @@ and match_case =
 and module_expr =
   [ nil | sid | `App of (module_expr* module_expr)
   | `Functor of (auident* module_type* module_expr) | `Struct of str_item
-  | `Constraint of (module_expr* module_type) | `PackageModule of expr | 
-    ant]
-  
+  | `StructEnd | `Constraint of (module_expr* module_type)
+  | `PackageModule of expr | ant] 
 and str_item =
   [ nil | `Class of class_expr | `ClassType of class_type
   | `Sem of (str_item* str_item) | `DirectiveSimple of alident
