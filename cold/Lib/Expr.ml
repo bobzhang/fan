@@ -141,10 +141,9 @@ let bad_patt _loc =
   FanLoc.raise _loc
     (Failure "this macro cannot be used in a pattern (see its definition)")
 let substp loc env =
-  let rec loop =
-    function
+  let rec loop (x : expr) =
+    match x with
     | `App (_loc,e1,e2) -> `App (loc, (loop e1), (loop e2))
-    | `Nil _loc -> `Nil loc
     | `Id (_loc,`Lid (_,x)) ->
         (try List.assoc x env with | Not_found  -> `Id (loc, (`Lid (loc, x))))
     | `Id (_loc,`Uid (_,x)) ->
@@ -462,13 +461,13 @@ let mk_record_ee label_exprs =
 let eta_expand expr number =
   let names = List.init number (fun i  -> x ~off:0 i) in
   names <+ (expr +> names)
-let gen_curry_n acc ~arity  cons n =
-  let args =
-    List.init arity
-      (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
-  let pat = of_str cons in
-  List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc))))
-    (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc
+let gen_curry_n (acc : expr) ~arity  cons n =
+  (let args =
+     List.init arity
+       (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
+   let pat = of_str cons in
+   List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc))))
+     (List.map (fun lst  -> appl_of_list1 (pat :: lst)) args) acc : expr )
 let currying match_cases ~arity  =
   let cases = or_of_list match_cases in
   if arity >= 2

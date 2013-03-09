@@ -512,7 +512,7 @@ let rec patt (x:patt) =
      | _ ->
          error (loc_of f)
            "this is not a constructor, it cannot be applied in a pattern" ]
-     | `Array (loc,p) -> mkpat loc (Ppat_array (List.map patt (list_of_sem' p [])))
+     | `Array (loc,p) -> mkpat loc (Ppat_array (List.map patt (list_of_sem p [])))
      | `ArrayEmpty(loc) -> mkpat loc (Ppat_array [])
          
      | `Chr (loc,s) ->
@@ -560,7 +560,7 @@ let rec patt (x:patt) =
           mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
       | `Tup(loc,`Com(_,p1,p2)) ->
           mkpat loc (Ppat_tuple
-                       (List.map patt (list_of_com' p1 (list_of_com' p2 []))))
+                       (List.map patt (list_of_com p1 (list_of_com p2 []))))
       | `Tup (loc,_) -> error loc "singleton tuple pattern"
       | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
       | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
@@ -700,7 +700,7 @@ let rec expr (x : expr) = with expr match x with
   | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) -> (*M*)
       mkexp loc
         (Pexp_function lab None
-           [(patt po(* patt_of_lab loc lab po *), expr e)])
+           [(patt po, expr e)])
   | `Fun(loc,`CaseWhen(_,`LabelS(_,`Lid(sloc,lab)),w,e)) ->
       mkexp loc
         (Pexp_function lab None
@@ -710,7 +710,7 @@ let rec expr (x : expr) = with expr match x with
   | `Fun(loc,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  (*M*)
          mkexp loc
            (Pexp_function lab None
-              [((* patt_of_lab loc lab po *)patt po,
+              [(patt po,
                 mkexp (loc_of w) (Pexp_when (expr w) (expr e)))])
   | `Fun (loc,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
       mkexp loc (Pexp_function ("?"^lab) None
@@ -846,9 +846,8 @@ let rec expr (x : expr) = with expr match x with
        mkexp loc (Pexp_pack (module_expr me))
    | `LocalTypeFun (loc,`Lid(_,i),e) -> mkexp loc (Pexp_newtype i (expr e))
    | x -> errorf (loc_of x ) "expr:%s" (dump_expr x) ]
-and patt_of_lab _loc lab (x:patt)= match x with 
-  [ `Nil _  -> patt (`Id(_loc,`Lid(_loc,lab)))
-  | p -> patt p ]
+(* and patt_of_lab _loc lab (x:patt)= match x with  *)
+(*   [  p -> patt p ] *)
 and expr_of_lab _loc lab (x:expr) = match x with
   [ `Nil _  -> expr (`Id(_loc,`Lid(_loc,lab)))
   | e -> expr e ]
@@ -1167,13 +1166,13 @@ and class_expr  (x:Ast.class_expr) = match x with
               (list_of_com' tl [])))
   | `CeFun (loc, (`Label (_,`Lid(_loc,lab), po)), ce) ->
       mkcl loc
-        (Pcl_fun lab None (patt_of_lab loc lab po) (class_expr ce))
+        (Pcl_fun lab None (patt po ) (class_expr ce))
   | `CeFun(loc,`OptLablExpr(_,`Lid(_loc,lab),p,e),ce) ->
       let lab = paolab lab p in
       mkcl loc (Pcl_fun ("?" ^ lab) (Some (expr e)) (patt p) (class_expr ce))
   | `CeFun (loc,`OptLabl(_,`Lid(_loc,lab),p), ce) -> 
       let lab = paolab lab p in
-        mkcl loc (Pcl_fun ("?" ^ lab) None (patt_of_lab loc lab p) (class_expr ce))
+        mkcl loc (Pcl_fun ("?" ^ lab) None (patt p) (class_expr ce))
   | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (patt p) (class_expr ce))
   | `CeLet (loc, rf, bi, ce) ->
       mkcl loc (Pcl_let (mkrf rf) (binding bi []) (class_expr ce))
@@ -1185,9 +1184,6 @@ and class_expr  (x:Ast.class_expr) = match x with
          pcstr_pat = patt p;
          pcstr_fields = cil;})
   | `ObjPat (loc,p,cfl) ->
-      (* let p = match po with *)
-      (*     [ `Nil _loc  -> `Any _loc *)
-      (*     | p -> p ] in *)
       let cil = class_str_item cfl [] in
       mkcl loc
         (Pcl_structure {

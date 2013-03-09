@@ -2426,11 +2426,7 @@ let apply () =
          ([`Snterm (Gram.obj (patt : 'patt Gram.t ))],
            ("Gram.mk_action (fun (x : 'patt)  (_loc : FanLoc.t)  -> (x : 'patt_quot ))\n",
              (Gram.mk_action
-                (fun (x : 'patt)  (_loc : FanLoc.t)  -> (x : 'patt_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'patt_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'patt_quot )))))]));
+                (fun (x : 'patt)  (_loc : FanLoc.t)  -> (x : 'patt_quot )))))]));
    Gram.extend_single (patt_as_patt_opt : 'patt_as_patt_opt Gram.t )
      (None,
        (None, None,
@@ -2487,14 +2483,14 @@ let apply () =
                     (`PaRng (_loc, p1, p2) : 'patt )))))]);
        ((Some "apply"), (Some `LA),
          [([`Snterm (Gram.obj (patt_constr : 'patt_constr Gram.t )); `Sself],
-            ("Gram.mk_action\n  (fun (p2 : 'patt)  (p1 : 'patt_constr)  (_loc : FanLoc.t)  ->\n     (match p2 with\n      | `Tup (_loc,p) ->\n          List.fold_left (fun p1  p2  -> `App (_loc, p1, p2)) p1\n            (list_of_com' p [])\n      | _ -> `App (_loc, p1, p2) : 'patt ))\n",
+            ("Gram.mk_action\n  (fun (p2 : 'patt)  (p1 : 'patt_constr)  (_loc : FanLoc.t)  ->\n     (match p2 with\n      | `Tup (_loc,p) ->\n          List.fold_left (fun p1  p2  -> `App (_loc, p1, p2)) p1\n            (list_of_com p [])\n      | _ -> `App (_loc, p1, p2) : 'patt ))\n",
               (Gram.mk_action
                  (fun (p2 : 'patt)  (p1 : 'patt_constr)  (_loc : FanLoc.t) 
                     ->
                     (match p2 with
                      | `Tup (_loc,p) ->
                          List.fold_left (fun p1  p2  -> `App (_loc, p1, p2))
-                           p1 (list_of_com' p [])
+                           p1 (list_of_com p [])
                      | _ -> `App (_loc, p1, p2) : 'patt )))));
          ([`Snterm (Gram.obj (patt_constr : 'patt_constr Gram.t ))],
            ("Gram.mk_action (fun (p1 : 'patt_constr)  (_loc : FanLoc.t)  -> (p1 : 'patt ))\n",

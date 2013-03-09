@@ -526,7 +526,6 @@ module Make(MetaLoc:META_LOC) =
       | #nil as _a0 -> (meta_nil _loc _a0 :>'result40)
     and meta_patt _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result39)
       | #sid as _a0 -> (meta_sid _loc _a0 :>'result39)
       | `App (_a0,_a1,_a2) ->
           `App
@@ -1670,7 +1669,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result24)
     let rec meta_ep _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result51)
       | #sid as _a0 -> (meta_sid _loc _a0 :>'result51)
       | `App (_a0,_a1,_a2) ->
           `App

@@ -379,9 +379,9 @@ let rest =
   |"`"; luident{s}; "_" -> {|$vrn:s _|}
   |"`"; luident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
     match v with
-      [ [x] ->  (* {| $vrn:s $x |} *) `App(_loc,`Vrn(_loc,s),x)
+    [ [x] ->  (* {| $vrn:s $x |} *) `App(_loc,`Vrn(_loc,s),x)
     | [x::xs] ->
-        `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))
+        `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list1 xs))
         (* appl_of_list [ `Vrn(_loc,s) :: com_of_list v] *)
         (* `App(_loc,`Vrn(_loc,s), tuple_com v) *)
         (* `App(_loc,`Vrn(_loc,s),`Tup(_loc,`Com(_loc,x,com_of_list xs))) *)

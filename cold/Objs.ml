@@ -480,7 +480,6 @@ class map2 =
     method patt : patt -> patt -> patt=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 : nil  :>patt)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 : sid  :>patt)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -1192,7 +1191,6 @@ class map2 =
     method ep : ep -> ep -> ep=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 : nil  :>ep)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 : sid  :>ep)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -1622,7 +1620,6 @@ class fold2 =
     method patt : patt -> patt -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -2151,7 +2148,6 @@ class fold2 =
     method ep : ep -> ep -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -2415,7 +2411,6 @@ class iter =
       | #nil as _a0 -> (self#nil _a0 :>'result144)
     method patt : patt -> 'result145=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result145)
       | #sid as _a0 -> (self#sid _a0 :>'result145)
       | `App (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
       | `Vrn (_a0,_a1) -> (self#loc _a0; self#string _a1)
@@ -2768,7 +2763,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result160)
     method ep : ep -> 'result161=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result161)
       | #sid as _a0 -> (self#sid _a0 :>'result161)
       | `App (_a0,_a1,_a2) -> (self#loc _a0; self#ep _a1; self#ep _a2)
       | `Vrn (_a0,_a1) -> (self#loc _a0; self#string _a1)
@@ -3145,7 +3139,6 @@ class map =
       | #nil as _a0 -> (self#nil _a0 : nil  :>of_ctyp)
     method patt : patt -> patt=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>patt)
       | #sid as _a0 -> (self#sid _a0 : sid  :>patt)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -3779,7 +3772,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>class_str_item)
     method ep : ep -> ep=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>ep)
       | #sid as _a0 -> (self#sid _a0 : sid  :>ep)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -4086,7 +4078,6 @@ class fold =
       | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method patt : patt -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -4539,7 +4530,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method ep : ep -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#ep _a1 in self#ep _a2
@@ -4928,7 +4918,6 @@ class print =
     method patt : 'fmt -> patt -> 'result310=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result310)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result310)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
@@ -5462,7 +5451,6 @@ class print =
     method ep : 'fmt -> ep -> 'result326=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result326)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result326)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
@@ -5875,7 +5863,6 @@ class eq =
     method patt : patt -> patt -> 'result365=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result365)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result365)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
@@ -6401,7 +6388,6 @@ class eq =
     method ep : ep -> ep -> 'result381=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result381)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result381)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ep _a1 _b1)) && (self#ep _a2 _b2)
@@ -6699,7 +6685,6 @@ and strip_loc_of_ctyp =
   | #nil as _a0 -> (strip_loc_nil _a0 :>'result424)
 and strip_loc_patt =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result423)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result423)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
@@ -7154,7 +7139,6 @@ and strip_loc_class_str_item =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result408)
 let rec strip_loc_ep =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result435)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result435)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ep _a1 in
@@ -7503,7 +7487,6 @@ and pp_print_of_ctyp fmt =
   | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result477)
 and pp_print_patt fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result476)
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result476)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -8024,7 +8007,6 @@ and pp_print_class_str_item fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result461)
 let rec pp_print_ep fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result488)
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result488)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0

@@ -104,7 +104,6 @@ type simple_patt =
   |`Or of (loc * simple_patt * simple_patt)
   |`Str of (loc * string)
   |`Any of loc
-  |`Nil of loc 
   | ant
    ];
 
@@ -115,5 +114,5 @@ type action_pattern =
   |`Com of (loc * action_pattern * action_pattern)
   |`Tup of (loc * action_pattern )
   |`Any of loc
-  |`Nil of loc 
+
  ];  

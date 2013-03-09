@@ -887,7 +887,7 @@ let _ =
            ((`Snterm (Gram.obj (internal_patt : 'internal_patt Gram.t ))),
              (`Skeyword ","));
          `Skeyword ")"],
-          ("Gram.mk_action\n  (fun _  (v : 'internal_patt list)  _  (s : 'luident)  _  (_loc : FanLoc.t) \n     ->\n     (match v with\n      | x::[] -> `App (_loc, (`Vrn (_loc, s)), x)\n      | x::xs ->\n          `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))\n      | _ -> assert false : 'simple_patt ))\n",
+          ("Gram.mk_action\n  (fun _  (v : 'internal_patt list)  _  (s : 'luident)  _  (_loc : FanLoc.t) \n     ->\n     (match v with\n      | x::[] -> `App (_loc, (`Vrn (_loc, s)), x)\n      | x::xs ->\n          `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list1 xs))\n      | _ -> assert false : 'simple_patt ))\n",
             (Gram.mk_action
                (fun _  (v : 'internal_patt list)  _  (s : 'luident)  _ 
                   (_loc : FanLoc.t)  ->
@@ -896,7 +896,7 @@ let _ =
                    | x::xs ->
                        `App
                          (_loc, (`App (_loc, (`Vrn (_loc, s)), x)),
-                           (com_of_list xs))
+                           (com_of_list1 xs))
                    | _ -> assert false : 'simple_patt )))))]));
   Gram.extend (internal_patt : 'internal_patt Gram.t )
     (None,

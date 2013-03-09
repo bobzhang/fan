@@ -173,7 +173,7 @@ let expr_of_ctyp
     simple_expr_of_ctyp (ty : or_ctyp)  =
   let f  (cons:string) (tyargs:list ctyp)  : match_case = 
     let args_length = List.length tyargs in  (* ` is not needed here *)
-    let p =
+    let p : patt =
       (* calling gen_tuple_n*)
       EP.gen_tuple_n ?cons_transform ~arity  cons args_length in
     let mk (cons,tyargs) =

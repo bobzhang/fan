@@ -197,16 +197,6 @@ let rec appl_of_list1 x =
   | [] -> failwith "appl_of_list1 empty list"
   | x::[] -> x
   | x::y::xs -> appl_of_list1 ((app x y) :: xs)
-let tuple_com y =
-  match y with
-  | [] -> failwith "tuple_com empty"
-  | x::[] -> x
-  | x::_ -> let _loc = x <+> (List.last y) in `Tup (_loc, (com_of_list y))
-let tuple_sta y =
-  match y with
-  | [] -> failwith "tuple_sta empty"
-  | x::[] -> x
-  | x::_ -> let _loc = x <+> (List.last y) in `Tup (_loc, (sta_of_list y))
 let rec and_of_list1 =
   function
   | [] -> failwithf "and_of_list1 empty list"
@@ -227,6 +217,21 @@ let rec dot_of_list1 =
   | [] -> failwith "dot_of_list1 empty list"
   | i::[] -> i
   | i::is -> dot i (dot_of_list1 is)
+let rec sta_of_list1 =
+  function
+  | [] -> failwith "sta_of_list1 empty list"
+  | i::[] -> i
+  | i::is -> sta i (sta_of_list1 is)
+let tuple_com y =
+  match y with
+  | [] -> failwith "tuple_com empty"
+  | x::[] -> x
+  | x::_ -> let _loc = x <+> (List.last y) in `Tup (_loc, (com_of_list1 y))
+let tuple_sta y =
+  match y with
+  | [] -> failwith "tuple_sta empty"
+  | x::[] -> x
+  | x::_ -> let _loc = x <+> (List.last y) in `Tup (_loc, (sta_of_list1 y))
 let rec list_of_and x acc =
   match x with
   | `And (_,x,y) -> list_of_and x (list_of_and y acc)

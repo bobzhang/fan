@@ -108,9 +108,10 @@ let bad_patt _loc =
    has a special meaning, then that replacment will be used
  *)  
 let substp loc env =
-  let rec loop = with {patt:expr;expr:patt} fun
+  let rec loop (x:expr)= with {patt:expr;expr:patt}
+    match x with
     [ {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
-    | {| |} -> {@loc| |}
+    (* | {| |} -> {@loc| |} *)
     | {| $lid:x |} ->
         try List.assoc x env with
           [ Not_found -> {@loc| $lid:x |} ]
@@ -552,13 +553,13 @@ let eta_expand expr number =
   ]}
   
  *)
-let gen_curry_n acc ~arity cons n =
+let gen_curry_n (acc:expr) ~arity cons n : expr =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {:patt| $(id:xid ~off:i j) |})) in
-  let pat = (* Patt. *)of_str cons in
+  let pat = of_str cons in
   List.fold_right
     (fun p acc -> {| fun [ $pat:p -> $acc ] |} )
-    (List.map (fun lst -> appl_of_list [pat:: lst]) args) acc;
+    (List.map (fun lst -> appl_of_list1 [pat:: lst]) args) acc;
 
 (*
   Example:

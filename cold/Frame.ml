@@ -118,7 +118,7 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
   ~mk_variant  simple_expr_of_ctyp (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
-     let p = EP.gen_tuple_n ?cons_transform ~arity cons args_length in
+     let p: patt = EP.gen_tuple_n ?cons_transform ~arity cons args_length in
      let mk (cons,tyargs) =
        let exprs =
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in

@@ -40,7 +40,7 @@ type simple_patt =
   | `Id of (loc* ident) | `Com of (loc* simple_patt* simple_patt)
   | `Alias of (loc* simple_patt* alident)
   | `Or of (loc* simple_patt* simple_patt) | `Str of (loc* string)
-  | `Any of loc | `Nil of loc | ant] 
+  | `Any of loc | ant] 
 type action_pattern =
   [ `Id of (loc* ident) | `Com of (loc* action_pattern* action_pattern)
-  | `Tup of (loc* action_pattern) | `Any of loc | `Nil of loc] 
+  | `Tup of (loc* action_pattern) | `Any of loc] 

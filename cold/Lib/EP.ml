@@ -52,7 +52,7 @@ let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
     List.init arity
       (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
   let pat = of_str (cons_transform cons) in
-  (List.map (fun lst  -> appl_of_list (pat :: lst)) args) |> tuple_com
+  (List.map (fun lst  -> appl_of_list1 (pat :: lst)) args) |> tuple_com
 let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi

@@ -359,7 +359,7 @@ let rec patt (x : patt) =
            error (loc_of f)
              "this is not a constructor, it cannot be applied in a pattern")
   | `Array (loc,p) ->
-      mkpat loc (Ppat_array (List.map patt (list_of_sem' p [])))
+      mkpat loc (Ppat_array (List.map patt (list_of_sem p [])))
   | `ArrayEmpty loc -> mkpat loc (Ppat_array [])
   | `Chr (loc,s) ->
       mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
@@ -422,7 +422,7 @@ let rec patt (x : patt) =
       mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
   | `Tup (loc,`Com (_,p1,p2)) ->
       mkpat loc
-        (Ppat_tuple (List.map patt (list_of_com' p1 (list_of_com' p2 []))))
+        (Ppat_tuple (List.map patt (list_of_com p1 (list_of_com p2 []))))
   | `Tup (loc,_) -> error loc "singleton tuple pattern"
   | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint ((patt p), (ctyp t)))
   | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
@@ -688,10 +688,6 @@ let rec expr (x : expr) =
   | `LocalTypeFun (loc,`Lid (_,i),e) ->
       mkexp loc (Pexp_newtype (i, (expr e)))
   | x -> errorf (loc_of x) "expr:%s" (dump_expr x)
-and patt_of_lab _loc lab (x : patt) =
-  match x with
-  | `Nil _ -> patt (`Id (_loc, (`Lid (_loc, lab))))
-  | p -> patt p
 and expr_of_lab _loc lab (x : expr) =
   match x with
   | `Nil _ -> expr (`Id (_loc, (`Lid (_loc, lab))))
@@ -1023,17 +1019,14 @@ and class_expr (x : Ast.class_expr) =
                 (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
                 (list_of_com' tl []))))
   | `CeFun (loc,`Label (_,`Lid (_loc,lab),po),ce) ->
-      mkcl loc
-        (Pcl_fun (lab, None, (patt_of_lab loc lab po), (class_expr ce)))
+      mkcl loc (Pcl_fun (lab, None, (patt po), (class_expr ce)))
   | `CeFun (loc,`OptLablExpr (_,`Lid (_loc,lab),p,e),ce) ->
       let lab = paolab lab p in
       mkcl loc
         (Pcl_fun (("?" ^ lab), (Some (expr e)), (patt p), (class_expr ce)))
   | `CeFun (loc,`OptLabl (_,`Lid (_loc,lab),p),ce) ->
       let lab = paolab lab p in
-      mkcl loc
-        (Pcl_fun
-           (("?" ^ lab), None, (patt_of_lab loc lab p), (class_expr ce)))
+      mkcl loc (Pcl_fun (("?" ^ lab), None, (patt p), (class_expr ce)))
   | `CeFun (loc,p,ce) ->
       mkcl loc (Pcl_fun ("", None, (patt p), (class_expr ce)))
   | `CeLet (loc,rf,bi,ce) ->

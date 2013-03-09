@@ -255,8 +255,8 @@ and of_ctyp =
   | nil]
          
 and patt =
-  [= nil
-  | sid
+  [=(*  nil *)
+  (* | *) sid
   | `App of (loc * patt * patt)
   | `Vrn of (loc * string)
   | `Com of (loc * patt * patt)
@@ -291,9 +291,7 @@ and patt =
     (* (module M : ty ) *)      
   | `ModuleConstraint of (loc * auident * ctyp) ]
 and rec_patt =
-  [=
-   (* nil *)
-  (* | *) `RecBind of (loc * ident * patt)
+  [= `RecBind of (loc * ident * patt)
   | `Sem of (loc  * rec_patt * rec_patt)
   | any
   | ant]  
@@ -365,10 +363,7 @@ and expr =
         (* (module ME : S) which is represented as (module (ME : S)) *)
   | `Package_expr of (loc * module_expr) ]
 and rec_expr =
-  [=(*  nil *)
-  (*      (\* rb ; rb *\) *)
-  (* | *) `Sem of (loc * rec_expr * rec_expr)
-        (* i = e *)
+  [= `Sem of (loc * rec_expr * rec_expr)
   | `RecBind  of (loc * ident * expr)
   | any (* Faked here to be symmertric to rec_patt *)
   | ant (* $s$ *) ]
@@ -583,8 +578,8 @@ and class_str_item =
 (* Any is necessary, since sometimes you want to [meta_loc_patt] to [_]
    Faked here to make a common subtyp of expr patt to be expressive enough *)
 type ep =
-  [= nil
-  | sid
+  [= (* nil *)
+  (* |  *)sid
   | `App of (loc * ep * ep)
   | `Vrn of (loc * string)
   | `Com of (loc * ep * ep)
@@ -598,8 +593,7 @@ type ep =
   | literal
   | ant ]
 and rec_bind =
-  [= (* nil *)
-  (* | *) `RecBind of (loc * ident * ep)
+  [=  `RecBind of (loc * ident * ep)
   | `Sem of (loc * rec_bind * rec_bind)
   | any
   | ant];

@@ -314,7 +314,6 @@ class eq =
     method patt : patt -> patt -> 'result35=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result35)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result35)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#patt _a1 _b1)
@@ -694,7 +693,6 @@ class eq =
     method ep : ep -> ep -> 'result51=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result51)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result51)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#ep _a0 _b0) && (self#ep _a1 _b1)
@@ -1039,7 +1037,6 @@ class print =
     method patt : 'fmt -> patt -> 'result90=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result90)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result90)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#patt _a0
@@ -1514,7 +1511,6 @@ class print =
     method ep : 'fmt -> ep -> 'result106=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result106)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result106)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#ep _a0 self#ep
@@ -1877,7 +1873,6 @@ and meta_of_ctyp _loc =
   | #nil as _a0 -> (meta_nil _loc _a0 :>'result150)
 and meta_patt _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result149)
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result149)
   | `App (_a0,_a1) ->
       `App
@@ -2572,7 +2567,6 @@ and meta_class_str_item _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result134)
 let rec meta_ep _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result161)
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result161)
   | `App (_a0,_a1) ->
       `App

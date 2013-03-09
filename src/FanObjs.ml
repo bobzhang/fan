@@ -76,17 +76,17 @@ class clean_ast = object
       {| $({@_l||}); $e |} |
       {| $e; $({@_l||} ) |} -> e
     | e -> e ];
-  method! patt p =
-    with patt
-    match super#patt p with
-    [ (* {| ( $p as $({@_l||} ) ) |} | *)
-      {| $({@_l||}) | $p |} |
-      {| $p | $({@_l||} ) |} |
-      {| $({@_l||} ), $p |} |
-      {| $p, $({@_l||} ) |} |
-      {| $({@_l||} ); $p |} |
-      {| $p; $({@_l||} ) |} -> p
-    | p -> p ];
+  (* method! patt p = *)
+
+  (*   match super#patt p with *)
+  (*   [ (\* {| ( $p as $({@_l||} ) ) |} | *\) *)
+  (*     {| $({@_l||}) | $p |} | *)
+  (*     {| $p | $({@_l||} ) |} | *)
+  (*     {| $({@_l||} ), $p |} | *)
+  (*     {| $p, $({@_l||} ) |} | *)
+  (*     {| $({@_l||} ); $p |} | *)
+  (*     {| $p; $({@_l||} ) |} -> p *)
+  (*   | p -> p ]; *)
   method! match_case mc =
     with match_case
     match super#match_case mc with

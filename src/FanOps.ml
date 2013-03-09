@@ -217,15 +217,15 @@ let binding_of_pel l = and_of_list (List.map bi_of_pe l);
     
 
 
-let rec is_irrefut_patt : patt -> bool = with patt
-    fun
+let rec is_irrefut_patt (x: patt) = with patt
+    match x with
     [
       `ArrayEmpty (_loc)
     | `LabelS (_loc,_)
     | {| $lid:_ |} -> true
     | {| () |} -> true
     | {| _ |} -> true
-    | {||} -> true (* why not *)
+    (* | {||} -> true (\* why not *\) *)
     | {| ($x as $_) |} -> is_irrefut_patt x (* && is_irrefut_patt y *)
     | {| { $p } |} ->
         List.for_all (fun [`RecBind (_,_,p) -> is_irrefut_patt p | _ -> true])
@@ -239,9 +239,7 @@ let rec is_irrefut_patt : patt -> bool = with patt
     | `Tup(_,p) -> is_irrefut_patt p
     | `OptLablS _ -> true
     | `OptLabl(_,_,p) | `OptLablExpr(_,_,p,_) -> is_irrefut_patt p
-    | {| ~ $_ |} -> true
-    | {| ~ $_: $p |} -> is_irrefut_patt p
-    | {| lazy $p |} -> is_irrefut_patt p
+    | `Label(_,_,p) | `Lazy (_,p) ->  is_irrefut_patt p
     | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
 
     | `ModuleUnpack _ 

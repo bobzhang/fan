@@ -94,12 +94,11 @@ let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
 let sum_type_of_list l = or_of_list (List.map ty_of_stl l)
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
-let rec is_irrefut_patt: patt -> bool =
-  function
+let rec is_irrefut_patt (x : patt) =
+  match x with
   | `ArrayEmpty _loc|`LabelS (_loc,_)|`Id (_loc,`Lid (_,_)) -> true
   | `Id (_loc,`Uid (_,"()")) -> true
   | `Any _loc -> true
-  | `Nil _loc -> true
   | `Alias (_loc,x,_) -> is_irrefut_patt x
   | `Record (_loc,p) ->
       List.for_all
@@ -113,9 +112,7 @@ let rec is_irrefut_patt: patt -> bool =
   | `Tup (_,p) -> is_irrefut_patt p
   | `OptLablS _ -> true
   | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_patt p
-  | `LabelS (_loc,_) -> true
-  | `Label (_loc,_,p) -> is_irrefut_patt p
-  | `Lazy (_loc,p) -> is_irrefut_patt p
+  | `Label (_,_,p)|`Lazy (_,p) -> is_irrefut_patt p
   | `Id (_loc,_) -> false
   | `ModuleUnpack _|`ModuleConstraint _ -> true
   | `Vrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)

@@ -582,7 +582,7 @@ let apply () = begin
        [ patt{x}; ","; comma_patt{y} -> `Com(_loc,x,y)
        | patt{x}; ";"; sem_patt{y} -> `Sem(_loc,x,y)
        | patt{x} -> x
-       | -> `Nil _loc  ] (*Q*)
+       (* | -> `Nil _loc *)  ] (*Q*)
        patt_as_patt_opt:
        [ patt{p1}; "as"; a_lident{s} -> {| ($p1 as $s) |}
        | patt{p} -> p ]
@@ -601,7 +601,7 @@ let apply () = begin
           match p2 with
             [ {| ($tup:p) |} ->
               List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
-                (list_of_com' p []) (* precise *)
+                (list_of_com p []) (* precise *)
             | _ -> {|$p1 $p2 |}  ]
         | patt_constr{p1} -> p1
         | "lazy"; S{p} -> {| lazy $p |}  ]

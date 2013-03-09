@@ -68,7 +68,7 @@ and or_ctyp =
   | `Of of (loc* sid* ctyp) | sid | ant_nil] 
 and of_ctyp = [ `Of of (loc* sid* ctyp) | sid | ant | nil] 
 and patt =
-  [ nil | sid | `App of (loc* patt* patt) | `Vrn of (loc* string)
+  [ sid | `App of (loc* patt* patt) | `Vrn of (loc* string)
   | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt)
   | `Tup of (loc* patt) | any | `Record of (loc* rec_patt) | ant | literal
   | `Alias of (loc* patt* alident) | `ArrayEmpty of loc
@@ -184,7 +184,7 @@ and class_str_item =
   | `CrVir of (loc* alident* private_flag* ctyp)
   | `CrVvr of (loc* alident* mutable_flag* ctyp) | ant] 
 type ep =
-  [ nil | sid | `App of (loc* ep* ep) | `Vrn of (loc* string)
+  [ sid | `App of (loc* ep* ep) | `Vrn of (loc* string)
   | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep) | `Tup of (loc* ep) | 
     any
   | `ArrayEmpty of loc | `Array of (loc* ep) | `Record of (loc* rec_bind)

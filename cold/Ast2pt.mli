@@ -104,7 +104,7 @@ val override_flag :
 
 val expr : expr -> Parsetree.expression
 
-val patt_of_lab : loc -> string -> patt -> Parsetree.pattern
+(* val patt_of_lab : loc -> string -> patt -> Parsetree.pattern *)
 
 val expr_of_lab : loc -> string -> expr -> Parsetree.expression
 

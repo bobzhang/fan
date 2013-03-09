@@ -62,7 +62,7 @@ and or_ctyp =
   | sid | ant_nil] 
 and of_ctyp = [ `Of of (sid* ctyp) | sid | ant | nil] 
 and patt =
-  [ nil | sid | `App of (patt* patt) | `Vrn of string | `Com of (patt* patt)
+  [ sid | `App of (patt* patt) | `Vrn of string | `Com of (patt* patt)
   | `Sem of (patt* patt) | `Tup of patt | any | `Record of rec_patt | 
     ant
   | literal | `Alias of (patt* alident) | `ArrayEmpty | `Array of patt
@@ -162,7 +162,7 @@ and class_str_item =
   | `CrVir of (alident* private_flag* ctyp)
   | `CrVvr of (alident* mutable_flag* ctyp) | ant] 
 type ep =
-  [ nil | sid | `App of (ep* ep) | `Vrn of string | `Com of (ep* ep)
+  [ sid | `App of (ep* ep) | `Vrn of string | `Com of (ep* ep)
   | `Sem of (ep* ep) | `Tup of ep | any | `ArrayEmpty | `Array of ep
   | `Record of rec_bind | literal | ant] 
 and rec_bind =
