@@ -4810,22 +4810,16 @@ let apply () =
          [([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ));
            `Snterm (Gram.obj (semi : 'semi Gram.t ));
            `Sself],
-            ("Gram.mk_action\n  (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) \n     (_loc : FanLoc.t)  ->\n     (match x2 with | `Nil _ -> x1 | _ -> `Sem (_loc, x1, x2) : 'class_sig_item_quot ))\n",
+            ("Gram.mk_action\n  (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) \n     (_loc : FanLoc.t)  -> (`Sem (_loc, x1, x2) : 'class_sig_item_quot ))\n",
               (Gram.mk_action
                  (fun (x2 : 'class_sig_item_quot)  _  (x1 : 'class_sig_item) 
                     (_loc : FanLoc.t)  ->
-                    (match x2 with | `Nil _ -> x1 | _ -> `Sem (_loc, x1, x2) : 
-                    'class_sig_item_quot )))));
+                    (`Sem (_loc, x1, x2) : 'class_sig_item_quot )))));
          ([`Snterm (Gram.obj (class_sig_item : 'class_sig_item Gram.t ))],
            ("Gram.mk_action\n  (fun (x : 'class_sig_item)  (_loc : FanLoc.t)  ->\n     (x : 'class_sig_item_quot ))\n",
              (Gram.mk_action
                 (fun (x : 'class_sig_item)  (_loc : FanLoc.t)  ->
-                   (x : 'class_sig_item_quot )))));
-         ([],
-           ("Gram.mk_action\n  (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'class_sig_item_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  ->
-                   (`Nil _loc : 'class_sig_item_quot )))))]));
+                   (x : 'class_sig_item_quot )))))]));
    Gram.extend_single (class_signature : 'class_signature Gram.t )
      (None,
        (None, None,
@@ -4864,7 +4858,7 @@ let apply () =
                    | _ ->
                        failwith
                          "`Sem (_loc, (`Ant (_loc, (mk_anti ~c:\"class_sig_item\" n s))), csg)\n"))));
-         ([`Slist0
+         ([`Slist1
              (Gram.srules
                 [([`Snterm
                      (Gram.obj (class_sig_item : 'class_sig_item Gram.t ));
@@ -4873,10 +4867,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (csg : 'class_sig_item)  (_loc : FanLoc.t) 
                            -> (csg : 'e__6 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__6 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list l : 'class_signature ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__6 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list1 l : 'class_signature ))\n",
              (Gram.mk_action
                 (fun (l : 'e__6 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list l : 'class_signature )))))]));
+                   (sem_of_list1 l : 'class_signature )))))]));
    Gram.extend_single (class_sig_item : 'class_sig_item Gram.t )
      (None,
        (None, None,
@@ -5656,7 +5650,15 @@ let apply () =
             (Gram.mk_action
                (fun _  (csg : 'class_signature)  (cst : 'opt_class_self_type)
                    _  (_loc : FanLoc.t)  ->
-                  (`CtSig (_loc, cst, csg) : 'class_type )))))]));
+                  (`CtSig (_loc, cst, csg) : 'class_type )))));
+        ([`Skeyword "object";
+         `Snterm
+           (Gram.obj (opt_class_self_type : 'opt_class_self_type Gram.t ));
+         `Skeyword "end"],
+          ("Gram.mk_action\n  (fun _  (cst : 'opt_class_self_type)  _  (_loc : FanLoc.t)  ->\n     (`CtSigEnd (_loc, cst) : 'class_type ))\n",
+            (Gram.mk_action
+               (fun _  (cst : 'opt_class_self_type)  _  (_loc : FanLoc.t)  ->
+                  (`CtSigEnd (_loc, cst) : 'class_type )))))]));
   Gram.extend_single
     (class_type_longident_and_param : 'class_type_longident_and_param Gram.t )
     (None,

@@ -21,6 +21,7 @@ let loc_of =
   | `Obj (_loc,_) -> _loc
   | `TyPol (_loc,_,_) -> _loc
   | `Val (_loc,_,_) -> _loc
+  | `CtSigEnd (_loc,_) -> _loc
   | `C (_loc,_) -> _loc
   | `LabelS (_loc,_) -> _loc
   | `Str (_loc,_) -> _loc

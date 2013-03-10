@@ -156,12 +156,11 @@ and str_item =
 and class_type =
   [ nil | `CtCon of (loc* virtual_flag* ident* type_parameters)
   | `CtFun of (loc* ctyp* class_type) | `CtSig of (loc* ctyp* class_sig_item)
-  | `And of (loc* class_type* class_type)
+  | `CtSigEnd of (loc* ctyp) | `And of (loc* class_type* class_type)
   | `CtCol of (loc* class_type* class_type)
   | `CtEq of (loc* class_type* class_type) | ant] 
 and class_sig_item =
-  [ nil | `Eq of (loc* ctyp* ctyp)
-  | `Sem of (loc* class_sig_item* class_sig_item)
+  [ `Eq of (loc* ctyp* ctyp) | `Sem of (loc* class_sig_item* class_sig_item)
   | `SigInherit of (loc* class_type)
   | `Method of (loc* alident* private_flag* ctyp)
   | `CgVal of (loc* alident* mutable_flag* virtual_flag* ctyp)

@@ -79,10 +79,6 @@ class clean_ast =
       match super#class_type ct with
       | `And (_loc,`Nil _l,ct)|`And (_loc,ct,`Nil _l) -> ct
       | ct -> ct
-    method! class_sig_item csg =
-      match super#class_sig_item csg with
-      | `Sem (_loc,`Nil _l,csg)|`Sem (_loc,csg,`Nil _l) -> csg
-      | csg -> csg
     method! class_str_item cst =
       match super#class_str_item cst with
       | `Sem (_loc,`Nil _l,cst)|`Sem (_loc,cst,`Nil _l) -> cst

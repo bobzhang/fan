@@ -937,6 +937,11 @@ and class_type (x : Ast.class_type) =
       let t = `App (loc1, (predef_option loc1), t) in
       mkcty loc (Pcty_fun (("?" ^ lab), (ctyp t), (class_type ct)))
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun ("", (ctyp t), (class_type ct)))
+  | `CtSigEnd (loc,t_o) ->
+      let t = match t_o with | `Nil _loc -> `Any loc | t -> t in
+      mkcty loc
+        (Pcty_signature
+           { pcsig_self = (ctyp t); pcsig_fields = []; pcsig_loc = loc })
   | `CtSig (loc,t_o,ctfl) ->
       let t = match t_o with | `Nil _loc -> `Any loc | t -> t in
       let cil = class_sig_item ctfl [] in
@@ -981,7 +986,6 @@ and class_info_class_type (ci : class_type) =
         (dump_class_type ct)
 and class_sig_item (c : class_sig_item) (l : class_type_field list) =
   (match c with
-   | `Nil _ -> l
    | `Eq (loc,t1,t2) -> (mkctf loc (Pctf_cstr ((ctyp t1), (ctyp t2)))) :: l
    | `Sem (_,csg1,csg2) -> class_sig_item csg1 (class_sig_item csg2 l)
    | `SigInherit (loc,ct) -> (mkctf loc (Pctf_inher (class_type ct))) :: l

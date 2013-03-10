@@ -600,6 +600,7 @@ class eq =
             (self#ctyp _a0 _b0) && (self#class_type _a1 _b1)
         | (`CtSig (_a0,_a1),`CtSig (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#class_sig_item _a1 _b1)
+        | (`CtSigEnd _a0,`CtSigEnd _b0) -> self#ctyp _a0 _b0
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
         | (`CtCol (_a0,_a1),`CtCol (_b0,_b1)) ->
@@ -611,7 +612,6 @@ class eq =
     method class_sig_item : class_sig_item -> class_sig_item -> 'result48=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result48)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -1402,6 +1402,8 @@ class print =
         | `CtSig (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CtSig@ %a@ %a)@]" self#ctyp _a0
               self#class_sig_item _a1
+        | `CtSigEnd _a0 ->
+            Format.fprintf fmt "@[<1>(`CtSigEnd@ %a)@]" self#ctyp _a0
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#class_type _a0
               self#class_type _a1
@@ -1415,7 +1417,6 @@ class print =
     method class_sig_item : 'fmt -> class_sig_item -> 'result103=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result103)
         | `Eq (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
@@ -2370,6 +2371,8 @@ and meta_class_type _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "CtSig")), (meta_ctyp _loc _a0))),
           (meta_class_sig_item _loc _a1))
+  | `CtSigEnd _a0 ->
+      `App (_loc, (`Vrn (_loc, "CtSigEnd")), (meta_ctyp _loc _a0))
   | `And (_a0,_a1) ->
       `App
         (_loc,
@@ -2388,7 +2391,6 @@ and meta_class_type _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result137)
 and meta_class_sig_item _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result136)
   | `Eq (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_ctyp _loc _a0))),

@@ -530,8 +530,7 @@ let apply () = begin
            `CaseWhen (_loc, p, w, e)
       | patt_as_patt_opt{p}; "->";expr{e} -> `Case(_loc,p,e)]
       match_case_quot:
-      [ L1 match_case0 SEP "|"{x} -> or_of_list1 x 
-      (* | -> `Nil _loc *) ]  |};
+      [ L1 match_case0 SEP "|"{x} -> or_of_list1 x]  |};
   with rec_expr
       {:extend|
         rec_expr_quot:
@@ -1020,16 +1019,16 @@ let apply () = begin
     {:extend|
       class_sig_item_quot:
       [ class_sig_item{x1}; semi; S{x2} ->
-        match x2 with
-        [ `Nil _ -> x1
-        | _ -> `Sem(_loc,x1,x2) ]
+        (* match x2 with *)
+        (* [ `Nil _ -> x1 *)
+        (* | _ -> *) `Sem(_loc,x1,x2) (* ] *)
       | class_sig_item{x} -> x
-      | -> `Nil _loc ]
+      (* | -> `Nil _loc  *)]
       class_signature:
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `Ant ((""|"csg"|"anti"|"list" as n),s); semi; S{csg} ->
           {| $(anti:mk_anti ~c:"class_sig_item" n s); $csg |}
-      | L0 [ class_sig_item{csg}; semi -> csg ]{l} -> sem_of_list l ]
+      | L1 [ class_sig_item{csg}; semi -> csg ]{l} -> sem_of_list1 l ]
       class_sig_item:
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_sig_item_tag
@@ -1181,7 +1180,11 @@ let apply () = begin
       | class_type_longident_and_param{ct} -> ct
 
       | "object"; opt_class_self_type{cst}; class_signature{csg}; "end" ->
-          {| object ($cst) $csg end |} ]
+          `CtSig(_loc,cst,csg)
+      | "object";opt_class_self_type{cst};"end" ->
+          `CtSigEnd(_loc,cst)
+      ]
+      
       class_type_longident_and_param:
       [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->
         `CtCon (_loc, (`ViNil _loc), i, t)

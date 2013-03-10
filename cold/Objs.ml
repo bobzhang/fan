@@ -1027,6 +1027,9 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
             let _a2 = self#class_sig_item _a2 _b2 in `CtSig (_a0, _a1, _a2)
+        | (`CtSigEnd (_a0,_a1),`CtSigEnd (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#ctyp _a1 _b1 in `CtSigEnd (_a0, _a1)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_type _a1 _b1 in
@@ -1046,8 +1049,6 @@ class map2 =
       class_sig_item -> class_sig_item -> class_sig_item=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>class_sig_item)
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -2014,6 +2015,8 @@ class fold2 =
         | (`CtSig (_a0,_a1,_a2),`CtSig (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#class_sig_item _a2 _b2
+        | (`CtSigEnd (_a0,_a1),`CtSigEnd (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_type _a1 _b1 in self#class_type _a2 _b2
@@ -2028,7 +2031,6 @@ class fold2 =
     method class_sig_item : class_sig_item -> class_sig_item -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -2643,6 +2645,7 @@ class iter =
           (self#loc _a0; self#ctyp _a1; self#class_type _a2)
       | `CtSig (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#class_sig_item _a2)
+      | `CtSigEnd (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `And (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_type _a1; self#class_type _a2)
       | `CtCol (_a0,_a1,_a2) ->
@@ -2652,7 +2655,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result157)
     method class_sig_item : class_sig_item -> 'result158=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result158)
       | `Eq (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Sem (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_sig_item _a1; self#class_sig_item _a2)
@@ -3610,6 +3612,9 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
           let _a2 = self#class_sig_item _a2 in `CtSig (_a0, _a1, _a2)
+      | `CtSigEnd (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#ctyp _a1 in `CtSigEnd (_a0, _a1)
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_type _a1 in
@@ -3625,7 +3630,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>class_type)
     method class_sig_item : class_sig_item -> class_sig_item=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>class_sig_item)
       | `Eq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -4391,6 +4395,7 @@ class fold =
       | `CtSig (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#class_sig_item _a2
+      | `CtSigEnd (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_type _a1 in self#class_type _a2
@@ -4403,7 +4408,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method class_sig_item : class_sig_item -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -5309,6 +5313,9 @@ class print =
         | `CtSig (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtSig@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#class_sig_item _a2
+        | `CtSigEnd (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`CtSigEnd@ %a@ %a)@]" self#loc _a0
+              self#ctyp _a1
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#class_type _a1 self#class_type _a2
@@ -5322,7 +5329,6 @@ class print =
     method class_sig_item : 'fmt -> class_sig_item -> 'result323=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result323)
         | `Eq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -6228,6 +6234,8 @@ class eq =
         | (`CtSig (_a0,_a1,_a2),`CtSig (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#class_sig_item _a2 _b2)
+        | (`CtSigEnd (_a0,_a1),`CtSigEnd (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_type _a1 _b1)) &&
               (self#class_type _a2 _b2)
@@ -6242,7 +6250,6 @@ class eq =
     method class_sig_item : class_sig_item -> class_sig_item -> 'result378=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result378)
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -6983,6 +6990,7 @@ and strip_loc_class_type =
   | `CtSig (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_class_sig_item _a2 in `CtSig (_a1, _a2)
+  | `CtSigEnd (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `CtSigEnd _a1
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_type _a1 in
       let _a2 = strip_loc_class_type _a2 in `And (_a1, _a2)
@@ -6995,7 +7003,6 @@ and strip_loc_class_type =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result411)
 and strip_loc_class_sig_item =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result410)
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
@@ -7851,6 +7858,9 @@ and pp_print_class_type fmt =
   | `CtSig (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CtSig@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_class_sig_item _a2
+  | `CtSigEnd (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`CtSigEnd@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_ctyp _a1
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_type _a1 pp_print_class_type _a2
@@ -7863,7 +7873,6 @@ and pp_print_class_type fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result464)
 and pp_print_class_sig_item fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result463)
   | `Eq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2

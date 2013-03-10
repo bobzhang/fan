@@ -188,11 +188,11 @@ class clean_ast = object
     [ {| $({@_l||} ) and $ct |} | {| $ct and $({@_l||} ) |} -> ct
     | ct -> ct ];
 
-  method! class_sig_item csg =
-    with class_sig_item
-    match super#class_sig_item csg with
-    [ {| $({@_l||} ); $csg |} | {| $csg; $({@_l||} ) |} -> csg
-    | csg -> csg ];
+  (* method! class_sig_item csg = *)
+  (*   with class_sig_item *)
+  (*   match super#class_sig_item csg with *)
+  (*   [ {| $({@_l||} ); $csg |} | {| $csg; $({@_l||} ) |} -> csg *)
+  (*   | csg -> csg ]; *)
 
   method! class_str_item cst =
     with class_str_item

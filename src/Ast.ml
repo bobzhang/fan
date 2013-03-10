@@ -441,9 +441,7 @@ and module_binding =
   | `Constraint  of (loc * auident * module_type)
   | ant ]
 and match_case =
-  [= (* nil *)
-  (* | *) `Or of (loc * match_case * match_case)
-        (* p (when e)? -> e *)
+  [= `Or of (loc * match_case * match_case)
   | `Case of (loc * patt * expr)
   | `CaseWhen of (loc * patt * expr * expr)
   | ant  ]
@@ -493,6 +491,8 @@ and str_item =
         (* value (rec)? bi *)
   | `Value of (loc * rec_flag * binding)
   | ant (* $s$ *) ]
+
+(* class body type *)         
 and class_type =
   [= nil
      (* (virtual)? i ([ t ])? *)
@@ -501,6 +501,7 @@ and class_type =
   | `CtFun of (loc * ctyp * class_type)
       (* object ((t))? (csg)? end *)
   | `CtSig of (loc * ctyp * class_sig_item)
+  | `CtSigEnd of (loc * ctyp)
         (* ct and ct *)
   | `And of (loc * class_type * class_type)
         (* ct : ct *)
@@ -509,9 +510,9 @@ and class_type =
   | `CtEq  of (loc * class_type * class_type)
   | ant ]
 and class_sig_item =
-  [= nil
+  [= (* nil *)
      (* type t = t *)
-  | `Eq of (loc * ctyp * ctyp)
+  (* | *) `Eq of (loc * ctyp * ctyp)
         (* csg ; csg *)
   | `Sem of (loc * class_sig_item * class_sig_item)
         (* inherit ct *)
