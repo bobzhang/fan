@@ -2,16 +2,12 @@ open PreCast.Syntax
 open FanMacroTools
 open Lib
 let macro_def = Gram.mk "macro_def"
-let macro_def_sig = Gram.mk "macro_def_sig"
 let uident_eval_ifdef = Gram.mk "uident_eval_ifdef"
 let uident_eval_ifndef = Gram.mk "uident_eval_ifndef"
 let else_macro_def = Gram.mk "else_macro_def"
-let else_macro_def_sig = Gram.mk "else_macro_def_sig"
 let else_expr = Gram.mk "else_expr"
 let smlist_then = Gram.mk "smlist_then"
 let smlist_else = Gram.mk "smlist_else"
-let sglist_then = Gram.mk "sglist_then"
-let sglist_else = Gram.mk "sglist_else"
 let endif = Gram.mk "endif"
 let opt_macro_value = Gram.mk "opt_macro_value"
 let uident = Gram.mk "uident"
@@ -26,15 +22,6 @@ let apply () =
                     (execute_macro ~expr ~patt
                        (`StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
                        (fun a  b  -> `Sem (_loc, a, b)) x : 'str_item )))))]));
-   Gram.extend_single (sig_item : 'sig_item Gram.t )
-     ((Some `First),
-       (None, None,
-         [([`Snterm (Gram.obj (macro_def_sig : 'macro_def_sig Gram.t ))],
-            ("Gram.mk_action\n  (fun (x : 'macro_def_sig)  (_loc : FanLoc.t)  ->\n     (execute_macro ~expr ~patt (`Nil _loc) (fun a  b  -> `Sem (_loc, a, b))\n        x : 'sig_item ))\n",
-              (Gram.mk_action
-                 (fun (x : 'macro_def_sig)  (_loc : FanLoc.t)  ->
-                    (execute_macro ~expr ~patt (`Nil _loc)
-                       (fun a  b  -> `Sem (_loc, a, b)) x : 'sig_item )))))]));
    Gram.extend_single (macro_def : 'macro_def Gram.t )
      (None,
        (None, None,
@@ -86,58 +73,6 @@ let apply () =
                    | _ ->
                        failwith
                          "Lazy (lazy (FanBasic.parse_include_file str_items fname))\n"))))]));
-   Gram.extend_single (macro_def_sig : 'macro_def_sig Gram.t )
-     (None,
-       (None, None,
-         [([`Skeyword "DEFINE";
-           `Snterm (Gram.obj (uident : 'uident Gram.t ))],
-            ("Gram.mk_action\n  (fun (i : 'uident)  _  (_loc : FanLoc.t)  ->\n     (Def (i, None) : 'macro_def_sig ))\n",
-              (Gram.mk_action
-                 (fun (i : 'uident)  _  (_loc : FanLoc.t)  ->
-                    (Def (i, None) : 'macro_def_sig )))));
-         ([`Skeyword "UNDEF"; `Snterm (Gram.obj (uident : 'uident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'uident)  _  (_loc : FanLoc.t)  -> (Und i : 'macro_def_sig ))\n",
-             (Gram.mk_action
-                (fun (i : 'uident)  _  (_loc : FanLoc.t)  ->
-                   (Und i : 'macro_def_sig )))));
-         ([`Skeyword "IFDEF";
-          `Snterm (Gram.obj (uident_eval_ifdef : 'uident_eval_ifdef Gram.t ));
-          `Skeyword "THEN";
-          `Snterm (Gram.obj (sglist_then : 'sglist_then Gram.t ));
-          `Snterm
-            (Gram.obj (else_macro_def_sig : 'else_macro_def_sig Gram.t ))],
-           ("Gram.mk_action\n  (fun (sg2 : 'else_macro_def_sig)  (sg1 : 'sglist_then)  _  _  _ \n     (_loc : FanLoc.t)  -> (make_ITE_result sg1 sg2 : 'macro_def_sig ))\n",
-             (Gram.mk_action
-                (fun (sg2 : 'else_macro_def_sig)  (sg1 : 'sglist_then)  _  _ 
-                   _  (_loc : FanLoc.t)  ->
-                   (make_ITE_result sg1 sg2 : 'macro_def_sig )))));
-         ([`Skeyword "IFNDEF";
-          `Snterm
-            (Gram.obj (uident_eval_ifndef : 'uident_eval_ifndef Gram.t ));
-          `Skeyword "THEN";
-          `Snterm (Gram.obj (sglist_then : 'sglist_then Gram.t ));
-          `Snterm
-            (Gram.obj (else_macro_def_sig : 'else_macro_def_sig Gram.t ))],
-           ("Gram.mk_action\n  (fun (sg2 : 'else_macro_def_sig)  (sg1 : 'sglist_then)  _  _  _ \n     (_loc : FanLoc.t)  -> (make_ITE_result sg1 sg2 : 'macro_def_sig ))\n",
-             (Gram.mk_action
-                (fun (sg2 : 'else_macro_def_sig)  (sg1 : 'sglist_then)  _  _ 
-                   _  (_loc : FanLoc.t)  ->
-                   (make_ITE_result sg1 sg2 : 'macro_def_sig )))));
-         ([`Skeyword "INCLUDE";
-          `Stoken
-            (((function | `STR (_,_) -> true | _ -> false)),
-              (`Normal, "`STR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,fname) ->\n         (Lazy (lazy (FanBasic.parse_include_file sig_items fname)) : \n         'macro_def_sig )\n     | _ ->\n         failwith\n           \"Lazy (lazy (FanBasic.parse_include_file sig_items fname))\n\")\n",
-             (Gram.mk_action
-                (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
-                   match __fan_1 with
-                   | `STR (_,fname) ->
-                       (Lazy
-                          (lazy (FanBasic.parse_include_file sig_items fname)) : 
-                       'macro_def_sig )
-                   | _ ->
-                       failwith
-                         "Lazy (lazy (FanBasic.parse_include_file sig_items fname))\n"))))]));
    Gram.extend_single (uident_eval_ifdef : 'uident_eval_ifdef Gram.t )
      (None,
        (None, None,
@@ -168,20 +103,6 @@ let apply () =
            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> ([] : 'else_macro_def ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  -> ([] : 'else_macro_def )))))]));
-   Gram.extend_single (else_macro_def_sig : 'else_macro_def_sig Gram.t )
-     (None,
-       (None, None,
-         [([`Skeyword "ELSE";
-           `Snterm (Gram.obj (sglist_else : 'sglist_else Gram.t ));
-           `Snterm (Gram.obj (endif : 'endif Gram.t ))],
-            ("Gram.mk_action\n  (fun _  (st : 'sglist_else)  _  (_loc : FanLoc.t)  ->\n     (st : 'else_macro_def_sig ))\n",
-              (Gram.mk_action
-                 (fun _  (st : 'sglist_else)  _  (_loc : FanLoc.t)  ->
-                    (st : 'else_macro_def_sig )))));
-         ([`Snterm (Gram.obj (endif : 'endif Gram.t ))],
-           ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> ([] : 'else_macro_def_sig ))\n",
-             (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> ([] : 'else_macro_def_sig )))))]));
    Gram.extend_single (else_expr : 'else_expr Gram.t )
      (None,
        (None, None,
@@ -247,54 +168,6 @@ let apply () =
               (Gram.mk_action
                  (fun (sml : 'e__2 list)  (_loc : FanLoc.t)  ->
                     (sml : 'smlist_else )))))]));
-   Gram.extend_single (sglist_then : 'sglist_then Gram.t )
-     (None,
-       (None, None,
-         [([`Slist1
-              (Gram.srules
-                 [([`Snterm
-                      (Gram.obj (macro_def_sig : 'macro_def_sig Gram.t ));
-                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                    ("Gram.mk_action\n  (fun _  (d : 'macro_def_sig)  (_loc : FanLoc.t)  ->\n     (execute_macro_if_active_branch ~expr ~patt _loc (`Nil _loc)\n        (fun a  b  -> `Sem (_loc, a, b)) Then d : 'e__3 ))\n",
-                      (Gram.mk_action
-                         (fun _  (d : 'macro_def_sig)  (_loc : FanLoc.t)  ->
-                            (execute_macro_if_active_branch ~expr ~patt _loc
-                               (`Nil _loc) (fun a  b  -> `Sem (_loc, a, b))
-                               Then d : 'e__3 )))));
-                 ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
-                  `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                   ("Gram.mk_action\n  (fun _  (si : 'sig_item)  (_loc : FanLoc.t)  -> (Str si : 'e__3 ))\n",
-                     (Gram.mk_action
-                        (fun _  (si : 'sig_item)  (_loc : FanLoc.t)  ->
-                           (Str si : 'e__3 )))))])],
-            ("Gram.mk_action\n  (fun (sgl : 'e__3 list)  (_loc : FanLoc.t)  -> (sgl : 'sglist_then ))\n",
-              (Gram.mk_action
-                 (fun (sgl : 'e__3 list)  (_loc : FanLoc.t)  ->
-                    (sgl : 'sglist_then )))))]));
-   Gram.extend_single (sglist_else : 'sglist_else Gram.t )
-     (None,
-       (None, None,
-         [([`Slist1
-              (Gram.srules
-                 [([`Snterm
-                      (Gram.obj (macro_def_sig : 'macro_def_sig Gram.t ));
-                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                    ("Gram.mk_action\n  (fun _  (d : 'macro_def_sig)  (_loc : FanLoc.t)  ->\n     (execute_macro_if_active_branch ~expr ~patt _loc (`Nil _loc)\n        (fun a  b  -> `Sem (_loc, a, b)) Else d : 'e__4 ))\n",
-                      (Gram.mk_action
-                         (fun _  (d : 'macro_def_sig)  (_loc : FanLoc.t)  ->
-                            (execute_macro_if_active_branch ~expr ~patt _loc
-                               (`Nil _loc) (fun a  b  -> `Sem (_loc, a, b))
-                               Else d : 'e__4 )))));
-                 ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
-                  `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                   ("Gram.mk_action\n  (fun _  (si : 'sig_item)  (_loc : FanLoc.t)  -> (Str si : 'e__4 ))\n",
-                     (Gram.mk_action
-                        (fun _  (si : 'sig_item)  (_loc : FanLoc.t)  ->
-                           (Str si : 'e__4 )))))])],
-            ("Gram.mk_action\n  (fun (sgl : 'e__4 list)  (_loc : FanLoc.t)  -> (sgl : 'sglist_else ))\n",
-              (Gram.mk_action
-                 (fun (sgl : 'e__4 list)  (_loc : FanLoc.t)  ->
-                    (sgl : 'sglist_else )))))]));
    Gram.extend_single (endif : 'endif Gram.t )
      (None,
        (None, None,
@@ -313,19 +186,19 @@ let apply () =
                  [([`Stoken
                       (((function | `Lid _ -> true | _ -> false)),
                         (`Normal, "`Lid _"))],
-                    ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__5 ) | _ -> failwith \"x\n\")\n",
+                    ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with | `Lid x -> (x : 'e__3 ) | _ -> failwith \"x\n\")\n",
                       (Gram.mk_action
                          (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
                             ->
                             match __fan_0 with
-                            | `Lid x -> (x : 'e__5 )
+                            | `Lid x -> (x : 'e__3 )
                             | _ -> failwith "x\n"))))]), (`Skeyword ","));
            `Skeyword ")";
            `Skeyword "=";
            `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-            ("Gram.mk_action\n  (fun (e : 'expr)  _  _  (pl : 'e__5 list)  _  (_loc : FanLoc.t)  ->\n     (Some (pl, e) : 'opt_macro_value ))\n",
+            ("Gram.mk_action\n  (fun (e : 'expr)  _  _  (pl : 'e__3 list)  _  (_loc : FanLoc.t)  ->\n     (Some (pl, e) : 'opt_macro_value ))\n",
               (Gram.mk_action
-                 (fun (e : 'expr)  _  _  (pl : 'e__5 list)  _ 
+                 (fun (e : 'expr)  _  _  (pl : 'e__3 list)  _ 
                     (_loc : FanLoc.t)  -> (Some (pl, e) : 'opt_macro_value )))));
          ([`Skeyword "="; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
            ("Gram.mk_action\n  (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->\n     (Some ([], e) : 'opt_macro_value ))\n",
@@ -422,48 +295,48 @@ let apply () =
          [([`Skeyword "`";
            Gram.srules
              [([`Skeyword "IFDEF"],
-                ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__6 ))\n",
+                ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__4 ))\n",
                   (Gram.mk_action
                      (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                        (Gram.string_of_token x : 'e__6 )))));
+                        (Gram.string_of_token x : 'e__4 )))));
              ([`Skeyword "IFNDEF"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__6 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__4 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__6 )))));
+                       (Gram.string_of_token x : 'e__4 )))));
              ([`Skeyword "THEN"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__6 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__4 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__6 )))));
+                       (Gram.string_of_token x : 'e__4 )))));
              ([`Skeyword "ELSE"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__6 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__4 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__6 )))));
+                       (Gram.string_of_token x : 'e__4 )))));
              ([`Skeyword "END"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__6 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__4 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__6 )))));
+                       (Gram.string_of_token x : 'e__4 )))));
              ([`Skeyword "ENDIF"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__6 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__4 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__6 )))));
+                       (Gram.string_of_token x : 'e__4 )))));
              ([`Skeyword "DEFINE"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__6 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__4 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__6 )))));
+                       (Gram.string_of_token x : 'e__4 )))));
              ([`Skeyword "IN"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__6 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__4 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__6 )))))]],
-            ("Gram.mk_action\n  (fun (kwd : 'e__6)  _  (_loc : FanLoc.t)  -> (`Vrn (_loc, kwd) : 'expr ))\n",
+                       (Gram.string_of_token x : 'e__4 )))))]],
+            ("Gram.mk_action\n  (fun (kwd : 'e__4)  _  (_loc : FanLoc.t)  -> (`Vrn (_loc, kwd) : 'expr ))\n",
               (Gram.mk_action
-                 (fun (kwd : 'e__6)  _  (_loc : FanLoc.t)  ->
+                 (fun (kwd : 'e__4)  _  (_loc : FanLoc.t)  ->
                     (`Vrn (_loc, kwd) : 'expr )))));
          ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
            ("Gram.mk_action\n  (fun (s : 'luident)  _  (_loc : FanLoc.t)  -> (`Vrn (_loc, s) : 'expr ))\n",
@@ -476,38 +349,38 @@ let apply () =
          [([`Skeyword "`";
            Gram.srules
              [([`Skeyword "IFDEF"],
-                ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__7 ))\n",
+                ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__5 ))\n",
                   (Gram.mk_action
                      (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                        (Gram.string_of_token x : 'e__7 )))));
+                        (Gram.string_of_token x : 'e__5 )))));
              ([`Skeyword "IFNDEF"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__7 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__5 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__7 )))));
+                       (Gram.string_of_token x : 'e__5 )))));
              ([`Skeyword "THEN"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__7 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__5 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__7 )))));
+                       (Gram.string_of_token x : 'e__5 )))));
              ([`Skeyword "ELSE"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__7 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__5 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__7 )))));
+                       (Gram.string_of_token x : 'e__5 )))));
              ([`Skeyword "END"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__7 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__5 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__7 )))));
+                       (Gram.string_of_token x : 'e__5 )))));
              ([`Skeyword "ENDIF"],
-               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__7 ))\n",
+               ("Gram.mk_action\n  (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     (Gram.string_of_token x : 'e__5 ))\n",
                  (Gram.mk_action
                     (fun (x : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                       (Gram.string_of_token x : 'e__7 )))))]],
-            ("Gram.mk_action\n  (fun (kwd : 'e__7)  _  (_loc : FanLoc.t)  -> (`Vrn (_loc, kwd) : 'patt ))\n",
+                       (Gram.string_of_token x : 'e__5 )))))]],
+            ("Gram.mk_action\n  (fun (kwd : 'e__5)  _  (_loc : FanLoc.t)  -> (`Vrn (_loc, kwd) : 'patt ))\n",
               (Gram.mk_action
-                 (fun (kwd : 'e__7)  _  (_loc : FanLoc.t)  ->
+                 (fun (kwd : 'e__5)  _  (_loc : FanLoc.t)  ->
                     (`Vrn (_loc, kwd) : 'patt )))));
          ([`Skeyword "`"; `Snterm (Gram.obj (luident : 'luident Gram.t ))],
            ("Gram.mk_action\n  (fun (s : 'luident)  _  (_loc : FanLoc.t)  -> (`Vrn (_loc, s) : 'patt ))\n",

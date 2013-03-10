@@ -650,7 +650,12 @@ let apply () =
             ("Gram.mk_action\n  (fun _  (sg : 'sig_items)  _  (_loc : FanLoc.t)  ->\n     (`Sig (_loc, sg) : 'module_type ))\n",
               (Gram.mk_action
                  (fun _  (sg : 'sig_items)  _  (_loc : FanLoc.t)  ->
-                    (`Sig (_loc, sg) : 'module_type )))))]);
+                    (`Sig (_loc, sg) : 'module_type )))));
+         ([`Skeyword "sig"; `Skeyword "end"],
+           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`SigEnd _loc : 'module_type ))\n",
+             (Gram.mk_action
+                (fun _  _  (_loc : FanLoc.t)  ->
+                   (`SigEnd _loc : 'module_type )))))]);
        ((Some "simple"), None,
          [([`Stoken
               (((function
@@ -751,22 +756,16 @@ let apply () =
          ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
           `Snterm (Gram.obj (semi : 'semi Gram.t ));
           `Sself],
-           ("Gram.mk_action\n  (fun (sg2 : 'sig_item_quot)  _  (sg1 : 'sig_item)  (_loc : FanLoc.t)  ->\n     (match sg2 with | `Nil _ -> sg1 | _ -> `Sem (_loc, sg1, sg2) : 'sig_item_quot ))\n",
+           ("Gram.mk_action\n  (fun (sg2 : 'sig_item_quot)  _  (sg1 : 'sig_item)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, sg1, sg2) : 'sig_item_quot ))\n",
              (Gram.mk_action
                 (fun (sg2 : 'sig_item_quot)  _  (sg1 : 'sig_item) 
                    (_loc : FanLoc.t)  ->
-                   (match sg2 with
-                    | `Nil _ -> sg1
-                    | _ -> `Sem (_loc, sg1, sg2) : 'sig_item_quot )))));
+                   (`Sem (_loc, sg1, sg2) : 'sig_item_quot )))));
          ([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ))],
            ("Gram.mk_action\n  (fun (sg : 'sig_item)  (_loc : FanLoc.t)  -> (sg : 'sig_item_quot ))\n",
              (Gram.mk_action
                 (fun (sg : 'sig_item)  (_loc : FanLoc.t)  ->
-                   (sg : 'sig_item_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'sig_item_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'sig_item_quot )))))]));
+                   (sg : 'sig_item_quot )))))]));
    Gram.extend_single (sig_item : 'sig_item Gram.t )
      (None,
        (None, None,
@@ -849,14 +848,6 @@ let apply () =
                 (fun (mt : 'module_type)  _  (i : 'a_uident)  _  _ 
                    (_loc : FanLoc.t)  ->
                    (`ModuleType (_loc, i, mt) : 'sig_item )))));
-         ([`Skeyword "import";
-          `Snterm (Gram.obj (dot_namespace : 'dot_namespace Gram.t ))],
-           ("Gram.mk_action\n  (fun (x : 'dot_namespace)  _  (_loc : FanLoc.t)  ->\n     (FanToken.paths := ((`Absolute x) :: (FanToken.paths.contents));\n      `Nil _loc : 'sig_item ))\n",
-             (Gram.mk_action
-                (fun (x : 'dot_namespace)  _  (_loc : FanLoc.t)  ->
-                   (FanToken.paths := ((`Absolute x) ::
-                      (FanToken.paths.contents));
-                    `Nil _loc : 'sig_item )))));
          ([`Skeyword "module";
           `Skeyword "type";
           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
@@ -968,7 +959,7 @@ let apply () =
                    | _ ->
                        failwith
                          "`Sem (_loc, (`Ant (_loc, (mk_anti n ~c:\"sig_item\" s))), sg)\n"))));
-         ([`Slist0
+         ([`Slist1
              (Gram.srules
                 [([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
@@ -976,10 +967,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (sg : 'sig_item)  (_loc : FanLoc.t)  ->
                            (sg : 'e__1 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__1 list)  (_loc : FanLoc.t)  -> (sem_of_list l : 'sig_items ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__1 list)  (_loc : FanLoc.t)  -> (sem_of_list1 l : 'sig_items ))\n",
              (Gram.mk_action
                 (fun (l : 'e__1 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list l : 'sig_items )))))])));
+                   (sem_of_list1 l : 'sig_items )))))])));
   (let grammar_entry_create = Gram.mk in
    let fun_def_patt: 'fun_def_patt Gram.t =
      grammar_entry_create "fun_def_patt" in

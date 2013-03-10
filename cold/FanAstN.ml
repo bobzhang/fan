@@ -464,6 +464,7 @@ class eq =
             ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
               (self#module_type _a2 _b2)
         | (`Sig _a0,`Sig _b0) -> self#sig_item _a0 _b0
+        | (`SigEnd,`SigEnd) -> true
         | (`With (_a0,_a1),`With (_b0,_b1)) ->
             (self#module_type _a0 _b0) && (self#with_constr _a1 _b1)
         | (`ModuleTypeOf _a0,`ModuleTypeOf _b0) -> self#module_expr _a0 _b0
@@ -472,7 +473,6 @@ class eq =
     method sig_item : sig_item -> sig_item -> 'result40=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result40)
         | (`Class _a0,`Class _b0) -> self#class_type _a0 _b0
         | (`ClassType _a0,`ClassType _b0) -> self#class_type _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -1229,6 +1229,7 @@ class print =
               self#module_type _a1 self#module_type _a2
         | `Sig _a0 ->
             Format.fprintf fmt "@[<1>(`Sig@ %a)@]" self#sig_item _a0
+        | `SigEnd -> Format.fprintf fmt "`SigEnd"
         | `With (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`With@ %a@ %a)@]" self#module_type _a0
               self#with_constr _a1
@@ -1239,7 +1240,6 @@ class print =
     method sig_item : 'fmt -> sig_item -> 'result95=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result95)
         | `Class _a0 ->
             Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#class_type _a0
         | `ClassType _a0 ->
@@ -2141,6 +2141,7 @@ and meta_module_type _loc =
                (`App (_loc, (`Vrn (_loc, "MtFun")), (meta_auident _loc _a0))),
                (meta_module_type _loc _a1))), (meta_module_type _loc _a2))
   | `Sig _a0 -> `App (_loc, (`Vrn (_loc, "Sig")), (meta_sig_item _loc _a0))
+  | `SigEnd -> `Vrn (_loc, "SigEnd")
   | `With (_a0,_a1) ->
       `App
         (_loc,
@@ -2151,7 +2152,6 @@ and meta_module_type _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result145)
 and meta_sig_item _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result144)
   | `Class _a0 ->
       `App (_loc, (`Vrn (_loc, "Class")), (meta_class_type _loc _a0))
   | `ClassType _a0 ->

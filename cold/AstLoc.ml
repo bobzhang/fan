@@ -129,6 +129,7 @@ let loc_of =
   | `CtCol (_loc,_,_) -> _loc
   | `RecordWith (_loc,_,_) -> _loc
   | `And (_loc,_,_) -> _loc
+  | `SigEnd _loc -> _loc
   | `TyDcl (_loc,_,_,_,_) -> _loc
   | `StructEnd _loc -> _loc
   | `Int32 (_loc,_) -> _loc

@@ -1000,6 +1000,8 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Sig")), (meta_loc _loc _a0))),
               (meta_sig_item _loc _a1))
+      | `SigEnd _a0 ->
+          `App (_loc, (`Vrn (_loc, "SigEnd")), (meta_loc _loc _a0))
       | `With (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1017,7 +1019,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result35)
     and meta_sig_item _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result34)
       | `Class (_a0,_a1) ->
           `App
             (_loc,

@@ -112,10 +112,11 @@ and rec_expr =
   | ant] 
 and module_type =
   [ nil | sid | `MtFun of (loc* auident* module_type* module_type)
-  | `Sig of (loc* sig_item) | `With of (loc* module_type* with_constr)
+  | `Sig of (loc* sig_item) | `SigEnd of loc
+  | `With of (loc* module_type* with_constr)
   | `ModuleTypeOf of (loc* module_expr) | ant] 
 and sig_item =
-  [ nil | `Class of (loc* class_type) | `ClassType of (loc* class_type)
+  [ `Class of (loc* class_type) | `ClassType of (loc* class_type)
   | `Sem of (loc* sig_item* sig_item) | `DirectiveSimple of (loc* alident)
   | `Directive of (loc* alident* expr) | `Exception of (loc* of_ctyp)
   | `External of (loc* alident* ctyp* strings)

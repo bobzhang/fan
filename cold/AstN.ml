@@ -99,10 +99,10 @@ and rec_expr =
   [ `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | any | ant] 
 and module_type =
   [ nil | sid | `MtFun of (auident* module_type* module_type)
-  | `Sig of sig_item | `With of (module_type* with_constr)
+  | `Sig of sig_item | `SigEnd | `With of (module_type* with_constr)
   | `ModuleTypeOf of module_expr | ant] 
 and sig_item =
-  [ nil | `Class of class_type | `ClassType of class_type
+  [ `Class of class_type | `ClassType of class_type
   | `Sem of (sig_item* sig_item) | `DirectiveSimple of alident
   | `Directive of (alident* expr) | `Exception of of_ctyp
   | `External of (alident* ctyp* strings) | `Include of module_type

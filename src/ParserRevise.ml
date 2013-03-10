@@ -217,7 +217,8 @@ let apply () = begin
           acc0 mt1 mt2
           (* ModuleType.acc0 mt1 mt2 *) ] (*FIXME*)
         "sig"
-        [ "sig"; sig_items{sg}; "end" -> {| sig $sg end |} ]
+        [ "sig"; sig_items{sg}; "end" -> `Sig(_loc,sg)
+        | "sig";"end" -> `SigEnd(_loc)]
        "simple"
         [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_type" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_type_tag
@@ -240,11 +241,13 @@ let apply () = begin
     [ "#"; a_lident{s} -> `DirectiveSimple(_loc,s)
     | "#"; a_lident{s}; expr{dp} -> `Directive(_loc,s,dp)
     | sig_item{sg1}; semi; S{sg2} ->
-        match sg2 with
-        [ `Nil _ -> sg1
-        | _ -> `Sem(_loc,sg1,sg2) ]
+        `Sem(_loc,sg1,sg2)
+        (* match sg2 with *)
+        (* [ `Nil _ -> sg1 (\*M*\) *)
+        (* | _ -> `Sem(_loc,sg1,sg2) ] *)
     | sig_item{sg} -> sg
-    | -> `Nil _loc ]
+    (* | -> `Nil _loc *)
+    ] (*M*)
     sig_item:
     [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
     | `QUOTATION x -> AstQuotation.expand _loc x DynAst.sig_item_tag
@@ -257,10 +260,10 @@ let apply () = begin
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
     | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
         `ModuleType(_loc,i,mt)
-    | "import"; dot_namespace{x} -> begin 
-        FanToken.paths := [ `Absolute  x :: !FanToken.paths];
-        `Nil _loc (*FIXME may be as an diretive ? *) (*M*)
-    end
+    (* | "import"; dot_namespace{x} -> begin  *)
+    (*     FanToken.paths := [ `Absolute  x :: !FanToken.paths]; *)
+    (*     `Nil _loc (\*FIXME may be as an diretive ? *\) (\*M*\) *)
+    (* end *)
     | "module"; "type"; a_uident{i} -> {| module type $i |}
     | "open"; module_longident{i} -> {| open $i |}
 
@@ -278,7 +281,7 @@ let apply () = begin
     sig_items:
     [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti n ~c:"sig_item" s) |}
     | `Ant ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->  {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
-    | L0 [ sig_item{sg}; semi -> sg ]{l} -> sem_of_list l  ]
+    | L1 [ sig_item{sg}; semi -> sg ]{l} -> sem_of_list1 l  ]
  |};
 
     with expr
@@ -985,12 +988,9 @@ let apply () = begin
       str_item_quot:
       [ "#"; a_lident{n}; expr{dp} -> `Directive(_loc,n,dp)
       | "#"; a_lident{n} -> `DirectiveSimple(_loc,n)
-      | str_item{st1}; semi; S{st2} ->
-          (* match st2 with *)
-          (* [ `Nil _ -> st1 (\*M*\) *)
-          (* | _ ->  *)`Sem(_loc,st1,st2) (* ] *)
-      | str_item{st} -> st
-      (* | -> `Nil _loc *) ] (*M*)
+      | str_item{st1}; semi; S{st2} -> `Sem(_loc,st1,st2)
+      | str_item{st} -> st]
+
       str_item:
       { "top"
         [ "exception"; constructor_declaration{t} ->

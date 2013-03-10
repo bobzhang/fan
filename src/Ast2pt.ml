@@ -964,6 +964,7 @@ and module_type : Ast.module_type -> Parsetree.module_type =
              mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
      | `Sig(loc,sl) ->
          mkmty loc (Pmty_signature (sig_item sl []))
+     | `SigEnd(loc) -> mkmty loc (Pmty_signature [])
      | `With(loc,mt,wc) ->
          mkmty loc (Pmty_with (module_type mt) (mkwithc wc ))
      | `ModuleTypeOf(_loc,me) ->
@@ -971,10 +972,9 @@ and module_type : Ast.module_type -> Parsetree.module_type =
      | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t) ]
 and sig_item (s:sig_item) (l:signature) :signature =
   with sig_item match s with 
-  [ `Nil _  -> l
-  | `Class (loc,cd) ->
-      [mksig loc (Psig_class
-                    (List.map class_info_class_type (list_of_and' cd []))) :: l]
+  [ `Class (loc,cd) ->
+    [mksig loc (Psig_class
+                  (List.map class_info_class_type (list_of_and' cd []))) :: l]
   | `ClassType (loc,ctd) ->
       [mksig loc (Psig_class_type
                     (List.map class_info_class_type (list_of_and' ctd []))) :: l]

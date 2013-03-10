@@ -87,11 +87,6 @@ class clean_ast =
       match super#name_ctyp t with
       | `Sem (_,t,`Nil _)|`Sem (_,`Nil _,t) -> t
       | t -> t
-    method! sig_item sg =
-      match super#sig_item sg with
-      | `Sem (_loc,`Nil _l,sg)|`Sem (_loc,sg,`Nil _l) -> sg
-      | `Type (_loc,`Nil _l) -> `Nil _loc
-      | sg -> sg
     method! module_type mt =
       match super#module_type mt with
       | `With (_loc,mt,`Nil _l) -> mt

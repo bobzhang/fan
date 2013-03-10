@@ -4,9 +4,9 @@ open FanMacroTools;
 open Lib;
 
 {:create|Gram
-  macro_def macro_def_sig uident_eval_ifdef uident_eval_ifndef
-  else_macro_def else_macro_def_sig else_expr smlist_then smlist_else sglist_then
-  sglist_else endif opt_macro_value uident 
+  macro_def (* macro_def_sig *) uident_eval_ifdef uident_eval_ifndef
+  else_macro_def (* else_macro_def_sig *) else_expr smlist_then smlist_else (* sglist_then *)
+  (* sglist_else *) endif opt_macro_value uident 
 |};
 
 let apply () = begin 
@@ -16,8 +16,9 @@ let apply () = begin
     [ macro_def{x} ->
       execute_macro ~expr ~patt {:str_item|let _ = () |} (*FIXME*)
         (fun a b -> {:str_item| $a; $b |}) x ]
-    sig_item: First
-    [ macro_def_sig{x} -> execute_macro ~expr ~patt {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ]
+    (* sig_item: First *)
+    (* [ macro_def_sig{x} -> *)
+    (*   execute_macro ~expr ~patt {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ] *)
     macro_def:
     [ "DEFINE"; uident{i}; opt_macro_value{def} -> Def i def
     | "UNDEF";  uident{i} -> Und i
@@ -27,15 +28,15 @@ let apply () = begin
         make_ITE_result st1 st2
     | "INCLUDE"; `STR (_, fname) -> Lazy (lazy (FanBasic.parse_include_file str_items fname)) ]
       
-    macro_def_sig:
-    [ "DEFINE"; uident{i} -> Def i None
-    | "UNDEF";  uident{i} -> Und i
-    | "IFDEF";  uident_eval_ifdef;  "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
-        make_ITE_result sg1 sg2
-    | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
-        make_ITE_result sg1 sg2
-    | "INCLUDE"; `STR (_, fname) ->
-        Lazy (lazy (FanBasic.parse_include_file sig_items fname)) ]
+    (* macro_def_sig: *)
+    (* [ "DEFINE"; uident{i} -> Def i None *)
+    (* | "UNDEF";  uident{i} -> Und i *)
+    (* | "IFDEF";  uident_eval_ifdef;  "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} -> *)
+    (*     make_ITE_result sg1 sg2 *)
+    (* | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} -> *)
+    (*     make_ITE_result sg1 sg2 *)
+    (* | "INCLUDE"; `STR (_, fname) -> *)
+    (*     Lazy (lazy (FanBasic.parse_include_file sig_items fname)) ] *)
 
     uident_eval_ifdef:
     [ uident{i} -> Stack.push (is_defined i) stack ]
@@ -43,8 +44,8 @@ let apply () = begin
     [ uident{i} -> Stack.push (not (is_defined i)) stack ]
     else_macro_def:
     [ "ELSE"; smlist_else{st}; endif -> st | endif -> [] ]
-    else_macro_def_sig:
-    [ "ELSE"; sglist_else{st}; endif -> st | endif -> [] ]
+    (* else_macro_def_sig: *)
+    (* [ "ELSE"; sglist_else{st}; endif -> st | endif -> [] ] *)
     else_expr:
     [ "ELSE"; expr{e}; endif -> e | endif -> {:expr| () |} ]
     smlist_then:
@@ -59,16 +60,16 @@ let apply () = begin
            execute_macro_if_active_branch ~expr ~patt  _loc
            {:str_item|let _ = ()|} (*FIXME*) (fun a b -> {:str_item| $a; $b |}) Else d
          | str_item{si}; semi -> Str si ]{sml} -> sml ]
-    sglist_then:
-    [ L1 [ macro_def_sig{d}; semi ->
-           execute_macro_if_active_branch ~expr ~patt
-          _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Then d
-           | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]   
-    sglist_else:
-    [ L1 [ macro_def_sig{d}; semi ->
-             execute_macro_if_active_branch ~expr ~patt
-               _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Else d
-    | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]  
+    (* sglist_then: *)
+    (* [ L1 [ macro_def_sig{d}; semi -> *)
+    (*        execute_macro_if_active_branch ~expr ~patt *)
+    (*       _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Then d *)
+    (*        | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]    *)
+    (* sglist_else: *)
+    (* [ L1 [ macro_def_sig{d}; semi -> *)
+    (*          execute_macro_if_active_branch ~expr ~patt *)
+    (*            _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Else d *)
+    (* | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]   *)
     endif: [ "END" -> () | "ENDIF" -> () ]
     opt_macro_value:
     [ "("; L1 [ `Lid x -> x ] SEP ","{pl}; ")"; "="; expr{e} -> Some (pl, e)

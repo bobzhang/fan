@@ -156,12 +156,12 @@ class clean_ast = object
     match super#name_ctyp t with
     [`Sem(_,t,`Nil _)
     |`Sem(_,`Nil _,t) -> t | t -> t ]  ;
-  method! sig_item sg =
-    with sig_item
-    match super#sig_item sg with
-    [ {| $({@_l||}); $sg |} | {| $sg; $({@_l||} ) |} -> sg
-    | {| type $({:ctyp@_l||} ) |} -> {||}
-    | sg -> sg ];
+  (* method! sig_item sg = *)
+  (*   with sig_item *)
+  (*   match super#sig_item sg with *)
+  (*   [ {| $({@_l||}); $sg |} | {| $sg; $({@_l||} ) |} -> sg *)
+  (*   | {| type $({:ctyp@_l||} ) |} -> {||} *)
+  (*   | sg -> sg ]; *)
 
   (* method! str_item st = *)
   (*   with str_item *)

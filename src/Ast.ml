@@ -373,15 +373,16 @@ and module_type =
   | `MtFun of (loc * auident * module_type * module_type)
         (* sig sg end *)
   | `Sig of (loc * sig_item)
+  | `SigEnd of loc 
         (* mt with wc *)
   | `With of (loc * module_type * with_constr)
         (* module type of m *)
   | `ModuleTypeOf of (loc * module_expr)
   | ant  ]
 and sig_item =
-  [= nil
-     (* class cict *)
-  | `Class of (loc * class_type)
+  [= (* nil *)
+  (*    (\* class cict *\) *)
+  (* | *) `Class of (loc * class_type)
       (* class type cict *)
   | `ClassType of (loc * class_type)
         (* sg ; sg *)
@@ -467,8 +468,7 @@ and module_expr =
   | `PackageModule of (loc * expr)
   | ant  ]
 and str_item =
-  [= (* nil *)
-  (* | *) `Class of (loc * class_expr) (* class cice *)
+  [= `Class of (loc * class_expr) (* class cice *)
   | `ClassType of (loc * class_type) (* class type cict *)
   | `Sem of (loc * str_item * str_item)
                 

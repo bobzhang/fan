@@ -769,6 +769,8 @@ class map2 =
         | (`Sig (_a0,_a1),`Sig (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#sig_item _a1 _b1 in `Sig (_a0, _a1)
+        | (`SigEnd _a0,`SigEnd _b0) ->
+            let _a0 = self#loc _a0 _b0 in `SigEnd _a0
         | (`With (_a0,_a1,_a2),`With (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#module_type _a1 _b1 in
@@ -782,8 +784,6 @@ class map2 =
     method sig_item : sig_item -> sig_item -> sig_item=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>sig_item)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_type _a1 _b1 in `Class (_a0, _a1)
@@ -1834,6 +1834,7 @@ class fold2 =
             let self = self#module_type _a2 _b2 in self#module_type _a3 _b3
         | (`Sig (_a0,_a1),`Sig (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#sig_item _a1 _b1
+        | (`SigEnd _a0,`SigEnd _b0) -> self#loc _a0 _b0
         | (`With (_a0,_a1,_a2),`With (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#module_type _a1 _b1 in self#with_constr _a2 _b2
@@ -1844,7 +1845,6 @@ class fold2 =
     method sig_item : sig_item -> sig_item -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#class_type _a1 _b1
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
@@ -2539,13 +2539,13 @@ class iter =
            self#module_type _a2;
            self#module_type _a3)
       | `Sig (_a0,_a1) -> (self#loc _a0; self#sig_item _a1)
+      | `SigEnd _a0 -> self#loc _a0
       | `With (_a0,_a1,_a2) ->
           (self#loc _a0; self#module_type _a1; self#with_constr _a2)
       | `ModuleTypeOf (_a0,_a1) -> (self#loc _a0; self#module_expr _a1)
       | #ant as _a0 -> (self#ant _a0 :>'result149)
     method sig_item : sig_item -> 'result150=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result150)
       | `Class (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
       | `ClassType (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
       | `Sem (_a0,_a1,_a2) ->
@@ -3404,6 +3404,7 @@ class map =
       | `Sig (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#sig_item _a1 in `Sig (_a0, _a1)
+      | `SigEnd _a0 -> let _a0 = self#loc _a0 in `SigEnd _a0
       | `With (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#module_type _a1 in
@@ -3414,7 +3415,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_type)
     method sig_item : sig_item -> sig_item=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>sig_item)
       | `Class (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_type _a1 in `Class (_a0, _a1)
@@ -4256,6 +4256,7 @@ class fold =
           let self = self#auident _a1 in
           let self = self#module_type _a2 in self#module_type _a3
       | `Sig (_a0,_a1) -> let self = self#loc _a0 in self#sig_item _a1
+      | `SigEnd _a0 -> self#loc _a0
       | `With (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#module_type _a1 in self#with_constr _a2
@@ -4264,7 +4265,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method sig_item : sig_item -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `Class (_a0,_a1) -> let self = self#loc _a0 in self#class_type _a1
       | `ClassType (_a0,_a1) ->
           let self = self#loc _a0 in self#class_type _a1
@@ -5141,6 +5141,8 @@ class print =
         | `Sig (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" self#loc _a0
               self#sig_item _a1
+        | `SigEnd _a0 ->
+            Format.fprintf fmt "@[<1>(`SigEnd@ %a)@]" self#loc _a0
         | `With (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`With@ %a@ %a@ %a)@]" self#loc _a0
               self#module_type _a1 self#with_constr _a2
@@ -5151,7 +5153,6 @@ class print =
     method sig_item : 'fmt -> sig_item -> 'result315=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result315)
         | `Class (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" self#loc _a0
               self#class_type _a1
@@ -6073,6 +6074,7 @@ class eq =
               && (self#module_type _a3 _b3)
         | (`Sig (_a0,_a1),`Sig (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#sig_item _a1 _b1)
+        | (`SigEnd _a0,`SigEnd _b0) -> self#loc _a0 _b0
         | (`With (_a0,_a1,_a2),`With (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#module_type _a1 _b1)) &&
               (self#with_constr _a2 _b2)
@@ -6083,7 +6085,6 @@ class eq =
     method sig_item : sig_item -> sig_item -> 'result370=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result370)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#class_type _a1 _b1)
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
@@ -6861,6 +6862,7 @@ and strip_loc_module_type =
       let _a2 = strip_loc_module_type _a2 in
       let _a3 = strip_loc_module_type _a3 in `MtFun (_a1, _a2, _a3)
   | `Sig (_a0,_a1) -> let _a1 = strip_loc_sig_item _a1 in `Sig _a1
+  | `SigEnd _a0 -> `SigEnd
   | `With (_a0,_a1,_a2) ->
       let _a1 = strip_loc_module_type _a1 in
       let _a2 = strip_loc_with_constr _a2 in `With (_a1, _a2)
@@ -6869,7 +6871,6 @@ and strip_loc_module_type =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result419)
 and strip_loc_sig_item =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result418)
   | `Class (_a0,_a1) -> let _a1 = strip_loc_class_type _a1 in `Class _a1
   | `ClassType (_a0,_a1) ->
       let _a1 = strip_loc_class_type _a1 in `ClassType _a1
@@ -7704,6 +7705,7 @@ and pp_print_module_type fmt =
   | `Sig (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sig_item _a1
+  | `SigEnd _a0 -> Format.fprintf fmt "@[<1>(`SigEnd@ %a)@]" pp_print_loc _a0
   | `With (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`With@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_module_type _a1 pp_print_with_constr _a2
@@ -7713,7 +7715,6 @@ and pp_print_module_type fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result472)
 and pp_print_sig_item fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result471)
   | `Class (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_type _a1

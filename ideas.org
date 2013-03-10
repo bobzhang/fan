@@ -1,0 +1,7 @@
+
+
+
+* with nil
+  you could have some benefit, like
+  when do the map traversal, you can map it to nil as a way of
+  removing them.

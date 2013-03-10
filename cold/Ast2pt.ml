@@ -804,13 +804,13 @@ and module_type: Ast.module_type -> Parsetree.module_type =
       mkmty loc
         (Pmty_functor ((with_loc n sloc), (module_type nt), (module_type mt)))
   | `Sig (loc,sl) -> mkmty loc (Pmty_signature (sig_item sl []))
+  | `SigEnd loc -> mkmty loc (Pmty_signature [])
   | `With (loc,mt,wc) ->
       mkmty loc (Pmty_with ((module_type mt), (mkwithc wc)))
   | `ModuleTypeOf (_loc,me) -> mkmty _loc (Pmty_typeof (module_expr me))
   | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t)
 and sig_item (s : sig_item) (l : signature) =
   (match s with
-   | `Nil _ -> l
    | `Class (loc,cd) ->
        (mksig loc
           (Psig_class (List.map class_info_class_type (list_of_and' cd []))))

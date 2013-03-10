@@ -2,7 +2,6 @@ open LibUtil
 open AstLoc
 open FSig
 open Format
-open Lib
 let apply_filter f (m : module_types) =
   (let f =
      function
@@ -43,49 +42,6 @@ let plugin_add plugin =
     ()
 let plugin_remove plugin =
   Ref.modify FanState.current_filters (fun x  -> List.remove plugin x)
-let filter_type_defs ?qualified  () =
-  object 
-    inherit  Objs.map as super
-    val mutable type_defs = None
-    method! sig_item =
-      function
-      | `Val (_loc,_,_)|`Include (_loc,_)|`External (_loc,_,_,_)
-        |`Exception (_loc,_)|`Class (_loc,_)|`ClassType (_loc,_)
-        |`DirectiveSimple (_loc,_)|`Module (_loc,_,_)|`ModuleType (_loc,_,_)
-        |`RecModule (_loc,_)|`Open (_loc,_) -> `Nil _loc
-      | `Type (_,(`TyDcl (_loc,name,vars,ctyp,constraints) as x)) ->
-          let res =
-            match ctyp with
-            | `TyEq (_,_,ctyp) -> Ctyp.qualified_app_list ctyp
-            | _ -> None in
-          let x =
-            match (res, qualified) with
-            | (Some (`Dot (_loc,i,_),ls),Some q) when
-                (Ident.eq i q) && (Ctyp.eq_list ls vars) ->
-                `TyDcl (_loc, name, vars, (`Nil _loc), constraints)
-            | (_,_) -> super#typedecl x in
-          let y = `Type (_loc, x) in
-          let () = type_defs <- Some (`Sem (_loc, type_defs, y)) in
-          `Type (_loc, x)
-      | `Type (_loc,ty) ->
-          let x = super#typedecl ty in
-          let () =
-            type_defs <- Some (`Sem (_loc, type_defs, (`Type (_loc, x)))) in
-          `Type (_loc, x)
-      | x -> super#sig_item x
-    method! ident =
-      function
-      | `Dot (_loc,x,y) as i ->
-          (match qualified with
-           | Some q when Ident.eq q x -> super#ident y
-           | _ -> super#ident i)
-      | i -> super#ident i
-    method! type_info =
-      function
-      | `TyMan (_loc,_,p1,ctyp) -> `TyRepr (_loc, p1, (super#type_repr ctyp))
-      | ty -> super#type_info ty
-    method get_type_defs = type_defs
-  end
 class type traversal
   =
   object 
