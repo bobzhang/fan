@@ -334,7 +334,9 @@ and expr =
         (* object ((p))? (cst)? end *)
 
   | `Obj of (loc * class_str_item)
+  | `ObjEnd of loc 
   | `ObjPat of (loc * patt * class_str_item)
+  | `ObjPatEnd of (loc * patt)
         (* ?s or ?s:e *)
   | `OptLabl of (loc *alident * expr)
   | `OptLablS of (loc * alident)
@@ -534,8 +536,9 @@ and class_expr =
   | `CeLet of (loc * rec_flag * binding * class_expr)
         (* object ((p))? (cst)? end *)
   | `Obj of (loc  * class_str_item)
+  | `ObjEnd of loc
   | `ObjPat of (loc * patt * class_str_item)
-        
+  | `ObjPatEnd of (loc * patt)
         (* ce : ct *)
   | `CeTyc of (loc * class_expr * class_type)
         (* ce and ce *)
@@ -544,8 +547,8 @@ and class_expr =
   | `Eq  of (loc * class_expr * class_expr)
   | ant ]
 and class_str_item =
-  [= nil
-  | `Sem of (loc * class_str_item * class_str_item)
+  [= (* nil *)
+  (* | *) `Sem of (loc * class_str_item * class_str_item)
         (* type t = t *)
   | `Eq of (loc * ctyp * ctyp)
         (* inherit(!)? ce (as s)? *)

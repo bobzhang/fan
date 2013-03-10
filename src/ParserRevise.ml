@@ -389,12 +389,19 @@ let apply () = begin
             let cases = or_of_list1 a in `Fun(_loc,cases)
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
+
         | "object"; "(";patt{p}; ")"; class_structure{cst};"end" ->
             `ObjPat(_loc,p,cst)
+        | "object"; "(";patt{p}; ")"; "end" ->
+            `ObjPatEnd(_loc,p)
         | "object"; "(";patt{p};":";ctyp{t};")";class_structure{cst};"end" ->
             `ObjPat(_loc,`Constraint(_loc,p,t),cst)
+        | "object"; "(";patt{p};":";ctyp{t};")";"end" ->
+            `ObjPatEnd(_loc,`Constraint(_loc,p,t))
         | "object"; class_structure{cst};"end"->
-            `Obj(_loc,cst)]
+            `Obj(_loc,cst)
+        | "object";"end" -> `ObjEnd(_loc)
+      ]
        "unary minus" NA
         [ "-"; S{e} -> FanOps.mkumin _loc "-" e
         | "-."; S{e} -> FanOps.mkumin _loc "-." e ]
@@ -1045,7 +1052,7 @@ let apply () = begin
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_str_item" n s) |}
         | `Ant ((""|"cst"|"anti"|"list" as n),s); semi; S{cst} ->
             {| $(anti:mk_anti ~c:"class_str_item" n s); $cst |}
-        | L0 [ class_str_item{cst}; semi -> cst ]{l} -> sem_of_list l  ]
+        | L1 [ class_str_item{cst}; semi -> cst ]{l} -> sem_of_list1 l  ]
       class_str_item:
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"class_str_item" n s) |}
@@ -1072,16 +1079,16 @@ let apply () = begin
         | method_opt_override{o}; opt_private{pf}; a_lident{l}; opt_polyt{topt};
                 fun_binding{e} ->
             {| method $override:o $private:pf $l : $topt = $e |}
-        | (* type_constraint *) "constraint"; ctyp{t1}; "="; ctyp{t2} ->
-            (* {| type $t1 = $t2 |} *) {|constraint $t1 = $t2|}
+        | "constraint"; ctyp{t1}; "="; ctyp{t2} ->
+          {|constraint $t1 = $t2|}
         | "initializer"; expr{se} -> {| initializer $se |} ]
       class_str_item_quot:
         [ class_str_item{x1}; semi; S{x2} ->
-          match x2 with
-          [ `Nil _ -> x1
-          | _ -> `Sem(_loc,x1,x2) ]
+          (* match x2 with *)
+          (* [ `Nil _ -> x1 *)
+          (* | _ -> *) `Sem(_loc,x1,x2) (* ] *)
         | class_str_item{x} -> x
-        | -> `Nil _loc ]
+        (* | -> `Nil _loc *) ]
     |};
     
   with class_expr
@@ -1124,12 +1131,17 @@ let apply () = begin
           [ `Ant ((""|"cexp"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"class_expr" n s) |}
           | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_expr_tag
           | class_longident_and_param{ce} -> ce
+
           | "object"; "("; patt{p}; ")" ; class_structure{cst};"end" ->
               `ObjPat(_loc,p,cst)
+          | "object"; "("; patt{p}; ")" ;"end" ->
+              `ObjPatEnd(_loc,p)
           | "object";"("; patt{p};":";ctyp{t};")"; class_structure{cst};"end" ->
               `ObjPat(_loc,`Constraint(_loc,p,t),cst)
-          | "object"; class_structure{cst};"end" ->
-              `Obj(_loc,cst)
+          | "object";"("; patt{p};":";ctyp{t};")"; "end" ->
+              `ObjPatEnd(_loc,`Constraint(_loc,p,t))
+          | "object"; class_structure{cst};"end" -> `Obj(_loc,cst)
+          | "object";"end" -> `ObjEnd(_loc)
           | "("; S{ce}; ":"; class_type{ct}; ")" -> {| ($ce : $ct) |}
           | "("; S{ce}; ")" -> ce ] }
       class_longident_and_param:

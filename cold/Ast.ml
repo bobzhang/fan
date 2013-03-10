@@ -98,7 +98,8 @@ and expr =
   | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* match_case) | `New of (loc* ident)
-  | `Obj of (loc* class_str_item) | `ObjPat of (loc* patt* class_str_item)
+  | `Obj of (loc* class_str_item) | `ObjEnd of loc
+  | `ObjPat of (loc* patt* class_str_item) | `ObjPatEnd of (loc* patt)
   | `OptLabl of (loc* alident* expr) | `OptLablS of (loc* alident)
   | `OvrInst of (loc* rec_expr) | `OvrInstEmpty of loc | `Seq of (loc* expr)
   | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
@@ -170,13 +171,14 @@ and class_expr =
   | `CeCon of (loc* virtual_flag* ident* type_parameters)
   | `CeFun of (loc* patt* class_expr)
   | `CeLet of (loc* rec_flag* binding* class_expr)
-  | `Obj of (loc* class_str_item) | `ObjPat of (loc* patt* class_str_item)
+  | `Obj of (loc* class_str_item) | `ObjEnd of loc
+  | `ObjPat of (loc* patt* class_str_item) | `ObjPatEnd of (loc* patt)
   | `CeTyc of (loc* class_expr* class_type)
   | `And of (loc* class_expr* class_expr)
   | `Eq of (loc* class_expr* class_expr) | ant] 
 and class_str_item =
-  [ nil | `Sem of (loc* class_str_item* class_str_item)
-  | `Eq of (loc* ctyp* ctyp) | `Inherit of (loc* override_flag* class_expr)
+  [ `Sem of (loc* class_str_item* class_str_item) | `Eq of (loc* ctyp* ctyp)
+  | `Inherit of (loc* override_flag* class_expr)
   | `InheritAs of (loc* override_flag* class_expr* alident)
   | `Initializer of (loc* expr)
   | `CrMth of (loc* alident* override_flag* private_flag* expr* ctyp)

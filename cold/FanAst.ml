@@ -858,6 +858,8 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Obj")), (meta_loc _loc _a0))),
               (meta_class_str_item _loc _a1))
+      | `ObjEnd _a0 ->
+          `App (_loc, (`Vrn (_loc, "ObjEnd")), (meta_loc _loc _a0))
       | `ObjPat (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -865,6 +867,11 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_loc _loc _a0))),
                    (meta_patt _loc _a1))), (meta_class_str_item _loc _a2))
+      | `ObjPatEnd (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_loc _loc _a0))),
+              (meta_patt _loc _a1))
       | `OptLabl (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1539,6 +1546,8 @@ module Make(MetaLoc:META_LOC) =
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Obj")), (meta_loc _loc _a0))),
               (meta_class_str_item _loc _a1))
+      | `ObjEnd _a0 ->
+          `App (_loc, (`Vrn (_loc, "ObjEnd")), (meta_loc _loc _a0))
       | `ObjPat (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1546,6 +1555,11 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_loc _loc _a0))),
                    (meta_patt _loc _a1))), (meta_class_str_item _loc _a2))
+      | `ObjPatEnd (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_loc _loc _a0))),
+              (meta_patt _loc _a1))
       | `CeTyc (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1570,7 +1584,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result25)
     and meta_class_str_item _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result24)
       | `Sem (_a0,_a1,_a2) ->
           `App
             (_loc,

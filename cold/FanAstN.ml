@@ -418,8 +418,10 @@ class eq =
             (self#expr _a0 _b0) && (self#match_case _a1 _b1)
         | (`New _a0,`New _b0) -> self#ident _a0 _b0
         | (`Obj _a0,`Obj _b0) -> self#class_str_item _a0 _b0
+        | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
+        | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#patt _a0 _b0
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
         | (`OptLablS _a0,`OptLablS _b0) -> self#alident _a0 _b0
@@ -644,8 +646,10 @@ class eq =
             ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#class_expr _a2 _b2)
         | (`Obj _a0,`Obj _b0) -> self#class_str_item _a0 _b0
+        | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
+        | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#patt _a0 _b0
         | (`CeTyc (_a0,_a1),`CeTyc (_b0,_b1)) ->
             (self#class_expr _a0 _b0) && (self#class_type _a1 _b1)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
@@ -657,7 +661,6 @@ class eq =
     method class_str_item : class_str_item -> class_str_item -> 'result50=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result50)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#class_str_item _a0 _b0) && (self#class_str_item _a1 _b1)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
@@ -1164,9 +1167,12 @@ class print =
         | `New _a0 -> Format.fprintf fmt "@[<1>(`New@ %a)@]" self#ident _a0
         | `Obj _a0 ->
             Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_str_item _a0
+        | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#patt _a0
               self#class_str_item _a1
+        | `ObjPatEnd _a0 ->
+            Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#patt _a0
         | `OptLabl (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
               self#expr _a1
@@ -1453,9 +1459,12 @@ class print =
               _a0 self#binding _a1 self#class_expr _a2
         | `Obj _a0 ->
             Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_str_item _a0
+        | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#patt _a0
               self#class_str_item _a1
+        | `ObjPatEnd _a0 ->
+            Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#patt _a0
         | `CeTyc (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a)@]" self#class_expr _a0
               self#class_type _a1
@@ -1469,7 +1478,6 @@ class print =
     method class_str_item : 'fmt -> class_str_item -> 'result105=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result105)
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#class_str_item
               _a0 self#class_str_item _a1
@@ -2050,10 +2058,13 @@ and meta_expr _loc =
   | `New _a0 -> `App (_loc, (`Vrn (_loc, "New")), (meta_ident _loc _a0))
   | `Obj _a0 ->
       `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_str_item _loc _a0))
+  | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_patt _loc _a0))),
           (meta_class_str_item _loc _a1))
+  | `ObjPatEnd _a0 ->
+      `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_patt _loc _a0))
   | `OptLabl (_a0,_a1) ->
       `App
         (_loc,
@@ -2459,10 +2470,13 @@ and meta_class_expr _loc =
                (meta_binding _loc _a1))), (meta_class_expr _loc _a2))
   | `Obj _a0 ->
       `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_str_item _loc _a0))
+  | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_patt _loc _a0))),
           (meta_class_str_item _loc _a1))
+  | `ObjPatEnd _a0 ->
+      `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_patt _loc _a0))
   | `CeTyc (_a0,_a1) ->
       `App
         (_loc,
@@ -2481,7 +2495,6 @@ and meta_class_expr _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result135)
 and meta_class_str_item _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result134)
   | `Sem (_a0,_a1) ->
       `App
         (_loc,

@@ -87,14 +87,14 @@ and expr =
   | `LabelS of alident | `Label of (alident* expr) | `Lazy of expr
   | `LetIn of (rec_flag* binding* expr)
   | `LetModule of (auident* module_expr* expr) | `Match of (expr* match_case)
-  | `New of ident | `Obj of class_str_item
-  | `ObjPat of (patt* class_str_item) | `OptLabl of (alident* expr)
-  | `OptLablS of alident | `OvrInst of rec_expr | `OvrInstEmpty
-  | `Seq of expr | `Send of (expr* alident) | `StringDot of (expr* expr)
-  | `Try of (expr* match_case) | `Constraint of (expr* ctyp)
-  | `Coercion of (expr* ctyp* ctyp) | `While of (expr* expr)
-  | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
-  | `Package_expr of module_expr] 
+  | `New of ident | `Obj of class_str_item | `ObjEnd
+  | `ObjPat of (patt* class_str_item) | `ObjPatEnd of patt
+  | `OptLabl of (alident* expr) | `OptLablS of alident | `OvrInst of rec_expr
+  | `OvrInstEmpty | `Seq of expr | `Send of (expr* alident)
+  | `StringDot of (expr* expr) | `Try of (expr* match_case)
+  | `Constraint of (expr* ctyp) | `Coercion of (expr* ctyp* ctyp)
+  | `While of (expr* expr) | `LetOpen of (ident* expr)
+  | `LocalTypeFun of (alident* expr) | `Package_expr of module_expr] 
 and rec_expr =
   [ `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | any | ant] 
 and module_type =
@@ -150,11 +150,13 @@ and class_expr =
   [ nil | `CeApp of (class_expr* expr)
   | `CeCon of (virtual_flag* ident* type_parameters)
   | `CeFun of (patt* class_expr) | `CeLet of (rec_flag* binding* class_expr)
-  | `Obj of class_str_item | `ObjPat of (patt* class_str_item)
-  | `CeTyc of (class_expr* class_type) | `And of (class_expr* class_expr)
-  | `Eq of (class_expr* class_expr) | ant] 
+  | `Obj of class_str_item | `ObjEnd | `ObjPat of (patt* class_str_item)
+  | `ObjPatEnd of patt | `CeTyc of (class_expr* class_type)
+  | `And of (class_expr* class_expr) | `Eq of (class_expr* class_expr) | 
+    ant]
+  
 and class_str_item =
-  [ nil | `Sem of (class_str_item* class_str_item) | `Eq of (ctyp* ctyp)
+  [ `Sem of (class_str_item* class_str_item) | `Eq of (ctyp* ctyp)
   | `Inherit of (override_flag* class_expr)
   | `InheritAs of (override_flag* class_expr* alident) | `Initializer of expr
   | `CrMth of (alident* override_flag* private_flag* expr* ctyp)

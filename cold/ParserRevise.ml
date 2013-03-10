@@ -1468,6 +1468,15 @@ let apply () =
          ([`Skeyword "object";
           `Skeyword "(";
           `Snterm (Gram.obj (patt : 'patt Gram.t ));
+          `Skeyword ")";
+          `Skeyword "end"],
+           ("Gram.mk_action\n  (fun _  _  (p : 'patt)  _  _  (_loc : FanLoc.t)  ->\n     (`ObjPatEnd (_loc, p) : 'expr ))\n",
+             (Gram.mk_action
+                (fun _  _  (p : 'patt)  _  _  (_loc : FanLoc.t)  ->
+                   (`ObjPatEnd (_loc, p) : 'expr )))));
+         ([`Skeyword "object";
+          `Skeyword "(";
+          `Snterm (Gram.obj (patt : 'patt Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
           `Skeyword ")";
@@ -1480,12 +1489,28 @@ let apply () =
                    (`ObjPat (_loc, (`Constraint (_loc, p, t)), cst) : 
                    'expr )))));
          ([`Skeyword "object";
+          `Skeyword "(";
+          `Snterm (Gram.obj (patt : 'patt Gram.t ));
+          `Skeyword ":";
+          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+          `Skeyword ")";
+          `Skeyword "end"],
+           ("Gram.mk_action\n  (fun _  _  (t : 'ctyp)  _  (p : 'patt)  _  _  (_loc : FanLoc.t)  ->\n     (`ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 'expr ))\n",
+             (Gram.mk_action
+                (fun _  _  (t : 'ctyp)  _  (p : 'patt)  _  _ 
+                   (_loc : FanLoc.t)  ->
+                   (`ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 'expr )))));
+         ([`Skeyword "object";
           `Snterm (Gram.obj (class_structure : 'class_structure Gram.t ));
           `Skeyword "end"],
            ("Gram.mk_action\n  (fun _  (cst : 'class_structure)  _  (_loc : FanLoc.t)  ->\n     (`Obj (_loc, cst) : 'expr ))\n",
              (Gram.mk_action
                 (fun _  (cst : 'class_structure)  _  (_loc : FanLoc.t)  ->
-                   (`Obj (_loc, cst) : 'expr )))))]);
+                   (`Obj (_loc, cst) : 'expr )))));
+         ([`Skeyword "object"; `Skeyword "end"],
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'expr ))\n",
+             (Gram.mk_action
+                (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'expr )))))]);
        ((Some "unary minus"), (Some `NA),
          [([`Skeyword "-"; `Sself],
             ("Gram.mk_action\n  (fun (e : 'expr)  _  (_loc : FanLoc.t)  ->\n     (FanOps.mkumin _loc \"-\" e : 'expr ))\n",
@@ -4986,7 +5011,7 @@ let apply () =
                    | _ ->
                        failwith
                          "`Sem (_loc, (`Ant (_loc, (mk_anti ~c:\"class_str_item\" n s))), cst)\n"))));
-         ([`Slist0
+         ([`Slist1
              (Gram.srules
                 [([`Snterm
                      (Gram.obj (class_str_item : 'class_str_item Gram.t ));
@@ -4995,10 +5020,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (cst : 'class_str_item)  (_loc : FanLoc.t) 
                            -> (cst : 'e__7 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list l : 'class_structure ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list1 l : 'class_structure ))\n",
              (Gram.mk_action
                 (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list l : 'class_structure )))))]));
+                   (sem_of_list1 l : 'class_structure )))))]));
    Gram.extend_single (class_str_item : 'class_str_item Gram.t )
      (None,
        (None, None,
@@ -5129,22 +5154,16 @@ let apply () =
          [([`Snterm (Gram.obj (class_str_item : 'class_str_item Gram.t ));
            `Snterm (Gram.obj (semi : 'semi Gram.t ));
            `Sself],
-            ("Gram.mk_action\n  (fun (x2 : 'class_str_item_quot)  _  (x1 : 'class_str_item) \n     (_loc : FanLoc.t)  ->\n     (match x2 with | `Nil _ -> x1 | _ -> `Sem (_loc, x1, x2) : 'class_str_item_quot ))\n",
+            ("Gram.mk_action\n  (fun (x2 : 'class_str_item_quot)  _  (x1 : 'class_str_item) \n     (_loc : FanLoc.t)  -> (`Sem (_loc, x1, x2) : 'class_str_item_quot ))\n",
               (Gram.mk_action
                  (fun (x2 : 'class_str_item_quot)  _  (x1 : 'class_str_item) 
                     (_loc : FanLoc.t)  ->
-                    (match x2 with | `Nil _ -> x1 | _ -> `Sem (_loc, x1, x2) : 
-                    'class_str_item_quot )))));
+                    (`Sem (_loc, x1, x2) : 'class_str_item_quot )))));
          ([`Snterm (Gram.obj (class_str_item : 'class_str_item Gram.t ))],
            ("Gram.mk_action\n  (fun (x : 'class_str_item)  (_loc : FanLoc.t)  ->\n     (x : 'class_str_item_quot ))\n",
              (Gram.mk_action
                 (fun (x : 'class_str_item)  (_loc : FanLoc.t)  ->
-                   (x : 'class_str_item_quot )))));
-         ([],
-           ("Gram.mk_action\n  (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'class_str_item_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  ->
-                   (`Nil _loc : 'class_str_item_quot )))))])));
+                   (x : 'class_str_item_quot )))))])));
   (Gram.extend_single (class_expr_quot : 'class_expr_quot Gram.t )
      (None,
        (None, None,
@@ -5375,6 +5394,15 @@ let apply () =
          ([`Skeyword "object";
           `Skeyword "(";
           `Snterm (Gram.obj (patt : 'patt Gram.t ));
+          `Skeyword ")";
+          `Skeyword "end"],
+           ("Gram.mk_action\n  (fun _  _  (p : 'patt)  _  _  (_loc : FanLoc.t)  ->\n     (`ObjPatEnd (_loc, p) : 'class_expr ))\n",
+             (Gram.mk_action
+                (fun _  _  (p : 'patt)  _  _  (_loc : FanLoc.t)  ->
+                   (`ObjPatEnd (_loc, p) : 'class_expr )))));
+         ([`Skeyword "object";
+          `Skeyword "(";
+          `Snterm (Gram.obj (patt : 'patt Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
           `Skeyword ")";
@@ -5387,12 +5415,29 @@ let apply () =
                    (`ObjPat (_loc, (`Constraint (_loc, p, t)), cst) : 
                    'class_expr )))));
          ([`Skeyword "object";
+          `Skeyword "(";
+          `Snterm (Gram.obj (patt : 'patt Gram.t ));
+          `Skeyword ":";
+          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+          `Skeyword ")";
+          `Skeyword "end"],
+           ("Gram.mk_action\n  (fun _  _  (t : 'ctyp)  _  (p : 'patt)  _  _  (_loc : FanLoc.t)  ->\n     (`ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 'class_expr ))\n",
+             (Gram.mk_action
+                (fun _  _  (t : 'ctyp)  _  (p : 'patt)  _  _ 
+                   (_loc : FanLoc.t)  ->
+                   (`ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 'class_expr )))));
+         ([`Skeyword "object";
           `Snterm (Gram.obj (class_structure : 'class_structure Gram.t ));
           `Skeyword "end"],
            ("Gram.mk_action\n  (fun _  (cst : 'class_structure)  _  (_loc : FanLoc.t)  ->\n     (`Obj (_loc, cst) : 'class_expr ))\n",
              (Gram.mk_action
                 (fun _  (cst : 'class_structure)  _  (_loc : FanLoc.t)  ->
                    (`Obj (_loc, cst) : 'class_expr )))));
+         ([`Skeyword "object"; `Skeyword "end"],
+           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'class_expr ))\n",
+             (Gram.mk_action
+                (fun _  _  (_loc : FanLoc.t)  ->
+                   (`ObjEnd _loc : 'class_expr )))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ":";

@@ -682,10 +682,15 @@ class map2 =
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_str_item _a1 _b1 in `Obj (_a0, _a1)
+        | (`ObjEnd _a0,`ObjEnd _b0) ->
+            let _a0 = self#loc _a0 _b0 in `ObjEnd _a0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
             let _a2 = self#class_str_item _a2 _b2 in `ObjPat (_a0, _a1, _a2)
+        | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#patt _a1 _b1 in `ObjPatEnd (_a0, _a1)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -1106,10 +1111,15 @@ class map2 =
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_str_item _a1 _b1 in `Obj (_a0, _a1)
+        | (`ObjEnd _a0,`ObjEnd _b0) ->
+            let _a0 = self#loc _a0 _b0 in `ObjEnd _a0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
             let _a2 = self#class_str_item _a2 _b2 in `ObjPat (_a0, _a1, _a2)
+        | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#patt _a1 _b1 in `ObjPatEnd (_a0, _a1)
         | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_expr _a1 _b1 in
@@ -1129,8 +1139,6 @@ class map2 =
       class_str_item -> class_str_item -> class_str_item=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>class_str_item)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_str_item _a1 _b1 in
@@ -1761,9 +1769,12 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#class_str_item _a1 _b1
+        | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#class_str_item _a2 _b2
+        | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#patt _a1 _b1
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#expr _a2 _b2
@@ -2075,9 +2086,12 @@ class fold2 =
             let self = self#binding _a2 _b2 in self#class_expr _a3 _b3
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#class_str_item _a1 _b1
+        | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#class_str_item _a2 _b2
+        | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#patt _a1 _b1
         | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_expr _a1 _b1 in self#class_type _a2 _b2
@@ -2092,7 +2106,6 @@ class fold2 =
     method class_str_item : class_str_item -> class_str_item -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_str_item _a1 _b1 in
@@ -2484,8 +2497,10 @@ class iter =
           (self#loc _a0; self#expr _a1; self#match_case _a2)
       | `New (_a0,_a1) -> (self#loc _a0; self#ident _a1)
       | `Obj (_a0,_a1) -> (self#loc _a0; self#class_str_item _a1)
+      | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#class_str_item _a2)
+      | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
       | `OptLabl (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
       | `OptLablS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
@@ -2694,8 +2709,10 @@ class iter =
            self#binding _a2;
            self#class_expr _a3)
       | `Obj (_a0,_a1) -> (self#loc _a0; self#class_str_item _a1)
+      | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#class_str_item _a2)
+      | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
       | `CeTyc (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_expr _a1; self#class_type _a2)
       | `And (_a0,_a1,_a2) ->
@@ -2705,7 +2722,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result159)
     method class_str_item : class_str_item -> 'result160=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result160)
       | `Sem (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_str_item _a1; self#class_str_item _a2)
       | `Eq (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
@@ -3308,10 +3324,14 @@ class map =
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_str_item _a1 in `Obj (_a0, _a1)
+      | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
           let _a2 = self#class_str_item _a2 in `ObjPat (_a0, _a1, _a2)
+      | `ObjPatEnd (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#patt _a1 in `ObjPatEnd (_a0, _a1)
       | `OptLabl (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3682,10 +3702,14 @@ class map =
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_str_item _a1 in `Obj (_a0, _a1)
+      | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
           let _a2 = self#class_str_item _a2 in `ObjPat (_a0, _a1, _a2)
+      | `ObjPatEnd (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#patt _a1 in `ObjPatEnd (_a0, _a1)
       | `CeTyc (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_expr _a1 in
@@ -3701,7 +3725,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>class_expr)
     method class_str_item : class_str_item -> class_str_item=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>class_str_item)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_str_item _a1 in
@@ -4179,9 +4202,11 @@ class fold =
           let self = self#expr _a1 in self#match_case _a2
       | `New (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
       | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_str_item _a1
+      | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#class_str_item _a2
+      | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#expr _a2
@@ -4448,9 +4473,11 @@ class fold =
           let self = self#rec_flag _a1 in
           let self = self#binding _a2 in self#class_expr _a3
       | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_str_item _a1
+      | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#class_str_item _a2
+      | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
       | `CeTyc (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_expr _a1 in self#class_type _a2
@@ -4463,7 +4490,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method class_str_item : class_str_item -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_str_item _a1 in self#class_str_item _a2
@@ -5049,9 +5075,14 @@ class print =
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
               self#class_str_item _a1
+        | `ObjEnd _a0 ->
+            Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `ObjPat (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#class_str_item _a2
+        | `ObjPatEnd (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
+              self#patt _a1
         | `OptLabl (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#expr _a2
@@ -5368,9 +5399,14 @@ class print =
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
               self#class_str_item _a1
+        | `ObjEnd _a0 ->
+            Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `ObjPat (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#class_str_item _a2
+        | `ObjPatEnd (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
+              self#patt _a1
         | `CeTyc (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a@ %a)@]" self#loc _a0
               self#class_expr _a1 self#class_type _a2
@@ -5384,7 +5420,6 @@ class print =
     method class_str_item : 'fmt -> class_str_item -> 'result325=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result325)
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#class_str_item _a1 self#class_str_item _a2
@@ -5981,9 +6016,12 @@ class eq =
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#class_str_item _a1 _b1)
+        | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#class_str_item _a2 _b2)
+        | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#patt _a1 _b1)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -6293,9 +6331,12 @@ class eq =
               && (self#class_expr _a3 _b3)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#class_str_item _a1 _b1)
+        | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#class_str_item _a2 _b2)
+        | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#patt _a1 _b1)
         | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_expr _a1 _b1)) &&
               (self#class_type _a2 _b2)
@@ -6310,7 +6351,6 @@ class eq =
     method class_str_item : class_str_item -> class_str_item -> 'result380=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result380)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_str_item _a1 _b1)) &&
               (self#class_str_item _a2 _b2)
@@ -6773,9 +6813,11 @@ and strip_loc_expr =
       let _a2 = strip_loc_match_case _a2 in `Match (_a1, _a2)
   | `New (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `New _a1
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_str_item _a1 in `Obj _a1
+  | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_class_str_item _a2 in `ObjPat (_a1, _a2)
+  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_expr _a2 in `OptLabl (_a1, _a2)
@@ -7043,9 +7085,11 @@ and strip_loc_class_expr =
       let _a2 = strip_loc_binding _a2 in
       let _a3 = strip_loc_class_expr _a3 in `CeLet (_a1, _a2, _a3)
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_str_item _a1 in `Obj _a1
+  | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_class_str_item _a2 in `ObjPat (_a1, _a2)
+  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
   | `CeTyc (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_expr _a1 in
       let _a2 = strip_loc_class_type _a2 in `CeTyc (_a1, _a2)
@@ -7058,7 +7102,6 @@ and strip_loc_class_expr =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result409)
 and strip_loc_class_str_item =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result408)
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_str_item _a1 in
       let _a2 = strip_loc_class_str_item _a2 in `Sem (_a1, _a2)
@@ -7602,9 +7645,13 @@ and pp_print_expr fmt =
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_str_item _a1
+  | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `ObjPat (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_class_str_item _a2
+  | `ObjPatEnd (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_patt _a1
   | `OptLabl (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_expr _a2
@@ -7912,9 +7959,13 @@ and pp_print_class_expr fmt =
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_str_item _a1
+  | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `ObjPat (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_class_str_item _a2
+  | `ObjPatEnd (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_patt _a1
   | `CeTyc (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_expr _a1 pp_print_class_type _a2
@@ -7927,7 +7978,6 @@ and pp_print_class_expr fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result462)
 and pp_print_class_str_item fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result461)
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_str_item _a1 pp_print_class_str_item _a2

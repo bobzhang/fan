@@ -194,11 +194,11 @@ class clean_ast = object
   (*   [ {| $({@_l||} ); $csg |} | {| $csg; $({@_l||} ) |} -> csg *)
   (*   | csg -> csg ]; *)
 
-  method! class_str_item cst =
-    with class_str_item
-    match super#class_str_item cst with
-    [ {| $({@_l||} ); $cst |} | {| $cst; $({@_l||} ) |} -> cst
-    | cst -> cst ];
+  (* method! class_str_item cst = *)
+  (*   with class_str_item *)
+  (*   match super#class_str_item cst with *)
+  (*   [ {| $({@_l||} ); $cst |} | {| $cst; $({@_l||} ) |} -> cst *)
+  (*   | cst -> cst ]; *)
 end;
 
 (* change all the [loc] to [ghost] *)    

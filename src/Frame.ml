@@ -386,9 +386,8 @@ let obj_of_module_types
     ~left_type_variable:(left_type_variable:FSig.basic_id_transform)
     ~mk_record
     ~mk_variant
-    (* ~destination *)
      base
-    class_name  simple_expr_of_ctyp (k:kind) (lst:module_types) = with {patt:ctyp}
+    class_name  simple_expr_of_ctyp (k:kind) (lst:module_types) : str_item = with {patt:ctyp}
   let tbl = Hashtbl.create 50 in 
     let f tydcl result_type =
       fun_of_tydcl ~names ~destination:(Obj k)
@@ -413,11 +412,10 @@ let obj_of_module_types
     let mk_class_str_item (name,tydcl) : class_str_item = 
       let (ty,result_type) = mk_type tydcl in
       {:class_str_item| method $lid:name : $ty = $(f tydcl result_type) |}  in 
-    let fs (ty:types) =
+    let fs (ty:types) : class_str_item =
       match ty with
       [ `Mutual named_types ->
-        sem_of_list (List.map mk_class_str_item named_types)
-        (* {:class_str_item| $(list: List.map mk_class_str_item named_types ) |} *)
+        sem_of_list1 (List.map mk_class_str_item named_types)
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          [ Some n  -> begin
@@ -428,27 +426,23 @@ let obj_of_module_types
          end
          | None ->  mk_class_str_item named_type ]] in 
       (* Loc.t will be translated to loc_t
-       we need to process extra to generate method loc_t
-     *)
+       we need to process extra to generate method loc_t *)
     let (extras,lst) = Ctyp.transform_module_types lst in 
-    let body = List.fold_left 
-        (fun acc types -> {:class_str_item| $acc; $(fs types) |} )
-        ({:class_str_item| |}) lst in
-    let body =
+    let body = List.map fs lst in 
+    let body : class_str_item =
       let items = List.map (fun (dest,src,len) ->
         let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
         {:class_str_item| method
             $lid:dest : $ty = $(unknown len) |} ) extras in
-      sem_of_list [body :: items]
-      (* {:class_str_item| $body ; $list:items |} *) in  begin 
-      let v = Ctyp.mk_obj class_name  base body;
-      Hashtbl.iter (fun _ v ->
-        eprintf "@[%a@]@." FSig.pp_print_warning_type  v)
-      tbl;
-      match module_name with
-      [None -> v
-      |Some u -> {:str_item| module $uid:u = struct $v  end  |} ]  
+      sem_of_list1 (body @ items) in begin 
+        let v = Ctyp.mk_obj class_name  base body;
+        Hashtbl.iter (fun _ v ->
+          eprintf "@[%a@]@." FSig.pp_print_warning_type  v)
+            tbl;
+        match module_name with
+        [None -> v
+        |Some u -> {:str_item| module $uid:u = struct $v  end  |} ]  
       end ;
   
   

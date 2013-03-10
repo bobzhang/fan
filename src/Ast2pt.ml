@@ -775,15 +775,17 @@ let override_flag loc =  fun
           mkexp loc (Pexp_letmodule (with_loc i sloc) (module_expr me) (expr e))
       | `Match (loc,e,a) -> mkexp loc (Pexp_match (expr e) (match_case a (* [] *)))
       | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
+
+      | `ObjEnd(loc) ->
+          mkexp loc (Pexp_object{pcstr_pat= patt (`Any loc); pcstr_fields=[]})
       | `Obj(loc,cfl) ->
           let p = `Any loc in 
           let cil = class_str_item cfl [] in
           mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
+      | `ObjPatEnd(loc,p) ->
+          mkexp loc (Pexp_object{pcstr_pat=patt p; pcstr_fields=[]})
+            
       | `ObjPat (loc,p,cfl) ->
-          (* let p = *)
-          (*    match po with *)
-          (*    [ `Nil _loc  -> `Any _loc  *)
-          (*    | p -> p ] in *)
           let cil = class_str_item cfl [] in
           mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
       | `OvrInstEmpty(loc) -> mkexp loc (Pexp_override [])
@@ -1182,28 +1184,26 @@ and class_info_class_type (ci:class_type) =
   | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (patt p) (class_expr ce))
   | `CeLet (loc, rf, bi, ce) ->
       mkcl loc (Pcl_let (mkrf rf) (binding bi []) (class_expr ce))
+
+  | `ObjEnd(loc) ->
+      mkcl loc (Pcl_structure{pcstr_pat= patt (`Any loc); pcstr_fields=[]})
   | `Obj(loc,cfl) ->
       let p = `Any loc in
       let cil = class_str_item cfl [] in
-      mkcl loc
-        (Pcl_structure {
-         pcstr_pat = patt p;
-         pcstr_fields = cil;})
+      mkcl loc (Pcl_structure {pcstr_pat = patt p; pcstr_fields = cil;})
+  | `ObjPatEnd(loc,p) ->
+      mkcl loc (Pcl_structure {pcstr_pat= patt p; pcstr_fields = []})
   | `ObjPat (loc,p,cfl) ->
       let cil = class_str_item cfl [] in
-      mkcl loc
-        (Pcl_structure {
-         pcstr_pat = patt p;
-         pcstr_fields = cil;
-       })
+      mkcl loc (Pcl_structure {pcstr_pat = patt p; pcstr_fields = cil;})
   | `CeTyc (loc,ce,ct) ->
       mkcl loc (Pcl_constraint (class_expr ce) (class_type ct))
   | t -> errorf (loc_of t) "class_expr: %s" (dump_class_expr t)]
 
   and class_str_item (c:class_str_item) l =
     match c with
-      [ `Nil _ -> l
-    | `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
+    [ (* `Nil _ -> l *)
+    (* | *) `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
     | `Sem(_,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
     | `Inherit (loc, ov, ce) ->
         [mkcf loc (Pcf_inher (override_flag loc ov) (class_expr ce) None) :: l]

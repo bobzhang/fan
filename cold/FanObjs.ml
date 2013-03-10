@@ -79,10 +79,6 @@ class clean_ast =
       match super#class_type ct with
       | `And (_loc,`Nil _l,ct)|`And (_loc,ct,`Nil _l) -> ct
       | ct -> ct
-    method! class_str_item cst =
-      match super#class_str_item cst with
-      | `Sem (_loc,`Nil _l,cst)|`Sem (_loc,cst,`Nil _l) -> cst
-      | cst -> cst
   end
 class reloc _loc = object  inherit  Objs.map method! loc _ = _loc end
 let wildcarder =

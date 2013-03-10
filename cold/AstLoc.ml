@@ -63,6 +63,7 @@ let loc_of =
   | `Coercion (_loc,_,_,_) -> _loc
   | `CtFun (_loc,_,_) -> _loc
   | `Arrow (_loc,_,_) -> _loc
+  | `ObjEnd _loc -> _loc
   | `Bind (_loc,_,_) -> _loc
   | `CtEq (_loc,_,_) -> _loc
   | `Functor (_loc,_,_,_) -> _loc
@@ -131,6 +132,7 @@ let loc_of =
   | `RecordWith (_loc,_,_) -> _loc
   | `And (_loc,_,_) -> _loc
   | `SigEnd _loc -> _loc
+  | `ObjPatEnd (_loc,_) -> _loc
   | `TyDcl (_loc,_,_,_,_) -> _loc
   | `StructEnd _loc -> _loc
   | `Int32 (_loc,_) -> _loc
