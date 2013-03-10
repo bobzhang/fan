@@ -240,7 +240,7 @@ let rec ctyp (x:ctyp) = match x with
   |  x -> errorf (loc_of x) "ctyp: %s" (dump_ctyp x) ]
 and row_field (x:row_field) acc =
   match x with 
-  [`Nil _loc  -> []
+  [`Nil _loc  -> [] (*M*)
   | `TyVrn (_loc,`C(_,i)) -> [Rtag i true [] :: acc]
   (* | `TyOfAmp (_loc,`TyVrn(_,`C(_,i)),t) -> *)
   (*       [Rtag i true (List.map ctyp (list_of_amp' t [])) :: acc ] *)
@@ -253,8 +253,8 @@ and row_field (x:row_field) acc =
   | `Ant(_loc,_) -> ANT_ERROR
   | `Ctyp(_,t) -> [Rinherit (ctyp t) :: acc]
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)]
-and meth_list (fl:name_ctyp) (acc: list core_field_type) : list core_field_type = match fl with
-  [`Nil _-> acc
+and meth_list (fl:name_ctyp) acc : list core_field_type = match fl with
+  [`Nil _-> acc (*M*)
   | `Sem (_loc,t1,t2)
     -> meth_list t1 (meth_list t2 acc)
   | `TyCol(_loc,`Id(_,`Lid(_,lab)),t) ->
@@ -264,8 +264,7 @@ and meth_list (fl:name_ctyp) (acc: list core_field_type) : list core_field_type 
 and package_type_constraints (wc:with_constr)
     (acc: list (Asttypes.loc Longident.t  *core_type))
     : list (Asttypes.loc Longident.t  *core_type) =  match wc with
-    [(* `Nil _ -> acc *)
-    (* | *) `TypeEq(_loc,`Id(_,id),ct) -> [(ident id, ctyp ct) :: acc]
+    [ `TypeEq(_loc,`Id(_,id),ct) -> [(ident id, ctyp ct) :: acc]
     | `And(_loc,wc1,wc2) ->
         package_type_constraints wc1 (package_type_constraints wc2 acc)
     | x -> errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
@@ -316,35 +315,7 @@ let mkvariant (x:or_ctyp) =
       (with_loc  s sloc, [], Some (ctyp t),  _loc)
   | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t) ];
 
-  
-(* let rec type_decl (tl: list (option (Asttypes.loc string) * (bool * bool))) *)
-(*     (cl: list (core_type * core_type * Location.t)) *)
-(*     loc m pflag (x: ctyp) = *)
-(*   match x with  *)
-(*   [`TyMan(_loc,p1,t1,p2,t2) -> *)
-(*     type_decl tl cl loc (Some (ctyp t1)) p1(\* pflag *\) t2 *)
 
-(*   | `Priv(_loc,t) -> *)
-(*       if pflag then *)
-(*         error _loc "multiple private keyword used, use only one instead" *)
-(*       else *)
-(*         type_decl tl cl loc m true t *)
-(*   | `Record (_loc,t) -> *)
-(*       mktype loc tl cl *)
-(*         (Ptype_record (List.map mktrecord (list_of_sem' t []))) (mkprivate' pflag) m *)
-(*   | `Sum(_loc,t) -> *)
-(*       mktype loc tl cl *)
-(*         (Ptype_variant (List.map mkvariant (list_of_or' t []))) (mkprivate' pflag) m *)
-(*   | t -> *)
-(*       if m <> None then *)
-(*         errorf loc "only one manifest type allowed by definition %s" *)
-(*           (dump_ctyp t) *)
-(*       else *)
-(*         let m = *)
-(*           match t with *)
-(*           [`Nil _loc  -> None *)
-(*           | _ -> Some (ctyp t) ] in *)
-(*         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m ] ; *)
 
 let type_kind (x:type_repr) =
   match x with
@@ -353,7 +324,7 @@ let type_kind (x:type_repr) =
   | `Sum(_loc,t) ->
       (Ptype_variant (List.map mkvariant (list_of_or' t [])))
   | `Ant(_loc,_) -> ANT_ERROR
-  | `Nil _loc -> failwithf "type_kind nil"
+  | `Nil _loc -> failwithf "type_kind nil" (*M*)
   ];
     
 let type_decl tl cl loc (x:type_info) =
@@ -369,7 +340,7 @@ let type_decl tl cl loc (x:type_info) =
       mktype loc tl cl ~type_kind:(Ptype_abstract) ~priv:(mkprivate p1)
         ~manifest:(Some (ctyp t1 ))
   | `Ant (_loc,_) -> ANT_ERROR
-  | `Nil _ ->
+  | `Nil _ -> (*Q*)
       mktype loc tl cl ~type_kind:(Ptype_abstract) ~priv:(Private)
         ~manifest:None ];
     
@@ -432,7 +403,7 @@ let optional_type_parameters (t:ctyp) =
 let  class_parameters (t:type_parameters) =
   List.filter_map
     (fun
-      [`Nil _ -> None
+      [`Nil _ -> None (*Q*)
       | `Ctyp(_, x) ->
           match quote_map x with
           [(Some x,v) -> Some (x,v)
@@ -684,7 +655,7 @@ let rec expr (x : expr) = with expr match x with
           mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
       | `Coercion (loc, e, t1, t2) ->
           let t1 = match t1 with
-            [ `Nil _ -> None
+            [ `Nil _ -> None (*Q*)
           | t -> Some (ctyp t) ] in
           mkexp loc (Pexp_constraint (expr e) t1 (Some (ctyp t2)))
       | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
@@ -792,8 +763,7 @@ let rec expr (x : expr) = with expr match x with
       | `OvrInst (loc,iel) ->
           let rec mkideexp (x:rec_expr) acc  = 
             match x with 
-              [ (* `Nil _ -> acc *)
-                `Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
+            [`Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
             | `RecBind(_,`Lid(sloc,s),e) -> [(with_loc s sloc, expr e) :: acc]
             | _ -> assert false ] in
           mkexp loc (Pexp_override (mkideexp iel []))
@@ -848,11 +818,6 @@ let rec expr (x : expr) = with expr match x with
               mkexp loc (Pexp_pack (module_expr me))
           | `LocalTypeFun (loc,`Lid(_,i),e) -> mkexp loc (Pexp_newtype i (expr e))
           | x -> errorf (loc_of x ) "expr:%s" (dump_expr x) ]
-(* and patt_of_lab _loc lab (x:patt)= match x with  *)
-(*   [  p -> patt p ] *)
-(* and expr_of_lab _loc lab (x:expr) = match x with *)
-(*   [ `Nil _  -> expr (`Id(_loc,`Lid(_loc,lab))) *)
-(*   | e -> expr e ] *)
 and label_expr (x : expr) = match x with 
   [ `Label (_loc,`Lid(_,lab),eo) -> (lab,  expr eo)
   | `LabelS(_loc,`Lid(sloc,lab)) -> (lab,expr(`Id(sloc,`Lid(sloc,lab))))
@@ -1098,7 +1063,7 @@ and class_type (x:Ast.class_type) = match x with
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun "" (ctyp t) (class_type ct))
   | `CtSigEnd(loc,t_o) ->
       let t = match t_o with
-        [  `Nil _loc -> `Any loc
+        [  `Nil _loc -> `Any loc (*Q*)
       | t -> t ] in
       mkcty loc
         (Pcty_signature {
@@ -1107,7 +1072,7 @@ and class_type (x:Ast.class_type) = match x with
          pcsig_loc =  loc;})
   | `CtSig (loc,t_o,ctfl) ->
       let t = match t_o with
-      [  `Nil _loc -> `Any loc
+      [  `Nil _loc -> `Any loc (*Q*)
       | t -> t ] in
       let cil = class_sig_item ctfl [] in
       mkcty loc (Pcty_signature {
@@ -1121,7 +1086,7 @@ and class_info_class_expr (ci:class_expr) =
   [ `Eq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
         let (loc_params, (params, variance)) =
           match params with
-            [`Nil _loc ->
+          [`Nil _loc -> (*Q*)
               (loc, ([], []))
           | t -> (loc_of t, List.split (class_parameters t)) ]  in
         {pci_virt = mkvirtual vir;
@@ -1138,7 +1103,7 @@ and class_info_class_type (ci:class_type) =
     ->
         let (loc_params, (params, variance)) =
           match params with
-            [  `Nil _loc ->
+          [`Nil _loc -> (*Q*)
               (loc, ([], []))
           | t -> (loc_of t, List.split (class_parameters t)) ] in
         {pci_virt = mkvirtual vir;
@@ -1151,8 +1116,7 @@ and class_info_class_type (ci:class_type) =
           "bad class/class type declaration/definition %s " (dump_class_type ct)]
   and class_sig_item (c:class_sig_item) (l: list class_type_field) : list class_type_field =
     match c with 
-      [(*  `Nil _ -> l *)
-       (* | *) `Eq (loc, t1, t2) ->
+    [`Eq (loc, t1, t2) ->
          [mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l]
     | `Sem(_,csg1,csg2) -> class_sig_item csg1 (class_sig_item csg2 l)
     | `SigInherit (loc,ct) -> [mkctf loc (Pctf_inher (class_type ct)) :: l]
@@ -1206,8 +1170,7 @@ and class_info_class_type (ci:class_type) =
 
   and class_str_item (c:class_str_item) l =
     match c with
-    [ (* `Nil _ -> l *)
-    (* | *) `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
+    [ `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
     | `Sem(_,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
     | `Inherit (loc, ov, ce) ->
         [mkcf loc (Pcf_inher (override_flag loc ov) (class_expr ce) None) :: l]
@@ -1215,7 +1178,7 @@ and class_info_class_type (ci:class_type) =
         [mkcf loc (Pcf_inher (override_flag loc ov) (class_expr ce) (Some x)) :: l]
     | `Initializer (loc,e) -> [mkcf loc (Pcf_init (expr e)) :: l]
     | `CrMth (loc, `Lid(sloc,s), ov, pf, e, t) ->
-        let t = match t with
+        let t = match t with (*Q*)
           [`Nil _ -> None
         | t -> Some (mkpolytype (ctyp t)) ] in
         let e = mkexp loc (Pexp_poly (expr e) t) in

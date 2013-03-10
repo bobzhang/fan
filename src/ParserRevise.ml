@@ -245,12 +245,9 @@ let apply () = begin
     | "include"; module_type{mt} -> {| include $mt |}
     | "module"; a_uident{i}; module_declaration{mt} ->  {| module $i : $mt |}
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
-    | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
-        `ModuleType(_loc,i,mt)
+    | "module"; "type"; a_uident{i}; "="; module_type{mt} -> `ModuleType(_loc,i,mt)
     | "module"; "type"; a_uident{i} -> `ModuleTypeEnd(_loc,i)
-        (* {| module type $i |} *)
     | "open"; module_longident{i} -> `Open(_loc,i)
-
     | "type"; type_declaration{t} -> `Type(_loc,t)
     | "val"; a_lident{i}; ":"; ctyp{t} -> `Val(_loc,i,t)
     | "class"; class_description{cd} ->    `Class(_loc,cd)
