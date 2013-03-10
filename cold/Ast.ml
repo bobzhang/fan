@@ -132,7 +132,7 @@ and with_constr =
 and binding =
   [ nil | `And of (loc* binding* binding) | `Bind of (loc* patt* expr) | ant] 
 and module_binding =
-  [ nil | `And of (loc* module_binding* module_binding)
+  [ `And of (loc* module_binding* module_binding)
   | `ModuleBind of (loc* auident* module_type* module_expr)
   | `Constraint of (loc* auident* module_type) | ant] 
 and match_case =

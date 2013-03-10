@@ -527,7 +527,6 @@ class eq =
     method module_binding : module_binding -> module_binding -> 'result43=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result43)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#module_binding _a0 _b0) && (self#module_binding _a1 _b1)
         | (`ModuleBind (_a0,_a1,_a2),`ModuleBind (_b0,_b1,_b2)) ->
@@ -1312,7 +1311,6 @@ class print =
     method module_binding : 'fmt -> module_binding -> 'result98=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result98)
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#module_binding
               _a0 self#module_binding _a1
@@ -2243,7 +2241,6 @@ and meta_binding _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result142)
 and meta_module_binding _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result141)
   | `And (_a0,_a1) ->
       `App
         (_loc,

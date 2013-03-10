@@ -435,9 +435,9 @@ and binding =
   | `Bind  of (loc * patt * expr)
   | ant  ]
 and module_binding =
-  [= nil
+  [= (* nil *)
      (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
-  | `And of (loc * module_binding * module_binding)
+  (* | *) `And of (loc * module_binding * module_binding)
       (* s : mt = me *)
   | `ModuleBind  of (loc *  auident * module_type * module_expr)
       (* s : mt *)
@@ -452,14 +452,11 @@ and match_case =
      (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
   | ant  ]
 and module_expr =
-  [=(*  nil *)
-  (* | *) sid
-      (* me me *)
-  | `App of (loc * module_expr * module_expr)
+  [= sid
+  | `App of (loc * module_expr * module_expr) (* me me *)
         (* functor (s : mt) -> me *)
   | `Functor of (loc * auident * module_type * module_expr)
   | `Struct of (loc * str_item)
-   (* empty module *)     
   | `StructEnd of loc 
         (* (me : mt) *)
   | `Constraint of (loc * module_expr * module_type)

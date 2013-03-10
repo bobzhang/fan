@@ -147,7 +147,7 @@ let apply () = begin
         | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
             (* {| $uid:m : $mt = $me |} *)
             `ModuleBind(_loc,m,mt,me)
-        | -> `Nil _loc ]
+        (* | -> `Nil _loc *) ] (*M*)
         module_binding:
         [ S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
         | `Ant (("module_binding"|"anti"|"list" |"" as n),s) -> {| $(anti:mk_anti ~c:"module_binding" n s) |}
@@ -250,10 +250,6 @@ let apply () = begin
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
     | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
         `ModuleType(_loc,i,mt)
-    (* | "import"; dot_namespace{x} -> begin  *)
-    (*     FanToken.paths := [ `Absolute  x :: !FanToken.paths]; *)
-    (*     `Nil _loc (\*FIXME may be as an diretive ? *\) (\*M*\) *)
-    (* end *)
     | "module"; "type"; a_uident{i} -> {| module type $i |}
     | "open"; module_longident{i} -> {| open $i |}
 

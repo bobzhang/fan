@@ -378,12 +378,7 @@ let apply () =
              (Gram.mk_action
                 (fun (me : 'module_expr)  _  (mt : 'module_type)  _ 
                    (m : 'a_uident)  (_loc : FanLoc.t)  ->
-                   (`ModuleBind (_loc, m, mt, me) : 'module_binding_quot )))));
-         ([],
-           ("Gram.mk_action\n  (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'module_binding_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  ->
-                   (`Nil _loc : 'module_binding_quot )))))]));
+                   (`ModuleBind (_loc, m, mt, me) : 'module_binding_quot )))))]));
    Gram.extend_single (module_binding : 'module_binding Gram.t )
      (None,
        (None, None,

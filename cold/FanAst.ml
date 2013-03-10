@@ -1181,7 +1181,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result32)
     and meta_module_binding _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result31)
       | `And (_a0,_a1,_a2) ->
           `App
             (_loc,

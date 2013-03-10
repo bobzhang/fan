@@ -59,10 +59,6 @@ class clean_ast =
       match super#binding bi with
       | `And (_loc,`Nil _l,bi)|`And (_loc,bi,`Nil _l) -> bi
       | bi -> bi
-    method! module_binding mb =
-      match super#module_binding mb with
-      | `And (_loc,`Nil _l,mb)|`And (_loc,mb,`Nil _l) -> mb
-      | mb -> mb
     method! ctyp t =
       match super#ctyp t with
       | `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)

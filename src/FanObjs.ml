@@ -105,12 +105,12 @@ class clean_ast = object
   (*   [ {| $({@_l||} ) ; $bi |} | {| $bi ; $({@_l||} ) |} -> bi *)
   (*   | bi -> bi ]; *)
 
-  method! module_binding mb =
-    with module_binding
-    match super#module_binding mb with
-    [ {| $({@_l||} ) and $mb |} |
-      {| $mb and $({@_l||} ) |} -> mb
-    | mb -> mb ];
+  (* method! module_binding mb = *)
+  (*   with module_binding *)
+  (*   match super#module_binding mb with *)
+  (*   [ {| $({@_l||} ) and $mb |} | *)
+  (*     {| $mb and $({@_l||} ) |} -> mb *)
+  (*   | mb -> mb ]; *)
 
   method! ctyp t =
     with ctyp
