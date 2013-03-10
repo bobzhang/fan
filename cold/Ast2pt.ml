@@ -892,7 +892,7 @@ and str_item (s : str_item) (l : structure) =
   (match s with
    | `Class (loc,cd) ->
        (mkstr loc
-          (Pstr_class (List.map class_info_class_expr (list_of_and' cd []))))
+          (Pstr_class (List.map class_info_class_expr (list_of_and cd []))))
        :: l
    | `ClassType (loc,ctd) ->
        (mkstr loc

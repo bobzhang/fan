@@ -1087,8 +1087,6 @@ class map2 =
     method class_expr : class_expr -> class_expr -> class_expr=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>class_expr)
         | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_expr _a1 _b1 in
@@ -2069,7 +2067,6 @@ class fold2 =
     method class_expr : class_expr -> class_expr -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_expr _a1 _b1 in self#expr _a2 _b2
@@ -2693,7 +2690,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result158)
     method class_expr : class_expr -> 'result159=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result159)
       | `CeApp (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_expr _a1; self#expr _a2)
       | `CeCon (_a0,_a1,_a2,_a3) ->
@@ -3680,7 +3676,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>class_sig_item)
     method class_expr : class_expr -> class_expr=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>class_expr)
       | `CeApp (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_expr _a1 in
@@ -4457,7 +4452,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method class_expr : class_expr -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `CeApp (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_expr _a1 in self#expr _a2
@@ -5383,7 +5377,6 @@ class print =
     method class_expr : 'fmt -> class_expr -> 'result324=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result324)
         | `CeApp (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a@ %a)@]" self#loc _a0
               self#class_expr _a1 self#expr _a2
@@ -6314,7 +6307,6 @@ class eq =
     method class_expr : class_expr -> class_expr -> 'result379=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result379)
         | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_expr _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -7069,7 +7061,6 @@ and strip_loc_class_sig_item =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result410)
 and strip_loc_class_expr =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result409)
   | `CeApp (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_expr _a1 in
       let _a2 = strip_loc_expr _a2 in `CeApp (_a1, _a2)
@@ -7942,7 +7933,6 @@ and pp_print_class_sig_item fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result463)
 and pp_print_class_expr fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result462)
   | `CeApp (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_expr _a1 pp_print_expr _a2

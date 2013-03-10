@@ -71,10 +71,6 @@ class clean_ast =
       match super#name_ctyp t with
       | `Sem (_,t,`Nil _)|`Sem (_,`Nil _,t) -> t
       | t -> t
-    method! class_expr ce =
-      match super#class_expr ce with
-      | `And (_loc,`Nil _l,ce)|`And (_loc,ce,`Nil _l) -> ce
-      | ce -> ce
     method! class_type ct =
       match super#class_type ct with
       | `And (_loc,`Nil _l,ct)|`And (_loc,ct,`Nil _l) -> ct

@@ -5208,11 +5208,7 @@ let apply () =
            ("Gram.mk_action\n  (fun (x : 'class_expr)  (_loc : FanLoc.t)  -> (x : 'class_expr_quot ))\n",
              (Gram.mk_action
                 (fun (x : 'class_expr)  (_loc : FanLoc.t)  ->
-                   (x : 'class_expr_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'class_expr_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'class_expr_quot )))))]));
+                   (x : 'class_expr_quot )))))]));
    Gram.extend_single (class_declaration : 'class_declaration Gram.t )
      (None,
        (None, None,

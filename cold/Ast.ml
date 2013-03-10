@@ -167,7 +167,7 @@ and class_sig_item =
   | `CgVal of (loc* alident* mutable_flag* virtual_flag* ctyp)
   | `CgVir of (loc* alident* private_flag* ctyp) | ant] 
 and class_expr =
-  [ nil | `CeApp of (loc* class_expr* expr)
+  [ `CeApp of (loc* class_expr* expr)
   | `CeCon of (loc* virtual_flag* ident* type_parameters)
   | `CeFun of (loc* patt* class_expr)
   | `CeLet of (loc* rec_flag* binding* class_expr)

@@ -1083,12 +1083,8 @@ let apply () = begin
           {|constraint $t1 = $t2|}
         | "initializer"; expr{se} -> {| initializer $se |} ]
       class_str_item_quot:
-        [ class_str_item{x1}; semi; S{x2} ->
-          (* match x2 with *)
-          (* [ `Nil _ -> x1 *)
-          (* | _ -> *) `Sem(_loc,x1,x2) (* ] *)
-        | class_str_item{x} -> x
-        (* | -> `Nil _loc *) ]
+        [ class_str_item{x1}; semi; S{x2} -> `Sem(_loc,x1,x2)
+        | class_str_item{x} -> x]
     |};
     
   with class_expr
@@ -1104,7 +1100,7 @@ let apply () = begin
           `CeCon (_loc, anti, i, ot)
           (* {| $virtual:anti $id:i [ $ot ] |} *)
       | class_expr{x} -> x
-      | -> `Nil _loc  ]
+      (* | -> `Nil _loc *)  ]
       class_declaration:
       [ S{c1}; "and"; S{c2} -> {| $c1 and $c2 |}
       | `Ant ((""|"cdcl"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_expr" n s) |}

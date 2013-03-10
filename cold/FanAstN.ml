@@ -634,7 +634,6 @@ class eq =
     method class_expr : class_expr -> class_expr -> 'result49=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result49)
         | (`CeApp (_a0,_a1),`CeApp (_b0,_b1)) ->
             (self#class_expr _a0 _b0) && (self#expr _a1 _b1)
         | (`CeCon (_a0,_a1,_a2),`CeCon (_b0,_b1,_b2)) ->
@@ -1444,7 +1443,6 @@ class print =
     method class_expr : 'fmt -> class_expr -> 'result104=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result104)
         | `CeApp (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a)@]" self#class_expr _a0
               self#expr _a1
@@ -2442,7 +2440,6 @@ and meta_class_sig_item _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result136)
 and meta_class_expr _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result135)
   | `CeApp (_a0,_a1) ->
       `App
         (_loc,

@@ -255,8 +255,7 @@ and of_ctyp =
   | nil]
          
 and patt =
-  [=(*  nil *)
-  (* | *) sid
+  [= sid
   | `App of (loc * patt * patt)
   | `Vrn of (loc * string)
   | `Com of (loc * patt * patt)
@@ -525,9 +524,7 @@ and class_sig_item =
   | `CgVir of (loc *  alident * private_flag * ctyp)
   | ant ]
 and class_expr =
-  [= nil
-      (* ce e *)
-  | `CeApp of (loc * class_expr * expr)
+  [= `CeApp of (loc * class_expr * expr)   (* ce e *)
       (* (virtual)? i ([ t ])? *)
   | `CeCon of (loc * virtual_flag * ident * (* ctyp *) type_parameters)
       (* fun p -> ce *)
@@ -547,8 +544,7 @@ and class_expr =
   | `Eq  of (loc * class_expr * class_expr)
   | ant ]
 and class_str_item =
-  [= (* nil *)
-  (* | *) `Sem of (loc * class_str_item * class_str_item)
+  [=  `Sem of (loc * class_str_item * class_str_item)
         (* type t = t *)
   | `Eq of (loc * ctyp * ctyp)
         (* inherit(!)? ce (as s)? *)

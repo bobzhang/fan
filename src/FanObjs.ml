@@ -176,11 +176,11 @@ class clean_ast = object
   (*   [ {:module_type| $mt with $({:with_constr@_l||} ) |} -> mt *)
   (*   | mt -> mt ]; *)
 
-  method! class_expr ce =
-    with class_expr
-    match super#class_expr ce with
-    [ {| $({@_l||} ) and $ce |} | {| $ce and $({@_l||} ) |} -> ce
-    | ce -> ce ];
+  (* method! class_expr ce = *)
+  (*   with class_expr *)
+  (*   match super#class_expr ce with *)
+  (*   [ {| $({@_l||} ) and $ce |} | {| $ce and $({@_l||} ) |} -> ce *)
+  (*   | ce -> ce ]; *)
 
   method! class_type ct =
     with class_type
