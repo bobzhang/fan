@@ -202,11 +202,7 @@ let apply () =
             ("Gram.mk_action\n  (fun (x : 'module_expr)  (_loc : FanLoc.t)  -> (x : 'module_expr_quot ))\n",
               (Gram.mk_action
                  (fun (x : 'module_expr)  (_loc : FanLoc.t)  ->
-                    (x : 'module_expr_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'module_expr_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'module_expr_quot )))))]));
+                    (x : 'module_expr_quot )))))]));
    Gram.extend (module_binding0 : 'module_binding0 Gram.t )
      (None,
        [(None, (Some `RA),

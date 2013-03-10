@@ -106,8 +106,7 @@ let apply () = begin
   with module_expr
   {:extend|
       module_expr_quot:
-      [ module_expr{x} -> x
-      | -> `Nil _loc ]
+      [ module_expr{x} -> x]
       module_binding0:
       { RA
         [ "("; a_uident{m}; ":"; module_type{mt}; ")"; S{mb} ->
@@ -203,7 +202,6 @@ let apply () = begin
               let _loc = FanLoc.merge loc1 loc2 in
               `Id(_loc,`App(_loc,i1,i2))
             | _ -> raise XStream.Failure ] in app0 mt1 mt2
-
           (* ModuleType.app0 mt1 mt2 *) ] (* FIXME *)
         "."
         [ S{mt1}; "."; S{mt2} ->
@@ -224,9 +222,7 @@ let apply () = begin
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_type_tag
         | module_longident_with_app{i} -> {| $id:i |}
         | "("; S{mt}; ")" -> {| $mt |}
-        | "module"; "type"; "of"; module_expr{me} ->
-            `ModuleTypeOf(_loc,me)
-            (* {| module type of $me |} *) ] }
+        | "module"; "type"; "of"; module_expr{me} -> `ModuleTypeOf(_loc,me)] }
       module_declaration:
       { RA
         [ ":"; module_type{mt} -> {| $mt |}
@@ -240,14 +236,8 @@ let apply () = begin
     sig_item_quot:
     [ "#"; a_lident{s} -> `DirectiveSimple(_loc,s)
     | "#"; a_lident{s}; expr{dp} -> `Directive(_loc,s,dp)
-    | sig_item{sg1}; semi; S{sg2} ->
-        `Sem(_loc,sg1,sg2)
-        (* match sg2 with *)
-        (* [ `Nil _ -> sg1 (\*M*\) *)
-        (* | _ -> `Sem(_loc,sg1,sg2) ] *)
-    | sig_item{sg} -> sg
-    (* | -> `Nil _loc *)
-    ] (*M*)
+    | sig_item{sg1}; semi; S{sg2} -> `Sem(_loc,sg1,sg2)
+    | sig_item{sg} -> sg] 
     sig_item:
     [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
     | `QUOTATION x -> AstQuotation.expand _loc x DynAst.sig_item_tag

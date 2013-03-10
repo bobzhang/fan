@@ -452,8 +452,8 @@ and match_case =
      (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
   | ant  ]
 and module_expr =
-  [= nil
-  | sid
+  [=(*  nil *)
+  (* | *) sid
       (* me me *)
   | `App of (loc * module_expr * module_expr)
         (* functor (s : mt) -> me *)

@@ -553,7 +553,6 @@ class eq =
     method module_expr : module_expr -> module_expr -> 'result45=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result45)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result45)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#module_expr _a0 _b0) && (self#module_expr _a1 _b1)
@@ -1341,7 +1340,6 @@ class print =
     method module_expr : 'fmt -> module_expr -> 'result100=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result100)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result100)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#module_expr _a0
@@ -2288,7 +2286,6 @@ and meta_match_case _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result140)
 and meta_module_expr _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result139)
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result139)
   | `App (_a0,_a1) ->
       `App

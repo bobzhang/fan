@@ -1243,7 +1243,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result30)
     and meta_module_expr _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result29)
       | #sid as _a0 -> (meta_sid _loc _a0 :>'result29)
       | `App (_a0,_a1,_a2) ->
           `App

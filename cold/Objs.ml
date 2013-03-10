@@ -931,8 +931,6 @@ class map2 =
     method module_expr : module_expr -> module_expr -> module_expr=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>module_expr)
         | ((#sid as _a0),(#sid as _b0)) ->
             (self#sid _a0 _b0 : sid  :>module_expr)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
@@ -1954,7 +1952,6 @@ class fold2 =
     method module_expr : module_expr -> module_expr -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -2612,7 +2609,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result154)
     method module_expr : module_expr -> 'result155=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result155)
       | #sid as _a0 -> (self#sid _a0 :>'result155)
       | `App (_a0,_a1,_a2) ->
           (self#loc _a0; self#module_expr _a1; self#module_expr _a2)
@@ -3541,7 +3537,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>match_case)
     method module_expr : module_expr -> module_expr=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>module_expr)
       | #sid as _a0 -> (self#sid _a0 : sid  :>module_expr)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -4358,7 +4353,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method module_expr : module_expr -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -5262,7 +5256,6 @@ class print =
     method module_expr : 'fmt -> module_expr -> 'result320=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result320)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result320)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
@@ -6193,7 +6186,6 @@ class eq =
     method module_expr : module_expr -> module_expr -> 'result375=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result375)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result375)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#module_expr _a1 _b1)) &&
@@ -6964,7 +6956,6 @@ and strip_loc_match_case =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result414)
 and strip_loc_module_expr =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result413)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result413)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_module_expr _a1 in
@@ -7819,7 +7810,6 @@ and pp_print_match_case fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result467)
 and pp_print_module_expr fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result466)
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result466)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0

@@ -124,7 +124,7 @@ and match_case =
   [ nil | `Or of (match_case* match_case) | `Case of (patt* expr)
   | `CaseWhen of (patt* expr* expr) | ant] 
 and module_expr =
-  [ nil | sid | `App of (module_expr* module_expr)
+  [ sid | `App of (module_expr* module_expr)
   | `Functor of (auident* module_type* module_expr) | `Struct of str_item
   | `StructEnd | `Constraint of (module_expr* module_type)
   | `PackageModule of expr | ant] 

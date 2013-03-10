@@ -139,7 +139,7 @@ and match_case =
   [ nil | `Or of (loc* match_case* match_case) | `Case of (loc* patt* expr)
   | `CaseWhen of (loc* patt* expr* expr) | ant] 
 and module_expr =
-  [ nil | sid | `App of (loc* module_expr* module_expr)
+  [ sid | `App of (loc* module_expr* module_expr)
   | `Functor of (loc* auident* module_type* module_expr)
   | `Struct of (loc* str_item) | `StructEnd of loc
   | `Constraint of (loc* module_expr* module_type)
