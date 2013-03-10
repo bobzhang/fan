@@ -60,12 +60,12 @@ end;
 
 class clean_ast = object
   inherit Objs.map as super;
-  method! with_constr wc =
-    with with_constr
-    match super#with_constr wc with
-    [ {| $({@_l||})  and $wc |} |
-      {| $wc and $({@_l||} ) |} -> wc
-    | wc -> wc ];
+  (* method! with_constr wc = *)
+  (*   with with_constr *)
+  (*   match super#with_constr wc with *)
+  (*   [ {| $({@_l||})  and $wc |} | *)
+  (*     {| $wc and $({@_l||} ) |} -> wc *)
+  (*   | wc -> wc ]; *)
   (* method! expr e = *)
   (*   with expr *)
   (*   match super#expr e with *)
@@ -171,10 +171,10 @@ class clean_ast = object
   (*   | {| let $rec:_ $({:binding@_l||} ) |} -> {||} *)
   (*   | st -> st ]; *)
 
-  method! module_type mt =
-    match super#module_type mt with
-    [ {:module_type| $mt with $({:with_constr@_l||} ) |} -> mt
-    | mt -> mt ];
+  (* method! module_type mt = *)
+  (*   match super#module_type mt with *)
+  (*   [ {:module_type| $mt with $({:with_constr@_l||} ) |} -> mt *)
+  (*   | mt -> mt ]; *)
 
   method! class_expr ce =
     with class_expr

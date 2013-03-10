@@ -409,9 +409,9 @@ and sig_item =
   | ant  ]
           
 and with_constr =
-  [= nil
+  [= (* nil *)
      (* type t = t *)
-  | `TypeEq of (loc * ctyp * ctyp)
+  (* | *) `TypeEq of (loc * ctyp * ctyp)
   | `TypeEqPriv of (loc * ctyp * ctyp)
         (* module i = i *)
   | `ModuleEq of (loc * ident * ident)
@@ -435,9 +435,9 @@ and binding =
   | `Bind  of (loc * patt * expr)
   | ant  ]
 and module_binding =
-  [= (* nil *)
+  [= 
      (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
-  (* | *) `And of (loc * module_binding * module_binding)
+   `And of (loc * module_binding * module_binding)
       (* s : mt = me *)
   | `ModuleBind  of (loc *  auident * module_type * module_expr)
       (* s : mt *)

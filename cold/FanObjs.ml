@@ -47,10 +47,6 @@ let map_loc f =
 class clean_ast =
   object 
     inherit  Objs.map as super
-    method! with_constr wc =
-      match super#with_constr wc with
-      | `And (_loc,`Nil _l,wc)|`And (_loc,wc,`Nil _l) -> wc
-      | wc -> wc
     method! match_case mc =
       match super#match_case mc with
       | `Or (_loc,`Nil _l,mc)|`Or (_loc,mc,`Nil _l) -> mc
@@ -83,10 +79,6 @@ class clean_ast =
       match super#name_ctyp t with
       | `Sem (_,t,`Nil _)|`Sem (_,`Nil _,t) -> t
       | t -> t
-    method! module_type mt =
-      match super#module_type mt with
-      | `With (_loc,mt,`Nil _l) -> mt
-      | mt -> mt
     method! class_expr ce =
       match super#class_expr ce with
       | `And (_loc,`Nil _l,ce)|`And (_loc,ce,`Nil _l) -> ce

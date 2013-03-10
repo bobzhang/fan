@@ -138,16 +138,13 @@ let apply () = begin
   with module_binding
       {:extend|
         module_binding_quot:
-        [ S{b1}; "and"; S{b2} ->  {| $b1 and $b2 |}
-        | `Ant (("module_binding"|"anti"|"" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
-        | a_uident{m}; ":"; module_type{mt} ->
-            (* {| $uid:m : $mt |} *) `Constraint(_loc,m,mt)
-            (* {| $m : $mt |} *)
-            (* {:str_item| module X = ($x :S)|} *)
+        [ S{b1}; "and"; S{b2} ->  `And(_loc,b1,b2)
+        | `Ant (("module_binding"|"anti"|"" as n),s) ->
+            {| $(anti:mk_anti ~c:"module_binding" n s) |}
+        | a_uident{m}; ":"; module_type{mt} -> `Constraint(_loc,m,mt)
         | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
             (* {| $uid:m : $mt = $me |} *)
-            `ModuleBind(_loc,m,mt,me)
-        (* | -> `Nil _loc *) ] (*M*)
+            `ModuleBind(_loc,m,mt,me)]
         module_binding:
         [ S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
         | `Ant (("module_binding"|"anti"|"list" |"" as n),s) -> {| $(anti:mk_anti ~c:"module_binding" n s) |}
@@ -166,7 +163,7 @@ let apply () = begin
   with with_constr
       {:extend|
         with_constr_quot:
-        [ with_constr{x} -> x  | -> `Nil _loc ]
+        [ with_constr{x} -> x  (* | -> `Nil _loc *) ]
         with_constr: 
         [ S{wc1}; "and"; S{wc2} -> {| $wc1 and $wc2 |}
         | `Ant ((""|"with_constr"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"with_constr" n s) |}

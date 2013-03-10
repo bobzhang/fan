@@ -481,11 +481,7 @@ let apply () =
             ("Gram.mk_action\n  (fun (x : 'with_constr)  (_loc : FanLoc.t)  -> (x : 'with_constr_quot ))\n",
               (Gram.mk_action
                  (fun (x : 'with_constr)  (_loc : FanLoc.t)  ->
-                    (x : 'with_constr_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'with_constr_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'with_constr_quot )))))]));
+                    (x : 'with_constr_quot )))))]));
    Gram.extend_single (with_constr : 'with_constr Gram.t )
      (None,
        (None, None,

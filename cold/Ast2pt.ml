@@ -177,7 +177,6 @@ and meth_list (fl : name_ctyp) (acc : core_field_type list) =
 and package_type_constraints (wc : with_constr)
   (acc : (Longident.t Asttypes.loc* core_type) list) =
   (match wc with
-   | `Nil _ -> acc
    | `TypeEq (_loc,`Id (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
    | `And (_loc,wc1,wc2) ->
        package_type_constraints wc1 (package_type_constraints wc2 acc)
@@ -781,7 +780,7 @@ and module_type: Ast.module_type -> Parsetree.module_type =
              ptype_loc = loc;
              ptype_variance = variance
            })) in
-    let constrs = list_of_and' wc [] in
+    let constrs = list_of_and wc [] in
     List.filter_map
       (function
        | `TypeEq (_loc,id_tpl,ct) ->

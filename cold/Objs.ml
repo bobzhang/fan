@@ -839,8 +839,6 @@ class map2 =
     method with_constr : with_constr -> with_constr -> with_constr=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>with_constr)
         | (`TypeEq (_a0,_a1,_a2),`TypeEq (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -1881,7 +1879,6 @@ class fold2 =
     method with_constr : with_constr -> with_constr -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`TypeEq (_a0,_a1,_a2),`TypeEq (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -2562,7 +2559,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result150)
     method with_constr : with_constr -> 'result151=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result151)
       | `TypeEq (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `TypeEqPriv (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
@@ -3459,7 +3455,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>sig_item)
     method with_constr : with_constr -> with_constr=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>with_constr)
       | `TypeEq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -4288,7 +4283,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method with_constr : with_constr -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `TypeEq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -5187,7 +5181,6 @@ class print =
     method with_constr : 'fmt -> with_constr -> 'result316=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result316)
         | `TypeEq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TypeEq@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -6111,7 +6104,6 @@ class eq =
     method with_constr : with_constr -> with_constr -> 'result371=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result371)
         | (`TypeEq (_a0,_a1,_a2),`TypeEq (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -6888,7 +6880,6 @@ and strip_loc_sig_item =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result418)
 and strip_loc_with_constr =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result417)
   | `TypeEq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TypeEq (_a1, _a2)
@@ -7742,7 +7733,6 @@ and pp_print_sig_item fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result471)
 and pp_print_with_constr fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result470)
   | `TypeEq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TypeEq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2

@@ -110,7 +110,7 @@ and sig_item =
   | `ModuleType of (auident* module_type) | `Open of ident
   | `Type of typedecl | `Val of (alident* ctyp) | ant] 
 and with_constr =
-  [ nil | `TypeEq of (ctyp* ctyp) | `TypeEqPriv of (ctyp* ctyp)
+  [ `TypeEq of (ctyp* ctyp) | `TypeEqPriv of (ctyp* ctyp)
   | `ModuleEq of (ident* ident) | `TypeSubst of (ctyp* ctyp)
   | `ModuleSubst of (ident* ident) | `And of (with_constr* with_constr)
   | ant] 

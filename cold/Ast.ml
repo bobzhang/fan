@@ -125,7 +125,7 @@ and sig_item =
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
   | `Type of (loc* typedecl) | `Val of (loc* alident* ctyp) | ant] 
 and with_constr =
-  [ nil | `TypeEq of (loc* ctyp* ctyp) | `TypeEqPriv of (loc* ctyp* ctyp)
+  [ `TypeEq of (loc* ctyp* ctyp) | `TypeEqPriv of (loc* ctyp* ctyp)
   | `ModuleEq of (loc* ident* ident) | `TypeSubst of (loc* ctyp* ctyp)
   | `ModuleSubst of (loc* ident* ident)
   | `And of (loc* with_constr* with_constr) | ant] 

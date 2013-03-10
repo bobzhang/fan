@@ -264,8 +264,8 @@ and meth_list (fl:name_ctyp) (acc: list core_field_type) : list core_field_type 
 and package_type_constraints (wc:with_constr)
     (acc: list (Asttypes.loc Longident.t  *core_type))
     : list (Asttypes.loc Longident.t  *core_type) =  match wc with
-    [`Nil _ -> acc
-    | `TypeEq(_loc,`Id(_,id),ct) -> [(ident id, ctyp ct) :: acc]
+    [(* `Nil _ -> acc *)
+    (* | *) `TypeEq(_loc,`Id(_,id),ct) -> [(ident id, ctyp ct) :: acc]
     | `And(_loc,wc1,wc2) ->
         package_type_constraints wc1 (package_type_constraints wc2 acc)
     | x -> errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
@@ -945,7 +945,7 @@ and module_type : Ast.module_type -> Parsetree.module_type =
           ptype_private = priv;
           ptype_manifest = Some (ctyp ct);
           ptype_loc =  loc; ptype_variance = variance}) in
-    let constrs = list_of_and' wc [] in
+    let constrs = list_of_and wc [] in
     List.filter_map (fun 
       [`TypeEq(_loc,id_tpl,ct) ->
           Some (mkwithtyp (fun x -> Pwith_type x) _loc Public id_tpl ct)
