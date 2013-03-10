@@ -933,42 +933,42 @@ and mktype_decl (x:typedecl)  =
              cl cloc td )
   | (t:typedecl) ->
       errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)]) tys
-  and module_type : Ast.module_type -> Parsetree.module_type =
-    let  mkwithc (wc:with_constr)  =
-      let mkwithtyp pwith_type loc priv id_tpl ct =
-        let (id, tpl) = type_parameters_and_type_name id_tpl in
-        let (params, variance) = List.split tpl in
-        (id, pwith_type
+and module_type : Ast.module_type -> Parsetree.module_type =
+  let  mkwithc (wc:with_constr)  =
+    let mkwithtyp pwith_type loc priv id_tpl ct =
+      let (id, tpl) = type_parameters_and_type_name id_tpl in
+      let (params, variance) = List.split tpl in
+      (id, pwith_type
            {ptype_params = params; ptype_cstrs = [];
             ptype_kind =  Ptype_abstract;
             ptype_private = priv;
             ptype_manifest = Some (ctyp ct);
             ptype_loc =  loc; ptype_variance = variance}) in
-      let constrs = list_of_and wc [] in
-      List.filter_map (fun 
-        [`TypeEq(_loc,id_tpl,ct) ->
-          Some (mkwithtyp (fun x -> Pwith_type x) _loc Public id_tpl ct)
-  |`TypeEqPriv(_loc,id_tpl,ct) ->
-      Some (mkwithtyp (fun x -> Pwith_type x) _loc Private id_tpl ct)
-  | `ModuleEq(_loc,i1,i2) ->
-      Some (long_uident i1, Pwith_module (long_uident i2))
-  | `TypeSubst(_loc,id_tpl,ct) ->
-      Some (mkwithtyp (fun x -> Pwith_typesubst x) _loc Public id_tpl ct )
-  | `ModuleSubst(_loc,i1,i2) ->
-      Some (long_uident i1, Pwith_modsubst (long_uident i2))
-  | t -> errorf (loc_of t) "bad with constraint (antiquotation) : %s" (dump_with_constr t)]) constrs in
-                     with module_type fun 
-                       [ `Id(loc,i) -> mkmty loc (Pmty_ident (long_uident i))
-                    | `MtFun(loc,`Uid(sloc,n),nt,mt) ->
-                        mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
-                    | `Sig(loc,sl) ->
-                        mkmty loc (Pmty_signature (sig_item sl []))
-                    | `SigEnd(loc) -> mkmty loc (Pmty_signature [])
-                    | `With(loc,mt,wc) ->
+    let constrs = list_of_and wc [] in
+    List.filter_map (fun 
+      [`TypeEq(_loc,id_tpl,ct) ->
+        Some (mkwithtyp (fun x -> Pwith_type x) _loc Public id_tpl ct)
+      |`TypeEqPriv(_loc,id_tpl,ct) ->
+        Some (mkwithtyp (fun x -> Pwith_type x) _loc Private id_tpl ct)
+      | `ModuleEq(_loc,i1,i2) ->
+          Some (long_uident i1, Pwith_module (long_uident i2))
+      | `TypeSubst(_loc,id_tpl,ct) ->
+          Some (mkwithtyp (fun x -> Pwith_typesubst x) _loc Public id_tpl ct )
+      | `ModuleSubst(_loc,i1,i2) ->
+          Some (long_uident i1, Pwith_modsubst (long_uident i2))
+      | t -> errorf (loc_of t) "bad with constraint (antiquotation) : %s" (dump_with_constr t)]) constrs in
+     with module_type fun 
+       [ `Id(loc,i) -> mkmty loc (Pmty_ident (long_uident i))
+       | `MtFun(loc,`Uid(sloc,n),nt,mt) ->
+           mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
+       | `Sig(loc,sl) ->
+           mkmty loc (Pmty_signature (sig_item sl []))
+       | `SigEnd(loc) -> mkmty loc (Pmty_signature [])
+       | `With(loc,mt,wc) ->
                         mkmty loc (Pmty_with (module_type mt) (mkwithc wc ))
-                    | `ModuleTypeOf(_loc,me) ->
-                        mkmty _loc (Pmty_typeof (module_expr me))
-                    | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t) ]
+       | `ModuleTypeOf(_loc,me) ->
+           mkmty _loc (Pmty_typeof (module_expr me))
+       | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t) ]
 and sig_item (s:sig_item) (l:signature) :signature =
   with sig_item match s with 
     [ `Class (loc,cd) ->
@@ -995,10 +995,10 @@ and sig_item (s:sig_item) (l:signature) :signature =
         [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
     | `RecModule (loc,mb) ->
         [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
+    | `ModuleTypeEnd(loc,`Uid(sloc,n)) ->
+        [mksig loc (Psig_modtype (with_loc n sloc ) Pmodtype_abstract ) :: l]
     | `ModuleType (loc,`Uid(sloc,n),mt) ->
-        let si =  match mt with
-          [ `Nil _ -> Pmodtype_abstract
-          | _ -> Pmodtype_manifest (module_type mt) ] in
+        let si =  Pmodtype_manifest (module_type mt)  in
         [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
     | `Open (loc,id) ->
                          [mksig loc (Psig_open (long_uident id)) :: l]
@@ -1075,14 +1075,14 @@ and str_item (s:str_item) (l:structure) : structure =
       [mkstr loc (Pstr_module (with_loc n sloc) (module_expr me)) :: l]
   | `RecModule (loc,mb) ->
         [mkstr loc (Pstr_recmodule (module_str_binding mb [])) :: l]
-    | `ModuleType (loc,`Uid(sloc,n),mt) ->
+  | `ModuleType (loc,`Uid(sloc,n),mt) ->
         [mkstr loc (Pstr_modtype (with_loc n sloc) (module_type mt)) :: l]
-    | `Open (loc,id) ->
+  | `Open (loc,id) ->
         [mkstr loc (Pstr_open (long_uident id)) :: l]
-    | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl )) :: l]
-    | `Value (loc,rf,bi) ->
-        [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
-    | x-> errorf (loc_of x) "str_item : %s" (dump_str_item x) ]
+  | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl )) :: l]
+  | `Value (loc,rf,bi) ->
+      [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
+  | x-> errorf (loc_of x) "str_item : %s" (dump_str_item x) ]
 and class_type (x:Ast.class_type) = match x with
   [ `CtCon (loc, `ViNil _, id,tl) ->
     mkcty loc

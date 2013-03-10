@@ -226,7 +226,7 @@ let apply () = begin
         | "("; a_uident{i}; ":"; module_type{t}; ")"; S{mt} ->
             {| functor ( $i : $t ) -> $mt |} ] }
       module_type_quot:
-      [ module_type{x} -> x | -> {:module_type||} ]  |};
+      [ module_type{x} -> x  ]  |};
 
   with sig_item
   {:extend|
@@ -247,10 +247,11 @@ let apply () = begin
     | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
     | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
         `ModuleType(_loc,i,mt)
-    | "module"; "type"; a_uident{i} -> {| module type $i |}
-    | "open"; module_longident{i} -> {| open $i |}
+    | "module"; "type"; a_uident{i} -> `ModuleTypeEnd(_loc,i)
+        (* {| module type $i |} *)
+    | "open"; module_longident{i} -> `Open(_loc,i)
 
-    | "type"; type_declaration{t} -> `Type(_loc,t) (* {| type $t |} *)
+    | "type"; type_declaration{t} -> `Type(_loc,t)
     | "val"; a_lident{i}; ":"; ctyp{t} -> `Val(_loc,i,t)
     | "class"; class_description{cd} ->    `Class(_loc,cd)
     | "class"; "type"; class_type_declaration{ctd} ->  `ClassType(_loc,ctd) ]

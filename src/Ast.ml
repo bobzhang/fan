@@ -368,8 +368,7 @@ and rec_expr =
   | any (* Faked here to be symmertric to rec_patt *)
   | ant (* $s$ *) ]
 and module_type =
-  [= nil
-  | sid
+  [= sid
        (* functor (s : mt) -> mt *)
   | `MtFun of (loc * auident * module_type * module_type)
         (* sig sg end *)
@@ -401,6 +400,7 @@ and sig_item =
   | `RecModule of (loc * module_binding)
         (* module type s = mt *)
   | `ModuleType of (loc * auident * module_type)
+  | `ModuleTypeEnd of (loc * auident)
   | `Open of (loc * ident)
   | `Type of (loc * typedecl)
         (* va s : t *)
