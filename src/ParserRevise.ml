@@ -1018,12 +1018,8 @@ let apply () = begin
   with class_sig_item
     {:extend|
       class_sig_item_quot:
-      [ class_sig_item{x1}; semi; S{x2} ->
-        (* match x2 with *)
-        (* [ `Nil _ -> x1 *)
-        (* | _ -> *) `Sem(_loc,x1,x2) (* ] *)
-      | class_sig_item{x} -> x
-      (* | -> `Nil _loc  *)]
+      [ class_sig_item{x1}; semi; S{x2} -> `Sem(_loc,x1,x2) (* ] *)
+      | class_sig_item{x} -> x]
       class_signature:
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `Ant ((""|"csg"|"anti"|"list" as n),s); semi; S{csg} ->
