@@ -1016,8 +1016,6 @@ class map2 =
     method class_type : class_type -> class_type -> class_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>class_type)
         | (`CtCon (_a0,_a1,_a2,_a3),`CtCon (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#virtual_flag _a1 _b1 in
@@ -2013,7 +2011,6 @@ class fold2 =
     method class_type : class_type -> class_type -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`CtCon (_a0,_a1,_a2,_a3),`CtCon (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#virtual_flag _a1 _b1 in
@@ -2647,7 +2644,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result156)
     method class_type : class_type -> 'result157=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result157)
       | `CtCon (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#virtual_flag _a1;
@@ -3614,7 +3610,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>str_item)
     method class_type : class_type -> class_type=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>class_type)
       | `CtCon (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#virtual_flag _a1 in
@@ -4404,7 +4399,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method class_type : class_type -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `CtCon (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in
@@ -5328,7 +5322,6 @@ class print =
     method class_type : 'fmt -> class_type -> 'result322=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result322)
         | `CtCon (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#virtual_flag _a1 self#ident _a2 self#type_parameters _a3
@@ -6254,7 +6247,6 @@ class eq =
     method class_type : class_type -> class_type -> 'result377=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result377)
         | (`CtCon (_a0,_a1,_a2,_a3),`CtCon (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
                (self#ident _a2 _b2))
@@ -7013,7 +7005,6 @@ and strip_loc_str_item =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result412)
 and strip_loc_class_type =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result411)
   | `CtCon (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_virtual_flag _a1 in
       let _a2 = strip_loc_ident _a2 in
@@ -7885,7 +7876,6 @@ and pp_print_str_item fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result465)
 and pp_print_class_type fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result464)
   | `CtCon (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_virtual_flag _a1 pp_print_ident _a2 pp_print_type_parameters

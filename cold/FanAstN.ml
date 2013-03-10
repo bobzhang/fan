@@ -594,7 +594,6 @@ class eq =
     method class_type : class_type -> class_type -> 'result47=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result47)
         | (`CtCon (_a0,_a1,_a2),`CtCon (_b0,_b1,_b2)) ->
             ((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
               (self#type_parameters _a2 _b2)
@@ -1397,7 +1396,6 @@ class print =
     method class_type : 'fmt -> class_type -> 'result102=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result102)
         | `CtCon (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a)@]"
               self#virtual_flag _a0 self#ident _a1 self#type_parameters _a2
@@ -2362,7 +2360,6 @@ and meta_str_item _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result138)
 and meta_class_type _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result137)
   | `CtCon (_a0,_a1,_a2) ->
       `App
         (_loc,

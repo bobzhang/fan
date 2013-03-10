@@ -815,12 +815,12 @@ and sig_item (s : sig_item) (l : signature) =
   (match s with
    | `Class (loc,cd) ->
        (mksig loc
-          (Psig_class (List.map class_info_class_type (list_of_and' cd []))))
+          (Psig_class (List.map class_info_class_type (list_of_and cd []))))
        :: l
    | `ClassType (loc,ctd) ->
        (mksig loc
           (Psig_class_type
-             (List.map class_info_class_type (list_of_and' ctd []))))
+             (List.map class_info_class_type (list_of_and ctd []))))
        :: l
    | `Sem (_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
    | `Directive _|`DirectiveSimple _ -> l
@@ -897,7 +897,7 @@ and str_item (s : str_item) (l : structure) =
    | `ClassType (loc,ctd) ->
        (mkstr loc
           (Pstr_class_type
-             (List.map class_info_class_type (list_of_and' ctd []))))
+             (List.map class_info_class_type (list_of_and ctd []))))
        :: l
    | `Sem (_,st1,st2) -> str_item st1 (str_item st2 l)
    | `Directive _|`DirectiveSimple _ -> l

@@ -1388,7 +1388,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result28)
     and meta_class_type _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result27)
       | `CtCon (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,

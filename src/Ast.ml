@@ -495,9 +495,9 @@ and str_item =
 
 (* class body type *)         
 and class_type =
-  [= nil
+  [= 
      (* (virtual)? i ([ t ])? *)
-  | `CtCon of (loc * virtual_flag * ident * (* ctyp *) type_parameters)
+   `CtCon of (loc * virtual_flag * ident *  type_parameters)
         (* [t] -> ct *)
   | `CtFun of (loc * ctyp * class_type)
       (* object ((t))? (csg)? end *)

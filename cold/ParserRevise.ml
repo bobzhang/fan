@@ -5622,11 +5622,7 @@ let apply () =
           ("Gram.mk_action\n  (fun (x : 'class_type_plus)  (_loc : FanLoc.t)  -> (x : 'class_type_quot ))\n",
             (Gram.mk_action
                (fun (x : 'class_type_plus)  (_loc : FanLoc.t)  ->
-                  (x : 'class_type_quot )))));
-        ([],
-          ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'class_type_quot ))\n",
-            (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'class_type_quot )))))]));
+                  (x : 'class_type_quot )))))]));
   Gram.extend_single (class_type_plus : 'class_type_plus Gram.t )
     (None,
       (None, None,

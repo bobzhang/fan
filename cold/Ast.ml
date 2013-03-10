@@ -155,7 +155,7 @@ and str_item =
   | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
   | `Type of (loc* typedecl) | `Value of (loc* rec_flag* binding) | ant] 
 and class_type =
-  [ nil | `CtCon of (loc* virtual_flag* ident* type_parameters)
+  [ `CtCon of (loc* virtual_flag* ident* type_parameters)
   | `CtFun of (loc* ctyp* class_type) | `CtSig of (loc* ctyp* class_sig_item)
   | `CtSigEnd of (loc* ctyp) | `And of (loc* class_type* class_type)
   | `CtCol of (loc* class_type* class_type)

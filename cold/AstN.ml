@@ -136,7 +136,7 @@ and str_item =
   | `ModuleType of (auident* module_type) | `Open of ident
   | `Type of typedecl | `Value of (rec_flag* binding) | ant] 
 and class_type =
-  [ nil | `CtCon of (virtual_flag* ident* type_parameters)
+  [ `CtCon of (virtual_flag* ident* type_parameters)
   | `CtFun of (ctyp* class_type) | `CtSig of (ctyp* class_sig_item)
   | `CtSigEnd of ctyp | `And of (class_type* class_type)
   | `CtCol of (class_type* class_type) | `CtEq of (class_type* class_type)

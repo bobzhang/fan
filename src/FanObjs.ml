@@ -182,11 +182,11 @@ class clean_ast = object
   (*   [ {| $({@_l||} ) and $ce |} | {| $ce and $({@_l||} ) |} -> ce *)
   (*   | ce -> ce ]; *)
 
-  method! class_type ct =
-    with class_type
-    match super#class_type ct with
-    [ {| $({@_l||} ) and $ct |} | {| $ct and $({@_l||} ) |} -> ct
-    | ct -> ct ];
+  (* method! class_type ct = *)
+  (*   with class_type *)
+  (*   match super#class_type ct with *)
+  (*   [ {| $({@_l||} ) and $ct |} | {| $ct and $({@_l||} ) |} -> ct *)
+  (*   | ct -> ct ]; *)
 
   (* method! class_sig_item csg = *)
   (*   with class_sig_item *)
