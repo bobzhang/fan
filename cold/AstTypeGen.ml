@@ -236,59 +236,67 @@ let gen_iter =
     ~mk_variant:mk_variant_iter ()
 let _ = ("OIter", gen_iter) |> Typehook.register
 let generate (module_types : FSig.module_types) =
-  let tbl = Hashtbl.create 30 in
-  let aux (_,ty) =
-    match (ty : typedecl ) with
-    | `TyDcl (_,_,_,`TyEq (_,_,`PolyEq (_,t)),_) ->
-        let branches = Ctyp.view_variant t in
-        List.iter
-          (function
-           | `variant (s,ls) ->
-               let arity = List.length ls in
-               ((try
-                   let v = Hashtbl.find tbl s in
-                   fun ()  ->
-                     if v <> arity
-                     then failwithf "%s has diffireent arities" s
-                 with | Not_found  -> (fun ()  -> Hashtbl.add tbl s arity)))
-                 ()
-           | _ -> ()) branches
-    | _ ->
-        FanLoc.errorf (loc_of ty) "generate module_types %s"
-          (FanObjs.dump_typedecl ty) in
-  let _ =
-    List.iter
-      (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)
-      module_types in
-  let case =
-    Hashtbl.fold
-      (fun key  arity  acc  ->
-         if arity = 1
-         then
-           `Or
-             (_loc,
-               (`Case
-                  (_loc,
-                    (`App
-                       (_loc, (`Vrn (_loc, key)),
-                         (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                    (`Id (_loc, (`Lid (_loc, "_loc")))))), acc)
-         else
-           if arity > 1
-           then
-             (let pats = (`Id (_loc, (`Lid (_loc, "_loc")))) ::
-                (List.init (arity - 1) (fun _  -> `Any _loc)) in
-              `Or
+  (let tbl = Hashtbl.create 30 in
+   let aux (_,ty) =
+     match (ty : typedecl ) with
+     | `TyDcl (_,_,_,`TyEq (_,_,`PolyEq (_,t)),_) ->
+         let branches = Ctyp.view_variant t in
+         List.iter
+           (function
+            | `variant (s,ls) ->
+                let arity = List.length ls in
+                ((try
+                    let v = Hashtbl.find tbl s in
+                    fun ()  ->
+                      if v <> arity
+                      then failwithf "%s has diffireent arities" s
+                  with | Not_found  -> (fun ()  -> Hashtbl.add tbl s arity)))
+                  ()
+            | _ -> ()) branches
+     | _ ->
+         FanLoc.errorf (loc_of ty) "generate module_types %s"
+           (FanObjs.dump_typedecl ty) in
+   let _ =
+     List.iter
+       (function | `Mutual tys -> List.iter aux tys | `Single t -> aux t)
+       module_types in
+   let case =
+     Hashtbl.fold
+       (fun key  arity  acc  ->
+          if arity = 1
+          then
+            let case =
+              `Case
                 (_loc,
-                  (`Case
-                     (_loc,
-                       (`App (_loc, (`Vrn (_loc, key)), (tuple_com pats))),
-                       (`Id (_loc, (`Lid (_loc, "_loc")))))), acc))
-           else failwithf "arity=0 key:%s" key) tbl (`Nil _loc) in
-  `Value
-    (_loc, (`ReNil _loc),
-      (`Bind
-         (_loc, (`Id (_loc, (`Lid (_loc, "loc_of")))), (`Fun (_loc, case)))))
+                  (`App
+                     (_loc, (`Vrn (_loc, key)),
+                       (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                  (`Id (_loc, (`Lid (_loc, "_loc"))))) in
+            match acc with
+            | None  -> Some case
+            | Some acc -> Some (`Or (_loc, case, acc))
+          else
+            if arity > 1
+            then
+              (let pats = (`Id (_loc, (`Lid (_loc, "_loc")))) ::
+                 (List.init (arity - 1) (fun _  -> `Any _loc)) in
+               let case =
+                 `Case
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, key)), (tuple_com pats))),
+                     (`Id (_loc, (`Lid (_loc, "_loc"))))) in
+               match acc with
+               | None  -> Some case
+               | Some acc -> Some (`Or (_loc, case, acc)))
+            else failwithf "arity=0 key:%s" key) tbl None in
+   match case with
+   | Some case ->
+       `Value
+         (_loc, (`ReNil _loc),
+           (`Bind
+              (_loc, (`Id (_loc, (`Lid (_loc, "loc_of")))),
+                (`Fun (_loc, case)))))
+   | None  -> failwithf "AstTypeGen.generate null case" : str_item )
 let _ =
   Typehook.register
     ~filter:(fun s  -> not (List.mem s ["loc"; "meta_option"; "meta_list"]))

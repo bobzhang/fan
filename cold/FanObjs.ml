@@ -47,10 +47,6 @@ let map_loc f =
 class clean_ast =
   object 
     inherit  Objs.map as super
-    method! match_case mc =
-      match super#match_case mc with
-      | `Or (_loc,`Nil _l,mc)|`Or (_loc,mc,`Nil _l) -> mc
-      | mc -> mc
     method! ctyp t =
       match super#ctyp t with
       | `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)

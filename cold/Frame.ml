@@ -129,7 +129,7 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
   let res =
     let t =
       if ((List.length res) >= 2) && (arity >= 2)
-      then (trail info) :: res
+      then match trail info with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
   currying ~arity res
@@ -159,7 +159,7 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
            | `abbrev lid -> (simple lid) :: acc) [] ls in
     let t =
       if ((List.length res) >= 2) && (arity >= 2)
-      then (trail info) :: res
+      then match trail info with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
   currying ~arity res

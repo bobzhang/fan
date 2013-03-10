@@ -43,6 +43,6 @@ let match_pre = object (self)
    [ {| $pat:p -> $e |} -> {| $pat:p -> fun () -> $e |}
    | {| $pat:p when $e -> $e1 |} -> {| $pat:p when $e -> fun () -> $e1 |}
    | {| $a1 | $a2 |} -> {| $(self#match_case a1) | $(self#match_case a2) |}
-   | {| |} -> {| |}
+   (* | {| |} -> {| |} *)
    | `Ant(_loc,x) -> `Ant(_loc, FanUtil.add_context x "lettry")];
 end;

@@ -383,10 +383,10 @@ let apply () = begin
        "obj" RA
         [
         (* FIXME fun and function duplicated *)      
-         "fun"; "[";  L0 match_case0 SEP "|"{a}; "]" ->
-           let cases = or_of_list a in `Fun (_loc,cases)
-        | "function"; "[";  L0 match_case0 SEP "|"{a}; "]" ->
-            let cases = or_of_list a in `Fun(_loc,cases)
+         "fun"; "[";  L1 match_case0 SEP "|"{a}; "]" ->
+           let cases = or_of_list1 a in `Fun (_loc,cases)
+        | "function"; "[";  L1 match_case0 SEP "|"{a}; "]" ->
+            let cases = or_of_list1 a in `Fun(_loc,cases)
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
         | "object"; "(";patt{p}; ")"; class_structure{cst};"end" ->
@@ -506,7 +506,7 @@ let apply () = begin
   with binding
       {:extend|
         binding_quot:
-        [ binding{x} -> x (* | -> `Nil _loc *) ] 
+        [ binding{x} -> x  ] 
         binding:
         [ `Ant (("binding"|"list" as n),s) ->
           {| $(anti:mk_anti ~c:"binding" n s) |}
@@ -521,7 +521,7 @@ let apply () = begin
   with match_case
     {:extend|
       match_case:
-      [ "["; L0 match_case0 SEP "|"{l}; "]" -> or_of_list l (* {|  $list:l  |} *) (* FIXME *)
+      [ "["; L1 match_case0 SEP "|"{l}; "]" -> or_of_list1 l (* {|  $list:l  |} *) (* FIXME *)
       | patt{p}; "->"; expr{e} -> `Case(_loc,p,e)(* {| $pat:p -> $e |} *) ]
       match_case0:
       [ `Ant (("match_case"|"list"| "anti"|"" as n),s) ->
@@ -530,8 +530,8 @@ let apply () = begin
            `CaseWhen (_loc, p, w, e)
       | patt_as_patt_opt{p}; "->";expr{e} -> `Case(_loc,p,e)]
       match_case_quot:
-      [ L0 match_case0 SEP "|"{x} -> or_of_list x 
-      | -> `Nil _loc ]  |};
+      [ L1 match_case0 SEP "|"{x} -> or_of_list1 x 
+      (* | -> `Nil _loc *) ]  |};
   with rec_expr
       {:extend|
         rec_expr_quot:

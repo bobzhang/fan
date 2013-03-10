@@ -187,7 +187,8 @@ let expr_of_ctyp
     let res =
       let t = (* only under this case we need trailing  *)
         if List.length res >= 2 && arity >= 2 then
-          [ trail info :: res ]
+          match trail info with [Some x-> [x::res] | None -> res ]
+          (* [ trail info :: res ] *)
         else res in
       List.rev t in 
     currying ~arity res 
@@ -223,7 +224,8 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~de
         | `abbrev (lid) ->  [simple lid :: acc ] ])  [] ls in
   let t =
     if List.length res >= 2 && arity >= 2 then
-      [trail info :: res]
+      match trail info with [Some x-> [x::res] | None -> res ]
+      (* [trail info :: res] *)
     else res in
   List.rev t in
   currying ~arity res ;

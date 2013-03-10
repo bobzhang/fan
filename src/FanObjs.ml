@@ -87,12 +87,12 @@ class clean_ast = object
   (*     {| $({@_l||} ); $p |} | *)
   (*     {| $p; $({@_l||} ) |} -> p *)
   (*   | p -> p ]; *)
-  method! match_case mc =
-    with match_case
-    match super#match_case mc with
-    [ {| $({@_l||} ) | $mc |} |
-      {| $mc | $({@_l||} ) |} -> mc
-    | mc -> mc ];
+  (* method! match_case mc = *)
+  (*   with match_case *)
+  (*   match super#match_case mc with *)
+  (*   [ {| $({@_l||} ) | $mc |} | *)
+  (*     {| $mc | $({@_l||} ) |} -> mc *)
+  (*   | mc -> mc ]; *)
   (* method! binding bi = *)
   (*   with binding *)
   (*   match super#binding bi with *)

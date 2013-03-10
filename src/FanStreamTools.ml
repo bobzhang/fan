@@ -153,7 +153,7 @@ let rec stream_pattern _loc epo e ekont = fun
         stream_pattern _loc epo e ekont spcl in
       let ckont = ekont err in stream_pattern_component skont ckont spc ];
 
-let stream_patterns_term _loc ekont tspel =
+let stream_patterns_term _loc ekont tspel : expr =
   let pel =
     List.fold_right
       (fun (p, w, _loc, spcl, epo, e) acc ->
@@ -167,11 +167,11 @@ let stream_patterns_term _loc ekont tspel =
             {| raise ($(uid:gm()).Error $str) |} in
           let skont = stream_pattern _loc epo e ekont spcl in
           {| begin  $(junk_fun _loc) $lid:strm_n; $skont  end |} in
-        match w with
-        [ Some w -> {:match_case| $pat:p when $w -> $e | $acc |}
-        | None -> {:match_case| $pat:p -> $e | $acc |} ])
-      tspel {:match_case||} in
-  {| match $(peek_fun _loc) $lid:strm_n with [ $pel | _ -> $(ekont ()) ] |} ;
+          match w with
+          [ Some w -> {:match_case| $pat:p when $w -> $e  | $acc |}
+          | None -> {:match_case| $pat:p -> $e  | $acc |} ])
+      tspel {:match_case| _ -> $(ekont () )|} in
+  {| match $(peek_fun _loc) $lid:strm_n with [ $pel ] |} ;
 
 let rec group_terms = fun
   [ [([(SpTrm (_loc, p, w), None) :: spcl], epo, e) :: spel] ->

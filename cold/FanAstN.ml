@@ -537,7 +537,6 @@ class eq =
     method match_case : match_case -> match_case -> 'result44=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result44)
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#match_case _a0 _b0) && (self#match_case _a1 _b1)
         | (`Case (_a0,_a1),`Case (_b0,_b1)) ->
@@ -1320,7 +1319,6 @@ class print =
     method match_case : 'fmt -> match_case -> 'result99=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result99)
         | `Or (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#match_case _a0
               self#match_case _a1
@@ -2257,7 +2255,6 @@ and meta_module_binding _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result141)
 and meta_match_case _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result140)
   | `Or (_a0,_a1) ->
       `App
         (_loc,

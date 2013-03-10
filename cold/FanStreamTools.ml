@@ -252,38 +252,39 @@ let rec stream_pattern _loc epo e ekont =
         stream_pattern _loc epo e ekont spcl in
       let ckont = ekont err in stream_pattern_component skont ckont spc
 let stream_patterns_term _loc ekont tspel =
-  let pel =
-    List.fold_right
-      (fun (p,w,_loc,spcl,epo,e)  acc  ->
-         let p = `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p) in
-         let e =
-           let ekont err =
-             let str =
-               match err with | Some estr -> estr | _ -> `Str (_loc, "") in
-             `App
-               (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
-                 (`App
-                    (_loc,
-                      (`Id
-                         (_loc,
-                           (`Dot
-                              (_loc, (`Uid (_loc, (gm ()))),
-                                (`Uid (_loc, "Error")))))), str))) in
-           let skont = stream_pattern _loc epo e ekont spcl in
-           `Seq
-             (_loc,
-               (`Sem
-                  (_loc,
-                    (`App
-                       (_loc, (junk_fun _loc),
-                         (`Id (_loc, (`Lid (_loc, strm_n)))))), skont))) in
-         match w with
-         | Some w -> `Or (_loc, (`CaseWhen (_loc, p, w, e)), acc)
-         | None  -> `Or (_loc, (`Case (_loc, p, e)), acc)) tspel (`Nil _loc) in
-  `Match
-    (_loc,
-      (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
-      (`Or (_loc, pel, (`Case (_loc, (`Any _loc), (ekont ()))))))
+  (let pel =
+     List.fold_right
+       (fun (p,w,_loc,spcl,epo,e)  acc  ->
+          let p = `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), p) in
+          let e =
+            let ekont err =
+              let str =
+                match err with | Some estr -> estr | _ -> `Str (_loc, "") in
+              `App
+                (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
+                  (`App
+                     (_loc,
+                       (`Id
+                          (_loc,
+                            (`Dot
+                               (_loc, (`Uid (_loc, (gm ()))),
+                                 (`Uid (_loc, "Error")))))), str))) in
+            let skont = stream_pattern _loc epo e ekont spcl in
+            `Seq
+              (_loc,
+                (`Sem
+                   (_loc,
+                     (`App
+                        (_loc, (junk_fun _loc),
+                          (`Id (_loc, (`Lid (_loc, strm_n)))))), skont))) in
+          match w with
+          | Some w -> `Or (_loc, (`CaseWhen (_loc, p, w, e)), acc)
+          | None  -> `Or (_loc, (`Case (_loc, p, e)), acc)) tspel
+       (`Case (_loc, (`Any _loc), (ekont ()))) in
+   `Match
+     (_loc,
+       (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
+       pel) : expr )
 let rec group_terms =
   function
   | ((SpTrm (_loc,p,w),None )::spcl,epo,e)::spel ->

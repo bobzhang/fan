@@ -904,8 +904,6 @@ class map2 =
     method match_case : match_case -> match_case -> match_case=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>match_case)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#match_case _a1 _b1 in
@@ -1927,7 +1925,6 @@ class fold2 =
     method match_case : match_case -> match_case -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#match_case _a1 _b1 in self#match_case _a2 _b2
@@ -2588,7 +2585,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result153)
     method match_case : match_case -> 'result154=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result154)
       | `Or (_a0,_a1,_a2) ->
           (self#loc _a0; self#match_case _a1; self#match_case _a2)
       | `Case (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#expr _a2)
@@ -3505,7 +3501,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_binding)
     method match_case : match_case -> match_case=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>match_case)
       | `Or (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#match_case _a1 in
@@ -4321,7 +4316,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method match_case : match_case -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `Or (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#match_case _a1 in self#match_case _a2
@@ -5221,7 +5215,6 @@ class print =
     method match_case : 'fmt -> match_case -> 'result319=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result319)
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
               self#match_case _a1 self#match_case _a2
@@ -6146,7 +6139,6 @@ class eq =
     method match_case : match_case -> match_case -> 'result374=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result374)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#match_case _a1 _b1)) &&
               (self#match_case _a2 _b2)
@@ -6915,7 +6907,6 @@ and strip_loc_module_binding =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result415)
 and strip_loc_match_case =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result414)
   | `Or (_a0,_a1,_a2) ->
       let _a1 = strip_loc_match_case _a1 in
       let _a2 = strip_loc_match_case _a2 in `Or (_a1, _a2)
@@ -7767,7 +7758,6 @@ and pp_print_module_binding fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result468)
 and pp_print_match_case fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result467)
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_match_case _a1 pp_print_match_case _a2

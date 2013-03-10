@@ -120,7 +120,7 @@ and module_binding =
   | `ModuleBind of (auident* module_type* module_expr)
   | `Constraint of (auident* module_type) | ant] 
 and match_case =
-  [ nil | `Or of (match_case* match_case) | `Case of (patt* expr)
+  [ `Or of (match_case* match_case) | `Case of (patt* expr)
   | `CaseWhen of (patt* expr* expr) | ant] 
 and module_expr =
   [ sid | `App of (module_expr* module_expr)

@@ -1211,7 +1211,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result31)
     and meta_match_case _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result30)
       | `Or (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1751,6 +1750,5 @@ let match_pre =
                    (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e1)))))
       | `Or (_loc,a1,a2) ->
           `Or (_loc, (self#match_case a1), (self#match_case a2))
-      | `Nil _loc -> `Nil _loc
       | `Ant (_loc,x) -> `Ant (_loc, (FanUtil.add_context x "lettry"))
   end

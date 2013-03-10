@@ -136,7 +136,7 @@ and module_binding =
   | `ModuleBind of (loc* auident* module_type* module_expr)
   | `Constraint of (loc* auident* module_type) | ant] 
 and match_case =
-  [ nil | `Or of (loc* match_case* match_case) | `Case of (loc* patt* expr)
+  [ `Or of (loc* match_case* match_case) | `Case of (loc* patt* expr)
   | `CaseWhen of (loc* patt* expr* expr) | ant] 
 and module_expr =
   [ sid | `App of (loc* module_expr* module_expr)

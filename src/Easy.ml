@@ -27,10 +27,10 @@ let gen_str_item
         |Some m ->
           `Last (fun s -> {:ident| $uid:m.$(lid:basic_transform id s) |} ) ] ;
       let trail (_,number)=
-      if number > 1 then
-        let patt = EP.tuple_of_number {:patt| _ |} arity in 
-        {:match_case| $pat:patt -> $trail |}
-      else {:match_case| |} ;
+        if number > 1 then
+          let patt = EP.tuple_of_number {:patt| _ |} arity in 
+          Some {:match_case| $pat:patt -> $trail |}
+        else (* {:match_case| |} *) None ;
       let names = names ;
       let mk_record = mk_record ;
       let cons_transform = cons_transform;
@@ -73,8 +73,8 @@ let gen_object
      let trail (_,number)=
        if number > 1 then
          let patt = EP.tuple_of_number {:patt| _ |} arity in 
-         {:match_case| $pat:patt -> $trail |}
-       else {:match_case| |} ;
+         Some {:match_case| $pat:patt -> $trail |}
+       else None in
     Frame.(obj_of_module_types
              ?cons_transform
              ?module_name

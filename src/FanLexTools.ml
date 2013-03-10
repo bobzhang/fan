@@ -351,12 +351,15 @@ let gen_definition _loc l =
       Array.mapi 
         (fun i j -> {:match_case| $`int:i -> $(call_state auto j) |})
         trans in
-    let cases = or_of_list (Array.to_list cases) in
+    let cases = or_of_list1
+        (Array.to_list cases @
+         [{:match_case| _ -> $(id:gm()).backtrack lexbuf|}]) in
     
     let body =
       {:expr|
       match ($lid:p ($(id:gm()).next lexbuf)) with
-      [ $cases | _ -> $(id:gm()).backtrack lexbuf ]
+      [ $cases ]  
+      (* [ $cases | _ -> $(id:gm()).backtrack lexbuf ] *)
       |} in
     let ret (body:expr) =
       {:binding| $lid:f = fun lexbuf -> $body |} in

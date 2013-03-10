@@ -733,10 +733,9 @@ and binding (x : binding) acc =
   | `Bind (_,p,e) -> ((patt p), (expr e)) :: acc
   | _ -> assert false
 and match_case (x : match_case) =
-  let cases = list_of_or' x [] in
+  let cases = list_of_or x [] in
   List.filter_map
     (function
-     | `Nil _ -> None
      | `Case (_,p,e) -> Some ((patt p), (expr e))
      | `CaseWhen (_,p,w,e) ->
          Some ((patt p), (mkexp (loc_of w) (Pexp_when ((expr w), (expr e)))))

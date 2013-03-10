@@ -380,9 +380,7 @@ and module_type =
   | `ModuleTypeOf of (loc * module_expr)
   | ant  ]
 and sig_item =
-  [= (* nil *)
-  (*    (\* class cict *\) *)
-  (* | *) `Class of (loc * class_type)
+  [= `Class of (loc * class_type)
       (* class type cict *)
   | `ClassType of (loc * class_type)
         (* sg ; sg *)
@@ -429,8 +427,7 @@ and with_constr =
     
    *)           
 and binding =
-  [= (* nil *)
-  (* | *) `And of (loc * binding * binding)
+  [=  `And of (loc * binding * binding)
         (* p = e *) (* let patt = expr *)
   | `Bind  of (loc * patt * expr)
   | ant  ]
@@ -444,12 +441,11 @@ and module_binding =
   | `Constraint  of (loc * auident * module_type)
   | ant ]
 and match_case =
-  [= nil
-  | `Or of (loc * match_case * match_case)
+  [= (* nil *)
+  (* | *) `Or of (loc * match_case * match_case)
         (* p (when e)? -> e *)
-  | `Case of (loc * patt * expr (* * expr *))
+  | `Case of (loc * patt * expr)
   | `CaseWhen of (loc * patt * expr * expr)
-     (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
   | ant  ]
 and module_expr =
   [= sid

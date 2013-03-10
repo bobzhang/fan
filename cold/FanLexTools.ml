@@ -306,7 +306,17 @@ let gen_definition _loc l =
             `Case
               (_loc, (`Int (_loc, (string_of_int i))), (call_state auto j)))
          trans in
-     let cases = or_of_list (Array.to_list cases) in
+     let cases =
+       or_of_list1
+         ((Array.to_list cases) @
+            [`Case
+               (_loc, (`Any _loc),
+                 (`App
+                    (_loc,
+                      (`Id
+                         (_loc,
+                           (`Dot (_loc, (gm ()), (`Lid (_loc, "backtrack")))))),
+                      (`Id (_loc, (`Lid (_loc, "lexbuf")))))))]) in
      let body =
        `Match
          (_loc,
@@ -316,18 +326,7 @@ let gen_definition _loc l =
                    (_loc,
                      (`Id
                         (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "next")))))),
-                     (`Id (_loc, (`Lid (_loc, "lexbuf")))))))),
-           (`Or
-              (_loc, cases,
-                (`Case
-                   (_loc, (`Any _loc),
-                     (`App
-                        (_loc,
-                          (`Id
-                             (_loc,
-                               (`Dot
-                                  (_loc, (gm ()), (`Lid (_loc, "backtrack")))))),
-                          (`Id (_loc, (`Lid (_loc, "lexbuf"))))))))))) in
+                     (`Id (_loc, (`Lid (_loc, "lexbuf")))))))), cases) in
      let ret (body : expr) =
        `Bind
          (_loc, (`Id (_loc, (`Lid (_loc, f)))),
