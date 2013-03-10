@@ -41,14 +41,6 @@ val package_type_constraints :
   (Longident.t Asttypes.loc * Parsetree.core_type) list
 val package_type : module_type -> Parsetree.package_type
 
-(* val mktype : *)
-(*   Location.t -> *)
-(*   (string Asttypes.loc option * (bool * bool)) list -> *)
-(*   (Parsetree.core_type * Parsetree.core_type * Location.t) list -> *)
-(*   Parsetree.type_kind -> *)
-(*   Asttypes.private_flag -> *)
-(*   Parsetree.core_type option -> Parsetree.type_declaration *)
-      
 val mkprivate' : bool -> Asttypes.private_flag
 
 val mkprivate : private_flag -> Asttypes.private_flag
@@ -65,11 +57,10 @@ val mkvariant :
 val type_decl :
   (string Asttypes.loc option * (bool * bool)) list ->
   (Parsetree.core_type * Parsetree.core_type * Location.t) list ->
-  FanLoc.t -> type_info   -> Parsetree.type_declaration
+  loc -> type_info   -> Parsetree.type_declaration
 
 val mkvalue_desc :
   Location.t -> ctyp -> strings list -> Parsetree.value_description
-
 
 val mkmutable : mutable_flag -> Asttypes.mutable_flag
 
@@ -92,21 +83,16 @@ val type_parameters_and_type_name :
       
 val patt_fa :  patt list -> patt -> patt * patt list
       
-val deep_mkrangepat : FanLoc.t -> char -> char -> Parsetree.pattern
+val deep_mkrangepat : loc -> char -> char -> Parsetree.pattern
 
-val mkrangepat : FanLoc.t -> char -> char -> Parsetree.pattern
+val mkrangepat : loc -> char -> char -> Parsetree.pattern
 
 val patt : patt -> Parsetree.pattern
 
 
-val override_flag :
-  FanLoc.t -> override_flag -> Asttypes.override_flag
+val override_flag :  loc -> override_flag -> Asttypes.override_flag
 
 val expr : expr -> Parsetree.expression
-
-(* val patt_of_lab : loc -> string -> patt -> Parsetree.pattern *)
-
-(* val expr_of_lab : loc -> string -> expr -> Parsetree.expression *)
 
 val label_expr : expr -> Asttypes.label * Parsetree.expression
 
@@ -157,9 +143,9 @@ val class_str_item :
   class_str_item ->
   Parsetree.class_field list -> Parsetree.class_field list
 
-val sig_item : sig_item -> Parsetree.signature
+val sig_item : sig_item -> Parsetree.signature_item list
 
-val str_item : str_item -> Parsetree.structure
+val str_item : str_item -> Parsetree.structure_item list
 
 val directive : expr -> Parsetree.directive_argument
     

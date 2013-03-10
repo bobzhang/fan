@@ -52,13 +52,14 @@ let _ =
                         then
                           Printf.eprintf
                             "pa_ulex (warning): multiple definition of named regexp '%s'\n"
-                            x
-                        else ();
+                            x;
                         Hashtbl.add FanLexTools.named_regexps x r) () : 
                   (_,'e__2,'e__3) Gram.foldsep )))],
-           ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Nil _loc : 'declare_regexp ))\n",
+           ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (`StExp (_loc, (`Id (_loc, (`Uid (_loc, \"()\"))))) : 'declare_regexp ))\n",
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  -> (`Nil _loc : 'declare_regexp )))))]));
+                (fun _  (_loc : FanLoc.t)  ->
+                   (`StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))) : 
+                   'declare_regexp )))))]));
   Gram.extend_single (regexps : 'regexps Gram.t )
     (None,
       (None, None,

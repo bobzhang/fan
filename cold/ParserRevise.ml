@@ -4505,6 +4505,17 @@ let apply () =
              (Gram.mk_action
                 (fun _  (n : 'a_lident)  _  (_loc : FanLoc.t)  ->
                    (([`DirectiveSimple (_loc, n)], (Some _loc)) : 'implem )))));
+         ([`Skeyword "#";
+          `Skeyword "import";
+          `Snterm (Gram.obj (dot_namespace : 'dot_namespace Gram.t ));
+          `Skeyword ";;"],
+           ("Gram.mk_action\n  (fun _  (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->\n     (FanToken.paths := ((`Absolute x) :: (FanToken.paths.contents));\n      ([`DirectiveSimple (_loc, (`Lid (_loc, \"import\")))], (Some _loc)) : \n     'implem ))\n",
+             (Gram.mk_action
+                (fun _  (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->
+                   (FanToken.paths := ((`Absolute x) ::
+                      (FanToken.paths.contents));
+                    ([`DirectiveSimple (_loc, (`Lid (_loc, "import")))],
+                      (Some _loc)) : 'implem )))));
          ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
           `Snterm (Gram.obj (semi : 'semi Gram.t ));
           `Sself],
@@ -4586,6 +4597,15 @@ let apply () =
              (Gram.mk_action
                 (fun _  (n : 'a_lident)  _  (_loc : FanLoc.t)  ->
                    (Some (`DirectiveSimple (_loc, n)) : 'top_phrase )))));
+         ([`Skeyword "#";
+          `Skeyword "import";
+          `Snterm (Gram.obj (dot_namespace : 'dot_namespace Gram.t ))],
+           ("Gram.mk_action\n  (fun (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->\n     (FanToken.paths := ((`Absolute x) :: (FanToken.paths.contents)); None : \n     'top_phrase ))\n",
+             (Gram.mk_action
+                (fun (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->
+                   (FanToken.paths := ((`Absolute x) ::
+                      (FanToken.paths.contents));
+                    None : 'top_phrase )))));
          ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
           `Snterm (Gram.obj (semi : 'semi Gram.t ))],
            ("Gram.mk_action\n  (fun _  (st : 'str_item)  (_loc : FanLoc.t)  -> (Some st : 'top_phrase ))\n",
@@ -4618,22 +4638,16 @@ let apply () =
          ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
           `Snterm (Gram.obj (semi : 'semi Gram.t ));
           `Sself],
-           ("Gram.mk_action\n  (fun (st2 : 'str_item_quot)  _  (st1 : 'str_item)  (_loc : FanLoc.t)  ->\n     (match st2 with | `Nil _ -> st1 | _ -> `Sem (_loc, st1, st2) : 'str_item_quot ))\n",
+           ("Gram.mk_action\n  (fun (st2 : 'str_item_quot)  _  (st1 : 'str_item)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, st1, st2) : 'str_item_quot ))\n",
              (Gram.mk_action
                 (fun (st2 : 'str_item_quot)  _  (st1 : 'str_item) 
                    (_loc : FanLoc.t)  ->
-                   (match st2 with
-                    | `Nil _ -> st1
-                    | _ -> `Sem (_loc, st1, st2) : 'str_item_quot )))));
+                   (`Sem (_loc, st1, st2) : 'str_item_quot )))));
          ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ))],
            ("Gram.mk_action\n  (fun (st : 'str_item)  (_loc : FanLoc.t)  -> (st : 'str_item_quot ))\n",
              (Gram.mk_action
                 (fun (st : 'str_item)  (_loc : FanLoc.t)  ->
-                   (st : 'str_item_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'str_item_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'str_item_quot )))))]));
+                   (st : 'str_item_quot )))))]));
    Gram.extend (str_item : 'str_item Gram.t )
      (None,
        [((Some "top"), None,
@@ -4687,14 +4701,6 @@ let apply () =
                  (fun (mt : 'module_type)  _  (i : 'a_uident)  _  _ 
                     (_loc : FanLoc.t)  ->
                     (`ModuleType (_loc, i, mt) : 'str_item )))));
-          ([`Skeyword "import";
-           `Snterm (Gram.obj (dot_namespace : 'dot_namespace Gram.t ))],
-            ("Gram.mk_action\n  (fun (x : 'dot_namespace)  _  (_loc : FanLoc.t)  ->\n     (FanToken.paths := ((`Absolute x) :: (FanToken.paths.contents));\n      `Nil _loc : 'str_item ))\n",
-              (Gram.mk_action
-                 (fun (x : 'dot_namespace)  _  (_loc : FanLoc.t)  ->
-                    (FanToken.paths := ((`Absolute x) ::
-                       (FanToken.paths.contents));
-                     `Nil _loc : 'str_item )))));
           ([`Skeyword "open";
            `Snterm (Gram.obj (module_longident : 'module_longident Gram.t ))],
             ("Gram.mk_action\n  (fun (i : 'module_longident)  _  (_loc : FanLoc.t)  ->\n     (`Open (_loc, i) : 'str_item ))\n",

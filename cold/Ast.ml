@@ -144,7 +144,7 @@ and module_expr =
   | `Constraint of (loc* module_expr* module_type)
   | `PackageModule of (loc* expr) | ant] 
 and str_item =
-  [ nil | `Class of (loc* class_expr) | `ClassType of (loc* class_type)
+  [ `Class of (loc* class_expr) | `ClassType of (loc* class_type)
   | `Sem of (loc* str_item* str_item) | `DirectiveSimple of (loc* alident)
   | `Directive of (loc* alident* expr) | `Exception of (loc* of_ctyp)
   | `StExp of (loc* expr) | `External of (loc* alident* ctyp* strings)

@@ -89,18 +89,18 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       | `Directive (_loc,`Lid (_,"directory"),`Str (_,s)) ->
           (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
       | `Directive (_loc,`Lid (_,"use"),`Str (_,s)) ->
-          Some
-            (parse_file ~directive_handler:sig_handler s
-               PreCast.CurrentParser.parse_interf)
+          parse_file ~directive_handler:sig_handler s
+            PreCast.CurrentParser.parse_interf
       | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
           (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
            None)
       | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
           (AstFilters.use_interf_filter s; None)
+      | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
       | `Directive (_loc,`Lid (_,x),_) ->
           FanLoc.raise _loc
             (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
-      | _ -> assert false
+      | _ -> None
     let rec str_handler =
       function
       | `Directive (_loc,`Lid (_,"load"),`Str (_,s)) ->
@@ -108,9 +108,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       | `Directive (_loc,`Lid (_,"directory"),`Str (_,s)) ->
           (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
       | `Directive (_loc,`Lid (_,"use"),`Str (_,s)) ->
-          Some
-            (parse_file ~directive_handler:str_handler s
-               PreCast.CurrentParser.parse_implem)
+          parse_file ~directive_handler:str_handler s
+            PreCast.CurrentParser.parse_implem
       | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
           (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
            None)
@@ -118,13 +117,18 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
           (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
       | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
           (AstFilters.use_implem_filter s; None)
+      | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
       | `Directive (_loc,`Lid (_,x),_) ->
           FanLoc.raise _loc
             (XStream.Error (x ^ "bad directive camlp4 can not handled "))
-      | _ -> assert false
+      | _ -> None
     let process ?directive_handler  name pa pr clean fold_filters =
-      (((parse_file ?directive_handler name pa) |> fold_filters) |> clean) |>
-        (pr ?input_file:(Some name) ?output_file:(output_file.contents))
+      match parse_file ?directive_handler name pa with
+      | None  ->
+          pr ?input_file:(Some name) ?output_file:(output_file.contents) None
+      | Some x ->
+          (Some (clean (fold_filters x))) |>
+            (pr ?input_file:(Some name) ?output_file:(output_file.contents))
     let process_intf name =
       process ~directive_handler:sig_handler name
         PreCast.CurrentParser.parse_interf

@@ -131,3 +131,4 @@ let err (error : lex_error) (loc : FanLoc.t) =
   raise (FanLoc.Exc_located (loc, (Lexing_error error)))
 let warn error loc =
   Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error
+let _ = ()

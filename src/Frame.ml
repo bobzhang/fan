@@ -361,7 +361,10 @@ let str_item_of_module_types ?module_name ?cons_transform
         and binding = mk_binding  tydcl in 
         {:str_item| let $rec:rec_flag  $binding |}
     end ] in
-  let item =  sem_of_list (List.map fs lst )  in
+  let item =
+    match lst with
+    [[] -> {:str_item|let _ = ()|}
+    | _ ->  sem_of_list1 (List.map fs lst ) ]  in
   match module_name with
   [ None -> item
   | Some m -> {:str_item| module $uid:m = struct $item end |} ];

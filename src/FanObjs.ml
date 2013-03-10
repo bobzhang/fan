@@ -163,13 +163,13 @@ class clean_ast = object
     | {| type $({:ctyp@_l||} ) |} -> {||}
     | sg -> sg ];
 
-  method! str_item st =
-    with str_item
-    match super#str_item st with
-    [ {| $({@_l||} ); $st |} | {| $st; $({@_l||} ) |} -> st
-    | {| type $({:ctyp@_l||} ) |} -> {||}
-    | {| let $rec:_ $({:binding@_l||} ) |} -> {||}
-    | st -> st ];
+  (* method! str_item st = *)
+  (*   with str_item *)
+  (*   match super#str_item st with *)
+  (*   [(\*  {| $({@_l||} ); $st |} | {| $st; $({@_l||} ) |} -> st *\) *)
+  (*   (\* |  *\){| type $({:ctyp@_l||} ) |} -> {||} *)
+  (*   | {| let $rec:_ $({:binding@_l||} ) |} -> {||} *)
+  (*   | st -> st ]; *)
 
   method! module_type mt =
     match super#module_type mt with

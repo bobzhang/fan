@@ -467,11 +467,9 @@ and module_expr =
   | `PackageModule of (loc * expr)
   | ant  ]
 and str_item =
-  [= nil
-     (* class cice *)
-  | `Class of (loc * class_expr)
-        (* class type cict *)
-  | `ClassType of (loc * class_type)
+  [= (* nil *)
+  (* | *) `Class of (loc * class_expr) (* class cice *)
+  | `ClassType of (loc * class_type) (* class type cict *)
   | `Sem of (loc * str_item * str_item)
                 
   | `DirectiveSimple of (loc * alident)

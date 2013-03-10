@@ -46,7 +46,7 @@ let plugin_remove plugin =
 let filter_type_defs ?qualified  () =
   object 
     inherit  Objs.map as super
-    val mutable type_defs = let _loc = FanLoc.ghost in `Nil _loc
+    val mutable type_defs = None
     method! sig_item =
       function
       | `Val (_loc,_,_)|`Include (_loc,_)|`External (_loc,_,_,_)
@@ -65,10 +65,12 @@ let filter_type_defs ?qualified  () =
                 `TyDcl (_loc, name, vars, (`Nil _loc), constraints)
             | (_,_) -> super#typedecl x in
           let y = `Type (_loc, x) in
-          let () = type_defs <- `Sem (_loc, type_defs, y) in `Type (_loc, x)
+          let () = type_defs <- Some (`Sem (_loc, type_defs, y)) in
+          `Type (_loc, x)
       | `Type (_loc,ty) ->
           let x = super#typedecl ty in
-          let () = type_defs <- `Sem (_loc, type_defs, (`Type (_loc, x))) in
+          let () =
+            type_defs <- Some (`Sem (_loc, type_defs, (`Type (_loc, x)))) in
           `Type (_loc, x)
       | x -> super#sig_item x
     method! ident =
@@ -134,7 +136,9 @@ let traversal () =
                           acc)
                      | None  -> `Sem (_loc, acc, code))
                   FanState.current_filters.contents
-                  (if FanState.keep.contents then res else `Nil _loc) in
+                  (if FanState.keep.contents
+                   then res
+                   else `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()")))))) in
               self#out_module; `Struct (_loc, result))))
        | x -> super#module_expr x
      method! str_item =
@@ -146,7 +150,9 @@ let traversal () =
                (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                   lst);
              self#out_and_types;
-             if FanState.keep.contents then x else `Nil _loc))
+             if FanState.keep.contents
+             then x
+             else `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()")))))))
        | `Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) as x ->
            let item = `Single (name, t) in
            (if print_collect_module_types.contents

@@ -15,11 +15,10 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
     [ FOLD1 (fun (x,r) () -> begin 
         if Hashtbl.mem FanLexTools.named_regexps x then
           Printf.eprintf 
-            "pa_ulex (warning): multiple definition of named regexp '%s'\n" x
-        else ();
+            "pa_ulex (warning): multiple definition of named regexp '%s'\n" x;
         Hashtbl.add FanLexTools.named_regexps x r
     end) (())
-        [`Lid x ; ":"; regexp{r} -> (x,r)]  SEP ";" -> {:str_item| |}]
+        [`Lid x ; ":"; regexp{r} -> (x,r)]  SEP ";" -> {:str_item|let _ = () |} (* FIXME*)]
     regexps:
     ["{" ; L1 regexp SEP ";"{xs};"}"  -> Array.of_list xs ]  
     regexp:

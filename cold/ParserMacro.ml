@@ -20,10 +20,11 @@ let apply () =
      ((Some `First),
        (None, None,
          [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ))],
-            ("Gram.mk_action\n  (fun (x : 'macro_def)  (_loc : FanLoc.t)  ->\n     (execute_macro ~expr ~patt (`Nil _loc) (fun a  b  -> `Sem (_loc, a, b))\n        x : 'str_item ))\n",
+            ("Gram.mk_action\n  (fun (x : 'macro_def)  (_loc : FanLoc.t)  ->\n     (execute_macro ~expr ~patt\n        (`StExp (_loc, (`Id (_loc, (`Uid (_loc, \"()\"))))))\n        (fun a  b  -> `Sem (_loc, a, b)) x : 'str_item ))\n",
               (Gram.mk_action
                  (fun (x : 'macro_def)  (_loc : FanLoc.t)  ->
-                    (execute_macro ~expr ~patt (`Nil _loc)
+                    (execute_macro ~expr ~patt
+                       (`StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
                        (fun a  b  -> `Sem (_loc, a, b)) x : 'str_item )))))]));
    Gram.extend_single (sig_item : 'sig_item Gram.t )
      ((Some `First),
@@ -203,12 +204,14 @@ let apply () =
               (Gram.srules
                  [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                    ("Gram.mk_action\n  (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->\n     (execute_macro_if_active_branch ~expr ~patt _loc (`Nil _loc)\n        (fun a  b  -> `Sem (_loc, a, b)) Then d : 'e__1 ))\n",
+                    ("Gram.mk_action\n  (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->\n     (execute_macro_if_active_branch ~expr ~patt _loc\n        (`StExp (_loc, (`Id (_loc, (`Uid (_loc, \"()\"))))))\n        (fun a  b  -> `Sem (_loc, a, b)) Then d : 'e__1 ))\n",
                       (Gram.mk_action
                          (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
                             (execute_macro_if_active_branch ~expr ~patt _loc
-                               (`Nil _loc) (fun a  b  -> `Sem (_loc, a, b))
-                               Then d : 'e__1 )))));
+                               (`StExp
+                                  (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
+                               (fun a  b  -> `Sem (_loc, a, b)) Then d : 
+                            'e__1 )))));
                  ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                    ("Gram.mk_action\n  (fun _  (si : 'str_item)  (_loc : FanLoc.t)  -> (Str si : 'e__1 ))\n",
@@ -226,12 +229,14 @@ let apply () =
               (Gram.srules
                  [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                    ("Gram.mk_action\n  (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->\n     (execute_macro_if_active_branch ~expr ~patt _loc (`Nil _loc)\n        (fun a  b  -> `Sem (_loc, a, b)) Else d : 'e__2 ))\n",
+                    ("Gram.mk_action\n  (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->\n     (execute_macro_if_active_branch ~expr ~patt _loc\n        (`StExp (_loc, (`Id (_loc, (`Uid (_loc, \"()\"))))))\n        (fun a  b  -> `Sem (_loc, a, b)) Else d : 'e__2 ))\n",
                       (Gram.mk_action
                          (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
                             (execute_macro_if_active_branch ~expr ~patt _loc
-                               (`Nil _loc) (fun a  b  -> `Sem (_loc, a, b))
-                               Else d : 'e__2 )))));
+                               (`StExp
+                                  (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
+                               (fun a  b  -> `Sem (_loc, a, b)) Else d : 
+                            'e__2 )))));
                  ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                    ("Gram.mk_action\n  (fun _  (si : 'str_item)  (_loc : FanLoc.t)  -> (Str si : 'e__2 ))\n",

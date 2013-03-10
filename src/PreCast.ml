@@ -1,6 +1,8 @@
 module Syntax = Syntax;
 
-let sig_item_parser =
+let sig_item_parser:   ref ( ?directive_handler:(Ast.sig_item -> option Ast.sig_item ) ->
+   FanLoc.t -> LibUtil.XStream.t char  -> option Ast.sig_item)
+ =
   ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
 let str_item_parser =
   ref (fun ?directive_handler:(_)  _ _ -> failwith "No implementation parser");

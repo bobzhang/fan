@@ -8,6 +8,7 @@ open FanLoc
 open FanOps
 open AstLoc
 open FanObjs
+let _ = ()
 let rec normalize_acc =
   function
   | `Dot (_loc,i1,i2) -> `Dot (_loc, (normalize_acc i1), (normalize_acc i2))
@@ -887,7 +888,6 @@ and module_expr (x : Ast.module_expr) =
   | t -> errorf (loc_of t) "module_expr: %s" (dump_module_expr t)
 and str_item (s : str_item) (l : structure) =
   (match s with
-   | `Nil _ -> l
    | `Class (loc,cd) ->
        (mkstr loc
           (Pstr_class (List.map class_info_class_expr (list_of_and' cd []))))

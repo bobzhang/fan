@@ -1,6 +1,7 @@
 open StdLib
 include AstN
 let _ = (); ()
+let _ = ()
 class eq =
   object (self : 'self_type)
     inherit  eqbase
@@ -569,7 +570,6 @@ class eq =
     method str_item : str_item -> str_item -> 'result46=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result46)
         | (`Class _a0,`Class _b0) -> self#class_expr _a0 _b0
         | (`ClassType _a0,`ClassType _b0) -> self#class_type _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -1361,7 +1361,6 @@ class print =
     method str_item : 'fmt -> str_item -> 'result101=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result101)
         | `Class _a0 ->
             Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#class_expr _a0
         | `ClassType _a0 ->
@@ -2318,7 +2317,6 @@ and meta_module_expr _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result139)
 and meta_str_item _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result138)
   | `Class _a0 ->
       `App (_loc, (`Vrn (_loc, "Class")), (meta_class_expr _loc _a0))
   | `ClassType _a0 ->

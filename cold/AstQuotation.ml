@@ -194,6 +194,8 @@ let make_parser entry loc loc_name_opt s =
   Ref.protect2 (FanConfig.antiquotations, true)
     (current_loc_name, loc_name_opt)
     (fun _  -> Gram.parse_string (Gram.eoi_entry entry) ~loc s)
+let _ = ()
+let _ = ()
 let of_str_item ~name  ~entry  =
   add name DynAst.str_item_tag (make_parser entry)
 let of_str_item_with_filter ~name  ~entry  ~filter  =

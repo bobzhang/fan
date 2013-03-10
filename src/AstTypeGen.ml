@@ -318,7 +318,7 @@ let generate (module_types:FSig.module_types) = with str_item
         {:match_case| $vrn:key $(pat:(tuple_com pats)) -> _loc | $acc |}
       else failwithf "arity=0 key:%s" key
         
-    ) tbl {||} in
+    ) tbl (`Nil _loc) in
   {| let loc_of  = fun [ $case ]|};
 Typehook.register
     ~filter:(fun s -> not (List.mem s ["loc"; "meta_option";"meta_list"]))

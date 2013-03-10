@@ -2,6 +2,7 @@ open FanOps
 open Ast
 module type META_LOC = sig val meta_loc : loc -> loc -> ep end
 let _ = (); ()
+let _ = ()
 module Make(MetaLoc:META_LOC) =
   struct
     include MetaLoc
@@ -1288,7 +1289,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result29)
     and meta_str_item _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result28)
       | `Class (_a0,_a1) ->
           `App
             (_loc,

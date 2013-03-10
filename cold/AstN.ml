@@ -1,4 +1,5 @@
 let _ = (); ()
+let _ = ()
 type loc = FanLoc.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
 type nil = [ `Nil] 
@@ -128,7 +129,7 @@ and module_expr =
   | `StructEnd | `Constraint of (module_expr* module_type)
   | `PackageModule of expr | ant] 
 and str_item =
-  [ nil | `Class of class_expr | `ClassType of class_type
+  [ `Class of class_expr | `ClassType of class_type
   | `Sem of (str_item* str_item) | `DirectiveSimple of alident
   | `Directive of (alident* expr) | `Exception of of_ctyp | `StExp of expr
   | `External of (alident* ctyp* strings) | `Include of module_expr

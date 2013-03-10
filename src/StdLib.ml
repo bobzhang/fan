@@ -2,10 +2,12 @@
 (* The dependency should only rely on the last version of
   [Fan], keep its dependency only on [LibUtil]
   *)
-open Format;
 open LibUtil;
+open Format;
+(* open LibUtil; *)
 
-import Fan.Inject;  
+#import Fan.Inject;;
+(* import Fan.Inject; *)
 {:str_item| eq_base1  |};
 {:str_item| print_base1  |};
 

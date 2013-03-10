@@ -277,7 +277,10 @@ let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names
              if Ctyp.is_recursive tydcl then `Recursive _loc else `ReNil _loc
            and binding = mk_binding tydcl in `Value (_loc, rec_flag, binding))) : 
     str_item ) in
-  let item = sem_of_list (List.map fs lst) in
+  let item =
+    match lst with
+    | [] -> `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()")))))
+    | _ -> sem_of_list1 (List.map fs lst) in
   match module_name with
   | None  -> item
   | Some m -> `Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item)))

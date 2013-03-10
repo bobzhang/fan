@@ -401,7 +401,7 @@ let mk_transform_type_eq () = object(self:'self_type)
            *)
            let src = i and dest = Ident.map_to_string i in begin
              Hashtbl.replace transformers dest (src,List.length lst);
-             {:str_item| |} 
+             {:str_item| let _ = ()|} (* FIXME *)
            end 
        | None ->  super#str_item x ]
      | x -> super#str_item x ];

@@ -132,17 +132,21 @@ module Camlp4Bin
             | {| #directory $str:s |} ->
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
             | {| #use $str:s|} ->
-                Some (parse_file
+                (* Some  *)(parse_file
                         ~directive_handler:sig_handler s PreCast.CurrentParser.parse_interf )
             | {| #default_quotation $str:s |} ->
                 begin AstQuotation.default :=
                   FanToken.resolve_name (`Sub [], s); None end
             | {| #$({:ident@_|filter|}) $str:s |} ->
-                begin AstFilters.use_interf_filter s; None ; end 
+                begin AstFilters.use_interf_filter s; None ; end
+            | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None
             | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)
                 FanLoc.raise _loc
                   (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
-            | _ -> assert false
+            | _ ->
+               None
+                (* FIXME *)  
+                (* assert false *)
             ] );
       let rec str_handler = with str_item
           (fun
@@ -150,33 +154,35 @@ module Camlp4Bin
             | {| #directory $str:s |} ->
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
             | {| #use $str:s |} ->
-                Some (parse_file  ~directive_handler:str_handler s
+                (* Some  *)(parse_file  ~directive_handler:str_handler s
                         PreCast.CurrentParser.parse_implem )
             | {| #default_quotation $str:s |} ->
                 begin AstQuotation.default :=
                   FanToken.resolve_name (`Sub [],s) ;
                   None end
-            (* | {| #lang_at $str:tag $str:quot |} *)
-            (*   -> *)
-            (*     begin AstQuotation.default_at_pos tag quot; None end *)
             | {| #lang_clear |} -> begin 
                 AstQuotation.clear_map ();
                 AstQuotation.clear_default ();
                 None
             end
             | {| #filter $str:s|} ->
-                begin AstFilters.use_implem_filter s; None ; end 
+                begin AstFilters.use_implem_filter s; None ; end
+            | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None                  
+            (* | {| #import |} -> None (\* FIXME *\) *)
             | {| #$lid:x $_ |} ->
                 (* FIXME pattern match should give _loc automatically *)
                 FanLoc.raise _loc (XStream.Error (x ^ "bad directive camlp4 can not handled "))
-            | _ -> assert false
+            | _ -> None
+                (* ignored *)
+                (* assert false *)
             ] );
       let process  ?directive_handler name pa pr clean fold_filters =
-          parse_file  ?directive_handler name pa 
-          |> fold_filters 
-          |> clean
-          |> pr ?input_file:(Some name) ?output_file:!output_file ;
-
+          match parse_file  ?directive_handler name pa with
+          [None ->
+            pr ?input_file:(Some name) ?output_file:!output_file None 
+          |Some x ->
+              Some (clean (fold_filters x))
+              |> pr ?input_file:(Some name) ?output_file:!output_file];
       (* [entrance] *)  
       let process_intf  name =
         process ~directive_handler:sig_handler

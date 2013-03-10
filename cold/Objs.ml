@@ -4,6 +4,7 @@ open Ast
 let strip_loc_list f lst = List.map f lst
 let strip_loc_ant ant = ant
 let _ = (); ()
+let _ = ()
 class map2 =
   object (self : 'self_type)
     inherit  mapbase2
@@ -962,8 +963,6 @@ class map2 =
     method str_item : str_item -> str_item -> str_item=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>str_item)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_expr _a1 _b1 in `Class (_a0, _a1)
@@ -1977,7 +1976,6 @@ class fold2 =
     method str_item : str_item -> str_item -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#class_expr _a1 _b1
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
@@ -2631,7 +2629,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result155)
     method str_item : str_item -> 'result156=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result156)
       | `Class (_a0,_a1) -> (self#loc _a0; self#class_expr _a1)
       | `ClassType (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
       | `Sem (_a0,_a1,_a2) ->
@@ -3569,7 +3566,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_expr)
     method str_item : str_item -> str_item=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>str_item)
       | `Class (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_expr _a1 in `Class (_a0, _a1)
@@ -4380,7 +4376,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method str_item : str_item -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `Class (_a0,_a1) -> let self = self#loc _a0 in self#class_expr _a1
       | `ClassType (_a0,_a1) ->
           let self = self#loc _a0 in self#class_type _a1
@@ -5289,7 +5284,6 @@ class print =
     method str_item : 'fmt -> str_item -> 'result321=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result321)
         | `Class (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" self#loc _a0
               self#class_expr _a1
@@ -6220,7 +6214,6 @@ class eq =
     method str_item : str_item -> str_item -> 'result376=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result376)
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#class_expr _a1 _b1)
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
@@ -6989,7 +6982,6 @@ and strip_loc_module_expr =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result413)
 and strip_loc_str_item =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result412)
   | `Class (_a0,_a1) -> let _a1 = strip_loc_class_expr _a1 in `Class _a1
   | `ClassType (_a0,_a1) ->
       let _a1 = strip_loc_class_type _a1 in `ClassType _a1
@@ -7849,7 +7841,6 @@ and pp_print_module_expr fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result466)
 and pp_print_str_item fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result465)
   | `Class (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_expr _a1

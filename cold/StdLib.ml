@@ -1,5 +1,5 @@
-open Format
 open LibUtil
+open Format
 let eq_int: int -> int -> bool = ( = )
 let eq_int32: int32 -> int32 -> bool = ( = )
 let eq_int64: int64 -> int64 -> bool = ( = )

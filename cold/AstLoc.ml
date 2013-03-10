@@ -2,6 +2,7 @@ open LibUtil
 open FanLoc.Ops
 include Ast
 let _ = (); ()
+let _ = ()
 let loc_of =
   function
   | `Any _loc -> _loc

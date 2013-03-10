@@ -73,15 +73,7 @@ let plugin_add plugin =
 
     
 let plugin_remove plugin =
-  (* let try v = Hashtbl.find filters plugin in begin  *)
-    (* v.activate <- false; *)
     Ref.modify FanState.current_filters (fun x -> List.remove plugin x) ;
-  (* end *)
-  (* with *)
-  (*   [Not_found -> begin  *)
-  (*     show_modules (); *)
-  (*     eprintf "plugin %s not found, removing operation ignored" plugin; *)
-  (*     end ]; *)
   
 
 
@@ -91,9 +83,9 @@ let plugin_remove plugin =
    nested type definitions in module are not considered.
    {:sig_item| type $x |}
  *)  
-let filter_type_defs ?qualified () = object (* (self:'self_type) *)
+let filter_type_defs ?qualified () = object
   inherit Objs.map as super;
-  val mutable type_defs = let _loc = FanLoc.ghost in {:str_item||} ;
+  val mutable type_defs = None ;
   method! sig_item = with sig_item fun
     [
      ( {| val $_ : $_ |} | {| include $_ |} | {| external $_ : $_ = $_ |}
@@ -112,12 +104,12 @@ let filter_type_defs ?qualified () = object (* (self:'self_type) *)
                   `TyDcl _loc name vars {:ctyp||} constraints
                |(_,_) -> super#typedecl x ] in 
              let y = {:str_item| type $x  |} in
-             let () =  type_defs <- {:str_item| $type_defs ; $y |} in      
+             let () =  type_defs <- Some {:str_item| $type_defs ; $y |} in      
              {| type $x |}  
      end
      | {| type $ty |} -> (* `And case *) begin
          let x = super#typedecl ty in
-         let () = type_defs <- {:str_item| $type_defs ; $({:str_item|type $x |}) |} in
+         let () = type_defs <- Some {:str_item| $type_defs ; $({:str_item|type $x |}) |} in
          {|type $x |} 
          end
      | x -> super#sig_item x];
@@ -203,7 +195,7 @@ let traversal () : traversal  = object (self:'self_type)
                     acc
                   end
                 |None -> {| $acc; $code |} ])  !FanState.current_filters 
-          (if !FanState.keep then res else {| |} );
+          (if !FanState.keep then res else {| let _ = () |} (* FIXME *) );
       self#out_module ;
       {:module_expr| struct $result end |}  
     end
@@ -216,7 +208,7 @@ let traversal () : traversal  = object (self:'self_type)
       self#update_cur_module_types
           (fun lst -> [`Mutual (List.rev self#get_cur_and_types) :: lst] );
       self#out_and_types;
-      (if !FanState.keep then x else {| |} )
+      (if !FanState.keep then x else {| let _ = () |} (* FIXME *) )
     end
     | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> begin
         let item =  `Single (name,t) ;

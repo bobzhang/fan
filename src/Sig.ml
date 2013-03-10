@@ -21,17 +21,17 @@ module type ParserImpl = sig
       syntax), the given [directive_handler] function  evaluates  it  and
       the parsing starts again. *)
   val parse_implem : ?directive_handler:(str_item -> option str_item) ->
-    FanLoc.t -> XStream.t char -> str_item;
+    FanLoc.t -> XStream.t char -> option str_item;
 
   val parse_interf : ?directive_handler:(sig_item -> option sig_item) ->
-        FanLoc.t -> XStream.t char -> sig_item;
+        FanLoc.t -> XStream.t char -> option sig_item;
 end;
 
 module type PrinterImpl = sig
   val print_interf : ?input_file:string -> ?output_file:string ->
-    sig_item -> unit;
+    option sig_item  -> unit;
   val print_implem : ?input_file:string -> ?output_file:string ->
-    str_item -> unit;
+    option str_item -> unit;
 end;
 
 
@@ -262,9 +262,12 @@ module type ParserPlugin = functor (Syn:Syntax) -> ParserImpl;
 
 
 type 'a parser_fun  =
-    ?directive_handler:('a -> option 'a) -> FanLoc.t -> XStream.t char -> 'a;
+    ?directive_handler:('a -> option 'a) -> loc
+      -> XStream.t char -> option 'a;
+
 type 'a printer_fun  =
-      ?input_file:string -> ?output_file:string -> 'a -> unit;
+      ?input_file:string -> ?output_file:string ->
+        option 'a -> unit;
 
 module type PRECAST = sig
   module Syntax     : Syntax ;

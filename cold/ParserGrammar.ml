@@ -45,7 +45,7 @@ let _ =
                  (Gram.mk_action
                     (fun (t : 'qualuid)  (_loc : FanLoc.t)  ->
                        (`static t : 'e__1 )))))];
-          `Slist0
+          `Slist1
             (Gram.srules
                [([`Stoken
                     (((function | `Lid _ -> true | _ -> false)),
@@ -115,7 +115,7 @@ let _ =
                          match __fan_1 with
                          | `Lid x -> ((_loc, x, y, (Some t)) : 'e__3 )
                          | _ -> failwith "(_loc, x, y, (Some t))\n"))))])],
-           ("Gram.mk_action\n  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->\n     (let mk =\n        match t with\n        | `static t -> `Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk\")))))\n        | `dynamic (x,t) ->\n            `App\n              (_loc,\n                (`Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))))),\n                (`Id (_loc, x))) in\n      let rest =\n        List.map\n          (fun (_loc,x,descr,ty)  ->\n             match (descr, ty) with\n             | (Some d,None ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`App (_loc, mk, (`Str (_loc, d)))))))\n             | (Some d,Some typ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`Constraint\n                             (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ)))))\n             | (None ,None ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`App (_loc, mk, (`Str (_loc, x)))))))\n             | (None ,Some typ) ->\n                 `Value\n                   (_loc, (`ReNil _loc),\n                     (`Bind\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`Constraint\n                             (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))))\n          ls in\n      sem_of_list rest : 'nonterminals ))\n",
+           ("Gram.mk_action\n  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->\n     (let mk =\n        match t with\n        | `static t -> `Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk\")))))\n        | `dynamic (x,t) ->\n            `App\n              (_loc,\n                (`Id (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))))),\n                (`Id (_loc, x))) in\n      sem_of_list1 &\n        (List.map\n           (fun (_loc,x,descr,ty)  ->\n              match (descr, ty) with\n              | (Some d,None ) ->\n                  `Value\n                    (_loc, (`ReNil _loc),\n                      (`Bind\n                         (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                           (`App (_loc, mk, (`Str (_loc, d)))))))\n              | (Some d,Some typ) ->\n                  `Value\n                    (_loc, (`ReNil _loc),\n                      (`Bind\n                         (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                           (`Constraint\n                              (_loc, (`App (_loc, mk, (`Str (_loc, d)))),\n                                typ)))))\n              | (None ,None ) ->\n                  `Value\n                    (_loc, (`ReNil _loc),\n                      (`Bind\n                         (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                           (`App (_loc, mk, (`Str (_loc, x)))))))\n              | (None ,Some typ) ->\n                  `Value\n                    (_loc, (`ReNil _loc),\n                      (`Bind\n                         (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                           (`Constraint\n                              (_loc, (`App (_loc, mk, (`Str (_loc, x)))),\n                                typ)))))) ls) : 'nonterminals ))\n",
              (Gram.mk_action
                 (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->
                    (let mk =
@@ -130,43 +130,42 @@ let _ =
                                    (`Dot
                                       (_loc, t, (`Lid (_loc, "mk_dynamic")))))),
                               (`Id (_loc, x))) in
-                    let rest =
-                      List.map
-                        (fun (_loc,x,descr,ty)  ->
-                           match (descr, ty) with
-                           | (Some d,None ) ->
-                               `Value
-                                 (_loc, (`ReNil _loc),
-                                   (`Bind
-                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                        (`App (_loc, mk, (`Str (_loc, d)))))))
-                           | (Some d,Some typ) ->
-                               `Value
-                                 (_loc, (`ReNil _loc),
-                                   (`Bind
-                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                        (`Constraint
-                                           (_loc,
-                                             (`App
-                                                (_loc, mk, (`Str (_loc, d)))),
-                                             typ)))))
-                           | (None ,None ) ->
-                               `Value
-                                 (_loc, (`ReNil _loc),
-                                   (`Bind
-                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                        (`App (_loc, mk, (`Str (_loc, x)))))))
-                           | (None ,Some typ) ->
-                               `Value
-                                 (_loc, (`ReNil _loc),
-                                   (`Bind
-                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                        (`Constraint
-                                           (_loc,
-                                             (`App
-                                                (_loc, mk, (`Str (_loc, x)))),
-                                             typ)))))) ls in
-                    sem_of_list rest : 'nonterminals )))))]));
+                    sem_of_list1 &
+                      (List.map
+                         (fun (_loc,x,descr,ty)  ->
+                            match (descr, ty) with
+                            | (Some d,None ) ->
+                                `Value
+                                  (_loc, (`ReNil _loc),
+                                    (`Bind
+                                       (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                                         (`App (_loc, mk, (`Str (_loc, d)))))))
+                            | (Some d,Some typ) ->
+                                `Value
+                                  (_loc, (`ReNil _loc),
+                                    (`Bind
+                                       (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                                         (`Constraint
+                                            (_loc,
+                                              (`App
+                                                 (_loc, mk, (`Str (_loc, d)))),
+                                              typ)))))
+                            | (None ,None ) ->
+                                `Value
+                                  (_loc, (`ReNil _loc),
+                                    (`Bind
+                                       (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                                         (`App (_loc, mk, (`Str (_loc, x)))))))
+                            | (None ,Some typ) ->
+                                `Value
+                                  (_loc, (`ReNil _loc),
+                                    (`Bind
+                                       (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                                         (`Constraint
+                                            (_loc,
+                                              (`App
+                                                 (_loc, mk, (`Str (_loc, x)))),
+                                              typ)))))) ls) : 'nonterminals )))))]));
   Gram.extend_single (nonterminalsclear : 'nonterminalsclear Gram.t )
     (None,
       (None, None,

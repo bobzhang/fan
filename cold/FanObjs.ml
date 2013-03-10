@@ -92,12 +92,6 @@ class clean_ast =
       | `Sem (_loc,`Nil _l,sg)|`Sem (_loc,sg,`Nil _l) -> sg
       | `Type (_loc,`Nil _l) -> `Nil _loc
       | sg -> sg
-    method! str_item st =
-      match super#str_item st with
-      | `Sem (_loc,`Nil _l,st)|`Sem (_loc,st,`Nil _l) -> st
-      | `Type (_loc,`Nil _l) -> `Nil _loc
-      | `Value (_loc,_,`Nil _l) -> `Nil _loc
-      | st -> st
     method! module_type mt =
       match super#module_type mt with
       | `With (_loc,mt,`Nil _l) -> mt

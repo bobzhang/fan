@@ -962,7 +962,11 @@ let apply () = begin
       [ "#"; a_lident{n}; expr{dp}; ";;" ->
         ([ `Directive(_loc,n,dp) ],  Some _loc)
       | "#"; a_lident{n}; ";;" ->
-        ([`DirectiveSimple(_loc,n)], Some _loc)  
+        ([`DirectiveSimple(_loc,n)], Some _loc)
+      | "#";"import"; dot_namespace{x};";;" -> 
+          (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
+            ([`DirectiveSimple(_loc,`Lid(_loc,"import"))],Some _loc))
+
       | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
       | `EOI -> ([], None) ]
       str_items: (* FIXME dump seems to be incorrect *)
@@ -972,17 +976,21 @@ let apply () = begin
       top_phrase:
       [ "#"; a_lident{n}; expr{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
+
+      | "#";"import"; dot_namespace{x} -> 
+            (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
+            None)
       | str_item{st}; semi -> Some st
       | `EOI -> None ]
       str_item_quot:
       [ "#"; a_lident{n}; expr{dp} -> `Directive(_loc,n,dp)
       | "#"; a_lident{n} -> `DirectiveSimple(_loc,n)
       | str_item{st1}; semi; S{st2} ->
-          match st2 with
-          [ `Nil _ -> st1 (*M*)
-          | _ -> `Sem(_loc,st1,st2) ]
+          (* match st2 with *)
+          (* [ `Nil _ -> st1 (\*M*\) *)
+          (* | _ ->  *)`Sem(_loc,st1,st2) (* ] *)
       | str_item{st} -> st
-      | -> `Nil _loc ] (*M*)
+      (* | -> `Nil _loc *) ] (*M*)
       str_item:
       { "top"
         [ "exception"; constructor_declaration{t} ->
@@ -1001,10 +1009,6 @@ let apply () = begin
             {| module rec $mb |}
         | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
             {| module type $i = $mt |}
-        | "import"; dot_namespace{x} -> begin
-            FanToken.paths := [ `Absolute  x :: !FanToken.paths];
-            `Nil _loc  (*M*)
-        end
         | "open"; module_longident{i} -> {| open $i |}
         | "type"; type_declaration{td} ->
             {| type $td |}

@@ -1043,9 +1043,8 @@ and module_expr (x:Ast.module_expr)=
   | t -> errorf (loc_of t) "module_expr: %s" (dump_module_expr t) ]
 and str_item (s:str_item) (l:structure) : structure =
   match s with 
-  [ `Nil _ -> l
-  | `Class (loc,cd) ->
-      [mkstr loc (Pstr_class
+  [ `Class (loc,cd) ->
+    [mkstr loc (Pstr_class
            (List.map class_info_class_expr (list_of_and' cd []))) :: l]
   | `ClassType (loc,ctd) ->
       [mkstr loc (Pstr_class_type

@@ -124,6 +124,6 @@ val string_of_expression : Parsetree.expression -> string
 val top_phrase: Format.formatter -> Parsetree.toplevel_phrase -> unit
 val core_type: Format.formatter -> Parsetree.core_type -> unit
 val pattern: Format.formatter -> Parsetree.pattern -> unit
-val signature: Format.formatter -> Parsetree.signature -> unit
-val structure: Format.formatter -> Parsetree.structure -> unit
-val string_of_structure: Parsetree.structure -> string
+val signature: Format.formatter -> Parsetree.signature_item list -> unit
+val structure: Format.formatter -> Parsetree.structure_item list  -> unit
+val string_of_structure: Parsetree.structure_item list -> string
