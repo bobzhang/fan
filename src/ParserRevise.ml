@@ -26,7 +26,7 @@ let apply () = begin
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
     {:clear|Gram
-      amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_expr_quot
+     amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_expr_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
     class_name_and_param class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
@@ -39,8 +39,8 @@ let apply () = begin
     label_expr_list label_expr label_longident label_patt label_patt_list  let_binding meth_list
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
-    more_ctyp name_tags (* opt_as_lident *) (* opt_class_self_patt *) opt_class_self_type opt_comma_ctyp opt_dot_dot
-    (* opt_expr *) opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
+    more_ctyp name_tags opt_class_self_type opt_comma_ctyp opt_dot_dot
+    opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
     str_item str_item_quot str_items top_phrase type_declaration type_ident_and_parameters
@@ -994,16 +994,15 @@ let apply () = begin
             {| module $i = $mb |}
         | "module"; "rec"; module_binding{mb} ->
             {| module rec $mb |}
-        | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
-            {| module type $i = $mt |}
-        | "open"; module_longident{i} -> {| open $i |}
-        | "type"; type_declaration{td} ->
-            {| type $td |}
+        | "module"; "type"; a_uident{i}; "="; module_type{mt} -> `ModuleType(_loc,i,mt)
+        | "open"; module_longident{i} -> `Open(_loc,i)
+        | "type"; type_declaration{td} -> `Type(_loc,td)
         | "let"; opt_rec{r}; binding{bi}; "in"; expr{x} ->
               {| let $rec:r $bi in $x |}
-        | "let"; opt_rec{r}; binding{bi} ->   match bi with
-            [ {:binding| _ = $e |} -> {| $exp:e |}
-            | _ -> {| let $rec:r $bi |} ]
+        | "let"; opt_rec{r}; binding{bi} ->
+            match bi with
+            [ `Bind(_loc,`Any _,e) -> `StExp(_loc,e)
+            | _ -> `Value(_loc,r,bi) ]
         | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; expr{e} ->
               {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; expr{e} -> {| let open $id:i in $e |}
@@ -1283,7 +1282,7 @@ let apply_ctyp () = begin
       |  type_ident_and_parameters{(n, tpl)}; "="; type_info{tk}; L0 constrain{cl}
         -> `TyDcl (_loc, n, tpl, tk, cl)
       | type_ident_and_parameters{(n,tpl)}; L0 constrain{cl} ->
-        `TyDcl(_loc,n,tpl,`Nil _loc,cl)]
+          `TyAbstr(_loc,n,tpl,cl)]
       type_info:
       [type_repr{t2} -> `TyRepr(_loc,`PrNil _loc,t2)
       | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)

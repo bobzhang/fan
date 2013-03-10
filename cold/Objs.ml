@@ -382,6 +382,18 @@ class map2 =
                        let _a0 = self#ctyp _a0 _b0 in
                        let _a1 = self#ctyp _a1 _b1 in (_a0, _a1)) _a4 _b4 in
             `TyDcl (_a0, _a1, _a2, _a3, _a4)
+        | (`TyAbstr (_a0,_a1,_a2,_a3),`TyAbstr (_b0,_b1,_b2,_b3)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in
+            let _a2 = self#list (fun self  -> self#ctyp) _a2 _b2 in
+            let _a3 =
+              self#list
+                (fun self  _a0  _b0  ->
+                   match (_a0, _b0) with
+                   | ((_a0,_a1),(_b0,_b1)) ->
+                       let _a0 = self#ctyp _a0 _b0 in
+                       let _a1 = self#ctyp _a1 _b1 in (_a0, _a1)) _a3 _b3 in
+            `TyAbstr (_a0, _a1, _a2, _a3)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#typedecl _a1 _b1 in
@@ -407,8 +419,6 @@ class map2 =
             let _a2 = self#ctyp _a2 _b2 in `TyEq (_a0, _a1, _a2)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>type_info)
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>type_info)
         | (_,_) -> invalid_arg "map2 failure"
     method type_repr : type_repr -> type_repr -> type_repr=
       fun _a0  _b0  ->
@@ -762,8 +772,6 @@ class map2 =
     method module_type : module_type -> module_type -> module_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>module_type)
         | ((#sid as _a0),(#sid as _b0)) ->
             (self#sid _a0 _b0 : sid  :>module_type)
         | (`MtFun (_a0,_a1,_a2,_a3),`MtFun (_b0,_b1,_b2,_b3)) ->
@@ -828,6 +836,9 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#auident _a1 _b1 in
             let _a2 = self#module_type _a2 _b2 in `ModuleType (_a0, _a1, _a2)
+        | (`ModuleTypeEnd (_a0,_a1),`ModuleTypeEnd (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#auident _a1 _b1 in `ModuleTypeEnd (_a0, _a1)
         | (`Open (_a0,_a1),`Open (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in `Open (_a0, _a1)
@@ -1539,6 +1550,16 @@ class fold2 =
                  | ((_a0,_a1),(_b0,_b1)) ->
                      let self = self#ctyp _a0 _b0 in self#ctyp _a1 _b1) _a4
               _b4
+        | (`TyAbstr (_a0,_a1,_a2,_a3),`TyAbstr (_b0,_b1,_b2,_b3)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#alident _a1 _b1 in
+            let self = self#list (fun self  -> self#ctyp) _a2 _b2 in
+            self#list
+              (fun self  _a0  _b0  ->
+                 match (_a0, _b0) with
+                 | ((_a0,_a1),(_b0,_b1)) ->
+                     let self = self#ctyp _a0 _b0 in self#ctyp _a1 _b1) _a3
+              _b3
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#typedecl _a1 _b1 in self#typedecl _a2 _b2
@@ -1559,7 +1580,6 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#private_flag _a1 _b1 in self#ctyp _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method type_repr : type_repr -> type_repr -> 'self_type=
       fun _a0  _b0  ->
@@ -1824,7 +1844,6 @@ class fold2 =
     method module_type : module_type -> module_type -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | (`MtFun (_a0,_a1,_a2,_a3),`MtFun (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
@@ -1871,6 +1890,8 @@ class fold2 =
         | (`ModuleType (_a0,_a1,_a2),`ModuleType (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#auident _a1 _b1 in self#module_type _a2 _b2
+        | (`ModuleTypeEnd (_a0,_a1),`ModuleTypeEnd (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#auident _a1 _b1
         | (`Open (_a0,_a1),`Open (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
         | (`Type (_a0,_a1),`Type (_b0,_b1)) ->
@@ -2357,6 +2378,12 @@ class iter =
            self#type_info _a3;
            self#list (fun self  (_a0,_a1)  -> self#ctyp _a0; self#ctyp _a1)
              _a4)
+      | `TyAbstr (_a0,_a1,_a2,_a3) ->
+          (self#loc _a0;
+           self#alident _a1;
+           self#list (fun self  -> self#ctyp) _a2;
+           self#list (fun self  (_a0,_a1)  -> self#ctyp _a0; self#ctyp _a1)
+             _a3)
       | `And (_a0,_a1,_a2) ->
           (self#loc _a0; self#typedecl _a1; self#typedecl _a2)
       | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result139)
@@ -2372,7 +2399,6 @@ class iter =
       | `TyEq (_a0,_a1,_a2) ->
           (self#loc _a0; self#private_flag _a1; self#ctyp _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result140)
-      | #nil as _a0 -> (self#nil _a0 :>'result140)
     method type_repr : type_repr -> 'result141=
       function
       | `Record (_a0,_a1) -> (self#loc _a0; self#name_ctyp _a1)
@@ -2527,7 +2553,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result148)
     method module_type : module_type -> 'result149=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result149)
       | #sid as _a0 -> (self#sid _a0 :>'result149)
       | `MtFun (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
@@ -2558,6 +2583,7 @@ class iter =
       | `RecModule (_a0,_a1) -> (self#loc _a0; self#module_binding _a1)
       | `ModuleType (_a0,_a1,_a2) ->
           (self#loc _a0; self#auident _a1; self#module_type _a2)
+      | `ModuleTypeEnd (_a0,_a1) -> (self#loc _a0; self#auident _a1)
       | `Open (_a0,_a1) -> (self#loc _a0; self#ident _a1)
       | `Type (_a0,_a1) -> (self#loc _a0; self#typedecl _a1)
       | `Val (_a0,_a1,_a2) -> (self#loc _a0; self#alident _a1; self#ctyp _a2)
@@ -3052,6 +3078,16 @@ class map =
                  let _a0 = self#ctyp _a0 in
                  let _a1 = self#ctyp _a1 in (_a0, _a1)) _a4 in
           `TyDcl (_a0, _a1, _a2, _a3, _a4)
+      | `TyAbstr (_a0,_a1,_a2,_a3) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in
+          let _a2 = self#list (fun self  -> self#ctyp) _a2 in
+          let _a3 =
+            self#list
+              (fun self  (_a0,_a1)  ->
+                 let _a0 = self#ctyp _a0 in
+                 let _a1 = self#ctyp _a1 in (_a0, _a1)) _a3 in
+          `TyAbstr (_a0, _a1, _a2, _a3)
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#typedecl _a1 in
@@ -3073,7 +3109,6 @@ class map =
           let _a1 = self#private_flag _a1 in
           let _a2 = self#ctyp _a2 in `TyEq (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>type_info)
-      | #nil as _a0 -> (self#nil _a0 : nil  :>type_info)
     method type_repr : type_repr -> type_repr=
       function
       | `Record (_a0,_a1) ->
@@ -3388,7 +3423,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>rec_expr)
     method module_type : module_type -> module_type=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>module_type)
       | #sid as _a0 -> (self#sid _a0 : sid  :>module_type)
       | `MtFun (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
@@ -3448,6 +3482,9 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#module_type _a2 in `ModuleType (_a0, _a1, _a2)
+      | `ModuleTypeEnd (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#auident _a1 in `ModuleTypeEnd (_a0, _a1)
       | `Open (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in `Open (_a0, _a1)
@@ -4012,6 +4049,13 @@ class fold =
           self#list
             (fun self  (_a0,_a1)  ->
                let self = self#ctyp _a0 in self#ctyp _a1) _a4
+      | `TyAbstr (_a0,_a1,_a2,_a3) ->
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in
+          let self = self#list (fun self  -> self#ctyp) _a2 in
+          self#list
+            (fun self  (_a0,_a1)  ->
+               let self = self#ctyp _a0 in self#ctyp _a1) _a3
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#typedecl _a1 in self#typedecl _a2
@@ -4029,7 +4073,6 @@ class fold =
           let self = self#loc _a0 in
           let self = self#private_flag _a1 in self#ctyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method type_repr : type_repr -> 'self_type=
       function
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
@@ -4243,7 +4286,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method module_type : module_type -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | `MtFun (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
@@ -4284,6 +4326,8 @@ class fold =
       | `ModuleType (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#module_type _a2
+      | `ModuleTypeEnd (_a0,_a1) ->
+          let self = self#loc _a0 in self#auident _a1
       | `Open (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
       | `Type (_a0,_a1) -> let self = self#loc _a0 in self#typedecl _a1
       | `Val (_a0,_a1,_a2) ->
@@ -4833,6 +4877,13 @@ class print =
                  (fun self  fmt  (_a0,_a1)  ->
                     Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#ctyp _a0
                       self#ctyp _a1)) _a4
+        | `TyAbstr (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`TyAbstr@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#alident _a1 (self#list (fun self  -> self#ctyp)) _a2
+              (self#list
+                 (fun self  fmt  (_a0,_a1)  ->
+                    Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#ctyp _a0
+                      self#ctyp _a1)) _a3
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#typedecl _a1 self#typedecl _a2
@@ -4850,7 +4901,6 @@ class print =
             Format.fprintf fmt "@[<1>(`TyEq@ %a@ %a@ %a)@]" self#loc _a0
               self#private_flag _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result305)
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result305)
     method type_repr : 'fmt -> type_repr -> 'result306=
       fun fmt  ->
         function
@@ -5126,7 +5176,6 @@ class print =
     method module_type : 'fmt -> module_type -> 'result314=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result314)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result314)
         | `MtFun (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`MtFun@ %a@ %a@ %a@ %a)@]" self#loc _a0
@@ -5179,6 +5228,9 @@ class print =
         | `ModuleType (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" self#loc
               _a0 self#auident _a1 self#module_type _a2
+        | `ModuleTypeEnd (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ModuleTypeEnd@ %a@ %a)@]" self#loc _a0
+              self#auident _a1
         | `Open (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" self#loc _a0
               self#ident _a1
@@ -5781,6 +5833,15 @@ class eq =
                     match (_a0, _b0) with
                     | ((_a0,_a1),(_b0,_b1)) ->
                         (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)) _a4 _b4)
+        | (`TyAbstr (_a0,_a1,_a2,_a3),`TyAbstr (_b0,_b1,_b2,_b3)) ->
+            (((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
+               (self#list (fun self  -> self#ctyp) _a2 _b2))
+              &&
+              (self#list
+                 (fun self  _a0  _b0  ->
+                    match (_a0, _b0) with
+                    | ((_a0,_a1),(_b0,_b1)) ->
+                        (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)) _a3 _b3)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#typedecl _a1 _b1)) &&
               (self#typedecl _a2 _b2)
@@ -5801,7 +5862,6 @@ class eq =
             ((self#loc _a0 _b0) && (self#private_flag _a1 _b1)) &&
               (self#ctyp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result360)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result360)
         | (_,_) -> false
     method type_repr : type_repr -> type_repr -> 'result361=
       fun _a0  _b0  ->
@@ -6061,7 +6121,6 @@ class eq =
     method module_type : module_type -> module_type -> 'result369=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result369)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result369)
         | (`MtFun (_a0,_a1,_a2,_a3),`MtFun (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
@@ -6108,6 +6167,8 @@ class eq =
         | (`ModuleType (_a0,_a1,_a2),`ModuleType (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
               (self#module_type _a2 _b2)
+        | (`ModuleTypeEnd (_a0,_a1),`ModuleTypeEnd (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#auident _a1 _b1)
         | (`Open (_a0,_a1),`Open (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
         | (`Type (_a0,_a1),`Type (_b0,_b1)) ->
@@ -6612,6 +6673,15 @@ and strip_loc_typedecl =
              let _a0 = strip_loc_ctyp _a0 in
              let _a1 = strip_loc_ctyp _a1 in (_a0, _a1)) _a4 in
       `TyDcl (_a1, _a2, _a3, _a4)
+  | `TyAbstr (_a0,_a1,_a2,_a3) ->
+      let _a1 = strip_loc_alident _a1 in
+      let _a2 = strip_loc_list strip_loc_ctyp _a2 in
+      let _a3 =
+        strip_loc_list
+          (fun (_a0,_a1)  ->
+             let _a0 = strip_loc_ctyp _a0 in
+             let _a1 = strip_loc_ctyp _a1 in (_a0, _a1)) _a3 in
+      `TyAbstr (_a1, _a2, _a3)
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_typedecl _a1 in
       let _a2 = strip_loc_typedecl _a2 in `And (_a1, _a2)
@@ -6629,7 +6699,6 @@ and strip_loc_type_info =
       let _a1 = strip_loc_private_flag _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyEq (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result428)
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result428)
 and strip_loc_type_repr =
   function
   | `Record (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `Record _a1
@@ -6848,7 +6917,6 @@ and strip_loc_rec_expr =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result420)
 and strip_loc_module_type =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result419)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result419)
   | `MtFun (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
@@ -6889,6 +6957,8 @@ and strip_loc_sig_item =
   | `ModuleType (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_type _a2 in `ModuleType (_a1, _a2)
+  | `ModuleTypeEnd (_a0,_a1) ->
+      let _a1 = strip_loc_auident _a1 in `ModuleTypeEnd _a1
   | `Open (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Open _a1
   | `Type (_a0,_a1) -> let _a1 = strip_loc_typedecl _a1 in `Type _a1
   | `Val (_a0,_a1,_a2) ->
@@ -7406,6 +7476,13 @@ and pp_print_typedecl fmt =
            (fun fmt  (_a0,_a1)  ->
               Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_ctyp _a0
                 pp_print_ctyp _a1)) _a4
+  | `TyAbstr (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`TyAbstr@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1 (pp_print_list pp_print_ctyp) _a2
+        (pp_print_list
+           (fun fmt  (_a0,_a1)  ->
+              Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_ctyp _a0
+                pp_print_ctyp _a1)) _a3
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_typedecl _a1 pp_print_typedecl _a2
@@ -7422,7 +7499,6 @@ and pp_print_type_info fmt =
       Format.fprintf fmt "@[<1>(`TyEq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_private_flag _a1 pp_print_ctyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result481)
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result481)
 and pp_print_type_repr fmt =
   function
   | `Record (_a0,_a1) ->
@@ -7687,7 +7763,6 @@ and pp_print_rec_expr fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result473)
 and pp_print_module_type fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result472)
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result472)
   | `MtFun (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`MtFun@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -7739,6 +7814,9 @@ and pp_print_sig_item fmt =
   | `ModuleType (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_module_type _a2
+  | `ModuleTypeEnd (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`ModuleTypeEnd@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_auident _a1
   | `Open (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1

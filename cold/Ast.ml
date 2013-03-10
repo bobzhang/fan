@@ -53,11 +53,12 @@ and tag_names =
   [ ant_nil | `App of (loc* tag_names* tag_names) | `TyVrn of (loc* astring)] 
 and typedecl =
   [ `TyDcl of (loc* alident* ctyp list* type_info* (ctyp* ctyp) list)
+  | `TyAbstr of (loc* alident* ctyp list* (ctyp* ctyp) list)
   | `And of (loc* typedecl* typedecl) | ant_nil] 
 and type_info =
   [ `TyMan of (loc* ctyp* private_flag* type_repr)
   | `TyRepr of (loc* private_flag* type_repr)
-  | `TyEq of (loc* private_flag* ctyp) | ant | nil] 
+  | `TyEq of (loc* private_flag* ctyp) | ant] 
 and type_repr =
   [ `Record of (loc* name_ctyp) | `Sum of (loc* or_ctyp) | ant | nil] 
 and name_ctyp =
@@ -112,7 +113,7 @@ and rec_expr =
     any
   | ant] 
 and module_type =
-  [ nil | sid | `MtFun of (loc* auident* module_type* module_type)
+  [ sid | `MtFun of (loc* auident* module_type* module_type)
   | `Sig of (loc* sig_item) | `SigEnd of loc
   | `With of (loc* module_type* with_constr)
   | `ModuleTypeOf of (loc* module_expr) | ant] 
@@ -123,7 +124,8 @@ and sig_item =
   | `External of (loc* alident* ctyp* strings)
   | `Include of (loc* module_type) | `Module of (loc* auident* module_type)
   | `RecModule of (loc* module_binding)
-  | `ModuleType of (loc* auident* module_type) | `Open of (loc* ident)
+  | `ModuleType of (loc* auident* module_type)
+  | `ModuleTypeEnd of (loc* auident) | `Open of (loc* ident)
   | `Type of (loc* typedecl) | `Val of (loc* alident* ctyp) | ant] 
 and with_constr =
   [ `TypeEq of (loc* ctyp* ctyp) | `TypeEqPriv of (loc* ctyp* ctyp)

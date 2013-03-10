@@ -720,11 +720,7 @@ let apply () =
             ("Gram.mk_action\n  (fun (x : 'module_type)  (_loc : FanLoc.t)  -> (x : 'module_type_quot ))\n",
               (Gram.mk_action
                  (fun (x : 'module_type)  (_loc : FanLoc.t)  ->
-                    (x : 'module_type_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'module_type_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'module_type_quot )))))])));
+                    (x : 'module_type_quot )))))])));
   (Gram.extend_single (sig_item_quot : 'sig_item_quot Gram.t )
      (None,
        (None, None,
@@ -838,10 +834,10 @@ let apply () =
          ([`Skeyword "module";
           `Skeyword "type";
           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_uident)  _  _  (_loc : FanLoc.t)  ->\n     (`ModuleType (_loc, i, (`Nil _loc)) : 'sig_item ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_uident)  _  _  (_loc : FanLoc.t)  ->\n     (`ModuleTypeEnd (_loc, i) : 'sig_item ))\n",
              (Gram.mk_action
                 (fun (i : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
-                   (`ModuleType (_loc, i, (`Nil _loc)) : 'sig_item )))));
+                   (`ModuleTypeEnd (_loc, i) : 'sig_item )))));
          ([`Skeyword "open";
           `Snterm (Gram.obj (module_longident : 'module_longident Gram.t ))],
            ("Gram.mk_action\n  (fun (i : 'module_longident)  _  (_loc : FanLoc.t)  ->\n     (`Open (_loc, i) : 'sig_item ))\n",
@@ -6099,12 +6095,11 @@ let apply_ctyp () =
             (Gram.obj
                (type_ident_and_parameters : 'type_ident_and_parameters Gram.t ));
          `Slist0 (`Snterm (Gram.obj (constrain : 'constrain Gram.t )))],
-          ("Gram.mk_action\n  (fun (cl : 'constrain list)  ((n,tpl) : 'type_ident_and_parameters) \n     (_loc : FanLoc.t)  ->\n     (`TyDcl (_loc, n, tpl, (`Nil _loc), cl) : 'type_declaration ))\n",
+          ("Gram.mk_action\n  (fun (cl : 'constrain list)  ((n,tpl) : 'type_ident_and_parameters) \n     (_loc : FanLoc.t)  -> (`TyAbstr (_loc, n, tpl, cl) : 'type_declaration ))\n",
             (Gram.mk_action
                (fun (cl : 'constrain list) 
                   ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t) 
-                  ->
-                  (`TyDcl (_loc, n, tpl, (`Nil _loc), cl) : 'type_declaration )))))]));
+                  -> (`TyAbstr (_loc, n, tpl, cl) : 'type_declaration )))))]));
   Gram.extend_single (type_info : 'type_info Gram.t )
     (None,
       (None, None,

@@ -54,10 +54,10 @@ val mkvariant :
   string Location.loc * Parsetree.core_type list *
   Parsetree.core_type option * loc
 
-val type_decl :
-  (string Asttypes.loc option * (bool * bool)) list ->
-  (Parsetree.core_type * Parsetree.core_type * Location.t) list ->
-  loc -> type_info   -> Parsetree.type_declaration
+(* val type_decl : *)
+(*   (string Asttypes.loc option * (bool * bool)) list -> *)
+(*   (Parsetree.core_type * Parsetree.core_type * Location.t) list -> *)
+(*   loc -> type_info   -> Parsetree.type_declaration *)
 
 val mkvalue_desc :
   Location.t -> ctyp -> strings list -> Parsetree.value_description

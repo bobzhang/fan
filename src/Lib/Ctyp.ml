@@ -331,11 +331,14 @@ let qualified_app_list = fun
   | {| $id:i  |} -> Some (i, [])
   | _ -> None ];
 
-let is_abstract = fun 
-  [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false];
+let is_abstract (x:typedecl)=
+  match x with [`TyAbstr _ -> true | _ -> false];
+  (* [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false]; *)
 
-let abstract_list = fun
-  [ `TyDcl (_, _, lst, {| |}, _) -> Some (List.length lst) | _ -> None];
+let abstract_list (x:typedecl)=
+  match x with 
+  [ `TyAbstr (_, _, lst,  _) -> Some (List.length lst)
+  | _ -> None];
   
 let eq t1 t2 =
   let strip_locs t = (FanObjs.map_loc (fun _ -> FanLoc.ghost))#ctyp t in

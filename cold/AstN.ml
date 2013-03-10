@@ -49,11 +49,12 @@ and tag_names =
   [ ant_nil | `App of (tag_names* tag_names) | `TyVrn of astring] 
 and typedecl =
   [ `TyDcl of (alident* ctyp list* type_info* (ctyp* ctyp) list)
+  | `TyAbstr of (alident* ctyp list* (ctyp* ctyp) list)
   | `And of (typedecl* typedecl) | ant_nil] 
 and type_info =
   [ `TyMan of (ctyp* private_flag* type_repr)
   | `TyRepr of (private_flag* type_repr) | `TyEq of (private_flag* ctyp)
-  | ant | nil] 
+  | ant] 
 and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | ant | nil] 
 and name_ctyp =
   [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp)
@@ -98,8 +99,8 @@ and expr =
 and rec_expr =
   [ `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | any | ant] 
 and module_type =
-  [ nil | sid | `MtFun of (auident* module_type* module_type)
-  | `Sig of sig_item | `SigEnd | `With of (module_type* with_constr)
+  [ sid | `MtFun of (auident* module_type* module_type) | `Sig of sig_item
+  | `SigEnd | `With of (module_type* with_constr)
   | `ModuleTypeOf of module_expr | ant] 
 and sig_item =
   [ `Class of class_type | `ClassType of class_type
@@ -107,8 +108,8 @@ and sig_item =
   | `Directive of (alident* expr) | `Exception of of_ctyp
   | `External of (alident* ctyp* strings) | `Include of module_type
   | `Module of (auident* module_type) | `RecModule of module_binding
-  | `ModuleType of (auident* module_type) | `Open of ident
-  | `Type of typedecl | `Val of (alident* ctyp) | ant] 
+  | `ModuleType of (auident* module_type) | `ModuleTypeEnd of auident
+  | `Open of ident | `Type of typedecl | `Val of (alident* ctyp) | ant] 
 and with_constr =
   [ `TypeEq of (ctyp* ctyp) | `TypeEqPriv of (ctyp* ctyp)
   | `ModuleEq of (ident* ident) | `TypeSubst of (ctyp* ctyp)

@@ -213,6 +213,8 @@ and tag_names =
 and typedecl =
     (* {:str_item| type  ('a, 'b, 'c) t = t |} *)
   [= `TyDcl of (loc * alident * list ctyp * type_info * list (ctyp * ctyp))
+
+  | `TyAbstr of (loc * alident * list ctyp * list (ctyp * ctyp) ) 
   | `And of (loc * typedecl * typedecl)
   | ant_nil ]
       (* original syntax
@@ -230,7 +232,7 @@ and type_info =        (* FIXME be more preicse *)
    (* type u = int *)
   | `TyEq of (loc * private_flag * ctyp)
   | ant
-  | nil]  
+  ]  
 and type_repr =
   [= `Record of (loc * name_ctyp)
   | `Sum of (loc * or_ctyp)

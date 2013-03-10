@@ -327,26 +327,7 @@ let type_kind (x:type_repr) =
   | `Nil _loc -> failwithf "type_kind nil" (*M*)
   ];
     
-let type_decl tl cl loc (x:type_info) =
-  match x with
-  [`TyMan(_,t1,p,t2) ->
-    mktype loc tl cl
-      ~type_kind:(type_kind t2) ~priv:(mkprivate p) ~manifest:(Some (ctyp t1))
-  | `TyRepr (_,p1,repr) ->
-      mktype loc tl cl
-        ~type_kind:(type_kind repr)
-        ~priv:(mkprivate p1) ~manifest:None
-  | `TyEq (_loc,p1,t1) ->
-      mktype loc tl cl ~type_kind:(Ptype_abstract) ~priv:(mkprivate p1)
-        ~manifest:(Some (ctyp t1 ))
-  | `Ant (_loc,_) -> ANT_ERROR
-  | `Nil _ -> (*Q*)
-      mktype loc tl cl ~type_kind:(Ptype_abstract) ~priv:(Private)
-        ~manifest:None ];
     
-(* return a [type_declaration]*)      
-(* let type_decl tl cl t loc : Parsetree.type_declaration = *)
-(*   type_decl tl cl loc false t; *)
 
 let mkvalue_desc loc t (p: list strings) =
   let ps = List.map (fun p ->
@@ -884,6 +865,19 @@ and mklabexp (x:rec_expr)  =
    
  *)    
 and mktype_decl (x:typedecl)  =
+  let type_decl tl cl loc (x:type_info) =
+    match x with
+    [`TyMan(_,t1,p,t2) ->
+      mktype loc tl cl
+        ~type_kind:(type_kind t2) ~priv:(mkprivate p) ~manifest:(Some (ctyp t1))
+    | `TyRepr (_,p1,repr) ->
+        mktype loc tl cl
+          ~type_kind:(type_kind repr)
+          ~priv:(mkprivate p1) ~manifest:None
+    | `TyEq (_loc,p1,t1) ->
+        mktype loc tl cl ~type_kind:(Ptype_abstract) ~priv:(mkprivate p1)
+          ~manifest:(Some (ctyp t1 ))
+    | `Ant (_loc,_) -> ANT_ERROR ] in
     let tys = list_of_and x [] in
     List.map
       (fun 
@@ -895,9 +889,16 @@ and mktype_decl (x:typedecl)  =
           (c+>sloc,
            type_decl
              (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl [])
-             cl cloc td )
-  | (t:typedecl) ->
-      errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)]) tys
+             cl cloc td)
+        | `TyAbstr(cloc,`Lid(sloc,c),tl,cl) ->
+            let cl = List.map
+                (fun (t1,t2) -> let loc = t1 <+> t2 in (ctyp t1,ctyp t2,loc)) cl in
+            (c+>sloc,
+             mktype cloc (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) cl
+               ~type_kind:Ptype_abstract ~priv:Private ~manifest:None)
+              
+        | (t:typedecl) ->
+            errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)]) tys
 and module_type : Ast.module_type -> Parsetree.module_type =
   let  mkwithc (wc:with_constr)  =
     let mkwithtyp pwith_type loc priv id_tpl ct =

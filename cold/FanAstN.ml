@@ -252,6 +252,15 @@ class eq =
                     match (_a0, _b0) with
                     | ((_a0,_a1),(_b0,_b1)) ->
                         (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)) _a3 _b3)
+        | (`TyAbstr (_a0,_a1,_a2),`TyAbstr (_b0,_b1,_b2)) ->
+            ((self#alident _a0 _b0) &&
+               (self#list (fun self  -> self#ctyp) _a1 _b1))
+              &&
+              (self#list
+                 (fun self  _a0  _b0  ->
+                    match (_a0, _b0) with
+                    | ((_a0,_a1),(_b0,_b1)) ->
+                        (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)) _a2 _b2)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#typedecl _a0 _b0) && (self#typedecl _a1 _b1)
         | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
@@ -268,7 +277,6 @@ class eq =
         | (`TyEq (_a0,_a1),`TyEq (_b0,_b1)) ->
             (self#private_flag _a0 _b0) && (self#ctyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result30)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result30)
         | (_,_) -> false
     method type_repr : type_repr -> type_repr -> 'result31=
       fun _a0  _b0  ->
@@ -460,7 +468,6 @@ class eq =
     method module_type : module_type -> module_type -> 'result39=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result39)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result39)
         | (`MtFun (_a0,_a1,_a2),`MtFun (_b0,_b1,_b2)) ->
             ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
@@ -492,6 +499,7 @@ class eq =
         | (`RecModule _a0,`RecModule _b0) -> self#module_binding _a0 _b0
         | (`ModuleType (_a0,_a1),`ModuleType (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#module_type _a1 _b1)
+        | (`ModuleTypeEnd _a0,`ModuleTypeEnd _b0) -> self#auident _a0 _b0
         | (`Open _a0,`Open _b0) -> self#ident _a0 _b0
         | (`Type _a0,`Type _b0) -> self#typedecl _a0 _b0
         | (`Val (_a0,_a1),`Val (_b0,_b1)) ->
@@ -967,6 +975,13 @@ class print =
                  (fun self  fmt  (_a0,_a1)  ->
                     Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#ctyp _a0
                       self#ctyp _a1)) _a3
+        | `TyAbstr (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`TyAbstr@ %a@ %a@ %a)@]" self#alident
+              _a0 (self#list (fun self  -> self#ctyp)) _a1
+              (self#list
+                 (fun self  fmt  (_a0,_a1)  ->
+                    Format.fprintf fmt "@[<1>(%a,@,%a)@]" self#ctyp _a0
+                      self#ctyp _a1)) _a2
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#typedecl _a0
               self#typedecl _a1
@@ -984,7 +999,6 @@ class print =
             Format.fprintf fmt "@[<1>(`TyEq@ %a@ %a)@]" self#private_flag _a0
               self#ctyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result85)
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result85)
     method type_repr : 'fmt -> type_repr -> 'result86=
       fun fmt  ->
         function
@@ -1221,7 +1235,6 @@ class print =
     method module_type : 'fmt -> module_type -> 'result94=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result94)
         | #sid as _a0 -> (self#sid fmt _a0 :>'result94)
         | `MtFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`MtFun@ %a@ %a@ %a)@]" self#auident _a0
@@ -1268,6 +1281,8 @@ class print =
         | `ModuleType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a)@]" self#auident
               _a0 self#module_type _a1
+        | `ModuleTypeEnd _a0 ->
+            Format.fprintf fmt "@[<1>(`ModuleTypeEnd@ %a)@]" self#auident _a0
         | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" self#ident _a0
         | `Type _a0 ->
             Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#typedecl _a0
@@ -1790,6 +1805,20 @@ and meta_typedecl _loc =
                   (_loc,
                     (`Com (_loc, (meta_ctyp _loc _a0), (meta_ctyp _loc _a1)))))
              _loc _a3))
+  | `TyAbstr (_a0,_a1,_a2) ->
+      `App
+        (_loc,
+          (`App
+             (_loc,
+               (`App
+                  (_loc, (`Vrn (_loc, "TyAbstr")), (meta_alident _loc _a0))),
+               (meta_list meta_ctyp _loc _a1))),
+          (meta_list
+             (fun _loc  (_a0,_a1)  ->
+                `Tup
+                  (_loc,
+                    (`Com (_loc, (meta_ctyp _loc _a0), (meta_ctyp _loc _a1)))))
+             _loc _a2))
   | `And (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_typedecl _loc _a0))),
@@ -1815,7 +1844,6 @@ and meta_type_info _loc =
           (`App (_loc, (`Vrn (_loc, "TyEq")), (meta_private_flag _loc _a0))),
           (meta_ctyp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result154)
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result154)
 and meta_type_repr _loc =
   function
   | `Record _a0 ->
@@ -2129,7 +2157,6 @@ and meta_rec_expr _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result146)
 and meta_module_type _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result145)
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result145)
   | `MtFun (_a0,_a1,_a2) ->
       `App
@@ -2189,6 +2216,8 @@ and meta_sig_item _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "ModuleType")), (meta_auident _loc _a0))),
           (meta_module_type _loc _a1))
+  | `ModuleTypeEnd _a0 ->
+      `App (_loc, (`Vrn (_loc, "ModuleTypeEnd")), (meta_auident _loc _a0))
   | `Open _a0 -> `App (_loc, (`Vrn (_loc, "Open")), (meta_ident _loc _a0))
   | `Type _a0 -> `App (_loc, (`Vrn (_loc, "Type")), (meta_typedecl _loc _a0))
   | `Val (_a0,_a1) ->

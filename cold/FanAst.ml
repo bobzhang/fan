@@ -412,6 +412,24 @@ module Make(MetaLoc:META_LOC) =
                         (`Com
                            (_loc, (meta_ctyp _loc _a0), (meta_ctyp _loc _a1)))))
                  _loc _a4))
+      | `TyAbstr (_a0,_a1,_a2,_a3) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App
+                      (_loc,
+                        (`App
+                           (_loc, (`Vrn (_loc, "TyAbstr")),
+                             (meta_loc _loc _a0))), (meta_alident _loc _a1))),
+                   (meta_list meta_ctyp _loc _a2))),
+              (meta_list
+                 (fun _loc  (_a0,_a1)  ->
+                    `Tup
+                      (_loc,
+                        (`Com
+                           (_loc, (meta_ctyp _loc _a0), (meta_ctyp _loc _a1)))))
+                 _loc _a3))
       | `And (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -448,7 +466,6 @@ module Make(MetaLoc:META_LOC) =
                    (`App (_loc, (`Vrn (_loc, "TyEq")), (meta_loc _loc _a0))),
                    (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result44)
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result44)
     and meta_type_repr _loc =
       function
       | `Record (_a0,_a1) ->
@@ -989,7 +1006,6 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result36)
     and meta_module_type _loc =
       function
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result35)
       | #sid as _a0 -> (meta_sid _loc _a0 :>'result35)
       | `MtFun (_a0,_a1,_a2,_a3) ->
           `App
@@ -1099,6 +1115,12 @@ module Make(MetaLoc:META_LOC) =
                       (_loc, (`Vrn (_loc, "ModuleType")),
                         (meta_loc _loc _a0))), (meta_auident _loc _a1))),
               (meta_module_type _loc _a2))
+      | `ModuleTypeEnd (_a0,_a1) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc, (`Vrn (_loc, "ModuleTypeEnd")), (meta_loc _loc _a0))),
+              (meta_auident _loc _a1))
       | `Open (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Open")), (meta_loc _loc _a0))),

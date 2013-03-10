@@ -148,11 +148,10 @@ let qualified_app_list =
   | `Id (_loc,`Lid (_,_))|`Id (_loc,`Uid (_,_)) -> None
   | `Id (_loc,i) -> Some (i, [])
   | _ -> None
-let is_abstract = function | `TyDcl (_,_,_,`Nil _loc,_) -> true | _ -> false
-let abstract_list =
-  function
-  | `TyDcl (_,_,lst,`Nil _loc,_) -> Some (List.length lst)
-  | _ -> None
+let is_abstract (x : typedecl) =
+  match x with | `TyAbstr _ -> true | _ -> false
+let abstract_list (x : typedecl) =
+  match x with | `TyAbstr (_,_,lst,_) -> Some (List.length lst) | _ -> None
 let eq t1 t2 =
   let strip_locs t = (FanObjs.map_loc (fun _  -> FanLoc.ghost))#ctyp t in
   (strip_locs t1) = (strip_locs t2)

@@ -166,7 +166,7 @@ and row_field (x : row_field) acc =
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
   | `Ctyp (_,t) -> (Rinherit (ctyp t)) :: acc
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)
-and meth_list (fl : name_ctyp) (acc : core_field_type list) =
+and meth_list (fl : name_ctyp) acc =
   (match fl with
    | `Nil _ -> acc
    | `Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
@@ -231,20 +231,6 @@ let type_kind (x : type_repr) =
   | `Sum (_loc,t) -> Ptype_variant (List.map mkvariant (list_of_or' t []))
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
   | `Nil _loc -> failwithf "type_kind nil"
-let type_decl tl cl loc (x : type_info) =
-  match x with
-  | `TyMan (_,t1,p,t2) ->
-      mktype loc tl cl ~type_kind:(type_kind t2) ~priv:(mkprivate p)
-        ~manifest:(Some (ctyp t1))
-  | `TyRepr (_,p1,repr) ->
-      mktype loc tl cl ~type_kind:(type_kind repr) ~priv:(mkprivate p1)
-        ~manifest:None
-  | `TyEq (_loc,p1,t1) ->
-      mktype loc tl cl ~type_kind:Ptype_abstract ~priv:(mkprivate p1)
-        ~manifest:(Some (ctyp t1))
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
-  | `Nil _ ->
-      mktype loc tl cl ~type_kind:Ptype_abstract ~priv:Private ~manifest:None
 let mkvalue_desc loc t (p : strings list) =
   let ps =
     List.map
@@ -752,6 +738,18 @@ and mklabexp (x : rec_expr) =
      | `RecBind (_,i,e) -> Some ((ident i), (expr e))
      | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_expr x)) bindings
 and mktype_decl (x : typedecl) =
+  let type_decl tl cl loc (x : type_info) =
+    match x with
+    | `TyMan (_,t1,p,t2) ->
+        mktype loc tl cl ~type_kind:(type_kind t2) ~priv:(mkprivate p)
+          ~manifest:(Some (ctyp t1))
+    | `TyRepr (_,p1,repr) ->
+        mktype loc tl cl ~type_kind:(type_kind repr) ~priv:(mkprivate p1)
+          ~manifest:None
+    | `TyEq (_loc,p1,t1) ->
+        mktype loc tl cl ~type_kind:Ptype_abstract ~priv:(mkprivate p1)
+          ~manifest:(Some (ctyp t1))
+    | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
   let tys = list_of_and x [] in
   List.map
     (function
@@ -765,6 +763,16 @@ and mktype_decl (x : typedecl) =
               (List.fold_right
                  (fun x  acc  -> (optional_type_parameters x) @ acc) tl [])
               cl cloc td))
+     | `TyAbstr (cloc,`Lid (sloc,c),tl,cl) ->
+         let cl =
+           List.map
+             (fun (t1,t2)  ->
+                let loc = t1 <+> t2 in ((ctyp t1), (ctyp t2), loc)) cl in
+         ((c +> sloc),
+           (mktype cloc
+              (List.fold_right
+                 (fun x  acc  -> (optional_type_parameters x) @ acc) tl [])
+              cl ~type_kind:Ptype_abstract ~priv:Private ~manifest:None))
      | (t : typedecl) -> errorf (loc_of t) "mktype_decl %s" (dump_typedecl t))
     tys
 and module_type: Ast.module_type -> Parsetree.module_type =
@@ -842,11 +850,10 @@ and sig_item (s : sig_item) (l : signature) =
        (mksig loc (Psig_module ((with_loc n sloc), (module_type mt)))) :: l
    | `RecModule (loc,mb) ->
        (mksig loc (Psig_recmodule (module_sig_binding mb []))) :: l
+   | `ModuleTypeEnd (loc,`Uid (sloc,n)) ->
+       (mksig loc (Psig_modtype ((with_loc n sloc), Pmodtype_abstract))) :: l
    | `ModuleType (loc,`Uid (sloc,n),mt) ->
-       let si =
-         match mt with
-         | `Nil _ -> Pmodtype_abstract
-         | _ -> Pmodtype_manifest (module_type mt) in
+       let si = Pmodtype_manifest (module_type mt) in
        (mksig loc (Psig_modtype ((with_loc n sloc), si))) :: l
    | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl))) :: l

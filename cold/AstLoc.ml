@@ -37,6 +37,7 @@ let loc_of =
   | `True _loc -> _loc
   | `Sem (_loc,_,_) -> _loc
   | `Send (_loc,_,_) -> _loc
+  | `ModuleTypeEnd (_loc,_) -> _loc
   | `Type (_loc,_) -> _loc
   | `Chr (_loc,_) -> _loc
   | `IfThenElse (_loc,_,_,_) -> _loc
@@ -70,6 +71,7 @@ let loc_of =
   | `With (_loc,_,_) -> _loc
   | `NativeInt (_loc,_) -> _loc
   | `TyVrnOf (_loc,_,_) -> _loc
+  | `TyAbstr (_loc,_,_,_) -> _loc
   | `Private _loc -> _loc
   | `Virtual _loc -> _loc
   | `RowVar _loc -> _loc
