@@ -859,8 +859,7 @@ and label_expr (x : expr) = match x with
   | `OptLablS(loc,`Lid(_,lab)) -> ("?"^lab, expr (`Id(loc,`Lid(loc,lab))))
   | e -> ("", expr e) ]
 and binding (x:binding) acc =  match x with
-  [ `And(_,x,y) ->
-    binding x (binding y acc)
+  [ `And(_,x,y) -> binding x (binding y acc)
   | {:binding@_loc| $(pat: {:patt@sloc| $lid:bind_name |} ) =
     ($e : $(`TyTypePol (_, vs, ty))) |} ->
 
@@ -889,7 +888,6 @@ and binding (x:binding) acc =  match x with
   | {:binding@_loc| $p = ($e : ! $vs . $ty) |} ->
       [(patt {:patt| ($p : ! $vs . $ty ) |}, expr e) :: acc]
   | `Bind (_,p,e) -> [(patt p, expr e) :: acc]
-  | `Nil _  -> acc
   | _ -> assert false ]
 and match_case (x:match_case) = 
   let cases = list_of_or' x [] in

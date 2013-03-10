@@ -2140,11 +2140,7 @@ let apply () =
             ("Gram.mk_action\n  (fun (x : 'binding)  (_loc : FanLoc.t)  -> (x : 'binding_quot ))\n",
               (Gram.mk_action
                  (fun (x : 'binding)  (_loc : FanLoc.t)  ->
-                    (x : 'binding_quot )))));
-         ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'binding_quot ))\n",
-             (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'binding_quot )))))]));
+                    (x : 'binding_quot )))))]));
    Gram.extend_single (binding : 'binding Gram.t )
      (None,
        (None, None,

@@ -308,7 +308,7 @@ include_quot:
     let symbs = List.map (fun x -> FanState.gensym x) ls in
     let res = FanState.gensym "res" in
     let exc = FanState.gensym "e" in
-    let binds = and_of_list
+    let binds = and_of_list1
         (List.map2 (fun x y -> {:binding| $lid:x = ! $lid:y |} ) symbs ls ) in
     let restore =
        seq_sem1 (List.map2 (fun x y -> {:expr| $lid:x := $lid:y |}) ls symbs) in

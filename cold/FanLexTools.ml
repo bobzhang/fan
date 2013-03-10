@@ -298,64 +298,66 @@ let gen_definition _loc l =
          (_loc, (`Id (_loc, (`Lid (_loc, f)))),
            (`Id (_loc, (`Lid (_loc, "lexbuf")))))) in
   let gen_state auto _loc i (part,trans,final) =
-    let f = mk_state_name i in
-    let p = mk_partition_name part in
-    let cases =
-      Array.mapi
-        (fun i  j  ->
-           `Case
-             (_loc, (`Int (_loc, (string_of_int i))), (call_state auto j)))
-        trans in
-    let cases = or_of_list (Array.to_list cases) in
-    let body =
-      `Match
-        (_loc,
-          (`App
-             (_loc, (`Id (_loc, (`Lid (_loc, p)))),
-               (`App
-                  (_loc,
-                    (`Id
-                       (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "next")))))),
-                    (`Id (_loc, (`Lid (_loc, "lexbuf")))))))),
-          (`Or
-             (_loc, cases,
-               (`Case
-                  (_loc, (`Any _loc),
-                    (`App
-                       (_loc,
-                         (`Id
-                            (_loc,
-                              (`Dot
-                                 (_loc, (gm ()), (`Lid (_loc, "backtrack")))))),
-                         (`Id (_loc, (`Lid (_loc, "lexbuf"))))))))))) in
-    let ret body =
-      `Bind
-        (_loc, (`Id (_loc, (`Lid (_loc, f)))),
-          (`Fun
-             (_loc,
-               (`Case (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), body))))) in
-    match best_final final with
-    | None  -> ret body
-    | Some i ->
-        if (Array.length trans) = 0
-        then `Nil _loc
-        else
-          ret
-            (`Seq
-               (_loc,
-                 (`Sem
-                    (_loc,
-                      (`App
-                         (_loc,
-                           (`App
-                              (_loc,
-                                (`Id
-                                   (_loc,
-                                     (`Dot
-                                        (_loc, (gm ()),
-                                          (`Lid (_loc, "mark")))))),
-                                (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
-                           (`Int (_loc, (string_of_int i))))), body)))) in
+    (let f = mk_state_name i in
+     let p = mk_partition_name part in
+     let cases =
+       Array.mapi
+         (fun i  j  ->
+            `Case
+              (_loc, (`Int (_loc, (string_of_int i))), (call_state auto j)))
+         trans in
+     let cases = or_of_list (Array.to_list cases) in
+     let body =
+       `Match
+         (_loc,
+           (`App
+              (_loc, (`Id (_loc, (`Lid (_loc, p)))),
+                (`App
+                   (_loc,
+                     (`Id
+                        (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "next")))))),
+                     (`Id (_loc, (`Lid (_loc, "lexbuf")))))))),
+           (`Or
+              (_loc, cases,
+                (`Case
+                   (_loc, (`Any _loc),
+                     (`App
+                        (_loc,
+                          (`Id
+                             (_loc,
+                               (`Dot
+                                  (_loc, (gm ()), (`Lid (_loc, "backtrack")))))),
+                          (`Id (_loc, (`Lid (_loc, "lexbuf"))))))))))) in
+     let ret (body : expr) =
+       `Bind
+         (_loc, (`Id (_loc, (`Lid (_loc, f)))),
+           (`Fun
+              (_loc,
+                (`Case (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), body))))) in
+     match best_final final with
+     | None  -> Some (ret body)
+     | Some i ->
+         if (Array.length trans) = 0
+         then None
+         else
+           Some
+             (ret
+                (`Seq
+                   (_loc,
+                     (`Sem
+                        (_loc,
+                          (`App
+                             (_loc,
+                               (`App
+                                  (_loc,
+                                    (`Id
+                                       (_loc,
+                                         (`Dot
+                                            (_loc, (gm ()),
+                                              (`Lid (_loc, "mark")))))),
+                                    (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
+                               (`Int (_loc, (string_of_int i))))), body))))) : 
+    binding option ) in
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
@@ -366,7 +368,7 @@ let gen_definition _loc l =
       brs in
   let table_counter = ref 0 in
   let tables = Hashtbl.create 31 in
-  let states = Array.mapi (gen_state auto _loc) auto in
+  let states = Array.filter_mapi (gen_state auto _loc) auto in
   let partitions =
     List.sort (fun (i0,_)  (i1,_)  -> compare i0 i1)
       (partitions ~part_tbl ()) in
@@ -376,63 +378,43 @@ let gen_definition _loc l =
     List.map (fun (i,arr)  -> binding_table ((mk_table_name i), arr))
       (List.sort (fun (i0,_)  (i1,_)  -> compare i0 i1)
          (get_tables ~tables ())) in
-  let b =
+  let (b,states) =
     let len = Array.length states in
-    if len > 1 then `Recursive _loc else `ReNil _loc in
-  let tables = and_of_list tables in
-  let parts = and_of_list parts in
-  let states = and_of_list (Array.to_list states) in
-  let cases = or_of_list (Array.to_list cases) in
-  `Fun
-    (_loc,
-      (`Case
-         (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))),
-           (`LetIn
-              (_loc, (`ReNil _loc), tables,
-                (`LetIn
-                   (_loc, (`ReNil _loc), parts,
-                     (`LetIn
-                        (_loc, b, states,
-                          (`Seq
-                             (_loc,
-                               (`Sem
-                                  (_loc,
-                                    (`App
-                                       (_loc,
-                                         (`Id
-                                            (_loc,
-                                              (`Dot
-                                                 (_loc, (gm ()),
-                                                   (`Lid (_loc, "start")))))),
-                                         (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
-                                    (`Match
-                                       (_loc,
-                                         (`App
-                                            (_loc,
-                                              (`Id
-                                                 (_loc,
-                                                   (`Lid
-                                                      (_loc,
-                                                        (mk_state_name 0))))),
-                                              (`Id
-                                                 (_loc,
-                                                   (`Lid (_loc, "lexbuf")))))),
-                                         (`Or
-                                            (_loc, cases,
-                                              (`Case
-                                                 (_loc, (`Any _loc),
-                                                   (`App
-                                                      (_loc,
-                                                        (`Id
-                                                           (_loc,
-                                                             (`Lid
-                                                                (_loc,
-                                                                  "raise")))),
-                                                        (`Id
-                                                           (_loc,
-                                                             (`Dot
-                                                                (_loc,
-                                                                  (gm ()),
-                                                                  (`Uid
-                                                                    (_loc,
-                                                                    "Error")))))))))))))))))))))))))))
+    match len with
+    | 1 -> ((`ReNil _loc), (states.(0)))
+    | 0 -> failwithf "FanLexTools.states length = 0 "
+    | _ -> ((`Recursive _loc), (and_of_list1 (Array.to_list states))) in
+  let cases =
+    or_of_list1
+      ((Array.to_list cases) @
+         [`Case
+            (_loc, (`Any _loc),
+              (`App
+                 (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
+                   (`Id
+                      (_loc, (`Dot (_loc, (gm ()), (`Uid (_loc, "Error")))))))))]) in
+  let rest =
+    binds tables
+      (binds parts
+         (`LetIn
+            (_loc, b, states,
+              (`Seq
+                 (_loc,
+                   (`Sem
+                      (_loc,
+                        (`App
+                           (_loc,
+                             (`Id
+                                (_loc,
+                                  (`Dot
+                                     (_loc, (gm ()), (`Lid (_loc, "start")))))),
+                             (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
+                        (`Match
+                           (_loc,
+                             (`App
+                                (_loc,
+                                  (`Id
+                                     (_loc, (`Lid (_loc, (mk_state_name 0))))),
+                                  (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
+                             cases))))))))) in
+  `Fun (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), rest)))

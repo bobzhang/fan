@@ -516,7 +516,6 @@ class eq =
     method binding : binding -> binding -> 'result42=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result42)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#binding _a0 _b0) && (self#binding _a1 _b1)
         | (`Bind (_a0,_a1),`Bind (_b0,_b1)) ->
@@ -1298,7 +1297,6 @@ class print =
     method binding : 'fmt -> binding -> 'result97=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result97)
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#binding _a0
               self#binding _a1
@@ -2226,7 +2224,6 @@ and meta_with_constr _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result143)
 and meta_binding _loc =
   function
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result142)
   | `And (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_binding _loc _a0))),

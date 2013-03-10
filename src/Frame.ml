@@ -342,17 +342,19 @@ let str_item_of_module_types ?module_name ?cons_transform
   (* return new types as generated  new context *)
   let fs (ty:types) : str_item= match ty with
     [ `Mutual named_types ->
-      let binding = match named_types with
-        [ [] -> {:binding| |}
-        | xs -> begin 
-            List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
-            List.reduce_right_with
+      (* let binding = *)
+      match named_types with
+      [ [] -> {:str_item| let _ = ()|} (* FIXME *)
+      | xs -> begin 
+          List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
+          let binding = List.reduce_right_with
               ~compose:(fun x y -> {:binding| $x and $y |} )
               ~f:(fun (_name,ty) ->begin
                 mk_binding  ty;
-              end ) xs
-        end ] in 
-      {:str_item| let rec $binding |} 
+              end ) xs;
+         {:str_item| let rec $binding |} 
+      end ]
+
     | `Single (name,tydcl) -> begin 
         Hashset.add cxt name;
         let rec_flag =

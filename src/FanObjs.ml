@@ -93,12 +93,12 @@ class clean_ast = object
     [ {| $({@_l||} ) | $mc |} |
       {| $mc | $({@_l||} ) |} -> mc
     | mc -> mc ];
-  method! binding bi =
-    with binding
-    match super#binding bi with
-    [ {| $({@_l||} ) and $bi |} |
-      {| $bi and $({@_l||} ) |} -> bi
-    | bi -> bi ];
+  (* method! binding bi = *)
+  (*   with binding *)
+  (*   match super#binding bi with *)
+  (*   [ {| $({@_l||} ) and $bi |} | *)
+  (*     {| $bi and $({@_l||} ) |} -> bi *)
+  (*   | bi -> bi ]; *)
   (* method! rec_expr rb = *)
   (*   with rec_expr *)
   (*   match super#rec_expr rb with *)

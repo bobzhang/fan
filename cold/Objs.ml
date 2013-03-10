@@ -869,8 +869,6 @@ class map2 =
     method binding : binding -> binding -> binding=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>binding)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#binding _a1 _b1 in
@@ -1902,7 +1900,6 @@ class fold2 =
     method binding : binding -> binding -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#binding _a1 _b1 in self#binding _a2 _b2
@@ -2573,7 +2570,6 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result151)
     method binding : binding -> 'result152=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result152)
       | `And (_a0,_a1,_a2) ->
           (self#loc _a0; self#binding _a1; self#binding _a2)
       | `Bind (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#expr _a2)
@@ -3482,7 +3478,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>with_constr)
     method binding : binding -> binding=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>binding)
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#binding _a1 in
@@ -4304,7 +4299,6 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method binding : binding -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#binding _a1 in self#binding _a2
@@ -5203,7 +5197,6 @@ class print =
     method binding : 'fmt -> binding -> 'result317=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result317)
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#binding _a1 self#binding _a2
@@ -6127,7 +6120,6 @@ class eq =
     method binding : binding -> binding -> 'result372=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result372)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#binding _a2 _b2)
@@ -6901,7 +6893,6 @@ and strip_loc_with_constr =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result417)
 and strip_loc_binding =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result416)
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_binding _a1 in
       let _a2 = strip_loc_binding _a2 in `And (_a1, _a2)
@@ -7754,7 +7745,6 @@ and pp_print_with_constr fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result470)
 and pp_print_binding fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result469)
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_binding _a1 pp_print_binding _a2

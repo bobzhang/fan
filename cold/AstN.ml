@@ -114,8 +114,7 @@ and with_constr =
   | `ModuleEq of (ident* ident) | `TypeSubst of (ctyp* ctyp)
   | `ModuleSubst of (ident* ident) | `And of (with_constr* with_constr)
   | ant] 
-and binding =
-  [ nil | `And of (binding* binding) | `Bind of (patt* expr) | ant] 
+and binding = [ `And of (binding* binding) | `Bind of (patt* expr) | ant] 
 and module_binding =
   [ `And of (module_binding* module_binding)
   | `ModuleBind of (auident* module_type* module_expr)

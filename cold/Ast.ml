@@ -130,7 +130,7 @@ and with_constr =
   | `ModuleSubst of (loc* ident* ident)
   | `And of (loc* with_constr* with_constr) | ant] 
 and binding =
-  [ nil | `And of (loc* binding* binding) | `Bind of (loc* patt* expr) | ant] 
+  [ `And of (loc* binding* binding) | `Bind of (loc* patt* expr) | ant] 
 and module_binding =
   [ `And of (loc* module_binding* module_binding)
   | `ModuleBind of (loc* auident* module_type* module_expr)

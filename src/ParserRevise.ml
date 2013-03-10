@@ -163,7 +163,7 @@ let apply () = begin
   with with_constr
       {:extend|
         with_constr_quot:
-        [ with_constr{x} -> x  (* | -> `Nil _loc *) ]
+        [ with_constr{x} -> x   ]
         with_constr: 
         [ S{wc1}; "and"; S{wc2} -> {| $wc1 and $wc2 |}
         | `Ant ((""|"with_constr"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"with_constr" n s) |}
@@ -506,7 +506,7 @@ let apply () = begin
   with binding
       {:extend|
         binding_quot:
-        [ binding{x} -> x | -> `Nil _loc ] 
+        [ binding{x} -> x (* | -> `Nil _loc *) ] 
         binding:
         [ `Ant (("binding"|"list" as n),s) ->
           {| $(anti:mk_anti ~c:"binding" n s) |}

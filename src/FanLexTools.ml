@@ -344,7 +344,7 @@ let gen_definition _loc l =
       {| $lid:f lexbuf |} in
 
   (* generate states transition *)
-  let gen_state auto _loc i (part,trans,final) =
+  let gen_state auto _loc i (part,trans,final) : option binding  =
     let f = mk_state_name i in 
     let p = mk_partition_name part in
     let cases =
@@ -358,14 +358,15 @@ let gen_definition _loc l =
       match ($lid:p ($(id:gm()).next lexbuf)) with
       [ $cases | _ -> $(id:gm()).backtrack lexbuf ]
       |} in
-    let ret body =
+    let ret (body:expr) =
       {:binding| $lid:f = fun lexbuf -> $body |} in
     match best_final final with
-    [ None -> ret body
+    [ None -> Some (ret body)
     | Some i -> 
-	if Array.length trans = 0 then {:binding||} else
-	ret
-	  {:expr| begin  $(id:gm()).mark lexbuf $`int:i;  $body end |} ] in
+	if Array.length trans = 0 then (* {:binding||} *) None else
+	Some
+          (ret
+	     {:expr| begin  $(id:gm()).mark lexbuf $`int:i;  $body end |}) ] in
 
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
@@ -375,7 +376,7 @@ let gen_definition _loc l =
   let cases = Array.mapi (fun i (_,e) -> {:match_case| $`int:i -> $e |}) brs in
   let table_counter = ref 0 in 
   let tables = Hashtbl.create 31 in
-  let states = Array.mapi (gen_state  auto _loc) auto in
+  let states = Array.filter_mapi (gen_state  auto _loc) auto in
   let partitions =
     List.sort
       (fun (i0,_) (i1,_) -> compare i0 i1)
@@ -388,26 +389,24 @@ let gen_definition _loc l =
       (fun (i,arr) ->
         binding_table (mk_table_name i,arr))
       (List.sort (fun (i0,_) (i1,_) -> compare i0 i1) (get_tables ~tables ())) in
-  let b =
+  let (b,states) =
     let len = Array.length states in
-    if  len > 1 then begin 
-      (* prerr_endlinef "length %d" len; *) (* FIXME *)
-      `Recursive _loc
-    end else
-    `ReNil _loc  in (* FIXME *)
-  let tables = and_of_list tables in
-  let parts = and_of_list parts in
-  let states = and_of_list (Array.to_list states) in
-  let cases =  or_of_list (Array.to_list cases) in 
-  {:expr|
-  fun lexbuf ->
-    let $tables in
-    let $parts in 
-    let $rec:b $states in
-    begin
-      $(id:gm()).start lexbuf;
-      match $(lid:mk_state_name 0) lexbuf with
-        [ $cases | _ -> raise $(id:gm()).Error ]
-    end
-  |};
+    match len with
+    [ 1 ->
+      (`ReNil _loc,states.(0))
+    | 0 -> failwithf "FanLexTools.states length = 0 "
+    | _ -> (`Recursive _loc, and_of_list1 (Array.to_list states)) ] in
+  let cases =
+    or_of_list1
+      (Array.to_list cases @ [{:match_case| _ -> raise $(id:gm()).Error|}]) in
+  let rest =
+    binds tables
+      (binds parts
+       {:expr|
+       let $rec:b $states in
+       ( $(id:gm()).start lexbuf;
+         match $(lid:mk_state_name 0) lexbuf with
+         [ $cases ] )|}) in
+  {:expr| fun lexbuf -> $rest |};
+
 

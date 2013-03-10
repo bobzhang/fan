@@ -78,6 +78,10 @@ let rec appl_of_list1 x =
   | [x;y::xs] -> appl_of_list1 [(app x y)::xs] ]  ;
     
   
+let rec or_of_list1 = fun
+  [ [] -> failwithf "or_of_list1 empty list"
+  | [t] -> t
+  | [t::ts] -> ora t (or_of_list1 ts)];
   
 let rec and_of_list1 = fun
   [ [] -> failwithf "and_of_list1 empty list"
@@ -197,3 +201,12 @@ let rec view_app acc = fun
     
 let seq_sem ls = seq (sem_of_list ls);
 let seq_sem1 ls = seq (sem_of_list1 ls);  
+
+
+let binds bs (e:expr) =
+  match bs with
+  [[] -> e
+  |_ ->
+      let binds = and_of_list1 bs  in
+      let _loc = binds <+> e in
+      {:expr|let $binds in $e |} ];  

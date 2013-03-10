@@ -560,6 +560,7 @@ module Array =
              done in
            result)
     let filter_map f a = filter_opt (map f a)
+    let filter_mapi f a = filter_opt (mapi f a)
     let for_all2 p xs ys =
       let n = length xs in
       let _ =

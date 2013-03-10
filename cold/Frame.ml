@@ -262,15 +262,15 @@ let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names
   let fs (ty : types) =
     (match ty with
      | `Mutual named_types ->
-         let binding =
-           match named_types with
-           | [] -> `Nil _loc
-           | xs ->
-               (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
-                List.reduce_right_with
-                  ~compose:(fun x  y  -> `And (_loc, x, y))
-                  ~f:(fun (_name,ty)  -> mk_binding ty) xs) in
-         `Value (_loc, (`Recursive _loc), binding)
+         (match named_types with
+          | [] -> `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()")))))
+          | xs ->
+              (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
+               (let binding =
+                  List.reduce_right_with
+                    ~compose:(fun x  y  -> `And (_loc, x, y))
+                    ~f:(fun (_name,ty)  -> mk_binding ty) xs in
+                `Value (_loc, (`Recursive _loc), binding))))
      | `Single (name,tydcl) ->
          (Hashset.add cxt name;
           (let rec_flag =

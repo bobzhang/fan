@@ -731,7 +731,6 @@ and binding (x : binding) acc =
       ((patt (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))))), (expr e)) ::
       acc
   | `Bind (_,p,e) -> ((patt p), (expr e)) :: acc
-  | `Nil _ -> acc
   | _ -> assert false
 and match_case (x : match_case) =
   let cases = list_of_or' x [] in
