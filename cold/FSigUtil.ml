@@ -9,6 +9,6 @@ let str_item_from_module_types ~f:(aux : named_type -> typedecl)
        let xs: str_item list =
          List.map
            (function
-            | `Mutual tys -> `Type (_loc, (and_of_list (List.map aux tys)))
+            | `Mutual tys -> `Type (_loc, (and_of_list1 (List.map aux tys)))
             | `Single ty -> `Type (_loc, (aux ty))) x in
        sem_of_list1 xs : str_item )

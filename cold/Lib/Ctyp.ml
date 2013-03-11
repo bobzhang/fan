@@ -18,14 +18,14 @@ let name_length_of_tydcl (x : typedecl) =
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) -> (name, (List.length tyvars))
   | tydcl ->
       failwithf "name_length_of_tydcl {|%s|}\n" (FanObjs.dump_typedecl tydcl)
-let gen_quantifiers ~arity  n =
+let gen_quantifiers1 ~arity  n :ctyp=
   ((List.init arity
       (fun i  ->
          List.init n
            (fun j  ->
               `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:i j)))))))
      |> List.concat)
-    |> appl_of_list
+    |> appl_of_list1
 let of_id_len ~off  (id,len) =
   appl_of_list1 ((`Id (_loc, id)) ::
     (List.init len
@@ -40,7 +40,7 @@ let ty_name_of_tydcl (x : typedecl) =
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record (ty : name_ctyp) =
-  (let (tys :name_ctyp list)= list_of_sem' ty [] in
+  (let (tys :name_ctyp list)= list_of_sem ty [] in
    tys |>
      (List.map
         (function
@@ -93,9 +93,9 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
           | Str_item  -> prefix <+ (app_src result_type)) in
    let base = prefix <+ (app_src dst) in
    if len = 0
-   then ((`TyPol (_loc, (`Nil _loc), base)), dst)
+   then (`TyPolEnd(_loc,base),dst)
    else
-     (let quantifiers = gen_quantifiers ~arity:quant len in
+     (let quantifiers = gen_quantifiers1 ~arity:quant len in
       ((`TyPol (_loc, quantifiers, (params +> base))), dst)) : (ctyp* ctyp) )
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
@@ -138,7 +138,7 @@ let is_recursive ty_dcl =
 let qualified_app_list =
   function
   | `App (_loc,_,_) as x ->
-      (match list_of_app' x [] with
+      (match list_of_app x [] with
        | (`Id (_loc,`Lid (_,_)))::_ -> None
        | (`Id (_loc,i))::ys -> Some (i, ys)
        | _ -> None)
@@ -203,30 +203,30 @@ let transform_module_types (lst : FSig.module_types) =
   let new_types = obj#type_transformers in (new_types, item1)
 let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose 
   (f : string -> ctyp list -> 'e) =
-  let branches = list_of_or' ty [] in
+  let branches = list_of_or ty [] in
   List.fold_left
     (fun acc  x  ->
        match (x : or_ctyp ) with
        | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
-           compose (f cons (list_of_star' tys [])) acc
+           compose (f cons (list_of_star tys [])) acc
        | `Id (_loc,`Uid (_,cons)) -> compose (f cons []) acc
        | t ->
            FanLoc.errorf (loc_of t) "reduce_data_ctors: %s"
              (FanObjs.dump_or_ctyp t)) init branches
 let view_sum (t : or_ctyp) =
-  let bs = list_of_or' t [] in
+  let bs = list_of_or t [] in
   List.map
     (function
      | `Id (_,`Uid (_,cons)) -> `branch (cons, [])
      | `Of (_loc,`Id (_,`Uid (_,cons)),t) ->
-         `branch (cons, (list_of_star' t []))
+         `branch (cons, (list_of_star t []))
      | _ -> assert false) bs
 let view_variant (t : row_field) =
-  (let lst = list_of_or' t [] in
+  (let lst = list_of_or t [] in
    List.map
      (function
       | `TyVrnOf (_loc,`C (_,cons),`Tup (_,t)) ->
-          `variant (cons, (list_of_star' t []))
+          `variant (cons, (list_of_star t []))
       | `TyVrnOf (_loc,`C (_,cons),t) -> `variant (cons, [t])
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
       | `Ctyp (_,`Id (_loc,i)) -> `abbrev i

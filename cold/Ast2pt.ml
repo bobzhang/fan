@@ -119,6 +119,13 @@ let rec ctyp (x : ctyp) =
       let t1 = `App (loc1, (predef_option loc1), t1) in
       mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
   | `Arrow (loc,t1,t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
+  | `TyObjEnd (_loc,row) ->
+      let xs =
+        match row with
+        | `RvNil _ -> []
+        | `RowVar _ -> [mkfield _loc Pfield_var]
+        | `Ant _ -> error _loc "antiquotation not expected here" in
+      mktyp _loc (Ptyp_object xs)
   | `TyObj (_loc,fl,row) ->
       let xs =
         match row with
@@ -129,6 +136,7 @@ let rec ctyp (x : ctyp) =
   | `ClassPath (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
   | `Package (_loc,pt) ->
       let (i,cs) = package_type pt in mktyp _loc (Ptyp_package (i, cs))
+  | `TyPolEnd (loc,t2) -> mktyp loc (Ptyp_poly ([], (ctyp t2)))
   | `TyPol (loc,t1,t2) ->
       let rec to_var_list =
         function
@@ -141,7 +149,7 @@ let rec ctyp (x : ctyp) =
   | `Quote (_loc,`Normal _,`Lid (_,s)) -> mktyp _loc (Ptyp_var s)
   | `Tup (loc,`Sta (_,t1,t2)) ->
       mktyp loc
-        (Ptyp_tuple (List.map ctyp (list_of_star' t1 (list_of_star' t2 []))))
+        (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
   | `PolyEq (_loc,t) ->
       mktyp _loc (Ptyp_variant ((row_field t []), true, None))
   | `PolySup (_loc,t) ->
@@ -159,7 +167,6 @@ let rec ctyp (x : ctyp) =
   | x -> errorf (loc_of x) "ctyp: %s" (dump_ctyp x)
 and row_field (x : row_field) acc =
   match x with
-  | `Nil _loc -> []
   | `TyVrn (_loc,`C (_,i)) -> (Rtag (i, true, [])) :: acc
   | `TyVrnOf (_loc,`C (_,i),t) -> (Rtag (i, false, [ctyp t])) :: acc
   | `Or (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
@@ -168,7 +175,6 @@ and row_field (x : row_field) acc =
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)
 and meth_list (fl : name_ctyp) acc =
   (match fl with
-   | `Nil _ -> acc
    | `Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
    | `TyCol (_loc,`Id (_,`Lid (_,lab)),t) ->
        (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
@@ -218,19 +224,18 @@ let mkvariant (x : or_ctyp) =
   match x with
   | `Id (_loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, _loc)
   | `Of (_loc,`Id (_,`Uid (sloc,s)),t) ->
-      ((with_loc s sloc), (List.map ctyp (list_of_star' t [])), None, _loc)
+      ((with_loc s sloc), (List.map ctyp (list_of_star t [])), None, _loc)
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),`Arrow (_,t,u)) ->
-      ((with_loc s sloc), (List.map ctyp (list_of_star' t [])),
+      ((with_loc s sloc), (List.map ctyp (list_of_star t [])),
         (Some (ctyp u)), _loc)
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
   | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t)
 let type_kind (x : type_repr) =
   match x with
-  | `Record (_loc,t) -> Ptype_record (List.map mktrecord (list_of_sem' t []))
-  | `Sum (_loc,t) -> Ptype_variant (List.map mkvariant (list_of_or' t []))
+  | `Record (_loc,t) -> Ptype_record (List.map mktrecord (list_of_sem t []))
+  | `Sum (_loc,t) -> Ptype_variant (List.map mkvariant (list_of_or t []))
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
-  | `Nil _loc -> failwithf "type_kind nil"
 let mkvalue_desc loc t (p : strings list) =
   let ps =
     List.map
@@ -268,7 +273,7 @@ let quote_map (x : ctyp) =
       (None, tuple)
   | t -> errorf (loc_of x) "quote_map %s" (dump_ctyp t)
 let optional_type_parameters (t : ctyp) =
-  List.map quote_map (list_of_app' t [])
+  List.map quote_map (list_of_app t [])
 let class_parameters (t : type_parameters) =
   List.filter_map
     (function
@@ -496,8 +501,10 @@ let rec expr (x : expr) =
       mkexp loc e
   | `Chr (loc,s) ->
       mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
+  | `Subtype (loc,e,t2) ->
+      mkexp loc (Pexp_constraint ((expr e), None, (Some (ctyp t2))))
   | `Coercion (loc,e,t1,t2) ->
-      let t1 = match t1 with | `Nil _ -> None | t -> Some (ctyp t) in
+      let t1 = Some (ctyp t1) in
       mkexp loc (Pexp_constraint ((expr e), t1, (Some (ctyp t2))))
   | `Flo (loc,s) ->
       mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
@@ -836,7 +843,7 @@ and sig_item (s : sig_item) (l : signature) =
    | `Exception (_loc,`Of (_,`Id (_,`Uid (sloc,s)),t)) ->
        (mksig _loc
           (Psig_exception
-             ((with_loc s sloc), (List.map ctyp (list_of_star' t [])))))
+             ((with_loc s sloc), (List.map ctyp (list_of_star t [])))))
        :: l
    | `Exception (_,_) -> assert false
    | `External (loc,`Lid (sloc,n),t,sl) ->
@@ -912,7 +919,7 @@ and str_item (s : str_item) (l : structure) =
    | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
        (mkstr loc
           (Pstr_exception
-             ((with_loc s loc), (List.map ctyp (list_of_star' t [])))))
+             ((with_loc s loc), (List.map ctyp (list_of_star t [])))))
        :: l
    | `Exception (_,_) -> assert false
    | `StExp (loc,e) -> (mkstr loc (Pstr_eval (expr e))) :: l
@@ -1101,8 +1108,14 @@ and class_str_item (c : class_str_item) l =
          (Pcf_inher ((override_flag loc ov), (class_expr ce), (Some x))))
       :: l
   | `Initializer (loc,e) -> (mkcf loc (Pcf_init (expr e))) :: l
+  | `CrMthS (loc,`Lid (sloc,s),ov,pf,e) ->
+      let e = mkexp loc (Pexp_poly ((expr e), None)) in
+      (mkcf loc
+         (Pcf_meth
+            ((with_loc s sloc), (mkprivate pf), (override_flag loc ov), e)))
+        :: l
   | `CrMth (loc,`Lid (sloc,s),ov,pf,e,t) ->
-      let t = match t with | `Nil _ -> None | t -> Some (mkpolytype (ctyp t)) in
+      let t = Some (mkpolytype (ctyp t)) in
       let e = mkexp loc (Pexp_poly ((expr e), t)) in
       (mkcf loc
          (Pcf_meth

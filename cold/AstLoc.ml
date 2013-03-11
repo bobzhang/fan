@@ -56,6 +56,7 @@ let loc_of =
   | `External (_loc,_,_,_) -> _loc
   | `CgVal (_loc,_,_,_,_) -> _loc
   | `Class (_loc,_) -> _loc
+  | `CrMthS (_loc,_,_,_,_) -> _loc
   | `LetIn (_loc,_,_,_) -> _loc
   | `Seq (_loc,_) -> _loc
   | `Quote (_loc,_,_) -> _loc
@@ -68,6 +69,7 @@ let loc_of =
   | `ObjEnd _loc -> _loc
   | `Bind (_loc,_,_) -> _loc
   | `CtEq (_loc,_,_) -> _loc
+  | `Subtype (_loc,_,_) -> _loc
   | `Functor (_loc,_,_,_) -> _loc
   | `With (_loc,_,_) -> _loc
   | `NativeInt (_loc,_) -> _loc
@@ -93,6 +95,7 @@ let loc_of =
   | `ArrayEmpty _loc -> _loc
   | `Int64 (_loc,_) -> _loc
   | `ModuleTypeOf (_loc,_) -> _loc
+  | `TyPolEnd (_loc,_) -> _loc
   | `To _loc -> _loc
   | `TyCol (_loc,_,_) -> _loc
   | `ObjPat (_loc,_,_) -> _loc
@@ -172,6 +175,7 @@ let loc_of =
   | `CeLet (_loc,_,_,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ViNil _loc -> _loc
+  | `TyObjEnd (_loc,_) -> _loc
   | `Sum (_loc,_) -> _loc
 let ghost = FanLoc.ghost
 let (<+>) a b = (loc_of a) <+> (loc_of b)

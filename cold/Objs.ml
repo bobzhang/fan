@@ -247,7 +247,6 @@ class map2 =
     method ctyp : ctyp -> ctyp -> ctyp=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 : nil  :>ctyp)
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -277,10 +276,16 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#name_ctyp _a1 _b1 in
             let _a2 = self#row_var_flag _a2 _b2 in `TyObj (_a0, _a1, _a2)
+        | (`TyObjEnd (_a0,_a1),`TyObjEnd (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#row_var_flag _a1 _b1 in `TyObjEnd (_a0, _a1)
         | (`TyPol (_a0,_a1,_a2),`TyPol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `TyPol (_a0, _a1, _a2)
+        | (`TyPolEnd (_a0,_a1),`TyPolEnd (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#ctyp _a1 _b1 in `TyPolEnd (_a0, _a1)
         | (`TyTypePol (_a0,_a1,_a2),`TyTypePol (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -334,8 +339,8 @@ class map2 =
     method row_field : row_field -> row_field -> row_field=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 : ant_nil  :>row_field)
+        | ((#ant as _a0),(#ant as _b0)) ->
+            (self#ant _a0 _b0 : ant  :>row_field)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#row_field _a1 _b1 in
@@ -354,8 +359,8 @@ class map2 =
     method tag_names : tag_names -> tag_names -> tag_names=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 : ant_nil  :>tag_names)
+        | ((#ant as _a0),(#ant as _b0)) ->
+            (self#ant _a0 _b0 : ant  :>tag_names)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#tag_names _a1 _b1 in
@@ -396,8 +401,8 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#typedecl _a1 _b1 in
             let _a2 = self#typedecl _a2 _b2 in `And (_a0, _a1, _a2)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 : ant_nil  :>typedecl)
+        | ((#ant as _a0),(#ant as _b0)) ->
+            (self#ant _a0 _b0 : ant  :>typedecl)
         | (_,_) -> invalid_arg "map2 failure"
     method type_info : type_info -> type_info -> type_info=
       fun _a0  _b0  ->
@@ -429,8 +434,6 @@ class map2 =
             let _a1 = self#or_ctyp _a1 _b1 in `Sum (_a0, _a1)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>type_repr)
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>type_repr)
         | (_,_) -> invalid_arg "map2 failure"
     method name_ctyp : name_ctyp -> name_ctyp -> name_ctyp=
       fun _a0  _b0  ->
@@ -449,8 +452,6 @@ class map2 =
             let _a2 = self#ctyp _a2 _b2 in `TyColMut (_a0, _a1, _a2)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>name_ctyp)
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>name_ctyp)
         | (_,_) -> invalid_arg "map2 failure"
     method or_ctyp : or_ctyp -> or_ctyp -> or_ctyp=
       fun _a0  _b0  ->
@@ -469,8 +470,8 @@ class map2 =
             let _a2 = self#ctyp _a2 _b2 in `Of (_a0, _a1, _a2)
         | ((#sid as _a0),(#sid as _b0)) ->
             (self#sid _a0 _b0 : sid  :>or_ctyp)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 : ant_nil  :>or_ctyp)
+        | ((#ant as _a0),(#ant as _b0)) ->
+            (self#ant _a0 _b0 : ant  :>or_ctyp)
         | (_,_) -> invalid_arg "map2 failure"
     method of_ctyp : of_ctyp -> of_ctyp -> of_ctyp=
       fun _a0  _b0  ->
@@ -483,8 +484,6 @@ class map2 =
             (self#sid _a0 _b0 : sid  :>of_ctyp)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>of_ctyp)
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>of_ctyp)
         | (_,_) -> invalid_arg "map2 failure"
     method patt : patt -> patt -> patt=
       fun _a0  _b0  ->
@@ -735,6 +734,10 @@ class map2 =
             let _a1 = self#expr _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in
             let _a3 = self#ctyp _a3 _b3 in `Coercion (_a0, _a1, _a2, _a3)
+        | (`Subtype (_a0,_a1,_a2),`Subtype (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#expr _a1 _b1 in
+            let _a2 = self#ctyp _a2 _b2 in `Subtype (_a0, _a1, _a2)
         | (`While (_a0,_a1,_a2),`While (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in
@@ -1186,6 +1189,12 @@ class map2 =
             let _a4 = self#expr _a4 _b4 in
             let _a5 = self#ctyp _a5 _b5 in
             `CrMth (_a0, _a1, _a2, _a3, _a4, _a5)
+        | (`CrMthS (_a0,_a1,_a2,_a3,_a4),`CrMthS (_b0,_b1,_b2,_b3,_b4)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#alident _a1 _b1 in
+            let _a2 = self#override_flag _a2 _b2 in
+            let _a3 = self#private_flag _a3 _b3 in
+            let _a4 = self#expr _a4 _b4 in `CrMthS (_a0, _a1, _a2, _a3, _a4)
         | (`CrVal (_a0,_a1,_a2,_a3,_a4),`CrVal (_b0,_b1,_b2,_b3,_b4)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -1455,7 +1464,6 @@ class fold2 =
     method ctyp : ctyp -> ctyp -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#alident _a2 _b2
@@ -1478,9 +1486,13 @@ class fold2 =
         | (`TyObj (_a0,_a1,_a2),`TyObj (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#name_ctyp _a1 _b1 in self#row_var_flag _a2 _b2
+        | (`TyObjEnd (_a0,_a1),`TyObjEnd (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#row_var_flag _a1 _b1
         | (`TyPol (_a0,_a1,_a2),`TyPol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
+        | (`TyPolEnd (_a0,_a1),`TyPolEnd (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`TyTypePol (_a0,_a1,_a2),`TyTypePol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -1522,8 +1534,7 @@ class fold2 =
     method row_field : row_field -> row_field -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'self_type)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#row_field _a1 _b1 in self#row_field _a2 _b2
@@ -1538,8 +1549,7 @@ class fold2 =
     method tag_names : tag_names -> tag_names -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'self_type)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#tag_names _a1 _b1 in self#tag_names _a2 _b2
@@ -1573,8 +1583,7 @@ class fold2 =
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#typedecl _a1 _b1 in self#typedecl _a2 _b2
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'self_type)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method type_info : type_info -> type_info -> 'self_type=
       fun _a0  _b0  ->
@@ -1599,7 +1608,6 @@ class fold2 =
         | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#or_ctyp _a1 _b1
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method name_ctyp : name_ctyp -> name_ctyp -> 'self_type=
       fun _a0  _b0  ->
@@ -1614,7 +1622,6 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method or_ctyp : or_ctyp -> or_ctyp -> 'self_type=
       fun _a0  _b0  ->
@@ -1629,8 +1636,7 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'self_type)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method of_ctyp : of_ctyp -> of_ctyp -> 'self_type=
       fun _a0  _b0  ->
@@ -1640,7 +1646,6 @@ class fold2 =
             let self = self#sid _a1 _b1 in self#ctyp _a2 _b2
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method patt : patt -> patt -> 'self_type=
       fun _a0  _b0  ->
@@ -1827,6 +1832,9 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#expr _a1 _b1 in
             let self = self#ctyp _a2 _b2 in self#ctyp _a3 _b3
+        | (`Subtype (_a0,_a1,_a2),`Subtype (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#expr _a1 _b1 in self#ctyp _a2 _b2
         | (`While (_a0,_a1,_a2),`While (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#expr _a1 _b1 in self#expr _a2 _b2
@@ -2163,6 +2171,11 @@ class fold2 =
             let self = self#override_flag _a2 _b2 in
             let self = self#private_flag _a3 _b3 in
             let self = self#expr _a4 _b4 in self#ctyp _a5 _b5
+        | (`CrMthS (_a0,_a1,_a2,_a3,_a4),`CrMthS (_b0,_b1,_b2,_b3,_b4)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#alident _a1 _b1 in
+            let self = self#override_flag _a2 _b2 in
+            let self = self#private_flag _a3 _b3 in self#expr _a4 _b4
         | (`CrVal (_a0,_a1,_a2,_a3,_a4),`CrVal (_b0,_b1,_b2,_b3,_b4)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
@@ -2337,7 +2350,6 @@ class iter =
     method any : any -> 'result134= fun (`Any _a0)  -> self#loc _a0
     method ctyp : ctyp -> 'result135=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'result135)
       | `Alias (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#alident _a2)
       | #any as _a0 -> (self#any _a0 :>'result135)
@@ -2351,7 +2363,9 @@ class iter =
       | #sid as _a0 -> (self#sid _a0 :>'result135)
       | `TyObj (_a0,_a1,_a2) ->
           (self#loc _a0; self#name_ctyp _a1; self#row_var_flag _a2)
+      | `TyObjEnd (_a0,_a1) -> (self#loc _a0; self#row_var_flag _a1)
       | `TyPol (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
+      | `TyPolEnd (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `TyTypePol (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Quote (_a0,_a1,_a2) ->
@@ -2374,7 +2388,7 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result136)
     method row_field : row_field -> 'result137=
       function
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result137)
+      | #ant as _a0 -> (self#ant _a0 :>'result137)
       | `Or (_a0,_a1,_a2) ->
           (self#loc _a0; self#row_field _a1; self#row_field _a2)
       | `TyVrn (_a0,_a1) -> (self#loc _a0; self#astring _a1)
@@ -2383,7 +2397,7 @@ class iter =
       | `Ctyp (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
     method tag_names : tag_names -> 'result138=
       function
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result138)
+      | #ant as _a0 -> (self#ant _a0 :>'result138)
       | `App (_a0,_a1,_a2) ->
           (self#loc _a0; self#tag_names _a1; self#tag_names _a2)
       | `TyVrn (_a0,_a1) -> (self#loc _a0; self#astring _a1)
@@ -2404,7 +2418,7 @@ class iter =
              _a3)
       | `And (_a0,_a1,_a2) ->
           (self#loc _a0; self#typedecl _a1; self#typedecl _a2)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result139)
+      | #ant as _a0 -> (self#ant _a0 :>'result139)
     method type_info : type_info -> 'result140=
       function
       | `TyMan (_a0,_a1,_a2,_a3) ->
@@ -2422,7 +2436,6 @@ class iter =
       | `Record (_a0,_a1) -> (self#loc _a0; self#name_ctyp _a1)
       | `Sum (_a0,_a1) -> (self#loc _a0; self#or_ctyp _a1)
       | #ant as _a0 -> (self#ant _a0 :>'result141)
-      | #nil as _a0 -> (self#nil _a0 :>'result141)
     method name_ctyp : name_ctyp -> 'result142=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -2431,7 +2444,6 @@ class iter =
       | `TyColMut (_a0,_a1,_a2) ->
           (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result142)
-      | #nil as _a0 -> (self#nil _a0 :>'result142)
     method or_ctyp : or_ctyp -> 'result143=
       function
       | `Or (_a0,_a1,_a2) ->
@@ -2439,13 +2451,12 @@ class iter =
       | `TyCol (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | `Of (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | #sid as _a0 -> (self#sid _a0 :>'result143)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result143)
+      | #ant as _a0 -> (self#ant _a0 :>'result143)
     method of_ctyp : of_ctyp -> 'result144=
       function
       | `Of (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | #sid as _a0 -> (self#sid _a0 :>'result144)
       | #ant as _a0 -> (self#ant _a0 :>'result144)
-      | #nil as _a0 -> (self#nil _a0 :>'result144)
     method patt : patt -> 'result145=
       function
       | #sid as _a0 -> (self#sid _a0 :>'result145)
@@ -2555,6 +2566,8 @@ class iter =
           (self#loc _a0; self#expr _a1; self#ctyp _a2)
       | `Coercion (_a0,_a1,_a2,_a3) ->
           (self#loc _a0; self#expr _a1; self#ctyp _a2; self#ctyp _a3)
+      | `Subtype (_a0,_a1,_a2) ->
+          (self#loc _a0; self#expr _a1; self#ctyp _a2)
       | `While (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
       | `LetOpen (_a0,_a1,_a2) ->
           (self#loc _a0; self#ident _a1; self#expr _a2)
@@ -2782,6 +2795,12 @@ class iter =
            self#private_flag _a3;
            self#expr _a4;
            self#ctyp _a5)
+      | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
+          (self#loc _a0;
+           self#alident _a1;
+           self#override_flag _a2;
+           self#private_flag _a3;
+           self#expr _a4)
       | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
           (self#loc _a0;
            self#alident _a1;
@@ -2982,7 +3001,6 @@ class map =
       fun (`Any _a0)  -> let _a0 = self#loc _a0 in `Any _a0
     method ctyp : ctyp -> ctyp=
       function
-      | #nil as _a0 -> (self#nil _a0 : nil  :>ctyp)
       | `Alias (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -3012,10 +3030,16 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#name_ctyp _a1 in
           let _a2 = self#row_var_flag _a2 in `TyObj (_a0, _a1, _a2)
+      | `TyObjEnd (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#row_var_flag _a1 in `TyObjEnd (_a0, _a1)
       | `TyPol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
           let _a2 = self#ctyp _a2 in `TyPol (_a0, _a1, _a2)
+      | `TyPolEnd (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#ctyp _a1 in `TyPolEnd (_a0, _a1)
       | `TyTypePol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -3063,7 +3087,7 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>type_parameters)
     method row_field : row_field -> row_field=
       function
-      | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>row_field)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>row_field)
       | `Or (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#row_field _a1 in
@@ -3080,7 +3104,7 @@ class map =
           let _a1 = self#ctyp _a1 in `Ctyp (_a0, _a1)
     method tag_names : tag_names -> tag_names=
       function
-      | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>tag_names)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>tag_names)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#tag_names _a1 in
@@ -3115,7 +3139,7 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#typedecl _a1 in
           let _a2 = self#typedecl _a2 in `And (_a0, _a1, _a2)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>typedecl)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>typedecl)
     method type_info : type_info -> type_info=
       function
       | `TyMan (_a0,_a1,_a2,_a3) ->
@@ -3141,7 +3165,6 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#or_ctyp _a1 in `Sum (_a0, _a1)
       | #ant as _a0 -> (self#ant _a0 : ant  :>type_repr)
-      | #nil as _a0 -> (self#nil _a0 : nil  :>type_repr)
     method name_ctyp : name_ctyp -> name_ctyp=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -3157,7 +3180,6 @@ class map =
           let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `TyColMut (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>name_ctyp)
-      | #nil as _a0 -> (self#nil _a0 : nil  :>name_ctyp)
     method or_ctyp : or_ctyp -> or_ctyp=
       function
       | `Or (_a0,_a1,_a2) ->
@@ -3173,7 +3195,7 @@ class map =
           let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `Of (_a0, _a1, _a2)
       | #sid as _a0 -> (self#sid _a0 : sid  :>or_ctyp)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>or_ctyp)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>or_ctyp)
     method of_ctyp : of_ctyp -> of_ctyp=
       function
       | `Of (_a0,_a1,_a2) ->
@@ -3182,7 +3204,6 @@ class map =
           let _a2 = self#ctyp _a2 in `Of (_a0, _a1, _a2)
       | #sid as _a0 -> (self#sid _a0 : sid  :>of_ctyp)
       | #ant as _a0 -> (self#ant _a0 : ant  :>of_ctyp)
-      | #nil as _a0 -> (self#nil _a0 : nil  :>of_ctyp)
     method patt : patt -> patt=
       function
       | #sid as _a0 -> (self#sid _a0 : sid  :>patt)
@@ -3417,6 +3438,10 @@ class map =
           let _a1 = self#expr _a1 in
           let _a2 = self#ctyp _a2 in
           let _a3 = self#ctyp _a3 in `Coercion (_a0, _a1, _a2, _a3)
+      | `Subtype (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#expr _a1 in
+          let _a2 = self#ctyp _a2 in `Subtype (_a0, _a1, _a2)
       | `While (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in
@@ -3814,6 +3839,12 @@ class map =
           let _a3 = self#private_flag _a3 in
           let _a4 = self#expr _a4 in
           let _a5 = self#ctyp _a5 in `CrMth (_a0, _a1, _a2, _a3, _a4, _a5)
+      | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in
+          let _a2 = self#override_flag _a2 in
+          let _a3 = self#private_flag _a3 in
+          let _a4 = self#expr _a4 in `CrMthS (_a0, _a1, _a2, _a3, _a4)
       | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -4003,7 +4034,6 @@ class fold =
     method any : any -> 'self_type= fun (`Any _a0)  -> self#loc _a0
     method ctyp : ctyp -> 'self_type=
       function
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
       | `Alias (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#alident _a2
@@ -4025,9 +4055,12 @@ class fold =
       | `TyObj (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#name_ctyp _a1 in self#row_var_flag _a2
+      | `TyObjEnd (_a0,_a1) ->
+          let self = self#loc _a0 in self#row_var_flag _a1
       | `TyPol (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
+      | `TyPolEnd (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `TyTypePol (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -4057,7 +4090,7 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method row_field : row_field -> 'self_type=
       function
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'self_type)
       | `Or (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#row_field _a1 in self#row_field _a2
@@ -4068,7 +4101,7 @@ class fold =
       | `Ctyp (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
     method tag_names : tag_names -> 'self_type=
       function
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#tag_names _a1 in self#tag_names _a2
@@ -4093,7 +4126,7 @@ class fold =
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#typedecl _a1 in self#typedecl _a2
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method type_info : type_info -> 'self_type=
       function
       | `TyMan (_a0,_a1,_a2,_a3) ->
@@ -4112,7 +4145,6 @@ class fold =
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#name_ctyp _a1
       | `Sum (_a0,_a1) -> let self = self#loc _a0 in self#or_ctyp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method name_ctyp : name_ctyp -> 'self_type=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -4123,7 +4155,6 @@ class fold =
       | `TyColMut (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method or_ctyp : or_ctyp -> 'self_type=
       function
       | `Or (_a0,_a1,_a2) ->
@@ -4134,14 +4165,13 @@ class fold =
       | `Of (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
-      | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
+      | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method of_ctyp : of_ctyp -> 'self_type=
       function
       | `Of (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method patt : patt -> 'self_type=
       function
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
@@ -4297,6 +4327,9 @@ class fold =
           let self = self#loc _a0 in
           let self = self#expr _a1 in
           let self = self#ctyp _a2 in self#ctyp _a3
+      | `Subtype (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#expr _a1 in self#ctyp _a2
       | `While (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#expr _a1 in self#expr _a2
@@ -4584,6 +4617,11 @@ class fold =
           let self = self#override_flag _a2 in
           let self = self#private_flag _a3 in
           let self = self#expr _a4 in self#ctyp _a5
+      | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in
+          let self = self#override_flag _a2 in
+          let self = self#private_flag _a3 in self#expr _a4
       | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
@@ -4813,7 +4851,6 @@ class print =
     method ctyp : 'fmt -> ctyp -> 'result300=
       fun fmt  ->
         function
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result300)
         | `Alias (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#alident _a2
@@ -4837,9 +4874,15 @@ class print =
         | `TyObj (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyObj@ %a@ %a@ %a)@]" self#loc _a0
               self#name_ctyp _a1 self#row_var_flag _a2
+        | `TyObjEnd (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`TyObjEnd@ %a@ %a)@]" self#loc _a0
+              self#row_var_flag _a1
         | `TyPol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyPol@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
+        | `TyPolEnd (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`TyPolEnd@ %a@ %a)@]" self#loc _a0
+              self#ctyp _a1
         | `TyTypePol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyTypePol@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -4884,7 +4927,7 @@ class print =
     method row_field : 'fmt -> row_field -> 'result302=
       fun fmt  ->
         function
-        | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result302)
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result302)
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
               self#row_field _a1 self#row_field _a2
@@ -4900,7 +4943,7 @@ class print =
     method tag_names : 'fmt -> tag_names -> 'result303=
       fun fmt  ->
         function
-        | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result303)
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result303)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
               self#tag_names _a1 self#tag_names _a2
@@ -4928,7 +4971,7 @@ class print =
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#typedecl _a1 self#typedecl _a2
-        | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result304)
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result304)
     method type_info : 'fmt -> type_info -> 'result305=
       fun fmt  ->
         function
@@ -4952,7 +4995,6 @@ class print =
             Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" self#loc _a0
               self#or_ctyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result306)
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result306)
     method name_ctyp : 'fmt -> name_ctyp -> 'result307=
       fun fmt  ->
         function
@@ -4966,7 +5008,6 @@ class print =
             Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" self#loc _a0
               self#sid _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result307)
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result307)
     method or_ctyp : 'fmt -> or_ctyp -> 'result308=
       fun fmt  ->
         function
@@ -4980,7 +5021,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" self#loc _a0
               self#sid _a1 self#ctyp _a2
         | #sid as _a0 -> (self#sid fmt _a0 :>'result308)
-        | #ant_nil as _a0 -> (self#ant_nil fmt _a0 :>'result308)
+        | #ant as _a0 -> (self#ant fmt _a0 :>'result308)
     method of_ctyp : 'fmt -> of_ctyp -> 'result309=
       fun fmt  ->
         function
@@ -4989,7 +5030,6 @@ class print =
               self#sid _a1 self#ctyp _a2
         | #sid as _a0 -> (self#sid fmt _a0 :>'result309)
         | #ant as _a0 -> (self#ant fmt _a0 :>'result309)
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result309)
     method patt : 'fmt -> patt -> 'result310=
       fun fmt  ->
         function
@@ -5191,6 +5231,9 @@ class print =
         | `Coercion (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`Coercion@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#expr _a1 self#ctyp _a2 self#ctyp _a3
+        | `Subtype (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Subtype@ %a@ %a@ %a)@]" self#loc _a0
+              self#expr _a1 self#ctyp _a2
         | `While (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`While@ %a@ %a@ %a)@]" self#loc _a0
               self#expr _a1 self#expr _a2
@@ -5530,6 +5573,10 @@ class print =
             Format.fprintf fmt "@[<1>(`CrMth@ %a@ %a@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#alident _a1 self#override_flag _a2
               self#private_flag _a3 self#expr _a4 self#ctyp _a5
+        | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
+            Format.fprintf fmt "@[<1>(`CrMthS@ %a@ %a@ %a@ %a@ %a)@]"
+              self#loc _a0 self#alident _a1 self#override_flag _a2
+              self#private_flag _a3 self#expr _a4
         | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
             Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" 
               self#loc _a0 self#alident _a1 self#override_flag _a2
@@ -5781,7 +5828,6 @@ class eq =
     method ctyp : ctyp -> ctyp -> 'result355=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result355)
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#alident _a2 _b2)
@@ -5804,9 +5850,13 @@ class eq =
         | (`TyObj (_a0,_a1,_a2),`TyObj (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#name_ctyp _a1 _b1)) &&
               (self#row_var_flag _a2 _b2)
+        | (`TyObjEnd (_a0,_a1),`TyObjEnd (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#row_var_flag _a1 _b1)
         | (`TyPol (_a0,_a1,_a2),`TyPol (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
+        | (`TyPolEnd (_a0,_a1),`TyPolEnd (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`TyTypePol (_a0,_a1,_a2),`TyTypePol (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -5847,8 +5897,7 @@ class eq =
     method row_field : row_field -> row_field -> 'result357=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'result357)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result357)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#row_field _a1 _b1)) &&
               (self#row_field _a2 _b2)
@@ -5863,8 +5912,7 @@ class eq =
     method tag_names : tag_names -> tag_names -> 'result358=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'result358)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result358)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#tag_names _a1 _b1)) &&
               (self#tag_names _a2 _b2)
@@ -5896,8 +5944,7 @@ class eq =
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#typedecl _a1 _b1)) &&
               (self#typedecl _a2 _b2)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'result359)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result359)
         | (_,_) -> false
     method type_info : type_info -> type_info -> 'result360=
       fun _a0  _b0  ->
@@ -5922,7 +5969,6 @@ class eq =
         | (`Sum (_a0,_a1),`Sum (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#or_ctyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result361)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result361)
         | (_,_) -> false
     method name_ctyp : name_ctyp -> name_ctyp -> 'result362=
       fun _a0  _b0  ->
@@ -5935,7 +5981,6 @@ class eq =
         | (`TyColMut (_a0,_a1,_a2),`TyColMut (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result362)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result362)
         | (_,_) -> false
     method or_ctyp : or_ctyp -> or_ctyp -> 'result363=
       fun _a0  _b0  ->
@@ -5948,8 +5993,7 @@ class eq =
         | (`Of (_a0,_a1,_a2),`Of (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result363)
-        | ((#ant_nil as _a0),(#ant_nil as _b0)) ->
-            (self#ant_nil _a0 _b0 :>'result363)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result363)
         | (_,_) -> false
     method of_ctyp : of_ctyp -> of_ctyp -> 'result364=
       fun _a0  _b0  ->
@@ -5958,7 +6002,6 @@ class eq =
             ((self#loc _a0 _b0) && (self#sid _a1 _b1)) && (self#ctyp _a2 _b2)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result364)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result364)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result364)
         | (_,_) -> false
     method patt : patt -> patt -> 'result365=
       fun _a0  _b0  ->
@@ -6145,6 +6188,9 @@ class eq =
             (((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
                (self#ctyp _a2 _b2))
               && (self#ctyp _a3 _b3)
+        | (`Subtype (_a0,_a1,_a2),`Subtype (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
+              (self#ctyp _a2 _b2)
         | (`While (_a0,_a1,_a2),`While (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -6478,6 +6524,11 @@ class eq =
                 && (self#private_flag _a3 _b3))
                && (self#expr _a4 _b4))
               && (self#ctyp _a5 _b5)
+        | (`CrMthS (_a0,_a1,_a2,_a3,_a4),`CrMthS (_b0,_b1,_b2,_b3,_b4)) ->
+            ((((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
+                (self#override_flag _a2 _b2))
+               && (self#private_flag _a3 _b3))
+              && (self#expr _a4 _b4)
         | (`CrVal (_a0,_a1,_a2,_a3,_a4),`CrVal (_b0,_b1,_b2,_b3,_b4)) ->
             ((((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                 (self#override_flag _a2 _b2))
@@ -6650,7 +6701,6 @@ let strip_loc_sid (`Id (_a0,_a1)) = let _a1 = strip_loc_ident _a1 in `Id _a1
 let strip_loc_any (`Any _a0) = `Any
 let rec strip_loc_ctyp =
   function
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result433)
   | `Alias (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
@@ -6672,9 +6722,12 @@ let rec strip_loc_ctyp =
   | `TyObj (_a0,_a1,_a2) ->
       let _a1 = strip_loc_name_ctyp _a1 in
       let _a2 = strip_loc_row_var_flag _a2 in `TyObj (_a1, _a2)
+  | `TyObjEnd (_a0,_a1) ->
+      let _a1 = strip_loc_row_var_flag _a1 in `TyObjEnd _a1
   | `TyPol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyPol (_a1, _a2)
+  | `TyPolEnd (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `TyPolEnd _a1
   | `TyTypePol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyTypePol (_a1, _a2)
@@ -6704,7 +6757,7 @@ and strip_loc_type_parameters =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result432)
 and strip_loc_row_field =
   function
-  | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result431)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result431)
   | `Or (_a0,_a1,_a2) ->
       let _a1 = strip_loc_row_field _a1 in
       let _a2 = strip_loc_row_field _a2 in `Or (_a1, _a2)
@@ -6715,7 +6768,7 @@ and strip_loc_row_field =
   | `Ctyp (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Ctyp _a1
 and strip_loc_tag_names =
   function
-  | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result430)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result430)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_tag_names _a1 in
       let _a2 = strip_loc_tag_names _a2 in `App (_a1, _a2)
@@ -6744,7 +6797,7 @@ and strip_loc_typedecl =
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_typedecl _a1 in
       let _a2 = strip_loc_typedecl _a2 in `And (_a1, _a2)
-  | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result429)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result429)
 and strip_loc_type_info =
   function
   | `TyMan (_a0,_a1,_a2,_a3) ->
@@ -6763,7 +6816,6 @@ and strip_loc_type_repr =
   | `Record (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `Record _a1
   | `Sum (_a0,_a1) -> let _a1 = strip_loc_or_ctyp _a1 in `Sum _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result427)
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result427)
 and strip_loc_name_ctyp =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -6776,7 +6828,6 @@ and strip_loc_name_ctyp =
       let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyColMut (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result426)
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result426)
 and strip_loc_or_ctyp =
   function
   | `Or (_a0,_a1,_a2) ->
@@ -6789,7 +6840,7 @@ and strip_loc_or_ctyp =
       let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result425)
-  | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result425)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result425)
 and strip_loc_of_ctyp =
   function
   | `Of (_a0,_a1,_a2) ->
@@ -6797,7 +6848,6 @@ and strip_loc_of_ctyp =
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result424)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result424)
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result424)
 and strip_loc_patt =
   function
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result423)
@@ -6953,6 +7003,9 @@ and strip_loc_expr =
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_ctyp _a2 in
       let _a3 = strip_loc_ctyp _a3 in `Coercion (_a1, _a2, _a3)
+  | `Subtype (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_expr _a1 in
+      let _a2 = strip_loc_ctyp _a2 in `Subtype (_a1, _a2)
   | `While (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_expr _a2 in `While (_a1, _a2)
@@ -7242,6 +7295,11 @@ and strip_loc_class_str_item =
       let _a3 = strip_loc_private_flag _a3 in
       let _a4 = strip_loc_expr _a4 in
       let _a5 = strip_loc_ctyp _a5 in `CrMth (_a1, _a2, _a3, _a4, _a5)
+  | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
+      let _a1 = strip_loc_alident _a1 in
+      let _a2 = strip_loc_override_flag _a2 in
+      let _a3 = strip_loc_private_flag _a3 in
+      let _a4 = strip_loc_expr _a4 in `CrMthS (_a1, _a2, _a3, _a4)
   | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_override_flag _a2 in
@@ -7441,7 +7499,6 @@ let pp_print_any fmt (`Any _a0) =
   Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc _a0
 let rec pp_print_ctyp fmt =
   function
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result486)
   | `Alias (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_alident _a2
@@ -7465,9 +7522,15 @@ let rec pp_print_ctyp fmt =
   | `TyObj (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyObj@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_name_ctyp _a1 pp_print_row_var_flag _a2
+  | `TyObjEnd (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`TyObjEnd@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_row_var_flag _a1
   | `TyPol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyPol@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
+  | `TyPolEnd (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`TyPolEnd@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_ctyp _a1
   | `TyTypePol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyTypePol@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
@@ -7510,7 +7573,7 @@ and pp_print_type_parameters fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result485)
 and pp_print_row_field fmt =
   function
-  | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result484)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result484)
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_row_field _a1 pp_print_row_field _a2
@@ -7525,7 +7588,7 @@ and pp_print_row_field fmt =
         pp_print_ctyp _a1
 and pp_print_tag_names fmt =
   function
-  | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result483)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result483)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_tag_names _a1 pp_print_tag_names _a2
@@ -7552,7 +7615,7 @@ and pp_print_typedecl fmt =
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_typedecl _a1 pp_print_typedecl _a2
-  | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result482)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result482)
 and pp_print_type_info fmt =
   function
   | `TyMan (_a0,_a1,_a2,_a3) ->
@@ -7574,7 +7637,6 @@ and pp_print_type_repr fmt =
       Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" pp_print_loc _a0
         pp_print_or_ctyp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result480)
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result480)
 and pp_print_name_ctyp fmt =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -7587,7 +7649,6 @@ and pp_print_name_ctyp fmt =
       Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sid _a1 pp_print_ctyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result479)
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result479)
 and pp_print_or_ctyp fmt =
   function
   | `Or (_a0,_a1,_a2) ->
@@ -7600,7 +7661,7 @@ and pp_print_or_ctyp fmt =
       Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sid _a1 pp_print_ctyp _a2
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result478)
-  | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result478)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result478)
 and pp_print_of_ctyp fmt =
   function
   | `Of (_a0,_a1,_a2) ->
@@ -7608,7 +7669,6 @@ and pp_print_of_ctyp fmt =
         pp_print_sid _a1 pp_print_ctyp _a2
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result477)
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result477)
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result477)
 and pp_print_patt fmt =
   function
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result476)
@@ -7805,6 +7865,9 @@ and pp_print_expr fmt =
   | `Coercion (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`Coercion@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_expr _a1 pp_print_ctyp _a2 pp_print_ctyp _a3
+  | `Subtype (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Subtype@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_expr _a1 pp_print_ctyp _a2
   | `While (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`While@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_expr _a1 pp_print_expr _a2
@@ -8132,6 +8195,10 @@ and pp_print_class_str_item fmt =
       Format.fprintf fmt "@[<1>(`CrMth@ %a@ %a@ %a@ %a@ %a@ %a)@]"
         pp_print_loc _a0 pp_print_alident _a1 pp_print_override_flag _a2
         pp_print_private_flag _a3 pp_print_expr _a4 pp_print_ctyp _a5
+  | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
+      Format.fprintf fmt "@[<1>(`CrMthS@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
+        _a0 pp_print_alident _a1 pp_print_override_flag _a2
+        pp_print_private_flag _a3 pp_print_expr _a4
   | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
       Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_override_flag _a2
