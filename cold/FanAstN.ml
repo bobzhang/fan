@@ -607,7 +607,7 @@ class eq =
             (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
         | (`CtCol (_a0,_a1),`CtCol (_b0,_b1)) ->
             (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
-        | (`CtEq (_a0,_a1),`CtEq (_b0,_b1)) ->
+        | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result46)
         | (_,_) -> false
@@ -1430,8 +1430,8 @@ class print =
         | `CtCol (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a)@]" self#class_type _a0
               self#class_type _a1
-        | `CtEq (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CtEq@ %a@ %a)@]" self#class_type _a0
+        | `Eq (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#class_type _a0
               self#class_type _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result100)
     method class_sig_item : 'fmt -> class_sig_item -> 'result101=
@@ -2436,10 +2436,10 @@ and meta_class_type _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "CtCol")), (meta_class_type _loc _a0))),
           (meta_class_type _loc _a1))
-  | `CtEq (_a0,_a1) ->
+  | `Eq (_a0,_a1) ->
       `App
         (_loc,
-          (`App (_loc, (`Vrn (_loc, "CtEq")), (meta_class_type _loc _a0))),
+          (`App (_loc, (`Vrn (_loc, "Eq")), (meta_class_type _loc _a0))),
           (meta_class_type _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result134)
 and meta_class_sig_item _loc =

@@ -64,7 +64,6 @@ let loc_of =
   | `Arrow (_loc,_,_) -> _loc
   | `ObjEnd _loc -> _loc
   | `Bind (_loc,_,_) -> _loc
-  | `CtEq (_loc,_,_) -> _loc
   | `Subtype (_loc,_,_) -> _loc
   | `Functor (_loc,_,_,_) -> _loc
   | `With (_loc,_,_) -> _loc

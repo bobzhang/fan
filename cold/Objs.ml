@@ -1055,10 +1055,10 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_type _a1 _b1 in
             let _a2 = self#class_type _a2 _b2 in `CtCol (_a0, _a1, _a2)
-        | (`CtEq (_a0,_a1,_a2),`CtEq (_b0,_b1,_b2)) ->
+        | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_type _a1 _b1 in
-            let _a2 = self#class_type _a2 _b2 in `CtEq (_a0, _a1, _a2)
+            let _a2 = self#class_type _a2 _b2 in `Eq (_a0, _a1, _a2)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>class_type)
         | (_,_) -> invalid_arg "map2 failure"
@@ -2061,7 +2061,7 @@ class fold2 =
         | (`CtCol (_a0,_a1,_a2),`CtCol (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_type _a1 _b1 in self#class_type _a2 _b2
-        | (`CtEq (_a0,_a1,_a2),`CtEq (_b0,_b1,_b2)) ->
+        | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_type _a1 _b1 in self#class_type _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
@@ -2702,7 +2702,7 @@ class iter =
           (self#loc _a0; self#class_type _a1; self#class_type _a2)
       | `CtCol (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_type _a1; self#class_type _a2)
-      | `CtEq (_a0,_a1,_a2) ->
+      | `Eq (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_type _a1; self#class_type _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result154)
     method class_sig_item : class_sig_item -> 'result155=
@@ -3707,10 +3707,10 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#class_type _a1 in
           let _a2 = self#class_type _a2 in `CtCol (_a0, _a1, _a2)
-      | `CtEq (_a0,_a1,_a2) ->
+      | `Eq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_type _a1 in
-          let _a2 = self#class_type _a2 in `CtEq (_a0, _a1, _a2)
+          let _a2 = self#class_type _a2 in `Eq (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>class_type)
     method class_sig_item : class_sig_item -> class_sig_item=
       function
@@ -4509,7 +4509,7 @@ class fold =
       | `CtCol (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_type _a1 in self#class_type _a2
-      | `CtEq (_a0,_a1,_a2) ->
+      | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_type _a1 in self#class_type _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
@@ -5457,8 +5457,8 @@ class print =
         | `CtCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a@ %a)@]" self#loc _a0
               self#class_type _a1 self#class_type _a2
-        | `CtEq (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CtEq@ %a@ %a@ %a)@]" self#loc _a0
+        | `Eq (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
               self#class_type _a1 self#class_type _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result316)
     method class_sig_item : 'fmt -> class_sig_item -> 'result317=
@@ -6397,7 +6397,7 @@ class eq =
         | (`CtCol (_a0,_a1,_a2),`CtCol (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_type _a1 _b1)) &&
               (self#class_type _a2 _b2)
-        | (`CtEq (_a0,_a1,_a2),`CtEq (_b0,_b1,_b2)) ->
+        | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_type _a1 _b1)) &&
               (self#class_type _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result370)
@@ -7173,9 +7173,9 @@ and strip_loc_class_type =
   | `CtCol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_type _a1 in
       let _a2 = strip_loc_class_type _a2 in `CtCol (_a1, _a2)
-  | `CtEq (_a0,_a1,_a2) ->
+  | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_type _a1 in
-      let _a2 = strip_loc_class_type _a2 in `CtEq (_a1, _a2)
+      let _a2 = strip_loc_class_type _a2 in `Eq (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result403)
 and strip_loc_class_sig_item =
   function
@@ -8069,8 +8069,8 @@ and pp_print_class_type fmt =
   | `CtCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_type _a1 pp_print_class_type _a2
-  | `CtEq (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`CtEq@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Eq (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_type _a1 pp_print_class_type _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result455)
 and pp_print_class_sig_item fmt =

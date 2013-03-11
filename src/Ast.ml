@@ -427,20 +427,18 @@ and str_item =
 
 (* class body type *)         
 and class_type =
-  [= 
-
-   `ClassCon of (loc * virtual_flag * ident *  type_parameters) (* (virtual)? i [ t ] *)
+  [= `ClassCon of
+    (loc * virtual_flag * ident *  type_parameters) (* (virtual)? i [ t ] *)
   | `ClassConS of (loc * virtual_flag * ident) (* (virtual)? i *)
   | `CtFun of (loc * ctyp * class_type) (* [t] -> ct *)
-
     (* object ((t))? (csg)? end *)
   | `CtSig of (loc * ctyp * class_sig_item)
-  | `Obj of (loc * class_sig_item) (* FIXME *)
-  | `CtSigEnd of (loc * ctyp) (* FIXME make names more meaningful*)
+  | `Obj of (loc * class_sig_item) (* object ... end *)
+  | `CtSigEnd of (loc * ctyp) (* object (ty) end*)
   | `ObjEnd of (loc) (* object end*)
   | `And of (loc * class_type * class_type)
   | `CtCol of (loc * class_type * class_type) (* ct : ct *)
-  | `CtEq  of (loc * class_type * class_type) (* ct = ct *)
+  | `Eq  of (loc * class_type * class_type) (* ct = ct *)
   | ant ]
 and class_sig_item =
   [= `Eq of (loc * ctyp * ctyp)
@@ -469,9 +467,7 @@ and class_expr =
   | ant ]
 and class_str_item =
   [=  `Sem of (loc * class_str_item * class_str_item)
-        (* type t = t *)
   | `Eq of (loc * ctyp * ctyp)
-        (* inherit(!)? ce (as s)? *)
   | `Inherit of (loc * override_flag * class_expr)
   | `InheritAs of (loc * override_flag * class_expr * alident)
   | `Initializer of (loc * expr)

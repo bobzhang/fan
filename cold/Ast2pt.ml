@@ -1009,7 +1009,7 @@ and class_info_class_expr (ci : class_expr) =
   | ce -> errorf (loc_of ce) "class_info_class_expr: %s" (dump_class_expr ce)
 and class_info_class_type (ci : class_type) =
   match ci with
-  | `CtEq (_,`ClassCon (loc,vir,`Lid (nloc,name),params),ct)
+  | `Eq (_,`ClassCon (loc,vir,`Lid (nloc,name),params),ct)
     |`CtCol (_,`ClassCon (loc,vir,`Lid (nloc,name),params),ct) ->
       let (loc_params,(params,variance)) =
         ((loc_of params), (List.split (class_parameters params))) in
@@ -1021,7 +1021,7 @@ and class_info_class_type (ci : class_type) =
         pci_loc = loc;
         pci_variance = variance
       }
-  | `CtEq (_,`ClassConS (loc,vir,`Lid (nloc,name)),ct)
+  | `Eq (_,`ClassConS (loc,vir,`Lid (nloc,name)),ct)
     |`CtCol (_,`ClassConS (loc,vir,`Lid (nloc,name)),ct) ->
       {
         pci_virt = (mkvirtual vir);

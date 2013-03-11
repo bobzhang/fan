@@ -164,7 +164,7 @@ and class_type =
   | `Obj of (loc* class_sig_item) | `CtSigEnd of (loc* ctyp) | `ObjEnd of loc
   | `And of (loc* class_type* class_type)
   | `CtCol of (loc* class_type* class_type)
-  | `CtEq of (loc* class_type* class_type) | ant] 
+  | `Eq of (loc* class_type* class_type) | ant] 
 and class_sig_item =
   [ `Eq of (loc* ctyp* ctyp) | `Sem of (loc* class_sig_item* class_sig_item)
   | `SigInherit of (loc* class_type)

@@ -1144,38 +1144,31 @@ let apply () = begin
       [ S{cd1}; "and"; S{cd2} -> {| $cd1 and $cd2 |}
       | `Ant ((""|"typ"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_type" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
-      | class_info_for_class_type{ci}; "="; class_type{ct} -> {| $ci = $ct |} ]
+      | class_info_for_class_type{ci}; "="; class_type{ct} ->
+          `Eq(_loc,ci,ct) ]
       class_info_for_class_type:
-
       [ opt_virtual{mv};  a_lident{i};"["; comma_type_parameter{x}; "]" ->
         `ClassCon(_loc,mv,(i:>ident),x)
-      | opt_virtual{mv}; a_lident{i} ->
-          `ClassConS(_loc,mv,(i:>ident))
-        (*   class_name_and_param{(i, ot)} -> *)
-        (* `ClassCon (_loc, mv, (i :>ident), ot) *)
-      ]
+      | opt_virtual{mv}; a_lident{i} -> `ClassConS(_loc,mv,(i:>ident))]
       class_type_quot:
-      [ S{ct1}; "and"; S{ct2} -> {| $ct1 and $ct2 |}
-      | S{ct1}; "="; S{ct2} -> {| $ct1 = $ct2 |}
+      [ S{ct1}; "and"; S{ct2} -> `And(_loc,ct1,ct2)
+      | S{ct1}; "="; S{ct2} -> `Eq(_loc,ct1,ct2)
       | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
       (* | "virtual";  class_name_and_param{(i, ot)} -> *)
       (*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *)
           (* {| virtual $((i:>ident)) [ $ot ] |} (\* types *\) *)
-
       (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
       (*     let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in *)
       (*     `ClassCon (_loc, anti, i, ot) *)
-            
       | `Ant (("virtual" as n),s); ident{i}; "["; comma_ctyp{t}; "]" ->
           let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
           `ClassCon(_loc,anti,i,t)
       | `Ant (("virtual" as n),s); ident{i} ->
           let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
           `ClassConS(_loc,anti,i)
-            
       | class_type_plus{x} -> x]
       class_type_plus:
-      [ "["; ctyp{t}; "]"; "->"; S{ct} -> {| [ $t ] -> $ct |}
+      [ "["; ctyp{t}; "]"; "->"; S{ct} -> `CtFun(_loc,t,ct)
       | class_type{ct} -> ct ]
       class_type:
       [ `Ant ((""|"ctyp"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"class_type" n s) |}
@@ -1184,9 +1177,7 @@ let apply () = begin
       | "object";"(";ctyp{t};")";class_signature{csg};"end" -> `CtSig(_loc,t,csg)
       | "object";class_signature{csg};"end"-> `Obj(_loc,csg)
       | "object"; "(";ctyp{t};")" -> `CtSigEnd(_loc,t)
-      | "object"; "end" -> `ObjEnd(_loc)
-      ]
- 
+      | "object"; "end" -> `ObjEnd(_loc)]
       class_type_longident_and_param:
       [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->
         `ClassCon (_loc, (`ViNil _loc), i, t)

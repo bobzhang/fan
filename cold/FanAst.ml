@@ -1478,12 +1478,12 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "CtCol")), (meta_loc _loc _a0))),
                    (meta_class_type _loc _a1))), (meta_class_type _loc _a2))
-      | `CtEq (_a0,_a1,_a2) ->
+      | `Eq (_a0,_a1,_a2) ->
           `App
             (_loc,
               (`App
                  (_loc,
-                   (`App (_loc, (`Vrn (_loc, "CtEq")), (meta_loc _loc _a0))),
+                   (`App (_loc, (`Vrn (_loc, "Eq")), (meta_loc _loc _a0))),
                    (meta_class_type _loc _a1))), (meta_class_type _loc _a2))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result26)
     and meta_class_sig_item _loc =

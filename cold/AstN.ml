@@ -140,7 +140,7 @@ and class_type =
   | `ClassConS of (virtual_flag* ident) | `CtFun of (ctyp* class_type)
   | `CtSig of (ctyp* class_sig_item) | `Obj of class_sig_item
   | `CtSigEnd of ctyp | `ObjEnd | `And of (class_type* class_type)
-  | `CtCol of (class_type* class_type) | `CtEq of (class_type* class_type)
+  | `CtCol of (class_type* class_type) | `Eq of (class_type* class_type)
   | ant] 
 and class_sig_item =
   [ `Eq of (ctyp* ctyp) | `Sem of (class_sig_item* class_sig_item)

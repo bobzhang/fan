@@ -5544,11 +5544,11 @@ let apply () =
                (class_info_for_class_type : 'class_info_for_class_type Gram.t ));
          `Skeyword "=";
          `Snterm (Gram.obj (class_type : 'class_type Gram.t ))],
-          ("Gram.mk_action\n  (fun (ct : 'class_type)  _  (ci : 'class_info_for_class_type) \n     (_loc : FanLoc.t)  -> (`CtEq (_loc, ci, ct) : 'class_type_declaration ))\n",
+          ("Gram.mk_action\n  (fun (ct : 'class_type)  _  (ci : 'class_info_for_class_type) \n     (_loc : FanLoc.t)  -> (`Eq (_loc, ci, ct) : 'class_type_declaration ))\n",
             (Gram.mk_action
                (fun (ct : 'class_type)  _  (ci : 'class_info_for_class_type) 
                   (_loc : FanLoc.t)  ->
-                  (`CtEq (_loc, ci, ct) : 'class_type_declaration )))))]));
+                  (`Eq (_loc, ci, ct) : 'class_type_declaration )))))]));
   Gram.extend_single
     (class_info_for_class_type : 'class_info_for_class_type Gram.t )
     (None,
@@ -5581,11 +5581,11 @@ let apply () =
                    (_loc : FanLoc.t)  ->
                    (`And (_loc, ct1, ct2) : 'class_type_quot )))));
         ([`Sself; `Skeyword "="; `Sself],
-          ("Gram.mk_action\n  (fun (ct2 : 'class_type_quot)  _  (ct1 : 'class_type_quot) \n     (_loc : FanLoc.t)  -> (`CtEq (_loc, ct1, ct2) : 'class_type_quot ))\n",
+          ("Gram.mk_action\n  (fun (ct2 : 'class_type_quot)  _  (ct1 : 'class_type_quot) \n     (_loc : FanLoc.t)  -> (`Eq (_loc, ct1, ct2) : 'class_type_quot ))\n",
             (Gram.mk_action
                (fun (ct2 : 'class_type_quot)  _  (ct1 : 'class_type_quot) 
                   (_loc : FanLoc.t)  ->
-                  (`CtEq (_loc, ct1, ct2) : 'class_type_quot )))));
+                  (`Eq (_loc, ct1, ct2) : 'class_type_quot )))));
         ([`Sself; `Skeyword ":"; `Sself],
           ("Gram.mk_action\n  (fun (ct2 : 'class_type_quot)  _  (ct1 : 'class_type_quot) \n     (_loc : FanLoc.t)  -> (`CtCol (_loc, ct1, ct2) : 'class_type_quot ))\n",
             (Gram.mk_action
