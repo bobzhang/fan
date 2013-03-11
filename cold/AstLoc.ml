@@ -16,7 +16,6 @@ let loc_of =
   | `TyEq (_loc,_,_) -> _loc
   | `ModuleBind (_loc,_,_,_) -> _loc
   | `Sta (_loc,_,_) -> _loc
-  | `CeConS (_loc,_,_) -> _loc
   | `Match (_loc,_,_) -> _loc
   | `Obj (_loc,_) -> _loc
   | `TyPol (_loc,_,_) -> _loc
@@ -50,7 +49,6 @@ let loc_of =
   | `CrMth (_loc,_,_,_,_,_) -> _loc
   | `Dot (_loc,_,_) -> _loc
   | `Struct (_loc,_) -> _loc
-  | `CeCon (_loc,_,_,_) -> _loc
   | `TyMan (_loc,_,_,_) -> _loc
   | `External (_loc,_,_,_) -> _loc
   | `CgVal (_loc,_,_,_,_) -> _loc
@@ -94,6 +92,7 @@ let loc_of =
   | `ArrayEmpty _loc -> _loc
   | `Int64 (_loc,_) -> _loc
   | `ModuleTypeOf (_loc,_) -> _loc
+  | `ClassCon (_loc,_,_,_) -> _loc
   | `TyPolEnd (_loc,_) -> _loc
   | `To _loc -> _loc
   | `TyCol (_loc,_,_) -> _loc
@@ -101,7 +100,6 @@ let loc_of =
   | `CgVir (_loc,_,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
   | `TyColMut (_loc,_,_) -> _loc
-  | `CtConS (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
   | `OptLablS (_loc,_) -> _loc
@@ -126,6 +124,7 @@ let loc_of =
   | `OvrInst (_loc,_) -> _loc
   | `OvNil _loc -> _loc
   | `ModuleSubst (_loc,_,_) -> _loc
+  | `ClassConS (_loc,_,_) -> _loc
   | `Positive _loc -> _loc
   | `CrVal (_loc,_,_,_,_) -> _loc
   | `ModuleConstraint (_loc,_,_) -> _loc
@@ -158,7 +157,6 @@ let loc_of =
   | `StringDot (_loc,_,_) -> _loc
   | `For (_loc,_,_,_,_,_) -> _loc
   | `CrVvr (_loc,_,_,_) -> _loc
-  | `CtCon (_loc,_,_,_) -> _loc
   | `Recursive _loc -> _loc
   | `OptLablExpr (_loc,_,_,_) -> _loc
   | `CtSig (_loc,_,_) -> _loc

@@ -942,14 +942,14 @@ and str_item (s : str_item) (l : structure) =
    | x -> errorf (loc_of x) "str_item : %s" (dump_str_item x) : structure )
 and class_type (x : Ast.class_type) =
   match x with
-  | `CtCon (loc,`ViNil _,id,tl) ->
+  | `ClassCon (loc,`ViNil _,id,tl) ->
       mkcty loc
         (Pcty_constr
            ((long_class_ident id),
              (List.map
                 (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
                 (list_of_com tl []))))
-  | `CtConS (loc,`ViNil _,id) ->
+  | `ClassConS (loc,`ViNil _,id) ->
       mkcty loc (Pcty_constr ((long_class_ident id), []))
   | `CtFun (loc,`Label (_,`Lid (_,lab),t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (class_type ct)))
@@ -986,7 +986,7 @@ and class_type (x : Ast.class_type) =
   | x -> errorf (loc_of x) "class type: %s" (dump_class_type x)
 and class_info_class_expr (ci : class_expr) =
   match ci with
-  | `Eq (_,`CeCon (loc,vir,`Lid (nloc,name),params),ce) ->
+  | `Eq (_,`ClassCon (loc,vir,`Lid (nloc,name),params),ce) ->
       let (loc_params,(params,variance)) =
         ((loc_of params), (List.split (class_parameters params))) in
       {
@@ -997,7 +997,7 @@ and class_info_class_expr (ci : class_expr) =
         pci_loc = loc;
         pci_variance = variance
       }
-  | `Eq (_loc,`CeConS (loc,vir,`Lid (nloc,name)),ce) ->
+  | `Eq (_loc,`ClassConS (loc,vir,`Lid (nloc,name)),ce) ->
       {
         pci_virt = (mkvirtual vir);
         pci_params = ([], loc);
@@ -1009,8 +1009,8 @@ and class_info_class_expr (ci : class_expr) =
   | ce -> errorf (loc_of ce) "class_info_class_expr: %s" (dump_class_expr ce)
 and class_info_class_type (ci : class_type) =
   match ci with
-  | `CtEq (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct)
-    |`CtCol (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct) ->
+  | `CtEq (_,`ClassCon (loc,vir,`Lid (nloc,name),params),ct)
+    |`CtCol (_,`ClassCon (loc,vir,`Lid (nloc,name),params),ct) ->
       let (loc_params,(params,variance)) =
         ((loc_of params), (List.split (class_parameters params))) in
       {
@@ -1021,8 +1021,8 @@ and class_info_class_type (ci : class_type) =
         pci_loc = loc;
         pci_variance = variance
       }
-  | `CtEq (_,`CtConS (loc,vir,`Lid (nloc,name)),ct)
-    |`CtCol (_,`CtConS (loc,vir,`Lid (nloc,name)),ct) ->
+  | `CtEq (_,`ClassConS (loc,vir,`Lid (nloc,name)),ct)
+    |`CtCol (_,`ClassConS (loc,vir,`Lid (nloc,name)),ct) ->
       {
         pci_virt = (mkvirtual vir);
         pci_params = ([], loc);
@@ -1059,14 +1059,14 @@ and class_expr (x : Ast.class_expr) =
       let (ce,el) = view_app [] c in
       let el = List.map label_expr el in
       mkcl loc (Pcl_apply ((class_expr ce), el))
-  | `CeCon (loc,`ViNil _,id,tl) ->
+  | `ClassCon (loc,`ViNil _,id,tl) ->
       mkcl loc
         (Pcl_constr
            ((long_class_ident id),
              (List.map
                 (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
                 (list_of_com tl []))))
-  | `CeConS (loc,`ViNil _,id) ->
+  | `ClassConS (loc,`ViNil _,id) ->
       mkcl loc (Pcl_constr ((long_class_ident id), []))
   | `CeFun (loc,`Label (_,`Lid (_loc,lab),po),ce) ->
       mkcl loc (Pcl_fun (lab, None, (patt po), (class_expr ce)))

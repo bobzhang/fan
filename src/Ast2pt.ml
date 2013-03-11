@@ -922,54 +922,52 @@ and module_type : Ast.module_type -> Parsetree.module_type =
            mkmty _loc (Pmty_typeof (module_expr me))
        | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t) ]
 and sig_item (s:sig_item) (l:signature) :signature =
-  with sig_item match s with 
-    [ `Class (loc,cd) ->
-      [mksig loc (Psig_class
-                    (List.map class_info_class_type (list_of_and cd []))) :: l]
-    | `ClassType (loc,ctd) ->
-        [mksig loc (Psig_class_type
-                      (List.map class_info_class_type (list_of_and ctd []))) :: l]
-    | `Sem(_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
-    | `Directive _ | `DirectiveSimple _  -> l
-          
-    | `Exception(_loc,`Id(_,`Uid(_,s))) ->
-        [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
-    | `Exception(_loc,`Of(_,`Id(_,`Uid(sloc,s)),t)) ->
-        [mksig _loc (Psig_exception (with_loc s sloc)
-                       (List.map ctyp (list_of_star t []))) :: l]
-    | `Exception (_,_) -> assert false (*FIXME*)
-    | `External (loc, `Lid(sloc,n), t, sl) ->
-        [mksig loc
-           (Psig_value (with_loc n sloc)
-              (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl []))) :: l]
-    | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
-    | `Module (loc,`Uid(sloc,n),mt) ->
-        [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
-    | `RecModule (loc,mb) ->
-        [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
-    | `ModuleTypeEnd(loc,`Uid(sloc,n)) ->
-        [mksig loc (Psig_modtype (with_loc n sloc ) Pmodtype_abstract ) :: l]
-    | `ModuleType (loc,`Uid(sloc,n),mt) ->
-        let si =  Pmodtype_manifest (module_type mt)  in
-        [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
-    | `Open (loc,id) ->
-                         [mksig loc (Psig_open (long_uident id)) :: l]
-    | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl )) :: l]
-    | `Val (loc,`Lid(sloc,n),t) ->
-        [mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l]
-    | t -> errorf (loc_of t) "sig_item: %s" (dump_sig_item t)]
+  match s with 
+ [ `Class (loc,cd) ->
+   [mksig loc (Psig_class
+                 (List.map class_info_class_type (list_of_and cd []))) :: l]
+ | `ClassType (loc,ctd) ->
+     [mksig loc (Psig_class_type
+                   (List.map class_info_class_type (list_of_and ctd []))) :: l]
+ | `Sem(_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
+ | `Directive _ | `DirectiveSimple _  -> l
+       
+ | `Exception(_loc,`Id(_,`Uid(_,s))) ->
+     [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
+ | `Exception(_loc,`Of(_,`Id(_,`Uid(sloc,s)),t)) ->
+     [mksig _loc (Psig_exception (with_loc s sloc)
+                    (List.map ctyp (list_of_star t []))) :: l]
+ | `Exception (_,_) -> assert false (*FIXME*)
+ | `External (loc, `Lid(sloc,n), t, sl) ->
+     [mksig loc
+        (Psig_value (with_loc n sloc)
+           (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl []))) :: l]
+ | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
+ | `Module (loc,`Uid(sloc,n),mt) ->
+     [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
+ | `RecModule (loc,mb) ->
+     [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
+ | `ModuleTypeEnd(loc,`Uid(sloc,n)) ->
+     [mksig loc (Psig_modtype (with_loc n sloc ) Pmodtype_abstract ) :: l]
+ | `ModuleType (loc,`Uid(sloc,n),mt) ->
+     let si =  Pmodtype_manifest (module_type mt)  in
+     [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
+ | `Open (loc,id) ->
+     [mksig loc (Psig_open (long_uident id)) :: l]
+ | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl )) :: l]
+ | `Val (loc,`Lid(sloc,n),t) ->
+     [mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l]
+ | t -> errorf (loc_of t) "sig_item: %s" (dump_sig_item t)]
 and module_sig_binding (x:module_binding) 
     (acc: list (Asttypes.loc string * Parsetree.module_type))  =
-  with module_binding match x with 
-  [ `And(_,x,y) ->
-      module_sig_binding x (module_sig_binding y acc)
+  match x with 
+  [ `And(_,x,y) -> module_sig_binding x (module_sig_binding y acc)
   | `Constraint(_loc,`Uid(sloc,s),mt) ->
       [(with_loc s sloc, module_type mt) :: acc]
   | t -> errorf (loc_of t) "module_sig_binding: %s" (dump_module_binding t) ]
 and module_str_binding (x:Ast.module_binding) acc =
   match x with 
-  [ `And(_,x,y) ->
-    module_str_binding x (module_str_binding y acc)
+  [ `And(_,x,y) -> module_str_binding x (module_str_binding y acc)
   | `ModuleBind(_loc,`Uid(sloc,s),mt,me)->
       [(with_loc s sloc, module_type mt, module_expr me) :: acc]
   | t -> errorf (loc_of t) "module_str_binding: %s" (dump_module_binding t)]
@@ -987,12 +985,10 @@ and module_expr (x:Ast.module_expr)=
   | `PackageModule(loc,`Constraint(_,e,`Package(_,pt))) ->
       mkmod loc
         (Pmod_unpack (
-         mkexp loc (Pexp_constraint
-                      (expr e,
-                       Some (mktyp loc (Ptyp_package (package_type pt))),
-                       None))))
-  | `PackageModule(loc,e) ->
-      mkmod loc (Pmod_unpack (expr e))
+         mkexp loc
+           (Pexp_constraint
+              (expr e, Some (mktyp loc (Ptyp_package (package_type pt))), None))))
+  | `PackageModule(loc,e) -> mkmod loc (Pmod_unpack (expr e))
   | t -> errorf (loc_of t) "module_expr: %s" (dump_module_expr t) ]
 and str_item (s:str_item) (l:structure) : structure =
   match s with 
@@ -1036,11 +1032,11 @@ and str_item (s:str_item) (l:structure) : structure =
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
   | x-> errorf (loc_of x) "str_item : %s" (dump_str_item x) ]
 and class_type (x:Ast.class_type) = match x with
-  [ `CtCon (loc, `ViNil _, id,tl) ->
+  [ `ClassCon (loc, `ViNil _, id,tl) ->
     mkcty loc
         (Pcty_constr (long_class_ident id)
            (List.map (fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false]) (list_of_com tl [])))
-  | `CtConS(loc,`ViNil _, id) ->
+  | `ClassConS(loc,`ViNil _, id) ->
       mkcty loc (Pcty_constr (long_class_ident id) [])
   | `CtFun (loc, (`Label (_, `Lid(_,lab), t)), ct) ->
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))
@@ -1065,7 +1061,7 @@ and class_type (x:Ast.class_type) = match x with
       
 and class_info_class_expr (ci:class_expr) =
   match ci with 
-  [ `Eq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
+  [ `Eq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
     let (loc_params, (params, variance)) =
       (loc_of params, List.split (class_parameters params)) in
         {pci_virt = mkvirtual vir;
@@ -1074,7 +1070,7 @@ and class_info_class_expr (ci:class_expr) =
          pci_expr = class_expr ce;
          pci_loc =  loc;
          pci_variance = variance}
-  | `Eq(_loc,`CeConS(loc,vir,`Lid(nloc,name)),ce) ->
+  | `Eq(_loc,`ClassConS(loc,vir,`Lid(nloc,name)),ce) ->
         {pci_virt = mkvirtual vir;
          pci_params = ([],  loc);
          pci_name = with_loc name nloc;
@@ -1084,8 +1080,8 @@ and class_info_class_expr (ci:class_expr) =
   | ce -> errorf  (loc_of ce) "class_info_class_expr: %s" (dump_class_expr ce) ]
 and class_info_class_type (ci:class_type) =
   match ci with 
-  [ `CtEq (_, (`CtCon (loc, vir, (`Lid (nloc, name)), params)), ct)
-  | `CtCol (_, (`CtCon (loc, vir, (`Lid (nloc, name)), params)), ct)
+  [ `CtEq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct)
+  | `CtCol (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct)
     ->
         let (loc_params, (params, variance)) =
           (loc_of params, List.split (class_parameters params)) in
@@ -1095,8 +1091,8 @@ and class_info_class_type (ci:class_type) =
          pci_expr = class_type ct;
          pci_loc =  loc;
          pci_variance = variance}
-  | `CtEq (_, (`CtConS (loc, vir, (`Lid (nloc, name)))), ct)
-  | `CtCol (_, (`CtConS (loc, vir, (`Lid (nloc, name)))), ct) ->
+  | `CtEq (_, (`ClassConS (loc, vir, (`Lid (nloc, name)))), ct)
+  | `CtCol (_, (`ClassConS (loc, vir, (`Lid (nloc, name)))), ct) ->
         {pci_virt = mkvirtual vir;
          pci_params = ([],  loc);
          pci_name = with_loc name nloc;
@@ -1125,13 +1121,13 @@ and class_expr  (x:Ast.class_expr) = match x with
       let (ce, el) = view_app [] c in
       let el = List.map label_expr el in
       mkcl loc (Pcl_apply (class_expr ce) el)
-  | `CeCon (loc, `ViNil _, id,tl) ->
+  | `ClassCon (loc, `ViNil _, id,tl) ->
       mkcl loc
         (Pcl_constr (long_class_ident id)
            (List.map (
             fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false])
               (list_of_com tl [])))
-  | `CeConS(loc,`ViNil _, id) ->
+  | `ClassConS(loc,`ViNil _, id) ->
       mkcl loc
         (Pcl_constr (long_class_ident id) [])
   | `CeFun (loc, (`Label (_,`Lid(_loc,lab), po)), ce) ->

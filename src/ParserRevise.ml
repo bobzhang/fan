@@ -1082,10 +1082,10 @@ let apply () = begin
       [ S{ce1}; "and"; S{ce2} -> {| $ce1 and $ce2 |}
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
       (* | "virtual";   class_name_and_param{(i, ot)} -> *)
-      (*     `CeCon (_loc, `Virtual _loc, (i :>ident), ot) *)
+      (*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *)
       (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
       (*     let anti = `Ant (_loc,mk_anti ~c:"class_expr" n s) in *)
-      (*     `CeCon (_loc, anti, i, ot) *)
+      (*     `ClassCon (_loc, anti, i, ot) *)
       | class_expr{x} -> x]
       class_declaration:
       [ S{c1}; "and"; S{c2} -> {| $c1 and $c2 |}
@@ -1098,8 +1098,8 @@ let apply () = begin
       | ipatt{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
       class_info_for_class_expr:
       [ opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]" -> 
-        `CeCon(_loc,mv,(i:>ident),x)
-      | opt_virtual{mv}; a_lident{i} -> `CeConS(_loc,mv, (i:>ident))]
+        `ClassCon(_loc,mv,(i:>ident),x)
+      | opt_virtual{mv}; a_lident{i} -> `ClassConS(_loc,mv, (i:>ident))]
       class_fun_def:
       [ ipatt{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; class_expr{ce} -> ce ]
       class_expr:
@@ -1129,9 +1129,9 @@ let apply () = begin
           | "("; S{ce}; ")" -> ce ] }
       class_longident_and_param:
       [ class_longident{ci}; "["; comma_ctyp{t}; "]" ->
-        `CeCon (_loc, `ViNil _loc, ci, t)
+        `ClassCon (_loc, `ViNil _loc, ci, t)
       | class_longident{ci} ->
-          `CeConS(_loc,`ViNil _loc,ci)
+          `ClassConS(_loc,`ViNil _loc,ci)
           (* {| $id:ci |} *)  ]  |};
   with class_type
     {:extend|
@@ -1149,30 +1149,30 @@ let apply () = begin
       class_info_for_class_type:
 
       [ opt_virtual{mv};  a_lident{i};"["; comma_type_parameter{x}; "]" ->
-        `CtCon(_loc,mv,(i:>ident),x)
+        `ClassCon(_loc,mv,(i:>ident),x)
       | opt_virtual{mv}; a_lident{i} ->
-          `CtConS(_loc,mv,(i:>ident))
+          `ClassConS(_loc,mv,(i:>ident))
         (*   class_name_and_param{(i, ot)} -> *)
-        (* `CtCon (_loc, mv, (i :>ident), ot) *)
+        (* `ClassCon (_loc, mv, (i :>ident), ot) *)
       ]
       class_type_quot:
       [ S{ct1}; "and"; S{ct2} -> {| $ct1 and $ct2 |}
       | S{ct1}; "="; S{ct2} -> {| $ct1 = $ct2 |}
       | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
       (* | "virtual";  class_name_and_param{(i, ot)} -> *)
-      (*     `CtCon (_loc, `Virtual _loc, (i :>ident), ot) *)
+      (*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *)
           (* {| virtual $((i:>ident)) [ $ot ] |} (\* types *\) *)
 
       (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
       (*     let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in *)
-      (*     `CtCon (_loc, anti, i, ot) *)
+      (*     `ClassCon (_loc, anti, i, ot) *)
             
       | `Ant (("virtual" as n),s); ident{i}; "["; comma_ctyp{t}; "]" ->
           let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
-          `CtCon(_loc,anti,i,t)
+          `ClassCon(_loc,anti,i,t)
       | `Ant (("virtual" as n),s); ident{i} ->
           let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
-          `CtConS(_loc,anti,i)
+          `ClassConS(_loc,anti,i)
             
       | class_type_plus{x} -> x]
       class_type_plus:
@@ -1182,15 +1182,9 @@ let apply () = begin
       [ `Ant ((""|"ctyp"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"class_type" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
       | class_type_longident_and_param{ct} -> ct
+      | "object";"(";ctyp{t};")";class_signature{csg};"end" -> `CtSig(_loc,t,csg)
+      | "object";class_signature{csg};"end"-> `Obj(_loc,csg)
 
-      (* | "object"; opt_class_self_type{cst}; class_signature{csg}; "end" -> *)
-      (*     `CtSig(_loc,cst,csg) *)
-      | "object";"(";ctyp{t};")";class_signature{csg};"end" ->
-          `CtSig(_loc,t,csg)
-      | "object";class_signature{csg};"end"->
-          `Obj(_loc,csg)
-      (* | "object";opt_class_self_type{cst};"end" -> *)
-      (*     `CtSigEnd(_loc,cst) *)
       | "object"; "(";ctyp{t};")" ->
           `CtSigEnd(_loc,t)
       | "object"; "end" ->
@@ -1199,8 +1193,8 @@ let apply () = begin
  
       class_type_longident_and_param:
       [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->
-        `CtCon (_loc, (`ViNil _loc), i, t)
-      | class_type_longident{i} -> `CtConS(_loc,`ViNil _loc,i)(* {| $id:i |} *)   ] |} ;
+        `ClassCon (_loc, (`ViNil _loc), i, t)
+      | class_type_longident{i} -> `ClassConS(_loc,`ViNil _loc,i)] |} ;
 end;
 
 

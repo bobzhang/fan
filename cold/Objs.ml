@@ -1021,16 +1021,16 @@ class map2 =
     method class_type : class_type -> class_type -> class_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`CtCon (_a0,_a1,_a2,_a3),`CtCon (_b0,_b1,_b2,_b3)) ->
+        | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#virtual_flag _a1 _b1 in
             let _a2 = self#ident _a2 _b2 in
             let _a3 = self#type_parameters _a3 _b3 in
-            `CtCon (_a0, _a1, _a2, _a3)
-        | (`CtConS (_a0,_a1,_a2),`CtConS (_b0,_b1,_b2)) ->
+            `ClassCon (_a0, _a1, _a2, _a3)
+        | (`ClassConS (_a0,_a1,_a2),`ClassConS (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#virtual_flag _a1 _b1 in
-            let _a2 = self#ident _a2 _b2 in `CtConS (_a0, _a1, _a2)
+            let _a2 = self#ident _a2 _b2 in `ClassConS (_a0, _a1, _a2)
         | (`CtFun (_a0,_a1,_a2),`CtFun (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -1103,16 +1103,16 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_expr _a1 _b1 in
             let _a2 = self#expr _a2 _b2 in `CeApp (_a0, _a1, _a2)
-        | (`CeCon (_a0,_a1,_a2,_a3),`CeCon (_b0,_b1,_b2,_b3)) ->
+        | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#virtual_flag _a1 _b1 in
             let _a2 = self#ident _a2 _b2 in
             let _a3 = self#type_parameters _a3 _b3 in
-            `CeCon (_a0, _a1, _a2, _a3)
-        | (`CeConS (_a0,_a1,_a2),`CeConS (_b0,_b1,_b2)) ->
+            `ClassCon (_a0, _a1, _a2, _a3)
+        | (`ClassConS (_a0,_a1,_a2),`ClassConS (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#virtual_flag _a1 _b1 in
-            let _a2 = self#ident _a2 _b2 in `CeConS (_a0, _a1, _a2)
+            let _a2 = self#ident _a2 _b2 in `ClassConS (_a0, _a1, _a2)
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
@@ -2037,11 +2037,11 @@ class fold2 =
     method class_type : class_type -> class_type -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`CtCon (_a0,_a1,_a2,_a3),`CtCon (_b0,_b1,_b2,_b3)) ->
+        | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#virtual_flag _a1 _b1 in
             let self = self#ident _a2 _b2 in self#type_parameters _a3 _b3
-        | (`CtConS (_a0,_a1,_a2),`CtConS (_b0,_b1,_b2)) ->
+        | (`ClassConS (_a0,_a1,_a2),`ClassConS (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#virtual_flag _a1 _b1 in self#ident _a2 _b2
         | (`CtFun (_a0,_a1,_a2),`CtFun (_b0,_b1,_b2)) ->
@@ -2099,11 +2099,11 @@ class fold2 =
         | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_expr _a1 _b1 in self#expr _a2 _b2
-        | (`CeCon (_a0,_a1,_a2,_a3),`CeCon (_b0,_b1,_b2,_b3)) ->
+        | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#virtual_flag _a1 _b1 in
             let self = self#ident _a2 _b2 in self#type_parameters _a3 _b3
-        | (`CeConS (_a0,_a1,_a2),`CeConS (_b0,_b1,_b2)) ->
+        | (`ClassConS (_a0,_a1,_a2),`ClassConS (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#virtual_flag _a1 _b1 in self#ident _a2 _b2
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
@@ -2684,12 +2684,12 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result153)
     method class_type : class_type -> 'result154=
       function
-      | `CtCon (_a0,_a1,_a2,_a3) ->
+      | `ClassCon (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#virtual_flag _a1;
            self#ident _a2;
            self#type_parameters _a3)
-      | `CtConS (_a0,_a1,_a2) ->
+      | `ClassConS (_a0,_a1,_a2) ->
           (self#loc _a0; self#virtual_flag _a1; self#ident _a2)
       | `CtFun (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#class_type _a2)
@@ -2732,12 +2732,12 @@ class iter =
       function
       | `CeApp (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_expr _a1; self#expr _a2)
-      | `CeCon (_a0,_a1,_a2,_a3) ->
+      | `ClassCon (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#virtual_flag _a1;
            self#ident _a2;
            self#type_parameters _a3)
-      | `CeConS (_a0,_a1,_a2) ->
+      | `ClassConS (_a0,_a1,_a2) ->
           (self#loc _a0; self#virtual_flag _a1; self#ident _a2)
       | `CeFun (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#class_expr _a2)
@@ -3674,15 +3674,16 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>str_item)
     method class_type : class_type -> class_type=
       function
-      | `CtCon (_a0,_a1,_a2,_a3) ->
+      | `ClassCon (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#virtual_flag _a1 in
           let _a2 = self#ident _a2 in
-          let _a3 = self#type_parameters _a3 in `CtCon (_a0, _a1, _a2, _a3)
-      | `CtConS (_a0,_a1,_a2) ->
+          let _a3 = self#type_parameters _a3 in
+          `ClassCon (_a0, _a1, _a2, _a3)
+      | `ClassConS (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#virtual_flag _a1 in
-          let _a2 = self#ident _a2 in `CtConS (_a0, _a1, _a2)
+          let _a2 = self#ident _a2 in `ClassConS (_a0, _a1, _a2)
       | `CtFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -3747,15 +3748,16 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#class_expr _a1 in
           let _a2 = self#expr _a2 in `CeApp (_a0, _a1, _a2)
-      | `CeCon (_a0,_a1,_a2,_a3) ->
+      | `ClassCon (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#virtual_flag _a1 in
           let _a2 = self#ident _a2 in
-          let _a3 = self#type_parameters _a3 in `CeCon (_a0, _a1, _a2, _a3)
-      | `CeConS (_a0,_a1,_a2) ->
+          let _a3 = self#type_parameters _a3 in
+          `ClassCon (_a0, _a1, _a2, _a3)
+      | `ClassConS (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#virtual_flag _a1 in
-          let _a2 = self#ident _a2 in `CeConS (_a0, _a1, _a2)
+          let _a2 = self#ident _a2 in `ClassConS (_a0, _a1, _a2)
       | `CeFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
@@ -4485,11 +4487,11 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method class_type : class_type -> 'self_type=
       function
-      | `CtCon (_a0,_a1,_a2,_a3) ->
+      | `ClassCon (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in
           let self = self#ident _a2 in self#type_parameters _a3
-      | `CtConS (_a0,_a1,_a2) ->
+      | `ClassConS (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in self#ident _a2
       | `CtFun (_a0,_a1,_a2) ->
@@ -4540,11 +4542,11 @@ class fold =
       | `CeApp (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_expr _a1 in self#expr _a2
-      | `CeCon (_a0,_a1,_a2,_a3) ->
+      | `ClassCon (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in
           let self = self#ident _a2 in self#type_parameters _a3
-      | `CeConS (_a0,_a1,_a2) ->
+      | `ClassConS (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in self#ident _a2
       | `CeFun (_a0,_a1,_a2) ->
@@ -5428,11 +5430,12 @@ class print =
     method class_type : 'fmt -> class_type -> 'result316=
       fun fmt  ->
         function
-        | `CtCon (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#virtual_flag _a1 self#ident _a2 self#type_parameters _a3
-        | `CtConS (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CtConS@ %a@ %a@ %a)@]" self#loc _a0
+        | `ClassCon (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#virtual_flag _a1 self#ident _a2 self#type_parameters
+              _a3
+        | `ClassConS (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`ClassConS@ %a@ %a@ %a)@]" self#loc _a0
               self#virtual_flag _a1 self#ident _a2
         | `CtFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a@ %a)@]" self#loc _a0
@@ -5487,11 +5490,12 @@ class print =
         | `CeApp (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a@ %a)@]" self#loc _a0
               self#class_expr _a1 self#expr _a2
-        | `CeCon (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`CeCon@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#virtual_flag _a1 self#ident _a2 self#type_parameters _a3
-        | `CeConS (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CeConS@ %a@ %a@ %a)@]" self#loc _a0
+        | `ClassCon (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#virtual_flag _a1 self#ident _a2 self#type_parameters
+              _a3
+        | `ClassConS (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`ClassConS@ %a@ %a@ %a)@]" self#loc _a0
               self#virtual_flag _a1 self#ident _a2
         | `CeFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" self#loc _a0
@@ -6369,11 +6373,11 @@ class eq =
     method class_type : class_type -> class_type -> 'result370=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`CtCon (_a0,_a1,_a2,_a3),`CtCon (_b0,_b1,_b2,_b3)) ->
+        | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
                (self#ident _a2 _b2))
               && (self#type_parameters _a3 _b3)
-        | (`CtConS (_a0,_a1,_a2),`CtConS (_b0,_b1,_b2)) ->
+        | (`ClassConS (_a0,_a1,_a2),`ClassConS (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
               (self#ident _a2 _b2)
         | (`CtFun (_a0,_a1,_a2),`CtFun (_b0,_b1,_b2)) ->
@@ -6430,11 +6434,11 @@ class eq =
         | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_expr _a1 _b1)) &&
               (self#expr _a2 _b2)
-        | (`CeCon (_a0,_a1,_a2,_a3),`CeCon (_b0,_b1,_b2,_b3)) ->
+        | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
                (self#ident _a2 _b2))
               && (self#type_parameters _a3 _b3)
-        | (`CeConS (_a0,_a1,_a2),`CeConS (_b0,_b1,_b2)) ->
+        | (`ClassConS (_a0,_a1,_a2),`ClassConS (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
               (self#ident _a2 _b2)
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
@@ -7147,13 +7151,13 @@ and strip_loc_str_item =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result404)
 and strip_loc_class_type =
   function
-  | `CtCon (_a0,_a1,_a2,_a3) ->
+  | `ClassCon (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_virtual_flag _a1 in
       let _a2 = strip_loc_ident _a2 in
-      let _a3 = strip_loc_type_parameters _a3 in `CtCon (_a1, _a2, _a3)
-  | `CtConS (_a0,_a1,_a2) ->
+      let _a3 = strip_loc_type_parameters _a3 in `ClassCon (_a1, _a2, _a3)
+  | `ClassConS (_a0,_a1,_a2) ->
       let _a1 = strip_loc_virtual_flag _a1 in
-      let _a2 = strip_loc_ident _a2 in `CtConS (_a1, _a2)
+      let _a2 = strip_loc_ident _a2 in `ClassConS (_a1, _a2)
   | `CtFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_class_type _a2 in `CtFun (_a1, _a2)
@@ -7202,13 +7206,13 @@ and strip_loc_class_expr =
   | `CeApp (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_expr _a1 in
       let _a2 = strip_loc_expr _a2 in `CeApp (_a1, _a2)
-  | `CeCon (_a0,_a1,_a2,_a3) ->
+  | `ClassCon (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_virtual_flag _a1 in
       let _a2 = strip_loc_ident _a2 in
-      let _a3 = strip_loc_type_parameters _a3 in `CeCon (_a1, _a2, _a3)
-  | `CeConS (_a0,_a1,_a2) ->
+      let _a3 = strip_loc_type_parameters _a3 in `ClassCon (_a1, _a2, _a3)
+  | `ClassConS (_a0,_a1,_a2) ->
       let _a1 = strip_loc_virtual_flag _a1 in
-      let _a2 = strip_loc_ident _a2 in `CeConS (_a1, _a2)
+      let _a2 = strip_loc_ident _a2 in `ClassConS (_a1, _a2)
   | `CeFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_class_expr _a2 in `CeFun (_a1, _a2)
@@ -8039,12 +8043,12 @@ and pp_print_str_item fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result456)
 and pp_print_class_type fmt =
   function
-  | `CtCon (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_virtual_flag _a1 pp_print_ident _a2 pp_print_type_parameters
-        _a3
-  | `CtConS (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`CtConS@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `ClassCon (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" pp_print_loc
+        _a0 pp_print_virtual_flag _a1 pp_print_ident _a2
+        pp_print_type_parameters _a3
+  | `ClassConS (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`ClassConS@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_virtual_flag _a1 pp_print_ident _a2
   | `CtFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -8096,12 +8100,12 @@ and pp_print_class_expr fmt =
   | `CeApp (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_expr _a1 pp_print_expr _a2
-  | `CeCon (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`CeCon@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_virtual_flag _a1 pp_print_ident _a2 pp_print_type_parameters
-        _a3
-  | `CeConS (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`CeConS@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `ClassCon (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" pp_print_loc
+        _a0 pp_print_virtual_flag _a1 pp_print_ident _a2
+        pp_print_type_parameters _a3
+  | `ClassConS (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`ClassConS@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_virtual_flag _a1 pp_print_ident _a2
   | `CeFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" pp_print_loc _a0

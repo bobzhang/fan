@@ -1419,7 +1419,7 @@ module Make(MetaLoc:META_LOC) =
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result27)
     and meta_class_type _loc =
       function
-      | `CtCon (_a0,_a1,_a2,_a3) ->
+      | `ClassCon (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
               (`App
@@ -1427,16 +1427,17 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc,
                         (`App
-                           (_loc, (`Vrn (_loc, "CtCon")),
+                           (_loc, (`Vrn (_loc, "ClassCon")),
                              (meta_loc _loc _a0))),
                         (meta_virtual_flag _loc _a1))),
                    (meta_ident _loc _a2))), (meta_type_parameters _loc _a3))
-      | `CtConS (_a0,_a1,_a2) ->
+      | `ClassConS (_a0,_a1,_a2) ->
           `App
             (_loc,
               (`App
                  (_loc,
-                   (`App (_loc, (`Vrn (_loc, "CtConS")), (meta_loc _loc _a0))),
+                   (`App
+                      (_loc, (`Vrn (_loc, "ClassConS")), (meta_loc _loc _a0))),
                    (meta_virtual_flag _loc _a1))), (meta_ident _loc _a2))
       | `CtFun (_a0,_a1,_a2) ->
           `App
@@ -1554,7 +1555,7 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "CeApp")), (meta_loc _loc _a0))),
                    (meta_class_expr _loc _a1))), (meta_expr _loc _a2))
-      | `CeCon (_a0,_a1,_a2,_a3) ->
+      | `ClassCon (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
               (`App
@@ -1562,16 +1563,17 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc,
                         (`App
-                           (_loc, (`Vrn (_loc, "CeCon")),
+                           (_loc, (`Vrn (_loc, "ClassCon")),
                              (meta_loc _loc _a0))),
                         (meta_virtual_flag _loc _a1))),
                    (meta_ident _loc _a2))), (meta_type_parameters _loc _a3))
-      | `CeConS (_a0,_a1,_a2) ->
+      | `ClassConS (_a0,_a1,_a2) ->
           `App
             (_loc,
               (`App
                  (_loc,
-                   (`App (_loc, (`Vrn (_loc, "CeConS")), (meta_loc _loc _a0))),
+                   (`App
+                      (_loc, (`Vrn (_loc, "ClassConS")), (meta_loc _loc _a0))),
                    (meta_virtual_flag _loc _a1))), (meta_ident _loc _a2))
       | `CeFun (_a0,_a1,_a2) ->
           `App
