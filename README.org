@@ -57,7 +57,7 @@ it's 100% compatible with ocaml.
 
 * Contribution
   Fan is a non-trivial project, I have already commited millions of
-  lines revisions during the last year.
+  lines [[file:stat/index.html][revisions]] during the last year.
 
   Feel free to send me a pull request
 
