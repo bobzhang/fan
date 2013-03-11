@@ -1174,9 +1174,9 @@ let apply () = begin
       [ `Ant ((""|"ctyp"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"class_type" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
       | class_type_longident_and_param{ct} -> ct
-      | "object";"(";ctyp{t};")";class_signature{csg};"end" -> `CtSig(_loc,t,csg)
+      | "object";"(";ctyp{t};")";class_signature{csg};"end" -> `ObjTy(_loc,t,csg)
       | "object";class_signature{csg};"end"-> `Obj(_loc,csg)
-      | "object"; "(";ctyp{t};")" -> `CtSigEnd(_loc,t)
+      | "object"; "(";ctyp{t};")" -> `ObjTyEnd(_loc,t)
       | "object"; "end" -> `ObjEnd(_loc)]
       class_type_longident_and_param:
       [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->

@@ -1049,12 +1049,12 @@ and class_type (x:Ast.class_type) = match x with
 
   | `ObjEnd(loc) ->
       mkcty loc (Pcty_signature {pcsig_self=ctyp (`Any loc);pcsig_fields=[];pcsig_loc=loc})
-  | `CtSigEnd(loc,t) ->
+  | `ObjTyEnd(loc,t) ->
       mkcty loc (Pcty_signature {pcsig_self= ctyp t; pcsig_fields = []; pcsig_loc = loc;})
   | `Obj(loc,ctfl) ->
       let cli = class_sig_item ctfl [] in
       mkcty loc (Pcty_signature {pcsig_self = ctyp(`Any loc);pcsig_fields=cli;pcsig_loc=loc})
-  | `CtSig (loc,t,ctfl) ->
+  | `ObjTy (loc,t,ctfl) ->
       let cil = class_sig_item ctfl [] in
       mkcty loc (Pcty_signature {pcsig_self = ctyp t; pcsig_fields = cil; pcsig_loc =  loc;})
   |  x -> errorf (loc_of x) "class type: %s" (dump_class_type x) ]

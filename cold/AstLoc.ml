@@ -20,7 +20,6 @@ let loc_of =
   | `Obj (_loc,_) -> _loc
   | `TyPol (_loc,_,_) -> _loc
   | `Val (_loc,_,_) -> _loc
-  | `CtSigEnd (_loc,_) -> _loc
   | `C (_loc,_) -> _loc
   | `LabelS (_loc,_) -> _loc
   | `Str (_loc,_) -> _loc
@@ -157,17 +156,18 @@ let loc_of =
   | `CrVvr (_loc,_,_,_) -> _loc
   | `Recursive _loc -> _loc
   | `OptLablExpr (_loc,_,_,_) -> _loc
-  | `CtSig (_loc,_,_) -> _loc
   | `SigInherit (_loc,_) -> _loc
   | `ModuleType (_loc,_,_) -> _loc
   | `Inherit (_loc,_,_) -> _loc
   | `MuNil _loc -> _loc
+  | `ObjTy (_loc,_,_) -> _loc
   | `Method (_loc,_,_,_) -> _loc
   | `Module (_loc,_,_) -> _loc
   | `ExAsf _loc -> _loc
   | `PackageModule (_loc,_) -> _loc
   | `PolyEq (_loc,_) -> _loc
   | `Open (_loc,_) -> _loc
+  | `ObjTyEnd (_loc,_) -> _loc
   | `ViNil _loc -> _loc
   | `TyObjEnd (_loc,_) -> _loc
   | `Sum (_loc,_) -> _loc

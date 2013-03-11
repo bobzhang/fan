@@ -1035,16 +1035,16 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
             let _a2 = self#class_type _a2 _b2 in `CtFun (_a0, _a1, _a2)
-        | (`CtSig (_a0,_a1,_a2),`CtSig (_b0,_b1,_b2)) ->
+        | (`ObjTy (_a0,_a1,_a2),`ObjTy (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
-            let _a2 = self#class_sig_item _a2 _b2 in `CtSig (_a0, _a1, _a2)
+            let _a2 = self#class_sig_item _a2 _b2 in `ObjTy (_a0, _a1, _a2)
+        | (`ObjTyEnd (_a0,_a1),`ObjTyEnd (_b0,_b1)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#ctyp _a1 _b1 in `ObjTyEnd (_a0, _a1)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_sig_item _a1 _b1 in `Obj (_a0, _a1)
-        | (`CtSigEnd (_a0,_a1),`CtSigEnd (_b0,_b1)) ->
-            let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#ctyp _a1 _b1 in `CtSigEnd (_a0, _a1)
         | (`ObjEnd _a0,`ObjEnd _b0) ->
             let _a0 = self#loc _a0 _b0 in `ObjEnd _a0
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
@@ -2047,13 +2047,13 @@ class fold2 =
         | (`CtFun (_a0,_a1,_a2),`CtFun (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#class_type _a2 _b2
-        | (`CtSig (_a0,_a1,_a2),`CtSig (_b0,_b1,_b2)) ->
+        | (`ObjTy (_a0,_a1,_a2),`ObjTy (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#class_sig_item _a2 _b2
+        | (`ObjTyEnd (_a0,_a1),`ObjTyEnd (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#class_sig_item _a1 _b1
-        | (`CtSigEnd (_a0,_a1),`CtSigEnd (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -2693,10 +2693,10 @@ class iter =
           (self#loc _a0; self#virtual_flag _a1; self#ident _a2)
       | `CtFun (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#class_type _a2)
-      | `CtSig (_a0,_a1,_a2) ->
+      | `ObjTy (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#class_sig_item _a2)
+      | `ObjTyEnd (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `Obj (_a0,_a1) -> (self#loc _a0; self#class_sig_item _a1)
-      | `CtSigEnd (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | `ObjEnd _a0 -> self#loc _a0
       | `And (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_type _a1; self#class_type _a2)
@@ -3688,16 +3688,16 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
           let _a2 = self#class_type _a2 in `CtFun (_a0, _a1, _a2)
-      | `CtSig (_a0,_a1,_a2) ->
+      | `ObjTy (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
-          let _a2 = self#class_sig_item _a2 in `CtSig (_a0, _a1, _a2)
+          let _a2 = self#class_sig_item _a2 in `ObjTy (_a0, _a1, _a2)
+      | `ObjTyEnd (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#ctyp _a1 in `ObjTyEnd (_a0, _a1)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_sig_item _a1 in `Obj (_a0, _a1)
-      | `CtSigEnd (_a0,_a1) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in `CtSigEnd (_a0, _a1)
       | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -4497,11 +4497,11 @@ class fold =
       | `CtFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#class_type _a2
-      | `CtSig (_a0,_a1,_a2) ->
+      | `ObjTy (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#class_sig_item _a2
+      | `ObjTyEnd (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_sig_item _a1
-      | `CtSigEnd (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -5440,15 +5440,15 @@ class print =
         | `CtFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#class_type _a2
-        | `CtSig (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CtSig@ %a@ %a@ %a)@]" self#loc _a0
+        | `ObjTy (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`ObjTy@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#class_sig_item _a2
+        | `ObjTyEnd (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ObjTyEnd@ %a@ %a)@]" self#loc _a0
+              self#ctyp _a1
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
               self#class_sig_item _a1
-        | `CtSigEnd (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CtSigEnd@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1
         | `ObjEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `And (_a0,_a1,_a2) ->
@@ -6383,13 +6383,13 @@ class eq =
         | (`CtFun (_a0,_a1,_a2),`CtFun (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#class_type _a2 _b2)
-        | (`CtSig (_a0,_a1,_a2),`CtSig (_b0,_b1,_b2)) ->
+        | (`ObjTy (_a0,_a1,_a2),`ObjTy (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#class_sig_item _a2 _b2)
+        | (`ObjTyEnd (_a0,_a1),`ObjTyEnd (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#class_sig_item _a1 _b1)
-        | (`CtSigEnd (_a0,_a1),`CtSigEnd (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_type _a1 _b1)) &&
@@ -7161,11 +7161,11 @@ and strip_loc_class_type =
   | `CtFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_class_type _a2 in `CtFun (_a1, _a2)
-  | `CtSig (_a0,_a1,_a2) ->
+  | `ObjTy (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_class_sig_item _a2 in `CtSig (_a1, _a2)
+      let _a2 = strip_loc_class_sig_item _a2 in `ObjTy (_a1, _a2)
+  | `ObjTyEnd (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `ObjTyEnd _a1
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_sig_item _a1 in `Obj _a1
-  | `CtSigEnd (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `CtSigEnd _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_type _a1 in
@@ -8053,15 +8053,15 @@ and pp_print_class_type fmt =
   | `CtFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_class_type _a2
-  | `CtSig (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`CtSig@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `ObjTy (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`ObjTy@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_class_sig_item _a2
+  | `ObjTyEnd (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`ObjTyEnd@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_ctyp _a1
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_sig_item _a1
-  | `CtSigEnd (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`CtSigEnd@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1
   | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0

@@ -5691,11 +5691,11 @@ let apply () =
          `Skeyword ")";
          `Snterm (Gram.obj (class_signature : 'class_signature Gram.t ));
          `Skeyword "end"],
-          ("Gram.mk_action\n  (fun _  (csg : 'class_signature)  _  (t : 'ctyp)  _  _  (_loc : FanLoc.t) \n     -> (`CtSig (_loc, t, csg) : 'class_type ))\n",
+          ("Gram.mk_action\n  (fun _  (csg : 'class_signature)  _  (t : 'ctyp)  _  _  (_loc : FanLoc.t) \n     -> (`ObjTy (_loc, t, csg) : 'class_type ))\n",
             (Gram.mk_action
                (fun _  (csg : 'class_signature)  _  (t : 'ctyp)  _  _ 
                   (_loc : FanLoc.t)  ->
-                  (`CtSig (_loc, t, csg) : 'class_type )))));
+                  (`ObjTy (_loc, t, csg) : 'class_type )))));
         ([`Skeyword "object";
          `Snterm (Gram.obj (class_signature : 'class_signature Gram.t ));
          `Skeyword "end"],
@@ -5707,10 +5707,10 @@ let apply () =
          `Skeyword "(";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
          `Skeyword ")"],
-          ("Gram.mk_action\n  (fun _  (t : 'ctyp)  _  _  (_loc : FanLoc.t)  ->\n     (`CtSigEnd (_loc, t) : 'class_type ))\n",
+          ("Gram.mk_action\n  (fun _  (t : 'ctyp)  _  _  (_loc : FanLoc.t)  ->\n     (`ObjTyEnd (_loc, t) : 'class_type ))\n",
             (Gram.mk_action
                (fun _  (t : 'ctyp)  _  _  (_loc : FanLoc.t)  ->
-                  (`CtSigEnd (_loc, t) : 'class_type )))));
+                  (`ObjTyEnd (_loc, t) : 'class_type )))));
         ([`Skeyword "object"; `Skeyword "end"],
           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'class_type ))\n",
             (Gram.mk_action

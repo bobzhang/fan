@@ -160,8 +160,8 @@ and str_item =
 and class_type =
   [ `ClassCon of (loc* virtual_flag* ident* type_parameters)
   | `ClassConS of (loc* virtual_flag* ident)
-  | `CtFun of (loc* ctyp* class_type) | `CtSig of (loc* ctyp* class_sig_item)
-  | `Obj of (loc* class_sig_item) | `CtSigEnd of (loc* ctyp) | `ObjEnd of loc
+  | `CtFun of (loc* ctyp* class_type) | `ObjTy of (loc* ctyp* class_sig_item)
+  | `ObjTyEnd of (loc* ctyp) | `Obj of (loc* class_sig_item) | `ObjEnd of loc
   | `And of (loc* class_type* class_type)
   | `CtCol of (loc* class_type* class_type)
   | `Eq of (loc* class_type* class_type) | ant] 

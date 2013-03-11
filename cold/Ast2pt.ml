@@ -965,7 +965,7 @@ and class_type (x : Ast.class_type) =
              pcsig_fields = [];
              pcsig_loc = loc
            })
-  | `CtSigEnd (loc,t) ->
+  | `ObjTyEnd (loc,t) ->
       mkcty loc
         (Pcty_signature
            { pcsig_self = (ctyp t); pcsig_fields = []; pcsig_loc = loc })
@@ -978,7 +978,7 @@ and class_type (x : Ast.class_type) =
              pcsig_fields = cli;
              pcsig_loc = loc
            })
-  | `CtSig (loc,t,ctfl) ->
+  | `ObjTy (loc,t,ctfl) ->
       let cil = class_sig_item ctfl [] in
       mkcty loc
         (Pcty_signature
