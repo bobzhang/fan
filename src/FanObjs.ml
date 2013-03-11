@@ -58,28 +58,28 @@ let map_loc f = object
 end;
 
 
-class clean_ast = object
-  inherit Objs.map as super;
-  method! ctyp t =
-    match super#ctyp t with
-    [ `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)|`Arrow (_loc,`Nil _l,t)
-    |`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) -> t
-    | t -> t];
-  (* method! type_parameters t = *)
-  (*   match super#type_parameters t with *)
-  (*     [`Com(_,t, `Nil _ ) -> t | `Com (_,`Nil _, t) -> t | t -> t]; *)
-  method! or_ctyp t =
-    match super#or_ctyp t with [ `Or(_,t,`Nil _) -> t | `Or(_,`Nil _,t) -> t| t -> t];
-  method! typedecl t =
-     match super#typedecl t with [`And(_,t,`Nil _) | `And(_,`Nil _,t) -> t | t -> t];
-  (* method! poly_ctyp t = *)
-  (*   match super#poly_ctyp t with *)
-  (*   [`TyPol(_,`Nil _,t) -> t | t ->t ]; *)
-  method! name_ctyp t =
-    match super#name_ctyp t with
-    [`Sem(_,t,`Nil _)
-    |`Sem(_,`Nil _,t) -> t | t -> t ]  ;
-end;
+(* class clean_ast = object *)
+(*   inherit Objs.map as super; *)
+(*   (\* method! ctyp t = *\) *)
+(*   (\*   match super#ctyp t with *\) *)
+(*   (\*   [ `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)|`Arrow (_loc,`Nil _l,t) *\) *)
+(*   (\*   |`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) -> t *\) *)
+(*   (\*   | t -> t]; *\) *)
+(*   (\* (\\* method! type_parameters t = *\\) *\) *)
+(*   (\* (\\*   match super#type_parameters t with *\\) *\) *)
+(*   (\* (\\*     [`Com(_,t, `Nil _ ) -> t | `Com (_,`Nil _, t) -> t | t -> t]; *\\) *\) *)
+(*   (\* method! or_ctyp t = *\) *)
+(*   (\*   match super#or_ctyp t with [ `Or(_,t,`Nil _) -> t | `Or(_,`Nil _,t) -> t| t -> t]; *\) *)
+(*   (\* method! typedecl t = *\) *)
+(*   (\*    match super#typedecl t with [`And(_,t,`Nil _) | `And(_,`Nil _,t) -> t | t -> t]; *\) *)
+(*   (\* (\\* method! poly_ctyp t = *\\) *\) *)
+(*   (\* (\\*   match super#poly_ctyp t with *\\) *\) *)
+(*   (\* (\\*   [`TyPol(_,`Nil _,t) -> t | t ->t ]; *\\) *\) *)
+(*   (\* method! name_ctyp t = *\) *)
+(*   (\*   match super#name_ctyp t with *\) *)
+(*   (\*   [`Sem(_,t,`Nil _) *\) *)
+(*   (\*   |`Sem(_,`Nil _,t) -> t | t -> t ]  ; *\) *)
+(* end; *)
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object

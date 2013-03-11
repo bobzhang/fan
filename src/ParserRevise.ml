@@ -40,7 +40,7 @@ let apply () = begin
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
     more_ctyp name_tags opt_class_self_type (* opt_comma_ctyp *) opt_dot_dot
-    opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
+    opt_meth_list opt_mutable (* opt_polyt *) opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
     str_item str_item_quot str_items top_phrase type_declaration type_ident_and_parameters
@@ -288,7 +288,7 @@ let apply () = begin
           match t with
           [ {:ctyp| ! $_ . $_ |} -> raise (XStream.Error "unexpected polytype here")
           | _ -> {| ($e : $t :> $t2) |} ]
-      | ":>"; ctyp{t}; "="; expr{e} -> {| ($e :> $t) |} ]
+      | ":>"; ctyp{t}; "="; expr{e} -> (* {| ($e :> $t) |} *)`Subtype(_loc,e,t) ]
       fun_binding:
       { RA
           [ "("; "type"; a_lident{i}; ")"; S{e} ->
@@ -464,7 +464,7 @@ let apply () = begin
         | "("; S{e}; ";"; ")" -> FanOps.mksequence ~loc:_loc e
         | "("; S{e}; ":"; ctyp{t}; ":>"; ctyp{t2}; ")" ->
             {| ($e : $t :> $t2 ) |}
-        | "("; S{e}; ":>"; ctyp{t}; ")" -> {| ($e :> $t) |}
+        | "("; S{e}; ":>"; ctyp{t}; ")" -> `Subtype(_loc,e,t)(* {| ($e :> $t) |} *)
         | "("; S{e}; ")" -> e
         | "begin"; sequence{seq}; "end" -> FanOps.mksequence ~loc:_loc seq
         | "begin"; "end" -> {| () |}
@@ -899,24 +899,18 @@ let apply () = begin
       | -> {:mutable_flag||}  ] 
       opt_virtual:
       [ "virtual" -> {:virtual_flag| virtual |}
-      | `Ant (("virtual"|"anti" as n),s) ->
-          (* {:virtual_flag|$(anti:(mk_anti ~c:"virtual_flag" n s))|} *)
-            (* let _ =  *)`Ant (_loc,mk_anti ~c:"virtual_flag" n s)
+      | `Ant (("virtual"|"anti" as n),s) -> `Ant (_loc,mk_anti ~c:"virtual_flag" n s)
       | -> {:virtual_flag||}  ] 
       opt_dot_dot:
-      [ ".." -> {:row_var_flag| .. |}
-      | `Ant ((".."|"anti" as n),s) ->
-          (* {:row_var_flag|$(anti:mk_anti ~c:"row_var_flag" n s) |} *)
-          (* let _ =  *)`Ant (_loc,mk_anti ~c:"row_var_flag" n s)
-      | -> {:row_var_flag||}  ]
+      [ ".." -> `RowVar _loc
+      | `Ant ((".."|"anti" as n),s) -> `Ant (_loc,mk_anti ~c:"row_var_flag" n s)
+      | -> `RvNil _loc   ]
 
       (*opt_rec@inline *)
       opt_rec:
-      [ "rec" -> {:rec_flag| rec |}
-      | `Ant (("rec"|"anti" as n),s) ->
-          (* {:rec_flag|$(anti:mk_anti ~c:"rec_flag" n s) |} *)
-            `Ant (_loc,mk_anti ~c:"rec_flag" n s)
-      | -> {:rec_flag||} ] 
+      [ "rec" -> `Recursive _loc
+      | `Ant (("rec"|"anti" as n),s) -> `Ant (_loc,mk_anti ~c:"rec_flag" n s)
+      | -> `ReNil _loc]
 
       a_string:
       [ `Ant((""|"lid") as n,s) -> `Ant (_loc, mk_anti n s)
@@ -1055,8 +1049,6 @@ let apply () = begin
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_str_item_tag
         | "inherit"; opt_override{o}; class_expr{ce}(* ; opt_as_lident{pb} *) ->
             `Inherit(_loc,o,ce)
-            (* `InheritAs(_loc,o,ce,pb) *)
-            (* {| inherit $!:o $ce $as:pb |} *)
         | "inherit"; opt_override{o}; class_expr{ce}; "as"; a_lident{i} ->
             `InheritAs(_loc,o,ce,i)
         | value_val_opt_override{o}; opt_mutable{mf}; a_lident{lab}; cvalue_binding{e}
@@ -1070,12 +1062,17 @@ let apply () = begin
         | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
                 (* poly_type *)ctyp{t} ->
                 match o with
-                [ {:override_flag@_||} -> {| method virtual $private:pf $l : $t |}
+                [ {:override_flag@_||} -> `CrVir (_loc, l, pf, t)
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
-        | method_opt_override{o}; opt_private{pf}; a_lident{l}; opt_polyt{topt};
+
+       | method_opt_override{o}; opt_private{pf}; a_lident{l}; ":"; ctyp{t} (* opt_polyt{topt} *);
                 fun_binding{e} ->
-            {| method $override:o $private:pf $l : $topt = $e |}
-        | "constraint"; ctyp{t1}; "="; ctyp{t2} ->
+                  `CrMth(_loc,l,o,pf,e,t)
+            (* {| method $override:o $private:pf $l : $topt = $e |} *)
+       | method_opt_override{o}; opt_private{pf};a_lident{l}; fun_binding{e} ->
+           `CrMthS(_loc,l,o,pf,e)
+             
+       | "constraint"; ctyp{t1}; "="; ctyp{t2} ->
           {|constraint $t1 = $t2|}
         | "initializer"; expr{se} -> {| initializer $se |} ]
       class_str_item_quot:
@@ -1216,7 +1213,7 @@ let apply_ctyp () = begin
     {:extend|
       ctyp_quot:
       [more_ctyp{x}; "*"; star_ctyp{y} -> `Sta (_loc, x, y)
-      | more_ctyp{x} -> x | -> `Nil _loc]
+      | more_ctyp{x} -> x (* | -> `Nil _loc *)]
       more_ctyp:
       [ctyp{x} -> x | type_parameter{x} -> x   ]
       unquoted_typevars:
@@ -1254,7 +1251,7 @@ let apply_ctyp () = begin
       | a_lident{lab}; ":"; ctyp{t} -> `TyCol(_loc,`Id(_loc, (lab :> ident)),t)]
       opt_meth_list:
       [ meth_list{(ml, v) } -> `TyObj (_loc, ml, v)
-      | opt_dot_dot{v}     -> `TyObj (_loc, (`Nil _loc), v)]
+      | opt_dot_dot{v}     -> `TyObjEnd(_loc,v) (* `TyObj (_loc, (`Nil _loc), v) *)]
       row_field:
       [ `Ant ((""|"typ" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp" n s))
       | `Ant (("list" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp|" n s))
@@ -1278,9 +1275,7 @@ let apply_ctyp () = begin
       | S{t1}; S{t2} -> `App (_loc, t1, t2)
       | "`"; astr{i} -> `TyVrn (_loc, i)  ]
 
-      (* only used in class_str_item *)
-      opt_polyt:
-      [ ":"; ctyp{t} -> t  | ->`Nil _loc ]
+
       
       type_declaration:
       [ `Ant ((""|"typ"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1302,7 +1297,7 @@ let apply_ctyp () = begin
 
       type_repr:
       ["["; constructor_declarations{t}; "]" -> `Sum(_loc,t )
-      | "["; "]" -> `Sum(_loc,`Nil _loc)
+      (* | "["; "]" -> `Sum(_loc,`Nil _loc) *)
       | "{"; label_declaration_list{t}; "}" -> `Record (_loc, t)]
       type_ident_and_parameters:
       [ "(";  L1 type_parameter SEP ","{tpl}; ")"; a_lident{i} -> (i, tpl)
@@ -1351,7 +1346,7 @@ let apply_ctyp () = begin
         | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Tup (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
         | "[="; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
-        | "[>"; "]" -> `PolySup (_loc, (`Nil _loc))
+        (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
         | "[>"; row_field{rfl}; "]" ->   `PolySup (_loc, rfl)
         | "[<"; row_field{rfl}; "]" -> `PolyInf(_loc,rfl)
         | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" -> `PolyInfSup(_loc,rfl,ntl)
@@ -1375,7 +1370,8 @@ let apply_ctyp () = begin
             (* {| $(id:(s:>ident)) : ($(FanAst.and_of_list tl) -> $rt) |} *)
             `TyCol
             (_loc, (`Id (_loc, (s :>ident))),
-             (`Arrow (_loc, (sta_of_list tl), rt)))
+             match tl with [ [] -> rt | _ -> `Arrow (_loc,sta_of_list1 tl,rt)]
+             (* (`Arrow (_loc, (sta_of_list tl), rt)) *))
       | a_uident{s} -> `Id(_loc,(s:>ident)) ]
       constructor_declaration:
       [ `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1396,16 +1392,10 @@ let apply_ctyp () = begin
       (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
       | a_lident{s}; ":"; ctyp{t} -> `TyCol (_loc, (`Id (_loc, (s :>ident))), t)
       | "mutable"; a_lident{s}; ":";  ctyp{t} -> `TyColMut(_loc,`Id(_loc,(s:>ident)),t)]
-
-      (* class_name_and_param: *)
-      (* [ a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x) *)
-      (* | a_lident{i} -> (i, `Nil _loc )  ] *)
       comma_type_parameter:
       [ S{t1}; ","; S{t2} ->  `Com (_loc, t1, t2)
       | `Ant (("list" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp," n s))
       | type_parameter{t} -> `Ctyp(_loc, t)  ]
-      (* opt_comma_ctyp: *)
-      (* [ "["; comma_ctyp{x}; "]" -> x | -> `Nil _loc  ] *)
       comma_ctyp:
       [ S{t1}; ","; S{t2} -> `Com (_loc, t1, t2) 
       | `Ant (("list" | "" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp," n s))

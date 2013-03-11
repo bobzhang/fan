@@ -237,7 +237,6 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
       (List.map
          (fun x  ->
             let exp = `Id (_loc, (`Lid (_loc, ("pp_print_" ^ x)))) in
-            (* let ty = `Nil _loc in *)
             `CrMthS
               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp))) in
   let v6 =

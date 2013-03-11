@@ -1,7 +1,6 @@
 type loc = FanLoc.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
 type nil = [ `Nil of loc] 
-type ant_nil = [ ant | nil] 
 type literal =
   [ `Chr of (loc* string) | `Int of (loc* string) | `Int32 of (loc* string)
   | `Int64 of (loc* string) | `Flo of (loc* string)

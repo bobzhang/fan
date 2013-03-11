@@ -19,7 +19,7 @@ val name_length_of_tydcl : (* ctyp *)typedecl -> string * int
 val ty_name_of_tydcl : typedecl -> ctyp
 val gen_ty_of_tydcl : off:int -> typedecl -> ctyp
     
-val gen_quantifiers : arity:int -> int -> ctyp
+(* val gen_quantifiers : arity:int -> int -> ctyp *)
 val of_id_len : off:int -> ident * int -> ctyp
 val of_name_len : off:int -> string * int -> ctyp
 

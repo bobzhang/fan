@@ -3,7 +3,6 @@ let _ = ()
 type loc = FanLoc.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
 type nil = [ `Nil] 
-type ant_nil = [ ant | nil] 
 type literal =
   [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
   | `Flo of string | `NativeInt of string | `Str of string] 
@@ -30,39 +29,38 @@ type dlpath = [ `Dot of (dupath* alident) | alident]
 type sid = [ `Id of ident] 
 type any = [ `Any] 
 type ctyp =
-  [ nil | `Alias of (ctyp* alident) | any | `App of (ctyp* ctyp)
+  [ `Alias of (ctyp* alident) | any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
   | `OptLabl of (alident* ctyp) | sid | `TyObj of (name_ctyp* row_var_flag)
-  | `TyPol of (ctyp* ctyp) | `TyTypePol of (ctyp* ctyp)
-  | `Quote of (position_flag* alident) | `QuoteAny of position_flag
-  | `Tup of ctyp | `Sta of (ctyp* ctyp) | `PolyEq of row_field
-  | `PolySup of row_field | `PolyInf of row_field
+  | `TyObjEnd of row_var_flag | `TyPol of (ctyp* ctyp) | `TyPolEnd of ctyp
+  | `TyTypePol of (ctyp* ctyp) | `Quote of (position_flag* alident)
+  | `QuoteAny of position_flag | `Tup of ctyp | `Sta of (ctyp* ctyp)
+  | `PolyEq of row_field | `PolySup of row_field | `PolyInf of row_field
   | `PolyInfSup of (row_field* tag_names) | `Package of module_type | 
     ant]
   
 and type_parameters =
   [ `Com of (type_parameters* type_parameters) | `Ctyp of ctyp | ant] 
 and row_field =
-  [ ant_nil | `Or of (row_field* row_field) | `TyVrn of astring
+  [ ant | `Or of (row_field* row_field) | `TyVrn of astring
   | `TyVrnOf of (astring* ctyp) | `Ctyp of ctyp] 
-and tag_names =
-  [ ant_nil | `App of (tag_names* tag_names) | `TyVrn of astring] 
+and tag_names = [ ant | `App of (tag_names* tag_names) | `TyVrn of astring] 
 and typedecl =
   [ `TyDcl of (alident* ctyp list* type_info* (ctyp* ctyp) list)
   | `TyAbstr of (alident* ctyp list* (ctyp* ctyp) list)
-  | `And of (typedecl* typedecl) | ant_nil] 
+  | `And of (typedecl* typedecl) | ant] 
 and type_info =
   [ `TyMan of (ctyp* private_flag* type_repr)
   | `TyRepr of (private_flag* type_repr) | `TyEq of (private_flag* ctyp)
   | ant] 
-and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | ant | nil] 
+and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | ant] 
 and name_ctyp =
   [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp)
-  | `TyColMut of (sid* ctyp) | ant | nil] 
+  | `TyColMut of (sid* ctyp) | ant] 
 and or_ctyp =
   [ `Or of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (sid* ctyp)
-  | sid | ant_nil] 
-and of_ctyp = [ `Of of (sid* ctyp) | sid | ant | nil] 
+  | sid | ant] 
+and of_ctyp = [ `Of of (sid* ctyp) | sid | ant] 
 and patt =
   [ sid | `App of (patt* patt) | `Vrn of string | `Com of (patt* patt)
   | `Sem of (patt* patt) | `Tup of patt | any | `Record of rec_patt | 
@@ -94,8 +92,9 @@ and expr =
   | `OvrInstEmpty | `Seq of expr | `Send of (expr* alident)
   | `StringDot of (expr* expr) | `Try of (expr* match_case)
   | `Constraint of (expr* ctyp) | `Coercion of (expr* ctyp* ctyp)
-  | `While of (expr* expr) | `LetOpen of (ident* expr)
-  | `LocalTypeFun of (alident* expr) | `Package_expr of module_expr] 
+  | `Subtype of (expr* ctyp) | `While of (expr* expr)
+  | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
+  | `Package_expr of module_expr] 
 and rec_expr =
   [ `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | any | ant] 
 and module_type =
@@ -161,6 +160,7 @@ and class_str_item =
   | `Inherit of (override_flag* class_expr)
   | `InheritAs of (override_flag* class_expr* alident) | `Initializer of expr
   | `CrMth of (alident* override_flag* private_flag* expr* ctyp)
+  | `CrMthS of (alident* override_flag* private_flag* expr)
   | `CrVal of (alident* override_flag* mutable_flag* expr)
   | `CrVir of (alident* private_flag* ctyp)
   | `CrVvr of (alident* mutable_flag* ctyp) | ant] 

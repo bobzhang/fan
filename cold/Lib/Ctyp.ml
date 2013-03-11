@@ -18,14 +18,14 @@ let name_length_of_tydcl (x : typedecl) =
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) -> (name, (List.length tyvars))
   | tydcl ->
       failwithf "name_length_of_tydcl {|%s|}\n" (FanObjs.dump_typedecl tydcl)
-let gen_quantifiers1 ~arity  n :ctyp=
-  ((List.init arity
-      (fun i  ->
-         List.init n
-           (fun j  ->
-              `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:i j)))))))
-     |> List.concat)
-    |> appl_of_list1
+let gen_quantifiers1 ~arity  n =
+  (((List.init arity
+       (fun i  ->
+          List.init n
+            (fun j  ->
+               `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:i j)))))))
+      |> List.concat)
+     |> appl_of_list1 : ctyp )
 let of_id_len ~off  (id,len) =
   appl_of_list1 ((`Id (_loc, id)) ::
     (List.init len
@@ -93,7 +93,7 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
           | Str_item  -> prefix <+ (app_src result_type)) in
    let base = prefix <+ (app_src dst) in
    if len = 0
-   then (`TyPolEnd(_loc,base),dst)
+   then ((`TyPolEnd (_loc, base)), dst)
    else
      (let quantifiers = gen_quantifiers1 ~arity:quant len in
       ((`TyPol (_loc, quantifiers, (params +> base))), dst)) : (ctyp* ctyp) )

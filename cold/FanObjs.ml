@@ -44,7 +44,6 @@ let map_ctyp f =
   object  inherit  Objs.map as super method! ctyp x = f (super#ctyp x) end
 let map_loc f =
   object  inherit  Objs.map as super method! loc x = f (super#loc x) end
-class clean_ast = object  inherit  Objs.map as super end
 class reloc _loc = object  inherit  Objs.map method! loc _ = _loc end
 let wildcarder =
   object (self)

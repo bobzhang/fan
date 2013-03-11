@@ -38,7 +38,7 @@
 type loc = FanLoc.t;
 type ant = [= `Ant of (loc * FanUtil.anti_cxt)];
 type nil = [= `Nil of loc];
-type ant_nil = [= ant|nil];
+
 
 type literal =
   [= `Chr of (loc * string)
@@ -164,8 +164,7 @@ type sid = [= `Id of (loc * ident)];
 type any = [= `Any of loc];
 
 type ctyp =
-  [= nil
-  | `Alias of (loc * ctyp * alident)
+  [= `Alias of (loc * ctyp * alident)
   | any
   | `App of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
   | `Arrow of (loc * ctyp * ctyp)
@@ -177,8 +176,9 @@ type ctyp =
   | sid
       (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
   | `TyObj of (loc * name_ctyp * row_var_flag )
+  | `TyObjEnd of (loc * row_var_flag)
   | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
-        
+  | `TyPolEnd of (loc *ctyp) (* !. t *)  
   | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
 
   (*  +'s -'s 's +_ -_ *)      
@@ -198,17 +198,15 @@ type ctyp =
 and type_parameters =
   [= `Com of (loc * type_parameters * type_parameters)
   | `Ctyp of (loc * ctyp)
-  | ant
-  (* | nil *)
-]  
+  | ant]  
 and row_field =
-  [= ant_nil
+  [= ant
   | `Or of (loc * row_field * row_field )
   | `TyVrn of (loc * astring)
   | `TyVrnOf of (loc * astring * ctyp)
   |  `Ctyp of (loc * ctyp)]
 and tag_names =
-  [= ant_nil
+  [= ant
   | `App of (loc * tag_names * tag_names)
   | `TyVrn of (loc * astring )]   
 and typedecl =
@@ -217,7 +215,7 @@ and typedecl =
 
   | `TyAbstr of (loc * alident * list ctyp * list (ctyp * ctyp) ) 
   | `And of (loc * typedecl * typedecl)
-  | ant_nil ]
+  | ant ]
       (* original syntax
          {[ type v = u = A of int ]}
        revise syntax
@@ -237,25 +235,23 @@ and type_info =        (* FIXME be more preicse *)
 and type_repr =
   [= `Record of (loc * name_ctyp)
   | `Sum of (loc * or_ctyp)
-  | ant
-  | nil ]   
+  | ant]
 and name_ctyp =
   [= `Sem of (loc * name_ctyp * name_ctyp)
   | `TyCol of (loc * sid * ctyp )
   | `TyColMut of (loc * sid * ctyp)
-  | ant
-  | nil ]
+  | ant]
 and or_ctyp =
   [= `Or of (loc * or_ctyp * or_ctyp )
   | `TyCol of (loc * sid * ctyp)
-  | `Of of (loc * (* ctyp *)sid * ctyp)
+  | `Of of (loc * sid * ctyp)
   | sid
-  | ant_nil]
+  | ant]
 and of_ctyp =
   [= `Of of (loc * sid * ctyp)
   | sid
-  | ant
-  | nil]
+  | ant]
+
          
 and patt =
   [= sid
@@ -354,8 +350,9 @@ and expr =
         (* try e with [ mc ] *)
   | `Try of (loc * expr * match_case)
         (* (e : t) *)
-  | (* `Constraint *) `Constraint of (loc * expr * ctyp)
-  | `Coercion of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)          
+  | (* `Constraint *) `Constraint of (loc * expr * ctyp) (*(e : t) *)
+  | `Coercion of (loc * expr * ctyp * ctyp) (* or (e : t :> t) *)
+  | `Subtype of (loc * expr * ctyp) (* (e :> t) *)
         (* while e do { e } *)
   | `While of (loc * expr * expr)
         (* let open i in e *)
@@ -568,6 +565,8 @@ and class_str_item =
   | `Initializer of (loc * expr)
         (* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)
   | `CrMth of (loc * alident * override_flag * private_flag * expr * ctyp)
+  | `CrMthS of (loc * alident * override_flag * private_flag * expr )
+        
         (* value(!)? (mutable)? s = e *)
   | `CrVal of (loc *  alident * override_flag * mutable_flag * expr)
         (* method virtual (private)? s : t *)

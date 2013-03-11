@@ -62,10 +62,10 @@ let name_length_of_tydcl (x:typedecl)=
   ]}
   quantifier variables can not be unified
  *)  
-let gen_quantifiers ~arity n  =
+let gen_quantifiers1 ~arity n  : ctyp =
   List.init arity
     (fun i -> List.init n (fun j -> {|  '$(lid:allx ~off:i j) |} ))
-  |> List.concat |> appl_of_list;
+  |> List.concat |> appl_of_list1;
 
 
 (*
@@ -140,7 +140,7 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
    
  *)
 let list_of_record (ty:name_ctyp) : list FSig.col  =
-  let (tys : list name_ctyp)  = list_of_sem' ty [] in
+  let (tys : list name_ctyp)  = list_of_sem ty [] in
     (* list_of_sem' ty [] *) tys|> List.map (
        fun
          [ 
@@ -250,8 +250,8 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
           |Str_item -> prefix <+ (app_src result_type)]) in 
   let base = prefix <+ (app_src dst) in
   if len = 0 then
-    ( `TyPol (_loc, (`Nil _loc ),base),dst)
-  else let quantifiers = gen_quantifiers ~arity:quant len in
+    ( `TyPolEnd (_loc, base),dst)
+  else let quantifiers = gen_quantifiers1 ~arity:quant len in
     ({| ! $quantifiers . $(params +> base) |},dst);
 
 (* FIXME : merge with [mk_type_of] *)  
@@ -322,7 +322,7 @@ let is_recursive ty_dcl =
  *)  
 let qualified_app_list = fun 
   [ {| $_ $_ |} as x->
-    match list_of_app' x []with
+    match list_of_app x []with
     [ [ {| $lid:_  |} :: _ ] -> None
     | [ {| $id:i   |} ::ys]  ->
         Some (i,ys)
@@ -484,11 +484,11 @@ let transform_module_types  (lst:FSig.module_types) =
  *)
 let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
     (f:  string -> list ctyp -> 'e)  =
-  let branches = list_of_or' ty [] in
+  let branches = list_of_or ty [] in
   List.fold_left (fun acc x -> match (x:or_ctyp) with
     [  `Of (_loc, (`Id (_, (`Uid (_, cons)))), tys)
       ->
-        compose (f cons ((* list_of_and' *)list_of_star' tys [])) acc  
+        compose (f cons ((* list_of_and' *)list_of_star tys [])) acc  
     | (* {| $uid:cons |} *)
       `Id (_loc, (`Uid (_, cons)))
       -> compose  (f cons [] ) acc
@@ -497,13 +497,13 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
           "reduce_data_ctors: %s" (FanObjs.dump_or_ctyp t)]) init  branches;
     
 let view_sum (t:or_ctyp) =
-  let bs = list_of_or' t [] in
+  let bs = list_of_or t [] in
   List.map
     (fun
       [ (* {|$uid:cons|} *) `Id(_,`Uid(_,cons)) ->
         `branch (cons,[])
        | `Of(_loc,`Id(_,`Uid(_,cons)),t) (* {|$uid:cons of $t|} *) ->
-           `branch (cons, (* FanAst.list_of_and' *) list_of_star'  t [])
+           `branch (cons, (* FanAst.list_of_and' *) list_of_star  t [])
        | _ -> assert false ]) bs ;
 
 (*
@@ -527,13 +527,13 @@ let view_sum (t:or_ctyp) =
  *)    
 let view_variant (t:row_field) : list vbranch =
 
-  let lst = list_of_or' t [] in 
+  let lst = list_of_or t [] in 
   List.map (
   fun [ (* {| `$cons of $tup:t |} *)
         (* `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Tup (_, t))) *)
        `TyVrnOf(_loc, `C(_,cons), `Tup(_,t))
         ->
-        `variant (cons, list_of_star' t [])
+        `variant (cons, list_of_star t [])
       | (* {| `$cons of $t |} *)
         (* `Of (_loc, (`TyVrn (_, `C(_,cons))), t) *)
         `TyVrnOf(_loc,`C(_,cons),t)

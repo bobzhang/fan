@@ -14,4 +14,4 @@ let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
     match destination with
     | Obj (Map ) ->
         `Case (_loc, pat, (`Coercion (_loc, e, (`Id (_loc, name)), annot)))
-    | _ -> `Case (_loc, pat, (`Subtype (_loc, e,  annot)))
+    | _ -> `Case (_loc, pat, (`Subtype (_loc, e, annot)))

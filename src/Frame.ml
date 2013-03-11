@@ -59,7 +59,7 @@ let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     simple_expr_of_ctyp (ty:ctyp) : expr =
   match ty with
   [ `Tup (_loc,t)  -> 
-    let ls = list_of_star' t [] in
+    let ls = list_of_star t [] in
     let len = List.length ls in
     let patt = EP.mk_tuple ~arity ~number:len in
     let tys =
@@ -181,7 +181,7 @@ let expr_of_ctyp
       mk_variant cons exprs in
     let e = mk (cons,tyargs) in
     {:match_case| $pat:p -> $e |} in  begin 
-    let info = (Sum, List.length (list_of_or' ty [])) in 
+    let info = (Sum, List.length (list_of_or ty [])) in 
     let res : list match_case =
       Ctyp.reduce_data_ctors ty  [] f ~compose:cons  in
     let res =
@@ -214,7 +214,7 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~de
     let annot = appl_of_list1 [f :: List.map (fun _ -> {:ctyp|_|}) a] in
     MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e in
   (* FIXME, be more precise  *)
-  let info = (TyVrnEq, List.length (list_of_or' ty [])) in
+  let info = (TyVrnEq, List.length (list_of_or ty [])) in
   let ls = Ctyp.view_variant ty in
   let res =
     let res = List.fold_left

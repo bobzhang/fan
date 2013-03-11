@@ -153,7 +153,7 @@ module type Syntax = sig
   val mutable_flag_quot : Gram.t mutable_flag;
   val opt_override : Gram.t override_flag;
   val override_flag_quot : Gram.t override_flag;
-  val opt_polyt : Gram.t ctyp;
+  (* val opt_polyt : Gram.t ctyp; *)
   val opt_private : Gram.t private_flag;
   val private_flag_quot : Gram.t private_flag;
   val opt_rec : Gram.t rec_flag;

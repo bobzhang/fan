@@ -72,8 +72,7 @@ let (map_class_str_item_base_1,
               {| method $lid:x : $ty = $exp |} ) in
   let v5 = ty_names |> List.map (fun x ->
     let exp = {:expr|$(lid:"pp_print_"^x)|} in
-    let ty = {:ctyp||} in
-    {| method $lid:x : $ty = $exp  |} ) in
+    {| method $lid:x  = $exp  |} ) in
   let v6 = ty_names |> List.map
     (fun x ->
       let ty = {:ctyp| $lid:x -> unit |} in
