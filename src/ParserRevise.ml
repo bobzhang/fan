@@ -1178,10 +1178,20 @@ let apply () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
       | class_type_longident_and_param{ct} -> ct
 
-      | "object"; opt_class_self_type{cst}; class_signature{csg}; "end" ->
-          `CtSig(_loc,cst,csg)
-      | "object";opt_class_self_type{cst};"end" ->
-          `CtSigEnd(_loc,cst)]
+      (* | "object"; opt_class_self_type{cst}; class_signature{csg}; "end" -> *)
+      (*     `CtSig(_loc,cst,csg) *)
+      | "object";"(";ctyp{t};")";class_signature{csg};"end" ->
+          `CtSig(_loc,t,csg)
+      | "object";class_signature{csg};"end"->
+          `Obj(_loc,csg)
+      (* | "object";opt_class_self_type{cst};"end" -> *)
+      (*     `CtSigEnd(_loc,cst) *)
+      | "object"; "(";ctyp{t};")" ->
+          `CtSigEnd(_loc,t)
+      | "object"; "end" ->
+          `ObjEnd(_loc)
+      ]
+ 
       class_type_longident_and_param:
       [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->
         `CtCon (_loc, (`ViNil _loc), i, t)
@@ -1194,11 +1204,9 @@ let apply_ctyp () = begin
     {:extend|
       ctyp_quot:
       [more_ctyp{x}; "*"; star_ctyp{y} -> `Sta (_loc, x, y)
-      | more_ctyp{x} -> x
-      | -> `Nil _loc  ]
+      | more_ctyp{x} -> x | -> `Nil _loc]
       more_ctyp:
-      [ctyp{x} -> x |
-      type_parameter{x} -> x   ]
+      [ctyp{x} -> x | type_parameter{x} -> x   ]
       unquoted_typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1206,24 +1214,14 @@ let apply_ctyp () = begin
       | a_lident{i} -> `Id(_loc,(i:>ident))]
       type_parameter:
       [ `Ant ((""|"typ"|"anti" as n),s) -> `Ant (_loc, (mk_anti n s))
-        (* {| $(anti:mk_anti n s) |} *)
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
-      | "'"; a_lident{i} ->
-          (* `Quote(_loc,`Normal _loc, `Some i) *)
-          `Quote(_loc,`Normal _loc, i)
-          (* {| '$i |} *)
+      | "'"; a_lident{i} -> `Quote(_loc,`Normal _loc, i)
       | "+"; "'"; a_lident{i} ->
           `Quote (_loc, `Positive _loc,  i)
-          (* `Quote (_loc, `Positive _loc, (`Some i)) *)
-          (* {| +'$i |} *)
-      | "-"; "'"; a_lident{i} ->
-          `Quote (_loc, (`Negative _loc),  i)
-          (* {| -'$i |} *)
+      | "-"; "'"; a_lident{i} -> `Quote (_loc, (`Negative _loc),  i)
       | "+"; "_" -> `QuoteAny (_loc, `Positive _loc)
-          (* {| + _|} *)
       | "-"; "_" -> `QuoteAny (_loc, `Negative _loc)
-          (* {| - _ |} *)
-      | "_" ->  `Any _loc (* {| _ |} *)]
+      | "_" ->  `Any _loc]
       type_longident_and_parameters:
       [ "("; type_parameters{tpl}; ")";type_longident{i} -> tpl {| $id:i|}
       | type_parameter{tpl} ; type_longident{i} -> `App(_loc,{|$id:i|},tpl)
@@ -1233,8 +1231,8 @@ let apply_ctyp () = begin
       [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
       | type_parameter{t} -> fun acc -> {| $acc $t |}
       | -> fun t -> t  ]
-      opt_class_self_type:
-      [ "("; ctyp{t}; ")" -> t | -> `Nil _loc ]
+      (* opt_class_self_type: *)
+      (* [ "("; ctyp{t}; ")" -> t | -> `Nil _loc ] *)
       meth_list:
       [ meth_decl{m}; ";"; S{(ml, v) }  -> (`Sem(_loc,m,ml)(* {| $m; $ml |} *), v)
       | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)

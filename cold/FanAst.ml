@@ -1436,11 +1436,17 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "CtSig")), (meta_loc _loc _a0))),
                    (meta_ctyp _loc _a1))), (meta_class_sig_item _loc _a2))
+      | `Obj (_a0,_a1) ->
+          `App
+            (_loc, (`App (_loc, (`Vrn (_loc, "Obj")), (meta_loc _loc _a0))),
+              (meta_class_sig_item _loc _a1))
       | `CtSigEnd (_a0,_a1) ->
           `App
             (_loc,
               (`App (_loc, (`Vrn (_loc, "CtSigEnd")), (meta_loc _loc _a0))),
               (meta_ctyp _loc _a1))
+      | `ObjEnd _a0 ->
+          `App (_loc, (`Vrn (_loc, "ObjEnd")), (meta_loc _loc _a0))
       | `And (_a0,_a1,_a2) ->
           `App
             (_loc,

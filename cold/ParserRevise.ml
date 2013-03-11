@@ -5675,23 +5675,35 @@ let apply () =
                (fun (ct : 'class_type_longident_and_param)  (_loc : FanLoc.t)
                    -> (ct : 'class_type )))));
         ([`Skeyword "object";
-         `Snterm
-           (Gram.obj (opt_class_self_type : 'opt_class_self_type Gram.t ));
+         `Skeyword "(";
+         `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+         `Skeyword ")";
          `Snterm (Gram.obj (class_signature : 'class_signature Gram.t ));
          `Skeyword "end"],
-          ("Gram.mk_action\n  (fun _  (csg : 'class_signature)  (cst : 'opt_class_self_type)  _ \n     (_loc : FanLoc.t)  -> (`CtSig (_loc, cst, csg) : 'class_type ))\n",
+          ("Gram.mk_action\n  (fun _  (csg : 'class_signature)  _  (t : 'ctyp)  _  _  (_loc : FanLoc.t) \n     -> (`CtSig (_loc, t, csg) : 'class_type ))\n",
             (Gram.mk_action
-               (fun _  (csg : 'class_signature)  (cst : 'opt_class_self_type)
-                   _  (_loc : FanLoc.t)  ->
-                  (`CtSig (_loc, cst, csg) : 'class_type )))));
+               (fun _  (csg : 'class_signature)  _  (t : 'ctyp)  _  _ 
+                  (_loc : FanLoc.t)  ->
+                  (`CtSig (_loc, t, csg) : 'class_type )))));
         ([`Skeyword "object";
-         `Snterm
-           (Gram.obj (opt_class_self_type : 'opt_class_self_type Gram.t ));
+         `Snterm (Gram.obj (class_signature : 'class_signature Gram.t ));
          `Skeyword "end"],
-          ("Gram.mk_action\n  (fun _  (cst : 'opt_class_self_type)  _  (_loc : FanLoc.t)  ->\n     (`CtSigEnd (_loc, cst) : 'class_type ))\n",
+          ("Gram.mk_action\n  (fun _  (csg : 'class_signature)  _  (_loc : FanLoc.t)  ->\n     (`Obj (_loc, csg) : 'class_type ))\n",
             (Gram.mk_action
-               (fun _  (cst : 'opt_class_self_type)  _  (_loc : FanLoc.t)  ->
-                  (`CtSigEnd (_loc, cst) : 'class_type )))))]));
+               (fun _  (csg : 'class_signature)  _  (_loc : FanLoc.t)  ->
+                  (`Obj (_loc, csg) : 'class_type )))));
+        ([`Skeyword "object";
+         `Skeyword "(";
+         `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
+         `Skeyword ")"],
+          ("Gram.mk_action\n  (fun _  (t : 'ctyp)  _  _  (_loc : FanLoc.t)  ->\n     (`CtSigEnd (_loc, t) : 'class_type ))\n",
+            (Gram.mk_action
+               (fun _  (t : 'ctyp)  _  _  (_loc : FanLoc.t)  ->
+                  (`CtSigEnd (_loc, t) : 'class_type )))));
+        ([`Skeyword "object"; `Skeyword "end"],
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'class_type ))\n",
+            (Gram.mk_action
+               (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'class_type )))))]));
   Gram.extend_single
     (class_type_longident_and_param : 'class_type_longident_and_param Gram.t )
     (None,
@@ -5889,20 +5901,6 @@ let apply_ctyp () =
           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (fun t  -> t : 'type_parameters ))\n",
             (Gram.mk_action
                (fun (_loc : FanLoc.t)  -> (fun t  -> t : 'type_parameters )))))]));
-  Gram.extend_single (opt_class_self_type : 'opt_class_self_type Gram.t )
-    (None,
-      (None, None,
-        [([`Skeyword "(";
-          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
-          `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  (t : 'ctyp)  _  (_loc : FanLoc.t)  -> (t : 'opt_class_self_type ))\n",
-             (Gram.mk_action
-                (fun _  (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                   (t : 'opt_class_self_type )))));
-        ([],
-          ("Gram.mk_action\n  (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'opt_class_self_type ))\n",
-            (Gram.mk_action
-               (fun (_loc : FanLoc.t)  -> (`Nil _loc : 'opt_class_self_type )))))]));
   Gram.extend_single (meth_list : 'meth_list Gram.t )
     (None,
       (None, None,

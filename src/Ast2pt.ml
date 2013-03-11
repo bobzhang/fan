@@ -1062,24 +1062,23 @@ and class_type (x:Ast.class_type) = match x with
       mkcty loc (Pcty_fun ("?" ^ lab) (ctyp t) (class_type ct))
         
   | `CtFun (loc,t,ct) -> mkcty loc (Pcty_fun "" (ctyp t) (class_type ct))
-  | `CtSigEnd(loc,t_o) ->
-      let t = match t_o with
-        [  `Nil _loc -> `Any loc (*Q*)
-      | t -> t ] in
-      mkcty loc
-        (Pcty_signature {
-         pcsig_self = ctyp t;
-         pcsig_fields = [];
-         pcsig_loc =  loc;})
-  | `CtSig (loc,t_o,ctfl) ->
-      let t = match t_o with
-      [  `Nil _loc -> `Any loc (*Q*)
-      | t -> t ] in
+
+  | `ObjEnd(loc) ->
+      mkcty loc (Pcty_signature {pcsig_self=ctyp (`Any loc);pcsig_fields=[];pcsig_loc=loc})
+  | `CtSigEnd(loc,t) ->
+      (* let t = match t_o with *)
+      (*   [  `Nil _loc -> `Any loc (\*Q*\) *)
+      (* | t -> t ] in *)
+      mkcty loc (Pcty_signature {pcsig_self= ctyp t; pcsig_fields = []; pcsig_loc = loc;})
+  | `Obj(loc,ctfl) ->
+      let cli = class_sig_item ctfl [] in
+      mkcty loc (Pcty_signature {pcsig_self = ctyp(`Any loc);pcsig_fields=cli;pcsig_loc=loc})
+  | `CtSig (loc,t,ctfl) ->
+      (* let t = match t_o with *)
+      (* [  `Nil _loc -> `Any loc (\*Q*\) *)
+      (* | t -> t ] in *)
       let cil = class_sig_item ctfl [] in
-      mkcty loc (Pcty_signature {
-                 pcsig_self = ctyp t;
-                 pcsig_fields = cil;
-                 pcsig_loc =  loc;})
+      mkcty loc (Pcty_signature {pcsig_self = ctyp t; pcsig_fields = cil; pcsig_loc =  loc;})
   |  x -> errorf (loc_of x) "class type: %s" (dump_class_type x) ]
       
 and class_info_class_expr (ci:class_expr) =

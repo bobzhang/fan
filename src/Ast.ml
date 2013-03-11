@@ -502,10 +502,13 @@ and class_type =
    `CtCon of (loc * virtual_flag * ident *  type_parameters)
         (* [t] -> ct *)
   | `CtFun of (loc * ctyp * class_type)
-      (* object ((t))? (csg)? end *)
+
+    (* object ((t))? (csg)? end *)
   | `CtSig of (loc * ctyp * class_sig_item)
-  | `CtSigEnd of (loc * ctyp)
-        (* ct and ct *)
+  | `Obj of (loc * class_sig_item) (* FIXME *)
+  | `CtSigEnd of (loc * ctyp) (* FIXME make names more meaningful*)
+  | `ObjEnd of (loc) (* object end*)
+        
   | `And of (loc * class_type * class_type)
         (* ct : ct *)
   | `CtCol of (loc * class_type * class_type)

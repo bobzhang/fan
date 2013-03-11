@@ -609,7 +609,9 @@ class eq =
             (self#ctyp _a0 _b0) && (self#class_type _a1 _b1)
         | (`CtSig (_a0,_a1),`CtSig (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#class_sig_item _a1 _b1)
+        | (`Obj _a0,`Obj _b0) -> self#class_sig_item _a0 _b0
         | (`CtSigEnd _a0,`CtSigEnd _b0) -> self#ctyp _a0 _b0
+        | (`ObjEnd,`ObjEnd) -> true
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
         | (`CtCol (_a0,_a1),`CtCol (_b0,_b1)) ->
@@ -1420,8 +1422,11 @@ class print =
         | `CtSig (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CtSig@ %a@ %a)@]" self#ctyp _a0
               self#class_sig_item _a1
+        | `Obj _a0 ->
+            Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_sig_item _a0
         | `CtSigEnd _a0 ->
             Format.fprintf fmt "@[<1>(`CtSigEnd@ %a)@]" self#ctyp _a0
+        | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#class_type _a0
               self#class_type _a1
@@ -2406,8 +2411,11 @@ and meta_class_type _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "CtSig")), (meta_ctyp _loc _a0))),
           (meta_class_sig_item _loc _a1))
+  | `Obj _a0 ->
+      `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_sig_item _loc _a0))
   | `CtSigEnd _a0 ->
       `App (_loc, (`Vrn (_loc, "CtSigEnd")), (meta_ctyp _loc _a0))
+  | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `And (_a0,_a1) ->
       `App
         (_loc,

@@ -139,9 +139,9 @@ and str_item =
 and class_type =
   [ `CtCon of (virtual_flag* ident* type_parameters)
   | `CtFun of (ctyp* class_type) | `CtSig of (ctyp* class_sig_item)
-  | `CtSigEnd of ctyp | `And of (class_type* class_type)
-  | `CtCol of (class_type* class_type) | `CtEq of (class_type* class_type)
-  | ant] 
+  | `Obj of class_sig_item | `CtSigEnd of ctyp | `ObjEnd
+  | `And of (class_type* class_type) | `CtCol of (class_type* class_type)
+  | `CtEq of (class_type* class_type) | ant] 
 and class_sig_item =
   [ `Eq of (ctyp* ctyp) | `Sem of (class_sig_item* class_sig_item)
   | `SigInherit of class_type | `Method of (alident* private_flag* ctyp)
