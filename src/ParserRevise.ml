@@ -1106,8 +1106,7 @@ let apply () = begin
       { "top"
           [ "fun"; ipatt{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
           | "function"; ipatt{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
-          | "let"; opt_rec{rf}; binding{bi}; "in"; S{ce} ->
-              {| let $rec:rf $bi in $ce |} ]
+          | "let"; opt_rec{rf}; binding{bi}; "in"; S{ce} -> `LetIn(_loc,rf,bi,ce)]
         "apply" NA
           [ S{ce}; expr Level "label"{e} -> {| $ce $e |} ]
         "simple"
@@ -1184,11 +1183,8 @@ let apply () = begin
       | class_type_longident_and_param{ct} -> ct
       | "object";"(";ctyp{t};")";class_signature{csg};"end" -> `CtSig(_loc,t,csg)
       | "object";class_signature{csg};"end"-> `Obj(_loc,csg)
-
-      | "object"; "(";ctyp{t};")" ->
-          `CtSigEnd(_loc,t)
-      | "object"; "end" ->
-          `ObjEnd(_loc)
+      | "object"; "(";ctyp{t};")" -> `CtSigEnd(_loc,t)
+      | "object"; "end" -> `ObjEnd(_loc)
       ]
  
       class_type_longident_and_param:

@@ -5319,11 +5319,11 @@ let apply () =
            `Snterm (Gram.obj (binding : 'binding Gram.t ));
            `Skeyword "in";
            `Sself],
-            ("Gram.mk_action\n  (fun (ce : 'class_expr)  _  (bi : 'binding)  (rf : 'opt_rec)  _ \n     (_loc : FanLoc.t)  -> (`CeLet (_loc, rf, bi, ce) : 'class_expr ))\n",
+            ("Gram.mk_action\n  (fun (ce : 'class_expr)  _  (bi : 'binding)  (rf : 'opt_rec)  _ \n     (_loc : FanLoc.t)  -> (`LetIn (_loc, rf, bi, ce) : 'class_expr ))\n",
               (Gram.mk_action
                  (fun (ce : 'class_expr)  _  (bi : 'binding)  (rf : 'opt_rec)
                      _  (_loc : FanLoc.t)  ->
-                    (`CeLet (_loc, rf, bi, ce) : 'class_expr )))))]);
+                    (`LetIn (_loc, rf, bi, ce) : 'class_expr )))))]);
        ((Some "apply"), (Some `NA),
          [([`Sself; `Snterml ((Gram.obj (expr : 'expr Gram.t )), "label")],
             ("Gram.mk_action\n  (fun (e : 'expr)  (ce : 'class_expr)  (_loc : FanLoc.t)  ->\n     (`CeApp (_loc, ce, e) : 'class_expr ))\n",

@@ -1582,7 +1582,7 @@ module Make(MetaLoc:META_LOC) =
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "CeFun")), (meta_loc _loc _a0))),
                    (meta_patt _loc _a1))), (meta_class_expr _loc _a2))
-      | `CeLet (_a0,_a1,_a2,_a3) ->
+      | `LetIn (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
               (`App
@@ -1590,7 +1590,7 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc,
                         (`App
-                           (_loc, (`Vrn (_loc, "CeLet")),
+                           (_loc, (`Vrn (_loc, "LetIn")),
                              (meta_loc _loc _a0))), (meta_rec_flag _loc _a1))),
                    (meta_binding _loc _a2))), (meta_class_expr _loc _a3))
       | `Obj (_a0,_a1) ->

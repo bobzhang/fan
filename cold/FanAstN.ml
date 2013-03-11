@@ -591,10 +591,10 @@ class eq =
     method class_type : class_type -> class_type -> 'result46=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`CtCon (_a0,_a1,_a2),`CtCon (_b0,_b1,_b2)) ->
+        | (`ClassCon (_a0,_a1,_a2),`ClassCon (_b0,_b1,_b2)) ->
             ((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
               (self#type_parameters _a2 _b2)
-        | (`CtConS (_a0,_a1),`CtConS (_b0,_b1)) ->
+        | (`ClassConS (_a0,_a1),`ClassConS (_b0,_b1)) ->
             (self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)
         | (`CtFun (_a0,_a1),`CtFun (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#class_type _a1 _b1)
@@ -636,14 +636,14 @@ class eq =
         match (_a0, _b0) with
         | (`CeApp (_a0,_a1),`CeApp (_b0,_b1)) ->
             (self#class_expr _a0 _b0) && (self#expr _a1 _b1)
-        | (`CeCon (_a0,_a1,_a2),`CeCon (_b0,_b1,_b2)) ->
+        | (`ClassCon (_a0,_a1,_a2),`ClassCon (_b0,_b1,_b2)) ->
             ((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
               (self#type_parameters _a2 _b2)
-        | (`CeConS (_a0,_a1),`CeConS (_b0,_b1)) ->
+        | (`ClassConS (_a0,_a1),`ClassConS (_b0,_b1)) ->
             (self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)
         | (`CeFun (_a0,_a1),`CeFun (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#class_expr _a1 _b1)
-        | (`CeLet (_a0,_a1,_a2),`CeLet (_b0,_b1,_b2)) ->
+        | (`LetIn (_a0,_a1,_a2),`LetIn (_b0,_b1,_b2)) ->
             ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#class_expr _a2 _b2)
         | (`Obj _a0,`Obj _b0) -> self#class_str_item _a0 _b0
@@ -1407,12 +1407,12 @@ class print =
     method class_type : 'fmt -> class_type -> 'result100=
       fun fmt  ->
         function
-        | `CtCon (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a)@]"
+        | `ClassCon (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a)@]"
               self#virtual_flag _a0 self#ident _a1 self#type_parameters _a2
-        | `CtConS (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CtConS@ %a@ %a)@]" self#virtual_flag
-              _a0 self#ident _a1
+        | `ClassConS (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ClassConS@ %a@ %a)@]"
+              self#virtual_flag _a0 self#ident _a1
         | `CtFun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a)@]" self#ctyp _a0
               self#class_type _a1
@@ -1461,17 +1461,17 @@ class print =
         | `CeApp (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a)@]" self#class_expr _a0
               self#expr _a1
-        | `CeCon (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CeCon@ %a@ %a@ %a)@]"
+        | `ClassCon (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a)@]"
               self#virtual_flag _a0 self#ident _a1 self#type_parameters _a2
-        | `CeConS (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CeConS@ %a@ %a)@]" self#virtual_flag
-              _a0 self#ident _a1
+        | `ClassConS (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ClassConS@ %a@ %a)@]"
+              self#virtual_flag _a0 self#ident _a1
         | `CeFun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a)@]" self#patt _a0
               self#class_expr _a1
-        | `CeLet (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CeLet@ %a@ %a@ %a)@]" self#rec_flag
+        | `LetIn (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a)@]" self#rec_flag
               _a0 self#binding _a1 self#class_expr _a2
         | `Obj _a0 ->
             Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_str_item _a0
@@ -2398,19 +2398,20 @@ and meta_str_item _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result135)
 and meta_class_type _loc =
   function
-  | `CtCon (_a0,_a1,_a2) ->
+  | `ClassCon (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
                (`App
-                  (_loc, (`Vrn (_loc, "CtCon")),
+                  (_loc, (`Vrn (_loc, "ClassCon")),
                     (meta_virtual_flag _loc _a0))), (meta_ident _loc _a1))),
           (meta_type_parameters _loc _a2))
-  | `CtConS (_a0,_a1) ->
+  | `ClassConS (_a0,_a1) ->
       `App
         (_loc,
-          (`App (_loc, (`Vrn (_loc, "CtConS")), (meta_virtual_flag _loc _a0))),
+          (`App
+             (_loc, (`Vrn (_loc, "ClassConS")), (meta_virtual_flag _loc _a0))),
           (meta_ident _loc _a1))
   | `CtFun (_a0,_a1) ->
       `App
@@ -2488,30 +2489,31 @@ and meta_class_expr _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "CeApp")), (meta_class_expr _loc _a0))),
           (meta_expr _loc _a1))
-  | `CeCon (_a0,_a1,_a2) ->
+  | `ClassCon (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
                (`App
-                  (_loc, (`Vrn (_loc, "CeCon")),
+                  (_loc, (`Vrn (_loc, "ClassCon")),
                     (meta_virtual_flag _loc _a0))), (meta_ident _loc _a1))),
           (meta_type_parameters _loc _a2))
-  | `CeConS (_a0,_a1) ->
+  | `ClassConS (_a0,_a1) ->
       `App
         (_loc,
-          (`App (_loc, (`Vrn (_loc, "CeConS")), (meta_virtual_flag _loc _a0))),
+          (`App
+             (_loc, (`Vrn (_loc, "ClassConS")), (meta_virtual_flag _loc _a0))),
           (meta_ident _loc _a1))
   | `CeFun (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "CeFun")), (meta_patt _loc _a0))),
           (meta_class_expr _loc _a1))
-  | `CeLet (_a0,_a1,_a2) ->
+  | `LetIn (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
-               (`App (_loc, (`Vrn (_loc, "CeLet")), (meta_rec_flag _loc _a0))),
+               (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
                (meta_binding _loc _a1))), (meta_class_expr _loc _a2))
   | `Obj _a0 ->
       `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_str_item _loc _a0))

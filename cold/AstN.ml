@@ -136,8 +136,8 @@ and str_item =
   | `ModuleType of (auident* module_type) | `Open of ident
   | `Type of typedecl | `Value of (rec_flag* binding) | ant] 
 and class_type =
-  [ `CtCon of (virtual_flag* ident* type_parameters)
-  | `CtConS of (virtual_flag* ident) | `CtFun of (ctyp* class_type)
+  [ `ClassCon of (virtual_flag* ident* type_parameters)
+  | `ClassConS of (virtual_flag* ident) | `CtFun of (ctyp* class_type)
   | `CtSig of (ctyp* class_sig_item) | `Obj of class_sig_item
   | `CtSigEnd of ctyp | `ObjEnd | `And of (class_type* class_type)
   | `CtCol of (class_type* class_type) | `CtEq of (class_type* class_type)
@@ -149,9 +149,9 @@ and class_sig_item =
   | `CgVir of (alident* private_flag* ctyp) | ant] 
 and class_expr =
   [ `CeApp of (class_expr* expr)
-  | `CeCon of (virtual_flag* ident* type_parameters)
-  | `CeConS of (virtual_flag* ident) | `CeFun of (patt* class_expr)
-  | `CeLet of (rec_flag* binding* class_expr) | `Obj of class_str_item
+  | `ClassCon of (virtual_flag* ident* type_parameters)
+  | `ClassConS of (virtual_flag* ident) | `CeFun of (patt* class_expr)
+  | `LetIn of (rec_flag* binding* class_expr) | `Obj of class_str_item
   | `ObjEnd | `ObjPat of (patt* class_str_item) | `ObjPatEnd of patt
   | `CeTyc of (class_expr* class_type) | `And of (class_expr* class_expr)
   | `Eq of (class_expr* class_expr) | ant] 

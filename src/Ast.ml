@@ -455,21 +455,14 @@ and class_sig_item =
   | ant ]
 and class_expr =
   [= `CeApp of (loc * class_expr * expr)   (* ce e *)
-
-  (* (virtual)? i ([ t ])?
-     class-specification ::= class class-spec { and class-spec }
-     class-spec ::= [virtual] [ [type-parameters]] class-name: class-type
-   *)
-  | `ClassCon of (loc * virtual_flag * ident * type_parameters)(* virtual*)
-  | `ClassConS of (loc * virtual_flag * ident)
+  | `ClassCon of (loc * virtual_flag * ident * type_parameters)(* virtual v [t]*)
+  | `ClassConS of (loc * virtual_flag * ident) (* virtual v *)
   | `CeFun of (loc * patt * class_expr) (* fun p -> ce *)
-
-  | `CeLet of (loc * rec_flag * binding * class_expr) (* let (rec)? bi in ce *)
-        (* object ((p))? (cst)? end *)
-  | `Obj of (loc  * class_str_item)
-  | `ObjEnd of loc
-  | `ObjPat of (loc * patt * class_str_item)
-  | `ObjPatEnd of (loc * patt)
+  | `LetIn of (loc * rec_flag * binding * class_expr) (* let (rec)? bi in ce *)
+  | `Obj of (loc  * class_str_item) (* object ((p))? (cst)? end *)
+  | `ObjEnd of loc (*object end*)
+  | `ObjPat of (loc * patt * class_str_item)(*object (p) .. end*)
+  | `ObjPatEnd of (loc * patt) (* object (p) end*)
   | `CeTyc of (loc * class_expr * class_type) (* ce : ct *)
   | `And of (loc * class_expr * class_expr)
   | `Eq  of (loc * class_expr * class_expr)
@@ -481,12 +474,10 @@ and class_str_item =
         (* inherit(!)? ce (as s)? *)
   | `Inherit of (loc * override_flag * class_expr)
   | `InheritAs of (loc * override_flag * class_expr * alident)
-      (* initializer e *)
   | `Initializer of (loc * expr)
         (* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)
   | `CrMth of (loc * alident * override_flag * private_flag * expr * ctyp)
   | `CrMthS of (loc * alident * override_flag * private_flag * expr )
-        
         (* value(!)? (mutable)? s = e *)
   | `CrVal of (loc *  alident * override_flag * mutable_flag * expr)
         (* method virtual (private)? s : t *)

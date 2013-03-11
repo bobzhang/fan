@@ -169,7 +169,6 @@ let loc_of =
   | `ExAsf _loc -> _loc
   | `PackageModule (_loc,_) -> _loc
   | `PolyEq (_loc,_) -> _loc
-  | `CeLet (_loc,_,_,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ViNil _loc -> _loc
   | `TyObjEnd (_loc,_) -> _loc

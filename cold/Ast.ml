@@ -176,7 +176,7 @@ and class_expr =
   | `ClassCon of (loc* virtual_flag* ident* type_parameters)
   | `ClassConS of (loc* virtual_flag* ident)
   | `CeFun of (loc* patt* class_expr)
-  | `CeLet of (loc* rec_flag* binding* class_expr)
+  | `LetIn of (loc* rec_flag* binding* class_expr)
   | `Obj of (loc* class_str_item) | `ObjEnd of loc
   | `ObjPat of (loc* patt* class_str_item) | `ObjPatEnd of (loc* patt)
   | `CeTyc of (loc* class_expr* class_type)

@@ -1117,11 +1117,11 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
             let _a2 = self#class_expr _a2 _b2 in `CeFun (_a0, _a1, _a2)
-        | (`CeLet (_a0,_a1,_a2,_a3),`CeLet (_b0,_b1,_b2,_b3)) ->
+        | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_flag _a1 _b1 in
             let _a2 = self#binding _a2 _b2 in
-            let _a3 = self#class_expr _a3 _b3 in `CeLet (_a0, _a1, _a2, _a3)
+            let _a3 = self#class_expr _a3 _b3 in `LetIn (_a0, _a1, _a2, _a3)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_str_item _a1 _b1 in `Obj (_a0, _a1)
@@ -2109,7 +2109,7 @@ class fold2 =
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#class_expr _a2 _b2
-        | (`CeLet (_a0,_a1,_a2,_a3),`CeLet (_b0,_b1,_b2,_b3)) ->
+        | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#rec_flag _a1 _b1 in
             let self = self#binding _a2 _b2 in self#class_expr _a3 _b3
@@ -2741,7 +2741,7 @@ class iter =
           (self#loc _a0; self#virtual_flag _a1; self#ident _a2)
       | `CeFun (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#class_expr _a2)
-      | `CeLet (_a0,_a1,_a2,_a3) ->
+      | `LetIn (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#rec_flag _a1;
            self#binding _a2;
@@ -3762,11 +3762,11 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
           let _a2 = self#class_expr _a2 in `CeFun (_a0, _a1, _a2)
-      | `CeLet (_a0,_a1,_a2,_a3) ->
+      | `LetIn (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
           let _a2 = self#binding _a2 in
-          let _a3 = self#class_expr _a3 in `CeLet (_a0, _a1, _a2, _a3)
+          let _a3 = self#class_expr _a3 in `LetIn (_a0, _a1, _a2, _a3)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_str_item _a1 in `Obj (_a0, _a1)
@@ -4552,7 +4552,7 @@ class fold =
       | `CeFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#class_expr _a2
-      | `CeLet (_a0,_a1,_a2,_a3) ->
+      | `LetIn (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
           let self = self#binding _a2 in self#class_expr _a3
@@ -5500,8 +5500,8 @@ class print =
         | `CeFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#class_expr _a2
-        | `CeLet (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`CeLet@ %a@ %a@ %a@ %a)@]" self#loc _a0
+        | `LetIn (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#rec_flag _a1 self#binding _a2 self#class_expr _a3
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
@@ -6444,7 +6444,7 @@ class eq =
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#class_expr _a2 _b2)
-        | (`CeLet (_a0,_a1,_a2,_a3),`CeLet (_b0,_b1,_b2,_b3)) ->
+        | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#rec_flag _a1 _b1)) &&
                (self#binding _a2 _b2))
               && (self#class_expr _a3 _b3)
@@ -7216,10 +7216,10 @@ and strip_loc_class_expr =
   | `CeFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_class_expr _a2 in `CeFun (_a1, _a2)
-  | `CeLet (_a0,_a1,_a2,_a3) ->
+  | `LetIn (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in
-      let _a3 = strip_loc_class_expr _a3 in `CeLet (_a1, _a2, _a3)
+      let _a3 = strip_loc_class_expr _a3 in `LetIn (_a1, _a2, _a3)
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_str_item _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
@@ -8110,8 +8110,8 @@ and pp_print_class_expr fmt =
   | `CeFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_class_expr _a2
-  | `CeLet (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`CeLet@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `LetIn (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_class_expr _a3
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0

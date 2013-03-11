@@ -1140,7 +1140,7 @@ and class_expr  (x:Ast.class_expr) = match x with
       let lab = paolab lab p in
       mkcl loc (Pcl_fun ("?" ^ lab) None (patt p) (class_expr ce))
   | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (patt p) (class_expr ce))
-  | `CeLet (loc, rf, bi, ce) ->
+  | `LetIn (loc, rf, bi, ce) ->
       mkcl loc (Pcl_let (mkrf rf) (binding bi []) (class_expr ce))
 
   | `ObjEnd(loc) ->
