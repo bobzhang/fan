@@ -1094,7 +1094,7 @@ let apply () = begin
       | class_info_for_class_expr{ci}; class_fun_binding{ce} -> {| $ci = $ce |} ]
       class_fun_binding:
       [ "="; class_expr{ce} -> ce
-      | ":"; class_type_plus{ct}; "="; class_expr{ce} -> {| ($ce : $ct) |}
+      | ":"; class_type_plus{ct}; "="; class_expr{ce} -> `Constraint(_loc,ce,ct)
       | ipatt{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
       class_info_for_class_expr:
       [ opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]" -> 
@@ -1124,7 +1124,7 @@ let apply () = begin
               `ObjPatEnd(_loc,`Constraint(_loc,p,t))
           | "object"; class_structure{cst};"end" -> `Obj(_loc,cst)
           | "object";"end" -> `ObjEnd(_loc)
-          | "("; S{ce}; ":"; class_type{ct}; ")" -> {| ($ce : $ct) |}
+          | "("; S{ce}; ":"; class_type{ct}; ")" -> `Constraint(_loc,ce,ct)
           | "("; S{ce}; ")" -> ce ] }
       class_longident_and_param:
       [ class_longident{ci}; "["; comma_ctyp{t}; "]" ->

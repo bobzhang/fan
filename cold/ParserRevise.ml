@@ -5248,11 +5248,11 @@ let apply () =
           `Snterm (Gram.obj (class_type_plus : 'class_type_plus Gram.t ));
           `Skeyword "=";
           `Snterm (Gram.obj (class_expr : 'class_expr Gram.t ))],
-           ("Gram.mk_action\n  (fun (ce : 'class_expr)  _  (ct : 'class_type_plus)  _  (_loc : FanLoc.t) \n     -> (`CeTyc (_loc, ce, ct) : 'class_fun_binding ))\n",
+           ("Gram.mk_action\n  (fun (ce : 'class_expr)  _  (ct : 'class_type_plus)  _  (_loc : FanLoc.t) \n     -> (`Constraint (_loc, ce, ct) : 'class_fun_binding ))\n",
              (Gram.mk_action
                 (fun (ce : 'class_expr)  _  (ct : 'class_type_plus)  _ 
                    (_loc : FanLoc.t)  ->
-                   (`CeTyc (_loc, ce, ct) : 'class_fun_binding )))));
+                   (`Constraint (_loc, ce, ct) : 'class_fun_binding )))));
          ([`Snterm (Gram.obj (ipatt : 'ipatt Gram.t )); `Sself],
            ("Gram.mk_action\n  (fun (cfb : 'class_fun_binding)  (p : 'ipatt)  (_loc : FanLoc.t)  ->\n     (`CeFun (_loc, p, cfb) : 'class_fun_binding ))\n",
              (Gram.mk_action
@@ -5428,11 +5428,11 @@ let apply () =
           `Skeyword ":";
           `Snterm (Gram.obj (class_type : 'class_type Gram.t ));
           `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  (ct : 'class_type)  _  (ce : 'class_expr)  _  (_loc : FanLoc.t)  ->\n     (`CeTyc (_loc, ce, ct) : 'class_expr ))\n",
+           ("Gram.mk_action\n  (fun _  (ct : 'class_type)  _  (ce : 'class_expr)  _  (_loc : FanLoc.t)  ->\n     (`Constraint (_loc, ce, ct) : 'class_expr ))\n",
              (Gram.mk_action
                 (fun _  (ct : 'class_type)  _  (ce : 'class_expr)  _ 
                    (_loc : FanLoc.t)  ->
-                   (`CeTyc (_loc, ce, ct) : 'class_expr )))));
+                   (`Constraint (_loc, ce, ct) : 'class_expr )))));
          ([`Skeyword "("; `Sself; `Skeyword ")"],
            ("Gram.mk_action\n  (fun _  (ce : 'class_expr)  _  (_loc : FanLoc.t)  -> (ce : 'class_expr ))\n",
              (Gram.mk_action

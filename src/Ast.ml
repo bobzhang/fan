@@ -463,7 +463,7 @@ and class_expr =
   | `ObjEnd of loc (*object end*)
   | `ObjPat of (loc * patt * class_str_item)(*object (p) .. end*)
   | `ObjPatEnd of (loc * patt) (* object (p) end*)
-  | `CeTyc of (loc * class_expr * class_type) (* ce : ct *)
+  | `Constraint of (loc * class_expr * class_type) (* ce : ct *)
   | `And of (loc * class_expr * class_expr)
   | `Eq  of (loc * class_expr * class_expr)
   | ant ]

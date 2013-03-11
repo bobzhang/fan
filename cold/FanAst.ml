@@ -1611,13 +1611,15 @@ module Make(MetaLoc:META_LOC) =
             (_loc,
               (`App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_loc _loc _a0))),
               (meta_patt _loc _a1))
-      | `CeTyc (_a0,_a1,_a2) ->
+      | `Constraint (_a0,_a1,_a2) ->
           `App
             (_loc,
               (`App
                  (_loc,
-                   (`App (_loc, (`Vrn (_loc, "CeTyc")), (meta_loc _loc _a0))),
-                   (meta_class_expr _loc _a1))), (meta_class_type _loc _a2))
+                   (`App
+                      (_loc, (`Vrn (_loc, "Constraint")),
+                        (meta_loc _loc _a0))), (meta_class_expr _loc _a1))),
+              (meta_class_type _loc _a2))
       | `And (_a0,_a1,_a2) ->
           `App
             (_loc,

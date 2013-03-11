@@ -153,8 +153,10 @@ and class_expr =
   | `ClassConS of (virtual_flag* ident) | `CeFun of (patt* class_expr)
   | `LetIn of (rec_flag* binding* class_expr) | `Obj of class_str_item
   | `ObjEnd | `ObjPat of (patt* class_str_item) | `ObjPatEnd of patt
-  | `CeTyc of (class_expr* class_type) | `And of (class_expr* class_expr)
-  | `Eq of (class_expr* class_expr) | ant] 
+  | `Constraint of (class_expr* class_type)
+  | `And of (class_expr* class_expr) | `Eq of (class_expr* class_expr) | 
+    ant]
+  
 and class_str_item =
   [ `Sem of (class_str_item* class_str_item) | `Eq of (ctyp* ctyp)
   | `Inherit of (override_flag* class_expr)

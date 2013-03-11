@@ -651,7 +651,7 @@ class eq =
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
         | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#patt _a0 _b0
-        | (`CeTyc (_a0,_a1),`CeTyc (_b0,_b1)) ->
+        | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#class_expr _a0 _b0) && (self#class_type _a1 _b1)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#class_expr _a0 _b0) && (self#class_expr _a1 _b1)
@@ -1481,9 +1481,9 @@ class print =
               self#class_str_item _a1
         | `ObjPatEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#patt _a0
-        | `CeTyc (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a)@]" self#class_expr _a0
-              self#class_type _a1
+        | `Constraint (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#class_expr
+              _a0 self#class_type _a1
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#class_expr _a0
               self#class_expr _a1
@@ -2524,10 +2524,11 @@ and meta_class_expr _loc =
           (meta_class_str_item _loc _a1))
   | `ObjPatEnd _a0 ->
       `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_patt _loc _a0))
-  | `CeTyc (_a0,_a1) ->
+  | `Constraint (_a0,_a1) ->
       `App
         (_loc,
-          (`App (_loc, (`Vrn (_loc, "CeTyc")), (meta_class_expr _loc _a0))),
+          (`App
+             (_loc, (`Vrn (_loc, "Constraint")), (meta_class_expr _loc _a0))),
           (meta_class_type _loc _a1))
   | `And (_a0,_a1) ->
       `App

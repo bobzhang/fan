@@ -42,7 +42,6 @@ let loc_of =
   | `IfThenElse (_loc,_,_,_) -> _loc
   | `ClassType (_loc,_) -> _loc
   | `ModuleUnpack (_loc,_) -> _loc
-  | `CeTyc (_loc,_,_) -> _loc
   | `CrVir (_loc,_,_,_) -> _loc
   | `Package (_loc,_) -> _loc
   | `While (_loc,_,_) -> _loc

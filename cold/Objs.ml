@@ -1134,10 +1134,10 @@ class map2 =
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in `ObjPatEnd (_a0, _a1)
-        | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
+        | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_expr _a1 _b1 in
-            let _a2 = self#class_type _a2 _b2 in `CeTyc (_a0, _a1, _a2)
+            let _a2 = self#class_type _a2 _b2 in `Constraint (_a0, _a1, _a2)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_expr _a1 _b1 in
@@ -2121,7 +2121,7 @@ class fold2 =
             let self = self#patt _a1 _b1 in self#class_str_item _a2 _b2
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#patt _a1 _b1
-        | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
+        | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_expr _a1 _b1 in self#class_type _a2 _b2
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
@@ -2751,7 +2751,7 @@ class iter =
       | `ObjPat (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#class_str_item _a2)
       | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
-      | `CeTyc (_a0,_a1,_a2) ->
+      | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_expr _a1; self#class_type _a2)
       | `And (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_expr _a1; self#class_expr _a2)
@@ -3778,10 +3778,10 @@ class map =
       | `ObjPatEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in `ObjPatEnd (_a0, _a1)
-      | `CeTyc (_a0,_a1,_a2) ->
+      | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_expr _a1 in
-          let _a2 = self#class_type _a2 in `CeTyc (_a0, _a1, _a2)
+          let _a2 = self#class_type _a2 in `Constraint (_a0, _a1, _a2)
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_expr _a1 in
@@ -4562,7 +4562,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#class_str_item _a2
       | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
-      | `CeTyc (_a0,_a1,_a2) ->
+      | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_expr _a1 in self#class_type _a2
       | `And (_a0,_a1,_a2) ->
@@ -5514,9 +5514,9 @@ class print =
         | `ObjPatEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
               self#patt _a1
-        | `CeTyc (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_expr _a1 self#class_type _a2
+        | `Constraint (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
+              _a0 self#class_expr _a1 self#class_type _a2
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#class_expr _a1 self#class_expr _a2
@@ -6456,7 +6456,7 @@ class eq =
               (self#class_str_item _a2 _b2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#patt _a1 _b1)
-        | (`CeTyc (_a0,_a1,_a2),`CeTyc (_b0,_b1,_b2)) ->
+        | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_expr _a1 _b1)) &&
               (self#class_type _a2 _b2)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
@@ -7226,9 +7226,9 @@ and strip_loc_class_expr =
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_class_str_item _a2 in `ObjPat (_a1, _a2)
   | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
-  | `CeTyc (_a0,_a1,_a2) ->
+  | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_expr _a1 in
-      let _a2 = strip_loc_class_type _a2 in `CeTyc (_a1, _a2)
+      let _a2 = strip_loc_class_type _a2 in `Constraint (_a1, _a2)
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_expr _a1 in
       let _a2 = strip_loc_class_expr _a2 in `And (_a1, _a2)
@@ -8123,8 +8123,8 @@ and pp_print_class_expr fmt =
   | `ObjPatEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1
-  | `CeTyc (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`CeTyc@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Constraint (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_expr _a1 pp_print_class_type _a2
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0

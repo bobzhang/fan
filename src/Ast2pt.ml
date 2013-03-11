@@ -1154,7 +1154,7 @@ and class_expr  (x:Ast.class_expr) = match x with
   | `ObjPat (loc,p,cfl) ->
       let cil = class_str_item cfl [] in
       mkcl loc (Pcl_structure {pcstr_pat = patt p; pcstr_fields = cil;})
-  | `CeTyc (loc,ce,ct) ->
+  | `Constraint (loc,ce,ct) ->
       mkcl loc (Pcl_constraint (class_expr ce) (class_type ct))
   | t -> errorf (loc_of t) "class_expr: %s" (dump_class_expr t)]
 
