@@ -587,11 +587,11 @@ let apply () =
             `Skeyword ")";
             `Skeyword "->";
             `Sself],
-             ("Gram.mk_action\n  (fun (mt : 'module_type)  _  _  (t : 'module_type)  _  (i : 'a_uident)  _ \n     _  (_loc : FanLoc.t)  -> (`MtFun (_loc, i, t, mt) : 'module_type ))\n",
+             ("Gram.mk_action\n  (fun (mt : 'module_type)  _  _  (t : 'module_type)  _  (i : 'a_uident)  _ \n     _  (_loc : FanLoc.t)  -> (`Functor (_loc, i, t, mt) : 'module_type ))\n",
                (Gram.mk_action
                   (fun (mt : 'module_type)  _  _  (t : 'module_type)  _ 
                      (i : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
-                     (`MtFun (_loc, i, t, mt) : 'module_type )))))]);
+                     (`Functor (_loc, i, t, mt) : 'module_type )))))]);
        ((Some "with"), None,
          [([`Sself;
            `Skeyword "with";
@@ -705,11 +705,11 @@ let apply () =
            `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
            `Skeyword ")";
            `Sself],
-            ("Gram.mk_action\n  (fun (mt : 'module_declaration)  _  (t : 'module_type)  _  (i : 'a_uident) \n     _  (_loc : FanLoc.t)  ->\n     (`MtFun (_loc, i, t, mt) : 'module_declaration ))\n",
+            ("Gram.mk_action\n  (fun (mt : 'module_declaration)  _  (t : 'module_type)  _  (i : 'a_uident) \n     _  (_loc : FanLoc.t)  ->\n     (`Functor (_loc, i, t, mt) : 'module_declaration ))\n",
               (Gram.mk_action
                  (fun (mt : 'module_declaration)  _  (t : 'module_type)  _ 
                     (i : 'a_uident)  _  (_loc : FanLoc.t)  ->
-                    (`MtFun (_loc, i, t, mt) : 'module_declaration )))))])]);
+                    (`Functor (_loc, i, t, mt) : 'module_declaration )))))])]);
    Gram.extend_single (module_type_quot : 'module_type_quot Gram.t )
      (None,
        (None, None,

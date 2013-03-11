@@ -8,7 +8,6 @@ let loc_of =
   | `Any _loc -> _loc
   | `Tup (_loc,_) -> _loc
   | `Array (_loc,_) -> _loc
-  | `MtFun (_loc,_,_,_) -> _loc
   | `Id (_loc,_) -> _loc
   | `ArrayDot (_loc,_,_) -> _loc
   | `Directive (_loc,_,_) -> _loc

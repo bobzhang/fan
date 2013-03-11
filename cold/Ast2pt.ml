@@ -816,7 +816,7 @@ and module_type: Ast.module_type -> Parsetree.module_type =
              (dump_with_constr t)) constrs in
   function
   | `Id (loc,i) -> mkmty loc (Pmty_ident (long_uident i))
-  | `MtFun (loc,`Uid (sloc,n),nt,mt) ->
+  | `Functor (loc,`Uid (sloc,n),nt,mt) ->
       mkmty loc
         (Pmty_functor ((with_loc n sloc), (module_type nt), (module_type mt)))
   | `Sig (loc,sl) -> mkmty loc (Pmty_signature (sig_item sl []))

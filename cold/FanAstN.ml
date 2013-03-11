@@ -458,7 +458,7 @@ class eq =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result38)
-        | (`MtFun (_a0,_a1,_a2),`MtFun (_b0,_b1,_b2)) ->
+        | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
             ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
               (self#module_type _a2 _b2)
         | (`Sig _a0,`Sig _b0) -> self#sig_item _a0 _b0
@@ -1232,9 +1232,9 @@ class print =
       fun fmt  ->
         function
         | #sid as _a0 -> (self#sid fmt _a0 :>'result92)
-        | `MtFun (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`MtFun@ %a@ %a@ %a)@]" self#auident _a0
-              self#module_type _a1 self#module_type _a2
+        | `Functor (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a)@]" self#auident
+              _a0 self#module_type _a1 self#module_type _a2
         | `Sig _a0 ->
             Format.fprintf fmt "@[<1>(`Sig@ %a)@]" self#sig_item _a0
         | `SigEnd -> Format.fprintf fmt "`SigEnd"
@@ -2166,12 +2166,13 @@ and meta_rec_expr _loc =
 and meta_module_type _loc =
   function
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result142)
-  | `MtFun (_a0,_a1,_a2) ->
+  | `Functor (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
-               (`App (_loc, (`Vrn (_loc, "MtFun")), (meta_auident _loc _a0))),
+               (`App
+                  (_loc, (`Vrn (_loc, "Functor")), (meta_auident _loc _a0))),
                (meta_module_type _loc _a1))), (meta_module_type _loc _a2))
   | `Sig _a0 -> `App (_loc, (`Vrn (_loc, "Sig")), (meta_sig_item _loc _a0))
   | `SigEnd -> `Vrn (_loc, "SigEnd")

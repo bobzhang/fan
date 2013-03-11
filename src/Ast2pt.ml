@@ -912,13 +912,12 @@ and module_type : Ast.module_type -> Parsetree.module_type =
       | t -> errorf (loc_of t) "bad with constraint (antiquotation) : %s" (dump_with_constr t)]) constrs in
      with module_type fun 
        [ `Id(loc,i) -> mkmty loc (Pmty_ident (long_uident i))
-       | `MtFun(loc,`Uid(sloc,n),nt,mt) ->
+       | `Functor(loc,`Uid(sloc,n),nt,mt) ->
            mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
        | `Sig(loc,sl) ->
            mkmty loc (Pmty_signature (sig_item sl []))
        | `SigEnd(loc) -> mkmty loc (Pmty_signature [])
-       | `With(loc,mt,wc) ->
-                        mkmty loc (Pmty_with (module_type mt) (mkwithc wc ))
+       | `With(loc,mt,wc) -> mkmty loc (Pmty_with (module_type mt) (mkwithc wc ))
        | `ModuleTypeOf(_loc,me) ->
            mkmty _loc (Pmty_typeof (module_expr me))
        | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t) ]

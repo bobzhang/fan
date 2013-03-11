@@ -102,11 +102,6 @@ type strings =
   | `Str of (loc * string)
   | ant  ]  ;
 
-(* type 'a mlist= *)
-(*   [= `Concat of (loc * 'a mlist * 'a mlist) *)
-(*   | 'a *)
-(*   | ant]; *)
-
 type alident =
   [= `Lid of (loc * string)
   | ant];
@@ -128,28 +123,12 @@ type uident =
   | `App of (loc * uident * uident)
   | auident];
 
-
-(* type uident = *)
-(*  [= `Dot of (loc * uident * uident) *)
-(*  | `App of (loc * uident * uident) *)
-(*  ];    *)
-(* {:ident|A.B.C.d|}
-      `Dot
-      (`Uid "A"
-        `Dot (`Uid "B")
-           `Dot("C",`Lid "d"))
-    *)
 type ident =
   [= `Dot of (loc * ident * ident) (* i . i *)
   | `App of (loc * ident * ident) (* i i *)
   | alident
   | auident];
 
-(* type dopath = *)
-(*  [= `Dot of (loc * dopath * dopath) *)
-(*  | auident ] ; *)
-
-(* A.B.C *)
 type dupath =
   [= `Dot of (loc * dupath * dupath)
   | auident];
@@ -170,20 +149,17 @@ type ctyp =
   | `Arrow of (loc * ctyp * ctyp)
   | `ClassPath of (loc * ident) (* #i *) (* #point *)
   | `Label of (loc * alident * ctyp) (* ~s:t *)
-        (* ?s:t *)
-  | `OptLabl of (loc * alident * ctyp )
-
+  | `OptLabl of (loc * alident * ctyp ) (* ?s:t *)
   | sid
       (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
   | `TyObj of (loc * name_ctyp * row_var_flag )
   | `TyObjEnd of (loc * row_var_flag)
+
   | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
   | `TyPolEnd of (loc *ctyp) (* !. t *)  
   | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
 
   (*  +'s -'s 's +_ -_ *)      
-
-
   | `Quote of (loc * position_flag * alident) 
   | `QuoteAny of (loc * position_flag )
   | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
@@ -192,7 +168,6 @@ type ctyp =
   | `PolySup of (loc * row_field )
   | `PolyInf of (loc * row_field)
   | `PolyInfSup of (loc * row_field * tag_names)
-        
   | `Package of (loc * module_type) (* (module S) *)
   | ant ]
 and type_parameters =
@@ -204,7 +179,7 @@ and row_field =
   | `Or of (loc * row_field * row_field )
   | `TyVrn of (loc * astring)
   | `TyVrnOf of (loc * astring * ctyp)
-  |  `Ctyp of (loc * ctyp)]
+  | `Ctyp of (loc * ctyp)]
 and tag_names =
   [= ant
   | `App of (loc * tag_names * tag_names)
@@ -212,7 +187,6 @@ and tag_names =
 and typedecl =
     (* {:str_item| type  ('a, 'b, 'c) t = t |} *)
   [= `TyDcl of (loc * alident * list ctyp * type_info * list (ctyp * ctyp))
-
   | `TyAbstr of (loc * alident * list ctyp * list (ctyp * ctyp) ) 
   | `And of (loc * typedecl * typedecl)
   | ant ]
@@ -222,16 +196,12 @@ and typedecl =
        {[ type v = u = [A of int];]} 
      *)
 and type_info =        (* FIXME be more preicse *)
-  [=
-   (* type u = v = [A of int ] *)
+  [= (* type u = v = [A of int ] *)
    `TyMan of (loc  * ctyp * private_flag  * type_repr)
-   (* type u = A.t = {x:int} *)
+     (* type u = A.t = {x:int} *)
   | `TyRepr of (loc * private_flag * type_repr)
-
-   (* type u = int *)
-  | `TyEq of (loc * private_flag * ctyp)
-  | ant
-  ]  
+  | `TyEq of (loc * private_flag * ctyp) (* type u = int *)
+  | ant]  
 and type_repr =
   [= `Record of (loc * name_ctyp)
   | `Sum of (loc * or_ctyp)
@@ -251,8 +221,6 @@ and of_ctyp =
   [= `Of of (loc * sid * ctyp)
   | sid
   | ant]
-
-         
 and patt =
   [= sid
   | `App of (loc * patt * patt)
@@ -264,8 +232,7 @@ and patt =
   | `Record of (loc * rec_patt)
   | ant
   | literal
-      
-  | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
+  | `Alias of (loc * patt * alident)
 
   | `ArrayEmpty of loc 
   | `Array of (loc * patt) (* [| p |] *)
@@ -341,21 +308,15 @@ and expr =
         (* {< rb >} *)
   | `OvrInst of (loc * rec_expr)
   | `OvrInstEmpty of loc
-        (* do { e } *)
-  | `Seq of (loc * expr)
-        (* e#s *)
-  | `Send of (loc * expr * alident)
-        (* e.[e] *)
-  | `StringDot of (loc * expr * expr)
-        (* try e with [ mc ] *)
-  | `Try of (loc * expr * match_case)
-        (* (e : t) *)
-  | (* `Constraint *) `Constraint of (loc * expr * ctyp) (*(e : t) *)
+  | `Seq of (loc * expr) (* do { e } *)
+  | `Send of (loc * expr * alident) (* e#s *)
+  | `StringDot of (loc * expr * expr) (* e.[e] *)
+  | `Try of (loc * expr * match_case) (* try e with [ mc ] *)
+
+  | `Constraint of (loc * expr * ctyp) (*(e : t) *)
   | `Coercion of (loc * expr * ctyp * ctyp) (* or (e : t :> t) *)
   | `Subtype of (loc * expr * ctyp) (* (e :> t) *)
-        (* while e do { e } *)
   | `While of (loc * expr * expr)
-        (* let open i in e *)
   | `LetOpen of (loc * ident * expr)
         (* fun (type t) -> e *)
         (* let f x (type t) y z = e *)
@@ -370,7 +331,7 @@ and rec_expr =
 and module_type =
   [= sid
        (* functor (s : mt) -> mt *)
-  | `MtFun of (loc * auident * module_type * module_type)
+  | `Functor of (loc * auident * module_type * module_type)
         (* sig sg end *)
   | `Sig of (loc * sig_item)
   | `SigEnd of loc 

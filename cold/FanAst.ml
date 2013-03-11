@@ -1016,7 +1016,7 @@ module Make(MetaLoc:META_LOC) =
     and meta_module_type _loc =
       function
       | #sid as _a0 -> (meta_sid _loc _a0 :>'result34)
-      | `MtFun (_a0,_a1,_a2,_a3) ->
+      | `Functor (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
               (`App
@@ -1024,7 +1024,7 @@ module Make(MetaLoc:META_LOC) =
                    (`App
                       (_loc,
                         (`App
-                           (_loc, (`Vrn (_loc, "MtFun")),
+                           (_loc, (`Vrn (_loc, "Functor")),
                              (meta_loc _loc _a0))), (meta_auident _loc _a1))),
                    (meta_module_type _loc _a2))),
               (meta_module_type _loc _a3))

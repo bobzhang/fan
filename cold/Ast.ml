@@ -114,7 +114,7 @@ and rec_expr =
     any
   | ant] 
 and module_type =
-  [ sid | `MtFun of (loc* auident* module_type* module_type)
+  [ sid | `Functor of (loc* auident* module_type* module_type)
   | `Sig of (loc* sig_item) | `SigEnd of loc
   | `With of (loc* module_type* with_constr)
   | `ModuleTypeOf of (loc* module_expr) | ant] 

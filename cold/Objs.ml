@@ -767,11 +767,12 @@ class map2 =
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) ->
             (self#sid _a0 _b0 : sid  :>module_type)
-        | (`MtFun (_a0,_a1,_a2,_a3),`MtFun (_b0,_b1,_b2,_b3)) ->
+        | (`Functor (_a0,_a1,_a2,_a3),`Functor (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#auident _a1 _b1 in
             let _a2 = self#module_type _a2 _b2 in
-            let _a3 = self#module_type _a3 _b3 in `MtFun (_a0, _a1, _a2, _a3)
+            let _a3 = self#module_type _a3 _b3 in
+            `Functor (_a0, _a1, _a2, _a3)
         | (`Sig (_a0,_a1),`Sig (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#sig_item _a1 _b1 in `Sig (_a0, _a1)
@@ -1849,7 +1850,7 @@ class fold2 =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
-        | (`MtFun (_a0,_a1,_a2,_a3),`MtFun (_b0,_b1,_b2,_b3)) ->
+        | (`Functor (_a0,_a1,_a2,_a3),`Functor (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#auident _a1 _b1 in
             let self = self#module_type _a2 _b2 in self#module_type _a3 _b3
@@ -2567,7 +2568,7 @@ class iter =
     method module_type : module_type -> 'result146=
       function
       | #sid as _a0 -> (self#sid _a0 :>'result146)
-      | `MtFun (_a0,_a1,_a2,_a3) ->
+      | `Functor (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#auident _a1;
            self#module_type _a2;
@@ -3450,11 +3451,11 @@ class map =
     method module_type : module_type -> module_type=
       function
       | #sid as _a0 -> (self#sid _a0 : sid  :>module_type)
-      | `MtFun (_a0,_a1,_a2,_a3) ->
+      | `Functor (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#module_type _a2 in
-          let _a3 = self#module_type _a3 in `MtFun (_a0, _a1, _a2, _a3)
+          let _a3 = self#module_type _a3 in `Functor (_a0, _a1, _a2, _a3)
       | `Sig (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#sig_item _a1 in `Sig (_a0, _a1)
@@ -4328,7 +4329,7 @@ class fold =
     method module_type : module_type -> 'self_type=
       function
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
-      | `MtFun (_a0,_a1,_a2,_a3) ->
+      | `Functor (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
           let self = self#module_type _a2 in self#module_type _a3
@@ -5230,9 +5231,9 @@ class print =
       fun fmt  ->
         function
         | #sid as _a0 -> (self#sid fmt _a0 :>'result308)
-        | `MtFun (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`MtFun@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#auident _a1 self#module_type _a2 self#module_type _a3
+        | `Functor (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#auident _a1 self#module_type _a2 self#module_type _a3
         | `Sig (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" self#loc _a0
               self#sig_item _a1
@@ -6182,7 +6183,7 @@ class eq =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result362)
-        | (`MtFun (_a0,_a1,_a2,_a3),`MtFun (_b0,_b1,_b2,_b3)) ->
+        | (`Functor (_a0,_a1,_a2,_a3),`Functor (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
                (self#module_type _a2 _b2))
               && (self#module_type _a3 _b3)
@@ -6989,10 +6990,10 @@ and strip_loc_rec_expr =
 and strip_loc_module_type =
   function
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result411)
-  | `MtFun (_a0,_a1,_a2,_a3) ->
+  | `Functor (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_type _a2 in
-      let _a3 = strip_loc_module_type _a3 in `MtFun (_a1, _a2, _a3)
+      let _a3 = strip_loc_module_type _a3 in `Functor (_a1, _a2, _a3)
   | `Sig (_a0,_a1) -> let _a1 = strip_loc_sig_item _a1 in `Sig _a1
   | `SigEnd _a0 -> `SigEnd
   | `With (_a0,_a1,_a2) ->
@@ -7848,8 +7849,8 @@ and pp_print_rec_expr fmt =
 and pp_print_module_type fmt =
   function
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result463)
-  | `MtFun (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`MtFun@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Functor (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_module_type _a2 pp_print_module_type
         _a3
   | `Sig (_a0,_a1) ->

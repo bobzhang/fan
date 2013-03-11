@@ -171,25 +171,21 @@ let apply () = begin
             `TypeEq (_loc, t1, t2)
         | "type"; type_longident_and_parameters{t1}; "="; "private"; ctyp{t2} ->
             `TypeEqPriv(_loc,t1,t2)
-            (* {| type $t1 = $t2 |} *)
         | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->
             `TypeSubst (_loc, t1, t2)
-            (* {| type $t1 := $t2 |} *)
         | "module"; module_longident{i1}; "="; module_longident_with_app{i2} ->
             `ModuleEq (_loc, i1, i2)
-            (* {| module $i1 = $i2 |} *)
         | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} ->
-            `ModuleSubst (_loc, i1, i2)
-            (* {| module $i1 := $i2 |} *) ] |};
+            `ModuleSubst (_loc, i1, i2)] |};
 
   with module_type
     {:extend|
       module_type:
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; S{t}; ")"; "->"; S{mt} ->
-            {| functor ( $i : $t ) -> $mt |} ]
+          `Functor(_loc,i,t,mt)]
         "with"
-        [ S{mt}; "with"; with_constr{wc} ->  {| $mt with $wc |} ]
+        [ S{mt}; "with"; with_constr{wc} -> `With(_loc,mt,wc)]
         "apply"
         [ S{mt1}; S{mt2} ->
           let app0 mt1 mt2 =
@@ -223,7 +219,7 @@ let apply () = begin
       { RA
         [ ":"; module_type{mt} -> {| $mt |}
         | "("; a_uident{i}; ":"; module_type{t}; ")"; S{mt} ->
-            {| functor ( $i : $t ) -> $mt |} ] }
+            `Functor(_loc,i,t,mt)] }
       module_type_quot:
       [ module_type{x} -> x  ]  |};
 
