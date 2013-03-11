@@ -345,7 +345,6 @@ module Make(MetaLoc:META_LOC) =
             (_loc, (`App (_loc, (`Vrn (_loc, "Ctyp")), (meta_loc _loc _a0))),
               (meta_ctyp _loc _a1))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result48)
-      | #nil as _a0 -> (meta_nil _loc _a0 :>'result48)
     and meta_row_field _loc =
       function
       | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result47)
@@ -1422,6 +1421,13 @@ module Make(MetaLoc:META_LOC) =
                              (meta_loc _loc _a0))),
                         (meta_virtual_flag _loc _a1))),
                    (meta_ident _loc _a2))), (meta_type_parameters _loc _a3))
+      | `CtConS (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "CtConS")), (meta_loc _loc _a0))),
+                   (meta_virtual_flag _loc _a1))), (meta_ident _loc _a2))
       | `CtFun (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1550,6 +1556,13 @@ module Make(MetaLoc:META_LOC) =
                              (meta_loc _loc _a0))),
                         (meta_virtual_flag _loc _a1))),
                    (meta_ident _loc _a2))), (meta_type_parameters _loc _a3))
+      | `CeConS (_a0,_a1,_a2) ->
+          `App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`App (_loc, (`Vrn (_loc, "CeConS")), (meta_loc _loc _a0))),
+                   (meta_virtual_flag _loc _a1))), (meta_ident _loc _a2))
       | `CeFun (_a0,_a1,_a2) ->
           `App
             (_loc,

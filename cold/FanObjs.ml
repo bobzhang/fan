@@ -53,11 +53,6 @@ class clean_ast =
         |`Arrow (_loc,`Nil _l,t)|`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l)
           -> t
       | t -> t
-    method! type_parameters t =
-      match super#type_parameters t with
-      | `Com (_,t,`Nil _) -> t
-      | `Com (_,`Nil _,t) -> t
-      | t -> t
     method! or_ctyp t =
       match super#or_ctyp t with
       | `Or (_,t,`Nil _) -> t

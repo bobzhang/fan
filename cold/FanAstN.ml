@@ -216,7 +216,6 @@ class eq =
             (self#type_parameters _a0 _b0) && (self#type_parameters _a1 _b1)
         | (`Ctyp _a0,`Ctyp _b0) -> self#ctyp _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result26)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result26)
         | (_,_) -> false
     method row_field : row_field -> row_field -> 'result27=
       fun _a0  _b0  ->
@@ -605,6 +604,8 @@ class eq =
         | (`CtCon (_a0,_a1,_a2),`CtCon (_b0,_b1,_b2)) ->
             ((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
               (self#type_parameters _a2 _b2)
+        | (`CtConS (_a0,_a1),`CtConS (_b0,_b1)) ->
+            (self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)
         | (`CtFun (_a0,_a1),`CtFun (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#class_type _a1 _b1)
         | (`CtSig (_a0,_a1),`CtSig (_b0,_b1)) ->
@@ -648,6 +649,8 @@ class eq =
         | (`CeCon (_a0,_a1,_a2),`CeCon (_b0,_b1,_b2)) ->
             ((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
               (self#type_parameters _a2 _b2)
+        | (`CeConS (_a0,_a1),`CeConS (_b0,_b1)) ->
+            (self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)
         | (`CeFun (_a0,_a1),`CeFun (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#class_expr _a1 _b1)
         | (`CeLet (_a0,_a1,_a2),`CeLet (_b0,_b1,_b2)) ->
@@ -944,7 +947,6 @@ class print =
               _a0 self#type_parameters _a1
         | `Ctyp _a0 -> Format.fprintf fmt "@[<1>(`Ctyp@ %a)@]" self#ctyp _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>'result81)
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result81)
     method row_field : 'fmt -> row_field -> 'result82=
       fun fmt  ->
         function
@@ -1416,6 +1418,9 @@ class print =
         | `CtCon (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a)@]"
               self#virtual_flag _a0 self#ident _a1 self#type_parameters _a2
+        | `CtConS (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`CtConS@ %a@ %a)@]" self#virtual_flag
+              _a0 self#ident _a1
         | `CtFun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a)@]" self#ctyp _a0
               self#class_type _a1
@@ -1467,6 +1472,9 @@ class print =
         | `CeCon (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeCon@ %a@ %a@ %a)@]"
               self#virtual_flag _a0 self#ident _a1 self#type_parameters _a2
+        | `CeConS (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`CeConS@ %a@ %a)@]" self#virtual_flag
+              _a0 self#ident _a1
         | `CeFun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a)@]" self#patt _a0
               self#class_expr _a1
@@ -1764,7 +1772,6 @@ and meta_type_parameters _loc =
           (meta_type_parameters _loc _a1))
   | `Ctyp _a0 -> `App (_loc, (`Vrn (_loc, "Ctyp")), (meta_ctyp _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result158)
-  | #nil as _a0 -> (meta_nil _loc _a0 :>'result158)
 and meta_row_field _loc =
   function
   | #ant_nil as _a0 -> (meta_ant_nil _loc _a0 :>'result157)
@@ -2403,6 +2410,11 @@ and meta_class_type _loc =
                   (_loc, (`Vrn (_loc, "CtCon")),
                     (meta_virtual_flag _loc _a0))), (meta_ident _loc _a1))),
           (meta_type_parameters _loc _a2))
+  | `CtConS (_a0,_a1) ->
+      `App
+        (_loc,
+          (`App (_loc, (`Vrn (_loc, "CtConS")), (meta_virtual_flag _loc _a0))),
+          (meta_ident _loc _a1))
   | `CtFun (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "CtFun")), (meta_ctyp _loc _a0))),
@@ -2488,6 +2500,11 @@ and meta_class_expr _loc =
                   (_loc, (`Vrn (_loc, "CeCon")),
                     (meta_virtual_flag _loc _a0))), (meta_ident _loc _a1))),
           (meta_type_parameters _loc _a2))
+  | `CeConS (_a0,_a1) ->
+      `App
+        (_loc,
+          (`App (_loc, (`Vrn (_loc, "CeConS")), (meta_virtual_flag _loc _a0))),
+          (meta_ident _loc _a1))
   | `CeFun (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "CeFun")), (meta_patt _loc _a0))),

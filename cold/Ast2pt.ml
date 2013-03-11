@@ -272,7 +272,6 @@ let optional_type_parameters (t : ctyp) =
 let class_parameters (t : type_parameters) =
   List.filter_map
     (function
-     | `Nil _ -> None
      | `Ctyp (_,x) ->
          (match quote_map x with
           | (Some x,v) -> Some (x, v)
@@ -942,7 +941,9 @@ and class_type (x : Ast.class_type) =
            ((long_class_ident id),
              (List.map
                 (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
-                (list_of_com' tl []))))
+                (list_of_com tl []))))
+  | `CtConS (loc,`ViNil _,id) ->
+      mkcty loc (Pcty_constr ((long_class_ident id), []))
   | `CtFun (loc,`Label (_,`Lid (_,lab),t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (class_type ct)))
   | `CtFun (loc,`OptLabl (loc1,`Lid (_,lab),t),ct) ->
@@ -980,9 +981,7 @@ and class_info_class_expr (ci : class_expr) =
   match ci with
   | `Eq (_,`CeCon (loc,vir,`Lid (nloc,name),params),ce) ->
       let (loc_params,(params,variance)) =
-        match params with
-        | `Nil _loc -> (loc, ([], []))
-        | t -> ((loc_of t), (List.split (class_parameters t))) in
+        ((loc_of params), (List.split (class_parameters params))) in
       {
         pci_virt = (mkvirtual vir);
         pci_params = (params, loc_params);
@@ -991,15 +990,22 @@ and class_info_class_expr (ci : class_expr) =
         pci_loc = loc;
         pci_variance = variance
       }
+  | `Eq (_loc,`CeConS (loc,vir,`Lid (nloc,name)),ce) ->
+      {
+        pci_virt = (mkvirtual vir);
+        pci_params = ([], loc);
+        pci_name = (with_loc name nloc);
+        pci_expr = (class_expr ce);
+        pci_loc = loc;
+        pci_variance = []
+      }
   | ce -> errorf (loc_of ce) "class_info_class_expr: %s" (dump_class_expr ce)
 and class_info_class_type (ci : class_type) =
   match ci with
   | `CtEq (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct)
     |`CtCol (_,`CtCon (loc,vir,`Lid (nloc,name),params),ct) ->
       let (loc_params,(params,variance)) =
-        match params with
-        | `Nil _loc -> (loc, ([], []))
-        | t -> ((loc_of t), (List.split (class_parameters t))) in
+        ((loc_of params), (List.split (class_parameters params))) in
       {
         pci_virt = (mkvirtual vir);
         pci_params = (params, loc_params);
@@ -1007,6 +1013,16 @@ and class_info_class_type (ci : class_type) =
         pci_expr = (class_type ct);
         pci_loc = loc;
         pci_variance = variance
+      }
+  | `CtEq (_,`CtConS (loc,vir,`Lid (nloc,name)),ct)
+    |`CtCol (_,`CtConS (loc,vir,`Lid (nloc,name)),ct) ->
+      {
+        pci_virt = (mkvirtual vir);
+        pci_params = ([], loc);
+        pci_name = (with_loc name nloc);
+        pci_expr = (class_type ct);
+        pci_loc = loc;
+        pci_variance = []
       }
   | ct ->
       errorf (loc_of ct) "bad class/class type declaration/definition %s "
@@ -1042,7 +1058,9 @@ and class_expr (x : Ast.class_expr) =
            ((long_class_ident id),
              (List.map
                 (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
-                (list_of_com' tl []))))
+                (list_of_com tl []))))
+  | `CeConS (loc,`ViNil _,id) ->
+      mkcl loc (Pcl_constr ((long_class_ident id), []))
   | `CeFun (loc,`Label (_,`Lid (_loc,lab),po),ce) ->
       mkcl loc (Pcl_fun (lab, None, (patt po), (class_expr ce)))
   | `CeFun (loc,`OptLablExpr (_,`Lid (_loc,lab),p,e),ce) ->

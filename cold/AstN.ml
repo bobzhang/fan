@@ -41,7 +41,7 @@ type ctyp =
     ant]
   
 and type_parameters =
-  [ `Com of (type_parameters* type_parameters) | `Ctyp of ctyp | ant | nil] 
+  [ `Com of (type_parameters* type_parameters) | `Ctyp of ctyp | ant] 
 and row_field =
   [ ant_nil | `Or of (row_field* row_field) | `TyVrn of astring
   | `TyVrnOf of (astring* ctyp) | `Ctyp of ctyp] 
@@ -138,10 +138,11 @@ and str_item =
   | `Type of typedecl | `Value of (rec_flag* binding) | ant] 
 and class_type =
   [ `CtCon of (virtual_flag* ident* type_parameters)
-  | `CtFun of (ctyp* class_type) | `CtSig of (ctyp* class_sig_item)
-  | `Obj of class_sig_item | `CtSigEnd of ctyp | `ObjEnd
-  | `And of (class_type* class_type) | `CtCol of (class_type* class_type)
-  | `CtEq of (class_type* class_type) | ant] 
+  | `CtConS of (virtual_flag* ident) | `CtFun of (ctyp* class_type)
+  | `CtSig of (ctyp* class_sig_item) | `Obj of class_sig_item
+  | `CtSigEnd of ctyp | `ObjEnd | `And of (class_type* class_type)
+  | `CtCol of (class_type* class_type) | `CtEq of (class_type* class_type)
+  | ant] 
 and class_sig_item =
   [ `Eq of (ctyp* ctyp) | `Sem of (class_sig_item* class_sig_item)
   | `SigInherit of class_type | `Method of (alident* private_flag* ctyp)
@@ -150,12 +151,11 @@ and class_sig_item =
 and class_expr =
   [ `CeApp of (class_expr* expr)
   | `CeCon of (virtual_flag* ident* type_parameters)
-  | `CeFun of (patt* class_expr) | `CeLet of (rec_flag* binding* class_expr)
-  | `Obj of class_str_item | `ObjEnd | `ObjPat of (patt* class_str_item)
-  | `ObjPatEnd of patt | `CeTyc of (class_expr* class_type)
-  | `And of (class_expr* class_expr) | `Eq of (class_expr* class_expr) | 
-    ant]
-  
+  | `CeConS of (virtual_flag* ident) | `CeFun of (patt* class_expr)
+  | `CeLet of (rec_flag* binding* class_expr) | `Obj of class_str_item
+  | `ObjEnd | `ObjPat of (patt* class_str_item) | `ObjPatEnd of patt
+  | `CeTyc of (class_expr* class_type) | `And of (class_expr* class_expr)
+  | `Eq of (class_expr* class_expr) | ant] 
 and class_str_item =
   [ `Sem of (class_str_item* class_str_item) | `Eq of (ctyp* ctyp)
   | `Inherit of (override_flag* class_expr)

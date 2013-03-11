@@ -17,6 +17,7 @@ let loc_of =
   | `TyEq (_loc,_,_) -> _loc
   | `ModuleBind (_loc,_,_,_) -> _loc
   | `Sta (_loc,_,_) -> _loc
+  | `CeConS (_loc,_,_) -> _loc
   | `Match (_loc,_,_) -> _loc
   | `Obj (_loc,_) -> _loc
   | `TyPol (_loc,_,_) -> _loc
@@ -98,6 +99,7 @@ let loc_of =
   | `CgVir (_loc,_,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
   | `TyColMut (_loc,_,_) -> _loc
+  | `CtConS (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
   | `Lid (_loc,_) -> _loc
   | `OptLablS (_loc,_) -> _loc

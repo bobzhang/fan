@@ -199,7 +199,8 @@ and type_parameters =
   [= `Com of (loc * type_parameters * type_parameters)
   | `Ctyp of (loc * ctyp)
   | ant
-  | nil]  
+  (* | nil *)
+]  
 and row_field =
   [= ant_nil
   | `Or of (loc * row_field * row_field )
@@ -500,6 +501,8 @@ and class_type =
   [= 
      (* (virtual)? i ([ t ])? *)
    `CtCon of (loc * virtual_flag * ident *  type_parameters)
+  | `CtConS of (loc * virtual_flag * ident)
+        
         (* [t] -> ct *)
   | `CtFun of (loc * ctyp * class_type)
 
@@ -530,8 +533,14 @@ and class_sig_item =
   | ant ]
 and class_expr =
   [= `CeApp of (loc * class_expr * expr)   (* ce e *)
-      (* (virtual)? i ([ t ])? *)
-  | `CeCon of (loc * virtual_flag * ident * (* ctyp *) type_parameters)
+
+  (* (virtual)? i ([ t ])?
+     class-specification ::= class class-spec { and class-spec }
+     class-spec ::= [virtual] [ [type-parameters]] class-name: class-type
+   *)
+  | `CeCon of (loc * virtual_flag * ident * type_parameters)
+  | `CeConS of (loc * virtual_flag * ident)
+        
       (* fun p -> ce *)
   | `CeFun of (loc * patt * class_expr)
         (* let (rec)? bi in ce *)

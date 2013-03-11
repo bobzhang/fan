@@ -29,7 +29,7 @@ let apply () = begin
      amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_expr_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
-    class_name_and_param class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
+    (* class_name_and_param *) class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
     class_structure
       class_type class_type_declaration class_type_longident class_type_longident_and_param
     class_type_plus class_type_quot comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
@@ -39,7 +39,7 @@ let apply () = begin
     label_expr_list label_expr label_longident label_patt label_patt_list  let_binding meth_list
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
-    more_ctyp name_tags opt_class_self_type opt_comma_ctyp opt_dot_dot
+    more_ctyp name_tags opt_class_self_type (* opt_comma_ctyp *) opt_dot_dot
     opt_meth_list opt_mutable opt_polyt opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
@@ -150,8 +150,7 @@ let apply () = begin
         | `Ant (("module_binding"|"anti"|"list" |"" as n),s) -> {| $(anti:mk_anti ~c:"module_binding" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x DynAst.module_binding_tag
         | a_uident{m}; ":"; module_type{mt}; "="; module_expr{me} ->
-            (* {| $uid:m : $mt = $me |} *)
-               `ModuleBind (_loc, m, mt, me)]
+            `ModuleBind (_loc, m, mt, me)]
         module_rec_declaration:
         [ S{m1}; "and"; S{m2} -> {| $m1 and $m2 |}
         | `Ant ((""|"module_binding"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
@@ -1089,13 +1088,11 @@ let apply () = begin
       class_expr_quot:
       [ S{ce1}; "and"; S{ce2} -> {| $ce1 and $ce2 |}
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
-      | "virtual";   class_name_and_param{(i, ot)} ->
-          `CeCon (_loc, `Virtual _loc, (i :>ident), ot)
-            (* {| virtual $((i:>ident)) [ $ot ]|} *)
-      | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
-          let anti = `Ant (_loc,mk_anti ~c:"class_expr" n s) in
-          `CeCon (_loc, anti, i, ot)
-          (* {| $virtual:anti $id:i [ $ot ] |} *)
+      (* | "virtual";   class_name_and_param{(i, ot)} -> *)
+      (*     `CeCon (_loc, `Virtual _loc, (i :>ident), ot) *)
+      (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
+      (*     let anti = `Ant (_loc,mk_anti ~c:"class_expr" n s) in *)
+      (*     `CeCon (_loc, anti, i, ot) *)
       | class_expr{x} -> x]
       class_declaration:
       [ S{c1}; "and"; S{c2} -> {| $c1 and $c2 |}
@@ -1107,8 +1104,9 @@ let apply () = begin
       | ":"; class_type_plus{ct}; "="; class_expr{ce} -> {| ($ce : $ct) |}
       | ipatt{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
       class_info_for_class_expr:
-      [ opt_virtual{mv};  class_name_and_param{(i, ot)} ->
-        `CeCon(_loc,mv,(i:>ident),ot)  ]
+      [ opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]" -> 
+        `CeCon(_loc,mv,(i:>ident),x)
+      | opt_virtual{mv}; a_lident{i} -> `CeConS(_loc,mv, (i:>ident))]
       class_fun_def:
       [ ipatt{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; class_expr{ce} -> ce ]
       class_expr:
@@ -1138,9 +1136,10 @@ let apply () = begin
           | "("; S{ce}; ")" -> ce ] }
       class_longident_and_param:
       [ class_longident{ci}; "["; comma_ctyp{t}; "]" ->
-        `CeCon (_loc, (`ViNil _loc), ci, t)
-          (* {| $id:ci [ $t ] |} *)
-      | class_longident{ci} -> {| $id:ci |}  ]  |};
+        `CeCon (_loc, `ViNil _loc, ci, t)
+      | class_longident{ci} ->
+          `CeConS(_loc,`ViNil _loc,ci)
+          (* {| $id:ci |} *)  ]  |};
   with class_type
     {:extend|
       class_description:
@@ -1155,20 +1154,33 @@ let apply () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_type_tag
       | class_info_for_class_type{ci}; "="; class_type{ct} -> {| $ci = $ct |} ]
       class_info_for_class_type:
-      [ opt_virtual{mv};  class_name_and_param{(i, ot)} ->
-        `CtCon (_loc, mv, (i :>ident), ot)
-        (* {| $virtual:mv $(id:(i:>ident)) [ $ot ] |} *) ]
+
+      [ opt_virtual{mv};  a_lident{i};"["; comma_type_parameter{x}; "]" ->
+        `CtCon(_loc,mv,(i:>ident),x)
+      | opt_virtual{mv}; a_lident{i} ->
+          `CtConS(_loc,mv,(i:>ident))
+        (*   class_name_and_param{(i, ot)} -> *)
+        (* `CtCon (_loc, mv, (i :>ident), ot) *)
+      ]
       class_type_quot:
       [ S{ct1}; "and"; S{ct2} -> {| $ct1 and $ct2 |}
       | S{ct1}; "="; S{ct2} -> {| $ct1 = $ct2 |}
       | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
-      | "virtual";  class_name_and_param{(i, ot)} ->
-          `CtCon (_loc, `Virtual _loc, (i :>ident), ot)
+      (* | "virtual";  class_name_and_param{(i, ot)} -> *)
+      (*     `CtCon (_loc, `Virtual _loc, (i :>ident), ot) *)
           (* {| virtual $((i:>ident)) [ $ot ] |} (\* types *\) *)
-      | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} ->
+
+      (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
+      (*     let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in *)
+      (*     `CtCon (_loc, anti, i, ot) *)
+            
+      | `Ant (("virtual" as n),s); ident{i}; "["; comma_ctyp{t}; "]" ->
           let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
-          `CtCon (_loc, anti, i, ot)
-          (* {| $virtual:anti $id:i [ $ot ] |} *)
+          `CtCon(_loc,anti,i,t)
+      | `Ant (("virtual" as n),s); ident{i} ->
+          let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in
+          `CtConS(_loc,anti,i)
+            
       | class_type_plus{x} -> x]
       class_type_plus:
       [ "["; ctyp{t}; "]"; "->"; S{ct} -> {| [ $t ] -> $ct |}
@@ -1195,7 +1207,7 @@ let apply () = begin
       class_type_longident_and_param:
       [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->
         `CtCon (_loc, (`ViNil _loc), i, t)
-      | class_type_longident{i} -> {| $id:i |}   ] |} ;
+      | class_type_longident{i} -> `CtConS(_loc,`ViNil _loc,i)(* {| $id:i |} *)   ] |} ;
 end;
 
 
@@ -1231,8 +1243,6 @@ let apply_ctyp () = begin
       [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
       | type_parameter{t} -> fun acc -> {| $acc $t |}
       | -> fun t -> t  ]
-      (* opt_class_self_type: *)
-      (* [ "("; ctyp{t}; ")" -> t | -> `Nil _loc ] *)
       meth_list:
       [ meth_decl{m}; ";"; S{(ml, v) }  -> (`Sem(_loc,m,ml)(* {| $m; $ml |} *), v)
       | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
@@ -1386,15 +1396,16 @@ let apply_ctyp () = begin
       (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
       | a_lident{s}; ":"; ctyp{t} -> `TyCol (_loc, (`Id (_loc, (s :>ident))), t)
       | "mutable"; a_lident{s}; ":";  ctyp{t} -> `TyColMut(_loc,`Id(_loc,(s:>ident)),t)]
-      class_name_and_param:
-      [ a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
-      | a_lident{i} -> (i, `Nil _loc )  ]
+
+      (* class_name_and_param: *)
+      (* [ a_lident{i}; "["; comma_type_parameter{x}; "]" -> (i, x) *)
+      (* | a_lident{i} -> (i, `Nil _loc )  ] *)
       comma_type_parameter:
       [ S{t1}; ","; S{t2} ->  `Com (_loc, t1, t2)
       | `Ant (("list" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp," n s))
       | type_parameter{t} -> `Ctyp(_loc, t)  ]
-      opt_comma_ctyp:
-      [ "["; comma_ctyp{x}; "]" -> x | -> `Nil _loc  ]
+      (* opt_comma_ctyp: *)
+      (* [ "["; comma_ctyp{x}; "]" -> x | -> `Nil _loc  ] *)
       comma_ctyp:
       [ S{t1}; ","; S{t2} -> `Com (_loc, t1, t2) 
       | `Ant (("list" | "" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp," n s))

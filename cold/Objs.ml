@@ -330,8 +330,6 @@ class map2 =
             let _a1 = self#ctyp _a1 _b1 in `Ctyp (_a0, _a1)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>type_parameters)
-        | ((#nil as _a0),(#nil as _b0)) ->
-            (self#nil _a0 _b0 : nil  :>type_parameters)
         | (_,_) -> invalid_arg "map2 failure"
     method row_field : row_field -> row_field -> row_field=
       fun _a0  _b0  ->
@@ -1033,6 +1031,10 @@ class map2 =
             let _a2 = self#ident _a2 _b2 in
             let _a3 = self#type_parameters _a3 _b3 in
             `CtCon (_a0, _a1, _a2, _a3)
+        | (`CtConS (_a0,_a1,_a2),`CtConS (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#virtual_flag _a1 _b1 in
+            let _a2 = self#ident _a2 _b2 in `CtConS (_a0, _a1, _a2)
         | (`CtFun (_a0,_a1,_a2),`CtFun (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -1111,6 +1113,10 @@ class map2 =
             let _a2 = self#ident _a2 _b2 in
             let _a3 = self#type_parameters _a3 _b3 in
             `CeCon (_a0, _a1, _a2, _a3)
+        | (`CeConS (_a0,_a1,_a2),`CeConS (_b0,_b1,_b2)) ->
+            let _a0 = self#loc _a0 _b0 in
+            let _a1 = self#virtual_flag _a1 _b1 in
+            let _a2 = self#ident _a2 _b2 in `CeConS (_a0, _a1, _a2)
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
@@ -1512,7 +1518,6 @@ class fold2 =
         | (`Ctyp (_a0,_a1),`Ctyp (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ctyp _a1 _b1
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method row_field : row_field -> row_field -> 'self_type=
       fun _a0  _b0  ->
@@ -2041,6 +2046,9 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#virtual_flag _a1 _b1 in
             let self = self#ident _a2 _b2 in self#type_parameters _a3 _b3
+        | (`CtConS (_a0,_a1,_a2),`CtConS (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#virtual_flag _a1 _b1 in self#ident _a2 _b2
         | (`CtFun (_a0,_a1,_a2),`CtFun (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#class_type _a2 _b2
@@ -2100,6 +2108,9 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#virtual_flag _a1 _b1 in
             let self = self#ident _a2 _b2 in self#type_parameters _a3 _b3
+        | (`CeConS (_a0,_a1,_a2),`CeConS (_b0,_b1,_b2)) ->
+            let self = self#loc _a0 _b0 in
+            let self = self#virtual_flag _a1 _b1 in self#ident _a2 _b2
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#class_expr _a2 _b2
@@ -2361,7 +2372,6 @@ class iter =
           (self#loc _a0; self#type_parameters _a1; self#type_parameters _a2)
       | `Ctyp (_a0,_a1) -> (self#loc _a0; self#ctyp _a1)
       | #ant as _a0 -> (self#ant _a0 :>'result136)
-      | #nil as _a0 -> (self#nil _a0 :>'result136)
     method row_field : row_field -> 'result137=
       function
       | #ant_nil as _a0 -> (self#ant_nil _a0 :>'result137)
@@ -2683,6 +2693,8 @@ class iter =
            self#virtual_flag _a1;
            self#ident _a2;
            self#type_parameters _a3)
+      | `CtConS (_a0,_a1,_a2) ->
+          (self#loc _a0; self#virtual_flag _a1; self#ident _a2)
       | `CtFun (_a0,_a1,_a2) ->
           (self#loc _a0; self#ctyp _a1; self#class_type _a2)
       | `CtSig (_a0,_a1,_a2) ->
@@ -2729,6 +2741,8 @@ class iter =
            self#virtual_flag _a1;
            self#ident _a2;
            self#type_parameters _a3)
+      | `CeConS (_a0,_a1,_a2) ->
+          (self#loc _a0; self#virtual_flag _a1; self#ident _a2)
       | `CeFun (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#class_expr _a2)
       | `CeLet (_a0,_a1,_a2,_a3) ->
@@ -3047,7 +3061,6 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in `Ctyp (_a0, _a1)
       | #ant as _a0 -> (self#ant _a0 : ant  :>type_parameters)
-      | #nil as _a0 -> (self#nil _a0 : nil  :>type_parameters)
     method row_field : row_field -> row_field=
       function
       | #ant_nil as _a0 -> (self#ant_nil _a0 : ant_nil  :>row_field)
@@ -3662,6 +3675,10 @@ class map =
           let _a1 = self#virtual_flag _a1 in
           let _a2 = self#ident _a2 in
           let _a3 = self#type_parameters _a3 in `CtCon (_a0, _a1, _a2, _a3)
+      | `CtConS (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#virtual_flag _a1 in
+          let _a2 = self#ident _a2 in `CtConS (_a0, _a1, _a2)
       | `CtFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -3731,6 +3748,10 @@ class map =
           let _a1 = self#virtual_flag _a1 in
           let _a2 = self#ident _a2 in
           let _a3 = self#type_parameters _a3 in `CeCon (_a0, _a1, _a2, _a3)
+      | `CeConS (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#virtual_flag _a1 in
+          let _a2 = self#ident _a2 in `CeConS (_a0, _a1, _a2)
       | `CeFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
@@ -4034,7 +4055,6 @@ class fold =
           let self = self#type_parameters _a1 in self#type_parameters _a2
       | `Ctyp (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-      | #nil as _a0 -> (self#nil _a0 :>'self_type)
     method row_field : row_field -> 'self_type=
       function
       | #ant_nil as _a0 -> (self#ant_nil _a0 :>'self_type)
@@ -4461,6 +4481,9 @@ class fold =
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in
           let self = self#ident _a2 in self#type_parameters _a3
+      | `CtConS (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#virtual_flag _a1 in self#ident _a2
       | `CtFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#class_type _a2
@@ -4513,6 +4536,9 @@ class fold =
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in
           let self = self#ident _a2 in self#type_parameters _a3
+      | `CeConS (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#virtual_flag _a1 in self#ident _a2
       | `CeFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#class_expr _a2
@@ -4855,7 +4881,6 @@ class print =
             Format.fprintf fmt "@[<1>(`Ctyp@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result301)
-        | #nil as _a0 -> (self#nil fmt _a0 :>'result301)
     method row_field : 'fmt -> row_field -> 'result302=
       fun fmt  ->
         function
@@ -5393,6 +5418,9 @@ class print =
         | `CtCon (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#virtual_flag _a1 self#ident _a2 self#type_parameters _a3
+        | `CtConS (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`CtConS@ %a@ %a@ %a)@]" self#loc _a0
+              self#virtual_flag _a1 self#ident _a2
         | `CtFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#class_type _a2
@@ -5449,6 +5477,9 @@ class print =
         | `CeCon (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`CeCon@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#virtual_flag _a1 self#ident _a2 self#type_parameters _a3
+        | `CeConS (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`CeConS@ %a@ %a@ %a)@]" self#loc _a0
+              self#virtual_flag _a1 self#ident _a2
         | `CeFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#class_expr _a2
@@ -5812,7 +5843,6 @@ class eq =
         | (`Ctyp (_a0,_a1),`Ctyp (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ctyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result356)
-        | ((#nil as _a0),(#nil as _b0)) -> (self#nil _a0 _b0 :>'result356)
         | (_,_) -> false
     method row_field : row_field -> row_field -> 'result357=
       fun _a0  _b0  ->
@@ -6333,6 +6363,9 @@ class eq =
             (((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
                (self#ident _a2 _b2))
               && (self#type_parameters _a3 _b3)
+        | (`CtConS (_a0,_a1,_a2),`CtConS (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
+              (self#ident _a2 _b2)
         | (`CtFun (_a0,_a1,_a2),`CtFun (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#class_type _a2 _b2)
@@ -6391,6 +6424,9 @@ class eq =
             (((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
                (self#ident _a2 _b2))
               && (self#type_parameters _a3 _b3)
+        | (`CeConS (_a0,_a1,_a2),`CeConS (_b0,_b1,_b2)) ->
+            ((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
+              (self#ident _a2 _b2)
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#class_expr _a2 _b2)
@@ -6666,7 +6702,6 @@ and strip_loc_type_parameters =
       let _a2 = strip_loc_type_parameters _a2 in `Com (_a1, _a2)
   | `Ctyp (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Ctyp _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result432)
-  | #nil as _a0 -> (strip_loc_nil _a0 :>'result432)
 and strip_loc_row_field =
   function
   | #ant_nil as _a0 -> (strip_loc_ant_nil _a0 :>'result431)
@@ -7103,6 +7138,9 @@ and strip_loc_class_type =
       let _a1 = strip_loc_virtual_flag _a1 in
       let _a2 = strip_loc_ident _a2 in
       let _a3 = strip_loc_type_parameters _a3 in `CtCon (_a1, _a2, _a3)
+  | `CtConS (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_virtual_flag _a1 in
+      let _a2 = strip_loc_ident _a2 in `CtConS (_a1, _a2)
   | `CtFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_class_type _a2 in `CtFun (_a1, _a2)
@@ -7155,6 +7193,9 @@ and strip_loc_class_expr =
       let _a1 = strip_loc_virtual_flag _a1 in
       let _a2 = strip_loc_ident _a2 in
       let _a3 = strip_loc_type_parameters _a3 in `CeCon (_a1, _a2, _a3)
+  | `CeConS (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_virtual_flag _a1 in
+      let _a2 = strip_loc_ident _a2 in `CeConS (_a1, _a2)
   | `CeFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_class_expr _a2 in `CeFun (_a1, _a2)
@@ -7467,7 +7508,6 @@ and pp_print_type_parameters fmt =
       Format.fprintf fmt "@[<1>(`Ctyp@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result485)
-  | #nil as _a0 -> (pp_print_nil fmt _a0 :>'result485)
 and pp_print_row_field fmt =
   function
   | #ant_nil as _a0 -> (pp_print_ant_nil fmt _a0 :>'result484)
@@ -7984,6 +8024,9 @@ and pp_print_class_type fmt =
       Format.fprintf fmt "@[<1>(`CtCon@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_virtual_flag _a1 pp_print_ident _a2 pp_print_type_parameters
         _a3
+  | `CtConS (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`CtConS@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_virtual_flag _a1 pp_print_ident _a2
   | `CtFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_class_type _a2
@@ -8038,6 +8081,9 @@ and pp_print_class_expr fmt =
       Format.fprintf fmt "@[<1>(`CeCon@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_virtual_flag _a1 pp_print_ident _a2 pp_print_type_parameters
         _a3
+  | `CeConS (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`CeConS@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_virtual_flag _a1 pp_print_ident _a2
   | `CeFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_class_expr _a2

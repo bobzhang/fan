@@ -103,9 +103,7 @@ let mk_obj class_name base body =
   `Class
     (_loc,
       (`Eq
-         (_loc,
-           (`CeCon
-              (_loc, (`ViNil _loc), (`Lid (_loc, class_name)), (`Nil _loc))),
+         (_loc, (`CeConS (_loc, (`ViNil _loc), (`Lid (_loc, class_name)))),
            (`ObjPat
               (_loc,
                 (`Constraint
@@ -116,9 +114,8 @@ let mk_obj class_name base body =
                    (_loc,
                      (`Inherit
                         (_loc, (`OvNil _loc),
-                          (`CeCon
-                             (_loc, (`ViNil _loc), (`Lid (_loc, base)),
-                               (`Nil _loc))))), body)))))))
+                          (`CeConS (_loc, (`ViNil _loc), (`Lid (_loc, base)))))),
+                     body)))))))
 let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (_,`Lid (_,name),_,ctyp,_) ->
