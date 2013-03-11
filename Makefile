@@ -11,3 +11,7 @@ cleantmp:
 	rm -rf _build/tmp
 cleantest:
 	rm -rf _build/test
+
+stat:
+	rm -rf stat/*
+	git_stats . stat

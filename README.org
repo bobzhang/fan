@@ -52,7 +52,9 @@ it's 100% compatible with ocaml.
 
   
 
-* Contribution
+* Contributions
+  Fan is a non-trivial project, I have already commited millions of
+  lines revisions during the last year.
   Feel free to send me a pull request
 
 * Install
