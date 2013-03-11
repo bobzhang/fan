@@ -1213,7 +1213,7 @@ let apply_ctyp () = begin
     {:extend|
       ctyp_quot:
       [more_ctyp{x}; "*"; star_ctyp{y} -> `Sta (_loc, x, y)
-      | more_ctyp{x} -> x (* | -> `Nil _loc *)]
+      | more_ctyp{x} -> x ]
       more_ctyp:
       [ctyp{x} -> x | type_parameter{x} -> x   ]
       unquoted_typevars:
@@ -1251,11 +1251,11 @@ let apply_ctyp () = begin
       | a_lident{lab}; ":"; ctyp{t} -> `TyCol(_loc,`Id(_loc, (lab :> ident)),t)]
       opt_meth_list:
       [ meth_list{(ml, v) } -> `TyObj (_loc, ml, v)
-      | opt_dot_dot{v}     -> `TyObjEnd(_loc,v) (* `TyObj (_loc, (`Nil _loc), v) *)]
+      | opt_dot_dot{v}     -> `TyObjEnd(_loc,v) ]
       row_field:
       [ `Ant ((""|"typ" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp" n s))
       | `Ant (("list" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp|" n s))
-      | S{t1}; "|"; S{t2} -> (* {| $t1 | $t2 |} *) `Or(_loc,t1,t2)
+      | S{t1}; "|"; S{t2} -> `Or(_loc,t1,t2)
       | "`"; astr{i} -> (* {| `$i |} *) `TyVrn(_loc,i)
       (* | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> *)
       (*     `TyOfAmp (_loc, (`TyVrn (_loc, i)), t) *)

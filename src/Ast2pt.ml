@@ -248,22 +248,15 @@ let rec ctyp (x:ctyp) = match x with
   |  x -> errorf (loc_of x) "ctyp: %s" (dump_ctyp x) ]
 and row_field (x:row_field) acc =
   match x with 
-  [(* `Nil _loc  -> [] (\*M*\) *)
-   `TyVrn (_loc,`C(_,i)) -> [Rtag i true [] :: acc]
-  (* | `TyOfAmp (_loc,`TyVrn(_,`C(_,i)),t) -> *)
-  (*       [Rtag i true (List.map ctyp (list_of_amp' t [])) :: acc ] *)
-  (* | `Of(_loc,`TyVrn(_,`C(_,i)),t) -> *)
-  (*     [Rtag i false (List.map ctyp (list_of_amp' t [])) :: acc ] *)
+  [`TyVrn (_loc,`C(_,i)) -> [Rtag i true [] :: acc]
   | `TyVrnOf(_loc,`C(_,i),t) ->
       [Rtag i false [ctyp t] :: acc ]
-      (* [Rtag i false (List.map ctyp (list_of_amp' t [])) :: acc ] *)
   | `Or(_loc,t1,t2) -> row_field t1 ( row_field t2 acc)
   | `Ant(_loc,_) -> ANT_ERROR
   | `Ctyp(_,t) -> [Rinherit (ctyp t) :: acc]
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)]
 and meth_list (fl:name_ctyp) acc : list core_field_type = match fl with
-  [(* `Nil _-> acc (\*M*\) *)
-  (* | *) `Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
+  [`Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
   | `TyCol(_loc,`Id(_,`Lid(_,lab)),t) ->
       [mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
   | x -> errorf (loc_of x) "meth_list: %s" (dump_name_ctyp x )]
@@ -330,9 +323,7 @@ let type_kind (x:type_repr) =
     (Ptype_record (List.map mktrecord (list_of_sem t [])))
   | `Sum(_loc,t) ->
       (Ptype_variant (List.map mkvariant (list_of_or t [])))
-  | `Ant(_loc,_) -> ANT_ERROR
-  (* | `Nil _loc -> failwithf "type_kind nil" (\*M*\) *)
-  ];
+  | `Ant(_loc,_) -> ANT_ERROR];
     
     
 
@@ -367,13 +358,6 @@ let quote_map (x:ctyp) =
     |`Normal _ -> (false,false)
     |`Ant (_loc,_) -> ANT_ERROR ] in
     (Some (s+>sloc),tuple)
-    (* let s = *)
-    (* match s with *)
-    (* [`None  -> None *)
-    (* |`Some (`Lid (sloc,s)) -> Some (s+>sloc) *)
-    (* |`Some (`Ant(_loc,_)) *)
-    (* |`Ant (_loc,_) -> ANT_ERROR] in *)
-    (* (s,tuple) *)
   |`QuoteAny(_loc,p) ->
     let tuple = match p with
       [`Positive _ -> (true,false)
@@ -391,25 +375,21 @@ let optional_type_parameters (t:ctyp) =
 let  class_parameters (t:type_parameters) =
   List.filter_map
     (fun
-      [(* `Nil _ -> None (\*Q*\) *)
-      (* | *) `Ctyp(_, x) ->
-          match quote_map x with
-          [(Some x,v) -> Some (x,v)
-          | (None,_) ->
-              errorf (loc_of t) "class_parameters %s" (dump_type_parameters t)]
-      | _ ->  errorf (loc_of t) "class_parameters %s" (dump_type_parameters t) ])
+      [`Ctyp(_, x) ->
+        match quote_map x with
+        [(Some x,v) -> Some (x,v)
+        | (None,_) ->
+            errorf (loc_of t) "class_parameters %s" (dump_type_parameters t)]
+        | _ ->  errorf (loc_of t) "class_parameters %s" (dump_type_parameters t) ])
     (list_of_com t []);
 
 
 let type_parameters_and_type_name t (* acc *) =
   let rec aux t acc = 
   match t with
-  [ (* {:ctyp| $t1 $t2 |} *)
-    `App(_loc,t1,t2) ->
+  [`App(_loc,t1,t2) ->
     aux t1 (optional_type_parameters t2 @ acc)
-  | (* {:ctyp| $id:i |} *)
-    `Id(_loc,i)
-    -> (ident i, acc)
+  | `Id(_loc,i) -> (ident i, acc)
   | x ->
       errorf (loc_of x) "type_parameters_and_type_name %s"
         (dump_ctyp x) ] in aux t [];
@@ -444,7 +424,7 @@ let rec patt (x:patt) =
   | {| $id:i |} ->
       let p = Ppat_construct (long_uident  i) None false 
       in mkpat _loc p
-  | (* {| ($p1 as $p2) |} *) `Alias (_loc, p1, x)->
+  |  `Alias (_loc, p1, x)->
       match x with
       [`Lid (sloc,s) -> mkpat _loc (Ppat_alias ((patt p1), with_loc s sloc))
       | `Ant (_loc,_) -> error _loc "invalid antiquotations"]  
@@ -574,7 +554,7 @@ let rec expr (x : expr) = with expr match x with
       let (e, l) =
         match sep_dot_expr [] x with
           [ [(loc, ml, `Id(sloc,`Uid(_,s))) :: l] ->
-            (mkexp loc (Pexp_construct (mkli sloc  s ml) None false(* ca *)), l)
+            (mkexp loc (Pexp_construct (mkli sloc  s ml) None false), l)
         | [(loc, ml, `Id(sloc,`Lid(_,s))) :: l] ->
             (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
         | [(_, [], e) :: l] -> (expr e, l)
@@ -644,9 +624,7 @@ let rec expr (x : expr) = with expr match x with
       | `Subtype (loc,e,t2) ->
           mkexp loc (Pexp_constraint (expr e) None (Some (ctyp t2)))
       | `Coercion (loc, e, t1, t2) ->
-          let t1 =(*  match t1 with *)
-            (* [ `Nil _ -> None (\*Q*\) *)
-          (* | t -> *) Some (ctyp t1) (* ] *) in
+          let t1 = Some (ctyp t1) in
           mkexp loc (Pexp_constraint (expr e) t1 (Some (ctyp t2)))
       | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
       | `For (loc, `Lid(sloc,i), e1, e2, df, el) ->
@@ -658,7 +636,7 @@ let rec expr (x : expr) = with expr match x with
             (Pexp_function lab None
                [(patt (`Id(sloc,`Lid(sloc,lab))),expr e)])
             
-      | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) -> (*M*)
+      | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) ->
           mkexp loc
             (Pexp_function lab None
                [(patt po, expr e)])
@@ -1089,11 +1067,8 @@ and class_type (x:Ast.class_type) = match x with
 and class_info_class_expr (ci:class_expr) =
   match ci with 
   [ `Eq (_, (`CeCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
-        let (loc_params, (params, variance)) =
-          (* match params with *)
-          (* [`Nil _loc -> (\*Q*\) *)
-          (*     (loc, ([], [])) *)
-          (* | t -> *) (loc_of params, List.split (class_parameters params)) (* ]  *) in
+    let (loc_params, (params, variance)) =
+      (loc_of params, List.split (class_parameters params)) in
         {pci_virt = mkvirtual vir;
          pci_params = (params,  loc_params);
          pci_name = with_loc name nloc;
@@ -1114,10 +1089,7 @@ and class_info_class_type (ci:class_type) =
   | `CtCol (_, (`CtCon (loc, vir, (`Lid (nloc, name)), params)), ct)
     ->
         let (loc_params, (params, variance)) =
-          (* match params with *)
-          (* [`Nil _loc -> (\*Q*\) *)
-          (*     (loc, ([], [])) *)
-          (* | t -> *) (loc_of params, List.split (class_parameters params)) (* ]  *)in
+          (loc_of params, List.split (class_parameters params)) in
         {pci_virt = mkvirtual vir;
          pci_params = (params,  loc_params);
          pci_name = with_loc name nloc;
@@ -1204,9 +1176,7 @@ and class_expr  (x:Ast.class_expr) = match x with
         let e = mkexp loc (Pexp_poly (expr e) None) in
         [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
     | `CrMth (loc, `Lid(sloc,s), ov, pf, e, t) ->
-        let t = (* match t with (\*Q*\) *)
-          (* [`Nil _ -> None *)
-        (* | t ->  *)Some (mkpolytype (ctyp t)) (* ] *) in
+        let t = Some (mkpolytype (ctyp t)) in
         let e = mkexp loc (Pexp_poly (expr e) t) in
         [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
     | `CrVal (loc, `Lid(sloc,s), ov, mf, e) ->
