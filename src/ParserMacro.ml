@@ -50,16 +50,16 @@ let apply () = begin
     [ "ELSE"; expr{e}; endif -> e | endif -> {:expr| () |} ]
     smlist_then:
     [ L1
-        [ macro_def{d}; semi ->
+        [ macro_def{d}; ";" ->
           execute_macro_if_active_branch ~expr ~patt _loc
             {:str_item|let _ = ()|} (* FIXME *)
             (fun a b -> {:str_item| $a; $b |}) Then d
-        | str_item{si}; semi -> Str si ]{sml} -> sml ]
+        | str_item{si}; ";" -> Str si ]{sml} -> sml ]
     smlist_else:
-    [ L1 [ macro_def{d}; semi ->
+    [ L1 [ macro_def{d}; ";" ->
            execute_macro_if_active_branch ~expr ~patt  _loc
            {:str_item|let _ = ()|} (*FIXME*) (fun a b -> {:str_item| $a; $b |}) Else d
-         | str_item{si}; semi -> Str si ]{sml} -> sml ]
+         | str_item{si}; ";" -> Str si ]{sml} -> sml ]
     (* sglist_then: *)
     (* [ L1 [ macro_def_sig{d}; semi -> *)
     (*        execute_macro_if_active_branch ~expr ~patt *)

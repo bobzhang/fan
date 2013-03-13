@@ -424,17 +424,13 @@ and str_item =
   | `Type of (loc * typedecl) (* type t *)
   | `Value of (loc * rec_flag * binding) (* value (rec)? bi *)
   | ant  ]
-
-(* class body type *)         
-and class_type =
+and class_type = (* class body type *)         
   [= `ClassCon of
     (loc * virtual_flag * ident *  type_parameters) (* (virtual)? i [ t ] *)
   | `ClassConS of (loc * virtual_flag * ident) (* (virtual)? i *)
   | `CtFun of (loc * ctyp * class_type) (* [t] -> ct *)
-  (* | `CtSig of (loc * ctyp * class_sig_item) (\*object (ty) ..  end*\) *)
-  (* | `CtSigEnd of (loc * ctyp) (\* object (ty) end*\) *)
-  | `ObjTy of (loc * ctyp * class_sig_item)
-  | `ObjTyEnd of (loc * ctyp)
+  | `ObjTy of (loc * ctyp * class_sig_item) (*object (ty) ..  end*)
+  | `ObjTyEnd of (loc * ctyp) (*object (ty) end*)
   | `Obj of (loc * class_sig_item) (* object ... end *)
   | `ObjEnd of (loc) (* object end*)
   | `And of (loc * class_type * class_type)

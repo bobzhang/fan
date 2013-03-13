@@ -170,7 +170,7 @@ module type Syntax = sig
   val sem_expr_for_list : Gram.t (expr -> expr);
   val sem_patt : Gram.t patt;
   val sem_patt_for_list : Gram.t (patt -> patt);
-  val semi : Gram.t unit;
+  (* val semi : Gram.t unit; *)
   val sequence : Gram.t expr;
   val sig_item : Gram.t sig_item;
   val sig_item_quot : Gram.t sig_item;

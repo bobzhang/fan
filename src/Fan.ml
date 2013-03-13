@@ -23,12 +23,12 @@ of_str_item_with_filter
   ~name:(d,"ocaml") ~entry:str_items
   ~filter:(fun s ->
     let _loc = loc_of s in 
-    let v =  {:module_expr| struct $s end |} in
+    let v =  `Struct(_loc,s)(* {:module_expr| struct $s end |} *) in
     (* let _ = Format.eprintf "@[%a@]@." Ast2pt.print_str_item s in *)
     let module_expr =
       (Typehook.traversal ())#module_expr v in
     let code = match module_expr with
-    [ {:module_expr| struct $item end |}  -> item
+    [ `Struct(_loc,item)(* {:module_expr| struct $item end |} *)  -> item
     | _ -> failwith "can not find items back " ]  in
     begin
       if !Typehook.show_code then
@@ -43,7 +43,7 @@ of_str_item_with_filter
              Plz send bug report to " ^ FanConfig.bug_main_address;
           end];
       code
-    end);
+    end);;
 
 of_expr ~name:(d,"fans") ~entry:Typehook.fan_quots ;
 of_expr ~name:(d,"save") ~entry:Typehook.save_quot;
@@ -204,7 +204,8 @@ add (`Absolute ["Fan";"Lang"],"str") DynAst.expr_tag
   (fun _loc _loc_option s -> {:expr|$str:s|});
 
 add (`Absolute ["Fan";"Lang"],"str") DynAst.str_item_tag
-  (fun _loc _loc_option s -> {:str_item| $(exp:{:expr|$str:s|}) |});
+  (fun _loc _loc_option s ->
+    `StExp(_loc,{:expr|$str:s|})(* {:str_item| $(exp:{:expr|$str:s|}) |} *));
   
 Options.add
     ("-dlang",

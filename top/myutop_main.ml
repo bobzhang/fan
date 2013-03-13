@@ -1,8 +1,8 @@
 
-let ppf_id fmt (x:Ident.t) = Format.fprintf "%s" (Ident.name x);;
+(* let ppf_id fmt (x:Ident.t) = Format.fprintf "%s" (Ident.name x);; *)
 
 
-(* #print_length 10000;; *)
+
 let _ =  begin
   Topdirs.dir_directory "+compiler-libs"
 end;;

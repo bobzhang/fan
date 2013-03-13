@@ -29,7 +29,7 @@ let apply () = begin
      amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_expr_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
-    (* class_name_and_param *) class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
+      class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
     class_structure
       class_type class_type_declaration class_type_longident class_type_longident_and_param
     class_type_plus class_type_quot comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
@@ -39,10 +39,10 @@ let apply () = begin
     label_expr_list label_expr label_longident label_patt label_patt_list  let_binding meth_list
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_expr module_expr_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
-    more_ctyp name_tags opt_class_self_type (* opt_comma_ctyp *) opt_dot_dot
-    opt_meth_list opt_mutable (* opt_polyt *) opt_private opt_rec opt_virtual 
+    more_ctyp name_tags opt_class_self_type opt_dot_dot
+    opt_meth_list opt_mutable opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot row_field sem_expr
-    sem_expr_for_list sem_patt sem_patt_for_list semi sequence sig_item sig_item_quot sig_items star_ctyp
+    sem_expr_for_list sem_patt sem_patt_for_list sequence sig_item sig_item_quot sig_items star_ctyp
     str_item str_item_quot str_items top_phrase type_declaration type_ident_and_parameters
     type_longident type_longident_and_parameters type_parameter type_parameters typevars 
     val_longident with_constr with_constr_quot
@@ -228,7 +228,7 @@ let apply () = begin
     sig_item_quot:
     [ "#"; a_lident{s} -> `DirectiveSimple(_loc,s)
     | "#"; a_lident{s}; expr{dp} -> `Directive(_loc,s,dp)
-    | sig_item{sg1}; semi; S{sg2} -> `Sem(_loc,sg1,sg2)
+    | sig_item{sg1}; (* semi; *)";"; S{sg2} -> `Sem(_loc,sg1,sg2)
     | sig_item{sg} -> sg] 
     sig_item:
     [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
@@ -252,12 +252,12 @@ let apply () = begin
     [ "#"; a_lident{n};  ";;" ->
       ([ `DirectiveSimple(_loc,n) ],  Some _loc)
     | "#"; a_lident{n}; expr{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc) 
-    | sig_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
+    | sig_item{si}; (* semi *)";";  S{(sil, stopped)} -> ([si :: sil], stopped)
     | `EOI -> ([], None) ]
     sig_items:
     [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti n ~c:"sig_item" s) |}
-    | `Ant ((""|"sigi"|"anti"|"list" as n),s); semi; S{sg} ->  {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
-    | L1 [ sig_item{sg}; semi -> sg ]{l} -> sem_of_list1 l  ]
+    | `Ant ((""|"sigi"|"anti"|"list" as n),s); ";"(* semi *); S{sg} ->  {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
+    | L1 [ sig_item{sg}; (* semi *)";" -> sg ]{l} -> sem_of_list1 l  ]
  |};
 
     with expr
@@ -846,51 +846,38 @@ let apply () = begin
       
       class_type_longident: [ type_longident{x} -> x ]
       val_longident:[ ident{x} -> x ]
-      class_longident:
-      [ label_longident{x} -> x ]
+      class_longident: [ label_longident{x} -> x ]
       
       method_opt_override:
       [ "method"; "!" -> {:override_flag| ! |}
       | "method"; `Ant (((""|"override"|"anti") as n),s) ->
           `Ant (_loc,mk_anti ~c:"override_flag" n s)
-            (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s)|} *)
       | "method" -> {:override_flag||}  ] 
       opt_override:
       [ "!" -> {:override_flag| ! |}
       | `Ant ((("!"|"override"|"anti") as n),s) ->
-          (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |} *)
           `Ant (_loc,mk_anti ~c:"override_flag" n s)
       | -> {:override_flag||} ]
       
       value_val_opt_override:
-      [ "val"; "!" -> {:override_flag| ! |}
+      [ "val"; "!" -> `Override _loc
       | "val"; `Ant (((""|"override"|"anti"|"!") as n),s) ->
-          (* {:override_flag|$(anti:mk_anti ~c:"override_flag" n s) |} *)
             `Ant (_loc,mk_anti ~c:"override_flag" n s)
-      | "val" -> {:override_flag||}   ] 
-      (* opt_as_lident: *)
-      (* [ "as"; a_lident{i} -> `Some (i) *)
-      (* | -> `None *)
-      (* | `Ant ((""|"as") as n,s) -> `Ant(_loc, mk_anti n s)]  *)
-
+      | "val" -> `OvNil _loc]
       direction_flag:
       [ "to" -> {:direction_flag| to |}
       | "downto" -> {:direction_flag| downto |}
       | `Ant (("to"|"anti"|"" as n),s) ->
-          (* {:direction_flag|$(anti:mk_anti ~c:"direction_flag" n s)|} *)
-          `Ant (_loc,mk_anti ~c:"direction_flag" n s)
-      ]
+          `Ant (_loc,mk_anti ~c:"direction_flag" n s)]
 
       opt_private:
       [ "private" -> {:private_flag| private |}
       | `Ant (("private"|"anti" as n),s) ->
-          (* {:private_flag| $(anti:mk_anti ~c:"private_flag" n s)|} *)
           `Ant (_loc,mk_anti ~c:"private_flag" n s)
       | -> {:private_flag||}  ] 
       opt_mutable:
       [ "mutable" -> {:mutable_flag| mutable |}
       | `Ant (("mutable"|"anti" as n),s) ->
-          (* {:mutable_flag| $(anti:mk_anti ~c:"mutable_flag" n s) |} *)
           `Ant (_loc,mk_anti ~c:"mutable_flag" n s)
       | -> {:mutable_flag||}  ] 
       opt_virtual:
@@ -919,12 +906,10 @@ let apply () = begin
       [ `Ant((""|"uid") as n,s) -> `Ant (_loc,mk_anti ~c:"a_uident" n s)
       | `Uid s  -> `Uid (_loc, s) ]
       string_list:
-      [ `Ant ((""(* |"str_list" *)),s) -> `Ant (_loc,mk_anti "str_list" s)
+      [ `Ant ((""),s) -> `Ant (_loc,mk_anti "str_list" s)
       | `Ant("",s) ; S{xs} -> `App(_loc,`Ant(_loc,mk_anti "" s), xs)
       | `STR (_, x) -> `Str(_loc,x)
-      | `STR (_, x); S{xs} -> `App(_loc,`Str(_loc,x),xs)
-          (* `LCons (x, xs) *)] 
-      semi: [ ";" -> () ]
+      | `STR (_, x); S{xs} -> `App(_loc,`Str(_loc,x),xs)]
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ direction_flag{x} -> x ] 
       mutable_flag_quot: [  opt_mutable{x} -> x ] 
@@ -946,44 +931,44 @@ let apply () = begin
           (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
             ([`DirectiveSimple(_loc,`Lid(_loc,"import"))],Some _loc))
 
-      | str_item{si}; semi;  S{(sil, stopped)} -> ([si :: sil], stopped)
+      | str_item{si}; ";"; S{(sil, stopped)} -> ([si :: sil], stopped)
+      | str_item{si}; ";;"; S{(sil, stopped)} -> ([si :: sil], stopped)
+            (* FIXME merge with the above in the future*)            
       | `EOI -> ([], None) ]
+
+      (* used by module .... end *)
       str_items: (* FIXME dump seems to be incorrect *)
       [ `Ant ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti n ~c:"str_item" s) |}
-      | `Ant ((""|"stri"|"anti"|"list" as n),s); semi; S{st} -> {| $(anti:mk_anti n ~c:"str_item" s); $st |}
-      | L1 [ str_item{st}; semi -> st ]{l} -> sem_of_list1 l (* {| $list:l |} *) ]
+      | `Ant ((""|"stri"|"anti"|"list" as n),s); ";"; S{st} ->
+          {| $(anti:mk_anti n ~c:"str_item" s); $st |}
+      | L1 [ str_item{st}; ";" -> st ]{l} -> sem_of_list1 l
+      | L1 [ str_item{st}; ";;" -> st ]{l} -> sem_of_list1 l ]
       top_phrase:
       [ "#"; a_lident{n}; expr{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
-
-      | "#";"import"; dot_namespace{x} -> 
-            (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
-            None)
-      | str_item{st}; semi -> Some st
+      | "#";"import"; dot_namespace{x} ->
+          (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
+           None)
+      | str_item{st}; ";" -> Some st
       | `EOI -> None ]
       str_item_quot:
       [ "#"; a_lident{n}; expr{dp} -> `Directive(_loc,n,dp)
       | "#"; a_lident{n} -> `DirectiveSimple(_loc,n)
-      | str_item{st1}; semi; S{st2} -> `Sem(_loc,st1,st2)
+      | str_item{st1}; ";";S{st2} -> `Sem(_loc,st1,st2)
       | str_item{st} -> st]
 
       str_item:
       { "top"
-        [ "exception"; constructor_declaration{t} ->
-            (* {| exception $t |} *)
-            `Exception(_loc,t)
+        [ "exception"; constructor_declaration{t} -> `Exception(_loc,t)
         (* | "exception"; constructor_declaration{t}; "="; type_longident{i} -> *)
         (*     {| exception $t = $i |} *)
         | "external"; a_lident{i};":"; ctyp{t};"="; string_list{sl} ->
             `External (_loc, i, t, sl)
-            (* {| external $i: $t = $sl |} *)
-              
-        | "include"; module_expr{me} -> {| include $me |}
-        | "module"; a_uident{i}; module_binding0{mb} ->
-            {| module $i = $mb |}
-        | "module"; "rec"; module_binding{mb} ->
-            {| module rec $mb |}
-        | "module"; "type"; a_uident{i}; "="; module_type{mt} -> `ModuleType(_loc,i,mt)
+        | "include"; module_expr{me} -> `Include(_loc,me)
+        | "module"; a_uident{i}; module_binding0{mb} -> `Module(_loc,i,mb)
+        | "module"; "rec"; module_binding{mb} -> `RecModule(_loc,mb)
+        | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
+            `ModuleType(_loc,i,mt)
         | "open"; module_longident{i} -> `Open(_loc,i)
         | "type"; type_declaration{td} -> `Type(_loc,td)
         | "let"; opt_rec{r}; binding{bi}; "in"; expr{x} ->
@@ -994,10 +979,10 @@ let apply () = begin
             | _ -> `Value(_loc,r,bi) ]
         | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; expr{e} ->
               {| let module $m = $mb in $e |}
-        | "let"; "open"; module_longident{i}; "in"; expr{e} -> {| let open $id:i in $e |}
-              
-        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; expr{x}; "with"; match_case{a} ->
-            {| let try $rec:r $bi in $x with [ $a ]|}
+        | "let"; "open"; module_longident{i}; "in"; expr{e} ->
+            {| let open $id:i in $e |}
+        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; expr{x}; "with"; match_case{a}
+          -> {| let try $rec:r $bi in $x with [ $a ]|}
         | "class"; class_declaration{cd} ->  `Class(_loc,cd)
         | "class"; "type"; class_type_declaration{ctd} ->
             `ClassType (_loc, ctd)
@@ -1011,34 +996,33 @@ let apply () = begin
   with class_sig_item
     {:extend|
       class_sig_item_quot:
-      [ class_sig_item{x1}; semi; S{x2} -> `Sem(_loc,x1,x2) (* ] *)
+      [ class_sig_item{x1}; ";"; S{x2} -> `Sem(_loc,x1,x2)
       | class_sig_item{x} -> x]
       class_signature:
-      [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
-      | `Ant ((""|"csg"|"anti"|"list" as n),s); semi; S{csg} ->
+      [ `Ant ((""|"csg"|"anti"|"list" as n),s) ->
+        {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
+      | `Ant ((""|"csg"|"anti"|"list" as n),s);";"; S{csg} ->
           {| $(anti:mk_anti ~c:"class_sig_item" n s); $csg |}
-      | L1 [ class_sig_item{csg}; semi -> csg ]{l} -> sem_of_list1 l ]
+      | L1 [ class_sig_item{csg};";" -> csg ]{l} -> sem_of_list1 l ]
       class_sig_item:
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_sig_item_tag
-      | "inherit"; class_type{cs} ->
-          `SigInherit(_loc,cs)
-          (* {| inherit $cs |} *)
+      | "inherit"; class_type{cs} -> `SigInherit(_loc,cs)
+
       | "val"; opt_mutable{mf}; opt_virtual{mv};a_lident{l}; ":"; ctyp{t} ->
           {| val $mutable:mf $virtual:mv $l : $t |}
-      | "method"; "virtual"; opt_private{pf}; a_lident{l}; ":"; (* poly_type *)ctyp{t} ->
+      | "method"; "virtual"; opt_private{pf}; a_lident{l}; ":";ctyp{t} ->
           {| method virtual $private:pf $l : $t |}
-      | "method"; opt_private{pf}; a_lident{l}; ":"; (* poly_type *)ctyp{t} ->
+      | "method"; opt_private{pf}; a_lident{l}; ":";ctyp{t} ->
           {| method $private:pf $l : $t |}
-      | (* type_constraint *)"constraint"; ctyp{t1}; "="; ctyp{t2} ->
-          (* {| type $t1 = $t2 |} *) {|constraint $t1 = $t2|} ] |};  
+      | "constraint"; ctyp{t1}; "="; ctyp{t2} -> {|constraint $t1 = $t2|} ] |};  
   with class_str_item
     {:extend|
       class_structure:
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_str_item" n s) |}
-        | `Ant ((""|"cst"|"anti"|"list" as n),s); semi; S{cst} ->
+        | `Ant ((""|"cst"|"anti"|"list" as n),s); (* semi *)";"; S{cst} ->
             {| $(anti:mk_anti ~c:"class_str_item" n s); $cst |}
-        | L1 [ class_str_item{cst}; semi -> cst ]{l} -> sem_of_list1 l  ]
+        | L1 [ class_str_item{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list1 l  ]
       class_str_item:
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"class_str_item" n s) |}
@@ -1072,7 +1056,7 @@ let apply () = begin
           {|constraint $t1 = $t2|}
         | "initializer"; expr{se} -> {| initializer $se |} ]
       class_str_item_quot:
-        [ class_str_item{x1}; semi; S{x2} -> `Sem(_loc,x1,x2)
+        [ class_str_item{x1}; (* semi *)";"; S{x2} -> `Sem(_loc,x1,x2)
         | class_str_item{x} -> x]
     |};
     
