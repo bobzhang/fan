@@ -869,17 +869,32 @@ and mktype_decl (x:typedecl)  =
     List.map
       (fun 
         [`TyDcl (cloc,`Lid(sloc,c),tl,td,cl) ->
-          let cl = List.map
-              (fun (t1,t2) ->
-                let loc = t1 <+> t2 in 
-                (ctyp t1, ctyp t2, loc)) cl in
+          let cl =
+            match cl with
+            [`Nil _ -> []
+            | `Constr(_,cl) ->
+              list_of_and cl []
+              |> List.map
+                  (fun
+                    [`Eq(loc,t1,t2) ->
+                      (ctyp t1, ctyp t2, loc)
+                    | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)])]
+          in
           (c+>sloc,
            type_decl
              (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl [])
              cl cloc td)
         | `TyAbstr(cloc,`Lid(sloc,c),tl,cl) ->
-            let cl = List.map
-                (fun (t1,t2) -> let loc = t1 <+> t2 in (ctyp t1,ctyp t2,loc)) cl in
+           let cl =
+            match cl with
+            [`Nil _ -> []
+            | `Constr(_,cl) ->
+              list_of_and cl []
+              |> List.map
+                  (fun
+                    [`Eq(loc,t1,t2) ->
+                      (ctyp t1, ctyp t2, loc)
+                    | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)])]         in            
             (c+>sloc,
              mktype cloc (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) cl
                ~type_kind:Ptype_abstract ~priv:Private ~manifest:None)

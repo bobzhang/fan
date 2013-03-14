@@ -38,11 +38,10 @@ end;
 include AstLoc;
   
 let match_pre = object (self)
-  inherit Objs.map; (* as super; *)
+  inherit Objs.map;
   method! case = with case fun
    [ {| $pat:p -> $e |} -> {| $pat:p -> fun () -> $e |}
    | {| $pat:p when $e -> $e1 |} -> {| $pat:p when $e -> fun () -> $e1 |}
    | {| $a1 | $a2 |} -> {| $(self#case a1) | $(self#case a2) |}
-   (* | {| |} -> {| |} *)
    | `Ant(_loc,x) -> `Ant(_loc, FanUtil.add_context x "lettry")];
 end;

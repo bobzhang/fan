@@ -128,19 +128,16 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {expr;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|} |
-        {|list string|} |  {|FanUtil.anti_cxt |} | {| meta_list string|} ->
-          res
-        | _ -> {|let $pat:pat0 = $expr in $res |}] 
-              )  params' result in
+          {|FanUtil.anti_cxt |}  -> res
+        | _ -> {|let $pat:pat0 = $expr in $res |}]) params' result in
   let mk_tuple params =
     let result = 
       params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_com in
     List.fold_right
       (fun {expr;pat0;ty;_} res ->
         match ty with
-        [ {|int|} | {|string |} |{|int32|} | {|nativeint|} |
-        {|loc|} | {|list string|} |  {| FanUtil.anti_cxt |} | {| meta_list string|}->
-          res
+        [ {|int|} | {|string |} |{|int32|} | {|nativeint|}
+        | {|loc|} | {| FanUtil.anti_cxt |} -> res
         | _ -> {|let $pat:pat0 = $expr in $res |}]) params result in 
   let mk_record cols =
     let result = 
@@ -150,12 +147,12 @@ let gen_strip = with {patt:ctyp;expr}
       (fun {re_info={expr;pat0;ty;_};_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|}
-        | {|list string|}  | {|FanUtil.anti_cxt|} | {| meta_list string|} ->
+        |  {|FanUtil.anti_cxt|}   ->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}]) cols result in
   gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
 Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc"; "ant"(* ; "meta_option"; "meta_list" *)]))
+    ~filter:(fun s -> not (List.mem s ["loc"; "ant"]))
     ("Strip",gen_strip);
 
 
@@ -165,7 +162,7 @@ Typehook.register
    | Meta generator                                                  |
    +-----------------------------------------------------------------+ *)
   
-let mk_variant_meta_expr cons params = with expr
+let mk_variant cons params = with expr
     let len = List.length params in 
     if String.ends_with cons "Ant" then
       EP.of_vstr_number "Ant" len
@@ -174,16 +171,16 @@ let mk_variant_meta_expr cons params = with expr
       |> List.map (fun [ {expr;_} -> expr ])
       |> List.fold_left mee_app (mee_of_str cons)  ;
         
-let mk_record_meta_expr cols = cols |> List.map
+let mk_record cols = cols |> List.map
   (fun [ {re_label; re_info={expr;_};_} -> (re_label, expr)]) |> mk_record_ee ;
 
-let mk_tuple_meta_expr params =
+let mk_tuple params =
     params |> List.map (fun [{expr;_} -> expr]) |> mk_tuple_ee ;
 
 let gen_meta_expr = 
   gen_str_item  ~id:(`Pre "meta_")  ~names:["_loc"]
-    ~mk_tuple:mk_tuple_meta_expr
-    ~mk_record:mk_record_meta_expr ~mk_variant:mk_variant_meta_expr ();
+    ~mk_tuple
+    ~mk_record ~mk_variant:mk_variant ();
 
 (* add hock FIXME*)  
 Typehook.register
@@ -191,6 +188,18 @@ Typehook.register
     ~filter:(fun s -> s<>"loc")
     ("MetaExpr",gen_meta_expr);
 
+(* +-----------------------------------------------------------------+
+   | Meta Object Generator                                           |
+   +-----------------------------------------------------------------+ *)
+let gen_meta =
+  gen_object ~kind:(Concrete {:ctyp|ep|})
+    ~mk_tuple
+    ~mk_record
+    ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
+    ~names:["_loc"]
+    ();
+Typehook.register ("MetaObj", gen_meta);
+  
 
 (* +-----------------------------------------------------------------+
    | Format generator                                                |

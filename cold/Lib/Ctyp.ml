@@ -2,17 +2,16 @@ open AstLoc
 open LibUtil
 open Basic
 open FSig
-let arrow a b = let _loc = a <+> b in `Arrow (_loc, a, b)
-let (|->) = arrow
 let arrow_of_list = List.reduce_right arrow
 let app_arrow lst acc = List.fold_right arrow lst acc
-let (<+) names ty =
+let (<+) (names : string list) (ty : ctyp) =
   List.fold_right
     (fun name  acc  ->
        `Arrow
          (_loc, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, name)))), acc))
     names ty
-let (+>) params base = List.fold_right arrow params base
+let (+>) (params : ctyp list) (base : ctyp) =
+  List.fold_right arrow params base
 let name_length_of_tydcl (x : typedecl) =
   match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) -> (name, (List.length tyvars))
@@ -70,6 +69,7 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
      | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
      | Obj (Iter ) -> (1, result_type)
      | Obj (Fold ) -> (1, self_type)
+     | Obj (Concrete c) -> (1, c)
      | Str_item  -> (1, result_type) in
    let params =
      List.init len
@@ -88,8 +88,9 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
                     `Quote
                       (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:1 i))))
                 | Iter  -> result_type
+                | Concrete c -> c
                 | Fold  -> self_type in
-              self_type |-> (prefix <+ (app_src dst))
+              arrow self_type (prefix <+ (app_src dst))
           | Str_item  -> prefix <+ (app_src result_type)) in
    let base = prefix <+ (app_src dst) in
    if len = 0

@@ -32,7 +32,6 @@ let loc_of =
   | `App (_loc,_,_) -> _loc
   | `Assign (_loc,_,_) -> _loc
   | `Normal _loc -> _loc
-  | `True _loc -> _loc
   | `Sem (_loc,_,_) -> _loc
   | `Send (_loc,_,_) -> _loc
   | `ModuleTypeEnd (_loc,_) -> _loc
@@ -67,6 +66,7 @@ let loc_of =
   | `Functor (_loc,_,_,_) -> _loc
   | `With (_loc,_,_) -> _loc
   | `NativeInt (_loc,_) -> _loc
+  | `Constr (_loc,_) -> _loc
   | `TyVrnOf (_loc,_,_) -> _loc
   | `TyAbstr (_loc,_,_,_) -> _loc
   | `Private _loc -> _loc
@@ -83,7 +83,6 @@ let loc_of =
   | `CeFun (_loc,_,_) -> _loc
   | `ClassPath (_loc,_) -> _loc
   | `Nil _loc -> _loc
-  | `False _loc -> _loc
   | `Com (_loc,_,_) -> _loc
   | `TyRepr (_loc,_,_) -> _loc
   | `ArrayEmpty _loc -> _loc
@@ -182,6 +181,7 @@ let anda a b = let _loc = a <+> b in `And (_loc, a, b)
 let dot a b = let _loc = a <+> b in `Dot (_loc, a, b)
 let tup x = let _loc = loc_of x in `Tup (_loc, x)
 let seq a = let _loc = loc_of a in `Seq (_loc, a)
+let arrow a b = let _loc = a <+> b in `Arrow (_loc, a, b)
 let typing a b = let _loc = a <+> b in `Constraint (_loc, a, b)
 let rec or_of_list =
   function

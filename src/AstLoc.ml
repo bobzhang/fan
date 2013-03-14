@@ -2,7 +2,7 @@ open LibUtil;
 open FanLoc.Ops;
 include Ast;
 {:fans|keep off; derive (GenLoc);|};
-(* {:ocaml|INCLUDE "src/Ast.ml"; |}; *)
+
 
 
 {:ocaml|{:include|"src/Ast.ml"|};|};
@@ -20,7 +20,7 @@ let anda a b = let _loc = a <+> b in `And(_loc,a,b);
 let dot a b = let _loc = a <+> b in `Dot (_loc,a,b);
 let tup x =  let _loc = loc_of x in `Tup (_loc,x);
 let seq a = let _loc = loc_of a in `Seq (_loc,a) ;
-
+let arrow a b = let _loc = a <+> b in `Arrow(_loc,a,b);
 
 let typing a b = let _loc = a<+> b in `Constraint(_loc,a,b);
 

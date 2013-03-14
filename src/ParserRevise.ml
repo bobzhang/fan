@@ -1244,9 +1244,11 @@ let apply_ctyp () = begin
       (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
       | S{t1}; "and"; S{t2} ->  `And(_loc,t1,t2)
       |  type_ident_and_parameters{(n, tpl)}; "="; type_info{tk}; L0 constrain{cl}
-        -> `TyDcl (_loc, n, tpl, tk, cl)
+        -> `TyDcl (_loc, n, tpl, tk,
+                   match cl with [[]-> `Nil _loc | _ -> `Constr(_loc,and_of_list cl)])
       | type_ident_and_parameters{(n,tpl)}; L0 constrain{cl} ->
-          `TyAbstr(_loc,n,tpl,cl)]
+          `TyAbstr(_loc,n,tpl,
+                   match cl with [[] -> `Nil _loc | _ -> `Constr(_loc, and_of_list cl)])]
       type_info:
       [type_repr{t2} -> `TyRepr(_loc,`PrNil _loc,t2)
       | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)
@@ -1265,7 +1267,7 @@ let apply_ctyp () = begin
       |  type_parameter{t};  a_lident{i} -> (i, [t])
       |  a_lident{i} -> (i, [])]
       constrain:
-      [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ]
+      [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> `Eq(_loc,t1, t2) ]
       typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}

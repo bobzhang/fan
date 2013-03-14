@@ -49,7 +49,8 @@ type destination =
 and kind =  
   | Fold
   | Iter
-  | Map 
+  | Map
+  | Concrete of ctyp 
 type warning_type =  
   | Abstract of string
   | Qualified of string 
@@ -74,6 +75,8 @@ and pp_print_kind fmt =
   | Fold  -> Format.fprintf fmt "Fold"
   | Iter  -> Format.fprintf fmt "Iter"
   | Map  -> Format.fprintf fmt "Map"
+  | Concrete _a0 ->
+      Format.fprintf fmt "@[<1>(Concrete@ %a)@]" pp_print_ctyp _a0
 let pp_print_warning_type fmt =
   function
   | Abstract _a0 ->

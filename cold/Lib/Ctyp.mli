@@ -9,8 +9,8 @@ open Ast
 (* val to_generalized : ctyp -> ctyp list * ctyp *)
 
 
-val arrow : ctyp -> ctyp -> ctyp
-val ( |-> ) : ctyp -> ctyp -> ctyp
+
+
 val arrow_of_list : ctyp list -> ctyp
 val app_arrow : ctyp list -> ctyp -> ctyp
 val ( <+ ) : string list -> ctyp -> ctyp

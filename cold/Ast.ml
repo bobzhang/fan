@@ -14,7 +14,6 @@ type override_flag = [ `Override of loc | `OvNil of loc | ant]
 type row_var_flag = [ `RowVar of loc | `RvNil of loc | ant] 
 type position_flag =
   [ `Positive of loc | `Negative of loc | `Normal of loc | ant] 
-type meta_bool = [ `True of loc | `False of loc | ant] 
 type strings =
   [ `App of (loc* strings* strings) | `Str of (loc* string) | ant] 
 type alident = [ `Lid of (loc* string) | ant] 
@@ -53,9 +52,13 @@ and row_field =
 and tag_names =
   [ ant | `App of (loc* tag_names* tag_names) | `TyVrn of (loc* astring)] 
 and typedecl =
-  [ `TyDcl of (loc* alident* ctyp list* type_info* (ctyp* ctyp) list)
-  | `TyAbstr of (loc* alident* ctyp list* (ctyp* ctyp) list)
+  [ `TyDcl of (loc* alident* ctyp list* type_info* opt_type_constr)
+  | `TyAbstr of (loc* alident* ctyp list* opt_type_constr)
   | `And of (loc* typedecl* typedecl) | ant] 
+and type_constr =
+  [ `And of (loc* type_constr* type_constr) | `Eq of (loc* ctyp* ctyp) | ant] 
+and opt_type_constr = [ `Constr of (loc* type_constr) | `Nil of loc] 
+and opt_type_params = [ `Nil of loc] 
 and type_info =
   [ `TyMan of (loc* ctyp* private_flag* type_repr)
   | `TyRepr of (loc* private_flag* type_repr)

@@ -103,11 +103,7 @@ let gen_strip =
          | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
-           |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")))
-           |`App
-              (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-             -> res
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       params' result in
   let mk_tuple params =
@@ -118,11 +114,7 @@ let gen_strip =
          | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
-           |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")))
-           |`App
-              (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-             -> res
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       params result in
   let mk_record cols =
@@ -137,11 +129,7 @@ let gen_strip =
          | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
-           |`App (_loc,`Id (_,`Lid (_,"list")),`Id (_,`Lid (_,"string")))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")))
-           |`App
-              (_loc,`Id (_,`Lid (_,"meta_list")),`Id (_,`Lid (_,"string")))
-             -> res
+           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       cols result in
   gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
@@ -149,26 +137,30 @@ let gen_strip =
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("Strip", gen_strip)
-let mk_variant_meta_expr cons params =
+let mk_variant cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
   then EP.of_vstr_number "Ant" len
   else
     (params |> (List.map (fun { expr;_}  -> expr))) |>
       (List.fold_left mee_app (mee_of_str cons))
-let mk_record_meta_expr cols =
+let mk_record cols =
   (cols |>
      (List.map (fun { re_label; re_info = { expr;_};_}  -> (re_label, expr))))
     |> mk_record_ee
-let mk_tuple_meta_expr params =
+let mk_tuple params =
   (params |> (List.map (fun { expr;_}  -> expr))) |> mk_tuple_ee
 let gen_meta_expr =
-  gen_str_item ~id:(`Pre "meta_") ~names:["_loc"]
-    ~mk_tuple:mk_tuple_meta_expr ~mk_record:mk_record_meta_expr
-    ~mk_variant:mk_variant_meta_expr ()
+  gen_str_item ~id:(`Pre "meta_") ~names:["_loc"] ~mk_tuple ~mk_record
+    ~mk_variant ()
 let _ =
   Typehook.register ~position:"__MetaExpr__" ~filter:(fun s  -> s <> "loc")
     ("MetaExpr", gen_meta_expr)
+let gen_meta =
+  gen_object ~kind:(Concrete (`Id (_loc, (`Lid (_loc, "ep"))))) ~mk_tuple
+    ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
+    ~names:["_loc"] ()
+let _ = Typehook.register ("MetaObj", gen_meta)
 let extract info =
   (info |> (List.map (fun { name_expr; id_expr;_}  -> [name_expr; id_expr])))
     |> List.concat

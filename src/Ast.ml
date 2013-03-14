@@ -91,10 +91,10 @@ type position_flag =
   | `Normal of loc
   |ant];
 
-type meta_bool =
-  [=`True of loc
-  |`False of loc
-  | ant];
+(* type meta_bool = *)
+(*   [=`True of loc *)
+(*   |`False of loc *)
+(*   | ant]; *)
 
 
 type strings =
@@ -124,8 +124,8 @@ type uident =
   | auident];
 
 type ident =
-  [= `Dot of (loc * ident * ident) (* i . i *)
-  | `App of (loc * ident * ident) (* i i *)
+  [= `Dot of (loc * ident * ident)
+  | `App of (loc * ident * ident) 
   | alident
   | auident];
 
@@ -186,8 +186,13 @@ and tag_names =
   | `TyVrn of (loc * astring )]   
 and typedecl =
     (* {:str_item| type  ('a, 'b, 'c) t = t |} *)
-  [= `TyDcl of (loc * alident * list ctyp * type_info * list (ctyp * ctyp))
-  | `TyAbstr of (loc * alident * list ctyp * list (ctyp * ctyp) ) 
+  [=
+
+  (*   `TySimple of (loc * alident) *)
+  (* | `TySimpleC of (loc * alident * type_constr)         *)
+   `TyDcl of (loc * alident * list ctyp *  type_info  * opt_type_constr)
+  (* | `TyDclC of (loc * alident * list ctyp * type_info * type_constr) *)
+  | `TyAbstr of (loc * alident * list ctyp * opt_type_constr ) 
   | `And of (loc * typedecl * typedecl)
   | ant ]
       (* original syntax
@@ -195,6 +200,15 @@ and typedecl =
        revise syntax
        {[ type v = u = [A of int];]} 
      *)
+and type_constr =
+  [= `And of (loc * type_constr * type_constr)
+  | `Eq of (loc * ctyp * ctyp)
+  | ant ]
+and opt_type_constr =
+ [= `Constr of (loc * type_constr)
+ | `Nil of loc ]
+and opt_type_params =
+  [= `Nil of loc ]
 and type_info =        (* FIXME be more preicse *)
   [= (* type u = v = [A of int ] *)
    `TyMan of (loc  * ctyp * private_flag  * type_repr)

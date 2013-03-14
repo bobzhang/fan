@@ -18,8 +18,8 @@ let gm () =
 let antiquot_expander ~parse_patt  ~parse_expr  =
   object 
     inherit  Objs.map as super
-    method! patt =
-      function
+    method! patt (x : patt) =
+      match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
           let mloc _loc = LocPatt.meta_loc _loc _loc in
           let e = parse_patt _loc code in
@@ -71,8 +71,8 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e)
            | _ -> super#patt e)
       | e -> super#patt e
-    method! expr =
-      function
+    method! expr (x : expr) =
+      match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
           let mloc _loc = (LocExpr.meta_loc _loc _loc :>expr) in
           let e = parse_expr _loc code in

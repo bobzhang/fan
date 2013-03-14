@@ -9,6 +9,7 @@ let strip_loc_ant ant = ant ;
   
 {:fans|keep off;
 derive(Map2 Fold2 OIter Map Fold  OPrint OEq Strip Print);
+ (* derive(MetaObj); *)
 |};
 
 {:ocaml|INCLUDE "src/Ast.ml"; |};

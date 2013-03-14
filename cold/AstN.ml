@@ -14,7 +14,6 @@ type virtual_flag = [ `Virtual | `ViNil | ant]
 type override_flag = [ `Override | `OvNil | ant] 
 type row_var_flag = [ `RowVar | `RvNil | ant] 
 type position_flag = [ `Positive | `Negative | `Normal | ant] 
-type meta_bool = [ `True | `False | ant] 
 type strings = [ `App of (strings* strings) | `Str of string | ant] 
 type alident = [ `Lid of string | ant] 
 type auident = [ `Uid of string | ant] 
@@ -46,9 +45,13 @@ and row_field =
   | `TyVrnOf of (astring* ctyp) | `Ctyp of ctyp] 
 and tag_names = [ ant | `App of (tag_names* tag_names) | `TyVrn of astring] 
 and typedecl =
-  [ `TyDcl of (alident* ctyp list* type_info* (ctyp* ctyp) list)
-  | `TyAbstr of (alident* ctyp list* (ctyp* ctyp) list)
+  [ `TyDcl of (alident* ctyp list* type_info* opt_type_constr)
+  | `TyAbstr of (alident* ctyp list* opt_type_constr)
   | `And of (typedecl* typedecl) | ant] 
+and type_constr =
+  [ `And of (type_constr* type_constr) | `Eq of (ctyp* ctyp) | ant] 
+and opt_type_constr = [ `Constr of type_constr | `Nil] 
+and opt_type_params = [ `Nil] 
 and type_info =
   [ `TyMan of (ctyp* private_flag* type_repr)
   | `TyRepr of (private_flag* type_repr) | `TyEq of (private_flag* ctyp)

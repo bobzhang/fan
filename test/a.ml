@@ -1,3 +1,4 @@
+
 (* open Format;; *)
 
 (* 3 *)
@@ -8,7 +9,8 @@
 (* end *)
 
 
-type 'a u constraint 'a = int
+(* type 'a u constraint 'a = int *)
+type  u constraint 'a = int    
 (* type 'a u constraint 'a = int*)    
 
 

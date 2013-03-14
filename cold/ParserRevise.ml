@@ -6086,20 +6086,30 @@ let apply_ctyp () =
          `Skeyword "=";
          `Snterm (Gram.obj (type_info : 'type_info Gram.t ));
          `Slist0 (`Snterm (Gram.obj (constrain : 'constrain Gram.t )))],
-          ("Gram.mk_action\n  (fun (cl : 'constrain list)  (tk : 'type_info)  _ \n     ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t)  ->\n     (`TyDcl (_loc, n, tpl, tk, cl) : 'type_declaration ))\n",
+          ("Gram.mk_action\n  (fun (cl : 'constrain list)  (tk : 'type_info)  _ \n     ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t)  ->\n     (`TyDcl\n        (_loc, n, tpl, tk,\n          (match cl with\n           | [] -> `Nil _loc\n           | _ -> `Constr (_loc, (and_of_list cl)))) : 'type_declaration ))\n",
             (Gram.mk_action
                (fun (cl : 'constrain list)  (tk : 'type_info)  _ 
                   ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t) 
-                  -> (`TyDcl (_loc, n, tpl, tk, cl) : 'type_declaration )))));
+                  ->
+                  (`TyDcl
+                     (_loc, n, tpl, tk,
+                       (match cl with
+                        | [] -> `Nil _loc
+                        | _ -> `Constr (_loc, (and_of_list cl)))) : 'type_declaration )))));
         ([`Snterm
             (Gram.obj
                (type_ident_and_parameters : 'type_ident_and_parameters Gram.t ));
          `Slist0 (`Snterm (Gram.obj (constrain : 'constrain Gram.t )))],
-          ("Gram.mk_action\n  (fun (cl : 'constrain list)  ((n,tpl) : 'type_ident_and_parameters) \n     (_loc : FanLoc.t)  -> (`TyAbstr (_loc, n, tpl, cl) : 'type_declaration ))\n",
+          ("Gram.mk_action\n  (fun (cl : 'constrain list)  ((n,tpl) : 'type_ident_and_parameters) \n     (_loc : FanLoc.t)  ->\n     (`TyAbstr\n        (_loc, n, tpl,\n          (match cl with\n           | [] -> `Nil _loc\n           | _ -> `Constr (_loc, (and_of_list cl)))) : 'type_declaration ))\n",
             (Gram.mk_action
                (fun (cl : 'constrain list) 
                   ((n,tpl) : 'type_ident_and_parameters)  (_loc : FanLoc.t) 
-                  -> (`TyAbstr (_loc, n, tpl, cl) : 'type_declaration )))))]));
+                  ->
+                  (`TyAbstr
+                     (_loc, n, tpl,
+                       (match cl with
+                        | [] -> `Nil _loc
+                        | _ -> `Constr (_loc, (and_of_list cl)))) : 'type_declaration )))))]));
   Gram.extend_single (type_info : 'type_info Gram.t )
     (None,
       (None, None,
@@ -6193,10 +6203,10 @@ let apply_ctyp () =
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
           `Skeyword "=";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->\n     ((t1, t2) : 'constrain ))\n",
+           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->\n     (`Eq (_loc, t1, t2) : 'constrain ))\n",
              (Gram.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                   ((t1, t2) : 'constrain )))))]));
+                   (`Eq (_loc, t1, t2) : 'constrain )))))]));
   Gram.extend_single (typevars : 'typevars Gram.t )
     (None,
       (None, None,

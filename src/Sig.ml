@@ -90,7 +90,7 @@ module type Syntax = sig
   val comma_ipatt : Gram.t patt;
   val comma_patt : Gram.t patt;
   val comma_type_parameter : Gram.t (* ctyp *) type_parameters;
-  val constrain : Gram.t (ctyp * ctyp);
+  val constrain : Gram.t type_constr (* (ctyp * ctyp) *);
   val constructor_arg_list : Gram.t ctyp;
   val constructor_declaration : Gram.t of_ctyp;
   val constructor_declarations : Gram.t or_ctyp;

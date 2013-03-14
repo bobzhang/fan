@@ -19,11 +19,7 @@ open FSig;
   
 
 
-(*
-   compose type abstractions
- *)
-let arrow a b =  let _loc =  a <+> b in  {| $a -> $b |};
-let (|->) = arrow;  
+(* let (|->) = arrow;   *)
 
 
 
@@ -31,13 +27,11 @@ let arrow_of_list = List.reduce_right arrow;
   
 let app_arrow lst acc = List.fold_right arrow lst acc;
   
+let (<+) (names: list string) (ty:ctyp) =
+  List.fold_right (fun name acc -> {| '$lid:name -> $acc |}) names ty;
   
-let (<+) names ty =
-  List.fold_right
-    (fun name acc -> {| '$lid:name -> $acc |})
-    names ty;
-  
-let (+>) params base = List.fold_right arrow params base;    
+let (+>) (params: list ctyp) (base:ctyp) = List.fold_right arrow params base;    
+
 (*
    {[
    match <:str_item< type list 'a  = [A of int | B of 'a] >> with
@@ -75,8 +69,7 @@ let gen_quantifiers1 ~arity n  : ctyp =
   ]}
  *)  
 let of_id_len ~off (id,len) =
-  appl_of_list
-  (* apply *) [{|$id:id |} ::
+  appl_of_list [{|$id:id |} ::
     (List.init len
        (fun i -> {|  '$(lid:allx ~off i) |}))];
   
@@ -215,11 +208,10 @@ let repeat_arrow_n ty n =
     ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
       'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
  *)
-let result_id = ref 0;  
+let result_id = ref 0; (* to be clean soon *)  
 let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
-  let prefix = List.map
-      (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
+  let prefix = List.map (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
     app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
   let result_type = (* {| 'result |} *)
@@ -231,6 +223,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)
+    |Obj (Concrete c ) -> (1,c)
     |Str_item -> (1,result_type)] in 
   let params =
     List.init len
@@ -245,8 +238,9 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
                 match  u with
                 [ Map -> {|  '$(lid:allx ~off:1 i) |}
                 | Iter -> result_type
+                | Concrete c -> c 
                 | Fold-> self_type ] in
-              (self_type |-> (prefix <+ (app_src dst)))
+              (arrow self_type  (prefix <+ (app_src dst)))
           |Str_item -> prefix <+ (app_src result_type)]) in 
   let base = prefix <+ (app_src dst) in
   if len = 0 then

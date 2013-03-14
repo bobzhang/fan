@@ -17,6 +17,7 @@ let dump_patt = to_string_of_printer dump#patt;
 let dump_class_type = to_string_of_printer dump#class_type;
 let dump_class_expr = to_string_of_printer dump#class_expr;
 let dump_ident = to_string_of_printer dump#ident;
+let dump_type_constr = to_string_of_printer dump#type_constr;  
 let dump_case = to_string_of_printer dump#case;
 let dump_rec_expr = to_string_of_printer dump#rec_expr;  
 let dump_str_item = to_string_of_printer dump#str_item;
