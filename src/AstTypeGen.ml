@@ -312,19 +312,19 @@ let generate (module_types:FSig.module_types) : str_item =
     (fun key arity acc ->
 
       if arity= 1 then
-        let case = {:match_case| $vrn:key _loc -> _loc |} in
+        let case = {:case| $vrn:key _loc -> _loc |} in
         match acc with
-        [None ->   Some case (* {:match_case| $vrn:key _loc -> _loc |} *)
+        [None ->   Some case (* {:case| $vrn:key _loc -> _loc |} *)
         |Some acc ->
-          Some (`Or(_loc,case,acc))(* {:match_case| $vrn:key _loc  -> _loc | $acc |} *) ]
+          Some (`Or(_loc,case,acc))(* {:case| $vrn:key _loc  -> _loc | $acc |} *) ]
       else if arity > 1 then 
         let pats =
           [ {:patt| _loc|} :: List.init (arity - 1) (fun _ -> {:patt| _ |}) ] in
-        let case = {:match_case| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
+        let case = {:case| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
         match acc with
         [None -> Some case
         |Some acc -> Some(`Or(_loc,case,acc))]  
-        (* {:match_case| $vrn:key $(pat:(tuple_com pats)) -> _loc | $acc |} *)
+        (* {:case| $vrn:key $(pat:(tuple_com pats)) -> _loc | $acc |} *)
       else failwithf "arity=0 key:%s" key
         
     ) tbl None  in

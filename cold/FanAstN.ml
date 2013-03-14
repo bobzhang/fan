@@ -393,7 +393,7 @@ class eq =
                 (self#expr _a2 _b2))
                && (self#direction_flag _a3 _b3))
               && (self#expr _a4 _b4)
-        | (`Fun _a0,`Fun _b0) -> self#match_case _a0 _b0
+        | (`Fun _a0,`Fun _b0) -> self#case _a0 _b0
         | (`IfThenElse (_a0,_a1,_a2),`IfThenElse (_b0,_b1,_b2)) ->
             ((self#expr _a0 _b0) && (self#expr _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -410,7 +410,7 @@ class eq =
             ((self#auident _a0 _b0) && (self#module_expr _a1 _b1)) &&
               (self#expr _a2 _b2)
         | (`Match (_a0,_a1),`Match (_b0,_b1)) ->
-            (self#expr _a0 _b0) && (self#match_case _a1 _b1)
+            (self#expr _a0 _b0) && (self#case _a1 _b1)
         | (`New _a0,`New _b0) -> self#ident _a0 _b0
         | (`Obj _a0,`Obj _b0) -> self#class_str_item _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
@@ -428,7 +428,7 @@ class eq =
         | (`StringDot (_a0,_a1),`StringDot (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#expr _a1 _b1)
         | (`Try (_a0,_a1),`Try (_b0,_b1)) ->
-            (self#expr _a0 _b0) && (self#match_case _a1 _b1)
+            (self#expr _a0 _b0) && (self#case _a1 _b1)
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Coercion (_a0,_a1,_a2),`Coercion (_b0,_b1,_b2)) ->
@@ -533,11 +533,11 @@ class eq =
             (self#auident _a0 _b0) && (self#module_type _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result42)
         | (_,_) -> false
-    method match_case : match_case -> match_case -> 'result43=
+    method case : case -> case -> 'result43=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
-            (self#match_case _a0 _b0) && (self#match_case _a1 _b1)
+            (self#case _a0 _b0) && (self#case _a1 _b1)
         | (`Case (_a0,_a1),`Case (_b0,_b1)) ->
             (self#patt _a0 _b0) && (self#expr _a1 _b1)
         | (`CaseWhen (_a0,_a1,_a2),`CaseWhen (_b0,_b1,_b2)) ->
@@ -1146,8 +1146,7 @@ class print =
             Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a)@]"
               self#alident _a0 self#expr _a1 self#expr _a2
               self#direction_flag _a3 self#expr _a4
-        | `Fun _a0 ->
-            Format.fprintf fmt "@[<1>(`Fun@ %a)@]" self#match_case _a0
+        | `Fun _a0 -> Format.fprintf fmt "@[<1>(`Fun@ %a)@]" self#case _a0
         | `IfThenElse (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`IfThenElse@ %a@ %a@ %a)@]" self#expr
               _a0 self#expr _a1 self#expr _a2
@@ -1168,7 +1167,7 @@ class print =
               _a0 self#module_expr _a1 self#expr _a2
         | `Match (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a)@]" self#expr _a0
-              self#match_case _a1
+              self#case _a1
         | `New _a0 -> Format.fprintf fmt "@[<1>(`New@ %a)@]" self#ident _a0
         | `Obj _a0 ->
             Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_str_item _a0
@@ -1195,7 +1194,7 @@ class print =
               self#expr _a1
         | `Try (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Try@ %a@ %a)@]" self#expr _a0
-              self#match_case _a1
+              self#case _a1
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#expr _a0
               self#ctyp _a1
@@ -1331,12 +1330,12 @@ class print =
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#auident
               _a0 self#module_type _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result96)
-    method match_case : 'fmt -> match_case -> 'result97=
+    method case : 'fmt -> case -> 'result97=
       fun fmt  ->
         function
         | `Or (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#match_case _a0
-              self#match_case _a1
+            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#case _a0 self#case
+              _a1
         | `Case (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Case@ %a@ %a)@]" self#patt _a0
               self#expr _a1
@@ -2043,7 +2042,7 @@ and meta_expr _loc =
                               (meta_alident _loc _a0))),
                          (meta_expr _loc _a1))), (meta_expr _loc _a2))),
                (meta_direction_flag _loc _a3))), (meta_expr _loc _a4))
-  | `Fun _a0 -> `App (_loc, (`Vrn (_loc, "Fun")), (meta_match_case _loc _a0))
+  | `Fun _a0 -> `App (_loc, (`Vrn (_loc, "Fun")), (meta_case _loc _a0))
   | `IfThenElse (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2082,7 +2081,7 @@ and meta_expr _loc =
   | `Match (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Match")), (meta_expr _loc _a0))),
-          (meta_match_case _loc _a1))
+          (meta_case _loc _a1))
   | `New _a0 -> `App (_loc, (`Vrn (_loc, "New")), (meta_ident _loc _a0))
   | `Obj _a0 ->
       `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_str_item _loc _a0))
@@ -2116,7 +2115,7 @@ and meta_expr _loc =
   | `Try (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Try")), (meta_expr _loc _a0))),
-          (meta_match_case _loc _a1))
+          (meta_case _loc _a1))
   | `Constraint (_a0,_a1) ->
       `App
         (_loc,
@@ -2299,13 +2298,12 @@ and meta_module_binding _loc =
           (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_auident _loc _a0))),
           (meta_module_type _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result138)
-and meta_match_case _loc =
+and meta_case _loc =
   function
   | `Or (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Or")), (meta_match_case _loc _a0))),
-          (meta_match_case _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_case _loc _a0))),
+          (meta_case _loc _a1))
   | `Case (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Case")), (meta_patt _loc _a0))),

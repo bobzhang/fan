@@ -14,7 +14,7 @@
     ctyp               :: Representaion of types
     patt               :: The type of patterns
     expr               :: The type of expressions
-    match_case         :: The type of cases for match/function/try constructions
+    case         :: The type of cases for match/function/try constructions
     ident              :: The type of identifiers (including path like Foo(X).Bar.y)
     binding            :: The type of let bindings
     rec_expr        :: The type of record definitions
@@ -263,7 +263,7 @@ and expr =
   | `Assign of (loc * expr * expr) (* e := e *)
         (* for s = e to/downto e do { e } *)
   | `For of (loc * alident * expr * expr * direction_flag * expr)
-  | `Fun of (loc * match_case) (* fun [ mc ] *)
+  | `Fun of (loc * case) (* fun [ mc ] *)
   | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
   | `IfThen of (loc * expr * expr) (* if e then e *)
   | `Label of (loc * alident * expr) (* ~s or ~s:e *)
@@ -273,7 +273,7 @@ and expr =
         (* let module s = me in e *)
   | `LetModule of (loc * auident * module_expr * expr)
         (* match e with [ mc ] *)
-  | `Match of (loc * expr * match_case)
+  | `Match of (loc * expr * case)
         (* new i *)
   | `New of (loc * ident)
         (* object ((p))? (cst)? end *)
@@ -289,7 +289,7 @@ and expr =
         (* e.[e] *)
   | `StringDot of (loc * expr * expr)
         (* try e with [ mc ] *)
-  | `Try of (loc * expr * match_case)
+  | `Try of (loc * expr * case)
         (* (e : t) *)
   | (* `Constraint *) `Constraint of (loc * expr * ctyp)
   | `Coercion of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)          
@@ -384,9 +384,9 @@ and module_binding =
       (* s : mt *)
   | `Constraint  of (loc * auident * module_type)
   | ant ]
-and match_case =
+and case =
   [= nil
-  | `Or of (loc * match_case * match_case)
+  | `Or of (loc * case * case)
         (* p (when e)? -> e *)
   | `Case of (loc * patt * expr * expr)
      (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)

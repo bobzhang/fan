@@ -83,15 +83,15 @@ and expr =
   | `ArrayDot of (loc* expr* expr) | `Array of (loc* expr) | `ExAsf of loc
   | `ExAsr of (loc* expr) | `Assign of (loc* expr* expr)
   | `For of (loc* alident* expr* expr* direction_flag* expr)
-  | `Fun of (loc* match_case) | `IfThenElse of (loc* expr* expr* expr)
+  | `Fun of (loc* case) | `IfThenElse of (loc* expr* expr* expr)
   | `IfThen of (loc* expr* expr) | `Label of (loc* alident* expr)
   | `Lazy of (loc* expr) | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* auident* module_expr* expr)
-  | `Match of (loc* expr* match_case) | `New of (loc* ident)
+  | `Match of (loc* expr* case) | `New of (loc* ident)
   | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
   | `OvrInst of (loc* rec_expr) | `Seq of (loc* expr)
   | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
-  | `Try of (loc* expr* match_case) | `Constraint of (loc* expr* ctyp)
+  | `Try of (loc* expr* case) | `Constraint of (loc* expr* ctyp)
   | `Coercion of (loc* expr* ctyp* ctyp) | `While of (loc* expr* expr)
   | `LetOpen of (loc* ident* expr) | `LocalTypeFun of (loc* alident* expr)
   | `Package_expr of (loc* module_expr)] 
@@ -122,9 +122,8 @@ and module_binding =
   [ nil | `And of (loc* module_binding* module_binding)
   | `ModuleBind of (loc* auident* module_type* module_expr)
   | `Constraint of (loc* auident* module_type) | ant] 
-and match_case =
-  [ nil | `Or of (loc* match_case* match_case)
-  | `Case of (loc* patt* expr* expr) | ant] 
+and case =
+  [ nil | `Or of (loc* case* case) | `Case of (loc* patt* expr* expr) | ant] 
 and module_expr =
   [ nil | sid | `App of (loc* module_expr* module_expr)
   | `Functor of (loc* auident* module_type* module_expr)

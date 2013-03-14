@@ -269,7 +269,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                         (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "sta_of_list")))))), e)
-           | ("list","ctyp|",_)|("list","match_case",_) ->
+           | ("list","ctyp|",_)|("list","case",_) ->
                `App
                  (_loc,
                    (`Id
@@ -285,7 +285,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                         (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "amp_of_list")))))), e)
-           | ("listlettry","match_case",_) ->
+           | ("listlettry","case",_) ->
                `App
                  (_loc,
                    (`Send
@@ -295,7 +295,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              (`Dot
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
-                        (`Lid (_loc, "match_case")))),
+                        (`Lid (_loc, "case")))),
                    (`App
                       (_loc,
                         (`Id
@@ -303,7 +303,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              (`Dot
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "or_of_list")))))), e)))
-           | ("antilettry","match_case",_) ->
+           | ("antilettry","case",_) ->
                `App
                  (_loc,
                    (`Send
@@ -313,11 +313,11 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              (`Dot
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
-                        (`Lid (_loc, "match_case")))),
+                        (`Lid (_loc, "case")))),
                    (`App
                       (_loc, (`Vrn (_loc, "Ant")),
                         (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))))
-           | ("lettry","match_case",_) ->
+           | ("lettry","case",_) ->
                `App
                  (_loc,
                    (`Send
@@ -327,7 +327,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                              (`Dot
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
-                        (`Lid (_loc, "match_case")))), e)
+                        (`Lid (_loc, "case")))), e)
            | ("list",("ctyp,"|"patt,"|"expr,"),_) ->
                `App
                  (_loc,

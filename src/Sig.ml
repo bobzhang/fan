@@ -54,9 +54,9 @@ module type Syntax = sig
     
   val amp_ctyp : Gram.t ctyp;
   val and_ctyp : Gram.t ctyp;
-  val match_case : Gram.t match_case;
-  val match_case0 : Gram.t match_case;
-  val match_case_quot : Gram.t match_case;
+  val case : Gram.t case;
+  val case0 : Gram.t case;
+  val case_quot : Gram.t case;
   val binding : Gram.t binding;
   val binding_quot : Gram.t binding;
   val rec_expr_quot : Gram.t rec_expr;

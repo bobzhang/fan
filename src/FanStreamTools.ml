@@ -39,17 +39,17 @@ let is_raise_failure  = fun
   
 let rec handle_failure e =
   match e with
-  [ {| try $_ with [ $(uid:m).Failure -> $e] |}  (* {:match_case|$(uid:m).Failure -> $e|} *)
+  [ {| try $_ with [ $(uid:m).Failure -> $e] |}  (* {:case|$(uid:m).Failure -> $e|} *)
     when m = gm()
     ->  handle_failure e
   | {| match $me with [ $a ] |} ->
-      let rec match_case_handle_failure =
+      let rec case_handle_failure =
         fun
-        [ {:match_case| $a1 | $a2 |} ->
-            match_case_handle_failure a1 && match_case_handle_failure a2
-        | {:match_case| $pat:_ -> $e |} -> handle_failure e
+        [ {:case| $a1 | $a2 |} ->
+            case_handle_failure a1 && case_handle_failure a2
+        | {:case| $pat:_ -> $e |} -> handle_failure e
         | _ -> false ]
-      in handle_failure me && match_case_handle_failure a
+      in handle_failure me && case_handle_failure a
   | {| let $bi in $e |} ->
       let rec binding_handle_failure =
         fun
@@ -168,9 +168,9 @@ let stream_patterns_term _loc ekont tspel : expr =
           let skont = stream_pattern _loc epo e ekont spcl in
           {| begin  $(junk_fun _loc) $lid:strm_n; $skont  end |} in
           match w with
-          [ Some w -> {:match_case| $pat:p when $w -> $e  | $acc |}
-          | None -> {:match_case| $pat:p -> $e  | $acc |} ])
-      tspel {:match_case| _ -> $(ekont () )|} in
+          [ Some w -> {:case| $pat:p when $w -> $e  | $acc |}
+          | None -> {:case| $pat:p -> $e  | $acc |} ])
+      tspel {:case| _ -> $(ekont () )|} in
   {| match $(peek_fun _loc) $lid:strm_n with [ $pel ] |} ;
 
 let rec group_terms = fun

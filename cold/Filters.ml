@@ -84,9 +84,9 @@ let add_debug_expr (e : expr) =
                               (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
                                 (`Id (_loc, (`Lid (_loc, "exc"))))))))))))))) : 
   expr )
-let rec map_match_case: match_case -> match_case =
+let rec map_case: case -> case =
   function
-  | `Or (_loc,m1,m2) -> `Or (_loc, (map_match_case m1), (map_match_case m2))
+  | `Or (_loc,m1,m2) -> `Or (_loc, (map_case m1), (map_case m2))
   | `Case (_loc,p,e) -> `Case (_loc, p, (add_debug_expr e))
   | `CaseWhen (_loc,p,w,e) -> `CaseWhen (_loc, p, w, (add_debug_expr e))
   | m -> m
@@ -97,7 +97,7 @@ let _ =
           inherit  Objs.map as super
           method! expr =
             function
-            | `Fun (_loc,m) -> `Fun (_loc, (map_match_case m))
+            | `Fun (_loc,m) -> `Fun (_loc, (map_case m))
             | x -> super#expr x
           method! str_item =
             function
@@ -151,12 +151,11 @@ let decorate_this_expr e id =
 let rec decorate_fun id =
   let decorate = decorate decorate_fun in
   let decorate_expr = decorate#expr in
-  let decorate_match_case = decorate#match_case in
+  let decorate_case = decorate#case in
   function
   | `Fun (_loc,`Case (_,p,e)) ->
       `Fun (_loc, (`Case (_loc, p, (decorate_fun id e))))
-  | `Fun (_loc,m) ->
-      decorate_this_expr (`Fun (_loc, (decorate_match_case m))) id
+  | `Fun (_loc,m) -> decorate_this_expr (`Fun (_loc, (decorate_case m))) id
   | e -> decorate_this_expr (decorate_expr e) id
 let _ =
   AstFilters.register_str_item_filter

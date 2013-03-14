@@ -31,13 +31,13 @@ let rec handle_failure e =
   | `Try (_loc,_,`Case (_,`Id (_,`Dot (_,`Uid (_,m),`Uid (_,"Failure"))),e))
       when m = (gm ()) -> handle_failure e
   | `Match (_loc,me,a) ->
-      let rec match_case_handle_failure =
+      let rec case_handle_failure =
         function
         | `Or (_loc,a1,a2) ->
-            (match_case_handle_failure a1) && (match_case_handle_failure a2)
+            (case_handle_failure a1) && (case_handle_failure a2)
         | `Case (_loc,_,e) -> handle_failure e
         | _ -> false in
-      (handle_failure me) && (match_case_handle_failure a)
+      (handle_failure me) && (case_handle_failure a)
   | `LetIn (_loc,`ReNil _,bi,e) ->
       let rec binding_handle_failure =
         function

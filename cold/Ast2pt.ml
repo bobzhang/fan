@@ -565,7 +565,7 @@ let rec expr (x : expr) =
            (("?" ^ lab), (Some (expr e1)),
              [((patt p),
                 (mkexp (loc_of w) (Pexp_when ((expr w), (expr e2)))))]))
-  | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (match_case a)))
+  | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (case a)))
   | `IfThenElse (loc,e1,e2,e3) ->
       mkexp loc (Pexp_ifthenelse ((expr e1), (expr e2), (Some (expr e3))))
   | `IfThen (loc,e1,e2) ->
@@ -612,7 +612,7 @@ let rec expr (x : expr) =
   | `LetModule (loc,`Uid (sloc,i),me,e) ->
       mkexp loc
         (Pexp_letmodule ((with_loc i sloc), (module_expr me), (expr e)))
-  | `Match (loc,e,a) -> mkexp loc (Pexp_match ((expr e), (match_case a)))
+  | `Match (loc,e,a) -> mkexp loc (Pexp_match ((expr e), (case a)))
   | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
   | `ObjEnd loc ->
       mkexp loc
@@ -655,7 +655,7 @@ let rec expr (x : expr) =
              [("", (expr e1)); ("", (expr e2))]))
   | `Str (loc,s) ->
       mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
-  | `Try (loc,e,a) -> mkexp loc (Pexp_try ((expr e), (match_case a)))
+  | `Try (loc,e,a) -> mkexp loc (Pexp_try ((expr e), (case a)))
   | `Tup (loc,e) ->
       let l = list_of_com e [] in
       (match l with
@@ -729,14 +729,14 @@ and binding (x : binding) acc =
       acc
   | `Bind (_,p,e) -> ((patt p), (expr e)) :: acc
   | _ -> assert false
-and match_case (x : match_case) =
+and case (x : case) =
   let cases = list_of_or x [] in
   List.filter_map
     (function
      | `Case (_,p,e) -> Some ((patt p), (expr e))
      | `CaseWhen (_,p,w,e) ->
          Some ((patt p), (mkexp (loc_of w) (Pexp_when ((expr w), (expr e)))))
-     | x -> errorf (loc_of x) "match_case %s" (dump_match_case x)) cases
+     | x -> errorf (loc_of x) "case %s" (dump_case x)) cases
 and mklabexp (x : rec_expr) =
   let bindings = list_of_sem x [] in
   List.filter_map

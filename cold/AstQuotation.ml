@@ -213,10 +213,9 @@ let of_class_str_item_with_filter ~name  ~entry  ~filter  =
   add name DynAst.class_str_item_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
-let of_match_case ~name  ~entry  =
-  add name DynAst.match_case_tag (make_parser entry)
-let of_match_case_with_filter ~name  ~entry  ~filter  =
-  add name DynAst.match_case_tag
+let of_case ~name  ~entry  = add name DynAst.case_tag (make_parser entry)
+let of_case_with_filter ~name  ~entry  ~filter  =
+  add name DynAst.case_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 let of_expr ~name  ~entry  =

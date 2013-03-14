@@ -14,7 +14,7 @@
     ctyp               :: Representaion of types
     patt               :: The type of patterns
     expr               :: The type of expressions
-    match_case         :: The type of cases for match/function/try constructions
+    case         :: The type of cases for match/function/try constructions
     ident              :: The type of identifiers (including path like Foo(X).Bar.y)
     binding            :: The type of let bindings
     rec_expr        :: The type of record definitions
@@ -282,7 +282,7 @@ and expr =
   | `Assign of (loc * expr * expr) (* e := e *)
         (* for s = e to/downto e do { e } *)
   | `For of (loc * alident * expr * expr * direction_flag * expr)
-  | `Fun of (loc * match_case) (* fun [ mc ] *)
+  | `Fun of (loc * case) (* fun [ mc ] *)
   | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
   | `IfThen of (loc * expr * expr) (* if e then e *)
   | `LabelS of (loc * alident) (* ~s *)
@@ -293,7 +293,7 @@ and expr =
         (* let module s = me in e *)
   | `LetModule of (loc * auident * module_expr * expr)
         (* match e with [ mc ] *)
-  | `Match of (loc * expr * match_case)
+  | `Match of (loc * expr * case)
         (* new i *)
   | `New of (loc * ident)
         (* object ((p))? (cst)? end *)
@@ -311,7 +311,7 @@ and expr =
   | `Seq of (loc * expr) (* do { e } *)
   | `Send of (loc * expr * alident) (* e#s *)
   | `StringDot of (loc * expr * expr) (* e.[e] *)
-  | `Try of (loc * expr * match_case) (* try e with [ mc ] *)
+  | `Try of (loc * expr * case) (* try e with [ mc ] *)
 
   | `Constraint of (loc * expr * ctyp) (*(e : t) *)
   | `Coercion of (loc * expr * ctyp * ctyp) (* or (e : t :> t) *)
@@ -386,8 +386,8 @@ and module_binding =
   | `ModuleBind  of (loc *  auident * module_type * module_expr)
   | `Constraint  of (loc * auident * module_type) (* s : mt *)
   | ant ]
-and match_case =
-  [= `Or of (loc * match_case * match_case)
+and case =
+  [= `Or of (loc * case * case)
   | `Case of (loc * patt * expr)
   | `CaseWhen of (loc * patt * expr * expr)
   | ant  ]

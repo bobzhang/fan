@@ -148,7 +148,7 @@ module type Config = sig
      [t -> t]
    *)
 
-  val trail: trail_info -> match_case;
+  val trail: trail_info -> case;
   val names: list string;
 
   (* transforming the constructor name(it only has effect in the pattern part) *)  

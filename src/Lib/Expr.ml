@@ -564,7 +564,7 @@ let gen_curry_n (acc:expr) ~arity cons n : expr =
 (*
   Example:
   {[
-   let u  =  list_of_or' {:match_case|
+   let u  =  list_of_or' {:case|
   (A0 (a0, a1),A0 (b0, b1)) -> 1
   |   (A1 (a0, a1), A1 (b0, b1)) -> 2
   |   (A2 (a0, a1), A2 (b0, b1)) -> 3 |} [] in currying ~arity:2 u ;
@@ -580,16 +580,16 @@ let gen_curry_n (acc:expr) ~arity cons n : expr =
   gen_tuple_n
  *)
   
-let currying match_cases ~arity =
-  let cases = or_of_list1 match_cases in (* FIXME when match_cases is []*)
+let currying cases ~arity =
+  let cases = or_of_list1 cases in (* FIXME when cases is []*)
   if  arity >= 2 then 
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exprs = List.map (fun s-> {| $lid:s |} ) names in
     let x = tuple_com exprs in
     names <+ {| match $x with [ $cases ]|} 
-    (* names <+ {| match $(tuple_com exprs) with [ $list:match_cases ] |} *)
+    (* names <+ {| match $(tuple_com exprs) with [ $list:cases ] |} *)
   else {| fun [ $cases ]|};
-      (* {| fun [ $list:match_cases ] |} *)
+      (* {| fun [ $list:cases ] |} *)
 
 
 let unknown len =

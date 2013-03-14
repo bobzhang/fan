@@ -72,7 +72,7 @@ val eta_expand : expr -> int -> expr
 
 val gen_curry_n : expr -> arity:int -> string -> int -> expr
 
-val currying : match_case list -> arity:int -> expr
+val currying : case list -> arity:int -> expr
 
 val unknown : int -> expr
 

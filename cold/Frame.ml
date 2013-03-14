@@ -123,9 +123,9 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
        let exprs =
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
        mk_variant cons exprs in
-     let e = mk (cons, tyargs) in `Case (_loc, p, e) : match_case ) in
+     let e = mk (cons, tyargs) in `Case (_loc, p, e) : case ) in
   let info = (Sum, (List.length (list_of_or ty []))) in
-  let res: match_case list = Ctyp.reduce_data_ctors ty [] f ~compose:cons in
+  let res: case list = Ctyp.reduce_data_ctors ty [] f ~compose:cons in
   let res =
     let t =
       if ((List.length res) >= 2) && (arity >= 2)
@@ -142,12 +142,12 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
        let exps =
          List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
        mk_variant cons exps in
-     let e = mk (cons, tyargs) in `Case (_loc, p, e) : match_case ) in
+     let e = mk (cons, tyargs) in `Case (_loc, p, e) : case ) in
   let simple lid =
     (let e = (simple_expr_of_ctyp (`Id (_loc, lid))) +> names in
      let (f,a) = view_app [] result in
      let annot = appl_of_list1 (f :: (List.map (fun _  -> `Any _loc) a)) in
-     MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e : match_case ) in
+     MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e : case ) in
   let info = (TyVrnEq, (List.length (list_of_or ty []))) in
   let ls = Ctyp.view_variant ty in
   let res =

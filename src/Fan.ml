@@ -141,9 +141,9 @@ add_quotation (d,"rec_expr") rec_expr_quot
     ~expr_filter
     ~patt_filter ;
   
-add_quotation (d,"match_case") match_case_quot
-    ~mexpr:ME.meta_match_case
-    ~mpatt:MP.meta_match_case
+add_quotation (d,"case") case_quot
+    ~mexpr:ME.meta_case
+    ~mpatt:MP.meta_case
     ~expr_filter
     ~patt_filter ;
   

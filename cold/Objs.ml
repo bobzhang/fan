@@ -641,7 +641,7 @@ class map2 =
             `For (_a0, _a1, _a2, _a3, _a4, _a5)
         | (`Fun (_a0,_a1),`Fun (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#match_case _a1 _b1 in `Fun (_a0, _a1)
+            let _a1 = self#case _a1 _b1 in `Fun (_a0, _a1)
         | (`IfThenElse (_a0,_a1,_a2,_a3),`IfThenElse (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in
@@ -674,7 +674,7 @@ class map2 =
         | (`Match (_a0,_a1,_a2),`Match (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#match_case _a2 _b2 in `Match (_a0, _a1, _a2)
+            let _a2 = self#case _a2 _b2 in `Match (_a0, _a1, _a2)
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in `New (_a0, _a1)
@@ -716,7 +716,7 @@ class map2 =
         | (`Try (_a0,_a1,_a2),`Try (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#match_case _a2 _b2 in `Try (_a0, _a1, _a2)
+            let _a2 = self#case _a2 _b2 in `Try (_a0, _a1, _a2)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#expr _a1 _b1 in
@@ -911,13 +911,13 @@ class map2 =
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>module_binding)
         | (_,_) -> invalid_arg "map2 failure"
-    method match_case : match_case -> match_case -> match_case=
+    method case : case -> case -> case=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#match_case _a1 _b1 in
-            let _a2 = self#match_case _a2 _b2 in `Or (_a0, _a1, _a2)
+            let _a1 = self#case _a1 _b1 in
+            let _a2 = self#case _a2 _b2 in `Or (_a0, _a1, _a2)
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
@@ -927,8 +927,7 @@ class map2 =
             let _a1 = self#patt _a1 _b1 in
             let _a2 = self#expr _a2 _b2 in
             let _a3 = self#expr _a3 _b3 in `CaseWhen (_a0, _a1, _a2, _a3)
-        | ((#ant as _a0),(#ant as _b0)) ->
-            (self#ant _a0 _b0 : ant  :>match_case)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>case)
         | (_,_) -> invalid_arg "map2 failure"
     method module_expr : module_expr -> module_expr -> module_expr=
       fun _a0  _b0  ->
@@ -1757,7 +1756,7 @@ class fold2 =
             let self = self#expr _a3 _b3 in
             let self = self#direction_flag _a4 _b4 in self#expr _a5 _b5
         | (`Fun (_a0,_a1),`Fun (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#match_case _a1 _b1
+            let self = self#loc _a0 _b0 in self#case _a1 _b1
         | (`IfThenElse (_a0,_a1,_a2,_a3),`IfThenElse (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#expr _a1 _b1 in
@@ -1782,7 +1781,7 @@ class fold2 =
             let self = self#module_expr _a2 _b2 in self#expr _a3 _b3
         | (`Match (_a0,_a1,_a2),`Match (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#match_case _a2 _b2
+            let self = self#expr _a1 _b1 in self#case _a2 _b2
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
@@ -1811,7 +1810,7 @@ class fold2 =
             let self = self#expr _a1 _b1 in self#expr _a2 _b2
         | (`Try (_a0,_a1,_a2),`Try (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#match_case _a2 _b2
+            let self = self#expr _a1 _b1 in self#case _a2 _b2
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#expr _a1 _b1 in self#ctyp _a2 _b2
@@ -1956,12 +1955,12 @@ class fold2 =
             let self = self#auident _a1 _b1 in self#module_type _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
-    method match_case : match_case -> match_case -> 'self_type=
+    method case : case -> case -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#match_case _a1 _b1 in self#match_case _a2 _b2
+            let self = self#case _a1 _b1 in self#case _a2 _b2
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#expr _a2 _b2
@@ -2510,7 +2509,7 @@ class iter =
            self#expr _a3;
            self#direction_flag _a4;
            self#expr _a5)
-      | `Fun (_a0,_a1) -> (self#loc _a0; self#match_case _a1)
+      | `Fun (_a0,_a1) -> (self#loc _a0; self#case _a1)
       | `IfThenElse (_a0,_a1,_a2,_a3) ->
           (self#loc _a0; self#expr _a1; self#expr _a2; self#expr _a3)
       | `IfThen (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
@@ -2525,8 +2524,7 @@ class iter =
            self#auident _a1;
            self#module_expr _a2;
            self#expr _a3)
-      | `Match (_a0,_a1,_a2) ->
-          (self#loc _a0; self#expr _a1; self#match_case _a2)
+      | `Match (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#case _a2)
       | `New (_a0,_a1) -> (self#loc _a0; self#ident _a1)
       | `Obj (_a0,_a1) -> (self#loc _a0; self#class_str_item _a1)
       | `ObjEnd _a0 -> self#loc _a0
@@ -2543,8 +2541,7 @@ class iter =
           (self#loc _a0; self#expr _a1; self#alident _a2)
       | `StringDot (_a0,_a1,_a2) ->
           (self#loc _a0; self#expr _a1; self#expr _a2)
-      | `Try (_a0,_a1,_a2) ->
-          (self#loc _a0; self#expr _a1; self#match_case _a2)
+      | `Try (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#case _a2)
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#expr _a1; self#ctyp _a2)
       | `Coercion (_a0,_a1,_a2,_a3) ->
@@ -2634,10 +2631,9 @@ class iter =
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#auident _a1; self#module_type _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result150)
-    method match_case : match_case -> 'result151=
+    method case : case -> 'result151=
       function
-      | `Or (_a0,_a1,_a2) ->
-          (self#loc _a0; self#match_case _a1; self#match_case _a2)
+      | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#case _a1; self#case _a2)
       | `Case (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#expr _a2)
       | `CaseWhen (_a0,_a1,_a2,_a3) ->
           (self#loc _a0; self#patt _a1; self#expr _a2; self#expr _a3)
@@ -3334,7 +3330,7 @@ class map =
           let _a5 = self#expr _a5 in `For (_a0, _a1, _a2, _a3, _a4, _a5)
       | `Fun (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#match_case _a1 in `Fun (_a0, _a1)
+          let _a1 = self#case _a1 in `Fun (_a0, _a1)
       | `IfThenElse (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in
@@ -3367,7 +3363,7 @@ class map =
       | `Match (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in
-          let _a2 = self#match_case _a2 in `Match (_a0, _a1, _a2)
+          let _a2 = self#case _a2 in `Match (_a0, _a1, _a2)
       | `New (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in `New (_a0, _a1)
@@ -3407,7 +3403,7 @@ class map =
       | `Try (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in
-          let _a2 = self#match_case _a2 in `Try (_a0, _a1, _a2)
+          let _a2 = self#case _a2 in `Try (_a0, _a1, _a2)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in
@@ -3577,12 +3573,12 @@ class map =
           let _a1 = self#auident _a1 in
           let _a2 = self#module_type _a2 in `Constraint (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_binding)
-    method match_case : match_case -> match_case=
+    method case : case -> case=
       function
       | `Or (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#match_case _a1 in
-          let _a2 = self#match_case _a2 in `Or (_a0, _a1, _a2)
+          let _a1 = self#case _a1 in
+          let _a2 = self#case _a2 in `Or (_a0, _a1, _a2)
       | `Case (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
@@ -3592,7 +3588,7 @@ class map =
           let _a1 = self#patt _a1 in
           let _a2 = self#expr _a2 in
           let _a3 = self#expr _a3 in `CaseWhen (_a0, _a1, _a2, _a3)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>match_case)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>case)
     method module_expr : module_expr -> module_expr=
       function
       | #sid as _a0 -> (self#sid _a0 : sid  :>module_expr)
@@ -4250,7 +4246,7 @@ class fold =
           let self = self#expr _a2 in
           let self = self#expr _a3 in
           let self = self#direction_flag _a4 in self#expr _a5
-      | `Fun (_a0,_a1) -> let self = self#loc _a0 in self#match_case _a1
+      | `Fun (_a0,_a1) -> let self = self#loc _a0 in self#case _a1
       | `IfThenElse (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#expr _a1 in
@@ -4273,7 +4269,7 @@ class fold =
           let self = self#module_expr _a2 in self#expr _a3
       | `Match (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#expr _a1 in self#match_case _a2
+          let self = self#expr _a1 in self#case _a2
       | `New (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
       | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_str_item _a1
       | `ObjEnd _a0 -> self#loc _a0
@@ -4296,7 +4292,7 @@ class fold =
           let self = self#expr _a1 in self#expr _a2
       | `Try (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#expr _a1 in self#match_case _a2
+          let self = self#expr _a1 in self#case _a2
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#expr _a1 in self#ctyp _a2
@@ -4421,11 +4417,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#module_type _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method match_case : match_case -> 'self_type=
+    method case : case -> 'self_type=
       function
       | `Or (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#match_case _a1 in self#match_case _a2
+          let self = self#case _a1 in self#case _a2
       | `Case (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#expr _a2
@@ -5133,8 +5129,8 @@ class print =
               self#loc _a0 self#alident _a1 self#expr _a2 self#expr _a3
               self#direction_flag _a4 self#expr _a5
         | `Fun (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Fun@ %a@ %a)@]" self#loc _a0
-              self#match_case _a1
+            Format.fprintf fmt "@[<1>(`Fun@ %a@ %a)@]" self#loc _a0 self#case
+              _a1
         | `IfThenElse (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`IfThenElse@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#expr _a1 self#expr _a2 self#expr _a3
@@ -5159,7 +5155,7 @@ class print =
               _a3
         | `Match (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#match_case _a2
+              self#expr _a1 self#case _a2
         | `New (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`New@ %a@ %a)@]" self#loc _a0
               self#ident _a1
@@ -5196,7 +5192,7 @@ class print =
               self#expr _a1 self#expr _a2
         | `Try (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Try@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#match_case _a2
+              self#expr _a1 self#case _a2
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#expr _a1 self#ctyp _a2
@@ -5343,12 +5339,12 @@ class print =
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#auident _a1 self#module_type _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result312)
-    method match_case : 'fmt -> match_case -> 'result313=
+    method case : 'fmt -> case -> 'result313=
       fun fmt  ->
         function
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
-              self#match_case _a1 self#match_case _a2
+              self#case _a1 self#case _a2
         | `Case (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#expr _a2
@@ -6094,7 +6090,7 @@ class eq =
                && (self#direction_flag _a4 _b4))
               && (self#expr _a5 _b5)
         | (`Fun (_a0,_a1),`Fun (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#match_case _a1 _b1)
+            (self#loc _a0 _b0) && (self#case _a1 _b1)
         | (`IfThenElse (_a0,_a1,_a2,_a3),`IfThenElse (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
                (self#expr _a2 _b2))
@@ -6119,7 +6115,7 @@ class eq =
               && (self#expr _a3 _b3)
         | (`Match (_a0,_a1,_a2),`Match (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#match_case _a2 _b2)
+              (self#case _a2 _b2)
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
@@ -6148,7 +6144,7 @@ class eq =
               (self#expr _a2 _b2)
         | (`Try (_a0,_a1,_a2),`Try (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#match_case _a2 _b2)
+              (self#case _a2 _b2)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -6292,12 +6288,12 @@ class eq =
               (self#module_type _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result366)
         | (_,_) -> false
-    method match_case : match_case -> match_case -> 'result367=
+    method case : case -> case -> 'result367=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#match_case _a1 _b1)) &&
-              (self#match_case _a2 _b2)
+            ((self#loc _a0 _b0) && (self#case _a1 _b1)) &&
+              (self#case _a2 _b2)
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#expr _a2 _b2)
@@ -6913,7 +6909,7 @@ and strip_loc_expr =
       let _a3 = strip_loc_expr _a3 in
       let _a4 = strip_loc_direction_flag _a4 in
       let _a5 = strip_loc_expr _a5 in `For (_a1, _a2, _a3, _a4, _a5)
-  | `Fun (_a0,_a1) -> let _a1 = strip_loc_match_case _a1 in `Fun _a1
+  | `Fun (_a0,_a1) -> let _a1 = strip_loc_case _a1 in `Fun _a1
   | `IfThenElse (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_expr _a2 in
@@ -6936,7 +6932,7 @@ and strip_loc_expr =
       let _a3 = strip_loc_expr _a3 in `LetModule (_a1, _a2, _a3)
   | `Match (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_match_case _a2 in `Match (_a1, _a2)
+      let _a2 = strip_loc_case _a2 in `Match (_a1, _a2)
   | `New (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `New _a1
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_str_item _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
@@ -6959,7 +6955,7 @@ and strip_loc_expr =
       let _a2 = strip_loc_expr _a2 in `StringDot (_a1, _a2)
   | `Try (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_match_case _a2 in `Try (_a1, _a2)
+      let _a2 = strip_loc_case _a2 in `Try (_a1, _a2)
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Constraint (_a1, _a2)
@@ -7084,11 +7080,11 @@ and strip_loc_module_binding =
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_type _a2 in `Constraint (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result407)
-and strip_loc_match_case =
+and strip_loc_case =
   function
   | `Or (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_match_case _a1 in
-      let _a2 = strip_loc_match_case _a2 in `Or (_a1, _a2)
+      let _a1 = strip_loc_case _a1 in
+      let _a2 = strip_loc_case _a2 in `Or (_a1, _a2)
   | `Case (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_expr _a2 in `Case (_a1, _a2)
@@ -7758,7 +7754,7 @@ and pp_print_expr fmt =
         pp_print_direction_flag _a4 pp_print_expr _a5
   | `Fun (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Fun@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_match_case _a1
+        pp_print_case _a1
   | `IfThenElse (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`IfThenElse@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_expr _a1 pp_print_expr _a2 pp_print_expr _a3
@@ -7782,7 +7778,7 @@ and pp_print_expr fmt =
         _a0 pp_print_auident _a1 pp_print_module_expr _a2 pp_print_expr _a3
   | `Match (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Match@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_match_case _a2
+        pp_print_expr _a1 pp_print_case _a2
   | `New (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`New@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1
@@ -7818,7 +7814,7 @@ and pp_print_expr fmt =
         pp_print_expr _a1 pp_print_expr _a2
   | `Try (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Try@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_match_case _a2
+        pp_print_expr _a1 pp_print_case _a2
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_expr _a1 pp_print_ctyp _a2
@@ -7959,11 +7955,11 @@ and pp_print_module_binding fmt =
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_module_type _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result459)
-and pp_print_match_case fmt =
+and pp_print_case fmt =
   function
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_match_case _a1 pp_print_match_case _a2
+        pp_print_case _a1 pp_print_case _a2
   | `Case (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_expr _a2

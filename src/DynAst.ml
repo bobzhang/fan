@@ -14,7 +14,7 @@ type 'a tag  =
  | Class_sig_item
  | Class_expr
  | Class_str_item
- | Match_case
+ | Case
  | Ident
  | Binding
  | Rec_expr
@@ -33,7 +33,7 @@ let string_of_tag = fun
  | Class_sig_item -> "class_sig_item"
  | Class_expr -> "class_expr"
  | Class_str_item -> "class_str_item"
- | Match_case -> "match_case"
+ | Case -> "case"
  | Ident -> "ident"
  | Binding -> "binding"
  | Rec_expr -> "rec_expr"
@@ -51,7 +51,7 @@ let class_type_tag : tag class_type = Class_type;
 let class_sig_item_tag : tag class_sig_item = Class_sig_item;
 let class_expr_tag : tag class_expr = Class_expr;
 let class_str_item_tag : tag class_str_item = Class_str_item;
-let match_case_tag : tag match_case = Match_case;
+let case_tag : tag case = Case;
 let ident_tag : tag ident = Ident;
 let binding_tag : tag binding = Binding;
 let rec_expr_tag : tag rec_expr  = Rec_expr;

@@ -42,9 +42,9 @@ module type Syntax =
     val uident : uident Gram.t
     val amp_ctyp : ctyp Gram.t
     val and_ctyp : ctyp Gram.t
-    val match_case : match_case Gram.t
-    val match_case0 : match_case Gram.t
-    val match_case_quot : match_case Gram.t
+    val case : case Gram.t
+    val case0 : case Gram.t
+    val case_quot : case Gram.t
     val binding : binding Gram.t
     val binding_quot : binding Gram.t
     val rec_expr_quot : rec_expr Gram.t

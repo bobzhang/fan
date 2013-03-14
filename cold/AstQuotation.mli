@@ -74,7 +74,7 @@ val of_patt: name:FanToken.name -> entry: patt Gram.t  -> unit
 
 val of_class_str_item: name:FanToken.name -> entry: class_str_item Gram.t  -> unit
 
-val of_match_case: name:FanToken.name -> entry: match_case Gram.t  -> unit
+val of_case: name:FanToken.name -> entry: case Gram.t  -> unit
 
 val of_str_item: name:FanToken.name -> entry: str_item Gram.t  -> unit
 
@@ -91,9 +91,9 @@ val of_class_str_item_with_filter :
   name:FanToken.name
   -> entry:class_str_item Gram.t -> filter:(class_str_item -> class_str_item) -> unit
 
-val of_match_case_with_filter :
+val of_case_with_filter :
   name:FanToken.name
-  -> entry:match_case Gram.t -> filter:(match_case -> match_case) -> unit
+  -> entry:case Gram.t -> filter:(case -> case) -> unit
 
 val of_expr_with_filter :
     name:FanToken.name

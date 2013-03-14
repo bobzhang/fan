@@ -29,8 +29,8 @@ let gen_str_item
       let trail (_,number)=
         if number > 1 then
           let patt = EP.tuple_of_number {:patt| _ |} arity in 
-          Some {:match_case| $pat:patt -> $trail |}
-        else (* {:match_case| |} *) None ;
+          Some {:case| $pat:patt -> $trail |}
+        else (* {:case| |} *) None ;
       let names = names ;
       let mk_record = mk_record ;
       let cons_transform = cons_transform;
@@ -73,7 +73,7 @@ let gen_object
      let trail (_,number)=
        if number > 1 then
          let patt = EP.tuple_of_number {:patt| _ |} arity in 
-         Some {:match_case| $pat:patt -> $trail |}
+         Some {:case| $pat:patt -> $trail |}
        else None in
     Frame.(obj_of_module_types
              ?cons_transform

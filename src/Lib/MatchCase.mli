@@ -7,4 +7,4 @@ arity:int ->
   destination:FSig.destination ->
   Ast.ident ->
   Ast.expr ->
-  match_case
+  case

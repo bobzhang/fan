@@ -101,8 +101,8 @@ val binding :
   (Parsetree.pattern * Parsetree.expression) list ->
   (Parsetree.pattern * Parsetree.expression) list
       
-val match_case :
-  match_case ->
+val case :
+  case ->
   (Parsetree.pattern * Parsetree.expression) list
 
 val mklabexp :

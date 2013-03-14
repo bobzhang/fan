@@ -15,7 +15,7 @@ class printer = object(self:'self)
     method longident_loc i =
       self#longident i.loc i.txt;
     method gen_cases  _loc (lst: list (pattern*expression)) =
-     with match_case 
+     with case 
      List.map
      (fun (p,e) ->
        match e.pexp_desc with

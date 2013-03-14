@@ -1,4 +1,4 @@
-#default_quotation "match_case";;
+#default_quotation "case";;
 open LibUtil;
 
 

@@ -66,7 +66,7 @@ let tuple_expr_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
       List.mapi
         (mapi_expr ~arity ~names  ~f:simple_expr_of_ctyp) ls in
     names <+ (currying
-                  [ {:match_case| $pat:patt -> $(mk_tuple tys ) |} ] ~arity)
+                  [ {:case| $pat:patt -> $(mk_tuple tys ) |} ] ~arity)
   | _  ->
       FanLoc.errorf _loc
         "tuple_expr_of_ctyp %s" (FanObjs.dump_ctyp ty)];
@@ -171,7 +171,7 @@ let expr_of_ctyp
     ?(names=[])
     ~trail ~mk_variant
     simple_expr_of_ctyp (ty : or_ctyp)  =
-  let f  (cons:string) (tyargs:list ctyp)  : match_case = 
+  let f  (cons:string) (tyargs:list ctyp)  : case = 
     let args_length = List.length tyargs in  (* ` is not needed here *)
     let p : patt =
       (* calling gen_tuple_n*)
@@ -180,9 +180,9 @@ let expr_of_ctyp
       let exprs = List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
       mk_variant cons exprs in
     let e = mk (cons,tyargs) in
-    {:match_case| $pat:p -> $e |} in  begin 
+    {:case| $pat:p -> $e |} in  begin 
     let info = (Sum, List.length (list_of_or ty [])) in 
-    let res : list match_case =
+    let res : list case =
       Ctyp.reduce_data_ctors ty  [] f ~compose:cons  in
     let res =
       let t = (* only under this case we need trailing  *)
@@ -198,8 +198,8 @@ let expr_of_ctyp
    accept [variant types]
  *)  
 let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~destination
-    simple_expr_of_ctyp result ty = with {patt:ctyp;expr:match_case}
-  let f (cons,tyargs) :  match_case=
+    simple_expr_of_ctyp result ty = with {patt:ctyp;expr:case}
+  let f (cons,tyargs) :  case=
     let len = List.length tyargs in
     let p = EP.gen_tuple_n ?cons_transform ~arity cons len in
     let mk (cons,tyargs) =
@@ -208,7 +208,7 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~de
     let e = mk (cons,tyargs) in
     {| $pat:p -> $e |} in 
   (* for the case [`a | b ] *)
-  let simple lid :match_case=
+  let simple lid :case=
     let e = (simple_expr_of_ctyp {:ctyp|$id:lid|}) +> names  in
     let (f,a) = view_app [] result in
     let annot = appl_of_list1 [f :: List.map (fun _ -> {:ctyp|_|}) a] in
@@ -275,7 +275,7 @@ let fun_of_tydcl
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
-            (currying ~arity [ {:match_case| $pat:patt -> $(mk_record info)  |} ])
+            (currying ~arity [ {:case| $pat:patt -> $(mk_record info)  |} ])
 
        |  `Sum (_,ctyp) -> 
           let funct = expr_of_ctyp ctyp in  

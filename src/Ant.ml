@@ -104,17 +104,17 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           |("list","ctyp*",_) ->
               {| $(uid:gm()).sta_of_list $e |}
           |("list","ctyp|",_)
-          |("list","match_case",_) ->
+          |("list","case",_) ->
               {| $(uid:gm()).or_of_list $e |}
           |("list","ctyp&",_) ->
               {| $(uid:gm()).amp_of_list $e |}
-          |("listlettry","match_case",_) ->
-              {| (($(uid:gm()).match_pre)#match_case
+          |("listlettry","case",_) ->
+              {| (($(uid:gm()).match_pre)#case
                     ($(uid:gm()).or_of_list $e)) |}
-          |("antilettry","match_case",_) ->
-              {| $(uid:gm()).match_pre#match_case (`Ant ($(mloc _loc), $e)) |}
-          |("lettry","match_case",_) ->
-              {| $(uid:gm()).match_pre#match_case $e |}
+          |("antilettry","case",_) ->
+              {| $(uid:gm()).match_pre#case (`Ant ($(mloc _loc), $e)) |}
+          |("lettry","case",_) ->
+              {| $(uid:gm()).match_pre#case $e |}
           |("list",("ctyp,"|"patt,"|"expr,"),_) ->
               {| $(uid:gm()).com_of_list $e |}
           |("list",

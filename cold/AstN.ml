@@ -81,16 +81,16 @@ and expr =
   | literal | `RecordWith of (rec_expr* expr) | `Dot of (expr* expr)
   | `ArrayDot of (expr* expr) | `ArrayEmpty | `Array of expr | `ExAsf
   | `ExAsr of expr | `Assign of (expr* expr)
-  | `For of (alident* expr* expr* direction_flag* expr) | `Fun of match_case
+  | `For of (alident* expr* expr* direction_flag* expr) | `Fun of case
   | `IfThenElse of (expr* expr* expr) | `IfThen of (expr* expr)
   | `LabelS of alident | `Label of (alident* expr) | `Lazy of expr
   | `LetIn of (rec_flag* binding* expr)
-  | `LetModule of (auident* module_expr* expr) | `Match of (expr* match_case)
+  | `LetModule of (auident* module_expr* expr) | `Match of (expr* case)
   | `New of ident | `Obj of class_str_item | `ObjEnd
   | `ObjPat of (patt* class_str_item) | `ObjPatEnd of patt
   | `OptLabl of (alident* expr) | `OptLablS of alident | `OvrInst of rec_expr
   | `OvrInstEmpty | `Seq of expr | `Send of (expr* alident)
-  | `StringDot of (expr* expr) | `Try of (expr* match_case)
+  | `StringDot of (expr* expr) | `Try of (expr* case)
   | `Constraint of (expr* ctyp) | `Coercion of (expr* ctyp* ctyp)
   | `Subtype of (expr* ctyp) | `While of (expr* expr)
   | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
@@ -119,8 +119,8 @@ and module_binding =
   [ `And of (module_binding* module_binding)
   | `ModuleBind of (auident* module_type* module_expr)
   | `Constraint of (auident* module_type) | ant] 
-and match_case =
-  [ `Or of (match_case* match_case) | `Case of (patt* expr)
+and case =
+  [ `Or of (case* case) | `Case of (patt* expr)
   | `CaseWhen of (patt* expr* expr) | ant] 
 and module_expr =
   [ sid | `App of (module_expr* module_expr)

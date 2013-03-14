@@ -149,7 +149,7 @@ let make_ctyp (styp:styp) tvar : ctyp =
                           (sg : 'e__1 ))))])
 
    `Slist0sep
-       ((`Snterm (Gram.obj (match_case0 : 'match_case0 Gram.t ))),
+       ((`Snterm (Gram.obj (case0 : 'case0 Gram.t ))),
         (`Skeyword "|"))
 
 
@@ -245,7 +245,7 @@ and make_expr_rules (_loc:loc)  (rl : list (list text * expr) ) (tvar:string) :e
    It is in charge of generating code like this 
    {[
    (Gram.mk_action
-               (fun (a : 'match_case)  _  (e : 'expr)  _  (_loc : FanLoc.t) 
+               (fun (a : 'case)  _  (e : 'expr)  _  (_loc : FanLoc.t) 
                   -> (`Try (_loc, e, a) : 'expr )))
    ]}
  *)

@@ -349,11 +349,11 @@ let gen_definition _loc l =
     let p = mk_partition_name part in
     let cases =
       Array.mapi 
-        (fun i j -> {:match_case| $`int:i -> $(call_state auto j) |})
+        (fun i j -> {:case| $`int:i -> $(call_state auto j) |})
         trans in
     let cases = or_of_list1
         (Array.to_list cases @
-         [{:match_case| _ -> $(id:gm()).backtrack lexbuf|}]) in
+         [{:case| _ -> $(id:gm()).backtrack lexbuf|}]) in
     
     let body =
       {:expr|
@@ -376,7 +376,7 @@ let gen_definition _loc l =
   let rs = Array.map fst brs in
   let auto = compile ~part_tbl  rs in
   
-  let cases = Array.mapi (fun i (_,e) -> {:match_case| $`int:i -> $e |}) brs in
+  let cases = Array.mapi (fun i (_,e) -> {:case| $`int:i -> $e |}) brs in
   let table_counter = ref 0 in 
   let tables = Hashtbl.create 31 in
   let states = Array.filter_mapi (gen_state  auto _loc) auto in
@@ -401,7 +401,7 @@ let gen_definition _loc l =
     | _ -> (`Recursive _loc, and_of_list1 (Array.to_list states)) ] in
   let cases =
     or_of_list1
-      (Array.to_list cases @ [{:match_case| _ -> raise $(id:gm()).Error|}]) in
+      (Array.to_list cases @ [{:case| _ -> raise $(id:gm()).Error|}]) in
   let rest =
     binds tables
       (binds parts

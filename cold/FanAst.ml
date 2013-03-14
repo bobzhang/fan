@@ -804,7 +804,7 @@ module Make(MetaLoc:META_LOC) =
       | `Fun (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "Fun")), (meta_loc _loc _a0))),
-              (meta_match_case _loc _a1))
+              (meta_case _loc _a1))
       | `IfThenElse (_a0,_a1,_a2,_a3) ->
           `App
             (_loc,
@@ -867,7 +867,7 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Match")), (meta_loc _loc _a0))),
-                   (meta_expr _loc _a1))), (meta_match_case _loc _a2))
+                   (meta_expr _loc _a1))), (meta_case _loc _a2))
       | `New (_a0,_a1) ->
           `App
             (_loc, (`App (_loc, (`Vrn (_loc, "New")), (meta_loc _loc _a0))),
@@ -935,7 +935,7 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Try")), (meta_loc _loc _a0))),
-                   (meta_expr _loc _a1))), (meta_match_case _loc _a2))
+                   (meta_expr _loc _a1))), (meta_case _loc _a2))
       | `Constraint (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1247,7 +1247,7 @@ module Make(MetaLoc:META_LOC) =
                         (meta_loc _loc _a0))), (meta_auident _loc _a1))),
               (meta_module_type _loc _a2))
       | #ant as _a0 -> (meta_ant _loc _a0 :>'result30)
-    and meta_match_case _loc =
+    and meta_case _loc =
       function
       | `Or (_a0,_a1,_a2) ->
           `App
@@ -1255,7 +1255,7 @@ module Make(MetaLoc:META_LOC) =
               (`App
                  (_loc,
                    (`App (_loc, (`Vrn (_loc, "Or")), (meta_loc _loc _a0))),
-                   (meta_match_case _loc _a1))), (meta_match_case _loc _a2))
+                   (meta_case _loc _a1))), (meta_case _loc _a2))
       | `Case (_a0,_a1,_a2) ->
           `App
             (_loc,
@@ -1820,7 +1820,7 @@ include AstLoc
 let match_pre =
   object (self)
     inherit  Objs.map
-    method! match_case =
+    method! case =
       function
       | `Case (_loc,p,e) ->
           `Case
@@ -1833,7 +1833,6 @@ let match_pre =
               (`Fun
                  (_loc,
                    (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e1)))))
-      | `Or (_loc,a1,a2) ->
-          `Or (_loc, (self#match_case a1), (self#match_case a2))
+      | `Or (_loc,a1,a2) -> `Or (_loc, (self#case a1), (self#case a2))
       | `Ant (_loc,x) -> `Ant (_loc, (FanUtil.add_context x "lettry"))
   end

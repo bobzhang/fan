@@ -16,8 +16,8 @@ let print_warning loc txt = !current_warning loc txt;
   aident
   amp_ctyp
   and_ctyp
-  match_case
-  match_case0
+  case
+  case0
   binding
   class_declaration
   class_description
@@ -61,7 +61,7 @@ let print_warning loc txt = !current_warning loc txt;
   (infixop6 "infix operator (level 6) (start with \"**\") (right assoc)")
 
   (prefixop "prefix operator (start with '!', '?', '~')")
-  (match_case_quot "quotation of match_case (try/match/function case)")
+  (case_quot "quotation of case (try/match/function case)")
 
   module_longident_dot_lparen  sequence'  fun_def  
   module_binding_quot ident_quot string_list     

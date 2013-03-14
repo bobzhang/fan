@@ -26,7 +26,7 @@ let apply () = begin
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
 
     {:clear|Gram
-     amp_ctyp and_ctyp match_case match_case0 match_case_quot binding binding_quot rec_expr_quot
+     amp_ctyp and_ctyp case case0 case_quot binding binding_quot rec_expr_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
       class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
@@ -332,10 +332,10 @@ let apply () = begin
             {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
             {| let open $id:i in $e |}
-        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a} ->
+        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a} ->
             {| let try $rec:r $bi in $x with [ $a ] |}
-        | "match"; S{e}; "with"; match_case{a} -> {|match $e with [$a]|}
-        | "try"; S{e}; "with"; match_case{a} -> {|try $e with [$a]|}
+        | "match"; S{e}; "with"; case{a} -> {|match $e with [$a]|}
+        | "try"; S{e}; "with"; case{a} -> {|try $e with [$a]|}
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} -> {| if $e1 then $e2 else $e3 |}
         | "if"; S{e1}; "then"; S{e2} -> {| if $e1 then $e2 |}
         | "do"; sequence{seq}; "done" -> FanOps.mksequence ~loc:_loc seq
@@ -376,9 +376,9 @@ let apply () = begin
        "obj" RA
         [
         (* FIXME fun and function duplicated *)      
-         "fun"; "[";  L1 match_case0 SEP "|"{a}; "]" ->
+         "fun"; "[";  L1 case0 SEP "|"{a}; "]" ->
            let cases = or_of_list1 a in `Fun (_loc,cases)
-        | "function"; "[";  L1 match_case0 SEP "|"{a}; "]" ->
+        | "function"; "[";  L1 case0 SEP "|"{a}; "]" ->
             let cases = or_of_list1 a in `Fun(_loc,cases)
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
@@ -471,7 +471,7 @@ let apply () = begin
        sequence: (*FIXME*)
        [ "let"; opt_rec{rf}; binding{bi}; "in"; expr{e}; sequence'{k} ->
          k {| let $rec:rf $bi in $e |}
-       | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; match_case{a}; sequence'{k}
+       | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
          -> k {| let try $rec:r $bi in $x with [ $a ] |}
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
            {| let $rec:rf $bi in $(FanOps.mksequence ~loc:_loc el) |}
@@ -518,19 +518,19 @@ let apply () = begin
         let_binding:
         [ patt{p}; fun_binding{e} -> {| $p = $e |} ] |};
 
-  with match_case
+  with case
     {:extend|
-      match_case:
-      [ "["; L1 match_case0 SEP "|"{l}; "]" -> or_of_list1 l (* {|  $list:l  |} *) (* FIXME *)
+      case:
+      [ "["; L1 case0 SEP "|"{l}; "]" -> or_of_list1 l (* {|  $list:l  |} *) (* FIXME *)
       | patt{p}; "->"; expr{e} -> `Case(_loc,p,e)(* {| $pat:p -> $e |} *) ]
-      match_case0:
-      [ `Ant (("match_case"|"list"| "anti"|"" as n),s) ->
-        `Ant (_loc, (mk_anti ~c:"match_case" n s))
+      case0:
+      [ `Ant (("case"|"list"| "anti"|"" as n),s) ->
+        `Ant (_loc, (mk_anti ~c:"case" n s))
       | patt_as_patt_opt{p}; "when"; expr{w};  "->"; expr{e} ->
            `CaseWhen (_loc, p, w, e)
       | patt_as_patt_opt{p}; "->";expr{e} -> `Case(_loc,p,e)]
-      match_case_quot:
-      [ L1 match_case0 SEP "|"{x} -> or_of_list1 x]  |};
+      case_quot:
+      [ L1 case0 SEP "|"{x} -> or_of_list1 x]  |};
   with rec_expr
       {:extend|
         rec_expr_quot:
@@ -981,7 +981,7 @@ let apply () = begin
               {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; expr{e} ->
             {| let open $id:i in $e |}
-        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; expr{x}; "with"; match_case{a}
+        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; expr{x}; "with"; case{a}
           -> {| let try $rec:r $bi in $x with [ $a ]|}
         | "class"; class_declaration{cd} ->  `Class(_loc,cd)
         | "class"; "type"; class_type_declaration{ctd} ->

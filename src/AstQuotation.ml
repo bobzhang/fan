@@ -316,8 +316,8 @@ let of_patt  = REGISTER(DynAst.patt_tag);
 let of_patt_with_filter  = REGISTER_FILTER(DynAst.patt_tag);
 let of_class_str_item  = REGISTER(DynAst.class_str_item_tag);
 let of_class_str_item_with_filter  = REGISTER_FILTER(DynAst.class_str_item_tag);
-let of_match_case = REGISTER(DynAst.match_case_tag);
-let of_match_case_with_filter = REGISTER_FILTER(DynAst.match_case_tag);
+let of_case = REGISTER(DynAst.case_tag);
+let of_case_with_filter = REGISTER_FILTER(DynAst.case_tag);
   
 
 (* both [expr] and [str_item] positions are registered *)
