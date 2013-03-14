@@ -307,7 +307,7 @@ let gen_definition _loc l =
               (_loc, (`Int (_loc, (string_of_int i))), (call_state auto j)))
          trans in
      let cases =
-       or_of_list1
+       or_of_list
          ((Array.to_list cases) @
             [`Case
                (_loc, (`Any _loc),
@@ -382,9 +382,9 @@ let gen_definition _loc l =
     match len with
     | 1 -> ((`ReNil _loc), (states.(0)))
     | 0 -> failwithf "FanLexTools.states length = 0 "
-    | _ -> ((`Recursive _loc), (and_of_list1 (Array.to_list states))) in
+    | _ -> ((`Recursive _loc), (and_of_list (Array.to_list states))) in
   let cases =
-    or_of_list1
+    or_of_list
       ((Array.to_list cases) @
          [`Case
             (_loc, (`Any _loc),

@@ -194,7 +194,7 @@ let bigarray_get loc arr arg =
              (loc,
                (`Sem
                   (loc, c1,
-                    (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list1 coords))))))))))
+                    (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list coords))))))))))
 let bigarray_set loc var newval =
   match var with
   | `App

@@ -266,7 +266,7 @@ let mk_record label_exprs =
      List.map
        (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
        label_exprs in
-   `Record (_loc, (sem_of_list1 rec_exprs)) : expr )
+   `Record (_loc, (sem_of_list rec_exprs)) : expr )
 let failure =
   `App
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
@@ -467,9 +467,9 @@ let gen_curry_n (acc : expr) ~arity  cons n =
        (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
    let pat = of_str cons in
    List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc))))
-     (List.map (fun lst  -> appl_of_list1 (pat :: lst)) args) acc : expr )
+     (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc : expr )
 let currying cases ~arity  =
-  let cases = or_of_list1 cases in
+  let cases = or_of_list cases in
   if arity >= 2
   then
     let names = List.init arity (fun i  -> x ~off:i 0) in

@@ -56,7 +56,7 @@ let _ =
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
-      appl_of_list1 ((EP.of_str cons) ::
+      appl_of_list ((EP.of_str cons) ::
         (params |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { expr; pat0;_}  res  ->
@@ -95,7 +95,7 @@ let gen_strip =
         (function | { ty = `Id (_loc,`Lid (_,"loc"));_} -> false | _ -> true)
         params in
     let result =
-      appl_of_list1 ((EP.of_str cons) ::
+      appl_of_list ((EP.of_str cons) ::
         (params' |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { expr; pat0; ty;_}  res  ->
@@ -191,16 +191,16 @@ let mk_variant_print cons params =
       mkfmt ("@[<1>(" ^ (cons ^ "@ ")) "@ " ")@]"
         (List.init len (fun _  -> "%a"))
     else mkfmt cons "" "" [] in
-  appl_of_list1 (pre :: (extract params))
+  appl_of_list (pre :: (extract params))
 let mk_tuple_print params =
   let len = List.length params in
   let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _  -> "%a")) in
-  appl_of_list1 (pre :: (extract params))
+  appl_of_list (pre :: (extract params))
 let mk_record_print cols =
   let pre =
     (cols |> (List.map (fun { re_label;_}  -> re_label ^ ":%a"))) |>
       (mkfmt "@[<hv 1>{" ";@," "}@]") in
-  appl_of_list1 (pre ::
+  appl_of_list (pre ::
     ((cols |> (List.map (fun { re_info;_}  -> re_info))) |> extract))
 let gen_print =
   gen_str_item ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_tuple:mk_tuple_print
@@ -221,7 +221,7 @@ let mk_variant_iter _cons params =
            (List.map
               (fun { name_expr; id_expr;_}  ->
                  `App (_loc, name_expr, id_expr))) in
-       seq_sem1 lst : expr )
+       seq_sem lst : expr )
 let mk_tuple_iter params = (mk_variant_iter "" params : expr )
 let mk_record_iter cols =
   let lst =
@@ -229,7 +229,7 @@ let mk_record_iter cols =
       (List.map
          (fun { re_info = { name_expr; id_expr;_};_}  ->
             `App (_loc, name_expr, id_expr))) in
-  seq_sem1 lst
+  seq_sem lst
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
     ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter

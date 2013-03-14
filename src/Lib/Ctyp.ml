@@ -65,7 +65,7 @@ let name_length_of_tydcl (x:typedecl)=
 let gen_quantifiers1 ~arity n  : ctyp =
   List.init arity
     (fun i -> List.init n (fun j -> {|  '$(lid:allx ~off:i j) |} ))
-  |> List.concat |> appl_of_list1;
+  |> List.concat |> appl_of_list;
 
 
 (*
@@ -75,7 +75,7 @@ let gen_quantifiers1 ~arity n  : ctyp =
   ]}
  *)  
 let of_id_len ~off (id,len) =
-  appl_of_list1
+  appl_of_list
   (* apply *) [{|$id:id |} ::
     (List.init len
        (fun i -> {|  '$(lid:allx ~off i) |}))];
@@ -113,7 +113,7 @@ let of_name_len ~off (name,len) =
 let ty_name_of_tydcl  (x:typedecl) =
   match x with 
   [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-       appl_of_list1 [ {| $lid:name |} :: tyvars]
+       appl_of_list [ {| $lid:name |} :: tyvars]
   | tydcl ->
       failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)];      
 
@@ -414,7 +414,7 @@ let mk_transform_type_eq () = object(self:'self_type)
           let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
           let src = i and dest = Ident.map_to_string i in begin
             Hashtbl.replace transformers dest (src,List.length lst);
-            appl_of_list1 [ {| $lid:dest |} :: lst ]
+            appl_of_list [ {| $lid:dest |} :: lst ]
           end
       | None -> super#ctyp x];
 
@@ -488,7 +488,7 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
   List.fold_left (fun acc x -> match (x:or_ctyp) with
     [  `Of (_loc, (`Id (_, (`Uid (_, cons)))), tys)
       ->
-        compose (f cons ((* list_of_and' *)list_of_star tys [])) acc  
+        compose (f cons (list_of_star tys [])) acc  
     | (* {| $uid:cons |} *)
       `Id (_loc, (`Uid (_, cons)))
       -> compose  (f cons [] ) acc
@@ -503,7 +503,7 @@ let view_sum (t:or_ctyp) =
       [ (* {|$uid:cons|} *) `Id(_,`Uid(_,cons)) ->
         `branch (cons,[])
        | `Of(_loc,`Id(_,`Uid(_,cons)),t) (* {|$uid:cons of $t|} *) ->
-           `branch (cons, (* FanAst.list_of_and' *) list_of_star  t [])
+           `branch (cons,  list_of_star  t [])
        | _ -> assert false ]) bs ;
 
 (*

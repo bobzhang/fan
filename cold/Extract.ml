@@ -48,7 +48,7 @@ and type_declaration id
            (`TyRepr (_loc, private_flag, (`Sum (_loc, (type_sum xs))))), []) : 
   typedecl )
 and type_record (xs : (Ident.t* Asttypes.mutable_flag* type_expr) list) =
-  (sem_of_list1 &
+  (sem_of_list &
      (List.map
         (fun (i,m,e)  ->
            let name = Ident.name i in
@@ -61,7 +61,7 @@ and type_record (xs : (Ident.t* Asttypes.mutable_flag* type_expr) list) =
                  (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_expr e))) xs) : 
   name_ctyp )
 and type_sum (xs : (Ident.t* type_expr list* type_expr option) list) =
-  (or_of_list1 &
+  (or_of_list &
      (List.map
         (function
          | (i,xs,None ) ->
@@ -72,7 +72,7 @@ and type_sum (xs : (Ident.t* type_expr list* type_expr option) list) =
                   `Of
                     (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_expr x))
               | _ ->
-                  let tys = sta_of_list1 & (List.map type_expr xs) in
+                  let tys = sta_of_list & (List.map type_expr xs) in
                   `Of (_loc, (`Id (_loc, (`Lid (_loc, name)))), tys))
          | (_i,_xs,Some _x) ->
              failwithf "type_sum  for gadt not supported yet") xs) : 
@@ -88,12 +88,12 @@ and type_expr ({ desc;_} : Types.type_expr) =
        (match opt with
         | Some x -> `Quote (_loc, (`Normal _loc), (`Lid (_loc, x)))
         | None  -> `QuoteAny (_loc, (`Normal _loc)))
-   | Ttuple ls -> tup & (sta_of_list1 & (List.map type_expr ls))
+   | Ttuple ls -> tup & (sta_of_list & (List.map type_expr ls))
    | Tconstr (path,ls,_ref) ->
        (match ls with
         | [] -> `Id (_loc, (id_path path))
         | _ ->
-            appl_of_list1 ((`Id (_loc, (id_path path))) ::
+            appl_of_list ((`Id (_loc, (id_path path))) ::
               (List.map type_expr ls)))
    | Tvariant _|Tpoly _|Tpackage _|Tlink _|Tfield _|Tnil |Tsubst _|Tobject _
      |Tarrow _ as x -> raise & (CtypNotSupport x) : ctyp )

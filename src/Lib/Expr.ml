@@ -283,7 +283,7 @@ let _loc = FanLoc.ghost ;
 let mk_record label_exprs : expr=
   let rec_exprs = List.map (fun (label, expr) ->
     {:rec_expr| $lid:label = $expr |} ) label_exprs in
-  `Record (_loc, (sem_of_list1 rec_exprs));
+  `Record (_loc, (sem_of_list rec_exprs));
   (* {| { $list:rec_exprs } |} *)
 
 
@@ -559,7 +559,7 @@ let gen_curry_n (acc:expr) ~arity cons n : expr =
   let pat = of_str cons in
   List.fold_right
     (fun p acc -> {| fun [ $pat:p -> $acc ] |} )
-    (List.map (fun lst -> appl_of_list1 [pat:: lst]) args) acc;
+    (List.map (fun lst -> appl_of_list [pat:: lst]) args) acc;
 
 (*
   Example:
@@ -581,7 +581,7 @@ let gen_curry_n (acc:expr) ~arity cons n : expr =
  *)
   
 let currying cases ~arity =
-  let cases = or_of_list1 cases in (* FIXME when cases is []*)
+  let cases = or_of_list cases in (* FIXME when cases is []*)
   if  arity >= 2 then 
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exprs = List.map (fun s-> {| $lid:s |} ) names in

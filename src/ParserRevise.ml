@@ -257,7 +257,7 @@ let apply () = begin
     sig_items:
     [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti n ~c:"sig_item" s) |}
     | `Ant ((""|"sigi"|"anti"|"list" as n),s); ";"(* semi *); S{sg} ->  {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
-    | L1 [ sig_item{sg}; (* semi *)";" -> sg ]{l} -> sem_of_list1 l  ]
+    | L1 [ sig_item{sg}; (* semi *)";" -> sg ]{l} -> sem_of_list l  ]
  |};
 
     with expr
@@ -377,9 +377,9 @@ let apply () = begin
         [
         (* FIXME fun and function duplicated *)      
          "fun"; "[";  L1 case0 SEP "|"{a}; "]" ->
-           let cases = or_of_list1 a in `Fun (_loc,cases)
+           let cases = or_of_list a in `Fun (_loc,cases)
         | "function"; "[";  L1 case0 SEP "|"{a}; "]" ->
-            let cases = or_of_list1 a in `Fun(_loc,cases)
+            let cases = or_of_list a in `Fun(_loc,cases)
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
 
@@ -521,7 +521,7 @@ let apply () = begin
   with case
     {:extend|
       case:
-      [ "["; L1 case0 SEP "|"{l}; "]" -> or_of_list1 l (* {|  $list:l  |} *) (* FIXME *)
+      [ "["; L1 case0 SEP "|"{l}; "]" -> or_of_list l (* {|  $list:l  |} *) (* FIXME *)
       | patt{p}; "->"; expr{e} -> `Case(_loc,p,e)(* {| $pat:p -> $e |} *) ]
       case0:
       [ `Ant (("case"|"list"| "anti"|"" as n),s) ->
@@ -530,7 +530,7 @@ let apply () = begin
            `CaseWhen (_loc, p, w, e)
       | patt_as_patt_opt{p}; "->";expr{e} -> `Case(_loc,p,e)]
       case_quot:
-      [ L1 case0 SEP "|"{x} -> or_of_list1 x]  |};
+      [ L1 case0 SEP "|"{x} -> or_of_list x]  |};
   with rec_expr
       {:extend|
         rec_expr_quot:
@@ -941,8 +941,8 @@ let apply () = begin
       [ `Ant ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti n ~c:"str_item" s) |}
       | `Ant ((""|"stri"|"anti"|"list" as n),s); ";"; S{st} ->
           {| $(anti:mk_anti n ~c:"str_item" s); $st |}
-      | L1 [ str_item{st}; ";" -> st ]{l} -> sem_of_list1 l
-      | L1 [ str_item{st}; ";;" -> st ]{l} -> sem_of_list1 l ]
+      | L1 [ str_item{st}; ";" -> st ]{l} -> sem_of_list l
+      | L1 [ str_item{st}; ";;" -> st ]{l} -> sem_of_list l ]
       top_phrase:
       [ "#"; a_lident{n}; expr{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
@@ -1003,7 +1003,7 @@ let apply () = begin
         {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `Ant ((""|"csg"|"anti"|"list" as n),s);";"; S{csg} ->
           {| $(anti:mk_anti ~c:"class_sig_item" n s); $csg |}
-      | L1 [ class_sig_item{csg};";" -> csg ]{l} -> sem_of_list1 l ]
+      | L1 [ class_sig_item{csg};";" -> csg ]{l} -> sem_of_list l ]
       class_sig_item:
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_sig_item" n s) |}
       | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_sig_item_tag
@@ -1022,7 +1022,7 @@ let apply () = begin
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_str_item" n s) |}
         | `Ant ((""|"cst"|"anti"|"list" as n),s); (* semi *)";"; S{cst} ->
             {| $(anti:mk_anti ~c:"class_str_item" n s); $cst |}
-        | L1 [ class_str_item{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list1 l  ]
+        | L1 [ class_str_item{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list l  ]
       class_str_item:
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) ->
             {| $(anti:mk_anti ~c:"class_str_item" n s) |}
@@ -1331,7 +1331,7 @@ let apply_ctyp () = begin
             (* {| $(id:(s:>ident)) : ($(FanAst.and_of_list tl) -> $rt) |} *)
             `TyCol
             (_loc, (`Id (_loc, (s :>ident))),
-             match tl with [ [] -> rt | _ -> `Arrow (_loc,sta_of_list1 tl,rt)]
+             match tl with [ [] -> rt | _ -> `Arrow (_loc,sta_of_list tl,rt)]
              (* (`Arrow (_loc, (sta_of_list tl), rt)) *))
       | a_uident{s} -> `Id(_loc,(s:>ident)) ]
       constructor_declaration:

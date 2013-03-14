@@ -42,7 +42,7 @@ let of_str s =
     ]}
 *)
 let  of_ident_number  cons n = 
-  appl_of_list1 [{| $id:cons |}:: (List.init n (fun  i -> {| $(id:xid i) |} ))];
+  appl_of_list [{| $id:cons |}:: (List.init n (fun  i -> {| $(id:xid i) |} ))];
 
 
 
@@ -56,7 +56,7 @@ let  of_ident_number  cons n =
    ]}
  *)
 let (+>) f names  =
-  appl_of_list1 [f:: (List.map (fun lid -> {| $lid:lid |} ) names)];
+  appl_of_list [f:: (List.map (fun lid -> {| $lid:lid |} ) names)];
 
 
 (*
@@ -160,7 +160,7 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {| $(id:xid ~off:i j) |} )) in
   let pat = of_str (cons_transform cons) in 
-  List.map (fun lst -> appl_of_list1 [pat:: lst]) args |> tuple_com ;
+  List.map (fun lst -> appl_of_list [pat:: lst]) args |> tuple_com ;
     
 
   
@@ -188,10 +188,10 @@ let mk_record ?(arity=1) cols  =
       (* `RecBind (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i)))) *)
       {:rec_expr| $lid:col_label = $(id:xid ~off i )  |} ]) cols in
   let res = zfold_left
-      ~start:1 ~until:(arity-1) ~acc:(`Record(_loc,sem_of_list1 (mk_list  0))
+      ~start:1 ~until:(arity-1) ~acc:(`Record(_loc,sem_of_list (mk_list  0))
         (* {| { $(list:mk_list 0) } |} *) )
       (fun acc i ->
-        com acc (`Record (_loc, (sem_of_list1 (mk_list i))))
+        com acc (`Record (_loc, (sem_of_list (mk_list i))))
        (* {| { $(list:mk_list i) } |} *)  ) in
   if arity > 1 then
     {| $tup:res |}

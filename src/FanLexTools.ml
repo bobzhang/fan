@@ -351,7 +351,7 @@ let gen_definition _loc l =
       Array.mapi 
         (fun i j -> {:case| $`int:i -> $(call_state auto j) |})
         trans in
-    let cases = or_of_list1
+    let cases = or_of_list
         (Array.to_list cases @
          [{:case| _ -> $(id:gm()).backtrack lexbuf|}]) in
     
@@ -398,9 +398,9 @@ let gen_definition _loc l =
     [ 1 ->
       (`ReNil _loc,states.(0))
     | 0 -> failwithf "FanLexTools.states length = 0 "
-    | _ -> (`Recursive _loc, and_of_list1 (Array.to_list states)) ] in
+    | _ -> (`Recursive _loc, and_of_list (Array.to_list states)) ] in
   let cases =
-    or_of_list1
+    or_of_list
       (Array.to_list cases @ [{:case| _ -> raise $(id:gm()).Error|}]) in
   let rest =
     binds tables

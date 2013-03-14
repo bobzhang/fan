@@ -275,7 +275,7 @@ with expr
       | "show_code"; "on" -> begin show_code := true; {| () |} end
       | "show_code"; "off" -> begin show_code := false; {| ()|} end]
       fan_quots:
-      [L1[fan_quot{x};";" -> x]{xs} -> seq_sem1 xs ]
+      [L1[fan_quot{x};";" -> x]{xs} -> seq_sem xs ]
 |};  
 
 let g = Gram.create_gram ~annot:"include" ~keywords:[] ();
@@ -308,10 +308,10 @@ include_quot:
     let symbs = List.map (fun x -> FanState.gensym x) ls in
     let res = FanState.gensym "res" in
     let exc = FanState.gensym "e" in
-    let binds = and_of_list1
+    let binds = and_of_list
         (List.map2 (fun x y -> {:binding| $lid:x = ! $lid:y |} ) symbs ls ) in
     let restore =
-       seq_sem1 (List.map2 (fun x y -> {:expr| $lid:x := $lid:y |}) ls symbs) in
+       seq_sem (List.map2 (fun x y -> {:expr| $lid:x := $lid:y |}) ls symbs) in
     {:expr|
     let $binds in
     try begin 

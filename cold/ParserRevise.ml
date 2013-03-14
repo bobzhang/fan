@@ -946,10 +946,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (sg : 'sig_item)  (_loc : FanLoc.t)  ->
                            (sg : 'e__1 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__1 list)  (_loc : FanLoc.t)  -> (sem_of_list1 l : 'sig_items ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__1 list)  (_loc : FanLoc.t)  -> (sem_of_list l : 'sig_items ))\n",
              (Gram.mk_action
                 (fun (l : 'e__1 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list1 l : 'sig_items )))))])));
+                   (sem_of_list l : 'sig_items )))))])));
   (let grammar_entry_create = Gram.mk in
    let fun_def_patt: 'fun_def_patt Gram.t =
      grammar_entry_create "fun_def_patt" in
@@ -1421,20 +1421,20 @@ let apply () =
            `Slist1sep
              ((`Snterm (Gram.obj (case0 : 'case0 Gram.t ))), (`Skeyword "|"));
            `Skeyword "]"],
-            ("Gram.mk_action\n  (fun _  (a : 'case0 list)  _  _  (_loc : FanLoc.t)  ->\n     (let cases = or_of_list1 a in `Fun (_loc, cases) : 'expr ))\n",
+            ("Gram.mk_action\n  (fun _  (a : 'case0 list)  _  _  (_loc : FanLoc.t)  ->\n     (let cases = or_of_list a in `Fun (_loc, cases) : 'expr ))\n",
               (Gram.mk_action
                  (fun _  (a : 'case0 list)  _  _  (_loc : FanLoc.t)  ->
-                    (let cases = or_of_list1 a in `Fun (_loc, cases) : 
+                    (let cases = or_of_list a in `Fun (_loc, cases) : 
                     'expr )))));
          ([`Skeyword "function";
           `Skeyword "[";
           `Slist1sep
             ((`Snterm (Gram.obj (case0 : 'case0 Gram.t ))), (`Skeyword "|"));
           `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (a : 'case0 list)  _  _  (_loc : FanLoc.t)  ->\n     (let cases = or_of_list1 a in `Fun (_loc, cases) : 'expr ))\n",
+           ("Gram.mk_action\n  (fun _  (a : 'case0 list)  _  _  (_loc : FanLoc.t)  ->\n     (let cases = or_of_list a in `Fun (_loc, cases) : 'expr ))\n",
              (Gram.mk_action
                 (fun _  (a : 'case0 list)  _  _  (_loc : FanLoc.t)  ->
-                   (let cases = or_of_list1 a in `Fun (_loc, cases) : 
+                   (let cases = or_of_list a in `Fun (_loc, cases) : 
                    'expr )))));
          ([`Skeyword "fun"; `Snterm (Gram.obj (fun_def : 'fun_def Gram.t ))],
            ("Gram.mk_action (fun (e : 'fun_def)  _  (_loc : FanLoc.t)  -> (e : 'expr ))\n",
@@ -2225,10 +2225,10 @@ let apply () =
            `Slist1sep
              ((`Snterm (Gram.obj (case0 : 'case0 Gram.t ))), (`Skeyword "|"));
            `Skeyword "]"],
-            ("Gram.mk_action\n  (fun _  (l : 'case0 list)  _  (_loc : FanLoc.t)  ->\n     (or_of_list1 l : 'case ))\n",
+            ("Gram.mk_action\n  (fun _  (l : 'case0 list)  _  (_loc : FanLoc.t)  -> (or_of_list l : 'case ))\n",
               (Gram.mk_action
                  (fun _  (l : 'case0 list)  _  (_loc : FanLoc.t)  ->
-                    (or_of_list1 l : 'case )))));
+                    (or_of_list l : 'case )))));
          ([`Snterm (Gram.obj (patt : 'patt Gram.t ));
           `Skeyword "->";
           `Snterm (Gram.obj (expr : 'expr Gram.t ))],
@@ -2275,10 +2275,10 @@ let apply () =
          [([`Slist1sep
               ((`Snterm (Gram.obj (case0 : 'case0 Gram.t ))),
                 (`Skeyword "|"))],
-            ("Gram.mk_action\n  (fun (x : 'case0 list)  (_loc : FanLoc.t)  -> (or_of_list1 x : 'case_quot ))\n",
+            ("Gram.mk_action\n  (fun (x : 'case0 list)  (_loc : FanLoc.t)  -> (or_of_list x : 'case_quot ))\n",
               (Gram.mk_action
                  (fun (x : 'case0 list)  (_loc : FanLoc.t)  ->
-                    (or_of_list1 x : 'case_quot )))))])));
+                    (or_of_list x : 'case_quot )))))])));
   (Gram.extend_single (rec_expr_quot : 'rec_expr_quot Gram.t )
      (None,
        (None, None,
@@ -4558,10 +4558,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (st : 'str_item)  (_loc : FanLoc.t)  ->
                            (st : 'e__5 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__5 list)  (_loc : FanLoc.t)  -> (sem_of_list1 l : 'str_items ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__5 list)  (_loc : FanLoc.t)  -> (sem_of_list l : 'str_items ))\n",
              (Gram.mk_action
                 (fun (l : 'e__5 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list1 l : 'str_items )))));
+                   (sem_of_list l : 'str_items )))));
          ([`Slist1
              (Gram.srules
                 [([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
@@ -4570,10 +4570,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (st : 'str_item)  (_loc : FanLoc.t)  ->
                            (st : 'e__6 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__6 list)  (_loc : FanLoc.t)  -> (sem_of_list1 l : 'str_items ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__6 list)  (_loc : FanLoc.t)  -> (sem_of_list l : 'str_items ))\n",
              (Gram.mk_action
                 (fun (l : 'e__6 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list1 l : 'str_items )))))]));
+                   (sem_of_list l : 'str_items )))))]));
    Gram.extend_single (top_phrase : 'top_phrase Gram.t )
      (None,
        (None, None,
@@ -4891,10 +4891,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (csg : 'class_sig_item)  (_loc : FanLoc.t) 
                            -> (csg : 'e__7 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list1 l : 'class_signature ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list l : 'class_signature ))\n",
              (Gram.mk_action
                 (fun (l : 'e__7 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list1 l : 'class_signature )))))]));
+                   (sem_of_list l : 'class_signature )))))]));
    Gram.extend_single (class_sig_item : 'class_sig_item Gram.t )
      (None,
        (None, None,
@@ -5019,10 +5019,10 @@ let apply () =
                      (Gram.mk_action
                         (fun _  (cst : 'class_str_item)  (_loc : FanLoc.t) 
                            -> (cst : 'e__8 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__8 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list1 l : 'class_structure ))\n",
+           ("Gram.mk_action\n  (fun (l : 'e__8 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list l : 'class_structure ))\n",
              (Gram.mk_action
                 (fun (l : 'e__8 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list1 l : 'class_structure )))))]));
+                   (sem_of_list l : 'class_structure )))))]));
    Gram.extend_single (class_str_item : 'class_str_item Gram.t )
      (None,
        (None, None,
@@ -6525,7 +6525,7 @@ let apply_ctyp () =
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (let (tl,rt) = FanOps.to_generalized t in\n      `TyCol\n        (_loc, (`Id (_loc, (s :>ident))),\n          (match tl with\n           | [] -> rt\n           | _ -> `Arrow (_loc, (sta_of_list1 tl), rt))) : 'constructor_declarations ))\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (let (tl,rt) = FanOps.to_generalized t in\n      `TyCol\n        (_loc, (`Id (_loc, (s :>ident))),\n          (match tl with\n           | [] -> rt\n           | _ -> `Arrow (_loc, (sta_of_list tl), rt))) : 'constructor_declarations ))\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->
                   (let (tl,rt) = FanOps.to_generalized t in
@@ -6533,7 +6533,7 @@ let apply_ctyp () =
                      (_loc, (`Id (_loc, (s :>ident))),
                        (match tl with
                         | [] -> rt
-                        | _ -> `Arrow (_loc, (sta_of_list1 tl), rt))) : 
+                        | _ -> `Arrow (_loc, (sta_of_list tl), rt))) : 
                   'constructor_declarations )))));
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
           ("Gram.mk_action\n  (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (s :>ident)) : 'constructor_declarations ))\n",

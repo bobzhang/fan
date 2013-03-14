@@ -316,7 +316,7 @@ let expr_delete_rule _loc n (symbolss:list (list symbol)) = with expr
           {:expr| $(id:gm()).delete_rule $e $b |}) symbolss in
   match symbolss with
   [[] -> {| () |}
-  |_ -> seq_sem1 rest ];  
+  |_ -> seq_sem rest ];  
   (* seq (sem_of_list rest); *)
   
 (* given the entry of the name, make a name *)
@@ -391,7 +391,7 @@ let let_in_of_extend _loc gram locals  default =
   [ None 
   | Some [] -> default
   | Some ll ->
-      let locals = and_of_list1 (List.map local_binding_of_name ll)  in
+      let locals = and_of_list (List.map local_binding_of_name ll)  in
       {:expr| let grammar_entry_create = $entry_mk in let $locals in $default |}  ]  ;
 
 (* the [locals] is local entry name list,
@@ -409,7 +409,7 @@ let text_of_functorial_extend _loc  gram locals el =
       List.map  text_of_entry el  in
     match el with
     [ [] -> {:expr| () |}
-    | _ -> seq_sem1 el  ]  in
+    | _ -> seq_sem el  ]  in
   let_in_of_extend _loc gram locals  args;
 
 

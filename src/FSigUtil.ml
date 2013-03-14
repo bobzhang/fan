@@ -10,10 +10,10 @@ let str_item_from_module_types ~f:(aux:named_type -> typedecl)
   | _ ->
       let xs : list str_item  = (List.map
        (fun
-         [`Mutual tys -> {:str_item| type $(and_of_list1 (List.map aux tys)) |}
+         [`Mutual tys -> {:str_item| type $(and_of_list (List.map aux tys)) |}
          |`Single ty ->
              {:str_item| type $(aux ty)|}] ) x ) in
-      sem_of_list1 xs] ;
+      sem_of_list xs] ;
 
 
 

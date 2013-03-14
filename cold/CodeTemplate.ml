@@ -152,7 +152,7 @@ let print_base1 =
                                                           (_loc,
                                                             (`Lid (_loc, "a")))))))))))))),
                               ty))))))) in
-  sem_of_list1 items
+  sem_of_list items
 let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_base_1,fold_class_str_item_base_2,print_class_str_item_base,iter_class_str_item_base_1,eq_class_str_item_base_2)
   =
   let ty_names = ty_metas |> (List.map (fun { str;_}  -> str)) in
@@ -282,9 +282,8 @@ let (map_class_str_item_base_1,map_class_str_item_base_2,fold_class_str_item_bas
                        (`Id (_loc, (`Lid (_loc, "bool"))))))) in
             `CrMth
               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp, ty))) in
-  ((sem_of_list1 v1), (sem_of_list1 v2), (sem_of_list1 v3),
-    (sem_of_list1 v4), (sem_of_list1 v5), (sem_of_list1 v6),
-    (sem_of_list1 v7))
+  ((sem_of_list v1), (sem_of_list v2), (sem_of_list v3), (sem_of_list v4),
+    (sem_of_list v5), (sem_of_list v6), (sem_of_list v7))
 let eq_base1 =
   let items =
     ty_metas |>
@@ -306,7 +305,7 @@ let eq_base1 =
                          (`Constraint
                             (_loc, (`Id (_loc, (`Lid (_loc, "=")))), ty)))))
             | `Custom s -> s)) in
-  sem_of_list1 items
+  sem_of_list items
 let _ =
   let open AstInjection in
     register_inject_class_str_item

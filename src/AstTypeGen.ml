@@ -77,7 +77,7 @@ end;
 let (gen_map,gen_map2) = with expr
   let mk_variant cons params =
     let result =
-      appl_of_list1
+      appl_of_list
         [ (EP.of_str cons) ::
           params |> List.map (fun [{exp0;_} -> exp0]) ] in 
     List.fold_right
@@ -122,7 +122,7 @@ let gen_strip = with {patt:ctyp;expr}
                (fun [{ty={|loc|};_} -> false | _  -> true])
                params) in
     let result =
-      appl_of_list1
+      appl_of_list
          [(EP.of_str cons) :: params' |> List.map (fun [{exp0;_} -> exp0]) ]  in 
     List.fold_right
       (fun {expr;pat0;ty;_} res ->
@@ -211,19 +211,19 @@ let mk_variant_print cons params =
             "@ " ")@]" (List.init len (fun _ -> "%a"))
         else
           mkfmt cons "" "" [] in
-    appl_of_list1 [pre :: extract params ] ;
+    appl_of_list [pre :: extract params ] ;
     
 let mk_tuple_print params =
     let len = List.length params in
     let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _ -> "%a")) in
-    appl_of_list1 [pre :: extract params];
+    appl_of_list [pre :: extract params];
     (* params |> extract |> apply pre  ; *)
     
 let mk_record_print cols = 
     let pre = cols
        |> List.map (fun [ {re_label;_} -> re_label^":%a" ])
        |>  mkfmt "@[<hv 1>{" ";@," "}@]" in
-    appl_of_list1 [pre :: 
+    appl_of_list [pre :: 
                   (cols |> List.map(fun [ {re_info;_} -> re_info ])
                   |> extract )] (* apply pre *)  ;
   
@@ -253,7 +253,7 @@ let mk_variant_iter _cons params :expr = with expr
       let lst =
         params
         |> List.map (fun [{name_expr; id_expr;_} -> {| $name_expr $id_expr |}]) in
-      seq_sem1 lst] ;
+      seq_sem lst] ;
   (* {| begin $list:lst end |} *)
 
 let mk_tuple_iter params : expr =
@@ -264,7 +264,7 @@ let mk_record_iter cols = with expr
     cols |>
     List.map
     (fun [{re_info={name_expr; id_expr;_};_} -> {| $name_expr $id_expr |}]) in
-  seq_sem1 lst;
+  seq_sem lst;
 
 
 let gen_iter =

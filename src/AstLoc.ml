@@ -27,34 +27,34 @@ let typing a b = let _loc = a<+> b in `Constraint(_loc,a,b);
   
 
 let rec or_of_list = fun
-  [ [] -> `Nil ghost
+  [ [] -> failwithf "or_of_list empty"
   | [t] -> t
   | [t::ts] -> ora t (or_of_list ts)];
 
 
 let rec and_of_list = fun
-  [ [] -> `Nil ghost
+  [ [] -> failwithf "and_of_list empty"
   | [t] -> t
   | [t::ts] -> anda t (and_of_list ts) ];
 
 
 let rec sem_of_list = fun
-  [ [] -> `Nil ghost
+  [ [] -> failwithf "sem_of_list empty"
   | [t] -> t
   | [t::ts] -> sem t (sem_of_list ts)];
   
 let rec com_of_list = fun
-  [ [] -> `Nil ghost
+  [ [] -> failwithf "com_of_list empty"
   | [t] -> t
   | [t::ts] -> com t (com_of_list ts)];
   
 let rec sta_of_list = fun
-  [ [] -> `Nil ghost
+  [ [] -> failwithf "sta_of_list empty"
   | [t] -> t
   | [t::ts] -> sta t (sta_of_list ts)];
 
 let rec dot_of_list = fun
-  [ [] -> `Nil ghost
+  [ [] -> failwithf "dot_of_list empty"
   | [t] -> t
   | [t::ts] -> dot t (dot_of_list ts)];
   
@@ -67,57 +67,18 @@ let rec dot_of_list = fun
  *)
 let rec appl_of_list x  =
   match x with
-  [[] -> `Nil ghost
+  [[] -> failwithf "appl_of_list empty"
   |[x] -> x
   | [x;y::xs] -> appl_of_list [(app x y)::xs]  ]  ;
 
     
-let rec appl_of_list1 x =
-  match x with
-  [ [] -> failwith "appl_of_list1 empty list"
-  | [x] -> x
-  | [x;y::xs] -> appl_of_list1 [(app x y)::xs] ]  ;
-    
-  
-let rec or_of_list1 = fun
-  [ [] -> failwithf "or_of_list1 empty list"
-  | [t] -> t
-  | [t::ts] -> ora t (or_of_list1 ts)];
-  
-let rec and_of_list1 = fun
-  [ [] -> failwithf "and_of_list1 empty list"
-  | [t] -> t
-  | [t::ts] ->anda t (and_of_list1 ts)];
-  
-
-let rec sem_of_list1 = fun
-  [ [] -> failwith "sem_of_list1 empty list"
-  | [t] -> t
-  | [t::ts] -> sem t (sem_of_list1 ts)];
-  
-
-let rec com_of_list1 = fun
-  [ [] -> failwith "com_of_list1 empty list"
-  | [t] -> t
-  | [t::ts] -> com t (com_of_list1 ts)];
-
-let rec dot_of_list1 = fun
-  [[] -> failwith "dot_of_list1 empty list"
-  |[i] -> i
-  |[i::is] -> dot i (dot_of_list1 is)];
-
-let rec sta_of_list1 = fun
-  [[] -> failwith "sta_of_list1 empty list"
-  |[i] -> i
-  |[i::is] -> sta i (sta_of_list1 is)];
-  
 let tuple_com y=
   match y with 
   [[] -> failwith "tuple_com empty"
   |[x] -> x
   | [x::_] ->
       let _loc = x <+> List.last y in
-      `Tup _loc (com_of_list1 y) ];
+      `Tup _loc (com_of_list y) ];
     
 let tuple_sta y =
   match y with
@@ -125,30 +86,20 @@ let tuple_sta y =
    | [x] -> x
    | [x::_] ->
        let _loc =  x <+> List.last y in 
-       `Tup _loc (sta_of_list1 y)];
+       `Tup _loc (sta_of_list y)];
     
   
 let rec list_of_and x acc =
   match x with
   [`And(_,x,y) -> list_of_and x (list_of_and y acc)
   | _ -> [x::acc] ];
-    
-let rec list_of_and' x acc =
-  match x with
-  [`And(_,x,y) -> list_of_and' x (list_of_and' y acc)
-  |`Nil _ -> acc
-  | _ -> [x::acc] ]  ;
 
 let rec list_of_com x acc =
   match x with
   [`Com(_,x,y) -> list_of_com x (list_of_com y acc)
   | _ -> [x::acc]];
     
-let rec list_of_com' x acc =
-  match x with
-  [`Com(_,x,y) -> list_of_com' x (list_of_com' y acc)
-  |`Nil _ -> acc
-  | _ -> [x::acc] ]  ;
+
 
 let rec list_of_star x acc =
   match x with
@@ -156,33 +107,16 @@ let rec list_of_star x acc =
   | _ -> [x::acc] ]  ;
     
     
-let rec list_of_star' x acc =
-  match x with
-  [`Sta(_,x,y) -> list_of_star' x (list_of_star' y acc)
-  | `Nil _ -> acc
-  | _ -> [x::acc]];
-    
 let rec list_of_or x acc =
   match x with
   [`Or(_,x,y) -> list_of_or x (list_of_or y acc)
   | _ -> [x::acc]]  ;
 
-let rec list_of_or' x acc =
-  match x with
-  [`Or(_,x,y) -> list_of_or' x (list_of_or' y acc)
-  | `Nil _ -> acc 
-  | _ -> [x::acc]]  ;
     
 let rec list_of_sem x acc =
   match x with
   [`Sem(_,x,y) -> list_of_sem x (list_of_sem y acc)
   | _ -> [x::acc]]  ;
-
-let rec list_of_sem' (x:'a) acc =
-  match x with
-  [`Sem(_,x,y) -> list_of_sem' x (list_of_sem' y acc)
-  |`Nil _ -> acc
-  | y -> [y::acc] ] ;
 
 
 let rec list_of_app  x acc =
@@ -190,24 +124,17 @@ let rec list_of_app  x acc =
   [`App(_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
   |x -> [x :: acc] ];
 
-let rec list_of_app' x acc =
-  match x with
-  [`App(_,t1,t2) -> list_of_app' t1 (list_of_app' t2 acc)
-  | `Nil _ -> acc 
-  |x -> [x :: acc] ];
-
 let rec view_app acc = fun
   [`App (_,f,a) -> view_app [a::acc] f
   | f -> (f,acc)];
-    
-let seq_sem ls = seq (sem_of_list ls);
-let seq_sem1 ls = seq (sem_of_list1 ls);  
 
+  
+let seq_sem ls = seq (sem_of_list ls);
 
 let binds bs (e:expr) =
   match bs with
   [[] -> e
   |_ ->
-      let binds = and_of_list1 bs  in
+      let binds = and_of_list bs  in
       let _loc = binds <+> e in
       {:expr|let $binds in $e |} ];  

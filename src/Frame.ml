@@ -51,7 +51,7 @@ let mapi_expr ?(arity=1) ?(names=[])
   let pat0 = exp0 in
   let id_expr = tuple_com  id_exprs  in
   let id_patt = id_expr in
-  let expr = appl_of_list1 [base:: id_exprs]  in
+  let expr = appl_of_list [base:: id_exprs]  in
   {name_expr; expr; id_expr; id_exprs; id_patt;id_patts;exp0;pat0;ty};       
 
 (* @raise Invalid_argument when type can not be handled *)  
@@ -140,7 +140,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable ~right_type_v
     | `App _  as ty ->
         match  list_of_app ty []  with
         [ [ {| $id:tctor |} :: ls ] ->
-          appl_of_list1 [trans tctor::
+          appl_of_list [trans tctor::
                         (ls |> List.map
                           (fun
                             [ `Quote (_loc,_,`Lid(_,s)) -> {:expr| $(lid:var s) |} 
@@ -211,7 +211,7 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~de
   let simple lid :case=
     let e = (simple_expr_of_ctyp {:ctyp|$id:lid|}) +> names  in
     let (f,a) = view_app [] result in
-    let annot = appl_of_list1 [f :: List.map (fun _ -> {:ctyp|_|}) a] in
+    let annot = appl_of_list [f :: List.map (fun _ -> {:ctyp|_|}) a] in
     MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e in
   (* FIXME, be more precise  *)
   let info = (TyVrnEq, List.length (list_of_or ty [])) in
@@ -368,7 +368,7 @@ let str_item_of_module_types ?module_name ?cons_transform
   let item =
     match lst with
     [[] -> {:str_item|let _ = ()|}
-    | _ ->  sem_of_list1 (List.map fs lst ) ]  in
+    | _ ->  sem_of_list (List.map fs lst ) ]  in
   match module_name with
   [ None -> item
   | Some m -> {:str_item| module $uid:m = struct $item end |} ];
@@ -415,7 +415,7 @@ let obj_of_module_types
     let fs (ty:types) : class_str_item =
       match ty with
       [ `Mutual named_types ->
-        sem_of_list1 (List.map mk_class_str_item named_types)
+        sem_of_list (List.map mk_class_str_item named_types)
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          [ Some n  -> begin
@@ -435,7 +435,7 @@ let obj_of_module_types
         let () = Hashtbl.add tbl dest (Qualified dest) in
         {:class_str_item| method
             $lid:dest : $ty = $(unknown len) |} ) extras in
-      sem_of_list1 (body @ items) in begin 
+      sem_of_list (body @ items) in begin 
         let v = Ctyp.mk_obj class_name  base body;
         Hashtbl.iter (fun _ v ->
           eprintf "@[%a@]@." FSig.pp_print_warning_type  v)

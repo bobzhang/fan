@@ -50,7 +50,7 @@ FanConfig.antiquotations := true;
       match t with
       [`static t -> {:expr| $id:t.mk |}
       |`dynamic(x,t) -> {:expr| $id:t.mk_dynamic $id:x |}] in   
-    sem_of_list1 & List.map
+    sem_of_list & List.map
       (fun
         (_loc,x,descr,ty) ->
         match (descr,ty) with
@@ -75,7 +75,7 @@ FanConfig.antiquotations := true;
     let rest = List.map (fun x ->
       let _loc = loc_of x in
       {:expr| $id:t.clear $(id:(x:>ident)) |}) ls in
-    seq_sem1 rest
+    seq_sem rest
     (* {:expr| begin $list:rest end |} *) ]
 |};
 
@@ -148,8 +148,8 @@ FanConfig.antiquotations := true;
   delete_rule_body:
   [ delete_rule_header{old};  L1 delete_rules {es} ->
     let () = grammar_module_name := old  in
-    seq_sem1 es
-    (* {:expr| begin $list:es end|} *)   ] 
+    seq_sem es]
+
   delete_rules:
   [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls}; "]" ->
     expr_delete_rule _loc n sls ]
@@ -380,7 +380,7 @@ FanConfig.antiquotations := true;
     match v with
     [ [x] ->  (* {| $vrn:s $x |} *) `App(_loc,`Vrn(_loc,s),x)
     | [x::xs] ->
-        `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list1 xs))
+        `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))
         (* appl_of_list [ `Vrn(_loc,s) :: com_of_list v] *)
         (* `App(_loc,`Vrn(_loc,s), tuple_com v) *)
         (* `App(_loc,`Vrn(_loc,s),`Tup(_loc,`Com(_loc,x,com_of_list xs))) *)

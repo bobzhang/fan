@@ -25,9 +25,9 @@ let gen_quantifiers1 ~arity  n =
             (fun j  ->
                `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:i j)))))))
       |> List.concat)
-     |> appl_of_list1 : ctyp )
+     |> appl_of_list : ctyp )
 let of_id_len ~off  (id,len) =
-  appl_of_list1 ((`Id (_loc, id)) ::
+  appl_of_list ((`Id (_loc, id)) ::
     (List.init len
        (fun i  -> `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off i)))))))
 let of_name_len ~off  (name,len) =
@@ -35,7 +35,7 @@ let of_name_len ~off  (name,len) =
 let ty_name_of_tydcl (x : typedecl) =
   match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
-      appl_of_list1 ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
+      appl_of_list ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
   | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
@@ -188,7 +188,7 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = Ident.map_to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           appl_of_list1 ((`Id (_loc, (`Lid (_loc, dest)))) :: lst))
+           appl_of_list ((`Id (_loc, (`Lid (_loc, dest)))) :: lst))
       | None  -> super#ctyp x
     method type_transformers =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)

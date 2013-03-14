@@ -294,7 +294,7 @@ let bigarray_get loc arr (arg (* :expr  *))  (* : expr  *)= with expr
   | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
   | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {@loc| $arr.{$c1,$c2,$c3,$(sem_of_list1 coords) } |} ];
+      {@loc| $arr.{$c1,$c2,$c3,$(sem_of_list coords) } |} ];
 
 
 (*
