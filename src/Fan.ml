@@ -43,7 +43,7 @@ of_str_item_with_filter
              Plz send bug report to " ^ FanConfig.bug_main_address;
           end];
       code
-    end);;
+    end);
 
 of_expr ~name:(d,"fans") ~entry:Typehook.fan_quots ;
 of_expr ~name:(d,"save") ~entry:Typehook.save_quot;

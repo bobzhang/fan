@@ -124,7 +124,7 @@ let apply () =
          [([`Slist1
               (Gram.srules
                  [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ));
-                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
+                   `Skeyword ";"],
                     ("Gram.mk_action\n  (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->\n     (execute_macro_if_active_branch ~expr ~patt _loc\n        (`StExp (_loc, (`Id (_loc, (`Uid (_loc, \"()\"))))))\n        (fun a  b  -> `Sem (_loc, a, b)) Then d : 'e__1 ))\n",
                       (Gram.mk_action
                          (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
@@ -134,7 +134,7 @@ let apply () =
                                (fun a  b  -> `Sem (_loc, a, b)) Then d : 
                             'e__1 )))));
                  ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
-                  `Snterm (Gram.obj (semi : 'semi Gram.t ))],
+                  `Skeyword ";"],
                    ("Gram.mk_action\n  (fun _  (si : 'str_item)  (_loc : FanLoc.t)  -> (Str si : 'e__1 ))\n",
                      (Gram.mk_action
                         (fun _  (si : 'str_item)  (_loc : FanLoc.t)  ->
@@ -149,7 +149,7 @@ let apply () =
          [([`Slist1
               (Gram.srules
                  [([`Snterm (Gram.obj (macro_def : 'macro_def Gram.t ));
-                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
+                   `Skeyword ";"],
                     ("Gram.mk_action\n  (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->\n     (execute_macro_if_active_branch ~expr ~patt _loc\n        (`StExp (_loc, (`Id (_loc, (`Uid (_loc, \"()\"))))))\n        (fun a  b  -> `Sem (_loc, a, b)) Else d : 'e__2 ))\n",
                       (Gram.mk_action
                          (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
@@ -159,7 +159,7 @@ let apply () =
                                (fun a  b  -> `Sem (_loc, a, b)) Else d : 
                             'e__2 )))));
                  ([`Snterm (Gram.obj (str_item : 'str_item Gram.t ));
-                  `Snterm (Gram.obj (semi : 'semi Gram.t ))],
+                  `Skeyword ";"],
                    ("Gram.mk_action\n  (fun _  (si : 'str_item)  (_loc : FanLoc.t)  -> (Str si : 'e__2 ))\n",
                      (Gram.mk_action
                         (fun _  (si : 'str_item)  (_loc : FanLoc.t)  ->

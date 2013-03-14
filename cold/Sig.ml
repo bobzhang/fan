@@ -144,7 +144,6 @@ module type Syntax =
     val sem_expr_for_list : (expr -> expr) Gram.t
     val sem_patt : patt Gram.t
     val sem_patt_for_list : (patt -> patt) Gram.t
-    val semi : unit Gram.t
     val sequence : expr Gram.t
     val sig_item : sig_item Gram.t
     val sig_item_quot : sig_item Gram.t
