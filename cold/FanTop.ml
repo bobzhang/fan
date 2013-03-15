@@ -19,12 +19,11 @@ let wrap parse_fun lb =
        raise Exit)
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
 let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens
-          (Syntax.top_phrase : str_item option Gram.t ) token_stream
+  match Gram.parse_origin_tokens (Syntax.top_phrase : stru option Gram.t )
+          token_stream
   with
-  | Some str_item ->
-      let str_item = AstFilters.apply_implem_filters str_item in
-      Ast2pt.phrase str_item
+  | Some stru ->
+      let stru = AstFilters.apply_implem_filters stru in Ast2pt.phrase stru
   | None  -> raise End_of_file
 let use_file token_stream =
   let rec loop () =

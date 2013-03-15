@@ -72,7 +72,7 @@ let traversal () =
        function
        | `Struct (_loc,u) ->
            (self#in_module;
-            (let res = self#str_item u in
+            (let res = self#stru u in
              let module_types = List.rev self#get_cur_module_types in
              if print_collect_module_types.contents
              then eprintf "@[%a@]@." FSig.pp_print_module_types module_types;
@@ -87,7 +87,7 @@ let traversal () =
                      match position with
                      | Some x ->
                          let (name,f) = Filters.make_filter (x, code) in
-                         (AstFilters.register_str_item_filter (name, f);
+                         (AstFilters.register_stru_filter (name, f);
                           AstFilters.use_implem_filter name;
                           acc)
                      | None  -> `Sem (_loc, acc, code))
@@ -97,11 +97,11 @@ let traversal () =
                    else `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()")))))) in
               self#out_module; `Struct (_loc, result))))
        | x -> super#module_expr x
-     method! str_item =
+     method! stru =
        function
        | `Type (_loc,`And (_,_,_)) as x ->
            (self#in_and_types;
-            (let _ = super#str_item x in
+            (let _ = super#stru x in
              self#update_cur_module_types
                (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                   lst);
@@ -118,7 +118,7 @@ let traversal () =
        | `Value (_loc,`ReNil _,_)|`ModuleType (_loc,_,_)|`Include (_loc,_)
          |`External (_loc,_,_,_)|`StExp (_loc,_)|`Exception (_loc,_)
          |`Directive (_loc,_,_) as x -> x
-       | x -> super#str_item x
+       | x -> super#stru x
      method! typedecl =
        function
        | `TyDcl (_,`Lid (_,name),_,_,_) as t ->
@@ -256,7 +256,7 @@ let _ =
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) ->\n         (let keep = FanState.keep and cf = FanState.current_filters in\n          let fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\n          (try\n             let fan_res__2 =\n               FanState.reset ();\n               FanBasic.parse_include_file PreCast.Syntax.str_items s in\n             let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\n           with\n           | fan_e__3 ->\n               ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)) : \n         'include_quot )\n     | _ ->\n         failwith\n           \"let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.str_items s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) ->\n         (let keep = FanState.keep and cf = FanState.current_filters in\n          let fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\n          (try\n             let fan_res__2 =\n               FanState.reset ();\n               FanBasic.parse_include_file PreCast.Syntax.strus s in\n             let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\n           with\n           | fan_e__3 ->\n               ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)) : \n         'include_quot )\n     | _ ->\n         failwith\n           \"let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.strus s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
@@ -268,8 +268,8 @@ let _ =
                         (try
                            let fan_res__2 =
                              FanState.reset ();
-                             FanBasic.parse_include_file
-                               PreCast.Syntax.str_items s in
+                             FanBasic.parse_include_file PreCast.Syntax.strus
+                               s in
                            let _ = keep := fan_keep__0; cf := fan_cf__1 in
                            fan_res__2
                          with
@@ -278,7 +278,7 @@ let _ =
                               raise fan_e__3)) : 'include_quot )
                    | _ ->
                        failwith
-                         "let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.str_items s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n"))))]))
+                         "let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.strus s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n"))))]))
 let save_quot = Gram.mk "save_quot"
 let _ =
   Gram.extend_single (save_quot : 'save_quot Gram.t )

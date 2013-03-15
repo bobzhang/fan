@@ -9,12 +9,12 @@ let eval_ast fmt ast =
       end)
     with  x -> (Errors.report_error fmt x; exit 2);
 
-(* AstQuotation.of_str_item_with_filter *)
-(*         ~name:"eval" ~entry:PreCast.Syntax.str_items *)
+(* AstQuotation.of_stru_with_filter *)
+(*         ~name:"eval" ~entry:PreCast.Syntax.strus *)
 (*         ~filter:(fun s -> begin  *)
 (*           eval_ast Format.err_formatter s; *)
 (*           let _loc = FanLoc.ghost ; *)
-(*             {:str_item||} *)
+(*             {:stru||} *)
 (*         end); *)
         
 

@@ -12,8 +12,8 @@ type ('a,'loc) stream_filter = ('a* 'loc) XStream.t -> ('a* 'loc) XStream.t
 module type ParserImpl =
   sig
     val parse_implem :
-      ?directive_handler:(str_item -> str_item option) ->
-        FanLoc.t -> char XStream.t -> str_item option
+      ?directive_handler:(stru -> stru option) ->
+        FanLoc.t -> char XStream.t -> stru option
     val parse_interf :
       ?directive_handler:(sig_item -> sig_item option) ->
         FanLoc.t -> char XStream.t -> sig_item option
@@ -23,7 +23,7 @@ module type PrinterImpl =
     val print_interf :
       ?input_file:string -> ?output_file:string -> sig_item option -> unit
     val print_implem :
-      ?input_file:string -> ?output_file:string -> str_item option -> unit
+      ?input_file:string -> ?output_file:string -> stru option -> unit
   end
 module type Syntax =
   sig
@@ -31,8 +31,8 @@ module type Syntax =
     include ParserImpl
     include PrinterImpl
     val interf : (sig_item list* FanLoc.t option) Gram.t
-    val implem : (str_item list* FanLoc.t option) Gram.t
-    val top_phrase : str_item option Gram.t
+    val implem : (stru list* FanLoc.t option) Gram.t
+    val top_phrase : stru option Gram.t
     val a_string : astring Gram.t
     val a_lident : [ `Lid of (loc* string) | ant] Gram.t
     val a_uident : auident Gram.t
@@ -61,9 +61,9 @@ module type Syntax =
     val class_sig_item : class_sig_item Gram.t
     val class_sig_item_quot : class_sig_item Gram.t
     val class_signature : class_sig_item Gram.t
-    val class_str_item : class_str_item Gram.t
-    val class_str_item_quot : class_str_item Gram.t
-    val class_structure : class_str_item Gram.t
+    val cstru : cstru Gram.t
+    val cstru_quot : cstru Gram.t
+    val class_structure : cstru Gram.t
     val class_type : class_type Gram.t
     val class_type_declaration : class_type Gram.t
     val class_type_longident : ident Gram.t
@@ -149,9 +149,9 @@ module type Syntax =
     val sig_item_quot : sig_item Gram.t
     val sig_items : sig_item Gram.t
     val star_ctyp : ctyp Gram.t
-    val str_item : str_item Gram.t
-    val str_item_quot : str_item Gram.t
-    val str_items : str_item Gram.t
+    val stru : stru Gram.t
+    val stru_quot : stru Gram.t
+    val strus : stru Gram.t
     val type_declaration : typedecl Gram.t
     val type_ident_and_parameters : (alident* opt_decl_params) Gram.t
     val type_info : type_info Gram.t
@@ -227,10 +227,10 @@ module type PRECAST =
     end
     val loaded_modules : string list ref
     val iter_and_take_callbacks : ((string* (unit -> unit)) -> unit) -> unit
-    val register_str_item_parser : str_item parser_fun -> unit
+    val register_stru_parser : stru parser_fun -> unit
     val register_sig_item_parser : sig_item parser_fun -> unit
-    val register_parser : str_item parser_fun -> sig_item parser_fun -> unit
-    val current_parser : unit -> (str_item parser_fun* sig_item parser_fun)
+    val register_parser : stru parser_fun -> sig_item parser_fun -> unit
+    val current_parser : unit -> (stru parser_fun* sig_item parser_fun)
     val plugin : (module Id) -> (module PLUGIN) -> unit
     val syntax_plugin : (module Id) -> (module SyntaxPlugin) -> unit
     val syntax_extension : (module Id) -> (module SyntaxExtension) -> unit
@@ -243,12 +243,10 @@ module type PRECAST =
     val enable_dump_camlp4_ast_printer : unit -> unit
     val enable_null_printer : unit -> unit
     val enable_auto : (unit -> bool) -> unit
-    val register_str_item_printer : str_item printer_fun -> unit
+    val register_stru_printer : stru printer_fun -> unit
     val register_sig_item_printer : sig_item printer_fun -> unit
-    val register_printer :
-      str_item printer_fun -> sig_item printer_fun -> unit
-    val current_printer :
-      unit -> (str_item printer_fun* sig_item printer_fun)
+    val register_printer : stru printer_fun -> sig_item printer_fun -> unit
+    val current_printer : unit -> (stru printer_fun* sig_item printer_fun)
     val declare_dyn_module : string -> (unit -> unit) -> unit
     module CurrentParser : ParserImpl
     module CurrentPrinter : PrinterImpl

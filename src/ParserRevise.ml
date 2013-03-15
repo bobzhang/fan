@@ -29,7 +29,7 @@ let apply () = begin
      amp_ctyp and_ctyp case case0 case_quot binding binding_quot rec_expr_quot
     class_declaration class_description class_expr class_expr_quot class_fun_binding class_fun_def
     class_info_for_class_expr class_info_for_class_type class_longident class_longident_and_param
-      class_sig_item class_sig_item_quot class_signature class_str_item class_str_item_quot
+      class_sig_item class_sig_item_quot class_signature cstru cstru_quot
     class_structure
       class_type class_type_declaration class_type_longident class_type_longident_and_param
     class_type_plus class_type_quot comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
@@ -43,7 +43,7 @@ let apply () = begin
     opt_meth_list opt_mutable opt_private opt_rec opt_virtual 
     patt patt_as_patt_opt patt_eoi patt_quot row_field sem_expr
     sem_expr_for_list sem_patt sem_patt_for_list sequence sig_item sig_item_quot sig_items star_ctyp
-    str_item str_item_quot str_items top_phrase type_declaration type_ident_and_parameters
+    stru stru_quot strus top_phrase type_declaration type_ident_and_parameters
     type_longident type_longident_and_parameters type_parameter type_parameters typevars 
     val_longident with_constr with_constr_quot
       lang
@@ -118,7 +118,7 @@ let apply () = begin
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; module_type{t}; ")"; "->"; S{me} ->
             {| functor ( $i : $t ) -> $me |}
-        | "struct"; str_items{st}; "end" -> `Struct(_loc,st)
+        | "struct"; strus{st}; "end" -> `Struct(_loc,st)
         | "struct"; "end" -> `StructEnd(_loc)]
        "apply"
         [ S{me1}; S{me2} -> {| $me1 $me2 |} ]
@@ -268,12 +268,12 @@ let apply () = begin
       | expr{e1}; ";"; sem_expr{e2} -> `Sem(_loc,e1,e2)
       | expr{e} -> e]
        (*
-       {:str_item|
+       {:stru|
        let f (type t) () =
           let module M = struct exception E of t ; end in
           ((fun x -> M.E x), (function [M.E x -> Some x | _ -> None]))|}
 
-       {:str_item| let f : ! 'a . 'a -> 'a = fun x -> x |}  
+       {:stru| let f : ! 'a . 'a -> 'a = fun x -> x |}  
         *)
       cvalue_binding:
       [ "="; expr{e} -> e
@@ -919,7 +919,7 @@ let apply () = begin
       override_flag_quot:[  opt_override{x} -> x ] 
       patt_eoi:  [ patt{x}; `EOI -> x ] 
       expr_eoi:  [ expr{x}; `EOI -> x ]  |};
-  with str_item
+  with stru
     {:extend|
     (* ml entrance *)    
       implem:
@@ -931,33 +931,33 @@ let apply () = begin
           (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
             ([`DirectiveSimple(_loc,`Lid(_loc,"import"))],Some _loc))
 
-      | str_item{si}; ";"; S{(sil, stopped)} -> ([si :: sil], stopped)
-      | str_item{si}; ";;"; S{(sil, stopped)} -> ([si :: sil], stopped)
+      | stru{si}; ";"; S{(sil, stopped)} -> ([si :: sil], stopped)
+      | stru{si}; ";;"; S{(sil, stopped)} -> ([si :: sil], stopped)
             (* FIXME merge with the above in the future*)            
       | `EOI -> ([], None) ]
 
       (* used by module .... end *)
-      str_items: (* FIXME dump seems to be incorrect *)
-      [ `Ant ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti n ~c:"str_item" s) |}
+      strus: (* FIXME dump seems to be incorrect *)
+      [ `Ant ((""|"stri"|"anti"|"list" as n),s) -> {| $(anti:mk_anti n ~c:"stru" s) |}
       | `Ant ((""|"stri"|"anti"|"list" as n),s); ";"; S{st} ->
-          {| $(anti:mk_anti n ~c:"str_item" s); $st |}
-      | L1 [ str_item{st}; ";" -> st ]{l} -> sem_of_list l
-      | L1 [ str_item{st}; ";;" -> st ]{l} -> sem_of_list l ]
+          {| $(anti:mk_anti n ~c:"stru" s); $st |}
+      | L1 [ stru{st}; ";" -> st ]{l} -> sem_of_list l
+      | L1 [ stru{st}; ";;" -> st ]{l} -> sem_of_list l ]
       top_phrase:
       [ "#"; a_lident{n}; expr{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
       | "#";"import"; dot_namespace{x} ->
           (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
            None)
-      | str_item{st}; ";" -> Some st
+      | stru{st}; ";" -> Some st
       | `EOI -> None ]
-      str_item_quot:
+      stru_quot:
       [ "#"; a_lident{n}; expr{dp} -> `Directive(_loc,n,dp)
       | "#"; a_lident{n} -> `DirectiveSimple(_loc,n)
-      | str_item{st1}; ";";S{st2} -> `Sem(_loc,st1,st2)
-      | str_item{st} -> st]
+      | stru{st1}; ";";S{st2} -> `Sem(_loc,st1,st2)
+      | stru{st} -> st]
 
-      str_item:
+      stru:
       { "top"
         [ "exception"; constructor_declaration{t} -> `Exception(_loc,t)
         (* | "exception"; constructor_declaration{t}; "="; type_longident{i} -> *)
@@ -987,8 +987,8 @@ let apply () = begin
         | "class"; "type"; class_type_declaration{ctd} ->
             `ClassType (_loc, ctd)
         | `Ant ((""|"stri"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"str_item" n s) |}
-        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.str_item_tag
+            {| $(anti:mk_anti ~c:"stru" n s) |}
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.stru_tag
         | expr{e} -> `StExp(_loc,e)
               (* this entry makes {| let $rec:r $bi in $x |} parsable *)
         ] }   |};
@@ -1016,17 +1016,17 @@ let apply () = begin
       | "method"; opt_private{pf}; a_lident{l}; ":";ctyp{t} ->
           {| method $private:pf $l : $t |}
       | "constraint"; ctyp{t1}; "="; ctyp{t2} -> {|constraint $t1 = $t2|} ] |};  
-  with class_str_item
+  with cstru
     {:extend|
       class_structure:
-        [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"class_str_item" n s) |}
+        [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"cstru" n s) |}
         | `Ant ((""|"cst"|"anti"|"list" as n),s); (* semi *)";"; S{cst} ->
-            {| $(anti:mk_anti ~c:"class_str_item" n s); $cst |}
-        | L1 [ class_str_item{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list l  ]
-      class_str_item:
+            {| $(anti:mk_anti ~c:"cstru" n s); $cst |}
+        | L1 [ cstru{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list l  ]
+      cstru:
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"class_str_item" n s) |}
-        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_str_item_tag
+            {| $(anti:mk_anti ~c:"cstru" n s) |}
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.cstru_tag
         | "inherit"; opt_override{o}; class_expr{ce}(* ; opt_as_lident{pb} *) ->
             `Inherit(_loc,o,ce)
         | "inherit"; opt_override{o}; class_expr{ce}; "as"; a_lident{i} ->
@@ -1055,9 +1055,9 @@ let apply () = begin
        | "constraint"; ctyp{t1}; "="; ctyp{t2} ->
           {|constraint $t1 = $t2|}
         | "initializer"; expr{se} -> {| initializer $se |} ]
-      class_str_item_quot:
-        [ class_str_item{x1}; (* semi *)";"; S{x2} -> `Sem(_loc,x1,x2)
-        | class_str_item{x} -> x]
+      cstru_quot:
+        [ cstru{x1}; (* semi *)";"; S{x2} -> `Sem(_loc,x1,x2)
+        | cstru{x} -> x]
     |};
     
   with class_expr
@@ -1246,10 +1246,10 @@ let apply_ctyp () = begin
       | S{t1}; "and"; S{t2} ->  `And(_loc,t1,t2)
       |  type_ident_and_parameters{(n, tpl)}; "="; type_info{tk}; L0 constrain{cl}
         -> `TyDcl (_loc, n, tpl, tk,
-                   match cl with [[]-> `Nil _loc | _ -> `Constr(_loc,and_of_list cl)])
+                   match cl with [[]-> `None _loc | _ -> `Some(_loc,and_of_list cl)])
       | type_ident_and_parameters{(n,tpl)}; L0 constrain{cl} ->
           `TyAbstr(_loc,n,tpl,
-                   match cl with [[] -> `Nil _loc | _ -> `Constr(_loc, and_of_list cl)])]
+                   match cl with [[] -> `None _loc | _ -> `Some(_loc, and_of_list cl)])]
       type_info:
       [type_repr{t2} -> `TyRepr(_loc,`PrNil _loc,t2)
       | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)

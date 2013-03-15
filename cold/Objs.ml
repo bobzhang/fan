@@ -398,10 +398,10 @@ class map2 =
       opt_type_constr -> opt_type_constr -> opt_type_constr=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Constr (_a0,_a1),`Constr (_b0,_b1)) ->
+        | (`Some (_a0,_a1),`Some (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#type_constr _a1 _b1 in `Constr (_a0, _a1)
-        | (`Nil _a0,`Nil _b0) -> let _a0 = self#loc _a0 _b0 in `Nil _a0
+            let _a1 = self#type_constr _a1 _b1 in `Some (_a0, _a1)
+        | (`None _a0,`None _b0) -> let _a0 = self#loc _a0 _b0 in `None _a0
         | (_,_) -> invalid_arg "map2 failure"
     method decl_param : decl_param -> decl_param -> decl_param=
       fun _a0  _b0  ->
@@ -728,13 +728,13 @@ class map2 =
             let _a1 = self#ident _a1 _b1 in `New (_a0, _a1)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#class_str_item _a1 _b1 in `Obj (_a0, _a1)
+            let _a1 = self#cstru _a1 _b1 in `Obj (_a0, _a1)
         | (`ObjEnd _a0,`ObjEnd _b0) ->
             let _a0 = self#loc _a0 _b0 in `ObjEnd _a0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#class_str_item _a2 _b2 in `ObjPat (_a0, _a1, _a2)
+            let _a2 = self#cstru _a2 _b2 in `ObjPat (_a0, _a1, _a2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in `ObjPatEnd (_a0, _a1)
@@ -994,7 +994,7 @@ class map2 =
             `Functor (_a0, _a1, _a2, _a3)
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#str_item _a1 _b1 in `Struct (_a0, _a1)
+            let _a1 = self#stru _a1 _b1 in `Struct (_a0, _a1)
         | (`StructEnd _a0,`StructEnd _b0) ->
             let _a0 = self#loc _a0 _b0 in `StructEnd _a0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
@@ -1007,7 +1007,7 @@ class map2 =
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>module_expr)
         | (_,_) -> invalid_arg "map2 failure"
-    method str_item : str_item -> str_item -> str_item=
+    method stru : stru -> stru -> stru=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
@@ -1018,8 +1018,8 @@ class map2 =
             let _a1 = self#class_type _a1 _b1 in `ClassType (_a0, _a1)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#str_item _a1 _b1 in
-            let _a2 = self#str_item _a2 _b2 in `Sem (_a0, _a1, _a2)
+            let _a1 = self#stru _a1 _b1 in
+            let _a2 = self#stru _a2 _b2 in `Sem (_a0, _a1, _a2)
         | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in `DirectiveSimple (_a0, _a1)
@@ -1062,8 +1062,7 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_flag _a1 _b1 in
             let _a2 = self#binding _a2 _b2 in `Value (_a0, _a1, _a2)
-        | ((#ant as _a0),(#ant as _b0)) ->
-            (self#ant _a0 _b0 : ant  :>str_item)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>stru)
         | (_,_) -> invalid_arg "map2 failure"
     method class_type : class_type -> class_type -> class_type=
       fun _a0  _b0  ->
@@ -1171,13 +1170,13 @@ class map2 =
             let _a3 = self#class_expr _a3 _b3 in `LetIn (_a0, _a1, _a2, _a3)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#class_str_item _a1 _b1 in `Obj (_a0, _a1)
+            let _a1 = self#cstru _a1 _b1 in `Obj (_a0, _a1)
         | (`ObjEnd _a0,`ObjEnd _b0) ->
             let _a0 = self#loc _a0 _b0 in `ObjEnd _a0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#class_str_item _a2 _b2 in `ObjPat (_a0, _a1, _a2)
+            let _a2 = self#cstru _a2 _b2 in `ObjPat (_a0, _a1, _a2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in `ObjPatEnd (_a0, _a1)
@@ -1196,14 +1195,13 @@ class map2 =
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>class_expr)
         | (_,_) -> invalid_arg "map2 failure"
-    method class_str_item :
-      class_str_item -> class_str_item -> class_str_item=
+    method cstru : cstru -> cstru -> cstru=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#class_str_item _a1 _b1 in
-            let _a2 = self#class_str_item _a2 _b2 in `Sem (_a0, _a1, _a2)
+            let _a1 = self#cstru _a1 _b1 in
+            let _a2 = self#cstru _a2 _b2 in `Sem (_a0, _a1, _a2)
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ctyp _a1 _b1 in
@@ -1251,8 +1249,7 @@ class map2 =
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#mutable_flag _a2 _b2 in
             let _a3 = self#ctyp _a3 _b3 in `CrVvr (_a0, _a1, _a2, _a3)
-        | ((#ant as _a0),(#ant as _b0)) ->
-            (self#ant _a0 _b0 : ant  :>class_str_item)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>cstru)
         | (_,_) -> invalid_arg "map2 failure"
     method ep : ep -> ep -> ep=
       fun _a0  _b0  ->
@@ -1619,9 +1616,9 @@ class fold2 =
       opt_type_constr -> opt_type_constr -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Constr (_a0,_a1),`Constr (_b0,_b1)) ->
+        | (`Some (_a0,_a1),`Some (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#type_constr _a1 _b1
-        | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
+        | (`None _a0,`None _b0) -> self#loc _a0 _b0
         | (_,_) -> invalid_arg "fold2 failure"
     method decl_param : decl_param -> decl_param -> 'self_type=
       fun _a0  _b0  ->
@@ -1870,11 +1867,11 @@ class fold2 =
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#class_str_item _a1 _b1
+            let self = self#loc _a0 _b0 in self#cstru _a1 _b1
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#class_str_item _a2 _b2
+            let self = self#patt _a1 _b1 in self#cstru _a2 _b2
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#patt _a1 _b1
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
@@ -2067,7 +2064,7 @@ class fold2 =
             let self = self#auident _a1 _b1 in
             let self = self#module_type _a2 _b2 in self#module_expr _a3 _b3
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#str_item _a1 _b1
+            let self = self#loc _a0 _b0 in self#stru _a1 _b1
         | (`StructEnd _a0,`StructEnd _b0) -> self#loc _a0 _b0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
@@ -2076,7 +2073,7 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#expr _a1 _b1
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
-    method str_item : str_item -> str_item -> 'self_type=
+    method stru : stru -> stru -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
@@ -2085,7 +2082,7 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#class_type _a1 _b1
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#str_item _a1 _b1 in self#str_item _a2 _b2
+            let self = self#stru _a1 _b1 in self#stru _a2 _b2
         | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
@@ -2198,11 +2195,11 @@ class fold2 =
             let self = self#rec_flag _a1 _b1 in
             let self = self#binding _a2 _b2 in self#class_expr _a3 _b3
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#class_str_item _a1 _b1
+            let self = self#loc _a0 _b0 in self#cstru _a1 _b1
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#class_str_item _a2 _b2
+            let self = self#patt _a1 _b1 in self#cstru _a2 _b2
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#patt _a1 _b1
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
@@ -2216,13 +2213,12 @@ class fold2 =
             let self = self#class_expr _a1 _b1 in self#class_expr _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
-    method class_str_item : class_str_item -> class_str_item -> 'self_type=
+    method cstru : cstru -> cstru -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#class_str_item _a1 _b1 in
-            self#class_str_item _a2 _b2
+            let self = self#cstru _a1 _b1 in self#cstru _a2 _b2
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
@@ -2488,8 +2484,8 @@ class iter =
       | #ant as _a0 -> (self#ant _a0 :>'result144)
     method opt_type_constr : opt_type_constr -> 'result145=
       function
-      | `Constr (_a0,_a1) -> (self#loc _a0; self#type_constr _a1)
-      | `Nil _a0 -> self#loc _a0
+      | `Some (_a0,_a1) -> (self#loc _a0; self#type_constr _a1)
+      | `None _a0 -> self#loc _a0
     method decl_param : decl_param -> 'result146=
       function
       | `Quote (_a0,_a1,_a2) ->
@@ -2635,10 +2631,10 @@ class iter =
            self#expr _a3)
       | `Match (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#case _a2)
       | `New (_a0,_a1) -> (self#loc _a0; self#ident _a1)
-      | `Obj (_a0,_a1) -> (self#loc _a0; self#class_str_item _a1)
+      | `Obj (_a0,_a1) -> (self#loc _a0; self#cstru _a1)
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
-          (self#loc _a0; self#patt _a1; self#class_str_item _a2)
+          (self#loc _a0; self#patt _a1; self#cstru _a2)
       | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
       | `OptLabl (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
@@ -2757,18 +2753,17 @@ class iter =
            self#auident _a1;
            self#module_type _a2;
            self#module_expr _a3)
-      | `Struct (_a0,_a1) -> (self#loc _a0; self#str_item _a1)
+      | `Struct (_a0,_a1) -> (self#loc _a0; self#stru _a1)
       | `StructEnd _a0 -> self#loc _a0
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#module_expr _a1; self#module_type _a2)
       | `PackageModule (_a0,_a1) -> (self#loc _a0; self#expr _a1)
       | #ant as _a0 -> (self#ant _a0 :>'result164)
-    method str_item : str_item -> 'result165=
+    method stru : stru -> 'result165=
       function
       | `Class (_a0,_a1) -> (self#loc _a0; self#class_expr _a1)
       | `ClassType (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
-      | `Sem (_a0,_a1,_a2) ->
-          (self#loc _a0; self#str_item _a1; self#str_item _a2)
+      | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#stru _a1; self#stru _a2)
       | `DirectiveSimple (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Directive (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#expr _a2)
@@ -2851,10 +2846,10 @@ class iter =
            self#rec_flag _a1;
            self#binding _a2;
            self#class_expr _a3)
-      | `Obj (_a0,_a1) -> (self#loc _a0; self#class_str_item _a1)
+      | `Obj (_a0,_a1) -> (self#loc _a0; self#cstru _a1)
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
-          (self#loc _a0; self#patt _a1; self#class_str_item _a2)
+          (self#loc _a0; self#patt _a1; self#cstru _a2)
       | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_expr _a1; self#class_type _a2)
@@ -2863,10 +2858,9 @@ class iter =
       | `Eq (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_expr _a1; self#class_expr _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result168)
-    method class_str_item : class_str_item -> 'result169=
+    method cstru : cstru -> 'result169=
       function
-      | `Sem (_a0,_a1,_a2) ->
-          (self#loc _a0; self#class_str_item _a1; self#class_str_item _a2)
+      | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#cstru _a1; self#cstru _a2)
       | `Eq (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Inherit (_a0,_a1,_a2) ->
           (self#loc _a0; self#override_flag _a1; self#class_expr _a2)
@@ -3227,10 +3221,10 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>type_constr)
     method opt_type_constr : opt_type_constr -> opt_type_constr=
       function
-      | `Constr (_a0,_a1) ->
+      | `Some (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#type_constr _a1 in `Constr (_a0, _a1)
-      | `Nil _a0 -> let _a0 = self#loc _a0 in `Nil _a0
+          let _a1 = self#type_constr _a1 in `Some (_a0, _a1)
+      | `None _a0 -> let _a0 = self#loc _a0 in `None _a0
     method decl_param : decl_param -> decl_param=
       function
       | `Quote (_a0,_a1,_a2) ->
@@ -3517,12 +3511,12 @@ class map =
           let _a1 = self#ident _a1 in `New (_a0, _a1)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_str_item _a1 in `Obj (_a0, _a1)
+          let _a1 = self#cstru _a1 in `Obj (_a0, _a1)
       | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
-          let _a2 = self#class_str_item _a2 in `ObjPat (_a0, _a1, _a2)
+          let _a2 = self#cstru _a2 in `ObjPat (_a0, _a1, _a2)
       | `ObjPatEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in `ObjPatEnd (_a0, _a1)
@@ -3751,7 +3745,7 @@ class map =
           let _a3 = self#module_expr _a3 in `Functor (_a0, _a1, _a2, _a3)
       | `Struct (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#str_item _a1 in `Struct (_a0, _a1)
+          let _a1 = self#stru _a1 in `Struct (_a0, _a1)
       | `StructEnd _a0 -> let _a0 = self#loc _a0 in `StructEnd _a0
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -3761,7 +3755,7 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#expr _a1 in `PackageModule (_a0, _a1)
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_expr)
-    method str_item : str_item -> str_item=
+    method stru : stru -> stru=
       function
       | `Class (_a0,_a1) ->
           let _a0 = self#loc _a0 in
@@ -3771,8 +3765,8 @@ class map =
           let _a1 = self#class_type _a1 in `ClassType (_a0, _a1)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#str_item _a1 in
-          let _a2 = self#str_item _a2 in `Sem (_a0, _a1, _a2)
+          let _a1 = self#stru _a1 in
+          let _a2 = self#stru _a2 in `Sem (_a0, _a1, _a2)
       | `DirectiveSimple (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in `DirectiveSimple (_a0, _a1)
@@ -3815,7 +3809,7 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
           let _a2 = self#binding _a2 in `Value (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>str_item)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>stru)
     method class_type : class_type -> class_type=
       function
       | `ClassCon (_a0,_a1,_a2,_a3) ->
@@ -3913,12 +3907,12 @@ class map =
           let _a3 = self#class_expr _a3 in `LetIn (_a0, _a1, _a2, _a3)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_str_item _a1 in `Obj (_a0, _a1)
+          let _a1 = self#cstru _a1 in `Obj (_a0, _a1)
       | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
-          let _a2 = self#class_str_item _a2 in `ObjPat (_a0, _a1, _a2)
+          let _a2 = self#cstru _a2 in `ObjPat (_a0, _a1, _a2)
       | `ObjPatEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in `ObjPatEnd (_a0, _a1)
@@ -3935,12 +3929,12 @@ class map =
           let _a1 = self#class_expr _a1 in
           let _a2 = self#class_expr _a2 in `Eq (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>class_expr)
-    method class_str_item : class_str_item -> class_str_item=
+    method cstru : cstru -> cstru=
       function
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_str_item _a1 in
-          let _a2 = self#class_str_item _a2 in `Sem (_a0, _a1, _a2)
+          let _a1 = self#cstru _a1 in
+          let _a2 = self#cstru _a2 in `Sem (_a0, _a1, _a2)
       | `Eq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -3986,7 +3980,7 @@ class map =
           let _a1 = self#alident _a1 in
           let _a2 = self#mutable_flag _a2 in
           let _a3 = self#ctyp _a3 in `CrVvr (_a0, _a1, _a2, _a3)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>class_str_item)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>cstru)
     method ep : ep -> ep=
       function
       | #sid as _a0 -> (self#sid _a0 : sid  :>ep)
@@ -4251,8 +4245,8 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method opt_type_constr : opt_type_constr -> 'self_type=
       function
-      | `Constr (_a0,_a1) -> let self = self#loc _a0 in self#type_constr _a1
-      | `Nil _a0 -> self#loc _a0
+      | `Some (_a0,_a1) -> let self = self#loc _a0 in self#type_constr _a1
+      | `None _a0 -> self#loc _a0
     method decl_param : decl_param -> 'self_type=
       function
       | `Quote (_a0,_a1,_a2) ->
@@ -4449,11 +4443,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#expr _a1 in self#case _a2
       | `New (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
-      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_str_item _a1
+      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#cstru _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in self#class_str_item _a2
+          let self = self#patt _a1 in self#cstru _a2
       | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -4618,21 +4612,21 @@ class fold =
           let self = self#loc _a0 in
           let self = self#auident _a1 in
           let self = self#module_type _a2 in self#module_expr _a3
-      | `Struct (_a0,_a1) -> let self = self#loc _a0 in self#str_item _a1
+      | `Struct (_a0,_a1) -> let self = self#loc _a0 in self#stru _a1
       | `StructEnd _a0 -> self#loc _a0
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#module_expr _a1 in self#module_type _a2
       | `PackageModule (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method str_item : str_item -> 'self_type=
+    method stru : stru -> 'self_type=
       function
       | `Class (_a0,_a1) -> let self = self#loc _a0 in self#class_expr _a1
       | `ClassType (_a0,_a1) ->
           let self = self#loc _a0 in self#class_type _a1
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#str_item _a1 in self#str_item _a2
+          let self = self#stru _a1 in self#stru _a2
       | `DirectiveSimple (_a0,_a1) ->
           let self = self#loc _a0 in self#alident _a1
       | `Directive (_a0,_a1,_a2) ->
@@ -4730,11 +4724,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
           let self = self#binding _a2 in self#class_expr _a3
-      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_str_item _a1
+      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#cstru _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in self#class_str_item _a2
+          let self = self#patt _a1 in self#cstru _a2
       | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -4746,11 +4740,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#class_expr _a1 in self#class_expr _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method class_str_item : class_str_item -> 'self_type=
+    method cstru : cstru -> 'self_type=
       function
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_str_item _a1 in self#class_str_item _a2
+          let self = self#cstru _a1 in self#cstru _a2
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -5121,10 +5115,10 @@ class print =
     method opt_type_constr : 'fmt -> opt_type_constr -> 'result319=
       fun fmt  ->
         function
-        | `Constr (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Constr@ %a@ %a)@]" self#loc _a0
+        | `Some (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Some@ %a@ %a)@]" self#loc _a0
               self#type_constr _a1
-        | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" self#loc _a0
+        | `None _a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" self#loc _a0
     method decl_param : 'fmt -> decl_param -> 'result320=
       fun fmt  ->
         function
@@ -5378,12 +5372,12 @@ class print =
               self#ident _a1
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
-              self#class_str_item _a1
+              self#cstru _a1
         | `ObjEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `ObjPat (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#class_str_item _a2
+              self#patt _a1 self#cstru _a2
         | `ObjPatEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
               self#patt _a1
@@ -5581,7 +5575,7 @@ class print =
               _a0 self#auident _a1 self#module_type _a2 self#module_expr _a3
         | `Struct (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" self#loc _a0
-              self#str_item _a1
+              self#stru _a1
         | `StructEnd _a0 ->
             Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" self#loc _a0
         | `Constraint (_a0,_a1,_a2) ->
@@ -5591,7 +5585,7 @@ class print =
             Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" self#loc _a0
               self#expr _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result338)
-    method str_item : 'fmt -> str_item -> 'result339=
+    method stru : 'fmt -> stru -> 'result339=
       fun fmt  ->
         function
         | `Class (_a0,_a1) ->
@@ -5602,7 +5596,7 @@ class print =
               self#class_type _a1
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#str_item _a1 self#str_item _a2
+              self#stru _a1 self#stru _a2
         | `DirectiveSimple (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a@ %a)@]" self#loc
               _a0 self#alident _a1
@@ -5718,12 +5712,12 @@ class print =
               self#rec_flag _a1 self#binding _a2 self#class_expr _a3
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
-              self#class_str_item _a1
+              self#cstru _a1
         | `ObjEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `ObjPat (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#class_str_item _a2
+              self#patt _a1 self#cstru _a2
         | `ObjPatEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
               self#patt _a1
@@ -5737,12 +5731,12 @@ class print =
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
               self#class_expr _a1 self#class_expr _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result342)
-    method class_str_item : 'fmt -> class_str_item -> 'result343=
+    method cstru : 'fmt -> cstru -> 'result343=
       fun fmt  ->
         function
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_str_item _a1 self#class_str_item _a2
+              self#cstru _a1 self#cstru _a2
         | `Eq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1 self#ctyp _a2
@@ -6128,9 +6122,9 @@ class eq =
       opt_type_constr -> opt_type_constr -> 'result377=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Constr (_a0,_a1),`Constr (_b0,_b1)) ->
+        | (`Some (_a0,_a1),`Some (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#type_constr _a1 _b1)
-        | (`Nil _a0,`Nil _b0) -> self#loc _a0 _b0
+        | (`None _a0,`None _b0) -> self#loc _a0 _b0
         | (_,_) -> false
     method decl_param : decl_param -> decl_param -> 'result378=
       fun _a0  _b0  ->
@@ -6374,11 +6368,11 @@ class eq =
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#class_str_item _a1 _b1)
+            (self#loc _a0 _b0) && (self#cstru _a1 _b1)
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#class_str_item _a2 _b2)
+              (self#cstru _a2 _b2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#patt _a1 _b1)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
@@ -6570,7 +6564,7 @@ class eq =
                (self#module_type _a2 _b2))
               && (self#module_expr _a3 _b3)
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#str_item _a1 _b1)
+            (self#loc _a0 _b0) && (self#stru _a1 _b1)
         | (`StructEnd _a0,`StructEnd _b0) -> self#loc _a0 _b0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#module_expr _a1 _b1)) &&
@@ -6579,7 +6573,7 @@ class eq =
             (self#loc _a0 _b0) && (self#expr _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result396)
         | (_,_) -> false
-    method str_item : str_item -> str_item -> 'result397=
+    method stru : stru -> stru -> 'result397=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
@@ -6587,8 +6581,8 @@ class eq =
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#class_type _a1 _b1)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#str_item _a1 _b1)) &&
-              (self#str_item _a2 _b2)
+            ((self#loc _a0 _b0) && (self#stru _a1 _b1)) &&
+              (self#stru _a2 _b2)
         | (`DirectiveSimple (_a0,_a1),`DirectiveSimple (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
@@ -6700,11 +6694,11 @@ class eq =
                (self#binding _a2 _b2))
               && (self#class_expr _a3 _b3)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#class_str_item _a1 _b1)
+            (self#loc _a0 _b0) && (self#cstru _a1 _b1)
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#class_str_item _a2 _b2)
+              (self#cstru _a2 _b2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#patt _a1 _b1)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
@@ -6718,12 +6712,12 @@ class eq =
               (self#class_expr _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result400)
         | (_,_) -> false
-    method class_str_item : class_str_item -> class_str_item -> 'result401=
+    method cstru : cstru -> cstru -> 'result401=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#class_str_item _a1 _b1)) &&
-              (self#class_str_item _a2 _b2)
+            ((self#loc _a0 _b0) && (self#cstru _a1 _b1)) &&
+              (self#cstru _a2 _b2)
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -7012,8 +7006,8 @@ and strip_loc_type_constr =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result452)
 and strip_loc_opt_type_constr =
   function
-  | `Constr (_a0,_a1) -> let _a1 = strip_loc_type_constr _a1 in `Constr _a1
-  | `Nil _a0 -> `Nil
+  | `Some (_a0,_a1) -> let _a1 = strip_loc_type_constr _a1 in `Some _a1
+  | `None _a0 -> `None
 and strip_loc_decl_param =
   function
   | `Quote (_a0,_a1,_a2) ->
@@ -7215,11 +7209,11 @@ and strip_loc_expr =
       let _a1 = strip_loc_expr _a1 in
       let _a2 = strip_loc_case _a2 in `Match (_a1, _a2)
   | `New (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `New _a1
-  | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_str_item _a1 in `Obj _a1
+  | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_class_str_item _a2 in `ObjPat (_a1, _a2)
+      let _a2 = strip_loc_cstru _a2 in `ObjPat (_a1, _a2)
   | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
@@ -7384,7 +7378,7 @@ and strip_loc_module_expr =
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_type _a2 in
       let _a3 = strip_loc_module_expr _a3 in `Functor (_a1, _a2, _a3)
-  | `Struct (_a0,_a1) -> let _a1 = strip_loc_str_item _a1 in `Struct _a1
+  | `Struct (_a0,_a1) -> let _a1 = strip_loc_stru _a1 in `Struct _a1
   | `StructEnd _a0 -> `StructEnd
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_module_expr _a1 in
@@ -7392,14 +7386,14 @@ and strip_loc_module_expr =
   | `PackageModule (_a0,_a1) ->
       let _a1 = strip_loc_expr _a1 in `PackageModule _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result432)
-and strip_loc_str_item =
+and strip_loc_stru =
   function
   | `Class (_a0,_a1) -> let _a1 = strip_loc_class_expr _a1 in `Class _a1
   | `ClassType (_a0,_a1) ->
       let _a1 = strip_loc_class_type _a1 in `ClassType _a1
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_str_item _a1 in
-      let _a2 = strip_loc_str_item _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_loc_stru _a1 in
+      let _a2 = strip_loc_stru _a2 in `Sem (_a1, _a2)
   | `DirectiveSimple (_a0,_a1) ->
       let _a1 = strip_loc_alident _a1 in `DirectiveSimple _a1
   | `Directive (_a0,_a1,_a2) ->
@@ -7497,11 +7491,11 @@ and strip_loc_class_expr =
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in
       let _a3 = strip_loc_class_expr _a3 in `LetIn (_a1, _a2, _a3)
-  | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_str_item _a1 in `Obj _a1
+  | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_class_str_item _a2 in `ObjPat (_a1, _a2)
+      let _a2 = strip_loc_cstru _a2 in `ObjPat (_a1, _a2)
   | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_expr _a1 in
@@ -7513,11 +7507,11 @@ and strip_loc_class_expr =
       let _a1 = strip_loc_class_expr _a1 in
       let _a2 = strip_loc_class_expr _a2 in `Eq (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result428)
-and strip_loc_class_str_item =
+and strip_loc_cstru =
   function
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_str_item _a1 in
-      let _a2 = strip_loc_class_str_item _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_loc_cstru _a1 in
+      let _a2 = strip_loc_cstru _a2 in `Sem (_a1, _a2)
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
@@ -7855,10 +7849,10 @@ and pp_print_type_constr fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result508)
 and pp_print_opt_type_constr fmt =
   function
-  | `Constr (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Constr@ %a@ %a)@]" pp_print_loc _a0
+  | `Some (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Some@ %a@ %a)@]" pp_print_loc _a0
         pp_print_type_constr _a1
-  | `Nil _a0 -> Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc _a0
+  | `None _a0 -> Format.fprintf fmt "@[<1>(`None@ %a)@]" pp_print_loc _a0
 and pp_print_decl_param fmt =
   function
   | `Quote (_a0,_a1,_a2) ->
@@ -8100,11 +8094,11 @@ and pp_print_expr fmt =
         pp_print_ident _a1
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_str_item _a1
+        pp_print_cstru _a1
   | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `ObjPat (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_class_str_item _a2
+        pp_print_patt _a1 pp_print_cstru _a2
   | `ObjPatEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1
@@ -8295,7 +8289,7 @@ and pp_print_module_expr fmt =
         _a3
   | `Struct (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_str_item _a1
+        pp_print_stru _a1
   | `StructEnd _a0 ->
       Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" pp_print_loc _a0
   | `Constraint (_a0,_a1,_a2) ->
@@ -8305,7 +8299,7 @@ and pp_print_module_expr fmt =
       Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" pp_print_loc _a0
         pp_print_expr _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result488)
-and pp_print_str_item fmt =
+and pp_print_stru fmt =
   function
   | `Class (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" pp_print_loc _a0
@@ -8315,7 +8309,7 @@ and pp_print_str_item fmt =
         pp_print_class_type _a1
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_str_item _a1 pp_print_str_item _a2
+        pp_print_stru _a1 pp_print_stru _a2
   | `DirectiveSimple (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1
@@ -8427,11 +8421,11 @@ and pp_print_class_expr fmt =
         pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_class_expr _a3
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_str_item _a1
+        pp_print_cstru _a1
   | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `ObjPat (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_class_str_item _a2
+        pp_print_patt _a1 pp_print_cstru _a2
   | `ObjPatEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1
@@ -8445,11 +8439,11 @@ and pp_print_class_expr fmt =
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_expr _a1 pp_print_class_expr _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result484)
-and pp_print_class_str_item fmt =
+and pp_print_cstru fmt =
   function
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_str_item _a1 pp_print_class_str_item _a2
+        pp_print_cstru _a1 pp_print_cstru _a2
   | `Eq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2

@@ -224,4 +224,4 @@ let _ =
                         "let c = ref LexSet.empty in\nfor i = 0 to (String.length s) - 1 do\n  c := (LexSet.union c.contents (LexSet.singleton (Char.code (s.[i]))))\ndone;\nc.contents\n"))))]))
 let d = `Absolute ["Fan"; "Lang"; "Lex"]
 let _ = AstQuotation.of_expr ~name:(d, "lex") ~entry:lex
-let _ = AstQuotation.of_str_item ~name:(d, "reg") ~entry:declare_regexp
+let _ = AstQuotation.of_stru ~name:(d, "reg") ~entry:declare_regexp

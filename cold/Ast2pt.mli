@@ -139,17 +139,17 @@ val class_sig_item :
 
 val class_expr : class_expr -> Parsetree.class_expr
 
-val class_str_item :
-  class_str_item ->
+val cstru :
+  cstru ->
   Parsetree.class_field list -> Parsetree.class_field list
 
 val sig_item : sig_item -> Parsetree.signature_item list
 
-val str_item : str_item -> Parsetree.structure_item list
+val stru : stru -> Parsetree.structure_item list
 
 val directive : expr -> Parsetree.directive_argument
     
-val phrase : str_item -> Parsetree.toplevel_phrase
+val phrase : stru -> Parsetree.toplevel_phrase
 val pp : formatter -> ('a, formatter, unit) format -> 'a
 
 val print_expr : formatter -> expr -> unit
@@ -157,7 +157,7 @@ val to_string_expr: expr -> string
     
 val print_patt : formatter -> patt -> unit
 
-val print_str_item : formatter -> str_item -> unit
+val print_stru : formatter -> stru -> unit
 
 val print_ctyp : formatter -> ctyp -> unit
   

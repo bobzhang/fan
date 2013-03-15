@@ -4,7 +4,7 @@ open Format;
 open Lib;
 open AstLoc;
 open LibUtil;
-module MetaAst = FanAst.Make Lib.Meta.MetaGhostLoc;  
+(* module MetaAst = FanAst.Make Lib.Meta.MetaGhostLoc;   *)
 
 open FanGrammar;
 

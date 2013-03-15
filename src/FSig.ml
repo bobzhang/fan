@@ -115,7 +115,7 @@ type warning_type =
 type plugin_name = string ;
 
 type plugin = {
-    transform:(module_types -> str_item);
+    transform:(module_types -> stru);
     (* activate: mutable bool; *)
     position: option string;
     filter: option (string->bool);

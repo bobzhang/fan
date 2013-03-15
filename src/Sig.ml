@@ -20,8 +20,8 @@ module type ParserImpl = sig
   (** When  the parser encounter a directive it stops (since the directive may change  the
       syntax), the given [directive_handler] function  evaluates  it  and
       the parsing starts again. *)
-  val parse_implem : ?directive_handler:(str_item -> option str_item) ->
-    FanLoc.t -> XStream.t char -> option str_item;
+  val parse_implem : ?directive_handler:(stru -> option stru) ->
+    FanLoc.t -> XStream.t char -> option stru;
 
   val parse_interf : ?directive_handler:(sig_item -> option sig_item) ->
         FanLoc.t -> XStream.t char -> option sig_item;
@@ -31,7 +31,7 @@ module type PrinterImpl = sig
   val print_interf : ?input_file:string -> ?output_file:string ->
     option sig_item  -> unit;
   val print_implem : ?input_file:string -> ?output_file:string ->
-    option str_item -> unit;
+    option stru -> unit;
 end;
 
 
@@ -41,8 +41,8 @@ module type Syntax = sig
   include ParserImpl;
   include PrinterImpl;
   val interf : Gram.t (list sig_item * option FanLoc.t);
-  val implem : Gram.t (list str_item * option FanLoc.t);
-  val top_phrase : Gram.t (option str_item);
+  val implem : Gram.t (list stru * option FanLoc.t);
+  val top_phrase : Gram.t (option stru);
   val a_string: Gram.t astring;
   val a_lident: Gram.t [= `Lid of (loc*string) | ant] (* alident *);
   val a_uident: Gram.t auident;
@@ -74,9 +74,9 @@ module type Syntax = sig
   val class_sig_item : Gram.t class_sig_item;
   val class_sig_item_quot : Gram.t class_sig_item;
   val class_signature : Gram.t class_sig_item;
-  val class_str_item : Gram.t class_str_item;
-  val class_str_item_quot : Gram.t class_str_item;
-  val class_structure : Gram.t class_str_item;
+  val cstru : Gram.t cstru;
+  val cstru_quot : Gram.t cstru;
+  val class_structure : Gram.t cstru;
   val class_type : Gram.t class_type;
   val class_type_declaration : Gram.t class_type;
   val class_type_longident : Gram.t ident;
@@ -176,9 +176,9 @@ module type Syntax = sig
   val sig_item_quot : Gram.t sig_item;
   val sig_items : Gram.t sig_item;
   val star_ctyp : Gram.t ctyp;
-  val str_item : Gram.t str_item;
-  val str_item_quot : Gram.t str_item;
-  val str_items : Gram.t str_item;
+  val stru : Gram.t stru;
+  val stru_quot : Gram.t stru;
+  val strus : Gram.t stru;
   (* val type_constraint : Gram.t unit; *)
   val type_declaration : Gram.t typedecl;
   val type_ident_and_parameters : Gram.t (alident(* string *) * opt_decl_params);
@@ -280,12 +280,12 @@ module type PRECAST = sig
 
   val loaded_modules : ref (list string);
   val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit ;
-  val register_str_item_parser : parser_fun str_item -> unit;
+  val register_stru_parser : parser_fun stru -> unit;
   val register_sig_item_parser : parser_fun sig_item -> unit;
   val register_parser :
-      parser_fun str_item -> parser_fun sig_item -> unit;
+      parser_fun stru -> parser_fun sig_item -> unit;
   val current_parser :
-      unit -> (parser_fun str_item * parser_fun sig_item);
+      unit -> (parser_fun stru * parser_fun sig_item);
 
   val plugin : (module Id) -> (module PLUGIN) -> unit ;
   val syntax_plugin:(module Id) -> (module SyntaxPlugin) -> unit;
@@ -301,12 +301,12 @@ module type PRECAST = sig
   val enable_auto: (unit->bool) -> unit;
 
 
-  val register_str_item_printer : printer_fun str_item -> unit;
+  val register_stru_printer : printer_fun stru -> unit;
   val register_sig_item_printer : printer_fun sig_item -> unit;
   val register_printer :
-      printer_fun str_item -> printer_fun sig_item -> unit;
+      printer_fun stru -> printer_fun sig_item -> unit;
   val current_printer :
-      unit -> (printer_fun str_item * printer_fun sig_item);
+      unit -> (printer_fun stru * printer_fun sig_item);
         
   val declare_dyn_module : string -> (unit -> unit) -> unit  ;
 

@@ -19,12 +19,12 @@ let dump_ident = to_string_of_printer dump#ident
 let dump_type_constr = to_string_of_printer dump#type_constr
 let dump_case = to_string_of_printer dump#case
 let dump_rec_expr = to_string_of_printer dump#rec_expr
-let dump_str_item = to_string_of_printer dump#str_item
+let dump_stru = to_string_of_printer dump#stru
 let dump_sig_item = to_string_of_printer dump#sig_item
 let dump_module_binding = to_string_of_printer dump#module_binding
 let dump_module_expr = to_string_of_printer dump#module_expr
 let dump_class_sig_item = to_string_of_printer dump#class_sig_item
-let dump_class_str_item = to_string_of_printer dump#class_str_item
+let dump_cstru = to_string_of_printer dump#cstru
 let dump_decl_param = to_string_of_printer dump#decl_param
 let dump_decl_params = to_string_of_printer dump#decl_params
 let map_expr f =
@@ -33,11 +33,8 @@ let map_patt f =
   object  inherit  Objs.map as super method! patt x = f (super#patt x) end
 let map_ctyp f =
   object  inherit  Objs.map as super method! ctyp x = f (super#ctyp x) end
-let map_str_item f =
-  object 
-    inherit  Objs.map as super
-    method! str_item x = f (super#str_item x)
-  end
+let map_stru f =
+  object  inherit  Objs.map as super method! stru x = f (super#stru x) end
 let map_sig_item f =
   object 
     inherit  Objs.map as super

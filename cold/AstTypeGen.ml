@@ -22,7 +22,7 @@ let mk_record_eq: FSig.record_col list -> expr =
   fun cols  ->
     (cols |> (List.map (fun { re_info;_}  -> re_info))) |> (mk_variant_eq "")
 let (gen_eq,gen_eqobj) =
-  ((gen_str_item ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
+  ((gen_stru ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
       ~mk_record:mk_record_eq ~mk_variant:mk_variant_eq
       ~trail:(`Id (_loc, (`Lid (_loc, "false")))) ()),
     (gen_object ~kind:Iter ~mk_tuple:mk_tuple_eq ~mk_record:mk_record_eq
@@ -132,8 +132,8 @@ let gen_strip =
            |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
          | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, expr)), res))
       cols result in
-  gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
-    ~names:[] ()
+  gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[]
+    ()
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("Strip", gen_strip)
@@ -151,7 +151,7 @@ let mk_record cols =
 let mk_tuple params =
   (params |> (List.map (fun { expr;_}  -> expr))) |> mk_tuple_ee
 let gen_meta_expr =
-  gen_str_item ~id:(`Pre "meta_") ~names:["_loc"] ~mk_tuple ~mk_record
+  gen_stru ~id:(`Pre "meta_") ~names:["_loc"] ~mk_tuple ~mk_record
     ~mk_variant ()
 let _ =
   Typehook.register ~position:"__MetaExpr__" ~filter:(fun s  -> s <> "loc")
@@ -197,7 +197,7 @@ let mk_record_print cols =
   appl_of_list (pre ::
     ((cols |> (List.map (fun { re_info;_}  -> re_info))) |> extract))
 let gen_print =
-  gen_str_item ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_tuple:mk_tuple_print
+  gen_stru ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_tuple:mk_tuple_print
     ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
 let gen_print_obj =
   gen_object ~kind:Iter ~mk_tuple:mk_tuple_print ~base:"printbase"
@@ -290,7 +290,7 @@ let generate (module_types : FSig.module_types) =
            (`Bind
               (_loc, (`Id (_loc, (`Lid (_loc, "loc_of")))),
                 (`Fun (_loc, case)))))
-   | None  -> failwithf "AstTypeGen.generate null case" : str_item )
+   | None  -> failwithf "AstTypeGen.generate null case" : stru )
 let _ =
   Typehook.register
     ~filter:(fun s  -> not (List.mem s ["loc"; "meta_option"; "meta_list"]))
@@ -315,6 +315,6 @@ let generate (module_types : FSig.module_types) =
          end in
        obj#typedecl ty
      else ty in
-   (fun x  -> let r = FSigUtil.str_item_from_module_types ~f:aux x in r)
-     module_types : str_item )
+   (fun x  -> let r = FSigUtil.stru_from_module_types ~f:aux x in r)
+     module_types : stru )
 let _ = Typehook.register ~filter:(fun _  -> true) ("LocType", generate)

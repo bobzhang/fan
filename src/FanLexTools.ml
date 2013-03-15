@@ -280,7 +280,7 @@ let output_byte_array v =  begin
   {:expr| $str:s |}
 end;
 
-let table (n,t) = {:str_item| let $lid:n = $(output_byte_array t) |};
+let table (n,t) = {:stru| let $lid:n = $(output_byte_array t) |};
 let binding_table (n,t) = {:binding|  $lid:n = $(output_byte_array t) |};
 
 
@@ -298,7 +298,7 @@ let partition ~counter ~tables (i,p) =
 	{:expr| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
   let body = gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  {:str_item| let $lid:f = fun c -> $body |};
+  {:stru| let $lid:f = fun c -> $body |};
 
 let binding_partition ~counter ~tables (i,p) = 
   let rec gen_tree = function 

@@ -24,7 +24,7 @@ let wrap_stream_parser ?(loc= FanLoc.mk "<stream>")  p s =
       (eprintf "error: %s" (FanLoc.to_string loc); FanLoc.raise loc e)
 let p_expr f e = pp f "@[%a@]@." AstPrint.expression (Ast2pt.expr e)
 let p_patt f e = pp f "@[%a@]@." AstPrint.pattern (Ast2pt.patt e)
-let p_str_item f e = pp f "@[%a@]@." AstPrint.structure (Ast2pt.str_item e)
+let p_stru f e = pp f "@[%a@]@." AstPrint.structure (Ast2pt.stru e)
 let p_ctyp f e = pp f "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e)
 let add_include_dir str =
   if str <> ""

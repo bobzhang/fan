@@ -33,8 +33,8 @@ let rec infix_kwds_filter = parser
 (*        {:delete| Gram expr: ["["; x; "::"; expr; "]"] |}; *)
 (*       true *)
 (*   end with [ Not_found -> false ]; *)
-(* let mk_lang_meta fan_quots fan_quot fan_str_item fan_expr fan_class_str_item fan_ctyp =  *)
-(*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_str_item fan_expr  fan_class_str_item fan_ctyp  ; *)
+(* let mk_lang_meta fan_quots fan_quot fan_stru fan_expr fan_cstru fan_ctyp =  *)
+(*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_stru fan_expr  fan_cstru fan_ctyp  ; *)
 (*   fan_quots: *)
 (*     ["top" *)
 (*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> {:expr| begin $list:strs end |} ] ] *)
@@ -51,9 +51,9 @@ let rec infix_kwds_filter = parser
 (*            Hashtbl.clear AstQuotation.default_tbl; *)
 (*            unit_literal _loc *)
 (*        end ] ] END; *)
-  (* fan_str_item:[[STRING{file}; STRING{c} -> str_item_of_file (file,c) ] ] *)
+  (* fan_stru:[[STRING{file}; STRING{c} -> stru_of_file (file,c) ] ] *)
   (* fan_expr: [[ STRING{file}; STRING{c}-> expr_of_file (file,c) ]] *)
-  (* fan_class_str_item: [[ STRING{file}; STRING{c}->  class_str_item_of_file (file,c) ]] *)
+  (* fan_cstru: [[ STRING{file}; STRING{c}->  cstru_of_file (file,c) ]] *)
   (* fan_ctyp: [[STRING{file};STRING{c} ->  ctyp_of_file (file,c) ]] *)
 
 

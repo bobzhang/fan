@@ -6,12 +6,12 @@ type key = string;
 type 'a filter  = 'a -> 'a;
   
 let interf_filters: Hashtbl.t key (filter sig_item) = Hashtbl.create 40;
-let implem_filters: Hashtbl.t key (filter str_item) = Hashtbl.create 40;
-let topphrase_filters: Hashtbl.t key (filter str_item) = Hashtbl.create 40;
+let implem_filters: Hashtbl.t key (filter stru) = Hashtbl.create 40;
+let topphrase_filters: Hashtbl.t key (filter stru) = Hashtbl.create 40;
 
 let applied_interf_filters:  Queue.t (string * filter sig_item) = Queue.create ();
-let applied_implem_filters:  Queue.t (string *filter str_item) = Queue.create ();
-let applied_topphrase_filters:  Queue.t (string * filter str_item) = Queue.create ();
+let applied_implem_filters:  Queue.t (string *filter stru) = Queue.create ();
+let applied_topphrase_filters:  Queue.t (string * filter stru) = Queue.create ();
   
 let apply_interf_filters  i = Queue.fold (fun ast (_name,f) -> f ast) i applied_interf_filters;
 let apply_implem_filters  i = Queue.fold (fun ast (_name,f) -> f ast) i applied_implem_filters;
@@ -36,7 +36,7 @@ let use_topphrase_filter s =
 
 let register_sig_item_filter (k,f) =
   Hashtbl.replace interf_filters k f ;
-let register_str_item_filter (k,f) = begin 
+let register_stru_filter (k,f) = begin 
   Hashtbl.replace implem_filters k f ;
 end;
 let register_topphrase_filter (k,f) =

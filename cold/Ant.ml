@@ -6,7 +6,7 @@ module LocExpr =
     let meta_loc _loc loc =
       match AstQuotation.current_loc_name.contents with
       | None  -> `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
-      | Some "here" -> MetaLoc.meta_loc _loc loc
+      | Some "here" -> meta_loc _loc loc
       | Some x -> `Id (_loc, (`Lid (_loc, x)))
   end
 module LocPatt = struct let meta_loc _loc _ = `Any _loc end
@@ -336,8 +336,8 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                         (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "com_of_list")))))), e)
-           | ("list",("binding;"|"str_item"|"sig_item"|"class_sig_item"
-                      |"class_str_item"|"rec_expr"|"ctyp;"|"patt;"|"expr;"),_)
+           | ("list",("binding;"|"stru"|"sig_item"|"class_sig_item"|"cstru"
+                      |"rec_expr"|"ctyp;"|"patt;"|"expr;"),_)
                ->
                `App
                  (_loc,

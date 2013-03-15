@@ -88,7 +88,7 @@ and expr =
   | `Lazy of (loc* expr) | `LetIn of (loc* rec_flag* binding* expr)
   | `LetModule of (loc* auident* module_expr* expr)
   | `Match of (loc* expr* case) | `New of (loc* ident)
-  | `Obj of (loc* patt* class_str_item) | `OptLabl of (loc* alident* expr)
+  | `Obj of (loc* patt* cstru) | `OptLabl of (loc* alident* expr)
   | `OvrInst of (loc* rec_expr) | `Seq of (loc* expr)
   | `Send of (loc* expr* alident) | `StringDot of (loc* expr* expr)
   | `Try of (loc* expr* case) | `Constraint of (loc* expr* ctyp)
@@ -127,12 +127,11 @@ and case =
 and module_expr =
   [ nil | sid | `App of (loc* module_expr* module_expr)
   | `Functor of (loc* auident* module_type* module_expr)
-  | `Struct of (loc* str_item)
-  | `Constraint of (loc* module_expr* module_type)
+  | `Struct of (loc* stru) | `Constraint of (loc* module_expr* module_type)
   | `PackageModule of (loc* expr) | ant] 
-and str_item =
+and stru =
   [ nil | `Class of (loc* class_expr) | `ClassType of (loc* class_type)
-  | `Sem of (loc* str_item* str_item) | `Directive of (loc* alident* expr)
+  | `Sem of (loc* stru* stru) | `Directive of (loc* alident* expr)
   | `Exception of (loc* of_ctyp) | `StExp of (loc* expr)
   | `External of (loc* alident* ctyp* string meta_list)
   | `Include of (loc* module_expr) | `Module of (loc* auident* module_expr)
@@ -157,13 +156,11 @@ and class_expr =
   | `CeCon of (loc* virtual_flag* ident* type_parameters)
   | `CeFun of (loc* patt* class_expr)
   | `CeLet of (loc* rec_flag* binding* class_expr)
-  | `Obj of (loc* patt* class_str_item)
-  | `CeTyc of (loc* class_expr* class_type)
+  | `Obj of (loc* patt* cstru) | `CeTyc of (loc* class_expr* class_type)
   | `And of (loc* class_expr* class_expr)
   | `Eq of (loc* class_expr* class_expr) | ant] 
-and class_str_item =
-  [ nil | `Sem of (loc* class_str_item* class_str_item)
-  | `Eq of (loc* ctyp* ctyp)
+and cstru =
+  [ nil | `Sem of (loc* cstru* cstru) | `Eq of (loc* ctyp* ctyp)
   | `Inherit of (loc* override_flag* class_expr* alident meta_option)
   | `Initializer of (loc* expr)
   | `CrMth of (loc* alident* override_flag* private_flag* expr* ctyp)

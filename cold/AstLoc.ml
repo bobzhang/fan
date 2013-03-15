@@ -66,7 +66,6 @@ let loc_of =
   | `Functor (_loc,_,_,_) -> _loc
   | `With (_loc,_,_) -> _loc
   | `NativeInt (_loc,_) -> _loc
-  | `Constr (_loc,_) -> _loc
   | `TyVrnOf (_loc,_,_) -> _loc
   | `TyAbstr (_loc,_,_,_) -> _loc
   | `Private _loc -> _loc

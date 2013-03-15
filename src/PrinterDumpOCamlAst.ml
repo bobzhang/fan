@@ -18,7 +18,7 @@ module P = struct
     let pt =
       match ast with
       [None -> []  
-      |Some ast -> Ast2pt.str_item ast] in
+      |Some ast -> Ast2pt.stru ast] in
     FanUtil.(with_open_out_file
                output_file
                (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt));

@@ -53,8 +53,8 @@ let p_expr f  e =
 let p_patt f e =
   pp f "@[%a@]@." AstPrint.pattern (Ast2pt.patt e);
   
-let p_str_item f e =
-  pp f "@[%a@]@." AstPrint.structure (Ast2pt.str_item e);
+let p_stru f e =
+  pp f "@[%a@]@." AstPrint.structure (Ast2pt.stru e);
 
 (* FIXME allow more interfaces later *)  
 (* let p_ident f e = *)
@@ -91,7 +91,7 @@ let parse_include_file entry =
 (* (\* to be exported   *\) *)
 (* let parse_include_file_smart file = let open Filename in *)
 (*   if check_suffix file ".ml" then *)
-(*     `Str (GramLib.parse_include_file str_items file) *)
+(*     `Str (GramLib.parse_include_file strus file) *)
 (*   else if check_suffix file ".mli" then *)
 (*     `Sig (GramLib.parse_include_file sig_items file) *)
 (*   else begin *)

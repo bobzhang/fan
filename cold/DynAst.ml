@@ -7,11 +7,11 @@ type 'a tag =
   | Sig_item
   | With_constr
   | Module_expr
-  | Str_item
+  | Stru
   | Class_type
   | Class_sig_item
   | Class_expr
-  | Class_str_item
+  | Cstru
   | Case
   | Ident
   | Binding
@@ -26,11 +26,11 @@ let string_of_tag =
   | Sig_item  -> "sig_item"
   | With_constr  -> "with_constr"
   | Module_expr  -> "module_expr"
-  | Str_item  -> "str_item"
+  | Stru  -> "stru"
   | Class_type  -> "class_type"
   | Class_sig_item  -> "class_sig_item"
   | Class_expr  -> "class_expr"
-  | Class_str_item  -> "class_str_item"
+  | Cstru  -> "cstru"
   | Case  -> "case"
   | Ident  -> "ident"
   | Binding  -> "binding"
@@ -43,11 +43,11 @@ let module_type_tag: module_type tag = Module_type
 let sig_item_tag: sig_item tag = Sig_item
 let with_constr_tag: with_constr tag = With_constr
 let module_expr_tag: module_expr tag = Module_expr
-let str_item_tag: str_item tag = Str_item
+let stru_tag: stru tag = Stru
 let class_type_tag: class_type tag = Class_type
 let class_sig_item_tag: class_sig_item tag = Class_sig_item
 let class_expr_tag: class_expr tag = Class_expr
-let class_str_item_tag: class_str_item tag = Class_str_item
+let cstru_tag: cstru tag = Cstru
 let case_tag: case tag = Case
 let ident_tag: ident tag = Ident
 let binding_tag: binding tag = Binding

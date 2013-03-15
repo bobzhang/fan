@@ -36,7 +36,7 @@ val mk_method_type_of_name :
       
 (* val mk_dest_type: destination:FSig.destination -> ident * int -> ctyp  *)
         
-val mk_obj : string -> string -> class_str_item -> str_item
+val mk_obj : string -> string -> cstru -> stru
 val is_recursive : typedecl -> bool
 val is_abstract : typedecl -> bool
 
@@ -57,7 +57,7 @@ val reduce_data_ctors:
     or_ctyp ->
       'a -> compose:('e -> 'a  -> 'a) -> (string -> ctyp list -> 'e) -> 'a    
 (* @raise Invalid_argument *)        
-val of_str_item: str_item -> typedecl
+val of_stru: stru -> typedecl
 
 val view_sum: or_ctyp -> FSig.branch list
 val view_variant: row_field -> FSig.vbranch list    

@@ -2,7 +2,7 @@ open Transform
 open FSig
 open Lib
 let _loc = FanLoc.ghost
-let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
+let gen_stru ?module_name  ?(arity= 1)  ?(trail=
   `App
     (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
       (`Str (_loc, "arity >= 2 in other branches"))))
@@ -31,8 +31,8 @@ let gen_str_item ?module_name  ?(arity= 1)  ?(trail=
   let cons_transform = cons_transform in
   Frame.check names;
   let open Frame in
-    str_item_of_module_types ?module_name ?cons_transform ~arity ~names
-      ~trail ~mk_variant ~left_type_id ~left_type_variable ~mk_record
+    stru_of_module_types ?module_name ?cons_transform ~arity ~names ~trail
+      ~mk_variant ~left_type_id ~left_type_variable ~mk_record
       (normal_simple_expr_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
          ~left_type_id ~right_type_variable)
 let gen_object ?module_name  ?(arity= 1)  ?(trail=

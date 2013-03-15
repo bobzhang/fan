@@ -4,7 +4,7 @@ open Format;
 open LibUtil;
 
 
-(*be careful, since you can register your own [str_item_parser],
+(*be careful, since you can register your own [stru_parser],
   if you do it in-consistently, this may result in an
   in-consistent behavior *)  
 let just_print_the_version () =
@@ -148,7 +148,7 @@ module Camlp4Bin
                 (* FIXME *)  
                 (* assert false *)
             ] );
-      let rec str_handler = with str_item
+      let rec str_handler = with stru
           (fun
             [ {| #load $str:s |} -> begin rewrite_and_load "" s; None end
             | {| #directory $str:s |} ->
@@ -194,7 +194,7 @@ module Camlp4Bin
           name
           PreCast.CurrentParser.parse_implem
           PreCast.CurrentPrinter.print_implem
-          (* (new FanObjs.clean_ast)#str_item *) (fun x -> x)
+          (* (new FanObjs.clean_ast)#stru *) (fun x -> x)
           AstFilters.apply_implem_filters
           (* gimd *);
 

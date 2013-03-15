@@ -303,7 +303,7 @@ let fun_of_tydcl
     | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (FanObjs.dump_type_info t)]
    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (FanObjs.dump_typedecl t)] ;             
 
-(* destination is [Str_item] generate [str_item], type annotations may
+(* destination is [Str_item] generate [stru], type annotations may
    not be needed here
  *)          
 let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
@@ -336,7 +336,7 @@ let binding_of_tydcl ?cons_transform simple_expr_of_ctyp
     failwithf $(str:"Abstract data type not implemented") |};
   end ;
 
-let str_item_of_module_types ?module_name ?cons_transform
+let stru_of_module_types ?module_name ?cons_transform
     ?arity ?names ~trail ~mk_variant ~left_type_id ~left_type_variable
     ~mk_record
     (* ~destination *)
@@ -349,11 +349,11 @@ let str_item_of_module_types ?module_name ?cons_transform
       (* ~destination *)
       (simple_expr_of_ctyp_with_cxt cxt) in
   (* return new types as generated  new context *)
-  let fs (ty:types) : str_item= match ty with
+  let fs (ty:types) : stru= match ty with
     [ `Mutual named_types ->
       (* let binding = *)
       match named_types with
-      [ [] -> {:str_item| let _ = ()|} (* FIXME *)
+      [ [] -> {:stru| let _ = ()|} (* FIXME *)
       | xs -> begin 
           List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
           let binding = List.reduce_right_with
@@ -361,7 +361,7 @@ let str_item_of_module_types ?module_name ?cons_transform
               ~f:(fun (_name,ty) ->begin
                 mk_binding  ty;
               end ) xs;
-         {:str_item| let rec $binding |} 
+         {:stru| let rec $binding |} 
       end ]
 
     | `Single (name,tydcl) -> begin 
@@ -370,15 +370,15 @@ let str_item_of_module_types ?module_name ?cons_transform
           if Ctyp.is_recursive tydcl then `Recursive _loc
           else `ReNil  _loc
         and binding = mk_binding  tydcl in 
-        {:str_item| let $rec:rec_flag  $binding |}
+        {:stru| let $rec:rec_flag  $binding |}
     end ] in
   let item =
     match lst with
-    [[] -> {:str_item|let _ = ()|}
+    [[] -> {:stru|let _ = ()|}
     | _ ->  sem_of_list (List.map fs lst ) ]  in
   match module_name with
   [ None -> item
-  | Some m -> {:str_item| module $uid:m = struct $item end |} ];
+  | Some m -> {:stru| module $uid:m = struct $item end |} ];
 
 
  (*
@@ -394,7 +394,7 @@ let obj_of_module_types
     ~mk_record
     ~mk_variant
      base
-    class_name  simple_expr_of_ctyp (k:kind) (lst:module_types) : str_item = with {patt:ctyp}
+    class_name  simple_expr_of_ctyp (k:kind) (lst:module_types) : stru = with {patt:ctyp}
   let tbl = Hashtbl.create 50 in 
     let f tydcl result_type =
       fun_of_tydcl ~names ~destination:(Obj k)
@@ -416,31 +416,31 @@ let obj_of_module_types
             (Obj k) in
         (ty,result_type) in
         
-    let mk_class_str_item (name,tydcl) : class_str_item = 
+    let mk_cstru (name,tydcl) : cstru = 
       let (ty,result_type) = mk_type tydcl in
-      {:class_str_item| method $lid:name : $ty = $(f tydcl result_type) |}  in 
-    let fs (ty:types) : class_str_item =
+      {:cstru| method $lid:name : $ty = $(f tydcl result_type) |}  in 
+    let fs (ty:types) : cstru =
       match ty with
       [ `Mutual named_types ->
-        sem_of_list (List.map mk_class_str_item named_types)
+        sem_of_list (List.map mk_cstru named_types)
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          [ Some n  -> begin
            let ty_str =  (* (Ctyp.to_string tydcl) FIXME *) "" in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
-           {:class_str_item| method $lid:name : $ty= $(unknown n) |}
+           {:cstru| method $lid:name : $ty= $(unknown n) |}
          end
-         | None ->  mk_class_str_item named_type ]] in 
+         | None ->  mk_cstru named_type ]] in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
     let (extras,lst) = Ctyp.transform_module_types lst in 
     let body = List.map fs lst in 
-    let body : class_str_item =
+    let body : cstru =
       let items = List.map (fun (dest,src,len) ->
         let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
-        {:class_str_item| method
+        {:cstru| method
             $lid:dest : $ty = $(unknown len) |} ) extras in
       sem_of_list (body @ items) in begin 
         let v = Ctyp.mk_obj class_name  base body;
@@ -449,7 +449,7 @@ let obj_of_module_types
             tbl;
         match module_name with
         [None -> v
-        |Some u -> {:str_item| module $uid:u = struct $v  end  |} ]  
+        |Some u -> {:stru| module $uid:u = struct $v  end  |} ]  
       end ;
   
   

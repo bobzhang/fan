@@ -518,12 +518,13 @@ class meta =
     method opt_type_constr : 'loc -> opt_type_constr -> ep=
       fun _loc  ->
         function
-        | `Constr (_a0,_a1) ->
+        | `Some (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Constr")), (self#loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Some")), (self#loc _loc _a0))),
                 (self#type_constr _loc _a1))
-        | `Nil _a0 -> `App (_loc, (`Vrn (_loc, "Nil")), (self#loc _loc _a0))
+        | `None _a0 ->
+            `App (_loc, (`Vrn (_loc, "None")), (self#loc _loc _a0))
     method decl_param : 'loc -> decl_param -> ep=
       fun _loc  ->
         function
@@ -1048,7 +1049,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Obj")), (self#loc _loc _a0))),
-                (self#class_str_item _loc _a1))
+                (self#cstru _loc _a1))
         | `ObjEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "ObjEnd")), (self#loc _loc _a0))
         | `ObjPat (_a0,_a1,_a2) ->
@@ -1058,7 +1059,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "ObjPat")), (self#loc _loc _a0))),
-                     (self#patt _loc _a1))), (self#class_str_item _loc _a2))
+                     (self#patt _loc _a1))), (self#cstru _loc _a2))
         | `ObjPatEnd (_a0,_a1) ->
             `App
               (_loc,
@@ -1499,7 +1500,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Struct")), (self#loc _loc _a0))),
-                (self#str_item _loc _a1))
+                (self#stru _loc _a1))
         | `StructEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "StructEnd")), (self#loc _loc _a0))
         | `Constraint (_a0,_a1,_a2) ->
@@ -1518,7 +1519,7 @@ class meta =
                    (_loc, (`Vrn (_loc, "PackageModule")),
                      (self#loc _loc _a0))), (self#expr _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method str_item : 'loc -> str_item -> ep=
+    method stru : 'loc -> stru -> ep=
       fun _loc  ->
         function
         | `Class (_a0,_a1) ->
@@ -1537,7 +1538,7 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Sem")), (self#loc _loc _a0))),
-                     (self#str_item _loc _a1))), (self#str_item _loc _a2))
+                     (self#stru _loc _a1))), (self#stru _loc _a2))
         | `DirectiveSimple (_a0,_a1) ->
             `App
               (_loc,
@@ -1821,7 +1822,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Obj")), (self#loc _loc _a0))),
-                (self#class_str_item _loc _a1))
+                (self#cstru _loc _a1))
         | `ObjEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "ObjEnd")), (self#loc _loc _a0))
         | `ObjPat (_a0,_a1,_a2) ->
@@ -1831,7 +1832,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "ObjPat")), (self#loc _loc _a0))),
-                     (self#patt _loc _a1))), (self#class_str_item _loc _a2))
+                     (self#patt _loc _a1))), (self#cstru _loc _a2))
         | `ObjPatEnd (_a0,_a1) ->
             `App
               (_loc,
@@ -1863,7 +1864,7 @@ class meta =
                      (self#class_expr _loc _a1))),
                 (self#class_expr _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method class_str_item : 'loc -> class_str_item -> ep=
+    method cstru : 'loc -> cstru -> ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1,_a2) ->
@@ -1872,8 +1873,7 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Sem")), (self#loc _loc _a0))),
-                     (self#class_str_item _loc _a1))),
-                (self#class_str_item _loc _a2))
+                     (self#cstru _loc _a1))), (self#cstru _loc _a2))
         | `Eq (_a0,_a1,_a2) ->
             `App
               (_loc,

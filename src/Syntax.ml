@@ -23,7 +23,7 @@ let print_warning loc txt = !current_warning loc txt;
   class_description
   class_expr class_fun_binding class_fun_def class_info_for_class_expr class_info_for_class_type
   class_longident class_longident_and_param class_name_and_param class_sig_item class_signature
-  class_str_item class_structure class_type class_type_declaration
+  cstru class_structure class_type class_type_declaration
   class_type_longident class_type_longident_and_param
   class_type_plus comma_ctyp comma_expr comma_ipatt comma_patt comma_type_parameter
   constrain constructor_arg_list constructor_declaration constructor_declarations
@@ -44,10 +44,10 @@ let print_warning loc txt = !current_warning loc txt;
   private_flag_quot  opt_rec  rec_flag_quot  opt_virtual  virtual_flag_quot  opt_override
   override_flag_quot  patt  patt_as_patt_opt  patt_eoi    (* poly_type *)
   row_field  sem_expr  sem_expr_for_list  sem_patt  sem_patt_for_list  semi  sequence
-  sig_item  sig_items  star_ctyp  str_item  str_items  top_phrase  (* type_constraint *)
+  sig_item  sig_items  star_ctyp  stru  strus  top_phrase  (* type_constraint *)
   type_declaration  type_ident_and_parameters  (* type_kind *)  type_longident  type_longident_and_parameters
   type_parameter  type_parameters  typevars  val_longident  with_constr  expr_quot  patt_quot
-  ctyp_quot  str_item_quot  sig_item_quot  class_str_item_quot  class_sig_item_quot  module_expr_quot
+  ctyp_quot  stru_quot  sig_item_quot  cstru_quot  class_sig_item_quot  module_expr_quot
   module_type_quot  class_type_quot  class_expr_quot  with_constr_quot  binding_quot  rec_expr_quot
   module_declaration
   type_info

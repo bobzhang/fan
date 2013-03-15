@@ -58,13 +58,13 @@ val table_name:
     
 val output_byte : Buffer.t -> int -> unit
 val output_byte_array : int array -> expr
-val table : string * int array -> str_item
+val table : string * int array -> stru
 (* val mk_partition_name : int -> string *)
 
 val partition:
     counter:int ref ->
       tables:(int array, int) Hashtbl.t ->
-        int * (int * int * int) list -> str_item
+        int * (int * int * int) list -> stru
 
 
 val best_final : bool array -> int option

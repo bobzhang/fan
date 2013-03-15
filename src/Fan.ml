@@ -19,21 +19,21 @@ open AstQuotation;
 let d = `Absolute ["Fan";"Lang"];
 
 
-of_str_item_with_filter
-  ~name:(d,"ocaml") ~entry:str_items
+of_stru_with_filter
+  ~name:(d,"ocaml") ~entry:strus
   ~filter:(fun s ->
     let _loc = loc_of s in 
-    let v =  `Struct(_loc,s)(* {:module_expr| struct $s end |} *) in
-    (* let _ = Format.eprintf "@[%a@]@." Ast2pt.print_str_item s in *)
+    let v =  `Struct(_loc,s)in
+    (* let _ = Format.eprintf "@[%a@]@." Ast2pt.print_stru s in *)
     let module_expr =
       (Typehook.traversal ())#module_expr v in
     let code = match module_expr with
-    [ `Struct(_loc,item)(* {:module_expr| struct $item end |} *)  -> item
+    [ `Struct(_loc,item)  -> item
     | _ -> failwith "can not find items back " ]  in
     begin
       if !Typehook.show_code then
         try
-          FanBasic.p_str_item Format.std_formatter code
+          FanBasic.p_stru Format.std_formatter code
         with
           [_ -> begin
             prerr_endline &
@@ -48,19 +48,19 @@ of_str_item_with_filter
 of_expr ~name:(d,"fans") ~entry:Typehook.fan_quots ;
 of_expr ~name:(d,"save") ~entry:Typehook.save_quot;
 
-of_str_item ~name:(d,"include") ~entry:Typehook.include_quot;
+of_stru ~name:(d,"include") ~entry:Typehook.include_quot;
 let d = `Absolute ["Fan";"Lang";"Macro"];
   
 of_expr_with_filter
     ~name:(d,"expr") ~entry:expr ~filter:(AstMacros.macro_expander#expr);
 
-of_class_str_item_with_filter
-    ~name:(d,"class_str_item") ~entry:class_str_item
-    ~filter:(AstMacros.macro_expander#class_str_item);
+of_cstru_with_filter
+    ~name:(d,"cstru") ~entry:cstru
+    ~filter:(AstMacros.macro_expander#cstru);
 
-of_str_item_with_filter
-    ~name:(d,"str_item") ~entry:str_item
-    ~filter:(AstMacros.macro_expander#str_item);
+of_stru_with_filter
+    ~name:(d,"stru") ~entry:stru
+    ~filter:(AstMacros.macro_expander#stru);
 
 
 let d = `Absolute ["Fan";"Lang";"Meta"];
@@ -71,9 +71,9 @@ add_quotation (d,"sig_item") sig_item_quot
     ~mexpr:Filters.me#sig_item
     ~mpatt:Filters.mp#sig_item
     ~expr_filter ~patt_filter ;
-add_quotation (d,"str_item") str_item_quot
-    ~mexpr:Filters.me#str_item
-    ~mpatt:Filters.mp#str_item
+add_quotation (d,"stru") stru_quot
+    ~mexpr:Filters.me#stru
+    ~mpatt:Filters.mp#stru
     ~expr_filter
     ~patt_filter ;
 add_quotation (d,"ctyp") ctyp_quot
@@ -119,9 +119,9 @@ add_quotation (d,"class_sig_item") class_sig_item_quot
     ~expr_filter
     ~patt_filter ;
 
-add_quotation (d,"class_str_item") class_str_item_quot
-    ~mexpr:Filters.me#class_str_item
-    ~mpatt:Filters.mp#class_str_item
+add_quotation (d,"cstru") cstru_quot
+    ~mexpr:Filters.me#cstru
+    ~mpatt:Filters.mp#cstru
     ~expr_filter
     ~patt_filter ;
   
@@ -205,9 +205,9 @@ add_quotation (d,"direction_flag") direction_flag_quot
 add (`Absolute ["Fan";"Lang"],"str") DynAst.expr_tag
   (fun _loc _loc_option s -> {:expr|$str:s|});
 
-add (`Absolute ["Fan";"Lang"],"str") DynAst.str_item_tag
+add (`Absolute ["Fan";"Lang"],"str") DynAst.stru_tag
   (fun _loc _loc_option s ->
-    `StExp(_loc,{:expr|$str:s|})(* {:str_item| $(exp:{:expr|$str:s|}) |} *));
+    `StExp(_loc,{:expr|$str:s|})(* {:stru| $(exp:{:expr|$str:s|}) |} *));
   
 Options.add
     ("-dlang",

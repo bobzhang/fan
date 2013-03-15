@@ -1,6 +1,6 @@
 open Ast 
 
-val gen_str_item :
+val gen_stru :
   ?module_name:string ->
   ?arity:int ->
   ?trail:expr ->
@@ -10,7 +10,7 @@ val gen_str_item :
   mk_tuple:(FSig.ty_info list -> expr) ->
   mk_record:(FSig.record_col list -> expr) ->
   mk_variant:(string -> FSig.ty_info list -> expr) -> unit -> 
-  FSig.module_types -> str_item
+  FSig.module_types -> stru
 val gen_object :
   ?module_name:string ->
   ?arity:int ->
@@ -23,4 +23,4 @@ val gen_object :
   mk_tuple:(FSig.ty_info list -> expr) ->
   mk_record:(FSig.record_col list -> expr) ->
   mk_variant:(string -> FSig.ty_info list -> expr) -> unit -> 
-  FSig.module_types -> str_item
+  FSig.module_types -> stru

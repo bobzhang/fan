@@ -10,7 +10,7 @@ let _loc = FanLoc.ghost ;
    For Objects, tctor_var, always (`Fun (fun x -> x))
    FIXME we may need a more flexible way to compose branches
  *)
-let gen_str_item
+let gen_stru
     ?module_name
     ?(arity=1)
     ?(trail= {:expr| failwith "arity >= 2 in other branches" |} )
@@ -35,7 +35,7 @@ let gen_str_item
       let mk_record = mk_record ;
       let cons_transform = cons_transform;
       Frame.check names ;
-      Frame.(str_item_of_module_types
+      Frame.(stru_of_module_types
                ?module_name
                ?cons_transform
                ~arity

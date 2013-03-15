@@ -46,7 +46,7 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   | {:expr| $id:_ |} | {:expr| new $_ |} -> o
         
   | {:expr| object ($p) $cst end |} ->
-      ((o#add_patt p)#class_str_item cst)#set_env env
+      ((o#add_patt p)#cstru cst)#set_env env
         
   | e -> super#expr e ];
 
@@ -55,14 +55,14 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
     (((o#add_patt p)#expr e1)#expr e2)#set_env env
   | m -> super#case m ];
 
-  method! str_item = fun
-  [ {:str_item| external $s : $t = $_ |} ->
+  method! stru = fun
+  [ {:stru| external $s : $t = $_ |} ->
     (o#ctyp t)#add_atom s
-  | {:str_item| let $bi |} ->
+  | {:stru| let $bi |} ->
       (o#binding bi)#add_binding bi
-  | {:str_item| let rec $bi |} ->
+  | {:stru| let rec $bi |} ->
       (o#add_binding bi)#binding bi
-  | st -> super#str_item st ];
+  | st -> super#stru st ];
 
   method! class_expr = fun
   [ {:class_expr| fun $p -> $ce |} ->
@@ -72,22 +72,22 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   | {:class_expr| let rec $bi in $ce |} ->
       (((o#add_binding bi)#binding bi)#class_expr ce)#set_env env
   | {:class_expr| object ($p) $cst end |} ->
-      ((o#add_patt p)#class_str_item cst)#set_env env
+      ((o#add_patt p)#cstru cst)#set_env env
   | ce -> super#class_expr ce ];
 
-  method! class_str_item = fun
-  [ {:class_str_item| inherit $override:_ $_ |} as cst -> super#class_str_item cst
-  | {:class_str_item| inherit $override:_ $ce as $s |} ->
+  method! cstru = fun
+  [ {:cstru| inherit $override:_ $_ |} as cst -> super#cstru cst
+  | {:cstru| inherit $override:_ $ce as $s |} ->
       (o#class_expr ce)#add_atom s
-  | {:class_str_item| val $override:_ $mutable:_ $s = $e |} ->
+  | {:cstru| val $override:_ $mutable:_ $s = $e |} ->
       (o#expr e)#add_atom s
-  | {:class_str_item| val virtual $mutable:_ $s : $t |} ->
+  | {:cstru| val virtual $mutable:_ $s : $t |} ->
       (o#ctyp t)#add_atom s
-  | cst -> super#class_str_item cst ];
+  | cst -> super#cstru cst ];
 
   method! module_expr = fun
   [ {:module_expr| struct $st end |} ->
-    (o#str_item st)#set_env env
+    (o#stru st)#set_env env
   | me -> super#module_expr me ];
 end;
 

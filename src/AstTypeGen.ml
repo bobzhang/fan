@@ -27,7 +27,7 @@ let mk_record_eq : list FSig.record_col -> expr  = fun cols ->
          |> mk_variant_eq "" ;
     
 let (gen_eq,gen_eqobj) = with expr
-  (gen_str_item ~id:(`Pre "eq_")  ~names:[]
+  (gen_stru ~id:(`Pre "eq_")  ~names:[]
     ~arity:2
     ~mk_tuple:mk_tuple_eq
     ~mk_record:mk_record_eq
@@ -150,7 +150,7 @@ let gen_strip = with {patt:ctyp;expr}
         |  {|FanUtil.anti_cxt|}   ->
           res
         | _ -> {|let $pat:pat0 = $expr in $res |}]) cols result in
-  gen_str_item ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
+  gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
 Typehook.register
     ~filter:(fun s -> not (List.mem s ["loc"; "ant"]))
     ("Strip",gen_strip);
@@ -178,7 +178,7 @@ let mk_tuple params =
     params |> List.map (fun [{expr;_} -> expr]) |> mk_tuple_ee ;
 
 let gen_meta_expr = 
-  gen_str_item  ~id:(`Pre "meta_")  ~names:["_loc"]
+  gen_stru  ~id:(`Pre "meta_")  ~names:["_loc"]
     ~mk_tuple
     ~mk_record ~mk_variant:mk_variant ();
 
@@ -239,7 +239,7 @@ let mk_record_print cols =
                   |> extract )] (* apply pre *)  ;
   
 let gen_print =
-  gen_str_item  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
+  gen_stru  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
     ~mk_tuple:mk_tuple_print  ~mk_record:mk_record_print
     ~mk_variant:mk_variant_print ()
     ;    
@@ -294,8 +294,8 @@ let gen_iter =
    | Get Location generator                                          |
    +-----------------------------------------------------------------+ *)
 
-let generate (module_types:FSig.module_types) : str_item =
-  with str_item 
+let generate (module_types:FSig.module_types) : stru =
+  with stru 
   let tbl = Hashtbl.create 30 in
   let aux (_,ty) =
     match (ty:typedecl) with
@@ -352,7 +352,7 @@ Typehook.register
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)
 (* remove the loc field *)
-let generate (module_types:FSig.module_types) : str_item = with str_item
+let generate (module_types:FSig.module_types) : stru = with stru
   let aux (name,ty) =
     if not (name ="ant") then 
      with ctyp
@@ -376,7 +376,7 @@ let generate (module_types:FSig.module_types) : str_item = with str_item
      (* obj#ctyp ty *)
      obj#typedecl ty
   else ty  in
-  (fun x -> let r = FSigUtil.str_item_from_module_types ~f:aux x  in r
-  (* {:str_item| module N = struct $r end |} *)) module_types;
+  (fun x -> let r = FSigUtil.stru_from_module_types ~f:aux x  in r
+  (* {:stru| module N = struct $r end |} *)) module_types;
 
 Typehook.register ~filter:(fun _ -> true (* not (List.mem s ["loc"; "ant"]) *)) ("LocType",generate);

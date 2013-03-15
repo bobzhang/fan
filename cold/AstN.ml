@@ -49,7 +49,7 @@ and typedecl =
   | `And of (typedecl* typedecl) | ant] 
 and type_constr =
   [ `And of (type_constr* type_constr) | `Eq of (ctyp* ctyp) | ant] 
-and opt_type_constr = [ `Constr of type_constr | `Nil] 
+and opt_type_constr = [ `Some of type_constr | `None] 
 and decl_param =
   [ `Quote of (position_flag* alident) | `QuoteAny of position_flag | 
     `Any
@@ -96,15 +96,14 @@ and expr =
   | `LabelS of alident | `Label of (alident* expr) | `Lazy of expr
   | `LetIn of (rec_flag* binding* expr)
   | `LetModule of (auident* module_expr* expr) | `Match of (expr* case)
-  | `New of ident | `Obj of class_str_item | `ObjEnd
-  | `ObjPat of (patt* class_str_item) | `ObjPatEnd of patt
-  | `OptLabl of (alident* expr) | `OptLablS of alident | `OvrInst of rec_expr
-  | `OvrInstEmpty | `Seq of expr | `Send of (expr* alident)
-  | `StringDot of (expr* expr) | `Try of (expr* case)
-  | `Constraint of (expr* ctyp) | `Coercion of (expr* ctyp* ctyp)
-  | `Subtype of (expr* ctyp) | `While of (expr* expr)
-  | `LetOpen of (ident* expr) | `LocalTypeFun of (alident* expr)
-  | `Package_expr of module_expr] 
+  | `New of ident | `Obj of cstru | `ObjEnd | `ObjPat of (patt* cstru)
+  | `ObjPatEnd of patt | `OptLabl of (alident* expr) | `OptLablS of alident
+  | `OvrInst of rec_expr | `OvrInstEmpty | `Seq of expr
+  | `Send of (expr* alident) | `StringDot of (expr* expr)
+  | `Try of (expr* case) | `Constraint of (expr* ctyp)
+  | `Coercion of (expr* ctyp* ctyp) | `Subtype of (expr* ctyp)
+  | `While of (expr* expr) | `LetOpen of (ident* expr)
+  | `LocalTypeFun of (alident* expr) | `Package_expr of module_expr] 
 and rec_expr =
   [ `Sem of (rec_expr* rec_expr) | `RecBind of (ident* expr) | any | ant] 
 and module_type =
@@ -134,13 +133,13 @@ and case =
   | `CaseWhen of (patt* expr* expr) | ant] 
 and module_expr =
   [ sid | `App of (module_expr* module_expr)
-  | `Functor of (auident* module_type* module_expr) | `Struct of str_item
+  | `Functor of (auident* module_type* module_expr) | `Struct of stru
   | `StructEnd | `Constraint of (module_expr* module_type)
   | `PackageModule of expr | ant] 
-and str_item =
-  [ `Class of class_expr | `ClassType of class_type
-  | `Sem of (str_item* str_item) | `DirectiveSimple of alident
-  | `Directive of (alident* expr) | `Exception of of_ctyp | `StExp of expr
+and stru =
+  [ `Class of class_expr | `ClassType of class_type | `Sem of (stru* stru)
+  | `DirectiveSimple of alident | `Directive of (alident* expr)
+  | `Exception of of_ctyp | `StExp of expr
   | `External of (alident* ctyp* strings) | `Include of module_expr
   | `Module of (auident* module_expr) | `RecModule of module_binding
   | `ModuleType of (auident* module_type) | `Open of ident
@@ -161,14 +160,14 @@ and class_expr =
   [ `CeApp of (class_expr* expr)
   | `ClassCon of (virtual_flag* ident* type_parameters)
   | `ClassConS of (virtual_flag* ident) | `CeFun of (patt* class_expr)
-  | `LetIn of (rec_flag* binding* class_expr) | `Obj of class_str_item
-  | `ObjEnd | `ObjPat of (patt* class_str_item) | `ObjPatEnd of patt
+  | `LetIn of (rec_flag* binding* class_expr) | `Obj of cstru | `ObjEnd
+  | `ObjPat of (patt* cstru) | `ObjPatEnd of patt
   | `Constraint of (class_expr* class_type)
   | `And of (class_expr* class_expr) | `Eq of (class_expr* class_expr) | 
     ant]
   
-and class_str_item =
-  [ `Sem of (class_str_item* class_str_item) | `Eq of (ctyp* ctyp)
+and cstru =
+  [ `Sem of (cstru* cstru) | `Eq of (ctyp* ctyp)
   | `Inherit of (override_flag* class_expr)
   | `InheritAs of (override_flag* class_expr* alident) | `Initializer of expr
   | `CrMth of (alident* override_flag* private_flag* expr* ctyp)

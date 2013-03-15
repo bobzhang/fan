@@ -2,17 +2,17 @@ open FSig;
 
 open AstLoc;
 
-let str_item_from_module_types ~f:(aux:named_type -> typedecl)
-    (x:module_types) : str_item =
+let stru_from_module_types ~f:(aux:named_type -> typedecl)
+    (x:module_types) : stru =
   let _loc = FanLoc.ghost in
   match x with
-  [ [] -> {:str_item| let _ = () |}
+  [ [] -> {:stru| let _ = () |}
   | _ ->
-      let xs : list str_item  = (List.map
+      let xs : list stru  = (List.map
        (fun
-         [`Mutual tys -> {:str_item| type $(and_of_list (List.map aux tys)) |}
+         [`Mutual tys -> {:stru| type $(and_of_list (List.map aux tys)) |}
          |`Single ty ->
-             {:str_item| type $(aux ty)|}] ) x ) in
+             {:stru| type $(aux ty)|}] ) x ) in
       sem_of_list xs] ;
 
 

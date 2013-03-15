@@ -252,8 +252,8 @@ class eq =
     method opt_type_constr : opt_type_constr -> opt_type_constr -> 'result29=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Constr _a0,`Constr _b0) -> self#type_constr _a0 _b0
-        | (`Nil,`Nil) -> true
+        | (`Some _a0,`Some _b0) -> self#type_constr _a0 _b0
+        | (`None,`None) -> true
         | (_,_) -> false
     method decl_param : decl_param -> decl_param -> 'result30=
       fun _a0  _b0  ->
@@ -436,10 +436,10 @@ class eq =
         | (`Match (_a0,_a1),`Match (_b0,_b1)) ->
             (self#expr _a0 _b0) && (self#case _a1 _b1)
         | (`New _a0,`New _b0) -> self#ident _a0 _b0
-        | (`Obj _a0,`Obj _b0) -> self#class_str_item _a0 _b0
+        | (`Obj _a0,`Obj _b0) -> self#cstru _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
+            (self#patt _a0 _b0) && (self#cstru _a1 _b1)
         | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#patt _a0 _b0
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
@@ -578,20 +578,20 @@ class eq =
         | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
             ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
               (self#module_expr _a2 _b2)
-        | (`Struct _a0,`Struct _b0) -> self#str_item _a0 _b0
+        | (`Struct _a0,`Struct _b0) -> self#stru _a0 _b0
         | (`StructEnd,`StructEnd) -> true
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#module_expr _a0 _b0) && (self#module_type _a1 _b1)
         | (`PackageModule _a0,`PackageModule _b0) -> self#expr _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result48)
         | (_,_) -> false
-    method str_item : str_item -> str_item -> 'result49=
+    method stru : stru -> stru -> 'result49=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class _a0,`Class _b0) -> self#class_expr _a0 _b0
         | (`ClassType _a0,`ClassType _b0) -> self#class_type _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
-            (self#str_item _a0 _b0) && (self#str_item _a1 _b1)
+            (self#stru _a0 _b0) && (self#stru _a1 _b1)
         | (`DirectiveSimple _a0,`DirectiveSimple _b0) -> self#alident _a0 _b0
         | (`Directive (_a0,_a1),`Directive (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#expr _a1 _b1)
@@ -670,10 +670,10 @@ class eq =
         | (`LetIn (_a0,_a1,_a2),`LetIn (_b0,_b1,_b2)) ->
             ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#class_expr _a2 _b2)
-        | (`Obj _a0,`Obj _b0) -> self#class_str_item _a0 _b0
+        | (`Obj _a0,`Obj _b0) -> self#cstru _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#class_str_item _a1 _b1)
+            (self#patt _a0 _b0) && (self#cstru _a1 _b1)
         | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#patt _a0 _b0
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#class_expr _a0 _b0) && (self#class_type _a1 _b1)
@@ -683,11 +683,11 @@ class eq =
             (self#class_expr _a0 _b0) && (self#class_expr _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result52)
         | (_,_) -> false
-    method class_str_item : class_str_item -> class_str_item -> 'result53=
+    method cstru : cstru -> cstru -> 'result53=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
-            (self#class_str_item _a0 _b0) && (self#class_str_item _a1 _b1)
+            (self#cstru _a0 _b0) && (self#cstru _a1 _b1)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Inherit (_a0,_a1),`Inherit (_b0,_b1)) ->
@@ -1009,9 +1009,9 @@ class print =
     method opt_type_constr : 'fmt -> opt_type_constr -> 'result87=
       fun fmt  ->
         function
-        | `Constr _a0 ->
-            Format.fprintf fmt "@[<1>(`Constr@ %a)@]" self#type_constr _a0
-        | `Nil -> Format.fprintf fmt "`Nil"
+        | `Some _a0 ->
+            Format.fprintf fmt "@[<1>(`Some@ %a)@]" self#type_constr _a0
+        | `None -> Format.fprintf fmt "`None"
     method decl_param : 'fmt -> decl_param -> 'result88=
       fun fmt  ->
         function
@@ -1230,12 +1230,11 @@ class print =
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a)@]" self#expr _a0
               self#case _a1
         | `New _a0 -> Format.fprintf fmt "@[<1>(`New@ %a)@]" self#ident _a0
-        | `Obj _a0 ->
-            Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_str_item _a0
+        | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#cstru _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#patt _a0
-              self#class_str_item _a1
+              self#cstru _a1
         | `ObjPatEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#patt _a0
         | `OptLabl (_a0,_a1) ->
@@ -1415,7 +1414,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a)@]" self#auident
               _a0 self#module_type _a1 self#module_expr _a2
         | `Struct _a0 ->
-            Format.fprintf fmt "@[<1>(`Struct@ %a)@]" self#str_item _a0
+            Format.fprintf fmt "@[<1>(`Struct@ %a)@]" self#stru _a0
         | `StructEnd -> Format.fprintf fmt "`StructEnd"
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]"
@@ -1423,7 +1422,7 @@ class print =
         | `PackageModule _a0 ->
             Format.fprintf fmt "@[<1>(`PackageModule@ %a)@]" self#expr _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>'result106)
-    method str_item : 'fmt -> str_item -> 'result107=
+    method stru : 'fmt -> stru -> 'result107=
       fun fmt  ->
         function
         | `Class _a0 ->
@@ -1431,8 +1430,8 @@ class print =
         | `ClassType _a0 ->
             Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#class_type _a0
         | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#str_item _a0
-              self#str_item _a1
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#stru _a0
+              self#stru _a1
         | `DirectiveSimple _a0 ->
             Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a)@]" self#alident
               _a0
@@ -1533,12 +1532,11 @@ class print =
         | `LetIn (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a)@]" self#rec_flag
               _a0 self#binding _a1 self#class_expr _a2
-        | `Obj _a0 ->
-            Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_str_item _a0
+        | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#cstru _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#patt _a0
-              self#class_str_item _a1
+              self#cstru _a1
         | `ObjPatEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#patt _a0
         | `Constraint (_a0,_a1) ->
@@ -1551,12 +1549,12 @@ class print =
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#class_expr _a0
               self#class_expr _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result110)
-    method class_str_item : 'fmt -> class_str_item -> 'result111=
+    method cstru : 'fmt -> cstru -> 'result111=
       fun fmt  ->
         function
         | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#class_str_item
-              _a0 self#class_str_item _a1
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#cstru _a0
+              self#cstru _a1
         | `Eq (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
@@ -1893,9 +1891,9 @@ and meta_type_constr _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result163)
 and meta_opt_type_constr _loc =
   function
-  | `Constr _a0 ->
-      `App (_loc, (`Vrn (_loc, "Constr")), (meta_type_constr _loc _a0))
-  | `Nil -> `Vrn (_loc, "Nil")
+  | `Some _a0 ->
+      `App (_loc, (`Vrn (_loc, "Some")), (meta_type_constr _loc _a0))
+  | `None -> `Vrn (_loc, "None")
 and meta_decl_param _loc =
   function
   | `Quote (_a0,_a1) ->
@@ -2181,13 +2179,12 @@ and meta_expr _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "Match")), (meta_expr _loc _a0))),
           (meta_case _loc _a1))
   | `New _a0 -> `App (_loc, (`Vrn (_loc, "New")), (meta_ident _loc _a0))
-  | `Obj _a0 ->
-      `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_str_item _loc _a0))
+  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_cstru _loc _a0))
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_patt _loc _a0))),
-          (meta_class_str_item _loc _a1))
+          (meta_cstru _loc _a1))
   | `ObjPatEnd _a0 ->
       `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_patt _loc _a0))
   | `OptLabl (_a0,_a1) ->
@@ -2430,8 +2427,7 @@ and meta_module_expr _loc =
                (`App
                   (_loc, (`Vrn (_loc, "Functor")), (meta_auident _loc _a0))),
                (meta_module_type _loc _a1))), (meta_module_expr _loc _a2))
-  | `Struct _a0 ->
-      `App (_loc, (`Vrn (_loc, "Struct")), (meta_str_item _loc _a0))
+  | `Struct _a0 -> `App (_loc, (`Vrn (_loc, "Struct")), (meta_stru _loc _a0))
   | `StructEnd -> `Vrn (_loc, "StructEnd")
   | `Constraint (_a0,_a1) ->
       `App
@@ -2442,7 +2438,7 @@ and meta_module_expr _loc =
   | `PackageModule _a0 ->
       `App (_loc, (`Vrn (_loc, "PackageModule")), (meta_expr _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result143)
-and meta_str_item _loc =
+and meta_stru _loc =
   function
   | `Class _a0 ->
       `App (_loc, (`Vrn (_loc, "Class")), (meta_class_expr _loc _a0))
@@ -2450,8 +2446,8 @@ and meta_str_item _loc =
       `App (_loc, (`Vrn (_loc, "ClassType")), (meta_class_type _loc _a0))
   | `Sem (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_str_item _loc _a0))),
-          (meta_str_item _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_stru _loc _a0))),
+          (meta_stru _loc _a1))
   | `DirectiveSimple _a0 ->
       `App (_loc, (`Vrn (_loc, "DirectiveSimple")), (meta_alident _loc _a0))
   | `Directive (_a0,_a1) ->
@@ -2611,13 +2607,12 @@ and meta_class_expr _loc =
              (_loc,
                (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
                (meta_binding _loc _a1))), (meta_class_expr _loc _a2))
-  | `Obj _a0 ->
-      `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_str_item _loc _a0))
+  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_cstru _loc _a0))
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_patt _loc _a0))),
-          (meta_class_str_item _loc _a1))
+          (meta_cstru _loc _a1))
   | `ObjPatEnd _a0 ->
       `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_patt _loc _a0))
   | `Constraint (_a0,_a1) ->
@@ -2637,13 +2632,12 @@ and meta_class_expr _loc =
           (`App (_loc, (`Vrn (_loc, "Eq")), (meta_class_expr _loc _a0))),
           (meta_class_expr _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result139)
-and meta_class_str_item _loc =
+and meta_cstru _loc =
   function
   | `Sem (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Sem")), (meta_class_str_item _loc _a0))),
-          (meta_class_str_item _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_cstru _loc _a0))),
+          (meta_cstru _loc _a1))
   | `Eq (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_ctyp _loc _a0))),

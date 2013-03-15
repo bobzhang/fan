@@ -3,7 +3,6 @@ open Format
 open Lib
 open AstLoc
 open LibUtil
-module MetaAst = FanAst.Make(Lib.Meta.MetaGhostLoc)
 open FanGrammar
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 let prefix = "__fan_"

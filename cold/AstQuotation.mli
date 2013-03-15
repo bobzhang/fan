@@ -72,24 +72,24 @@ val of_expr: name:FanToken.name -> entry: expr Gram.t  -> unit
 
 val of_patt: name:FanToken.name -> entry: patt Gram.t  -> unit
 
-val of_class_str_item: name:FanToken.name -> entry: class_str_item Gram.t  -> unit
+val of_cstru: name:FanToken.name -> entry: cstru Gram.t  -> unit
 
 val of_case: name:FanToken.name -> entry: case Gram.t  -> unit
 
-val of_str_item: name:FanToken.name -> entry: str_item Gram.t  -> unit
+val of_stru: name:FanToken.name -> entry: stru Gram.t  -> unit
 
 val make_parser: 'a Gram.t -> FanLoc.t -> string option -> string -> 'a
 
 
-val of_str_item_with_filter: name:FanToken.name ->
-  entry:str_item Gram.t -> filter:(str_item -> str_item) -> unit
+val of_stru_with_filter: name:FanToken.name ->
+  entry:stru Gram.t -> filter:(stru -> stru) -> unit
 
 val of_patt_with_filter :
   name:FanToken.name -> entry:patt Gram.t -> filter:(patt -> patt) -> unit
 
-val of_class_str_item_with_filter :
+val of_cstru_with_filter :
   name:FanToken.name
-  -> entry:class_str_item Gram.t -> filter:(class_str_item -> class_str_item) -> unit
+  -> entry:cstru Gram.t -> filter:(cstru -> cstru) -> unit
 
 val of_case_with_filter :
   name:FanToken.name

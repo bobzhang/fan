@@ -733,13 +733,13 @@ let rec expr (x : expr) = with expr match x with
           mkexp loc (Pexp_object{pcstr_pat= patt (`Any loc); pcstr_fields=[]})
       | `Obj(loc,cfl) ->
           let p = `Any loc in 
-          let cil = class_str_item cfl [] in
+          let cil = cstru cfl [] in
           mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
       | `ObjPatEnd(loc,p) ->
           mkexp loc (Pexp_object{pcstr_pat=patt p; pcstr_fields=[]})
             
       | `ObjPat (loc,p,cfl) ->
-          let cil = class_str_item cfl [] in
+          let cil = cstru cfl [] in
           mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
       | `OvrInstEmpty(loc) -> mkexp loc (Pexp_override [])
       | `OvrInst (loc,iel) ->
@@ -857,7 +857,7 @@ and mklabexp (x:rec_expr)  =
 
 (* Example:
    {[
-   (Lib.Ctyp.of_str_item {:str_item|type u = int and v  = [A of u and b ] |})
+   (Lib.Ctyp.of_stru {:stru|type u = int and v  = [A of u and b ] |})
    ||> mktype_decl |> AstPrint.default#type_def_list f;
    type u = int 
    and v =  
@@ -885,8 +885,8 @@ and mktype_decl (x:typedecl)  =
         [`TyDcl (cloc,`Lid(sloc,c),tl,td,cl) ->
           let cl =
             match cl with
-            [`Nil _ -> []
-            | `Constr(_,cl) ->
+            [`None _ -> []
+            | `Some(_,cl) ->
               list_of_and cl []
               |> List.map
                   (fun
@@ -902,8 +902,8 @@ and mktype_decl (x:typedecl)  =
         | `TyAbstr(cloc,`Lid(sloc,c),tl,cl) ->
            let cl =
             match cl with
-            [`Nil _ -> []
-            | `Constr(_,cl) ->
+            [`None _ -> []
+            | `Some(_,cl) ->
               list_of_and cl []
               |> List.map
                   (fun
@@ -1010,7 +1010,7 @@ and module_expr (x:Ast.module_expr)=
       mkmod loc (Pmod_apply (module_expr me1) (module_expr me2))
   | `Functor(loc,`Uid(sloc,n),mt,me) ->
       mkmod loc (Pmod_functor (with_loc n sloc) (module_type mt) (module_expr me))
-  | `Struct(loc,sl) -> mkmod loc (Pmod_structure (str_item sl []))
+  | `Struct(loc,sl) -> mkmod loc (Pmod_structure (stru sl []))
   | `StructEnd(loc) -> mkmod loc (Pmod_structure [])
   | `Constraint(loc,me,mt) ->
         mkmod loc (Pmod_constraint (module_expr me) (module_type mt))
@@ -1022,7 +1022,7 @@ and module_expr (x:Ast.module_expr)=
               (expr e, Some (mktyp loc (Ptyp_package (package_type pt))), None))))
   | `PackageModule(loc,e) -> mkmod loc (Pmod_unpack (expr e))
   | t -> errorf (loc_of t) "module_expr: %s" (dump_module_expr t) ]
-and str_item (s:str_item) (l:structure) : structure =
+and stru (s:stru) (l:structure) : structure =
   match s with 
   [ `Class (loc,cd) ->
     [mkstr loc (Pstr_class
@@ -1030,7 +1030,7 @@ and str_item (s:str_item) (l:structure) : structure =
   | `ClassType (loc,ctd) ->
         [mkstr loc (Pstr_class_type
                       (List.map class_info_class_type (list_of_and ctd []))) :: l]
-  | `Sem(_,st1,st2) -> str_item st1 (str_item st2 l)
+  | `Sem(_,st1,st2) -> stru st1 (stru st2 l)
   | `Directive _ | `DirectiveSimple _  -> l
   | `Exception(loc,`Id(_,`Uid(_,s))) ->
       [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
@@ -1062,7 +1062,7 @@ and str_item (s:str_item) (l:structure) : structure =
   | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl )) :: l]
   | `Value (loc,rf,bi) ->
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
-  | x-> errorf (loc_of x) "str_item : %s" (dump_str_item x) ]
+  | x-> errorf (loc_of x) "stru : %s" (dump_stru x) ]
 and class_type (x:Ast.class_type) = match x with
   [ `ClassCon (loc, `ViNil _, id,tl) ->
     mkcty loc
@@ -1179,21 +1179,21 @@ and class_expr  (x:Ast.class_expr) = match x with
       mkcl loc (Pcl_structure{pcstr_pat= patt (`Any loc); pcstr_fields=[]})
   | `Obj(loc,cfl) ->
       let p = `Any loc in
-      let cil = class_str_item cfl [] in
+      let cil = cstru cfl [] in
       mkcl loc (Pcl_structure {pcstr_pat = patt p; pcstr_fields = cil;})
   | `ObjPatEnd(loc,p) ->
       mkcl loc (Pcl_structure {pcstr_pat= patt p; pcstr_fields = []})
   | `ObjPat (loc,p,cfl) ->
-      let cil = class_str_item cfl [] in
+      let cil = cstru cfl [] in
       mkcl loc (Pcl_structure {pcstr_pat = patt p; pcstr_fields = cil;})
   | `Constraint (loc,ce,ct) ->
       mkcl loc (Pcl_constraint (class_expr ce) (class_type ct))
   | t -> errorf (loc_of t) "class_expr: %s" (dump_class_expr t)]
 
-  and class_str_item (c:class_str_item) l =
+  and cstru (c:cstru) l =
     match c with
     [ `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
-    | `Sem(_,cst1,cst2) -> class_str_item cst1 (class_str_item cst2 l)
+    | `Sem(_,cst1,cst2) -> cstru cst1 (cstru cst2 l)
     | `Inherit (loc, ov, ce) ->
         [mkcf loc (Pcf_inher (override_flag loc ov) (class_expr ce) None) :: l]
     | `InheritAs(loc,ov,ce,`Lid(_,x)) ->
@@ -1212,10 +1212,10 @@ and class_expr  (x:Ast.class_expr) = match x with
         [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
     | `CrVvr (loc,`Lid(sloc,s),mf,t) ->
         [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]
-    | x  -> errorf  (loc_of  x) "class_str_item: %s" (dump_class_str_item x) ];
+    | x  -> errorf  (loc_of  x) "cstru: %s" (dump_cstru x) ];
 
 let sig_item (ast:sig_item) : signature = sig_item ast [];
-let str_item ast = str_item ast [];
+let stru ast = stru ast [];
 
 let directive (x:expr) = with expr  match x with 
   [`Str(_,s) -> Pdir_string s
@@ -1224,12 +1224,12 @@ let directive (x:expr) = with expr  match x with
   | {| false |} -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_expr e)) ] ;
 
-let phrase (x: str_item) =
+let phrase (x: stru) =
   match x with 
   [ `Directive (_, `Lid(_,d),dp) -> Ptop_dir d (directive dp)
   | `DirectiveSimple(_,`Lid(_,d)) -> Ptop_dir d Pdir_none
   | `Directive (_, `Ant(_loc,_),_) -> error _loc "antiquotation not allowed"
-  | si -> Ptop_def (str_item si) ];
+  | si -> Ptop_def (stru si) ];
 
 open Format;
 let pp = fprintf;  
@@ -1242,8 +1242,8 @@ let to_string_expr = to_string_of_printer print_expr;
 let print_patt f e =
   pp f "@[%a@]@." AstPrint.pattern (patt e);
   
-let print_str_item f e =
-  pp f "@[%a@]@." AstPrint.structure (str_item e);
+let print_stru f e =
+  pp f "@[%a@]@." AstPrint.structure (stru e);
 
 (* FIXME allow more interfaces later *)  
 (* let p_ident f e = *)

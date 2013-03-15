@@ -9,11 +9,11 @@ type 'a tag  =
  | Sig_item
  | With_constr
  | Module_expr
- | Str_item
+ | Stru
  | Class_type
  | Class_sig_item
  | Class_expr
- | Class_str_item
+ | Cstru
  | Case
  | Ident
  | Binding
@@ -28,11 +28,11 @@ let string_of_tag = fun
  | Sig_item -> "sig_item"
  | With_constr -> "with_constr"
  | Module_expr -> "module_expr"
- | Str_item -> "str_item"
+ | Stru -> "stru"
  | Class_type -> "class_type"
  | Class_sig_item -> "class_sig_item"
  | Class_expr -> "class_expr"
- | Class_str_item -> "class_str_item"
+ | Cstru -> "cstru"
  | Case -> "case"
  | Ident -> "ident"
  | Binding -> "binding"
@@ -46,11 +46,11 @@ let module_type_tag : tag module_type = Module_type;
 let sig_item_tag : tag sig_item = Sig_item;
 let with_constr_tag : tag with_constr = With_constr;
 let module_expr_tag : tag module_expr = Module_expr;
-let str_item_tag : tag str_item = Str_item;
+let stru_tag : tag stru = Stru;
 let class_type_tag : tag class_type = Class_type;
 let class_sig_item_tag : tag class_sig_item = Class_sig_item;
 let class_expr_tag : tag class_expr = Class_expr;
-let class_str_item_tag : tag class_str_item = Class_str_item;
+let cstru_tag : tag cstru = Cstru;
 let case_tag : tag case = Case;
 let ident_tag : tag ident = Ident;
 let binding_tag : tag binding = Binding;

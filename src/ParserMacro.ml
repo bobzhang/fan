@@ -12,10 +12,10 @@ open Lib;
 let apply () = begin 
   {:extend|Gram
 
-    str_item: First
+    stru: First
     [ macro_def{x} ->
-      execute_macro ~expr ~patt {:str_item|let _ = () |} (*FIXME*)
-        (fun a b -> {:str_item| $a; $b |}) x ]
+      execute_macro ~expr ~patt {:stru|let _ = () |} (*FIXME*)
+        (fun a b -> {:stru| $a; $b |}) x ]
     (* sig_item: First *)
     (* [ macro_def_sig{x} -> *)
     (*   execute_macro ~expr ~patt {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ] *)
@@ -26,7 +26,7 @@ let apply () = begin
         make_ITE_result st1 st2
     | "IFNDEF"; uident_eval_ifndef; "THEN"; smlist_then{st1}; else_macro_def{st2} ->
         make_ITE_result st1 st2
-    | "INCLUDE"; `STR (_, fname) -> Lazy (lazy (FanBasic.parse_include_file str_items fname)) ]
+    | "INCLUDE"; `STR (_, fname) -> Lazy (lazy (FanBasic.parse_include_file strus fname)) ]
       
     (* macro_def_sig: *)
     (* [ "DEFINE"; uident{i} -> Def i None *)
@@ -52,14 +52,14 @@ let apply () = begin
     [ L1
         [ macro_def{d}; ";" ->
           execute_macro_if_active_branch ~expr ~patt _loc
-            {:str_item|let _ = ()|} (* FIXME *)
-            (fun a b -> {:str_item| $a; $b |}) Then d
-        | str_item{si}; ";" -> Str si ]{sml} -> sml ]
+            {:stru|let _ = ()|} (* FIXME *)
+            (fun a b -> {:stru| $a; $b |}) Then d
+        | stru{si}; ";" -> Str si ]{sml} -> sml ]
     smlist_else:
     [ L1 [ macro_def{d}; ";" ->
            execute_macro_if_active_branch ~expr ~patt  _loc
-           {:str_item|let _ = ()|} (*FIXME*) (fun a b -> {:str_item| $a; $b |}) Else d
-         | str_item{si}; ";" -> Str si ]{sml} -> sml ]
+           {:stru|let _ = ()|} (*FIXME*) (fun a b -> {:stru| $a; $b |}) Else d
+         | stru{si}; ";" -> Str si ]{sml} -> sml ]
     (* sglist_then: *)
     (* [ L1 [ macro_def_sig{d}; semi -> *)
     (*        execute_macro_if_active_branch ~expr ~patt *)

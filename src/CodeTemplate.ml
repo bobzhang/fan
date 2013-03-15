@@ -6,11 +6,11 @@ let _loc =FanLoc.ghost ;
 
 type ty_meta = {
     str:string;
-    print: [= `Exist | `Custom of str_item | `Fmt of string];
-    eq: [= `Def | `Custom of str_item]
+    print: [= `Exist | `Custom of stru | `Fmt of string];
+    eq: [= `Def | `Custom of stru]
   };
 
-let base1_types = with str_item
+let base1_types = with stru
   [ ("int", `Exist , `Def) ;
     ("int32", `Fmt "%ld", `Def);
     ("int64", `Fmt "%Ld", `Def );
@@ -29,7 +29,7 @@ let ty_metas =
     [(str,print,eq) ->
       {str;print;eq}]);
   
-let print_base1 = with str_item
+let print_base1 = with stru
   let items =
     ty_metas |> List.map (fun [
       {str;print;_} ->
@@ -45,14 +45,14 @@ let print_base1 = with str_item
 
   
   
-let (map_class_str_item_base_1,
-     map_class_str_item_base_2,
-     fold_class_str_item_base_1,
-     fold_class_str_item_base_2,
-     print_class_str_item_base,
-     iter_class_str_item_base_1,
-     eq_class_str_item_base_2 
-    ) =  with class_str_item
+let (map_cstru_base_1,
+     map_cstru_base_2,
+     fold_cstru_base_1,
+     fold_cstru_base_2,
+     print_cstru_base,
+     iter_cstru_base_1,
+     eq_cstru_base_2 
+    ) =  with cstru
   let ty_names = ty_metas |> List.map (fun [{str;_} -> str]) in
   let v1 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> $lid:x |} in
@@ -89,7 +89,7 @@ let (map_class_str_item_base_1,
   (* ({|$list:v1|},{|$list:v2|},{|$list:v3|}, *)
   (*  {|$list:v4|},{|$list:v5|},{|$list:v6|},{|$list:v7|}) *);
 
-let eq_base1 = with str_item
+let eq_base1 = with stru
   let items = ty_metas |> List.map (fun [
   {str;eq;_} ->
     let ty =  {:ctyp| $lid:str -> $lid:str -> bool |}  in
@@ -101,23 +101,23 @@ let eq_base1 = with str_item
     (* {| $list:items |} *) ;
 
 let open AstInjection in begin 
-  register_inject_class_str_item
-    ("map_class_str_item_base_1",map_class_str_item_base_1);
-  register_inject_class_str_item
-    ("map_class_str_item_base_2",map_class_str_item_base_2);
-  register_inject_class_str_item
-    ("fold_class_str_item_base_1",fold_class_str_item_base_1);
-  register_inject_class_str_item
-    ("fold_class_str_item_base_2",fold_class_str_item_base_2);
-  (* val print_class_str_item_base : class_str_item *)
-  register_inject_class_str_item
-    ("print_class_str_item_base",print_class_str_item_base);
-  register_inject_class_str_item
-    ("iter_class_str_item_base_1", iter_class_str_item_base_1);
-  register_inject_class_str_item
-    ("eq_class_str_item_base_2", eq_class_str_item_base_2);
-  register_inject_str_item ("eq_base1",eq_base1);
-  register_inject_str_item ("print_base1",print_base1);
+  register_inject_cstru
+    ("map_cstru_base_1",map_cstru_base_1);
+  register_inject_cstru
+    ("map_cstru_base_2",map_cstru_base_2);
+  register_inject_cstru
+    ("fold_cstru_base_1",fold_cstru_base_1);
+  register_inject_cstru
+    ("fold_cstru_base_2",fold_cstru_base_2);
+  (* val print_cstru_base : cstru *)
+  register_inject_cstru
+    ("print_cstru_base",print_cstru_base);
+  register_inject_cstru
+    ("iter_cstru_base_1", iter_cstru_base_1);
+  register_inject_cstru
+    ("eq_cstru_base_2", eq_cstru_base_2);
+  register_inject_stru ("eq_base1",eq_base1);
+  register_inject_stru ("print_base1",print_base1);
 
 end;
 

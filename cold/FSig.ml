@@ -86,6 +86,6 @@ let pp_print_warning_type fmt =
 type plugin_name = string 
 type plugin = 
   {
-  transform: module_types -> str_item;
+  transform: module_types -> stru;
   position: string option;
   filter: (string -> bool) option} 

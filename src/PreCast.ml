@@ -4,11 +4,11 @@ let sig_item_parser:   ref ( ?directive_handler:(Ast.sig_item -> option Ast.sig_
    FanLoc.t -> LibUtil.XStream.t char  -> option Ast.sig_item)
  =
   ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
-let str_item_parser =
+let stru_parser =
   ref (fun ?directive_handler:(_)  _ _ -> failwith "No implementation parser");
 let sig_item_printer =
   ref (fun ?input_file:(_) ?output_file:(_)  _ -> failwith "No interface printer");
-let str_item_printer =
+let stru_printer =
   ref (fun ?input_file:(_)  ?output_file:(_) _ -> failwith "No implementation printer");
 let callbacks = Queue.create ();
 let loaded_modules = ref [];
@@ -24,17 +24,17 @@ let declare_dyn_module m f = begin
       Queue.add (m, f) callbacks;
   end;
 
-let register_str_item_parser f = str_item_parser := f;
+let register_stru_parser f = stru_parser := f;
 let register_sig_item_parser f = sig_item_parser := f;
 let register_parser f g =
-  begin  str_item_parser := f; sig_item_parser := g  end;
-let current_parser () = (!str_item_parser, !sig_item_parser);
+  begin  stru_parser := f; sig_item_parser := g  end;
+let current_parser () = (!stru_parser, !sig_item_parser);
 
-let register_str_item_printer f = str_item_printer := f;
+let register_stru_printer f = stru_printer := f;
 let register_sig_item_printer f = sig_item_printer := f;
 let register_printer f g =
-  begin  str_item_printer := f; sig_item_printer := g  end;
-let current_printer () = (!str_item_printer, !sig_item_printer);
+  begin  stru_printer := f; sig_item_printer := g  end;
+let current_printer () = (!stru_printer, !sig_item_printer);
 
 
   
@@ -97,20 +97,20 @@ module Printers = struct
 end;
   
 sig_item_parser := Syntax.parse_interf;
-str_item_parser := Syntax.parse_implem;
+stru_parser := Syntax.parse_implem;
 
 module CurrentParser = struct
   let parse_interf ?directive_handler loc strm =
     !sig_item_parser ?directive_handler loc strm;
   let parse_implem ?directive_handler loc strm =
-    !str_item_parser ?directive_handler loc strm;
+    !stru_parser ?directive_handler loc strm;
 end;
 
 module CurrentPrinter = struct
   let print_interf ?input_file ?output_file ast =
     !sig_item_printer ?input_file ?output_file ast;
   let print_implem ?input_file ?output_file ast =
-    !str_item_printer ?input_file ?output_file ast;
+    !stru_printer ?input_file ?output_file ast;
 end;
 
 

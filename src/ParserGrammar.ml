@@ -27,7 +27,7 @@ FanConfig.antiquotations := true;
   (*
 
     {[
-    with str t nonterminals {| U a b c d|} |> Ast2pt.print_str_item f;
+    with str t nonterminals {| U a b c d|} |> Ast2pt.print_stru f;
     let a = U.mk "a"
     let b = U.mk "b"
     let c = U.mk "c"
@@ -45,7 +45,7 @@ FanConfig.antiquotations := true;
       | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
       | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
     ->
-    with str_item
+    with stru
     let mk =
       match t with
       [`static t -> {:expr| $id:t.mk |}
@@ -427,7 +427,7 @@ AstQuotation.of_expr
     ~name:((d,"delete")) ~entry:delete_rule_body;
 AstQuotation.of_expr
     ~name:((d,"clear")) ~entry:nonterminalsclear;
-AstQuotation.of_str_item
+AstQuotation.of_stru
     ~name:((d,"create")) ~entry:nonterminals;
 
 (*

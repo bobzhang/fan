@@ -34,8 +34,8 @@ let (+>) (params: list ctyp) (base:ctyp) = List.fold_right arrow params base;
 
 (*
    {[
-   match <:str_item< type list 'a  = [A of int | B of 'a] >> with
-   [ <:str_item<type .$x$. >> -> name_length_of_tydcl x ];
+   match <:stru< type list 'a  = [A of int | B of 'a] >> with
+   [ <:stru<type .$x$. >> -> name_length_of_tydcl x ];
    ("list",1)
    ]}
  *)
@@ -76,13 +76,13 @@ let of_id_len ~off (id,len) =
   
 (*
    {[
-    ( <:str_item< type list 'a  = [A of int | B of 'a] >> |>
-    fun [ <:str_item<type .$x$. >> -> name_length_of_tydcl x
+    ( <:stru< type list 'a  = [A of int | B of 'a] >> |>
+    fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
         |> of_name_len ~off:1 |> eprint ] );
    list 'all_b0
 
-    ( <:str_item< type list   = [A of int | B] >> |>
-    fun [ <:str_item<type .$x$. >> -> name_length_of_tydcl x
+    ( <:stru< type list   = [A of int | B] >> |>
+    fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
         |> of_name_len ~off:1 |> eprint ] );
    ]}
 
@@ -98,8 +98,8 @@ let of_name_len ~off (name,len) =
 
   {[
   
-  (fun [ <:str_item<type .$x$. >> -> ty_name_of_tydcl x  |> eprint ])
-  <:str_item< type list 'a  = [A of int | B of 'a] >>;
+  (fun [ <:stru<type .$x$. >> -> ty_name_of_tydcl x  |> eprint ])
+  <:stru< type list 'a  = [A of int | B of 'a] >>;
 
   list 'a
    ]}
@@ -114,8 +114,8 @@ let ty_name_of_tydcl  (x:typedecl) =
 
 (*
   {[
-  (fun [ <:str_item<type .$x$. >> -> gen_ty_of_tydcl ~off:2 x  |> eprint ])
-  <:str_item< type list 'a 'b = [A of int | B of 'a] >> ;
+  (fun [ <:stru<type .$x$. >> -> gen_ty_of_tydcl ~off:2 x  |> eprint ])
+  <:stru< type list 'a 'b = [A of int | B of 'a] >> ;
 
   list 'all_c0 'all_c1
   ]}
@@ -175,9 +175,9 @@ let repeat_arrow_n ty n =
   [result] is a keyword
   {[
   let (name,len) =
-    ( {:str_item| type list 'a  'b = [A of int | B of 'a] |}
+    ( {:stru| type list 'a  'b = [A of int | B of 'a] |}
       |>
-      fun [ {:str_item|type $x |} -> name_length_of_tydcl x]);
+      fun [ {:stru|type $x |} -> name_length_of_tydcl x]);
 
 
   let f = mk_method_type ~number:2 ~prefix:["fmt"]
@@ -273,7 +273,7 @@ let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
 
 
 let mk_obj class_name  base body =
-  {:str_item| class $lid:class_name = object (self: 'self_type)
+  {:stru| class $lid:class_name = object (self: 'self_type)
     inherit $lid:base ;
     $body;
   end |};
@@ -300,7 +300,7 @@ let is_recursive ty_dcl =
   | _ -> failwithf "is_recursive not type declartion: %s" (FanObjs.dump_typedecl ty_dcl)];
 
 (*
-  {:str_item|
+  {:stru|
   type u = int
   and v = bool
   |}
@@ -360,17 +360,17 @@ let eq_list t1 t2 =
   let f = mk_transform_type_eq ();
 
   let v =
-  (f#str_item
+  (f#stru
 
-  <:str_item<
+  <:stru<
   type a = Loc.t
   and  b 'a  = [ A of LL.t 'a and LL.t 'a and Loc.t];
   let f x = 3
   >> );
 
-  f#type_transformers |>  opr#str_item fmt;  
+  f#type_transformers |>  opr#stru fmt;  
 
-  v |> opr#str_item fmt;
+  v |> opr#stru fmt;
 
   type ll_t 'a0 = LL.t 'a0;
   type loc_t = Loc.t;
@@ -391,9 +391,9 @@ let eq_list t1 t2 =
 let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50;
   inherit Objs.map as super;
-  method! str_item = fun
+  method! stru = fun
     [ 
-     {:str_item| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
+     {:stru| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
        let r = match ctyp with [`TyEq (_,_,t) -> qualified_app_list t | _ -> None ] in
        match (* qualified_app_list ctyp *) r with
        [ Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
@@ -401,7 +401,7 @@ let mk_transform_type_eq () = object(self:'self_type)
            match vars with 
            [`None _ -> [] | `Some (_,x) -> list_of_com x []] in
          if  not (eq_list (vars : list decl_params :> list ctyp) lst) then 
-           super#str_item x
+           super#stru x
          else
           (* Manual substitution
              [type u 'a 'b = Loc.t 'a 'b]
@@ -410,10 +410,10 @@ let mk_transform_type_eq () = object(self:'self_type)
            *)
            let src = i and dest = Ident.map_to_string i in begin
              Hashtbl.replace transformers dest (src,List.length lst);
-             {:str_item| let _ = ()|} (* FIXME *)
+             {:stru| let _ = ()|} (* FIXME *)
            end 
-       | None ->  super#str_item x ]
-     | x -> super#str_item x ];
+       | None ->  super#stru x ]
+     | x -> super#stru x ];
   method! ctyp x =
     match qualified_app_list x with
       [ Some (i, lst) ->
@@ -437,7 +437,7 @@ let mk_transform_type_eq () = object(self:'self_type)
   (*           `TyMan(loc,p1,v,p2,repr)   *)
   (*         end *)
   (*       | None  -> (\* match x with *\) *)
-  (*       (\* <:str_item< type a =b == [A of int] >> ; *\) *)
+  (*       (\* <:stru< type a =b == [A of int] >> ; *\) *)
   (*     (\* [ `TyMan(_loc,p1,x,p2,ctyp)(\\* {| $x == $ctyp |} *\\) -> (\\* ignore x on purpose *\\) *\) *)
   (*       `TyMan(_loc,p1,x,p2,super#type_repr repr) ] *)
   (*       (\* {| $x == $(super#ctyp ctyp) |} *\) *)
@@ -555,8 +555,8 @@ let view_variant (t:row_field) : list vbranch =
             "view_variant %s" (FanObjs.dump_row_field u) ] ) lst ;
 
     
-let of_str_item = fun
+let of_stru = fun
   [ `Type(_,x) -> x
   | t ->
       FanLoc.errorf (loc_of t)
-        "Ctyp.of_str_item %s" (FanObjs.dump_str_item t) ];
+        "Ctyp.of_stru %s" (FanObjs.dump_stru t) ];

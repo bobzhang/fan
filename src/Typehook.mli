@@ -4,7 +4,7 @@ open FSig
 val print_collect_module_types: bool ref
 
 (* type plugin = { *)
-(*   transform : FSig.module_types -> str_item; *)
+(*   transform : FSig.module_types -> stru; *)
 (*   mutable activate : bool; *)
 (*   position: string option; *)
 (*   filter: (string -> bool) option; *)
@@ -15,7 +15,7 @@ val show_code : bool ref
 
 val register :
     ?filter:(string->bool) -> ?position:string ->
-      plugin_name * (FSig.module_types -> str_item) -> unit
+      plugin_name * (FSig.module_types -> stru) -> unit
 val show_modules : unit -> unit
 val plugin_add : plugin_name -> unit
 val plugin_remove : plugin_name -> unit
@@ -41,5 +41,5 @@ val traversal: unit -> traversal
  *)
 val fan_quot : expr Gram.t
 val fan_quots : expr Gram.t
-val include_quot: str_item Gram.t
+val include_quot: stru Gram.t
 val save_quot: expr Gram.t

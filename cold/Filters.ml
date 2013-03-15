@@ -1,14 +1,16 @@
 open LibUtil
 open AstLoc
-module MetaLoc =
-  struct let meta_loc _loc _ = `Id (_loc, (`Lid (_loc, "loc"))) end
-module MetaAst = FanAst.Make(MetaLoc)
+let meta =
+  object 
+    inherit  FanMeta.meta
+    method! loc _loc _ = `Id (_loc, (`Lid (_loc, "loc")))
+  end
 let _ =
-  AstFilters.register_str_item_filter
+  AstFilters.register_stru_filter
     ("lift",
       (fun ast  ->
          let _loc = loc_of ast in
-         let e = (MetaAst.meta_str_item _loc ast :>expr) in
+         let e = (meta#stru _loc ast : ep  :>expr) in
          `StExp
            (_loc,
              (`LetIn
@@ -91,7 +93,7 @@ let rec map_case: case -> case =
   | `CaseWhen (_loc,p,w,e) -> `CaseWhen (_loc, p, w, (add_debug_expr e))
   | m -> m
 let _ =
-  AstFilters.register_str_item_filter
+  AstFilters.register_stru_filter
     ("exception",
       ((object 
           inherit  Objs.map as super
@@ -99,14 +101,14 @@ let _ =
             function
             | `Fun (_loc,m) -> `Fun (_loc, (map_case m))
             | x -> super#expr x
-          method! str_item =
+          method! stru =
             function
             | `Module (_loc,`Uid (_,"Debug"),_) as st -> st
-            | st -> super#str_item st
-        end)#str_item))
+            | st -> super#stru st
+        end)#stru))
 let _ =
-  AstFilters.register_str_item_filter
-    ("strip", (((new FanObjs.reloc) FanLoc.ghost)#str_item))
+  AstFilters.register_stru_filter
+    ("strip", (((new FanObjs.reloc) FanLoc.ghost)#stru))
 let decorate_binding decorate_fun =
   (object 
      inherit  Objs.map as super
@@ -119,11 +121,11 @@ let decorate_binding decorate_fun =
 let decorate decorate_fun =
   object (o)
     inherit  Objs.map as super
-    method! str_item =
+    method! stru =
       function
       | `Value (_loc,r,b) ->
           `Value (_loc, r, (decorate_binding decorate_fun b))
-      | st -> super#str_item st
+      | st -> super#stru st
     method! expr =
       function
       | `LetIn (_loc,r,b,e) ->
@@ -158,8 +160,7 @@ let rec decorate_fun id =
   | `Fun (_loc,m) -> decorate_this_expr (`Fun (_loc, (decorate_case m))) id
   | e -> decorate_this_expr (decorate_expr e) id
 let _ =
-  AstFilters.register_str_item_filter
-    ("profile", ((decorate decorate_fun)#str_item))
+  AstFilters.register_stru_filter ("profile", ((decorate decorate_fun)#stru))
 let map_expr =
   function
   | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))
@@ -208,28 +209,28 @@ let map_expr =
                           else `Id (_loc, (`Lid (_loc, "false")))))))))))
   | e -> e
 let _ =
-  AstFilters.register_str_item_filter
-    ("trash_nothing", ((FanObjs.map_expr map_expr)#str_item))
+  AstFilters.register_stru_filter
+    ("trash_nothing", ((FanObjs.map_expr map_expr)#stru))
 let make_filter (s,code) =
   let f =
     function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
-  (("filter_" ^ s), ((FanObjs.map_str_item f)#str_item))
+  (("filter_" ^ s), ((FanObjs.map_stru f)#stru))
 let me =
   object 
     inherit  FanMeta.meta
     method! loc _loc loc =
       match AstQuotation.current_loc_name.contents with
       | None  -> `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
-      | Some "here" -> MetaLoc.meta_loc _loc loc
+      | Some "here" -> Lib.Meta.meta_loc _loc loc
       | Some x -> `Id (_loc, (`Lid (_loc, x)))
   end
 let mp = object  inherit  FanMeta.meta method! loc _loc _ = `Any _loc end
 let _ =
-  AstFilters.register_str_item_filter
+  AstFilters.register_stru_filter
     ("serialize",
       (fun x  ->
          let _loc = FanLoc.ghost in
-         let y = (me#str_item _loc x : ep  :>expr) in
+         let y = (me#stru _loc x : ep  :>expr) in
          `Sem
            (_loc, x,
              (`Value

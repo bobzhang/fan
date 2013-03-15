@@ -1,13 +1,13 @@
 open Ast;
 open FanUtil;
 open Lib.Meta;
+
 module LocExpr = struct
   let meta_loc _loc loc =
     match !AstQuotation.current_loc_name with
     [ None -> {:expr| $(lid:!FanLoc.name) |}
-    | Some "here" -> MetaLoc.meta_loc _loc loc
+    | Some "here" -> meta_loc _loc loc
     | Some x -> {:expr| $lid:x |} ];
-  
 end;
 module LocPatt = struct
   let meta_loc _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
@@ -118,9 +118,9 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       |("list",("ctyp,"|"patt,"|"expr,"),_) ->
           {| $(uid:gm()).com_of_list $e |}
       |("list",
-        ("binding;"|"str_item"
+        ("binding;"|"stru"
       |"sig_item"|"class_sig_item"
-            |"class_str_item"|"rec_expr"
+            |"cstru"|"rec_expr"
             |"ctyp;"|"patt;"|"expr;"),_) ->
                 {| $(uid:gm()).sem_of_list $e |}
       | _ -> super#expr e]

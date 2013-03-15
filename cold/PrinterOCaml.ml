@@ -5,7 +5,7 @@ module Id =
 module P =
   struct
     let print_implem ?input_file:_  ?output_file  ast =
-      let pt = match ast with | None  -> [] | Some ast -> Ast2pt.str_item ast in
+      let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
       FanUtil.with_open_out_file output_file
         (fun oc  ->
            let fmt = Format.formatter_of_out_channel oc in

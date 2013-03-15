@@ -26,12 +26,12 @@ let wrap parse_fun lb =
 
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens
-      (Syntax.top_phrase : Gram.t (option str_item)) token_stream with
-    [ Some str_item ->
-        let str_item =
-          (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) str_item in *)
-          AstFilters.apply_implem_filters str_item in
-        Ast2pt.phrase str_item
+      (Syntax.top_phrase : Gram.t (option stru)) token_stream with
+    [ Some stru ->
+        let stru =
+          (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
+          AstFilters.apply_implem_filters stru in
+        Ast2pt.phrase stru
     | None -> raise End_of_file ];
 
   
@@ -39,7 +39,7 @@ let use_file token_stream =
   let rec loop () =
       let (pl, stopped_at_directive) = Gram.parse_origin_tokens Syntax.implem token_stream in
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
-        with str_item match pl with
+        with stru match pl with
         [ [ {| #load $str:s |} ] ->
             begin  Topdirs.dir_load Format.std_formatter s; loop ()  end
         | [ {| #directory $str:s |} ] ->

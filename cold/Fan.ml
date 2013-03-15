@@ -9,7 +9,7 @@ open LibUtil
 open AstQuotation
 let d = `Absolute ["Fan"; "Lang"]
 let _ =
-  of_str_item_with_filter ~name:(d, "ocaml") ~entry:str_items
+  of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
     ~filter:(fun s  ->
                let _loc = loc_of s in
                let v = `Struct (_loc, s) in
@@ -20,7 +20,7 @@ let _ =
                  | _ -> failwith "can not find items back " in
                if Typehook.show_code.contents
                then
-                 (try FanBasic.p_str_item Format.std_formatter code
+                 (try FanBasic.p_stru Format.std_formatter code
                   with
                   | _ ->
                       prerr_endline &
@@ -29,24 +29,24 @@ let _ =
                code)
 let _ = of_expr ~name:(d, "fans") ~entry:Typehook.fan_quots
 let _ = of_expr ~name:(d, "save") ~entry:Typehook.save_quot
-let _ = of_str_item ~name:(d, "include") ~entry:Typehook.include_quot
+let _ = of_stru ~name:(d, "include") ~entry:Typehook.include_quot
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 let _ =
   of_expr_with_filter ~name:(d, "expr") ~entry:expr
     ~filter:(AstMacros.macro_expander#expr)
 let _ =
-  of_class_str_item_with_filter ~name:(d, "class_str_item")
-    ~entry:class_str_item ~filter:(AstMacros.macro_expander#class_str_item)
+  of_cstru_with_filter ~name:(d, "cstru") ~entry:cstru
+    ~filter:(AstMacros.macro_expander#cstru)
 let _ =
-  of_str_item_with_filter ~name:(d, "str_item") ~entry:str_item
-    ~filter:(AstMacros.macro_expander#str_item)
+  of_stru_with_filter ~name:(d, "stru") ~entry:stru
+    ~filter:(AstMacros.macro_expander#stru)
 let d = `Absolute ["Fan"; "Lang"; "Meta"]
 let _ =
   add_quotation (d, "sig_item") sig_item_quot ~mexpr:(Filters.me#sig_item)
     ~mpatt:(Filters.mp#sig_item) ~expr_filter ~patt_filter
 let _ =
-  add_quotation (d, "str_item") str_item_quot ~mexpr:(Filters.me#str_item)
-    ~mpatt:(Filters.mp#str_item) ~expr_filter ~patt_filter
+  add_quotation (d, "stru") stru_quot ~mexpr:(Filters.me#stru)
+    ~mpatt:(Filters.mp#stru) ~expr_filter ~patt_filter
 let _ =
   add_quotation (d, "ctyp") ctyp_quot ~mexpr:(Filters.me#ctyp)
     ~mpatt:(Filters.mp#ctyp) ~expr_filter ~patt_filter
@@ -77,9 +77,8 @@ let _ =
     ~mexpr:(Filters.me#class_sig_item) ~mpatt:(Filters.mp#class_sig_item)
     ~expr_filter ~patt_filter
 let _ =
-  add_quotation (d, "class_str_item") class_str_item_quot
-    ~mexpr:(Filters.me#class_str_item) ~mpatt:(Filters.mp#class_str_item)
-    ~expr_filter ~patt_filter
+  add_quotation (d, "cstru") cstru_quot ~mexpr:(Filters.me#cstru)
+    ~mpatt:(Filters.mp#cstru) ~expr_filter ~patt_filter
 let _ =
   add_quotation (d, "with_constr") with_constr_quot
     ~mexpr:(Filters.me#with_constr) ~mpatt:(Filters.mp#with_constr)
@@ -131,7 +130,7 @@ let _ =
   add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.expr_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s))
 let _ =
-  add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.str_item_tag
+  add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.stru_tag
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
 let _ =
   Options.add

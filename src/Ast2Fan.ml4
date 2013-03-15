@@ -384,8 +384,8 @@ class printer = object(self:'self)
            {| module type of $(self#module_expr me) |}
        ];  
 
-     method structure_item {pstr_desc=x;pstr_loc=_loc} : Ast.str_item =
-       with str_item match x with
+     method structure_item {pstr_desc=x;pstr_loc=_loc} : Ast.stru =
+       with stru match x with
        [Pstr_eval e -> {| $(exp:self#expr e) |}
        |Pstr_value (rf,lst) ->
            let bindings =
@@ -409,15 +409,15 @@ class printer = object(self:'self)
 
        ];  
 
-     method structure (ls:structure) : Ast.str_item =
+     method structure (ls:structure) : Ast.stru =
        assert false; 
      method signature (ls:signature)  : Ast.sig_item =
        assert false;
      method signature_item {psig_desc=x;psig_loc=_loc} : Ast.sig_item =
        raise Not_found;
-     method class_fields (ls:list class_field) : Ast.class_str_item =
+     method class_fields (ls:list class_field) : Ast.cstru =
        assert false;
-     method class_field {pcf_desc=x;pcf_loc = _loc} : Ast.class_str_item =
+     method class_field {pcf_desc=x;pcf_loc = _loc} : Ast.cstru =
        assert false;
      method class_expr {pcl_desc=x;pcl_loc=_loc} : Ast.class_expr = assert false;
      method class_type ({pci_expr;_}: class_infos class_type)  : Ast.class_type = assert false;
@@ -426,7 +426,7 @@ class printer = object(self:'self)
   (*      {| $(list:List.map self#class_type ls ) |} ; *)
   (* {:class_type| object end |} *)
   (*   {:class_type| $a and $b |} *)
-       (* {:str_item| class type a = object end and b = object end|} *)
+       (* {:stru| class type a = object end and b = object end|} *)
 end;
 
 

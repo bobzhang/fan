@@ -17,16 +17,16 @@ open AstLoc;
 
      -- `App
      --
-  {:str_item| g |};
+  {:stru| g |};
 
   -- macro.expr
      
 
-  -- macro.str_item
+  -- macro.stru
      `StExp ..  
 
   1. the position where macro quotation appears
-     - class_str_item
+     - cstru
        combine with translate, this should be inferred automatically
 
 
@@ -34,7 +34,7 @@ open AstLoc;
      currently only expr
 
   3. the type macro expander
-     - macro.class_str_item should generate class_str_item 
+     - macro.cstru should generate cstru 
 
   4. register
 
@@ -42,14 +42,14 @@ open AstLoc;
 
   Guarantee:
     macro.expr should return expr
-    macro.str_item should return str_item 
+    macro.stru should return stru 
  *)
 type key = string;
 
 type expander =  expr -> expr;
 
 (*
-   expr -> str_item
+   expr -> stru
 *)
   
 let macro_expanders: Hashtbl.t key expander = Hashtbl.create 40 ;
@@ -115,4 +115,4 @@ let macro_expander = object(self)
   | e -> super#expr e ];
 end;
 
-(* AstFilters.register_str_item_filter ("macro", macro_expander#str_item);   *)
+(* AstFilters.register_stru_filter ("macro", macro_expander#stru);   *)

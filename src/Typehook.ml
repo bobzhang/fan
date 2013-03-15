@@ -104,13 +104,13 @@ let plugin_remove plugin =
 (*                    (\* type u 'a = Loc.u 'a *\)        *)
 (*                   `TyDcl _loc name vars {:ctyp||} constraints *)
 (*                |(_,_) -> super#typedecl x ] in  *)
-(*              let y = {:str_item| type $x  |} in *)
-(*              let () =  type_defs <- Some {:str_item| $type_defs ; $y |} in       *)
+(*              let y = {:stru| type $x  |} in *)
+(*              let () =  type_defs <- Some {:stru| $type_defs ; $y |} in       *)
 (*              {| type $x |}   *)
 (*      end *)
 (*      | {| type $ty |} -> (\* `And case *\) begin *)
 (*          let x = super#typedecl ty in *)
-(*          let () = type_defs <- Some {:str_item| $type_defs ; $({:str_item|type $x |}) |} in *)
+(*          let () = type_defs <- Some {:stru| $type_defs ; $({:stru|type $x |}) |} in *)
 (*          {|type $x |}  *)
 (*          end *)
 (*      | x -> super#sig_item x]; *)
@@ -172,10 +172,10 @@ let traversal () : traversal  = object (self:'self_type)
   method update_cur_and_types f = 
     cur_and_types <-  f cur_and_types;
   (* entrance *)  
-  method! module_expr = with str_item fun
+  method! module_expr = with stru fun
     [ {:module_expr| struct $u end |}  ->  begin 
       self#in_module ;
-      let res = self#str_item u ;
+      let res = self#stru u ;
       let module_types = List.rev (self#get_cur_module_types) ;
       if !print_collect_module_types then
         eprintf "@[%a@]@." FSig.pp_print_module_types module_types ;
@@ -191,7 +191,7 @@ let traversal () : traversal  = object (self:'self_type)
                 match position with
                 [Some x ->
                   let (name,f) = Filters.make_filter (x,code) in begin 
-                    AstFilters.register_str_item_filter (name,f);
+                    AstFilters.register_stru_filter (name,f);
                     AstFilters.use_implem_filter name ;
                     acc
                   end
@@ -202,10 +202,10 @@ let traversal () : traversal  = object (self:'self_type)
     end
     | x -> super#module_expr x ];
 
-  method! str_item  = with str_item fun
+  method! stru  = with stru fun
     [ {| type $_ and $_ |} as x -> begin
       self#in_and_types;
-      let _ = super#str_item x ;
+      let _ = super#stru x ;
       self#update_cur_module_types
           (fun lst -> [`Mutual (List.rev self#get_cur_and_types) :: lst] );
       self#out_and_types;
@@ -222,7 +222,7 @@ let traversal () : traversal  = object (self:'self_type)
     | {| external $_ : $_ = $_ |} | {| $exp:_ |}   | `Exception (_loc,_)
 (* {| exception $_ |} *) 
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
-    |  x ->  super#str_item x  ];
+    |  x ->  super#stru x  ];
   method! typedecl = fun
     [ `TyDcl (_, `Lid(_,name), _, _, _) as t -> begin
       if self#is_in_and_types then
@@ -287,7 +287,7 @@ include_quot:
     let keep = FanState.keep and cf = FanState.current_filters in
     {:save| keep cf ->  begin
       FanState.reset ();
-      FanBasic.parse_include_file PreCast.Syntax.str_items s;
+      FanBasic.parse_include_file PreCast.Syntax.strus s;
     end
   |}
  ]

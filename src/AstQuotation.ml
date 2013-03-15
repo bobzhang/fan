@@ -78,7 +78,7 @@ module QMap =MapMake (struct type t =key ; let compare = compare; end);
 
   [map]  and [default] is used to help resolve default case {[ {||} ]}
 
-  for example, you can register [Fan.Meta.expr] with [expr] and [str_item] positions,
+  for example, you can register [Fan.Meta.expr] with [expr] and [stru] positions,
   but when you call {[ with {expr:patt} ]} here, first the name of patt will be resolved
   to be [Fan.Meta.patt], then when you parse {[ {| |} ]} in a position, because its
   name is "", so it will first turn to help from [map], then to default
@@ -266,9 +266,9 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
     Ref.protect2 (FanConfig.antiquotations,true) (current_loc_name, loc_name_opt)
       (fun _ ->
         Gram.parse_string entry_eoi ~loc s |> mexpr loc |> expr_filter) in
-  let expand_str_item loc loc_name_opt s =
+  let expand_stru loc loc_name_opt s =
     let exp_ast = expand_expr loc loc_name_opt s in
-    {:str_item@loc| $(exp:exp_ast) |} in
+    {:stru@loc| $(exp:exp_ast) |} in
   let expand_patt _loc loc_name_opt s =
     Ref.protect FanConfig.antiquotations true begin fun _ ->
       let ast = Gram.parse_string entry_eoi ~loc:_loc s in
@@ -295,7 +295,7 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
     end in begin
         add name DynAst.expr_tag expand_expr;
         add name DynAst.patt_tag expand_patt;
-        add name DynAst.str_item_tag expand_str_item;
+        add name DynAst.stru_tag expand_stru;
     end;
 
 let make_parser entry =
@@ -310,32 +310,32 @@ DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
   add name tag (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
 
   
-let of_str_item = REGISTER(DynAst.str_item_tag);
-let of_str_item_with_filter = REGISTER_FILTER(DynAst.str_item_tag);
+let of_stru = REGISTER(DynAst.stru_tag);
+let of_stru_with_filter = REGISTER_FILTER(DynAst.stru_tag);
 let of_patt  = REGISTER(DynAst.patt_tag);
 let of_patt_with_filter  = REGISTER_FILTER(DynAst.patt_tag);
-let of_class_str_item  = REGISTER(DynAst.class_str_item_tag);
-let of_class_str_item_with_filter  = REGISTER_FILTER(DynAst.class_str_item_tag);
+let of_cstru  = REGISTER(DynAst.cstru_tag);
+let of_cstru_with_filter  = REGISTER_FILTER(DynAst.cstru_tag);
 let of_case = REGISTER(DynAst.case_tag);
 let of_case_with_filter = REGISTER_FILTER(DynAst.case_tag);
   
 
-(* both [expr] and [str_item] positions are registered *)
+(* both [expr] and [stru] positions are registered *)
 let of_expr ~name ~entry =
   let expand_fun =  make_parser entry in
   let mk_fun loc loc_name_opt s =
-    {:str_item@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
+    {:stru@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
       add name DynAst.expr_tag expand_fun ;
-      add name DynAst.str_item_tag mk_fun ;
+      add name DynAst.stru_tag mk_fun ;
     end ;
   
 let of_expr_with_filter ~name ~entry ~filter =
   let expand_fun =
     fun loc loc_name_opt s -> filter ( make_parser entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
-    {:str_item@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
+    {:stru@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
       add name DynAst.expr_tag expand_fun ;
-      add name DynAst.str_item_tag mk_fun ;
+      add name DynAst.stru_tag mk_fun ;
     end ;
   
 

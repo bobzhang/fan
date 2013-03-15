@@ -257,7 +257,7 @@ let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1)
            (`App
               (_loc, (`Id (_loc, (`Lid (_loc, "failwithf")))),
                 (`Str (_loc, "Abstract data type not implemented"))))))
-let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names 
+let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names 
   ~trail  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_expr_of_ctyp_with_cxt (lst : module_types) =
   let cxt = Hashset.create 50 in
@@ -282,7 +282,7 @@ let str_item_of_module_types ?module_name  ?cons_transform  ?arity  ?names
           (let rec_flag =
              if Ctyp.is_recursive tydcl then `Recursive _loc else `ReNil _loc
            and binding = mk_binding tydcl in `Value (_loc, rec_flag, binding))) : 
-    str_item ) in
+    stru ) in
   let item =
     match lst with
     | [] -> `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()")))))
@@ -309,15 +309,14 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
        Ctyp.mk_method_type ~number:arity ~prefix:names
          ((`Lid (_loc, name)), len) (Obj k) in
      (ty, result_type) in
-   let mk_class_str_item (name,tydcl) =
+   let mk_cstru (name,tydcl) =
      (let (ty,result_type) = mk_type tydcl in
       `CrMth
         (_loc, (`Lid (_loc, name)), (`OvNil _loc), (`PrNil _loc),
-          (f tydcl result_type), ty) : class_str_item ) in
+          (f tydcl result_type), ty) : cstru ) in
    let fs (ty : types) =
      (match ty with
-      | `Mutual named_types ->
-          sem_of_list (List.map mk_class_str_item named_types)
+      | `Mutual named_types -> sem_of_list (List.map mk_cstru named_types)
       | `Single ((name,tydcl) as named_type) ->
           (match Ctyp.abstract_list tydcl with
            | Some n ->
@@ -327,10 +326,10 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
                `CrMth
                  (_loc, (`Lid (_loc, name)), (`OvNil _loc), (`PrNil _loc),
                    (unknown n), ty)
-           | None  -> mk_class_str_item named_type) : class_str_item ) in
+           | None  -> mk_cstru named_type) : cstru ) in
    let (extras,lst) = Ctyp.transform_module_types lst in
    let body = List.map fs lst in
-   let body: class_str_item =
+   let body: cstru =
      let items =
        List.map
          (fun (dest,src,len)  ->
@@ -348,4 +347,4 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
    (match module_name with
     | None  -> v
     | Some u -> `Module (_loc, (`Uid (_loc, u)), (`Struct (_loc, v)))) : 
-  str_item )
+  stru )

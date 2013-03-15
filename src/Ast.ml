@@ -22,7 +22,7 @@
     == Modules ==
     module_type        :: The type of module types
     sig_item           :: The type of signature items
-    str_item           :: The type of structure items
+    stru           :: The type of structure items
     module_expr        :: The type of module expressions
     module_binding     :: The type of recursive module definitions
     with_constr        :: The type of `with' constraints
@@ -31,7 +31,7 @@
     class_type         :: The type of class types
     class_sig_item     :: The type of class signature items
     class_expr         :: The type of class expressions
-    class_str_item     :: The type of class structure items
+    cstru     :: The type of class structure items
  *)
 
 
@@ -186,7 +186,7 @@ and tag_names =
   | `App of (loc * tag_names * tag_names)
   | `TyVrn of (loc * astring )]   
 and typedecl =
-    (* {:str_item| type  ('a, 'b, 'c) t = t |} *)
+    (* {:stru| type  ('a, 'b, 'c) t = t |} *)
   [=
    `TyDcl of (loc * alident * (* list ctyp *) opt_decl_params
                 *  type_info  * opt_type_constr)
@@ -206,8 +206,8 @@ and type_constr =
   | `Eq of (loc * ctyp * ctyp)
   | ant ]
 and opt_type_constr =
- [= `Constr of (loc * type_constr) (* changed to some and None later *)
- | `Nil of loc ]
+ [= `Some of (loc * type_constr) (* changed to some and None later *)
+ | `None of loc ]
 and decl_param =
   [=  `Quote of (loc * position_flag * alident)
   | `QuoteAny of (loc * position_flag )
@@ -324,9 +324,9 @@ and expr =
   | `New of (loc * ident)
         (* object ((p))? (cst)? end *)
 
-  | `Obj of (loc * class_str_item)
+  | `Obj of (loc * cstru)
   | `ObjEnd of loc 
-  | `ObjPat of (loc * patt * class_str_item)
+  | `ObjPat of (loc * patt * cstru)
   | `ObjPatEnd of (loc * patt)
         (* ?s or ?s:e *)
   | `OptLabl of (loc *alident * expr)
@@ -421,17 +421,17 @@ and module_expr =
   [= sid
   | `App of (loc * module_expr * module_expr) (* me me *)
   | `Functor of (loc * auident * module_type * module_expr)
-  | `Struct of (loc * str_item)
+  | `Struct of (loc * stru)
   | `StructEnd of loc 
   | `Constraint of (loc * module_expr * module_type) (* (me : mt) *)
         (* (value e) *)
         (* (value e : S) which is represented as (value (e : S)) *)
   | `PackageModule of (loc * expr)
   | ant  ]
-and str_item =
+and stru =
   [= `Class of (loc * class_expr) (* class cice *)
   | `ClassType of (loc * class_type) (* class type cict *)
-  | `Sem of (loc * str_item * str_item)
+  | `Sem of (loc * stru * stru)
   | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * expr)
         (* exception t or exception t = i *)
@@ -480,16 +480,16 @@ and class_expr =
   | `ClassConS of (loc * virtual_flag * ident) (* virtual v *)
   | `CeFun of (loc * patt * class_expr) (* fun p -> ce *)
   | `LetIn of (loc * rec_flag * binding * class_expr) (* let (rec)? bi in ce *)
-  | `Obj of (loc  * class_str_item) (* object ((p))? (cst)? end *)
+  | `Obj of (loc  * cstru) (* object ((p))? (cst)? end *)
   | `ObjEnd of loc (*object end*)
-  | `ObjPat of (loc * patt * class_str_item)(*object (p) .. end*)
+  | `ObjPat of (loc * patt * cstru)(*object (p) .. end*)
   | `ObjPatEnd of (loc * patt) (* object (p) end*)
   | `Constraint of (loc * class_expr * class_type) (* ce : ct *)
   | `And of (loc * class_expr * class_expr)
   | `Eq  of (loc * class_expr * class_expr)
   | ant ]
-and class_str_item =
-  [=  `Sem of (loc * class_str_item * class_str_item)
+and cstru =
+  [=  `Sem of (loc * cstru * cstru)
   | `Eq of (loc * ctyp * ctyp)
   | `Inherit of (loc * override_flag * class_expr)
   | `InheritAs of (loc * override_flag * class_expr * alident)

@@ -180,7 +180,7 @@ let mk_transform_type_eq () =
   object (self : 'self_type)
     val transformers = Hashtbl.create 50
     inherit  Objs.map as super
-    method! str_item =
+    method! stru =
       function
       | `Type (_loc,`TyDcl (_,_name,vars,ctyp,_)) as x ->
           let r =
@@ -194,13 +194,13 @@ let mk_transform_type_eq () =
                  | `None _ -> []
                  | `Some (_,x) -> list_of_com x [] in
                if not (eq_list (vars : decl_params list  :>ctyp list) lst)
-               then super#str_item x
+               then super#stru x
                else
                  (let src = i and dest = Ident.map_to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
                   `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
-           | None  -> super#str_item x)
-      | x -> super#str_item x
+           | None  -> super#stru x)
+      | x -> super#stru x
     method! ctyp x =
       match qualified_app_list x with
       | Some (i,lst) ->
@@ -254,9 +254,7 @@ let view_variant (t : row_field) =
       | u ->
           FanLoc.errorf (loc_of u) "view_variant %s"
             (FanObjs.dump_row_field u)) lst : vbranch list )
-let of_str_item =
+let of_stru =
   function
   | `Type (_,x) -> x
-  | t ->
-      FanLoc.errorf (loc_of t) "Ctyp.of_str_item %s"
-        (FanObjs.dump_str_item t)
+  | t -> FanLoc.errorf (loc_of t) "Ctyp.of_stru %s" (FanObjs.dump_stru t)

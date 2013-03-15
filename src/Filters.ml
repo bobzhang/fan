@@ -3,17 +3,21 @@ open LibUtil;
 
 open AstLoc;
 
-module MetaLoc = struct
-   (* this makes sense here, because, for list operation
-      you don't care about the location representation here *)
-  let meta_loc  _loc _ = `Id(_loc,`Lid(_loc,"loc")) (* {:patt| loc |} *);
+(* module MetaLoc = struct *)
+(*    (\* this makes sense here, because, for list operation *)
+(*       you don't care about the location representation here *\) *)
+(*   let meta_loc  _loc _ = `Id(_loc,`Lid(_loc,"loc")) (\* {:patt| loc |} *\); *)
+(* end; *)
+(* module MetaAst = FanAst.Make MetaLoc; *)
+let meta = object
+  inherit FanMeta.meta;
+  method! loc _loc  _ = `Id(_loc,`Lid(_loc,"loc"));
 end;
-module MetaAst = FanAst.Make MetaLoc;
-AstFilters.register_str_item_filter ("lift",(fun ast ->
+AstFilters.register_stru_filter ("lift",(fun ast ->
   let _loc = loc_of ast in
-  let e = (MetaAst.meta_str_item _loc ast :> expr )in
-  {:str_item| let loc = FanLoc.ghost in $e |}
-  (* {:str_item| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) |} *))); (* FIXME Loc => FanLoc*)
+  let e = (meta#stru _loc ast :ep  :> expr )in
+  {:stru| let loc = FanLoc.ghost in $e |}
+  (* {:stru| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_stru _loc ast) |} *))); (* FIXME Loc => FanLoc*)
 
 let add_debug_expr (e:expr) : expr =
   let _loc = loc_of e in
@@ -37,17 +41,17 @@ let rec map_case : case -> case  = with case
   | m -> m ];
 
 
-AstFilters.register_str_item_filter ("exception",object
+AstFilters.register_stru_filter ("exception",object
   inherit Objs.map as super;
   method! expr = fun
   [ {:expr@_loc| fun [ $m ] |}  -> {:expr| fun [ $(map_case m) ] |}
   | x -> super#expr x ];
-  method! str_item = fun
-  [ {:str_item| module Debug = $_ |} as st -> st
-  | st -> super#str_item st ];
-end#str_item);
+  method! stru = fun
+  [ {:stru| module Debug = $_ |} as st -> st
+  | st -> super#stru st ];
+end#stru);
 
-AstFilters.register_str_item_filter ("strip",(new FanObjs.reloc  FanLoc.ghost)#str_item);
+AstFilters.register_stru_filter ("strip",(new FanObjs.reloc  FanLoc.ghost)#stru);
 
 let decorate_binding decorate_fun = object
   inherit Objs.map as super;
@@ -59,10 +63,10 @@ let decorate_binding decorate_fun = object
 
 let decorate decorate_fun = object (o)
   inherit Objs.map as super;
-  method! str_item = fun
-    [ {:str_item@_loc| let $rec:r $b |} ->
-      {:str_item| let $rec:r $(decorate_binding decorate_fun b) |}
-    | st -> super#str_item st ];
+  method! stru = fun
+    [ {:stru@_loc| let $rec:r $b |} ->
+      {:stru| let $rec:r $(decorate_binding decorate_fun b) |}
+    | st -> super#stru st ];
   method! expr = fun
     [ {:expr@_loc| let $rec:r $b in $e |} ->
       {:expr| let $rec:r $(decorate_binding decorate_fun b) in $(o#expr e) |}
@@ -88,7 +92,7 @@ let rec decorate_fun id =
       decorate_this_expr {:expr| fun [ $(decorate_case m) ] |} id
   | e -> decorate_this_expr (decorate_expr e) id ];
 
-AstFilters.register_str_item_filter("profile", (decorate decorate_fun)#str_item);
+AstFilters.register_stru_filter("profile", (decorate decorate_fun)#stru);
 
 let map_expr = with expr fun
   [ {| $e NOTHING |} | {| fun [NOTHING  -> $e] |} -> e
@@ -103,14 +107,14 @@ let map_expr = with expr fun
          $(if h then {| true |} else {| false |} )) |}
   | e -> e];
 
-AstFilters.register_str_item_filter ("trash_nothing",(FanObjs.map_expr map_expr)#str_item);
+AstFilters.register_stru_filter ("trash_nothing",(FanObjs.map_expr map_expr)#stru);
   
 (* [s] should starts with __ *)
 let make_filter (s,code) =
-  let f = with str_item fun
+  let f = with stru fun
   [ {| $lid:s'|} when s =s' -> code
   | e -> e  ] in
-  ("filter_"^s, (FanObjs.map_str_item f )#str_item);
+  ("filter_"^s, (FanObjs.map_stru f )#stru);
 
 (* module ME = FanAst.Make Ant.LocExpr; *)
 (* module MP = FanAst.Make Ant.LocPatt; *)
@@ -119,7 +123,7 @@ let me = object
   method! loc _loc loc =
     match !AstQuotation.current_loc_name with
     [ None -> {:expr| $(lid:!FanLoc.name) |}
-    | Some "here" -> MetaLoc.meta_loc _loc loc
+    | Some "here" -> Lib.Meta.meta_loc _loc loc
     | Some x -> {:expr| $lid:x |} ];
 end;
 let mp = object
@@ -129,10 +133,10 @@ end;
 
 
   
-AstFilters.register_str_item_filter
+AstFilters.register_stru_filter
     ("serialize",
      (fun x ->
         let _loc = FanLoc.ghost in 
-        let y = (me#str_item _loc x : ep :> expr)in 
-        {:str_item| $x; let __fan_repr_of_file = $y |}
+        let y = (me#stru _loc x : ep :> expr)in 
+        {:stru| $x; let __fan_repr_of_file = $y |}
         ) );  

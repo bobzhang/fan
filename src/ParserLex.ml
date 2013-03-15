@@ -18,7 +18,7 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
             "pa_ulex (warning): multiple definition of named regexp '%s'\n" x;
         Hashtbl.add FanLexTools.named_regexps x r
     end) (())
-        [`Lid x ; ":"; regexp{r} -> (x,r)]  SEP ";" -> {:str_item|let _ = () |} (* FIXME*)]
+        [`Lid x ; ":"; regexp{r} -> (x,r)]  SEP ";" -> {:stru|let _ = () |} (* FIXME*)]
     regexps:
     ["{" ; L1 regexp SEP ";"{xs};"}"  -> Array.of_list xs ]  
     regexp:
@@ -59,7 +59,7 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 let d = `Absolute ["Fan";"Lang";"Lex"];
 AstQuotation.of_expr
   ~name:(d,"lex") ~entry:lex ;
-AstQuotation.of_str_item
+AstQuotation.of_stru
     ~name:(d,"reg")
     ~entry:declare_regexp;  
   
@@ -74,7 +74,7 @@ end;
 let () =
   let first = ref true in
   let _loc = FanLoc.ghost in 
-  AstFilters.register_str_item_filter 
+  AstFilters.register_stru_filter 
     ("ulex",(fun s -> begin 
       assert(!first); first := false;
       let table_counter = ref 0;
@@ -82,7 +82,7 @@ let () =
       let parts = List.map (LexGen.partition ~counter:table_counter ~tables) (FanLexTools.partitions ()) in
       let tables = List.map LexGen.table (LexGen.get_tables ~tables ()) in
       let suffix = "__" ^ Digest.to_hex (Digest.string (Marshal.to_string (parts, tables) [])) in
-      (change_ids suffix) # str_item {:str_item| $list:tables; $list:parts; $s |}
+      (change_ids suffix) # stru {:stru| $list:tables; $list:parts; $s |}
     end
     ));
 *)

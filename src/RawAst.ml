@@ -22,7 +22,7 @@
     == Modules ==
     module_type        :: The type of module types
     sig_item           :: The type of signature items
-    str_item           :: The type of structure items
+    stru           :: The type of structure items
     module_expr        :: The type of module expressions
     module_binding     :: The type of recursive module definitions
     with_constr        :: The type of `with' constraints
@@ -31,7 +31,7 @@
     class_type         :: The type of class types
     class_sig_item     :: The type of class signature items
     class_expr         :: The type of class expressions
-    class_str_item     :: The type of class structure items
+    cstru     :: The type of class structure items
  *)
 
 
@@ -167,7 +167,7 @@ and tag_names =
   | `App of (loc * tag_names * tag_names)
   | `TyVrn of (loc * astring )]   
 and typedecl =
-    (* {:str_item| type  ('a, 'b, 'c) t = t |} *)
+    (* {:stru| type  ('a, 'b, 'c) t = t |} *)
   [= `TyDcl of (loc * alident * list ctyp * type_info * list (ctyp * ctyp))
   | `And of (loc * typedecl * typedecl)
   | ant_nil ]
@@ -277,7 +277,7 @@ and expr =
         (* new i *)
   | `New of (loc * ident)
         (* object ((p))? (cst)? end *)
-  | `Obj of (loc * patt * class_str_item)
+  | `Obj of (loc * patt * cstru)
         (* ?s or ?s:e *)
   | `OptLabl of (loc *alident * expr)
         (* {< rb >} *)
@@ -398,20 +398,20 @@ and module_expr =
   | `App of (loc * module_expr * module_expr)
         (* functor (s : mt) -> me *)
   | `Functor of (loc * auident * module_type * module_expr)
-  | `Struct of (loc * str_item)
+  | `Struct of (loc * stru)
         (* (me : mt) *)
   | `Constraint of (loc * module_expr * module_type)
         (* (value e) *)
         (* (value e : S) which is represented as (value (e : S)) *)
   | `PackageModule of (loc * expr)
   | ant  ]
-and str_item =
+and stru =
   [= nil
      (* class cice *)
   | `Class of (loc * class_expr)
         (* class type cict *)
   | `ClassType of (loc * class_type)
-  | `Sem of (loc * str_item * str_item)
+  | `Sem of (loc * stru * stru)
         (* # s or # s e *)
   | `Directive of (loc * alident * expr)
         (* exception t or exception t = i *)
@@ -480,7 +480,7 @@ and class_expr =
         (* let (rec)? bi in ce *)
   | `CeLet of (loc * rec_flag * binding * class_expr)
         (* object ((p))? (cst)? end *)
-  | `Obj of (loc * patt * class_str_item)
+  | `Obj of (loc * patt * cstru)
         (* ce : ct *)
   | `CeTyc of (loc * class_expr * class_type)
         (* ce and ce *)
@@ -488,9 +488,9 @@ and class_expr =
         (* ce = ce *)
   | `Eq  of (loc * class_expr * class_expr)
   | ant ]
-and class_str_item =
+and cstru =
   [= nil
-  | `Sem of (loc * class_str_item * class_str_item)
+  | `Sem of (loc * cstru * cstru)
         (* type t = t *)
   | `Eq of (loc * ctyp * ctyp)
         (* inherit(!)? ce (as s)? *)
