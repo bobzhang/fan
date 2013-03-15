@@ -45,7 +45,7 @@ val expr_of_ctyp :
   mk_variant:(string -> FSig.ty_info list -> expr) ->
   (ctyp -> expr) -> or_ctyp -> expr 
 val mk_prefix :
-  ctyp list ->
+  opt_decl_params ->
   expr ->
   ?names:string list ->
   left_type_variable:FSig.basic_id_transform ->
@@ -59,7 +59,7 @@ val fun_of_tydcl :
       result_type:ctyp -> 
       (ctyp -> expr ) ->
         (or_ctyp -> expr ) ->
-          (ctyp -> (* ctyp *)row_field -> expr) ->  (* labeld as variant *)
+          (ctyp -> row_field -> expr) ->  (* labeld as variant *)
             typedecl -> expr
 val binding_of_tydcl :
   ?cons_transform:(string -> string) ->

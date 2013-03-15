@@ -5762,12 +5762,7 @@ let apply_ctyp () =
         [([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
            ("Gram.mk_action (fun (x : 'ctyp)  (_loc : FanLoc.t)  -> (x : 'more_ctyp ))\n",
              (Gram.mk_action
-                (fun (x : 'ctyp)  (_loc : FanLoc.t)  -> (x : 'more_ctyp )))));
-        ([`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ))],
-          ("Gram.mk_action\n  (fun (x : 'type_parameter)  (_loc : FanLoc.t)  -> (x : 'more_ctyp ))\n",
-            (Gram.mk_action
-               (fun (x : 'type_parameter)  (_loc : FanLoc.t)  ->
-                  (x : 'more_ctyp )))))]));
+                (fun (x : 'ctyp)  (_loc : FanLoc.t)  -> (x : 'more_ctyp )))))]));
   Gram.extend_single (unquoted_typevars : 'unquoted_typevars Gram.t )
     (None,
       (None, None,
@@ -5816,17 +5811,6 @@ let apply_ctyp () =
                    | `Ant ((""|"typ"|"anti" as n),s) ->
                        (`Ant (_loc, (mk_anti n s)) : 'type_parameter )
                    | _ -> failwith "`Ant (_loc, (mk_anti n s))\n"))));
-        ([`Stoken
-            (((function | `QUOTATION _ -> true | _ -> false)),
-              (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.ctyp_tag : 'type_parameter )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'type_parameter )
-                  | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
         ([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), i) : 'type_parameter ))\n",
             (Gram.mk_action
@@ -5875,11 +5859,11 @@ let apply_ctyp () =
                    (tpl (`Id (_loc, i)) : 'type_longident_and_parameters )))));
         ([`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ));
          `Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'type_longident)  (tpl : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`Id (_loc, i)), tpl) : 'type_longident_and_parameters ))\n",
+          ("Gram.mk_action\n  (fun (i : 'type_longident)  (tpl : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`Id (_loc, i)), (tpl :>ctyp)) : 'type_longident_and_parameters ))\n",
             (Gram.mk_action
                (fun (i : 'type_longident)  (tpl : 'type_parameter) 
                   (_loc : FanLoc.t)  ->
-                  (`App (_loc, (`Id (_loc, i)), tpl) : 'type_longident_and_parameters )))));
+                  (`App (_loc, (`Id (_loc, i)), (tpl :>ctyp)) : 'type_longident_and_parameters )))));
         ([`Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'type_longident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, i) : 'type_longident_and_parameters ))\n",
             (Gram.mk_action
@@ -5900,16 +5884,17 @@ let apply_ctyp () =
       (None, None,
         [([`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ));
           `Sself],
-           ("Gram.mk_action\n  (fun (t2 : 'type_parameters)  (t1 : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (fun acc  -> t2 (`App (_loc, acc, t1)) : 'type_parameters ))\n",
+           ("Gram.mk_action\n  (fun (t2 : 'type_parameters)  (t1 : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (fun acc  -> t2 (`App (_loc, acc, (t1 :>ctyp))) : 'type_parameters ))\n",
              (Gram.mk_action
                 (fun (t2 : 'type_parameters)  (t1 : 'type_parameter) 
                    (_loc : FanLoc.t)  ->
-                   (fun acc  -> t2 (`App (_loc, acc, t1)) : 'type_parameters )))));
+                   (fun acc  -> t2 (`App (_loc, acc, (t1 :>ctyp))) : 
+                   'type_parameters )))));
         ([`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (fun acc  -> `App (_loc, acc, t) : 'type_parameters ))\n",
+          ("Gram.mk_action\n  (fun (t : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (fun acc  -> `App (_loc, acc, (t :>ctyp)) : 'type_parameters ))\n",
             (Gram.mk_action
                (fun (t : 'type_parameter)  (_loc : FanLoc.t)  ->
-                  (fun acc  -> `App (_loc, acc, t) : 'type_parameters )))));
+                  (fun acc  -> `App (_loc, acc, (t :>ctyp)) : 'type_parameters )))));
         ([],
           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (fun t  -> t : 'type_parameters ))\n",
             (Gram.mk_action
@@ -6180,22 +6165,25 @@ let apply_ctyp () =
               (`Skeyword ","));
           `Skeyword ")";
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (tpl : 'type_parameter list)  _  (_loc : FanLoc.t)\n      -> ((i, tpl) : 'type_ident_and_parameters ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (tpl : 'type_parameter list)  _  (_loc : FanLoc.t)\n      ->\n     ((i, (`Some (_loc, (com_of_list (tpl :>decl_params list))))) : 'type_ident_and_parameters ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (tpl : 'type_parameter list)  _ 
                    (_loc : FanLoc.t)  ->
-                   ((i, tpl) : 'type_ident_and_parameters )))));
+                   ((i,
+                      (`Some (_loc, (com_of_list (tpl :>decl_params list))))) : 
+                   'type_ident_and_parameters )))));
         ([`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ));
          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'a_lident)  (t : 'type_parameter)  (_loc : FanLoc.t)  ->\n     ((i, [t]) : 'type_ident_and_parameters ))\n",
+          ("Gram.mk_action\n  (fun (i : 'a_lident)  (t : 'type_parameter)  (_loc : FanLoc.t)  ->\n     ((i, (`Some (_loc, (t :>decl_params)))) : 'type_ident_and_parameters ))\n",
             (Gram.mk_action
                (fun (i : 'a_lident)  (t : 'type_parameter)  (_loc : FanLoc.t)
-                   -> ((i, [t]) : 'type_ident_and_parameters )))));
+                   ->
+                  ((i, (`Some (_loc, (t :>decl_params)))) : 'type_ident_and_parameters )))));
         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     ((i, []) : 'type_ident_and_parameters ))\n",
+          ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     ((i, (`None _loc)) : 'type_ident_and_parameters ))\n",
             (Gram.mk_action
                (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
-                  ((i, []) : 'type_ident_and_parameters )))))]));
+                  ((i, (`None _loc)) : 'type_ident_and_parameters )))))]));
   Gram.extend_single (constrain : 'constrain Gram.t )
     (None,
       (None, None,
@@ -6685,10 +6673,10 @@ let apply_ctyp () =
                       (`Ant (_loc, (mk_anti ~c:"ctyp," n s)) : 'comma_type_parameter )
                   | _ -> failwith "`Ant (_loc, (mk_anti ~c:\"ctyp,\" n s))\n"))));
         ([`Snterm (Gram.obj (type_parameter : 'type_parameter Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (`Ctyp (_loc, t) : 'comma_type_parameter ))\n",
+          ("Gram.mk_action\n  (fun (t : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (`Ctyp (_loc, (t :>ctyp)) : 'comma_type_parameter ))\n",
             (Gram.mk_action
                (fun (t : 'type_parameter)  (_loc : FanLoc.t)  ->
-                  (`Ctyp (_loc, t) : 'comma_type_parameter )))))]));
+                  (`Ctyp (_loc, (t :>ctyp)) : 'comma_type_parameter )))))]));
   Gram.extend_single (comma_ctyp : 'comma_ctyp Gram.t )
     (None,
       (None, None,

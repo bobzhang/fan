@@ -13,10 +13,15 @@ let (<+) (names : string list) (ty : ctyp) =
 let (+>) (params : ctyp list) (base : ctyp) =
   List.fold_right arrow params base
 let name_length_of_tydcl (x : typedecl) =
-  match x with
-  | `TyDcl (_,`Lid (_,name),tyvars,_,_) -> (name, (List.length tyvars))
-  | tydcl ->
-      failwithf "name_length_of_tydcl {|%s|}\n" (FanObjs.dump_typedecl tydcl)
+  (match x with
+   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
+       (name,
+         ((match tyvars with
+           | `None _ -> 0
+           | `Some (_,xs) -> List.length & (list_of_com xs []))))
+   | tydcl ->
+       failwithf "name_length_of_tydcl {|%s|}\n"
+         (FanObjs.dump_typedecl tydcl) : (string* int) )
 let gen_quantifiers1 ~arity  n =
   (((List.init arity
        (fun i  ->
@@ -34,6 +39,10 @@ let of_name_len ~off  (name,len) =
 let ty_name_of_tydcl (x : typedecl) =
   match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
+      let tyvars =
+        match tyvars with
+        | `None _ -> []
+        | `Some (_,xs) -> (list_of_com xs [] :>ctyp list) in
       appl_of_list ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
   | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
@@ -151,7 +160,12 @@ let qualified_app_list =
 let is_abstract (x : typedecl) =
   match x with | `TyAbstr _ -> true | _ -> false
 let abstract_list (x : typedecl) =
-  match x with | `TyAbstr (_,_,lst,_) -> Some (List.length lst) | _ -> None
+  match x with
+  | `TyAbstr (_,_,lst,_) ->
+      (match lst with
+       | `None _ -> Some 0
+       | `Some (_,xs) -> Some (List.length & (list_of_com xs [])))
+  | _ -> None
 let eq t1 t2 =
   let strip_locs t = (FanObjs.map_loc (fun _  -> FanLoc.ghost))#ctyp t in
   (strip_locs t1) = (strip_locs t2)
@@ -175,7 +189,11 @@ let mk_transform_type_eq () =
             | _ -> None in
           (match r with
            | Some (i,lst) ->
-               if not (eq_list vars lst)
+               let vars =
+                 match vars with
+                 | `None _ -> []
+                 | `Some (_,x) -> list_of_com x [] in
+               if not (eq_list (vars : decl_params list  :>ctyp list) lst)
                then super#str_item x
                else
                  (let src = i and dest = Ident.map_to_string i in

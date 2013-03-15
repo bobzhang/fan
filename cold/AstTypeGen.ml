@@ -160,7 +160,9 @@ let gen_meta =
   gen_object ~kind:(Concrete (`Id (_loc, (`Lid (_loc, "ep"))))) ~mk_tuple
     ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
     ~names:["_loc"] ()
-let _ = Typehook.register ("MetaObj", gen_meta)
+let _ =
+  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
+    ("MetaObj", gen_meta)
 let extract info =
   (info |> (List.map (fun { name_expr; id_expr;_}  -> [name_expr; id_expr])))
     |> List.concat

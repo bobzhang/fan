@@ -39,9 +39,10 @@ let (+>) (params: list ctyp) (base:ctyp) = List.fold_right arrow params base;
    ("list",1)
    ]}
  *)
-let name_length_of_tydcl (x:typedecl)=
+let name_length_of_tydcl (x:typedecl) : (string * int) =
   match x with 
-  [ `TyDcl (_, `Lid(_,name), tyvars, _, _) -> (name, List.length tyvars)
+  [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
+    (name, match tyvars with [`None _ -> 0 | `Some (_,xs) -> List.length & list_of_com  xs []])
   | tydcl ->
       failwithf "name_length_of_tydcl {|%s|}\n"  (FanObjs.dump_typedecl tydcl)];      
 
@@ -106,7 +107,8 @@ let of_name_len ~off (name,len) =
 let ty_name_of_tydcl  (x:typedecl) =
   match x with 
   [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-       appl_of_list [ {| $lid:name |} :: tyvars]
+    let tyvars = match tyvars with [`None _ -> [] |`Some(_,xs) -> (list_of_com xs [] :> list ctyp) ] in
+    appl_of_list [ {| $lid:name |} :: tyvars]
   | tydcl ->
       failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)];      
 
@@ -330,14 +332,21 @@ let is_abstract (x:typedecl)=
   (* [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false]; *)
 
 let abstract_list (x:typedecl)=
+
   match x with 
-  [ `TyAbstr (_, _, lst,  _) -> Some (List.length lst)
+  [ `TyAbstr (_, _, lst,  _) ->
+    match lst with
+    [`None _ -> Some 0
+    |`Some (_,xs) ->
+        Some (List.length & list_of_com xs [])
+  ]
+    (* Some (List.length lst) *)
   | _ -> None];
   
 let eq t1 t2 =
   let strip_locs t = (FanObjs.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
   strip_locs t1 = strip_locs t2;
-  
+(* FIXME add hoc *)  
 let eq_list t1 t2 =
   let rec loop = fun
     [ ([],[]) -> true
@@ -388,7 +397,10 @@ let mk_transform_type_eq () = object(self:'self_type)
        let r = match ctyp with [`TyEq (_,_,t) -> qualified_app_list t | _ -> None ] in
        match (* qualified_app_list ctyp *) r with
        [ Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
-         if  not (eq_list vars lst) then 
+         let vars =
+           match vars with 
+           [`None _ -> [] | `Some (_,x) -> list_of_com x []] in
+         if  not (eq_list (vars : list decl_params :> list ctyp) lst) then 
            super#str_item x
          else
           (* Manual substitution

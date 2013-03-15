@@ -25,8 +25,8 @@ type ident =
   [ `Dot of (ident* ident) | `App of (ident* ident) | alident | auident] 
 type dupath = [ `Dot of (dupath* dupath) | auident] 
 type dlpath = [ `Dot of (dupath* alident) | alident] 
-type sid = [ `Id of ident] 
 type any = [ `Any] 
+type sid = [ `Id of ident] 
 type ctyp =
   [ `Alias of (ctyp* alident) | any | `App of (ctyp* ctyp)
   | `Arrow of (ctyp* ctyp) | `ClassPath of ident | `Label of (alident* ctyp)
@@ -35,9 +35,8 @@ type ctyp =
   | `TyTypePol of (ctyp* ctyp) | `Quote of (position_flag* alident)
   | `QuoteAny of position_flag | `Tup of ctyp | `Sta of (ctyp* ctyp)
   | `PolyEq of row_field | `PolySup of row_field | `PolyInf of row_field
-  | `PolyInfSup of (row_field* tag_names) | `Package of module_type | 
-    ant]
-  
+  | `Com of (ctyp* ctyp) | `PolyInfSup of (row_field* tag_names)
+  | `Package of module_type | ant] 
 and type_parameters =
   [ `Com of (type_parameters* type_parameters) | `Ctyp of ctyp | ant] 
 and row_field =
@@ -45,13 +44,21 @@ and row_field =
   | `TyVrnOf of (astring* ctyp) | `Ctyp of ctyp] 
 and tag_names = [ ant | `App of (tag_names* tag_names) | `TyVrn of astring] 
 and typedecl =
-  [ `TyDcl of (alident* ctyp list* type_info* opt_type_constr)
-  | `TyAbstr of (alident* ctyp list* opt_type_constr)
+  [ `TyDcl of (alident* opt_decl_params* type_info* opt_type_constr)
+  | `TyAbstr of (alident* opt_decl_params* opt_type_constr)
   | `And of (typedecl* typedecl) | ant] 
 and type_constr =
   [ `And of (type_constr* type_constr) | `Eq of (ctyp* ctyp) | ant] 
 and opt_type_constr = [ `Constr of type_constr | `Nil] 
-and opt_type_params = [ `Nil] 
+and decl_param =
+  [ `Quote of (position_flag* alident) | `QuoteAny of position_flag | 
+    `Any
+  | ant] 
+and decl_params =
+  [ `Quote of (position_flag* alident) | `QuoteAny of position_flag | 
+    `Any
+  | `Com of (decl_params* decl_params) | ant] 
+and opt_decl_params = [ `Some of decl_params | `None] 
 and type_info =
   [ `TyMan of (ctyp* private_flag* type_repr)
   | `TyRepr of (private_flag* type_repr) | `TyEq of (private_flag* ctyp)

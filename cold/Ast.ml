@@ -27,8 +27,8 @@ type ident =
   | auident] 
 type dupath = [ `Dot of (loc* dupath* dupath) | auident] 
 type dlpath = [ `Dot of (loc* dupath* alident) | alident] 
-type sid = [ `Id of (loc* ident)] 
 type any = [ `Any of loc] 
+type sid = [ `Id of (loc* ident)] 
 type ctyp =
   [ `Alias of (loc* ctyp* alident) | any | `App of (loc* ctyp* ctyp)
   | `Arrow of (loc* ctyp* ctyp) | `ClassPath of (loc* ident)
@@ -41,7 +41,7 @@ type ctyp =
   | `QuoteAny of (loc* position_flag) | `Tup of (loc* ctyp)
   | `Sta of (loc* ctyp* ctyp) | `PolyEq of (loc* row_field)
   | `PolySup of (loc* row_field) | `PolyInf of (loc* row_field)
-  | `PolyInfSup of (loc* row_field* tag_names)
+  | `Com of (loc* ctyp* ctyp) | `PolyInfSup of (loc* row_field* tag_names)
   | `Package of (loc* module_type) | ant] 
 and type_parameters =
   [ `Com of (loc* type_parameters* type_parameters) | `Ctyp of (loc* ctyp)
@@ -52,13 +52,20 @@ and row_field =
 and tag_names =
   [ ant | `App of (loc* tag_names* tag_names) | `TyVrn of (loc* astring)] 
 and typedecl =
-  [ `TyDcl of (loc* alident* ctyp list* type_info* opt_type_constr)
-  | `TyAbstr of (loc* alident* ctyp list* opt_type_constr)
+  [ `TyDcl of (loc* alident* opt_decl_params* type_info* opt_type_constr)
+  | `TyAbstr of (loc* alident* opt_decl_params* opt_type_constr)
   | `And of (loc* typedecl* typedecl) | ant] 
 and type_constr =
   [ `And of (loc* type_constr* type_constr) | `Eq of (loc* ctyp* ctyp) | ant] 
 and opt_type_constr = [ `Constr of (loc* type_constr) | `Nil of loc] 
-and opt_type_params = [ `Nil of loc] 
+and decl_param =
+  [ `Quote of (loc* position_flag* alident)
+  | `QuoteAny of (loc* position_flag) | `Any of loc | ant] 
+and decl_params =
+  [ `Quote of (loc* position_flag* alident)
+  | `QuoteAny of (loc* position_flag) | `Any of loc
+  | `Com of (loc* decl_params* decl_params) | ant] 
+and opt_decl_params = [ `Some of (loc* decl_params) | `None of loc] 
 and type_info =
   [ `TyMan of (loc* ctyp* private_flag* type_repr)
   | `TyRepr of (loc* private_flag* type_repr)

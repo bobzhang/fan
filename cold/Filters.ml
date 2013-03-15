@@ -214,14 +214,22 @@ let make_filter (s,code) =
   let f =
     function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
   (("filter_" ^ s), ((FanObjs.map_str_item f)#str_item))
-module ME = FanAst.Make(Ant.LocExpr)
-module MP = FanAst.Make(Ant.LocPatt)
+let me =
+  object 
+    inherit  FanMeta.meta
+    method! loc _loc loc =
+      match AstQuotation.current_loc_name.contents with
+      | None  -> `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
+      | Some "here" -> MetaLoc.meta_loc _loc loc
+      | Some x -> `Id (_loc, (`Lid (_loc, x)))
+  end
+let mp = object  inherit  FanMeta.meta method! loc _loc _ = `Any _loc end
 let _ =
   AstFilters.register_str_item_filter
     ("serialize",
       (fun x  ->
          let _loc = FanLoc.ghost in
-         let y = (ME.meta_str_item _loc x :>expr) in
+         let y = (me#str_item _loc x : ep  :>expr) in
          `Sem
            (_loc, x,
              (`Value

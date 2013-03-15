@@ -103,6 +103,7 @@ let loc_of =
   | `InheritAs (_loc,_,_,_) -> _loc
   | `Constraint (_loc,_,_) -> _loc
   | `Ant (_loc,_) -> _loc
+  | `Some (_loc,_) -> _loc
   | `Package_expr (_loc,_) -> _loc
   | `TypeEqPriv (_loc,_,_) -> _loc
   | `Label (_loc,_,_) -> _loc
@@ -159,6 +160,7 @@ let loc_of =
   | `ModuleType (_loc,_,_) -> _loc
   | `Inherit (_loc,_,_) -> _loc
   | `MuNil _loc -> _loc
+  | `None _loc -> _loc
   | `ObjTy (_loc,_,_) -> _loc
   | `Method (_loc,_,_,_) -> _loc
   | `Module (_loc,_,_) -> _loc

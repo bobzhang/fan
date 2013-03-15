@@ -13,6 +13,9 @@ class primitive =
     method string _loc (i : string) = (`Str (_loc, (String.escaped i)) : ep )
     method char _loc (i : char) = (`Chr (_loc, (Char.escaped i)) : ep )
     method unit _loc (_ : unit) = (`Id (_loc, (`Uid (_loc, "()"))) : ep )
+    method loc _loc (_l : loc) =
+      (`Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) : ep )
+    method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
     method bool _loc x =
       (match x with
        | true  -> `Id (_loc, (`Lid (_loc, "true")))
@@ -23,9 +26,6 @@ let _ = ()
 class meta =
   object (self : 'self_type)
     inherit  primitive
-    method loc : 'loc -> loc -> ep= fun _loc  _a0  -> self#fanloc_t _loc _a0
-    method ant : 'loc -> ant -> ep=
-      fun _loc  (`Ant (_a0,_a1))  -> `Ant (_a0, _a1)
     method nil : 'loc -> nil -> ep=
       fun _loc  (`Nil _a0)  ->
         `App (_loc, (`Vrn (_loc, "Nil")), (self#loc _loc _a0))
@@ -238,14 +238,14 @@ class meta =
                      (`App (_loc, (`Vrn (_loc, "Dot")), (self#loc _loc _a0))),
                      (self#dupath _loc _a1))), (self#alident _loc _a2))
         | #alident as _a0 -> (self#alident _loc _a0 :>ep)
+    method any : 'loc -> any -> ep=
+      fun _loc  (`Any _a0)  ->
+        `App (_loc, (`Vrn (_loc, "Any")), (self#loc _loc _a0))
     method sid : 'loc -> sid -> ep=
       fun _loc  (`Id (_a0,_a1))  ->
         `App
           (_loc, (`App (_loc, (`Vrn (_loc, "Id")), (self#loc _loc _a0))),
             (self#ident _loc _a1))
-    method any : 'loc -> any -> ep=
-      fun _loc  (`Any _a0)  ->
-        `App (_loc, (`Vrn (_loc, "Any")), (self#loc _loc _a0))
     method ctyp : 'loc -> ctyp -> ep=
       fun _loc  ->
         function
@@ -372,6 +372,13 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "PolyInf")), (self#loc _loc _a0))),
                 (self#row_field _loc _a1))
+        | `Com (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Com")), (self#loc _loc _a0))),
+                     (self#ctyp _loc _a1))), (self#ctyp _loc _a2))
         | `PolyInfSup (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -465,7 +472,7 @@ class meta =
                                   (_loc, (`Vrn (_loc, "TyDcl")),
                                     (self#loc _loc _a0))),
                                (self#alident _loc _a1))),
-                          (self#list (fun self  -> self#ctyp) _loc _a2))),
+                          (self#opt_decl_params _loc _a2))),
                      (self#type_info _loc _a3))),
                 (self#opt_type_constr _loc _a4))
         | `TyAbstr (_a0,_a1,_a2,_a3) ->
@@ -479,7 +486,7 @@ class meta =
                              (_loc, (`Vrn (_loc, "TyAbstr")),
                                (self#loc _loc _a0))),
                           (self#alident _loc _a1))),
-                     (self#list (fun self  -> self#ctyp) _loc _a2))),
+                     (self#opt_decl_params _loc _a2))),
                 (self#opt_type_constr _loc _a3))
         | `And (_a0,_a1,_a2) ->
             `App
@@ -517,9 +524,62 @@ class meta =
                 (`App (_loc, (`Vrn (_loc, "Constr")), (self#loc _loc _a0))),
                 (self#type_constr _loc _a1))
         | `Nil _a0 -> `App (_loc, (`Vrn (_loc, "Nil")), (self#loc _loc _a0))
-    method opt_type_params : 'loc -> opt_type_params -> ep=
-      fun _loc  (`Nil _a0)  ->
-        `App (_loc, (`Vrn (_loc, "Nil")), (self#loc _loc _a0))
+    method decl_param : 'loc -> decl_param -> ep=
+      fun _loc  ->
+        function
+        | `Quote (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "Quote")), (self#loc _loc _a0))),
+                     (self#position_flag _loc _a1))),
+                (self#alident _loc _a2))
+        | `QuoteAny (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "QuoteAny")), (self#loc _loc _a0))),
+                (self#position_flag _loc _a1))
+        | `Any _a0 -> `App (_loc, (`Vrn (_loc, "Any")), (self#loc _loc _a0))
+        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
+    method decl_params : 'loc -> decl_params -> ep=
+      fun _loc  ->
+        function
+        | `Quote (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "Quote")), (self#loc _loc _a0))),
+                     (self#position_flag _loc _a1))),
+                (self#alident _loc _a2))
+        | `QuoteAny (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "QuoteAny")), (self#loc _loc _a0))),
+                (self#position_flag _loc _a1))
+        | `Any _a0 -> `App (_loc, (`Vrn (_loc, "Any")), (self#loc _loc _a0))
+        | `Com (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Com")), (self#loc _loc _a0))),
+                     (self#decl_params _loc _a1))),
+                (self#decl_params _loc _a2))
+        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
+    method opt_decl_params : 'loc -> opt_decl_params -> ep=
+      fun _loc  ->
+        function
+        | `Some (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Some")), (self#loc _loc _a0))),
+                (self#decl_params _loc _a1))
+        | `None _a0 ->
+            `App (_loc, (`Vrn (_loc, "None")), (self#loc _loc _a0))
     method type_info : 'loc -> type_info -> ep=
       fun _loc  ->
         function
@@ -1991,6 +2051,4 @@ class meta =
                      (self#rec_bind _loc _a1))), (self#rec_bind _loc _a2))
         | #any as _a0 -> (self#any _loc _a0 :>ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method fanloc_t : 'loc -> FanLoc.t -> ep= self#unknown
-    method fanutil_anti_cxt : 'loc -> FanUtil.anti_cxt -> ep= self#unknown
   end

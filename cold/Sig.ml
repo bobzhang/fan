@@ -153,12 +153,12 @@ module type Syntax =
     val str_item_quot : str_item Gram.t
     val str_items : str_item Gram.t
     val type_declaration : typedecl Gram.t
-    val type_ident_and_parameters : (alident* ctyp list) Gram.t
+    val type_ident_and_parameters : (alident* opt_decl_params) Gram.t
     val type_info : type_info Gram.t
     val type_repr : type_repr Gram.t
     val type_longident : ident Gram.t
     val type_longident_and_parameters : ctyp Gram.t
-    val type_parameter : ctyp Gram.t
+    val type_parameter : decl_param Gram.t
     val type_parameters : (ctyp -> ctyp) Gram.t
     val typevars : ctyp Gram.t
     val val_longident : ident Gram.t

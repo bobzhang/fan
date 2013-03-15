@@ -91,11 +91,6 @@ type position_flag =
   | `Normal of loc
   |ant];
 
-(* type meta_bool = *)
-(*   [=`True of loc *)
-(*   |`False of loc *)
-(*   | ant]; *)
-
 
 type strings =
   [= `App of (loc * strings * strings)
@@ -138,9 +133,13 @@ type dlpath=
   | alident];
 
 
+type any = [= `Any of loc];
+(* type type_quote = *)
+(*   [= `Quote of (loc * position_flag * alident) *)
+(*   | `QuoteAny of (loc * position_flag) | any | ant ]; *)
 
 type sid = [= `Id of (loc * ident)];
-type any = [= `Any of loc];
+
 
 type ctyp =
   [= `Alias of (loc * ctyp * alident)
@@ -160,13 +159,15 @@ type ctyp =
   | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
 
   (*  +'s -'s 's +_ -_ *)      
-  | `Quote of (loc * position_flag * alident) 
+  | `Quote of (loc * position_flag * alident)
   | `QuoteAny of (loc * position_flag )
+  (* | type_quote *)
   | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
   | `Sta of (loc * ctyp * ctyp) (* t * t *)
   | `PolyEq of (loc * row_field)
   | `PolySup of (loc * row_field )
   | `PolyInf of (loc * row_field)
+  | `Com of (loc * ctyp * ctyp)
   | `PolyInfSup of (loc * row_field * tag_names)
   | `Package of (loc * module_type) (* (module S) *)
   | ant ]
@@ -187,14 +188,14 @@ and tag_names =
 and typedecl =
     (* {:str_item| type  ('a, 'b, 'c) t = t |} *)
   [=
-
-  (*   `TySimple of (loc * alident) *)
-  (* | `TySimpleC of (loc * alident * type_constr)         *)
-   `TyDcl of (loc * alident * list ctyp *  type_info  * opt_type_constr)
-  (* | `TyDclC of (loc * alident * list ctyp * type_info * type_constr) *)
-  | `TyAbstr of (loc * alident * list ctyp * opt_type_constr ) 
+   `TyDcl of (loc * alident * (* list ctyp *) opt_decl_params
+                *  type_info  * opt_type_constr)
+  | `TyAbstr of (loc * alident * (* list ctyp *)
+                   opt_decl_params
+                   * opt_type_constr ) 
   | `And of (loc * typedecl * typedecl)
   | ant ]
+
       (* original syntax
          {[ type v = u = A of int ]}
        revise syntax
@@ -205,10 +206,21 @@ and type_constr =
   | `Eq of (loc * ctyp * ctyp)
   | ant ]
 and opt_type_constr =
- [= `Constr of (loc * type_constr)
+ [= `Constr of (loc * type_constr) (* changed to some and None later *)
  | `Nil of loc ]
-and opt_type_params =
-  [= `Nil of loc ]
+and decl_param =
+  [=  `Quote of (loc * position_flag * alident)
+  | `QuoteAny of (loc * position_flag )
+  | `Any of loc | ant]
+and decl_params =
+ [= `Quote of (loc * position_flag * alident)
+  | `QuoteAny of (loc * position_flag )
+  | `Any of loc 
+  | `Com of (loc  * decl_params * decl_params) | ant]
+      
+and opt_decl_params =
+ [= `Some of (loc * decl_params)
+ | `None of loc  ]   
 and type_info =        (* FIXME be more preicse *)
   [= (* type u = v = [A of int ] *)
    `TyMan of (loc  * ctyp * private_flag  * type_repr)

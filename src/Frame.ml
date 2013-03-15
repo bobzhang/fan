@@ -232,16 +232,23 @@ let expr_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~de
 
 (* add extra arguments to the generated expression node
  *)  
-let mk_prefix  vars (acc:expr) ?(names=[])  ~left_type_variable=
+let mk_prefix (vars:opt_decl_params) (acc:expr) ?(names=[])  ~left_type_variable=
   let open Transform in 
   let varf = basic_transform left_type_variable in
-  let  f (var:ctyp) acc =
+  let  f (var:decl_params) acc =
     match var with
     [ `Quote(_,_,`Lid(_loc,s)) ->
         {| fun $(lid: varf s) -> $acc |}
     | t  ->
-        FanLoc.errorf (loc_of t) "mk_prefix: %s" (FanObjs.dump_ctyp t)] in
-  List.fold_right f vars ( names <+ acc);
+        FanLoc.errorf (loc_of t) "mk_prefix: %s" (FanObjs.dump_decl_params t)] in
+  match vars with
+  [`None _ -> (names <+ acc)
+  |`Some(_,xs) ->
+      let vars = list_of_com xs [] in
+      List.fold_right f vars (names <+ acc)
+  ];  
+  (* let xs  = list_of_com vars [] in *)
+  (* List.fold_right f vars ( names <+ acc); *)
 
 
 (* +-----------------------------------------------------------------+

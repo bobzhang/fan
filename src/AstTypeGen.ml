@@ -198,7 +198,9 @@ let gen_meta =
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
     ~names:["_loc"]
     ();
-Typehook.register ("MetaObj", gen_meta);
+Typehook.register
+    ~filter:(fun s -> not (List.mem s ["loc";"ant"]))
+    ("MetaObj", gen_meta);
   
 
 (* +-----------------------------------------------------------------+

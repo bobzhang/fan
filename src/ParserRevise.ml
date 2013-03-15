@@ -1176,7 +1176,7 @@ let apply_ctyp () = begin
       [more_ctyp{x}; "*"; star_ctyp{y} -> `Sta (_loc, x, y)
       | more_ctyp{x} -> x ]
       more_ctyp:
-      [ctyp{x} -> x | type_parameter{x} -> x   ]
+      [ctyp{x} -> x (* | type_parameter{x} -> x *)   ]
       unquoted_typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `Ant ((""|"typ" as n),s) ->  {| $(anti:mk_anti ~c:"ctyp" n s) |}
@@ -1184,7 +1184,7 @@ let apply_ctyp () = begin
       | a_lident{i} -> `Id(_loc,(i:>ident))]
       type_parameter:
       [ `Ant ((""|"typ"|"anti" as n),s) -> `Ant (_loc, (mk_anti n s))
-      | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag
+      (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.ctyp_tag *)
       | "'"; a_lident{i} -> `Quote(_loc,`Normal _loc, i)
       | "+"; "'"; a_lident{i} ->
           `Quote (_loc, `Positive _loc,  i)
@@ -1194,12 +1194,13 @@ let apply_ctyp () = begin
       | "_" ->  `Any _loc]
       type_longident_and_parameters:
       [ "("; type_parameters{tpl}; ")";type_longident{i} -> tpl {| $id:i|}
-      | type_parameter{tpl} ; type_longident{i} -> `App(_loc,{|$id:i|},tpl)
+      | type_parameter{tpl} ; type_longident{i} -> `App(_loc,{|$id:i|},(tpl:>ctyp))
       | type_longident{i} -> {|$id:i|} 
       | `Ant ((""|"anti" as n),s) -> {|$(anti:mk_anti n s ~c:"ctyp")|} ]
       type_parameters:
-      [ type_parameter{t1}; S{t2} -> fun acc -> t2 {| $acc $t1 |}
-      | type_parameter{t} -> fun acc -> {| $acc $t |}
+      [ type_parameter{t1}; S{t2} ->
+        fun acc -> t2 (`App(_loc,acc, (t1:>ctyp)))
+      | type_parameter{t} -> fun acc -> `App(_loc,acc, (t:>ctyp))
       | -> fun t -> t  ]
       meth_list:
       [ meth_decl{m}; ";"; S{(ml, v) }  -> (`Sem(_loc,m,ml)(* {| $m; $ml |} *), v)
@@ -1263,9 +1264,11 @@ let apply_ctyp () = begin
       (* | "["; "]" -> `Sum(_loc,`Nil _loc) *)
       | "{"; label_declaration_list{t}; "}" -> `Record (_loc, t)]
       type_ident_and_parameters:
-      [ "(";  L1 type_parameter SEP ","{tpl}; ")"; a_lident{i} -> (i, tpl)
-      |  type_parameter{t};  a_lident{i} -> (i, [t])
-      |  a_lident{i} -> (i, [])]
+      [ "(";  L1 type_parameter SEP ","{tpl}; ")"; a_lident{i} ->
+        (i, `Some(_loc, com_of_list (tpl :> list decl_params)))
+      |  type_parameter{t};  a_lident{i} ->
+          (i, `Some (_loc,(t:>decl_params)))
+      |  a_lident{i} -> (i, `None _loc)]
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> `Eq(_loc,t1, t2) ]
       typevars:
@@ -1358,7 +1361,7 @@ let apply_ctyp () = begin
       comma_type_parameter:
       [ S{t1}; ","; S{t2} ->  `Com (_loc, t1, t2)
       | `Ant (("list" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp," n s))
-      | type_parameter{t} -> `Ctyp(_loc, t)  ]
+      | type_parameter{t} -> `Ctyp(_loc, (t:>ctyp))  ]
       comma_ctyp:
       [ S{t1}; ","; S{t2} -> `Com (_loc, t1, t2) 
       | `Ant (("list" | "" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp," n s))

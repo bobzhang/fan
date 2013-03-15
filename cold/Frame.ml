@@ -163,17 +163,23 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
       else res in
     List.rev t in
   currying ~arity res
-let mk_prefix vars (acc : expr) ?(names= [])  ~left_type_variable  =
+let mk_prefix (vars : opt_decl_params) (acc : expr) ?(names= []) 
+  ~left_type_variable  =
   let open Transform in
     let varf = basic_transform left_type_variable in
-    let f (var : ctyp) acc =
+    let f (var : decl_params) acc =
       match var with
       | `Quote (_,_,`Lid (_loc,s)) ->
           `Fun
             (_loc,
               (`Case (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), acc)))
-      | t -> FanLoc.errorf (loc_of t) "mk_prefix: %s" (FanObjs.dump_ctyp t) in
-    List.fold_right f vars (names <+ acc)
+      | t ->
+          FanLoc.errorf (loc_of t) "mk_prefix: %s"
+            (FanObjs.dump_decl_params t) in
+    match vars with
+    | `None _ -> names <+ acc
+    | `Some (_,xs) ->
+        let vars = list_of_com xs [] in List.fold_right f vars (names <+ acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~destination  ~result_type  simple_expr_of_ctyp expr_of_ctyp
   expr_of_variant tydcl =

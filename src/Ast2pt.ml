@@ -349,7 +349,7 @@ let paolab (lab:string) (p:patt) : string =
   | _ -> lab ] ;
 
 
-let quote_map (x:ctyp) =
+let quote_map x =
   match x with
   [`Quote (_loc,p,`Lid(sloc,s)) ->
     let tuple = match p with
@@ -365,12 +365,26 @@ let quote_map (x:ctyp) =
       |`Normal _ -> (false,false)
       |`Ant (_loc,_) -> ANT_ERROR ] in
       (None,tuple)
-  | t ->
-      errorf (loc_of x) "quote_map %s" (dump_ctyp t)]  ;
+  | _ ->
+      errorf (loc_of x) "quote_map %s" (dump_ctyp x)]  ;
     
 let optional_type_parameters (t:ctyp) = 
   List.map quote_map (list_of_app t [])(* (FanAst.list_of_ctyp_app t []) *) ;
+(* (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) *)
+let mk_type_parameters (tl:opt_decl_params)
+    :  list ( option (Asttypes.loc string)  * (bool * bool)) =
+  match tl with
+  [`None _ -> []
+  | `Some(_,x) ->
+      let xs = list_of_com x [] in
+      List.map
+        (fun
+          [ #decl_param as x ->
+             quote_map (x:>ctyp)
+          |  _ -> assert false]) xs
+   ]  ;
 
+  
 (* ['a,'b,'c']*)
 let  class_parameters (t:type_parameters) =
   List.filter_map
@@ -384,7 +398,7 @@ let  class_parameters (t:type_parameters) =
     (list_of_com t []);
 
 
-let type_parameters_and_type_name t (* acc *) =
+let type_parameters_and_type_name t  =
   let rec aux t acc = 
   match t with
   [`App(_loc,t1,t2) ->
@@ -882,7 +896,8 @@ and mktype_decl (x:typedecl)  =
           in
           (c+>sloc,
            type_decl
-             (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl [])
+
+             (mk_type_parameters tl)
              cl cloc td)
         | `TyAbstr(cloc,`Lid(sloc,c),tl,cl) ->
            let cl =
@@ -896,7 +911,9 @@ and mktype_decl (x:typedecl)  =
                       (ctyp t1, ctyp t2, loc)
                     | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)])]         in            
             (c+>sloc,
-             mktype cloc (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) cl
+             mktype cloc
+               (mk_type_parameters tl)
+               (* (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) *) cl
                ~type_kind:Ptype_abstract ~priv:Private ~manifest:None)
               
         | (t:typedecl) ->

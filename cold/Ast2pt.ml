@@ -253,7 +253,7 @@ let paolab (lab : string) (p : patt) =
        i
    | ("",p) -> errorf (loc_of p) "paolab %s" (dump_patt p)
    | _ -> lab : string )
-let quote_map (x : ctyp) =
+let quote_map x =
   match x with
   | `Quote (_loc,p,`Lid (sloc,s)) ->
       let tuple =
@@ -271,9 +271,19 @@ let quote_map (x : ctyp) =
         | `Normal _ -> (false, false)
         | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
       (None, tuple)
-  | t -> errorf (loc_of x) "quote_map %s" (dump_ctyp t)
+  | _ -> errorf (loc_of x) "quote_map %s" (dump_ctyp x)
 let optional_type_parameters (t : ctyp) =
   List.map quote_map (list_of_app t [])
+let mk_type_parameters (tl : opt_decl_params) =
+  (match tl with
+   | `None _ -> []
+   | `Some (_,x) ->
+       let xs = list_of_com x [] in
+       List.map
+         (function
+          | #decl_param as x -> quote_map (x :>ctyp)
+          | _ -> assert false) xs : (string Asttypes.loc option* (bool*
+                                      bool)) list )
 let class_parameters (t : type_parameters) =
   List.filter_map
     (function
@@ -771,11 +781,7 @@ and mktype_decl (x : typedecl) =
                      | _ ->
                          errorf (loc_of x) "invalid constraint: %s"
                            (dump_type_constr cl))) in
-         ((c +> sloc),
-           (type_decl
-              (List.fold_right
-                 (fun x  acc  -> (optional_type_parameters x) @ acc) tl [])
-              cl cloc td))
+         ((c +> sloc), (type_decl (mk_type_parameters tl) cl cloc td))
      | `TyAbstr (cloc,`Lid (sloc,c),tl,cl) ->
          let cl =
            match cl with
@@ -789,10 +795,8 @@ and mktype_decl (x : typedecl) =
                          errorf (loc_of x) "invalid constraint: %s"
                            (dump_type_constr cl))) in
          ((c +> sloc),
-           (mktype cloc
-              (List.fold_right
-                 (fun x  acc  -> (optional_type_parameters x) @ acc) tl [])
-              cl ~type_kind:Ptype_abstract ~priv:Private ~manifest:None))
+           (mktype cloc (mk_type_parameters tl) cl ~type_kind:Ptype_abstract
+              ~priv:Private ~manifest:None))
      | (t : typedecl) -> errorf (loc_of t) "mktype_decl %s" (dump_typedecl t))
     tys
 and module_type: Ast.module_type -> Parsetree.module_type =

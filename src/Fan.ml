@@ -65,138 +65,140 @@ of_str_item_with_filter
 
 let d = `Absolute ["Fan";"Lang";"Meta"];
 
+
+
 add_quotation (d,"sig_item") sig_item_quot
-    ~mexpr:ME.meta_sig_item
-    ~mpatt:MP.meta_sig_item
+    ~mexpr:Filters.me#sig_item
+    ~mpatt:Filters.mp#sig_item
     ~expr_filter ~patt_filter ;
 add_quotation (d,"str_item") str_item_quot
-    ~mexpr:ME.meta_str_item
-    ~mpatt:MP.meta_str_item
+    ~mexpr:Filters.me#str_item
+    ~mpatt:Filters.mp#str_item
     ~expr_filter
     ~patt_filter ;
 add_quotation (d,"ctyp") ctyp_quot
-    ~mexpr:ME.meta_ctyp
-    ~mpatt:MP.meta_ctyp
+    ~mexpr:Filters.me#ctyp
+    ~mpatt:Filters.mp#ctyp
     ~expr_filter
     ~patt_filter ;
 add_quotation (d,"patt") patt_quot
-    ~mexpr:ME.meta_patt
-    ~mpatt:MP.meta_patt
+    ~mexpr:Filters.me#patt
+    ~mpatt:Filters.mp#patt
     ~expr_filter
     ~patt_filter ;
 add_quotation (d,"expr") expr_quot
-    ~mexpr:ME.meta_expr
-    ~mpatt:MP.meta_expr
+    ~mexpr:Filters.me#expr
+    ~mpatt:Filters.mp#expr
     ~expr_filter
     ~patt_filter ;
 add_quotation (d,"module_type") module_type_quot
-    ~mexpr:ME.meta_module_type
-    ~mpatt:MP.meta_module_type
+    ~mexpr:Filters.me#module_type
+    ~mpatt:Filters.mp#module_type
     ~expr_filter
     ~patt_filter ;
 add_quotation (d,"module_expr") module_expr_quot
-    ~mexpr:ME.meta_module_expr
-    ~mpatt:MP.meta_module_expr
+    ~mexpr:Filters.me#module_expr
+    ~mpatt:Filters.mp#module_expr
     ~expr_filter
     ~patt_filter ;
 
 add_quotation (d,"class_type") class_type_quot
-    ~mexpr:ME.meta_class_type ~mpatt:MP.meta_class_type
+    ~mexpr:Filters.me#class_type ~mpatt:Filters.mp#class_type
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"class_expr") class_expr_quot
-    ~mexpr:ME.meta_class_expr
-    ~mpatt:MP.meta_class_expr
+    ~mexpr:Filters.me#class_expr
+    ~mpatt:Filters.mp#class_expr
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"class_sig_item") class_sig_item_quot
-    ~mexpr:ME.meta_class_sig_item
-    ~mpatt:MP.meta_class_sig_item
+    ~mexpr:Filters.me#class_sig_item
+    ~mpatt:Filters.mp#class_sig_item
     ~expr_filter
     ~patt_filter ;
 
 add_quotation (d,"class_str_item") class_str_item_quot
-    ~mexpr:ME.meta_class_str_item
-    ~mpatt:MP.meta_class_str_item
+    ~mexpr:Filters.me#class_str_item
+    ~mpatt:Filters.mp#class_str_item
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"with_constr") with_constr_quot
-    ~mexpr:ME.meta_with_constr
-    ~mpatt:MP.meta_with_constr
+    ~mexpr:Filters.me#with_constr
+    ~mpatt:Filters.mp#with_constr
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"binding") binding_quot
-    ~mexpr:ME.meta_binding
-    ~mpatt:MP.meta_binding
+    ~mexpr:Filters.me#binding
+    ~mpatt:Filters.mp#binding
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"rec_expr") rec_expr_quot
-    ~mexpr:ME.meta_rec_expr
-    ~mpatt:MP.meta_rec_expr
+    ~mexpr:Filters.me#rec_expr
+    ~mpatt:Filters.mp#rec_expr
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"case") case_quot
-    ~mexpr:ME.meta_case
-    ~mpatt:MP.meta_case
+    ~mexpr:Filters.me#case
+    ~mpatt:Filters.mp#case
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"module_binding") module_binding_quot
-    ~mexpr:ME.meta_module_binding
-    ~mpatt:MP.meta_module_binding
+    ~mexpr:Filters.me#module_binding
+    ~mpatt:Filters.mp#module_binding
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"ident") ident_quot
-    ~mexpr:ME.meta_ident
-    ~mpatt:MP.meta_ident
+    ~mexpr:Filters.me#ident
+    ~mpatt:Filters.mp#ident
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"rec_flag") rec_flag_quot
-    ~mexpr:ME.meta_rec_flag
-    ~mpatt:MP.meta_rec_flag
+    ~mexpr:Filters.me#rec_flag
+    ~mpatt:Filters.mp#rec_flag
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"private_flag") private_flag_quot
-    ~mexpr:ME.meta_private_flag
-    ~mpatt:MP.meta_private_flag
+    ~mexpr:Filters.me#private_flag
+    ~mpatt:Filters.mp#private_flag
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"row_var_flag") row_var_flag_quot
-    ~mexpr:ME.meta_row_var_flag
-    ~mpatt:MP.meta_row_var_flag
+    ~mexpr:Filters.me#row_var_flag
+    ~mpatt:Filters.mp#row_var_flag
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"mutable_flag") mutable_flag_quot
-    ~mexpr:ME.meta_mutable_flag
-    ~mpatt:MP.meta_mutable_flag
+    ~mexpr:Filters.me#mutable_flag
+    ~mpatt:Filters.mp#mutable_flag
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"virtual_flag") virtual_flag_quot
-    ~mexpr:ME.meta_virtual_flag ~mpatt:MP.meta_virtual_flag
+    ~mexpr:Filters.me#virtual_flag ~mpatt:Filters.mp#virtual_flag
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"override_flag") override_flag_quot
-    ~mexpr:ME.meta_override_flag
-    ~mpatt:MP.meta_override_flag
+    ~mexpr:Filters.me#override_flag
+    ~mpatt:Filters.mp#override_flag
     ~expr_filter
     ~patt_filter ;
   
 add_quotation (d,"direction_flag") direction_flag_quot
-    ~mexpr:ME.meta_direction_flag
-    ~mpatt:MP.meta_direction_flag
+    ~mexpr:Filters.me#direction_flag
+    ~mpatt:Filters.mp#direction_flag
     ~expr_filter
     ~patt_filter ;
 
