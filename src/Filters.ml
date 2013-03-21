@@ -116,8 +116,6 @@ let make_filter (s,code) =
   | e -> e  ] in
   ("filter_"^s, (FanObjs.map_stru f )#stru);
 
-(* module ME = FanAst.Make Ant.LocExpr; *)
-(* module MP = FanAst.Make Ant.LocPatt; *)
 let me = object
   inherit FanMeta.meta;
   method! loc _loc loc =

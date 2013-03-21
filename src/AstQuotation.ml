@@ -259,7 +259,12 @@ let parse_quotation_result parse loc quot pos_tag str =
       FanLoc.raise iloc exc1 ];
 
     
-
+(* [expr_filter] needs an coercion , we can not finish in one step
+   by mexpr, since 1. the type has to be relaxed not only to ep, since
+   [parse_patt] or [parse_expr] could introduce any type.
+   2. the context is a bit missing when expand the antiquotation..
+   it expands differently when in expr or patt... 
+ *)
 let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
   let entry_eoi = Gram.eoi_entry entry in
   let expand_expr loc loc_name_opt s =
@@ -268,7 +273,7 @@ let add_quotation ~expr_filter ~patt_filter  ~mexpr ~mpatt name entry  =
         Gram.parse_string entry_eoi ~loc s |> mexpr loc |> expr_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_expr loc loc_name_opt s in
-    {:stru@loc| $(exp:exp_ast) |} in
+    `StExp(loc,exp_ast) in
   let expand_patt _loc loc_name_opt s =
     Ref.protect FanConfig.antiquotations true begin fun _ ->
       let ast = Gram.parse_string entry_eoi ~loc:_loc s in

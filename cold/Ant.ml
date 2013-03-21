@@ -1,15 +1,12 @@
 open Ast
 open FanUtil
 open Lib.Meta
-module LocExpr =
-  struct
-    let meta_loc _loc loc =
-      match AstQuotation.current_loc_name.contents with
-      | None  -> `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
-      | Some "here" -> meta_loc _loc loc
-      | Some x -> `Id (_loc, (`Lid (_loc, x)))
-  end
-module LocPatt = struct let meta_loc _loc _ = `Any _loc end
+let meta_loc_exp _loc loc =
+  match AstQuotation.current_loc_name.contents with
+  | None  -> `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
+  | Some "here" -> meta_loc _loc loc
+  | Some x -> `Id (_loc, (`Lid (_loc, x)))
+let meta_loc_patt _loc _ = `Any _loc
 let gm () =
   match FanConfig.compilation_unit.contents with
   | Some "FanAst" -> ""
@@ -21,7 +18,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     method! patt (x : patt) =
       match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
-          let mloc _loc = LocPatt.meta_loc _loc _loc in
+          let mloc _loc = meta_loc_patt _loc _loc in
           let e = parse_patt _loc code in
           (match (decorations, cxt, sep) with
            | ("anti",_,_) ->
@@ -74,7 +71,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     method! expr (x : expr) =
       match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
-          let mloc _loc = (LocExpr.meta_loc _loc _loc :>expr) in
+          let mloc _loc = (meta_loc_exp _loc _loc :>expr) in
           let e = parse_expr _loc code in
           (match (decorations, cxt, sep) with
            | ("anti",_,__) ->
